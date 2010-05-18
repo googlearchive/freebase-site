@@ -79,7 +79,7 @@ class OnDiskAcreApp(object):
             script = {'id':null, 'name':null, 'handler':null,
                       'content_type':null, 'contents':null, 'extension':null}
             fn, ext = f.rsplit('.', 1)
-            script['id'] = metadata['id'] + '/' + fn
+            script['id'] = metadata['id'] + '/' + quotekey(fn)
             script['extension'] = ext
             script['name'] = quotekey(fn)
             script['contents'] = file(os.path.join(directory, f))

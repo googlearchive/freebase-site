@@ -17,6 +17,13 @@ null, true, false = None, True, False
 
 DEFAULT_ACRE_SERVICE_URL = "http://acre.branch.qa.metaweb.com"
 
+SHORT_GRAPH_MAP = {
+    "otg":"http://acre.freebase.com",
+    "sandbox":"http://acre.sandbox-freebase.com",
+    "trunk":"http://trunk.qa.metaweb.com",
+    "branch":"http://branch.qa.metaweb.com"
+}
+
 class extmap(object):
     FILE_TYPES = {
         'png':'image/png',
@@ -108,15 +115,18 @@ class AcrePush(object):
 
         self.fb.login(user, pw)
 
-    def push(self, directory, version, id=None):
+    def push(self, directory, version, id=None, patch=False):
         oda = OnDiskAcreApp(directory, id)
 
         try:
             self.fb.get_app(oda.metadata['id'])
         except MetawebError:
+            if patch:
+                usage("Cannot patch a non-existant app")
             self.fb.create_app(oda.metadata['id'])
 
-        self.fb.delete_app_all_files(oda.metadata['id'])
+        if not patch:
+            self.fb.delete_app_all_files(oda.metadata['id'])
 
         for key, val in oda.metadata['files'].iteritems():
             if val['handler'] == 'binary':
@@ -136,21 +146,21 @@ def usage(msg=None):
         print >> sys.stderr, "%s: %s" %(sys.argv[0], msg)
         print >> sys.stderr, ""
 
-    print >> sys.stderr, "%s [-i id] [-h acrehost] directory version" % sys.argv[0]
+    print >> sys.stderr, "%s [-i id] [-h acrehost] [-u username] [-p password] [-P] directory version" % sys.argv[0]
     sys.exit(1)
 
 if __name__ == '__main__':
     import getopt
 
     try:
-        args, remains = getopt.getopt(sys.argv[1:], "i:h:u:p:")
+        args, remains = getopt.getopt(sys.argv[1:], "i:h:u:p:P")
     except getopt.GetoptError, e:
         usage(e)
 
     if len(remains) != 2:
         usage("must supply directory and version")
 
-    id, host, user, pw = None, DEFAULT_ACRE_SERVICE_URL, None, None
+    id, host, user, pw, patch = None, DEFAULT_ACRE_SERVICE_URL, None, None, False
     for a in args:
         if a[0] == '-i':
             id = a[1]
@@ -160,6 +170,8 @@ if __name__ == '__main__':
             user = a[1]
         elif a[0] == '-p':
             pw = a[1]
+        elif a[0] == '-P':
+            patch = True
 
     if not user:
         user = raw_input("Username: ")
@@ -168,5 +180,12 @@ if __name__ == '__main__':
     if not pw:
         pw = getpass.getpass()
 
+    mhost = SHORT_GRAPH_MAP.get(host);
+    if not host.startswith("http://") and not mhost:
+        usage("Host must start with http:// or be a known short name (e.g. trunk, branch, otg, sandbox)")
+
+    if mhost:
+        host = mhost
+        
     ap = AcrePush(user, pw, host);
-    ap.push(remains[0], remains[1] id)
+    ap.push(remains[0], remains[1], id, patch)

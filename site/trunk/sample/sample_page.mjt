@@ -1,0 +1,18 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+
+</acre:script>
+
+<html>
+  <head>
+    <link rel="stylesheet" href="${mf.link_href('sample_page.css')}" type="text/css" media="screen">
+    <title>sample site page</title>
+  </head>
+
+  <body>
+    <h1>Hello World</h1>
+    foo bar
+
+    <script type="text/javascript" src="${mf.script_src('sample_page.js')}"></script>
+  </body>
+</html>

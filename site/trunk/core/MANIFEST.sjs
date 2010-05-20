@@ -41,6 +41,10 @@ function base_manifest(MF, scope) {
          * The base url prefix for retrieving css and js. All apps who extend the base_manifest
          * will have a "/MANIFEST/s" entry-point to serve css and js as specified in their MF.stylesheet
          * and MF.javascript.
+         *
+         * The idea is that once an app is branched/deployed, this static_base_url will be changed
+         * to a permanent static server (i.e., http://freebaselibs.com/statc/freebase_site/foo/[version]/...).
+         * But when developing, we want the resources to be served dynamically through "/MANIFEST/s/...".
          */
         static_base_url: scope.acre.request.base_url + scope.acre.request.base_path + "MANIFEST/s/",
 

@@ -28,7 +28,8 @@ function extend() {
  *   };
  */
 function extend_manifest(MF, scope) {
-    return extend(MF, base_manifest(MF, scope), MF);
+    var orig = extend({}, MF);
+    return extend(MF, base_manifest(MF, scope), orig);
 };
 
 /**

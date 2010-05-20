@@ -1,0 +1,17 @@
+[{
+  "id": null,
+  "/freebase/domain_profile/featured_views": [{
+    "id":    null,
+    "name":  null,
+    "sort":  "index",
+    "index": null,
+    "/common/document/content": {
+      "blob_id": null
+    }
+  }],
+  "!views_count:/freebase/query_hints/related_domain": {
+    "optional": true,
+    "return":   "count",
+    "limit":    1000
+  }
+}]

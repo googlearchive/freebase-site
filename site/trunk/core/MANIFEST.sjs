@@ -180,7 +180,7 @@ function base_manifest(MF, scope) {
     /**
      * Main block. DO NOT MODIFY!
      *
-     * Responsible for routing request to "/MANIFEST/s" or server MF (json/p).
+     * Responsible for routing request to "/MANIFEST/s" or serve MF (json/p).
      *
      * usage:
      *   var MF = {...};

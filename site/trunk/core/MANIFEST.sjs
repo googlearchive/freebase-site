@@ -52,7 +52,7 @@ function base_manifest(MF, scope) {
          * Generate the proper url to serve the css(s) specified by "foo.css" key in MF.stylesheet
          *
          * usage:
-         *   <link rel="stylesheet" href="${MF.link_href("foo.css")}"/>
+         *   <link rel="stylesheet" type="text/css" href="${MF.link_href("foo.css")}"/>
          */
         link_href: function(key) {
             return MF.static_base_url + key;
@@ -71,7 +71,7 @@ function base_manifest(MF, scope) {
         /**
          * less (css) parser.
          */
-        less: function(data, callback, errback) {
+        less: function(data /*required*/, callback /*required*/, errback /*optional*/) {
             if (!MF.less.parser) {
                 MF.less.parser = new(scope.acre.require("/freebase/site/core/less", MF.version["/freebase/site/core"]).less.Parser)({optimization:3});
             }
@@ -96,12 +96,20 @@ function base_manifest(MF, scope) {
          */
         css: function(key) {
             if (! (MF.stylesheet && (key in MF.stylesheet))) {
-                // TODO: raise 404?
-                return;
+                return MF.not_found();
             }
+            scope.acre.response.set_header("content-type", "text/css");
             MF.stylesheet[key]
                 .forEach(function(id) {
-                             var source = scope.acre.require(id, MF.resource_version(id)).body;
+                             var source;
+                             try {
+                                 source = scope.acre.require(id, MF.resource_version(id)).body;
+                             }
+                             catch (ex) {
+                                 scope.acre.write("\n/** " + ex.toString() + " **/\n");
+                                 return;
+                             }
+
                              if (/\.less$/.exec(id)) {
                                  MF.less(source, scope.acre.write, function(e) {
                                              scope.acre.write(scope.JSON.stringify(e, null, 2));
@@ -118,12 +126,19 @@ function base_manifest(MF, scope) {
          */
         js: function(key) {
             if (! (MF.javascript && (key in MF.javascript))) {
-                // TODO: raise 404?
-                return;
+                return MF.not_found();
             }
+            scope.acre.response.set_header("content-type", "text/javascript");
             MF.javascript[key]
                 .forEach(function(id) {
-                             var source = scope.acre.require(id, MF.resource_version(id)).body;
+                             var source;
+                             try {
+                                 source = scope.acre.require(id, MF.resource_version(id)).body;
+                             }
+                             catch (ex) {
+                                 scope.acre.write("\n/** " + ex.toString() + " **/\n");
+                                 return;
+                             }
                              scope.acre.write(source);
                          });
         },
@@ -135,11 +150,9 @@ function base_manifest(MF, scope) {
          */
         resource_version: function(resource_id) {
             var appid = resource_id.split("/");
-
             if (appid.length === 1) {
                 return null;
             }
-
             appid.pop();
             appid = appid.join("/");
             if (MF.version && (appid in MF.version)) {
@@ -158,7 +171,14 @@ function base_manifest(MF, scope) {
             else if (/\.css$/.exec(key)) {
                 MF.css(key);
             }
-            // TODO: raise 404?
+            else {
+                MF.not_found();
+            }
+        },
+
+        not_found: function() {
+            scope.acre.response.status = 404;
+            scope.acre.exit();
         },
 
         /**
@@ -181,6 +201,9 @@ function base_manifest(MF, scope) {
                     if (typeof MF[path[0]] === "function") {
                         return MF[path[0]](path[1]);
                     }
+                }
+                if (scope.acre.request.path_info !== "/") {
+                    return MF.not_found();
                 }
             }
 

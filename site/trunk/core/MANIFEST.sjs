@@ -1,5 +1,9 @@
 
-
+/**
+ * TODO: this should go in some library
+ *
+ * @see jQuery.extend()
+ */
 function extend() {
     var a = arguments[0];
     for (var i=1,len=arguments.length; i<len; i++) {
@@ -14,11 +18,14 @@ function extend() {
 /**
  * All apps' MANIFEST.MF must extend the base_manifest to be able to:
  * - serve (less)css/js as defined in the MANIFEST
- * - serve MANIFEST.MF as json
+ * - serve MANIFEST.MF as json/p
  *
  * usage:
  *   var MF = {...};
  *   acre.require("/freebase/site/core/MANIFEST").extend_manifest(MF, this);
+ *   if (acre.current_script == acre.request.script) {
+ *     MF.main();
+ *   };
  */
 function extend_manifest(MF, scope) {
     return extend(MF, base_manifest(MF, scope), MF);
@@ -29,18 +36,37 @@ function extend_manifest(MF, scope) {
  */
 function base_manifest(MF, scope) {
     return {
+
+        /**
+         * The base url prefix for retrieving css and js. All apps who extend the base_manifest
+         * will have a "/MANIFEST/s" entry-point to serve css and js as specified in their MF.stylesheet
+         * and MF.javascript.
+         */
+        static_base_url: scope.acre.request.base_url + scope.acre.request.base_path + "MANIFEST/s/",
+
+        /**
+         * Generate the proper url to serve the css(s) specified by "foo.css" key in MF.stylesheet
+         *
+         * usage:
+         *   <link rel="stylesheet" href="${MF.link_href("foo.css")}"/>
+         */
         link_href: function(key) {
-            return MF.static_base_url() + key;
+            return MF.static_base_url + key;
         },
 
+        /**
+         * Generate the proper url to serve the js(s) specified by "foo.js" key in MF.javascript
+         *
+         * usage:
+         *   <script type="text/javascript" src="${MF.script_src("foo.js")}"></script>
+         */
         script_src: function(key) {
-            return MF.static_base_url() + key;
+            return MF.static_base_url + key;
         },
 
-        static_base_url: function() {
-            return scope.acre.request.base_url + "MANIFEST/static/";
-        },
-
+        /**
+         * less (css) parser.
+         */
         less: function(data, callback, errback) {
             if (!MF.less.parser) {
                 MF.less.parser = new(scope.acre.require("/freebase/site/core/less", MF.version["/freebase/site/core"]).less.Parser)({optimization:3});
@@ -58,17 +84,10 @@ function base_manifest(MF, scope) {
                                  });
         },
 
-
-        "static": function(key) {
-            if (/\.js$/.exec(key)) {
-                MF.js(key);
-            }
-            else if (/\.css$/.exec(key)) {
-                MF.css(key);
-            }
-        },
-
-
+        /**
+         * Serve (acre.write) all css declared in MF.stylesheet[key].
+         * If css is less (*.less), then run the less parser.
+         */
         css: function(key) {
             if (! (MF.stylesheet && (key in MF.stylesheet))) {
                 return;
@@ -87,6 +106,9 @@ function base_manifest(MF, scope) {
                 });
         },
 
+        /**
+         * Serve (acre.write) all js declared in MF.javascript[key].
+         */
         js: function(key) {
             if (! (MF.javascript && (key in MF.javascript))) {
                 return;
@@ -98,6 +120,11 @@ function base_manifest(MF, scope) {
                          });
         },
 
+        /**
+         * Match resource_id to an app version declared in MF.version
+         * If resource_id is unrecognized (i.e., app_id not declared in MF.version),
+         * throws error.
+         */
         resource_version: function(resource_id) {
             var appid = resource_id.split("/");
 
@@ -113,6 +140,30 @@ function base_manifest(MF, scope) {
             throw "A version for " + appid + " must be declared in the MANIFEST.";
         },
 
+        /**
+         * The "/MANIFEST/s" handler. Currently only recognizes *.js and *.css.
+         */
+        s: function(key) {
+            if (/\.js$/.exec(key)) {
+                MF.js(key);
+            }
+            else if (/\.css$/.exec(key)) {
+                MF.css(key);
+            }
+        },
+
+        /**
+         * Main block. DO NOT MODIFY!
+         *
+         * Responsible for routing request to "/MANIFEST/s" or server MF (json/p).
+         *
+         * usage:
+         *   var MF = {...};
+         *   acre.require("/freebase/site/core/MANIFEST").extend_manifest(MF, this);
+         *   if (acre.current_script == acre.request.script) {
+         *     MF.main();
+         *   };
+         */
         main: function() {
             if (scope.acre.request.path_info && scope.acre.request.path_info.length) {
                 var path = scope.acre.request.path_info.substring(1).split("/", 2);

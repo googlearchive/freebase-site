@@ -87,9 +87,12 @@ function base_manifest(MF, scope) {
         /**
          * Serve (acre.write) all css declared in MF.stylesheet[key].
          * If css is less (*.less), then run the less parser.
+         *
+         * TODO: we need to post-process (regex) to replace url(...) declarations.
          */
         css: function(key) {
             if (! (MF.stylesheet && (key in MF.stylesheet))) {
+                // TODO: raise 404?
                 return;
             }
             MF.stylesheet[key]
@@ -111,6 +114,7 @@ function base_manifest(MF, scope) {
          */
         js: function(key) {
             if (! (MF.javascript && (key in MF.javascript))) {
+                // TODO: raise 404?
                 return;
             }
             MF.javascript[key]
@@ -134,7 +138,7 @@ function base_manifest(MF, scope) {
 
             appid.pop();
             appid = appid.join("/");
-            if (appid in MF.version) {
+            if (MF.version && (appid in MF.version)) {
                 return MF.version[appid];
             }
             throw "A version for " + appid + " must be declared in the MANIFEST.";
@@ -150,6 +154,7 @@ function base_manifest(MF, scope) {
             else if (/\.css$/.exec(key)) {
                 MF.css(key);
             }
+            // TODO: raise 404?
         },
 
         /**

@@ -48,6 +48,8 @@
     ${g.page.content(g)}
 
     ${g.page.footer(g)}
+
+    ${g.page.footer_script(g)}
   </body>
 </acre:block>
 
@@ -149,4 +151,9 @@
       </ul>
     </div>
   </div>
+</acre:block>
+
+
+<acre:block def="footer_script(g)">
+  <acre:block if="g.exports.footer_script">${g.exports.footer_script(g)}</acre:block>
 </acre:block>

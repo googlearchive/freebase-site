@@ -12,6 +12,9 @@
 <acre:block def="content_body(g)">
   <h1>Hello World</h1>
   foo bar
+</acre:block>
+
+<acre:block def="footer_script(g)">
   ${g.t.script(mf.script_src("sample_page.js"))}
 </acre:block>
 

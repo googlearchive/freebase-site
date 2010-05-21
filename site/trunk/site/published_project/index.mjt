@@ -1,4 +1,5 @@
 <acre:script>
+
   var mf = acre.require("MANIFEST").MF;
   var options = {path: false,args: true};
 
@@ -6,12 +7,16 @@
   var query = acre.require('base').query;
   query = acre.freebase.extend_query(query, {'id':id});
   var results = acre.freebase.mqlread(query).result;
+
 </acre:script>
 
 <acre:block def="head(g)" trim="">
   <link rel="stylesheet" href="$g.bp/project.css.css" media="screen, projection" />
   ${g.jq.plugins(['masonry', 'lazyload'])}
-  <script src="$g.bp/project.js"></script>
+  <script src="$g.bp/project.js.js"></script>
+  <acre:script>
+    console.log(g);
+  </acre:script>
 </acre:block>
 
 <acre:block def="body(g)">
@@ -28,21 +33,8 @@
                 </a>
               </div>
               <div class="collection-info">
-                <h1><a href="http://www.freebase.com${r['id']}" class="collection-title"><span>${r['name']}</span></a> <a href="#" class="collection-show-topics">i</a></h1>
+                <h1><a href="http://www.freebase.com${r['id']}" class="collection-title"><span>${r['name']}</span></a> <a href="javascript:void(0);" title="${r['id']}" class="collection-show-topics">i</a></h1>
                 <div class="collection-topics">
-                  <h2>Including:</h2>
-                  <ul class="clear">
-                    <li><span><a href="#">180° South</a></span></li>
-                    <li><span><a href="#">All About Evil</a></span></li>
-                    <li><span><a href="#">All Good Children</a></span></li>
-                    <li><span><a href="#">Another Year</a></span></li>
-                    <li><span><a href="#">Aurora</a></span></li>
-                    <li><span><a href="#">Babies</a></span></li>
-                    <li><span><a href="#">Black Heaven</a></span></li>
-                    <li><span><a href="#">Behind the Burly Q</a></span></li>
-                    <li><span><a href="#">180° South</a></span></li>
-                  </ul>
-                  <a class="topic-count">and 53 more&hellip;</a>
                 </div>
               </div>
             </div>
@@ -54,4 +46,3 @@
 </acre:block>  
 
 ${acre.require("/freebase/apps/global/templates", mf.version["/freebase/apps/global"]).page(this.exports, "freebase", options)}
-

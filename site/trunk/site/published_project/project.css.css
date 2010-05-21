@@ -79,20 +79,20 @@ a.collection-title {
 }
 
 .collection-show-topics {
+    display: none;
     position: absolute;
     right: 3px;
     top: 7px;
-    display: inline-block;
     text-indent: -9999px;
-    background: url(icon-chiclet.png) no-repeat;
+    background: url(icon-chiclet.png) no-repeat -13px 0;
     height: 12px; width: 12px;
 }
 
-.collection:hover .collection-show-topics {
-    background-position: -13px 0;
+.collection-active .collection-show-topics {
+    display: block;
 }
 
-.collection:hover .collection-show-topics:hover {
+.collection-active .collection-show-topics:hover {
     background-position: -26px 0;
 }
 

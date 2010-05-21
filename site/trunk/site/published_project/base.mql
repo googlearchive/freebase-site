@@ -5,8 +5,9 @@
     "name":  null,
     "sort":  "index",
     "index": null,
-    "/common/document/content": {
-      "blob_id": null
+    "type": "/freebase/query",
+    "key": {
+        "value": null
     }
   }],
   "!views_count:/freebase/query_hints/related_domain": {

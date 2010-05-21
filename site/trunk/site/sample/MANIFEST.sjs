@@ -15,7 +15,4 @@ var MF = {
 
 };
 
-acre.require("/freebase/site/core/MANIFEST", MF.version["/freebase/site/core"]).extend_manifest(MF, this);
-if (acre.current_script == acre.request.script) {
-  MF.main();
-};
+acre.require("/freebase/site/core/MANIFEST", MF.version["/freebase/site/core"]).init(MF, this);

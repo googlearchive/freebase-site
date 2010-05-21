@@ -1,4 +1,3 @@
-
 /**
  * TODO: this should go in some library
  *
@@ -16,16 +15,21 @@ function extend() {
 };
 
 /**
+ * usage:
+ *   var MF = {...};
+ *   acre.require("/freebase/site/core/MANIFEST").init(MF, this);
+ */
+function init(MF, scope) {
+  extend_manifest(MF, scope);
+  if (scope.acre.current_script == scope.acre.request.script) {
+    MF.main();
+  }
+};
+
+/**
  * All apps' MANIFEST.MF must extend the base_manifest to be able to:
  * - serve (less)css/js as defined in the MANIFEST
  * - serve MANIFEST.MF as json/p
- *
- * usage:
- *   var MF = {...};
- *   acre.require("/freebase/site/core/MANIFEST").extend_manifest(MF, this);
- *   if (acre.current_script == acre.request.script) {
- *     MF.main();
- *   };
  */
 function extend_manifest(MF, scope) {
   var orig = extend({}, MF);
@@ -209,3 +213,25 @@ function base_manifest(MF, scope) {
   };
 };
 
+
+var MF = {
+  "version": {
+    "/freebase/libs/jquery": "8"
+  },
+  "suggest" : {
+    "version": "1.2.1",
+    "base_url": "http://freebaselibs.com/static/suggest/"
+  },
+  "jquery" : {
+    "version" : "1.4"
+  },
+  "freebase": {
+      "resource": {
+        "hash": "69ebf557e8734e6575f5077fe4e03506c99a28c5bb34e101459906ac6f44992f",
+        "base_url": "http://res.freebase.com/s/"
+      }
+  }
+};
+MF.suggest.base_url += MF.suggest.version;
+MF.freebase.resource.base_url += MF.freebase.resource.hash;
+init(MF, this);

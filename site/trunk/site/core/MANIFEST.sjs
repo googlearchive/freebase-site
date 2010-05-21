@@ -247,7 +247,7 @@ var MF = {
     "core.css": ["core.css"]
   },
   "javascript": {
-    "core.js": ["core.js"]
+    "core.js": ["signin.js", "searchbox.js", "core.js"]
   }
 };
 MF.suggest.base_url += MF.suggest.version;

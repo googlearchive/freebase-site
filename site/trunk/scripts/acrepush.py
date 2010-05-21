@@ -83,7 +83,7 @@ class OnDiskAcreApp(object):
             script['extension'] = ext
             script['name'] = quotekey(fn)
             script['contents'] = file(os.path.join(directory, f))
-            script['blob_id'] = hashlib.sha256(script['contents']).hexdigest()
+            script['blob_id'] = hashlib.sha256(script['contents'].read()).hexdigest()
             ct, handler = extmap.type_for_extension(ext)
             script['handler'] = handler
             script['content_type'] = ct

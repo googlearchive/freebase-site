@@ -7,7 +7,7 @@ import json
 import subprocess
 
 cmd_options = OptionParser()
-cmd_options.add_option('-u', '--url', dest='host',
+cmd_options.add_option('-u', '--url', dest='url',
                        default="http://acre.branch.qa.metaweb.com",
                        help="acre host i.e., http://acre.sandbox-freebase.com")
 
@@ -37,7 +37,7 @@ def is_int(str):
 
 def next_version(appid):
     try:
-        url = "%s/appeditor/get_app?%s" % (options.host, urllib.urlencode(dict(appid=appid)))
+        url = "%s/appeditor/get_app?%s" % (options.url, urllib.urlencode(dict(appid=appid)))
         app_info = get_json(url).get('result')
         versions = app_info.get('versions', [])
         versions = [v for v in versions if is_int(v['name'])]
@@ -65,7 +65,7 @@ for arg in args:
     dir = os.path.join(base_site_dir, app)
     cmd = [os.path.join(base_scripts_dir, 'acrepush.py'),
            '-i', appid,
-           '-h', options.host,
+           '-h', options.url,
            dir, str(ver)]
 
     print " ".join(cmd)

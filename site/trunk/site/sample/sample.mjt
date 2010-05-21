@@ -1,9 +1,11 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
   var page_options = {};
-  var title = "Sample Page";
 </acre:script>
 
+<acre:block def="title(g)">
+  Sample Page
+</acre:block>
 
 <acre:block def="head(g)">
   ${g.t.stylesheet(mf.link_href("sample_page.css"))}

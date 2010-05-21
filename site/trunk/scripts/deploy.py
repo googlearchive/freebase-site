@@ -8,8 +8,13 @@ from cssmin import cssmin
 from optparse import OptionParser
 from pprint import pprint
 
+def scripts_dir():
+    path = os.path.join(os.getcwd(), __file__)    
+    dir = os.path.dirname(path)    
+    return os.path.abspath(dir)
+
 JAVA = os.environ.get("JAVA_EXE", "java")
-COMPILER = os.path.join(os.getcwd(), "compiler.jar")
+COMPILER = os.path.join(scripts_dir(), "compiler.jar")
 JAVA_OPTS = ["-jar", COMPILER, "--warning_level", "QUIET"]
 
 cmd_options = OptionParser()

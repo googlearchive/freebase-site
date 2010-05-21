@@ -1,0 +1,48 @@
+<acre:script>
+
+  var mf = acre.require("MANIFEST").MF;
+  var options = {path: false,args: true};
+
+  var id = acre.request.params.id;
+  var query = acre.require('base').query;
+  query = acre.freebase.extend_query(query, {'id':id});
+  var results = acre.freebase.mqlread(query).result;
+
+</acre:script>
+
+<acre:block def="head(g)" trim="">
+  <link rel="stylesheet" href="$g.bp/project.css.css" media="screen, projection" />
+  ${g.jq.plugins(['masonry', 'lazyload'])}
+  <script src="$g.bp/project.js.js"></script>
+  <acre:script>
+    console.log(g);
+  </acre:script>
+</acre:block>
+
+<acre:block def="body(g)">
+  <div id="content" class="clear">
+    <div id="content-main">
+      <div class="main-section-nohead">
+        <h2>Explore the <strong>${results[0]['!views_count:/freebase/query_hints/related_domain']}</strong> collections curated by our community</h2>
+        <div id="collections">
+          <div class="collection" acre:for="r in results[0]['/freebase/domain_profile/featured_views']">
+            <div class="collection-inner">
+              <div class="collection-img">
+                <a href="#">
+                  <img src="http://www.freebase.com/type/chiclet${r['id']}?spacing=1&limit=6&mode=fillcropmid&size=150" height="150" />
+                </a>
+              </div>
+              <div class="collection-info">
+                <h1><a href="http://www.freebase.com${r['id']}" class="collection-title"><span>${r['name']}</span></a> <a href="javascript:void(0);" title="${r['id']}" class="collection-show-topics">i</a></h1>
+                <div class="collection-topics">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>    
+      </div>
+    </div>
+  </div>
+</acre:block>  
+
+${acre.require("/freebase/apps/global/templates", mf.version["/freebase/apps/global"]).page(this.exports, "freebase", options)}

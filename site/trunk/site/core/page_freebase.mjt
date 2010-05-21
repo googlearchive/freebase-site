@@ -68,7 +68,7 @@
           <input type="hidden" value="0" name="start" />
           <input type="text" 
                  autocomplete="off"
-                 placeholder="Search ${g.h.sitewide_topic_count()} interconnected topics"
+                 placeholder="Search 12 million interconnected topics"
                  name="query" id="global-search-input"
                  class="SearchBox-input AutocompleteInput-input" />
         </fieldset>

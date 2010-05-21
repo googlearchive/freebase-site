@@ -1,18 +1,19 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
-
+  var page_options = {};
+  var title = "Sample Page";
 </acre:script>
 
-<html>
-  <head>
-    <link rel="stylesheet" href="${mf.link_href('sample_page.css')}" type="text/css" media="screen">
-    <title>sample site page</title>
-  </head>
 
-  <body>
-    <h1>Hello World</h1>
-    foo bar
+<acre:block def="head(g)">
+  ${g.t.stylesheet(mf.link_href("sample_page.css"))}
+</acre:block>
 
-    <script type="text/javascript" src="${mf.script_src('sample_page.js')}"></script>
-  </body>
-</html>
+<acre:block def="content_body(g)">
+  <h1>Hello World</h1>
+  foo bar
+  ${g.t.script(mf.script_src("sample_page.js"))}
+</acre:block>
+
+
+${acre.require("/freebase/site/core/template", mf.version["/freebase/site/core"]).page(this.exports, page_options)}

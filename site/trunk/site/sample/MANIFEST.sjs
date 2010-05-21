@@ -6,11 +6,11 @@ var MF = {
   },
 
   stylesheet: {
-    "sample_page.css": ["/freebase/site/core/core.css", "sample_page.css", "sample_page.less"]
+    "sample_page.css": ["sample_page.css", "sample_page.less"]
   },
 
   javascript: {
-    "sample_page.js": ["/freebase/site/core/core.js", "sample_page.js"]
+    "sample_page.js": ["sample_page.js"]
   }
 
 };

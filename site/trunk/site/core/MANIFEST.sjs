@@ -50,7 +50,7 @@ function base_manifest(MF, scope) {
      * to a permanent static server (i.e., http://freebaselibs.com/statc/freebase_site/foo/[version]/...).
      * But when developing, we want the resources to be served dynamically through "/MANIFEST/s/...".
      */
-    static_base_url: scope.acre.request.base_url + scope.acre.request.base_path + "MANIFEST/s/",
+    static_base_url: scope.acre.current_script.app.base_url + scope.acre.request.base_path + "/MANIFEST/s/",
 
     /**
      * Generate the proper url to serve the css(s) specified by "foo.css" key in MF.stylesheet
@@ -70,6 +70,18 @@ function base_manifest(MF, scope) {
      */
     script_src: function(key) {
       return MF.static_base_url + key;
+    },
+
+
+    /**
+     * TODO: fix
+     */
+    img_src: function(resource_id) {
+      var appid = resource_id.split("/");
+      if (appid.length === 1) {
+        return scope.acre.current_script.app.base_url + "/" + resource_id;
+      }
+      return resource_id;
     },
 
     /**
@@ -216,7 +228,7 @@ function base_manifest(MF, scope) {
 
 var MF = {
   "version": {
-    "/freebase/libs/jquery": "8"
+    "/freebase/libs/jquery": "release"
   },
   "suggest" : {
     "version": "1.2.1",
@@ -230,6 +242,12 @@ var MF = {
         "hash": "69ebf557e8734e6575f5077fe4e03506c99a28c5bb34e101459906ac6f44992f",
         "base_url": "http://res.freebase.com/s/"
       }
+  },
+  "stylesheet": {
+    "core.css": ["core.css"]
+  },
+  "javascript": {
+    "core.js": ["core.js"]
   }
 };
 MF.suggest.base_url += MF.suggest.version;

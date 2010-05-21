@@ -23,7 +23,7 @@
   <div id="content" class="clear">
     <div id="content-main">
       <div class="main-section-nohead">
-        <h2>Explore the <strong>${results[0]['!views_count:/freebase/query_hints/related_domain']}</strong> collections curated by our community</h2>
+        <h2 id="collection-summary">Explore the <strong>${results[0]['!views_count:/freebase/query_hints/related_domain']}</strong> collections curated by our community</h2>
         <div id="collections">
           <div class="collection" acre:for="r in results[0]['/freebase/domain_profile/featured_views']">
             <div class="collection-inner">

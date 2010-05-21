@@ -4,7 +4,7 @@ body { background: #fff; }
   width: 80%;
 }
 
-#content-main h2 {
+#collection-summary {
     font-family: "Georgia", serif;
     font-style: italic;
     color: #666;
@@ -104,12 +104,14 @@ a.collection-title {
 .collection-topics {
   display: none;
   margin-left: 10px;
+  height: 95px;
 }
 
 .collection-info h2 {
-  font-size: 1.2em;
+  font-size: 1.1em;
   font-weight: bold;
-  margin-top: 9px;
+  margin-top: 5px;
+  color: #666;
   margin-bottom: 0;
 }
 

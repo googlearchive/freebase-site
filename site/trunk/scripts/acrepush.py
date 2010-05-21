@@ -129,6 +129,8 @@ class AcrePush(object):
             self.fb.delete_app_all_files(oda.metadata['id'])
 
         for key, val in oda.metadata['files'].iteritems():
+            # resest filedescriptor to beginning of file so we can read it again
+            val['contents'].seek(0)
             if val['handler'] == 'binary':
                 self.fb.save_binary_file(val['id'], val['contents'],
                                          val['content_type'])

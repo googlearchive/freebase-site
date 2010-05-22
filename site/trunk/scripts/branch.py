@@ -96,7 +96,7 @@ for arg in args:
 for appname, appid, ver in apps:
     src = 'https://svn.metaweb.com/svn/freebase_site/trunk/%s' % appname
     dest = 'https://svn.metaweb.com/svn/freebase_site/dev/%s/%s' % (appname, ver)
-    msg = "Creating branch /dev/%s/%s" % (appname, ver)
+    msg = "Create branch /dev/%s/%s" % (appname, ver)
     cmd = ['svn', 'copy', src, dest, "-q", "--parents", "-m", '"%s"' % msg]
     print "[SVN] %s" % " ".join(cmd)
     subprocess.call(cmd)
@@ -119,7 +119,7 @@ for appname, appid, ver in apps:
     print "[SVN] %s" % " ".join(cmd)
     subprocess.call(cmd)
 
-    msg = "Updating static_base_url.txt for %s/%s" % (appid, ver)
+    msg = "Update %s/%s/static_base_url.txt with %s" % (appid, ver, freebaselibs_url)
     cmd = ['svn', 'commit', tempdir, "-q", "-m", '"%s"' % msg]    
     print "[SVN] %s" % " ".join(cmd)
     subprocess.call(cmd)
@@ -150,8 +150,8 @@ for appname, appid, ver in apps:
     subprocess.call(cmd)    
 
     # 3. urlfetch static files from app url
-    #base_url = "http://{ver}.{appname}.site.freebase.{freebaseapps}".format(ver=ver, appname=appname, freebaseapps=freebaseapps)
-    base_url = "http://{appname}.site.freebase.dev.acre.z:8115".format(appname=appname)
+    base_url = "http://{ver}.{appname}.site.freebase.{freebaseapps}".format(ver=ver, appname=appname, freebaseapps=freebaseapps)
+    #base_url = "http://{appname}.site.freebase.dev.acre.z:8115".format(appname=appname)
 
     cmd = [os.path.join(dir.scripts, 'deploy.py'),
            "-s", base_url,
@@ -170,7 +170,7 @@ for appname, appid, ver in apps:
     os.chdir(cwd)
 
     # 5. svn commit
-    msg = "Uploading static files to freebaselibs deploy directory from %s" % base_url
+    msg = "Add static files to /deploy/%s/%s from %s" % (appname, ver, base_url)
     cmd = ['svn', 'commit', tempdir, "-q", "-m", '"%s"' % msg]
     print "[SVN] %s" % " ".join(cmd)    
     subprocess.call(cmd)

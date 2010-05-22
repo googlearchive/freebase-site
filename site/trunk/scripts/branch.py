@@ -126,8 +126,8 @@ for appname, appid, ver, appdir in apps:
     subprocess.call(cmd)    
 
     # 3. urlfetch static files from app url
-    #base_url = "http://{ver}.{appname}.site.freebase.{freebaseapps}".format(ver=ver, appname=appname, freebaseapps=freebaseapps)
-    base_url = "http://{appname}.site.freebase.dev.acre.z:8115".format(appname=appname)
+    base_url = "http://{ver}.{appname}.site.freebase.{freebaseapps}".format(ver=ver, appname=appname, freebaseapps=freebaseapps)
+    #base_url = "http://{appname}.site.freebase.dev.acre.z:8115".format(appname=appname)
 
     cmd = [os.path.join(dir.scripts, 'deploy.py'),
            "-s", base_url,
@@ -150,4 +150,5 @@ for appname, appid, ver, appdir in apps:
     print " ".join(cmd)    
     subprocess.call(cmd)
 
-# update MANIFEST freebaselibs prefix
+
+# TODO restart staticserver (outboun01/02)

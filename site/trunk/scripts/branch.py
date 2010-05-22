@@ -8,6 +8,7 @@ import subprocess
 import dir
 from tempfile import mkdtemp
 
+# acre pod mapping to host for appeditor web services, i.e., /appeditor/get_app
 POD = {
     "otg":"http://acre.freebase.com",
     "sandbox":"http://acre.sandbox-freebase.com",
@@ -15,6 +16,7 @@ POD = {
     "trunk":"http://acre.trunk.qa.metaweb.com"
 }
 
+# acre pod mappings to app url suffix, i.e., http:// + ver + id + suffix = app url
 FREEBASEAPPS = {
     "otg": "dev.freebaseapps.com",
     "sandbox": "dev.sandbox-freebaseapps.com",
@@ -22,24 +24,20 @@ FREEBASEAPPS = {
     "trunk": "dev.trunk.qa-freebaseapps.com"
 }
 
+# recognized extensions for static files
 EXTENSIONS = [".js", ".css", ".png", ".gif", ".jpg", ".txt"]
 
-cmd_options = OptionParser()
-cmd_options.add_option('-p', '--pod', dest='pod', 
-                       help="acre host i.e., otg|sandbox|branch|trunk")
-
-options, args = cmd_options.parse_args()
-
-pod = POD.get(options.pod, POD['branch'])
-freebaseapps = FREEBASEAPPS.get(options.pod, FREEBASEAPPS['branch'])
-
-print "branching to %s" % pod
-
 def get_json(url):
+    '''
+    urlfetch json
+    '''
     body = ''.join(urllib2.urlopen(url).readlines())
     return json.loads(body)
 
 def is_int(str):
+    '''
+    is str an int?
+    '''
     try:
         int(str)
         return True
@@ -47,6 +45,12 @@ def is_int(str):
         return False
 
 def next_version(appid):
+    '''
+    determine the next available version number for an app
+    1. use pod/appeditor/get_app service to list current versions
+    2. increment the highest version
+    3. if no versions, return "1"
+    '''
     try:
         url = "%s/appeditor/get_app?%s" % (pod, urllib.urlencode(dict(appid=appid)))
         appinfo = get_json(url).get('result')
@@ -59,17 +63,37 @@ def next_version(appid):
         pass
     return 1
 
+#
+# command line options parser
+#
+# usage: branch.py -p branch app1[:version] app2[:version] ...
+#
+# -p <pod>
+cmd_options = OptionParser()
+cmd_options.add_option('-p', '--pod', dest='pod', 
+                       help="acre host i.e., otg|sandbox|branch|trunk")
+options, args = cmd_options.parse_args()
+
+# pod, freebaseapps default to branch
+pod = POD.get(options.pod, POD['branch'])
+freebaseapps = FREEBASEAPPS.get(options.pod, FREEBASEAPPS['branch'])
+
+print "branching to %s" % pod
+
+# for each app name specified, determine
+# 1. app id
+# 2. version, if not specified, next_version()
 apps = []
 for arg in args:    
     appname, ver = arg.split(":", 1) if ":" in arg else (arg, None)
     appid = "/freebase/site/%s" % appname
     if not ver:
         ver = next_version(appid)            
-    apps.append((appname, appid, str(ver), os.path.join(dir.trunk, appname)))
+    apps.append((appname, appid, str(ver)))
 
 
 # copy to /dev (svn branch)
-for appname, appid, ver, appdir in apps:
+for appname, appid, ver in apps:
     src = 'https://svn.metaweb.com/svn/freebase_site/trunk/%s' % appname
     dest = 'https://svn.metaweb.com/svn/freebase_site/dev/%s/%s' % (appname, ver)
     msg = "Creating branch %s for %s" % (ver, appname)
@@ -79,7 +103,7 @@ for appname, appid, ver, appdir in apps:
 
          
 # push to acre
-for appname, appid, ver, appdir in apps:
+for appname, appid, ver in apps:
     dest = 'https://svn.metaweb.com/svn/freebase_site/dev/%s/%s' % (appname, ver)
     tempdir = mkdtemp()
     cmd = ['svn', 'checkout', dest, tempdir]
@@ -110,7 +134,7 @@ for appname, appid, ver, appdir in apps:
 
 
 # copy to /deloy (for static server - freebaselibs.com)
-for appname, appid, ver, appdir in apps:
+for appname, appid, ver in apps:
     dest = 'https://svn.metaweb.com/svn/freebase_site/deploy/%s/%s' % (appname, ver)
 
     # 1. create deploy dir in svn

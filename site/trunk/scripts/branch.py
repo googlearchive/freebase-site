@@ -5,24 +5,35 @@ import urllib
 import urllib2
 import json
 import subprocess
+import dir
+from tempfile import mkdtemp
+
+POD = {
+    "otg":"http://acre.freebase.com",
+    "sandbox":"http://acre.sandbox-freebase.com",
+    "branch":"http://acre.branch.qa.metaweb.com",
+    "trunk":"http://acre.trunk.qa.metaweb.com"
+}
+
+FREEBASEAPPS = {
+    "otg": "dev.freebaseapps.com",
+    "sandbox": "dev.sandbox-freebaseapps.com",
+    "branch": "dev.branch.qa-freebaseapps.com",
+    "trunk": "dev.trunk.qa-freebaseapps.com"
+}
+
+EXTENSIONS = [".js", ".css", ".png", ".gif", ".jpg", ".txt"]
 
 cmd_options = OptionParser()
-cmd_options.add_option('-u', '--url', dest='url',
-                       default="http://acre.branch.qa.metaweb.com",
-                       help="acre host i.e., http://acre.sandbox-freebase.com")
+cmd_options.add_option('-p', '--pod', dest='pod', 
+                       help="acre host i.e., otg|sandbox|branch|trunk")
 
 options, args = cmd_options.parse_args()
 
-def scripts_dir():
-    path = os.path.join(os.getcwd(), __file__)    
-    dir = os.path.dirname(path)    
-    return os.path.abspath(dir)
+pod = POD.get(options.pod, POD['branch'])
+freebaseapps = FREEBASEAPPS.get(options.pod, FREEBASEAPPS['branch'])
 
-def site_dir():
-    path = os.path.join(os.getcwd(), __file__)    
-    dir = os.path.dirname(path)
-    dir = os.path.join(dir, "../site")
-    return os.path.abspath(dir)
+print "branching to %s" % pod
 
 def get_json(url):
     body = ''.join(urllib2.urlopen(url).readlines())
@@ -37,9 +48,9 @@ def is_int(str):
 
 def next_version(appid):
     try:
-        url = "%s/appeditor/get_app?%s" % (options.url, urllib.urlencode(dict(appid=appid)))
-        app_info = get_json(url).get('result')
-        versions = app_info.get('versions', [])
+        url = "%s/appeditor/get_app?%s" % (pod, urllib.urlencode(dict(appid=appid)))
+        appinfo = get_json(url).get('result')
+        versions = appinfo.get('versions', [])
         versions = [v for v in versions if is_int(v['name'])]
         versions.sort(key=lambda x: int(x['name']))
         if versions:
@@ -48,28 +59,77 @@ def next_version(appid):
         pass
     return 1
 
-
-base_site_dir = site_dir()
-base_scripts_dir = scripts_dir()
-
+apps = []
 for arg in args:    
-    app, ver = arg.split(":", 1) if ":" in arg else (arg, None)
-
-    appid = "/freebase/site/%s" % app
-
+    appname, ver = arg.split(":", 1) if ":" in arg else (arg, None)
+    appid = "/freebase/site/%s" % appname
     if not ver:
-        ver = next_version(appid)
-            
-    print appid, ver
+        ver = next_version(appid)            
+    apps.append((appname, appid, str(ver), os.path.join(dir.trunk, appname)))
 
-    dir = os.path.join(base_site_dir, app)
-    cmd = [os.path.join(base_scripts_dir, 'acrepush.py'),
-           '-i', appid,
-           '-h', options.url,
-           dir, str(ver)]
 
+# copy to /dev (svn branch)
+# mdkir -p /dev/sample/3
+#              /scripts/3
+#              /core/3
+"""
+for appname, appid, ver, appdir in apps:
+    src = 'https://svn.metaweb.com/svn/freebase_site/trunk/%s' % appname
+    dest = 'https://svn.metaweb.com/svn/freebase_site/dev/%s/%s' % (appname, ver)
+    msg = "Creating branch %s for %s" % (ver, appname)
+    cmd = ['svn', 'copy', src, dest, "--parents", "-m", '"%s"' % msg]
     print " ".join(cmd)
-
     subprocess.call(cmd)
 
-    
+         
+# push to acre
+for appname, appid, ver, appdir in apps:
+    cmd = [os.path.join(dir.scripts, 'acrepush.py'),
+           '-i', appid,
+           '-h', pod,
+           appdir, ver]
+    print " ".join(cmd)
+    subprocess.call(cmd)
+"""
+
+# copy to /deloy (for static server - freebaselibs.com)
+for appname, appid, ver, appdir in apps:
+    dest = 'https://svn.metaweb.com/svn/freebase_site/deploy/%s/%s' % (appname, ver)
+
+    # 1. create deploy dir in svn
+    msg = "Create deploy directory for %s:%s" % (appname, ver)
+    cmd = ['svn', 'mkdir', dest, "--parents", "-m", '"%s"' % msg]
+    print " ".join(cmd)    
+    subprocess.call(cmd)
+
+    # 2. checkout deploy dir into temp directory
+    tempdir = mkdtemp()
+    cmd = ['svn', 'checkout', dest, tempdir]
+    print " ".join(cmd)      
+    subprocess.call(cmd)    
+
+    # 3. urlfetch static files from app url
+    #base_url = "http://{ver}.{appname}.site.freebase.{freebaseapps}".format(ver=ver, appname=appname, freebaseapps=freebaseapps)
+    base_url = "http://sample.site.freebase.dev.acre.z:8115"
+    cmd = [os.path.join(dir.scripts, 'deploy.py'),
+           "-s", base_url,
+           "-d", tempdir]
+    print " ".join(cmd)
+    subprocess.call(cmd)    
+
+    # 4. svn add
+    cwd = os.getcwd()
+    os.chdir(tempdir)
+    files = [f for f in os.listdir(tempdir) if os.path.splitext(f)[1].lower() in EXTENSIONS]
+    cmd = ['svn', 'add'] + files
+    print " ".join(cmd)
+    subprocess.call(cmd)
+    os.chdir(cwd)
+
+    # 5. svn commit
+    msg = "Uploading static files to freebaselibs deploy directory from %s" % base_url
+    cmd = ['svn', 'commit', tempdir, "-m", '"%s"' % msg]
+    print " ".join(cmd)    
+    subprocess.call(cmd)
+
+# update MANIFEST freebaselibs prefix

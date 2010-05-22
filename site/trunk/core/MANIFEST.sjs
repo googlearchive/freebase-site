@@ -131,6 +131,8 @@ function base_manifest(MF, scope) {
         else {
           scope.acre.write(source);
         }
+
+        // process all css replacing url(/foo/app/bar.png) declarations
       });
     },
 
@@ -239,8 +241,6 @@ function base_manifest(MF, scope) {
   catch(ex) {
     // ignore
   }
-
-
 
   return base;
 };

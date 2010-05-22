@@ -127,7 +127,7 @@ for appname, appid, ver, appdir in apps:
 
     # 3. urlfetch static files from app url
     #base_url = "http://{ver}.{appname}.site.freebase.{freebaseapps}".format(ver=ver, appname=appname, freebaseapps=freebaseapps)
-    base_url = "http://{appname}.site.freebase.acre.z:8115".format(appname=appname)
+    base_url = "http://{appname}.site.freebase.dev.acre.z:8115".format(appname=appname)
 
     cmd = [os.path.join(dir.scripts, 'deploy.py'),
            "-s", base_url,

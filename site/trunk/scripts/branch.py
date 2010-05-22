@@ -78,7 +78,7 @@ options, args = cmd_options.parse_args()
 pod = POD.get(options.pod, POD['branch'])
 freebaseapps = FREEBASEAPPS.get(options.pod, FREEBASEAPPS['branch'])
 
-print "branching to %s" % pod
+print "[INFO] branching to %s" % pod
 
 # for each app name specified, determine
 # 1. app id
@@ -96,9 +96,9 @@ for arg in args:
 for appname, appid, ver in apps:
     src = 'https://svn.metaweb.com/svn/freebase_site/trunk/%s' % appname
     dest = 'https://svn.metaweb.com/svn/freebase_site/dev/%s/%s' % (appname, ver)
-    msg = "Creating branch %s for %s" % (ver, appname)
-    cmd = ['svn', 'copy', src, dest, "--parents", "-m", '"%s"' % msg]
-    print " ".join(cmd)
+    msg = "Creating branch /dev/%s/%s" % (appname, ver)
+    cmd = ['svn', 'copy', src, dest, "-q", "--parents", "-m", '"%s"' % msg]
+    print "[SVN] %s" % " ".join(cmd)
     subprocess.call(cmd)
 
          
@@ -106,8 +106,8 @@ for appname, appid, ver in apps:
 for appname, appid, ver in apps:
     dest = 'https://svn.metaweb.com/svn/freebase_site/dev/%s/%s' % (appname, ver)
     tempdir = mkdtemp()
-    cmd = ['svn', 'checkout', dest, tempdir]
-    print " ".join(cmd)      
+    cmd = ['svn', 'checkout', dest, tempdir, "-q"]
+    print "[SVN] %s" % " ".join(cmd)      
     subprocess.call(cmd)
 
     freebaselibs_url = "http://freebaselibs.com/static/freebase_site/{appname}/{ver}".format(appname=appname, ver=ver)
@@ -115,13 +115,13 @@ for appname, appid, ver in apps:
     with open(filename, "w") as f:
         f.write(freebaselibs_url)
 
-    cmd = ['svn', 'add', filename]
-    print " ".join(cmd)
+    cmd = ['svn', 'add', filename, "-q"]
+    print "[SVN] %s" % " ".join(cmd)
     subprocess.call(cmd)
 
-    msg = "Updating static_base_url.txt for %s:%s" % (appname, ver)
-    cmd = ['svn', 'commit', tempdir, "-m", '"%s"' % msg]    
-    print " ".join(cmd)
+    msg = "Updating static_base_url.txt for %s/%s" % (appid, ver)
+    cmd = ['svn', 'commit', tempdir, "-q", "-m", '"%s"' % msg]    
+    print "[SVN] %s" % " ".join(cmd)
     subprocess.call(cmd)
     
     cmd = [os.path.join(dir.scripts, 'acrepush.py'),
@@ -129,7 +129,7 @@ for appname, appid, ver in apps:
            '-h', pod,
            tempdir, ver]
 
-    print " ".join(cmd)
+    print "[ACREPUSH] %s" % " ".join(cmd)
     subprocess.call(cmd)
 
 
@@ -138,25 +138,25 @@ for appname, appid, ver in apps:
     dest = 'https://svn.metaweb.com/svn/freebase_site/deploy/%s/%s' % (appname, ver)
 
     # 1. create deploy dir in svn
-    msg = "Create deploy directory for %s:%s" % (appname, ver)
-    cmd = ['svn', 'mkdir', dest, "--parents", "-m", '"%s"' % msg]
-    print " ".join(cmd)    
+    msg = "Create deploy directory /deploy/%s/%s" % (appname, ver)
+    cmd = ['svn', 'mkdir', dest, "--parents", "-q", "-m", '"%s"' % msg]
+    print "[SVN] %s" % " ".join(cmd)    
     subprocess.call(cmd)
 
     # 2. checkout deploy dir into temp directory
     tempdir = mkdtemp()
-    cmd = ['svn', 'checkout', dest, tempdir]
-    print " ".join(cmd)      
+    cmd = ['svn', 'checkout', dest, tempdir, "-q"]
+    print "[SVN] %s" % " ".join(cmd)      
     subprocess.call(cmd)    
 
     # 3. urlfetch static files from app url
-    base_url = "http://{ver}.{appname}.site.freebase.{freebaseapps}".format(ver=ver, appname=appname, freebaseapps=freebaseapps)
-    #base_url = "http://{appname}.site.freebase.dev.acre.z:8115".format(appname=appname)
+    #base_url = "http://{ver}.{appname}.site.freebase.{freebaseapps}".format(ver=ver, appname=appname, freebaseapps=freebaseapps)
+    base_url = "http://{appname}.site.freebase.dev.acre.z:8115".format(appname=appname)
 
     cmd = [os.path.join(dir.scripts, 'deploy.py'),
            "-s", base_url,
            "-d", tempdir]
-    print " ".join(cmd)
+    print "[DEPLOY] %s" % " ".join(cmd)
     subprocess.call(cmd)    
 
     # 4. svn add
@@ -164,14 +164,15 @@ for appname, appid, ver in apps:
     os.chdir(tempdir)
     files = [f for f in os.listdir(tempdir) if os.path.splitext(f)[1].lower() in EXTENSIONS]
     cmd = ['svn', 'add'] + files
-    print " ".join(cmd)
+    cmd.append('-q')
+    print "[SVN] %s" % " ".join(cmd)
     subprocess.call(cmd)
     os.chdir(cwd)
 
     # 5. svn commit
     msg = "Uploading static files to freebaselibs deploy directory from %s" % base_url
-    cmd = ['svn', 'commit', tempdir, "-m", '"%s"' % msg]
-    print " ".join(cmd)    
+    cmd = ['svn', 'commit', tempdir, "-q", "-m", '"%s"' % msg]
+    print "[SVN] %s" % " ".join(cmd)    
     subprocess.call(cmd)
 
 

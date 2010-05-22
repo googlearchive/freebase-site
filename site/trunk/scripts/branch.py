@@ -69,9 +69,6 @@ for arg in args:
 
 
 # copy to /dev (svn branch)
-# mdkir -p /dev/sample/3
-#              /scripts/3
-#              /core/3
 """
 for appname, appid, ver, appdir in apps:
     src = 'https://svn.metaweb.com/svn/freebase_site/trunk/%s' % appname

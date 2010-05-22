@@ -40,7 +40,7 @@ function extend_manifest(MF, scope) {
  * The base MANIFEST core library.
  */
 function base_manifest(MF, scope) {
-  return {
+  var base = {
     /**
      * The base url prefix for retrieving css and js. All apps who extend the base_manifest
      * will have a "/MANIFEST/s" entry-point to serve css and js as specified in their MF.stylesheet
@@ -223,6 +223,26 @@ function base_manifest(MF, scope) {
       }, scope);
     }
   };
+
+
+  /**
+   * DO NOT MODIFY!
+   *
+   * The url specified in static_base_url.txt (if it exists) overrides default base.static_base_url.
+   * We use this to use freebaselibs to serve static files (js, css, png, etc.)
+   *
+   * static_base_url.txt is updated by freebase site branch/deploy scripts.
+   */
+  try {
+    base.static_base_url = scope.acre.require("static_base_url.txt").body.replace(/^\s+|\s+$/g, "");
+  }
+  catch(ex) {
+    // ignore
+  }
+
+
+
+  return base;
 };
 
 

@@ -69,7 +69,6 @@ for arg in args:
 
 
 # copy to /dev (svn branch)
-"""
 for appname, appid, ver, appdir in apps:
     src = 'https://svn.metaweb.com/svn/freebase_site/trunk/%s' % appname
     dest = 'https://svn.metaweb.com/svn/freebase_site/dev/%s/%s' % (appname, ver)
@@ -81,13 +80,34 @@ for appname, appid, ver, appdir in apps:
          
 # push to acre
 for appname, appid, ver, appdir in apps:
+    dest = 'https://svn.metaweb.com/svn/freebase_site/dev/%s/%s' % (appname, ver)
+    tempdir = mkdtemp()
+    cmd = ['svn', 'checkout', dest, tempdir]
+    print " ".join(cmd)      
+    subprocess.call(cmd)
+
+    freebaselibs_url = "http://freebaselibs.com/static/freebase_site/{appname}/{ver}".format(appname=appname, ver=ver)
+    filename = os.path.join(tempdir, "static_base_url.txt.txt")
+    with open(filename, "w") as f:
+        f.write(freebaselibs_url)
+
+    cmd = ['svn', 'add', filename]
+    print " ".join(cmd)
+    subprocess.call(cmd)
+
+    msg = "Updating static_base_url.txt for %s:%s" % (appname, ver)
+    cmd = ['svn', 'commit', tempdir, "-m", '"%s"' % msg]    
+    print " ".join(cmd)
+    subprocess.call(cmd)
+    
     cmd = [os.path.join(dir.scripts, 'acrepush.py'),
            '-i', appid,
            '-h', pod,
-           appdir, ver]
+           tempdir, ver]
+
     print " ".join(cmd)
     subprocess.call(cmd)
-"""
+
 
 # copy to /deloy (for static server - freebaselibs.com)
 for appname, appid, ver, appdir in apps:
@@ -106,7 +126,9 @@ for appname, appid, ver, appdir in apps:
     subprocess.call(cmd)    
 
     # 3. urlfetch static files from app url
-    base_url = "http://{ver}.{appname}.site.freebase.{freebaseapps}".format(ver=ver, appname=appname, freebaseapps=freebaseapps)
+    #base_url = "http://{ver}.{appname}.site.freebase.{freebaseapps}".format(ver=ver, appname=appname, freebaseapps=freebaseapps)
+    base_url = "http://{appname}.site.freebase.acre.z:8115".format(appname=appname)
+
     cmd = [os.path.join(dir.scripts, 'deploy.py'),
            "-s", base_url,
            "-d", tempdir]

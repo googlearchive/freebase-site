@@ -64,16 +64,19 @@ class OnDiskAcreApp(object):
         mdpath = os.path.join(directory, '.metadata')
         if not os.path.exists(mdpath):
             metadata = {}
-            if id:
-                metadata['id'] = id
-                f = file(os.path.join(directory, '.metadata'), 'w+')
-                json.dump(metadata, f)
-                f.close()
-            else:
-                raise Exception("need to supply an id if .metadata is not present")
         else:
             mdf = file(mdpath)
             metadata = json.load(mdf)
+            mdf.close()
+
+        if id:
+            metadata['id'] = id
+            f = file(os.path.join(directory, '.metadata'), 'w+')
+            json.dump(metadata, f)
+            f.close()
+
+        if 'id' not in metadata:
+            raise Exception("need to supply an id if .metadata is not present")
 
         def handle_file(f):
             script = {'id':null, 'name':null, 'handler':null,
@@ -83,7 +86,7 @@ class OnDiskAcreApp(object):
             script['extension'] = ext
             script['name'] = quotekey(fn)
             script['contents'] = file(os.path.join(directory, f))
-            script['blob_id'] = hashlib.sha256(script['contents'].read()).hexdigest()
+            script['blob_id'] = hashlib.sha256(script['contents']).hexdigest()
             ct, handler = extmap.type_for_extension(ext)
             script['handler'] = handler
             script['content_type'] = ct
@@ -129,8 +132,7 @@ class AcrePush(object):
             self.fb.delete_app_all_files(oda.metadata['id'])
 
         for key, val in oda.metadata['files'].iteritems():
-            # resest filedescriptor to beginning of file so we can read it again
-            val['contents'].seek(0)
+            val['contents'].seek(0);
             if val['handler'] == 'binary':
                 self.fb.save_binary_file(val['id'], val['contents'],
                                          val['content_type'])

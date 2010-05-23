@@ -11,9 +11,9 @@
 </acre:script>
 
 <acre:block def="head(g)" trim="">
-  <link rel="stylesheet" href="$g.bp/project.css.css" media="screen, projection" />
+  <link rel="stylesheet" href="$g.bp/project.css" media="screen, projection" />
   ${g.jq.plugins(['masonry', 'lazyload'])}
-  <script src="$g.bp/project.js.js"></script>
+  <script src="$g.bp/project.js"></script>
   <acre:script>
     console.log(g);
   </acre:script>

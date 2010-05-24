@@ -1,7 +1,9 @@
 $(document).ready(function(){
     
     // Only load chiclets when needed
-    $("img").lazyload();
+    $("img").lazyload({
+        effect : "fadeIn"
+    });
   
     // Setup jQuery masonry to handle reflowing of chiclets
     $("#collections").masonry({animate: true });

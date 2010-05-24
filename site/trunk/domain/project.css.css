@@ -23,9 +23,13 @@ body { background: #fff; }
     -webkit-transition-property: -webkit-box-shadow, background-image, opacity;
     -webkit-transition-duration: 0.3s;
     -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
     opacity: 0.8;
     padding: 10px 10px 40px;
     -webkit-box-shadow: 0 0 3px #aaa;
+    -moz-box-shadow: 0 0 3px #aaa;
+    box-shadow: 0 0 3px #aaa;
     box-shadow: 0 0 3px #aaa;
     color: #333;
 }
@@ -33,9 +37,12 @@ body { background: #fff; }
 .collection-inner:hover {
     cursor: pointer;
     opacity: 1;
+    background: #ececec;
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#efefef), to(#dcdcdc));
     background-repeat: repeat;
     -webkit-box-shadow: 0 0 8px #666;
+    -moz-box-shadow: 0 0 8px #666;
+    box-shadow: 0 0 8px #666;
     text-decoration: none;
 }
 
@@ -94,6 +101,7 @@ a.collection-title {
 .collection-active .collection-show-topics.expanded:hover { background-position: -52px 0; } /* expanded state hover */
 
 .collection:hover h1 {
+    background: #f8f8f8;
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#dcdcdc));
     background-repeat: repeat;            
 }

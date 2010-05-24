@@ -13,7 +13,7 @@
 <acre:block def="head(g)" trim="">
   <link rel="stylesheet" href="$g.bp/project.css.css" media="screen, projection" />
   ${g.jq.plugins(['masonry', 'lazyload'])}
-  <script src="$g.bp/project.js.js"></script>
+  <script src="$g.bp/project.js"></script>
   <acre:script>
     console.log(g);
   </acre:script>
@@ -33,7 +33,7 @@
                 </a>
               </div>
               <div class="collection-info">
-                <h1><a href="http://www.freebase.com/view${r['id']}" class="collection-title"><span>${r['name']}</span></a> <a href="javascript:void(0);" title="${r['id']}" class="collection-show-topics">i</a></h1>
+                <h1><a href="http://www.freebase.com/view${r['id']}" class="collection-title" title="${r['name']}"><span>${r['name']}</span></a> <a href="javascript:void(0);" title="${r['id']}" class="collection-show-topics">i</a></h1>
                 <div class="collection-topics">
                   <a href="http://www.freebase.com/view${r['id']}">View all &raquo;</a>
                 </div>

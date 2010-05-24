@@ -5,7 +5,7 @@ var MF = {
   },
 
   stylesheet: {
-    "project.css": ["/freebase/site/core/core.less", "project.css"]
+    "project.css": ["/freebase/site/core/core.less", "project.less"]
   },
 
   javascript: {

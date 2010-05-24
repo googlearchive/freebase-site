@@ -15,7 +15,7 @@
 </acre:block>
 
 <acre:block def="head(g)">
-  ${g.t.stylesheet(mf.link_href("project.css"))}
+  ${g.t.stylesheet(mf.link_href("project.less"))}
 </acre:block>
 
 <acre:block def="content_body(g)">

@@ -95,7 +95,7 @@ a.collection-title {
     height: 12px; width: 12px;
 }
 
-.collection-active .collection-show-topics                { display: block; } /* only show icon on .collection hover */;
+.collection-active .collection-show-topics                { display: block; } /* only show icon on .collection hover */
 .collection-active .collection-show-topics:hover          { background-position: -26px 0; } /* normal hover */
 .collection-active .collection-show-topics.expanded       { background-position: -39px 0; } /* expanded state */
 .collection-active .collection-show-topics.expanded:hover { background-position: -52px 0; } /* expanded state hover */

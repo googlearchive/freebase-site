@@ -290,14 +290,10 @@ var MF = {
         "hash": "69ebf557e8734e6575f5077fe4e03506c99a28c5bb34e101459906ac6f44992f",
         "base_url": "http://res.freebase.com/s/"
       }
-  },
-  "stylesheet": {
-    "core.css": ["core.css"]
-  },
-  "javascript": {
-    "core.js": ["signin.js", "searchbox.js", "core.js"]
   }
 };
 MF.suggest.base_url += MF.suggest.version;
 MF.freebase.resource.base_url += MF.freebase.resource.hash;
 init(MF, this);
+
+

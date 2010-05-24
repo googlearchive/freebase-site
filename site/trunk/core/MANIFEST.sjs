@@ -1,3 +1,6 @@
+acre.require("/freebase/apps/libraries/api_enhancer", "release");
+var h = acre.require("helpers_url");
+
 /**
  * TODO: this should go in some library
  *
@@ -89,7 +92,7 @@ function base_manifest(MF, scope) {
      */
     less: function(data /*required*/, callback /*required*/, errback /*optional*/) {
       if (!MF.less.parser) {
-        MF.less.parser = new(scope.acre.require("/freebase/site/core/less", MF.version["/freebase/site/core"]).less.Parser)({optimization:3});
+        MF.less.parser = new(MF.require("/freebase/site/core/less").less.Parser)({optimization:3});
       }
       MF.less.parser.parse(data, function(e, root) {
         if (e) {
@@ -117,23 +120,38 @@ function base_manifest(MF, scope) {
       MF.stylesheet[key].forEach(function(id) {
         var source;
         try {
-          source = scope.acre.require(id, MF.resource_version(id)).body;
+          source = MF.require(id).body;
         }
         catch (ex) {
           scope.acre.write("\n/** " + ex.toString() + " **/\n");
           return;
         }
         if (/\.less$/.exec(id)) {
-          MF.less(source, scope.acre.write, function(e) {
-            scope.acre.write(scope.JSON.stringify(e, null, 2));
-          });
+          MF.less(source,
+                  function(result) {
+                    scope.acre.write(MF.css_preprocessor(result));
+                  },
+                  function(e) {
+                    scope.acre.write(scope.JSON.stringify(e, null, 2));
+                  });
         }
         else {
-          scope.acre.write(source);
+          scope.acre.write(MF.css_preprocessor(source));
         }
 
         // process all css replacing url(/foo/app/bar.png) declarations
       });
+    },
+
+    css_preprocessor: function(str) {
+      var buf = [];
+      var m, regex = /url\s*\(\s*([^\)]+)\s*\)/gi;
+      str.split(/[\n\r\f]/).forEach(function(l) {
+        buf.push(l.replace(regex, function(m, group) {
+          return "url(" + MF.resource_url(group.trim()) + ")";
+        }));
+      });
+      return buf.join("\n");
     },
 
     /**
@@ -147,7 +165,7 @@ function base_manifest(MF, scope) {
       MF.javascript[key].forEach(function(id) {
         var source;
         try {
-          source = scope.acre.require(id, MF.resource_version(id)).body;
+          source = MF.require(id).body;
         }
         catch (ex) {
           scope.acre.write("\n/** " + ex.toString() + " **/\n");
@@ -158,21 +176,31 @@ function base_manifest(MF, scope) {
     },
 
     /**
-     * Match resource_id to an app version declared in MF.version
-     * If resource_id is unrecognized (i.e., app_id not declared in MF.version),
+     * Match resource_path to an app version declared in MF.version
+     * If resource_path is unrecognized (i.e., app_id not declared in MF.version),
      * throws error.
      */
-    resource_version: function(resource_id) {
-      var appid = resource_id.split("/");
-      if (appid.length === 1) {
-        return null;
+    _resource_info: function(resource_path) {
+      if (resource_path[0] !== "/") {
+        return {id:scope.acre.current_script.app.id + "/" + resource_path, version:null};
       }
+      var appid = resource_path.split("/");
       appid.pop();
       appid = appid.join("/");
       if (MF.version && (appid in MF.version)) {
-        return MF.version[appid];
+        return {id:resource_path, version:MF.version[appid]};
       }
       throw "A version for " + appid + " must be declared in the MANIFEST.";
+    },
+
+    require: function(resource_path) {
+      var ver_info = MF._resource_info(resource_path);
+      return scope.acre.require(ver_info.id, ver_info.version);
+    },
+
+    resource_url: function(resource_path) {
+      var ver_info = MF._resource_info(resource_path);
+      return h.resource_url(ver_info.id, ver_info.version);
     },
 
     /**
@@ -236,7 +264,7 @@ function base_manifest(MF, scope) {
    * static_base_url.txt is updated by freebase site branch/deploy scripts.
    */
   try {
-    base.static_base_url = scope.acre.require("static_base_url.txt").body.replace(/^\s+|\s+$/g, "");
+    base.static_base_url = scope.acre.require("static_base_url.txt").body.trim();
   }
   catch(ex) {
     // ignore

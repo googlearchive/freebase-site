@@ -1,14 +1,17 @@
 var MF = {
-  "version": {
-    "/freebase/apps/global": null,
-    "/user/willmoffat/suggest": "2",
-    "/freebase/libs/jquery": "8",
+
+  version: {
+    "/freebase/site/core": null
+  },
+
+  stylesheet: {
+    "project.css": ["/freebase/site/core/core.less", "project.css"]
+  },
+
+  javascript: {
+    "project.js": ["project.js", "jquery.lazyload.js", "jquery.masonry.js"]
   }
+
 };
 
-if (acre.current_script == acre.request.script) {  
-  var service = acre.require("/freebase/libs/service/lib", "release");
-  service.GetService(function() {
-    return MF;
-  }, this);
-}
+acre.require("/freebase/site/core/MANIFEST", MF.version["/freebase/site/core"]).init(MF, this);

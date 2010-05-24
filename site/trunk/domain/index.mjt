@@ -1,7 +1,7 @@
 <acre:script>
 
   var mf = acre.require("MANIFEST").MF;
-  var options = {path: false,args: true};
+  var page_options = {};
 
   var id = acre.request.params.id;
   var query = acre.require('base').query;
@@ -10,16 +10,15 @@
 
 </acre:script>
 
-<acre:block def="head(g)" trim="">
-  <link rel="stylesheet" href="$g.bp/project.css.css" media="screen, projection" />
-  ${g.jq.plugins(['masonry', 'lazyload'])}
-  <script src="$g.bp/project.js"></script>
-  <acre:script>
-    console.log(g);
-  </acre:script>
+<acre:block def="title(g)">
+    Published Project
 </acre:block>
 
-<acre:block def="body(g)">
+<acre:block def="head(g)">
+  ${g.t.stylesheet(mf.link_href("project.css"))}
+</acre:block>
+
+<acre:block def="content_body(g)">
   <div id="content" class="clear">
     <div id="content-main">
       <div class="main-section-nohead">
@@ -44,6 +43,11 @@
       </div>
     </div>
   </div>
-</acre:block>  
+</acre:block>
 
-${acre.require("/freebase/apps/global/templates", mf.version["/freebase/apps/global"]).page(this.exports, "freebase", options)}
+<acre:block def="footer_script(g)">
+  ${g.t.script(mf.script_src("project.js"))}
+</acre:block>
+
+
+${acre.require("/freebase/site/core/template", mf.version["/freebase/site/core"]).page(this.exports, page_options)}

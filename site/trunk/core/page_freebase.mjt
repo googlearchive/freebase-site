@@ -7,9 +7,7 @@
       <title acre:if="g.exports.title">Freebase - ${g.exports.title(g)}</title>
       <title acre:else="">Freebase</title>
 
-      ${g.t.stylesheet(g.mf.link_href("core.css"))}
-     
-      <!-- jquery -->
+     <!-- jquery -->
       ${g.jq.jquery(g.mf.jquery.version)}
 
       <!-- freebase suggest -->
@@ -23,9 +21,7 @@
         var user_info_service_url = "${g.base_path}/acre/account/user_info";
       </script>
 
-      ${g.t.script(g.mf.script_src("core.js"))}
-
-      <!-- any additional head content (i.e., css, js, etc.)-->
+     <!-- any additional head content (i.e., css, js, etc.)-->
       <acre:block if="g.exports.head">
         ${g.exports.head(g)}
       </acre:block>

@@ -1,0 +1,123 @@
+/*------------------------------------------------------------
+
+    MIXINS
+    
+    These are global mixins that should be used
+    for common CSS patterns (eg. CSS3 properties that require
+    multiple browser vendor prefixes).
+    
+    For documentation on using mixins:
+    http://lesscss.org/docs
+
+------------------------------------------------------------*/
+
+.rounded_corners (@radius: 5px) {
+  -moz-border-radius: @radius;
+  -webkit-border-radius: @radius;
+  border-radius: @radius;
+}
+
+
+/*
+--------------------------------------
+GLOBAL RESET
+--------------------------------------
+ */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-weight: inherit;
+    font-style: inherit;
+    font-size: 100%;
+    font-family: inherit;
+    vertical-align: baseline;
+}
+
+/* remember to define focus styles! */
+:focus { outline: 0; }
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+caption, th, td {
+    text-align: left;
+    font-weight: normal;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+    content: "";
+}
+
+blockquote, q {
+    quotes: "" "";
+}
+
+strong { font-weight: bold; }
+
+/*
+--------------------------------------
+GLOBAL TYPE SIZES
+--------------------------------------
+ */
+
+/*
+    Default browser types size is 16px (assuming the user has not customized their settings).
+    Assuming this default, we set the body to a font size of 62.5%, which effectively
+    resets our default type size to 10px. From here, we can think of font-size in terms of
+    pixels, but set font-size in ems. For example, 1em = 10px, 0.9em = 9px, 1.2em = 12px.
+*/
+
+body { font-size: 62.5%; line-height: 1.5; } /* 10px */
+
+h1, h2, h3, h4, h5, h6 {font-weight:normal;}
+
+
+/* TODO: Added global type sizes once we have better sense of
+   common type sizes in templates */
+
+
+/*
+--------------------------------------
+PAGE STRUCTURE
+--------------------------------------
+*/
+
+body {
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; 
+    background: #f4f8fb;
+    color: #666;
+    min-width: 960px;
+}
+
+/* #content is a required element on every template.
+   We use it to determine positioning of various pop-up
+   elements, as well as use it to insure grid integrity.
+   for the visual design.
+*/
+
+#content { padding: 3.5em 3em 0px; }
+
+/* Fixed is a class appended to #content when we want a fixed width, centered page */
+.fixed { 
+    margin: 0 auto;
+    width: 96em;
+}
+
+/* liquid is the class appended to #content when we want a liquid layout */
+.liquid {}

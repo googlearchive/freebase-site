@@ -117,30 +117,26 @@ function base_manifest(MF, scope) {
         return MF.not_found();
       }
       scope.acre.response.set_header("content-type", "text/css");
+
+      var buf = [];
       MF.stylesheet[key].forEach(function(id) {
         var source;
         try {
-          source = MF.require(id).body;
+          // css preprocessor to replace url(resource_path) declarations
+          buf.push(MF.css_preprocessor(MF.require(id).body));
         }
         catch (ex) {
           scope.acre.write("\n/** " + ex.toString() + " **/\n");
           return;
         }
-        if (/\.less$/.exec(id)) {
-          MF.less(source,
-                  function(result) {
-                    scope.acre.write(MF.css_preprocessor(result));
-                  },
-                  function(e) {
-                    scope.acre.write(scope.JSON.stringify(e, null, 2));
-                  });
-        }
-        else {
-          scope.acre.write(MF.css_preprocessor(source));
-        }
-
-        // process all css replacing url(/foo/app/bar.png) declarations
       });
+
+      // run less on concatenated css/less
+      MF.less(buf.join(""),
+              scope.acre.write,
+              function(e) {
+                scope.acre.write(scope.JSON.stringify(e, null, 2));
+              });
     },
 
     css_preprocessor: function(str) {
@@ -165,13 +161,13 @@ function base_manifest(MF, scope) {
       MF.javascript[key].forEach(function(id) {
         var source;
         try {
-          source = MF.require(id).body;
+          scope.acre.write(MF.require(id).body);
         }
         catch (ex) {
           scope.acre.write("\n/** " + ex.toString() + " **/\n");
           return;
         }
-        scope.acre.write(source);
+
       });
     },
 

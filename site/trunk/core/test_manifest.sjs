@@ -64,7 +64,9 @@ test("css_preprocessor", function() {
   var tests = [
     ["background: url(/hello/world/app/freebase-logo.png) no-repeat", "background: url(" + h.resource_url("/hello/world/app/freebase-logo.png", mf.version["/hello/world/app"]) + ") no-repeat"],
     ["background: url(icon-chiclet.png)", "background: url(" + h.resource_url("/freebase/site/core/icon-chiclet.png") + ")"],
-    ["background: url(/foo/bar/app/baz.gif)", "background: url(" + h.resource_url("/foo/bar/app/baz.gif",  mf.version["/foo/bar/app"]) + ")"]
+    ["background: url(/foo/bar/app/baz.gif)", "background: url(" + h.resource_url("/foo/bar/app/baz.gif",  mf.version["/foo/bar/app"]) + ")"],
+    ["background: url(http://www.freebase.com/logo.png)", "background: url(http://www.freebase.com/logo.png)"]
+
   ];
 
   tests.forEach(function(t) {

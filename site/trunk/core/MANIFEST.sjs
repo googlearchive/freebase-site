@@ -144,7 +144,11 @@ function base_manifest(MF, scope) {
       var m, regex = /url\s*\(\s*([^\)]+)\s*\)/gi;
       str.split(/[\n\r\f]/).forEach(function(l) {
         buf.push(l.replace(regex, function(m, group) {
-          return "url(" + MF.resource_url(group.trim()) + ")";
+          var url = group.trim();
+          if (url.startsWith("http://") || url.startsWith("https://")) {
+            return m;
+          }
+          return "url(" + MF.resource_url(url) + ")";
         }));
       });
       return buf.join("\n");

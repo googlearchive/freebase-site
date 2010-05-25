@@ -77,14 +77,28 @@ function base_manifest(MF, scope) {
 
 
     /**
-     * TODO: fix
+     * Serve an image through freebaselibs or through acre
+     * base_url is for testing
      */
-    img_src: function(resource_id) {
-      var appid = resource_id.split("/");
-      if (appid.length === 1) {
-        return scope.acre.current_script.app.base_url + "/" + resource_id;
+    img_src: function(resource_path, base_url) {
+      try {
+         base_url = scope.acre.require("static_base_url.txt").body.trim();
+      } catch(ex) {
+        // ignore
       }
-      return resource_id;
+      
+      var ver_info = MF._resource_info(resource_path);
+      var path = ver_info.id.split("/");
+      var resource = path.pop();
+      var appname = path.pop();
+      
+      // Only serve through freebaselibs if it has been uploaded
+      //   and we are using a freebase site image
+      if (base_url && path.join("/") === "/freebase/site") {
+        return base_url + appname + "/" + resource;
+      }
+      
+      return MF.resource_url(resource_path);
     },
 
     /**

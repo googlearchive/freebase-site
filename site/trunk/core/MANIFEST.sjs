@@ -44,6 +44,9 @@ function extend_manifest(MF, scope) {
  */
 function base_manifest(MF, scope, undefined) {
   var base = {
+    /**
+     * MF.version, MF.stylesheet, MF.javascript default to empty dictionary
+     */
     version: {},
     stylesheet: {},
     javascript: {},
@@ -157,7 +160,7 @@ function base_manifest(MF, scope, undefined) {
      * Run the less css parser on all of the css afterwards
      */
     css: function(key) {
-      if (! (MF.stylesheet && (key in MF.stylesheet))) {
+      if (!MF.stylesheet[key]) {
         return MF.not_found();
       }
       scope.acre.response.set_header("content-type", "text/css");
@@ -202,7 +205,7 @@ function base_manifest(MF, scope, undefined) {
      * Serve (acre.write) all js declared in MF.javascript[key].
      */
     js: function(key) {
-      if (! (MF.javascript && (key in MF.javascript))) {
+      if (!MF.javascript[key]) {
         return MF.not_found();
       }
       scope.acre.response.set_header("content-type", "text/javascript");
@@ -237,7 +240,7 @@ function base_manifest(MF, scope, undefined) {
       var appid = resource_path.split("/");
       var name = appid.pop();
       appid = appid.join("/");
-      if (MF.version && (appid in MF.version)) {
+      if (appid in MF.version) {
         return {
           id: resource_path,
           version: MF.version[appid],

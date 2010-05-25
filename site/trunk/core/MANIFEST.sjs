@@ -108,9 +108,7 @@ function base_manifest(MF, scope) {
 
     /**
      * Serve (acre.write) all css declared in MF.stylesheet[key].
-     * If css is less (*.less), then run the less parser.
-     *
-     * TODO: we need to post-process (regex) to replace url(...) declarations.
+     * Run the less css parser on all of the css afterwards
      */
     css: function(key) {
       if (! (MF.stylesheet && (key in MF.stylesheet))) {
@@ -259,7 +257,7 @@ function base_manifest(MF, scope) {
    * DO NOT MODIFY!
    *
    * The url specified in static_base_url.txt (if it exists) overrides default base.static_base_url.
-   * We use this to use freebaselibs to serve static files (js, css, png, etc.)
+   * This is used to serve static files though freebaselibs (js, css, png, etc.)
    *
    * static_base_url.txt is updated by freebase site branch/deploy scripts.
    */

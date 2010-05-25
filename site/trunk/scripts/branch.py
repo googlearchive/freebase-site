@@ -48,6 +48,14 @@ freebaseapps = FREEBASEAPPS.get(options.pod, FREEBASEAPPS['branch'])
 print "[INFO] branching to %s" % pod
 
 
+def run_cmd(cmd, exit=True):
+    stdout, stderr = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+    if stderr:
+        print stderr
+        if exit:
+            sys.exit()
+    return stdout
+
 
 def get_json(url):
     '''
@@ -62,6 +70,16 @@ def is_int(str):
     '''
     try:
         int(str)
+        return True
+    except ValueError, e:
+        return False
+
+def is_number(str):
+    '''
+    is str a number? (1, 2.1, etc.)
+    '''
+    try:
+        float(str)
         return True
     except ValueError, e:
         return False
@@ -117,6 +135,14 @@ for arg in args:
         print "You must specify an app and deploy version for %s [app_name:app_version:deploy_version]" % arg
         sys.exit()
 
+    if not is_number(app_ver):
+        print "Version %s for app % must be a number" % (app_ver, appname)
+        sys.exit()
+
+    if not is_number(deployed_ver):
+        print "Version %s for deploy % must be a number" % (deployed_ver, appname)
+        sys.exit()
+
     appid = "/freebase/site/%s" % appname
     
     # check app version if already exists
@@ -130,13 +156,32 @@ for arg in args:
     except urllib2.HTTPError, e:
         pass
     
+    # check dev version if already exists
+    cmd = ["svn", "ls", svn_dev_url(appname, app_ver)]
+    version = run_cmd(cmd, exit=False)
+    if version:
+        print "A dev version %s already exists for %s. Overwrite [y/n]?" % (app_ver, appname)
+        if raw_input().lower() != "y":
+            sys.exit()    
+        else:
+            msg = "Deleting existing dev version %s for app %s" % (app_ver, appname) 
+            cmd = ["svn", "delete", svn_dev_url(appname, app_ver), "-m", msg]
+            print "[SVN] %s" % " ".join(cmd)
+            run_cmd(cmd)
+
     # check deploy version if already exists
     cmd = ["svn", "ls", svn_deployed_url(appname, deployed_ver)]
-    version = subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0]
+
+    version = run_cmd(cmd, exit=False)
     if version:
         print "A deployed version %s already exists for %s. Overwrite [y/n]?" % (deployed_ver, appname)
         if raw_input().lower() != "y":
             sys.exit()    
+        else:
+            msg = "Deleting existing deployed version %s for app %s" % (deployed_ver, appname) 
+            cmd = ["svn", "delete", svn_deployed_url(appname, deployed_ver), "-m", msg]
+            print "[SVN] %s" % " ".join(cmd)
+            run_cmd(cmd)
 
     apps.append((appname, appid, app_ver, deployed_ver))
 
@@ -146,9 +191,9 @@ for appname, appid, app_ver, deployed_ver in apps:
     src = svn_trunk_url(appname)
     dest = svn_dev_url(appname, app_ver)
     msg = "Create branch version %s of %s" % (app_ver, appname)
-    cmd = ['svn', 'copy', src, dest, "-q", "--parents", "-m", '"%s"' % msg]
+    cmd = ['svn', 'copy', src, dest, "--parents", "-m", '"%s"' % msg]
     print "[SVN] %s" % " ".join(cmd)
-    subprocess.call(cmd)
+    run_cmd(cmd)
 
 
 svn_temp_dirs = {}
@@ -157,9 +202,9 @@ svn_temp_dirs = {}
 for appname, appid, app_ver, deployed_ver in apps:
     dest = svn_dev_url(appname, app_ver)
     tempdir = mkdtemp()
-    cmd = ['svn', 'checkout', dest, tempdir, "-q"]
+    cmd = ['svn', 'checkout', dest, tempdir]
     print "[SVN] %s" % " ".join(cmd)      
-    subprocess.call(cmd)    
+    run_cmd(cmd)    
     # keep track of all svn checkouts to temporary directories
     svn_temp_dirs[dest] = tempdir
 
@@ -168,14 +213,14 @@ for appname, appid, app_ver, deployed_ver in apps:
     with open(filename, "w") as f:
         f.write(freebaselibs_url)
 
-    cmd = ['svn', 'add', filename, "-q"]
+    cmd = ['svn', 'add', filename]
     print "[SVN] %s" % " ".join(cmd)
-    subprocess.call(cmd)
+    run_cmd(cmd)
 
     msg = "Update %s/%s/static_base_url.txt with %s" % (appid, app_ver, freebaselibs_url)
-    cmd = ['svn', 'commit', tempdir, "-q", "-m", '"%s"' % msg]    
+    cmd = ['svn', 'commit', tempdir, "-m", '"%s"' % msg]    
     print "[SVN] %s" % " ".join(cmd)
-    subprocess.call(cmd)
+    run_cmd(cmd)
     
     cmd = [os.path.join(dir.scripts, 'acrepush.py'),
            '-i', appid,
@@ -183,7 +228,9 @@ for appname, appid, app_ver, deployed_ver in apps:
            tempdir, app_ver]
 
     print "[ACREPUSH] %s" % " ".join(cmd)
-    subprocess.call(cmd)
+    if subprocess.call(cmd) != 0:
+        print "[ACREPUSH] FAIL!!!"
+        sys.exit()
 
 
 # copy to /deloy (for static server - freebaselibs.com)
@@ -192,15 +239,15 @@ for appname, appid, app_ver, deployed_ver in apps:
 
     # 1. create deploy dir in svn
     msg = "Create deployed version %s for %s" % (deployed_ver, appname)
-    cmd = ['svn', 'mkdir', dest, "--parents", "-q", "-m", '"%s"' % msg]
+    cmd = ['svn', 'mkdir', dest, "--parents", "-m", '"%s"' % msg]
     print "[SVN] %s" % " ".join(cmd)    
-    subprocess.call(cmd)
+    run_cmd(cmd)
 
     # 2. checkout deploy dir into temp directory
     tempdir = mkdtemp()
-    cmd = ['svn', 'checkout', dest, tempdir, "-q"]
+    cmd = ['svn', 'checkout', dest, tempdir]
     print "[SVN] %s" % " ".join(cmd)      
-    subprocess.call(cmd)    
+    run_cmd(cmd)    
     # keep track of all svn checkouts to temporary directories
     svn_temp_dirs[dest] = tempdir
 
@@ -212,7 +259,7 @@ for appname, appid, app_ver, deployed_ver in apps:
            "-s", url,
            "-d", tempdir]
     print "[DEPLOY] %s" % " ".join(cmd)
-    subprocess.call(cmd)    
+    run_cmd(cmd)    
 
     # 3b: svn list app_ver and copy images (*.png, *.gif, etc.) to tempdir
     branched_dir = svn_temp_dirs[svn_dev_url(appname, app_ver)]
@@ -229,16 +276,15 @@ for appname, appid, app_ver, deployed_ver in apps:
     os.chdir(tempdir)
     files = [f for f in os.listdir(tempdir) if os.path.splitext(f)[1].lower() in EXTENSIONS]
     cmd = ['svn', 'add'] + files
-    cmd.append('-q')
     print "[SVN] %s" % " ".join(cmd)
-    subprocess.call(cmd)
+    run_cmd(cmd)
     os.chdir(cwd)
 
     # 5. svn commit
     msg = "Add static files to deployed version %s of %s" % (deployed_ver, appname)
-    cmd = ['svn', 'commit', tempdir, "-q", "-m", '"%s"' % msg]
+    cmd = ['svn', 'commit', tempdir, "-m", '"%s"' % msg]
     print "[SVN] %s" % " ".join(cmd)    
-    subprocess.call(cmd)
+    run_cmd(cmd)
 
 
 # TODO restart staticserver (outboun01/02)

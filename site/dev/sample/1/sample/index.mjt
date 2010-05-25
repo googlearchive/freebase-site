@@ -1,0 +1,25 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var page_options = {};
+</acre:script>
+
+<acre:block def="title(g)">
+  Sample Page
+</acre:block>
+
+<acre:block def="head(g)">
+  ${g.t.stylesheet(mf.css_src("sample_page.css"))}
+</acre:block>
+
+<acre:block def="content_body(g)">
+  <h1>Hello World</h1>
+  foo bar
+  <img src="${mf.img_src('/freebase/site/core/metaweb-logo.png')}"/>
+</acre:block>
+
+<acre:block def="footer_script(g)">
+  ${g.t.script(mf.script_src("sample_page.js"))}
+</acre:block>
+
+
+${acre.require("/freebase/site/core/template", mf.version["/freebase/site/core"]).page(this.exports, page_options)}

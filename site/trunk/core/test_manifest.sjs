@@ -63,7 +63,6 @@ test("resource_url", function() {
   });
 });
 
-
 test("css_preprocessor", function() {
   var mf = {
     version: {
@@ -147,15 +146,6 @@ test("extend_manifest", function() {
   equals(mf.version["/hello/world/app"], "7");
   ok(mf.javascript);
   ok(mf.stylesheet);
-
-  // move to test_resource_version
-  try {
-    mf.resource_version("/hello/world/bap/foo");
-    ok(false, "expected exception since /hello/world/bap is not defined in mf.version");
-  }
-  catch(ex) {
-    ok(true, ex);
-  }
 });
 
 

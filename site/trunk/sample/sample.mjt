@@ -8,7 +8,7 @@
 </acre:block>
 
 <acre:block def="head(g)">
-  ${g.t.stylesheet(mf.link_href("sample_page.css"))}
+  ${g.t.stylesheet(mf.css_src("sample_page.css"))}
 </acre:block>
 
 <acre:block def="content_body(g)">

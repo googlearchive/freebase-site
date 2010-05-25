@@ -42,7 +42,7 @@ function extend_manifest(MF, scope) {
 /**
  * The base MANIFEST core library.
  */
-function base_manifest(MF, scope) {
+function base_manifest(MF, scope, undefined) {
   var base = {
     /**
      * The base url prefix for retrieving css and js. All apps who extend the base_manifest
@@ -53,20 +53,29 @@ function base_manifest(MF, scope) {
      * to a permanent static server (i.e., http://freebaselibs.com/statc/freebase_site/foo/[version]/...).
      * But when developing, we want the resources to be served dynamically through "/MANIFEST/s/...".
      */
-    static_base_url: scope.acre.current_script.app.base_url + scope.acre.request.base_path + "/MANIFEST/s/",
+    static_base_url: scope.acre.current_script.app.base_url +  "/MANIFEST/s/",
 
     /**
-     * Generate the proper url to serve the css(s) specified by "foo.css" key in MF.stylesheet
+     * Generate the proper url to serve the css resource(s) specified by MF.stylesheet[key].
+     * The css resource(s) in MF.stylesheet[key] can be a relative css (local app file)
+     * or absolute (external app file). For an external resource,
+     * you MUST specify the app id containing the external resource in MF.version.
      *
      * usage:
-     *   <link rel="stylesheet" type="text/css" href="${MF.link_href("foo.css")}"/>
+     *   <link rel="stylesheet" type="text/css" href="${MF.css_src("foo.css")}"/>
      */
-    link_href: function(key) {
+    css_src: function(key) {
       return MF.static_base_url + key;
+    },
+    link_href: function(key) {
+      return MF.css_src(key);
     },
 
     /**
-     * Generate the proper url to serve the js(s) specified by "foo.js" key in MF.javascript
+     * Generate the proper url to serve the js resource(s) specified by MF.javascript[key].
+     * The js resource(s) in MF.javascript[key] can be a relative js (local app file)
+     * or absolute (external app file). For an external resource,
+     * you MUST specify the app id containing the external resource in MF.version.
      *
      * usage:
      *   <script type="text/javascript" src="${MF.script_src("foo.js")}"></script>
@@ -77,11 +86,26 @@ function base_manifest(MF, scope) {
 
 
     /**
-     * Serve an image through freebaselibs or through acre
-     * base_url is for testing
+     * Generate the proper url to serve an image resource specified by the resource_path.
+     * The resource_path can be a relative resource (local app file)
+     * or absolute (external app file). For an external resource,
+     * you MUST specify the app id containing the external resource in MF.version.
+     *
+     * usage:
+     *   <img src="${MF.img_src('local.png')}" /><!-- local image -->
+     *   <img src="${MF.img_src('/freebase/site/app/external.png')}" /><!-- external image -->
      */
     img_src: function(resource_path) {
-      return MF.resource_url(resource_path);
+      var resource = MF._resource_info(resource_path);
+      if (resource.local) {
+        // local image files relative to the current app
+        return scope.acre.current_script.app.base_url + "/" + resource.name;
+      }
+      else {
+        // get the url through the external app MANIFEST.MF.img_src(resource.name)
+        var ext_mf = MF.require(resource.appid + "/MANIFEST", resource.version).MF;
+        return ext_mf.img_src(resource.name);
+      }
     },
 
     /**
@@ -177,25 +201,47 @@ function base_manifest(MF, scope) {
      */
     _resource_info: function(resource_path) {
       if (resource_path[0] !== "/") {
-        return {id:scope.acre.current_script.app.id + "/" + resource_path, version:null};
+        return {
+          id: scope.acre.current_script.app.id + "/" + resource_path,
+          version: null,
+          appid: scope.acre.current_script.app.id,
+          name: resource_path,
+          local: true
+        };
       }
       var appid = resource_path.split("/");
-      appid.pop();
+      var name = appid.pop();
       appid = appid.join("/");
       if (MF.version && (appid in MF.version)) {
-        return {id:resource_path, version:MF.version[appid]};
+        return {
+          id: resource_path,
+          version: MF.version[appid],
+          appid: appid,
+          name: name,
+          local: false
+        };
       }
       throw "A version for " + appid + " must be declared in the MANIFEST.";
     },
 
-    require: function(resource_path) {
-      var ver_info = MF._resource_info(resource_path);
-      return scope.acre.require(ver_info.id, ver_info.version);
+    /**
+     * resource can be a string (resource_path) or
+     * an object (returned by MF._resource_info)
+     *
+     * You can pass an object returned by MF._resource_info
+     * to avoid another MF._resource_info lookup.
+     * @see MF.img_src
+     */
+    require: function(resource /** string or object **/) {
+      if (typeof resource === "string") {
+        resource = MF._resource_info(resource);
+      }
+      return scope.acre.require(resource.id, resource.version);
     },
 
     resource_url: function(resource_path) {
-      var ver_info = MF._resource_info(resource_path);
-      return h.resource_url(ver_info.id, ver_info.version);
+      var resource = MF._resource_info(resource_path);
+      return h.resource_url(resource.id, resource.version);
     },
 
     /**
@@ -259,7 +305,10 @@ function base_manifest(MF, scope) {
    * static_base_url.txt is updated by freebase site branch/deploy scripts.
    */
   try {
-    base.static_base_url = scope.acre.require("static_base_url.txt").body.trim();
+    var static_base_url = scope.acre.require("static_base_url.txt").body.trim();
+    if (static_base_url) {
+      base.static_base_url = static_base_url;
+    }
   }
   catch(ex) {
     // ignore

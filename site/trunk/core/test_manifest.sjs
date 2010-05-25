@@ -15,10 +15,22 @@ test("_resource_info", function() {
 
   equals(mf._resource_info("/hello/world/app/foo.css").id, "/hello/world/app/foo.css");
   equals(mf._resource_info("/hello/world/app/foo.css").version, "4");
+  equals(mf._resource_info("/hello/world/app/foo.css").name, "foo.css");
+  equals(mf._resource_info("/hello/world/app/foo.css").appid, "/hello/world/app");
+  equals(mf._resource_info("/hello/world/app/foo.css").local, false);
+
   equals(mf._resource_info("/foo/bar/app/foo.js").id, "/foo/bar/app/foo.js");
   equals(mf._resource_info("/foo/bar/app/foo.js").version, null);
+  equals(mf._resource_info("/foo/bar/app/foo.js").name, "foo.js");
+  equals(mf._resource_info("/foo/bar/app/foo.js").appid, "/foo/bar/app");
+  equals(mf._resource_info("/foo/bar/app/foo.js").local, false);
+
   equals(mf._resource_info("foo.png").id, "/freebase/site/core/foo.png");
   equals(mf._resource_info("foo.png").version, null);
+  equals(mf._resource_info("foo.png").name, "foo.png");
+  equals(mf._resource_info("foo.png").appid, "/freebase/site/core");
+  equals(mf._resource_info("foo.png").local, true);
+
   try {
     mf._resource_info("/xxx/yyy/zzz/foo.less");
     ok(false, "expected an exception for an unknown resource");
@@ -74,6 +86,13 @@ test("css_preprocessor", function() {
   });
 });
 
+test("css_src", function() {
+
+});
+
+test("script_src", function() {
+
+});
 
 test("img_src", function() {
   var mf = {
@@ -86,9 +105,10 @@ test("img_src", function() {
   m.extend_manifest(mf, scope);
 
   var tests = [
-    ["/hello/world/app/freebase-logo.png", h.resource_url("/hello/world/app/freebase-logo.png", mf.version["/hello/world/app"])],
-    ["icon-chiclet.png", h.resource_url("/freebase/site/core/icon-chiclet.png")],
-    ["/foo/bar/app/baz.gif", h.resource_url("/foo/bar/app/baz.gif", mf.version["/foo/bar/app"])]
+//    ["/hello/world/app/freebase-logo.png", h.resource_url("/hello/world/app/freebase-logo.png", mf.version["/hello/world/app"])],
+//    ["icon-chiclet.png", h.resource_url("/freebase/site/core/icon-chiclet.png")],
+//    ["/foo/bar/app/baz.gif", h.resource_url("/foo/bar/app/baz.gif", mf.version["/foo/bar/app"])],
+    ["local.png", mf.static_base_url + "local.png"]
   ];
 
   tests.forEach(function(t) {
@@ -106,7 +126,7 @@ test("extend_manifest", function() {
   };
   m.extend_manifest(mf, scope);
   equals(mf.static_base_url, "foo/");
-  equals(mf.link_href("bar.css"), "foo/bar.css");
+  equals(mf.css_src("bar.css"), "foo/bar.css");
   equals(mf.script_src("bar.js"), "foo/bar.js");
   equals(mf._resource_info("/hello/world/app/foo").version, "7");
   try {

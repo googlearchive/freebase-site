@@ -103,7 +103,8 @@ function base_manifest(MF, scope, undefined) {
       }
       else {
         // get the url through the external app MANIFEST.MF.img_src(resource.name)
-        var ext_mf = MF.require(resource.appid + "/MANIFEST", resource.version).MF;
+        var ext_resource = extend({}, resource, {id:resource.appid+"/MANIFEST", name:"MANIFEST"});
+        var ext_mf = MF.require(ext_resource).MF;
         return ext_mf.img_src(resource.name);
       }
     },

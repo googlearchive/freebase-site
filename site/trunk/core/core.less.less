@@ -17,10 +17,10 @@
     border-radius: @radius;
 }
 
-.box_shadow (@h: 0px, @v: 0px, @blur: 3px) {
-    -webkit-box-shadow: 0 0 3px #aaa;
-    -moz-box-shadow: 0 0 3px #aaa;
-    box-shadow: 0 0 3px #aaa;
+.box_shadow (@h: 0px, @v: 0px, @blur: 3px, @color: #aaa) {
+    -webkit-box-shadow: @h @v @blur @color;
+    -moz-box-shadow: @h @v @blur @color;
+    box-shadow: @h @v @blur @color;
 }
 
 

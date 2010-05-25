@@ -65,7 +65,7 @@ function base_manifest(MF, scope, undefined) {
     static_base_url: scope.acre.current_script.app.base_url +  "/MANIFEST/s",
 
     /**
-     * This is like stat_base_url but for images (*.png, *.gif, etc.).
+     * This is like static_base_url but for images (*.png, *.gif, etc.).
      *
      * This will be overwritten by what's in static_base_url.txt.
      */

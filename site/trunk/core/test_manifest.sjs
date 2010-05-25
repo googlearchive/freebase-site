@@ -75,6 +75,28 @@ test("css_preprocessor", function() {
 });
 
 
+test("img_src", function() {
+  var mf = {
+    version: {
+      "/hello/world/app": "4",
+      "/foo/bar/app": null,
+      "/freebase/site/homepage": "5"
+    }
+  };
+  m.extend_manifest(mf, scope);
+
+  var tests = [
+    ["/hello/world/app/freebase-logo.png", h.resource_url("/hello/world/app/freebase-logo.png", mf.version["/hello/world/app"])],
+    ["icon-chiclet.png", h.resource_url("/freebase/site/core/icon-chiclet.png")],
+    ["/foo/bar/app/baz.gif", h.resource_url("/foo/bar/app/baz.gif", mf.version["/foo/bar/app"])]
+  ];
+
+  tests.forEach(function(t) {
+    equals(mf.img_src(t[0]), t[1]);
+  });
+});
+
+
 test("extend_manifest", function() {
   var mf = {
     version: {

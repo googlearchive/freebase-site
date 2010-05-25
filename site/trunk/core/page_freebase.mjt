@@ -87,8 +87,7 @@
         <a href="${acre.markup.bless(g.h.account_url('signout', acre.request.url))}" title="Sign out of Freebase" rel="nofollow">Sign out</a>
       </div>
       <div id="anonymous-user-controls" id="signedout" style="display:none;">
-        <a href="${acre.markup.bless(g.h.account_url('signin', acre.request.url))}" title="Sign in to your Freebase account" rel="nofollow">Sign in</a>
-        <a href="${acre.markup.bless(g.h.account_url('register', acre.request.url))}" title="Create an account with Freebase" rel="nofollow">Sign up</a>
+        <a href="${acre.markup.bless(g.h.account_url('signin', acre.request.url))}" title="Sign in to your Freebase account" rel="nofollow">Sign in or Sign up</a>
       </div>
     </div>
   </div>  

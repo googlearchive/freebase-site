@@ -149,7 +149,7 @@ test("extend_manifest", function() {
 });
 
 
-if (acre.current_script == acre.request.script) {
+if (acre.current_script === acre.request.script) {
   acre.test.report();
 }
 

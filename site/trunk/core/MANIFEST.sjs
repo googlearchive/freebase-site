@@ -24,7 +24,7 @@ function extend() {
  */
 function init(MF, scope) {
   extend_manifest(MF, scope);
-  if (scope.acre.current_script == scope.acre.request.script) {
+  if (scope.acre.current_script === scope.acre.request.script) {
     MF.main();
   }
 };

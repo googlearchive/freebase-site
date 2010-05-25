@@ -44,6 +44,10 @@ function extend_manifest(MF, scope) {
  */
 function base_manifest(MF, scope, undefined) {
   var base = {
+    version: {},
+    stylesheet: {},
+    javascript: {},
+
     /**
      * The base url prefix for retrieving css and js. All apps who extend the base_manifest
      * will have a "/MANIFEST/s" entry-point to serve css and js as specified in their MF.stylesheet
@@ -55,11 +59,11 @@ function base_manifest(MF, scope, undefined) {
      *
      * This will be overwritten by what's in static_base_url.txt.
      */
-    static_base_url: scope.acre.current_script.app.base_url +  "/MANIFEST/s/",
+    static_base_url: scope.acre.current_script.app.base_url +  "/MANIFEST/s",
 
     /**
      * This is like stat_base_url but for images (*.png, *.gif, etc.).
-     * 
+     *
      * This will be overwritten by what's in static_base_url.txt.
      */
     image_base_url: scope.acre.current_script.app.base_url,
@@ -74,8 +78,9 @@ function base_manifest(MF, scope, undefined) {
      *   <link rel="stylesheet" type="text/css" href="${MF.css_src("foo.css")}"/>
      */
     css_src: function(key) {
-      return MF.static_base_url + key;
+      return MF.static_base_url + "/" + key;
     },
+    /** DEPRECATED: use css_src **/
     link_href: function(key) {
       return MF.css_src(key);
     },
@@ -89,8 +94,12 @@ function base_manifest(MF, scope, undefined) {
      * usage:
      *   <script type="text/javascript" src="${MF.script_src("foo.js")}"></script>
      */
+    js_src: function(key) {
+      return MF.static_base_url + "/" + key;
+    },
+    /** DEPRECATED: use js_src **/
     script_src: function(key) {
-      return MF.static_base_url + key;
+      return MF.js_src(key);
     },
 
 
@@ -113,8 +122,14 @@ function base_manifest(MF, scope, undefined) {
       else {
         // get the url through the external app MANIFEST.MF.img_src(resource.name)
         var ext_resource = extend({}, resource, {id:resource.appid+"/MANIFEST", name:"MANIFEST"});
-        var ext_mf = MF.require(ext_resource).MF;
-        return ext_mf.img_src(resource.name);
+        try {
+          var ext_mf = MF.require(ext_resource).MF;
+          return ext_mf.img_src(resource.name);
+        }
+        catch (ex) {
+          console.log("MF.img_src: no MANIFEST in external app", resource.appid, ex);
+          return MF.resource_url(resource);
+        }
       }
     },
 
@@ -249,8 +264,10 @@ function base_manifest(MF, scope, undefined) {
       return scope.acre.require(resource.id, resource.version);
     },
 
-    resource_url: function(resource_path) {
-      var resource = MF._resource_info(resource_path);
+    resource_url: function(resource /** string or object **/) {
+      if (typeof resource === "string") {
+        resource = MF._resource_info(resource);
+      }
       return h.resource_url(resource.id, resource.version);
     },
 

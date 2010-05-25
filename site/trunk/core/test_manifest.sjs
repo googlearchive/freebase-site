@@ -87,28 +87,45 @@ test("css_preprocessor", function() {
 });
 
 test("css_src", function() {
+  var mf = {
+    stylesheet: {
+      "foo.css": ["/hello/world/app/external.css", "local.css"]
+    }
+  };
+  m.extend_manifest(mf, scope);
 
+  equals(mf.css_src("foo.css"), mf.static_base_url + "/foo.css");
 });
 
 test("script_src", function() {
+  var mf = {
+    javascript: {
+      "foo.js": ["/hello/world/app/external.js", "local.js"]
+    }
+  };
+  m.extend_manifest(mf, scope);
 
+  equals(mf.script_src("foo.js"), mf.static_base_url + "/foo.js");
 });
 
 test("img_src", function() {
   var mf = {
     version: {
-      "/hello/world/app": "4",
-      "/foo/bar/app": null,
-      "/freebase/site/homepage": "5"
+      "/freebase/site/core": null,
+      "/hello/world/app": "5"
     }
   };
   m.extend_manifest(mf, scope);
+
+  var ext_mf = acre.require("/freebase/site/core/MANIFEST", null).MF;
 
   var tests = [
 //    ["/hello/world/app/freebase-logo.png", h.resource_url("/hello/world/app/freebase-logo.png", mf.version["/hello/world/app"])],
 //    ["icon-chiclet.png", h.resource_url("/freebase/site/core/icon-chiclet.png")],
 //    ["/foo/bar/app/baz.gif", h.resource_url("/foo/bar/app/baz.gif", mf.version["/foo/bar/app"])],
-    ["local.png", mf.static_base_url + "local.png"]
+    ["local.png", mf.image_base_url + "/local.png"],
+    ["/freebase/site/core/freebase-logo-production.png", ext_mf.image_base_url + "/freebase-logo-production.png"],
+    ["/hello/world/app/foo.png", h.resource_url("/hello/world/app/foo.png", "5")]
   ];
 
   tests.forEach(function(t) {
@@ -121,14 +138,17 @@ test("extend_manifest", function() {
   var mf = {
     version: {
       "/hello/world/app": "7"
-    },
-    static_base_url: "foo/"
+    }
   };
   m.extend_manifest(mf, scope);
-  equals(mf.static_base_url, "foo/");
-  equals(mf.css_src("bar.css"), "foo/bar.css");
-  equals(mf.script_src("bar.js"), "foo/bar.js");
-  equals(mf._resource_info("/hello/world/app/foo").version, "7");
+  equals(mf.static_base_url, acre.current_script.app.base_url +  "/MANIFEST/s");
+
+  ok(mf.version);
+  equals(mf.version["/hello/world/app"], "7");
+  ok(mf.javascript);
+  ok(mf.stylesheet);
+
+  // move to test_resource_version
   try {
     mf.resource_version("/hello/world/bap/foo");
     ok(false, "expected exception since /hello/world/bap is not defined in mf.version");

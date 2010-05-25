@@ -25,6 +25,8 @@ FREEBASEAPPS = {
     "trunk": "dev.trunk.qa-freebaseapps.com"
 }
 
+OUTBOUND = ["outbound01.ops.sjc1.metaweb.com", "outbound02.ops.sjc1.metaweb.com"]
+
 # recognized extensions for static files
 IMG_EXTENSIONS = [".png", ".gif", ".jpg"]
 EXTENSIONS = [".js", ".css", ".txt"] + IMG_EXTENSIONS
@@ -288,4 +290,13 @@ for appname, appid, app_ver, deployed_ver in apps:
 
 
 # TODO restart staticserver (outboun01/02)
+print "Do you wish to restart the static servers: %s" % OUTBOUND
+if raw_input().lower() != "y":
+    sys.exit() 
+
+for outbound in OUTBOUND:
+    cmd = ["ssh", outbound, "sudo", "mwdeploy"]
+    print "[SSH] %s" % " ".join(cmd)
+    subprocess.call(cmd)
+
 print "success!"

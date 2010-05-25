@@ -52,8 +52,17 @@ function base_manifest(MF, scope, undefined) {
      * The idea is that once an app is branched/deployed, this static_base_url will be changed
      * to a permanent static server (i.e., http://freebaselibs.com/statc/freebase_site/foo/[version]/...).
      * But when developing, we want the resources to be served dynamically through "/MANIFEST/s/...".
+     *
+     * This will be overwritten by what's in static_base_url.txt.
      */
     static_base_url: scope.acre.current_script.app.base_url +  "/MANIFEST/s/",
+
+    /**
+     * This is like stat_base_url but for images (*.png, *.gif, etc.).
+     * 
+     * This will be overwritten by what's in static_base_url.txt.
+     */
+    image_base_url: scope.acre.current_script.app.base_url,
 
     /**
      * Generate the proper url to serve the css resource(s) specified by MF.stylesheet[key].
@@ -99,7 +108,7 @@ function base_manifest(MF, scope, undefined) {
       var resource = MF._resource_info(resource_path);
       if (resource.local) {
         // local image files relative to the current app
-        return scope.acre.current_script.app.base_url + "/" + resource.name;
+        return MF.image_base_url + "/" + resource.name;
       }
       else {
         // get the url through the external app MANIFEST.MF.img_src(resource.name)
@@ -308,7 +317,7 @@ function base_manifest(MF, scope, undefined) {
   try {
     var static_base_url = scope.acre.require("static_base_url.txt").body.trim();
     if (static_base_url) {
-      base.static_base_url = static_base_url;
+      base.static_base_url = base.image_base_url = static_base_url;
     }
   }
   catch(ex) {

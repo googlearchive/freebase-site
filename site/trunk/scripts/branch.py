@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import os
+import os, sys
 from optparse import OptionParser
 import urllib
 import urllib2
@@ -7,6 +7,7 @@ import json
 import subprocess
 import dir
 from tempfile import mkdtemp
+import shutil
 
 # acre pod mapping to host for appeditor web services, i.e., /appeditor/get_app
 POD = {
@@ -25,7 +26,28 @@ FREEBASEAPPS = {
 }
 
 # recognized extensions for static files
-EXTENSIONS = [".js", ".css", ".png", ".gif", ".jpg", ".txt"]
+IMG_EXTENSIONS = [".png", ".gif", ".jpg"]
+EXTENSIONS = [".js", ".css", ".txt"] + IMG_EXTENSIONS
+
+
+#
+# command line options parser
+#
+# usage: branch.py -p branch app1:app1_version:deploy1_version app2:app2_version:deploy2_version
+#
+# -p <pod>
+cmd_options = OptionParser()
+cmd_options.add_option('-p', '--pod', dest='pod', 
+                       help="acre host i.e., otg|sandbox|branch|trunk")
+options, args = cmd_options.parse_args()
+
+# pod, freebaseapps default to branch
+pod = POD.get(options.pod, POD['branch'])
+freebaseapps = FREEBASEAPPS.get(options.pod, FREEBASEAPPS['branch'])
+
+print "[INFO] branching to %s" % pod
+
+
 
 def get_json(url):
     '''
@@ -44,6 +66,13 @@ def is_int(str):
     except ValueError, e:
         return False
 
+def get_app(appid):
+    '''
+    get app info using  pod/appeditor/get_app service
+    '''
+    url = "%s/appeditor/get_app?%s" % (pod, urllib.urlencode(dict(appid=appid)))
+    return get_json(url).get('result')
+
 def next_version(appid):
     '''
     determine the next available version number for an app
@@ -52,8 +81,7 @@ def next_version(appid):
     3. if no versions, return "1"
     '''
     try:
-        url = "%s/appeditor/get_app?%s" % (pod, urllib.urlencode(dict(appid=appid)))
-        appinfo = get_json(url).get('result')
+        app_info = get_app(appid)
         versions = appinfo.get('versions', [])
         versions = [v for v in versions if is_int(v['name'])]
         versions.sort(key=lambda x: int(x['name']))
@@ -63,54 +91,79 @@ def next_version(appid):
         pass
     return 1
 
-#
-# command line options parser
-#
-# usage: branch.py -p branch app1[:version] app2[:version] ...
-#
-# -p <pod>
-cmd_options = OptionParser()
-cmd_options.add_option('-p', '--pod', dest='pod', 
-                       help="acre host i.e., otg|sandbox|branch|trunk")
-options, args = cmd_options.parse_args()
 
-# pod, freebaseapps default to branch
-pod = POD.get(options.pod, POD['branch'])
-freebaseapps = FREEBASEAPPS.get(options.pod, FREEBASEAPPS['branch'])
+def svn_deployed_url(appname, version):
+    return "https://svn.metaweb.com/svn/freebase_site/deployed/%s/%s" % (appname, version)
 
-print "[INFO] branching to %s" % pod
+def svn_dev_url(appname, version):
+    return "https://svn.metaweb.com/svn/freebase_site/dev/%s/%s" % (appname, version)
+
+def svn_trunk_url(appname):
+    return "https://svn.metaweb.com/svn/freebase_site/trunk/%s" % appname
+
+def app_url(appname, app_ver):
+    return "http://{app_ver}.{appname}.site.freebase.{freebaseapps}".format(app_ver=app_ver, appname=appname, freebaseapps=freebaseapps)
+
 
 # for each app name specified, determine
-# 1. app id
-# 2. version, if not specified, next_version()
+# 1. app id (required)
+# 2. app version (required) - acre
+# 3. deploy version (required) - freebaselibs
 apps = []
 for arg in args:    
-    appname, ver = arg.split(":", 1) if ":" in arg else (arg, None)
+    try :
+        appname, app_ver, deployed_ver = arg.split(":", 2)
+    except ValueError, e:
+        print "You must specify an app and deploy version for %s [app_name:app_version:deploy_version]" % arg
+        sys.exit()
+
     appid = "/freebase/site/%s" % appname
-    if not ver:
-        ver = next_version(appid)            
-    apps.append((appname, appid, str(ver)))
+    
+    # check app version if already exists
+    try:
+        appinfo = get_app(appid)
+        version = [v for v in appinfo.get('versions', []) if v['name'] == app_ver]
+        if version:
+            print "An app version %s already exists for %s. Overwrite [y/n]?" % (app_ver, appname)
+            if raw_input().lower() != "y":
+                sys.exit()
+    except urllib2.HTTPError, e:
+        pass
+    
+    # check deploy version if already exists
+    cmd = ["svn", "ls", svn_deployed_url(appname, deployed_ver)]
+    version = subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0]
+    if version:
+        print "A deployed version %s already exists for %s. Overwrite [y/n]?" % (deployed_ver, appname)
+        if raw_input().lower() != "y":
+            sys.exit()    
+
+    apps.append((appname, appid, app_ver, deployed_ver))
 
 
 # copy to /dev (svn branch)
-for appname, appid, ver in apps:
-    src = 'https://svn.metaweb.com/svn/freebase_site/trunk/%s' % appname
-    dest = 'https://svn.metaweb.com/svn/freebase_site/dev/%s/%s' % (appname, ver)
-    msg = "Create branch /dev/%s/%s" % (appname, ver)
+for appname, appid, app_ver, deployed_ver in apps:
+    src = svn_trunk_url(appname)
+    dest = svn_dev_url(appname, app_ver)
+    msg = "Create branch version %s of %s" % (app_ver, appname)
     cmd = ['svn', 'copy', src, dest, "-q", "--parents", "-m", '"%s"' % msg]
     print "[SVN] %s" % " ".join(cmd)
     subprocess.call(cmd)
 
+
+svn_temp_dirs = {}
          
 # push to acre
-for appname, appid, ver in apps:
-    dest = 'https://svn.metaweb.com/svn/freebase_site/dev/%s/%s' % (appname, ver)
+for appname, appid, app_ver, deployed_ver in apps:
+    dest = svn_dev_url(appname, app_ver)
     tempdir = mkdtemp()
     cmd = ['svn', 'checkout', dest, tempdir, "-q"]
     print "[SVN] %s" % " ".join(cmd)      
-    subprocess.call(cmd)
+    subprocess.call(cmd)    
+    # keep track of all svn checkouts to temporary directories
+    svn_temp_dirs[dest] = tempdir
 
-    freebaselibs_url = "http://freebaselibs.com/static/freebase_site/{appname}/{ver}".format(appname=appname, ver=ver)
+    freebaselibs_url = "http://freebaselibs.com/static/freebase_site/{appname}/{deployed_ver}".format(appname=appname, deployed_ver=deployed_ver)
     filename = os.path.join(tempdir, "static_base_url.txt.txt")
     with open(filename, "w") as f:
         f.write(freebaselibs_url)
@@ -119,7 +172,7 @@ for appname, appid, ver in apps:
     print "[SVN] %s" % " ".join(cmd)
     subprocess.call(cmd)
 
-    msg = "Update %s/%s/static_base_url.txt with %s" % (appid, ver, freebaselibs_url)
+    msg = "Update %s/%s/static_base_url.txt with %s" % (appid, app_ver, freebaselibs_url)
     cmd = ['svn', 'commit', tempdir, "-q", "-m", '"%s"' % msg]    
     print "[SVN] %s" % " ".join(cmd)
     subprocess.call(cmd)
@@ -127,18 +180,18 @@ for appname, appid, ver in apps:
     cmd = [os.path.join(dir.scripts, 'acrepush.py'),
            '-i', appid,
            '-h', pod,
-           tempdir, ver]
+           tempdir, app_ver]
 
     print "[ACREPUSH] %s" % " ".join(cmd)
     subprocess.call(cmd)
 
 
 # copy to /deloy (for static server - freebaselibs.com)
-for appname, appid, ver in apps:
-    dest = 'https://svn.metaweb.com/svn/freebase_site/deploy/%s/%s' % (appname, ver)
+for appname, appid, app_ver, deployed_ver in apps:
+    dest = svn_deployed_url(appname, deployed_ver)
 
     # 1. create deploy dir in svn
-    msg = "Create deploy directory /deploy/%s/%s" % (appname, ver)
+    msg = "Create deployed version %s for %s" % (deployed_ver, appname)
     cmd = ['svn', 'mkdir', dest, "--parents", "-q", "-m", '"%s"' % msg]
     print "[SVN] %s" % " ".join(cmd)    
     subprocess.call(cmd)
@@ -148,16 +201,28 @@ for appname, appid, ver in apps:
     cmd = ['svn', 'checkout', dest, tempdir, "-q"]
     print "[SVN] %s" % " ".join(cmd)      
     subprocess.call(cmd)    
+    # keep track of all svn checkouts to temporary directories
+    svn_temp_dirs[dest] = tempdir
 
     # 3. urlfetch static files from app url
-    base_url = "http://{ver}.{appname}.site.freebase.{freebaseapps}".format(ver=ver, appname=appname, freebaseapps=freebaseapps)
-    #base_url = "http://{appname}.site.freebase.dev.acre.z:8115".format(appname=appname)
+    #url = app_url(appname, app_ver)
+    url = "http://{appname}.site.freebase.dev.acre.z:8115".format(appname=appname)
 
     cmd = [os.path.join(dir.scripts, 'deploy.py'),
-           "-s", base_url,
+           "-s", url,
            "-d", tempdir]
     print "[DEPLOY] %s" % " ".join(cmd)
     subprocess.call(cmd)    
+
+    # 3b: svn list app_ver and copy images (*.png, *.gif, etc.) to tempdir
+    branched_dir = svn_temp_dirs[svn_dev_url(appname, app_ver)]
+    img_files = [f for f in os.listdir(branched_dir) if os.path.splitext(f)[1].lower() in IMG_EXTENSIONS]    
+    for f in img_files:
+        src = os.path.join(branched_dir, f)
+        # in local acre dev, we use double extensions for static files including image files
+        # convert double extensions to single extension
+        dest = os.path.join(tempdir, os.path.splitext(f)[0])
+        shutil.copy2(src, dest)
 
     # 4. svn add
     cwd = os.getcwd()
@@ -170,10 +235,11 @@ for appname, appid, ver in apps:
     os.chdir(cwd)
 
     # 5. svn commit
-    msg = "Add static files to /deploy/%s/%s from %s" % (appname, ver, base_url)
+    msg = "Add static files to deployed version %s of %s" % (deployed_ver, appname)
     cmd = ['svn', 'commit', tempdir, "-q", "-m", '"%s"' % msg]
     print "[SVN] %s" % " ".join(cmd)    
     subprocess.call(cmd)
 
 
 # TODO restart staticserver (outboun01/02)
+print "success!"

@@ -119,8 +119,8 @@ class AcrePush(object):
         u = urllib2.urlopen(acrehost+'/acre/status').read()
         me_server = u.split('\n')[2].split(':')[1].strip()
         cookiefile = '/tmp/freebase-python-cookie-jar-%s' %  pwd.getpwuid( os.getuid() )[ 0 ]
-        pdb.set_trace()
-        self.fb = HTTPMetawebSession(me_server, cookiefile=cookiefile, keepcookie=True, acre_service_url=acrehost)
+        #pdb.set_trace()
+        self.fb = HTTPMetawebSession(me_server, cookiefile=cookiefile, acre_service_url=acrehost)
 
     def get_credentials(self, user=None, pw=None):
 

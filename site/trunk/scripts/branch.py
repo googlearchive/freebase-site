@@ -9,6 +9,7 @@ import dir
 from tempfile import mkdtemp
 import shutil
 import re
+import acrepush
 
 # acre pod mapping to host for appeditor web services, i.e., /appeditor/get_app
 POD = {
@@ -112,12 +113,30 @@ def next_version(appid):
         pass
     return 1
 
+def svn_revision(path):
+    '''
+    Do an svn log to get the latest revison of path
+    '''
+    cmd = ['svn', 'log', '-l', '1', path]
+    svn_output = run_cmd(cmd)
+    return int(re.search(r'r([\d]+)', svn_output).group(1))
+
+
+def svn_commit(path, msg, exit=False):
+    '''
+    Helper method for svn commit
+    '''
+    cmd = ['svn', 'commit', path, '-m', '"%s"' % msg]
+    log('svn', cmd)
+    return run_cmd(cmd, exit=exit)
+
+
 def log(type, cmd):
     print '[{type}] {cmd}'.format(type=type, cmd=(' '.join(cmd)))
 
 
 def svn_deployed_url(app, svn_revision):
-    return 'https://svn.metaweb.com/svn/freebase_site/deployed/{app}/{svn_revision}'.format(app=app, svn_revision=svn_revision)
+    return 'https://svn.metaweb.com/svn/freebase_site/deployed/{app}/$Rev: {svn_revision} $'.format(app=app, svn_revision=svn_revision)
 
 def svn_dev_url(app, version):
     return 'https://svn.metaweb.com/svn/freebase_site/dev/{app}/{version}'.format(app=app, version=version)
@@ -128,6 +147,11 @@ def svn_trunk_url(app):
 def app_url(app, version):
     return 'http://{version}.{app}.site.freebase.{freebaseapps}'.format(version=version, app=app, freebaseapps=freebaseapps)
 
+def get_credentials():
+    import getpass
+    user = raw_input("Freebase Username: ")            
+    pw = getpass.getpass("Freebase Password: ")
+    return (user, pw)
 
 # for each app name specified, determine
 # 1. app id (required)
@@ -151,40 +175,11 @@ for arg in args:
         appinfo = get_app(appid)
         v = [v for v in appinfo.get('versions', []) if v['name'] == version]
         if v:
-            print 'An acre version {version} already exists for app {app}. Overwrite [y/n]?'.format(version=version, app=app),
-            if raw_input().lower() != "y":
+            prompt = 'An acre version {version} already exists for app {app}. Overwrite [y/n]? '.format(version=version, app=app)
+            if raw_input(prompt).lower() != "y":
                 sys.exit()
     except urllib2.HTTPError, e:
         pass
-    '''
-    # check svn branch version if already exists
-
-    # check dev version if already exists
-    cmd = ["svn", "ls", svn_dev_url(app, version)]
-    version = run_cmd(cmd, exit=False)
-    if version:
-        print "An svn branch version %s already exists for app %s. Overwrite [y/n]?" % (version, app),
-        if raw_input().lower() != "y":
-            sys.exit()    
-        else:
-            msg = "Deleting existing svn branch version %s for app %s" % (version, app) 
-            cmd = ["svn", "delete", svn_dev_url(app, version), "-m", msg]
-            print "[SVN] %s" % " ".join(cmd)
-            run_cmd(cmd)
-
-    # check deploy version if already exists
-    cmd = ["svn", "ls", svn_deployed_url(app, deployed_ver)]
-    version = run_cmd(cmd, exit=False)
-    if version:
-        print "An svn deployed version %s already exists for app %s. Overwrite [y/n]?" % (deployed_ver, app),
-        if raw_input().lower() != "y":
-            sys.exit()    
-        else:
-            msg = "Deleting existing svn deployed version %s for app %s" % (deployed_ver, app) 
-            cmd = ["svn", "delete", svn_deployed_url(app, deployed_ver), "-m", msg]
-            print "[SVN] %s" % " ".join(cmd)
-            run_cmd(cmd)
-            '''
 
     print app, appid, version
 
@@ -214,6 +209,9 @@ svn_temp_dirs = {}
 svn_branch_revs = {}
          
 # push to acre
+
+user, pw = get_credentials()
+
 for app, appid, version in apps:
     branch = svn_dev_url(app, version)
     tempdir = mkdtemp() 
@@ -223,21 +221,14 @@ for app, appid, version in apps:
     log('svn', cmd)
     run_cmd(cmd)
 
-    # update static_base_url.txt.txt
-
-
+    # update app.cfg with static_base_url, image_base_url
     filename = os.path.join(tempdir, "app.cfg.cfg")
 
-    if (not os.path.exists(filename)):
+    if (not os.path.exists(filename)):        
+        base_url = "http://freebaselibs.com/static/freebase_site/{app}/$Rev$".format(app=app)
         cfg = {
-            "svn": {
-                "Date": "$Date$",
-                "Revision": "$Revision$",
-                "Author": "$Author$",
-                "HeadURL": "$HeadURL$",
-                "Id": "$Id$"
-                },
-            "deployed_base_url": "http://freebaselibs.com/static/freebase_site/{app}".format(app=app)
+            "static_base_url": base_url,
+            "image_base_url": base_url
         } 
         with open(filename, "w") as f:
             f.write(json.dumps(cfg, indent=2))
@@ -247,37 +238,32 @@ for app, appid, version in apps:
         run_cmd(cmd, exit=False)
 
         # svn propset svn:keywords "Rev" static_base_url.txt.txt
-        cmd = ['svn', 'propset', 'svn:keywords', 'Date Revision Author HeadURL Id', filename]
+        cmd = ['svn', 'propset', 'svn:keywords', 'Rev', filename]
         log('svn', cmd)
         run_cmd(cmd)
+
+        msg = 'Add app config with static_base_url'
+        svn_commit(tempdir, msg)
     else:
-        # touch app.cfg by adding a space to the end of file
-        with open(filename, "a") as f:
-            f.write(" ")
+        # compare "svn info branch" and "svn info app.cfg"
+        # to check if anything was checked in after app.cfg
+        if (svn_revision(tempdir) > svn_revision(filename)):
+            # touch app.cfg by adding a space to the end of file
+            with open(filename, "a") as f:
+                f.write(" ")
 
-    # commit static_base_url.txt.txt to branch
-    msg = 'Add app config with svn and deployment information'
-    cmd = ['svn', 'commit', tempdir, '-m', '"%s"' % msg]
-    log('svn', cmd)
-    svn_output = run_cmd(cmd)
+            msg = 'Update app config with static_base_url'
+            svn_commit(tempdir, msg)
 
-    # determine what svn revision we're on (this number will be the static deployed directory for this branch)
-    svn_output = svn_output.splitlines()[-1]
-    branch_rev = re.search(r'[\d]+', svn_output).group()
-    # keep track of svn revisions for branch
-    svn_branch_revs[branch] = branch_rev    
+    svn_branch_revs[branch] = svn_revision(branch)
 
     # acre push branch
-    cmd = [os.path.join(dir.scripts, 'acrepush.py'),
-           '-i', appid, 
-           '-h', pod,
-           tempdir, version]
-    log('acrepush', cmd)
-    if subprocess.call(cmd) != 0:
-        pass
-        '''print "[ACREPUSH] FAIL!!!"
-        sys.exit()'''
+    acrepush.push(appid, pod, tempdir, version=version, user=user, pw=pw)
 
+
+# flag to tell us if we've created new freebaselibs deployed directory,
+# and if so, restart the outbound01/02 static servers
+restart_static_servers = False
 
 # copy to /deloy (for static server - freebaselibs.com)
 for app, appid, version in apps:
@@ -341,16 +327,34 @@ for app, appid, version in apps:
     log('svn', cmd)
     run_cmd(cmd)
 
+    restart_static_servers = True
 
-# TODO restart staticserver (outboun01/02)
-print 'Do you wish to restart the static servers {servers} [y/n]?'.format(servers=", ".join(OUTBOUND)),
-if raw_input().lower() != "y":
-    print 'Please DO NOT forget to restart the static servers {servers}'.format(servers=", ".join(OUTBOUND))
-    sys.exit() 
 
-for outbound in OUTBOUND:
-    cmd = ["ssh", outbound, "sudo", "mwdeploy"]
-    log('ssh', cmd)
-    subprocess.call(cmd)
+# repush tip of svn:trunk to acre:trunk
+for app, appid, version in apps:
+    # svn checkout
+    trunk = svn_trunk_url(app)
+    tempdir = mkdtemp() 
+    # keep track of all svn checkouts to temporary directories
+    svn_temp_dirs[trunk] = tempdir
+    cmd = ['svn', 'checkout', trunk, tempdir]
+    log('svn', cmd)
+    run_cmd(cmd)
+
+    # acrepush
+    acrepush.push(appid, pod, tempdir, user=user, pw=pw)   
+
+
+if restart_static_servers:
+    prompt = 'Do you wish to restart the static servers {servers} [y/n]? '.format(servers=", ".join(OUTBOUND))
+    if raw_input(prompt).lower() != "y":
+        print 'Please DO NOT forget to restart the static servers {servers}'.format(servers=", ".join(OUTBOUND))
+        sys.exit() 
+
+    for outbound in OUTBOUND:
+        cmd = ["ssh", outbound, "sudo", "mwdeploy"]
+        log('ssh', cmd)
+        subprocess.call(cmd)
+
 
 print "success!"

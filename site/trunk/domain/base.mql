@@ -1,18 +1,27 @@
 [{
   "id": null,
+  "name": null,
   "/freebase/domain_profile/featured_views": [{
     "id":    null,
     "name":  null,
     "sort":  "index",
     "index": null,
     "type": "/freebase/query",
-    "key": {
-        "value": null
-    }
   }],
   "!views_count:/freebase/query_hints/related_domain": {
     "optional": true,
     "return":   "count",
     "limit":    1000
+  },
+  "/freebase/domain_profile/theme": {
+    "optional":      true,
+    "id":            null,
+    "type":          "/freebase/theme",
+    "header_image": {
+        "id": null,
+        "optional": true
+    },
+    "header_text_color": null,
+    "header_background_color": null
   }
 }]

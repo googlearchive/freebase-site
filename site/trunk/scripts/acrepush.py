@@ -275,6 +275,19 @@ def usage(msg=None):
     print >> sys.stderr, "%s [-i id] [-h acrehost] [-u username] [-p password] [-d] directory [version]" % sys.argv[0]
     sys.exit(1)
 
+def push(id, host, directory,user=None, pw=None, dry=False, version=None):
+    
+    mhost = SHORT_GRAPH_MAP.get(host);
+    if not host.startswith("http://") and not mhost:
+        usage("Host must start with http:// or be a known short name (e.g. trunk, branch, otg, sandbox)")
+
+    if mhost:
+        host = mhost
+
+    ap = AcrePush(host);
+    ap.push(directory, version, id, dry, user, pw)
+
+
 if __name__ == '__main__':
     import getopt
 
@@ -303,12 +316,5 @@ if __name__ == '__main__':
         elif a[0] == '-d':
             dry = True
 
-    mhost = SHORT_GRAPH_MAP.get(host);
-    if not host.startswith("http://") and not mhost:
-        usage("Host must start with http:// or be a known short name (e.g. trunk, branch, otg, sandbox)")
-
-    if mhost:
-        host = mhost
         
-    ap = AcrePush(host);
-    ap.push(directory, version, id, dry, user, pw)
+    push(id, host, directory, user, pw, dry, version)

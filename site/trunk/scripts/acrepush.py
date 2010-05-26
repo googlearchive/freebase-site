@@ -1,10 +1,5 @@
 #!/usr/bin/env python
-import sys
-import os
-import hashlib
-import urllib2
-import re
-import hashlib
+import sys, os, hashlib, urllib2, tempfile, re, pwd
 import pdb
 
 try:
@@ -123,8 +118,9 @@ class AcrePush(object):
 
         u = urllib2.urlopen(acrehost+'/acre/status').read()
         me_server = u.split('\n')[2].split(':')[1].strip()
-        self.fb = HTTPMetawebSession(me_server, cookiefile='', 
-                                     acre_service_url=acrehost)
+        cookiefile = '/tmp/freebase-python-cookie-jar-%s' %  pwd.getpwuid( os.getuid() )[ 0 ]
+        pdb.set_trace()
+        self.fb = HTTPMetawebSession(me_server, cookiefile=cookiefile, keepcookie=True, acre_service_url=acrehost)
 
     def get_credentials(self, user=None, pw=None):
 
@@ -216,8 +212,6 @@ class AcrePush(object):
         try:
             graph_app = self.fb.get_app(ondisk_app.metadata['id'])
         except MetawebError:
-            if patch:
-                usage("Cannot patch a non-existant app")
             self.fb.create_app(ondisk_app.metadata['id'])
 
         delete_files, push_files = {}, ondisk_app.metadata['files']

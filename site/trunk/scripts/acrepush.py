@@ -10,6 +10,9 @@ except ImportError:
 from freebase.api import HTTPMetawebSession, MetawebError
 from freebase.api.mqlkey import quotekey, unquotekey
 
+class AcrepushError(Exception):
+    pass
+
 null, true, false = None, True, False
 
 DEFAULT_ACRE_SERVICE_URL = "http://acre.branch.qa.metaweb.com"
@@ -228,6 +231,8 @@ class AcrePush(object):
 
         if version or len(delete_files.keys()) or len(push_files.keys()) or create_app:
             (user, pw) = self.get_credentials(user, pw)
+            if not (user and pw):
+                raise AcrepushError('You must specify a valid and username and password')
             self.fb.login(user, pw)
 
         if create_app:
@@ -276,7 +281,7 @@ def usage(msg=None):
     sys.exit(1)
 
 def push(id, host, directory,user=None, pw=None, dry=False, version=None):
-    
+
     mhost = SHORT_GRAPH_MAP.get(host);
     if not host.startswith("http://") and not mhost:
         usage("Host must start with http:// or be a known short name (e.g. trunk, branch, otg, sandbox)")

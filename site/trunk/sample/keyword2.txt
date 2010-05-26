@@ -1,1 +1,1 @@
-http://freebaselibs.com/static/freebase_site/{appname}/$Revision
+http://freebaselibs.com/static/freebase_site/{appname}/$Revision$

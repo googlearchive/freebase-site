@@ -1,1 +1,1 @@
-http://freebaselibs.com/static/freebase_site/sample/$Rev$
+http://www.freebaselibs.com/static/freebase_site/sample/$Rev$

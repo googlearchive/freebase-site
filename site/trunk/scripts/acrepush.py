@@ -233,10 +233,6 @@ class AcrePush(object):
         if create_app:
             self.fb.create_app(ondisk_app.metadata['id'])
             
-        if version:
-            self.fb.create_app_version(ondisk_app.metadata['id'], version)
-            print >> sys.stderr, 'Updated version %s' % version
-
         if not (len(delete_files.keys()) or len(push_files.keys())):
             print "No files affected."
             return
@@ -262,6 +258,10 @@ class AcrePush(object):
                                        val['acre_handler'], val['content_type'])
 
 
+
+        if version:
+            self.fb.create_app_version(ondisk_app.metadata['id'], version)
+            print >> sys.stderr, 'Updated version %s' % version
 
 
         print "\nPush succesfull, %s files affected" % len(files_changed)

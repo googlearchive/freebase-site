@@ -32,7 +32,7 @@ mf = json.loads(body).get('result')
 
 # get each stylesheet page, cssmin and copy to outdir
 for page in mf.get('stylesheet'):
-    url = "%s/MANIFEST/s/%s" % (options.src, page)
+    url = "%s/MANIFEST/%s" % (options.src, page)
     css = ''.join(urllib2.urlopen(url).readlines())    
     min = cssmin(css)
     filename = os.path.join(options.dest, page)
@@ -41,7 +41,7 @@ for page in mf.get('stylesheet'):
     
 # get each javascript page, compile (closure compiler) and copy to outdir
 for page in mf.get('javascript'):
-    url = "%s/MANIFEST/s/%s" % (options.src, page)
+    url = "%s/MANIFEST/%s" % (options.src, page)
     
     status, path = mkstemp(text=True)    
     with open(path, 'w') as temp:

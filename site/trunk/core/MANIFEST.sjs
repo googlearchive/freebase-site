@@ -53,16 +53,16 @@ function base_manifest(MF, scope, undefined) {
 
     /**
      * The base url prefix for retrieving css and js. All apps who extend the base_manifest
-     * will have a "/MANIFEST/s" entry-point to serve css and js as specified in their MF.stylesheet
+     * will have a "/MANIFEST/..." entry-point to serve css and js as specified in their MF.stylesheet
      * and MF.javascript.
      *
      * The idea is that once an app is branched/deployed, this static_base_url will be changed
      * to a permanent static server (i.e., http://freebaselibs.com/statc/freebase_site/foo/[version]/...).
-     * But when developing, we want the resources to be served dynamically through "/MANIFEST/s/...".
+     * But when developing, we want the resources to be served dynamically through "/MANIFEST/...".
      *
      * This will be overwritten by what's in static_base_url.txt.
      */
-    static_base_url: scope.acre.current_script.app.base_url +  "/MANIFEST/s",
+    static_base_url: scope.acre.current_script.app.base_url +  "/MANIFEST",
 
     /**
      * This is like static_base_url but for images (*.png, *.gif, etc.).
@@ -274,21 +274,6 @@ function base_manifest(MF, scope, undefined) {
       return h.resource_url(resource.id, resource.version);
     },
 
-    /**
-     * The "/MANIFEST/s" handler. Currently only recognizes *.js and *.css.
-     */
-    s: function(key) {
-      if (/\.js$/.exec(key)) {
-        MF.js(key);
-      }
-      else if (/\.css$/.exec(key)) {
-        MF.css(key);
-      }
-      else {
-        MF.not_found();
-      }
-    },
-
     not_found: function() {
       scope.acre.response.status = 404;
       scope.acre.exit();
@@ -297,7 +282,7 @@ function base_manifest(MF, scope, undefined) {
     /**
      * Main block. DO NOT MODIFY!
      *
-     * Responsible for routing request to "/MANIFEST/s" or serve MF (json/p).
+     * Responsible for routing request to "/MANIFEST/..." or serve MF (json/p).
      *
      * usage:
      *   var MF = {...};
@@ -308,13 +293,14 @@ function base_manifest(MF, scope, undefined) {
      */
     main: function() {
       if (scope.acre.request.path_info && scope.acre.request.path_info.length) {
-        var path = scope.acre.request.path_info.substring(1).split("/", 2);
-        if (path.length === 2) {
-          if (typeof MF[path[0]] === "function") {
-            return MF[path[0]](path[1]);
-          }
+        var path = scope.acre.request.path_info.substring(1);
+        if (/\.js$/.exec(path)) {
+          return MF.js(path);
         }
-        if (scope.acre.request.path_info !== "/") {
+        else if (/\.css$/.exec(path)) {
+          return MF.css(path);
+        }
+        else if (scope.acre.request.path_info !== "/") {
           return MF.not_found();
         }
       }

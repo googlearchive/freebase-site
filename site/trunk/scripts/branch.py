@@ -292,6 +292,7 @@ for appname, appid, app_ver, deployed_ver in apps:
 # TODO restart staticserver (outboun01/02)
 print "Do you wish to restart the static servers: %s" % OUTBOUND
 if raw_input().lower() != "y":
+    print "Please DO NOT forget to restart the static servers: %s" % OUTBOUND
     sys.exit() 
 
 for outbound in OUTBOUND:

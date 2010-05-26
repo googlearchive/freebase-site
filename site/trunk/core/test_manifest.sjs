@@ -119,9 +119,6 @@ test("img_src", function() {
   var ext_mf = acre.require("/freebase/site/core/MANIFEST", null).MF;
 
   var tests = [
-//    ["/hello/world/app/freebase-logo.png", h.resource_url("/hello/world/app/freebase-logo.png", mf.version["/hello/world/app"])],
-//    ["icon-chiclet.png", h.resource_url("/freebase/site/core/icon-chiclet.png")],
-//    ["/foo/bar/app/baz.gif", h.resource_url("/foo/bar/app/baz.gif", mf.version["/foo/bar/app"])],
     ["local.png", mf.image_base_url + "/local.png"],
     ["/freebase/site/core/freebase-logo-production.png", ext_mf.image_base_url + "/freebase-logo-production.png"],
     ["/hello/world/app/foo.png", h.resource_url("/hello/world/app/foo.png", "5")]
@@ -140,7 +137,7 @@ test("extend_manifest", function() {
     }
   };
   m.extend_manifest(mf, scope);
-  equals(mf.static_base_url, acre.current_script.app.base_url +  "/MANIFEST/s");
+  equals(mf.static_base_url, acre.current_script.app.base_url +  "/MANIFEST");
 
   ok(mf.version);
   equals(mf.version["/hello/world/app"], "7");

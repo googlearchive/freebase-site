@@ -208,11 +208,11 @@ class AcrePush(object):
     def push(self, directory, version, id=None, dry=False, user=None, pw=None):
         ondisk_app = OnDiskAcreApp(directory, id)
         graph_app = None
-
+        create_app = False
         try:
             graph_app = self.fb.get_app(ondisk_app.metadata['id'])
         except MetawebError:
-            self.fb.create_app(ondisk_app.metadata['id'])
+            create_app = True
 
         delete_files, push_files = {}, ondisk_app.metadata['files']
 
@@ -226,9 +226,12 @@ class AcrePush(object):
 
         ###### dry run until this point ##########
 
-        if version or len(delete_files.keys()) or len(push_files.keys()):
+        if version or len(delete_files.keys()) or len(push_files.keys()) or create_app:
             (user, pw) = self.get_credentials(user, pw)
             self.fb.login(user, pw)
+
+        if create_app:
+            self.fb.create_app(ondisk_app.metadata['id'])
             
         if version:
             self.fb.create_app_version(ondisk_app.metadata['id'], version)

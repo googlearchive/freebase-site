@@ -92,7 +92,7 @@
             <div class="collection-info">
               <h1>
                 <a href="http://www.freebase.com/view${r['id']}" class="collection-title" title="${r['name']}"><span>${r['name']}</span></a>
-                <a href="javascript:void(0);" title="${r['id']}" class="collection-show-topics">i</a>
+                <a href="javascript:void(0);" title="${r['id']}" class="collection-show-topics" data-fb-query="false">i</a>
                 <span class="collection-title-fade"></span>
               </h1>
               <div class="collection-topics">

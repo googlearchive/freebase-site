@@ -18,13 +18,16 @@ $(document).ready(function(){
     $(".collection-show-topics").click(function(){
     
         // Basic UI state management for collection topics
+        var $link = $(this);
         var collection_id = $(this).attr("title");
         var $collection = $(this).closest(".collection");
         var $topics = $collection.find(".collection-topics");
+        var query_state = $(this).attr("data-fb-query");
         
+        // If topics panel is hidden, we need to query for topics and show
         if ($topics.is(":hidden")) {
             $(this).addClass("expanded");
-            show_topic_panel($collection, $topics, collection_id);
+            show_topic_panel($link, $collection, $topics, collection_id, query_state);
         }
         else {
             $(this).removeClass("expanded");
@@ -43,15 +46,19 @@ $(document).ready(function(){
     });
     
     // Function for showing topics panel
-    function show_topic_panel(collection, topics, collection_id) {
-        $(collection).find(".collection-info").animate({top: '50px'}, 300);
-        $(topics).slideDown(300).fadeIn(200).addClass("loading");
-        $.ajax({
-            url: "http://domain.site.freebase.dev.acre.z:8115/collection-topics?id=" + collection_id,
-            success: function(data) {
-                $(topics).removeClass("loading").html(data);
-            }
-        });
+    function show_topic_panel($link, $collection, $topics, collection_id, query_state) {
+        $collection.find(".collection-info").animate({top: '50px'}, 300);
+        $topics.slideDown(300).fadeIn(200);
+        if(query_state == "false") {
+            $topics.addClass("loading");
+            $.ajax({
+                url: "http://domain.site.freebase.dev.acre.z:8115/collection-topics?id=" + collection_id,
+                success: function(data) {
+                    $topics.removeClass("loading").html(data);
+                    $link.attr("data-fb-query", "true");
+                }
+            });        
+        }
     }
     
     // Function for hiding topics panel

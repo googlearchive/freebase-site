@@ -85,18 +85,18 @@
         <div class="collection" acre:for="r in results[0]['/freebase/domain_profile/featured_views']">
           <div class="collection-inner">
             <div class="collection-img">
-              <a href="#">
-                <img src="http://www.freebase.com/type/chiclet${r['id']}?spacing=1&limit=6&mode=fillcropmid&size=150" height="150" />
+              <a href="http://www.freebase.com/view${r['id']}">
+                <img src="http://www.freebase.com/type/chiclet${r['id']}?spacing=1&limit=6&mode=fillcropmid&size=150" height="150" alt="Photos of topics from $r.name" />
               </a>
             </div>
             <div class="collection-info">
               <h1>
                 <a href="http://www.freebase.com/view${r['id']}" class="collection-title" title="${r['name']}"><span>${r['name']}</span></a>
-                <a href="javascript:void(0);" title="${r['id']}" class="collection-show-topics" data-fb-query="false">i</a>
+                <a href="javascript:void(0);" title="${r['id']}" class="collection-show-topics" data-fb-query="false">info</a>
                 <span class="collection-title-fade"></span>
               </h1>
               <div class="collection-topics">
-                <a href="http://www.freebase.com/view${r['id']}">View all &raquo;</a>
+              <p class="collection-view-all"><a href="http://www.freebase.com/view${r['id']}">View all &raquo;</a></p>
               </div>
             </div>
           </div>

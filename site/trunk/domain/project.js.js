@@ -1,4 +1,6 @@
 $(document).ready(function(){
+
+    var fb = {}
     
     // Only load chiclets when needed
     $("img").lazyload({
@@ -27,11 +29,11 @@ $(document).ready(function(){
         // If topics panel is hidden, we need to query for topics and show
         if ($topics.is(":hidden")) {
             $(this).addClass("expanded");
-            show_topic_panel($link, $collection, $topics, collection_id, query_state);
+            fb.show_topic_panel($link, $collection, $topics, collection_id, query_state);
         }
         else {
             $(this).removeClass("expanded");
-            hide_topic_panel($collection);
+            fb.hide_topic_panel($collection);
         }
     });
     
@@ -42,11 +44,11 @@ $(document).ready(function(){
     }, function() {
         $(this).removeClass('collection-active');
         $(this).find(".collection-show-topics").removeClass("expanded");
-        hide_topic_panel($(this));
+        fb.hide_topic_panel($(this));
     });
     
     // Function for showing topics panel
-    function show_topic_panel($link, $collection, $topics, collection_id, query_state) {
+    fb.show_topic_panel = function ($link, $collection, $topics, collection_id, query_state) {
         $collection.find(".collection-info").animate({top: '50px'}, 300);
         $topics.slideDown(300).fadeIn(200);
         if(query_state == "false") {
@@ -54,7 +56,8 @@ $(document).ready(function(){
             $.ajax({
                 url: "http://domain.site.freebase.dev.acre.z:8115/collection-topics?id=" + collection_id,
                 success: function(data) {
-                    $topics.removeClass("loading").html(data);
+                    $topics.removeClass("loading").prepend(data);
+                    $more = $topics.find(".collection-view-all").show();
                     $link.attr("data-fb-query", "true");
                 }
             });        
@@ -62,7 +65,7 @@ $(document).ready(function(){
     }
     
     // Function for hiding topics panel
-    function hide_topic_panel(collection) {
+    fb.hide_topic_panel = function(collection) {
         var $menu = $(collection).find(".collection-info");
         var $topics = $(collection).find(".collection-topics");
         if($topics.is(":visible")) {

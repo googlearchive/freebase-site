@@ -96,7 +96,7 @@ function route(req) {
     var handler = handlers[extension_map[ext]];
     
     if (typeof handler === 'function') {
-        handler.apply(this);
+        handler.apply(this, res);
     }
     acre.exit();
 }

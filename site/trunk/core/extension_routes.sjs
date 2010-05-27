@@ -1,5 +1,6 @@
 var extension_map = {
      mql  : 'mqlquery',
+     sjs  : null,
      mjt  : 'mjt',
      js   : 'passthrough',
      html : 'passthrough',
@@ -92,10 +93,10 @@ function route(req) {
         acre.exit();
     }
     
-    var handler = extension_map[ext] || "passthrough";
+    var handler = handlers[extension_map[ext]];
     
-    if (handler) {
-        handlers[handler].apply(this);
+    if (typeof handler === 'function') {
+        handler.apply(this);
     }
     acre.exit();
 }

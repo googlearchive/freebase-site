@@ -11,7 +11,7 @@ $(document).ready(function(){
     // We animate the chiclet on hover after 1 second, and return to 0 on mouseout
     $(".collection-img > a").hover(function(){
         $(this).find('img').animate({left: '0'},{duration:1000}).animate({left:'-604px'},{duration:4500, easing: 'linear'});},function() {
-        $(this).find('img').stop(true, true);
+        $(this).find('img').stop(true, false);
         $(this).find('img').animate({left:'0px'},{duration:500, easing: 'swing'});
     });
 

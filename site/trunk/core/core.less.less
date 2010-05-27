@@ -76,10 +76,12 @@ blockquote, q {
 
 strong { font-weight: bold; }
 
+article, aside, dialog,figure, footer, header, hgroup, menu, nav, section { display: block; }
+
 /*
---------------------------------------
+--------------------------------------------------
 GLOBAL TYPE SIZES
---------------------------------------
+--------------------------------------------------
  */
 
 /*
@@ -96,12 +98,40 @@ h1, h2, h3, h4, h5, h6 {font-weight:normal;}
 
 /* TODO: Added global type sizes once we have better sense of
    common type sizes in templates */
+   
+/*
+--------------------------------------------------
+LINKS
+--------------------------------------------------
+*/
+a:link, a:visited { text-decoration: none; color: #1170a3; }
+a:focus, a:active { outline: none; }
+a:hover           { text-decoration: underline; }
+
 
 
 /*
---------------------------------------
+--------------------------------------------------
+GLOBAL CLASSES
+--------------------------------------------------
+ */
+
+/*  Generic class for self-clearing block level elements with floated children */
+.clear:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.clear { min-height: 1%; zoom: 1; }
+
+
+
+/*
+--------------------------------------------------
 PAGE STRUCTURE
---------------------------------------
+--------------------------------------------------
 */
 
 body {
@@ -134,7 +164,7 @@ Header
 ------------------------
 */
 
-#header {
+#page-header {
     position: relative;
     z-index: 10; /* for Freebase Suggest */
     min-height: 50px;
@@ -142,7 +172,7 @@ Header
     border-bottom: 1px solid #fb3;
 }
 
-#header img {
+#page-header img {
     position: absolute;
     top: 12px;
     left: 30px;
@@ -287,7 +317,7 @@ Global Search Box
     padding: 0.5em 0;
 }
 
-#header .loading span {
+#page-header .loading span {
     padding-right: 20px;
     background: url(http://www.freebase.com/resources/images/ui/loader-sm-snake-orange.gif) no-repeat center right;
 }
@@ -302,7 +332,7 @@ Freebase Suggest Header
 
 .fbs-pane, .fbs-flyout-pane { z-index: 3000; }
 
-#header .fbs-item { border: 0; }
+#page-header .fbs-item { border: 0; }
 
 
 #site-search-box li.fbs-selected .fbs-item-name,
@@ -311,21 +341,21 @@ Freebase Suggest Header
     border-right: 0;
 }
 
-#header .fbs-pane { 
+#page-header .fbs-pane { 
     width: 276px;
     padding: 0;
     border: 0;
     margin: 4px 0 0 2px;
 }
 
-#header .fbs-header { display: none;}
-#header ul.fbs-list { margin: 0; border: 0;}
-#header ul.fbs-list,
+#page-header .fbs-header { display: none;}
+#page-header ul.fbs-list { margin: 0; border: 0;}
+#page-header ul.fbs-list,
 .fbs-flyout-content {
     background-color: #f4f8fb;
 }
 
-#header a.fbs-more-link {
+#page-header a.fbs-more-link {
     font-size: 11px;
     margin-left: 3px;
 }
@@ -337,7 +367,7 @@ Site-wide footer. Present at the bottom
 of all templates.
 */
 
-#footer {
+#page-footer {
     clear: both;
     margin-top: 30px;
     background: #fff;

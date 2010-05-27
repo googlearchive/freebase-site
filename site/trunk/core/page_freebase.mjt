@@ -1,9 +1,9 @@
 
 <acre:block def="page(g)">
-  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <!DOCTYPE html>
+  <html lang="en" dir="ltr">
     <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+      <meta charset="utf-8" />
       <title acre:if="g.exports.title">Freebase - ${g.exports.title(g)}</title>
       <title acre:else="">Freebase</title>
 
@@ -39,18 +39,15 @@
 
 <acre:block def="body(g)">
   <body acre:attrs="g.options.body_class ? {'class': g.options.body_class} : {}">
-    ${g.page.header(g)} 
-
+    ${g.page.header(g)}
     ${g.page.content(g)}
-
     ${g.page.footer(g)}
-
     ${g.page.footer_script(g)}
   </body>
 </acre:block>
 
 <acre:block def="header(g)">
-  <div id="header" class="clear">
+  <header id="page-header" class="clear" role="banner">
     <div id="logo">
       <a href="$g.client_base" title="Return to Freebase homepage">
         <img alt="Freebase" 
@@ -90,22 +87,23 @@
         <a href="${acre.markup.bless(g.h.account_url('signin', acre.request.url))}" title="Sign in to your Freebase account" rel="nofollow">Sign in or Sign up</a>
       </div>
     </div>
-  </div>  
+  </header>  
 </acre:block>
 
 
 <acre:block def="content(g)">
-  <div id="content" class="fixed clear">
-    <div id="section-header">
+  <acre:block if="g.exports.content_header">${g.exports.content_header(g)}</acre:block>
+  <div id="content" class="clear">
+    <hgroup class="section-header">
       <acre:block if="g.exports.section_header">${g.exports.section_header(g)}</acre:block>
       <acre:block elif="g.exports.title"><h1 id="page-title">${g.exports.title(g)}</h1></acre:block>
-    </div>
+    </hgroup>
     <acre:block if="g.exports.content_body">${g.exports.content_body(g)}</acre:block>
   </div>
 </acre:block>
 
 <acre:block def="footer(g)">
-  <div id="footer" class="clear">
+  <footer id="page-footer" class="clear">
     <div id="metaweb-attribution">
       <a href="http://www.metaweb.com/" id="copyright" title="Learn more about Metaweb, Inc." rel="nofollow">
         &#169;2010&nbsp;
@@ -133,7 +131,7 @@
            title="Visit our blog to keep up with the latest news from Freebase">Freebase Blog</a>
       </li>
     </ul>
-    <div id="footer-categories" class="clear">
+    <nav id="footer-categories" class="clear">
       <strong id="categories-header">Freebase contains information on:</strong>
       <ul id="footer-categories-list" class="clear">  
         <li class="category-list-item"><a href="${g.client_base}/view/category/arts-entertainment" title="Explore Arts &amp; Entertainment">Arts &amp; Entertainment</a></li>
@@ -144,8 +142,8 @@
         <li class="category-list-item"><a href="${g.client_base}/view/category/sports" title="Explore Sports">Sports</a></li>
         <li class="category-list-item"><a href="${g.client_base}/view/category/time-space" title="Explore Time &amp; Space">Time &amp; Space</a></li>
       </ul>
-    </div>
-  </div>
+    </nav>
+  </footer>
 </acre:block>
 
 

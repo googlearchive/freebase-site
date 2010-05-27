@@ -16,19 +16,18 @@
   ${g.t.stylesheet(mf.css_src("project-manifest.css"))}
 </acre:block>
 
-<acre:block def="content_body(g)">
-
+<acre:block def="content_header(g)">
   <acre:script>
     
     if(results[0]['/freebase/domain_profile/theme']){
 
         // We have a theme, so we need to fine out what values are specified by the user
         
-        project_theme = true
+        var project_theme = true
 
-        header_background = "";
-        header_image = "";
-        header_text = "";
+        var header_background = "";
+        var header_image = "";
+        var header_text = "";
 
 
         // define background-color    
@@ -41,12 +40,12 @@
             header_image = "height:100px; background-image: url(http://img.freebase.com/api/trans/image_thumb" + results[0]['/freebase/domain_profile/theme']['header_image']['id'] + "?mode=fit&maxheight=100);background-repeat:no-repeat;";
         }
         
-        // define header image
+        // define header text color
         if (results[0]['/freebase/domain_profile/theme']['header_text_color']) {
             header_text = "color:" + results[0]['/freebase/domain_profile/theme']['header_text_color'] + ";";
         }
     
-        background = header_background + header_image + header_text;
+        var background = header_background + header_image + header_text;
         
         if(header_image) {
             hide_header_text = true;
@@ -55,33 +54,31 @@
             hide_header_text = false;
         }    
     }
-    
     else{
-        project_theme = false;
+        var project_theme = false;
     }
 
   </acre:script>
 
   <acre:block if="id.startsWith('/base/')">
-    <div acre:if="project_theme" style="${background}" class="project-header-custom">
+    <header acre:if="project_theme" style="${background}" class="project-header-custom">
       <h1 class="project-header-title" acre:if="hide_header_text" style="display:none;">${results[0]['name']}</h1>
       <h1 class="project-header-title" acre:else="">${results[0]['name']}</h1>
-    </div>
-    <div acre:else="" class="project-header">
+    </header>
+    <header acre:else="" class="project-header">
       <h1 class="project-header-title">${results[0]['name']}</h1>    
-    </div>
+    </header>
   </acre:block>
   <acre:block else="">
-    <div class="project-header commons-header">
+    <header class="project-header commons-header">
       <h1 class="project-header-title">${results[0]['name']}</h1>
-    </div>    
-  </acre:block>
+    </header>    
+  </acre:block>  
+</acre:block>
 
 
-
-
-
-  <div id="content-main">
+<acre:block def="content_body(g)">
+  <section id="content-main">
     <div class="main-section-nohead">
       <h2 id="collection-summary">Explore the <strong>${results[0]['!views_count:/freebase/query_hints/related_domain']}</strong> collections curated by our community</h2>
       <div id="collections">
@@ -93,7 +90,11 @@
               </a>
             </div>
             <div class="collection-info">
-              <h1><a href="http://www.freebase.com/view${r['id']}" class="collection-title" title="${r['name']}"><span>${r['name']}</span></a> <a href="javascript:void(0);" title="${r['id']}" class="collection-show-topics">i</a></h1>
+              <h1>
+                <a href="http://www.freebase.com/view${r['id']}" class="collection-title" title="${r['name']}"><span>${r['name']}</span></a>
+                <a href="javascript:void(0);" title="${r['id']}" class="collection-show-topics">i</a>
+                <span class="collection-title-fade"></span>
+              </h1>
               <div class="collection-topics">
                 <a href="http://www.freebase.com/view${r['id']}">View all &raquo;</a>
               </div>
@@ -102,7 +103,7 @@
         </div>
       </div>    
     </div>
-  </div>
+  </section>
 </acre:block>
 
 <acre:block def="footer_script(g)">

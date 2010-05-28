@@ -1,7 +1,7 @@
 var extension_map = {
-  mql  : 'mqlquery',
-  sjs  : null,
+  sjs  : "script",
   mjt  : 'mjt',
+  mql  : 'mqlquery',
   js   : 'passthrough',
   html : 'passthrough',
   gif  : 'binary',
@@ -11,18 +11,33 @@ var extension_map = {
 
 
 var handlers = {
-
-  passthrough : function (res) {
-    var ttl = 3600; // 1 hour
-    if (res.headers) {
-      for (var k in res.headers) {
-        var v = res.headers[k];
-        acre.response.set_header(k.toLowerCase(),v);
-      }
+    
+  script : function(res) {
+    if (typeof res.main === 'function') {
+      acre.request.script = res.acre.current_script;
+      main();
     }
-    acre.response.set_header_default('Cache-Control','public, max-age=' + ttl);
-    acre.response.status = res.status;
-    acre.write(res.body);
+  },
+  
+  mjt : function(res) {
+    var defs = res;
+
+    // pkg is the TemplatePackage instance
+    var pkg = defs._main.prototype.tpackage;
+
+    // pkgtop is the rendered toplevel template
+    var pkgtop = pkg.tcall;
+
+    if (typeof pkgtop.doc_content_type != 'undefined') {
+      acre.response.set_header('content-type', pkgtop.doc_content_type);
+      acre.response.status = 200;
+    } else {
+      // template output defaults to html.
+      acre.response.set_header('content-type', 'text/html');
+      acre.response.status = 200;
+    }
+
+    acre.write(pkgtop);
   },
 
   mqlquery : function(res){
@@ -52,27 +67,20 @@ var handlers = {
     if (callback !== null)
       acre.write(')');
   },
-
-  mjt : function(res) {
-    var defs = res;
-
-    // pkg is the TemplatePackage instance
-    var pkg = defs._main.prototype.tpackage;
-
-    // pkgtop is the rendered toplevel template
-    var pkgtop = pkg.tcall;
-
-    if (typeof pkgtop.doc_content_type != 'undefined') {
-      acre.response.set_header('content-type', pkgtop.doc_content_type);
-      acre.response.status = 200;
-    } else {
-      // template output defaults to html.
-      acre.response.set_header('content-type', 'text/html');
-      acre.response.status = 200;
+  
+  passthrough : function (res) {
+    var ttl = 3600; // 1 hour
+    if (res.headers) {
+      for (var k in res.headers) {
+        var v = res.headers[k];
+        acre.response.set_header(k.toLowerCase(),v);
+      }
     }
-
-    acre.write(pkgtop);
+    acre.response.set_header_default('Cache-Control','public, max-age=' + ttl);
+    acre.response.status = res.status;
+    acre.write(res.body);
   }
+  
 };
 
 handlers.binary = handlers.passthrough;

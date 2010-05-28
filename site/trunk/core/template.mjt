@@ -35,9 +35,7 @@
     g.exports = exports;
     g.options = options;
     g.page = acre.require(options.page); 
-
-   console.log("g.exports", g.exports.head);
-  </acre:script>
+ </acre:script>
   ${g.page['page'](g)}
 </acre:block>
 

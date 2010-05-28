@@ -27,6 +27,8 @@ function init(MF, scope) {
   if (scope.acre.current_script === scope.acre.request.script) {
     MF.main();
   }
+  // routes hack to call sjs main()
+  scope.main = MF.main;
 };
 
 /**
@@ -292,6 +294,7 @@ function base_manifest(MF, scope, undefined) {
      *   };
      */
     main: function() {
+      console.log("MANIFEST.main");
       if (scope.acre.request.path_info && scope.acre.request.path_info.length) {
         var path = scope.acre.request.path_info.substring(1);
         if (/\.js$/.exec(path)) {

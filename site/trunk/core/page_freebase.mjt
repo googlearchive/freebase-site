@@ -1,5 +1,9 @@
 
 <acre:block def="page(g)">
+  <acre:script>
+    acre.response.set_header('content-type', 'text/html');
+    acre.response.status = 200;
+  </acre:script>
   <!DOCTYPE html>
   <html lang="en" dir="ltr">
     <head>
@@ -7,8 +11,12 @@
       <title acre:if="g.exports.title">Freebase - ${g.exports.title(g)}</title>
       <title acre:else="">Freebase</title>
 
-     <!-- jquery -->
-      ${g.jq.jquery(g.mf.jquery.version)}
+      <acre:script>
+        console.log("acre.freebase.jquery_loaded", acre.freebase.jquery_loaded);
+      </acre:script>
+
+      <!-- jquery -->
+      ${g.t.script("http://ajax.googleapis.com/ajax/libs/jquery/" + g.mf.jquery.version + "/jquery.min.js")}
 
       <!-- freebase suggest -->
       ${g.t.suggest()}

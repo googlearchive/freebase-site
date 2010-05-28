@@ -27,10 +27,6 @@ var map = [
   {
     path: "/bar",
     app: "/freebase/site/domain"
-  },
-  {
-    path: "/hello",
-    app: "/freebase/site/hello"
   }
 ];
 

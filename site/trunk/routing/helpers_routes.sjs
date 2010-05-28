@@ -91,15 +91,15 @@ handlers.binary = handlers.passthrough;
 /**
  * Not like ordinary path split.
  *
- * /foo.bar/baz => [foo, bar, /baz]
+ * /foo.bar/baz/fu => [foo, bar, /baz/fu]
  */
 function split_path(path) {
   var path_segs = path.split("/");
-  path_segs.shift();
+  var slash = path_segs.shift();
   var filename = path_segs.shift() || "index";
   var file_segs = filename.split('.');
   var ext = file_segs.length > 1 ? file_segs.pop() : "sjs";
-  return [filename, ext, "/" + path_segs.join("/")];
+  return [filename, ext, slash + path_segs.join("/")];
 };
 
 var ERROR_NOT_FOUND = "Route require not found";

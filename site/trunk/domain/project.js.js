@@ -54,7 +54,7 @@ $(document).ready(function(){
         if(query_state == "false") {
             $topics.addClass("loading");
             $.ajax({
-                url: "http://domain.site.freebase.dev.acre.z:8115/collection-topics?id=" + collection_id,
+                url: "/collection-topics?id=" + collection_id,
                 success: function(data) {
                     $topics.removeClass("loading").prepend(data);
                     $more = $topics.find(".collection-view-all").show();

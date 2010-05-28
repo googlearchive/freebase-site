@@ -99,7 +99,6 @@ function route(req) {
     if (typeof handler === 'function') {
         handler.apply(this, args);
     }
-    acre.exit();
 }
 
 if (acre.current_script === acre.request.script) {

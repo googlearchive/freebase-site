@@ -53,7 +53,7 @@ function route(req) {
 
     var paths = [
       "/routes",    // 1st option
-      "/" + path,   // 2nd option
+      path,   // 2nd option
       "/not_found"  // 3rd option
     ];
 

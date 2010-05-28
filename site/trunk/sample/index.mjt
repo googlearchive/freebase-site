@@ -16,7 +16,7 @@
   foo bar
   <img src="${mf.img_src('/freebase/site/core/metaweb-logo.png')}"/>
   <hr/>
-<pre><![CDATA[${JSON.stringify(acre.request, null, indent=2)}
+<pre><![CDATA[${JSON.stringify(acre, null, indent=2)}
 ]]></pre>
 </acre:block>
 

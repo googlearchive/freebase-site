@@ -14,7 +14,6 @@ var handlers = {
     
   script : function(res) {
     if (typeof res.main === 'function') {
-      acre.request.script = res.acre.current_script;
       main();
     }
   },
@@ -98,6 +97,7 @@ function route(req) {
 
   try {
     var res = acre.require(filename);
+    acre.request.script = res.acre.current_script;
   } catch(e) {
     acre.response.status = 404;
     acre.exit();

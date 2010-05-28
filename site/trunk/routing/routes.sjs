@@ -52,9 +52,9 @@ function route(req) {
     path = path.replace(rule.path, "");
 
     var paths = [
-      "/routes",    // 1st option
-      path,   // 2nd option
-      "/not_found"  // 3rd option
+      //"/routes",    // 1st option
+      path//,   // 2nd option
+      //"/not_found"  // 3rd option
     ];
 
     for (var j=0,len2=paths.length; j<len2; j++) {

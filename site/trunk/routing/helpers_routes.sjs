@@ -95,11 +95,11 @@ handlers.binary = handlers.passthrough;
  */
 function split_path(path) {
   var path_segs = path.split("/");
-  var slash = path_segs.shift();
+  path_segs.shift();
   var filename = path_segs.shift() || "index";
   var file_segs = filename.split('.');
   var ext = file_segs.length > 1 ? file_segs.pop() : "sjs";
-  return [filename, ext, slash + path_segs.join("/")];
+  return [filename, ext, "/" + path_segs.join("/")];
 };
 
 var ERROR_NOT_FOUND = "Route require not found";

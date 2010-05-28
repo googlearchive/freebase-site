@@ -51,8 +51,12 @@ freebaseapps = FREEBASEAPPS.get(options.pod, FREEBASEAPPS['branch'])
 
 print '[INFO] branching to {pod}'.format(pod=pod)
 
+def log_cmd(cmd, name=None):
+    name = cmd[0] if not name
+    print '[{name}] {cmd}'.format(type=name, cmd=(' '.join(cmd)))
 
-def run_cmd(cmd, exit=True):
+def run_cmd(cmd, name=None, exit=True):
+    log_cmd(cmd, name=name)
     stdout, stderr = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
     if stderr:
         print stderr
@@ -121,19 +125,12 @@ def svn_revision(path):
     svn_output = run_cmd(cmd)
     return int(re.search(r'r([\d]+)', svn_output).group(1))
 
-
 def svn_commit(path, msg, exit=False):
     '''
     Helper method for svn commit
     '''
     cmd = ['svn', 'commit', path, '-m', '"%s"' % msg]
-    log('svn', cmd)
     return run_cmd(cmd, exit=exit)
-
-
-def log(type, cmd):
-    print '[{type}] {cmd}'.format(type=type, cmd=(' '.join(cmd)))
-
 
 def svn_deployed_url(app, svn_revision):
     return 'https://svn.metaweb.com/svn/freebase_site/deployed/{app}/$Rev: {svn_revision} $'.format(app=app, svn_revision=svn_revision)
@@ -191,7 +188,6 @@ for app, appid, version in apps:
     branch = svn_dev_url(app, version)
     print branch
     cmd = ['svn', 'ls', branch]
-    log('svn', cmd)
     version = run_cmd(cmd, exit=False)
     
     if version:
@@ -201,7 +197,6 @@ for app, appid, version in apps:
     trunk = svn_trunk_url(app)
     msg = 'Create branch version {version} of app {app}'.format(version=version, app=app)
     cmd = ['svn', 'copy', trunk, branch, '--parents', '-m', '"%s"' % msg]
-    log('svn', cmd)
     run_cmd(cmd)
 
 
@@ -218,7 +213,6 @@ for app, appid, version in apps:
     # keep track of all svn checkouts to temporary directories
     svn_temp_dirs[branch] = tempdir
     cmd = ['svn', 'checkout', branch, tempdir]
-    log('svn', cmd)
     run_cmd(cmd)
     
     # update app.cfg with static_base_url, image_base_url
@@ -234,12 +228,10 @@ for app, appid, version in apps:
             f.write(json.dumps(cfg, indent=2))
         # add static_base_url.txt.txt to branch. This will error if one already exists
         cmd = ['svn', 'add', filename]
-        log('svn', cmd)
         run_cmd(cmd, exit=False)
         
         # svn propset svn:keywords "Rev" static_base_url.txt.txt
         cmd = ['svn', 'propset', 'svn:keywords', 'Rev', filename]
-        log('svn', cmd)
         run_cmd(cmd)
         
         msg = 'Add app config with static_base_url'
@@ -273,7 +265,6 @@ for app, appid, version in apps:
     
     deployed = svn_deployed_url(app, branch_rev)
     cmd = ['svn', 'ls', deployed]
-    log('svn', cmd)
     version = run_cmd(cmd, exit=False)
     
     if version:
@@ -283,13 +274,11 @@ for app, appid, version in apps:
     # 1. create deployed directory for static files in svn
     msg = 'Create static file deployed directory version {version} for app {app}'.format(version=branch_rev, app=app)
     cmd = ['svn', 'mkdir', deployed, '--parents', '-m', '"%s"' % msg]
-    log('svn', cmd)
     run_cmd(cmd)
     
     # 2. checkout deployed directory into temp directory
     tempdir = mkdtemp()
     cmd = ['svn', 'checkout', deployed, tempdir]
-    log('svn', cmd)
     run_cmd(cmd)
     # keep track of all svn checkouts to temporary directories
     svn_temp_dirs[deployed] = tempdir
@@ -299,8 +288,7 @@ for app, appid, version in apps:
     url = 'http://{app}.site.freebase.dev.acre.z:8115'.format(app=app)
     cmd = [os.path.join(dir.scripts, 'deploy.py'),
            '-s', url, '-d', tempdir]
-    log('deploy', cmd)
-    run_cmd(cmd)
+    run_cmd(cmd, name='urlfetch')
     
     # 3b: svn list version and copy images (*.png, *.gif, etc.) to tempdir
     branch_dir = svn_temp_dirs[branch]
@@ -317,15 +305,12 @@ for app, appid, version in apps:
     os.chdir(tempdir)
     files = [f for f in os.listdir(tempdir) if os.path.splitext(f)[1].lower() in EXTENSIONS]
     cmd = ['svn', 'add'] + files
-    log('svn', cmd)
     run_cmd(cmd)
     os.chdir(cwd)
     
     # 5. svn commit
     msg = 'Add static files to deployed directory version {version} of app {app}'.format(version=branch_rev, app=app)
-    cmd = ['svn', 'commit', tempdir, "-m", '"%s"' % msg]
-    log('svn', cmd)
-    run_cmd(cmd)
+    svn_commit(tempdir, msg)
     
     restart_static_servers = True
 
@@ -338,7 +323,6 @@ for app, appid, version in apps:
     # keep track of all svn checkouts to temporary directories
     svn_temp_dirs[trunk] = tempdir
     cmd = ['svn', 'checkout', trunk, tempdir]
-    log('svn', cmd)
     run_cmd(cmd)
     
     # acrepush

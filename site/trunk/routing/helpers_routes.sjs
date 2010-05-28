@@ -4,6 +4,8 @@ var extension_map = {
   mql  : 'mql',
   js   : 'passthrough',
   html : 'passthrough',
+  css  : 'passthrough',
+  less : 'passthrough',
   gif  : 'binary',
   jpg  : 'binary',
   png  : 'binary'
@@ -103,6 +105,7 @@ function split_path(path) {
 var ERROR_NOT_FOUND = "Route require not found";
 
 function do_route(req, path, app_id, version) {
+  console.log("do_route", path, app_id, version);
   var path_segs = split_path(path);
   var filename = path_segs[0];
   var ext = path_segs[1];
@@ -117,13 +120,16 @@ function do_route(req, path, app_id, version) {
   req.path_info = path_info;
 
   try {
-    console.log("do_route", id, ext);
+    console.log("do_route", "require", id, version);
     var res = acre.require(id, version);
+
     // MONKEY PATCH
-    //req.script = res.acre.current_script;
+    if (res.acre) {
+      req.script = res.acre.current_script;
+    }
   }
   catch (e) {
-    console.log("do_route", "acre.require", "error", e);
+    console.log("do_route", "require", "error", e);
     if (e && typeof e === "object" && e.message === "Could not fetch data from " + id) {
       throw(ERROR_NOT_FOUND);
     }
@@ -132,11 +138,16 @@ function do_route(req, path, app_id, version) {
     }
   }
 
-  if (res._main) {
-    // bit of a hack to determine the thing we just acre.required is a mjt template.
+  if (typeof res._main === "function") {
+    // is this a mjt template?
     ext = "mjt";
   }
+  else if (typeof res.query === "object") {
+    // is this a mql query?
+    ext = "mql";
+  }
 
+  console.log("do_route", "handler", ext);
   var handler = handlers[extension_map[ext]];
   var args = [res];
   if (typeof handler === 'function') {
@@ -148,39 +159,3 @@ function route(req) {
   var path = req.url.replace(req.app_url + req.base_path, "");
   do_route(req, path);
 }
-
-/**
-function route(req) {
-  var path = req.url.replace(req.app_url + req.base_path, "");
-
-  path = splitpath(path, "sjs");
-  req.path_info = path.path_info;
-
-  try {
-    var res = acre.require(path.file);
-    acre.request.script = res.acre.current_script;
-  } catch(e) {
-    console.log("routes 404", acre);
-    acre.response.status = 404;
-    acre.exit();
-  }
-
-  if (res._main) {
-    // bif of a hack to determine the thing we just acre.required is a mjt template.
-    path.extension = "mjt";
-  }
-
-  var handler = handlers[extension_map[path.extension]];
-  var args = [res];
-
-  if (typeof handler === 'function') {
-    handler.apply(this, args);
-  }
-
-  acre.exit();
-}
-
-if (acre.current_script === acre.request.script) {
-  route(acre.request);
-}
-**/

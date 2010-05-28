@@ -9,6 +9,10 @@ var h = acre.require("helpers_routes");
  */
 var map = [
   {
+    path: "/core",
+    app: "/freebase/site/core"
+  },
+  {
     path: "/bar/foo",
     app: "/freebase/site/sample"
   },
@@ -73,8 +77,9 @@ function route(req) {
 };
 
 if (acre.current_script === acre.request.script) {
+  console.log("routing", "trying to route", acre.request);
   route(acre.request);
-  console.log("extension routes", acre.request);
+  console.log("routing", "fallback to acre routing", acre.request);
   h.route(acre.request);
 }
 

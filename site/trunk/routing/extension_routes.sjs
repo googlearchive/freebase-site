@@ -11,7 +11,7 @@ var extension_map = {
 
 
 var handlers = {
-    
+
     passthrough : function (res) {
         var ttl = 3600; // 1 hour
         if (res.headers) {
@@ -24,7 +24,7 @@ var handlers = {
         acre.response.status = res.status;
         acre.write(res.body);
     },
-    
+
     mqlquery : function(res){
         // support JSONP.  note that this means the callback= query argument
         //  is unavailable for modifying the query, which is fine in practice.
@@ -52,7 +52,7 @@ var handlers = {
         if (callback !== null)
           acre.write(')');
     },
-    
+
     mjt : function(res) {
         var defs = res;
 
@@ -85,21 +85,23 @@ function route(req) {
     req.path_info = "/" + path_segs.join("/");
     var file_segs = filename.split('.');
     var ext = file_segs.length > 1 ? file_segs.pop() : "mjt";
-    
+
     try {
         var res = acre.require(filename);
     } catch(e) {
         acre.response.status = 404;
         acre.exit();
     }
-    
+
     var handler = handlers[extension_map[ext]];
     var args = [res];
-    
+
     if (typeof handler === 'function') {
         handler.apply(this, args);
     }
     acre.exit();
 }
 
-route(acre.request);
+if (acre.current_script === acre.request.script) {
+  route(acre.request);
+}

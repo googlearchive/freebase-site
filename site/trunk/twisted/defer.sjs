@@ -61,6 +61,11 @@ Deferred.prototype._add_call = function(call_state) {
     }
     
     this.callstack.push(call_state);
+    
+    if (this.state === "error" || this.state === "ready") {
+        this.runCallstack();
+    }
+    
     return this;
 };
 
@@ -71,11 +76,7 @@ Deferred.prototype.addCallback = function(func) {
         args: Array.prototype.slice.call(arguments, 1)
     };
     
-    if (this.state == 'ready') {
-        return this._run_call(call_state);
-    } else {
-        return this._add_call(call_state);
-    }
+    return this._add_call(call_state);
 };
 
 Deferred.prototype.addErrback = function(func){
@@ -85,11 +86,7 @@ Deferred.prototype.addErrback = function(func){
         args: Array.prototype.slice.call(arguments, 1)
     };
     
-    if (this.state == 'error') {
-        return this._run_call(call_state);
-    } else {
-        return this._add_call(call_state);
-    }
+    return this._add_call(call_state);
 };
 
 Deferred.prototype.addBoth = function(func, opts){

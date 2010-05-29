@@ -55,48 +55,71 @@ Deferred.prototype.errback = function(e, msg, info){
     return this.enqueue();
 };
 
-Deferred.prototype._add_call = function(kind, thunkspec){
-    if (!this.callstack)
+Deferred.prototype._add_call = function(call_state) {
+    if (!this.callstack) {
         this.callstack = [];
-        
-    this.callstack.push({
-        kind : kind,
-        thunkspec : thunkspec
-    });
+    }
     
+    this.callstack.push(call_state);
     return this;
 };
 
-Deferred.prototype.addCallback = function(THUNK_ARGS){
+Deferred.prototype.addCallback = function(func) {
+    var call_state = {
+        kind: "callback",
+        func: func,
+        args: Array.prototype.slice.call(arguments, 1)
+    };
+    
     if (this.state == 'ready') {
-        return this._run_call({kind:"callback", thunkspec: acre.task.vthunk(arguments)});
+        return this._run_call(call_state);
     } else {
-        return this._add_call("callback", acre.task.vthunk(arguments));
+        return this._add_call(call_state);
     }
 };
 
-Deferred.prototype.addErrback = function(THUNK_ARGS){
+Deferred.prototype.addErrback = function(func){
+    var call_state = {
+        kind: "errback",
+        func: func,
+        args: Array.prototype.slice.call(arguments, 1)
+    };
+    
     if (this.state == 'error') {
-        return this._run_call({kind:"errback", thunkspec: acre.task.vthunk(arguments)});
+        return this._run_call(call_state);
     } else {
-        return this._add_call("errback",  acre.task.vthunk(arguments));
+        return this._add_call(call_state);
     }
 };
 
 Deferred.prototype.addBoth = function(func, opts){
-    return this._add_call("both", func, opts);
+    var call_state = {
+        kind: "both",
+        func: func,
+        args: Array.prototype.slice.call(arguments).slice(1)
+    };
+    
+    return this._add_call(call_state);
 };
 
 Deferred.prototype._run_call = function(cb) {
     try {
         var result;
+        var args = cb.args.slice(0);
+        
         if (cb.kind !== "errback") {
-            result = acre.task.vcall(cb.thunkspec, this.result);
+            if (this.result) {
+                args.unshift(this.result);
+            }
+            result = cb.func.apply(this, args);
         } else {
-            result = acre.task.vcall(cb.thunkspec, this.messages);
+            if (this.messages) {
+                args.unshift(this.messages);
+            }
+            result = cb.func.apply(this, args);
             this.not_in_error = true;
         }
-
+        
         if (result instanceof Deferred) {
             var thiss = this;
             result.addCallback(function(data){

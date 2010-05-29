@@ -36,11 +36,12 @@ test("errback", function() {
   function not_handled(e) {
     throw e;
   }
+  
   var d = defer.Deferred().addCallback(err).addErrback(sub);
   // The errback shouldn't have run yet
   equals(value, 0);
-  // We are now calling the callback so the number
-  // so we should error and then number should go down by one
+  // We are now calling the callback
+  // so we should error and the number should go down by one
   d.callback()
   equals(value, -1);
   // Since we recovered gracefully we should be back
@@ -59,6 +60,42 @@ test("errback", function() {
   equals(d.not_in_error, false);
   d.addErrback(sub);
   equals(d.not_in_error, true);
+  equals(value, -1);
+});
+
+test("errback_late_trigger", function() {
+  // Lets try that again this time triggering the callback last
+  var value = 0;
+  function err() {
+    n/a;
+  }
+  function add() {
+    value += 1;
+    return value;
+  }
+  function sub() {
+    value -= 1;
+    return value;
+  }
+  function not_handled(e) {
+    throw e;
+  }
+  
+  var d = defer.Deferred()
+  d.addCallback(err) // 0
+  d.addErrback(sub); // -1
+  d.addCallback(add); // 0
+  d.callback()
+  equals(value, 0);
+  
+  // If we don't handle the error with the first callback then
+  //   we should still be calling errbacks
+  var d = defer.Deferred()
+  d.addCallback(err); // 0
+  d.addErrback(not_handled); // 0 - Should keep us in errbacks
+  d.addCallback(add); // 0 - Should be skipped
+  d.addErrback(sub); // -1
+  d.callback()
   equals(value, -1);
 });
 

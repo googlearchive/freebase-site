@@ -122,8 +122,12 @@ test("callback_arguments", function() {
   d.addCallback(function(result) {
     equals(result, "time flies");
     var args = Array.prototype.slice.call(arguments);
-    equals(args.join(" "), "time flies like an arrow")
+    return args.join(" ");
   }, "like", "an", "arrow");
+  
+  d.addCallback(function(result) {
+    equals(result, "time flies like an arrow");
+  })
 });
 
 

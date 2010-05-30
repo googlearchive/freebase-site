@@ -32,7 +32,7 @@ var map = [
 
 
 function route(req) {
-  var path = req.url.replace(req.app_url + req.base_path, "");
+  var path = req.url.replace(req.app_url + req.base_path, "").split("?")[0];
 
   console.log("routing", path);
 

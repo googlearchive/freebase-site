@@ -106,11 +106,8 @@ var ERROR_NOT_FOUND = "Route require not found";
 
 function do_route(req, path, app_id, version) {
   console.log("do_route", path, app_id, version);
-  var path_segs = split_path(path);
-  var filename = path_segs[0];
-  var ext = path_segs[1];
-  var path_info = path_segs[2];
-
+  var [filename, ext, path_info] = split_path(path);
+  
   var id = filename;
   if (app_id) {
     id = app_id + "/" + filename;

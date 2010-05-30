@@ -32,7 +32,7 @@ var map = [
 
 
 function route(req) {
-  var path = req.url.replace(req.app_url + req.base_path, "").split("?")[0];
+  var [path, query_string] = req.url.replace(req.app_url + req.base_path, "").split("?");
 
   console.log("routing", path);
 
@@ -50,6 +50,16 @@ function route(req) {
     }
 
     path = path.replace(rule.path, "");
+
+    // make sure we have a path within the app we're routing too, 
+    // otherwise relative links will break
+    if (!path) {
+      var url = req.app_url + rule.path + "/";
+      if (query_string) url += "?" + query_string;
+      acre.response.status = 302;
+      acre.response.headers.location = url;
+      acre.exit();
+    }
 
     var paths = [
       //"/routes",    // 1st option

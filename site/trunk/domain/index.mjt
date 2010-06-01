@@ -10,6 +10,14 @@
   query = acre.freebase.extend_query(query, {'id':id});
   var results = acre.freebase.mqlread(query).result;
 
+
+  var activity_url = acre.freebase.service_url + '/api/trans/activity?id=' + id;
+  var contributors = {}
+  try {
+      contributors = JSON.parse(acre.urlfetch(activity_url).body)[id]['result'];
+      console.log(contributors);
+  } catch (e) {}
+
 </acre:script>
 
 <acre:block def="head(g)">

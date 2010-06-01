@@ -9,7 +9,7 @@ function include(script_id) {
   }
 };
 
-
+include("helpers_util");
 include("helpers_url");
 include("helpers_format");
 

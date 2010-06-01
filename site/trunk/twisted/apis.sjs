@@ -1,10 +1,10 @@
-var Urlfetch;
+var urlfetch;
 var freebase = {};
 
-function() {
+(function() {
   var defer = acre.require("defer");
   
-  Urlfetch = defer.makeDeferred(
+  urlfetch = defer.makeDeferred(
     acre.async.urlfetch,
     {position:1, key:"callback"},
     {position:1, key:"errback"}
@@ -33,4 +33,4 @@ function() {
           {position:api["options_pos"], key:"errback"}
       );
   });
-}
+})();

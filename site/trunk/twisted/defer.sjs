@@ -20,12 +20,12 @@ function DeferredError(e, message, info) {
 */
 var Deferred = acre.task.define(null, []);
 
-Deferred.prototype.request = function(){
+Deferred.prototype.request = function() {
     // Any Tasks based on Deferred need this to be the last line in request()
     this.runCallstack();
 };
 
-Deferred.prototype._add_error = function(e, msg, info){
+Deferred.prototype._add_error = function(e, msg, info) {
     if (!this.messages)
         this.messages = null;
         
@@ -43,13 +43,13 @@ Deferred.prototype.error = function (e, msg, info) {
     throw this.messages[0].message;
 };
 
-Deferred.prototype.callback = function(data){
+Deferred.prototype.callback = function(data) {
     this.result = data;
     this.messages = null;
     return this.enqueue();
 };
 
-Deferred.prototype.errback = function(e, msg, info){
+Deferred.prototype.errback = function(e, msg, info) {
     this.result = null;
     this._add_error(e, msg, info);
     return this.enqueue();
@@ -79,7 +79,7 @@ Deferred.prototype.addCallback = function(func) {
     return this._add_call(call_state);
 };
 
-Deferred.prototype.addErrback = function(func){
+Deferred.prototype.addErrback = function(func) {
     var call_state = {
         kind: "errback",
         func: func,
@@ -89,7 +89,7 @@ Deferred.prototype.addErrback = function(func){
     return this._add_call(call_state);
 };
 
-Deferred.prototype.addBoth = function(func, opts){
+Deferred.prototype.addBoth = function(func, opts) {
     var call_state = {
         kind: "both",
         func: func,
@@ -119,11 +119,11 @@ Deferred.prototype._run_call = function(cb) {
         
         if (result instanceof Deferred) {
             var thiss = this;
-            result.addCallback(function(data){
+            result.addCallback(function(data) {
                 thiss.result = data;
                 thiss.runCallstack();
             });
-            result.addErrback(function(e, msg, info){
+            result.addErrback(function(e, msg, info) {
                 thiss._add_error(e, msg, info);
                 thiss.runCallstack();
             });
@@ -138,7 +138,7 @@ Deferred.prototype._run_call = function(cb) {
     return this;
 }
 
-Deferred.prototype.runCallstack = function(){
+Deferred.prototype.runCallstack = function() {
     if  (typeof this.not_in_error === 'undefined') {
         this.not_in_error = true;
     }
@@ -247,17 +247,17 @@ DeferredGroup.prototype.request = function (prereq) {
 */
 var DeferredList = acre.task.define(DeferredGroup, [{name: "dlist"}, {name: "opts", 'default':{}}]);
 
-DeferredList.prototype.init = function(){
+DeferredList.prototype.init = function() {
     var dl = this;
-    this.dlist.forEach(function(d){
+    this.dlist.forEach(function(d) {
         dl.require(d, false);
     });
 };
 
-DeferredList.prototype.summarize = function(){
+DeferredList.prototype.summarize = function() {
     var result = [];
 
-    this.dlist.forEach(function(d){
+    this.dlist.forEach(function(d) {
         result.push({
             success : (d.state === "ready" ? true : false),
             result : d.result || null,
@@ -275,14 +275,14 @@ DeferredList.prototype.summarize = function(){
 */
 var DeferredDict = acre.task.define(DeferredGroup, [{name: "ddict"}]);
 
-DeferredDict.prototype.init = function(){
+DeferredDict.prototype.init = function() {
     for (var key in this.ddict) {
         var d = this.ddict[key];
         this.require(d, false);
     }
 };
 
-DeferredDict.prototype.summarize = function(){
+DeferredDict.prototype.summarize = function() {
     var result = {};
 
     for (var key in this.ddict) {
@@ -357,7 +357,7 @@ function makeDeferred(func, callback_pos, errback_pos) {
         return args;
     }
         
-    return function(){
+    return function() {
         var d = Deferred();
 
         args = Array.prototype.slice.call(arguments);        

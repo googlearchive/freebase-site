@@ -1,9 +1,11 @@
-var extension = acre.require("extension_routing");
+function do_route(req, path, mf, routes) {
+  var query_string;
 
-function route(req, mf, routes) {
-  var [path, query_string] = req.url.replace(req.app_url + req.base_path, "").split("?");
+  if (path.indexOf("?") !== -1) {
+    var [path, query_string] = path.split("?", 2);
+  }
 
-  console.log("routing", path);
+  console.log("app_router", "routing", path);
 
   for (var i=0,len=routes.length; i<len; i++) {
     var rule = routes[i];
@@ -15,7 +17,7 @@ function route(req, mf, routes) {
     console.log(path, rule.path, rule.app);
 
     if (!(rule.app in mf.version)) {
-      throw (rule.app + " must be defined in the routes MANIFEST");
+      throw (rule.app + " must be defined in the manifest");
     }
 
     path = path.replace(rule.path, "");
@@ -36,6 +38,7 @@ function route(req, mf, routes) {
       //"/not_found"  // 3rd option
     ];
 
+    var extension = acre.require("extension_router");
     for (var j=0,len2=paths.length; j<len2; j++) {
       try {
         extension.do_route(req, paths[j], rule.app, mf.version[rule.app]);
@@ -51,3 +54,7 @@ function route(req, mf, routes) {
   }
 };
 
+function route(req, mf, routes) {
+  var path = req.url.replace(req.app_url + req.base_path, "");
+  do_route(req, path, mf, routes);
+}

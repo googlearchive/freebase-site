@@ -1,1 +1,6 @@
-Welcome to homepage index
+<html>
+  <body>
+    Welcome to homepage index
+   <pre>${JSON.stringify(acre.request.params, null, 2)}</pre>
+  </body>
+</html>

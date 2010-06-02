@@ -63,7 +63,7 @@ if __name__ == '__main__':
     usage = "usage: %prog [options] app_key"
 
     from optparse import OptionParser
-    parser = OptionParser()
+    parser = OptionParser(usage=usage)
     parser.add_option("-p", "--password", action="store", dest="password", default=None, help="The user's password")
     parser.add_option("-u", "--username", action="store", dest="username", default=None, help="The user's username")
     parser.add_option("-g", "--graph", action="store", dest="pod", default="branch", help="The pod you want to use for an api server - otg, sandbox, trunk or branch")

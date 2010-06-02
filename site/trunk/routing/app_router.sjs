@@ -10,7 +10,15 @@ function do_route(req, path, mf, routes) {
   for (var i=0,len=routes.length; i<len; i++) {
     var rule = routes[i];
 
-    if (!path.startsWith(rule.path)) {
+    if (rule.root) {
+      if (rule.path !== path) {
+        continue;
+      }
+    }
+    else if (path.startsWith(rule.path)) {
+      path = path.replace(rule.path, "");
+    }
+    else {
       continue;
     }
 
@@ -19,8 +27,6 @@ function do_route(req, path, mf, routes) {
     if (!(rule.app in mf.version)) {
       throw (rule.app + " must be defined in the manifest");
     }
-
-    path = path.replace(rule.path, "");
 
     // make sure we have a path within the app we're routing too,
     // otherwise relative links will break

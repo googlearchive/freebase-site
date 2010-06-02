@@ -6,6 +6,16 @@
  */
 var routes = [
   {
+    path: "/",
+    app: "/freebase/site/homepage",
+    root: true
+  },
+  {
+    path: "/index",
+    app: "/freebase/site/homepage",
+    root: true
+  },
+  {
     path: "/core",
     app: "/freebase/site/core"
   },

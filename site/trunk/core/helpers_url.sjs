@@ -5,6 +5,8 @@ var __all__ = [
   "resource_url"
 ];
 
+var mf = acre.require("MANIFEST").MF;
+
 /**
  * Given an appid (/user/daepark/myapp) and version, generate the url to the app:
  *
@@ -77,6 +79,5 @@ function account_url(kind, return_url) {
  * url to freebase static resource (http://res.freebase.com/s/xxxx/resource/css/foo.css)
  */
 function freebase_static_resource_url(path) {
-  var mf = acre.require("MANIFEST").MF;
   return mf.freebase.resource.base_url + path;
 };

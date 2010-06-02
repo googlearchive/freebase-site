@@ -1,4 +1,28 @@
-acre.require("/freebase/apps/libraries/api_enhancer", "release");
+
+var MF = {
+  "version": {
+    "/freebase/libs/jquery": "release",
+    "/freebase/apps/libraries": "release"
+  },
+  "suggest" : {
+    "version": "1.2.1",
+    "base_url": "http://freebaselibs.com/static/suggest/"
+  },
+  "jquery" : {
+    "version" : "1.4"
+  },
+  "freebase": {
+      "resource": {
+        "hash": "69ebf557e8734e6575f5077fe4e03506c99a28c5bb34e101459906ac6f44992f",
+        "base_url": "http://res.freebase.com/s/"
+      }
+  }
+};
+MF.suggest.base_url += MF.suggest.version;
+MF.freebase.resource.base_url += MF.freebase.resource.hash;
+
+
+acre.require("/freebase/apps/libraries/api_enhancer", MF.version["/freebase/apps/libraries"]);
 var h = acre.require("helpers_url");
 var extend = acre.require("helpers_util").extend;
 
@@ -324,28 +348,6 @@ function base_manifest(MF, scope, undefined) {
 };
 
 
-var MF = {
-  "version": {
-    "/freebase/libs/jquery": "release"
-  },
-  "suggest" : {
-    "version": "1.2.1",
-    "base_url": "http://freebaselibs.com/static/suggest/"
-  },
-  "jquery" : {
-    "version" : "1.4"
-  },
-  "freebase": {
-      "resource": {
-        "hash": "69ebf557e8734e6575f5077fe4e03506c99a28c5bb34e101459906ac6f44992f",
-        "base_url": "http://res.freebase.com/s/"
-      }
-  }
-};
-MF.suggest.base_url += MF.suggest.version;
-MF.freebase.resource.base_url += MF.freebase.resource.hash;
+
+
 init(MF, this);
-
-
-
-

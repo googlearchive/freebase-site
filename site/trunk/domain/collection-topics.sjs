@@ -1,7 +1,7 @@
 var id = acre.request.params.id;
 
 var template = acre.require('collection-topics-template');
-var url = "http://trunk.qa.metaweb.com/private/query" + id;
+var url = acre.freebase.service_url + "/private/query" + id;
 var result = JSON.parse(acre.urlfetch(url).body);
 
 var topics = [];

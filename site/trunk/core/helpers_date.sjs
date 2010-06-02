@@ -39,6 +39,9 @@ function parse_date(date_str, format /* optional */) {
  * @param format (String, optional) - A format string of supproted datejs format spcifiers.
  * @return (String) A string representation of the current Date object.
  *
+ * Example Format:    
+ * dddd, dd MMMM yyyy -> Tuesday, 22 August 2006
+ *
  * @see http://code.google.com/p/datejs/ for format specifiers
  **/
 function format_date(date, format /* optional */) {

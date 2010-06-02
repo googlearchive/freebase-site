@@ -4,7 +4,8 @@ $(document).ready(function(){
     
     // Only load chiclets when needed
     $("img").lazyload({
-        effect : "fadeIn"
+        effect : "fadeIn",
+        threshold : 200
     });
   
     // Setup jQuery masonry to handle reflowing of chiclets

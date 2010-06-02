@@ -1,7 +1,8 @@
-
 <acre:script>
 
   var mf = acre.require("MANIFEST").MF;
+  var h = mf.require("/freebase/site/core/helpers", mf.version["/freebase/site/core"]);
+
   acre.require("/freebase/apps/libraries/api_enhancer", "release");
   var page_options = {};
 
@@ -9,8 +10,7 @@
   var query = acre.require('base').query;
   query = acre.freebase.extend_query(query, {'id':id});
   var results = acre.freebase.mqlread(query).result;
-
-
+  
   var activity_url = acre.freebase.service_url + '/api/trans/activity?id=' + id;
   var contributors = {}
   try {
@@ -52,7 +52,7 @@
         if (results[0]['/freebase/domain_profile/theme']['header_text_color']) {
             header_text = "color:" + results[0]['/freebase/domain_profile/theme']['header_text_color'] + ";";
         }
-    
+
         var background = header_background + header_image + header_text;
         
         if(header_image) {
@@ -87,29 +87,49 @@
 
 <acre:block def="content_body(g)">
   <section id="content-main">
-    <div class="main-section-nohead">
-      <h2 id="collection-summary">Explore the <strong>${results[0]['!views_count:/freebase/query_hints/related_domain']}</strong> collections curated by our community</h2>
-      <div id="collections">
-        <div class="collection" acre:for="r in results[0]['/freebase/domain_profile/featured_views']">
-          <div class="collection-inner">
-            <div class="collection-img">
-              <a href="http://www.freebase.com/view${r['id']}">
-                <img src="http://www.freebase.com/type/chiclet${r['id']}?spacing=1&limit=6&mode=fillcropmid&size=150" height="150" alt="Photos of topics from $r.name" />
-              </a>
-            </div>
-            <div class="collection-info">
-              <h1>
-                <a href="http://www.freebase.com/view${r['id']}" class="collection-title" title="${r['name']}"><span>${r['name']}</span></a>
-                <a href="javascript:void(0);" title="${r['id']}" class="collection-show-topics" data-fb-query="false">info</a>
-                <span class="collection-title-fade"></span>
-              </h1>
-              <div class="collection-topics">
-              <p class="collection-view-all"><a href="http://www.freebase.com/view${r['id']}">View all &raquo;</a></p>
-              </div>
+    <div class="project-metadata">
+      <div class="wrapper">
+        <footer class="summary">
+          <span class="freebase-stamp">A Freebase Community Project</span>
+          <h2>
+            <span class="vcard">
+              <img class="photo" src="http://img.freebase.com/api/trans/image_thumb/${results[0]['creator']['id']}?pad=1&errorid=%2Ffreebase%2Fuser_profile%2Fempty_user_image&maxheight=30&mode=fillcrop&maxwidth=30" />
+              Started by <a href="#" class="url nickname" title="View user profile">${results[0]["creator"]["name"]}</a> on
+            </span>
+            <time class="published" datetime="${results[0]['timestamp']}"> ${h.format_date(acre.freebase.date_from_iso(results[0]["timestamp"]), 'MMMM dd, yyyy')}</time>
+            <a href="#project-summary" class="more">details</a>
+          </h2>
+        </footer>
+        <header class="summary nav clear">
+          <ul class="view-mode">
+            <li><a href="#gallery" title="View collections as a gallery">Gallery</a></li>
+            <li><a href="#list" title="View collections as a list">List</a></li>
+          </ul>
+          <h3>Explore <em>${results[0]['!views_count:/freebase/query_hints/related_domain']} collections</em> featuring <em>XXXX topics</em></h3>
+        </header>      
+      </div>
+    </div>
+    <p style="display:none;">${acre.freebase.get_blob(results[0]['/common/topic/article']['id']).body}</p>
+    <div id="collections">
+      <div class="collection" acre:for="r in results[0]['/freebase/domain_profile/featured_views']">
+        <div class="collection-inner">
+          <div class="collection-img">
+            <a href="http://www.freebase.com/view${r['id']}">
+              <img src="http://www.freebase.com/type/chiclet${r['id']}?spacing=1&limit=6&mode=fillcropmid&size=150" height="150" alt="Photos of topics from $r.name" />
+            </a>
+          </div>
+          <div class="collection-info">
+            <h1>
+              <a href="http://www.freebase.com/view${r['id']}" class="collection-title" title="${r['name']}"><span>${r['name']}</span></a>
+              <a href="javascript:void(0);" title="${r['id']}" class="collection-show-topics" data-fb-query="false">info</a>
+              <span class="collection-title-fade"></span>
+            </h1>
+            <div class="collection-topics">
+            <p class="collection-view-all"><a href="http://www.freebase.com/view${r['id']}">View all &raquo;</a></p>
             </div>
           </div>
         </div>
-      </div>    
+      </div>
     </div>
   </section>
 </acre:block>

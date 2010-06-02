@@ -99,6 +99,44 @@ test("errback_late_trigger", function() {
   equals(value, -1);
 });
 
+test("quick_trigger", function() {
+  var value = 0;
+  function add() {
+    value += 1;
+    return value;
+  }
+  var d = defer.Deferred().callback();
+  // We are triggering without a callback
+  //  so the number should remain at 0
+  equals(value, 0);
+  
+  // Now add a callback which should get immediately
+  // triggered and increase the number to 1
+  d.addCallback(add);
+  equals(value, 1);
+  
+  var value = 0;
+  function err() {
+    n/a;
+  }
+  function add() {
+    value += 1;
+    return value;
+  }
+  function sub() {
+    value -= 1;
+    return value;
+  }
+  
+  var d = defer.Deferred().addCallback(err).callback();
+  // The errback shouldn't have run yet
+  equals(value, 0);
+  // We are now adding the errback
+  // so the number should go down by one
+  d.addErrback(sub)
+  equals(value, -1);
+});
+
 test("chaining", function() {
   var d = defer.Deferred().callback("horse");
   d.addCallback(function(result) {

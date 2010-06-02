@@ -1,15 +1,17 @@
 /**
 *  Convert all errors in deferreds into a standard object
 */
-function wrap_deferred_error(e, message, info) {
+function wrap_deferred_error(e) {
+    if (!e) e = {};
+    
     if (e instanceof Error) {
         e.code = e.code || "/internal/javascript";
-        e.message = message || e.message || null;
-        e.info = info || e.info || e;
+        e.message = e.message || e.toString();
+        e.info = e.info || null;
     } else {
-        e.code = e || "/internal";
-        e.message = message ||  null;
-        e.info = info || null;
+        e.code = e.toString() || "/internal";
+        e.message = e.toString();
+        e.info = null;
     }
     return e;
 }
@@ -25,12 +27,12 @@ Deferred.prototype.request = function() {
     this.runCallstack();
 };
 
-Deferred.prototype._add_error = function(e, msg, info) {
+Deferred.prototype._add_error = function(e) {
     if (!this.messages)
         this.messages = null;
         
     if (typeof e !== 'undefined') {
-        var error = wrap_deferred_error(e, msg, info);
+        var error = wrap_deferred_error(e);
         console.error(error.message, error);
         this.messages = error;
     }
@@ -38,20 +40,15 @@ Deferred.prototype._add_error = function(e, msg, info) {
     this.not_in_error = false;
 }
 
-Deferred.prototype.error = function (e, msg, info) {
-    this._error([this.messages]);
-    throw this.messages[0].message;
-};
-
 Deferred.prototype.callback = function(data) {
     this.result = data;
     this.messages = null;
     return this.enqueue();
 };
 
-Deferred.prototype.errback = function(e, msg, info) {
+Deferred.prototype.errback = function(e) {
     this.result = null;
-    this._add_error(e, msg, info);
+    this._add_error(e);
     return this.enqueue();
 };
 
@@ -105,11 +102,13 @@ Deferred.prototype._run_call = function(cb) {
         var args = cb.args.slice(0);
         
         if (cb.kind !== "errback") {
+            // Place the result as the first argument
             if (this.result) {
                 args.unshift(this.result);
             }
             result = cb.func.apply(this, args);
         } else {
+            // Place the error as the first argument
             if (this.messages) {
                 args.unshift(this.messages);
             }
@@ -118,16 +117,18 @@ Deferred.prototype._run_call = function(cb) {
         }
         
         if (result instanceof Deferred) {
-            var thiss = this;
+            // If returned a deferred then add it to the chain
+            var self = this;
             result.addCallback(function(data) {
-                thiss.result = data;
-                thiss.runCallstack();
+                self.result = data;
+                self.runCallstack();
             });
-            result.addErrback(function(e, msg, info) {
-                thiss._add_error(e, msg, info);
-                thiss.runCallstack();
+            result.addErrback(function(e) {
+                self._add_error(e);
+                self.runCallstack();
             });
         } else {
+            // Otherwise continue down the chain
             this.result = result;
             return this.runCallstack();
         }
@@ -145,16 +146,14 @@ Deferred.prototype.runCallstack = function() {
     
     if (!this.callstack || !this.callstack.length) {
         if (this.state === "wait") {
+            // Set the deferred to be ready to
+            //  to take callbacks and errbacks
             this.ready(this.result);
-            //if (this.not_in_error) {
-            //    this.ready(this.result);
-            //} else {
-            //    this.error();
-            //}
         }
         return this;
     }
     
+    // Grab the next call state off of the call stack and run it
     var cb = this.callstack.shift();
     
     // callback is the wrong type, so skip

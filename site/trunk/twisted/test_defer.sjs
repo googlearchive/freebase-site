@@ -145,6 +145,10 @@ test("chaining", function() {
   });
   d.addCallback(function(result) {
     equals(result, "chicken");
+    return 0;
+  });
+  d.addCallback(function(result) {
+    equals(result, 0);
   });
 });
 
@@ -166,6 +170,41 @@ test("callback_arguments", function() {
   d.addCallback(function(result) {
     equals(result, "time flies like an arrow");
   })
+});
+
+test("deferred_list", function() {
+  var called = {};
+  
+  var deferreds = [];
+  for(var i=0; i<5; i++) {
+    var d = defer.Deferred().callback(i);
+    called[i] = false;
+    d.addCallback(function(result) {
+      called[result] = true;
+      return result;
+    });
+    deferreds.push(d);
+  }
+  var d = defer.DeferredList(deferreds);
+  
+  var dlist_called = false;
+  d.addCallback(function(results) {
+    dlist_called = true;
+    for(var i=0; i<5; i++) {
+      var result = results[i];
+      ok(called[result], "Result "+result+" should be called");
+      equals(result, i, "Result "+result+" should be called in order");
+    }
+    return results;
+  });
+  
+  d.addErrback(function(error) {
+    ok(false, "The errback of a deferred list should never be called");
+  });
+  
+  // Since all of the dependant callbacks were already triggered
+  //  the dlist callback should be called immediately
+  ok(dlist_called, "The callback for the deferred list should be called");
 });
 
 

@@ -103,15 +103,11 @@ Deferred.prototype._run_call = function(cb) {
         
         if (cb.kind !== "errback") {
             // Place the result as the first argument
-            if (this.result) {
-                args.unshift(this.result);
-            }
+            args.unshift(this.result);
             result = cb.func.apply(this, args);
         } else {
             // Place the error as the first argument
-            if (this.messages) {
-                args.unshift(this.messages);
-            }
+            args.unshift(this.messages);
             result = cb.func.apply(this, args);
             this.not_in_error = true;
         }
@@ -172,102 +168,75 @@ Deferred.prototype.runCallstack = function() {
 *  Internal Only -- Underlying Task used for grouping deferreds
 *     NOTE: Most of this is lifted directly from mjt.Task
 */
-var DeferredGroup = acre.task.define(Deferred, [{name: "ddict"}, {name: "opts", 'default':{}}]);
+var DeferredGroup = acre.task.define(Deferred, [
+  {name: "ddict"}, 
+  {name: "opts", 'default':{}}
+]);
 
-DeferredGroup.prototype.require = function (prereq) {
-    // avoid dependency bookkeeping if prereq is already ready
-    if (prereq.state == 'ready')
-        return this;
-
-    // pass on any immediate errors
-    if (prereq.state == 'error')
-        return this._prereq_error(prereq);
-
-    // ok, we're both in wait state.  set up the dependency.
-    this._prereqs[prereq._task_id] = prereq;
-    
-    prereq
-        .addCallback('_prereq_ready', this, prereq)
-        .addErrback('_prereq_error', this, prereq);
-
-    return this;
-};
-
-DeferredGroup.prototype._prereqs_check = function () {
-    if (this._prereqs === null)
-        return this;
-
-    // if there are any remaining prereqs, bail
-    for (var prereq in this._prereqs)
-        return this;
-
-    return this.finish();
-};
-
+// callback when a prerequisite task succeeds
 DeferredGroup.prototype._prereq_ready = function (prereq) {
-    if (this.opts.fireOnOneCallback || this._prereqs === null)
-        return this.finish();
-        
+    if (this.opts.fireOnOneErrback || this._prereqs === null) {
+        return this;
+    }
+    
     delete this._prereqs[prereq._task_id];
-    this._prereqs_check();
-    return prereq.result;
+    return this._prereqs_check();
 };
 
+// callback when a prerequisite task fails
 DeferredGroup.prototype._prereq_error = function (prereq) {
-    if (this.opts.fireOnOneErrback || this._prereqs === null)
-        return this.finish();
-
-    delete this._prereqs[prereq._task_id];
-    this._prereqs_check();
+    if (this.opts.fireOnOneErrback || this._prereqs === null) {
+        return this;
+    }
     
+    // errors get passed through immediately
+    this._prereqs = null;
     if (this.opts.consumeErrors) {
-        return true;
+        return null;
     } else {
         throw prereq.messages;
     }
 };
 
-DeferredGroup.prototype.finish = function() {
-    this._prereqs = null;
-    this.enqueue();
-    return this.request(); 
+DeferredGroup.prototype.summarize = function() {
+    return null;
 }
 
 DeferredGroup.prototype.request = function (prereq) {
-    if (this.summarize)
-        this.result = this.summarize();
-
+    this.result = this.summarize();
     this.runCallstack();
 };
-
-
 
 /**
 *  Group Deferreds in an array
 */
-var DeferredList = acre.task.define(DeferredGroup, [{name: "dlist"}, {name: "opts", 'default':{}}]);
+var DeferredList = acre.task.define(DeferredGroup, [
+  {name: "dlist"},
+  {name: "opts", 'default':{}}
+]);
 
 DeferredList.prototype.init = function() {
-    var dl = this;
-    this.dlist.forEach(function(d) {
-        dl.require(d, false);
-    });
+    for each(var d in this.dlist) {
+        this.require(d);
+    }
+    this.enqueue();
 };
 
 DeferredList.prototype.summarize = function() {
     var result = [];
-
-    this.dlist.forEach(function(d) {
-        result.push({
-            success : (d.state === "ready" ? true : false),
-            result : d.result || null,
-            messages : d.messages || null
-        });
-    });
+    
+    for each(var d in this.dlist) {
+        if (d.state === "ready") {
+            result.push(d.result);
+        } else if (d.state === "error") {
+            result.push(d.messages);
+        } else {
+            result.push(undefined);
+        }
+    }
     
     return result;
 };
-
 
 
 /**
@@ -289,8 +258,8 @@ DeferredDict.prototype.summarize = function() {
         var d = this.ddict[key];
         result[key] = {
             success : (d.state === "ready" ? true : false),
-            result : d.result || null,
-            messages : d.messages || null
+            result : d.result,
+            messages : d.messages
         };
     }
 

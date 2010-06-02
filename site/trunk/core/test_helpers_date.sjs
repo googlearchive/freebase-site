@@ -12,12 +12,22 @@ test("parse_date", function() {
     "08/03/1998"
   ];
 
-  tests.forEach(function(test) {
-    var d = h.parse_date(test);
+  function assert_equals(d) {
     equals(d.getMonth(), 7);
     equals(d.getDate(), 3);
     equals(d.getFullYear(), 1998);
+  }
+
+  tests.forEach(function(test) {
+    var d = h.parse_date(test);
+    assert_equals(d);
   });
+
+  var d = h.parse_date(tests[4], "MM/dd/yyyy");
+  assert_equals(d);
+
+  d = h.parse_date(tests[3], "MM/dd/yyyy");
+  strictEqual(d, null);
 });
 
 test("format_date", function() {
@@ -33,6 +43,9 @@ test("format_date", function() {
   tests.forEach(function([format, expected]) {
     equals(h.format_date(d, format), expected);
   });
+
+  var [format, expected] = tests[4];
+  ok(h.format_date(d));
 });
 
 test("relative_date", function() {

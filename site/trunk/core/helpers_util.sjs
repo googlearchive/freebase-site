@@ -1,3 +1,6 @@
+var __all__ = [
+  "extend"
+];
 
 /**
  * TODO: this should go in some library

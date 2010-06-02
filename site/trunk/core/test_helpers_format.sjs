@@ -3,21 +3,21 @@ acre.require('/test/lib').enable(this);
 var h = acre.require("helpers_format");
 
 test("commafy", function() {
-  equals("1,000", h.commafy(1000));
-  equals("100", h.commafy(100));
-  equals("1,234,567,890", h.commafy(1234567890));
-  equals("-1,000", h.commafy(-1000));
-  equals("-100", h.commafy(-100));
-  equals("-1,234,567,890", h.commafy(-1234567890));
-  equals("0", h.commafy(0));
-  equals("1", h.commafy(1));
+  equals(h.commafy(1000), "1,000");
+  equals(h.commafy(100), "100");
+  equals(h.commafy(1234567890), "1,234,567,890");
+  equals(h.commafy(-1000), "-1,000");
+  equals(h.commafy(-100), "-100");
+  equals(h.commafy(-1234567890), "-1,234,567,890");
+  equals(h.commafy(0), "0");
+  equals(h.commafy(1), "1");
 });
 
 
 test("round", function() {
-  equals(100, h.round(149, 2));
-  equals(1200, h.round(1150, 2));
-  equals(11000, h.round(11111, 3));
+  equals(h.round(149, 2), 100);
+  equals(h.round(1150, 2), 1200);
+  equals(h.round(11111, 3), 11000);
 });
 
 

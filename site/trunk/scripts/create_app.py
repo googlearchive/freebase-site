@@ -28,8 +28,8 @@ PODS = {
         "me":"branch.qa.metaweb.com"
     },
     "local":{
-        "acre":"http://ae.branch.qa.metaweb.com:8115",
-        "me":"branch.qa.metaweb.com"
+        "acre":"http://ae.trunk.qa.metaweb.com:8115",
+        "me":"trunk.qa.metaweb.com"
     }
 }
 
@@ -46,7 +46,7 @@ def _get_metaweb_session(pod_name, username, password):
 def create_app(app_key, username, session):
     # create the app under the user's namespace
     user_app_id = "/user/%s/%s" % (username, app_key)
-    session.create_app(user_app_id, app_key)
+    session.create_app(user_app_id, app_key, extra_group="/m/043wdvg" )
     
     # add the key under /freebase/site as well
     session.mqlwrite({
@@ -80,7 +80,7 @@ if __name__ == '__main__':
 
     try:
         session = _get_metaweb_session(pod, username, password)
-    except:
+    except Exception, e:
         print "auth failed!"
         sys.exit(1)
 

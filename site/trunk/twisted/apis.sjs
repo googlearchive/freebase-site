@@ -4,11 +4,39 @@ var freebase = {};
 (function() {
   var defer = acre.require("defer");
   
-  urlfetch = defer.makeDeferred(
-    acre.async.urlfetch,
-    {position:1, key:"callback"},
-    {position:1, key:"errback"}
-  );
+  urlfetch = function() {
+    // Wrap async urlfetch to handle redirects
+    var _urlfetch = defer.makeDeferred(
+      acre.async.urlfetch,
+      {position:1, key:"callback"},
+      {position:1, key:"errback"}
+    );
+    
+    var args = Array.prototype.slice.call(arguments);
+    var d = _urlfetch.apply(null, args);
+    d.addErrback(function(e) {
+      // Not a urlfetch exception, so let someone else handle it
+      if (!(e instanceof acre.errors.URLError)) {
+        throw e;
+      }
+      
+      // Not a redirect, let someone else handle it
+      if (e.info.status < 300 || e.info.status > 399) {
+        throw e;
+      }
+      
+      // Invalid redirect so we can't redirect
+      if (!e.info.headers['Location'] || !e.info.headers['Location'].length) {
+        throw e;
+      }
+      
+      // Lets try this again, this time with the new url
+      args[0] = e.info.headers['Location'];
+      return _urlfetch.apply(null, args);
+    });
+    
+    return d
+  };
   
   var freebase_apis = [
       {name: "fetch",            options_pos: 1},

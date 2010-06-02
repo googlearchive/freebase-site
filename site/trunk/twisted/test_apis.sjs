@@ -36,7 +36,7 @@ test("urlfetch_redirects", function() {
   })
   d.addErrback(function(error) {
     if (error.info.status >= 300 && error.info.status < 400) {
-      ok(false, "We shouldn't be redirecting");
+      ok(false, "We should have redirected and not received this error.");
     } else {
       ok(false, "We shouldn't be erroring out here");
     }
@@ -47,6 +47,7 @@ test("urlfetch_redirects", function() {
 
 test("urlfetch_failure", function() {
   // Check that a 404 response calls the errback
+  
   var errback_called = false;
   var d = urlfetch("http://www.freebase.com/non-existent-page");
   d.addCallback(function(result) {

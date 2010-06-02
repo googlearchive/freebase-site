@@ -1,17 +1,17 @@
 /**
-*  Standard object for all errors in Deferreds
+*  Convert all errors in deferreds into a standard object
 */
-function DeferredError(e, message, info) {
+function wrap_deferred_error(e, message, info) {
     if (e instanceof Error) {
-        this.code = e.code || "/internal/javascript";
-        this.message = message || e.message || null;
-        this.info = info || e.info || e;
+        e.code = e.code || "/internal/javascript";
+        e.message = message || e.message || null;
+        e.info = info || e.info || e;
     } else {
-        this.code = e || "/internal";
-        this.message = message ||  null;
-        this.info = info || null;
+        e.code = e || "/internal";
+        e.message = message ||  null;
+        e.info = info || null;
     }
-    return this;
+    return e;
 }
 
 
@@ -30,7 +30,7 @@ Deferred.prototype._add_error = function(e, msg, info) {
         this.messages = null;
         
     if (typeof e !== 'undefined') {
-        var error = (e instanceof DeferredError) ? e : new DeferredError(e, msg, info);
+        var error = wrap_deferred_error(e, msg, info);
         console.error(error.message, error);
         this.messages = error;
     }
@@ -142,20 +142,21 @@ Deferred.prototype.runCallstack = function() {
     if  (typeof this.not_in_error === 'undefined') {
         this.not_in_error = true;
     }
-
+    
     if (!this.callstack || !this.callstack.length) {
         if (this.state === "wait") {
-            if(this.not_in_error) {
-                this.ready(this.result);
-            } else {
-                this.error();
-            }            
+            this.ready(this.result);
+            //if (this.not_in_error) {
+            //    this.ready(this.result);
+            //} else {
+            //    this.error();
+            //}
         }
         return this;
     }
-
+    
     var cb = this.callstack.shift();
-
+    
     // callback is the wrong type, so skip
     if ((cb.kind !== "both") &&
             !(this.not_in_error && (cb.kind === "callback")) && 
@@ -356,10 +357,10 @@ function makeDeferred(func, callback_pos, errback_pos) {
         args[pos.position][pos.key] = func;
         return args;
     }
-        
+    
     return function() {
         var d = Deferred();
-
+        
         args = Array.prototype.slice.call(arguments);        
         _place_callback(args, _normalize_pos(callback_pos), function(res) {
             d.callback(res);
@@ -369,11 +370,10 @@ function makeDeferred(func, callback_pos, errback_pos) {
         });
         
         try {
-            func.apply(null, args);     
+            func.apply(null, args);
         } catch(e) {
             d.errback(e);
         }
-        
         return d;
     }
 }

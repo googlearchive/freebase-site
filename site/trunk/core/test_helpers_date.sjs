@@ -2,6 +2,14 @@ acre.require('/test/lib').enable(this);
 
 var h = acre.require("helpers_date");
 
+
+test("parse_date", function() {
+  var d = h.parse_date("August 26, 1998");
+  equals(d.getMonth(), 7);
+  equals(d.getDate(), 26);
+  equals(d.getFullYear(), 1998);
+});
+
 test("relative_date", function() {
   var d = new Date();
   d.setTime(d.getTime() - 30 * 1000);

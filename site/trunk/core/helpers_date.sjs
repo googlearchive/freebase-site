@@ -6,10 +6,10 @@ __all__ = [
 
 
 var mf = acre.require("MANIFEST").MF;
-var date = acre.require("/freebase/apps/libraries/date", mf.version["/freebase/apps/libraries"]).Date;
+var datejs = acre.require("/freebase/apps/libraries/date", mf.version["/freebase/apps/libraries"]).Date;
 
 function parse_date(date_str) {
-  return date.parse(date_str);
+  return datejs.parse(date_str);
 };
 
 function format_date(date, format) {

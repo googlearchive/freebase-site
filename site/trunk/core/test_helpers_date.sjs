@@ -4,10 +4,35 @@ var h = acre.require("helpers_date");
 
 
 test("parse_date", function() {
-  var d = h.parse_date("August 26, 1998");
-  equals(d.getMonth(), 7);
-  equals(d.getDate(), 26);
-  equals(d.getFullYear(), 1998);
+  var tests = [
+    "August 3, 1998",
+    "Aug 03, 98",
+    "3 August 1998",
+    "8/3/98",
+    "08/03/1998"
+  ];
+
+  tests.forEach(function(test) {
+    var d = h.parse_date(test);
+    equals(d.getMonth(), 7);
+    equals(d.getDate(), 3);
+    equals(d.getFullYear(), 1998);
+  });
+});
+
+test("format_date", function() {
+  var tests = [
+    ["MMMM d, yyyy", "August 3, 1998"],
+    ["MMM dd, yy", "Aug 03, 98"],
+    ["d MM yy", "3 08 98"],
+    ["M/d/yy", "8/3/98"],
+    ["MM/dd/yyyy", "08/03/1998"]
+  ];
+  var d = new Date(1998, 7, 3);
+
+  tests.forEach(function([format, expected]) {
+    equals(h.format_date(d, format), expected);
+  });
 });
 
 test("relative_date", function() {

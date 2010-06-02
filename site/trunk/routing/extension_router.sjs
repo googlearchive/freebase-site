@@ -62,7 +62,7 @@ var handlers = {
       acre.response.set_header('content-type', 'text/plain');
     }
     try {
-      res = _system_freebase.mqlread(q);
+      res = acre.freebase.mqlread(q);
       acre.write(JSON.stringify(res.result, null, 2));
     } catch (e) {
       acre.write(JSON.stringify(e.response, null, 2));

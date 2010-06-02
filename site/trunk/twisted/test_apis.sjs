@@ -75,6 +75,19 @@ test("urlfetch_failure", function() {
   
 });
 
+test("mqlread_success", function() {
+  // Basic mqlread should call the callback
+  var d = freebase.mqlread({id: "/en/bob_dylan", name: null});
+  d.addCallback(function(envelope) {
+    equals(envelope.result.name, "Bob Dylan");
+  })
+  d.addErrback(function(error) {
+    ok(false, "Mqlread returned an error: "+error);
+  });
+  
+  acre.async.wait_on_results();
+});
+
 if (acre.current_script === acre.request.script) {
   acre.test.report();
 }

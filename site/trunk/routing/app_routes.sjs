@@ -8,12 +8,12 @@ var routes = [
   {
     path: "/",
     app: "/freebase/site/homepage",
-    root: true
+    absolute: true
   },
   {
     path: "/index",
     app: "/freebase/site/homepage",
-    root: true
+    absolute: true
   },
   {
     path: "/core",

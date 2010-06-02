@@ -10,7 +10,7 @@ function do_route(req, path, mf, routes) {
   for (var i=0,len=routes.length; i<len; i++) {
     var rule = routes[i];
 
-    if (rule.root) {
+    if (rule.absolute) {
       if (rule.path !== path) {
         continue;
       }

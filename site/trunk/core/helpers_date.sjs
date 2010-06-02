@@ -24,17 +24,20 @@ function relative_date(d) {
 
   var delta = c.getTime() - d.getTime();
   var dY = Math.floor(delta / (365 * 24 * 60 * 60 * 1000));
-  var dM = Math.floor(delta / (30 * 24 * 60 * 60 * 1000));
-  var dD = Math.floor(delta / (24 * 60 * 60 * 1000));
-  var dH = Math.floor(delta / (60 * 60 * 1000));
-  var dN = Math.floor(delta / (60 * 1000));
+  if (dY > 0) { return dY === 1? "1 year ago"   : dY + " years ago"; }
 
-  if (dY > 0)   { return dY === 1? "1 year ago"   : dY + " years ago"; }
+  var dM = Math.floor(delta / (30 * 24 * 60 * 60 * 1000));
   if (dM > 0)   { return dM === 1? "1 month ago"  : dM + " months ago"; }
+
+  var dD = Math.floor(delta / (24 * 60 * 60 * 1000));
   if (dD > 0)   { return dD === 1? "1 day ago"    : dD + " days ago"; }
+
+  var dH = Math.floor(delta / (60 * 60 * 1000));
   if (dH > 0)   { return dH === 1? "1 hour ago"   : dH + " hours ago"; }
+
+  var dN = Math.floor(delta / (60 * 1000));
   if (dN > 0)   { return dN === 1? "1 minute ago" : dN + " minutes ago"; }
-  if (dN == 0)  { return "less than a minute ago"; }
-  if (dN < 0)   { return "in the future???"; }
+  else if (dN == 0)  { return "less than a minute ago"; }
+  else /*(dN < 0)*/   { return "in the future???"; }
 };
 

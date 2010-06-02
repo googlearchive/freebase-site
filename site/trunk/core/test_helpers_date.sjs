@@ -87,6 +87,10 @@ test("relative_date", function() {
   d = new Date();
   d.setTime(d.getTime() - 2.5 * 365 * 24 * 60 * 60 * 1000);
   equals(h.relative_date(d), "2 years ago");
+
+  d = new Date();
+  d.setTime(d.getTime() + 1 * 60 * 1000);
+  equals(h.relative_date(d), "in the future???");
 });
 
 if (acre.current_script == acre.request.script) {

@@ -169,7 +169,7 @@ Deferred.prototype.runCallstack = function() {
 *     NOTE: Most of this is lifted directly from mjt.Task
 */
 var DeferredGroup = acre.task.define(Deferred, [
-  {name: "ddict"}, 
+  {name: "dgroup"}, 
   {name: "opts", 'default':{}}
 ]);
 
@@ -242,27 +242,33 @@ DeferredList.prototype.summarize = function() {
 /**
 *  Group Deferreds in an object
 */
-var DeferredDict = acre.task.define(DeferredGroup, [{name: "ddict"}]);
+var DeferredDict = acre.task.define(DeferredGroup, [
+    {name: "ddict"},
+    {name: "opts", 'default':{}}
+]);
 
 DeferredDict.prototype.init = function() {
     for (var key in this.ddict) {
         var d = this.ddict[key];
-        this.require(d, false);
+        this.require(d);
     }
+    this.enqueue();
 };
 
 DeferredDict.prototype.summarize = function() {
     var result = {};
-
+    
     for (var key in this.ddict) {
         var d = this.ddict[key];
-        result[key] = {
-            success : (d.state === "ready" ? true : false),
-            result : d.result,
-            messages : d.messages
-        };
+        if (d.state === "ready") {
+            result[key] = d.result;
+        } else if (d.state === "error") {
+            result[key] = d.messages;
+        } else {
+            result[key] = undefined;
+        }
     }
-
+    
     return result;
 };
 

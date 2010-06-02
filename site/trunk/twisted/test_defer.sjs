@@ -207,6 +207,41 @@ test("deferred_list", function() {
   ok(dlist_called, "The callback for the deferred list should be called");
 });
 
+test("deferred_dict", function() {
+  var keys = ["a", "b", "c", "d", "e"];
+  var called = {};
+  
+  var deferreds = {};
+  for each(var key in keys) {
+    var d = defer.Deferred().callback(key);
+    called[key] = false;
+    d.addCallback(function(result) {
+      called[result] = true;
+      return result;
+    });
+    deferreds[key] = d;
+  }
+  var d = defer.DeferredDict(deferreds);
+  
+  var ddict_called = false;
+  d.addCallback(function(results) {
+    ddict_called = true;
+    for each(var key in keys) {
+      var result = results[key];
+      ok(called[result], "Result "+result+" should be called");
+      equals(result, key, "Result "+result+" should be called with the correct key");
+    }
+    return results;
+  });
+  
+  d.addErrback(function(error) {
+    ok(false, "The errback of a deferred dict should never be called");
+  });
+  
+  // Since all of the dependant callbacks were already triggered
+  //  the dlist callback should be called immediately
+  ok(ddict_called, "The callback for the deferred dict should be called");
+});
 
 if (acre.current_script === acre.request.script) {
   acre.test.report();

@@ -43,43 +43,33 @@ Function.prototype.bind = Function.prototype.bind || Function.prototype.prebind;
 /**
 *  Convert all errors in deferreds into a standard failure object
 */
-var Failure = Object.create({
-    wrap: function(error) {
-        var default_errors = [
-            Error, EvalError, RangeError,
-            ReferenceError, SyntaxError,
-            TypeError, URIError
-        ];
-        
-        for each (var err_type in default_errors) {
-            if (error instanceof err_type) {
-                this.error = error;
-                return error;
-            }
-        }
-        
-        // Then create something that is an error
-        var e = Object.create(Error);
-        e.message = ""+error;
-        e.info = e;
-        this.error = e;
-        return e;
-    },
-    
-    trap: function(var_args) {
-        for each(var error in arguments) {
-            if (this.error instanceof error) {
-                return;
-            }
-        }
-        
-        throw this.error;
-    },
-    
-    toString: function() {
-        return this.error.toString();
+var Failure = Object.create({});
+
+Failure.init = function(error) {
+    if (error instanceof Error) {
+        this.error = error;
+        return error;
     }
-});
+    
+    // Then create something that is an error
+    var e = new Error(""+error);
+    this.error = e;
+    return this;
+};
+    
+Failure.trap = function(var_args) {
+    for each(var error in arguments) {
+        if (this.error instanceof error) {
+            return;
+        }
+    }
+    
+    throw this.error;
+};
+    
+Failure.toString = function() {
+    return this.error.toString();
+};
 
 /**
 *  A Task that supports callback/errback chaining
@@ -140,8 +130,8 @@ Deferred.prototype._add_error = function(error) {
     if (error instanceof Failure) {
         this.result = error;
     } else {
-        var failure = Object.create(Failure);
-        failure.wrap(error);
+        var failure = Object.create(Failure)
+        failure.init(error);
         this.result = failure;
     }
     console.error(this.result.toString(), this.result);

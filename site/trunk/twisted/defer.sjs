@@ -1,4 +1,32 @@
 /**
+* Add es5 features
+*/
+Object.create = Object.create || function(p) {
+  if (arguments.length != 1)
+    throw new Error("Can't simulate 2nd arg");
+  function f() {}; // Crockford's trick
+  f.prototype = p;
+  return new f();
+};
+
+Object.keys = Object.keys || function(o) {
+  var result = [];
+  for(var name in o) {
+    if (o.hasOwnProperty(name))
+      result.push(name);
+  }
+  return result;
+};
+
+Function.prototype.bind = Function.prototype.bind || function(scope) {
+  var func = this;
+  return function() {
+    return func.apply(scope, arguments);
+  };
+};
+
+
+/**
 *  Convert all errors in deferreds into a standard object
 */
 function wrap_deferred_error(e) {
@@ -173,29 +201,52 @@ var DeferredGroup = acre.task.define(Deferred, [
   {name: "opts", 'default':{}}
 ]);
 
-// callback when a prerequisite task succeeds
-DeferredGroup.prototype._prereq_ready = function (prereq) {
-    if (this.opts.fireOnOneErrback || this._prereqs === null) {
-        return this;
-    }
+DeferredGroup.prototype.require = function (prereq) {
+    // if we are already ready, adding prereqs is illegal
+    if (this.state !== 'init')
+        throw new Error('task.enqueue() already called - too late for .require()');
     
-    delete this._prereqs[prereq._task_id];
-    return this._prereqs_check();
+    // avoid dependency bookkeeping if prereq is already ready
+    if (prereq.state == 'ready')
+        return this;
+    
+    // if we are already in error state, we're not going anywhere.
+    if (this.state == 'error')
+        return this;
+    
+    // ok, we're both in wait state.  set up the dependency.
+    this._prereqs[prereq._task_id] = prereq;
+    
+    prereq.addCallback(this._prereq_callback.bind(this), prereq);
+    prereq.addErrback(this._prereq_errback.bind(this), prereq);
+    
+    return this;
 };
 
-// callback when a prerequisite task fails
-DeferredGroup.prototype._prereq_error = function (prereq) {
-    if (this.opts.fireOnOneErrback || this._prereqs === null) {
-        return this;
+// callback when a prerequisite task succeeds
+DeferredGroup.prototype._prereq_callback = function (result, prereq) {
+  console.log("here1", result);
+    if (this.opts.fireOnOneCallback === true) {
+        this._prereqs = [];
+    } else {
+        delete this._prereqs[prereq._task_id];
     }
     
-    // errors get passed through immediately
-    this._prereqs = null;
-    if (this.opts.consumeErrors) {
-        return null;
+    this._prereqs_check();
+    return result;
+};
+
+// errback when a prerequisite task fails
+DeferredGroup.prototype._prereq_errback = function (error, prereq) {
+    console.log("here2", error);
+    if (this.opts.fireOnOneErrback === true) {
+        this._prereqs = null;
+        throw error;
     } else {
-        throw prereq.messages;
+        delete this._prereqs[prereq._task_id];
     }
+    
+    return error;
 };
 
 DeferredGroup.prototype.summarize = function() {
@@ -211,8 +262,8 @@ DeferredGroup.prototype.request = function (prereq) {
 *  Group Deferreds in an array
 */
 var DeferredList = acre.task.define(DeferredGroup, [
-  {name: "dlist"},
-  {name: "opts", 'default':{}}
+    {name: "dlist"},
+    {name: "opts", 'default':{}}
 ]);
 
 DeferredList.prototype.init = function() {
@@ -271,7 +322,6 @@ DeferredDict.prototype.summarize = function() {
     
     return result;
 };
-
 
 
 /**

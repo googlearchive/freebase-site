@@ -207,6 +207,76 @@ test("deferred_list", function() {
   ok(dlist_called, "The callback for the deferred list should be called");
 });
 
+test("deferred_list_with_callbacks", function() {
+  function steamer(word) {
+    return ["steam", word].join("-");
+  }
+  
+  var dengine = defer.Deferred().callback("engine").addCallback(steamer);
+  var dpunk = defer.Deferred().addCallback(steamer).callback("punk");
+  var dboat = defer.Deferred().addCallback(steamer);
+  
+  var dlist = defer.DeferredList([dengine, dpunk]);
+  
+  dboat.callback("boat");
+  
+  var dlist_called = false;
+  dlist.addCallback(function(results) {
+    dlist_called = true;
+    equals(results[0], "steam-engine", "Should be the combined word");
+    equals(results[1], "steam-punk", "Should be the combined word");
+    equals(results[2], "steam-boat", "Should be the combined word");
+    return results;
+  });
+  
+  dlist.addErrback(function(error) {
+    ok(false, "The errback of a deferred list should not be called");
+  });
+  
+  // Since all of the dependant callbacks were already triggered
+  //  the dlist callback should be called immediately
+  ok(dlist_called, "The callback for the deferred list should be called");
+});
+
+test("deferred_list_error", function() {
+  function err(value) {
+    n/a;
+  }
+  function add(value) {
+    return value + 1;
+  }
+  function sub(value) {
+    return value - 1;
+  }
+  function not_handled(e) {
+    throw e;
+  }
+  
+  // Trigger the dependant callbacks
+  var dsucc = defer.Deferred().callback(0).addCallback(add);
+  var dfail = defer.Deferred().callback(0).addCallback(err);
+  
+  var d = defer.DeferredList([dsucc, dfail]);
+  
+  var dlist_called = false;
+  d.addCallback(function([succ_result, fail_result]) {
+    console.log([succ_result, fail_result]);
+    dlist_called = true;
+    equals(succ_result, 1, "Should have been added");
+    ok(fail_result instanceof Error, "Should have returned the error: "+fail_result);
+    
+    return [succ_result, fail_result];
+  });
+  
+  d.addErrback(function(error) {
+    ok(false, "The errback of a deferred list should not be called");
+  });
+  
+  // Since all of the dependant callbacks were already triggered
+  //  the dlist callback should be called
+  ok(dlist_called, "The callback for the deferred list should be called");
+});
+
 test("deferred_dict", function() {
   var keys = ["a", "b", "c", "d", "e"];
   var called = {};

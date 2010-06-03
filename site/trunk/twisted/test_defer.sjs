@@ -3,64 +3,63 @@ acre.require('/test/lib').enable(this);
 var defer = acre.require("defer");
 
 test("callback", function() {
-  var value = 0;
-  function add() {
-    value += 1;
-    return value;
+  function add(value) {
+    return value + 1;
   }
   var d = defer.Deferred().addCallback(add);
   // The callback shouldn't have run yet
-  equals(value, 0);
+  equals(d.result, undefined);
   // We are now calling the callback so the number should go up by one
-  d.callback()
-  equals(value, 1);
+  d.callback(0)
+  equals(d.result, 1);
   // Enqueing a new callback after the deferred has been triggered
   //  should result in the callback being called
   d.addCallback(add);
-  equals(value, 2);
+  equals(d.result, 2);
 });
 
 test("errback", function() {
-  var value = 0;
-  function err() {
+  function err(value) {
     n/a;
   }
-  function add() {
-    value += 1;
+  function reset(failure, value) {
     return value;
   }
-  function sub() {
-    value -= 1;
-    return value;
+  function add(value) {
+    return value + 1;
+  }
+  function sub(value) {
+    return value - 1;
   }
   function not_handled(e) {
     throw e;
   }
   
-  var d = defer.Deferred().addCallback(err).addErrback(sub);
-  // The errback shouldn't have run yet
-  equals(value, 0);
+  var d = defer.Deferred().addCallback(err).addErrback(reset, -1);
+  // The errback or callback shouldn't have run yet
+  equals(d.result, undefined);
   // We are now calling the callback
-  // so we should error and the number should go down by one
-  d.callback()
-  equals(value, -1);
+  // so we should error and the number should go to -1
+  d.callback(0)
+  equals(d.result, -1);
   // Since we recovered gracefully we should be back
   //  to callbacks
   d.addCallback(add);
-  equals(value, 0);
+  equals(d.result, 0);
   
   // If we don't handle the error with the first callback then
   //   we should still be calling errbacks
-  equals(d.not_in_error, true);
+  equals(d.result instanceof defer.Failure, false, "Shouldn't be in error: "+d.result);
   d.addCallback(err);
-  equals(d.not_in_error, false);
+  equals(d.result instanceof defer.Failure, true, "Should be in error: "+d.result);
   d.addErrback(not_handled);
-  equals(d.not_in_error, false);
+  equals(d.result instanceof defer.Failure, true, "Should be in error: "+d.result);
   d.addCallback(add);
-  equals(d.not_in_error, false);
-  d.addErrback(sub);
-  equals(d.not_in_error, true);
-  equals(value, -1);
+  equals(d.result instanceof defer.Failure, true, "Should be in error: "+d.result);
+  d.addErrback(reset, 0);
+  equals(d.result instanceof defer.Failure, false, "Shouldn't be in error: "+d.result);
+  d.addCallback(sub)
+  equals(d.result, -1);
 });
 
 test("errback_late_trigger", function() {
@@ -216,7 +215,7 @@ test("deferred_list_with_callbacks", function() {
   var dpunk = defer.Deferred().addCallback(steamer).callback("punk");
   var dboat = defer.Deferred().addCallback(steamer);
   
-  var dlist = defer.DeferredList([dengine, dpunk]);
+  var dlist = defer.DeferredList([dengine, dpunk, dboat]);
   
   dboat.callback("boat");
   
@@ -260,10 +259,9 @@ test("deferred_list_error", function() {
   
   var dlist_called = false;
   d.addCallback(function([succ_result, fail_result]) {
-    console.log([succ_result, fail_result]);
     dlist_called = true;
     equals(succ_result, 1, "Should have been added");
-    ok(fail_result instanceof Error, "Should have returned the error: "+fail_result);
+    ok(fail_result instanceof defer.Failure, "Should have returned the error: "+fail_result);
     
     return [succ_result, fail_result];
   });

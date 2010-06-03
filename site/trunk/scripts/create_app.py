@@ -6,7 +6,6 @@ import httplib
 import cookielib
 import re
 from unittest import TestCase
-import simplejson
 import urllib
 from urllib2 import Request
 import getpass
@@ -43,21 +42,19 @@ def _get_metaweb_session(pod_name, username, password):
     session.login(username=username, password=password)
     return session
 
-def create_app(app_key, username, session):
+def exists(id, session):
+    return bool(session.mqlread({"id":id}))
+
+def create_app(app_key, session):
     # create the app under the user's namespace
-    user_app_id = "/user/%s/%s" % (username, app_key)
-    session.create_app(user_app_id, app_key, extra_group="/m/043wdvg" )
+    app_id = "/freebase/site/%s" % (app_key)
     
-    # add the key under /freebase/site as well
-    session.mqlwrite({
-       "id": user_app_id,
-       "key":{
-           "namespace":"/freebase/site",
-           "value":app_key,
-           "connect":"insert"
-       }
-    })
-    
+    if exists(app_id, session):
+        print "That app already exists!" 
+        sys.exit(1)
+        
+    session.create_app(app_id, app_key, extra_group="/m/043wdvg" )
+
 if __name__ == '__main__':
     #session = _get_metaweb_session(pod, username, password)
     usage = "usage: %prog [options] app_key"
@@ -86,7 +83,7 @@ if __name__ == '__main__':
 
     app_key = args[0]
 
-    create_app(app_key, username, session)
+    create_app(app_key, session)
 
     print "success!"
 

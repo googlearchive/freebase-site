@@ -15,6 +15,16 @@ if (acre.current_script === acre.request.script) {
 
   // 3. Fallback to default acre local routing by extensions/filename
   router = acre.require("extension_router");
-  router.route(acre.request);
+  try {
+    router.route(acre.request);
+  }
+  catch (ex) {
+    if (ex === router.NOT_FOUND) {
+      acre.response.status = 404;
+      acre.write("not_found"); 
+      acre.exit();
+    }
+    throw(ex);
+  }
 }
 

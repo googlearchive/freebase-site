@@ -31,11 +31,14 @@ function do_route(req, path, mf, routes) {
     // make sure we have a path within the app we're routing too,
     // otherwise relative links will break
     if (!path) {
+      path = "/";
+      /**
       var url = req.app_url + rule.path + "/";
       if (query_string) url += "?" + query_string;
       acre.response.status = 302;
       acre.response.headers.location = url;
       acre.exit();
+       **/
     }
 
     var paths = [

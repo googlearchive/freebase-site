@@ -102,7 +102,7 @@ function split_path(path) {
   return [filename, ext, "/" + path_segs.join("/")];
 };
 
-var ERROR_NOT_FOUND = "Route require not found";
+var NOT_FOUND = "Route require not found";
 
 function do_route(req, path, app_id, version) {
   console.log("do_route", path, app_id, version);
@@ -114,6 +114,7 @@ function do_route(req, path, app_id, version) {
   }
 
   // MONKEY PATCH
+  var old_path_info = req.path_info;
   req.path_info = path_info;
 
   try {
@@ -127,12 +128,12 @@ function do_route(req, path, app_id, version) {
   }
   catch (e) {
     console.log("do_route", "require", "error", e);
+    // reset path_info
+    req.path_info = old_path_info;
     if (e && typeof e === "object" && e.message === "Could not fetch data from " + id) {
-      throw(ERROR_NOT_FOUND);
+      throw(NOT_FOUND);
     }
-    else {
-      throw(e);
-    }
+    throw(e);
   }
 
   if (typeof res._main === "function") {

@@ -1,8 +1,11 @@
 <acre:script>
+  console.log(acre.request.app_url, acre.request.base_path || null, acre.request.path_info);
+
   var mf = acre.require("MANIFEST").MF;
   var page_options = {};
   
-  var datejs = acre.require("/freebase/apps/libraries/date", mf.version["/freebase/apps/libraries"]);
+  var h = acre.require("/freebase/site/core/helpers", mf.version["/freebase/site/core"]);
+  
   var utils = acre.require("utils");
   
   var order = acre.request.params.order || 'name';
@@ -35,7 +38,7 @@
       }
       d.instance_count = instances;
       d.type_count = types;
-      d.date = new datejs.Date(acre.freebase.date_from_iso(d.timestamp));
+      d.date = h.parse_date(acre.freebase.date_from_iso(d.timestamp));
       domains.push(d);
       domains_ids[d.id] = true;
     }
@@ -69,7 +72,7 @@
     </h1>
   </div>
   <div id="path" acre:if="user_id">
-    &raquo; <a href="/">Domains</a> &raquo; <span>${user_id}'s Domains</span>
+    &raquo; <a href="${h.url_for('/freebase/site/schema/index')}">Domains</a> &raquo; <span>${user_id}'s Domains</span>
   </div>
 </acre:block>
 
@@ -104,11 +107,11 @@
         </tr>
       
         <tr acre:for="d in domains" acre:if="!d['/freebase/domain_profile/hidden']">
-          <td><a href="domain?id=${acre.form.quote(d.id)}">${d.name}</a></td>
+          <td><a href="${h.url_for('/freebase/site/schema/domain', [['id',d.id]])}">${d.name}</a></td>
           <td>${d.id}</td>
-          <td class="numeric">${(d.type_count > 0) ? utils.commaFormatInteger(d.type_count) : "-"}</td>
-          <td class="numeric">${(d.instance_count > 0) ? utils.commaFormatInteger(d.instance_count) : "-"}</td>
-          <td class="numeric">${d.date.toString("yyyy-MM-dd")}</td>
+          <td class="numeric">${ (d.type_count > 0) ? h.commafy(d.type_count) : "-"}</td>
+          <td class="numeric">${ (d.instance_count > 0) ? h.commafy(d.instance_count) : "-"}</td>
+          <td class="numeric">${ h.format_date(d.date, "yyyy-MM-dd")}</td>
         </tr>
       </table>
     </div>

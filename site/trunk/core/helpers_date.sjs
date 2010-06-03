@@ -9,7 +9,7 @@ __all__ = [
  */
 
 var mf = acre.require("MANIFEST").MF;
-var datejs = acre.require("/freebase/apps/libraries/date", mf.version["/freebase/apps/libraries"]).Date;
+var datejs = acre.require("/freebase/apps/libraries/date", mf.version["/freebase/app/libraries"]).Date;
 
 /**
  * Converts the specified string value into its JavaScript Date equivalent using conventional format recognized by datejs,
@@ -39,7 +39,7 @@ function parse_date(date_str, format /* optional */) {
  * @param format (String, optional) - A format string of supproted datejs format spcifiers.
  * @return (String) A string representation of the current Date object.
  *
- * Example Format:    
+ * Example Format:
  * dddd, dd MMMM yyyy -> Tuesday, 22 August 2006
  *
  * @see http://code.google.com/p/datejs/ for format specifiers

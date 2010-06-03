@@ -1,9 +1,9 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
   var page_options = {};
+  var h = acre.require("/freebase/site/core/helpers", mf.version["/freebase/site/core"]);
 
-  var datejs = acre.require("/freebase/apps/libraries/date", mf.version["/freebase/apps/libraries"]);
-  var utils = acre.require("utils");
+ var utils = acre.require("utils");
   
   var id = acre.request.params.id || '';
   if (id != '' && id.charAt(0) == '/') {
@@ -13,7 +13,7 @@
     
     if (result != null) {
       if ('/freebase/type_profile/instance_count' in result && result['/freebase/type_profile/instance_count']) {
-        var instances = utils.commaFormatInteger(result['/freebase/type_profile/instance_count'].value);
+        var instances = h.commafy(result['/freebase/type_profile/instance_count'].value);
       }
       
       if ('/common/topic/article' in result && result['/common/topic/article'].length > 0) {
@@ -74,7 +74,7 @@
   $result.name.value <span class="type">type</span> <span class="type" acre:if="result['/freebase/type_hints/mediator']">| mediator/CVT</span> <span acre:if="result['/freebase/type_profile/published']" class="type">| ${result['/freebase/type_profile/published'].name}</span><span class="type" acre:else>(no published info)</span>
   <span class="extends" acre:if="result['/freebase/type_hints/included_types'].length > 0">extends</span>        
   <acre:block for="t in result['/freebase/type_hints/included_types']">
-    <span class="included_type"><a href="type?id=${acre.form.quote(t.id)}">${t.name.value}</a> <span class="type">type</span> <span class="type" acre:if="t['/freebase/type_hints/mediator']">| mediator/CVT</span> <span acre:if="t['/freebase/type_profile/published']" class="type">| ${t['/freebase/type_profile/published'].name}</span><span class="type" acre:else>(no published info)</span></span>
+    <span class="included_type"><a href="${h.url_for('/freebase/site/schema/type', [['id',t.id]])}">${t.name.value}</a> <span class="type">type</span> <span class="type" acre:if="t['/freebase/type_hints/mediator']">| mediator/CVT</span> <span acre:if="t['/freebase/type_profile/published']" class="type">| ${t['/freebase/type_profile/published'].name}</span><span class="type" acre:else>(no published info)</span></span>
   </acre:block>
 </acre:block>
 
@@ -88,13 +88,15 @@
       Schema Explorer
     </h1>
   </div>
-  <div id="path">&raquo; <a href="./">Domains</a> &raquo; <a href="${'domain?id=' + acre.form.quote(result.domain.id)}">$result.domain.id</a> &raquo; <span>$result.id</span></div>
+  <div id="path">&raquo; <a href="${h.url_for('/freebase/site/schema/index')}">Domains</a>
+  &raquo; <a href="${h.url_for('/freebase/site/schema/domain', [['id', result.domain.id]])}">$result.domain.id</a> &raquo; <span>$result.id</span></div>
 </acre:block>
 
 <acre:block def="content_body(g)">
   <acre:block if="result != null">
   
-    <div id="views"><span>Table View</span> | <a href="type2?id=${acre.form.quote(result.id)}">Diagram view</a></div>
+    <div id="views"><span>Table View</span>
+    | <a href="${h.url_for('/freebase/site/schema/type2',[['id', result.id]])}}">Diagram view</a></div>
   
     <div id="body">
     
@@ -117,9 +119,9 @@
             </tr>
             <tr acre:for="i,prop in result.properties" class="${(i % 2 == 0) ? 'odd' : 'even'} ${utils.isGlobal(prop.id) ? 'global' : 'local'}">
               <td>$prop.name</td>
-              <td><a href="${'property?id=' + acre.form.quote(prop.id)}">$prop.id</a></td>
+              <td><a href="${h.url_for('/freebase/site/schema/property', [['id', prop.id]])}">$prop.id</a></td>
               <td>
-                <a href="${acre.request.script.name + '?id=' + acre.form.quote(prop.expected_type.id)}">$prop.expected_type.id</a>
+                <a href="${h.url_for('/freebase/site/schema/type', [['id', prop.expected_type.id]])}">$prop.expected_type.id</a>
               </td>
               <td class="flag">
                 <span acre:if="prop.master_property == null">&#10003;</span>
@@ -150,9 +152,9 @@
             </tr>
             <tr acre:for="i,prop in result.inherited_properties" class="${(i % 2 == 0) ? 'odd' : 'even'} ${utils.isGlobal(prop.id) ? 'global' : 'local'}">
               <td>$prop.name</td>
-              <td><a href="${'property?id=' + acre.form.quote(prop.id)}">$prop.id</a></td>
+              <td><a href="${h.url_for('/freebase/site/schema/property',[['id',prop.id]])}">$prop.id</a></td>
               <td>
-                <a href="${acre.request.script.name + '?id=' + acre.form.quote(prop.expected_type.id)}">$prop.expected_type.id</a>
+                <a href="${h.url_for('/freebase/site/schema/type',[['id',prop.expected_type.id]])}">$prop.expected_type.id</a>
               </td>
               <td class="flag">
                 <span acre:if="prop.master_property == null">&#10003;</span>
@@ -184,9 +186,9 @@
             </tr>
             <tr acre:for="i,prop in result.expected_by" class="${(i % 2 == 0) ? 'odd' : 'even'} ${utils.isGlobal(prop.id) ? 'global' : 'local'}">
               <td>$prop.schema.name.value</td>
-              <td><a href="${acre.request.script.name + '?id=' + acre.form.quote(prop.schema.id)}">$prop.schema.id</a></td>
+              <td><a href="${h.url_for('/freebase/site/schema/type',[['id',prop.schema.id]])}">$prop.schema.id</a></td>
               <td>$prop.name.value</td>
-              <td><a href="${'property?id=' + acre.form.quote(prop.id)}">$prop.id</a></td>
+              <td><a href="${h.url_for('/freebase/site/schema/property',[['id',prop.id]])}">$prop.id</a></td>
               <td class="flag">
                 <span acre:if="prop.master_property == null">&#10003;</span>
                 <span acre:else="">&nbsp;</span>

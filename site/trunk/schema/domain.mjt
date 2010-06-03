@@ -2,7 +2,8 @@
   var mf = acre.require("MANIFEST").MF;
   var page_options = {};
 
-  var datejs = acre.require("/freebase/apps/libraries/date", mf.version["/freebase/apps/libraries"]);
+  var h = acre.require("/freebase/site/core/helpers", mf.version["/freebase/site/core"]);
+
   var utils = acre.require("utils");
     
   var order = acre.request.params.order || 'name';
@@ -19,7 +20,7 @@
       var mediators = [];
       
       for each (var t in types) {
-        t.date = new datejs.Date(acre.freebase.date_from_iso(t.timestamp));
+        t.date = h.parse_date(acre.freebase.date_from_iso(t.timestamp));
         t.instance_count = t["/freebase/type_profile/instance_count"];
         if (t['/freebase/type_hints/mediator']) {
           mediators.push(t);
@@ -75,7 +76,7 @@
       Schema Explorer
     </h1>
   </div>
-  <div if="result" id="path">&raquo; <a href="./">Domains</a> &raquo; <span>$result.id</span></div>
+  <div if="result" id="path">&raquo; <a href="${h.url_for('/freebase/site/schema/index')}">Domains</a> &raquo; <span>$result.id</span></div>
 </acre:block>
 
 <acre:block def="content_body(g)">
@@ -112,10 +113,10 @@
                   }
                 }
               </acre:script>
-              <td><a href="domain?id=${acre.form.quote(d.id)}">${d.name}</a></td>
+              <td><a href="${h.url_for('/freebase/site/schema/domain', [['id',d.id]])}">${d.name}</a></td>
               <td>${d.id}</td>
-              <td class="numeric">${(types > 0) ? utils.commaFormatInteger(types) : "-"}</td>
-              <td class="numeric">${(instances > 0) ? utils.commaFormatInteger(instances) : "-"}</td>
+              <td class="numeric">${(types > 0) ? h.commafy(types) : "-"}</td>
+              <td class="numeric">${(instances > 0) ? h.commafy(instances) : "-"}</td>
             </tr>
           </table>
         </div>
@@ -132,10 +133,10 @@
             <th class="numeric"><a href="?id=${acre.form.quote(result.id)}&order=creation&dir=${order == 'creation' ? inv_dir : dir}">creation date <span acre:if="order == 'creation'">${indicator}</span></a></th>
           </tr>
           <tr acre:for="i,t in types" acre:if="!t['/freebase/type_hints/mediator']" class="${(i % 2 == 0) ? 'odd' : 'even'}">
-            <td><a href="${'type?id=' + acre.form.quote(t.id)}">$t.name</a></td>
+            <td><a href="${h.url_for('/freebase/site/schema/type', [['id',t.id]])}">$t.name</a></td>
             <td>$t.id</td>
             <td class="numeric">$t.properties.length</td>
-            <td class="numeric"><a href="${acre.freebase.service_url}/view${t.id}">${utils.commaFormatInteger(t['/freebase/type_profile/instance_count'])}</a></td>
+            <td class="numeric"><a href="${acre.freebase.service_url}/view${t.id}">${h.commafy(t['/freebase/type_profile/instance_count'])}</a></td>
             <td class="numeric">${t.date.toString("yyyy-MM-dd")}</td>
           </tr>
         </table>
@@ -153,11 +154,11 @@
               <th class="numeric"><a href="?id=${acre.form.quote(result.id)}&order=creation&dir=${order == 'creation' ? inv_dir : dir}">creation date <span acre:if="order == 'creation'">${indicator}</span></a></th>
             </tr>
             <tr acre:for="i,t in mediators" class="${(i % 2 == 0) ? 'odd' : 'even'}">
-              <td><a href="${'type?id=' + acre.form.quote(t.id)}">$t.name</a></td>
+              <td><a href="${h.url_for('/freebase/site/schema/type', [['id',t.id]])}">$t.name</a></td>
               <td>$t.id</td>
               <td class="numeric">$t.properties.length</td>
-              <td class="numeric"><a href="${acre.freebase.service_url}/view${t.id}">${utils.commaFormatInteger(t['/freebase/type_profile/instance_count'])}</a></td>
-              <td class="numeric">${t.date.toString("yyyy-MM-dd")}</td>
+              <td class="numeric"><a href="${acre.freebase.service_url}/view${t.id}">${h.commafy(t['/freebase/type_profile/instance_count'])}</a></td>
+              <td class="numeric">${h.format_date(t.date,"yyyy-MM-dd")}</td>
             </tr>
           </table>
         </div>

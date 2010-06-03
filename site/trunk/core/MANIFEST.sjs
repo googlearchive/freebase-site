@@ -1,6 +1,7 @@
 
 var MF = {
   "version": {
+    "/freebase/site/routing": null,
     "/freebase/libs/jquery": "release",
     "/freebase/apps/libraries": "release"
   },
@@ -21,10 +22,9 @@ var MF = {
 MF.suggest.base_url += MF.suggest.version;
 MF.freebase.resource.base_url += MF.freebase.resource.hash;
 
-
 acre.require("/freebase/apps/libraries/api_enhancer", MF.version["/freebase/apps/libraries"]);
-var h = acre.require("helpers");
-
+var util = acre.require("helpers_util");
+var url = acre.require("helpers_url");
 
 /**
  * usage:
@@ -46,8 +46,8 @@ function init(MF, scope) {
  * - serve MANIFEST.MF as json/p
  */
 function extend_manifest(MF, scope) {
-  var orig = h.extend({}, MF);
-  return h.extend(MF, base_manifest(MF, scope), orig);
+  var orig = util.extend({}, MF);
+  return util.extend(MF, base_manifest(MF, scope), orig);
 };
 
 /**
@@ -135,7 +135,7 @@ function base_manifest(MF, scope, undefined) {
       }
       else {
         // get the url through the external app MANIFEST.MF.img_src(resource.name)
-        var ext_resource = h.extend({}, resource, {id:resource.appid+"/MANIFEST", name:"MANIFEST"});
+        var ext_resource = util.extend({}, resource, {id:resource.appid+"/MANIFEST", name:"MANIFEST"});
         try {
           var ext_mf = MF.require(ext_resource).MF;
           return ext_mf.img_src(resource.name);
@@ -282,7 +282,7 @@ function base_manifest(MF, scope, undefined) {
       if (typeof resource === "string") {
         resource = MF._resource_info(resource);
       }
-      return h.resource_url(resource.id, resource.version);
+      return url.resource_url(resource.id, resource.version);
     },
 
     not_found: function() {
@@ -337,7 +337,7 @@ function base_manifest(MF, scope, undefined) {
   try {
     var cfg = JSON.parse(scope.acre.require("app.cfg").body);
     if (cfg) {
-      h.extend(base, cfg);
+      util.extend(base, cfg);
     }
   }
   catch(ex) {
@@ -346,8 +346,5 @@ function base_manifest(MF, scope, undefined) {
 
   return base;
 };
-
-
-
 
 init(MF, this);

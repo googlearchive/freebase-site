@@ -17,7 +17,14 @@
 
   g.core_base    = acre.current_script.app.base_url;
   g.client_base  = acre.freebase.site_host;
-  g.is_client    = /^https?:\/\/(www\.)?(freebase|sandbox\-freebase|branch\.qa\.freebase|trunk\.qa\.freebase)\.com\//.test(acre.request.base_url);
+
+  // Known client urls:
+  // http://devel.branch.qa.metaweb.com:8115
+  // http://trunk.qa.metaweb.com
+  // http://branch.qa.metaweb.com
+  // http://www.sandbox-freebase.com
+  // http://www.freebase.com
+  g.is_client    = g.h.is_client();
 
   this.exports.g = g;  
 </acre:script>

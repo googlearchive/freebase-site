@@ -52,8 +52,9 @@ def create_app(app_key, session):
     if exists(app_id, session):
         print "That app already exists!" 
         sys.exit(1)
-        
-    session.create_app(app_id, app_key, extra_group="/m/043wdvg" )
+
+    name = "freebase site %s" % app_key
+    session.create_app(app_id, app_key, name=name, extra_group="/m/043wdvg" )
 
 if __name__ == '__main__':
     #session = _get_metaweb_session(pod, username, password)

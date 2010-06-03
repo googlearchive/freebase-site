@@ -52,8 +52,7 @@ Failure.init = function(error) {
     }
     
     // Then create something that is an error
-    var e = new Error(""+error);
-    this.error = e;
+    this.error = new Error(""+error);
     return this;
 };
     
@@ -130,7 +129,7 @@ Deferred.prototype._add_error = function(error) {
     if (error instanceof Failure) {
         this.result = error;
     } else {
-        var failure = Object.create(Failure)
+        var failure = Object.create(Failure);
         failure.init(error);
         this.result = failure;
     }

@@ -14,7 +14,7 @@ var MF = {
   },
   "freebase": {
       "resource": {
-        "hash": "69ebf557e8734e6575f5077fe4e03506c99a28c5bb34e101459906ac6f44992f",
+        "hash" : "dd20b6623a39c3624ab666c6f4e69f80423c7186ab9f8add7c53dd927ad389fa",
         "base_url": "http://res.freebase.com/s/"
       }
   }

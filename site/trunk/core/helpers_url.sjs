@@ -104,7 +104,6 @@ function resource_url(resource_path, version) {
  */
 function account_url(kind, return_url) {
   var client    = is_client();
-
   var client_base  = acre.freebase.site_host;
   var sclient_base = acre.freebase.site_host.replace(/^http/,"https");
   if (return_url) { return_url = encodeURIComponent(return_url); }
@@ -148,7 +147,7 @@ function account_url(kind, return_url) {
  * freebase url
  */
 function freebase_url(path, params) {
-  return acre.form.build_url(acre.freebase.service_url + path, parse_params(params));
+  return acre.form.build_url(acre.freebase.service_url + (path || ""), parse_params(params));
 };
 
 
@@ -156,7 +155,7 @@ function freebase_url(path, params) {
  * url to freebase static resource (http://res.freebase.com/s/xxxx/resource/css/foo.css)
  */
 function freebase_static_resource_url(path) {
-  return mf.freebase.resource.base_url + path;
+  return mf.freebase.resource.base_url + (path || "");
 };
 
 /**

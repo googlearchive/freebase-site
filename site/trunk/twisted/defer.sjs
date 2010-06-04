@@ -279,6 +279,16 @@ DeferredGroup.prototype.request = function (prereq) {
     this._run_callstack();
 };
 
+DeferredGroup.prototype.enqueue = function () {
+    // don't warn about redundant enqueues, they happen too often
+    if (this.state != 'init') {
+        return this;
+    }
+    
+    this.state = 'wait';
+    return this._prereqs_check();
+};
+
 /**
 *  Group Deferreds in an array
 */

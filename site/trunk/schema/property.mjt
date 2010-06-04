@@ -48,7 +48,7 @@
         </tr>
         <tr>
           <td class="rev_predicate" acre:if="result.reverse_property">
-            <a href="${h.url_for('/freebase/site/schema/property,[['id',result.reverse_property.id]])}">${result.reverse_property.name}</a><span class="attribute" acre:if="!result.master_property">master</span>
+            <a href="${h.url_for('/freebase/site/schema/property',[['id',result.reverse_property.id]])}">${result.reverse_property.name}</a><span class="attribute" acre:if="!result.master_property">master</span>
           </td>
           <td acre:else>&nbsp;</td>
         </tr>

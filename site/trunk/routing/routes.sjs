@@ -18,13 +18,10 @@ if (acre.current_script === acre.request.script) {
   try {
     router.route(acre.request);
   }
-  catch (ex) {
-    if (ex === router.NOT_FOUND) {
-      acre.response.status = 404;
-      acre.write("not_found"); 
-      acre.exit();
-    }
-    throw(ex);
+  catch (e if e === router.NOT_FOUND) {
+    acre.response.status = 404;
+    acre.write("not_found");
+    acre.exit();
   }
 }
 

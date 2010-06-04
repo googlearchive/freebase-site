@@ -267,9 +267,9 @@ for app, appid, version in apps:
     
     deployed = svn_deployed_url(app, branch_rev)
     cmd = ['svn', 'ls', deployed]
-    version = run_cmd(cmd, exit=False)
+    svn_exists = run_cmd(cmd, exit=False)
     
-    if version:
+    if svn_exists:
         # static files deploy directory already exist for the branch revision - no op
         continue
     
@@ -286,8 +286,8 @@ for app, appid, version in apps:
     svn_temp_dirs[deployed] = tempdir
     
     # 3. urlfetch static files from app url (js/css)
-    #url = app_url(app, version)
-    url = 'http://{app}.site.freebase.dev.acre.z:8115'.format(app=app)
+    url = app_url(app, version)
+    #url = 'http://{app}.site.freebase.dev.acre.z:8115'.format(app=app)
     cmd = [os.path.join(dir.scripts, 'deploy.py'),
            '-s', url, '-d', tempdir]
     run_cmd(cmd, name='urlfetch')

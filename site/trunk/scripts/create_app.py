@@ -54,7 +54,7 @@ def create_app(app_key, session):
         sys.exit(1)
 
     name = "freebase site %s" % app_key
-    session.create_app(app_id, app_key, name=name, extra_group="/m/043wdvg" )
+    session.create_app(app_id, name=name, extra_group="/m/043wdvg" )
 
 if __name__ == '__main__':
     #session = _get_metaweb_session(pod, username, password)

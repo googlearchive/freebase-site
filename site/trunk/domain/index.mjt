@@ -20,16 +20,14 @@
   // define topic count
   var topic_count = activity['instance'][0]['v']
   
-  // define top users. filter out _bot and constrain to 5
+  // define top users. filter out '_bot', add username, and constrain to 5
   var top_contributors = activity['users'];
   
   for (var key in top_contributors){
+    top_contributors[key].username = top_contributors[key]['id'].replace('/user/', '')
     if (top_contributors[key]['id'].indexOf('_bot') >= 0) {
-        delete top_contributors[key];
     }    
   }
-  
-  
 
 </acre:script>
 
@@ -42,7 +40,7 @@
     
     if(results[0]['/freebase/domain_profile/theme']){
 
-        // We have a theme, so we need to fine out what values are specified by the user
+        // We have a theme, so we need to find out what values are specified by the user
         
         var project_theme = true
 
@@ -121,7 +119,7 @@
             <h3>Top Contributors:</h3>
             <span class="vcard" acre:for="c in top_contributors">
               <a href="#" class="url nickname" title="View user profile">
-                <img class="photo" src="http://img.freebase.com/api/trans/image_thumb/${c['id']}?pad=1&errorid=%2Ffreebase%2Fuser_profile%2Fempty_user_image&maxheight=50&mode=fillcrop&maxwidth=50" height="50" width="50" alt="${c['id'].replace('/user/', '')}" />
+                <img class="photo" src="http://img.freebase.com/api/trans/image_thumb/${c['id']}?pad=1&errorid=%2Ffreebase%2Fuser_profile%2Fempty_user_image&maxheight=50&mode=fillcrop&maxwidth=50" height="50" width="50" alt="${c['username']}" />
               </a>
             </span>
           </div>

@@ -9,7 +9,7 @@ var MF = {
   },
 
   javascript: {
-    "project.js": ["/freebase/site/core/core.js", "project.js", "jquery.lazyload.js", "jquery.masonry.js"]
+    "project.js": ["/freebase/site/core/core.js", "project.js", "jquery.lazyload.js", "jquery.masonry.js", "jquery.tablesorter.js"]
   }
 
 };

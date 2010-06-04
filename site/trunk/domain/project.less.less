@@ -188,7 +188,7 @@ a.collection-title:hover {
 .project-metadata {
     border: 5px solid #f2f2f2;
     .rounded_corners(5px);
-    margin: 0 2em 2em 0;
+    margin: 0 0 2em 0;
 }
 
 .project-metadata .wrapper {
@@ -299,10 +299,21 @@ a.selected {
 }
 
 #collection-table thead th {
+    background: #ececec;
+    .linear_gradient();
     font-weight: bold;
     padding: 0.5em 1em;
-    border-bottom: 2px solid #ececec;
+    border-bottom: 2px solid #ddd;
+    text-shadow: 0 1px #fff;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #efefef;
+    vertical-align: bottom;
+    line-height: 1;
+    border-collapse: separate;
 }
+
+#collection-table thead th.c-name { border-left: 0; }
+#collection-table thead th.c-description { border-right: 0; }
 
 #collection-table tbody tr th,
 #collection-table tbody tr td {
@@ -310,12 +321,16 @@ a.selected {
     border-bottom: 1px solid #ececec;
 }
 
+.odd {
+    background: #f8f8f8;
+}
+
 .c-name {
     width: 30%;
 }
 
-c.creator,
-c.timestamp,
-c.view {
-    width: 20%;
+.c-creator,
+.c-timestamp,
+.c-view {
+    width: 10%;
 }

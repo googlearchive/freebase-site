@@ -64,6 +64,10 @@ $(document).ready(function(){
         }
     });
     
+    // Basic table striping & sorting
+    $("table#collection-table").tablesorter();
+    $("table#collection-table tbody tr:odd").addClass("odd");
+    
     // Add active class to hovered collection &
     // Remove active class and hide topics on mouseout
     $(".collection").hover(function() {

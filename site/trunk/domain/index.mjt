@@ -150,23 +150,29 @@
             </tr>
           </thead>
           <tbody>
-            <tr acre:for="c in results[0]['/freebase/domain_profile/featured_views']">
-              <th class="c-name" scope="row"><a href="http://www.freebase.com/view$c.id">$c.name</th>
-              <td class="c-creator">${c.creator.name}</td>
-              <td class="c-timestamp"><time class="published" datetime="${c.timestamp}">${h.format_date(acre.freebase.date_from_iso(c.timestamp), 'MMMM dd, yyyy')}</time></td>
-              <td class="c-view">${c['/freebase/query_hints/preferred_view']}</td>
-              <td class="c-description">
-                <acre:block if="c['/common/topic/article'] && c['/common/topic/article']['id']">
-                  ${acre.markup.bless(acre.freebase.get_blob(c['/common/topic/article']['id']).body)}
-                </acre:block>
-              </td>
-            </tr>
+            <acre:block for="c in results[0]['/freebase/domain_profile/featured_views']">
+            ${list_item(c)}
+            </acre:block>
           </tbody>
         </table>
       
       </div>
     </div>
   </section>
+</acre:block>
+
+<acre:block def="list_item(c)">
+<tr>
+  <th class="c-name" scope="row"><a href="http://www.freebase.com/view$c.id">$c.name</th>
+  <td class="c-creator"><span class="vcard"><a href="http://www.freebase.com/view${c.creator.id}" class="url nickname" title="View user profile">${c.creator.name}</a></span></td>
+  <td class="c-timestamp"><time class="published" datetime="${c.timestamp}">${h.format_date(acre.freebase.date_from_iso(c.timestamp), 'MMMM dd, yyyy')}</time></td>
+  <td class="c-view">${c['/freebase/query_hints/preferred_view']}</td>
+  <td class="c-description">
+    <acre:block if="c['/common/topic/article'] && c['/common/topic/article']['id']">
+      ${acre.markup.bless(acre.freebase.get_blob(c['/common/topic/article']['id']).body)}
+    </acre:block>
+  </td>
+</tr>
 </acre:block>
 
 <acre:block def="chiclet(c)">

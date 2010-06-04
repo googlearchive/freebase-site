@@ -21,13 +21,12 @@
   var topic_count = activity['instance'][0]['v']
   
   // define top users. filter out '_bot', add username, and constrain to 5
-  var top_contributors = activity['users'];
-  
-  for (var key in top_contributors){
-    top_contributors[key].username = top_contributors[key]['id'].replace('/user/', '')
-    if (top_contributors[key]['id'].indexOf('_bot') >= 0) {
-    }    
-  }
+  var top_contributors = activity['users'].filter(function(user) {
+    return user.id.indexOf('_bot') === -1;
+  }).map(function(user) {
+    user.username = user.id.slice("/user/".length);
+    return user;
+  });
 
 </acre:script>
 

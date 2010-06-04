@@ -36,13 +36,7 @@ function url_for(resource_path, params, extra_path) {
 
   // params can be an array of tuples
   // [ [name1,value1], [name2,value2], ...]
-  if (params && (params instanceof Array)) {
-    var dict = {};
-    params.forEach(function([name,value]) {
-      dict[name] = value;
-    });
-    params = dict;
-  }
+  params = parse_params(params);
 
   var resource_info = routes_mf._resource_info(resource_path);
 
@@ -151,8 +145,35 @@ function account_url(kind, return_url) {
 
 
 /**
+ * freebase url
+ */
+function freebase_url(path, params) {
+  return acre.form.build_url(acre.freebase.service_url + path, parse_params(params));
+};
+
+
+/**
  * url to freebase static resource (http://res.freebase.com/s/xxxx/resource/css/foo.css)
  */
 function freebase_static_resource_url(path) {
   return mf.freebase.resource.base_url + path;
+};
+
+/**
+ * params can be an array of tuples
+ *
+ * @param params:Object,Array (optional) - Query string parameters can be
+ *                                         a dictonary of {name: value, ...} or
+ *                                         an array of [ [name, value] .., ] tuples.
+ */
+function parse_params(params) {
+  // [ [name1,value1], [name2,value2], ...]
+  if (params && (params instanceof Array)) {
+    var dict = {};
+    params.forEach(function([name,value]) {
+      dict[name] = value;
+    });
+    params = dict;
+  }
+  return params;
 };

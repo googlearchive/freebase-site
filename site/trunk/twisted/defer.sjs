@@ -185,9 +185,16 @@ Deferred.prototype._run_call = function(func) {
 
 Deferred.prototype._run_callstack = function() {
     // Keep on running callbacks until we are finished
+    
     if (!this.callstack || !this.callstack.length) {
+        // When we are done calling all callbacks we will
+        //   trigger the appropriate event
         if (this.state === "wait") {
-            this.ready(this.result);
+            if (this.result instanceof Failure) {
+                this.error(this.result.error);
+            } else {
+                this.ready(this.result);
+            }
         }
         return this;
     }
@@ -223,31 +230,8 @@ var DeferredGroup = acre.task.define(Deferred, [
   {name: "opts", 'default':{}}
 ]);
 
-DeferredGroup.prototype.require = function (prereq) {
-    // if we are already ready, adding prereqs is illegal
-    if (this.state !== 'init')
-        throw new Error('task.enqueue() already called - too late for .require()');
-    
-    // avoid dependency bookkeeping if prereq is already ready
-    
-    if (prereq.state === 'ready')
-        return this;
-    
-    // if we are already in error state, we're not going anywhere.
-    if (this.state === 'error')
-        return this;
-    
-    // ok, we're both in wait state.  set up the dependency.
-    this._prereqs[prereq._task_id] = prereq;
-    
-    prereq.addCallback(this._prereq_callback.bind(this), prereq);
-    prereq.addErrback(this._prereq_errback.bind(this), prereq);
-    
-    return this;
-};
-
-// callback when a prerequisite task succeeds
-DeferredGroup.prototype._prereq_callback = function (result, prereq) {
+// ready when a prerequisite task succeeds
+DeferredGroup.prototype._prereq_ready = function (prereq) {
     if (this.opts.fireOnOneCallback === true) {
         this._prereqs = [];
     } else {
@@ -255,19 +239,18 @@ DeferredGroup.prototype._prereq_callback = function (result, prereq) {
     }
     
     this._prereqs_check();
-    return result;
+    return this;
 };
 
-// errback when a prerequisite task fails
-DeferredGroup.prototype._prereq_errback = function (failure, prereq) {
+// error when a prerequisite task fails
+DeferredGroup.prototype._prereq_error = function (prereq) {
     if (this.opts.fireOnOneErrback === true) {
         this._prereqs = null;
         throw failure;
     } else {
         delete this._prereqs[prereq._task_id];
     }
-    
-    return failure;
+    return this;
 };
 
 DeferredGroup.prototype.summarize = function() {
@@ -288,6 +271,7 @@ DeferredGroup.prototype.enqueue = function () {
     this.state = 'wait';
     return this._prereqs_check();
 };
+
 
 /**
 *  Group Deferreds in an array

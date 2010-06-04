@@ -1,11 +1,10 @@
 function do_route(req, path, mf, routes) {
   var query_string;
-
   if (path.indexOf("?") !== -1) {
     var [path, query_string] = path.split("?", 2);
   }
 
-  console.log("app_router", "routing", path);
+  console.log("app_router", "routing", path, query_string);
 
   for (var i=0,len=routes.length; i<len; i++) {
     var rule = routes[i];
@@ -28,11 +27,11 @@ function do_route(req, path, mf, routes) {
       throw (rule.app + " must be defined in the manifest");
     }
 
-    // make sure we have a path within the app we're routing too,
-    // otherwise relative links will break
     if (!path) {
       path = "/";
       /**
+       // make sure we have a path within the app we're routing too,
+       // otherwise relative links will break
       var url = req.app_url + rule.path + "/";
       if (query_string) url += "?" + query_string;
       acre.response.status = 302;
@@ -49,15 +48,13 @@ function do_route(req, path, mf, routes) {
 
     var extension = acre.require("extension_router");
     for (var j=0,len2=paths.length; j<len2; j++) {
+      var [script_id, path_info] = extension.split_path(paths[j]);
       try {
-        extension.do_route(req, paths[j], rule.app, mf.version[rule.app]);
+        extension.do_route(req, rule.app + "/" + script_id, mf.version[rule.app], path_info);
         acre.exit();
       }
-      catch (ex) {
-        if (ex === extension.NOT_FOUND) {
-          continue;
-        }
-        throw(ex);
+      catch (e if e === extension.NOT_FOUND) {
+        continue;
       }
     }
   }

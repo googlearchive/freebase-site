@@ -15,10 +15,14 @@ var extension_map = {
 var handlers = {
 
   sjs : function(res) {
-    console.log("sjs");
+    console.log("sjs", res);
     if (typeof res.main === 'function') {
       console.log("sjs.main");
       res.main();
+    }
+    else if (res.acre.current_script.name.indexOf("test_") === 0) {
+      console.log("sjs.test_report");
+      res.acre.test.report();
     }
   },
 
@@ -91,49 +95,48 @@ handlers.binary = handlers.passthrough;
 /**
  * Not like ordinary path split.
  *
- * /foo.bar/baz/fu => [foo, bar, /baz/fu]
+ * /foo.bar/baz/fu => [foo.bar, /baz/fu]
  */
 function split_path(path) {
   var path_segs = path.split("/");
   path_segs.shift();
-  var filename = path_segs.shift() || "index";
-  var file_segs = filename.split('.');
-  var ext = file_segs.length > 1 ? file_segs.pop() : "sjs";
-  return [filename, ext, "/" + path_segs.join("/")];
+  var script_id = path_segs.shift() || "index";
+  return [script_id, "/" + path_segs.join("/")];
+};
+
+function split_extension(path) {
+  var i = path.lastIndexOf(".");
+  if (i !== -1) {
+    return [path.substring(0, i), path.substring(i+1)];
+  }
+  return [path, "sjs"];
 };
 
 var NOT_FOUND = "Route require not found";
 
-function do_route(req, path, app_id, version) {
-  console.log("do_route", path, app_id, version);
-  var [filename, ext, path_info] = split_path(path);
+function do_route(req, script_id, version, path_info) {
 
-  var id = filename;
-  if (app_id) {
-    id = app_id + "/" + filename;
-  }
+  console.log("do_route", script_id, version, path_info);
+  var [path, ext] = split_extension(script_id);
 
   // MONKEY PATCH
   var old_path_info = req.path_info;
-  req.path_info = path_info;
+  req.path_info = path_info || "/";
 
   try {
-    console.log("do_route", "require", id, version);
-    var res = acre.require(id, version);
+    console.log("do_route", "require", script_id, version);
+    var res = acre.require(script_id, version);
 
     // MONKEY PATCH
     if (res.acre) {
       req.script = res.acre.current_script;
     }
   }
-  catch (e) {
-    console.log("do_route", "require", "error", e);
+  catch (e if e.message === "Could not fetch data from " + script_id) {
+    console.log("do_route", "NOT_FOUND", script_id, e);
     // reset path_info
     req.path_info = old_path_info;
-    if (e && typeof e === "object" && e.message === "Could not fetch data from " + id) {
-      throw(NOT_FOUND);
-    }
-    throw(e);
+    throw(NOT_FOUND);
   }
 
   if (typeof res._main === "function") {
@@ -155,5 +158,6 @@ function do_route(req, path, app_id, version) {
 
 function route(req) {
   var path = req.url.replace(req.app_url + req.base_path, "");
-  do_route(req, path);
+  var [script_id, path_info] = split_path(path);
+  do_route(req, script_id, null, path_info);
 }

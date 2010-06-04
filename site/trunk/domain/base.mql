@@ -23,7 +23,12 @@
         "id": null,
         "name": null
     },
-    "/freebase/query_hints/preferred_view": null
+    "/freebase/query_hints/preferred_view": null,
+    "/common/topic/article": {
+        "id": null,
+        "limit": 1,
+        "optional": true
+    },
   }],
   "!views_count:/freebase/query_hints/related_domain": {
     "optional": true,

@@ -124,7 +124,7 @@
           </div>
         </div>
         <header class="summary nav clear">
-          <ul class="view-mode">
+          <ul class="view-mode-nav">
             <li><a href="#gallery" class="view-mode-option selected" title="View collections as a gallery">Gallery</a></li>
             <li><a href="#list" class="view-mode-option" title="View collections as a list">List</a></li>
           </ul>
@@ -133,27 +133,62 @@
       </div>
     </div>
     <div id="collections">
-      <div class="collection" acre:for="r in results[0]['/freebase/domain_profile/featured_views']">
-        <div class="collection-inner">
-          <div class="collection-img">
-            <a href="http://www.freebase.com/view${r['id']}">
-              <img src="http://www.freebase.com/type/chiclet${r['id']}?spacing=1&limit=6&mode=fillcropmid&size=150" height="150" alt="Photos of topics from $r.name" />
-            </a>
-          </div>
-          <div class="collection-info">
-            <h1>
-              <a href="http://www.freebase.com/view${r['id']}" class="collection-title" title="${r['name']}"><span>${r['name']}</span></a>
-              <a href="javascript:void(0);" title="${r['id']}" class="collection-show-topics" data-fb-query="false">info</a>
-              <span class="collection-title-fade"></span>
-            </h1>
-            <div class="collection-topics">
-            <p class="collection-view-all"><a href="http://www.freebase.com/view${r['id']}">View all &raquo;</a></p>
-            </div>
-          </div>
-        </div>
+      <div id="gallery" class="view-mode">
+        <acre:block for="r in results[0]['/freebase/domain_profile/featured_views']">
+          ${chiclet(r)}
+        </acre:block>
+      </div>
+      <div id="list" class="view-mode" style="display:none;">
+        <table id="collection-table" cellspacing="0">
+          <thead>
+            <tr>
+              <th class="c-name" scope="col">Name</th>
+              <th class="c-creator" scope="col">Created by</th>
+              <th class="c-timestamp" scope="col">Created on</th>
+              <th class="c-view" scope="col">View</th>
+              <th class="c-description" scope="col">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr acre:for="c in results[0]['/freebase/domain_profile/featured_views']">
+              <th class="c-name" scope="row"><a href="http://www.freebase.com/view$c.id">$c.name</th>
+              <td class="c-creator">${c.creator.name}</td>
+              <td class="c-timestamp"><time class="published" datetime="${c.timestamp}">${h.format_date(acre.freebase.date_from_iso(c.timestamp), 'MMMM dd, yyyy')}</time></td>
+              <td class="c-view">${c['/freebase/query_hints/preferred_view']}</td>
+              <td class="c-description">
+                <acre:block if="c['/common/topic/article'] && c['/common/topic/article']['id']">
+                  ${acre.markup.bless(acre.freebase.get_blob(c['/common/topic/article']['id']).body)}
+                </acre:block>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      
       </div>
     </div>
   </section>
+</acre:block>
+
+<acre:block def="chiclet(c)">
+<div class="collection">
+  <div class="collection-inner">
+    <div class="collection-img">
+      <a href="http://www.freebase.com/view${c['id']}">
+        <img src="http://www.freebase.com/type/chiclet${c['id']}?spacing=1&limit=6&mode=fillcropmid&size=150" height="150" alt="Photos of topics from $c.name" />
+      </a>
+    </div>
+    <div class="collection-info">
+      <h1>
+        <a href="http://www.freebase.com/view${c['id']}" class="collection-title" title="${c['name']}"><span>${c['name']}</span></a>
+        <a href="javascript:void(0);" title="${c['id']}" class="collection-show-topics" data-fb-query="false">info</a>
+        <span class="collection-title-fade"></span>
+      </h1>
+      <div class="collection-topics">
+        <p class="collection-view-all"><a href="http://www.freebase.com/view${c['id']}">View all &raquo;</a></p>
+      </div>
+    </div>
+  </div>
+</div>
 </acre:block>
 
 <acre:block def="footer_script(g)">

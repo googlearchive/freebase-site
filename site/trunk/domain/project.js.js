@@ -9,7 +9,24 @@ $(document).ready(function(){
     });
   
     // Setup jQuery masonry to handle reflowing of chiclets
-    $("#collections").masonry({animate: true });
+    // This can only be initialized if #collections is visible
+    // otherwise masonry forces visibility on window resize
+    if($("#gallery").is(":visible")) {
+        $(this).masonry({animate: true });    
+    }
+    
+    // Simple tabset for changing view modes
+    $(".view-mode-option").click(function(){
+        var $target = $($(this).attr("href"));
+        if ($target.is(":hidden")) {
+            $(".view-mode").fadeOut("fast");
+            $target.fadeIn("fast");
+        }
+        
+        $(".view-mode-option").removeClass("selected");
+        $(this).addClass("selected");
+        return false;                
+    });
     
     // Hide project details
     var $project_details = $(".summary-expanded").hide();

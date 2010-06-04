@@ -10,6 +10,15 @@ $(document).ready(function(){
   
     // Setup jQuery masonry to handle reflowing of chiclets
     $("#collections").masonry({animate: true });
+    
+    // Hide project details
+    var $project_details = $(".summary-expanded").hide();
+    
+    // Show/Hide project details handler
+    $(".summary > h2 > .more").click(function(){
+        $project_details.toggle("fast");
+        $(this).text($(this).text() == 'details' ? 'hide' : 'details');
+    });
 
     // We animate the chiclet on hover after 1 second, and return to 0 on mouseout
     $(".collection-img > a").hover(function(){

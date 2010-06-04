@@ -12,11 +12,24 @@
   var results = acre.freebase.mqlread(query).result;
   
   var activity_url = acre.freebase.service_url + '/api/trans/activity?id=' + id;
-  var contributors = {}
+  var activity = {}
   try {
-      contributors = JSON.parse(acre.urlfetch(activity_url).body)[id]['result'];
-      console.log(contributors);
+      activity = JSON.parse(acre.urlfetch(activity_url).body)[id]['result'];
   } catch (e) {}
+  
+  // define topic count
+  var topic_count = activity['instance'][0]['v']
+  
+  // define top users. filter out _bot and constrain to 5
+  var top_contributors = activity['users'];
+  
+  for (var key in top_contributors){
+    if (top_contributors[key]['id'].indexOf('_bot') >= 0) {
+        delete top_contributors[key];
+    }    
+  }
+  
+  
 
 </acre:script>
 
@@ -100,16 +113,28 @@
             <a href="#project-summary" class="more">details</a>
           </h2>
         </footer>
+        <div class="summary-expanded">
+          <p><strong>Name:</strong> ${results[0]["name"]}</p>
+          <p><strong>Source:</strong> <a href="http://www.freebase.com/view${results[0]['id']}">http://www.freebase.com/view${results[0]['id']}</a></p>
+          <div class="project-description">${acre.markup.bless(acre.freebase.get_blob(results[0]['/common/topic/article']['id']).body)}</div>
+          <div class="top-contributors clear" acre:if="top_contributors && top_contributors.length">
+            <h3>Top Contributors:</h3>
+            <span class="vcard" acre:for="c in top_contributors">
+              <a href="#" class="url nickname" title="View user profile">
+                <img class="photo" src="http://img.freebase.com/api/trans/image_thumb/${c['id']}?pad=1&errorid=%2Ffreebase%2Fuser_profile%2Fempty_user_image&maxheight=50&mode=fillcrop&maxwidth=50" height="50" width="50" alt="${c['id'].replace('/user/', '')}" />
+              </a>
+            </span>
+          </div>
+        </div>
         <header class="summary nav clear">
           <ul class="view-mode">
-            <li><a href="#gallery" title="View collections as a gallery">Gallery</a></li>
-            <li><a href="#list" title="View collections as a list">List</a></li>
+            <li><a href="#gallery" class="view-mode-option selected" title="View collections as a gallery">Gallery</a></li>
+            <li><a href="#list" class="view-mode-option" title="View collections as a list">List</a></li>
           </ul>
-          <h3>Explore <em>${results[0]['!views_count:/freebase/query_hints/related_domain']} collections</em> featuring <em>XXXX topics</em></h3>
+          <h3>Explore <em>${results[0]['!views_count:/freebase/query_hints/related_domain']} collections</em> featuring <em>$topic_count topics</em></h3>
         </header>      
       </div>
     </div>
-    <p style="display:none;">${acre.freebase.get_blob(results[0]['/common/topic/article']['id']).body}</p>
     <div id="collections">
       <div class="collection" acre:for="r in results[0]['/freebase/domain_profile/featured_views']">
         <div class="collection-inner">

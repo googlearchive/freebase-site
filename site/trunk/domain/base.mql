@@ -17,7 +17,13 @@
     "name": null,
     "sort": "index",
     "index": null,
-    "type": "/freebase/query"
+    "type": "/freebase/query",
+    "timestamp": null,
+    "creator": {
+        "id": null,
+        "name": null
+    },
+    "/freebase/query_hints/preferred_view": null
   }],
   "!views_count:/freebase/query_hints/related_domain": {
     "optional": true,

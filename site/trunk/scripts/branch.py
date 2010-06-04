@@ -52,8 +52,10 @@ freebaseapps = FREEBASEAPPS.get(options.pod, FREEBASEAPPS['branch'])
 print '[INFO] branching to {pod}'.format(pod=pod)
 
 def log_cmd(cmd, name=None):
-    name = cmd[0] if not name
-    print '[{name}] {cmd}'.format(type=name, cmd=(' '.join(cmd)))
+    if not name:
+        name = cmd[0]
+
+    print '[{name}] {cmd}'.format(name=name, cmd=(' '.join(cmd)))
 
 def run_cmd(cmd, name=None, exit=True):
     log_cmd(cmd, name=name)

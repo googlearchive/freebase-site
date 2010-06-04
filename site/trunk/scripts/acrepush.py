@@ -208,6 +208,17 @@ class AcrePush(object):
 
         return (delete_files, push_files)
 
+    def create_app(self, id):
+
+        parts = id.split('/')
+        
+        if '/'.join(parts[:-1]) == '/freebase/site':
+            import create_app
+            create_app.create_app(parts[-1], self.fb)
+            
+        else:
+            self.fb.create_app(ondisk_app.metadata['id'])        
+
     def push(self, directory, version, id=None, dry=False, user=None, pw=None):
         ondisk_app = OnDiskAcreApp(directory, id)
         graph_app = None
@@ -236,7 +247,8 @@ class AcrePush(object):
             self.fb.login(user, pw)
 
         if create_app:
-            self.fb.create_app(ondisk_app.metadata['id'])
+            self.create_app(ondisk_app.metadata['id'])
+
             
         if not (len(delete_files.keys()) or len(push_files.keys())):
             print "No files affected."
@@ -277,7 +289,7 @@ def usage(msg=None):
         print >> sys.stderr, "%s: %s" %(sys.argv[0], msg)
         print >> sys.stderr, ""
 
-    print >> sys.stderr, "%s [-i id] [-h acrehost] [-u username] [-p password] [-d] directory [version]" % sys.argv[0]
+    print >> sys.stderr, "%s [-i id] [-g acrehost] [-u username] [-p password] [-d] directory [version]" % sys.argv[0]
     sys.exit(1)
 
 def push(id, host, directory,user=None, pw=None, dry=False, version=None):
@@ -297,7 +309,7 @@ if __name__ == '__main__':
     import getopt
 
     try:
-        args, remains = getopt.getopt(sys.argv[1:], "i:h:u:p:d")
+        args, remains = getopt.getopt(sys.argv[1:], "i:g:u:p:d")
     except getopt.GetoptError, e:
         usage(e)
 
@@ -312,7 +324,7 @@ if __name__ == '__main__':
     for a in args:
         if a[0] == '-i':
             id = a[1]
-        elif a[0] == '-h':
+        elif a[0] == '-g':
             host = a[1]
         elif a[0] == '-u':
             user = a[1]

@@ -1,3 +1,5 @@
+var h = acre.require("helpers");
+
 var extension_map = {
   sjs  : "sjs",
   mjt  : 'mjt',
@@ -92,32 +94,16 @@ var handlers = {
 
 handlers.binary = handlers.passthrough;
 
+
 /**
- * Not like ordinary path split.
- *
- * /foo.bar/baz/fu => [foo.bar, /baz/fu]
+ * Specific error thrown when do_route's acre.require cannot find specified script_id
  */
-function split_path(path) {
-  var path_segs = path.split("/");
-  path_segs.shift();
-  var script_id = path_segs.shift() || "index";
-  return [script_id, "/" + path_segs.join("/")];
-};
-
-function split_extension(path) {
-  var i = path.lastIndexOf(".");
-  if (i !== -1) {
-    return [path.substring(0, i), path.substring(i+1)];
-  }
-  return [path, "sjs"];
-};
-
 var NOT_FOUND = "Route require not found";
 
 function do_route(req, script_id, version, path_info) {
 
   console.log("do_route", script_id, version, path_info);
-  var [path, ext] = split_extension(script_id);
+  var [path, ext] = h.split_extension(script_id);
 
   // MONKEY PATCH
   var old_path_info = req.path_info;
@@ -158,6 +144,6 @@ function do_route(req, script_id, version, path_info) {
 
 function route(req) {
   var path = req.url.replace(req.app_url + req.base_path, "");
-  var [script_id, path_info] = split_path(path);
+  var [script_id, path_info, query_string] = h.split_path(path);
   do_route(req, script_id, null, path_info);
 }

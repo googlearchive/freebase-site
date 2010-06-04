@@ -1,10 +1,6 @@
-function do_route(req, path, mf, routes) {
-  var query_string;
-  if (path.indexOf("?") !== -1) {
-    var [path, query_string] = path.split("?", 2);
-  }
 
-  console.log("app_router", "routing", path, query_string);
+function do_route(req, path, mf, routes) {
+  console.log("app_router", "routing", path);
 
   for (var i=0,len=routes.length; i<len; i++) {
     var rule = routes[i];
@@ -29,15 +25,6 @@ function do_route(req, path, mf, routes) {
 
     if (!path) {
       path = "/";
-      /**
-       // make sure we have a path within the app we're routing too,
-       // otherwise relative links will break
-      var url = req.app_url + rule.path + "/";
-      if (query_string) url += "?" + query_string;
-      acre.response.status = 302;
-      acre.response.headers.location = url;
-      acre.exit();
-       **/
     }
 
     var paths = [
@@ -45,10 +32,11 @@ function do_route(req, path, mf, routes) {
       path//,   // 2nd option
       //"/not_found"  // 3rd option
     ];
-
+    
+    var h = acre.require("helpers");
     var extension = acre.require("extension_router");
     for (var j=0,len2=paths.length; j<len2; j++) {
-      var [script_id, path_info] = extension.split_path(paths[j]);
+      var [script_id, path_info] = h.split_path(paths[j]);
       try {
         extension.do_route(req, rule.app + "/" + script_id, mf.version[rule.app], path_info);
         acre.exit();
@@ -62,5 +50,9 @@ function do_route(req, path, mf, routes) {
 
 function route(req, mf, routes) {
   var path = req.url.replace(req.app_url + req.base_path, "");
+  // filter out query string
+  if (path.indexOf("?") !== -1) {
+    var [path, query_string] = path.split("?", 2);
+  }
   do_route(req, path, mf, routes);
-}
+};

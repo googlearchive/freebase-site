@@ -7,7 +7,8 @@ var __all__ = [
   "url_for"
 ];
 
-var mf = acre.require("MANIFEST").MF;
+var MANIFEST = acre.require("MANIFEST");
+var mf = MANIFEST.MF;
 var routes_mf = acre.require("/freebase/site/routing/MANIFEST", mf.version["/freebase/site/routing"]).MF;
 var routes = acre.require("/freebase/site/routing/app_routes", mf.version["/freebase/site/routing"]);
 
@@ -81,10 +82,7 @@ function url_for(resource_path, params, extra_path) {
  * resource_url("/user/daepark/myapp", "3") => http://3.myapp.daepark.user.dev.freebaseapps.com
  */
 function app_url(appid, version) {
-  var path = appid.split("/");
-  path = path.reverse();
-  return acre.host.protocol + "://" + (version ? (version + ".") : "") + path.join('.') + acre.host.dev_name + (acre.host.port !== 80 ? (":" + acre.host.port) : "");
-
+  return MANIFEST.app_url(appid, version);
 };
 
 /**
@@ -93,9 +91,7 @@ function app_url(appid, version) {
  * resource_url("/user/daepark/myapp/foo.png", "3") => http://3.myapp.daepark.user.dev.freebaseapps.com/foo.png
  */
 function resource_url(resource_path, version) {
-  var path = resource_path.split("/");
-  var filename = path.pop();
-  return app_url(path.join("/"), version) + "/" + filename;
+  return MANIFEST.resource_url(resource_path, version);
 };
 
 

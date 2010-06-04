@@ -24,7 +24,37 @@ MF.freebase.resource.base_url += MF.freebase.resource.hash;
 
 acre.require("/freebase/apps/libraries/api_enhancer", MF.version["/freebase/apps/libraries"]);
 var util = acre.require("helpers_util");
-var url = acre.require("helpers_url");
+
+
+
+/**
+ * Given an appid (/user/daepark/myapp) and version, generate the url to the app:
+ *
+ * resource_url("/user/daepark/myapp", "3") => http://3.myapp.daepark.user.dev.freebaseapps.com
+ */
+function app_url(appid, version) {
+  var path = appid.split("/");
+  path = path.reverse();
+  return acre.host.protocol + "://" + (version ? (version + ".") : "") + path.join('.') + acre.host.dev_name + (acre.host.port !== 80 ? (":" + acre.host.port) : "");
+
+};
+
+/**
+ * Given a path to an acre reource (/user/daepark/myapp/foo.png) and version, generate the url to the resource:
+ *
+ * resource_url("/user/daepark/myapp/foo.png", "3") => http://3.myapp.daepark.user.dev.freebaseapps.com/foo.png
+ */
+function resource_url(resource_path, version) {
+  var path = resource_path.split("/");
+  var filename = path.pop();
+  return app_url(path.join("/"), version) + "/" + filename;
+};
+
+
+
+
+
+
 
 /**
  * usage:
@@ -282,7 +312,7 @@ function base_manifest(MF, scope, undefined) {
       if (typeof resource === "string") {
         resource = MF._resource_info(resource);
       }
-      return url.resource_url(resource.id, resource.version);
+      return resource_url(resource.id, resource.version);
     },
 
     not_found: function() {

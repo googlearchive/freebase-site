@@ -14,24 +14,24 @@ var freebase = {};
     
     var args = Array.prototype.slice.call(arguments);
     var d = _urlfetch.apply(null, args);
-    d.addErrback(function(e) {
+    d.addErrback(function(failure) {
       // Not a urlfetch exception, so let someone else handle it
-      if (!(e instanceof acre.errors.URLError)) {
-        throw e;
+      if (!(failure.error instanceof acre.errors.URLError)) {
+        throw failure;
       }
       
       // Not a redirect, let someone else handle it
-      if (e.info.status < 300 || e.info.status > 399) {
-        throw e;
+      if (failure.error.info.status < 300 || failure.error.info.status > 399) {
+        throw failure;
       }
       
       // Invalid redirect so we can't redirect
-      if (!e.info.headers['Location'] || !e.info.headers['Location'].length) {
-        throw e;
+      if (!failure.error.info.headers['Location'] || !failure.error.info.headers['Location'].length) {
+        throw failure;
       }
       
       // Lets try this again, this time with the new url
-      args[0] = e.info.headers['Location'];
+      args[0] = failure.error.info.headers['Location'];
       return _urlfetch.apply(null, args);
     });
     

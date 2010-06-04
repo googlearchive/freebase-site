@@ -9,8 +9,8 @@ test("urlfetch_success", function() {
   d.addCallback(function(result) {
     ok(result.body, "Make sure that we returned a result");
   })
-  d.addErrback(function(error) {
-    ok(false, "Urlfetch returned an error: "+error);
+  d.addErrback(function(failure) {
+    ok(false, "Urlfetch returned an error: "+failure.error);
   });
   
   acre.async.wait_on_results();
@@ -20,8 +20,8 @@ test("urlfetch_success", function() {
   d.addCallback(function(result) {
     ok(result.body, "Make sure that we returned a result");
   })
-  d.addErrback(function(error) {
-    ok(false, "Urlfetch returned an error: "+error);
+  d.addErrback(function(failure) {
+    ok(false, "Urlfetch returned an error: "+failure.error);
   });
   
   acre.async.wait_on_results();
@@ -34,8 +34,8 @@ test("urlfetch_redirects", function() {
   d.addCallback(function(result) {
     ok(result.body, "Make sure that we returned a result");
   })
-  d.addErrback(function(error) {
-    if (error.info.status >= 300 && error.info.status < 400) {
+  d.addErrback(function(failure) {
+    if (failure.error.info.status >= 300 && failure.error.info.status < 400) {
       ok(false, "We should have redirected and not received this error.");
     } else {
       ok(false, "We shouldn't be erroring out here");
@@ -53,8 +53,8 @@ test("urlfetch_failure", function() {
   d.addCallback(function(result) {
     ok(false, "Callback shouldn't have run on a 404 response.");
   })
-  d.addErrback(function(error) {
-    equals(error.info.status, 404);
+  d.addErrback(function(failure) {
+    equals(failure.error.info.status, 404);
     errback_called = true;
   });
   acre.async.wait_on_results();
@@ -66,7 +66,7 @@ test("urlfetch_failure", function() {
   d.addCallback(function(result) {
     ok(false, "Callback shouldn't have run on a bad url.");
   })
-  d.addErrback(function(error) {
+  d.addErrback(function(failure) {
     errback_called = true;
   });
   
@@ -81,7 +81,7 @@ test("mqlread_success", function() {
   d.addCallback(function(envelope) {
     equals(envelope.result.name, "Bob Dylan");
   })
-  d.addErrback(function(error) {
+  d.addErrback(function(failure) {
     ok(false, "Mqlread returned an error: "+error);
   });
   

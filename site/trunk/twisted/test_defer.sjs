@@ -171,6 +171,35 @@ test("callback_arguments", function() {
   })
 });
 
+test("succeed_and_fail", function() {
+  var d = defer.succeed("success");
+  var callback_called = false;
+  d.addErrback(function(failure) {
+    ok(false, "Shouldn't call errback on success");
+    throw failure;
+  });
+  d.addCallback(function(result) {
+    equals(result, "success");
+    callback_called = true;
+    return result;
+  });
+  ok(callback_called, "Callback must have been called for succeed");
+  
+  var error = new Error("error");
+  var d = defer.fail(error);
+  var errback_called = false;
+  d.addErrback(function(failure) {
+    equals(failure.error, error);
+    errback_called = true;
+    throw failure;
+  });
+  d.addCallback(function(result) {
+    ok(false, "Shouldn't call callback on failure");
+    return result;
+  });
+  ok(errback_called, "Errback must have been called for fail");
+});
+
 test("deferred_list", function() {
   var called = {};
   

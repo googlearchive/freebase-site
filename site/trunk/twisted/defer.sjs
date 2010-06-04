@@ -219,6 +219,20 @@ Deferred.prototype._run_callstack = function() {
     return this._run_callstack();
 };
 
+/**
+ *  Returns a deferred that succeeds immediately with the passed in result
+*/
+
+var succeed = function(result) {
+  return Deferred().callback(result);
+}
+
+/**
+ *  Returns a deferred that fails immediately with the passed in error
+*/
+var fail = function(error) {
+  return Deferred().errback(error);
+};
 
 
 /**

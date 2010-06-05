@@ -22,7 +22,7 @@ test("errback", function() {
   function err(value) {
     n/a;
   }
-  function reset(failure, value) {
+  function reset(error, value) {
     return value;
   }
   function add(value) {
@@ -49,15 +49,15 @@ test("errback", function() {
   
   // If we don't handle the error with the first callback then
   //   we should still be calling errbacks
-  equals(d.result instanceof defer.Failure, false, "Shouldn't be in error: "+d.result);
+  equals(d.result instanceof Error, false, "Shouldn't be in error: "+d.result);
   d.addCallback(err);
-  equals(d.result instanceof defer.Failure, true, "Should be in error: "+d.result);
+  equals(d.result instanceof Error, true, "Should be in error: "+d.result);
   d.addErrback(not_handled);
-  equals(d.result instanceof defer.Failure, true, "Should be in error: "+d.result);
+  equals(d.result instanceof Error, true, "Should be in error: "+d.result);
   d.addCallback(add);
-  equals(d.result instanceof defer.Failure, true, "Should be in error: "+d.result);
+  equals(d.result instanceof Error, true, "Should be in error: "+d.result);
   d.addErrback(reset, 0);
-  equals(d.result instanceof defer.Failure, false, "Shouldn't be in error: "+d.result);
+  equals(d.result instanceof Error, false, "Shouldn't be in error: "+d.result);
   d.addCallback(sub)
   equals(d.result, -1);
 });
@@ -174,9 +174,9 @@ test("callback_arguments", function() {
 test("succeed_and_fail", function() {
   var d = defer.succeed("success");
   var callback_called = false;
-  d.addErrback(function(failure) {
+  d.addErrback(function(error) {
     ok(false, "Shouldn't call errback on success");
-    throw failure;
+    throw error;
   });
   d.addCallback(function(result) {
     equals(result, "success");
@@ -188,13 +188,13 @@ test("succeed_and_fail", function() {
   var error = new Error("error");
   var d = defer.fail(error);
   var errback_called = false;
-  d.addErrback(function(failure) {
-    equals(failure.error, error);
+  d.addErrback(function(e) {
+    equals(e, error);
     errback_called = true;
-    throw failure;
+    throw e;
   });
   d.addCallback(function(result) {
-    ok(false, "Shouldn't call callback on failure");
+    ok(false, "Shouldn't call callback on error");
     return result;
   });
   ok(errback_called, "Errback must have been called for fail");
@@ -290,7 +290,7 @@ test("deferred_list_error", function() {
   d.addCallback(function([succ_result, fail_result]) {
     dlist_called = true;
     equals(succ_result, 1, "Should have been added");
-    ok(fail_result instanceof defer.Failure, "Should have returned the error: "+fail_result);
+    ok(fail_result instanceof Error, "Should have returned the error: "+fail_result);
     
     return [succ_result, fail_result];
   });

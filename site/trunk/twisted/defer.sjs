@@ -1,33 +1,16 @@
 acre.require("es5");
 
 /**
-*  Convert all errors in deferreds into a standard failure object
+*  Throw the error this error isn't one of the passed in errors
 */
-var Failure = Object.create({});
-
-Failure.init = function(error) {
-    if (error instanceof Error) {
-        this.error = error;
-        return error;
-    }
-    
-    // Then create something that is an error
-    this.error = new Error(""+error);
-    return this;
-};
-    
-Failure.trap = function(var_args) {
+Error.prototype.trap = function(var_args) {
     for each(var error in arguments) {
-        if (this.error instanceof error) {
+        if (this instanceof error) {
             return;
         }
     }
     
-    throw this.error;
-};
-    
-Failure.toString = function() {
-    return this.error.toString();
+    throw this;
 };
 
 /**
@@ -85,14 +68,20 @@ Deferred.prototype.request = function() {
     this._run_callstack();
 };
 
-Deferred.prototype._add_error = function(error) {
-    if (error instanceof Failure) {
-        this.result = error;
-    } else {
-        var failure = Object.create(Failure);
-        failure.init(error);
-        this.result = failure;
+/**
+*  Convert all values in errbacks into an error
+*/
+Deferred.prototype.maybeError = function(error) {
+    if (!(error instanceof Error)) {
+        // Turn it into an error
+        error = new Error(""+error);
     }
+    
+    return error;
+}
+
+Deferred.prototype._add_error = function(error) {
+    this.result = this.maybeError(error);
     console.error(this.result.toString(), this.result);
     return this.result;
 }
@@ -117,7 +106,7 @@ Deferred.prototype._run_call = function(func) {
         //  update the current result
         var result = func(this.result);
         
-        if (result instanceof Failure) {
+        if (result instanceof Error) {
             this._add_error(result);
             return this._run_callstack();
         } else if (result instanceof Deferred) {
@@ -126,10 +115,12 @@ Deferred.prototype._run_call = function(func) {
             result.addCallback(function(data) {
                 self.result = data;
                 self._run_callstack();
+                return data;
             });
-            result.addErrback(function(failure) {
-                self._add_error(failure);
+            result.addErrback(function(error) {
+                self._add_error(error);
                 self._run_callstack();
+                return error;
             });
         } else {
             // Otherwise continue down the callstack
@@ -150,8 +141,8 @@ Deferred.prototype._run_callstack = function() {
         // When we are done calling all callbacks we will
         //   trigger the appropriate event
         if (this.state === "wait") {
-            if (this.result instanceof Failure) {
-                this.error(this.result.error);
+            if (this.result instanceof Error) {
+                this.error(this.result);
             } else {
                 this.ready(this.result);
             }
@@ -162,7 +153,7 @@ Deferred.prototype._run_callstack = function() {
     // Grab the next callstate off of the callstack and run it
     var callstate = this.callstack.shift();
     
-    if (this.result instanceof Failure) {
+    if (this.result instanceof Error) {
         if (callstate.errback) {
             // We are currently in an error state, so call the errback
             //  if on exists for this callstate
@@ -220,7 +211,7 @@ DeferredGroup.prototype._prereq_ready = function (prereq) {
 DeferredGroup.prototype._prereq_error = function (prereq) {
     if (this.opts.fireOnOneErrback === true) {
         this._prereqs = null;
-        throw failure;
+        throw prereq.messages[0];
     } else {
         delete this._prereqs[prereq._task_id];
     }

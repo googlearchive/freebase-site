@@ -64,6 +64,8 @@ def run_cmd(cmd, name=None, exit=True):
         print stderr
         if exit:
             sys.exit()
+        else:
+            return -1
     return stdout
 
 
@@ -190,9 +192,9 @@ for app, appid, version in apps:
     branch = svn_dev_url(app, version)
     print branch
     cmd = ['svn', 'ls', branch]
-    version = run_cmd(cmd, exit=False)
+    r = run_cmd(cmd, exit=False)
     
-    if version:
+    if r != -1:
         # if already in svn, no op
         continue
     
@@ -267,9 +269,9 @@ for app, appid, version in apps:
     
     deployed = svn_deployed_url(app, branch_rev)
     cmd = ['svn', 'ls', deployed]
-    svn_exists = run_cmd(cmd, exit=False)
+    r = run_cmd(cmd, exit=False)
     
-    if svn_exists:
+    if r != -1:
         # static files deploy directory already exist for the branch revision - no op
         continue
     
@@ -306,15 +308,16 @@ for app, appid, version in apps:
     cwd = os.getcwd()
     os.chdir(tempdir)
     files = [f for f in os.listdir(tempdir) if os.path.splitext(f)[1].lower() in EXTENSIONS]
-    cmd = ['svn', 'add'] + files
-    run_cmd(cmd)
-    os.chdir(cwd)
+    if files:
+        cmd = ['svn', 'add'] + files
+        run_cmd(cmd)
+        os.chdir(cwd)
     
-    # 5. svn commit
-    msg = 'Add static files to deployed directory version {version} of app {app}'.format(version=branch_rev, app=app)
-    svn_commit(tempdir, msg)
+        # 5. svn commit
+        msg = 'Add static files to deployed directory version {version} of app {app}'.format(version=branch_rev, app=app)
+        svn_commit(tempdir, msg)
     
-    restart_static_servers = True
+        restart_static_servers = True
 
 
 # repush tip of svn:trunk to acre:trunk
@@ -339,7 +342,7 @@ if restart_static_servers:
     
     for outbound in OUTBOUND:
         cmd = ["ssh", outbound, "sudo", "mwdeploy"]
-        log('ssh', cmd)
+        #log('ssh', cmd)
         subprocess.call(cmd)
 
 

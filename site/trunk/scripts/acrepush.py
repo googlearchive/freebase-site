@@ -110,7 +110,7 @@ class OnDiskAcreApp(object):
             d = handle_file(f)
 
             if metadata['files'].get(d['name']):
-                print >> sys.stderr, 'WARNING: file %s will override contents of %s' % (f, d['name'])
+                print 'WARNING: file %s will override contents of %s' % (f, d['name'])
 
             metadata['files'][d['name']] = d
 
@@ -135,7 +135,7 @@ class AcrePush(object):
             if not pw:
                 pw = getpass.getpass()
         except KeyboardInterrupt:
-            print >> sys.stderr, "\nPush aborted."
+            print "\nPush aborted."
             return (None, None)
 
         return (user, pw)
@@ -143,16 +143,16 @@ class AcrePush(object):
     def print_app_diff(self, delete_files, push_files, ignored_files):
         
         for filename in ignored_files:
-            print >> sys.stderr, "?\t%s" % filename
+            print "?\t%s" % filename
         for filename,d in delete_files.iteritems():
             if filename not in push_files.keys():
-                print >> sys.stderr, "R\t%s\t(%s)" % (d.get('unquoted_filename'), d.get('reason', ''))
+                print "R\t%s\t(%s)" % (d.get('unquoted_filename'), d.get('reason', ''))
                 
         for filename,d in push_files.iteritems():
             if filename in delete_files.keys() or d.get('reason', '') == 'changed content':
-                print >> sys.stderr, "M\t%s\t(%s)" % (d.get('unquoted_filename'), d.get('reason', ''))
+                print "M\t%s\t(%s)" % (d.get('unquoted_filename'), d.get('reason', ''))
             else:
-                print >> sys.stderr, "A\t%s\t(%s)" % (d.get('unquoted_filename'), d.get('reason', ''))
+                print "A\t%s\t(%s)" % (d.get('unquoted_filename'), d.get('reason', ''))
                     
 
 
@@ -278,7 +278,7 @@ class AcrePush(object):
 
         if version:
             self.fb.create_app_version(ondisk_app.metadata['id'], version)
-            print >> sys.stderr, 'Updated version %s' % version
+            print 'Updated version %s' % version
 
 
         print "\nPush succesfull, %s files affected" % len(files_changed)
@@ -286,10 +286,9 @@ class AcrePush(object):
 
 def usage(msg=None):
     if msg:
-        print >> sys.stderr, "%s: %s" %(sys.argv[0], msg)
-        print >> sys.stderr, ""
+        print "%s: %s\n" %(sys.argv[0], msg)
 
-    print >> sys.stderr, "%s [-i id] [-g acrehost] [-u username] [-p password] [-d] directory [version]" % sys.argv[0]
+    print "%s [-i id] [-g acrehost] [-u username] [-p password] [-d] directory [version]" % sys.argv[0]
     sys.exit(1)
 
 def push(id, host, directory,user=None, pw=None, dry=False, version=None):

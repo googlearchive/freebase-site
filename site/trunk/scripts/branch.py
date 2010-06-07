@@ -230,11 +230,11 @@ for app, appid, version in apps:
         } 
         with open(filename, "w") as f:
             f.write(json.dumps(cfg, indent=2))
-        # add static_base_url.txt.txt to branch. This will error if one already exists
+        # add app.cfg.cfg to branch
         cmd = ['svn', 'add', filename]
-        run_cmd(cmd, exit=False)
+        run_cmd(cmd)
         
-        # svn propset svn:keywords "Rev" static_base_url.txt.txt
+        # svn propset svn:keywords "Rev" app.cfg.cfg
         cmd = ['svn', 'propset', 'svn:keywords', 'Rev', filename]
         run_cmd(cmd)
         
@@ -274,27 +274,18 @@ for app, appid, version in apps:
     if r != -1:
         # static files deploy directory already exist for the branch revision - no op
         continue
-    
-    # 1. create deployed directory for static files in svn
-    msg = 'Create static file deployed directory version {version} for app {app}'.format(version=branch_rev, app=app)
-    cmd = ['svn', 'mkdir', deployed, '--parents', '-m', '"%s"' % msg]
-    run_cmd(cmd)
-    
-    # 2. checkout deployed directory into temp directory
+
+    # 1. urlfetch static files from app url (js/css)
     tempdir = mkdtemp()
-    cmd = ['svn', 'checkout', deployed, tempdir]
-    run_cmd(cmd)
     # keep track of all svn checkouts to temporary directories
     svn_temp_dirs[deployed] = tempdir
-    
-    # 3. urlfetch static files from app url (js/css)
     url = app_url(app, version)
     #url = 'http://{app}.site.freebase.dev.acre.z:8115'.format(app=app)
     cmd = [os.path.join(dir.scripts, 'deploy.py'),
            '-s', url, '-d', tempdir]
     run_cmd(cmd, name='urlfetch')
-    
-    # 3b: svn list version and copy images (*.png, *.gif, etc.) to tempdir
+
+    # 2. svn list version and copy images (*.png, *.gif, etc.) to tempdir
     branch_dir = svn_temp_dirs[branch]
     img_files = [f for f in os.listdir(branch_dir) if os.path.splitext(f)[1].lower() in IMG_EXTENSIONS]    
     for f in img_files:
@@ -302,21 +293,14 @@ for app, appid, version in apps:
         # in local acre dev, we use double extensions for static files including image files
         # convert double extensions to single extension
         dest = os.path.join(tempdir, os.path.splitext(f)[0])
-        shutil.copy2(src, dest)
-    
-    # 4. svn add
-    cwd = os.getcwd()
-    os.chdir(tempdir)
-    files = [f for f in os.listdir(tempdir) if os.path.splitext(f)[1].lower() in EXTENSIONS]
+        shutil.copy2(src, dest)    
+
+    # 3. if static files, import to svn deployed dir
+    files = [f for f in os.listdir(tempdir)]
     if files:
-        cmd = ['svn', 'add'] + files
+        msg = 'Create static file deployed directory version {version} for app {app}'.format(version=branch_rev, app=app)
+        cmd = ['svn', 'import', tempdir, deployed, '-m', '"%s"' % msg]
         run_cmd(cmd)
-        os.chdir(cwd)
-    
-        # 5. svn commit
-        msg = 'Add static files to deployed directory version {version} of app {app}'.format(version=branch_rev, app=app)
-        svn_commit(tempdir, msg)
-    
         restart_static_servers = True
 
 

@@ -29,7 +29,7 @@ var h_url = acre.require("helpers_url");
 /**
  * usage:
  *   var MF = {...};
- *   acre.require("/freebase/site/core/MANIFEST").init(MF, this);
+ *   acre.require("/freebase/site/core/MANIFEST")init(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/core/$Rev$", "static_base_url": "http://freebaselibs.com/static/freebase_site/core/$Rev$"});
  */
 function init(MF, scope) {
   extend_manifest(MF, scope);
@@ -347,4 +347,4 @@ function base_manifest(MF, scope, undefined) {
   return base;
 };
 
-this.init(MF, this);
+thisinit(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/core/$Rev$", "static_base_url": "http://freebaselibs.com/static/freebase_site/core/$Rev$"});

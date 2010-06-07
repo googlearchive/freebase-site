@@ -347,4 +347,4 @@ function base_manifest(MF, scope, undefined) {
   return base;
 };
 
-init(MF, this);
+this.init(MF, this);

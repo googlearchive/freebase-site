@@ -217,7 +217,7 @@ class AcrePush(object):
             create_app.create_app(parts[-1], self.fb)
             
         else:
-            self.fb.create_app(ondisk_app.metadata['id'])        
+            self.fb.create_app(id)
 
     def push(self, directory, version, id=None, dry=False, user=None, pw=None):
         ondisk_app = OnDiskAcreApp(directory, id)
@@ -277,7 +277,7 @@ class AcrePush(object):
 
 
         if version:
-            self.fb.create_app_version(ondisk_app.metadata['id'], version)
+            self.fb.create_app_version(ondisk_app.metadata['id'], version, timestamp='__now__')
             print 'Updated version %s' % version
 
 

@@ -71,14 +71,12 @@ function base_manifest(MF, scope, undefined) {
      * to a permanent static server (i.e., http://freebaselibs.com/statc/freebase_site/foo/[version]/...).
      * But when developing, we want the resources to be served dynamically through "/MANIFEST/...".
      *
-     * This will be overwritten by what's in app.cfg.
      */
     static_base_url: scope.acre.current_script.app.base_url +  "/MANIFEST",
 
     /**
      * This is like static_base_url but for images (*.png, *.gif, etc.).
      *
-     * This will be overwritten by what's in app.cfg.
      */
     image_base_url: scope.acre.current_script.app.base_url,
 
@@ -322,27 +320,6 @@ function base_manifest(MF, scope, undefined) {
       }, scope);
     }
   };
-
-
-  /**
-   * DO NOT MODIFY!
-   *
-   * Options specified in app.cfg (if it exists) overrides MANIFEST options.
-   * Specifically static_base_url and image_base_url.
-   *
-   * This is used to serve static files though freebaselibs (js, css, png, etc.)
-   *
-   * app.cfg is added/updated freebase site branch/deploy scripts.
-   */
-  try {
-    var cfg = JSON.parse(scope.acre.require("app.cfg").body);
-    if (cfg) {
-      h_util.extend(base, cfg);
-    }
-  }
-  catch(ex) {
-    // ignore
-  }
 
   return base;
 };

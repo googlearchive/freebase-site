@@ -1,0 +1,160 @@
+
+<acre:block def="page(g)">
+  <acre:script>
+    acre.response.set_header('content-type', 'text/html');
+    acre.response.status = 200;
+  </acre:script>
+  <!DOCTYPE html>
+  <html lang="en" dir="ltr">
+    <head>
+      <meta charset="utf-8" />
+      <title acre:if="g.exports.title">Freebase - ${g.exports.title(g)}</title>
+      <title acre:else="">Freebase</title>
+
+      <acre:script>
+        console.log("acre.freebase.jquery_loaded", acre.freebase.jquery_loaded);
+      </acre:script>
+
+      <!-- jquery -->
+      ${g.t.script("http://ajax.googleapis.com/ajax/libs/jquery/" + g.mf.jquery.version + "/jquery.min.js")}
+
+      <!-- freebase suggest -->
+      ${g.t.suggest()}
+      
+      <!-- for signed in/out client-side javascript logic -->      
+      <script acre:if="g.is_client" type="text/javascript">
+        var user_info_service_url = "/api/service/user_info";
+      </script>
+      <script acre:else="" type="text/javascript">
+        var user_info_service_url = "${g.base_path}/acre/account/user_info";
+      </script>
+
+     <!-- any additional head content (i.e., css, js, etc.)-->
+      <acre:block if="g.exports.head">
+        ${g.exports.head(g)}
+      </acre:block>
+    </head>
+
+    <acre:block if="g.exports.body">
+      ${g.exports.body(g)}
+    </acre:block>
+    <acre:block else="">
+      ${g.page.body(g)}
+    </acre:block>
+ </html>
+</acre:block>
+
+
+<acre:block def="body(g)">
+  <body acre:attrs="g.options.body_class ? {'class': g.options.body_class} : {}">
+    ${g.page.header(g)}
+    ${g.page.content(g)}
+    ${g.page.footer(g)}
+    ${g.page.footer_script(g)}
+  </body>
+</acre:block>
+
+<acre:block def="header(g)">
+  <header id="page-header" class="clear" role="banner">
+    <div id="logo">
+      <a href="$g.client_base" title="Return to Freebase homepage">
+        <img alt="Freebase" 
+             acre:attrs="g.is_client ? {src: g.mf.img_src('freebase-logo-production.png')} : {src: g.mf.img_src('freebase-logo-sandbox.png')}"
+             border="0" height="29" width="117" /></a>
+    </div>
+    <div class="site-search" searchUrl="${g.client_base}/search" id="SearchBox">
+      <form method="get" action="${g.client_base}/search" class="SearchBox-form">
+        <fieldset class="search-form-header">
+          <input type="hidden" value="30" name="limit" />
+          <input type="hidden" value="0" name="start" />
+          <input type="text" 
+                 autocomplete="off"
+                 placeholder="Search 12 million interconnected topics"
+                 name="query" id="global-search-input"
+                 class="SearchBox-input AutocompleteInput-input" />
+        </fieldset>
+      </form>
+      <div id="site-search-box"></div>
+      <div id="site-search-label"><span>Start typing to get some suggestions</span></div>
+    </div>
+    <ul id="nav-global" class="clear">
+      <li class="nav-global-item" id="nav-explore"><a href="${g.client_base}/explore"     title="Explore Freebase data">Explore</a></li>
+      <li class="nav-global-item" id="nav-apps"><a href="${g.client_base}/apps"           title="Find Apps made with Freebase">Apps</a></li>      
+      <li class="nav-global-item" id="nav-developer"><a href="${g.client_base}/developer" title="Read developer documentation of Freebase services">Developers</a></li>      
+      <li class="nav-global-item" id="nav-make"><a href="http://wiki.freebase.com/"       title="Give help and get help adding data to Freebase">Help</a></li>
+    </ul>
+    <div id="nav-account">
+      <div class="nav-user-controls" id="signedin" style="display:none;">
+        <strong id="nav-username">
+          Signed in as
+          <a href="${g.client_base}/view" title="View your profile"></a></strong>
+        <a href="${acre.markup.bless(g.h.account_url('settings'))}" title="View your account info on Freebase" rel="nofollow">Settings</a>
+        <a href="${acre.markup.bless(g.h.account_url('signout', acre.request.url))}" title="Sign out of Freebase" rel="nofollow">Sign out</a>
+      </div>
+      <div id="anonymous-user-controls" id="signedout" style="display:none;">
+        <a href="${acre.markup.bless(g.h.account_url('signin', acre.request.url))}" title="Sign in to your Freebase account" rel="nofollow">Sign in or Sign up</a>
+      </div>
+    </div>
+  </header>  
+</acre:block>
+
+
+<acre:block def="content(g)">
+  <acre:block if="g.exports.content_header">${g.exports.content_header(g)}</acre:block>
+  <div id="content" class="clear">
+    <hgroup class="section-header">
+      <acre:block if="g.exports.section_header">${g.exports.section_header(g)}</acre:block>
+      <acre:block elif="g.exports.title"><h1 id="page-title">${g.exports.title(g)}</h1></acre:block>
+    </hgroup>
+    <acre:block if="g.exports.content_body">${g.exports.content_body(g)}</acre:block>
+  </div>
+</acre:block>
+
+<acre:block def="footer(g)">
+  <footer id="page-footer" class="clear">
+    <div id="metaweb-attribution">
+      <a href="http://www.metaweb.com/" id="copyright" title="Learn more about Metaweb, Inc." rel="nofollow">
+        &#169;2010&nbsp;
+        <img src="${g.mf.img_src('metaweb-logo.png')}" alt="Metaweb"  width="71" height="12" />
+      </a>
+    </div>
+    <ul id="nav-footer" class="clear">
+      <li class="nav-footer-item">
+        <a id="site-feedback" href="${g.client_base}/site/feedback" 
+           rel="nofollow" 
+           title="Send us your feedback">Feedback</a>
+      </li>
+      <li class="nav-footer-item">
+        <a href="${g.client_base}/policies/attribution" 
+           rel="nofollow" 
+           title="View the Freebase Licensing Policy">Attribution Policy</a>
+      </li>
+      <li class="nav-footer-item">
+        <a href="${g.client_base}/policies/tos" 
+           rel="nofollow"
+           title="View the Freebase Terms of Service">Terms of Service</a>
+      </li>
+      <li class="nav-footer-item">
+        <a href="http://blog.freebase.com/" 
+           title="Visit our blog to keep up with the latest news from Freebase">Freebase Blog</a>
+      </li>
+    </ul>
+    <nav id="footer-categories" class="clear">
+      <strong id="categories-header">Freebase contains information on:</strong>
+      <ul id="footer-categories-list" class="clear">  
+        <li class="category-list-item"><a href="${g.client_base}/view/category/arts-entertainment" title="Explore Arts &amp; Entertainment">Arts &amp; Entertainment</a></li>
+        <li class="category-list-item"><a href="${g.client_base}/view/category/products-services" title="Explore Products &amp; Services">Products &amp; Services</a></li>
+        <li class="category-list-item"><a href="${g.client_base}/view/category/science-technology" title="Explore Science &amp; Technology">Science &amp; Technology</a></li>
+        <li class="category-list-item"><a href="${g.client_base}/view/category/society" title="Explore Society">Society</a></li>
+        <li class="category-list-item"><a href="${g.client_base}/view/category/special-interests" title="Explore Special Interests">Special Interests</a></li>
+        <li class="category-list-item"><a href="${g.client_base}/view/category/sports" title="Explore Sports">Sports</a></li>
+        <li class="category-list-item"><a href="${g.client_base}/view/category/time-space" title="Explore Time &amp; Space">Time &amp; Space</a></li>
+      </ul>
+    </nav>
+  </footer>
+</acre:block>
+
+
+<acre:block def="footer_script(g)">
+  <acre:block if="g.exports.footer_script">${g.exports.footer_script(g)}</acre:block>
+</acre:block>

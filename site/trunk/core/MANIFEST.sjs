@@ -31,8 +31,8 @@ var h_url = acre.require("helpers_url");
  *   var MF = {...};
  *   acre.require("/freebase/site/core/MANIFEST").init(MF, this);
  */
-function init(MF, scope) {
-  extend_manifest(MF, scope);
+function init(MF, scope, options) {
+  extend_manifest(MF, scope, options);
   if (scope.acre.current_script === scope.acre.request.script) {
     MF.main();
   }
@@ -45,8 +45,8 @@ function init(MF, scope) {
  * - serve (less)css/js as defined in the MANIFEST
  * - serve MANIFEST.MF as json/p
  */
-function extend_manifest(MF, scope) {
-  var orig = h_util.extend({}, MF);
+function extend_manifest(MF, scope, options) {
+  var orig = h_util.extend({}, MF, options);
   return h_util.extend(MF, base_manifest(MF, scope), orig);
 };
 

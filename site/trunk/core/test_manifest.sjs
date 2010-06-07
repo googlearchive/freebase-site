@@ -143,6 +143,11 @@ test("extend_manifest", function() {
   equals(mf.version["/hello/world/app"], "7");
   ok(mf.javascript);
   ok(mf.stylesheet);
+
+
+  m.extend_manifest(mf, scope, {static_base_url:'foo', image_base_url: 'bar'});
+  equals(mf.static_base_url, 'foo');
+  equals(mf.image_base_url, 'bar');
 });
 
 

@@ -11,7 +11,7 @@ function include(script_id) {
 
 include("helpers_util");
 include("helpers_date");
-include("helpers_url");
+include("helpers_url2");
 include("helpers_format");
 
 

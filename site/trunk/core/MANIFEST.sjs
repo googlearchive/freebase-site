@@ -23,38 +23,8 @@ MF.suggest.base_url += MF.suggest.version;
 MF.freebase.resource.base_url += MF.freebase.resource.hash;
 
 acre.require("/freebase/apps/libraries/api_enhancer", MF.version["/freebase/apps/libraries"]);
-var util = acre.require("helpers_util");
-
-
-
-/**
- * Given an appid (/user/daepark/myapp) and version, generate the url to the app:
- *
- * resource_url("/user/daepark/myapp", "3") => http://3.myapp.daepark.user.dev.freebaseapps.com
- */
-function app_url(appid, version) {
-  var path = appid.split("/");
-  path = path.reverse();
-  return acre.host.protocol + "://" + (version ? (version + ".") : "") + path.join('.') + acre.host.dev_name + (acre.host.port !== 80 ? (":" + acre.host.port) : "");
-
-};
-
-/**
- * Given a path to an acre reource (/user/daepark/myapp/foo.png) and version, generate the url to the resource:
- *
- * resource_url("/user/daepark/myapp/foo.png", "3") => http://3.myapp.daepark.user.dev.freebaseapps.com/foo.png
- */
-function resource_url(resource_path, version) {
-  var path = resource_path.split("/");
-  var filename = path.pop();
-  return app_url(path.join("/"), version) + "/" + filename;
-};
-
-
-
-
-
-
+var h_util = acre.require("helpers_util");
+var h_url = acre.require("helpers_url");
 
 /**
  * usage:
@@ -76,8 +46,8 @@ function init(MF, scope) {
  * - serve MANIFEST.MF as json/p
  */
 function extend_manifest(MF, scope) {
-  var orig = util.extend({}, MF);
-  return util.extend(MF, base_manifest(MF, scope), orig);
+  var orig = h_util.extend({}, MF);
+  return h_util.extend(MF, base_manifest(MF, scope), orig);
 };
 
 /**
@@ -165,7 +135,7 @@ function base_manifest(MF, scope, undefined) {
       }
       else {
         // get the url through the external app MANIFEST.MF.img_src(resource.name)
-        var ext_resource = util.extend({}, resource, {id:resource.appid+"/MANIFEST", name:"MANIFEST"});
+        var ext_resource = h_util.extend({}, resource, {id:resource.appid+"/MANIFEST", name:"MANIFEST"});
         try {
           var ext_mf = MF.require(ext_resource).MF;
           return ext_mf.img_src(resource.name);
@@ -312,7 +282,7 @@ function base_manifest(MF, scope, undefined) {
       if (typeof resource === "string") {
         resource = MF._resource_info(resource);
       }
-      return resource_url(resource.id, resource.version);
+      return h_url.resource_url(resource.id, resource.version);
     },
 
     not_found: function() {
@@ -367,7 +337,7 @@ function base_manifest(MF, scope, undefined) {
   try {
     var cfg = JSON.parse(scope.acre.require("app.cfg").body);
     if (cfg) {
-      util.extend(base, cfg);
+      h_util.extend(base, cfg);
     }
   }
   catch(ex) {

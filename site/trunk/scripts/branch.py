@@ -6,7 +6,7 @@ import urllib2
 import json
 import subprocess
 import dir
-from tempfile import mkdtemp
+from tempfile import mkdtemp, mkstemp
 import shutil
 import re
 import acrepush
@@ -218,39 +218,30 @@ for app, appid, version in apps:
     svn_temp_dirs[branch] = tempdir
     cmd = ['svn', 'checkout', branch, tempdir]
     run_cmd(cmd)
-    
-    # update app.cfg with static_base_url, image_base_url
-    filename = os.path.join(tempdir, "app.cfg.cfg")
-    
-    if (not os.path.exists(filename)):
-        base_url = "http://freebaselibs.com/static/freebase_site/{app}/$Rev$".format(app=app)
-        cfg = {
-            "static_base_url": base_url,
-            "image_base_url": base_url
-        } 
-        with open(filename, "w") as f:
-            f.write(json.dumps(cfg, indent=2))
-        # add app.cfg.cfg to branch
-        cmd = ['svn', 'add', filename]
-        run_cmd(cmd)
-        
-        # svn propset svn:keywords "Rev" app.cfg.cfg
-        cmd = ['svn', 'propset', 'svn:keywords', 'Rev', filename]
-        run_cmd(cmd)
-        
-        msg = 'Add app config with static_base_url'
-        svn_commit(tempdir, msg)
-    else:
-        # compare "svn info branch" and "svn info app.cfg"
-        # to check if anything was checked in after app.cfg
-        if (svn_revision(tempdir) > svn_revision(filename)):
-            # touch app.cfg by adding a space to the end of file
-            with open(filename, "a") as f:
-                f.write(" ")
+
+    # update MANIFEST static_base_url
+    base_url = "http://freebaselibs.com/static/freebase_site/{app}/$Rev$".format(app=app)
+    cfg = json.dumps({
+        "static_base_url": base_url,
+        "image_base_url": base_url
+    })
+    manifest = os.path.join(tempdir, "MANIFEST.sjs")
+    if os.path.exists(manifest):
+        init_re = re.compile(r'\.init\s*\(\s*MF\s*\,\s*this.*$')
+        temp = mkstemp()
+        with open(temp[1], "w") as tmp:
+            with open(os.path.join(manifest)) as mf:
+                for line in mf.xreadlines():
+                    tmp.write(init_re.sub('.init(MF, this, %s);' % cfg, line))                    
+        shutil.copy2(temp[1], manifest)
             
-            msg = 'Update app config with static_base_url'
-            svn_commit(tempdir, msg)
-    
+        # svn propset svn:keywords "Rev" MANIFEST.sjs
+        cmd = ['svn', 'propset', 'svn:keywords', 'Rev', manifest]
+        run_cmd(cmd)
+        
+        msg = 'Update MANIFEST static_base_url'
+        svn_commit(tempdir, msg)    
+
     svn_branch_revs[branch] = svn_revision(branch)
     
     # acre push branch

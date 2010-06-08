@@ -205,14 +205,17 @@ var RequestCanceled, RequestTimeout;
       deferred.resolve(results)
     } else {
       for (var key in promises) {
-        var handle_promise = function(value){
-          results[key] = value;
-          fulfilled++;
-          if (fulfilled === length){
-            deferred.resolve(results);
+        (function() {
+          var k = key;
+          var handle_promise = function(value){
+            results[k] = value;
+            fulfilled++;
+            if (fulfilled === length){
+              deferred.resolve(results);
+            }
           }
-        }
-        when(promises[key], handle_promise, handle_promise);
+          when(promises[k], handle_promise, handle_promise);
+        })()
       }
     }
     return deferred.promise;

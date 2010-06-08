@@ -18,6 +18,14 @@ Object.keys = Object.keys || function(o) {
   return result;
 };
 
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+      if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
+
 Function.prototype.prebind = Function.prototype.prebind || function(scope, var_args) {
   // Binds a function to a scope with any arguments bound to the left
   var func = this;

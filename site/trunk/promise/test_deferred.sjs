@@ -209,6 +209,145 @@ test("succeed_and_fail", function() {
   ok(errback_called, "Errback must have been called for fail");
 });
 
+test("all_list", function() {
+  var called = {};
+  
+  var promises = [];
+  for(var i=0; i<5; i++) {
+    called[i] = false;
+    var p = deferred.resolved(i).then(function(result) {
+      called[result] = true;
+      return result;
+    });
+    promises.push(p);
+  }
+  
+  var dlist_called = false;
+  deferred.all(promises)
+    .then(function(results) {
+      dlist_called = true;
+      for(var i=0; i<5; i++) {
+        var result = results[i];
+        ok(called[result], "Result "+result+" should be called");
+        equals(result, i, "Result "+result+" should be called in order");
+      }
+      return results;
+      
+    }, function(error) {
+      ok(false, "The errback of a deferred list should never be called");
+    });
+  
+  // Since all of the dependant callbacks were already triggered
+  //  the dlist callback should be called immediately
+  ok(dlist_called, "The callback for the deferred list should be called");
+});
+
+test("all_list_with_callbacks", function() {
+  function steamer(word) {
+    return ["steam", word].join("-");
+  }
+  
+  var pengine = deferred.resolved("engine").then(steamer);
+  var dpunk = deferred.unresolved();
+  var ppunk = dpunk.then(steamer);
+  dpunk.resolve("punk");
+  var dboat = deferred.unresolved()
+  var pboat = dboat.then(steamer);
+  
+  var pall = deferred.all([pengine, ppunk, pboat]);
+  
+  dboat.resolve("boat");
+  
+  var pall_called = false;
+  pall.then(function(results) {
+    pall_called = true;
+    equals(results[0], "steam-engine", "Should be the combined word");
+    equals(results[1], "steam-punk", "Should be the combined word");
+    equals(results[2], "steam-boat", "Should be the combined word");
+    return results;
+  });
+  
+  pall.then(null, function(error) {
+    ok(false, "The errback of a deferred list should not be called");
+  });
+  
+  // Since all of the dependant callbacks were already triggered
+  //  the dlist callback should be called immediately
+  ok(pall_called, "The callback for the deferred list should be called");
+});
+
+test("all_error", function() {
+  function err(value) {
+    n/a;
+  }
+  function add(value) {
+    return value + 1;
+  }
+  function sub(value) {
+    return value - 1;
+  }
+  function not_handled(e) {
+    throw e;
+  }
+  
+  // Trigger the dependant callbacks
+  var dsucc = deferred.resolved(0).then(add);
+  var dfail = deferred.resolved(0).then(err);
+  
+  var p = deferred.all([dsucc, dfail]);
+  
+  var all_called = false;
+  p = p.then(function([succ_result, fail_result]) {
+    all_called = true;
+    equals(succ_result, 1, "Should have been added");
+    ok(fail_result instanceof Error, "Should have returned the error: "+fail_result);
+    
+    return [succ_result, fail_result];
+  });
+  
+  p = p.then(null, function(error) {
+    ok(false, "The errback of a deferred list should not be called");
+  });
+  
+  // Since all of the dependant callbacks were already triggered
+  //  the dlist callback should be called
+  ok(all_called, "The callback for the deferred list should be called");
+});
+
+test("all_dict", function() {
+  var keys = ["a", "b", "c", "d", "e"];
+  var called = {};
+  
+  var promises = {};
+  keys.forEach(function(key) {
+    called[key] = false;
+    var p = deferred.resolved(key)
+      .then(function(result) {
+        called[result] = true;
+        return result;
+      });
+    promises[key] = p;
+  });
+  
+  var all_dict_called = false;
+  deferred.all(promises)
+    .then(function(results) {
+      all_dict_called = true;
+      keys.forEach(function (key) {
+        var result = results[key];
+        ok(called[result], "Result "+result+" should be called");
+        equals(result, key, "Result "+result+" should be called with the correct key");
+      });
+      return results;
+    }, function(error) {
+      ok(false, "The errback of a deferred dict should never be called");
+    });
+  
+  // Since all of the dependant callbacks were already triggered
+  //  the dlist callback should be called immediately
+  ok(all_dict_called, "The callback for the deferred dict should be called");
+});
+
 if (acre.current_script === acre.request.script) {
   acre.test.report();
 }

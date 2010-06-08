@@ -193,11 +193,7 @@ Error.prototype.trap = function(var_args) {
     }
   };
   
-  /**
-   * Takes an array or dict of promises and returns a promise that 
-   * is fulfilled when all of those promises have been fulfilled
-   */
-  all = function(promises) {
+  function all_array(array) {
     var deferred = unresolved();
     
     var fulfilled = 0;
@@ -219,6 +215,63 @@ Error.prototype.trap = function(var_args) {
       });
     }
     return deferred.promise;
+  }
+  
+  function all_dict(dict) {
+    var deferred = unresolved();
+    
+    var fulfilled = 0;
+    var length = promises.length;
+    var results = [];
+    
+    if (length === 0) {
+      deferred.resolve(results)
+    } else {
+      array.forEach(function(promise, index){
+        when(promise, each, each);
+        function each(value){
+          results[index] = value;
+          fulfilled++;
+          if(fulfilled === length){
+            deferred.resolve(results);
+          }
+        }
+      });
+    }
+    return deferred.promise;
+  }
+  
+  /**
+   * Takes an array or dict of promises and returns a promise that 
+   * is fulfilled when all of those promises have been fulfilled
+   */
+  all = function(promises) {
+    var deferred = unresolved();
+    
+    var fulfilled = 0;
+    var length = Object.size(promises);
+    var results;
+    if (promises instanceof Array) {
+      results = [];
+    } else {
+      results = {};
+    }
+    
+    if (length === 0) {
+      deferred.resolve(results)
+    } else {
+      for (var key in promises) {
+        var handle_promise = function(value){
+          results[key] = value;
+          fulfilled++;
+          if (fulfilled === length){
+            deferred.resolve(results);
+          }
+        }
+        when(promises[key], handle_promise, handle_promise);
+      }
+    }
+    return deferred.promise;
   };
 
   /**
@@ -228,20 +281,20 @@ Error.prototype.trap = function(var_args) {
   any = function(promises){
     var deferred = unresolved();
     var fulfilled;
-    array.forEach(function(promise, index){
-      when(promise, function(value){
+    for (var key in promises) {
+      when(promises[key], function(value){
         if (!fulfilled) {
           fulfilled = true;
           deferred.resolve(value);
         }  
       },
-      function(error){
+      function(error) {
         if (!fulfilled) {
           fulfilled = true;
           deferred.resolve(error);
         }  
       });
-    });
+    }
     return deferred.promise;
   };
 

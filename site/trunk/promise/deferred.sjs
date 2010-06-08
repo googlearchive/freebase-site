@@ -19,8 +19,21 @@ acre.require("es5");
 var Deferred;
 var unresolved, resolved, rejected;
 var when, whenPromise;
+var makePromise, maybePromise;
 var all, first, seq;
 var RequestCanceled, RequestTimeout;
+
+/**
+*  Re throw the error if this error isn't one of the passed in errors
+*/
+Error.prototype.trap = function(var_args) {
+  for each(var error in arguments) {
+    if (this instanceof error) {
+        return;
+    }
+  }
+  throw this;
+};
 
 (function() {
   
@@ -52,8 +65,11 @@ var RequestCanceled, RequestTimeout;
       var func = (result instanceof Error ? listener.error : listener.resolved);
       if (func) {
           try {
-            var new_result = func(result);
-            when(new_result, listener.deferred.resolve, listener.deferred.reject);
+            when(func(result), function(new_result) {
+              listener.deferred.resolve(new_result)
+            }, function(new_error) {
+              listener.deferred.reject(new_error)
+            });
           } catch(e) {
             listener.deferred.reject(e);
           }
@@ -229,5 +245,80 @@ var RequestCanceled, RequestTimeout;
     return deferred.promise;
   };
 
+  /**
+  *  Return a Promise whether func returns a Promise or not
+  */
+  maybePromise = function(func, args) {
+    var value = func.apply(this, args);
+    if (is_promise(value)) {
+      return value;
+    } else {
+      return resolved(result);
+    }
+  };
+
+  /**
+  *  Make a Deferred from an async function with callback and/or errback args
+  *    - func = function reference
+  *    - callback_pos = number or dict with callback postiion in func signature
+  *      - position = array position in arguments
+  *      - key = key if argument is an object
+  *    - errback_pos = same as callback_pos, but for errback
+  */
+  makePromise = function(func, callback_pos, errback_pos) {
+    
+    function _normalize_pos(pos) {
+      switch (typeof pos) {
+        case "undefined" :
+          return { position: null, key: null };
+        case "number" : 
+          return { position: pos, key: null };
+        case "object" :
+          if (pos.position && typeof pos.position !== "number") {
+            throw "Callback 'position' property must be a number";
+          }
+          return pos;
+        default :
+          throw "Unrecognized type for callback position -- must be a number or object with 'position' and/or 'key' values";
+      }
+    }
+    
+    function _place_callback(args, pos, func) {
+      if (!pos.position) {
+        return args;
+      }
+      
+      if(!pos.key) {
+        args[pos.position] = func;
+        return args;
+      }
+      
+      if (typeof args[pos.position] !== "object") {
+        args[pos.position] = {};
+      }
+      
+      args[pos.position][pos.key] = func;
+      return args;
+    }
+    
+    return function() {
+      var d = unresolved();
+      
+      args = Array.prototype.slice.call(arguments);
+      _place_callback(args, _normalize_pos(callback_pos), function(res) {
+          d.resolve(res);
+      });
+      _place_callback(args, _normalize_pos(errback_pos), function(e) {
+          d.reject(e);
+      });
+      
+      try {
+        func.apply(null, args);
+      } catch(e) {
+        d.reject(e);
+      }
+      return d.promise;
+    }
+  }
   
 })();

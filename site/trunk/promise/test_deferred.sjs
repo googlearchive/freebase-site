@@ -44,6 +44,24 @@ test("callback_chaining", function() {
   })
 });
 
+test("callback_deferred", function() {
+  var p = deferred.resolved("ministry of");
+  
+  // Each result should be the result of the deferred
+  //  before it in the chain
+  p.then(function(result) {
+    equals(result, "ministry of");
+    return deferred.resolved("silly")
+  })
+  .then(function(result) {
+    equals(result, "silly");
+    return deferred.rejected("walks")
+  })
+  .then(null, function(error) {
+    equals(error.message, "walks");
+  });
+});
+
 test("errback", function() {
   var value = 0;
   
@@ -160,6 +178,35 @@ test("quick_trigger", function() {
   // so the number should go down by one
   p.then(null, sub)
   equals(value, -1);
+});
+
+test("succeed_and_fail", function() {
+  var d = deferred.resolved("success");
+  var callback_called = false;
+  var p = d.then(null, function(error) {
+    ok(false, "Shouldn't call errback on success");
+    throw error;
+  });
+  p = p.then(function(result) {
+    equals(result, "success");
+    callback_called = true;
+    return result;
+  });
+  ok(callback_called, "Callback must have been called for succeed");
+  
+  var error = new Error("error");
+  var d = deferred.rejected(error);
+  var errback_called = false;
+  var p = d.then(null, function(e) {
+    equals(e, error);
+    errback_called = true;
+    throw e;
+  });
+  p = p.then(function(result) {
+    ok(false, "Shouldn't call callback on error");
+    return result;
+  });
+  ok(errback_called, "Errback must have been called for fail");
 });
 
 if (acre.current_script === acre.request.script) {

@@ -240,6 +240,22 @@ test("all_list", function() {
   // Since all of the dependant callbacks were already triggered
   //  the dlist callback should be called immediately
   ok(dlist_called, "The callback for the deferred list should be called");
+  
+  // Make sure that tuple unpacking works
+  var psteam = deferred.resolved("steam");
+  var ppunk = deferred.resolved("punk");
+  var dlist_called = false;
+  deferred.all([psteam, ppunk])
+    .then(function([steam, punk]) {
+      equals(steam, "steam");
+      equals(punk, "punk");
+      return steam+punk;
+    })
+    .then(function(result) {
+      dlist_called = true;
+      equals(result, "steampunk");
+    });
+  ok(dlist_called, "The callback for the deferred list should be called");
 });
 
 test("all_list_with_callbacks", function() {

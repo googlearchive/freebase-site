@@ -18,9 +18,9 @@ acre.require("es5");
 // Exports
 var Deferred;
 var unresolved, resolved, rejected;
-var when, whenPromise;
+var when;
 var makePromise, maybePromise;
-var all, first, seq;
+var all, any;
 var RequestCanceled, RequestTimeout;
 
 (function() {

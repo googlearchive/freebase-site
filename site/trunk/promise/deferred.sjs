@@ -23,26 +23,18 @@ var makePromise, maybePromise;
 var all, first, seq;
 var RequestCanceled, RequestTimeout;
 
-/**
-*  Re throw the error if this error isn't one of the passed in errors
-*/
-Error.prototype.trap = function(var_args) {
-  for each(var error in arguments) {
-    if (this instanceof error) {
-        return;
-    }
-  }
-  throw this;
-};
-
 (function() {
   
   // --- Possible Errors for Deferreds ---
-  RequestCanceled = function() {}
-  RequestCanceled.prototype = Error;
+  RequestCanceled = function(message) {
+    this.message = message;
+  };
+  RequestCanceled.prototype = new Error();
   
-  RequestTimeout = function() {}
-  RequestTimeout.prototype = Error;
+  RequestTimeout = function(message) {
+    this.message = message;
+  };
+  RequestTimeout.prototype = new Error();
   
   // --- Deferred Implementation ---
   Deferred = function() {
@@ -96,7 +88,7 @@ Error.prototype.trap = function(var_args) {
           error = new Error(""+error);
       }
       complete(error);
-      console.warn(""+error, error);
+      console.warn(error.toString(), error);
       return promise;
     };
     
@@ -193,54 +185,6 @@ Error.prototype.trap = function(var_args) {
     }
   };
   
-  function all_array(array) {
-    var deferred = unresolved();
-    
-    var fulfilled = 0;
-    var length = promises.length;
-    var results = [];
-    
-    if (length === 0) {
-      deferred.resolve(results)
-    } else {
-      array.forEach(function(promise, index){
-        when(promise, each, each);
-        function each(value){
-          results[index] = value;
-          fulfilled++;
-          if(fulfilled === length){
-            deferred.resolve(results);
-          }
-        }
-      });
-    }
-    return deferred.promise;
-  }
-  
-  function all_dict(dict) {
-    var deferred = unresolved();
-    
-    var fulfilled = 0;
-    var length = promises.length;
-    var results = [];
-    
-    if (length === 0) {
-      deferred.resolve(results)
-    } else {
-      array.forEach(function(promise, index){
-        when(promise, each, each);
-        function each(value){
-          results[index] = value;
-          fulfilled++;
-          if(fulfilled === length){
-            deferred.resolve(results);
-          }
-        }
-      });
-    }
-    return deferred.promise;
-  }
-  
   /**
    * Takes an array or dict of promises and returns a promise that 
    * is fulfilled when all of those promises have been fulfilled
@@ -286,13 +230,13 @@ Error.prototype.trap = function(var_args) {
         if (!fulfilled) {
           fulfilled = true;
           deferred.resolve(value);
-        }  
+        }
       },
       function(error) {
         if (!fulfilled) {
           fulfilled = true;
           deferred.resolve(error);
-        }  
+        }
       });
     }
     return deferred.promise;

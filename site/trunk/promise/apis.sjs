@@ -35,7 +35,16 @@ var freebase = {};
       return _urlfetch.apply(null, args);
     };
     
-    return _urlfetch.apply(null, args).then(null, handle_redirect_error);
+    var handle_timeout_error = function(error) {
+      if (error.message === "Time limit exceeded") {
+        throw new deferred.RequestTimeout(error.message);
+      }
+      return error;
+    }
+    
+    return _urlfetch.apply(null, args)
+      .then(null, handle_redirect_error)
+      .then(null, handle_timeout_error);
   };
   
   var freebase_apis = [

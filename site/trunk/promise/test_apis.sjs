@@ -1,5 +1,6 @@
 acre.require('/test/lib').enable(this);
 
+var deferred = acre.require("deferred");
 var freebase = acre.require("apis").freebase;
 var urlfetch = acre.require("apis").urlfetch;
 
@@ -70,6 +71,23 @@ test("urlfetch_failure", function() {
   acre.async.wait_on_results();
   ok(errback_called, "Errback must be called on failed requests");
   
+});
+
+test("urlfetch_timeout", function() {
+  // Check that a timeout calls the errback with the right error
+  
+  var errback_called = false;
+  urlfetch("http://www.freebase.com", {timeout: .1})
+    .then(function(result) {
+      ok(false, "Callback shouldn't have run on timeout");
+    })
+    .then(null, function(error) {
+      ok(error instanceof deferred.RequestTimeout, "Must be a timeout error: "+error.name);
+      equals(error.message, "Time limit exceeded");
+      errback_called = true;
+    });
+  acre.async.wait_on_results();
+  ok(errback_called, "Errback must be called on failed requests");
 });
 
 test("mqlread_success", function() {

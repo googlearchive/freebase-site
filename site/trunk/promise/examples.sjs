@@ -48,11 +48,10 @@ acre.async.wait_on_results();
 acre.write("\n\n---Waiting on multiple promises---\n");
 var psteam = freebase.mqlread({id: "/en/steam", name: null});
 var ppunk = freebase.mqlread({id: "/en/punk", name: null});
-deferred.all({steam: psteam, punk: ppunk})
-  .then(function(results) {
-    console.log(results);
-    acre.write(results.steam.result.name);
-    acre.write(results.punk.result.name);
+deferred.all([psteam, ppunk])
+  .then(function([steam, punk]) {
+    acre.write(steam.result.name);
+    acre.write(punk.result.name);
   });
 
 acre.async.wait_on_results();

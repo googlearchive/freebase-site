@@ -35,12 +35,15 @@ test("url_for", function() {
   if (h.is_client()) {
     equal(h.url_for("/freebase/site/core/test_helpers_url"), acre.request.app_url + acre.request.base_path + routes.get_route("/freebase/site/core").path + "/test_helpers_url");
     equal(h.url_for("/freebase/site/schema/index"), acre.request.app_url + acre.request.base_path + routes.get_route("/freebase/site/schema").path + "/index");
+    equal(h.url_for("/freebase/site/toolbox/service", null, "/apps"), acre.request.app_url + acre.request.base_path + routes.get_route("/freebase/site/toolbox").path + "/service/apps");
+
     // /freebase/site/homepage/index is absolute
     equal(h.url_for("/freebase/site/homepage/index"), acre.request.app_url + acre.request.base_path + "/index");
   }
   else {
     equal(h.url_for("/freebase/site/core/test_helpers_url"),  h.resource_url("/freebase/site/core/test_helpers_url", routes_mf.version["/freebase/site/core"]));
     equal(h.url_for("/freebase/site/schema/index"), h.resource_url("/freebase/site/schema/index", routes_mf.version["/freebase/site/schema"]));
+    equal(h.url_for("/freebase/site/toolbox/service", null, "/apps"),  h.resource_url("/freebase/site/toolbox/service", routes_mf.version["/freebase/site/toolbox"]) + "/apps");
     equal(h.url_for("/freebase/site/homepage/index"), h.resource_url("/freebase/site/homepage/index", routes_mf.version["/freebase/site/homepage"]));
   }
 });

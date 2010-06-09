@@ -3,7 +3,8 @@ var MF = {
   "version": {
     "/freebase/site/routing": null,
     "/freebase/libs/jquery": "release",
-    "/freebase/apps/libraries": "release"
+    "/freebase/apps/libraries": "release",
+    "/freebase/libs/service": "release"
   },
   "suggest" : {
     "version": "1.2.1",
@@ -285,6 +286,8 @@ function base_manifest(MF, scope, undefined) {
       if (typeof resource === "string") {
         resource = MF._resource_info(resource);
       }
+      console.log("resource", resource);
+
       return scope.acre.require(resource.id, resource.version);
     },
 

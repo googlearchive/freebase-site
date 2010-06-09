@@ -43,6 +43,10 @@ function url_for(resource_path, params, extra_path) {
   // [ [name1,value1], [name2,value2], ...]
   params = parse_params(params);
 
+  if (!extra_path) {
+    extra_path = "";
+  }
+
   var resource_info = routes_mf._resource_info(resource_path);
 
   // If served by client/routing, look up the client route
@@ -61,11 +65,11 @@ function url_for(resource_path, params, extra_path) {
         var path = rts[i].path;
         if (rts[i].absolute) {
           if (rts[i].app + rts[i].path === resource_info.id) {
-            return acre.form.build_url(acre.request.app_url + acre.request.base_path + rts[i].path, params);
+            return acre.form.build_url(acre.request.app_url + acre.request.base_path + rts[i].path + extra_path, params);
           }
         }
         else {
-          return acre.form.build_url(acre.request.app_url + acre.request.base_path + rts[i].path + "/" + resource_info.name, params);
+          return acre.form.build_url(acre.request.app_url + acre.request.base_path + rts[i].path + "/" + resource_info.name + extra_path, params);
         }
       }
     }
@@ -85,7 +89,7 @@ function url_for(resource_path, params, extra_path) {
 //  }
   else {
     // else absolute resource_url for external urls
-    return acre.form.build_url(resource_url(resource_info.id, resource_info.version), params);
+    return acre.form.build_url(resource_url(resource_info.id, resource_info.version) + extra_path, params);
   }
 };
 

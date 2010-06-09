@@ -85,7 +85,7 @@
         <a href="${g.h.url_for('/freebase/site/homepage/index')}" onclick="return fb.dispatch(event, fb.toolbox.toggle, ['${g.h.url_for('/freebase/site/toolbox/tasks')}'])">Tasks</a>
       </li>
       <li class="nav-global-item nav-global-menu" id="nav-apps">
-        <a href="${g.h.url_for('/freebase/site/homepage/index')}" onclick="return fb.dispatch(event, fb.toolbox.toggle, ['${g.h.url_for('/freebase/site/toolbox/apps')}'])">Apps</a>
+        <a href="${g.h.url_for('/freebase/site/homepage/index')}" onclick="return fb.dispatch(event, fb.toolbox.toggle, ['${g.h.url_for('/freebase/site/toolbox/service', null, '/apps')}'])">Apps</a>
       </li>
       <li class="nav-global-item nav-global-menu" id="nav-queries">
         <a href="${g.h.url_for('/freebase/site/homepage/index')}" onclick="return fb.dispatch(event, fb.toolbox.toggle, ['${g.h.url_for('/freebase/site/toolbox/queries')}'])">Queries</a>

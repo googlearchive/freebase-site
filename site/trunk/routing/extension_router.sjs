@@ -20,11 +20,11 @@ var handlers = {
     console.log("sjs", res);
     if (typeof res.main === 'function') {
       console.log("sjs.main");
-      res.main();
+      res.main(res);
     }
     else if (res.acre.current_script.name.indexOf("test_") === 0) {
       console.log("sjs.test_report");
-      res.acre.test.report();
+      res.acre.test.report(res);
     }
   },
 

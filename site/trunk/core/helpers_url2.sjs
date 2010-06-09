@@ -55,9 +55,19 @@ function url_for(resource_path, params, extra_path) {
   // http://www.sandbox-freebase.com
   // http://www.freebase.com
   if (is_client()) {
-    var route = routes.get_route(resource_info.appid);
-    if (route) {
-      return acre.form.build_url(acre.request.app_url + acre.request.base_path + route.path + "/" + resource_info.name, params);
+    var rts = routes.get_routes(resource_info.appid);
+    if (rts) {
+      for (var i=0,l=rts.length; i<l; i++) {
+        var path = rts[i].path;
+        if (rts[i].absolute) {
+          if (rts[i].app + rts[i].path === resource_info.id) {
+            return acre.form.build_url(acre.request.app_url + acre.request.base_path + rts[i].path, params);
+          }
+        }
+        else {
+          return acre.form.build_url(acre.request.app_url + acre.request.base_path + rts[i].path + "/" + resource_info.name, params);
+        }
+      }
     }
     // this should NOT happen since we called routes_mf._resource_info
     throw("route undefined: " + resource_path);

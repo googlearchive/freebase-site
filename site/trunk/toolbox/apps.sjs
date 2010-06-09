@@ -25,10 +25,6 @@ function html(args) {
 
 function main() {
   var args = service.parse_request_args();
-  //var user = service.check_user();
-  args.id = "/user/daepark";
-  //acre.freebase.touch();
-
   if (args.json || args.callback) {
     json(args);
   }
@@ -36,7 +32,6 @@ function main() {
     html(args);
   }
 };
-
 
 if (acre.current_script == acre.request.script) {
   main();

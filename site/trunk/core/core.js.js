@@ -1,14 +1,14 @@
 /**
  * everything should go under the freebase namespace.
  */
-window.freebase = {};
+window.freebase = window.fb = {};
 
 
 /**
  * simple event dispatcher
  */
 (function($, fb) {
-  window.dispatch = function(event, fn, args, thisArg) {
+  fb.dispatch = function(event, fn, args, thisArg) {
     if (typeof fn !== "function") {
       return false;
     }
@@ -31,7 +31,7 @@ window.freebase = {};
 (function($, fb) {
   /**
    * 1. mw_user cookie
-   * 2. set a global window.mw_user object: {id:String, guid:String: name:String}
+   * 2. set a fb.user object: {id:String, guid:String: name:String}
    * 3. update signin/out state
    */
 
@@ -59,19 +59,19 @@ window.freebase = {};
     if (!id) {
       id = '/user/' + this.name;
     }
-    window.mw_user = {
+    fb.user = {
       guid: guid,
       name: name,
       id: id
     };
   }
 
-  if (window.mw_user) {
+  if (fb.user) {
     // signed in
     var u = $("#nav-username a:first");
     if (u.length) {
-      u[0].href +=window.mw_user.id;
-      u.text(window.mw_user.name);
+      u[0].href += fb.user.id;
+      u.text(fb.user.name);
     }
     $("#signedin").show();
   }
@@ -146,7 +146,12 @@ window.freebase = {};
 
 (function($, fb) {
   var tb = fb.toolbox = {
-    toggle: function(event) {
+    toggle: function(event, url) {
+      if (!fb.user) {
+        // not signed-in, navigate to landing page
+        return true;
+      }
+
       var a = event.target;
       var expanded = $(a).hasClass("collapse");
 
@@ -164,7 +169,7 @@ window.freebase = {};
       var popup = $(a).data("popup");
       if (popup) {
         popup.slideDown(function() {
-          $(a).addClass("collapse");
+          $(a).removeClass("expand").addClass("collapse");
         });
         return false;
       }
@@ -176,8 +181,11 @@ window.freebase = {};
 
       // get contents of popup
       $.ajax({
-        url: a.href,
+        url: url,
         dataType: "jsonp",
+        data: {
+          id: fb.user.id
+        },
         success: function(data) {
           popup.html(data.result.html);
           popup.removeClass("popup-loading");
@@ -192,7 +200,7 @@ window.freebase = {};
       });
 
       popup.slideDown(function() {
-        $(a).addClass("collapse");
+        $(a).removeClass("expand").addClass("collapse");
       });
 
       return false;
@@ -204,11 +212,16 @@ window.freebase = {};
         var popup = $(this).data("popup");
         if (popup) {
           popup.slideUp(function() {
-            $(a).removeClass("collapse");
+            $(a).removeClass("collapse").addClass("expand");
           });
         }
       });
     }
   };
+
+  // if fb.user, show expand for all toolboxes
+  if (fb.user) {
+    $(".nav-global-menu > a").addClass("expand");
+  }
 })(jQuery, window.freebase);
 

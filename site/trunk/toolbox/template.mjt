@@ -22,6 +22,49 @@
   </div>
 </acre:block>
 
+
+<!-- Queries -->
+
+<acre:block def="queries_toolbox(queries)">
+  <acre:script>
+    var options = {
+      search: queries_toolbox_search,
+      header: queries_toolbox_header,
+      content: function() {
+        return acre.markup.bless(acre.markup.stringify(queries_toolbox_content(queries)));
+      },
+      footer: queries_toolbox_footer
+    };
+  </acre:script>
+  ${toolbox(options)}
+</acre:block>
+
+<acre:block def="queries_toolbox_search()">
+  <form action="">
+    <input type="text" name="q" placeholder="Search queries by name..."/>
+    <button type="submit">Search</button>
+  </form>
+</acre:block>
+
+<acre:block def="queries_toolbox_header()">
+  Your Queries
+  <a class="help" href="">What are Queries?</a>
+</acre:block>
+
+<acre:block def="queries_toolbox_content(queries)">
+  <ul>
+    <li acre:for="query in queries">
+      <a href="${acre.freebase.service_url}/view/${query.id}">${query.name}</a>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="queries_toolbox_footer()">
+  queries_toolbox_footer
+</acre:block>
+
+<!-- Apps -->
+
 <acre:block def="apps_toolbox(apps)">
   <acre:script>
     var options = {

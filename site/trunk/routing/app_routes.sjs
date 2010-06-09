@@ -24,6 +24,10 @@ var routes = [
     app: "/freebase/site/schema"
   },
   {
+    path: "/toolbox",
+    app: "/freebase/site/toolbox"
+  },
+  {
     path: "/core",
     app: "/freebase/site/core"
   },

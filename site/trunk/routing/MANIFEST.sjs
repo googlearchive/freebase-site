@@ -6,7 +6,8 @@ var MF = {
     "/freebase/site/homepage": null,
     "/freebase/site/sample": null,
     "/freebase/site/domain": null,
-    "/freebase/site/schema": null
+    "/freebase/site/schema": null,
+    "/freebase/site/toolbox": null
   }
 };
 

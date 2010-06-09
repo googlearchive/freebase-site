@@ -1,4 +1,3 @@
-
 var MF = {
 
   version: {
@@ -10,7 +9,7 @@ var MF = {
   },
 
   javascript: {
-    "sample_page.js": ["/freebase/site/core/core.js", "sample_page.js"]
+    "sample_page.js": ["/freebase/site/core/MANIFEST/core.js", "sample_page.js"]
   }
 
 };

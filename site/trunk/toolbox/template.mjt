@@ -1,0 +1,61 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+</acre:script>
+
+<acre:block def="toolbox(options)">
+  <div class="toolbox">
+    <div acre:if="options.search" class="toolbox-search">
+      ${options.search()}
+   </div>
+
+    <div acre:if="options.header" class="toolbox-header">
+      ${options.header()}
+    </div>
+
+    <div acre:if="options.content" class="toolbox-content">
+      ${options.content()}
+   </div>
+
+    <div acre:if="options.footer" class="toolbox-footer">
+      ${options.footer()}
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="apps_toolbox(apps)">
+  <acre:script>
+    var options = {
+      search: apps_toolbox_search,
+      header: apps_toolbox_header,
+      content: function() {
+        return acre.markup.bless(acre.markup.stringify(apps_toolbox_content(apps)));
+      },
+      footer: apps_toolbox_footer
+    };
+  </acre:script>
+  ${toolbox(options)}
+</acre:block>
+
+<acre:block def="apps_toolbox_search()">
+  <form action="">
+    <input type="text" name="q" placeholder="Search apps by name..."/>
+    <button type="submit">Search</button>
+  </form>
+</acre:block>
+
+<acre:block def="apps_toolbox_header()">
+  Your Apps
+  <a class="help" href="">What are Apps?</a>
+</acre:block>
+
+<acre:block def="apps_toolbox_content(apps)">
+  <ul>
+    <li acre:for="app in apps">
+      <a href="${acre.freebase.service_url}/apps/app${app.appid}">${app.name}</a>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="apps_toolbox_footer()">
+  apps_toolbox_footer
+</acre:block>

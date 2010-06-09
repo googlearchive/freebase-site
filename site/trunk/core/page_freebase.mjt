@@ -78,10 +78,21 @@
       <div id="site-search-label"><span>Start typing to get some suggestions</span></div>
     </div>
     <ul id="nav-global" class="clear">
-      <li class="nav-global-item" id="nav-explore"><a href="${g.client_base}/explore"     title="Explore Freebase data">Explore</a></li>
-      <li class="nav-global-item" id="nav-apps"><a href="${g.client_base}/apps"           title="Find Apps made with Freebase">Apps</a></li>      
-      <li class="nav-global-item" id="nav-developer"><a href="${g.client_base}/developer" title="Read developer documentation of Freebase services">Developers</a></li>      
-      <li class="nav-global-item" id="nav-make"><a href="http://wiki.freebase.com/"       title="Give help and get help adding data to Freebase">Help</a></li>
+      <li class="nav-global-item nav-global-menu" id="nav-tasks">
+        <a href="" onclick="return dispatch(event, freebase.toolbox.toggle)">Tasks</a>
+      </li>
+      <li class="nav-global-item nav-global-menu" id="nav-apps">
+        <a href="${g.h.url_for('/freebase/site/toolbox/apps')}" onclick="return dispatch(event, freebase.toolbox.toggle)">Apps</a>
+      </li>
+      <li class="nav-global-item nav-global-menu" id="nav-queries">
+        <a href="" onclick="return dispatch(event, freebase.toolbox.toggle)">Queries</a>
+      </li>
+      <li class="nav-global-item nav-global-menu" id="nav-schema">
+        <a href="" onclick="return dispatch(event, freebase.toolbox.toggle)">Schema</a>
+      </li>
+      <li class="nav-global-item" id="nav-docs">
+        <a href="http://wiki.freebase.com/" title="Give help and get help adding data to Freebase">Docs</a>
+      </li>
     </ul>
     <div id="nav-account">
       <div class="nav-user-controls" id="signedin" style="display:none;">

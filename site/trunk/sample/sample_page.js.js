@@ -1,2 +1,2 @@
 
-alert("sample_page.js");
+console.log("sample_page.js");

@@ -79,19 +79,19 @@
     </div>
     <ul id="nav-global" class="clear">
       <li class="nav-global-item nav-global-menu" id="nav-projects">
-        <a href="${g.h.url_for('/freebase/site/homepage/index')}" onclick="return fb.dispatch(event, fb.toolbox.toggle, ['${g.h.url_for('/freebase/site/toolbox/projects')}'])" >Projects</a>
+        <a href="${g.h.url_for('/freebase/site/homepage/index')}" onclick="return fb.dispatch(event, fb.toolbox.toggle, ['${g.h.url_for('/freebase/site/toolbox/service', null, '/projects')}'])">Projects</a>
       </li>
       <li class="nav-global-item nav-global-menu" id="nav-tasks">
-        <a href="${g.h.url_for('/freebase/site/homepage/index')}" onclick="return fb.dispatch(event, fb.toolbox.toggle, ['${g.h.url_for('/freebase/site/toolbox/tasks')}'])">Tasks</a>
+        <a href="${g.h.url_for('/freebase/site/homepage/index')}" onclick="return fb.dispatch(event, fb.toolbox.toggle, ['${g.h.url_for('/freebase/site/toolbox/service', null, '/tasks')}'])">Tasks</a>
       </li>
       <li class="nav-global-item nav-global-menu" id="nav-apps">
         <a href="${g.h.url_for('/freebase/site/homepage/index')}" onclick="return fb.dispatch(event, fb.toolbox.toggle, ['${g.h.url_for('/freebase/site/toolbox/service', null, '/apps')}'])">Apps</a>
       </li>
       <li class="nav-global-item nav-global-menu" id="nav-queries">
-        <a href="${g.h.url_for('/freebase/site/homepage/index')}" onclick="return fb.dispatch(event, fb.toolbox.toggle, ['${g.h.url_for('/freebase/site/toolbox/queries')}'])">Queries</a>
+        <a href="${g.h.url_for('/freebase/site/homepage/index')}" onclick="return fb.dispatch(event, fb.toolbox.toggle, ['${g.h.url_for('/freebase/site/toolbox/service', null, '/queries')}'])">Queries</a>
       </li>
       <li class="nav-global-item nav-global-menu" id="nav-schema">
-        <a href="${g.h.url_for('/freebase/site/homepage/index')}" onclick="return fb.dispatch(event, fb.toolbox.toggle, ['${g.h.url_for('/freebase/site/toolbox/schema')}'])">Schema</a>
+        <a href="${g.h.url_for('/freebase/site/homepage/index')}" onclick="return fb.dispatch(event, fb.toolbox.toggle, ['${g.h.url_for('/freebase/site/toolbox/service', null, '/schema')}'])">Schema</a>
       </li>
       <li class="nav-global-item" id="nav-docs">
         <a href="http://wiki.freebase.com/" title="Give help and get help adding data to Freebase">Docs</a>

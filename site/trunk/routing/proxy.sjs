@@ -1,3 +1,7 @@
+// Simple MANIFEST-based proxy
+// Example: 
+//    <app host>/proxy/freebase/site/domain/index?id=/base/cannes
+
 var mf = acre.require("MANIFEST").MF
 var router = acre.require("extension_router");
 

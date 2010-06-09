@@ -29,6 +29,8 @@ for (var i=2; i < path_segs.length; i+=1) {
         break;
     }
     
-    // No match; TODO: route to where?
-    // router.do_route(req, scriptid, mf.version[appid], path_info);
+    // No match; TODO: better error behavior here?
+    acre.response.status = 404;
+    acre.write("not found");
+    acre.exit();
 }

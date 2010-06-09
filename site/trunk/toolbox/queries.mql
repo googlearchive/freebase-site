@@ -1,0 +1,24 @@
+
+[{
+  "id": null,
+  "name": null,
+  "type": "/freebase/query",
+  "/freebase/query_hints/related_domain": {
+    "id": null,
+    "name": null,
+    "type": "/type/domain"
+  },
+  "/freebase/query_hints/related_type": {
+    "id": null,
+    "name": null,
+    "type": "/type/type"
+  },
+  "/freebase/query_hints/preferred_view": {
+    "id": null,
+    "name": null,
+    "optional": true,
+    "type": "/freebase/view_type"
+  },
+  "sort": "name",
+  "creator": "/user/daepark"
+}]

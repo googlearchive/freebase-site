@@ -5,7 +5,7 @@ var MF = {
   },
 
   stylesheet: {
-    "sample_page.css": ["/freebase/site/core/core.less", "sample_page.css", "sample_page.less"]
+    "sample_page.css": ["/freebase/site/core/MANIFEST/core.css", "sample_page.css", "sample_page.less"]
   },
 
   javascript: {

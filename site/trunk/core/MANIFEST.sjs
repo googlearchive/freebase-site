@@ -21,6 +21,9 @@ var MF = {
   },
   javascript: {
     "core.js": ['jquery.cookie.js', 'jquery.ui.position.js', 'core.js']
+  },
+  stylesheet: {
+    "core.css": ["core.less", "popup.css"]
   }
 };
 MF.suggest.base_url += MF.suggest.version;
@@ -153,8 +156,9 @@ function base_manifest(MF, scope, undefined) {
      * less (css) parser.
      */
     less: function(data /*required*/, callback /*required*/, errback /*optional*/) {
+      console.log("less", MF, scope);
       if (!MF.less.parser) {
-        MF.less.parser = new(MF.require("/freebase/site/core/less").less.Parser)({optimization:3});
+        MF.less.parser = new(acre.require("/freebase/site/core/less", MF.version["/freebase/site/core"]).less.Parser)({optimization:3});
       }
       MF.less.parser.parse(data, function(e, root) {
         if (e) {
@@ -184,17 +188,20 @@ function base_manifest(MF, scope, undefined) {
         var m = re.exec(id);
         if (m) {
           MF.require(m[1]).MF.css(m[2], scope);
-          return;
         }
-        try {
-          // css preprocessor to replace url(resource_path) declarations
-          buf.push(MF.css_preprocessor(MF.require(id).body));
-        }
-        catch (ex) {
-          scope.acre.write("\n/** " + ex.toString() + " **/\n");
-          return;
+        else {
+          try {
+            // css preprocessor to replace url(resource_path) declarations
+            buf.push(MF.css_preprocessor(MF.require(id).body));
+          }
+          catch (ex) {
+            scope.acre.write("\n/** " + ex.toString() + " **/\n");
+            return;
+          }
         }
       });
+
+      console.log("css", buf);
 
       // run less on concatenated css/less
       MF.less(buf.join(""),
@@ -286,8 +293,6 @@ function base_manifest(MF, scope, undefined) {
       if (typeof resource === "string") {
         resource = MF._resource_info(resource);
       }
-      console.log("resource", resource);
-
       return scope.acre.require(resource.id, resource.version);
     },
 
@@ -316,7 +321,6 @@ function base_manifest(MF, scope, undefined) {
      *   };
      */
     main: function() {
-      console.log("MANIFEST.main");
       if (scope.acre.request.path_info && scope.acre.request.path_info.length) {
         var path = scope.acre.request.path_info.substring(1);
         if (/\.js$/.exec(path)) {

@@ -146,25 +146,10 @@ window.freebase = window.fb = {};
 
 (function($, fb) {
   var tb = fb.toolbox = {
-    toggle: function(menu) {
-
-      if (!fb.user) {
-        // not signed-in or no toolbox url
-        return;
-      }
-      
+    show: function(menu) {
       menu = $(menu);
-      var expanded = menu.hasClass("collapse");
 
-      // hide all toolboxes
-      tb.hide_all();
-
-
-
-      // if expanded, nothing else to do
-      if (expanded) {
-        return;
-      }
+      clearTimeout(menu.data("popup-timeout"));
 
       // if popup panel already exists, just show it
       var popup = menu.data("popup");
@@ -179,6 +164,12 @@ window.freebase = window.fb = {};
       popup = $('<div class="popup popup-loading toolbox-popup" style="display:none;position:absolute;">');
       $(document.body).append(popup);
       menu.data("popup", popup);
+      popup.hover(function() {
+                    tb.show(menu);
+                  },
+                  function() {
+                    tb.hide(menu);
+                  });
 
       // get contents of popup
       $.ajax({
@@ -205,24 +196,29 @@ window.freebase = window.fb = {};
       });
     },
 
-    hide_all: function() {
-      $(".nav-global-menu").each(function() {
-        var popup = $(this).data("popup");
+    hide: function(menu) {
+      menu = $(menu);
+      clearTimeout(menu.data("popup-timeout"));
+      menu.data("popup-timeout", setTimeout(function() {
+        var popup = menu.data("popup");
         if (popup) {
           popup.hide();
-          $(this).removeClass("collapse").addClass("expand");
+          menu.removeClass("collapse").addClass("expand");
         }
-      });
+      }, 200));
     }
+
   };
 
   // if fb.user, show expand for all toolboxes
   if (fb.user) {
     $(".nav-global-menu")
       .addClass("expand")
-      .hover(function(e) {
-               console.log("hover", this);
-               tb.toggle(this);
+      .hover(function() {
+               tb.show(this);
+             },
+             function() {
+               tb.hide(this);
              });
   }
 })(jQuery, window.freebase);

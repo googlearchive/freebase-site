@@ -187,7 +187,7 @@ function base_manifest(MF, scope, undefined) {
       MF.stylesheet[key].forEach(function(id) {
         var m = re.exec(id);
         if (m) {
-          buf = buf.concat(MF.require(m[1]).MF.css(m[2], scope, buf, true));
+          buf = buf.concat(MF.require(m[1]).MF.css(m[2], scope, true));
         }
         else {
           try {

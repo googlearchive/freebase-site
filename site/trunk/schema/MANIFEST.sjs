@@ -6,13 +6,13 @@ var MF = {
     "/freebase/apps/libraries" : "release",
     "/user/pak21/schemaviz" : null
   },
-  
+
   stylesheet: {
-    "schema.css": ["/freebase/site/core/core.less", "schema.css"]
+    "schema.css": ["/freebase/site/core/MANIFEST/core.css", "schema.css"]
   },
 
   javascript: {
-    "index.js": ["/freebase/site/core/core.js", "index.js"]
+    "index.js": ["/freebase/site/core/MANIFEST/core.js", "index.js"]
   }
 
 };

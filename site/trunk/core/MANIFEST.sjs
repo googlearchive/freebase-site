@@ -176,7 +176,7 @@ function base_manifest(MF, scope, undefined) {
      * Serve (acre.write) all css declared in MF.stylesheet[key].
      * Run the less css parser on all of the css afterwards
      */
-    css: function(key, scope) {
+    css: function(key, scope, buffer) {
       if (!MF.stylesheet[key]) {
         return MF.not_found();
       }
@@ -187,7 +187,7 @@ function base_manifest(MF, scope, undefined) {
       MF.stylesheet[key].forEach(function(id) {
         var m = re.exec(id);
         if (m) {
-          MF.require(m[1]).MF.css(m[2], scope);
+          buf = buf.concat(MF.require(m[1]).MF.css(m[2], scope, buf, true));
         }
         else {
           try {
@@ -200,6 +200,10 @@ function base_manifest(MF, scope, undefined) {
           }
         }
       });
+
+      if (buffer) {
+        return buf;
+      }
 
       // run less on concatenated css/less
       MF.less(buf.join(""),

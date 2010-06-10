@@ -16,8 +16,5 @@ test("map", function() {
 
 console.log("test_routes 4");
 
-if (acre.current_script == acre.request.script) {
-  console.log("test_routes 5");
-  acre.test.report();
-}
+acre.test.report();
 

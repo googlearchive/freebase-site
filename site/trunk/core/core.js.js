@@ -147,8 +147,6 @@ window.freebase = window.fb = {};
 (function($, fb) {
   var tb = fb.toolbox = {
     show: function(menu) {
-      menu = $(menu);
-
       clearTimeout(menu.data("popup-timeout"));
 
       // if popup panel already exists, just show it
@@ -197,17 +195,19 @@ window.freebase = window.fb = {};
     },
 
     hide: function(menu) {
-      menu = $(menu);
       clearTimeout(menu.data("popup-timeout"));
       menu.data("popup-timeout", setTimeout(function() {
-        var popup = menu.data("popup");
-        if (popup) {
-          popup.hide();
-          menu.removeClass("collapse").addClass("expand");
-        }
+        tb.hide_delay(menu);
       }, 200));
-    }
+    },
 
+    hide_delay: function(menu) {
+      var popup = menu.data("popup");
+      if (popup) {
+        popup.hide();
+        menu.removeClass("collapse").addClass("expand");
+      }
+    }
   };
 
   // if fb.user, show expand for all toolboxes
@@ -215,10 +215,10 @@ window.freebase = window.fb = {};
     $(".nav-global-menu")
       .addClass("expand")
       .hover(function() {
-               tb.show(this);
+               tb.show($(this));
              },
              function() {
-               tb.hide(this);
+               tb.hide($(this));
              });
   }
 })(jQuery, window.freebase);

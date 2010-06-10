@@ -53,9 +53,8 @@ var RequestCanceled, RequestTimeout;
       }
       result = value;
       finished = true;
-      waiting.forEach(function(listener) {
-        notify(listener);
-      });
+      waiting.forEach(notify);
+      waiting = [];
     }
     
     // Calls the listener's errback or callback depending on the 
@@ -63,31 +62,24 @@ var RequestCanceled, RequestTimeout;
     //  passing them on. If this listener doesn't handle this type of 
     //  result then it passes it along.
     function notify(listener) {
-      // Determine which callback to call based on whether
-      //   we in error or not
-      var func = (result instanceof Error ? listener.error : listener.resolved);
-      if (func) {
-          try {
-            // Pass along the result down the chain
-            // If its a deferred then resolve it first
-            when(func(result), function(new_result) {
-              listener.deferred.resolve(new_result)
-            }, function(new_error) {
-              listener.deferred.reject(new_error)
-            });
-          } catch(e) {
-            // If the callback errored then pass that error down the chain
-            listener.deferred.reject(e);
-          }
-      
-      } else {
-        // This promise doesn't handle this type of result so pass it along
-        if (result instanceof Error) {
-          listener.deferred.reject(result);
-        } else {
-          listener.deferred.resolve(result);
-        }
+      // Determine which callback (if any) to call based on whether
+      //   we are currently in error or not
+      var func = (result instanceof Error ? listener.errback : listener.callback);
+      try {
+        var value = (func ?  func(result) : result);
+      } catch(e) {
+        // If the callback errored then pass that error down the chain
+        listener.deferred.reject(e);
+        return;
       }
+      
+      // Pass along the result down the chain
+      // If its a deferred then resolve it first
+      when(value, function(new_result) {
+        listener.deferred.resolve(new_result)
+      }, function(new_error) {
+        listener.deferred.reject(new_error)
+      });
     }
     
     // A deferred can be completed by either resolving, or rejecting it
@@ -103,23 +95,28 @@ var RequestCanceled, RequestTimeout;
     //  by coercing the value into an error
     var reject = this.reject = function(error) {
       if (!(error instanceof Error)) {
-          // Turn it into an error
           error = new Error(""+error);
       }
-      complete(error);
       console.warn(error.toString(), error);
+      complete(error);
       return promise;
     };
     
-    // Adds a new success and/or failure listener to this deferred.
+    // Adds a new success and/or failure listener to this deferred's promise
     // All of these listeners will be called when the deferred 
     //   is resolved or rejected.
-    var then = this.then = promise.then = function(callback, errback) {
-      var return_deferred = new Deferred();
+    this.then = promise.then = function(callback, errback) {
+      if (callback && typeof callback !== "function") {
+        throw new Error("First argument to then() must be a function.");
+      }
+      if (errback && typeof errback !== "function") {
+        throw new Error("Second argument to then() must be a function.");
+      }
+      
       var listener = {
-        resolved: callback,
-        error: errback,
-        deferred: return_deferred
+        callback: callback,
+        errback: errback,
+        deferred: new Deferred()
       }; 
       
       if (finished) {
@@ -127,14 +124,14 @@ var RequestCanceled, RequestTimeout;
       } else {
         waiting.push(listener);
       }
-      return return_deferred.promise;
+      return listener.deferred.promise;
     };
     
     // Cancels an uncompleted deferred by rejecting it with a canceled error.
     //  This just cancels the callback chain, if the deferred creator wants to
     //  cancel the request as well then they should attach an errback to 
     //  catch RequestCanceled errors
-    var cancel = this.cancel = function(reason) {
+    this.cancel = function(reason) {
       // Cancels the asynchronous operation
       if (!finished){
         reject(new RequestCanceled(reason));
@@ -215,7 +212,7 @@ var RequestCanceled, RequestTimeout;
   // Takes an array or dict of promises and returns a promise that 
   //   is fulfilled when all of those promises have been fulfilled
   all = function(promises) {
-    var deferred = unresolved();
+    var deferred = new Deferred();
     
     var fulfilled = 0;
     var length = Object.size(promises);
@@ -249,7 +246,7 @@ var RequestCanceled, RequestTimeout;
   // Takes an array or dict of promises and returns a promise that 
   //   is fulfilled when the first of those promises have been fulfilled
   any = function(promises){
-    var deferred = unresolved();
+    var deferred = new Deferred();
     var fulfilled;
     for (var key in promises) {
       when(promises[key], function(value){
@@ -321,7 +318,7 @@ var RequestCanceled, RequestTimeout;
     }
     
     return function() {
-      var d = unresolved();
+      var d = new Deferred();
       
       args = Array.prototype.slice.call(arguments);
       _place_callback(args, _normalize_pos(callback_pos), function(res) {

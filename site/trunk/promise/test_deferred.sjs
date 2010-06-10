@@ -79,8 +79,9 @@ test("errback", function() {
   }
 
   var d = deferred.unresolved();
-
-  var p = d.then(err).then(null, sub);
+  var p = d.promise;
+  
+  var p = p.then(err).then(null, sub);
   // Neither callback nor errrback should have been triggered
   equals(value, 0);
   // We are now calling the callback

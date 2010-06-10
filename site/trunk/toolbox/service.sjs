@@ -25,10 +25,7 @@ var api = {
 };
 
 api.apps.args = ["id"];
-api.apps.auth = true;
-
 api.queries.args = ["id"];
-api.queries.auth = true;
 
 function main(scope) {
   var service = acre.require("/freebase/site/core/service", mf.version["/freebase/site/core"]);

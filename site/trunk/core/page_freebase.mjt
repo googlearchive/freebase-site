@@ -78,20 +78,20 @@
       <div id="site-search-label"><span>Start typing to get some suggestions</span></div>
     </div>
     <ul id="nav-global" class="clear">
-      <li class="nav-global-item nav-global-menu" id="nav-projects">
-        <a href="${g.h.url_for('/freebase/site/homepage/index')}" onclick="return fb.dispatch(event, fb.toolbox.toggle, ['${g.h.url_for('/freebase/site/toolbox/service', null, '/projects')}'])">Projects</a>
+      <li class="nav-global-item nav-global-menu" id="nav-projects" data-popup-url="${g.h.url_for('/freebase/site/toolbox/service', null, '/projects')}">
+        <a href="${g.h.url_for('/freebase/site/homepage/index')}">Projects</a>
       </li>
-      <li class="nav-global-item nav-global-menu" id="nav-tasks">
-        <a href="${g.h.url_for('/freebase/site/homepage/index')}" onclick="return fb.dispatch(event, fb.toolbox.toggle, ['${g.h.url_for('/freebase/site/toolbox/service', null, '/tasks')}'])">Tasks</a>
+      <li class="nav-global-item nav-global-menu" id="nav-tasks" data-popup-url="${g.h.url_for('/freebase/site/toolbox/service', null, '/tasks')}">
+        <a href="${g.h.url_for('/freebase/site/homepage/index')}">Tasks</a>
       </li>
-      <li class="nav-global-item nav-global-menu" id="nav-apps">
-        <a href="${g.h.url_for('/freebase/site/homepage/index')}" onclick="return fb.dispatch(event, fb.toolbox.toggle, ['${g.h.url_for('/freebase/site/toolbox/service', null, '/apps')}'])">Apps</a>
+      <li class="nav-global-item nav-global-menu" id="nav-apps" data-popup-url="${g.h.url_for('/freebase/site/toolbox/service', null, '/apps')}">
+        <a href="${g.h.url_for('/freebase/site/homepage/index')}">Apps</a>
       </li>
-      <li class="nav-global-item nav-global-menu" id="nav-queries">
-        <a href="${g.h.url_for('/freebase/site/homepage/index')}" onclick="return fb.dispatch(event, fb.toolbox.toggle, ['${g.h.url_for('/freebase/site/toolbox/service', null, '/queries')}'])">Queries</a>
+      <li class="nav-global-item nav-global-menu" id="nav-queries" data-popup-url="${g.h.url_for('/freebase/site/toolbox/service', null, '/queries')}">
+        <a href="${g.h.url_for('/freebase/site/homepage/index')}">Queries</a>
       </li>
-      <li class="nav-global-item nav-global-menu" id="nav-schema">
-        <a href="${g.h.url_for('/freebase/site/homepage/index')}" onclick="return fb.dispatch(event, fb.toolbox.toggle, ['${g.h.url_for('/freebase/site/toolbox/service', null, '/schema')}'])">Schema</a>
+      <li class="nav-global-item nav-global-menu" id="nav-schema" data-popup-url="${g.h.url_for('/freebase/site/toolbox/service', null, '/schema')}">
+        <a href="${g.h.url_for('/freebase/site/homepage/index')}">Schema</a>
       </li>
       <li class="nav-global-item" id="nav-docs">
         <a href="http://wiki.freebase.com/" title="Give help and get help adding data to Freebase">Docs</a>

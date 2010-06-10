@@ -146,42 +146,43 @@ window.freebase = window.fb = {};
 
 (function($, fb) {
   var tb = fb.toolbox = {
-    toggle: function(event, url) {
+    toggle: function(menu) {
+
       if (!fb.user) {
-        // not signed-in, navigate to landing page
-        return true;
+        // not signed-in or no toolbox url
+        return;
       }
-
-      var a = event.target;
-      var expanded = $(a).hasClass("collapse");
-
-      console.log("popup expanded", expanded);
+      
+      menu = $(menu);
+      var expanded = menu.hasClass("collapse");
 
       // hide all toolboxes
       tb.hide_all();
 
+
+
       // if expanded, nothing else to do
       if (expanded) {
-        return false;
+        return;
       }
 
       // if popup panel already exists, just show it
-      var popup = $(a).data("popup");
+      var popup = menu.data("popup");
       if (popup) {
         popup.slideDown(function() {
-          $(a).removeClass("expand").addClass("collapse");
+          menu.removeClass("expand").addClass("collapse");
         });
-        return false;
+        return;
       }
 
       // dynamically create a new popup panel
       popup = $('<div class="popup popup-loading toolbox-popup" style="display:none;position:absolute;">');
       $(document.body).append(popup);
-      $(a).data("popup", popup);
+      menu.data("popup", popup);
 
       // get contents of popup
       $.ajax({
-        url: url,
+        url: menu.attr("data-popup-url"),
         dataType: "jsonp",
         data: {
           id: fb.user.id
@@ -194,26 +195,22 @@ window.freebase = window.fb = {};
 
       // show popup
       popup.position({
-        of: $(a).parent("li"),
+        of: menu,
         my: "left top",
         at: "left bottom"
       });
 
       popup.slideDown(function() {
-        $(a).removeClass("expand").addClass("collapse");
+        menu.removeClass("expand").addClass("collapse");
       });
-
-      return false;
     },
 
     hide_all: function() {
-      $(".nav-global-menu > a").each(function() {
-        var a = this;
+      $(".nav-global-menu").each(function() {
         var popup = $(this).data("popup");
         if (popup) {
-          popup.slideUp(function() {
-            $(a).removeClass("collapse").addClass("expand");
-          });
+          popup.hide();
+          $(this).removeClass("collapse").addClass("expand");
         }
       });
     }
@@ -221,7 +218,12 @@ window.freebase = window.fb = {};
 
   // if fb.user, show expand for all toolboxes
   if (fb.user) {
-    $(".nav-global-menu > a").addClass("expand");
+    $(".nav-global-menu")
+      .addClass("expand")
+      .hover(function(e) {
+               console.log("hover", this);
+               tb.toggle(this);
+             });
   }
 })(jQuery, window.freebase);
 

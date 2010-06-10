@@ -12,9 +12,9 @@ test("urlfetch_success", function() {
   d.addErrback(function(failure) {
     ok(false, "Urlfetch returned an error: "+failure.error);
   });
-  
+
   acre.async.wait_on_results();
-  
+
   // Multiple urlfetches should also work
   var d = urlfetch("http://www.metaweb.com");
   d.addCallback(function(result) {
@@ -23,13 +23,13 @@ test("urlfetch_success", function() {
   d.addErrback(function(failure) {
     ok(false, "Urlfetch returned an error: "+failure.error);
   });
-  
+
   acre.async.wait_on_results();
 });
 
 test("urlfetch_redirects", function() {
   // Make sure that we are following redirects on async urlfetchs
-  
+
   var d = urlfetch("http://freebase.com");
   d.addCallback(function(result) {
     ok(result.body, "Make sure that we returned a result");
@@ -41,13 +41,13 @@ test("urlfetch_redirects", function() {
       ok(false, "We shouldn't be erroring out here");
     }
   });
-  
+
   acre.async.wait_on_results();
 });
 
 test("urlfetch_failure", function() {
   // Check that a 404 response calls the errback
-  
+
   var errback_called = false;
   var d = urlfetch("http://www.freebase.com/non-existent-page");
   d.addCallback(function(result) {
@@ -59,7 +59,7 @@ test("urlfetch_failure", function() {
   });
   acre.async.wait_on_results();
   ok(errback_called, "Errback must be called on failed requests");
-  
+
   // Check that bad urls call the errback
   var errback_called = false;
   var d = urlfetch("bad_url");
@@ -69,10 +69,10 @@ test("urlfetch_failure", function() {
   d.addErrback(function(failure) {
     errback_called = true;
   });
-  
+
   acre.async.wait_on_results();
   ok(errback_called, "Errback must be called on failed requests");
-  
+
 });
 
 test("mqlread_success", function() {
@@ -84,10 +84,8 @@ test("mqlread_success", function() {
   d.addErrback(function(failure) {
     ok(false, "Mqlread returned an error: "+error);
   });
-  
+
   acre.async.wait_on_results();
 });
 
-if (acre.current_script === acre.request.script) {
-  acre.test.report();
-}
+acre.test.report();

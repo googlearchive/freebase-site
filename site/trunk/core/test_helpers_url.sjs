@@ -64,6 +64,5 @@ test("freebase_static_resource_url", function() {
 });
 
 
-if (acre.current_script == acre.request.script) {
-  acre.test.report();
-}
+acre.test.report();
+

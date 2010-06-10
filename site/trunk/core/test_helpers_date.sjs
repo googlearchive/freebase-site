@@ -106,8 +106,6 @@ test("relative_date", function() {
   equals(h.relative_date(d), "in the future???");
 });
 
-if (acre.current_script == acre.request.script) {
-  acre.test.report();
-}
+acre.test.report();
 
 

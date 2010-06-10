@@ -21,8 +21,6 @@ test("round", function() {
 });
 
 
-if (acre.current_script == acre.request.script) {
-  acre.test.report();
-}
+acre.test.report();
 
 

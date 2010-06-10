@@ -7,7 +7,7 @@ test("callback", function() {
   function add() {
     value += 1;
   }
-  
+
   var d = deferred.unresolved()
   var p = d.then(add);
   // The callback shouldn't have run yet
@@ -23,7 +23,7 @@ test("callback", function() {
 
 test("callback_chaining", function() {
   var p = deferred.resolved("horse");
-  
+
   // Each return result should be passed along to
   //  the next callback...
   p.then(function(result) {
@@ -37,7 +37,7 @@ test("callback_chaining", function() {
   .then(function(result) {
     equals(result, 0);
   });
-  
+
   // ...while not affecting the original
   p.then(function(result) {
     equals(result, "horse");
@@ -46,7 +46,7 @@ test("callback_chaining", function() {
 
 test("callback_deferred", function() {
   var p = deferred.resolved("ministry of");
-  
+
   // Each result should be the result of the deferred
   //  before it in the chain
   p.then(function(result) {
@@ -64,7 +64,7 @@ test("callback_deferred", function() {
 
 test("errback", function() {
   var value = 0;
-  
+
   function err() {
     n/a;
   }
@@ -77,9 +77,9 @@ test("errback", function() {
   function not_handled(e) {
     throw e;
   }
-  
+
   var d = deferred.unresolved();
-  
+
   var p = d.then(err).then(null, sub);
   // Neither callback nor errrback should have been triggered
   equals(value, 0);
@@ -91,7 +91,7 @@ test("errback", function() {
   //  to callbacks
   p = p.then(add);
   equals(value, 0);
-  
+
   // If we don't handle the error with the first callback then
   //   we should still be calling errbacks
   p = p.then(err);
@@ -120,14 +120,14 @@ test("errback_late_trigger", function() {
   function not_handled(e) {
     throw e;
   }
-  
+
   var d = deferred.unresolved()
   d.then(err) // 0
     .then(null, sub) // -1
     .then(add); // 0
   d.resolve()
   equals(value, 0);
-  
+
   // If we don't handle the error with the first callback then
   //   we should still be calling errbacks
   var d = deferred.unresolved()
@@ -137,7 +137,7 @@ test("errback_late_trigger", function() {
     .then(null, sub); // -1
   d.resolve()
   equals(value, -1);
-  
+
 });
 
 test("quick_trigger", function() {
@@ -150,12 +150,12 @@ test("quick_trigger", function() {
   // We are triggering without a callback
   //  so the number should remain at 0
   equals(value, 0);
-  
+
   // Now add a callback which should get immediately
   // triggered and increase the number to 1
   p.then(add);
   equals(value, 1);
-  
+
   var value = 0;
   function err() {
     n/a;
@@ -168,7 +168,7 @@ test("quick_trigger", function() {
     value -= 1;
     return value;
   }
-  
+
   var d = deferred.unresolved();
   var p = d.then(err);
   d.resolve();
@@ -193,7 +193,7 @@ test("succeed_and_fail", function() {
     return result;
   });
   ok(callback_called, "Callback must have been called for succeed");
-  
+
   var error = new Error("error");
   var d = deferred.rejected(error);
   var errback_called = false;
@@ -211,7 +211,7 @@ test("succeed_and_fail", function() {
 
 test("all_list", function() {
   var called = {};
-  
+
   var promises = [];
   for(var i=0; i<5; i++) {
     called[i] = false;
@@ -221,7 +221,7 @@ test("all_list", function() {
     });
     promises.push(p);
   }
-  
+
   var dlist_called = false;
   deferred.all(promises)
     .then(function(results) {
@@ -232,15 +232,15 @@ test("all_list", function() {
         equals(result, i, "Result "+result+" should be called in order");
       }
       return results;
-      
+
     }, function(error) {
       ok(false, "The errback of a deferred list should never be called");
     });
-  
+
   // Since all of the dependant callbacks were already triggered
   //  the dlist callback should be called immediately
   ok(dlist_called, "The callback for the deferred list should be called");
-  
+
   // Resolving out of order should work
   var dsteam = deferred.unresolved();
   var dpunk = deferred.unresolved();
@@ -255,10 +255,10 @@ test("all_list", function() {
       dlist_called = true;
       equals(result, "steampunk");
     });
-  
+
   dpunk.resolve("punk");
   dsteam.resolve("steam");
-  
+
   ok(dlist_called, "The callback for the deferred list should be called");
 });
 
@@ -266,18 +266,18 @@ test("all_list_with_callbacks", function() {
   function steamer(word) {
     return ["steam", word].join("-");
   }
-  
+
   var pengine = deferred.resolved("engine").then(steamer);
   var dpunk = deferred.unresolved();
   var ppunk = dpunk.then(steamer);
   dpunk.resolve("punk");
   var dboat = deferred.unresolved()
   var pboat = dboat.then(steamer);
-  
+
   var pall = deferred.all([pengine, ppunk, pboat]);
-  
+
   dboat.resolve("boat");
-  
+
   var pall_called = false;
   pall.then(function(results) {
     pall_called = true;
@@ -286,11 +286,11 @@ test("all_list_with_callbacks", function() {
     equals(results[2], "steam-boat", "Should be the combined word");
     return results;
   });
-  
+
   pall.then(null, function(error) {
     ok(false, "The errback of a deferred list should not be called");
   });
-  
+
   // Since all of the dependant callbacks were already triggered
   //  the dlist callback should be called immediately
   ok(pall_called, "The callback for the deferred list should be called");
@@ -309,26 +309,26 @@ test("all_error", function() {
   function not_handled(e) {
     throw e;
   }
-  
+
   // Trigger the dependant callbacks
   var dsucc = deferred.resolved(0).then(add);
   var dfail = deferred.resolved(0).then(err);
-  
+
   var p = deferred.all([dsucc, dfail]);
-  
+
   var all_called = false;
   p = p.then(function([succ_result, fail_result]) {
     all_called = true;
     equals(succ_result, 1, "Should have been added");
     ok(fail_result instanceof Error, "Should have returned the error: "+fail_result);
-    
+
     return [succ_result, fail_result];
   });
-  
+
   p = p.then(null, function(error) {
     ok(false, "The errback of a deferred list should not be called");
   });
-  
+
   // Since all of the dependant callbacks were already triggered
   //  the dlist callback should be called
   ok(all_called, "The callback for the deferred list should be called");
@@ -337,7 +337,7 @@ test("all_error", function() {
 test("all_dict", function() {
   var keys = ["a", "b", "c", "d", "e"];
   var called = {};
-  
+
   var promises = {};
   keys.forEach(function(key) {
     called[key] = false;
@@ -348,7 +348,7 @@ test("all_dict", function() {
       });
     promises[key] = p;
   });
-  
+
   var all_dict_called = false;
   deferred.all(promises)
     .then(function(results) {
@@ -362,12 +362,10 @@ test("all_dict", function() {
     }, function(error) {
       ok(false, "The errback of a deferred dict should never be called");
     });
-  
+
   // Since all of the dependant callbacks were already triggered
   //  the dlist callback should be called immediately
   ok(all_dict_called, "The callback for the deferred dict should be called");
 });
 
-if (acre.current_script === acre.request.script) {
-  acre.test.report();
-}
+acre.test.report();

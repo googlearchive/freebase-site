@@ -54,7 +54,7 @@
 <acre:block def="queries_toolbox_content(queries)">
   <ul>
     <li acre:for="query in queries">
-      <a href="${acre.freebase.service_url}/view/${query.id}">${query.name}</a>
+      <a href="${acre.freebase.service_url}/view${query.id}">${query.name}</a>
     </li>
   </ul>
 </acre:block>

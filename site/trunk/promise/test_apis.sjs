@@ -12,9 +12,9 @@ test("urlfetch_success", function() {
     }, function(failure) {
       ok(false, "Urlfetch returned an error: "+error);
     });
-  
+
   acre.async.wait_on_results();
-  
+
   // Multiple urlfetches should also work
   urlfetch("http://www.metaweb.com")
     .then(function(result) {
@@ -22,13 +22,13 @@ test("urlfetch_success", function() {
     }, function(error) {
       ok(false, "Urlfetch returned an error: "+error);
     });
-  
+
   acre.async.wait_on_results();
 });
 
 test("urlfetch_redirects", function() {
   // Make sure that we are following redirects on async urlfetchs
-  
+
   urlfetch("http://freebase.com")
     .then(function(result) {
       ok(result.body, "Make sure that we returned a result");
@@ -39,13 +39,13 @@ test("urlfetch_redirects", function() {
         ok(false, "We shouldn't be erroring out here");
       }
     });
-  
+
   acre.async.wait_on_results();
 });
 
 test("urlfetch_failure", function() {
   // Check that a 404 response calls the errback
-  
+
   var errback_called = false;
   urlfetch("http://www.freebase.com/non-existent-page")
     .then(function(result) {
@@ -57,7 +57,7 @@ test("urlfetch_failure", function() {
     });
   acre.async.wait_on_results();
   ok(errback_called, "Errback must be called on failed requests");
-  
+
   // Check that bad urls call the errback
   var errback_called = false;
   urlfetch("bad_url")
@@ -67,15 +67,15 @@ test("urlfetch_failure", function() {
     .then(null, function(error) {
       errback_called = true;
     });
-  
+
   acre.async.wait_on_results();
   ok(errback_called, "Errback must be called on failed requests");
-  
+
 });
 
 test("urlfetch_timeout", function() {
   // Check that a timeout calls the errback with the right error
-  
+
   var errback_called = false;
   urlfetch("http://www.freebase.com", {timeout: .1})
     .then(function(result) {
@@ -98,10 +98,8 @@ test("mqlread_success", function() {
     }, function(error) {
       ok(false, "Mqlread returned an error: "+error);
     });
-  
+
   acre.async.wait_on_results();
 });
 
-if (acre.current_script === acre.request.script) {
-  acre.test.report();
-}
+acre.test.report();

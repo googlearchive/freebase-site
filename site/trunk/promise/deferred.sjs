@@ -45,18 +45,6 @@ var RequestCanceled, RequestTimeout;
     var waiting = [];
     var promise = this.promise = {};
     
-    // Complete can only be called once for each deferred
-    //  it records the result and notifies all the listeners
-    function complete(value) {
-      if (finished) {
-        throw new Error("This deferred has already been resolved");
-      }
-      result = value;
-      finished = true;
-      waiting.forEach(notify);
-      waiting = [];
-    }
-    
     // Calls the listener's errback or callback depending on the 
     //  current result. It will resolve returned promises before
     //  passing them on. If this listener doesn't handle this type of 
@@ -86,8 +74,19 @@ var RequestCanceled, RequestTimeout;
     //  based on success or error.
     
     // Calling resolve will put the deferred in a success state
+    // Resolve can only be called once for each deferred
+    // It records the result and notifies all the listeners
     var resolve = this.resolve = function(value) {
-      complete(value);
+      if (finished) {
+        throw new Error("This deferred has already been resolved");
+      }
+      
+      result = value;
+      finished = true;
+      
+      waiting.forEach(notify);
+      waiting = [];
+      
       return promise;
     };
     
@@ -95,10 +94,10 @@ var RequestCanceled, RequestTimeout;
     //  by coercing the value into an error
     var reject = this.reject = function(error) {
       if (!(error instanceof Error)) {
-          error = new Error(""+error);
+        error = new Error(""+error);
       }
       console.warn(error.toString(), error);
-      complete(error);
+      resolve(error);
       return promise;
     };
     
@@ -211,6 +210,8 @@ var RequestCanceled, RequestTimeout;
   
   // Takes an array or dict of promises and returns a promise that 
   //   is fulfilled when all of those promises have been fulfilled
+  // Each returned result will be either the result, or an Error on
+  //   failure. Errbacks of "all" will never be called.
   all = function(promises) {
     var deferred = new Deferred();
     
@@ -224,44 +225,52 @@ var RequestCanceled, RequestTimeout;
     }
     
     if (length === 0) {
-      deferred.resolve(results)
-    } else {
-      for (var key in promises) {
-        (function() {
-          var k = key;
-          var handle_promise = function(value){
-            results[k] = value;
-            fulfilled++;
-            if (fulfilled === length){
-              deferred.resolve(results);
-            }
-          }
-          when(promises[k], handle_promise, handle_promise);
-        })()
-      }
+      deferred.resolve(results);
+      return deferred.promise;
     }
+    
+    for (var key in promises) {
+      (function () {
+        var k = key;
+        var handle_promise = function(value) {
+          results[k] = value;
+          fulfilled += 1;
+          if (fulfilled === length){
+            deferred.resolve(results);
+          }
+        }
+        when(promises[k], handle_promise, handle_promise);
+      })();
+    }
+    
     return deferred.promise;
   };
   
   // Takes an array or dict of promises and returns a promise that 
-  //   is fulfilled when the first of those promises have been fulfilled
-  any = function(promises){
+  //   is fulfilled with the result of the first fulfilled promise
+  any = function(promises) {
     var deferred = new Deferred();
-    var fulfilled;
+    var fulfilled = false;
+    
+    if (Object.size(promises) === 0) {
+      deferred.resolve();
+      return deferred.promise;
+    }
+    
     for (var key in promises) {
       when(promises[key], function(value){
         if (!fulfilled) {
           fulfilled = true;
           deferred.resolve(value);
         }
-      },
-      function(error) {
+      }, function(error) {
         if (!fulfilled) {
           fulfilled = true;
-          deferred.resolve(error);
+          deferred.reject(error);
         }
       });
     }
+    
     return deferred.promise;
   };
   

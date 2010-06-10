@@ -369,4 +369,30 @@ test("all_dict", function() {
   ok(all_dict_called, "The callback for the deferred dict should be called");
 });
 
+test("any_list", function() {
+  var deferreds = [];
+  for(var i=0; i<5; i++) {
+    deferreds.push(deferred.unresolved());
+  }
+  
+  var dlist_called = 0;
+  deferred.any(deferreds)
+    .then(function (result) {
+      dlist_called += 1;
+      equals(result, 3);
+    },function (error) {
+      dlist_called += 1;
+      ok(false, "The errback shouldn't be called");
+    });
+  
+  // The first one should trigger the any callback
+  //   the others should be ignored
+  deferreds[3].resolve(3);
+  deferreds[2].reject(2);
+  deferreds[0].resolve(0);
+  
+  equals(dlist_called, 1, "The callback for the any list should be called once.");
+});
+
+
 acre.test.report();

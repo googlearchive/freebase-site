@@ -53,7 +53,7 @@ def create_app(app_key, session):
         print "That app already exists!" 
         sys.exit(1)
 
-    name = "freebase site %s" % app_key
+    name = "freebase.com %s" % app_key
     session.create_app(app_id, name=name, extra_group="/m/043wdvg" )
 
 if __name__ == '__main__':

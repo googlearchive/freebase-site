@@ -60,7 +60,7 @@ var RequestCanceled, RequestTimeout;
     
     // Calls the listener's errback or callback depending on the 
     //  current result. It will resolve returned promises before
-    //  passing them on. If this listener handle this type of 
+    //  passing them on. If this listener doesn't handle this type of 
     //  result then it passes it along.
     function notify(listener) {
       // Determine which callback to call based on whether
@@ -69,14 +69,14 @@ var RequestCanceled, RequestTimeout;
       if (func) {
           try {
             // Pass along the result down the chain
-            //  if its a deferred then resolve it first
+            // If its a deferred then resolve it first
             when(func(result), function(new_result) {
               listener.deferred.resolve(new_result)
             }, function(new_error) {
               listener.deferred.reject(new_error)
             });
           } catch(e) {
-            // If error come up then pass along the error
+            // If the callback errored then pass that error down the chain
             listener.deferred.reject(e);
           }
       
@@ -111,9 +111,9 @@ var RequestCanceled, RequestTimeout;
       return promise;
     };
     
-    // Adds a new success and/or failure listener to this deferred
-    //  all of these listeners will be called when the deferred is resolved
-    //  or rejected.
+    // Adds a new success and/or failure listener to this deferred.
+    // All of these listeners will be called when the deferred 
+    //   is resolved or rejected.
     var then = this.then = promise.then = function(callback, errback) {
       var return_deferred = new Deferred();
       var listener = {
@@ -148,12 +148,12 @@ var RequestCanceled, RequestTimeout;
     return new Deferred();
   }
   
-  // Convenience function to return an resolved promise
+  // Convenience function to return a resolved promise
   resolved = function(value) {
     return unresolved().resolve(value);
   }
   
-  // Convenience function to return an rejected promise
+  // Convenience function to return a rejected promise
   rejected = function(error) {
     return unresolved().reject(error);
   }
@@ -213,7 +213,7 @@ var RequestCanceled, RequestTimeout;
   };
   
   // Takes an array or dict of promises and returns a promise that 
-  // is fulfilled when all of those promises have been fulfilled
+  //   is fulfilled when all of those promises have been fulfilled
   all = function(promises) {
     var deferred = unresolved();
     
@@ -247,7 +247,7 @@ var RequestCanceled, RequestTimeout;
   };
   
   // Takes an array or dict of promises and returns a promise that 
-  // is fulfilled when the first of those promises have been fulfilled
+  //   is fulfilled when the first of those promises have been fulfilled
   any = function(promises){
     var deferred = unresolved();
     var fulfilled;
@@ -268,7 +268,7 @@ var RequestCanceled, RequestTimeout;
     return deferred.promise;
   };
   
-  //  Return a Promise whether func returns a Promise or not
+  //  Return a promise whether func returns a promise or not
   maybePromise = function(func, args) {
     var value = func.apply(this, args);
     if (is_promise(value)) {
@@ -278,7 +278,7 @@ var RequestCanceled, RequestTimeout;
     }
   };
 
-  //  Make a Deferred from an async function with callback and/or errback args
+  //  Make a deferred from an async function with callback and/or errback args
   //    - func = function reference
   //    - callback_pos = number or dict with callback postiion in func signature
   //      - position = array position in arguments

@@ -201,8 +201,6 @@ function base_manifest(MF, scope, undefined) {
         }
       });
 
-      console.log("css", buf);
-
       // run less on concatenated css/less
       MF.less(buf.join(""),
               scope.acre.write,

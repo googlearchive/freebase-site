@@ -19,9 +19,7 @@ if (acre.current_script === acre.request.script) {
     router.route(acre.request);
   }
   catch (e if e === router.NOT_FOUND) {
-    acre.response.status = 404;
-    acre.write("not_found");
-    acre.exit();
+    acre.require("/freebase/site/error/index", mf.version["/freebase/site/error"])
+      .main(this, {status:404});
   }
 }
-

@@ -39,8 +39,6 @@ function type_membership(user_id) {
   q["!/type/usergroup/member"][0]["!/type/domain/owners"][0].types = type_clause;
   q["/freebase/user_profile/favorite_types"] = type_clause;
 
-  console.log(q);
-
   function callback(result) {
     result = result.result;
     var admin_of = [];

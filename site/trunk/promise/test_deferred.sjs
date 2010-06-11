@@ -1,5 +1,6 @@
 acre.require('/test/lib').enable(this);
 
+acre.require("es5");
 var deferred = acre.require("deferred");
 
 test("callback", function() {
@@ -179,6 +180,25 @@ test("quick_trigger", function() {
   // so the number should go down by one
   p.then(null, sub)
   equals(value, -1);
+});
+
+test("callback_arguments", function() {
+  deferred.resolved("time")
+    .then(function(result, extra) {
+      equals(result, "time");
+      equals(extra, "flies");
+      return result + " " + extra;
+    }.postbind(this, "flies"))
+    
+    .then(function(result) {
+      equals(result, "time flies");
+      var args = Array.prototype.slice.call(arguments);
+      return args.join(" ");
+    }.postbind(this, "like", "an", "arrow"))
+    
+    .then(function(result) {
+      equals(result, "time flies like an arrow");
+    })
 });
 
 test("succeed_and_fail", function() {

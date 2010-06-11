@@ -104,36 +104,10 @@ var RequestCanceled, RequestTimeout;
     // Adds a new success and/or failure listener to this deferred's promise
     // All of these listeners will be called when the deferred 
     //   is resolved or rejected.
-    
-    // All arguments are optional
-    // The first function is the callback
-    // The second function is the errback
-    // A trailing array defines bound variables for the callbacks
-    
     // Call patterns:
     //  .then(callback)
-    //  .then(callback, [arg0, arg1, ...])
     //  .then(null, errback)
-    //  .then(callback, errback, [arg0, arg1, ...])
-    this.then = promise.then = function(callback, errback, args) {
-      
-      // In the case that an errback isn't specified
-      //  the args can be the second argument
-      if (errback instanceof Array) {
-        args = errback;
-        errback = null;
-      }
-      
-      // If there are bound args then bind them to
-      //  the passed in callbacks
-      if (args && Object.size(args) > 0) {
-        if (typeof callback === "function") {
-          callback = Function.prototype.postbind.apply(callback, [callback].concat(args));
-        }
-        if (typeof errback === "function") {
-          errback = Function.prototype.postbind.apply(errback, [errback].concat(args));
-        }
-      }
+    this.then = promise.then = function(callback, errback) {
       
       var listener = {
         callback: callback,

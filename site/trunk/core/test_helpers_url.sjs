@@ -33,12 +33,12 @@ test("url_for", function() {
   var routes =  acre.require("/freebase/site/routing/app_routes", mf.version["/freebase/site/routing"]);
 
   if (h.is_client()) {
-    equal(h.url_for("/freebase/site/core/test_helpers_url"), acre.request.app_url + acre.request.base_path + routes.get_route("/freebase/site/core").path + "/test_helpers_url");
-    equal(h.url_for("/freebase/site/schema/index"), acre.request.app_url + acre.request.base_path + routes.get_route("/freebase/site/schema").path + "/index");
-    equal(h.url_for("/freebase/site/toolbox/service", null, "/apps"), acre.request.app_url + acre.request.base_path + routes.get_route("/freebase/site/toolbox").path + "/service/apps");
+    equal(h.url_for("/freebase/site/core/test_helpers_url"), acre.request.app_url + acre.request.base_path + routes.get_route("/freebase/site/core").from + "/test_helpers_url");
+    equal(h.url_for("/freebase/site/schema/index"), acre.request.app_url + acre.request.base_path + routes.get_route("/freebase/site/schema").from + "/index");
+    equal(h.url_for("/freebase/site/toolbox/service", null, "/apps"), acre.request.app_url + acre.request.base_path + routes.get_route("/freebase/site/toolbox").from + "/service/apps");
 
     // /freebase/site/homepage/index is absolute
-    equal(h.url_for("/freebase/site/homepage/index"), acre.request.app_url + acre.request.base_path + "/index");
+    equal(h.url_for("/freebase/site/homepage/index"), acre.request.app_url + acre.request.base_path + "/");
   }
   else {
     equal(h.url_for("/freebase/site/core/test_helpers_url"),  h.resource_url("/freebase/site/core/test_helpers_url", routes_mf.version["/freebase/site/core"]));

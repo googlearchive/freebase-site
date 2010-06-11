@@ -4,23 +4,24 @@ function do_route(req, path, mf, routes) {
 
   for (var i=0,len=routes.length; i<len; i++) {
     var rule = routes[i];
+    var app = rule.app;
 
-    if (rule.absolute) {
-      if (rule.path !== path) {
+    if (rule.as === "script") {
+      if (rule.from !== path) {
         continue;
       }
     }
-    else if (path.startsWith(rule.path)) {
-      path = path.replace(rule.path, "");
+    else if (path.startsWith(rule.from)) {
+      path = path.replace(rule.from, "");
     }
     else {
       continue;
     }
 
-    console.log(path, rule.path, rule.app);
+    console.log(path, rule.from, rule.to, rule.as);
 
-    if (!(rule.app in mf.version)) {
-      throw (rule.app + " must be defined in the manifest");
+    if (!(app in mf.version)) {
+      throw (app + " must be defined in the manifest");
     }
 
     if (!path) {
@@ -32,13 +33,13 @@ function do_route(req, path, mf, routes) {
       path//,   // 2nd option
       //"/not_found"  // 3rd option
     ];
-    
+
     var h = acre.require("helpers");
     var extension = acre.require("extension_router");
     for (var j=0,len2=paths.length; j<len2; j++) {
       var [script_id, path_info] = h.split_path(paths[j]);
       try {
-        extension.do_route(req, rule.app + "/" + script_id, mf.version[rule.app], path_info);
+        extension.do_route(req, app + "/" + script_id, mf.version[app], path_info);
         acre.exit();
       }
       catch (e if e === extension.NOT_FOUND) {

@@ -2,64 +2,76 @@
  *
  * routes map
  * 1. processed in order
- * 2. app handlers for each path MUST be define in your MANIFEST
+ * 2. "to" apps for each "from" path be defined in your MANIFEST
+ * 3. default route "as" "app", valid values are "app", "script"
  */
 var routes = [
   {
-    path: "/",
-    app: "/freebase/site/homepage",
-    absolute: true
+    from: "/",
+    to: "/freebase/site/homepage/index",
+    as: "script"
   },
   {
-    path: "/index",
-    app: "/freebase/site/homepage",
-    absolute: true
+    from: "/index",
+    to: "/freebase/site/homepage/index",
+    as: "script"
   },
   {
-    path: "/domain",
-    app: "/freebase/site/domain"
+    from: "/domain",
+    to: "/freebase/site/domain"
   },
   {
-    path: "/schema",
-    app: "/freebase/site/schema"
+    from: "/schema",
+    to: "/freebase/site/schema"
   },
   {
-    path: "/toolbox",
-    app: "/freebase/site/toolbox"
+    from: "/toolbox",
+    to: "/freebase/site/toolbox"
   },
   {
-    path: "/core",
-    app: "/freebase/site/core"
+    from: "/core",
+    to: "/freebase/site/core"
   },
   {
-    path: "/sample",
-    app: "/freebase/site/sample"
+    from: "/sample",
+    to: "/freebase/site/sample"
   }
 ];
 
 /**
- * map: appid -> route
+ * map: to(appid) -> route
  */
-var _app_paths = {};
-for (var i=0,l=routes.length; i<l; i++) {
-  var r = _app_paths[routes[i].app];
-  if (!r) {
-    r = _app_paths[routes[i].app] = [];
+var _routes_map = {};
+routes.forEach(function(route) {
+  if (!route.as) {
+    route.as = "app"; // default to route as "app"
   }
-  r.push(routes[i]);
-};
+  var app = route.to;
+  if (route.as === "script") {
+    app = route.to.split("/");
+    app.pop();
+    app = app.join("/");
+  }
+  route.app = app;
+  var r = _routes_map[app];
+  if (!r) {
+    r = _routes_map[app] = [];
+  }
+  r.push(route);
+});
+
 
 /**
  * Get the first path in routes that matches the appid.
  */
-function get_route(appid) {
-  var r = get_routes(appid);
+function get_route(to) {
+  var r = get_routes(to);
   if (r && r.length) {
     return r[0];
   }
   return null;
 };
 
-function get_routes(appid) {
-  return _app_paths[appid];
+function get_routes(to) {
+  return _routes_map[to];
 };

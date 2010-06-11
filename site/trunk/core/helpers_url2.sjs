@@ -62,14 +62,14 @@ function url_for(resource_path, params, extra_path) {
     var rts = routes.get_routes(resource_info.appid);
     if (rts) {
       for (var i=0,l=rts.length; i<l; i++) {
-        var path = rts[i].path;
-        if (rts[i].absolute) {
-          if (rts[i].app + rts[i].path === resource_info.id) {
-            return acre.form.build_url(acre.request.app_url + acre.request.base_path + rts[i].path + extra_path, params);
+        var route = rts[i];
+        if (route.as === "script") {
+          if (route.to === resource_info.id) {
+            return acre.form.build_url(acre.request.app_url + acre.request.base_path + route.from + extra_path, params);
           }
         }
         else {
-          return acre.form.build_url(acre.request.app_url + acre.request.base_path + rts[i].path + "/" + resource_info.name + extra_path, params);
+          return acre.form.build_url(acre.request.app_url + acre.request.base_path + route.from + "/" + resource_info.name + extra_path, params);
         }
       }
     }

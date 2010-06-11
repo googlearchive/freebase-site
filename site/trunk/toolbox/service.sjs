@@ -4,58 +4,86 @@ var deferred = acre.require("/freebase/site/promise/deferred", mf.version["/free
 var freebase = acre.require("/freebase/site/promise/apis", mf.version["/freebase/site/promise"]).freebase;
 
 function domain_membership(user_id) {
-  var q = acre.require("domains").query;
-  q = acre.freebase.extend_query(q, {id: user_id});
+  var q_admin = acre.freebase.extend_query(acre.require("admin_domains").query, {id: user_id});
+  var q_fav = acre.freebase.extend_query(acre.require("fav_domains").query, {id: user_id});
 
-  function callback(result) {
-    result = result.result;
-    var admin_of = [];
-    var member_of = [];
-    result["!/type/usergroup/member"].forEach(function(m) {
-      m["!/type/domain/owners"].forEach(function(d) {
-        admin_of.push({id:d.id, name:d.name});
+  function callback([r_admin, r_fav]) {
+    var r_admin = r_admin.result;
+    var r_fav = r_fav.result;
+
+    var map = {};
+
+    if (r_admin) {
+      r_admin["!/type/usergroup/member"].forEach(function(m) {
+        m["!/type/domain/owners"].forEach(function(d) {
+          map[d.id] = {id:d.id, name:d.name, admin:true};
+        });
       });
+    }
+    if (r_fav) {
+      r_fav["/freebase/user_profile/favorite_domains"].forEach(function(d) {
+        if (! (d.id in map)) {
+          map[d.id] = {id:d.id, name:d.name};
+        }
+      });
+    }
+    var domains = [];
+    for (var k in map) {
+      domains.push(map[k]);
+    }
+    domains.sort(function(a,b) {
+      return a.name > b.name;
     });
-    result["/freebase/user_profile/favorite_domains"].forEach(function(d) {
-      member_of.push({id:d.id, name:d.name});
-    });
-    return [admin_of, member_of];
+    return domains;
   };
-  return freebase.mqlread(q).then(callback);
+
+  var d_admin = freebase.mqlread(q_admin);
+  var d_fav = freebase.mqlread(q_fav);
+
+  return deferred.all([d_admin, d_fav]).then(callback);
 };
 
 
 function type_membership(user_id) {
-  var q = acre.require("domains").query;
-  delete q["/freebase/user_profile/favorite_domains"];
+  var q_admin = acre.freebase.extend_query(acre.require("admin_types").query, {id: user_id});
+  var q_fav = acre.freebase.extend_query(acre.require("fav_types").query, {id: user_id});
 
-  var type_clause = [{
-    "id": null,
-    "name": null,
-    "type": "/type/type",
-    "sort": "name",
-    "optional": true
-  }];
-  q["!/type/usergroup/member"][0]["!/type/domain/owners"][0].types = type_clause;
-  q["/freebase/user_profile/favorite_types"] = type_clause;
+  function callback([r_admin, r_fav]) {
+    var r_admin = r_admin.result;
+    var r_fav = r_fav.result;
 
-  function callback(result) {
-    result = result.result;
-    var admin_of = [];
-    var member_of = [];
-    result["!/type/usergroup/member"].forEach(function(m) {
-      m["!/type/domain/owners"].forEach(function(d) {
-        d["types"].forEach(function(t) {
-          admin_of.push({id:t.id, name:t.name});
+    var map = {};
+
+    if (r_admin) {
+      r_admin["!/type/usergroup/member"].forEach(function(m) {
+        m["!/type/domain/owners"].forEach(function(d) {
+          d["types"].forEach(function(t) {
+            map[t.id] = {id:t.id, name:t.name, admin:true};
+          });
         });
       });
+    }
+    if (r_fav) {
+      r_fav["/freebase/user_profile/favorite_types"].forEach(function(t) {
+        if (! (t.id in map)) {
+          map[t.id] = {id:t.id, name:t.name};
+        }
+      });
+    }
+    var types = [];
+    for (var k in map) {
+      types.push(map[k]);
+    }
+    types.sort(function(a,b) {
+      return a.name > b.name;
     });
-    result["/freebase/user_profile/favorite_types"].forEach(function(t) {
-      member_of.push({id:t.id, name:t.name});
-    });
-    return [admin_of, member_of];
+    return types;
   };
-  return freebase.mqlread(q).then(callback);
+
+  var d_admin = freebase.mqlread(q_admin);
+  var d_fav = freebase.mqlread(q_fav);
+
+  return deferred.all([d_admin, d_fav]).then(callback);
 };
 
 
@@ -63,8 +91,7 @@ var api = {
 
   projects: function(args, headers) {
     return domain_membership(args.id)
-      .then(function([admin_of, member_of]) {
-              var domains = admin_of.concat(member_of);
+      .then(function(domains) {
               return {
                 data: domains,
                 html: acre.markup.stringify(t.projects_toolbox(domains))
@@ -95,8 +122,7 @@ var api = {
 
   schema: function(args, header) {
     return type_membership(args.id)
-      .then(function([admin_of, member_of]) {
-              var types = admin_of.concat(member_of);
+      .then(function(types) {
               return {
                 data: types,
                 html: acre.markup.stringify(t.schema_toolbox(types))

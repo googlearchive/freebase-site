@@ -1,0 +1,9 @@
+{
+  "id": "/user/daepark",
+  "/freebase/user_profile/favorite_types": [{
+    "id": null,
+    "name": null,
+    "type": "/type/type",
+    "limit": 500
+  }]
+}

@@ -108,8 +108,10 @@ var api = {
 
 };
 
+api.projects.args = ["id"];
 api.apps.args = ["id"];
 api.queries.args = ["id"];
+api.schema.args = ["id"];
 
 function main(scope) {
   var service = acre.require("/freebase/site/core/service", mf.version["/freebase/site/core"]);

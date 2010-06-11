@@ -226,18 +226,21 @@ var RequestCanceled, RequestTimeout;
       return deferred.promise;
     }
     
-    for (var key in promises) {
-      (function () {
-        var k = key;
-        var handle_promise = function(value) {
-          results[k] = value;
-          fulfilled += 1;
-          if (fulfilled === length){
-            deferred.resolve(results);
-          }
+    var handle_promise = function(k) {
+      return function(value) {
+        results[k] = value;
+        fulfilled += 1;
+        if (fulfilled === length){
+          deferred.resolve(results);
         }
-        when(promises[k], handle_promise, handle_promise);
-      })();
+      }
+    }
+    
+    for (var key in promises) {
+      if (promises.hasOwnProperty(key)) {
+        var hp = handle_promise(key);
+        when(promises[key], hp, hp);
+      }
     }
     
     return deferred.promise;
@@ -255,17 +258,19 @@ var RequestCanceled, RequestTimeout;
     }
     
     for (var key in promises) {
-      when(promises[key], function(value){
-        if (!fulfilled) {
-          fulfilled = true;
-          deferred.resolve(value);
-        }
-      }, function(error) {
-        if (!fulfilled) {
-          fulfilled = true;
-          deferred.reject(error);
-        }
-      });
+      if (promises.hasOwnProperty(key)) {
+        when(promises[key], function(value){
+          if (!fulfilled) {
+            fulfilled = true;
+            deferred.resolve(value);
+          }
+        }, function(error) {
+          if (!fulfilled) {
+            fulfilled = true;
+            deferred.reject(error);
+          }
+        });
+      }
     }
     
     return deferred.promise;

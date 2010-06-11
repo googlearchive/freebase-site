@@ -23,7 +23,7 @@ var MF = {
     "core.js": ['jquery.cookie.js', 'jquery.ui.position.js', 'core.js']
   },
   stylesheet: {
-    "core.css": ["core.less", "popup.css"]
+    "core.css": ["core.less", "components.less"]
   }
 };
 MF.suggest.base_url += MF.suggest.version;

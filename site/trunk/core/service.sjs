@@ -32,6 +32,8 @@ var deferred = acre.require("/freebase/site/promise/deferred", mf.version["/free
  * 2. Check required authentication (i.e., myservice_2 requires authentication)
  * 3. Invoke myapis.myservice_2 and /freebase/libs/service/lib to properly format/handle as json/p response.
  *
+ * Note that your api methods can return a deferred/promise (@see /freebase/site/promise/deferred)
+ *
  * @see http://service.freebaseapps.com/index
  */
 function main(scope, api) {

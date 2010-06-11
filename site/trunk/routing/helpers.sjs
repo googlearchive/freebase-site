@@ -1,7 +1,7 @@
 /**
  * Split path to script_id and path_info pairs. This is not like an ordinary path split.
  *
- * /foo.bar/baz/fu => [foo.bar, /baz/fu]
+ * /foo.bar/baz/fu?k=v => ['foo.bar', '/baz/fu', 'k=v']
  *
  * NOTE: The path MUST begin with "/" but the resulting script_id DOES NOT start with "/".
  * The script_id defaults to "index" if path is "/".

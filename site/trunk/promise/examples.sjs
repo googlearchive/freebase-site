@@ -1,3 +1,5 @@
+acre.require("es5");
+
 var deferred = acre.require("/freebase/site/promise/deferred");
 var freebase = acre.require("/freebase/site/promise/apis").freebase;
 var urlfetch = acre.require("/freebase/site/promise/apis").urlfetch;
@@ -87,3 +89,16 @@ pgaga
   .then(acre.write);
 
 acre.async.wait_on_results();
+
+//---Passing along arguments---
+acre.write("\n\n---Passing along arguments---\n");
+deferred.resolved("time")
+  .then(function(result, extra) {
+    return result + " " + extra;
+  }.postbind(this, "flies"))
+  
+  .then(function(result) {
+    return Array.prototype.slice.call(arguments).join(" ");
+  }.postbind(this, "like", "an", "arrow"))
+  
+  .then(acre.write)

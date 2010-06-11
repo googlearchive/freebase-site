@@ -39,7 +39,7 @@ var routes = [
 ];
 
 /**
- * map: to(appid) -> route
+ * map[app(to)] = route
  */
 var _routes_map = {};
 routes.forEach(function(route) {
@@ -62,16 +62,16 @@ routes.forEach(function(route) {
 
 
 /**
- * Get the first path in routes that matches the appid.
+ * Get the first path in routes that matches the app (id).
  */
-function get_route(to) {
-  var r = get_routes(to);
+function get_route(app) {
+  var r = get_routes(app);
   if (r && r.length) {
     return r[0];
   }
   return null;
 };
 
-function get_routes(to) {
-  return _routes_map[to];
+function get_routes(app) {
+  return _routes_map[app];
 };

@@ -196,7 +196,7 @@ window.freebase = window.fb = {};
       clearTimeout(menu.data("popup-timeout"));
       menu.data("popup-timeout", setTimeout(function() {
         tb.hide_delay(menu);
-      }, 100));
+      }, 0));
     },
 
     hide_delay: function(menu) {

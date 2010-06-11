@@ -152,9 +152,8 @@ window.freebase = window.fb = {};
       // if popup panel already exists, just show it
       var popup = menu.data("popup");
       if (popup) {
-        popup.slideDown(function() {
-          menu.removeClass("expand").addClass("collapse");
-        });
+        popup.show();
+        menu.removeClass("expand").addClass("collapse");
         return;
       }
 
@@ -189,16 +188,15 @@ window.freebase = window.fb = {};
         at: "left bottom"
       });
 
-      popup.slideDown(function() {
-        menu.removeClass("expand").addClass("collapse");
-      });
+      popup.show();
+      menu.removeClass("expand").addClass("collapse");
     },
 
     hide: function(menu) {
       clearTimeout(menu.data("popup-timeout"));
       menu.data("popup-timeout", setTimeout(function() {
         tb.hide_delay(menu);
-      }, 200));
+      }, 100));
     },
 
     hide_delay: function(menu) {

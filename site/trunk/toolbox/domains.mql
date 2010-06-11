@@ -1,0 +1,32 @@
+{
+  "id": "/user/daepark",
+  "!/type/usergroup/member": [{
+    "id" : null,
+    "name" : null,
+    "limit": 500,
+    "!/type/domain/owners" : [{
+      "id": null,
+      "name": null,
+      "type": "/type/domain",
+      "limit": 500,
+      "sort": "name",
+      "forbid:type": {
+        "id": "/freebase/apps/acre_app",
+        "optional": "forbidden"
+      }
+    }],
+    "optional": true
+  }],
+  "/freebase/user_profile/favorite_domains": [{
+    "id": null,
+    "name": null,
+    "type": "/type/domain",
+    "limit": 500,
+    "optional": true,
+    "sort": "name",
+    "forbid:type": {
+      "id": "/freebase/apps/acre_app",
+      "optional": "forbidden"
+    }
+  }]
+}

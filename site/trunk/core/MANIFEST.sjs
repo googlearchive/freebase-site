@@ -2,6 +2,7 @@
 var MF = {
   "version": {
     "/freebase/site/routing": null,
+    "/freebase/site/promise": null,
     "/freebase/libs/jquery": "release",
     "/freebase/apps/libraries": "release",
     "/freebase/libs/service": "release"

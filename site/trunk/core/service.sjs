@@ -1,5 +1,6 @@
 var mf = acre.require("/freebase/site/core/MANIFEST").MF;
 var lib = acre.require("/freebase/libs/service/lib", mf.version["/freebase/libs/service"]);
+var deferred = acre.require("/freebase/site/promise/deferred", mf.version["/freebase/site/promise"]);
 
 /**
  * A generic service for json/p responses.
@@ -48,20 +49,34 @@ function main(scope, api) {
     var svc = (method === 'GET' ? lib.GetService :
                (headers['content-type'].indexOf("multipart/form-data") === 0 ? lib.FormService : lib.PostService));
 
-    svc(function() {
-      var args = lib.parse_request_args(fn.args); // check required args
-      if (fn.auth) { // check authentication
-        lib.check_user();
-      }
+    var args = lib.parse_request_args(fn.args); // check required args
+    if (fn.auth) { // check authentication
+      lib.check_user();
+    }
 
-      var response;
-      if (svc === lib.FormService) {
-        response = fn(args, headers, scope.acre.request.body);
-      }
-      else {
-        response = fn(args, headers);
-      }
-      return response;
-    }, scope);
+    // api method can return deferred/promise
+    var d;
+    if (svc === lib.FormService) {
+      d = fn(args, headers, scope.acre.request.body);
+    }
+    else {
+      d = fn(args, headers);
+    }
+
+    function success(result) {
+      svc(function() {
+        return result;
+      }, scope);
+    };
+
+    function error(e) {
+      svc(function() {
+        return e;
+      }, scope);
+    };
+
+    deferred.when(d, success, error);
+
+    acre.async.wait_on_results();
   }
 };

@@ -2,6 +2,7 @@
 var MF = {
   version: {
     "/freebase/site/core": null,
+    "/freebase/site/promise": null,
     "/freebase/apps/appeditor": "release"
   }
 };

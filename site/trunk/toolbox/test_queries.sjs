@@ -27,8 +27,8 @@ test("type_membership", function() {
 test("user_queries", function() {
   var result;
   q.user_queries("/user/daepark")
-    .then(function(types) {
-      result = types;
+    .then(function(queries) {
+      result = queries;
     });
   acre.async.wait_on_results();
   ok(result);

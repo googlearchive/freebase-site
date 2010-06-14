@@ -35,6 +35,10 @@ var routes = [
   {
     from: "/sample",
     to: "/freebase/site/sample"
+  },
+  {
+    from: "/appadmin",
+    to: "/freebase/site/appadmin"
   }
 ];
 

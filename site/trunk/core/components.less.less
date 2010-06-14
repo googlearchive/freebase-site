@@ -5,9 +5,9 @@
 }
 
 .toolbox-header {
-    font-size: 1.2em;
     color: #fff;
     border-top: 1px solid #6a6a6a;
+    padding: 0.3em 0.5em;
 }
 
 .toolbox-header a.help, 
@@ -15,8 +15,14 @@
     color: orange;
 }
 
+.toolbox-header-content {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
 .toolbox-header a {
     float: right;
+    font-size: 1.1em;
 }
 
 .toolbox-search input {
@@ -31,7 +37,6 @@
 }
 
 .toolbox-content li {
-   
     list-style-type: none;
     margin: 0 0 0.1em 0;
     width: 27.4em;
@@ -48,4 +53,34 @@
     font-size: 1.2em;
     line-height: 2.3;
     padding: 0 0.5em;
+}
+
+.toolbox-search {
+    margin: 0.4em 0.4em;
+}
+
+.toolbox-textbox {
+    width: 17em;
+    -moz-border-radius: 3px; 
+    -webkit-border-radius: 3px; 
+    border: 1px solid #b6e8fc;
+    padding: 0.4em 0.2em;
+}
+
+.toolbox-searchbutton {
+    background: none;
+    border: 0;
+    color: orange;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; 
+    
+}
+
+.popup-loading {
+    border: red;
+    z-index: 100;
+    background-color: rgba(0,0,0,0.8);
+    .rounded_corners(5px);
+    height: 40px;
+    display: block;
+    visibility: visible;
 }

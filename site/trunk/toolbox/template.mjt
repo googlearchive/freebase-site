@@ -40,13 +40,13 @@
 
 <acre:block def="projects_toolbox_search()">
   <form action="">
-    <input type="text" name="q" placeholder="Search projects by name..."/>
-    <button type="submit">Search</button>
+    <input type="text" name="q" class="toolbox-textbox" placeholder="Filter your projects..."/>
+    <button type="submit" class="toolbox-searchbutton">Search All Projects</button>
   </form>
 </acre:block>
 
 <acre:block def="projects_toolbox_header()">
-  Your Projects
+  <span class="toolbox-header-content">Your Projects</span>
   <a class="help" href="">What are Projects?</a>
 </acre:block>
 
@@ -80,13 +80,13 @@
 
 <acre:block def="apps_toolbox_search()">
   <form action="">
-    <input type="text" name="q" placeholder="Search apps by name..."/>
-    <button type="submit">Search</button>
+    <input type="text" name="q" class="toolbox-textbox" placeholder="Search apps by name..."/>
+    <button type="submit" class="toolbox-searchbutton">Search All Apps</button>
   </form>
 </acre:block>
 
 <acre:block def="apps_toolbox_header()">
-  Your Apps
+  <span class="toolbox-header-content">Your Apps</span>
   <a class="help" href="">What are Apps?</a>
 </acre:block>
 
@@ -120,13 +120,13 @@
 
 <acre:block def="queries_toolbox_search()">
   <form action="">
-    <input type="text" name="q" placeholder="Search queries by name..."/>
+    <input type="text" name="q" class="toolbox-textbox" placeholder="Search queries by name..."/>
     <button type="submit">Search</button>
   </form>
 </acre:block>
 
 <acre:block def="queries_toolbox_header()">
-  Your Queries
+  <span class="toolbox-header-content">Your Queries</span>
   <a class="help" href="">What are Queries?</a>
 </acre:block>
 

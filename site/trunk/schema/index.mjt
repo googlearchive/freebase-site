@@ -154,4 +154,4 @@
   ${g.t.script(mf.script_src("index.js"))}
 </acre:block>
 
-${acre.require("/freebase/site/core/template", mf.version["/freebase/site/core"]).page(this.exports, page_options)}
+${acre.require("/freebase/site/core/template", mf.version["/freebase/site/core"]).render_page(this.exports, page_options)}

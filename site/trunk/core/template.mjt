@@ -26,24 +26,22 @@
   // http://www.freebase.com
   g.is_client    = g.h.is_client();
 
-  this.exports.g = g;  
+  this.exports.g = g;
 </acre:script>
 
-
-
-<acre:block def="page(exports, options)">
+<acre:block def="render_page(exports, options)">
   <acre:script>
-   if (!options) {
-      options = {};
-    }
-    if (!options.page) {
-      options.page = "/freebase/site/core/page_freebase";
-    }
     g.exports = exports;
-    g.options = options;
-    g.page = acre.require(options.page); 
- </acre:script>
-  ${g.page['page'](g)}
+    var base_def = acre.require("/freebase/site/core/page_freebase").page;
+  </acre:script>
+  ${render_def(base_def, options)}
+</acre:block>
+
+<acre:block def="render_def(def, options)">
+  <acre:script>
+    g.c = options || {};
+  </acre:script>
+  ${def(g)}
 </acre:block>
 
 <acre:block def="stylesheet()" trim="">

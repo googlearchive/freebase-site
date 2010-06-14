@@ -39,18 +39,18 @@
       ${g.exports.body(g)}
     </acre:block>
     <acre:block else="">
-      ${g.page.body(g)}
+      ${body(g)}
     </acre:block>
  </html>
 </acre:block>
 
 
 <acre:block def="body(g)">
-  <body acre:attrs="g.options.body_class ? {'class': g.options.body_class} : {}">
-    ${g.page.header(g)}
-    ${g.page.content(g)}
-    ${g.page.footer(g)}
-    ${g.page.footer_script(g)}
+  <body acre:attrs="g.c.body_class ? {'class': g.c.body_class} : {}">
+    ${header(g)}
+    ${content(g)}
+    ${footer(g)}
+    ${footer_script(g)}
   </body>
 </acre:block>
 

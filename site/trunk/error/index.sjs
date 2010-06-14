@@ -5,7 +5,7 @@ function main(scope, args) {
   var core_template = acre.require("/freebase/site/core/template", mf.version["/freebase/site/core"]);
   var error_template = acre.require("template");
 
-  acre.write(acre.markup.stringify(core_template.page(error_template, page_options)));
+  acre.write(acre.markup.stringify(core_template.render_page(error_template, page_options)));
   if (args.status) {
     scope.acre.response.status = parseInt(args.status);
   }

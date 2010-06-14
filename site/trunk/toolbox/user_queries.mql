@@ -19,6 +19,7 @@
     "optional": true,
     "type": "/freebase/view_type"
   },
+  "/freebase/query_hints/curated": true,
   "sort": "name",
   "creator": "/user/daepark"
 }]

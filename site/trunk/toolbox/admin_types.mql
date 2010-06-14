@@ -13,7 +13,12 @@
       "types": [{
         "id": null,
         "name": null,
-        "type": "/type/type"
+        "type": "/type/type",
+        "!/freebase/domain_profile/base_type": {
+          "id": null,
+          "optional": "forbidden",
+          "limit": 0
+        }
       }]
     }]
   }]

@@ -3,6 +3,7 @@ var MF = {
   "version": {
     "/freebase/site/routing": null,
     "/freebase/site/promise": null,
+    "/freebase/site/toolbox": null,
     "/freebase/libs/jquery": "release",
     "/freebase/apps/libraries": "release",
     "/freebase/libs/service": "release"
@@ -21,7 +22,7 @@ var MF = {
       }
   },
   javascript: {
-    "core.js": ['jquery.cookie.js', 'jquery.ui.position.js', 'core.js']
+    "core.js": ['jquery.cookie.js', 'jquery.ui.position.js', 'core.js', '/freebase/site/toolbox/toolbox.js']
   },
   stylesheet: {
     "core.css": ["core.less", "components.less"]

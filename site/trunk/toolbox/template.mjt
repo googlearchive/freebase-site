@@ -52,8 +52,8 @@
 
 <acre:block def="projects_toolbox_content(projects)">
   <ul>
-    <li acre:for="project in projects">
-      <a href="${acre.freebase.service_url}/view${project.id}">${project.name}</a>
+    <li acre:for="project in projects" data-name="${project.name || project.id}" data-id="${project.id}">
+      <a href="${acre.freebase.service_url}/view${project.id}">${project.name || project.id}</a>
     </li>
   </ul>
 </acre:block>
@@ -92,8 +92,8 @@
 
 <acre:block def="apps_toolbox_content(apps)">
   <ul>
-    <li acre:for="app in apps">
-      <a href="${acre.freebase.service_url}/apps/app${app.appid}">${app.name}</a>
+    <li acre:for="app in apps" data-name="${app.name || app.id}" data-id="${app.id}">
+      <a href="${acre.freebase.service_url}/apps/app${app.appid}">${app.name || app.id}</a>
     </li>
   </ul>
 </acre:block>
@@ -132,8 +132,8 @@
 
 <acre:block def="queries_toolbox_content(queries)">
   <ul>
-    <li acre:for="query in queries">
-      <a href="${acre.freebase.service_url}/view${query.id}">${query.name}</a>
+    <li acre:for="query in queries" data-name="${query.name || query.id}" data-id="${query.id}">
+      <a href="${acre.freebase.service_url}/view${query.id}">${query.name || query.id}</a>
     </li>
   </ul>
 </acre:block>
@@ -160,7 +160,7 @@
 
 <acre:block def="schema_toolbox_search()">
   <form action="">
-    <input type="text" name="q" placeholder="Search schema by name..."/>
+    <input type="text" max="200" name="q" placeholder="Search schema by name..."/>
     <button type="submit">Search</button>
   </form>
 </acre:block>
@@ -172,8 +172,8 @@
 
 <acre:block def="schema_toolbox_content(types)">
   <ul>
-    <li acre:for="type in types">
-      <a href="${acre.freebase.service_url}/view${type.id}">${type.name}</a>
+    <li acre:for="type in types" data-name="${type.name || type.id}" data-id="${type.id}">
+      <a href="${acre.freebase.service_url}/view${type.id}">${type.name || type.id}</a>
       <div class="id">${type.id}</div>
     </li>
   </ul>

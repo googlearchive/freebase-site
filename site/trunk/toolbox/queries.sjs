@@ -2,6 +2,9 @@ var mf = acre.require("MANIFEST").MF;
 var deferred = acre.require("/freebase/site/promise/deferred", mf.version["/freebase/site/promise"]);
 var freebase = acre.require("/freebase/site/promise/apis", mf.version["/freebase/site/promise"]).freebase;
 
+/**
+ * Get all domains user_id is an admin of AND member of (/freebase/user_profile/favorite_domains)
+ */
 function domain_membership(user_id) {
   var q_admin = acre.freebase.extend_query(acre.require("admin_domains").query, {id: user_id});
   var q_fav = acre.freebase.extend_query(acre.require("fav_domains").query, {id: user_id});
@@ -42,7 +45,9 @@ function domain_membership(user_id) {
   return deferred.all([d_admin, d_fav]).then(callback);
 };
 
-
+/**
+ * Get all types user_id is an admin of AND member of (/freebase/user_profile/favorite_types)
+ */
 function type_membership(user_id) {
   var q_admin = acre.freebase.extend_query(acre.require("admin_types").query, {id: user_id});
   var q_fav = acre.freebase.extend_query(acre.require("fav_types").query, {id: user_id});

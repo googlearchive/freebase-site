@@ -146,7 +146,7 @@ class AcrePush(object):
             print "?\t%s" % filename
         for filename,d in delete_files.iteritems():
             if filename not in push_files.keys():
-                print "R\t%s\t(%s)" % (d.get('unquoted_filename'), d.get('reason', ''))
+                print "R\t%s\t(%s)" % (unquotekey(filename), d.get('reason', ''))
                 
         for filename,d in push_files.iteritems():
             if filename in delete_files.keys() or d.get('reason', '') == 'changed content':

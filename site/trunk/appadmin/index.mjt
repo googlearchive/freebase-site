@@ -1,0 +1,39 @@
+<acre:script>
+
+  var mf = acre.require("MANIFEST").MF;
+  var page_options = {};
+
+  var namespace = acre.request.params['namespace'] || '/freebase/site';
+  var query = acre.require('namespace_apps').query;
+  query[0]['key']['namespace'] = namespace;
+  var namespace_apps = acre.freebase.mqlread(query).result;
+
+</acre:script>
+
+<acre:block def="title(g)">
+App Admin
+</acre:block>
+
+<acre:block def="head(g)">
+  ${g.t.stylesheet(mf.css_src("appadmin.css"))}
+</acre:block>
+
+<acre:block def="content_body(g)">
+
+  <table>
+    <tr><th class="header">app</th></tr>
+    <acre:block for="app in namespace_apps">
+      <tr><td class="cell"><a href="${g.h.url_for('/freebase/site/appadmin/app', [['id', app.id]])}">${app.name}</a></td></tr>
+    </acre:block>  
+  </table>
+</acre:block>
+
+<acre:block def="footer_script(g)">
+  ${g.t.script(mf.script_src("appadmin.js"))}
+</acre:block>
+
+${acre.require("/freebase/site/core/template", mf.version["/freebase/site/core"]).page(this.exports, page_options)}
+
+
+
+

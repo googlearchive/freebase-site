@@ -1,0 +1,87 @@
+<acre:script>
+
+  var mf = acre.require("MANIFEST").MF;
+  var page_options = {}
+
+  var id = acre.request.params['id'] ? acre.request.params['id'] :  '/user/masouras/activity';
+  
+  var app_util = acre.require('app_util');
+  
+  var result = app_util.get_app(id);
+  if (!result['error']) { 
+  var versions = app_util.get_version_timeline(result);
+  
+  var reference_id = app_util.construct_id(result.reference_env, id, result.reference_version);
+
+
+  console.log(result);
+  console.log(versions);
+
+  
+
+  }
+
+</acre:script>
+
+<acre:block def="title(g)">
+<a href="${g.h.url_for('/freebase/site/appadmin/index')}">AppAdmin</a>: ${result[result.reference_env]['name']} (${id})
+</acre:block>
+
+<acre:block def="head(g)">
+  ${g.t.stylesheet(mf.css_src("appadmin.css"))}
+</acre:block>
+
+<acre:block def="content_body(g)">
+  
+  <table>
+    <tr>
+      <th class="header cell">version</th>
+      <acre:block for="env in app_util.ENV">
+        <th class="header cell">${env['name']}</th>
+      </acre:block>
+    </tr>
+
+    <acre:block for="version in versions">
+      <tr>
+        
+        <td>${version['version']}</td>
+        <acre:block for="env in app_util.ENV">
+          <acre:block if="version[env['id']]">
+            <td class="${version[env['id']]['class']} cell" id="${app_util.construct_id(env['id'], id, version['version'])}">
+            </td>
+          </acre:block>
+          <acre:block else="">
+            <td>---</td>
+          </acre:block>
+          
+        </acre:block>       
+      </tr>       
+    </acre:block>
+  </table>
+
+</acre:block>
+
+<acre:block def="footer_script(g)">
+  ${g.t.script(mf.script_src("appadmin.js"))}
+
+  <script type="text/javascript">
+
+    var reference_id = ${JSON.stringify(reference_id)};
+    var app_version_details_url = ${JSON.stringify(g.h.url_for('/freebase/site/appadmin/app_version_details'))};
+    var app_version_diff_url = ${JSON.stringify(g.h.url_for('/freebase/site/appadmin/app_version_diff'))};
+
+    $(".reference").each(function(index) {  
+    $(this).load(app_version_details_url + "?id=" + $(this).attr('id'));
+    });
+    $(".diff").each(function(index) {  
+    $(this).load(app_version_diff_url + "?id1=" + reference_id + "&id2=" + $(this).attr('id'));
+    });
+  </script>
+
+</acre:block>
+
+
+  ${acre.require("/freebase/site/core/template", mf.version["/freebase/site/core"]).page(this.exports, page_options)}
+
+
+

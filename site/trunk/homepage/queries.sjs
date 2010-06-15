@@ -2,7 +2,7 @@ var mf = acre.require("MANIFEST").MF;
 var deferred = mf.require("/freebase/site/promise/deferred");
 var freebase = mf.require("/freebase/site/promise/apis").freebase;
 
-function domain_categories() {
+var domain_categories = function () {
   var q_categories = acre.require("domain_categories").query;
   
   return freebase.mqlread(q_categories)
@@ -20,4 +20,4 @@ function domain_categories() {
     });
 }
 
-AlphabeticallyGroupedCommonsDomains(self, "grouped_commons_domains").do_query()
+//AlphabeticallyGroupedCommonsDomains(self, "grouped_commons_domains").do_query()

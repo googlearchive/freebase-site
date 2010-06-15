@@ -3,6 +3,14 @@ var MF = {
   version: {
     "/freebase/site/core": null,
     "/freebase/site/promise": null
+  },
+  
+  stylesheet: {
+    "project.css": ["/freebase/site/core/MANIFEST/core.css"]
+  },
+
+  javascript: {
+    "project.js": ["/freebase/site/core/MANIFEST/core.js"]
   }
 };
 

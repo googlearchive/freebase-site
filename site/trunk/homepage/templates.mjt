@@ -4,7 +4,7 @@
 
 <acre:block def="categories_list(categories)">
   <ul>
-    <acre:block acre:for="var category in categories">
+    <acre:block for="category in categories">
       <li>
         ${category.name}
       </li>

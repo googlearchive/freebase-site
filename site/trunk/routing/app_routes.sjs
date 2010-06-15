@@ -29,11 +29,19 @@ var routes = [
     to: "/freebase/site/toolbox"
   },
   {
+    from: "/apptoolbox",
+    to: "/freebase/site/toolbox"
+  },
+  {
+    from: "/appsample",
+    to: "/freebase/site/sample"
+  },
+  {
     from: "/core",
     to: "/freebase/site/core"
   },
   {
-    from: "/appsample",
+    from: "/sample",
     to: "/freebase/site/sample"
   },
   {

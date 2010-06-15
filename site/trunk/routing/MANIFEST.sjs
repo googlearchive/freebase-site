@@ -2,14 +2,14 @@
 
 var MF = {
   version: {
-    "/freebase/site/core": "release",
-    "/freebase/site/homepage": "release",
-    "/freebase/site/sample": "release",
-    "/freebase/site/domain": "release",
-    "/freebase/site/schema": "release",
-    "/freebase/site/toolbox": "release",
-    "/freebase/site/appadmin": "release",
-    "/freebase/site/error": "release"
+    "/freebase/site/core": null,
+    "/freebase/site/homepage": null,
+    "/freebase/site/sample": null,
+    "/freebase/site/domain": null,
+    "/freebase/site/schema": null,
+    "/freebase/site/toolbox": null,
+    "/freebase/site/appadmin": null,
+    "/freebase/site/error": null
   }
 };
 

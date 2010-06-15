@@ -2,9 +2,9 @@
   console.log(acre.request.app_url, acre.request.base_path || null, acre.request.path_info);
 
   var mf = acre.require("MANIFEST").MF;
-  var page_options = {};
+  var c = this.exports.c = {};
   
-  var h = acre.require("/freebase/site/core/helpers", mf.version["/freebase/site/core"]);
+  var h = mf.require("/freebase/site/core/helpers");
   
   var utils = acre.require("utils");
   
@@ -57,15 +57,15 @@
   }
 </acre:script>
 
-<acre:block def="title(g)">
+<acre:block def="title()">
   All Domains
 </acre:block>
 
-<acre:block def="head(g)">
-  ${g.t.stylesheet(mf.css_src("schema.css"))}
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.mf.css')}" />
 </acre:block>
 
-<acre:block def="content_header(g)">
+<acre:block def="content_header()">
   <div class="page-header">
     <h1 id="page-title">
       Schema Explorer
@@ -76,7 +76,7 @@
   </div>
 </acre:block>
 
-<acre:block def="content_body(g)">
+<acre:block def="content_body()">
   <div id="body">  
     <table>
       <tr>
@@ -150,8 +150,8 @@
   </div>
 </acre:block>
 
-<acre:block def="footer_script(g)">
-  ${g.t.script(mf.script_src("index.js"))}
+<acre:block def="footer_script()">
+  <script src="${mf.script_src('schema.mf.js')}"></script>
 </acre:block>
 
-${acre.require("/freebase/site/core/template", mf.version["/freebase/site/core"]).render_page(this.exports, page_options)}
+${mf.require("/freebase/site/template/renderer").render_page(null, this.exports)}

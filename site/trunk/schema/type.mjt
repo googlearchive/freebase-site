@@ -1,7 +1,8 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
-  var page_options = {};
-  var h = acre.require("/freebase/site/core/helpers", mf.version["/freebase/site/core"]);
+  var c = this.exports.c = {};
+  
+  var h = mf.require("/freebase/site/core/helpers");
 
  var utils = acre.require("utils");
   
@@ -79,7 +80,7 @@
 </acre:block>
 
 <acre:block def="head()">
-  <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.css')}" />
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.mf.css')}" />
 </acre:block>
 
 <acre:block def="content_header()">
@@ -223,7 +224,7 @@
 </acre:block>
 
 <acre:block def="footer_script()">
-  <script src="${mf.script_src('index.js')}" type="text/javascript"></script>
+  <script src="${mf.script_src('schema.mf.js')}"></script>
 </acre:block>
 
-${mf.require("/freebase/site/core/controller").render_page(null, this.exports)}
+${mf.require("/freebase/site/template/renderer").render_page(null, this.exports)}

@@ -3,16 +3,17 @@ var MF = {
 
   version: {
     "/freebase/site/core" : null,
+    "/freebase/site/template": null,
     "/freebase/apps/libraries" : "release",
     "/user/pak21/schemaviz" : null
   },
 
   stylesheet: {
-    "schema.css": ["/freebase/site/core/MANIFEST/core.css", "schema.css"]
+    "schema.mf.css": ["/freebase/site/template/MANIFEST/freebase.mf.css", "schema.css"]
   },
 
   javascript: {
-    "index.js": ["/freebase/site/core/MANIFEST/core.js", "index.js"]
+    "schema.mf.js": ["/freebase/site/template/MANIFEST/freebase.mf.js", "schema.js"]
   }
 
 };

@@ -33,7 +33,7 @@ var routes = [
     to: "/freebase/site/core"
   },
   {
-    from: "/sample",
+    from: "/appsample",
     to: "/freebase/site/sample"
   },
   {

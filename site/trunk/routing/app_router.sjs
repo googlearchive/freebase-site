@@ -11,7 +11,7 @@ function do_route(req, path, mf, routes) {
         continue;
       }
     }
-    else if (path.startsWith(rule.from)) {
+    else if (path.indexOf(rule.from) === 0) {
       path = path.replace(rule.from, "");
     }
     else {

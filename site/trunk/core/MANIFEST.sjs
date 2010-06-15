@@ -4,7 +4,6 @@ var MF = {
     "/freebase/site/routing": null,
     "/freebase/site/promise": null,
     "/freebase/libs/jquery": "release",
-    "/freebase/apps/libraries": "release",
     "/freebase/libs/service": "release"
   },
   "freebase": {
@@ -16,7 +15,6 @@ var MF = {
 };
 MF.freebase.resource.base_url += MF.freebase.resource.hash;
 
-acre.require("/freebase/apps/libraries/api_enhancer", MF.version["/freebase/apps/libraries"]);
 var h_util = acre.require("helpers_util");
 var h_url = acre.require("helpers_url");
 
@@ -145,7 +143,7 @@ function base_manifest(MF, scope, undefined) {
     less: function(data /*required*/, callback /*required*/, errback /*optional*/) {
       console.log("less", MF, scope);
       if (!MF.less.parser) {
-        MF.less.parser = new(acre.require("/freebase/site/core/less", MF.version["/freebase/site/core"]).less.Parser)({optimization:3});
+        MF.less.parser = new(MF.require("/freebase/site/core/less").less.Parser)({optimization:3});
       }
       MF.less.parser.parse(data, function(e, root) {
         if (e) {
@@ -201,15 +199,21 @@ function base_manifest(MF, scope, undefined) {
     },
 
     css_preprocessor: function(str) {
+      var fburl = MF.require("/freebase/site/core/helpers_url2").freebase_static_resource_url;
       var buf = [];
       var m, regex = /url\s*\(\s*([^\)]+)\s*\)/gi;
       str.split(/[\n\r\f]/).forEach(function(l) {
         buf.push(l.replace(regex, function(m, group) {
-          var url = group.trim();
-          if (url.startsWith("http://") || url.startsWith("https://")) {
+          var url = group.replace(/^\s+|\s+$/g, "");
+          if (url.indexOf("http://") == 0 || url.indexOf("https://") === 0) {
             return m;
           }
-          return "url(" + MF.resource_url(url) + ")";
+          else if (url.indexOf("freebase://") === 0) {
+            return "url(" + fburl(url.substring(11)) + ")";
+          }
+          else {
+            return "url(" + MF.resource_url(url) + ")";
+          }
         }));
       });
       return buf.join("\n");

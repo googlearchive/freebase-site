@@ -25,7 +25,7 @@ var MF = {
     "core.js": ['jquery.cookie.js', 'jquery.ui.position.js', 'core.js', '/freebase/site/toolbox/toolbox.js']
   },
   stylesheet: {
-    "core.css": ["core.less", "components.less"]
+    "core.css": ["core.less", "components.less", '/freebase/site/toolbox/toolbox.less']
   }
 };
 MF.suggest.base_url += MF.suggest.version;

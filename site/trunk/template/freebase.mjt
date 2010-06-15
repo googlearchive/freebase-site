@@ -20,7 +20,7 @@
       </acre:script>
       
       <!-- freebase suggest -->
-      <link rel="stylesheet" type="text/css" href="${mf.suggest.base_url}/suggest.min.css}" />
+      <link rel="stylesheet" type="text/css" href="${mf.suggest.base_url}/suggest.min.css" />
       
       <!-- any additional head content (i.e., css, js, etc.)-->
       <acre:block if="exports.head">

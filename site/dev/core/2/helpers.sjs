@@ -1,0 +1,19 @@
+var self = this;
+
+function include(script_id) {
+  var s = acre.require(script_id);
+  if (s.__all__) {
+    s.__all__.forEach(function(m) {
+      self[m] = s[m];
+    });
+  }
+};
+
+include("helpers_util");
+include("helpers_date");
+include("helpers_url2");
+include("helpers_format");
+
+
+
+

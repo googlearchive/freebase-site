@@ -125,6 +125,10 @@ class AcrePush(object):
         #pdb.set_trace()
         self.fb = HTTPMetawebSession(me_server, cookiefile=cookiefile, acre_service_url=acrehost)
 
+        self.is_production = False
+        if acrehost == "http://acre.freebase.com":
+            self.is_production = True
+
     def get_credentials(self, user=None, pw=None):
 
         try:
@@ -228,6 +232,14 @@ class AcrePush(object):
         except MetawebError:
             create_app = True
 
+        if version:
+            try: 
+                self.fb.get_app("%s/%s" % (id, version))
+                version_app_exists = True
+            except:
+                version_app_exists = False
+            
+
         delete_files, push_files = {}, ondisk_app.metadata['files']
 
         if graph_app:
@@ -277,8 +289,12 @@ class AcrePush(object):
 
 
         if version:
-            self.fb.create_app_version(ondisk_app.metadata['id'], version, timestamp='__now__')
-            print 'Updated version %s' % version
+
+            if not (self.is_production and version_app_exists):
+                self.fb.create_app_version(ondisk_app.metadata['id'], version, timestamp='__now__')
+                print 'Updated version %s' % version
+            else:
+                print 'Will NOT update version %s in OTG' % version
 
 
         print "\nPush succesfull, %s files affected" % len(files_changed)

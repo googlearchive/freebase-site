@@ -162,7 +162,7 @@
 
 
 <acre:block def="footer_script(exports)">
-  !-- jquery -->
+  <!-- jquery -->
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/${mf.jquery.version}/jquery.min.js"></script>
   <script src="${mf.suggest.base_url}/suggest.min.js"></script>
   <acre:block if="exports.footer_script">${exports.footer_script()}</acre:block>

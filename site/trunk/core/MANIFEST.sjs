@@ -3,32 +3,17 @@ var MF = {
   "version": {
     "/freebase/site/routing": null,
     "/freebase/site/promise": null,
-    "/freebase/site/toolbox": null,
     "/freebase/libs/jquery": "release",
     "/freebase/apps/libraries": "release",
     "/freebase/libs/service": "release"
-  },
-  "suggest" : {
-    "version": "1.2.1",
-    "base_url": "http://freebaselibs.com/static/suggest/"
-  },
-  "jquery" : {
-    "version" : "1.4"
   },
   "freebase": {
       "resource": {
         "hash" : "dd20b6623a39c3624ab666c6f4e69f80423c7186ab9f8add7c53dd927ad389fa",
         "base_url": "http://res.freebase.com/s/"
       }
-  },
-  javascript: {
-    "core.js": ['jquery.cookie.js', 'jquery.ui.position.js', 'core.js', '/freebase/site/toolbox/toolbox.js']
-  },
-  stylesheet: {
-    "core.css": ["core.less", "components.less", '/freebase/site/toolbox/toolbox.less']
   }
 };
-MF.suggest.base_url += MF.suggest.version;
 MF.freebase.resource.base_url += MF.freebase.resource.hash;
 
 acre.require("/freebase/apps/libraries/api_enhancer", MF.version["/freebase/apps/libraries"]);

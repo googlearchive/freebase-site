@@ -14,14 +14,14 @@ acre.async.wait_on_results();
 
 //---Error---
 acre.write("\n\n---Error---\n");
-urlfetch("http://www.metaweb.com/success")
+urlfetch("http://www.metaweb.com/elephant")
   .then(function(response) {
-    acre.write("We made it big!");
+    acre.write("The animal is in the house!");
     return response;
     
   }, function(error) {
     if (error.info.status === 404) {
-      acre.write("Success not found :(");
+      acre.write("No elephant found :(");
     } else if (error.info.status === 500) {
       acre.write("Reply hazy. Try again soon.");
     } else {

@@ -1,5 +1,11 @@
 var mf = acre.require("MANIFEST").MF;
-var controller = mf.require("/freebase/site/core/controller");
+var renderer = mf.require("/freebase/site/template/renderer");
+var freebase = mf.require("/freebase/site/promise/apis").freebase;
 var page = mf.require("page_template");
 
-controller.render_page(null, page);
+var queries = {
+  "topic": freebase.mqlread({id: "/en/bob_dylan", name: null})
+    .then(function(envelope) {return envelope.result;}),
+  "greeting": "Hello"
+}
+renderer.render_page(queries, page);

@@ -1,0 +1,13 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+</acre:script>
+
+<acre:block def="categories_list(categories)">
+  <ul>
+    <acre:block acre:for="var category in categories">
+      <li>
+        ${category.name}
+      </li>
+    </acre:block>
+  </ul>
+</acre:block>

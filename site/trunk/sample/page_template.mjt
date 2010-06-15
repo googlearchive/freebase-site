@@ -1,6 +1,5 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
-  var controller = mf.require("/freebase/site/core/controller");
   var c = this.exports.c = {};
 </acre:script>
 
@@ -21,7 +20,5 @@
 </acre:block>
 
 <acre:block def="footer_script()">
-  <script src="${mf.script_src('sample_page.js')}" type="text/javascript"></script>
+  <script src="${mf.script_src('sample_page.js')}"></script>
 </acre:block>
-
-${controller.render_page(null, this.exports)}

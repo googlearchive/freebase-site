@@ -1,7 +1,8 @@
 var MF = {
 
   version: {
-    "/freebase/site/core": null
+    "/freebase/site/core": null,
+    "/freebase/site/promise": null
   },
 
   stylesheet: {

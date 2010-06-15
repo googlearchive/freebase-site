@@ -29,19 +29,18 @@
   this.exports.g = g;
 </acre:script>
 
-<acre:block def="render_page(exports, options)">
+<acre:block def="render_page(exports, base_template)">
   <acre:script>
-    g.exports = exports;
-    var base_def = acre.require("/freebase/site/core/page_freebase").page;
+    var base_template = base_template || acre.require("/freebase/site/core/page_freebase");
   </acre:script>
-  ${render_def(base_def, options)}
+  ${render_def(base_template, "page", exports)}
 </acre:block>
 
-<acre:block def="render_def(def, options)">
+<acre:block def="render_def(template, def_name, var_args)">
   <acre:script>
-    g.c = options || {};
+    var args = Array.prototype.slice.call(arguments, 2);
   </acre:script>
-  ${def(g)}
+  ${template[def_name].apply(template, args)}
 </acre:block>
 
 <acre:block def="stylesheet()" trim="">

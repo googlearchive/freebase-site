@@ -79,7 +79,7 @@
 </acre:block>
 
 <acre:block def="head(g)">
-  ${g.t.stylesheet(mf.css_src("schema.css"))}
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.css')}" />
 </acre:block>
 
 <acre:block def="content_header(g)">
@@ -223,7 +223,7 @@
 </acre:block>
 
 <acre:block def="footer_script(g)">
-  ${g.t.script(mf.script_src("index.js"))}
+  <script src="${mf.script_src('index.js')}" type="text/javascript"></script>
 </acre:block>
 
-${acre.require("/freebase/site/core/template", mf.version["/freebase/site/core"]).render_page(this.exports, page_options)}
+${mf.require("/freebase/site/core/controller").render_page(null, this.exports)}

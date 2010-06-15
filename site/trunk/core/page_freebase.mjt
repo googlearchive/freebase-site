@@ -1,5 +1,8 @@
+<acre:script>
+  var g = acre.require("template").g;
+</acre:script>
 
-<acre:block def="page(g)">
+<acre:block def="page(exports)">
   <acre:script>
     acre.response.set_header('content-type', 'text/html');
     acre.response.status = 200;
@@ -8,7 +11,7 @@
   <html lang="en" dir="ltr">
     <head>
       <meta charset="utf-8" />
-      <title acre:if="g.exports.title">Freebase - ${g.exports.title(g)}</title>
+      <title acre:if="exports.title">Freebase - ${exports.title()}</title>
       <title acre:else="">Freebase</title>
 
       <acre:script>
@@ -30,31 +33,31 @@
       </script>
 
      <!-- any additional head content (i.e., css, js, etc.)-->
-      <acre:block if="g.exports.head">
-        ${g.exports.head(g)}
+      <acre:block if="exports.head">
+        ${exports.head()}
       </acre:block>
     </head>
 
-    <acre:block if="g.exports.body">
-      ${g.exports.body(g)}
+    <acre:block if="exports.body">
+      ${exports.body()}
     </acre:block>
     <acre:block else="">
-      ${body(g)}
+      ${body(exports)}
     </acre:block>
  </html>
 </acre:block>
 
 
-<acre:block def="body(g)">
-  <body acre:attrs="g.c.body_class ? {'class': g.c.body_class} : {}">
-    ${header(g)}
-    ${content(g)}
-    ${footer(g)}
-    ${footer_script(g)}
+<acre:block def="body(exports)">
+  <body acre:attrs="g.body_class ? {'class': g.body_class} : {}">
+    ${header(exports)}
+    ${content(exports)}
+    ${footer(exports)}
+    ${footer_script(exports)}
   </body>
 </acre:block>
 
-<acre:block def="header(g)">
+<acre:block def="header(exports)">
   <header id="page-header" class="clear" role="banner">
     <div id="logo">
       <a href="$g.client_base" title="Return to Freebase homepage">
@@ -113,18 +116,18 @@
 </acre:block>
 
 
-<acre:block def="content(g)">
-  <acre:block if="g.exports.content_header">${g.exports.content_header(g)}</acre:block>
+<acre:block def="content(exports)">
+  <acre:block if="exports.content_header">${exports.content_header()}</acre:block>
   <div id="content" class="clear">
     <hgroup class="section-header">
-      <acre:block if="g.exports.section_header">${g.exports.section_header(g)}</acre:block>
-      <acre:block elif="g.exports.title"><h1 id="page-title">${g.exports.title(g)}</h1></acre:block>
+      <acre:block if="exports.section_header">${exports.section_header()}</acre:block>
+      <acre:block elif="exports.title"><h1 id="page-title">${exports.title()}</h1></acre:block>
     </hgroup>
-    <acre:block if="g.exports.content_body">${g.exports.content_body(g)}</acre:block>
+    <acre:block if="exports.content_body">${exports.content_body()}</acre:block>
   </div>
 </acre:block>
 
-<acre:block def="footer(g)">
+<acre:block def="footer(exports)">
   <footer id="page-footer" class="clear">
     <div id="metaweb-attribution">
       <a href="http://www.metaweb.com/" id="copyright" title="Learn more about Metaweb, Inc." rel="nofollow">
@@ -169,6 +172,6 @@
 </acre:block>
 
 
-<acre:block def="footer_script(g)">
-  <acre:block if="g.exports.footer_script">${g.exports.footer_script(g)}</acre:block>
+<acre:block def="footer_script(exports)">
+  <acre:block if="exports.footer_script">${exports.footer_script()}</acre:block>
 </acre:block>

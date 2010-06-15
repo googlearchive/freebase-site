@@ -1,6 +1,5 @@
 var main = function(scope) {
   var mf = acre.require("MANIFEST").MF;
-  var controller = mf.require("/freebase/site/core/controller");
   var queries = mf.require("queries");
   var index_template = mf.require("index_template");
   
@@ -8,7 +7,8 @@ var main = function(scope) {
   var queries = {
     categories: p_categories,
   };
-  controller.render_page(queries, index_template);
+  
+  mf.require("/freebase/site/template/renderer").render_page(queries, index_template);
 };
 
 if (acre.current_script == acre.request.script) {

@@ -1,5 +1,4 @@
 var mf = acre.require("MANIFEST").MF;
-var renderer = mf.require("/freebase/site/template/renderer");
 var freebase = mf.require("/freebase/site/promise/apis").freebase;
 var page = mf.require("page_template");
 
@@ -8,4 +7,5 @@ var queries = {
     .then(function(envelope) {return envelope.result;}),
   "greeting": "Hello"
 }
-renderer.render_page(queries, page);
+
+mf.require("/freebase/site/template/renderer").render_page(queries, page);

@@ -1,8 +1,0 @@
-<acre:block def="body(topics)">
-<h2>Including:</h2>
-<ul>
-    <li acre:for="t in topics">
-        <span><a href="${t['link']}" title="View ${t['name']}">${t['name']}</a></span>
-    </li>
-</ul>
-</acre:block>

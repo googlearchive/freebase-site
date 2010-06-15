@@ -1,15 +1,18 @@
 var MF = {
 
   version: {
-    "/freebase/site/core": null
+    "/freebase/site/core": null,
+    "/freebase/site/template": null,
+    "/freebase/apps/libraries": "release"
   },
 
   stylesheet: {
-    "project-manifest.css": ["/freebase/site/core/MANIFEST/core.css", "project.less"]
+    "domain.mf.css": ["/freebase/site/template/MANIFEST/freebase.mf.css", "project.less"]
   },
 
   javascript: {
-    "project.js": ["/freebase/site/core/MANIFEST/core.js", "project.js", "jquery.lazyload.js", "jquery.masonry.js", "jquery.tablesorter.js"]
+    "domain.mf.js": ["/freebase/site/template/MANIFEST/freebase.mf.js", "project.js", 
+                     "jquery.lazyload.js", "jquery.masonry.js", "jquery.tablesorter.js"]
   }
 
 };

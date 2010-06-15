@@ -2,7 +2,7 @@ var MF = {
 
   version: {
       "/freebase/site/core": "release",
-      "/freebase/site/template" : null
+      "/freebase/site/template" : "release"
   },
 
   stylesheet: {

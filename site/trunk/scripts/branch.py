@@ -11,20 +11,18 @@ import shutil
 import re
 import acrepush
 
-# acre pod mapping to host for appeditor web services, i.e., /appeditor/get_app
-POD = {
+# acre graph mapping to host for appeditor web services, i.e., /appeditor/get_app
+GRAPH = {
     "otg":"http://acre.freebase.com",
     "sandbox":"http://acre.sandbox-freebase.com",
-    "branch":"http://acre.branch.qa.metaweb.com",
-    "trunk":"http://acre.trunk.qa.metaweb.com"
+    "qa":"http://acre.branch.qa.metaweb.com",
 }
 
-# acre pod mappings to app url suffix, i.e., http:// + ver + id + suffix = app url
+# acre graph mappings to app url suffix, i.e., http:// + ver + id + suffix = app url
 FREEBASEAPPS = {
     "otg": "dev.freebaseapps.com",
     "sandbox": "dev.sandbox-freebaseapps.com",
-    "branch": "dev.branch.qa-freebaseapps.com",
-    "trunk": "dev.trunk.qa-freebaseapps.com"
+    "qa": "dev.branch.qa-freebaseapps.com",
 }
 
 OUTBOUND = ["outbound01.ops.sjc1.metaweb.com", "outbound02.ops.sjc1.metaweb.com"]
@@ -39,17 +37,17 @@ EXTENSIONS = [".js", ".css", ".txt"] + IMG_EXTENSIONS
 #
 # usage: branch.py -p branch app1:app1_version:deploy1_version app2:app2_version:deploy2_version
 #
-# -p <pod>
+# -g <graph>
 cmd_options = OptionParser()
-cmd_options.add_option('-p', '--pod', dest='pod', 
-                       help="acre host i.e., otg|sandbox|branch|trunk")
+cmd_options.add_option('-g', '--graph', dest='graph', 
+                       help="acre host i.e., otg|sandbox|qa")
 options, args = cmd_options.parse_args()
 
-# pod, freebaseapps default to branch
-pod = POD.get(options.pod, POD['branch'])
-freebaseapps = FREEBASEAPPS.get(options.pod, FREEBASEAPPS['branch'])
+# graph, freebaseapps default to branch
+graph = GRAPH.get(options.graph, GRAPH['qa'])
+freebaseapps = FREEBASEAPPS.get(options.graph, FREEBASEAPPS['qa'])
 
-print '[INFO] branching to {pod}'.format(pod=pod)
+print '[INFO] branching to {graph}'.format(graph=graph)
 
 def log_cmd(cmd, name=None):
     if not name:
@@ -98,15 +96,15 @@ def is_number(str):
 
 def get_app(appid):
     '''
-    get app info using  pod/appeditor/get_app service
+    get app info using  graph/appeditor/get_app service
     '''
-    url = "{pod}/appeditor/get_app?{appid}".format(pod=pod, appid=urllib.urlencode(dict(appid=appid)))
+    url = "{graph}/appeditor/get_app?{appid}".format(graph=graph, appid=urllib.urlencode(dict(appid=appid)))
     return get_json(url).get('result')
 
 def next_version(appid):
     '''
     determine the next available version number for an app
-    1. use pod/appeditor/get_app service to list current versions
+    1. use graph/appeditor/get_app service to list current versions
     2. increment the highest version
     3. if no versions, return "1"
     '''
@@ -245,7 +243,7 @@ for app, appid, version in apps:
     svn_branch_revs[branch] = svn_revision(branch)
     
     # acre push branch
-    acrepush.push(appid, pod, tempdir, version=version, user=user, pw=pw)
+    acrepush.push(appid, graph, tempdir, version=version, user=user, pw=pw)
 
 
 # flag to tell us if we've created new freebaselibs deployed directory,
@@ -306,7 +304,7 @@ for app, appid, version in apps:
     run_cmd(cmd)
     
     # acrepush
-    acrepush.push(appid, pod, tempdir, user=user, pw=pw)   
+    acrepush.push(appid, graph, tempdir, user=user, pw=pw)   
 
 
 if restart_static_servers:

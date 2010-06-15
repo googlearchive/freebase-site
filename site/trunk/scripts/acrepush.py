@@ -20,8 +20,7 @@ DEFAULT_ACRE_SERVICE_URL = "http://acre.branch.qa.metaweb.com"
 SHORT_GRAPH_MAP = {
     "otg":"http://acre.freebase.com",
     "sandbox":"http://acre.sandbox-freebase.com",
-    "trunk":"http://acre.trunk.qa.metaweb.com",
-    "branch":"http://acre.branch.qa.metaweb.com"
+    "qa":"http://acre.branch.qa.metaweb.com"
 }
 
 class extmap(object):
@@ -304,7 +303,7 @@ def usage(msg=None):
     if msg:
         print "%s: %s\n" %(sys.argv[0], msg)
 
-    print "%s [-i id] [-g acrehost] [-u username] [-p password] [-d] directory [version]" % sys.argv[0]
+    print "%s [-i id] [-g graph] [-u username] [-p password] [-d] directory [version]" % sys.argv[0]
     sys.exit(1)
 
 def push(id, host, directory,user=None, pw=None, dry=False, version=None):

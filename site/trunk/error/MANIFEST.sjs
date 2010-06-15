@@ -1,14 +1,14 @@
 
-
 var MF = {
   version: {
-    "/freebase/site/core": null
+    "/freebase/site/core": null,
+    "/freebase/site/template": null
   },
   stylesheet: {
-    "error.css": ["/freebase/site/core/MANIFEST/core.css"]
+    "error.mf.css": ["/freebase/site/template/MANIFEST/freebase.mf.css"]
   },
   javascript: {
-    "error.js": ["/freebase/site/core/MANIFEST/core.js"]
+    "error.mf.js": ["/freebase/site/template/MANIFEST/freebase.mf.js"]
   }
 };
 

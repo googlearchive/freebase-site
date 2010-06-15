@@ -145,6 +145,7 @@ body {
     background: #f4f8fb;
     color: #666;
     min-width: 960px;
+    border-top: 1px solid #dd5500;
 }
 
 /* #content is a required element on every template.
@@ -173,14 +174,27 @@ Header
 #page-header {
     position: relative;
     z-index: 10; /* for Freebase Suggest */
-    min-height: 50px;
-    background: #ff6702 url(http://www.freebase.com/resources/images/ui/sprite-vert.png) repeat-x 0 0;
+    min-height: 34px;
+    /* background: #ff6702 url(http://www.freebase.com/resources/images/ui/sprite-vert.png) repeat-x 0 0;*/
+   background-image: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0.22, rgb(255,133,51)),
+        color-stop(0.61, rgb(220,88,0))
+    );
+    background-image:-moz-linear-gradient(
+        center top,
+        rgb(255,133,51) 22%,
+        rgb(220,88,0) 61%
+    );
     border-bottom: 1px solid #fb3;
+    border-top: 1px solid #ffaa66;
 }
 
 #page-header img {
     position: absolute;
-    top: 12px;
+    top: 6px;
     left: 30px;
     z-index:12;
 }
@@ -195,6 +209,7 @@ Header
     color: #fff;
     padding: 9px 25px 9px 25px;
     font-size: 1.1em;
+    width: 20em;
 }
 
 #nav-account a {
@@ -203,7 +218,7 @@ Header
 }
 
 .anonymous-user-controls { text-align: center;}
-.nav-user-controls       { text-align: right; }
+.nav-user-controls       {}
 
 #anonymous-user-controls {
     margin-top: 0.4em;
@@ -229,44 +244,47 @@ NAV
 */
 
 #nav-global {
-    margin: 0 0 0 45.5em;
+    margin: 0.2em 0 0 45.5em;
+    padding: 0 0 0 0;
 }
 
 #nav-global li {
     float: left;
     display: inline;
     cursor: pointer; 
-    padding: 1.3em 12px 7.85px 12px; 
+    padding: 0.5em 2px 0.8em 0.8em; 
     font-weight: bold;
+    margin-right: 0.2em;
 }
 
 #nav-global a {
     color: #fff;
     font-size: 1.2em;
     font-weight: bold;
+    background: url(/freebase/site/template/ui-sprite.png) right 0.45em no-repeat;
+    padding-right: 1.6em;
 }
 
 #nav-global a:hover { text-decoration: none; }
 
-#nav-global li:hover { 
-    background: #ff9046;
-    -moz-border-radius-bottomright: 5px; 
-    -moz-border-radius-bottomleft: 5px;
-    -webkit-border-bottom-right-radius: 5px; 
-    -webkit-border-bottom-left-radius: 5px;
+#nav-global li:hover,
+#nav-global li.collapse { 
+     background-color: rgba(0,0,0,0.8);
+    -moz-border-radius-topright: 5px; 
+    -moz-border-radius-topleft: 5px;
+    -webkit-border-top-right-radius: 5px; 
+    -webkit-border-top-left-radius: 5px;
 }
 
 #nav-global li.on { 
     background: #f71; 
     border: 1px #fa7 solid; 
     border-top: none;
-    -moz-border-radius-bottomright: 5px;
-    -moz-border-radius-bottomleft: 5px;
-    -webkit-border-bottom-right-radius: 5px;
-    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-topright: 5px;
+    -moz-border-radius-topleft: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -webkit-border-top-left-radius: 5px;
 }
-
-
 
 /*
 -----------------------------------------
@@ -274,11 +292,11 @@ Global Search Box
 -----------------------------------------
 */
 .site-search {
-    background: #f71;
+    background: #f70;
     position: absolute;
-    z-index: 1;
-    left: 163px; top: 0;
-    padding: 10px 0 6px 0;
+    z-index: 51;
+    left: 163px; top: -1px;
+    padding: 3px 4px;
     border: 1px solid #ffa172;
     border-top: 0;
     -moz-border-radius-bottomleft: 5px;
@@ -287,22 +305,16 @@ Global Search Box
     -webkit-border-bottom-right-radius: 5px;
 }
 
-.search-form-header {
-    margin: 0 10px;
-    background: url(http://www.freebase.com/resources/images/ui/icon-sprite.png) 0 -35px no-repeat;
-    padding-left: 25px;
-}
-
-
 #global-search-input {
     border: 1px solid #c1c1c1;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    padding: 0.4em;
-    font-size: 1.2em;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    font-style: italic;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; 
+    padding: 0.3em;
+    font-size: 1.3em;
     width: 225px;
     font-size: 1.1em;
-    margin-top: -2px;
     background: #fff url(http://www.freebase.com/resources/images/ui/sprite-vert.png) 0 -100px;
 }
 

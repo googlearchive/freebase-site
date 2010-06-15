@@ -158,6 +158,7 @@ class AcrePush(object):
                 print "A\t%s\t(%s)" % (d.get('unquoted_filename'), d.get('reason', ''))
                     
 
+        sys.stdout.flush()
 
     def get_app_diff(self, graph_app, ondisk_app):
         graph_files, local_files = graph_app['files'], ondisk_app.metadata['files']
@@ -270,12 +271,14 @@ class AcrePush(object):
             return
 
         for filename,val in delete_files.iteritems():
-            print ".",            
+            print ".",
+            sys.stdout.flush()
             self.fb.delete_app_file(ondisk_app.metadata['id'], unquotekey(filename))
             files_changed.add(filename)
 
         for filename, val in push_files.iteritems():
-            print ".",            
+            print ".",
+            sys.stdout.flush()
             val['contents'].seek(0);
             files_changed.add(filename)
             if val['acre_handler'] == 'binary':

@@ -1,15 +1,16 @@
 var MF = {
 
   version: {
-    "/freebase/site/core": "release"
+      "/freebase/site/core": "release",
+      "/freebase/site/template" : null
   },
 
   stylesheet: {
-    "appadmin.css": ["/freebase/site/core/MANIFEST/core.css", "appadmin_core.css"]
+      "appadmin.mf.css": ["/freebase/site/template/MANIFEST/freebase.mf.css", "appadmin_core.css"]
   },
 
   javascript: {
-    "appadmin.js": ["/freebase/site/core/MANIFEST/core.js", "appadmin_core.js"]
+      "appadmin.mf.js": ["/freebase/site/template/MANIFEST/freebase.mf.js", "appadmin_core.js"]
   }
 
 };

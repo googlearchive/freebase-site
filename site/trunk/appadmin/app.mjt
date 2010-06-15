@@ -1,37 +1,34 @@
 <acre:script>
 
   var mf = acre.require("MANIFEST").MF;
-  var page_options = {}
+  var h = mf.require('/freebase/site/core/helpers')
+  var app_util = acre.require('app_util');
 
   var id = acre.request.params['id'] ? acre.request.params['id'] :  '/user/masouras/activity';
   
-  var app_util = acre.require('app_util');
-  
   var result = app_util.get_app(id);
+  var versions = null;
   if (!result['error']) { 
-  var versions = app_util.get_version_timeline(result);
-  
+  versions = app_util.get_version_timeline(result);
+  }
   var reference_id = app_util.construct_id(result.reference_env, id, result.reference_version);
 
+  //console.log(result);
+  //console.log(versions);
 
-  console.log(result);
-  console.log(versions);
-
-  
-
-  }
+  var c = this.exports.c = {};  
 
 </acre:script>
 
-<acre:block def="title(g)">
-<a href="${g.h.url_for('/freebase/site/appadmin/index')}">AppAdmin</a>: ${result[result.reference_env]['name']} (${id})
+<acre:block def="title()">
+<a href="${h.url_for('/freebase/site/appadmin/index')}">AppAdmin</a>: ${result[result.reference_env]['name']} (${id})
 </acre:block>
 
-<acre:block def="head(g)">
-  ${g.t.stylesheet(mf.css_src("appadmin.css"))}
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('appadmin.mf.css')}" />
 </acre:block>
 
-<acre:block def="content_body(g)">
+<acre:block def="content_body()">
   
   <table>
     <tr>
@@ -61,14 +58,13 @@
 
 </acre:block>
 
-<acre:block def="footer_script(g)">
-  ${g.t.script(mf.script_src("appadmin.js"))}
-
+<acre:block def="footer_script()">
+  <script src="${mf.script_src('appadmin.mf.js')}" type="text/javascript"></script>
   <script type="text/javascript">
 
     var reference_id = ${JSON.stringify(reference_id)};
-    var app_version_details_url = ${JSON.stringify(g.h.url_for('/freebase/site/appadmin/app_version_details'))};
-    var app_version_diff_url = ${JSON.stringify(g.h.url_for('/freebase/site/appadmin/app_version_diff'))};
+    var app_version_details_url = ${JSON.stringify(h.url_for('/freebase/site/appadmin/app_version_details'))};
+    var app_version_diff_url = ${JSON.stringify(h.url_for('/freebase/site/appadmin/app_version_diff'))};
 
     $(".reference").each(function(index) {  
     $(this).load(app_version_details_url + "?id=" + $(this).attr('id'));
@@ -80,8 +76,10 @@
 
 </acre:block>
 
+${mf.require("/freebase/site/template/renderer").render_page(null, this.exports)}
 
-  ${acre.require("/freebase/site/core/template", mf.version["/freebase/site/core"]).page(this.exports, page_options)}
+
+
 
 
 

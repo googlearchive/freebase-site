@@ -43,34 +43,36 @@
          <span>${category.name}</span>
         </a>
       </li>
-      <li class="ui-tabs-last">
+      <li class="last">
         <a href="#all-domains-pane" id="all-domains-tab">
           <span>All</span>
         </a>
       </li>
     </ul>
     
-    <div id="all-domains-pane">
-      <div class="domains-toc">
-        <acre:block for="letter in letters">
-          <span acre:if="letter in grouped_domains" class="toc-letter">
-            <a href="#projects-group-${letter}">${letter}</a>
-          </span>
-          <span acre:else="" class="toc-letter">${letter}</span>
+    <div id="explorer-panes">
+      <div id="all-domains-pane">
+        <div class="domains-toc">
+          <acre:block for="letter in letters">
+            <span acre:if="letter in grouped_domains" class="toc-letter">
+              <a href="#projects-group-${letter}">${letter}</a>
+            </span>
+            <span acre:else="" class="toc-letter">${letter}</span>
+          </acre:block>
+        </div>
+    
+        <acre:block for="letter, domains in grouped_domains">
+          <a name="projects-group-${letter}" class="letter">${letter}</a>
+          <ul>
+            <li acre:for="domain in domains">
+              <a href="${h.freebase_url('/view'+domain.id)}">
+                ${domain.name}
+              </a>
+            </li>
+          </ul>
         </acre:block>
+    
       </div>
-    
-      <acre:block for="letter, domains in grouped_domains">
-        <a name="projects-group-${letter}" class="letter">${letter}</a>
-        <ul>
-          <li acre:for="domain in domains">
-            <a href="${h.freebase_url('/view'+domain.id)}">
-              ${domain.name}
-            </a>
-          </li>
-        </ul>
-      </acre:block>
-    
     </div>
     <span id="pointer"><span id="pointer-text"></span></span>
   </div>

@@ -11,7 +11,8 @@ var MF = {
   },
 
   "javascript": {
-    "index.mf.js": ["/freebase/site/template/MANIFEST/freebase.mf.js", "homepage.js"]
+    "index.mf.js": ["/freebase/site/template/MANIFEST/freebase.mf.js", 
+                    "jquery.tools.tabs.min.js", "jquery.equalizecols.js", "homepage.js"]
   }
 };
 

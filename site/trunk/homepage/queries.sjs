@@ -55,3 +55,7 @@ var alphabetically_grouped_commons_domains = function() {
       });
     });
 };
+
+var domains_for_category = function(category_id) {
+  return [{id: "/film", name: "Film"}];
+}

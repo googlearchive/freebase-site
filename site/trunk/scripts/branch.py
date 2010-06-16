@@ -10,6 +10,7 @@ from tempfile import mkdtemp, mkstemp
 import shutil
 import re
 import acrepush
+from cssmin import cssmin
 
 # acre graph mapping to host for appeditor web services, i.e., /appeditor/get_app
 GRAPH = {
@@ -31,6 +32,9 @@ OUTBOUND = ["outbound01.ops.sjc1.metaweb.com", "outbound02.ops.sjc1.metaweb.com"
 IMG_EXTENSIONS = [".png", ".gif", ".jpg"]
 EXTENSIONS = [".js", ".css", ".txt"] + IMG_EXTENSIONS
 
+JAVA = os.environ.get("JAVA_EXE", "java")
+COMPILER = os.path.join(dir.scripts, "compiler.jar")
+JAVA_OPTS = ["-jar", COMPILER, "--warning_level", "QUIET"]
 
 #
 # command line options parser
@@ -41,6 +45,8 @@ EXTENSIONS = [".js", ".css", ".txt"] + IMG_EXTENSIONS
 cmd_options = OptionParser()
 cmd_options.add_option('-g', '--graph', dest='graph', 
                        help="acre host i.e., otg|sandbox|qa")
+cmd_options.add_option('-u', '--user', dest='user', 
+                       help="freebase username - e.g. namesbc")
 options, args = cmd_options.parse_args()
 
 # graph, freebaseapps default to branch
@@ -67,13 +73,6 @@ def run_cmd(cmd, name=None, exit=True):
     return stdout
 
 
-def get_json(url):
-    '''
-    urlfetch json
-    '''
-    body = ''.join(urllib2.urlopen(url).readlines())
-    return json.loads(body)
-
 def is_int(str):
     '''
     is str an int?
@@ -94,12 +93,67 @@ def is_number(str):
     except ValueError, e:
         return False
 
+
+def fetch_url(url, isjson=False):
+
+    request = urllib2.Request(url, headers = {'Cache-control': 'no-cache' })
+    try:
+        contents = urllib2.urlopen(request).readlines()
+    except:
+        print 'ERROR FETCHING URL: %s' % url
+        if json:
+            return None
+        return []
+    
+    if json:
+        return json.loads(''.join(contents))
+    
+    return contents
+
+
+def deploy_static_files(source_url, tmp_dir):
+    # load app MANIFEST.MF
+    url = "%s/MANIFEST" % source_url
+    body = ''.join(fetch_url(url))
+    mf = json.loads(body).get('result')
+
+    # get each stylesheet page, cssmin and copy to outdir
+    for page in mf.get('stylesheet'):
+        url = "%s/MANIFEST/%s" % (source_url, page)
+        css = ''.join(fetch_url(url))
+        if not css:
+            exit(-1)
+        min = cssmin(css)
+        filename = os.path.join(tmp_dir, page)
+        with open(filename, "w") as f:
+            f.write(min)
+    
+        # get each javascript page, compile (closure compiler) and copy to outdir
+    for page in mf.get('javascript'):
+        url = "%s/MANIFEST/%s" % (source_url, page)
+        
+        status, path = mkstemp(text=True)    
+        with open(path, 'w') as temp:
+            for line in fetch_url(url):
+                temp.write(line)
+                
+        filename = os.path.join(tmp_dir, page)
+    
+        with open(filename, 'w') as outfile:
+            cmd = [JAVA] + JAVA_OPTS + ["--js", path]
+            subprocess.call(cmd, stdout=outfile)
+
+        # delete temp file
+        os.remove(path)
+
+
+
 def get_app(appid):
     '''
     get app info using  graph/appeditor/get_app service
     '''
     url = "{graph}/appeditor/get_app?{appid}".format(graph=graph, appid=urllib.urlencode(dict(appid=appid)))
-    return get_json(url).get('result')
+    return fetch_url(url, isjson=True).get('result')
 
 def next_version(appid):
     '''
@@ -148,7 +202,10 @@ def app_url(app, version):
 
 def get_credentials():
     import getpass
-    user = raw_input("Freebase Username: ")
+    if options.user:
+        user = options.user
+    else:
+        user = raw_input("Freebase Username: ")
     pw = getpass.getpass("Freebase Password: ")
     return (user, pw)
 
@@ -270,9 +327,10 @@ for app, appid, version in apps:
     svn_temp_dirs[deployed] = tempdir
     url = app_url(app, version)
     #url = 'http://{app}.site.freebase.dev.acre.z:8115'.format(app=app)
-    cmd = [os.path.join(dir.scripts, 'deploy.py'),
-           '-s', url, '-d', tempdir]
-    run_cmd(cmd, name='urlfetch')
+    deploy_static_files(url, tempdir)
+    #cmd = [os.path.join(dir.scripts, 'deploy.py'),
+    #       '-s', url, '-d', tempdir]
+    #run_cmd(cmd, name='urlfetch')
 
     # 2. svn list version and copy images (*.png, *.gif, etc.) to tempdir
     branch_dir = svn_temp_dirs[branch]

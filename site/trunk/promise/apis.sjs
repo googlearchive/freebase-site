@@ -47,6 +47,37 @@ var freebase = {};
       .then(null, handle_timeout_error);
   };
   
+  freebase.get_static = function(bdb, ids) {
+    if (!(ids instanceof Array)) {
+      retrieve_ids = [ids];
+    } else {
+      retrieve_ids = ids;
+    }
+    
+    var url = acre.freebase.service_url;
+    url += "/api/trans/"+bdb+"?";
+    retrieve_ids.forEach(function(id) {
+      url += "id="+id;
+    });
+    
+    return urlfetch(url)
+      .then(function(response) {
+        var response = JSON.parse(response.body);
+        var results = {};
+        retrieve_ids.forEach(function (id) {
+          results[id] = response[id].result;
+        });
+        return results;
+      })
+      .then(function(results) {
+        if (!(ids instanceof Array)) {
+          return results[ids];
+        } else {
+          return results;
+        }
+      });
+  }
+  
   var freebase_apis = [
       {name: "fetch",            options_pos: 1},
       {name: "touch",            options_pos: 0},

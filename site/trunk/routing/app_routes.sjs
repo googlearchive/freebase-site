@@ -17,6 +17,10 @@ var routes = [
     as: "script"
   },
   {
+    from: "/homepage",
+    to: "/freebase/site/homepage"
+  },
+  {
     from: "/domain",
     to: "/freebase/site/domain"
   },

@@ -87,11 +87,13 @@
 <acre:block def="domain_panel(domain)">
   <h3 class="domain-title">
     <a href="${h.freebase_url('/view'+domain.id)}">${domain.name}</a>
+    <span class="topic-count">
+      ${domain.topic_count || 0}
+      ${(domain.topic_count === 1 ? 'topic' : 'topics')}
+    </span>
   </h3>
   
-  <p acre:if="domain['/common/topic/article'] && domain['/common/topic/article'].text">
-    ${domain["/common/topic/article"].text}
-  </p>
+  <p acre:if="domain.description">${domain.description}</p>
   
   <a href="${h.freebase_url('/view'+domain.id)}"
      class="explore-link"

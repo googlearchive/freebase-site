@@ -1,6 +1,11 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
   var h = mf.require("/freebase/site/core/helpers");
+  var letters = ['a', 'b', 'c', 'd', 'e', 'f', 
+                 'g', 'h', 'i', 'j', 'k', 'l', 
+                 'm', 'n', 'o', 'p', 'q', 'r', 
+                 's', 't', 'u', 'v', 'w', 'x', 
+                 'y', 'z'];
 </acre:script>
 
 <acre:block def="categories_list(categories)">
@@ -26,4 +31,69 @@
     </ul>
   </acre:block>
   
+</acre:block>
+
+<acre:block def="domain_explorer(categories, groups)">
+  <span id="domain-explorer-title">Explore Freebase</span>
+  <div id="domain-explorer-tabset">
+    
+    <ul id="domain-explorer-tabs">
+      <li acre:for="category in categories">
+        <a href="${h.url_for('loadpanel', [['id', category.id]])}">
+         <span>${category.name}</span>
+        </a>
+      </li>
+      <li class="ui-tabs-last">
+        <a href="#all-domains-pane" id="all-domains-tab">
+          <span>All</span>
+        </a>
+      </li>
+    </ul>
+    
+    <div id="all-domains-pane">
+      <div class="domains-toc">
+        <acre:block for="letter in letters">
+          <span acre:if="letter in groups" class="toc-letter">
+            <a href="#all-commons-domains-${letter}">${letter}</a>
+          </span>
+          <span acre:else="" class="toc-letter">${letter}</span>
+        </acre:block>
+      </div>
+    
+      <acre:block for="letter, domains in groups">
+        <a name="all-commons-domains-${letter}" class="letter">${letter}</a>
+        <ul>
+          <li acre:for="domain in domains">
+            <a href="${h.freebase_url('/view'+domain.id)}">
+              ${domain.name}
+            </a>
+          </li>
+        </ul>
+      </acre:block>
+    
+    </div>
+    <span id="pointer"><span id="pointer-text"></span></span>
+  </div>
+</acre:block>
+
+<acre:block def="explorer_panel(domains)">
+  <ul class="domain-explorer-list">
+    <li acre:for="domain in domains">
+      ${domain_panel(domain)}
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="domain_panel(domain)">
+  <h3 class="domain-title">
+    <a href="${h.freebase_url('/view'+domain.id)}">${domain.name}</a>
+  </h3>
+  
+  <p acre:if="domain['/common/topic/article'] && domain['/common/topic/article'].text">
+    ${domain["/common/topic/article"].text}
+  </p>
+  
+  <a href="${h.freebase_url('/view'+domain.id)}"
+     class="explore-link"
+     title="Explore ${domain.name}">Explore ${domain.name} &raquo;</a>
 </acre:block>

@@ -10,8 +10,7 @@
 
 <acre:block def="content_body()">
   <section id="content-main">
-    ${templates.categories_list(c.categories)}
-    ${templates.grouped_domains_list(c.domains)}
+    ${templates.domain_explorer(c.categories, c.domains)}
   </section>
 </acre:block>
 

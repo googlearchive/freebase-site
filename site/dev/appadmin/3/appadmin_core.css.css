@@ -1,0 +1,15 @@
+h1 { font-size: 1.8em; }
+
+table { font-size: 1.2em; width: 98%; }
+
+th { font-weight: bold; }
+
+.header { border-bottom: 1px solid #a9a9a9; }
+
+.cell { padding: 2px; }
+
+.reference { border: 2px solid #a9a9a9;}
+
+.release { background-color: #E4FFCF; }
+
+.diff {}

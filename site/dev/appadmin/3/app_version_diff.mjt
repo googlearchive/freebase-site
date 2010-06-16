@@ -1,0 +1,15 @@
+<acre:script>
+
+var id1 = acre.request.params['id1'];
+var id2 = acre.request.params['id2'];
+var app_util = acre.require('app_util');
+
+var diff = app_util.get_app_diff(id1, id2);
+
+//console.log(diff);
+
+
+</acre:script>
+<i>${diff['app2']['relative_date']}</i>
+<br/>diff for ${id2}
+

@@ -32,16 +32,10 @@
       $.ajax({
         url: menu.attr("data-popup-url"),
         dataType: "jsonp",
+        jsonpCallback: "window.freebase.toolbox.jsonp",
         data: {
-          id: fb.user.id
-        },
-        success: function(data) {
-          popup.html(data.result.html);
-          popup.removeClass("popup-loading");
-          tb.init_search(popup);
-          if (popup.is(":visible")) {
-            $(".toolbox-textbox", popup).focus();
-          }
+          id: fb.user.id,
+          context: "#" + menu.attr("id")
         }
       });
 
@@ -54,6 +48,21 @@
 
       popup.show();
       menu.removeClass("expand").addClass("collapse");
+    },
+
+    jsonp: function(data) {
+      // TODO: handle error status code
+      var result = data.result;
+      var menu = $(result.context);
+      if (!menu.length) return;
+      var popup = menu.data("popup");
+      if (!popup) return;
+      popup.html(data.result.html);
+      popup.removeClass("popup-loading");
+      tb.init_search(popup);
+      if (popup.is(":visible")) {
+        $(".toolbox-textbox", popup).focus();
+      }
     },
 
     hide: function(menu) {

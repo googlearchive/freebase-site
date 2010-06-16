@@ -1,5 +1,6 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
+  var h = mf.require("/freebase/site/core/helpers");
 </acre:script>
 
 <acre:block def="categories_list(categories)">
@@ -10,4 +11,19 @@
       </li>
     </acre:block>
   </ul>
+</acre:block>
+
+<acre:block def="grouped_domains_list(groups)">
+  
+  <acre:block for="group, domains in groups">
+    <h2>${group}</h2>
+    <ul>
+      <acre:block for="domain in domains">
+        <li>
+          <a href="${h.freebase_url('/view'+domain.id)}">${domain.name}</a>
+        </li>
+      </acre:block>
+    </ul>
+  </acre:block>
+  
 </acre:block>

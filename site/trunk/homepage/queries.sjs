@@ -58,16 +58,12 @@ var alphabetically_grouped_commons_domains = function() {
 };
 
 var domains_for_category = function(category_id) {
-  var category_q = [{
-    "id": null,
-    "name": null,
-    "/common/topic/article": {"mid": null, "limit": 1, "optional": true},
-    "type": "/type/domain",
-    "!/freebase/domain_category/domains": {"id": category_id},
-    "sort": "name"
-  }];
+  var q_category = acre.require("domains_for_category").query;
+  q_category = acre.freebase.extend_query(q_category,
+    {"!/freebase/domain_category/domains.id": category_id}
+  );
   
-  return freebase.mqlread(category_q)
+  return freebase.mqlread(q_category)
     .then(function(envelope) {
       return envelope.result.map(function(domain) {
         return {

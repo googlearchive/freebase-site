@@ -92,8 +92,8 @@
 
 <acre:block def="apps_toolbox_content(apps)">
   <ul>
-    <li acre:for="app in apps" data-name="${app.name || app.id}" data-id="${app.id}">
-      <a href="${acre.freebase.service_url}/apps/app${app.appid}">${app.name || app.id}</a>
+    <li acre:for="app in apps" data-name="${app.name || app.appid}" data-id="${app.appid}">
+      <a href="${acre.freebase.service_url}/apps/app${app.appid}">${app.name || app.appid}</a>
     </li>
   </ul>
 </acre:block>

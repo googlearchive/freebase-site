@@ -208,8 +208,8 @@ function base_manifest(MF, scope, undefined) {
           if (url.indexOf("http://") == 0 || url.indexOf("https://") === 0) {
             return m;
           }
-          else if (url.indexOf("freebase://") === 0) {
-            return "url(" + fburl(url.substring(11)) + ")";
+          else if (url.indexOf("static://") === 0) {
+            return "url(" + fburl(url.substring(9)) + ")";
           }
           else {
             return "url(" + MF.resource_url(url) + ")";

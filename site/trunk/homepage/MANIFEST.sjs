@@ -7,11 +7,11 @@ var MF = {
   },
   
   "stylesheet": {
-    "index.mf.css": ["/freebase/site/template/MANIFEST/freebase.mf.css"]
+    "index.mf.css": ["/freebase/site/template/MANIFEST/freebase.mf.css", "homepage.css"]
   },
 
   "javascript": {
-    "index.mf.js": ["/freebase/site/template/MANIFEST/freebase.mf.js"]
+    "index.mf.js": ["/freebase/site/template/MANIFEST/freebase.mf.js", "homepage.js"]
   }
 };
 

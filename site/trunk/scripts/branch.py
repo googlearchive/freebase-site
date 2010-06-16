@@ -101,7 +101,7 @@ def fetch_url(url, isjson=False):
         contents = urllib2.urlopen(request).readlines()
     except:
         print 'ERROR FETCHING URL: %s' % url
-        if json:
+        if isjson:
             return None
         return []
     

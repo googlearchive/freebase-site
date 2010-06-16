@@ -1,0 +1,33 @@
+<acre:script>
+  
+  
+  var q = [{
+    "id":        null,
+    "name":      null,
+    "timestamp": null,
+    "/type/namespace/keys" : {
+      "value" : "release"
+    },
+    "attribution": {
+      "name": null,
+      "type": "/type/user",
+      "usergroup": {
+        "id":       "/en/metaweb_staff",
+      }
+    },
+    "limit":     100000,
+    "sort":      "timestamp",
+    "type":      "/freebase/apps/acre_app"
+  }];
+  
+  if (acre.request.params['all']) { 
+    delete q[0]['/type/namespace/keys']; 
+  }
+  
+  var apps = acre.freebase.mqlread(q).result;
+  
+</acre:script>
+
+<div acre:for="app in apps">
+  $app.name - http://acre.freebase.com/#app=$app.id
+</div>

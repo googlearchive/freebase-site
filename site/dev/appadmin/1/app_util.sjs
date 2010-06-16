@@ -193,22 +193,48 @@ var get_app = function(id) {
 
 };
 
-var get_app_diff = function(id1, id2) {
+var get_manifest_diff = function(app1, app2) {
 
-    var diff = { 'files' : {}, 'manifest' : {} }
+    var diff = { 'add' : [], 'remove' : [], 'changed' : [] };
+
+    
+
+
+
+    return diff;
+
+
+};
+
+
+var get_file_diff = function(app1, app2) { 
+
+    var diff = { 'add' : [], 'remove' : [], 'changed' : [] };
+
+    return diff
+};
+
+
+
+var get_app_diff = function(id1, id2) {
 
     var result = get_app(id1);
     var app1 = result[result.reference_env || 'production'];
 
-    
-    result = get_app(id2);
+    var result = get_app(id2);
     var app2 = result[result.reference_env || 'production'];
-    console.log(app1);
+
     app1['manifest'] = get_manifest_contents(id1, app1);
     app2['manifest'] = get_manifest_contents(id2, app2);
 
-    return diff;
+    var diff = { 
+        'file' : get_file_diff(app1, app2), 
+        'manifest' : get_manifest_diff(app1, app2), 
+        'app1' : app1, 
+        'app2' : app2 
+    };
 
+    return diff;
 
 };
 
@@ -230,8 +256,9 @@ var url = function(context, path) {
 
 };
 
-var get_manifest_contents = function(id, app) {
+var get_manifest_contents = function(id) {
 
+    console.log('manifest');
     var manifest = null;
     var context = deconstruct_id(id);
     var manifest_url = url(context, '/MANIFEST');

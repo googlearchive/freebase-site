@@ -10,6 +10,6 @@ var diff = app_util.get_app_diff(id1, id2);
 
 
 </acre:script>
-<i>${app['relative_date']}</i>
+<i>${diff['app2']['relative_date']}</i>
 <br/>diff for ${id2}
 

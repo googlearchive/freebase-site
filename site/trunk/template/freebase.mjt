@@ -61,7 +61,7 @@
           <input type="hidden" value="0" name="start" />
           <input type="text" 
                  autocomplete="off"
-                 placeholder="Search 12 million interconnected topics"
+                 placeholder="Find topics..."
                  name="query" id="global-search-input"
                  class="SearchBox-input AutocompleteInput-input" />
         </fieldset>
@@ -92,7 +92,6 @@
     <div id="nav-account">
       <div class="nav-user-controls" id="signedin" style="display:none;">
         <strong id="nav-username">
-          Signed in as
           <a href="${h.freebase_url('/view')}" title="View your profile"></a></strong>
         <a href="${acre.markup.bless(h.account_url('settings'))}" title="View your account info on Freebase" rel="nofollow">Settings</a>
         <a href="${acre.markup.bless(h.account_url('signout', acre.request.url))}" title="Sign out of Freebase" rel="nofollow">Sign out</a>

@@ -180,8 +180,9 @@ function base_manifest(MF, scope, undefined) {
             buf.push(MF.css_preprocessor(MF.require(id).body));
           }
           catch (ex) {
+            console.error(ex);
             scope.acre.write("\n/** " + ex.toString() + " **/\n");
-            return;
+            acre.exit();
           }
         }
       });

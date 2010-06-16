@@ -14,8 +14,8 @@ groupBy = function(array, key) {
   return res;
 };
 
-var domain_categories = function () {
-  var q_categories = acre.require("domain_categories").query;
+var categories = function () {
+  var q_categories = acre.require("categories").query;
   
   return freebase.mqlread(q_categories)
     .then(function(envelope) {

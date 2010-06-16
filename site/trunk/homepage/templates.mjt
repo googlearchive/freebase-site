@@ -33,7 +33,7 @@
   
 </acre:block>
 
-<acre:block def="domain_explorer(categories, groups)">
+<acre:block def="domain_explorer(categories, grouped_domains)">
   <span id="domain-explorer-title">Explore Freebase</span>
   <div id="domain-explorer-tabset">
     
@@ -53,14 +53,14 @@
     <div id="all-domains-pane">
       <div class="domains-toc">
         <acre:block for="letter in letters">
-          <span acre:if="letter in groups" class="toc-letter">
+          <span acre:if="letter in grouped_domains" class="toc-letter">
             <a href="#all-commons-domains-${letter}">${letter}</a>
           </span>
           <span acre:else="" class="toc-letter">${letter}</span>
         </acre:block>
       </div>
     
-      <acre:block for="letter, domains in groups">
+      <acre:block for="letter, domains in grouped_domains">
         <a name="all-commons-domains-${letter}" class="letter">${letter}</a>
         <ul>
           <li acre:for="domain in domains">

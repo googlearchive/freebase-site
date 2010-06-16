@@ -105,7 +105,7 @@ def fetch_url(url, isjson=False):
             return None
         return []
     
-    if json:
+    if isjson:
         return json.loads(''.join(contents))
     
     return contents

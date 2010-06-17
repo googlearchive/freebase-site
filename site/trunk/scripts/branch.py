@@ -114,8 +114,14 @@ def fetch_url(url, isjson=False):
 def deploy_static_files(source_url, tmp_dir):
     # load app MANIFEST.MF
     url = "%s/MANIFEST" % source_url
-    body = ''.join(fetch_url(url))
-    mf = json.loads(body).get('result')
+    
+    mf = fetch_url(url, isjson=True)
+
+    if not mf:
+        print "Aborting push of resource files - no manifest found!"
+        return
+        
+    mf = mf.get('result');
 
     # get each stylesheet page, cssmin and copy to outdir
     for page in mf.get('stylesheet'):

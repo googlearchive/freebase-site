@@ -27,7 +27,7 @@
   var apps = acre.freebase.mqlread(q).result;
   
 </acre:script>
-<html><head><title>freebase.com apps</title></head><body>
+<html><head><title>freebase.com related utilities and apps</title></head><body>
 
 <h1>freebase.com related utilities and apps</h1>
 

@@ -232,13 +232,12 @@ class AcrePush(object):
         except MetawebError:
             create_app = True
 
+        version_app_exists = True
         if version:
             try: 
                 self.fb.get_app("%s/%s" % (id, version))
-                version_app_exists = True
             except:
                 version_app_exists = False
-            
 
         delete_files, push_files = {}, ondisk_app.metadata['files']
 
@@ -252,6 +251,14 @@ class AcrePush(object):
 
         ###### dry run until this point ##########
 
+
+        if version and self.is_production and version_app_exists:
+            reply = raw_input('Version %s is released in production. Are you SURE you want to update it (this will update the live site) ?\n Type "yes" or any other key to abort: ' % version)
+            if reply != 'yes':
+                print 'Aborting push to production.'
+                return
+
+            
         if version or len(delete_files.keys()) or len(push_files.keys()) or create_app:
             (user, pw) = self.get_credentials(user, pw)
             if not (user and pw):
@@ -291,13 +298,8 @@ class AcrePush(object):
 
 
         if version:
-
-            if not (self.is_production and version_app_exists):
-                self.fb.create_app_version(ondisk_app.metadata['id'], version, timestamp='__now__')
-                print 'Updated version %s' % version
-            else:
-                print 'Will NOT update version %s in OTG' % version
-
+            self.fb.create_app_version(ondisk_app.metadata['id'], version, timestamp='__now__')
+            print 'Updated version %s' % version
 
         print "\nPush succesfull, %s files affected" % len(files_changed)
         

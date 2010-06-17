@@ -27,9 +27,9 @@
   var apps = acre.freebase.mqlread(q).result;
   
 </acre:script>
-<html><head><title>freebase.com related utilities and apps</title></head><body>
+<html><head><title>freebase.com related  utilities and apps</title></head><body>
 
-<h1>freebase.com related utilities and apps</h1>
+<h1>freebase.com related  utilities and apps</h1>
 
 <div acre:for="app in apps">
   $app.name - http://acre.freebase.com/#app=$app.id

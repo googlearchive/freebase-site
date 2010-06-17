@@ -197,12 +197,27 @@ var get_manifest_diff = function(app1, app2) {
 
     var diff = { 'add' : [], 'remove' : [], 'changed' : [] };
 
+    var m1 = app1['manifest'] ? app1['manifest']['version'] : {};
+    var m2 = app2['manifest'] ? app2['manifest']['version'] : {};
+
+    for (var appid in m1) { 
+        if (!(appid in m2)) { 
+            diff['remove'].push({'appid' : appid}); 
+            continue;
+        }
+
+        if (m2[appid] != m1[appid]) { 
+            diff['changed'].push({'appid' : appid, 'version' : m2[appid]});
+        }
+        
+    }
+    for (var appid in m2) { 
+        if (!(appid in m1)) { diff['add'].push({'appid' : appid, 'version' : m2[appid]}); }
+    }
     
-
-
+    console.log(diff)
 
     return diff;
-
 
 };
 
@@ -220,9 +235,13 @@ var get_app_diff = function(id1, id2) {
 
     var result = get_app(id1);
     var app1 = result[result.reference_env || 'production'];
-
+    
     var result = get_app(id2);
     var app2 = result[result.reference_env || 'production'];
+
+    if (!(app1 && app2)) { 
+        return {};
+    }
 
     app1['manifest'] = get_manifest_contents(id1, app1);
     app2['manifest'] = get_manifest_contents(id2, app2);

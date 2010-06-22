@@ -26,159 +26,6 @@ var h_util = acre.require("helpers_util");
 var h_url = acre.require("helpers_url");
 
 
-function decompose_path(path, options /* file : true|false, resolve_appid : true|false, callback/errback/etc. : for async appid resolution */) {
-    options = options || {};
-    var app_ver_id_parts;   // arrary used to manipulate appid/host components
-
-    // structure of object we'll be returning
-    var resource = {
-        path        : path,
-        app_host    : null,
-        appid       : null,
-        version     : null, /* 'null' means un-resolved.  will be 'current' if resolved, but not a version */
-        filename    : null,
-        fileid      : null,
-        path_info   : "/",
-        querystring : null,
-        service_url : acre.freebase.service_url,
-        acre_host   : acre.host.name + ((acre.host.port !== 80) ? ":" + acre.host.port : "")
-    };
-
-    // test whether it's a new- or old-style path
-    var bits = path.split('//');
-
-    if (bits.length > 2) {
-        throw "invalid path -- multiple instances of '//'";
-    }
-
-    // either relative or old-style graph ID syntax
-    if (bits.length === 1) {             
-        app_ver_id_parts = path.split("/");
-        if (options.file) {
-            resource.filename = app_ver_id_parts.pop();
-            resource.path = resource.filename;
-        }
-        if (app_ver_id_parts.length) {
-            var temp = app_ver_id_parts.join(".");
-            var app_path = temp.split(".").reverse().join(".") + "dev";
-            resource.app_host = app_path + "." + resource.acre_host;
-            resource.appid = app_ver_id_parts.join('/');
-            resource.path = "//" + app_path + (options.file ? "/" + resource.filename : "");
-        }
-    }
-
-    // new require-style styntax  
-    if (bits.length === 2) {
-
-        // extract querystring, if present
-        var qparts = bits[1].split("?");
-        if (qparts.length > 1) {
-            resource.querystring = qparts[1];
-        }
-
-        // extract app host portion
-        var parts = qparts[0].split('/');
-        var app_host_part = parts.shift();
-
-        // extract filename and path_info, if present
-        if (parts.length) {
-            resource.filename = parts.pop();
-            resource.path_info = "/" + parts.join("/");
-        }
-
-        // break-down app host so we can work with it
-        app_ver_id_parts = app_host_part.split('.');
-
-        // check whether it's cross-graph.  if so:
-        // * change the service_url
-        // * munge other values accordingly
-        var acre_host_re = /\.(freebaseapps\.com|sandbox\-freebaseapps\.com|branch\.qa\-freebaseapps\.com|trunk\.qa\-freebaseapps\.com)\.$/;
-        var match = app_host_part.match(acre_host_re);
-        if(match) {
-            resource.acre_host = match[1];
-            resource.service_url = ACRE_TO_FREEBASE_MAP[resource.acre_host];
-            app_host_part = app_host_part.replace(acre_host_re,"");
-            app_ver_id_parts = app_host_part.split(".");
-        }
-
-        // construct fully-qualified versioned appid and app_host
-        switch (app_ver_id_parts[app_ver_id_parts.length-1]) {
-
-            case "dev" :   // ends in '.dev' so it's fully-qualified ID
-                app_ver_id_parts.pop();
-                app_ver_id_parts.reverse().unshift("");
-                resource.app_host = app_host_part + "." + resource.acre_host;
-                break;
-
-            case "" :      // ends in '.' so it's a full-qualified hostname
-                app_ver_id_parts.pop();
-                resource.app_host = app_ver_id_parts.join(".");
-
-                app_ver_id_parts.reverse().unshift(DEFAULT_HOST_NS);
-                break;
-
-            default :     // otherwise, it's a 'published' hostname
-                app_ver_id_parts = app_ver_id_parts.reverse();
-                var host_base_parts = acre.host.name.split('.');
-                for (var a in host_base_parts) {
-                    app_ver_id_parts.unshift(host_base_parts[a]);
-                }
-                app_ver_id_parts.unshift(DEFAULT_HOST_NS);
-
-                resource.app_host = app_host_part + "." + resource.acre_host;
-                break;
-                
-        }
-        resource.appid = app_ver_id_parts.join('/');
-    }
-
-    // if requested, resolve fully-qaulified versioned appid into canonical appid and version
-    if (options.resolve_appid) {
-        delete options.resolve_appid;
-        delete options.file;
-        
-        var q = {
-            "id" : resource.appid,
-            "/freebase/apps/acre_app_version/acre_app" : {
-                "id" : null,
-                "/type/namespace/keys" : {
-                    "limit" : 1,
-                    "r:value!=" : "release",
-                    "value" : null,
-                    "namespace" : {
-                        "id" : resource.appid
-                    }
-                },
-                "id" : null,
-                "optional" : true
-            }
-        };
-        var r = acre.freebase.mqlread(q, null, options).result;
-        if (!r) {
-            throw new ServiceError("400 Bad Request", "/api/status/error", {
-                message : "App: " + resource.app_host + " doesn\'t exist",
-                code    : "/api/status/error/input/no_app",
-                info    : resource.appid
-            });
-        }
-        if (r["/freebase/apps/acre_app_version/acre_app"]) {
-            resource.version = r["/freebase/apps/acre_app_version/acre_app"]["/type/namespace/keys"].value;
-            resource.appid = r["/freebase/apps/acre_app_version/acre_app"].id;
-        } else {
-            resource.version = "current";
-            resource.appid = r.id;
-        }
-    }
-
-    if (resource.filename) {
-        resource.fileid = resource.appid ? resource.appid + "/" + resource.filename : resource.filename;
-    }
-    
-    return resource;
-}
-
-
-
 /**
  * usage:
  *   var MF = {...};
@@ -405,6 +252,137 @@ function base_manifest(MF, scope, undefined) {
         }
       });
     },
+    
+    /**
+     * Parses a path (either relative, graph ID or host-style) and resolves it into
+     * metadata about that resource.
+     *
+     * Takes an optional options dict:
+     *   @param file (boolean) - hint whether resource is a file (graph ID style only)
+     */
+    parse_path : function(path, options /* file : true|false */) {
+      
+      var DEFAULT_HOST_NS = "/freebase/apps/hosts";
+
+      var ACRE_TO_FREEBASE_MAP = {
+        "freebaseapps.com"           : "http://www.freebase.com",
+        "sandbox-freebaseapps.com"   : "http://www.sandbox-freebase.com",
+        "branch.qa-freebaseapps.com" : "http://branch.qa.metaweb.com",
+        "trunk.qa-freebaseapps.com"  : "http://trunk.qa.metaweb.com"
+      };
+      
+      options = options || {};
+      var app_ver_id_parts;   // arrary used to manipulate appid/host components
+
+      // structure of object we'll be returning
+      var resource = {
+        path        : null,
+        id          : null,
+        app_path    : null,
+        appid       : null,
+        version     : null,
+        filename    : null,
+        path_info   : "/",
+        querystring : null,
+        service_url : acre.freebase.service_url,
+        acre_host   : acre.host.name + ((acre.host.port !== 80) ? ":" + acre.host.port : "")
+      };
+
+      // extract querystring, if present
+      var qparts = path.split("?");
+      if (qparts.length > 1) {
+        resource.querystring = qparts[1];
+        path = qparts[0];
+      }
+
+      // it's the new host-style styntax:
+      if (path.indexOf("//") === 0) {
+
+        // extract app host portion
+        var bits = path.split('//');
+        var parts = bits[1].split('/');
+        var app_host_part = parts.shift();
+
+        // extract filename and path_info, if present
+        if (parts.length) {
+          resource.filename = parts.pop();
+          resource.path_info = "/" + parts.join("/");
+        }
+
+        // break-down app host so we can work with it
+        app_ver_id_parts = app_host_part.split('.');
+
+        // check whether it's cross-graph.  if so:
+        // * change the service_url
+        // * munge other values accordingly
+        var acre_host_re = /\.(freebaseapps\.com|sandbox\-freebaseapps\.com|branch\.qa\-freebaseapps\.com|trunk\.qa\-freebaseapps\.com)\.$/;
+        var match = app_host_part.match(acre_host_re);
+        if(match) {
+          resource.acre_host = match[1];
+          resource.service_url = ACRE_TO_FREEBASE_MAP[resource.acre_host];
+          app_host_part = app_host_part.replace(acre_host_re,"");
+          app_ver_id_parts = app_host_part.split(".");
+        }
+
+        // construct fully-qualified versioned appid and app_host
+        switch (app_ver_id_parts[app_ver_id_parts.length-1]) {
+
+          case "dev" :   // ends in '.dev' so it's fully-qualified ID
+          app_ver_id_parts.pop();
+          app_ver_id_parts.reverse().unshift("");
+          break;
+
+          case "" :      // ends in '.' so it's a full-qualified hostname
+          app_ver_id_parts.pop();
+          app_ver_id_parts.reverse().unshift(DEFAULT_HOST_NS);
+          break;
+
+          default :     // otherwise, it's a 'published' hostname
+          app_ver_id_parts = app_ver_id_parts.reverse();
+          var host_base_parts = acre.host.name.split('.');
+          for (var a in host_base_parts) {
+            app_ver_id_parts.unshift(host_base_parts[a]);
+          }
+          app_ver_id_parts.unshift(DEFAULT_HOST_NS);
+          break;
+
+        }
+        resource.app_path = app_host_part;
+        resource.appid = app_ver_id_parts.join('/');
+
+
+        // it's an old-style graph ID   
+      } else if (path.indexOf("/") === 0) {
+
+        var parts = path.split("/");
+        if (options.file) {
+          resource.filename = parts.pop();
+          // NOTE: this mode does not support path_info (ambiguous)
+        }
+        resource.appid = parts.join('/');
+        resource.app_path = resource.appid.split(".").reverse().join(".") + "dev";
+
+
+      // it's a relative path
+      } else {
+        resource.appid = scope.acre.current_script.app.id;
+        resource.version = scope.acre.current_script.app.version;
+        resource.app_path = (resource.version ? resource.version + "." : "" ) + 
+                            resource.appid.split("/").reverse().join(".") + "dev";
+
+        // extract filename and path_info, if present
+        var parts = path.split("/");
+        if (parts.length) {
+          resource.filename = parts.pop();
+          resource.path_info = "/" + parts.join("/");
+        }
+      }
+
+      resource.id = resource.appid + (resource.filename ? "/" + resource.filename : "");
+      resource.path = "//" + resource.app_path + (resource.filename ? "/" + resource.filename : "");
+
+      return resource;
+    },
 
     /**
      * Match resource_path to an app version declared in MF.version
@@ -436,124 +414,153 @@ function base_manifest(MF, scope, undefined) {
       throw "A version for " + appid + " must be declared in the MANIFEST.";
     },
 
-      _resource_info2: function(id, file) { 
-          console.log('IN: ' + id + ' ' + file);
+    _resource_info2: function(id, file) { 
+      console.log('IN: ' + id + ' ' + file);
 
-          var res = { 
-              //full graph id of the resource - includes files, excludes version
-              //you can pass this to acre.require()
-              //e.g. /freebase/site/core/MANIFEST
-              'id' : null,
-              //version of app
-              //you can pass this to acre.require()
-              //e.g. 5
-              'version' : null,
-              //if the id was a label in MF.apps, this will be the label value
-              //e.g. //release.core.site.freebase.dev
-              'label' : null,
-              //graph id of the app, without version or file
-              //e.g. /freebase/site/core
-              'appid' : null,
-              //name of the resource (file)
-              //e.g. MANIFEST
-              'name' : null,
-              //if this is a relative file to the current app, local is true
-              'local' : false
-          };
+      var res = { 
+        //full graph id of the resource - includes files, excludes version
+        //you can pass this to acre.require()
+        //e.g. /freebase/site/core/MANIFEST
+        'id' : null,
+        //version of app
+        //you can pass this to acre.require()
+        //e.g. 5
+        'version' : null,
+        //if the id was a label in MF.apps, this will be the label value
+        //e.g. //release.core.site.freebase.dev
+        'label' : null,
+        //graph id of the app, without version or file
+        //e.g. /freebase/site/core
+        'appid' : null,
+        //name of the resource (file)
+        //e.g. MANIFEST
+        'name' : null,
+        //if this is a relative file to the current app, local is true
+        'local' : false
+      };
 
-          if (!id) { 
-              return res;
-          }
+      if (!id) { 
+        return res;
+      }
 
-          //label or file
-          if (id[0] != '/') { 
+      //label or file
+      if (id[0] != '/') { 
 
-              //if there is no second argument, it's a relative file require
-              if (!file) { 
-                  res.id = scope.acre.current_script.app.id + "/" + id;
-                  res.appid = scope.acre.current_script.app.id;
-                  res.version = null;
-                  res.local = true;
-                  res.name = id;
+        //if there is no second argument, it's a relative file require
+        if (!file) { 
+          res.id = scope.acre.current_script.app.id + "/" + id;
+          res.appid = scope.acre.current_script.app.id;
+          res.version = null;
+          res.local = true;
+          res.name = id;
 
-                  return res;
-              }
-          
-              //both label and file
-              if (! (MF.apps && MF.apps[id]) ) {
-                  console.log('resource resolution error: no label ' + id + ' in manifest.apps');
-                  return null;
-              }
+          return res;
+        }
 
-              res.label = true;
-          }    
-  
-          //console.log(id);
-          // graph id: /freebase/site/core/helpers
-          if (id[0] == '/' && id.length > 1 && id[1] != '/') { 
-            var appid = id.split("/");
-            res.name = appid.pop();
-            res.appid = appid.join("/");
-            res.version = null; //tough luck - old style ids
-            res.id = id;
+        //both label and file
+        if (! (MF.apps && MF.apps[id]) ) {
+          console.log('resource resolution error: no label ' + id + ' in manifest.apps');
+          return null;
+        }
 
-            return res;
-          }
+        res.label = true;
+      }    
 
-          resource = MF.apps[id]; 
-          //console.log(resource);
+      //console.log(id);
+      // graph id: /freebase/site/core/helpers
+      if (id[0] == '/' && id.length > 1 && id[1] != '/') { 
+        var appid = id.split("/");
+        res.name = appid.pop();
+        res.appid = appid.join("/");
+        res.version = null; //tough luck - old style ids
+        res.id = id;
 
-          // new style id: //<something>
-          if (resource.indexOf('//') == 0) { 
+        return res;
+      }
 
-            //find out if there is a file, and only use the first part
-            var bits = resource.slice(2).split('/');
+      resource = MF.apps[id]; 
+      //console.log(resource);
 
-            //5-long paths begin with versions
-            //e.g. bits[0] would be 4.core.site.freebase.dev
-            var parts = bits[0].split('.');
-            if (parts[parts.length-1] == 'dev' && parts.length == 5) { 
-              res.version = parts[0];
-              parts.shift();      
-            }
+      // new style id: //<something>
+      if (resource.indexOf('//') == 0) { 
 
-            var new_resource = '//' + parts.join('.') + (bits[1] ? '/' + bits[1] : '');
+        //find out if there is a file, and only use the first part
+        var bits = resource.slice(2).split('/');
 
-            //resolve the id
-            var context = decompose_path(new_resource);
-            //finally, if we have a resulting appid, require it  
-            if (context.appid) { 
-              res.appid = context.appid;
-              //if this was a pre-baked new id, use the filename from the id
-              //e.g. //services/lib (lib is the file)
-              if (context.filename) { 
-                res.name = context.filename;
-                res.id = res.appid + '/' + res.name;
+        //5-long paths begin with versions
+        //e.g. bits[0] would be 4.core.site.freebase.dev
+        var parts = bits[0].split('.');
+        if (parts[parts.length-1] == 'dev' && parts.length == 5) { 
+          res.version = parts[0];
+          parts.shift();      
+        }
 
-                //if this was a label that resolved into a new id 
-                //and there is a file argument, use the file argument
-                //e.g. mf.require('services', 'lib');
-              } else if (res.label && file) { 
-                res.id = res.appid + '/' + file;
-              } 
+        var new_resource = '//' + parts.join('.') + (bits[1] ? '/' + bits[1] : '');
 
-              return res;
-            //couldnt resolve
-            } else {
-                console.log('mf.require error: cannot resolve id: ' + new_resource);
-                return null;
-            }
-            
+        //resolve the id
+        var context = parse_path(new_resource);
+        //finally, if we have a resulting appid, require it  
+        if (context.appid) { 
+          res.appid = context.appid;
+          //if this was a pre-baked new id, use the filename from the id
+          //e.g. //services/lib (lib is the file)
+          if (context.filename) { 
+            res.name = context.filename;
+            res.id = res.appid + '/' + res.name;
 
-          }
-      
-        //this is the case of mf.require('/') and any other stranglers
-        console.log('mf.require error: unable to figure out what to do with resource ' + resource);
+            //if this was a label that resolved into a new id 
+            //and there is a file argument, use the file argument
+            //e.g. mf.require('services', 'lib');
+          } else if (res.label && file) { 
+            res.id = res.appid + '/' + file;
+          } 
+
+          return res;
+          //couldnt resolve
+        } else {
+          console.log('mf.require error: cannot resolve id: ' + new_resource);
+          return null;
+        }
+
+
+      }
+
+      //this is the case of mf.require('/') and any other stranglers
+      console.log('mf.require error: unable to figure out what to do with resource ' + resource);
+      return null;
+
+    },
+
+    /**
+     * Match label to an app version declared in MF.version
+     * If label is not declared in MF.version), throws error.
+     */
+    _labelled_resource_info : function(label_or_file, file) {
+      console.log('IN: ' + label_or_file + ' ' + file);
+
+      //if there is no second argument, it's a relative file require
+      if (!file) {
+        return MF.parse_path(label_or_file)
+      }
+
+      if (!(MF.apps && MF.apps[label_or_file]) ) {
+        console.log('resource resolution error: no label ' + label_or_file + ' in manifest.apps');
         return null;
+      }
 
+      var path = MF.apps[label_or_file] + "/" + file;
+      var resource = MF.parse_path(path);
 
-
-      },
+      // hard-coded parsing of appid until new require ready
+      var parts = resource.appid.split("/");
+      if (parts.length === 5) {
+        resource.version = parts.pop();
+        resource.appid = parts.join("/");
+        resource.id = resource.appid + "/" + resource.filename;
+      }
+      
+      return resource;
+    },
 
     /**
      * resource can be a string (resource_path) or
@@ -563,7 +570,7 @@ function base_manifest(MF, scope, undefined) {
      * to avoid another MF._resource_info lookup.
      * @see MF.img_src
      */
-    require_DEPRECATED: function(resource /** string or object **/) {
+   require_DEPRECATED: function(resource /** string or object **/) {
 
       if (typeof resource === "string") {
         resource = MF._resource_info(resource);
@@ -571,22 +578,22 @@ function base_manifest(MF, scope, undefined) {
       return scope.acre.require(resource.id, resource.version);
     },
 
-      require: function(resource /**string or object**/, file /**string**/) { 
-          
-          if (!resource) { 
-              return null;
-          }
-          var res = resource;
+    require: function(resource /**string or object**/, file /**string**/) { 
+      
+      if (!resource) { 
+        return null;
+      }
+      var res = resource;
 
-          //resource not a string - just pass to acre.require  
-          if (typeof resource === "string")  {
-              res = MF._resource_info2(resource, file);
-          }  
+      //resource not a string - just pass to acre.require  
+      if (typeof resource === "string")  {
+        res = MF._labelled_resource_info(resource, file);
+      }  
 
-          console.log('require FROM: ' + resource + ' ' + file + '  TO: ' + res.id + ' ' + res.version);
-          return scope.acre.require(res.id, res.version);
+      console.log('require FROM: ' + resource + ' ' + file + '  TO: ' + res.id + ' ' + res.version);
+      return scope.acre.require(res.id, res.version);
 
-      },
+    },
 
     resource_url: function(resource /** string or object **/) {
       if (typeof resource === "string") {

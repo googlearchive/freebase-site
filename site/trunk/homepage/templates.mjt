@@ -1,6 +1,6 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
-  var h = mf.require("/freebase/site/core/helpers");
+  var h = mf.require("core", "helpers");
   var letters = ['a', 'b', 'c', 'd', 'e', 'f', 
                  'g', 'h', 'i', 'j', 'k', 'l', 
                  'm', 'n', 'o', 'p', 'q', 'r', 

@@ -1,6 +1,6 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
-  var h = mf.require("/freebase/site/core/helpers");
+  var h = mf.require("core", "helpers");
 </acre:script>
 
 <acre:block def="page(exports)">

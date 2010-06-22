@@ -1,11 +1,11 @@
 var mf = acre.require("MANIFEST").MF;
-var deferred = mf.require("/freebase/site/promise/deferred");
-var h = mf.require("/freebase/site/core/helpers_util");
+var deferred = mf.require("promise", "deferred");
+var h = mf.require("core", "helpers_util");
 
 // Call one of these once at the end of your controller to render a
 //  freebase page, or single def with the results
 function render_page(data, exports, base_template) {
-  base_template = base_template || acre.require("freebase");
+  base_template = base_template || mf.require("freebase");
   _render(data, base_template, "page", exports, [exports]);
 }
 

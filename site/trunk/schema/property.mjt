@@ -2,11 +2,11 @@
   var mf = acre.require("MANIFEST").MF;
   var c = this.exports.c = {};
   
-  var h = mf.require("/freebase/site/core/helpers");
+  var h = mf.require("core", "helpers");
 
  var id = acre.request.params.id || "";
   if (id != "" && id.charAt(0) == '/') {
-    var query = acre.freebase.extend_query(acre.require("property-query").query, { "id" : id });
+    var query = acre.freebase.extend_query(mf.require("property-query").query, { "id" : id });
     var result = acre.freebase.mqlread(query).result;
     if (result != null) {
       if ('/common/topic/article' in result && result['/common/topic/article'].length > 0) {
@@ -78,4 +78,4 @@
   <script src="${mf.script_src('schema.mf.js')}"></script>
 </acre:block>
 
-${mf.require("/freebase/site/template/renderer").render_page(null, this.exports)}
+${mf.require("template", "renderer").render_page(null, this.exports)}

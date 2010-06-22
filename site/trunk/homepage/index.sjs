@@ -7,7 +7,7 @@ var main = function(scope) {
     "grouped_domains": queries.alphabetically_grouped_commons_domains()
   };
   
-  mf.require("/freebase/site/template/renderer").render_page(
+    mf.require("template", "renderer").render_page(
     queries,
     mf.require("index_template")
   );

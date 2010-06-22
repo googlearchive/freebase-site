@@ -2,7 +2,7 @@
 
   var mf = acre.require("MANIFEST").MF;
   var id = acre.request.params['id'];
-  var app_util = acre.require('app_util');
+  var app_util = mf.require('app_util');
   
   var result = app_util.get_app(id);
   var context = app_util.deconstruct_id(id);

@@ -1,11 +1,11 @@
 <acre:script>
 
   var mf = acre.require("MANIFEST").MF;
-  var h = mf.require('/freebase/site/core/helpers');
-  var freebase = acre.require('/freebase/site/promise/apis').freebase;
+  var h = mf.require('core', 'helpers');
+  var freebase = mf.require('promise', 'apis').freebase;
 
   var namespace = acre.request.params['namespace'] || '/freebase/site';
-  var query = acre.require('namespace_apps').query;
+  var query = mf.require('namespace_apps').query;
   query[0]['key']['namespace'] = namespace;
 
   var queries = { 
@@ -39,7 +39,7 @@ App Admin
   <script src="${mf.script_src('appadmin.mf.js')}" type="text/javascript"></script>
 </acre:block>
 
-${mf.require("/freebase/site/template/renderer").render_page(queries, this.exports)}
+${mf.require('template', 'renderer').render_page(queries, this.exports)}
 
 
 

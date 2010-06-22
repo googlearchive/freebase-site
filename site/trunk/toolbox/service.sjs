@@ -1,7 +1,7 @@
 var mf = acre.require("MANIFEST").MF;
-var t = acre.require("template");
-var queries = acre.require("queries");
-var h = mf.require("/freebase/site/core/helpers");
+var t = mf.require("template");
+var queries = mf.require("queries");
+var h = mf.require("core", "helpers");
 
 var api = {
 
@@ -17,7 +17,7 @@ var api = {
   },
 
   apps: function(args, headers) {
-    var list_user_apps = mf.require("/freebase/apps/appeditor/list_user_apps").list_user_apps;
+      var list_user_apps = mf.require("appeditor", "list_user_apps").list_user_apps;
     var apps = list_user_apps(args.id, args.include_filenames);
     return {
       context: args.context,
@@ -59,7 +59,7 @@ function main(scope) {
   if (h.is_client()) {
     acre.response.set_cache_policy('fast');
   }
-  var service = mf.require("/freebase/site/core/service");
+  var service = mf.require("core", "service");
   service.main(scope, api);
 };
 

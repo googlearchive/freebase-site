@@ -1,10 +1,10 @@
 <acre:script>
 
   var mf = acre.require("MANIFEST").MF;
-  var h = mf.require("/freebase/site/core/helpers");
+  var h = mf.require("core", "helpers");
   var c = this.exports.c = {};
 
-  mf.require("/freebase/apps/libraries/api_enhancer");
+  mf.require("libraries", "api_enhancer");
 
   var id = acre.request.params.id;
   var query = acre.require('base').query;
@@ -18,7 +18,7 @@
   } catch (e) {}
   
   // define topic count
-  var topic_count = activity['instance'][0]['v']
+  var topic_count = activity['instance'][0]['v'];
   
   // define top users. filter out '_bot', add username, and constrain to 5
   var top_contributors = activity['users'].filter(function(user) {
@@ -202,4 +202,4 @@
 </acre:block>
 
 
-${mf.require("/freebase/site/template/renderer").render_page(null, this.exports)}
+${mf.require("template", "renderer").render_page(null, this.exports)}

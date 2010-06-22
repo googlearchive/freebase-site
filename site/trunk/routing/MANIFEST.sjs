@@ -10,7 +10,19 @@ var MF = {
     "/freebase/site/toolbox": null,
     "/freebase/site/appadmin": null,
     "/freebase/site/error": null
-  }
+  },
+  'apps' : { 
+      'core' : '//core.site.freebase.dev',
+      'template' : '//core.site.freebase.dev',
+      'sample' : '//sample.site.freebase.dev',
+      'domain' : '//domain.site.freebase.dev',
+      'schema' : '//schema.site.freebase.dev',
+      'toolbox': '//toolbox.site.freebase.dev',
+      'appadmin' : '//appadmin.site.freebase.dev',
+      'error' : '//error.site.freebase.dev',
+      "homepage" : '//homepage.site.freebase.dev'
+  },
+
 };
 
 function is_release_pod() { 
@@ -20,6 +32,10 @@ function is_release_pod() {
 if (is_release_pod()) { 
     for (var appid in MF.version) { 
         MF.version[appid] = "release";
+    }
+
+    for (var label in MF.apps) { 
+        MF.apps['label'] = '//release.' + MF.apps['label'].slice(2);
     }
 }
 

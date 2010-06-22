@@ -1,7 +1,7 @@
 function main(scope, args) {
   var mf = acre.require("MANIFEST").MF;
-  var renderer = mf.require("/freebase/site/template/renderer");
-  var error_template = acre.require("template");
+  var renderer = mf.require("template", "renderer");
+  var error_template = mf.require("template");
 
   renderer.render_page({"status": args.status}, error_template);
   if (args.status) {

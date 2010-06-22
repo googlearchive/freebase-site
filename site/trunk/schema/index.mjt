@@ -4,9 +4,9 @@
   var mf = acre.require("MANIFEST").MF;
   var c = this.exports.c = {};
   
-  var h = mf.require("/freebase/site/core/helpers");
+  var h = mf.require("core", "helpers");
   
-  var utils = acre.require("utils");
+  var utils = mf.require("utils");
   
   var order = acre.request.params.order || 'name';
   var dir = acre.request.params.dir || 'asc';
@@ -15,9 +15,9 @@
   var indicator = (dir == 'asc') ? '▲' : '▼';
 
   if (!user_id) {
-    var query = acre.require("index-query").query;
+    var query = mf.require("index-query").query;
   } else {
-    var query = acre.require("user-domains-query").query;
+    var query = mf.require("user-domains-query").query;
     query = acre.freebase.extend_query(query, { "creator" : user_id });
   }
   var result = acre.freebase.mqlread(query).result;
@@ -154,4 +154,4 @@
   <script src="${mf.script_src('schema.mf.js')}"></script>
 </acre:block>
 
-${mf.require("/freebase/site/template/renderer").render_page(null, this.exports)}
+${mf.require("template", "renderer").render_page(null, this.exports)}

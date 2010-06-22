@@ -4,6 +4,10 @@ var MF = {
     "/freebase/site/core": null,
     "/freebase/site/template": null
   },
+    'apps' : { 
+        'template' : '//release.template.site.freebase.dev',
+        'core' : '//release.core.site.freebae.dev'
+    },
   stylesheet: {
     "error.mf.css": ["/freebase/site/template/MANIFEST/freebase.mf.css"]
   },

@@ -10,9 +10,6 @@ import dir
 from pprint import pprint
 
 
-JAVA = os.environ.get("JAVA_EXE", "java")
-COMPILER = os.path.join(dir.scripts, "compiler.jar")
-JAVA_OPTS = ["-jar", COMPILER, "--warning_level", "QUIET"]
 
 cmd_options = OptionParser()
 
@@ -25,15 +22,18 @@ cmd_options.add_option('-d', '--dest', dest='dest',
                        help="directory to deploy to")
 options, args = cmd_options.parse_args()
 
-# load app MANIFEST.MF
-url = "%s/MANIFEST" % options.src
-body = ''.join(urllib2.urlopen(url).readlines())
-mf = json.loads(body).get('result')
+
 
 # get each stylesheet page, cssmin and copy to outdir
 for page in mf.get('stylesheet'):
     url = "%s/MANIFEST/%s" % (options.src, page)
-    css = ''.join(urllib2.urlopen(url).readlines())    
+
+    try:
+        css = ''.join(urllib2.urlopen(url).readlines())
+    except:
+        print '[urlfetch error] %s' % url
+        sys.stdout.flush()
+    
     min = cssmin(css)
     filename = os.path.join(options.dest, page)
     with open(filename, "w") as f:

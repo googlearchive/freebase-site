@@ -5,7 +5,7 @@ var main = function(scope) {
   var category = acre.request.params.id;
   var p_domains = queries.domains_for_category(category);
   
-  mf.require("/freebase/site/template/renderer").render_def(
+    mf.require("template", "renderer").render_def(
     null,
     mf.require("templates"),
     "explorer_panel",

@@ -5,6 +5,12 @@ var MF = {
     "/freebase/site/template": null,
     "/freebase/apps/libraries": "release"
   },
+  'apps' : { 
+      'core' : '//release.core.site.freebase.dev',
+      'template' : '//release.template.site.freebase.dev',
+      'libraries' : '//release.libraries.apps.freebase.dev',
+  },
+
 
   stylesheet: {
     "domain.mf.css": ["/freebase/site/template/MANIFEST/freebase.mf.css", "project.less"]

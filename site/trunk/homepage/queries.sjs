@@ -1,7 +1,7 @@
 var mf = acre.require("MANIFEST").MF;
-var deferred = mf.require("/freebase/site/promise/deferred");
-var freebase = mf.require("/freebase/site/promise/apis").freebase;
-var urlfetch = mf.require("/freebase/site/promise/apis").urlfetch;
+var deferred = mf.require("promise", "deferred");
+var freebase = mf.require("promise", "apis").freebase;
+var urlfetch = mf.require("promise", "apis").urlfetch;
 
 groupBy = function(array, key) {
   var res = {};

@@ -5,6 +5,12 @@ var MF = {
     "/freebase/site/template": null,
     "/freebase/site/promise": null
   },
+  'apps' : { 
+      'core' : '//release.core.site.freebase.dev',
+      'template' : '//release.template.site.freebase.dev',
+      'libraries' : '//release.libraries.apps.freebase.dev',
+      'promise' : '//release.promise.site.freebase.dev'
+  },
   
   "stylesheet": {
     "index.mf.css": ["/freebase/site/template/MANIFEST/freebase.mf.css", "homepage.css"]

@@ -17,20 +17,16 @@ var routes = [
     as: "script"
   },
   {
-    from: "/homepage",
+    from: "/apphomepage",
     to: "/freebase/site/homepage"
   },
   {
-    from: "/domain",
+    from: "/appdomain",
     to: "/freebase/site/domain"
   },
   {
-    from: "/schema",
+    from: "/appschema",
     to: "/freebase/site/schema"
-  },
-  {
-    from: "/toolbox",
-    to: "/freebase/site/toolbox"
   },
   {
     from: "/apptoolbox",
@@ -41,12 +37,8 @@ var routes = [
     to: "/freebase/site/sample"
   },
   {
-    from: "/core",
+    from: "/appcore",
     to: "/freebase/site/core"
-  },
-  {
-    from: "/sample",
-    to: "/freebase/site/sample"
   },
   {
     from: "/appadmin",

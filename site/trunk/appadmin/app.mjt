@@ -1,8 +1,8 @@
 <acre:script>
 
   var mf = acre.require("MANIFEST").MF;
-  var h = mf.require('/freebase/site/core/helpers')
-  var app_util = acre.require('app_util');
+  var h = mf.require('core', 'helpers');
+  var app_util = mf.require('app_util');
 
   var id = acre.request.params['id'] ? acre.request.params['id'] :  '/user/masouras/activity';
   
@@ -76,7 +76,7 @@
 
 </acre:block>
 
-${mf.require("/freebase/site/template/renderer").render_page(null, this.exports)}
+${mf.require("template", "renderer").render_page(null, this.exports)}
 
 
 

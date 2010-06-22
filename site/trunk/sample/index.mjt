@@ -1,6 +1,6 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
-  var freebase = mf.require("/freebase/site/promise/apis").freebase;
+  var freebase = mf.require("promise", "apis").freebase;
   
   var c = this.exports.c = {"greeting": "Hello"};
   var queries = {
@@ -29,4 +29,4 @@
   <script src="${mf.script_src('sample_page.mf.js')}"></script>
 </acre:block>
 
-${mf.require("/freebase/site/template/renderer").render_page(queries, this.exports)}
+${mf.require("template", "renderer").render_page(queries, this.exports)}

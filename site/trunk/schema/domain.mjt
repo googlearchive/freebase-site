@@ -1,9 +1,9 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
-  var h = mf.require("/freebase/site/core/helpers");
+  var h = mf.require("core", "helpers");
   var c = this.exports.c = {};
 
-  var utils = acre.require("utils");
+  var utils = mf.require("utils");
     
   var order = acre.request.params.order || 'name';
   var dir = acre.request.params.dir || 'asc';
@@ -11,7 +11,7 @@
   var indicator = (dir == 'asc') ? '▲' : '▼';  
   var id = acre.environ.params.id || "";
   if (id != '' && id.charAt(0) == '/') {
-    var q = acre.require("domain-query").query;
+    var q = mf.require("domain-query").query;
     q = acre.freebase.extend_query(q, {"id": id});
     var result = acre.freebase.mqlread(q).result;
     if (result != null) {
@@ -52,7 +52,7 @@
       }
       
       try {
-        var graph = mf.require('/user/pak21/schemaviz/graph');
+        var graph = mf.require('schemaviz' ,'graph');
         var gv = graph.graphviz(graph.dot(result.id, acre.request.params));
       } catch (e) {
         var gv = { imageurl : null };
@@ -202,4 +202,4 @@
   <script src="${mf.script_src('schema.mf.js')}"></script>
 </acre:block>
 
-${mf.require("/freebase/site/template/renderer").render_page(null, this.exports)}
+${mf.require("template", "renderer").render_page(null, this.exports)}

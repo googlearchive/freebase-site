@@ -4,6 +4,11 @@ var MF = {
     "/freebase/site/promise": null,
     "/freebase/site/toolbox": null
   },
+  "apps" : {
+      "core" : "//release.core.site.freebase.dev",
+      "promise" : "//release.promise.site.freebase.dev",
+      "toolbox" : "//release.toolbox.site.freebase.dev"
+  },
   "suggest" : {
     "version": "1.2.1",
     "base_url": "http://freebaselibs.com/static/suggest/"

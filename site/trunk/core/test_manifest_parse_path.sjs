@@ -28,7 +28,7 @@ var spec =  [
     {
         'name' : 'file',
         'id' : 'foo',
-        'expected' : make_empty_result({'filename' : 'foo'}),
+        'expected' : make_empty_result({'appid' : '/freebase/site/core' , 'filename' : 'foo'}),
         'options' : { 'file' : true }
     },
     {

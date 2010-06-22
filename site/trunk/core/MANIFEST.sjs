@@ -538,7 +538,7 @@ function base_manifest(MF, scope, undefined) {
     _labelled_resource_info : function(label_or_file, file) {
       console.log('IN: ' + label_or_file + ' ' + file);
 
-      //if there is no second argument, it's a relative file require
+      //if there is no second argument, it's a relative file
       if (!file) {
         return MF.parse_path(label_or_file)
       }

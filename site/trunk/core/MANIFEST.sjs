@@ -26,91 +26,155 @@ var h_util = acre.require("helpers_util");
 var h_url = acre.require("helpers_url");
 
 
+function decompose_path(path, options /* file : true|false, resolve_appid : true|false, callback/errback/etc. : for async appid resolution */) {
+    options = options || {};
+    var app_ver_id_parts;   // arrary used to manipulate appid/host components
 
-function decompose_path(path, kind /* only required if doing a file in the old syntax */) {
-  var _DEFAULT_HOST_NS = "/freebase/apps/hosts";
-  var acre_host_re = /\.(freebaseapps|sandbox\-freebaseapps|branch\.qa\-freebaseapps|trunk\.qa\-freebaseapps)\.com\.$/;
-  var acre_to_freebase_map = {
-    "freebaseapps" : "http://www.freebase.com",
-    "sandbox-freebaseapps" : "http://www.sandbox-freebase.com",
-    "branch.qa-freebaseapps" : "http://branch.qa.metaweb.com",
-    "trunk.qa-freebaseapps" : "http://trunk.qa.metaweb.com"
-  };
-  
-  var resource = {
-    service_url : acre.freebase.service_url,
-    appid       : null,
-    fileid      : null,
-    filename    : null,
-    path_info   : null,
-    querystring : null
-  };
+    // structure of object we'll be returning
+    var resource = {
+        path        : path,
+        app_host    : null,
+        appid       : null,
+        version     : null, /* 'null' means un-resolved.  will be 'current' if resolved, but not a version */
+        filename    : null,
+        fileid      : null,
+        path_info   : "/",
+        querystring : null,
+        service_url : acre.freebase.service_url,
+        acre_host   : acre.host.name + ((acre.host.port !== 80) ? ":" + acre.host.port : "")
+    };
 
-  var bits = path.split('//');
-  
-  // old-style graph ID syntax
-  if (bits.length != 2) {
-    if (kind == "file") {
-      var segs = path.split("/");
-      resource.filename = segs.pop();
-      resource.appid = segs.join("/");
-    } else {
-      resource.appid = path;
+    // test whether it's a new- or old-style path
+    var bits = path.split('//');
+
+    if (bits.length > 2) {
+        throw "invalid path -- multiple instances of '//'";
     }
-    return resource;
-  }
-  
-  // new require-style styntax
-  sid = bits[1];
-  var qparts = sid.split("?");
-  if (qparts.length > 1) {
-    resource.querystring = qparts[1];
-    sid = qparts[0];
-  }
-  
-  var parts = sid.split('/');
-  var app_ver_id_part = parts.shift();
-  
-  if (parts.length) {
-    resource.filename = parts.pop();
-    resource.path_info = "/" + parts.join("/");
-  }
 
-  var app_ver_id = '';
-  var app_ver_id_parts = app_ver_id_part.split('.');
-  
-  // check whether it's an acre host
-  var app_host = app_ver_id_parts.join(".");
-  var match = app_host.match(acre_host_re);
-  if(match) {
-    app_ver_id_parts = app_host.replace(acre_host_re,"").split(".");
-    resource.service_url = acre_to_freebase_map[match[1]];
-  }
+    // either relative or old-style graph ID syntax
+    if (bits.length === 1) {             
+        app_ver_id_parts = path.split("/");
+        if (options.file) {
+            resource.filename = app_ver_id_parts.pop();
+            resource.path = resource.filename;
+        }
+        if (app_ver_id_parts.length) {
+            var temp = app_ver_id_parts.join(".");
+            var app_path = temp.split(".").reverse().join(".") + "dev";
+            resource.app_host = app_path + "." + resource.acre_host;
+            resource.appid = app_ver_id_parts.join('/');
+            resource.path = "//" + app_path + (options.file ? "/" + resource.filename : "");
+        }
+    }
 
-  if (app_ver_id_parts[app_ver_id_parts.length-1] == 'dev') {
-    // ends in '.dev' so it's fully-qualified ID
-    app_ver_id = '/' + app_ver_id_parts.slice(0, app_ver_id_parts.length-1).reverse().join('/');
-  } else if (app_ver_id_parts[app_ver_id_parts.length-1] == '') {
-    // ends in '.' so it's a hostname
-    app_ver_id_parts.pop();
+    // new require-style styntax  
+    if (bits.length === 2) {
+
+        // extract querystring, if present
+        var qparts = bits[1].split("?");
+        if (qparts.length > 1) {
+            resource.querystring = qparts[1];
+        }
+
+        // extract app host portion
+        var parts = qparts[0].split('/');
+        var app_host_part = parts.shift();
+
+        // extract filename and path_info, if present
+        if (parts.length) {
+            resource.filename = parts.pop();
+            resource.path_info = "/" + parts.join("/");
+        }
+
+        // break-down app host so we can work with it
+        app_ver_id_parts = app_host_part.split('.');
+
+        // check whether it's cross-graph.  if so:
+        // * change the service_url
+        // * munge other values accordingly
+        var acre_host_re = /\.(freebaseapps\.com|sandbox\-freebaseapps\.com|branch\.qa\-freebaseapps\.com|trunk\.qa\-freebaseapps\.com)\.$/;
+        var match = app_host_part.match(acre_host_re);
+        if(match) {
+            resource.acre_host = match[1];
+            resource.service_url = ACRE_TO_FREEBASE_MAP[resource.acre_host];
+            app_host_part = app_host_part.replace(acre_host_re,"");
+            app_ver_id_parts = app_host_part.split(".");
+        }
+
+        // construct fully-qualified versioned appid and app_host
+        switch (app_ver_id_parts[app_ver_id_parts.length-1]) {
+
+            case "dev" :   // ends in '.dev' so it's fully-qualified ID
+                app_ver_id_parts.pop();
+                app_ver_id_parts.reverse().unshift("");
+                resource.app_host = app_host_part + "." + resource.acre_host;
+                break;
+
+            case "" :      // ends in '.' so it's a full-qualified hostname
+                app_ver_id_parts.pop();
+                resource.app_host = app_ver_id_parts.join(".");
+
+                app_ver_id_parts.reverse().unshift(DEFAULT_HOST_NS);
+                break;
+
+            default :     // otherwise, it's a 'published' hostname
+                app_ver_id_parts = app_ver_id_parts.reverse();
+                var host_base_parts = acre.host.name.split('.');
+                for (var a in host_base_parts) {
+                    app_ver_id_parts.unshift(host_base_parts[a]);
+                }
+                app_ver_id_parts.unshift(DEFAULT_HOST_NS);
+
+                resource.app_host = app_host_part + "." + resource.acre_host;
+                break;
+                
+        }
+        resource.appid = app_ver_id_parts.join('/');
+    }
+
+    // if requested, resolve fully-qaulified versioned appid into canonical appid and version
+    if (options.resolve_appid) {
+        delete options.resolve_appid;
+        delete options.file;
+        
+        var q = {
+            "id" : resource.appid,
+            "/freebase/apps/acre_app_version/acre_app" : {
+                "id" : null,
+                "/type/namespace/keys" : {
+                    "limit" : 1,
+                    "r:value!=" : "release",
+                    "value" : null,
+                    "namespace" : {
+                        "id" : resource.appid
+                    }
+                },
+                "id" : null,
+                "optional" : true
+            }
+        };
+        var r = acre.freebase.mqlread(q, null, options).result;
+        if (!r) {
+            throw new ServiceError("400 Bad Request", "/api/status/error", {
+                message : "App: " + resource.app_host + " doesn\'t exist",
+                code    : "/api/status/error/input/no_app",
+                info    : resource.appid
+            });
+        }
+        if (r["/freebase/apps/acre_app_version/acre_app"]) {
+            resource.version = r["/freebase/apps/acre_app_version/acre_app"]["/type/namespace/keys"].value;
+            resource.appid = r["/freebase/apps/acre_app_version/acre_app"].id;
+        } else {
+            resource.version = "current";
+            resource.appid = r.id;
+        }
+    }
+
+    if (resource.filename) {
+        resource.fileid = resource.appid ? resource.appid + "/" + resource.filename : resource.filename;
+    }
     
-    app_ver_id_parts.reverse().unshift(_DEFAULT_HOST_NS);
-    app_ver_id = app_ver_id_parts.join('/');
-  } else {
-    app_ver_id_parts = app_ver_id_parts.reverse();
-
-    var host_base_parts = acre.host.name.split('.');
-    for (var a in host_base_parts) {
-      app_ver_id_parts.unshift(host_base_parts[a]);
-    }
-
-    app_ver_id_parts.unshift(_DEFAULT_HOST_NS);
-    app_ver_id = app_ver_id_parts.join('/');
-  }
-  
-  resource.appid = app_ver_id;
-  
-  return resource;
+    return resource;
 }
 
 

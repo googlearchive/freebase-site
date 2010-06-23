@@ -35,9 +35,9 @@ if (is_release_pod()) {
     }
 
     for (var label in MF.apps) { 
-        MF.apps['label'] = '//release.' + MF.apps['label'].slice(2);
+        MF.apps[label] = '//release.' + MF.apps[label].slice(2);
     }
 }
 
 
-acre.require("/freebase/site/core/MANIFEST", MF.version["/freebase/site/core"]).init(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/routing/$Rev$", "static_base_url": "http://freebaselibs.com/static/freebase_site/routing/$Rev$"});
+acre.require("/freebase/site/core/MANIFEST", MF.version["/freebase/site/core"]).init(MF, this);

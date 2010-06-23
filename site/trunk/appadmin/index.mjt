@@ -24,8 +24,7 @@ App Admin
   <link rel="stylesheet" type="text/css" href="${mf.css_src('appadmin.mf.css')}" />
 </acre:block>
 
-<acre:block def="content_body()">
-
+<acre:block def="content_body()">      
   <table>
     <tr><th class="header">app</th></tr>
     ${console.log(c)}

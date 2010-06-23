@@ -43,7 +43,11 @@ var routes = [
   {
     from: "/appadmin",
     to: "/freebase/site/appadmin"
-  }
+  },
+  { from: "/log",
+    to: "/freebase/site/appadmin/log",
+    as: "script"
+  } 
 ];
 
 /**

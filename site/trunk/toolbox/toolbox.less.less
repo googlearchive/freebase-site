@@ -11,8 +11,10 @@
 
 .toolbox-header a.help, 
 .toolbox-footer a {
-    color: orange;
+    color: #ffaa66;
 }
+
+.toolbox-content {}
 
 .toolbox-header-content {
     font-weight: bold;
@@ -32,26 +34,27 @@
     height: 30em;
     overflow-y: scroll;
     width: 29em;
-    margin: 0 0.3em;
+    margin: 0 0 0 0.3em;
 }
 
 .toolbox-content li {
     list-style-type: none;
     margin: 0 0 0.1em 0;
     width: 27.4em;
-}
-
-.toolbox-content a {
-    display: block;
     background: #fff;
     -moz-border-radius-topleft: 5px; 
     -moz-border-radius-bottomleft: 5px;
     -webkit-border-top-left-radius: 5px; 
     -webkit-border-bottom-left-radius: 5px;
+    position: relative;
+}
+
+.toolbox-content a {
+    display: block;
     font-weight: bold;
     font-size: 1.2em;
     line-height: 2.3;
-    padding: 0 0.5em;
+    padding: 0 0 0 0.5em;
 }
 
 .toolbox-search {
@@ -69,7 +72,33 @@
 .toolbox-searchbutton {
     background: none;
     border: 0;
-    color: orange;
-    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; 
-    
+    color: #ffaa66;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;  
+}
+
+.schema-toolbox-id{
+    font-weight: normal;
+    line-height: 1;
+    display: block;
+    clear: both;
+}
+
+.toolbox-footer a{
+    background: url(ui-sprite.png) 0 -144px no-repeat;
+    font-size: 1.2em;
+    line-height: 1.5;
+    display: block;
+    padding: 0 0 0 2em;
+    margin: 0.6em 0 0.6em 0.6em;
+}
+
+.toolbox-link-edit {
+    background: url(ui-sprite) 0 -100px no-repeat;
+    width: 18px;
+    height: 18px;
+    text-indent: -3000px;
+    float: right;
+    position: absolute;
+    top: 0.4em;
+    right: 0;
 }

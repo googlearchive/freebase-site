@@ -79,9 +79,9 @@
       <li class="nav-global-item nav-global-menu" id="nav-apps" data-popup-url="${h.url_for('/freebase/site/toolbox/service', null, '/apps')}">
         <a href="${h.url_for('/freebase/site/homepage/index')}">Apps</a>
       </li>
-      <li class="nav-global-item nav-global-menu" id="nav-queries" data-popup-url="${h.url_for('/freebase/site/toolbox/service', null, '/queries')}">
+      <!-- li class="nav-global-item nav-global-menu" id="nav-queries" data-popup-url="${h.url_for('/freebase/site/toolbox/service', null, '/queries')}">
         <a href="${h.url_for('/freebase/site/homepage/index')}">Queries</a>
-      </li>
+      </li -->
       <li class="nav-global-item nav-global-menu" id="nav-schema" data-popup-url="${h.url_for('/freebase/site/toolbox/service', null, '/schema')}">
         <a href="${h.url_for('/freebase/site/homepage/index')}">Schema</a>
       </li>

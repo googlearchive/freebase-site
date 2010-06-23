@@ -41,7 +41,7 @@
 <acre:block def="projects_toolbox_search()">
   <form action="">
     <input type="text" name="q" class="toolbox-textbox" placeholder="Filter your projects..."/>
-    <button type="submit" class="toolbox-searchbutton">Search All Projects</button>
+    <button type="submit" class="toolbox-searchbutton">Search All</button>
   </form>
 </acre:block>
 
@@ -59,7 +59,7 @@
 </acre:block>
 
 <acre:block def="projects_toolbox_footer()">
-  projects_toolbox_footer
+  <a href="" class="toolbox-link-new">New Project</a>
 </acre:block>
 
 <!-- Apps -->
@@ -94,12 +94,13 @@
   <ul>
     <li acre:for="app in apps" data-name="${app.name || app.appid}" data-id="${app.appid}">
       <a href="${acre.freebase.service_url}/apps/app${app.appid}">${app.name || app.appid}</a>
+      <a href="" class="toolbox-link-edit">Edit this App</a>
     </li>
   </ul>
 </acre:block>
 
 <acre:block def="apps_toolbox_footer()">
-  apps_toolbox_footer
+  <a href="" class="toolbox-link-new">New Project</a>
 </acre:block>
 
 <!-- Queries -->
@@ -121,7 +122,7 @@
 <acre:block def="queries_toolbox_search()">
   <form action="">
     <input type="text" name="q" class="toolbox-textbox" placeholder="Search queries by name..."/>
-    <button type="submit">Search</button>
+    <button type="submit" class="toolbox-searchbutton">Search</button>
   </form>
 </acre:block>
 
@@ -160,21 +161,22 @@
 
 <acre:block def="schema_toolbox_search()">
   <form action="">
-    <input type="text" max="200" name="q" placeholder="Search schema by name..."/>
-    <button type="submit">Search</button>
+    <input type="text" max="200" name="q" class="toolbox-textbox" placeholder="Filter your types..."/>
+    <button type="submit" class="toolbox-searchbutton">Search All Types</button>
   </form>
 </acre:block>
 
 <acre:block def="schema_toolbox_header()">
-  Your Schema
+  <span class="toolbox-header-content">Your Schema</span>
   <a class="help" href="">What are Schema?</a>
 </acre:block>
 
 <acre:block def="schema_toolbox_content(types)">
   <ul>
     <li acre:for="type in types" data-name="${type.name || type.id}" data-id="${type.id}">
-      <a href="${acre.freebase.service_url}/view${type.id}">${type.name || type.id}</a>
-      <div class="id">${type.id}</div>
+      <a href="${acre.freebase.service_url}/view${type.id}">${type.name || type.id}  </a>
+       <span class="schema-toolbox-id">${type.id}</span>
+      
     </li>
   </ul>
 </acre:block>

@@ -498,7 +498,7 @@ function base_manifest(MF, scope, undefined) {
         var new_resource = '//' + parts.join('.') + (bits[1] ? '/' + bits[1] : '');
 
         //resolve the id
-        var context = parse_path(new_resource);
+        var context = MF.parse_path(new_resource);
         //finally, if we have a resulting appid, require it  
         if (context.appid) { 
           res.appid = context.appid;
@@ -587,7 +587,9 @@ function base_manifest(MF, scope, undefined) {
 
       //resource not a string - just pass to acre.require  
       if (typeof resource === "string")  {
-        res = MF._labelled_resource_info(resource, file);
+       res = MF._labelled_resource_info(resource, file);
+       //res = MF._resource_info2(resource, file);
+
       }  
 
       console.log('require FROM: ' + resource + ' ' + file + '  TO: ' + res.id + ' ' + res.version);

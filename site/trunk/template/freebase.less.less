@@ -175,6 +175,7 @@ Header
     position: relative;
     z-index: 10; /* for Freebase Suggest */
     min-height: 34px;
+    min-width: 96em;
     /* background: #ff6702 url(http://www.freebase.com/resources/images/ui/sprite-vert.png) repeat-x 0 0; */
     border-bottom: 1px solid #fb3;
     background-image: -webkit-gradient(
@@ -210,7 +211,7 @@ Header
     color: #fff;
     font-size: 1.1em;
     width: 20em;
-    text-align: center;
+    text-align: left;
 }
 
 #nav-account a {
@@ -288,6 +289,17 @@ NAV
     -moz-border-radius-topleft: 5px;
     -webkit-border-top-right-radius: 5px;
     -webkit-border-top-left-radius: 5px;
+}
+
+#nav-global li#nav-docs {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    padding: 0.5em 2px 0.6em 0.8em;
+}
+
+#nav-global li#nav-docs a {
+    background: none;
+    padding-right: 0.3em;
 }
 
 /*

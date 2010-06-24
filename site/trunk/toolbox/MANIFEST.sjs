@@ -3,7 +3,7 @@ var MF = {
   "apps" : {
     "core" : "//core.site.freebase.dev",
     "promise" : "//promise.site.freebase.dev",
-    "appeditor" : "//release.appeditor.apps.freebase.dev"
+    "appeditor" : "//appeditor.apps.freebase.dev"
   }
 };
 

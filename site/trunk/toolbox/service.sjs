@@ -17,7 +17,7 @@ var api = {
   },
 
   apps: function(args, headers) {
-      var list_user_apps = mf.require("appeditor", "list_user_apps").list_user_apps;
+    var list_user_apps = mf.require("appeditor", "list_user_apps").list_user_apps;
     var apps = list_user_apps(args.id, args.include_filenames);
     return {
       context: args.context,

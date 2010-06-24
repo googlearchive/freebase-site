@@ -3,17 +3,15 @@ var MF = {
   "apps" : {
       "core" : "//core.site.freebase.dev",
       "template" : "//template.site.freebase.dev",
-      "libraries" : "//libraries.apps.freebase.dev",
-      "promise" : "//promise.site.freebase.dev"
+      "promise" : "//promise.site.freebase.dev",
+      "libraries" : "//release.libraries.apps.freebase.dev"
   },
-
   "stylesheet": {
     "index.mf.css": [
       ["template", "MANIFEST", "/freebase.mf.css"],
       "homepage.css"
     ]
   },
-
   "javascript": {
     "index.mf.js": [
       ["template", "MANIFEST", "/freebase.mf.js"],

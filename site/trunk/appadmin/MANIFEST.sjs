@@ -7,21 +7,18 @@ var MF = {
   "test" : {
     "files" : ["test_new_ids"]
   },
-
-  stylesheet: {
+  "stylesheet": {
     "appadmin.mf.css": [
       ["template", "MANIFEST", "/freebase.mf.css"],
       "appadmin_core.css"
     ]
   },
-
-  javascript: {
+  "javascript": {
     "appadmin.mf.js": [
       ["template", "MANIFEST", "/freebase.mf.js"],
       "appadmin_core.js"
     ]
   }
-
 };
 
 // acre.require(MF.apps.core).init(MF, this);

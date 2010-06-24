@@ -17,7 +17,6 @@ var MF = {
       "sample_page.js"
     ]
   }
-
 };
 
 // acre.require(MF.apps.core).init(MF, this);

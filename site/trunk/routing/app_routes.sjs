@@ -1,5 +1,4 @@
 /**
- *
  * routes map
  * 1. processed in order
  * 2. "to" apps for each "from" path be defined in your MANIFEST
@@ -8,41 +7,45 @@
 var routes = [
   {
     from: "/",
-    to: "/freebase/site/homepage/index",
-    as: "script"
+    to: "homepage",
+    script: "index"
   },
   {
     from: "/index",
-    to: "/freebase/site/homepage/index",
-    as: "script"
+    to: "homepage",
+    script: "index"
   },
   {
     from: "/apphomepage",
-    to: "/freebase/site/homepage"
+    to: "homepage"
   },
   {
     from: "/appdomain",
-    to: "/freebase/site/domain"
+    to: "domain"
   },
   {
     from: "/appschema",
-    to: "/freebase/site/schema"
+    to: "schema"
   },
   {
     from: "/apptoolbox",
-    to: "/freebase/site/toolbox"
+    to: "toolbox"
   },
   {
     from: "/appsample",
-    to: "/freebase/site/sample"
+    to: "sample"
   },
   {
     from: "/appcore",
-    to: "/freebase/site/core"
+    to: "core"
   },
   {
     from: "/appadmin",
-    to: "/freebase/site/appadmin"
+    to: "appadmin"
+  },
+  {
+    from: "/approuting",
+    to: "routing"
   }
 ];
 
@@ -51,16 +54,7 @@ var routes = [
  */
 var _routes_map = {};
 routes.forEach(function(route) {
-  if (!route.as) {
-    route.as = "app"; // default to route as "app"
-  }
   var app = route.to;
-  if (route.as === "script") {
-    app = route.to.split("/");
-    app.pop();
-    app = app.join("/");
-  }
-  route.app = app;
   var r = _routes_map[app];
   if (!r) {
     r = _routes_map[app] = [];

@@ -117,7 +117,7 @@ function parse_path(path, scope, options /* file : true|false */) {
     resource.appid = scope.acre.current_script.app.id;
     resource.version = scope.acre.current_script.app.version;
     resource.app_path = (resource.version ? resource.version + "." : "" ) +
-      resource.appid.split("/").reverse().join(".") + "dev";
+                        resource.appid.split("/").reverse().join(".") + "dev";
 
     // extract filename and path_info, if present
     var parts = path.split("/");

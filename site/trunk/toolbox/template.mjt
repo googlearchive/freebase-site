@@ -41,7 +41,7 @@
 <acre:block def="projects_toolbox_search()">
   <form action="">
     <input type="text" name="q" class="toolbox-textbox" placeholder="Filter your projects..."/>
-    <button type="submit" class="toolbox-searchbutton">Search All</button>
+    <button type="submit" class="toolbox-searchbutton">Search All Projects</button>
   </form>
 </acre:block>
 
@@ -100,7 +100,7 @@
 </acre:block>
 
 <acre:block def="apps_toolbox_footer()">
-  <a href="" class="toolbox-link-new">New Project</a>
+  <a href="" class="toolbox-link-new">New App</a>
 </acre:block>
 
 <!-- Queries -->
@@ -182,6 +182,6 @@
 </acre:block>
 
 <acre:block def="schema_toolbox_footer()">
-  schema_toolbox_footer
+  <a href="" class="toolbox-link-new">New Type</a>
 </acre:block>
 

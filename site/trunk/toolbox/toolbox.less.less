@@ -1,3 +1,6 @@
+.popup {
+    width: 30em;
+}
 .popup-loading {
     width: 30em;
     background: url(/freebase/site/toolbox/black-loader.gif) rgba(0,0,0,0.8) no-repeat center center;
@@ -33,14 +36,14 @@
 .toolbox-content ul {
     height: 30em;
     overflow-y: scroll;
-    width: 29em;
-    margin: 0 0 0 0.3em;
+    margin: 0 0.3em;
 }
 
 .toolbox-content li {
     list-style-type: none;
     margin: 0 0 0.1em 0;
-    width: 27.4em;
+    padding: 0.5em 0;
+    width: 27.8em;
     background: #fff;
     -moz-border-radius-topleft: 5px; 
     -moz-border-radius-bottomleft: 5px;
@@ -53,7 +56,14 @@
     display: block;
     font-weight: bold;
     font-size: 1.2em;
-    line-height: 2.3;
+    line-height: 1.4;
+    padding: 0 0 0 0.5em;
+}
+
+.schema-toolbox-id {
+    color: #666;
+    font-size: 1em;
+    line-height: 1.2;
     padding: 0 0 0 0.5em;
 }
 
@@ -73,7 +83,8 @@
     background: none;
     border: 0;
     color: #ffaa66;
-    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;  
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+    padding: 0;  
 }
 
 .schema-toolbox-id{
@@ -102,3 +113,5 @@
     top: 0.4em;
     right: 0;
 }
+
+

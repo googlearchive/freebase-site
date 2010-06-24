@@ -27,7 +27,7 @@ function match_route(path, route) {
 
 if (acre.current_script === acre.request.script) {
   var req = acre.request;
-  var req_path = req.url.replace(req.app_url + req.base_path, "");
+  var req_path = req.url.replace(req.app_url /*+ req.base_path*/, "");
   // filter out query string
   var path = req_path;
   var query_string;

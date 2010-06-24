@@ -109,7 +109,7 @@ function parse_path(path, scope, options /* file : true|false */) {
       // NOTE: this mode does not support path_info (ambiguous)
     }
     resource.appid = parts.join('/');
-    resource.app_path = resource.appid.split(".").reverse().join(".") + "dev";
+    resource.app_path = resource.appid.split("/").reverse().join(".") + "dev";
 
 
     // it's a relative path

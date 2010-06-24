@@ -24,7 +24,7 @@ var spec =  [
     {
         'name' : 'freebase app id',
         'id' : '/freebase/site/sample',
-        'expected' : make_empty_result({'appid' : '/freebase/site/sample'})
+        'expected' : make_empty_result({'appid' : '/freebase/site/sample', 'path' : '//sample.site.freebase.dev'})
     },
     {
         'name' : 'file',

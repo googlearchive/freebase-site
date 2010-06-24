@@ -21,7 +21,7 @@
 </acre:script>
 
 <acre:block def="title()">
-<a href="${h.url_for('/freebase/site/appadmin/index')}">AppAdmin</a>: ${result[result.reference_env]['name']} (${id})
+<a href="${h.url_for('appadmin', 'index')}">AppAdmin</a>: ${result[result.reference_env]['name']} (${id})
 </acre:block>
 
 <acre:block def="head()">
@@ -63,8 +63,8 @@
   <script type="text/javascript">
 
     var reference_id = ${JSON.stringify(reference_id)};
-    var app_version_details_url = ${JSON.stringify(h.url_for('/freebase/site/appadmin/app_version_details'))};
-    var app_version_diff_url = ${JSON.stringify(h.url_for('/freebase/site/appadmin/app_version_diff'))};
+    var app_version_details_url = ${JSON.stringify(h.url_for('appadmin', 'app_version_details'))};
+    var app_version_diff_url = ${JSON.stringify(h.url_for('appadmin', 'app_version_diff'))};
 
     $(".reference").each(function(index) {  
     $(this).load(app_version_details_url + "?id=" + $(this).attr('id'));

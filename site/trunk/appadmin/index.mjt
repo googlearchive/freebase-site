@@ -29,7 +29,7 @@ App Admin
     <tr><th class="header">app</th></tr>
     ${console.log(c)}
     <acre:block for="app in c.namespace_apps.result">
-      <tr><td class="cell"><a href="${h.url_for('/freebase/site/appadmin/app', [['id', app.id]])}">${app.name}</a></td></tr>
+      <tr><td class="cell"><a href="${h.url_for('appadmin', 'app', [['id', app.id]])}">${app.name}</a></td></tr>
     </acre:block>  
   </table>
 </acre:block>
@@ -39,6 +39,3 @@ App Admin
 </acre:block>
 
 ${mf.require('template', 'renderer').render_page(queries, this.exports)}
-
-
-

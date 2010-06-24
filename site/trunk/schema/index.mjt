@@ -72,7 +72,7 @@
     </h1>
   </div>
   <div id="path" acre:if="user_id">
-    &raquo; <a href="${h.url_for('/freebase/site/schema/index')}">Domains</a> &raquo; <span>${user_id}'s Domains</span>
+    &raquo; <a href="${h.url_for('schema', 'index')}">Domains</a> &raquo; <span>${user_id}'s Domains</span>
   </div>
 </acre:block>
 
@@ -107,7 +107,7 @@
         </tr>
       
         <tr acre:for="d in domains" acre:if="!d['/freebase/domain_profile/hidden']">
-          <td><a href="${h.url_for('/freebase/site/schema/domain', [['id',d.id]])}">${d.name}</a></td>
+          <td><a href="${h.url_for('schema', 'domain', [['id',d.id]])}">${d.name}</a></td>
           <td>${d.id}</td>
           <td class="numeric">${ (d.type_count > 0) ? h.commafy(d.type_count) : "-"}</td>
           <td class="numeric">${ (d.instance_count > 0) ? h.commafy(d.instance_count) : "-"}</td>

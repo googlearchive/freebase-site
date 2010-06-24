@@ -29,7 +29,7 @@
       Schema Explorer
     </h1>
   </div>
-  <div id="path">&raquo; <a href="${h.url_for('/freebase/site/schema/index')}">Domains</a> &raquo; <a href="${h.url_for('/freebase/site/schema/domain',[['id',result.schema.domain.id]])}">$result.schema.domain.id</a> &raquo; <a href="${h.url_for('/freebase/site/schema/type',[['id',result.schema.id]])}">$result.schema.id</a> &raquo; <span>$result.id</span></div>
+  <div id="path">&raquo; <a href="${h.url_for('schema', 'index')}">Domains</a> &raquo; <a href="${h.url_for('schema', 'domain', [['id',result.schema.domain.id]])}">$result.schema.domain.id</a> &raquo; <a href="${h.url_for('schema', 'type', [['id',result.schema.id]])}">$result.schema.id</a> &raquo; <span>$result.id</span></div>
 </acre:block>
 
 <acre:block def="content_body()">
@@ -38,18 +38,18 @@
       <table class="skeleton">
         <tr>
           <td class="subject" rowspan="2">
-            <a href="${h.url_for('/freebase/site/schema/type',[['id',result.schema.id]])}">${result.schema.name}</a>
+            <a href="${h.url_for('schema', 'type', [['id',result.schema.id]])}">${result.schema.name}</a>
           </td>
           <td class="predicate">
             <span class="current">$result.name.value <span class="attribute" acre:if="!result.master_property">master</span><span class="attribute" acre:if="result.unique">unique</span></span>
           </td> 
           <td class="object" rowspan="2">
-            <a href="${h.url_for('/freebase/site/schema/type',[['id',result.expected_type.id]])}">${(result.expected_type.id.indexOf('/type/') == 0) ? result.expected_type.id : result.expected_type.name}</a> <span class="attribute" acre:if="result.expected_type['/freebase/type_hints/mediator']">mediator/CVT</span> <a class="attribute" acre:if="result.unit" href="${h.url_for('/freebase/site/schema/type',[['id',result.unit.id]])}">$result.unit.name</a>
+            <a href="${h.url_for('schema', 'type', [['id',result.expected_type.id]])}">${(result.expected_type.id.indexOf('/type/') == 0) ? result.expected_type.id : result.expected_type.name}</a> <span class="attribute" acre:if="result.expected_type['/freebase/type_hints/mediator']">mediator/CVT</span> <a class="attribute" acre:if="result.unit" href="${h.url_for('schema', 'type', [['id',result.unit.id]])}">$result.unit.name</a>
           </td>
         </tr>
         <tr>
           <td class="rev_predicate" acre:if="result.reverse_property">
-            <a href="${h.url_for('/freebase/site/schema/property',[['id',result.reverse_property.id]])}">${result.reverse_property.name}</a><span class="attribute" acre:if="!result.master_property">master</span>
+            <a href="${h.url_for('schema', 'property', [['id',result.reverse_property.id]])}">${result.reverse_property.name}</a><span class="attribute" acre:if="!result.master_property">master</span>
           </td>
           <td acre:else>&nbsp;</td>
         </tr>

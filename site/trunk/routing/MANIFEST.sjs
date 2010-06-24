@@ -1,5 +1,3 @@
-
-
 var MF = {
   "apps" : {
     "core" : "//core.site.freebase.dev",
@@ -35,5 +33,6 @@ function get_app(path) {
   return _app_paths[path];
 };
 
-
+// acre.require(MF.apps.core).init(MF, this);
+// temporary hack until acre.require supports new syntax
 acre.require("/freebase/site/core/MANIFEST").init(MF, this);

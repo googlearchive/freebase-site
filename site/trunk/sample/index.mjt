@@ -19,7 +19,7 @@
 
 <acre:block def="content_body()">
   <h1>${c.greeting} ${c.topic.name}</h1>
-  <img src="${mf.img_src('/freebase/site/template/metaweb-logo.png')}"/>
+  <img src="${mf.img_src('template', 'metaweb-logo.png')}"/>
   <hr/>
 <pre><![CDATA[${JSON.stringify(acre, null, indent=2)}
 ]]></pre>
@@ -29,4 +29,10 @@
   <script src="${mf.script_src('sample_page.mf.js')}"></script>
 </acre:block>
 
+<acre:script>
+  console.log("render_page BEFORE");
+</acre:script>
 ${mf.require("template", "renderer").render_page(queries, this.exports)}
+<acre:script>
+  console.log("render_page AFTER");
+</acre:script>

@@ -1,13 +1,12 @@
 var MF = {
-
-  version: {
-    "/freebase/site/core": null
+  "apps": {
+    "core": "//core.site.freebase.dev"
   },
-  
   test: {
     files: ['test_apis', 'test_deferred']
   }
-
 };
 
-acre.require("/freebase/site/core/MANIFEST", MF.version["/freebase/site/core"]).init(MF, this);
+// acre.require(MF.apps.core).init(MF, this);
+// temporary hack until acre.require supports new syntax
+acre.require("/freebase/site/core/MANIFEST").init(MF, this);

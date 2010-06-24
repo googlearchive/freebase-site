@@ -1,13 +1,8 @@
 var MF = {
-  "version": {
-    "/freebase/site/core": null,
-    "/freebase/site/promise": null,
-    "/freebase/site/toolbox": null
-  },
   "apps" : {
-      "core" : "//release.core.site.freebase.dev",
-      "promise" : "//release.promise.site.freebase.dev",
-      "toolbox" : "//release.toolbox.site.freebase.dev"
+    "core" : "//core.site.freebase.dev",
+    "promise" : "//promise.site.freebase.dev",
+    "toolbox" : "//toolbox.site.freebase.dev"
   },
   "suggest" : {
     "version": "1.2.1",
@@ -17,14 +12,23 @@ var MF = {
     "version" : "1.4"
   },
   "javascript": {
-    "freebase.mf.js": ['jquery.cookie.js', 'jquery.ui.position.js', 
-                       'freebase.js', "/freebase/site/toolbox/toolbox.js"]
+    "freebase.mf.js": [
+      "jquery.cookie.js",
+      "jquery.ui.position.js",
+      "freebase.js",
+      ["toolbox", "toolbox.js"]
+    ]
   },
   "stylesheet": {
-    "freebase.mf.css": ["freebase.less", "components.less", 
-                        "/freebase/site/toolbox/toolbox.less"]
+    "freebase.mf.css": [
+      "freebase.less",
+      "components.less",
+      ["toolbox", "toolbox.less"]
+    ]
   }
 };
 MF.suggest.base_url += MF.suggest.version;
 
-acre.require("/freebase/site/core/MANIFEST", MF.version["/freebase/site/core"]).init(MF, this);
+// acre.require(MF.apps.core).init(MF, this);
+// temporary until acre.require supports new syntax
+acre.require("/freebase/site/core/MANIFEST").init(MF, this);

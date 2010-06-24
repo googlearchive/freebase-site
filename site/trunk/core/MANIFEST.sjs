@@ -88,7 +88,7 @@ function base_manifest(MF, scope, undefined) {
      *     "my.mf.css": [
      *       "local.css",    // local css
      *       ["external_app_label", "external.less"],  // external css
-     *       ["external_app_label", "MANIFEST", "external.mf.css"]  // external manifest css
+     *       ["external_app_label", "MANIFEST", "/external.mf.css"]  // external manifest css
      *     ],
      *   ...
      *   }
@@ -116,7 +116,7 @@ function base_manifest(MF, scope, undefined) {
      *     "my.mf.js": [
      *       "local.js",    // local js
      *       ["external_app_label", "external.js"],  // external js
-     *       ["external_app_label", "MANIFEST", "external.mf.js"]  // external manifest js
+     *       ["external_app_label", "MANIFEST", "/external.mf.js"]  // external manifest js
      *     ],
      *   ...
      *   }
@@ -204,7 +204,8 @@ function base_manifest(MF, scope, undefined) {
           ss = [ss];
         }
         if (ss.length === 3 && ss[1] === "MANIFEST") {
-          buf = buf.concat(MF.require(ss[0], "MANIFEST").MF.css(ss[2], scope, true));
+          var f = ss[2].split("/", 2).pop();
+          buf = buf.concat(MF.require(ss[0], "MANIFEST").MF.css(f, scope, true));
         }
         else {
           try {
@@ -275,7 +276,8 @@ function base_manifest(MF, scope, undefined) {
           script = [script];
         }
         if (script.length === 3 && script[1] === "MANIFEST") {
-          MF.require(script[0], "MANIFEST").MF.js(script[2], scope);
+          var f = script[2].split("/", 2).pop();
+          MF.require(script[0], "MANIFEST").MF.js(f, scope);
         }
         else {
           try {

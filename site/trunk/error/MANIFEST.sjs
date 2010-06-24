@@ -1,19 +1,21 @@
 
 var MF = {
-  version: {
-    "/freebase/site/core": null,
-    "/freebase/site/template": null
+  "apps": {
+    "core": "//core.site.freebase.dev",
+    "template": "//template.site.freebase.dev"
   },
-    'apps' : { 
-        'template' : '//release.template.site.freebase.dev',
-        'core' : '//release.core.site.freebae.dev'
-    },
   stylesheet: {
-    "error.mf.css": ["/freebase/site/template/MANIFEST/freebase.mf.css"]
+    "error.mf.css": [
+      ["template", "MANIFEST", "/freebase.mf.css"]
+    ]
   },
   javascript: {
-    "error.mf.js": ["/freebase/site/template/MANIFEST/freebase.mf.js"]
+    "error.mf.js": [
+      ["template", "MANIFEST", "/freebase.mf.js"]
+    ]
   }
 };
 
-acre.require("/freebase/site/core/MANIFEST", MF.version["/freebase/site/core"]).init(MF, this);
+// acre.require(MF.apps.core).init(MF, this);
+// temporary until acre.require supports new syntax
+acre.require("/freebase/site/core/MANIFEST").init(MF, this);

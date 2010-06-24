@@ -70,20 +70,20 @@
       <div id="site-search-label"><span>Start typing to get some suggestions</span></div>
     </div>
     <ul id="nav-global" class="clear">
-      <li class="nav-global-item nav-global-menu" id="nav-projects" data-popup-url="${h.url_for('/freebase/site/toolbox/service', null, '/projects')}">
-        <a href="${h.url_for('/freebase/site/homepage/index')}">Projects</a>
+      <li class="nav-global-item nav-global-menu" id="nav-projects" data-popup-url="${h.url_for('toolbox', 'service', null, '/projects')}">
+        <a href="${h.url_for('homepage', 'index')}">Projects</a>
       </li>
-      <li class="nav-global-item nav-global-menu" id="nav-tasks" data-popup-url="${h.url_for('/freebase/site/toolbox/service', null, '/tasks')}">
-        <a href="${h.url_for('/freebase/site/homepage/index')}">Tasks</a>
+      <li class="nav-global-item nav-global-menu" id="nav-tasks" data-popup-url="${h.url_for('toolbox', 'service', null, '/tasks')}">
+        <a href="${h.url_for('homepage', 'index')}">Tasks</a>
       </li>
-      <li class="nav-global-item nav-global-menu" id="nav-apps" data-popup-url="${h.url_for('/freebase/site/toolbox/service', null, '/apps')}">
-        <a href="${h.url_for('/freebase/site/homepage/index')}">Apps</a>
+      <li class="nav-global-item nav-global-menu" id="nav-apps" data-popup-url="${h.url_for('toolbox', 'service', null, '/apps')}">
+        <a href="${h.url_for('homepage', 'index')}">Apps</a>
       </li>
-      <!-- li class="nav-global-item nav-global-menu" id="nav-queries" data-popup-url="${h.url_for('/freebase/site/toolbox/service', null, '/queries')}">
-        <a href="${h.url_for('/freebase/site/homepage/index')}">Queries</a>
+      <!-- li class="nav-global-item nav-global-menu" id="nav-queries" data-popup-url="${h.url_for('toolbox', 'service', null, '/queries')}">
+        <a href="${h.url_for('homepage', 'index')}">Queries</a>
       </li -->
-      <li class="nav-global-item nav-global-menu" id="nav-schema" data-popup-url="${h.url_for('/freebase/site/toolbox/service', null, '/schema')}">
-        <a href="${h.url_for('/freebase/site/homepage/index')}">Schema</a>
+      <li class="nav-global-item nav-global-menu" id="nav-schema" data-popup-url="${h.url_for('toolbox', 'service', null, '/schema')}">
+        <a href="${h.url_for('homepage', 'index')}">Schema</a>
       </li>
       <li class="nav-global-item" id="nav-docs">
         <a href="http://wiki.freebase.com/" title="Give help and get help adding data to Freebase">Docs</a>

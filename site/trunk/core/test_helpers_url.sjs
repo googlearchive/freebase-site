@@ -34,10 +34,10 @@ test("url_for", function() {
   var h_acre = acre.require("helpers_acre");
 
   if (true || h.is_client()) {
-    equal(h.url_for("core", "test_helpers_url"), acre.request.app_url + acre.request.base_path + routes.get_route("core").from + "/test_helpers_url");
-    equal(h.url_for("schema", "index"), acre.request.app_url + acre.request.base_path + routes.get_route("schema").from + "/index");
-    equal(h.url_for("toolbox", "service", null, "/apps"), acre.request.app_url + acre.request.base_path + routes.get_route("toolbox").from + "/service/apps");
-    equal(h.url_for("homepage", "index"), acre.request.app_url + acre.request.base_path + "/");
+    equal(h.url_for("core", "test_helpers_url"), acre.request.app_url /*+ acre.request.base_path*/ + routes.get_route("core").from + "/test_helpers_url");
+    equal(h.url_for("schema", "index"), acre.request.app_url /*+ acre.request.base_path*/ + routes.get_route("schema").from + "/index");
+    equal(h.url_for("toolbox", "service", null, "/apps"), acre.request.app_url /*+ acre.request.base_path*/ + routes.get_route("toolbox").from + "/service/apps");
+    equal(h.url_for("homepage", "index"), acre.request.app_url /*+ acre.request.base_path*/ + "/");
   }
   else {
     equal(h.url_for("core", "test_helpers_url"),  h.resource_url(h_acre.parse_path(routes_mf.apps["core"] + "/test_helpers_url", scope).id));

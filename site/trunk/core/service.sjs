@@ -1,6 +1,6 @@
-var mf = acre.require("/freebase/site/core/MANIFEST").MF;
-var lib = acre.require("/freebase/libs/service/lib", mf.version["/freebase/libs/service"]);
-var deferred = acre.require("/freebase/site/promise/deferred", mf.version["/freebase/site/promise"]);
+var mf = acre.require("MANIFEST").MF;
+var lib = mf.require("service", "lib");
+var deferred = mf.require("promise", "deferred");
 
 /**
  * A generic service for json/p responses.

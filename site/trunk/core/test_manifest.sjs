@@ -123,15 +123,16 @@ test("img_src", function() {
 
 test("extend_manifest", function() {
   var mf = {
-    version: {
-      "/hello/world/app": "7"
+    apps: {
+      "core": "//core.site.freebase.dev",
+      "hello": "//7.app.world.hello.dev"
     }
   };
   m.extend_manifest(mf, scope);
   equals(mf.static_base_url, acre.current_script.app.base_url +  "/MANIFEST");
 
-  ok(mf.version);
-  equals(mf.version["/hello/world/app"], "7");
+  ok(mf.apps);
+  equals(mf.apps["hello"], "//7.app.world.hello.dev");
   ok(mf.javascript);
   ok(mf.stylesheet);
 

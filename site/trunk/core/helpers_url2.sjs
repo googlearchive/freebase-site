@@ -77,12 +77,12 @@ function url_for(app, file, params, extra_path) {
       var r = rts[i];
       if (r.script) {
         if (r.script === resource_info.filename) {
-          var url = acre.request.app_url + acre.request.base_path + r.from + extra_path;
+          var url = acre.request.app_url /*+ acre.request.base_path*/ + r.from + extra_path;
           return acre.form.build_url(url, params);
         }
       }
       else {
-        var url = acre.request.app_url + acre.request.base_path + r.from + "/" + resource_info.filename + extra_path;
+        var url = acre.request.app_url /*+ acre.request.base_path*/ + r.from + "/" + resource_info.filename + extra_path;
         return acre.form.build_url(url, params);
       }
     }

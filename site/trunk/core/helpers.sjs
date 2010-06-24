@@ -2,10 +2,13 @@ var self = this;
 
 function include(script_id) {
   var s = acre.require(script_id);
-  if (s.__all__) {
-    s.__all__.forEach(function(m) {
-      self[m] = s[m];
-    });
+  if (s.exports && typeof s.exports === "object") {
+    for (var n in s.exports) {
+      if (n in self) {
+        throw("Multiple helper method defined with the same name: " + n);
+      }
+      self[n] = s.exports[n];
+    }
   }
 };
 

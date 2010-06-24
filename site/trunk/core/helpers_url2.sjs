@@ -5,24 +5,26 @@
  * which will automatically include all helpers in helpers_url.
  */
 
-var __all__ = [
-  "url_for",
-  "freebase_url",
-  "freebase_static_resource_url"
-];
+var exports = {
+  "url_for": url_for,
+  "freebase_static_resource_url": freebase_static_resource_url
+};
 var self = this;
 var h_url = acre.require("helpers_url");
-h_url.__all__.forEach(function(m) {
-  self[m] = h_url[m];
-  __all__.push(m);
-});
+for (var m in h_url.exports) {
+  exports[m] = self[m] = h_url.exports[m];
+}
 
-var MANIFEST = acre.require("MANIFEST");
-var mf = MANIFEST.MF;
-var routes_mf = acre.require("/freebase/site/routing/MANIFEST", mf.version["/freebase/site/routing"]).MF;
-var routes = acre.require("/freebase/site/routing/app_routes", mf.version["/freebase/site/routing"]);
+
+var mf = acre.require("MANIFEST").MF;
+var routes_mf = mf.require("routing", "MANIFEST").MF;
+var routes = mf.require("routing", "app_routes");
+var h_acre = acre.require("helpers_acre");
 
 /**
+ *
+ *
+
  * Get the canonical url for an acre resource specified by resource_path.
  * The resource_path MUST be absolute, e.g., "/user/userX/appY/foo" and the app containing the resource
  * MUST be defined in the routing manifest /freebase/site/routing/MANIFEST version map.
@@ -37,7 +39,14 @@ var routes = acre.require("/freebase/site/routing/app_routes", mf.version["/free
  *                                         an array of [ [name, value] .., ] tuples.
  * @param extra_path:String (optional) - Additional path information appended to the url, e.g., http://.../resource[extra_path]?query_params
  */
-function url_for(resource_path, params, extra_path) {
+function url_for(app, file, params, extra_path) {
+  var path = routes_mf.apps[app];
+  if (!path) {
+    throw("app is not defined in the routing MANIFEST: " + app);
+  }
+  // new require path syntax (i.e., //app.site.freebase.dev/file
+  path = [path, file].join("/");
+  var resource_info = h_acre.parse_path(path, this);
 
   // params can be an array of tuples
   // [ [name1,value1], [name2,value2], ...]
@@ -47,7 +56,8 @@ function url_for(resource_path, params, extra_path) {
     extra_path = "";
   }
 
-  var resource_info = routes_mf._resource_info(resource_path);
+
+
 
   // If served by client/routing, look up the client route
   // information from /freebase/site/routing/app_routes table.
@@ -58,23 +68,24 @@ function url_for(resource_path, params, extra_path) {
   // http://branch.qa.metaweb.com
   // http://www.sandbox-freebase.com
   // http://www.freebase.com
-  if (is_client()) {
-    var rts = routes.get_routes(resource_info.appid);
-    if (rts) {
-      for (var i=0,l=rts.length; i<l; i++) {
-        var route = rts[i];
-        if (route.as === "script") {
-          if (route.to === resource_info.id) {
-            return acre.form.build_url(acre.request.app_url + acre.request.base_path + route.from + extra_path, params);
-          }
-        }
-        else {
-          return acre.form.build_url(acre.request.app_url + acre.request.base_path + route.from + "/" + resource_info.name + extra_path, params);
+  if (true || is_client()) {
+    var rts = routes.get_routes(app);
+    if (!rts) {
+      throw("route undefined in routing app_routes: " + app);
+    }
+    for (var i=0,l=rts.length; i<l; i++) {
+      var r = rts[i];
+      if (r.script) {
+        if (r.script === resource_info.filename) {
+          var url = acre.request.app_url + acre.request.base_path + r.from + extra_path;
+          return acre.form.build_url(url, params);
         }
       }
+      else {
+        var url = acre.request.app_url + acre.request.base_path + r.from + "/" + resource_info.filename + extra_path;
+        return acre.form.build_url(url, params);
+      }
     }
-    // this should NOT happen since we called routes_mf._resource_info
-    throw("route undefined: " + resource_path);
   }
 
   // Else we are running a standalone acre app, i.e:
@@ -89,16 +100,12 @@ function url_for(resource_path, params, extra_path) {
 //  }
   else {
     // else absolute resource_url for external urls
-    return acre.form.build_url(resource_url(resource_info.id, resource_info.version) + extra_path, params);
+    var url = resource_url(resource_info.id, resource_info.version) + extra_path;
+    return acre.form.build_url(url, params);
   }
 };
 
-/**
- * freebase url
- */
-function freebase_url(path, params) {
-  return acre.form.build_url(acre.freebase.service_url + (path || ""), parse_params(params));
-};
+
 
 
 /**
@@ -109,21 +116,3 @@ function freebase_static_resource_url(path) {
 };
 
 
-/**
- * params can be an array of tuples
- *
- * @param params:Object,Array (optional) - Query string parameters can be
- *                                         a dictonary of {name: value, ...} or
- *                                         an array of [ [name, value] .., ] tuples.
- */
-function parse_params(params) {
-  // [ [name1,value1], [name2,value2], ...]
-  if (params && (params instanceof Array)) {
-    var dict = {};
-    params.forEach(function([name,value]) {
-      dict[name] = value;
-    });
-    params = dict;
-  }
-  return params;
-};

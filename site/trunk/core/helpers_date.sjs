@@ -1,15 +1,15 @@
-__all__ = [
-  "parse_date",
-  "format_date",
-  "relative_date"
-];
+var exports = {
+  "parse_date": parse_date,
+  "format_date": format_date,
+  "relative_date": relative_date
+};
 
 /**
  * Date library to parse and format dates using datejs library
  */
 
 var mf = acre.require("MANIFEST").MF;
-var datejs = acre.require("/freebase/apps/libraries/date", mf.version["/freebase/app/libraries"]).Date;
+var datejs = mf.require("libraries", "date").Date;
 
 /**
  * Converts the specified string value into its JavaScript Date equivalent using conventional format recognized by datejs,

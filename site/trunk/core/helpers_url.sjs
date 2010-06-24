@@ -5,12 +5,14 @@
  * which will automatically include all helpers in helpers_url.
  */
 
-var __all__ = [
-  "is_client",
-  "app_url",
-  "resource_url",
-  "account_url"
-];
+var exports = {
+  "is_client": is_client,
+  "app_url": app_url,
+  "resource_url": resource_url,
+  "account_url": account_url,
+  "freebase_url": freebase_url,
+  "parse_params": parse_params
+};
 
 /**
  * Known client urls:
@@ -91,4 +93,32 @@ function account_url(kind, return_url) {
       break;
   }
   return url;
+};
+
+
+/**
+ * freebase url
+ */
+function freebase_url(path, params) {
+  return acre.form.build_url(acre.freebase.service_url + (path || ""), parse_params(params));
+};
+
+
+/**
+ * params can be an array of tuples
+ *
+ * @param params:Object,Array (optional) - Query string parameters can be
+ *                                         a dictonary of {name: value, ...} or
+ *                                         an array of [ [name, value] .., ] tuples.
+ */
+function parse_params(params) {
+  // [ [name1,value1], [name2,value2], ...]
+  if (params && (params instanceof Array)) {
+    var dict = {};
+    params.forEach(function([name,value]) {
+      dict[name] = value;
+    });
+    params = dict;
+  }
+  return params;
 };

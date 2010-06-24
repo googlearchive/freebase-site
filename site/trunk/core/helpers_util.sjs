@@ -1,6 +1,6 @@
-var __all__ = [
-  "extend"
-];
+var exports = {
+  "extend": extend
+};
 
 /**
  * TODO: this should go in some library

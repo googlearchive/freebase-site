@@ -1,8 +1,8 @@
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").MF;
-
 var h = acre.require("helpers_url2");
+var scope = this;
 
 test("app_url", function() {
   var expected = acre.host.protocol + "://foo.daepark.user." + acre.host.dev_name + (acre.host.port !== 80 ? (":" + acre.host.port) : "");
@@ -29,22 +29,21 @@ test("parse_params", function() {
 });
 
 test("url_for", function() {
-  var routes_mf = acre.require("/freebase/site/routing/MANIFEST", mf.version["/freebase/site/routing"]).MF;
-  var routes =  acre.require("/freebase/site/routing/app_routes", mf.version["/freebase/site/routing"]);
+  var routes_mf = mf.require("routing", "MANIFEST").MF;
+  var routes =  mf.require("routing", "app_routes");
+  var h_acre = acre.require("helpers_acre");
 
-  if (h.is_client()) {
-    equal(h.url_for("/freebase/site/core/test_helpers_url"), acre.request.app_url + acre.request.base_path + routes.get_route("/freebase/site/core").from + "/test_helpers_url");
-    equal(h.url_for("/freebase/site/schema/index"), acre.request.app_url + acre.request.base_path + routes.get_route("/freebase/site/schema").from + "/index");
-    equal(h.url_for("/freebase/site/toolbox/service", null, "/apps"), acre.request.app_url + acre.request.base_path + routes.get_route("/freebase/site/toolbox").from + "/service/apps");
-
-    // /freebase/site/homepage/index is absolute
-    equal(h.url_for("/freebase/site/homepage/index"), acre.request.app_url + acre.request.base_path + "/");
+  if (true || h.is_client()) {
+    equal(h.url_for("core", "test_helpers_url"), acre.request.app_url + acre.request.base_path + routes.get_route("core").from + "/test_helpers_url");
+    equal(h.url_for("schema", "index"), acre.request.app_url + acre.request.base_path + routes.get_route("schema").from + "/index");
+    equal(h.url_for("toolbox", "service", null, "/apps"), acre.request.app_url + acre.request.base_path + routes.get_route("toolbox").from + "/service/apps");
+    equal(h.url_for("homepage", "index"), acre.request.app_url + acre.request.base_path + "/");
   }
   else {
-    equal(h.url_for("/freebase/site/core/test_helpers_url"),  h.resource_url("/freebase/site/core/test_helpers_url", routes_mf.version["/freebase/site/core"]));
-    equal(h.url_for("/freebase/site/schema/index"), h.resource_url("/freebase/site/schema/index", routes_mf.version["/freebase/site/schema"]));
-    equal(h.url_for("/freebase/site/toolbox/service", null, "/apps"),  h.resource_url("/freebase/site/toolbox/service", routes_mf.version["/freebase/site/toolbox"]) + "/apps");
-    equal(h.url_for("/freebase/site/homepage/index"), h.resource_url("/freebase/site/homepage/index", routes_mf.version["/freebase/site/homepage"]));
+    equal(h.url_for("core", "test_helpers_url"),  h.resource_url(h_acre.parse_path(routes_mf.apps["core"] + "/test_helpers_url", scope).id));
+    equal(h.url_for("schema", "index"), h.resource_url(h_acre.parse_path(routes_mf.apps["schema"] + "/index", scope).id));
+    equal(h.url_for("toolbox", "service", null, "/apps"),  h.resource_url(h_acre.parse_path(routes_mf.apps["toolbox"] + "/service", scope).id) + "/apps");
+    equal(h.url_for("homepage", "index"), h.resource_url(h_acre.parse_path(routes_mf.apps["homepage"] + "/index", scope).id));
   }
 });
 

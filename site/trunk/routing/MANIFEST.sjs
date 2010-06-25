@@ -1,15 +1,16 @@
 var MF = {
   "apps" : {
+    "routing": "//routing.site.freebase.dev",
     "core" : "//core.site.freebase.dev",
-    "template" : "//core.site.freebase.dev",
+    "template" : "//template.site.freebase.dev",
+    "promise": "//promise.site.freebase.dev",
     "sample" : "//sample.site.freebase.dev",
     "domain" : "//domain.site.freebase.dev",
     "schema" : "//schema.site.freebase.dev",
     "toolbox": "//toolbox.site.freebase.dev",
     "appadmin" : "//appadmin.site.freebase.dev",
     "error" : "//error.site.freebase.dev",
-    "homepage" : "//homepage.site.freebase.dev",
-    "routing": "//routing.site.freebase.dev"
+    "homepage" : "//homepage.site.freebase.dev"
   }
 };
 
@@ -33,6 +34,4 @@ function get_app(path) {
   return _app_paths[path];
 };
 
-// acre.require(MF.apps.core).init(MF, this);
-// temporary hack until acre.require supports new syntax
-acre.require("/freebase/site/core/MANIFEST").init(MF, this);
+acre.require(MF.apps.core + "/MANIFEST").init(MF, this);

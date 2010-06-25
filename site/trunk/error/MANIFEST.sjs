@@ -16,6 +16,4 @@ var MF = {
   }
 };
 
-// acre.require(MF.apps.core).init(MF, this);
-// temporary until acre.require supports new syntax
-acre.require("/freebase/site/core/MANIFEST").init(MF, this);
+acre.require(MF.apps.core + "/MANIFEST").init(MF, this);

@@ -4,6 +4,20 @@ var m = acre.require("MANIFEST");
 var h = acre.require("helpers_url");
 var scope = this;
 
+test("require_args", function() {
+  var mf = {};
+  m.extend_manifest(mf, scope);
+  deepEqual(mf.require_args("bar"), {app:null,file:"bar",local:true});
+  deepEqual(mf.require_args("foo", "bar"), {app:"foo",file:"bar",local:false});
+  deepEqual(mf.require_args("foo", "bar", "baz"), {app:"foo",file:"bar",local:false});
+  deepEqual(mf.require_args(null, "bar"), {app:null,file:"bar",local:true});
+  deepEqual(mf.require_args("foo", null), {app:null,file:"foo",local:true});
+  var ex = "bad require args";
+  try { mf.require_args(); ok(false, "expected " + ex); } catch(e) { equal(e, ex); }
+  try { mf.require_args(null); ok(false, "expected " + ex); } catch(e) { equal(e, ex); }
+  try { mf.require_args(null, null); ok(false, "expected " + ex); } catch(e) { equal(e, ex); }
+});
+
 test("resource_url", function() {
   var mf = {
     apps: {

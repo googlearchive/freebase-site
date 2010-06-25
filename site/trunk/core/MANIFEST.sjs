@@ -137,15 +137,18 @@ function base_manifest(MF, scope, undefined) {
     /**
      * Helper method to parse app label, file arguments.
      */
-    _parse_args: function(app, file) {
-      var local = typeof file === "undefined";
-      return {
-        "app": local ? null : app,
-        "file": local ? app : file,
-        "local": local
-      };
+    require_args: function(app, file) {
+      var args = [arg for each (arg in Array.prototype.slice.call(arguments)) if (arg)];
+      if (!args.length) {
+        throw("bad require args");
+      }
+      if (args.length > 1) {
+        return {app:args[0], file:args[1], local:false};
+      }
+      else {
+        return {app:null, file:args[0], local:true};
+      }
     },
-
 
     /**
      * Generate the proper url to serve an image resource.
@@ -157,7 +160,7 @@ function base_manifest(MF, scope, undefined) {
      *   <img src="${MF.img_src('some_app_label', 'external.png')}" /><!-- external image -->
      */
     img_src: function(app, file) {
-      var args = MF._parse_args(app, file);
+      var args = MF.require_args(app, file);
       if (args.local) {
         // local image files relative to the current app
         return MF.image_base_url + "/" + args.file;
@@ -306,7 +309,7 @@ function base_manifest(MF, scope, undefined) {
     },
 
     require: function(app, file) {
-      var args = MF._parse_args(app, file);
+      var args = MF.require_args(app, file);
       if (args.local) {
         return scope.acre.require(args.file);
       }
@@ -319,7 +322,7 @@ function base_manifest(MF, scope, undefined) {
     },
 
     resource_url: function(app, file) {
-      var args = MF._parse_args(app, file);
+      var args = MF.require_args(app, file);
       if (args.local) {
         var path = [scope.acre.current_script.app.id, args.file];
         return h_url.resource_url(path.join("/"));

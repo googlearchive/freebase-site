@@ -316,9 +316,8 @@ function base_manifest(MF, scope, undefined) {
       if (!MF.apps[args.app]) {
         throw("An app label for \"" + args.app + "\" must be declared in the MANIFEST.");
       }
-      var path = [MF.apps[args.app], args.file];
-      var res = h_acre.parse_path(path.join("/"), scope);
-      return scope.acre.require(res.id, res.version);
+      var path = [MF.apps[args.app], args.file].join("/");
+      return scope.acre.require(path);
     },
 
     resource_url: function(app, file) {

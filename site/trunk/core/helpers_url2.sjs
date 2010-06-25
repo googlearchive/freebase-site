@@ -22,18 +22,13 @@ var routes = mf.require("routing", "app_routes");
 var h_acre = acre.require("helpers_acre");
 
 /**
- *
- *
-
- * Get the canonical url for an acre resource specified by resource_path.
- * The resource_path MUST be absolute, e.g., "/user/userX/appY/foo" and the app containing the resource
- * MUST be defined in the routing manifest /freebase/site/routing/MANIFEST version map.
+ * Get the canonical url for an acre resource specified by "app" label and "file" name.
+ * The "app" label MUST be defined in the /freebase/site/routing/MANIFEST and /freebase/site/routing/app_routes.
  * This is to ensure we prefix the proper routing path when we are served under
  * a known client url (@see is_client).
- * Also, the versions of the apps have to be consistent with routing so that we point
- * to the same version even if we use url_for in a standalone acre app.
  *
- * @param resource_path:String (required) - The ID of a resource. MUST be absolute, e.g., /user/userX/appY/foo.
+ * @param app:String (required) - The app label defined in /freebase/site/routing/MANIFEST and /freebase/site/routing/app_routes.
+ * @param file:String (require) - The file name where /app/label/id/file = the graph id.
  * @param params:Object,Array (optional) - Query string parameters can be
  *                                         a dictonary of {name: value, ...} or
  *                                         an array of [ [name, value] .., ] tuples.
@@ -44,21 +39,12 @@ function url_for(app, file, params, extra_path) {
   if (!path) {
     throw("app is not defined in the routing MANIFEST: " + app);
   }
-  // new require path syntax (i.e., //app.site.freebase.dev/file
-  path = [path, file].join("/");
-  var resource_info = h_acre.parse_path(path, this);
-
   // params can be an array of tuples
   // [ [name1,value1], [name2,value2], ...]
   params = parse_params(params);
-
   if (!extra_path) {
     extra_path = "";
   }
-
-
-
-
   // If served by client/routing, look up the client route
   // information from /freebase/site/routing/app_routes table.
   //
@@ -76,13 +62,13 @@ function url_for(app, file, params, extra_path) {
     for (var i=0,l=rts.length; i<l; i++) {
       var r = rts[i];
       if (r.script) {
-        if (r.script === resource_info.filename) {
+        if (r.script === file) {
           var url = acre.request.app_url /*+ acre.request.base_path*/ + r.from + extra_path;
           return acre.form.build_url(url, params);
         }
       }
       else {
-        var url = acre.request.app_url /*+ acre.request.base_path*/ + r.from + "/" + resource_info.filename + extra_path;
+        var url = acre.request.app_url /*+ acre.request.base_path*/ + r.from + "/" + file + extra_path;
         return acre.form.build_url(url, params);
       }
     }
@@ -94,18 +80,15 @@ function url_for(app, file, params, extra_path) {
   // http://schema.site.freebase.dev.branch.qa-freebaseapps.com
   // http://schema.site.freebase.dev.sandbox-freebaseapps.com
   // http://schema.site.freebase.dev.freebaseapps.com
-//  if (is_local) {
-    // relative url for local files
-//    return acre.form.build_url(resource_info.name, params);
-//  }
   else {
     // else absolute resource_url for external urls
+    // new require path syntax (i.e., //app.site.freebase.dev/file)
+    path = [path, file].join("/");
+    var resource_info = h_acre.parse_path(path, this);
     var url = resource_url(resource_info.id, resource_info.version) + extra_path;
     return acre.form.build_url(url, params);
   }
 };
-
-
 
 
 /**

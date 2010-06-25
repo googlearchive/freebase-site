@@ -203,9 +203,17 @@ function base_manifest(MF, scope, undefined) {
         if (!(ss instanceof Array)) {
           ss = [ss];
         }
-        if (ss.length === 3 && ss[1] === "MANIFEST") {
-          var f = ss[2].split("/", 2).pop();
-          buf = buf.concat(MF.require(ss[0], "MANIFEST").MF.css(f, scope, true));
+        if (ss.length > 1) {
+          var ext_mf = MF.require(ss[0], "MANIFEST").MF;
+          if (ss.length === 2) {
+            // run css_preprocessor within the context of ext_mf
+            buf.push(ext_mf.css_preprocessor(ext_mf.require(ss[1]).body));
+          }
+          else if (ss.length === 3 && ss[1] === "MANIFEST") {
+            // get external css manifest content within the context of ext_mf
+            var f = ss[2].split("/", 2).pop();
+            buf = buf.concat(ext_mf.css(f, scope, true));
+          }
         }
         else {
           try {
@@ -275,9 +283,15 @@ function base_manifest(MF, scope, undefined) {
         if (!(script instanceof Array)) {
           script = [script];
         }
-        if (script.length === 3 && script[1] === "MANIFEST") {
-          var f = script[2].split("/", 2).pop();
-          MF.require(script[0], "MANIFEST").MF.js(f, scope);
+        if (script.length > 1) {
+          var ext_mf = MF.require(script[0], "MANIFEST").MF;
+          if (script.length === 2) {
+            scope.acre.write(ext_mf.require(script[1]).body);
+          }
+          else if (script.length === 3 && script[1] === "MANIFEST") {
+            var f = script[2].split("/", 2).pop();
+            ext_mf.js(f, scope);
+          }
         }
         else {
           try {
@@ -297,7 +311,7 @@ function base_manifest(MF, scope, undefined) {
         return scope.acre.require(args.file);
       }
       if (!MF.apps[args.app]) {
-        throw("An app label for " + args.app + " must be declared in the MANIFEST.");
+        throw("An app label for \"" + args.app + "\" must be declared in the MANIFEST.");
       }
       var path = [MF.apps[args.app], args.file];
       var res = h_acre.parse_path(path.join("/"), scope);
@@ -311,7 +325,7 @@ function base_manifest(MF, scope, undefined) {
         return h_url.resource_url(path.join("/"));
       }
       if (!MF.apps[args.app]) {
-        throw("An app label for " + args.app + " must be declared in the MANIFEST.");
+        throw("An app label for \"" + args.app + "\" must be declared in the MANIFEST.");
       }
       var path = [MF.apps[args.app], args.file];
       var res = h_acre.parse_path(path.join("/"), scope);
@@ -336,8 +350,6 @@ function base_manifest(MF, scope, undefined) {
      *   };
      */
     main: function() {
-      console.log("main", scope.acre.request);
-
       if (scope.acre.request.path_info && scope.acre.request.path_info.length) {
         var path = scope.acre.request.path_info.substring(1);
         if (/\.js$/.exec(path)) {
@@ -360,5 +372,4 @@ function base_manifest(MF, scope, undefined) {
   return base;
 };
 
-console.log("this.init");
 this.init(MF, this);

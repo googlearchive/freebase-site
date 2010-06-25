@@ -33,7 +33,7 @@ test("url_for", function() {
   var routes =  mf.require("routing", "app_routes");
   var h_acre = acre.require("helpers_acre");
 
-  if (true || h.is_client()) {
+  if (h.is_client()) {
     equal(h.url_for("core", "test_helpers_url"), acre.request.app_url /*+ acre.request.base_path*/ + routes.get_route("core").from + "/test_helpers_url");
     equal(h.url_for("schema", "index"), acre.request.app_url /*+ acre.request.base_path*/ + routes.get_route("schema").from + "/index");
     equal(h.url_for("toolbox", "service", null, "/apps"), acre.request.app_url /*+ acre.request.base_path*/ + routes.get_route("toolbox").from + "/service/apps");

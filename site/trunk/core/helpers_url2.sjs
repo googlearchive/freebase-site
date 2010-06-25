@@ -68,7 +68,7 @@ function url_for(app, file, params, extra_path) {
   // http://branch.qa.metaweb.com
   // http://www.sandbox-freebase.com
   // http://www.freebase.com
-  if (true || is_client()) {
+  if (is_client()) {
     var rts = routes.get_routes(app);
     if (!rts) {
       throw("route undefined in routing app_routes: " + app);

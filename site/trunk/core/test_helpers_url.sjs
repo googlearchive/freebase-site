@@ -13,7 +13,7 @@ test("parse_params", function() {
 });
 
 function resource_url(apppath, file, params, extra_path) {
-  var url = acre.host.protocol + ":" + apppath + acre.host.name + (acre.host.port !== 80 ? (":" + acre.host.port) : "") + "/" + file + (extra_path || "");
+  var url = acre.host.protocol + ":" + apppath + "." + acre.host.name + (acre.host.port !== 80 ? (":" + acre.host.port) : "") + "/" + file + (extra_path || "");
   return acre.form.build_url(url, params);
 };
 

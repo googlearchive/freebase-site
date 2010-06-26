@@ -3,9 +3,6 @@ acre.require('/test/lib').enable(this);
 var m = acre.require("MANIFEST");
 var scope = this;
 
-//console.log("acre.current_script.app.id", acre.get_metadata(acre.current_script.app.id));
-console.log("//core.site.freebase.dev", acre.get_metadata("//core.site.freebase.dev"));
-
 test("require_args", function() {
   var mf = {};
   m.extend_manifest(mf, scope);

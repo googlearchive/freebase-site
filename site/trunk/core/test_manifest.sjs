@@ -1,8 +1,10 @@
 acre.require('/test/lib').enable(this);
 
 var m = acre.require("MANIFEST");
-var h = acre.require("helpers_url");
 var scope = this;
+
+//console.log("acre.current_script.app.id", acre.get_metadata(acre.current_script.app.id));
+console.log("//core.site.freebase.dev", acre.get_metadata("//core.site.freebase.dev"));
 
 test("require_args", function() {
   var mf = {};
@@ -18,50 +20,19 @@ test("require_args", function() {
   try { mf.require_args(null, null); ok(false, "expected " + ex); } catch(e) { equal(e, ex); }
 });
 
-test("resource_url", function() {
-  var mf = {
-    apps: {
-      "core": "//core.site.freebase.dev",
-      "hello": "//4.app.world.hello.dev",
-      "foo": "//app.bar.foo.dev"
-    }
-  };
-  m.extend_manifest(mf, scope);
-
-  var tests = [
-    [
-      ["hello", "freebase-logo.png"],
-      h.resource_url("/hello/world/app/freebase-logo.png", 4)
-    ],
-    [
-      ["icon-chiclet.png"],
-      h.resource_url("/freebase/site/core/icon-chiclet.png")
-    ],
-    [
-      ["foo", "baz.gif"],
-      h.resource_url("/foo/bar/app/baz.gif",  null)
-    ]
-  ];
-
-  tests.forEach(function(t) {
-    equals(mf.resource_url.apply(mf, t[0]), t[1]);
-  });
-});
-
 test("css_preprocessor", function() {
   var mf = {
     apps: {
       "core": "//core.site.freebase.dev",
-      "hello": "//4.app.world.hello.dev",
-      "foo": "//app.bar.foo.dev"
+      "routing": "//release.routing.site.freebase.dev"
     }
   };
   m.extend_manifest(mf, scope);
 
   var tests = [
-    ["background: url(hello, freebase-logo.png) no-repeat", "background: url(" + h.resource_url("/hello/world/app/freebase-logo.png", 4) + ") no-repeat"],
-    ["background: url(icon-chiclet.png)", "background: url(" + h.resource_url("/freebase/site/core/icon-chiclet.png") + ")"],
-    ["background: url( foo , baz.gif )", "background: url(" + h.resource_url("/foo/bar/app/baz.gif") + ")"],
+    ["background: url(core, freebase-logo.png) no-repeat", "background: url(" + mf.img_src("core", "freebase-logo.png") + ") no-repeat"],
+    ["background: url(icon-chiclet.png)", "background: url(" + mf.img_src("icon-chiclet.png") + ")"],
+    ["background: url( routing , baz.gif )", "background: url(" + mf.img_src("routing", "baz.gif") + ")"],
     ["background: url(http://www.freebase.com/logo.png)", "background: url(http://www.freebase.com/logo.png)"]
 
   ];

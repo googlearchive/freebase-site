@@ -17,9 +17,7 @@ var MF = {
 };
 MF.freebase.resource.base_url += MF.freebase.resource.hash;
 
-var h_util = acre.require("helpers_util");
-var h_url = acre.require("helpers_url");
-var h_acre = acre.require("helpers_acre");
+var extend = acre.require("helpers_util").extend;
 var freebase_static_resource_url;
 
 
@@ -43,8 +41,8 @@ function init(MF, scope, options) {
  * - serve MANIFEST.MF as json/p
  */
 function extend_manifest(MF, scope, options) {
-  var orig = h_util.extend({}, MF, options);
-  return h_util.extend(MF, base_manifest(MF, scope), orig);
+  var orig = extend({}, MF, options);
+  return extend(MF, base_manifest(MF, scope), orig);
 };
 
 /**
@@ -244,7 +242,7 @@ function base_manifest(MF, scope, undefined) {
 
     css_preprocessor: function(str) {
       if (!freebase_static_resource_url) {
-        freebase_static_resource_url = MF.require("core", "helpers_url2").freebase_static_resource_url;
+        freebase_static_resource_url = MF.require("core", "helpers_url").freebase_static_resource_url;
       }
       var buf = [];
       var m, regex = /url\s*\(\s*([^\)]+)\s*\)/gi;
@@ -267,7 +265,7 @@ function base_manifest(MF, scope, undefined) {
               params.push(app.replace(/^\s+|\s+$/g, ""));
               params.push(file.replace(/^\s+|\s+$/g, ""));
             }
-            return "url(" + MF.resource_url.apply(null, params) + ")";
+            return "url(" + MF.img_src.apply(null, params) + ")";
           }
         }));
       });
@@ -318,20 +316,6 @@ function base_manifest(MF, scope, undefined) {
       }
       var path = [MF.apps[args.app], args.file].join("/");
       return scope.acre.require(path);
-    },
-
-    resource_url: function(app, file) {
-      var args = MF.require_args(app, file);
-      if (args.local) {
-        var path = [scope.acre.current_script.app.id, args.file];
-        return h_url.resource_url(path.join("/"));
-      }
-      if (!MF.apps[args.app]) {
-        throw("An app label for \"" + args.app + "\" must be declared in the MANIFEST.");
-      }
-      var path = [MF.apps[args.app], args.file];
-      var res = h_acre.parse_path(path.join("/"), scope);
-      return h_url.resource_url(res.id, res.version);
     },
 
     not_found: function() {

@@ -1,24 +1,8 @@
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").MF;
-var h = acre.require("helpers_url2");
+var h = acre.require("helpers_url");
 var scope = this;
-
-test("app_url", function() {
-  var expected = acre.host.protocol + "://foo.daepark.user." + acre.host.dev_name + (acre.host.port !== 80 ? (":" + acre.host.port) : "");
-  equal(h.app_url("/user/daepark/foo"), expected);
-  equal(h.app_url("/user/daepark/foo", null), expected);
-  expected = acre.host.protocol + "://2.foo.daepark.user." + acre.host.dev_name + (acre.host.port !== 80 ? (":" + acre.host.port) : "");
-  equal(h.app_url("/user/daepark/foo", "2"), expected);
-});
-
-test("resource_url", function() {
-  var expected = acre.host.protocol + "://foo.daepark.user." + acre.host.dev_name + (acre.host.port !== 80 ? (":" + acre.host.port) : "") + "/bar";
-  equal(h.resource_url("/user/daepark/foo/bar"), expected);
-  equal(h.resource_url("/user/daepark/foo/bar", null), expected);
-  expected = acre.host.protocol + "://2.foo.daepark.user." + acre.host.dev_name + (acre.host.port !== 80 ? (":" + acre.host.port) : "") + "/bar";
-  equal(h.resource_url("/user/daepark/foo/bar", "2"), expected);
-});
 
 test("parse_params", function() {
   deepEqual(h.parse_params({a:1,b:2}), {a:1,b:2});
@@ -28,10 +12,14 @@ test("parse_params", function() {
   deepEqual(h.parse_params([]), {});
 });
 
+function resource_url(apppath, file, params, extra_path) {
+  var url = acre.host.protocol + ":" + apppath + acre.host.name + (acre.host.port !== 80 ? (":" + acre.host.port) : "") + "/" + file + (extra_path || "");
+  return acre.form.build_url(url, params);
+};
+
 test("url_for", function() {
   var routes_mf = mf.require("routing", "MANIFEST").MF;
   var routes =  mf.require("routing", "app_routes");
-  var h_acre = acre.require("helpers_acre");
 
   if (h.is_client()) {
     equal(h.url_for("core", "test_helpers_url"), acre.request.app_url /*+ acre.request.base_path*/ + routes.get_route("core").from + "/test_helpers_url");
@@ -40,10 +28,10 @@ test("url_for", function() {
     equal(h.url_for("homepage", "index"), acre.request.app_url /*+ acre.request.base_path*/ + "/");
   }
   else {
-    equal(h.url_for("core", "test_helpers_url"),  h.resource_url(h_acre.parse_path(routes_mf.apps["core"] + "/test_helpers_url", scope).id));
-    equal(h.url_for("schema", "index"), h.resource_url(h_acre.parse_path(routes_mf.apps["schema"] + "/index", scope).id));
-    equal(h.url_for("toolbox", "service", null, "/apps"),  h.resource_url(h_acre.parse_path(routes_mf.apps["toolbox"] + "/service", scope).id) + "/apps");
-    equal(h.url_for("homepage", "index"), h.resource_url(h_acre.parse_path(routes_mf.apps["homepage"] + "/index", scope).id));
+    equal(h.url_for("core", "test_helpers_url"),  resource_url(routes_mf.apps["core"],  "test_helpers_url"));
+    equal(h.url_for("schema", "index"), resource_url(routes_mf.apps["schema"], "index"));
+    equal(h.url_for("toolbox", "service", null, "/apps"),  resource_url(routes_mf.apps["toolbox"], "service", null, "/apps"));
+    equal(h.url_for("homepage", "index"), resource_url(routes_mf.apps["homepage"], "index"));
   }
 });
 

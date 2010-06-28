@@ -2,6 +2,11 @@ var mf = acre.require("MANIFEST").MF;
 var h = acre.require("helpers");
 var routes = acre.require("app_routes").routes;
 
+/**
+ * Does the given path match the given route object?
+ * If so, return the target app id, target script and additional path_info.
+ * Otherwise, return false.
+ */
 function match_route(path, route) {
   var from_re1 = RegExp("^" + route.from + "$");
   var from_re2 = RegExp("^" + route.from + "/");
@@ -25,11 +30,19 @@ function match_route(path, route) {
   return [app, script, path_info];
 };
 
+/**
+ * Invoke the error app template with status=404 and exit.
+ */
 function not_found(id) {
   mf.require("error", "index").main(this, {status:404, not_found:id});
   acre.exit();
 };
 
+/**
+ * Try acre.route the given path parameters.
+ * Before acre.route, we do an acre.get_medata and check existence of the app and script.
+ * If success, acre.route. Otherwise, not_found()
+ */
 function do_route(app, script, path_info, query_string) {
   try {
     var md = acre.get_metadata(app);
@@ -53,6 +66,9 @@ function do_route(app, script, path_info, query_string) {
   acre.exit();
 };
 
+/**
+ * Main route logic
+ */
 if (acre.current_script === acre.request.script) {
   var req = acre.request;
   var req_path = req.url.replace(req.app_url /*+ req.base_path*/, "");

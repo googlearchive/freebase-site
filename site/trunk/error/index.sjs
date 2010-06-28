@@ -3,7 +3,7 @@ function main(scope, args) {
   var renderer = mf.require("template", "renderer");
   var error_template = mf.require("template");
 
-  renderer.render_page({"status": args.status}, error_template);
+  renderer.render_page(args, error_template);
   if (args.status) {
     scope.acre.response.status = parseInt(args.status);
   }

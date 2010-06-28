@@ -4,7 +4,7 @@
 </acre:script>
 
 <acre:block def="title()">
-  Error: ${c.status || ""}
+
 </acre:block>
 
 <acre:block def="head()">
@@ -12,7 +12,8 @@
 </acre:block>
 
 <acre:block def="content_body()">
-
+  <h1>Error: ${c.status || ""}</h1>
+  <h1 acre:if="c.not_found">NOT FOUND: ${c.not_found}</h1>
 </acre:block>
 
 <acre:block def="footer_script()">

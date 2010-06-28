@@ -25,6 +25,34 @@ function match_route(path, route) {
   return [app, script, path_info];
 };
 
+function not_found(id) {
+  mf.require("error", "index").main(this, {status:404, not_found:id});
+  acre.exit();
+};
+
+function do_route(app, script, path_info, query_string) {
+  try {
+    var md = acre.get_metadata(app);
+  }
+  catch (ex) {
+    return not_found(app || acre.current_script.app.id);
+  }
+  if (!md.files[script]) {
+    return not_found(md.app_id + "/" + script);
+  }
+
+  var path = [
+    (app ? app + "/" : ""),
+    script,
+    path_info,
+    (query_string ? "?" + query_string : "")
+  ];
+  path = path.join("");
+  console.log("routing", path);
+  acre.route(path);
+  acre.exit();
+};
+
 if (acre.current_script === acre.request.script) {
   var req = acre.request;
   var req_path = req.url.replace(req.app_url /*+ req.base_path*/, "");
@@ -46,13 +74,10 @@ if (acre.current_script === acre.request.script) {
     var app = match[0];
     var script = match[1];
     var path_info = match[2];
-    path = app + "/" + script + path_info + (query_string ? "?" + query_string : "");
-    console.log("routing", path);
-    acre.route(path);
-    acre.exit();
+    // acre.route and exit
+    do_route(app, script, path_info, query_string);
   }
+  // default to local acre.route
   var [script, path_info, query_string] = h.split_path(req_path);
-  path = script + path_info + (query_string ? "?" + query_string : "");
-  console.log("routing local", path);
-  acre.route(path);
+  do_route(null, script, path_info, query_string);
 }

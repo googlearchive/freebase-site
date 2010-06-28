@@ -210,8 +210,8 @@ Header
     min-height: 34px;
     color: #fff;
     font-size: 1.1em;
-    width: 20em;
-    text-align: left;
+    width: 25em;
+    text-align: right;
 }
 
 #nav-account a {
@@ -222,7 +222,9 @@ Header
 }
 
 .anonymous-user-controls { text-align: center;}
-.nav-user-controls       {}
+.nav-user-controls       {
+    padding-left: 2.5em;
+}
 
 #anonymous-user-controls {
     margin-top: 0.4em;
@@ -234,7 +236,7 @@ Header
     color: #fff;
 }
 
-#nav-username { display: block; font-weight: normal;}
+#nav-username { display: block; }
 #nav-username a:link { 
     font-weight: bold;
     color: #fff;
@@ -252,28 +254,23 @@ NAV
     top: 0;
     left: 420px;
     margin: 0.2em 0 0 0;
-    padding: 0 0 0 0;
 }
 
 #nav-global a {
     color: #fff;
     font-size: 1.2em;
     font-weight: bold;
-  
 }
 
 #nav-global a:hover {
     text-decoration: none;
 }
 
-#nav-global li,
-#nav-global li#nav-docs {
+#nav-global li {
     float: left;
     display: inline;
     cursor: pointer;  
     font-weight: bold;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
     padding: 0.5em 0.9em 0.4em 0.8em;
     margin-right: 0.8em;
 }
@@ -283,23 +280,37 @@ NAV
     margin-right: 0em;
 }
 
-#nav-global li:hover { 
+#nav-global li.collapse { 
     background-color: rgba(0,0,0,0.8);
     -moz-border-radius-topright: 5px; 
     -moz-border-radius-topleft: 5px;
     -webkit-border-top-right-radius: 5px; 
     -webkit-border-top-left-radius: 5px;
     .box_shadow(1px, 1px, 6px, #666);
-    
 }
+
+#nav-global li:hover {
+    background-color: rgba(0,0,0,0.8);
+    moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    .box_shadow(1px, 1px, 6px, #666);
+}
+
 
 #nav-global li.collapse:hover,
 #nav-global li.expand:hover { 
+    background-color: rgba(0,0,0,0.8);
     -moz-border-radius-bottomright: 0px; 
     -moz-border-radius-bottomleft: 0px;
     -webkit-border-bottom-right-radius: 0px; 
     -webkit-border-bottom-left-radius: 0px;
     .box_shadow(1px, 1px, 6px, #666);
+}
+
+
+#nav-global li#nav-docs:hover {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
 }
 
 #nav-global li.collapse a,

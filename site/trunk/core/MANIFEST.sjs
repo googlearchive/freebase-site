@@ -134,6 +134,8 @@ function base_manifest(MF, scope, undefined) {
 
     /**
      * Helper method to parse app label, file arguments.
+     * If one argument, first argument is the file name of the local resource.
+     * If two arguments, first argument is the app label (defined in MF.apps) and second is the file name.
      */
     require_args: function(app, file) {
       var args = [arg for each (arg in Array.prototype.slice.call(arguments)) if (arg)];

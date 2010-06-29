@@ -102,4 +102,17 @@ test("mqlread_success", function() {
   acre.async.wait_on_results();
 });
 
+test("get_static", function() {
+  // We should get back results from this bdb call
+  freebase.get_static("notable_types_2", "/en/metaweb")
+    .then(function(envelope) {
+      equals(envelope.types[0].t, "/business/company", "Should return the expected notable type");
+    }, function(error) {
+      ok(false, "get_static shouldn't return an error: "+error);
+    });
+  
+  acre.async.wait_on_results();
+});
+
+
 acre.test.report();

@@ -48,6 +48,8 @@ var freebase = {};
   };
   
   freebase.get_static = function(bdb, ids) {
+    var retrieve_ids;
+    
     if (!(ids instanceof Array)) {
       retrieve_ids = [ids];
     } else {

@@ -16,7 +16,7 @@ from cssmin import cssmin
 GRAPH = {
     "otg":"http://acre.freebase.com",
     "sandbox":"http://acre.sandbox-freebase.com",
-    "qa":"http://acre.branch.qa.metaweb.com",
+    "qa":"http://ae.branch.qa.metaweb.com:8115",
 }
 
 # acre graph mappings to app url suffix, i.e., http:// + ver + id + suffix = app url
@@ -96,15 +96,14 @@ def is_number(str):
 
 def fetch_url(url, isjson=False):
 
+    print '[fetchurl] %s' % url
     request = urllib2.Request(url, headers = {'Cache-control': 'no-cache' })
     try:
         contents = urllib2.urlopen(request).readlines()
     except:
         print 'ERROR FETCHING URL: %s' % url
-        if isjson:
-            return None
-        return []
-    
+        raise
+
     if isjson:
         return json.loads(''.join(contents))
     

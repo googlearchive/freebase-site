@@ -20,7 +20,7 @@ DEFAULT_ACRE_SERVICE_URL = "http://acre.branch.qa.metaweb.com"
 SHORT_GRAPH_MAP = {
     "otg":"http://acre.freebase.com",
     "sandbox":"http://acre.sandbox-freebase.com",
-    "qa":"http://acre.branch.qa.metaweb.com"
+    "qa":"http://ae.branch.qa.metaweb.com:8115"
 }
 
 class extmap(object):

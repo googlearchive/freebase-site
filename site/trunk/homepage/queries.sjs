@@ -74,7 +74,7 @@ var domains_for_category = function(category_id) {
       });
     })
     .then(function(domains) {
-      promises = [];
+      var promises = [];
       
       // Get article for each domain
       domains.forEach(function(domain) {

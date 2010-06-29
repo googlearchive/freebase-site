@@ -14,11 +14,7 @@
       <meta charset="utf-8" />
       <title acre:if="exports.title">Freebase - ${exports.title()}</title>
       <title acre:else="">Freebase</title>
-      
-      <acre:script>
-        console.log("acre.freebase.jquery_loaded", acre.freebase.jquery_loaded);
-      </acre:script>
-      
+
       <!-- freebase suggest -->
       <link rel="stylesheet" type="text/css" href="${mf.suggest.base_url}/suggest.min.css" />
       

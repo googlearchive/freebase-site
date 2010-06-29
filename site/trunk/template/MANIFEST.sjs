@@ -2,7 +2,8 @@ var MF = {
   "apps" : {
     "core" : "//core.site.freebase.dev",
     "promise" : "//promise.site.freebase.dev",
-    "toolbox" : "//toolbox.site.freebase.dev"
+    "toolbox" : "//toolbox.site.freebase.dev",
+    "jqueryui": "//jqueryui.site.freebase.dev"
   },
   "suggest" : {
     "version": "1.2.1",
@@ -14,7 +15,7 @@ var MF = {
   "javascript": {
     "freebase.mf.js": [
       "jquery.cookie.js",
-      "jquery.ui.position.js",
+      ["jqueryui", "MANIFEST", "/jquery.ui.core.mf.js"],
       "freebase.js",
       ["toolbox", "toolbox.js"]
     ]

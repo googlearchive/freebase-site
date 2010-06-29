@@ -14,6 +14,7 @@ var MF = {
   }
 };
 MF.freebase.resource.base_url += MF.freebase.resource.hash;
+var CORE_MF = MF;
 
 var extend = acre.require("helpers_util").extend;
 var freebase_static_resource_url;
@@ -133,7 +134,7 @@ function base_manifest(MF, scope, undefined) {
      * If two arguments, first argument is the app label (defined in MF.apps) and second is the file name.
      */
     require_args: function(app, file) {
-      var args = [arg for each (arg in Array.prototype.slice.call(arguments)) if (arg)];
+      var args = [arg for each (arg in [app, file]) if (arg)];
       if (!args.length) {
         throw("bad require args");
       }
@@ -192,7 +193,7 @@ function base_manifest(MF, scope, undefined) {
      */
     css: function(key, scope, buffer) {
       if (!MF.stylesheet[key]) {
-        return MF.not_found();
+        return MF.not_found(scope.acre.current_script.app.id + "/MANIFEST/" + key);
       }
       scope.acre.response.set_header("content-type", "text/css");
 
@@ -274,7 +275,7 @@ function base_manifest(MF, scope, undefined) {
      */
     js: function(key, scope) {
       if (!MF.javascript[key]) {
-        return MF.not_found();
+        return MF.not_found(scope.acre.current_script.app.id + "/MANIFEST/" + key);
       }
       scope.acre.response.set_header("content-type", "text/javascript");
       MF.javascript[key].forEach(function(script) {
@@ -315,9 +316,8 @@ function base_manifest(MF, scope, undefined) {
       return scope.acre.require(path);
     },
 
-    not_found: function() {
-      scope.acre.response.status = 404;
-      scope.acre.exit();
+    not_found: function(id) {
+      CORE_MF.require("routing", "routes").not_found(id);
     },
 
     /**
@@ -333,20 +333,20 @@ function base_manifest(MF, scope, undefined) {
      *   };
      */
     main: function() {
-      if (scope.acre.request.path_info && scope.acre.request.path_info.length) {
-        var path = scope.acre.request.path_info.substring(1);
+      var path_info = scope.acre.request.path_info;
+      if (path_info && path_info.length) {
+        var path = path_info.substring(1);
         if (/\.js$/.exec(path)) {
           return MF.js(path, scope);
         }
         else if (/\.css$/.exec(path)) {
           return MF.css(path, scope);
         }
-        else if (scope.acre.request.path_info !== "/") {
-          return MF.not_found();
+        else if (path_info !== "/") {
+          return MF.not_found(scope.acre.current_script.app.id + path_info);
         }
       }
-      var service = scope.acre.require("/freebase/libs/service/lib", "release");
-      service.GetService(function() {
+      CORE_MF.require("service", "lib").GetService(function() {
         return MF;
       }, scope);
     }

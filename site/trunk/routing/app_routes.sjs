@@ -46,6 +46,10 @@ var routes = [
   {
     from: "/approuting",
     to: "routing"
+  },
+  {
+    from: "/apptemplate",
+    to: "template"
   }
 ];
 
@@ -77,3 +81,9 @@ function get_route(app) {
 function get_routes(app) {
   return _routes_map[app];
 };
+
+if (acre.current_script === acre.request.script) {
+  acre.require("//release.service.libs.freebase.dev/lib").GetService(function() {
+    return routes;
+  }, this);
+}

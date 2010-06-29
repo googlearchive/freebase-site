@@ -6,7 +6,7 @@
 
   mf.require("libraries", "api_enhancer");
 
-  var id = acre.request.params.id;
+  var id = acre.request.params.id || "/film";
   var query = acre.require('base').query;
   query = acre.freebase.extend_query(query, {'id':id});
   var results = acre.freebase.mqlread(query).result;

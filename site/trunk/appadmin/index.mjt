@@ -35,7 +35,7 @@ App Admin
 </acre:block>
 
 <acre:block def="footer_script()">
-  <script src="${mf.script_src('appadmin.mf.js')}" type="text/javascript"></script>
+  <script src="${mf.js_src('appadmin.mf.js')}" type="text/javascript"></script>
 </acre:block>
 
 ${mf.require('template', 'renderer').render_page(queries, this.exports)}

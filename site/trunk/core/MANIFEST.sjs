@@ -1,5 +1,4 @@
 var MF = {
-
   "apps" : {
     "routing" : "//routing.site.freebase.dev",
     "promise" : "//promise.site.freebase.dev",
@@ -7,12 +6,11 @@ var MF = {
     "service" : "//release.service.libs.freebase.dev",
     "libraries" : "//release.libraries.apps.freebase.dev"
   },
-
   "freebase": {
     "resource": {
       "hash" : "dd20b6623a39c3624ab666c6f4e69f80423c7186ab9f8add7c53dd927ad389fa",
       "base_url": "http://res.freebase.com/s/"
-      }
+    }
   }
 };
 MF.freebase.resource.base_url += MF.freebase.resource.hash;
@@ -23,16 +21,20 @@ var freebase_static_resource_url;
 
 /**
  * usage:
- *   var MF = {...};
- *   acre.require("/freebase/site/core/MANIFEST").init(MF, this);
+ *   var MF = {
+ *     apps: {
+ *       core: "//core.site.freebase.dev",
+ *       ...
+ *     }
+ *     ...
+ *   };
+ *   acre.require(MF.apps.core).init(MF, this);
  */
 function init(MF, scope, options) {
   extend_manifest(MF, scope, options);
   if (scope.acre.current_script === scope.acre.request.script) {
     MF.main();
   }
-  // routes hack to call sjs main()
-  scope.main = MF.main;
 };
 
 /**
@@ -99,10 +101,7 @@ function base_manifest(MF, scope, undefined) {
     css_src: function(key) {
       return MF.static_base_url + "/" + key;
     },
-    /** DEPRECATED: use css_src **/
-    link_href: function(key) {
-      return MF.css_src(key);
-    },
+
 
     /**
      * Generate the proper url to serve the js resource(s) specified by MF.javascript[key].
@@ -122,14 +121,10 @@ function base_manifest(MF, scope, undefined) {
      * For the tuple declarations, you MUST specify the app label in MF.apps.
      *
      * usage:
-     *   <script type="text/javascript" src="${MF.script_src("my.mf.js")}"></script>
+     *   <script type="text/javascript" src="${MF.js_src("my.mf.js")}"></script>
      */
     js_src: function(key) {
       return MF.static_base_url + "/" + key;
-    },
-    /** DEPRECATED: use js_src **/
-    script_src: function(key) {
-      return MF.js_src(key);
     },
 
     /**

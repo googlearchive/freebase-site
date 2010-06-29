@@ -57,7 +57,7 @@ test("css_src", function() {
   equals(mf.css_src("foo.mf.css"), mf.static_base_url + "/foo.mf.css");
 });
 
-test("script_src", function() {
+test("js_src", function() {
   var mf = {
     apps: {
       "core": "//core.site.freebase.dev",
@@ -72,7 +72,7 @@ test("script_src", function() {
   };
   m.extend_manifest(mf, scope);
 
-  equals(mf.script_src("foo.mf.js"), mf.static_base_url + "/foo.mf.js");
+  equals(mf.js_src("foo.mf.js"), mf.static_base_url + "/foo.mf.js");
 });
 
 test("img_src", function() {

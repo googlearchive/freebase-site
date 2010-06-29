@@ -15,5 +15,5 @@
 </acre:block>
 
 <acre:block def="footer_script()">
-  <script src="${mf.script_src('index.mf.js')}"></script>
+  <script src="${mf.js_src('index.mf.js')}"></script>
 </acre:block>

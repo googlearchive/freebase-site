@@ -28,7 +28,7 @@ var freebase_static_resource_url;
  *     }
  *     ...
  *   };
- *   acre.require(MF.apps.core).init(MF, this);
+ *   acre.require(MF.apps.core).init(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/core/$Rev$", "static_base_url": "http://freebaselibs.com/static/freebase_site/core/$Rev$"});
  */
 function init(MF, scope, options) {
   extend_manifest(MF, scope, options);
@@ -354,4 +354,4 @@ function base_manifest(MF, scope, undefined) {
   return base;
 };
 
-this.init(MF, this);
+this.init(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/core/$Rev$", "static_base_url": "http://freebaselibs.com/static/freebase_site/core/$Rev$"});

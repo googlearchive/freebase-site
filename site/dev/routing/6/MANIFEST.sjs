@@ -34,4 +34,4 @@ function get_app(path) {
   return _app_paths[path];
 };
 
-acre.require(MF.apps.core + "/MANIFEST").init(MF, this);
+acre.require(MF.apps.core + "/MANIFEST").init(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/routing/$Rev$", "static_base_url": "http://freebaselibs.com/static/freebase_site/routing/$Rev$"});

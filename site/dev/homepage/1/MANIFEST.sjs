@@ -23,4 +23,4 @@ var MF = {
 };
 
 acre.require(MF.apps.core + "/MANIFEST").init(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/homepage/$Rev$", "static_base_url": "http://freebaselibs.com/static/freebase_site/homepage/$Rev$"});
- 
+  

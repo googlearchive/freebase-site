@@ -1,10 +1,10 @@
 
 var MF = {
   "apps" : {
-    "core" : "//core.site.freebase.dev",
-    "promise" : "//promise.site.freebase.dev",
-    "template": "//template.site.freebase.dev",
-    "appeditor" : "//appeditor.apps.freebase.dev"
+    "core" : "//5.core.site.freebase.dev",
+    "promise" : "//3.promise.site.freebase.dev",
+    "template": "//6.template.site.freebase.dev",
+    "appeditor" : "//release.appeditor.apps.freebase.dev"
   }
 };
 

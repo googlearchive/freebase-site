@@ -23,11 +23,11 @@ PODS = {
         "me":"trunk.qa.metaweb.com"
     },
     "branch":{
-        "acre":"http://acre.branch.qa.metaweb.com:8115",
+        "acre":"http://acre.branch.qa.metaweb.com",
         "me":"branch.qa.metaweb.com"
     },
     "qa" : {
-        "acre":"http://acre.branch.qa.metaweb.com:8115",
+        "acre":"http://acre.branch.qa.metaweb.com",
         "me":"branch.qa.metaweb.com"
     },    
     "local":{

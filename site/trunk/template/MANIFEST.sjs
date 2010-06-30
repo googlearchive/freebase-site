@@ -1,9 +1,9 @@
 var MF = {
   "apps" : {
-    "core" : "//core.site.freebase.dev",
-    "promise" : "//promise.site.freebase.dev",
-    "toolbox" : "//toolbox.site.freebase.dev",
-    "jqueryui": "//jqueryui.site.freebase.dev"
+    "core" : "//5.core.site.freebase.dev",
+    "promise" : "//3.promise.site.freebase.dev",
+    "toolbox" : "//4.toolbox.site.freebase.dev",
+    "jqueryui": "//1.jqueryui.site.freebase.dev"
   },
   "suggest" : {
     "version": "1.2.1",

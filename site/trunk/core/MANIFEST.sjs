@@ -2,7 +2,6 @@ var MF = {
   "apps" : {
     "routing" : "//routing.site.freebase.dev",
     "promise" : "//promise.site.freebase.dev",
-    "jquery" : "//release.jquery.libs.freebase.dev",
     "service" : "//release.service.libs.freebase.dev",
     "libraries" : "//release.libraries.apps.freebase.dev"
   },

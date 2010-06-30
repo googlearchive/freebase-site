@@ -1,3 +1,7 @@
+/**
+ * jquery-ui 1.8.2 (Stable, for jQuery 1.4+)
+ * http://jqueryui.com/
+ */
 var MF = {
   "apps": {
     "core": "//core.site.freebase.dev"

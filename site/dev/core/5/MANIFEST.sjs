@@ -1,9 +1,9 @@
 var MF = {
   "apps" : {
-    "routing" : "//release.routing.site.freebase.dev",
-    "promise" : "//release.promise.site.freebase.dev",
-    "service" : "//release.service.libs.freebase.dev",
-    "libraries" : "//release.libraries.apps.freebase.dev"
+    "routing" : "//6.routing.site.freebase.dev",
+    "promise" : "//3.promise.site.freebase.dev",
+    "service" : "//4.service.libs.freebase.dev",
+    "libraries" : "//2.libraries.apps.freebase.dev"
   },
   "freebase": {
     "resource": {
@@ -28,7 +28,7 @@ var freebase_static_resource_url;
  *     }
  *     ...
  *   };
- *   acre.require(MF.apps.core).init(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/core/$Rev$", "static_base_url": "http://freebaselibs.com/static/freebase_site/core/$Rev$"});
+ *   acre.require(MF.apps.core).init(MF, this);
  */
 function init(MF, scope, options) {
   extend_manifest(MF, scope, options);
@@ -354,4 +354,4 @@ function base_manifest(MF, scope, undefined) {
   return base;
 };
 
-this.init(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/core/$Rev$", "static_base_url": "http://freebaselibs.com/static/freebase_site/core/$Rev$"});
+this.init(MF, this);

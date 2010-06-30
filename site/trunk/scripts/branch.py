@@ -180,13 +180,17 @@ def next_version(appid):
         pass
     return 1
 
-def svn_revision(path):
+def svn_revision(path, files=None):
     '''
     Do an svn log to get the latest revison of path
     '''
     cmd = ['svn', 'log', '-l', '1', path]
+    if files:
+        cmd += files
     svn_output = run_cmd(cmd)
-    return int(re.search(r'r([\d]+)', svn_output).group(1))
+    if svn_output:
+        return int(re.search(r'r([\d]+)', svn_output).group(1))
+    return False
 
 def svn_commit(path, msg, exit=False):
     '''
@@ -196,7 +200,7 @@ def svn_commit(path, msg, exit=False):
     return run_cmd(cmd, exit=exit)
 
 def svn_deployed_url(app, svn_revision):
-    return 'https://svn.metaweb.com/svn/freebase_site/deployed/{app}/$Rev: {svn_revision} $'.format(app=app, svn_revision=svn_revision)
+    return 'https://svn.metaweb.com/svn/freebase_site/deployed/{app}/{svn_revision}'.format(app=app, svn_revision=svn_revision)
 
 def svn_dev_url(app, version):
     return 'https://svn.metaweb.com/svn/freebase_site/dev/{app}/{version}'.format(app=app, version=version)
@@ -281,8 +285,23 @@ for app, appid, version in apps:
     cmd = ['svn', 'checkout', branch, tempdir]
     run_cmd(cmd)
 
+    cmd = ['svn', 'ls', branch]
+    files = run_cmd(cmd)
+    if files:
+        files = files.split("\n")
+        static_files = []
+        for f in files:
+            for ext in EXTENSIONS:
+                if f.endswith(ext):
+                    static_files.append(f)
+        if static_files:
+            svn_branch_revs[branch] = svn_revision(branch, files=static_files)
+
+    if not svn_branch_revs.get(branch):
+        svn_branch_revs[branch] = svn_revision(branch)
+
     # update MANIFEST static_base_url
-    base_url = "http://freebaselibs.com/static/freebase_site/{app}/$Rev$".format(app=app)
+    base_url = "http://freebaselibs.com/static/freebase_site/{app}/{rev}".format(app=app, rev=svn_branch_revs[branch])
     cfg = json.dumps({
         "static_base_url": base_url,
         "image_base_url": base_url
@@ -295,19 +314,10 @@ for app, appid, version in apps:
             with open(os.path.join(manifest)) as mf:
                 for line in mf.xreadlines():
                     tmp.write(init_re.sub('.init(MF, this, %s);' % cfg, line))
-                #you need the space to force a new version number
-                #otherwise svn commit would not substitute $Rev$ if there are no changes
-                tmp.write(' ')
         shutil.copy2(temp[1], manifest)
-            
-        # svn propset svn:keywords "Rev" MANIFEST.sjs
-        cmd = ['svn', 'propset', 'svn:keywords', 'Rev', manifest]
-        run_cmd(cmd)
         
         msg = 'Update MANIFEST static_base_url'
-        svn_commit(tempdir, msg)    
-
-    svn_branch_revs[branch] = svn_revision(branch)
+        svn_commit(tempdir, msg)
     
     # acre push branch
     acrepush.push(appid, graph, tempdir, version=version, user=user, pw=pw)

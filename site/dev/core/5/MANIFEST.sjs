@@ -28,7 +28,7 @@ var freebase_static_resource_url;
  *     }
  *     ...
  *   };
- *   acre.require(MF.apps.core).init(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/core/$Rev$", "static_base_url": "http://freebaselibs.com/static/freebase_site/core/$Rev$"});
+ *   acre.require(MF.apps.core).init(MF, this);
  */
 function init(MF, scope, options) {
   extend_manifest(MF, scope, options);
@@ -262,7 +262,7 @@ function base_manifest(MF, scope, undefined) {
               params.push(app.replace(/^\s+|\s+$/g, ""));
               params.push(file.replace(/^\s+|\s+$/g, ""));
             }
-            return "url(" + MF.img_src.apply(null, params) + ")";
+            return "url(" + MF.img_src.apply(null, params).replace(/\s/g, '%20') + ")";
           }
         }));
       });
@@ -354,4 +354,4 @@ function base_manifest(MF, scope, undefined) {
   return base;
 };
 
-this.init(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/core/$Rev$", "static_base_url": "http://freebaselibs.com/static/freebase_site/core/$Rev$"});
+this.init(MF, this);

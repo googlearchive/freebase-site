@@ -262,7 +262,7 @@ function base_manifest(MF, scope, undefined) {
               params.push(app.replace(/^\s+|\s+$/g, ""));
               params.push(file.replace(/^\s+|\s+$/g, ""));
             }
-            return "url(" + MF.img_src.apply(null, params) + ")";
+            return "url(" + MF.img_src.apply(null, params).replace(/\s/g, '%20') + ")";
           }
         }));
       });

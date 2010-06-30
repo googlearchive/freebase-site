@@ -1,9 +1,9 @@
 var MF = {
   "apps" : {
-    "routing" : "//release.routing.site.freebase.dev",
-    "promise" : "//release.promise.site.freebase.dev",
-    "service" : "//release.service.libs.freebase.dev",
-    "libraries" : "//release.libraries.apps.freebase.dev"
+    "routing" : "//6.routing.site.freebase.dev",
+    "promise" : "//3.promise.site.freebase.dev",
+    "service" : "//4.service.libs.freebase.dev",
+    "libraries" : "//2.libraries.apps.freebase.dev"
   },
   "freebase": {
     "resource": {

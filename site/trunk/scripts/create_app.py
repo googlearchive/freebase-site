@@ -23,9 +23,13 @@ PODS = {
         "me":"trunk.qa.metaweb.com"
     },
     "branch":{
-        "acre":"http://ae.branch.qa.metaweb.com:8115",
+        "acre":"http://acre.branch.qa.metaweb.com:8115",
         "me":"branch.qa.metaweb.com"
     },
+    "qa" : {
+        "acre":"http://acre.branch.qa.metaweb.com:8115",
+        "me":"branch.qa.metaweb.com"
+    },    
     "local":{
         "acre":"http://ae.trunk.qa.metaweb.com:8115",
         "me":"trunk.qa.metaweb.com"
@@ -54,6 +58,8 @@ def create_app(app_key, session):
         sys.exit(1)
 
     name = "freebase.com %s" % app_key
+    import pdb
+    pdb.set_trace()
     session.create_app(app_id, name=name, extra_group="/m/043wdvg" )
 
 if __name__ == '__main__':

@@ -16,7 +16,7 @@ from cssmin import cssmin
 GRAPH = {
     "otg":"http://acre.freebase.com",
     "sandbox":"http://acre.sandbox-freebase.com",
-    "qa":"http://ae.branch.qa.metaweb.com:8115",
+    "qa":"http://acre.branch.qa.metaweb.com:8115",
 }
 
 # acre graph mappings to app url suffix, i.e., http:// + ver + id + suffix = app url

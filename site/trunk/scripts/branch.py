@@ -294,7 +294,11 @@ for app, appid, version in apps:
         with open(temp[1], "w") as tmp:
             with open(os.path.join(manifest)) as mf:
                 for line in mf.xreadlines():
-                    tmp.write(init_re.sub('.init(MF, this, %s);' % cfg, line))                    
+                    print line
+                    tmp.write(init_re.sub('.init(MF, this, %s);' % cfg, line))
+                #you need the space to force a new version number
+                #otherwise svn commit would not substitute $Rev$ if there are no changes
+                tmp.write(' ')
         shutil.copy2(temp[1], manifest)
             
         # svn propset svn:keywords "Rev" MANIFEST.sjs

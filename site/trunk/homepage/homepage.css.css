@@ -94,9 +94,7 @@ DOMAIN EXPLORER
     color: #fff;
 }
 
-
-#domain-explorer .ui-tabs-panel,
-#all-domains-pane {
+.domain-explorer-pane {
     float: left;
     padding: 1em 0;
     background: #fff;
@@ -104,6 +102,7 @@ DOMAIN EXPLORER
     border-left: 1px solid #dcdcdc;
     -webkit-border-bottom-right-radius: 5px;
     -moz-border-radius-bottomright: 5px;
+    display: none;
 }
 
 .domain-explorer-list {
@@ -140,12 +139,12 @@ DOMAIN EXPLORER
     color: #aaa;
 }
 
-#all-domains-pane ul {
+#pane-all ul {
     margin-left: 3.5em;
     font-size: 1.2em;
 }
 
-#all-domains-pane .letter {
+#pane-all .letter {
     display: block;
     font-size: 1.4em;
     margin: 5px 25px;

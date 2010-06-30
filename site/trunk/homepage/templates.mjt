@@ -33,7 +33,7 @@
   
 </acre:block>
 
-<acre:block def="domain_explorer(categories, grouped_domains)">
+<acre:block def="domain_explorer(categories, grouped_domains, loaded_categories)">
   <span id="domain-explorer-title">All Projects</span>
   <div id="domain-explorer-tabset">
     
@@ -44,14 +44,21 @@
         </a>
       </li>
       <li class="last">
-        <a href="#all-domains-pane" id="all-domains-tab">
+        <a href="#pane-all">
           <span>All</span>
         </a>
       </li>
     </ul>
     
     <div id="explorer-panes">
-      <div id="all-domains-pane">
+      <acre:block for="category in categories">
+        <div class="domain-explorer-pane" id="pane${category.id.replace(/\//g, '-')}">
+          <acre:block if="loaded_categories[category.id]">
+            ${explorer_panel(loaded_categories[category.id])}
+          </acre:block>
+        </div>
+      </acre:block>
+      <div class="domain-explorer-pane" id="pane-all">
         <div class="domains-toc">
           <acre:block for="letter in letters">
             <span acre:if="letter in grouped_domains" class="toc-letter">
@@ -60,7 +67,7 @@
             <span acre:else="" class="toc-letter">${letter}</span>
           </acre:block>
         </div>
-    
+        
         <acre:block for="letter, domains in grouped_domains">
           <a name="projects-group-${letter}" class="letter">${letter}</a>
           <ul>
@@ -71,7 +78,7 @@
             </li>
           </ul>
         </acre:block>
-    
+        
       </div>
     </div>
     <span id="pointer"><span id="pointer-text"></span></span>

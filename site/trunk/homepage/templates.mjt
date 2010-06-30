@@ -54,7 +54,7 @@
       <acre:block for="category in categories">
         <div class="domain-explorer-pane" id="pane${category.id.replace(/\//g, '-')}">
           <acre:block if="loaded_categories[category.id]">
-            ${explorer_panel(loaded_categories[category.id])}
+            ${category_panel(loaded_categories[category.id])}
           </acre:block>
         </div>
       </acre:block>
@@ -85,26 +85,42 @@
   </div>
 </acre:block>
 
-<acre:block def="explorer_panel(domains)">
-  <ul class="domain-explorer-list">
-    <li acre:for="domain in domains">
-      ${domain_panel(domain)}
+<acre:block def="category_panel(domains)">
+  <ul class="category-domain-list">
+    <li acre:for="domain in domains" class="domain-item clear">
+      ${domain_item(domain)}
     </li>
   </ul>
 </acre:block>
 
-<acre:block def="domain_panel(domain)">
-  <h3 class="domain-title">
-    <a href="${h.freebase_url('/view'+domain.id)}">${domain.name}</a>
-    <span class="topic-count">
-      ${domain.topic_count || 0}
-      ${(domain.topic_count === 1 ? 'topic' : 'topics')}
-    </span>
-  </h3>
+<acre:block def="activity_section(domain)">
+  <div class="domain-activity domain-section">
+    ${domain.activity.total.e} Assertions
+    ${domain.activity.total.t} Topics
+  </div>
+</acre:block>
+
+<acre:block def="domain_item(domain)">
+  <div class="domain-info domain-section">
+    <h3 class="domain-title">
+      <a href="${h.freebase_url('/view'+domain.id)}">${domain.name}</a>
+    </h3>
+    <div class="member-count">
+      ${domain.member_count > 100 ? 'more than 100' : domain.member_count || 0}
+      ${domain.member_count === 1 ? 'member' : 'members'}
+    </div>
+  </div>
   
-  <p acre:if="domain.description">${domain.description}</p>
+  ${activity_section(domain)}
   
-  <a href="${h.freebase_url('/view'+domain.id)}"
-     class="explore-link"
-     title="Explore ${domain.name}">Explore ${domain.name} &raquo;</a>
+  <div class="domain-contributor domain-section">
+    <acre:block if="domain.top_user">
+      <a href="${h.freebase_url('/view'+domain.top_user.id)}">
+        <img src="${acre.freebase.imgurl(domain.top_user.id, 60, 60, 'fill')}"
+             class="user-image"
+             width="60"
+             height="60"/>
+      </a>
+    </acre:block>
+  </div>
 </acre:block>

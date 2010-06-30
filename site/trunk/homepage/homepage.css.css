@@ -97,31 +97,26 @@ DOMAIN EXPLORER
 .domain-explorer-pane {
     float: left;
     padding: 1em 0;
-    background: #fff;
-    width: 43.9em;
+    background: #eee;
     border-left: 1px solid #dcdcdc;
     -webkit-border-bottom-right-radius: 5px;
     -moz-border-radius-bottomright: 5px;
     display: none;
 }
 
-.domain-explorer-list {
+.category-domain-list {
     list-style: none;
     margin: 0 2em;
 }
 
-.domain-explorer-list li {
+.category-domain-list li {
     padding-bottom: 1em;
     margin-bottom: 1em;
     border-bottom: 1px solid #cdcbcd;
 }
 
-.domain-explorer-list p {
+.category-domain-list p {
     margin-bottom: 0.6em;
-}
-
-.domain-explorer-list .explore-link {
-    font-size: 1.2em;
 }
 
 .domain-title {
@@ -160,6 +155,23 @@ DOMAIN EXPLORER
     text-transform: uppercase;
 }
 
+.domain-section {
+    float: left;
+    width: 20em;
+    height: 10em;
+}
+
+.domain-activity {
+    width: 250px;
+    background: #fff;
+}
+
+.user-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2em;
+}
 
 /*
 ---------------------

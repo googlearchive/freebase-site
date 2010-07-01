@@ -46,22 +46,18 @@ fb.homepage.init_activity_charts = function(scope) {
   $(".activity-chart", scope).each(function() {
     var $chart = $(this);
     var weeks = JSON.parse($chart.attr("data-activity"));
-    var r = Raphael($chart[0]);
+    var r = Raphael($chart[0], $chart.width(), $chart.height());
     
-    r.g.txtattr.font = "12px 'Fontin Sans', Fontin-Sans, sans-serif";
-    
-    var x = [], y = [], y2 = [], y3 = [];
-    for (var i = 0; i < 500; i++) {
+    var x = [], edits = [], fill = [], capacity = [];
+    for (var i = 0; i < weeks.length; i++) {
       x[i] = i * 10;
-      y[i] = (y[i - 1] || 0) + (Math.random() * 7) - 3;
-      y2[i] = (y2[i - 1] || 150) + (Math.random() * 7) - 3.5;
-      y3[i] = (y3[i - 1] || 300) + (Math.random() * 7) - 4;
+      edits.push(parseInt(weeks[i].e, 10));
+      capacity.push(parseInt(weeks[i].c, 10));
+      fill.push(parseInt(weeks[i].f, 10));
     }
     
-    r.g.text(160, 10, "Simple Line Chart");
-    
-    r.g.linechart(10, 10, 300, 220, x, [y, y2, y3]);
-    
+    r.g.linechart(0, 0, 175, 40, x, [edits], {colors: ["#c60"]});
+    r.g.linechart(0, 50, 175, 40, x, [fill, capacity]);
   });
 };
 

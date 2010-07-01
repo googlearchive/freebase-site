@@ -1,8 +1,8 @@
 
 var MF = {
   "apps" : {
-    "core" : "//core.site.freebase.dev",
-    "template" : "//template.site.freebase.dev",
+    "core" : "//5.core.site.freebase.dev",
+    "template" : "//6.template.site.freebase.dev",
     "libraries" : "//release.libraries.apps.freebase.dev",
     "schemaviz" : "//release.schemaviz.pak21.user.dev"
   },

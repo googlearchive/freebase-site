@@ -272,7 +272,7 @@ class AcrePush(object):
             
         if not (len(delete_files.keys()) or len(push_files.keys())):
             print "No files affected."
-            return
+            #return
 
         files_changed = set()
         if not (user and pw):

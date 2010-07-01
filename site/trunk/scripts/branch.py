@@ -125,9 +125,23 @@ def deploy_static_files(source_url, tmp_dir):
         
     mf = mf.get('result');
 
+    for key in ['stylesheet', 'javascript']:
+        for page in mf.get(key):
+            url = "%s/MANIFEST/%s" % (source_url, page)
+            filename = os.path.join(tmp_dir, page)
+            with open(filename, 'w') as temp:
+                for line in fetch_url(url):
+                    temp.write(line)
+    """
     # get each stylesheet page, cssmin and copy to outdir
     for page in mf.get('stylesheet'):
         url = "%s/MANIFEST/%s" % (source_url, page)
+        filename = os.path.join(tmp_dir, page)
+        with open(filename, "w") as temp:
+            for line in fetch_url(url):
+                temp.write(line)
+
+    
         css = ''.join(fetch_url(url))
         if not css:
             exit(-1)
@@ -136,15 +150,14 @@ def deploy_static_files(source_url, tmp_dir):
         with open(filename, "w") as f:
             f.write(min)
     
-        # get each javascript page, compile (closure compiler) and copy to outdir
+    # get each javascript page, compile (closure compiler) and copy to outdir
     for page in mf.get('javascript'):
         url = "%s/MANIFEST/%s" % (source_url, page)
-        
-        status, path = mkstemp(text=True)    
-        with open(path, 'w') as temp:
+        filename = os.path.join(tmp_dir, page)
+        with open(filename, 'w') as temp:
             for line in fetch_url(url):
                 temp.write(line)
-                
+  
         filename = os.path.join(tmp_dir, page)
     
         with open(filename, 'w') as outfile:
@@ -153,7 +166,7 @@ def deploy_static_files(source_url, tmp_dir):
 
         # delete temp file
         os.remove(path)
-
+        """
 
 
 def get_app(appid):
@@ -330,12 +343,16 @@ for app, appid, veresion in apps:
         continue
 
     status, path = mkstemp()
-    with open(path, "ab") as hash_file:
+    with open(path, "wb") as hash_file:
         print("hash_file: %s" % path)
         for f in files:
             with open(os.path.join(deployed_dir, f), "rb") as static_file:
                 print("static_file: %s" % os.path.join(deployed_dir, f))
-                hash_file.write(static_file.read())
+                while True:
+                    data = static_file.read(2**20)
+                    if not data:
+                        break
+                    hash_file.write(data)
 
     # deploy_rev is the md5 hash of all the static files sorted and concatenated together
     with open(path, "rb") as hash_file:
@@ -349,6 +366,24 @@ for app, appid, veresion in apps:
         # static files deploy directory already exist for the branch revision - no op
         continue
 
+    # css min
+    css_files = [f for f in os.listdir(deployed_dir) if os.path.splitext(f)[1].lower() == ".css"]
+    for css_file in css_files:
+        with open(css_file, "r") as infile:
+            min_css = cssmin(infile.read())
+        with open(css_file, "w") as outfile:
+            outfile.write(min_css)
+
+    # js min (closure compiler)
+    js_files = [f for f in os.listdir(deployed_dir) if os.path.splitext(f)[1].lower() == ".js"]
+    for js_file in js_files:
+        js_path = os.path.join(deployed_dir, js_file)
+        status, temppath = mkstemp()        
+        with open(temppath, "w") as tempfile:
+            cmd = [JAVA] + JAVA_OPTS + ["--js", js_path]
+            subprocess.call(cmd, stdout=tempfile)
+        shutil.copy2(temppath, js_path)
+        
     msg = 'Create static file deployed directory version {version} for app {app}'.format(version=deploy_rev, app=app)
     cmd = ['svn', 'import', deployed_dir, deployed_url, '-m', '"%s"' % msg]
     run_cmd(cmd)

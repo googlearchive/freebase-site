@@ -27,4 +27,4 @@ var MF = {
   }
 };
 
-acre.require(MF.apps.core + "/MANIFEST").init(MF, this);
+acre.require(MF.apps.core + "/MANIFEST").init(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/homepage/ea7d6bc470d6c3a3421474257d9feb29", "static_base_url": "http://freebaselibs.com/static/freebase_site/homepage/ea7d6bc470d6c3a3421474257d9feb29"});

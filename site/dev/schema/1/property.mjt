@@ -1,0 +1,81 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var c = this.exports.c = {};
+  
+  var h = mf.require("core", "helpers");
+
+ var id = acre.request.params.id || "";
+  if (id != "" && id.charAt(0) == '/') {
+    var query = acre.freebase.extend_query(mf.require("property-query").query, { "id" : id });
+    var result = acre.freebase.mqlread(query).result;
+    if (result != null) {
+      if ('/common/topic/article' in result && result['/common/topic/article'].length > 0) {
+        var blob = acre.freebase.get_blob(result['/common/topic/article'][0].id);
+        if (blob.body) {
+          var desc = blob.body;
+        }
+      }
+    }
+  }
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  <div class="page-header">
+    <h1 id="page-title">
+      Schema Explorer
+    </h1>
+  </div>
+  <div id="path">&raquo; <a href="${h.url_for('schema', 'index')}">Domains</a> &raquo; <a href="${h.url_for('schema', 'domain', [['id',result.schema.domain.id]])}">$result.schema.domain.id</a> &raquo; <a href="${h.url_for('schema', 'type', [['id',result.schema.id]])}">$result.schema.id</a> &raquo; <span>$result.id</span></div>
+</acre:block>
+
+<acre:block def="content_body()">
+  <acre:block if="result != null">
+    <div id="body">    
+      <table class="skeleton">
+        <tr>
+          <td class="subject" rowspan="2">
+            <a href="${h.url_for('schema', 'type', [['id',result.schema.id]])}">${result.schema.name}</a>
+          </td>
+          <td class="predicate">
+            <span class="current">$result.name.value <span class="attribute" acre:if="!result.master_property">master</span><span class="attribute" acre:if="result.unique">unique</span></span>
+          </td> 
+          <td class="object" rowspan="2">
+            <a href="${h.url_for('schema', 'type', [['id',result.expected_type.id]])}">${(result.expected_type.id.indexOf('/type/') == 0) ? result.expected_type.id : result.expected_type.name}</a> <span class="attribute" acre:if="result.expected_type['/freebase/type_hints/mediator']">mediator/CVT</span> <a class="attribute" acre:if="result.unit" href="${h.url_for('schema', 'type', [['id',result.unit.id]])}">$result.unit.name</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="rev_predicate" acre:if="result.reverse_property">
+            <a href="${h.url_for('schema', 'property', [['id',result.reverse_property.id]])}">${result.reverse_property.name}</a><span class="attribute" acre:if="!result.master_property">master</span>
+          </td>
+          <td acre:else>&nbsp;</td>
+        </tr>
+      </table>
+    
+      <div id="description" acre:if="desc">${acre.markup.bless(desc)}</div>
+    
+      <div class="tools">
+        <a href="${acre.freebase.service_url}/type/schema${id}" class="spaced">Edit Schema &raquo;</a><a href="http://www.freebase.com/tools/explore${id}">Explore View &raquo;</a>       
+      </div>
+    </div>
+
+  </acre:block>
+  <acre:block elif="id == ''">
+    <div id="error">Need to specify the <em>id</em> parameter</div>
+  </acre:block>
+  <acre:block elif="id.charAt(0) != '/'">
+    <div id="error"><em>${id}</em> is not a property ID</div>
+  </acre:block>
+  <acre:block else="">
+    <div id="error">No property found for <em>$id</em></div>
+  </acre:block>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="${mf.js_src('schema.mf.js')}"></script>
+</acre:block>
+
+${mf.require("template", "renderer").render_page(null, this.exports)}

@@ -1,0 +1,12 @@
+[{
+  "id":        null,
+  "type":      "/type/domain",
+  "name":      null,
+  "creator":   "/user/jdouglas",
+  "timestamp": null,
+  "/type/domain/types": [{
+    "id":            null,
+    "/freebase/type_profile/instance_count": null,
+    "limit": 1000
+  }]
+}]

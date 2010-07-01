@@ -1,11 +1,12 @@
 
 var MF = {
   "apps": {
-      "core": "//5.core.site.freebase.dev",
-      "template": "//6.template.site.freebase.dev",
-      "promise": "//3.promise.site.freebase.dev",
-      "libraries": "//2.libraries.apps.freebase.dev",
-      "raphael": "//raphael.site.freebase.dev"
+      "core": "//1.core.site.freebase.dev",
+      "template": "//1.template.site.freebase.dev",
+      "promise": "//1.promise.site.freebase.dev",
+      "raphael": "//1.raphael.site.freebase.dev",
+    
+      "libraries": "//2.libraries.apps.freebase.dev"
   },
   "stylesheet": {
     "index.mf.css": [

@@ -11,6 +11,7 @@ import shutil
 import re
 import acrepush
 from cssmin import cssmin
+import hashlib
 
 # acre graph mapping to host for appeditor web services, i.e., /appeditor/get_app
 GRAPH = {
@@ -32,7 +33,7 @@ OUTBOUND = ["outbound01.ops.sjc1.metaweb.com", "outbound02.ops.sjc1.metaweb.com"
 
 # recognized extensions for static files
 IMG_EXTENSIONS = [".png", ".gif", ".jpg"]
-EXTENSIONS = [".js", ".css", ".txt"] + IMG_EXTENSIONS
+EXTENSIONS = [".js", ".css", ".less", ".txt"] + IMG_EXTENSIONS
 
 JAVA = os.environ.get("JAVA_EXE", "java")
 COMPILER = os.path.join(dir.scripts, "compiler.jar")
@@ -220,6 +221,16 @@ def get_credentials():
     pw = getpass.getpass("Freebase Password: ")
     return (user, pw)
 
+def hash_for_file(f, block_size=2**20):
+    md5 = hashlib.md5()
+    while True:
+        data = f.read(block_size)
+        if not data:
+            break
+        md5.update(data)
+    return md5.hexdigest()
+
+
 # for each app name specified, determine
 # 1. app id (required)
 # 2. app version (required) - acre
@@ -271,12 +282,12 @@ for app, appid, version in apps:
 
 
 svn_temp_dirs = {}
-svn_branch_revs = {}
+svn_deploy_revs = {}
          
-# push to acre
-
+# get user credentials for pushing to acre
 user, pw = get_credentials()
 
+# push app branch to acre
 for app, appid, version in apps:
     branch = svn_dev_url(app, version)
     tempdir = mkdtemp() 
@@ -284,29 +295,73 @@ for app, appid, version in apps:
     svn_temp_dirs[branch] = tempdir
     cmd = ['svn', 'checkout', branch, tempdir]
     run_cmd(cmd)
+                    
+    # acre push branch
+    acrepush.push(appid, graph, tempdir, version=version, user=user, pw=pw)
 
-    cmd = ['svn', 'ls', branch]
-    files = run_cmd(cmd)
-    if files:
-        files = files.split("\n")
-        static_files = []
+# flag to tell us if we've created new freebaselibs deployed directory,
+# and if so, restart the outbound01/02 static servers
+restart_static_servers = False
+
+# determine if we need to create a new deploy revision by
+# 1. determine the md5 hash of all the img files + javascript/stylesheet manifests sorted and concatenated together.
+for app, appid, veresion in apps:
+    branch = svn_dev_url(app, version)
+    branch_dir = svn_temp_dirs[branch]
+
+    # 1. urlfetch static files from app url (*.mf.js/*.mf.css)
+    deployed_dir = mkdtemp()    
+    url = app_url(app, version)
+    #url = 'http://{app}.site.freebase.dev.acre.z:8115'.format(app=app)
+    deploy_static_files(url, deployed_dir)
+
+    # 2. svn list version and copy images (*.png, *.gif, etc.) to deployed_dir
+    img_files = [f for f in os.listdir(branch_dir) if os.path.splitext(f)[1].lower() in IMG_EXTENSIONS]    
+    for f in img_files:
+        src = os.path.join(branch_dir, f)
+        # in local acre dev, we use double extensions for static files including image files
+        # convert double extensions to single extension
+        dest = os.path.join(deployed_dir, os.path.splitext(f)[0])
+        shutil.copy2(src, dest)
+
+    # 3. if static files, import to svn deployed dir
+    files = sorted([f for f in os.listdir(deployed_dir) if os.path.splitext(f)[1].lower() in EXTENSIONS])
+    if not files:
+        continue
+
+    status, path = mkstemp()
+    with open(path, "ab") as hash_file:
+        print("hash_file: %s" % path)
         for f in files:
-            for ext in EXTENSIONS:
-                if f.endswith(ext):
-                    static_files.append(f)
-        if static_files:
-            svn_branch_revs[branch] = svn_revision(branch, files=static_files)
+            with open(os.path.join(deployed_dir, f), "rb") as static_file:
+                print("static_file: %s" % os.path.join(deployed_dir, f))
+                hash_file.write(static_file.read())
 
-    if not svn_branch_revs.get(branch):
-        svn_branch_revs[branch] = svn_revision(branch)
+    # deploy_rev is the md5 hash of all the static files sorted and concatenated together
+    with open(path, "rb") as hash_file:
+        deploy_rev = hash_for_file(hash_file)
+
+    deployed_url = svn_deployed_url(app, deploy_rev)
+    cmd = ['svn', 'ls', deployed_url]
+    r = run_cmd(cmd, exit=False)
+    
+    if r != -1:
+        # static files deploy directory already exist for the branch revision - no op
+        continue
+
+    msg = 'Create static file deployed directory version {version} for app {app}'.format(version=deploy_rev, app=app)
+    cmd = ['svn', 'import', deployed_dir, deployed_url, '-m', '"%s"' % msg]
+    run_cmd(cmd)
+    
+    restart_static_servers = True 
 
     # update MANIFEST static_base_url
-    base_url = "http://freebaselibs.com/static/freebase_site/{app}/{rev}".format(app=app, rev=svn_branch_revs[branch])
+    base_url = "http://freebaselibs.com/static/freebase_site/{app}/{rev}".format(app=app, rev=deploy_rev)
     cfg = json.dumps({
         "static_base_url": base_url,
         "image_base_url": base_url
     })
-    manifest = os.path.join(tempdir, "MANIFEST.sjs")
+    manifest = os.path.join(branch_dir, "MANIFEST.sjs")
     if os.path.exists(manifest):
         init_re = re.compile(r'\.init\s*\(\s*MF\s*\,\s*this.*$')
         temp = mkstemp()
@@ -317,59 +372,12 @@ for app, appid, version in apps:
         shutil.copy2(temp[1], manifest)
         
         msg = 'Update MANIFEST static_base_url'
-        svn_commit(tempdir, msg)
-    
-    # acre push branch
-    acrepush.push(appid, graph, tempdir, version=version, user=user, pw=pw)
+        svn_commit(branch_dir, msg)    
 
+        # acre push branch
+        acrepush.push(appid, graph, branch_dir, version=version, user=user, pw=pw)
 
-# flag to tell us if we've created new freebaselibs deployed directory,
-# and if so, restart the outbound01/02 static servers
-restart_static_servers = False
-
-# copy to /deloy (for static server - freebaselibs.com)
-for app, appid, version in apps:
-    # get svn revision of branch (cached above)
-    branch = svn_dev_url(app, version)
-    branch_rev = svn_branch_revs[branch]
-    
-    deployed = svn_deployed_url(app, branch_rev)
-    cmd = ['svn', 'ls', deployed]
-    r = run_cmd(cmd, exit=False)
-    
-    if r != -1:
-        # static files deploy directory already exist for the branch revision - no op
-        continue
-
-    # 1. urlfetch static files from app url (js/css)
-    tempdir = mkdtemp()
-    # keep track of all svn checkouts to temporary directories
-    svn_temp_dirs[deployed] = tempdir
-    url = app_url(app, version)
-    #url = 'http://{app}.site.freebase.dev.acre.z:8115'.format(app=app)
-    deploy_static_files(url, tempdir)
-    #cmd = [os.path.join(dir.scripts, 'deploy.py'),
-    #       '-s', url, '-d', tempdir]
-    #run_cmd(cmd, name='urlfetch')
-
-    # 2. svn list version and copy images (*.png, *.gif, etc.) to tempdir
-    branch_dir = svn_temp_dirs[branch]
-    img_files = [f for f in os.listdir(branch_dir) if os.path.splitext(f)[1].lower() in IMG_EXTENSIONS]    
-    for f in img_files:
-        src = os.path.join(branch_dir, f)
-        # in local acre dev, we use double extensions for static files including image files
-        # convert double extensions to single extension
-        dest = os.path.join(tempdir, os.path.splitext(f)[0])
-        shutil.copy2(src, dest)    
-
-    # 3. if static files, import to svn deployed dir
-    files = [f for f in os.listdir(tempdir)]
-    if files:
-        msg = 'Create static file deployed directory version {version} for app {app}'.format(version=branch_rev, app=app)
-        cmd = ['svn', 'import', tempdir, deployed, '-m', '"%s"' % msg]
-        run_cmd(cmd)
-        restart_static_servers = True
-
+    svn_deploy_revs[branch] = deploy_rev
 
 # repush tip of svn:trunk to acre:trunk
 for app, appid, version in apps:

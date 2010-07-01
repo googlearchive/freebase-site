@@ -1,8 +1,8 @@
 
 var MF = {
   "apps": {
-    "core": "//5.core.site.freebase.dev",
-    "template": "//6.template.site.freebase.dev"
+    "core": "//1.core.site.freebase.dev",
+    "template": "//1.template.site.freebase.dev"
   },
   stylesheet: {
     "error.mf.css": [

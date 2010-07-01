@@ -11,4 +11,4 @@ var MF = {
   }
 };
 
-acre.require(MF.apps.core + "/MANIFEST").init(MF, this);
+acre.require(MF.apps.core + "/MANIFEST").init(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/jqueryui/071389aa94f81c4cc479013e38e93784", "static_base_url": "http://freebaselibs.com/static/freebase_site/jqueryui/071389aa94f81c4cc479013e38e93784"});

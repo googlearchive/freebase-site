@@ -1,0 +1,157 @@
+<acre:script>
+  console.log(acre.request.app_url, acre.request.base_path || null, acre.request.path_info);
+
+  var mf = acre.require("MANIFEST").MF;
+  var c = this.exports.c = {};
+  
+  var h = mf.require("core", "helpers");
+  
+  var utils = mf.require("utils");
+  
+  var order = acre.request.params.order || 'name';
+  var dir = acre.request.params.dir || 'asc';
+  var user_id = acre.request.params.user_id;
+  var inv_dir = (dir == 'asc') ? 'desc' : 'asc';
+  var indicator = (dir == 'asc') ? '▲' : '▼';
+
+  if (!user_id) {
+    var query = mf.require("index-query").query;
+  } else {
+    var query = mf.require("user-domains-query").query;
+    query = acre.freebase.extend_query(query, { "creator" : user_id });
+  }
+  var result = acre.freebase.mqlread(query).result;
+  var ds = (user_id) ? result : result['/type/namespace/keys'];
+  var domains = [];
+  var domains_ids = {};
+  
+  for each (var d in ds) {
+    if (!user_id) d = d.namespace;
+    if (typeof domains_ids[d.id] == "undefined") {
+      var instances = 0;
+      var types = 0;
+      for each (var t in d['/type/domain/types']) {
+        types++;
+        if ('/freebase/type_profile/instance_count' in t) {
+          instances += t['/freebase/type_profile/instance_count'];
+        }
+      }
+      d.instance_count = instances;
+      d.type_count = types;
+      d.date = h.parse_date(acre.freebase.date_from_iso(d.timestamp));
+      domains.push(d);
+      domains_ids[d.id] = true;
+    }
+  }    
+  
+  if (order == 'id') {
+    domains.sort((dir == 'asc') ? utils.id_sort_asc : utils.id_sort_desc);
+  } else if (order == 'types') {
+    domains.sort((dir == 'asc') ? utils.types_sort_asc : utils.types_sort_desc);
+  } else if (order == 'instances') {
+    domains.sort((dir == 'asc') ? utils.instances_sort_asc : utils.instances_sort_desc);
+  } else if (order == 'creation') {
+    domains.sort((dir == 'asc') ? utils.creation_sort_asc : utils.creation_sort_desc);
+  } else {
+    domains.sort((dir == 'asc') ? utils.name_sort_asc : utils.name_sort_desc);
+  }
+</acre:script>
+
+<acre:block def="title()">
+  All Domains
+</acre:block>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  <div class="page-header">
+    <h1 id="page-title">
+      Schema Explorer
+    </h1>
+  </div>
+  <div id="path" acre:if="user_id">
+    &raquo; <a href="${h.url_for('schema', 'index')}">Domains</a> &raquo; <span>${user_id}'s Domains</span>
+  </div>
+</acre:block>
+
+<acre:block def="content_body()">
+  <div id="body">  
+    <table>
+      <tr>
+        <td>
+          <form id="type_form" action="type" method="GET">   
+            Search for a <em>Type</em> ¬<br/>
+            <input id="type" type="text" name="id" value=""/>   
+          </form>
+        </td>
+        <td>
+          <form id="property_form" action="property" method="GET">   
+            Search for a <em>Property</em> ¬<br/>
+            <input id="property" type="text" name="id" value=""/>   
+          </form>
+        </td>
+      </tr>
+    </table>
+  
+    <div class="table_box">
+      <h2>Domains <acre:block if="user_id">of $user_id</acre:block></h2>
+      <table>
+        <tr>
+          <th><a href="?order=name&dir=${order == 'name' ? inv_dir : dir}${user_id ? '&user_id=' + user_id : ''}" title="order by name">domain name <span acre:if="order == 'name'">${indicator}</span></a></th>
+          <th><a href="?order=id&dir=${order == 'id' ? inv_dir : dir}${user_id ? '&user_id=' + user_id : ''}" title="order by id">domain id <span acre:if="order == 'id'">${indicator}</span></a></th>
+          <th class="numeric"><a href="?order=types&dir=${order == 'types' ? inv_dir : dir}${user_id ? '&user_id=' + user_id : ''}" title="order by number of types"># of types <span acre:if="order == 'types'">${indicator}</span></a></th>
+          <th class="numeric"><a href="?order=instances&dir=${order == 'instances' ? inv_dir : dir}${user_id ? '&user_id=' + user_id : ''}" title="order by number of instances"># of instances <span acre:if="order == 'instances'">${indicator}</span></a></th>
+          <th class="numeric"><a href="?order=creation&dir=${order == 'creation' ? inv_dir : dir}${user_id ? '&user_id=' + user_id : ''}" title="order by date of creation">creation date <span acre:if="order == 'creation'">${indicator}</span></a></th>
+        </tr>
+      
+        <tr acre:for="d in domains" acre:if="!d['/freebase/domain_profile/hidden']">
+          <td><a href="${h.url_for('schema', 'domain', [['id',d.id]])}">${d.name}</a></td>
+          <td>${d.id}</td>
+          <td class="numeric">${ (d.type_count > 0) ? h.commafy(d.type_count) : "-"}</td>
+          <td class="numeric">${ (d.instance_count > 0) ? h.commafy(d.instance_count) : "-"}</td>
+          <td class="numeric">${ h.format_date(d.date, "yyyy-MM-dd")}</td>
+        </tr>
+      </table>
+    </div>
+  
+    <div class="tools">
+      <h1>All Bases and User Domains</h1>
+      <table>
+        <tr>
+          <td>
+            <form id="all_type_form" action="type" method="GET">   
+              Search for a <em>Type</em> ¬<br/>
+              <input id="all_type" type="text" name="id" value=""/>   
+            </form>
+          </td>
+          <td>
+            <form id="all_property_form" action="property" method="GET">   
+              Search for a <em>Property</em> ¬<br/>
+              <input id="all_property" type="text" name="id" value=""/>   
+            </form>
+          </td>
+          <td>
+            <form id="domain_form" action="domain" method="GET">   
+              Search for a <em>Domain</em> ¬<br/>
+              <input id="domain" type="text" name="id" value=""/>   
+            </form>   
+          </td>
+          <td>
+            <form id="user_form" action="" method="GET">   
+              List all domains of a <em>User</em> ¬<br/>
+              <input id="user" type="text" name="user_id" value=""/>   
+            </form> 
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="${mf.js_src('schema.mf.js')}"></script>
+</acre:block>
+
+${mf.require("template", "renderer").render_page(null, this.exports)}

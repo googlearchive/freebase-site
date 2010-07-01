@@ -1,0 +1,205 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var h = mf.require("core", "helpers");
+  var c = this.exports.c = {};
+
+  var utils = mf.require("utils");
+    
+  var order = acre.request.params.order || 'name';
+  var dir = acre.request.params.dir || 'asc';
+  var inv_dir = (dir == 'asc') ? 'desc' : 'asc';
+  var indicator = (dir == 'asc') ? '▲' : '▼';  
+  var id = acre.environ.params.id || "";
+  if (id != '' && id.charAt(0) == '/') {
+    var q = mf.require("domain-query").query;
+    q = acre.freebase.extend_query(q, {"id": id});
+    var result = acre.freebase.mqlread(q).result;
+    if (result != null) {
+      var types = result.types;
+      var mediators = [];
+      
+      for each (var t in types) {
+        t.date = h.parse_date(acre.freebase.date_from_iso(t.timestamp));
+        t.instance_count = t["/freebase/type_profile/instance_count"];
+        if (t['/freebase/type_hints/mediator']) {
+          mediators.push(t);
+        }
+        utils.fix_id(t);
+      }
+      
+      if (order == 'id') {
+        types.sort((dir == 'asc') ? utils.id_sort_asc : utils.id_sort_desc);
+        mediators.sort((dir == 'asc') ? utils.id_sort_asc : utils.id_sort_desc);
+      } else if (order == 'properties') {
+        types.sort((dir == 'asc') ? utils.properties_sort_asc : utils.properties_sort_desc);
+        mediators.sort((dir == 'asc') ? utils.properties_sort_asc : utils.properties_sort_desc);
+      } else if (order == 'instances') {
+        types.sort((dir == 'asc') ? utils.instances_sort_asc : utils.instances_sort_desc);
+        mediators.sort((dir == 'asc') ? utils.instances_sort_asc : utils.instances_sort_desc);
+      } else if (order == 'creation') {
+        types.sort((dir == 'asc') ? utils.creation_sort_asc : utils.creation_sort_desc);
+        mediators.sort((dir == 'asc') ? utils.creation_sort_asc : utils.creation_sort_desc);
+      } else {
+        types.sort((dir == 'asc') ? utils.name_sort_asc : utils.name_sort_desc);
+        mediators.sort((dir == 'asc') ? utils.name_sort_asc : utils.name_sort_desc);
+      }
+      
+      if ('/common/topic/article' in result && result['/common/topic/article'].length > 0) {
+        var blob = acre.freebase.get_blob(result['/common/topic/article'][0].id);
+        if (blob.body) {
+          var desc = blob.body;
+        }
+      }
+      
+      try {
+        var graph = mf.require('schemaviz' ,'graph');
+        var gv = graph.graphviz(graph.dot(result.id, acre.request.params));
+      } catch (e) {
+        var gv = { imageurl : null };
+      }
+    }
+  }
+</acre:script>
+
+<acre:block def="title()">
+  $result.name <span class="type">domain</span>
+</acre:block>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  <div class="page-header">
+    <h1 id="page-title">
+      Schema Explorer
+    </h1>
+  </div>
+  <div if="result" id="path">&raquo; <a href="${h.url_for('schema', 'index')}">Domains</a> &raquo; <span>$result.id</span></div>
+</acre:block>
+
+<acre:block def="content_body(g)">
+  <acre:block if="result">
+      <div id="body">
+      <div id="description" acre:if="desc">${acre.markup.bless(desc)}</div>
+    
+      <acre:block if="result['/type/namespace/keys'].length > 0">
+        <acre:script>
+          result['/type/namespace/keys'].sort(function(a,b) {
+            return a.namespace.id.localeCompare(b.namespace.id);
+          });
+        </acre:script>
+      
+        <div class="table_box">
+          <h2>Subdomains</h2>
+          <table>
+            <tr>
+              <th>domain name</th>
+              <th>domain id</th>
+              <th class="numeric"># of types</th>
+              <th class="numeric"># of instances</th>
+            </tr>
+          
+            <tr acre:for="v in result['/type/namespace/keys']">
+              <acre:script>
+                var d = v.namespace;
+                var types = 0;
+                var instances = 0;
+                for each (var t in d.types) {
+                  types++;
+                  if ('/freebase/type_profile/instance_count' in t) {
+                    instances += t['/freebase/type_profile/instance_count'];
+                  }
+                }
+              </acre:script>
+              <td><a href="${h.url_for('schema', 'domain', [['id',d.id]])}">${d.name}</a></td>
+              <td>${d.id}</td>
+              <td class="numeric">${(types > 0) ? h.commafy(types) : "-"}</td>
+              <td class="numeric">${(instances > 0) ? h.commafy(instances) : "-"}</td>
+            </tr>
+          </table>
+        </div>
+      </acre:block>
+    
+      <div class="table_box">
+        <h2>Types</h2>
+        <table>
+          <tr>
+            <th><a href="?id=${acre.form.quote(result.id)}&order=name&dir=${order == 'name' ? inv_dir : dir}">type name <span acre:if="order == 'name'">${indicator}</span></a></th>
+            <th><a href="?id=${acre.form.quote(result.id)}&order=id&dir=${order == 'id' ? inv_dir : dir}">type id <span acre:if="order == 'id'">${indicator}</span></a></th>
+            <th class="numeric"><a href="?id=${acre.form.quote(result.id)}&order=properties&dir=${order == 'properties' ? inv_dir : dir}"># of properties <span acre:if="order == 'properties'">${indicator}</span></a></th>
+            <th class="numeric"><a href="?id=${acre.form.quote(result.id)}&order=instances&dir=${order == 'instances' ? inv_dir : dir}"># of instances <span acre:if="order == 'instances'">${indicator}</span></a></th>
+            <th class="numeric"><a href="?id=${acre.form.quote(result.id)}&order=creation&dir=${order == 'creation' ? inv_dir : dir}">creation date <span acre:if="order == 'creation'">${indicator}</span></a></th>
+          </tr>
+          <tr acre:for="i,t in types" acre:if="!t['/freebase/type_hints/mediator']" class="${(i % 2 == 0) ? 'odd' : 'even'}">
+            <td><a href="${h.url_for('schema', 'type', [['id',t.id]])}">$t.name</a></td>
+            <td>$t.id</td>
+            <td class="numeric">$t.properties.length</td>
+            <td class="numeric"><a href="${acre.freebase.service_url}/view${t.id}">${h.commafy(t['/freebase/type_profile/instance_count'])}</a></td>
+            <td class="numeric">${t.date.toString("yyyy-MM-dd")}</td>
+          </tr>
+        </table>
+      </div>
+    
+      <acre:block if="mediators.length > 0">
+        <div class="table_box">
+          <h2>Mediators/CVTs</h2>
+          <table>
+            <tr>
+              <th><a href="?id=${acre.form.quote(result.id)}&order=name&dir=${order == 'name' ? inv_dir : dir}">type name <span acre:if="order == 'name'">${indicator}</span></a></th>
+              <th><a href="?id=${acre.form.quote(result.id)}&order=id&dir=${order == 'id' ? inv_dir : dir}">type id <span acre:if="order == 'id'">${indicator}</span></a></th>
+              <th class="numeric"><a href="?id=${acre.form.quote(result.id)}&order=properties&dir=${order == 'properties' ? inv_dir : dir}"># of properties <span acre:if="order == 'properties'">${indicator}</span></a></th>
+              <th class="numeric"><a href="?id=${acre.form.quote(result.id)}&order=instances&dir=${order == 'instances' ? inv_dir : dir}"># of instances <span acre:if="order == 'instances'">${indicator}</span></a></th>
+              <th class="numeric"><a href="?id=${acre.form.quote(result.id)}&order=creation&dir=${order == 'creation' ? inv_dir : dir}">creation date <span acre:if="order == 'creation'">${indicator}</span></a></th>
+            </tr>
+            <tr acre:for="i,t in mediators" class="${(i % 2 == 0) ? 'odd' : 'even'}">
+              <td><a href="${h.url_for('schema', 'type', [['id',t.id]])}">$t.name</a></td>
+              <td>$t.id</td>
+              <td class="numeric">$t.properties.length</td>
+              <td class="numeric"><a href="${acre.freebase.service_url}/view${t.id}">${h.commafy(t['/freebase/type_profile/instance_count'])}</a></td>
+              <td class="numeric">${h.format_date(t.date,"yyyy-MM-dd")}</td>
+            </tr>
+          </table>
+        </div>
+      </acre:block>
+    
+      <div id="schemaviz" acre:if="gv.imageurl">
+        <h2>Visual Map</h2>
+        <div class="map"><a title="Click to see $result.name's schema visual map in full size" href="http://schemaviz.freebaseapps.com/?domain=$result.id"><img src="${gv.imageurl}"></a></div>
+      </div> 
+    
+      <div class="tools">
+        <h1>Administrators</h1>
+        <acre:block if="result.owners">
+          <table acre:for="group in result.owners">
+            <tr>
+              <td>${group.name}: </td>
+              <td>
+                <span acre:for="i,member in group.member"><span acre:if="i > 0">, </span><a href="$acre.freebase.service_url/view$member.id">$member.name</a></span>
+              </td>
+            </tr>
+          </table>
+        </acre:block>
+        <acre:block else="">
+          No administrators for this domain!
+        </acre:block>
+      </div>      
+    </div>
+  
+  </acre:block>
+  <acre:block elif="id == ''">
+    <div id="error">Need to specify the <em>id</em> parameter</div>
+  </acre:block>
+  <acre:block elif="id.charAt(0) != '/'">
+    <div id="error"><em>${id}</em> is not a domain ID</div>
+  </acre:block>
+  <acre:block else="">
+    <div id="error">No domain found for <em>$id</em></div>
+  </acre:block>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="${mf.js_src('schema.mf.js')}"></script>
+</acre:block>
+
+${mf.require("template", "renderer").render_page(null, this.exports)}

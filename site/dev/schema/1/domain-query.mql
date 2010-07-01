@@ -1,0 +1,60 @@
+{
+  "id":   "/freebase",
+  "type": "/type/domain",
+  "name": null,
+  "/type/namespace/keys": [{
+    "optional": true,
+    "value":    null,
+    "namespace": {
+      "id":   null,
+      "name": null,
+      "type": "/type/domain",
+      "types": [{
+        "id":            null,
+        "/freebase/type_profile/instance_count": null,
+        "limit" : 1000
+      }]
+    },
+    "limit" : 1000
+  }],
+  "types": [{
+    "optional":      true,
+    "id":            null,
+    "name":          null,
+    "timestamp":     null,
+    "properties":    [],
+    "/type/reflect/any_reverse": {
+      "link": {
+        "master_property": "/freebase/type_hints/hinted_type"
+      },
+      "mediator": null,
+      "optional": true,
+      "type":     "/freebase/type_hints",
+      "limit":    1
+    },
+    "key": [{
+      "namespace": null,
+      "value": null
+    }],
+    "/freebase/type_profile/instance_count": null,
+    "/freebase/type_hints/mediator": null,
+    "limit" : 1000
+  }],
+  "owners": [{
+    "optional": true,
+    "id":       null,
+    "name":     null,
+    "member": [{
+      "optional": true,
+      "name":     null,
+      "sort":     "name",
+      "id":       null,
+      "type":     "/freebase/user_profile"
+    }]
+  }],
+  "/common/topic/article": [{
+    "optional": true,
+    "id":       null,
+    "limit":    1
+  }]
+}

@@ -103,8 +103,10 @@ var domains_for_category = function(category_id) {
       
       // Get activity for each domain
       domains.forEach(function(domain) {
-        promises.push(deferred.resolved(example_domain_data)
+        promises.push(freebase.get_static("activity", "summary_"+domain.id)
           .then(function(activity) {
+            if (!activity) return null;
+            
             domain.activity = activity;
             
             domain.top_user = get_top_user(activity.users.h);

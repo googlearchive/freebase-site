@@ -53,7 +53,7 @@
     <div id="explorer-panes">
       <acre:block for="category in categories">
         <div class="domain-explorer-pane" id="pane${category.id.replace(/\//g, '-')}">
-          <acre:block if="loaded_categories[category.id]">
+          <acre:block if="loaded_categories && loaded_categories[category.id]">
             ${category_panel(loaded_categories[category.id])}
           </acre:block>
         </div>
@@ -94,9 +94,28 @@
 </acre:block>
 
 <acre:block def="activity_section(domain)">
-  <div class="domain-activity domain-section">
-    ${domain.activity.total.e} Assertions
-    ${domain.activity.total.t} Topics
+  <div acre:if="domain.activity" 
+       class="domain-activity domain-section">
+    <div class="activity-chart" data-activity="${JSON.stringify(domain.activity.weeks)}">
+    </div>
+    <div class="activity-stats">
+      <div class="activity-assertions">
+        <div class="activity-stats-number">
+          ${domain.activity.total.e}
+        </div>
+        <div class="activity-stats-label">
+          ${domain.activity.total.t === 1 ? 'assertion' : 'assertions'}
+        </div>
+      </div>
+      <div class="activity-topics">
+        <div class="activity-stats-number">
+          ${domain.activity.total.t}
+        </div>
+        <div class="activity-stats-label">
+          ${domain.activity.total.t === 1 ? 'topic' : 'topics'}
+        </div>
+      </div>
+    </div>
   </div>
 </acre:block>
 

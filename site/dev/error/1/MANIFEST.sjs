@@ -16,4 +16,4 @@ var MF = {
   }
 };
 
-acre.require(MF.apps.core + "/MANIFEST").init(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/error/0a43c2ae8f07ab03b49c367157a043c6", "static_base_url": "http://freebaselibs.com/static/freebase_site/error/0a43c2ae8f07ab03b49c367157a043c6"});
+acre.require(MF.apps.core + "/MANIFEST").init(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/error/6f9a14a63c14a582938acc97a57f8010", "static_base_url": "http://freebaselibs.com/static/freebase_site/error/6f9a14a63c14a582938acc97a57f8010"});

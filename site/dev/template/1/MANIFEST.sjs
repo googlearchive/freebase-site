@@ -30,4 +30,4 @@ var MF = {
 };
 MF.suggest.base_url += MF.suggest.version;
 
-acre.require(MF.apps.core + "/MANIFEST").init(MF, this);
+acre.require(MF.apps.core + "/MANIFEST").init(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/template/17e2b8015538c0251139be4a98a25136", "static_base_url": "http://freebaselibs.com/static/freebase_site/template/17e2b8015538c0251139be4a98a25136"});

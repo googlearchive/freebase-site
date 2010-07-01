@@ -1,8 +1,0 @@
-[{
-  "id": null,
-  "name": null,
-  "/common/topic/article": {"mid": null, "limit": 1, "optional": true},
-  "type": "/type/domain",
-  "!/freebase/domain_category/domains": {"id": null},
-  "sort": "name"
-}]

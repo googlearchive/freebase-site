@@ -9,6 +9,8 @@
 </acre:block>
 
 <acre:block def="content_body()">
+<header class="project-header commons-header">
+</header>
   <section id="content-main">
     ${templates.domain_explorer(c.categories, c.grouped_domains, c.loaded_categories)}
   </section>

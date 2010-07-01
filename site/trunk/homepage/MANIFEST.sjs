@@ -10,7 +10,7 @@ var MF = {
   "stylesheet": {
     "index.mf.css": [
       ["template", "MANIFEST", "/freebase.mf.css"],
-      "homepage.css"
+      "homepage.less"
     ]
   },
   "javascript": {

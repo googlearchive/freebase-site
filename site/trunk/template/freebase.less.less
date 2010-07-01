@@ -176,20 +176,8 @@ Header
     z-index: 10; /* for Freebase Suggest */
     min-height: 34px;
     min-width: 96em;
-    /* background: #ff6702 url(static:///resources/images/ui/sprite-vert.png) repeat-x 0 0; */
     border-bottom: 1px solid #fb3;
-    background-image: -webkit-gradient(
-        linear,
-        left top,
-        left bottom,
-        color-stop(0.22, rgb(255,133,51)),
-        color-stop(0.61, rgb(220,88,0))
-    );
-    background-image: -moz-linear-gradient(
-         center top,
-         rgb(255,133,51) 22%,
-         rgb(220,88,0) 61%
-    );
+    .linear_gradient(#ff8533, #dd5800, repeat);
     border-bottom: 1px solid #fb3;
     border-top: 1px solid #ffaa66;
 }
@@ -286,14 +274,14 @@ NAV
     -moz-border-radius-topleft: 5px;
     -webkit-border-top-right-radius: 5px; 
     -webkit-border-top-left-radius: 5px;
-    .box_shadow(1px, 1px, 6px, #666);
+    /* .box_shadow(1px, 1px, 6px, #000); */
 }
 
 #nav-global li:hover {
     background-color: rgba(0,0,0,0.8);
     moz-border-radius: 5px;
     -webkit-border-radius: 5px;
-    .box_shadow(1px, 1px, 6px, #666);
+    /* .box_shadow(1px, 1px, 6px, #000); */
 }
 
 
@@ -304,7 +292,7 @@ NAV
     -moz-border-radius-bottomleft: 0px;
     -webkit-border-bottom-right-radius: 0px; 
     -webkit-border-bottom-left-radius: 0px;
-    .box_shadow(1px, 1px, 6px, #666);
+   /*  .box_shadow(1px, 1px, 6px, #000); */
 }
 
 

@@ -19,8 +19,12 @@
   <section id="content-main">
     ${templates.domain_explorer(c.categories, c.grouped_domains, c.loaded_categories)}
   </section>
-  <section id="content-sub">
-    fdsahjfdhsajkfhdjska fhjkdas hfjkdshfjkdshfjksdlhfjkadsl hjkfdals
+  <section id="content-side">
+    ${templates.help_build()}
+    ${templates.blog_entries()}
+    ${templates.wiki_entries()}
+    ${templates.using_fb_data()}
+    ${templates.get_gridworks()}
   </section>
 </acre:block>
 

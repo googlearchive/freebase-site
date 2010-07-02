@@ -96,10 +96,14 @@
 <acre:block def="activity_section(domain)">
   <div acre:if="domain.activity" 
        class="domain-activity domain-section">
-    <div class="activity-chart" data-activity="${JSON.stringify(domain.activity.weeks)}">
-    </div>
-    <div class="activity-stats">
-      <div class="activity-assertions">
+       
+    <div class="activity-stats-top">
+      <div class="activity-label-assertions">
+        assertions
+      </div>
+      <div class="activity-chart-assertions" data-activity="${JSON.stringify(domain.activity.weeks)}">
+      </div>
+      <div class="activity-stats-assertions">
         <div class="activity-stats-number">
           ${domain.activity.total.e}
         </div>
@@ -107,7 +111,15 @@
           ${domain.activity.total.t === 1 ? 'assertion' : 'assertions'}
         </div>
       </div>
-      <div class="activity-topics">
+    </div>
+    
+    <div class="activity-stats-bottom">
+      <div class="activity-label-coverage">
+        coverage
+      </div>
+      <div class="activity-chart-coverage" data-activity="${JSON.stringify(domain.activity.weeks)}">
+      </div>
+      <div class="activity-stats-topics">
         <div class="activity-stats-number">
           ${domain.activity.total.t}
         </div>
@@ -116,6 +128,7 @@
         </div>
       </div>
     </div>
+    
   </div>
 </acre:block>
 

@@ -54,10 +54,6 @@ DOMAIN EXPLORER
     background: #f0f2f3;
     padding: 8px 10px;
     border-bottom: 1px solid #dcdbdc;
-    -webkit-border-top-left-radius: 5px;
-    -webkit-border-top-right-radius: 5px;
-    -moz-border-radius-topleft: 5px;
-    -moz-border-radius-topright: 5px;
 }
 
 #domain-explorer-tabset {
@@ -191,52 +187,86 @@ DOMAIN EXPLORER
     height: 10em;
 }
 
-.domain-activity {
+.activity-chart-assertions {
+    float: left;
+    height: 50px;
+    width: 150px;
+    margin-left: 5px;
+    overflow: hidden;
+}
+
+.activity-chart-coverage {
+    float: left;
+    height: 50px;
+    width: 150px;
+    margin-left: 5px;
+    overflow: hidden;
+}
+
+.activity-stats-top {
+    height: 50px;
     width: 27em;
+    margin-right: 2px;
+    margin-bottom: 2px;
     background: #fff;
     
     -webkit-border-top-right-radius: 5px;
     -moz-border-radius-topright: 5px;
     -webkit-border-top-left-radius: 5px;
     -moz-border-radius-topleft: 5px;
+}
+
+.activity-stats-bottom {
+    height: 50px;
+    width: 27em;
+    margin-right: 2px;
+    margin-top: 2px;
+    background: #fff;
+    
     -webkit-border-bottom-right-radius: 5px;
     -moz-border-radius-bottomright: 5px;
     -webkit-border-bottom-left-radius: 5px;
     -moz-border-radius-bottomleft: 5px;
 }
 
-.activity-chart {
-    float: left;
-    height: 10em;
-    width: 175px;
-    margin-left: 2px;
-    overflow: hidden;
+.activity-label-assertions {
+  float: left;
+  color: #c60;
+  line-height: 50px;
+  margin-left: 2px;
 }
 
-.activity-stats {
-    float: right;
-    height: 9em;
-    width: 65px;
-    margin-right: 2px;
-    color: #fff;
+.activity-label-coverage {
+  float: left;
+  color: #669;
+  line-height: 50px;
+  margin-left: 2px;
 }
 
-.activity-assertions {
+.activity-stats-assertions {
     background: #c60;
-    height: 4em;
-    margin: 2px;
+    height: 44px;
+    width: 60px;
+    margin-top: 2px;
+    margin-right: 2px;
     padding: 2px;
+    float: right;
+    color: #fff;
     -webkit-border-top-right-radius: 5px;
     -moz-border-radius-topright: 5px;
     -webkit-border-top-left-radius: 5px;
     -moz-border-radius-topleft: 5px;
 }
 
-.activity-topics {
+.activity-stats-topics {
     background: #669;
-    height: 4em;
-    margin: 2px;
+    height: 44px;
+    width: 60px;
+    margin-bottom: 2px;
+    margin-right: 2px;
     padding: 2px;
+    float: right;
+    color: #fff;
     -webkit-border-bottom-right-radius: 5px;
     -moz-border-radius-bottomright: 5px;
     -webkit-border-bottom-left-radius: 5px;

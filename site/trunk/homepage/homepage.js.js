@@ -43,21 +43,36 @@ $.tools.tabs.addEffect("load_pane", function(i, done) {
 });
 
 fb.homepage.init_activity_charts = function(scope) {
-  $(".activity-chart", scope).each(function() {
+  $(".activity-chart-assertions", scope).each(function() {
     var $chart = $(this);
     var weeks = JSON.parse($chart.attr("data-activity"));
     var r = Raphael($chart[0], $chart.width(), $chart.height());
     
-    var x = [], edits = [], fill = [], capacity = [];
+    var x = [], edits = [];
     for (var i = 0; i < weeks.length; i++) {
       x[i] = i * 10;
       edits.push(parseInt(weeks[i].e, 10));
-      capacity.push(parseInt(weeks[i].c, 10));
-      fill.push(parseInt(weeks[i].f, 10));
     }
     
-    r.g.linechart(0, 0, 175, 40, x, [edits], {colors: ["#c60"]});
-    r.g.linechart(0, 50, 175, 40, x, [fill, capacity]);
+    r.g.linechart(-2, 0, 150, 40, x, [edits], {colors: ["#c60"]});
+  });
+  
+  $(".activity-chart-coverage", scope).each(function() {
+    var $chart = $(this);
+    var weeks = JSON.parse($chart.attr("data-activity"));
+    var r = Raphael($chart[0], $chart.width(), $chart.height());
+    
+    var fill_percentage = [], total_amount = [];
+    for (var i = 0; i < weeks.length; i++) {
+      var capacity = parseInt(weeks[i].c, 10);
+      var fill = parseInt(weeks[i].f, 10);
+      fill_percentage.push(fill);
+      total_amount.push(capacity - fill);
+    }
+    
+    r.g.barchart(3, -10, 150, 70, 
+                 [fill_percentage, total_amount], 
+                 {stacked: true, colors: ["#669", "#ccc"]});
   });
 };
 

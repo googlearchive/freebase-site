@@ -158,12 +158,12 @@ function base_manifest(MF, scope, undefined) {
       var args = MF.require_args(app, file);
       if (args.local) {
         // local image files relative to the current app
-        return MF.image_base_url + "/" + args.file;
+        return args.file;
       }
       else {
         // get the url through the external app MANIFEST.MF.img_src(resource.name)
         var ext_mf = MF.require(args.app, "MANIFEST").MF;
-        return ext_mf.img_src(args.file);
+        return ext_mf.image_base_url + "/" + args.file;
       }
     },
 

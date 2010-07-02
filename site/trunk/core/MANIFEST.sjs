@@ -273,7 +273,7 @@ function base_manifest(MF, scope, undefined) {
                 return "url(" + scope.acre.current_script.app.base_url + "/" + args.file + ")";
               }
               else {
-                var ext_mf = MF.require(args.app, "MANIFEST");
+                var ext_mf = MF.require(args.app, "MANIFEST").MF;
                 return "url(" + ext_mf.app_base_url() + "/" + args.file + ")";
               }
             }

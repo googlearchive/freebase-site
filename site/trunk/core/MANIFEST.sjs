@@ -71,6 +71,10 @@ function base_manifest(MF, scope, undefined) {
      */
     static_base_url: scope.acre.current_script.app.base_url +  "/MANIFEST",
 
+    app_base_url: function() {
+      return scope.acre.current_script.app.base_url;
+    },
+
     /**
      * This is like static_base_url but for images (*.png, *.gif, etc.).
      *
@@ -190,7 +194,7 @@ function base_manifest(MF, scope, undefined) {
      * Serve (acre.write) all css declared in MF.stylesheet[key].
      * Run the less css parser on all of the css afterwards
      */
-    css: function(key, scope, buffer) {
+    css: function(key, scope, buffer, use_acre_url) {
       if (!MF.stylesheet[key]) {
         return MF.not_found(scope.acre.current_script.app.id + "/MANIFEST/" + key);
       }
@@ -205,18 +209,18 @@ function base_manifest(MF, scope, undefined) {
           var ext_mf = MF.require(ss[0], "MANIFEST").MF;
           if (ss.length === 2) {
             // run css_preprocessor within the context of ext_mf
-            buf.push(ext_mf.css_preprocessor(ext_mf.require(ss[1]).body));
+            buf.push(ext_mf.css_preprocessor(ext_mf.require(ss[1]).body, use_acre_url));
           }
           else if (ss.length === 3 && ss[1] === "MANIFEST") {
             // get external css manifest content within the context of ext_mf
             var f = ss[2].split("/", 2).pop();
-            buf = buf.concat(ext_mf.css(f, scope, true));
+            buf = buf.concat(ext_mf.css(f, scope, true, use_acre_url));
           }
         }
         else {
           try {
             // css preprocessor to replace url(...) declarations
-            buf.push(MF.css_preprocessor(MF.require.apply(null, ss).body));
+            buf.push(MF.css_preprocessor(MF.require.apply(null, ss).body, use_acre_url));
           }
           catch (ex) {
             scope.acre.write("\n/** " + ex.toString() + " **/\n");
@@ -237,7 +241,7 @@ function base_manifest(MF, scope, undefined) {
               });
     },
 
-    css_preprocessor: function(str) {
+    css_preprocessor: function(str, use_acre_url) {
       if (!freebase_static_resource_url) {
         freebase_static_resource_url = MF.require("core", "helpers_url").freebase_static_resource_url;
       }
@@ -262,7 +266,20 @@ function base_manifest(MF, scope, undefined) {
               params.push(app.replace(/^\s+|\s+$/g, ""));
               params.push(file.replace(/^\s+|\s+$/g, ""));
             }
-            return "url(" + MF.img_src.apply(null, params).replace(/\s/g, '%20') + ")";
+
+            if (use_acre_url) {
+              var args = MF.require_args.apply(null, params);
+              if (args.local) {
+                return "url(" + scope.acre.current_script.app.base_url + "/" + args.file + ")";
+              }
+              else {
+                var ext_mf = MF.require(args.app, "MANIFEST");
+                return "url(" + ext_mf.app_base_url() + "/" + args.file + ")";
+              }
+            }
+            else {
+              return "url(" + MF.img_src.apply(null, params).replace(/\s/g, '%20') + ")";
+            }
           }
         }));
       });
@@ -339,7 +356,8 @@ function base_manifest(MF, scope, undefined) {
           return MF.js(path, scope);
         }
         else if (/\.css$/.exec(path)) {
-          return MF.css(path, scope);
+          var use_acre_url = scope.acre.request.params.use_acre_url;
+          return MF.css(path, scope, false, use_acre_url);
         }
         else if (path_info !== "/") {
           return MF.not_found(scope.acre.current_script.app.id + path_info);

@@ -362,33 +362,33 @@ for app, appid, veresion in apps:
     cmd = ['svn', 'ls', deployed_url]
     r = run_cmd(cmd, exit=False)
     
-    if r != -1:
-        # static files deploy directory already exist for the branch revision - no op
-        continue
+    if r == -1:
+        # static files deploy directory does not exist for the branch revision
 
-    # css min
-    css_files = [f for f in os.listdir(deployed_dir) if os.path.splitext(f)[1].lower() == ".css"]
-    for css_file in css_files:
-        with open(css_file, "r") as infile:
-            min_css = cssmin(infile.read())
-        with open(css_file, "w") as outfile:
-            outfile.write(min_css)
+        # css min
+        css_files = [f for f in os.listdir(deployed_dir) if os.path.splitext(f)[1].lower() == ".css"]
+        for css_file in css_files:
+            css_path = os.path.join(deployed_dir, css_file)
+            with open(css_path, "r") as infile:
+                min_css = cssmin(infile.read())
+            with open(css_path, "w") as outfile:
+                outfile.write(min_css)
 
-    # js min (closure compiler)
-    js_files = [f for f in os.listdir(deployed_dir) if os.path.splitext(f)[1].lower() == ".js"]
-    for js_file in js_files:
-        js_path = os.path.join(deployed_dir, js_file)
-        status, temppath = mkstemp()        
-        with open(temppath, "w") as tempfile:
-            cmd = [JAVA] + JAVA_OPTS + ["--js", js_path]
-            subprocess.call(cmd, stdout=tempfile)
-        shutil.copy2(temppath, js_path)
+        # js min (closure compiler)
+        js_files = [f for f in os.listdir(deployed_dir) if os.path.splitext(f)[1].lower() == ".js"]
+        for js_file in js_files:
+            js_path = os.path.join(deployed_dir, js_file)
+            status, temppath = mkstemp()        
+            with open(temppath, "w") as tempfile:
+                cmd = [JAVA] + JAVA_OPTS + ["--js", js_path]
+                subprocess.call(cmd, stdout=tempfile)
+            shutil.copy2(temppath, js_path)
         
-    msg = 'Create static file deployed directory version {version} for app {app}'.format(version=deploy_rev, app=app)
-    cmd = ['svn', 'import', deployed_dir, deployed_url, '-m', '"%s"' % msg]
-    run_cmd(cmd)
+        msg = 'Create static file deployed directory version {version} for app {app}'.format(version=deploy_rev, app=app)
+        cmd = ['svn', 'import', deployed_dir, deployed_url, '-m', '"%s"' % msg]
+        run_cmd(cmd)
     
-    restart_static_servers = True 
+        restart_static_servers = True 
 
     # update MANIFEST static_base_url
     base_url = "http://freebaselibs.com/static/freebase_site/{app}/{rev}".format(app=app, rev=deploy_rev)

@@ -21,7 +21,7 @@
   <h1>${c.greeting} ${c.topic.name}</h1>
   <img src="${mf.img_src('template', 'metaweb-logo.png')}"/>
   <hr/>
-<pre><![CDATA[${JSON.stringify(acre, null, indent=2)}
+<pre><![CDATA[${JSON.stringify(acre, null, 2)}
 ]]></pre>
 </acre:block>
 

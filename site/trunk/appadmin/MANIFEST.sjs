@@ -4,9 +4,6 @@ var MF = {
     "template" : "//1.template.site.freebase.dev",
     "promise" : "//1.promise.site.freebase.dev"
   },
-  "test" : {
-    "files" : ["test_new_ids"]
-  },
   "stylesheet": {
     "appadmin.mf.css": [
       ["template", "MANIFEST", "/freebase.mf.css"],

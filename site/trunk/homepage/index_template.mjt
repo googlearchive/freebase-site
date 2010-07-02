@@ -8,12 +8,24 @@
   <link rel="stylesheet" type="text/css" href="${mf.css_src('index.mf.css')}" />
 </acre:block>
 
-<acre:block def="content_body()">
-<header class="project-header commons-header">
+<acre:block def="content_header()">
+<header class="homepage-header">
+  <h1 class="homepage-header-title">The definitive open database of people, places and things, built by a community that loves data.</h1>
+  fdsfds
 </header>
+</acre:block>
+
+<acre:block def="content_body()">
   <section id="content-main">
     ${templates.domain_explorer(c.categories, c.grouped_domains, c.loaded_categories)}
   </section>
+  <section id="content-sub">
+    fdsahjfdhsajkfhdjska fhjkdas hfjkdshfjkdshfjksdlhfjkadsl hjkfdals
+  </section>
+</acre:block>
+
+<acre:block def="content_sub()">
+  
 </acre:block>
 
 <acre:block def="footer_script()">

@@ -1,7 +1,31 @@
 #content {
     margin: 2em auto;
-    width: 96em;
-    padding-top: 0;
+    width: 98em; /* was 960*/
+    padding: 0;
+}
+
+#content-main {
+    border: 5px solid #e4e6e7;
+    overflow: auto;
+    width: 73em;
+    float: left;
+    background: #fff;
+    
+}
+
+/* from project.css */
+.homepage-header {
+    height: 50px;
+    .linear_gradient(#7d92b2, #64768f, repeat);
+    color: #fff;
+    text-align: center;    
+}
+
+.homepage-header-title {
+    font-size: 2.1em;
+    font-weight: normal;
+    margin: 0;
+    padding: 0.55em 0;
 }
 
 
@@ -13,7 +37,7 @@ DOMAIN EXPLORER
 
 #domain-explorer {
     float: left;
-    width: 63em;
+    /* width: 63em;*/
     border: 1px solid #dcdbdc;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -27,9 +51,9 @@ DOMAIN EXPLORER
     font-weight: bold;
     line-height: 1;
     color: #404859;
+    background: #f0f2f3;
     padding: 8px 10px;
     border-bottom: 1px solid #dcdbdc;
-    background: #f9f9f9;
     -webkit-border-top-left-radius: 5px;
     -webkit-border-top-right-radius: 5px;
     -moz-border-radius-topleft: 5px;
@@ -47,7 +71,7 @@ DOMAIN EXPLORER
     position: absolute;
     left: 0;
     z-index: 10;
-    width: 204px;
+    width: 175px;
     height: 40px;
     background: url(explore-sprite.png) no-repeat 0 -262px;
 }
@@ -62,7 +86,7 @@ DOMAIN EXPLORER
 
 #domain-explorer-tabs {
     float: left;
-    width: 19em;
+    width: 17em;
     background: #f6f6f6;
     -webkit-border-bottom-left-radius: 5px;
     -moz-border-radius-bottomleft: 5px;
@@ -74,6 +98,8 @@ DOMAIN EXPLORER
     font-weight: normal;
     border-bottom: 1px solid #dcdbdc;
     list-style: none;
+    .linear_gradient(#fefefe, #e4e6e7, repeat);
+    
 }
 
 #domain-explorer-tabs li a {
@@ -97,7 +123,7 @@ DOMAIN EXPLORER
 
 .domain-explorer-pane {
     float: left;
-    padding: 1em 0;
+    padding: 0;
     background: #eee;
     border-left: 1px solid #dcdcdc;
     -webkit-border-bottom-right-radius: 5px;
@@ -107,13 +133,13 @@ DOMAIN EXPLORER
 
 .category-domain-list {
     list-style: none;
-    margin: 0 2em;
+    margin: 0;
 }
 
 .category-domain-list li {
-    padding-bottom: 1em;
-    margin-bottom: 1em;
-    border-bottom: 1px solid #cdcbcd;
+    padding: 0.3em 1.5em;
+    border-bottom: 1px solid #dcdbdc;
+    border-top: 1px solid #fff;
 }
 
 .category-domain-list p {
@@ -156,14 +182,17 @@ DOMAIN EXPLORER
     text-transform: uppercase;
 }
 
+.domain-info {
+    width: 18em;
+}
+
 .domain-section {
     float: left;
-    width: 20em;
     height: 10em;
 }
 
 .domain-activity {
-    width: 250px;
+    width: 27em;
     background: #fff;
     
     -webkit-border-top-right-radius: 5px;
@@ -233,9 +262,9 @@ CONTENT SUB
 */
 
 #content-sub {
-    float: left;
-    margin-left: 3em;
-    width: 27em;
+    float: right;
+    width: 22em;
+    border: 1px solid red;
 }
 
 #content-sub h3 {

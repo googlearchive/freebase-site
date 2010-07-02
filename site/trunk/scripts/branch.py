@@ -112,61 +112,38 @@ def fetch_url(url, isjson=False):
     
     return contents
 
-
-def deploy_static_files(source_url, tmp_dir):
+def deploy_static_files(source_dir, source_url, dest_dir, **kws):
     # load app MANIFEST.MF
-    url = "%s/MANIFEST" % source_url
-    
+    url = "%s/MANIFEST" % source_url    
     mf = fetch_url(url, isjson=True)
+    if not (mf and mf.get('result')):
+        raise "Aborting push of resource files - no manifest found!"
+    mf = mf['result']
+    for manifest in ['javascript', 'stylesheet']:
+        get_manifest_files(mf[manifest], source_url, dest_dir, **kws)
 
-    if not mf:
-        print "Aborting push of resource files - no manifest found!"
-        return
-        
-    mf = mf.get('result');
+    # 2. svn list version and copy images (*.png, *.gif, etc.) to dest_dir
+    img_files = [f for f in os.listdir(source_dir) if os.path.splitext(f)[1].lower() in IMG_EXTENSIONS]    
+    for f in img_files:
+        src = os.path.join(source_dir, f)
+        # in local acre dev, we use double extensions for static files including image files
+        # convert double extensions to single extension
+        dest = os.path.join(dest_dir, os.path.splitext(f)[0])
+        shutil.copy2(src, dest)
 
-    for key in ['stylesheet', 'javascript']:
-        for page in mf.get(key):
-            url = "%s/MANIFEST/%s" % (source_url, page)
-            filename = os.path.join(tmp_dir, page)
-            with open(filename, 'w') as temp:
-                for line in fetch_url(url):
-                    temp.write(line)
-    """
-    # get each stylesheet page, cssmin and copy to outdir
-    for page in mf.get('stylesheet'):
-        url = "%s/MANIFEST/%s" % (source_url, page)
-        filename = os.path.join(tmp_dir, page)
-        with open(filename, "w") as temp:
+    # 3. if static files, import to svn deployed dir
+    files = sorted([f for f in os.listdir(dest_dir) if os.path.splitext(f)[1].lower() in EXTENSIONS])
+    return files
+
+def get_manifest_files(manifest, source_url, dest_dir, **kws):
+    for filename in manifest:
+        url = "%s/MANIFEST/%s" % (source_url, filename)
+        if kws:
+            url = "%s?%s" % (url, urllib.urlencode(kws))
+        filename = os.path.join(dest_dir, filename)
+        with open(filename, 'w') as dest_file:
             for line in fetch_url(url):
-                temp.write(line)
-
-    
-        css = ''.join(fetch_url(url))
-        if not css:
-            exit(-1)
-        min = cssmin(css)
-        filename = os.path.join(tmp_dir, page)
-        with open(filename, "w") as f:
-            f.write(min)
-    
-    # get each javascript page, compile (closure compiler) and copy to outdir
-    for page in mf.get('javascript'):
-        url = "%s/MANIFEST/%s" % (source_url, page)
-        filename = os.path.join(tmp_dir, page)
-        with open(filename, 'w') as temp:
-            for line in fetch_url(url):
-                temp.write(line)
-  
-        filename = os.path.join(tmp_dir, page)
-    
-        with open(filename, 'w') as outfile:
-            cmd = [JAVA] + JAVA_OPTS + ["--js", path]
-            subprocess.call(cmd, stdout=outfile)
-
-        # delete temp file
-        os.remove(path)
-        """
+                dest_file.write(line)
 
 
 def get_app(appid):
@@ -325,70 +302,37 @@ for app, appid, veresion in apps:
     # 1. urlfetch static files from app url (*.mf.js/*.mf.css)
     deployed_dir = mkdtemp()    
     url = app_url(app, version)
-    #url = 'http://{app}.site.freebase.dev.acre.z:8115'.format(app=app)
-    deploy_static_files(url, deployed_dir)
-
-    # 2. svn list version and copy images (*.png, *.gif, etc.) to deployed_dir
-    img_files = [f for f in os.listdir(branch_dir) if os.path.splitext(f)[1].lower() in IMG_EXTENSIONS]    
-    for f in img_files:
-        src = os.path.join(branch_dir, f)
-        # in local acre dev, we use double extensions for static files including image files
-        # convert double extensions to single extension
-        dest = os.path.join(deployed_dir, os.path.splitext(f)[0])
-        shutil.copy2(src, dest)
-
-    # 3. if static files, import to svn deployed dir
-    files = sorted([f for f in os.listdir(deployed_dir) if os.path.splitext(f)[1].lower() in EXTENSIONS])
-    if not files:
+    # We need to pass use_acre_url=1, for the MANIFEST css_preprocessor to return consistent urls for css url declarations to
+    # calculate deterministic hashes of all static files for an app.
+    # 1. url(local.png) = http://2.localapp.site.freebase.dev.../local.png
+    #                  != http://freebaselibs.com/static/freebase_site/localapp/abcdef.../local.png
+    # 2. url(externalapp, external.png) = http://3.externalapp.site.freebase.dev.../external.png
+    #                                  != http://freebaselibs.com/static/freebase_site/externalapp/abcdef.../external.png
+    # This is needed since we have not yet set the MANIFEST static_base_url/image_base_url.
+    # The static_base_url/image_base_url is determined by the md5 hash of all static files of an app
+    # including the dynamically generated javascript/stylesheet MANIFEST files declared in MF.javascript and MF.stylesheet.
+    # The MF.javascript files are deterministic since we go through the external apps MANIFEST/ entry point (i.e., .../MANIFEST/foo.mf.js).
+    # The MF.stylesheet files also go through the external apps MANIFEST/ entry point (i.e., .../MANIFEST.foo.mf.css) but is
+    # only deterministic if we DO NOT preprocess the css url(...) declarations since it uses the image_base_url.
+    static_files = deploy_static_files(branch_dir, url, deployed_dir, use_acre_url=1)
+    if not static_files:
         continue
 
+    # deploy_rev is the md5 hash of all the static files sorted and concatenated together
     status, path = mkstemp()
     with open(path, "wb") as hash_file:
         print("hash_file: %s" % path)
-        for f in files:
+        for f in static_files:
             with open(os.path.join(deployed_dir, f), "rb") as static_file:
                 print("static_file: %s" % os.path.join(deployed_dir, f))
                 while True:
                     data = static_file.read(2**20)
                     if not data:
                         break
-                    hash_file.write(data)
-
-    # deploy_rev is the md5 hash of all the static files sorted and concatenated together
+                    hash_file.write(data)   
     with open(path, "rb") as hash_file:
         deploy_rev = hash_for_file(hash_file)
-
-    deployed_url = svn_deployed_url(app, deploy_rev)
-    cmd = ['svn', 'ls', deployed_url]
-    r = run_cmd(cmd, exit=False)
-    
-    if r == -1:
-        # static files deploy directory does not exist for the branch revision
-
-        # css min
-        css_files = [f for f in os.listdir(deployed_dir) if os.path.splitext(f)[1].lower() == ".css"]
-        for css_file in css_files:
-            css_path = os.path.join(deployed_dir, css_file)
-            with open(css_path, "r") as infile:
-                min_css = cssmin(infile.read())
-            with open(css_path, "w") as outfile:
-                outfile.write(min_css)
-
-        # js min (closure compiler)
-        js_files = [f for f in os.listdir(deployed_dir) if os.path.splitext(f)[1].lower() == ".js"]
-        for js_file in js_files:
-            js_path = os.path.join(deployed_dir, js_file)
-            status, temppath = mkstemp()        
-            with open(temppath, "w") as tempfile:
-                cmd = [JAVA] + JAVA_OPTS + ["--js", js_path]
-                subprocess.call(cmd, stdout=tempfile)
-            shutil.copy2(temppath, js_path)
-        
-        msg = 'Create static file deployed directory version {version} for app {app}'.format(version=deploy_rev, app=app)
-        cmd = ['svn', 'import', deployed_dir, deployed_url, '-m', '"%s"' % msg]
-        run_cmd(cmd)
-    
-        restart_static_servers = True 
+        svn_deploy_revs[branch] = deploy_rev
 
     # update MANIFEST static_base_url
     base_url = "http://freebaselibs.com/static/freebase_site/{app}/{rev}".format(app=app, rev=deploy_rev)
@@ -410,9 +354,47 @@ for app, appid, veresion in apps:
         svn_commit(branch_dir, msg)    
 
         # acre push branch
-        acrepush.push(appid, graph, branch_dir, version=version, user=user, pw=pw)
+        acrepush.push(appid, graph, branch_dir, version=version, user=user, pw=pw)    
 
-    svn_deploy_revs[branch] = deploy_rev
+    # check if a deployed_rev already exists or not
+    deployed_url = svn_deployed_url(app, deploy_rev)
+    cmd = ['svn', 'ls', deployed_url]
+    r = run_cmd(cmd, exit=False)
+
+    if r != -1:
+        continue
+
+    # deployed_rev does not exist, add it to svn    
+    deployed_dir = mkdtemp()
+    # now that we have deterministically calculated the deployed_rev and updated the MANIFEST static_base_url/image_base_url,
+    # we now want to reget the static_files with the correct css url(...) pointing the http://freebaselibs...
+    static_files = deploy_static_files(branch_dir, url, deployed_dir)
+    
+    # css min
+    css_files = [f for f in os.listdir(deployed_dir) if os.path.splitext(f)[1].lower() == ".css"]
+    for css_file in css_files:
+        css_path = os.path.join(deployed_dir, css_file)
+        with open(css_path, "r") as infile:
+            min_css = cssmin(infile.read())
+        with open(css_path, "w") as outfile:
+            outfile.write(min_css)
+
+    # js min (closure compiler)
+    js_files = [f for f in os.listdir(deployed_dir) if os.path.splitext(f)[1].lower() == ".js"]
+    for js_file in js_files:
+        js_path = os.path.join(deployed_dir, js_file)
+        status, temppath = mkstemp()        
+        with open(temppath, "w") as tempfile:
+            cmd = [JAVA] + JAVA_OPTS + ["--js", js_path]
+            subprocess.call(cmd, stdout=tempfile)
+        shutil.copy2(temppath, js_path)
+        
+    msg = 'Create static file deployed directory version {version} for app {app}'.format(version=deploy_rev, app=app)
+    cmd = ['svn', 'import', deployed_dir, deployed_url, '-m', '"%s"' % msg]
+    run_cmd(cmd)
+    
+    restart_static_servers = True
+
 
 # repush tip of svn:trunk to acre:trunk
 for app, appid, version in apps:

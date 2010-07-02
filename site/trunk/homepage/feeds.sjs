@@ -39,7 +39,7 @@ var xml = (function() {
 //////////////////
 // RSS Handling //
 //////////////////
-function get_rss_entries(url) {
+function get_rss_entries(url,maxcount,filterFunc) {
   var items;
   try {
     var rss = acre.urlfetch(url).body;
@@ -49,6 +49,9 @@ function get_rss_entries(url) {
     });
   } catch(e) {console.warn(e); }
   if (!(items && items.length)) { console.warn('Could not parse any items from '+url); }
+
+  if (filterFunc) { items = filterFunc(items); }
+  if (maxcount)   { items = items.slice(0,maxcount); }
   return items;
 }
 

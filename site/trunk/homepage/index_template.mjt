@@ -21,8 +21,8 @@
   </section>
   <section id="content-side">
     ${templates.help_build()}
-    ${templates.blog_entries()}
-    ${templates.wiki_entries()}
+    ${templates.blog_entries(2)}
+    ${templates.wiki_entries(3)}
     ${templates.using_fb_data()}
     ${templates.get_gridworks()}
   </section>

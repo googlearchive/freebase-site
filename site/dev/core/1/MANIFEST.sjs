@@ -322,14 +322,23 @@ function base_manifest(MF, scope, undefined) {
 
     require: function(app, file) {
       var args = MF.require_args(app, file);
+      
       if (args.local) {
-        return scope.acre.require(args.file);
+        if (this === MF) {
+          return scope.acre.require(args.file);
+        } else {
+          return scope.acre.require.apply(this, [args.file]);
+        }
       }
       if (!MF.apps[args.app]) {
         throw("An app label for \"" + args.app + "\" must be declared in the MANIFEST.");
       }
       var path = [MF.apps[args.app], args.file].join("/");
-      return scope.acre.require(path);
+      if (this === MF) {
+        return scope.acre.require(path);
+      } else {
+        return scope.acre.require.apply(this, [path]);
+      }
     },
 
     not_found: function(id) {
@@ -368,7 +377,7 @@ function base_manifest(MF, scope, undefined) {
       }, scope);
     }
   };
-
+  
   return base;
 };
 

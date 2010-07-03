@@ -1,10 +1,10 @@
 // Aggregated helper functions from various files
 
-function output_helpers() {
+function output_helpers(scope) {
   var blacklist = ["AcreExitException", "URLError", "XMLHttpRequest"];
   
   acre.write("---Helper functions in this module---\n");
-  for (var f in this) {
+  for (var f in scope) {
     var in_blacklist = false;
     blacklist.forEach(function (black) {
       if (f === black) {

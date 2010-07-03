@@ -1,5 +1,29 @@
 // Aggregated helper functions from various files
 
+var self = this;
+
+function include(script_id) {
+  var s = acre.require(script_id);
+  if (s.exports && typeof s.exports === "object") {
+    for (var n in s.exports) {
+      if (n in self) {
+        throw("Multiple helper method defined with the same name: " + n);
+      }
+      self[n] = s.exports[n];
+    }
+  }
+};
+
+include("helpers_util");
+include("helpers_date");
+include("helpers_url");
+include("helpers_format");
+
+
+
+
+
+/*
 function output_helpers(scope) {
   var blacklist = ["AcreExitException", "URLError", "XMLHttpRequest"];
   
@@ -26,3 +50,4 @@ acre.require.apply(this, ["helpers_util"]);
 acre.require.apply(this, ["helpers_date"]);
 acre.require.apply(this, ["helpers_url"]);
 acre.require.apply(this, ["helpers_format"]);
+*/

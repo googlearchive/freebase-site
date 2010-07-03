@@ -324,21 +324,13 @@ function base_manifest(MF, scope, undefined) {
       var args = MF.require_args(app, file);
       
       if (args.local) {
-        if (this === MF) {
-          return scope.acre.require(args.file);
-        } else {
-          return scope.acre.require.apply(this, [args.file]);
-        }
+        return scope.acre.require(args.file);
       }
       if (!MF.apps[args.app]) {
         throw("An app label for \"" + args.app + "\" must be declared in the MANIFEST.");
       }
       var path = [MF.apps[args.app], args.file].join("/");
-      if (this === MF) {
-        return scope.acre.require(path);
-      } else {
-        return scope.acre.require.apply(this, [path]);
-      }
+      return scope.acre.require(path);
     },
 
     not_found: function(id) {

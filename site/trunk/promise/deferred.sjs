@@ -311,7 +311,7 @@ var RequestCanceled, RequestTimeout;
     }
     
     function _place_callback(args, pos, func) {
-      if (!pos.position) {
+      if (typeof pos.position === 'undefined') {
         return args;
       }
       

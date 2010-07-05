@@ -149,7 +149,7 @@
   <div class="domain-contributor domain-section">
     <acre:block if="domain.top_user">
       <a href="${h.freebase_url('/view'+domain.top_user.id)}">
-        <img src="${acre.freebase.imgurl(domain.top_user.id, 60, 60, 'fill')}"
+        <img src="${acre.freebase.imgurl(domain.top_user.id, 60, 60, 'fillcropmid')}"
              class="user-image"
              width="60"
              height="60"/>

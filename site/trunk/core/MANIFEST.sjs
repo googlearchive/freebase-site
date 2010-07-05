@@ -298,15 +298,13 @@ function base_manifest(MF, scope, undefined) {
         if (!(script instanceof Array)) {
           script = [script];
         }
-        if (script.length > 1) {
+        if (script.length === 2) {
+          scope.acre.write(MF.require(script[0], script[1]).body);
+        }
+        else if (script.length === 3 && script[1] === "MANIFEST") {
           var ext_mf = MF.require(script[0], "MANIFEST").MF;
-          if (script.length === 2) {
-            scope.acre.write(ext_mf.require(script[1]).body);
-          }
-          else if (script.length === 3 && script[1] === "MANIFEST") {
-            var f = script[2].split("/", 2).pop();
-            ext_mf.js(f, scope);
-          }
+          var f = script[2].split("/", 2).pop();
+          ext_mf.js(f, scope);
         }
         else {
           try {

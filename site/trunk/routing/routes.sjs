@@ -27,6 +27,7 @@ function match_route(path, route) {
   if (!app) {
     throw (route.to + " must be defined in the manifest");
   }
+  
   return [app, script, path_info];
 };
 
@@ -51,16 +52,21 @@ function do_route(app, script, path_info, query_string) {
   catch (ex) {
     return not_found(app || acre.current_script.app.id);
   }
-  if (!md.files[script]) {
-    return not_found(md.app_id + "/" + script);
-  }
-
+  
   var path = [
     (app ? app + "/" : ""),
     script,
     path_info,
     (query_string ? "?" + query_string : "")
   ];
+  
+  if (md.files["routes"] && app) {
+    path.splice(1, 0, "routes/");
+  }
+  else if (!md.files[script]) {
+    return not_found(md.app_id + "/" + script);
+  }
+  
   path = path.join("");
   console.log("routing", path);
   acre.route(path);
@@ -81,6 +87,7 @@ if (acre.current_script === acre.request.script) {
     path = path_segs[0];
     query_string = path_segs[1];
   }
+  
   // find the first route match
   for (var i=0,len=routes.length; i<len; i++) {
     var route = routes[i];

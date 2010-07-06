@@ -20,9 +20,11 @@
     ${templates.domain_explorer(c.categories, c.grouped_domains, c.loaded_categories)}
   </section>
   <section id="content-side">
-    ${templates.help_build()}
-    ${templates.blog_entries(2)}
-    ${templates.wiki_entries(3)}
+    <div class="sidebar-content-featured">
+      ${templates.help_build()}
+      ${templates.blog_entries(2)}
+      ${templates.wiki_entries(3)}
+    </div>
     ${templates.using_fb_data()}
     ${templates.get_gridworks()}
   </section>

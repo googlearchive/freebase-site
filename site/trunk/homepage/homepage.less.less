@@ -10,7 +10,7 @@
     width: 73em;
     float: left;
     background: #fff;
-    
+    .rounded_corners(5px);
 }
 
 /* from project.css */
@@ -51,7 +51,7 @@ DOMAIN EXPLORER
     font-weight: bold;
     line-height: 1;
     color: #404859;
-    background: #f0f2f3;
+    background: #f4f8fb;
     padding: 8px 10px;
     border-bottom: 1px solid #dcdbdc;
 }
@@ -120,7 +120,7 @@ DOMAIN EXPLORER
 .domain-explorer-pane {
     float: left;
     padding: 0;
-    background: #eee;
+    background: #f4f8fb;
     border-left: 1px solid #dcdcdc;
     -webkit-border-bottom-right-radius: 5px;
     -moz-border-radius-bottomright: 5px;
@@ -291,10 +291,10 @@ CONTENT SUB
 ---------------------
 */
 
-#content-sub {
+#content-side {
     float: right;
     width: 22em;
-    border: 1px solid red;
+    margin-left: 1em;
 }
 
 #content-sub h3 {
@@ -309,4 +309,48 @@ CONTENT SUB
 
 #content-sub p {
     margin-bottom: 1em;
+}
+
+.sidebar-content-featured {
+    border: 1px solid #ccddff;
+    .rounded_corners(5px);
+    font-size: 1.1em;
+    background: #ffffff;
+}
+
+.content-sub-section {
+    border-bottom: 1px solid #dcdbdc;
+    padding: 1em;
+}
+.content-sub-section-feat {
+    border-bottom: 1px solid #dcdbdc;
+    background: #f9f9f9;
+    -webkit-border-top-right-radius: 5px;
+    -webkit-border-top-left-radius: 5px;
+    -moz-border-radius-topright: 5px;
+    -moz-border-radius-topleft: 5px;
+}
+
+.sidebar-header {
+    font-size: 1.3em;
+    line-height: 1.3;
+    font-weight: bold;
+}
+
+.input-standard {
+    border: 1px solid #cccccc;
+    .rounded_corners(4px);
+    padding: 0.4em;
+    .linear_gradient(#e5e5e5, #ffffff, repeat);
+    margin: 0;
+}
+
+.button-featured {
+    .linear_gradient(#ff6f02, #dc5800, repeat);
+    border: 1px solid #dc5800;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; 
+    font-weight: bold;
+    color: #fff;
+    font-size: 1.1em;
+    .rounded_corners(5px);
 }

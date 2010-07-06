@@ -52,6 +52,10 @@ function do_route(app, script, path_info, query_string) {
   catch (ex) {
     return not_found(app || acre.current_script.app.id);
   }
+
+  if (!md.files["routes"] && !md.files[script]) {
+    return not_found(md.app_id + "/" + script);
+  }
   
   var path = [
     (app ? app + "/" : ""),
@@ -59,13 +63,6 @@ function do_route(app, script, path_info, query_string) {
     path_info,
     (query_string ? "?" + query_string : "")
   ];
-  
-  if (md.files["routes"] && app) {
-    path.splice(1, 0, "routes/");
-  }
-  else if (!md.files[script]) {
-    return not_found(md.app_id + "/" + script);
-  }
   
   path = path.join("");
   console.log("routing", path);

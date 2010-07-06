@@ -190,11 +190,8 @@ function do_ajax(method, file, funcname) {
 
 if (acre.current_script === acre.request.script) {
   
-  // HACK - deal with hard-coding acre.route() to 'routes' in /freebase/site/routing
-  var path = acre.request.path_info.replace(/^\/routes/,"");
-  
   // HACK - kill trailing slash in case it's there
-  path = path.replace(/\/$/,"");
+  var path = acre.request.path_info.replace(/\/$/,"");
   
   do_route(path);
 }

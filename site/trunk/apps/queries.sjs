@@ -80,75 +80,61 @@ var app = function(id, options) {
   var appq = make_app_query();
   appq = acre.freebase.extend_query(appq, {id: id});
   
-  var promise = freebase.mqlread(appq)
+  return freebase.mqlread(appq)
     .then(function(envelope){
       return make_app(envelope.result);
     }, function(error) {
       return null;
-    });
-
-  if (options.article) {
-    promise.then(function(app) {
-      if (!app || !app.article) return app;
+    })
+    .then(function(app) {
+      var d = {};
       
-      // do it sync for now
-      var response = acre.freebase.get_blob(app.article.content);
-      var s = mf.require("libraries", "showdown");
-      var converter = new s.Showdown.converter();
-      app.article.text = response.body;
-      app.article.html = converter.makeHtml(app.article.text);
-      return app;
+      if (options.article) {
+        d.article = freebase.get_blob(app.article.content)
+          .then(function(response) {
+              var s = mf.require("libraries", "showdown");
+              var converter = new s.Showdown.converter();
+              app.article.text = response.body;
+              app.article.html = converter.makeHtml(app.article.text);
+              return app;
+            });
+      }
       
-      /*
-      return freebase.get_blob(app.article.content)
-        .then(function(response) {
-            acre.write("yo")
-            var s = mf.require("libraries", "showdown");
-            var converter = new s.Showdown.converter();
-            app.article.text = response.body;
-            app.article.html = converter.makeHtml(app.article.text);
+      if (options.api_keys) {
+        var url = acre.freebase.service_url.replace(/http:\/\//, 'https://') + '/api/oauth/enable';
+        var args = { 
+          id: app.guid,
+          reset_secret : (app.oauth_enabled ? false : true)
+        };
+        var fetch_opts = {
+          method : "POST",
+          sign : true,
+          content : acre.form.encode(args)
+        };
+        
+        // Do it sync until we can figure out ACRE-1809
+        var res = acre.freebase.fetch(url, fetch_opts);
+        app.oauth = {
+          key : res.key,
+          secret : res.secret
+        };
+        /*
+        d.oauth = freebase.fetch(url, fetch_opts)
+          .then(function(res) {
+            app.oauth = {
+              key : res.key,
+              secret : res.secret
+            };
             return app;
           });
-          //acre.async.wait_on_results();
-          */
-    })
-  }
-  
-  if (options.api_keys) {
-    promise.then(function(app) {
-      if (!app) return app;
-      var url = acre.freebase.service_url.replace(/http:\/\//, 'https://') + '/api/oauth/enable';
-      var args = { 
-        id: app.guid,
-        reset_secret : (app.oauth_enabled ? false : true)
-      };
-      var fetch_opts = {
-        method : "POST",
-        sign : true,
-        content : acre.form.encode(args)
-      };
+        */
+      }
       
-      // Do it sync until we can figure out ACRE-1809
-      var res = acre.freebase.fetch(url, fetch_opts);
-      app.oauth = {
-        key : res.key,
-        secret : res.secret
-      };
-      return app;
-      /*
-      return freebase.fetch(url, fetch_opts)
-        .then(function(res) {
-          app.oauth = {
-            key : res.key,
-            secret : res.secret
-          };
+      return deferred.all(d)
+        .then(function(results) {
           return app;
         });
-      */
     });
-  }
-  
-  return promise;
 };
 
 

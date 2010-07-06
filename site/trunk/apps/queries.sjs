@@ -15,11 +15,6 @@ function make_app_query(opts) {
 function make_app(appinfo) {
   if (!appinfo) return null;
   
-  function icon_src(id) {
-    var MISSING_ID = "/guid/9202a8c04000641f800000000b493d2f"; 
-    return acre.freebase.imgurl(id, 170, 65, "fillcropmid", MISSING_ID); 
-  }
-  
   var app = {
     id : appinfo.id,
     guid : appinfo.guid,
@@ -28,35 +23,33 @@ function make_app(appinfo) {
     homepage : appinfo.homepage,
     description : appinfo.description,
     modified : appinfo.timestamp,
-    article : (appinfo['/common/topic/article'] && appinfo['/common/topic/article'].content ? appinfo['/common/topic/article'] : null),
+    article : appinfo['/common/topic/article'],
     creator : (appinfo['/type/domain/owners'] ? appinfo['/type/domain/owners'].creator : null), 
     authors : (appinfo['/type/domain/owners'] ? appinfo['/type/domain/owners'].member : []),
-    icon : null,
-    acre : null,
-    oauth_enabled : appinfo.oauth_enabled
+    icon : appinfo.icon,
+    oauth_enabled : appinfo.oauth_enabled,
+    acre : null
   };
   
-  if (appinfo.icon) {
-    app.icon = {
-      id : appinfo.icon.id,
-      name : appinfo.icon.name,
-      src : icon_src(appinfo.id)
-    };
+  if (app.icon) {
+    app.icon.src = acre.freebase.imgurl(app.icon.id, 170, 65, "fillcropmid");
   }
   
+  // extra properties for Acre apps
   if (appinfo['acre:type']) {    
 
-    if (!app.homepage) {
-      // HACK - I don't like this method
-      var pubkey = false;
-      var version = null;
-      if (appinfo.key) {
-        pubkey = appinfo["pubkey:key"].value;
-      } else if (appinfo["pubkey:/type/namespace/keys"]) {
-        version = appinfo["pubkey:/type/namespace/keys"].value;
-        pubkey = appinfo["pubkey:/type/namespace/keys"].namespace.key.value;
-      }
-      
+    // figure out whether the app or one of it's versions has been published
+    var pubkey = false;
+    var version = null;
+    if (appinfo.key) {
+      pubkey = appinfo["pubkey:key"].value;
+    } else if (appinfo["pubkey:/type/namespace/keys"]) {
+      version = appinfo["pubkey:/type/namespace/keys"].value;
+      pubkey = appinfo["pubkey:/type/namespace/keys"].namespace.key.value;
+    }
+
+    // set the homepage... but don't override a manually set one
+    if (!app.homepage) {      
       if (pubkey) {
         app.homepage = 'http://' + pubkey + '.freebaseapps.com/';
       } else {
@@ -64,6 +57,7 @@ function make_app(appinfo) {
       }
     }
     
+    // look at file modification time for Acre apps too
     if (appinfo['modified:/type/namespace/keys']) {
       var modified = appinfo['modified:/type/namespace/keys'].namespace["/common/document/content"].timestamp;
       app.modified = (modified > app.modified) ? modified : app.modified;
@@ -92,18 +86,31 @@ var app = function(id, options) {
     }, function(error) {
       return null;
     });
-  
+
   if (options.article) {
     promise.then(function(app) {
       if (!app || !app.article) return app;
-      return freebase.get_blob(app.article.id)
-          .then(function(response) {
+      
+      // do it sync for now
+      var response = acre.freebase.get_blob(app.article.content);
+      var s = mf.require("libraries", "showdown");
+      var converter = new s.Showdown.converter();
+      app.article.text = response.body;
+      app.article.html = converter.makeHtml(app.article.text);
+      return app;
+      
+      /*
+      return freebase.get_blob(app.article.content)
+        .then(function(response) {
+            acre.write("yo")
             var s = mf.require("libraries", "showdown");
             var converter = new s.Showdown.converter();
             app.article.text = response.body;
             app.article.html = converter.makeHtml(app.article.text);
             return app;
           });
+          //acre.async.wait_on_results();
+          */
     })
   }
   

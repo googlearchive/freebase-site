@@ -59,7 +59,7 @@
           <label>Detailed Description
             <span class="markdownlink">Note: 
               You can <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">use Markdown</a> here.</span></label>
-          <textarea name="article" acre:if="c.app.article">${g.FB.get_blob(c.app.article.id).body}</textarea>
+          <textarea name="article" acre:if="c.app.article">$c.app.article.text</textarea>
           <textarea name="article" acre:else=""></textarea>
         </p>
       

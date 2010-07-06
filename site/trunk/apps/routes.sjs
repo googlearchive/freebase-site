@@ -75,7 +75,7 @@ function do_route(path) {
     case "admin" :
     case "edit" : 
     case "api_keys" :
-      do_app("admin", path,  {api_keys:true});
+      do_app("admin", path,  {article: true, api_keys:true});
       break;
       
     // ajax entrypoints for editing

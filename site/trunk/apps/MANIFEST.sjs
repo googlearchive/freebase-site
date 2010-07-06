@@ -12,7 +12,7 @@ var MF = {
       ["template", "MANIFEST", "/freebase.mf.css"],
       "apps.less"
     ],
-    "article.mj.css" : [
+    "article.mf.css" : [
       "article.css"
     ]
   },

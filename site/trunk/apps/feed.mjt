@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<acre:doc type="application/atom+xml">
+  <acre:script><![CDATA[
+    var Datejs = acre.require("/freebase/apps/libraries/date").Date;
+    var days = acre.request.params.days;
+    var staff = acre.request.params.staff;
+    var nonstaff = (staff && staff == "false");
+    days = (days) ? parseInt(days) : 15;
+    var q = acre.require("latest_released_apps").query;
+    if (nonstaff) {
+      var c = {
+        "app:/type/namespace/keys.namespace.creator.usergroup" : {
+          "id": "/en/metaweb_staff",
+          "optional": "forbidden"
+        },
+        "version:/type/namespace/keys.namespace.creator.usergroup" : {
+          "id": "/en/metaweb_staff",
+          "optional": "forbidden"
+        },
+      };
+    }
+    q = acre.freebase.extend_query(q,c);
+    var res = acre.freebase.mqlread(q).result;
+  
+    var results = []
+    for each (var i in res["app:/type/namespace/keys"]) {
+      var app = i.namespace;
+      app.timestamp = i.link.timestamp;
+      app.host = i.value;
+      results.push(app);
+    }
+   
+    for each (var i in res["version:/type/namespace/keys"]) {
+      var app = i.namespace.key.namespace;
+      app.timestamp = i.link.timestamp;
+      app.creator = i.namespace.creator;
+      app.host = i.value;
+      results.push(app);
+    }
+     
+    results.sort(function(a,b){
+      return (acre.freebase.date_from_iso(a.timestamp) < acre.freebase.date_from_iso(b.timestamp)) ? 1 : -1;
+    })
+    
+    function isYoungerThan(timestamp,days) {
+      var creation = new Datejs(acre.freebase.date_from_iso(timestamp));
+      return Datejs.today().add(-days).days().isBefore(creation);
+    }
+    
+    function getAppURL(host) {
+      return "http://" + host + "." + acre.host.name + "/";
+    }
+  ]]></acre:script>
+  
+  <feed xmlns="http://www.w3.org/2005/Atom">
+    
+    <title>Latest Acre App Releases<acre:block if="nonstaff">by non-staff devs</acre:block></title>
+    <updated>${Datejs.today().toString("yyyy-MM-ddTHH:mm:ssZ")}</updated>
+    <link href="${acre.request.url}" rel="self"/>
+    <author>
+      <name>Acre</name>
+    </author>
+    <id>http://activity.freebaseapps.com/feed_latest_created_apps</id>
+    
+    <acre:block for="r in results">
+      <entry acre:if="isYoungerThan(r.timestamp,days)">
+        <acre:script>var url = getAppURL(r.host);</acre:script>
+        <title>${(r.name) ? r.name : r.id} by ${r.creator.id}</title>
+        <link href="${url}"/>
+        <id>${url}</id>
+        <updated>${r.timestamp}</updated>
+        <summary type="xhtml">
+          <div  xmlns="http://www.w3.org/1999/xhtml">
+            <h3>${(r.name) ? r.name : r.id}</h3>
+            <small> by ${r.creator.id}</small>
+            <p acre:if="r['/freebase/apps/application/description']">
+              <img acre:if="r['/freebase/apps/application/icon']" 
+              src="${acre.freebase.imgurl(r['/freebase/apps/application/description'],150,150,'fillcropmid')}" />
+              ${r['/freebase/apps/application/description']}
+            </p>
+          </div>
+        </summary>
+      </entry>
+    </acre:block>
+    
+  </feed>
+  
+</acre:doc>

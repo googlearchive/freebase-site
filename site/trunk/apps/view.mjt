@@ -1,0 +1,85 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var c = this.exports.c = {};
+  var h = mf.require("core", "helpers");
+  var bp = acre.request.base_path;
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('apps.mf.css')}" />
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('article.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  <header class="app-header">
+    <h1 class="app-header-title">Explore Apps</h1>
+  </header>
+</acre:block>
+
+<acre:block def="title()" trim="">
+  <acre:block if="c.app">
+    $c.app.name
+  </acre:block>
+  <acre:block else="">
+    App Not Found
+  </acre:block>
+</acre:block>
+
+<acre:block def="content_body()">  
+  <section id="content-main">
+    <acre:block if="c.app">
+      <div id="app-detail" class="content-box">
+        <img class="app-icon" acre:if="c.app.icon" src="$c.app.icon.src" alt="$c.app.name"/>
+
+        <p acre:if="c.app.modified">
+          last updated <b>${h.relative_date(acre.freebase.date_from_iso(c.app.modified))}</b>
+        </p>
+
+        <p class="description" acre:if="c.app.description">
+          $c.app.description
+        </p>
+
+        <div id="article-content" acre:if="c.app.article">
+          ${acre.markup.bless(c.app.article.html)}
+        </div>
+
+        <p class="box-nextactions">
+          <a class="button" href="$c.app.homepage">
+            Go to this App
+          </a>      
+          <a class="button" acre:if="c.app.acre" href="$c.app.acre.source">
+            View Source
+          </a>
+          <acre:block if="c.user">
+            <acre:script>
+              var is_author = c.app.authors.some(function(author){
+                return (author.id === c.user.id);
+              });
+            </acre:script>
+            <a class="button" acre:if="is_author" href="$bp/admin$c.app.id">
+              Settings...
+            </a>
+          </acre:block>
+        </p>         
+      </div>
+    </acre:block>
+  </section>
+
+  <section id="content-side">
+    <div class="box-sidebar" acre:if="c.app && c.app.authors.length">
+      <h4>App Authors</h4>
+      <ul class="box-thumblist">  
+        <li acre:for="author in c.app.authors">
+          <a href="$bp$author.id">
+            <img height="45" width="45" src="${acre.freebase.imgurl(author.id, 45, 45, 'fillcropmid')};" />
+            <p>$author.name</p>
+          </a>
+        </li> 
+      </ul>       
+    </div>
+  </section>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="${mf.js_src('apps.mf.js')}"></script>
+</acre:block>

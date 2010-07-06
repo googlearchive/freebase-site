@@ -50,7 +50,11 @@ var routes = [
   {
     from: "/apptemplate",
     to: "template"
-  }
+  },
+  {
+    from: "/apps",
+    to: "apps"
+  },
 ];
 
 /**

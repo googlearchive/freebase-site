@@ -10,7 +10,8 @@ var MF = {
     "toolbox": "//toolbox.site.freebase.dev",
     "appadmin" : "//appadmin.site.freebase.dev",
     "error" : "//error.site.freebase.dev",
-    "homepage" : "//homepage.site.freebase.dev"
+    "homepage" : "//homepage.site.freebase.dev",
+    "apps" : "//apps.site.freebase.dev"
   }
 };
 

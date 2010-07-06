@@ -89,7 +89,7 @@ var app = function(id, options) {
     .then(function(app) {
       var d = {};
       
-      if (options.article) {
+      if (options.article && app.article) {
         d.article = freebase.get_blob(app.article.content)
           .then(function(response) {
               var s = mf.require("libraries", "showdown");

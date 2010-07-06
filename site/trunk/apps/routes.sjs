@@ -133,6 +133,7 @@ function do_explore(category, query) {
 
 function do_feed(category, query) {
   var cat = CATEGORIES[category || "released"];
+  
   var data = {
     category : category,
     query : query,
@@ -140,9 +141,10 @@ function do_feed(category, query) {
     apps  : cat.apps_func.apply(this, cat.apps_args)
   };
 
-  mf.require("template", "renderer").render_page(
+  mf.require("template", "renderer").render_def(
     data,
-    mf.require("feed")
+    mf.require("feed"),
+    "feed"
   );
 }
 

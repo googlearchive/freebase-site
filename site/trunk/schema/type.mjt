@@ -1,81 +1,21 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
   var c = this.exports.c = {};
-  
   var h = mf.require("core", "helpers");
-
- var utils = mf.require("utils");
   
-  var id = acre.request.params.id || '';
-  if (id != '' && id.charAt(0) == '/') {
-    var query = acre.freebase.extend_query(mf.require("type-query").query, { "id" : id });
-    var q = acre.freebase.mqlread(query);
-    var result = q.result;
-    
-    if (result != null) {
-      if ('/freebase/type_profile/instance_count' in result && result['/freebase/type_profile/instance_count']) {
-        var instances = h.commafy(result['/freebase/type_profile/instance_count'].value);
-      }
-      
-      if ('/common/topic/article' in result && result['/common/topic/article'].length > 0) {
-        var blob = acre.freebase.get_blob(result['/common/topic/article'][0].id);
-        if (blob.body) {
-          var desc = blob.body;
-        }
-      }
-      
-      var q = [{
-        "id": null,
-        "name": null,
-        "type": id,
-        "*": null
-      }];
-      var query_url = "http://www.freebase.com/app/queryeditor?autorun=true&q=" + encodeURIComponent(JSON.stringify(q));
-      
-      function id_sort(a,b) {
-        var is_a_global = utils.isGlobal(a.id);
-        var is_b_global = utils.isGlobal(b.id);
-        if (is_a_global && !is_b_global) {
-          return -1;
-        } else if (is_b_global && !is_a_global) {
-          return 1;
-        } else {
-          return a.id.localeCompare(b.id);
-        }
-      } 
-      
-      result.inherited_properties = [];
-      
-      for each (var t in result['/freebase/type_hints/included_types']) {
-        for each (var p in t.properties) {
-          utils.fix_id(p);
-          utils.fix_id(p.expected_type);
-          result.inherited_properties.push(p);
-        }
-      }
-      
-      for each (var p in result.properties) {
-        utils.fix_id(p);
-        utils.fix_id(p.expected_type);
-      }
-      
-      for each (var p in result.expected_by) {
-        utils.fix_id(p);
-        utils.fix_id(p.schema);
-      }
-      
-      result.properties.sort(id_sort);
-      result.inherited_properties.sort(id_sort);
-      result.expected_by.sort(id_sort);    
-    }
-  }
+  var id = acre.request.params.id || acre.request.path_info;
+  
+  var queries = mf.require("queries");
+  var data = {
+    "type" : queries.type(id)
+  };
 </acre:script>
 
 <acre:block def="title()">
-  $result.name.value <span class="type">type</span> <span class="type" acre:if="result['/freebase/type_hints/mediator']">| mediator/CVT</span> <span acre:if="result['/freebase/type_profile/published']" class="type">| ${result['/freebase/type_profile/published'].name}</span><span class="type" acre:else>(no published info)</span>
-  <span class="extends" acre:if="result['/freebase/type_hints/included_types'].length > 0">extends</span>        
-  <acre:block for="t in result['/freebase/type_hints/included_types']">
-    <span class="included_type"><a href="${h.url_for('schema', 'type', [['id',t.id]])}">${t.name.value}</a> <span class="type">type</span> <span class="type" acre:if="t['/freebase/type_hints/mediator']">| mediator/CVT</span> <span acre:if="t['/freebase/type_profile/published']" class="type">| ${t['/freebase/type_profile/published'].name}</span><span class="type" acre:else>(no published info)</span></span>
+  $c.type.name <span class="type">type</span> <span class="type" acre:if="c.type.mediator">| mediator/CVT</span> <span acre:if="c.type.published" class="type">| ${c.type.published.name}</span><span class="type" acre:else>(no published info)</span>
+  <span class="extends" acre:if="c.type.included_types.length > 0">extends</span>        
+  <acre:block for="t in c.type.included_types">
+    <span class="included_type"><a href="${h.url_for('schema', 'type', [['id',t.id]])}">${t.name}</a> <span class="type">type</span> <span class="type" acre:if="t.mediator">| mediator/CVT</span> <span acre:if="t.published" class="type">| ${t.published.name}</span><span class="type" acre:else>(no published info)</span></span>
   </acre:block>
 </acre:block>
 
@@ -90,24 +30,21 @@
     </h1>
   </div>
   <div id="path">&raquo; <a href="${h.url_for('schema', 'index')}">Domains</a>
-  &raquo; <a href="${h.url_for('schema', 'domain', [['id', result.domain.id]])}">$result.domain.id</a> &raquo; <span>$result.id</span></div>
+  &raquo; <a href="${h.url_for('schema', 'domain', [['id', c.type.domain.id]])}">$c.type.domain.id</a> &raquo; <span>$c.type.id</span></div>
 </acre:block>
 
 <acre:block def="content_body()">
-  <acre:block if="result != null">
-  
-    <div id="views"><span>Table View</span>
-    | <a href="${h.url_for('schema', 'type2', [['id', result.id]])}}">Diagram view</a></div>
+  <acre:block if="c.type">
   
     <div id="body">
     
-      <div id="description" acre:if="desc">${acre.markup.bless(desc)}</div>
+      <div id="description" acre:if="c.type.desc">${acre.markup.bless(c.type.desc)}</div>
     
-      <div id="links"><a href="$query_url" target="_new">Build a query for this type &raquo;</a><a acre:if="instances" href="${acre.freebase.service_url}/view${acre.request.params.id}">Browse the <big>${instances}</big> instances of this type &raquo;</a></div>        
+      <div id="links"><a href="$c.type.query_url" target="_new">Build a query for this type &raquo;</a><a acre:if="c.type.instances" href="${acre.freebase.service_url}/view${acre.request.params.id}">Browse the <big>${c.type.instances}</big> instances of this type &raquo;</a></div>        
     
-      <p acre:if="result.default_property != null">Default property: ${result.default_property}</p>
+      <p acre:if="c.type.default_property != null">Default property: ${c.type.default_property}</p>
     
-      <acre:block if="result.properties.length > 0">
+      <acre:block if="c.type.properties.length > 0">
         <div class="table_box">
           <h2>Properties</h2>
           <table>
@@ -118,7 +55,7 @@
               <th class="flag">is master?</th>
               <th class="flag">is unique?</th>
             </tr>
-            <tr acre:for="i,prop in result.properties" class="${(i % 2 == 0) ? 'odd' : 'even'} ${utils.isGlobal(prop.id) ? 'global' : 'local'}">
+            <tr acre:for="i,prop in c.type.properties" class="${(i % 2 == 0) ? 'odd' : 'even'} ${queries.isGlobal(prop.id) ? 'global' : 'local'}">
               <td>$prop.name</td>
               <td><a href="${h.url_for('schema', 'property', [['id', prop.id]])}">$prop.id</a></td>
               <td>
@@ -140,7 +77,7 @@
         <h2>Type has no properties</h2>
       </acre:block>
     
-      <acre:block if="result.inherited_properties.length > 0">
+      <acre:block if="c.type.inherited_properties.length > 0">
         <div class="table_box">
           <h2>Inherited Properties</h2>
           <table>
@@ -151,7 +88,7 @@
               <th class="flag">is master?</th>
               <th class="flag">is unique?</th>
             </tr>
-            <tr acre:for="i,prop in result.inherited_properties" class="${(i % 2 == 0) ? 'odd' : 'even'} ${utils.isGlobal(prop.id) ? 'global' : 'local'}">
+            <tr acre:for="i,prop in c.type.inherited_properties" class="${(i % 2 == 0) ? 'odd' : 'even'} ${queries.isGlobal(prop.id) ? 'global' : 'local'}">
               <td>$prop.name</td>
               <td><a href="${h.url_for('schema', 'property', [['id',prop.id]])}">$prop.id</a></td>
               <td>
@@ -173,7 +110,7 @@
         <h2>Type has no inherited properties</h2>
       </acre:block>
     
-      <acre:block if="result.expected_by.length > 0">
+      <acre:block if="c.type.expected_by.length > 0">
         <div class="table_box">
           <h2>Incoming Properties</h2>      
           <table>
@@ -185,10 +122,10 @@
               <th class="flag">is master?</th>
               <th class="flag">is unique?</th>
             </tr>
-            <tr acre:for="i,prop in result.expected_by" class="${(i % 2 == 0) ? 'odd' : 'even'} ${utils.isGlobal(prop.id) ? 'global' : 'local'}">
-              <td>$prop.schema.name.value</td>
+            <tr acre:for="i,prop in c.type.expected_by" class="${(i % 2 == 0) ? 'odd' : 'even'} ${queries.isGlobal(prop.id) ? 'global' : 'local'}">
+              <td>$prop.schema.name</td>
               <td><a href="${h.url_for('schema', 'type', [['id',prop.schema.id]])}">$prop.schema.id</a></td>
-              <td>$prop.name.value</td>
+              <td>$prop.name</td>
               <td><a href="${h.url_for('schema', 'property', [['id',prop.id]])}">$prop.id</a></td>
               <td class="flag">
                 <span acre:if="prop.master_property == null">&#10003;</span>
@@ -221,10 +158,11 @@
   <acre:block else="">
     <div id="error">No type found for <em>$id</em></div>
   </acre:block>
+  
 </acre:block>
 
 <acre:block def="footer_script()">
   <script src="${mf.js_src('schema.mf.js')}"></script>
 </acre:block>
 
-${mf.require("template", "renderer").render_page(null, this.exports)}
+${mf.require("template", "renderer").render_page(data, this.exports)}

@@ -1,6 +1,20 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
   var c = this.exports.c = {};
+  var h = mf.require("core", "helpers");
+  var queries = mf.require("queries");
+    
+  var order = acre.request.params.order || 'name';
+  var dir = acre.request.params.dir || 'asc';
+  var user_id = acre.request.params.user_id;
+  var bp = acre.request.base_path;
+
+  var data = {};
+  if (user_id) {
+    data.domains = queries.user_domains(user_id, order, dir);
+  } else {
+    data.domains = queries.all_domains(order, dir);
+  }
 </acre:script>
 
 <acre:block def="head()">
@@ -69,27 +83,19 @@
       <thead>
         <tr>
           <th class="column-header">Domain</th>
-          <th class="column-header">Key</th>
+          <th class="column-header">ID</th>
           <th class="column-header numeric"># of Types</th>
           <th class="column-header numeric"># of Instances</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr acre:for="d in c.domains">
           <th class="row-header odd">
-            <a href="XXX" title="View {project.name}">American Football</a>
+            <a href="$bp/domain$d.id" title="View $d.name">$d.name</a>
           </th>
-          <td class="even">/american_football</td>
-          <td class="odd numeric">23</td>
-          <td class="even numeric">72,257</td>
-        </tr>
-        <tr>
-          <th class="row-header odd">
-            <a href="XXX" title="View {project.name}">American Football</a>
-          </th>
-          <td class="even">/american_football</td>
-          <td class="odd numeric">23</td>
-          <td class="even numeric">72,257</td>
+          <td class="even">$d.id</td>
+          <td class="odd numeric">$d.type_count</td>
+          <td class="even numeric">${h.commafy(d.instance_count)}</td>
         </tr>
       </tbody>
     </table>
@@ -99,4 +105,5 @@
 <acre:block def="footer_script()">
   <script src="${mf.js_src('schema.mf.js')}"></script>
 </acre:block>
-${mf.require("template", "renderer").render_page(null, this.exports)}
+
+${mf.require("template", "renderer").render_page(data, this.exports)}

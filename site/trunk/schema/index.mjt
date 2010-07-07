@@ -1,12 +1,7 @@
 <acre:script>
-  console.log(acre.request.app_url, acre.request.base_path || null, acre.request.path_info);
-
   var mf = acre.require("MANIFEST").MF;
   var c = this.exports.c = {};
-  
   var h = mf.require("core", "helpers");
-  
-  var utils = mf.require("utils");
   
   var order = acre.request.params.order || 'name';
   var dir = acre.request.params.dir || 'asc';
@@ -14,46 +9,12 @@
   var inv_dir = (dir == 'asc') ? 'desc' : 'asc';
   var indicator = (dir == 'asc') ? '▲' : '▼';
 
-  if (!user_id) {
-    var query = mf.require("index-query").query;
+  var queries = mf.require("queries");
+  var data = {};
+  if (user_id) {
+    data.domains = queries.user_domains(user_id, order, dir);
   } else {
-    var query = mf.require("user-domains-query").query;
-    query = acre.freebase.extend_query(query, { "creator" : user_id });
-  }
-  var result = acre.freebase.mqlread(query).result;
-  var ds = (user_id) ? result : result['/type/namespace/keys'];
-  var domains = [];
-  var domains_ids = {};
-  
-  for each (var d in ds) {
-    if (!user_id) d = d.namespace;
-    if (typeof domains_ids[d.id] == "undefined") {
-      var instances = 0;
-      var types = 0;
-      for each (var t in d['/type/domain/types']) {
-        types++;
-        if ('/freebase/type_profile/instance_count' in t) {
-          instances += t['/freebase/type_profile/instance_count'];
-        }
-      }
-      d.instance_count = instances;
-      d.type_count = types;
-      d.date = h.parse_date(acre.freebase.date_from_iso(d.timestamp));
-      domains.push(d);
-      domains_ids[d.id] = true;
-    }
-  }    
-  
-  if (order == 'id') {
-    domains.sort((dir == 'asc') ? utils.id_sort_asc : utils.id_sort_desc);
-  } else if (order == 'types') {
-    domains.sort((dir == 'asc') ? utils.types_sort_asc : utils.types_sort_desc);
-  } else if (order == 'instances') {
-    domains.sort((dir == 'asc') ? utils.instances_sort_asc : utils.instances_sort_desc);
-  } else if (order == 'creation') {
-    domains.sort((dir == 'asc') ? utils.creation_sort_asc : utils.creation_sort_desc);
-  } else {
-    domains.sort((dir == 'asc') ? utils.name_sort_asc : utils.name_sort_desc);
+    data.domains = queries.all_domains(order, dir);
   }
 </acre:script>
 
@@ -106,7 +67,7 @@
           <th class="numeric"><a href="?order=creation&dir=${order == 'creation' ? inv_dir : dir}${user_id ? '&user_id=' + user_id : ''}" title="order by date of creation">creation date <span acre:if="order == 'creation'">${indicator}</span></a></th>
         </tr>
       
-        <tr acre:for="d in domains" acre:if="!d['/freebase/domain_profile/hidden']">
+        <tr acre:for="d in c.domains" acre:if="!d['/freebase/domain_profile/hidden']">
           <td><a href="${h.url_for('schema', 'domain', [['id',d.id]])}">${d.name}</a></td>
           <td>${d.id}</td>
           <td class="numeric">${ (d.type_count > 0) ? h.commafy(d.type_count) : "-"}</td>
@@ -154,4 +115,4 @@
   <script src="${mf.js_src('schema.mf.js')}"></script>
 </acre:block>
 
-${mf.require("template", "renderer").render_page(null, this.exports)}
+${mf.require("template", "renderer").render_page(data, this.exports)}

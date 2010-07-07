@@ -68,7 +68,7 @@
         </tr>
       
         <tr acre:for="d in c.domains" acre:if="!d['/freebase/domain_profile/hidden']">
-          <td><a href="${h.url_for('schema', 'domain', [['id',d.id]])}">${d.name}</a></td>
+          <td><a href="${h.url_for('schema', 'domain', null, d.id)}">${d.name}</a></td>
           <td>${d.id}</td>
           <td class="numeric">${ (d.type_count > 0) ? h.commafy(d.type_count) : "-"}</td>
           <td class="numeric">${ (d.instance_count > 0) ? h.commafy(d.instance_count) : "-"}</td>

@@ -7,7 +7,6 @@
   var order = acre.request.params.order || 'name';
   var dir = acre.request.params.dir || 'asc';
   var user_id = acre.request.params.user_id;
-  var bp = acre.request.base_path;
 
   var data = {};
   if (user_id) {
@@ -91,7 +90,7 @@
       <tbody>
         <tr acre:for="d in c.domains">
           <th class="row-header odd">
-            <a href="$bp/domain$d.id" title="View $d.name">$d.name</a>
+            <a href="${h.url_for('schema', 'domain', null, d.id)}" title="View $d.name">$d.name</a>
           </th>
           <td class="even">$d.id</td>
           <td class="odd numeric">$d.type_count</td>

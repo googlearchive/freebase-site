@@ -15,7 +15,7 @@
   $c.type.name <span class="type">type</span> <span class="type" acre:if="c.type.mediator">| mediator/CVT</span> <span acre:if="c.type.published" class="type">| ${c.type.published.name}</span><span class="type" acre:else>(no published info)</span>
   <span class="extends" acre:if="c.type.included_types.length > 0">extends</span>        
   <acre:block for="t in c.type.included_types">
-    <span class="included_type"><a href="${h.url_for('schema', 'type', [['id',t.id]])}">${t.name}</a> <span class="type">type</span> <span class="type" acre:if="t.mediator">| mediator/CVT</span> <span acre:if="t.published" class="type">| ${t.published.name}</span><span class="type" acre:else>(no published info)</span></span>
+    <span class="included_type"><a href="${h.url_for('schema', 'type', null, t.id)}">${t.name}</a> <span class="type">type</span> <span class="type" acre:if="t.mediator">| mediator/CVT</span> <span acre:if="t.published" class="type">| ${t.published.name}</span><span class="type" acre:else>(no published info)</span></span>
   </acre:block>
 </acre:block>
 
@@ -30,7 +30,7 @@
     </h1>
   </div>
   <div id="path">&raquo; <a href="${h.url_for('schema', 'index')}">Domains</a>
-  &raquo; <a href="${h.url_for('schema', 'domain', [['id', c.type.domain.id]])}">$c.type.domain.id</a> &raquo; <span>$c.type.id</span></div>
+  &raquo; <a href="${h.url_for('schema', 'domain', null, c.type.domain.id)}">$c.type.domain.id</a> &raquo; <span>$c.type.id</span></div>
 </acre:block>
 
 <acre:block def="content_body()">
@@ -40,7 +40,7 @@
     
       <div id="description" acre:if="c.type.desc">${acre.markup.bless(c.type.desc)}</div>
     
-      <div id="links"><a href="$c.type.query_url" target="_new">Build a query for this type &raquo;</a><a acre:if="c.type.instances" href="${acre.freebase.service_url}/view${acre.request.params.id}">Browse the <big>${c.type.instances}</big> instances of this type &raquo;</a></div>        
+      <div id="links"><a href="$c.type.query_url" target="_new">Build a query for this type &raquo;</a><a acre:if="c.type.instances" href="${acre.freebase.site_host}/view${acre.request.params.id}">Browse the <big>${c.type.instances}</big> instances of this type &raquo;</a></div>        
     
       <p acre:if="c.type.default_property != null">Default property: ${c.type.default_property}</p>
     
@@ -57,9 +57,9 @@
             </tr>
             <tr acre:for="i,prop in c.type.properties" class="${(i % 2 == 0) ? 'odd' : 'even'} ${queries.isGlobal(prop.id) ? 'global' : 'local'}">
               <td>$prop.name</td>
-              <td><a href="${h.url_for('schema', 'property', [['id', prop.id]])}">$prop.id</a></td>
+              <td><a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.id</a></td>
               <td>
-                <a href="${h.url_for('schema', 'type', [['id', prop.expected_type.id]])}">$prop.expected_type.id</a>
+                <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">$prop.expected_type.id</a>
               </td>
               <td class="flag">
                 <span acre:if="prop.master_property == null">&#10003;</span>
@@ -90,9 +90,9 @@
             </tr>
             <tr acre:for="i,prop in c.type.inherited_properties" class="${(i % 2 == 0) ? 'odd' : 'even'} ${queries.isGlobal(prop.id) ? 'global' : 'local'}">
               <td>$prop.name</td>
-              <td><a href="${h.url_for('schema', 'property', [['id',prop.id]])}">$prop.id</a></td>
+              <td><a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.id</a></td>
               <td>
-                <a href="${h.url_for('schema', 'type', [['id',prop.expected_type.id]])}">$prop.expected_type.id</a>
+                <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">$prop.expected_type.id</a>
               </td>
               <td class="flag">
                 <span acre:if="prop.master_property == null">&#10003;</span>
@@ -124,9 +124,9 @@
             </tr>
             <tr acre:for="i,prop in c.type.expected_by" class="${(i % 2 == 0) ? 'odd' : 'even'} ${queries.isGlobal(prop.id) ? 'global' : 'local'}">
               <td>$prop.schema.name</td>
-              <td><a href="${h.url_for('schema', 'type', [['id',prop.schema.id]])}">$prop.schema.id</a></td>
+              <td><a href="${h.url_for('schema', 'type', null, prop.schema.id)}">$prop.schema.id</a></td>
               <td>$prop.name</td>
-              <td><a href="${h.url_for('schema', 'property', [['id',prop.id]])}">$prop.id</a></td>
+              <td><a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.id</a></td>
               <td class="flag">
                 <span acre:if="prop.master_property == null">&#10003;</span>
                 <span acre:else="">&nbsp;</span>
@@ -144,7 +144,7 @@
       </acre:block>
     
       <div class="tools">
-        <a href="${acre.freebase.service_url}/type/schema${id}" class="spaced">Edit Schema &raquo;</a><a href="http://www.freebase.com/tools/explore${id}">Explore View &raquo;</a>       
+        <a href="${acre.freebase.site_host}/type/schema${id}" class="spaced">Edit Schema &raquo;</a><a href="${acre.freebase.site_host}/tools/explore${id}">Explore View &raquo;</a>       
       </div>
     </div>
   

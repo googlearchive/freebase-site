@@ -73,7 +73,7 @@ function url_for(app, file, params, extra_path) {
         }
       }
       else {
-        var url = acre.request.app_url /*+ acre.request.base_path*/ + r.from + "/" + file + extra_path;
+        var url = acre.request.app_url /*+ acre.request.base_path*/ + r.from + (file ? "/" + file : "") + extra_path;
         return acre.form.build_url(url, params);
       }
     }
@@ -88,7 +88,7 @@ function url_for(app, file, params, extra_path) {
   else {
     // else absolute resource_url for external urls
     // new require path syntax (i.e., //app.site.freebase.dev/file)
-    var url = acre.host.protocol + ":" + path + "." + acre.host.name + (acre.host.port !== 80 ? (":" + acre.host.port) : "") + "/" + file + extra_path;
+    var url = acre.host.protocol + ":" + path + "." + acre.host.name + (acre.host.port !== 80 ? (":" + acre.host.port) : "") + (file ? "/" + file : "") + extra_path;
     return acre.form.build_url(url, params);
   }
 };

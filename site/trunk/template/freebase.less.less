@@ -133,7 +133,6 @@ GLOBAL CLASSES
 .clear { min-height: 1%; zoom: 1; }
 
 
-
 /*
 --------------------------------------------------
 PAGE STRUCTURE
@@ -142,7 +141,7 @@ PAGE STRUCTURE
 
 body {
     font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; 
-    background: #f4f8fb;
+    background: #f1f2f3;
     color: #666;
     min-width: 960px;
     border-top: 1px solid #dd5500;
@@ -467,3 +466,22 @@ of all templates.
 }
 
 .category-list-item-last { border: 0; }
+
+/*
+--------------------------------------
+Page-level header
+--------------------------------------
+Site-wide footer. Present at the bottom
+of all templates.
+*/
+
+.page-header {
+    padding: 1em 3em;
+    .linear_gradient(#7c91b1, #64768f, repeat);
+}
+
+.page-header h1 {
+    color: #fff;
+    font-size: 2.4em;
+    text-shadow:2px 2px 2px #333;
+}

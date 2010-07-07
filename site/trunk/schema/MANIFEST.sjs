@@ -1,21 +1,21 @@
-
 var MF = {
-  "apps" : {
-    "core" : "//core.site.freebase.dev",
-    "template" : "//template.site.freebase.dev",
-    "promise": "//promise.site.freebase.dev",
-    "libraries" : "//release.libraries.apps.freebase.dev",
-    "schemaviz" : "//release.schemaviz.pak21.user.dev"
+  "apps": {
+      "core": "//core.site.freebase.dev",
+      "template": "//template.site.freebase.dev",
+      "promise": "//promise.site.freebase.dev",
+      "jquerytools": "//jquerytools.site.freebase.dev",
+      "libraries": "//libraries.apps.freebase.dev"
   },
   "stylesheet": {
     "schema.mf.css": [
       ["template", "MANIFEST", "/freebase.mf.css"],
-      "schema.css"
+      "schema.less"
     ]
   },
   "javascript": {
     "schema.mf.js": [
       ["template", "MANIFEST", "/freebase.mf.js"],
+      ["jquerytools", "tabs.js"],
       "schema.js"
     ]
   }

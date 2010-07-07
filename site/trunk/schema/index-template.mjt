@@ -1,0 +1,102 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var c = this.exports.c = {};
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  <div class="page-header">
+    <h1 id="page-title">
+      Schema Explorer
+    </h1>
+  </div>
+</acre:block>
+
+<acre:block def="content_body()">
+  <div class="section">
+    <h1 class="section-title">Search</h1>
+    <div id="schema-search" class="section-tabs">
+      <ul class="section-tabset clear">
+        <li class="section-tab"><a href="#domain-search">Domains</a></li>
+        <li class="section-tab"><a href="#type-search">Types</a></li>
+        <li class="section-tab"><a href="#property-search">Properties</a></li>
+        <li class="section-tab"><a href="#user-search">Users</a></li>
+      </ul>
+      <div class="search-box" id="domain-search">
+        <form id="domain-search-form">
+          <fieldset>
+            <input type="search" name="domain-search-input" placeholder="Start typing for suggested domains" />
+            <label><input type="radio" checked="checked" />Freebase Commons</label>
+            <label><input type="radio" />All Projects</label>
+          </fieldset>
+        </form>
+      </div>
+      <div class="search-box" id="type-search">
+        <form id="type-search-form">
+          <fieldset>
+            <input type="search" name="type-search-input" placeholder="Start typing for suggested domains" placeholder="Start typing for suggested types" />
+            <label><input type="radio" checked="checked" />Freebase Commons</label>
+            <label><input type="radio" />All Projects</label>
+          </fieldset>
+        </form>
+      </div>
+      <div class="search-box" id="property-search">
+        <form id="property-search-form">
+          <fieldset>
+            <input type="search" name="property-search-input" placeholder="Start typing for suggested domains" placeholder="Start typing for suggested properties" />
+            <label><input type="radio" checked="checked" />Freebase Commons</label>
+            <label><input type="radio" />All Projects</label>
+          </fieldset>
+        </form>      
+      </div>
+      <div class="search-box" id="user-search">
+        <form id="user-search-form">
+          <fieldset>
+            <input type="search" name="user-search-input" placeholder="Start typing for suggested domains" placeholder="Start typing for suggested users" />
+            <label><input type="radio" checked="checked" />Freebase Commons</label>
+            <label><input type="radio" />All Projects</label>
+          </fieldset>
+        </form>      
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <h1 class="section-title">Browse</h1>
+    <table cellspacing="0" class="table">
+      <thead>
+        <tr>
+          <th class="column-header">Domain</th>
+          <th class="column-header">Key</th>
+          <th class="column-header numeric"># of Types</th>
+          <th class="column-header numeric"># of Instances</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th class="row-header odd">
+            <a href="XXX" title="View {project.name}">American Football</a>
+          </th>
+          <td class="even">/american_football</td>
+          <td class="odd numeric">23</td>
+          <td class="even numeric">72,257</td>
+        </tr>
+        <tr>
+          <th class="row-header odd">
+            <a href="XXX" title="View {project.name}">American Football</a>
+          </th>
+          <td class="even">/american_football</td>
+          <td class="odd numeric">23</td>
+          <td class="even numeric">72,257</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="${mf.js_src('schema.mf.js')}"></script>
+</acre:block>
+${mf.require("template", "renderer").render_page(null, this.exports)}

@@ -58,7 +58,7 @@
 </acre:script>
 
 <acre:block def="title()">
-  All Domains
+  Schema
 </acre:block>
 
 <acre:block def="head()">

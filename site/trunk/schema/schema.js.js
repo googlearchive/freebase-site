@@ -1,25 +1,30 @@
-$(function() {
-  $("#domain").suggest({
+$(document).ready(function(){
+
+    $("#schema-search > .section-tabset").tabs("#schema-search > .search-box");
+
+
+/*
+    $("#domain").suggest({
     "type": "/type/domain"
-  }).bind("fb-select", function(e,data) { 
+    }).bind("fb-select", function(e,data) { 
     var t = "#domain";
     $(t).val(data.id);
     $(t + "_form").submit();
-  }).focus(function() {
+    }).focus(function() {
     this.select();
-  });
-  
-  $("#user").suggest({
+    });
+    
+    $("#user").suggest({
     "type": "/type/user"
-  }).bind("fb-select", function(e,data) { 
+    }).bind("fb-select", function(e,data) { 
     var t = "#user";
     $(t).val(data.id);
     $(t + "_form").submit();
-  }).focus(function() {
+    }).focus(function() {
     this.select();
-  });
-  
-  $("#type").suggest({
+    });
+    
+    $("#type").suggest({
     "type" : "/type/type",
     "mql_filter" : [{
       "type" : "/type/type",
@@ -33,15 +38,15 @@ $(function() {
         "optional": "forbidden"
       }
     }]
-  }).bind("fb-select", function(e,data) { 
+    }).bind("fb-select", function(e,data) { 
     var t = "#type";
     $(t).val(data.id);
     $(t + "_form").submit();
-  }).focus(function() {
+    }).focus(function() {
     this.select();
-  });
-  
-  $("#property").suggest({
+    });
+    
+    $("#property").suggest({
     "type" : "/type/property",
     "mql_filter" : [{
       "type": "/type/property",
@@ -58,32 +63,33 @@ $(function() {
         }
       }
     }]
-  }).bind("fb-select", function(e,data) { 
+    }).bind("fb-select", function(e,data) { 
     var t = "#property";
     $(t).val(data.id);
     $(t + "_form").submit();
-  }).focus(function() {
+    }).focus(function() {
     this.select();
-  });
-  
-  $("#all_type").suggest({
+    });
+    
+    $("#all_type").suggest({
     "type": "/type/type"
-  }).bind("fb-select", function(e,data) {
+    }).bind("fb-select", function(e,data) {
     var t = "#type";
     $(t).val(data.id);
     $(t + "_form").submit();
-  }).focus(function() {
+    }).focus(function() {
     this.select();
-  });
-  
-  $("#all_property").suggest({
+    });
+    
+    $("#all_property").suggest({
     "type": "/type/property"
-  }).bind("fb-select", function(e,data) {
+    }).bind("fb-select", function(e,data) {
     var t = "#property";
     $(t).val(data.id);
     $(t + "_form").submit();
-  }).focus(function() {
+    }).focus(function() {
     this.select();
-  });
-  
+    });
+*/
+
 });

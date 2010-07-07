@@ -32,6 +32,16 @@ var freebase_static_resource_url;
  */
 function init(MF, scope, options) {
   extend_manifest(MF, scope, options);
+  if (/^https?\:\/\/devel\.(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(scope.acre.request.app_url)) {
+    // on our dev machines, we ALWYAYS want to use the trunk of all /freebase/site apps
+    var re = /^(\/\/(?:release|\d+)\.)[^\.]+\.site\.freebase\.dev$/;
+    for (var app in MF.apps) {
+      var m = re.exec(MF.apps[app]);
+      if (m) {
+        MF.apps[app] = MF.apps[app].replace(m[1], "//");
+      }
+    }
+  }
   if (scope.acre.current_script === scope.acre.request.script) {
     MF.main();
   }
@@ -320,7 +330,7 @@ function base_manifest(MF, scope, undefined) {
 
     require: function(app, file) {
       var args = MF.require_args(app, file);
-      
+
       if (args.local) {
         return scope.acre.require(args.file);
       }
@@ -367,7 +377,7 @@ function base_manifest(MF, scope, undefined) {
       }, scope);
     }
   };
-  
+
   return base;
 };
 

@@ -5,7 +5,7 @@ var MF = {
       "template": "//1.template.site.freebase.dev",
       "promise": "//1.promise.site.freebase.dev",
       "raphael": "//1.raphael.site.freebase.dev",
-    
+
       "libraries": "//2.libraries.apps.freebase.dev"
   },
   "stylesheet": {
@@ -27,4 +27,7 @@ var MF = {
   }
 };
 
+if (/^https?\:\/\/devel\.(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url)) {
+  MF.apps.core = "//core.site.freebase.dev";
+}
 acre.require(MF.apps.core + "/MANIFEST").init(MF, this);

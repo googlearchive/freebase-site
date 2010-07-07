@@ -6,12 +6,12 @@ var h = mf.require("core", "helpers_util");
 //  freebase page, or single def with the results
 function render_page(data, exports, base_template) {
   base_template = base_template || mf.require("freebase");
-  _render(data, base_template, "page", exports, [exports]);
+  return _render(data, base_template, "page", exports, [exports]);
 }
 
 function render_def(data, template, def_name, var_args) {
   var args = Array.prototype.slice.call(arguments, 3);
-  _render(data, template, def_name, template, args);
+  return _render(data, template, def_name, template, args);
 }
 
 function _render(data, template, def_name, exports, args) {
@@ -28,4 +28,5 @@ function _render(data, template, def_name, exports, args) {
     acre.write(response);
   });
   acre.async.wait_on_results();
+  return "";
 }

@@ -39,38 +39,36 @@
         <li class="section-tab"><a href="#user-search">Users</a></li>
       </ul>
       <div class="search-box" id="domain-search">
-        <form id="domain-search-form">
+        <form id="domain-search-form" method="get" action="domain">
           <fieldset>
-            <input type="search" name="domain-search-input" placeholder="Start typing for suggested domains" />
-            <label><input type="radio" checked="checked" />Freebase Commons</label>
-            <label><input type="radio" />All Projects</label>
+            <input type="text" name="id" id="domain-search-input" id="domain-search-input" placeholder="Start typing for suggested domains" />
           </fieldset>
         </form>
+        <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-commons" checked="checked" />Freebase Commons</label>
+        <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" />All Projects</label>
       </div>
       <div class="search-box" id="type-search">
-        <form id="type-search-form">
+        <form id="type-search-form" method="get" action="type">
           <fieldset>
-            <input type="search" name="type-search-input" placeholder="Start typing for suggested domains" placeholder="Start typing for suggested types" />
-            <label><input type="radio" checked="checked" />Freebase Commons</label>
-            <label><input type="radio" />All Projects</label>
+            <input type="text" name="id" id="type-search-input" placeholder="Start typing for suggested types" />
+            <label><input type="radio" name="type-search-toggle" class="search-toggle" id="type-search-toggle-commons" checked="checked" />Freebase Commons</label>
+            <label><input type="radio" name="type-search-toggle" class="search-toggle" id="type-search-toggle-all" />All Projects</label>
           </fieldset>
         </form>
       </div>
       <div class="search-box" id="property-search">
-        <form id="property-search-form">
+        <form id="property-search-form" method="get" action="property">
           <fieldset>
-            <input type="search" name="property-search-input" placeholder="Start typing for suggested domains" placeholder="Start typing for suggested properties" />
-            <label><input type="radio" checked="checked" />Freebase Commons</label>
-            <label><input type="radio" />All Projects</label>
+            <input type="text" name="id" id="property-search-input" placeholder="Start typing for suggested properties" />
+            <label><input type="radio" name="property-search-toggle" class="search-toggle" id="property-search-toggle-commons" checked="checked" />Freebase Commons</label>
+            <label><input type="radio" name="property-search-toggle" class="search-toggle" id="property-search-toggle-all" />All Projects</label>
           </fieldset>
         </form>      
       </div>
       <div class="search-box" id="user-search">
         <form id="user-search-form">
           <fieldset>
-            <input type="search" name="user-search-input" placeholder="Start typing for suggested domains" placeholder="Start typing for suggested users" />
-            <label><input type="radio" checked="checked" />Freebase Commons</label>
-            <label><input type="radio" />All Projects</label>
+            <input type="text" name="id" id="user-search-input" placeholder="Start typing for suggested domains" placeholder="Start typing for suggested users" />
           </fieldset>
         </form>      
       </div>

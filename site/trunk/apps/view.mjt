@@ -2,7 +2,6 @@
   var mf = acre.require("MANIFEST").MF;
   var c = this.exports.c = {};
   var h = mf.require("core", "helpers");
-  var bp = acre.request.base_path;
 </acre:script>
 
 <acre:block def="head()">
@@ -56,7 +55,7 @@
                 return (author.id === c.user.id);
               });
             </acre:script>
-            <a class="button" acre:if="is_author" href="$bp/admin$c.app.id">
+            <a class="button" acre:if="is_author" href="${h.url_for('apps', 'admin', null, c.app.id)}">
               Settings...
             </a>
           </acre:block>
@@ -70,7 +69,7 @@
       <h4>App Authors</h4>
       <ul class="box-thumblist">  
         <li acre:for="author in c.app.authors">
-          <a href="$bp$author.id">
+          <a href="${acre.freebase.site_host}/view$author.id">
             <img height="45" width="45" src="${acre.freebase.imgurl(author.id, 45, 45, 'fillcropmid')};" />
             <p>$author.name</p>
           </a>

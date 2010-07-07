@@ -2,8 +2,6 @@
   var mf = acre.require("MANIFEST").MF;
   var c = this.exports.c = {};
   var h = mf.require("core", "helpers");
-  var bp = acre.request.base_path;
-  // TODO -- AUTH CHECK
 </acre:script>
 
 <acre:block def="head()">
@@ -28,7 +26,7 @@
     </div>
   
     <div class="content-box" acre:else="">
-      <form id="edit-props" action="$bp/form/submit/set_app_properties" method="post" class="box-form">
+      <form id="edit-props" action="${h.url_for('apps', 'form', null, '/submit/set_app_properties')}" method="post" class="box-form">
         <input type="hidden" name="appid" value="$c.app.id" />
         <ul class="box-modechooser">
           <li>
@@ -65,11 +63,11 @@
       
         <p>
           <input class="button-focus" type="submit" name="title" value="Update this App"/>
-          <button onclick="location.href='$bp/app$c.app.id'">Cancel</button>
+          <a class="button" href="${h.url_for('apps', 'app', null, c.app.id)}">Cancel</button>
         </p>
       </form>
     
-      <form id="icon_form" action="$bp/form/submit/add_icon" method="post">
+      <form id="icon_form" action="${h.url_for('apps', 'form', null, '/submit/add_icon')}" method="post">
         <p>
           <label>App Icon</label>
           <input id="icon_file" type="file" name="file" />
@@ -97,7 +95,7 @@
 
 <acre:block def="footer_script()">
   <script type="text/javascript">
-    var bp = "${bp}";
+    var bp = "${h.url_for('apps')}";
     var app = ${JSON.stringify(c.app)};
   </script>
   <script type="text/javascript" src="${mf.js_src('apps.mf.js')}"></script>

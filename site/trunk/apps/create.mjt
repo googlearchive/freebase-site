@@ -1,7 +1,7 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
   var c = this.exports.c = {};
-  var bp = acre.request.base_path;
+  var h = mf.require("core", "helpers");
 </acre:script>
 
 <acre:block def="title()" trim="">
@@ -25,9 +25,9 @@
         <h2>Made something cool with Freebase?</h2>
         
         <p>
-          Share your work with the <a href="/community">Freebase community</a> 
+          Share your work with the <a href="${acre.freebase.site_host}/community">Freebase community</a> 
           by adding it to the App Directory.  Anything made with 
-          the <a href="/docs/data">Freebase API</a> can be listed here.
+          the <a href="${acre.freebase.site_host}/docs/data">Freebase API</a> can be listed here.
         </p>
         
         <h3><a id="create-link" href="#">Add Your Project &raquo;</a></h3>
@@ -39,7 +39,7 @@
         <h2>Just getting started? Try Acre!</h2>
         
         <p>
-          <a href="/docs/acre">Acre</a> is Freebase's application hosting platform, 
+          <a href="${acre.freebase.site_host}/docs/acre">Acre</a> is Freebase's application hosting platform, 
           designed to minimize the effort required to build web applications with 
           Freebase data and create mashups with other web services.
         </p>
@@ -52,7 +52,7 @@
 
 <acre:block def="footer_script()">
   <script type="text/javascript">
-    var bp = "${bp}";
+    var bp = "${h.url_for('apps')}";
   </script>
   <script type="text/javascript" src="${mf.js_src('apps.mf.js')}"></script>
 </acre:block>

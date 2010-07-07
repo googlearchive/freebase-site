@@ -87,6 +87,7 @@ var app = function(id, options) {
       return null;
     })
     .then(function(app) {
+      if (!app) return null;
       var d = {};
       
       if (options.article && app.article) {

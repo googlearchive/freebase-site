@@ -1,68 +1,22 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
-  var h = mf.require("core", "helpers");
   var c = this.exports.c = {};
+  var h = mf.require("core", "helpers");
 
-  var utils = mf.require("utils");
-    
+  var id = acre.request.params.id || acre.request.path_info;
   var order = acre.request.params.order || 'name';
   var dir = acre.request.params.dir || 'asc';
   var inv_dir = (dir == 'asc') ? 'desc' : 'asc';
-  var indicator = (dir == 'asc') ? '▲' : '▼';  
-  var id = acre.environ.params.id || "";
-  if (id != '' && id.charAt(0) == '/') {
-    var q = mf.require("domain-query").query;
-    q = acre.freebase.extend_query(q, {"id": id});
-    var result = acre.freebase.mqlread(q).result;
-    if (result != null) {
-      var types = result.types;
-      var mediators = [];
-      
-      for each (var t in types) {
-        t.date = h.parse_date(acre.freebase.date_from_iso(t.timestamp));
-        t.instance_count = t["/freebase/type_profile/instance_count"];
-        if (t['/freebase/type_hints/mediator']) {
-          mediators.push(t);
-        }
-        utils.fix_id(t);
-      }
-      
-      if (order == 'id') {
-        types.sort((dir == 'asc') ? utils.id_sort_asc : utils.id_sort_desc);
-        mediators.sort((dir == 'asc') ? utils.id_sort_asc : utils.id_sort_desc);
-      } else if (order == 'properties') {
-        types.sort((dir == 'asc') ? utils.properties_sort_asc : utils.properties_sort_desc);
-        mediators.sort((dir == 'asc') ? utils.properties_sort_asc : utils.properties_sort_desc);
-      } else if (order == 'instances') {
-        types.sort((dir == 'asc') ? utils.instances_sort_asc : utils.instances_sort_desc);
-        mediators.sort((dir == 'asc') ? utils.instances_sort_asc : utils.instances_sort_desc);
-      } else if (order == 'creation') {
-        types.sort((dir == 'asc') ? utils.creation_sort_asc : utils.creation_sort_desc);
-        mediators.sort((dir == 'asc') ? utils.creation_sort_asc : utils.creation_sort_desc);
-      } else {
-        types.sort((dir == 'asc') ? utils.name_sort_asc : utils.name_sort_desc);
-        mediators.sort((dir == 'asc') ? utils.name_sort_asc : utils.name_sort_desc);
-      }
-      
-      if ('/common/topic/article' in result && result['/common/topic/article'].length > 0) {
-        var blob = acre.freebase.get_blob(result['/common/topic/article'][0].id);
-        if (blob.body) {
-          var desc = blob.body;
-        }
-      }
-      
-      try {
-        var graph = mf.require('schemaviz' ,'graph');
-        var gv = graph.graphviz(graph.dot(result.id, acre.request.params));
-      } catch (e) {
-        var gv = { imageurl : null };
-      }
-    }
-  }
+  var indicator = (dir == 'asc') ? '▲' : '▼'; 
+  
+  var queries = mf.require("queries");  
+  var data = {
+    "domain" : queries.domain(id, order, dir)
+  };
 </acre:script>
 
 <acre:block def="title()">
-  $result.name <span class="type">domain</span>
+  $c.domain.name <span class="type">domain</span>
 </acre:block>
 
 <acre:block def="head()">
@@ -75,21 +29,15 @@
       Schema Explorer
     </h1>
   </div>
-  <div if="result" id="path">&raquo; <a href="${h.url_for('schema', 'index')}">Domains</a> &raquo; <span>$result.id</span></div>
+  <div if="c.domain" id="path">&raquo; <a href="${h.url_for('schema', 'index')}">Domains</a> &raquo; <span>$c.domain.id</span></div>
 </acre:block>
 
-<acre:block def="content_body(g)">
-  <acre:block if="result">
+<acre:block def="content_body()">
+  <acre:block if="c.domain">
       <div id="body">
-      <div id="description" acre:if="desc">${acre.markup.bless(desc)}</div>
+      <div id="description" acre:if="c.domain.desc">${acre.markup.bless(c.domain.desc)}</div>
     
-      <acre:block if="result['/type/namespace/keys'].length > 0">
-        <acre:script>
-          result['/type/namespace/keys'].sort(function(a,b) {
-            return a.namespace.id.localeCompare(b.namespace.id);
-          });
-        </acre:script>
-      
+      <acre:block if="c.domain.subdomains.length > 0">
         <div class="table_box">
           <h2>Subdomains</h2>
           <table>
@@ -100,18 +48,7 @@
               <th class="numeric"># of instances</th>
             </tr>
           
-            <tr acre:for="v in result['/type/namespace/keys']">
-              <acre:script>
-                var d = v.namespace;
-                var types = 0;
-                var instances = 0;
-                for each (var t in d.types) {
-                  types++;
-                  if ('/freebase/type_profile/instance_count' in t) {
-                    instances += t['/freebase/type_profile/instance_count'];
-                  }
-                }
-              </acre:script>
+            <tr acre:for="d in c.subdomains">
               <td><a href="${h.url_for('schema', 'domain', [['id',d.id]])}">${d.name}</a></td>
               <td>${d.id}</td>
               <td class="numeric">${(types > 0) ? h.commafy(types) : "-"}</td>
@@ -120,18 +57,18 @@
           </table>
         </div>
       </acre:block>
-    
+      
       <div class="table_box">
         <h2>Types</h2>
         <table>
           <tr>
-            <th><a href="?id=${acre.form.quote(result.id)}&order=name&dir=${order == 'name' ? inv_dir : dir}">type name <span acre:if="order == 'name'">${indicator}</span></a></th>
-            <th><a href="?id=${acre.form.quote(result.id)}&order=id&dir=${order == 'id' ? inv_dir : dir}">type id <span acre:if="order == 'id'">${indicator}</span></a></th>
-            <th class="numeric"><a href="?id=${acre.form.quote(result.id)}&order=properties&dir=${order == 'properties' ? inv_dir : dir}"># of properties <span acre:if="order == 'properties'">${indicator}</span></a></th>
-            <th class="numeric"><a href="?id=${acre.form.quote(result.id)}&order=instances&dir=${order == 'instances' ? inv_dir : dir}"># of instances <span acre:if="order == 'instances'">${indicator}</span></a></th>
-            <th class="numeric"><a href="?id=${acre.form.quote(result.id)}&order=creation&dir=${order == 'creation' ? inv_dir : dir}">creation date <span acre:if="order == 'creation'">${indicator}</span></a></th>
+            <th><a href="?id=${acre.form.quote(c.domain.id)}&order=name&dir=${order == 'name' ? inv_dir : dir}">type name <span acre:if="order == 'name'">${indicator}</span></a></th>
+            <th><a href="?id=${acre.form.quote(c.domain.id)}&order=id&dir=${order == 'id' ? inv_dir : dir}">type id <span acre:if="order == 'id'">${indicator}</span></a></th>
+            <th class="numeric"><a href="?id=${acre.form.quote(c.domain.id)}&order=properties&dir=${order == 'properties' ? inv_dir : dir}"># of properties <span acre:if="order == 'properties'">${indicator}</span></a></th>
+            <th class="numeric"><a href="?id=${acre.form.quote(c.domain.id)}&order=instances&dir=${order == 'instances' ? inv_dir : dir}"># of instances <span acre:if="order == 'instances'">${indicator}</span></a></th>
+            <th class="numeric"><a href="?id=${acre.form.quote(c.domain.id)}&order=creation&dir=${order == 'creation' ? inv_dir : dir}">creation date <span acre:if="order == 'creation'">${indicator}</span></a></th>
           </tr>
-          <tr acre:for="i,t in types" acre:if="!t['/freebase/type_hints/mediator']" class="${(i % 2 == 0) ? 'odd' : 'even'}">
+          <tr acre:for="i,t in c.domain.types" acre:if="!t.mediator" class="${(i % 2 == 0) ? 'odd' : 'even'}">
             <td><a href="${h.url_for('schema', 'type', [['id',t.id]])}">$t.name</a></td>
             <td>$t.id</td>
             <td class="numeric">$t.properties.length</td>
@@ -141,37 +78,32 @@
         </table>
       </div>
     
-      <acre:block if="mediators.length > 0">
+      <acre:block if="c.domain.mediators.length > 0">
         <div class="table_box">
           <h2>Mediators/CVTs</h2>
           <table>
             <tr>
-              <th><a href="?id=${acre.form.quote(result.id)}&order=name&dir=${order == 'name' ? inv_dir : dir}">type name <span acre:if="order == 'name'">${indicator}</span></a></th>
-              <th><a href="?id=${acre.form.quote(result.id)}&order=id&dir=${order == 'id' ? inv_dir : dir}">type id <span acre:if="order == 'id'">${indicator}</span></a></th>
-              <th class="numeric"><a href="?id=${acre.form.quote(result.id)}&order=properties&dir=${order == 'properties' ? inv_dir : dir}"># of properties <span acre:if="order == 'properties'">${indicator}</span></a></th>
-              <th class="numeric"><a href="?id=${acre.form.quote(result.id)}&order=instances&dir=${order == 'instances' ? inv_dir : dir}"># of instances <span acre:if="order == 'instances'">${indicator}</span></a></th>
-              <th class="numeric"><a href="?id=${acre.form.quote(result.id)}&order=creation&dir=${order == 'creation' ? inv_dir : dir}">creation date <span acre:if="order == 'creation'">${indicator}</span></a></th>
+              <th><a href="?id=${acre.form.quote(c.domain.id)}&order=name&dir=${order == 'name' ? inv_dir : dir}">type name <span acre:if="order == 'name'">${indicator}</span></a></th>
+              <th><a href="?id=${acre.form.quote(c.domain.id)}&order=id&dir=${order == 'id' ? inv_dir : dir}">type id <span acre:if="order == 'id'">${indicator}</span></a></th>
+              <th class="numeric"><a href="?id=${acre.form.quote(c.domain.id)}&order=properties&dir=${order == 'properties' ? inv_dir : dir}"># of properties <span acre:if="order == 'properties'">${indicator}</span></a></th>
+              <th class="numeric"><a href="?id=${acre.form.quote(c.domain.id)}&order=instances&dir=${order == 'instances' ? inv_dir : dir}"># of instances <span acre:if="order == 'instances'">${indicator}</span></a></th>
+              <th class="numeric"><a href="?id=${acre.form.quote(c.domain.id)}&order=creation&dir=${order == 'creation' ? inv_dir : dir}">creation date <span acre:if="order == 'creation'">${indicator}</span></a></th>
             </tr>
-            <tr acre:for="i,t in mediators" class="${(i % 2 == 0) ? 'odd' : 'even'}">
+            <tr acre:for="i,t in c.domain.mediators" class="${(i % 2 == 0) ? 'odd' : 'even'}">
               <td><a href="${h.url_for('schema', 'type', [['id',t.id]])}">$t.name</a></td>
               <td>$t.id</td>
               <td class="numeric">$t.properties.length</td>
-              <td class="numeric"><a href="${acre.freebase.service_url}/view${t.id}">${h.commafy(t['/freebase/type_profile/instance_count'])}</a></td>
+              <td class="numeric"><a href="${acre.freebase.service_url}/view${t.id}">${h.commafy(t.instance_count)}</a></td>
               <td class="numeric">${h.format_date(t.date,"yyyy-MM-dd")}</td>
             </tr>
           </table>
         </div>
       </acre:block>
     
-      <div id="schemaviz" acre:if="gv.imageurl">
-        <h2>Visual Map</h2>
-        <div class="map"><a title="Click to see $result.name's schema visual map in full size" href="http://schemaviz.freebaseapps.com/?domain=$result.id"><img src="${gv.imageurl}"></a></div>
-      </div> 
-    
       <div class="tools">
         <h1>Administrators</h1>
-        <acre:block if="result.owners">
-          <table acre:for="group in result.owners">
+        <acre:block if="c.domain.owners">
+          <table acre:for="group in c.domain.owners">
             <tr>
               <td>${group.name}: </td>
               <td>
@@ -202,4 +134,4 @@
   <script src="${mf.js_src('schema.mf.js')}"></script>
 </acre:block>
 
-${mf.require("template", "renderer").render_page(null, this.exports)}
+${mf.require("template", "renderer").render_page(data, this.exports)}

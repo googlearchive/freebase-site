@@ -2,6 +2,7 @@ var mf = acre.require("MANIFEST").MF;
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 var urlfetch = mf.require("promise", "apis").urlfetch;
+var qh = mf.require("queries", "helpers");
 var h = mf.require("core", "helpers");
 
 
@@ -92,6 +93,10 @@ var domain = function(id, order, dir) {
   
   var q = mf.require("domain-query").query;
   q = acre.freebase.extend_query(q, {"id": id});
+  var user_clause = qh.user_clause();
+  acre.freebase.extend_query(q.creator, user_clause);
+  acre.freebase.extend_query(q.owners[0].member[0], user_clause);
+
   
   return freebase.mqlread(q)
     .then(function(envelope) {

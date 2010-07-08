@@ -1,6 +1,7 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
   var h = mf.require("core", "helpers");
+  console.log("imagecomponents", h, h.image_thumb_url);
 </acre:script>
 
 <acre:block def="user_image_small(user)">

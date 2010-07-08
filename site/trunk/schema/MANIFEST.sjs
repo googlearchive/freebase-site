@@ -5,7 +5,8 @@ var MF = {
       "promise": "//promise.site.freebase.dev",
       "jquerytools": "//jquerytools.site.freebase.dev",
       "libraries": "//libraries.apps.freebase.dev",
-      "domain": "//domain.site.freebase.dev"
+      "domain": "//domain.site.freebase.dev",
+      "queries": "//queries.site.freebase.dev"
   },
   "stylesheet": {
     "schema.mf.css": [

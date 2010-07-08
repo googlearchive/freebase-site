@@ -25,6 +25,7 @@
       errorid: "/freebase/user_profile/empty_user_image"
     };
   </acre:script>
+
   <div class="user-image">
     <a href="${url}" class="fn nickname url">
      ${image_thumb(user["/common/topic/image"], size, options)}
@@ -55,7 +56,7 @@
 
 <acre:block def="_image_thumb(image, size, options)" if="image">
   <acre:script>
-    var o = h.extend({mode:"fit"}, options);
+x   var o = h.extend({mode:"fit"}, options);
     var width, height;
     if (o.pad) {
       if (o.mode === "fill") {
@@ -70,7 +71,7 @@
         width = height = size;
       }
     }
-    var attrs = {src: h.image_thumb_url(image.id, size, o)};
+    var attrs = {src: h.image_thumb_url(image, size, o)};
     if (width) {
       attrs.width = width;
     }

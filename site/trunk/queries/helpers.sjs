@@ -2,6 +2,9 @@ var mf = acre.require("MANIFEST").MF;
 var extend = mf.require("core", "helpers_util").extend;
 
 function user_clause(id, badges, options) {
+  if (!id) {
+    id = null;
+  }
   var q = {
     "id": id,
     "name": null,

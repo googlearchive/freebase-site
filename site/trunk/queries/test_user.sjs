@@ -11,8 +11,8 @@ test("user", function() {
   acre.async.wait_on_results();
   ok(result);
   equal(result.name, "daepark");
-  equal(result["image"].length, 1);
-  ok(!result["badge"]);
+  equal(result["/common/topic/image"].length, 1);
+  ok(!result["badges:/type/user/usergroup"]);
 });
 
 test("user_badges", function() {
@@ -23,7 +23,7 @@ test("user_badges", function() {
     });
   acre.async.wait_on_results();
   ok(result);
-  ok(result["badges"].length);
+  ok(result["badges:/type/user/usergroup"].length);
 });
 
 acre.test.report();

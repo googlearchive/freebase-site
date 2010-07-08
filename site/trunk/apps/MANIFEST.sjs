@@ -4,12 +4,15 @@ var MF = {
       "template": "//template.site.freebase.dev",
       "promise": "//promise.site.freebase.dev",
       "libraries" : "//release.libraries.apps.freebase.dev",
+      "domain": "//domain.site.freebase.dev",
       "jquery" : "//release.jquery.libs.freebase.dev",
+      "jquerytools": "//jquerytools.site.freebase.dev",
       "service" : "//release.service.libs.freebase.dev"
   },
   "stylesheet": {
     "apps.mf.css": [
       ["template", "MANIFEST", "/freebase.mf.css"],
+      ["template", "freebase.table.less"],
       "apps.less"
     ],
     "article.mf.css" : [
@@ -19,6 +22,8 @@ var MF = {
   "javascript": {
     "apps.mf.js": [
       ["template", "MANIFEST", "/freebase.mf.js"],
+      ["jquerytools", "tabs.js"],
+      ["domain", "jquery.tablesorter.js"],
       ["jquery", "jquery.form.js"],
       "apps.js"
     ]

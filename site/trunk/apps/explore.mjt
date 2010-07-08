@@ -4,20 +4,18 @@
   var h = mf.require("core", "helpers");
 </acre:script>
 
+<acre:block def="title()" trim="">
+  $c.title
+</acre:block>
+
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="${mf.css_src('apps.mf.css')}" />
 </acre:block>
 
-<!--
-<acre:block def="title()" trim="">
-  $c.title
-</acre:block>
--->
-
 <acre:block def="content_header()">
-  <header class="app-header">
-    <h1 class="app-header-title">Explore Apps</h1>
-  </header>
+  <div class="page-header">
+    <h1 id="page-title">Explore Apps</h1>
+  </div>
 </acre:block>
 
 <acre:block def="content_body()">
@@ -66,24 +64,24 @@
       <a href="${h.url_for('apps', 'creeat')}" class="button">New App</a>
     </header>
     
-    <table id="app-list" acre:if="c.apps.length">
-      <thead>
-        <tr>
-          <th>Name/Description</th>
-          <!--<th>Related Projects</th>-->
-          <th acre:if="c.category === 'released'">Version</th>
-          <th>Authors</th>
-          <th>Last Modified</th>
-          <th acre:if="c.category === 'search' || c.category === 'user'">
-            <input type="checkbox" class="apps-filter" name="unpublished" checked="checked"/>
-            <label>Published</label>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
+    <div class="section">
+      <table class="table" cellspacing="0" acre:if="c.apps.length">
+        <thead>
+          <tr>
+            <th scope="col" class="column-header">Name/Description</th>
+            <th scope="col" class="column-header" acre:if="c.category === 'released'">Version</th>
+            <th scope="col" class="column-header" acre:else="">Related Projects</th>
+            <th scope="col" class="column-header">Authors</a></th>
+            <th scope="col" class="column-header numeric">Last Modified</th>
+            <th scope="col" class="column-header" acre:if="c.category === 'search' || c.category === 'user'">
+              <input type="checkbox" class="apps-filter" name="unpublished" checked="checked"/>
+              <label>Published</label>
+            </th>
+          </tr>
+        </thead>
         <tr acre:for="app in c.apps" 
             acre:attrs="app.listed?{'class':'published'}:{'class':'unpublished'}">
-          <td>
+          <td class="odd">
             <h3 class="app-title">
               <a href="${h.url_for('apps', null, null, app.id)}">$app.name</a>
             </h3>
@@ -91,13 +89,13 @@
               $app.description
             </p>
           </td>
-          <!--<td>insert related projects</td>-->
-          <th acre:if="c.category === 'released'">
+          <td acre:if="c.category === 'released'" class="even">
             <acre:block if="app.acre && app.acre.version">
               $app.acre.version
             </acre:block>
-          </th>
-          <td>
+          </td>
+          <td acre:else="" class="even"></td>
+          <td class="odd">
             <div class="authors" acre:if="app.authors.length">
               <acre:script>
                 var f = app.authors[0];
@@ -107,7 +105,7 @@
               <acre:block if="num > 0"> and $num other<acre:block if="num > 1">s</acre:block></acre:block>
             </div>
           </td>
-          <td>
+          <td class="even">
             <acre:block if="app.modified">
               ${h.relative_date(acre.freebase.date_from_iso(app.modified))}
             </acre:block>
@@ -115,43 +113,50 @@
               N/A
             </acre:block>
           </td>
-          <td acre:if="c.category === 'search' || c.category === 'user'">
+          <td class="odd" acre:if="c.category === 'search' || c.category === 'user'">
             <acre:block if="app.listed">&#10003;</acre:block>
           </td>
         </tr>
-      </tbody>
-    </table>
-    
-    <div id="no-apps" acre:else="">
-      <p acre:if="c.category === 'user'">
-        <b>${c.query}</b> hasn't written any apps yet. 
-      </p>
-      <p acre:elif="c.category === 'search'">
-        Your search for <b>${c.query}</b> did not match any apps. 
-      </p>
-      <p acre:else="">
-        Error retrieving app list
-      </p>
+      </table>
+      <div id="no-apps" acre:else="">
+        <p acre:if="c.category === 'user'">
+          <b>${c.query}</b> hasn't written any apps yet. 
+        </p>
+        <p acre:elif="c.category === 'search'">
+          Your search for <b>${c.query}</b> did not match any apps. 
+        </p>
+        <p acre:else="">
+          Error retrieving app list
+        </p>
+      </div>
     </div>
-    
+
   </section>
   
-  <section id="content-side">
-    <h4>What are Apps?</h4>
-    <p>
-      Apps are community created web applications that use freebase data.
-      Apps can be built with <a href="">Acre</a>, a zero-install, JavaScript-based
-      app development and hosting platform.  Apps can also be built using the
-      <a href="">Freebase API</a> and the language of your choice.
-    </p>
-    <h4>Learn more:</h4>
-    <ul>
-      <li>Wiki: Acre</li>
-      <li>Acre Template Reference</li>
-      <li>Wiki: Freebase API</li>
-      <li>Freebase API Reference</li>      
-    </ul>
-  </section>
+  
+  <aside role="complimentary" id="content-sub">
+    <div class="content-wrapper">
+      <h2 class="aside-title">What are Apps?</h2>
+      <p>
+        Apps are community created web applications that use freebase data.
+        Apps can be built with <a href="">Acre</a>, a zero-install, JavaScript-based
+        app development and hosting platform.  Apps can also be built using the
+        <a href="">Freebase API</a> and the language of your choice.
+      </p>
+      
+      <div class="aside-box">
+        Foo
+      </div>
+      
+      <h2 class="aside-title">Learn more:</h2>
+      <ul>
+        <li><a title="View help page" href="http://wiki.freebase.com/wiki/Acre">Wiki:Acre</a></li>
+        <li><a title="View help page" href="${acre.freebase.site_host}/docs/acre_templates">Acre Template Reference</a></li>
+        <li><a title="View help page" href="http://wiki.freebase.com/wiki/Freebase_API">Wiki: Freebase API</a></li>
+        <li><a title="View help page" href="${acre.freebase.site_host}/docs/web_services">Freebase API Reference</a></li>
+      </ul>
+    </div>
+  </aside>
 </acre:block>
 
 <acre:block def="footer_script()">

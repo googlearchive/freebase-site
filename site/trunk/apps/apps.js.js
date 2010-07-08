@@ -12,6 +12,17 @@ $(function() {
     }
   }
   
+  // Setup schema search tabset
+  // var $schema_explorer_search_tabset = $("#schema-search > .section-tabset").tabs("#schema-search > .search-box");
+  
+  // Make table sortable
+  $(".table").tablesorter({
+      cssAsc: "column-header-asc",
+      cssDesc: "column-header-desc",
+      cssHeader: "column-header",
+      sortList: [[0,0]]
+  });
+  
   if (typeof category !== 'undefined') set_search_mode(category);
   
   $(".view-mode-option")

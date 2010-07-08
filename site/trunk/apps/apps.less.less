@@ -1,3 +1,186 @@
+/*
+
+Candidates for global
+
+*/
+
+.section-title {
+    padding-left: 5px;
+    font-weight: bold;
+    font-size: 2.4em;
+    line-height: 1;
+    margin-bottom: 10px;
+    color: #b3bfc2;
+}
+
+.aside-title {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #444;
+}
+
+.aside-box {
+    background: #fff;
+    border: 1px solid #d5d7d8;
+    padding: 1em;
+    .rounded_corners(5px);
+}
+
+
+/*
+-----------------------------
+Tabset Style
+-----------------------------
+*/
+
+.section-tabs {
+    border: 5px solid #e4e6e7;
+    .rounded_corners(10px);
+    background: #fff;
+}
+
+/* section-tabset should always include a 'clear' class */
+.section-tabset {
+    border-bottom: 1px solid #e4e4e4;
+    list-style: none;
+    .linear_gradient(#fff, #ededed, repeat);
+    .rounded_corners(5px);
+}
+
+.section-tab {
+    float: left;
+    border-right: 1px solid #e4e4e4;
+}
+
+.section-tab a {
+    display: block;
+    color: #666;
+    padding: 10px 13px;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.current {
+    .linear_gradient(#ededed, #fff, repeat);
+}
+
+
+
+
+
+
+.search-box {
+    margin: 2em 0 2em 13px;
+}
+
+.search-box label {
+    font-size: 1.4em;
+    padding-right: 1em;
+}
+
+.search-box form,
+.search-box fieldset {
+    display: inline;
+}
+
+.text-input {
+    -webkit-transition-property: border, -webkit-box-shadow;
+    -webkit-transition-duration: 0.3s;
+    font-size: 1.4em;
+    border: 1px solid #e0e0e0;
+    padding: 5px 7px;
+    width: 300px;
+    .rounded_corners(5px);
+}
+
+.text-input:focus {
+    border-color: #61d7f7;
+    .box_shadow(0px, 0px, 3px, #aaa);
+}
+
+
+/*
+Schema Styling
+*/
+
+#content-wrapper {
+    padding-right: 270px;
+}
+
+#content-main {
+    float: left;
+    display: inline;
+    margin-right: -100%;
+    width: 100%;
+}
+
+#content-sub {
+    float: right;
+    display: inline;
+    width: 27em;
+    margin-right: -27em;
+    margin-top: 5px;
+    position: relative;
+}
+
+#content-sub p,
+#content-sub ul {
+    font-size: 1.2em;
+    margin-bottom: 0.5em;
+}
+
+#content-sub ul {
+    font-weight: bold;
+    margin-left: 17px;
+}
+
+#content-sub ul li {
+    padding: 0.2em 0;
+}
+
+#content-sub h3 {
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+#content-sub .content-wrapper {
+    margin-left: 3em;
+}
+
+#schema-search {
+    margin-bottom: 2em;
+}
+
+.aside-box {
+    margin-bottom: 1em;
+}
+
+.aside-box h4 {
+    font-size: 1.3em;
+}
+
+.aside-box table {
+    width: 100%;
+    margin-left: 17%;
+    font-size: 1.1em;
+}
+
+.is-a,
+.has-a {
+    color: #444;
+    padding-right: 5px;
+}
+
+.kind {
+    color: #888;
+    padding-right: 5px;
+}
+
+
+
+
+
+
 #content {
   margin: 2em auto;
   width: 98em; /* was 960*/
@@ -35,19 +218,6 @@
 
 #content-side p {
   margin-bottom: 1em;
-}
-
-.app-header {
-  height: 50px;
-  background: #404859;
-  color: #fff;
-}
-
-.app-header-title {
-  font-size: 2.1em;
-  font-weight: normal;
-  margin-bottom: 0;
-  padding: 0.55em 30px;
 }
 
 a.button, button.button { 

@@ -4,18 +4,18 @@
   var h = mf.require("core", "helpers");
 </acre:script>
 
+<acre:block def="title()" trim="">
+  Settings<acre:block if="c.app"> for $c.app.name</acre:block>
+</acre:block>
+
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="${mf.css_src('apps.mf.css')}" />
 </acre:block>
 
 <acre:block def="content_header()">
-  <header class="app-header">
-    <h1 class="app-header-title">Explore Apps</h1>
-  </header>
-</acre:block>
-
-<acre:block def="title()" trim="">
-  Settings<acre:block if="c.app"> for $c.app.name</acre:block>
+  <div class="page-header">
+    <h1 id="page-title">Explore Apps</h1>
+  </div>
 </acre:block>
 
 <acre:block def="content_body()">

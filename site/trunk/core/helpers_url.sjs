@@ -3,6 +3,7 @@ var exports = {
   "url_for": url_for,
   "account_url": account_url,
   "freebase_url": freebase_url,
+  "wiki_url": wiki_url,
   "freebase_static_resource_url": freebase_static_resource_url,
   "get_image_dimensions": get_image_dimensions,
   "get_image_orientation": get_image_orientation,
@@ -149,6 +150,15 @@ function freebase_url(path, params) {
   return acre.form.build_url(acre.freebase.service_url + (path || ""), parse_params(params));
 };
 
+/**
+ * freebase wiki url
+ */
+function wiki_url(path, params) {
+  if (path) {
+    path = "/wiki/" + path;
+  }
+  return acre.form.build_url("http://wiki.freebase.com" + (path || ""), parse_params(params));
+};
 
 /**
  * url to freebase static resource (http://res.freebase.com/s/xxxx/resource/css/foo.css)

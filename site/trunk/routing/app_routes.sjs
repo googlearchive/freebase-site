@@ -55,6 +55,10 @@ var routes = [
     from: "/apps",
     to: "apps"
   },
+  {
+    from: "/appqueries",
+    to: "queries"
+  }
 ];
 
 /**

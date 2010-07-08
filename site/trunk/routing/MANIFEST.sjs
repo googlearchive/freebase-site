@@ -11,7 +11,8 @@ var MF = {
     "appadmin" : "//appadmin.site.freebase.dev",
     "error" : "//error.site.freebase.dev",
     "homepage" : "//homepage.site.freebase.dev",
-    "apps" : "//apps.site.freebase.dev"
+    "apps" : "//apps.site.freebase.dev",
+    "queries": "//queries.site.freebase.dev"
   }
 };
 

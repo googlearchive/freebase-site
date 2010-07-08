@@ -35,7 +35,7 @@
 <acre:block def="user_badges(badges, size)" if="badges && badges.length">
   <acre:block for="group in badges">
     <acre:script>
-      var url = ${h.freebase_url("/view" + group.id)}
+      var url = h.freebase_url("/view" + group.id);
     </acre:script>
     <a class="user-badge-${size} badge${group.id.replace(/\//g, '-')}"
        title="This user is a ${group.name}"
@@ -50,7 +50,8 @@
     }
   </acre:script>
   ${_image_thumb(image, size, options)}
-<acre:block>
+</acre:block>
+
 <acre:block def="_image_thumb(image, size, options)" if="image">
   <acre:script>
     var o = h.extend({mode:"fit"}, options);
@@ -79,6 +80,7 @@
       attrs.alt = image.name;
     }
     h.extend(attrs, o.attrs);
-  <acre:script>
+  </acre:script>
   <img acre:attrs="attrs">
 </acre:block>
+

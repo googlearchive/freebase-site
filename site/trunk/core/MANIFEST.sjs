@@ -31,17 +31,21 @@ var freebase_static_resource_url;
  *   acre.require(MF.apps.core).init(MF, this);
  */
 function init(MF, scope, options) {
-  extend_manifest(MF, scope, options);
   if (/^https?\:\/\/devel\.(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(scope.acre.request.app_url)) {
     // on our dev machines, we ALWYAYS want to use the trunk of all /freebase/site apps
     var re = /^(\/\/(?:release|\d+)\.)[^\.]+\.site\.freebase\.dev$/;
     for (var app in MF.apps) {
       var m = re.exec(MF.apps[app]);
       if (m) {
+        var old = MF.apps[app];
         MF.apps[app] = MF.apps[app].replace(m[1], "//");
+        console.log("dev MANIFEST override from", old, "to", MF.apps[app]);
       }
     }
   }
+
+  extend_manifest(MF, scope, options);
+
   if (scope.acre.current_script === scope.acre.request.script) {
     MF.main();
   }
@@ -79,17 +83,15 @@ function base_manifest(MF, scope, undefined) {
      * But when developing, we want the resources to be served dynamically through "/MANIFEST/...".
      *
      */
-    static_base_url: scope.acre.current_script.app.base_url +  "/MANIFEST",
-
-    app_base_url: function() {
-      return scope.acre.current_script.app.base_url;
-    },
+    static_base_url: null,
 
     /**
      * This is like static_base_url but for images (*.png, *.gif, etc.).
      *
      */
-    image_base_url: scope.acre.current_script.app.base_url,
+    image_base_url: null,
+
+    app_base_url: null,
 
     /**
      * Generate the proper url to serve the css resource(s) specified by MF.stylesheet[key].
@@ -284,7 +286,7 @@ function base_manifest(MF, scope, undefined) {
               }
               else {
                 var ext_mf = MF.require(args.app, "MANIFEST").MF;
-                return "url(" + ext_mf.app_base_url() + "/" + args.file + ")";
+                return "url(" + MF.app_base_url + "/" + args.file + ")";
               }
             }
             else {
@@ -377,6 +379,28 @@ function base_manifest(MF, scope, undefined) {
       }, scope);
     }
   };
+
+  base.app_base_url = scope.acre.current_script.app.base_url;
+  if (/^https?:\/\/((www|devel)\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(scope.acre.request.app_url)) {
+  //if (/^https?\:\/\/devel\.(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(scope.acre.request.app_url)) {
+    var routes_mf = acre.require(CORE_MF.apps.routing + "/MANIFEST");
+    var app = routes_mf.get_app(scope.acre.current_script.app.path);
+    if (app) {
+      var routes = acre.require(CORE_MF.apps.routing + "/app_routes");
+      var rts = routes.get_routes(app);
+      if (rts) {
+        for (var i=0,l=rts.length; i<l; i++) {
+          var rt = rts[i];
+          if (!rt.script) {
+            base.app_base_url = scope.acre.request.app_url + rt.from;
+            break;
+          }
+        }
+      }
+    }
+  }
+  base.image_base_url = base.app_base_url;
+  base.static_base_url = base.app_base_url + "/MANIFEST";
 
   return base;
 };

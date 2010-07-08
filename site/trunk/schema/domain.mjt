@@ -24,7 +24,7 @@
   <div class="page-header">
     <nav class="breadcrumb clear">
       <ol>
-        <li class="breadcrumb-item"><a href="#">Schema Explorer</a></li>
+        <li class="breadcrumb-item"><a href="${h.url_for('schema')}">Schema Explorer</a></li>
         <li if="c.domain" class="breadcrumb-item last"><a href="#">$c.domain.name</a></li>
       </ol>
     </nav>

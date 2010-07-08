@@ -4,12 +4,17 @@ var exports = {
   "account_url": account_url,
   "freebase_url": freebase_url,
   "freebase_static_resource_url": freebase_static_resource_url,
+  "get_image_dimensions": get_image_dimensions,
+  "get_image_orientation": get_image_orientation,
+  "image_thumb_url": image_thumb_url,
+  "image_url": image_url,
   "parse_params": parse_params
 };
 
 var mf = acre.require("MANIFEST").MF;
 var routes_mf = mf.require("routing", "MANIFEST").MF;
 var routes = mf.require("routing", "app_routes");
+var extend = mf.require("helpers_util").extend;
 
 /**
  * Known client urls:
@@ -150,6 +155,66 @@ function freebase_url(path, params) {
  */
 function freebase_static_resource_url(path) {
   return mf.freebase.resource.base_url + (path || "");
+};
+
+
+function get_image_dimensions(image) {
+  var size = image["/common/image/size"] || image.size;
+  if (size) {
+    return [size.x, size.y];
+  }
+  return [null, null];
+};
+
+function get_image_orientation(image) {
+  var [width, height] = get_image_dimensions(image);
+  if (width && height) {
+    return (width - height < 0) ? 'portrait' : 'landscape';
+  }
+  return null;
+};
+
+
+function image_thumb_url(image, size, options) {
+  size = size || 16;
+  var o = extend({mode:"fit"}, options);
+  if (o.mode === "fill") {
+    var orientation = get_image_orientation(image);
+    if (orientation === "portrait") {
+      return image_url(image.id, extend(o, {maxwidth:size}));
+    }
+    else {
+      return image_url(image.id, extend(o, {maxheight:size}));
+    }
+  }
+  else { // fit, fillcrop, fillcropmid
+    return image_url(image.id, extend(o, {maxheight:size,maxwidth:size}));
+  }
+};
+
+/**
+ * image_thumb takes an image guid and creates a blob url for fetching that image. It also passes
+    appropriate dimension/cropping parameters.
+    id: guid of image
+    maxheight/maxwidth: maximum size of that dimension
+    cropwidth: size of crop
+    raw: do not user the thumbnailing service - return the raw image with the original dimensions
+    NOTE: some of these parameters should really be booleans. However, this gets called from genshi
+    which passes stream objects. bool(<stream>) returns True even if the stream is empty while
+    str(<stream>) returns False when checked if the original string is empty.
+    use: the use of this image for reporting and tracking purposes (performance)
+*/
+function image_url(id, options) {
+  var o = extend({
+    maxheight: null,
+    maxwidth: null,
+    mode: "fit",
+    use: null,
+    pad: null,
+    onfail: null,
+    errorid: "/freebase/no_image_png"
+  }, options);
+  return acre.form.build_url(freebase_url("/api/trans/image_thumb"), o);
 };
 
 

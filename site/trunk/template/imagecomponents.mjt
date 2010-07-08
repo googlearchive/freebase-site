@@ -1,0 +1,84 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var h = mf.require("core", "helpers");
+</acre:script>
+
+<acre:block def="user_image_small(user)">
+  ${user_image(user, 30)}
+</acre:block>
+
+<acre:block def="user_image_medium(user)">
+  ${user_image(user, 40)}
+</acre:block>
+
+<acre:block def="user_image_large(user)">
+  ${user_image(user, 75)}
+</acre:block>
+
+<acre:block def="user_image(user, size)" if="user">
+ <acre:script>
+    var url = h.freebase_url("/view" + user.id);
+    var options = {
+      mode: "fillcrop",
+      pad: true,
+      errorid: "/freebase/user_profile/empty_user_image"
+    };
+  </acre:script>
+  <div class="user-image">
+    <a href="${url}" class="fn nickname url">
+     ${image_thumb(user.image, size, options)}
+    </a>
+    ${user_badges(user.badges, size)}
+ </div>
+</acre:block>
+
+<acre:block def="user_badges(badges, size)" if="badges && badges.length">
+  <acre:block for="group in badges">
+    <acre:script>
+      var url = ${h.freebase_url("/view" + group.id)}
+    </acre:script>
+    <a class="user-badge-${size} badge${group.id.replace(/\//g, '-')}"
+       title="This user is a ${group.name}"
+       href="${url}">${group.name}</a>
+  </acre:block>
+</acre:block>
+
+<acre:block def="image_thumb(image, size, options)" if="image">
+  <acre:script>
+    if (image instanceof Array) {
+      image = image.length ? image[0] : null;
+    }
+  </acre:script>
+  ${_image_thumb(image, size, options)}
+<acre:block>
+<acre:block def="_image_thumb(image, size, options)" if="image">
+  <acre:script>
+    var o = h.extend({mode:"fit"}, options);
+    var width, height;
+    if (o.pad) {
+      if (o.mode === "fill") {
+        if (h.get_image_orientation(image)) {
+          width = size;
+        }
+        else {
+          height = size;
+        }
+      }
+      else {
+        width = height = size;
+      }
+    }
+    var attrs = {src: h.image_thumb_url(image.id, size, o)};
+    if (width) {
+      attrs.width = width;
+    }
+    if (height) {
+      attrs.height = height;
+    }
+    if (image.name) {
+      attrs.alt = image.name;
+    }
+    h.extend(attrs, o.attrs);
+  <acre:script>
+  <img acre:attrs="attrs">
+</acre:block>

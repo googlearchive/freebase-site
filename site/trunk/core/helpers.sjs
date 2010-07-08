@@ -20,13 +20,27 @@ include("helpers_url");
 include("helpers_format");
 
 
+function get_image_dimensions(image) {
+  var size = image["/common/image/size"] || image.size;
+  if (size) {
+    return [size.x, size.y];
+  }
+  return [null, null];
+};
 
+function get_image_orientation(image) {
+  var [width, height] = get_image_dimensions(image);
+  if (width && height) {
+    return (width - height < 0) ? 'portrait' : 'landscape';
+  }
+  return null;
+};
 
 
 /*
 function output_helpers(scope) {
   var blacklist = ["AcreExitException", "URLError", "XMLHttpRequest"];
-  
+
   acre.write("---Helper functions in this module---\n");
   for (var f in scope) {
     var in_blacklist = false;
@@ -35,9 +49,9 @@ function output_helpers(scope) {
         in_blacklist = true;
       }
     });
-    
-    if (this.hasOwnProperty(f) && 
-        !in_blacklist && 
+
+    if (this.hasOwnProperty(f) &&
+        !in_blacklist &&
         typeof this[f] === 'function') {
       var code = this[f].toString();
       var signature = code.slice(code.indexOf("(")+1, code.indexOf(")"));

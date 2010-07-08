@@ -48,7 +48,7 @@
       <a href="${acre.freebase.site_host}" title="Return to Freebase homepage">
         <img alt="Freebase" 
              acre:attrs="h.is_client() ? {src: mf.img_src('freebase-logo-production.png')} : {src: mf.img_src('freebase-logo-sandbox.png')}"
-             border="0" height="29" width="117" /></a>
+             border="0" height="14" width="87" /></a>
     </div>
     <div class="site-search" searchUrl="${h.freebase_url('/search')}" id="SearchBox">
       <form method="get" action="${h.freebase_url('/search')}" class="SearchBox-form">

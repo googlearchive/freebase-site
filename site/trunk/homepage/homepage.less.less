@@ -7,7 +7,7 @@
 #content-main {
     border: 5px solid #e4e6e7;
     overflow: auto;
-    width: 73em;
+    width: 74em;
     float: left;
     background: #fff;
     .rounded_corners(5px);
@@ -16,16 +16,22 @@
 /* from project.css */
 .homepage-header {
     height: 50px;
+    background: #64768f;
     .linear_gradient(#7d92b2, #64768f, repeat);
     color: #fff;
-    text-align: center;    
+    text-align: center;   
+    border-bottom: 1px solid #fff;
+    padding: 0.55em 0; 
 }
 
 .homepage-header-title {
     font-size: 2.1em;
     font-weight: normal;
     margin: 0;
-    padding: 0.55em 0;
+    text-shadow: #5c6c84 2px 2px 3px;
+    border-bottom: 1px solid #b2bbc7;
+    padding-bottom: 0.6em;
+    display: inline;
 }
 
 
@@ -47,13 +53,21 @@ DOMAIN EXPLORER
 
 #domain-explorer-title {
     display: block;
-    font-size: 1.4em;
-    font-weight: bold;
-    line-height: 1;
-    color: #404859;
-    background: #f4f8fb;
+    .linear_gradient(#fefefe, #ebedee, repeat);
     padding: 8px 10px;
     border-bottom: 1px solid #dcdbdc;
+    overflow: auto;
+}
+
+.domain-explorer-title-content {
+    float: left;
+    font-size: 1.6em;
+    line-height: 1;
+    color: #666666;
+}
+.domain-explorer-rss {
+    float: left;
+    margin: 2px 0 0 1em;
 }
 
 #domain-explorer-tabset {
@@ -69,14 +83,15 @@ DOMAIN EXPLORER
     z-index: 10;
     width: 175px;
     height: 40px;
-    background: url(explore-sprite.png) no-repeat 0 -262px;
+    background: url(template, ui-sprite.png) no-repeat top left;
 }
 
 #pointer-text {
     display: block;
-    padding: 12px 10px;
+    padding: 10px;
     color: #fff;
     font-size: 14px;
+    font-weight: bold;
     line-height: 1;
 }
 
@@ -86,6 +101,7 @@ DOMAIN EXPLORER
     background: #f6f6f6;
     -webkit-border-bottom-left-radius: 5px;
     -moz-border-radius-bottomleft: 5px;
+    border-radius: 5px;
 }
 
 #domain-explorer-tabs li {
@@ -94,14 +110,15 @@ DOMAIN EXPLORER
     font-weight: normal;
     border-bottom: 1px solid #dcdbdc;
     list-style: none;
-    .linear_gradient(#fefefe, #e4e6e7, repeat);
-    
+    background: #f5f5f5;
+    .linear_gradient(#fefefe, #ececec, repeat);
 }
 
 #domain-explorer-tabs li a {
     display: block;
     color: #888;
-    padding: 12px 10px;
+    font-weight: bold;
+    padding: 10px;
 }
 
 #domain-explorer-tabs li a:hover {
@@ -120,7 +137,7 @@ DOMAIN EXPLORER
 .domain-explorer-pane {
     float: left;
     padding: 0;
-    background: #f4f8fb;
+    background: #F1F2F3;
     border-left: 1px solid #dcdcdc;
     -webkit-border-bottom-right-radius: 5px;
     -moz-border-radius-bottomright: 5px;
@@ -142,14 +159,13 @@ DOMAIN EXPLORER
     margin-bottom: 0.6em;
 }
 
-.domain-title {
-    margin-bottom: 0.5em;
-}
-
 .domain-title a {
-    font-size: 18px;
-    font-weight: normal;
-    color: #404859;
+    font-size: 1.3em;
+    font-weight: bold;
+}
+.member-count {
+    font-size: 1.1em;
+    line-height: 1.0em;
 }
 
 .domain-title .topic-count {
@@ -184,12 +200,11 @@ DOMAIN EXPLORER
 
 .domain-section {
     float: left;
-    height: 10em;
+    height: 5em;
 }
 
 .activity-chart-assertions {
     float: left;
-    height: 50px;
     width: 150px;
     margin-left: 5px;
     overflow: hidden;
@@ -203,19 +218,18 @@ DOMAIN EXPLORER
     overflow: hidden;
 }
 
-.activity-stats-top {
-    height: 50px;
+.activity-stats {
+    height: 30px;
     width: 27em;
     margin-right: 2px;
     margin-bottom: 2px;
     background: #fff;
-    
-    -webkit-border-top-right-radius: 5px;
-    -moz-border-radius-topright: 5px;
-    -webkit-border-top-left-radius: 5px;
-    -moz-border-radius-topleft: 5px;
+    .rounded_corners(5px);
+    border: 1px solid #dcdbdc;
+    padding: 3px;
 }
 
+/*
 .activity-stats-bottom {
     height: 50px;
     width: 27em;
@@ -227,14 +241,14 @@ DOMAIN EXPLORER
     -moz-border-radius-bottomright: 5px;
     -webkit-border-bottom-left-radius: 5px;
     -moz-border-radius-bottomleft: 5px;
-}
-
+} */
+/* 
 .activity-label-assertions {
   float: left;
-  color: #c60;
+  color: #ff862b;
   line-height: 50px;
   margin-left: 2px;
-}
+} */
 
 .activity-label-coverage {
   float: left;
@@ -243,34 +257,32 @@ DOMAIN EXPLORER
   margin-left: 2px;
 }
 
-.activity-stats-assertions {
-    background: #c60;
-    height: 44px;
-    width: 60px;
+.activity-stats-facts {
+    background: #ff862b;
+    width: 48px;
     margin-top: 2px;
     margin-right: 2px;
     padding: 2px;
-    float: right;
+    float: left;
     color: #fff;
-    -webkit-border-top-right-radius: 5px;
-    -moz-border-radius-topright: 5px;
     -webkit-border-top-left-radius: 5px;
     -moz-border-radius-topleft: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomleft: 5px;
 }
 
 .activity-stats-topics {
-    background: #669;
-    height: 44px;
-    width: 60px;
-    margin-bottom: 2px;
+    background: #7788aa;
+    width: 48px;
+    /* margin-bottom: 2px;
     margin-right: 2px;
-    padding: 2px;
-    float: right;
+    padding: 2px; */
+    float: left;
     color: #fff;
     -webkit-border-bottom-right-radius: 5px;
     -moz-border-radius-bottomright: 5px;
-    -webkit-border-bottom-left-radius: 5px;
-    -moz-border-radius-bottomleft: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topright: 5px;
 }
 
 .activity-stats-number {
@@ -282,7 +294,6 @@ DOMAIN EXPLORER
     display: block;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 2em;
 }
 
 /*
@@ -341,7 +352,6 @@ CONTENT SUB
     border: 1px solid #cccccc;
     .rounded_corners(4px);
     padding: 0.4em;
-    .linear_gradient(#e5e5e5, #ffffff, repeat);
     margin: 0;
 }
 
@@ -353,4 +363,19 @@ CONTENT SUB
     color: #fff;
     font-size: 1.1em;
     .rounded_corners(5px);
+}
+
+.rss-icon {
+    background: url(template, ui-sprite.png) no-repeat -100px left;
+    display: block;
+    text-indent: -3000px;
+    width: 14px;
+    height: 14px;
+}
+.domain-explorer-title-content {
+    float: left;
+}
+.domain-explorer-rss {
+    float: left;
+    margin-left: 10px;
 }

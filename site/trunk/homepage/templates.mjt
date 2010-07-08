@@ -35,7 +35,11 @@
 </acre:block>
 
 <acre:block def="domain_explorer(categories, grouped_domains, loaded_categories)">
-  <span id="domain-explorer-title">All Projects</span>
+  <div id="domain-explorer-title">
+    <span class="domain-explorer-title-content">Projects</span> 
+    <a href="" class="rss-icon domain-explorer-rss">RSS</a>
+  </div>
+  
   <div id="domain-explorer-tabset">
     
     <ul id="domain-explorer-tabs">
@@ -98,38 +102,39 @@
   <div acre:if="domain.activity" 
        class="domain-activity domain-section">
        
-    <div class="activity-stats-top">
-      <div class="activity-label-assertions">
+    <div class="activity-stats">
+      <!--div class="activity-label-assertions">
         assertions
-      </div>
+      </div -->
       <div class="activity-chart-assertions" data-activity="${JSON.stringify(domain.activity.weeks)}">
       </div>
-      <div class="activity-stats-assertions">
+      <div class="activity-stats-facts">
         <div class="activity-stats-number">
           ${domain.activity.total.e}
         </div>
-        <div class="activity-stats-label">
+        <!--div class="activity-stats-label">
           ${domain.activity.total.t === 1 ? 'assertion' : 'assertions'}
+        </div-->
+      </div>
+      <div class="activity-stats-topics">
+        <div class="activity-stats-number">
+          ${domain.activity.total.t}
         </div>
+        <!--div class="activity-stats-label">
+          ${domain.activity.total.t === 1 ? 'topic' : 'topics'}
+        </div -->
       </div>
     </div>
-    
+    <!--
     <div class="activity-stats-bottom">
       <div class="activity-label-coverage">
         coverage
       </div>
       <div class="activity-chart-coverage" data-activity="${JSON.stringify(domain.activity.weeks)}">
       </div>
-      <div class="activity-stats-topics">
-        <div class="activity-stats-number">
-          ${domain.activity.total.t}
-        </div>
-        <div class="activity-stats-label">
-          ${domain.activity.total.t === 1 ? 'topic' : 'topics'}
-        </div>
-      </div>
+      
     </div>
-    
+    -->
   </div>
 </acre:block>
 
@@ -149,10 +154,10 @@
   <div class="domain-contributor domain-section">
     <acre:block if="domain.top_user">
       <a href="${h.freebase_url('/view'+domain.top_user.id)}">
-        <img src="${acre.freebase.imgurl(domain.top_user.id, 60, 60, 'fillcropmid')}"
+        <img src="${acre.freebase.imgurl(domain.top_user.id, 36, 36, 'fillcropmid')}"
              class="user-image"
-             width="60"
-             height="60"/>
+             width="36"
+             height="36"/>
       </a>
     </acre:block>
   </div>

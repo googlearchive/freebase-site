@@ -1,6 +1,6 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
-  var h = mf.require("core", "helpers");
+  var h = mf.require("helpers");
   var letters = ['a', 'b', 'c', 'd', 'e', 'f', 
                  'g', 'h', 'i', 'j', 'k', 'l', 
                  'm', 'n', 'o', 'p', 'q', 'r', 
@@ -198,7 +198,7 @@
       <input name="email" type="email" placeholder="Your email address..." class="input-standard"/><!-- XXX: link to Michael's app  XXX: placeholder support in freebase.js.js -->
       <input type="submit" value="Submit" class="button-featured"/> <!-- button styling? -->
     </form>
-    <a href="#XXX">Existing members, please sign in &raquo;
+    <a href="${h.freebase_url('/signin/login')}">Existing members, please sign in &raquo;
   </div>
 </acre:block>
 
@@ -234,8 +234,8 @@
       Freebase data is free for use under the <a href="http://www.freebase.com/policies/licensing#licenses">CC-BY</a> license.
       Get data using the Freebase API or download the latest data dump.
     </div>
-    <div><a href="#XXX_query_editor">Try the API</a></div>
-    <div><a href="#XXX_downloads">Get a Data Dump</a></div>    
+    <div><a href="${h.freebase_url('/app/queryeditor')}">Try the API</a></div>
+    <div><a href="${h.wiki_url('Data_dumps')}">Get a Data Dump</a></div>    
   </div>
 </acre:block>
 
@@ -243,7 +243,7 @@
   <div>
     <h2>Get Gridworks!</h2>
     <div>Gridworks is an open source power tool to clean, understand, reconcile and augment data.</div>
-    <div><a href="#XXX">Download</a></div>
-    <div><a href="#XXX">Learn More</a></div>        
+    <div><a href="http://code.google.com/p/freebase-gridworks/wiki/Downloads">Download</a></div>
+    <div><a href="http://code.google.com/p/freebase-gridworks/">Learn More</a></div>        
   </div>
 </acre:block>

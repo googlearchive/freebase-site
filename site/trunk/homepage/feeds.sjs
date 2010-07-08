@@ -1,3 +1,9 @@
+var mf = acre.require("MANIFEST").MF;
+var deferred = mf.require("promise", "deferred");
+var freebase = mf.require("promise", "apis").freebase;
+var urlfetch = mf.require("promise", "apis").urlfetch;
+
+
 ////////////////////////
 // Wrap xml dom in JS //
 ////////////////////////
@@ -41,18 +47,21 @@ var xml = (function() {
 //////////////////
 function get_rss_entries(url,maxcount,filterFunc) {
   var items;
-  try {
-    var rss = acre.urlfetch(url).body;
-    xml.parse(rss);
-    items = xml.getTags('item').map(function(item) {
-      return xml.getValues( item, ['title','dc:creator','pubDate','description','link'] );
-    });
-  } catch(e) {console.warn(e); }
-  if (!(items && items.length)) { console.warn('Could not parse any items from '+url); }
+  return urlfetch(url).then(function(r) {
+    try {
+      var rss = r.body;
+      xml.parse(rss);
+      items = xml.getTags('item').map(function(item) {
+        return xml.getValues( item, ['title','dc:creator','pubDate','description','link'] );
+      });
+    } catch(e) {console.warn('RSS Exception: '+e); }
+    if (!(items && items.length)) { console.warn('Could not parse any items from '+url,rss); }
 
-  if (filterFunc) { items = filterFunc(items); }
-  if (maxcount)   { items = items.slice(0,maxcount); }
-  return items;
+    if (filterFunc) { items = filterFunc(items); }
+    if (maxcount)   { items = items.slice(0,maxcount); }
+
+    return items;
+  });
 }
 
 function filter_wiki_entries(items) {
@@ -68,12 +77,5 @@ function filter_wiki_entries(items) {
     return true;
   });
   return items;
-}
-
-
-// XXX: this belongs elsewhere
-// "Wed Jun 09 2010" --> "Wed Jun 09"
-function formatDate(d) {
-  return d.toDateString().replace(/\s20\d\d/,'');
 }
 

@@ -16,6 +16,8 @@ var p_loaded = p_categories.then(function(categories) {
 var data = {
   "categories": p_categories,
   "grouped_domains": queries.alphabetically_grouped_commons_domains(),
+  "blog": queries.blog_entries(),
+  "wiki": queries.wiki_entries()
   //"loaded_categories": p_loaded
 };
 

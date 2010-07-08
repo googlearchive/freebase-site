@@ -27,8 +27,8 @@
   <section id="content-side">
     <div class="sidebar-content-featured">
       ${templates.help_build()}
-      ${templates.blog_entries(2)}
-      ${templates.wiki_entries(3)}
+      ${templates.blog_entries(c.blog)}
+      ${templates.wiki_entries(c.wiki)}
     </div>
     ${templates.using_fb_data()}
     ${templates.get_gridworks()}

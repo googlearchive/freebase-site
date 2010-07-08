@@ -1,12 +1,16 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
   var h = mf.require("core", "helpers");
-  var feeds = acre.require('feeds');
   var letters = ['a', 'b', 'c', 'd', 'e', 'f', 
                  'g', 'h', 'i', 'j', 'k', 'l', 
                  'm', 'n', 'o', 'p', 'q', 'r', 
                  's', 't', 'u', 'v', 'w', 'x', 
                  'y', 'z'];
+                 
+   // "Wed Jun 09 2010" --> "Wed Jun 09"     // XXX: this belongs elsewhere
+   function formatDate(d) {
+     return d.toDateString().replace(/\s20\d\d/,'');
+   }
 </acre:script>
 
 <acre:block def="categories_list(categories)">
@@ -198,36 +202,27 @@
   </div>
 </acre:block>
 
-<!-- XXX: don't do urlfetches in the template. TODO: convert to promises -->
 <!-- Note: We trust feedburner to escape HTML entities in the description -->
-<acre:block def="blog_entries(maxcount)">
-  <acre:script>
-    var rss_url = 'http://blog.freebase.com/feed/';
-    var blog_items = feeds.get_rss_entries(rss_url,maxcount);
-  </acre:script>
-  <div class="content-sub-section">
-    <h3 class="sidebar-header">On the <a href="http://blog.freebase.com">Freebase Blog:</a></h3>
-    <a href="$rss_url">RSS</a><!-- XXX: RSS icon? action? -->
-    <div acre:for="item in blog_items">
+<acre:block def="blog_entries(blog)">
+  <div acre:if="blog" class="content-sub-section">
+    <h3 class="sidebar-header">On the <a href="$blog.url">Freebase Blog:</a></h3>
+    <a href="$blog.rss_url">RSS</a><!-- XXX: RSS icon? action? -->
+    <div acre:for="item in blog.items">
       <a href="$item.link" title="${acre.markup.bless(item.description)}">$item.title</a>
       by <a href="${h.freebase_url('/view/user/'+item['dc:creator'])}">${item['dc:creator']}</a>
-      on ${feeds.formatDate(new Date(item.pubDate))}
+      on ${formatDate(new Date(item.pubDate))}
     </div>
   </div>
 </acre:block>
 
-<acre:block def="wiki_entries(maxcount)">
-  <acre:script>
-    var rss_url = 'http://wiki.freebase.com/w/index.php?title=Special:RecentChanges&amp;feed=rss';
-    var wiki_items = feeds.get_rss_entries(rss_url,maxcount,feeds.filter_wiki_entries);
-  </acre:script>
-  <div class="content-sub-section">
-    <h3 class="sidebar-header">On the <a href="http://wiki.freebase.com">Freebase Wiki:</a></h3>
-    <a href="$rss_url">RSS</a><!-- XXX: RSS icon? action? -->
-    <div acre:for="item in wiki_items">
+<acre:block def="wiki_entries(wiki)">
+  <div acre:if="wiki" class="content-sub-section">
+    <h3 class="sidebar-header">On the <a href="$wiki.url">Freebase Wiki:</a></h3>
+    <a href="$wiki.rss_url">RSS</a><!-- XXX: RSS icon? action? -->
+    <div acre:for="item in wiki.items">
       <a href="$item.link">$item.title</a>
-      by <a href="http://wiki.freebase.com/wiki/User:${item['dc:creator']}">${item['dc:creator']}</a>
-      on ${feeds.formatDate(new Date(item.pubDate))}
+      by <a href="$wiki.user_url:${item['dc:creator']}">${item['dc:creator']}</a>
+      on ${formatDate(new Date(item.pubDate))}
     </div>
   </div>
 </acre:block>

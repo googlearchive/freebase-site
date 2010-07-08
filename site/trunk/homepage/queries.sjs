@@ -3,16 +3,16 @@ var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 var urlfetch = mf.require("promise", "apis").urlfetch;
 
-groupBy = function(array, key) {
+function groupBy(array, key) {
   var res = {};
   array.forEach(function(x) {
     var k = (typeof key === "function" ? key.apply(this, [x]) : x[key]);
     var v = res[k];
-    if (!v) v = res[k] = [];
+    if (!v) { v = res[k] = []; }
     v.push(x);
   });
   return res;
-};
+}
 
 var categories = function () {
   var q_categories = acre.require("categories").query;
@@ -105,7 +105,7 @@ var domains_for_category = function(category_id) {
       domains.forEach(function(domain) {
         promises.push(freebase.get_static("activity", "summary_"+domain.id)
           .then(function(activity) {
-            if (!activity) return null;
+            if (!activity) { return null; }
             
             domain.activity = activity;
             
@@ -117,10 +117,10 @@ var domains_for_category = function(category_id) {
               domain.top_user = get_top_user(activity.users.b);
             }
             
-            return activity
+            return activity;
           }));
       });
       
       return deferred.all(promises).then(function() {return domains;});
-    })
-}
+    });
+};

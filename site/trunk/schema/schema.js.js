@@ -2,6 +2,14 @@ $(document).ready(function(){
 
     // Setup schema search tabset
     $("#schema-search > .section-tabset").tabs("#schema-search > .search-box");
+    
+    // Make table sortable
+    $(".table").tablesorter({
+        cssAsc: "column-header-asc",
+        cssDesc: "column-header-desc",
+        cssHeader: "column-header",
+        sortList: [[0,0]]
+    });
 
 
     var MQL_FILTERS = {
@@ -137,7 +145,19 @@ $(document).ready(function(){
 
     });
 
+});
 
 
-
+// We have to force the digit parser to ignore commas for proper sorting on high instance counts
+// See http://www.barneyb.com/barneyblog/2009/06/03/jquery-tablesorter-comma-parser/
+jQuery.tablesorter.addParser({
+  id: "commaDigit",
+  is: function(s, table) {
+    var c = table.config;
+    return jQuery.tablesorter.isDigit(s.replace(/,/g, ""), c);
+  },
+  format: function(s) {
+    return jQuery.tablesorter.formatFloat(s.replace(/,/g, ""));
+  },
+  type: "numeric"
 });

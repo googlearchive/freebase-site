@@ -4,7 +4,8 @@ var MF = {
       "template": "//template.site.freebase.dev",
       "promise": "//promise.site.freebase.dev",
       "jquerytools": "//jquerytools.site.freebase.dev",
-      "libraries": "//libraries.apps.freebase.dev"
+      "libraries": "//libraries.apps.freebase.dev",
+      "domain": "//domain.site.freebase.dev"
   },
   "stylesheet": {
     "schema.mf.css": [
@@ -16,6 +17,7 @@ var MF = {
     "schema.mf.js": [
       ["template", "MANIFEST", "/freebase.mf.js"],
       ["jquerytools", "tabs.js"],
+      ["domain", "jquery.tablesorter.js"],
       "schema.js"
     ]
   }

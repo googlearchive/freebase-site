@@ -21,7 +21,7 @@
     var url = h.freebase_url("/view" + user.id);
     var options = {
       mode: "fillcrop",
-      pad: true,
+      pad: 1,
       errorid: "/freebase/user_profile/empty_user_image"
     };
   </acre:script>

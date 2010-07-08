@@ -215,6 +215,11 @@ function image_url(id, options) {
     onfail: null,
     errorid: "/freebase/no_image_png"
   }, options);
+  for (var key in o) {
+    if (o[key] == null) {
+      delete o[key];
+    }
+  }
   return acre.form.build_url(freebase_url("/api/trans/image_thumb"), o);
 };
 

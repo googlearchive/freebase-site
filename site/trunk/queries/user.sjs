@@ -8,15 +8,6 @@ function user(id, badges) {
   return freebase.mqlread(q)
     .then(function(result) {
       result = result.result;
-      /**
-      if (result["/common/topic/image"]) {
-        result["image"] = result["/common/topic/image"];
-        delete result["/common/topic/image"];
-      }
-      if (result["badges:/type/user/usergroup"]) {
-        result["badges"] = result["badges:/type/user/usergroup"];
-        delete result["badges:/type/user/usergroup"];
-      }**/
       return result;
     });
 };

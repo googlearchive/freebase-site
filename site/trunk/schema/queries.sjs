@@ -6,11 +6,12 @@ var qh = mf.require("queries", "helpers");
 var h = mf.require("core", "helpers");
 
 
-function add_description(o) {
+function add_description(o, mode, options) {
+  mode = mode || "blurb";
   if (!o['/common/topic/article'] || o['/common/topic/article'].length === 0) {
     return o;
   }
-  return freebase.get_blob(o['/common/topic/article'][0].id, "blurb")
+  return freebase.get_blob(o['/common/topic/article'][0].id, mode, options)
     .then(function(response) {
       o.description = response.body;
       return o;

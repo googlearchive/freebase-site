@@ -9,7 +9,8 @@ var MF = {
   },
   "stylesheet": {
     "schema.mf.css": [
-      ["template", "MANIFEST", "/freebase.mf.css"],
+      ["template", "MANIFEST", "/freebase.mf.css",],
+      ["template", "freebase.table.less"],
       "schema.less"
     ]
   },

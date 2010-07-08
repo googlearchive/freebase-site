@@ -1,7 +1,7 @@
 $(document).ready(function(){
 
     // Setup schema search tabset
-    $("#schema-search > .section-tabset").tabs("#schema-search > .search-box");
+    var $schema_explorer_search_tabset = $("#schema-search > .section-tabset").tabs("#schema-search > .search-box");
     
     // Make table sortable
     $(".table").tablesorter({
@@ -92,6 +92,9 @@ $(document).ready(function(){
 
     // On click for radio buttons, we have to update mql_filter params and reinitialize suggest
     $(".search-toggle").click(function(e){
+    
+        // focus related input
+        var $text_input = $(this).parent().siblings("form").find(".text-input").focus();
         
         // We grab the radio buttons closest form
         // and compare it's ID to decide which mql_filter

@@ -58,22 +58,28 @@
         </div>
       </acre:block>
       
-      <div class="table_box">
-        <h2>Types</h2>
-        <table>
-          <tr>
-            <th><a href="?id=${acre.form.quote(c.domain.id)}&order=name&dir=${order == 'name' ? inv_dir : dir}">type name <span acre:if="order == 'name'">${indicator}</span></a></th>
-            <th><a href="?id=${acre.form.quote(c.domain.id)}&order=id&dir=${order == 'id' ? inv_dir : dir}">type id <span acre:if="order == 'id'">${indicator}</span></a></th>
-            <th class="numeric"><a href="?id=${acre.form.quote(c.domain.id)}&order=properties&dir=${order == 'properties' ? inv_dir : dir}"># of properties <span acre:if="order == 'properties'">${indicator}</span></a></th>
-            <th class="numeric"><a href="?id=${acre.form.quote(c.domain.id)}&order=instances&dir=${order == 'instances' ? inv_dir : dir}"># of instances <span acre:if="order == 'instances'">${indicator}</span></a></th>
-            <th class="numeric"><a href="?id=${acre.form.quote(c.domain.id)}&order=creation&dir=${order == 'creation' ? inv_dir : dir}">creation date <span acre:if="order == 'creation'">${indicator}</span></a></th>
-          </tr>
-          <tr acre:for="i,t in c.domain.types" acre:if="!t.mediator" class="${(i % 2 == 0) ? 'odd' : 'even'}">
-            <td><a href="${h.url_for('schema', 'type', null, t.id)}">$t.name</a></td>
-            <td>$t.id</td>
-            <td class="numeric">$t.properties.length</td>
-            <td class="numeric"><a href="${acre.freebase.service_url}/view${t.id}">${h.commafy(t.instances)}</a></td>
-            <td class="numeric">${t.date.toString("yyyy-MM-dd")}</td>
+      <div class="section">
+        <h2 class="table-title">Types</h2>
+        <table class="table" cellspacing="0">
+          <thead>
+            <tr>
+              <th scope="col" class="column-header">Type</span></th>
+              <th scope="col" class="column-header">ID</th>
+              <th scope="col" class="column-header numeric"># of Properties</a></th>
+              <th scope="col" class="column-header numeric"># of Instances </th>
+              <th scope="col" class="column-header description">Description</th>
+            </tr>
+          </thead>
+          <tr acre:for="i,t in c.domain.types" acre:if="!t.mediator">
+            <th class="odd" scope="row"><a href="${h.url_for('schema', 'type', null, t.id)}">$t.name</a></th>
+            <td class="even">$t.id</td>
+            <td class="odd numeric">$t.properties.length</td>
+            <td class="even numeric"><a href="${acre.freebase.service_url}/view${t.id}">${h.commafy(t.instances)}</a></td>
+            <td class="description">
+              <acre:block if="t['/common/topic/article'] && t['/common/topic/article']['id']">
+                ${acre.markup.bless(acre.freebase.get_blob(t['/common/topic/article']['id']).body)}
+              </acre:block>
+            </td>
           </tr>
         </table>
       </div>

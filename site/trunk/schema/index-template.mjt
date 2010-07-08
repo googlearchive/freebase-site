@@ -78,27 +78,27 @@
       </div>
       </div>
       <div class="section">
-      <h1 class="section-title">Browse</h1>
-      <table cellspacing="0" class="table">
-        <thead>
-          <tr>
-            <th scope="col" class="column-header">Domain</th>
-            <th scope="col" class="column-header">ID</th>
-            <th scope="col" class="column-header numeric"># of Types</th>
-            <th scope="col" class="column-header numeric"># of Instances</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr acre:for="d in c.domains">
-            <th class="row-header odd" scope="row">
-              <a href="${h.url_for('schema', 'domain', null, d.id)}" title="View $d.name">$d.name</a>
-            </th>
-            <td class="even">$d.id</td>
-            <td class="odd numeric">$d.type_count</td>
-            <td class="even numeric">${h.commafy(d.instance_count)}</td>
-          </tr>
-        </tbody>
-      </table>
+        <h1 class="section-title">Browse</h1>
+        <table cellspacing="0" class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="column-header">Domain</th>
+              <th scope="col" class="column-header">ID</th>
+              <th scope="col" class="column-header numeric"># of Types</th>
+              <th scope="col" class="column-header numeric"># of Instances</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr acre:for="d in c.domains">
+              <th class="row-header odd" scope="row">
+                <a href="${h.url_for('schema', 'domain', null, d.id)}" title="View $d.name">$d.name</a>
+              </th>
+              <td class="even">$d.id</td>
+              <td class="odd numeric">$d.type_count</td>
+              <td class="even numeric">${h.commafy(d.instance_count)}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>  
     </div>
     

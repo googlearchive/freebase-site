@@ -63,9 +63,9 @@
         <table class="table" cellspacing="0">
           <thead>
             <tr>
-              <th scope="col" class="column-header">Type</span></th>
+              <th scope="col" class="column-header">Type</th>
               <th scope="col" class="column-header">ID</th>
-              <th scope="col" class="column-header numeric"># of Properties</a></th>
+              <th scope="col" class="column-header numeric"># of Properties</th>
               <th scope="col" class="column-header numeric"># of Instances </th>
               <th scope="col" class="column-header description">Description</th>
             </tr>

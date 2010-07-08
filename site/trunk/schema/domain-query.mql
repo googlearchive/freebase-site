@@ -23,6 +23,11 @@
     "name":          null,
     "timestamp":     null,
     "properties":    [],
+    "/common/topic/article": [{
+      "optional": true,
+      "id":       null,
+      "limit":    1
+    }],
     "/type/reflect/any_reverse": {
       "link": {
         "master_property": "/freebase/type_hints/hinted_type"

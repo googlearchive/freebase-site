@@ -9,7 +9,7 @@ function get_article(o) {
   if (!o['/common/topic/article'] || o['/common/topic/article'].length === 0) {
     return o;
   }
-  return freebase.get_blob(o['/common/topic/article'][0].id)
+  return freebase.get_blob(o['/common/topic/article'][0].id, "blurb")
     .then(function(response) {
       o.desc = response.body;
       return o;
@@ -114,11 +114,14 @@ var domain = function(id, order, dir) {
       delete domain['/type/namespace/keys'];
       lsort(domain.subdomains, "id", "asc");
       
+      var blurb_promises = [];
       domain.mediators = [];
       domain.types = domain.types.map(function(t) {
         t.date = h.parse_date(acre.freebase.date_from_iso(t.timestamp));
         t.instance_count = t["/freebase/type_profile/instance_count"];
         t.mediator = t['/freebase/type_hints/mediator'];
+        blurb_promises.push(get_article(t));
+        
         if (t.mediator) {
           domain.mediators.push(t);
         }
@@ -127,7 +130,11 @@ var domain = function(id, order, dir) {
       
       domain.types = lsort(domain.types, order, dir);
       domain.mediators = lsort(domain.mediators, order, dir);
-      return domain;
+      
+      return deferred.all(blurb_promises)
+        .then(function() {
+          return domain;
+        });
     },
     function(error) {
       return null;

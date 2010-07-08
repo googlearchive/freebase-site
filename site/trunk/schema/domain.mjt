@@ -74,12 +74,8 @@
             <th class="odd" scope="row"><a href="${h.url_for('schema', 'type', null, t.id)}">$t.name</a></th>
             <td class="even">$t.id</td>
             <td class="odd numeric">$t.properties.length</td>
-            <td class="even numeric"><a href="${acre.freebase.service_url}/view${t.id}">${h.commafy(t.instances)}</a></td>
-            <td class="description">
-              <acre:block if="t['/common/topic/article'] && t['/common/topic/article']['id']">
-                ${acre.markup.bless(acre.freebase.get_blob(t['/common/topic/article']['id']).body)}
-              </acre:block>
-            </td>
+            <td class="even numeric"><a href="${acre.freebase.service_url}/view${t.id}">${h.commafy(t.instance_count)}</a></td>
+            <td class="description">$t.desc</td>
           </tr>
         </table>
       </div>

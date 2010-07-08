@@ -20,22 +20,6 @@ include("helpers_url");
 include("helpers_format");
 
 
-function get_image_dimensions(image) {
-  var size = image["/common/image/size"] || image.size;
-  if (size) {
-    return [size.x, size.y];
-  }
-  return [null, null];
-};
-
-function get_image_orientation(image) {
-  var [width, height] = get_image_dimensions(image);
-  if (width && height) {
-    return (width - height < 0) ? 'portrait' : 'landscape';
-  }
-  return null;
-};
-
 
 /*
 function output_helpers(scope) {

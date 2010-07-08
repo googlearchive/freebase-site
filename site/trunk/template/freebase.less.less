@@ -97,7 +97,7 @@ GLOBAL TYPE SIZES
     pixels, but set font-size in ems. For example, 1em = 10px, 0.9em = 9px, 1.2em = 12px.
 */
 
-body { font-size: 62.5%; line-height: 1.5; } /* 10px */
+body { font-size: 62.5%; line-height: 1.5; text-rendering: optimizeLegibility; } /* 10px */
 
 h1, h2, h3, h4, h5, h6 {font-weight:normal;}
 
@@ -153,7 +153,7 @@ body {
    for the visual design.
 */
 
-#content { padding: 3.5em 3em 0px; }
+#content { padding: 3em 3em 0px; }
 
 /* Fixed is a class appended to #content when we want a fixed width, centered page */
 .fixed { 

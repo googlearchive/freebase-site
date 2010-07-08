@@ -46,7 +46,7 @@
         </tr>
       </table>
       
-      <div id="description" acre:if="c.property.desc">${acre.markup.bless(c.property.desc)}</div>
+      <div id="description" acre:if="c.property.description">${acre.markup.bless(c.property.description)}</div>
     
       <div class="tools">
         <a href="${acre.freebase.site_host}/type/schema${id}" class="spaced">Edit Schema &raquo;</a><a href="${acre.freebase.site_host}/tools/explore${id}">Explore View &raquo;</a>       

@@ -38,7 +38,7 @@
   
     <div id="body">
     
-      <div id="description" acre:if="c.type.desc">${acre.markup.bless(c.type.desc)}</div>
+      <div id="description" acre:if="c.type.description">${acre.markup.bless(c.type.description)}</div>
     
       <div id="links"><a href="$c.type.query_url" target="_new">Build a query for this type &raquo;</a><a acre:if="c.type.instances" href="${acre.freebase.site_host}/view${acre.request.params.id}">Browse the <big>${c.type.instances}</big> instances of this type &raquo;</a></div>        
     

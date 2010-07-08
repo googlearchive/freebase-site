@@ -11,7 +11,7 @@ function get_article(o) {
   }
   return freebase.get_blob(o['/common/topic/article'][0].id, "blurb")
     .then(function(response) {
-      o.desc = response.body;
+      o.description = response.body;
       return o;
     });
 };

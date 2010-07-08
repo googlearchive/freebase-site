@@ -35,7 +35,7 @@
 <acre:block def="content_body()">
   <acre:block if="c.domain">
       <div id="body">
-      <div id="description" acre:if="c.domain.desc">${acre.markup.bless(c.domain.desc)}</div>
+      <div id="description" acre:if="c.domain.description">${acre.markup.bless(c.domain.description)}</div>
     
       <acre:block if="c.domain.subdomains.length > 0">
         <div class="table_box">
@@ -75,7 +75,7 @@
             <td class="even">$t.id</td>
             <td class="odd numeric">$t.properties.length</td>
             <td class="even numeric"><a href="${acre.freebase.service_url}/view${t.id}">${h.commafy(t.instance_count)}</a></td>
-            <td class="description">$t.desc</td>
+            <td class="description"><acre:block if="t.description">$t.description</acre:block></td>
           </tr>
         </table>
       </div>

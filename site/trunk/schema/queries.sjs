@@ -116,7 +116,7 @@ var domain = function(id, order, dir) {
       
       var blurb_promises = [];
       domain.mediators = [];
-      domain.types = domain.types.map(function(t) {
+      domain.types = domain.types.filter(function(t) {
         t.date = h.parse_date(acre.freebase.date_from_iso(t.timestamp));
         t.instance_count = t["/freebase/type_profile/instance_count"];
         t.mediator = t['/freebase/type_hints/mediator'];
@@ -124,6 +124,7 @@ var domain = function(id, order, dir) {
         
         if (t.mediator) {
           domain.mediators.push(t);
+          return false;
         }
         return t;
       });

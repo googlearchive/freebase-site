@@ -120,43 +120,22 @@
 </acre:block>
 
 <acre:block def="activity_section(domain)">
-  <div acre:if="domain.activity" 
-       class="domain-activity domain-section">
-       
-    <div class="activity-stats">
-      <!--div class="activity-label-assertions">
-        assertions
-      </div -->
+  <div class="domain-activity domain-section">
+    <div acre:if="domain.activity"
+         class="activity-stats">
       <div class="activity-chart-assertions" data-activity="${JSON.stringify(domain.activity.weeks)}">
       </div>
       <div class="activity-stats-block activity-stats-facts">
         <div class="activity-stats-number">
-          ${domain.activity.total.e}
+          ${h.format_stat(domain.activity.total.e)}
         </div>
-        <!--div class="activity-stats-label">
-          ${domain.activity.total.t === 1 ? 'assertion' : 'assertions'}
-        </div-->
       </div>
       <div class="activity-stats-block activity-stats-topics">
         <div class="activity-stats-number">
-          ${domain.activity.total.t}
+          ${h.format_stat(domain.activity.total.t)}
         </div>
-        <!--div class="activity-stats-label">
-          ${domain.activity.total.t === 1 ? 'topic' : 'topics'}
-        </div -->
       </div>
     </div>
-    <!--
-    <div class="activity-stats-bottom">
-      <div class="activity-label-coverage">
-        coverage
-      </div>
-      <div class="activity-chart-coverage" data-activity="${JSON.stringify(domain.activity.weeks)}">
-      </div>
-      
-    </div>
-    -->
-
   </div>
 </acre:block>
 
@@ -210,7 +189,7 @@
     <div acre:for="item in blog.items">
       <a href="$item.link" title="${acre.markup.bless(item.description)}">$item.title</a>
       by <a href="${h.freebase_url('/view/user/'+item['dc:creator'])}">${item['dc:creator']}</a>
-      on ${formatDate(new Date(item.pubDate))}
+      on ${h.format_date(h.parse_date(item.pubDate), 'MMM d')}
     </div>
   </div>
 </acre:block>
@@ -222,7 +201,7 @@
     <div acre:for="item in wiki.items">
       <a href="$item.link">$item.title</a>
       by <a href="$wiki.user_url:${item['dc:creator']}">${item['dc:creator']}</a>
-      on ${formatDate(new Date(item.pubDate))}
+      on ${h.format_date(h.parse_date(item.pubDate), 'MMM d')}
     </div>
   </div>
 </acre:block>

@@ -61,6 +61,29 @@ function extend_manifest(MF, scope, options) {
   return extend(MF, base_manifest(MF, scope), orig);
 };
 
+
+function  get_app_base_url(scope) {
+  if (/^https?:\/\/((www|devel)\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(scope.acre.request.app_url)) {
+  //if (/^https?\:\/\/devel\.(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(scope.acre.request.app_url)) {
+    var routes_mf = acre.require(CORE_MF.apps.routing + "/MANIFEST");
+    var app = routes_mf.get_app(scope.acre.current_script.app.path);
+    if (app) {
+      var routes = acre.require(CORE_MF.apps.routing + "/app_routes");
+      var rts = routes.get_routes(app);
+      if (rts) {
+        for (var i=0,l=rts.length; i<l; i++) {
+          var rt = rts[i];
+          if (!rt.script) {
+            return scope.acre.request.app_url + rt.from;
+          }
+        }
+      }
+    }
+  }
+  return scope.acre.current_script.app.base_url;
+};
+
+
 /**
  * The base MANIFEST core library.
  */
@@ -72,6 +95,27 @@ function base_manifest(MF, scope, undefined) {
     apps: {},
     stylesheet: {},
     javascript: {},
+
+    get_app_base_url: function() {
+      if (/^https?:\/\/((www|devel)\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(scope.acre.request.app_url)) {
+        //if (/^https?\:\/\/devel\.(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(scope.acre.request.app_url)) {
+        var routes_mf = acre.require(CORE_MF.apps.routing + "/MANIFEST");
+        var app = routes_mf.get_app(scope.acre.current_script.app.path);
+        if (app) {
+          var routes = acre.require(CORE_MF.apps.routing + "/app_routes");
+          var rts = routes.get_routes(app);
+          if (rts) {
+            for (var i=0,l=rts.length; i<l; i++) {
+              var rt = rts[i];
+              if (!rt.script) {
+                return scope.acre.request.app_url + rt.from;
+              }
+            }
+          }
+        }
+      }
+      return scope.acre.current_script.app.base_url;
+    },
 
     /**
      * The base url prefix for retrieving css and js. All apps who extend the base_manifest
@@ -380,25 +424,7 @@ function base_manifest(MF, scope, undefined) {
     }
   };
 
-  base.app_base_url = scope.acre.current_script.app.base_url;
-  if (/^https?:\/\/((www|devel)\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(scope.acre.request.app_url)) {
-  //if (/^https?\:\/\/devel\.(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(scope.acre.request.app_url)) {
-    var routes_mf = acre.require(CORE_MF.apps.routing + "/MANIFEST");
-    var app = routes_mf.get_app(scope.acre.current_script.app.path);
-    if (app) {
-      var routes = acre.require(CORE_MF.apps.routing + "/app_routes");
-      var rts = routes.get_routes(app);
-      if (rts) {
-        for (var i=0,l=rts.length; i<l; i++) {
-          var rt = rts[i];
-          if (!rt.script) {
-            base.app_base_url = scope.acre.request.app_url + rt.from;
-            break;
-          }
-        }
-      }
-    }
-  }
+  base.app_base_url = base.get_app_base_url();
   base.image_base_url = base.app_base_url;
   base.static_base_url = base.app_base_url + "/MANIFEST";
 

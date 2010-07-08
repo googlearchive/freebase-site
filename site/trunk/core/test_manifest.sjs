@@ -111,7 +111,7 @@ test("extend_manifest", function() {
     }
   };
   m.extend_manifest(mf, scope);
-  equals(mf.static_base_url, acre.current_script.app.base_url +  "/MANIFEST");
+  equals(mf.static_base_url, mf.get_app_base_url() +  "/MANIFEST");
 
   ok(mf.apps);
   equals(mf.apps["hello"], "//7.app.world.hello.dev");

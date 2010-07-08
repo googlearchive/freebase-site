@@ -26,12 +26,12 @@
     };
   </acre:script>
 
-  <div class="user-image">
+  <span class="user-image">
     <a href="${url}" class="fn nickname url">
      ${image_thumb(user["/common/topic/image"], size, options)}
     </a>
     ${user_badges(user["badges:/type/user/usergroup"], size)}
- </div>
+ </span>
 </acre:block>
 
 <acre:block def="user_badges(badges, size)" if="badges && badges.length">

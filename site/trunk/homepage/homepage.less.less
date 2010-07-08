@@ -6,7 +6,7 @@
 
 #content-main {
     border: 5px solid #e4e6e7;
-    overflow: auto;
+    /* overflow: auto;*/
     width: 74em;
     float: left;
     background: #fff;
@@ -15,13 +15,13 @@
 
 /* from project.css */
 .homepage-header {
-    height: 50px;
     background: #64768f;
     .linear_gradient(#7d92b2, #64768f, repeat);
     color: #fff;
     text-align: center;   
     border-bottom: 1px solid #fff;
-    padding: 0.55em 0; 
+    padding: 1em 0; 
+    clear: both;
 }
 
 .homepage-header-title {
@@ -30,10 +30,21 @@
     margin: 0;
     text-shadow: #5c6c84 2px 2px 3px;
     border-bottom: 1px solid #b2bbc7;
-    padding-bottom: 0.6em;
+    padding-bottom: 0.7em;
     display: inline;
 }
 
+.homepage-announce {
+    font-size: 1.6em;
+    line-height: 2;
+    font-weight: bold;
+    clear: both;
+    padding: 10px 0;
+}
+
+.homepage-announce a {
+    color: #ffbb33;
+}
 
 /*
 ----------------------------
@@ -51,24 +62,61 @@ DOMAIN EXPLORER
     background: #fff;
 }
 
-#domain-explorer-title {
+#domain-explorer-header {
     display: block;
     .linear_gradient(#fefefe, #ebedee, repeat);
-    padding: 8px 10px;
+    padding: 8px 0;
     border-bottom: 1px solid #dcdbdc;
     overflow: auto;
 }
 
-.domain-explorer-title-content {
+.domain-explorer-title {
     float: left;
     font-size: 1.6em;
     line-height: 1;
     color: #666666;
+    width: 170px;
 }
+
 .domain-explorer-rss {
     float: left;
     margin: 2px 0 0 1em;
 }
+
+.domain-activity-controls {
+    float: left;
+    width: 190px;
+    padding: 0 0 0 10px;
+    font-size: 1.1em;
+}
+
+.activity-chart-header {
+    width: 145px;
+    float: left;
+}
+.activity-stats-header-facts {
+    float: left;
+    width: 48px;
+    color: #f71;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+.activity-stats-header-topics {
+    float: left;
+    width: 48px;
+    color: #78a;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.activity-stats-header-coverage {
+    float: left;
+    width: 48px;
+    color: #495;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
 
 #domain-explorer-tabset {
     position: relative;
@@ -97,7 +145,7 @@ DOMAIN EXPLORER
 
 #domain-explorer-tabs {
     float: left;
-    width: 17em;
+    width: 170px;
     background: #f6f6f6;
     -webkit-border-bottom-left-radius: 5px;
     -moz-border-radius-bottomleft: 5px;
@@ -150,7 +198,7 @@ DOMAIN EXPLORER
 }
 
 .category-domain-list li {
-    padding: 0.3em 1.5em;
+    padding: 0.3em 0;
     border-bottom: 1px solid #dcdbdc;
     border-top: 1px solid #fff;
 }
@@ -160,10 +208,12 @@ DOMAIN EXPLORER
 }
 
 .domain-title a {
+    margin-left: 10px;
     font-size: 1.3em;
     font-weight: bold;
 }
 .member-count {
+    margin-left: 10px;
     font-size: 1.1em;
     line-height: 1.0em;
 }
@@ -195,19 +245,19 @@ DOMAIN EXPLORER
 }
 
 .domain-info {
-    width: 18em;
+    width: 190px;
 }
 
 .domain-section {
     float: left;
-    height: 5em;
+    height: 4em;
 }
 
 .activity-chart-assertions {
     float: left;
-    width: 150px;
-    margin-left: 5px;
+    margin-right: 5px;
     overflow: hidden;
+    width: 145px;
 }
 
 .activity-chart-coverage {
@@ -220,13 +270,13 @@ DOMAIN EXPLORER
 
 .activity-stats {
     height: 30px;
-    width: 27em;
     margin-right: 2px;
     margin-bottom: 2px;
     background: #fff;
     .rounded_corners(5px);
     border: 1px solid #dcdbdc;
-    padding: 3px;
+    padding: 5px;
+
 }
 
 /*
@@ -248,23 +298,38 @@ DOMAIN EXPLORER
   color: #ff862b;
   line-height: 50px;
   margin-left: 2px;
-} */
+} 
 
 .activity-label-coverage {
   float: left;
   color: #669;
   line-height: 50px;
   margin-left: 2px;
+}*/
+
+.activity-coverage {
+    width: 60px;
+    text-align: center;
 }
 
-.activity-stats-facts {
-    background: #ff862b;
+.activity-coverage-number {
+    color: #449955;
+    font-size: 1.4em;
+    font-weight: bold;
+    margin-top: 7px;
+}
+
+.activity-stats-block {
     width: 48px;
-    margin-top: 2px;
-    margin-right: 2px;
+    margin:0 3px 3px 0;
     padding: 2px;
     float: left;
     color: #fff;
+    text-align: center;
+}
+
+.activity-stats-facts {
+    background: #f71;
     -webkit-border-top-left-radius: 5px;
     -moz-border-radius-topleft: 5px;
     -webkit-border-bottom-left-radius: 5px;
@@ -272,13 +337,7 @@ DOMAIN EXPLORER
 }
 
 .activity-stats-topics {
-    background: #7788aa;
-    width: 48px;
-    /* margin-bottom: 2px;
-    margin-right: 2px;
-    padding: 2px; */
-    float: left;
-    color: #fff;
+    background: #78a;
     -webkit-border-bottom-right-radius: 5px;
     -moz-border-radius-bottomright: 5px;
     -webkit-border-top-right-radius: 5px;
@@ -286,8 +345,10 @@ DOMAIN EXPLORER
 }
 
 .activity-stats-number {
+    font-size: 1.2em;
     font-weight: bold;
-    font-size: 125%;
+    line-height: 2;
+    margin: 0 auto;
 }
 
 .user-image {
@@ -372,9 +433,7 @@ CONTENT SUB
     width: 14px;
     height: 14px;
 }
-.domain-explorer-title-content {
-    float: left;
-}
+
 .domain-explorer-rss {
     float: left;
     margin-left: 10px;

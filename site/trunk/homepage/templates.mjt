@@ -35,9 +35,26 @@
 </acre:block>
 
 <acre:block def="domain_explorer(categories, grouped_domains, loaded_categories)">
-  <div id="domain-explorer-title">
-    <span class="domain-explorer-title-content">Projects</span> 
-    <a href="" class="rss-icon domain-explorer-rss">RSS</a>
+  <div id="domain-explorer-header">
+    <div class="domain-explorer-title">Projects
+      <a href="" class="rss-icon domain-explorer-rss">RSS</a>  
+    </div> 
+    
+    <div class="domain-activity-controls">
+      Sort by <a href="">activity</a>
+    </div>
+    <div class="activity-chart-header">
+    abc
+    </div>
+    <div class="activity-stats-header-facts">
+      Facts
+    </div>
+    <div class="activity-stats-header-topics">
+      Topics
+    </div>
+    <div class="activity-stats-header-coverage">
+      Coverage
+    </div>
   </div>
   
   <div id="domain-explorer-tabset">
@@ -108,7 +125,7 @@
       </div -->
       <div class="activity-chart-assertions" data-activity="${JSON.stringify(domain.activity.weeks)}">
       </div>
-      <div class="activity-stats-facts">
+      <div class="activity-stats-block activity-stats-facts">
         <div class="activity-stats-number">
           ${domain.activity.total.e}
         </div>
@@ -116,7 +133,7 @@
           ${domain.activity.total.t === 1 ? 'assertion' : 'assertions'}
         </div-->
       </div>
-      <div class="activity-stats-topics">
+      <div class="activity-stats-block activity-stats-topics">
         <div class="activity-stats-number">
           ${domain.activity.total.t}
         </div>
@@ -135,6 +152,7 @@
       
     </div>
     -->
+
   </div>
 </acre:block>
 
@@ -150,7 +168,11 @@
   </div>
   
   ${activity_section(domain)}
-  
+  <div class="domain-section activity-coverage">
+    <div class="activity-coverage-number">
+      7%
+    </div>
+  </div>
   <div class="domain-contributor domain-section">
     <acre:block if="domain.top_user">
       <a href="${h.freebase_url('/view'+domain.top_user.id)}">

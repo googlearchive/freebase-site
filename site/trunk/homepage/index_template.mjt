@@ -11,6 +11,10 @@
 <acre:block def="content_header()">
 <header class="homepage-header">
   <h1 class="homepage-header-title">The definitive open database of people, places and things, built by a community that loves data.</h1>
+  <div class="homepage-announce">
+    Freebase is joining someone.
+    <a href="">Learn More &raquo;</a>
+  </div>
 </header>
 </acre:block>
 

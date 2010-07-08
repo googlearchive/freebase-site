@@ -129,6 +129,7 @@ var domain = function(id, order, dir) {
         return t;
       });
       
+      domain.date = h.format_date(acre.freebase.date_from_iso(domain.timestamp), 'MMMM dd, yyyy');
       domain.types = lsort(domain.types, order, dir);
       domain.mediators = lsort(domain.mediators, order, dir);
       

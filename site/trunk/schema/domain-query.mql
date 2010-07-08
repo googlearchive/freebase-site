@@ -2,6 +2,11 @@
   "id":   "/freebase",
   "type": "/type/domain",
   "name": null,
+  "timestamp": null,
+  "creator": {
+    "id": null,
+    "name": null
+  },
   "/type/namespace/keys": [{
     "optional": true,
     "value":    null,

@@ -96,7 +96,7 @@ var RequestCanceled, RequestTimeout;
       if (!(error instanceof Error)) {
         error = new Error(""+error);
       }
-      console.warn(error.toString(), error);
+      console.warn('Deferred: '+error.toString(), error);
       resolve(error);
       return promise;
     };

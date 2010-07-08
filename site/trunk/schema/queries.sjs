@@ -5,7 +5,7 @@ var urlfetch = mf.require("promise", "apis").urlfetch;
 var h = mf.require("core", "helpers");
 
 
-function get_article(o) {
+function add_description(o) {
   if (!o['/common/topic/article'] || o['/common/topic/article'].length === 0) {
     return o;
   }
@@ -97,7 +97,7 @@ var domain = function(id, order, dir) {
     .then(function(envelope) {
       return envelope.result;
     })
-    .then(get_article)
+    .then(add_description)
     .then(function(domain) {
       domain.subdomains = domain['/type/namespace/keys'].map(function(v) {
         var d = v.namespace;
@@ -120,7 +120,7 @@ var domain = function(id, order, dir) {
         t.date = h.parse_date(acre.freebase.date_from_iso(t.timestamp));
         t.instance_count = t["/freebase/type_profile/instance_count"];
         t.mediator = t['/freebase/type_hints/mediator'];
-        blurb_promises.push(get_article(t));
+        blurb_promises.push(add_description(t));
         
         if (t.mediator) {
           domain.mediators.push(t);
@@ -154,7 +154,7 @@ var type = function(id, order, dir) {
     then(function(envelope) {
       return envelope.result;
     })
-    .then(get_article)
+    .then(add_description)
     .then(function(r) {
       if (!r) return null;
       
@@ -169,7 +169,7 @@ var type = function(id, order, dir) {
         key : r.key
       };
       
-      type.desc = r.desc;
+      type.description = r.description;
       type.instances = r['/freebase/type_profile/instance_count'] ? h.commafy(r['/freebase/type_profile/instance_count'].value) : null;
       
       type.properties = lsort(r.properties, "id", "asc");
@@ -210,7 +210,7 @@ var property = function(id) {
     .then(function(envelope) {
       return envelope.result;
     })
-    .then(get_article)
+    .then(add_description)
     .then(null, function() {
       return null;
     });

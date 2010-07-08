@@ -102,11 +102,10 @@
 
 <acre:block def="content(exports)">
   <acre:block if="exports.content_header">${exports.content_header()}</acre:block>
+  <div acre:elif="exports.title" class="page-header">
+    <h1 id="page-title">${exports.title()}</h1>
+  </div>
   <div id="content" class="clear">
-    <hgroup class="section-header">
-      <acre:block if="exports.section_header">${exports.section_header()}</acre:block>
-      <acre:block elif="exports.title"><h1 id="page-title">${exports.title()}</h1></acre:block>
-    </hgroup>
     <acre:block if="exports.content_body">${exports.content_body()}</acre:block>
   </div>
 </acre:block>

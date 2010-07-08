@@ -56,7 +56,7 @@
 
 <acre:block def="_image_thumb(image, size, options)" if="image">
   <acre:script>
-x   var o = h.extend({mode:"fit"}, options);
+    var o = h.extend({mode:"fit"}, options);
     var width, height;
     if (o.pad) {
       if (o.mode === "fill") {

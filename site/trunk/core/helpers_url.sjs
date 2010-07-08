@@ -206,6 +206,7 @@ function image_thumb_url(image, size, options) {
 */
 function image_url(id, options) {
   var o = extend({
+    id: id,
     maxheight: null,
     maxwidth: null,
     mode: "fit",

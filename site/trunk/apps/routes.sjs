@@ -30,6 +30,11 @@ function do_route(path) {
   var file = segs.shift() || "";
   var path = "/" + segs.join("/");
   
+  // Pass image requests through;
+  if ( /\.(png|gif|jpg)$/.test(file)) {
+    acre.route(file);
+  }
+  
   switch (file) {
     
     // special-case MANIFEST files

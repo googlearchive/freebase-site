@@ -1,19 +1,7 @@
 $(function() {
   
-  function set_search_mode(category) {
-    $(".view-mode-option").removeClass("selected");
-    $(".search-component").hide();
-    if (category === "user") {
-      $("#mode-user").addClass("selected");
-      $("#user-search").show();
-    } else {
-      $("#mode-apps").addClass("selected");
-      $("#app-search").show();
-    }
-  }
-  
   // Setup schema search tabset
-  // var $schema_explorer_search_tabset = $("#schema-search > .section-tabset").tabs("#schema-search > .search-box");
+  var $apps_explorer_search_tabset = $("#apps-search > .section-tabset").tabs("#apps-search > .search-box");
   
   // Make table sortable
   $(".table").tablesorter({
@@ -22,16 +10,8 @@ $(function() {
       cssHeader: "column-header",
       sortList: [[0,0]]
   });
-  
-  if (typeof category !== 'undefined') set_search_mode(category);
-  
-  $(".view-mode-option")
-    .click(function() {
-      set_search_mode($(this).attr("id").replace("mode-",""));
-      return false;
-    });
 
-  $("#user-suggest")
+  $("#user-search-input")
     .suggest({type: '/type/user'})
     .bind("fb-select", function(e, data) {
       location.href = bp + data.id;

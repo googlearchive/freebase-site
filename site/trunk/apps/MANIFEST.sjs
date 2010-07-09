@@ -5,6 +5,7 @@ var MF = {
       "promise": "//promise.site.freebase.dev",
       "libraries" : "//release.libraries.apps.freebase.dev",
       "domain": "//domain.site.freebase.dev",
+      "schema": "//schema.site.freebase.dev",
       "jquery" : "//release.jquery.libs.freebase.dev",
       "jquerytools": "//jquerytools.site.freebase.dev",
       "service" : "//release.service.libs.freebase.dev"
@@ -13,6 +14,7 @@ var MF = {
     "apps.mf.css": [
       ["template", "MANIFEST", "/freebase.mf.css"],
       ["template", "freebase.table.less"],
+      ["schema", "schema.less"],
       "apps.less"
     ],
     "article.mf.css" : [

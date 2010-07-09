@@ -65,58 +65,83 @@ DOMAIN EXPLORER
 #domain-explorer-header {
     display: block;
     .linear_gradient(#fefefe, #ebedee, repeat);
-    padding: 8px 0;
     border-bottom: 1px solid #dcdbdc;
     overflow: auto;
 }
 
+.domain-explorer-title, 
+.domain-activity-controls, 
+.activity-chart-header {
+    height: 30px;
+    float: left;
+}
+
 .domain-explorer-title {
+    width: 190px;
+}
+.domain-explorer-title-content {
     float: left;
     font-size: 1.6em;
     line-height: 1;
-    color: #666666;
-    width: 170px;
+    margin: 8px 0 0 10px;
 }
-
 .domain-explorer-rss {
     float: left;
-    margin: 2px 0 0 1em;
+    margin: 10px 0 0 1em;
+}
+   
+.domain-activity-controls {
+     width: 170px;
 }
 
-.domain-activity-controls {
-    float: left;
-    width: 190px;
-    padding: 0 0 0 10px;
+.domain-activity-controls-content {
+    padding: 8px 0 0 20px;
     font-size: 1.1em;
+    font-weight: bold;
+    display: block;
+    color: #888;
+}
+
+.domain-activity-controls a {
+    font-weight: normal;
+    padding-right: 7px;
+    background: url(template, ui-sprite.png) no-repeat -214px right;
 }
 
 .activity-chart-header {
-    width: 145px;
+    width: 165px;
+    height: 30px;
+    background: url(template, ui-sprite.png) no-repeat 0px -125px;
     float: left;
 }
 .activity-stats-header-facts {
     float: left;
-    width: 48px;
+    width: 54px;
     color: #f71;
     font-size: 1.1em;
     font-weight: bold;
+    padding-top: 10px;
+    text-align: center;
 }
 .activity-stats-header-topics {
     float: left;
-    width: 48px;
+    width: 55px;
     color: #78a;
     font-size: 1.1em;
     font-weight: bold;
+    padding-top: 10px;
+    text-align: center;
 }
 
 .activity-stats-header-coverage {
     float: left;
-    width: 48px;
+    width: 60px;
     color: #495;
     font-size: 1.1em;
     font-weight: bold;
+    padding-top: 10px;
+    text-align: center;
 }
-
 
 #domain-explorer-tabset {
     position: relative;
@@ -129,7 +154,7 @@ DOMAIN EXPLORER
     position: absolute;
     left: 0;
     z-index: 10;
-    width: 175px;
+    width: 200px;
     height: 40px;
     background: url(template, ui-sprite.png) no-repeat top left;
 }
@@ -145,7 +170,7 @@ DOMAIN EXPLORER
 
 #domain-explorer-tabs {
     float: left;
-    width: 170px;
+    width: 190px;
     background: #f6f6f6;
     -webkit-border-bottom-left-radius: 5px;
     -moz-border-radius-bottomleft: 5px;
@@ -207,13 +232,16 @@ DOMAIN EXPLORER
     margin-bottom: 0.6em;
 }
 
+.domain-title {
+    margin-left: 20px;
+}
+
 .domain-title a {
-    margin-left: 10px;
     font-size: 1.3em;
     font-weight: bold;
 }
 .member-count {
-    margin-left: 10px;
+    margin-left: 20px;
     font-size: 1.1em;
     line-height: 1.0em;
 }
@@ -245,12 +273,11 @@ DOMAIN EXPLORER
 }
 
 .domain-info {
-    width: 190px;
+    width: 170px;
 }
 
 .domain-section {
     float: left;
-    height: 4em;
 }
 
 .activity-chart-assertions {
@@ -268,15 +295,17 @@ DOMAIN EXPLORER
     overflow: hidden;
 }
 
+.activity-chart-assertions{
+    float: left;
+    width: 150px;
+    height: 10px;
+}
+
 .activity-stats {
-    height: 30px;
-    margin-right: 2px;
-    margin-bottom: 2px;
     background: #fff;
     .rounded_corners(5px);
     border: 1px solid #dcdbdc;
-    padding: 5px;
-
+    overflow: auto;
 }
 
 .activity-coverage {
@@ -293,8 +322,7 @@ DOMAIN EXPLORER
 
 .activity-stats-block {
     width: 48px;
-    margin:0 3px 3px 0;
-    padding: 2px;
+    margin: 3px 3px 3px 0;
     float: left;
     color: #fff;
     text-align: center;
@@ -321,6 +349,8 @@ DOMAIN EXPLORER
     font-weight: bold;
     line-height: 2;
     margin: 0 auto;
+    padding: 0 2px;
+    height: 26px;
 }
 
 .user-image {

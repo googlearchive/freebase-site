@@ -40,12 +40,15 @@
 
 <acre:block def="domain_explorer(categories, grouped_domains, loaded_categories)">
   <div id="domain-explorer-header">
-    <div class="domain-explorer-title">Projects
+    <div class="domain-explorer-title">
+      <span class="domain-explorer-title-content">Projects</span>
       <a href="" class="rss-icon domain-explorer-rss">RSS</a>  
     </div> 
     
     <div class="domain-activity-controls">
-      Sort by <a href="">activity</a>
+      <span class="domain-activity-controls-content">
+        Sort by <a href="">activity</a>
+      </span>
     </div>
     <div class="activity-chart-header">
     abc

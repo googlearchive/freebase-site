@@ -54,10 +54,10 @@ function image_clause(options) {
 function article_clause(current, options) {
   var q = {
     "optional": true,
-    "id": null,
-    "creator": {"id": null, "name": null, "timestamp": null},
-    "/common/document/source_uri": null,
-    "/common/document/content": content_clause()
+    "id": null
+    //"creator": {"id": null, "name": null, "timestamp": null},
+    //"/common/document/source_uri": null,
+    //"/common/document/content": content_clause()
   };
   if (current) {
     extend(q, {

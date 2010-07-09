@@ -44,3 +44,50 @@ function image_clause(options) {
   }
   return [q];
 };
+
+/**
+ Generic clause for getting the "/common/topic/article" (or any /common/document)
+ of an object.
+
+ if current is true, the only the most recent article is returned
+ **/
+function article_clause(current, options) {
+  var q = {
+    "optional": true,
+    "id": null,
+    "creator": {"id": null, "name": null, "timestamp": null},
+    "/common/document/source_uri": null,
+    "/common/document/content": content_clause()
+  };
+  if (current) {
+    extend(q, {
+      "limit": 1,
+      "timestamp": null,
+      "sort": "-timestamp"
+    });
+  }
+  if (options) {
+    extend(q, options);
+  }
+  return [q];
+};
+
+
+function content_clause(options) {
+  var q = {
+    "optional": true,
+    "id": null,
+    "name": null,
+    "limit": 1,
+    "/type/content/blob_id": null,
+    "/type/content/media_type": null,
+    "/type/content/text_encoding": null,
+    "/type/content/length": null,
+    "/type/content/language": null
+  };
+  if (options) {
+    extend(q, options);
+  }
+  return q;
+};
+

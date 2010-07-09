@@ -3,6 +3,7 @@ var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 var urlfetch = mf.require("promise", "apis").urlfetch;
 var qh = mf.require("queries", "helpers");
+var blob = mf.require("queries", "blob");
 var h = mf.require("core", "helpers");
 
 
@@ -11,9 +12,10 @@ function add_description(o, mode, options) {
   if (!o['/common/topic/article'] || o['/common/topic/article'].length === 0) {
     return o;
   }
-  return freebase.get_blob(o['/common/topic/article'][0].id, mode, options)
-    .then(function(response) {
-      o.description = response.body;
+  var getter = mode === "blob" ? blob.get_blob : blob.get_blurb;
+  return getter(o['/common/topic/article'][0].id, options)
+    .then(function(blob) {
+      o.description = blob;
       return o;
     });
 };
@@ -38,14 +40,14 @@ function make_domain(d) {
 var user_domains = function(user_id, order, dir) {
   order = order || "name";
   dir = dir || "asc";
-  
+
   if (id === '/' || id.charAt(0) !== '/') {
     throw "invalid userid";
   }
-  
+
   var q = mf.require("user-domains-query").query;
   q = acre.freebase.extend_query(q, { "creator" : user_id });
-  
+
   return freebase.mqlread(q)
     .then(function(envelope) {
       return envelope.result;
@@ -65,9 +67,9 @@ var user_domains = function(user_id, order, dir) {
 var all_domains = function(order, dir) {
   order = order || "name";
   dir = dir || "asc";
-  
+
   var q = mf.require("index-query").query;
-  
+
   return freebase.mqlread(q)
     .then(function(envelope) {
       return envelope.result;
@@ -88,22 +90,25 @@ var domain = function(id, order, dir) {
   if (id === '/' || id.charAt(0) !== '/') {
     throw "invalid ID";
   }
-  
+
   order = order || "name";
   dir = dir || "asc";
-  
+
   var q = mf.require("domain-query").query;
   q = acre.freebase.extend_query(q, {"id": id});
-  var user_clause = qh.user_clause();
-  acre.freebase.extend_query(q.creator, user_clause);
-  acre.freebase.extend_query(q.owners[0].member[0], user_clause);
 
-  
+  var user_clause = qh.user_clause();
+  q.creator = user_clause;
+  q.owners[0].member = [user_clause];
+  q["/common/topic/article"] = q.types[0]["/common/topic/article"] = qh.article_clause();
+
   return freebase.mqlread(q)
     .then(function(envelope) {
       return envelope.result;
     })
-    .then(add_description)
+    .then(function(domain) {
+      return add_description(domain, "blob");
+    })
     .then(function(domain) {
       domain.subdomains = domain['/type/namespace/keys'].map(function(v) {
         var d = v.namespace;
@@ -119,7 +124,7 @@ var domain = function(id, order, dir) {
       });
       delete domain['/type/namespace/keys'];
       lsort(domain.subdomains, "id", "asc");
-      
+
       var blurb_promises = [];
       domain.mediators = [];
       domain.types = domain.types.filter(function(t) {
@@ -127,18 +132,18 @@ var domain = function(id, order, dir) {
         t.instance_count = t["/freebase/type_profile/instance_count"];
         t.mediator = t['/freebase/type_hints/mediator'];
         blurb_promises.push(add_description(t));
-        
+
         if (t.mediator) {
           domain.mediators.push(t);
           return false;
         }
         return t;
       });
-      
+
       domain.date = h.format_date(acre.freebase.date_from_iso(domain.timestamp), 'MMMM dd, yyyy');
       domain.types = lsort(domain.types, order, dir);
       domain.mediators = lsort(domain.mediators, order, dir);
-      
+
       return deferred.all(blurb_promises)
         .then(function() {
           return domain;
@@ -156,7 +161,7 @@ var type = function(id, order, dir) {
   }
   var q = mf.require("type-query").query;
   q = acre.freebase.extend_query(q, { "id" : id });
-  
+
   return freebase.mqlread(q).
     then(function(envelope) {
       return envelope.result;
@@ -164,7 +169,7 @@ var type = function(id, order, dir) {
     .then(add_description)
     .then(function(r) {
       if (!r) return null;
-      
+
       var type = {
         id : r.id,
         name : r.name,
@@ -175,10 +180,10 @@ var type = function(id, order, dir) {
         included_types : r["/freebase/type_hints/included_types"],
         key : r.key
       };
-      
+
       type.description = r.description;
       type.instances = r['/freebase/type_profile/instance_count'] ? h.commafy(r['/freebase/type_profile/instance_count'].value) : null;
-      
+
       type.properties = lsort(r.properties, "id", "asc");
       type.expected_by = lsort(r.expected_by, "id", "asc");
 
@@ -189,7 +194,7 @@ var type = function(id, order, dir) {
         }
       }
       type.inherited_properties = lsort(type.inherited_properties, "id", "asc");
-      
+
       var q = [{
         "id": null,
         "name": null,
@@ -209,10 +214,10 @@ var property = function(id) {
   if (id === '/' || id.charAt(0) !== '/') {
     throw "invalid ID";
   }
-  
+
   var q = mf.require("property-query").query;
   q = acre.freebase.extend_query(q, { "id" : id });
-  
+
   return freebase.mqlread(q)
     .then(function(envelope) {
       return envelope.result;
@@ -228,7 +233,7 @@ function lsort(list, kind, dir) {
   var kinds = {
     "id" : {
       "key" : "id",
-      "sort" : "id",
+      "sort" : "id"
     },
     "types" : {
       "key" : "type_count",
@@ -251,10 +256,10 @@ function lsort(list, kind, dir) {
       "sort" : "text"
     }
   };
-  
+
   function compare(a, b, kind) {
     var k = kinds[kind];
-    
+
     switch (k.sort) {
       case "id" :
         var is_a_global = isGlobal(a[k.key]);
@@ -277,7 +282,7 @@ function lsort(list, kind, dir) {
         return a[k.key].localeCompare(b[k.key]);
     }
   };
-  
+
   return list.sort(function(a, b) {
     if (dir === "asc") {
       return compare(a, b, kind);
@@ -292,7 +297,7 @@ function dedupe(list) {
   list = list.filter(function(l) {
     if (ids[l.id]) return false;
     ids[l.id] = true;
-    return l;          
+    return l;
   });
   return list;
 };
@@ -302,7 +307,7 @@ function isTypeType(id) {
 }
 
 function isGlobal(id) {
-  return id.indexOf('/user/') == -1 && 
+  return id.indexOf('/user/') == -1 &&
          id.indexOf('/guid/') == -1 &&
          id.indexOf('/base/') == -1;
 }

@@ -3,10 +3,7 @@
   "type": "/type/domain",
   "name": null,
   "timestamp": null,
-  "creator": {
-    "id": null,
-    "name": null
-  },
+  "creator": null,
   "/type/namespace/keys": [{
     "optional": true,
     "value":    null,
@@ -28,11 +25,7 @@
     "name":          null,
     "timestamp":     null,
     "properties":    [],
-    "/common/topic/article": [{
-      "optional": true,
-      "id":       null,
-      "limit":    1
-    }],
+    "/common/topic/article": [],
     "/type/reflect/any_reverse": {
       "link": {
         "master_property": "/freebase/type_hints/hinted_type"
@@ -54,17 +47,7 @@
     "optional": true,
     "id":       null,
     "name":     null,
-    "member": [{
-      "optional": true,
-      "name":     null,
-      "sort":     "name",
-      "id":       null,
-      "type":     "/freebase/user_profile"
-    }]
+    "member": []
   }],
-  "/common/topic/article": [{
-    "optional": true,
-    "id":       null,
-    "limit":    1
-  }]
+  "/common/topic/article": []
 }

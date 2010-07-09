@@ -42,7 +42,7 @@
           <li class="section-tab"><a href="#user-search">Users</a></li>
         </ul>
         <div class="search-box" id="domain-search">
-          <form id="domain-search-form" method="get" action="domain">
+          <form id="domain-search-form" method="get" action="${h.url_for('schema', 'domain')}">
             <fieldset>
               <input type="text" name="id" class="text-input" id="domain-search-input" id="domain-search-input" placeholder="Start typing for suggested domains..." />
             </fieldset>
@@ -51,7 +51,7 @@
           <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" />All Projects</label>
         </div>
         <div class="search-box" id="type-search">
-          <form id="type-search-form" method="get" action="type">
+          <form id="type-search-form" method="get" action="${h.url_for('schema', 'type')}">
             <fieldset>
               <input type="text" name="id" class="text-input" id="type-search-input" placeholder="Start typing for suggested types..." />
             </fieldset>
@@ -60,7 +60,7 @@
           <label><input type="radio" name="type-search-toggle" class="search-toggle" id="type-search-toggle-all" />All Projects</label>
         </div>
         <div class="search-box" id="property-search">
-          <form id="property-search-form" method="get" action="property">
+          <form id="property-search-form" method="get" action="${h.url_for('schema', 'property')}">
             <fieldset>
               <input type="text" name="id" class="text-input" id="property-search-input" placeholder="Start typing for suggested properties..." />
             </fieldset>

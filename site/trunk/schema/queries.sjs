@@ -162,8 +162,8 @@ var type = function(id, order, dir) {
   var q = mf.require("type-query").query;
   q = acre.freebase.extend_query(q, { "id" : id });
 
-  return freebase.mqlread(q).
-    then(function(envelope) {
+  return freebase.mqlread(q)
+    .then(function(envelope) {
       return envelope.result;
     })
     .then(add_description)
@@ -186,14 +186,7 @@ var type = function(id, order, dir) {
 
       type.properties = lsort(r.properties, "id", "asc");
       type.expected_by = lsort(r.expected_by, "id", "asc");
-
-      type.inherited_properties = [];
-      for each (var t in r['/freebase/type_hints/included_types']) {
-        for each (var p in t.properties) {
-          type.inherited_properties.push(p);
-        }
-      }
-      type.inherited_properties = lsort(type.inherited_properties, "id", "asc");
+      type.included_types = r['/freebase/type_hints/included_types'];
 
       var q = [{
         "id": null,
@@ -202,7 +195,8 @@ var type = function(id, order, dir) {
         "*": null
       }];
       type.query_url = "http://www.freebase.com/app/queryeditor?autorun=true&q=" + encodeURIComponent(JSON.stringify(q));
-      return type;
+
+      return type;      
     },
     function(error) {
      return null;

@@ -63,10 +63,19 @@
         "id":       null,
         "name":     null
       },
+      "/freebase/property_hints/disambiguator": null,
+      "/freebase/property_hints/display_none": null,
+      "/freebase/documented_object/tip": null,    
       "key": [{
         "namespace": null,
         "value":     null
       }],
+      "unit": {
+          "id": null,
+          "name": null,
+          "/freebase/unit_profile/abbreviation": null,
+          "optional": true
+      },      
       "unique":   null,
       "optional": true
     }],
@@ -101,6 +110,15 @@
       "namespace": null,
       "value":     null
     }],
+    "unit": {
+        "id": null,
+        "name": null,
+        "/freebase/unit_profile/abbreviation": null,
+        "optional": true
+    },
+    "/freebase/property_hints/disambiguator": null,
+    "/freebase/property_hints/display_none": null, 
+    "/freebase/documented_object/tip": null,
     "unique":   null,
     "optional": true
   }],

@@ -4,12 +4,14 @@ $(document).ready(function(){
     var $schema_explorer_search_tabset = $("#schema-search > .section-tabset").tabs("#schema-search > .search-box");
     
     // Make table sortable
+/*
     $(".table").tablesorter({
         cssAsc: "column-header-asc",
         cssDesc: "column-header-desc",
         cssHeader: "column-header",
         sortList: [[0,0]]
     });
+*/
 
 
     var MQL_FILTERS = {
@@ -32,8 +34,8 @@ $(document).ready(function(){
 
     $domain_input.suggest(domain_suggest_options)
     .bind("fb-select", function(e, data){
-        $domain_form.find("input[type=text]").val(data.id)
-        $domain_form.submit();
+        var url = $domain_form.attr("action");       
+        window.location.href = url + data.id;
     })
     .focus(function() {
         this.select();
@@ -53,8 +55,8 @@ $(document).ready(function(){
     
     $type_input.suggest(type_suggest_options)
    .bind("fb-select", function(e, data){
-        $type_form.find("input[type=text]").val(data.id);
-        $type_form.submit();
+        var url = $type_form.attr("action");
+        window.location.href = url + data.id;
     })
     .focus(function() {
         this.select();
@@ -74,8 +76,8 @@ $(document).ready(function(){
     
     $property_input.suggest(property_suggest_options)
    .bind("fb-select", function(e, data){
-        $property_form.find("input[type=text]").val(data.id);
-        $property_form.submit();
+        var url = $property_form.attr("action");
+        window.location.href = url + data.id;
     })
     .focus(function() {
         this.select();

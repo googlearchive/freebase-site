@@ -45,31 +45,37 @@
       <p acre:if="c.type.default_property != null">Default property: ${c.type.default_property}</p>
     
       <acre:block if="c.type.properties.length > 0">
-        <div class="table_box">
-          <h2>Properties</h2>
-          <table>
-            <tr>
-              <th>property name</th>
-              <th>property id ▲</th>
-              <th>expected type</th>
-              <th class="flag">is master?</th>
-              <th class="flag">is unique?</th>
-            </tr>
-            <tr acre:for="i,prop in c.type.properties" class="${(i % 2 == 0) ? 'odd' : 'even'} ${queries.isGlobal(prop.id) ? 'global' : 'local'}">
-              <td>$prop.name</td>
-              <td><a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.id</a></td>
-              <td>
-                <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">$prop.expected_type.id</a>
-              </td>
-              <td class="flag">
-                <span acre:if="prop.master_property == null">&#10003;</span>
-                <span acre:else="">&nbsp;</span>
-              </td>
-              <td class="flag">
-                <span acre:if="prop.unique">&#10003;</span>
-                <span acre:else="">&nbsp;</span>
-              </td>
-            </tr>
+        <div class="section">
+          <h2 class="table-title">Properties</h2>
+          <table class="table" cellspacing="0">
+            <thead>
+              <tr>
+                <th class="column-header">Property</th>
+                <th class="column-header">ID</th>
+                <th class="column-header">Expected Type</th>
+                <th class="column-header description">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr acre:for="prop in c.type.properties">
+                <th scope="row" class="row-header odd">$prop.name</th>
+                <td class="even"><a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.id</a></td>
+                <td class="odd">
+                  <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">
+                    $prop.expected_type.id
+                  </a>
+                  <span acre:if="prop.unit">$prop.unit.name</span>
+                </td>
+                <td class="even description">
+                  <p acre:if="prop['/freebase/documented_object/tip']">${prop['/freebase/documented_object/tip']}</p>
+                  <span acre:if="prop.master_property === null">master</span>
+                  <span acre:else="">reverse</span>
+                  <span acre:if="prop.unique">unique</span>
+                  <span acre:if="prop['/freebase/property_hints/disambiguator']">disambiguating</span>
+                  <span acre:if="prop['/freebase/property_hints/display_none']">hidden</span>
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </acre:block>
@@ -77,32 +83,39 @@
         <h2>Type has no properties</h2>
       </acre:block>
     
-      <acre:block if="c.type.inherited_properties.length > 0">
-        <div class="table_box">
-          <h2>Inherited Properties</h2>
-          <table>
-            <tr>
-              <th>property name</th>
-              <th>property id ▲</th>
-              <th>expected type</th>
-              <th class="flag">is master?</th>
-              <th class="flag">is unique?</th>
-            </tr>
-            <tr acre:for="i,prop in c.type.inherited_properties" class="${(i % 2 == 0) ? 'odd' : 'even'} ${queries.isGlobal(prop.id) ? 'global' : 'local'}">
-              <td>$prop.name</td>
-              <td><a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.id</a></td>
-              <td>
-                <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">$prop.expected_type.id</a>
-              </td>
-              <td class="flag">
-                <span acre:if="prop.master_property == null">&#10003;</span>
-                <span acre:else="">&nbsp;</span>
-              </td>
-              <td class="flag">
-                <span acre:if="prop.unique">&#10003;</span>
-                <span acre:else="">&nbsp;</span>
-              </td>
-            </tr>
+      <acre:script>
+      </acre:script>
+      <acre:block if="c.type.included_types">
+        <div class="section">
+          <h2 class="table-title">Inherited Properties</h2>
+          <table class="table" cellspacing="0">
+            <tbody acre:for="t in c.type.included_types">
+              <tr>
+                <th class="tbody-header" colspan="4">$t.name <span class="key">$t.id</span></th>
+              </tr>
+              <tr>
+                <th class="column-header">Property</th>
+                <th class="column-header">ID</th>
+                <th class="column-header">Expected Type</th>
+                <th class="column-header description">Description</th>
+              </tr>
+              <tr acre:for="prop in t.properties" class="included-property">
+                <th scope="row" class="odd row-header">$prop.name</th>
+                <td class="even"><a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.id</a></td>
+                <td class="odd">
+                  <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">$prop.expected_type.id</a>
+                  <span acre:if="prop.unit">$prop.unit.name</span>
+                </td>
+                <td class="even description">
+                  <p acre:if="prop['/freebase/documented_object/tip']">${prop['/freebase/documented_object/tip']}</p>                 
+                  <span acre:if="prop.master_property === null">master</span>
+                  <span acre:else="">reverse</span>
+                  <span acre:if="prop.unique">,unique</span>
+                  <span acre:if="prop['/freebase/property_hints/disambiguator']">,disambiguating</span>
+                  <span acre:if="prop['/freebase/property_hints/display_none']">,hidden</span>
+                </td>
+              </tr>            
+            </tbody>
           </table>
         </div>
       </acre:block>

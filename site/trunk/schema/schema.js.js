@@ -13,6 +13,21 @@ $(document).ready(function(){
     });
 */
 
+    var $included_types = $("#included-types-table");
+    var $inherited_properties = $included_types.find("tbody").hide();
+    
+    $(".tbody-header", $included_types).click(function(){
+    
+        var $tbody = $("." + $(this).attr("data-target"));
+        
+        if ($tbody.is(":hidden")) {
+            $tbody.slideDown();
+        }
+        else {
+            $tbody.slideUp();
+        }
+    });
+
 
     var MQL_FILTERS = {
         domain : [{ "key": [{"namespace" : "/" }] }],

@@ -187,7 +187,47 @@ var type = function(id, order, dir) {
       type.properties = lsort(r.properties, "id", "asc");
       type.expected_by = lsort(r.expected_by, "id", "asc");
       type.included_types = r['/freebase/type_hints/included_types'];
-
+      
+      
+      /*
+      
+      Incoming Properties are grouped in the following buckets on the Type page:
+      
+        - Same Domain (Properties within the same domain as the current Type)
+        - Commons (Properties in the Commons outside of the current Type's domain)
+        - Bases (Properties outside of the Commons that don't match the current Type's domain)
+      
+      */
+      
+      type.incoming_properties = {
+        "same": {
+          "name": type.domain.name,
+          "properties": []
+        },
+        "commons": {
+          "name": "Commons",
+          "properties": []        
+        },
+        "bases": {
+          "name": "Bases",
+          "properties": []        
+        }
+      }
+      
+      r.expected_by.forEach(function(p){
+         if(p.schema.domain.id === type.domain.id) {
+            type.incoming_properties.same.properties.push(p);
+         }         
+         else if (p.schema.domain.id.split("/").length === 2) {
+            type.incoming_properties.commons.properties.push(p);       
+         }         
+         else {
+            type.incoming_properties.bases.properties.push(p);
+         }
+      });
+      
+      console.log(type.incoming_properties);
+      
       var q = [{
         "id": null,
         "name": null,

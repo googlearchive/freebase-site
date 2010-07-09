@@ -21,6 +21,12 @@ var MF = {
       ["jquerytools", "tabs.js"],
       ["domain", "jquery.tablesorter.js"],
       "schema.js"
+    ],
+    "schema-landing.mf.js": [
+      ["template", "MANIFEST", "/freebase.mf.js"],
+      ["jquerytools", "tabs.js"],
+      ["domain", "jquery.tablesorter.js"],
+      "schema-landing.js"
     ]
   }
 };

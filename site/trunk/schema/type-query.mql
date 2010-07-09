@@ -132,6 +132,10 @@
         "lang":     "/lang/en",
         "optional": true
       },
+      "domain": {
+        "id": null,
+        "name": null
+      },
       "key": [{
         "namespace": null,
         "value":     null
@@ -139,20 +143,6 @@
       "/freebase/type_hints/mediator": null,
       "/freebase/type_profile/instance_count": {
         "value":    null,
-        "optional": true
-      }
-    },
-    "master_property": {
-      "optional": true,
-      "schema": {
-        "id":       null,
-        "optional": true
-      }
-    },
-    "reverse_property": {
-      "optional": true,
-      "schema": {
-        "id":       null,
         "optional": true
       }
     },

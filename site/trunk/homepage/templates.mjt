@@ -152,8 +152,9 @@
   
   ${activity_section(domain)}
   <div class="domain-section activity-coverage">
-    <div class="activity-coverage-number">
-      7%
+    <div acre:if="domain.activity && domain.activity.weeks"
+         class="activity-coverage-number">
+      ${h.compute_coverage_percentage(domain)}%
     </div>
   </div>
   <div class="domain-contributor domain-section">
@@ -174,8 +175,9 @@
     <h3 class="sidebar-header">Help Build Freebase!</h3>
     Enter your email address and we'll let you know when you can sign up:
     <form>
-      <input name="email" type="email" placeholder="Your email address..." class="input-standard"/><!-- XXX: link to Michael's app  XXX: placeholder support in freebase.js.js -->
-      <input type="submit" value="Submit" class="button-featured"/> <!-- button styling? -->
+      <input name="email" type="email" placeholder="Your email address..." class="input-standard"/>
+      <!-- XXX: link to Michael's app  XXX: placeholder support in freebase.js.js -->
+      <input type="submit" value="Submit" class="button-featured"/>
     </form>
     <a href="${h.freebase_url('/signin/login')}">Existing members, please sign in &raquo;
   </div>

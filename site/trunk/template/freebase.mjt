@@ -120,6 +120,7 @@
         &#169;2010&nbsp;
         <img src="${mf.img_src('metaweb-logo.png')}" alt="Metaweb"  width="71" height="12" />
       </a>
+      <a href="${acre.response.headers['x-acre-source-url']}">View Source</a>
     </div>
     <ul id="nav-footer" class="clear">
       <li class="nav-footer-item">

@@ -1,6 +1,9 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
   var h = mf.require("core", "helpers");
+  if (h.is_client()) {
+    acre.response.set_cache_policy('fast');  
+ }
 </acre:script>
 
 <acre:block def="page(exports)">

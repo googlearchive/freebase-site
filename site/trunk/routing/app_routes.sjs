@@ -60,6 +60,10 @@ var routes = [
     to: "queries"
   },
   {
+    from: "/docs",
+    to: "devdocs"
+  },
+  {
     from: "/policies",
     to: "policies"
   }
@@ -88,11 +92,11 @@ function get_route(app) {
     return r[0];
   }
   return null;
-};
+}
 
 function get_routes(app) {
   return _routes_map[app];
-};
+}
 
 if (acre.current_script === acre.request.script) {
   acre.require("//release.service.libs.freebase.dev/lib").GetService(function() {

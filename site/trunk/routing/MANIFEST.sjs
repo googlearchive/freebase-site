@@ -12,6 +12,7 @@ var MF = {
     "error" : "//error.site.freebase.dev",
     "homepage" : "//homepage.site.freebase.dev",
     "apps" : "//apps.site.freebase.dev",
+    "devdocs" : "//devdocs.site.freebase.dev",
     "queries": "//queries.site.freebase.dev",
     "policies" : "//policies.site.freebase.dev"
   }

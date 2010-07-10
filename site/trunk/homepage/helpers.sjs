@@ -3,9 +3,10 @@ var exports = {
 };
 
 var mf = acre.require("MANIFEST").MF;
+var h = mf.require("core", "helpers");
 
 function format_stat(number) {
-  return ""+number;
+  return h.commafy(number);
 }
 
 function compute_coverage_percentage(domain) {
@@ -29,4 +30,4 @@ function uppercase_alphabet() {
           'Y', 'Z'];
 }
 
-mf.require("core", "helpers").extend_helpers(this);
+h.extend_helpers(this);

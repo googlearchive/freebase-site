@@ -8,13 +8,13 @@ var MF = {
   },
   "stylesheet": {
     "docs_style.mf.css": [
-      ["template", "MANIFEST", "/freebase.mf.css"],
+      ["template", "freebase.mf.css"],
       "docs_style.css"
     ]
   },
   "javascript": {
     "index.mf.js": [
-      ["template", "MANIFEST", "/freebase.mf.js"]
+      ["template", "freebase.mf.js"]
     ]
   },
 

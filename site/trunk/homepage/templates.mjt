@@ -1,16 +1,6 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
   var h = mf.require("helpers");
-  var letters = ['a', 'b', 'c', 'd', 'e', 'f', 
-                 'g', 'h', 'i', 'j', 'k', 'l', 
-                 'm', 'n', 'o', 'p', 'q', 'r', 
-                 's', 't', 'u', 'v', 'w', 'x', 
-                 'y', 'z'];
-                 
-   // "Wed Jun 09 2010" --> "Wed Jun 09"     // XXX: this belongs elsewhere
-   function formatDate(d) {
-     return d.toDateString().replace(/\s20\d\d/,'');
-   }
 </acre:script>
 
 <acre:block def="categories_list(categories)">
@@ -76,6 +66,20 @@
         <a href="#pane-all">
           <span>All</span>
         </a>
+        <!--->
+        <ul>
+          <acre:block acre:for="letter in h.uppercase_alphabet()">
+            <li class="toc-letter">
+              <a acre:if="letter in grouped_domains" href="">
+                ${letter}
+              </a>
+              <span acre:else="">
+                ${letter}
+              </span>
+            </li>
+          </acre:block>
+        </ul>
+        <!-->
       </li>
     </ul>
     
@@ -87,28 +91,7 @@
           </acre:block>
         </div>
       </acre:block>
-      <div class="domain-explorer-pane" id="pane-all">
-        <div class="domains-toc">
-          <acre:block for="letter in letters">
-            <span acre:if="letter in grouped_domains" class="toc-letter">
-              <a href="#projects-group-${letter}">${letter}</a>
-            </span>
-            <span acre:else="" class="toc-letter">${letter}</span>
-          </acre:block>
-        </div>
-        
-        <acre:block for="letter, domains in grouped_domains">
-          <a name="projects-group-${letter}" class="letter">${letter}</a>
-          <ul>
-            <li acre:for="domain in domains">
-              <a href="${h.freebase_url('/view'+domain.id)}">
-                ${domain.name}
-              </a>
-            </li>
-          </ul>
-        </acre:block>
-        
-      </div>
+      <div class="domain-explorer-pane" id="pane-all"></div>
     </div>
     <span id="pointer"><span id="pointer-text"></span></span>
   </div>
@@ -127,6 +110,10 @@
     <div acre:if="domain.activity"
          class="activity-stats">
       <div class="activity-chart-assertions" data-activity="${JSON.stringify(domain.activity.weeks)}">
+      </div>
+      <div class="activity-stats-lastweek">
+        <strong>${h.format_stat(domain.activity.weeks[domain.activity.weeks.length-1].e)}</strong>
+        <div class="activity-stats-lastweek-label">last week</div>
       </div>
       <div class="activity-stats-block activity-stats-facts">
         <div class="activity-stats-number">
@@ -228,6 +215,6 @@
     <h2>Get Gridworks!</h2>
     <div>Gridworks is an open source power tool to clean, understand, reconcile and augment data.</div>
     <div><a href="http://code.google.com/p/freebase-gridworks/wiki/Downloads">Download</a></div>
-    <div><a href="http://code.google.com/p/freebase-gridworks/">Learn More</a></div>        
+    <div><a href="http://code.google.com/p/freebase-gridworks/">Learn More</a></div>
   </div>
 </acre:block>

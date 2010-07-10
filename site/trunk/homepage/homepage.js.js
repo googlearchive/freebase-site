@@ -34,8 +34,9 @@ $.tools.tabs.addEffect("load_pane", function(i, done) {
     // load it with a page specified in the tab's href attribute
     $tab.parent().addClass("processing");
     $pane.load($tab.attr("href"), function() {
-      fb.homepage.init_activity_charts($pane);
+      
       switch_pane();
+      fb.homepage.init_activity_charts($pane);
     });
   } else {
     switch_pane();
@@ -46,15 +47,47 @@ fb.homepage.init_activity_charts = function(scope) {
   $(".activity-chart-assertions", scope).each(function() {
     var $chart = $(this);
     var weeks = JSON.parse($chart.attr("data-activity"));
-    var r = Raphael($chart[0], $chart.width(), $chart.height());
     
     var x = [], edits = [];
     for (var i = 0; i < weeks.length; i++) {
-      x[i] = i * 10;
-      edits.push(parseInt(weeks[i].e, 10));
+      var edit = parseInt(weeks[i].e, 10);
+      edits.push([i, edit]);
     }
     
-    r.g.linechart(-2, 0, 150, 40, x, [edits], {colors: ["#c60"]});
+    var options = {
+      grid: {
+        show: true,
+        color: "#fff",
+        borderWidth: 0,
+        hoverable: true,
+        autoHighlight: true,
+        mouseActiveRadius: 3
+      },
+      legend: {show: false},
+      xaxis: {
+        tickFormatter: function() {return "";},
+        ticks: []
+      },
+      yaxis: {
+        tickFormatter: function() {return "";},
+        ticks: []
+      }
+    };
+    var series = {
+      data: edits,
+      lines: {
+        show: true
+      },
+      points: {
+        show: true,
+        radius: 2,
+        fill: true,
+        fillColor: "#f71"
+      },
+      shadowSize: 0,
+      color: "#f71"
+    };
+    $.plot($chart, [series], options);
   });
 };
 

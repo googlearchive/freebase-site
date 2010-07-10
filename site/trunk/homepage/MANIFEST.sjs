@@ -5,6 +5,7 @@ var MF = {
       "template": "//1.template.site.freebase.dev",
       "promise": "//1.promise.site.freebase.dev",
       "raphael": "//1.raphael.site.freebase.dev",
+      "flot": "//flot.site.freebase.dev",
 
       "libraries": "//2.libraries.apps.freebase.dev"
   },
@@ -17,10 +18,7 @@ var MF = {
   "javascript": {
     "index.mf.js": [
       ["template", "freebase.mf.js"],
-      ["raphael", "raphael.js"],
-      ["raphael", "g.raphael.js"],
-      ["raphael", "g.line.js"],
-      ["raphael", "g.bar.js"],
+      ["flot", "flot.core.mf.js"],
       "jquery.tools.tabs.min.js",
       "homepage.js"
     ]

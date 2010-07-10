@@ -262,14 +262,6 @@ function base_manifest(MF, scope, undefined) {
         if (!(ss instanceof Array)) {
           ss = [ss];
         }
-        /**
-        if (ss.length === 3 && ss[1] === "MANIFEST") {
-          // get external css manifest content within the context of ext_mf
-          var ext_mf = MF.require(ss[0], "MANIFEST").MF;
-          var f = ss[2].split("/", 2).pop();  // path may include "/"
-          buf = buf.concat(ext_mf.css(f, scope, true, use_acre_url));
-        }
-         **/
         if (ss.length === 2) {
           buf.push("\n/** " + ss[0] + ", " + ss[1] + "**/\n");
           var ext_md = MF.get_metadata(ss[0]);

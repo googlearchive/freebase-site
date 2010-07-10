@@ -161,6 +161,8 @@ var type = function(id, order, dir) {
   }
   var q = mf.require("type-query").query;
   q = acre.freebase.extend_query(q, { "id" : id });
+  
+  q.creator = qh.user_clause();
 
   return freebase.mqlread(q)
     .then(function(envelope) {
@@ -174,26 +176,25 @@ var type = function(id, order, dir) {
         id : r.id,
         name : r.name,
         domain : r.domain,
-        mediator :  r['/freebase/type_hints/mediator'],
-        published : r['/freebase/type_profile/published'],
+        creator : r.creator,
+        timestamp : r.timestamp,
+        cvt :  r['/freebase/type_hints/mediator'],
+        enumeration: r['/freebase/type_hints/enumeration'],
         default_property : r.default_property,
         included_types : r["/freebase/type_hints/included_types"],
-        key : r.key
+        key : r.key,
+        description : r.description,
+        properties : r.properties,
+        included_types : r['/freebase/type_hints/included_types']
       };
-
-      type.description = r.description;
+  
       type.instances = r['/freebase/type_profile/instance_count'] ? h.commafy(r['/freebase/type_profile/instance_count'].value) : null;
 
-      type.properties = lsort(r.properties, "id", "asc");
-      type.expected_by = lsort(r.expected_by, "id", "asc");
-      type.included_types = r['/freebase/type_hints/included_types'];
-      
-      
       /*
       
       Incoming Properties are grouped in the following buckets on the Type page:
       
-        - Same Domain (Properties within the same domain as the current Type)
+        - Same (Properties within the same domain as the current Type)
         - Commons (Properties in the Commons outside of the current Type's domain)
         - Bases (Properties outside of the Commons that don't match the current Type's domain)
       
@@ -212,7 +213,7 @@ var type = function(id, order, dir) {
           "name": "Bases",
           "properties": []        
         }
-      }
+      };
       
       r.expected_by.forEach(function(p){
          if(p.schema.domain.id === type.domain.id) {
@@ -224,10 +225,30 @@ var type = function(id, order, dir) {
          else {
             type.incoming_properties.bases.properties.push(p);
          }
-      });
+      });      
+
+      /* Attach siblings to type object */
+
+      var sibling_query = {
+        "id":   null,
+        "type": "/type/domain",
+        "types": [{
+          "id": null,
+          "name": null
+        }]
+      };
       
-      console.log(type.incoming_properties);
-      
+      var query = acre.freebase.extend_query(sibling_query, { "id" : type.domain.id });
+      var sibling_p = freebase.mqlread(query)
+        .then(function(envelope) {
+          return envelope.result;
+        })
+        .then(function(s){
+            if (!s) return null;
+            
+            type.siblings  = s.types;
+        });
+
       var q = [{
         "id": null,
         "name": null,
@@ -236,7 +257,10 @@ var type = function(id, order, dir) {
       }];
       type.query_url = "http://www.freebase.com/app/queryeditor?autorun=true&q=" + encodeURIComponent(JSON.stringify(q));
 
-      return type;      
+      
+      return sibling_p.then(function(){
+        return type;
+      })
     },
     function(error) {
      return null;

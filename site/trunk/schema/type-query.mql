@@ -1,11 +1,11 @@
 {
-  "type":          "/type/type",
-  "id":            "/architecture/structure",
-  "/freebase/type_hints/mediator": null,
-  "/freebase/type_profile/published": {
-  },
+  "id": "/architecture/structure",
+  "type": "/type/type",
+  "timestamp": null,
   "default_property": null,
   "name": null,
+  "/freebase/type_hints/mediator": null,
+  "/freebase/type_hints/enumeration": null,
   "domain": {
     "id":       null,
     "name": null,
@@ -100,9 +100,22 @@
       }
     },
     "master_property": {
+      "id": null,
+      "name": null,
       "optional": true,
       "schema": {
         "id":       null,
+        "name": null,
+        "optional": true
+      }
+    },
+    "reverse_property": {
+      "id": null,
+      "name": null,
+      "optional": true,
+      "schema": {
+        "id":       null,
+        "name": null,
         "optional": true
       }
     },

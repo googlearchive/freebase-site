@@ -6,14 +6,14 @@ var MF = {
   },
   "stylesheet": {
     "sample_page.mf.css": [
-      ["template", "MANIFEST", "/freebase.mf.css"],
+      ["template", "freebase.mf.css"],
       "sample_page.css",
       "sample_page.less"
     ]
   },
   "javascript": {
     "sample_page.mf.js": [
-      ["template", "MANIFEST", "/freebase.mf.js"],
+      ["template", "freebase.mf.js"],
       "sample_page.js"
     ]
   }

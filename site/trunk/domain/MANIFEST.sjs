@@ -6,13 +6,13 @@ var MF = {
   },
   "stylesheet": {
     "domain.mf.css": [
-      ["template", "MANIFEST", "/freebase.mf.css"],
+      ["template", "freebase.mf.css"],
       "project.less"
     ]
   },
   "javascript": {
     "domain.mf.js": [
-      ["template", "MANIFEST", "/freebase.mf.js"],
+      ["template", "freebase.mf.js"],
       "jquery.lazyload.js", "jquery.masonry.js", "jquery.tablesorter.js",
       "project.js"
     ]

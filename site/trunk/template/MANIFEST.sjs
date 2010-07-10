@@ -15,16 +15,16 @@ var MF = {
   "javascript": {
     "freebase.mf.js": [
       "jquery.cookie.js",
-      ["jqueryui", "MANIFEST", "/jquery.ui.core.mf.js"],
-      "freebase.js"/**,
-      ["toolbox", "toolbox.js"]**/
+      ["jqueryui", "jquery.ui.core.mf.js"],
+      "freebase.js",
+      ["toolbox", "toolbox.js"]
     ]
   },
   "stylesheet": {
     "freebase.mf.css": [
       "freebase.less",
-      "components.less"/**,
-      ["toolbox", "toolbox.less"]**/
+      "components.less",
+      ["toolbox", "toolbox.less"]
     ]
   }
 };

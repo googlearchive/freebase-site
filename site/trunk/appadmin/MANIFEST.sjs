@@ -6,13 +6,13 @@ var MF = {
   },
   "stylesheet": {
     "appadmin.mf.css": [
-      ["template", "MANIFEST", "/freebase.mf.css"],
+      ["template", "freebase.mf.css"],
       "appadmin_core.css"
     ]
   },
   "javascript": {
     "appadmin.mf.js": [
-      ["template", "MANIFEST", "/freebase.mf.js"],
+      ["template", "freebase.mf.js"],
       "appadmin_core.js"
     ]
   }

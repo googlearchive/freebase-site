@@ -10,13 +10,13 @@ var MF = {
   },
   "stylesheet": {
     "index.mf.css": [
-      ["template", "MANIFEST", "/freebase.mf.css"],
+      ["template", "freebase.mf.css"],
       "homepage.less"
     ]
   },
   "javascript": {
     "index.mf.js": [
-      ["template", "MANIFEST", "/freebase.mf.js"],
+      ["template", "freebase.mf.js"],
       ["raphael", "raphael.js"],
       ["raphael", "g.raphael.js"],
       ["raphael", "g.line.js"],

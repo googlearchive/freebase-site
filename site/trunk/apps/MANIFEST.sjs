@@ -12,7 +12,7 @@ var MF = {
   },
   "stylesheet": {
     "apps.mf.css": [
-      ["template", "MANIFEST", "/freebase.mf.css"],
+      ["template", "freebase.mf.css"],
       ["template", "freebase.table.less"],
       ["schema", "schema.less"],
       "apps.less"
@@ -23,7 +23,7 @@ var MF = {
   },
   "javascript": {
     "apps.mf.js": [
-      ["template", "MANIFEST", "/freebase.mf.js"],
+      ["template", "freebase.mf.js"],
       ["jquerytools", "tabs.js"],
       ["domain", "jquery.tablesorter.js"],
       ["jquery", "jquery.form.js"],

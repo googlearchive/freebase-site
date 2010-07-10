@@ -5,13 +5,13 @@ var MF = {
   },
   "stylesheet": {
     "policies.mf.css": [
-      ["template", "MANIFEST", "/freebase.mf.css"],
+      ["template", "freebase.mf.css"],
       "css-policies.css"
     ]
   },
   "javascript": {
     "apps.mf.js": [
-      ["template", "MANIFEST", "/freebase.mf.js"],
+      ["template", "freebase.mf.js"],
       ["jquerytools", "tabs.js"],
       ["domain", "jquery.tablesorter.js"],
       ["jquery", "jquery.form.js"],

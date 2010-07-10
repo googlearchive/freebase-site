@@ -148,7 +148,7 @@ function base_manifest(MF, scope, undefined) {
      *     "my.mf.css": [
      *       "local.css",    // local css
      *       ["external_app_label", "external.less"],  // external css
-     *       ["external_app_label", "MANIFEST", "/external.mf.css"]  // external manifest css
+     *       ["external_app_label", "external.mf.css"]  // external manifest css
      *     ],
      *   ...
      *   }
@@ -173,7 +173,7 @@ function base_manifest(MF, scope, undefined) {
      *     "my.mf.js": [
      *       "local.js",    // local js
      *       ["external_app_label", "external.js"],  // external js
-     *       ["external_app_label", "MANIFEST", "/external.mf.js"]  // external manifest js
+     *       ["external_app_label", "external.mf.js"]  // external manifest js
      *     ],
      *   ...
      *   }
@@ -251,39 +251,106 @@ function base_manifest(MF, scope, undefined) {
      * Run the less css parser on all of the css afterwards
      */
     css: function(key, scope, buffer, use_acre_url) {
-      if (!MF.stylesheet[key]) {
+      var mf_ss = MF.stylesheet[key];
+      if (! mf_ss) {
         return MF.not_found(scope.acre.current_script.app.id + "/MANIFEST/" + key);
       }
       scope.acre.response.set_header("content-type", "text/css");
-
       var buf = [];
-      MF.stylesheet[key].forEach(function(ss) {
+      for (var i=0,l=mf_ss.length; i<l; i++) {
+        var ss = mf_ss[i];
         if (!(ss instanceof Array)) {
           ss = [ss];
         }
-        if (ss.length > 1) {
+        /**
+        if (ss.length === 3 && ss[1] === "MANIFEST") {
+          // get external css manifest content within the context of ext_mf
           var ext_mf = MF.require(ss[0], "MANIFEST").MF;
-          if (ss.length === 2) {
-            // run css_preprocessor within the context of ext_mf
-            buf.push(ext_mf.css_preprocessor(ext_mf.require(ss[1]).body, use_acre_url));
+          var f = ss[2].split("/", 2).pop();  // path may include "/"
+          buf = buf.concat(ext_mf.css(f, scope, true, use_acre_url));
+        }
+         **/
+        if (ss.length === 2) {
+          buf.push("\n/** " + ss[0] + ", " + ss[1] + "**/\n");
+          var ext_md = MF.get_metadata(ss[0]);
+          if ("MANIFEST" in ext_md.files) {
+            // Go through external app's MF
+            var ext_mf = MF.require(ss[0], "MANIFEST").MF;
+            if (ss[1] in ext_mf.stylesheet) {
+              // Go through external app's MF.css() if ss[1] is in external app's MF.stylesheet
+              buf = buf.concat(ext_mf.css(ss[1], scope, true, use_acre_url));
+            }
+            else {
+              // Otherwise, use external app's MF.css_preprocessor on the contents
+              // of the external app's file
+              try {
+                buf.push(ext_mf.css_preprocessor(ext_mf.require(ss[1]).body, use_acre_url));
+              }
+              catch (ex) {
+                scope.acre.write("\n/** " + ex.toString() + " **/\n");
+                acre.exit();
+              }
+            }
           }
-          else if (ss.length === 3 && ss[1] === "MANIFEST") {
-            // get external css manifest content within the context of ext_mf
-            var f = ss[2].split("/", 2).pop();
-            buf = buf.concat(ext_mf.css(f, scope, true, use_acre_url));
+          else {
+            // If no external app MANIFEST then just include the contents
+            // of the external file
+            try {
+              buf.push(MF.require(ss[0], ss[1]).body);
+            }
+            catch (ex) {
+              scope.acre.write("\n/** " + ex.toString() + " **/\n");
+              acre.exit();
+            }
           }
         }
-        else {
-          try {
-            // css preprocessor to replace url(...) declarations
-            buf.push(MF.css_preprocessor(MF.require.apply(null, ss).body, use_acre_url));
+        else if (ss.length === 1) {
+          buf.push("\n/** " + ss[0] + "**/\n");
+          if (ss[0] in MF.stylesheet) {
+            // you can chain MF.stylesheet declarations
+            // WARNING! DOES NOT CHECK FOR CIRCULAR DEPENDENCIES!!!
+            buf = buf.concat(MF.css(ss[0], scope, true, use_acre_url));
           }
-          catch (ex) {
-            scope.acre.write("\n/** " + ex.toString() + " **/\n");
-            acre.exit();
+          else {
+            try {
+              // css preprocessor to replace url(...) declarations
+              buf.push(MF.css_preprocessor(MF.require(ss[0]).body, use_acre_url));
+            }
+            catch (ex) {
+              scope.acre.write("\n/** " + ex.toString() + " **/\n");
+              acre.exit();
+            }
           }
         }
-      });
+      }
+
+      // MF.stylesheet[key].forEach(function(ss) {
+      //   if (!(ss instanceof Array)) {
+      //     ss = [ss];
+      //   }
+      //   if (ss.length > 1) {
+      //     var ext_mf = MF.require(ss[0], "MANIFEST").MF;
+      //     if (ss.length === 2) {
+      //       // run css_preprocessor within the context of ext_mf
+      //       buf.push(ext_mf.css_preprocessor(ext_mf.require(ss[1]).body, use_acre_url));
+      //     }
+      //     else if (ss.length === 3 && ss[1] === "MANIFEST") {
+      //       // get external css manifest content within the context of ext_mf
+      //       var f = ss[2].split("/", 2).pop();
+      //       buf = buf.concat(ext_mf.css(f, scope, true, use_acre_url));
+      //     }
+      //   }
+      //   else {
+      //     try {
+      //       // css preprocessor to replace url(...) declarations
+      //       buf.push(MF.css_preprocessor(MF.require.apply(null, ss).body, use_acre_url));
+      //     }
+      //     catch (ex) {
+      //       scope.acre.write("\n/** " + ex.toString() + " **/\n");
+      //       acre.exit();
+      //     }
+      //   }
+      // });
 
       if (buffer) {
         return buf;
@@ -346,32 +413,76 @@ function base_manifest(MF, scope, undefined) {
      * Serve (acre.write) all js declared in MF.javascript[key].
      */
     js: function(key, scope) {
-      if (!MF.javascript[key]) {
+      var mf_script = MF.javascript[key];
+      if (!mf_script) {
         return MF.not_found(scope.acre.current_script.app.id + "/MANIFEST/" + key);
       }
       scope.acre.response.set_header("content-type", "text/javascript");
-      MF.javascript[key].forEach(function(script) {
+      for (var i=0,l=mf_script.length; i<l; i++) {
+        var script = mf_script[i];
         if (!(script instanceof Array)) {
           script = [script];
         }
         if (script.length === 2) {
-          scope.acre.write(MF.require(script[0], script[1]).body);
-        }
-        else if (script.length === 3 && script[1] === "MANIFEST") {
-          var ext_mf = MF.require(script[0], "MANIFEST").MF;
-          var f = script[2].split("/", 2).pop();
-          ext_mf.js(f, scope);
-        }
-        else {
+          scope.acre.write("\n/** " + script[0] + ", " + script[1] + " **/\n");
+          var ext_md = MF.get_metadata(script[0]);
+          if ("MANIFEST" in ext_md.files) {
+            // Go through external app's MF
+            // for further MF.js chaining if script[1] in external app's MF.javascript.
+            var ext_mf = MF.require(script[0], "MANIFEST").MF;
+            if (script[1] in ext_mf.javascript) {
+              ext_mf.js(script[1], scope);
+              continue;
+            }
+          }
+          // otherwise, just MF.require the contents of the external app's file
           try {
-            scope.acre.write(MF.require.apply(null, script).body);
+            scope.acre.write(MF.require(script[0], script[1]).body);
           }
           catch (ex) {
             scope.acre.write("\n/** " + ex.toString() + " **/\n");
-            return;
           }
         }
-      });
+        else if (script.length === 1) {
+          scope.acre.write("\n/** " + script[0] + " **/\n");
+          if (script[0] in MF.javascript) {
+            // you can chain MF.javascript declarations
+            // WARNING! DOES NOT CHECK FOR CIRCULAR DEPENDENCIES!!!
+            MF.js(script[0], scope);
+          }
+          else {
+            try {
+              scope.acre.write(MF.require(script[0]).body);
+            }
+            catch (ex) {
+              scope.acre.write("\n/** " + ex.toString() + " **/\n");
+            }
+          }
+        }
+      }
+
+    //   MF.javascript[key].forEach(function(script) {
+    //     if (!(script instanceof Array)) {
+    //       script = [script];
+    //     }
+    //     if (script.length === 2) {
+    //       scope.acre.write(MF.require(script[0], script[1]).body);
+    //     }
+    //     else if (script.length === 3 && script[1] === "MANIFEST") {
+    //       var ext_mf = MF.require(script[0], "MANIFEST").MF;
+    //       var f = script[2].split("/", 2).pop();
+    //       ext_mf.js(f, scope);
+    //     }
+    //     else {
+    //       try {
+    //         scope.acre.write(MF.require.apply(null, script).body);
+    //       }
+    //       catch (ex) {
+    //         scope.acre.write("\n/** " + ex.toString() + " **/\n");
+    //         return;
+    //       }
+    //     }
+    //   });
     },
 
     require: function(app, file) {
@@ -385,6 +496,16 @@ function base_manifest(MF, scope, undefined) {
       }
       var path = [MF.apps[args.app], args.file].join("/");
       return scope.acre.require(path);
+    },
+
+    get_metadata: function(app) {
+      if (!app) {
+        return scope.acre.get_metadata();
+      }
+      if (!MF.apps[app]) {
+        throw("An app label for \"" + app + "\" must be declared in the MANIFEST.");
+      }
+      return scope.acre.get_metadata(MF.apps[app]);
     },
 
     not_found: function(id) {

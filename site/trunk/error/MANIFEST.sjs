@@ -6,12 +6,12 @@ var MF = {
   },
   stylesheet: {
     "error.mf.css": [
-      ["template", "MANIFEST", "/freebase.mf.css"]
+      ["template", "freebase.mf.css"]
     ]
   },
   javascript: {
     "error.mf.js": [
-      ["template", "MANIFEST", "/freebase.mf.js"]
+      ["template", "freebase.mf.js"]
     ]
   }
 };

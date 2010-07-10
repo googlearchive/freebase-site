@@ -10,20 +10,20 @@ var MF = {
   },
   "stylesheet": {
     "schema.mf.css": [
-      ["template", "MANIFEST", "/freebase.mf.css",],
+      ["template", "freebase.mf.css"],
       ["template", "freebase.table.less"],
       "schema.less"
     ]
   },
   "javascript": {
     "schema.mf.js": [
-      ["template", "MANIFEST", "/freebase.mf.js"],
+      ["template", "freebase.mf.js"],
       ["jquerytools", "tabs.js"],
       ["domain", "jquery.tablesorter.js"],
       "schema.js"
     ],
     "schema-landing.mf.js": [
-      ["template", "MANIFEST", "/freebase.mf.js"],
+      ["template", "freebase.mf.js"],
       ["jquerytools", "tabs.js"],
       ["domain", "jquery.tablesorter.js"],
       "schema-landing.js"

@@ -141,17 +141,20 @@ $(document).ready(function(){
 
     // On click for radio buttons, we have to update mql_filter params and reinitialize suggest
     $(".search-toggle").click(function(e){
-    
-        // focus related input
-        var $text_input = $(this).parent().siblings("form").find(".text-input").focus();
-        
-        // We grab the radio buttons closest form
-        // and compare it's ID to decide which mql_filter
-        // we need to update
 
         $el = $(this);
-        $parent = $(this).closest("form");
-
+        $parent = $(this).parent().siblings("form");
+        
+    
+        // focus related input
+        var $text_input = $parent.find(".text-input").focus();
+        
+        /*
+            We grab the radio buttons closest form
+            and compare it's ID to decide which mql_filter
+            we need to update.
+        */
+        
         // Split ID to compare string
         el_id = $el.attr("id").split("-");
         

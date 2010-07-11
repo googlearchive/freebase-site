@@ -27,6 +27,25 @@ $(document).ready(function(){
         
     });
     
+    h_width = $(".breadcrumb-sibling-trigger").outerWidth();
+    h_offset = (h_width);
+    console.log(h_offset);
+    
+    $(".breadcrumb-sibling-trigger").tooltip({
+        events: {def: "click,mouseout"},
+        position: "bottom right",
+        offset: [-5, -h_offset],
+        effect: "fade",
+        delay: 300,
+        onBeforeShow: function(){
+            this.getTrigger().addClass("active");
+        },
+        onHide: function() {
+            this.getTrigger().removeClass("active");        
+        }
+        
+    });
+    
     $(".row-menu-trigger").css({"visibility":"hidden"});
     
     $(".hoverable").hover(function(){

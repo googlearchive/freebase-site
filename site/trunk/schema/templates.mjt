@@ -1,0 +1,54 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var h = mf.require("core", "helpers");
+</acre:script>
+
+<!-- Incoming Properties markup pattern -->
+<acre:block def="incoming_props_group(group, expanded)">
+
+  <acre:script>
+
+    if(group.name != 'Commons' && group.name != 'Bases') {
+      var class_name = "incoming-property-same";
+    }
+    else {
+      var class_name = "incoming-property-" + group.name.toLowerCase();
+    }
+
+    if (expanded === true) {
+      var state = 'expanded';
+    }
+    else {
+      var state = '';
+    }
+
+  </acre:script>
+
+  <thead>
+    <tr>
+      <th class="tbody-header $state" colspan="4" data-target="$class_name">
+        <span class="tbody-header-title">$group.name</span>
+      </th>
+    </tr>
+  </thead>
+  <tbody class="$class_name $state">
+    <tr>
+      <th class="column-header" scope="col">Originating Type</th>
+      <th class="column-header" scope="col">Property</th>              
+    </tr>
+    <tr acre:for="prop in group.properties">
+      <td class="odd">
+        <div>
+          <a href="${h.url_for('schema', 'type', null, prop.schema.id)}">$prop.schema.name.value</a>
+        </div>
+        <span class="key">$prop.schema.id</span>
+      </td>
+      <td class="even">
+        <div>
+          <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
+        </div>
+        <span class="key">$prop.id</span>
+      </td>
+    </tr>
+  </tbody>
+</acre:block>

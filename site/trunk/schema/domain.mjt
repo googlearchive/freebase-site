@@ -80,7 +80,7 @@
           <a href="http://wiki.freebase.com/wiki/Types" rel="help external" title="Read help article" class="help-link">What are Types?</a>
           Types
         </h2>
-        <table class="table" cellspacing="0">
+        <table class="table table-sortable" cellspacing="0">
           <thead>
             <tr>
               <th scope="col" class="column-header">Type</th>
@@ -106,7 +106,7 @@
             <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="Read help article" rel="help external" class="help-link">What are Compound Value Types?</a>
             Compound Value Types (CVTs)
           </h2>
-          <table class="table">
+          <table class="table table-sortable">
             <thead>
               <tr>
                 <th scope="col" class="column-header">Type</th>

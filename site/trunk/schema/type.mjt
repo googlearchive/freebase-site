@@ -2,6 +2,7 @@
   var mf = acre.require("MANIFEST").MF;
   var c = this.exports.c = {};
   var h = mf.require("core", "helpers");
+  var t = mf.require("templates");
   var image = mf.require("template", "imagecomponents");
   
   var id = acre.request.params.id || acre.request.path_info;
@@ -50,29 +51,36 @@
         </span>
         <span class="included-types" acre:if="c.type.included_types.length > 0">
           <strong>Extends:</strong>
-          <span acre:for="i, t in c.type.included_types" acre:trim="">
-            <acre:block if="i">, </acre:block><a href="$h.url_for('schema', 'type', t.id, )">$t.name</a>
-          </span>
+          <span acre:for="i, t in c.type.included_types" acre:trim=""><acre:block if="i">,</acre:block><a href="${h.url_for('schema', 'type', null, t.id )}">$t.name</a></span>
         </span>
       </div>
       <span class="creation-timestamp">
         ${image.user_image_small(c.type.creator)}
         Created by <a href="${acre.freebase.service_url}/view${c.type.creator.id}" title="View user profile">$c.type.creator.name</a> 
-        on <time class="published" datetime="${c.type.timestamp}">$c.type.timestamp</time>
+        on <time class="published" datetime="${c.type.timestamp}">$c.type.date</time>
       </span>    
       <div id="description" acre:if="c.type.description">
         <p>${acre.markup.bless(c.type.description)}</p>
       </div>
-      <div id="links">
-        <a href="$c.type.query_url" target="_new">Build a query for this type &raquo;</a>
-        <a acre:if="c.type.instances" href="${acre.freebase.site_host}/view${acre.request.params.id}">Browse the <big>${c.type.instances}</big> instances of this type &raquo;</a>
-        <a href="${acre.freebase.site_host}/type/schema${id}" class="spaced">Edit Schema &raquo;</a>
+      <div class="nav clear">
+        <ul class="nav-mode">
+          <li><a href="#" class="current">Table</a></li>
+          <li><a href="#">Diagram</a></li>
+        </ul>
+        <ul class="nav-utilities">
+          <li>
+            <a acre:if="c.type.instances" href="${h.freebase_url('/view'+id)}" class="icon-link"><span class="browse-icon">Browse <strong>${c.type.instances}</strong> Instances</span></a>
+          </li>
+          <li>
+            <a href="$c.type.query_url" class="icon-link"><span class="query-icon">Build Query</span></a>
+          </li>
+          <li>
+            <a href="${h.freebase_url('/type/schema'+id)}" class="icon-link"><span class="edit-icon">Edit Schema</span></a>
+          </li>
+        </ul>
       </div>
     </div>
-    
-    
-      <p acre:if="c.type.default_property != null">Default property: ${c.type.default_property}</p>
-    
+        
       <acre:block if="c.type.properties.length > 0">
         <div class="section">
           <h2 class="table-title">Properties</h2>
@@ -86,9 +94,17 @@
               </tr>
             </thead>
             <tbody>
-              <tr acre:for="prop in c.type.properties">
-                <th scope="row" class="row-header odd">$prop.name</th>
-                <td class="even"><a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.id</a></td>
+              <tr acre:for="prop in c.type.properties" class="hoverable">
+                <th scope="row" class="row-header odd">
+                  <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
+                  <a href="javascript:void(0);" class="row-menu-trigger">+</a>
+                  <ul class="row-menu tooltip">
+                    <li class="row-menu-item"><a href="${h.url_for('schema', 'property', null, prop.id)}">View property details</a></li>
+                    <li class="row-menu-item"><a href="${h.freebase_url('/view'+prop.expected_type.id)}">Browse instances</a></li>
+                    <li class="row-menu-item last"><a href="#">Build query</a></li>
+                  </div>
+                </th>
+                <td class="even">$prop.id</td>
                 <td class="odd">
                   <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">
                     $prop.expected_type.id
@@ -106,11 +122,13 @@
                 </td>
                 <td class="even description">
                   <p acre:if="prop['/freebase/documented_object/tip']">${prop['/freebase/documented_object/tip']}</p>
-                  <span acre:if="prop.master_property === null">master</span>
-                  <span acre:else="">reverse</span>
-                  <span acre:if="prop.unique">unique</span>
-                  <span acre:if="prop['/freebase/property_hints/disambiguator']">disambiguating</span>
-                  <span acre:if="prop['/freebase/property_hints/display_none']">hidden</span>
+                  <span class="property-meta">
+                    <span acre:if="prop.master_property === null">master</span>
+                    <span acre:else="">reverse</span>
+                    <span acre:if="prop.unique">unique</span>
+                    <span acre:if="prop['/freebase/property_hints/disambiguator']">disambiguating</span>
+                    <span acre:if="prop['/freebase/property_hints/display_none']">hidden</span>                  
+                  </span>
                 </td>
               </tr>
             </tbody>
@@ -133,7 +151,9 @@
               </acre:script>
               <thead>
                 <tr>
-                  <th class="tbody-header" colspan="4" data-target="$class_name">$t.name <span class="key">$t.id</span></th>
+                  <th class="tbody-header" colspan="4" data-target="$class_name">
+                    <span class="tbody-header-title">$t.name</span> <span class="key">$t.id</span>
+                  </th>
                 </tr>
               </thead>
               <tbody class="$class_name">
@@ -143,7 +163,7 @@
                   <th class="column-header">Expected Type</th>
                   <th class="column-header description">Description</th>
                 </tr>
-                <tr acre:for="prop in t.properties" class="included-property">
+                <tr acre:for="prop in t.properties" class="included-property hoverable">
                   <th scope="row" class="odd row-header">$prop.name</th>
                   <td class="even"><a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.id</a></td>
                   <td class="odd">
@@ -173,15 +193,15 @@
           <h2 class="table-title">
             Incoming Properties
           </h2>
-          <table class="table" cellspacing="0">
+          <table class="table" cellspacing="0" id="incoming-properties-table">
             <acre:block if="c.type.incoming_properties.same.properties.length > 0">
-              ${incoming_props_group(c.type.incoming_properties.same)}
+              ${t.incoming_props_group(c.type.incoming_properties.same, expanded=true)}
             </acre:block>
             <acre:block if="c.type.incoming_properties.commons.properties.length > 0">
-              ${incoming_props_group(c.type.incoming_properties.commons)}
+              ${t.incoming_props_group(c.type.incoming_properties.commons)}
             </acre:block>
             <acre:block if="c.type.incoming_properties.same.properties.length > 0">
-              ${incoming_props_group(c.type.incoming_properties.bases)}
+              ${t.incoming_props_group(c.type.incoming_properties.bases)}
             </acre:block>
           </table>
         </div>
@@ -201,33 +221,6 @@
     <div id="error">No type found for <em>$id</em></div>
   </acre:block>
   
-</acre:block>
-
-<acre:block def="incoming_props_group(group)">
-  <thead>
-    <tr>
-      <th class="tbody-header" colspan="4">$group.name</th>
-    </tr>
-  </thead>
-  <tr>
-    <th class="column-header" scope="col">Originating Type</th>
-    <th class="column-header" scope="col">Property</th>              
-  </tr>
-  <tr acre:for="prop in group.properties">
-    <td class="odd">
-      <div>
-        <a href="${h.url_for('schema', 'type', null, prop.schema.id)}">$prop.schema.name.value</a>
-      </div>
-      <span class="key">$prop.schema.id</span>
-    </td>
-    <td class="even">
-      <div>
-        <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
-      </div>
-      <span class="key">$prop.id</span>
-    </td>
-  </tr>
-
 </acre:block>
 
 <acre:block def="footer_script()">

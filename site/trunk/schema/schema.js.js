@@ -3,28 +3,60 @@ $(document).ready(function(){
     // Setup schema search tabset
     var $schema_explorer_search_tabset = $("#schema-search > .section-tabset").tabs("#schema-search > .search-box");
     
-    // Make table sortable
-/*
-    $(".table").tablesorter({
+    // Make all sortable tables sortable
+    $(".table-sortable").tablesorter({
         cssAsc: "column-header-asc",
         cssDesc: "column-header-desc",
         cssHeader: "column-header",
         sortList: [[0,0]]
     });
-*/
+
+    // trigger for row menus
+    $(".row-menu-trigger").each(function(){
+
+        var $tooltip = $(this).tooltip({
+            events: {def: "click,mouseout"},
+            position: "bottom right",
+            offset: [-10, -10],
+            effect: "fade",
+            delay: 300
+        });
+        
+        $menu = $(this).closest(".row-menu");
+        $menu.children().last().hide();
+        
+    });
+    
+    $(".row-menu-trigger").css({"visibility":"hidden"});
+    
+    $(".hoverable").hover(function(){
+        $row = $(this).addClass("row-hover");
+        $menu_trigger = $row.find(".row-menu-trigger").css('visibility','visible').hide().fadeIn("fast");
+    }, function(){
+        $menu_trigger.css("visibility", "hidden");
+        $row.removeClass("row-hover");
+    });
 
     var $included_types = $("#included-types-table");
     var $inherited_properties = $included_types.find("tbody").hide();
+    var $incoming_properties = $("#incoming-properties-table").find("tbody:not(.expanded)").hide();
     
-    $(".tbody-header", $included_types).click(function(){
-    
-        var $tbody = $("." + $(this).attr("data-target"));
+    $("#included-types-table .tbody-header, #incoming-properties-table .tbody-header").click(function(){
+        
+        var $row = $(this);
+        var $tbody = $("tbody." + $row.attr("data-target"));
+        console.log($tbody);
+        var $trigger = $row.find(".tbody-header-title");
         
         if ($tbody.is(":hidden")) {
+            $trigger.addClass("expanded")
             $tbody.slideDown();
+            $row.addClass("expanded")
         }
         else {
+            $trigger.removeClass("expanded");
             $tbody.slideUp();
+            $row.removeClass("expanded");
         }
     });
 

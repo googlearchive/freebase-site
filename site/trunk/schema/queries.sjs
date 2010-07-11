@@ -178,6 +178,7 @@ var type = function(id, order, dir) {
         domain : r.domain,
         creator : r.creator,
         timestamp : r.timestamp,
+        date : h.format_date(acre.freebase.date_from_iso(r.timestamp), 'MMMM dd, yyyy'),
         cvt :  r['/freebase/type_hints/mediator'],
         enumeration: r['/freebase/type_hints/enumeration'],
         default_property : r.default_property,

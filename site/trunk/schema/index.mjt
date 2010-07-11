@@ -79,7 +79,7 @@
       </div>
       <div class="section">
         <h1 class="section-title">Browse</h1>
-        <table cellspacing="0" class="table">
+        <table cellspacing="0" class="table table-sortable">
           <thead>
             <tr>
               <th scope="col" class="column-header">Domain</th>

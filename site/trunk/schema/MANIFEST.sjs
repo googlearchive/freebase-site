@@ -19,6 +19,7 @@ var MF = {
     "schema.mf.js": [
       ["template", "freebase.mf.js"],
       ["jquerytools", "tabs.js"],
+      ["jquerytools", "tooltip.js"],
       ["domain", "jquery.tablesorter.js"],
       "schema.js"
     ],

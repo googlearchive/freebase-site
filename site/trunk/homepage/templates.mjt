@@ -159,6 +159,32 @@
   </div>
 </acre:block>
 
+<acre:block def="gridworks()">
+  <div class="content-subsection-gridworks">
+    <img src="${mf.img_src('gridworks-logo.png')}" class="gridworks-logo"/>
+    <p>An open source power tool to fix, discover, experiment, connect and customize your data.  <a href="">Learn more &raquo;</a></p>
+  </div>
+</acre>
+
+<acre:block def="what_is_freebase()">
+  <div class="content-sub-section">
+    <h3>What is <span class="emphasis">Freebase?</span></h3>
+    <p>Learn what an entity graph is, what kind of information it contains, and why you should add your data!</p>
+    <a href="" class="more-link">Learn More &raquo;</a>
+  </div>
+</acre>
+
+<acre:block def="for_developers()">
+  <div class="content-sub-section">
+    <h3><span class="emphasis">Freebase</span> for Developers</h3>
+    <ul>
+      <li>powerful queriable API</li>
+      <li>JavaScript-based hosting framework</li>
+      <li>libraries for other languages</li>
+    </ul>
+    <a href="" class="more-link">Learn More &raquo;</a>
+  </div>
+</acre>
 
 <acre:block def="help_build()">
   <div class="content-sub-section content-sub-section-feat">

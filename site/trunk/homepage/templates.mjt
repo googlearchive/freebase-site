@@ -187,7 +187,7 @@
 </acre>
 
 <acre:block def="join_freebase()">
-  <div class="content-sub-section content-sub-section-feat">
+  <div class="content-footer-section content-footer-section-first">
     <h3 class="sidebar-header">Join the Community</h3>
     Enter your email address and we'll let you know when you can sign up:
     <form>
@@ -201,8 +201,8 @@
 
 <!-- Note: We trust feedburner to escape HTML entities in the description -->
 <acre:block def="blog_entries(blog)">
-  <div acre:if="blog" class="content-sub-section">
-    <h3 class="sidebar-header">On the <a href="$blog.url">Freebase Blog:</a></h3>
+  <div acre:if="blog" class="content-footer-section">
+    <h3 class="sidebar-header"><a href="$blog.url">Blog</a></h3>
     <a href="$blog.rss_url">RSS</a><!-- XXX: RSS icon? action? -->
     <div acre:for="item in blog.items">
       <a href="$item.link" title="${acre.markup.bless(item.description)}">$item.title</a>
@@ -213,8 +213,8 @@
 </acre:block>
 
 <acre:block def="wiki_entries(wiki)">
-  <div acre:if="wiki" class="content-sub-section">
-    <h3 class="sidebar-header">On the <a href="$wiki.url">Freebase Wiki:</a></h3>
+  <div acre:if="wiki" class="content-footer-section">
+    <h3 class="sidebar-header"><a href="$wiki.url">Wiki</a></h3>
     <a href="$wiki.rss_url">RSS</a><!-- XXX: RSS icon? action? -->
     <div acre:for="item in wiki.items">
       <a href="$item.link">$item.title</a>
@@ -225,15 +225,15 @@
 </acre:block>
 
 <acre:block def="join_discussion()">
-  <div class="content-sub-section content-sub-section-feat">
-    <h3 class="sidebar-header">Join the Community</h3>
-    Enter your email address and we'll let you know when you can sign up:
+  <div class="content-footer-section content-footer-section-last">
+    <h3 class="sidebar-header">Discussion LIst</h3>
+    Enter your email address to join the discussion:
     <form>
       <input name="email" type="email" placeholder="Your email address..." class="input-standard"/>
       <!-- XXX: link to Michael's app  XXX: placeholder support in freebase.js.js -->
       <input type="submit" value="Submit" class="button-featured"/>
     </form>
-    <a href="${h.freebase_url('/signin/login')}">Existing members, please sign in &raquo;
+    <a href="${h.freebase_url('/signin/login')}">Read the List Archive
   </div>
 </acre:block>
 

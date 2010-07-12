@@ -16,39 +16,39 @@ var routes = [
     script: "index"
   },
   {
-    from: "/apphomepage",
+    from: "/homepage",
     to: "homepage"
   },
   {
-    from: "/appdomain",
-    to: "domain"
-  },
-  {
-    from: "/appschema",
+    from: "/schema",
     to: "schema"
   },
   {
-    from: "/apptoolbox",
+    from: "/domain",
+    to: "domain"
+  },
+  {
+    from: "/toolbox",
     to: "toolbox"
   },
   {
-    from: "/appsample",
+    from: "/sample",
     to: "sample"
   },
   {
-    from: "/appcore",
+    from: "/core",
     to: "core"
   },
   {
-    from: "/appadmin",
+    from: "/admin",
     to: "appadmin"
   },
   {
-    from: "/approuting",
+    from: "/routing",
     to: "routing"
   },
   {
-    from: "/apptemplate",
+    from: "/template",
     to: "template"
   },
   {
@@ -56,7 +56,7 @@ var routes = [
     to: "apps"
   },
   {
-    from: "/appqueries",
+    from: "/queries",
     to: "queries"
   },
   {

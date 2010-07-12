@@ -1,8 +1,0 @@
-[{
-  "id": null,
-  "name": null,
-  "type": "/type/domain",
-  "/freebase/domain_profile/users": {"return": "count", "type": "/type/user", "limit": 101},
-  "!/freebase/domain_category/domains": {"id": null},
-  "sort": "name"
-}]

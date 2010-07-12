@@ -1,4 +1,4 @@
-<acre:script>
+ÅÅ<acre:script>
   var mf = acre.require("MANIFEST").MF;
   var h = mf.require("helpers");
 </acre:script>
@@ -186,9 +186,9 @@
   </div>
 </acre>
 
-<acre:block def="help_build()">
+<acre:block def="join_freebase()">
   <div class="content-sub-section content-sub-section-feat">
-    <h3 class="sidebar-header">Help Build Freebase!</h3>
+    <h3 class="sidebar-header">Join the Community</h3>
     Enter your email address and we'll let you know when you can sign up:
     <form>
       <input name="email" type="email" placeholder="Your email address..." class="input-standard"/>
@@ -224,6 +224,19 @@
   </div>
 </acre:block>
 
+<acre:block def="join_discussion()">
+  <div class="content-sub-section content-sub-section-feat">
+    <h3 class="sidebar-header">Join the Community</h3>
+    Enter your email address and we'll let you know when you can sign up:
+    <form>
+      <input name="email" type="email" placeholder="Your email address..." class="input-standard"/>
+      <!-- XXX: link to Michael's app  XXX: placeholder support in freebase.js.js -->
+      <input type="submit" value="Submit" class="button-featured"/>
+    </form>
+    <a href="${h.freebase_url('/signin/login')}">Existing members, please sign in &raquo;
+  </div>
+</acre:block>
+
 <acre:block def="using_fb_data()">
   <div>
     <h2>Using Freebase Data</h2>
@@ -244,3 +257,5 @@
     <div><a href="http://code.google.com/p/freebase-gridworks/">Learn More</a></div>
   </div>
 </acre:block>
+
+

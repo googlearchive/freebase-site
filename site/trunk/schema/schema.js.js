@@ -50,6 +50,18 @@ $(document).ready(function(){
         
     });
     
+    /*
+        Return Link Tooltips
+    */
+    
+    $(".return-link-trigger").tooltip({
+        events: {def: "click,mouseout"},
+        position: "top center",
+        effect: "fade",
+        delay: 300,
+        offset: [-8, 0]
+    });
+    
     // we use 'visibillity' here to prevent table shifting when shown
     $(".row-menu-trigger").css({"visibility":"hidden"});
     

@@ -469,6 +469,43 @@ Type Page
     line-height: 1;
 }
 
+.return-link-trigger {
+    display: inline-block;
+    background: url(ui-icons.png) no-repeat 0 -191px;
+    width: 12px;
+    padding-top: 16px;
+}
+
+.return-link-trigger:hover {
+    cursor: pointer;
+    background-position: 0 -208px;
+} 
+
+.return-link-description {
+    display: block;
+    display: none;
+    background: #222;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    font-size: 11px;
+    padding: 10px;
+    width: 160px;
+    color: #fff;
+    .rounded_corners(5px);
+}
+
+.return-link-pointer {
+    position: absolute;
+    bottom: -8px;
+    left: 80px;
+    font-size: 0;
+    line-height: 0; 
+    width: 0;
+    border-top: 8px solid #222;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+}
+
 /*
     XXX: this should likely be in freebase.table.less
     waiting until we have the sprites sorted out

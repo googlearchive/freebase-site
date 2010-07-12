@@ -61,13 +61,17 @@
         $prop.expected_type.id
       </a>
       <span acre:if="prop.unit" class="unit">$prop.unit.name</span>
-      <span acre:if="prop.master_property || prop.reverse_property" style="display:none">
+      <span acre:if="prop.master_property || prop.reverse_property">
+        <span class="return-link-trigger"></span>
         <acre:script>
           var other_property = prop.master_property || prop.reverse_property;
         </acre:script>
-        $prop.name has a return link of
-        $other_property.name
-        from $other_property.schema.name
+        <span class="return-link-description">
+          <strong>$prop.name</strong> has a return link of
+          <strong>$other_property.name</strong>
+          from <strong>$other_property.schema.name</strong>
+          <span class="return-link-pointer"></span>
+        </span>
         
       </span>
     </td>

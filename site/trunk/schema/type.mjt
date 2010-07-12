@@ -149,14 +149,14 @@
           <h2 class="table-title">
             Incoming Properties
           </h2>
-          <table class="table" cellspacing="0" id="incoming-properties-table" acre:if="c.type.incoming_properties.length > 0">
+          <table class="table" cellspacing="0" id="incoming-properties-table" acre:if="c.type.incoming_properties.same.properties.length > 0 || c.type.incoming_properties.commons.properties.length > 0 || c.type.incoming_properties.bases.properties.length > 0">
             <acre:block if="c.type.incoming_properties.same.properties.length > 0">
               ${t.incoming_props_group(c.type.incoming_properties.same, expanded=true)}
             </acre:block>
             <acre:block if="c.type.incoming_properties.commons.properties.length > 0">
               ${t.incoming_props_group(c.type.incoming_properties.commons)}
             </acre:block>
-            <acre:block if="c.type.incoming_properties.same.properties.length > 0">
+            <acre:block if="c.type.incoming_properties.bases.properties.length > 0">
               ${t.incoming_props_group(c.type.incoming_properties.bases)}
             </acre:block>
           </table>

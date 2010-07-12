@@ -1,0 +1,57 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var templates = mf.require("templates");
+  var c = this.exports.c = {};
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('index.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+<header class="homepage-header">
+  
+  <h1 class="homepage-header-title">
+    <span>This stuff sounds impossible</span>
+  </h1>
+  <div class="homepage-announce">
+    Freebase is announcing Gridworks.
+    <a href="http://code.google.com/p/freebase-gridworks/">
+      Learn More &raquo;
+    </a>
+  </div>
+</header>
+</acre:block>
+
+<acre:block def="content_body()">
+  <section id="content-main">
+    ${templates.domain_explorer(c.categories, c.grouped_domains, c.loaded_categories)}
+  </section>
+  
+  <section id="content-side">
+    ${templates.gridworks()}
+    ${templates.what_is_freebase()}
+    ${templates.for_developers()}
+    
+  </section>
+  <section id="content-footer">
+    ${templates.join_freebase()}
+    ${templates.blog_entries(c.blog)}
+    ${templates.wiki_entries(c.wiki)}
+    ${templates.join_discussion()}
+  </section>
+  
+  <!--
+  ${templates.using_fb_data()}
+  ${templates.get_gridworks()}
+  -->
+  
+</acre:block>
+
+<acre:block def="content_sub()">
+  
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="${mf.js_src('index.mf.js')}"></script>
+</acre:block>

@@ -1,5 +1,6 @@
 var exports = {
-  "extend": extend
+  "extend": extend,
+  "first_element": first_element
 };
 
 /**
@@ -17,3 +18,11 @@ function extend() {
   }
   return a;
 };
+
+function first_element(array) {
+  if (array instanceof Array) {
+    return array.length ? array[0] : null;
+  } else {
+    return array;
+  }
+}

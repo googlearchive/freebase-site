@@ -7,7 +7,7 @@ var exports = {
   "freebase_static_resource_url": freebase_static_resource_url,
   "get_image_dimensions": get_image_dimensions,
   "get_image_orientation": get_image_orientation,
-  "image_thumb_url": image_thumb_url,
+  "oriented_image_url": oriented_image_url,
   "image_url": image_url,
   "parse_params": parse_params
 };
@@ -185,20 +185,21 @@ function get_image_orientation(image) {
 };
 
 
-function image_thumb_url(image, size, options) {
+function oriented_image_url(image, size, options) {
   size = size || 16;
   var o = extend({mode:"fit"}, options);
+  var image_id = image.id || image.mid || image.guid;
   if (o.mode === "fill") {
     var orientation = get_image_orientation(image);
     if (orientation === "portrait") {
-      return image_url(image.id, extend(o, {maxwidth:size}));
+      return image_url(image_id, extend(o, {maxwidth:size}));
     }
     else {
-      return image_url(image.id, extend(o, {maxheight:size}));
+      return image_url(image_id, extend(o, {maxheight:size}));
     }
   }
   else { // fit, fillcrop, fillcropmid
-    return image_url(image.id, extend(o, {maxheight:size,maxwidth:size}));
+    return image_url(image_id, extend(o, {maxheight:size, maxwidth:size}));
   }
 };
 
@@ -209,10 +210,6 @@ function image_thumb_url(image, size, options) {
     maxheight/maxwidth: maximum size of that dimension
     cropwidth: size of crop
     raw: do not user the thumbnailing service - return the raw image with the original dimensions
-    NOTE: some of these parameters should really be booleans. However, this gets called from genshi
-    which passes stream objects. bool(<stream>) returns True even if the stream is empty while
-    str(<stream>) returns False when checked if the original string is empty.
-    use: the use of this image for reporting and tracking purposes (performance)
 */
 function image_url(id, options) {
   var o = extend({
@@ -226,10 +223,11 @@ function image_url(id, options) {
     errorid: "/freebase/no_image_png"
   }, options);
   for (var key in o) {
-    if (o[key] == null) {
+    if (o[key] === null || o[key] === undefined) {
       delete o[key];
     }
   }
+  
   return acre.form.build_url(freebase_url("/api/trans/image_thumb"), o);
 };
 

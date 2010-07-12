@@ -39,7 +39,7 @@
           <span acre:if="prop['/freebase/property_hints/display_none']">,hidden</span>
         </td>
       </tr>
-    </tbody>           
+    </tbody>
   </acre:block>
 </acre:block>
 

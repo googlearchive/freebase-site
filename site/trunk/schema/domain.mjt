@@ -57,7 +57,7 @@
               ${image.user_image_medium(member)}
             </li>
           </ul>
-        </acre:block>      
+        </acre:block>
       </div>
     
 <!--

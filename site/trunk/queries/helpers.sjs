@@ -8,8 +8,7 @@ function user_clause(id, badges, options) {
   var q = {
     "id": id,
     "name": null,
-    "type": "/type/user",
-    "/common/topic/image": image_clause({limit:1})
+    "type": "/type/user"
   };
   if (badges) {
     extend(q, {

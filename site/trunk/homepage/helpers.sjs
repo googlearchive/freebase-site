@@ -1,12 +1,22 @@
 var exports = {
-  "format_stat": format_stat
+  "format_stat": format_stat,
+  "compute_coverage_percentage": compute_coverage_percentage,
+  "lowercase_alphabet": lowercase_alphabet,
+  "uppercase_alphabet": uppercase_alphabet
 };
 
 var mf = acre.require("MANIFEST").MF;
 var h = mf.require("core", "helpers");
 
 function format_stat(number) {
-  return h.commafy(number);
+  var abbr = ["K", "M", "B", "T"];
+  for (var i=abbr.length; i>0; i--) {
+    var power = Math.pow(10, i*3);
+    if (number >= power) {
+      return Math.round(number / power) + abbr[i-1];
+    }
+  }
+  return ""+number;
 }
 
 function compute_coverage_percentage(domain) {

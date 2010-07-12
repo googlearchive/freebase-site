@@ -1,0 +1,154 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var c = this.exports.c = {};
+  var h = mf.require("core", "helpers");
+  var image = mf.require("template", "imagecomponents");
+
+  var id = acre.request.params.id || acre.request.path_info;
+  var order = acre.request.params.order || 'name';
+  var dir = acre.request.params.dir || 'asc';
+  var inv_dir = (dir == 'asc') ? 'desc' : 'asc';
+  var indicator = (dir == 'asc') ? '▲' : '▼'; 
+  
+  var queries = mf.require("queries");  
+  var data = {
+    "domain" : queries.domain(id, order, dir)
+  };
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  <div class="page-header">
+    <nav class="breadcrumb clear">
+      <ol>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.url_for('schema')}">Schema Explorer</a>
+          </span>
+        </li>  
+        <li if="c.domain" class="breadcrumb-item last">
+          <span class="breadcrumb-item-inner">
+            <a href="#">$c.domain.name</a>
+          </span>
+        </li>
+      </ol>
+    </nav>
+  </div>
+</acre:block>
+
+<acre:block def="content_body()">
+  <acre:block if="c.domain">
+      
+      <div class="page-meta">
+        <h1>$c.domain.name <span class="key">$c.domain.id</span></h1>
+        <span class="creation-timestamp">
+          ${image.user_image_small(c.domain.creator)}
+          Created by <a href="${acre.freebase.service_url}/view${c.domain.creator.id}" title="View user profile">$c.domain.creator.name</a> 
+          on <time class="published" datetime="${c.domain.timestamp}">$c.domain.date</time>
+        </span>
+        <div id="description" acre:if="c.domain.description">${acre.markup.bless(c.domain.description)}</div>
+        <acre:block if="c.domain.owners">
+          <h2 class="user-list-title">Project Owners:</h2>
+          <ul class="user-list clear" acre:for="group in c.domain.owners">
+            <li acre:for="i,member in group.member" acre:for="i,member in group.member" class="vcard">
+              ${image.user_image_medium(member)}
+            </li>
+          </ul>
+        </acre:block>
+      </div>
+    
+<!--
+      <acre:block if="c.domain.subdomains.length > 0">
+        <div class="table_box">
+          <h2>Subdomains</h2>
+          <table>
+            <tr>
+              <th>domain name</th>
+              <th>domain id</th>
+              <th class="numeric"># of types</th>
+              <th class="numeric"># of instances</th>
+            </tr>
+          
+            <tr acre:for="d in c.subdomains">
+              <td><a href="${h.url_for('schema', 'domain', null, d.id)}">${d.name}</a></td>
+              <td>${d.id}</td>
+              <td class="numeric">${(types > 0) ? h.commafy(types) : "-"}</td>
+              <td class="numeric">${(instances > 0) ? h.commafy(instances) : "-"}</td>
+            </tr>
+          </table>
+        </div>
+      </acre:block>
+-->
+      <div class="section">
+        <h2 class="table-title">
+          <a href="http://wiki.freebase.com/wiki/Types" rel="help external" title="Read help article" class="help-link">What are Types?</a>
+          Types
+        </h2>
+        <table class="table table-sortable" cellspacing="0">
+          <thead>
+            <tr>
+              <th scope="col" class="column-header">Type</th>
+              <th scope="col" class="column-header">ID</th>
+              <th scope="col" class="column-header numeric"># of Properties</th>
+              <th scope="col" class="column-header numeric"># of Instances </th>
+              <th scope="col" class="column-header description">Description</th>
+            </tr>
+          </thead>
+          <tr acre:for="i,t in c.domain.types" acre:if="!t.mediator">
+            <th class="odd row-header" scope="row"><a href="${h.url_for('schema', 'type', null, t.id)}">$t.name</a></th>
+            <td class="even">$t.id</td>
+            <td class="odd numeric">$t.properties.length</td>
+            <td class="even numeric"><a href="${acre.freebase.service_url}/view${t.id}">${h.commafy(t.instance_count)}</a></td>
+            <td class="odd description"><acre:block if="t.description">$t.description</acre:block></td>
+          </tr>
+        </table>
+      </div>
+    
+      <acre:block if="c.domain.mediators.length > 0">
+        <div class="section">
+          <h2 class="table-title">
+            <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="Read help article" rel="help external" class="help-link">What are Compound Value Types?</a>
+            Compound Value Types (CVTs)
+          </h2>
+          <table class="table table-sortable">
+            <thead>
+              <tr>
+                <th scope="col" class="column-header">Type</th>
+                <th class="column-header" scope="col">ID</th>
+                <th class="column-header numeric" scope="col"># of Properties</th>
+                <th class="column-header numeric" scope="col"># of Instances</th>
+                <th class="column-header description" scope="col">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr acre:for="i,t in c.domain.mediators">
+                <th class="row-header odd"><a href="${h.url_for('schema', 'type', null, t.id)}">$t.name</a></th>
+                <td class="even">$t.id</td>
+                <td class="odd numeric">$t.properties.length</td>
+                <td class="even numeric"><a href="${acre.freebase.service_url}/view${t.id}">${h.commafy(t.instance_count)}</a></td>
+                <td class="odd description"><acre:block if="t.description">$t.description</acre:block></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </acre:block>  
+  </acre:block>
+  <acre:block elif="id == ''">
+    <div id="error">Need to specify the <em>id</em> parameter</div>
+  </acre:block>
+  <acre:block elif="id.charAt(0) != '/'">
+    <div id="error"><em>${id}</em> is not a domain ID</div>
+  </acre:block>
+  <acre:block else="">
+    <div id="error">No domain found for <em>$id</em></div>
+  </acre:block>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="${mf.js_src('schema.mf.js')}"></script>
+</acre:block>
+
+${mf.require("template", "renderer").render_page(data, this.exports)}

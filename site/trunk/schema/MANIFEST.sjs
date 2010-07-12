@@ -1,12 +1,14 @@
 var MF = {
   "apps": {
-      "core": "//core.site.freebase.dev",
-      "template": "//template.site.freebase.dev",
-      "promise": "//promise.site.freebase.dev",
-      "jquerytools": "//jquerytools.site.freebase.dev",
-      "libraries": "//libraries.apps.freebase.dev",
-      "domain": "//domain.site.freebase.dev",
-      "queries": "//queries.site.freebase.dev"
+      "core": "//2.core.site.freebase.dev",
+      "template": "//2.template.site.freebase.dev",
+      "promise": "//2.promise.site.freebase.dev",
+      "jquerytools": "//2.jquerytools.site.freebase.dev",
+      "domain": "//2.domain.site.freebase.dev",
+      "queries": "//2.queries.site.freebase.dev",
+
+      // external apps
+      "libraries": "//libraries.apps.freebase.dev"
   },
   "stylesheet": {
     "schema.mf.css": [

@@ -1,7 +1,7 @@
 var MF = {
   "apps": {
-      "core": "//core.site.freebase.dev",
-      "template": "//1.template.site.freebase.dev"
+      "core": "//2.core.site.freebase.dev",
+      "template": "//2..template.site.freebase.dev"
   },
   "stylesheet": {
     "policies.mf.css": [

@@ -1,9 +1,10 @@
 var MF = {
   "apps": {
-    "core": "//core.site.freebase.dev",
-    "template": "//template.site.freebase.dev",
-    "promise": "//promise.site.freebase.dev",
+    "core": "//2.core.site.freebase.dev",
+    "template": "//2.template.site.freebase.dev",
+    "promise": "//2.promise.site.freebase.dev",
 
+    // external apps
     "libraries": "//libraries.apps.freebase.dev"
   },
   "stylesheet": {
@@ -19,7 +20,7 @@ var MF = {
   },
 
   // devdoc specific metadata
-  
+
   "version": {
     "/freebase/apps/global"               :  "52",
     "/freebase/apps/home"                 :  "85",

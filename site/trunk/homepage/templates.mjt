@@ -1,5 +1,6 @@
 ÅÅ<acre:script>
   var mf = acre.require("MANIFEST").MF;
+  var image_components = mf.require("template", "imagecomponents");
   var h = mf.require("helpers");
 </acre:script>
 
@@ -164,14 +165,7 @@
     </div>
   </div>
   <div class="domain-contributor domain-section">
-    <acre:block if="domain.top_user">
-      <a href="${h.freebase_url('/view'+domain.top_user.id)}">
-        <img src="${acre.freebase.imgurl(domain.top_user.id, 36, 36, 'fillcropmid')}"
-             class="user-image"
-             width="36"
-             height="36"/>
-      </a>
-    </acre:block>
+    ${image_components.user_image_small(domain.top_user)}
   </div>
 </acre:block>
 

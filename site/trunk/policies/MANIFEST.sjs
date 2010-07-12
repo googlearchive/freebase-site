@@ -1,7 +1,12 @@
 var MF = {
   "apps": {
       "core": "//2.core.site.freebase.dev",
-      "template": "//2.template.site.freebase.dev"
+      "template": "//2.template.site.freebase.dev",
+      "jquerytools": "//2.jquerytools.site.freebase.dev",
+      "domain": "//2.domain.site.freebase.dev",
+
+      // external apps
+      "jquery": "//release.jquery.libs.freebase.dev"
   },
   "stylesheet": {
     "policies.mf.css": [

@@ -20,33 +20,30 @@
 
 <acre:block def="content_header()">
   <div class="page-header">
-    <h1 id="page-title">Explore Apps</h1>
+    <h1 id="page-title">Apps</h1>
   </div>
 </acre:block>
 
 <acre:block def="content_body()">  
-  <section id="content-main">
-    <acre:block if="c.app">
-      <div id="app-detail" class="content-box">
+  <div id="content-wrapper">
+    
+    <div id="content-main" role="main">   
+      <div id="app-detail" class="section content-box" if="c.app">
+        <h1 class="section-title">$c.app.name</h1>
         <img class="app-icon" acre:if="c.app.icon" src="$c.app.icon.src" alt="$c.app.name"/>
-
         <p acre:if="c.app.modified">
           last updated <b>${h.relative_date(acre.freebase.date_from_iso(c.app.modified))}</b>
         </p>
-
-        <p class="description" acre:if="c.app.description">
-          $c.app.description
-        </p>
-
+        <p class="description" acre:if="c.app.description">$c.app.description</p>
         <div id="article-content" acre:if="c.app.article">
           ${acre.markup.bless(c.app.article.html)}
         </div>
-
+        
         <p class="box-nextactions">
-          <a class="button" href="$c.app.homepage">
+          <a class="button-link-primary" href="$c.app.homepage">
             Go to this App
           </a>      
-          <a class="button" acre:if="c.app.acre" href="$c.app.acre.source">
+          <a class="button-link" acre:if="c.app.acre" href="$c.app.acre.source">
             View Source
           </a>
           <acre:block if="c.user">
@@ -55,28 +52,28 @@
                 return (author.id === c.user.id);
               });
             </acre:script>
-            <a class="button" acre:if="is_author" href="${h.url_for('apps', 'admin', null, c.app.id)}">
+            <a class="button-link" acre:if="is_author" href="${h.url_for('apps', 'admin', null, c.app.id)}">
               Settings...
             </a>
           </acre:block>
         </p>         
       </div>
-    </acre:block>
-  </section>
-
-  <section id="content-side">
-    <div class="box-sidebar" acre:if="c.app && c.app.authors.length">
-      <h4>App Authors</h4>
-      <ul class="box-thumblist">  
-        <li acre:for="author in c.app.authors">
-          <a href="${acre.freebase.site_host}/view$author.id">
-            <img height="45" width="45" src="${acre.freebase.imgurl(author.id, 45, 45, 'fillcropmid')};" />
-            <p>$author.name</p>
-          </a>
-        </li> 
-      </ul>       
     </div>
-  </section>
+
+    <aside role="complimentary" id="content-sub">
+      <div class="content-wrapper" acre:if="c.app && c.app.authors.length">
+        <h2 class="aside-title">App Authors</h2>
+        <ul class="box-thumblist">  
+          <li acre:for="author in c.app.authors">
+            <a href="${acre.freebase.site_host}/view$author.id">
+              <img height="45" width="45" src="${acre.freebase.imgurl(author.id, 45, 45, 'fillcropmid')};" />
+              <p>$author.name</p>
+            </a>
+          </li> 
+        </ul>       
+      </div>
+    </aside>
+  </div>
 </acre:block>
 
 <acre:block def="footer_script()">

@@ -14,7 +14,7 @@
 
 <acre:block def="content_header()">
   <div class="page-header">
-    <h1 id="page-title">Explore Apps</h1>
+    <h1 id="page-title">Apps</h1>
   </div>
 </acre:block>
 
@@ -54,11 +54,10 @@
         <a href="${h.url_for('apps', 'released')}">Recently Released</a> | 
         <a href="${h.url_for('apps', 'recent')}">Recently Updated</a> |
         <a href="${h.url_for('apps', 'featured')}">Featured</a>
-      
-        <a acre:if="c.category === 'released'" href="${h.url_for('apps', 'feed', null, c.category + (c.query ? '/' + c.query : ''))}">
-          subscribe via RSS
-        </a>
-        <a href="${h.url_for('apps', 'creeat')}" class="button">New App</a>
+        <span id="app-buttons-right">
+          <a acre:if="c.category === 'released'" href="${h.url_for('apps', 'feed', null, c.category + (c.query ? '/' + c.query : ''))}" class="rss-icon domain-explorer-rss">RSS</a>
+          <a href="${h.url_for('apps', 'creeat')}" class="button-link-primary">New App</a>
+        </span>
         <table class="table" cellspacing="0" acre:if="c.apps.length">
           <thead>
             <tr>

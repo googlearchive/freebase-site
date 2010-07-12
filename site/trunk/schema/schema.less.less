@@ -551,3 +551,59 @@ tr:hover .tbody-header-title.expanded {
     padding-right: 22px;
     background: url(ui-icons.png) no-repeat right -297px;    
 }
+
+
+
+
+/*
+-----------------------------
+Property Visualization
+-----------------------------
+*/
+
+table.skeleton {
+    font-size: 1.8em;
+    margin: 3em auto;
+    border-spacing: 1em 0;
+    border-collapse: separate;    
+}
+
+.skeleton td {
+    vertical-align: middle;
+    text-align: center;
+}      
+
+.subject a, 
+.object a {
+    display: block;
+    padding: 20px;
+    background: #f8f8f8;
+    border: 1px solid #d5d7d8;
+    .rounded_corners(5px);
+    .linear_gradient(#f8f8f8, #ececec);
+}
+
+.predicate {
+    border-bottom: 1px solid #d5d7d8c;
+    background: url(right_arrow.png) no-repeat center right;
+    padding: 0.3em 2em;
+}
+
+.rev_predicate {
+    border-top: 1px solid #d5d7d8;
+    background: url(left_arrow.png) no-repeat center left;
+    padding: 0.3em 2em;
+}    
+
+.attribute {
+    color: #aaa;
+    font-size: 60%;
+    position: relative;
+    bottom: 0.8em;
+    margin-right: 0.5em;
+}
+
+.current-prop {
+    font-size: 150%;
+}
+

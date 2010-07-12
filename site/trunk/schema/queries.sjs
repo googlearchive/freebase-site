@@ -276,13 +276,59 @@ var property = function(id) {
 
   var q = mf.require("property-query").query;
   q = acre.freebase.extend_query(q, { "id" : id });
+  
+  q.creator = qh.user_clause();
 
   return freebase.mqlread(q)
     .then(function(envelope) {
       return envelope.result;
     })
-    .then(add_description)
-    .then(null, function() {
+    .then(function(r) {
+      
+      var prop = {
+        id : r.id,
+        name : r.name,
+        creator : r.creator,
+        date : h.format_date(acre.freebase.date_from_iso(r.timestamp), 'MMMM dd, yyyy'),
+        timestamp : r.timestamp,
+        description : r['/freebase/documented_object/tip'],
+        schema : r.schema,
+        unique : r.unique,
+        expected_type : r.expected_type,
+        master_property : r.master_property,
+        reverse_property : r.reverse_property,
+        disambiguator : r['/freebase/property_hints/disambiguator'],
+        hidden : r['/freebase/property_hints/display_none'],
+        delegated : r.delegated,
+        unit : r.unit
+      };
+
+      var sibling_query = {
+        "id": null,
+        "type": "/type/type",
+        "properties": [{
+          "id": null,
+          "name": null
+        }]     
+      };
+      
+      var query = acre.freebase.extend_query(sibling_query, {"id": prop.schema.id });
+      var sibling_p = freebase.mqlread(query)
+        .then(function(envelope){
+          return envelope.result;
+        })
+        .then(function(s){
+          if (!s) return null;
+          
+          prop.siblings = s.properties;
+        });
+        
+      return sibling_p.then(function(){ 
+          console.log('prop is:', prop);
+          return prop;
+      })
+    },
+    function(error){
       return null;
     });
 };

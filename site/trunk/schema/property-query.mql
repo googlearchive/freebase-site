@@ -1,36 +1,39 @@
 {
   "type": "/type/property",
-  "id":   "/book/periodical_frequency/frequency",
-  "name": {
-    "value":    null,
-    "optional": true
-  },
-  "/common/topic/article": [{
-    "id":       null,
-    "optional": true,
-    "limit":    1
-  }],
+  "id":   "/people/person/date_of_birth",
+  "name": null,
+  "creator": null,
+  "timestamp": null,
+  "/freebase/documented_object/tip": null,
   "schema": {
     "id":   null,
     "name": null,
     "type": "/type/type",
     "domain": {
+      "id":   null,
+      "name": null
     }
   },
   "expected_type": {
-    "id":            null,
-    "name":          null,
-    "type":          "/type/type",
+    "id": null,
+    "name": null,
+    "type": "/type/type",
     "/freebase/type_hints/mediator": null
   },
-  "unique": {
+  "unique": null,
+  "/freebase/property_hints/display_none": null,  
+  "master_property": {
+    "optional": true,
+    "id":       null,
+    "name":     null
   },
   "reverse_property": {
+    "optional": true,
+    "id":       null,
+    "name":     null
   },
-  "master_property": {
-  },
-  "delegated": {
-  },
+  "/freebase/property_hints/disambiguator": null,
+  "delegated": null,
   "unit": {
     "id":       null,
     "name":     null,

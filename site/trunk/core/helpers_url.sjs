@@ -5,9 +5,6 @@ var exports = {
   "freebase_url": freebase_url,
   "wiki_url": wiki_url,
   "freebase_static_resource_url": freebase_static_resource_url,
-  "get_image_dimensions": get_image_dimensions,
-  "get_image_orientation": get_image_orientation,
-  "oriented_image_url": oriented_image_url,
   "image_url": image_url,
   "parse_params": parse_params
 };
@@ -165,42 +162,6 @@ function wiki_url(path, params) {
  */
 function freebase_static_resource_url(path) {
   return mf.freebase.resource.base_url + (path || "");
-};
-
-
-function get_image_dimensions(image) {
-  var size = image["/common/image/size"] || image.size;
-  if (size) {
-    return [size.x, size.y];
-  }
-  return [null, null];
-};
-
-function get_image_orientation(image) {
-  var [width, height] = get_image_dimensions(image);
-  if (width && height) {
-    return (width - height < 0) ? 'portrait' : 'landscape';
-  }
-  return null;
-};
-
-
-function oriented_image_url(image, size, options) {
-  size = size || 16;
-  var o = extend({mode:"fit"}, options);
-  var image_id = image.id || image.mid || image.guid;
-  if (o.mode === "fill") {
-    var orientation = get_image_orientation(image);
-    if (orientation === "portrait") {
-      return image_url(image_id, extend(o, {maxwidth:size}));
-    }
-    else {
-      return image_url(image_id, extend(o, {maxheight:size}));
-    }
-  }
-  else { // fit, fillcrop, fillcropmid
-    return image_url(image_id, extend(o, {maxheight:size, maxwidth:size}));
-  }
 };
 
 /**

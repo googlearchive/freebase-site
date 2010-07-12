@@ -19,7 +19,7 @@ var MF = {
 };
 
 function is_release_pod() {
-  return /^https?:\/\/(www\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url);
+  return /^https?:\/\/(www\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url);
 };
 
 if (is_release_pod()) {

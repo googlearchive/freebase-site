@@ -115,6 +115,11 @@ Breadcrumbs
     color: #e4e6e7;
 }
 
+.breadcrumb .breadcrumb-item-inner {
+    display: block;
+    padding: 5px 9px 5px 7px; 
+}
+
 #breadcrumb-siblings {
     z-index: 10;
     width: 200px;
@@ -150,11 +155,6 @@ Breadcrumbs
 
 .last {
     background-image: none;
-}
-
-.breadcrumb .breadcrumb-item-inner {
-    display: block;
-    padding: 5px 7px;
 }
 
 .breadcrumb-item-inner a {
@@ -356,6 +356,10 @@ Landing Page
 Type Page
 */
 
+.row-header {
+    white-space: nowrap;
+}
+
 .meta {
     background: url(ui-icons.png) no-repeat 0 -172px;
     padding-top: 8px;
@@ -432,6 +436,14 @@ Type Page
     padding: 0 1.2em;
 }
 
+.row-menu-trigger {
+    display: inline-block;
+    text-indent: -9999px;
+    width: 15px;
+    height: 15px;
+    background: url(ui-icons.png) no-repeat -2px -272px;
+}
+
 .row-menu {
     display: none;
     list-style: none;
@@ -487,4 +499,18 @@ tr:hover .tbody-header-title.expanded {
 
 .tbody-header-title.expanded:hover {
     background-position: 0 -156px;
+}
+
+.sort-icon {
+    display: inline-block;
+}
+
+.column-header-desc .sort-icon {
+    padding-right: 22px;
+    background: url(ui-icons.png) no-repeat right -287px;
+}
+
+.column-header-asc .sort-icon {
+    padding-right: 22px;
+    background: url(ui-icons.png) no-repeat right -297px;    
 }

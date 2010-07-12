@@ -27,9 +27,13 @@ $(document).ready(function(){
         
     });
     
+    /*
+        Breadcrumbs
+    */
+    
+    // Offset the breadcrumb menu equivalent to the width of the trigger
     h_width = $(".breadcrumb-sibling-trigger").outerWidth();
     h_offset = (h_width);
-    console.log(h_offset);
     
     $(".breadcrumb-sibling-trigger").tooltip({
         events: {def: "click,mouseout"},
@@ -46,6 +50,7 @@ $(document).ready(function(){
         
     });
     
+    // we use 'visibillity' here to prevent table shifting when shown
     $(".row-menu-trigger").css({"visibility":"hidden"});
     
     $(".hoverable").hover(function(){
@@ -56,6 +61,10 @@ $(document).ready(function(){
         $row.removeClass("row-hover");
     });
 
+
+    /*
+        Show/Hide Included Types & Incoming Properties
+    */
     var $included_types = $("#included-types-table");
     var $inherited_properties = $included_types.find("tbody").hide();
     var $incoming_properties = $("#incoming-properties-table").find("tbody:not(.expanded)").hide();
@@ -64,7 +73,6 @@ $(document).ready(function(){
         
         var $row = $(this);
         var $tbody = $("tbody." + $row.attr("data-target"));
-        console.log($tbody);
         var $trigger = $row.find(".tbody-header-title");
         
         if ($tbody.is(":hidden")) {
@@ -79,6 +87,11 @@ $(document).ready(function(){
         }
     });
 
+    /*
+        MQL_FILTERS are config parameters passed to respective
+        Freebase Suggest instances for Domain, Type, and Property
+        depending on whether the user has toggled Freebase Commons / All Projects
+    */
 
     var MQL_FILTERS = {
         domain : [{ "key": [{"namespace" : "/" }] }],
@@ -158,7 +171,11 @@ $(document).ready(function(){
 */
     
 
-    // On click for radio buttons, we have to update mql_filter params and reinitialize suggest
+    /*
+        Schema Search Toggles
+        On click for radio buttons, we have to update mql_filter params and reinitialize suggest
+        
+    */
     $(".search-toggle").click(function(e){
 
         $el = $(this);

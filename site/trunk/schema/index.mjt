@@ -82,10 +82,10 @@
         <table cellspacing="0" class="table table-sortable">
           <thead>
             <tr>
-              <th scope="col" class="column-header">Domain</th>
-              <th scope="col" class="column-header">ID</th>
-              <th scope="col" class="column-header numeric"># of Types</th>
-              <th scope="col" class="column-header numeric"># of Instances</th>
+              <th scope="col" class="column-header"><span class="sort-icon">Domain</span></th>
+              <th scope="col" class="column-header"><span class="sort-icon">ID</span></th>
+              <th scope="col" class="column-header numeric"><span class="sort-icon"># of Types</span></th>
+              <th scope="col" class="column-header numeric"><span class="sort-icon"># of Instances</span></th>
             </tr>
           </thead>
           <tbody>

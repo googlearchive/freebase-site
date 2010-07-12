@@ -136,13 +136,12 @@
             <a class="help-link" href="http://wiki.freebase.com/wiki/Included_type" rel="help external" title="Read help article">What are Included Types?</a>
             Included Types
           </h2>
-          <table class="table" cellspacing="0" id="included-types-table">
+          <table class="table" cellspacing="0" id="included-types-table" acre:if="c.type.included_types.length > 0">
             ${t.included_types(c.type.included_types)}
           </table>
+          <h2 acre:else="">$c.type.name has no Included Types</h2>
+
         </div>
-      </acre:block>
-      <acre:block else="">
-        <h2>$c.type.name has no Included Types</h2>
       </acre:block>
     
       <acre:block if="c.type.incoming_properties">
@@ -150,7 +149,7 @@
           <h2 class="table-title">
             Incoming Properties
           </h2>
-          <table class="table" cellspacing="0" id="incoming-properties-table">
+          <table class="table" cellspacing="0" id="incoming-properties-table" acre:if="c.type.incoming_properties.length > 0">
             <acre:block if="c.type.incoming_properties.same.properties.length > 0">
               ${t.incoming_props_group(c.type.incoming_properties.same, expanded=true)}
             </acre:block>
@@ -161,10 +160,8 @@
               ${t.incoming_props_group(c.type.incoming_properties.bases)}
             </acre:block>
           </table>
+          <h2 acre:else="">$c.type.name has no Incoming Properties</h2>
         </div>
-      </acre:block>
-      <acre:block else="">
-        <h2>No incoming links</h2>
       </acre:block>
     
   </acre:block>

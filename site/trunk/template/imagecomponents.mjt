@@ -27,7 +27,7 @@
   </acre:script>
 
   <span class="user-image">
-    <a href="${url}" class="fn nickname url">
+    <a href="${url}" class="fn nickname url" title="${user.name || user.id}">
      ${image_thumb(user["/common/topic/image"], size, options)}
     </a>
     ${user_badges(user["badges:/type/user/usergroup"], size)}

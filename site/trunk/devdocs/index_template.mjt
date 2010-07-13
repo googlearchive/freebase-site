@@ -3,7 +3,7 @@
 </acre:script>
 
 <acre:block def="title()">
-  Developer Documentation
+  Reference Documentation
 </acre:block>
 
 <acre:block def="head()">
@@ -94,4 +94,8 @@
       No content
     </div>
   </div>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script type="text/javascript" src="${mf.js_src('index.mf.js')}"></script>
 </acre:block>

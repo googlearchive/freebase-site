@@ -70,7 +70,7 @@
     
     <ul id="domain-explorer-tabs">
       <li acre:if="user">
-        <a href="${h.url_for('homepage', 'loadpanel', [['domains', 'your']])}">
+        <a href="${h.url_for('homepage', 'loadpanel', [['user', user.id]])}">
          <span>Your Data</span>
         </a>
       </li>

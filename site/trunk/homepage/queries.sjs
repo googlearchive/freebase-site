@@ -119,6 +119,16 @@ var process_domains = function(envelope) {
   });
 };
 
+var domains_for_ids = function(domain_ids) {
+  var q_domains = acre.require("domain_info").extend(
+    {"id|=": domain_ids}
+  );
+  
+  return freebase.mqlread(q_domains.query)
+    .then(process_domains)
+    .then(add_domain_activity)
+};
+
 var domains_for_category = function(category_id) {
   var q_category = acre.require("domain_info").extend(
     {"!/freebase/domain_category/domains.id": category_id}
@@ -129,14 +139,42 @@ var domains_for_category = function(category_id) {
     .then(add_domain_activity);
 };
 
-var domains_for_ids = function(domain_ids) {
-  var q_domains = acre.require("domain_info").extend(
-    {"id|=": domain_ids}
-  );
+var domains_for_user = function(user_id) {
+  var q_members = [{
+    "id": null,
+    "type": "/type/domain",
+    "/freebase/domain_profile/users": {"id": user_id},
+    "limit": 1000
+  }];
+  var q_admins = [{
+    "id": null,
+    "type": "/type/domain",
+    "/type/domain/owners": {
+      "/type/usergroup/member": {"id": user_id},
+      "limit": 0
+    },
+    "limit": 1000
+  }];
   
-  return freebase.mqlread(q_domains.query)
-    .then(process_domains)
-    .then(add_domain_activity);
+  return deferred.all([freebase.mqlread(q_members), freebase.mqlread(q_admins)])
+    .then(function(envelopes) {
+      var ids = [];
+      envelopes.forEach(function(envelope) {
+        envelope.result.forEach(function(domain) {
+          ids.push(domain.id);
+        });
+      });
+      
+      return domains_for_ids(ids)
+        .then(function(domains) {
+          domains.forEach(function(domain) {
+            if (domain.id === user_id+"/default_domain") {
+              domain.name = domain.name.replace("types", "profile");
+            }
+          })
+          return domains;
+        });
+    });
 };
 
 var user_info = function(user_id) {

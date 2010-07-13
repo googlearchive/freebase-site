@@ -209,7 +209,10 @@
 <acre:block def="gridworks()">
   <div class="content-subsection-gridworks">
     <img src="${mf.img_src('gridworks-logo.png')}" class="gridworks-logo"/>
-    <p>An open source power tool to fix, discover, experiment, connect and customize your data.  <a href="">Learn more &raquo;</a></p>
+    <p>
+      An open source power tool to fix, discover, experiment, connect and customize your data.  
+      <a href="http://code.google.com/p/freebase-gridworks">Learn more &raquo;</a>
+    </p>
   </div>
 </acre>
 
@@ -217,7 +220,7 @@
   <div class="content-sub-section">
     <h3>What is <span class="emphasis">Freebase?</span></h3>
     <p>Learn what an entity graph is, what kind of information it contains, and why you should add your data!</p>
-    <a href="" class="more-link">Learn More &raquo;</a>
+    <a href="http://wiki.freebase.com/wiki/What_is_Freebase%3F" class="more-link">Learn More &raquo;</a>
   </div>
 </acre>
 
@@ -229,7 +232,7 @@
       <li>JavaScript-based hosting framework</li>
       <li>libraries for other languages</li>
     </ul>
-    <a href="" class="more-link">Learn More &raquo;</a>
+    <a href="http://wiki.freebase.com/wiki/Developers" class="more-link">Learn More &raquo;</a>
   </div>
 </acre>
 

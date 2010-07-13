@@ -17,17 +17,22 @@ function match_route(path, route) {
     // no match
     return false;
   }
-  if (route.script) {
-    var script = route.script;
+  var app, script, path_info;
+  if (route.redirect) {
+    return true;
   }
   else {
-    var [script, path_info, qs] = h.split_path(path_info);
+    app = mf.apps[route.to];
+    if (!app) {
+      throw (route.to + " must be defined in the manifest");
+    }
+    if (route.script) {
+      script = route.script;
+    }
+    else {
+      var [script, path_info, qs] = h.split_path(path_info);
+    }
   }
-  var app = mf.apps[route.to];
-  if (!app) {
-    throw (route.to + " must be defined in the manifest");
-  }
-  
   return [app, script, path_info];
 };
 
@@ -56,14 +61,14 @@ function do_route(app, script, path_info, query_string) {
   if (!md.files["routes"] && !md.files[script]) {
     return not_found(md.app_id + "/" + script);
   }
-  
+
   var path = [
     (app ? app + "/" : ""),
     script,
     path_info,
     (query_string ? "?" + query_string : "")
   ];
-  
+
   path = path.join("");
   console.log("routing", path);
   acre.route(path);
@@ -84,7 +89,7 @@ if (acre.current_script === acre.request.script) {
     path = path_segs[0];
     query_string = path_segs[1];
   }
-  
+
   // find the first route match
   for (var i=0,len=routes.length; i<len; i++) {
     var route = routes[i];
@@ -92,11 +97,18 @@ if (acre.current_script === acre.request.script) {
     if (!match) {
       continue;
     }
-    var app = match[0];
-    var script = match[1];
-    var path_info = match[2];
-    // acre.route and exit
-    do_route(app, script, path_info, query_string);
+    if (route.redirect) {
+      acre.response.status = route.redirect;
+      acre.response.set_header("location", route.to);
+      acre.exit();
+    }
+    else {
+      var app = match[0];
+      var script = match[1];
+      var path_info = match[2];
+      // acre.route and exit
+      do_route(app, script, path_info, query_string);
+    }
   }
   // default to local acre.route
   var [script, path_info, query_string] = h.split_path(req_path);

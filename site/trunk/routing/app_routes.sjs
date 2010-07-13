@@ -66,6 +66,11 @@ var routes = [
   {
     from: "/policies",
     to: "policies"
+  },
+  {
+    from: "/developer",
+    to: "http://wiki.freebase.com/wiki/Developers",
+    redirect: 301
   }
 ];
 

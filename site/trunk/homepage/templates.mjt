@@ -166,14 +166,31 @@
   </div>
   
   ${activity_section(domain)}
-  <!--div class="domain-section activity-coverage">
-    <div acre:if="domain.activity && domain.activity.weeks"
-         class="activity-coverage-number">
-      ${h.facts_per_topic(domain)}
-    </div>
-  </div-->
+  
   <div class="domain-contributor domain-section">
     ${image_components.user_image_small(domain.top_user)}
+  </div>
+</acre:block>
+
+<acre:block def="homepage_header()">
+  <div class="homepage-header">
+    <h1 class="homepage-header-title">
+      <span>
+        An entity graph of people, places and things, built by a community that loves open data.
+      </span>
+    </h1>
+    <span class="homepage-announce">
+      Freebase is announcing Gridworks.
+      <a href="http://code.google.com/p/freebase-gridworks/">
+        Learn More &raquo;
+      </a>
+    </span>
+  </div>
+</acre:block>
+
+<acre:block def="user_info(user)">
+  <div class="content-sub-section">
+    User Info
   </div>
 </acre:block>
 
@@ -254,26 +271,4 @@
     <a href="${h.freebase_url('/signin/login')}">Read the List Archive
   </div>
 </acre:block>
-
-<acre:block def="using_fb_data()">
-  <div>
-    <h2>Using Freebase Data</h2>
-    <div>
-      Freebase data is free for use under the <a href="http://www.freebase.com/policies/licensing#licenses">CC-BY</a> license.
-      Get data using the Freebase API or download the latest data dump.
-    </div>
-    <div><a href="${h.freebase_url('/app/queryeditor')}">Try the API</a></div>
-    <div><a href="${h.wiki_url('Data_dumps')}">Get a Data Dump</a></div>    
-  </div>
-</acre:block>
-
-<acre:block def="get_gridworks()">
-  <div>
-    <h2>Get Gridworks!</h2>
-    <div>Gridworks is an open source power tool to clean, understand, reconcile and augment data.</div>
-    <div><a href="http://code.google.com/p/freebase-gridworks/wiki/Downloads">Download</a></div>
-    <div><a href="http://code.google.com/p/freebase-gridworks/">Learn More</a></div>
-  </div>
-</acre:block>
-
 

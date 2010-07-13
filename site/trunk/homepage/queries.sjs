@@ -139,6 +139,10 @@ var domains_for_ids = function(domain_ids) {
     .then(add_domain_activity);
 };
 
+var user_info = function(user_id) {
+  
+}
+
 ///////////////////
 // Freebase Blog //
 ///////////////////

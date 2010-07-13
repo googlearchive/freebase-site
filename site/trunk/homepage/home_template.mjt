@@ -18,13 +18,12 @@
   </div>
   
   <div id="content-side">
+    ${templates.user_info(c.user)}
     ${templates.gridworks()}
-    ${templates.what_is_freebase()}
-    ${templates.for_developers()}
   </div>
   
   <div id="content-footer">
-    ${templates.join_freebase()}
+    ${templates.for_developers()}
     ${templates.blog_entries(c.blog)}
     ${templates.wiki_entries(c.wiki)}
     ${templates.join_discussion()}

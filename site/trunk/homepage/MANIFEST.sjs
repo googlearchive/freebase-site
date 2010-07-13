@@ -10,13 +10,13 @@ var MF = {
       "libraries": "//2.libraries.apps.freebase.dev"
   },
   "stylesheet": {
-    "index.mf.css": [
+    "homepage.mf.css": [
       ["template", "freebase.mf.css"],
       "homepage.less"
     ]
   },
   "javascript": {
-    "index.mf.js": [
+    "homepage.mf.js": [
       ["template", "freebase.mf.js"],
       ["flot", "flot.core.mf.js"],
       "jquery.tools.tabs.min.js",

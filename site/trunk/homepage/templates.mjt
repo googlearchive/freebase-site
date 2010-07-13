@@ -160,7 +160,7 @@
       <a href="${h.freebase_url('/view'+domain.id)}">${domain.name}</a>
     </h3>
     <div class="member-count">
-      ${domain.member_count > 100 ? 'more than 100' : domain.member_count || 0}
+      ${domain.member_count > 100 ? '100+' : domain.member_count || 0}
       ${domain.member_count === 1 ? 'member' : 'members'}
     </div>
   </div>

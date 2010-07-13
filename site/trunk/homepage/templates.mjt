@@ -174,12 +174,14 @@
         An entity graph of people, places and things, built by a community that loves open data.
       </span>
     </h1>
+    <!--
     <span class="homepage-announce">
-      Freebase is announcing Gridworks.
-      <a href="http://code.google.com/p/freebase-gridworks/">
+      Message goes here
+      <a href="link goes here">
         Learn More &raquo;
       </a>
     </span>
+    -->
   </div>
 </acre:block>
 

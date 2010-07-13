@@ -14,7 +14,6 @@
   <!DOCTYPE html>
   <html lang="en" dir="ltr">
     <head>
-      <script type="text/javascript" src="/local/path/to/firebug-lite.js"></script>
       <meta charset="utf-8" />
       <title acre:if="exports.title">Freebase - ${exports.title()}</title>
       <title acre:else="">Freebase</title>

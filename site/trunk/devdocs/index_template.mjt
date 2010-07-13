@@ -33,7 +33,7 @@
           <li acre:for="doc in category.docs" acre:attrs="(o.sel_category == doc.key)?{'class':'selected'}:{}">
             <acre:block if="!(doc.hidden && (o.sel_category != doc.key))">
               <a acre:if="doc.sections || doc.content" href="$c.base_path/$doc.key">$doc.name</a>
-              <a acre:elif="doc.link" href="$c.base_path/$doc.link">$doc.name</a>
+              <a acre:elif="doc.link" href="$doc.link">$doc.name</a>
               <span acre:else="">$doc.name</span>
             </acre:block>
           </li>

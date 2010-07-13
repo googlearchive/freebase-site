@@ -5,7 +5,7 @@
  */
 var MF = {
   "apps": {
-    "core": "//2.core.site.freebase.dev"
+    "core": "//3.core.site.freebase.dev"
   },
   "javascript": {
     "raphael.all.mf.js": [

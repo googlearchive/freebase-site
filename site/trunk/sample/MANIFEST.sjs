@@ -1,8 +1,8 @@
 var MF = {
   "apps" : {
-    "core" : "//core.site.freebase.dev",
-    "template" : "//template.site.freebase.dev",
-    "promise" : "//promise.site.freebase.dev"
+    "core": "//3.core.site.freebase.dev",
+    "template": "//3.template.site.freebase.dev",
+    "promise": "//3.promise.site.freebase.dev"
   },
   "stylesheet": {
     "sample_page.mf.css": [

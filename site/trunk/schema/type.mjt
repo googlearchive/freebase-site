@@ -31,7 +31,7 @@
 </acre:block>
 
 <acre:block def="content_header()">
-  <div class="page-header">
+  <div class="page-header clear">
     <nav class="breadcrumb clear">
       <ol class="clear">
         <li class="breadcrumb-item">

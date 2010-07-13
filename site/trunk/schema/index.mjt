@@ -104,7 +104,7 @@
       </div>  
     </div>
     
-    <aside role="complimentary" id="content-sub">
+    <div class="aside" role="complimentary" id="content-sub">
       <div class="content-wrapper">
         <h2 class="aside-title">What is Schema</h2>
         <p>Schema describes how data in Freebase is structured.</p>
@@ -140,7 +140,7 @@
           <li><a title="View help page" href="http://wiki.freebase.com/wiki/Domains">Wiki:Domain</a></li>
         </ul>
       </div>
-    </aside>
+    </div>
   
   </div>
 

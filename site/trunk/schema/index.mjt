@@ -110,9 +110,9 @@
     
     <div class="aside" role="complimentary" id="content-sub">
       <div class="content-wrapper">
-        <h2 class="aside-title">What is Schema</h2>
+        <h2 class="aside-title">What is Schema?</h2>
         <p>Schema describes how data in Freebase is structured.</p>
-        <p>Schema is made by creating:</p> 
+        <p><strong>Schema is made by creating:</strong></p> 
         <h3><a href="" title="Learn more about">types</a></h3> 
         <p>which define a particular kind of person, place or thing and contain</p>
         <h3><a href="#" title="Learn more about">properties</a></h3>
@@ -138,10 +138,10 @@
         </div>
         <h2 class="aside-title">Learn more:</h2>
         <ul>
-          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Schema">Wiki:Schema</a></li>
-          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Types">Wiki:Type</a></li>
-          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Properties">Wiki:Property</a></li>
-          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Domains">Wiki:Domain</a></li>
+          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Schema">Wiki: Schema</a></li>
+          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Types">Wiki: Type</a></li>
+          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Properties">Wiki: Property</a></li>
+          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Domains">Wiki: Domain</a></li>
         </ul>
       </div>
     </div>

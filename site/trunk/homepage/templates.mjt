@@ -68,6 +68,9 @@
     <div class="activity-stats-header-topics">
       Topics
     </div>
+    <div class="activity-stats-header-user">
+      Top User
+    </div>
   </div>
   
   <div id="domain-explorer-tabset">

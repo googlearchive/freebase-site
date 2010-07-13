@@ -1,5 +1,5 @@
 #content {
-    margin: 2em auto;
+    margin: 3.5em auto 2em auto;
     width: 98em; /* was 960*/
     padding: 0;
 }
@@ -79,18 +79,9 @@ DOMAIN EXPLORER
 
 .domain-explorer-title, 
 .domain-activity-controls, 
-.activity-chart-header,
-.activity-stats-header-user  {
+.activity-chart-header {
     height: 30px;
     float: left;
-}
-
-.activity-chart-date {
-    width: 25px;
-    text-align: center;
-    float: left;
-    font-size: 1.1em;
-    line-height: 1em;
 }
 
 .domain-explorer-title {
@@ -124,29 +115,50 @@ DOMAIN EXPLORER
     padding-right: 7px;
     background: url(template, ui-sprite.png) no-repeat -214px right;
 }
-
+/* Activity chart */
 .activity-chart-header {
-    width: 165px;
+    width: 175px;
     height: 30px;
-    background: url(template, ui-sprite.png) no-repeat 12px -125px;
+    background: url(template, ui-sprite.png) no-repeat 12px -126px;
     float: left;
+    position: relative;
 }
+
+.activity-chart-date {
+    width: 25px;
+    text-align: center;
+    float: left;
+    font-size: 1.1em;
+    line-height: 1em;
+    color: #888;
+    position: absolute;
+    top: 4px;
+}
+
+.activity-chart-date-second {
+    left: 56px;
+}
+
+.activity-chart-date-last {
+    left: 98px;    
+}
+
 .activity-stats-header-facts {
     float: left;
-    width: 54px;
+    width: 48px;
     color: #f71;
     font-size: 1.1em;
     font-weight: bold;
-    padding-top: 10px;
+    padding-top: 12px;
     text-align: center;
 }
 .activity-stats-header-topics {
     float: left;
-    width: 55px;
+    width: 50px;
     color: #78a;
     font-size: 1.1em;
     font-weight: bold;
-    padding-top: 10px;
+    padding-top: 12px;
     text-align: center;
 }
 
@@ -154,8 +166,12 @@ DOMAIN EXPLORER
     width: 45px;
     color: #888888;
     font-size: 1.1em;
+    line-height: 1;
     font-weight: bold;
     text-align: center;
+    margin: 4px 0 0 10px;
+    height: 23px;
+    float: left;
 }
 
 #domain-explorer-tabset {
@@ -389,7 +405,7 @@ CONTENT SUB
     .rounded_corners(5px);
     padding: 1em;
     text-align: center;
-    margin: 1.5em 0 1.5em 0;
+    margin: 0 0 1.5em 0;
 }
 
 .content-subsection-gridworks p {

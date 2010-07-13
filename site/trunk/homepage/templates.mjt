@@ -67,7 +67,7 @@
       Topics
     </div>
     <div class="activity-stats-header-coverage">
-      Coverage
+      Fanout
     </div>
   </div>
   
@@ -161,7 +161,7 @@
   <div class="domain-section activity-coverage">
     <div acre:if="domain.activity && domain.activity.weeks"
          class="activity-coverage-number">
-      ${h.compute_coverage_percentage(domain)}%
+      ${h.facts_per_topic(domain)}
     </div>
   </div>
   <div class="domain-contributor domain-section">

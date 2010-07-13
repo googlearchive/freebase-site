@@ -24,6 +24,12 @@ function compute_coverage_percentage(domain) {
   return Math.round((last_week.f / last_week.c) * 100);
 }
 
+function facts_per_topic(domain) {
+  var value = domain.activity.total.e / domain.activity.total.t;
+  value = Math.log(value) / Math.LN10;
+  return Math.round(value * 10);
+}
+
 function lowercase_alphabet() {
   return ['a', 'b', 'c', 'd', 'e', 'f', 
           'g', 'h', 'i', 'j', 'k', 'l', 

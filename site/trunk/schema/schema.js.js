@@ -3,6 +3,8 @@ $(document).ready(function(){
     // Setup schema search tabset
     var $schema_explorer_search_tabset = $("#schema-search > .section-tabset").tabs("#schema-search > .search-box");
     
+    var $type_mode_tabset = $(".nav-mode").tabs("#content .mode");
+    
     // Make all sortable tables sortable
     $(".table-sortable").tablesorter({
         cssAsc: "column-header-asc",

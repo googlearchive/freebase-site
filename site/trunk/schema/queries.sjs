@@ -5,6 +5,7 @@ var urlfetch = mf.require("promise", "apis").urlfetch;
 var qh = mf.require("queries", "helpers");
 var blob = mf.require("queries", "blob");
 var h = mf.require("core", "helpers");
+var utils = acre.require("utils");
 
 
 function add_description(o, mode, options) {
@@ -186,7 +187,8 @@ var type = function(id, order, dir) {
         key : r.key,
         description : r.description,
         properties : r.properties,
-        included_types : r['/freebase/type_hints/included_types']
+        included_types : r['/freebase/type_hints/included_types'],
+        expected_by : r.expected_by
       };
   
       type.instances = r['/freebase/type_profile/instance_count'] ? h.commafy(r['/freebase/type_profile/instance_count'].value) : null;

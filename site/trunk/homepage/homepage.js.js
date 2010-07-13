@@ -49,7 +49,7 @@ fb.homepage.init_activity_charts = function(scope) {
     var weeks = JSON.parse($chart.attr("data-activity"));
     
     var x = [], edits = [];
-    for (var i = 0; i < weeks.length; i++) {
+    for (var i=1; i < weeks.length; i++) {
       var edit = parseInt(weeks[i].e, 10);
       edits.push([i, edit]);
     }

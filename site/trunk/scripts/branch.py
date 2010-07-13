@@ -289,15 +289,12 @@ for app, appid, version in apps:
     # acre push branch
     acrepush.push(appid, graph, tempdir, version=version, user=user, pw=pw)
 
-# flag to tell us if we've created new freebaselibs deployed directory,
-# and if so, restart the outbound01/02 static servers
-restart_static_servers = False
 
 # determine if we need to create a new deploy revision by
 # 1. determine the md5 hash of all the img files + javascript/stylesheet manifests sorted and concatenated together.
-for app, appid, veresion in apps:
-    branch = svn_dev_url(app, version)
-    branch_dir = svn_temp_dirs[branch]
+for app, appid, version in apps:
+    branch_url = svn_dev_url(app, version)
+    branch_dir = svn_temp_dirs[branch_url]
 
     # 1. urlfetch static files from app url (*.mf.js/*.mf.css)
     deployed_dir = mkdtemp()    
@@ -332,7 +329,7 @@ for app, appid, veresion in apps:
                     hash_file.write(data)   
     with open(path, "rb") as hash_file:
         deploy_rev = hash_for_file(hash_file)
-        svn_deploy_revs[branch] = deploy_rev
+        svn_deploy_revs[branch_url] = deploy_rev
 
     # update MANIFEST static_base_url
     base_url = "http://freebaselibs.com/static/freebase_site/{app}/{rev}".format(app=app, rev=deploy_rev)
@@ -354,8 +351,20 @@ for app, appid, veresion in apps:
         svn_commit(branch_dir, msg)    
 
         # acre push branch
-        acrepush.push(appid, graph, branch_dir, version=version, user=user, pw=pw)    
+        acrepush.push(appid, graph, branch_dir, version=version, user=user, pw=pw)
 
+# flag to tell us if we've created new freebaselibs deployed directory,
+# and if so, restart the outbound01/02 static servers
+restart_static_servers = False
+
+for app, appid, version in apps:
+    branch_url = svn_dev_url(app, version)
+    branch_dir = svn_temp_dirs[branch_url]
+    deploy_rev = svn_deploy_revs.get(branch_url)
+
+    if not deploy_rev:
+        continue
+    
     # check if a deployed_rev already exists or not
     deployed_url = svn_deployed_url(app, deploy_rev)
     cmd = ['svn', 'ls', deployed_url]
@@ -366,6 +375,7 @@ for app, appid, veresion in apps:
 
     # deployed_rev does not exist, add it to svn    
     deployed_dir = mkdtemp()
+    url = app_url(app, version)
     # now that we have deterministically calculated the deployed_rev and updated the MANIFEST static_base_url/image_base_url,
     # we now want to reget the static_files with the correct css url(...) pointing the http://freebaselibs...
     static_files = deploy_static_files(branch_dir, url, deployed_dir)

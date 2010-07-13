@@ -20,6 +20,12 @@
 
       <!-- freebase suggest -->
       <link rel="stylesheet" type="text/css" href="${mf.suggest.base_url}/suggest.min.css" />
+      <link rel="search" 
+            type="application/opensearchdescription+xml" 
+            href="/opensearch" 
+            title="Freebase search" />
+      
+      <script>${acre.include("header.js")}</script>
       
       <!-- any additional head content (i.e., css, js, etc.)-->
       <acre:block if="exports.head">

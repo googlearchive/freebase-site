@@ -19,11 +19,7 @@
 </acre:script>
 
 <acre:block def="title()">
-  $c.type.name <span class="type">type</span> <span class="type" acre:if="c.type.mediator">| mediator/CVT</span> <span acre:if="c.type.published" class="type">| ${c.type.published.name}</span><span class="type" acre:else>(no published info)</span>
-  <span class="extends" acre:if="c.type.included_types.length > 0">extends</span>        
-  <acre:block for="t in c.type.included_types">
-    <span class="included_type"><a href="${h.url_for('schema', 'type', null, t.id)}">${t.name}</a> <span class="type">type</span> <span class="type" acre:if="t.mediator">| mediator/CVT</span> <span acre:if="t.published" class="type">| ${t.published.name}</span><span class="type" acre:else>(no published info)</span></span>
-  </acre:block>
+  Type<acre:block if="c.type"> - $c.type.name</acre:block>
 </acre:block>
 
 <acre:block def="head()">

@@ -11,6 +11,10 @@
   };
 </acre:script>
 
+<acre:block def="title()">
+  Property<acre:block if="c.property"> - $c.property.name</acre:block>
+</acre:block>
+
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.mf.css')}" />
 </acre:block>
@@ -21,7 +25,7 @@
       <ol class="clear">
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.url_for('schema')}">Schema Explorer</a>
+            <a href="${h.url_for('schema')}">Schema</a>
           </span>
         </li>
         <li class="breadcrumb-item">

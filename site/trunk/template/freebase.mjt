@@ -25,7 +25,9 @@
             href="/opensearch" 
             title="Freebase search" />
       
-      <script>${acre.include("googleanalytics.js")}</script>
+      <acre:block if="h.is_production()">
+        <script>${acre.include("googleanalytics.js")}</script>
+      </acre:block>
       
       <!-- any additional head content (i.e., css, js, etc.)-->
       <acre:block if="exports.head">

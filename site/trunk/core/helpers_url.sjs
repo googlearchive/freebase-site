@@ -1,5 +1,6 @@
 var exports = {
   "is_client": is_client,
+  "is_production": is_production,
   "url_for": url_for,
   "account_url": account_url,
   "freebase_url": freebase_url,
@@ -28,6 +29,12 @@ function is_client() {
   }
   return is_client.b;
 };
+function is_production() {
+  if (is_production.b == undefined) {
+    is_production.b = /^https?:\/\/(www\.)?freebase\.com(\:\d+)?/.test(acre.request.app_url);
+  }
+  return is_production.b;
+}
 
 /**
  * Get the canonical url for an acre resource specified by "app" label and "file" name.
@@ -188,7 +195,7 @@ function image_url(id, options) {
       delete o[key];
     }
   }
-  
+
   return acre.form.build_url(freebase_url("/api/trans/image_thumb"), o);
 };
 

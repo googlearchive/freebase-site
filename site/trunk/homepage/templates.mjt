@@ -42,21 +42,21 @@
       </span>
     </div>
     <div class="activity-chart-header">
-      <div class="actitity-chart-date">
+      <div class="activity-chart-date">
         <acre:script>
           var two_months_ago = new Date();
           two_months_ago.setDate(two_months_ago.getDate()-7*8)
         </acre:script>
         ${h.format_date(two_months_ago, "MMM d")}
       </div>
-      <div class="actitity-chart-date">
+      <div class="activity-chart-date">
         <acre:script>
           var one_month_ago = new Date();
           one_month_ago.setDate(one_month_ago.getDate()-7*4)
         </acre:script>
         ${h.format_date(one_month_ago, "MMM d")}
       </div>
-      <div class="actitity-chart-date">
+      <div class="activity-chart-date">
         last week
       </div>
     </div>

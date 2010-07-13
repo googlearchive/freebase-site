@@ -185,7 +185,7 @@
   <div class="content-sub-section">
     <h3><span class="emphasis">Freebase</span> for Developers</h3>
     <ul>
-      <li>powerful queriable API</li>
+      <li>powerful queryable API</li>
       <li>JavaScript-based hosting framework</li>
       <li>libraries for other languages</li>
     </ul>

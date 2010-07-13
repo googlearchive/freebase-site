@@ -120,6 +120,10 @@ var process_domains = function(envelope) {
 };
 
 var domains_for_ids = function(domain_ids) {
+  if (!domains_ids || domain_ids.length === 0) {
+    return [];
+  }
+  
   var q_domains = acre.require("domain_info").extend(
     {"id|=": domain_ids}
   );

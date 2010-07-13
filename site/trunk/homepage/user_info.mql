@@ -6,11 +6,13 @@
   "/freebase/user_profile/watched_items": {
     "type": "/type/user",
     "limit": 101,
-    "return": "count"
+    "return": "count",
+    "optional": true
   },
   "!/freebase/user_profile/watched_items": {
     "type": "/type/user",
     "limit": 101,
-    "return": "count"
+    "return": "count",
+    "optional": true
   },
 }

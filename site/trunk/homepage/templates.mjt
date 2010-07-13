@@ -33,7 +33,7 @@
     
     <div class="domain-activity-controls">
       <span class="domain-activity-controls-content">
-        Sort by <a href="">write activity</a>
+        <!--Sort by <a href="">write activity</a>-->
       </span>
     </div>
     <div class="activity-chart-header">
@@ -88,7 +88,7 @@
         <a href="#pane-all">
           <span>All</span>
         </a>
-        <!--->
+        <!--
         <ul>
           <acre:block acre:for="letter in h.uppercase_alphabet()">
             <li class="toc-letter">
@@ -101,7 +101,7 @@
             </li>
           </acre:block>
         </ul>
-        <!-->
+        -->
       </li>
     </ul>
     

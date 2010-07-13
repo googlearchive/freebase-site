@@ -255,7 +255,7 @@
                   </td>
                 </tr>
               </acre:block>
-              <tr acre:if="!previous_global && result.properties.length > 0" class="separator local">
+              <tr acre:if="!previous_global && c.type.properties.length > 0" class="separator local">
                 <td class="c1 spacer"></td>
                 <td class="c1">&nbsp;</td>
                 <td class="c1"></td>

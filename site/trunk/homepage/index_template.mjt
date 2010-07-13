@@ -17,7 +17,7 @@
   <link rel="canonical" href="http://www.freebase.com" />
   
   <script>
-    (function(fb){if (fb && fb.user_info) {window.location.href= "/home"; }})(window.freebase);
+    if (document.cookie.indexOf("metaweb-user-info") > 0) {window.location.href= "/home";}
   </script>
   <link rel="stylesheet" type="text/css" href="${mf.css_src('homepage.mf.css')}" />
 </acre:block>

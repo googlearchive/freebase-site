@@ -29,6 +29,11 @@ function get_list() {
           "sections" : url_for("datadocs", "sections_getting_started" )
         },
         {
+          "name"     : "MQL Reference",
+          "key"      : "mql",
+          "sections" : url_for("mql","sections_new?base="+ acre.request.base_path) // XXX: what is base_path used for?
+        },
+        {
           "name"     : "MQL Read",
           "key"      : "mqlread",
           "content": host + "/web_service/en/api_service_mqlread"
@@ -56,7 +61,7 @@ function get_list() {
       ]
     },
     {
-      "name" : "Libraries",
+      "name" : "Widgets",
       "docs" : [
         {
           "name"     : "Freebase Suggest",

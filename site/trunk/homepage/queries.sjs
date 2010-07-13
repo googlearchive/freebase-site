@@ -120,7 +120,7 @@ var process_domains = function(envelope) {
 };
 
 var domains_for_ids = function(domain_ids) {
-  if (!domains_ids || domain_ids.length === 0) {
+  if (!domain_ids || domain_ids.length === 0) {
     return [];
   }
   

@@ -30,12 +30,10 @@
       <acre:block for="category in o.categories">
         <h3>$category.name</h3>
         <ul>
-          <li acre:for="doc in category.docs" acre:attrs="(o.sel_category == doc.key)?{'class':'selected'}:{}">
-            <acre:block if="!(doc.hidden && (o.sel_category != doc.key))">
-              <a acre:if="doc.sections || doc.content" href="$c.base_path/$doc.key">$doc.name</a>
-              <a acre:elif="doc.link" href="$doc.link">$doc.name</a>
-              <span acre:else="">$doc.name</span>
-            </acre:block>
+          <li acre:for="doc in category.docs" acre:if="!doc.anonymous && !(doc.hidden && (o.sel_category != doc.key))" acre:attrs="(o.sel_category == doc.key)?{'class':'selected'}:{}">
+            <a acre:if="doc.sections || doc.content" href="$c.base_path/$doc.key">$doc.name</a>
+            <a acre:elif="doc.link" href="$doc.link">$doc.name</a>
+            <span acre:else="">$doc.name</span>
           </li>
         </ul>
       </acre:block>

@@ -1,7 +1,6 @@
 //XXX: why test this? if (acre.current_script === acre.request.script) {
 
 var path_info = acre.request.path_info;
-if (path_info==='/') { path_info='/data'; }
 
 var filename = path_info.split('/')[1];
 

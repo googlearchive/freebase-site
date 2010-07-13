@@ -63,7 +63,6 @@ function setup(path_info) {
   var query = request.query_string;
   // This is not used. Calling get_user_info makes pages that use this NOT cacheable
   //var user = acre.freebase.get_user_info();
-  
   var sel_category;
   var sel_section;
   var path = path_info.split('/');

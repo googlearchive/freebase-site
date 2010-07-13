@@ -140,8 +140,21 @@ var domains_for_ids = function(domain_ids) {
 };
 
 var user_info = function(user_id) {
-  
-}
+  var q_user = acre.require("user_info").extend({"id": user_id});
+  return freebase.mqlread(q_user.query)
+    .then(function(envelope) {
+      var result = envelope.result;
+      return {
+        "id": result.id,
+        "name": result.name,
+        "created": acre.freebase.date_from_iso(result.timestamp),
+        "following_count": result['/freebase/user_profile/watched_items'] || 0,
+        "followers_count": result['!/freebase/user_profile/watched_items'] || 0,
+        "messages_count": 0,
+        "assertions": 0
+      };
+    });
+};
 
 ///////////////////
 // Freebase Blog //

@@ -1,0 +1,16 @@
+{
+  "id": null,
+  "name": null,
+  "type": "/type/user",
+  "timestamp": null,
+  "/freebase/user_profile/watched_items": {
+    "type": "/type/user",
+    "limit": 101,
+    "return": "count"
+  },
+  "!/freebase/user_profile/watched_items": {
+    "type": "/type/user",
+    "limit": 101,
+    "return": "count"
+  },
+}

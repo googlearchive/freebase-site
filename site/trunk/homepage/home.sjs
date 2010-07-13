@@ -1,11 +1,16 @@
 var mf = acre.require("MANIFEST").MF;
 var queries = mf.require("queries");
 
-var user_id;
+var loggedin_user = acre.freebase.get_user_info();
 if (acre.request.params.id) {
   user_id = acre.request.params.id;
+} else if (loggedin_user){
+  user_id = loggedin_user.id;
 } else {
-  user_id = acre.freebase.get_user_info();
+  // If the user is not logged-in then redirect to the logged-out homepage
+  acre.response.status = 302;
+  acre.response.set_header("Location", "/");
+  acre.exit();
 }
 
 var data = {

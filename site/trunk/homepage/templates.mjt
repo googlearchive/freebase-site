@@ -106,6 +106,7 @@
     </ul>
     
     <div id="explorer-panes">
+      <div acre:if="user" class="domain-explorer-pane" id="pane-your"></div>
       <div class="domain-explorer-pane" id="pane-featured"></div>
       <acre:block for="category in categories">
         <div class="domain-explorer-pane" id="pane${category.id.replace(/\//g, '-')}"></div>
@@ -184,7 +185,24 @@
 
 <acre:block def="user_info(user)">
   <div class="content-sub-section">
-    User Info
+    <div>
+      <a href="${h.freebase_url('/view'+user.id)}">${user.name}</a>
+    </div>
+    <div>
+      joined in ${h.format_date(user.created, "MMMM yyyy")}
+    </div>
+    <div>
+      ${user.assertions} total assertions
+    </div>
+    <div>
+      following ${user.following_count}
+    </div>
+    <div>
+      followers ${user.followers_count}
+    </div>
+    <div>
+      messages ${user.messages_count}
+    </div>
   </div>
 </acre:block>
 

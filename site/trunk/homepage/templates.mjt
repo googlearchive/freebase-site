@@ -280,9 +280,11 @@
   <div class="content-footer-section content-footer-section-last">
     <h3 class="sidebar-header">Discussion LIst</h3>
     Enter your email address to join the discussion:
-    <form>
-      <input name="email" type="email" placeholder="Your email address..." class="input-standard"/>
-      <!-- XXX: link to Michael's app  XXX: placeholder support in freebase.js.js -->
+    <form method="POST" action="http://lists.freebase.com/mailman/subscribe/freebase-discuss" >
+      <input name="email" type="email" 
+             placeholder="Your email address..." 
+             class="input-standard"/>
+
       <input type="submit" value="Submit" class="button-featured"/>
     </form>
     <a href="${h.freebase_url('/signin/login')}">Read the List Archive

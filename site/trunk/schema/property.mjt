@@ -17,7 +17,7 @@
 
 <acre:block def="content_header()">
   <div class="page-header clear">
-    <nav class="breadcrumb clear">
+    <div class="breadcrumb clear">
       <ol class="clear">
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
@@ -49,7 +49,7 @@
           </div>          
         </li>
       </ol>
-    </nav>
+    </div>
   </div>
 
 </acre:block>

@@ -1,5 +1,5 @@
 var util = acre.require("util");
-var host = util.get_doc_host();
+var host = util.get_doc_host(); //XXX: do I still need this?
 
 var contents = {
   "contents": [
@@ -107,7 +107,7 @@ var contents = {
       "name": "Create Group",
       "key": "create_group",
       "content": host + "/web_service/en/api_create_group"
-    },
+    }
   ],
   "status": "200 OK"
 };

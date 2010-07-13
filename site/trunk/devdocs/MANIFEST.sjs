@@ -1,11 +1,21 @@
 var MF = {
   "apps": {
-    "core": "//2.core.site.freebase.dev",
-    "template": "//2.template.site.freebase.dev",
-    "promise": "//2.promise.site.freebase.dev",
+    "core":      "//2.core.site.freebase.dev",
+    "template":  "//2.template.site.freebase.dev",
+    "promise":   "//2.promise.site.freebase.dev",
 
-    // external apps
-    "libraries": "//libraries.apps.freebase.dev"
+    "libraries": "//libraries.apps.freebase.dev",
+    
+    //devdoc list
+    "datadocs":     "//release.datadocs.dfhuynh.user.dev",
+    "acredocs":     "//release.acredocs.stefanomazzocchi.user.dev",
+    "mql":          "//release.mql.jdouglas.user.dev",
+    "devdocs":      "//devdocs.site.freebase.dev", // depend on self for web_services_list //XXX: add a version number?
+    "mjt":          "//release.templates.jdouglas.user.dev",
+    "acreassist":   "//release.acreassist.dfhuynh.user.dev",
+    "jscheatsheet": "//release.jscheatsheet.stefanomazzocchi.user.dev",
+    "libtopic":     "//release.libtopic.fbclient.user.dev"
+
   },
   "stylesheet": {
     "docs_style.mf.css": [
@@ -19,21 +29,9 @@ var MF = {
     ]
   },
 
-  // devdoc specific metadata
-
-  "version": {
-    "/freebase/apps/global"               :  "52",
-    "/freebase/apps/home"                 :  "85",
-    "/user/dfhuynh/datadocs"              : "release",
-    "/user/stefanomazzocchi/acredocs"     : "release",
-    "/user/jdouglas/mql"                  : "release",
-    "/user/jdouglas/templates"            : "release",
-    "/user/dfhuynh/acreassist"            : "release",
-    "/user/stefanomazzocchi/jscheatsheet" : "release",
-    "/user/fbclient/libtopic"             : "release"
-  },
+  // devdoc-specific links
   "urls" : {
-    "cheatsheet"       : "http://download.freebase.com/MQLcheatsheet-081208.pdf",
+    "cheatsheet"       : "http://download.freebase.com/MQLcheatsheet-081208.pdf", //XXX: this link is dead
     "query_recipes"    : "http://wiki.freebase.com/wiki/MQL_Recipes",
     "client_libraries" : "http://wiki.freebase.com/wiki/Libraries",
     "acre_recipes"     : "http://wiki.freebase.com/wiki/Acre_Recipes",

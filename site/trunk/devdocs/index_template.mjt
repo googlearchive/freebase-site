@@ -1,3 +1,6 @@
+<acre:script>
+  var c = this.exports.c = {};
+</acre:script>
 
 <acre:block def="title()">
   Developer Documentation
@@ -19,10 +22,8 @@
   </div>
 
   <acre:script>
-    acre.request.path_info = acre.request.url.substring(acre.request.base_url.length);
-    console.log('HACK: acre.request.path_info',acre.request.path_info);
     var util = acre.require("util");
-    var o = util.setup();
+    var o = util.setup(c.path_info);
   </acre:script>
   <div id="help-viewer">
     <div id="help-nav">
@@ -31,9 +32,8 @@
         <ul>
           <li acre:for="doc in category.docs" acre:attrs="(o.sel_category == doc.key)?{'class':'selected'}:{}">
             <acre:block if="!(doc.hidden && (o.sel_category != doc.key))">
-            <!--HACK: how to avoid /index/ -->
-              <a acre:if="doc.sections || doc.content" href="/docs/index/$doc.key">$doc.name</a>
-              <a acre:elif="doc.link" href="$doc.link">$doc.name</a>
+              <a acre:if="doc.sections || doc.content" href="$c.base_path/$doc.key">$doc.name</a>
+              <a acre:elif="doc.link" href="$c.base_path/$doc.link">$doc.name</a>
               <span acre:else="">$doc.name</span>
             </acre:block>
           </li>
@@ -79,8 +79,7 @@
                 }
                 var deprecated = "deprecated" in section && section.deprecated;
               </acre:script>
-              <!-- HACK: check these urls -->
-              <a acre:if="(o.sel_section == section.key) || !section.hidden" href="$o.mode/$o.sel_category/$section.key" 
+              <a acre:if="(o.sel_section == section.key) || !section.hidden" href="$c.base_path/$o.sel_category/$section.key" 
               class="${deprecated ? 'deprecated' : ''}">
                 $section.name</a>
             </li>

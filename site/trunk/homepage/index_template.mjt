@@ -1,4 +1,4 @@
-<acre:script>
+http://www.vmware.com/downloads/eula.do<acre:script>
   var mf = acre.require("MANIFEST").MF;
   var templates = mf.require("templates");
   var c = this.exports.c = {};
@@ -9,37 +9,37 @@
 </acre:block>
 
 <acre:block def="content_header()">
-<header class="homepage-header">
+<div class="homepage-header">
   
   <h1 class="homepage-header-title">
-    <span>This stuff sounds impossible</span>
+    <span>This stuff sounds impossible to me</span>
   </h1>
-  <div class="homepage-announce">
+  <span class="homepage-announce">
     Freebase is announcing Gridworks.
     <a href="http://code.google.com/p/freebase-gridworks/">
       Learn More &raquo;
     </a>
-  </div>
-</header>
+  </span>
+</div>
 </acre:block>
 
 <acre:block def="content_body()">
-  <section id="content-main">
+  <div id="content-main">
     ${templates.domain_explorer(c.categories, c.grouped_domains, c.loaded_categories)}
-  </section>
+  </div>
   
-  <section id="content-side">
+  <div id="content-side">
     ${templates.gridworks()}
     ${templates.what_is_freebase()}
     ${templates.for_developers()}
     
-  </section>
-  <section id="content-footer">
+  </div>
+  <div id="content-footer">
     ${templates.join_freebase()}
     ${templates.blog_entries(c.blog)}
     ${templates.wiki_entries(c.wiki)}
     ${templates.join_discussion()}
-  </section>
+  </div>
   
   <!--
   ${templates.using_fb_data()}
@@ -55,3 +55,4 @@
 <acre:block def="footer_script()">
   <script src="${mf.js_src('index.mf.js')}"></script>
 </acre:block>
+

@@ -1,4 +1,4 @@
-ÅÅ<acre:script>
+<acre:script>
   var mf = acre.require("MANIFEST").MF;
   var image_components = mf.require("template", "imagecomponents");
   var h = mf.require("helpers");
@@ -32,7 +32,7 @@
 <acre:block def="domain_explorer(categories, grouped_domains, loaded_categories)">
   <div id="domain-explorer-header">
     <div class="domain-explorer-title">
-      <span class="domain-explorer-title-content">Projects</span>
+      <span class="domain-explorer-title-content">Data</span>
       <a href="" class="rss-icon domain-explorer-rss">RSS</a>  
     </div> 
     
@@ -158,12 +158,12 @@
   </div>
   
   ${activity_section(domain)}
-  <div class="domain-section activity-coverage">
+  <!--div class="domain-section activity-coverage">
     <div acre:if="domain.activity && domain.activity.weeks"
          class="activity-coverage-number">
       ${h.facts_per_topic(domain)}
     </div>
-  </div>
+  </div-->
   <div class="domain-contributor domain-section">
     ${image_components.user_image_small(domain.top_user)}
   </div>

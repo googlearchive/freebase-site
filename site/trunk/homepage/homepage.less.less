@@ -20,13 +20,14 @@
     color: #fff;
     text-align: center;   
     border-bottom: 1px solid #fff;
-    /* padding: 1em 0; */ 
+    padding: 1em 0;
     clear: both;
     overflow: auto;
 }
 
 .homepage-header-title {
     float: left;
+    display: inline-block;
     width: 100%;
 }
 
@@ -46,6 +47,7 @@
     padding: 10px 0;
     float: left;
     width: 100%;
+    display: inline-block;
 }
 
 .homepage-announce a {
@@ -72,12 +74,13 @@ DOMAIN EXPLORER
     display: block;
     .linear_gradient(#fefefe, #ebedee, repeat);
     border-bottom: 1px solid #dcdbdc;
-    overflow: auto;
-}
+    height: 3em;
+    }
 
 .domain-explorer-title, 
 .domain-activity-controls, 
-.activity-chart-header {
+.activity-chart-header,
+.activity-stats-header-user  {
     height: 30px;
     float: left;
 }
@@ -139,19 +142,17 @@ DOMAIN EXPLORER
     text-align: center;
 }
 
-.activity-stats-header-coverage {
-    float: left;
-    width: 60px;
-    color: #495;
+.activity-stats-header-user {
+    width: 45px;
+    color: #888888;
     font-size: 1.1em;
     font-weight: bold;
-    padding-top: 10px;
     text-align: center;
 }
 
 #domain-explorer-tabset {
     position: relative;
-    z-index: 10;
+    z-index: 5;
     height: 1%;
 }
 
@@ -279,7 +280,7 @@ DOMAIN EXPLORER
 }
 
 .domain-info {
-    width: 170px;
+    width: 221px;
 }
 
 .domain-section {
@@ -289,6 +290,7 @@ DOMAIN EXPLORER
 .activity-chart-assertions {
     float: left;
     width: 110px;
+    margin-right: 10px;
     height: 32px;
     overflow: hidden;
 }
@@ -298,31 +300,26 @@ DOMAIN EXPLORER
     .rounded_corners(5px);
     border: 1px solid #dcdbdc;
     overflow: auto;
-}
-
-.activity-coverage {
-    width: 60px;
-    text-align: center;
-}
-
-.activity-coverage-number {
-    color: #449955;
-    font-size: 1.4em;
-    font-weight: bold;
-    margin-top: 7px;
+    margin-right: 10px;
 }
 
 .activity-stats-lastweek {
     color: #f71;
-    width: 40px;
+    width: 50px;
     float: left;
-    font-size: 90%;
+    font-size: 1.2em;
+    line-height: 1;
     overflow: hidden;
 }
-
 .activity-stats-lastweek-label {
-    font-size: 90%;
+    font-size: 10px;
+    line-height: 1;
 }
+
+.domain-contributor {
+    margin-right: 10px;
+}
+
 
 .activity-stats-block {
     width: 48px;
@@ -454,22 +451,6 @@ CONTENT SUB
     margin-top: 0.6em;
 }
 
-/*
-.sidebar-content-featured {
-    border: 1px solid #ccddff;
-    .rounded_corners(5px);
-    font-size: 1.1em;
-    background: #ffffff;
-}
-.content-sub-section-feat {
-    border-bottom: 1px solid #dcdbdc;
-    background: #f9f9f9;
-    -webkit-border-top-right-radius: 5px;
-    -webkit-border-top-left-radius: 5px;
-    -moz-border-radius-topright: 5px;
-    -moz-border-radius-topleft: 5px;
-}
-*/
 .sidebar-header {
     font-size: 1.3em;
     line-height: 1.3;
@@ -521,6 +502,7 @@ CONTENT FOOTER
 
 .content-footer-section {
     width: 21em;
+    height: 20em;
     float: left;
     border-right: 1px solid #d3d3d3;
     padding: 1.5em;

@@ -29,6 +29,7 @@
     background-repeat: @mode;
 }
 
+
 /*-----------------------------------------------------------
 
     Global Color Palette
@@ -184,8 +185,10 @@ Header
     position: relative;
     z-index: 10; /* for Freebase Suggest */
     min-height: 34px;
+    height: 34px;
     min-width: 96em;
     border-bottom: 1px solid #fb3;
+    background: #fa6;
     .linear_gradient(#ff8533, #dd5800, repeat);
     border-bottom: 1px solid #fb3;
     border-top: 1px solid #ffaa66;
@@ -207,7 +210,6 @@ Header
     min-height: 34px;
     color: #fff;
     font-size: 1.1em;
-    /* width: 25em; */
 }
 
 #signedout {
@@ -218,7 +220,7 @@ Header
 
 #nav-username,
 #nav-settings,
-#nv-signout {
+#nav-signout {
     display: inline-block;
 }
 
@@ -228,9 +230,12 @@ Header
     margin: 0 1em 0 0;
 }
 
-.anonymous-user-controls { text-align: center;}
+.anonymous-user-controls { 
+    text-align: center;
+    }
 .nav-user-controls       {
-    padding-left: 2.5em;
+    padding-left: 1.5em;
+    border-left: 1px solid #ffaa66;
 }
 
 #anonymous-user-controls {
@@ -243,7 +248,6 @@ Header
     color: #fff;
 }
 
-#nav-username { display: block; }
 #nav-username a:link { 
     font-weight: bold;
     color: #fff;
@@ -259,7 +263,7 @@ NAV
 #nav-global {
     position: absolute;
     top: 0;
-    left: 390px;
+    left: 425px;
     margin: 0.2em 0 0 0;
 }
 
@@ -353,7 +357,7 @@ Global Search Box
     font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; 
     padding: 0.3em;
     font-size: 1.3em;
-    width: 225px;
+    width: 271px;
     font-size: 1.1em;
     background: #fff url(static:///resources/images/ui/sprite-vert.png) 0 -100px;
 }

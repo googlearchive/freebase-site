@@ -14,6 +14,7 @@
   <!DOCTYPE html>
   <html lang="en" dir="ltr">
     <head>
+      <script type="text/javascript" src="/local/path/to/firebug-lite.js"></script>
       <meta charset="utf-8" />
       <title acre:if="exports.title">Freebase - ${exports.title()}</title>
       <title acre:else="">Freebase</title>
@@ -46,7 +47,7 @@
 </acre:block>
 
 <acre:block def="header(exports)">
-  <header id="page-header" class="clear" role="banner">
+  <div id="page-header" class="clear" role="banner">
     <div id="logo">
       <a href="${acre.freebase.site_host}" title="Return to Freebase homepage">
         <img alt="Freebase" 
@@ -70,20 +71,21 @@
     </div>
     <ul id="nav-global" class="clear">
       <li class="nav-global-item nav-global-menu" id="nav-projects" data-popup-url="${h.url_for('toolbox', 'service', null, '/projects')}">
-        <a href="${h.url_for('homepage', 'index')}">Projects</a>
+        <a href="${h.url_for('homepage', 'index')}">Data</a>
       </li>
-      <!-- li class="nav-global-item nav-global-menu" id="nav-tasks" data-popup-url="${h.url_for('toolbox', 'service', null, '/tasks')}">
-        <a href="${h.url_for('homepage', 'index')}">Tasks</a>
-      </li-->
-      <li class="nav-global-item nav-global-menu" id="nav-apps" data-popup-url="${h.url_for('toolbox', 'service', null, '/apps')}">
-        <a href="${h.url_for('apps')}">Apps</a>
-      </li>
-      <!-- li class="nav-global-item nav-global-menu" id="nav-queries" data-popup-url="${h.url_for('toolbox', 'service', null, '/queries')}">
-        <a href="${h.url_for('homepage', 'index')}">Queries</a>
-      </li -->
       <li class="nav-global-item nav-global-menu" id="nav-schema" data-popup-url="${h.url_for('toolbox', 'service', null, '/schema')}">
         <a href="${h.url_for('schema')}">Schema</a>
       </li>
+      <li class="nav-global-item nav-global-menu" id="nav-apps" data-popup-url="${h.url_for('toolbox', 'service', null, '/apps')}">
+        <a href="${h.url_for('apps')}">Apps</a>
+      </li>
+       <!-- li class="nav-global-item nav-global-menu" id="nav-tasks" data-popup-url="${h.url_for('toolbox', 'service', null, '/tasks')}">
+          <a href="${h.url_for('homepage', 'index')}">Tasks</a>
+        </li-->      
+      <!-- li class="nav-global-item nav-global-menu" id="nav-queries" data-popup-url="${h.url_for('toolbox', 'service', null, '/queries')}">
+        <a href="${h.url_for('homepage', 'index')}">Queries</a>
+      </li -->
+    
       <li class="nav-global-item" id="nav-docs">
         <a href="http://wiki.freebase.com/" title="Give help and get help adding data to Freebase">Docs</a>
       </li>
@@ -93,13 +95,13 @@
         <strong id="nav-username">
           <a href="${h.freebase_url('/view')}" title="View your profile"></a></strong>
         <a href="${acre.markup.bless(h.account_url('settings'))}" title="View your account info on Freebase" rel="nofollow" id="nav-settings">Settings</a>
-        <a href="${acre.markup.bless(h.account_url('signout', acre.request.url))}" title="Sign out of Freebase" rel="nofollow" id="nav-signout">Sign out</a>
+        <a href="${acre.markup.bless(h.account_url('signout', acre.request.url))}" title="Sign out of Freebase" rel="nofollow" id="nav-signout">Sign Out</a>
       </div>
       <div id="anonymous-user-controls" id="signedout" style="display:none;">
         <a href="${acre.markup.bless(h.account_url('signin', acre.request.url))}" title="Sign in to your Freebase account" rel="nofollow">Sign in or Sign up</a>
       </div>
     </div>
-  </header>  
+  </div>  
 </acre:block>
 
 
@@ -114,7 +116,7 @@
 </acre:block>
 
 <acre:block def="footer(exports)">
-  <footer id="page-footer" class="clear">
+  <div id="page-footer" class="clear">
     <div id="metaweb-attribution">
       <a href="http://www.metaweb.com/" id="copyright" title="Learn more about Metaweb, Inc." rel="nofollow">
         &#169;2010&nbsp;
@@ -143,7 +145,7 @@
            title="Visit our blog to keep up with the latest news from Freebase">Freebase Blog</a>
       </li>
     </ul>
-    <nav id="footer-categories" class="clear">
+    <div id="footer-categories" class="clear">
       <strong id="categories-header">Freebase contains information on:</strong>
       <ul id="footer-categories-list" class="clear">  
         <li class="category-list-item"><a href="${h.freebase_url('/view/category/arts-entertainment')}" title="Explore Arts &amp; Entertainment">Arts &amp; Entertainment</a></li>
@@ -154,8 +156,8 @@
         <li class="category-list-item"><a href="${h.freebase_url('/view/category/sports')}" title="Explore Sports">Sports</a></li>
         <li class="category-list-item"><a href="${h.freebase_url('/view/category/time-space')}" title="Explore Time &amp; Space">Time &amp; Space</a></li>
       </ul>
-    </nav>
-  </footer>
+    </div>
+  </div>
 </acre:block>
 
 

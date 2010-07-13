@@ -1,0 +1,365 @@
+/*
+-----------------------------------------
+Buttons
+-----------------------------------------
+*/
+
+/* 
+
+Active button currently is used to for buttons which are the primary call to action.
+This should be updated so that .active represents the state of a button, not it's
+relative importance in a workflow. Suggested class name would be .primary, which
+may or may not be .active
+
+*/
+
+
+button, a.button-link { 
+    font-size: 12px;
+    line-height: 1.5;
+    background: #e6e6e6 url(static:///resources/images/ui/sprite-vert.png) repeat-x 0 -3380px;
+    color: #666;
+    font-weight:bold;
+    margin: 2px;
+    padding: 3px 6px;
+    border: 1px solid #c5c5c5;
+    .rounded_corners(4px);
+    display: inline-block;
+    overflow: visible;
+    cursor: pointer;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; 
+}
+
+.button-primary,
+input[type=submit].button-primary,
+button.active { 
+    color: #fff;
+    border: 1px solid #dc5800;
+    font-weight: bold;
+    .rounded_corners(4px);
+    display: inline-block;
+    overflow: visible;
+    cursor: pointer;
+    margin: 2px;
+    padding: 3px 6px;
+    line-height: 1.5;
+    background: #fa7c0a url(static:///resources/images/ui/sprite-vert.png) repeat-x 0 -3450px;
+}
+
+button[disabled],
+button.disabled,
+button.primary.disabled, 
+a.button-link.disabled,
+a.button-link-primary.disabled {
+    background: #e6e6e6 url(static:///resources/images/ui/sprite-vert.png) repeat-x 0 -3380px;
+    color: #b3b3b3;
+    border: 1px solid #d6d6d6;
+    cursor: default;
+}
+button[disabled]:hover,
+button.disabled:hover {
+    cursor: default;
+    border: 1px solid #d6d6d6;
+}
+
+a.button-link-primary { 
+    font-size: 12px;
+    line-height: 1.5;
+    background: #fa7c0a url(static:///resources/images/ui/sprite-vert.png) repeat-x 0 -3450px;
+    margin: 2px;
+    color: #fff;
+    padding: 3px 6px;
+    border: 1px solid #dc5800;
+    .rounded_corners(4px);
+    display: inline-block;
+    overflow: visible;
+    cursor: pointer;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+    font-weight: bold; 
+}
+
+button:hover, 
+.button-link:hover,
+a.button-link-primary:hover {
+    border: 1px solid #61d7f7;
+    text-decoration: none;
+}
+
+
+/*
+---------------------
+EXPLORE
+---------------------
+*/
+
+#apps-search {
+  margin-bottom: 2em;
+}
+
+#app-buttons-right {
+  float:right;
+}
+
+tr.unpublished {
+  display : none;
+}
+
+.aside-box {
+  position: relative; 
+  background: #fff; 
+  border: 1px #cdf solid; 
+  .rounded_corners(4px);
+  padding: 12px 0;
+}
+
+.aside-box img { 
+  padding: 4px 0 6px 12px; 
+}
+
+.aside-box h2 { 
+  font-size: 1.8em;
+  line-height: 1;
+  color: #999; 
+  padding: 0 4px 12px 12px; 
+  margin: 0 0 4px 0; 
+  border-bottom: 1px solid #ddd;
+}
+
+.aside-box h2.norule { 
+  padding-bottom: 0; 
+  border-bottom: 0; 
+}
+
+.aside-box h2.stacked { 
+  margin-top: 5px; 
+  padding-top: 12px; 
+  border-top: 1px solid #cdf;
+}
+
+.aside-box h3 { 
+  border-top: 1px solid #ddd; 
+  font-size: 1.2em; 
+  font-weight: bold; 
+  margin: 12px 0 0 0; 
+  padding: 12px 12px 0 12px;
+}
+
+.aside-box p { 
+  font-size: 1.1em; 
+  padding: 4px 12px; 
+  line-height: 1.1em;
+}
+
+.aside-box ul { 
+  color: #f71; 
+}
+
+.aside-box li { 
+  list-style: disc outside; 
+  margin: 8px 15px 8px 25px; 
+  font-size: 1.1em;  
+  line-height: 1.1em;
+}
+
+.aside-box li h5 { 
+  font-size: 1.1em; 
+  color: #7788aa; 
+  font-weight: bold; 
+  margin: 0 0 3px 0;
+}
+
+.aside-box li .details { color: #666; }
+.aside-box li .actions { float: right; }
+
+
+/*
+---------------------
+CREATE
+---------------------
+*/
+
+
+#body-left-half {
+  float: left;
+  width: 455px; 
+  margin: 0 0 50px 0;
+}
+
+#body-right-half { 
+  float: right; 
+  width: 455px;  
+  margin: 0 30px 50px 0;
+}
+
+#addacreapp-header { 
+  border-bottom: 1px solid #edf1f3; 
+  padding-bottom: 10px;
+}
+
+#addacreapp-list { 
+  width: 190px; height: 300px; 
+  margin: 0 0 -12px 0; 
+  border-right: 1px solid #edf1f3; 
+  overflow: auto; 
+}
+
+#addacreapp-list li { 
+  font-size: 1.2em; 
+  padding: 6px; 
+  font-weight: bold; 
+}
+
+#addacreapp-list li.selected { 
+  background: #edf1f3; 
+}
+
+#addacreapp-form { 
+  position: absolute; 
+  top: 100px; right: 30px; 
+  margin: 0 0 0 190px; 
+  width: 440px; height: 400px;
+}
+
+#addapp h2 {
+  color:#f71; 
+  font-size: 2em; 
+  margin: 0 0 12px 12px;
+}
+#addapp h3 {
+  margin-bottom: 5px;
+}
+
+.content-box dl { 
+  padding: 0 0 8px 0;
+}
+
+.content-box dt { 
+  font-size: 1.8em; 
+  margin: 20px 10px -5px 10px;
+}
+
+.content-box p { 
+  font-size: 1.4em; 
+  margin: 8px 10px; 
+}
+
+.content-box h3 { 
+  font-size: 1.4em; 
+  font-weight: bold; 
+  margin: 8px 12px 0 12px;
+}
+
+.content-box h3.right { 
+  float: right;
+}
+
+
+/*
+---------------------
+VIEW
+---------------------
+*/
+.app-icon { 
+  float: right; 
+  margin: 0 12px 12px 12px; 
+  border: 1px solid #ccc; 
+  background: #DDD url(static:///resources/images/ui/sprite-bg-1px.png) repeat-x 0 0; 
+}
+
+#app-detail .description { 
+  margin: 12px 0 0 40px; 
+  font-style: italic; 
+}
+
+ul.box-thumblist li { 
+  margin: 16px 12px; 
+  clear: left; 
+  list-style: none; 
+}
+
+ul.box-thumblist p { 
+  font-size: 1.1em; 
+}
+
+ul.box-thumblist img { 
+  float: left; 
+  margin: -2px 8px 0 0; 
+  padding: 2px; 
+  border: 1px solid #d6d6d6; 
+}
+
+
+/*
+---------------------
+EDIT
+---------------------
+*/
+
+.box-form {
+  margin: 12px 0;
+}
+
+.box-form p { 
+  font-size: 1.3em; 
+  position: relative; 
+  line-height: 1.4em; 
+  width: 420px; 
+}
+
+.box-form label { 
+  position: absolute; 
+  top: 2px; right: 305px; 
+  width: 120px; 
+  text-align: right; 
+}
+
+.box-form input, .box-form textarea, .box-form select { 
+  margin: 0 0 0 120px; 
+}
+
+.box-form input[type=text] { 
+  width: 400px;
+}
+
+.box-form textarea { 
+  width: 400px; height: 300px; 
+}
+
+.box-form .description { 
+  margin-bottom: 40px; 
+}
+
+#icon_form {
+  position: absolute;
+  left: 175px;
+  top: 280px;
+}
+
+#icon_form p { 
+  font-size:1.3em; 
+  line-height:1.4em; 
+  white-space: nowrap; 
+  overflow: hidden;
+}
+
+.box-modechooser { 
+  margin: 4px 0 16px 30px;
+}
+
+.box-modechooser input { 
+  margin: 0 2px 0 0; 
+}
+
+.box-modechooser li { 
+  display: inline; 
+  padding: 0 0 0 25px; 
+  font-size: 1.8em; 
+  color: #f71; 
+}
+
+.markdownlink { 
+  font-size: 0.8em; 
+  line-height: 1.2em; 
+  margin-top: 8px; 
+  display: block; 
+}

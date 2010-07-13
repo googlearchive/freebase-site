@@ -1,0 +1,78 @@
+{
+  "id":            null,
+  "guid":          null,
+  "name":          null,
+  "type":          "/freebase/apps/application",
+  "acre:type": {
+    "id":       "/freebase/apps/acre_app",
+    "optional": true
+  },
+  "homepage":      null,
+  "listed":        null,
+  "oauth_enabled": null,
+  "description":   null,
+  "icon": {
+    "id":       null,
+    "name":     null,
+    "optional": true
+  },
+  "/common/topic/article": {
+    "id":       null,
+    "content":  null,
+    "limit":    1,
+    "optional": true
+  },
+  "timestamp" : null,
+  "modified:/type/namespace/keys": {
+    "namespace": {
+      "type" : "/freebase/apps/acre_doc",
+      "/common/document/content" : {
+        "timestamp" : null
+      }
+    },
+    "sort":     "-namespace./common/document/content.timestamp",
+    "optional": true,
+    "limit":    1
+  },
+  "pubkey:key": {
+    "value":     null,
+    "namespace": "/freebase/apps/hosts/com/freebaseapps",
+    "limit":     1,
+    "optional":  true
+  },
+  "pubkey:/type/namespace/keys": {
+    "value" : null,
+    "value!=" : "release",
+    "namespace" : {
+      "key": {
+        "value":     null,
+        "namespace": "/freebase/apps/hosts/com/freebaseapps",
+        "limit":     1
+      },
+      "limit":    1,
+    },
+    "limit" : 1,
+    "optional": true
+  },
+  "/type/domain/owners": {
+    "creator": {
+      "id":       null,
+      "name":     null,
+      "optional": true
+    },
+    "a:creator": {
+      "id":       "/user/prune",
+      "optional": "forbidden"
+    },
+    "b:creator": {
+      "id":       "/user/xtine",
+      "optional": "forbidden"
+    },
+    "member": [{
+      "id":       null,
+      "name":     null,
+      "optional": true
+    }],
+    "optional": true
+  }
+}

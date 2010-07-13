@@ -8,7 +8,8 @@ var h = mf.require("core", "helpers");
 var utils = acre.require("utils");
 
 
-function add_description(o, mode, options) {
+function add_description(o, mode, options, label) {
+  label = label || "description";
   mode = mode || "blurb";
   if (!o['/common/topic/article'] || o['/common/topic/article'].length === 0) {
     return o;
@@ -16,7 +17,7 @@ function add_description(o, mode, options) {
   var getter = mode === "blob" ? blob.get_blob : blob.get_blurb;
   return getter(o['/common/topic/article'][0].id, options)
     .then(function(blob) {
-      o.description = blob;
+      o[label] = blob;
       return o;
     });
 };
@@ -108,7 +109,10 @@ var domain = function(id, order, dir) {
       return envelope.result;
     })
     .then(function(domain) {
-      return add_description(domain, "blob");
+      return add_description(domain, "blurb", {}, "blurb");
+    })
+    .then(function(domain) {
+      return add_description(domain, "blob", {}, "blob");
     })
     .then(function(domain) {
       domain.subdomains = domain['/type/namespace/keys'].map(function(v) {

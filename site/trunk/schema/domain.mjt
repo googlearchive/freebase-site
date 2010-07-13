@@ -56,7 +56,15 @@
           Created by <a href="${acre.freebase.service_url}/view${c.domain.creator.id}" title="View user profile">$c.domain.creator.name</a> 
           on <time class="published" datetime="${c.domain.timestamp}">$c.domain.date</time>
         </span>
-        <div id="description" acre:if="c.domain.description">${acre.markup.bless(c.domain.description)}</div>
+        <div id="description" acre:if="c.domain.blurb && c.domain.blob">
+          <p class="blurb">
+            $c.domain.blurb
+          </p>
+          <div class="blob">
+            ${acre.markup.bless(c.domain.blob)}
+          </div>
+          <a href="javascript:void(0);" class="blurb-trigger">More</a>          
+        </div>
         <acre:block if="c.domain.owners">
           <h2 class="user-list-title">Project Owners:</h2>
           <ul class="user-list clear" acre:for="group in c.domain.owners">

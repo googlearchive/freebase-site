@@ -29,6 +29,25 @@ $(document).ready(function(){
         
     });
     
+    $(".blurb-trigger").click(function(){
+        $trigger = $(this);
+        $blurb = $trigger.siblings(".blurb");
+        $blob = $trigger.siblings(".blob");
+        console.log($blurb);
+        console.log($blob);
+        
+        if ($blob.is(":hidden")) {
+            $blob.show();
+            $blurb.hide();
+            $trigger.text('Less');
+        }
+        else {
+            $blob.hide();
+            $blurb.show();       
+            $trigger.text('More');
+        }
+    });
+    
     /*
         Breadcrumbs
     */

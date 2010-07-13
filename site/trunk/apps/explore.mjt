@@ -125,7 +125,7 @@
       </div>
     </div>
   
-    <aside role="complimentary" id="content-sub">
+    <div class="aside" role="complimentary" id="content-sub">
       <div class="content-wrapper">
         <h2 class="aside-title">What are Apps?</h2>
         <p>
@@ -155,7 +155,7 @@
         </div>
 
       </div>
-    </aside>
+    </div>
   </div>
 </acre:block>
 

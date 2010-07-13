@@ -16,6 +16,11 @@ var routes = [
     script: "index"
   },
   {
+    from: "/home",
+    to: "homepage",
+    script: "home"
+  },
+  {
     from: "/homepage",
     to: "homepage"
   },

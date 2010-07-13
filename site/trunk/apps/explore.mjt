@@ -2,6 +2,7 @@
   var mf = acre.require("MANIFEST").MF;
   var c = this.exports.c = {};
   var h = mf.require("core", "helpers");
+  var image = mf.require("template", "imagecomponents");
 </acre:script>
 
 <acre:block def="title()" trim="">
@@ -34,68 +35,74 @@
               <fieldset>
                 <input type="text" name="q" class="text-input" id="app-search-input" placeholder="Search apps..." />
                 <input type="submit" class="button-primary" value="Search"/>
+                <!--
+                <label><input type="checkbox" name="unlisted" class="search-toggle" value="$c.query||''" id="app-search-toggle-listed"
+                  acre:attrs="acre.request.params.unlisted?{'checked':'checked'}:{}"/>Include Unpublished Apps</label>
+                -->
               </fieldset>
             </form>
-            <label><input type="checkbox" name="app-search-toggle" class="search-toggle" id="app-search-toggle-listed" checked="checked" />Published Apps Only</label>
           </div>
           <div class="search-box" id="user-search">
             <form id="user-search-form" method="get" action="type">
               <fieldset>
                 <input type="text" name="id" class="text-input" id="user-search-input" placeholder="Start typing for suggested users..." />
+                <!--
+                <label><input type="checkbox" name="unlisted" class="search-toggle" value="$c.query||''" id="app-search-toggle-listed"
+                  acre:attrs="acre.request.params.unlisted?{'checked':'checked'}:{}"/>Include Unpublished Apps</label>
+                -->
               </fieldset>
             </form>
-            <label><input type="checkbox" name="app-search-toggle" class="search-toggle" id="app-search-toggle-listed" checked="checked" />Published Apps Only</label>
           </div>
         </div>
       </div>
 
       <div class="section">
-        <h1 class="section-title">$c.title <acre:block if="c.query">$c.query</acre:block></h1>
+        <span id="app-buttons-right">
+          <a href="${h.url_for('apps', 'create')}" class="button-link-primary">New App</a>
+        </span>
+        <a acre:if="c.category === 'released'" href="${h.url_for('apps', 'feed', null, c.category + (c.query ? '/' + c.query : ''))}" class="rss-icon domain-explorer-rss">RSS</a>
+        <h1 class="section-title">
+          $c.title <acre:block if="c.query">$c.query</acre:block>
+        </h1>
+        
+        <!-->
         <a href="${h.url_for('apps', 'released')}">Recently Released</a> | 
         <a href="${h.url_for('apps', 'recent')}">Recently Updated</a> |
         <a href="${h.url_for('apps', 'featured')}">Featured</a>
-        <span id="app-buttons-right">
-          <a acre:if="c.category === 'released'" href="${h.url_for('apps', 'feed', null, c.category + (c.query ? '/' + c.query : ''))}" class="rss-icon domain-explorer-rss">RSS</a>
-          <a href="${h.url_for('apps', 'creeat')}" class="button-link-primary">New App</a>
-        </span>
+        -->
         <table class="table" cellspacing="0" acre:if="c.apps.length">
           <thead>
             <tr>
-              <th scope="col" class="column-header">Name/Description</th>
-              <th scope="col" class="column-header" acre:if="c.category === 'released'">Version</th>
-              <th scope="col" class="column-header" acre:else="">Related Projects</th>
+              <th scope="col" class="column-header">App</th>
               <th scope="col" class="column-header">Authors</a></th>
-              <th scope="col" class="column-header numeric">Last Modified</th>
+              <th scope="col" class="column-header numeric">Last Edited</th>
             </tr>
           </thead>
-          <tr acre:for="app in c.apps" 
-              acre:attrs="app.listed?{'class':'published'}:{'class':'unpublished'}">
+          <tr acre:for="app in c.apps">
             <td class="odd">
               <h3 class="app-title">
                 <a href="${h.url_for('apps', null, null, app.id)}">$app.name</a>
+                <span acre:if="app.acre && app.acre.version" class="app-version">
+                  $app.acre.version
+                </span>
               </h3>
               <p class="app-description" acre:if="app.description">
                 $app.description
               </p>
             </td>
-            <td acre:if="c.category === 'released'" class="even">
-              <acre:block if="app.acre && app.acre.version">
-                $app.acre.version
-              </acre:block>
-            </td>
-            <td acre:else="" class="even"></td>
-            <td class="odd">
+            <td class="even">
               <div class="authors" acre:if="app.authors.length">
                 <acre:script>
                   var f = app.authors[0];
                   var num = app.authors.length - 1;
                 </acre:script>              
-                by <a href="${h.url_for('apps', null, null, f.id)}">$f.name</a>
+                <a href="${h.url_for('apps', null, null, f.id)}">$f.name</a>
                 <acre:block if="num > 0"> and $num other<acre:block if="num > 1">s</acre:block></acre:block>
               </div>
             </td>
-            <td class="even">
+            <td class="odd">
               <acre:block if="app.modified">
+                <acre:block if="app.modified_by">${image.user_image_small(app.modified_by)}</acre:block>
                 ${h.relative_date(acre.freebase.date_from_iso(app.modified))}
               </acre:block>
               <acre:block else="">
@@ -125,31 +132,6 @@
           Apps are community created web applications that use freebase data.
         </p>
         
-        <div class="aside-box">
-          <img src="${mf.img_src('logo-acre.png')}" width="66" height="20" alt="acre" border="0" />
-          <h2>Open Code for Open Data</h2>
-          <p>
-            Acre is the fastest way to make Freebase apps &#8212;
-          </p>
-          <ul>
-            <li><h5>clone any existing app to get started</h5></li>
-            <li>
-              <h5>free hosting</h5>
-              <span class="details">zero install, zero deployment, browser-based code editor</span>
-            </li>
-            <li>
-              <h5>easy to code</h5>
-              <span class="details">server-side JavaScript with a powerful template language</span>
-            </li>
-            <li>
-              <h5>connect to everything</h5>
-              <span class="details">built-in API methods for Freebase services, OAuth, connecting to other website APIs, 
-                and much more</span>
-              </li>
-            </ul> 
-            <h3><a href="http://acre.freebase.com/#create=app">Create an Acre app &raquo;</a></h3>
-        </div>
-        
         <h2 class="aside-title">Learn more:</h2>
         <ul>
           <li><a title="View help page" href="http://wiki.freebase.com/wiki/Acre">Wiki:Acre</a></li>
@@ -157,6 +139,20 @@
           <li><a title="View help page" href="http://wiki.freebase.com/wiki/Freebase_API">Wiki: Freebase API</a></li>
           <li><a title="View help page" href="${acre.freebase.site_host}/docs/web_services">Freebase API Reference</a></li>
         </ul>
+        
+        <div class="aside-box">
+          <img src="${mf.img_src('logo-acre.png')}" width="66" height="20" alt="acre" border="0" />
+          <h2>Open Code for Open Data</h2>
+          <p>
+            Acre is the fastest way to make Freebase apps &#8212;
+          </p>
+          <ul>
+            <li><h5>easy to code</h5></li>
+            <li><h5>connect to everything</h5></li>
+            <li><h5>clone any app to get started</h5></li>
+          </ul>
+          <h3><a href="http://acre.freebase.com/#create=app">Create an Acre app &raquo;</a></h3>
+        </div>
 
       </div>
     </aside>

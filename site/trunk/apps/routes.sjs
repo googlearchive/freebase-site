@@ -59,13 +59,13 @@ function do_route(path) {
         path = "/" + file + path;
         do_app("view", path, {article:true});
       } else if (segs.length === 1) {
-        do_explore("user", segs[0]);
+        do_explore("user", segs[0], acre.request.params);
       } else {
         do_explore("user");
       }
       break;
     case "search" : 
-      do_explore("search", acre.request.params.q);
+      do_explore("search", acre.request.params.q, acre.request.params);
       break;
       
     // app list feeds
@@ -117,7 +117,7 @@ function do_redirect(url) {
 }
 
 
-function do_explore(category, query) {
+function do_explore(category, query, opts) {
   // Reset the base_path
   acre.request.base_path = acre.request.base_path.replace(new RegExp("\/" + category + "(/.*)?$"), "")
   
@@ -126,7 +126,7 @@ function do_explore(category, query) {
     category : category,
     query : query,
     title : cat.title,
-    apps  : cat.apps_func.apply(this, [query])
+    apps  : cat.apps_func.apply(this, [query, opts])
   };
 
   mf.require("template", "renderer").render_page(

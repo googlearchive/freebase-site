@@ -14,18 +14,37 @@
 
 <acre:block def="content_header()">
   <div class="page-header">
-    <h1 id="page-title">Explore Apps</h1>
+    <nav class="breadcrumb clear">
+      <ol>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.url_for('apps')}">Apps</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item last" acre:if="c.app.creator">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.url_for('apps',null, null, c.app.creator.id)}">$c.app.creator.name</a>
+          </span>
+        </li>
+      </ol>
+    </nav>
   </div>
 </acre:block>
 
 <acre:block def="content_body()">
-  <section id="content-main">
+  <div id="content-main">
     
-    <div class="content-box" acre:if="!c.app">
+    <div class="page-meta" acre:if="!c.app">
       <i>No app specified</i>
     </div>
   
-    <div class="content-box" acre:else="">
+    <div class="page-meta" acre:else="">
+      <h1>$c.app.name</h1>
+      <span class="creation-timestamp" acre:if="c.app && c.app.oauth">
+          <b>OAuth Credentials</b><br/>
+          <em>Consumer Key:</em> $c.app.oauth.key<br/>
+          <em>Consumer Secret:</em> $c.app.oauth.secret
+      </span>
       <form id="edit-props" action="${h.url_for('apps', 'form', null, '/submit/set_app_properties')}" method="post" class="box-form">
         <input type="hidden" name="appid" value="$c.app.id" />
         <ul class="box-modechooser">
@@ -60,10 +79,10 @@
           <textarea name="article" acre:if="c.app.article">$c.app.article.text</textarea>
           <textarea name="article" acre:else=""></textarea>
         </p>
-      
-        <p>
-          <input class="button-focus" type="submit" name="title" value="Update this App"/>
-          <a class="button" href="${h.url_for('apps', 'app', null, c.app.id)}">Cancel</button>
+        
+        <p class="box-nextactions">
+          <input class="button-primary" type="submit" name="title" value="Update this App"/>
+          <a class="button-link" href="${h.url_for('apps', 'app', null, c.app.id)}">Cancel</button>
         </p>
       </form>
     
@@ -82,15 +101,7 @@
       </form>
     </div>
     
-  </section>
-  
-  <section id="content-side">
-    <acre:block if="c.app && c.app.oauth">
-      <h4>OAuth Credentials</h4>
-      <p><b>Consumer Key:</b> $c.app.oauth.key</p>
-      <p><b>Consumer Secret:</b> $c.app.oauth.secret</p>
-    </acre:block>
-  </section>
+  </div>
 </acre:block>
 
 <acre:block def="footer_script()">

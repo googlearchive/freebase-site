@@ -2,25 +2,17 @@ $(function() {
   
   // Setup schema search tabset
   var $apps_explorer_search_tabset = $("#apps-search > .section-tabset").tabs("#apps-search > .search-box");
-  
-  // Make table sortable
-  $(".table").tablesorter({
-      cssAsc: "column-header-asc",
-      cssDesc: "column-header-desc",
-      cssHeader: "column-header",
-      sortList: [[0,0]]
-  });
 
   $("#user-search-input")
     .suggest({type: '/type/user'})
     .bind("fb-select", function(e, data) {
-      location.href = bp + data.id;
+      var url = bp + data.id;
+      location.href = url;
     });
   
-  $(".apps-filter")
+  $(".search-toggle")
     .change(function() {
-      var classname = "." + $(this).attr("name");
-      $(classname).toggle($(this).val());
+      $(this).closest("form").submit();
     });
   
   $('#create-link')

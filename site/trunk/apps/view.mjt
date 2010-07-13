@@ -38,10 +38,11 @@
     
     <div id="content-main" role="main">
 
-      <div class="page-meta">
+      <div class="page-meta" acre:if="c.app">
         <h1>$c.app.name</h1>
         <div class="meta">
-          <em class="description" acre:if="c.app.description">$c.app.description</em>
+          <span class="description" acre:if="c.app.description">$c.app.description</span>
+          <span class="description" acre:else="">No description provided</span>
         </div>
         <span class="creation-timestamp">
           ${image.user_image_small(c.app.modified_by)}
@@ -80,6 +81,9 @@
             </acre:block>
           </p>
         </div>
+      </div>
+      <div class="page-meta" acre:else="">
+        <h1>No app found</h1>
       </div>
 
 

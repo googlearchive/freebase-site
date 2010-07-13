@@ -3,14 +3,6 @@ var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 var urlfetch = mf.require("promise", "apis").urlfetch;
 
-function make_app_query(opts) {
-  opts = opts || {};
-  var q = acre.require('app_query').query;
-  if (opts && opts.limit) {
-    q.limit = opts.limit;
-  }
-  return q;
-};
 
 function make_app(appinfo) {
   if (!appinfo) return null;
@@ -80,8 +72,7 @@ var app = function(id, options) {
   if (!id) return null;
   
   options = options || {};
-  var appq = make_app_query();
-  appq = acre.freebase.extend_query(appq, {id: id});
+  var appq = acre.require('app_query').extend({id: id}).query;
   
   return freebase.mqlread(appq)
     .then(function(envelope){
@@ -115,14 +106,6 @@ var app = function(id, options) {
           sign : true,
           content : acre.form.encode(args)
         };
-        
-        // Do it sync until we can figure out ACRE-1809
-        var res = acre.freebase.fetch(url, fetch_opts);
-        app.oauth = {
-          key : res.key,
-          secret : res.secret
-        };
-        /*
         d.oauth = freebase.fetch(url, fetch_opts)
           .then(function(res) {
             app.oauth = {
@@ -131,7 +114,6 @@ var app = function(id, options) {
             };
             return app;
           });
-        */
       }
       
       return deferred.all(d)
@@ -144,11 +126,11 @@ var app = function(id, options) {
 
 var featured_apps = function(opts){
   var featured = mf.featured;
-  var q = make_app_query(opts);
-  q = acre.freebase.extend_query(q,{
+  var q = acre.require('app_query').extend({
     "id" : null, 
-    "id|=": featured
-  });
+    "id|=": featured,
+    "limit" : 25
+  }).query;
   
   return freebase.mqlread([q])
     .then(function(envelope){
@@ -167,7 +149,8 @@ var featured_apps = function(opts){
 
 
 var released_apps = function(opts) {
-  var rq = acre.require("released").query;  
+  var rq = acre.require("released").query;
+  
   return freebase.mqlread(rq)
     .then(function(envelope) {
       return envelope.result.map(function(link) {
@@ -181,8 +164,7 @@ var released_apps = function(opts) {
       return [];
     })
     .then(function(ids) {
-      var q = make_app_query(opts);
-      q = acre.freebase.extend_query(q, {'id|=' : ids});
+      var q = acre.require('app_query').extend({'id|=' : ids}).query;
       return freebase.mqlread([q])
         .then(function(envelope) {
           envelope.result.forEach(function(appinfo) {
@@ -197,12 +179,11 @@ var released_apps = function(opts) {
 
 
 var recent_apps = function(opts) {
-  var q = make_app_query(opts);
-  q = acre.freebase.extend_query(q, {
-    "sort" : "-modified:/type/namespace/keys.namespace./common/document/content.timestamp",
+  var q = acre.require('app_query').extend({
+    "sort" : "-modified:/type/namespace/keys.namespace./common/document/content.link.timestamp",
     "listed" : true,
     "limit" : 25
-  });
+  }).query;
   
   return freebase.mqlread([q])
     .then(function(envelope){
@@ -220,16 +201,17 @@ var user_apps = function(username, opts) {
     console.log("no username in user_apps");
     return [];
   }
-
-  var q = make_app_query(opts);
-  q = acre.freebase.extend_query(q, {
+  
+  var ext = {
     "sort" : "name",
     "by:/type/domain/owners" : {
       "member" : {
         "id" : '/user/' + username
       }
-    }
-  });
+    },
+  };
+
+  var q = acre.require('app_query').extend(ext).query;
 
   return freebase.mqlread([q])
     .then(function(envelope){
@@ -243,12 +225,17 @@ var user_apps = function(username, opts) {
 
 
 var search_apps = function(search, opts) {
-  var q = make_app_query(opts);
+  q = acre.require('app_query').query;
+  var args = {
+    type:'/freebase/apps/application', 
+    mql_output:[q]
+  };
+    
+  if (opts && !opts.unlisted) {
+    args.mql_filter = [{ "/freebase/apps/application/listed" : true }];
+  }
   
-  return freebase.search(search, {
-      type:'/freebase/apps/application', 
-      mql_output:[q]
-    })
+  return freebase.search(search, args)
     .then(function(envelope){
       return envelope.result.map(function(appinfo){
         return make_app(appinfo);

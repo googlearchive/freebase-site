@@ -38,7 +38,7 @@
     
     <div class="domain-activity-controls">
       <span class="domain-activity-controls-content">
-        Sort by <a href="">activity</a>
+        Sort by <a href="">write activity</a>
       </span>
     </div>
     <div class="activity-chart-header">
@@ -65,9 +65,6 @@
     </div>
     <div class="activity-stats-header-topics">
       Topics
-    </div>
-    <div class="activity-stats-header-coverage">
-      Density
     </div>
   </div>
   

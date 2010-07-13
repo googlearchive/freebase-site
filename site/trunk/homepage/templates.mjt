@@ -259,7 +259,7 @@
     <div acre:for="item in blog.items">
       <a href="$item.link" title="${acre.markup.bless(item.description)}">$item.title</a>
       by <a href="${h.freebase_url('/view/user/'+item['dc:creator'])}">${item['dc:creator']}</a>
-      on ${h.format_date(h.parse_date(item.pubDate), 'MMM d')}
+      on ${h.format_date(h.parse_date(item.pubDate), 'MMMM d')}
     </div>
   </div>
 </acre:block>
@@ -271,7 +271,7 @@
     <div acre:for="item in wiki.items">
       <a href="$item.link">$item.title</a>
       by <a href="$wiki.user_url:${item['dc:creator']}">${item['dc:creator']}</a>
-      on ${h.format_date(h.parse_date(item.pubDate), 'MMM d')}
+      on ${h.format_date(h.parse_date(item.pubDate), 'MMMM d')}
     </div>
   </div>
 </acre:block>

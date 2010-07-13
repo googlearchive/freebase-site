@@ -11,12 +11,12 @@ function create_app(args) {
     name : name,
     id : null,
     type: [
-    {id: '/type/domain',
-    connect: 'insert'},
-    {id: '/common/topic',
-    connect: 'insert'},
-    {id: '/freebase/apps/application',
-    connect: 'insert'}
+      {id: '/type/domain',
+      connect: 'insert'},
+      {id: '/common/topic',
+      connect: 'insert'},
+      {id: '/freebase/apps/application',
+      connect: 'insert'}
     ],
     "/type/domain/owners" : {
       id : group.id,

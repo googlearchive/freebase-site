@@ -124,11 +124,11 @@ var app = function(id, options) {
 };
 
 
-var featured_apps = function(opts){
-  var featured = mf.featured;
+var list_apps = function(query, opts){
+  var list = mf[opts.list];
   var q = acre.require('app_query').extend({
     "id" : null, 
-    "id|=": featured,
+    "id|=": list,
     "limit" : 25
   }).query;
   
@@ -142,7 +142,7 @@ var featured_apps = function(opts){
     })
     .then(function(apps){
       return apps.sort(function(a, b) {
-        return featured.indexOf(a.id) - featured.indexOf(b.id);
+        return list.indexOf(a.id) - list.indexOf(b.id);
       });
     });
 };

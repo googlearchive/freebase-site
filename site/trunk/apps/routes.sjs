@@ -8,7 +8,11 @@ var CATEGORIES = {
   },
   featured  : {
     title        : "Featured Apps",
-    apps_func    : queries.featured_apps
+    apps_func    : queries.list_apps
+  },
+  games  : {
+    title        : "Data Games",
+    apps_func    : queries.list_apps
   },
   recent   : {
     title        : "Recently Updated Apps",
@@ -49,10 +53,13 @@ function do_route(path) {
       do_explore("released");
       break;
     case "featured" :
-      do_explore("featured");
+      do_explore("featured", null, {list:"featured"});
       break;
     case "recent" :
       do_explore("recent");
+      break;
+    case "games" :
+      do_explore("games", null, {list:"games"});
       break;
     case "user" :
       if (segs.length > 1) {

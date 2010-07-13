@@ -1,6 +1,6 @@
 $(function() {
   
-  // Setup schema search tabset
+  // Setup app search tabset
   var $apps_explorer_search_tabset = $("#apps-search > .section-tabset").tabs("#apps-search > .search-box");
 
   $("#user-search-input")
@@ -8,11 +8,6 @@ $(function() {
     .bind("fb-select", function(e, data) {
       var url = bp + data.id;
       location.href = url;
-    });
-  
-  $(".search-toggle")
-    .change(function() {
-      $(this).closest("form").submit();
     });
   
   $('#create-link')

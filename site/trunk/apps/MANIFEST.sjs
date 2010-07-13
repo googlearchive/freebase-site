@@ -49,6 +49,13 @@ var MF = {
     "/user/stefanomazzocchi/ids",
     "/user/jamie/wordnet-app",
     "/user/stefanomazzocchi/translate"
+  ],
+  "games" : [
+    "/user/stefanomazzocchi/typewriter",
+    "/user/stefanomazzocchi/geographer2",
+    "/user/stefanomazzocchi/genderizer",
+    "/user/stefanomazzocchi/detypewriter",
+    "/user/stefanomazzocchi/dater"
   ]
 };
 if (/^https?\:\/\/devel\.(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url)) {

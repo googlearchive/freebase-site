@@ -51,14 +51,14 @@
         </acre:script>
         ${h.format_date(two_months_ago, "MMM d")}
       </div>
-      <div class="activity-chart-date">
+      <div class="activity-chart-date activity-chart-date-second">
         <acre:script>
           var one_month_ago = new Date();
           one_month_ago.setDate(one_month_ago.getDate()-7*4)
         </acre:script>
         ${h.format_date(one_month_ago, "MMM d")}
       </div>
-      <div class="activity-chart-date">
+      <div class="activity-chart-date activity-chart-date-last">
         last week
       </div>
     </div>

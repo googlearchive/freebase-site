@@ -4,9 +4,8 @@ var MF = {
       "core": "//3.core.site.freebase.dev",
       "template": "//3.template.site.freebase.dev",
       "promise": "//3.promise.site.freebase.dev",
-      "raphael": "//3.raphael.site.freebase.dev",
       "flot": "//3.flot.site.freebase.dev",
-
+      
       "libraries": "//2.libraries.apps.freebase.dev"
   },
   "stylesheet": {

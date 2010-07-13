@@ -71,8 +71,13 @@
   <div id="domain-explorer-tabset">
     
     <ul id="domain-explorer-tabs">
+      <li>
+        <a href="${h.url_for('homepage', 'loadpanel', [['domains', 'featured']])}">
+         <span>Featured</span>
+        </a>
+      </li>
       <li acre:for="category in categories">
-        <a href="${h.url_for('homepage', 'loadpanel', [['id', category.id]])}">
+        <a href="${h.url_for('homepage', 'loadpanel', [['category', category.id]])}">
          <span>${category.name}</span>
         </a>
       </li>
@@ -98,6 +103,7 @@
     </ul>
     
     <div id="explorer-panes">
+      <div class="domain-explorer-pane" id="pane-featured"></div>
       <acre:block for="category in categories">
         <div class="domain-explorer-pane" id="pane${category.id.replace(/\//g, '-')}">
           <acre:block if="loaded_categories && loaded_categories[category.id]">

@@ -83,47 +83,60 @@ function get_top_user(users) {
   return top_user.e > 0 ? top_user : null;
 }
 
+var add_domain_activity = function(domains) {
+  var promises = [];
+  
+  // Get activity for each domain
+  domains.forEach(function(domain) {
+    promises.push(freebase.get_static("activity", "summary_"+domain.id)
+      .then(function(activity) {
+        if (!activity) { return null; }
+        
+        domain.activity = activity;
+        
+        domain.top_user = get_top_user(activity.users.h);
+        if (!domain.top_user) {
+          domain.top_user = get_top_user(activity.users.s);
+        }
+        if (!domain.top_user) {
+          domain.top_user = get_top_user(activity.users.b);
+        }
+        
+        return activity;
+      }));
+  });
+  
+  return deferred.all(promises).then(function() {return domains;});
+};
+
+var process_domains = function(envelope) {
+  return envelope.result.map(function(domain) {
+    return {
+      "id": domain.id,
+      "name": domain.name,
+      "member_count": domain["/freebase/domain_profile/users"] || 0
+    };
+  });
+};
+
 var domains_for_category = function(category_id) {
-  var q_category = acre.require("domains_for_category").query;
-  q_category = acre.freebase.extend_query(q_category,
+  var q_category = acre.require("domain_info").extend(
     {"!/freebase/domain_category/domains.id": category_id}
   );
   
-  return freebase.mqlread(q_category)
-    .then(function(envelope) {
-      return envelope.result.map(function(domain) {
-        return {
-          "id": domain.id,
-          "name": domain.name,
-          "member_count": domain["/freebase/domain_profile/users"] || 0
-        };
-      });
-    })
-    .then(function(domains) {
-      var promises = [];
-      
-      // Get activity for each domain
-      domains.forEach(function(domain) {
-        promises.push(freebase.get_static("activity", "summary_"+domain.id)
-          .then(function(activity) {
-            if (!activity) { return null; }
-            
-            domain.activity = activity;
-            
-            domain.top_user = get_top_user(activity.users.h);
-            if (!domain.top_user) {
-              domain.top_user = get_top_user(activity.users.s);
-            }
-            if (!domain.top_user) {
-              domain.top_user = get_top_user(activity.users.b);
-            }
-            
-            return activity;
-          }));
-      });
-      
-      return deferred.all(promises).then(function() {return domains;});
-    });
+  return freebase.mqlread(q_category.query)
+    .then(process_domains)
+    .then(add_domain_activity);
+};
+
+var domains_for_ids = function(domain_ids) {
+  var q_domains = acre.require("domain_info").extend(
+    {"id|=": domain_ids}
+  );
+  
+  return freebase.mqlread(q_domains.query)
+    .then(process_domains)
+    .then(add_domain_activity);
 };
 
 ///////////////////

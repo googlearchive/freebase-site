@@ -41,9 +41,9 @@
         </li>
         <li class="breadcrumb-item last">
           <span class="breadcrumb-item-inner">
-            <a href="javascript:void(0);" class="breadcrumb-sibling-trigger">$c.type.name</a>
+            <a href="javascript:void(0);" class="breadcrumb-sibling-trigger" acre:if="c.type.siblings && c.type.siblings.length > 1">$c.type.name</a>
           </span>
-          <div class="tooltip" id="breadcrumb-siblings" style="display:none">
+          <div class="tooltip" id="breadcrumb-siblings">
             <strong>Go to another type</strong>
             <ul>
               <li acre:for="s in c.type.siblings">

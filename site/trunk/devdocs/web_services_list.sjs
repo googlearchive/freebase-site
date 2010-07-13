@@ -57,7 +57,7 @@ var contents = {
       "name": "Geosearch",
       "key": "geosearch",
       "content": acre.freebase.service_url + "/api/service/geosearch?help"
-    }
+    },
     {
       "name": "Raw Content",
       "key": "trans_raw",

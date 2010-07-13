@@ -1,0 +1,75 @@
+<html>
+  
+  <acre:script>
+    acre.oauth.get_authorization();
+    
+    var method = acre.request.method;
+    if (method == "POST") {
+      var content = acre.request.body_params['content'];
+      try {
+        //acre.write(acre.request.body_params['document']);
+        acre.freebase.upload(content, 'text/html', {document: acre.request.body_params['document']});
+      } catch(e) {
+        acre.write(JSON.stringify(e.response, null, 2));
+        acre.exit();
+      }
+    } else if (acre.request.path_info !== '/') {
+      var q = {
+        "id":acre.request.path_info, 
+        "/common/topic/article" : {
+          "id" : null, 
+          "optional" : true, 
+          "limit" : 1
+        }
+      };
+      var article = acre.freebase.mqlread(q).result['/common/topic/article'];
+      var content = acre.freebase.get_blob(article.id, 'raw').body;
+    }
+    
+    var mf = acre.require("MANIFEST").MF;
+    var g = acre.require("/freebase/apps/global/templates", mf.version["/freebase/apps/global"]).g;
+  </acre:script>
+  
+  <head>    
+    <!-- jquery + suggest -->
+    ${g.t.suggest()}
+    
+    <!-- suggesttype plugin -->
+    ${g.t.suggest_plugin("type")}
+    
+    <script type="text/javascript">
+      jQuery(function($) {
+        $('#topic')
+          .suggesttype({
+            'type' : '/freebase/metaweb_api_service'
+          })
+          .bind("fb-select", function(e, data){
+            location.href = "/edit_api_description" + data.id;
+          });
+        });
+    </script>
+    <title>Edit API Descriptions</title>
+  </head>
+  
+  <body>
+    
+    <p>Pick a web service: <input id="topic" type="text"></p>
+    
+    <acre:block if="method == 'POST'">
+      Thank you for your support.
+    </acre:block>
+    
+    <acre:block elif="article">
+      <form action="" method="POST">
+        <input name="document" type="hidden" value="$article.id"/>
+        <textarea name="content" style="width:800px;height:600px" acre:trim="">
+          ${acre.markup.bless(content)}
+        </textarea><br/>
+        <input type="submit" value="save"/>
+      </form>
+      <a href="$acre.freebase.service_url/view$acre.environ.path_info">Edit on Freebase</a>
+    </acre:block>
+    
+  </body>
+</html>
+

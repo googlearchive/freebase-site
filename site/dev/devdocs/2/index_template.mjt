@@ -1,0 +1,98 @@
+
+<acre:block def="title()">
+  Developer Documentation
+</acre:block>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('docs_style.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_body()">
+  <div id="docs-search">
+    <h1>Search Freebase docs:</h1>
+    <form action="http://www.google.com/cse">
+      <input type="hidden" name="cx" value="000021600935202413705:4wd8ui9n5go" />
+      <input type="hidden" name="ie" value="UTF-8" />
+      <input type="text" name="q" class="docs-search-input" />
+      <input type="submit" name="sa" value="Search" class="button-primary" />
+    </form>
+  </div>
+
+  <acre:script>
+    acre.request.path_info = acre.request.url.substring(acre.request.base_url.length);
+    console.log('HACK: acre.request.path_info',acre.request.path_info);
+    var util = acre.require("util");
+    var o = util.setup();
+  </acre:script>
+  <div id="help-viewer">
+    <div id="help-nav">
+      <acre:block for="category in o.categories">
+        <h3>$category.name</h3>
+        <ul>
+          <li acre:for="doc in category.docs" acre:attrs="(o.sel_category == doc.key)?{'class':'selected'}:{}">
+            <acre:block if="!(doc.hidden && (o.sel_category != doc.key))">
+            <!--HACK: how to avoid /index/ -->
+              <a acre:if="doc.sections || doc.content" href="/docs/index/$doc.key">$doc.name</a>
+              <a acre:elif="doc.link" href="$doc.link">$doc.name</a>
+              <span acre:else="">$doc.name</span>
+            </acre:block>
+          </li>
+        </ul>
+      </acre:block>
+      <div id="cse"></div>
+    </div>
+    <acre:block if="o.section_url">
+      ${helpsection(o)}
+    </acre:block>
+    <acre:block elif="o.doc_content">
+      <div id="help-section">
+        <div id="help-content" class="wide">
+          ${acre.markup.bless(util.get_content(o.doc_content, o.query))}
+        </div>
+      </div>
+    </acre:block>
+  </div>
+</acre:block>
+
+<acre:block def="helpsection(o)">
+  <acre:script>
+    var util = acre.require("util");
+    var content_url;
+  </acre:script>
+  <div id="help-section">
+    <div id="help-subnav">
+      <ul>
+        <acre:block for="section in o.sections">
+          <acre:block if="'inline' in section">
+            <li acre:attrs="'className' in section?{'class':section.className}:{}">
+              ${acre.markup.bless(util.get_content(section.inline))}
+            </li>
+          </acre:block>
+          <acre:block else="">
+            <li class="${section.level ? 'level'+section.level : 'level1'}${(o.sel_section == section.key)?' selected':''}">
+              <acre:script>
+                if (o.sel_section == section.key) { 
+                  content_url = section.content; 
+                  if (acre.request.query_string.length > 0) {
+                    content_url += (content_url.indexOf("?") > 0 ? "&" : "?") + acre.request.query_string;
+                  }
+                }
+                var deprecated = "deprecated" in section && section.deprecated;
+              </acre:script>
+              <!-- HACK: check these urls -->
+              <a acre:if="(o.sel_section == section.key) || !section.hidden" href="$o.mode/$o.sel_category/$section.key" 
+              class="${deprecated ? 'deprecated' : ''}">
+                $section.name</a>
+            </li>
+          </acre:block>
+        </acre:block>
+      </ul>
+    </div>
+    <div id="help-content" acre:if="content_url">
+      ${acre.markup.bless(util.get_content(content_url))}
+    </div>
+    <div id="help-content" acre:else="">
+      No content
+    </div>
+  </div>
+</acre:block>

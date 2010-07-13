@@ -6,14 +6,12 @@
 
 #content-main {
     border: 5px solid #e4e6e7;
-    /* overflow: auto;*/
     width: 74em;
     float: left;
     background: #fff;
     .rounded_corners(5px);
 }
 
-/* from project.css */
 .homepage-header {
     background: #64768f;
     .linear_gradient(#7d92b2, #64768f, repeat);
@@ -528,12 +526,13 @@ CONTENT FOOTER
 
 .content-footer-section {
     width: 21em;
-    height: 20em;
+    height: 15em;
     float: left;
     border-right: 1px solid #d3d3d3;
     padding: 1.5em;
-    /* background: #fff;
-    -webkit-gradient:
+    background: #fff;
+   /* -webkit-gradient(linear, 0% 0%, 100% 100%, from(#F7F7F7), to(#FFFFFF)) */
+    /* -webkit-gradient:
         linear,
         left bottom,
         right bottom,
@@ -543,4 +542,8 @@ CONTENT FOOTER
         left center,
         rgb(255,255,255) 6%,
         rgb(245,245,245) 77%;*/
+}
+
+.content-footer-section-last {
+    border-right: 0;
 }

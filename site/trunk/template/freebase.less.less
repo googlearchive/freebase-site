@@ -188,8 +188,7 @@ Header
     height: 34px;
     min-width: 96em;
     border-bottom: 1px solid #fb3;
-    background: #fa6;
-    .linear_gradient(#ff8533, #dd5800, repeat);
+    background: url(vert-sprite.png) 0 -69px repeat-x #db5700;
     border-bottom: 1px solid #fb3;
     border-top: 1px solid #ffaa66;
 }
@@ -271,10 +270,8 @@ NAV
     color: #fff;
     font-size: 1.2em;
     font-weight: bold;
-}
-
-#nav-global a:hover {
-    text-decoration: none;
+    padding: 0.5em 0.9em 0.4em 0.8em;
+    display: block;
 }
 
 #nav-global li {
@@ -282,10 +279,22 @@ NAV
     display: inline;
     cursor: pointer;  
     font-weight: bold;
-    padding: 0.5em 0.9em 0.4em 0.8em;
     margin-right: 0.8em;
 }
 
+#nav-global a:hover {
+    .rounded_corners(5px);
+    .box_shadow(1px, 1px, 6px, #bb4e05);
+    background-color: rgba(0,0,0,0.8);
+    text-decoration: none;
+}
+
+.ie6 #nav-global a:hover,
+.ie7 #nav-global a:hover {
+    background-color: #000;
+}
+
+/* This is for toolbox drop downs
 #nav-global li.collapse,
 #nav-global li.expand {
     margin-right: 0em;
@@ -297,17 +306,8 @@ NAV
     -moz-border-radius-topleft: 5px;
     -webkit-border-top-right-radius: 5px; 
     -webkit-border-top-left-radius: 5px;
-    /* .box_shadow(1px, 1px, 6px, #000); */
+    /* .box_shadow(1px, 1px, 6px, #000); 
 }
-
-#nav-global li:hover {
-    background-color: rgba(0,0,0,0.8);
-    moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    .box_shadow(1px, 1px, 6px, #bb4e05);
-}
-
-
 #nav-global li.collapse:hover,
 #nav-global li.expand:hover { 
     background-color: rgba(0,0,0,0.8);
@@ -315,10 +315,8 @@ NAV
     -moz-border-radius-bottomleft: 0px;
     -webkit-border-bottom-right-radius: 0px; 
     -webkit-border-bottom-left-radius: 0px;
-   /*  .box_shadow(1px, 1px, 6px, #000); */
+   /*  .box_shadow(1px, 1px, 6px, #000); 
 }
-
-
 #nav-global li#nav-docs:hover {
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -329,6 +327,8 @@ NAV
     background: url(ui-sprite.png) right 5px no-repeat;
     padding-right: 1.3em;
 }
+*/
+
 
 /*
 -----------------------------------------
@@ -343,6 +343,7 @@ Global Search Box
     padding: 3px 4px;
     border: 1px solid #ffa172;
     border-top: 0;
+    width: 280px;
     -moz-border-radius-bottomleft: 5px;
     -moz-border-radius-bottomright: 5px;
     -webkit-border-bottom-left-radius: 5px;

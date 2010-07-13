@@ -37,7 +37,9 @@
 </acre:block>
 
 <acre:block def="body(exports)">
-  <body>
+   <!--[if IE 7 ]><body class="ie7"><![endif]-->
+   <!--[if IE 6 ]><body class="ie6"><![endif]-->
+   <!--[if !IE]>--><body class=""><!--<![endif]-->
     ${header(exports)}
     ${content(exports)}
     ${footer(exports)}

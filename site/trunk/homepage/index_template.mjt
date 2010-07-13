@@ -14,7 +14,7 @@
 
 <acre:block def="content_body()">
   <div id="content-main">
-    ${templates.domain_explorer(c.categories, c.grouped_domains, c.loaded_categories)}
+    ${templates.domain_explorer(c.categories, c.grouped_domains)}
   </div>
   
   <div id="content-side">

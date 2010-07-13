@@ -7,9 +7,7 @@
 <acre:block def="categories_list(categories)">
   <ul>
     <acre:block for="category in categories">
-      <li>
-        ${category.name}
-      </li>
+      <li>${category.name}</li>
     </acre:block>
   </ul>
 </acre:block>
@@ -29,14 +27,9 @@
   
 </acre:block>
 
-<acre:block def="domain_explorer(categories, grouped_domains, loaded_categories)">
+<acre:block def="domain_explorer(categories, grouped_domains, user)">
   <div id="domain-explorer-header">
-    <div class="domain-explorer-title">
-      <!--
-      <span class="domain-explorer-title-content">Data</span>
-      <a href="" class="rss-icon domain-explorer-rss">RSS</a>  
-      -->
-    </div> 
+    <div class="domain-explorer-title"></div>
     
     <div class="domain-activity-controls">
       <span class="domain-activity-controls-content">
@@ -76,9 +69,14 @@
   <div id="domain-explorer-tabset">
     
     <ul id="domain-explorer-tabs">
+      <li acre:if="user">
+        <a href="${h.url_for('homepage', 'loadpanel', [['domains', 'your']])}">
+         <span>Your Data</span>
+        </a>
+      </li>
       <li>
         <a href="${h.url_for('homepage', 'loadpanel', [['domains', 'featured']])}">
-         <span>Featured</span>
+         <span>Featured Data</span>
         </a>
       </li>
       <li acre:for="category in categories">
@@ -110,11 +108,7 @@
     <div id="explorer-panes">
       <div class="domain-explorer-pane" id="pane-featured"></div>
       <acre:block for="category in categories">
-        <div class="domain-explorer-pane" id="pane${category.id.replace(/\//g, '-')}">
-          <acre:block if="loaded_categories && loaded_categories[category.id]">
-            ${category_panel(loaded_categories[category.id])}
-          </acre:block>
-        </div>
+        <div class="domain-explorer-pane" id="pane${category.id.replace(/\//g, '-')}"></div>
       </acre:block>
       <div class="domain-explorer-pane" id="pane-all"></div>
     </div>

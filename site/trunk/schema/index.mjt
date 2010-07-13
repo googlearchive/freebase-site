@@ -39,7 +39,7 @@
           <li class="section-tab"><a href="#domain-search">Domains</a></li>
           <li class="section-tab"><a href="#type-search">Types</a></li>
           <li class="section-tab"><a href="#property-search">Properties</a></li>
-          <li class="section-tab"><a href="#user-search">Users</a></li>
+<!--           <li class="section-tab"><a href="#user-search">Users</a></li> -->
         </ul>
         <div class="search-box" id="domain-search">
           <form id="domain-search-form" method="get" action="${h.url_for('schema', 'domain')}">
@@ -68,6 +68,7 @@
           <label><input type="radio" name="property-search-toggle" class="search-toggle" id="property-search-toggle-commons" checked="checked" />Freebase Commons</label>
           <label><input type="radio" name="property-search-toggle" class="search-toggle" id="property-search-toggle-all" />All Projects</label>
         </div>
+<!--
         <div class="search-box" id="user-search">
           <form id="user-search-form">
             <fieldset>
@@ -75,6 +76,7 @@
             </fieldset>
           </form>      
         </div>
+-->
       </div>
       </div>
       <div class="section">

@@ -43,7 +43,10 @@
   <acre:block if="c.domain">
       
       <div class="page-meta">
-        <h1>$c.domain.name <span class="key">$c.domain.id</span></h1>
+        <h1>$c.domain.name</h1>
+        <div class="meta">
+            <span class="key"><strong>Key:</strong> $c.domain.id</span>        
+        </div>
         <span class="creation-timestamp">
           ${image.user_image_small(c.domain.creator)}
           Created by <a href="${acre.freebase.service_url}/view${c.domain.creator.id}" title="View user profile">$c.domain.creator.name</a> 
@@ -90,11 +93,11 @@
         <table class="table table-sortable" cellspacing="0">
           <thead>
             <tr>
-              <th scope="col" class="column-header">Type</th>
-              <th scope="col" class="column-header">ID</th>
-              <th scope="col" class="column-header numeric"># of Properties</th>
-              <th scope="col" class="column-header numeric"># of Instances </th>
-              <th scope="col" class="column-header description">Description</th>
+              <th scope="col" class="column-header"><span class="sort-icon">Type</span></th>
+              <th class="column-header" scope="col"><span class="sort-icon">ID</span></th>
+              <th class="column-header numeric" scope="col"><span class="sort-icon"># of Properties</span></th>
+              <th class="column-header numeric" scope="col"><span class="sort-icon"># of Instances</span></th>
+              <th class="column-header description" scope="col"><span class="sort-icon">Description</span></th>
             </tr>
           </thead>
           <tr acre:for="i,t in c.domain.types" acre:if="!t.mediator">
@@ -116,11 +119,11 @@
           <table class="table table-sortable">
             <thead>
               <tr>
-                <th scope="col" class="column-header">Type</th>
-                <th class="column-header" scope="col">ID</th>
-                <th class="column-header numeric" scope="col"># of Properties</th>
-                <th class="column-header numeric" scope="col"># of Instances</th>
-                <th class="column-header description" scope="col">Description</th>
+                <th scope="col" class="column-header"><span class="sort-icon">Type</span></th>
+                <th class="column-header" scope="col"><span class="sort-icon">ID</span></th>
+                <th class="column-header numeric" scope="col"><span class="sort-icon"># of Properties</span></th>
+                <th class="column-header numeric" scope="col"><span class="sort-icon"># of Instances</span></th>
+                <th class="column-header description" scope="col"><span class="sort-icon">Description</span></th>
               </tr>
             </thead>
             <tbody>

@@ -59,8 +59,11 @@ function make_app(appinfo) {
     
     // look at file modification time for Acre apps too
     if (appinfo['modified:/type/namespace/keys']) {
-      var modified = appinfo['modified:/type/namespace/keys'].namespace["/common/document/content"].timestamp;
-      app.modified = (modified > app.modified) ? modified : app.modified;
+      var modified = appinfo['modified:/type/namespace/keys'].namespace["/common/document/content"].link.timestamp;
+      if (modified > app.modified) {
+        app.modified = (modified > app.modified) ? modified : app.modified;
+        app.modified_by = appinfo['modified:/type/namespace/keys'].namespace["/common/document/content"].link.creator;
+      }
     }
     
     app.acre = {

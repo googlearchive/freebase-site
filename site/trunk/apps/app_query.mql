@@ -27,10 +27,16 @@
     "namespace": {
       "type" : "/freebase/apps/acre_doc",
       "/common/document/content" : {
-        "timestamp" : null
+        "link" : {
+          "creator" : {
+            "id" : null,
+            "name" : null
+          },
+          "timestamp" : null
+        }
       }
     },
-    "sort":     "-namespace./common/document/content.timestamp",
+    "sort":     "-namespace./common/document/content.link.timestamp",
     "optional": true,
     "limit":    1
   },

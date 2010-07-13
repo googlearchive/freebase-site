@@ -5,6 +5,20 @@
 </acre:script>
 
 <acre:block def="head()">
+  <meta name="description" 
+        content="A social database about things you know and love, spanning millions of topics in 
+                 thousands of categories. Explore Freebase, add to it, or build applications with it.">
+  <meta name="keywords" 
+        content="database, open database, shared database, facts, fact sheet, information, community,
+                 discussion, semantic web, metaweb, arts &amp; entertainment, society, sports, 
+                 products &amp; services, time &amp; space, money, science &amp; technology, 
+                 special interests, system" >
+  <meta name="robots" content="noodp">
+  <link rel="canonical" href="http://www.freebase.com" />
+  
+  <script>
+    (function(fb){if (fb && fb.user_info) {window.location.href= "/home"; }})(window.freebase);
+  </script>
   <link rel="stylesheet" type="text/css" href="${mf.css_src('homepage.mf.css')}" />
 </acre:block>
 

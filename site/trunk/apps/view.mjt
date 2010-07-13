@@ -6,6 +6,9 @@
 </acre:script>
 
 <acre:block def="title()" trim="">
+  <acre:script>
+    acre.response.set_cache_policy("fresh");
+  </acre:script>
   <acre:block if="c.app">
     $c.app.name
   </acre:block>

@@ -279,9 +279,8 @@
   <div class="content-section">
     <h3>Join the Community</h3>
     <p>Enter your email address and we'll let you know when you can sign up:</p>
-    <form>
+    <form action="http://www.register.freebase.com/regemails/add" method="GET">
       <input name="email" type="email" class="standard-input" placeholder="Your email address..." class="input-standard"/>
-      <!-- XXX: link to Michael's app -->
       <input type="submit" value="Submit" class="button button-primary"/>
     </form>
     <a href="${h.freebase_url('/signin/login')}" class="plain-link">Existing members, please sign in &raquo;</a>

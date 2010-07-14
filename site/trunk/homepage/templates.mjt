@@ -29,7 +29,10 @@
 
 <acre:block def="domain_explorer(categories, user)">
   <div id="domain-explorer-header">
-    <div class="domain-explorer-title"></div>
+    <div class="domain-explorer-title">
+      <div class="domain-explorer-title-content">Data</div>
+      <a href="" class="rss-icon domain-explorer-rss">RSS</a>
+    </div>
     
     <div class="domain-activity-controls">
       <span class="domain-activity-controls-content">
@@ -209,7 +212,7 @@
 </acre:block>
 
 <acre:block def="gridworks()">
-  <div class="content-subsection-gridworks">
+  <div class="content-section-gridworks">
     <img src="${mf.img_src('gridworks-logo.png')}" class="gridworks-logo"/>
     <p>
       An open source power tool to fix, discover, experiment, connect and customize your data.  
@@ -239,7 +242,7 @@
 </acre>
 
 <acre:block def="join_freebase()">
-  <div class="content-section content-section-first">
+  <div class="content-section">
     <h3>Join the Community</h3>
     <p>Enter your email address and we'll let you know when you can sign up:</p>
     <form>
@@ -255,11 +258,16 @@
 <acre:block def="blog_entries(blog)">
   <div acre:if="blog" class="content-section">
     <h3 class="sidebar-header"><a href="$blog.url">Blog</a></h3>
-    <a href="$blog.rss_url">RSS</a><!-- XXX: RSS icon? action? -->
-    <div acre:for="item in blog.items">
-      <a href="$item.link" title="${acre.markup.bless(item.description)}">$item.title</a>
-      by <a href="${h.freebase_url('/view/user/'+item['dc:creator'])}">${item['dc:creator']}</a>
-      on ${h.format_date(h.parse_date(item.pubDate), 'MMMM d')}
+    <a href="$blog.rss_url" class="rss-icon">RSS</a><!-- XXX: RSS icon? action? -->
+    <div class="blog-feature-content">
+      <div acre:for="item in blog.items" class="blog-item">
+        <a href="$item.link" 
+           title="${acre.markup.bless(item.description)}" 
+           class="item-title">$item.title</a>
+        by 
+        <a href="${h.freebase_url('/view/user/'+item['dc:creator'])}">${item['dc:creator']}</a>
+        on ${h.format_date(h.parse_date(item.pubDate), 'MMMM d')}
+      </div>
     </div>
   </div>
 </acre:block>
@@ -267,17 +275,19 @@
 <acre:block def="wiki_entries(wiki)">
   <div acre:if="wiki" class="content-section">
     <h3 class="sidebar-header"><a href="$wiki.url">Wiki</a></h3>
-    <a href="$wiki.rss_url">RSS</a><!-- XXX: RSS icon? action? -->
-    <div acre:for="item in wiki.items">
-      <a href="$item.link">$item.title</a>
-      by <a href="$wiki.user_url:${item['dc:creator']}">${item['dc:creator']}</a>
-      on ${h.format_date(h.parse_date(item.pubDate), 'MMMM d')}
+    <a href="$wiki.rss_url" class="rss-icon">RSS</a><!-- XXX: RSS icon? action? -->
+    <div class="wiki-feature-content">
+      <div acre:for="item in wiki.items" class="wiki-item">
+        <a href="$item.link" class="item-title">$item.title</a>
+        by <a href="$wiki.user_url:${item['dc:creator']}">${item['dc:creator']}</a>
+        on ${h.format_date(h.parse_date(item.pubDate), 'MMMM d')}
+      </div>
     </div>
   </div>
 </acre:block>
 
 <acre:block def="join_discussion()">
-  <div class="content-section content-section-last">
+  <div class="content-section">
     <h3>Discussion List</h3>
     <p>Enter your email address to join the discussion:</p>
     <form method="POST" action="http://lists.freebase.com/mailman/subscribe/freebase-discuss" >

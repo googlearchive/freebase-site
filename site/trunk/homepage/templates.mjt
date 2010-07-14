@@ -186,7 +186,7 @@
 </acre:block>
 
 <acre:block def="user_info(user)">
-  <div class="content-sub-section">
+  <div class="content-section">
     <div>
       <a href="${h.freebase_url('/view'+user.id)}">${user.name}</a>
     </div>
@@ -219,7 +219,7 @@
 </acre>
 
 <acre:block def="what_is_freebase()">
-  <div class="content-sub-section">
+  <div class="content-section">
     <h3>What is <span class="emphasis">Freebase?</span></h3>
     <p>Learn what an entity graph is, what kind of information it contains, and why you should add your data!</p>
     <a href="http://wiki.freebase.com/wiki/What_is_Freebase%3F" class="more-link">Learn More &raquo;</a>
@@ -227,7 +227,7 @@
 </acre>
 
 <acre:block def="for_developers()">
-  <div class="content-sub-section">
+  <div class="content-section">
     <h3><span class="emphasis">Freebase</span> for Developers</h3>
     <ul>
       <li>powerful queryable API</li>
@@ -239,21 +239,21 @@
 </acre>
 
 <acre:block def="join_freebase()">
-  <div class="content-footer-section content-footer-section-first">
-    <h3 class="sidebar-header">Join the Community</h3>
-    Enter your email address and we'll let you know when you can sign up:
+  <div class="content-section content-section-first">
+    <h3>Join the Community</h3>
+    <p>Enter your email address and we'll let you know when you can sign up:</p>
     <form>
-      <input name="email" type="email" placeholder="Your email address..." class="input-standard"/>
+      <input name="email" type="email" class="standard-input" placeholder="Your email address..." class="input-standard"/>
       <!-- XXX: link to Michael's app  XXX: placeholder support in freebase.js.js -->
       <input type="submit" value="Submit" class="button-featured"/>
     </form>
-    <a href="${h.freebase_url('/signin/login')}">Existing members, please sign in &raquo;
+    <a href="${h.freebase_url('/signin/login')}" class="plain-link">Existing members, please sign in &raquo;
   </div>
 </acre:block>
 
 <!-- Note: We trust feedburner to escape HTML entities in the description -->
 <acre:block def="blog_entries(blog)">
-  <div acre:if="blog" class="content-footer-section">
+  <div acre:if="blog" class="content-section">
     <h3 class="sidebar-header"><a href="$blog.url">Blog</a></h3>
     <a href="$blog.rss_url">RSS</a><!-- XXX: RSS icon? action? -->
     <div acre:for="item in blog.items">
@@ -265,7 +265,7 @@
 </acre:block>
 
 <acre:block def="wiki_entries(wiki)">
-  <div acre:if="wiki" class="content-footer-section">
+  <div acre:if="wiki" class="content-section">
     <h3 class="sidebar-header"><a href="$wiki.url">Wiki</a></h3>
     <a href="$wiki.rss_url">RSS</a><!-- XXX: RSS icon? action? -->
     <div acre:for="item in wiki.items">
@@ -277,9 +277,9 @@
 </acre:block>
 
 <acre:block def="join_discussion()">
-  <div class="content-footer-section content-footer-section-last">
-    <h3 class="sidebar-header">Discussion LIst</h3>
-    Enter your email address to join the discussion:
+  <div class="content-section content-section-last">
+    <h3>Discussion LIst</h3>
+    <p>Enter your email address to join the discussion:</p>
     <form method="POST" action="http://lists.freebase.com/mailman/subscribe/freebase-discuss" >
       <input name="email" type="email" 
              placeholder="Your email address..." 

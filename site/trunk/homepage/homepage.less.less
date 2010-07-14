@@ -18,9 +18,13 @@
     color: #fff;
     text-align: center;   
     border-bottom: 1px solid #fff;
-    padding: 1em 0;
+    padding: 1.5em 0;
     clear: both;
     overflow: hidden;
+}
+
+.ie6 .homepage-header {
+    height: 8em;
 }
 
 .homepage-header-title {
@@ -35,17 +39,21 @@
     font-weight: normal;
     padding-bottom: 0.7em;
     border-bottom: 1px solid #b2bbc7;
+    display: inline-block;
 }
 
 .homepage-announce {
-    font-size: 1.6em;
-    line-height: 2;
-    font-weight: bold;
     clear: both;
-    padding: 10px 0;
     float: left;
     width: 100%;
-    display: inline-block;
+}
+
+.homepage-announce span {
+    font-size: 1.6em;
+    line-height: 1.6;
+    font-weight: bold;
+    margin-top: 0.7em;
+    display: block;
 }
 
 .homepage-announce a {
@@ -252,7 +260,7 @@ DOMAIN EXPLORER
 }
 
 .category-domain-list li {
-    padding: 0.3em 0;
+    padding: 0.4em 0;
     border-bottom: 1px solid #dcdbdc;
     border-top: 1px solid #fff;
 }
@@ -435,7 +443,7 @@ CONTENT SUB
     color: #404859;
 }
 
-.content-sub-section {
+#content-sub .content-section {
     background: #fff;
     border: 1px solid #abe;
    .rounded_corners(5px);
@@ -444,18 +452,18 @@ CONTENT SUB
     overflow: auto;
 }
 
-.content-sub-section p,
-.content-sub-section li {
+#content-sub  .content-section p,
+#content-sub  .content-section li {
     color: #666;
     font-size: 1.2em;
     line-height: 1.2;
 }
 
-.content-sub-section ul {
+#content-sub .content-section ul {
     margin-left: 2em;
 }
 
-.content-sub-section h3 {
+#content-sub .content-section h3 {
     color: #1170a3;
     font-size: 1.5em;
     line-height: 1;
@@ -488,15 +496,7 @@ CONTENT SUB
     margin: 0;
 }
 
-.button-featured {
-    .linear_gradient(#ff6f02, #dc5800, repeat);
-    border: 1px solid #dc5800;
-    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; 
-    font-weight: bold;
-    color: #fff;
-    font-size: 1.1em;
-    .rounded_corners(5px);
-}
+
 
 .rss-icon {
     background: url(template, ui-sprite.png) no-repeat -100px left;
@@ -518,32 +518,102 @@ CONTENT FOOTER
 */
 
 #content-footer {
+    width: 98em;
     border: 1px solid #d3d3d3;
     .rounded_corners(5px);
     float: left;
     margin-top: 1.5em;
 }
 
-.content-footer-section {
-    width: 21em;
+#content-footer .content-section {
+    width: 21.4em;
     height: 15em;
     float: left;
     border-right: 1px solid #d3d3d3;
     padding: 1.5em;
-    background: #fff;
-   /* -webkit-gradient(linear, 0% 0%, 100% 100%, from(#F7F7F7), to(#FFFFFF)) */
-    /* -webkit-gradient:
-        linear,
-        left bottom,
-        right bottom,
-        color-stop(0.06, rgb(255,255,255)),
-        color-stop(0.77, rgb(245,245,245));
-    -moz-linear-gradient:
-        left center,
-        rgb(255,255,255) 6%,
-        rgb(245,245,245) 77%;*/
+    background-image: -webkit-gradient(linear, 0% 0%, 100% 100%, from(#F7F7F7), to(#FFFFFF));
+    background-image: -moz-linear-gradient(100% 100% 0deg,#F6F6F6, #FFFFFF);
 }
 
-.content-footer-section-last {
+#content-footer .content-section-first {
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    -webkit-border-top-left-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+}
+#content-footer .content-section-last {
     border-right: 0;
+    -webkit-border-bottom-right-radius: 5px;
+    -moz-border-radius-bottomright: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topright: 5px;
+}
+
+#content-footer h3 {
+    font-size: 1.6em;
+    line-height: 1;
+    margin-bottom: 0.5em;
+    float: left;
+}
+
+#content-footer p {
+    font-size: 1.1em;
+    line-height: 1.3;
+    margin: 1em 0 0.6em 0;
+    display: block;
+    clear: both;
+    float: left;
+}
+
+#content-footer .input-standard {
+    width: 13em;
+}
+
+#content-footer .rss-icon {
+    float: right;
+}
+
+#content-footer form {
+    margin-bottom: 1em;
+}
+
+#content-footer a.plain-link {
+    font-weight: normal;
+    font-size: 1.1em;
+}
+
+.button-featured {
+    .linear_gradient(#ff6f02, #dc5800, repeat);
+    border: 1px solid #dc5800;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; 
+    font-weight: bold;
+    color: #fff;
+    font-size: 1.1em;
+    .rounded_corners(5px);
+    padding: 0.4em 0.5em;
+}
+
+.blog-feature-content,
+.wiki-feature-content {
+    float: left;
+    font-size: 1.1em;
+}
+
+#content-footer .item-title {
+    font-weight: bold;
+    font-size: 1.2em;
+    line-height: 1.1;
+    display: block;
+    clear: both;
+}
+
+.blog-item,
+.wiki-item {
+    margin: 0.6em 0;
+    float: left;
+}
+
+.content-footer-section-last a {
+    font-weight: bold;
+    font-size: 1.3em;
 }

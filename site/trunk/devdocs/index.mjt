@@ -38,9 +38,9 @@
         </blockquote>
 
         <acre:block for="category in categories">
-          <h3>$category.name</h3>
+          <h2>$category.name</h2>
           <ul>
-            <li acre:for="doc in category.docs" acre:if="!doc.anonymous && !(doc.hidden && (o.sel_category != doc.key))">
+            <li acre:for="doc in category.docs" acre:if="!(doc.hidden && (o.sel_category != doc.key))">
               <a acre:if="doc.sections || doc.content" href="$c.base_path/$doc.key">$doc.name</a>
               <a acre:elif="doc.link" href="$doc.link">$doc.name</a>
               <span acre:else="">$doc.name</span>

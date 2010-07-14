@@ -45,17 +45,15 @@
     <div id="content-main" role="main">
       <div class="page-meta" acre:if="c.app">
         <h1>$c.app.name</h1>
-        <div class="meta" acre:if="c.app.description">
-          <span class="description">$c.app.description</span>
-        </div>
         <span class="creation-timestamp">
           ${image.user_image_small(c.app.modified_by)}
           Last modified by <a href="${h.url_for('apps', null, null, c.app.modified_by.id)}">$c.app.modified_by.name</a> 
           <time class="published" datetime="${c.app.modified}">${h.relative_date(acre.freebase.date_from_iso(c.app.modified))}</time>
         </span>
         <img class="app-icon" acre:if="c.app.icon" src="$c.app.icon.src" alt="$c.app.name"/>
-        <div id="description" acre:if="c.app.article">
-          <p>${acre.markup.bless(c.app.article.html)}</p>
+        <div class="app-description">
+          <p acre:if="c.app.description">$c.app.description</p>
+          <p acre:if="c.app.article">${acre.markup.bless(c.app.article.html)}</p>
         </div>
         <acre:block if="c.app.authors">
           <h2 class="user-list-title">Authors:</h2>
@@ -65,8 +63,7 @@
             </li>
           </ul>
         </acre:block>
-        <div class="nav clear">
-          <p class="box-nextactions">
+        <div class="app-actions">
             <a class="button button-primary" href="$c.app.homepage">
               Go to this App
             </a>      
@@ -83,7 +80,6 @@
                 Edit Settings
               </a>
             </acre:block>
-          </p>
         </div>
       </div>
       <div class="page-meta" acre:else="">

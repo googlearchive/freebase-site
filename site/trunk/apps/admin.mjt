@@ -67,7 +67,7 @@
         </ul>
       
         <p>
-          <label>App Name</label> <input type="text" name="name" value="$c.app.name"/>
+          <label>App Name</label> <input type="text" name="name" class="textbox" value="$c.app.name"/>
         </p>
       
         <p>

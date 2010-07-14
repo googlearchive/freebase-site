@@ -6,6 +6,11 @@
 
 <acre:block def="title()" trim="">
   <acre:script>
+    if (!c.user) {
+      acre.response.status = 302;
+      acre.response.set_header("location", h.account_url("signin", acre.request.url));
+      acre.exit();      
+    }
     acre.response.set_cache_policy("fresh");
   </acre:script>
   Settings<acre:block if="c.app"> for $c.app.name</acre:block>

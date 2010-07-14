@@ -70,18 +70,18 @@
             <tr>
               <th scope="col" class="column-header">App</th>
               <th scope="col" class="column-header">Authors</a></th>
-              <th scope="col" class="column-header numeric">Last Edited</th>
+              <th scope="col" class="column-header">Last Edited</th>
             </tr>
           </thead>
           <tr acre:for="app in c.apps">
             <td class="odd">
               <h3 class="app-title">
                 <a href="${h.url_for('apps', null, null, app.id)}">$app.name</a>
-                <span acre:if="app.acre && app.acre.version" class="app-version">
+                <span acre:if="app.acre && app.acre.version" class="applist-version">
                   v.$app.acre.version
                 </span>
               </h3>
-              <p class="app-description" acre:if="app.description">
+              <p class="applist-details" acre:if="app.description">
                 $app.description
               </p>
             </td>
@@ -90,16 +90,16 @@
                 <acre:script>
                   var f = app.authors[0];
                   var num = app.authors.length - 1;
-                </acre:script>              
+                </acre:script>
                 <a href="${h.url_for('apps', null, null, f.id)}">$f.name</a>
-                <acre:block if="num > 0"><br />and $num other<acre:block if="num > 1">s</acre:block></acre:block>
+                <acre:block if="num > 0"><div class="applist-details">and $num other<acre:block if="num > 1">s</acre:block></div></acre:block>
               </div>
             </td>
-            <td class="odd">
+            <td class="odd applist-userimage">
               <acre:block if="app.modified">
-                <acre:block if="app.modified_by">${image.user_image_small(app.modified_by)}</acre:block>
-                ${h.relative_date(acre.freebase.date_from_iso(app.modified))}<br />
-                ${c.app.modified_by.id}
+                <acre:block if="app.modified_by">${image.user_image_small(app.modified_by)} 
+                by <a href="${acre.freebase.service_url}/view${app.modified_by.id}" title="View user profile">$app.modified_by.name</a></acre:block>
+                <div class="applist-details">${h.relative_date(acre.freebase.date_from_iso(app.modified))}</div>
               </acre:block>
               <acre:block else="">
                 N/A

@@ -31,21 +31,22 @@
             <a href="${h.url_for('apps')}">Apps</a>
           </span>
         </li>
+        <li class="breadcrumb-item last" if="c.app">
+          <span class="breadcrumb-item-inner">
+            <a href="#">$c.app.name</a>
+          </span>
+        </li>
       </ol>
     </div>
   </div>
 </acre:block>
 
 <acre:block def="content_body()">  
-  <div id="content-wrapper">
-    
     <div id="content-main" role="main">
-
       <div class="page-meta" acre:if="c.app">
         <h1>$c.app.name</h1>
-        <div class="meta">
-          <span class="description" acre:if="c.app.description">$c.app.description</span>
-          <span class="description" acre:else="">No description provided</span>
+        <div class="meta" acre:if="c.app.description">
+          <span class="description">$c.app.description</span>
         </div>
         <span class="creation-timestamp">
           ${image.user_image_small(c.app.modified_by)}
@@ -66,7 +67,7 @@
         </acre:block>
         <div class="nav clear">
           <p class="box-nextactions">
-            <a class="button-link-primary" href="$c.app.homepage">
+            <a class="button-primary" href="$c.app.homepage">
               Go to this App
             </a>      
             <a class="button-link" acre:if="c.app.acre" href="$c.app.acre.source">
@@ -79,7 +80,7 @@
                 });
               </acre:script>
               <a class="button-link" acre:if="is_author" href="${h.url_for('apps', 'admin', null, c.app.id)}">
-                Settings...
+                Edit Settings
               </a>
             </acre:block>
           </p>
@@ -88,9 +89,6 @@
       <div class="page-meta" acre:else="">
         <h1>No app found</h1>
       </div>
-
-
-    </div>
   </div>
 </acre:block>
 

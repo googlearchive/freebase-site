@@ -1,0 +1,99 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var c = this.exports.c = {};
+  var h = mf.require("core", "helpers");
+  var image = mf.require("template", "imagecomponents");
+</acre:script>
+
+<acre:block def="title()" trim="">
+  <acre:script>
+    acre.response.set_cache_policy("fresh");
+  </acre:script>
+  <acre:block if="c.app">
+    $c.app.name
+  </acre:block>
+  <acre:block else="">
+    App Not Found
+  </acre:block>
+</acre:block>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('apps.mf.css')}" />
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('article.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  <div class="page-header">
+    <div class="breadcrumb clear">
+      <ol>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.url_for('apps')}">Apps</a>
+          </span>
+        </li>
+      </ol>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="content_body()">  
+  <div id="content-wrapper">
+    
+    <div id="content-main" role="main">
+
+      <div class="page-meta" acre:if="c.app">
+        <h1>$c.app.name</h1>
+        <div class="meta">
+          <span class="description" acre:if="c.app.description">$c.app.description</span>
+          <span class="description" acre:else="">No description provided</span>
+        </div>
+        <span class="creation-timestamp">
+          ${image.user_image_small(c.app.modified_by)}
+          Last modified by <a href="${acre.freebase.service_url}/view${c.app.modified_by.id}" title="View user profile">$c.app.modified_by.name</a> 
+          <time class="published" datetime="${c.app.modified}">${h.relative_date(acre.freebase.date_from_iso(c.app.modified))}</time>
+        </span>
+        <img class="app-icon" acre:if="c.app.icon" src="$c.app.icon.src" alt="$c.app.name"/>
+        <div id="description" acre:if="c.app.article">
+          <p>${acre.markup.bless(c.app.article.html)}</p>
+        </div>
+        <acre:block if="c.app.authors">
+          <h2 class="user-list-title">Authors:</h2>
+          <ul class="user-list clear">
+            <li acre:for="author in c.app.authors" class="vcard">
+              ${image.user_image_medium(author)}
+            </li>
+          </ul>
+        </acre:block>
+        <div class="nav clear">
+          <p class="box-nextactions">
+            <a class="button-link-primary" href="$c.app.homepage">
+              Go to this App
+            </a>      
+            <a class="button-link" acre:if="c.app.acre" href="$c.app.acre.source">
+              View Source
+            </a>
+            <acre:block if="c.user">
+              <acre:script>
+                var is_author = c.app.authors.some(function(author){
+                  return (author.id === c.user.id);
+                });
+              </acre:script>
+              <a class="button-link" acre:if="is_author" href="${h.url_for('apps', 'admin', null, c.app.id)}">
+                Settings...
+              </a>
+            </acre:block>
+          </p>
+        </div>
+      </div>
+      <div class="page-meta" acre:else="">
+        <h1>No app found</h1>
+      </div>
+
+
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="${mf.js_src('apps.mf.js')}"></script>
+</acre:block>

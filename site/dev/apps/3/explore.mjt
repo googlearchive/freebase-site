@@ -1,0 +1,169 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var c = this.exports.c = {};
+  var h = mf.require("core", "helpers");
+  var image = mf.require("template", "imagecomponents");
+</acre:script>
+
+<acre:block def="title()" trim="">
+  $c.title
+</acre:block>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('apps.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  <div class="page-header">
+    <h1 id="page-title">Apps</h1>
+  </div>
+</acre:block>
+
+<acre:block def="content_body()">
+  <div id="content-wrapper">
+    <div id="content-main" role="main">
+      
+      <div class="section">
+        <h1 class="section-title">Search</h1>
+        <div id="apps-search" class="section-tabs">
+          <ul class="section-tabset clear">
+            <li class="section-tab"><a href="#app-search">Apps</a></li>
+            <li class="section-tab"><a href="#user-search">By User</a></li>
+          </ul>
+          <div class="search-box" id="app-search">
+            <form id="app-search-form" method="get" action="${h.url_for('apps', 'search')}">
+              <fieldset>
+                <input type="text" name="q" class="text-input" id="app-search-input" placeholder="Search apps..." />
+                <input type="submit" class="button-primary" value="Search"/>
+                <!--
+                <label><input type="checkbox" name="unlisted" class="search-toggle" value="$c.query||''" id="app-search-toggle-listed"
+                  acre:attrs="acre.request.params.unlisted?{'checked':'checked'}:{}"/>Include Unpublished Apps</label>
+                -->
+              </fieldset>
+            </form>
+          </div>
+          <div class="search-box" id="user-search">
+            <form id="user-search-form" method="get" action="type">
+              <fieldset>
+                <input type="text" name="id" class="text-input" id="user-search-input" placeholder="Start typing for suggested users..." />
+                <!--
+                <label><input type="checkbox" name="unlisted" class="search-toggle" value="$c.query||''" id="app-search-toggle-listed"
+                  acre:attrs="acre.request.params.unlisted?{'checked':'checked'}:{}"/>Include Unpublished Apps</label>
+                -->
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <span id="app-buttons-right">
+          <a href="${h.url_for('apps', 'create')}" class="button-link-primary">New App</a>
+        </span>
+        <a acre:if="c.category === 'released'" href="${h.url_for('apps', 'feed', null, c.category + (c.query ? '/' + c.query : ''))}" class="rss-icon domain-explorer-rss">RSS</a>
+        <h1 class="section-title">
+          $c.title <acre:block if="c.query">$c.query</acre:block>
+        </h1>
+        
+        <!-->
+        <a href="${h.url_for('apps', 'released')}">Recently Released</a> | 
+        <a href="${h.url_for('apps', 'recent')}">Recently Updated</a> |
+        <a href="${h.url_for('apps', 'featured')}">Featured</a>
+        -->
+        <table class="table" cellspacing="0" acre:if="c.apps.length">
+          <thead>
+            <tr>
+              <th scope="col" class="column-header">App</th>
+              <th scope="col" class="column-header">Authors</a></th>
+              <th scope="col" class="column-header numeric">Last Edited</th>
+            </tr>
+          </thead>
+          <tr acre:for="app in c.apps">
+            <td class="odd">
+              <h3 class="app-title">
+                <a href="${h.url_for('apps', null, null, app.id)}">$app.name</a>
+                <span acre:if="app.acre && app.acre.version" class="app-version">
+                  $app.acre.version
+                </span>
+              </h3>
+              <p class="app-description" acre:if="app.description">
+                $app.description
+              </p>
+            </td>
+            <td class="even">
+              <div class="authors" acre:if="app.authors.length">
+                <acre:script>
+                  var f = app.authors[0];
+                  var num = app.authors.length - 1;
+                </acre:script>              
+                <a href="${h.url_for('apps', null, null, f.id)}">$f.name</a>
+                <acre:block if="num > 0"> and $num other<acre:block if="num > 1">s</acre:block></acre:block>
+              </div>
+            </td>
+            <td class="odd">
+              <acre:block if="app.modified">
+                <acre:block if="app.modified_by">${image.user_image_small(app.modified_by)}</acre:block>
+                ${h.relative_date(acre.freebase.date_from_iso(app.modified))}
+              </acre:block>
+              <acre:block else="">
+                N/A
+              </acre:block>
+            </td>
+          </tr>
+        </table>
+        <div id="no-apps" acre:else="">
+          <p acre:if="c.category === 'user'">
+            <b>${c.query}</b> hasn't written any apps yet. 
+          </p>
+          <p acre:elif="c.category === 'search'">
+            Your search for <b>${c.query}</b> did not match any apps. 
+          </p>
+          <p acre:else="">
+            Error retrieving app list
+          </p>
+        </div>
+      </div>
+    </div>
+  
+    <div class="aside" role="complimentary" id="content-sub">
+      <div class="content-wrapper">
+        <h2 class="aside-title">What are Apps?</h2>
+        <p>
+          Apps are community created web applications that use freebase data.
+        </p>
+        
+        <h2 class="aside-title">Learn more:</h2>
+        <ul>
+          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Acre">Wiki:Acre</a></li>
+          <li><a title="View help page" href="${acre.freebase.site_host}/docs/acre_templates">Acre Template Reference</a></li>
+          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Freebase_API">Wiki: Freebase API</a></li>
+          <li><a title="View help page" href="${acre.freebase.site_host}/docs/web_services">Freebase API Reference</a></li>
+        </ul>
+        
+        <div class="aside-box">
+          <img src="${mf.img_src('logo-acre.png')}" width="66" height="20" alt="acre" border="0" />
+          <h2>Open Code for Open Data</h2>
+          <p>
+            Acre is the fastest way to make Freebase apps &#8212;
+          </p>
+          <ul>
+            <li><h5>easy to code</h5></li>
+            <li><h5>connect to everything</h5></li>
+            <li><h5>clone any app to get started</h5></li>
+          </ul>
+          <h3><a href="http://acre.freebase.com/#create=app">Create an Acre app &raquo;</a></h3>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script type="text/javascript">
+    var bp = "${h.url_for('apps')}";
+    var category = "${c.category}";
+  </script>
+  <script type="text/javascript" src="${mf.js_src('apps.mf.js')}"></script>
+</acre:block>
+

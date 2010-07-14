@@ -132,8 +132,13 @@ var RequestCanceled, RequestTimeout;
       if (!finished){
         reject(new RequestCanceled(reason));
       }
-    }
+    };
     
+    this.cleanup = promise.cleanup = function() {
+      if (result instanceof Error) {
+        throw result;
+      }
+    }
   }
   
   // Convenience function to return an unresolved deferred

@@ -17,7 +17,7 @@ var CACHE_POLICIES = {
   },
   "public": {
     "public": true,
-    "no-cache": "Set-Cookie",
+    //"no-cache": "Set-Cookie",
     "max-age": 28800,
     "s-maxage": 28800,
     "stale-while-revalidate": 28800

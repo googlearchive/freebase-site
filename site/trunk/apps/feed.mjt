@@ -30,7 +30,7 @@
             <small> by ${app.creator.id}</small>
             <p acre:if="app.description">
               <img acre:if="app.icon" 
-              src="${acre.freebase.imgurl(c.app.icon.id,150,150,'fillcropmid')}" />
+              src="${acre.freebase.imgurl(app.icon.id,150,150,'fillcropmid')}" />
               $app.description
             </p>
           </div>

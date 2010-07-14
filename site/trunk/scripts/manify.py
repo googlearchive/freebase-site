@@ -51,7 +51,7 @@ search_path = os.path.abspath(os.path.join(dir.scripts, ".."));
 cmd = ['find', search_path, "-name", "routing", "-prune", "-o", "-name", "MANIFEST.sjs"]
 mfs = run_cmd(cmd)
 
-app_re = re.compile(r'(\s*)[\"\']?(\w+)[\"\']?\s*\:\s[\"\']?\/\/(\d+\.)?(\w+)\.site\.freebase\.dev[\"\']?\s*(\,)?\s*?')
+app_re = re.compile(r'(\s*)[\"\']?(\w+)[\"\']?\s*\:\s*[\"\']?\/\/(\d+\.)?(\w+)\.site\.freebase\.dev[\"\']?\s*(\,)?\s*?')
 import pdb
 for mf in mfs.split("\n"):
     if not mf.endswith("MANIFEST.sjs"):

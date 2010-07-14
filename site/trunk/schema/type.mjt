@@ -32,7 +32,7 @@
       <ol class="clear">
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.url_for('schema')}">Schema Explorer</a>
+            <a href="${h.url_for('schema')}">Schema</a>
           </span>
         </li>
         <li if="c.type.domain" class="breadcrumb-item">

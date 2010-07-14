@@ -18,12 +18,6 @@ function get_list() {
       "name" : "APIs",
       "docs" : [
         {
-          "name"     : "Landing Page",
-          "key"      : "index",
-          "content"  : url_for("devdocs","landing"),
-          "anonymous" : true
-        },
-        {
           "name"     : "Freebase Overview",
           "key"      : "data",
           "sections" : url_for("datadocs", "sections_getting_started" )

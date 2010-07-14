@@ -1,0 +1,165 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var h = mf.require("core", "helpers");
+  var utils = mf.require("utils");
+</acre:script>
+
+<!-- Native Properties markup pattern -->
+<acre:block def="native_properties(properties, type)">
+  <tr acre:for="prop in properties" class="hoverable">
+    <th scope="row" class="row-header odd">
+      <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
+      <a href="javascript:void(0);" class="row-menu-trigger">+</a>
+      <ul class="row-menu tooltip">
+        <li class="row-menu-item"><a href="${h.url_for('schema', 'property', null, prop.id)}">View property details</a></li>
+        <li class="row-menu-item" acre:if="prop.expected_type.id.indexOf('/type') === -1">
+          <a href="${h.freebase_url('/view'+prop.expected_type.id)}">Browse instances</a>
+        </li>
+        <li class="row-menu-item last">
+          <a href="${utils.get_prop_query(prop.id, type)}">Build query</a>
+        </li>
+      </ul>
+    </th>
+    <td class="even">$prop.id</td>
+    <td class="odd">
+      <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">
+        $prop.expected_type.id
+      </a>
+      <span acre:if="prop.unit" class="measurement-unit">$prop.unit.name</span>
+      <span acre:if="prop.master_property || prop.reverse_property">
+        <span class="return-link-trigger"></span>
+        <acre:script>
+          var other_property = prop.master_property || prop.reverse_property;
+        </acre:script>
+        <span class="return-link-description">
+          <strong>$prop.name</strong> has a return link of
+          <strong>$other_property.name</strong>
+          from <strong>$other_property.schema.name</strong>
+          <span class="return-link-pointer"></span>
+        </span>
+        
+      </span>
+    </td>
+    <td class="even description">
+      <p acre:if="prop['/freebase/documented_object/tip']">${prop['/freebase/documented_object/tip']}</p>
+      <span class="property-meta">
+        <span acre:if="prop.master_property === null"><abbr title="">master</abbr></span>
+        <span acre:else=""><abbr title="">reverse</abbr></span>
+        <span acre:if="prop.unique"><abbr title="This property can only have a single value">unique</abbr></span>
+        <span acre:if="prop['/freebase/property_hints/disambiguator']"><abbr title="">disambiguating</abbr></span>
+        <span acre:if="prop['/freebase/property_hints/display_none']"><abbr title="">hidden</abbr></span>                  
+      </span>
+    </td>
+  </tr>
+</acre:block>
+
+<!-- Included Types markup pattern -->
+<acre:block def="included_types(types, type)">
+  <acre:block for="t in types">
+    <acre:script>
+      var class_name = "included-type" + t.id.replace(/\//g, "-");
+    </acre:script>
+    <thead>
+      <tr>
+        <th class="tbody-header" colspan="4" data-target="$class_name">
+          <span class="tbody-header-title">$t.name</span> <span class="key">$t.id</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody class="$class_name">
+      <tr>
+        <th class="column-header">Property</th>
+        <th class="column-header">ID</th>
+        <th class="column-header">Expected Type</th>
+        <th class="column-header description">Description</th>
+      </tr>
+      <tr acre:for="prop in t.properties" class="included-property hoverable">
+        <th scope="row" class="odd row-header">
+          <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
+          <a href="javascript:void(0);" class="row-menu-trigger">+</a>
+          <ul class="row-menu tooltip">
+            <li class="row-menu-item"><a href="${h.url_for('schema', 'property', null, prop.id)}">View property details</a></li>
+            <li class="row-menu-item" acre:if="prop.expected_type.id.indexOf('/type') === -1">
+              <a href="${h.freebase_url('/view'+prop.expected_type.id)}">Browse instances</a>
+            </li>
+            <li class="row-menu-item last"><a href="#">Build query</a></li>
+          </ul>          
+        </th>
+        <td class="even">$prop.id</td>
+        <td class="odd">
+          <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">$prop.expected_type.id</a>
+          <span acre:if="prop.unit">$prop.unit.name</span>
+        </td>
+        <td class="even description">
+          <p acre:if="prop['/freebase/documented_object/tip']">${prop['/freebase/documented_object/tip']}</p>                 
+          <span acre:if="prop.master_property === null">master</span>
+          <span acre:else="">reverse</span>
+          <span acre:if="prop.unique">,unique</span>
+          <span acre:if="prop['/freebase/property_hints/disambiguator']">,disambiguating</span>
+          <span acre:if="prop['/freebase/property_hints/display_none']">,hidden</span>
+        </td>
+      </tr>
+    </tbody>
+  </acre:block>
+</acre:block>
+
+<!-- Incoming Properties markup pattern -->
+<acre:block def="incoming_props_group(group, expanded)">
+
+  <acre:script>
+
+    if(group.name != 'Commons' && group.name != 'Bases') {
+      var class_name = "incoming-property-same";
+    }
+    else {
+      var class_name = "incoming-property-" + group.name.toLowerCase();
+    }
+
+    if (expanded === true) {
+      var state = 'expanded';
+    }
+    else {
+      var state = '';
+    }
+
+  </acre:script>
+
+  <thead>
+    <tr>
+      <th class="tbody-header $state" colspan="4" data-target="$class_name">
+        <span class="tbody-header-title">$group.name</span>
+      </th>
+    </tr>
+  </thead>
+  <tbody class="$class_name $state">
+    <tr>
+      <th class="column-header" scope="col">Property</th>              
+      <th class="column-header" scope="col">Originating Type</th>
+    </tr>
+    <tr acre:for="prop in group.properties" class="hoverable">
+      <td class="odd">
+        <div>
+          <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
+          <a href="javascript:void(0);" class="row-menu-trigger">+</a>
+          <ul class="row-menu tooltip">
+            <li class="row-menu-item"><a href="${h.url_for('schema', 'property', null, prop.id)}">View property details</a></li>
+            <li class="row-menu-item last"><a href="#">Build query</a></li>
+          </ul>          
+        </div>
+        <span class="key">$prop.id</span>      
+      </td>
+      <td class="even">
+        <div>
+          <a href="${h.url_for('schema', 'type', null, prop.schema.id)}">$prop.schema.name.value</a>
+          <a href="javascript:void(0);" class="row-menu-trigger">+</a>
+          <ul class="row-menu tooltip">
+            <li class="row-menu-item"><a href="${h.url_for('schema', 'type', null, prop.schema.id)}">View type schema</a></li>
+            <li class="row-menu-item"><a href="${h.freebase_url('/view'+prop.schema.id)}">Browse instances</a></li>
+            <li class="row-menu-item last"><a href="#">Build query</a></li>
+          </ul>          
+        </div>
+        <span class="key">$prop.schema.id</span>      
+      </td>
+    </tr>
+  </tbody>
+</acre:block>

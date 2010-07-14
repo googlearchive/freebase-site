@@ -69,7 +69,7 @@
           </ul>
         </acre:block>
         <div class="app-actions">
-            <a class="button button-primary" href="$c.app.homepage">
+            <a acre:if="c.app.homepage" class="button button-primary" href="$c.app.homepage">
               Go to this App
             </a>      
             <a class="button" acre:if="c.app.acre" href="$c.app.acre.source">

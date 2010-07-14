@@ -40,8 +40,13 @@ function match_route(path, route) {
  * Invoke the error app template with status=404 and exit.
  */
 function not_found(id) {
+  /*
   var path = acre.form.build_url(mf.apps.error + "/index", {status:404, not_found:id});
   acre.route(path);
+  acre.exit();
+   */
+  acre.response.status = 302;
+  acre.response.set_header("location", acre.freebase.site_host + "/error" + id);
   acre.exit();
 };
 

@@ -18,7 +18,7 @@ if (acre.request.params.category) {
     null,
     mf.require("templates"),
     "domain_toc_panel",
-    queries.alphabetically_grouped_domains()
+    queries.alphabetically_grouped_domains(true)
   );
   acre.exit();
   

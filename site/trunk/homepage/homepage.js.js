@@ -27,6 +27,12 @@ $.tools.tabs.addEffect("load_pane", function(i, done) {
     $tab.parent().removeClass("processing");
     crossfade();
     update_pointer();
+    
+    if ($pane.is("#pane-all")) {
+      $("#domain-explorer-header").children().fadeOut("fast");
+    } else {
+      $("#domain-explorer-header").children().fadeIn("fast");
+    }
   }
   
   // only load the pane once
@@ -34,7 +40,6 @@ $.tools.tabs.addEffect("load_pane", function(i, done) {
     // load it with a page specified in the tab's href attribute
     $tab.parent().addClass("processing");
     $pane.load($tab.attr("href"), function() {
-      
       switch_pane();
       fb.homepage.init_activity_charts($pane);
     });

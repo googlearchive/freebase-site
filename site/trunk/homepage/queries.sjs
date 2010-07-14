@@ -35,10 +35,10 @@ var categories = function () {
 var all_domains = function(commons_only) {
   var q_domains = acre.require("domain_info");
   if (commons_only) {
-    q_domains.extend({"key": {"namespace": "/"}})
+    q_domains = q_domains.extend({"key": {"namespace": "/", "limit": 0}});
   }
   
-  return freebase.mqlread(q_domains)
+  return freebase.mqlread(q_domains.query)
     .then(function(envelope) {
       return envelope.result.map(function(domain) {
         return {

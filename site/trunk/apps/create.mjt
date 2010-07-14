@@ -21,7 +21,20 @@
 
 <acre:block def="content_header()">
   <div class="page-header">
-    <h1 id="page-title">Explore Apps</h1>
+    <div class="breadcrumb clear">
+      <ol>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.url_for('apps')}">Apps</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item last">
+          <span class="breadcrumb-item-inner">
+            <a href="#">New App</a>
+          </span>
+        </li>
+      </ol>
+    </div>
   </div>
 </acre:block>
 

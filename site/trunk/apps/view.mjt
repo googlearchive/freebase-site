@@ -31,6 +31,11 @@
             <a href="${h.url_for('apps')}">Apps</a>
           </span>
         </li>
+        <li class="breadcrumb-item" acre:if="c.app.creator">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.url_for('apps',null, null, c.app.creator.id)}">$c.app.creator.name</a>
+          </span>
+        </li>
         <li class="breadcrumb-item last" if="c.app">
           <span class="breadcrumb-item-inner">
             <a href="#">$c.app.name</a>

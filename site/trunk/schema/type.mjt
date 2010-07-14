@@ -179,13 +179,13 @@
           <td class="left structure">
             <table>
               <tbody class="commons">
-                ${t.type_diagram_left(c.type.expected_by.commons)}
+                ${t.type_diagram_incoming_props(c.type.expected_by.commons)}
               </tbody>
               <tbody class="bases">
-                ${t.type_diagram_left(c.type.expected_by.base)}
+                ${t.type_diagram_incoming_props(c.type.expected_by.base)}
               </tbody>
               <tbody class="users">
-                ${t.type_diagram_left(c.type.expected_by.user)}
+                ${t.type_diagram_incoming_props(c.type.expected_by.user)}
               </tbody>
             </table>
           </td>
@@ -198,8 +198,9 @@
           </td>
           <td class="right structure">
             <table>
-              <acre:block for="type in c.type.included_types">              
-                ${t.type_diagram_right(type.properties)}
+              ${t.type_diagram_native_props(c.type.properties)} 
+              <acre:block for="type in c.type.included_types"> 
+                ${t.type_diagram_inherited_props(type.properties)}
               </acre:block>
             </table>
           </td>

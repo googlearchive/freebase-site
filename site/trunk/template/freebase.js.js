@@ -140,6 +140,7 @@ window.freebase = window.fb = {};
           return true;
         }
       });
-
+      
+      $("input[placeholder]").placeholder({blankSubmit: true});
     });
 })(jQuery, window.freebase);

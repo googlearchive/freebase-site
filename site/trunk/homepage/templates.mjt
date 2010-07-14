@@ -256,7 +256,7 @@
     <p>Enter your email address and we'll let you know when you can sign up:</p>
     <form>
       <input name="email" type="email" class="standard-input" placeholder="Your email address..." class="input-standard"/>
-      <!-- XXX: link to Michael's app  XXX: placeholder support in freebase.js.js -->
+      <!-- XXX: link to Michael's app -->
       <input type="submit" value="Submit" class="button button-primary"/>
     </form>
     <a href="${h.freebase_url('/signin/login')}" class="plain-link">Existing members, please sign in &raquo;

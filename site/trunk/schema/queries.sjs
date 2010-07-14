@@ -330,7 +330,6 @@ var property = function(id) {
         });
         
       return sibling_p.then(function(){ 
-          console.log('prop is:', prop);
           return prop;
       })
     },

@@ -27,3 +27,17 @@ function fix_id(o) {
 //  }
   return o;
 }
+
+function get_prop_query(p, t) {
+  console.log("property is: ", p);
+  var q = [{
+    "id": null,
+    "name": null,
+    "type": t,
+  }];
+  
+  q[p] = [];
+  
+  return "http://www.freebase.com/app/queryeditor?autorun=true&q=" + encodeURIComponent(JSON.stringify(q));
+    
+}

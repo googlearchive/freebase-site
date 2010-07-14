@@ -259,7 +259,7 @@
   <div class="content-section">
     <h3>What is <span class="emphasis">Freebase?</span></h3>
     <p>Learn what an entity graph is, what kind of information it contains, and why you should add your data!</p>
-    <a href="${h.wiki_url('What_is_Freebase')}" class="more-link">Learn More &raquo;</a>
+    <a href="${h.wiki_url('What_is_Freebase%3F')}" class="more-link">Learn More &raquo;</a>
   </div>
 </acre>
 
@@ -292,7 +292,7 @@
 <acre:block def="blog_entries(blog)">
   <div acre:if="blog" class="content-section">
     <h3 class="sidebar-header"><a href="$blog.url">Blog</a></h3>
-    <a href="$blog.rss_url" class="rss-icon">RSS</a><!-- XXX: RSS icon? action? -->
+    <a href="$blog.rss_url" class="rss-icon">RSS</a>
     <div class="blog-feature-content">
       Latest posts:
       <div acre:for="item in blog.items" class="blog-item">
@@ -310,7 +310,7 @@
 <acre:block def="wiki_entries(wiki)">
   <div acre:if="wiki" class="content-section">
     <h3 class="sidebar-header"><a href="$wiki.url">Wiki</a></h3>
-    <a href="$wiki.rss_url" class="rss-icon">RSS</a><!-- XXX: RSS icon? action? -->
+    <a href="$wiki.rss_url" class="rss-icon">RSS</a>
     <div class="wiki-feature-content">
       Recent Changes:
       <div acre:for="item in wiki.items" class="wiki-item">
@@ -333,7 +333,7 @@
       
       <input type="submit" value="Subscribe" class="button button-primary"/>
     </form>
-    <a href="#" class="bold-link">Read the List Archive</a>
+    <a href="http://lists.freebase.com/pipermail/freebase-discuss/" class="bold-link">Read the List Archive</a>
   </div>
 </acre:block>
 

@@ -117,7 +117,7 @@
         <p>which define a particular kind of person, place or thing and contain</p>
         <h3><a href="#" title="Learn more about">properties</a></h3>
         <p>which define the unique qualities of a type.</p>
-        <p>One simple way to understand the difference between types and properties is that types express &ldquo;is a&rdquo;;, while properties express &ldquo;has a&rdquo;.</p>
+        <p>One simple way to understand the difference between types and properties is that types express &ldquo;is a&rdquo;, while properties express &ldquo;has a&rdquo;.</p>
         <p><strong>Here's an example:</strong></p>
         <div class="aside-box">
           <h4><a href="${h.freebase_url('/view/en/william_shakespeare')}" title="View on Freebase">William Shakespeare</a></h4>

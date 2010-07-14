@@ -12,6 +12,11 @@
     "id": "/freebase/apps/application",
     "optional": "forbidden"
   },
+  "not_acre:type": {
+    "id": "/freebase/apps/acre_app",
+    "optional": "forbidden"
+  },
+  "/freebase/domain_profile/hidden": {"value": true, "optional": "forbidden"},
   "sort": "name",
   "limit": 1000
 }]

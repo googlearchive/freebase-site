@@ -186,6 +186,10 @@
   </div>
 </acre:block>
 
+<acre:block def="domain_toc_panel(grouped_domains)">
+
+</acre:block>
+
 <acre:block def="user_info(user)">
   <div class="content-section user-data">
     <div>

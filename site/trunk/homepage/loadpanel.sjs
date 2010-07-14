@@ -12,6 +12,16 @@ if (acre.request.params.category) {
   p_domains = queries.domains_for_category(acre.request.params.category);
 } else if (acre.request.params.domains === "featured") {
   p_domains = queries.domains_for_ids(FEATURED_DOMAIN_IDS);
+} else if (acre.request.params.domains === "all") {
+  
+  mf.require("template", "renderer").render_def(
+    null,
+    mf.require("templates"),
+    "domain_toc_panel",
+    queries.alphabetically_grouped_domains()
+  );
+  acre.exit();
+  
 } else if (acre.request.params.user) {
   p_domains = queries.domains_for_user(acre.request.params.user);
 }

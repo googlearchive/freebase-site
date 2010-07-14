@@ -3,10 +3,8 @@ var queries = mf.require("queries");
 
 var data = {
   "categories": queries.categories(),
-  "grouped_domains": queries.alphabetically_grouped_commons_domains(),
   "blog": queries.blog_entries(),
-  "wiki": queries.wiki_entries(),
-  "loaded_categories": queries.categories()
+  "wiki": queries.wiki_entries()
 };
 
 mf.require("template", "renderer").render_page(

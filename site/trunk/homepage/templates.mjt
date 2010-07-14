@@ -27,7 +27,7 @@
   
 </acre:block>
 
-<acre:block def="domain_explorer(categories, grouped_domains, user)">
+<acre:block def="domain_explorer(categories, user)">
   <div id="domain-explorer-header">
     <div class="domain-explorer-title"></div>
     

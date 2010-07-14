@@ -15,7 +15,6 @@ if (acre.request.params.id) {
 
 var data = {
   "categories": queries.categories(),
-  "grouped_domains": queries.alphabetically_grouped_commons_domains(),
   "blog": queries.blog_entries(),
   "wiki": queries.wiki_entries(),
   "user": queries.user_info(user_id)

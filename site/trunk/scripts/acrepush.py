@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys, os, hashlib, urllib2, tempfile, re, pwd
 import pdb
+import time
 
 try:
     import json
@@ -293,12 +294,15 @@ class AcrePush(object):
                 self.fb.save_binary_file(val['id'], val['contents'],
                                          val['content_type'])
             else:
-                self.fb.save_text_file(val['id'], val['contents'].read(),
+                contents = val['contents'].read()
+                self.fb.save_text_file(val['id'], contents,
                                        val['acre_handler'], val['content_type'])
-
-
-
+                if 'MANIFEST' in val['id']:
+                    print ">>>>>>>>>> acrepush {id}".format(id=val['id'])
+                    print contents
+                    
         if version:
+            time.sleep(1)
             self.fb.create_app_version(ondisk_app.metadata['id'], version, timestamp='__now__')
             print 'Updated version %s' % version
 

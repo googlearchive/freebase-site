@@ -353,6 +353,11 @@ for app, appid, version in apps:
         # acre push branch
         acrepush.push(appid, graph, branch_dir, version=version, user=user, pw=pw)
 
+        mf_url = app_url(app, version) + "/MANIFEST"
+        print ">>>>>>>>>> fetch_url {url}".format(url=mf_url)
+        print json.dumps(fetch_url(mf_url, isjson=True), indent=2)
+        
+        
 # flag to tell us if we've created new freebaselibs deployed directory,
 # and if so, restart the outbound01/02 static servers
 restart_static_servers = False
@@ -379,11 +384,20 @@ for app, appid, version in apps:
     # now that we have deterministically calculated the deployed_rev and updated the MANIFEST static_base_url/image_base_url,
     # we now want to reget the static_files with the correct css url(...) pointing the http://freebaselibs...
     static_files = deploy_static_files(branch_dir, url, deployed_dir)
-    
+            
     # css min
     css_files = [f for f in os.listdir(deployed_dir) if os.path.splitext(f)[1].lower() == ".css"]
     for css_file in css_files:
         css_path = os.path.join(deployed_dir, css_file)
+        
+        # we should not have any css url declrations that look like 'url(http://3.template.site.freebase.dev...)'
+        cmd = ['grep', '-E', 'url\s*\(\s*https?\:\/\/[0-9]+\.', css_path]
+        r = run_cmd(cmd)
+        if r:
+            prompt = '{f} contains 1 or more acre url declrarations. Continue with deploying {rev} of {app} [y/n]?'.format(f=f, rev=deploy_rev, app=app)
+            if raw_input(prompt).lower() != 'y':
+                sys.exit()
+        
         with open(css_path, "r") as infile:
             min_css = cssmin(infile.read())
         with open(css_path, "w") as outfile:

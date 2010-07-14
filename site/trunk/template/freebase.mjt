@@ -181,7 +181,7 @@
   <acre:block if="exports.footer_script">${exports.footer_script()}</acre:block>
 </acre:block>
 
-
+<!-- add any acre variables you wanted passed to client-side -->
 <acre:block def="acre_javascript_vars()">
   <script>
     var acre = {

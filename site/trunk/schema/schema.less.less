@@ -645,7 +645,7 @@ Type Visualization
 -----------------------------
 */
 
-#skeleton { border-collapse: collapse; margin: 3em auto; }
+#skeleton { border-collapse: collapse; margin: 3em auto; font-size: 12px;}
 #skeleton .in_prop { text-align: right; padding: 10px 5px 0px 5px; }
 #skeleton .in_type { text-align: right; }
 #skeleton .in_type a { position: relative; top: 0.6em; }
@@ -653,8 +653,9 @@ Type Visualization
 #skeleton .out_type { text-align: left; }
 #skeleton .out_type a { position: relative; top: 0.6em; }
 #skeleton .spacer { width: 10px; }
-#skeleton .clean { background-color: #fff; }
 #skeleton .c1 { padding-top: 6px; }
+#skeleton .left .c1 { padding-right:15px; }
+#skeleton .right .c1 { padding-left:15px; }
 #skeleton .c2 { border-bottom: 1px solid #d5d7d8; }
 #skeleton .c3 { border-bottom: 1px solid #d5d7d8; background-image: url(small_right_arrow.png); background-position: bottom right; background-repeat: no-repeat; }
 #skeleton .c4 { border: 1px solid #d5d7d8; border-top: 0px; }
@@ -666,11 +667,10 @@ Type Visualization
 #skeleton .right-legend { white-space: nowrap; text-align: right; color: #aaa; padding-top: 2em; padding-right: 3px; }
 #skeleton .master { font-weight: bold; }
 #skeleton .unique { font-style: italic; }
-#skeleton .local td { background-color: #f0f0f0; }
 #skeleton .mediator { }
 #skeleton .truetype { font-weight: bold; font-size: 110%; }
 #skeleton .typetype { font-family: courier; font-weight: normal; font-size: 100%; }
-#skeleton .type-container .type { font-size: 2.4em; padding: 1em 2em; background: #f8f8f8; .linear_gradient(#f8f8f8, #ececec); border: 1px solid #d5d7d8; .rounded_corners(5px); white-space: nowrap; }
+#skeleton .type-container .type { font-size: 1.8em; padding: 1em 2em; background: #f8f8f8; .linear_gradient(#f8f8f8, #ececec); border: 1px solid #d5d7d8; .rounded_corners(5px); white-space: nowrap; }
 #skeleton .type { white-space: nowrap; padding: 1em; border: 1px solid #ccc; margin: 1em;}
 #skeleton .type .name .attribute { font-size: 50%; color: #888; position: relative; bottom: 1em; right: 0.5em; }
 #skeleton .type .attribute { font-size: 120%; color: #888; }

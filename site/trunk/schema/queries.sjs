@@ -192,10 +192,21 @@ var type = function(id, order, dir) {
         description : r.description,
         properties : r.properties,
         included_types : r['/freebase/type_hints/included_types'],
-        expected_by : r.expected_by
       };
-  
+      
       type.instances = r['/freebase/type_profile/instance_count'] ? h.commafy(r['/freebase/type_profile/instance_count'].value) : null;
+
+      type.expected_by = {
+        commons: [],
+        base: [],
+        user: []
+      };
+      
+      r.expected_by.forEach(function(p){
+        var kind = kind_of_domain(p);
+        type.expected_by[kind].push(p);
+      });
+
 
       /*
       
@@ -420,4 +431,32 @@ function isGlobal(id) {
   return id.indexOf('/user/') == -1 &&
          id.indexOf('/guid/') == -1 &&
          id.indexOf('/base/') == -1;
+}
+
+
+function kind_of_domain (d){
+   if (d['schema']['domain']['id'].indexOf("/user/") == 0){
+       return 'user';
+   }
+
+   if (d['schema']['domain']['id'].indexOf("/base/") == 0){
+       return 'base';
+   }
+
+   return 'commons';
+}
+
+function compare_type(a,b){
+   var aval = kind_of_domain(a);
+   var bval = kind_of_domain(b);
+
+   if (aval < bval){
+       return -1;
+   }
+
+   if (bval < aval){
+       return 1;
+   }
+
+   return 0;
 }

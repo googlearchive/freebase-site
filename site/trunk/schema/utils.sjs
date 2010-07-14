@@ -28,8 +28,10 @@ function fix_id(o) {
   return o;
 }
 
+/*
+    Returns a query string for provided property
+*/
 function get_prop_query(p, t) {
-  console.log("property is: ", p);
   var q = [{
     "id": null,
     "name": null,

@@ -178,41 +178,22 @@
         <tr>
           <td class="left structure">
             <table>
-              <acre:block for="i,prop in c.type.expected_by">
-                <acre:script>
-                  var global = utils.isGlobal(prop.id);
-                  transition = global != previous_global;
-                  previous_global = global;
-                  var same = (previous == prop.schema.id);
-                  previous = prop.schema.id;
-                </acre:script>
-                <tr acre:if="transition && i > 0" class="separator">
-                  <td class="c1"></td>
-                  <td class="c1 spacer"></td>
-                  <td class="c7">&nbsp;</td>
-                  <td class="c1 spacer"></td>
-                </tr>
-                <tr class="${global ? 'global' : 'local'} ${prop.inherited ? 'inherited' : ''}">
-                  <td nowrap="" class="c1 in_type ${prop.schema['/freebase/type_hints/mediator'] ? 'mediator' : 'truetype'}">
-                    <acre:block if="!same || i == 0">
-                      <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.schema.id} ${prop.schema['/freebase/type_hints/mediator'] ? '| mediator' : ''}">$prop.schema.name.value</a>
-                      <acre:script>var instances = prop.schema['/freebase/type_profile/instance_count'];</acre:script>
-                      <a acre:if="instances" href="${acre.freebase.service_url}/view${prop.schema.id}" title="Browse the ${instances.value} instances of ${prop.schema.id}" class="instances" >[$instances.value]</a>
-                    </acre:block>
-                  </td>
-                  <td class="${same ? '' : 'c2'} spacer"></td>
-                  <td nowrap="" class="in_prop ${(i == 0) ? 'c2' : same ? 'c4' : 'c5'} ${prop.master_property == null ? 'master' : ''} ${prop.unique ? 'unique' : ''}">
-                    <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.id} ${prop.master_property == null ? '| master' : ''} ${prop.unique ? '| unique' : ''}">$prop.name</a>
-                  </td>
-                  <td class="${(i > 0) ? 'c1' : 'c3'} spacer ${(i == 0 && !global) ? 'clean' : ''}"></td>
-                </tr>
-              </acre:block>
-              <tr acre:if="!previous_global && c.type.expected_by.length > 0" class="separator local">
-                <td class="c1 left-legend">in base or user schema</td>
-                <td class="c1"></td>
-                <td class="c1">&nbsp;</td>
-                <td class="c1 spacer"></td>
+              <tr>
+                <td colspan="4" style="text-align:right">Properties with an Expected Type of $c.type.name</td>
+              </tr>            
+              <tr>
+                <td>Commons</td>
               </tr>
+              ${t.type_diagram_left(c.type.expected_by.commons)}
+              <tr>
+                <td>Bases</td>
+              </tr>
+
+              ${t.type_diagram_left(c.type.expected_by.base)}
+              <tr>
+                <td>Users</td>
+              </tr>
+              ${t.type_diagram_left(c.type.expected_by.user)}
             </table>
           </td>
           <td class="center structure">
@@ -224,42 +205,15 @@
           </td>
           <td class="right structure">
             <table>
-              <acre:block for="i,prop in c.type.properties">
-                
-                <acre:script>
-                  var global = utils.isGlobal(prop.id);
-                  transition = global != previous_global;
-                  previous_global = global;
-                  var same = (previous == prop.expected_type.id);
-                  previous = prop.expected_type.id;
-                </acre:script>
-                <tr acre:if="transition && i > 0" class="separator">
-                  <td class="c1 spacer"></td>
-                  <td class="c8">&nbsp;</td>
-                  <td class="c1 spacer"></td>
-                  <td class="c1"></td>
+              <tr>
+                <td colspan="4">Properties that $c.type.name includes</td>
+              </tr>                        
+              <acre:block for="type in c.type.included_types">              
+                <tr>
+                  <td>$type.name</td>
                 </tr>
-                <tr class="${utils.isGlobal(prop.id) ? 'global' : 'local'} ${prop.inherited ? 'inherited' : ''}">
-                  <td class="${(i > 0) ? 'c1' : 'c2'} spacer ${(i == 0 && !global) ? 'clean' : ''}"></td>
-                  <td nowrap="" class="out_prop ${(i == 0) ? 'c2' : same ? 'c4' : 'c6' } ${prop.master_property == null ? 'master' : ''} ${prop.unique ? 'unique' : ''}">
-                    <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
-                  </td>
-                  <td class="${same && i != 0 ? '' : 'c3'} spacer"></td>
-                  <td nowrap="" class="c1 out_type ${prop.expected_type['/freebase/type_hints/mediator'] ? 'mediator' : 'truetype'} ${utils.isTypeType(prop.expected_type.id) ? 'typetype' : ''}">
-                    <acre:block if="!same || i == 0">
-                      <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.expected_type.id} ${prop.expected_type['/freebase/type_hints/mediator'] ? '| mediator' : ''}">$prop.expected_type.name</a>
-                      <acre:script>var instances = prop.expected_type['/freebase/type_profile/instance_count'];</acre:script>
-                      <a acre:if="instances" href="${acre.freebase.service_url}/view${prop.expected_type.id}" title="Browse the ${instances.value} instances of ${prop.expected_type.id}" class="instances" >[$instances.value]</a>
-                    </acre:block>
-                  </td>
-                </tr>
+                ${t.type_diagram_right(type.properties)}
               </acre:block>
-              <tr acre:if="!previous_global && c.type.properties.length > 0" class="separator local">
-                <td class="c1 spacer"></td>
-                <td class="c1">&nbsp;</td>
-                <td class="c1"></td>
-                <td class="c1 right-legend">in base or user schema</td>
-              </tr>              
             </table>
           </td>
         </tr>

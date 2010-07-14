@@ -2,6 +2,10 @@
   var mf = acre.require("MANIFEST").MF;
   var h = mf.require("core", "helpers");
   var utils = mf.require("utils");
+  
+  var previous = null;
+  var previous_global = null;  
+
 </acre:script>
 
 <!-- Native Properties markup pattern -->
@@ -162,4 +166,75 @@
       </td>
     </tr>
   </tbody>
+</acre:block>
+
+
+
+<!-- Markup pattern for left-hand table of Type Diagram -->
+
+<acre:block def="type_diagram_left(props)">
+  <acre:block for="i,prop in props">
+    <acre:script>
+      var global = utils.isGlobal(prop.id);
+      transition = global != previous_global;
+      previous_global = global;
+      var same = (previous == prop.schema.id);
+      previous = prop.schema.id;
+    </acre:script>
+    <tr acre:if="transition && i > 0" class="separator">
+      <td class="c1"></td>
+      <td class="c1 spacer"></td>
+      <td class="c7">&nbsp;</td>
+      <td class="c1 spacer"></td>
+    </tr>
+    <tr class="${global ? 'global' : 'local'} ${prop.inherited ? 'inherited' : ''}">
+      <td nowrap="" class="c1 in_type ${prop.schema['/freebase/type_hints/mediator'] ? 'mediator' : 'truetype'}">
+        <acre:block if="!same || i == 0">
+          <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.schema.id} ${prop.schema['/freebase/type_hints/mediator'] ? '| mediator' : ''}">$prop.schema.name.value</a>
+          <acre:script>var instances = prop.schema['/freebase/type_profile/instance_count'];</acre:script>
+          <a acre:if="instances" href="${acre.freebase.service_url}/view${prop.schema.id}" title="Browse the ${instances.value} instances of ${prop.schema.id}" class="instances" >[$instances.value]</a>
+        </acre:block>
+      </td>
+      <td class="${same ? '' : 'c2'} spacer"></td>
+      <td nowrap="" class="in_prop ${(i == 0) ? 'c2' : same ? 'c4' : 'c5'} ${prop.master_property == null ? 'master' : ''} ${prop.unique ? 'unique' : ''}">
+        <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.id} ${prop.master_property == null ? '| master' : ''} ${prop.unique ? '| unique' : ''}">$prop.name</a>
+      </td>
+      <td class="${(i > 0) ? 'c1' : 'c3'} spacer ${(i == 0 && !global) ? 'clean' : ''}"></td>
+    </tr>
+  </acre:block>
+</acre:block>
+
+<!-- Markup pattern for right-hand table of Type diagram -->
+
+<acre:block def="type_diagram_right(properties)">
+  <acre:block acre:for="i, prop in properties">
+  <acre:script>
+    console.log('expected type id:', prop.expected_type.id);
+    var global = utils.isGlobal(prop.id);
+    transition = global != previous_global;
+    previous_global = global;
+    var same = (previous == prop.expected_type.id);
+    previous = prop.expected_type.id;
+  </acre:script>                
+    <tr acre:if="transition && i > 0" class="separator">
+      <td class="c1 spacer"></td>
+      <td class="c8">&nbsp;</td>
+      <td class="c1 spacer"></td>
+      <td class="c1"></td>
+    </tr>
+    <tr class="${utils.isGlobal(prop.id) ? 'global' : 'local'} ${prop.inherited ? 'inherited' : ''}">
+      <td class="${(i > 0) ? 'c1' : 'c2'} spacer ${(i == 0 && !global) ? 'clean' : ''}"></td>
+      <td nowrap="" class="out_prop ${(i == 0) ? 'c2' : same ? 'c4' : 'c6' } ${prop.master_property == null ? 'master' : ''} ${prop.unique ? 'unique' : ''}">
+        <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
+      </td>
+      <td class="${same && i != 0 ? '' : 'c3'} spacer"></td>
+      <td nowrap="" class="c1 out_type ${prop.expected_type['/freebase/type_hints/mediator'] ? 'mediator' : 'truetype'} ${utils.isTypeType(prop.expected_type.id) ? 'typetype' : ''}">
+        <acre:block if="!same || i == 0">
+          <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.expected_type.id} ${prop.expected_type['/freebase/type_hints/mediator'] ? '| mediator' : ''}">$prop.expected_type.name</a>
+          <acre:script>var instances = prop.expected_type['/freebase/type_profile/instance_count'];</acre:script>
+          <a acre:if="instances" href="${acre.freebase.service_url}/view${prop.expected_type.id}" title="Browse the ${instances.value} instances of ${prop.expected_type.id}" class="instances" >[$instances.value]</a>
+        </acre:block>
+      </td>
+    </tr>    
+  </acre:block>
 </acre:block>

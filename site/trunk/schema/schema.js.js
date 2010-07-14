@@ -138,6 +138,10 @@ $(document).ready(function(){
     var $domain_input = $("#domain-search-input");
     var $domain_form = $domain_input.closest("form");
     
+    $domain_form.submit(function(){
+        return false;
+    });
+    
     var domain_suggest_options = { "type" : "/type/domain" };
     
     if ($("#domain-search-toggle-commons").is(":checked")) {
@@ -159,6 +163,10 @@ $(document).ready(function(){
     var $type_input = $("#type-search-input");
     var $type_form = $type_input.closest("form");
 
+    $type_form.submit(function(){
+        return false;
+    });
+
     var type_suggest_options = { "type" : "/type/type" };
 
     if ($("#type-search-toggle-commons").is(":checked")) {
@@ -179,6 +187,10 @@ $(document).ready(function(){
     */
     var $property_input = $("#property-search-input");
     var $property_form = $property_input.closest("form");
+
+    $property_form.submit(function(){
+        return false;
+    });
     
     var property_suggest_options = { "type" : "/type/property" };
 

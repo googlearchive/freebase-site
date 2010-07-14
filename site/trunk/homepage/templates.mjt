@@ -88,7 +88,7 @@
         </a>
       </li>
       <li class="last">
-        <a href="#pane-all">
+        <a href="${h.url_for('homepage', 'loadpanel', [['domains', 'all']])}">
           <span>All</span>
         </a>
         <!--

@@ -34,7 +34,7 @@
             <form id="app-search-form" method="get" action="${h.url_for('apps', 'search')}">
               <fieldset>
                 <input type="text" name="q" class="text-input" id="app-search-input" placeholder="Search apps..." />
-                <input type="submit" class="button-primary" value="Search"/>
+                <input type="submit" class="button button-primary" value="Search"/>
                 <!--
                 <label><input type="checkbox" name="unlisted" class="search-toggle" value="$c.query||''" id="app-search-toggle-listed"
                   acre:attrs="acre.request.params.unlisted?{'checked':'checked'}:{}"/>Include Unpublished Apps</label>
@@ -58,7 +58,7 @@
 
       <div class="section">
         <span id="app-buttons-right">
-          <a href="${h.url_for('apps', 'create')}" class="button-primary">New App</a>
+          <a href="${h.url_for('apps', 'create')}" class="button button-primary">New App</a>
         </span>
         <h1 class="section-title">
           $c.title <acre:block if="c.query">$c.query</acre:block>
@@ -98,7 +98,7 @@
             <td class="odd applist-userimage">
               <acre:block if="app.modified">
                 <acre:block if="app.modified_by">${image.user_image_small(app.modified_by)} 
-                by <a href="${acre.freebase.service_url}/view${app.modified_by.id}" title="View user profile">$app.modified_by.name</a></acre:block>
+                by <a href="${h.url_for('apps', null, null, app.modified_by.id)}">$app.modified_by.name</a></acre:block>
                 <div class="applist-details">${h.relative_date(acre.freebase.date_from_iso(app.modified))}</div>
               </acre:block>
               <acre:block else="">

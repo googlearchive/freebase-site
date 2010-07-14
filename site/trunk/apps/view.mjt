@@ -50,7 +50,7 @@
         </div>
         <span class="creation-timestamp">
           ${image.user_image_small(c.app.modified_by)}
-          Last modified by <a href="${acre.freebase.service_url}/view${c.app.modified_by.id}" title="View user profile">$c.app.modified_by.name</a> 
+          Last modified by <a href="${h.url_for('apps', null, null, c.app.modified_by.id)}">$c.app.modified_by.name</a> 
           <time class="published" datetime="${c.app.modified}">${h.relative_date(acre.freebase.date_from_iso(c.app.modified))}</time>
         </span>
         <img class="app-icon" acre:if="c.app.icon" src="$c.app.icon.src" alt="$c.app.name"/>
@@ -67,10 +67,10 @@
         </acre:block>
         <div class="nav clear">
           <p class="box-nextactions">
-            <a class="button-primary" href="$c.app.homepage">
+            <a class="button button-primary" href="$c.app.homepage">
               Go to this App
             </a>      
-            <a class="button-link" acre:if="c.app.acre" href="$c.app.acre.source">
+            <a class="button" acre:if="c.app.acre" href="$c.app.acre.source">
               View Source
             </a>
             <acre:block if="c.user">
@@ -79,7 +79,7 @@
                   return (author.id === c.user.id);
                 });
               </acre:script>
-              <a class="button-link" acre:if="is_author" href="${h.url_for('apps', 'admin', null, c.app.id)}">
+              <a class="button" acre:if="is_author" href="${h.url_for('apps', 'admin', null, c.app.id)}">
                 Edit Settings
               </a>
             </acre:block>

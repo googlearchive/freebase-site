@@ -128,13 +128,12 @@ EXPLORE
   font-size: 0.9em;
 }
 
-
-td.applist-userimage {
+.table td.applist-userimage {
   white-space: nowrap;
   padding: 2px 50px 2px 2px;
 }
 
-.applist-userimage .user-image {
+.table td.applist-userimage .user-image {
   padding: 0 5px 0 0 !important;
   float: left;
 }
@@ -332,78 +331,4 @@ EDIT
   margin-top: 8px; 
   display: block; 
 }
-
-
-/*
------------------------------------------
-DELETE
------------------------------------------
-*/
-
-/* 
-
-Active button currently is used to for buttons which are the primary call to action.
-This should be updated so that .active represents the state of a button, not it's
-relative importance in a workflow. Suggested class name would be .primary, which
-may or may not be .active
-
-*/
-
-
-button, a.button-link { 
-    font-size: 12px;
-    line-height: 1.5;
-    background: #e6e6e6 url(static:///resources/images/ui/sprite-vert.png) repeat-x 0 -3380px;
-    color: #666;
-    font-weight:bold;
-    margin: 2px;
-    padding: 3px 6px;
-    border: 1px solid #c5c5c5;
-    .rounded_corners(4px);
-    display: inline-block;
-    overflow: visible;
-    cursor: pointer;
-    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; 
-}
-
-
-button[disabled],
-button.disabled,
-button.primary.disabled, 
-a.button-link.disabled,
-a.button-link-primary.disabled {
-    background: #e6e6e6 url(static:///resources/images/ui/sprite-vert.png) repeat-x 0 -3380px;
-    color: #b3b3b3;
-    border: 1px solid #d6d6d6;
-    cursor: default;
-}
-button[disabled]:hover,
-button.disabled:hover {
-    cursor: default;
-    border: 1px solid #d6d6d6;
-}
-
-a.button-link-primary { 
-    font-size: 12px;
-    line-height: 1.5;
-    background: #fa7c0a url(static:///resources/images/ui/sprite-vert.png) repeat-x 0 -3450px;
-    margin: 2px;
-    color: #fff;
-    padding: 3px 6px;
-    border: 1px solid #dc5800;
-    .rounded_corners(4px);
-    display: inline-block;
-    overflow: visible;
-    cursor: pointer;
-    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
-    font-weight: bold; 
-}
-
-button:hover, 
-.button-link:hover,
-a.button-link-primary:hover {
-    border: 1px solid #61d7f7;
-    text-decoration: none;
-}
-
 

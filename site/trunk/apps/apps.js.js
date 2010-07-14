@@ -3,11 +3,21 @@ $(function() {
   // Setup app search tabset
   var $apps_explorer_search_tabset = $("#apps-search > .section-tabset").tabs("#apps-search > .search-box");
 
+  var $user_form = $("#user-search-input").closest("form");
+
+  $user_form.submit(function(){
+      return false;
+  });
+  
+  
   $("#user-search-input")
     .suggest({type: '/type/user'})
     .bind("fb-select", function(e, data) {
       var url = bp + data.id;
       location.href = url;
+    })
+    .focus(function() {
+        this.select();
     });
   
   $('#create-link')

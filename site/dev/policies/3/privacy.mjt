@@ -1,0 +1,71 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var c = this.exports.c = {};
+  var h = mf.require("core", "helpers");  
+  var t = mf.require("templates");
+</acre:script>
+
+<acre:block def="title()" trim="">
+  Privacy Policy
+</acre:block>
+
+<acre:block def="head()" trim="">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('policies.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_body()">
+  <div id="body-left">
+    <div class="content-box">
+      
+      <h2>Introduction </h2>
+      <p>Freebase is an open, shared database of the world’s information, built by the community and for the community, and free for anyone to edit. This Privacy Policy lays out the different types of information we store, in Freebase and elsewhere, and the various ways in which we use it. </p>
+      <h2>Information Collection and Use</h2>
+      <h4>User Information</h4>
+      <p>In order to contribute data to Freebase, users must register with the site. When users register, we collect certain User Information, including a username, email address and password.</p>
+      <p>If you are a registered user, your username and password are used to authenticate you when you log-in. In addition, your username and your user picture (if you choose to upload one) are displayed to others on the site in order to facilitate interaction within the Freebase community. </p>
+      <p>User Information as described above is tied to a specific user account. User Information can only be entered by a registered user who has been authenticated by logging in. Nobody other than the logged in user can edit information about that user.</p>
+      <p>Your edit history is also public, providing a record of what contributions you have made to Freebase. Your viewing history, however, is not public.</p>
+      <p>We use your email address to send you notifications, updates, newsletters, or news related to the service. If you do not wish to receive these emails, simply click the “unsubscribe” link in the body of the email and follow the on-screen directions.</p>
+      <p>Freebase allows registered users to send invitations to their friends.
+        We use your friends’ email addresses to send them these invitations, and we retain their addresses for the purpose of identifying them when they come to our site.
+        Unless they register with the site, we do not send them any other emails or use their email address for any other purpose.</p>
+      <p>Finally, we log non-<a href="http://www.freebase.com/view/en/personally_identifiable_information">Personally Identifiable Information</a> including profile information, aggregate user data and browser type from registered users and casual visitors to the site. This data is used to manage the website, track usage, and improve the website services. This non-Personally Identifiable Information may be shared with third parties to provide more relevant services and advertisements to members. User IP addresses are also recorded for security and monitoring purposes. </p>
+      <h4>Information in Freebase</h4>
+      <p>Freebase is an open, shared database that contains information about millions of topics, including profiles of a large number of people, called “Person Topics.” These <a href="http://www.freebase.com/view/people/person">Person Topics</a> are public and contain detailed assertions about real-life people, including things like gender and date of birth. Users may choose to create Person Topics about themselves, or assert that an existing Person Topic is about them, thus associating their Freebase user profile with that Topic. To be clear, however, Person Topics can be created and edited by anyone, about anyone. </p>
+      <p>Person Topics are useful for looking up information about other people, but because they can be edited by others, the information is not fully verifiable. Instead, we rely on our community of users to maintain the accuracy of our database. </p>
+      <p>If you think Person Topics contain information that that violates laws, including laws with respect to privacy and publicity rights, please contact us at <a href="mailto:privacy@metaweb.com">privacy@metaweb.com</a>.</p>
+      <h4>Cookies</h4>
+      <p>Like many websites, we use cookies in order to improve your experience on the site. You can instruct your browser to stop accepting cookies or to ask you before accepting a cookie, but doing so will likely degrade your Freebase experience.</p>
+      <p>We do not link the information stored in cookies to any Personally Identifiable Information you submit while on the site.</p>
+      <h2>Disclosure to Third Parties </h2>
+      <p>We may disclose Personally Identifiable Information in connection with our receipt of a subpoena or search warrant or other legal process. If we become involved in a merger, acquisition, or any form of sale of some or all of our assets, we may transfer your personal information to the acquiring entity. We will use reasonable efforts to provide you notice before such personal information is transferred to the acquiring entity.</p>
+      <p>We may also disclose Personally Identifiable Information, including cookies and IP addresses, to third parties who use this information to help manage our own websites and deliver products and information to you. These third parties are obligated by contract to keep the information confidential and are prohibited from using it for any other purpose. </p>
+      <h3>Choice </h3>
+      <p>You are not required to register to gain access to most of Freebase.
+        If you register you will gain access to more parts of the site, but we will need to collect User Information about you, including Personally Identifiable Information such as your email address, and will use it as described above. It is your choice whether to register or not.</p>
+      <h3>More on Privacy </h3>
+      <h4>Children’s online privacy protection</h4>
+      <p>We understand the importance of protecting children’s privacy, especially in an online environment. The Freebase site is not designed for or directed at children.
+        Use of the site and the Freebase service is currently limited to adults. It is our policy not to knowingly collect or maintain information from anyone under the age of 13.
+      </p>
+      <h4>Links to third party sites</h4>
+      <p>Freebase contains links to third party websites. We assume no responsibility for the information practices of those websites. We encourage visitors to review each site’s privacy policy before disclosing any personal information on that site. </p>
+      <h4>Phishing</h4>
+      <p>We do not and will not, at any time, request Personally Identifiable Information or other information in a non-secure or unsolicited e-mail or telephone communication. Identity theft and the practice currently known as “phishing” are of great concern to us. For more information about phishing, visit the Federal Trade Commission’s website at <a href="http://www.ftc.gov/bcp/edu/pubs/consumer/alerts/alt127.shtm">http://www.ftc.gov/bcp/edu/pubs/consumer/alerts/alt127.shtm</a>.</p>
+      <h4>Security</h4>
+      <p>Security is an absolute top priority of ours. Personal information on the Site is protected via SSL encryption, firewalls and/or self-updating antivirus software. </p>
+      <h2>Changes to this Policy </h2>
+      <p>This Privacy Policy may be updated from time to time as our services change and grow. We will indicate any such changes by placing a prominent notice on our homepage. If you have any questions about this policy, the practices of this site, or your dealings with this website, please contact us at <a href="mailto:privacy@metaweb.com">privacy@metaweb.com</a>. </p>
+    </div>
+  </div>
+  
+  <div id="body-right" class="policies-right">
+    ${t.policy_nav()}
+  </div>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="${mf.js_src('template', 'MANIFEST', '/freebase.mf.js')}"></script>
+</acre:block>
+
+${mf.require("template", "renderer").render_page(null, this.exports)}

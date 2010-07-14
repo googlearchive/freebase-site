@@ -2,7 +2,7 @@ var MF = {
   "apps" : {
     "core": "//6.core.site.freebase.dev",
     "template": "//6.template.site.freebase.dev",
-    
+
     // external apps
     "libraries" : "//release.libraries.apps.freebase.dev"
   },
@@ -15,7 +15,7 @@ var MF = {
   "javascript": {
     "domain.mf.js": [
       ["template", "freebase.mf.js"],
-      "jquery.lazyload.js", "jquery.masonry.js", "jquery.tablesorter.js",
+      "jquery.lazyload.js", "jquery.masonry.js",
       "project.js"
     ]
   }

@@ -21,7 +21,7 @@
 </acre:block>
 
 <acre:block def="head()">
-  <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.mf.css')}" />
+ <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.mf.css')}" />
 </acre:block>
 
 <acre:block def="content_header()">
@@ -151,6 +151,7 @@
 </acre:block>
 
 <acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
   <script src="${mf.js_src('schema.mf.js')}"></script>
 </acre:block>
 

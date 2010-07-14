@@ -21,14 +21,7 @@ var MF = {
       ["template", "freebase.mf.js"],
       ["jquerytools", "tabs.js"],
       ["jquerytools", "tooltip.js"],
-      "jquery.tablesorter.js",
       "schema.js"
-    ],
-    "schema-landing.mf.js": [
-      ["template", "freebase.mf.js"],
-      ["jquerytools", "tabs.js"],
-      "jquery.tablesorter.js",
-      "schema-landing.js"
     ]
   }
 };

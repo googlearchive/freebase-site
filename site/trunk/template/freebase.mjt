@@ -62,7 +62,7 @@
 <acre:block def="header(exports)">
   <div id="page-header" class="clear" role="banner">
     <div id="logo">
-      <a href="${acre.freebase.site_host}" title="Return to Freebase homepage">
+      <a href="${h.url_for('homepage', 'index')}" title="Return to Freebase homepage">
         <img alt="Freebase" 
              acre:attrs="h.is_client() ? {src: mf.img_src('freebase-logo-production.png')} : {src: mf.img_src('freebase-logo-sandbox.png')}"
              border="0" height="14" width="87" /></a>

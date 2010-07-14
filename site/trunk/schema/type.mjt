@@ -178,22 +178,15 @@
         <tr>
           <td class="left structure">
             <table>
-              <tr>
-                <td colspan="4" style="text-align:right">Properties with an Expected Type of $c.type.name</td>
-              </tr>            
-              <tr>
-                <td>Commons</td>
-              </tr>
-              ${t.type_diagram_left(c.type.expected_by.commons)}
-              <tr>
-                <td>Bases</td>
-              </tr>
-
-              ${t.type_diagram_left(c.type.expected_by.base)}
-              <tr>
-                <td>Users</td>
-              </tr>
-              ${t.type_diagram_left(c.type.expected_by.user)}
+              <tbody class="commons">
+                ${t.type_diagram_left(c.type.expected_by.commons)}
+              </tbody>
+              <tbody class="bases">
+                ${t.type_diagram_left(c.type.expected_by.base)}
+              </tbody>
+              <tbody class="users">
+                ${t.type_diagram_left(c.type.expected_by.user)}
+              </tbody>
             </table>
           </td>
           <td class="center structure">
@@ -205,13 +198,7 @@
           </td>
           <td class="right structure">
             <table>
-              <tr>
-                <td colspan="4">Properties that $c.type.name includes</td>
-              </tr>                        
               <acre:block for="type in c.type.included_types">              
-                <tr>
-                  <td>$type.name</td>
-                </tr>
                 ${t.type_diagram_right(type.properties)}
               </acre:block>
             </table>

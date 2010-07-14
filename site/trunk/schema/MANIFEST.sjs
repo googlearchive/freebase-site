@@ -4,7 +4,6 @@ var MF = {
       "template": "//4.template.site.freebase.dev",
       "promise": "//4.promise.site.freebase.dev",
       "jquerytools": "//4.jquerytools.site.freebase.dev",
-      "domain": "//4.domain.site.freebase.dev",
       "queries": "//4.queries.site.freebase.dev",
 
       // external apps
@@ -22,7 +21,7 @@ var MF = {
       ["template", "freebase.mf.js"],
       ["jquerytools", "tabs.js"],
       ["jquerytools", "tooltip.js"],
-      ["domain", "jquery.tablesorter.js"],
+      "jquery.tablesorter.js",
       "schema.js"
     ],
     "schema-landing.mf.js": [

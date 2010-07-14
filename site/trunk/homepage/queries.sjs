@@ -207,34 +207,30 @@ var user_info = function(user_id) {
 ///////////////////
 // Freebase Blog //
 ///////////////////
-function blog_entries() {
-  var maxcount = 2;
-  var url     = 'http://blog.freebase.com';
+function blog_entries(maxcount) {
+  var maxcount = maxcount || 2;
+  var url = 'http://blog.freebase.com';
   var rss_url = 'http://feeds.feedburner.com/FreebaseBlog'; // skip blog.freebase.com/feed redirect for speed
-  return feeds.get_rss_entries(rss_url,maxcount)
-   .then(function(items) {
-     return {items:items, url:url, rss_url:rss_url};
-    }, function(error) {
-    ///XXX: what goes here?
-    return null;
-  });
+  return feeds.get_rss_entries(rss_url, maxcount)
+    .then(null, function(error) {return [];})
+    .then(function(items) {
+      return {items:items, url:url, rss_url:rss_url};
+    })
 }
 
 ///////////////////
 // Freebase Wiki //
 ///////////////////
-function wiki_entries() {
-  var maxcount = 3;
+function wiki_entries(maxcount) {
+  var maxcount = maxcount || 2;
   var url = 'http://wiki.freebase.com';
-  var rss_url  = url + '/w/index.php?title=Special:RecentChanges&feed=rss';
+  var rss_url = url + '/w/index.php?title=Special:RecentChanges&feed=rss';
   var user_url = url + '/wiki/User';
-  return feeds.get_rss_entries(rss_url,maxcount,feeds.filter_wiki_entries)
-   .then(function(items) {
-     return {items:items, url:url, rss_url:rss_url, user_url:user_url};
-    }, function(error) {
-    ///XXX: what goes here?
-    return null;
-  });
+  return feeds.get_rss_entries(rss_url, maxcount, feeds.filter_wiki_entries)
+    .then(null, function(error) {return [];})
+    .then(function(items) {
+      return {items:items, url:url, rss_url:rss_url, user_url:user_url};
+    });
 }
 
 

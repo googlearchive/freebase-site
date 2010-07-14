@@ -30,7 +30,7 @@
       <p>We provide access to portions of the Site and Service through an API thereby enabling people to build applications on top of the Freebase platform. The API and Application Hosting Services are provided free of charge for up to <strong>100,000 (one hundred thousand) calls per day <u>per person or organization</u></strong>, which we believe will meet the needs of the vast majority of developers. You agree not to use multiple IP addresses or any other means to get around this limitation. If you require higher volume API use for your site or service, please contact us at <a href="mailto:partners@metaweb.com">partners@metaweb.com</a> to discuss an alternate arrangement. </p>
       <p>For purposes of this Terms of Service, any use of the API constitutes use of the Site and Service. You agree only to use the API as outlined in the documentation provided by us on the Site.</p>
       <h2>6. Data Dumps </h2>
-      <p>In addition to providing access to Freebase via the Site and the API, Metaweb provides a free, downloadable version of the Data in Freebase every three months. These files, referred to as “Data Dumps,”, constitute a snapshot of the Data stored in Freebase and the Schema that structures it, and are provided under the same CC-BY license. They can be found at <a href="http://download.freebase.com/datadumps">http://download.freebase.com/datadumps</a>.</p>
+      <p>In addition to providing access to Freebase via the Site and the API, Metaweb provides a free, downloadable version of the Data in Freebase every three months. These files, referred to as "Data Dumps,", constitute a snapshot of the Data stored in Freebase and the Schema that structures it, and are provided under the same CC-BY license. They can be found at <a href="http://download.freebase.com/datadumps">http://download.freebase.com/datadumps</a>.</p>
       <p>For purposes of this Terms of Service, any use of the Data Dumps constitutes use of the Site and Service. You agree only to use the Data Dumps as outlined in the documentation provided by us on the Site.</p>
       <h2>7. Content Linked to by Freebase Users and Developers </h2>
       <p>The inclusion of any link on the Site, Service or Content does not imply that we endorse, recommend or are affiliated with the linked organization or company, or the content, product or services on or available from the linked website. You acknowledge sole responsibility for and assume all risk arising from your access to and/or use of any such linked websites.</p>
@@ -51,7 +51,7 @@
             <li>infringes another’s rights, including any copyrights or other intellectual property rights; </li>
             <li>is encrypted such that it is rendered inaccessible to other Freebase users; </li>
             <li>contains software viruses or any other computer code, files or programs designed to interrupt, destroy or limit the functionality of any computer software or hardware or telecommunications equipment; </li>
-            <li>contains unsolicited or unauthorized advertising, promotional materials, "junk mail,” or “spam,” or has any connection to any form of “adware,” or “spyware”; </li>
+            <li>contains unsolicited or unauthorized advertising, promotional materials, "junk mail," or "spam," or has any connection to any form of "adware," or "spyware"; </li>
             <li>you know to be false or misleading;</li>
           </ol>
         </li>

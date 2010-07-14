@@ -1,9 +1,9 @@
 var MF = {
   "apps": {
-      "core": "//3.core.site.freebase.dev",
-      "template": "//3.template.site.freebase.dev",
-      "jquerytools": "//3.jquerytools.site.freebase.dev",
-      "domain": "//3.domain.site.freebase.dev",
+      "core": "//4.core.site.freebase.dev",
+      "template": "//4.template.site.freebase.dev",
+      "jquerytools": "//4.jquerytools.site.freebase.dev",
+      "domain": "//4.domain.site.freebase.dev",
 
       // external apps
       "jquery": "//release.jquery.libs.freebase.dev"

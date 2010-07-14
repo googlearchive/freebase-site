@@ -1,11 +1,11 @@
 var MF = {
   "apps": {
-      "core": "//3.core.site.freebase.dev",
-      "template": "//3.template.site.freebase.dev",
-      "promise": "//3.promise.site.freebase.dev",
-      "jquerytools": "//3.jquerytools.site.freebase.dev",
-      "domain": "//3.domain.site.freebase.dev",
-      "queries": "//3.queries.site.freebase.dev",
+      "core": "//4.core.site.freebase.dev",
+      "template": "//4.template.site.freebase.dev",
+      "promise": "//4.promise.site.freebase.dev",
+      "jquerytools": "//4.jquerytools.site.freebase.dev",
+      "domain": "//4.domain.site.freebase.dev",
+      "queries": "//4.queries.site.freebase.dev",
 
       // external apps
       "libraries": "//libraries.apps.freebase.dev"

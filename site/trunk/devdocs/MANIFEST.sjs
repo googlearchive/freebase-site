@@ -1,8 +1,8 @@
 var MF = {
   "apps": {
-    "core": "//3.core.site.freebase.dev",
-    "template": "//3.template.site.freebase.dev",
-    "promise": "//3.promise.site.freebase.dev",
+    "core": "//4.core.site.freebase.dev",
+    "template": "//4.template.site.freebase.dev",
+    "promise": "//4.promise.site.freebase.dev",
 
     "libraries": "//libraries.apps.freebase.dev",
     
@@ -10,7 +10,7 @@ var MF = {
     "datadocs":     "//release.datadocs.dfhuynh.user.dev",
     "acredocs":     "//release.acredocs.stefanomazzocchi.user.dev",
     "mql":          "//release.mql.jdouglas.user.dev",
-    "devdocs": "//3.devdocs.site.freebase.dev",
+    "devdocs": "//4.devdocs.site.freebase.dev",
     "mjt":          "//release.templates.jdouglas.user.dev",
     "acreassist":   "//release.acreassist.dfhuynh.user.dev",
     "jscheatsheet": "//release.jscheatsheet.stefanomazzocchi.user.dev",

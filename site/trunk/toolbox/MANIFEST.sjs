@@ -1,9 +1,9 @@
 
 var MF = {
   "apps" : {
-    "core": "//3.core.site.freebase.dev",
-    "promise": "//3.promise.site.freebase.dev",
-    "template": "//3.template.site.freebase.dev",
+    "core": "//4.core.site.freebase.dev",
+    "promise": "//4.promise.site.freebase.dev",
+    "template": "//4.template.site.freebase.dev",
 
     // external apps
     "appeditor" : "//appeditor.apps.freebase.dev"

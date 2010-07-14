@@ -58,18 +58,13 @@
 
       <div class="section">
         <span id="app-buttons-right">
-          <a href="${h.url_for('apps', 'create')}" class="button-link-primary">New App</a>
+          <a href="${h.url_for('apps', 'create')}" class="button-primary">New App</a>
         </span>
-        <a acre:if="c.category === 'released'" href="${h.url_for('apps', 'feed', null, c.category + (c.query ? '/' + c.query : ''))}" class="rss-icon domain-explorer-rss">RSS</a>
         <h1 class="section-title">
           $c.title <acre:block if="c.query">$c.query</acre:block>
+          <a acre:if="c.category === 'released'" href="${h.url_for('apps', 'feed/', null, c.category + (c.query ? '/' + c.query : ''))}" class="rss-icon">RSS</a>
         </h1>
-        
-        <!-->
-        <a href="${h.url_for('apps', 'released')}">Recently Released</a> | 
-        <a href="${h.url_for('apps', 'recent')}">Recently Updated</a> |
-        <a href="${h.url_for('apps', 'featured')}">Featured</a>
-        -->
+
         <table class="table" cellspacing="0" acre:if="c.apps.length">
           <thead>
             <tr>
@@ -97,7 +92,7 @@
                   var num = app.authors.length - 1;
                 </acre:script>              
                 <a href="${h.url_for('apps', null, null, f.id)}">$f.name</a>
-                <acre:block if="num > 0"> and $num other<acre:block if="num > 1">s</acre:block></acre:block>
+                <acre:block if="num > 0"><br />and $num other<acre:block if="num > 1">s</acre:block></acre:block>
               </div>
             </td>
             <td class="odd">
@@ -129,31 +124,30 @@
       <div class="content-wrapper">
         <h2 class="aside-title">What are Apps?</h2>
         <p>
-          Apps are community created web applications that use freebase data.
+          Apps are community created web applications that use Freebase data.
         </p>
         
         <h2 class="aside-title">Learn more:</h2>
         <ul>
-          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Acre">Wiki:Acre</a></li>
-          <li><a title="View help page" href="${acre.freebase.site_host}/docs/acre_templates">Acre Template Reference</a></li>
           <li><a title="View help page" href="http://wiki.freebase.com/wiki/Freebase_API">Wiki: Freebase API</a></li>
+          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Libraries">Wiki: Language Libraries</a></li>
+          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Acre">Wiki: Acre</a></li>
           <li><a title="View help page" href="${acre.freebase.site_host}/docs/web_services">Freebase API Reference</a></li>
+          <li><a title="View help page" href="${acre.freebase.site_host}/docs/acre_templates">Acre Template Reference</a></li>
         </ul>
         
-        <div class="aside-box">
-          <img src="${mf.img_src('logo-acre.png')}" width="66" height="20" alt="acre" border="0" />
-          <h2>Open Code for Open Data</h2>
-          <p>
-            Acre is the fastest way to make Freebase apps &#8212;
-          </p>
+        <div class="acre-box">
+          <img src="${mf.img_src('acre-logo.png')}" width="67" height="21" alt="acre" border="0" />
+          <h2>Open code for open data.</h2>
           <ul>
-            <li><h5>easy to code</h5></li>
-            <li><h5>connect to everything</h5></li>
-            <li><h5>clone any app to get started</h5></li>
+            <li>JavaScript-based, easy to code</li>
+            <li>built-in Freebase APIs</li>
+            <li>clone any app to get started</li>
           </ul>
-          <h3><a href="http://acre.freebase.com/#create=app">Create an Acre app &raquo;</a></h3>
+          <p>
+            <a href="http://acre.freebase.com/#create=app" class="more-link">Create an Acre app &raquo;</a>
+          </p>
         </div>
-
       </div>
     </div>
   </div>

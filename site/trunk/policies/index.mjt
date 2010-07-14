@@ -49,7 +49,7 @@
           <h2><label for="type-many">Content is about several things</label></h2>
           <p>
             <strong>General Attribution</strong> links to the Freebase home page. It 
-            provides your users with less context and may only be used when you don’t 
+            provides your users with less context and may only be used when you don't 
             have a specific topic ID to reference.
           </p>
         </li>
@@ -96,20 +96,20 @@
         <li id="attribution"><h5>with Attribution</h5> You must attribute the work in 
           the manner specified by the author or licensor</li>
       </ul>
-      <h4 class="right"><a href="${ccby}">Read the entire license »</a></h4>
+      <h4 class="right"><a href="${ccby}">Read the entire license &raquo;</a></h4>
     </div>
     
     ${t.policy_nav()}
     
     <h2>What about images?</h2>
-    <p>Freebase’s CC-BY attribution often covers thumbnail images. Full-size 
+    <p>Freebase's CC-BY attribution often covers thumbnail images. Full-size 
       images are also available under a variety of usage terms:</p>
     <dl>
       <dt>Public Domain</dt> 
-      <dd>These images have no copyright restrictions and don’t require additional attribution.</dd>
+      <dd>These images have no copyright restrictions and don't require additional attribution.</dd>
       <dt>Fair Use</dt>
       <dd>These images are copyrighted, but may be used without additional attribution if the
-        <a href="${fairuse}">"Fair Use” doctrine</a> of the US Copyright Act applies in the context 
+        <a href="${fairuse}">"Fair Use" doctrine</a> of the US Copyright Act applies in the context 
         of your website.</dd>
       <dt>Specifically Licensed</dt>
       <dd>These images have been released under a specific free license (e.g., <a href="${ccby}">CC-BY</a>, 

@@ -29,7 +29,6 @@
     background-repeat: @mode;
 }
 
-
 /*-----------------------------------------------------------
 
     Global Color Palette
@@ -422,12 +421,40 @@ Freebase Suggest Header
     font-size: 11px;
     margin-left: 3px;
 }
+
+
+/*
+--------------------------------------
+BUTTONS
+--------------------------------------
+*/
+
+.button-primary, a.button-primary {
+  .linear_gradient(#f83, #f70, repeat);
+  .rounded_corners(5px);
+  display: inline-block;
+  overflow: visible;
+  margin: 2px;
+  padding: 3px 6px;
+  border: 1px solid #dc5800;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; 
+  font-size: 1.3em;
+  font-weight: bold;
+  line-height: 1.5;    
+  color: #fff;
+  text-shadow:1px 1px 3px #b50;
+  cursor: pointer;
+}
+
+.button-primary:hover, a.button-primary:hover {
+    border: 1px solid #61d7f7;
+    text-decoration: none;
+}
+
 /*
 --------------------------------------
 FOOTER
 --------------------------------------
-Site-wide footer. Present at the bottom
-of all templates.
 */
 
 #page-footer {

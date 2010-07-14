@@ -30,8 +30,6 @@
 <acre:block def="domain_explorer(categories, user)">
   <div id="domain-explorer-header">
     <div class="domain-explorer-title">
-      <div class="domain-explorer-title-content">Data</div>
-      <a href="" class="rss-icon domain-explorer-rss">RSS</a>
     </div>
     
     <div class="domain-activity-controls">
@@ -211,7 +209,7 @@
         ${h.commafy(user.followers_count)}
       </div>
     </div>
-    <div class="stat-box stat-box-right">
+    <div class="stat-box stat-box-last">
       <span class="stat-box-label">messages</span>
       <div class="stat-box-number">
         ${h.commafy(user.messages_count)}

@@ -95,7 +95,7 @@
         
         <div class="box-nextactions">
           <input class="button button-primary" type="submit" name="title" value="Update this App"/>
-          <a class="button" href="${h.url_for('apps', 'app', null, c.app.id)}">Cancel</button>
+          <a class="button" href="${h.url_for('apps', 'app', null, c.app.id)}">Cancel</a>
         </div>
       </form>
     

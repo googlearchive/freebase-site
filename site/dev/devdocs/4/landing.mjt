@@ -1,0 +1,30 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var h = mf.require("core", "helpers");
+  var categories = acre.require("doc_list").get_list();
+</acre:script>
+
+<h1>Freebase API Reference Documentation</h1>
+
+<p>
+  This is the home of "official" Freebase API documentation, written by the developers who wrote the APIs.
+</p>
+
+<blockquote>
+  <strong>
+    Please check out the <a href="http://wiki.freebase.com/wiki/Category:Development">developer resources 
+    on the Freebase wiki</a> for support, examples, tutorials, etc.
+  </strong>
+</blockquote>
+
+<acre:block for="category in categories">
+  <h3>$category.name</h3>
+  <ul>
+    <li acre:for="doc in category.docs" acre:if="!doc.anonymous && !(doc.hidden && (o.sel_category != doc.key))">
+      <a acre:if="doc.sections || doc.content" href="/docs/$doc.key">$doc.name</a>
+      <a acre:elif="doc.link" href="$doc.link">$doc.name</a>
+      <span acre:else="">$doc.name</span>
+    </li>
+  </ul>
+</acre:block>
+

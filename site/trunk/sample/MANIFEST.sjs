@@ -2,11 +2,13 @@ var MF = {
   "apps" : {
     "core": "//5.core.site.freebase.dev",
     "template": "//5.template.site.freebase.dev",
-    "promise": "//5.promise.site.freebase.dev"
+    "promise": "//5.promise.site.freebase.dev",
+    "jqueryui": "//5.jqueryui.site.freebase.dev"
   },
   "stylesheet": {
     "sample_page.mf.css": [
       ["template", "freebase.mf.css"],
+      ["jqueryui", "jquery.ui.tabs.js"],
       "sample_page.css",
       "sample_page.less"
     ]

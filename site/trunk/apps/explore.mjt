@@ -78,7 +78,7 @@
               <h3 class="app-title">
                 <a href="${h.url_for('apps', null, null, app.id)}">$app.name</a>
                 <span acre:if="app.acre && app.acre.version" class="app-version">
-                  $app.acre.version
+                  v.$app.acre.version
                 </span>
               </h3>
               <p class="app-description" acre:if="app.description">
@@ -98,7 +98,8 @@
             <td class="odd">
               <acre:block if="app.modified">
                 <acre:block if="app.modified_by">${image.user_image_small(app.modified_by)}</acre:block>
-                ${h.relative_date(acre.freebase.date_from_iso(app.modified))}
+                ${h.relative_date(acre.freebase.date_from_iso(app.modified))}<br />
+                ${c.app.modified_by.id}
               </acre:block>
               <acre:block else="">
                 N/A

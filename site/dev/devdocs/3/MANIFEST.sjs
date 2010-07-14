@@ -1,11 +1,11 @@
 var MF = {
   "apps": {
-    "core":      "//2.core.site.freebase.dev",
-    "template":  "//2.template.site.freebase.dev",
-    "promise":   "//2.promise.site.freebase.dev",
+    "core":      "//3.core.site.freebase.dev",
+    "template":  "//3.template.site.freebase.dev",
+    "promise":   "//3.promise.site.freebase.dev",
 
     "libraries": "//libraries.apps.freebase.dev",
-    
+
     //devdoc list
     "datadocs":     "//release.datadocs.dfhuynh.user.dev",
     "acredocs":     "//release.acredocs.stefanomazzocchi.user.dev",

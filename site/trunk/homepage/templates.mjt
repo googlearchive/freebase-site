@@ -189,24 +189,33 @@
 </acre:block>
 
 <acre:block def="user_info(user)">
-  <div class="content-section">
+  <div class="content-section user-data">
     <div>
-      <a href="${h.freebase_url('/view'+user.id)}">${user.name}</a>
+      <a href="${h.freebase_url('/view'+user.id)}" class="bold-link">${user.name}</a>
     </div>
-    <div>
+    <div class="user-stats">
       joined in ${h.format_date(user.created, "MMMM yyyy")}
     </div>
-    <div>
+    <div class="user-stats">
       ${h.commafy(user.assertions)} total assertions
     </div>
-    <div>
-      following ${h.commafy(user.following_count)}
+    <div class="stat-box">
+      <span class="stat-box-label">following</span>
+      <div class="stat-box-number">
+        ${h.commafy(user.following_count)}
+      </div>
     </div>
-    <div>
-      followers ${h.commafy(user.followers_count)}
+    <div class="stat-box">
+      <span class="stat-box-label">followers</span>
+      <div class="stat-box-number">  
+        ${h.commafy(user.followers_count)}
+      </div>
     </div>
-    <div>
-      messages ${h.commafy(user.messages_count)}
+    <div class="stat-box stat-box-right">
+      <span class="stat-box-label">messages</span>
+      <div class="stat-box-number">
+        ${h.commafy(user.messages_count)}
+      </div>
     </div>
   </div>
 </acre:block>
@@ -248,7 +257,7 @@
     <form>
       <input name="email" type="email" class="standard-input" placeholder="Your email address..." class="input-standard"/>
       <!-- XXX: link to Michael's app  XXX: placeholder support in freebase.js.js -->
-      <input type="submit" value="Submit" class="button-featured"/>
+      <input type="submit" value="Submit" class="button button-primary"/>
     </form>
     <a href="${h.freebase_url('/signin/login')}" class="plain-link">Existing members, please sign in &raquo;
   </div>
@@ -260,6 +269,7 @@
     <h3 class="sidebar-header"><a href="$blog.url">Blog</a></h3>
     <a href="$blog.rss_url" class="rss-icon">RSS</a><!-- XXX: RSS icon? action? -->
     <div class="blog-feature-content">
+      Latest posts:
       <div acre:for="item in blog.items" class="blog-item">
         <a href="$item.link" 
            title="${acre.markup.bless(item.description)}" 
@@ -277,6 +287,7 @@
     <h3 class="sidebar-header"><a href="$wiki.url">Wiki</a></h3>
     <a href="$wiki.rss_url" class="rss-icon">RSS</a><!-- XXX: RSS icon? action? -->
     <div class="wiki-feature-content">
+      Recent Changes:
       <div acre:for="item in wiki.items" class="wiki-item">
         <a href="$item.link" class="item-title">$item.title</a>
         by <a href="$wiki.user_url:${item['dc:creator']}">${item['dc:creator']}</a>
@@ -287,7 +298,7 @@
 </acre:block>
 
 <acre:block def="join_discussion()">
-  <div class="content-section">
+  <div class="content-section content-section-last">
     <h3>Discussion List</h3>
     <p>Enter your email address to join the discussion:</p>
     <form method="POST" action="http://lists.freebase.com/mailman/subscribe/freebase-discuss" >
@@ -295,9 +306,9 @@
              placeholder="Your email address..." 
              class="input-standard"/>
       
-      <input type="submit" value="Submit" class="button-featured"/>
+      <input type="submit" value="Subscribe" class="button button-primary"/>
     </form>
-    <a href="http://lists.freebase.com/pipermail/freebase-discuss/">Read the List Archive</a>
+    <a href="#" class="bold-link">Read the List Archive</a>
   </div>
 </acre:block>
 

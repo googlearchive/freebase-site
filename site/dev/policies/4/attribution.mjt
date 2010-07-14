@@ -1,6 +1,0 @@
-  <acre:script>
-    acre.response.status = 302;
-    acre.response.set_header('Location', '/policies/index/')
-    acre.exit();
-  </acre:script>
-

@@ -81,6 +81,12 @@ function get_list() {
           "name"     : "API Reference",
           "key"      : "acre_api",
           "sections" : url_for("acreassist", "sections")
+        },
+        {
+          "name"     : "Javascript Reference",
+          "key"      : "js_reference",
+          "sections" : url_for("jscheatsheet", "sections"),
+          "hidden"   : true // only show if requested directly (by app editor)
         }
       ]
     }

@@ -222,7 +222,7 @@
   <div class="content-section">
     <h3>What is <span class="emphasis">Freebase?</span></h3>
     <p>Learn what an entity graph is, what kind of information it contains, and why you should add your data!</p>
-    <a href="http://wiki.freebase.com/wiki/What_is_Freebase%3F" class="more-link">Learn More &raquo;</a>
+    <a href="${h.wiki_url('What_is_Freebase')}" class="more-link">Learn More &raquo;</a>
   </div>
 </acre>
 
@@ -234,7 +234,7 @@
       <li>JavaScript-based hosting framework</li>
       <li>libraries for other languages</li>
     </ul>
-    <a href="http://wiki.freebase.com/wiki/Developers" class="more-link">Learn More &raquo;</a>
+    <a href="${h.wiki_url('Developers')}" class="more-link">Learn More &raquo;</a>
   </div>
 </acre>
 

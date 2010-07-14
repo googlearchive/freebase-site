@@ -1,0 +1,184 @@
+/*
+-----------------------------------------
+Buttons
+-----------------------------------------
+*/
+
+/* 
+
+Active button currently is used to for buttons which are the primary call to action.
+This should be updated so that .active represents the state of a button, not it's
+relative importance in a workflow. Suggested class name would be .primary, which
+may or may not be .active
+
+*/
+
+
+button, a.button-link { 
+    font-size: 12px;
+    line-height: 1.5;
+    background: #e6e6e6 url(static:///resources/images/ui/sprite-vert.png) repeat-x 0 -3380px;
+    color: #666;
+    font-weight:bold;
+    margin: 2px;
+    padding: 3px 6px;
+    border: 1px solid #c5c5c5;
+    .rounded_corners(4px);
+    display: inline-block;
+    overflow: visible;
+    cursor: pointer;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; 
+}
+
+.button-primary,
+input[type=submit].button-primary,
+button.active { 
+    color: #fff;
+    border: 1px solid #dc5800;
+    font-weight: bold;
+    .rounded_corners(4px);
+    display: inline-block;
+    overflow: visible;
+    cursor: pointer;
+    margin: 2px;
+    padding: 3px 6px;
+    line-height: 1.5;
+    background: #fa7c0a url(static:///resources/images/ui/sprite-vert.png) repeat-x 0 -3450px;
+}
+
+button[disabled],
+button.disabled,
+button.primary.disabled, 
+a.button-link.disabled,
+a.button-link-primary.disabled {
+    background: #e6e6e6 url(static:///resources/images/ui/sprite-vert.png) repeat-x 0 -3380px;
+    color: #b3b3b3;
+    border: 1px solid #d6d6d6;
+    cursor: default;
+}
+button[disabled]:hover,
+button.disabled:hover {
+    cursor: default;
+    border: 1px solid #d6d6d6;
+}
+
+a.button-link-primary { 
+    font-size: 12px;
+    line-height: 1.5;
+    background: #fa7c0a url(static:///resources/images/ui/sprite-vert.png) repeat-x 0 -3450px;
+    margin: 2px;
+    color: #fff;
+    padding: 3px 6px;
+    border: 1px solid #dc5800;
+    .rounded_corners(4px);
+    display: inline-block;
+    overflow: visible;
+    cursor: pointer;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+    font-weight: bold; 
+}
+
+button:hover, 
+.button-link:hover,
+a.button-link-primary:hover {
+    border: 1px solid #61d7f7;
+    text-decoration: none;
+}
+
+/*
+-----------------------------------------
+Doc Viewer
+-----------------------------------------
+*/
+#help-viewer { position: relative; margin: 0px 10px 0 15px; }
+#help-viewer-standalone #help-section { margin: 0 10px 10px 10px; }
+
+#docs-devtools {
+  position: absolute;
+  top: 51px; 
+  right: 300px;
+  padding: 0 0 0 12px;
+  height: 61px;
+  border-left: 1px solid #9ba3b3;
+  border-right: 1px solid #9ba3b3;
+}
+#docs-devtools a { font-size: 1.5em; padding: 0 12px 0 0; color: #fb3; }
+#docs-devtools h1, #docs-search h1 { font-size: 1.2em; color: #fff; padding-top: 10px; }
+
+#docs-search {
+  position: absolute;
+  top: 35px;
+  right: 40px;
+}
+.docs-search-input { width: 185px; }
+#docs-search .button-primary { line-height: 1.3em; }
+
+
+#help-nav { float: left; z-index: 5; padding: 30px 0 0 0; width: 170px; font-size: 1.2em; }
+#help-nav h3 { margin: 0 0 4px 5px; font-size: 1.2em; color: #f71; }
+#help-nav ul { list-style-type: none; padding: 0 0 12px 0; }
+#help-nav li { padding: 3px 0 3px 5px; }
+#help-nav li:hover { background: #edf1f3; border-right: 1px #ddd solid; }
+#help-nav a:hover, #help-subnav a:hover { text-decoration: none; }
+#help-nav li.selected { background: #fff; border: 1px #ddd solid; border-right: none; -moz-border-radius-topleft: 4px; -moz-border-radius-bottomleft: 4px;
+  -webkit-border-top-left-radius: 4px; -webkit-border-bottom-left-radius: 4px; }
+
+#help-section { z-index: 0;  margin: 0 0 0 169px; background: #fff; border: 1px #ddd solid; -webkit-border-radius: 4px; -moz-border-radius: 4px; }
+#help-section.full { margin: 0px; }
+#help-subnav { float: left; width: 150px; font-size: 1.1em; }
+#help-subnav ul { padding: 15px 0 0 0; }
+#help-subnav li { list-style-type: none; padding: 7px 5px 3px 8px; line-height: 1.2em; word-wrap: break-word; }
+#help-subnav li.level2 { font-size: 0.9em; padding: 4px 4px 3px 13px; }
+#help-subnav li:hover { background: #f3fafd; }
+#help-subnav li.selected { background: #edf1f3; }
+#help-subnav li.custom:hover { background: none; }
+#help-subnav .deprecated { text-decoration: line-through; }
+
+#subnav-search input { margin: 3px 0; padding: 3px; width: 130px; } 
+
+#help-content { margin: 5px 5px 5px 150px; padding: 20px; background: #fff; border: 1px #edf1f3 solid; min-height: 600px; min-width: 200px; }   
+#help-content.wide { margin: 5px; }
+#help-content h1 { color: #222; font-size: 20px; margin-bottom: 25px; }
+#help-content h1 em { color: #f71; }
+#help-content h2 { color: #f60; font-size: 14px; margin: 20px 0 0 0;  }
+#help-content h3 { color: #444; font-size: 13px; font-weight: bold; }
+#help-content h4 { color: #444; font-size: 11px; font-weight: bold; margin: 10px 0 -8px 15px; }
+#help-content p, #help-content dl { margin: 8px 0; font-size: 13px; line-height: 16px; }
+#help-content tt, #help-content code, #help-content pre { font-family: "Droid Sans Mono", "Andale Mono", Monaco, "Courier New", Courier; color: #000; }
+#help-content .deprecation { color: #c00; }
+#help-content small { font-size: 9px; }
+#help-content pre { font-size: 13px; }
+#help-content em { color: #f71; }
+#help-content strong { color: #000; }
+#help-content dt { margin: 16px 0 0 0; font-size: 13px; text-decoration: none; }
+#help-content dt strong { margin: 0 10px 0 0; }
+#help-content dt.deprecated strong { color: #c00; text-decoration: line-through; }
+#help-content dt em, #help-content dd em { color: #396; }
+#help-content dt em { font-size: 13px; }
+#help-content dt .icon-codesearch { padding: 0 0 0 10px; }
+#help-content dd { margin: 2px 0 12px 0; }
+#help-content dd pre, #help-content dd blockquote { font-size: 13px; }
+#help-content ul, #help-content ol { margin: 0 0 10px 0; }
+#help-content li { margin: 8px 0 8px 25px; font-size: 13px; }
+#help-content li blockquote pre { font-size: 13px; }
+#help-content ul li { list-style-type: disc; }
+#help-content ol li { list-style-type: decimal; }
+#help-content li p, #help-content dd p, #help-content dd li { font-size: 13px; }
+#help-content table { margin: 10px; font-size: 13px; border: 3px double #ddd; }
+#help-content th { font-weight: bold; padding: 5px; background: #f5fbff; text-align: right; border: 1px solid #ddd; }
+#help-content .th-top th { text-align: center;  }
+#help-content td { margin: 10px; padding: 5px;  border: 1px solid #ddd; }
+#help-content td p { font-size: 13px; margin: 0; }
+#help-content td pre { font-size: 13px; }  
+#help-content blockquote, #help-content pre.literal-block { border: 1px #ddd solid; padding: 4px 8px; margin: 8px 0 16px 15px; background: #f5f5f5; color: #000; font-size: 13px; overflow: auto; }
+#help-content blockquote p { font-size: 13px; }
+#help-content blockquote h4 { margin: 10px 0 0 0; }
+#help-content blockquote pre { font-size: 13px; }
+#help-content blockquote ul { list-style-position: inside; }
+#help-content blockquote table { font-size: 13px; }
+#help-content blockquote th, #help-content blockquote td, #help-content blockquote li { font-size: 13px; }
+#help-content .chapter h2 { margin-bottom: 20px; }
+#help-content .section h1 { color: #f60; font-size: 14px; margin: 20px 0 0 0;  }
+#help-content .recipe .title { font-weight: bold; }
+#help-content .recipe-content { padding: 5px 10px; border: 1px solid #ccc; margin: 5px; }
+#help-content .recipe blockquote pre code { font-size: 10px; }

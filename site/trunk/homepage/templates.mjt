@@ -194,16 +194,16 @@
       joined in ${h.format_date(user.created, "MMMM yyyy")}
     </div>
     <div>
-      ${user.assertions} total assertions
+      ${h.commafy(user.assertions)} total assertions
     </div>
     <div>
-      following ${user.following_count}
+      following ${h.commafy(user.following_count)}
     </div>
     <div>
-      followers ${user.followers_count}
+      followers ${h.commafy(user.followers_count)}
     </div>
     <div>
-      messages ${user.messages_count}
+      messages ${h.commafy(user.messages_count)}
     </div>
   </div>
 </acre:block>
@@ -278,16 +278,16 @@
 
 <acre:block def="join_discussion()">
   <div class="content-section content-section-last">
-    <h3>Discussion LIst</h3>
+    <h3>Discussion List</h3>
     <p>Enter your email address to join the discussion:</p>
     <form method="POST" action="http://lists.freebase.com/mailman/subscribe/freebase-discuss" >
       <input name="email" type="email" 
              placeholder="Your email address..." 
              class="input-standard"/>
-
+      
       <input type="submit" value="Submit" class="button-featured"/>
     </form>
-    <a href="${h.freebase_url('/signin/login')}">Read the List Archive
+    <a href="#">Read the List Archive</a>
   </div>
 </acre:block>
 

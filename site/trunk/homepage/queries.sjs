@@ -182,18 +182,24 @@ var domains_for_user = function(user_id) {
 };
 
 var user_info = function(user_id) {
-  var q_user = acre.require("user_info").extend({"id": user_id});
-  return freebase.mqlread(q_user.query)
-    .then(function(envelope) {
-      var result = envelope.result;
+  var deferreds = {};
+  var q_user = mf.require("user_info").extend({"id": user_id}).query;
+  deferreds.user = freebase.mqlread(q_user);
+  deferreds.activity = freebase.get_static("activity", user_id);
+  
+  return deferred.all(deferreds)
+    .then(function(results) {
+      var user = results.user.result;
+      var activity = results.activity || {};
+      
       return {
-        "id": result.id,
-        "name": result.name,
-        "created": acre.freebase.date_from_iso(result.timestamp),
-        "following_count": result['/freebase/user_profile/watched_items'] || 0,
-        "followers_count": result['!/freebase/user_profile/watched_items'] || 0,
+        "id": user.id,
+        "name": user.name,
+        "created": acre.freebase.date_from_iso(user.timestamp),
+        "following_count": user['/freebase/user_profile/watched_items'] || 0,
+        "followers_count": user['!/freebase/user_profile/watched_items'] || 0,
         "messages_count": 0,
-        "assertions": 0
+        "assertions": activity.total || 0
       };
     });
 };

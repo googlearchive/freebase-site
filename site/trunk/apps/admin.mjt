@@ -93,7 +93,7 @@
           <textarea name="article" acre:else="" class="textarea"></textarea>
         </p>
         
-        <div class="box-nextactions">
+        <div class="editapp-actions">
           <input class="button button-primary" type="submit" name="title" value="Update this App"/>
           <a class="button" href="${h.url_for('apps', 'app', null, c.app.id)}">Cancel</a>
         </div>

@@ -40,6 +40,9 @@
       "name":     null,
       "index":    null,
       "sort":     "index",
+      "schema": {
+        "name": null
+      },
       "expected_type": {
         "id":            null,
         "name": null,

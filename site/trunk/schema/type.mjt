@@ -179,6 +179,9 @@
           <td class="left structure">
             <table>
               <tbody class="commons">
+                <tr>
+                  <th class="type-diagram-col-header" colspan="3">Incoming Properties</th>
+                </tr>
                 ${t.type_diagram_incoming_props(c.type.expected_by.commons)}
               </tbody>
               <tbody class="bases">
@@ -198,7 +201,13 @@
           </td>
           <td class="right structure">
             <table>
-              ${t.type_diagram_native_props(c.type.properties)} 
+              <tr>
+                <th colspan="4" class="type-diagram-col-header">$c.type.name Properties</th>
+              </tr>            
+              ${t.type_diagram_native_props(c.type.properties)}
+              <tr>
+                <th colspan="4" class="type-diagram-col-header">Inherited Properties</th>
+              </tr>                          
               <acre:block for="type in c.type.included_types"> 
                 ${t.type_diagram_inherited_props(type.properties)}
               </acre:block>

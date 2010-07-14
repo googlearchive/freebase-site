@@ -185,7 +185,6 @@
       <td class="c1"></td>
       <td class="c1 spacer"></td>
       <td class="c7">&nbsp;</td>
-      <td class="c1 spacer"></td>
     </tr>
     <tr class="${global ? 'global' : 'local'} ${prop.inherited ? 'inherited' : ''}">
       <td nowrap="" class="c1 in_type ${prop.schema['/freebase/type_hints/mediator'] ? 'mediator' : 'truetype'}">
@@ -199,7 +198,6 @@
       <td nowrap="" class="in_prop ${(i == 0) ? 'c2' : same ? 'c4' : 'c5'} ${prop.master_property == null ? 'master' : ''} ${prop.unique ? 'unique' : ''}">
         <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.id} ${prop.master_property == null ? '| master' : ''} ${prop.unique ? '| unique' : ''}">$prop.name</a>
       </td>
-      <td class="${(i > 0) ? 'c1' : 'c3'} spacer ${(i == 0 && !global) ? 'clean' : ''}"></td>
     </tr>
   </acre:block>
 </acre:block>
@@ -222,7 +220,6 @@
       <td class="c1"></td>
     </tr>
     <tr class="${utils.isGlobal(prop.id) ? 'global' : 'local'} ${prop.inherited ? 'inherited' : ''}">
-      <td class="${(i > 0) ? 'c1' : 'c2'} spacer ${(i == 0 && !global) ? 'clean' : ''}"></td>
       <td nowrap="" class="out_prop ${(i == 0) ? 'c2' : same ? 'c4' : 'c6' } ${prop.master_property == null ? 'master' : ''} ${prop.unique ? 'unique' : ''}">
         <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
       </td>
@@ -257,7 +254,6 @@
       <td class="c1"></td>
     </tr>
     <tr class="${utils.isGlobal(prop.id) ? 'global' : 'local'} ${prop.inherited ? 'inherited' : ''}">
-      <td class="${(i > 0) ? 'c1' : 'c2'} spacer ${(i == 0 && !global) ? 'clean' : ''}"></td>
       <td nowrap="" class="out_prop ${(i == 0) ? 'c2' : same ? 'c4' : 'c6' } ${prop.master_property == null ? 'master' : ''} ${prop.unique ? 'unique' : ''}">
         <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
       </td>

@@ -1,0 +1,21 @@
+{
+  "id":      "/",
+  "type":    [],
+  "name":    null,
+  "creator": null,
+  "/type/namespace/keys": [{
+    "value":  null,
+    "namespace": {
+      "id":            null,
+      "name":          null,
+      "type":          [],
+      "timestamp":     null,
+      "/freebase/domain_profile/hidden": null,
+      "/type/domain/types": [{
+        "id":            null,
+        "/freebase/type_profile/instance_count": null,
+        "limit":         1000
+      }]
+    }
+  }]
+}

@@ -170,11 +170,36 @@ var domains_for_user = function(user_id) {
     });
 };
 
+var messages = function(user_id) {
+  var q_messages = mf.require("messages")
+    .extend({"post.author.id": user_id})
+    .extend({"replies:post.author.id!=": user_id})
+    .query;
+  
+  return freebase.mqlread(q_messages)
+    .then(function(envelope) {
+      var message_count = 0;
+      envelope.result.forEach(function(result) {
+        var replies = result['replies:post'];
+        var timestamp = result.post.timestamp;
+        
+        replies.forEach(function(reply) {
+          if (reply.timestamp > timestamp) {
+            message_count += 1;
+          }
+        })
+      });
+      
+      return message_count;
+    });
+};
+
 var user_info = function(user_id) {
   var deferreds = {};
   var q_user = mf.require("user_info").extend({"id": user_id}).query;
   deferreds.user = freebase.mqlread(q_user);
   deferreds.activity = freebase.get_static("activity", user_id);
+  deferreds.messages = messages(user_id);
   
   return deferred.all(deferreds)
     .then(function(results) {
@@ -187,7 +212,7 @@ var user_info = function(user_id) {
         "created": acre.freebase.date_from_iso(user.timestamp),
         "following_count": user['/freebase/user_profile/watched_items'] || 0,
         "followers_count": user['!/freebase/user_profile/watched_items'] || 0,
-        "messages_count": 0,
+        "messages_count": results.messages || 0,
         "assertions": activity.total || 0
       };
     });

@@ -28,7 +28,10 @@
       <acre:block if="h.is_production()">
         <script>${acre.include("googleanalytics.js")}</script>
       </acre:block>
-      
+
+      <!-- acre variables useful for client-side javascript -->
+      ${acre_javascript_vars()}
+     
       <!-- any additional head content (i.e., css, js, etc.)-->
       <acre:block if="exports.head">
         ${exports.head()}
@@ -176,4 +179,16 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/${mf.jquery.version}/jquery.min.js"></script>
   <script src="${mf.suggest.base_url}/suggest.min.js"></script>
   <acre:block if="exports.footer_script">${exports.footer_script()}</acre:block>
+</acre:block>
+
+
+<acre:block def="acre_javascript_vars()">
+  <script>
+    var acre = {
+      freebase: {
+        service_url: "${acre.freebase.service_url}",
+        site_host: "${acre.freebase.site_host}"
+      }
+    };
+  </script>
 </acre:block>

@@ -88,7 +88,7 @@ window.freebase = window.fb = {};
 (function($, fb){
   $(function() {
     var search = $("#SearchBox .SearchBox-input,#global-search-input");
-    var root =  document.location.protocol + "//www.freebase.com";
+    var root = acre.freebase.site_host;
 
     search.suggest({
       service_url:root,
@@ -140,7 +140,7 @@ window.freebase = window.fb = {};
           return true;
         }
       });
-      
+
       $('input, textarea').textPlaceholder();
     });
 })(jQuery, window.freebase);

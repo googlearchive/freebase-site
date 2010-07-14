@@ -230,10 +230,12 @@ var search_apps = function(search, opts) {
     type:'/freebase/apps/application', 
     mql_output:[q]
   };
-    
+  
+  /*
   if (opts && !opts.unlisted) {
     args.mql_filter = [{ "/freebase/apps/application/listed" : true }];
   }
+  */
   
   return freebase.search(search, args)
     .then(function(envelope){

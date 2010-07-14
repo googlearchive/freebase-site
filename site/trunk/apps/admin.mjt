@@ -77,26 +77,26 @@
       
         <p>
           <label>Homepage</label> 
-          <input type="text" name="homepage" value="${c.app.homepage||''}"/>
+          <input type="text" name="homepage" class="textbox" value="${c.app.homepage||''}"/>
           <span class="note" acre:if="false">Note: changing this value will not register a new URL within Acre</span>
         </p>
       
         <p class="description">
-          <label>Short Description</label> <input type="text" name="description" value="${c.app.description||''}"/>
+          <label>Short Description</label> <input type="text" name="description" class="textbox" value="${c.app.description||''}"/>
         </p>
       
         <p>
           <label>Detailed Description
             <span class="markdownlink">Note: 
               You can <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">use Markdown</a> here.</span></label>
-          <textarea name="article" acre:if="c.app.article">$c.app.article.text</textarea>
-          <textarea name="article" acre:else=""></textarea>
+          <textarea name="article" acre:if="c.app.article" class="textarea">$c.app.article.text</textarea>
+          <textarea name="article" acre:else="" class="textarea"></textarea>
         </p>
         
-        <p class="box-nextactions">
-          <input class="button-primary" type="submit" name="title" value="Update this App"/>
-          <a class="button-link" href="${h.url_for('apps', 'app', null, c.app.id)}">Cancel</button>
-        </p>
+        <div class="box-nextactions">
+          <input class="button button-primary" type="submit" name="title" value="Update this App"/>
+          <a class="button" href="${h.url_for('apps', 'app', null, c.app.id)}">Cancel</button>
+        </div>
       </form>
     
       <form id="icon_form" action="${h.url_for('apps', 'form', null, '/submit/add_icon')}" method="post">

@@ -14,77 +14,6 @@ may or may not be .active
 */
 
 
-button, a.button-link { 
-    font-size: 12px;
-    line-height: 1.5;
-    background: #e6e6e6 url(static:///resources/images/ui/sprite-vert.png) repeat-x 0 -3380px;
-    color: #666;
-    font-weight:bold;
-    margin: 2px;
-    padding: 3px 6px;
-    border: 1px solid #c5c5c5;
-    .rounded_corners(4px);
-    display: inline-block;
-    overflow: visible;
-    cursor: pointer;
-    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; 
-}
-
-.button-primary,
-input[type=submit].button-primary,
-button.active { 
-    color: #fff;
-    border: 1px solid #dc5800;
-    font-weight: bold;
-    .rounded_corners(4px);
-    display: inline-block;
-    overflow: visible;
-    cursor: pointer;
-    margin: 2px;
-    padding: 3px 6px;
-    line-height: 1.5;
-    background: #fa7c0a url(static:///resources/images/ui/sprite-vert.png) repeat-x 0 -3450px;
-}
-
-button[disabled],
-button.disabled,
-button.primary.disabled, 
-a.button-link.disabled,
-a.button-link-primary.disabled {
-    background: #e6e6e6 url(static:///resources/images/ui/sprite-vert.png) repeat-x 0 -3380px;
-    color: #b3b3b3;
-    border: 1px solid #d6d6d6;
-    cursor: default;
-}
-button[disabled]:hover,
-button.disabled:hover {
-    cursor: default;
-    border: 1px solid #d6d6d6;
-}
-
-a.button-link-primary { 
-    font-size: 12px;
-    line-height: 1.5;
-    background: #fa7c0a url(static:///resources/images/ui/sprite-vert.png) repeat-x 0 -3450px;
-    margin: 2px;
-    color: #fff;
-    padding: 3px 6px;
-    border: 1px solid #dc5800;
-    .rounded_corners(4px);
-    display: inline-block;
-    overflow: visible;
-    cursor: pointer;
-    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
-    font-weight: bold; 
-}
-
-button:hover, 
-.button-link:hover,
-a.button-link-primary:hover {
-    border: 1px solid #61d7f7;
-    text-decoration: none;
-}
-
 /*
 -----------------------------------------
 Doc Viewer
@@ -103,7 +32,7 @@ Doc Viewer
   border-right: 1px solid #9ba3b3;
 }
 #docs-devtools a { font-size: 1.5em; padding: 0 12px 0 0; color: #fb3; }
-#docs-devtools h1, #docs-search h1 { font-size: 1.2em; color: #fff; padding-top: 10px; }
+#docs-devtools h1, #docs-search h1 { font-size: 1.2em; color: #fff; line-height: 1; padding-top: 12px; }
 
 #docs-search {
   position: absolute;
@@ -113,8 +42,21 @@ Doc Viewer
 .docs-search-input { width: 185px; }
 #docs-search .button-primary { line-height: 1.3em; }
 
+#help-intro { 
+  position: absolute; 
+  width: 375px; 
+  top: 25px; 
+  left: 25px; 
+  font-size: 1.4em; 
+  }
 
-#help-nav { float: left; z-index: 5; padding: 30px 0 0 0; width: 170px; font-size: 1.2em; }
+#help-intro-categories { 
+  border-left: #ddd 1px solid;
+  margin: -10px 0 0 400px;
+  padding: 0 0 0 20px;
+  }
+
+#help-nav { float: left; z-index: 5; padding: 10px 0 0 0; width: 170px; font-size: 1.2em; }
 #help-nav h3 { margin: 0 0 4px 5px; font-size: 1.2em; color: #f71; }
 #help-nav ul { list-style-type: none; padding: 0 0 12px 0; }
 #help-nav li { padding: 3px 0 3px 5px; }
@@ -136,7 +78,7 @@ Doc Viewer
 
 #subnav-search input { margin: 3px 0; padding: 3px; width: 130px; } 
 
-#help-content { margin: 5px 5px 5px 150px; padding: 20px; background: #fff; border: 1px #edf1f3 solid; min-height: 600px; min-width: 200px; }   
+#help-content { margin: 5px 5px 5px 150px; padding: 20px; background: #fff; border: 1px #edf1f3 solid; min-height: 600px; min-width: 200px; position: relative; }   
 #help-content.wide { margin: 5px; }
 #help-content h1 { color: #222; font-size: 20px; margin-bottom: 25px; }
 #help-content h1 em { color: #f71; }

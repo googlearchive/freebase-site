@@ -14,39 +14,38 @@
 
 <acre:block def="content_body()">
   <div id="docs-search">
-    <h1>Search Freebase docs:</h1>
+    <h1>Search the API Reference:</h1>
     <form action="http://www.google.com/cse">
       <input type="hidden" name="cx" value="000021600935202413705:4wd8ui9n5go" />
       <input type="hidden" name="ie" value="UTF-8" />
-      <input type="text" name="q" class="docs-search-input" />
-      <input type="submit" name="sa" value="Search" class="button-primary" />
+      <input type="text" name="q" class="docs-search-input textbox" />
+      <input type="submit" name="sa" value="Search" class="button button-primary" />
     </form>
   </div>
     <div id="help-section" class="full">
       <div id="help-content" class="wide">
-        <h1>Freebase API Reference Documentation</h1>
+        <div id="help-intro">
+          <p>
+            This is home to all official Freebase API documentation, written by the developers who wrote the APIs.  
+          </p>
+          
+          <p>
+            <b>For language libraries, examples, tutorials and more, also check out <a href="http://wiki.freebase.com/wiki/Category:Development">Developer Resources</a> in the <a href="http://wiki.freebase.com/">Freebase Wiki.</a></b>
+          </p>
+        </div>
 
-        <p>
-          This is the home of "official" Freebase API documentation, written by the developers who wrote the APIs.
-        </p>
-
-        <blockquote>
-          <strong>
-            Please check out the <a href="http://wiki.freebase.com/wiki/Category:Development">developer resources 
-            on the Freebase wiki</a> for support, examples, tutorials, etc.
-          </strong>
-        </blockquote>
-
-        <acre:block for="category in categories">
-          <h2>$category.name</h2>
-          <ul>
-            <li acre:for="doc in category.docs" acre:if="!(doc.hidden && (o.sel_category != doc.key))">
-              <a acre:if="doc.sections || doc.content" href="$c.base_path/$doc.key">$doc.name</a>
-              <a acre:elif="doc.link" href="$doc.link">$doc.name</a>
-              <span acre:else="">$doc.name</span>
-            </li>
-          </ul>
-        </acre:block>
+        <div id="help-intro-categories">        
+          <acre:block for="category in categories">
+            <h2>$category.name</h2>
+            <ul>
+              <li acre:for="doc in category.docs" acre:if="!(doc.hidden && (o.sel_category != doc.key))">
+                <a acre:if="doc.sections || doc.content" href="$c.base_path/$doc.key">$doc.name</a>
+                <a acre:elif="doc.link" href="$doc.link">$doc.name</a>
+                <span acre:else="">$doc.name</span>
+              </li>
+            </ul>
+          </acre:block>
+        </div>
       </div>
     </div>
   </div>

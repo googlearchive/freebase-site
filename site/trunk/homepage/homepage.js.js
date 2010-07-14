@@ -28,6 +28,7 @@ $.tools.tabs.addEffect("load_pane", function(i, done) {
     crossfade();
     update_pointer();
     
+    // Switch off the header when we show the table of contents
     if ($pane.is("#pane-all")) {
       $("#domain-explorer-header").children().fadeOut("fast");
     } else {

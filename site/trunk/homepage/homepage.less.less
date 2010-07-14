@@ -597,14 +597,21 @@ CONTENT SIDE
     line-height: 1.3;
 }
 
-.stat-box {
+.stat-box, a.stat-box:link, a.stat-box:visited {
+    display: block;
     background: #78a;
     .rounded_corners(5px);
     color: #fff;
     width: 5.3em;
     float: left;
-    margin: 1em 0.5em 0 0;
+    margin: 1em 0.3em 0 0;
     padding: 0.1em 0.4em 0.3em 0.4em;
+    text-decoration: none;
+    border: transparent 1px solid;
+}
+
+a.stat-box:hover {
+    border: #61d7f7 1px solid;
 }
 
 .stat-box-last {

@@ -221,24 +221,27 @@
     <div class="user-stats">
       ${h.commafy(user.assertions)} total assertions
     </div>
-    <div class="stat-box">
+    <a href="${h.freebase_url('/user/settings/following')}"
+       class="stat-box">
       <span class="stat-box-label">following</span>
       <div class="stat-box-number">
         ${h.commafy(user.following_count)}
       </div>
-    </div>
-    <div class="stat-box">
+    </a>
+    <a href="${h.freebase_url('/user/settings/followers')}"
+       class="stat-box">
       <span class="stat-box-label">followers</span>
-      <div class="stat-box-number">  
+      <div class="stat-box-number">
         ${h.commafy(user.followers_count)}
       </div>
-    </div>
-    <div class="stat-box stat-box-last">
+    </a>
+    <a href="${h.freebase_url('/user/replies')}"
+       class="stat-box stat-box-last">
       <span class="stat-box-label">messages</span>
       <div class="stat-box-number">
         ${h.commafy(user.messages_count)}
       </div>
-    </div>
+    </a>
   </div>
 </acre:block>
 

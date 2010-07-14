@@ -46,13 +46,9 @@
     </td>
     <td class="even description">
       <p acre:if="prop['/freebase/documented_object/tip']">${prop['/freebase/documented_object/tip']}</p>
-      <span class="property-meta">
-        <span acre:if="prop.master_property === null"><abbr title="">master</abbr></span>
-        <span acre:else=""><abbr title="">reverse</abbr></span>
-        <span acre:if="prop.unique"><abbr title="This property can only have a single value">unique</abbr></span>
-        <span acre:if="prop['/freebase/property_hints/disambiguator']"><abbr title="">disambiguating</abbr></span>
-        <span acre:if="prop['/freebase/property_hints/display_none']"><abbr title="">hidden</abbr></span>                  
-      </span>
+      <acre:block acre:trim="">              
+        <span acre:if="prop.master_property === null" class="property-meta"><abbr title="This is a master property">master</abbr></span><span acre:else="" class="property-meta"><abbr title="This is a reverse property">reverse</abbr></span><span acre:if="prop.unique" class="property-meta">, <abbr title="This property can only have a single value">unique</abbr></span><span acre:if="prop['/freebase/property_hints/disambiguator']" class="property-meta">, <abbr title="This property is a disambiguator">disambiguating</abbr></span><span acre:if="prop['/freebase/property_hints/display_none']" class="property-meta">, <abbr title="This property is hidden by default">hidden</abbr></span>
+      </acre:block>
     </td>
   </tr>
 </acre:block>
@@ -95,12 +91,10 @@
           <span acre:if="prop.unit">$prop.unit.name</span>
         </td>
         <td class="even description">
-          <p acre:if="prop['/freebase/documented_object/tip']">${prop['/freebase/documented_object/tip']}</p>                 
-          <span acre:if="prop.master_property === null">master</span>
-          <span acre:else="">reverse</span>
-          <span acre:if="prop.unique">,unique</span>
-          <span acre:if="prop['/freebase/property_hints/disambiguator']">,disambiguating</span>
-          <span acre:if="prop['/freebase/property_hints/display_none']">,hidden</span>
+          <p acre:if="prop['/freebase/documented_object/tip']">${prop['/freebase/documented_object/tip']}</p>
+          <acre:block acre:trim="">              
+            <span acre:if="prop.master_property === null" class="property-meta"><abbr title="This is a master property">master</abbr></span><span acre:else="" class="property-meta"><abbr title="This is a reverse property">reverse</abbr></span><span acre:if="prop.unique" class="property-meta">, <abbr title="This property can only have a single value">unique</abbr></span><span acre:if="prop['/freebase/property_hints/disambiguator']" class="property-meta">, <abbr title="This property is a disambiguator">disambiguating</abbr></span><span acre:if="prop['/freebase/property_hints/display_none']" class="property-meta">, <abbr title="This property is hidden by default">hidden</abbr></span>
+          </acre:block>
         </td>
       </tr>
     </tbody>

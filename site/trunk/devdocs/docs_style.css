@@ -124,7 +124,7 @@ Doc Viewer
   -webkit-border-top-left-radius: 4px; -webkit-border-bottom-left-radius: 4px; }
 
 #help-section { z-index: 0;  margin: 0 0 0 169px; background: #fff; border: 1px #ddd solid; -webkit-border-radius: 4px; -moz-border-radius: 4px; }
-
+#help-section.full { margin: 0px; }
 #help-subnav { float: left; width: 150px; font-size: 1.1em; }
 #help-subnav ul { padding: 15px 0 0 0; }
 #help-subnav li { list-style-type: none; padding: 7px 5px 3px 8px; line-height: 1.2em; word-wrap: break-word; }
@@ -137,7 +137,7 @@ Doc Viewer
 #subnav-search input { margin: 3px 0; padding: 3px; width: 130px; } 
 
 #help-content { margin: 5px 5px 5px 150px; padding: 20px; background: #fff; border: 1px #edf1f3 solid; min-height: 600px; min-width: 200px; }   
-#help-content.wide { margin: 5px; }   
+#help-content.wide { margin: 5px; }
 #help-content h1 { color: #222; font-size: 20px; margin-bottom: 25px; }
 #help-content h1 em { color: #f71; }
 #help-content h2 { color: #f60; font-size: 14px; margin: 20px 0 0 0;  }

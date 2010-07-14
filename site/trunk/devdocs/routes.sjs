@@ -18,6 +18,12 @@ var data = {
   path_info:path_info
 };
 
-mf.require("template", "renderer").render_page(data,mf.require("index_template"));
+var renderer = mf.require("template", "renderer");
+
+if (path_info==="/") {
+  renderer.render_page(data,mf.require("index"));
+} else {
+  renderer.render_page(data,mf.require("doc"));
+}
 
 

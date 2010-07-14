@@ -1,3 +1,9 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var h = mf.require("core", "helpers");
+  var categories = acre.require("doc_list").get_list();
+</acre:script>
+
 <h1>Freebase API Reference Documentation</h1>
 
 <p>
@@ -11,10 +17,14 @@
   </strong>
 </blockquote>
 
-<br/>
+<acre:block for="category in categories">
+  <h3>$category.name</h3>
+  <ul>
+    <li acre:for="doc in category.docs" acre:if="!doc.anonymous && !(doc.hidden && (o.sel_category != doc.key))">
+      <a acre:if="doc.sections || doc.content" href="/docs/$doc.key">$doc.name</a>
+      <a acre:elif="doc.link" href="$doc.link">$doc.name</a>
+      <span acre:else="">$doc.name</span>
+    </li>
+  </ul>
+</acre:block>
 
-<p>
-  <em>
-    &lt;-- Pick an API
-  </em>
-</p>

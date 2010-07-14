@@ -27,7 +27,6 @@ var MF = {
     "apps.mf.js": [
       ["template", "freebase.mf.js"],
       ["jquerytools", "tabs.js"],
-      ["domain", "jquery.tablesorter.js"],
       ["jquery", "jquery.form.js"],
       "apps.js"
     ]

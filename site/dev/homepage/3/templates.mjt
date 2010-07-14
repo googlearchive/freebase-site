@@ -1,0 +1,293 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var image_components = mf.require("template", "imagecomponents");
+  var h = mf.require("helpers");
+</acre:script>
+
+<acre:block def="categories_list(categories)">
+  <ul>
+    <acre:block for="category in categories">
+      <li>${category.name}</li>
+    </acre:block>
+  </ul>
+</acre:block>
+
+<acre:block def="grouped_domains_list(groups)">
+  
+  <acre:block for="group, domains in groups">
+    <h2>${group}</h2>
+    <ul>
+      <acre:block for="domain in domains">
+        <li>
+          <a href="${h.freebase_url('/view'+domain.id)}">${domain.name}</a>
+        </li>
+      </acre:block>
+    </ul>
+  </acre:block>
+  
+</acre:block>
+
+<acre:block def="domain_explorer(categories, user)">
+  <div id="domain-explorer-header">
+    <div class="domain-explorer-title"></div>
+    
+    <div class="domain-activity-controls">
+      <span class="domain-activity-controls-content">
+        <!--Sort by <a href="">write activity</a>-->
+      </span>
+    </div>
+    <div class="activity-chart-header">
+      <div class="activity-chart-date">
+        <acre:script>
+          var two_months_ago = new Date();
+          two_months_ago.setDate(two_months_ago.getDate()-7*8)
+        </acre:script>
+        ${h.format_date(two_months_ago, "MMM d")}
+      </div>
+      <div class="activity-chart-date activity-chart-date-second">
+        <acre:script>
+          var one_month_ago = new Date();
+          one_month_ago.setDate(one_month_ago.getDate()-7*4)
+        </acre:script>
+        ${h.format_date(one_month_ago, "MMM d")}
+      </div>
+      <div class="activity-chart-date activity-chart-date-last">
+        last week
+      </div>
+    </div>
+    <div class="activity-stats-header-facts">
+      Facts
+    </div>
+    <div class="activity-stats-header-topics">
+      Topics
+    </div>
+    <div class="activity-stats-header-user">
+      Top User
+    </div>
+  </div>
+  
+  <div id="domain-explorer-tabset">
+    
+    <ul id="domain-explorer-tabs">
+      <li acre:if="user">
+        <a href="${h.url_for('homepage', 'loadpanel', [['user', user.id]])}">
+         <span>Your Data</span>
+        </a>
+      </li>
+      <li>
+        <a href="${h.url_for('homepage', 'loadpanel', [['domains', 'featured']])}">
+         <span>Featured Data</span>
+        </a>
+      </li>
+      <li acre:for="category in categories">
+        <a href="${h.url_for('homepage', 'loadpanel', [['category', category.id]])}">
+         <span>${category.name}</span>
+        </a>
+      </li>
+      <li class="last">
+        <a href="#pane-all">
+          <span>All</span>
+        </a>
+        <!--
+        <ul>
+          <acre:block acre:for="letter in h.uppercase_alphabet()">
+            <li class="toc-letter">
+              <a acre:if="letter in grouped_domains" href="">
+                ${letter}
+              </a>
+              <span acre:else="">
+                ${letter}
+              </span>
+            </li>
+          </acre:block>
+        </ul>
+        -->
+      </li>
+    </ul>
+    
+    <div id="explorer-panes">
+      <div acre:if="user" class="domain-explorer-pane" id="pane-your"></div>
+      <div class="domain-explorer-pane" id="pane-featured"></div>
+      <acre:block for="category in categories">
+        <div class="domain-explorer-pane" id="pane${category.id.replace(/\//g, '-')}"></div>
+      </acre:block>
+      <div class="domain-explorer-pane" id="pane-all"></div>
+    </div>
+    <span id="pointer"><span id="pointer-text"></span></span>
+  </div>
+</acre:block>
+
+<acre:block def="category_panel(domains)">
+  <ul class="category-domain-list">
+    <li acre:for="domain in domains" class="domain-item clear">
+      ${domain_item(domain)}
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="activity_section(domain)">
+  <div class="domain-activity domain-section">
+    <div acre:if="domain.activity"
+         class="activity-stats">
+      <div class="activity-chart-assertions" data-activity="${JSON.stringify(domain.activity.weeks)}">
+      </div>
+      <div class="activity-stats-lastweek">
+        <strong>${h.format_stat(domain.activity.weeks[domain.activity.weeks.length-1].e)}</strong>
+        <div class="activity-stats-lastweek-label">last week</div>
+      </div>
+      <div class="activity-stats-block activity-stats-facts">
+        <div class="activity-stats-number">
+          ${h.format_stat(domain.activity.total.e)}
+        </div>
+      </div>
+      <div class="activity-stats-block activity-stats-topics">
+        <div class="activity-stats-number">
+          ${h.format_stat(domain.activity.total.t)}
+        </div>
+      </div>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="domain_item(domain)">
+  <div class="domain-info domain-section">
+    <h3 class="domain-title">
+      <a href="${h.freebase_url('/view'+domain.id)}">${domain.name}</a>
+    </h3>
+    <div class="member-count">
+      ${domain.member_count > 100 ? '100+' : domain.member_count || 0}
+      ${domain.member_count === 1 ? 'member' : 'members'}
+    </div>
+  </div>
+  
+  ${activity_section(domain)}
+  
+  <div class="domain-contributor domain-section">
+    ${image_components.user_image_small(domain.top_user)}
+  </div>
+</acre:block>
+
+<acre:block def="homepage_header()">
+  <div class="homepage-header">
+    <h1 class="homepage-header-title">
+      <span>
+        An entity graph of people, places and things, built by a community that loves open data.
+      </span>
+    </h1>
+    <!--
+    <span class="homepage-announce">
+      Message goes here
+      <a href="link goes here">
+        Learn More &raquo;
+      </a>
+    </span>
+    -->
+  </div>
+</acre:block>
+
+<acre:block def="user_info(user)">
+  <div class="content-sub-section">
+    <div>
+      <a href="${h.freebase_url('/view'+user.id)}">${user.name}</a>
+    </div>
+    <div>
+      joined in ${h.format_date(user.created, "MMMM yyyy")}
+    </div>
+    <div>
+      ${user.assertions} total assertions
+    </div>
+    <div>
+      following ${user.following_count}
+    </div>
+    <div>
+      followers ${user.followers_count}
+    </div>
+    <div>
+      messages ${user.messages_count}
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="gridworks()">
+  <div class="content-subsection-gridworks">
+    <img src="${mf.img_src('gridworks-logo.png')}" class="gridworks-logo"/>
+    <p>
+      An open source power tool to fix, discover, experiment, connect and customize your data.  
+      <a href="http://code.google.com/p/freebase-gridworks">Learn more &raquo;</a>
+    </p>
+  </div>
+</acre>
+
+<acre:block def="what_is_freebase()">
+  <div class="content-sub-section">
+    <h3>What is <span class="emphasis">Freebase?</span></h3>
+    <p>Learn what an entity graph is, what kind of information it contains, and why you should add your data!</p>
+    <a href="http://wiki.freebase.com/wiki/What_is_Freebase%3F" class="more-link">Learn More &raquo;</a>
+  </div>
+</acre>
+
+<acre:block def="for_developers()">
+  <div class="content-sub-section">
+    <h3><span class="emphasis">Freebase</span> for Developers</h3>
+    <ul>
+      <li>powerful queryable API</li>
+      <li>JavaScript-based hosting framework</li>
+      <li>libraries for other languages</li>
+    </ul>
+    <a href="http://wiki.freebase.com/wiki/Developers" class="more-link">Learn More &raquo;</a>
+  </div>
+</acre>
+
+<acre:block def="join_freebase()">
+  <div class="content-footer-section content-footer-section-first">
+    <h3 class="sidebar-header">Join the Community</h3>
+    Enter your email address and we'll let you know when you can sign up:
+    <form>
+      <input name="email" type="email" placeholder="Your email address..." class="input-standard"/>
+      <!-- XXX: link to Michael's app  XXX: placeholder support in freebase.js.js -->
+      <input type="submit" value="Submit" class="button-featured"/>
+    </form>
+    <a href="${h.freebase_url('/signin/login')}">Existing members, please sign in &raquo;
+  </div>
+</acre:block>
+
+<!-- Note: We trust feedburner to escape HTML entities in the description -->
+<acre:block def="blog_entries(blog)">
+  <div acre:if="blog" class="content-footer-section">
+    <h3 class="sidebar-header"><a href="$blog.url">Blog</a></h3>
+    <a href="$blog.rss_url">RSS</a><!-- XXX: RSS icon? action? -->
+    <div acre:for="item in blog.items">
+      <a href="$item.link" title="${acre.markup.bless(item.description)}">$item.title</a>
+      by <a href="${h.freebase_url('/view/user/'+item['dc:creator'])}">${item['dc:creator']}</a>
+      on ${h.format_date(h.parse_date(item.pubDate), 'MMMM d')}
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="wiki_entries(wiki)">
+  <div acre:if="wiki" class="content-footer-section">
+    <h3 class="sidebar-header"><a href="$wiki.url">Wiki</a></h3>
+    <a href="$wiki.rss_url">RSS</a><!-- XXX: RSS icon? action? -->
+    <div acre:for="item in wiki.items">
+      <a href="$item.link">$item.title</a>
+      by <a href="$wiki.user_url:${item['dc:creator']}">${item['dc:creator']}</a>
+      on ${h.format_date(h.parse_date(item.pubDate), 'MMMM d')}
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="join_discussion()">
+  <div class="content-footer-section content-footer-section-last">
+    <h3 class="sidebar-header">Discussion LIst</h3>
+    Enter your email address to join the discussion:
+    <form method="POST" action="http://lists.freebase.com/mailman/subscribe/freebase-discuss" >
+      <input name="email" type="email" 
+             placeholder="Your email address..." 
+             class="input-standard"/>
+
+      <input type="submit" value="Submit" class="button-featured"/>
+    </form>
+    <a href="${h.freebase_url('/signin/login')}">Read the List Archive
+  </div>
+</acre:block>
+

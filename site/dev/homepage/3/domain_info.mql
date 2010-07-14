@@ -1,0 +1,17 @@
+[{
+  "id": null,
+  "name": null,
+  "type": "/type/domain",
+  "/freebase/domain_profile/users": {
+    "return": "count",
+    "type": "/type/user",
+    "limit": 101,
+    "optional": true
+  },
+  "not_app:type": {
+    "id": "/freebase/apps/application",
+    "optional": "forbidden"
+  },
+  "sort": "name",
+  "limit": 1000
+}]

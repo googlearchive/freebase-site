@@ -386,13 +386,8 @@ function base_manifest(MF, scope, undefined) {
 
             if (use_acre_url) {
               var args = MF.require_args.apply(null, params);
-              if (args.local) {
-                return "url(" + scope.acre.current_script.app.base_url + "/" + args.file + ")";
-              }
-              else {
-                var ext_mf = MF.require(args.app, "MANIFEST").MF;
-                return "url(" + MF.app_base_url + "/" + args.file + ")";
-              }
+              var app_path = args.local ? scope.acre.current_script.app.path : MF.apps[args.app];
+              return "url(" + app_path + "/" + args.file + ")";
             }
             else {
               return "url(" + MF.img_src.apply(null, params).replace(/\s/g, '%20') + ")";

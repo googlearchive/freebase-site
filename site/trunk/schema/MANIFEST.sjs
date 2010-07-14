@@ -27,7 +27,7 @@ var MF = {
     "schema-landing.mf.js": [
       ["template", "freebase.mf.js"],
       ["jquerytools", "tabs.js"],
-      ["domain", "jquery.tablesorter.js"],
+      "jquery.tablesorter.js",
       "schema-landing.js"
     ]
   }

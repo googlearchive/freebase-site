@@ -198,7 +198,7 @@
     </div>
     
     <acre:block for="letter, domains in grouped_domains">
-      <a name="all-commons-domains-${letter}" class="letter">${letter}</a>
+      <a name="all-domains-${letter}" class="letter">${letter}</a>
       <ul>
         <li acre:for="domain in domains">
           <a href="${h.freebase_url('/view'+domain.id)}">

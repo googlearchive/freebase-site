@@ -80,10 +80,34 @@ function do_route(app, script, path_info, query_string) {
   acre.exit();
 };
 
+//check if the top level domain does not start with www.
+//issue a 301 to the same url, starting with www.
+//cache the response
+function check_top_level_domain() { 
+
+    var req = acre.request;
+    var must_redirect = ['freebase.com', 'sandbox-freebase.com'];
+
+    for (var i in must_redirect) {
+
+        if (req.url.slice(7).indexOf(must_redirect[i]) == 0) { 
+            
+            var new_url = 'http://www.' + req.url.slice(7);
+            acre.response.status = '301';
+            acre.response.set_header("Location", new_url);
+            acre.response.set_cache_policy('fast');  
+            acre.exit();
+        }
+
+    }
+
+};
+
 /**
  * Main route logic
  */
 if (acre.current_script === acre.request.script) {
+  check_top_level_domain();
   var req = acre.request;
   var req_path = req.url.replace(req.app_url /*+ req.base_path*/, "");
   // filter out query string

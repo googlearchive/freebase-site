@@ -193,6 +193,16 @@ var user_info = function(user_id) {
     });
 };
 
+var is_registration_off = function() {
+  return freebase.mqlread({
+      "id": "/freebase/maintenance",
+      "/freebase/maintenance_profile/registration_off": null
+    })
+    .then(function(envelope) {
+      return envelope.result["/freebase/maintenance_profile/registration_off"];
+    })
+}
+
 ///////////////////
 // Freebase Blog //
 ///////////////////

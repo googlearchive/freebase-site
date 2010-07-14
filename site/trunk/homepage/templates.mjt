@@ -275,15 +275,26 @@
   </div>
 </acre>
 
-<acre:block def="join_freebase()">
+<acre:block def="join_freebase(reg_off)">
   <div class="content-section">
     <h3>Join the Community</h3>
-    <p>Enter your email address and we'll let you know when you can sign up:</p>
-    <form action="http://www.register.freebase.com/regemails/add" method="GET">
-      <input name="email" type="email" class="standard-input" placeholder="Your email address..." class="input-standard"/>
-      <input type="submit" value="Submit" class="button button-primary"/>
-    </form>
-    <a href="${h.freebase_url('/signin/login')}" class="plain-link">Existing members, please sign in &raquo;</a>
+    <acre:block if="reg_off">
+      <p>Enter your email address and we'll let you know when you can sign up:</p>
+      <form action="http://www.register.freebase.com/regemails/add" method="GET">
+        <input name="email" type="email" class="standard-input" placeholder="Your email address..." class="input-standard"/>
+        <input type="submit" value="Submit" class="button button-primary"/>
+      </form>
+      <a href="${h.account_url('signin', acre.request.url)}" class="plain-link">Existing members, please sign in &raquo;</a>
+    </acre:block>
+    <acre:block else="">
+      <p>Help the Freebase community create an
+      entity graph of people, places and things,
+      or put it to work for you!</p>
+      <form action="${h.account_url('signin', acre.request.url)}" method="GET">
+        <input type="submit" value="Sign In or Sign Up"
+               class="button button-primary" style="margin-top: 1em;"/>
+      </form>
+    </acre:block>
   </div>
 </acre:block>
 

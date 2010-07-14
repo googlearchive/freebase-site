@@ -38,7 +38,7 @@
   </div>
   
   <div id="content-footer">
-    ${templates.join_freebase()}
+    ${templates.join_freebase(c.reg_off)}
     ${templates.blog_entries(c.blog)}
     ${templates.wiki_entries(c.wiki)}
     ${templates.join_discussion()}

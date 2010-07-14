@@ -1,5 +1,6 @@
 var mf = acre.require("MANIFEST").MF;
 var queries = mf.require("queries");
+var cache = mf.require("core", "cache");
 
 var FEATURED_DOMAIN_IDS =  [
   "/tv", "/film", "/book",
@@ -9,11 +10,15 @@ var FEATURED_DOMAIN_IDS =  [
 
 var p_domains;
 if (acre.request.params.category) {
+  cache.set_cache_header("public");
   p_domains = queries.domains_for_category(acre.request.params.category);
-} else if (acre.request.params.domains === "featured") {
-  p_domains = queries.domains_for_ids(FEATURED_DOMAIN_IDS);
-} else if (acre.request.params.domains === "all") {
   
+} else if (acre.request.params.domains === "featured") {
+  cache.set_cache_header("public");
+  p_domains = queries.domains_for_ids(FEATURED_DOMAIN_IDS);
+  
+} else if (acre.request.params.domains === "all") {
+  cache.set_cache_header("public");
   mf.require("template", "renderer").render_def(
     null,
     mf.require("templates"),
@@ -23,6 +28,7 @@ if (acre.request.params.category) {
   acre.exit();
   
 } else if (acre.request.params.user) {
+  cache.set_cache_header("nocache");
   p_domains = queries.domains_for_user(acre.request.params.user);
 }
 

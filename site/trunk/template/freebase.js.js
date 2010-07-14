@@ -141,6 +141,6 @@ window.freebase = window.fb = {};
         }
       });
       
-      $("input[placeholder]").placeholder({blankSubmit: true});
+      $('input, textarea').textPlaceholder();
     });
 })(jQuery, window.freebase);

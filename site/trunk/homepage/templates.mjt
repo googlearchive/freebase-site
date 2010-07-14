@@ -257,7 +257,7 @@
       <!-- XXX: link to Michael's app -->
       <input type="submit" value="Submit" class="button button-primary"/>
     </form>
-    <a href="${h.freebase_url('/signin/login')}" class="plain-link">Existing members, please sign in &raquo;
+    <a href="${h.freebase_url('/signin/login')}" class="plain-link">Existing members, please sign in &raquo;</a>
   </div>
 </acre:block>
 

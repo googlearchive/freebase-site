@@ -1,6 +1,5 @@
 var mf = acre.require("MANIFEST").MF;
 var queries = mf.require("queries");
-var cache = mf.require("core", "cache");
 
 var data = {
   "categories": queries.categories(),

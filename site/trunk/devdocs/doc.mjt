@@ -97,7 +97,7 @@
 <acre:block def="footer_script()">
   <script type="text/javascript" src="${mf.js_src('index.mf.js')}"></script>
   <script type="text/javascript">
-    if (onLoad) {
+    if (typeof onLoad === 'function') {
       onLoad();
     }
   </script>

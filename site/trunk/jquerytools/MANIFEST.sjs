@@ -4,7 +4,7 @@
  */
 var MF = {
   "apps": {
-    "core": "//7.core.site.freebase.dev"
+    "core": "//8.core.site.freebase.dev"
   }
 };
 

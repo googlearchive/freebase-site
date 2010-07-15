@@ -31,7 +31,7 @@ var ENV = [
 ];
 
 
-if (acre.request.server_name.indexOf('acrenet.metaweb.com') || acre.request.server_name.indexOf('acre.z')){
+if (acre.request.server_name.match('acrenet.metaweb.com') || acre.request.server_name.match('acre.z')){
     ENV.push({ 
         'service_url' : 'http://branch.qa.metaweb.com',
         'name' : 'QA',
@@ -166,14 +166,17 @@ var get_app = function(id) {
         try {
             result[en['id']] = ae.get_app(context.versionid);
             available_environments.push(en['id']);
-            
-            result[en['id']]['relative_date'] = helpers.relative_date(acre.freebase.date_from_iso(result[en['id']]['creation_time']));
-                
-
         } catch(e) { 
             result[en['id']] = null;
             continue;
         }
+
+        if (result[en['id']] && result[en['id']]['relative_date']) { 
+            result[en['id']]['relative_date'] = helpers.relative_date(acre.freebase.date_from_iso(result[en['id']]['creation_time']));
+        } else { 
+            result[en['id']]['relative_date'] = 'unkown';
+        }
+
         //if the release is not set, set it to 'trunk'
         if (!result[en['id']]['release']) { 
             result[en['id']]['release'] = 'trunk';
@@ -181,7 +184,7 @@ var get_app = function(id) {
     }
 
     revert_service_url();
-
+    console.log(result);
     if (available_environments.length) { 
         result.reference_env = context.env || available_environments[0];
         result.reference_version = result[result.reference_env]['release'];

@@ -1,7 +1,7 @@
 var MF = {
   "apps" : {
-    "routing": "//7.routing.site.freebase.dev",
-    "promise": "//7.promise.site.freebase.dev",
+    "routing": "//8.routing.site.freebase.dev",
+    "promise": "//8.promise.site.freebase.dev",
 
     // external apps
     "service" : "//4.service.libs.freebase.dev",

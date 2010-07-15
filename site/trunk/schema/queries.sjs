@@ -146,6 +146,14 @@ var domain = function(id, order, dir) {
       });
 
       domain.date = h.format_date(acre.freebase.date_from_iso(domain.timestamp), 'MMMM dd, yyyy');
+      domain.types = domain.types.filter(function(type){
+        if (!type.name) {
+          return false;
+        }
+        else {
+          return true;
+        }
+      });
       domain.types = lsort(domain.types, order, dir);
       domain.mediators = lsort(domain.mediators, order, dir);
 
@@ -173,7 +181,15 @@ var type = function(id, order, dir) {
     .then(function(envelope) {
       return envelope.result;
     })
-    .then(add_description)
+    .then(function(r){
+        var promises = [];
+        promises.push(add_description(r, "blurb", {}, "blurb"));
+        promises.push(add_description(r, "blob", {}, "blob"));
+        return deferred.all(promises)
+          .then(function(){
+              return r;
+          })
+    })
     .then(function(r) {
       if (!r) return null;
 
@@ -189,7 +205,8 @@ var type = function(id, order, dir) {
         default_property : r.default_property,
         included_types : r["/freebase/type_hints/included_types"],
         key : r.key,
-        description : r.description,
+        blurb : r.blurb,
+        blob: r.blob,
         properties : r.properties,
         included_types : r['/freebase/type_hints/included_types'],
       };

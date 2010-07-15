@@ -52,7 +52,7 @@
             </fieldset>
           </form>
           <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-commons" checked="checked" />Freebase Commons</label>
-          <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" />All Projects</label>
+          <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" />All Domains</label>
         </div>
         <div class="search-box" id="type-search">
           <form id="type-search-form" method="get" action="${h.url_for('schema', 'type')}">
@@ -61,7 +61,7 @@
             </fieldset>
           </form>
           <label><input type="radio" name="type-search-toggle" class="search-toggle" id="type-search-toggle-commons" checked="checked" />Freebase Commons</label>
-          <label><input type="radio" name="type-search-toggle" class="search-toggle" id="type-search-toggle-all" />All Projects</label>
+          <label><input type="radio" name="type-search-toggle" class="search-toggle" id="type-search-toggle-all" />All Domains</label>
         </div>
         <div class="search-box" id="property-search">
           <form id="property-search-form" method="get" action="${h.url_for('schema', 'property')}">
@@ -70,7 +70,7 @@
             </fieldset>
           </form>      
           <label><input type="radio" name="property-search-toggle" class="search-toggle" id="property-search-toggle-commons" checked="checked" />Freebase Commons</label>
-          <label><input type="radio" name="property-search-toggle" class="search-toggle" id="property-search-toggle-all" />All Projects</label>
+          <label><input type="radio" name="property-search-toggle" class="search-toggle" id="property-search-toggle-all" />All Domains</label>
         </div>
 <!--
         <div class="search-box" id="user-search">

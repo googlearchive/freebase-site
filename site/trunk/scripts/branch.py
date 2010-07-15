@@ -13,6 +13,8 @@ import acrepush
 from cssmin import cssmin
 import hashlib
 
+ALL_APPS = ['apps', 'core', 'devdocs', 'domain', 'error', 'flot', 'homepage', 'jquerytools', 'jqueryui', 'policies', 'promise', 'queries', 'routing', 'schema', 'template', 'toolbox']
+
 # acre graph mapping to host for appeditor web services, i.e., /appeditor/get_app
 GRAPH = {
     "otg":"http://acre.freebase.com",
@@ -225,6 +227,11 @@ def hash_for_file(f, block_size=2**20):
 # 1. app id (required)
 # 2. app version (required) - acre
 apps = []
+if len(args) and args[0].startswith('all:'):
+    _, version = args[0].split(":")
+
+    args = ["%s:%s" % (app, version) for app in ALL_APPS]
+
 for arg in args:
     try :
         app, version = arg.split(":", 1)

@@ -7,7 +7,7 @@
 
 <acre:block def="title()" trim="">
   <acre:script>
-    acre.response.set_cache_policy("fresh");
+    mf.require("core", "cache").set_cache_policy("nocache");
   </acre:script>
   <acre:block if="c.app">
     $c.app.name

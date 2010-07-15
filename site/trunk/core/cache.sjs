@@ -11,16 +11,19 @@ var CACHE_POLICIES = {
     "private": true,
     "no-cache": "Set-Cookie",
     "max-age": 0,
-    "s-maxage": 0,
-    "maxage-vary-cookie": "mwLastWriteTime|3600",
-    "stale-while-revalidate": 3600
+    "s-maxage": 3600
   },
-  "public": {
+  "public-short": {
+    "public": true,
+    "no-cache": "Set-Cookie",
+    "max-age": 3600,
+    "s-maxage": 3600
+  },
+  "public-long": {
     "public": true,
     "no-cache": "Set-Cookie",
     "max-age": 28800,
-    "s-maxage": 28800,
-    "stale-while-revalidate": 28800
+    "s-maxage": 28800
   }
 };
 
@@ -35,6 +38,18 @@ function cache_control(policy, options) {
     cache_options = extend(cache_options, CACHE_POLICIES[policy], options);
   } else if (typeof policy === "object") {
     cache_options = extend(cache_options, policy);
+  }
+  
+  if (cache_options['max-age'] && cache_options['max-age'] > 0) {
+    cache_options["stale-while-revalidate"] = cache_options['max-age'];
+    
+    if (cache_options['pubic']) {
+      cache_options["stale-if-error"] = cache_options['max-age'];
+    }
+    
+    if (cache_options['max-age'] > (cache_options['s-max-age'] || 0)) {
+      cache_options["maxage-vary-cookie"] = cache_options['max-age']+"|mwLastWriteTime";
+    }
   }
   
   var cache_options_list = [];
@@ -53,12 +68,12 @@ function cache_control(policy, options) {
   return [cache_options_list.join(", "), cache_options];
 }
 
-function set_cache_header(policy, options) {
+function set_cache_policy(policy, options) {
   var [cache_control_value, cache_options] = cache_control(policy, options);
-  acre.response.set_header("cache-control", cache_control_value);
+  acre.response.headers["cache-control"] = cache_control_value;
   
   if (typeof cache_options["max-age"] === "number") {
     var expires = new Date(acre.request.start_time.getTime() + cache_options["max-age"] * 1000);
-    acre.response.set_header("expires", expires.toUTCString());
+    acre.response.headers["expires"] = expires.toUTCString();
   }
 }

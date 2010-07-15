@@ -9,9 +9,9 @@ var data = {
   "reg_off": queries.is_registration_off()
 };
 
-cache.set_cache_header("public");
-
 mf.require("template", "renderer").render_page(
   data,
   mf.require("index_template")
 );
+
+mf.require("core", "cache").set_cache_policy("public-long");

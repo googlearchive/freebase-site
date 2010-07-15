@@ -1,6 +1,5 @@
 var mf = acre.require("MANIFEST").MF;
 var queries = mf.require("queries");
-var cache = mf.require("core", "cache");
 
 var loggedin_user = acre.freebase.get_user_info();
 if (acre.request.params.id) {
@@ -21,9 +20,9 @@ var data = {
   "user": queries.user_info(user_id)
 };
 
-cache.set_cache_header("nocache");
-
 mf.require("template", "renderer").render_page(
   data,
   mf.require("home_template")
 );
+
+mf.require("core", "cache").set_cache_policy("nocache");

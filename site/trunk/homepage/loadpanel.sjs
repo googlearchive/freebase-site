@@ -1,6 +1,5 @@
 var mf = acre.require("MANIFEST").MF;
 var queries = mf.require("queries");
-var cache = mf.require("core", "cache");
 
 var FEATURED_DOMAIN_IDS =  [
   "/tv", "/film", "/book",
@@ -8,27 +7,27 @@ var FEATURED_DOMAIN_IDS =  [
   "/government", "/music"
 ];
 
+var cache_policy = "public-long";
+
 var p_domains;
 if (acre.request.params.category) {
-  cache.set_cache_header("public");
   p_domains = queries.domains_for_category(acre.request.params.category);
   
 } else if (acre.request.params.domains === "featured") {
-  cache.set_cache_header("public");
   p_domains = queries.domains_for_ids(FEATURED_DOMAIN_IDS);
   
 } else if (acre.request.params.domains === "all") {
-  cache.set_cache_header("public");
   mf.require("template", "renderer").render_def(
     null,
     mf.require("templates"),
     "domain_toc_panel",
     queries.alphabetically_grouped_domains(true)
   );
+  mf.require("core", "cache").set_cache_policy(cache_policy);
   acre.exit();
   
 } else if (acre.request.params.user) {
-  cache.set_cache_header("nocache");
+  cache_policy = "nocache";
   p_domains = queries.domains_for_user(acre.request.params.user);
 }
 
@@ -98,3 +97,5 @@ mf.require("template", "renderer").render_def(
   "category_panel",
   p_domains
 );
+
+mf.require("core", "cache").set_cache_policy(cache_policy);

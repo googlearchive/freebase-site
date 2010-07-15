@@ -47,7 +47,7 @@ function cache_control(policy, options) {
       cache_options["stale-if-error"] = cache_options['max-age'];
     }
     
-    if (cache_options['max-age'] > (cache_options['s-max-age'] || 0)) {
+    if (cache_options['max-age'] > (cache_options['s-maxage'] || 0)) {
       cache_options["maxage-vary-cookie"] = cache_options['max-age']+"|mwLastWriteTime";
     }
   }

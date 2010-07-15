@@ -8,6 +8,7 @@
     "limit": 101,
     "optional": true
   },
+  "has:key": {"value": null, "limit": 0},
   "not_app:type": {
     "id": "/freebase/apps/application",
     "optional": "forbidden"

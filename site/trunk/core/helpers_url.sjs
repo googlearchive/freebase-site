@@ -7,7 +7,8 @@ var exports = {
   "wiki_url": wiki_url,
   "freebase_static_resource_url": freebase_static_resource_url,
   "image_url": image_url,
-  "parse_params": parse_params
+  "parse_params": parse_params,
+  "parse_uri": parse_uri
 };
 
 var mf = acre.require("MANIFEST").MF;
@@ -217,4 +218,36 @@ function parse_params(params) {
     params = dict;
   }
   return params;
+};
+
+
+// Adapted from parseUri 1.2.2
+// (c) Steven Levithan <stevenlevithan.com>
+// MIT License
+function parse_uri(str) {
+  var o = {
+    key: [
+      "source", "protocol", "authority", "userInfo", "user",
+      "password", "host", "port", "relative", "path",
+      "directory", "file", "query", "anchor"
+    ],
+    q: {
+      name: "params",
+      parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+    },
+    parser: /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+  };
+  
+  var m = o.parser.exec(str);
+  var uri = {};
+  var i = 14;
+  
+  while (i--) uri[o.key[i]] = m[i] || "";
+  
+  uri[o.q.name] = {};
+  uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
+    if ($1) uri[o.q.name][$1] = $2;
+  });
+  
+  return uri;
 };

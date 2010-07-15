@@ -66,7 +66,7 @@
       <a href="${h.url_for('homepage', 'index')}" title="Return to Freebase homepage">
         <img alt="Freebase" 
              acre:attrs="h.is_production() ? {src: mf.img_src('freebase-logo-production.png')} : {src: mf.img_src('freebase-logo-sandbox.png')}"
-             border="0" height="14" width="87" /></a>
+             border="0" height="21" width="87" /></a>
     </div>
     <div class="site-search" searchUrl="${h.freebase_url('/search')}" id="SearchBox">
       <form method="get" action="${h.freebase_url('/search')}" class="SearchBox-form">

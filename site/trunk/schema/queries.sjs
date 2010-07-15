@@ -289,7 +289,7 @@ var type = function(id, order, dir) {
         .then(function(s){
             if (!s) return null;
             
-            type.siblings  = s.types;
+            type.siblings  = lsort(s.types, "name", "asc");
         });
 
       var q = [{

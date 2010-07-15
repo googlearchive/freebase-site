@@ -251,6 +251,7 @@ DOMAIN EXPLORER
     font-size: 14px;
     font-weight: bold;
     line-height: 1;
+    white-space: nowrap;
 }
 
 #domain-explorer-tabs {
@@ -311,8 +312,18 @@ DOMAIN EXPLORER
 }
 
 .category-domain-list {
+    width: 549px;
     list-style: none;
     margin: 0;
+}
+
+.ie8 .category-domain-list,
+.ie7 .category-domain-list {
+    width: 544px;
+}
+
+.ie7 .category-domain-list {
+    width: 544px;
 }
 
 .ie6 .category-domain-list {
@@ -628,7 +639,7 @@ a.stat-box:hover {
 
 .ie8 .stat-box,
 .ie8 a.stat-box {
-    width: 5em;
+    width: 4.9em;
 }
 
 .stat-box-number {

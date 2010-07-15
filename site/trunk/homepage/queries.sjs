@@ -292,7 +292,6 @@ function wiki_entries(maxcount) {
     .then(function(items) {
       items.forEach(function(item) {
         var link_url = h.parse_uri(item.link);
-        console.log(link_url);
         if (link_url.params.title) {
           item.link = h.wiki_url(link_url.params.title);
         }

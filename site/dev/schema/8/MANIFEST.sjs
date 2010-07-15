@@ -28,4 +28,4 @@ var MF = {
 if (/^https?\:\/\/devel\.(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url)) {
   MF.apps.core = "//core.site.freebase.dev";
 }
-acre.require(MF.apps.core + "/MANIFEST").init(MF, this);
+acre.require(MF.apps.core + "/MANIFEST").init(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/schema/ca8bb1c7bb678a4e3f53a94f7b1a937f", "static_base_url": "http://freebaselibs.com/static/freebase_site/schema/ca8bb1c7bb678a4e3f53a94f7b1a937f"});

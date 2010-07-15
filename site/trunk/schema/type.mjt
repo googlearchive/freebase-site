@@ -117,29 +117,27 @@
     <div class="mode" id="type-table">
       
       <!-- Native Props Table -->
-      <acre:block if="c.type.properties.length > 0">
-          <div class="section" id="type-table">
-            <h2 class="table-title">
-              <a class="help-link" href="http://wiki.freebase.com/wiki/Property" rel="help external" title="Read help article">What are Properties?</a>
-              Properties
-            </h2>
-            <table class="table" cellspacing="0">
-              <thead>
-                <tr>
-                  <th class="column-header">Property</th>
-                  <th class="column-header">ID</th>
-                  <th class="column-header">Expected Type</th>
-                  <th class="column-header description">Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${t.native_properties(c.type.properties, c.type.id)}
-              </tbody>
-            </table>
-          </div>
-      </acre:block>
-      <acre:block else="">
-        <h2>Type has no properties</h2>
+      <acre:block if="c.type.properties">
+      <div class="section" id="type-table">
+        <h2 class="table-title">
+          <a class="help-link" href="http://wiki.freebase.com/wiki/Property" rel="help external" title="Read help article">What are Properties?</a>
+          Properties
+        </h2>
+        <table class="table" cellspacing="0" acre:if="c.type.properties.length > 0">
+          <thead>
+            <tr>
+              <th class="column-header">Property</th>
+              <th class="column-header">ID</th>
+              <th class="column-header">Expected Type</th>
+              <th class="column-header description">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${t.native_properties(c.type.properties, c.type.id)}
+          </tbody>
+        </table>
+        <h2 class="empty-table-msg" acre:else=""><strong>$c.type.name</strong> has no properties</h2>
+      </div>
       </acre:block>
       
       <!-- Included Types Table -->      
@@ -152,8 +150,7 @@
           <table class="table" cellspacing="0" id="included-types-table" acre:if="c.type.included_types.length > 0">
             ${t.included_types(c.type.included_types)}
           </table>
-          <h2 acre:else="">$c.type.name has no Included Types</h2>
-  
+          <h2 class="empty-table-msg" acre:else=""><strong>$c.type.name</strong> has no Included Types</h2>
         </div>
       </acre:block>
       
@@ -174,7 +171,7 @@
               ${t.incoming_props_group(c.type.incoming_properties.bases)}
             </acre:block>
           </table>
-          <h2 acre:else="">$c.type.name has no Incoming Properties</h2>
+          <h2 class="empty-table-msg" acre:else=""><strong>$c.type.name</strong> has no Incoming Properties</h2>
         </div>        
       </acre:block>
     </div>

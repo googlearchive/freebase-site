@@ -1,5 +1,6 @@
 var mf = acre.require("MANIFEST").MF;
 var queries = mf.require("queries");
+var h = mf.require("helpers");
 
 var loggedin_user = acre.freebase.get_user_info();
 if (acre.request.params.id) {
@@ -9,7 +10,8 @@ if (acre.request.params.id) {
 } else {
   // If the user is not logged-in then redirect to the logged-out homepage
   acre.response.status = 302;
-  acre.response.set_header("Location", "/");
+  var logout_url = h.account_url("signout", h.url_for("homepage", "index"));
+  acre.response.set_header("Location", logout_url);
   acre.exit();
 }
 

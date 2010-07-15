@@ -11,11 +11,17 @@ var utils = acre.require("utils");
 function add_description(o, mode, options, label) {
   label = label || "description";
   mode = mode || "blurb";
+  options = options || {};
   if (!o['/common/topic/article'] || o['/common/topic/article'].length === 0) {
     return o;
   }
+  if (mode === "blob") {
+    if (! ("maxlength" in options)) {
+      options.maxlength = 1000;
+    }
+  }
   var getter = mode === "blob" ? blob.get_blob : blob.get_blurb;
-  return getter(o['/common/topic/article'][0].id, options)
+  return blob.get_blurb(o['/common/topic/article'][0].id, options)
     .then(function(blob) {
       o[label] = blob;
       return o;
@@ -182,7 +188,7 @@ var type = function(id, order, dir) {
   }
   var q = mf.require("type-query").query;
   q = acre.freebase.extend_query(q, { "id" : id });
-  
+
   q.creator = qh.user_clause();
 
   return freebase.mqlread(q)
@@ -218,7 +224,7 @@ var type = function(id, order, dir) {
         properties : r.properties,
         included_types : r['/freebase/type_hints/included_types'],
       };
-      
+
       type.instances = r['/freebase/type_profile/instance_count'] ? h.commafy(r['/freebase/type_profile/instance_count'].value) : null;
 
       type.expected_by = {
@@ -226,7 +232,7 @@ var type = function(id, order, dir) {
         base: [],
         user: []
       };
-      
+
       r.expected_by.forEach(function(p){
         var kind = kind_of_domain(p);
         type.expected_by[kind].push(p);
@@ -234,15 +240,15 @@ var type = function(id, order, dir) {
 
 
       /*
-      
+
       Incoming Properties are grouped in the following buckets on the Type page:
-      
+
         - Same (Properties within the same domain as the current Type)
         - Commons (Properties in the Commons outside of the current Type's domain)
         - Bases (Properties outside of the Commons that don't match the current Type's domain)
-      
+
       */
-      
+
       type.incoming_properties = {
         "same": {
           "name": type.domain.name,
@@ -250,25 +256,25 @@ var type = function(id, order, dir) {
         },
         "commons": {
           "name": "Commons",
-          "properties": []        
+          "properties": []
         },
         "bases": {
           "name": "Bases",
-          "properties": []        
+          "properties": []
         }
       };
-      
+
       r.expected_by.forEach(function(p){
          if(p.schema.domain.id === type.domain.id) {
             type.incoming_properties.same.properties.push(p);
-         }         
+         }
          else if (p.schema.domain.id.split("/").length === 2) {
-            type.incoming_properties.commons.properties.push(p);       
-         }         
+            type.incoming_properties.commons.properties.push(p);
+         }
          else {
             type.incoming_properties.bases.properties.push(p);
          }
-      });      
+      });
 
       /* Attach siblings to type object */
 
@@ -280,7 +286,7 @@ var type = function(id, order, dir) {
           "name": null
         }]
       };
-      
+
       var query = acre.freebase.extend_query(sibling_query, { "id" : type.domain.id });
       var sibling_p = freebase.mqlread(query)
         .then(function(envelope) {
@@ -288,7 +294,7 @@ var type = function(id, order, dir) {
         })
         .then(function(s){
             if (!s) return null;
-            
+
             type.siblings  = lsort(s.types, "name", "asc");
         });
 
@@ -300,7 +306,7 @@ var type = function(id, order, dir) {
       }];
       type.query_url = "http://www.freebase.com/app/queryeditor?autorun=true&q=" + encodeURIComponent(JSON.stringify(q));
 
-      
+
       return sibling_p.then(function(){
         return type;
       })
@@ -318,7 +324,7 @@ var property = function(id) {
 
   var q = mf.require("property-query").query;
   q = acre.freebase.extend_query(q, { "id" : id });
-  
+
   q.creator = qh.user_clause();
 
   return freebase.mqlread(q)
@@ -326,7 +332,7 @@ var property = function(id) {
       return envelope.result;
     })
     .then(function(r) {
-      
+
       var prop = {
         id : r.id,
         name : r.name,
@@ -351,9 +357,9 @@ var property = function(id) {
         "properties": [{
           "id": null,
           "name": null
-        }]     
+        }]
       };
-      
+
       var query = acre.freebase.extend_query(sibling_query, {"id": prop.schema.id });
       var sibling_p = freebase.mqlread(query)
         .then(function(envelope){
@@ -361,11 +367,11 @@ var property = function(id) {
         })
         .then(function(s){
           if (!s) return null;
-          
+
           prop.siblings = s.properties;
         });
-        
-      return sibling_p.then(function(){ 
+
+      return sibling_p.then(function(){
           return prop;
       })
     },

@@ -13,7 +13,7 @@ function get_blob(id) {
 
 function get_blurb(id, options) {
   var o = extend({maxlength: 100}, options);
-  return freebase.get_blob(id, "blurb", options)
+  return freebase.get_blob(id, "blurb", o)
     .then(function(blob) {
       return blob.body;
     });

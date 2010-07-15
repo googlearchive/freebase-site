@@ -88,9 +88,9 @@
         <p class="blurb">
           $c.type.blurb&hellip;
         </p>
-        <div class="blob">
-          ${acre.markup.bless(c.type.blob)}
-        </div>
+        <p class="blob">
+          $c.type.blob
+        </p>
         <a href="javascript:void(0);" class="blurb-trigger">More</a>          
       </div>
       

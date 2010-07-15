@@ -60,9 +60,9 @@
           <p class="blurb">
             $c.domain.blurb
           </p>
-          <div class="blob">
-            ${acre.markup.bless(c.domain.blob)}
-          </div>
+          <p class="blob">
+            $c.domain.blob
+          </p>
           <a href="javascript:void(0);" class="blurb-trigger">More</a>          
         </div>
         <acre:block if="c.domain.owners">

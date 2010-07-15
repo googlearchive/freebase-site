@@ -72,7 +72,7 @@
         on <time class="published" datetime="${c.property.timestamp}">$c.property.date</time>
       </span>
       <div id="description" acre:if="c.property.description">
-        <p>${acre.markup.bless(c.property.description)}</p>
+        <p class="blurb">$c.property.description</p>
       </div>
     </div>
     <table class="skeleton">

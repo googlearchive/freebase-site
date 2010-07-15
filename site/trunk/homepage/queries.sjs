@@ -2,6 +2,7 @@ var mf = acre.require("MANIFEST").MF;
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 var urlfetch = mf.require("promise", "apis").urlfetch;
+var h = mf.require("helpers");
 var feeds = acre.require('feeds');
 
 function groupBy(array, key) {
@@ -280,6 +281,14 @@ function wiki_entries(maxcount) {
   return feeds.get_rss_entries(rss_url, maxcount, feeds.filter_wiki_entries)
     .then(null, function(error) {return [];})
     .then(function(items) {
+      items.forEach(function(item) {
+        var link_url = h.parse_uri(item.link);
+        console.log(link_url);
+        if (link_url.params.title) {
+          item.link = h.wiki_url(link_url.params.title);
+        }
+      })
+      
       return {items:items, url:url, rss_url:rss_url, user_url:user_url};
     });
 }

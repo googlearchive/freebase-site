@@ -7,11 +7,6 @@ $.tools.tabs.addEffect("load_pane", function(i, done) {
   var $pane = $panes.eq(i);
   var $tab = this.getTabs().eq(i);
   
-  function crossfade() {
-    $panes.fadeOut("fast");
-    $pane.fadeIn(done);
-  }
-  
   function update_pointer() {
       // First, figure out the selected tab and it's position
       var tab_position = $tab.position();
@@ -29,7 +24,10 @@ $.tools.tabs.addEffect("load_pane", function(i, done) {
   
   function switch_pane() {
     $tab.parent().removeClass("processing");
-    crossfade();
+    
+    $panes.hide();
+    $pane.fadeIn(done);
+    
     update_pointer();
     
     // Switch off the header when we show the table of contents

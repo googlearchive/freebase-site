@@ -17,6 +17,5 @@
     "id": "/freebase/apps/acre_app",
     "optional": "forbidden"
   },
-  "sort": "name",
   "limit": 1000
 }]

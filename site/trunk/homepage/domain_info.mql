@@ -1,5 +1,6 @@
 [{
   "id": null,
+  "guid": null,
   "name": null,
   "type": "/type/domain",
   "/freebase/domain_profile/users": {

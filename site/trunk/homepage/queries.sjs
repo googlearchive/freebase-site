@@ -78,9 +78,17 @@ var add_domain_activity = function(domains) {
   
   // Get activity for each domain
   domains.forEach(function(domain) {
-    promises.push(freebase.get_static("activity", "summary_"+domain.id)
+    
+    promises.push(freebase.get_static("activity", "summary_"+domain.guid.replace("#", "/guid/"))
       .then(function(activity) {
-        if (!activity) { return null; }
+        // Retry failures with the domain id instead of the guid
+        if (activity === undefined) {
+          return freebase.get_static("activity", "summary_"+domain.id);
+        }
+        return activity;
+      })
+      .then(function(activity) {
+        if (!activity) {return activity;}
         
         domain.activity = activity;
         
@@ -103,6 +111,7 @@ var process_domains = function(envelope) {
   return envelope.result.map(function(domain) {
     return {
       "id": domain.id,
+      "guid": domain.guid,
       "name": domain.name,
       "member_count": domain["/freebase/domain_profile/users"] || 0
     };

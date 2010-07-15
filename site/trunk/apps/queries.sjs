@@ -33,7 +33,7 @@ function make_app(appinfo) {
     // figure out whether the app or one of it's versions has been published
     var pubkey = false;
     var version = null;
-    if (appinfo.key) {
+    if (appinfo["pubkey:key"]) {
       pubkey = appinfo["pubkey:key"].value;
     } else if (appinfo["pubkey:/type/namespace/keys"]) {
       version = appinfo["pubkey:/type/namespace/keys"].value;

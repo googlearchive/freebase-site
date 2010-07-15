@@ -20,12 +20,12 @@ function _render(data, template, def_name, exports, args) {
     "args": deferred.all(args)
   };
   
-  var render_p = deferred.all(d).then(function(results) {
+  var finished_results;
+  var results_p = deferred.all(d).then(function(results) {
     if (exports && exports.c && typeof exports.c === "object") {
       h.extend(exports.c, results.data);
     }
-    var response = template[def_name].apply(template, results.args);
-    acre.write(response);
+    finished_results = results;
   });
   
   acre.async.wait_on_results();
@@ -33,7 +33,11 @@ function _render(data, template, def_name, exports, args) {
   try {
     d.data.cleanup();
     d.args.cleanup();
-    render_p.cleanup();
+    results_p.cleanup();
+    
+    var response = template[def_name].apply(template, finished_results.args);
+    acre.write(response);
+    
   } catch (e if !h.is_devel()) {
     /*
     var path = acre.form.build_url("//error.site.freebase.dev/index", {status:500});

@@ -247,7 +247,7 @@
 
 <acre:block def="gridworks()">
   <div class="content-section-gridworks">
-    <img src="${mf.img_src('gridworks-logo.png')}" class="gridworks-logo"/>
+    <a href="http://code.google.com/p/freebase-gridworks"><img src="${mf.img_src('gridworks-logo.png')}" border="0" class="gridworks-logo"/></a>
     <p>
       An open source power tool to fix, discover, experiment, connect and customize your data.  
       <a href="http://code.google.com/p/freebase-gridworks">Learn more &raquo;</a>
@@ -343,7 +343,7 @@
       
       <input type="submit" value="Subscribe" class="button button-primary"/>
     </form>
-    <a href="http://lists.freebase.com/pipermail/freebase-discuss/" class="bold-link">Read the List Archive</a>
+    <a href="http://freebase.markmail.org/" class="bold-link">Read the List Archive</a>
   </div>
 </acre:block>
 

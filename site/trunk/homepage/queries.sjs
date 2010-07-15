@@ -226,7 +226,34 @@ var is_registration_off = function() {
     .then(function(envelope) {
       return envelope.result["/freebase/maintenance_profile/registration_off"];
     })
-}
+};
+
+var has_membership = function(user_id) {
+  var q_members = [{
+    "id": null,
+    "type": "/type/domain",
+    "/freebase/domain_profile/users": {"id": user_id},
+    "limit": 2
+  }];
+  var q_admins = [{
+    "id": null,
+    "type": "/type/domain",
+    "/type/domain/owners": {
+      "/type/usergroup/member": {"id": user_id},
+      "limit": 0
+    },
+    "limit": 2
+  }];
+  
+  return deferred.all([freebase.mqlread(q_members), freebase.mqlread(q_admins)])
+    .then(function(envelopes) {
+      var domain_count = false;
+      envelopes.forEach(function(envelope) {
+        domain_count += envelope.result.length;
+      });
+      return domain_count > 1;
+    });
+};
 
 ///////////////////
 // Freebase Blog //

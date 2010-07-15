@@ -58,13 +58,13 @@ p_domains
           return 0;
         }
       }));
-  
+    
     } else if (acre.request.params.sort === "members") {
        // Sort domains by total topics
        return domains.sort(domain_sort(function(a, b) {
          return b.member_count - a.member_count;
        }));
-  
+    
     } else if (acre.request.params.sort === "facts") {
       // Sort domains by total facts
       return domains.sort(domain_sort(function(a, b) {
@@ -72,7 +72,7 @@ p_domains
         var b_facts = b.activity ? b.activity.total.e : 0;
         return b_facts - a_facts;
       }));
-  
+    
     } else if (acre.request.params.sort === "topics") {
        // Sort domains by total topics
        return domains.sort(domain_sort(function(a, b) {
@@ -80,7 +80,7 @@ p_domains
          var b_topics = b.activity ? b.activity.total.t : 0;
          return b_topics - a_topics;
        }));
-  
+    
     } else {
       // Sort domains by recent activity
       return domains.sort(domain_sort(function(a, b) {

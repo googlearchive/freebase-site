@@ -17,7 +17,13 @@
 
 <acre:block def="content_body()">
   <div id="content-main">
-    ${templates.domain_explorer(c.categories, c.user)}
+    <acre:script>
+      var index = 0;
+      if (!c.has_membership) {
+        var index = 1;
+      }
+    </acre:script>
+    ${templates.domain_explorer(c.categories, c.user, index)}
   </div>
   
   <div id="content-side">

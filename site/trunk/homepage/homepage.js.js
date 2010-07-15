@@ -17,6 +17,10 @@ $.tools.tabs.addEffect("load_pane", function(i, done) {
       var tab_position = $tab.position();
       
       // Update pointer text and position accordingly
+      if ($("#pointer").is(":hidden")) {
+        $("#pointer").css({'top': tab_position.top + 'px' });
+      }
+      
       var pointer_text = $tab.text();
       $("#pointer-text").fadeOut(function() {$("#pointer-text").html(pointer_text);});
       $("#pointer").fadeIn().animate({'top': tab_position.top + 'px' },
@@ -98,9 +102,10 @@ fb.homepage.init_activity_charts = function(scope) {
 };
 
 fb.homepage.init = function() {
-
-  $("#domain-explorer-tabs").tabs("#explorer-panes > div", {
-    initialIndex: 0,
+  
+  var $tabs = $("#domain-explorer-tabs");
+  $tabs.tabs("#explorer-panes > div", {
+    initialIndex: parseInt($tabs.attr("data-index") || 0, 10),
     effect: "load_pane"
   });
 };

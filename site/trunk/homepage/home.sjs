@@ -17,7 +17,8 @@ var data = {
   "categories": queries.categories(),
   "blog": queries.blog_entries(),
   "wiki": queries.wiki_entries(),
-  "user": queries.user_info(user_id)
+  "user": queries.user_info(user_id),
+  "has_membership": queries.has_membership(user_id)
 };
 
 mf.require("template", "renderer").render_page(

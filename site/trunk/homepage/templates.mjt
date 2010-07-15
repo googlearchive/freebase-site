@@ -27,7 +27,7 @@
   
 </acre:block>
 
-<acre:block def="domain_explorer(categories, user)">
+<acre:block def="domain_explorer(categories, user, index)">
   <div id="domain-explorer-header">
     <div class="domain-explorer-title">
     </div>
@@ -69,7 +69,7 @@
   
   <div id="domain-explorer-tabset">
     
-    <ul id="domain-explorer-tabs">
+    <ul id="domain-explorer-tabs" data-index="${index || 0}">
       <li acre:if="user">
         <a href="${h.url_for('homepage', 'loadpanel', [['user', user.id]])}">
          <span>Your Data</span>

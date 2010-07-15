@@ -1,9 +1,0 @@
-[{
-  "type": "/type/domain",
-  "id": null,
-  "key": {"namespace": '/', "limit" : 1 },
-  "name": null,
-  "sort": "name",
-  "/freebase/domain_profile/hidden": {"value": true, "optional": "forbidden"},
-  "limit": 1000
-}]

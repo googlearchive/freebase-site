@@ -13,4 +13,4 @@ mf.require("template", "renderer").render_page(
   mf.require("index_template")
 );
 
-mf.require("core", "cache").set_cache_policy("public-long");
+mf.require("core", "cache").set_cache_policy("public");

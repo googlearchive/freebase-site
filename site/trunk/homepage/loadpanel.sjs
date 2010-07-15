@@ -19,7 +19,7 @@ function domain_sort(func) {
   };
 }
 
-var cache_policy = "public-long";
+var cache_policy = "public";
 
 var p_domains;
 if (acre.request.params.category) {
@@ -39,7 +39,7 @@ if (acre.request.params.category) {
   acre.exit();
   
 } else if (acre.request.params.user) {
-  cache_policy = "nocache";
+  cache_policy = "private";
   p_domains = queries.domains_for_user(acre.request.params.user);
 }
 

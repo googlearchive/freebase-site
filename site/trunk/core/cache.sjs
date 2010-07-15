@@ -11,13 +11,9 @@ var CACHE_POLICIES = {
     "max-age": 0,
     "maxage-vary-cookie": "3600|mwLastWriteTime"
   },
-  "public-short": {
+  "public": {
     "public": true,
     "max-age": 3600
-  },
-  "public-long": {
-    "public": true,
-    "max-age": 21600
   }
 };
 

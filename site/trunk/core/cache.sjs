@@ -4,26 +4,20 @@ var CACHE_POLICIES = {
   "nocache": {
     "private": true,
     "no-cache": true,
-    "max-age": 0,
-    "s-maxage": 0
+    "max-age": 0
   },
   "private": {
     "private": true,
-    "no-cache": "Set-Cookie",
     "max-age": 0,
-    "s-maxage": 3600
+    "maxage-vary-cookie": "3600|mwLastWriteTime"
   },
   "public-short": {
     "public": true,
-    "no-cache": "Set-Cookie",
-    "max-age": 3600,
-    "s-maxage": 3600
+    "max-age": 3600
   },
   "public-long": {
     "public": true,
-    "no-cache": "Set-Cookie",
-    "max-age": 28800,
-    "s-maxage": 28800
+    "max-age": 21600
   }
 };
 
@@ -38,18 +32,6 @@ function cache_control(policy, options) {
     cache_options = extend(cache_options, CACHE_POLICIES[policy], options);
   } else if (typeof policy === "object") {
     cache_options = extend(cache_options, policy);
-  }
-  
-  if (cache_options['max-age'] && cache_options['max-age'] > 0) {
-    cache_options["stale-while-revalidate"] = cache_options['max-age'];
-    
-    if (cache_options['public']) {
-      cache_options["stale-if-error"] = cache_options['max-age'];
-    }
-    
-    if (cache_options['max-age'] > (cache_options['s-maxage'] || 0)) {
-      cache_options["maxage-vary-cookie"] = cache_options['max-age']+"|mwLastWriteTime";
-    }
   }
   
   var cache_options_list = [];

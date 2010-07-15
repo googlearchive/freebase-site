@@ -307,7 +307,6 @@
       Latest posts:
       <div acre:for="item in blog.items" class="blog-item">
         <a href="$item.link" 
-           title="${acre.markup.bless(item.description)}" 
            class="item-title">$item.title</a>
         by 
         <a href="${h.freebase_url('/view/user/'+item['dc:creator'])}">${item['dc:creator']}</a>

@@ -43,7 +43,7 @@ function cache_control(policy, options) {
   if (cache_options['max-age'] && cache_options['max-age'] > 0) {
     cache_options["stale-while-revalidate"] = cache_options['max-age'];
     
-    if (cache_options['pubic']) {
+    if (cache_options['public']) {
       cache_options["stale-if-error"] = cache_options['max-age'];
     }
     

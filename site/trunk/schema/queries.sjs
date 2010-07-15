@@ -80,6 +80,14 @@ var all_domains = function(order, dir) {
       var domains = result['/type/namespace/keys'].map(function(d) {
         return make_domain(d.namespace);
       });
+      domains = domains.filter(function(domain){
+        if (domain.instance_count < 1) {
+          return false;
+        }
+        else {
+          return true;
+        }
+      })
       return lsort(dedupe(domains), order, dir);
     },
     function() {

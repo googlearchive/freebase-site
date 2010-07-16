@@ -175,14 +175,9 @@
         An entity graph of people, places and things, built by a community that loves open data.
       </span>
     </h1>
-    <!--
-    <span class="homepage-announce">
-      Message goes here
-      <a href="link goes here">
-        Learn More &raquo;
-      </a>
-    </span>
-    -->
+    <div class="homepage-announce">
+      Freebase is joining <a href="http://www.google.com/"><img id="homepage-announce-logo" src="${mf.img_src('google.png')}" alt="Google" border="0" /></a><big>!</big> <a href="http://blog.freebase.com/2010/07/16/metaweb-joins-google/" class="homepage-announce-more">Learn more &raquo;</a></span>
+    </div>
   </div>
 </acre:block>
 

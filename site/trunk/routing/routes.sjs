@@ -95,7 +95,7 @@ function check_top_level_domain() {
             var new_url = 'http://www.' + req.url.slice(7);
             acre.response.status = '301';
             acre.response.set_header("Location", new_url);
-            acre.response.set_cache_policy('fast');  
+            acre.response.set_header("cache-control", "public, max-age: 3600");
             acre.exit();
         }
 

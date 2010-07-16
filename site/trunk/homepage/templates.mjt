@@ -197,15 +197,17 @@
       </acre:block>
     </div>
     
-    <acre:block for="letter, domains in grouped_domains">
-      <a name="all-domains-${letter}" class="letter">${letter}</a>
-      <ul>
-        <li acre:for="domain in domains">
-          <a href="${h.freebase_url('/view'+domain.id)}">
-            ${domain.name}
-          </a>
-        </li>
-      </ul>
+    <acre:block for="letter in h.lowercase_alphabet()">
+      <acre:block if="grouped_domains[letter]">
+        <a name="all-domains-${letter}" class="letter">${letter}</a>
+        <ul>
+          <li acre:for="domain in grouped_domains[letter]">
+            <a href="${h.freebase_url('/view'+domain.id)}">
+              ${domain.name}
+            </a>
+          </li>
+        </ul>
+      </acre:block>
     </acre:block>
   </div>
 </acre:block>

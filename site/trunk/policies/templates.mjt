@@ -11,7 +11,7 @@
   <h2>Freebase Terms and Policies</h2>
   
   <ul class="toc">
-    <li class="toc-item" acre:attrs="sn=='index'?{'class':'toc-item on'}:{}"><a href="${h.url_for('policies','index')}">How to Attribute</a></li>
+    <li class="toc-item" acre:attrs="sn=='attribution'?{'class':'toc-item on'}:{}"><a href="${h.url_for('policies','attribution')}">How to Attribute</a></li>
     <li class="toc-item" acre:attrs="sn=='licensing'?{'class':'toc-item on'}:{}"><a href="${h.url_for('policies','licensing')}">Licensing Policy</a></li>
     <li class="toc-item" acre:attrs="sn=='copyright'?{'class':'toc-item on'}:{}"><a href="${h.url_for('policies','copyright')}">Copyright Policy</a></li>
     <li class="toc-item" acre:attrs="sn=='privacy'?{'class':'toc-item on'}:{}"><a href="${h.url_for('policies','privacy')}">Privacy Policy</a></li>

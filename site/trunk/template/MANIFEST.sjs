@@ -16,6 +16,7 @@ var MF = {
     "freebase.mf.js": [
       "jquery.cookie.js",
       "jquery.placeholder.js",
+      "jquery.metadata.js",
       ["jqueryui", "jquery.ui.core.mf.js"],
       "freebase.js"/*,
       ["toolbox", "toolbox.js"]*/

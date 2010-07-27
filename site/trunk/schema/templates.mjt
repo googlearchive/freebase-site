@@ -102,15 +102,15 @@
 </acre:block>
 
 <!-- Incoming Properties markup pattern -->
-<acre:block def="incoming_props_group(group, expanded)">
+<acre:block def="incoming_props_group(name, props, expanded)">
 
   <acre:script>
 
-    if(group.name != 'Commons' && group.name != 'Bases') {
+    if(name != 'Commons' && name != 'Bases') {
       var class_name = "incoming-property-same";
     }
     else {
-      var class_name = "incoming-property-" + group.name.toLowerCase();
+      var class_name = "incoming-property-" + name.toLowerCase();
     }
 
     if (expanded === true) {
@@ -125,7 +125,7 @@
   <thead>
     <tr>
       <th class="tbody-header $state" colspan="4" data-target="$class_name">
-        <span class="tbody-header-title">$group.name</span>
+        <span class="tbody-header-title">$name</span>
       </th>
     </tr>
   </thead>
@@ -134,7 +134,7 @@
       <th class="column-header" scope="col">Property</th>              
       <th class="column-header" scope="col">Originating Type</th>
     </tr>
-    <tr acre:for="prop in group.properties" class="hoverable">
+    <tr acre:for="prop in props" class="hoverable">
       <td class="odd">
         <div>
           <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
@@ -148,7 +148,7 @@
       </td>
       <td class="even">
         <div>
-          <a href="${h.url_for('schema', 'type', null, prop.schema.id)}">$prop.schema.name.value</a>
+          <a href="${h.url_for('schema', 'type', null, prop.schema.id)}">$prop.schema.name</a>
           <a href="javascript:void(0);" class="row-menu-trigger">+</a>
           <ul class="row-menu tooltip">
             <li class="row-menu-item"><a href="${h.url_for('schema', 'type', null, prop.schema.id)}">View type schema</a></li>
@@ -181,11 +181,10 @@
       <td class="c7">&nbsp;</td>
     </tr>
     <tr class="${global ? 'global' : 'local'} ${prop.inherited ? 'inherited' : ''}">
-      <td nowrap="" class="c1 in_type ${prop.schema['/freebase/type_hints/mediator'] ? 'mediator' : 'truetype'}">
+      <td nowrap="" class="c1 in_type ${prop.schema.cvt ? 'mediator' : 'truetype'}">
         <acre:block if="!same || i == 0">
-          <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.schema.id} ${prop.schema['/freebase/type_hints/mediator'] ? '| mediator' : ''}">$prop.schema.name.value</a>
-          <acre:script>var instances = prop.schema['/freebase/type_profile/instance_count'];</acre:script>
-          <a acre:if="instances" href="${acre.freebase.service_url}/view${prop.schema.id}" title="Browse the ${instances.value} instances of ${prop.schema.id}" class="instances" >[$instances.value]</a>
+          <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.schema.id} ${prop.schema.cvt ? '| mediator' : ''}">$prop.schema.name</a>
+          <a acre:if="prop.schema.instance_count" href="${h.freebase_url('/view' + prop.schema.id)}" title="Browse the ${h.commafy(prop.schema.instance_count)} instances of ${prop.schema.id}" class="instances">[h.commafy(prop.schema.instance_count)]</a>
         </acre:block>
       </td>
       <td class="${same ? '' : 'c2'} spacer"></td>

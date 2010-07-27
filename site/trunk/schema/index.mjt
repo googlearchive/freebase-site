@@ -2,17 +2,15 @@
   var mf = acre.require("MANIFEST").MF;
   var c = this.exports.c = {};
   var h = mf.require("core", "helpers");
-  var queries = mf.require("queries");
+  var queries = mf.require("queries2");
     
-  var order = acre.request.params.order || 'name';
-  var dir = acre.request.params.dir || 'asc';
-  var user_id = acre.request.params.user_id;
+ var user_id = acre.request.params.user_id;
 
   var data = {};
   if (user_id) {
-    data.domains = queries.user_domains(user_id, order, dir);
+    data.domains = queries.user_domains(user_id);
   } else {
-    data.domains = queries.all_domains(order, dir);
+    data.domains = queries.all_domains();
   }
 </acre:script>
 
@@ -85,13 +83,13 @@
       </div>
       <div class="section">
         <h1 class="section-title">Browse</h1>
-        <table cellspacing="0" class="table table-sortable">
+        <table cellspacing="0" class="table table-sortable {sortlist: [[0,0]]}">
           <thead>
             <tr>
-              <th scope="col" class="column-header"><span class="sort-icon">Domain</span></th>
+              <th scope="col" class="column-header {sorter: 'schemaName'}"><span class="sort-icon">Domain</span></th>
               <th scope="col" class="column-header"><span class="sort-icon">ID</span></th>
               <th scope="col" class="column-header numeric"><span class="sort-icon"># of Types</span></th>
-              <th scope="col" class="column-header numeric"><span class="sort-icon"># of Instances</span></th>
+              <th scope="col" class="column-header numeric {sorter: 'commaDigit'}"><span class="sort-icon"># of Instances</span></th>
             </tr>
           </thead>
           <tbody>
@@ -100,7 +98,7 @@
                 <a href="${h.url_for('schema', 'domain', null, d.id)}" title="View $d.name">$d.name</a>
               </th>
               <td class="even">$d.id</td>
-              <td class="odd numeric">$d.type_count</td>
+              <td class="odd numeric">$d.types</td>
               <td class="even numeric">${h.commafy(d.instance_count)}</td>
             </tr>
           </tbody>

@@ -50,7 +50,7 @@
         <span class="creation-timestamp">
           ${image.user_image_small(c.domain.creator)}
           Created by <a href="${h.freebase_url('/view' + c.domain.creator.id)}" title="View user profile">${c.domain.creator.name}</a> 
-          on <time class="published" datetime="${c.domain.timestamp}">${h.format_date(acre.freebase.date_from_iso(c.domain.timestamp), 'MMMM dd, yyyy')}</time>
+          on <time class="published" datetime="${c.domain.timestamp}">$c.domain.date</time>
         </span>
         <div id="description" acre:if="c.domain.blurb && c.domain.blob">
           <p class="blurb">
@@ -76,10 +76,10 @@
           <a href="http://wiki.freebase.com/wiki/Types" rel="help external" title="Read help article" class="help-link">What are Types?</a>
           Types
         </h2>
-        <table class="table table-sortable" cellspacing="0">
+        <table class="table table-sortable {sortlist: [[0,0]]}" cellspacing="0">
           <thead>
             <tr>
-              <th scope="col" class="column-header"><span class="sort-icon">Type</span></th>
+              <th scope="col" class="column-header {sorter: 'schemaName'}"><span class="sort-icon">Type</span></th>
               <th class="column-header" scope="col"><span class="sort-icon">ID</span></th>
               <th class="column-header numeric" scope="col"><span class="sort-icon"># of Properties</span></th>
               <th class="column-header numeric {sorter: 'commaDigit'}" scope="col"><span class="sort-icon"># of Instances</span></th>
@@ -87,7 +87,9 @@
             </tr>
           </thead>
           <tr acre:for="i,t in c.domain.types">
-            <th class="odd row-header" scope="row"><a href="${h.url_for('schema', 'type', null, t.id)}">$t.name</a></th>
+            <th class="odd row-header" scope="row">
+              <a href="${h.url_for('schema', 'type', null, t.id)}">$t.name</a>
+            </th>
             <td class="even">$t.id</td>
             <td class="odd numeric">$t.properties</td>
             <td class="even numeric"><a href="${acre.freebase.service_url}/view${t.id}">${h.commafy(t.instance_count)}</a></td>
@@ -102,10 +104,10 @@
             <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="Read help article" rel="help external" class="help-link">What are Compound Value Types?</a>
             Compound Value Types (CVTs)
           </h2>
-          <table class="table table-sortable">
+          <table class="table table-sortable {sortlist: [[0,0]]}">
             <thead>
               <tr>
-                <th scope="col" class="column-header"><span class="sort-icon">Type</span></th>
+                <th scope="col" class="column-header {sorter: 'schemaName'}"><span class="sort-icon">Type</span></th>
                 <th class="column-header" scope="col"><span class="sort-icon">ID</span></th>
                 <th class="column-header numeric" scope="col"><span class="sort-icon"># of Properties</span></th>
                 <th class="column-header numeric {sorter: 'commaDigit'}" scope="col"><span class="sort-icon"># of Instances</span></th>
@@ -114,7 +116,9 @@
             </thead>
             <tbody>
               <tr acre:for="i,t in c.domain['cvt:types']">
-                <th class="row-header odd"><a href="${h.url_for('schema', 'type', null, t.id)}">$t.name</a></th>
+                <th class="row-header odd">
+                  <a href="${h.url_for('schema', 'type', null, t.id)}">$t.name</a>
+                </th>
                 <td class="even">$t.id</td>
                 <td class="odd numeric">$t.properties</td>
                 <td class="even numeric"><a href="${acre.freebase.service_url}/view${t.id}">${h.commafy(t.instance_count)}</a></td>

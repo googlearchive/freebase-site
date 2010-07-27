@@ -5,9 +5,19 @@
     // Setup schema search tabset
     var $schema_explorer_search_tabset = $("#schema-search > .section-tabset").tabs("#schema-search > .search-box");
 
-    var $type_mode_tabset = $(".nav-mode").tabs("#content .mode");
+    //var $type_mode_tabset = $(".nav-mode").tabs("#content .mode");
 
-
+    $.tablesorter.addParser({
+      id: "schemaName",
+      is: function(s) {
+        return false;
+      },
+      format: function(s) {
+        console.log('schemaName', s);
+        return $(s).text().toLowerCase();
+      },
+      type: 'text'
+    });
     $.tablesorter.addParser({
       // set a unique id
       id: 'commaDigit',
@@ -27,8 +37,7 @@
     $(".table-sortable").tablesorter({
       cssAsc: "column-header-asc",
       cssDesc: "column-header-desc",
-      cssHeader: "column-header",
-      sortList: [[0,0]]
+      cssHeader: "column-header"
     });
 
     // trigger for row menus

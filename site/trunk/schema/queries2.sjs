@@ -257,6 +257,9 @@ function type(id) {
               result.incoming.base.push(p);
             }
           });
+          result.incoming.same.sort(sort_by_name);
+          result.incoming.common.sort(sort_by_name);
+          result.incoming.base.sort(sort_by_name);
           return result;
         });
       });
@@ -287,6 +290,9 @@ function typediagram(id) {
               result.incoming.user.push(p);
             }
           });
+          result.incoming.common.sort(sort_by_name);
+          result.incoming.base.sort(sort_by_name);
+          result.incoming.user.sort(sort_by_name);
           return result;
         });
       });
@@ -403,4 +409,12 @@ property.incoming = function(options) {
       }
     }
   }, options)];
+};
+
+
+function sort_by_id(a,b) {
+  return b.id < a.id;
+};
+function sort_by_name(a,b) {
+  return b.name.toLowerCase() < a.name.toLowerCase();
 };

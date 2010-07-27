@@ -2,8 +2,9 @@
   var mf = acre.require("MANIFEST").MF;
   var c = this.exports.c = {};  
   var h = mf.require("core", "helpers");
-  var queries = mf.require("queries");
+  var queries = mf.require("queries2");
   var image = mf.require("template", "imagecomponents");
+  var sh = mf.require("helpers");
 
   var id = acre.request.params.id || acre.request.path_info;
   var data = {
@@ -75,6 +76,7 @@
         <p class="blurb">$c.property.description</p>
       </div>
     </div>
+
     <table class="skeleton">
       <tbody>
         <tr>
@@ -90,7 +92,7 @@
           </td> 
           <td class="object" rowspan="2">
             <a href="${h.url_for('schema', 'type', null, c.property.expected_type.id)}">
-              ${queries.isTypeType(c.property.expected_type.id) ? c.property.expected_type.id : c.property.expected_type.name}
+              ${sh.isTypeType(c.property.expected_type.id) ? c.property.expected_type.id : c.property.expected_type.name}
             </a>
             <span class="attribute" acre:if="c.property.expected_type['/freebase/type_hints/mediator']">mediator/CVT</span>
             <a class="attribute" acre:if="c.property.unit" href="${h.url_for('schema', 'type', null, c.property.unit.id)}">$c.property.unit.name</a>

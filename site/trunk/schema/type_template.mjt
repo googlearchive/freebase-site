@@ -4,6 +4,7 @@
   var h = mf.require("core", "helpers");
   var t = mf.require("templates");
   var image = mf.require("template", "imagecomponents");  
+  var sh = mf.require("helpers");
 </acre:script>
 
 <acre:block def="title()">
@@ -30,9 +31,10 @@
         </li>
         <li class="breadcrumb-item last">
           <span class="breadcrumb-item-inner">
-            <a href="javascript:void(0);" class="breadcrumb-sibling-trigger">$c.type.name</a>
+            <a href="javascript:void(0);" acre:if="c.type.domain.types && c.type.domain.types.length" class="breadcrumb-sibling-trigger">$c.type.name</a>
+            <a href="javascript:void(0);" acre:else="">$c.type.name</a>
           </span>
-          <div class="tooltip" id="breadcrumb-siblings"  acre:if="c.type.domain.types && c.type.domain.types.length > 1">
+          <div class="tooltip" id="breadcrumb-siblings" acre:if="c.type.domain.types && c.type.domain.types.length">
             <strong>Go to another type</strong>
             <ul>
               <li acre:for="s in c.type.domain.types">
@@ -91,7 +93,7 @@
           <a acre:if="c.type.instance_count" href="${h.freebase_url('/view'+c.type.id)}" class="icon-link"><span class="browse-icon">Browse <strong>${h.commafy(c.type.instance_count)}</strong> Instances</span></a>
         </li>
         <li>
-          <a href="$c.type.query_url" class="icon-link"><span class="query-icon">Build Query</span></a>
+          <a href="${sh.build_query_url(c.type.id)}" class="icon-link"><span class="query-icon">Build Query</span></a>
         </li>
         <li>
           <a href="${h.freebase_url('/type/schema'+c.type.id)}" class="icon-link"><span class="edit-icon">Edit Schema</span></a>

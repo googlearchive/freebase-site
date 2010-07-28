@@ -10,7 +10,7 @@
   if (user_id) {
     data.domains = queries.user_domains(user_id);
   } else {
-    data.domains = queries.all_domains();
+    data.domains = queries.common_domains();
   }
 </acre:script>
 

@@ -6,6 +6,14 @@ var qh = mf.require("queries", "helpers");
 var blob = mf.require("queries", "blob");
 var h = mf.require("core", "helpers");
 
+/**
+ * get and attach blurb/blob to a mql result that has a "/common/topic/article" key
+ *
+ * @param o:Object (required) - A mql result that has a "/common/topic/article" key
+ * @param mode:String (optional) - "blurb" will get blurb and "blob" will get blob with maxlength 1000. Default is "blurb".
+ * @param options:Object (optional) - Params to pass to acre.freebase.get_blob
+ * @param label:String (optional) - The key to use to attach the blurb/blob content to o. Default is mode.
+ */
 function add_description(o, mode, options, label) {
   mode = mode || "blurb";
   label = label || mode;
@@ -26,21 +34,31 @@ function add_description(o, mode, options, label) {
     });
 };
 
-function all_domains() {
-  return domains(all_domains.query());
+/**
+ * Get all "commons" domains. Domains with a key in "/".
+ */
+function common_domains() {
+  return domains(domains.query());
 };
 
+/**
+ * Get all domains created by user_id.
+ */
 function user_domains(user_id) {
-  return domains(all_domains.query({creator: user_id, key: []}));
+  return domains(domains.query({creator: user_id, key: [], optional: true}));
 };
 
+/**
+ * Do domains query and for each domain, get instance counts (activity bdb).
+ */
 function domains(q) {
   return freebase.mqlread(q)
     .then(function(envelope) {
-      return envelope.result || {};
+      return envelope.result || [];
     })
     .then(function(domains) {
       var promises = [];
+      // instance counts for each domain
       domains.forEach(function(domain) {
         var activity_id = "summary_/guid/" + domain.guid.slice(1);
         promises.push(freebase.get_static("activity", activity_id)
@@ -62,7 +80,10 @@ function domains(q) {
     });
 };
 
-all_domains.query = function(options) {
+/**
+ * mql domains query
+ */
+domains.query = function(options) {
   return [h.extend({
     id: null,
     guid: null,
@@ -80,6 +101,11 @@ all_domains.query = function(options) {
   }, options)];
 };
 
+/**
+ * Domain query and for each type in the domain:
+ * 1. get type descriptions
+ * 2. get type instance counts
+ */
 function domain(id) {
   var q = domain.query({id:id});
   return freebase.mqlread(q)
@@ -123,6 +149,9 @@ function domain(id) {
     });
 };
 
+/**
+ * mql domain query
+ */
 domain.query = function(options) {
   return h.extend({
     id: null,
@@ -173,6 +202,12 @@ domain.query = function(options) {
   }, options);
 };
 
+/**
+ * Base type query:
+ * 1. expand included_types to get their properties
+ * 2. get type instance count
+ * 3. get "sibiling" types (types that are in the same domain)
+ */
 function base_type(id) {
   var q = type.query({id:id});
   return freebase.mqlread(q)
@@ -230,11 +265,22 @@ function base_type(id) {
       }];
       promises.push(freebase.mqlread(siblings_q)
         .then(function(env) {
-          return env.result || {};
+          return env.result || [];
         })
         .then(function(siblings) {
           result.domain.types = siblings;
           return siblings;
+        }));
+
+      // incoming properties (properties whose ect == this type)
+      var incoming_q = property.incoming({optional:true, expected_type:id});
+      promises.push(freebase.mqlread(incoming_q)
+        .then(function(env) {
+          return env.result || [];
+        })
+        .then(function(properties) {
+          result.expected_by = properties;
+          return properties;
         }));
 
       return deferred.all(promises)
@@ -252,29 +298,22 @@ function type(id) {
         common: [],
         base: []
       };
-      var q = property.incoming({optional:true,expected_type:id});
-      return freebase.mqlread(q)
-        .then(function(env) {
-          return env.result || {};
-        })
-        .then(function(properties) {
-          properties.forEach(function(p) {
-            if (p.schema.domain.id === result.domain.id) {
-              result.incoming.same.push(p);
-            }
-            else if (p.schema.domain.key.namespace === "/") {
-              result.incoming.common.push(p);
-            }
-            else {
-              result.incoming.base.push(p);
-            }
-          });
-          result.incoming.same.sort(sort_by_name);
-          result.incoming.common.sort(sort_by_name);
-          result.incoming.base.sort(sort_by_name);
-          return result;
-        });
+      result.expected_by.forEach(function(p) {
+        if (p.schema.domain.id === result.domain.id) {
+          result.incoming.same.push(p);
+        }
+        else if (p.schema.domain.key.namespace === "/") {
+          result.incoming.common.push(p);
+        }
+        else {
+          result.incoming.base.push(p);
+        }
       });
+      result.incoming.same.sort(sort_by_name);
+      result.incoming.common.sort(sort_by_name);
+      result.incoming.base.sort(sort_by_name);
+      return result;
+    });
 };
 
 function typediagram(id) {
@@ -285,29 +324,22 @@ function typediagram(id) {
         base: [],
         user: []
       };
-      var q = property.incoming({optional:true,expected_type:id});
-      return freebase.mqlread(q)
-        .then(function(env) {
-          return env.result || {};
-        })
-        .then(function(properties) {
-          properties.forEach(function(p) {
-            if (p.schema.domain.key.namespace === "/") {
-              result.incoming.common.push(p);
-            }
-            else if (p.schema.domain.id.indexOf("/base/") === 0) {
-              result.incoming.base.push(p);
-            }
-            else if (p.schema.domain.id.indexOf("/user/") === 0) {
-              result.incoming.user.push(p);
-            }
-          });
-          result.incoming.common.sort(sort_by_name);
-          result.incoming.base.sort(sort_by_name);
-          result.incoming.user.sort(sort_by_name);
-          return result;
-        });
+      result.expected_by.forEach(function(p) {
+        if (p.schema.domain.key.namespace === "/") {
+          result.incoming.common.push(p);
+        }
+        else if (p.schema.domain.id.indexOf("/base/") === 0) {
+          result.incoming.base.push(p);
+        }
+        else if (p.schema.domain.id.indexOf("/user/") === 0) {
+          result.incoming.user.push(p);
+        }
       });
+      result.incoming.common.sort(sort_by_name);
+      result.incoming.base.sort(sort_by_name);
+      result.incoming.user.sort(sort_by_name);
+      return result;
+    });
 };
 
 type.query = function(options) {
@@ -386,7 +418,7 @@ function property(id) {
       }];
       promises.push(freebase.mqlread(siblings_q)
         .then(function(env) {
-          return env.result;
+          return env.result || [];
         })
         .then(function(props) { console.log("prop", result);
           result.schema.properties = props;

@@ -2,7 +2,7 @@
   var mf = acre.require("MANIFEST").MF;
   var c = this.exports.c = {};  
   var h = mf.require("core", "helpers");
-  var queries = mf.require("queries2");
+  var queries = mf.require("queries");
   var image = mf.require("template", "imagecomponents");
   var sh = mf.require("helpers");
 

@@ -6,7 +6,7 @@
 
   var id = acre.request.params.id || acre.request.path_info;
  
-  var queries = mf.require("queries2");  
+  var queries = mf.require("queries");  
   var data = {
     "domain" : queries.domain(id)
   };

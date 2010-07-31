@@ -133,3 +133,13 @@ function compare_type(a,b){
 
    return 0;
 }
+
+
+
+function sort_by_id(a,b) {
+  return b.id < a.id;
+};
+
+function sort_by_name(a,b) {
+  return b.name.toLowerCase() < a.name.toLowerCase();
+};

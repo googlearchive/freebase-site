@@ -73,7 +73,7 @@
       Created by <a href="${acre.freebase.service_url}/view${c.type.creator.id}" title="View user profile">$c.type.creator.name</a> 
       on <time class="published" datetime="${c.type.timestamp}">$c.type.date</time>
     </span>    
-    <div id="description" acre:if="c.type.blurb && c.type.blob">
+    <div id="description">
       <p class="blurb">
         $c.type.blurb&hellip;
       </p>

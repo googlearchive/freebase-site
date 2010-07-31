@@ -93,7 +93,7 @@
             <td class="even">$t.id</td>
             <td class="odd numeric">$t.properties</td>
             <td class="even numeric"><a href="${acre.freebase.service_url}/view${t.id}">${h.commafy(t.instance_count)}</a></td>
-            <td class="odd description"><acre:block if="t.blurb">$t.blurb</acre:block></td>
+            <td class="odd description">$t.blurb</td>
           </tr>
         </table>
       </div>

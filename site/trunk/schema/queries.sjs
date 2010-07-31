@@ -5,6 +5,7 @@ var urlfetch = mf.require("promise", "apis").urlfetch;
 var qh = mf.require("queries", "helpers");
 var blob = mf.require("queries", "blob");
 var h = mf.require("core", "helpers");
+var sh = mf.require("helpers");
 
 /**
  * get and attach blurb/blob to a mql result that has a "/common/topic/article" key
@@ -19,6 +20,7 @@ function add_description(o, mode, options, label) {
   label = label || mode;
   options = options || {};
   if (!o['/common/topic/article'] || o['/common/topic/article'].length === 0) {
+    o[label] = "";
     return o;
   }
   if (mode === "blob") {
@@ -93,11 +95,11 @@ domains.query = function(options) {
       namespace: "/",
       limit: 0
     }],
-    types: [{
+    types: {
       "id": null,
       type: "/type/type",
       "return": "count"
-    }]
+    }
   }, options)];
 };
 
@@ -127,6 +129,7 @@ function domain(id) {
       // type blurbs
       types.forEach(function(type) {
         promises.push(add_description(type));
+        type.mediator = type["/freebase/type_hints/mediator"] === true;
       });
       // domain activity, instance counts per type
       var activity_id = "summary_/guid/" + domain.guid.slice(1);
@@ -175,7 +178,13 @@ domain.query = function(options) {
       "/common/topic/article": qh.article_clause(true),
       "/freebase/type_hints/mediator": {
         value: true,
-        optional: "forbidden"
+        optional: "forbidden",
+        limit: 0
+      },
+      "!/freebase/domain_profile/base_type": {
+        id: null,
+        optional: "forbidden",
+        limit: 0
       },
       properties: {
         type: "/type/property",
@@ -189,9 +198,7 @@ domain.query = function(options) {
       name: null,
       type: "/type/type",
       "/common/topic/article": qh.article_clause(true),
-      "/freebase/type_hints/mediator": {
-        value: true
-      },
+      "/freebase/type_hints/mediator": true,
       properties: {
         type: "/type/property",
         "return": "count"
@@ -202,6 +209,19 @@ domain.query = function(options) {
   }, options);
 };
 
+function normalize_prop(prop) {
+  prop.tip = prop["/freebase/documented_object/tip"] || "";
+  prop.disambiguator = prop["/freebase/property_hints/disambiguator"] === true;
+  prop.display_none = prop["/freebase/property_hints/display_none"] === true;
+  if (prop.expected_type && typeof prop.expected_type === "object") {
+    prop.expected_type.mediator = prop.expected_type["/freebase/type_hints/mediator"] === true;
+  }
+};
+function normalize_props(props) {
+  props.forEach(function(p) {
+    normalize_prop(p);
+  });
+};
 /**
  * Base type query:
  * 1. expand included_types to get their properties
@@ -215,12 +235,22 @@ function base_type(id) {
       return envelope.result || {};
     })
     .then(function(result) {
+      return add_description(result, "blurb");
+    })
+    .then(function(result) {
+      return add_description(result, "blob");
+    })
+    .then(function(result) {
       // readable timestamp
       result.date = h.format_date(acre.freebase.date_from_iso(result.timestamp), 'MMMM dd, yyyy');
       // cvt?
-      result.cvt = result["/freebase/type_hints/mediator"] === true;
+      result.mediator = result["/freebase/type_hints/mediator"] === true;
+      // enumeration?
+      result.enumeration = result["/freebase/type_hints/enumeration"] === true;
       // included_types
       result.included_types = result["/freebase/type_hints/included_types"] || [];
+      // properties
+      normalize_props(result.properties);
 
       var promises = [];
 
@@ -231,6 +261,7 @@ function base_type(id) {
              return env.result || {};
            })
            .then(function(inc_type_result) {
+             normalize_props(inc_type_result.properties);
              h.extend(inc_type, inc_type_result);
              return inc_type_result;
            }));
@@ -272,6 +303,7 @@ function base_type(id) {
           return siblings;
         }));
 
+      result.expected_by = [];
       // incoming properties (properties whose ect == this type)
       var incoming_q = property.incoming({optional:true, expected_type:id});
       promises.push(freebase.mqlread(incoming_q)
@@ -279,6 +311,7 @@ function base_type(id) {
           return env.result || [];
         })
         .then(function(properties) {
+          normalize_props(properties);
           result.expected_by = properties;
           return properties;
         }));
@@ -309,9 +342,9 @@ function type(id) {
           result.incoming.base.push(p);
         }
       });
-      result.incoming.same.sort(sort_by_name);
-      result.incoming.common.sort(sort_by_name);
-      result.incoming.base.sort(sort_by_name);
+      result.incoming.same.sort(sh.sort_by_name);
+      result.incoming.common.sort(sh.sort_by_name);
+      result.incoming.base.sort(sh.sort_by_name);
       return result;
     });
 };
@@ -335,9 +368,9 @@ function typediagram(id) {
           result.incoming.user.push(p);
         }
       });
-      result.incoming.common.sort(sort_by_name);
-      result.incoming.base.sort(sort_by_name);
-      result.incoming.user.sort(sort_by_name);
+      result.incoming.common.sort(sh.sort_by_name);
+      result.incoming.base.sort(sh.sort_by_name);
+      result.incoming.user.sort(sh.sort_by_name);
       return result;
     });
 };
@@ -366,7 +399,12 @@ type.query = function(options) {
       id: null,
       optional: true,
       index: null,
-      sort: "index"
+      sort: "index",
+      "!/freebase/domain_profile/base_type": {
+        id: null,
+        optional: "forbidden",
+        limit: 0
+      }
     }],
     properties: [property.query({optional: true, index: null, sort: "index"})]
   }, options);
@@ -397,12 +435,8 @@ function property(id) {
     .then(function(result) {
       // readable timestamp
       result.date = h.format_date(acre.freebase.date_from_iso(result.timestamp), 'MMMM dd, yyyy');
-      // description
-      result.description = result['/freebase/documented_object/tip'] || "";
-      // disambiguator
-      result.disambiguator = result['/freebase/property_hints/disambiguator'] === true;
-      // hidden
-      result.hidden = result['/freebase/property_hints/display_none'] === true;
+
+      normalize_prop(result);
 
       var promises = [];
       // sibling props (in the same schema excluding this prop)
@@ -420,7 +454,7 @@ function property(id) {
         .then(function(env) {
           return env.result || [];
         })
-        .then(function(props) { console.log("prop", result);
+        .then(function(props) {
           result.schema.properties = props;
           return props;
         }));
@@ -489,6 +523,9 @@ property.incoming = function(options) {
     expected_type: null,
     master_property: null,
     unique: null,
+    "/freebase/property_hints/disambiguator": null,
+    "/freebase/property_hints/display_none": null,
+    "/freebase/documented_object/tip": null,
     schema: {
       id: null,
       name: null,
@@ -511,10 +548,3 @@ property.incoming = function(options) {
   }, options)];
 };
 
-
-function sort_by_id(a,b) {
-  return b.id < a.id;
-};
-function sort_by_name(a,b) {
-  return b.name.toLowerCase() < a.name.toLowerCase();
-};

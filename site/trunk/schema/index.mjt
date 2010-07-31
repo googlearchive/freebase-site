@@ -6,8 +6,6 @@
     
   var user_id = acre.request.params.user_id;
 
-
-
   var data = {};
   if (user_id) {
     data.domains = queries.user_domains(user_id);

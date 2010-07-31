@@ -29,6 +29,7 @@
       <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">
         $prop.expected_type.id
       </a>
+      <span acre:if="prop.expected_type.mediator" class="is-cvt"><abbr title="This is a compound value type">cvt</abbr></span>
       <span acre:if="prop.unit" class="measurement-unit">$prop.unit.name</span>
       <span acre:if="prop.master_property || prop.reverse_property">
         <span class="return-link-trigger"></span>
@@ -45,9 +46,9 @@
       </span>
     </td>
     <td class="even description">
-      <p acre:if="prop['/freebase/documented_object/tip']">${prop['/freebase/documented_object/tip']}</p>
+      <p acre:if="prop.tip">${prop.tip}</p>
       <acre:block acre:trim="">              
-        <span acre:if="prop.master_property === null" class="property-meta"><abbr title="This is a master property">master</abbr></span><span acre:else="" class="property-meta"><abbr title="This is a reverse property">reverse</abbr></span><span acre:if="prop.unique" class="property-meta">, <abbr title="This property can only have a single value">unique</abbr></span><span acre:if="prop['/freebase/property_hints/disambiguator']" class="property-meta">, <abbr title="This property is a disambiguator">disambiguating</abbr></span><span acre:if="prop['/freebase/property_hints/display_none']" class="property-meta">, <abbr title="This property is hidden by default">hidden</abbr></span>
+        <span acre:if="prop.master_property === null" class="property-meta"><abbr title="This is a master property">master</abbr></span><span acre:else="" class="property-meta"><abbr title="This is a reverse property">reverse</abbr></span><span acre:if="prop.unique" class="property-meta">, <abbr title="This property can only have a single value">unique</abbr></span><span acre:if="prop.disambiguator" class="property-meta">, <abbr title="This property is a disambiguator">disambiguating</abbr></span><span acre:if="prop.display_none" class="property-meta">, <abbr title="This property is hidden by default">hidden</abbr></span>
       </acre:block>
     </td>
   </tr>
@@ -91,9 +92,9 @@
           <span acre:if="prop.unit">$prop.unit.name</span>
         </td>
         <td class="even description">
-          <p acre:if="prop['/freebase/documented_object/tip']">${prop['/freebase/documented_object/tip']}</p>
+          <p acre:if="prop.tip">${prop.tip}</p>
           <acre:block acre:trim="">              
-            <span acre:if="prop.master_property === null" class="property-meta"><abbr title="This is a master property">master</abbr></span><span acre:else="" class="property-meta"><abbr title="This is a reverse property">reverse</abbr></span><span acre:if="prop.unique" class="property-meta">, <abbr title="This property can only have a single value">unique</abbr></span><span acre:if="prop['/freebase/property_hints/disambiguator']" class="property-meta">, <abbr title="This property is a disambiguator">disambiguating</abbr></span><span acre:if="prop['/freebase/property_hints/display_none']" class="property-meta">, <abbr title="This property is hidden by default">hidden</abbr></span>
+            <span acre:if="prop.master_property === null" class="property-meta"><abbr title="This is a master property">master</abbr></span><span acre:else="" class="property-meta"><abbr title="This is a reverse property">reverse</abbr></span><span acre:if="prop.unique" class="property-meta">, <abbr title="This property can only have a single value">unique</abbr></span><span acre:if="prop.disambiguator" class="property-meta">, <abbr title="This property is a disambiguator">disambiguating</abbr></span><span acre:if="prop.display_none" class="property-meta">, <abbr title="This property is hidden by default">hidden</abbr></span>
           </acre:block>
         </td>
       </tr>
@@ -217,10 +218,10 @@
         <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
       </td>
       <td class="${same && i != 0 ? '' : 'c3'} spacer"></td>
-      <td nowrap="" class="c1 out_type ${prop.expected_type['/freebase/type_hints/mediator'] ? 'mediator' : 'truetype'} ${sh.isTypeType(prop.expected_type.id) ? 'typetype' : ''}">
+      <td nowrap="" class="c1 out_type ${prop.expected_type.mediator ? 'mediator' : 'truetype'} ${sh.isTypeType(prop.expected_type.id) ? 'typetype' : ''}">
         <acre:block if="!same || i == 0">
-          <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.expected_type.id} ${prop.expected_type['/freebase/type_hints/mediator'] ? '| mediator' : ''}">$prop.expected_type.name</a>
-          <acre:script>var instances = prop.expected_type['/freebase/type_profile/instance_count'];</acre:script>
+          <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.expected_type.id} ${prop.expected_type.mediator ? '| mediator' : ''}">$prop.expected_type.name</a>
+          <acre:script>var instances = prop.expected_type.instance_count;</acre:script>
           <a acre:if="instances" href="${acre.freebase.service_url}/view${prop.expected_type.id}" title="Browse the ${instances.value} instances of ${prop.expected_type.id}" class="instances" >[$instances.value]</a>
         </acre:block>
       </td>
@@ -251,10 +252,10 @@
         <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
       </td>
       <td class="${same && i != 0 ? '' : 'c3'} spacer"></td>
-      <td nowrap="" class="c1 out_type ${prop.expected_type['/freebase/type_hints/mediator'] ? 'mediator' : 'truetype'} ${sh.isTypeType(prop.expected_type.id) ? 'typetype' : ''}">
+      <td nowrap="" class="c1 out_type ${prop.expected_type.mediator ? 'mediator' : 'truetype'} ${sh.isTypeType(prop.expected_type.id) ? 'typetype' : ''}">
         <acre:block if="!same || i == 0">
-          <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.expected_type.id} ${prop.expected_type['/freebase/type_hints/mediator'] ? '| mediator' : ''}">$prop.expected_type.name</a>
-          <acre:script>var instances = prop.expected_type['/freebase/type_profile/instance_count'];</acre:script>
+          <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.expected_type.id} ${prop.expected_type.mediator ? '| mediator' : ''}">$prop.expected_type.name</a>
+          <acre:script>var instances = prop.expected_type.instance_count;</acre:script>
           <a acre:if="instances" href="${acre.freebase.service_url}/view${prop.expected_type.id}" title="Browse the ${instances.value} instances of ${prop.expected_type.id}" class="instances" >[$instances.value]</a>
         </acre:block>
       </td>

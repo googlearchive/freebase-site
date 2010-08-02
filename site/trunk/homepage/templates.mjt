@@ -318,7 +318,7 @@
     <h3 class="sidebar-header"><a href="$wiki.url">Wiki</a></h3>
     <a href="$wiki.rss_url" class="rss-icon">RSS</a>
     <div class="wiki-feature-content">
-      Recent Changes:
+      Recent changes:
       <div acre:for="item in wiki.items" class="wiki-item">
         <a href="$item.link" class="item-title">$item.title</a>
         by <a href="$wiki.user_url:${item['dc:creator']}">${item['dc:creator']}</a>

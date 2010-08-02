@@ -30,6 +30,8 @@
   </div>
 </acre:block>
 
+
+
 <acre:block def="content_body()">
 
   <div id="content-wrapper">

@@ -41,13 +41,13 @@
         </li>
         <li class="breadcrumb-item last">
           <span class="breadcrumb-item-inner">
-            <a href="javascript:void(0);" class="breadcrumb-sibling-trigger" acre:if="c.property.siblings && c.property.siblings.length > 1">$c.property.name</a>
+            <a href="javascript:void(0);" class="breadcrumb-sibling-trigger" acre:if="c.property.schema.properties && c.property.schema.properties.length">$c.property.name</a>
             <a href="javascript:void(0);" acre:else="">$c.property.name</a>            
           </span>
-          <div class="tooltip" id="breadcrumb-siblings" acre:if="c.property.siblings && c.property.siblings.length > 1">
+          <div class="tooltip" id="breadcrumb-siblings" acre:if="c.property.schema.properties && c.property.schema.properties.length">
             <strong>Go to another $c.property.schema.name property</strong>
             <ul>
-              <li acre:for="s in c.property.siblings">
+              <li acre:for="s in c.property.schema.properties">
                 <a href="${h.url_for('schema', 'property', null, s.id)}" title="Go to type">$s.name</a>
               </li>
             </ul>

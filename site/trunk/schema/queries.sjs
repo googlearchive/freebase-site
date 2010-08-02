@@ -2,10 +2,11 @@ var mf = acre.require("MANIFEST").MF;
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 var urlfetch = mf.require("promise", "apis").urlfetch;
-var qh = mf.require("queries", "helpers");
 var blob = mf.require("queries", "blob");
 var h = mf.require("core", "helpers");
 var sh = mf.require("helpers");
+var mql = mf.require("mql");
+var qh = mf.require("queries", "helpers");
 
 /**
  * get and attach blurb/blob to a mql result that has a "/common/topic/article" key
@@ -40,14 +41,14 @@ function add_description(o, mode, options, label) {
  * Get all "commons" domains. Domains with a key in "/".
  */
 function common_domains() {
-  return domains(domains.query());
+  return domains(mql.domains());
 };
 
 /**
  * Get all domains created by user_id.
  */
 function user_domains(user_id) {
-  return domains(domains.query({creator: user_id, key: [], optional: true}));
+  return domains(mql.domains({creator: user_id, key: [], optional: true}));
 };
 
 /**
@@ -82,26 +83,6 @@ function domains(q) {
     });
 };
 
-/**
- * mql domains query
- */
-domains.query = function(options) {
-  return [h.extend({
-    id: null,
-    guid: null,
-    name: null,
-    type: "/type/domain",
-    key: [{
-      namespace: "/",
-      limit: 0
-    }],
-    types: {
-      "id": null,
-      type: "/type/type",
-      "return": "count"
-    }
-  }, options)];
-};
 
 /**
  * Domain query and for each type in the domain:
@@ -109,7 +90,7 @@ domains.query = function(options) {
  * 2. get type instance counts
  */
 function domain(id) {
-  var q = domain.query({id:id});
+  var q = mql.domain({id:id});
   return freebase.mqlread(q)
     .then(function(envelope) {
       return envelope.result || {};
@@ -152,62 +133,7 @@ function domain(id) {
     });
 };
 
-/**
- * mql domain query
- */
-domain.query = function(options) {
-  return h.extend({
-    id: null,
-    guid: null,
-    name: null,
-    type: "/type/domain",
-    timestamp: null,
-    key: [{
-      value: null,
-      namespace: null
-    }],
-    creator: qh.user_clause(),
-    owners: [{
-      member: [qh.user_clause()]
-    }],
-    "/common/topic/article": qh.article_clause(true),
-    types: [{ // non-cvt types
-      id: null,
-      name: null,
-      type: "/type/type",
-      "/common/topic/article": qh.article_clause(true),
-      "/freebase/type_hints/mediator": {
-        value: true,
-        optional: "forbidden",
-        limit: 0
-      },
-      "!/freebase/domain_profile/base_type": {
-        id: null,
-        optional: "forbidden",
-        limit: 0
-      },
-      properties: {
-        type: "/type/property",
-        "return": "count"
-      },
-      optional: true,
-      limit: 1000
-    }],
-    "cvt:types": [{ // cvt types
-      id: null,
-      name: null,
-      type: "/type/type",
-      "/common/topic/article": qh.article_clause(true),
-      "/freebase/type_hints/mediator": true,
-      properties: {
-        type: "/type/property",
-        "return": "count"
-      },
-      optional: true,
-      limit: 1000
-    }]
-  }, options);
-};
+
 
 function normalize_prop(prop) {
   prop.tip = prop["/freebase/documented_object/tip"] || "";
@@ -229,7 +155,7 @@ function normalize_props(props) {
  * 3. get "sibiling" types (types that are in the same domain)
  */
 function base_type(id) {
-  var q = type.query({id:id});
+  var q = mql.type({id:id});
   return freebase.mqlread(q)
     .then(function(envelope) {
       return envelope.result || {};
@@ -256,7 +182,7 @@ function base_type(id) {
 
       // expand included_types
       result.included_types.forEach(function(inc_type) {
-         promises.push(freebase.mqlread(type.query({id:inc_type.id}))
+         promises.push(freebase.mqlread(mql.type({id:inc_type.id}))
            .then(function(env) {
              return env.result || {};
            })
@@ -305,16 +231,11 @@ function base_type(id) {
 
       result.expected_by = [];
       // incoming properties (properties whose ect == this type)
-      var incoming_q = property.incoming({optional:true, expected_type:id});
-      promises.push(freebase.mqlread(incoming_q)
-        .then(function(env) {
-          return env.result || [];
-        })
-        .then(function(properties) {
-          normalize_props(properties);
-          result.expected_by = properties;
-          return properties;
-        }));
+      promises.push(property.incoming(id)
+          .then(function(properties) {
+              result.expected_by = properties;
+              return properties;
+            }));
 
       return deferred.all(promises)
         .then(function() {
@@ -375,44 +296,10 @@ function typediagram(id) {
     });
 };
 
-type.query = function(options) {
-  return h.extend({
-    id: null,
-    guid: null,
-    name: null,
-    type: "/type/type",
-    timestamp: null,
-    key: [{
-      value: null,
-      namespace: null
-    }],
-    creator: qh.user_clause(),
-    "/common/topic/article": qh.article_clause(true),
-    domain: {
-      id: null,
-      name: null,
-      type: "/type/domain"
-    },
-    "/freebase/type_hints/mediator": null,
-    "/freebase/type_hints/enumeration": null,
-    "/freebase/type_hints/included_types": [{
-      id: null,
-      optional: true,
-      index: null,
-      sort: "index",
-      "!/freebase/domain_profile/base_type": {
-        id: null,
-        optional: "forbidden",
-        limit: 0
-      }
-    }],
-    properties: [property.query({optional: true, index: null, sort: "index"})]
-  }, options);
-};
 
 
 function property(id) {
-  var q = property.query({
+  var q = mql.property({
     id: id,
     creator: qh.user_clause(),
     timestamp:null,
@@ -460,91 +347,21 @@ function property(id) {
         }));
       return deferred.all(promises)
         .then(function() {
+            console.log(result);
           return result;
         });
     });
 };
 
-property.query = function(options) {
-  return h.extend({
-    id: null,
-    guid: null,
-    name: null,
-    type: "/type/property",
-    key: [{
-      namespace: null,
-      value: null
-    }],
-    expected_type: {
-      id: null,
-      name: null,
-      type: "/type/type",
-      "/freebase/type_hints/mediator": null
-    },
-    master_property: {
-      id: null,
-      name: null,
-      type: "/type/property",
-      schema: {
-        id: null,
-        name: null
-      },
-      optional: true
-    },
-    reverse_property: {
-      id: null,
-      name: null,
-      type: "/type/property",
-      schema: {
-        id: null,
-        name: null
-      },
-      optional: true
-    },
-    unit: {
-        id: null,
-        name: null,
-        "/freebase/unit_profile/abbreviation": null,
-        optional: true
-    },
-    "/freebase/property_hints/disambiguator": null,
-    "/freebase/property_hints/display_none": null,
-    "/freebase/documented_object/tip": null,
-    "unique":   null
-  }, options);
+property.incoming = function(id) {
+  var q = mql.property.incoming({id: id});
+  return freebase.mqlread(q)
+    .then(function(env) {
+      var result =  env.result || {};
+      return result.expected_by || [];
+    })
+    .then(function(properties) {
+        normalize_props(properties);
+        return properties;
+    });
 };
-
-
-property.incoming = function(options) {
-  return [h.extend({
-    id: null,
-    name: null,
-    type: "/type/property",
-    expected_type: null,
-    master_property: null,
-    unique: null,
-    "/freebase/property_hints/disambiguator": null,
-    "/freebase/property_hints/display_none": null,
-    "/freebase/documented_object/tip": null,
-    schema: {
-      id: null,
-      name: null,
-      type: "/type/type",
-      "/freebase/type_hints/mediator": null,
-      domain: {
-        id: null,
-        type: "/type/domain",
-        key: {
-          namespace: null,
-          limit: 1
-        }
-      },
-      "!/freebase/domain_profile/base_type": {
-        id: null,
-        optional: "forbidden",
-        limit: 0
-      }
-    }
-  }, options)];
-};
-

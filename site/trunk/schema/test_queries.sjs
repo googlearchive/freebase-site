@@ -1,7 +1,7 @@
 acre.require('/test/lib').enable(this);
 
 var q = acre.require("queries");
-
+var mql = acre.require("mql");
 
 function assert_keys(keys, o, null_check) {
   var errors = [];
@@ -27,7 +27,7 @@ function assert_domain(domain) {
 
 test("domains", function() {
   var result;
-  q.domains(q.domains.query({"id":"/base/slamdunk",key:[]}))
+  q.domains(mql.domains({"id":"/base/slamdunk",key:[]}))
     .then(function(domains) {
        result = domains;
     });
@@ -175,7 +175,20 @@ test("property", function() {
   assert_prop(result);
 });
 
+
+test("property.incoming", function() {
+  var result;
+  q.property.incoming("/film/director")
+    .then(function(props) {
+      result = props;
+    });
+  acre.async.wait_on_results();
+  ok(result);
+  result.forEach(function(prop) {
+    assert_prop(prop);
+  });
+});
+
+
 acre.test.report();
-
-
 

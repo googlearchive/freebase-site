@@ -11,7 +11,6 @@ test("user", function() {
   acre.async.wait_on_results();
   ok(result);
   equal(result.name, "daepark");
-  equal(result["/common/topic/image"].length, 1);
   ok(!result["badges:/type/user/usergroup"]);
 });
 

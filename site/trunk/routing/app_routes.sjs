@@ -76,6 +76,10 @@ var routes = [
     from: "/developer",
     to: "http://wiki.freebase.com/wiki/Developers",
     redirect: 301
+  },
+  {
+    from: "/permission",
+    to: "permission"
   }
 ];
 

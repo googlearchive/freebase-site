@@ -31,7 +31,7 @@
       </acre:block>
 
       <!-- acre variables useful for client-side javascript -->
-      ${acre_javascript_vars()}
+      ${acre_javascript_vars(exports)}
      
       <!-- any additional head content (i.e., css, js, etc.)-->
       <acre:block if="exports.head">
@@ -183,13 +183,19 @@
 </acre:block>
 
 <!-- add any acre variables you wanted passed to client-side -->
-<acre:block def="acre_javascript_vars()">
+<acre:block def="acre_javascript_vars(exports)">
   <script>
     var acre = {
       freebase: {
         service_url: "${acre.freebase.service_url}",
         site_host: "${acre.freebase.site_host}"
+      },
+      request: {
+        app_url: "${acre.request.app_url}"
       }
     };
   </script>
+  <script acre:if="typeof exports.c === 'object'">
+    acre.c = ${JSON.stringify(exports.c)};
+ </script>
 </acre:block>

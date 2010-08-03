@@ -3,6 +3,7 @@ var MF = {
     "core": "//9.core.site.freebase.dev",
     "promise": "//9.promise.site.freebase.dev",
     "toolbox": "//9.toolbox.site.freebase.dev",
+    "permission": "//permission.site.freebase.dev",
     "jqueryui": "//9.jqueryui.site.freebase.dev"
   },
   "suggest" : {
@@ -20,6 +21,10 @@ var MF = {
       ["jqueryui", "jquery.ui.core.mf.js"],
       "freebase.js"/*,
       ["toolbox", "toolbox.js"]*/
+    ],
+    "freebase-permission.mf.js": [
+      "freebase.mf.js",
+      ["permission", "permission.js"]
     ]
   },
   "stylesheet": {

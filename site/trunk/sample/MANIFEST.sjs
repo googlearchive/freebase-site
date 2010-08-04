@@ -8,7 +8,6 @@ var MF = {
   "stylesheet": {
     "sample_page.mf.css": [
       ["template", "freebase.mf.css"],
-      ["jqueryui", "jquery.ui.tabs.js"],
       "sample_page.css",
       "sample_page.less"
     ]
@@ -16,6 +15,7 @@ var MF = {
   "javascript": {
     "sample_page.mf.js": [
       ["template", "freebase.mf.js"],
+      ["jqueryui", "jquery.ui.tabs.js"],
       "sample_page.js"
     ]
   }

@@ -38,7 +38,7 @@ function _render(data, template, def_name, exports, args) {
     var response = template[def_name].apply(template, finished_results.args);
     acre.write(response);
     
-  } catch (e if !h.is_devel()) {
+  } catch (e if /^https?:\/\/(www\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url)) {
     /*
     var path = acre.form.build_url("//error.site.freebase.dev/index", {status:500});
     acre.route(path);

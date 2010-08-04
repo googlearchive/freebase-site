@@ -2,7 +2,12 @@
  * everything should go under the freebase namespace.
  */
 window.freebase = window.fb = {};
-
+if (!window.console) {
+  window.console = {
+    log: function() {}, info: function() {}, debug:function() {},
+    warn:function() {}, error:function() {}
+  };
+}
 
 /**
  * simple event dispatcher
@@ -23,6 +28,51 @@ window.freebase = window.fb = {};
   };
 })(jQuery, window.freebase);
 
+/**
+ * simple dynamic javascript loader which caches the script_url,
+ * so that it does not do multiple gets and executions.
+ */
+(function($, fb) {
+  var cache = {};    
+  fb.get_script = function(script_url, callback) {
+    // check_cache
+    var cached = cache[script_url];
+    if (cached) {
+      if (cached.state === 1) {  // requesting
+        // add to the list of callbacks
+        cached.callbacks.push(callback);
+      }
+      else if (cached.state === 4) { // already loaded
+        // immediately callback
+        callback();
+      }
+    }
+    else {
+      // not yet requested
+      cached = cache[script_url] = {
+        state: 0, // initialized
+        callbacks: [callback]
+      };
+      $.ajax({
+        url: script_url,
+        dataType: 'script',
+        beforeSend: function() {
+          cached.state = 1;
+        },
+        success: function() {          
+          cached.state = 4;
+          $.each(cached.callbacks, function(i,callback) {
+            callback();
+          });
+        },
+        error: function() {
+          // TODO: handle error
+          cached.state = -1;
+        }
+      }); 
+    }
+  };
+})(jQuery, window.freebase);
 
 
 /**
@@ -35,49 +85,74 @@ window.freebase = window.fb = {};
    * 3. update signin/out state
    */
 
-  /*
-   * Returns a single item 'i' from a Metaweb cookie 'c'
-   * Item codes: u=username, d=display name, g=guid, p=path
+   $(window)
+     .bind("fb.user.signedin", function(e, user) {
+       console.log("fb.user.signnedin");
+       fb.user = user;
+       // signed in
+       var u = $("#nav-username a:first");
+       if (u.length) {
+         u[0].href += fb.user.id;
+         u.text(fb.user.name);
+       }
+       $("#signedin").show();
+     })
+     .bind("fb.user.signedout", function(e) {
+       console.log("fb.user.signedout");
+       // signed out
+       $("#signedout").show();
+     });
+
+  /**
+   *  If metaweb client url? use metaweb-user-info cookie info
    */
-  function cookieItem(c, i) {
-    var s = c.indexOf('|'+i+'_');
-    if (s != -1){
-      s = s + 2 + i.length;
-      var e = c.indexOf('|',s);
-      if (e != -1) return decodeURIComponent(c.substr(s,e-s));
-    }
-    return null;
-  };
-
-  // get user info from cookie:
-  var cookieInfo = $.cookie("metaweb-user-info");
-  if (cookieInfo) {
-    // 'g' = User GUID, 'u' = user account name, 'p' = path name of user obj
-    var guid = cookieItem(cookieInfo, 'g');
-    var name = cookieItem(cookieInfo, 'u');
-    var id = cookieItem(cookieInfo, 'p');
-    if (!id) {
-      id = '/user/' + this.name;
-    }
-    fb.user = {
-      guid: guid,
-      name: name,
-      id: id
+  if (/^https?\:\/\/devel\.(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url)) {
+    /*
+     * Returns a single item 'i' from a Metaweb cookie 'c'
+     * Item codes: u=username, d=display name, g=guid, p=path
+     */
+    function cookieItem(c, i) {
+      var s = c.indexOf('|'+i+'_');
+      if (s != -1){
+        s = s + 2 + i.length;
+        var e = c.indexOf('|',s);
+        if (e != -1) return decodeURIComponent(c.substr(s,e-s));
+      }
+      return null;
     };
-  }
 
-  if (fb.user) {
-    // signed in
-    var u = $("#nav-username a:first");
-    if (u.length) {
-      u[0].href += fb.user.id;
-      u.text(fb.user.name);
+    // get user info from cookie:
+    var cookieInfo = $.cookie("metaweb-user-info");
+    if (cookieInfo) {
+      // 'g' = User GUID, 'u' = user account name, 'p' = path name of user obj
+      var guid = cookieItem(cookieInfo, 'g');
+      var name = cookieItem(cookieInfo, 'u');
+      var id = cookieItem(cookieInfo, 'p');
+      if (!id) {
+        id = '/user/' + this.name;
+      }
+      $(window).trigger("fb.user.signedin", {guid: guid, name: name, id: id});
     }
-    $("#signedin").show();
+    else {
+      $(window).trigger("fb.user.signedout");
+    }
   }
   else {
-    // signed out
-    $("#signedout").show();
+    $.ajax({
+      url: "/acre/account/user_info",
+      dataType: "json",
+      success: function(data) {
+        if (data && data.code === "/api/status/ok") {
+          $(window).trigger("fb.user.signedin", {id: data.id, guid: data.guid, name: data.username});
+        }
+        else {
+          $(window).trigger("fb.user.signedout");
+        }
+      },
+      error: function() {
+        $(window).trigger("fb.user.signedout");
+      }
+    });      
   }
 })(jQuery, window.freebase);
 

@@ -1,0 +1,10 @@
+[{
+  "id": null,
+  "/freebase/domain_profile/featured_views": [{
+    "id":    null,
+    "name":  null,
+    "sort":  "index",
+    "index": null,
+    "type": "/freebase/query"
+  }]
+}]

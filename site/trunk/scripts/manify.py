@@ -72,5 +72,5 @@ for mf in mfs.split("\n"):
                 else:
                     outfile.write(line)
                     
-    shutil.copy2(temp[1], mf)
+    shutil.copy(temp[1], mf)
                 

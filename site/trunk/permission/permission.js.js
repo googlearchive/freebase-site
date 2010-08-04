@@ -20,7 +20,7 @@
      jsonp: function(data) {
        perm.has_permission = data.result === true;
        console.log("has_permission", perm.has_permission);
-       window.trigger("fb.permission.has_permission", perm.has_permission);
+       $(window).trigger("fb.permission.has_permission", perm.has_permission);
      }
    };
    

@@ -6,6 +6,7 @@ var diagram = acre.request.params.view === "diagram";
 var queries = mf.require("queries");
 
 var data = {
+  id: id,
   diagram: diagram,
   type : diagram ? queries.typediagram(id) : queries.type(id)
 };

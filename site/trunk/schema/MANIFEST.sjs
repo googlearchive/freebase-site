@@ -18,10 +18,25 @@ var MF = {
   },
   "javascript": {
     "schema.mf.js": [
-      ["template", "freebase.mf.js"],
+      ["template", "freebase-permission.mf.js"],
       ["jquerytools", "tabs.js"],
       ["jquerytools", "tooltip.js"],
       "schema.js"
+    ],
+    "index.mf.js": [
+      "schema.mf.js",
+      "index.js"
+    ],
+    "domain.mf.js": [
+      "schema.mf.js",
+      "domain.js"
+    ],
+    "domain-edit.mf.js": [
+      "domain-edit.js"
+    ],
+    "type.mf.js": [
+      "schema.mf.js",
+      "type.js"
     ]
   }
 };

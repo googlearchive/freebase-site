@@ -1,0 +1,42 @@
+
+
+<acre:block def="add_new_type_form(domain_id, cvt)">
+  <tfoot>
+    <acre:block for="rowclass in ['edit-row', 'edit-row edit-row-template']">
+      <tr class="${rowclass}">
+        <td>
+          <label>Name</label>
+          <input name="name" type="text"/>
+        </td>
+
+        <td>
+          <label>Key</label><span>${domain_id}/</span>
+          <input name="key" type="text"/>
+        </td>
+
+        <td colspan="2">
+          <label>Display</label>
+          <select acre:if="cvt" name="type_hint">
+            <option>Compound Value</option>
+          </select>
+          <select acre:else="" name="type_hint">
+            <option selected="selected">Standard</option>
+            <option>Enumerated</option>
+          </select>
+        </td>
+
+        <td>
+          <label>Description</label>
+          <textarea name="desc"></textarea>
+        </td>
+      </tr>
+    </acre:block>
+
+    <tr class="edit-row edit-row-submit">
+      <td colspan="5">
+        <button class="button button-primary button-submit" type="submit">Save</button>
+        <button class="button button-cancel">Cancel</button>
+      </td>
+    </tr>
+  </tfoot>
+</acre:block>

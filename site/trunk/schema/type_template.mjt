@@ -113,7 +113,7 @@
 
 <acre:block def="footer_script()">
   <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
-  <script src="${mf.js_src('schema.mf.js')}"></script>
+  <script src="${mf.js_src('type.mf.js')}"></script>
 </acre:block>
 
 
@@ -157,9 +157,7 @@
  
     <!-- Incoming Properties Table -->
     <div class="section">
-      <h2 class="table-title">
-        Incoming Properties
-      </h2>
+      <h2 class="table-title">Incoming Properties</h2>
       <table class="table" cellspacing="0" id="incoming-properties-table" acre:if="c.type.incoming.same.length || c.type.incoming.common.length || c.type.incoming.base.length">
         <acre:block if="c.type.incoming.same.length">
           ${t.incoming_props_group(c.type.domain.name, c.type.incoming.same, expanded=true)}

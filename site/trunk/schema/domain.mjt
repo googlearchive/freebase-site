@@ -8,7 +8,8 @@
  
   var queries = mf.require("queries");  
   var data = {
-    "domain" : queries.domain(id)
+    id: id,
+    domain : queries.domain(id)
   };
 </acre:script>
 
@@ -96,6 +97,9 @@
             <td class="odd description">$t.blurb</td>
           </tr>
         </table>
+        <div class="edit">
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_new_type, this);"><span>Add New</span></a>
+        </div>
       </div>
     
       <acre:block if="c.domain['cvt:types'].length > 0">
@@ -126,6 +130,9 @@
               </tr>
             </tbody>
           </table>
+          <div class="edit">
+            <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_new_cvt, this);"><span>Add New</span></a>
+          </div>
         </div>
       </acre:block>  
   </acre:block>
@@ -142,7 +149,7 @@
 
 <acre:block def="footer_script()">
   <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
-  <script src="${mf.js_src('schema.mf.js')}"></script>
+  <script src="${mf.js_src('domain.mf.js')}"></script>
 </acre:block>
 
 ${mf.require("template", "renderer").render_page(data, this.exports)}

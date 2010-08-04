@@ -13,7 +13,7 @@ import acrepush
 from cssmin import cssmin
 import hashlib
 
-ALL_APPS = ['apps', 'core', 'devdocs', 'domain', 'error', 'flot', 'homepage', 'jquerytools', 'jqueryui', 'policies', 'promise', 'queries', 'routing', 'schema', 'template', 'toolbox']
+ALL_APPS = ['apps', 'core', 'devdocs', 'domain', 'error', 'flot', 'homepage', 'jquerytools', 'jqueryui', 'policies', 'promise', 'queries', 'routing', 'schema', 'template', 'toolbox', 'permission']
 
 # acre graph mapping to host for appeditor web services, i.e., /appeditor/get_app
 GRAPH = {
@@ -103,11 +103,20 @@ def fetch_url(url, isjson=False):
 
     print '[fetchurl] %s' % url
     request = urllib2.Request(url, headers = {'Cache-control': 'no-cache' })
-    try:
-        contents = urllib2.urlopen(request).readlines()
-    except:
-        print 'ERROR FETCHING URL: %s' % url
-        raise
+
+    tries = 3
+
+    while tries > 0:
+        try:
+            contents = urllib2.urlopen(request).readlines()
+        except:
+            print 'ERROR FETCHING URL: %s' % url
+            if tries > 1:
+                print 'trying again....'
+            else:
+                raise
+
+        tries -= 1
 
     if isjson:
         return json.loads(''.join(contents))

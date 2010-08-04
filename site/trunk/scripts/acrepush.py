@@ -254,11 +254,11 @@ class AcrePush(object):
         ###### dry run until this point ##########
 
 
-        if version and self.is_production and version_app_exists:
-            reply = raw_input('Version %s is released in production. Are you SURE you want to update it (this will update the live site) ?\n Type "yes" or any other key to abort: ' % version)
-            if reply != 'yes':
-                print 'Aborting push to production.'
-                return
+        #if version and self.is_production and version_app_exists:
+        #    reply = raw_input('Version %s is released in production. Are you SURE you want to update it (this will update the live site) ?\n Type "yes" or any other key to abort: ' % version)
+        #    if reply != 'yes':
+        #        print 'Aborting push to production.'
+        #        return
 
             
         if version or len(delete_files.keys()) or len(push_files.keys()) or create_app:

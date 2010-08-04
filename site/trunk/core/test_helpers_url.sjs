@@ -51,9 +51,5 @@ test("freebase_static_resource_url", function() {
 });
 
 
-test("image_thumb_url", function() {
-  console.log(h.image_thumb_url({id:"/user/daepark"}));
-});
-
 acre.test.report();
 

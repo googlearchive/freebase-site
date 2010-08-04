@@ -1,6 +1,6 @@
 var MF = {
   "apps": {
-    "core": "//9.core.site.freebase.dev"
+    "core": "//11.core.site.freebase.dev"
   },
   "test": {
     "files": ['test_apis', 'test_deferred']

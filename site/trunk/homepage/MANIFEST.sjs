@@ -1,10 +1,10 @@
 
 var MF = {
   "apps": {
-      "core": "//9.core.site.freebase.dev",
-      "template": "//9.template.site.freebase.dev",
-      "promise": "//9.promise.site.freebase.dev",
-      "flot": "//9.flot.site.freebase.dev",
+      "core": "//11.core.site.freebase.dev",
+      "template": "//11.template.site.freebase.dev",
+      "promise": "//11.promise.site.freebase.dev",
+      "flot": "//11.flot.site.freebase.dev",
       
       "libraries": "//2.libraries.apps.freebase.dev"
   },

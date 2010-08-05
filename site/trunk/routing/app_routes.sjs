@@ -80,7 +80,11 @@ var routes = [
   {
     from: "/permission",
     to: "permission"
-  }
+  },
+  { 
+    from: "/appeditor",
+    to : "appeditor"
+  }	
 ];
 
 /**

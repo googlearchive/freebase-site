@@ -15,7 +15,8 @@ var MF = {
     "devdocs" : "//devdocs.site.freebase.dev",
     "queries": "//queries.site.freebase.dev",
     "policies" : "//policies.site.freebase.dev",
-    "permission": "//permission.site.freebase.dev"
+    "permission": "//permission.site.freebase.dev",
+    "appeditor" : "//appeditor.apps.freebase.dev"
   }
 };
 

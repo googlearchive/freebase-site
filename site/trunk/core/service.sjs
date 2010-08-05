@@ -51,19 +51,58 @@ function main(scope, api) {
     var svc = (method === 'GET' ? lib.GetService :
                (headers['content-type'].indexOf("multipart/form-data") === 0 ? lib.FormService : lib.PostService));
 
-    var args = lib.parse_request_args(fn.args); // check required args
-    if (fn.auth) { // check authentication
-      lib.check_user();
-    }
-
-    // api method can return deferred/promise
     var d;
-    if (svc === lib.FormService) {
-      d = fn(args, headers, scope.acre.request.body);
+    try {
+      var args = lib.parse_request_args(fn.args); // check required args
+      if (fn.auth) { // check authentication
+        lib.check_user();
+      }
+      // api method can return deferred/promise
+      if (svc === lib.FormService) {
+        d = fn(args, headers, scope.acre.request.body);
+      }
+      else {
+        d = fn(args, headers);
+      }
+    } 
+    /**
+     * This series of catch blocks copied from
+     * //service.libs.freebase.dev/lib (run_function_as_service)
+     */  
+    catch (e if e instanceof lib.ServiceError) {
+      return lib.output_response(e);
     }
-    else {
-      d = fn(args, headers);
+    catch (e if e instanceof acre.freebase.Error) {
+      // it's an acre.freebase error so pass along original error from Freebase
+      return lib.output_response(e.response);
     }
+    catch (e if e instanceof acre.errors.URLError) {
+      // it's an unknown urlfetch error so parse it
+      var response = e.response.body;
+      var info;
+      try {
+        // is it a JSON-formatted error?
+        info = JSON.parse(response);
+      } 
+      catch(e) {
+        // otherwise just package the response as string
+        info = response;
+      }
+      var msg = e.request_url ? "Error fetching " + e.request_url : "Error fetching external URL";
+      return lib.output_response(new lib.ServiceError("500 Service Error", null, {
+        message: msg,
+        code : "/api/status/error/service/external",
+        info :info
+      }));    
+    } 
+    catch (e if typeof e === 'string') {
+      // it's just a message string, which is a convenience for throwing validation errors
+      return lib.output_response(new lib.ServiceError("400 Bad Request", null, {
+          message: e,
+          code : "/api/status/error/input/validation"
+      }));
+    }
+    // otherwise, let it fallthrough to error page to wrap the JS call stack
 
     function success(result) {
       svc(function() {

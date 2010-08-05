@@ -3,10 +3,11 @@
     <acre:block for="rowclass in ['edit-row', 'edit-row edit-row-template']">
       <tr class="${rowclass}">
         <td colspan="5">
-          <div class="form-field fb-type-name">
+         <div class="form-field fb-type-name">
             <label>
               <span class="form-label">Name</span>
               <input name="name" type="text" class="text-input" />
+              <input name="domain" type="hidden" value="${domain_id}"/>
             </label>
           </div>
 
@@ -23,10 +24,10 @@
           <div class="form-field fb-type-display">
             <label>
               <span class="form-label">Display</span>
-              <select acre:if="cvt" name="type_hint">
+              <select acre:if="cvt" name="typehint">
                 <option>Compound Value</option>
               </select>
-              <select acre:else="" name="type_hint">
+              <select acre:else="" name="typehint">
                 <option selected="selected">Standard</option>
                 <option>Enumerated</option>
               </select>

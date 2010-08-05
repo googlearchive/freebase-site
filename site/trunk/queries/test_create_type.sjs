@@ -11,215 +11,220 @@ test("login required", function() {
   ok(user, "login required");
 });
 
-if (user) {
-  var counter = 0;
-  function get_name() {
-    return  [user.username, user.transaction_id, counter++].join("_");
-  };
+if (!user) {
+  acre.test.report();
+  acre.exit();
+}
 
-  test("create_type", function() {    
-    var success;
-    var name = get_name();
-    create_type({
-      domain: user.id + "/default_domain",
-      name: name,
-      key: name,
-      mqlkey_quote: true
-    })
-    .then(function(r) {
-      success = r;
+var counter = 0;
+function get_name() {
+  return  [user.username, user.transaction_id, counter++].join("_");
+};
+
+test("create_type", function() {    
+  var success;
+  var name = get_name();
+  create_type({
+    domain: user.id + "/default_domain",
+    name: name,
+    key: name,
+    mqlkey_quote: true
+  })
+  .then(function(r) {
+    success = r;
+  });
+  acre.async.wait_on_results();
+  ok(success);
+  equal(success.key.value, acre.freebase.mqlkey_quote(name));
+
+  // assert included type /common/topic
+  freebase.mqlread({
+    id:success.id, 
+    "/freebase/type_hints/included_types": {id:"/common/topic"},
+    permission: {
+      id: null,
+      "!/type/object/permission": {id: user.id + "/default_domain"}
+    }
+  })
+  .then(function(env) {
+    success = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(success);
+  equal(success["/freebase/type_hints/included_types"].id, "/common/topic");
+  equal(success.permission["!/type/object/permission"].id,  user.id + "/default_domain");
+});
+
+test("create_type cvt", function() {    
+  var success;
+  var name = get_name();
+  create_type({
+    domain: user.id + "/default_domain",
+    name: name,
+    key: name,
+    typehint: "cvt",
+    mqlkey_quote: true
+  })
+  .then(function(r) {
+    success = r;
+  });
+  acre.async.wait_on_results();
+  ok(success);
+  equal(success.key.value, acre.freebase.mqlkey_quote(name));
+
+  // assert /freebase/type_hints/mediator
+  freebase.mqlread({id:success.id, "/freebase/type_hints/mediator": null})
+    .then(function(env) {
+      success = env.result;
     });
-    acre.async.wait_on_results();
-    ok(success);
-    equal(success.key.value, acre.freebase.mqlkey_quote(name));
+  acre.async.wait_on_results();
+  ok(success);
+  ok(success["/freebase/type_hints/mediator"]);
+});
 
-    // assert included type /common/topic
-    freebase.mqlread({
-      id:success.id, 
-      "/freebase/type_hints/included_types": {id:"/common/topic"},
+test("create_type enumeration", function() {    
+  var success;
+  var name = get_name();
+  create_type({
+    domain: user.id + "/default_domain",
+    name: name,
+    typehint: "enumeration",
+    key: name,
+    mqlkey_quote: true
+  })
+  .then(function(r) {
+    success = r;
+  });
+  acre.async.wait_on_results();
+  ok(success);
+  equal(success.key.value, acre.freebase.mqlkey_quote(name));
+
+  // assert included type /common/topic
+  freebase.mqlread({
+    id:success.id, 
+    "/freebase/type_hints/included_types": {id:"/common/topic"},
+    "/freebase/type_hints/enumeration": null
+  })
+  .then(function(env) {
+    success = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(success);
+  equal(success["/freebase/type_hints/included_types"].id, "/common/topic");
+  ok(success["/freebase/type_hints/enumeration"]);
+});
+
+
+test("create_type no name", function() {
+  var success, error;
+  var name = get_name();
+  create_type({
+    domain: user.id + "/default_domain",
+    name: "",
+    key: name,
+    mqlkey_quote: true
+  })
+  .then(function(r) {
+    success = r;
+  }, function(e) {
+    error = e;
+  });
+  acre.async.wait_on_results();
+  ok(error, ""+error);
+});
+
+test("create_type no key", function() {
+  var success, error;
+  var name = get_name();
+  create_type({
+    domain: user.id + "/default_domain",
+    name: name,
+    mqlkey_quote: true
+  })
+  .then(function(r) {
+    success = r;
+  }, function(e) {
+    error = e;
+  });
+  acre.async.wait_on_results();
+  ok(error, ""+error);
+});
+
+test("create_type bad key", function() {
+  var success, error;
+  var name = get_name();
+  create_type({
+    domain: user.id + "/default_domain",
+    name: name,
+    key: name
+  })
+  .then(function(r) {
+    success = r;
+  }, function(e) {
+    error = e;
+  });
+  acre.async.wait_on_results();
+  ok(error, ""+error);
+});
+
+test("create_type no domain", function() {
+  var success, error;
+  var name = get_name();
+  create_type({
+    name: name,
+    key: name,
+    mqlkey_quote: true
+  })
+  .then(function(r) {
+    success = r;
+  }, function(e) {
+    error = e;
+  });
+  acre.async.wait_on_results();
+  ok(error, ""+error);
+});
+
+
+test("create_type with description", function() {
+  var success;
+  var name = get_name();
+  create_type({
+    domain: user.id + "/default_domain",
+    name: name,
+    key: name,
+    mqlkey_quote: true,
+    desc: name
+  })
+  .then(function(r) {
+    success = r;
+  });
+  acre.async.wait_on_results();
+  ok(success);
+
+  // assert /common/topic/article
+  freebase.mqlread({
+    id: success.id, 
+    "/common/topic/article": {
+      id: null,
       permission: {
         id: null,
-        "!/type/object/permission": {id: user.id + "/default_domain"}
+        "!/type/object/permission": {
+          id: user.id + "/default_domain"
+        }
       }
-    })
-    .then(function(env) {
-      success = env.result;
-    });
-    acre.async.wait_on_results();
-    ok(success);
-    equal(success["/freebase/type_hints/included_types"].id, "/common/topic");
-    equal(success.permission["!/type/object/permission"].id,  user.id + "/default_domain");
-  });
-
-  test("create_type cvt", function() {    
-    var success;
-    var name = get_name();
-    create_type({
-      domain: user.id + "/default_domain",
-      name: name,
-      key: name,
-      typehint: "cvt",
-      mqlkey_quote: true
-    })
-    .then(function(r) {
-      success = r;
-    });
-    acre.async.wait_on_results();
-    ok(success);
-    equal(success.key.value, acre.freebase.mqlkey_quote(name));
-
-    // assert /freebase/type_hints/mediator
-    freebase.mqlread({id:success.id, "/freebase/type_hints/mediator": null})
-      .then(function(env) {
-        success = env.result;
+    }
+  })
+  .then(function(env) {
+    return env.result;
+  })
+  .then(function(result) {      
+    return freebase.get_blob(result["/common/topic/article"].id, "blurb")
+      .then(function(blob) {
+        success = blob.body;
       });
-    acre.async.wait_on_results();
-    ok(success);
-    ok(success["/freebase/type_hints/mediator"]);
   });
-
-  test("create_type enumeration", function() {    
-    var success;
-    var name = get_name();
-    create_type({
-      domain: user.id + "/default_domain",
-      name: name,
-      typehint: "enumeration",
-      key: name,
-      mqlkey_quote: true
-    })
-    .then(function(r) {
-      success = r;
-    });
-    acre.async.wait_on_results();
-    ok(success);
-    equal(success.key.value, acre.freebase.mqlkey_quote(name));
-
-    // assert included type /common/topic
-    freebase.mqlread({
-      id:success.id, 
-      "/freebase/type_hints/included_types": {id:"/common/topic"},
-      "/freebase/type_hints/enumeration": null
-    })
-    .then(function(env) {
-      success = env.result;
-    });
-    acre.async.wait_on_results();
-    ok(success);
-    equal(success["/freebase/type_hints/included_types"].id, "/common/topic");
-    ok(success["/freebase/type_hints/enumeration"]);
-  });
-
-
-  test("create_type no name", function() {
-    var success, error;
-    var name = get_name();
-    create_type({
-      domain: user.id + "/default_domain",
-      name: "",
-      key: name,
-      mqlkey_quote: true
-    })
-    .then(function(r) {
-      success = r;
-    }, function(e) {
-      error = e;
-    });
-    acre.async.wait_on_results();
-    ok(error, ""+error);
-  });
-
-  test("create_type no key", function() {
-    var success, error;
-    var name = get_name();
-    create_type({
-      domain: user.id + "/default_domain",
-      name: name,
-      mqlkey_quote: true
-    })
-    .then(function(r) {
-      success = r;
-    }, function(e) {
-      error = e;
-    });
-    acre.async.wait_on_results();
-    ok(error, ""+error);
-  });
-
-  test("create_type bad key", function() {
-    var success, error;
-    var name = get_name();
-    create_type({
-      domain: user.id + "/default_domain",
-      name: name,
-      key: name
-    })
-    .then(function(r) {
-      success = r;
-    }, function(e) {
-      error = e;
-    });
-    acre.async.wait_on_results();
-    ok(error, ""+error);
-  });
-
-  test("create_type no domain", function() {
-    var success, error;
-    var name = get_name();
-    create_type({
-      name: name,
-      key: name,
-      mqlkey_quote: true
-    })
-    .then(function(r) {
-      success = r;
-    }, function(e) {
-      error = e;
-    });
-    acre.async.wait_on_results();
-    ok(error, ""+error);
-  });
-
-
-  test("create_type with description", function() {
-    var success;
-    var name = get_name();
-    create_type({
-      domain: user.id + "/default_domain",
-      name: name,
-      key: name,
-      mqlkey_quote: true,
-      desc: name
-    })
-    .then(function(r) {
-      success = r;
-    });
-    acre.async.wait_on_results();
-    ok(success);
-
-    // assert /common/topic/article
-    freebase.mqlread({
-      id: success.id, 
-      "/common/topic/article": {
-        id: null,
-        limit: 1
-      }
-    })
-    .then(function(env) {
-      console.log("env", env);
-      return env.result;
-    })
-    .then(function(result) {      
-      console.log("result", result);
-      return freebase.get_blob(result["/common/topic/article"].id, "unsafe")
-        .then(function(blob) {
-          success = blob.body;
-        });
-    });
-    acre.async.wait_on_results();
-    equal(success, name);
-  });
-
-}
+  acre.async.wait_on_results();
+  equal(success, name);
+});
 
 acre.test.report();

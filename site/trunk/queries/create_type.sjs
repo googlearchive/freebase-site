@@ -2,6 +2,7 @@ var mf = acre.require("MANIFEST").MF;
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 var h = mf.require("core", "helpers");
+var create_article = mf.require("create_article").create_article;
 
 /**
  * Create a new type using the permission of the specified domain.
@@ -57,7 +58,7 @@ function create_type(o) {
           lang: lang,
           connect: "update"
         }
-      };          
+      };
       if (typehint === "cvt") {
         // add /freebase/type_profile/mediator
         q["/freebase/type_hints/mediator"] = {
@@ -78,30 +79,18 @@ function create_type(o) {
         };
       }
       return freebase.mqlwrite(q)
-        .then(function() {
+        .then(function(env) {
+          return env.result;
+        })
+        .then(function(result) {
+          if (desc !== "") {
+            return create_article(desc, "text/html", {use_permission_of: domain, topic: created.id})
+              .then(function(article) {
+                return created;
+              });
+          }
           return created;
         });
-    })
-    .then(function(created) {
-      if (desc) {
-        return freebase.upload(desc, "text/html", {use_permission_of: domain})
-          .then(function(env) {
-            console.log("freebase.upload", env);
-
-            return env.result;
-          })
-          .then(function(result) {
-            return freebase.mqlwrite({
-              id:created.id, 
-              "/common/topic/article": {
-                id: result.id,
-                connect: "insert"
-            }});
-          })
-          .then(function() {
-            return created;
-          });
-      }
-      return created;
     });
 };
+

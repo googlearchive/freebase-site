@@ -97,8 +97,8 @@
             <td class="odd description">$t.blurb</td>
           </tr>
         </table>
-        <div class="edit">
-          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_new_type, this);"><span>Add New</span></a>
+        <div class="table-edit edit">
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_new_type, this);"><span class="add-icon">Add New</span></a>
         </div>
       </div>
     

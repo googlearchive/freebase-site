@@ -21,8 +21,8 @@
               console.log("fb.schema.domain.edit.add_new_type.submit");
             })
             .bind("fb.schema.domain.edit.add_new_type.cancel", function() {
-              tfoot.hide();
-              editbutton.show();
+              tfoot.fadeOut();
+              editbutton.fadeIn();
             });
         }
       });

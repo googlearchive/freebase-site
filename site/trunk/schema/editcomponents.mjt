@@ -1,33 +1,44 @@
-
-
 <acre:block def="add_new_type_form(domain_id, cvt)">
   <tfoot>
     <acre:block for="rowclass in ['edit-row', 'edit-row edit-row-template']">
       <tr class="${rowclass}">
-        <td>
-          <label>Name</label>
-          <input name="name" type="text"/>
-        </td>
+        <td colspan="5">
+          <div class="form-field fb-type-name">
+            <label>
+              <span class="form-label">Name</span>
+              <input name="name" type="text"/>
+            </label>
+          </div>
 
-        <td>
-          <label>Key</label><span>${domain_id}/</span>
-          <input name="key" type="text"/>
-        </td>
+          <div class="form-field fb-type-key">
+            <label>
+              <span class="form-label">
+                Key
+                <span class="key">${domain_id}/</span>
+              </span>
+              <input name="key" type="text" />
+            </label>
+          </div>
 
-        <td colspan="2">
-          <label>Display</label>
-          <select acre:if="cvt" name="type_hint">
-            <option>Compound Value</option>
-          </select>
-          <select acre:else="" name="type_hint">
-            <option selected="selected">Standard</option>
-            <option>Enumerated</option>
-          </select>
-        </td>
+          <div class="form-field fb-type-display">
+            <label>
+              <span class="form-label">Display</span>
+              <select acre:if="cvt" name="type_hint">
+                <option>Compound Value</option>
+              </select>
+              <select acre:else="" name="type_hint">
+                <option selected="selected">Standard</option>
+                <option>Enumerated</option>
+              </select>
+            </label>
+          </div>
 
-        <td>
-          <label>Description</label>
-          <textarea name="desc"></textarea>
+          <div class="form-field fb-type-description">
+            <label>
+              <span class="form-label">Description</span>
+              <textarea name="desc"></textarea>
+            </label>
+          </div>            
         </td>
       </tr>
     </acre:block>

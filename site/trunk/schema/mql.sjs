@@ -89,7 +89,6 @@ function type(options) {
     "/common/topic/article": qh.article_clause(true),
     domain: {
       id: null,
-      guid: null,
       name: null,
       type: "/type/domain"
     },

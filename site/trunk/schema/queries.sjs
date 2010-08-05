@@ -196,15 +196,16 @@ function base_type(id) {
       */
 
       // instance_count
-      var activity_id = "summary_/guid/" + result.domain.guid.slice(1);
+      var activity_id = "summary_/guid/" + result.guid.slice(1);
       result.instance_count = 0;
       promises.push(freebase.get_static("activity", activity_id)
         .then(function(activity) {
           return activity || {};
         })
         .then(function(activity) {
-          if (activity.types) {
-            result.instance_count = activity.types[id] || 0;
+          if (activity.properties) {
+            // /type/object/type is the total instances of this type
+            result.instance_count = activity.properties["/type/object/type"] || 0;
           }
           return activity;
         }));

@@ -195,7 +195,7 @@
       }
     };
   </script>
-  <script acre:if="typeof exports.c === 'object'">
-    acre.c = ${JSON.stringify(exports.c)};
+  <script acre:if="typeof exports.c === 'object' && exports.c.id">
+    acre.c = {id: "${exports.c.id}"};
  </script>
 </acre:block>

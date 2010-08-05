@@ -2,12 +2,19 @@
  * everything should go under the freebase namespace.
  */
 window.freebase = window.fb = {};
-if (!window.console) {
-  window.console = {
-    log: function() {}, info: function() {}, debug:function() {},
-    warn:function() {}, error:function() {}
-  };
-}
+
+(function($, fb) {
+  if (!window.console) {
+    window.console = {
+      log: $.noop, 
+      info: $.noop, 
+      debug: $.noop,
+      warn: $.noop,
+      error: $.noop
+    };
+  }
+})(jQuery, window.freebase);
+
 
 /**
  * simple event dispatcher

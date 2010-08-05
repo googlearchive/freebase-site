@@ -204,7 +204,7 @@ function base_type(id) {
         })
         .then(function(activity) {
           if (activity.types) {
-            result.instance_count = activity.types[ids] || 0;
+            result.instance_count = activity.types[id] || 0;
           }
           return activity;
         }));

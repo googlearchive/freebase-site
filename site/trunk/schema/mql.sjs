@@ -89,6 +89,7 @@ function type(options) {
     "/common/topic/article": qh.article_clause(true),
     domain: {
       id: null,
+      guid: null,
       name: null,
       type: "/type/domain"
     },
@@ -96,6 +97,7 @@ function type(options) {
     "/freebase/type_hints/enumeration": null,
     "/freebase/type_hints/included_types": [{
       id: null,
+      name: null,
       optional: true,
       index: null,
       sort: "index",
@@ -181,7 +183,7 @@ property.incoming = function(options) {
           optional: "forbidden",
           limit: 0
         }
-      }                    
+      }
     })]
   }, options);
 };

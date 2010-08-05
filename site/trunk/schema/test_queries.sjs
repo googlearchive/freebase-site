@@ -102,7 +102,6 @@ test("domain", function() {
   }
 });
 
-
 function assert_prop(prop) {
   assert_keys(["id", "name", "expected_type",
                "tip", "disambiguator", "display_none"], prop, true);
@@ -118,7 +117,7 @@ function assert_type(type) {
                "creator", "timestamp", "date",
                "blurb", "blob",
                "instance_count",
-               "properties", "expected_by"], type);
+               "properties"], type);
   if (type.properties && type.properties.length) {
     type.properties.forEach(function(p) {
       assert_prop(p);
@@ -160,7 +159,7 @@ test("typediagram", function() {
   ok(result);
   assert_type(result);
   ok(result.incoming);
-  assert_keys(["common", "base", "user"], result.incoming);
+  assert_keys(["same", "common", "base"], result.incoming);
 });
 
 

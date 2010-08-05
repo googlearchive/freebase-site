@@ -6,7 +6,7 @@
      * retrieve add_new_type form (ajax).
      */
     add_new_type_begin: function(target, cvt) {
-      var editbutton = $(target).parents(".edit:first").hide();      
+      var editbutton = $(target).parents(".edit:first").hide();
       var table = editbutton.prev("table");
       $.ajax({
         url: acre.request.app_url + "/schema/service/add_new_type_begin",
@@ -71,7 +71,7 @@
     /**
      * init add_new_type row
      */
-    add_new_type_init_row: function(row) {      
+    add_new_type_init_row: function(row) {
       var name = $(":input[name=name]", row);
       var key =  $(":input[name=key]", row);
       var desc = $(":input[name=desc]", row);
@@ -139,6 +139,21 @@
         return;
       }
 
+      rows.each(function() {
+        var row = $(this);
+        var data = {
+          domain: $(":input[name=domain]").val(),
+          name:  $(":input[name=name]", row).val(),
+          key: $(":input[name=key]", row).val(),
+          typehint: $(":input[name=typehint]", row).val(),
+          desc: $(":input[name=desc]", row).val()
+        };
+        if (name === "" && key === "") {
+          row.remove();
+        }
+      });
+/**
+
       var submit_data = [];
       rows.each(function() {
         var row = $(this);
@@ -162,7 +177,7 @@
         error: function() {
           console.log(Array.prototype.slice.call(arguments));
         }
-      });
+      });**/
     },
 
     /**

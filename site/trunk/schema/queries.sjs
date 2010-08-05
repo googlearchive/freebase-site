@@ -181,6 +181,7 @@ function base_type(id) {
       var promises = [];
 
       // expand included_types
+      /**
       result.included_types.forEach(function(inc_type) {
          promises.push(freebase.mqlread(mql.type({id:inc_type.id}))
            .then(function(env) {
@@ -192,15 +193,19 @@ function base_type(id) {
              return inc_type_result;
            }));
       });
+      */
 
       // instance_count
-      var activity_id = result.guid.slice(1);
+      var activity_id = "summary_/guid/" + result.domain.guid.slice(1);
+      result.instance_count = 0;
       promises.push(freebase.get_static("activity", activity_id)
         .then(function(activity) {
           return activity || {};
         })
         .then(function(activity) {
-          result.instance_count = (activity.total && activity.total['new']) || 0;
+          if (activity.types) {
+            result.instance_count = activity.types[ids] || 0;
+          }
           return activity;
         }));
 
@@ -229,14 +234,15 @@ function base_type(id) {
           return siblings;
         }));
 
-      result.expected_by = [];
+      //result.expected_by = [];
       // incoming properties (properties whose ect == this type)
+      /**
       promises.push(property.incoming(id)
           .then(function(properties) {
               result.expected_by = properties;
               return properties;
             }));
-
+       */
       return deferred.all(promises)
         .then(function() {
           return result;
@@ -252,6 +258,33 @@ function type(id) {
         common: [],
         base: []
       };
+
+      var q = [{
+        id: null,
+        name: null,
+        type: "/type/property",
+        expected_type: id,
+        schema: {
+          id: null,
+          name: null,
+          type: "/type/type",
+          domain: {
+            id: result.domain.id
+          }
+        },
+        optional: true
+      }];
+
+      return freebase.mqlread(q)
+        .then(function(env) {
+          return env.result || [];
+        })
+        .then(function(props) {
+          result.incoming.same = props;
+          return result;
+        });
+/**
+
       result.expected_by.forEach(function(p) {
         if (p.schema.domain.id === result.domain.id) {
           result.incoming.same.push(p);
@@ -267,17 +300,40 @@ function type(id) {
       result.incoming.common.sort(sh.sort_by_name);
       result.incoming.base.sort(sh.sort_by_name);
       return result;
+**/
     });
 };
 
 function typediagram(id) {
+  return type(id);
+  /**
   return base_type(id)
     .then(function(result) {
-      result.incoming = {
-        common: [],
-        base: [],
-        user: []
-      };
+      var q = [{
+        id: null,
+        name: null,
+        type: "/type/property",
+        expected_type: id,
+        schema: {
+          id: null,
+          name: null,
+          type: "/type/type",
+          domain: {
+            id: result.domain.id
+          }
+        },
+        optional: true
+      }];
+
+      return freebase.mqlread(q)
+        .then(function(env) {
+          return env.result || [];
+        })
+        .then(function(props) {
+          result.incoming.same = props;
+          return result;
+        });
+
       result.expected_by.forEach(function(p) {
         if (p.schema.domain.key.namespace === "/") {
           result.incoming.common.push(p);
@@ -294,6 +350,7 @@ function typediagram(id) {
       result.incoming.user.sort(sh.sort_by_name);
       return result;
     });
+   **/
 };
 
 

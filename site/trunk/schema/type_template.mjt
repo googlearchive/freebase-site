@@ -158,19 +158,18 @@
     <!-- Incoming Properties Table -->
     <div class="section">
       <h2 class="table-title">Incoming Properties</h2>
-      <table class="table" cellspacing="0" id="incoming-properties-table" acre:if="c.type.incoming.same.length || c.type.incoming.common.length || c.type.incoming.base.length">
-        <acre:block if="c.type.incoming.same.length">
+      <table class="table" cellspacing="0" id="incoming-properties-table">
+        <acre:block if="c.type.incoming.same">
           ${t.incoming_props_group(c.type.domain.name, c.type.incoming.same, expanded=true)}
         </acre:block>
-        <acre:block if="c.type.incoming.common.length">
+        <acre:block if="c.type.incoming.common">
           ${t.incoming_props_group("Commons", c.type.incoming.common)}
         </acre:block>
-        <acre:block if="c.type.incoming.base.length">
+        <acre:block if="c.type.incoming.base">
           ${t.incoming_props_group("Bases", c.type.incoming.base)}
         </acre:block>
       </table>
-      <h2 class="empty-table-msg" acre:else=""><strong>$c.type.name</strong> has no Incoming Properties</h2>
-    </div>   
+   </div>   
   </div>     
 </acre:block>
 
@@ -185,13 +184,13 @@
               <tr>
                 <th class="type-diagram-col-header" colspan="3">Incoming Properties</th>
               </tr>
-              ${t.type_diagram_incoming_props(c.type.incoming.common)}
+              ${t.type_diagram_incoming_props(c.type.incoming.same)}
             </tbody>
             <tbody class="bases">
-              ${t.type_diagram_incoming_props(c.type.incoming.base)}
+              ${t.type_diagram_incoming_props(c.type.incoming.common)}
             </tbody>
             <tbody class="users">
-              ${t.type_diagram_incoming_props(c.type.incoming.user)}
+              ${t.type_diagram_incoming_props(c.type.incoming.base)}
             </tbody>
           </table>
         </td>

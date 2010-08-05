@@ -29,16 +29,32 @@ var api = {
     }
     var promises = [];
     data.forEach(function(t) {
-      //h.extend(t, {mqlkey_quote:true});
-      //promises.push(create_type(t));
+      h.extend(t, {mqlkey_quote:true});
+      promises.push(create_type(t));
     });
-    return data;
+
+    return deferred.all(promises)
+      .then(function(results) {
+        results.forEach(function(result) {
+          var errors = [];
+          var successes = [];
+          if (result instanceof Error) {
+            errors.push(result);
+          }
+          else {
+            successes.push(result);
+          }
+        });
+      });
   }
 };
 
-// required args
+// required args and authorization
 api.add_new_type_begin.args = ["id"]; // domain id, cvt (optional)
+api.add_new_type_being.auth = true;
+
 api.add_new_type_submit.args = ["data"]; // data is JSON (Array)
+api.add_new_type_submit.auth = true;
 
 function main(scope) {
   if (h.is_client()) {

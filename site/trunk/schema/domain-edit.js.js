@@ -14,7 +14,7 @@
           // clear tfoot
           $("tfoot", table).remove();
           var tfoot = $(html);
-          $(table).append(tfoot);
+          $(table).append(tfoot).find(".text-input:first").focus();
           de.add_new_type_init(tfoot);
           tfoot
             .bind("fb.schema.domain.edit.add_new_type.submit", function() {

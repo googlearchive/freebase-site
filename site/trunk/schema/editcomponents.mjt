@@ -6,7 +6,7 @@
           <div class="form-field fb-type-name">
             <label>
               <span class="form-label">Name</span>
-              <input name="name" type="text"/>
+              <input name="name" type="text" class="text-input" />
             </label>
           </div>
 
@@ -16,7 +16,7 @@
                 Key
                 <span class="key">${domain_id}/</span>
               </span>
-              <input name="key" type="text" />
+              <input name="key" type="text" class="text-input" />
             </label>
           </div>
 
@@ -36,7 +36,7 @@
           <div class="form-field fb-type-description">
             <label>
               <span class="form-label">Description</span>
-              <textarea name="desc"></textarea>
+              <textarea name="desc" class="textarea" rows="3"></textarea>
             </label>
           </div>            
         </td>

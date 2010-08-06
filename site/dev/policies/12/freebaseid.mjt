@@ -1,0 +1,66 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var c = this.exports.c = {};
+  var h = mf.require("core", "helpers");  
+  var t = mf.require("templates");
+</acre:script>
+
+<acre:block def="title()" trim="">
+  Freebase ID
+</acre:block>
+
+<acre:block def="head()" trim="">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('policies.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_body()">
+  <div id="body-left">
+    <div class="content-box">
+      
+      <a name="q0"><h2 class="question">What is Freebase ID?</h2></a>
+      <p>
+        Freebase ID is an authentication system that allows you to sign in to multiple websites using
+        a single username and password. Create your account once and use it to sign in to any site
+        that accepts Freebase ID.
+      </p>
+      
+      <a name="q1"><h2 class="question">What sites use Freebase ID?</h2></a>
+      <p>
+        Freebase ID is used by sites that were built using free data sets and developer tools from Freebase.
+      </p>
+      
+      <a name="q2"><h2 class="question">What is Freebase?</h2></a>
+      <p>
+        Freebase is an open database of the world's information. It is built by the community and for the community,
+        which means anyone can browse it, contribute information to it, or build applications on top of it.
+        Freebase data sets cover dozens of popular categories, like music, movies, books, people, locations,
+        companies, sports, science, and more.  Already, Freebase contains millions of freely licensed facts
+        and images and is growing daily thanks to the efforts of a passionate, global user community.
+        Websites built on top of the Freebase platform are called "Freebase apps."  They include a wide range of social
+        networks, recommendation engines, and reference sites, and they all make use the the rich, open data in Freebase.
+      </p>
+      
+      <a name="q3"><h2 class="question">How do Freebase apps share my content?</h2></a>
+      <p>
+        Certain Freebase apps allow users to contribute content. For example, a site for beer lovers might
+        allow its users to add new beers to the database, or a social network for movie fans might let
+        its users rate and recommend movies.  When users contribute content in this manner, it gets
+        recorded in Freebase so that other Freebase apps can use it, and it is attributed in Freebase to that user.  
+        Private data (e.g., email addresses, passwords) is never made public, nor is information about what you have viewed.
+      </p>
+      
+    </div>
+  </div>
+  
+  <div id="body-right" class="policies-right">
+    ${t.policy_nav()}
+  </div>
+</acre:block>
+
+
+
+<acre:block def="footer_script()">
+  <script src="${mf.js_src('policies.mf.js')}"></script>
+</acre:block>
+
+${mf.require("template", "renderer").render_page(null, this.exports)}

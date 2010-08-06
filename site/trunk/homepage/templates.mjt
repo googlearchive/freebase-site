@@ -70,30 +70,33 @@
   <div id="domain-explorer-tabset">
     
     <ul id="domain-explorer-tabs" data-index="${index || 0}">
-      <li acre:if="user">
-        <a href="${h.url_for('homepage', 'loadpanel', [['user', user.id]])}">
+      <li acre:if="user" class="domain-explorer-tab">
+        <a href="${h.url_for('homepage', 'loadpanel', [['user', user.id]])}"
+		   class="domain-explorer-tab-link">
          <span>Your Data</span>
         </a>
       </li>
-      <li>
-        <a href="${h.url_for('homepage', 'loadpanel', [['domains', 'featured']])}">
+      <li  class="domain-explorer-tab">
+        <a href="${h.url_for('homepage', 'loadpanel', [['domains', 'featured']])}"
+		   class="domain-explorer-tab-link">
          <span>Featured Data</span>
         </a>
       </li>
-      <li acre:for="category in categories">
-        <a href="${h.url_for('homepage', 'loadpanel', [['category', category.id]])}">
+      <li acre:for="category in categories" class="domain-explorer-tab">
+        <a href="${h.url_for('homepage', 'loadpanel', [['category', category.id]])}"
+		   class="domain-explorer-tab-link">
          <span>${category.name}</span>
         </a>
       </li>
-      <li class="last">
-        <a href="${h.url_for('homepage', 'loadpanel', [['domains', 'all']])}">
+      <li class="last" class="domain-explorer-tab">
+        <a href="${h.url_for('homepage', 'loadpanel', [['domains', 'all']])}"
+		   class="domain-explorer-tab-link">
           <span>All</span>
         </a>
-        <!--
-        <ul>
+        <ul id="all-domains-nav">
           <acre:block acre:for="letter in h.uppercase_alphabet()">
             <li class="toc-letter">
-              <a acre:if="letter in grouped_domains" href="">
+	              <a acre:if="false && letter in grouped_domains" href="">
                 ${letter}
               </a>
               <span acre:else="">
@@ -102,7 +105,6 @@
             </li>
           </acre:block>
         </ul>
-        -->
       </li>
     </ul>
     
@@ -183,14 +185,14 @@
 
 <acre:block def="domain_toc_panel(grouped_domains)">
   <div id="all-domains-pane">
-    <div class="domains-toc">
+    <ul class="domains-toc">
       <acre:block for="letter in h.lowercase_alphabet()">
-        <span acre:if="letter in grouped_domains" class="toc-letter">
+        <li acre:if="letter in grouped_domains" class="toc-letter">
           <a href="#all-domains-${letter}">${letter}</a>
-        </span>
-        <span acre:else="" class="toc-letter">${letter}</span>
+        </li>
+        <li acre:else="" class="toc-letter">${letter}</li>
       </acre:block>
-    </div>
+    </ul>
     
     <acre:block for="letter in h.lowercase_alphabet()">
       <acre:block if="grouped_domains[letter]">

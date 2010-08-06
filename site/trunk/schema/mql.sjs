@@ -41,6 +41,7 @@ function domain(options) {
       name: null,
       type: "/type/type",
       "/common/topic/article": qh.article_clause(true),
+      "/freebase/type_hints/enumeration": null,
       "/freebase/type_hints/mediator": {
         value: true,
         optional: "forbidden",

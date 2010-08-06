@@ -42,38 +42,14 @@ var api = {
   },
 
   add_new_type_submit: function(args) {
-    var data;
-    try {
-      data = JSON.parse(args.data);
-      if (! (data instanceof Array)) {
-        throw "data not an array";
-      }
-    }
-    catch (e) {
-      throw "data needs to be a JSON array";
-    }
-    if (!data.length) {
-      // nothing to do
-      return "noop";
-    }
-    var promises = [];
-    data.forEach(function(t) {
-      h.extend(t, {mqlkey_quote:true});
-      promises.push(create_type(t));
-    });
+    var create_type_options = h.extend({}, args, {mqlkey_quote:true});
 
-    return deferred.all(promises)
-      .then(function(results) {
-        results.forEach(function(result) {
-          var errors = [];
-          var successes = [];
-          if (result instanceof Error) {
-            errors.push(result);
-          }
-          else {
-            successes.push(result);
-          }
-        });
+    return create_type(create_type_options)
+      .then(function(result) {
+        var created = {name:args.name, id: result.id, properties: 0, instance_count: 0, blurb: args.description};
+        return {
+          html: acre.markup.stringify(t.domain_type_row(created))
+        };
       });
   }
 };
@@ -88,7 +64,7 @@ api.get_incoming_from_bases.args = ["id"]; // type id, exclude_domain (ptional)
 api.add_new_type_begin.args = ["id"]; // domain id, cvt (optional)
 api.add_new_type_begin.auth = true;
 
-api.add_new_type_submit.args = ["data"]; // data is JSON (Array)
+api.add_new_type_submit.args = ["domain", "name", "key", "typehint", "description"];
 api.add_new_type_submit.auth = true;
 
 function main(scope) {

@@ -6,7 +6,7 @@ var create_article = mf.require("create_article").create_article;
 
 /**
  * Create a new type using the permission of the specified domain.
- * 
+ *
  * @param o:Object (required) - options specifying the new type (name, key, etc.):
  *   domain (required)
  *   name (required)
@@ -14,7 +14,7 @@ var create_article = mf.require("create_article").create_article;
  *   desc (optional)
  *   typehint (optional) - "enumeration", "cvt"
  *   mqlkey_quote (optional) - acre.freebase.mqlkey_quote(key) if TRUE, default is False.
- */ 
+ */
 function create_type(o) {
   var domain = o.domain == null ? "" : h.trim(o.domain);
   var name = o.name == null ? "" : h.trim(o.name);
@@ -41,7 +41,7 @@ function create_type(o) {
     "/type/type/domain": {
       id: domain
     },
-    create: "unless_exists"    
+    create: "unless_exists"
   };
   return freebase.mqlwrite(q, {use_permission_of: domain})
     .then(function(env) {
@@ -49,7 +49,7 @@ function create_type(o) {
     })
     .then(function(created) {
       if (created.create === "existed") {
-        return created;
+        return deferred.rejected("key already exists: " + key);
       }
       q = {
         id: created.id,

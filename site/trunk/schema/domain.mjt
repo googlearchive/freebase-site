@@ -2,6 +2,7 @@
   var mf = acre.require("MANIFEST").MF;
   var c = this.exports.c = {};
   var h = mf.require("core", "helpers");
+  var templates = mf.require("templates");
   var image = mf.require("template", "imagecomponents");
 
   var id = acre.request.params.id || acre.request.path_info;
@@ -87,18 +88,9 @@
               <th class="column-header description" scope="col"><span class="sort-icon">Description</span></th>
             </tr>
           </thead>
-          <tr acre:for="i,t in c.domain.types">
-            <th class="odd row-header" scope="row">
-              <a href="${h.url_for('schema', 'type', null, t.id)}">$t.name</a>
-            </th>
-            <td class="even">$t.id</td>
-            <td class="odd numeric">$t.properties</td>
-            <td class="even numeric"><a href="${acre.freebase.service_url}/view${t.id}">${h.commafy(t.instance_count)}</a></td>
-            <td class="odd description">
-              <p>$t.blurb</p>
-              <span acre:if="t['/freebase/type_hints/enumeration'] === true" class="property-meta">Enumerated</span>
-            </td>
-          </tr>
+          <acre:block for="i,type in c.domain.types">
+            ${templates.domain_type_row(type)}
+          </acre:block>
         </table>
         <div class="table-edit edit">
           <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_new_type, this);"><span class="add-icon">Add New</span></a>

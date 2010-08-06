@@ -8,6 +8,21 @@
 
 </acre:script>
 
+<acre:block def="domain_type_row(type)">
+  <tr>
+    <th class="odd row-header" scope="row">
+      <a href="${h.url_for('schema', 'type', null, type.id)}">$type.name</a>
+    </th>
+    <td class="even">$type.id</td>
+    <td class="odd numeric">$type.properties</td>
+    <td class="even numeric"><a href="${acre.freebase.service_url}/view${type.id}">${h.commafy(type.instance_count)}</a></td>
+    <td class="odd description">
+      <p>$type.blurb</p>
+      <span acre:if="type['/freebase/type_hints/enumeration']" class="property-meta">Enumerated</span>
+    </td>
+  </tr>
+</acre:block>
+
 <!-- Native Properties markup pattern -->
 <acre:block def="native_properties(properties, type_id)">
   <tbody>

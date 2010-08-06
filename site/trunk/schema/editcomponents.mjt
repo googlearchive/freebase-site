@@ -1,54 +1,50 @@
 <acre:block def="add_new_type_form(domain_id, cvt)">
-  <tfoot>
+  <div class="edit-form">
     <acre:block for="rowclass in ['edit-row', 'edit-row edit-row-template']">
-      <tr class="${rowclass}">
-        <td colspan="5">
-         <div class="form-field fb-type-name">
-            <label>
-              <span class="form-label">Name</span>
-              <input name="name" type="text" class="text-input" />
-              <input name="domain" type="hidden" value="${domain_id}"/>
-            </label>
-          </div>
+      <div class="${rowclass}">
+        <div class="form-field fb-type-name">
+          <label>
+            <span class="form-label">Name</span>
+            <input name="name" type="text" class="text-input" />
+            <input name="domain" type="hidden" value="${domain_id}"/>
+          </label>
+        </div>
 
-          <div class="form-field fb-type-key">
-            <label>
-              <span class="form-label">
-                Key
-                <span class="key">${domain_id}/</span>
-              </span>
-              <input name="key" type="text" class="text-input" />
-            </label>
-          </div>
+        <div class="form-field fb-type-key">
+          <label>
+            <span class="form-label">
+              Key
+              <span class="key">${domain_id}/</span>
+            </span>
+            <input name="key" type="text" class="text-input" />
+          </label>
+        </div>
 
-          <div class="form-field fb-type-display">
-            <label>
-              <span class="form-label">Display</span>
-              <select acre:if="cvt" name="typehint">
-                <option>Compound Value</option>
-              </select>
-              <select acre:else="" name="typehint">
-                <option selected="selected">Standard</option>
-                <option>Enumerated</option>
-              </select>
-            </label>
-          </div>
+        <div class="form-field fb-type-display">
+          <label>
+            <span class="form-label">Display</span>
+            <select acre:if="cvt" name="typehint">
+              <option>Compound Value</option>
+            </select>
+            <select acre:else="" name="typehint">
+              <option selected="selected">Standard</option>
+              <option>Enumerated</option>
+            </select>
+          </label>
+        </div>
 
-          <div class="form-field fb-type-description">
-            <label>
-              <span class="form-label">Description</span>
-              <textarea name="desc" class="textarea" rows="3"></textarea>
-            </label>
-          </div>            
-        </td>
-      </tr>
+        <div class="form-field fb-type-description">
+          <label>
+            <span class="form-label">Description</span>
+            <textarea name="description" class="textarea" rows="3"></textarea>
+          </label>
+        </div>        
+      </div>
     </acre:block>
 
-    <tr class="edit-row edit-row-submit">
-      <td colspan="5">
-        <button class="button button-primary button-submit" type="submit">Save</button>
-        <button class="button button-cancel">Cancel</button>
-      </td>
-    </tr>
-  </tfoot>
+    <div class="edit-row edit-row-submit">
+      <button class="button button-primary button-submit" type="submit">Save</button>
+      <button class="button button-cancel">Cancel</button>
+   </div>
+  </div>
 </acre:block>

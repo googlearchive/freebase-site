@@ -64,43 +64,9 @@ function main(scope, api) {
       else {
         d = fn(args, headers);
       }
-    } 
-    /**
-     * This series of catch blocks copied from
-     * //service.libs.freebase.dev/lib (run_function_as_service)
-     */  
-    catch (e if e instanceof lib.ServiceError) {
-      return lib.output_response(e);
     }
-    catch (e if e instanceof acre.freebase.Error) {
-      // it's an acre.freebase error so pass along original error from Freebase
-      return lib.output_response(e.response);
-    }
-    catch (e if e instanceof acre.errors.URLError) {
-      // it's an unknown urlfetch error so parse it
-      var response = e.response.body;
-      var info;
-      try {
-        // is it a JSON-formatted error?
-        info = JSON.parse(response);
-      } 
-      catch(e) {
-        // otherwise just package the response as string
-        info = response;
-      }
-      var msg = e.request_url ? "Error fetching " + e.request_url : "Error fetching external URL";
-      return lib.output_response(new lib.ServiceError("500 Service Error", null, {
-        message: msg,
-        code : "/api/status/error/service/external",
-        info :info
-      }));    
-    } 
-    catch (e if typeof e === 'string') {
-      // it's just a message string, which is a convenience for throwing validation errors
-      return lib.output_response(new lib.ServiceError("400 Bad Request", null, {
-          message: e,
-          code : "/api/status/error/input/validation"
-      }));
+    catch (e if instanceof_service_error(e)) {
+      return handle_service_error(e);
     }
     // otherwise, let it fallthrough to error page to wrap the JS call stack
 
@@ -112,7 +78,7 @@ function main(scope, api) {
 
     function error(e) {
       svc(function() {
-        return e;
+        return handle_service_error(e);
       }, scope);
     };
 
@@ -121,3 +87,59 @@ function main(scope, api) {
     acre.async.wait_on_results();
   }
 };
+
+/**
+ * is e and instanceof a known error
+ */
+function instanceof_service_error(e) {
+  return e instanceof lib.ServiceError  ||
+    e instanceof acre.freebase.Error ||
+    e instanceof acre.errors.URLError ||
+    typeof e === 'string';
+};
+
+function handle_service_error(e) {
+  /**
+   * This series of catch blocks copied from
+   * //service.libs.freebase.dev/lib (run_function_as_service)
+   */
+
+  if (e instanceof lib.ServiceError) {
+    return lib.output_response(e);
+  }
+  else if (e instanceof acre.freebase.Error) {
+    // it's an acre.freebase error so pass along original error from Freebase
+    return lib.output_response(e.response);
+  }
+  else if (e instanceof acre.errors.URLError) {
+    // it's an unknown urlfetch error so parse it
+    var response = e.response.body;
+    var info;
+    try {
+      // is it a JSON-formatted error?
+      info = JSON.parse(response);
+    }
+    catch(e) {
+      // otherwise just package the response as string
+      info = response;
+    }
+    var msg = e.request_url ? "Error fetching " + e.request_url : "Error fetching external URL";
+    return lib.output_response(new lib.ServiceError("500 Service Error", null, {
+      message: msg,
+      code : "/api/status/error/service/external",
+      info :info
+    }));
+  }
+  else {
+    // catch all defaults to validation errors
+    var msg = e;
+    if (e instanceof Error) {
+      msg = (typeof e.toString === "function") ? e.toString() : ""+e;
+    }
+    return lib.output_response(new lib.ServiceError("400 Bad Request", null, {
+      message: e,
+      code : "/api/status/error/input/validation"
+    }));
+  }
+};
+

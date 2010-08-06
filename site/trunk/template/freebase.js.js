@@ -6,8 +6,8 @@ window.freebase = window.fb = {};
 (function($, fb) {
   if (!window.console) {
     window.console = {
-      log: $.noop, 
-      info: $.noop, 
+      log: $.noop,
+      info: $.noop,
       debug: $.noop,
       warn: $.noop,
       error: $.noop
@@ -40,7 +40,7 @@ window.freebase = window.fb = {};
  * so that it does not do multiple gets and executions.
  */
 (function($, fb) {
-  var cache = {};    
+  var cache = {};
   fb.get_script = function(script_url, callback) {
     // check_cache
     var cached = cache[script_url];
@@ -66,7 +66,7 @@ window.freebase = window.fb = {};
         beforeSend: function() {
           cached.state = 1;
         },
-        success: function() {          
+        success: function() {
           cached.state = 4;
           $.each(cached.callbacks, function(i,callback) {
             callback();
@@ -76,7 +76,7 @@ window.freebase = window.fb = {};
           // TODO: handle error
           cached.state = -1;
         }
-      }); 
+      });
     }
   };
 })(jQuery, window.freebase);
@@ -159,7 +159,7 @@ window.freebase = window.fb = {};
       error: function() {
         $(window).trigger("fb.user.signedout");
       }
-    });      
+    });
   }
 })(jQuery, window.freebase);
 
@@ -225,4 +225,21 @@ window.freebase = window.fb = {};
 
       $('input, textarea').textPlaceholder();
     });
+})(jQuery, window.freebase);
+
+
+
+/**
+ * some utility methods
+ */
+(function($, fb){
+
+   fb.disable = function(elt) {
+     $(elt).attr("disabled", "disabled").addClass("disabled");
+   };
+
+   fb.enable = function(elt) {
+     $(elt).removeAttr("disabled").removeClass("disabled");
+   };
+
 })(jQuery, window.freebase);

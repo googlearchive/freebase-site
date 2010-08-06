@@ -2,7 +2,7 @@
 from optparse import OptionParser
 from freebase.api import HTTPMetawebSession, MetawebError
 import urllib2
-ALL_APPS = ['apps', 'core', 'devdocs', 'domain', 'error', 'flot', 'homepage', 'jquerytools', 'jqueryui', 'policies', 'promise', 'queries', 'routing', 'schema', 'template', 'toolbox', 'permission']
+ALL_APPS = ['apps', 'core', 'devdocs', 'domain', 'error', 'flot', 'homepage', 'jquerytools', 'jqueryui', 'policies', 'promise', 'queries', 'routing', 'schema', 'template', 'toolbox', 'permission', 'appadmin']
 
 
 GRAPH = {

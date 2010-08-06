@@ -110,6 +110,7 @@ function domain(id) {
       // type blurbs
       types.forEach(function(type) {
         promises.push(add_description(type));
+        type.instance_count = 0;
         type.mediator = type["/freebase/type_hints/mediator"] === true;
       });
       // domain activity, instance counts per type
@@ -142,11 +143,13 @@ function normalize_prop(prop) {
   if (prop.expected_type && typeof prop.expected_type === "object") {
     prop.expected_type.mediator = prop.expected_type["/freebase/type_hints/mediator"] === true;
   }
+  return prop;
 };
 function normalize_props(props) {
   props.forEach(function(p) {
     normalize_prop(p);
   });
+  return props;
 };
 /**
  * Base type query:
@@ -179,21 +182,6 @@ function base_type(id) {
       normalize_props(result.properties);
 
       var promises = [];
-
-      // expand included_types
-      /**
-      result.included_types.forEach(function(inc_type) {
-         promises.push(freebase.mqlread(mql.type({id:inc_type.id}))
-           .then(function(env) {
-             return env.result || {};
-           })
-           .then(function(inc_type_result) {
-             normalize_props(inc_type_result.properties);
-             h.extend(inc_type, inc_type_result);
-             return inc_type_result;
-           }));
-      });
-      */
 
       // instance_count
       var activity_id = "summary_/guid/" + result.guid.slice(1);
@@ -235,15 +223,6 @@ function base_type(id) {
           return siblings;
         }));
 
-      //result.expected_by = [];
-      // incoming properties (properties whose ect == this type)
-      /**
-      promises.push(property.incoming(id)
-          .then(function(properties) {
-              result.expected_by = properties;
-              return properties;
-            }));
-       */
       return deferred.all(promises)
         .then(function() {
           return result;
@@ -255,105 +234,77 @@ function type(id) {
   return base_type(id)
     .then(function(result) {
       result.incoming = {
-        same: [],
-        common: [],
-        base: []
+        domain: [],
+        commons: 0,
+        bases: 0
       };
-
-      var q = [{
-        id: null,
-        name: null,
-        type: "/type/property",
-        expected_type: id,
-        schema: {
-          id: null,
-          name: null,
-          type: "/type/type",
-          domain: {
-            id: result.domain.id
-          }
-        },
-        optional: true
-      }];
-
-      return freebase.mqlread(q)
-        .then(function(env) {
-          return env.result || [];
-        })
+      var promises = [];
+      promises.push(incoming_from_domain(id, result.domain.id)
         .then(function(props) {
-          result.incoming.same = props;
+          result.incoming.domain = props || [];
+        }));
+      promises.push(incoming_from_commons(id, result.domain.id, true)
+        .then(function(props) {
+          result.incoming.commons = props || 0;
+        }));
+      promises.push(incoming_from_bases(id, result.domain.id, true)
+        .then(function(props) {
+          result.incoming.bases = props || 0;
+        }));
+
+      return deferred.all(promises)
+        .then(function() {
+          console.log("result", result);
           return result;
         });
-/**
-
-      result.expected_by.forEach(function(p) {
-        if (p.schema.domain.id === result.domain.id) {
-          result.incoming.same.push(p);
-        }
-        else if (p.schema.domain.key.namespace === "/") {
-          result.incoming.common.push(p);
-        }
-        else {
-          result.incoming.base.push(p);
-        }
-      });
-      result.incoming.same.sort(sh.sort_by_name);
-      result.incoming.common.sort(sh.sort_by_name);
-      result.incoming.base.sort(sh.sort_by_name);
-      return result;
-**/
     });
 };
 
 function typediagram(id) {
-  return type(id);
-  /**
   return base_type(id)
     .then(function(result) {
-      var q = [{
-        id: null,
-        name: null,
-        type: "/type/property",
-        expected_type: id,
-        schema: {
-          id: null,
-          name: null,
-          type: "/type/type",
-          domain: {
-            id: result.domain.id
-          }
-        },
-        optional: true
-      }];
-
-      return freebase.mqlread(q)
-        .then(function(env) {
-          return env.result || [];
-        })
+      result.incoming = {
+        domain: [],
+        commons: [],
+        bases: []
+      };
+      var promises = [];
+      promises.push(incoming_from_domain(id, result.domain.id)
         .then(function(props) {
-          result.incoming.same = props;
+          result.incoming.domain = props || [];
+        }));
+      promises.push(incoming_from_commons(id, result.domain.id)
+        .then(function(props) {
+          result.incoming.commons = props || [];
+        }));
+      promises.push(incoming_from_bases(id, result.domain.id)
+        .then(function(props) {
+          result.incoming.bases = props || [];
+        }));
+
+      return deferred.all(promises)
+        .then(function() {
+          console.log("result", result);
           return result;
         });
-
-      result.expected_by.forEach(function(p) {
-        if (p.schema.domain.key.namespace === "/") {
-          result.incoming.common.push(p);
-        }
-        else if (p.schema.domain.id.indexOf("/base/") === 0) {
-          result.incoming.base.push(p);
-        }
-        else if (p.schema.domain.id.indexOf("/user/") === 0) {
-          result.incoming.user.push(p);
-        }
-      });
-      result.incoming.common.sort(sh.sort_by_name);
-      result.incoming.base.sort(sh.sort_by_name);
-      result.incoming.user.sort(sh.sort_by_name);
-      return result;
     });
-   **/
 };
 
+
+function type_properties(id) {
+  var q = {
+    id: id,
+    type: "/type/type",
+    properties: [mql.property({optional: true, index: null, sort: "index"})]
+  };
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result || {};
+    })
+    .then(function(result) {
+      return normalize_props(result.properties);
+    });
+};
 
 
 function property(id) {
@@ -405,21 +356,100 @@ function property(id) {
         }));
       return deferred.all(promises)
         .then(function() {
-            console.log(result);
           return result;
         });
     });
 };
 
-property.incoming = function(id) {
-  var q = mql.property.incoming({id: id});
+
+function incoming_from_domain(type_id, domain_id, count) {
+  var q = incoming.query({expected_type:type_id});
+  h.extend(q[0].schema, {domain: domain_id});
+  if (count) {
+    // just get counts
+    q = q[0];
+    h.extend(q, {"return": "count"});
+  }
+  return incoming(q);
+};
+
+function incoming_from_commons(type_id, exclude_domain_id, count) {
+  var q = incoming.query({expected_type:type_id});
+  var domain_clause = {
+    domain: {
+      key: {
+        namespace: "/",
+        limit: 0
+      }
+    }
+  };
+  if (exclude_domain_id) {
+    domain_clause["forbid:domain"] = {
+      id: exclude_domain_id,
+      optional: "forbidden",
+      limit: 0
+    };
+  }
+  h.extend(q[0].schema, domain_clause);
+  if (count) {
+    // just get counts
+    q = q[0];
+    h.extend(q, {"return": "count"});
+  }
+  return incoming(q);
+};
+
+function incoming_from_bases(type_id, exclude_domain_id, count) {
+  var q = incoming.query({expected_type:type_id});
+  var domain_clause = {
+    domain: {
+      key: {
+        "forbid:namespace": {
+          id: "/",
+          optional: "forbidden"
+        },
+        limit: 0
+      }
+    }
+  };
+  if (exclude_domain_id) {
+    domain_clause["forbid:domain"] = {
+      id: exclude_domain_id,
+      optional: "forbidden",
+      limit: 0
+    };
+  }
+  h.extend(q[0].schema, domain_clause);
+
+  if (count) {
+    // just get counts
+    q = q[0];
+    h.extend(q, {"return": "count"});
+  }
+  return incoming(q);
+};
+
+function incoming(q) {
   return freebase.mqlread(q)
     .then(function(env) {
-      var result =  env.result || {};
-      return result.expected_by || [];
+      console.log("incoming", env, typeof env.result);
+      return env.result;
     })
-    .then(function(properties) {
-        normalize_props(properties);
-        return properties;
+    .then(function(result) {
+      return result;
     });
+};
+incoming.query = function(options) {
+  return [h.extend({
+    id: null,
+    name: null,
+    type: "/type/property",
+    expected_type: null,
+    schema: {
+      id: null,
+      name: null,
+      type: "/type/type"
+    },
+    optional: true
+  }, options)];
 };

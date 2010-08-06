@@ -52,8 +52,10 @@ function domain(options) {
         limit: 0
       },
       properties: {
+        id: null,
         type: "/type/property",
-        "return": "count"
+        "return": "count",
+        optional: true
       },
       optional: true,
       limit: 1000
@@ -159,31 +161,5 @@ function property(options) {
   }, options);
 };
 
-property.incoming = function(options) {
-  return h.extend({
-    id: null,
-    type: "/type/type",
-    expected_by: [property({
-      schema: {
-        id: null,
-        name: null,
-        type: "/type/type",
-        "/freebase/type_hints/mediator": null,
-        domain: {
-          id: null,
-          type: "/type/domain",
-          key: {
-            namespace: null,
-            limit: 1
-          }
-        },
-        "!/freebase/domain_profile/base_type": {
-          id: null,
-          optional: "forbidden",
-          limit: 0
-        }
-      }
-    })]
-  }, options);
-};
+
 

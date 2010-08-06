@@ -2,7 +2,34 @@
 
 (function($, fb) {
 
-  var schema = fb.schema = {};
+  var schema = fb.schema = {
+    // trigger for row menus
+    init_row_menu: function(context) {
+      $(".row-menu-trigger", context).each(function(){
+        $(this).tooltip({
+          events: {def: "click,mouseout"},
+          position: "bottom right",
+          offset: [-10, -10],
+          effect: "fade",
+          delay: 300
+        });
+        var $menu = $(this).closest(".row-menu");
+        $menu.children().last().hide();
+      })
+      .css({"visibility":"hidden"});// we use 'visibillity' here to prevent table shifting when shown
+
+      $(".hoverable", context).hover(function(){
+          var row = $(this);
+          row.addClass("row-hover");
+          $(".row-menu-trigger", row).css('visibility','visible').hide().fadeIn("fast");
+        },
+        function(){
+          var row = $(this);
+          $(".row-menu-trigger", row).css('visibility','hidden');
+          row.removeClass("row-hover");
+        });
+    }
+  };
 
   function init() {
     $.tablesorter.addParser({
@@ -35,20 +62,9 @@
       cssAsc: "column-header-asc",
       cssDesc: "column-header-desc",
       cssHeader: "column-header"
-    });    
-    // trigger for row menus
-    $(".row-menu-trigger").each(function(){
-      $(this).tooltip({
-        events: {def: "click,mouseout"},
-        position: "bottom right",
-        offset: [-10, -10],
-        effect: "fade",
-        delay: 300
-      });
-
-      var $menu = $(this).closest(".row-menu");
-      $menu.children().last().hide();
     });
+
+    schema.init_row_menu();
 
     $(".blurb-trigger").click(function(){
       var $trigger = $(this);
@@ -87,20 +103,6 @@
         this.getTrigger().removeClass("active");
       }
     });
-
-    // we use 'visibillity' here to prevent table shifting when shown
-    $(".row-menu-trigger").css({"visibility":"hidden"});
-
-    $(".hoverable").hover(function(){
-      var row = $(this);
-      row.addClass("row-hover");
-      $(".row-menu-trigger", row).css('visibility','visible').hide().fadeIn("fast");
-    }, function(){
-      var row = $(this);
-      $(".row-menu-trigger", row).css('visibility','hidden');
-      row.removeClass("row-hover");
-    });
-
   };
 
   $(init);

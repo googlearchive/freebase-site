@@ -9,128 +9,84 @@
 </acre:script>
 
 <!-- Native Properties markup pattern -->
-<acre:block def="native_properties(properties, type)">
-  <tr acre:for="prop in properties" class="hoverable">
-    <th scope="row" class="row-header odd">
-      <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
-      <a href="javascript:void(0);" class="row-menu-trigger">+</a>
-      <ul class="row-menu tooltip">
-        <li class="row-menu-item"><a href="${h.url_for('schema', 'property', null, prop.id)}">View property details</a></li>
-        <li class="row-menu-item" acre:if="prop.expected_type.id.indexOf('/type') === -1">
-          <a href="${h.freebase_url('/view'+prop.expected_type.id)}">Browse instances</a>
-        </li>
-        <li class="row-menu-item last">
-          <a href="${sh.build_query_url(type, prop.id)}">Build query</a>
-       </li>
-      </ul>
-    </th>
-    <td class="even">$prop.id</td>
-    <td class="odd">
-      <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">
-        $prop.expected_type.id
-      </a>
-      <span acre:if="prop.expected_type.mediator" class="is-cvt"><abbr title="This is a compound value type">cvt</abbr></span>
-      <span acre:if="prop.unit" class="measurement-unit">$prop.unit.name</span>
-      <span acre:if="prop.master_property || prop.reverse_property">
-        <span class="return-link-trigger"></span>
-        <acre:script>
-          var other_property = prop.master_property || prop.reverse_property;
-        </acre:script>
-        <span class="return-link-description">
-          <strong>$prop.name</strong> has a return link of
-          <strong>$other_property.name</strong>
-          from <strong>$other_property.schema.name</strong>
-          <span class="return-link-pointer"></span>
+<acre:block def="native_properties(properties, type_id)">
+  <tbody>
+    <tr>
+      <th class="column-header">Property</th>
+      <th class="column-header">ID</th>
+      <th class="column-header">Expected Type</th>
+      <th class="column-header description">Description</th>
+    </tr>
+    <tr acre:for="prop in properties" class="hoverable">
+      <th scope="row" class="row-header odd">
+        <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
+        <a href="javascript:void(0);" class="row-menu-trigger">+</a>
+        <ul class="row-menu tooltip">
+          <li class="row-menu-item"><a href="${h.url_for('schema', 'property', null, prop.id)}">View property details</a></li>
+          <li class="row-menu-item" acre:if="prop.expected_type.id.indexOf('/type') === -1">
+            <a href="${h.freebase_url('/view'+prop.expected_type.id)}">Browse instances</a>
+          </li>
+          <li class="row-menu-item last">
+            <a href="${sh.build_query_url(type_id, prop.id)}">Build query</a>
+          </li>
+        </ul>
+      </th>
+      <td class="even">$prop.id</td>
+      <td class="odd">
+        <a href="${h.url_for('schema', 'type_id', null, prop.expected_type.id)}">
+          $prop.expected_type.id
+        </a>
+        <span acre:if="prop.expected_type.mediator" class="is-cvt"><abbr title="This is a compound value type">cvt</abbr></span>
+        <span acre:if="prop.unit" class="measurement-unit">$prop.unit.name</span>
+        <span acre:if="prop.master_property || prop.reverse_property">
+          <span class="return-link-trigger"></span>
+          <acre:script>
+            var other_property = prop.master_property || prop.reverse_property;
+          </acre:script>
+          <span class="return-link-description">
+            <strong>$prop.name</strong> has a return link of
+            <strong>$other_property.name</strong>
+            from <strong>$other_property.schema.name</strong>
+            <span class="return-link-pointer"></span>
+          </span>        
         </span>
-        
-      </span>
-    </td>
-    <td class="even description">
-      <p acre:if="prop.tip">${prop.tip}</p>
-      <acre:block acre:trim="">              
-        <span acre:if="prop.master_property === null" class="property-meta"><abbr title="This is a master property">master</abbr></span><span acre:else="" class="property-meta"><abbr title="This is a reverse property">reverse</abbr></span><span acre:if="prop.unique" class="property-meta">, <abbr title="This property can only have a single value">unique</abbr></span><span acre:if="prop.disambiguator" class="property-meta">, <abbr title="This property is a disambiguator">disambiguating</abbr></span><span acre:if="prop.display_none" class="property-meta">, <abbr title="This property is hidden by default">hidden</abbr></span>
-      </acre:block>
-    </td>
-  </tr>
+      </td>
+      <td class="even description">
+        <p acre:if="prop.tip">${prop.tip}</p>
+        <acre:block acre:trim="">              
+          <span acre:if="prop.master_property === null" class="property-meta"><abbr title="This is a master property">master</abbr></span><span acre:else="" class="property-meta"><abbr title="This is a reverse property">reverse</abbr></span><span acre:if="prop.unique" class="property-meta">, <abbr title="This property can only have a single value">unique</abbr></span><span acre:if="prop.disambiguator" class="property-meta">, <abbr title="This property is a disambiguator">disambiguating</abbr></span><span acre:if="prop.display_none" class="property-meta">, <abbr title="This property is hidden by default">hidden</abbr></span>
+        </acre:block>
+      </td>
+    </tr>
+  </tbody>
 </acre:block>
 
 <!-- Included Types markup pattern -->
-<acre:block def="included_types(types, type)">
-  <acre:block for="t in types">
-    <acre:script>
-      var class_name = "included-type" + t.id.replace(/\//g, "-");
-    </acre:script>
-    <thead>
-      <tr>
-        <th class="tbody-header" colspan="4" data-target="$class_name">
-          <span class="tbody-header-title">$t.name</span> <span class="key">$t.id</span>
-        </th>
-      </tr>
-    </thead>
-    <tbody class="$class_name">
-      <tr>
-        <th class="column-header">Property</th>
-        <th class="column-header">ID</th>
-        <th class="column-header">Expected Type</th>
-        <th class="column-header description">Description</th>
-      </tr>
-      <tr acre:for="prop in t.properties" class="included-property hoverable">
-        <th scope="row" class="odd row-header">
-          <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
-          <a href="javascript:void(0);" class="row-menu-trigger">+</a>
-          <ul class="row-menu tooltip">
-            <li class="row-menu-item"><a href="${h.url_for('schema', 'property', null, prop.id)}">View property details</a></li>
-            <li class="row-menu-item" acre:if="prop.expected_type.id.indexOf('/type') === -1">
-              <a href="${h.freebase_url('/view'+prop.expected_type.id)}">Browse instances</a>
-            </li>
-            <li class="row-menu-item last"><a href="#">Build query</a></li>
-          </ul>          
-        </th>
-        <td class="even">$prop.id</td>
-        <td class="odd">
-          <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">$prop.expected_type.id</a>
-          <span acre:if="prop.unit">$prop.unit.name</span>
-        </td>
-        <td class="even description">
-          <p acre:if="prop.tip">${prop.tip}</p>
-          <acre:block acre:trim="">              
-            <span acre:if="prop.master_property === null" class="property-meta"><abbr title="This is a master property">master</abbr></span><span acre:else="" class="property-meta"><abbr title="This is a reverse property">reverse</abbr></span><span acre:if="prop.unique" class="property-meta">, <abbr title="This property can only have a single value">unique</abbr></span><span acre:if="prop.disambiguator" class="property-meta">, <abbr title="This property is a disambiguator">disambiguating</abbr></span><span acre:if="prop.display_none" class="property-meta">, <abbr title="This property is hidden by default">hidden</abbr></span>
-          </acre:block>
-        </td>
-      </tr>
-    </tbody>
-  </acre:block>
+<acre:block def="included_type_thead(type, expanded)">
+  <thead>
+    <tr>
+      <th class="tbody-header ${expanded ? 'expanded' : ''}" colspan="4" 
+         data-url="${h.url_for('schema', 'service', [['id',type.id],['foo','bar']] , '/get_type_properties')}">
+        <span class="tbody-header-title">$type.name</span> <span class="key">$type.id</span>
+      </th>
+    </tr>    
+  </thead>
 </acre:block>
 
 <!-- Incoming Properties markup pattern -->
-<acre:block def="incoming_props_group(name, props, expanded)">
-
-  <acre:script>
-
-    if(name != 'Commons' && name != 'Bases') {
-      var class_name = "incoming-property-same";
-    }
-    else {
-      var class_name = "incoming-property-" + name.toLowerCase();
-    }
-
-    if (expanded === true) {
-      var state = 'expanded';
-    }
-    else {
-      var state = '';
-    }
-
-  </acre:script>
-
+<acre:block def="incoming_props_thead(name, expanded, data_url)">
   <thead>
     <tr>
-      <th class="tbody-header $state" colspan="4" data-target="$class_name">
-        <span class="tbody-header-title">$name</span>
+      <th class="tbody-header ${expanded ? 'expanded' : ''}" colspan="4"
+          data-url="${data_url ? data_url : ''}">
+        <span class="tbody-header-title ${expanded ? 'expanded' : ''}">$name</span>
       </th>
     </tr>
   </thead>
-  <tbody class="$class_name $state">
+</acre:block>
+
+<acre:block def="incoming_props_tbody(props)">
+  <tbody>
     <tr>
       <th class="column-header" scope="col">Property</th>              
       <th class="column-header" scope="col">Originating Type</th>
@@ -160,10 +116,8 @@
         <span class="key">$prop.schema.id</span>      
       </td>
     </tr>
-  </tbody>
+  </tbody>  
 </acre:block>
-
-
 
 <!-- Markup pattern for left-hand table of Type Diagram -->
 

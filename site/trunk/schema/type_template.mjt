@@ -128,16 +128,7 @@
         Properties
       </h2>
       <table class="table" cellspacing="0" acre:if="c.type.properties.length">
-        <thead>
-          <tr>
-            <th class="column-header">Property</th>
-            <th class="column-header">ID</th>
-            <th class="column-header">Expected Type</th>
-            <th class="column-header description">Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${t.native_properties(c.type.properties, c.type.id)}
+         ${t.native_properties(c.type.properties, c.type.id)}
         </tbody>
       </table>
       <h2 class="empty-table-msg" acre:else=""><strong>$c.type.name</strong> has no properties</h2>
@@ -150,25 +141,30 @@
         Included Types
       </h2>
       <table class="table" cellspacing="0" id="included-types-table"  acre:if="c.type.included_types.length">
-        ${t.included_types(c.type.included_types)}
-      </table>
+        <acre:block for="type in c.type.included_types">
+          ${t.included_type_thead(type)}          
+        </acre:block>
+     </table>
       <h2 class="empty-table-msg" acre:else=""><strong>$c.type.name</strong> has no Included Types</h2>
     </div>
  
     <!-- Incoming Properties Table -->
     <div class="section">
       <h2 class="table-title">Incoming Properties</h2>
-      <table class="table" cellspacing="0" id="incoming-properties-table">
-        <acre:block if="c.type.incoming.same">
-          ${t.incoming_props_group(c.type.domain.name, c.type.incoming.same, expanded=true)}
+      <table class="table" cellspacing="0" id="incoming-properties-table" 
+             acre:if="c.type.incoming.domain.length || c.type.incoming.commons || c.type.incoming.bases">
+        <acre:block if="c.type.incoming.domain.length">
+          ${t.incoming_props_thead(c.type.domain.name, true)}
+          ${t.incoming_props_tbody(c.type.incoming.domain)}
+       </acre:block>
+        <acre:block if="c.type.incoming.commons">
+          ${t.incoming_props_thead("Commons", false, h.url_for('schema', 'service', [['id',c.type.id],['exclude_domain',c.type.domain.id]], '/get_incoming_from_commons'))}
         </acre:block>
-        <acre:block if="c.type.incoming.common">
-          ${t.incoming_props_group("Commons", c.type.incoming.common)}
-        </acre:block>
-        <acre:block if="c.type.incoming.base">
-          ${t.incoming_props_group("Bases", c.type.incoming.base)}
+        <acre:block if="c.type.incoming.bases">
+          ${t.incoming_props_thead("Bases", false, h.url_for('schema', 'service', [['id',c.type.id],['exclude_domain',c.type.domain.id]], '/get_incoming_from_bases'))}
         </acre:block>
       </table>
+      <h2 class="empty-table-msg" acre:else=""><strong>$c.type.name</strong> has no incoming properties</h2>
    </div>   
   </div>     
 </acre:block>
@@ -184,13 +180,15 @@
               <tr>
                 <th class="type-diagram-col-header" colspan="3">Incoming Properties</th>
               </tr>
-              ${t.type_diagram_incoming_props(c.type.incoming.same)}
+              <acre:block if="c.type.incoming.domain.length">
+                ${t.type_diagram_incoming_props(c.type.incoming.domain)}
+              </acre:block>
             </tbody>
-            <tbody class="bases">
-              ${t.type_diagram_incoming_props(c.type.incoming.common)}
+            <tbody class="bases" acre:if="c.type.incoming.commons.length">
+              ${t.type_diagram_incoming_props(c.type.incoming.commons)}
             </tbody>
-            <tbody class="users">
-              ${t.type_diagram_incoming_props(c.type.incoming.base)}
+            <tbody class="users" acre:if="c.type.incoming.bases.length">
+              ${t.type_diagram_incoming_props(c.type.incoming.bases)}
             </tbody>
           </table>
         </td>

@@ -268,7 +268,7 @@ DOMAIN EXPLORER
     border-radius: 5px;
 }
 
-#domain-explorer-tabs li {
+.domain-explorer-tab {
     font-size: 1.4em;
     line-height: 1;
     font-weight: normal;
@@ -278,14 +278,14 @@ DOMAIN EXPLORER
     .linear_gradient(#fefefe, #ececec, repeat);
 }
 
-#domain-explorer-tabs li a {
+.domain-explorer-tab-link {
     display: block;
     color: #888;
     font-weight: bold;
     padding: 10px;
 }
 
-#domain-explorer-tabs li a:hover {
+.domain-explorer-tab a:hover {
     text-decoration: none;
 }
 
@@ -296,6 +296,34 @@ DOMAIN EXPLORER
 
 #domain-explorer-tabs li.current a {
     color: #fff;
+}
+
+#all-domains-nav {
+	overflow: auto;
+	margin: 0.6em 0 0.6em 0.4em;
+}
+
+
+#all-domains-nav li {
+	color: #888;
+	/* color: #fff; */
+	display: block;
+	font-weight: bold;
+	width: 1.2em;
+	text-align: center;
+	float: left;
+	margin: 0px;
+	padding: 0.4em;
+}
+
+#all-domains-nav li.active {
+		color: #fff;
+	background: #78a;
+	.rounded_corners(5px);
+}
+
+#all-domains-nav a {
+	color: #fff;
 }
 
 .domain-explorer-pane {

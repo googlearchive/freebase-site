@@ -33,7 +33,7 @@
       </th>
       <td class="even">$prop.id</td>
       <td class="odd">
-        <a href="${h.url_for('schema', 'type_id', null, prop.expected_type.id)}">
+        <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">
           $prop.expected_type.id
         </a>
         <span acre:if="prop.expected_type.mediator" class="is-cvt"><abbr title="This is a compound value type">cvt</abbr></span>

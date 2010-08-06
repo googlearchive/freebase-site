@@ -32,6 +32,10 @@
   };
 
   function init() {
+
+    /**
+     * $.tablesorter defaults
+     */
     $.tablesorter.addParser({
       id: "schemaName",
       is: function(s) {
@@ -57,12 +61,9 @@
       type: 'numeric'
     });
 
-    // Make all sortable tables sortable
-    $(".table-sortable").tablesorter({
-      cssAsc: "column-header-asc",
-      cssDesc: "column-header-desc",
-      cssHeader: "column-header"
-    });
+    $.tablesorter.defaults.cssAsc = "column-header-asc";
+    $.tablesorter.defaults.cssDesc = "column-header-desc";
+    $.tablesorter.defaults.cssHeader =  "column-header";
 
     schema.init_row_menu();
 

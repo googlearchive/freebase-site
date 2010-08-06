@@ -1,8 +1,13 @@
 (function($, fb) {
 
   function init() {
+    // init table sorter
+    var table = $(".table-sortable").tablesorter();
+    $("thead th:nth-child(3)", table)[0].count = 1;
+    $("thead th:nth-child(4)", table)[0].count = 1;
+
     // Setup schema search tabset
-    var $schema_explorer_search_tabset = $("#schema-search > .section-tabset").tabs("#schema-search > .search-box");    
+    var $schema_explorer_search_tabset = $("#schema-search > .section-tabset").tabs("#schema-search > .search-box");
 
     /*
         MQL_FILTERS are config parameters passed to respective

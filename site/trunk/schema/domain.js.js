@@ -1,6 +1,12 @@
 (function($, fb) {
 
   var d = fb.schema.domain = {
+    init: function() {
+      var table = $(".table-sortable").tablesorter();
+      $("thead th:nth-child(3)", table)[0].count = 1;
+      $("thead th:nth-child(4)", table)[0].count = 1;
+    },
+
     init_edit: function() {
       // show all edit controls
       $(".edit").show();
@@ -29,5 +35,7 @@
       //d.init_edit();
     }
   });
+
+  $(d.init);
 
 })(jQuery, window.freebase);

@@ -300,7 +300,7 @@ DOMAIN EXPLORER
 
 #all-domains-nav {
 	overflow: auto;
-	margin: 0.6em 0 0.6em 0.4em;
+	margin: 0.6em 0.4em 0.6em 0.4em;
 }
 
 
@@ -319,7 +319,7 @@ DOMAIN EXPLORER
 #all-domains-nav li.active {
 		color: #fff;
 	background: #78a;
-	.rounded_corners(5px);
+	.rounded_corners();
 }
 
 #all-domains-nav a {
@@ -443,7 +443,7 @@ DOMAIN EXPLORER
 
 .activity-stats {
     background: #fff;
-    .rounded_corners(5px);
+    .rounded_corners();
     border: 1px solid #dcdbdc;
     overflow: auto;
     margin-right: 10px;
@@ -490,18 +490,12 @@ DOMAIN EXPLORER
 
 .activity-stats-facts {
     background: #f71;
-    -webkit-border-top-left-radius: 5px;
-    -moz-border-radius-topleft: 5px;
-    -webkit-border-bottom-left-radius: 5px;
-    -moz-border-radius-bottomleft: 5px;
+    .rounded_corners_leftside();
 }
 
 .activity-stats-topics {
     background: #78a;
-    -webkit-border-bottom-right-radius: 5px;
-    -moz-border-radius-bottomright: 5px;
-    -webkit-border-top-right-radius: 5px;
-    -moz-border-radius-topright: 5px;
+    .rounded_corners_rightside();
 }
 
 .activity-stats-number {
@@ -546,7 +540,7 @@ CONTENT SIDE
     border: 2px solid #b2bbc7;
     background: #444;
     .linear_gradient(#666666, #232323, repeat);
-    .rounded_corners(5px);
+    .rounded_corners();
     padding: 1em;
     text-align: center;
     margin: 0 0 1.5em 0;
@@ -574,7 +568,7 @@ CONTENT SIDE
 #content-side .content-section {
     background: #fff;
     border: 1px solid #abe;
-    .rounded_corners(5px);
+    .rounded_corners();
     padding: 1em;
     margin-bottom: 1.5em;
     overflow: auto;
@@ -647,7 +641,7 @@ CONTENT SIDE
 .stat-box, a.stat-box:link, a.stat-box:visited {
     display: block;
     background: #78a;
-    .rounded_corners(5px);
+    .rounded_corners();
     color: #fff;
     width: 5.3em;
     float: left;
@@ -695,7 +689,7 @@ CONTENT FOOTER
 #content-footer {
     width: 98em;
     border: 1px solid #d3d3d3;
-    .rounded_corners(5px);
+    .rounded_corners();
     float: left;
     margin-top: 1.5em;
 }
@@ -717,16 +711,11 @@ CONTENT FOOTER
 }
 
 #content-footer div:first-child {
-    -webkit-border-bottom-left-radius: 5px;
-    -moz-border-radius-bottomleft: 5px;
-    -webkit-border-top-left-radius: 5px;
-    -moz-border-radius-topleft: 5px;
+    .rounded_corners_leftside();
 }
+
 #content-footer div:last-child {
-    -webkit-border-bottom-right-radius: 5px;
-    -moz-border-radius-bottomright: 5px;
-    -webkit-border-top-right-radius: 5px;
-    -moz-border-radius-topright: 5px;
+   .rounded_corners_rightside();
 }
 
 #content-footer .content-section-last {

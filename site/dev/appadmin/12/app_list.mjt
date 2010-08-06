@@ -1,0 +1,50 @@
+<acre:script>
+  
+  
+  var q = [{
+    "id":        null,
+    "name":      null,
+    "timestamp": null,
+    "/type/namespace/keys" : {
+      "value" : "release"
+    },
+  "key" : { 
+  "namespace" : "/freebase/site", 
+  "limit" : 0
+  },
+    "attribution": {
+      "name": null,
+      "type": "/type/user",
+      "usergroup": {
+        "id":       "/en/metaweb_staff",
+      }
+    },
+    "limit":     100000,
+    "sort":      "timestamp",
+    "type":      "/freebase/apps/acre_app"
+  }];
+  
+  if (acre.request.params['all']) { 
+    delete q[0]['/type/namespace/keys']; 
+  }
+
+  q[0]['key']['namespace'] = '/freebase/apps';
+  var freebase_apps = acre.freebase.mqlread(q).result;
+
+  q[0]['key']['namespace'] = '/freebase/site';
+  var freebase_site =  acre.freebase.mqlread(q).result;
+</acre:script>
+
+<html><head><title>freebase.com apps</title></head><body>
+
+<h1>freebase.com apps</h1>
+
+<div acre:for="app in freebase_apps">
+  $app.name - http://acre.freebase.com/#app=$app.id
+</div>
+<div acre:for="app in freebase_site">
+  $app.name - http://acre.freebase.com/#app=$app.id
+</div>
+
+
+</body></html>

@@ -20,13 +20,15 @@ var ENV = [
         'service_url' : 'http://www.freebase.com',
         'name' : 'Production',
         'id' : 'production',
-        'acre' : 'dev.freebaseapps.com'
+        'acre' : '.freebaseapps.com.',
+	'ae' : 'http://acre.freebase.com'
     },
     { 
         'service_url' : 'http://www.sandbox-freebase.com',
         'name' : 'Sandbox',
         'id' : 'sandbox',
-        'acre' : 'dev.sandbox-freebaseapps.com'
+        'acre' : '.sandbox-freebaseapps.com.',
+	'ae' : 'http://acre.sandbox-freebase.com'
     }
 ];
 
@@ -195,6 +197,88 @@ var get_app = function(id) {
     return result
 
 };
+
+/*
+
+Given an app meta-data dictionary, returns an array of version up to the released version
+input:
+app(dict): app meta-data
+output:
+[ {  
+   'name' : <version_name> e.g. 11
+   'id' : <app_id>  e.g. //11.homepage.site.freebase.dev
+   'time' : <human readable time diff> e.g. 7 hours ago
+   'release' : <release> e.g. true
+}... ]
+
+*/
+
+var app_versions_to_release = function(app) { 
+
+    var now = new Date();
+
+    //trunk (current) is always a valid version
+    var versions = [{ 
+	'name' : 'trunk',
+	'id' : app.path,
+	'date' : now,
+	'release' : app.release ? false : true
+    }];
+
+
+    //if there are no more versions of this app, return
+    if (!app.versions) { 
+	return versions;
+    }
+
+    //go through each version and create an entry in the versions array
+    for (var i in app.versions) { 
+
+	var version = app.versions[i];
+
+	versions.push({
+	    'name' : version.name,
+	    'id' : '//' + version.name + '.' + app.path.slice(2),
+	    'date' : acre.freebase.date_from_iso(version.as_of_time),
+	    'release' : app.release && app.release == version.name ? true: false
+	});
+
+	if (versions[versions.length-1].release == true) { 
+	    break;
+	}
+    }
+
+
+    console.log(versions);
+    return versions;
+
+}
+
+
+/*
+
+Given an app id, gets the app meta-data for each environment.
+input:
+id(string): app id
+output:
+{ '<env_id>' : app-meta-data(dict) }
+*/
+
+
+var get_app2 = function(id) { 
+
+    var result = {}
+
+    for (var i in ENV) { 
+	var en = ENV[i];
+	result[en['id']] = ae.get_app(id + en['acre']);
+    }
+    
+
+    return result;
+
+}
+
 
 var get_manifest_diff = function(app1, app2) {
 

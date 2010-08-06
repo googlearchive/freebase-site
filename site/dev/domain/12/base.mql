@@ -1,0 +1,49 @@
+[{
+  "id": null,
+  "mid": null,
+  "name": null,
+  "timestamp": null,
+  "creator": {
+    "id": null,
+    "name": null
+  },
+  "/common/topic/article": {
+    "id": null,
+    "limit": 1,
+    "optional": true
+  },
+  "/freebase/domain_profile/featured_views": [{
+    "id": null,
+    "name": null,
+    "sort": "index",
+    "index": null,
+    "type": "/freebase/query",
+    "timestamp": null,
+    "creator": {
+        "id": null,
+        "name": null
+    },
+    "/freebase/query_hints/preferred_view": null,
+    "/common/topic/article": {
+        "id": null,
+        "limit": 1,
+        "optional": true
+    },
+  }],
+  "!views_count:/freebase/query_hints/related_domain": {
+    "optional": true,
+    "return": "count",
+    "limit": 1000
+  },
+  "/freebase/domain_profile/theme": {
+    "optional": true,
+    "id": null,
+    "type": "/freebase/theme",
+    "header_image": {
+      "id": null,
+      "optional": true
+    },
+    "header_text_color": null,
+    "header_background_color": null
+  }
+}]

@@ -3,7 +3,7 @@ var MF = {
     "core": "//13.core.site.freebase.dev",
     "template": "//13.template.site.freebase.dev",
       "promise": "//13.promise.site.freebase.dev",
-      "ae" : "//release.appeditor.apps.freebase.dev"
+      "ae" : "//appeditor.apps.freebase.dev"
   },
   "stylesheet": {
     "appadmin.mf.css": [

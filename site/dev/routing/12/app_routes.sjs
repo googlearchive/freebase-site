@@ -45,7 +45,7 @@ var routes = [
     to: "core"
   },
   {
-    from: "/admin",
+    from: "/app/admin",
     to: "appadmin"
   },
   {

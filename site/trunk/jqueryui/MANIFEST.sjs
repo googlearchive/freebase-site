@@ -4,7 +4,7 @@
  */
 var MF = {
   "apps": {
-    "core": "//11.core.site.freebase.dev"
+    "core": "//12.core.site.freebase.dev"
   },
   "javascript": {
     "jquery.ui.core.mf.js": ["jquery.ui.core.js", "jquery.ui.widget.js", "jquery.ui.mouse.js", "jquery.ui.position.js"]

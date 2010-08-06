@@ -40,7 +40,7 @@ App Admin
 	  var details_url = app_details_url + "?id=" + app_path.replace('\/\/', '%2f%2f');
 	</acre:script>
 	  <a href="#" class="expand" app_url="${details_url}" app_id="${app_path}">&gt;</a>
-	  <a href="${h.url_for('appadmin', 'app', [['id', app.path]])}">${app.name}</a></td>
+	  <a href="${h.url_for('appadmin', 'app', [['id', app_path]])}">${app.name}</a></td>
 	<td class="cell summary" app_url="${summary_url}"></td>
       </tr>
       <tr><td colspan="2"><div style="visibility: hidden;" id="details-${app_path}">Fetching details...</div></td></tr>

@@ -13,7 +13,7 @@ import acrepush
 from cssmin import cssmin
 import hashlib
 
-ALL_APPS = ['apps', 'core', 'devdocs', 'domain', 'error', 'flot', 'homepage', 'jquerytools', 'jqueryui', 'policies', 'promise', 'queries', 'routing', 'schema', 'template', 'toolbox', 'permission']
+ALL_APPS = ['apps', 'core', 'devdocs', 'domain', 'error', 'flot', 'homepage', 'jquerytools', 'jqueryui', 'policies', 'promise', 'queries', 'routing', 'schema', 'template', 'toolbox', 'permission', 'appadmin']
 
 # acre graph mapping to host for appeditor web services, i.e., /appeditor/get_app
 GRAPH = {

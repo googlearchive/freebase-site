@@ -1,8 +1,8 @@
 var MF = {
   "apps" : {
-    "core": "//11.core.site.freebase.dev",
-    "template": "//11.template.site.freebase.dev",
-      "promise": "//11.promise.site.freebase.dev",
+    "core": "//12.core.site.freebase.dev",
+    "template": "//12.template.site.freebase.dev",
+      "promise": "//12.promise.site.freebase.dev",
       "ae" : "//release.appeditor.apps.freebase.dev"
   },
   "stylesheet": {

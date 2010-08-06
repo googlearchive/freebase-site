@@ -5,7 +5,7 @@
  */
 var MF = {
   "apps": {
-    "core": "//11.core.site.freebase.dev"
+    "core": "//12.core.site.freebase.dev"
   },
   "javascript": {
     "flot.core.mf.js": [

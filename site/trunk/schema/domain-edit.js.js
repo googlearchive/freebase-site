@@ -19,7 +19,8 @@
           // add edit-form after the edit button
           var form = $(data.result.html).hide()
             .data("table", table)
-            .data("edit", editbutton);
+            .data("edit", editbutton)
+            .data("submitted", []);
           editbutton.after(form);
 
           // show edit-form
@@ -38,6 +39,10 @@
               console.log("fb.schema.domain.edit.add_new_type.submit");
               de.add_new_type_cancel(form);
             })
+            .bind("fb.schema.domain.edit.add_new_type.finish", function() {
+              console.log("fb.schema.domain.edit.add_new_type.finish");
+              de.add_new_type_finish(form);
+            })
             .bind("fb.schema.domain.edit.add_new_type.warning", function(e, row, warning) {
               console.log("fb.schema.domain.edit.add_new_type.warning", row, warning);
               de.add_new_type_row_warning(form, row, warning);
@@ -54,16 +59,22 @@
      * init add_new_type form
      */
     add_new_type_init: function(form) {
-
       // submit handler
-      form.data("button-submit", $(".button-submit", form).click(function() {
+      var submit = $(".button-submit", form).click(function() {
         form.trigger("fb.schema.domain.edit.add_new_type.submit");
-      }));
+      });
+      form.bind("change", function() {
+        fb.enable(submit);
+      });
+      form.data("button-submit", submit);
+      // disable submit button
+      fb.disable(submit);
 
       // cancel handler
-      form.data("button-cancel", $(".button-cancel", form).click(function() {
+      var cancel = $(".button-cancel", form).click(function() {
         form.trigger("fb.schema.domain.edit.add_new_type.cancel");
-      }));
+      });
+      form.data("button-cancel", cancel);
 
       // disable edit-row-template
       fb.disable($(".edit-row-template :input", form));
@@ -123,11 +134,9 @@
     },
 
     add_new_type_cancel: function(form) {
-      if (form.data("button-cancel").is(":disabled")) {
-        return;
-      }
       form.slideUp(function() {
         form.data("edit").slideDown();
+        $(this).remove();
       });
     },
 
@@ -135,121 +144,104 @@
      * validate rows, if no errors submit
      */
     add_new_type_submit: function(form) {
-      // if already submitting, don't submit
+      if (form.is(".loading")) {
+        return;
+      }
       if (form.data("button-submit").is(":disabled")) {
         return;
       }
-
-      // disable submit
-      fb.disable(form.data("button-submit"));
-      fb.disable(form.data("button-cancel"));
-
+      // remove focus from activeelement
+      if (document.activeElement) {
+        $(document.activeElement).blur();
+      }
       // remove existing row-msg's
       $(".row-msg", form).remove();
       var rows = $(".edit-row:not(.edit-row-template, .edit-row-submit)", form).each(function() {
         de.add_new_type_row_validate($(this));
       });
-
-      // are there any errors? if so, don't submit
-      if ($(".row-msg-error", form).length) {
-        // re-enable submit
-        fb.enable(form.data("button-submit"));
+      // any pre-submit errors?
+      if ($(".row-msg-error").length) {
         return;
       }
+      form.slideUp(function() {
+        form.addClass("loading").slideDown(function() {
+          rows = Array.prototype.slice.call(rows); // make jQuery object into an Array
+          de.add_new_type_submit_rows(form, rows);
+        });
+      });
+    },
 
-      rows.each(function() {
-        var row = $(this);
-        var data = {
-          domain: $(":input[name=domain]", row).val(),
-          name:  $(":input[name=name]", row).val(),
-          key: $(":input[name=key]", row).val(),
-          typehint: $(":input[name=typehint]", row).val(),
-          description: $(":input[name=description]", row).val()
-        };
+    add_new_type_finish: function(form) {
+      var tbody = form.data("table").find("tbody:first");
+      // do we have any new rows?
+      var submitted = form.data("submitted");
+      $.each(submitted, function(i,n) {
+        var row = n[0];
+        var data = n[1];
+        var new_row = $(data.result.html).addClass("new");
+        tbody.append(new_row);
+        row.remove();
+      });
+      // clear submitted array
+      form.data("submitted",[]);
 
-        // skip empty rows
-        if (data.name === "" || data.key === "") {
-          return;
-        }
+      // do we have any errors?
+      if ($(".row-msg-error", form).length) {
+        form.slideUp(function() {
+          form.removeClass("loading").slideDown();
+        });
+      }
+      else {
+        form.trigger("fb.schema.domain.edit.add_new_type.cancel");
+      }
+    },
 
+    add_new_type_submit_rows: function(form, rows /** Array **/) {
+      if (!rows.length) {
+        form.trigger("fb.schema.domain.edit.add_new_type.finish");
         return;
-
-        function check_submit(success) {
-          if ($(".loading", form).length) {
-            console.log("check_submit still loading");
-            // still submitting
-            return;
-          }
-          fb.enable(form.data("button-submit"));
-          fb.enable(form.data("button-cancel"));
-
-          if (success) {
-            form.trigger("fb.schema.domain.edit.add_new_type.cancel");
-          }
-        };
-
-        var tbody = table.find("tbody:first");
-        $.ajax({
-          url: acre.request.app_url + "/schema/service/add_new_type_submit",
-          type: "POST",
-          dataType: "json",
-          data: data,
-          beforeSend: function() {
-            row.addClass("loading");
-          },
-          success: function(data) {
-            var new_row = $(data.result.html).addClass("new-row");
-            row.fadeOut(function() {
-              tbody.append(new_row);
-              $(this).remove();
-              check_submit(true);
-            });
-          },
-          error: function(xhr) {
-            console.log("error", xhr.responseText);
-
-            var msg;
-            try {
-              msg = JSON.parse(xhr.responseText);
-              msg = msg.messages[0].message;
-            }
-            catch (e) {
-              msg = xhr.responseText;
-            }
-
-            de.add_new_type_row_error(form, row, msg);
-            row.removeClass("loading");
-
-            check_submit(false);
-          }
-        });
-      });
-/**
-
-      var submit_data = [];
-      rows.each(function() {
-        var row = $(this);
-        submit_data.push({
-          domain: $(":input[name=domain]").val(),
-          name:  $(":input[name=name]", row).val(),
-          key: $(":input[name=key]", row).val(),
-          typehint: $(":input[name=typehint]", row).val(),
-          description: $(":input[name=description]", row).val()
-        });
-      });
+      }
+      var row = $(rows.shift());
+      var name = $.trim($(":input[name=name]", row).val());
+      var key = $.trim($(":input[name=key]", row).val());
+      if (name === "" || key === "") {
+        // skip row
+        de.add_new_type_submit_rows(form, rows);
+        return;
+      }
+      var data = {
+        domain:  $(":input[name=domain]", row).val(),
+        name: name,
+        key: key,
+        typehint: $(":input[name=typehint]", row).val(),
+        description: $(":input[name=description]", row).val()
+      };
 
       $.ajax({
         url: acre.request.app_url + "/schema/service/add_new_type_submit",
         type: "POST",
         dataType: "json",
-        data: {data:JSON.stringify(submit_data)},
+        data: data,
         success: function(data) {
-          console.log(data);
+          form.data("submitted").push([row, data]);
         },
-        error: function() {
-          console.log(Array.prototype.slice.call(arguments));
+        error: function(xhr) {
+          var msg;
+          try {
+            msg = JSON.parse(xhr.responseText);
+            msg = msg.messages[0].message; // display the first message
+          }
+          catch(e) {
+            msg = xhr.responseText;
+          }
+          // TODO: make error expandable to see whole error message
+          de.add_new_type_row_error(form, row, msg);
+        },
+        complete: function() {
+          // submit next row
+          de.add_new_type_submit_rows(form, rows);
         }
-      });**/
+      });
     },
 
     /**

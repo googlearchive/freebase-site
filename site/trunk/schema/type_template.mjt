@@ -137,7 +137,7 @@
     <!-- Included Types Table -->      
     <div class="section">
       <h2 class="table-title">
-        <a class="help-link" href="http://wiki.freebase.com/wiki/Included_type" rel="help external" title="Read help article">What are Included Types?</a>
+        <a class="help-link" href="http://wiki.freebase.com/wiki/Included_Type" rel="help external" title="Read help article">What are Included Types?</a>
         Included Types
       </h2>
       <table class="table" cellspacing="0" id="included-types-table"  acre:if="c.type.included_types.length">

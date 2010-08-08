@@ -12,7 +12,7 @@ var create_article = mf.require("create_article").create_article;
  *   name (required)
  *   key (required)
  *   desc (optional)
- *   typehint (optional) - "enumeration", "cvt"
+ *   typehint (optional) - "enumeration", "mediator"
  *   mqlkey_quote (optional) - acre.freebase.mqlkey_quote(key) if TRUE, default is False.
  */
 function create_type(o) {
@@ -20,7 +20,7 @@ function create_type(o) {
   var name = o.name == null ? "" : h.trim(o.name);
   var key = o.key == null ? "" : h.trim(o.key);
   var desc = o.desc == null ? "" : h.trim(o.desc);
-  var typehint = (o.typehint === "enumeration" || o.typehint === "cvt") ? o.typehint : "";
+  var typehint = (o.typehint === "enumeration" || o.typehint === "mediator") ? o.typehint : "";
   var mqlkey_quote = o.mqlkey_quote === true;
   var lang = o.lang == null ? "/lang/en" : o.lang;  // this should be set globally somehow
   if (domain === "" || name === "" || key === "") {
@@ -59,7 +59,7 @@ function create_type(o) {
           connect: "update"
         }
       };
-      if (typehint === "cvt") {
+      if (typehint === "mediator") {
         // add /freebase/type_profile/mediator
         q["/freebase/type_hints/mediator"] = {
           value: true,

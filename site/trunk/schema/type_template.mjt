@@ -55,7 +55,7 @@
       <span class="key"><strong>Key:</strong> $c.type.id</span>
       <span class="display-type">
         <strong>Display:</strong>
-        <span class="display-type" acre:if="c.type.cvt">Compound Value</span>
+        <span class="display-type" acre:if="c.type.mediator">Mediator</span>
         <span class="display-type" acre:elif="c.type.enumeration">Enumerated</span>
         <span class="display-type" acre:else="">Standard</span>
       </span>

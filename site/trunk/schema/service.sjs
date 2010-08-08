@@ -37,7 +37,7 @@ var api = {
 
   add_new_type_begin: function(args) {
     return {
-      html: acre.markup.stringify(edit.add_new_type_form(args.id, args.cvt == 1))
+      html: acre.markup.stringify(edit.add_new_type_form(args.id, args.mediator == 1))
     };
   },
 
@@ -47,6 +47,12 @@ var api = {
     return create_type(create_type_options)
       .then(function(result) {
         var created = {name:args.name, id: result.id, properties: 0, instance_count: 0, blurb: args.description};
+        if (args.typehint === "mediator") {
+          created.mediator = created["/freebase/type_hints/mediator"] = true;
+        }
+        else if (args.typehint === "enumeration") {
+          created.enumeration = created["/freebase/type_hints/enumeration"] = true;
+        }
         return {
           html: acre.markup.stringify(t.domain_type_row(created))
         };
@@ -61,7 +67,7 @@ api.get_incoming_from_commons.args = ["id"]; // type id, exclude_domain (ptional
 
 api.get_incoming_from_bases.args = ["id"]; // type id, exclude_domain (ptional)
 
-api.add_new_type_begin.args = ["id"]; // domain id, cvt (optional)
+api.add_new_type_begin.args = ["id"]; // domain id, mediator (optional)
 api.add_new_type_begin.auth = true;
 
 api.add_new_type_submit.args = ["domain", "name", "key", "typehint", "description"];

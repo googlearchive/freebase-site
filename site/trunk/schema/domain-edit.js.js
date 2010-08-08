@@ -5,12 +5,12 @@
     /**
      * retrieve add_new_type form (ajax).
      */
-    add_new_type_begin: function(target, cvt) {
+    add_new_type_begin: function(target, mediator) {
       var editbutton = $(target).parents(".edit:first");
       var table = editbutton.prev("table");
       $.ajax({
         url: acre.request.app_url + "/schema/service/add_new_type_begin",
-        data: {id: acre.c.id, cvt: cvt ? 1 : 0},
+        data: {id: acre.c.id, mediator: mediator ? 1 : 0},
         dataType: "json",
         success: function(data) {
           // remove previous edit-form
@@ -209,11 +209,14 @@
         de.add_new_type_submit_rows(form, rows);
         return;
       }
+      var typehint = $(":input[name=typehint]", row);
+      typehint = typehint.is(":checked") ? typehint.val() : "";
+
       var data = {
         domain:  $(":input[name=domain]", row).val(),
         name: name,
         key: key,
-        typehint: $(":input[name=typehint]", row).val(),
+        typehint: typehint,
         description: $(":input[name=description]", row).val()
       };
 

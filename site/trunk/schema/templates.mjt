@@ -18,7 +18,7 @@
     <td class="even numeric"><a href="${acre.freebase.service_url}/view${type.id}">${h.commafy(type.instance_count)}</a></td>
     <td class="odd description">
       <p>$type.blurb</p>
-      <span acre:if="type['/freebase/type_hints/enumeration']" class="property-meta">Enumerated</span>
+      <span acre:if="type.enumeration" class="property-meta">Enumeration</span>
     </td>
   </tr>
 </acre:block>
@@ -51,7 +51,7 @@
         <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">
           $prop.expected_type.id
         </a>
-        <span acre:if="prop.expected_type.mediator" class="is-cvt"><abbr title="This is a compound value type">cvt</abbr></span>
+        <span acre:if="prop.expected_type.mediator" class="is-mediator"><abbr title="This is a mediator">mediator</abbr></span>
         <span acre:if="prop.unit" class="measurement-unit">$prop.unit.name</span>
         <span acre:if="prop.master_property || prop.reverse_property">
           <span class="return-link-trigger"></span>
@@ -151,9 +151,9 @@
       <td class="c7">&nbsp;</td>
     </tr>
     <tr class="${global ? 'global' : 'local'} ${prop.inherited ? 'inherited' : ''}">
-      <td nowrap="" class="c1 in_type ${prop.schema.cvt ? 'mediator' : 'truetype'}">
+      <td nowrap="" class="c1 in_type ${prop.schema.mediator ? 'mediator' : 'truetype'}">
         <acre:block if="!same || i == 0">
-          <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.schema.id} ${prop.schema.cvt ? '| mediator' : ''}">$prop.schema.name</a>
+          <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.schema.id} ${prop.schema.mediator ? '| mediator' : ''}">$prop.schema.name</a>
           <a acre:if="prop.schema.instance_count" href="${h.freebase_url('/view' + prop.schema.id)}" title="Browse the ${h.commafy(prop.schema.instance_count)} instances of ${prop.schema.id}" class="instances">[h.commafy(prop.schema.instance_count)]</a>
         </acre:block>
       </td>

@@ -106,12 +106,13 @@ function domain(id) {
       domain.date = h.format_date(acre.freebase.date_from_iso(domain.timestamp), 'MMMM dd, yyyy');
 
       var promises = [];
-      var types = domain["types"].concat(domain["cvt:types"]);
+      var types = domain["types"].concat(domain["mediator:types"]);
       // type blurbs
       types.forEach(function(type) {
         promises.push(add_description(type));
         type.instance_count = 0;
         type.mediator = type["/freebase/type_hints/mediator"] === true;
+        type.enumeration = type["/freebase/type_hints/enumeratio"] === true;
       });
       // domain activity, instance counts per type
       var activity_id = "summary_/guid/" + domain.guid.slice(1);
@@ -172,7 +173,7 @@ function base_type(id) {
     .then(function(result) {
       // readable timestamp
       result.date = h.format_date(acre.freebase.date_from_iso(result.timestamp), 'MMMM dd, yyyy');
-      // cvt?
+      // mediator?
       result.mediator = result["/freebase/type_hints/mediator"] === true;
       // enumeration?
       result.enumeration = result["/freebase/type_hints/enumeration"] === true;

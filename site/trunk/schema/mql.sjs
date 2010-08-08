@@ -36,7 +36,7 @@ function domain(options) {
       member: [qh.user_clause()]
     }],
     "/common/topic/article": qh.article_clause(true),
-    types: [{ // non-cvt types
+    types: [{ // non-mediator types
       id: null,
       name: null,
       type: "/type/type",
@@ -61,12 +61,13 @@ function domain(options) {
       optional: true,
       limit: 1000
     }],
-    "cvt:types": [{ // cvt types
+    "mediator:types": [{ // mediator types
       id: null,
       name: null,
       type: "/type/type",
       "/common/topic/article": qh.article_clause(true),
       "/freebase/type_hints/mediator": true,
+      "/freebase/type_hints/enumeration": null,
       properties: {
         type: "/type/property",
         "return": "count"

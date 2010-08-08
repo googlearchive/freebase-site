@@ -74,9 +74,9 @@ test("user_domains", function() {
 
 
 test("domain", function() {
-  function assert_type(type, cvt) {
-    assert_keys(["name", "id", "properties", "instance_count", "blurb", "mediator"], type, true);
-    equal(type["mediator"], cvt);
+  function assert_type(type, mediator) {
+    assert_keys(["name", "id", "properties", "instance_count", "blurb", "mediator", "enumeration"], type, true);
+    equal(type["mediator"], mediator);
   };
 
   var result;
@@ -87,17 +87,17 @@ test("domain", function() {
   acre.async.wait_on_results();
   ok(result);
   assert_keys(["id", "name", "creator",  "owners", "timestamp", "date",
-               "blurb", "blob", "types", "cvt:types"], result, true);
+               "blurb", "blob", "types", "mediator:types"], result, true);
   // regular types
   ok(result.types && result.types.length);
   result.types.forEach(function(type) {
     assert_type(type, false);
   });
-  // cvts
-  var cvts = result["cvt:types"];
-  if (cvts && cvts.length) {
-    cvts.forEach(function(cvt) {
-      assert_type(cvt, true);
+  // mediators
+  var mediators = result["mediator:types"];
+  if (mediators && mediators.length) {
+    mediators.forEach(function(mediator) {
+      assert_type(mediator, true);
     });
   }
 });

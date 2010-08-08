@@ -2,9 +2,22 @@
 
   var d = fb.schema.domain = {
     init: function() {
-      var table = $(".table-sortable").tablesorter();
-      $("thead th:nth-child(3)", table)[0].count = 1;
-      $("thead th:nth-child(4)", table)[0].count = 1;
+      d.init_tablesorter();
+    },
+
+    init_tablesorter: function() {
+      $(".table-sortable").each(function() {
+        var table = $(this);
+        console.log(table, $("> tbody > tr", table).length);
+        if ($("> tbody > tr", table).length) {
+          table.tablesorter();
+          $("thead th:nth-child(3)", table)[0].count = 1;
+          $("thead th:nth-child(4)", table)[0].count = 1;
+        }
+        else {
+          table.hide();
+        }
+      });
     },
 
     init_edit: function() {
@@ -16,14 +29,14 @@
       return d._add_new_type(e);
     },
 
-    add_new_cvt: function(e) {
+    add_new_mediator: function(e) {
       return d._add_new_type(e, true);
     },
 
-    _add_new_type: function(e, cvt) {
+    _add_new_type: function(e, mediator) {
       var target = e.target;
       fb.get_script(acre.request.app_url + "/schema/MANIFEST/domain-edit.mf.js", function() {
-        d.edit.add_new_type_begin(target, cvt);
+        d.edit.add_new_type_begin(target, mediator);
       });
       return false;
     }
@@ -38,4 +51,4 @@
 
   $(d.init);
 
-})(jQuery, window.freebase); 
+})(jQuery, window.freebase);

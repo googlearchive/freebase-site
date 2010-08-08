@@ -21,7 +21,7 @@ function get_name() {
   return  [user.username, user.transaction_id, counter++].join("_");
 };
 
-test("create_type", function() {    
+test("create_type", function() {
   var success;
   var name = get_name();
   create_type({
@@ -39,7 +39,7 @@ test("create_type", function() {
 
   // assert included type /common/topic
   freebase.mqlread({
-    id:success.id, 
+    id:success.id,
     "/freebase/type_hints/included_types": {id:"/common/topic"},
     permission: {
       id: null,
@@ -55,14 +55,14 @@ test("create_type", function() {
   equal(success.permission["!/type/object/permission"].id,  user.id + "/default_domain");
 });
 
-test("create_type cvt", function() {    
+test("create_type mediator", function() {
   var success;
   var name = get_name();
   create_type({
     domain: user.id + "/default_domain",
     name: name,
     key: name,
-    typehint: "cvt",
+    typehint: "mediator",
     mqlkey_quote: true
   })
   .then(function(r) {
@@ -82,7 +82,7 @@ test("create_type cvt", function() {
   ok(success["/freebase/type_hints/mediator"]);
 });
 
-test("create_type enumeration", function() {    
+test("create_type enumeration", function() {
   var success;
   var name = get_name();
   create_type({
@@ -101,7 +101,7 @@ test("create_type enumeration", function() {
 
   // assert included type /common/topic
   freebase.mqlread({
-    id:success.id, 
+    id:success.id,
     "/freebase/type_hints/included_types": {id:"/common/topic"},
     "/freebase/type_hints/enumeration": null
   })
@@ -203,7 +203,7 @@ test("create_type with description", function() {
 
   // assert /common/topic/article
   freebase.mqlread({
-    id: success.id, 
+    id: success.id,
     "/common/topic/article": {
       id: null,
       permission: {
@@ -217,7 +217,7 @@ test("create_type with description", function() {
   .then(function(env) {
     return env.result;
   })
-  .then(function(result) {      
+  .then(function(result) {
     return freebase.get_blob(result["/common/topic/article"].id, "blurb")
       .then(function(blob) {
         success = blob.body;

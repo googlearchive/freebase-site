@@ -1,4 +1,4 @@
-<acre:block def="add_new_type_form(domain_id, cvt)">
+<acre:block def="add_new_type_form(domain_id, mediator)">
   <div class="edit-form">
     <acre:block for="rowclass in ['edit-row', 'edit-row edit-row-template']">
       <div class="${rowclass}">
@@ -23,13 +23,12 @@
         <div class="form-field fb-type-display">
           <label>
             <span class="form-label">Display</span>
-            <select acre:if="cvt" name="typehint">
-              <option>Compound Value</option>
-            </select>
-            <select acre:else="" name="typehint">
-              <option selected="selected">Standard</option>
-              <option>Enumerated</option>
-            </select>
+            <acre:block if="mediator">
+              <input type="checkbox" name="typehint" value="mediator" disabled="disabled" checked="checked"> <label for="typehint">Mediator</label>
+            </acre:block>
+            <acre:block else="">
+              <input type="checkbox" name="typehint" value="enumeration"> <label for="typehint">Enumeration</label>
+            </acre:block>
           </label>
         </div>
 

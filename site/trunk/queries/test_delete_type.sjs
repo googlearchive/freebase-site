@@ -58,4 +58,41 @@ test("delete_type", function() {
      result.domain.connect === "deleted", "domain link deleted: " + type.domain.id);
 });
 
+
+test("delete_type dry_run", function() {
+  var type;
+  var name = get_name();
+  create_type({
+    domain: user.id + "/default_domain",
+    name: name,
+    key: name,
+    mqlkey_quote: true
+  })
+  .then(function(r) {
+    type = r;
+  });
+  acre.async.wait_on_results();
+  ok(type.id, type.id);
+
+  var info, result;
+  delete_type(type.id, user.id, true)
+    .then(function([type_info, delete_result]) {
+      info = type_info;
+      result = delete_result;
+    });
+  acre.async.wait_on_results();
+  ok(info);
+  ok(!result);
+
+  equal(info.id, type.id, "type info.id: " + info.id);
+  ok(info.key[0].value === type.key.value &&
+     info.key[0].namespace === type.key.namespace, "type info.key: " + type.key.value);
+
+  ok(info.domain.id === type.domain.id, "type info.domain: " + type.domain.id);
+
+  // delete type
+  delete_type(type.id, user.id, false, true);
+  acre.async.wait_on_results();
+});
+
 acre.test.report();

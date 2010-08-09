@@ -17,14 +17,16 @@ var h = mf.require("core", "helpers");
  *   4. remove property expected type on properties you have permission on
  *   5. take note of the properties that you don't have permission on
  */
-function delete_type(type_id, user_id, force) {
+function delete_type(type_id, user_id, dry_run, force) {
   return type_info(type_id, user_id)
     .then(function(info) {
-      if (!force &&
-          (info.instance_count ||
-           info.expected_by.permitted.length ||
-           info.expected_by.not_permitted.length)) {
-        throw info;
+      if (!force && (info.instance_count ||
+          info.expected_by.permitted.length ||
+          info.expected_by.not_permitted.length)) {
+        throw deferred.rejected(info);
+      }
+      if (dry_run) {
+        return [info, null];
       }
       var q = {
         guid: info.guid,

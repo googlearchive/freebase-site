@@ -51,6 +51,9 @@ function create_type(o) {
       if (created.create === "existed") {
         return deferred.rejected("key already exists: " + key);
       }
+      // cleanup result
+      created.domain = created["/type/type/domain"];
+
       q = {
         id: created.id,
         name: {

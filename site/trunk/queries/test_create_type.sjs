@@ -3,6 +3,7 @@ acre.require('/test/lib').enable(this);
 var mf = acre.require("MANIFEST").MF;
 var freebase = mf.require("promise", "apis").freebase;
 var create_type = acre.require("create_type").create_type;
+var delete_type = acre.require("delete_type").delete_type;
 
 // this test requires user to be logged in
 var user = acre.freebase.get_user_info();
@@ -53,6 +54,10 @@ test("create_type", function() {
   ok(success);
   equal(success["/freebase/type_hints/included_types"].id, "/common/topic");
   equal(success.permission["!/type/object/permission"].id,  user.id + "/default_domain");
+
+  // delete type
+  delete_type(success.id, user.id, true);
+  acre.async.wait_on_results();
 });
 
 test("create_type mediator", function() {
@@ -80,6 +85,10 @@ test("create_type mediator", function() {
   acre.async.wait_on_results();
   ok(success);
   ok(success["/freebase/type_hints/mediator"]);
+
+  // delete type
+  delete_type(success.id, user.id, true);
+  acre.async.wait_on_results();
 });
 
 test("create_type enumeration", function() {
@@ -112,6 +121,10 @@ test("create_type enumeration", function() {
   ok(success);
   equal(success["/freebase/type_hints/included_types"].id, "/common/topic");
   ok(success["/freebase/type_hints/enumeration"]);
+
+  // delete type
+  delete_type(success.id, user.id, true);
+  acre.async.wait_on_results();
 });
 
 
@@ -186,7 +199,7 @@ test("create_type no domain", function() {
 
 
 test("create_type with description", function() {
-  var success;
+  var success, type;
   var name = get_name();
   create_type({
     domain: user.id + "/default_domain",
@@ -196,7 +209,7 @@ test("create_type with description", function() {
     desc: name
   })
   .then(function(r) {
-    success = r;
+    type = success = r;
   });
   acre.async.wait_on_results();
   ok(success);
@@ -225,6 +238,10 @@ test("create_type with description", function() {
   });
   acre.async.wait_on_results();
   equal(success, name);
+
+  // delete type
+  delete_type(type.id, user.id, true);
+  acre.async.wait_on_results();
 });
 
 acre.test.report();

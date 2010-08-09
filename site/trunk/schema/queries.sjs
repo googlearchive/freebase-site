@@ -135,8 +135,6 @@ function domain(id) {
     });
 };
 
-
-
 function normalize_prop(prop) {
   prop.tip = prop["/freebase/documented_object/tip"] || "";
   prop.disambiguator = prop["/freebase/property_hints/disambiguator"] === true;

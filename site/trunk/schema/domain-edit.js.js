@@ -5,30 +5,20 @@
     /**
      * retrieve add_new_type form (ajax).
      */
-    add_new_type_begin: function(target, mediator) {
-      var editbutton = $(target).parents(".edit:first");
-      var table = editbutton.prev("table");
+    add_new_type_begin: function(context, mediator) {
+      var table = context.prev("table");
       $.ajax({
         url: acre.request.app_url + "/schema/service/add_new_type_begin",
         data: {id: acre.c.id, mediator: mediator ? 1 : 0},
         dataType: "json",
         success: function(data) {
-          // remove previous edit-form
-          editbutton.next(".edit-form").remove();
-
           // add edit-form after the edit button
           var form = $(data.result.html).hide()
             .data("table", table)
-            .data("edit", editbutton)
             .data("submitted", []);
-          editbutton.after(form);
+          context.after(form);
 
-          // show edit-form
-          editbutton.slideUp(function() {
-            form.slideDown(function() {
-              de.add_new_type_init(form);
-            });
-          });
+          de.add_new_type_init(form);
 
           form
             .bind("fb.schema.domain.edit.add_new_type.submit", function() {
@@ -50,6 +40,9 @@
             .bind("fb.schema.domain.edit.add_new_type.error", function(e, row, error) {
               console.log("fb.schema.domain.edit.add_new_type.error", row, error);
               de.add_new_type_row_error(form, row, error);
+            })
+            .slideDown(function() {
+              $(":text:first", this).focus();
             });
         }
       });
@@ -83,8 +76,6 @@
       $(".edit-row:not(.edit-row-template, .edit-row-submit)", form).each(function() {
         de.add_new_type_init_row($(this));
       });
-
-      $(":text:first", form).focus();
     },
 
     /**
@@ -135,7 +126,6 @@
 
     add_new_type_cancel: function(form) {
       form.slideUp(function() {
-        form.data("edit").slideDown();
         $(this).remove();
       });
     },
@@ -163,13 +153,11 @@
       if ($(".row-msg-error").length) {
         return;
       }
-      form.slideUp(function() {
-        form.addClass("loading").slideDown(function() {
-          rows = Array.prototype.slice.call(rows); // make jQuery object into an Array
-          de.add_new_type_submit_rows(form, rows);
-        });
-      });
-    },
+
+      form.addClass("loading");
+      rows = Array.prototype.slice.call(rows); // make jQuery object into an Array
+      de.add_new_type_submit_rows(form, rows);
+   },
 
     add_new_type_finish: function(form) {
       var tbody = form.data("table").find("tbody:first");
@@ -178,8 +166,10 @@
       $.each(submitted, function(i,n) {
         var row = n[0];
         var data = n[1];
-        var new_row = $(data.result.html).addClass("new");
+        var new_row = $(data.result.html).addClass("new-row");
         tbody.append(new_row);
+        fb.schema.init_row_menu(new_row);
+        $(".edit", new_row).show();
         row.remove();
       });
       // clear submitted array
@@ -187,9 +177,7 @@
 
       // do we have any errors?
       if ($(".row-msg-error", form).length) {
-        form.slideUp(function() {
-          form.removeClass("loading").slideDown();
-        });
+        form.removeClass("loading");
       }
       else {
         form.trigger("fb.schema.domain.edit.add_new_type.cancel");
@@ -263,6 +251,29 @@
       }
       // TODO: simple duplicate key check
     },
+
+
+
+
+    /**
+     * delete type
+     */
+    delete_type_begin: function(context, type_id) {
+      $.ajax({
+        url: acre.request.app_url + "/schema/service/delete_type_begin",
+        data: {id: type_id, user: fb.user.id},
+        dataType: "json",
+        success: function(data) {
+          // remove previous edit-form
+          var confirm_row = $(data.result.html);
+          context.after(confirm_row);
+        }
+      });
+
+    },
+
+
+
 
 
     /**

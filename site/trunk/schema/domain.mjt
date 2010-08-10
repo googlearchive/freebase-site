@@ -99,7 +99,7 @@
           <strong>$c.domain.name</strong> has no types.
         </h2>        
         <div class="table-edit edit">
-          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_new_type, this);"><span class="add-icon">Add New</span></a>
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_new_type, null, this);"><span class="add-icon">Add New</span></a>
         </div>
       </div>
     
@@ -129,7 +129,7 @@
           <strong>$c.domain.name</strong> has no Compound Value Types.
         </h2> 
         <div class="table-edit edit">
-          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_new_mediator, this);"><span class="add-icon">Add New</span></a>
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_new_mediator, null, this);"><span class="add-icon">Add New</span></a>
         </div>
       </div>
   </acre:block>

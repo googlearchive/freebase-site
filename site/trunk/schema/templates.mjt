@@ -14,12 +14,18 @@
       <a href="${h.url_for('schema', 'type', null, type.id)}">$type.name</a>
       <a href="javascript:void(0);" class="row-menu-trigger">+</a>
       <ul class="row-menu tooltip">
+        <li class="row-menu-item edit">
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.edit_type, ['${type.id}'], this);"><span class="edit-icon">Edit type</span></a>
+        </li>
+        <li class="row-menu-item edit">
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.delete_type, ['${type.id}'], this);"><span class="trash-icon">Delete type</span></a>
+        </li>
         <li class="row-menu-item"><a href="${h.url_for('schema', 'type', null, type.id)}">View type details</a></li>
         <li class="row-menu-item">
           <a href="${h.freebase_url('/view'+type.id)}">Browse <em>${h.commafy(type.instance_count)}</em> instances</a>
         </li>
         <li class="row-menu-item last">
-          <a href="#">Build query</a>
+          <a href="${sh.build_query_url(type.id)}">Build query</a>
         </li>
       </ul>      
     </th>

@@ -4,6 +4,7 @@ var MF = {
       "template": "//13.template.site.freebase.dev",
       "promise": "//13.promise.site.freebase.dev",
       "jquerytools": "//13.jquerytools.site.freebase.dev",
+      "jqueryui": "//13.jquerytools.site.freebase.dev",
       "queries": "//13.queries.site.freebase.dev",
 
       // external apps
@@ -32,6 +33,7 @@ var MF = {
       "domain.js"
     ],
     "domain-edit.mf.js": [
+      "jqueryui", "jquery.effects.core.js",
       "domain-edit.js"
     ],
     "type.mf.js": [

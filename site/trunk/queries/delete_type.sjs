@@ -20,14 +20,19 @@ var h = mf.require("core", "helpers");
 function delete_type(type_id, user_id, dry_run, force) {
   return type_info(type_id, user_id)
     .then(function(info) {
-      if (!force && (info.instance_count ||
+      if (info.instance_count ||
           info.expected_by.permitted.length ||
-          info.expected_by.not_permitted.length)) {
-        throw deferred.rejected(info);
+          info.expected_by.not_permitted.length) {
+
+        console.log("use the force", info);
+        if (dry_run) {
+          return [info, null];
+        }
+        else if (!force) {
+          throw deferred.rejected(JSON.stringify(info));
+        }
       }
-      if (dry_run) {
-        return [info, null];
-      }
+
       var q = {
         guid: info.guid,
         type: {id: "/type/type", connect: "delete"},

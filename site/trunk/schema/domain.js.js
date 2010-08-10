@@ -26,17 +26,39 @@
     },
 
     add_new_type: function(e) {
-      return d._add_new_type(e);
+      return d._add_new_type(this);
     },
 
     add_new_mediator: function(e) {
-      return d._add_new_type(e, true);
+      return d._add_new_type(this, true);
     },
 
-    _add_new_type: function(e, mediator) {
+    _add_new_type: function(thisArg, mediator) {
+      var context = $(thisArg).parent(".table-edit");
+      if (context.next(".edit-form").length) {
+        return false;
+      }
+      fb.get_script(acre.request.app_url + "/schema/MANIFEST/domain-edit.mf.js", function() {
+        d.edit.add_new_type_begin(context, mediator);
+      });
+      return false;
+    },
+
+    delete_type: function(e, type_id) {
+      var context = $(this).parents("tr:first");
+      if (context.next(".edit-form").length) {
+        return false;
+      }
+      fb.get_script(acre.request.app_url + "/schema/MANIFEST/domain-edit.mf.js", function() {
+        d.edit.delete_type_begin(context, type_id);
+      });
+      return false;
+    },
+
+    edit_type: function(e, type_id) {
       var target = e.target;
       fb.get_script(acre.request.app_url + "/schema/MANIFEST/domain-edit.mf.js", function() {
-        d.edit.add_new_type_begin(target, mediator);
+        d.edit.edit_type_begin(target);
       });
       return false;
     }

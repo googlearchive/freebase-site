@@ -4,6 +4,7 @@ var h = mf.require("core", "helpers");
 var edit = mf.require("editcomponents");
 var ServiceError = mf.require("core", "service").lib.ServiceError;
 var create_type = mf.require("queries", "create_type").create_type;
+var delete_type = mf.require("queries", "delete_type").delete_type;
 var queries = mf.require("queries");
 var t = mf.require("templates");
 
@@ -57,6 +58,16 @@ var api = {
           html: acre.markup.stringify(t.domain_type_row(created))
         };
       });
+  },
+
+  delete_type_begin: function(args) {
+    // delete_type dry_run so we know what we are deleting
+    return delete_type(args.id, args.user, true)
+      .then(function([type_info, result]) {
+        return {
+          html: acre.markup.stringify(edit.delete_type_form(type_info))
+        };
+      });
   }
 };
 
@@ -72,6 +83,9 @@ api.add_new_type_begin.auth = true;
 
 api.add_new_type_submit.args = ["domain", "name", "key", "typehint", "description"];
 api.add_new_type_submit.auth = true;
+
+api.delete_type_begin.args = ["id", "user"]; // type id, user id
+api.delete_type_begin.auth = true;
 
 function main(scope) {
   if (h.is_client()) {

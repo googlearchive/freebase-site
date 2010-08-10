@@ -6,28 +6,32 @@
     // trigger for row menus
     init_row_menu: function(context) {
       $(".row-menu-trigger", context).each(function(){
-        $(this).tooltip({
+        var trigger = $(this);
+
+        trigger.tooltip({
           events: {def: "click,mouseout"},
           position: "bottom right",
           offset: [-10, -10],
           effect: "fade",
           delay: 300
         });
-        var $menu = $(this).closest(".row-menu");
-        $menu.children().last().hide();
-      })
-      .css({"visibility":"hidden"});// we use 'visibillity' here to prevent table shifting when shown
+        //var $menu = $(this).closest(".row-menu");
+        //$menu.children().last().hide();
 
-      $(".hoverable", context).hover(function(){
-          var row = $(this);
-          row.addClass("row-hover");
-          $(".row-menu-trigger", row).css('visibility','visible').hide().fadeIn("fast");
-        },
-        function(){
-          var row = $(this);
-          $(".row-menu-trigger", row).css('visibility','hidden');
-          row.removeClass("row-hover");
-        });
+        trigger.parents("tr:first").hover(schema.row_menu_hoverover, schema.row_menu_hoverout);
+      });
+    },
+
+    row_menu_hoverover: function(e) {
+      var row = $(this);
+      row.addClass("row-hover");
+      $(".row-menu-trigger", row).css('visibility','visible');
+    },
+
+    row_menu_hoverout: function(e) {
+      var row = $(this);
+      $(".row-menu-trigger", row).css('visibility','hidden');
+      row.removeClass("row-hover");
     }
   };
 

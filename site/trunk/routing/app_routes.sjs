@@ -81,10 +81,14 @@ var routes = [
     from: "/permission",
     to: "permission"
   },
-  { 
+  {
     from: "/appeditor",
     to : "appeditor"
-  }	
+  },
+  {
+    from: "/jqueryui",
+    to: "jqueryui"
+  }
 ];
 
 /**

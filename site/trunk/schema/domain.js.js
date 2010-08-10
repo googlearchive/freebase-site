@@ -14,9 +14,6 @@
           $("thead th:nth-child(3)", table)[0].count = 1;
           $("thead th:nth-child(4)", table)[0].count = 1;
         }
-        else {
-          table.hide();
-        }
       });
     },
 
@@ -33,32 +30,38 @@
       return d._add_new_type(this, true);
     },
 
-    _add_new_type: function(thisArg, mediator) {
-      var context = $(thisArg).parent(".table-edit");
-      if (context.next(".edit-form").length) {
+    _add_new_type: function(trigger, mediator) {
+      trigger = $(trigger);
+      if (trigger.is(".editing")) { // are we already editing?
         return false;
       }
+      trigger.addClass("editing");
       fb.get_script(acre.request.app_url + "/schema/MANIFEST/domain-edit.mf.js", function() {
-        d.edit.add_new_type_begin(context, mediator);
+        d.edit.add_new_type_begin(trigger, mediator);
       });
       return false;
     },
 
     delete_type: function(e, type_id) {
-      var context = $(this).parents("tr:first");
-      if (context.next(".edit-form").length) {
+      var trigger = $(this);
+      if (trigger.is(".editing")) { // are we already editing?
         return false;
       }
+      trigger.addClass("editing");
       fb.get_script(acre.request.app_url + "/schema/MANIFEST/domain-edit.mf.js", function() {
-        d.edit.delete_type_begin(context, type_id);
+        d.edit.delete_type_begin(trigger, type_id);
       });
       return false;
     },
 
     edit_type: function(e, type_id) {
-      var target = e.target;
+      var trigger = $(this);
+      if (trigger.is(".editing")) { // are we already editing?
+        return false;
+      }
+      trigger.addClass("editing");
       fb.get_script(acre.request.app_url + "/schema/MANIFEST/domain-edit.mf.js", function() {
-        d.edit.edit_type_begin(target);
+        d.edit.edit_type_begin(trigger, type_id);
       });
       return false;
     }

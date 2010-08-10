@@ -81,12 +81,17 @@
         </h2>
         <table class="table table-sortable {sortlist: [[0,0]]}" cellspacing="0">
           <thead>
-            <tr>
+            <tr acre:attrs="!c.domain.types.length ? {style:'display:none;'}:{}">
               <th scope="col" class="column-header {sorter: 'schemaName'}"><span class="sort-icon">Type</span></th>
               <th class="column-header" scope="col"><span class="sort-icon">ID</span></th>
               <th class="column-header numeric" scope="col"><span class="sort-icon"># of Properties</span></th>
               <th class="column-header numeric {sorter: 'commaDigit'}" scope="col"><span class="sort-icon"># of Instances</span></th>
               <th class="column-header description" scope="col"><span class="sort-icon">Description</span></th>
+            </tr>
+            <tr acre:attrs="c.domain.types.length ? {style:'display:none;'}:{}">
+              <td colspan="5">
+                <strong>$c.domain.name</strong> has no types.
+              </td>
             </tr>
           </thead>
           <tbody>
@@ -94,13 +99,16 @@
               ${templates.domain_type_row(type)}
             </acre:block>
           </tbody>
-        </table>
-        <h2 class="empty-table-msg" acre:if="!c.domain.types.length">
-          <strong>$c.domain.name</strong> has no types.
-        </h2>        
-        <div class="table-edit edit">
-          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_new_type, null, this);"><span class="add-icon">Add New</span></a>
-        </div>
+          <tfoot class="table-edit edit">
+            <tr>
+              <td colspan="5">
+                <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_new_type, null, this);">
+                  <span class="add-icon">Add New</span>
+                </a>
+              </td>
+            </tr>
+          </tfoot>
+        </table> 
       </div>
     
       <!-- mediators -->
@@ -111,12 +119,17 @@
         </h2>
         <table class="table table-sortable {sortlist: [[0,0]]}">
           <thead>
-            <tr>
+            <tr acre:attrs="!c.domain['mediator:types'].length ? {style:'display:none;'}:{}">
               <th scope="col" class="column-header {sorter: 'schemaName'}"><span class="sort-icon">Type</span></th>
               <th class="column-header" scope="col"><span class="sort-icon">ID</span></th>
               <th class="column-header numeric" scope="col"><span class="sort-icon"># of Properties</span></th>
               <th class="column-header numeric {sorter: 'commaDigit'}" scope="col"><span class="sort-icon"># of Instances</span></th>
               <th class="column-header description" scope="col"><span class="sort-icon">Description</span></th>
+            </tr>
+            <tr acre:attrs="c.domain['mediator:types'].length ? {style:'display:none;'}:{}">
+              <td colspan="5">
+                <strong>$c.domain.name</strong> has no Compound Value Types.
+              </td>
             </tr>
           </thead>
           <tbody>
@@ -124,14 +137,17 @@
               ${templates.domain_type_row(type)}
             </acre:block>
           </tbody>
+          <tfoot class="table-edit edit">
+            <tr>
+              <td colspan="5">
+                <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_new_mediator, null, this);">
+                  <span class="add-icon">Add New</span>
+                </a>
+              </td>
+            </tr>
+          </tfoot>
         </table>
-        <h2 class="empty-table-msg" acre:if="!c.domain['mediator:types'].length">
-          <strong>$c.domain.name</strong> has no Compound Value Types.
-        </h2> 
-        <div class="table-edit edit">
-          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_new_mediator, null, this);"><span class="add-icon">Add New</span></a>
-        </div>
-      </div>
+     </div>
   </acre:block>
   <acre:block elif="id == ''">
     <div id="error">Need to specify the <em>id</em> parameter</div>

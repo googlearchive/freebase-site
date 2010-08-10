@@ -33,7 +33,7 @@ var MF = {
       "domain.js"
     ],
     "domain-edit.mf.js": [
-      "jqueryui", "jquery.effects.core.js",
+      ["template", "jquery.showrow.js"],
       "domain-edit.js"
     ],
     "type.mf.js": [

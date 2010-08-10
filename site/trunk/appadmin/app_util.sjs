@@ -18,21 +18,30 @@ function revert_service_url() { acre.freebase.set_service_url(CURRENT_SERVICE_UR
 var ENV = [
     { 
         'service_url' : 'http://www.freebase.com',
+	'service_domain' : 'www.freebase.com',
         'name' : 'Production',
         'id' : 'production',
         'acre' : '.freebaseapps.com.',
-	'ae' : 'http://acre.freebase.com'
+	'ae' : 'http://acre.freebase.com',
+	'freebaseapps' : 'freebaseapps.com'
     },
     { 
         'service_url' : 'http://www.sandbox-freebase.com',
+	'service_domain' : 'www.sandbox-freebase.com',
         'name' : 'Sandbox',
         'id' : 'sandbox',
         'acre' : '.sandbox-freebaseapps.com.',
-	'ae' : 'http://acre.sandbox-freebase.com'
+	'ae' : 'http://acre.sandbox-freebase.com',
+	'freebaseapps' : 'sandbox-freebaseapps.com'
     }
 ];
 
+if (acre.request.server_name == "devel.sandbox-freebase.com") {
+    ENV[1]['service_url'] = 'http://' + acre.request.server_name + ':' + acre.request.server_port;
+    ENV[1]['service_domain'] = acre.request.server_name;
+}
 
+/*
 if (acre.request.server_name.match('acrenet.metaweb.com') || acre.request.server_name.match('acre.z')){
     ENV.push({ 
         'service_url' : 'http://branch.qa.metaweb.com',
@@ -40,7 +49,8 @@ if (acre.request.server_name.match('acrenet.metaweb.com') || acre.request.server
         'id' : 'qa',
         'acre' : 'branch.qa-freebaseapps.com'
     });
-}    
+} 
+*/   
 
 var get_env = function(env_id) { 
 
@@ -200,54 +210,80 @@ var get_app = function(id) {
 
 /*
 
-Given an app meta-data dictionary, returns an array of version up to the released version
+Given an app meta-data dictionary, returns a dictionary that containts the trunk, latest and release versions
 input:
 app(dict): app meta-data
 output:
-[ {  
+{ 'latest' : {...},
+  'release' : { 
    'name' : <version_name> e.g. 11
    'id' : <app_id>  e.g. //11.homepage.site.freebase.dev
    'time' : <human readable time diff> e.g. 7 hours ago
    'release' : <release> e.g. true
-}... ]
-
+   },
+   'trunk' : {...}
+   
+   }
 */
 
 var app_versions_to_release = function(app) { 
 
     var now = new Date();
 
+    var versions= { 
+	'trunk' : null,
+	'latest' : null,
+	'release' : null
+    };
+
     //trunk (current) is always a valid version
-    var versions = [{ 
+    var trunk =  {  
 	'name' : 'trunk',
 	'id' : app.path,
-	'date' : now,
-	'release' : app.release ? false : true
-    }];
+	'date' : now
+    };
 
+    versions.trunk = trunk;
+    
 
     //if there are no more versions of this app, return
-    if (!app.versions) { 
+    if (!app.versions || app.versions.length == 0) { 
+	versions.latest = trunk
+	versions.release = trunk;
 	return versions;
     }
 
     //go through each version and create an entry in the versions array
     for (var i in app.versions) { 
-
+	
 	var version = app.versions[i];
+	
+	if (i == 0) { 
+	    versions.latest = { 
+		'name' : version.name,
+		'id' : '//' + version.name + '.' + app.path.slice(2),
+		'date' : acre.freebase.date_from_iso(version.as_of_time)
+	    }
+	    
+	}
+	
+	if (!app.release || !(version.name == app.release) ) {
+	    continue;
+	}
 
-	versions.push({
+	versions.release = {
 	    'name' : version.name,
 	    'id' : '//' + version.name + '.' + app.path.slice(2),
-	    'date' : acre.freebase.date_from_iso(version.as_of_time),
-	    'release' : app.release && app.release == version.name ? true: false
-	});
+	    'date' : acre.freebase.date_from_iso(version.as_of_time)
+	};
+	
+	break;
+    }	
 
-	if (versions[versions.length-1].release == true) { 
-	    break;
-	}
+
+    if (!versions.release) { 
+	versions.release = versions.trunk;
     }
-
 
     console.log(versions);
     return versions;
@@ -264,7 +300,6 @@ output:
 { '<env_id>' : app-meta-data(dict) }
 */
 
-
 var get_app2 = function(id) { 
 
     var result = {}
@@ -279,6 +314,21 @@ var get_app2 = function(id) {
 
 }
 
+
+/*
+
+converts an app id to something that can be used as an html id
+strips slashes  and . 
+input: 
+id(string): app id
+output:
+id(string): escaped id
+
+*/
+
+var html_id = function(id) { 
+    return id.replace(/[\/\.]/g, '');
+}
 
 var get_manifest_diff = function(app1, app2) {
 

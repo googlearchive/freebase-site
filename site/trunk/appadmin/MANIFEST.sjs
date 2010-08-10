@@ -12,11 +12,13 @@ var MF = {
     ]
   },
   "javascript": {
-    "appadmin.mf.js": [
-      ["template", "freebase.mf.js"],
-      "appadmin_core.js"
-    ]
+
+      "appadmin.mf.js": [
+	  ["template", "freebase.mf.js"],
+	  "appadmin_core.js"
+      ]
   }
+
 };
 
 if (/^https?\:\/\/devel\.(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url)) {

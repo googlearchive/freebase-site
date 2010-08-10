@@ -138,10 +138,14 @@ window.freebase = window.fb = {};
       if (!id) {
         id = '/user/' + this.name;
       }
-      $(window).trigger("fb.user.signedin", {guid: guid, name: name, id: id});
+      setTimeout(function() {
+        $(window).trigger("fb.user.signedin", {guid: guid, name: name, id: id});
+      }, 0);
     }
     else {
-      $(window).trigger("fb.user.signedout");
+      setTimeout(function() {
+        $(window).trigger("fb.user.signedout");
+      }, 0);
     }
   }
   else {

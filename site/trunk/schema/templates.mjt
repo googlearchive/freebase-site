@@ -18,7 +18,7 @@
           <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.edit_type, ['${type.id}'], this);"><span class="edit-icon">Edit type</span></a>
         </li>
         <li class="row-menu-item edit">
-          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.delete_type, ['${type.id}'], this);"><span class="trash-icon">Delete type</span></a>
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.delete_type, ['${type.id}'], this);"><span class="delete-icon">Delete type</span></a>
         </li>
         <li class="row-menu-item"><a href="${h.url_for('schema', 'type', null, type.id)}">View type details</a></li>
         <li class="row-menu-item">
@@ -27,7 +27,7 @@
         <li class="row-menu-item last">
           <a href="${sh.build_query_url(type.id)}">Build query</a>
         </li>
-      </ul>      
+      </ul>
     </th>
     <td class="even">$type.id</td>
     <td class="odd numeric">$type.properties</td>

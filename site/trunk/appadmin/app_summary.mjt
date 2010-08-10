@@ -3,33 +3,41 @@
   var mf = acre.require("MANIFEST").MF;
   var id = acre.request.params['id'];
   var util = acre.require("app_util");
+  var h = mf.require('core', 'helpers');
 
   var apps = util.get_app2(id);
-  
-  for (var i in apps) { 
 
+  for (var i in apps) { 
   apps[i].timeline = util.app_versions_to_release(apps[i]);
-  
   }
 
+  var app_name = apps['production'] ? apps['production']['name'] : apps['sandbox']['name'];
+
+  var details_url =  h.url_for('appadmin', 'app_details') + "?id=" + id.replace('\/\/', '%2f%2f');
+  var release_url = h.url_for('appeditor', 'set_app_release');
 
 </acre:script>
 
-<div id="reference-${id}">
+<td class="cell">
+  <a href="#" class="expand" app_url="${details_url}" app_id="${id}">&gt;</a>
+  ${app_name}
+</td>
 
-  <acre:block for="env in util.ENV">
-    <acre:script>var app = apps[env['id']]</acre:script>
-    ${env['id']}: 
-    <span>
-      <acre:block for="version in app.timeline">
-	<a href="${env['ae']}/#!path=${version.id}"><span acre:attrs="version.release ? { 'style' : 'font-weight: bold;' } : {}">${version.name}</a>
 
-      </acre:block>
-    </span>
+<acre:block for="env in util.ENV">
+  <acre:script>
+    var versions = apps[env['id']]['timeline'];
   </acre:script>
-
-
-
-</div>
-
+  <td class="cell"><a href="${env['ae']}/#!path=${versions.trunk.id}">${versions.trunk.name}</a></td>
+  <td class="cell"><a href="${env['ae']}/#!path=${versions.latest.id}">${versions.latest.name}</a></td>
+  <td class="cell"><a href="${env['ae']}/#!path=${versions.release.id}">${versions.release.name}</a></td>
+  <acre:block if="env['service_domain'] == acre.request.server_name">
+    <td class="cell">
+      <b>${versions.latest.name}:</b> test
+      <acre:block if="env['service_domain'] == acre.request.server_name && versions.latest.name != versions.release.name">
+	| <a href="${release_url}" class="release" app_html_id="${util.html_id(id)}" app_version="${versions.latest.name}" app_id="${id}">release</a>
+      </acre:block>
+    </td>
+  </acre:block>
+</acre:block>
 

@@ -1,5 +1,5 @@
 /**
- * jquery-ui 1.8.2 (Stable, for jQuery 1.4+)
+ * jquery-ui 1.8.4 (Stable, for jQuery 1.4+)
  * http://jqueryui.com/
  */
 var MF = {

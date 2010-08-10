@@ -17,7 +17,9 @@ var MF = {
     "policies" : "//policies.site.freebase.dev",
     "permission": "//permission.site.freebase.dev",
     "appeditor" : "//appeditor.apps.freebase.dev",
-    "jqueryui": "//jqueryui.site.freebase.dev"
+    "jqueryui": "//jqueryui.site.freebase.dev",
+    "tasks":"//tasks.site.freebase.dev"
+
   }
 };
 

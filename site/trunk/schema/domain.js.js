@@ -8,7 +8,6 @@
     init_tablesorter: function() {
       $(".table-sortable").each(function() {
         var table = $(this);
-        console.log(table, $("> tbody > tr", table).length);
         if ($("> tbody > tr", table).length) {
           table.tablesorter();
           $("thead th:nth-child(3)", table)[0].count = 1;
@@ -48,6 +47,10 @@
         return false;
       }
       trigger.addClass("editing");
+
+      // hide tooltip
+      trigger.parents(".tooltip:first").siblings(".row-menu-trigger:first").data("tooltip").hide();
+
       fb.get_script(acre.request.app_url + "/schema/MANIFEST/domain-edit.mf.js", function() {
         d.edit.delete_type_begin(trigger, type_id);
       });

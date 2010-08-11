@@ -48,30 +48,10 @@
 
 
 
-<acre:block def="delete_type_form(type_info)">
-  <acre:script>
-    var count = type_info.instance_count;
-    var expected_by = type_info.expected_by.permitted.length + type_info.expected_by.not_permitted.length;
-  </acre:script>
-  <tr class="edit-form">
+<acre:block def="delete_type_result(type_info)">
+  <tr>
     <td colspan="5">
-      <div>
-        <div acre:if="type_info.instance_count" 
-             class="edit-row row-msg row-msg-warning">
-          There ${count > 1 ? "are " + h.commafy(count) + " topics" : "is 1 topic"} typed as this type.
-        </div>
-        <div acre:if="type_info.expected_by.permitted.length || type_info.expected_by.not_permitted.length" 
-             class="edit-row row-msg row-msg-warning">
-          There ${expected_by > 1 ? "are " + h.commafy(expected_by) + " properties" : "is 1 property"} with an expected type of this type.
-        </div>
-        <div class="edit-row row-msg row-msg-confirm">
-          Are you sure you want to delete this type?
-        </div>
-        <div class="edit-row edit-row-submit">
-          <button class="button button-primary button-submit" type="submit">Delete</button>
-          <button class="button button-cancel">Cancel</button>
-        </div>        
-      </div>
+      The type <strong>${type_info.name}</strong> has been deleted. <a href="#" class="${JSON.stringify(type_info)}">Undo</a>
     </td>
   </tr>
 </acre:block>

@@ -47,7 +47,7 @@
             })
             .bind("fb.schema.domain.edit.add_new_type.error", function(e, row, error) {
               console.log("fb.schema.domain.edit.add_new_type.error", row, error);
-              de.add_new_type_row_error(form, row, error);
+              de.add_new_type_row_error(row, error);
             });
         }
       });
@@ -157,19 +157,6 @@
         description: $(":input[name=description]", form.row).val()
       };
 
-      function error_handler(xhr) {
-        var msg;
-        try {
-          msg = JSON.parse(xhr.responseText);
-          msg = msg.messages[0].message; // display the first message
-        }
-        catch(e) {
-          msg = xhr.responseText;
-        }
-        // TODO: make error expandable to see whole error message
-        de.add_new_type_row_error(form, form.row, msg);
-      };
-
       $.ajax({
         url: acre.request.app_url + "/schema/service/add_new_type_submit",
         type: "POST",
@@ -177,16 +164,17 @@
         data: data,
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
-            return error_handler(xhr);
+            return de.ajax_error_handler(xhr, form.row);
           }
           var new_row = $(data.result.html);
           form.row.before(new_row);
           new_row.hide();
           new_row.showRow(null, null, "slow");
+          $(".button-cancel", form.submit).text("Done");
           de.add_new_type_init_row(form);
         },
         error: function(xhr) {
-          error_handler(xhr);
+          de.ajax_error_handler(xhr, form.row);
         },
         complete: function() {
           form.row.removeClass("loading");
@@ -194,7 +182,7 @@
           //de.add_new_type_submit_rows(form, rows);
         }
       });
-   },
+    },
 
     add_new_type_finish: function(form) {
       var tbody = form.data("table").find("tbody:first");
@@ -234,38 +222,59 @@
     },
 
 
-
-
     /**
      * delete type
      */
-    delete_type_begin: function(context, type_id) {
+    delete_type_begin: function(trigger, type_id) {
+      var row = trigger.parents("tr:first");
+      var table = row.parents("table:first");
+
       $.ajax({
-        url: acre.request.app_url + "/schema/service/delete_type_begin",
+        url: acre.request.app_url + "/schema/service/delete_type_submit",
         data: {id: type_id, user: fb.user.id},
         dataType: "json",
         success: function(data) {
-          // remove previous edit-form
-          var confirm_row = $(data.result.html);
-          context.after(confirm_row);
+          if (data.code === "/api/status/error") {
+            return de.ajax_error_handler(xhr, row);
+          }
+          var new_row = $(data.result.html);
+          row.before(new_row);
+          new_row.hide();
+          row.hideRow(function() {
+            new_row.showRow();
+            row.remove();
+          });
+        },
+        error: function(xhr) {
+          de.ajax_error_handler(xhr, row);
         }
       });
 
     },
 
 
-
-
+    ajax_error_handler: function(xhr, row) {
+      var msg;
+      try {
+        msg = JSON.parse(xhr.responseText);
+        msg = msg.messages[0].message; // display the first message
+      }
+      catch(e) {
+        msg = xhr.responseText;
+      }
+      // TODO: make error expandable to see whole error message
+      de.add_new_type_row_error(row, msg);
+    },
 
     /**
      * row messages
      */
 
-    add_new_type_row_error: function(form, row, msg) {
-      de.add_new_type_row_message(form, row, de.row_message(msg, "error"));
+    add_new_type_row_error: function(row, msg) {
+      de.add_new_type_row_message(row, de.row_message(msg, "error"));
     },
 
-    add_new_type_row_message: function(form, row, row_msg) {
+    add_new_type_row_message: function(row, row_msg) {
       // prepend row_msg to row
       row.before(row_msg);
       row_msg.hide().showRow();

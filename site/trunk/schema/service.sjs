@@ -60,12 +60,12 @@ var api = {
       });
   },
 
-  delete_type_begin: function(args) {
-    // delete_type dry_run so we know what we are deleting
-    return delete_type(args.id, args.user, true)
+  delete_type_submit: function(args) {
+    // delete_type
+    return delete_type(args.id, args.user, false, true)
       .then(function([type_info, result]) {
         return {
-          html: acre.markup.stringify(edit.delete_type_form(type_info))
+          html: acre.markup.stringify(edit.delete_type_result(type_info))
         };
       });
   }
@@ -84,8 +84,8 @@ api.add_new_type_begin.auth = true;
 api.add_new_type_submit.args = ["domain", "name", "key", "typehint", "description"];
 api.add_new_type_submit.auth = true;
 
-api.delete_type_begin.args = ["id", "user"]; // type id, user id
-api.delete_type_begin.auth = true;
+api.delete_type_submit.args = ["id", "user"]; // type id, user id
+api.delete_type_submit.auth = true;
 
 function main(scope) {
   if (h.is_client()) {

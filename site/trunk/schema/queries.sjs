@@ -147,6 +147,15 @@ function minimal_type(type_id) {
     guid: null,
     name: null,
     type: "/type/type",
+    key: [{
+      namespace: null,
+      value: null
+    }],
+    domain: {
+      id: null,
+      name: null,
+      type: "/type/domain"
+    },
     "/common/topic/article": qh.article_clause(true),
     "/freebase/type_hints/enumeration": null,
     "/freebase/type_hints/mediator": null,
@@ -163,7 +172,8 @@ function minimal_type(type_id) {
     })
     .then(function(type) {
       var promises = [];
-      promises.push(add_description(type));
+      promises.push(add_description(type, "blurb", null, "blurb"));
+      promises.push(add_description(type, "blob", null, "blob"));
       type.instance_count = 0;
       type.mediator = type["/freebase/type_hints/mediator"] === true;
       type.enumeration = type["/freebase/type_hints/enumeration"] === true;

@@ -82,6 +82,24 @@ var api = {
           html: acre.markup.stringify(t.domain_type_row(type))
         };
       });
+  },
+
+  edit_type_begin: function(args) {
+    return queries.minimal_type(args.id)
+    .then(function(type) {
+      return {
+        html: acre.markup.stringify(edit.edit_type_form(type))
+      };
+    });
+  },
+
+  edit_type_submit: function(args) {
+    return queries.minimal_type(args.id)
+    .then(function(type) {
+      return {
+        html: acre.markup.stringify(t.domain_type_row(type))
+      };
+    });
   }
 };
 
@@ -103,6 +121,12 @@ api.delete_type_submit.auth = true;
 
 api.undo_delete_type_submit.args = ["type_info"]; // JSON @see /freebas/site/queries/delete_type
 api.undo_delete_type_submit.auth = true;
+
+api.edit_type_begin.args = ["id"]; // type id
+api.edit_type_begin.auth = true;
+
+api.edit_type_submit.args = api.add_new_type_submit.args.concat(["id"]);
+api.edit_type_submit.auth = true;
 
 function main(scope) {
   if (h.is_client()) {

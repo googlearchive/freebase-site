@@ -22,22 +22,14 @@
       $(".edit").show();
     },
 
-    add_new_type: function(e) {
-      return d._add_new_type(this);
-    },
-
-    add_new_mediator: function(e) {
-      return d._add_new_type(this, true);
-    },
-
-    _add_new_type: function(trigger, mediator) {
-      trigger = $(trigger);
+    add_new_type: function(e, domain_id, mediator) {
+      var trigger = $(this);
       if (trigger.is(".editing")) { // are we already editing?
         return false;
       }
       trigger.addClass("editing");
       fb.get_script(acre.request.app_url + "/schema/MANIFEST/domain-edit.mf.js", function() {
-        d.edit.add_new_type_begin(trigger, mediator);
+        d.edit.add_new_type_begin(trigger, domain_id, mediator);
       });
       return false;
     },
@@ -48,10 +40,8 @@
         return false;
       }
       trigger.addClass("editing");
-
       // hide tooltip
       trigger.parents(".tooltip:first").siblings(".row-menu-trigger:first").data("tooltip").hide();
-
       fb.get_script(acre.request.app_url + "/schema/MANIFEST/domain-edit.mf.js", function() {
         d.edit.delete_type_begin(trigger, type_id);
       });
@@ -77,6 +67,8 @@
         return false;
       }
       trigger.addClass("editing");
+      // hide tooltip
+      trigger.parents(".tooltip:first").siblings(".row-menu-trigger:first").data("tooltip").hide();
       fb.get_script(acre.request.app_url + "/schema/MANIFEST/domain-edit.mf.js", function() {
         d.edit.edit_type_begin(trigger, type_id);
       });

@@ -81,7 +81,7 @@
         </h2>
         <table class="table table-sortable" cellspacing="0">
           <thead>
-            <tr acre:attrs="!c.domain.types.length ? {style:'display:none;'}:{}">
+            <tr acre:attrs="c.domain.types.length ? {}:{style:'display:none;'}">
               <th scope="col" class="column-header column-header-desc {sorter: 'schemaName'}"><span class="sort-icon">Type</span></th>
               <th class="column-header" scope="col"><span class="sort-icon">ID</span></th>
               <th class="column-header numeric" scope="col"><span class="sort-icon"># of Properties</span></th>
@@ -89,9 +89,9 @@
               <th class="column-header description" scope="col"><span class="sort-icon">Description</span></th>
             </tr>
             <tr acre:attrs="c.domain.types.length ? {style:'display:none;'}:{}">
-              <td colspan="5" class="table-empty-column">
+              <th colspan="5" class="table-empty-column" scope="col">
                 <p>The project <strong>$c.domain.name</strong> does not have any types.</p>
-              </td>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -118,8 +118,8 @@
           Compound Value Types (CVTs)
         </h2>
         <table class="table table-sortable">
-          <thead>
-            <tr acre:attrs="!c.domain['mediator:types'].length ? {style:'display:none;'}:{}">
+          <thead class="${JSON.stringify(c.domain['mediator:types'])}">
+            <tr acre:attrs="c.domain['mediator:types'].length ? {}:{style:'display:none;'}">
               <th scope="col" class="column-header column-header-desc {sorter: 'schemaName'}"><span class="sort-icon">Type</span></th>
               <th class="column-header" scope="col"><span class="sort-icon">ID</span></th>
               <th class="column-header numeric" scope="col"><span class="sort-icon"># of Properties</span></th>
@@ -127,9 +127,9 @@
               <th class="column-header description" scope="col"><span class="sort-icon">Description</span></th>
             </tr>
             <tr acre:attrs="c.domain['mediator:types'].length ? {style:'display:none;'}:{}">
-              <td colspan="5">
+               <th colspan="5" class="table-empty-column" scope="col">
                 <strong>$c.domain.name</strong> has no Compound Value Types.
-              </td>
+              </th>
             </tr>
           </thead>
           <tbody>

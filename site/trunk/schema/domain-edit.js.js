@@ -34,6 +34,11 @@
            * after submit success, re-init form for additional adds
            */
           form.row.bind("fb.schema.domain.edit.type.success", function() {
+            // show headers if showing the empty message
+            var empty_msg = $("thead:first .table-empty-column", form.table);
+            if (empty_msg.length) {
+              empty_msg.parents("tr:first").hide().prev("tr").show();
+            }
             $(".button-cancel", form.submit).text("Done");
             de.init_edit_type_form_row(form);
           });

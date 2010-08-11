@@ -69,8 +69,10 @@ function domain(options) {
       "/freebase/type_hints/mediator": true,
       "/freebase/type_hints/enumeration": null,
       properties: {
+        id: null,
         type: "/type/property",
-        "return": "count"
+        "return": "count",
+        optional: true
       },
       optional: true,
       limit: 1000

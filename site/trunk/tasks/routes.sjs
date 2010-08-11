@@ -120,7 +120,7 @@ function handle_put(path_params, query_params){
 if (acre.current_script === acre.request.script) {
 
   // This is a hack so that we can make sure tests can run by hitting this url
-  if (acre.request.path_info.indexOf("/test_") == 0 ){
+  if (acre.request.path_info.indexOf("/test_") == 0 || acre.request.path_info.indexOf("/MANIFEST") == 0 ){
     acre.route(acre.request.url);
   }
 

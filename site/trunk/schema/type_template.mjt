@@ -50,15 +50,13 @@
 
 <acre:block def="content_body()">
   <div class="page-meta">
-    <h1>$c.type.name</h1>
+    <h1>
+      $c.type.name
+      <span class="display-type" acre:if="c.type.mediator">Mediator</span>
+      <span class="display-type" acre:else="">Entity Type</span>
+    </h1>
     <div class="meta">
       <span class="key"><strong>Key:</strong> $c.type.id</span>
-      <span class="display-type">
-        <strong>Display:</strong>
-        <span class="display-type" acre:if="c.type.mediator">Mediator</span>
-        <span class="display-type" acre:elif="c.type.enumeration">Enumerated</span>
-        <span class="display-type" acre:else="">Standard</span>
-      </span>
       <span class="included-types" acre:if="c.type.included_types.length > 0">
         <strong>Includes: </strong>
         <acre:block trim="">
@@ -67,13 +65,16 @@
           </span>
         </acre:block>
       </span>
+      <span class="display-type" acre:if="c.type.enumeration">
+        <strong>Enumerated</strong>
+      </span>
     </div>
     <span class="creation-timestamp">
       ${image.user_image_small(c.type.creator)}
       Created by <a href="${acre.freebase.service_url}/view${c.type.creator.id}" title="View user profile">$c.type.creator.name</a> 
       on <time class="published" datetime="${c.type.timestamp}">$c.type.date</time>
     </span>    
-    <div id="description">
+    <div id="description" acre:if="c.type.blurb">
       <p class="blurb">
         $c.type.blurb&hellip;
       </p>

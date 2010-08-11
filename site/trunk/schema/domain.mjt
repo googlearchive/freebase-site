@@ -89,8 +89,8 @@
               <th class="column-header description" scope="col"><span class="sort-icon">Description</span></th>
             </tr>
             <tr acre:attrs="c.domain.types.length ? {style:'display:none;'}:{}">
-              <td colspan="5">
-                <strong>$c.domain.name</strong> has no types.
+              <td colspan="5" class="table-empty-column">
+                <p>The project <strong>$c.domain.name</strong> does not have any types.</p>
               </td>
             </tr>
           </thead>

@@ -241,7 +241,7 @@
           if (data.code === "/api/status/error") {
             return de.ajax_error_handler(xhr, row);
           }
-          var new_row = $(data.result.html);
+          var new_row = $(data.result.html).addClass("new-row");
           row.before(new_row);
           new_row.hide();
           row.remove();

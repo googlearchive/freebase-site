@@ -20,7 +20,7 @@
     var thisArg = this;
     return this.each(function() {
       var row = $(this).hide();
-      var td = $("> td", row).wrapInner('<div class="wrapInner" style="display: block;">');
+      var td = $("> td, > th", row).wrapInner('<div class="wrapInner" style="display: block;">');
       var wrapInner = $(".wrapInner", td).hide();
       row.show();
       wrapInner[animation](speed, function() {
@@ -46,7 +46,7 @@
     var thisArg = this;
     return this.each(function() {
       var row = $(this).show();
-      var td = $("> td", row).wrapInner('<div class="wrapInner" style="display: block;">');
+      var td = $("> td, > th", row).wrapInner('<div class="wrapInner" style="display: block;">');
       var wrapInner = $(".wrapInner", td);
       wrapInner[animation](speed, function() {
         $(this).each(function() {

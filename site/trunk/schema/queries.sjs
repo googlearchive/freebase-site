@@ -114,7 +114,7 @@ function domain(id) {
         promises.push(add_description(type));
         type.instance_count = 0;
         type.mediator = type["/freebase/type_hints/mediator"] === true;
-        type.enumeration = type["/freebase/type_hints/enumeratio"] === true;
+        type.enumeration = type["/freebase/type_hints/enumeration"] === true;
       });
       // domain activity, instance counts per type
       var activity_id = "summary_/guid/" + domain.guid.slice(1);
@@ -133,6 +133,56 @@ function domain(id) {
       return deferred.all(promises)
         .then(function() {
           return domain;
+        });
+    });
+};
+
+/**
+ * Get minimal type info (blurb, mediator, enumeration, #properties, instance_count).
+ * If you want full type info, use base_type or type queries.
+ */
+function minimal_type(type_id) {
+  var q = {
+    id: type_id,
+    guid: null,
+    name: null,
+    type: "/type/type",
+    "/common/topic/article": qh.article_clause(true),
+    "/freebase/type_hints/enumeration": null,
+    "/freebase/type_hints/mediator": null,
+    properties: {
+      id: null,
+      type: "/type/property",
+      "return": "count",
+      optional: true
+    }
+  };
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result || {};
+    })
+    .then(function(type) {
+      var promises = [];
+      promises.push(add_description(type));
+      type.instance_count = 0;
+      type.mediator = type["/freebase/type_hints/mediator"] === true;
+      type.enumeration = type["/freebase/type_hints/enumeration"] === true;
+      // domain activity, instance counts per type
+      var activity_id = "summary_/guid/" + type.guid.slice(1);
+      promises.push(freebase.get_static("activity", activity_id)
+        .then(function(activity) {
+          return activity || {};
+        })
+        .then(function(activity) {
+          if (activity.properties) {
+            // /type/object/type is the total instances of this type
+            type.instance_count = activity.properties["/type/object/type"] || 0;
+          }
+          return activity;
+        }));
+      return deferred.all(promises)
+        .then(function() {
+          return type;
         });
     });
 };

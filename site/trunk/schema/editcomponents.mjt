@@ -49,9 +49,11 @@
 
 
 <acre:block def="delete_type_result(type_info)">
-  <tr>
+  <tr class="row-msg row-msg-info">
     <td colspan="5">
-      The type <strong>${type_info.name}</strong> has been deleted. <a href="#" class="${JSON.stringify(type_info)}">Undo</a>
+      The type <strong>${type_info.name}</strong> has been deleted. 
+      <a href="#" onclick="return freebase.dispatch(event, freebase.schema.domain.undo_delete_type, null, this);"
+         class="${JSON.stringify(type_info)}">Undo</a>
     </td>
   </tr>
 </acre:block>

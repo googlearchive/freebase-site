@@ -3,8 +3,8 @@ var mf = acre.require("MANIFEST").MF;
 var h = mf.require("core", "helpers");
 var edit = mf.require("editcomponents");
 var ServiceError = mf.require("core", "service").lib.ServiceError;
-var create_type = mf.require("queries", "create_type").create_type;
-var delete_type = mf.require("queries", "delete_type").delete_type;
+var create_type = mf.require("queries", "create_type");
+var delete_type = mf.require("queries", "delete_type");
 var queries = mf.require("queries");
 var t = mf.require("templates");
 
@@ -45,7 +45,7 @@ var api = {
   add_new_type_submit: function(args) {
     var create_type_options = h.extend({}, args, {mqlkey_quote:true});
 
-    return create_type(create_type_options)
+    return create_type.create_type(create_type_options)
       .then(function(result) {
         var created = {name:args.name, id: result.id, properties: 0, instance_count: 0, blurb: args.description};
         if (args.typehint === "mediator") {
@@ -62,10 +62,24 @@ var api = {
 
   delete_type_submit: function(args) {
     // delete_type
-    return delete_type(args.id, args.user, false, true)
+    return delete_type.delete_type(args.id, args.user, false, true)
       .then(function([type_info, result]) {
         return {
           html: acre.markup.stringify(edit.delete_type_result(type_info))
+        };
+      });
+  },
+
+  undo_delete_type_submit: function(args) {
+    // undo delete_type
+    var type_info = JSON.parse(args.type_info);
+    return delete_type.undo(type_info)
+      .then(function([info, result]) {
+         return queries.minimal_type(type_info.id);
+      })
+      .then(function(type) {
+        return {
+          html: acre.markup.stringify(t.domain_type_row(type))
         };
       });
   }
@@ -86,6 +100,9 @@ api.add_new_type_submit.auth = true;
 
 api.delete_type_submit.args = ["id", "user"]; // type id, user id
 api.delete_type_submit.auth = true;
+
+api.undo_delete_type_submit.args = ["type_info"]; // JSON @see /freebas/site/queries/delete_type
+api.undo_delete_type_submit.auth = true;
 
 function main(scope) {
   if (h.is_client()) {

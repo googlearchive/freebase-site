@@ -275,5 +275,17 @@ test("incoming_from_bases count", function() {
   ok(typeof result === "number", ""+result);
 });
 
+
+test("minimal_type", function() {
+  var result;
+  q.minimal_type("/film/film")
+    .then(function(type) {
+      result = type;
+    });
+  acre.async.wait_on_results();
+  ok(result);
+  assert_keys(["name", "id", "properties", "instance_count", "blurb", "mediator", "enumeration"], result, true);
+});
+
 acre.test.report();
 

@@ -232,10 +232,10 @@
     delete_type_begin: function(trigger, type_id) {
       var row = trigger.parents("tr:first");
       var table = row.parents("table:first");
-
       $.ajax({
         url: acre.request.app_url + "/schema/service/delete_type_submit",
         data: {id: type_id, user: fb.user.id},
+        type: "POST",
         dataType: "json",
         success: function(data) {
           if (data.code === "/api/status/error") {
@@ -251,9 +251,38 @@
           de.ajax_error_handler(xhr, row);
         }
       });
-
     },
 
+    /**
+     * undo delete type
+     */
+    undo_delete_type_begin: function(trigger, type_info) {
+      var row = trigger.parents("tr:first");
+      var table = row.parents("table:first");
+      $.ajax({
+        url: acre.request.app_url + "/schema/service/undo_delete_type_submit",
+        data: {type_info: JSON.stringify(type_info)},
+        type: "POST",
+        dataType: "json",
+        success: function(data) {
+          if (data.code === "/api/status/error") {
+            return de.ajax_error_handler(xhr, row);
+          }
+          var new_row = $(data.result.html).addClass("new-row");
+          row.before(new_row);
+          new_row.hide();
+          row.remove();
+          new_row.showRow(function() {
+            fb.schema.init_row_menu(new_row);
+            // show edit controls in tooltip
+            $(".edit", new_row).show();
+          }, null, "slow");
+        },
+        error: function(xhr) {
+          de.ajax_error_handler(xhr, row);
+        }
+      });
+    },
 
     ajax_error_handler: function(xhr, row) {
       var msg;

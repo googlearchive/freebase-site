@@ -58,6 +58,19 @@
       return false;
     },
 
+    undo_delete_type: function(e) {
+      var trigger = $(this);
+      if (trigger.is(".editing")) { // are we already editing?
+        return false;
+      }
+      trigger.addClass("editing");
+      var type_info = trigger.metadata();
+      fb.get_script(acre.request.app_url + "/schema/MANIFEST/domain-edit.mf.js", function() {
+        d.edit.undo_delete_type_begin(trigger, type_info);
+      });
+      return false;
+    },
+
     edit_type: function(e, type_id) {
       var trigger = $(this);
       if (trigger.is(".editing")) { // are we already editing?

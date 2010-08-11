@@ -169,7 +169,11 @@
           var new_row = $(data.result.html);
           form.row.before(new_row);
           new_row.hide();
-          new_row.showRow(null, null, "slow");
+          new_row.showRow(function() {
+            fb.schema.init_row_menu(new_row);
+            // show edit controls in tooltip
+            $(".edit", new_row).show();
+          }, null, "slow");
           $(".button-cancel", form.submit).text("Done");
           de.add_new_type_init_row(form);
         },
@@ -194,7 +198,7 @@
         var new_row = $(data.result.html).addClass("new-row");
         tbody.append(new_row);
         fb.schema.init_row_menu(new_row);
-        $(".edit", new_row).show();
+        $(".edit", new_row).show(null, null, "slow");
         row.remove();
       });
       // clear submitted array
@@ -240,10 +244,8 @@
           var new_row = $(data.result.html);
           row.before(new_row);
           new_row.hide();
-          row.hideRow(function() {
-            new_row.showRow();
-            row.remove();
-          });
+          row.remove();
+          new_row.showRow();
         },
         error: function(xhr) {
           de.ajax_error_handler(xhr, row);

@@ -10,6 +10,7 @@
         var table = $(this);
         if ($("> tbody > tr", table).length) {
           table.tablesorter();
+          $("thead th:nth-child(1)", table)[0].count = 1;
           $("thead th:nth-child(3)", table)[0].count = 1;
           $("thead th:nth-child(4)", table)[0].count = 1;
         }

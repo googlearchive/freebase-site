@@ -83,10 +83,10 @@
       </div>
       <div class="section">
         <h1 class="section-title">Browse</h1>
-        <table cellspacing="0" class="table table-sortable {sortlist: [[0,0]]}">
+        <table cellspacing="0" class="table table-sortable">
           <thead>
             <tr>
-              <th scope="col" class="column-header {sorter: 'schemaName'}"><span class="sort-icon">Domain</span></th>
+              <th scope="col" class="column-header column-header-desc {sorter: 'schemaName'}"><span class="sort-icon">Domain</span></th>
               <th scope="col" class="column-header"><span class="sort-icon">ID</span></th>
               <th scope="col" class="column-header numeric"><span class="sort-icon"># of Types</span></th>
               <th scope="col" class="column-header numeric {sorter: 'commaDigit'}"><span class="sort-icon"># of Instances</span></th>

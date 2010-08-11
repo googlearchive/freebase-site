@@ -3,6 +3,7 @@
   function init() {
     // init table sorter
     var table = $(".table-sortable").tablesorter();
+    $("thead th:nth-child(1)", table)[0].count = 1;
     $("thead th:nth-child(3)", table)[0].count = 1;
     $("thead th:nth-child(4)", table)[0].count = 1;
 

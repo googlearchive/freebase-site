@@ -79,7 +79,7 @@ function domains(q) {
             return domain;
           });
       });
-      return domains;
+      return domains.sort(sh.sort_by_name);
     });
 };
 
@@ -106,7 +106,9 @@ function domain(id) {
       domain.date = h.format_date(acre.freebase.date_from_iso(domain.timestamp), 'MMMM dd, yyyy');
 
       var promises = [];
-      var types = domain["types"].concat(domain["mediator:types"]);
+
+      var types = domain["types"].sort(sh.sort_by_name);
+      types = types.concat(domain["mediator:types"].sort(sh.sort_by_name));
       // type blurbs
       types.forEach(function(type) {
         promises.push(add_description(type));

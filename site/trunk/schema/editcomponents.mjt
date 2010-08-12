@@ -38,7 +38,7 @@
 
       <tr class="edit-row-submit">
         <td colspan="5">
-          <button class="button button-primary button-submit" type="submit" disabled="disabled">Save</button>
+          <button class="button button-primary button-submit" type="submit">Save</button>
           <button class="button button-cancel">Cancel</button>
         </td>
       </tr>

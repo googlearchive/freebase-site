@@ -103,12 +103,6 @@
       }
       form.trigger_row.before(form.submit);
 
-      form.row.showRow(function() {
-        de.init_edit_type_form(form);
-      });
-      form.trigger_row.hide();
-      form.submit.show();
-
       form.row
         .bind("fb.schema.domain.edit.type.submit", function() {
           console.log("fb.schema.domain.edit.type.submit");
@@ -122,6 +116,13 @@
           console.log("fb.schema.domain.edit.type.error", row, error);
           de.edit_type_error(row, error);
         });
+
+      de.init_edit_type_form(form);
+      form.row.showRow(function() {
+        $(":text:first", form.row).focus();
+      });
+      form.trigger_row.hide();
+      form.submit.show();
     },
 
     /**
@@ -132,15 +133,10 @@
       var save = $(".button-submit", form.submit).click(function() {
         form.row.trigger("fb.schema.domain.edit.type.submit");
       });
-      form.row.bind("change", function() {
-        fb.enable(save);
-      });
-
       // cancel handler
       $(".button-cancel", form.submit).click(function() {
         form.row.trigger("fb.schema.domain.edit.type.cancel");
       });
-
       // init edit-row
       de.init_edit_type_form_row(form);
     },
@@ -156,6 +152,7 @@
       if (form.mode === "add") {
         name.val("");
         key.val("").data("changed", false);
+        $(":input[name=typehint]", form.row).removeAttr("checked");
         description.val("");
       }
 
@@ -198,9 +195,6 @@
      */
     edit_type_submit: function(form) {
       if (form.row.is(".loading")) {
-        return;
-      }
-      if ($(".button-submit", form.submit).is(":disabled")) {
         return;
       }
       // remove focus from activeelement

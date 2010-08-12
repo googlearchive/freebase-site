@@ -3,6 +3,7 @@
     <tbody>
       <tr class="edit-row">
         <td colspan="5">
+          <div class="edit-row-loader"></div>
           <div class="form-field fb-type-name">
             <label>
               <span class="form-label">Name</span>

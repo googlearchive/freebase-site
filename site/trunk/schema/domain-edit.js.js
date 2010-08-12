@@ -186,6 +186,9 @@
         $(this).remove();
       });
       form.submit.remove();
+      // XXX Dae: I added this to remove any error messages when a user clicks cancle/done
+      // Feel free to refactor as you see fit
+      $('.row-msg').remove();
       form.trigger_row.show();
       form.trigger.removeClass("editing");
     },
@@ -210,9 +213,14 @@
       if (form.row.prev(".row-msg-error").length) {
         return;
       }
-
+      
       form.row.addClass("loading");
 
+      // TODO We need to show a loading div here, but we have a problem with position:relative on <td> elements
+
+      //var loading_height = form.row.find("td:first").height();
+      //form.row.find(".edit-row-loader").css({height: loading_height}).show();      
+      
       var name = $.trim($(":input[name=name]", form.row).val());
       var key = $.trim($(":input[name=key]", form.row).val());
       var typehint = $(":input[name=typehint]", form.row);

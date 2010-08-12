@@ -76,7 +76,7 @@
          <span>Your Data</span>
         </a>
       </li>
-      <li  class="domain-explorer-tab">
+      <li class="domain-explorer-tab">
         <a href="${h.url_for('homepage', 'loadpanel', [['domains', 'featured']])}"
 		   class="domain-explorer-tab-link">
          <span>Featured Data</span>
@@ -88,20 +88,16 @@
          <span>${category.name}</span>
         </a>
       </li>
-      <li class="last" class="domain-explorer-tab">
-        <a href="${h.url_for('homepage', 'loadpanel', [['domains', 'all']])}"
-		   class="domain-explorer-tab-link">
+      <li class="last" class="domain-explorer-tab" id="tab-all">
+        <a class="domain-explorer-tab-link">
           <span>All</span>
         </a>
         <ul id="all-domains-nav">
-          <acre:block acre:for="letter in h.uppercase_alphabet()">
+          <acre:block acre:for="letter in h.lowercase_alphabet()">
             <li class="toc-letter">
-	              <a acre:if="false && letter in grouped_domains" href="">
-                ${letter}
+	          <a href="${h.url_for('homepage', 'loadpanel', [['domains', letter]])}">
+                ${letter.toUpperCase()}
               </a>
-              <span acre:else="">
-                ${letter}
-              </span>
             </li>
           </acre:block>
         </ul>
@@ -115,6 +111,9 @@
         <div class="domain-explorer-pane" id="pane${category.id.replace(/\//g, '-')}"></div>
       </acre:block>
       <div class="domain-explorer-pane" id="pane-all"></div>
+      <acre:block for="letter in h.lowercase_alphabet()">
+        <div class="domain-explorer-pane" id="pane-all-${letter}"></div>
+      </acre:block>
     </div>
     <span id="pointer"><span id="pointer-text"></span></span>
   </div>

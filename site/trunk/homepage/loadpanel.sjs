@@ -24,10 +24,10 @@ var cache_policy = "public";
 var p_domains;
 if (acre.request.params.category) {
   p_domains = queries.domains_for_category(acre.request.params.category);
-  
+
 } else if (acre.request.params.domains === "featured") {
   p_domains = queries.domains_for_ids(FEATURED_DOMAIN_IDS);
-  
+
 } else if (acre.request.params.domains === "all") {
   mf.require("template", "renderer").render_def(
     null,
@@ -37,7 +37,9 @@ if (acre.request.params.category) {
   );
   mf.require("core", "cache").set_cache_policy(cache_policy);
   acre.exit();
-  
+} else if (acre.request.params.domains) {
+  p_domains = queries.domains_for_letter(acre.request.params.domains);
+
 } else if (acre.request.params.user) {
   cache_policy = "private";
   p_domains = queries.domains_for_user(acre.request.params.user);
@@ -45,26 +47,26 @@ if (acre.request.params.category) {
 
 p_domains
   .then(function(domains) {
-    
+
     // Sort the domains as specified
     if (acre.request.params.sort === "name") {
       // Sort domains alphabetically by name
       return domains.sort(domain_sort(function(a, b) {
         if (a.name < b.name) {
-          return -1
+          return -1;
         } else if (a.name > b.name) {
           return 1;
         } else {
           return 0;
         }
       }));
-    
+
     } else if (acre.request.params.sort === "members") {
        // Sort domains by total topics
        return domains.sort(domain_sort(function(a, b) {
          return b.member_count - a.member_count;
        }));
-    
+
     } else if (acre.request.params.sort === "facts") {
       // Sort domains by total facts
       return domains.sort(domain_sort(function(a, b) {
@@ -72,7 +74,7 @@ p_domains
         var b_facts = b.activity ? b.activity.total.e : 0;
         return b_facts - a_facts;
       }));
-    
+
     } else if (acre.request.params.sort === "topics") {
        // Sort domains by total topics
        return domains.sort(domain_sort(function(a, b) {
@@ -80,7 +82,7 @@ p_domains
          var b_topics = b.activity ? b.activity.total.t : 0;
          return b_topics - a_topics;
        }));
-    
+
     } else {
       // Sort domains by recent activity
       return domains.sort(domain_sort(function(a, b) {

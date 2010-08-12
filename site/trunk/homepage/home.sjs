@@ -2,6 +2,7 @@ var mf = acre.require("MANIFEST").MF;
 var queries = mf.require("queries");
 var h = mf.require("helpers");
 
+
 var loggedin_user = acre.freebase.get_user_info();
 if (acre.request.params.id) {
   user_id = acre.request.params.id;

@@ -29,10 +29,12 @@ function add_description(o, mode, options, label) {
       options.maxlength = 1000;
     }
   }
-  var getter = mode === "blob" ? blob.get_blob : blob.get_blurb;
   return blob.get_blurb(o['/common/topic/article'][0].id, options)
     .then(function(blob) {
       o[label] = blob;
+      return o;
+    }, function(error) {
+      o[label] = "";
       return o;
     });
 };

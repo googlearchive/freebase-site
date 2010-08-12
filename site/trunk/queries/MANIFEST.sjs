@@ -1,7 +1,7 @@
 var MF = {
   "apps" : {
-    "core": "//13.core.site.freebase.dev",
-    "promise": "//13.promise.site.freebase.dev"
+    "core": "//14.core.site.freebase.dev",
+    "promise": "//14.promise.site.freebase.dev"
   }
 };
 

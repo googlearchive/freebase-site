@@ -1,7 +1,7 @@
 var MF = {
   "apps" : {
-    "core": "//13.core.site.freebase.dev",
-    "template": "//13.template.site.freebase.dev",
+    "core": "//14.core.site.freebase.dev",
+    "template": "//14.template.site.freebase.dev",
 
     // external apps
     "libraries" : "//release.libraries.apps.freebase.dev"

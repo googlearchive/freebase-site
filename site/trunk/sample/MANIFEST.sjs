@@ -1,9 +1,9 @@
 var MF = {
   "apps" : {
-    "core": "//13.core.site.freebase.dev",
-    "template": "//13.template.site.freebase.dev",
-    "promise": "//13.promise.site.freebase.dev",
-    "jqueryui": "//13.jqueryui.site.freebase.dev"
+    "core": "//14.core.site.freebase.dev",
+    "template": "//14.template.site.freebase.dev",
+    "promise": "//14.promise.site.freebase.dev",
+    "jqueryui": "//14.jqueryui.site.freebase.dev"
   },
   "stylesheet": {
     "sample_page.mf.css": [

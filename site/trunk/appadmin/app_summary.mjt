@@ -19,7 +19,7 @@
 </acre:script>
 
 <td class="cell">
-  <a href="#" class="expand" app_url="${details_url}" app_id="${id}">&gt;</a>
+  <!-- <a href="#" class="expand" app_url="${details_url}" app_id="${id}">&gt;</a> -->
   ${app_name}
 </td>
 
@@ -29,10 +29,12 @@
     var versions = apps[env['id']]['timeline'];
   </acre:script>
   <td class="cell"><a href="${env['ae']}/#!path=${versions.trunk.id}">${versions.trunk.name}</a></td>
-  <td class="cell"><a href="${env['ae']}/#!path=${versions.latest.id}">${versions.latest.name}</a></td>
+  
+  <td class="cell" id="app-version-${util.html_id(versions.latest.id)}"><a href="${env['ae']}/#!path=${versions.latest.id}">${versions.latest.name}</a></td>
+  
   <td class="cell"><a href="${env['ae']}/#!path=${versions.release.id}">${versions.release.name}</a></td>
   <acre:block if="env['service_domain'] == acre.request.server_name">
-    <td class="cell">
+    <td class="cell" width="300px">
       <b>${versions.latest.name}:</b> 
       <a id="test-${util.html_id(id)}" href="http:${versions.latest.id}.${env['freebaseapps']}/acre/test" class="test" app_html_id="${util.html_id(versions.latest.id)}">
 	test
@@ -43,6 +45,7 @@
       </acre:block>
       <div id="messages-${util.html_id(versions.latest.id)}" style="font-size: 75%"></div>
     </td>
+
   </acre:block>
 </acre:block>
 

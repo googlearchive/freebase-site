@@ -19,8 +19,6 @@ $("#test-all").click(function(e) {
 });
 
 
-
-
 function load_app_summary(appid) { 
     $("#summary-" + appid).load(
 	$("#summary-" + appid).attr('app_url'),
@@ -30,7 +28,6 @@ function load_app_summary(appid) {
 	}	
     );
 }
-
 
 function bind_app_buttons(appid) { 
 
@@ -92,7 +89,7 @@ function bind_app_buttons(appid) {
 	test_file_div += "<br/>" + parseInt(total_tests-failed_tests) + "/" + total_tests + " passed";
 
 
-	var html_message = "<table style='margin-top: 10px;'><tr><td width='150px' class='" + file_class_name + "'>" + test_file_div + "</td><td>" + test_result_div + "</td></tr></table>";
+	var html_message = "<table style='margin-top: 10px;'><tr><td width='60px' class='" + file_class_name + "'>" + test_file_div + "</td><td width='130px'>" + test_result_div + "</td></tr></table>";
 
 	$("#messages-" + app_html_id).append(html_message);
 

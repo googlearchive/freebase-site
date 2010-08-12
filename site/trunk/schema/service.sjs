@@ -5,6 +5,7 @@ var edit = mf.require("editcomponents");
 var ServiceError = mf.require("core", "service").lib.ServiceError;
 var create_type = mf.require("queries", "create_type");
 var delete_type = mf.require("queries", "delete_type");
+var update_type = mf.require("queries", "update_type");
 var queries = mf.require("queries");
 var t = mf.require("templates");
 
@@ -94,12 +95,16 @@ var api = {
   },
 
   edit_type_submit: function(args) {
-    return queries.minimal_type(args.id)
-    .then(function(type) {
-      return {
-        html: acre.markup.stringify(t.domain_type_row(type))
-      };
-    });
+    var update_type_options = h.extend({}, args);
+    return update_type.update_type(update_type_options)
+      .then(function(updated_id) {
+        return queries.minimal_type(updated_id);
+      })
+      .then(function(type) {
+        return {
+          html: acre.markup.stringify(t.domain_type_row(type))
+        };
+      });
   }
 };
 

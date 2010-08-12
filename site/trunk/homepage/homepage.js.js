@@ -25,6 +25,8 @@
 
     if ($tab.closest("li").is(".toc-letter")) {
       fb.homepage.update_pointer($("#tab-all > a:first"));
+      $(".toc-letter").removeClass("active");
+      $tab.closest("li").addClass("active");
     } else {
       fb.homepage.update_pointer($tab);
     }

@@ -13,3 +13,6 @@ th { font-weight: bold; }
 .release { background-color: #E4FFCF; }
 
 .diff {}
+
+.test-passed { color: green; }
+.test-failed { color: red; }

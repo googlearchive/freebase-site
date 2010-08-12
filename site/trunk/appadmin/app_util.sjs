@@ -39,6 +39,8 @@ var ENV = [
 if (acre.request.server_name == "devel.sandbox-freebase.com") {
     ENV[1]['service_url'] = 'http://' + acre.request.server_name + ':' + acre.request.server_port;
     ENV[1]['service_domain'] = acre.request.server_name;
+    //hack to make this app work for me during development
+    ENV[1]['freebaseapps'] = "acre.intrepid.sfo:8115";
 }
 
 /*

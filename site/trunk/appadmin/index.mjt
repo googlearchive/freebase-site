@@ -50,7 +50,7 @@ App Admin
   <table>
     <tr><th class="header">app</th>
       <acre:block for="env in util.ENV">
-	<th class="header" acre:attrs=" env['service_domain'] == acre.request.server_name ? {'colspan' :4 } : {'colspan' : 3, 'width' : '40%' }">${env['name']}
+	<th class="header" acre:attrs=" env['service_domain'] == acre.request.server_name ? {'colspan' :4 } : {'colspan' : 3, 'width' : '30%' }">${env['name']}
 	  
 	  <!-- We are in this environment right now -->
 	   <acre:block if="env['service_domain'] == acre.request.server_name">

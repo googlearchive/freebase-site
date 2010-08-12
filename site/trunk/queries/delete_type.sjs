@@ -1,7 +1,6 @@
 var mf = acre.require("MANIFEST").MF;
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
-var h = mf.require("core", "helpers");
 
 /**
  * Delete a type. If the type is being "used", throws an exception unless force=true.

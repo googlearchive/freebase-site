@@ -206,7 +206,7 @@ test("create_type with description", function() {
     name: name,
     key: name,
     mqlkey_quote: true,
-    desc: name
+    description: name
   })
   .then(function(r) {
     type = success = r;

@@ -3,7 +3,9 @@ var ae = {
         if (app_id.indexOf('/trunk') == app_id.length - 6) { 
             app_id = app_id.slice(0, app_id.length-6); 
         }
-        return acre.require('/freebase/apps/appeditor/get_app').get_app(app_id);
+	try { 
+            return acre.require('/freebase/apps/appeditor/get_app').get_app(app_id);
+	} catch(e) { return null; }
     },
     'get_file' : acre.require('/freebase/apps/appeditor/get_file').get_file
 };

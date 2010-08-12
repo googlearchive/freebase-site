@@ -1,4 +1,6 @@
 
+var global_results = { 'total_tests' : 0, 'total_failed' : 0, 'total_apps' : 0 };
+
 //copied  from app_util.sjs
 var html_id = function(id) { 
     return id.replace(/[\/\.]/g, '');
@@ -6,6 +8,7 @@ var html_id = function(id) {
 
 $(".summary").each(function(index) {  
     load_app_summary($(this).attr('app_id'));
+    global_results.total_apps++;
 });
 
 $("#release-all").click(function(e) { 
@@ -64,6 +67,8 @@ function bind_app_buttons(appid) {
 	for (var i in test_result.testfiles[0].modules[0].tests) { 
 
 	    total_tests++;
+	    global_results.total_tests++;
+	    
 	    var this_test = test_result.testfiles[0].modules[0].tests[i];
 	    var class_name = this_test.failures ? "test-failed" : "test-passed";
 
@@ -73,6 +78,7 @@ function bind_app_buttons(appid) {
 
 		file_class_name = "test-failed";
 		failed_tests++;
+		global_results.total_failed++;
 		for (var j in this_test.log) { 
 		    var this_log = this_test.log[j];
 
@@ -92,6 +98,7 @@ function bind_app_buttons(appid) {
 	var html_message = "<table style='margin-top: 10px;'><tr><td width='60px' class='" + file_class_name + "'>" + test_file_div + "</td><td width='130px'>" + test_result_div + "</td></tr></table>";
 
 	$("#messages-" + app_html_id).append(html_message);
+	$("#message").html("Total Tests: " + global_results.total_tests + " Failed: " + global_results.total_failed);
 
     };
 
@@ -121,7 +128,6 @@ function bind_app_buttons(appid) {
 
     
     $("#test-" + appid).bind('click', function(e) { 
-
 
 	$.ajax({
 	    'url' : $(this).attr('href'),

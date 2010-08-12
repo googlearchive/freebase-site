@@ -60,4 +60,4 @@ var MF = {
 if (/^https?\:\/\/devel\.(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url)) {
   MF.apps.core = "//core.site.freebase.dev";
 }
-acre.require(MF.apps.core + "/MANIFEST").init(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/apps/1bd60645e2519289cffff6557e19f72f", "static_base_url": "http://freebaselibs.com/static/freebase_site/apps/1bd60645e2519289cffff6557e19f72f"});
+acre.require(MF.apps.core + "/MANIFEST").init(MF, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/apps/0631ab4754d5acd8316fae247f0983dc", "static_base_url": "http://freebaselibs.com/static/freebase_site/apps/0631ab4754d5acd8316fae247f0983dc"});

@@ -113,7 +113,8 @@ window.freebase = window.fb = {};
   /**
    *  If metaweb client url? use metaweb-user-info cookie info
    */
-  if (/^https?\:\/\/devel\.(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url)) {
+  if (/^https?\:\/\/((.+)\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url)) {
+
     /*
      * Returns a single item 'i' from a Metaweb cookie 'c'
      * Item codes: u=username, d=display name, g=guid, p=path

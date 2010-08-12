@@ -35,7 +35,6 @@ function _get_method(){
  *    would yield [["task","/12345"], ["domain", "/en/film"]  ]
  */
 function _get_params(path_info){
-  console.log("PATH_INFO:" + path_info);
   var components = path_info.split("/-/");
   if (!components.length){
     return [];
@@ -49,22 +48,18 @@ function _get_params(path_info){
   if (components.length > 1){
       for (var x = 1; x < components.length; x+=1){
         var component  = components[x];
-        console.log("COMP: " + component );
         var sep = component.indexOf("/");
         sep = sep != -1 ? sep : component.length +1;
         var key = component.slice(0,sep);
-        console.log("key: " + key);
         var value = component.slice(sep);
 
         //if it's just a slash, the value is empty
         value = value.length == 1 ? null : value;
 
-        console.log("value: " + value);
         params.push([key, value || null ]);
       }
   }
 
-  console.log("params: " + params);
   return params;
 }
 
@@ -78,7 +73,6 @@ function _params_list_to_params_map(params_list){
 }
 
 function handle_get(params){
-  console.log("entering handle_get");
   var params_map = _params_list_to_params_map(params);
   var task_id = params_map.task;
   var mql_result = acre.freebase.mqlread({
@@ -102,7 +96,6 @@ function handle_get(params){
       "name":null
   });
   
-  console.log("mql result: " + JSON.stringify(mql_result));
   if (!mql_result.result){
     throw new service.ServiceError(404, "/api/status/error", {
         "message":"no such task"
@@ -113,31 +106,36 @@ function handle_get(params){
 
 function handle_put(path_params, query_params){
   var user = service.check_user();
-  
-
 }
 
 if (acre.current_script === acre.request.script) {
 
   // This is a hack so that we can make sure tests can run by hitting this url
   if (acre.request.path_info.indexOf("/test_") == 0 || acre.request.path_info.indexOf("/MANIFEST") == 0 ){
-    acre.route(acre.request.url);
+    
+    var path_info = acre.request.path_info;
+    var query_string = acre.request.query_string;
+    var route_to = path_info.slice(1);
+    if (query_string){
+      route_to += "?" + query_string;
+    }
+
+    acre.route(route_to);
   }
 
   var method = _get_method();
   var base_url = acre.request.base_url;
   var params = _get_params(acre.request.path_info);  
   var result = null;
-  
+
   service.FormService(function(){
-  if (method == "GET"){
-    result  = handle_get(params);
-    
-  } else if (method =="POST"){
-    result = handle_post(params);
-  } else if (method == "PUT"){
-    result = handle_put(params);
-  }
+    if (method == "GET"){
+      result  = handle_get(params);
+    } else if (method =="POST"){
+      result = handle_post(params);
+    } else if (method == "PUT"){
+      result = handle_put(params);
+    }
 
   }, this);
 }

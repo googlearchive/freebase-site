@@ -1,0 +1,168 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var c = this.exports.c = {};
+  var h = mf.require("core", "helpers");
+  var templates = mf.require("templates");
+  var image = mf.require("template", "imagecomponents");
+
+  var id = acre.request.params.id || acre.request.path_info;
+ 
+  var queries = mf.require("queries");  
+  var data = {
+    id: id,
+    domain : queries.domain(id)
+  };
+</acre:script>
+
+<acre:block def="title()">
+  Domain<acre:block if="c.domain"> - $c.domain.name</acre:block>
+</acre:block>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  <div class="page-header clear">
+    <div class="breadcrumb clear">
+      <ol>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.url_for('schema')}">Schema</a>
+          </span>
+        </li>  
+        <li if="c.domain" class="breadcrumb-item last">
+          <span class="breadcrumb-item-inner">
+            <a href="#">$c.domain.name</a>
+          </span>
+        </li>
+      </ol>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="content_body()">
+  <acre:block if="c.domain">
+      
+      <div class="page-meta">
+        <h1>$c.domain.name</h1>
+        <div class="meta">
+            <span class="key"><strong>Key:</strong> $c.domain.id</span>        
+        </div>
+        <span class="creation-timestamp">
+          ${image.user_image_small(c.domain.creator)}
+          Created by <a href="${h.freebase_url('/view' + c.domain.creator.id)}" title="View user profile">${c.domain.creator.name}</a> 
+          on <time class="published" datetime="${c.domain.timestamp}">$c.domain.date</time>
+        </span>
+        <div id="description" acre:if="c.domain.blurb && c.domain.blob">
+          <p class="blurb">
+            $c.domain.blurb
+          </p>
+          <p class="blob">
+            $c.domain.blob
+          </p>
+          <a href="javascript:void(0);" class="blurb-trigger">More</a>          
+        </div>
+        <acre:block if="c.domain.owners">
+          <h2 class="user-list-title">Project Owners:</h2>
+          <ul class="user-list clear" acre:for="group in c.domain.owners">
+            <li acre:for="i,member in group.member" acre:for="i,member in group.member" class="vcard">
+              ${image.user_image_medium(member)}
+            </li>
+          </ul>
+        </acre:block>
+      </div>
+    
+      <!-- regular types -->
+      <div class="section">
+        <h2 class="table-title">
+          <a href="http://wiki.freebase.com/wiki/Types" rel="help external" title="Read help article" class="help-link">What are Types?</a>
+          Types
+        </h2>
+        <table class="table table-sortable" cellspacing="0">
+          <thead>
+            <tr acre:attrs="c.domain.types.length ? {}:{style:'display:none;'}">
+              <th scope="col" class="column-header column-header-desc {sorter: 'schemaName'}"><span class="sort-icon">Type</span></th>
+              <th class="column-header" scope="col"><span class="sort-icon">ID</span></th>
+              <th class="column-header numeric" scope="col"><span class="sort-icon"># of Properties</span></th>
+              <th class="column-header numeric {sorter: 'commaDigit'}" scope="col"><span class="sort-icon"># of Instances</span></th>
+              <th class="column-header description" scope="col"><span class="sort-icon">Description</span></th>
+            </tr>
+            <tr acre:attrs="c.domain.types.length ? {style:'display:none;'}:{}">
+              <th colspan="5" class="table-empty-column" scope="col">
+                <p>The project <strong>$c.domain.name</strong> does not have any types.</p>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <acre:block for="i,type in c.domain.types">
+              ${templates.domain_type_row(type)}
+            </acre:block>
+          </tbody>
+          <tfoot class="table-edit edit">
+            <tr>
+              <td colspan="5">
+                <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_new_type, ['${c.domain.id}'], this);">
+                  <span class="add-icon">Add New</span>
+                </a>
+              </td>
+            </tr>
+          </tfoot>
+        </table> 
+      </div>
+    
+      <!-- mediators -->
+      <div class="section">
+        <h2 class="table-title">
+          <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="Read help article" rel="help external" class="help-link">What are Compound Value Types?</a>
+          Compound Value Types (CVTs)
+        </h2>
+        <table class="table table-sortable">
+          <thead class="${JSON.stringify(c.domain['mediator:types'])}">
+            <tr acre:attrs="c.domain['mediator:types'].length ? {}:{style:'display:none;'}">
+              <th scope="col" class="column-header column-header-desc {sorter: 'schemaName'}"><span class="sort-icon">Type</span></th>
+              <th class="column-header" scope="col"><span class="sort-icon">ID</span></th>
+              <th class="column-header numeric" scope="col"><span class="sort-icon"># of Properties</span></th>
+              <th class="column-header numeric {sorter: 'commaDigit'}" scope="col"><span class="sort-icon"># of Instances</span></th>
+              <th class="column-header description" scope="col"><span class="sort-icon">Description</span></th>
+            </tr>
+            <tr acre:attrs="c.domain['mediator:types'].length ? {style:'display:none;'}:{}">
+               <th colspan="5" class="table-empty-column" scope="col">
+                <strong>$c.domain.name</strong> has no Compound Value Types.
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <acre:block for="i,type in c.domain['mediator:types']">
+              ${templates.domain_type_row(type)}
+            </acre:block>
+          </tbody>
+          <tfoot class="table-edit edit">
+            <tr>
+              <td colspan="5">
+                <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_new_type, ['${c.domain.id}', true], this);">
+                  <span class="add-icon">Add New</span>
+                </a>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+     </div>
+  </acre:block>
+  <acre:block elif="id == ''">
+    <div id="error">Need to specify the <em>id</em> parameter</div>
+  </acre:block>
+  <acre:block elif="id.charAt(0) != '/'">
+    <div id="error"><em>${id}</em> is not a domain ID</div>
+  </acre:block>
+  <acre:block else="">
+    <div id="error">No domain found for <em>$id</em></div>
+  </acre:block>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+  <script src="${mf.js_src('domain.mf.js')}"></script>
+</acre:block>
+
+${mf.require("template", "renderer").render_page(data, this.exports)}

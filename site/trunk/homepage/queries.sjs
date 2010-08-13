@@ -143,11 +143,54 @@ var domains_for_category = function(category_id) {
 };
 
 var domains_for_letter = function(letter) {
-  var q_domains = acre.require("domain_info").extend(
-    {"letter:domain~=": "^"+letter}
-  );
+  var q_commons = acre.require("domain_info").extend({
+    "letter:name~=": "^"+letter+"*",
+    "key": {"namespace": "/", "limit": 0},
+    "limit": 100
+  });
+  var q_bases = acre.require("domain_info").extend({
+    "letter:name~=": "^"+letter+"*",
+    "key": {"namespace": "/base", "limit": 0},
+    "limit": 100,
+    "/freebase/domain_profile/hidden": {
+      "value": true,
+      "optional": "forbidden"
+    },
+    "types": [{
+      "type": "/type/type",
+      "!/freebase/domain_profile/base_type": {
+        "id": null,
+        "optional": "forbidden"
+      },
+      "instance": {"return": "estimate-count"}
+    }],
+    "/freebase/domain_profile/featured_views": {"return": "estimate-count"}
+  });
 
-  return freebase.mqlread(q_domains.query)
+  var p_commons = freebase.mqlread(q_commons.query);
+  var p_bases = freebase.mqlread(q_bases.query)
+    .then(function(envelope) {
+      envelope.result = envelope.result.filter(function(domain) {
+        if (domain["/freebase/domain_profile/featured_views"] < 6) {
+          return false;
+        }
+
+        var instances = 0;
+        domain.types.forEach(function(type) {
+          instances += type.instance;
+        });
+        if (instances < 100) {
+          return false;
+        }
+        return true;
+      });
+      return envelope;
+    });
+
+  return deferred.all([p_commons, p_bases])
+    .then(function([commons, bases]) {
+      return {"result": commons.result.concat(bases.result)};
+    })
     .then(process_domains)
     .then(add_domain_activity);
 };
@@ -184,7 +227,7 @@ var domains_for_user = function(user_id) {
             if (domain.id === user_id+"/default_domain") {
               domain.name = domain.name.replace("types", "profile");
             }
-          })
+          });
           return domains;
         });
     });
@@ -207,7 +250,7 @@ var messages = function(user_id) {
           if (reply.timestamp > timestamp) {
             message_count += 1;
           }
-        })
+        });
       });
 
       return message_count;
@@ -245,7 +288,7 @@ var is_registration_off = function() {
     })
     .then(function(envelope) {
       return envelope.result["/freebase/maintenance_profile/registration_off"];
-    })
+    });
 };
 
 var has_membership = function(user_id) {
@@ -286,7 +329,7 @@ function blog_entries(maxcount) {
     .then(null, function(error) {return [];})
     .then(function(items) {
       return {items:items, url:url, rss_url:rss_url};
-    })
+    });
 }
 
 ///////////////////

@@ -147,12 +147,15 @@
     init_edit_type_form_row: function(form) {
       var name = $(":input[name=name]", form.row);
       var key =  $(":input[name=key]", form.row).data("changed", false);
+      var typehint = $(":input[name=typehint]", form.row);
       var description = $(":input[name=description]", form.row);
 
       if (form.mode === "add") {
         name.val("");
         key.val("").data("changed", false);
-        $(":input[name=typehint]", form.row).removeAttr("checked");
+        if (!typehint.is(":disabled")) {
+          typehint.removeAttr("checked");
+        }
         description.val("");
       }
 
@@ -213,14 +216,14 @@
       if (form.row.prev(".row-msg-error").length) {
         return;
       }
-      
+
       form.row.addClass("loading");
 
       // TODO We need to show a loading div here, but we have a problem with position:relative on <td> elements
 
       //var loading_height = form.row.find("td:first").height();
-      //form.row.find(".edit-row-loader").css({height: loading_height}).show();      
-      
+      //form.row.find(".edit-row-loader").css({height: loading_height}).show();
+
       var name = $.trim($(":input[name=name]", form.row).val());
       var key = $.trim($(":input[name=key]", form.row).val());
       var typehint = $(":input[name=typehint]", form.row);

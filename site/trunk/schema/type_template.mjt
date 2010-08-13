@@ -2,7 +2,7 @@
   var mf = acre.require("MANIFEST").MF;
   var c = this.exports.c = {};
   var h = mf.require("core", "helpers");
-  var t = mf.require("templates");
+  var tc = mf.require("type_components");
   var image = mf.require("template", "imagecomponents");  
   var sh = mf.require("helpers");
 </acre:script>
@@ -130,7 +130,7 @@
         Properties
       </h2>
       <table class="table" cellspacing="0" acre:if="c.type.properties.length">
-         ${t.native_properties(c.type.properties, c.type.id)}
+         ${tc.native_properties(c.type.properties, c.type.id)}
         </tbody>
       </table>
       <h2 class="empty-table-msg" acre:else=""><strong>$c.type.name</strong> has no properties</h2>
@@ -144,7 +144,7 @@
       </h2>
       <table class="table" cellspacing="0" id="included-types-table"  acre:if="c.type.included_types.length">
         <acre:block for="type in c.type.included_types">
-          ${t.included_type_thead(type)}          
+          ${tc.included_type_thead(type)}          
         </acre:block>
      </table>
       <h2 class="empty-table-msg" acre:else=""><strong>$c.type.name</strong> has no Included Types</h2>
@@ -156,14 +156,14 @@
       <table class="table" cellspacing="0" id="incoming-properties-table" 
              acre:if="c.type.incoming.domain.length || c.type.incoming.commons || c.type.incoming.bases">
         <acre:block if="c.type.incoming.domain.length">
-          ${t.incoming_props_thead(c.type.domain.name, true)}
-          ${t.incoming_props_tbody(c.type.incoming.domain)}
+          ${tc.incoming_props_thead(c.type.domain.name, true)}
+          ${tc.incoming_props_tbody(c.type.incoming.domain)}
        </acre:block>
         <acre:block if="c.type.incoming.commons">
-          ${t.incoming_props_thead("Commons", false, h.url_for('schema', 'service', [['id',c.type.id],['exclude_domain',c.type.domain.id]], '/get_incoming_from_commons'))}
+          ${tc.incoming_props_thead("Commons", false, h.url_for('schema', 'type', [['id',c.type.id],['exclude_domain',c.type.domain.id]], '/get_incoming_from_commons'))}
         </acre:block>
         <acre:block if="c.type.incoming.bases">
-          ${t.incoming_props_thead("Bases", false, h.url_for('schema', 'service', [['id',c.type.id],['exclude_domain',c.type.domain.id]], '/get_incoming_from_bases'))}
+          ${tc.incoming_props_thead("Bases", false, h.url_for('schema', 'type', [['id',c.type.id],['exclude_domain',c.type.domain.id]], '/get_incoming_from_bases'))}
         </acre:block>
       </table>
       <h2 class="empty-table-msg" acre:else=""><strong>$c.type.name</strong> has no incoming properties</h2>
@@ -183,14 +183,14 @@
                 <th class="type-diagram-col-header" colspan="3">Incoming Properties</th>
               </tr>
               <acre:block if="c.type.incoming.domain.length">
-                ${t.type_diagram_incoming_props(c.type.incoming.domain)}
+                ${tc.type_diagram_incoming_props(c.type.incoming.domain)}
               </acre:block>
             </tbody>
             <tbody class="bases" acre:if="c.type.incoming.commons.length">
-              ${t.type_diagram_incoming_props(c.type.incoming.commons)}
+              ${tc.type_diagram_incoming_props(c.type.incoming.commons)}
             </tbody>
             <tbody class="users" acre:if="c.type.incoming.bases.length">
-              ${t.type_diagram_incoming_props(c.type.incoming.bases)}
+              ${tc.type_diagram_incoming_props(c.type.incoming.bases)}
             </tbody>
           </table>
         </td>
@@ -206,12 +206,12 @@
             <tr>
               <th colspan="4" class="type-diagram-col-header">$c.type.name Properties</th>
             </tr>            
-            ${t.type_diagram_native_props(c.type.properties)}
+            ${tc.type_diagram_native_props(c.type.properties)}
             <tr>
               <th colspan="4" class="type-diagram-col-header">Inherited Properties</th>
             </tr>                          
             <acre:block for="type in c.type.included_types"> 
-              ${t.type_diagram_inherited_props(type.properties)}
+              ${tc.type_diagram_inherited_props(type.properties)}
             </acre:block>
           </table>
         </td>

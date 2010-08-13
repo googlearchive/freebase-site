@@ -2,16 +2,8 @@
   var mf = acre.require("MANIFEST").MF;
   var c = this.exports.c = {};
   var h = mf.require("core", "helpers");
-  var templates = mf.require("templates");
-  var image = mf.require("template", "imagecomponents");
-
-  var id = acre.request.params.id || acre.request.path_info;
- 
-  var queries = mf.require("queries");  
-  var data = {
-    id: id,
-    domain : queries.domain(id)
-  };
+  var dc = mf.require("domain_components");
+  var image = mf.require("template", "imagecomponents");  
 </acre:script>
 
 <acre:block def="title()">
@@ -96,7 +88,7 @@
           </thead>
           <tbody>
             <acre:block for="i,type in c.domain.types">
-              ${templates.domain_type_row(type)}
+              ${dc.domain_type_row(type)}
             </acre:block>
           </tbody>
           <tfoot class="table-edit edit">
@@ -134,7 +126,7 @@
           </thead>
           <tbody>
             <acre:block for="i,type in c.domain['mediator:types']">
-              ${templates.domain_type_row(type)}
+              ${dc.domain_type_row(type)}
             </acre:block>
           </tbody>
           <tfoot class="table-edit edit">
@@ -165,4 +157,3 @@
   <script src="${mf.js_src('domain.mf.js')}"></script>
 </acre:block>
 
-${mf.require("template", "renderer").render_page(data, this.exports)}

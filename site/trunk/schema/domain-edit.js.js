@@ -8,7 +8,7 @@
      */
     add_new_type_begin: function(trigger, domain_id, mediator) {
       $.ajax({
-        url: acre.request.app_url + "/schema/service/add_new_type_begin",
+        url: acre.request.app_url + "/schema/domain/add_new_type_begin",
         data: {id: domain_id, mediator: mediator ? 1 : 0},
         dataType: "json",
         success: function(data, status, xhr) {
@@ -20,7 +20,7 @@
           var form = {
             mode: "add",
             ajax: {
-              url: acre.request.app_url + "/schema/service/add_new_type_submit"
+              url: acre.request.app_url + "/schema/domain/add_new_type_submit"
             },
             table: trigger.parents("table:first"),
             trigger: trigger,
@@ -54,7 +54,7 @@
      */
     edit_type_begin: function(trigger, type_id) {
       $.ajax({
-        url: acre.request.app_url + "/schema/service/edit_type_begin",
+        url: acre.request.app_url + "/schema/domain/edit_type_begin",
         data: {id: type_id},
         dataType: "json",
         success: function(data, status, xhr) {
@@ -66,7 +66,7 @@
           var form = {
             mode: "edit",
             ajax: {
-              url: acre.request.app_url + "/schema/service/edit_type_submit",
+              url: acre.request.app_url + "/schema/domain/edit_type_submit",
               data: {id: type_id}
             },
             table: trigger.parents("table:first"),
@@ -146,7 +146,7 @@
      */
     init_edit_type_form_row: function(form) {
       var name = $(":input[name=name]", form.row);
-      var key =  $(":input[name=key]", form.row).data("changed", false);
+      var key =  $(":input[name=key]", form.row);
       var typehint = $(":input[name=typehint]", form.row);
       var description = $(":input[name=description]", form.row);
 
@@ -157,6 +157,9 @@
           typehint.removeAttr("checked");
         }
         description.val("");
+      }
+      else {
+        key.data("changed", true);
       }
 
       if (!form.row.data("initialized")) {
@@ -286,7 +289,7 @@
       var row = trigger.parents("tr:first");
       var table = row.parents("table:first");
       $.ajax({
-        url: acre.request.app_url + "/schema/service/delete_type_submit",
+        url: acre.request.app_url + "/schema/domain/delete_type_submit",
         data: {id: type_id, user: fb.user.id},
         type: "POST",
         dataType: "json",
@@ -313,7 +316,7 @@
       var row = trigger.parents("tr:first");
       var table = row.parents("table:first");
       $.ajax({
-        url: acre.request.app_url + "/schema/service/undo_delete_type_submit",
+        url: acre.request.app_url + "/schema/domain/undo_delete_type_submit",
         data: {type_info: JSON.stringify(type_info)},
         type: "POST",
         dataType: "json",

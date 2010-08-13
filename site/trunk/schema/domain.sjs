@@ -1,5 +1,5 @@
 var mf = acre.require("MANIFEST").MF;
-var api = acre.require("type_api").api;
+var api = acre.require("domain_api").api;
 var service = mf.require("core", "service");
 var queries = mf.require("queries");
 
@@ -8,19 +8,18 @@ try {
   service.main(this, api);
 }
 catch (e if e instanceof service.ApiNotFoundError) {
+  // if not found, path_info is a domain id
   main();
 }
 
 function main() {
-  var type_id = acre.request.params.id || acre.request.path_info;
-  var diagram = acre.request.params.view === "diagram";
+  var domain_id = acre.request.params.id || acre.request.path_info;
   var data = {
-    id: type_id,
-    diagram: diagram,
-    type: diagram ? queries.typediagram(type_id) : queries.type(type_id)
+    id: domain_id,
+    domain: queries.domain(domain_id)
   };
   mf.require("template", "renderer").render_page(
     data,
-    mf.require("type_template")
+    mf.require("domain_template")
   );
 };

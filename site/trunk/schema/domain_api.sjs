@@ -1,41 +1,13 @@
-
 var mf = acre.require("MANIFEST").MF;
 var h = mf.require("core", "helpers");
-var edit = mf.require("editcomponents");
-var ServiceError = mf.require("core", "service").lib.ServiceError;
+var edit = mf.require("domain_editcomponents");
+var dc = mf.require("domain_components");
 var create_type = mf.require("queries", "create_type");
 var delete_type = mf.require("queries", "delete_type");
 var update_type = mf.require("queries", "update_type");
 var queries = mf.require("queries");
-var t = mf.require("templates");
 
 var api = {
-  get_type_properties: function(args) {
-    return queries.type_properties(args.id)
-      .then(function(props) {
-        return {
-          html: acre.markup.stringify(t.native_properties(props, args.id))
-        };
-      });
-  },
-
-  get_incoming_from_commons: function(args) {
-    return queries.incoming_from_commons(args.id, args.exclude_domain)
-      .then(function(props) {
-        return {
-          html: acre.markup.stringify(t.incoming_props_tbody(props))
-        };
-      });
-  },
-
-  get_incoming_from_bases: function(args) {
-    return queries.incoming_from_bases(args.id, args.exclude_domain)
-      .then(function(props) {
-        return {
-          html: acre.markup.stringify(t.incoming_props_tbody(props))
-        };
-      });
-  },
 
   add_new_type_begin: function(args) {
     return {
@@ -56,7 +28,7 @@ var api = {
           created.enumeration = created["/freebase/type_hints/enumeration"] = true;
         }
         return {
-          html: acre.markup.stringify(t.domain_type_row(created))
+          html: acre.markup.stringify(dc.domain_type_row(created))
         };
       });
   },
@@ -80,7 +52,7 @@ var api = {
       })
       .then(function(type) {
         return {
-          html: acre.markup.stringify(t.domain_type_row(type))
+          html: acre.markup.stringify(dc.domain_type_row(type))
         };
       });
   },
@@ -102,19 +74,13 @@ var api = {
       })
       .then(function(type) {
         return {
-          html: acre.markup.stringify(t.domain_type_row(type))
+          html: acre.markup.stringify(dc.domain_type_row(type))
         };
       });
   }
 };
 
 // required args and authorization
-api.get_type_properties.args = ["id"]; // type id
-
-api.get_incoming_from_commons.args = ["id"]; // type id, exclude_domain (ptional)
-
-api.get_incoming_from_bases.args = ["id"]; // type id, exclude_domain (ptional)
-
 api.add_new_type_begin.args = ["id"]; // domain id, mediator (optional)
 api.add_new_type_begin.auth = true;
 
@@ -132,15 +98,3 @@ api.edit_type_begin.auth = true;
 
 api.edit_type_submit.args = api.add_new_type_submit.args.concat(["id"]);
 api.edit_type_submit.auth = true;
-
-function main(scope) {
-  if (h.is_client()) {
-    acre.response.set_cache_policy('fast');
-  }
-  var service = mf.require("core", "service");
-  service.main(scope, api);
-};
-
-if (acre.current_script == acre.request.script) {
-  main(this);
-}

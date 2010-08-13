@@ -5,16 +5,21 @@
   fb.homepage.update_pointer = function($tab) {
     // First, figure out the selected tab and it's position
     var tab_position = $tab.position();
+    var $pointer = $("#pointer");
+
+    if ($pointer.position().top === tab_position.top) {
+      return;
+    }
 
     // Update pointer text and position accordingly
-    if ($("#pointer").is(":hidden")) {
-      $("#pointer").css({'top': tab_position.top + 'px' });
+    if ($pointer.is(":hidden")) {
+      $pointer.css({'top': tab_position.top + 'px' });
     }
 
     var pointer_text = $tab.text();
     $("#pointer-text").fadeOut(function() {$("#pointer-text").html(pointer_text);});
-    $("#pointer").fadeIn().animate({'top': tab_position.top + 'px' },
-                                   function() {$("#pointer-text").fadeIn();});
+    $pointer.fadeIn().animate({'top': tab_position.top + 'px' },
+                              function() {$("#pointer-text").fadeIn();});
   };
 
   fb.homepage.switch_pane = function($tab, $pane, $panes, done) {

@@ -22,21 +22,6 @@
                               function() {$("#pointer-text").fadeIn();});
   };
 
-  fb.homepage.switch_pane = function($tab, $pane, $panes, done) {
-    $tab.closest(".domain-explorer-tab").removeClass("processing");
-
-    $panes.hide();
-    $pane.fadeIn(done);
-
-    if ($tab.closest("li").is(".toc-letter")) {
-      fb.homepage.update_pointer($("#tab-all > a:first"));
-      $(".toc-letter").removeClass("active");
-      $tab.closest("li").addClass("active");
-    } else {
-      fb.homepage.update_pointer($tab);
-    }
-  };
-
   $.tools.tabs.addEffect("load_pane", function(i, done) {
     var $panes = this.getPanes();
     var $pane = $panes.eq(i);
@@ -55,16 +40,28 @@
       $("#all-domains-nav").hide();
     }
 
+    // Indicator which tab is open with a pointer
+    if ($tab.closest("li").is(".toc-letter")) {
+      fb.homepage.update_pointer($("#tab-all > a:first"));
+      $(".toc-letter").removeClass("active");
+      $tab.closest("li").addClass("active");
+    } else {
+      fb.homepage.update_pointer($tab);
+    }
+
     // only load the pane once
     if ($pane.is(":empty") || $.trim($pane.text()).length == 0) {
       // load it with a page specified in the tab's href attribute
-      $tab.closest(".domain-explorer-tab").addClass("processing");
+      $("#pointer > .indicator").addClass("processing");
       $pane.load($tab.attr("href"), function() {
-        fb.homepage.switch_pane($tab, $pane, $panes, done);
+        $panes.hide();
+        $pane.fadeIn(done);
         fb.homepage.init_activity_charts($pane);
+        $("#pointer > .indicator").removeClass("processing");
       });
     } else {
-      fb.homepage.switch_pane($tab, $pane, $panes, done);
+      $panes.hide();
+      $pane.fadeIn(done);
     };
   });
 

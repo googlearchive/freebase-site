@@ -15,7 +15,7 @@ GENERAL
     width: 74em;
     float: left;
     background: #fff;
-    .rounded_corners(5px);
+    .rounded_corners();
 }
 
 .input-standard {
@@ -101,9 +101,7 @@ DOMAIN EXPLORER
 #domain-explorer {
     float: left;
     border: 1px solid #dcdbdc;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
+    .rounded_corners();
     background: #fff;
 }
 
@@ -139,7 +137,6 @@ DOMAIN EXPLORER
      width: 220px;
 }
 
-.ie8 .domain-activity-controls,
 .ie7 .domain-activity-controls,
 .ie6 .domain-activity-controls {
      width: 210px;
@@ -290,30 +287,32 @@ DOMAIN EXPLORER
 }
 
 #domain-explorer-tabs li.processing {
-    background: url(loader-sm-snake-black.gif) no-repeat center right;
+    background: url(loader-sm-snake-black.gif) no-repeat 10px right;
     margin-right: 5px;
 }
 
-#domain-explorer-tabs li.current a {
+#all-domains-nav li a {
+	color: #888;
+	font-weight: bold;
+}
+
+#domain-explorer-tabs li.active a {
     color: #fff;
 }
 
 #all-domains-nav {
 	overflow: auto;
-	margin: 0.6em 0.4em 0.6em 0.4em;
+	margin: 0.5em 0.4em;
 }
 
 
 #all-domains-nav li {
-	color: #888;
-	/* color: #fff; */
 	display: block;
-	font-weight: bold;
 	width: 1.2em;
 	text-align: center;
 	float: left;
 	margin: 0px;
-	padding: 0.4em;
+	padding: 0.3em;
 }
 
 #all-domains-nav li.active {
@@ -351,10 +350,6 @@ DOMAIN EXPLORER
 }
 
 .ie8 .category-domain-list,
-.ie7 .category-domain-list {
-    width: 544px;
-}
-
 .ie7 .category-domain-list {
     width: 544px;
 }
@@ -417,7 +412,6 @@ DOMAIN EXPLORER
     width: 221px;
 }
 
-.ie8 .domain-info,
 .ie7 .domain-info,
 .ie6 .domain-info {
     width: 211px;
@@ -509,9 +503,8 @@ DOMAIN EXPLORER
 
 .user-image {
     display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
+    margin: 0 auto;
+		}
 
 /*
 ---------------------

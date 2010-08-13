@@ -191,10 +191,8 @@
       form.row.hideRow(function() {
         $(this).remove();
       });
+      de.clear_messages(form.row);
       form.submit.remove();
-      // XXX Dae: I added this to remove any error messages when a user clicks cancle/done
-      // Feel free to refactor as you see fit
-      $('.row-msg').remove();
       form.trigger_row.show();
       form.trigger.removeClass("editing");
     },
@@ -210,13 +208,13 @@
       if (document.activeElement) {
         $(document.activeElement).blur();
       }
-      // remove existing row-msg's
-      form.row.prev(".row-msg").remove();
+
+      de.clear_messages(form.row);
 
       de.edit_type_form_row_validate(form.row);
 
       // any pre-submit errors?
-      if (form.row.prev(".row-msg-error").length) {
+      if (de.has_row_message(form.row, "error")) {
         return;
       }
 
@@ -340,9 +338,6 @@
       });
     },
 
-
-
-
     ajax_error_handler: function(xhr, row) {
       var msg;
       try {
@@ -361,13 +356,26 @@
      */
 
     edit_type_error: function(row, msg) {
-      de.edit_type_row_message(row, de.row_message(msg, "error"));
+      msg = de.row_message(msg, "error");
+      de.edit_type_row_message(row, msg, "error");
     },
 
-    edit_type_row_message: function(row, row_msg) {
+    edit_type_row_message: function(row, row_msg, type) {
       // prepend row_msg to row
       row.before(row_msg);
       row_msg.hide().showRow();
+
+      var msg_data = row.data("row-msg");
+      if (!msg_data) {
+        msg_data = {};
+        row.data("row-msg", msg_data);
+      }
+      if (!msg_data[type]) {
+        msg_data[type] = [row_msg];
+      }
+      else {
+        msg_data[type].push(row_msg);
+      }
     },
 
     row_message: function(msg, type) {
@@ -378,6 +386,26 @@
         row.addClass("row-msg-" + type);
       }
       return row;
+    },
+
+    clear_messages: function(row) {
+      var msg_data = row.data("row-msg");
+      if (msg_data) {
+        $.each(msg_data, function(type,msgs) {
+          $.each(msgs, function(i,msg) {
+            msg.remove();
+          });
+        });
+        row.removeData("row-msg");
+      }
+    },
+
+    has_row_message: function(row, type) {
+      var msg_data = row.data("row-msg");
+      if (type) {
+        return msg_data && msg_data[type] && msg_data[type].length;
+      }
+      return msg_data != null;
     }
 
   };

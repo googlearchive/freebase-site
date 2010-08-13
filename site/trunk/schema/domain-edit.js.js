@@ -174,7 +174,7 @@
           }
         });
         // enter/escape key handler
-        $(":input", form.row).keyup(function(e) {
+        $(":input:not(textarea)", form.row).keyup(function(e) {
           if (e.keyCode === 13) { // enter
             form.row.trigger("fb.schema.domain.edit.type.submit");
           }

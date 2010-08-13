@@ -18,7 +18,7 @@ function groupBy(array, key) {
 
 var categories = function () {
   var q_categories = acre.require("categories").query;
-
+  
   return freebase.mqlread(q_categories)
     .then(function(envelope) {
       return envelope.result.map(function(category) {
@@ -27,8 +27,7 @@ var categories = function () {
           "name": category.name
         };
       });
-    },
-    function(error) {
+    }, function(error) {
       return [];
     });
 };
@@ -47,8 +46,7 @@ var all_domains = function(commons_only) {
           "name": domain.name
         };
       });
-    },
-    function (error) {
+    }, function (error) {
       return [];
     });
 };
@@ -322,7 +320,7 @@ var has_membership = function(user_id) {
 // Freebase Blog //
 ///////////////////
 function blog_entries(maxcount) {
-  var maxcount = maxcount || 2;
+  maxcount = maxcount || 2;
   var url = 'http://blog.freebase.com';
   var rss_url = 'http://feeds.feedburner.com/FreebaseBlog'; // skip blog.freebase.com/feed redirect for speed
   return feeds.get_rss_entries(rss_url, maxcount)
@@ -336,7 +334,7 @@ function blog_entries(maxcount) {
 // Freebase Wiki //
 ///////////////////
 function wiki_entries(maxcount) {
-  var maxcount = maxcount || 2;
+  maxcount = maxcount || 2;
   var url = 'http://wiki.freebase.com';
   var rss_url = url + '/w/index.php?title=Special:RecentChanges&feed=rss';
   var user_url = url + '/wiki/User';
@@ -348,7 +346,7 @@ function wiki_entries(maxcount) {
         if (link_url.params.title) {
           item.link = h.wiki_url(link_url.params.title);
         }
-      })
+      });
 
       return {items:items, url:url, rss_url:rss_url, user_url:user_url};
     });

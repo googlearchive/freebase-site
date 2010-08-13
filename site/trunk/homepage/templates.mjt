@@ -115,7 +115,7 @@
         <div class="domain-explorer-pane" id="pane-all-${letter}"></div>
       </acre:block>
     </div>
-    <span id="pointer"><span id="pointer-text"></span></span>
+    <span id="pointer"><span id="pointer-text"></span><span class="indicator"></span></span>
   </div>
 </acre:block>
 

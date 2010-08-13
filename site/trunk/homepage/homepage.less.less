@@ -254,7 +254,22 @@ DOMAIN EXPLORER
     font-weight: bold;
     line-height: 1;
     white-space: nowrap;
+	float: left;
 }
+
+.indicator {
+	width: 18px;
+	height: 18px;
+	border: 1px solid red;
+    background: url(loader-sm-snake-black.gif) no-repeat right top;
+	float: right;
+	display: none;
+}
+
+.processing .indicator {
+	display: block;
+}
+
 
 #domain-explorer-tabs {
     float: left;
@@ -286,10 +301,6 @@ DOMAIN EXPLORER
     text-decoration: none;
 }
 
-#domain-explorer-tabs li.processing {
-    background: url(loader-sm-snake-black.gif) no-repeat right 10px;
-    margin-right: 5px;
-}
 
 #all-domains-nav li a {
 	color: #888;

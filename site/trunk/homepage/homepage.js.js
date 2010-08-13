@@ -52,12 +52,18 @@
     // only load the pane once
     if ($pane.is(":empty") || $.trim($pane.text()).length == 0) {
       // load it with a page specified in the tab's href attribute
-      $("#pointer > .indicator").addClass("processing");
+      $("#pointer").queue(function(finished) {
+        $("#pointer").addClass("processing");
+        finished();
+      });
       $pane.load($tab.attr("href"), function() {
         $panes.hide();
         $pane.fadeIn(done);
         fb.homepage.init_activity_charts($pane);
-        $("#pointer > .indicator").removeClass("processing");
+        $("#pointer").queue(function(finished) {
+          $("#pointer").removeClass("processing");
+          finished();
+        });
       });
     } else {
       $panes.hide();

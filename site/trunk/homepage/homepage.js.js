@@ -37,6 +37,19 @@
     var $pane = $panes.eq(i);
     var $tab = this.getTabs().eq(i);
 
+    if ($tab.closest("li").is("#tab-all")) {
+      $("#all-domains-nav").fadeIn("fast");
+      $tab = $(".toc-letter.active > a:first");
+      if ($tab.length === 0) {
+        $tab = $(".toc-letter > a:first");
+      }
+      done();
+      $tab.click();
+      return;
+    } else if (!$tab.closest(".domain-explorer-tab").is("#tab-all")) {
+      $("#all-domains-nav").hide();
+    }
+
     // only load the pane once
     if ($pane.is(":empty") || $.trim($pane.text()).length == 0) {
       // load it with a page specified in the tab's href attribute

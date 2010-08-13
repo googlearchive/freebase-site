@@ -89,10 +89,10 @@
         </a>
       </li>
       <li class="last" class="domain-explorer-tab" id="tab-all">
-        <a class="domain-explorer-tab-link">
+        <a class="domain-explorer-tab-link" href="javascript:void();">
           <span>All</span>
         </a>
-        <ul id="all-domains-nav">
+        <ul id="all-domains-nav" style="display: none;">
           <acre:block acre:for="letter in h.lowercase_alphabet()">
             <li class="toc-letter">
 	          <a href="${h.url_for('homepage', 'loadpanel', [['domains', letter]])}">

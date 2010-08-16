@@ -79,13 +79,6 @@ var add_domain_activity = function(domains) {
 
     promises.push(freebase.get_static("activity", "summary_"+domain.guid.replace("#", "/guid/"))
       .then(function(activity) {
-        // Retry failures with the domain id instead of the guid
-        if (activity === undefined) {
-          return freebase.get_static("activity", "summary_"+domain.id);
-        }
-        return activity;
-      })
-      .then(function(activity) {
         if (!activity) {return activity;}
 
         domain.activity = activity;
@@ -93,9 +86,6 @@ var add_domain_activity = function(domains) {
         domain.top_user = get_top_user(activity.users.h);
         if (!domain.top_user) {
           domain.top_user = get_top_user(activity.users.s);
-        }
-        if (!domain.top_user) {
-          domain.top_user = get_top_user(activity.users.b);
         }
 
         return activity;

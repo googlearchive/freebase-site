@@ -1,4 +1,5 @@
 var mf = acre.require("MANIFEST").MF;
+var h = mf.require("helpers");
 var lib = mf.require("service", "lib");
 var deferred = mf.require("promise", "deferred");
 
@@ -46,47 +47,63 @@ function main(scope, api) {
     action = action.substring(1);
   }
 
-  if (typeof api[action] === 'function') {
-    var fn = api[action];
-    var svc = (method === 'GET' ? lib.GetService :
-               (headers['content-type'].indexOf("multipart/form-data") === 0 ? lib.FormService : lib.PostService));
+  if (typeof api[action] !== "function") {
+    throw new ApiNotFoundError("api not found: " + action);
+  }
 
-    var d;
-    try {
-      var args = lib.parse_request_args(fn.args); // check required args
-      if (fn.auth) { // check authentication
-        lib.check_user();
-      }
-      // api method can return deferred/promise
-      if (svc === lib.FormService) {
-        d = fn(args, headers, scope.acre.request.body);
-      }
-      else {
-        d = fn(args, headers);
-      }
+  var fn = api[action];
+  var svc = (method === 'GET' ? lib.GetService :
+             (headers['content-type'].indexOf("multipart/form-data") === 0 ? lib.FormService : lib.PostService));
+
+  var d;
+  try {
+    var args = lib.parse_request_args(fn.args); // check required args
+    if (fn.auth) { // check authentication
+      lib.check_user();
     }
-    catch (e if instanceof_service_error(e)) {
+    // api method can return deferred/promise
+    if (svc === lib.FormService) {
+      d = fn(args, headers, scope.acre.request.body);
+    }
+    else {
+      d = fn(args, headers);
+    }
+  }
+  catch (e if instanceof_service_error(e)) {
+    return handle_service_error(e);
+  }
+  // otherwise, let it fallthrough to error page to wrap the JS call stack
+
+  function success(result) {
+    svc(function() {
+      return result;
+    }, scope);
+  };
+
+  function error(e) {
+    svc(function() {
       return handle_service_error(e);
-    }
-    // otherwise, let it fallthrough to error page to wrap the JS call stack
+    }, scope);
+  };
 
-    function success(result) {
-      svc(function() {
-        return result;
-      }, scope);
-    };
+  deferred.when(d, success, error);
 
-    function error(e) {
-      svc(function() {
-        return handle_service_error(e);
-      }, scope);
-    };
+  acre.async.wait_on_results();
 
-    deferred.when(d, success, error);
-
-    acre.async.wait_on_results();
+  // cache_policy
+  if (h.is_client() && fn.cache_policy) {
+    acre.response.set_cache_policy(fn.cache_policy);
   }
 };
+
+
+function ApiNotFoundError() {
+    Error.apply(this, arguments);
+}
+ApiNotFoundError.prototype = new Error();
+ApiNotFoundError.prototype.constructor = ApiNotFoundError;
+ApiNotFoundError.prototype.name = 'ApiNotFoundError';
+
 
 /**
  * is e and instanceof a known error

@@ -820,6 +820,7 @@ Expected Type Suggest Dialog
     padding-right: 15px;
     text-align: center;
     margin-bottom: 8px;
+    -webkit-transition: color 0.2s;    
 }
 
 .ect-menu-item:hover {
@@ -827,10 +828,16 @@ Expected Type Suggest Dialog
 }
 
 .ect-icon {
+    opacity: 0.8;
     display: block;
     width: 48px;
     height: 48px;
     background: url(ect-icons.png) no-repeat;
+    -webkit-transition: opacity 0.2s;
+}
+
+.ect-icon:hover {
+    opacity: 1;
 }
 
 .ect-text    { background-position: 0 0;}

@@ -283,7 +283,7 @@ function base_type(id) {
         })
         .then(function(siblings) {
           result.domain.types = siblings;
-          return siblings;
+          return siblings.sort(sh.sort_by_name);
         }));
 
       return deferred.all(promises)

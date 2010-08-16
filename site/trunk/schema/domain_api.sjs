@@ -9,13 +9,13 @@ var queries = mf.require("queries");
 
 var api = {
 
-  add_new_type_begin: function(args) {
+  add_type_begin: function(args) {
     return {
-      html: acre.markup.stringify(edit.add_new_type_form(args.id, args.mediator == 1))
+      html: acre.markup.stringify(edit.add_type_form(args.id, args.mediator == 1))
     };
   },
 
-  add_new_type_submit: function(args) {
+  add_type_submit: function(args) {
     var create_type_options = h.extend({}, args, {mqlkey_quote:true});
 
     return create_type.create_type(create_type_options)
@@ -81,11 +81,11 @@ var api = {
 };
 
 // required args and authorization
-api.add_new_type_begin.args = ["id"]; // domain id, mediator (optional)
-api.add_new_type_begin.auth = true;
+api.add_type_begin.args = ["id"]; // domain id, mediator (optional)
+api.add_type_begin.auth = true;
 
-api.add_new_type_submit.args = ["domain", "name", "key", "typehint", "description"];
-api.add_new_type_submit.auth = true;
+api.add_type_submit.args = ["domain", "name", "key"];
+api.add_type_submit.auth = true;
 
 api.delete_type_submit.args = ["id", "user"]; // type id, user id
 api.delete_type_submit.auth = true;
@@ -96,5 +96,5 @@ api.undo_delete_type_submit.auth = true;
 api.edit_type_begin.args = ["id"]; // type id
 api.edit_type_begin.auth = true;
 
-api.edit_type_submit.args = api.add_new_type_submit.args.concat(["id"]);
+api.edit_type_submit.args = api.add_type_submit.args.concat(["id"]);
 api.edit_type_submit.auth = true;

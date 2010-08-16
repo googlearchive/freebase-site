@@ -1,50 +1,58 @@
 (function($, fb) {
 
+  var se = fb.schema.edit;   // required;
 
   var de = fb.schema.domain.edit = {
 
     /**
-     * retrieve add_new_type form (ajax).
+     * retrieve add_type form (ajax).
      */
-    add_new_type_begin: function(trigger, domain_id, mediator) {
+    add_type_begin: function(trigger, domain_id, mediator) {
       $.ajax({
-        url: acre.request.app_url + "/schema/domain/add_new_type_begin",
+        url: acre.request.app_url + "/schema/domain/add_type_begin",
         data: {id: domain_id, mediator: mediator ? 1 : 0},
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
-            return de.ajax_error_handler(xhr, row);
+            return se.ajax_error_handler(xhr, row);
           }
           // add edit-form after the edit button
           var html = $(data.result.html);
           var form = {
             mode: "add",
+            event_prefix: "fb.schema.domain.add.type.",
             ajax: {
-              url: acre.request.app_url + "/schema/domain/add_new_type_submit"
+              url: acre.request.app_url + "/schema/domain/add_type_submit"
             },
+
+            init_form: de.init_type_form,
+            validate_form: de.validate_type_form,
+            submit_form: de.submit_type_form,
+
             table: trigger.parents("table:first"),
             trigger: trigger,
             trigger_row: trigger.parents("tr:first"),
             row: $(".edit-row", html).hide(),
-            submit: $(".edit-row-submit", html).hide()
+            submit_row: $(".edit-row-submit", html).hide()
           };
-          de.init_edit_type(form);
+
+          se.init_edit_form(form);
 
           /**
            * after submit success, re-init form for additional adds
            */
-          form.row.bind("fb.schema.domain.edit.type.success", function() {
+          form.row.bind("fb.schema.domain.add.type.success", function() {
             // show headers if showing the empty message
             var empty_msg = $("thead:first .table-empty-column", form.table);
             if (empty_msg.length) {
               empty_msg.parents("tr:first").hide().prev("tr").show();
             }
-            $(".button-cancel", form.submit).text("Done");
-            de.init_edit_type_form_row(form);
+            $(".button-cancel", form.submit_row).text("Done");
+            de.init_type_form(form);
           });
         },
         error: function(xhr) {
-          de.ajax_error_handler(xhr, row);
+          se.ajax_error_handler(xhr, row);
         }
       });
     },
@@ -59,92 +67,51 @@
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
-            return de.ajax_error_handler(xhr, row);
+            return se.ajax_error_handler(xhr, row);
           }
           // add edit-form after the edit button
           var html = $(data.result.html);
           var form = {
             mode: "edit",
+            event_prefix: "fb.schema.domain.edit.type.",
             ajax: {
               url: acre.request.app_url + "/schema/domain/edit_type_submit",
               data: {id: type_id}
             },
+
+            init_form: de.init_type_form,
+            validate_form: de.validate_type_form,
+            submit_form: de.submit_type_form,
+
+
             table: trigger.parents("table:first"),
             trigger: trigger,
             trigger_row: trigger.parents("tr:first"),
             row: $(".edit-row", html).hide(),
-            submit: $(".edit-row-submit", html).hide()
+            submit_row: $(".edit-row-submit", html).hide()
           };
-          de.init_edit_type(form);
+
+          se.init_edit_form(form);
+
           /**
            * after submit success, we're done editing, remove form and old row
            */
           form.row.bind("fb.schema.domain.edit.type.success", function() {
             form.trigger_row.remove(); // old row
             form.row.remove();
-            form.submit.remove();
+            form.submit_row.remove();
           });
         },
         error: function(xhr) {
-          de.ajax_error_handler(xhr, row);
+          se.ajax_error_handler(xhr, row);
         }
       });
     },
 
-    init_edit_type: function(form) {
-      if (form.mode === "add") {
-        $("tbody", form.table).append(form.row);
-      }
-      else if (form.mode === "edit") {
-        form.trigger_row.before(form.row);
-      }
-      else {
-        throw "Unknown edit type mode: " + form.mode;
-      }
-      form.trigger_row.before(form.submit);
-
-      form.row
-        .bind("fb.schema.domain.edit.type.submit", function() {
-          console.log("fb.schema.domain.edit.type.submit");
-          de.edit_type_submit(form);
-        })
-        .bind("fb.schema.domain.edit.type.cancel", function() {
-          console.log("fb.schema.domain.edit.type.cancel");
-          de.edit_type_cancel(form);
-        })
-        .bind("fb.schema.domain.edit.type.error", function(e, row, error) {
-          console.log("fb.schema.domain.edit.type.error", row, error);
-          de.edit_type_error(row, error);
-        });
-
-      de.init_edit_type_form(form);
-      form.row.showRow(function() {
-        $(":text:first", form.row).focus();
-      });
-      form.trigger_row.hide();
-      form.submit.show();
-    },
-
     /**
-     * init add_new_type form
+     * init add_type row
      */
-    init_edit_type_form: function(form) {
-      // submit handler
-      var save = $(".button-submit", form.submit).click(function() {
-        form.row.trigger("fb.schema.domain.edit.type.submit");
-      });
-      // cancel handler
-      $(".button-cancel", form.submit).click(function() {
-        form.row.trigger("fb.schema.domain.edit.type.cancel");
-      });
-      // init edit-row
-      de.init_edit_type_form_row(form);
-    },
-
-    /**
-     * init add_new_type row
-     */
-    init_edit_type_form_row: function(form) {
+    init_type_form: function(form) {
       var name = $(":input[name=name]", form.row);
       var key =  $(":input[name=key]", form.row);
       var typehint = $(":input[name=typehint]", form.row);
@@ -174,12 +141,12 @@
           }
         });
         // enter/escape key handler
-        $(":input:not(textarea)", form.row).keyup(function(e) {
+        $(":input:not(textarea)", form.row).keypress(function(e) {
           if (e.keyCode === 13) { // enter
-            form.row.trigger("fb.schema.domain.edit.type.submit");
+            form.row.trigger(form.event_prefix + "submit");
           }
           else if (e.keyCode === 27) { // escape
-            form.row.trigger("fb.schema.domain.edit.type.cancel");
+            form.row.trigger(form.event_prefix + "cancel");
           }
         });
         form.row.data("initialized", true);
@@ -187,38 +154,10 @@
       name.focus();
     },
 
-    edit_type_cancel: function(form) {
-      form.row.hideRow(function() {
-        $(this).remove();
-      });
-      de.clear_messages(form.row);
-      form.submit.remove();
-      form.trigger_row.show();
-      form.trigger.removeClass("editing");
-    },
-
     /**
      * validate rows, if no errors submit
      */
-    edit_type_submit: function(form) {
-      if (form.row.is(".loading")) {
-        return;
-      }
-      // remove focus from activeelement
-      if (document.activeElement) {
-        $(document.activeElement).blur();
-      }
-
-      de.clear_messages(form.row);
-
-      de.edit_type_form_row_validate(form.row);
-
-      // any pre-submit errors?
-      if (de.has_row_message(form.row, "error")) {
-        return;
-      }
-
-      form.row.addClass("loading");
+    submit_type_form: function(form) {
 
       // TODO We need to show a loading div here, but we have a problem with position:relative on <td> elements
 
@@ -245,7 +184,7 @@
         data: $.extend(data, form.ajax.data),
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
-            return de.ajax_error_handler(xhr, form.row);
+            return se.ajax_error_handler(xhr, form.row);
           }
           var new_row = $(data.result.html).addClass("new-row");
           form.row.before(new_row);
@@ -256,13 +195,10 @@
             // show edit controls in tooltip
             $(".edit", new_row).show();
           }, null, "slow");
-          form.row.trigger("fb.schema.domain.edit.type.success");
+          form.row.trigger(form.event_prefix + "success");
         },
         error: function(xhr) {
-          de.ajax_error_handler(xhr, form.row);
-        },
-        complete: function() {
-          form.row.removeClass("loading");
+          se.ajax_error_handler(xhr, form.row);
         }
       });
     },
@@ -270,11 +206,11 @@
     /**
      * validate row
      */
-    edit_type_form_row_validate: function(row) {
-      var name = $.trim($(":input[name=name]", row).val());
-      var key =  $.trim($(":input[name=key]", row).val());
+    validate_type_form: function(form) {
+      var name = $.trim($(":input[name=name]", form.row).val());
+      var key =  $.trim($(":input[name=key]", form.row).val());
       if (name === "" || key === "") {
-        row.trigger("fb.schema.domain.edit.type.error", [row, "Name and Key is required"]);
+        form.row.trigger(form.event_prefix + "error", [form.row, "Name and Key are required"]);
       }
       // TODO: simple duplicate key check
     },
@@ -293,7 +229,7 @@
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
-            return de.ajax_error_handler(xhr, row);
+            return se.ajax_error_handler(xhr, row);
           }
           var new_row = $(data.result.html).addClass("new-row");
           row.before(new_row);
@@ -302,7 +238,7 @@
           new_row.showRow();
         },
         error: function(xhr) {
-          de.ajax_error_handler(xhr, row);
+          se.ajax_error_handler(xhr, row);
         }
       });
     },
@@ -320,7 +256,7 @@
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
-            return de.ajax_error_handler(xhr, row);
+            return se.ajax_error_handler(xhr, row);
           }
           var new_row = $(data.result.html).addClass("new-row");
           row.before(new_row);
@@ -333,79 +269,9 @@
           }, null, "slow");
         },
         error: function(xhr) {
-          de.ajax_error_handler(xhr, row);
+          se.ajax_error_handler(xhr, row);
         }
       });
-    },
-
-    ajax_error_handler: function(xhr, row) {
-      var msg;
-      try {
-        msg = JSON.parse(xhr.responseText);
-        msg = msg.messages[0].message; // display the first message
-      }
-      catch(e) {
-        msg = xhr.responseText;
-      }
-      // TODO: make error expandable to see whole error message
-      de.edit_type_error(row, msg);
-    },
-
-    /**
-     * row messages
-     */
-
-    edit_type_error: function(row, msg) {
-      msg = de.row_message(msg, "error");
-      de.edit_type_row_message(row, msg, "error");
-    },
-
-    edit_type_row_message: function(row, row_msg, type) {
-      // prepend row_msg to row
-      row.before(row_msg);
-      row_msg.hide().showRow();
-
-      var msg_data = row.data("row-msg");
-      if (!msg_data) {
-        msg_data = {};
-        row.data("row-msg", msg_data);
-      }
-      if (!msg_data[type]) {
-        msg_data[type] = [row_msg];
-      }
-      else {
-        msg_data[type].push(row_msg);
-      }
-    },
-
-    row_message: function(msg, type) {
-      var span = $("<span>").text(msg);
-      var td = $('<td colspan="5">').append(span);
-      var row = $('<tr class="row-msg">').append(td);
-      if (type) {
-        row.addClass("row-msg-" + type);
-      }
-      return row;
-    },
-
-    clear_messages: function(row) {
-      var msg_data = row.data("row-msg");
-      if (msg_data) {
-        $.each(msg_data, function(type,msgs) {
-          $.each(msgs, function(i,msg) {
-            msg.remove();
-          });
-        });
-        row.removeData("row-msg");
-      }
-    },
-
-    has_row_message: function(row, type) {
-      var msg_data = row.data("row-msg");
-      if (type) {
-        return msg_data && msg_data[type] && msg_data[type].length;
-      }
-      return msg_data != null;
     }
 
   };

@@ -1,4 +1,4 @@
-<acre:block def="add_new_type_form(domain_id, mediator, type)">
+<acre:block def="add_type_form(domain_id, mediator, type)">
   <table class="edit-form clear">
     <tbody>
       <tr class="edit-row">
@@ -48,7 +48,7 @@
 </acre:block>
 
 <acre:block def="edit_type_form(type)">
-  ${add_new_type_form(type.domain.id, type.mediator, type)}
+  ${add_type_form(type.domain.id, type.mediator, type)}
 </acre:block>
 
 <acre:block def="delete_type_result(type_info)">

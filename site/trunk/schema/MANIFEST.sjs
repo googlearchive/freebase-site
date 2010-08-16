@@ -20,6 +20,7 @@ var MF = {
   "javascript": {
     "schema.mf.js": [
       ["template", "freebase-permission.mf.js"],
+      ["template", "jquery.showrow.js"],
       ["jquerytools", "tabs.js"],
       ["jquerytools", "tooltip.js"],
       "schema.js"
@@ -33,12 +34,16 @@ var MF = {
       "domain.js"
     ],
     "domain-edit.mf.js": [
-      ["template", "jquery.showrow.js"],
+      "schema-edit.js",
       "domain-edit.js"
     ],
     "type.mf.js": [
       "schema.mf.js",
       "type.js"
+    ],
+    "type-edit.mf.js": [
+      "schema-edit.js",
+      "type-edit.js"
     ]
   }
 };

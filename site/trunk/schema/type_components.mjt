@@ -6,57 +6,73 @@
   var previous_global = null;  
 </acre:script>
 
+<acre:block def="type_property_row(prop, type_id)">
+  <tr class="hoverable">
+    <th scope="row" class="row-header odd">
+      <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
+      <a href="javascript:void(0);" class="row-menu-trigger">+</a>
+      <ul class="row-menu tooltip">
+        <li class="row-menu-item edit">
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.edit_property, ['${prop.id}'], this);"><span class="edit-icon">Edit property</span></a>
+        </li>
+        <li class="row-menu-item edit">
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.delete_property, ['${prop.id}'], this);"><span class="delete-icon">Delete property</span></a>
+        </li>
+        <li class="row-menu-item"><a href="${h.url_for('schema', 'property', null, prop.id)}">View property details</a></li>
+        <li class="row-menu-item" acre:if="prop.expected_type.id.indexOf('/type') === -1">
+          <a href="${h.freebase_url('/view'+prop.expected_type.id)}">Browse instances</a>
+        </li>
+        <li class="row-menu-item last">
+          <a href="${sh.build_query_url(type_id, prop.id)}">Build query</a>
+        </li>
+      </ul>
+    </th>
+    <td class="even">$prop.id</td>
+    <td class="odd">
+      <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">
+        $prop.expected_type.id
+      </a>
+      <span acre:if="prop.expected_type.mediator" class="is-mediator"><abbr title="This is a mediator">mediator</abbr></span>
+      <span acre:if="prop.unit" class="measurement-unit">$prop.unit.name</span>
+      <span acre:if="prop.master_property || prop.reverse_property">
+        <span class="return-link-trigger"></span>
+        <acre:script>
+          var other_property = prop.master_property || prop.reverse_property;
+        </acre:script>
+        <span class="return-link-description">
+          <strong>$prop.name</strong> has a return link of
+          <strong>$other_property.name</strong>
+          from <strong>$other_property.schema.name</strong>
+          <span class="return-link-pointer"></span>
+        </span>        
+      </span>
+    </td>
+    <td class="even description">
+      <p acre:if="prop.tip">${prop.tip}</p>
+      <acre:block acre:trim="">              
+        <span acre:if="prop.master_property === null" class="property-meta"><abbr title="This is a master property">master</abbr></span><span acre:else="" class="property-meta"><abbr title="This is a reverse property">reverse</abbr></span><span acre:if="prop.unique" class="property-meta">, <abbr title="This property can only have a single value">unique</abbr></span><span acre:if="prop.disambiguator" class="property-meta">, <abbr title="This property is a disambiguator">disambiguating</abbr></span><span acre:if="prop.display_none" class="property-meta">, <abbr title="This property is hidden by default">hidden</abbr></span>
+      </acre:block>
+    </td>
+  </tr>
+</acre:block>
 
 <!-- Native Properties markup pattern -->
 <acre:block def="native_properties(properties, type_id)">
   <tbody>
-    <tr>
-      <th class="column-header">Property</th>
+    <tr acre:attrs="properties.length ? {}:{style:'display:none;'}">
+      <th scope="col" class="column-header">Property</th>
       <th class="column-header">ID</th>
       <th class="column-header">Expected Type</th>
       <th class="column-header description">Description</th>
     </tr>
-    <tr acre:for="prop in properties" class="hoverable">
-      <th scope="row" class="row-header odd">
-        <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
-        <a href="javascript:void(0);" class="row-menu-trigger">+</a>
-        <ul class="row-menu tooltip">
-          <li class="row-menu-item"><a href="${h.url_for('schema', 'property', null, prop.id)}">View property details</a></li>
-          <li class="row-menu-item" acre:if="prop.expected_type.id.indexOf('/type') === -1">
-            <a href="${h.freebase_url('/view'+prop.expected_type.id)}">Browse instances</a>
-          </li>
-          <li class="row-menu-item last">
-            <a href="${sh.build_query_url(type_id, prop.id)}">Build query</a>
-          </li>
-        </ul>
+    <tr acre:attrs="properties.length ? {style:'display:none;'}:{}">
+      <th colspan="5" class="table-empty-column" scope="col">
+        <p>This type has no Properties</p>
       </th>
-      <td class="even">$prop.id</td>
-      <td class="odd">
-        <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">
-          $prop.expected_type.id
-        </a>
-        <span acre:if="prop.expected_type.mediator" class="is-mediator"><abbr title="This is a mediator">mediator</abbr></span>
-        <span acre:if="prop.unit" class="measurement-unit">$prop.unit.name</span>
-        <span acre:if="prop.master_property || prop.reverse_property">
-          <span class="return-link-trigger"></span>
-          <acre:script>
-            var other_property = prop.master_property || prop.reverse_property;
-          </acre:script>
-          <span class="return-link-description">
-            <strong>$prop.name</strong> has a return link of
-            <strong>$other_property.name</strong>
-            from <strong>$other_property.schema.name</strong>
-            <span class="return-link-pointer"></span>
-          </span>        
-        </span>
-      </td>
-      <td class="even description">
-        <p acre:if="prop.tip">${prop.tip}</p>
-        <acre:block acre:trim="">              
-          <span acre:if="prop.master_property === null" class="property-meta"><abbr title="This is a master property">master</abbr></span><span acre:else="" class="property-meta"><abbr title="This is a reverse property">reverse</abbr></span><span acre:if="prop.unique" class="property-meta">, <abbr title="This property can only have a single value">unique</abbr></span><span acre:if="prop.disambiguator" class="property-meta">, <abbr title="This property is a disambiguator">disambiguating</abbr></span><span acre:if="prop.display_none" class="property-meta">, <abbr title="This property is hidden by default">hidden</abbr></span>
-        </acre:block>
-      </td>
-    </tr>
+    </tr> 
+    <acre:block for="prop in properties" class="hoverable">
+      ${type_property_row(prop, type_id)}
+    </acre:block>
   </tbody>
 </acre:block>
 
@@ -68,7 +84,7 @@
          data-url="${h.url_for('schema', 'type', [['id',type.id]] , '/get_type_properties')}">
         <span class="tbody-header-title">$type.name</span> <span class="key">$type.id</span>
       </th>
-    </tr>    
+    </tr>
   </thead>
 </acre:block>
 

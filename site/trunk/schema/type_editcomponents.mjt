@@ -1,0 +1,86 @@
+<acre:block def="add_property_form(type_id, property)">
+  <table class="edit-form clear">
+    <tbody>
+      <tr class="edit-row">
+        <td colspan="4">
+          <div class="edit-row-loader"></div>
+          <div class="form-field fb-property-name">
+            <label>
+              <span class="form-label">Name</span>
+              <input name="name" type="text" class="text-input" acre:attrs="property?{value:property.name}:{}"/>
+              <input name="type" type="hidden" value="${type_id}"/>
+            </label>
+          </div>
+          <div class="form-field fb-property-key">
+            <label>
+              <span class="form-label">
+                Key
+                <span class="key">${type_id}/</span>
+              </span>
+              <input name="key" type="text" class="text-input" acre:attrs="property?{value:property.key[0].value}:{}"/>
+            </label>
+          </div>
+          <div class="form-field fb-property-expected-type">
+            <acre:script>
+              var ect_input = ""
+              var ect_hidden = "";
+              var unit_hidden = "";
+              if (property) {
+                if (property.expected_type) {
+                  ect_input  = ect_hidden = property.expected_type.id;
+                  if (property.unit) {
+                    unit_hidden = property.unit.id;           
+                    ect_input = ect_input + " (" + property.unit["/freebase/unit_profile/abbreviation"] + ")";
+                  }
+                }
+              }
+            </acre:script>
+            <label>
+              <span class="form-label">Expected Type</span>
+              <input name="expected_type_input" type="text" class="text-input suggest-input" 
+                     acre:attrs="ect_input?{value:ect_input}:{placeholder:'start typing for suggestions...'}"/>
+              <input name="expected_type" type="hidden" 
+                     acre:attrs="ect_hidden?{value:ect_hidden}:{}">
+              <input name="unit" type="hidden" acre:attrs="unit_hidden?{value:unit_hidden}:{}">
+            </label>
+          </div>
+          <div class="form-field fb-property-description">
+            <label>
+              <span class="form-label">Description</span>
+              <textarea name="description" class="textarea" rows="3">${property?property.tip:""}</textarea>
+            </label>
+            <div class="fb-property-display">
+              <label for="disambiguator" class="boolean-field">
+                <input type="checkbox" name="disambiguator" 
+                       acre:attrs="property&&property.disambiguator?{checked:'checked'}:{}">
+                Disambiguating
+              </label>
+              <label for="unique" class="boolean-field">
+                <input type="checkbox" name="unique"
+                       acre:attrs="property&&property.unique?{checked:'checked'}:{}">
+                Unique
+              </label>
+              <label for="hidden" class="boolean-field">
+                <input type="checkbox" name="hidden"
+                       acre:attrs="property&&property.hidden?{checked:'checked'}:{}">
+                Hidden
+              </label>
+              <label for="master" class="boolean-field">
+                <input type="checkbox" name="master" disabled="disabled"
+                       acre:attrs="property&&property.master_property?{}:{checked:'checked'}">
+                Master
+              </label>
+            </div>          
+          </div>        
+        </td>
+      </tr>
+
+      <tr class="edit-row-submit">
+        <td colspan="5">
+          <button class="button button-primary button-submit" type="submit">Save</button>
+          <button class="button button-cancel">Cancel</button>
+        </td>
+      </tr>
+    <tbody>
+  </table>
+</acre:block>

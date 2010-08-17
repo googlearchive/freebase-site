@@ -35,6 +35,13 @@
           self.input.val(data.name)
               .data("data.suggest", data)
               .trigger("fb-select", data);
+          // hide all menus
+          $(".trigger", this).each(function() {
+            var tooltip = $(this).data("tooltip");
+            if (tooltip) {
+              tooltip.hide();
+            }
+          });
           self.hide_all();
         });
         this.pane.append(this.ect);
@@ -138,7 +145,7 @@
           cname = name.toLowerCase();
         }
         var li = $('<li class="ect-menu-item">');
-        var trigger = $('<a href="javascript:void(0);" class="ect-icon">');
+        var trigger = $('<a href="javascript:void(0);" class="ect-icon trigger">');
         trigger.addClass("ect-" + cname);
         li.append(trigger);
         li.append(document.createTextNode(name));

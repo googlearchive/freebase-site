@@ -35,7 +35,7 @@
     <form class="domain-activity-controls">
       <span class="domain-activity-controls-content">
         Sort by
-        <select name="sort" class="popup-menu">
+        <select name="sort" class="domain-explorer-popup-menu">
           <option selected value="activity">write activity</option>
           <option value="name">name</option>
           <option value="members">total members</option>

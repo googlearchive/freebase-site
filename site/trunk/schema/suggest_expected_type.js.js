@@ -43,7 +43,7 @@
 
         var html =
           '<div class="ect-unit-dialog">' +
-            '<h2>Select measurment type</h2>' +
+            '<h2 class="ect-unit-dialog-title">Select measurement type</h2>' +
             '<div class="ect-unit-field">' +
               '<label for="dimension">The kind of thing to measure</label>' +
               '<select name="dimension"></select>' +
@@ -53,7 +53,7 @@
               '<select name="dimension-unit"></select>' +
             '</div>' +
             '<div class="ect-unit-submit">' +
-              '<button class="button button-primary button-submit">Ok</button>' +
+              '<button class="button button-primary button-submit">OK</button>' +
               '<button class="button button-cancel">Cancel</button>' +
             '</div>' +
           '</div>';

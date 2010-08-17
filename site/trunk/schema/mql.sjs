@@ -152,6 +152,11 @@ function property(options) {
       },
       optional: true
     },
+    delegated: {
+      id: null,
+      name: null,
+      optional: true
+    },
     unit: {
         id: null,
         name: null,

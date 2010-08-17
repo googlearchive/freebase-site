@@ -20,7 +20,7 @@
           var html = $(data.result.html);
           var form = {
             mode: "add",
-            event_prefix: "fb.schema.type.edit.property.",
+            event_prefix: "fb.schema.type.add.property.",
             ajax: {
               url: acre.request.app_url + "/schema/type/add_property_submit"
             },
@@ -41,7 +41,7 @@
           /**
            * after submit success, re-init form for additional adds
            */
-          form.row.bind("fb.schema.type.edit.property.success", function() {
+          form.row.bind("fb.schema.type.add.property.success", function() {
             // show headers if showing the empty message
             var empty_msg = $("tbody:first .table-empty-column", form.table);
             if (empty_msg.length) {
@@ -49,6 +49,54 @@
             }
             $(".button-cancel", form.submit).text("Done");
             te.init_property_form(form);
+          });
+        },
+        error: function(xhr) {
+          se.ajax_error_handler(xhr, row);
+        }
+      });
+    },
+
+
+    edit_property_begin: function(trigger, prop_id) {
+      $.ajax({
+        url: acre.request.app_url + "/schema/type/edit_property_begin",
+        data: {id: prop_id},
+        dataType: "json",
+        success: function(data, status, xhr) {
+          if (data.code === "/api/status/error") {
+            return se.ajax_error_handler(xhr, row);
+          }
+          // add edit-form after the edit button
+          var html = $(data.result.html);
+          var form = {
+            mode: "edit",
+            event_prefix: "fb.schema.type.edit.property.",
+            ajax: {
+              url: acre.request.app_url + "/schema/type/add_property_submit",
+              data: {id: prop_id}
+            },
+
+            init_form: te.init_property_form,
+            validate_form: te.validate_property_form,
+            submit_form: te.submit_property_form,
+
+            table: trigger.parents("table:first"),
+            trigger: trigger,
+            trigger_row: trigger.parents("tr:first"),
+            row: $(".edit-row", html).hide(),
+            submit_row: $(".edit-row-submit", html).hide()
+          };
+
+          se.init_edit_form(form);
+
+         /**
+           * after submit success, we're done editing, remove form and old row
+           */
+          form.row.bind("fb.schema.domain.edit.property.success", function() {
+            form.trigger_row.remove(); // old row
+            form.row.remove();
+            form.submit_row.remove();
           });
         },
         error: function(xhr) {

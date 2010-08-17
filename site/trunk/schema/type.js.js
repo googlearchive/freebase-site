@@ -89,6 +89,20 @@
         t.edit.add_property_begin(trigger, type_id);
       });
       return false;
+    },
+
+    edit_property: function(e, prop_id) {
+      var trigger = $(this);
+      if (trigger.is(".editing")) { // are we already editing?
+        return false;
+      }
+      trigger.addClass("editing");
+      // hide tooltip
+      trigger.parents(".tooltip:first").siblings(".row-menu-trigger:first").data("tooltip").hide();
+      fb.get_script(acre.request.app_url + "/schema/MANIFEST/type-edit.mf.js", function() {
+        t.edit.edit_property_begin(trigger, prop_id);
+      });
+      return false;
     }
   };
 

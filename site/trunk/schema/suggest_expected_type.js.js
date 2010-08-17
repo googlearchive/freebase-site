@@ -82,13 +82,14 @@
               }
             });
           });
-        $(".button-cancel", this.ect_unit).click(function() {
+        $(".button-cancel", this.ect_unit).click(function(e) {
           self.ect_menu.show();
           self.ect_unit.hide();
           self.status.show();
           self.input.focus().removeData("dont_hide");
+          e.stopPropagation();
         });
-        $(".button-submit", this.ect_unit).click(function() {
+        $(".button-submit", this.ect_unit).click(function(e) {
           var selected_unit = $("[selected]", self.ect_dimension_units);
           var data = {
             name: "Measurment",
@@ -102,6 +103,7 @@
           self.ect_menu.show();
           self.ect_unit.hide();
           self.hide_all();
+          e.stopPropagation();
         });
 
         this.ect_pane.append(this.ect_menu);

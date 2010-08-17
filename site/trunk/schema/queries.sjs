@@ -409,6 +409,7 @@ function property(id) {
         },
         optional: true
       }];
+
       promises.push(freebase.mqlread(siblings_q)
         .then(function(env) {
           return env.result || [];
@@ -417,6 +418,7 @@ function property(id) {
           result.schema.properties = props;
           return props;
         }));
+
       return deferred.all(promises)
         .then(function() {
           return result;
@@ -515,4 +517,48 @@ incoming.query = function(options) {
     },
     optional: true
   }, options)];
+};
+
+
+
+function is_property_used(prop_id) {
+  var promises = [];
+  var master_query = {
+    source: null,
+    target: null,
+    target_value: null,
+    type: "/type/link",
+    master_property: prop_id,
+    limit: 1
+  };
+  promises.push(freebase.mqlread(master_query)
+    .then(function(env) {
+      console.log("master_query", env.result);
+      return env.result;
+    }));
+
+  var reverse_query = {
+    source: null,
+    target: null,
+    target_value: null,
+    type: "/type/link",
+    master_property: {reverse_property: prop_id},
+    limit: 1
+  };
+  promises.push(freebase.mqlread(reverse_query)
+    .then(function(env) {
+      console.log("reverse_query", env.result);
+      return env.result;
+    }));
+
+  return deferred.all(promises)
+    .then(function(results) {
+      console.log("results", results);
+      for (var i=0,l=results.length; i<l; i++) {
+        if (results[i] != null) {
+          return true;
+        }
+      }
+      return false;
+    });
 };

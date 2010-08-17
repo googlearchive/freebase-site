@@ -1,13 +1,28 @@
-<acre:block def="add_property_form(type_id, property)">
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+ var h = mf.require("core", "helpers");
+</acre:script>
+
+
+<acre:block def="add_property_form(type_id, prop)">
   <table class="edit-form clear">
     <tbody>
       <tr class="edit-row">
         <td colspan="4">
           <div class="edit-row-loader"></div>
+          <div acre:if="prop && prop.used" class="form-msg">            
+            You cannot change the <strong>Expected Type</strong> or <strong>Uniqueness</strong> while this property is being used. 
+            <a href="${h.freebase_url('/view')}${prop.schema.id}/-${prop.id}">View instances &raquo;</a>
+          </div>
+          <div acre:if="prop && prop.delegated" class="form-msg">
+            You cannot change the <strong>Expected Type</strong> or <strong>Uniqueness</strong> while this property is being delegated to <a href="${h.url_for('schema', 'property', null, prop.delegated.id)}">${prop.delegated.id}</a>.
+            <a href="${h.freebase_url('/view')}${prop.schema.id}/-${prop.id}">View instances &raquo;</a>
+          </div>
+            
           <div class="form-field fb-property-name">
             <label>
               <span class="form-label">Name</span>
-              <input name="name" type="text" class="text-input" acre:attrs="property?{value:property.name}:{}"/>
+              <input name="name" type="text" class="text-input" acre:attrs="prop?{value:prop.name}:{}"/>
               <input name="type" type="hidden" value="${type_id}"/>
             </label>
           </div>
@@ -17,7 +32,7 @@
                 Key
                 <span class="key">${type_id}/</span>
               </span>
-              <input name="key" type="text" class="text-input" acre:attrs="property?{value:property.key[0].value}:{}"/>
+              <input name="key" type="text" class="text-input" acre:attrs="prop?{value:prop.key[0].value}:{}"/>
             </label>
           </div>
           <div class="form-field fb-property-expected-type">
@@ -25,20 +40,25 @@
               var ect_input = ""
               var ect_hidden = "";
               var unit_hidden = "";
-              if (property) {
-                if (property.expected_type) {
-                  ect_input  = ect_hidden = property.expected_type.id;
-                  if (property.unit) {
-                    unit_hidden = property.unit.id;           
-                    ect_input = ect_input + " (" + property.unit["/freebase/unit_profile/abbreviation"] + ")";
+              var attrs = {};
+              if (prop) {
+                if (prop.expected_type) {
+                  ect_input  = ect_hidden = prop.expected_type.id;
+                  if (prop.unit) {
+                    unit_hidden = prop.unit.id;           
+                    ect_input = ect_input + " (" + prop.unit.name + ")";
                   }
                 }
+                attrs.value = ect_input;
+                if (prop.used || prop.delegated) {
+                  attrs.disabled = 'disabled';
+                }
               }
-            </acre:script>
+           </acre:script>
             <label>
               <span class="form-label">Expected Type</span>
               <input name="expected_type_input" type="text" class="text-input suggest-input" 
-                     acre:attrs="ect_input?{value:ect_input}:{placeholder:'start typing for suggestions...'}"/>
+                    acre:attrs="attrs"/>
               <input name="expected_type" type="hidden" 
                      acre:attrs="ect_hidden?{value:ect_hidden}:{}">
               <input name="unit" type="hidden" acre:attrs="unit_hidden?{value:unit_hidden}:{}">
@@ -47,27 +67,38 @@
           <div class="form-field fb-property-description">
             <label>
               <span class="form-label">Description</span>
-              <textarea name="description" class="textarea" rows="3">${property?property.tip:""}</textarea>
+              <textarea name="description" class="textarea" rows="3">${prop?prop.tip:""}</textarea>
             </label>
             <div class="fb-property-display">
               <label for="disambiguator" class="boolean-field">
                 <input type="checkbox" name="disambiguator" 
-                       acre:attrs="property&&property.disambiguator?{checked:'checked'}:{}">
+                       acre:attrs="prop&&prop.disambiguator?{checked:'checked'}:{}">
                 Disambiguating
               </label>
               <label for="unique" class="boolean-field">
+                <acre:script>
+                  var attrs = {};
+                  if (prop) {
+                    if (prop.unique) {
+                      attrs.checked = 'checked';
+                    }
+                    if (prop.used || prop.delegated) {
+                      attrs.disabled = 'disabled';
+                    }
+                  }
+                </acre:script>
                 <input type="checkbox" name="unique"
-                       acre:attrs="property&&property.unique?{checked:'checked'}:{}">
+                       acre:attrs="attrs">
                 Unique
               </label>
               <label for="hidden" class="boolean-field">
                 <input type="checkbox" name="hidden"
-                       acre:attrs="property&&property.hidden?{checked:'checked'}:{}">
+                       acre:attrs="prop&&prop.hidden?{checked:'checked'}:{}">
                 Hidden
               </label>
               <label for="master" class="boolean-field">
                 <input type="checkbox" name="master" disabled="disabled"
-                       acre:attrs="property&&property.master_property?{}:{checked:'checked'}">
+                       acre:attrs="prop&&prop.master_property?{}:{checked:'checked'}">
                 Master
               </label>
             </div>          
@@ -83,4 +114,10 @@
       </tr>
     <tbody>
   </table>
+</acre:block>
+
+
+
+<acre:block def="edit_property_form(prop)">
+  ${add_property_form(prop.schema.id, prop)}
 </acre:block>

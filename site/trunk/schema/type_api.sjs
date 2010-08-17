@@ -4,6 +4,8 @@ var queries = mf.require("queries");
 var tc = mf.require("type_components");
 var edit = mf.require("type_editcomponents");
 var create_property = mf.require("queries", "create_property");
+var deferred = mf.require("promise", "deferred");
+var freebase = mf.require("promise", "apis").freebase;
 
 var api = {
   get_type_properties: function(args) {
@@ -47,8 +49,23 @@ var api = {
       })
       .then(function(prop) {
         return {
-          html: acre.markup.stringify(tc.type_property_row(prop, args.type))
+          html: acre.markup.stringify(tc.type_property_row(prop))
         };
+      });
+  },
+
+
+  edit_property_begin: function(args) {
+    var promises = [];
+    promises.push(queries.property(args.id));
+    promises.push(queries.is_property_used(args.id));
+    return deferred.all(promises)
+      .then(function(results) {
+        console.log("edit_prop_begin", results);
+        var prop = results[0];
+        prop.used = results[1];
+console.log("edit_prop_begin prop", prop);
+        return {html:acre.markup.stringify(edit.edit_property_form(prop))};
       });
   }
 };
@@ -68,3 +85,6 @@ api.add_property_begin.auth = true;
 
 api.add_property_submit.args = ["type", "name", "key", "expected_type"];
 api.add_property_submit.auth = true;
+
+api.edit_property_begin.args = ["id"]; // property id
+api.edit_property_begin.auth = true;

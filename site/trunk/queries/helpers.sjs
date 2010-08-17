@@ -1,6 +1,24 @@
 var mf = acre.require("MANIFEST").MF;
 var extend = mf.require("core", "helpers_util").extend;
 
+var LITERAL_TYPE_IDS = {
+  "/type/int":1,
+  "/type/float":1,
+  "/type/boolean":1,
+  "/type/rawstring":1,
+  "/type/uri":1,
+  "/type/text":1,
+  "/type/datetime":1,
+  "/type/bytestring":1,
+  "/type/id":1,
+  "/type/key":1,
+  "/type/value":1,
+  "/type/enumeration":1
+};
+function is_literal_type(type_id) {
+  return  LITERAL_TYPE_IDS[type_id] === 1;
+};
+
 function user_clause(id, badges, options) {
   if (!id) {
     id = null;

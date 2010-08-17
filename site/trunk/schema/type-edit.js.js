@@ -174,14 +174,17 @@
 
 
         // enter/escape key handler
-        $(":input:not(textarea)", form.row).keypress(function(e) {
-          if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
-            form.row.trigger(form.event_prefix + "submit");
-          }
-          else if (e.keyCode === 27) { // escape
-            form.row.trigger(form.event_prefix + "cancel");
-          }
-        });
+        $(":input:not(textarea)", form.row)
+          .keypress(function(e) {
+            if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
+              form.row.trigger(form.event_prefix + "submit");
+            }
+          })
+          .keyup(function(e) {
+            if (e.keyCode === 27) { // escape
+              form.row.trigger(form.event_prefix + "cancel");
+            }
+          });
 
         form.row.data("initialized", true);
       }

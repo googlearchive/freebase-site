@@ -519,6 +519,13 @@ Type Page
     font-size: 0.9em;
     padding: 0.5em 0.8em;
     line-height: 1;
+    -webkit-transition: all 0.2s;
+}
+
+.row-menu-item a:hover {
+    color: #fff;
+    background-color: @link-blue;
+    text-decoration: none;
 }
 
 .return-link-trigger {
@@ -807,19 +814,30 @@ Expected Type Suggest Dialog
 
 .ect-menu-dialog {
     background: #f0f2f3;
+    border: 1px solid #dce3e8;
+    border-top: 0;
+    text-align: center;
 }
 
-.ect-menu {
-    margin: 1em auto;
+.fbs-reset .ect-menu {
+    margin: 0 auto 1em;
     width: 252px;
     position: relative;
 }
 
-.ect-menu-item {
+.fbs-reset .ect-menu-title {
+    display: block;
+    font-size: 12px;
+    padding-top: 10px;
+    margin-bottom: 10px;
+}
+
+.fbs-reset .ect-menu-item {
     list-style: none;
     float: left;
     padding-right: 15px;
     text-align: center;
+    font-size: 10px;
     margin-bottom: 8px;
     -webkit-transition: color 0.2s;    
 }
@@ -831,6 +849,9 @@ Expected Type Suggest Dialog
     color: #222;
 }
 
+/*
+Expected Type Icons
+*/
 .ect-icon {
     opacity: 0.8;
     display: block;
@@ -851,3 +872,19 @@ Expected Type Suggest Dialog
 .ect-image   { background-position: 0 -232px;}
 .ect-weblink { background-position: 0 -290px;}
 .ect-address { background-position: 0 -348px;}
+
+.fbs-status {
+    color: #666;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+}
+
+.fbs-reset li.row-menu-item {
+    font-size: 12px;
+    text-align: left;
+}
+
+.fbs-reset .fbs-suggestnew-button {
+    font-size: 13px;
+}

@@ -26,7 +26,7 @@
         base._init.call(self);
 
         this.ect_pane = $('<div class="ect-pane">');
-        this.ect_menu = $('<div class="ect-menu-dialog"><span>or choose from the data types below</span></div>');
+        this.ect_menu = $('<div class="ect-menu-dialog"><span class="ect-menu-title">or choose from the data types below</span></div>');
         this.ect_list = $('<ul class="ect-menu clear">');
         $.each(['text', 'numeric', 'date', 'boolean', 'image', 'weblink', 'address'], function(i,type) {
           self.ect_list.append(self["create_ect_" + type].call(self));

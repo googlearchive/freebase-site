@@ -110,8 +110,6 @@
   <acre:block else="">
     ${table_view()}
   </acre:block>
-  
-  ${ect_init_dialog()}
 
 </acre:block>
 
@@ -253,7 +251,7 @@
 
 <acre:block def="ect_init_dialog()">
 <div class="ect-menu-dialog">
-  <span>or choose from the data types below</span>
+  <span class="ect-menu-title">or choose from the data types below</span>
   <ul class="ect-menu">
     <li class="ect-menu-item">
       <a href="javascript:void(0);" class="ect-icon ect-text"></a>

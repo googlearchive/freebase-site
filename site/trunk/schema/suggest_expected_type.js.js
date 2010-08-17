@@ -25,16 +25,62 @@
         // call super._init()
         base._init.call(self);
 
-        this.ect = $('<div class="ect-menu-dialog"><span>or choose from the data types below</span></div>');
+        this.ect_pane = $('<div class="ect-pane">');
+        this.ect_menu = $('<div class="ect-menu-dialog"><span>or choose from the data types below</span></div>');
         this.ect_list = $('<ul class="ect-menu clear">');
         $.each(['text', 'numeric', 'date', 'boolean', 'image', 'weblink', 'address'], function(i,type) {
           self.ect_list.append(self["create_ect_" + type].call(self));
         });
-        this.ect.append(this.ect_list);
-        this.ect.bind("ect", function(e, data) {
-          self.input.val(data.name)
-              .data("data.suggest", data)
-              .trigger("fb-select", data);
+
+        var html =
+          '<div class="ect-unit-dialog">' +
+            '<h2>Select measurment type</h2>' +
+            '<div class="ect-unit-field">' +
+              '<label for="dimension">The kind of thing to measure</label>' +
+              '<select name="dimension"></select>' +
+            '</div>' +
+            '<div class="ect-unit-field">' +
+              '<label for="dimension-unit">The unit to measure it in</label>' +
+              '<select name="dimension-unit"></select>' +
+            '</div>' +
+            '<div class="ect-unit-submit">' +
+              '<button class="button button-primary button-submit">Ok</button>' +
+              '<button class="button button-cancel">Cancel</button>' +
+            '</div>' +
+          '</div>';
+        this.ect_unit = $(html).hide();
+        this.ect_dimension = $('select:first', this.ect_unit);
+        this.ect_dimension_units = $('select:eq(1)', this.ect_unit);
+
+        this.ect_dimension
+          .change(function(e) {
+            console.log("dimension select", e);
+            var option = $("[selected]", this);
+            var units = option.data("units");
+            if (self.ect_dimension_units.data("units") === units) {
+              return;
+            }
+            self.ect_dimension_units.empty();
+            $.each(units, function(i,u) {
+              var option = $('<option>').text(u.name).attr("value", u.id).data("data", u);
+              self.ect_dimension_units.append(option);
+              if (u.id === "/en/meter") {
+                option.attr("selected", "selected");
+              }
+            });
+          });
+        $(".button-cancel", this.ect_unit).click(function() {
+          self.ect_menu.show();
+          self.ect_unit.hide();
+          self.status.show();
+        });
+
+
+        this.ect_pane.append(this.ect_menu);
+        this.ect_pane.append(this.ect_unit);
+        this.ect_menu.append(this.ect_list);
+
+        this.ect_pane.bind("ect", function(e, data) {
           // hide all menus
           $(".trigger", this).each(function() {
             var tooltip = $(this).data("tooltip");
@@ -42,24 +88,41 @@
               tooltip.hide();
             }
           });
-          self.hide_all();
+          if (data.id === "/type/float" && data.name === "Measurement") {
+            self.ect_menu.hide();
+            self.ect_unit.show();
+            self.status.hide();
+          }
+          else {
+            self.input.val(data.name)
+              .data("data.suggest", data)
+              .trigger("fb-select", data);
+
+            self.hide_all();
+          }
         });
-        this.pane.append(this.ect);
+
+        this.pane.append(this.ect_pane);
+
+        $.suggest.suggest_expected_type.load_dimensions();
       },
 
-      status_start: function(response_data, start, first) {
+      status_start: function(response_data, start, first) {console.log("status_start", this.ect_unit.is(":visible"));
         base.status_start.apply(this);
-        this.ect.show();
+        this.ect_pane.show();
+        if (this.ect_unit.is(":visible")) {
+          this.status.hide();
+        }
       },
 
-      status_loading: function(response_data, start, first) {
+      status_loading: function(response_data, start, first) {console.log("status_loading");
         base.status_loading.apply(this);
-        this.ect.hide();
+        this.ect_pane.hide();
       },
 
-      status_select: function() {
+      status_select: function() {console.log("status_select");
         base.status_select.apply(this);
-        this.ect.hide();
+        this.ect_pane.hide();
       },
 
       create_ect_text: function() {
@@ -170,7 +233,8 @@
 
     }));
 
-    $.extend($.suggest.suggest_expected_type, {
+    var sect = $.suggest.suggest_expected_type;
+    $.extend(sect, {
         defaults:  $.extend(true, {}, $.suggest.suggest.defaults, {
           tooltip_options: {
             events: {def: "click,mouseout"},
@@ -179,8 +243,69 @@
             effect: "fade",
             delay: 300,
             relative: true
+          }}),
+        set_dimensions: function(dimensions) {
+          $(".ect-pane select[name=dimension]").each(function() {
+            var select = $(this);
+            if (select.data("dimensions") === dimensions) {
+              return;
+            }
+            var selected;
+            $.each(dimensions, function(i,d) {
+              var option = $('<option>').text(d.name).attr("value", d.id).data("units", d.units);
+              select.append(option);
+              if (d.id === "/en/length") {
+                selected = option;
+              }
+            });
+            select.data("dimensions", dimensions);
+            if (selected) {
+              selected.attr("selected", "selected");
+              select.change();
+            }
+          });
+        },
+        load_dimensions: function() {
+          if (sect.dimensions) {
+            sect.set_dimensions(sect.dimensions);
+            return;
           }
-        })
+          if (sect.load_dimensions.lock) {
+            return;
+          }
+          // lock
+          sect.load_dimensions.lock = true;
+          var q = [{
+            id: null,
+            name: null,
+            type: "/measurement_unit/dimension",
+            units: [{
+              id: null,
+              name: null,
+              type: "/type/unit",
+              "/freebase/unit_profile/abbreviation": null
+            }]
+          }];
+          $.ajax({
+            url: "http://api.freebase.com/api/service/mqlread",
+            data: {query: JSON.stringify({query: q})},
+            dataType: "jsonp",
+            jsonpCallback: "jQuery.suggest.suggest_expected_type.jsonpCallback"
+          });
+        },
+        jsonpCallback: function(data) {
+          console.log("ajax.success", data);
+          if (data.code === "/api/status/ok") {
+            sect.dimensions = data.result.sort(sect.sort_by_name);
+            $.each(sect.dimensions, function(i,d) {
+              d.units.sort(sect.sort_by_name);
+            });
+            sect.set_dimensions(sect.dimensions);
+          }
+        },
+        sort_by_name: function(a,b) {
+          return b.name < a.name;
+        }
     });
 
 })(jQuery);

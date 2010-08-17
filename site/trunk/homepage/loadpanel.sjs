@@ -62,7 +62,7 @@ p_domains
       }));
 
     } else if (acre.request.params.sort === "members") {
-       // Sort domains by total topics
+       // Sort domains by total members
        return domains.sort(domain_sort(function(a, b) {
          return b.member_count - a.member_count;
        }));

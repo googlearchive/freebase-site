@@ -32,11 +32,19 @@
     <div class="domain-explorer-title">
     </div>
     
-    <div class="domain-activity-controls">
+    <form class="domain-activity-controls">
       <span class="domain-activity-controls-content">
-        <!--Sort by <a href="">write activity</a>-->
+        Sort by
+        <select name="sort" class="popup-menu">
+          <option selected value="activity">write activity</option>
+          <option value="name">name</option>
+          <option value="members">total members</option>
+          <option value="facts">total facts</option>
+          <option value="topics">total topics</option>
+        </select>
       </span>
-    </div>
+    </form>
+
     <div class="activity-chart-header">
       <div class="activity-chart-date">
         <acre:script>
@@ -121,9 +129,14 @@
 
 <acre:block def="category_panel(domains)">
   <ul class="category-domain-list">
-    <li acre:for="domain in domains" class="domain-item clear">
-      ${domain_item(domain)}
-    </li>
+    <acre:block for="domain in domains">
+      <li acre:if="domain.id.match('default_domain$')" class="domain-item clear">
+        ${domain_item(domain)}
+      </li>
+      <li acre:else="" class="sorted-domain domain-item clear">
+        ${domain_item(domain)}
+      </li>
+    </acre:block>
   </ul>
 </acre:block>
 
@@ -152,7 +165,13 @@
 </acre:block>
 
 <acre:block def="domain_item(domain)">
-  <div class="domain-info domain-section">
+  <div class="domain-info domain-section"
+       data-activity="${domain.activity.weeks[domain.activity.weeks.length-1].e}"
+       data-name="${domain.name}"
+       data-members="${domain.member_count || 0}"
+       data-facts="${domain.activity ? domain.activity.total.e : 0}"
+       data-topics="${domain.activity ? domain.activity.total.t : 0}"
+       >
     <h3 class="domain-title">
       <a href="${h.freebase_url('/view'+domain.id)}">${domain.name}</a>
     </h3>

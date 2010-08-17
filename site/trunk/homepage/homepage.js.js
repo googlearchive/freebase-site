@@ -56,8 +56,10 @@
         $("#pointer").addClass("processing");
         finished();
       });
+      
       $pane.load($tab.attr("href"), function() {
         $panes.hide();
+        fb.homepage.sort_domains($pane);
         $pane.fadeIn(done);
         fb.homepage.init_activity_charts($pane);
         $("#pointer").queue(function(finished) {
@@ -71,6 +73,17 @@
     };
   });
 
+  fb.homepage.sort_domains = function(scope) {
+    var kind = $(".domain-activity-controls select").val();
+    var $domains = $("ul.category-domain-list > li.sorted-domain");
+    var order = "desc";
+    if (kind === "name") {
+      order = "asc";
+    }
+    
+    $domains.tsort(".domain-info", {attr: "data-"+kind, order: order, place: "end"});
+  };
+  
   fb.homepage.init_activity_charts = function(scope) {
     $(".activity-chart-assertions", scope).each(function() {
       var $chart = $(this);
@@ -125,6 +138,8 @@
       initialIndex: parseInt($tabs.attr("data-index") || 0, 10),
       effect: "load_pane"
     });
+
+    $(".domain-activity-controls select").change(fb.homepage.sort_domains);
   };
 
   setTimeout(fb.homepage.init, 0);

@@ -256,31 +256,31 @@
   <span>or choose from the data types below</span>
   <ul class="ect-menu">
     <li class="ect-menu-item">
-      <a href="" class="ect-icon ect-text"></a>
+      <a href="javascript:void(0);" class="ect-icon ect-text"></a>
       Text
     </li>
     <li class="ect-menu-item">
-      <a href="" class="ect-icon ect-numeric"></a>
+      <a href="javascript:void(0);" class="ect-icon ect-numeric"></a>
       Numeric
     </li>
     <li class="ect-menu-item">
-      <a href="" class="ect-icon ect-date"></a>
+      <a href="javascript:void(0);" class="ect-icon ect-date"></a>
       Date/Time
     </li>
     <li class="ect-menu-item">
-      <a href="" class="ect-icon ect-boolean"></a>
+      <a href="javascript:void(0);" class="ect-icon ect-boolean"></a>
       Boolean
     </li>
     <li class="ect-menu-item">
-      <a href="" class="ect-icon ect-image"></a>
+      <a href="javascript:void(0);" class="ect-icon ect-image"></a>
       Image
     </li>
     <li class="ect-menu-item">
-      <a href="" class="ect-icon ect-weblink"></a>
+      <a href="javascript:void(0);" class="ect-icon ect-weblink"></a>
       Weblink
     </li>
     <li class="ect-menu-item">
-      <a href="" class="ect-icon ect-address"></a>
+      <a href="javascript:void(0);" class="ect-icon ect-address"></a>
       Address
     </li>    
   </ul>

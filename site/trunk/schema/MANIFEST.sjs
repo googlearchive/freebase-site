@@ -43,6 +43,7 @@ var MF = {
     ],
     "type-edit.mf.js": [
       "schema-edit.js",
+      "suggest_expected_type.js",
       "type-edit.js"
     ]
   }

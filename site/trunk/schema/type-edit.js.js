@@ -102,9 +102,10 @@
         });
 
         // expected_type
-        expected_type_input.suggest({
+        expected_type_input.suggest_expected_type({
           category:"expected_type",
-          required: "always"
+          required: "always",
+          suggest_new: "Create new type"
         })
         .bind("fb-select", function(e, data) {
           expected_type_input.val(data.id);

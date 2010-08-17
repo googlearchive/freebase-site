@@ -108,12 +108,20 @@
           suggest_new: "Create new type"
         })
         .bind("fb-select", function(e, data) {
-          expected_type_input.val(data.id);
-          expected_type.val(data.id);
-          console.log(e);
+          if (data.unit) {
+            expected_type_input.val(data.id + " (" + data.unit.name + ")");
+            expected_type.val(data.id);
+            unit.val(data.unit.id);
+          }
+          else {
+            expected_type_input.val(data.id);
+            expected_type.val(data.id);
+            unit.val("");
+          }
         })
         .bind("fb-textchange", function() {
           expected_type.val("");
+          unit.val("");
         });
 
 

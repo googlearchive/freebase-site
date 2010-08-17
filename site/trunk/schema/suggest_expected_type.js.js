@@ -1,4 +1,14 @@
-
+/**
+ * A specialize suggest plugin that displays categorized common expected types:
+ *
+ * - text
+ * - numbers
+ * - date/time
+ * - boolean
+ * - image
+ * - weblink
+ * - address
+ */
 ;(function($) {
 
   if (!$.suggest) {
@@ -12,10 +22,6 @@
     status_select: $.suggest.suggest.prototype.status_select
   };
 
-  function noop_false() {
-    return false;
-  };
-
   $.suggest("suggest_expected_type",
     $.extend(true, {}, $.suggest.suggest.prototype, {
 
@@ -25,7 +31,7 @@
         // call super._init()
         base._init.call(self);
 
-        this.ect_pane = $('<div class="ect-pane">');
+        this.ect_pane = $('<div class="ect-pane fbs-reset">');
         this.ect_menu = $('<div class="ect-menu-dialog"><span class="ect-menu-title">or choose from the data types below</span></div>');
         this.ect_list = $('<ul class="ect-menu clear">');
         $.each(['text', 'numeric', 'date', 'boolean', 'image', 'weblink', 'address'], function(i,type) {
@@ -62,7 +68,11 @@
             }
             self.ect_dimension_units.empty();
             $.each(units, function(i,u) {
-              var option = $('<option>').text(u.name).attr("value", u.id).data("data", u);
+              var name = u.name;
+              if (u["/freebase/unit_profile/abbreviation"]) {
+                name += " (" + u["/freebase/unit_profile/abbreviation"] + ")";
+              }
+              var option = $('<option>').text(name).attr("value", u.id).data("data", u);
               self.ect_dimension_units.append(option);
               if (u.id === "/en/meter") {
                 option.attr("selected", "selected");
@@ -73,34 +83,51 @@
           self.ect_menu.show();
           self.ect_unit.hide();
           self.status.show();
+          self.input.focus().removeData("dont_hide");
         });
-
+        $(".button-submit", this.ect_unit).click(function() {
+          var selected_unit = $("[selected]", self.ect_dimension_units);
+          var data = {
+            name: "Measurment",
+            id: "/type/float",
+            unit: selected_unit.data("data")
+          };
+          self.input.val(data.name)
+            .data("data.suggest", data)
+            .trigger("fb-select", data);
+          self.input.focus().removeData("dont_hide");
+          self.hide_all();
+        });
 
         this.ect_pane.append(this.ect_menu);
         this.ect_pane.append(this.ect_unit);
         this.ect_menu.append(this.ect_list);
 
-        this.ect_pane.bind("ect", function(e, data) {
-          // hide all menus
-          $(".trigger", this).each(function() {
-            var tooltip = $(this).data("tooltip");
-            if (tooltip) {
-              tooltip.hide();
+        this.ect_pane
+          .bind("ect", function(e, data) {
+            // hide all menus
+            $(".trigger", this).each(function() {
+              var tooltip = $(this).data("tooltip");
+              if (tooltip) {
+                tooltip.hide();
+              }
+            });
+            if (data.id === "/type/float" && data.name === "Measurement") {
+              self.ect_menu.hide();
+              self.ect_unit.show();
+              self.status.hide();
             }
-          });
-          if (data.id === "/type/float" && data.name === "Measurement") {
-            self.ect_menu.hide();
-            self.ect_unit.show();
-            self.status.hide();
-          }
-          else {
-            self.input.val(data.name)
-              .data("data.suggest", data)
-              .trigger("fb-select", data);
+            else {
+              self.input.val(data.name)
+                .data("data.suggest", data)
+                .trigger("fb-select", data);
 
-            self.hide_all();
-          }
-        });
+              self.hide_all();
+            }
+          })
+          .bind("mouseup", function(e) {
+            e.stopPropagation();
+          });
 
         this.pane.append(this.ect_pane);
 

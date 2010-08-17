@@ -320,9 +320,13 @@
               "/freebase/unit_profile/abbreviation": null
             }]
           }];
+          // do as_of_time since units don't change often and better cacheability
+          var today = (new Date());
+          function pad(n){ return n<10 ? '0'+n : n;};
+          var as_of_time = [today.getFullYear(), pad(today.getMonth()+1), pad(today.getDate())].join("-");
           $.ajax({
             url: "http://api.freebase.com/api/service/mqlread",
-            data: {query: JSON.stringify({query: q})},
+            data: {query: JSON.stringify({query: q, as_of_time: as_of_time})},
             dataType: "jsonp",
             jsonpCallback: "jQuery.suggest.suggest_expected_type.jsonpCallback"
           });

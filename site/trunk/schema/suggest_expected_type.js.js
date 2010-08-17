@@ -22,6 +22,9 @@
     status_select: $.suggest.suggest.prototype.status_select
   };
 
+  // delete placeholder plugin as part of suggest
+  $.fn.placeholder = $.noop;
+
   $.suggest("suggest_expected_type",
     $.extend(true, {}, $.suggest.suggest.prototype, {
 
@@ -96,6 +99,8 @@
             .data("data.suggest", data)
             .trigger("fb-select", data);
           self.input.focus().removeData("dont_hide");
+          self.ect_menu.show();
+          self.ect_unit.hide();
           self.hide_all();
         });
 

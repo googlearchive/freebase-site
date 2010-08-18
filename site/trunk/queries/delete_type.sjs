@@ -46,7 +46,7 @@ function delete_type(type_id, user_id, dry_run, force) {
         q.key = [{namespace:k.namespace, value:k.value, connect: "delete"} for each (k in info.key)];
       }
       if (info.expected_by.permitted.length) {
-        q.expected_by = [{id: eb.id, connect: "delete"} for each (eb in info.expected_by.permitted)];
+        q["/type/type/expected_by"] = [{id: eb.id, connect: "delete"} for each (eb in info.expected_by.permitted)];
       }
       return freebase.mqlwrite(q)
         .then(function(env) {
@@ -55,6 +55,7 @@ function delete_type(type_id, user_id, dry_run, force) {
         .then(function(result) {
           // cleanup result
           result.domain = result["/type/type/domain"];
+          result.expected_by = result["/type/type/expected_by"];
           return [info, result];
         });
     });
@@ -75,7 +76,7 @@ function undo(type_info) {
     q.key = [{namespace:k.namespace, value:k.value, connect: "insert"} for each (k in type_info.key)];
   }
   if (type_info.expected_by.permitted.length) {
-    q.expected_by = [{id: eb.id, connect: "insert"} for each (eb in type_info.expected_by.permitted)];
+    q["/type/type/expected_by"] = [{id: eb.id, connect: "insert"} for each (eb in type_info.expected_by.permitted)];
   }
   return freebase.mqlwrite(q)
     .then(function(env) {
@@ -84,6 +85,7 @@ function undo(type_info) {
     .then(function(result) {
       // cleanup result
       result.domain = result["/type/type/domain"];
+      result.expected_by = result["/type/type/expected_by"];
       return [type_info, result];
     });
 };

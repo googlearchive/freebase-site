@@ -11,11 +11,11 @@
         <td colspan="4">
           <div class="edit-row-loader"></div>
           <div acre:if="prop && prop.used" class="form-msg">            
-            You cannot change the <strong>Expected Type</strong> or <strong>Uniqueness</strong> while this property is being used. 
+            This property is being used. You cannot change the <strong>Expected Type</strong> or <strong>Uniqueness</strong>.
             <a href="${h.freebase_url('/view')}${prop.schema.id}/-${prop.id}">View instances &raquo;</a>
           </div>
           <div acre:if="prop && prop.delegated" class="form-msg">
-            You cannot change the <strong>Expected Type</strong> or <strong>Uniqueness</strong> while this property is being delegated to <a href="${h.url_for('schema', 'property', null, prop.delegated.id)}">${prop.delegated.id}</a>.
+            This property is being delgated to <a href="${h.url_for('schema', 'property', null, prop.delegated.id)}">${prop.delegated.id}</a>. You cannot change the <strong>Expected Type</strong> or <strong>Uniqueness</strong>.
             <a href="${h.freebase_url('/view')}${prop.schema.id}/-${prop.id}">View instances &raquo;</a>
           </div>
             

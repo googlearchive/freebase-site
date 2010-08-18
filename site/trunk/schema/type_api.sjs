@@ -58,7 +58,7 @@ var api = {
   edit_property_begin: function(args) {
     var promises = [];
     promises.push(queries.property(args.id));
-    promises.push(queries.is_property_used(args.id));
+    promises.push(mf.require("queries", "property").used(args.id));
     return deferred.all(promises)
       .then(function(results) {
         console.log("edit_prop_begin", results);

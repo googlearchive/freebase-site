@@ -166,7 +166,7 @@
 
 <acre:block def="domain_item(domain)">
   <div class="domain-info domain-section"
-       data-activity="${domain.activity.weeks[domain.activity.weeks.length-1].e}"
+       data-activity="${domain.activity ? domain.activity.weeks[domain.activity.weeks.length-1].e : 0}"
        data-name="${domain.name}"
        data-members="${domain.member_count || 0}"
        data-facts="${domain.activity ? domain.activity.total.e : 0}"

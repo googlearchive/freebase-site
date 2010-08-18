@@ -79,14 +79,41 @@
       $(".edit").show();
     },
 
-    add_property: function(e, type_id) {
+    add_property: function(e, prop_id) {
       var trigger = $(this);
       if (trigger.is(".editing")) { // are we already editing?
         return false;
       }
       trigger.addClass("editing");
       fb.get_script(acre.request.app_url + "/schema/MANIFEST/type-edit.mf.js", function() {
-        t.edit.add_property_begin(trigger, type_id);
+        t.edit.add_property_begin(trigger, prop_id);
+      });
+      return false;
+    },
+
+    delete_property: function(e, prop_id) {
+      var trigger = $(this);
+      if (trigger.is(".editing")) { // are we already editing?
+        return false;
+      }
+      trigger.addClass("editing");
+      // hide tooltip
+      trigger.parents(".tooltip:first").siblings(".row-menu-trigger:first").data("tooltip").hide();
+      fb.get_script(acre.request.app_url + "/schema/MANIFEST/type-edit.mf.js", function() {
+        t.edit.delete_property_begin(trigger, prop_id);
+      });
+      return false;
+    },
+
+    undo_delete_property: function(e) {
+      var trigger = $(this);
+      if (trigger.is(".editing")) { // are we already editing?
+        return false;
+      }
+      trigger.addClass("editing");
+      var prop_info = trigger.metadata();
+      fb.get_script(acre.request.app_url + "/schema/MANIFEST/type-edit.mf.js", function() {
+        t.edit.undo_delete_property_begin(trigger, prop_info);
       });
       return false;
     },

@@ -4,6 +4,7 @@ var queries = mf.require("queries");
 var tc = mf.require("type_components");
 var edit = mf.require("type_editcomponents");
 var create_property = mf.require("queries", "create_property");
+var delete_property = mf.require("queries", "delete_property");
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 
@@ -54,6 +55,29 @@ var api = {
       });
   },
 
+  delete_property_submit: function(args) {
+    // delete_property
+    return delete_property.delete_property(args.id, args.user, false, true)
+      .then(function([prop_info, result]) {
+        return {
+          html: acre.markup.stringify(edit.delete_property_result(prop_info))
+        };
+      });
+  },
+
+  undo_delete_property_submit: function(args) {
+    // undo delete_type
+    var prop_info = JSON.parse(args.prop_info);
+    return delete_property.undo(prop_info)
+      .then(function([info, result]) {
+         return queries.property(prop_info.id);
+      })
+      .then(function(prop) {
+        return {
+          html: acre.markup.stringify(tc.type_property_row(prop))
+        };
+      });
+  },
 
   edit_property_begin: function(args) {
     var promises = [];
@@ -85,6 +109,12 @@ api.add_property_begin.auth = true;
 
 api.add_property_submit.args = ["type", "name", "key", "expected_type"];
 api.add_property_submit.auth = true;
+
+api.delete_property_submit.args = ["id", "user"]; // property id, user id
+api.delete_property_submit.auth = true;
+
+api.undo_delete_property_submit.args = ["prop_info"]; // JSON @see /freebase/site/queries/delete_property
+api.undo_delete_property_submit.auth = true;
 
 api.edit_property_begin.args = ["id"]; // property id
 api.edit_property_begin.auth = true;

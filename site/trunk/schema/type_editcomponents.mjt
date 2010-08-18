@@ -107,7 +107,7 @@
       </tr>
 
       <tr class="edit-row-submit">
-        <td colspan="5">
+        <td colspan="4">
           <button class="button button-primary button-submit" type="submit">Save</button>
           <button class="button button-cancel">Cancel</button>
         </td>
@@ -116,8 +116,16 @@
   </table>
 </acre:block>
 
-
-
 <acre:block def="edit_property_form(prop)">
   ${add_property_form(prop.schema.id, prop)}
+</acre:block>
+
+<acre:block def="delete_property_result(prop_info)">
+  <tr class="row-msg row-msg-info">
+    <td colspan="4">
+      The property <strong>${prop_info.name || prop_info.id}</strong> has been deleted. 
+      <a href="#" onclick="return freebase.dispatch(event, freebase.schema.type.undo_delete_property, null, this);"
+         class="${JSON.stringify(prop_info)}">Undo</a>
+    </td>
+  </tr>
 </acre:block>

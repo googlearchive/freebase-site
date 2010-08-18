@@ -4,7 +4,6 @@ var freebase = mf.require("promise", "apis").freebase;
 
 
 function delete_property(prop_id, user_id, dry_run, force) {
-
   return prop_info(prop_id, user_id)
     .then(function(info) {
       if (dry_run) {
@@ -55,7 +54,45 @@ function delete_property(prop_id, user_id, dry_run, force) {
           return [info, result];
         });
     });
+};
 
+function undo(prop_info) {
+  var q = {
+    guid: prop_info.guid,
+    type: {id: "/type/property", connect: "insert"},
+    "/type/property/schema": {id: prop_info.schema.id, connect: "update"}
+  };
+  if (prop_info.key.length) {
+    q.key = [{namespace:k.namespace, value:k.value, connect:"insert"} for each (k in prop_info.key)];
+  }
+  if (prop_info.expected_type) {
+    q["/type/property/expected_type"] = {id:prop_info.expected_type.id, connect:"update"};
+  }
+  if (prop_info.master_property) {
+    q["/type/property/master_property"] = {id:prop_info.master_property.id, connect:"update"};
+  }
+  if (prop_info.reverse_property.permitted) {
+    q["/type/property/reverse_property"]  = {id:prop_info.reverse_property.permitted, connect:"update"};
+  }
+  if (prop_info.delegated) {
+    q["/type/property/delegated"] = {id:prop_info.delegated.id, connect:"update"};
+  }
+  if (prop_info.delegated_by.permitted.length) {
+    q["!/type/property/delegated"] = [{id:d.id, connect:"insert"} for each (d in prop_info.delegated_by.permitted)];
+  }
+  return freebase.mqlwrite(q)
+    .then(function(env) {
+      return env.result;
+    })
+    .then(function(result) {
+      // cleanup result
+      result.schema = result["/type/property/schema"];
+      result.expected_type = result["/type/property/expected_type"];
+      result.master_property = result["/type/property/master_property"];
+      result.reverse_property = result["/type/property/reverse_property"];
+      result.delegated = result["/type/property/delegated"];
+      return [prop_info, result];
+    });
 };
 
 

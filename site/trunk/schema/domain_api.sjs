@@ -90,7 +90,7 @@ api.add_type_submit.auth = true;
 api.delete_type_submit.args = ["id", "user"]; // type id, user id
 api.delete_type_submit.auth = true;
 
-api.undo_delete_type_submit.args = ["type_info"]; // JSON @see /freebas/site/queries/delete_type
+api.undo_delete_type_submit.args = ["type_info"]; // JSON @see /freebase/site/queries/delete_type
 api.undo_delete_type_submit.auth = true;
 
 api.edit_type_begin.args = ["id"]; // type id

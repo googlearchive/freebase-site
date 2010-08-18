@@ -54,8 +54,6 @@ test("delete_property", function() {
   }
 });
 
-
-
 test("undo", function() {
   var type = h.create_type(user_domain);
   var type2 = h.create_type(user_domain);
@@ -82,9 +80,6 @@ test("undo", function() {
     acre.async.wait_on_results();
     ok(result);
     ok(result.type.id === "/type/property" && result.type.connect === "inserted", JSON.stringify(result));
-
-    // delete property
-    delete_property(prop.id, user.id, false, true);
   }
   finally {
     if (prop) h.delete_property(prop);
@@ -93,5 +88,152 @@ test("undo", function() {
   }
 });
 
+test("delete_property with master_property", function() {
+  var type = h.create_type(user_domain);
+  var type2 = h.create_type(user_domain);
+  var prop2 = h.create_property(type2.id);
+  var prop = h.create_property(type.id, {"/type/property/master_property": {id: prop2.id}});
+
+  // assert master_property present
+  var result = acre.freebase.mqlread({id:prop.id, type:"/type/property", master_property: null}).result;
+  equal(result.master_property, prop2.id);
+
+  try {
+    var info;
+    delete_property(prop.id, user.id, false, true)
+      .then(function([prop_info, delete_result]) {
+        info = prop_info;
+        result = delete_result;
+      });
+    acre.async.wait_on_results();
+    ok(result);
+
+    result = acre.freebase.mqlread({id:prop.guid, "/type/property/master_property": null}).result;
+    ok(!result["/type/property/master_property"]);
+
+    undo(info);
+    acre.async.wait_on_results();
+
+    result = acre.freebase.mqlread({id:prop.id, type:"/type/property", master_property: null}).result;
+    equal(result.master_property, prop2.id);
+  }
+  finally {
+    if (prop) h.delete_property(prop);
+    if (prop2) h.delete_property(prop2);
+    if (type2) h.delete_type(type2);
+    if (type) h.delete_type(type);
+  }
+});
+
+test("delete_property with reverse_property", function() {
+  var type = h.create_type(user_domain);
+  var type2 = h.create_type(user_domain);
+  var prop2 = h.create_property(type2.id);
+  var prop = h.create_property(type.id, {"/type/property/master_property": {id: prop2.id}});
+
+  // assert master_property present
+  var result = acre.freebase.mqlread({id:prop2.id, type:"/type/property", reverse_property: null}).result;
+  equal(result.reverse_property, prop.id);
+
+  try {
+    var info;
+    delete_property(prop2.id, user.id, false, true)
+      .then(function([prop_info, delete_result]) {
+        info = prop_info;
+        result = delete_result;
+      });
+    acre.async.wait_on_results();
+    ok(result, JSON.stringify(info));
+
+    result = acre.freebase.mqlread({id:prop2.guid, "/type/property/reverse_property": null}).result;
+    ok(!result["/type/property/reverse_property"]);
+
+    undo(info);
+    acre.async.wait_on_results();
+
+    result = acre.freebase.mqlread({id:prop2.id, type:"/type/property", reverse_property: null}).result;
+    equal(result.reverse_property, prop.id);
+  }
+  finally {
+    if (prop) h.delete_property(prop);
+    if (prop2) h.delete_property(prop2);
+    if (type2) h.delete_type(type2);
+    if (type) h.delete_type(type);
+  }
+});
+
+test("delete_property with delegated property", function() {
+  var type = h.create_type(user_domain);
+  var type2 = h.create_type(user_domain);
+  var prop2 = h.create_property(type2.id);
+  var prop = h.create_property(type.id, {"/type/property/delegated": {id: prop2.id}});
+
+  // assert master_property present
+  var result = acre.freebase.mqlread({id:prop.id, type:"/type/property", delegated: null}).result;
+  equal(result.delegated, prop2.id);
+
+  try {
+    var info;
+    delete_property(prop.id, user.id, false, true)
+      .then(function([prop_info, delete_result]) {
+        info = prop_info;
+        result = delete_result;
+      });
+    acre.async.wait_on_results();
+    ok(result);
+
+    result = acre.freebase.mqlread({id:prop.guid, "/type/property/delegated": null}).result;
+    ok(!result["/type/property/delegated"]);
+
+    undo(info);
+    acre.async.wait_on_results();
+
+    result = acre.freebase.mqlread({id:prop.id, type:"/type/property", delegated: null}).result;
+    equal(result.delegated, prop2.id);
+  }
+  finally {
+    if (prop) h.delete_property(prop);
+    if (prop2) h.delete_property(prop2);
+    if (type2) h.delete_type(type2);
+    if (type) h.delete_type(type);
+  }
+});
+
+test("delete_property delegated by a property", function() {
+  var type = h.create_type(user_domain);
+  var type2 = h.create_type(user_domain);
+  var prop2 = h.create_property(type2.id);
+  var prop = h.create_property(type.id, {"/type/property/delegated": {id: prop2.id}});
+
+  // assert master_property present
+  var result = acre.freebase.mqlread({id:prop2.id, "!/type/property/delegated": null}).result;
+  equal(result["!/type/property/delegated"], prop.id);
+
+  try {
+    var info;
+    delete_property(prop2.id, user.id, false, true)
+      .then(function([prop_info, delete_result]) {
+        info = prop_info;
+        result = delete_result;
+      });
+    acre.async.wait_on_results();
+    ok(result);
+
+    result = acre.freebase.mqlread({id:prop2.guid, "!/type/property/delegated": null}).result;
+    ok(!result["!/type/property/delegated"]);
+
+    undo(info);
+    acre.async.wait_on_results();
+
+    result = acre.freebase.mqlread({id:prop2.id, "!/type/property/delegated": null}).result;
+    equal(result["!/type/property/delegated"], prop.id);
+  }
+  finally {
+    if (prop) h.delete_property(prop);
+    if (prop2) h.delete_property(prop2);
+    if (type2) h.delete_type(type2);
+    if (type) h.delete_type(type);
+  }
+});
 
 acre.test.report();

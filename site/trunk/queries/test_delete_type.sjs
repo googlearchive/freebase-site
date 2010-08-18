@@ -112,9 +112,13 @@ test("delete_type expected_by property", function() {
   var type = h.create_type(user_domain);
   var type2 = h.create_type(user_domain);
   var prop = h.create_property(type.id, {"/type/property/expected_type": {id: type2.id}});
-  equal (prop["/type/property/expected_type"].id, type2.id);
+
+  // assert expected_type present
+  var result = acre.freebase.mqlread({id:prop.id, type:"/type/property", expected_type: null}).result;
+  equal(result.expected_type, type2.id);
+
   try {
-    var info, result;
+    var info;
     delete_type(type2.id, user.id, false, true)
       .then(function([type_info, delete_result]) {
         info = type_info;
@@ -127,18 +131,13 @@ test("delete_type expected_by property", function() {
     result = acre.freebase.mqlread({id:prop.id, type:"/type/property", expected_type: null}).result;
     ok(!result.expected_type);
 
-    console.log("info", info);
-
     // undo
     undo(info);
     acre.async.wait_on_results();
 
-    // prop.expected_type should have been deleted since user has permission on it
+    // prop.expected_type should have been re-asserted on undo
     result = acre.freebase.mqlread({id:prop.id, type:"/type/property", expected_type: null}).result;
     equal(result.expected_type, type2.id);
-
-    acre.async.wait_on_results();
-    ok(result);
   }
   finally {
     if (prop) h.delete_property(prop);

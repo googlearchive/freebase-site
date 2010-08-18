@@ -17,11 +17,13 @@ function delete_property(prop_id, user_id, dry_run, force) {
            info.delegated_by.not_permitted.length)) {
         throw deferred.rejected(JSON.stringify(info));
       }
+
       var q = {
         guid: info.guid,
         type: {id: "/type/property", connect: "delete"},
         "/type/property/schema": {id: info.schema.id, connect:"delete"}
       };
+
       if (info.key.length) {
         q.key = [{namespace:k.namespace, value:k.value, connect:"delete"} for each (k in info.key)];
       }

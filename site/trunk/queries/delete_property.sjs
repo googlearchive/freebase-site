@@ -32,7 +32,7 @@ function delete_property(prop_id, user_id, dry_run, force) {
         q["/type/property/master_property"] = {id:info.master_property.id, connect:"delete"};
       }
       if (info.reverse_property.permitted) {
-        q["/type/property/reverse_property"]  = {id:info.reverse_property.permitted, connect:"delete"};
+        q["/type/property/reverse_property"]  = {id:info.reverse_property.permitted.id, connect:"delete"};
       }
       if (info.delegated) {
         q["/type/property/delegated"]  = {id:info.delegated.id, connect:"delete"};
@@ -72,7 +72,7 @@ function undo(prop_info) {
     q["/type/property/master_property"] = {id:prop_info.master_property.id, connect:"update"};
   }
   if (prop_info.reverse_property.permitted) {
-    q["/type/property/reverse_property"]  = {id:prop_info.reverse_property.permitted, connect:"update"};
+    q["/type/property/reverse_property"]  = {id:prop_info.reverse_property.permitted.id, connect:"update"};
   }
   if (prop_info.delegated) {
     q["/type/property/delegated"] = {id:prop_info.delegated.id, connect:"update"};
@@ -146,16 +146,16 @@ function prop_info_query(prop_id, user_id) {
       id: null,
       optional: true
     },
-    "!/type/property/delegated": {
+    "!/type/property/delegated": [{
       id: null,
       optional: true,
       permission: [{permits: [{member: {id: user_id}}]}]
-    },
-    "!opp:/type/property/delegated": {
+    }],
+    "!opp:/type/property/delegated": [{
       id: null,
       optional: true,
       permission:[{"permits": [{optional:"forbidden", member:{id: user_id}}]}]
-    }
+    }]
   };
   return freebase.mqlread(q)
     .then(function(env) {
@@ -168,16 +168,16 @@ function prop_info_query(prop_id, user_id) {
         name: result.name,
         schema: result.schema,
         key: [{namespace:k.namespace.id, value:k.value} for each (k in result.key)],
-        expected_type: result.expected_type,
-        master_property: result.master_property,
+        expected_type: result.expected_type ? {id:result.expected_type.id} : null,
+        master_property: result.master_property ? {id:result.master_property.id} : null,
         reverse_property: {
-          permitted: result.reverse_property ? result.reverse_property.id : null,
-          not_permitted: result["opp:reverse_property"] ? result["opp:reverse_property"].id : null
+          permitted: result.reverse_property ? {id:result.reverse_property.id} : null,
+          not_permitted: result["opp:reverse_property"] ? {id:result["opp:reverse_property"].id} : null
         },
-        delegated: result.delegated,
+        delegated: result.delegated ? {id:result.delegated.id} : null,
         delegated_by: {
-          permitted: [d.id for each (d in result["!/type/property/delegated"])],
-          not_permitted: [d.id for each (d in result["!opp:/type/property/delegated"])]
+          permitted:  [{id:d.id} for each (d in result["!/type/property/delegated"])],
+          not_permitted: [{id:d.id} for each (d in result["!opp:/type/property/delegated"])]
         }
       };
       return info;

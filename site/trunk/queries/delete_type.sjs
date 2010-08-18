@@ -155,8 +155,8 @@ function type_info_query(type_id, user_id) {
         domain: result.domain,
         key: [{namespace:k.namespace.id, value:k.value} for each (k in result.key)],
         expected_by: {
-          permitted: [p.id for each (p in result.expected_by)],
-          not_permitted: [p.id for each (p in result["opp:expected_by"])]
+          permitted: [{id:p.id} for each (p in result.expected_by)],
+          not_permitted: [{id:p.id} for each (p in result["opp:expected_by"])]
         }
       };
     });

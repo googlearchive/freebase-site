@@ -26,7 +26,7 @@ function validate_options(o, required) {
   if (required) {
     for (var i=0,l=required.length; i<l; i++) {
       if (o[required[i]] === "") {
-        return deferred.rejected(required[i] + " required");
+        throw (required[i] + " required");
       }
     }
   }
@@ -43,10 +43,16 @@ function validate_options(o, required) {
  */
 function create_type(o) {
   // validate args
-  validate_options(o, ["domain", "name", "key"]);
+  try {
+    validate_options(o, ["domain", "name", "key"]);
+  }
+  catch (e) {
+    return deferred.rejected(e);
+  }
 
   var q = {
     id: null,
+    guid: null,
     key: {
       value: o.key,
       namespace: o.domain

@@ -12,7 +12,7 @@ var qh = mf.require("helpers");
 function validate_options(o) {
   create_type.validate_options(o, ["domain"]);
   if (!o.id) {
-    return deferred.rejected("type id required");
+    throw ("type id required");
   }
   return o;
 };
@@ -23,7 +23,14 @@ function validate_options(o) {
  * @param o:Object (required) - options specifying the updated values. @see validate_options
  */
 function update_type(o) {
-  validate_options(o);
+  // validate args
+  try {
+    validate_options(o);
+  }
+  catch (e) {
+    return deferred.rejected(e);
+  }
+
   var q = {
     id: o.id,
     guid: null,

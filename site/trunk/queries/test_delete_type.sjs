@@ -108,4 +108,44 @@ test("undo", function() {
 
 
 
+test("delete_type expected_by property", function() {
+  var type = h.create_type(user_domain);
+  var type2 = h.create_type(user_domain);
+  var prop = h.create_property(type.id, {"/type/property/expected_type": {id: type2.id}});
+  equal (prop["/type/property/expected_type"].id, type2.id);
+  try {
+    var info, result;
+    delete_type(type2.id, user.id, false, true)
+      .then(function([type_info, delete_result]) {
+        info = type_info;
+        result = delete_result;
+      });
+    acre.async.wait_on_results();
+    ok(result);
+
+    // prop.expected_type should have been deleted since user has permission on it
+    result = acre.freebase.mqlread({id:prop.id, type:"/type/property", expected_type: null}).result;
+    ok(!result.expected_type);
+
+    console.log("info", info);
+
+    // undo
+    undo(info);
+    acre.async.wait_on_results();
+
+    // prop.expected_type should have been deleted since user has permission on it
+    result = acre.freebase.mqlread({id:prop.id, type:"/type/property", expected_type: null}).result;
+    equal(result.expected_type, type2.id);
+
+    acre.async.wait_on_results();
+    ok(result);
+  }
+  finally {
+    if (prop) h.delete_property(prop);
+    if (type2) h.delete_type(type2);
+    if (type) h.delete_type(type);
+  }
+});
+
+
 acre.test.report();

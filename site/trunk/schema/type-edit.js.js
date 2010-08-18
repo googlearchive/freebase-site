@@ -150,6 +150,7 @@
 
         // expected_type
         expected_type_input.suggest_expected_type({
+          service_url: acre.freebase.service_url,
           category:"expected_type",
           required: "always",
           suggest_new: "Create new type"

@@ -130,7 +130,8 @@ function property(options) {
       id: null,
       name: null,
       type: "/type/type",
-      "/freebase/type_hints/mediator": null
+      "/freebase/type_hints/mediator": null,
+      optional:true
     },
     master_property: {
       id: null,

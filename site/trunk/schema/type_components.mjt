@@ -19,7 +19,7 @@
           <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.delete_property, ['${prop.id}'], this);"><span class="delete-icon">Delete property</span></a>
         </li>
         <li class="row-menu-item"><a href="${h.url_for('schema', 'property', null, prop.id)}">View property details</a></li>
-        <li class="row-menu-item" acre:if="prop.expected_type.id.indexOf('/type') === -1">
+        <li class="row-menu-item" acre:if="prop.expected_type && prop.expected_type.id.indexOf('/type') === -1">
           <a href="${h.freebase_url('/view'+prop.expected_type.id)}">Browse instances</a>
         </li>
         <li class="row-menu-item last">
@@ -29,10 +29,12 @@
     </th>
     <td class="even">$prop.id</td>
     <td class="odd">
+      <acre:block if="prop.expected_type">
       <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">
         $prop.expected_type.id
       </a>
       <span acre:if="prop.expected_type.mediator" class="is-mediator"><abbr title="This is a mediator">mediator</abbr></span>
+      </acre:block>
       <span acre:if="prop.unit" class="measurement-unit">$prop.unit.name</span>
       <span acre:if="prop.master_property || prop.reverse_property">
         <span class="return-link-trigger"></span>

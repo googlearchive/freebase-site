@@ -216,7 +216,7 @@ function normalize_props(props) {
 };
 /**
  * Base type query:
- * 1. expand included_types to get their properties
+ * 1. description (blurb and blob)
  * 2. get type instance count
  * 3. get "sibiling" types (types that are in the same domain)
  */
@@ -353,7 +353,9 @@ function typediagram(id) {
     });
 };
 
-
+/**
+ * Get all properties of a type
+ */
 function type_properties(id) {
   var q = {
     id: id,
@@ -369,7 +371,9 @@ function type_properties(id) {
     });
 };
 
-
+/**
+ * Full fledged property query
+ */
 function property(id) {
   var q = mql.property({
     id: id,
@@ -425,6 +429,13 @@ function property(id) {
         });
     });
 };
+
+//
+// Incoming property queries from
+// 1. a given domain
+// 2. commons
+// 3. everything else except commons (and optionally a given domain)
+//
 
 
 function incoming_from_domain(type_id, domain_id, count) {

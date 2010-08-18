@@ -2,7 +2,34 @@ var mf = acre.require("MANIFEST").MF;
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 
-
+/**
+ * Delete a property. If the property is being "used", throws an exception unless force=true.
+ * You can also pass dry_run=true to see what will be deleted.
+ *
+ * A property is "used" if one or moer of the following is true:
+ *   1. it has one or more /type/link instances with the property as the master or reverse property.
+ *   2. it has an incoming /type/property/master_property link
+ *   3. it has one or more incoming /type/property/delegated link
+ *
+ * Delete property by:
+ *   1. remove /type/property
+ *   2. remove schema link
+ *   3. remove keys from type
+ *   4. remove expected_type
+ *   5. remove master_property
+ *   6. remove incoming /type/property/master_property, if you have permission
+ *   7. remove delegated
+ *   8. remove incoming /type/property/delegated on properties you have permission on
+ *
+ * @param prop_id:String (required) - property id
+ * @param user_id:String (required) - user id permitted to delete this type
+ * @param dry_run:Boolean (optional) - don't write, just return what will be deleted.
+ *                                     dry_run takes precedence over force.
+ * @param force:Boolean (optional) - delete property even if type is being "used"
+ * @throws prop_info:Object if force != true and property is being "used".
+ * @return a tuple [prop_info, result] where prop_info is what was deleted
+ * and result is the mqlwrite result of deleting the property.
+ */
 function delete_property(prop_id, user_id, dry_run, force) {
   return prop_info(prop_id, user_id)
     .then(function(info) {
@@ -58,6 +85,11 @@ function delete_property(prop_id, user_id, dry_run, force) {
     });
 };
 
+/**
+ * Undo delete_property.
+ *
+ * @param prop_info:Object (required) - the prop info returned by delete_property
+ */
 function undo(prop_info) {
   var q = {
     guid: prop_info.guid,

@@ -60,7 +60,7 @@ test("update_type key", function() {
     acre.async.wait_on_results();
     ok(updated, updated);
 
-    var result = acre.freebase.mqlread({id:updated, key:{namespace:user.id+"/default_domain", value:null}}).result;
+    var result = acre.freebase.mqlread({id:updated, key:{namespace:user_domain, value:null}}).result;
     equal(result.key.value, acre.freebase.mqlkey_quote(type.name+"updated"));
   }
   finally {

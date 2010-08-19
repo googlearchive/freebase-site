@@ -2,7 +2,6 @@
   var mf = acre.require("MANIFEST").MF;
   var c = this.exports.c = {};
   var h = mf.require("core", "helpers");
-  var te = mf.require("type_editcomponents");
   var tc = mf.require("type_components");
   var image = mf.require("template", "imagecomponents");  
   var sh = mf.require("helpers");
@@ -50,7 +49,6 @@
 </acre:block>
 
 <acre:block def="content_body()">
-${te.type_meta_dialog()} 
   <div class="page-meta">
     <h1>
       $c.type.name

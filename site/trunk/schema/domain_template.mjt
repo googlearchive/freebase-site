@@ -3,6 +3,7 @@
   var c = this.exports.c = {};
   var h = mf.require("core", "helpers");
   var dc = mf.require("domain_components");
+  var de = mf.require("domain_editcomponents");
   var image = mf.require("template", "imagecomponents");  
 </acre:script>
 

@@ -1,9 +1,40 @@
-
 /*
 =========================
 Candidates for global
 =========================
 */
+
+
+/* Modal Dialogs */
+
+.modal {
+    width: 55em; /* we should remove this before production */
+    border: 5px solid #dcdbdc;
+    background: #f0f2f3;
+    padding: 1em;
+    .rounded_corners();
+}
+
+.modal-inner {
+    background: #fff;
+    border: 1px solid #dcdbdc;
+    .rounded_corners();
+}
+
+.modal-title {
+    font-size: 1.4em;
+    font-weight: bold;
+    border-bottom: 1px solid #dcdbdc;
+    padding: 7px 10px;
+}
+
+.modal-buttons {
+    margin-top: 1em;
+}
+
+.modal-content {
+    padding: 0 10px;
+}
 
 .section-title {
     padding-left: 5px;
@@ -501,6 +532,7 @@ Type Page
 }
 
 .row-menu {
+    z-index: 10;
     display: none;
     list-style: none;
     background: #fff;

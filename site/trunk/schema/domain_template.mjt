@@ -3,7 +3,6 @@
   var c = this.exports.c = {};
   var h = mf.require("core", "helpers");
   var dc = mf.require("domain_components");
-  var de = mf.require("domain_editcomponents");
   var image = mf.require("template", "imagecomponents");  
 </acre:script>
 
@@ -35,7 +34,6 @@
 </acre:block>
 
 <acre:block def="content_body()">
-${de.domain_meta_dialog()}
   <acre:block if="c.domain">
       
       <div class="page-meta">

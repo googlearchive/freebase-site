@@ -67,7 +67,7 @@ var api = {
   },
 
   edit_type_submit: function(args) {
-    var update_type_options = h.extend({}, args);
+    var update_type_options = h.extend({}, args, {mqlkey_quote:true});
     return update_type.update_type(update_type_options)
       .then(function(updated_id) {
         return queries.minimal_type(updated_id);
@@ -96,5 +96,5 @@ api.undo_delete_type_submit.auth = true;
 api.edit_type_begin.args = ["id"]; // type id
 api.edit_type_begin.auth = true;
 
-api.edit_type_submit.args = api.add_type_submit.args.concat(["id"]);
+api.edit_type_submit.args = ["id", "domain", "name", "key"];
 api.edit_type_submit.auth = true;

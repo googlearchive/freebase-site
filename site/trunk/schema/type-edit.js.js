@@ -73,7 +73,7 @@
             mode: "edit",
             event_prefix: "fb.schema.type.edit.property.",
             ajax: {
-              url: acre.request.app_url + "/schema/type/add_property_submit",
+              url: acre.request.app_url + "/schema/type/edit_property_submit",
               data: {id: prop_id}
             },
 
@@ -93,7 +93,7 @@
          /**
            * after submit success, we're done editing, remove form and old row
            */
-          form.row.bind("fb.schema.domain.edit.property.success", function() {
+          form.row.bind("fb.schema.type.edit.property.success", function() {
             form.trigger_row.remove(); // old row
             form.row.remove();
             form.submit_row.remove();

@@ -35,6 +35,7 @@
 </acre:block>
 
 <acre:block def="content_body()">
+${de.domain_meta_dialog()}
   <acre:block if="c.domain">
       
       <div class="page-meta">

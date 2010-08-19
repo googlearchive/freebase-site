@@ -68,12 +68,12 @@
     <h1 class="modal-title">Domain Settings</h1>
     <div class="modal-content">
       <div class="form-group">
-        <div class="form-row">
+        <div class="form-row form-row-inline">
           <label class="form-label" for="domain-name">Name</label>
           <input class="text-input" type="text" name="domain-name" value="" />
           <span class="form-note">You can change this at any time</span>
         </div>
-        <div class="form-row">
+        <div class="form-row form-row-inline">
           <label class="form-label" for="domain-key">Key</label>
           <input class="text-input" type="text" name="domain-key" value="" />
           <span class="form-note">
@@ -84,7 +84,7 @@
       </div>
       <div class="form-row">
         <label class="form-label">Description</label>
-        <textarea class="textarea" name="domain-description">Lorem ipsum dolor...</textarea>
+        <textarea class="textarea" name="domain-description" rows="4">Lorem ipsum dolor...</textarea>
       </div>
     </div>
   </div>

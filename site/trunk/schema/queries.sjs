@@ -359,6 +359,7 @@ function typediagram(id) {
 function type_properties(id) {
   var q = {
     id: id,
+    name: null,
     type: "/type/type",
     properties: [mql.property({optional: true, index: null, sort: "index"})]
   };
@@ -366,8 +367,9 @@ function type_properties(id) {
     .then(function(env) {
       return env.result || {};
     })
-    .then(function(result) {
-      return normalize_props(result.properties);
+    .then(function(type) {
+      normalize_props(type.properties);
+      return type;
     });
 };
 

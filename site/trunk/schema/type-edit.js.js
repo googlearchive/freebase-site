@@ -152,7 +152,6 @@
         expected_type_input.suggest_expected_type({
           service_url: acre.freebase.service_url,
           category:"expected_type",
-          required: "always",
           suggest_new: "Create new type"
         })
         .bind("fb-select", function(e, data) {
@@ -318,7 +317,128 @@
           se.ajax_error_handler(xhr, row);
         }
       });
+    },
+
+    /**
+     * add included_type
+     */
+    add_included_type_begin: function(trigger, type_id) {
+      $.ajax({
+        url: acre.request.app_url + "/schema/type/add_included_type_begin",
+        data: {id: type_id},
+        dataType: "json",
+        success: function(data, status, xhr) {
+          if (data.code === "/api/status/error") {
+            return se.ajax_error_handler(xhr, row);
+          }
+
+          // add edit-form after the edit button
+          var html = $(data.result.html);
+          var form = {
+            mode: "edit",
+            event_prefix: "fb.schema.type.add.included_type.",
+            ajax: {
+              url: acre.request.app_url + "/schema/type/add_included_type_submit"
+            },
+
+            init_form: te.init_included_type_form,
+            validate_form: te.validate_included_type_form,
+            submit_form: te.submit_included_type_form,
+
+            table: trigger.parents("table:first"),
+            trigger: trigger,
+            trigger_row: trigger.parents("tr:first"),
+            row: $(".edit-row", html).hide(),
+            submit_row: $(".edit-row-submit", html).hide()
+          };
+
+          se.init_edit_form(form);
+
+          /**
+           * after submit success, we're done editing, remove form and old row
+           */
+          form.row.bind("fb.schema.type.add.included_type.success", function() {
+            $(".button-cancel", form.submit).text("Done");
+            te.init_included_type_form(form);
+          });
+        },
+        error: function(xhr) {
+          se.ajax_error_handler(xhr, row);
+        }
+      });
+    },
+
+    init_included_type_form: function(form) {
+      var included_type_input = $("input[name=included_type_input]", form.row).val("");
+      var included_type = $("input[name=included_type]", form.row).val("");
+
+      if (!form.row.data("initialized")) {
+        included_type_input.suggest({
+          service_url: acre.freebase.service_url,
+          category: "cotype",
+          suggest_new: "Create new type"
+        })
+        .bind("fb-select", function(e, data) {
+          included_type_input.val(data.id);
+          included_type.val(data.id);
+        })
+        .bind("fb-textchange", function() {
+          included_type.val("");
+        });
+
+        // enter/escape key handler
+        $(":input:not(textarea)", form.row)
+          .keypress(function(e) {
+            if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
+              form.row.trigger(form.event_prefix + "submit");
+            }
+          })
+          .keyup(function(e) {
+            if (e.keyCode === 27) { // escape
+              form.row.trigger(form.event_prefix + "cancel");
+            }
+          });
+        form.row.data("initialized", true);
+      }
+      included_type_input.focus();
+    },
+
+    validate_included_type_form: function(form) {
+      var included_type = $.trim($(":input[name=included_type]", form.row).val());
+      if (included_type === "") {
+        form.row.trigger(form.event_prefix + "error", [form.row, "Please choose a type to include"]);
+      }
+    },
+
+    submit_included_type_form: function(form) {
+      var data = {
+        type: $(":input[name=type]", form.row).val(),
+        included_type: $.trim($(":input[name=included_type]", form.row).val())
+      };
+      $.ajax({
+        url: form.ajax.url,
+        type: "POST",
+        dataType: "json",
+        data: $.extend(data, form.ajax.data),
+        success: function(data, status, xhr) {
+          if (data.code === "/api/status/error") {
+            return se.ajax_error_handler(xhr, form.row);
+          }
+          var thead = $(data.result.html);
+          form.table.append(thead);
+          var new_row = $("tr:first", thead).hide();
+          new_row.showRow(function() {
+            // init expand/collapse
+            $(".tbody-header", thead).data("ajax", true).click(fb.schema.type.toggle);
+            form.row.trigger(form.event_prefix + "success");
+          }, null, "slow");
+        },
+        error: function(xhr) {
+          se.ajax_error_handler(xhr, form.row);
+        }
+      });
     }
+
 
   };
 

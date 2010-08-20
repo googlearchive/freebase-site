@@ -12,9 +12,9 @@ var freebase = mf.require("promise", "apis").freebase;
 var api = {
   get_type_properties: function(args) {
     return queries.type_properties(args.id)
-      .then(function(props) {
+      .then(function(type) {
         return {
-          html: acre.markup.stringify(tc.native_properties(props, args.id))
+          html: acre.markup.stringify(tc.native_properties(type.properties, args.id))
         };
       });
   },
@@ -103,6 +103,37 @@ var api = {
           html: acre.markup.stringify(tc.type_property_row(prop))
         };
       });
+  },
+
+  add_included_type_begin: function(args) {
+    return {
+      html: acre.markup.stringify(edit.add_included_type_form(args.id))
+    };
+  },
+
+  add_included_type_submit: function(args) {
+    var q = {
+      id: args.type,
+      "/freebase/type_hints/included_types": {id:args.included_type, connect:"insert"}
+    };
+    return freebase.mqlwrite(q)
+      .then(function(env) {
+        return env.result;
+      })
+      .then(function(result) {
+        var present = result["/freebase/type_hints/included_types"].connect === "present";
+        if (present) {
+          return deferred.rejected(args.included_type + " is already included");
+        }
+        else {
+          return freebase.mqlread({id:args.included_type, name:null})
+            .then(function(env) {
+              return {
+                html: acre.markup.stringify(tc.included_type_thead(env.result))
+              };
+            });
+        }
+      });
   }
 };
 
@@ -133,3 +164,9 @@ api.edit_property_begin.auth = true;
 
 api.edit_property_submit.args = ["id", "type", "name", "key", "expected_type"];
 api.edit_property_submit.auth = true;
+
+api.add_included_type_begin.args = ["id"]; // type id
+api.add_included_type_begin.auth = true;
+
+api.add_included_type_submit.args = ["type", "included_type"]; // type id, id of type to include
+api.add_included_type_submit.auth = true;

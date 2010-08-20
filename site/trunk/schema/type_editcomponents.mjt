@@ -130,6 +130,29 @@
   </tr>
 </acre:block>
 
+<acre:block def="add_included_type_form(type_id)">
+  <table class="edit-form clear">
+    <tbody>
+      <tr class="edit-row">
+        <td colspan="4">
+          <div class="edit-row-loader"></div>
+          <div class="form-field fb-included-type">
+            <input name="included_type_input" type="text" class="text-input suggest-input"/>
+            <input name="included_type" type="hidden" />
+            <input name="type" type="hidden" value="${type_id}"/>
+          </div>
+        </td>
+      </tr>
+      <tr class="edit-row-submit">
+        <td colspan="4">
+          <button class="button button-primary button-submit" type="submit">Add</button>
+          <button class="button button-cancel">Cancel</button>
+        </td>
+      </tr>
+    <tbody>
+  </table>  
+</acre:block>
+
 <acre:block def="type_meta_dialog()">
 <div class="modal">
   <div class="modal-inner">

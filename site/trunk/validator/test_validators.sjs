@@ -97,14 +97,14 @@ for (var env in tests) {
   });
 }
 
-var truthy = [true, "true", "yes", "1", "100", [0], [{}], {a:null}];
+var truthy = [true, "true", "yes", "1", "-1", [0], [{}], {a:null}];
 test("validators.StringBool", truthy, function() {
   truthy.forEach(function(t) {
     strictEqual(validators.StringBool(t).to_js(), true);
   });
 });
 
-var falsey = [false, "false", "no", "", "foo", "0", "-100", [], {}];
+var falsey = [false, "false", "no", "", "0", undefined, [], {}];
 test("validators.StringBool", falsey, function() {
   falsey.forEach(function(f) {
     strictEqual(validators.StringBool(f).to_js(), false);
@@ -142,7 +142,7 @@ var mqlid_test = {
 };
 test("validators.MqlId", mqlid_test, function() {
   mqlid_test.valid.concat(mqlid_test.allow).forEach(function(id) {
-    strictEqual(validators.MqlId(id, {allow_guid:true, allow_reverse:true}).to_js(), id);
+    strictEqual(validators.MqlId(id, {guid:true, reverse:true}).to_js(), id);
   });
 
   mqlid_test.invalid.concat(mqlid_test.allow).forEach(function(id) {
@@ -177,8 +177,8 @@ var oneof_test = {
     invalid: [0, -1, -2]
   },
   "mixed": {
-    oneof: [true, 1, "true"],
-    valid: [1, "true", true],
+    oneof: [true, 1, "true", undefined, null],
+    valid: [true, 1, "true", undefined, null],
     invalid: [0, "false", false]
   }
 };

@@ -234,10 +234,13 @@ var StringBool = Validator.factory(scope, "StringBoolean", {
   },
   "string": function(val, options) {
     val = val.toLowerCase();
-    return val === "true" || val === "yes" || this["number"](parseInt(val), options);
+    if (val === "" || val === "false" || val === "no" || val === "0") {
+      return false;
+    }
+    return true;
   },
   "number": function(val, options) {
-    return val > 0;
+    return val !== 0;
   },
   "undefined": function(val, options) {
     return false;
@@ -289,11 +292,11 @@ Validator.factory(scope, "Guid", {
  */
 Validator.factory(scope, "MqlId", {
   "defaults": {
-    "allow_guid": false,   // #9202a8c04000641f8000000003e00cc6
-    "allow_reverse": false // !/film/film/starring
+    "guid": false,   // allow guid #9202a8c04000641f8000000003e00cc6
+    "reverse": false // allow !/film/film/starring
   },
   "string": function(val, options) {
-    if (options.allow_guid) {
+    if (options.guid) {
       try {
         return validate_guid(val);
       }
@@ -301,7 +304,7 @@ Validator.factory(scope, "MqlId", {
         // ignore
       }
     }
-    if (options.allow_reverse && val.length > 2 && val.indexOf("!/") === 0) {
+    if (options.reverse && val.length > 2 && val.indexOf("!/") === 0) {
         return val;
     }
     if (val.indexOf("/") === 0) {
@@ -338,16 +341,7 @@ Validator.factory(scope, "OneOf", {
   "undefined": function(val, options) {
     return this.check_oneof(val, options);
   },
-  "function": function(val, options) {
-    return this.check_oneof(val, options);
-  },
   "null": function(val, options) {
-    return this.check_oneof(val, options);
-  },
-  "array": function(val, options) {
-    return this.check_oneof(val, options);
-  },
-  "dict": function(val, options) {
     return this.check_oneof(val, options);
   },
   check_oneof: function(val, options) {
@@ -357,7 +351,8 @@ Validator.factory(scope, "OneOf", {
           return val;
         }
       }
+      return this.invalid(val);
     }
-    return this.invalid(val);
+    return this.invalid("oneof option not an array");
   }
 });

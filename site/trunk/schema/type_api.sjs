@@ -44,7 +44,7 @@ var api = {
   },
 
   add_property_submit: function(args) {
-    var create_property_options = h.extend({}, args, {mqlkey_quote:true});
+    var create_property_options = h.extend({}, args, {mqlkey_quote:true, empty_delete:false});
     return create_property.create_property(create_property_options)
       .then(function(created) {
         return queries.property(created.id);
@@ -93,7 +93,7 @@ var api = {
   },
 
   edit_property_submit: function(args) {
-    var update_prop_options = h.extend({}, args, {mqlkey_quote:true});
+    var update_prop_options = h.extend({}, args, {mqlkey_quote:true, empty_delete:true});
     return update_property.update_property(update_prop_options)
       .then(function(updated_id) {
         return queries.property(updated_id);

@@ -16,7 +16,7 @@ var api = {
   },
 
   add_type_submit: function(args) {
-    var create_type_options = h.extend({}, args, {mqlkey_quote:true});
+    var create_type_options = h.extend({}, args, {mqlkey_quote:true, empty_delete:false});
 
     return create_type.create_type(create_type_options)
       .then(function(result) {
@@ -67,7 +67,7 @@ var api = {
   },
 
   edit_type_submit: function(args) {
-    var update_type_options = h.extend({}, args, {mqlkey_quote:true});
+    var update_type_options = h.extend({}, args, {mqlkey_quote:true, empty_delete:true});
     return update_type.update_type(update_type_options)
       .then(function(updated_id) {
         return queries.minimal_type(updated_id);

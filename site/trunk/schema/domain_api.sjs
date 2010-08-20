@@ -9,6 +9,12 @@ var queries = mf.require("queries");
 
 var api = {
 
+  domain_settings_begin: function(args) {
+    return {
+      html: acre.markup.stringify(edit.domain_settings_form())
+    };
+  },
+
   add_type_begin: function(args) {
     return {
       html: acre.markup.stringify(edit.add_type_form(args.id, args.mediator == 1))
@@ -81,6 +87,9 @@ var api = {
 };
 
 // required args and authorization
+api.domain_settings_begin.args = ["id"]; // domain id
+api.domain_settings_begin.auth = true;
+
 api.add_type_begin.args = ["id"]; // domain id, mediator (optional)
 api.add_type_begin.auth = true;
 

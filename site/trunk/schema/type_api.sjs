@@ -37,6 +37,12 @@ var api = {
       });
   },
 
+  type_settings_begin: function(args) {
+    return {
+      html: acre.markup.stringify(edit.type_settings_form())
+    };
+  },
+
   add_property_begin: function(args) {
     return {
       html: acre.markup.stringify(edit.add_property_form(args.id))
@@ -146,6 +152,9 @@ api.get_incoming_from_commons.cache_policy = "fast";
 
 api.get_incoming_from_bases.args = ["id"]; // type id, exclude_domain (optional)
 api.get_incoming_from_commons.cache_policy = "fast";
+
+api.type_settings_begin.args = ["id"]; // type id
+api.type_settings_begin.auth = true;
 
 api.add_property_begin.args = ["id"]; // type id
 api.add_property_begin.auth = true;

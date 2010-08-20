@@ -34,6 +34,8 @@ var MF = {
       "domain.js"
     ],
     "domain-edit.mf.js": [
+      ["jquerytools", "toolbox.expose.js"],
+      ["jquerytools", "overlay.js"],
       "schema-edit.js",
       "domain-edit.js"
     ],
@@ -42,6 +44,8 @@ var MF = {
       "type.js"
     ],
     "type-edit.mf.js": [
+      ["jquerytools", "toolbox.expose.js"],
+      ["jquerytools", "overlay.js"],
       "schema-edit.js",
       "suggest_expected_type.js",
       "type-edit.js"

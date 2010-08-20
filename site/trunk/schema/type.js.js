@@ -79,6 +79,14 @@
       $(".edit").show();
     },
 
+    type_settings: function(e, type_id) {
+      var trigger = $(this);
+      fb.get_script(acre.request.app_url + "/schema/MANIFEST/type-edit.mf.js", function() {
+        t.edit.type_settings_begin(trigger, type_id);
+      });
+      return false;
+    },
+
     add_property: function(e, prop_id) {
       var trigger = $(this);
       if (trigger.is(".editing")) { // are we already editing?

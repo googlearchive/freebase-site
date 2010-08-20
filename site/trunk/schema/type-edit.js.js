@@ -5,6 +5,35 @@
   var te = fb.schema.type.edit = {
 
     /**
+     * type settings form
+     */
+    type_settings_begin: function(trigger, type_id) {
+      $.ajax({
+        url: acre.request.app_url + "/schema/type/type_settings_begin",
+        data: {id:type_id},
+        dataType: "json",
+        success: function(data, status, xhr) {
+          if (data.code === "/api/status/error") {
+            alert(xhr.responseText);
+            return;
+          }
+          var html = $(data.result.html);
+          $(document.body).append(html);
+          html.overlay({
+            close: ".button-cancel",
+            closeOnClick: false,
+            load: true,
+            mask: {
+	      color: '#000',
+	      loadSpeed: 200,
+	      opacity: 0.5
+	    }
+          });
+        }
+      });
+    },
+
+    /**
      * retrieve add_property form (ajax).
      */
     add_property_begin: function(trigger, type_id) {

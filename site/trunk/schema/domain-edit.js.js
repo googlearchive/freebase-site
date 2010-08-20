@@ -4,6 +4,36 @@
 
   var de = fb.schema.domain.edit = {
 
+
+    /**
+     * domain settings form
+     */
+    domain_settings_begin: function(trigger, domain_id) {
+      $.ajax({
+        url: acre.request.app_url + "/schema/domain/domain_settings_begin",
+        data: {id:domain_id},
+        dataType: "json",
+        success: function(data, status, xhr) {
+          if (data.code === "/api/status/error") {
+            alert(xhr.responseText);
+            return;
+          }
+          var html = $(data.result.html);
+          $(document.body).append(html);
+          html.overlay({
+            close: ".button-cancel",
+            closeOnClick: false,
+            load: true,
+            mask: {
+	      color: '#000',
+	      loadSpeed: 200,
+	      opacity: 0.5
+	    }
+          });
+        }
+      });
+    },
+
     /**
      * retrieve add_type form (ajax).
      */

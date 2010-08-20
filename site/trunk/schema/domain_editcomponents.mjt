@@ -61,36 +61,35 @@
   </tr>
 </acre:block>
 
-<acre:block def="domain_meta_dialog()">
-
-<div class="modal">
-  <div class="modal-inner">
-    <h1 class="modal-title">Domain Settings</h1>
-    <div class="modal-content">
-      <div class="form-group">
-        <div class="form-row form-row-inline">
-          <label class="form-label" for="domain-name">Name</label>
-          <input class="text-input" type="text" name="domain-name" value="" />
-          <span class="form-note">You can change this at any time</span>
+<acre:block def="domain_settings_form()">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">Domain Settings</h1>
+      <div class="modal-content">
+        <div class="form-group">
+          <div class="form-row form-row-inline">
+            <label class="form-label" for="domain-name">Name</label>
+            <input class="text-input" type="text" name="domain-name" value="" />
+            <span class="form-note">You can change this at any time</span>
+          </div>
+          <div class="form-row form-row-inline">
+            <label class="form-label" for="domain-key">Key</label>
+            <input class="text-input" type="text" name="domain-key" value="" />
+            <span class="form-note">
+              Four or more alphanumerica characters. No spaces.
+              <strong>Changing a key may break external apps that use this project</strong>
+            </span>
+          </div>
         </div>
-        <div class="form-row form-row-inline">
-          <label class="form-label" for="domain-key">Key</label>
-          <input class="text-input" type="text" name="domain-key" value="" />
-          <span class="form-note">
-            Four or more alphanumerica characters. No spaces.
-            <strong>Changing a key may break external apps that use this project</strong>
-          </span>
+        <div class="form-row">
+          <label class="form-label">Description</label>
+          <textarea class="textarea" name="domain-description" rows="4">Lorem ipsum dolor...</textarea>
         </div>
-      </div>
-      <div class="form-row">
-        <label class="form-label">Description</label>
-        <textarea class="textarea" name="domain-description" rows="4">Lorem ipsum dolor...</textarea>
       </div>
     </div>
+    <div class="modal-buttons">
+      <button class="button button-primary" type="submit">Save</button>
+      <button class="button button-cancel">Cancel</button>
+    </div>
   </div>
-  <div class="modal-buttons">
-    <button class="button button-primary" type="submit">Save</button>
-    <button class="button button-cancel">Cancel</button>
-  </div>
-</div>
 </acre:block>

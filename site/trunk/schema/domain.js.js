@@ -22,6 +22,14 @@
       $(".edit").show();
     },
 
+    domain_settings: function(e, domain_id) {
+      var trigger = $(this);
+      fb.get_script(acre.request.app_url + "/schema/MANIFEST/domain-edit.mf.js", function() {
+        d.edit.domain_settings_begin(trigger, domain_id);
+      });
+      return false;
+    },
+
     add_type: function(e, domain_id, mediator) {
       var trigger = $(this);
       if (trigger.is(".editing")) { // are we already editing?

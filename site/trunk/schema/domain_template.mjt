@@ -37,12 +37,18 @@
   <acre:block if="c.domain">
       
       <div class="page-meta">
+
+        <span class="edit domain-settings">
+          <a href="javascript:void(0)" onclick="return freebase.dispatch(event, freebase.schema.domain.domain_settings, ['${c.domain.id}', true], this);">domain settings</a>
+        </span>
+
         <h1>$c.domain.name</h1>
         <div class="meta">
             <span class="key"><strong>Key:</strong> $c.domain.id</span>        
-        </div>
+        </div>        
         <span class="creation-timestamp">
-          ${image.user_image_small(c.domain.creator)}
+         
+         ${image.user_image_small(c.domain.creator)}
           Created by <a href="${h.freebase_url('/view' + c.domain.creator.id)}" title="View user profile">${c.domain.creator.name}</a> 
           on <time class="published" datetime="${c.domain.timestamp}">$c.domain.date</time>
         </span>

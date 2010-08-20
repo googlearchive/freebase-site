@@ -50,6 +50,11 @@
 
 <acre:block def="content_body()">
   <div class="page-meta">
+
+    <span class="edit type-settings">
+      <a href="javascript:void(0)" onclick="return freebase.dispatch(event, freebase.schema.type.type_settings, ['${c.type.id}'], this);">type settings</a>
+    </span>
+
     <h1>
       $c.type.name
       <span class="flags">

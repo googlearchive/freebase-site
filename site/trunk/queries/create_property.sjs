@@ -2,60 +2,35 @@ var mf = acre.require("MANIFEST").MF;
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 var h = mf.require("core", "helpers");
-
-
-/*
- * @param o:Object (required) - options specifying the new type (name, key, etc.):
- *   type (required)
- *   name (required)
- *   key (required)
- *   expected_type (required)
- *   unit (optional)
- *   description (optional)
- *   disambiguator (optional)
- *   unique (optional)
- *   hidden (optional)
- *   mqlkey_quote (optional) - acre.freebase.mqlkey_quote(key) if TRUE, default is False.
- *
- * Note: this will modify o with the validated values
- */
-function validate_options(o, required) {
-  o.type = o.type == null ? "" : h.trim(o.type);
-  o.name = o.name == null ? "" : h.trim(o.name);
-  o.key = o.key == null ? "" : h.trim(o.key);
-  o.expected_type = o.expected_type == null ? "" : h.trim(o.expected_type);
-  o.unit = o.unit == null ? "" : h.trim(o.unit);
-  o.description = o.description == null ? "" : h.trim(o.description);
-  o.disambiguator = o.disambiguator === true || o.disambiguator === "true" || o.disambiguator === "1";
-  o.unique = o.unique === true || o.unique === "true" || o.unique === "1";
-  o.hidden = o.hidden === true || o.hidden === "true" || o.hidden === "1";
-  o.mqlkey_quote = o.mqlkey_quote === true;
-  o.lang = o.lang == null ? "/lang/en" : o.lang;  // this should be set globally somehow
-  if (required) {
-    for (var i=0,l=required.length; i<l; i++) {
-      if (o[required[i]] === "") {
-        throw (required[i] + " required");
-      }
-    }
-  }
-  if (o.mqlkey_quote) {
-    o.key = acre.freebase.mqlkey_quote(o.key);
-  }
-  return o;
-};
+var validators = mf.require("validator", "validators");
 
 /**
  * Create a new property using the permission of the specified type.
  *
  * @param o:Object (required) - options specifying the new property @see validate_options
  */
-function create_property(o) {
-  // validate args
+function create_property(options) {
+  var o;
   try {
-    validate_options(o, ["type", "name", "key", "expected_type"]);
+    o = {
+      type: validators.MqlId(options.type, {not_empty:true}).to_js(),
+      name: validators.String(options.name, {not_empty:true}).to_js(),
+      key: validators.String(options.key, {not_empty:true}).to_js(),
+      expected_type: validators.MqlId(options.expected_type, {not_empty:true}).to_js(),
+      unit: validators.MqlId(options.unit, {if_empty:""}).to_js(),
+      description: validators.String(options.description, {if_empty:""}).to_js(),
+      disambiguator: validators.StringBool(options.disambiguator, {if_empty:false}).to_js(),
+      unique: validators.StringBool(options.unique, {if_empty:false}).to_js(),
+      hidden: validators.StringBool(options.hidden, {if_empty:false}).to_js(),
+      mqlkey_quote: validators.StringBool(options.mqlkey_quote, {if_empty:false}).to_js(),
+      lang: validators.MqlId(options.lang, {if_empty:"/lang/en"}).to_js()
+    };
   }
-  catch (e) {
+  catch(e if e instanceof validators.Invalid) {
     return deferred.rejected(e);
+  }
+  if (o.mqlkey_quote) {
+    o.key = acre.freebase.mqlkey_quote(o.key);
   }
 
   var q = {

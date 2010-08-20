@@ -3,51 +3,31 @@ var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 var h = mf.require("core", "helpers");
 var create_article = mf.require("create_article");
-
-/*
- * @param o:Object (required) - options specifying the new type (name, key, etc.):
- *   domain (required)
- *   name (required)
- *   key (required)
- *   description (optional)
- *   typehint (optional) - "enumeration", "mediator"
- *   mqlkey_quote (optional) - acre.freebase.mqlkey_quote(key) if TRUE, default is False.
- *
- * Note: this will modify o with the validated values
- */
-function validate_options(o, required) {
-  o.domain = o.domain == null ? "" : h.trim(o.domain);
-  o.name = o.name == null ? "" : h.trim(o.name);
-  o.key = o.key == null ? "" : h.trim(o.key);
-  o.description = o.description == null ? "" : h.trim(o.description);
-  o.typehint = (o.typehint === "enumeration" || o.typehint === "mediator") ? o.typehint : "";
-  o.mqlkey_quote = o.mqlkey_quote === true || o.mqlkey_quote === "true" || o.mqlkey_quote === "1";
-  o.lang = o.lang == null ? "/lang/en" : o.lang;  // this should be set globally somehow
-  if (required) {
-    for (var i=0,l=required.length; i<l; i++) {
-      if (o[required[i]] === "") {
-        throw (required[i] + " required");
-      }
-    }
-  }
-  if (o.mqlkey_quote) {
-    o.key = acre.freebase.mqlkey_quote(o.key);
-  }
-  return o;
-};
+var validators = mf.require("validator", "validators");
 
 /**
  * Create a new type using the permission of the specified domain.
  *
  * @param o:Object (required) - options specifying the new type @see validate_options
  */
-function create_type(o) {
-  // validate args
+function create_type(options) {
+  var o;
   try {
-    validate_options(o, ["domain", "name", "key"]);
+    o = {
+      domain: validators.MqlId(options.domain, {not_empty:true}).to_js(),
+      name: validators.String(options.name, {not_empty:true}).to_js(),
+      key: validators.String(options.key, {not_empty:true}).to_js(),
+      description: validators.String(options.description, {if_empty:""}).to_js(),
+      typehint: validators.OneOf(options.typehint, {oneof:["enumeration", "mediator"], if_empty:""}).to_js(),
+      mqlkey_quote: validators.StringBool(options.mqlkey_quote, {if_empty:false}).to_js(),
+      lang: validators.MqlId(options.lang, {if_empty:"/lang/en"}).to_js()
+    };
   }
-  catch (e) {
+  catch(e if e instanceof validators.Invalid) {
     return deferred.rejected(e);
+  }
+  if (o.mqlkey_quote) {
+    o.key = acre.freebase.mqlkey_quote(o.key);
   }
 
   var q = {

@@ -18,8 +18,8 @@ var MF = {
     "permission": "//permission.site.freebase.dev",
     "appeditor" : "//appeditor.apps.freebase.dev",
     "jqueryui": "//jqueryui.site.freebase.dev",
-    "tasks":"//tasks.site.freebase.dev"
-
+    "tasks":"//tasks.site.freebase.dev",
+    "validator": "//validator.site.freebase.dev"
   }
 };
 

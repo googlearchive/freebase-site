@@ -92,7 +92,10 @@ var routes = [
   {
     from: "/jqueryui",
     to: "jqueryui"
-  }
+  },  {
+    from: "/validator",
+    to: "validator"
+  },
 ];
 
 /**

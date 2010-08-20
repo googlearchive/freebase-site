@@ -14,9 +14,9 @@ function create_type(options) {
   var o;
   try {
     o = {
-      domain: validators.MqlId(options.domain, {not_empty:true}).to_js(),
-      name: validators.String(options.name, {not_empty:true}).to_js(),
-      key: validators.String(options.key, {not_empty:true}).to_js(),
+      domain: validators.MqlId(options.domain, {required:true}).to_js(),
+      name: validators.String(options.name, {required:true}).to_js(),
+      key: validators.String(options.key, {required:true}).to_js(),
       description: validators.String(options.description, {if_empty:""}).to_js(),
       typehint: validators.OneOf(options.typehint, {oneof:["enumeration", "mediator"], if_empty:""}).to_js(),
       mqlkey_quote: validators.StringBool(options.mqlkey_quote, {if_empty:false}).to_js(),

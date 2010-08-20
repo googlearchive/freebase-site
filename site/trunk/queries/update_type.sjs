@@ -14,8 +14,8 @@ function update_type(options) {
   var o;
   try {
     o = {
-      domain: validators.MqlId(options.domain, {not_empty:true}).to_js(),
-      id: validators.MqlId(options.id, {not_empty:true}).to_js(),
+      domain: validators.MqlId(options.domain, {required:true}).to_js(),
+      id: validators.MqlId(options.id, {required:true}).to_js(),
       name: validators.String(options.name, {if_empty:""}).to_js(),
       key: validators.String(options.key, {if_empty:""}).to_js(),
       description: validators.String(options.description, {if_empty:""}).to_js(),

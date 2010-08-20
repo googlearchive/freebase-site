@@ -12,8 +12,8 @@ function update_property(options) {
   var o;
   try {
     o = {
-      type: validators.MqlId(options.type, {not_empty:true}).to_js(),
-      id: validators.MqlId(options.id, {not_empty:true}).to_js(),
+      type: validators.MqlId(options.type, {required:true}).to_js(),
+      id: validators.MqlId(options.id, {required:true}).to_js(),
       name: validators.String(options.name, {if_empty:""}).to_js(),
       key: validators.String(options.key, {if_empty:""}).to_js(),
       expected_type: validators.MqlId(options.expected_type, {if_empty:""}).to_js(),

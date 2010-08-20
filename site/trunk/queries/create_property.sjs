@@ -13,10 +13,10 @@ function create_property(options) {
   var o;
   try {
     o = {
-      type: validators.MqlId(options.type, {not_empty:true}).to_js(),
-      name: validators.String(options.name, {not_empty:true}).to_js(),
-      key: validators.String(options.key, {not_empty:true}).to_js(),
-      expected_type: validators.MqlId(options.expected_type, {not_empty:true}).to_js(),
+      type: validators.MqlId(options.type, {required:true}).to_js(),
+      name: validators.String(options.name, {required:true}).to_js(),
+      key: validators.String(options.key, {required:true}).to_js(),
+      expected_type: validators.MqlId(options.expected_type, {required:true}).to_js(),
       unit: validators.MqlId(options.unit, {if_empty:""}).to_js(),
       description: validators.String(options.description, {if_empty:""}).to_js(),
       disambiguator: validators.StringBool(options.disambiguator, {if_empty:false}).to_js(),

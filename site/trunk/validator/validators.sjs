@@ -95,7 +95,7 @@ Validator.Class.prototype = {
     strip: true
     // if_empty
     // if_invalid
-    // not_empty
+    // required
   },
   to_js: function() {
     if (typeof this.val === "string" && this.options.strip) {
@@ -137,8 +137,8 @@ Validator.Class.prototype = {
       if ("if_empty" in options) {
         throw(new IfEmpty(options.if_empty));
       }
-      if (options.not_empty) {
-        this.invalid("empty value", val);
+      if (options.required) {
+        this.invalid("required", val);
       }
     }
   },

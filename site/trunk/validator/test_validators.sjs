@@ -75,7 +75,7 @@ for (var env in tests) {
       }
     });
 
-    // if_empty, not_empty
+    // if_empty, required
     ["", [], {}, null, undefined].forEach(function(empty) {
       try {
         strictEqual(validator(empty, {if_empty: "world"}).to_js(), "world");
@@ -84,8 +84,8 @@ for (var env in tests) {
         ok(false, "option if_empty ignored");
       }
       try {
-        validator(empty, {not_empty: true}).to_js();
-        ok(false, "option not_empty ignored");
+        validator(empty, {required: true}).to_js();
+        ok(false, "option required ignored");
       }
       catch (e if e instanceof validators.Invalid) {
         ok(e, e.toString());

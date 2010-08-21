@@ -59,7 +59,7 @@
         });
 
       // submit handler
-      var save = $(".button-submit", form.submit_row).click(function() {
+      $(".button-submit", form.submit_row).click(function() {
         form.row.trigger(event_prefix + "submit");
       });
       // cancel handler
@@ -122,7 +122,7 @@
       }
     },
 
-    ajax_error_handler: function(xhr, row) {
+    ajax_error_handler: function(xhr, row, form) {
       var msg;
       try {
         msg = JSON.parse(xhr.responseText);
@@ -132,7 +132,12 @@
         msg = xhr.responseText;
       }
       // TODO: make error expandable to see whole error message
-      se.row_error(row, msg);
+      if (row) {
+        se.row_error(row, msg);
+      }
+      else if (form) {
+        se.form_error(form, msg);
+      }
     },
 
     row_error: function(row, msg) {
@@ -179,6 +184,129 @@
 
     has_row_message: function(row, type) {
       var msg_data = row.data("row-msg");
+      if (type) {
+        return msg_data && msg_data[type] && msg_data[type].length;
+      }
+      return msg_data != null;
+    },
+
+
+
+
+
+
+    init_settings_form: function(form) {
+
+      $(document.body).append(form.form.hide());
+
+      var event_prefix = form.event_prefix || "fb.schema.edit.settings.";
+      form.form
+       .bind(event_prefix + "submit", function() {
+          console.log(event_prefix + "submit");
+          se.submit_settings_form(form);
+        })
+        .bind(event_prefix + "error", function(e, error) {
+          console.log(event_prefix + "error", error);
+          se.form_error(form.form, error);
+        })
+        .bind(event_prefix + "success", function() {
+          console.log(event_prefix + "success");
+          form.form.removeClass("loading");
+        });
+
+     // submit handler
+      $(".button-submit", form.form).click(function() {
+        form.form.trigger(event_prefix + "submit");
+      });
+
+      // init form
+      if (typeof form.init_form === "function") {
+        form.init_form(form);
+      }
+
+      form.form.overlay({
+          close: ".button-cancel",
+          closeOnClick: false,
+          load: true,
+          mask: {
+            color: '#000',
+	    loadSpeed: 200,
+	    opacity: 0.5
+	  }
+        });
+    },
+
+    submit_settings_form: function(form) {
+      // are we already submitting?
+      if (form.form.is(".loading")) {
+        return;
+      }
+
+      // remove focus from activeElement
+      if (document.activeElement) {
+        $(document.activeElement).blur();
+      }
+
+      // clear messages
+      se.clear_form_message(form.form);
+
+      // validate edit-row
+      if (typeof form.validate_form === "function") {
+        form.validate_form(form);
+      }
+
+      // any pre-submit errors?
+      if (se.has_form_message(form.form, "error")) {
+        return;
+      }
+
+      // add a loading class to flag we are submitting the form
+      form.form.addClass("loading");
+
+      // submit edit-row
+      if (typeof form.submit_form === "function") {
+        form.submit_form(form);
+      }
+    },
+
+    form_error: function(form, msg) {
+      return se.form_message(form, msg, "error");
+    },
+
+    form_message: function(form, msg, type) {
+      var form_msg = $("<div class='form-msg'>").text(msg).hide();
+
+      $(".form-group", form).prepend(form_msg);
+      form_msg.slideDown();
+
+      var msg_data = form.data("form-msg");
+      if (!msg_data) {
+        msg_data = {};
+        form.data("form-msg", msg_data);
+      }
+      if (!msg_data[type]) {
+        msg_data[type] = [form_msg];
+      }
+      else {
+        msg_data[type].push(form_msg);
+      }
+      return form_msg;
+    },
+
+    clear_form_message: function(form) {
+      var msg_data = form.data("form-msg");
+      if (msg_data) {
+        $.each(msg_data, function(type,msgs) {
+          $.each(msgs, function(i,msg) {
+            msg.remove();
+          });
+        });
+        form.removeData("form-msg");
+      }
+    },
+
+    has_form_message: function(form, type) {
+      var msg_data = form.data("form-msg");
       if (type) {
         return msg_data && msg_data[type] && msg_data[type].length;
       }

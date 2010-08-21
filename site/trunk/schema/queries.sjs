@@ -85,6 +85,28 @@ function domains(q) {
     });
 };
 
+/**
+ * minimal domain query to get the name, key(s), and article
+ */
+function minimal_domain(id) {
+  var q = {
+    id: id,
+    name: null,
+    type: "/type/domain",
+    key: [{
+      value: null,
+      namespace: null
+    }],
+    "/common/topic/article": qh.article_clause(true)
+  };
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result || {};
+    })
+    .then(function(domain) {
+      return add_description(domain, "blob", null, "blob");
+    });
+};
 
 /**
  * Domain query and for each type in the domain:

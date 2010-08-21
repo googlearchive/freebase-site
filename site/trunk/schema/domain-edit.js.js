@@ -14,22 +14,71 @@
         data: {id:domain_id},
         dataType: "json",
         success: function(data, status, xhr) {
-          if (data.code === "/api/status/error") {
-            alert(xhr.responseText);
-            return;
-          }
           var html = $(data.result.html);
-          $(document.body).append(html);
-          html.overlay({
-            close: ".button-cancel",
-            closeOnClick: false,
-            load: true,
-            mask: {
-	      color: '#000',
-	      loadSpeed: 200,
-	      opacity: 0.5
-	    }
-          });
+          var form = {
+            event_prefix: "fb.schema.domain.settings.",
+            ajax: {
+              url: acre.request.app_url + "/schema/domain/domain_settings_submit",
+              data: {id: domain_id}
+            },
+
+            init_form: de.init_domain_settings_form,
+            validate_form: de.validate_domain_settings_form,
+            submit_form: de.submit_domain_settings_form,
+
+            form: html
+          };
+
+          se.init_settings_form(form);
+        }
+      });
+    },
+
+    init_domain_settings_form: function(form) {
+      // enter key
+      $(":input:not(textarea)", form.form)
+        .keypress(function(e) {
+          if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
+            form.form.trigger(form.event_prefix + "submit");
+          }
+        });
+    },
+
+    validate_domain_settings_form: function(form) {
+      var name = $.trim($("input[name=name]", form.form).val());
+      var key =  $.trim($("input[name=key]", form.form).val()).toLowerCase();
+      if (name === "" || key === "") {
+        form.form.trigger(form.event_prefix + "error", "Name and Key are required");
+      }
+      else if (!(/^[a-z][a-z0-9]{3,}$/.test(key))) {
+        form.form.trigger(form.event_prefix + "error", "Key must be four or more alphanumeric characters, no spaces and not begin with a number");
+      }
+    },
+
+    submit_domain_settings_form: function(form) {
+      var name = $.trim($(":input[name=name]", form.row).val());
+      var key =  $.trim($("input[name=key]", form.form).val()).toLowerCase();
+
+      var data = {
+        name: name,
+        key: key,
+        namespace: $("input[name=namespace]", form.form).val(),
+        description: $("textarea[name=description]", form.form).val()
+      };
+
+      $.ajax({
+        url: form.ajax.url,
+        type: "POST",
+        dataType: "json",
+        data: $.extend(data, form.ajax.data),
+        success: function(data, status, xhr) {
+          if (data.code === "/api/status/error") {
+            return se.ajax_error_handler(xhr, form.form);
+          }
+          form.form.trigger(form.event_prefix + "success");
+        },
+        error: function(xhr) {
+          se.ajax_error_handler(xhr, null, form.form);
         }
       });
     },
@@ -195,7 +244,7 @@
       //form.row.find(".edit-row-loader").css({height: loading_height}).show();
 
       var name = $.trim($(":input[name=name]", form.row).val());
-      var key = $.trim($(":input[name=key]", form.row).val());
+      var key = $.trim($(":input[name=key]", form.row).val()).toLowerCase();
       var typehint = $(":input[name=typehint]", form.row);
       typehint = typehint.is(":checked") ? typehint.val() : "";
 

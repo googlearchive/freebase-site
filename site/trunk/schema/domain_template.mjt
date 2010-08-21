@@ -39,7 +39,7 @@
       <div class="page-meta">
 
         <span class="edit domain-settings">
-          <a href="javascript:void(0)" onclick="return freebase.dispatch(event, freebase.schema.domain.domain_settings, ['${c.domain.id}', true], this);">domain settings</a>
+          <a href="javascript:void(0)" onclick="return freebase.dispatch(event, freebase.schema.domain.domain_settings, ['${c.domain.id}'], this);">domain settings</a>
         </span>
 
         <h1>$c.domain.name</h1>

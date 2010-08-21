@@ -10,9 +10,22 @@ var queries = mf.require("queries");
 var api = {
 
   domain_settings_begin: function(args) {
-    return {
-      html: acre.markup.stringify(edit.domain_settings_form())
-    };
+    return queries.minimal_domain(args.id)
+      .then(function(domain) {
+        // choose the best key
+        var key = domain.key[0];
+        for (var i=0,l=domain.key.length; i<l; i++) {
+          var k = domain.key[i];
+          if ((k.namespace + "/" + k.value) === args.id) {
+            key = k;
+            break;
+          }
+        }
+        domain.key = key;
+        return {
+          html: acre.markup.stringify(edit.domain_settings_form(domain))
+        };
+      });
   },
 
   add_type_begin: function(args) {

@@ -61,7 +61,7 @@
   </tr>
 </acre:block>
 
-<acre:block def="domain_settings_form()">
+<acre:block def="domain_settings_form(domain)">
   <div class="modal">
     <div class="modal-inner">
       <h1 class="modal-title">Domain Settings</h1>
@@ -69,26 +69,27 @@
         <div class="form-group">
           <div class="form-row form-row-inline">
             <label class="form-label" for="domain-name">Name</label>
-            <input class="text-input" type="text" name="domain-name" value="" />
+            <input class="text-input" type="text" name="name" value="${domain.name}" />
             <span class="form-note">You can change this at any time</span>
           </div>
           <div class="form-row form-row-inline">
-            <label class="form-label" for="domain-key">Key</label>
-            <input class="text-input" type="text" name="domain-key" value="" />
+           <label class="form-label" for="domain-key">Key <span class="key">${domain.key.namespace}/</span></label>            
+            <input class="text-input" type="text" name="key" value="${domain.key.value}" />
+            <input type="hidden" name="namespace" value="${domain.key.namespace}" />
             <span class="form-note">
-              Four or more alphanumerica characters. No spaces.
+              Four or more alphanumeric characters. No spaces.
               <strong>Changing a key may break external apps that use this project</strong>
             </span>
           </div>
         </div>
         <div class="form-row">
           <label class="form-label">Description</label>
-          <textarea class="textarea" name="domain-description" rows="4">Lorem ipsum dolor...</textarea>
+          <textarea class="textarea" name="description" rows="4">${domain.blob || ""}</textarea>
         </div>
       </div>
     </div>
     <div class="modal-buttons">
-      <button class="button button-primary" type="submit">Save</button>
+      <button class="button button-submit button-primary" type="submit">Save</button>
       <button class="button button-cancel">Cancel</button>
     </div>
   </div>

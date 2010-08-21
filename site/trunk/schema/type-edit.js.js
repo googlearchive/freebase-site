@@ -230,7 +230,7 @@
       //form.row.find(".edit-row-loader").css({height: loading_height}).show();
 
       var name = $.trim($("input[name=name]", form.row).val());
-      var key =  $.trim($("input[name=key]", form.row).val());
+      var key =  $.trim($("input[name=key]", form.row).val()).toLowerCase();
       var expected_type = $("input[name=expected_type]", form.row).val();
       var unit = $("input[name=unit]", form.row).val();
       var description = $("input[name=description]", form.row).val();

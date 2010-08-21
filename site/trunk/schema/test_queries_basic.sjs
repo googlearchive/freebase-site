@@ -166,8 +166,8 @@ test("typediagram", function() {
 test("type_properties", function() {
   var result;
   q.type_properties("/base/slamdunk/player")
-    .then(function(props) {
-      result = props;
+    .then(function(type) {
+      result = type.properties;
     });
   acre.async.wait_on_results();
   ok(result);

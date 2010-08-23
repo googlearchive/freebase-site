@@ -8,7 +8,10 @@
     $("thead th:nth-child(4)", table)[0].count = 1;
 
     // Setup schema search tabset
-    var $schema_explorer_search_tabset = $("#schema-search > .section-tabset").tabs("#schema-search > .search-box");
+    var $schema_explorer_search_tabset = $("#schema-search > .section-tabset").tabs("#schema-search > .search-box", {
+      initialIndex: 1
+    });
+
 
     /*
         MQL_FILTERS are config parameters passed to respective
@@ -160,6 +163,7 @@
         $property_input.suggest(property_suggest_options);
       }
     });
+    
   };
 
   $(init);

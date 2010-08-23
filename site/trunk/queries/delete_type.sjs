@@ -40,7 +40,8 @@ function delete_type(type_id, user_id, dry_run, force) {
       var q = {
         guid: info.guid,
         type: {id: "/type/type", connect: "delete"},
-        "/type/type/domain": {id: info.domain.id, connect: "delete"}
+        "/type/type/domain": {id: info.domain.id, connect: "delete"},
+        "/dataworld/gardening_task/async_delete": {value:true, connect:"update"}
       };
       if (info.key.length) {
         q.key = [{namespace:k.namespace, value:k.value, connect: "delete"} for each (k in info.key)];
@@ -70,7 +71,8 @@ function undo(type_info) {
   var q = {
     guid: type_info.guid,
     type: {id: "/type/type", connect: "insert"},
-    "/type/type/domain": {id: type_info.domain.id, connect: "insert"}
+    "/type/type/domain": {id: type_info.domain.id, connect: "insert"},
+    "/dataworld/gardening_task/async_delete": {value:true, connect:"delete"}
   };
   if (type_info.key.length) {
     q.key = [{namespace:k.namespace, value:k.value, connect: "insert"} for each (k in type_info.key)];

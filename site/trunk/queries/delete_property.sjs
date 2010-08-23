@@ -48,7 +48,8 @@ function delete_property(prop_id, user_id, dry_run, force) {
       var q = {
         guid: info.guid,
         type: {id: "/type/property", connect: "delete"},
-        "/type/property/schema": {id: info.schema.id, connect:"delete"}
+        "/type/property/schema": {id: info.schema.id, connect:"delete"},
+        "/dataworld/gardening_task/async_delete": {value:true, connect:"update"}
       };
 
       if (info.key.length) {
@@ -94,7 +95,8 @@ function undo(prop_info) {
   var q = {
     guid: prop_info.guid,
     type: {id: "/type/property", connect: "insert"},
-    "/type/property/schema": {id: prop_info.schema.id, connect: "update"}
+    "/type/property/schema": {id: prop_info.schema.id, connect: "update"},
+    "/dataworld/gardening_task/async_delete": {value:true, connect:"delete"}
   };
   if (prop_info.key.length) {
     q.key = [{namespace:k.namespace, value:k.value, connect:"insert"} for each (k in prop_info.key)];

@@ -46,6 +46,10 @@ test("delete_property", function() {
 
     ok(result.expected_type.id === type2.id &&
        result.expected_type.connect === "deleted", "expected_type link deleted: " + type2.id);
+
+    ok(result["/dataworld/gardening_task/async_delete"].value === true &&
+       result["/dataworld/gardening_task/async_delete"].connect === "inserted",
+       "/dataworld/gardening_task/async_delete set");
   }
   finally {
     if (prop) h.delete_property(prop);
@@ -80,6 +84,10 @@ test("undo", function() {
     acre.async.wait_on_results();
     ok(result);
     ok(result.type.id === "/type/property" && result.type.connect === "inserted", JSON.stringify(result));
+
+    ok(result["/dataworld/gardening_task/async_delete"].value === true &&
+       result["/dataworld/gardening_task/async_delete"].connect === "deleted",
+       "/dataworld/gardening_task/async_delete unset");
   }
   finally {
     if (prop) h.delete_property(prop);

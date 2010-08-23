@@ -40,6 +40,10 @@ test("delete_type", function() {
 
     ok(result.domain.id === type.domain.id &&
        result.domain.connect === "deleted", "domain link deleted: " + type.domain.id);
+
+    ok(result["/dataworld/gardening_task/async_delete"].value === true &&
+       result["/dataworld/gardening_task/async_delete"].connect === "inserted",
+       "/dataworld/gardening_task/async_delete set");
   }
   finally {
     if (type) {
@@ -98,6 +102,10 @@ test("undo", function() {
     acre.async.wait_on_results();
     ok(result);
     ok(result.type.id === "/type/type" && result.type.connect === "inserted", JSON.stringify(result));
+
+    ok(result["/dataworld/gardening_task/async_delete"].value === true &&
+       result["/dataworld/gardening_task/async_delete"].connect === "deleted",
+       "/dataworld/gardening_task/async_delete unset");
   }
   finally {
     if (type) {

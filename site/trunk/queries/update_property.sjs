@@ -6,7 +6,7 @@ var validators = mf.require("validator", "validators");
 /**
  * Update an existing property values (name, key, expected_type, etc.)
  *
- * @param o:Object (required) - options specifying the updated values. @see validate_options
+ * @param o:Object (required) - options specifying the updated values.
  */
 function update_property(options) {
   var o;

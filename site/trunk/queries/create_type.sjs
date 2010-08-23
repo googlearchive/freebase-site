@@ -8,7 +8,7 @@ var validators = mf.require("validator", "validators");
 /**
  * Create a new type using the permission of the specified domain.
  *
- * @param o:Object (required) - options specifying the new type @see validate_options
+ * @param o:Object (required) - options specifying the new type.
  */
 function create_type(options) {
   var o;

@@ -11,6 +11,44 @@ function random() {
 random.CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
 
 /**
+ * Create a minimal domain in user_id namespace.
+ * Caller must be authenticated and have permission on user_id.
+ * @param user_id:String (required) - the user id of the current authenticated user.
+ * @param options:String (optional) - options to extend the create unconditional type clause.
+ */
+function create_domain(user_id, options) {
+  var name = "test_domain_" + random();
+  var q = {
+    id: null,
+    guid: null,
+    name: {value: name, lang:"/lang/en"},
+    key: {value: acre.freebase.mqlkey_quote(name), namespace: user_id},
+    type: {id: "/type/domain"},
+    create: "unconditional"
+  };
+  h.extend(q, options);
+  var domain = acre.freebase.mqlwrite(q, {use_permission_of: user_id}).result;
+  domain.name = domain.name.value;
+  return domain;
+};
+
+/**
+ * Delete test domain created by create_test_domain.
+ * Caller must be authenticated and have permission on domain.
+ * @param type:Object (required) - the domain returned by create_test_domain
+ */
+function delete_domain(domain) {
+  var q = {
+    guid: domain.guid,
+    key: {value: domain.key.value, namespace: domain.key.namespace, connect: "delete"},
+    type: {id: "/type/domain", connect: "delete"}
+  };
+  var deleted = acre.freebase.mqlwrite(q).result;
+  deleted.domain = deleted["/type/type/domain"];
+  return deleted;
+};
+
+/**
  * Create a minimal type in domain_id.
  * Caller must be authenticated and have permission on domain_id.
  * @param domain_id:String (required) - the domain id current authenticated user has permission on.

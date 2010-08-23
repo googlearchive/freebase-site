@@ -7,7 +7,7 @@ var validators = mf.require("validator", "validators");
 /**
  * Create a new property using the permission of the specified type.
  *
- * @param o:Object (required) - options specifying the new property @see validate_options
+ * @param o:Object (required) - options specifying the new property.
  */
 function create_property(options) {
   var o;

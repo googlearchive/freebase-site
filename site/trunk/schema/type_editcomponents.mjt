@@ -164,11 +164,11 @@
         <div class="form-group">
           <div class="form-row form-row-inline">
             <label class="form-label" for="type-name">Name</label>
-           <input class="text-input" type="text" name="name" value="${type.name}" />
+            <input class="text-input" type="text" name="name" value="${type.name}" />
             <span class="form-note">You can change this at any time</span>
           </div>
           <div class="form-row form-row-inline">
-           <label class="form-label" for="key">Key <span class="key">${type.key.namespace}/</span></label>   
+            <label class="form-label" for="key">Key <span class="key">${type.key.namespace}/</span></label>   
             <input type="hidden" name="namespace" value="${type.key.namespace}" />
             <input class="text-input" type="text" name="key" value="${type.key.value}"/>              
             <span class="form-note">
@@ -188,13 +188,6 @@
           </label>
           <span class="form-note">Constrain this type to a specific list of topics <a href="http://wiki.freebase.com/wiki/Enumerated_type" rel="help external">Learn more &raquo;</a></span>
         </div>
-        <!--
-        <div class="form-row">
-          <label class="form-label">Classification</label>
-          <select name="type-kind"></select>
-          <span class="form-note">Tell developers what role this type plays in your schema</span>
-        </div>
-        -->
       </div>
     </div>
     <div class="modal-buttons">

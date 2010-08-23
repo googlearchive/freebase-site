@@ -156,7 +156,7 @@
   </table>  
 </acre:block>
 
-<acre:block def="type_settings_form()">
+<acre:block def="type_settings_form(type)">
   <div class="modal">
     <div class="modal-inner">
       <h1 class="modal-title">Type Settings</h1>
@@ -164,12 +164,13 @@
         <div class="form-group">
           <div class="form-row form-row-inline">
             <label class="form-label" for="type-name">Name</label>
-            <input class="text-input" type="text" name="type-name" value="" />
+           <input class="text-input" type="text" name="name" value="${type.name}" />
             <span class="form-note">You can change this at any time</span>
           </div>
           <div class="form-row form-row-inline">
-            <label class="form-label" for="domain-key">Key <span class="key">/domainpath/</span></label>
-            <input class="text-input" type="text" name="type-key" value="" />
+           <label class="form-label" for="key">Key <span class="key">${type.key.namespace}/</span></label>   
+            <input type="hidden" name="namespace" value="${type.key.namespace}" />
+            <input class="text-input" type="text" name="key" value="${type.key.value}"/>              
             <span class="form-note">
               Four or more alphanumerica characters. No spaces.
               <strong>Changing a key may break external apps that use this project</strong>
@@ -178,21 +179,26 @@
         </div>
         <div class="form-row">
           <label class="form-label">Description</label>
-          <textarea class="textarea" name="domain-description" rows="4">Lorem ipsum dolor...</textarea>
+          <textarea class="textarea" name="description" rows="4">${type.blob || ""}</textarea>
         </div>
         <div class="form-row">
-          <label class="form-label" for="type-enumerated"><input type="checkbox" name="type-enumerated" value="" /> Enumerated </label>
+          <label class="form-label" for="typehint">
+            <input type="checkbox" name="typehint" value="enumeration" acre:attrs="type.enumeration?{checked:'checked'}:{}"/>
+            Enumerated
+          </label>
           <span class="form-note">Constrain this type to a specific list of topics <a href="http://wiki.freebase.com/wiki/Enumerated_type" rel="help external">Learn more &raquo;</a></span>
         </div>
+        <!--
         <div class="form-row">
           <label class="form-label">Classification</label>
           <select name="type-kind"></select>
           <span class="form-note">Tell developers what role this type plays in your schema</span>
         </div>
+        -->
       </div>
     </div>
     <div class="modal-buttons">
-      <button class="button button-primary" type="submit">Save</button>
+      <button class="button button-submit button-primary" type="submit">Save</button>
       <button class="button button-cancel">Cancel</button>
     </div>
   </div>

@@ -13,25 +13,83 @@
         data: {id:type_id},
         dataType: "json",
         success: function(data, status, xhr) {
-          if (data.code === "/api/status/error") {
-            alert(xhr.responseText);
-            return;
-          }
           var html = $(data.result.html);
-          $(document.body).append(html);
-          html.overlay({
-            close: ".button-cancel",
-            closeOnClick: false,
-            load: true,
-            mask: {
-	      color: '#000',
-	      loadSpeed: 200,
-	      opacity: 0.5
-	    }
-          });
+          var form = {
+            event_prefix: "fb.schema.type.settings.",
+            ajax: {
+              url: acre.request.app_url + "/schema/type/type_settings_submit",
+              data: {id: type_id}
+            },
+
+            init_form: te.init_type_settings_form,
+            validate_form: te.validate_type_settings_form,
+            submit_form: te.submit_type_settings_form,
+
+            form: html
+          };
+
+          se.init_settings_form(form);
+
+          form.form
+            .bind(form.event_prefix + "success", function(e, data) {
+              window.location = data.location;
+            });
         }
       });
     },
+
+    init_type_settings_form: function(form) {
+      // enter key
+      $(":input:not(textarea)", form.form)
+        .keypress(function(e) {
+          if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
+            form.form.trigger(form.event_prefix + "submit");
+          }
+        });
+    },
+
+    validate_type_settings_form: function(form) {
+      var name = $.trim($("input[name=name]", form.form).val());
+      var key =  $.trim($("input[name=key]", form.form).val()).toLowerCase();
+      if (name === "" || key === "") {
+        form.form.trigger(form.event_prefix + "error", "Name and Key are required");
+      }
+      else if (!(/^[a-z][a-z0-9_\-]{3,}$/.test(key))) {
+        form.form.trigger(form.event_prefix + "error", "Key must be four or more alphanumeric characters, no spaces and not begin with a number");
+      }
+    },
+
+    submit_type_settings_form: function(form) {
+      var name = $.trim($(":input[name=name]", form.row).val());
+      var key =  $.trim($("input[name=key]", form.form).val()).toLowerCase();
+      var typehint = $(":input[name=typehint]", form.row);
+      typehint = typehint.is(":checked") ? typehint.val() : "";
+
+      var data = {
+        name: name,
+        key: key,
+        domain: $("input[name=namespace]", form.form).val(),
+        description: $("textarea[name=description]", form.form).val(),
+        typehint: typehint
+      };
+
+      $.ajax({
+        url: form.ajax.url,
+        type: "POST",
+        dataType: "json",
+        data: $.extend(data, form.ajax.data),
+        success: function(data, status, xhr) {
+          if (data.code === "/api/status/error") {
+            return se.ajax_error_handler(xhr, null, form.form);
+          }
+          form.form.trigger(form.event_prefix + "success", data.result);
+        },
+        error: function(xhr) {
+          se.ajax_error_handler(xhr, null, form.form);
+        }
+      });
+    },
+
 
     /**
      * retrieve add_property form (ajax).

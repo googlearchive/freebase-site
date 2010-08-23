@@ -6,6 +6,7 @@ var edit = mf.require("type_editcomponents");
 var create_property = mf.require("queries", "create_property");
 var delete_property = mf.require("queries", "delete_property");
 var update_property = mf.require("queries", "update_property");
+var update_type = mf.require("queries", "update_type");
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 
@@ -38,9 +39,32 @@ var api = {
   },
 
   type_settings_begin: function(args) {
-    return {
-      html: acre.markup.stringify(edit.type_settings_form())
-    };
+    return queries.minimal_type(args.id)
+      .then(function(type) {
+        // choose the best key
+        var key = type.key[0];
+        for (var i=0,l=type.key.length; i<l; i++) {
+          var k = type.key[i];
+          if (k.namespace === type.domain.id) {
+            key = k;
+            break;
+          }
+        }
+        type.key = key;
+        return {
+          html: acre.markup.stringify(edit.type_settings_form(type))
+        };
+      });
+  },
+
+  type_settings_submit: function(args) {
+    var update_type_options = h.extend({}, args, {mqlkey_quote:true, empty_delete:true});
+    return update_type.update_type(update_type_options)
+      .then(function(updated_id) {
+         return {
+          location: h.url_for("schema", "type", null, updated_id)
+        };
+      });
   },
 
   add_property_begin: function(args) {

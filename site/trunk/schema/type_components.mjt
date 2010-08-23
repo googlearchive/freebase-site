@@ -105,22 +105,11 @@
 <acre:block def="incoming_props_tbody(props)">
   <tbody>
     <tr>
-      <th class="column-header" scope="col">Property</th>              
-      <th class="column-header" scope="col">Originating Type</th>
+      <th class="column-header" scope="col">Originating Type</th>              
+      <th class="column-header" scope="col">Property</th>
     </tr>
     <tr acre:for="prop in props" class="hoverable">
       <td class="odd">
-        <div>
-          <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
-          <a href="javascript:void(0);" class="row-menu-trigger">+</a>
-          <ul class="row-menu tooltip">
-            <li class="row-menu-item"><a href="${h.url_for('schema', 'property', null, prop.id)}">View property details</a></li>
-            <li class="row-menu-item last"><a href="#">Build query</a></li>
-          </ul>          
-        </div>
-        <span class="key">$prop.id</span>      
-      </td>
-      <td class="even">
         <div>
           <a href="${h.url_for('schema', 'type', null, prop.schema.id)}">$prop.schema.name</a>
           <a href="javascript:void(0);" class="row-menu-trigger">+</a>
@@ -131,6 +120,17 @@
           </ul>          
         </div>
         <span class="key">$prop.schema.id</span>      
+      </td>
+      <td class="even">
+        <div>
+          <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
+          <a href="javascript:void(0);" class="row-menu-trigger">+</a>
+          <ul class="row-menu tooltip">
+            <li class="row-menu-item"><a href="${h.url_for('schema', 'property', null, prop.id)}">View property details</a></li>
+            <li class="row-menu-item last"><a href="#">Build query</a></li>
+          </ul>          
+        </div>
+        <span class="key">$prop.id</span>      
       </td>
     </tr>
   </tbody>  

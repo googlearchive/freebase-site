@@ -4,7 +4,6 @@
 
   var de = fb.schema.domain.edit = {
 
-
     /**
      * domain settings form
      */
@@ -30,6 +29,11 @@
           };
 
           se.init_settings_form(form);
+
+          form.form
+            .bind(form.event_prefix + "success", function(e, data) {
+              window.location = data.location;
+            });
         }
       });
     },
@@ -50,7 +54,7 @@
       if (name === "" || key === "") {
         form.form.trigger(form.event_prefix + "error", "Name and Key are required");
       }
-      else if (!(/^[a-z][a-z0-9]{3,}$/.test(key))) {
+      else if (!(/^[a-z][a-z0-9_\-]{3,}$/.test(key))) {
         form.form.trigger(form.event_prefix + "error", "Key must be four or more alphanumeric characters, no spaces and not begin with a number");
       }
     },
@@ -73,9 +77,9 @@
         data: $.extend(data, form.ajax.data),
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
-            return se.ajax_error_handler(xhr, form.form);
+            return se.ajax_error_handler(xhr, null, form.form);
           }
-          form.form.trigger(form.event_prefix + "success");
+          form.form.trigger(form.event_prefix + "success", data.result);
         },
         error: function(xhr) {
           se.ajax_error_handler(xhr, null, form.form);

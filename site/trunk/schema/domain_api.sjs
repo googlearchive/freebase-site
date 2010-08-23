@@ -2,10 +2,12 @@ var mf = acre.require("MANIFEST").MF;
 var h = mf.require("core", "helpers");
 var edit = mf.require("domain_editcomponents");
 var dc = mf.require("domain_components");
+var update_domain = mf.require("queries", "update_domain");
 var create_type = mf.require("queries", "create_type");
 var delete_type = mf.require("queries", "delete_type");
 var update_type = mf.require("queries", "update_type");
 var queries = mf.require("queries");
+var freebase = mf.require("promise", "apis").freebase;
 
 var api = {
 
@@ -22,8 +24,33 @@ var api = {
           }
         }
         domain.key = key;
+
+        // does the user have permission to change the key?
+        var q = {
+          id: key.namespace,
+          permission: [{permits: [{member: {id: acre.freebase.get_user_info().id}}]}]
+        };
+        return freebase.mqlread(q)
+          .then(function(env) {
+              if (env.result) {
+                domain.key.permitted = true;
+              }
+              return domain;
+            });
+      })
+      .then(function(domain) {
         return {
           html: acre.markup.stringify(edit.domain_settings_form(domain))
+        };
+      });
+  },
+
+  domain_settings_submit: function(args) {
+    var update_domain_options = h.extend({}, args, {mqlkey_quote:true, empty_delete:true});
+    return update_domain.update_domain(update_domain_options)
+      .then(function(updated_id) {
+        return {
+          location: h.url_for("schema", "domain", null, updated_id)
         };
       });
   },
@@ -102,6 +129,9 @@ var api = {
 // required args and authorization
 api.domain_settings_begin.args = ["id"]; // domain id
 api.domain_settings_begin.auth = true;
+
+api.domain_settings_submit.args = ["id", "name", "namespace", "key"]; // domain id
+api.domain_settings_submit.auth = true;
 
 api.add_type_begin.args = ["id"]; // domain id, mediator (optional)
 api.add_type_begin.auth = true;

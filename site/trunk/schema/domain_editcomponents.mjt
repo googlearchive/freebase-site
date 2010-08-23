@@ -73,13 +73,22 @@
             <span class="form-note">You can change this at any time</span>
           </div>
           <div class="form-row form-row-inline">
-           <label class="form-label" for="domain-key">Key <span class="key">${domain.key.namespace}/</span></label>            
-            <input class="text-input" type="text" name="key" value="${domain.key.value}" />
+            <label class="form-label" for="domain-key">Key <span class="key">${domain.key.namespace}${domain.key.namespace === "/" ? "" : "/"}</span></label>   
             <input type="hidden" name="namespace" value="${domain.key.namespace}" />
-            <span class="form-note">
-              Four or more alphanumeric characters. No spaces.
-              <strong>Changing a key may break external apps that use this project</strong>
-            </span>
+            <acre:block if="domain.key.permitted">
+              <input class="text-input" type="text" name="key" value="${domain.key.value}"/>              
+              <span class="form-note">
+                Four or more alphanumeric characters. No spaces.
+                <strong>Changing a key may break external apps that use this project</strong>
+              </span>
+            </acre:block>
+            <acre:block else="">
+              <input class="text-input" type="text" name="key" value="${domain.key.value}" disabled="disabled"/>            
+              <span class="form-note">
+                You do not permission to update this key in <span class="key">${domain.key.namespace}</span>.
+                Please contact a freebase administrator.
+              </span>              
+            </acre:block>
           </div>
         </div>
         <div class="form-row">

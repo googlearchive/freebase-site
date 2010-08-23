@@ -51,9 +51,6 @@
 <acre:block def="content_body()">
   <div class="page-meta">
 
-    <span class="edit type-settings">
-      <a href="javascript:void(0)" onclick="return freebase.dispatch(event, freebase.schema.type.type_settings, ['${c.type.id}'], this);">type settings</a>
-    </span>
 
     <h1>
       $c.type.name
@@ -75,11 +72,18 @@
         </acre:block>
       </span>
     </div>
-    <span class="creation-timestamp">
-      ${image.user_image_small(c.type.creator)}
-      Created by <a href="${acre.freebase.service_url}/view${c.type.creator.id}" title="View user profile">$c.type.creator.name</a> 
-      on <time class="published" datetime="${c.type.timestamp}">$c.type.date</time>
-    </span>    
+    <div class="admin-toolbox">
+      <span class="edit type-settings">
+        <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.type_settings, ['${c.type.id}'], this);">
+          <span class="edit-icon">Type Settings</span>
+        </a>
+      </span>
+      <span class="creation-timestamp">
+        ${image.user_image_small(c.type.creator)}
+        Created by <a href="${acre.freebase.service_url}/view${c.type.creator.id}" title="View user profile">$c.type.creator.name</a> 
+        on <time class="published" datetime="${c.type.timestamp}">$c.type.date</time>
+      </span>    
+    </div>
     <div id="description" acre:if="c.type.blurb">
       <p class="blurb">
         $c.type.blurb&hellip;

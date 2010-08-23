@@ -269,10 +269,13 @@ h1 .flags {
     color: #666;
 }
 
-.creation-timestamp {
+.admin-toolbox {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 0; right: 0;
+}
+
+.creation-timestamp {
+    float: left;
     background: #e4e6e7;
     padding: 0 0.7em;
     font-size: 1.2em;
@@ -281,6 +284,13 @@ h1 .flags {
     -webkit-border-bottom-left-radius: 5px;
     -moz-border-radius-bottomleft: 5px;
     border-bottom-left-radius: 5px;
+}
+
+.admin-toolbox .edit {
+    float: left;
+    font-size: 11px;
+    line-height: 3.5;
+    padding-right: 1em;
 }
 
 .creation-timestamp .user-image {
@@ -889,11 +899,19 @@ Expected Type Suggest Dialog
     position: relative;
 }
 
+.fbs-reset .fbs-status {
+    font-size: 11px;
+}
+
 .fbs-reset .ect-menu-title {
     display: block;
     font-size: 12px;
     padding-top: 10px;
     margin-bottom: 10px;
+}
+
+.fb-included-type {
+    font-size: 1.2em;
 }
 
 .fbs-reset .ect-menu-item {

@@ -1,5 +1,3 @@
-
-
 (function($, fb) {
 
   var schema = fb.schema = {

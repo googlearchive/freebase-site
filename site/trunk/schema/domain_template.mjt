@@ -38,20 +38,22 @@
       
       <div class="page-meta">
 
-        <span class="edit domain-settings">
-          <a href="javascript:void(0)" onclick="return freebase.dispatch(event, freebase.schema.domain.domain_settings, ['${c.domain.id}'], this);">domain settings</a>
-        </span>
-
         <h1>$c.domain.name</h1>
         <div class="meta">
-            <span class="key"><strong>Key:</strong> $c.domain.id</span>        
+          <span class="key"><strong>Key:</strong> $c.domain.id</span>        
         </div>        
-        <span class="creation-timestamp">
-         
-         ${image.user_image_small(c.domain.creator)}
-          Created by <a href="${h.freebase_url('/view' + c.domain.creator.id)}" title="View user profile">${c.domain.creator.name}</a> 
-          on <time class="published" datetime="${c.domain.timestamp}">$c.domain.date</time>
-        </span>
+        <div class="admin-toolbox">
+          <span class="edit domain-settings">
+            <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.domain_settings, ['${c.domain.id}', true], this);">
+              <span class="edit-icon">Project Settings</span>
+            </a>
+          </span>
+          <span class="creation-timestamp">
+            ${image.user_image_small(c.domain.creator)}
+            Created by <a href="${h.freebase_url('/view' + c.domain.creator.id)}" title="View user profile">${c.domain.creator.name}</a> 
+            on <time class="published" datetime="${c.domain.timestamp}">$c.domain.date</time>
+          </span>
+        </div>
         <div id="description" acre:if="c.domain.blurb && c.domain.blob">
           <p class="blurb">
             $c.domain.blurb

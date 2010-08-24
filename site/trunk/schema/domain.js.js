@@ -30,14 +30,14 @@
       return false;
     },
 
-    add_type: function(e, domain_id, mediator) {
+    add_type: function(e, domain_id, role) {
       var trigger = $(this);
       if (trigger.is(".editing")) { // are we already editing?
         return false;
       }
       trigger.addClass("editing");
       fb.get_script(acre.request.app_url + "/schema/MANIFEST/domain-edit.mf.js", function() {
-        d.edit.add_type_begin(trigger, domain_id, mediator);
+        d.edit.add_type_begin(trigger, domain_id, role);
       });
       return false;
     },

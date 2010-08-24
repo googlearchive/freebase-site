@@ -74,9 +74,11 @@ test("user_domains", function() {
 
 
 test("domain", function() {
-  function assert_type(type, mediator) {
-    assert_keys(["name", "id", "properties", "instance_count", "blurb", "mediator", "enumeration"], type, true);
-    equal(type["mediator"], mediator);
+  function assert_type(type, role) {
+    assert_keys(["name", "id", "properties", "instance_count", "blurb"], type, true);
+    if (role) {
+      equal(type.role, role);
+    }
   };
 
   var result;
@@ -87,17 +89,24 @@ test("domain", function() {
   acre.async.wait_on_results();
   ok(result);
   assert_keys(["id", "name", "creator",  "owners", "timestamp", "date",
-               "blurb", "blob", "types", "mediator:types"], result, true);
+               "blurb", "blob", "types", "mediator:types", "cvt:types"], result, true);
   // regular types
   ok(result.types && result.types.length);
   result.types.forEach(function(type) {
-    assert_type(type, false);
+    assert_type(type);
   });
   // mediators
   var mediators = result["mediator:types"];
   if (mediators && mediators.length) {
     mediators.forEach(function(mediator) {
-      assert_type(mediator, true);
+      assert_type(mediator, "mediator");
+    });
+  }
+  // cvts
+  var cvts = result["cvt:types"];
+  if (cvts && cvts.length) {
+    cvts.forEach(function(cvt) {
+      assert_type(cvt, "cvt");
     });
   }
 });
@@ -107,13 +116,13 @@ function assert_prop(prop) {
                "tip", "disambiguator", "display_none"], prop, true);
   assert_keys(["unique", "unit", "master_property", "reverse_property"], prop);
   if (prop.expected_type && typeof prop.expected_type === "object") {
-    assert_keys(["mediator"], prop.expected_type);
+    assert_keys(["role"], prop.expected_type);
   }
 }
 
 function assert_type(type) {
   assert_keys(["id", "name", "domain",
-               "mediator", "enumeration", "included_types",
+               "role", "included_types",
                "creator", "timestamp", "date",
                "blurb", "blob",
                "instance_count",

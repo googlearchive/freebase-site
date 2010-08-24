@@ -8,15 +8,8 @@ function domains(options) {
     guid: null,
     name: null,
     type: "/type/domain",
-    key: [{
-      namespace: "/",
-      limit: 0
-    }],
-    types: {
-      "id": null,
-      type: "/type/type",
-      "return": "count"
-    }
+    key: [{namespace: "/", limit: 0}],
+    types: {"id": null, type: "/type/type", "return": "count"}
   }, options)];
 };
 
@@ -27,55 +20,21 @@ function domain(options) {
     name: null,
     type: "/type/domain",
     timestamp: null,
-    key: [{
-      value: null,
-      namespace: null
-    }],
+    key: [{value: null, namespace: null}],
     creator: qh.user_clause(),
-    owners: [{
-      member: [qh.user_clause()]
-    }],
+    owners: [{member: [qh.user_clause()]}],
     "/common/topic/article": qh.article_clause(true),
-    types: [{ // non-mediator types
+    types: [{
+      optional: true,
       id: null,
       name: null,
       type: "/type/type",
       "/common/topic/article": qh.article_clause(true),
+      properties: {optional: true, id: null, type: "/type/property", "return": "count"},
+      "/freebase/type_hints/role": {optional: true, id: null},
+      "/freebase/type_hints/mediator": null,
       "/freebase/type_hints/enumeration": null,
-      "/freebase/type_hints/mediator": {
-        value: true,
-        optional: "forbidden",
-        limit: 0
-      },
-      "!/freebase/domain_profile/base_type": {
-        id: null,
-        optional: "forbidden",
-        limit: 0
-      },
-      properties: {
-        id: null,
-        type: "/type/property",
-        "return": "count",
-        optional: true
-      },
-      optional: true,
-      limit: 1000
-    }],
-    "mediator:types": [{ // mediator types
-      id: null,
-      name: null,
-      type: "/type/type",
-      "/common/topic/article": qh.article_clause(true),
-      "/freebase/type_hints/mediator": true,
-      "/freebase/type_hints/enumeration": null,
-      properties: {
-        id: null,
-        type: "/type/property",
-        "return": "count",
-        optional: true
-      },
-      optional: true,
-      limit: 1000
+      "!/freebase/domain_profile/base_type": {optional: "forbidden", id: null, limit: 0}
     }]
   }, options);
 };
@@ -87,30 +46,20 @@ function type(options) {
     name: null,
     type: "/type/type",
     timestamp: null,
-    key: [{
-      value: null,
-      namespace: null
-    }],
+    key: [{value: null, namespace: null}],
     creator: qh.user_clause(),
     "/common/topic/article": qh.article_clause(true),
-    domain: {
-      id: null,
-      name: null,
-      type: "/type/domain"
-    },
+    domain: {id: null, name: null, type: "/type/domain"},
+    "/freebase/type_hints/role": {optional: true, id: null},
     "/freebase/type_hints/mediator": null,
     "/freebase/type_hints/enumeration": null,
     "/freebase/type_hints/included_types": [{
+      optional: true,
       id: null,
       name: null,
-      optional: true,
       index: null,
       sort: "index",
-      "!/freebase/domain_profile/base_type": {
-        id: null,
-        optional: "forbidden",
-        limit: 0
-      }
+      "!/freebase/domain_profile/base_type": {optional: "forbidden", id: null, limit: 0}
     }],
     properties: [property({optional: true, index: null, sort: "index"})]
   }, options);
@@ -122,52 +71,41 @@ function property(options) {
     guid: null,
     name: null,
     type: "/type/property",
-    key: [{
-      namespace: null,
-      value: null
-    }],
+    key: [{namespace: null, value: null}],
     expected_type: {
+      optional: true,
       id: null,
       name: null,
       type: "/type/type",
+      "/freebase/type_hints/role": {optional: true, id: null},
       "/freebase/type_hints/mediator": null,
-      optional:true
+      "/freebase/type_hints/enumeration": null
     },
     master_property: {
+      optional: true,
       id: null,
       name: null,
       type: "/type/property",
-      schema: {
-        id: null,
-        name: null
-      },
-      optional: true
+      schema: {id: null, name: null}
     },
     reverse_property: {
+      optional: true,
       id: null,
       name: null,
       type: "/type/property",
-      schema: {
-        id: null,
-        name: null
-      },
-      optional: true
+      schema: {id: null, name: null}
     },
-    delegated: {
-      id: null,
-      name: null,
-      optional: true
-    },
+    delegated: {optional: true, id: null, name: null},
     unit: {
+        optional: true,
         id: null,
         name: null,
-        "/freebase/unit_profile/abbreviation": null,
-        optional: true
+        "/freebase/unit_profile/abbreviation": null
     },
+    "unique": null,
     "/freebase/property_hints/disambiguator": null,
     "/freebase/property_hints/display_none": null,
-    "/freebase/documented_object/tip": null,
-    "unique":   null
+    "/freebase/documented_object/tip": null
   }, options);
 };
 

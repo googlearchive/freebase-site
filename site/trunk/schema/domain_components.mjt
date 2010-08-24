@@ -31,7 +31,7 @@
     <td class="even numeric"><a href="${acre.freebase.service_url}/view${type.id}">${h.commafy(type.instance_count)}</a></td>
     <td class="odd description">
       <p>$type.blurb</p>
-      <span acre:if="type.enumeration" class="property-meta">Enumerated</span>
+      <span acre:if="type.role === 'enumeration'" class="property-meta">Enumerated</span>
     </td>
   </tr>
 </acre:block>

@@ -71,14 +71,14 @@ test("update_type key", function() {
 });
 
 
-test("update_type typehint", function() {
+test("update_type mediator", function() {
   var type = h.create_type(user_domain, {"/freebase/type_hints/included_types": {id: "/common/topic"}});
   try {
     var updated;
     update_type({
       domain: user_domain,
       id: type.id,
-      typehint: "mediator"
+      role: "mediator"
     })
     .then(function(id) {
       updated = id;
@@ -88,11 +88,14 @@ test("update_type typehint", function() {
 
     var result = acre.freebase.mqlread({
       id:updated,
-      "/freebase/type_hints/mediator":null,
-      "/freebase/type_hints/included_types":[]
+      "/freebase/type_hints/mediator": null,
+      "/freebase/type_hints/role": {optional:true, id: null},
+      "/freebase/type_hints/included_types": []
     }).result;
     ok(result["/freebase/type_hints/mediator"], "updated as mediator");
-    ok(![id for each (id in result["/freebase/type_hints/included_types"])].length, "/common/topic is not an included_type");
+    equal(result["/freebase/type_hints/role"].id, "/freebase/type_roles/mediator");
+    var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
+    ok(!common_topic.length);
   }
   finally {
     if (type) {
@@ -101,6 +104,72 @@ test("update_type typehint", function() {
   }
 });
 
+test("update_type cvt", function() {
+  var type = h.create_type(user_domain, {"/freebase/type_hints/included_types": {id: "/common/topic"}});
+  try {
+    var updated;
+    update_type({
+      domain: user_domain,
+      id: type.id,
+      role: "cvt"
+    })
+    .then(function(id) {
+      updated = id;
+    });
+    acre.async.wait_on_results();
+    ok(updated, updated);
+
+    var result = acre.freebase.mqlread({
+      id:updated,
+      "/freebase/type_hints/mediator": null,
+      "/freebase/type_hints/role": {optional:true, id: null},
+      "/freebase/type_hints/included_types": []
+    }).result;
+    ok(result["/freebase/type_hints/mediator"], "updated as cvt");
+    equal(result["/freebase/type_hints/role"].id, "/freebase/type_roles/cvt");
+    var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
+    ok(!common_topic.length);
+  }
+  finally {
+    if (type) {
+      h.delete_type(type);
+    }
+  }
+});
+
+
+test("update_type enumeration", function() {
+  var type = h.create_type(user_domain);
+  try {
+    var updated;
+    update_type({
+      domain: user_domain,
+      id: type.id,
+      role: "enumeration"
+    })
+    .then(function(id) {
+      updated = id;
+    });
+    acre.async.wait_on_results();
+    ok(updated, updated);
+
+    var result = acre.freebase.mqlread({
+      id:updated,
+      "/freebase/type_hints/enumeration": null,
+      "/freebase/type_hints/role": {optional:true, id: null},
+      "/freebase/type_hints/included_types": []
+    }).result;
+    ok(result["/freebase/type_hints/enumeration"], "updated as enumeration");
+    equal(result["/freebase/type_hints/role"].id, "/freebase/type_roles/enumeration");
+    var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
+    ok(common_topic.length);
+  }
+  finally {
+    if (type) {
+      h.delete_type(type);
+    }
+  }
+});
 
 test("update_type description", function() {
   var type = h.create_type(user_domain);

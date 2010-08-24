@@ -18,7 +18,7 @@ function create_type(options) {
       name: validators.String(options.name, {required:true}).to_js(),
       key: validators.String(options.key, {required:true}).to_js(),
       description: validators.String(options.description, {if_empty:""}).to_js(),
-      typehint: validators.OneOf(options.typehint, {oneof:["enumeration", "mediator"], if_empty:""}).to_js(),
+      role: validators.OneOf(options.role, {oneof:["mediator", "cvt", "enumeration"], if_empty:""}).to_js(),
       mqlkey_quote: validators.StringBool(options.mqlkey_quote, {if_empty:false}).to_js(),
       lang: validators.MqlId(options.lang, {if_empty:"/lang/en"}).to_js()
     };
@@ -64,17 +64,37 @@ function create_type(options) {
           connect: "update"
         }
       };
-      if (o.typehint === "mediator") {
-        // add /freebase/type_profile/mediator
+      if (o.role === "mediator") {
+        // need to update both /freebase/type_hints/mediator and /freebase/type_hints/role
         q["/freebase/type_hints/mediator"] = {
           value: true,
           connect: "update"
         };
+        q["/freebase/type_hints/role"] = {
+          id: "/freebase/type_roles/mediator",
+          connect: "update"
+        };
+      }
+      else if (o.role === "cvt") {
+        // need to update both /freebase/type_hints/mediator and /freebase/type_hints/role
+        q["/freebase/type_hints/mediator"] = {
+          value: true,
+          connect: "update"
+        };
+        q["/freebase/type_hints/role"] = {
+          id: "/freebase/type_roles/cvt",
+          connect: "update"
+        };
       }
       else {
-        if (o.typehint === "enumeration") {
+        if (o.role === "enumeration") {
+          // need to update both /freebase/type_hints/enumeration and /freebase/type_hints/role
           q["/freebase/type_hints/enumeration"] = {
             value: true,
+            connect: "update"
+          };
+          q["/freebase/type_hints/role"] = {
+            id: "/freebase/type_roles/enumeration",
             connect: "update"
           };
         }

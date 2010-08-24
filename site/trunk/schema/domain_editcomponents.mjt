@@ -1,4 +1,4 @@
-<acre:block def="add_type_form(domain_id, mediator, type)">
+<acre:block def="add_type_form(domain_id, role, type)">
   <table class="edit-form clear">
     <tbody>
       <tr class="edit-row">
@@ -26,11 +26,14 @@
               <textarea name="description" class="textarea" rows="3">${type?type.blob:""}</textarea>
             </label>
             <div class="fb-type-display">
-              <acre:block if="mediator">
-                <label for="typehint" class="boolean-field"><input type="checkbox" name="typehint" value="mediator" disabled="disabled" checked="checked">Mediator</label>
+              <acre:block if="role === 'mediator'">
+                <label for="role" class="boolean-field"><input type="checkbox" name="role" value="mediator" disabled="disabled" checked="checked">Mediator</label>
+              </acre:block>
+              <acre:block elif="role === 'cvt'">
+                <label for="role" class="boolean-field"><input type="checkbox" name="role" value="cvt" disabled="disabled" checked="checked">Compound Value Type</label>
               </acre:block>
               <acre:block else="">
-                <label for="typehint" class="boolean-field"><input type="checkbox" name="typehint" value="enumeration" acre:attrs="(type && type.enumeration)?{checked:'checked'}:{}">Enumerated</label>
+                <label for="role" class="boolean-field"><input type="checkbox" name="role" value="enumeration" acre:attrs="(type && type.role === 'enumeration')?{checked:'checked'}:{}">Enumerated</label>
               </acre:block>
             </div>          
           </div>        
@@ -48,7 +51,7 @@
 </acre:block>
 
 <acre:block def="edit_type_form(type)">
-  ${add_type_form(type.domain.id, type.mediator, type)}
+  ${add_type_form(type.domain.id, type.role, type)}
 </acre:block>
 
 <acre:block def="delete_type_result(type_info)">

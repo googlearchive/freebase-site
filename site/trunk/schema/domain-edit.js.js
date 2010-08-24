@@ -90,10 +90,10 @@
     /**
      * retrieve add_type form (ajax).
      */
-    add_type_begin: function(trigger, domain_id, mediator) {
+    add_type_begin: function(trigger, domain_id, role) {
       $.ajax({
         url: acre.request.app_url + "/schema/domain/add_type_begin",
-        data: {id: domain_id, mediator: mediator ? 1 : 0},
+        data: {id: domain_id, role: role},
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
@@ -197,14 +197,14 @@
     init_type_form: function(form) {
       var name = $(":input[name=name]", form.row);
       var key =  $(":input[name=key]", form.row);
-      var typehint = $(":input[name=typehint]", form.row);
+      var role = $(":input[name=role]", form.row);
       var description = $(":input[name=description]", form.row);
 
       if (form.mode === "add") {
         name.val("");
         key.val("").data("changed", false);
-        if (!typehint.is(":disabled")) {
-          typehint.removeAttr("checked");
+        if (!role.is(":disabled")) {
+          role.removeAttr("checked");
         }
         description.val("");
       }
@@ -249,14 +249,14 @@
 
       var name = $.trim($(":input[name=name]", form.row).val());
       var key = $.trim($(":input[name=key]", form.row).val()).toLowerCase();
-      var typehint = $(":input[name=typehint]", form.row);
-      typehint = typehint.is(":checked") ? typehint.val() : "";
+      var role = $(":input[name=role]", form.row);
+      role = role.is(":checked") ? role.val() : "";
 
       var data = {
         domain:  $(":input[name=domain]", form.row).val(),
         name: name,
         key: key,
-        typehint: typehint,
+        role: role,
         description: $(":input[name=description]", form.row).val()
       };
 

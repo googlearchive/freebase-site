@@ -114,8 +114,8 @@
       <!-- mediators -->
       <div class="section">
         <h2 class="table-title">
-          <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="Read help article" rel="help external" class="help-link">What are Compound Value Types?</a>
-          Compound Value Types (CVTs)
+          <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="Read help article" rel="help external" class="help-link">What are Mediators?</a>
+          Mediators
         </h2>
         <table class="table table-sortable">
           <thead class="${JSON.stringify(c.domain['mediator:types'])}">
@@ -128,7 +128,7 @@
             </tr>
             <tr acre:attrs="c.domain['mediator:types'].length ? {style:'display:none;'}:{}">
                <th colspan="5" class="table-empty-column" scope="col">
-                <strong>$c.domain.name</strong> has no Compound Value Types.
+                <strong>$c.domain.name</strong> has no Mediators.
               </th>
             </tr>
           </thead>
@@ -140,7 +140,45 @@
           <tfoot class="table-edit edit">
             <tr>
               <td colspan="5">
-                <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_type, ['${c.domain.id}', true], this);">
+                <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_type, ['${c.domain.id}', 'mediator'], this);">
+                  <span class="add-icon">Add New</span>
+                </a>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- cvts -->
+      <div class="section">
+        <h2 class="table-title">
+          <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="Read help article" rel="help external" class="help-link">What are Compound Value Types?</a>
+          Compound Value Types (CVTs)
+        </h2>
+        <table class="table table-sortable">
+          <thead class="${JSON.stringify(c.domain['cvt:types'])}">
+            <tr acre:attrs="c.domain['cvt:types'].length ? {}:{style:'display:none;'}">
+              <th scope="col" class="column-header column-header-desc {sorter: 'schemaName'}"><span class="sort-icon">Type</span></th>
+              <th class="column-header" scope="col"><span class="sort-icon">ID</span></th>
+              <th class="column-header numeric" scope="col"><span class="sort-icon"># of Properties</span></th>
+              <th class="column-header numeric {sorter: 'commaDigit'}" scope="col"><span class="sort-icon"># of Instances</span></th>
+              <th class="column-header description" scope="col"><span class="sort-icon">Description</span></th>
+            </tr>
+            <tr acre:attrs="c.domain['cvt:types'].length ? {style:'display:none;'}:{}">
+               <th colspan="5" class="table-empty-column" scope="col">
+                <strong>$c.domain.name</strong> has no Compound Value Types.
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <acre:block for="i,type in c.domain['cvt:types']">
+              ${dc.domain_type_row(type)}
+            </acre:block>
+          </tbody>
+          <tfoot class="table-edit edit">
+            <tr>
+              <td colspan="5">
+                <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_type, ['${c.domain.id}', 'cvt'], this);">
                   <span class="add-icon">Add New</span>
                 </a>
               </td>

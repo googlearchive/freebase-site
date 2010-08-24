@@ -67,7 +67,7 @@ test("create_type mediator", function() {
       domain: user_domain,
       name: name,
       key: name,
-      typehint: "mediator",
+      role: "mediator",
       mqlkey_quote: true
     })
     .then(function(r) {
@@ -77,10 +77,57 @@ test("create_type mediator", function() {
     ok(type);
     equal(type.key.value, acre.freebase.mqlkey_quote(name));
 
-    // assert /freebase/type_hints/mediator
-    var result = acre.freebase.mqlread({id:type.id, "/freebase/type_hints/mediator": null}).result;
+    // assert /freebase/type_hints/mediator and /freebase/type_hints/role
+    // and no included types
+    var result = acre.freebase.mqlread({
+      id: type.id,
+      "/freebase/type_hints/mediator": null,
+      "/freebase/type_hints/role": {optional:true, id: null},
+      "/freebase/type_hints/included_types": []
+    }).result;
     ok(result);
     ok(result["/freebase/type_hints/mediator"]);
+    equal(result["/freebase/type_hints/role"].id, "/freebase/type_roles/mediator");
+    var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
+    ok(!common_topic.length);
+  }
+  finally {
+    if (type) {
+      h.delete_type(type);
+    }
+  }
+});
+
+test("create_type cvt", function() {
+  var type;
+  try {
+    var name = get_name();
+    create_type({
+      domain: user_domain,
+      name: name,
+      key: name,
+      role: "cvt",
+      mqlkey_quote: true
+    })
+    .then(function(r) {
+      type = r;
+    });
+    acre.async.wait_on_results();
+    ok(type);
+    equal(type.key.value, acre.freebase.mqlkey_quote(name));
+
+    // assert /freebase/type_hints/mediator and /freebase/type_hints/role
+    var result = acre.freebase.mqlread({
+      id: type.id,
+      "/freebase/type_hints/mediator": null,
+      "/freebase/type_hints/role": {optional:true, id: null},
+      "/freebase/type_hints/included_types": []
+    }).result;
+    ok(result);
+    ok(result["/freebase/type_hints/mediator"]);
+    equal(result["/freebase/type_hints/role"].id, "/freebase/type_roles/cvt");
+    var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
+    ok(!common_topic.length);
   }
   finally {
     if (type) {
@@ -96,7 +143,7 @@ test("create_type enumeration", function() {
     create_type({
       domain: user_domain,
       name: name,
-      typehint: "enumeration",
+      role: "enumeration",
       key: name,
       mqlkey_quote: true
     })
@@ -110,12 +157,15 @@ test("create_type enumeration", function() {
     // assert included type /common/topic
     var result = acre.freebase.mqlread({
       id:type.id,
-      "/freebase/type_hints/included_types": {id:"/common/topic"},
-      "/freebase/type_hints/enumeration": null
+      "/freebase/type_hints/enumeration": null,
+        "/freebase/type_hints/role": {optional:true, id: null},
+      "/freebase/type_hints/included_types": []
     }).result;
     ok(result);
-    equal(result["/freebase/type_hints/included_types"].id, "/common/topic");
     ok(result["/freebase/type_hints/enumeration"]);
+    equal(result["/freebase/type_hints/role"].id, "/freebase/type_roles/enumeration");
+    var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
+    ok(common_topic.length);
   }
   finally {
     if (type) {

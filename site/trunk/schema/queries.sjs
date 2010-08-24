@@ -50,7 +50,7 @@ function common_domains() {
  * Get all domains created by user_id.
  */
 function user_domains(user_id) {
-  return domains(mql.domains({creator: user_id, key: [], optional: true}));
+  return domains(mql.domains({optional: true, creator: user_id, key: []}));
 };
 
 /**
@@ -93,10 +93,7 @@ function minimal_domain(id) {
     id: id,
     name: null,
     type: "/type/domain",
-    key: [{
-      value: null,
-      namespace: null
-    }],
+    key: [{value: null, namespace: null}],
     "/common/topic/article": qh.article_clause(true)
   };
   return freebase.mqlread(q)
@@ -107,6 +104,7 @@ function minimal_domain(id) {
       return add_description(domain, "blob", null, "blob");
     });
 };
+
 
 /**
  * Domain query and for each type in the domain:
@@ -131,15 +129,32 @@ function domain(id) {
 
       var promises = [];
 
-      var types = domain["types"].sort(sh.sort_by_name);
-      types = types.concat(domain["mediator:types"].sort(sh.sort_by_name));
-      // type blurbs
-      types.forEach(function(type) {
+      // categorize types by their roles (mediator, cvt, etc.)
+      var types = [];
+      var mediators = [];
+      var cvts = [];
+      domain.types.forEach(function(type) {
         promises.push(add_description(type));
         type.instance_count = 0;
-        type.mediator = type["/freebase/type_hints/mediator"] === true;
-        type.enumeration = type["/freebase/type_hints/enumeration"] === true;
+        var role = qh.get_type_role(type, true);
+        if (role === "mediator") {
+          mediators.push(type);
+        }
+        else if (role === "cvt") {
+          cvts.push(type);
+        }
+        else {
+          types.push(type);
+        }
       });
+      types.sort(sh.sort_by_name);
+      mediators.sort(sh.sort_by_name);
+      cvts.sort(sh.sort_by_name);
+
+      domain.types = types;
+      domain["mediator:types"] = mediators;
+      domain["cvt:types"] = cvts;
+
       // domain activity, instance counts per type
       var activity_id = "summary_/guid/" + domain.guid.slice(1);
       promises.push(freebase.get_static("activity", activity_id)
@@ -171,37 +186,26 @@ function minimal_type(type_id) {
     guid: null,
     name: null,
     type: "/type/type",
-    key: [{
-      namespace: null,
-      value: null
-    }],
-    domain: {
-      id: null,
-      name: null,
-      type: "/type/domain"
-    },
+    key: [{namespace: null, value: null}],
+    domain: {id: null, name: null, type: "/type/domain"},
     "/common/topic/article": qh.article_clause(true),
-    "/freebase/type_hints/enumeration": null,
+    "/freebase/type_hints/role": {optional: true, id: null},
     "/freebase/type_hints/mediator": null,
-    properties: {
-      id: null,
-      type: "/type/property",
-      "return": "count",
-      optional: true
-    }
+    "/freebase/type_hints/enumeration": null,
+    properties: {optional: true, id: null, type: "/type/property", "return": "count"}
   };
   return freebase.mqlread(q)
     .then(function(env) {
       return env.result || {};
     })
     .then(function(type) {
+      qh.get_type_role(type, true);
       var promises = [];
+      // description
       promises.push(add_description(type, "blurb", null, "blurb"));
       promises.push(add_description(type, "blob", null, "blob"));
-      type.instance_count = 0;
-      type.mediator = type["/freebase/type_hints/mediator"] === true;
-      type.enumeration = type["/freebase/type_hints/enumeration"] === true;
       // domain activity, instance counts per type
+      type.instance_count = 0;
       var activity_id = "summary_/guid/" + type.guid.slice(1);
       promises.push(freebase.get_static("activity", activity_id)
         .then(function(activity) {
@@ -226,7 +230,7 @@ function normalize_prop(prop) {
   prop.disambiguator = prop["/freebase/property_hints/disambiguator"] === true;
   prop.display_none = prop["/freebase/property_hints/display_none"] === true;
   if (prop.expected_type && typeof prop.expected_type === "object") {
-    prop.expected_type.mediator = prop.expected_type["/freebase/type_hints/mediator"] === true;
+    qh.get_type_role(prop.expected_type, true);
   }
   return prop;
 };
@@ -257,10 +261,8 @@ function base_type(id) {
     .then(function(result) {
       // readable timestamp
       result.date = h.format_date(acre.freebase.date_from_iso(result.timestamp), 'MMMM dd, yyyy');
-      // mediator?
-      result.mediator = result["/freebase/type_hints/mediator"] === true;
-      // enumeration?
-      result.enumeration = result["/freebase/type_hints/enumeration"] === true;
+      // type role
+      qh.get_type_role(result, true);
       // included_types
       result.included_types = result["/freebase/type_hints/included_types"] || [];
       // properties
@@ -285,19 +287,13 @@ function base_type(id) {
 
       // sibling types (in the same domain excluding this type)
       var siblings_q = [{
+        optional: true,
         id: null,
         "id!=": id,
         name: null,
         type: "/type/type",
-        domain: {
-          id: result.domain.id
-        },
-        "!/freebase/domain_profile/base_type": {
-          id: null,
-          optional: "forbidden",
-          limit: 0
-        },
-        optional: true
+        domain: result.domain.id,
+        "!/freebase/domain_profile/base_type": {optional: "forbidden", id: null, limit: 0}
       }];
       promises.push(freebase.mqlread(siblings_q)
         .then(function(env) {
@@ -339,7 +335,6 @@ function type(id) {
 
       return deferred.all(promises)
         .then(function() {
-          console.log("result", result);
           return result;
         });
     });
@@ -369,7 +364,6 @@ function typediagram(id) {
 
       return deferred.all(promises)
         .then(function() {
-          console.log("result", result);
           return result;
         });
     });
@@ -408,11 +402,7 @@ function property(id) {
       guid: null,
       name: null,
       type: "/type/type",
-      domain: {
-        id: null,
-        name: null,
-        type: "/type/domain"
-      }
+      domain: {id: null, name: null, type: "/type/domain"}
     }
   });
   return freebase.mqlread(q)
@@ -428,14 +418,12 @@ function property(id) {
       var promises = [];
       // sibling props (in the same schema excluding this prop)
       var siblings_q = [{
+        optional: true,
         id: null,
         "id!=": id,
         name: null,
         type: "/type/property",
-        schema: {
-          id: result.schema.id
-        },
-        optional: true
+        schema: result.schema.id
       }];
 
       promises.push(freebase.mqlread(siblings_q)
@@ -477,16 +465,13 @@ function incoming_from_commons(type_id, exclude_domain_id, count) {
   var q = incoming.query({expected_type:type_id});
   var domain_clause = {
     domain: {
-      key: {
-        namespace: "/",
-        limit: 0
-      }
+      key: {namespace: "/", limit: 0}
     }
   };
   if (exclude_domain_id) {
     domain_clause["forbid:domain"] = {
-      id: exclude_domain_id,
       optional: "forbidden",
+      id: exclude_domain_id,
       limit: 0
     };
   }
@@ -504,18 +489,15 @@ function incoming_from_bases(type_id, exclude_domain_id, count) {
   var domain_clause = {
     domain: {
       key: {
-        "forbid:namespace": {
-          id: "/",
-          optional: "forbidden"
-        },
+        "forbid:namespace": {optional: "forbidden", id: "/"},
         limit: 0
       }
     }
   };
   if (exclude_domain_id) {
     domain_clause["forbid:domain"] = {
-      id: exclude_domain_id,
       optional: "forbidden",
+      id: exclude_domain_id,
       limit: 0
     };
   }
@@ -532,7 +514,6 @@ function incoming_from_bases(type_id, exclude_domain_id, count) {
 function incoming(q) {
   return freebase.mqlread(q)
     .then(function(env) {
-      console.log("incoming", env, typeof env.result);
       return env.result;
     })
     .then(function(result) {
@@ -541,16 +522,12 @@ function incoming(q) {
 };
 incoming.query = function(options) {
   return [h.extend({
+    optional: true,
     id: null,
     name: null,
     type: "/type/property",
     expected_type: null,
-    schema: {
-      id: null,
-      name: null,
-      type: "/type/type"
-    },
-    optional: true
+    schema: {id: null, name: null, type: "/type/type"}
   }, options)];
 };
 

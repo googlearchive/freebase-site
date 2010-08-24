@@ -19,6 +19,42 @@ function is_literal_type(type_id) {
   return  LITERAL_TYPE_IDS[type_id] === 1;
 };
 
+/**
+ * Get the type role looking at legacy/deprecated type hints,
+ * /freebase/type_hints/mediator,
+ * /freebase/type_hints/enumeration
+ * as well as the new /freebase/type_hints/role.
+ *
+ * @param type:Object (required)
+ * @param set:Boolean (optional) - Set type.role = mediator|cvt|enumeration|null if TRUE.
+ */
+function get_type_role(type, set) {
+  var role = null;
+  if (type["/freebase/type_hints/role"]) {
+    if (type["/freebase/type_hints/role"].id === "/freebase/type_roles/mediator") {
+      role = "mediator";
+    }
+    else if (type["/freebase/type_hints/role"].id === "/freebase/type_roles/cvt") {
+      role = "cvt";
+    }
+    else if (type["/freebase/type_hints/role"].id === "/freebase/type_roles/enumeration") {
+      role = "enumeration";
+    }
+  }
+  else if (type["/freebase/type_hints/mediator"]) {
+    role = "mediator";
+  }
+  else if (type["/freebase/type_hints/enumeration"]) {
+    role = "enumeration";
+  }
+  if (set) {
+    type.role = role;
+  }
+  return role;
+};
+
+
+
 function user_clause(id, badges, options) {
   if (!id) {
     id = null;

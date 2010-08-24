@@ -57,7 +57,7 @@ var api = {
 
   add_type_begin: function(args) {
     return {
-      html: acre.markup.stringify(edit.add_type_form(args.id, args.mediator == 1))
+      html: acre.markup.stringify(edit.add_type_form(args.id, args.role))
     };
   },
 
@@ -67,12 +67,7 @@ var api = {
     return create_type.create_type(create_type_options)
       .then(function(result) {
         var created = {name:args.name, id: result.id, properties: 0, instance_count: 0, blurb: args.description};
-        if (args.typehint === "mediator") {
-          created.mediator = created["/freebase/type_hints/mediator"] = true;
-        }
-        else if (args.typehint === "enumeration") {
-          created.enumeration = created["/freebase/type_hints/enumeration"] = true;
-        }
+        created.role = args.role;
         return {
           html: acre.markup.stringify(dc.domain_type_row(created))
         };

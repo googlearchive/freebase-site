@@ -251,6 +251,10 @@
             expected_type_input.val(data.id);
             expected_type.val(data.id);
             unit.val("");
+            if (data.id === "/type/boolean") {
+              // auto-check unique on /type/boolean
+              $("input[name=unique]", form.row).attr("checked", "checked");
+            }
           }
         })
         .bind("fb-textchange", function() {

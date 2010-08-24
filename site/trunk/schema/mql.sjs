@@ -86,14 +86,16 @@ function property(options) {
       id: null,
       name: null,
       type: "/type/property",
-      schema: {id: null, name: null}
+      schema: {id: null, name: null},
+      unique: null
     },
     reverse_property: {
       optional: true,
       id: null,
       name: null,
       type: "/type/property",
-      schema: {id: null, name: null}
+      schema: {id: null, name: null},
+      unique: null
     },
     delegated: {optional: true, id: null, name: null},
     unit: {

@@ -111,11 +111,16 @@
           </td>
         </tr>
         <tr>
-          <td class="rev_predicate" acre:if="c.property.reverse_property">
-            <a href="${h.url_for('schema', 'property', null, c.property.reverse_property.id)}">${c.property.reverse_property.name}</a>
-            <span class="attribute" acre:if="!c.property.master_property">master</span>
+          <td acre:if="c.property.reverse_property" class="rev_predicate">
+            <a href="${h.url_for('schema', 'property', null, c.property.reverse_property.id)}">${c.property.reverse_property.name}</a>     
+            <span class="attribute" acre:if="c.property.reverse_property.unique">unique</span> 
           </td>
-          <td acre:else>&nbsp;</td>
+          <td acre:elif="c.property.master_property" class="rev_predicate">
+            <a href="${h.url_for('schema', 'property', null, c.property.master_property.id)}">${c.property.master_property.name}</a>  
+            <span class="attribute">master</span>    
+            <span class="attribute" acre:if="c.property.master_property.unique">unique</span>
+          </td>
+         <td acre:else="">&nbsp;</td>
         </tr>
       </tbody>
     </table>

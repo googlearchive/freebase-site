@@ -4,7 +4,6 @@ var MF = {
       "template": "//14.template.site.freebase.dev",
       "promise": "//14.promise.site.freebase.dev",
       "jquerytools": "//14.jquerytools.site.freebase.dev",
-      "jqueryui": "//14.jquerytools.site.freebase.dev",
       "queries": "//14.queries.site.freebase.dev",
 
       // external apps

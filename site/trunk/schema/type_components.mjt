@@ -30,10 +30,18 @@
     <td class="even">$prop.id</td>
     <td class="odd">
       <acre:block if="prop.expected_type">
-      <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">
-        $prop.expected_type.id
-      </a>
-      <span acre:if="prop.expected_type.mediator" class="is-mediator"><abbr title="This is a mediator">mediator</abbr></span>
+        <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">
+          $prop.expected_type.id
+        </a>
+        <acre:block if="prop.expected_type.role === 'mediator'">
+          <span class="ect-role"><abbr title="This is a mediator">mediator</abbr></span>
+        </acre:block>
+        <acre:block if="prop.expected_type.role === 'cvt'">
+          <span class="ect-role"><abbr title="This is a compound value type">cvt</abbr></span>
+        </acre:block>
+        <acre:block if="prop.expected_type.role === 'enumeration'">
+          <span class="ect-role"><abbr title="This is an enumerated type">enumerated</abbr></span>
+        </acre:block>      
       </acre:block>
       <span acre:if="prop.unit" class="measurement-unit">$prop.unit.name</span>
       <span acre:if="prop.master_property || prop.reverse_property">

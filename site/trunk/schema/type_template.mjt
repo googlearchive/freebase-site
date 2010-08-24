@@ -50,15 +50,21 @@
 
 <acre:block def="content_body()">
   <div class="page-meta">
-
-
     <h1>
       $c.type.name
       <span class="flags">
-        <span acre:if="c.type.mediator">Mediator</span>
-        <span acre:else="">
-          <span acre:if="c.type.enumeration">Enumerated</span> Entity Type
-        </span>
+        <acre:block if="c.type.role === 'mediator'">
+          <span>Mediator</span>
+        </acre:block>
+        <acre:block elif="c.type.role === 'cvt'">
+          <span>Compound Value Type</span>
+        </acre:block>
+        <acre:block elif="c.type.role === 'enumeration'">
+          <span>Enumerated Entity Type</span>
+        </acre:block>
+        <acre:block else="">
+          <span>Entity Type</span>
+        </acre:block>
       </span>
     </h1>
     <div class="meta">

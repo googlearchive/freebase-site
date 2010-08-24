@@ -62,15 +62,15 @@
     submit_type_settings_form: function(form) {
       var name = $.trim($(":input[name=name]", form.row).val());
       var key =  $.trim($("input[name=key]", form.form).val()).toLowerCase();
-      var typehint = $(":input[name=typehint]", form.row);
-      typehint = typehint.is(":checked") ? typehint.val() : "";
+      var role = $(":input[name=role]", form.row);
+      role = role.is(":checked") ? role.val() : "";
 
       var data = {
         name: name,
         key: key,
         domain: $("input[name=namespace]", form.form).val(),
         description: $("textarea[name=description]", form.form).val(),
-        typehint: typehint
+        role: role
       };
 
       $.ajax({

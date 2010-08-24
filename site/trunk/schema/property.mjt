@@ -97,7 +97,16 @@
             <a href="${h.url_for('schema', 'type', null, c.property.expected_type.id)}">
               ${sh.isTypeType(c.property.expected_type.id) ? c.property.expected_type.id : c.property.expected_type.name}
             </a>
-            <span class="attribute" acre:if="c.property.expected_type.mediator">mediator/CVT</span>
+            <acre:block if="c.property.expected_type.role === 'mediator'">
+              <span class="attribute">mediator</span>
+            </acre:block>
+            <acre:block elif="c.property.expected_type.role === 'cvt'">
+              <span class="attribute">cvt</span>
+            </acre:block>
+            <acre:block elif="c.property.expected_type.role === 'enumeration'">
+              <span class="attribute">enumerated</span>
+            </acre:block>
+            
             <a class="attribute" acre:if="c.property.unit" href="${h.url_for('schema', 'type', null, c.property.unit.id)}">$c.property.unit.name</a>
           </td>
         </tr>

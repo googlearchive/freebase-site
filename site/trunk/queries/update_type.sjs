@@ -119,7 +119,7 @@ function update_type(options) {
       }
       else if (o.role === "mediator") {
         update["/freebase/type_hints/mediator"] = {value: true, connect: "update"};
-        update["/freebase/type_hints/role"] = {id:"/freebase/type_roles/mediator", connect: "update"};
+        update["/freebase/type_hints/role"] = {id:"/freebase/type_role/mediator", connect: "update"};
         // remove old enumeration flag
         update["/freebase/type_hints/enumeration"] = {value:true, connect:"delete"};
         // remove /common/topic as included type
@@ -127,7 +127,7 @@ function update_type(options) {
       }
       else if (o.role === "cvt") {
         update["/freebase/type_hints/mediator"] = {value: true, connect: "update"};
-        update["/freebase/type_hints/role"] = {id:"/freebase/type_roles/cvt", connect: "update"};
+        update["/freebase/type_hints/role"] = {id:"/freebase/type_role/cvt", connect: "update"};
         // remove old enumeration flag
         update["/freebase/type_hints/enumeration"] = {value:true, connect:"delete"};
         // remove /common/topic as included type
@@ -135,7 +135,7 @@ function update_type(options) {
       }
       else if (o.role === "enumeration") {
         update["/freebase/type_hints/enumeration"] = {value: true, connect: "update"};
-        update["/freebase/type_hints/role"] = {id:"/freebase/type_roles/enumeration", connect: "update"};
+        update["/freebase/type_hints/role"] = {id:"/freebase/type_role/enumeration", connect: "update"};
         // remove old mediator flag
         update["/freebase/type_hints/mediator"] = {value:true, connect:"delete"};
         // insert /common/topic as included type

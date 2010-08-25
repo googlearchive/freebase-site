@@ -71,7 +71,7 @@ function create_type(options) {
           connect: "update"
         };
         q["/freebase/type_hints/role"] = {
-          id: "/freebase/type_roles/mediator",
+          id: "/freebase/type_role/mediator",
           connect: "update"
         };
       }
@@ -82,7 +82,7 @@ function create_type(options) {
           connect: "update"
         };
         q["/freebase/type_hints/role"] = {
-          id: "/freebase/type_roles/cvt",
+          id: "/freebase/type_role/cvt",
           connect: "update"
         };
       }
@@ -94,7 +94,7 @@ function create_type(options) {
             connect: "update"
           };
           q["/freebase/type_hints/role"] = {
-            id: "/freebase/type_roles/enumeration",
+            id: "/freebase/type_role/enumeration",
             connect: "update"
           };
         }

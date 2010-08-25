@@ -93,7 +93,7 @@ test("update_type mediator", function() {
       "/freebase/type_hints/included_types": []
     }).result;
     ok(result["/freebase/type_hints/mediator"], "updated as mediator");
-    equal(result["/freebase/type_hints/role"].id, "/freebase/type_roles/mediator");
+    equal(result["/freebase/type_hints/role"].id, "/freebase/type_role/mediator");
     var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
     ok(!common_topic.length);
   }
@@ -126,7 +126,7 @@ test("update_type cvt", function() {
       "/freebase/type_hints/included_types": []
     }).result;
     ok(result["/freebase/type_hints/mediator"], "updated as cvt");
-    equal(result["/freebase/type_hints/role"].id, "/freebase/type_roles/cvt");
+    equal(result["/freebase/type_hints/role"].id, "/freebase/type_role/cvt");
     var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
     ok(!common_topic.length);
   }
@@ -160,7 +160,7 @@ test("update_type enumeration", function() {
       "/freebase/type_hints/included_types": []
     }).result;
     ok(result["/freebase/type_hints/enumeration"], "updated as enumeration");
-    equal(result["/freebase/type_hints/role"].id, "/freebase/type_roles/enumeration");
+    equal(result["/freebase/type_hints/role"].id, "/freebase/type_role/enumeration");
     var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
     ok(common_topic.length);
   }

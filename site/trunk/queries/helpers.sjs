@@ -31,13 +31,13 @@ function is_literal_type(type_id) {
 function get_type_role(type, set) {
   var role = null;
   if (type["/freebase/type_hints/role"]) {
-    if (type["/freebase/type_hints/role"].id === "/freebase/type_roles/mediator") {
+    if (type["/freebase/type_hints/role"].id === "/freebase/type_role/mediator") {
       role = "mediator";
     }
-    else if (type["/freebase/type_hints/role"].id === "/freebase/type_roles/cvt") {
+    else if (type["/freebase/type_hints/role"].id === "/freebase/type_role/cvt") {
       role = "cvt";
     }
-    else if (type["/freebase/type_hints/role"].id === "/freebase/type_roles/enumeration") {
+    else if (type["/freebase/type_hints/role"].id === "/freebase/type_role/enumeration") {
       role = "enumeration";
     }
   }

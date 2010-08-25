@@ -59,10 +59,20 @@
     </td>
     <td class="even description">
       <p acre:if="prop.tip">${prop.tip}</p>
-      <acre:block acre:trim="">              
-        <span acre:if="prop.master_property === null" class="property-meta"><abbr title="This is a master property">master</abbr></span><span acre:else="" class="property-meta"><abbr title="This is a reverse property">reverse</abbr></span><span acre:if="prop.unique" class="property-meta">, <abbr title="This property can only have a single value">unique</abbr></span><span acre:if="prop.disambiguator" class="property-meta">, <abbr title="This property is a disambiguator">disambiguating</abbr></span><span acre:if="prop.display_none" class="property-meta">, <abbr title="This property is hidden by default">hidden</abbr></span>
-      </acre:block>
-    </td>
+      <span acre:if="prop.delegated" class="property-meta" acre:trim="">
+        <abbr title="This is a property is delegated to ${prop.delegated.id}">delegated</abbr>
+      </span><span acre:elif="prop.master_property" class="property-meta" acre:trim="">
+        <abbr title="This is a reverse property">reverse</abbr>
+      </span><span acre:else="" class="property-meta" acre:trim="">
+        <abbr title="This is a master property">master</abbr>
+      </span><span acre:if="prop.unique" class="property-meta" acre:trim="">,
+        <abbr title="This property can only have a single value">unique</abbr>
+      </span><span acre:if="prop.disambiguator" class="property-meta" acre:trim="">,
+        <abbr title="This property is a disambiguator">disambiguating</abbr>
+      </span><span acre:if="prop.display_none" class="property-meta" acre:trim="">,
+        <abbr title="This property is hidden by default">hidden</abbr>
+      </span>
+   </td>
   </tr>
 </acre:block>
 

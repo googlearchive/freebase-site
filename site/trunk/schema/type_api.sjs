@@ -142,27 +142,39 @@ var api = {
   },
 
   add_included_type_submit: function(args) {
-    var q = {
-      id: args.type,
-      "/freebase/type_hints/included_types": {id:args.included_type, connect:"insert"}
-    };
-    return freebase.mqlwrite(q)
+    var promises = [];
+    promises.push(queries.included_types(args.included_type));
+    promises.push(freebase.mqlread({id:args.included_type, name:null})
       .then(function(env) {
         return env.result;
-      })
+      }));
+    return deferred.all(promises)
       .then(function(result) {
-        var present = result["/freebase/type_hints/included_types"].connect === "present";
-        if (present) {
-          return deferred.rejected(args.included_type + " is already included");
-        }
-        else {
-          return freebase.mqlread({id:args.included_type, name:null})
-            .then(function(env) {
+        // include the included types of args.included_type + args.included_type
+        var include_types = result[0].concat(result[1]);
+        return include_types;
+      })
+      .then(function(types) {
+        return queries.add_included_types(args.id, [t.id for each (t in types)])
+          .then(function(included) {
+            var inserted = [t.id for each (t in included) if (t.connect === "inserted")];
+            if (inserted.length) {
+              var types_by_id = {};
+              types.forEach(function(type) {
+                types_by_id[type.id] = type;
+              });
+              var html = [];
+              inserted.forEach(function(type) {
+                html.push(acre.markup.stringify(tc.included_type_thead(types_by_id[type])));
+              });
               return {
-                html: acre.markup.stringify(tc.included_type_thead(env.result))
+                html: html.join("")
               };
-            });
-        }
+            }
+            else {
+              return deferred.rejected(args.included_type + " is already included");
+            }
+          });
       });
   },
 
@@ -211,7 +223,7 @@ api.edit_property_submit.auth = true;
 api.add_included_type_begin.args = ["id"]; // type id
 api.add_included_type_begin.auth = true;
 
-api.add_included_type_submit.args = ["type", "included_type"]; // type id, id of type to include
+api.add_included_type_submit.args = ["id", "included_type"]; // type id, id of type to include
 api.add_included_type_submit.auth = true;
 
 api.reverse_property_begin.args = ["id", "master"]; // type id, master property id

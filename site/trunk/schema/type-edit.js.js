@@ -510,7 +510,7 @@
 
     submit_included_type_form: function(form) {
       var data = {
-        type: $(":input[name=type]", form.row).val(),
+        id: $(":input[name=id]", form.row).val(),
         included_type: $.trim($(":input[name=included_type]", form.row).val())
       };
       $.ajax({
@@ -522,12 +522,17 @@
           if (data.code === "/api/status/error") {
             return se.ajax_error_handler(xhr, form.row);
           }
-          var thead = $(data.result.html);
-          form.table.append(thead);
-          var new_row = $("tr:first", thead).hide();
-          new_row.showRow(function() {
+
+          var container = $("<table>");
+          container.html(data.result.html);
+          var theads = $(">thead", container);
+          form.table.append(theads);
+          var rows = $("tr:first", theads).hide();
+          rows.showRow(function() {
             // init expand/collapse
-            $(".tbody-header", thead).data("ajax", true).click(fb.schema.type.toggle);
+            $(".tbody-header", theads).each(function() {
+              $(this).data("ajax", true).click(fb.schema.type.toggle);
+            });
             form.row.trigger(form.event_prefix + "success");
           }, null, "slow");
         },

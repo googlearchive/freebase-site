@@ -390,6 +390,37 @@ function type_properties(id) {
 };
 
 /**
+ * Get all included types of a type
+ */
+function included_types(id) {
+  return freebase.mqlread(mql.included_types({id:id}))
+    .then(function(env) {
+      return env.result;
+    })
+    .then(function(result) {
+      var types = result["/freebase/type_hints/included_types"];
+      return [{id: t.id, name: t.name} for each (t in types)];
+    });
+};
+
+/**
+ * Add types (included_types) to the /freebase/type_hints/included_types list of type (id).
+ */
+function add_included_types(id, include_types) {
+  var q = {
+    id: id,
+    "/freebase/type_hints/included_types": []
+  };
+  include_types.forEach(function(type_id) {
+    q["/freebase/type_hints/included_types"].push({id: type_id, connect: "insert"});
+  });
+  return freebase.mqlwrite(q)
+    .then(function(env) {
+      return env.result["/freebase/type_hints/included_types"];
+    });
+};
+
+/**
  * Full fledged property query
  */
 function property(id) {

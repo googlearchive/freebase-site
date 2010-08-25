@@ -171,7 +171,7 @@
               <span class="form-label">Choose a type to include</span>
               <input name="included_type_input" type="text" class="text-input suggest-input"/>
               <input name="included_type" type="hidden" />
-              <input name="type" type="hidden" value="${type_id}"/>
+              <input name="id" type="hidden" value="${type_id}"/>
             </label>
           </div>
         </td>

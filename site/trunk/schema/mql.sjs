@@ -57,11 +57,27 @@ function type(options) {
       optional: true,
       id: null,
       name: null,
+      type: "/type/type",
       index: null,
       sort: "index",
       "!/freebase/domain_profile/base_type": {optional: "forbidden", id: null, limit: 0}
     }],
     properties: [property({optional: true, index: null, sort: "index"})]
+  }, options);
+};
+
+function included_types(options) {
+  return h.extend({
+    id: null,
+    "/freebase/type_hints/included_types": [{
+      optional: true,
+      id: null,
+      name: null,
+      type: "/type/type",
+      index: null,
+      sort: "index",
+      "!/freebase/domain_profile/base_type": {optional: "forbidden", id: null, limit: 0}
+    }]
   }, options);
 };
 

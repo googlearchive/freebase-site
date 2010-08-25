@@ -68,7 +68,7 @@
         </acre:block>
         <div class="nav clear">
           <ul class="nav-utilities">
-            <li>
+            <li class="edit">
               <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.domain_settings, ['${c.domain.id}', true], this);">
                 <span class="edit-icon">Domain Settings</span>
               </a>

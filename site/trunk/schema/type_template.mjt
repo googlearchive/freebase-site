@@ -101,7 +101,7 @@
         <li><a acre:attrs="c.diagram ? {'class':'current'} : {href: h.url_for('schema', 'type', [['view','diagram']], c.type.id)}">Diagram</a></li>
       </ul>
       <ul class="nav-utilities">
-        <li>
+        <li class="edit">
         <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.type_settings, ['${c.type.id}'], this);">
           <span class="edit-icon">Type Settings</span>
         </a>

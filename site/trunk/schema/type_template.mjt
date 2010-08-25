@@ -79,11 +79,6 @@
       </span>
     </div>
     <div class="admin-toolbox">
-      <span class="edit type-settings">
-        <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.type_settings, ['${c.type.id}'], this);">
-          <span class="edit-icon">Type Settings</span>
-        </a>
-      </span>
       <span class="creation-timestamp">
         ${image.user_image_small(c.type.creator)}
         Created by <a href="${acre.freebase.service_url}/view${c.type.creator.id}" title="View user profile">$c.type.creator.name</a> 
@@ -107,13 +102,15 @@
       </ul>
       <ul class="nav-utilities">
         <li>
+        <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.type_settings, ['${c.type.id}'], this);">
+          <span class="edit-icon">Type Settings</span>
+        </a>
+        </li>
+        <li>
           <a acre:if="c.type.instance_count" href="${h.freebase_url('/view'+c.type.id)}" class="icon-link"><span class="browse-icon">Browse <strong>${h.commafy(c.type.instance_count)}</strong> Instances</span></a>
         </li>
         <li>
           <a href="${sh.build_query_url(c.type.id)}" class="icon-link"><span class="query-icon">Build Query</span></a>
-        </li>
-        <li>
-          <a href="${h.freebase_url('/type/schema'+c.type.id)}" class="icon-link"><span class="edit-icon">Edit Schema</span></a>
         </li>
       </ul>
     </div>

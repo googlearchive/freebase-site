@@ -111,6 +111,10 @@
         <h2 class="aside-title">What is Schema?</h2>
         <p>Schema describes how data in Freebase is structured.</p>
         <p><strong>Schema is made by creating:</strong></p> 
+        <h3>
+          <a href="http://wiki.freebase.com/wiki/Domain">projects</a>
+        </h3>
+        <p>which define a common namespace for you to create</p>
         <h3><a href="" title="Learn more about">types</a></h3> 
         <p>which define a particular kind of person, place or thing and contain</p>
         <h3><a href="#" title="Learn more about">properties</a></h3>

@@ -43,11 +43,6 @@
           <span class="key"><strong>Key:</strong> $c.domain.id</span>        
         </div>        
         <div class="admin-toolbox">
-          <span class="edit domain-settings">
-            <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.domain_settings, ['${c.domain.id}', true], this);">
-              <span class="edit-icon">Project Settings</span>
-            </a>
-          </span>
           <span class="creation-timestamp">
             ${image.user_image_small(c.domain.creator)}
             Created by <a href="${h.freebase_url('/view' + c.domain.creator.id)}" title="View user profile">${c.domain.creator.name}</a> 
@@ -64,13 +59,25 @@
           <a href="javascript:void(0);" class="blurb-trigger">More</a>          
         </div>
         <acre:block if="c.domain.owners">
-          <h2 class="user-list-title">Project Owners:</h2>
+          <h2 class="user-list-title">Domain Owners:</h2>
           <ul class="user-list clear" acre:for="group in c.domain.owners">
             <li acre:for="i,member in group.member" acre:for="i,member in group.member" class="vcard">
               ${image.user_image_medium(member)}
             </li>
           </ul>
         </acre:block>
+        <div class="nav clear">
+          <ul class="nav-utilities">
+            <li>
+              <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.domain_settings, ['${c.domain.id}', true], this);">
+                <span class="edit-icon">Domain Settings</span>
+              </a>
+            </li>
+            <li>
+              <a href="${h.freebase_url('/view'+c.domain.id)}" class="icon-link"><span class="browse-icon">Browse Domain</span></a>
+            </li>
+          </ul>
+        </div>
       </div>
     
       <!-- regular types -->
@@ -90,7 +97,7 @@
             </tr>
             <tr acre:attrs="c.domain.types.length ? {style:'display:none;'}:{}">
               <th colspan="5" class="table-empty-column" scope="col">
-                <p>The project <strong>$c.domain.name</strong> does not have any types.</p>
+                <p>The domain <strong>$c.domain.name</strong> does not have any types.</p>
               </th>
             </tr>
           </thead>
@@ -110,50 +117,12 @@
           </tfoot>
         </table> 
       </div>
-    
-      <!-- mediators -->
-      <div class="section">
-        <h2 class="table-title">
-          <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="Read help article" rel="help external" class="help-link">What are Mediators?</a>
-          Mediators
-        </h2>
-        <table class="table table-sortable">
-          <thead class="${JSON.stringify(c.domain['mediator:types'])}">
-            <tr acre:attrs="c.domain['mediator:types'].length ? {}:{style:'display:none;'}">
-              <th scope="col" class="column-header column-header-desc {sorter: 'schemaName'}"><span class="sort-icon">Type</span></th>
-              <th class="column-header" scope="col"><span class="sort-icon">ID</span></th>
-              <th class="column-header numeric" scope="col"><span class="sort-icon"># of Properties</span></th>
-              <th class="column-header numeric {sorter: 'commaDigit'}" scope="col"><span class="sort-icon"># of Instances</span></th>
-              <th class="column-header description" scope="col"><span class="sort-icon">Description</span></th>
-            </tr>
-            <tr acre:attrs="c.domain['mediator:types'].length ? {style:'display:none;'}:{}">
-               <th colspan="5" class="table-empty-column" scope="col">
-                <strong>$c.domain.name</strong> has no Mediators.
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <acre:block for="i,type in c.domain['mediator:types']">
-              ${dc.domain_type_row(type)}
-            </acre:block>
-          </tbody>
-          <tfoot class="table-edit edit">
-            <tr>
-              <td colspan="5">
-                <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_type, ['${c.domain.id}', 'mediator'], this);">
-                  <span class="add-icon">Add New</span>
-                </a>
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
 
       <!-- cvts -->
       <div class="section">
         <h2 class="table-title">
           <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="Read help article" rel="help external" class="help-link">What are Compound Value Types?</a>
-          Compound Value Types (CVTs)
+          Compound Value Types
         </h2>
         <table class="table table-sortable">
           <thead class="${JSON.stringify(c.domain['cvt:types'])}">
@@ -185,6 +154,44 @@
             </tr>
           </tfoot>
         </table>
+     </div>
+    
+     <!-- mediators -->
+     <div class="section">
+       <h2 class="table-title">
+         <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="Read help article" rel="help external" class="help-link">What are Mediators?</a>
+         Mediators
+       </h2>
+       <table class="table table-sortable">
+         <thead class="${JSON.stringify(c.domain['mediator:types'])}">
+           <tr acre:attrs="c.domain['mediator:types'].length ? {}:{style:'display:none;'}">
+             <th scope="col" class="column-header column-header-desc {sorter: 'schemaName'}"><span class="sort-icon">Type</span></th>
+             <th class="column-header" scope="col"><span class="sort-icon">ID</span></th>
+             <th class="column-header numeric" scope="col"><span class="sort-icon"># of Properties</span></th>
+             <th class="column-header numeric {sorter: 'commaDigit'}" scope="col"><span class="sort-icon"># of Instances</span></th>
+             <th class="column-header description" scope="col"><span class="sort-icon">Description</span></th>
+           </tr>
+           <tr acre:attrs="c.domain['mediator:types'].length ? {style:'display:none;'}:{}">
+             <th colspan="5" class="table-empty-column" scope="col">
+               <strong>$c.domain.name</strong> has no Mediators.
+             </th>
+           </tr>
+         </thead>
+         <tbody>
+           <acre:block for="i,type in c.domain['mediator:types']">
+           ${dc.domain_type_row(type)}
+           </acre:block>
+         </tbody>
+         <tfoot class="table-edit edit">
+           <tr>
+             <td colspan="5">
+               <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_type, ['${c.domain.id}', 'mediator'], this);">
+                 <span class="add-icon">Add New</span>
+               </a>
+             </td>
+           </tr>
+         </tfoot>
+       </table>
      </div>
   </acre:block>
   <acre:block elif="id == ''">

@@ -87,14 +87,14 @@
       return false;
     },
 
-    add_property: function(e, prop_id) {
+    add_property: function(e, type_id) {
       var trigger = $(this);
       if (trigger.is(".editing")) { // are we already editing?
         return false;
       }
       trigger.addClass("editing");
       fb.get_script(acre.request.app_url + "/schema/MANIFEST/type-edit.mf.js", function() {
-        t.edit.add_property_begin(trigger, prop_id);
+        t.edit.add_property_begin(trigger, type_id);
       });
       return false;
     },
@@ -148,6 +148,20 @@
       trigger.addClass("editing");
       fb.get_script(acre.request.app_url + "/schema/MANIFEST/type-edit.mf.js", function() {
         t.edit.add_included_type_begin(trigger, type_id);
+      });
+      return false;
+    },
+
+    reverse_property: function(e, type_id, master_id) {
+      var trigger = $(this);
+      if (trigger.is(".editing")) { // are we already editing?
+        return false;
+      }
+      trigger.addClass("editing");
+      // hide tooltip
+      trigger.parents(".tooltip:first").siblings(".row-menu-trigger:first").data("tooltip").hide();
+      fb.get_script(acre.request.app_url + "/schema/MANIFEST/type-edit.mf.js", function() {
+        t.edit.reverse_property_begin(trigger, type_id, master_id);
       });
       return false;
     }

@@ -164,7 +164,17 @@ var api = {
             });
         }
       });
+  },
+
+  reverse_property_begin: function(args) {
+    return queries.property(args.master)
+      .then(function(master_prop) {
+        return {
+          html: acre.markup.stringify(edit.reverse_property_form(args.id, master_prop))
+        };
+      });
   }
+
 };
 
 // required args and authorization
@@ -203,3 +213,6 @@ api.add_included_type_begin.auth = true;
 
 api.add_included_type_submit.args = ["type", "included_type"]; // type id, id of type to include
 api.add_included_type_submit.auth = true;
+
+api.reverse_property_begin.args = ["id", "master"]; // type id, master property id
+api.reverse_property_begin.auth = true;

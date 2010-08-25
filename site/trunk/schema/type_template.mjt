@@ -133,7 +133,7 @@
 
 <acre:block def="table_view()">  
   <!-- Table View -->
-  <div class="mode" id="type-table">
+  <div class="mode">
     
     <!-- Native Props Table -->
     <div class="section" id="type-table">

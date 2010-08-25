@@ -1,10 +1,10 @@
 <acre:script>
   var mf = acre.require("MANIFEST").MF;
- var h = mf.require("core", "helpers");
+  var h = mf.require("core", "helpers");
 </acre:script>
 
 
-<acre:block def="add_property_form(type_id, prop)">
+<acre:block def="add_property_form(type_id, prop, master_prop)">
   <table class="edit-form clear">
     <tbody>
       <tr class="edit-row">
@@ -54,15 +54,31 @@
                   attrs.disabled = 'disabled';
                 }
               }
+              else if (master_prop) {
+                attrs.value = ect_input = ect_hidden = master_prop.schema.id;
+                attrs.disabled = 'disabled';
+              }
            </acre:script>
             <label>
               <span class="form-label">Expected Type</span>
               <input name="expected_type_input" type="text" class="text-input suggest-input" 
-                    acre:attrs="attrs"/>
+                     acre:attrs="attrs"/>
               <input name="expected_type" type="hidden" 
                      acre:attrs="ect_hidden?{value:ect_hidden}:{}">
               <input name="unit" type="hidden" acre:attrs="unit_hidden?{value:unit_hidden}:{}">
+              <input acre:if="master_prop" name="master_property" type="hidden" value="${master_prop.id}">
             </label>
+
+            <acre:block if="prop">
+              <acre:block if="prop.master_property">
+                Property links in as 
+                <a title="${prop.master_property.id}" href="${h.url_for('schema', 'property', null, prop.master_property.id)}"><strong>${prop.master_property.name}</strong></a>.
+             </acre:block>
+              <acre:block elif="prop.reverse_property">
+                Property links in as 
+                <a title="${prop.reverse_property.id}" href="${h.url_for('schema', 'property', null, prop.reverse_property.id)}"><strong>${prop.reverse_property.name}</strong></a>.
+             </acre:block>
+            </acre:block>
           </div>
           <div class="form-field fb-property-description">
             <label>
@@ -86,6 +102,12 @@
                       attrs.disabled = 'disabled';
                     }
                   }
+                  else if (master_prop) {
+                    if (master_prop.unique) {
+                      attrs.checked = 'checked';
+                      attrs.disabled = 'disabled';
+                    }
+                  }
                 </acre:script>
                 <input type="checkbox" name="unique"
                        acre:attrs="attrs">
@@ -97,9 +119,11 @@
                 Hidden
               </label>
               <label for="master" class="boolean-field">
-                <input type="checkbox" name="master" disabled="disabled"
-                       acre:attrs="prop&&prop.master_property?{}:{checked:'checked'}">
-                Master
+                <input acre:if="prop" type="checkbox" name="master" disabled="disabled"
+                       acre:attrs="prop.master_property?{}:{checked:'checked'}" />
+                <input acre:if="master_prop" type="checkbox" name="master" disabled="disabled"/>
+                <input acre:else="" type="checkbox" name="master" disabled="disabled" checked="checked"/>
+               Master
               </label>
             </div>          
           </div>        
@@ -120,6 +144,10 @@
   ${add_property_form(prop.schema.id, prop)}
 </acre:block>
 
+<acre:block def="reverse_property_form(type_id, master_prop)">
+  ${add_property_form(type_id, null, master_prop)}
+</acre:block>
+
 <acre:block def="delete_property_result(prop_info)">
   <tr class="row-msg row-msg-info">
     <td colspan="4">
@@ -129,6 +157,8 @@
     </td>
   </tr>
 </acre:block>
+
+
 
 <acre:block def="add_included_type_form(type_id)">
   <table class="edit-form clear">

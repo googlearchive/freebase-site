@@ -22,6 +22,8 @@ function create_property(options) {
       disambiguator: validators.StringBool(options.disambiguator, {if_empty:false}).to_js(),
       unique: validators.StringBool(options.unique, {if_empty:false}).to_js(),
       hidden: validators.StringBool(options.hidden, {if_empty:false}).to_js(),
+      master_property: validators.MqlId(options.master_property, {if_empty:""}).to_js(),
+
       mqlkey_quote: validators.StringBool(options.mqlkey_quote, {if_empty:false}).to_js(),
       lang: validators.MqlId(options.lang, {if_empty:"/lang/en"}).to_js()
     };
@@ -95,6 +97,12 @@ function create_property(options) {
           value:o.description,
           lang:o.lang,
           connect:"update"
+        };
+      }
+      if (o.master_property) {
+        q.master_property = {
+          id: o.master_property,
+          connect: "update"
         };
       }
       return freebase.mqlwrite(q)

@@ -527,7 +527,21 @@ incoming.query = function(options) {
     name: null,
     type: "/type/property",
     expected_type: null,
-    schema: {id: null, name: null, type: "/type/type"}
+    schema: {id: null, name: null, type: "/type/type"},
+    master_property: {
+      optional: true,
+      id: null,
+      name: null,
+      type: "/type/property",
+      schema: {id: null, name: null}
+    },
+    reverse_property: {
+      optional: true,
+      id: null,
+      name: null,
+      type: "/type/property",
+      schema: {id: null, name: null}
+    }
   }, options)];
 };
 

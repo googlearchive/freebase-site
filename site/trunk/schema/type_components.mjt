@@ -44,18 +44,18 @@
         </acre:block>      
       </acre:block>
       <span acre:if="prop.unit" class="measurement-unit">$prop.unit.name</span>
-      <span acre:if="prop.master_property || prop.reverse_property">
+      <acre:script>
+        var other_property = prop.master_property || prop.reverse_property;
+      </acre:script>
+      <acre:block if="other_property">
         <span class="return-link-trigger"></span>
-        <acre:script>
-          var other_property = prop.master_property || prop.reverse_property;
-        </acre:script>
         <span class="return-link-description">
           <strong>$prop.name</strong> has a return link of
           <strong>$other_property.name</strong>
           from <strong>$other_property.schema.name</strong>
           <span class="return-link-pointer"></span>
         </span>        
-      </span>
+      </acre:block>
     </td>
     <td class="even description">
       <p acre:if="prop.tip">${prop.tip}</p>
@@ -120,25 +120,43 @@
       <td class="odd">
         <div>
           <a href="${h.url_for('schema', 'type', null, prop.schema.id)}">$prop.schema.name</a>
+          <acre:script>
+            var other_property = prop.master_property || prop.reverse_property;
+          </acre:script>
+          <acre:block if="other_property">
+            <span class="return-link-trigger"></span>
+            <span class="return-link-description">
+              <strong>$prop.name</strong> has a return link of
+              <strong>$other_property.name</strong>
+              from <strong>$other_property.schema.name</strong>
+              <span class="return-link-pointer"></span>
+            </span>        
+          </acre:block>  
           <a href="javascript:void(0);" class="row-menu-trigger">+</a>
-          <ul class="row-menu tooltip">
+          <ul class="row-menu tooltip">          
+            <li acre:if="!other_property" class="row-menu-item edit">
+              <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.reverse_property, ['${prop.expected_type}','${prop.id}'], this);"><span class="create-return-link-icon">Create return link</span></a>
+            </li>
             <li class="row-menu-item"><a href="${h.url_for('schema', 'type', null, prop.schema.id)}">View type schema</a></li>
             <li class="row-menu-item"><a href="${h.freebase_url('/view'+prop.schema.id)}">Browse instances</a></li>
             <li class="row-menu-item last"><a href="#">Build query</a></li>
           </ul>          
         </div>
-        <span class="key">$prop.schema.id</span>      
+        <span class="key">$prop.schema.id</span>     
       </td>
       <td class="even">
         <div>
           <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
+          <acre:script>
+            var other_property = prop.master_property || prop.reverse_property;
+          </acre:script>
           <a href="javascript:void(0);" class="row-menu-trigger">+</a>
           <ul class="row-menu tooltip">
             <li class="row-menu-item"><a href="${h.url_for('schema', 'property', null, prop.id)}">View property details</a></li>
             <li class="row-menu-item last"><a href="#">Build query</a></li>
           </ul>          
         </div>
-        <span class="key">$prop.id</span>      
+        <span class="key">$prop.id</span>     
       </td>
     </tr>
   </tbody>  

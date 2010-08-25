@@ -95,13 +95,14 @@
      * retrieve add_property form (ajax).
      */
     add_property_begin: function(trigger, type_id) {
+      var trigger_row = trigger.parents("tr:first");
       $.ajax({
         url: acre.request.app_url + "/schema/type/add_property_begin",
         data: {id: type_id},
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
-            return se.ajax_error_handler(xhr, row);
+            return se.ajax_error_handler(xhr, trigger_row);
           }
           // add edit-form after the edit button
           var html = $(data.result.html);
@@ -118,7 +119,7 @@
 
             table: trigger.parents("table:first"),
             trigger: trigger,
-            trigger_row: trigger.parents("tr:first"),
+            trigger_row: trigger_row,
             row: $(".edit-row", html).hide(),
             submit_row: $(".edit-row-submit", html).hide()
           };
@@ -139,20 +140,21 @@
           });
         },
         error: function(xhr) {
-          se.ajax_error_handler(xhr, row);
+          se.ajax_error_handler(xhr, trigger_row);
         }
       });
     },
 
 
     edit_property_begin: function(trigger, prop_id) {
+      var trigger_row = trigger.parents("tr:first");
       $.ajax({
         url: acre.request.app_url + "/schema/type/edit_property_begin",
         data: {id: prop_id},
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
-            return se.ajax_error_handler(xhr, row);
+            return se.ajax_error_handler(xhr, trigger_row);
           }
           // add edit-form after the edit button
           var html = $(data.result.html);
@@ -170,7 +172,7 @@
 
             table: trigger.parents("table:first"),
             trigger: trigger,
-            trigger_row: trigger.parents("tr:first"),
+            trigger_row: trigger_row,
             row: $(".edit-row", html).hide(),
             submit_row: $(".edit-row-submit", html).hide()
           };
@@ -187,7 +189,7 @@
           });
         },
         error: function(xhr) {
-          se.ajax_error_handler(xhr, row);
+          se.ajax_error_handler(xhr, trigger_row);
         }
       });
     },
@@ -312,30 +314,34 @@
         hidden: hidden
       };
 
-      $.ajax({
+      var ajax_options = {
         url: form.ajax.url,
         type: "POST",
         dataType: "json",
-        data: $.extend(data, form.ajax.data),
-        success: function(data, status, xhr) {
-          if (data.code === "/api/status/error") {
-            return se.ajax_error_handler(xhr, form.row);
-          }
-          var new_row = $(data.result.html).addClass("new-row");
-          form.row.before(new_row);
-          new_row.hide();
-          new_row.showRow(function() {
-            // init row menu
-            fb.schema.init_row_menu(new_row);
-            // show edit controls in tooltip
-            $(".edit", new_row).show();
-          }, null, "slow");
-          form.row.trigger(form.event_prefix + "success");
-        },
-        error: function(xhr) {
-          se.ajax_error_handler(xhr, form.row);
+        data: $.extend(data, form.ajax.data)
+      };
+
+      ajax_options.success = form.ajax.success || function(data, status, xhr) {
+        if (data.code === "/api/status/error") {
+          return se.ajax_error_handler(xhr, form.row);
         }
-      });
+        var new_row = $(data.result.html).addClass("new-row");
+        form.row.before(new_row);
+        new_row.hide();
+        new_row.showRow(function() {
+          // init row menu
+          fb.schema.init_row_menu(new_row);
+          // show edit controls in tooltip
+          $(".edit", new_row).show();
+        }, null, "slow");
+        form.row.trigger(form.event_prefix + "success");
+      };
+
+      ajax_options.error = form.ajax.error || function(xhr) {
+        se.ajax_error_handler(xhr, form.row);
+      };
+
+      $.ajax(ajax_options);
     },
 
     /**
@@ -414,13 +420,14 @@
      * add included_type
      */
     add_included_type_begin: function(trigger, type_id) {
+      var trigger_row = trigger.parents("tr:first");
       $.ajax({
         url: acre.request.app_url + "/schema/type/add_included_type_begin",
         data: {id: type_id},
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
-            return se.ajax_error_handler(xhr, row);
+            return se.ajax_error_handler(xhr, trigger_row);
           }
 
           // add edit-form after the edit button
@@ -438,7 +445,7 @@
 
             table: trigger.parents("table:first"),
             trigger: trigger,
-            trigger_row: trigger.parents("tr:first"),
+            trigger_row: trigger_row,
             row: $(".edit-row", html).hide(),
             submit_row: $(".edit-row-submit", html).hide()
           };
@@ -454,7 +461,7 @@
           });
         },
         error: function(xhr) {
-          se.ajax_error_handler(xhr, row);
+          se.ajax_error_handler(xhr, trigger_row);
         }
       });
     },
@@ -528,8 +535,77 @@
           se.ajax_error_handler(xhr, form.row);
         }
       });
-    }
+    },
 
+
+    reverse_property_begin: function(trigger, type_id, master_id) {
+      var trigger_row = trigger.parents("tr:first");
+      $.ajax({
+        url: acre.request.app_url + "/schema/type/reverse_property_begin",
+        data: {id: type_id, master: master_id},
+        dataType: "json",
+        success: function(data, status, xhr) {
+          if (data.code === "/api/status/error") {
+            return se.ajax_error_handler(xhr, trigger_row);
+          }
+          var html = $(data.result.html);
+          var form = {
+            mode: "edit",
+            event_prefix: "fb.schema.type.reverse.property.",
+            ajax: {
+              url: acre.request.app_url + "/schema/type/add_property_submit",
+              data: {master_property: master_id},
+              success: function(data, status, xhr) {
+                if (data.code === "/api/status/error") {
+                  return se.ajax_error_handler(xhr, form.row);
+                }
+                te.reverse_property_success(form, data);
+              }
+            },
+
+            init_form: te.init_property_form,
+            validate_form: te.validate_property_form,
+            submit_form: te.submit_property_form,
+
+            table: trigger.parents("table:first"),
+            trigger: trigger,
+            trigger_row: trigger_row,
+            row: $(".edit-row", html).hide(),
+            submit_row: $(".edit-row-submit", html).hide()
+          };
+
+          se.init_edit_form(form);
+        },
+        error: function(xhr) {
+          se.ajax_error_handler(xhr, trigger_row);
+        }
+      });
+    },
+
+    reverse_property_success: function(form, data) {
+      var new_row = $(data.result.html).addClass("new-row");
+
+      var prop_body = $("#type-table table:first > tbody");
+      prop_body.append(new_row);
+      new_row.hide();
+      new_row.showRow(function() {
+        // init row menu
+        fb.schema.init_row_menu(new_row);
+        fb.schema.type.init_tooltips(new_row);
+        // show edit controls in tooltip
+        $(".edit", new_row).show();
+      }, null, "slow");
+
+      // show headers if showing the empty message
+      var empty_msg = $(".table-empty-column", prop_body);
+      if (empty_msg.length) {
+        empty_msg.parents("tr:first").hide().prev("tr").show();
+      }
+
+      form.trigger_row.remove(); // old row
+      form.row.remove();
+      form.submit_row.remove();
+    }
 
   };
 

@@ -406,14 +406,31 @@ function included_types(id) {
 /**
  * Add types (included_types) to the /freebase/type_hints/included_types list of type (id).
  */
-function add_included_types(id, include_types) {
+function add_included_types(id, included_types) {
   var q = {
     id: id,
     "/freebase/type_hints/included_types": []
   };
-  include_types.forEach(function(type_id) {
+  included_types.forEach(function(type_id) {
     q["/freebase/type_hints/included_types"].push({id: type_id, connect: "insert"});
   });
+  return freebase.mqlwrite(q)
+    .then(function(env) {
+      return env.result["/freebase/type_hints/included_types"];
+    });
+};
+
+/**
+ * Delete an included type from type (id).
+ */
+function delete_included_type(id, included_type) {
+  var q = {
+    id: id,
+    "/freebase/type_hints/included_types": {
+      id: included_type,
+      connect: "delete"
+    }
+  };
   return freebase.mqlwrite(q)
     .then(function(env) {
       return env.result["/freebase/type_hints/included_types"];

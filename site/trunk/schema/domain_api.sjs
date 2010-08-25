@@ -127,21 +127,26 @@ api.domain_settings_begin.auth = true;
 
 api.domain_settings_submit.args = ["id", "name", "namespace", "key"]; // domain id
 api.domain_settings_submit.auth = true;
+api.domain_settings_submit.method = "POST";
 
 api.add_type_begin.args = ["id"]; // domain id, mediator (optional)
 api.add_type_begin.auth = true;
 
 api.add_type_submit.args = ["domain", "name", "key"];
 api.add_type_submit.auth = true;
+api.add_type_submit.method = "POST";
 
 api.delete_type_submit.args = ["id", "user"]; // type id, user id
 api.delete_type_submit.auth = true;
+api.delete_type_submit.method = "POST";
 
 api.undo_delete_type_submit.args = ["type_info"]; // JSON @see /freebase/site/queries/delete_type
 api.undo_delete_type_submit.auth = true;
+api.undo_delete_type_submit.method = "POST";
 
 api.edit_type_begin.args = ["id"]; // type id
 api.edit_type_begin.auth = true;
 
 api.edit_type_submit.args = ["id", "domain", "name", "key"];
 api.edit_type_submit.auth = true;
+api.edit_type_submit.method = "POST";

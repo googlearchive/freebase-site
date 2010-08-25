@@ -158,8 +158,6 @@
   </tr>
 </acre:block>
 
-
-
 <acre:block def="add_included_type_form(type_id)">
   <table class="edit-form clear">
     <tbody>
@@ -184,6 +182,15 @@
       </tr>
     <tbody>
   </table>  
+</acre:block>
+
+<acre:block def="delete_included_type_result(type_id, included_type_id)">
+  <tr class="row-msg row-msg-info">
+    <td colspan="4">
+      <strong>${included_type_id}</strong> is no longer included.
+      <a href="#" onclick="return freebase.dispatch(event, freebase.schema.type.undo_delete_included_type, ['${type_id}','${included_type_id}'], this);">Undo</a>
+    </td>
+  </tr>
 </acre:block>
 
 <acre:block def="type_settings_form(type)">

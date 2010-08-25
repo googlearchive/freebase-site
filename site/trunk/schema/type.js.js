@@ -152,6 +152,31 @@
       return false;
     },
 
+    delete_included_type: function(e, type_id, included_type_id) {
+      e.stopPropagation();
+      var trigger = $(this);
+      if (trigger.is(".editing")) { // are we already editing?
+        return false;
+      }
+      trigger.addClass("editing");
+      fb.get_script(acre.request.app_url + "/schema/MANIFEST/type-edit.mf.js", function() {
+        t.edit.delete_included_type_begin(trigger, type_id, included_type_id);
+      });
+      return false;
+    },
+
+    undo_delete_included_type: function(e, type_id, included_type_id) {
+      var trigger = $(this);
+      if (trigger.is(".editing")) { // are we already editing?
+        return false;
+      }
+      trigger.addClass("editing");
+      fb.get_script(acre.request.app_url + "/schema/MANIFEST/type-edit.mf.js", function() {
+        t.edit.undo_delete_included_type_begin(trigger, type_id, included_type_id);
+      });
+      return false;
+    },
+
     reverse_property: function(e, type_id, master_id) {
       var trigger = $(this);
       if (trigger.is(".editing")) { // are we already editing?

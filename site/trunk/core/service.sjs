@@ -52,8 +52,14 @@ function main(scope, api) {
   }
 
   var fn = api[action];
-  var svc = (method === 'GET' ? lib.GetService :
-             (headers['content-type'].indexOf("multipart/form-data") === 0 ? lib.FormService : lib.PostService));
+
+  var svc;
+  if (fn.method === "POST") {
+    svc = lib.PostService;
+  }
+  else {
+    svc = lib.GetService;
+  }
 
   var d;
   try {

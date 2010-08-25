@@ -87,12 +87,13 @@
 </acre:block>
 
 <!-- Included Types markup pattern -->
-<acre:block def="included_type_thead(type, expanded)">
+<acre:block def="included_type_thead(type_id, included_type, expanded)">
   <thead>
     <tr>
       <th class="tbody-header ${expanded ? 'expanded' : ''}" colspan="4" 
-         data-url="${h.url_for('schema', 'type', [['id',type.id]] , '/get_type_properties')}">
-        <span class="tbody-header-title">$type.name</span> <span class="key">$type.id</span>
+         data-url="${h.url_for('schema', 'type', [['id',included_type.id]] , '/get_type_properties')}">
+        <span class="tbody-header-title">$included_type.name</span> <span class="key">$included_type.id</span>
+        <a href="#" onclick="return freebase.dispatch(event, freebase.schema.type.delete_included_type, ['${type_id}', '${included_type.id}'], this);"><span>delete</span></a>
       </th>
     </tr>
   </thead>
@@ -105,7 +106,7 @@
       <th class="tbody-header ${expanded ? 'expanded' : ''}" colspan="4"
           data-url="${data_url ? data_url : ''}">
         <span class="tbody-header-title ${expanded ? 'expanded' : ''}">$name</span>
-      </th>
+     </th>
     </tr>
   </thead>
 </acre:block>

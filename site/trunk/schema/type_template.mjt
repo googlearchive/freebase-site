@@ -165,7 +165,7 @@
       </h2>
       <table class="table" cellspacing="0" id="included-types-table">
         <acre:block for="type in c.type.included_types">
-          ${tc.included_type_thead(type)}
+          ${tc.included_type_thead(c.type.id, type)}
         </acre:block>
         <thead acre:attrs="c.type.included_types.length ? {style:'display:none;'}:{}">
           <tr>

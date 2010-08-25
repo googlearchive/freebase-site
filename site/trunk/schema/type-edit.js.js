@@ -542,6 +542,57 @@
       });
     },
 
+    delete_included_type_begin: function(trigger, type_id, included_type_id) {
+      var row = trigger.parents("tr:first");
+      var table = row.parents("table:first");
+      $.ajax({
+        url: acre.request.app_url + "/schema/type/delete_included_type_submit",
+        data: {id: type_id, included_type: included_type_id},
+        type: "POST",
+        dataType: "json",
+        success: function(data, status, xhr) {
+          if (data.code === "/api/status/error") {
+            return se.ajax_error_handler(xhr, row);
+          }
+          var new_row = $(data.result.html).addClass("new-row");
+          row.before(new_row);
+          new_row.hide();
+          row.remove();
+          new_row.showRow();
+        },
+        error: function(xhr) {
+          se.ajax_error_handler(xhr, row);
+        }
+      });
+    },
+
+    undo_delete_included_type_begin: function(trigger, type_id, included_type_id) {
+      var row = trigger.parents("tr:first");
+      var table = row.parents("table:first");
+      $.ajax({
+        url: acre.request.app_url + "/schema/type/undo_delete_included_type_submit",
+        data: {id: type_id, included_type: included_type_id},
+        type: "POST",
+        dataType: "json",
+        success: function(data, status, xhr) {
+          if (data.code === "/api/status/error") {
+            return se.ajax_error_handler(xhr, row);
+          }
+          var new_row = $(data.result.html).addClass("new-row");
+          row.before(new_row);
+          new_row.hide();
+          row.remove();
+          new_row.showRow(function() {
+            $(".tbody-header", new_row).each(function() {
+              $(this).data("ajax", true).click(fb.schema.type.toggle);
+            });
+          }, null, "slow");
+        },
+        error: function(xhr) {
+          se.ajax_error_handler(xhr, row);
+        }
+      });
+    },
 
     reverse_property_begin: function(trigger, type_id, master_id) {
       var trigger_row = trigger.parents("tr:first");

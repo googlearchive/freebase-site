@@ -151,21 +151,21 @@ var api = {
     return deferred.all(promises)
       .then(function(result) {
         // include the included types of args.included_type + args.included_type
-        var include_types = result[0].concat(result[1]);
-        return include_types;
+        var to_include = result[0].concat(result[1]);
+        return to_include;
       })
-      .then(function(types) {
-        return queries.add_included_types(args.id, [t.id for each (t in types)])
+      .then(function(to_include) {
+        return queries.add_included_types(args.id, [t.id for each (t in to_include)])
           .then(function(included) {
             var inserted = [t.id for each (t in included) if (t.connect === "inserted")];
             if (inserted.length) {
               var types_by_id = {};
-              types.forEach(function(type) {
+              to_include.forEach(function(type) {
                 types_by_id[type.id] = type;
               });
               var html = [];
               inserted.forEach(function(type) {
-                html.push(acre.markup.stringify(tc.included_type_thead(types_by_id[type])));
+                html.push(acre.markup.stringify(tc.included_type_thead(args.id, types_by_id[type])));
               });
               return {
                 html: html.join("")
@@ -175,6 +175,31 @@ var api = {
               return deferred.rejected(args.included_type + " is already included");
             }
           });
+      });
+  },
+
+  delete_included_type_submit: function(args) {
+    return queries.delete_included_type(args.id, args.included_type)
+      .then(function(result) {
+        return {
+          html: acre.markup.stringify(edit.delete_included_type_result(args.id, args.included_type))
+        };
+      });
+  },
+
+  undo_delete_included_type_submit: function(args) {
+    var promises = [];
+    promises.push(queries.add_included_types(args.id, [args.included_type]));
+    promises.push(freebase.mqlread({id:args.included_type, name:null})
+      .then(function(env) {
+        return env.result;
+      }));
+
+    return deferred.all(promises)
+      .then(function(result) {
+        return {
+          html: acre.markup.stringify(tc.included_type_thead(args.id, result[1]))
+        };
       });
   },
 
@@ -207,12 +232,15 @@ api.add_property_begin.auth = true;
 
 api.add_property_submit.args = ["type", "name", "key", "expected_type"];
 api.add_property_submit.auth = true;
+api.add_property_submit.method = "POST";
 
 api.delete_property_submit.args = ["id", "user"]; // property id, user id
 api.delete_property_submit.auth = true;
+api.delete_property_submit.method = "POST";
 
 api.undo_delete_property_submit.args = ["prop_info"]; // JSON @see /freebase/site/queries/delete_property
 api.undo_delete_property_submit.auth = true;
+api.undo_delete_property_submit.method = "POST";
 
 api.edit_property_begin.args = ["id"]; // property id
 api.edit_property_begin.auth = true;
@@ -225,6 +253,11 @@ api.add_included_type_begin.auth = true;
 
 api.add_included_type_submit.args = ["id", "included_type"]; // type id, id of type to include
 api.add_included_type_submit.auth = true;
+api.add_included_type_submit.method = "POST";
+
+api.delete_included_type_submit.args = ["id", "included_type"]; // type id, id of type to remove from included_type
+api.delete_included_type_submit.auth = true;
+api.delete_included_type_submit.method = "POST";
 
 api.reverse_property_begin.args = ["id", "master"]; // type id, master property id
 api.reverse_property_begin.auth = true;

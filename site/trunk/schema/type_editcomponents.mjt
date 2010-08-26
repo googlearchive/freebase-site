@@ -64,9 +64,10 @@
               <input name="expected_type_input" type="text" class="text-input suggest-input" 
                      acre:attrs="attrs"/>
               <input name="expected_type" type="hidden" 
-                     acre:attrs="ect_hidden?{value:ect_hidden}:{}">
-              <input name="unit" type="hidden" acre:attrs="unit_hidden?{value:unit_hidden}:{}">
-              <input acre:if="master_prop" name="master_property" type="hidden" value="${master_prop.id}">
+                     acre:attrs="ect_hidden?{value:ect_hidden}:{}"/>
+              <input name="expected_type_new" type="hidden"/>
+              <input name="unit" type="hidden" acre:attrs="unit_hidden?{value:unit_hidden}:{}"/>
+              <input acre:if="master_prop" name="master_property" type="hidden" value="${master_prop.id}"/>
             </label>
 
             <acre:block if="prop">
@@ -88,7 +89,7 @@
             <div class="fb-property-display">
               <label for="disambiguator" class="boolean-field">
                 <input type="checkbox" name="disambiguator" 
-                       acre:attrs="prop&&prop.disambiguator?{checked:'checked'}:{}">
+                       acre:attrs="prop&&prop.disambiguator?{checked:'checked'}:{}"/>
                 Disambiguating
               </label>
               <label for="unique" class="boolean-field">
@@ -110,17 +111,17 @@
                   }
                 </acre:script>
                 <input type="checkbox" name="unique"
-                       acre:attrs="attrs">
+                       acre:attrs="attrs"/>
                 Unique
               </label>
               <label for="hidden" class="boolean-field">
                 <input type="checkbox" name="hidden"
-                       acre:attrs="prop&&prop.hidden?{checked:'checked'}:{}">
+                       acre:attrs="prop&&prop.hidden?{checked:'checked'}:{}"/>
                 Hidden
               </label>
               <label for="master" class="boolean-field">
                 <input acre:if="prop" type="checkbox" name="master" disabled="disabled"
-                       acre:attrs="prop.master_property?{}:{checked:'checked'}" />
+                       acre:attrs="prop.master_property?{}:{checked:'checked'}"/>
                 <input acre:if="master_prop" type="checkbox" name="master" disabled="disabled"/>
                 <input acre:else="" type="checkbox" name="master" disabled="disabled" checked="checked"/>
                Master

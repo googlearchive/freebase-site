@@ -20,6 +20,7 @@ function Invalid() {
 };
 Invalid.prototype = new Error();
 
+
 /**
  * A factory to create a new Invalid with var args.
  *
@@ -118,7 +119,7 @@ Validator.Class.prototype = {
     this.options = h.extend({}, this.defaults, this.options);
   },
   defaults: {
-    strip: true
+    strip: true   // strip beginning/ending whitespaces if string
     // if_empty
     // if_invalid
     // required

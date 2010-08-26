@@ -7,6 +7,7 @@ var create_property = mf.require("queries", "create_property");
 var delete_property = mf.require("queries", "delete_property");
 var update_property = mf.require("queries", "update_property");
 var update_type = mf.require("queries", "update_type");
+var create_type = mf.require("queries", "create_type");
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 
@@ -74,15 +75,40 @@ var api = {
   },
 
   add_property_submit: function(args) {
-    var create_property_options = h.extend({}, args, {mqlkey_quote:true, empty_delete:false});
-    return create_property.create_property(create_property_options)
-      .then(function(created) {
-        return queries.property(created.id);
-      })
-      .then(function(prop) {
-        return {
-          html: acre.markup.stringify(tc.type_property_row(prop))
-        };
+    var promise;
+    if (!args.expected_type && args.expected_type_new) {
+      // do we need to create a new expected type?
+      promise = freebase.mqlread({id: args.type, "/type/type/domain": null})
+        .then(function(env) {
+          var create_type_options = {
+            domain: env.result["/type/type/domain"],
+            name: args.expected_type_new,
+            key: args.expected_type_new.toLowerCase(),
+            mqlkey_quote: true,
+            empty_delete: false
+          };
+          return create_type.create_type(create_type_options)
+            .then(function(type) {
+              args.expected_type = type.id;
+              return args;
+            });
+        });
+    }
+    else {
+      promise = deferred.resolved(args);
+    }
+    return promise
+      .then(function(args) {
+        var create_property_options = h.extend({}, args, {mqlkey_quote:true, empty_delete:false});
+        return create_property.create_property(create_property_options)
+          .then(function(created) {
+            return queries.property(created.id);
+          })
+          .then(function(prop) {
+            return {
+              html: acre.markup.stringify(tc.type_property_row(prop))
+            };
+          });
       });
   },
 
@@ -123,15 +149,40 @@ var api = {
   },
 
   edit_property_submit: function(args) {
-    var update_prop_options = h.extend({}, args, {mqlkey_quote:true, empty_delete:true});
-    return update_property.update_property(update_prop_options)
-      .then(function(updated_id) {
-        return queries.property(updated_id);
-      })
-      .then(function(prop) {
-        return {
-          html: acre.markup.stringify(tc.type_property_row(prop))
-        };
+    var promise;
+    if (!args.expected_type && args.expected_type_new) {
+      // do we need to create a new expected type?
+      promise = freebase.mqlread({id: args.type, "/type/type/domain": null})
+        .then(function(env) {
+          var create_type_options = {
+            domain: env.result["/type/type/domain"],
+            name: args.expected_type_new,
+            key: args.expected_type_new.toLowerCase(),
+            mqlkey_quote: true,
+            empty_delete: false
+          };
+          return create_type.create_type(create_type_options)
+            .then(function(type) {
+              args.expected_type = type.id;
+              return args;
+            });
+        });
+    }
+    else {
+      promise = deferred.resolved(args);
+    }
+    return promise
+      .then(function(args) {
+        var update_prop_options = h.extend({}, args, {mqlkey_quote:true, empty_delete:true});
+        return update_property.update_property(update_prop_options)
+          .then(function(updated_id) {
+            return queries.property(updated_id);
+          })
+          .then(function(prop) {
+            return {
+              html: acre.markup.stringify(tc.type_property_row(prop))
+            };
+          });
       });
   },
 

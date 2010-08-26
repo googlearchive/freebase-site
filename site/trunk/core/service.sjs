@@ -160,7 +160,7 @@ function handle_service_error(e) {
       msg = (typeof e.toString === "function") ? e.toString() : ""+e;
     }
     return lib.output_response(new lib.ServiceError("400 Bad Request", null, {
-      message: e,
+      message: msg,
       code : "/api/status/error/input/validation"
     }));
   }

@@ -202,6 +202,7 @@
       var key =  $("input[name=key]", form.row);
       var expected_type_input = $("input[name=expected_type_input]", form.row);
       var expected_type = $("input[name=expected_type]", form.row);
+      var expected_type_new = $("input[name=expected_type_new]", form.row);
       var unit = $("input[name=unit]", form.row);
       var description = $("textarea[name=description]", form.row);
       var disambiguator = $("input[name=disambiguator]", form.row);
@@ -213,6 +214,7 @@
         key.val("").data("changed", false);
         expected_type_input.val("");
         expected_type.val("");
+        expected_type_new.val("");
         unit.val("");
         description.val("");
         $.each([disambiguator, unique, hidden], function(i, checkbox) {
@@ -247,11 +249,13 @@
           if (data.unit) {
             expected_type_input.val(data.id + " (" + data.unit.name + ")");
             expected_type.val(data.id);
+            expected_type_new.val("");
             unit.val(data.unit.id);
           }
           else {
             expected_type_input.val(data.id);
             expected_type.val(data.id);
+            expected_type_new.val("");
             unit.val("");
             if (data.id === "/type/boolean") {
               // auto-check unique on /type/boolean
@@ -261,9 +265,14 @@
         })
         .bind("fb-textchange", function() {
           expected_type.val("");
+          expected_type_new.val("");
+          unit.val("");
+        })
+        .bind("fb-select-new", function(e, val) {
+          expected_type_new.val($.trim(val));
+          expected_type.val("");
           unit.val("");
         });
-
 
         // enter/escape key handler
         $(":input:not(textarea)", form.row)
@@ -296,6 +305,7 @@
       var name = $.trim($("input[name=name]", form.row).val());
       var key =  $.trim($("input[name=key]", form.row).val()).toLowerCase();
       var expected_type = $("input[name=expected_type]", form.row).val();
+      var expected_type_new = $("input[name=expected_type_new]", form.row).val();
       var unit = $("input[name=unit]", form.row).val();
       var description = $("input[name=description]", form.row).val();
       var disambiguator = $("input[name=disambiguator]", form.row).is(":checked") ? 1 : 0;
@@ -307,6 +317,7 @@
         name: name,
         key: key,
         expected_type: expected_type,
+        expected_type_new: expected_type_new,
         unit: unit,
         description: description,
         disambiguator: disambiguator,
@@ -350,8 +361,9 @@
     validate_property_form: function(form) {
       var name = $.trim($(":input[name=name]", form.row).val());
       var key =  $.trim($(":input[name=key]", form.row).val());
-      var ect = $.trim($(":input[name=expected_type]", form.row).val());
-      if (name === "" || key === "" || ect === "") {
+      var ect = $(":input[name=expected_type]", form.row).val();
+      var ect_new = $(":input[name=expected_type_new]", form.row).val();
+      if (name === "" || key === "" || (ect === "" && ect_new === "")) {
         form.row.trigger(form.event_prefix + "error", [form.row, "Name, Key and Expected Type are required"]);
       }
       // TODO: simple duplicate key check

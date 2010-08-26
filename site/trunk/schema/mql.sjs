@@ -103,7 +103,8 @@ function property(options) {
       name: null,
       type: "/type/property",
       schema: {id: null, name: null},
-      unique: null
+      unique: null,
+      unit: {optional: true, id: null, name: null, "/freebase/unit_profile/abbreviation": null}
     },
     reverse_property: {
       optional: true,
@@ -111,15 +112,11 @@ function property(options) {
       name: null,
       type: "/type/property",
       schema: {id: null, name: null},
-      unique: null
+      unique: null,
+      unit: {optional: true, id: null, name: null, "/freebase/unit_profile/abbreviation": null}
     },
     delegated: {optional: true, id: null, name: null},
-    unit: {
-        optional: true,
-        id: null,
-        name: null,
-        "/freebase/unit_profile/abbreviation": null
-    },
+    unit: {optional: true, id: null, name: null, "/freebase/unit_profile/abbreviation": null},
     "unique": null,
     "/freebase/property_hints/disambiguator": null,
     "/freebase/property_hints/display_none": null,

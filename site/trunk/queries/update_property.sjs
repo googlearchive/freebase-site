@@ -13,27 +13,27 @@ function update_property(options) {
   try {
     o = {
       // required
-      type: validators.MqlId(options.type, {required:true}).to_js(),
-      id: validators.MqlId(options.id, {required:true}).to_js(),
+      type: validators.MqlId(options, "type", {required:true}),
+      id: validators.MqlId(options, "id", {required:true}),
 
       // optional
-      name: validators.String(options.name, {if_empty:null}).to_js(),
-      key: validators.String(options.key, {if_empty:null}).to_js(),
-      expected_type: validators.MqlId(options.expected_type, {if_empty:null}).to_js(),
-      unit: validators.MqlId(options.unit, {if_empty:null}).to_js(),
-      description: validators.String(options.description, {if_empty:null}).to_js(),
-      disambiguator: validators.StringBool(options.disambiguator, {if_empty:null}).to_js(),
-      unique: validators.StringBool(options.unique, {if_empty:null}).to_js(),
-      hidden: validators.StringBool(options.hidden, {if_empty:null}).to_js(),
+      name: validators.String(options, "name", {if_empty:null}),
+      key: validators.String(options, "key", {if_empty:null}),
+      expected_type: validators.MqlId(options, "expected_type", {if_empty:null}),
+      unit: validators.MqlId(options, "unit", {if_empty:null}),
+      description: validators.String(options, "description", {if_empty:null}),
+      disambiguator: validators.StringBool(options, "disambiguator", {if_empty:null}),
+      unique: validators.StringBool(options, "unique", {if_empty:null}),
+      hidden: validators.StringBool(options, "hidden", {if_empty:null}),
 
       // default lang for text is /lang/en
-      lang: validators.MqlId(options.lang, {if_empty:"/lang/en"}).to_js(),
+      lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"}),
 
       // if TRUE, acre.freebase.mqlkey_quote key. Default is FALSE
-      mqlkey_quote: validators.StringBool(options.mqlkey_quote, {if_empty:false}).to_js(),
+      mqlkey_quote: validators.StringBool(options, "mqlkey_quote", {if_empty:false}),
 
       // if TRUE, name, key, ect, unit, description, disambiguator, unique, hidden is deleted if empty. Default is FALSE
-      empty_delete: validators.StringBool(options.empty_delete, {if_empty:false}).to_js()
+      empty_delete: validators.StringBool(options, "empty_delete", {if_empty:false})
     };
   }
   catch(e if e instanceof validators.Invalid) {

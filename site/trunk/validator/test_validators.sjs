@@ -50,13 +50,13 @@ for (var env in tests) {
 
     // test valids
     valid.forEach(function(ok) {
-      strictEqual(validator(ok).to_js(), ok);
+      strictEqual(validator(ok), ok);
     });
 
     // test invalids
     invalid.forEach(function(nok) {
       try {
-        validator(nok).to_js();
+        validator(nok);
         ok(false, env + " validator accepted " + (typeof nok) + " value");
       }
       catch(e if e instanceof validators.Invalid) {
@@ -68,7 +68,7 @@ for (var env in tests) {
 
       // if_invalid
       try {
-        strictEqual(validator(nok, {if_invalid: "hello"}).to_js(), "hello");
+        strictEqual(validator(nok, {if_invalid: "hello"}), "hello");
       }
       catch(e) {
         ok(false, "option if_invalid ignored");
@@ -78,13 +78,13 @@ for (var env in tests) {
     // if_empty, required
     ["", [], {}, null, undefined].forEach(function(empty) {
       try {
-        strictEqual(validator(empty, {if_empty: "world"}).to_js(), "world");
+        strictEqual(validator(empty, {if_empty: "world"}), "world");
       }
       catch (e) {
         ok(false, "option if_empty ignored");
       }
       try {
-        validator(empty, {required: true}).to_js();
+        validator(empty, {required: true});
         ok(false, "option required ignored");
       }
       catch (e if e instanceof validators.Invalid) {
@@ -100,14 +100,14 @@ for (var env in tests) {
 var truthy = [true, "true", "yes", "1", "-1", [0], [{}], {a:null}];
 test("validators.StringBool", truthy, function() {
   truthy.forEach(function(t) {
-    strictEqual(validators.StringBool(t).to_js(), true);
+    strictEqual(validators.StringBool(t), true);
   });
 });
 
 var falsey = [false, "false", "no", "", "0", undefined, [], {}];
 test("validators.StringBool", falsey, function() {
   falsey.forEach(function(f) {
-    strictEqual(validators.StringBool(f).to_js(), false);
+    strictEqual(validators.StringBool(f), false);
   });
 });
 
@@ -117,12 +117,12 @@ var guid_test = {
 };
 test("validators.Guid", guid_test, function() {
   guid_test.valid.forEach(function(guid) {
-    strictEqual(validators.Guid(guid).to_js(), guid);
+    strictEqual(validators.Guid(guid), guid);
   });
 
   guid_test.invalid.forEach(function(guid) {
     try {
-      validators.Guid(guid).to_js();
+      validators.Guid(guid);
       ok(false, "expected invalid guid " + guid);
     }
     catch(e if e instanceof validators.Invalid) {
@@ -142,12 +142,12 @@ var mqlid_test = {
 };
 test("validators.MqlId", mqlid_test, function() {
   mqlid_test.valid.concat(mqlid_test.allow).forEach(function(id) {
-    strictEqual(validators.MqlId(id, {guid:true, reverse:true}).to_js(), id);
+    strictEqual(validators.MqlId(id, {guid:true, reverse:true}), id);
   });
 
   mqlid_test.invalid.concat(mqlid_test.allow).forEach(function(id) {
     try {
-      validators.MqlId(id).to_js();
+      validators.MqlId(id);
       ok(false, "expected invalid mql id " + id);
     }
     catch(e if e instanceof validators.Invalid) {
@@ -190,12 +190,12 @@ test("valdiators.OneOf", oneof_test, function() {
     var invalid = testing.invalid;
 
     valid.forEach(function(val) {
-      strictEqual(validators.OneOf(val, {oneof:oneof}).to_js(), val);
+      strictEqual(validators.OneOf(val, {oneof:oneof}), val);
     });
 
     invalid.forEach(function(val) {
       try {
-        validators.OneOf(val, {oneof:oneof}).to_js();
+        validators.OneOf(val, {oneof:oneof});
         ok(false, "not oneof " + val);
       }
       catch(e if e instanceof validators.Invalid) {

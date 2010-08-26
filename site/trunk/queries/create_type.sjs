@@ -14,13 +14,13 @@ function create_type(options) {
   var o;
   try {
     o = {
-      domain: validators.MqlId(options.domain, {required:true}).to_js(),
-      name: validators.String(options.name, {required:true}).to_js(),
-      key: validators.String(options.key, {required:true}).to_js(),
-      description: validators.String(options.description, {if_empty:""}).to_js(),
-      role: validators.OneOf(options.role, {oneof:["mediator", "cvt", "enumeration"], if_empty:""}).to_js(),
-      mqlkey_quote: validators.StringBool(options.mqlkey_quote, {if_empty:false}).to_js(),
-      lang: validators.MqlId(options.lang, {if_empty:"/lang/en"}).to_js()
+      domain: validators.MqlId(options, "domain", {required:true}),
+      name: validators.String(options, "name", {required:true}),
+      key: validators.String(options, "key", {required:true}),
+      description: validators.String(options, "description", {if_empty:""}),
+      role: validators.OneOf(options, "role", {oneof:["mediator", "cvt", "enumeration"], if_empty:""}),
+      mqlkey_quote: validators.StringBool(options, "mqlkey_quote", {if_empty:false}),
+      lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"})
     };
   }
   catch(e if e instanceof validators.Invalid) {

@@ -13,19 +13,19 @@ function create_property(options) {
   var o;
   try {
     o = {
-      type: validators.MqlId(options.type, {required:true}).to_js(),
-      name: validators.String(options.name, {required:true}).to_js(),
-      key: validators.String(options.key, {required:true}).to_js(),
-      expected_type: validators.MqlId(options.expected_type, {required:true}).to_js(),
-      unit: validators.MqlId(options.unit, {if_empty:""}).to_js(),
-      description: validators.String(options.description, {if_empty:""}).to_js(),
-      disambiguator: validators.StringBool(options.disambiguator, {if_empty:false}).to_js(),
-      unique: validators.StringBool(options.unique, {if_empty:false}).to_js(),
-      hidden: validators.StringBool(options.hidden, {if_empty:false}).to_js(),
-      master_property: validators.MqlId(options.master_property, {if_empty:""}).to_js(),
+      type: validators.MqlId(options, "type", {required:true}),
+      name: validators.String(options, "name", {required:true}),
+      key: validators.String(options, "key", {required:true}),
+      expected_type: validators.MqlId(options, "expected_type", {required:true}),
+      unit: validators.MqlId(options, "unit", {if_empty:""}),
+      description: validators.String(options, "description", {if_empty:""}),
+      disambiguator: validators.StringBool(options, "disambiguator", {if_empty:false}),
+      unique: validators.StringBool(options, "unique", {if_empty:false}),
+      hidden: validators.StringBool(options, "hidden", {if_empty:false}),
+      master_property: validators.MqlId(options, "master_property", {if_empty:""}),
 
-      mqlkey_quote: validators.StringBool(options.mqlkey_quote, {if_empty:false}).to_js(),
-      lang: validators.MqlId(options.lang, {if_empty:"/lang/en"}).to_js()
+      mqlkey_quote: validators.StringBool(options, "mqlkey_quote", {if_empty:false}),
+      lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"})
     };
   }
   catch(e if e instanceof validators.Invalid) {

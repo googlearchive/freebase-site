@@ -15,21 +15,21 @@ function update_type(options) {
   try {
     o = {
       // required
-      domain: validators.MqlId(options.domain, {required:true}).to_js(),
-      id: validators.MqlId(options.id, {required:true}).to_js(),
+      domain: validators.MqlId(options, "domain", {required:true}),
+      id: validators.MqlId(options, "id", {required:true}),
 
       // optional
-      name: validators.String(options.name, {if_empty:null}).to_js(),
-      key: validators.String(options.key, {if_empty:null}).to_js(),
-      description: validators.String(options.description, {if_empty:null}).to_js(),
-      role: validators.OneOf(options.role, {oneof:["mediator", "cvt", "enumeration"], if_empty:null}).to_js(),
-      lang: validators.MqlId(options.lang, {if_empty:"/lang/en"}).to_js(),
+      name: validators.String(options, "name", {if_empty:null}),
+      key: validators.String(options, "key", {if_empty:null}),
+      description: validators.String(options, "description", {if_empty:null}),
+      role: validators.OneOf(options, "role", {oneof:["mediator", "cvt", "enumeration"], if_empty:null}),
+      lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"}),
 
       // if TRUE, acre.freebase.mqlkey_quote key. Default is FALSE
-      mqlkey_quote: validators.StringBool(options.mqlkey_quote, {if_empty:false}).to_js(),
+      mqlkey_quote: validators.StringBool(options, "mqlkey_quote", {if_empty:false}),
 
       // if TRUE, name, key, description, role is deleted if empty. Default is FALSE
-      empty_delete: validators.StringBool(options.empty_delete, {if_empty:false}).to_js()
+      empty_delete: validators.StringBool(options, "empty_delete", {if_empty:false})
     };
   }
   catch(e if e instanceof validators.Invalid) {

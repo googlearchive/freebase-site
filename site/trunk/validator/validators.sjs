@@ -1,6 +1,16 @@
 var mf = acre.require("MANIFEST").MF;
 var h = mf.require("core", "helpers");
 
+var Class = {
+  factory: function(clazz, clazz_args) {
+    function F(args) {
+      return clazz.apply(this, args);
+    };
+    F.prototype = clazz.prototype;
+    return new F(clazz_args);
+  }
+};
+
 function Invalid() {
   var args = [];
   for (var i=0, l=arguments.length; i<l; i++) {
@@ -15,15 +25,9 @@ Invalid.prototype = new Error();
  *
  * throw(Invalid.fatory.apply(null, [arg1, arg2, ...]));
  */
-Invalid.factory = (function() {
-  function F(args) {
-    return Invalid.apply(this, args);
-  }
-  F.prototype = Invalid.prototype;
-  return function() {
-    return new F(arguments);
-  };
-})();
+Invalid.factory = function() {
+  return Class.factory(Invalid, arguments);
+};
 
 
 function IfException(val) {
@@ -58,7 +62,11 @@ IfInvalid.prototype = new IfException();
  *
  * This will create a MyValidator object in the current scope, which then you will be able to call it directly:
  *
- * var validated = MyValidator(val, options).to_js();
+ * var validated = MyValidator(val, options);
+ *
+ * or
+ *
+ * var validated = MyValidator(obj, "key", options);
  *
  * You can choose to implement zero or more typeof's methods for the input value. The above example only
  * allows values that are typeof "array" or "dict". For everything else, the base Validator class will
@@ -69,27 +77,45 @@ IfInvalid.prototype = new IfException();
  * @param val (required) - Any value that you want validated
  * @param options:Ojbect (optional) - Options
  */
-function Validator(val, options) {
-  return new Validator.Class(val, options);
+function Validator(/** (val, options) OR (obj, key, options) **/) {
+  //return new Validator.Class(obj, key, options);
+  return Class.factory(Validator.Class, arguments).to_js();
 };
-Validator.Class = function(val, options) {
-  this.init(val, options);
+
+Validator.usage = "usage: Validator(val, options) OR Validator(obj, key, options)";
+
+Validator.Class = function(/** (val, options) OR (obj, key, options) **/) {
+  this.init.apply(this, arguments);
 };
 Validator.factory = function(scope, name, prototype) {
-  scope[name] = function(val, options) {
-    return new scope[name].Class(val, options);
+  scope[name] = function(/** (val, options) OR (obj, key, options) **/) {
+    return Class.factory(scope[name].Class, arguments).to_js();
   };
-  scope[name].Class = function(val, options) {
-    this.init(val, options);
+  scope[name].Class = function(/** (val, options) OR (obj, key, options) **/) {
+    this.init.apply(this, arguments);
   };
   h.extend(scope[name].Class.prototype, Validator.Class.prototype, prototype);
   return scope[name];
 };
 
 Validator.Class.prototype = {
-  init: function(val, options) {
-    this.val = val;
-    this.options = h.extend({}, this.defaults, options);
+  init: function(/** (val, options) OR (obj, key, options) **/) {
+    var args = arguments;
+    var len = args.length;
+    if (len === 0 || len > 3) {
+      throw(Invalid.factory(Validator.usage));
+    }
+    if (len > 1 && typeof args[1] === "string") {
+      this.key = args[1];
+      this.val = args[0][this.key];
+      this.options = len === 3 ? args[2] : null;
+    }
+    else {
+      this.key = "value";
+      this.val = args[0];
+      this.options = len == 2 ? args[1] : null;
+    }
+    this.options = h.extend({}, this.defaults, this.options);
   },
   defaults: {
     strip: true
@@ -138,7 +164,7 @@ Validator.Class.prototype = {
         throw(new IfEmpty(options.if_empty));
       }
       if (options.required) {
-        this.invalid("required", val);
+        this.invalid(this.key, "is required");
       }
     }
   },
@@ -282,7 +308,7 @@ Validator.factory(scope, "Guid", {
       return validate_guid(val);
     }
     catch (e if e instanceof NotAGuid) {
-      return this.invalid("not a guid", val);
+      return this.invalid(this.key, "is not a guid");
     }
   }
 });
@@ -317,7 +343,7 @@ Validator.factory(scope, "MqlId", {
         return val;
       }
     }
-    return this.invalid("not a mql id", val);
+    return this.invalid(this.key, "is not a mql id");
   }
 });
 
@@ -351,7 +377,7 @@ Validator.factory(scope, "OneOf", {
           return val;
         }
       }
-      return this.invalid(val);
+      return this.invalid(this.key, "is not one of", JSON.stringify(options.oneof));
     }
     return this.invalid("oneof option not an array");
   }

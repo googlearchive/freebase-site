@@ -544,6 +544,7 @@
             // init expand/collapse
             $(".tbody-header", theads).each(function() {
               $(this).data("ajax", true).click(fb.schema.type.toggle);
+              $(".edit", this).show();
             });
             form.row.trigger(form.event_prefix + "success");
           }, null, "slow");
@@ -569,6 +570,7 @@
           var new_row = $(data.result.html).addClass("new-row");
           row.before(new_row);
           new_row.hide();
+          row.parent("thead").next("tbody:first").remove();
           row.remove();
           new_row.showRow();
         },
@@ -590,13 +592,17 @@
           if (data.code === "/api/status/error") {
             return se.ajax_error_handler(xhr, row);
           }
-          var new_row = $(data.result.html).addClass("new-row");
-          row.before(new_row);
+          var new_thead = $(data.result.html);
+          var new_row = $(">tr", new_thead).addClass("new-row");
+          var old_thead = row.parents("thead:first");
+
+          old_thead.before(new_thead);
           new_row.hide();
-          row.remove();
+          old_thead.remove();
           new_row.showRow(function() {
             $(".tbody-header", new_row).each(function() {
               $(this).data("ajax", true).click(fb.schema.type.toggle);
+              $(".edit", this).show();
             });
           }, null, "slow");
         },

@@ -225,6 +225,21 @@ function minimal_type(type_id) {
     });
 };
 
+function type_role(type_id) {
+  var q = {
+    id: type_id,
+    type: "/type/type",
+    "/freebase/type_hints/role": {optional: true, id: null},
+    "/freebase/type_hints/mediator": null,
+    "/freebase/type_hints/enumeration": null
+  };
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return qh.get_type_role(env.result || {});
+    });
+};
+
+
 function normalize_prop(prop) {
   prop.tip = prop["/freebase/documented_object/tip"] || "";
   prop.disambiguator = prop["/freebase/property_hints/disambiguator"] === true;

@@ -199,7 +199,7 @@
         </thead>
         <acre:block if="c.type.incoming.domain.length">
           ${tc.incoming_props_thead(c.type.domain.name, true)}
-          ${tc.incoming_props_tbody(c.type.incoming.domain)}
+          ${tc.incoming_props_tbody(c.type.incoming.domain, c.type.role !== 'cvt')}
        </acre:block>
         <acre:block if="c.type.incoming.commons">
           ${tc.incoming_props_thead("Commons", false, h.url_for('schema', 'type', [['id',c.type.id],['exclude_domain',c.type.domain.id]], '/get_incoming_from_commons'))}

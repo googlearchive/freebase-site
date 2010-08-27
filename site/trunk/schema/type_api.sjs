@@ -22,17 +22,23 @@ var api = {
   },
 
   get_incoming_from_commons: function(args) {
-    return queries.incoming_from_commons(args.id, args.exclude_domain)
-      .then(function(props) {
+    var promises = [];
+    promises.push(queries.incoming_from_commons(args.id, args.exclude_domain));
+    promises.push(queries.type_role(args.id));
+    return deferred.all(promises)
+      .then(function([props, role]) {
         return {
-          html: acre.markup.stringify(tc.incoming_props_tbody(props))
+          html: acre.markup.stringify(tc.incoming_props_tbody(props, role !== "cvt"))
         };
       });
   },
 
   get_incoming_from_bases: function(args) {
-    return queries.incoming_from_bases(args.id, args.exclude_domain)
-      .then(function(props) {
+    var promises = [];
+    promises.push(queries.incoming_from_bases(args.id, args.exclude_domain));
+    promises.push(queries.type_role(args.id));
+    return deferred.all(promises)
+      .then(function([props, role]) {
         return {
           html: acre.markup.stringify(tc.incoming_props_tbody(props))
         };

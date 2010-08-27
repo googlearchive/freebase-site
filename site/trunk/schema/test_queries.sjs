@@ -210,6 +210,23 @@ test("included_types", function() {
   ok(person.length === 1, "/people/person is an included type of /film/actor");
 });
 
+test("type_role", function() {
+  var result;
+  q.type_role("/film/performance")
+    .then(function(role) {
+      result = role;
+    });
+  acre.async.wait_on_results();
+  equal(result, "mediator");
+
+  q.type_role("/people/gender")
+    .then(function(role) {
+      result = role;
+    });
+  acre.async.wait_on_results();
+  equal(result, "enumeration");
+});
+
 //
 //
 // All tests after this comment requires users to be logged in

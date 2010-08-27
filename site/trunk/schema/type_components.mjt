@@ -121,7 +121,7 @@
   </thead>
 </acre:block>
 
-<acre:block def="incoming_props_tbody(props)">
+<acre:block def="incoming_props_tbody(props, allow_return_link)">
   <tbody>
     <tr>
       <th class="column-header" scope="col">Originating Type</th>              
@@ -145,7 +145,7 @@
           </acre:block>  
           <a href="javascript:void(0);" class="row-menu-trigger">+</a>
           <ul class="row-menu tooltip">          
-            <li acre:if="!other_property" class="row-menu-item edit">
+            <li acre:if="allow_return_link && !other_property" class="row-menu-item edit">
               <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.reverse_property, ['${prop.expected_type}','${prop.id}'], this);"><span class="create-return-link-icon">Create return link</span></a>
             </li>
             <li class="row-menu-item"><a href="${h.url_for('schema', 'type', null, prop.schema.id)}">View type schema</a></li>

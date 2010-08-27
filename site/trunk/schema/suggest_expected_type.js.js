@@ -63,7 +63,6 @@
 
         this.ect_dimension
           .change(function(e) {
-            console.log("dimension select", e);
             var option = $("[selected]", this);
             var units = option.data("units");
             if (self.ect_dimension_units.data("units") === units) {
@@ -141,7 +140,7 @@
         $.suggest.suggest_expected_type.load_dimensions();
       },
 
-      status_start: function(response_data, start, first) {console.log("status_start", this.ect_unit.is(":visible"));
+      status_start: function(response_data, start, first) {//console.log("status_start", this.ect_unit.is(":visible"));
         base.status_start.apply(this);
         this.ect_pane.show();
         if (this.ect_unit.is(":visible")) {
@@ -149,12 +148,12 @@
         }
       },
 
-      status_loading: function(response_data, start, first) {console.log("status_loading");
+      status_loading: function(response_data, start, first) {//console.log("status_loading");
         base.status_loading.apply(this);
         this.ect_pane.hide();
       },
 
-      status_select: function() {console.log("status_select");
+      status_select: function() {//console.log("status_select");
         base.status_select.apply(this);
         this.ect_pane.hide();
       },
@@ -332,7 +331,7 @@
           });
         },
         jsonpCallback: function(data) {
-          console.log("ajax.success", data);
+          //console.log("ajax.success", data);
           if (data.code === "/api/status/ok") {
             sect.dimensions = data.result.sort(sect.sort_by_name);
             $.each(sect.dimensions, function(i,d) {

@@ -278,7 +278,28 @@
     <p>Learn what an entity graph is, what kind of information it contains, and why you should add your data!</p>
     <a href="${h.wiki_url('What_is_Freebase%3F')}" class="more-link">Learn More &raquo;</a>
   </div>
-</acre>
+</acre:block>
+
+<acre:block def="contribute_to_freebase()">
+  <div class="content-section contribute-section">
+    <h3>Contribute to <span class="emphasis">Freebase</span></h3>
+    <ul>
+      <li>
+        <a href="${h.freebase_url('/tools/flags/review')}">Review queue</a>
+        <p>review topics for merge and delete.</p>
+      </li>
+      <li>
+        <a href="http://typewriter.freebaseapps.com">Typewriter</a>
+        <p>add types to topics.</p>
+      </li>
+      <li>
+        <a href="http://wordhunger.freebaseapps.com">Wordhunger</a>
+        <p>connect WordNet to Freebase.</p>
+      </li>
+    </ul>
+    <a href="${h.wiki_url('Data_games')}" class="more-link">Learn More &raquo;</a>
+  </div>
+</acre:block>
 
 <acre:block def="for_developers()">
   <div class="content-section">

@@ -76,7 +76,8 @@ var api = {
 
   add_property_begin: function(args) {
     return {
-      html: acre.markup.stringify(edit.add_property_form(args.id))
+      html: acre.markup.stringify(edit.add_property_form(args.id)),
+      modal: acre.markup.stringify(edit.delegate_property_form())
     };
   },
 
@@ -267,6 +268,26 @@ var api = {
           html: acre.markup.stringify(edit.reverse_property_form(args.id, master_prop))
         };
       });
+  },
+
+  delegate_property_begin: function(args) {
+    var q = {
+      id: args.id,
+      type: "/type/property",
+      expected_type: null,
+      unique: null
+    };
+    return freebase.mqlread(q)
+      .then(function(env) {
+        return env.result;
+      })
+      .then(function(prop) {
+        return {
+          message: acre.markup.stringify(edit.delegated_property_message(prop)),
+          expected_type: prop.expected_type,
+          unique: prop.unique
+        };
+      });
   }
 
 };
@@ -318,3 +339,6 @@ api.delete_included_type_submit.method = "POST";
 
 api.reverse_property_begin.args = ["id", "master"]; // type id, master property id
 api.reverse_property_begin.auth = true;
+
+api.delegate_property_begin.args = ["id"]; // property id
+api.delegate_property_begin.auth = true;

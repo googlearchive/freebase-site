@@ -47,6 +47,7 @@ var MF = {
       ["jquerytools", "overlay.js"],
       "schema-edit.js",
       "suggest_expected_type.js",
+      "suggest_property.js",
       "type-edit.js"
     ]
   }

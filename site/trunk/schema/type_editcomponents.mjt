@@ -9,6 +9,14 @@
       <tr class="edit-row">
         <td colspan="4">
           <div class="edit-row-loader"></div>  
+
+          <div class="nav clear">
+            <ul class="nav-mode">
+              <li><a class="nav-toggle current" href="#">Add New Property</a></li>
+              <li><a class="nav-toggle nav-delegate" href="#">Add Existing Property</a></li>
+            </ul>
+          </div>
+
           <div class="form-field fb-property-name">
             <label>
               <span class="form-label">Name</span>
@@ -54,7 +62,7 @@
               </label>
               <label for="master" class="boolean-field">
                 <input type="checkbox" name="master" disabled="disabled" checked="checked"/>
-               Master
+               <span>Master</span>
               </label>
             </div>          
           </div>        
@@ -239,11 +247,10 @@
               </label>
               <label for="unique" class="boolean-field">
                 <acre:script>
-                  var unique = {};
+                  var unique = {disabled:'disabled'};
                   if (master_prop.unique) {
                     unique.checked = 'checked';
-                    unique.disabled = 'disabled';
-                  }
+                 }
                 </acre:script>
                 <input type="checkbox" name="unique" acre:attrs="unique"/>
                 Unique
@@ -372,5 +379,36 @@
       <button class="button button-submit button-primary" type="submit">Save</button>
       <button class="button button-cancel">Cancel</button>
     </div>
+  </div>
+</acre:block>
+
+
+<acre:block def="delegate_property_form()">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">Add Existing Property</h1>
+      <div class="modal-content">
+        <div class="form-row">
+          <span class="form-note">You are adding a property from another type. <a href="http://wiki.freebase.com/wiki/Property_delegation" target="_new">Learn more &raquo;</a></span>
+        </div>
+        <div class="form-row">
+          <label>
+            <span class="form-label">Property</span>
+            <input name="property" type="text" class="text-input suggest-input delegate-property-input"/>
+         </label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <button class="button button-submit button-primary" type="submit">Ok</button>
+      <button class="button button-cancel">Cancel</button>
+    </div>
+  </div>
+</acre:block>
+
+
+<acre:block def="delegated_property_message(prop)">
+  <div class="form-msg">
+    This property will be delgated to <a href="${h.url_for('schema', 'property', null, prop.id)}" target="_new">${prop.id}</a>. You cannot change the <strong>Expected Type</strong> or <strong>Uniqueness</strong>.
   </div>
 </acre:block>

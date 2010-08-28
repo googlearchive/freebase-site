@@ -90,6 +90,111 @@
       });
     },
 
+    init_delegate_property: function(form, modal) {
+      $(".nav-toggle", form.row).click(function(e) {
+        te.toggle_delegate_property($(this), form, modal);
+        return false;
+      });
+    },
+
+    toggle_delegate_property: function(trigger, form, modal) {
+      if (trigger.is(".current")) {
+        return false;
+      }
+      var nav = trigger.parents(".nav:first");
+      $(".nav-toggle", nav).removeClass("current");
+      trigger.addClass("current");
+      if (trigger.is(".nav-delegate")) {
+        var api = modal.data("overlay");
+        if (api) {
+          api.load();
+        }
+        else {
+          te.init_delegate_property_form(form, modal);
+          modal.overlay({
+            close: ".button-cancel",
+            closeOnClick: false,
+            load: true,
+            mask: {
+              color: '#000',
+              loadSpeed: 200,
+              opacity: 0.5
+            },
+            onBeforeLoad: function() {
+              modal.removeData("data.suggest");
+            },
+            onLoad: function() {
+              $(":text:first", modal).val("").focus();
+            },
+            onClose: function() {
+              var data = modal.data("data.suggest");
+              if (data && data.id) {
+                console.log("delegate", data.id);
+                te.delegate_property_begin(form, data.id);
+              }
+              else {
+                $(".nav-toggle:first", nav).click();
+              }
+            }
+          });
+        }
+      }
+      else {
+        $("input[name=expected_type_input]", form.row).removeAttr("disabled");
+        $("label[for=master]", form.row).find("span").text("Master");
+        $("input[name=unique]", form.row).removeAttr("disabled", "disabled");
+        $(".form-msg", form.row).remove();
+      }
+    },
+
+    init_delegate_property_form: function(form, modal) {
+      $(".suggest-input", modal).suggest_property({
+        service_url: acre.freebase.service_url
+      })
+      .bind("fb-select", function(e, data) {
+        $(this).val(data.id);
+      })
+      .keypress(function(e) {
+        if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
+          modal.data("data.suggest", $(".suggest-input", modal).data("data.suggest"));
+          modal.data("overlay").close();
+        }
+      });
+      $(".button-submit", modal).click(function() { console.log("modal submit");
+        modal.data("data.suggest", $(".suggest-input", modal).data("data.suggest"));
+        modal.data("overlay").close();
+      });
+    },
+
+    delegate_property_begin: function(form, prop_id) {
+
+      $.ajax({
+        url: acre.request.app_url + "/schema/type/delegate_property_begin",
+        data: {id: prop_id},
+        dataType: "json",
+        success: function(data, status, xhr) {
+          if (data.code === "/api/status/error") {
+            return se.ajax_error_handler(xhr, form.row);
+          }
+          var result = data.result;
+
+          $("input[name=expected_type_input]", form.row).val(result.expected_type).attr("disabled", "disabled");
+          $("input[name=expected_type]", form.row).val(result.expected_type);
+          $("label[for=master]", form.row).find("span").text("Reverse");
+          var unique = $("input[name=unique]", form.row).attr("disabled", "disabled");
+          if (result.unique) {
+            unique.attr("checked", "checked");
+          }
+
+          var field = $(".form-field:first", form.row);
+          var message = $(result.message);
+          field.before(message);
+        },
+        error: function(xhr) {
+          se.ajax_error_handler(xhr, form.row);
+        }
+      });
+    },
 
     /**
      * retrieve add_property form (ajax).
@@ -106,6 +211,7 @@
           }
           // add edit-form after the edit button
           var html = $(data.result.html);
+
           var form = {
             mode: "add",
             event_prefix: "fb.schema.type.add.property.",
@@ -125,6 +231,11 @@
           };
 
           se.init_edit_form(form);
+
+          // delegate property dialog
+          var modal = $(data.result.modal).hide();
+          $(document.body).append(modal);
+          te.init_delegate_property(form, modal);
 
           /**
            * after submit success, re-init form for additional adds
@@ -242,7 +353,6 @@
         // expected_type
         expected_type_input.suggest_expected_type({
           service_url: acre.freebase.service_url,
-          category:"expected_type",
           suggest_new: "Create new type"
         })
         .bind("fb-select", function(e, data) {

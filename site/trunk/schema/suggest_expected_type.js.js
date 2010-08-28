@@ -19,7 +19,8 @@
     _init: $.suggest.suggest.prototype._init,
     status_start: $.suggest.suggest.prototype.status_start,
     status_loading: $.suggest.suggest.prototype.status_loading,
-    status_select: $.suggest.suggest.prototype.status_select
+    status_select: $.suggest.suggest.prototype.status_select,
+    create_item: $.suggest.suggest.prototype.create_item
   };
 
   // delete placeholder plugin as part of suggest
@@ -262,6 +263,15 @@
           ul.append(li);
         });
         return ul;
+      },
+
+      create_item: function(data, response_data) {
+        var li = base.create_item.apply(this, [data, response_data]);
+        var domain = data.id.split("/");
+        domain.pop();
+        domain = domain.join("/");
+        $("."+this.options.css.item_type, li).text(domain);
+        return li;
       }
 
     }));
@@ -269,6 +279,7 @@
     var sect = $.suggest.suggest_expected_type;
     $.extend(sect, {
         defaults:  $.extend(true, {}, $.suggest.suggest.defaults, {
+          category: "expected_type",
           tooltip_options: {
             events: {def: "click,mouseout"},
             position: "bottom right",

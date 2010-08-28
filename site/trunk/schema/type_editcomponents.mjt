@@ -40,6 +40,7 @@
               <input name="expected_type" type="hidden"/>
               <input name="expected_type_new" type="hidden"/>
               <input name="unit" type="hidden"/>
+              <input name="delegated" type="hidden"/>
             </label>
           </div>
          <div class="form-field fb-property-description">

@@ -140,6 +140,9 @@
         }
       }
       else {
+        // remove delegated value
+        $("input[name=delegated]", form.row).val("");
+        // re-enable expected_type and unique and remove delegated message
         $("input[name=expected_type_input]", form.row).removeAttr("disabled");
         $("label[for=master]", form.row).find("span").text("Master");
         $("input[name=unique]", form.row).removeAttr("disabled", "disabled");
@@ -177,7 +180,7 @@
             return se.ajax_error_handler(xhr, form.row);
           }
           var result = data.result;
-
+          // disabled expected_type and unique
           $("input[name=expected_type_input]", form.row).val(result.expected_type).attr("disabled", "disabled");
           $("input[name=expected_type]", form.row).val(result.expected_type);
           $("label[for=master]", form.row).find("span").text("Reverse");
@@ -185,10 +188,12 @@
           if (result.unique) {
             unique.attr("checked", "checked");
           }
-
+          // show delegated message
           var field = $(".form-field:first", form.row);
           var message = $(result.message);
           field.before(message);
+          // add delegated value
+          $("input[name=delegated]", form.row).val(prop_id);
         },
         error: function(xhr) {
           se.ajax_error_handler(xhr, form.row);
@@ -246,7 +251,7 @@
             if (empty_msg.length) {
               empty_msg.parents("tr:first").hide().prev("tr").show();
             }
-            $(".button-cancel", form.submit).text("Done");
+            $(".button-cancel", form.submit_row).text("Done");
             te.init_property_form(form);
           });
         },
@@ -321,6 +326,7 @@
       var hidden = $("input[name=hidden]", form.row);
 
       if (form.mode === "add") {
+        $(".nav-toggle:first", form.row).click(); // reset delegate property form
         name.val("");
         key.val("").data("changed", false);
         expected_type_input.val("");
@@ -422,6 +428,7 @@
       var unique = $("input[name=unique]", form.row).is(":checked") ? 1 : 0;
       var hidden = $("input[name=hidden]", form.row).is(":checked") ? 1 : 0;
 
+
       var data = {
         type:  $(":input[name=type]", form.row).val(),
         name: name,
@@ -434,6 +441,15 @@
         unique: unique,
         hidden: hidden
       };
+
+      // special delgate property logic
+      // we want to be careful submitting the "delegated" paramter
+      if (form.mode === "add") {
+        if ($(".nav-delegate", form.row).is(".current")) {
+          // sanity check we are actually in the delegate tab
+          data.delegated = $("input[name=delegated]", form.row).val();
+        }
+      }
 
       var ajax_options = {
         url: form.ajax.url,
@@ -578,7 +594,7 @@
            * after submit success, we're done editing, remove form and old row
            */
           form.row.bind("fb.schema.type.add.included_type.success", function() {
-            $(".button-cancel", form.submit).text("Done");
+            $(".button-cancel", form.submit_row).text("Done");
             te.init_included_type_form(form);
           });
         },

@@ -64,9 +64,9 @@ var RequestCanceled, RequestTimeout;
       // Pass along the result down the chain
       // If its a deferred then resolve it first
       when(value, function(new_result) {
-        listener.deferred.resolve(new_result)
+        listener.deferred.resolve(new_result);
       }, function(new_error) {
-        listener.deferred.reject(new_error)
+        listener.deferred.reject(new_error);
       });
     }
     
@@ -138,23 +138,23 @@ var RequestCanceled, RequestTimeout;
       if (result instanceof Error) {
         throw result;
       }
-    }
-  }
+    };
+  };
   
   // Convenience function to return an unresolved deferred
   unresolved = function() {
     return new Deferred();
-  }
+  };
   
   // Convenience function to return a resolved promise
   resolved = function(value) {
     return unresolved().resolve(value);
-  }
+  };
   
   // Convenience function to return a rejected promise
   rejected = function(error) {
     return unresolved().reject(error);
-  }
+  };
   
   // Determines whether a value is a promise by checking
   //  for a .then method
@@ -238,8 +238,8 @@ var RequestCanceled, RequestTimeout;
         if (fulfilled === length){
           deferred.resolve(results);
         }
-      }
-    }
+      };
+    };
     
     for (var key in promises) {
       if (promises.hasOwnProperty(key)) {

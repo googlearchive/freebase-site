@@ -242,10 +242,17 @@
 
           se.init_edit_form(form);
 
-          // delegate property dialog
-          var modal = $(data.result.modal).hide();
-          $(document.body).append(modal);
-          te.init_delegate_property(form, modal);
+          var is_cvt = $.trim($(".page-meta .flags").text()) === "Compound Value Type";
+          if (is_cvt) {
+            // hide add existing property option
+            $(".nav", form.row).hide();
+          }
+          else {
+            // delegate property dialog
+            var modal = $(data.result.modal).hide();
+            $(document.body).append(modal);
+            te.init_delegate_property(form, modal);
+          }
 
           /**
            * after submit success, re-init form for additional adds

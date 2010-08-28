@@ -180,9 +180,14 @@
             return se.ajax_error_handler(xhr, form.row);
           }
           var result = data.result;
-          // disabled expected_type and unique
-          $("input[name=expected_type_input]", form.row).val(result.expected_type).attr("disabled", "disabled");
-          $("input[name=expected_type]", form.row).val(result.expected_type);
+
+          // set and disable expected_type and unique
+          var ect_data = {
+            id : result.expected_type,
+            unit: result.unit
+          };
+          $("input[name=expected_type_input]", form.row).attr("disabled", "disabled")
+            .trigger("fb-select", ect_data);
           $("label[for=master]", form.row).find("span").text("Reverse");
           var unique = $("input[name=unique]", form.row).attr("disabled", "disabled");
           if (result.unique) {

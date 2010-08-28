@@ -275,7 +275,8 @@ var api = {
       id: args.id,
       type: "/type/property",
       expected_type: null,
-      unique: null
+      unique: null,
+      unit: {optional: true, id: null, name: null}
     };
     return freebase.mqlread(q)
       .then(function(env) {
@@ -285,11 +286,11 @@ var api = {
         return {
           message: acre.markup.stringify(edit.delegated_property_message(prop)),
           expected_type: prop.expected_type,
-          unique: prop.unique
+          unique: prop.unique,
+          unit: prop.unit
         };
       });
   }
-
 };
 
 // required args and authorization

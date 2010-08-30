@@ -176,8 +176,8 @@
      <!-- mediators -->
      <div class="section">
        <h2 class="table-title">
-         <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="Read help article" rel="help external" class="help-link">What are Mediators?</a>
-         Mediators
+         <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="Read help article" rel="help external" class="help-link">What are Compound Relationship Types?</a>
+         Compound Relationship Types
        </h2>
        <table class="table table-sortable">
          <thead class="${JSON.stringify(c.domain['mediator:types'])}">
@@ -191,7 +191,7 @@
            <tr acre:attrs="c.domain['mediator:types'].length ? {style:'display:none;'}:{}">
              <th colspan="5" class="table-empty-column" scope="col">
                 <div class="edit table-empty-msg">
-                  <a href="javascript:void(0)" class="table-empty-trigger">Use Mediators to&hellip;</a>
+                  <a href="javascript:void(0)" class="table-empty-trigger">Use Compound Relationship Types to&hellip;</a>
                   <div class="table-empty-text">
                     <p>
                     <strong>Describe the relationship between two or more Entity Types.</strong>
@@ -200,7 +200,7 @@
                     <p><a href="http://wiki.freebase.com/wiki/Types" rel="external help">Learn more &raquo;</a></p> 
                   </div>
                 </div>
-               <h3 class="table-empty-title">This domain doesn't have any Mediators.</h3>
+               <h3 class="table-empty-title">This domain doesn't have any Compound Relationship Types.</h3>
              </th>
            </tr>
          </thead>

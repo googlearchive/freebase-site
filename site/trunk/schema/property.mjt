@@ -105,9 +105,8 @@
             </acre:block>
             <acre:block elif="c.property.expected_type.role === 'enumeration'">
               <span class="attribute">enumerated</span>
-            </acre:block>
-            
-            <a class="attribute" acre:if="c.property.unit" href="${h.url_for('schema', 'type', null, c.property.unit.id)}">$c.property.unit.name</a>
+            </acre:block>            
+            <span class="attribute" acre:if="c.property.unit">$c.property.unit.name</a>
           </td>
         </tr>
         <tr>

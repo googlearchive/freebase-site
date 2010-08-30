@@ -20,7 +20,8 @@
     status_start: $.suggest.suggest.prototype.status_start,
     status_loading: $.suggest.suggest.prototype.status_loading,
     status_select: $.suggest.suggest.prototype.status_select,
-    create_item: $.suggest.suggest.prototype.create_item
+    create_item: $.suggest.suggest.prototype.create_item,
+    focus: $.suggest.suggest.prototype.focus
   };
 
   // delete placeholder plugin as part of suggest
@@ -272,6 +273,11 @@
         domain = domain.join("/");
         $("."+this.options.css.item_type, li).text(domain);
         return li;
+      },
+
+      focus: function(e) {
+        base.focus.apply(this, [e]);
+        this.input.removeData("dont_hide");
       }
 
     }));

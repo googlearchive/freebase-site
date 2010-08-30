@@ -426,15 +426,15 @@
       //var loading_height = form.row.find("td:first").height();
       //form.row.find(".edit-row-loader").css({height: loading_height}).show();
 
-      var name = $.trim($("input[name=name]", form.row).val());
-      var key =  $.trim($("input[name=key]", form.row).val()).toLowerCase();
-      var expected_type = $("input[name=expected_type]", form.row).val();
-      var expected_type_new = $("input[name=expected_type_new]", form.row).val();
-      var unit = $("input[name=unit]", form.row).val();
-      var description = $("input[name=description]", form.row).val();
-      var disambiguator = $("input[name=disambiguator]", form.row).is(":checked") ? 1 : 0;
-      var unique = $("input[name=unique]", form.row).is(":checked") ? 1 : 0;
-      var hidden = $("input[name=hidden]", form.row).is(":checked") ? 1 : 0;
+      var name = $.trim($(":input[name=name]", form.row).val());
+      var key =  $.trim($(":input[name=key]", form.row).val()).toLowerCase();
+      var expected_type = $(":input[name=expected_type]", form.row).val();
+      var expected_type_new = $(":input[name=expected_type_new]", form.row).val();
+      var unit = $(":input[name=unit]", form.row).val();
+      var description = $(":input[name=description]", form.row).val();
+      var disambiguator = $(":input[name=disambiguator]", form.row).is(":checked") ? 1 : 0;
+      var unique = $(":input[name=unique]", form.row).is(":checked") ? 1 : 0;
+      var hidden = $(":input[name=hidden]", form.row).is(":checked") ? 1 : 0;
 
 
       var data = {
@@ -455,7 +455,7 @@
       if (form.mode === "add") {
         if ($(".nav-delegate", form.row).is(".current")) {
           // sanity check we are actually in the delegate tab
-          data.delegated = $("input[name=delegated]", form.row).val();
+          data.delegated = $(":input[name=delegated]", form.row).val();
         }
       }
 

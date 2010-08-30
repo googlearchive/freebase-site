@@ -3,6 +3,7 @@
   var d = fb.schema.domain = {
     init: function() {
       d.init_tablesorter();
+      d.init_toggle_help_messages();
     },
 
     init_tablesorter: function() {
@@ -13,6 +14,27 @@
           $("thead th:nth-child(1)", table)[0].count = 1;
           $("thead th:nth-child(3)", table)[0].count = 1;
           $("thead th:nth-child(4)", table)[0].count = 1;
+        }
+      });
+    },
+
+    init_toggle_help_messages: function() {
+
+      $(".table-empty-msg:first").addClass("active").find(".table-empty-text").slideDown();
+
+      $(".table-empty-trigger").click(function() {
+        $trigger = $(this);
+        $container = $trigger.parents(".edit");
+        $help_text = $container.find(".table-empty-text");
+
+        if ($help_text.is(":hidden")) {
+          $container.addClass("active");
+          $help_text.slideDown();
+        }
+
+        else {
+          $container.removeClass("active");
+          $help_text.slideUp();
         }
       });
     },

@@ -97,7 +97,14 @@
             </tr>
             <tr acre:attrs="c.domain.types.length ? {style:'display:none;'}:{}">
               <th colspan="5" class="table-empty-column" scope="col">
-                <p>The domain <strong>$c.domain.name</strong> does not have any types.</p>
+                <div class="edit table-empty-msg">
+                  <a href="javascript:void(0)" class="table-empty-trigger">Use Entity Types to&hellip;</a>
+                  <div class="table-empty-text">
+                    <p> <strong>Describe any person, place, or concept</strong>. This is the most common type in Freebase and is used to describe an is a relationship between topics (eg. San Francisco is a city)</p>
+                    <p><a href="http://wiki.freebase.com/wiki/Types" rel="external help">Learn more &raquo;</a></p> 
+                  </div>
+                </div>
+                <h3 class="table-empty-title">This domain doesn't have any Entity Types.</h3>
               </th>
             </tr>
           </thead>
@@ -135,7 +142,17 @@
             </tr>
             <tr acre:attrs="c.domain['cvt:types'].length ? {style:'display:none;'}:{}">
                <th colspan="5" class="table-empty-column" scope="col">
-                <strong>$c.domain.name</strong> has no Compound Value Types.
+                <div class="edit table-empty-msg">
+                  <a href="javascript:void(0)" class="table-empty-trigger">Use Compound Value Types to&hellip;</a>
+                  <div class="table-empty-text">
+                    <p>
+                    <strong>Extend simple primary values.</strong>
+                    For example, asserting that San Francisco has a population of 808,977 is less useful than asserting that San Francisco had a population of 808,977 in 2008.
+                    </p>
+                    <p><a href="http://wiki.freebase.com/wiki/Types" rel="external help">Learn more &raquo;</a></p> 
+                  </div>
+                </div>
+                <h3 class="table-empty-title">This domain doesn't have any Compound Value Types.</h3>
               </th>
             </tr>
           </thead>
@@ -173,7 +190,17 @@
            </tr>
            <tr acre:attrs="c.domain['mediator:types'].length ? {style:'display:none;'}:{}">
              <th colspan="5" class="table-empty-column" scope="col">
-               <strong>$c.domain.name</strong> has no Mediators.
+                <div class="edit table-empty-msg">
+                  <a href="javascript:void(0)" class="table-empty-trigger">Use Mediators to&hellip;</a>
+                  <div class="table-empty-text">
+                    <p>
+                    <strong>Describe the relationship between two or more Entity Types.</strong>
+                    For example, the film performance mediator in Film describes the relationship between a movie, an actor, and a character. We use film performance  to assert that Heath Ledger played the character of The Joker in the film The Dark Knight.
+                    </p>
+                    <p><a href="http://wiki.freebase.com/wiki/Types" rel="external help">Learn more &raquo;</a></p> 
+                  </div>
+                </div>
+               <h3 class="table-empty-title">This domain doesn't have any Mediators.</h3>
              </th>
            </tr>
          </thead>

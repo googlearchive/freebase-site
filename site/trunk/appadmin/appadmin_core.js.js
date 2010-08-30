@@ -1,4 +1,3 @@
-
 var global_results = { 'total_tests' : 0, 'total_failed' : 0, 'total_apps' : 0 };
 
 //copied  from app_util.sjs
@@ -17,6 +16,10 @@ $("#release-all").click(function(e) {
 });
 
 $("#test-all").click(function(e) { 
+
+    global_results.total_tests = 0;
+    global_results.total_failed = 0;
+
     $(".test").each(function(index) { $(this).click(); });
     return false;
 });

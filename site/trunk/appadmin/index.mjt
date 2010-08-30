@@ -6,7 +6,7 @@
   var lib_ae = mf.require('ae', 'lib_appeditor_service');
   var util = mf.require('app_util');
 
-  var queries = { };
+  var queries = { }; 
 
   if (acre.request.params.id) {
   

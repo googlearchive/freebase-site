@@ -23,6 +23,7 @@ function create_property(options) {
       unique: validators.StringBool(options, "unique", {if_empty:false}),
       hidden: validators.StringBool(options, "hidden", {if_empty:false}),
       master_property: validators.MqlId(options, "master_property", {if_empty:""}),
+      delegated: validators.MqlId(options, "delegated", {if_empty:""}),
 
       mqlkey_quote: validators.StringBool(options, "mqlkey_quote", {if_empty:false}),
       lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"})
@@ -102,6 +103,12 @@ function create_property(options) {
       if (o.master_property) {
         q.master_property = {
           id: o.master_property,
+          connect: "update"
+        };
+      }
+      if (o.delegated) {
+        q.delegated = {
+          id: o.delegated,
           connect: "update"
         };
       }

@@ -76,8 +76,7 @@ var api = {
 
   add_property_begin: function(args) {
     return {
-      html: acre.markup.stringify(edit.add_property_form(args.id)),
-      modal: acre.markup.stringify(edit.delegate_property_form())
+      html: acre.markup.stringify(edit.add_property_form(args.id))
     };
   },
 

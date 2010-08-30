@@ -90,87 +90,85 @@
       });
     },
 
-    init_delegate_property: function(form, modal) {
+    init_delegate_property: function(form) {
       $(".nav-toggle", form.row).click(function(e) {
-        te.toggle_delegate_property($(this), form, modal);
+        te.toggle_delegate_property($(this), form);
         return false;
       });
     },
 
-    toggle_delegate_property: function(trigger, form, modal) {
+    toggle_delegate_property: function(trigger, form) {
       if (trigger.is(".current")) {
         return false;
       }
       var nav = trigger.parents(".nav:first");
       $(".nav-toggle", nav).removeClass("current");
       trigger.addClass("current");
+
+      // clear all input values under expected type field
+      var ect_field = $(".fb-property-expected-type", form.row);
+      $("input", ect_field).val("");
+      // reset unique checkbox
+      var unique = $("input[name=unique]", form.row).removeAttr("checked");
+      // remove any form messages
+      $(".form-msg", form.row).remove();
+
       if (trigger.is(".nav-delegate")) {
-        var api = modal.data("overlay");
-        if (api) {
-          api.load();
-        }
-        else {
-          te.init_delegate_property_form(form, modal);
-          modal.overlay({
-            close: ".button-cancel",
-            closeOnClick: false,
-            load: true,
-            mask: {
-              color: '#000',
-              loadSpeed: 200,
-              opacity: 0.5
-            },
-            onBeforeLoad: function() {
-              modal.removeData("data.suggest");
-            },
-            onLoad: function() {
-              $(":text:first", modal).val("").focus();
-            },
-            onClose: function() {
-              var data = modal.data("data.suggest");
-              if (data && data.id) {
-                console.log("delegate", data.id);
+        // show delegate message
+        $(".nav-delegate-msg", nav).show();
+        // hide ect input and update label
+        $("input[name=expected_type_input]", form.row).hide()
+          .prev(".form-label").text("Property to use");
+        // show property input
+        var delegated = $("input[name=delegated]", form.row).show();
+        // update Master checkbox and disable unique
+        $("label[for=master]", form.row).find("span").text("Delegated");
+        unique.attr("disabled", "disabled");
+        var inst = delegated.data("suggest_property");
+        if (!inst) {
+          // init suggest
+          console.log("init delegated suggest");
+          delegated
+            .unbind()
+            .suggest_property({
+              service_url: acre.freebase.service_url
+            })
+            .bind("fb-select", function(e, data) {
+              $(this).val(data.id);
+              setTimeout(function() {
                 te.delegate_property_begin(form, data.id);
+              }, 0);
+            })
+            .keypress(function(e) {
+              if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
+                console.log("enter");
+                form.row.trigger(form.event_prefix + "submit");
               }
-              else {
-                $(".nav-toggle:first", nav).click();
+            })
+            .keyup(function(e) {
+              if (e.keyCode === 27) { // escape
+                form.row.trigger(form.event_prefix + "cancel");
               }
-            }
-          });
+            });
         }
       }
       else {
-        // remove delegated value
-        $("input[name=delegated]", form.row).val("");
-        // re-enable expected_type and unique and remove delegated message
-        $("input[name=expected_type_input]", form.row).removeAttr("disabled");
+        // hide delegate message
+        $(".nav-delegate-msg", nav).hide();
+        // hide property input
+        $("input[name=delegated]", form.row).hide();
+        // show ect input
+        $("input[name=expected_type_input]", form.row).show()
+          .prev(".form-label").text("Expected Type");
+        // update Master checkbox and re-enable unique
         $("label[for=master]", form.row).find("span").text("Master");
-        $("input[name=unique]", form.row).removeAttr("disabled", "disabled");
-        $(".form-msg", form.row).remove();
+        unique.removeAttr("disabled");
       }
-    },
-
-    init_delegate_property_form: function(form, modal) {
-      $(".suggest-input", modal).suggest_property({
-        service_url: acre.freebase.service_url
-      })
-      .bind("fb-select", function(e, data) {
-        $(this).val(data.id);
-      })
-      .keypress(function(e) {
-        if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
-          modal.data("data.suggest", $(".suggest-input", modal).data("data.suggest"));
-          modal.data("overlay").close();
-        }
-      });
-      $(".button-submit", modal).click(function() { console.log("modal submit");
-        modal.data("data.suggest", $(".suggest-input", modal).data("data.suggest"));
-        modal.data("overlay").close();
-      });
+      $("input[name=name]", form.row).focus();
     },
 
     delegate_property_begin: function(form, prop_id) {
-
+      form.row.addClass("loading");
       $.ajax({
         url: acre.request.app_url + "/schema/type/delegate_property_begin",
         data: {id: prop_id},
@@ -186,22 +184,21 @@
             id : result.expected_type,
             unit: result.unit
           };
-          $("input[name=expected_type_input]", form.row).attr("disabled", "disabled")
-            .trigger("fb-select", ect_data);
-          $("label[for=master]", form.row).find("span").text("Reverse");
-          var unique = $("input[name=unique]", form.row).attr("disabled", "disabled");
+          $("input[name=expected_type_input]", form.row).trigger("fb-select", ect_data);
           if (result.unique) {
-            unique.attr("checked", "checked");
+            $("input[name=unique]", form.row).attr("checked", "checked");
           }
           // show delegated message
+          $(".form-msg", form.row).remove();
           var field = $(".form-field:first", form.row);
           var message = $(result.message);
           field.before(message);
-          // add delegated value
-          $("input[name=delegated]", form.row).val(prop_id);
         },
         error: function(xhr) {
           se.ajax_error_handler(xhr, form.row);
+        },
+        complete: function() {
+          form.row.removeClass("loading");
         }
       });
     },
@@ -249,9 +246,7 @@
           }
           else {
             // delegate property dialog
-            var modal = $(data.result.modal).hide();
-            $(document.body).append(modal);
-            te.init_delegate_property(form, modal);
+            te.init_delegate_property(form);
           }
 
           /**
@@ -406,6 +401,7 @@
         $(":input:not(textarea)", form.row)
           .keypress(function(e) {
             if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
+              console.log("enter");
               form.row.trigger(form.event_prefix + "submit");
             }
           })

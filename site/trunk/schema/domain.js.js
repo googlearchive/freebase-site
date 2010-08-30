@@ -20,11 +20,9 @@
 
     init_toggle_help_messages: function() {
 
-      $(".table-empty-msg:first").addClass("active").find(".table-empty-text").slideDown();
-
       $(".table-empty-trigger").click(function() {
         $trigger = $(this);
-        $container = $trigger.parents(".edit");
+        $container = $trigger.parents(".table-empty-msg");
         $help_text = $container.find(".table-empty-text");
 
         if ($help_text.is(":hidden")) {
@@ -42,6 +40,19 @@
     init_edit: function() {
       // show all edit controls
       $(".edit").show();
+
+      // Show the help text for Entity Types if user has admin rights
+      var $type_tables = $("table.table");
+      $type_tables.first().find(".table-empty-msg").addClass("active").find(".table-empty-text").slideDown();
+     
+      // If none of the type tables have rows, hide help links
+      // outside of tables to accomodate for help links inside table
+      if ($type_tables.find("tbody > tr").length === 0) {
+        $(".table-title > .help-link").hide();
+      }
+      else {
+        $(".table-empty-msg").hide();
+      }
     },
 
     domain_settings: function(e, domain_id) {

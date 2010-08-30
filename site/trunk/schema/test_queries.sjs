@@ -5,14 +5,34 @@ var q = mf.require("queries");
 var mql = mf.require("mql");
 var ht = mf.require("queries", "helpers_test");
 
-function assert_keys(keys, o, null_check) {
+// Call one of these, specific to where your key comes from
+function assert_mql_keys(keys, o, null_check) {
+  assert_keys(keys, o, null_check, 'mql')
+}
+
+function assert_bdb_keys(keys, o, null_check) {
+  assert_keys(keys, o, null_check, 'activity bdb')
+}
+
+function assert_cdb_keys(keys, o, null_check) {
+  assert_keys(keys, o, null_check, 'cdb')
+}
+
+// Called by one of the functions above
+function assert_keys(keys, o, null_check, source) {
+  
+  if (!source) {
+    source = 'unknown source';
+  }
+  
   var errors = [];
   keys.forEach(function(key) {
     if (! (key in o)) {
       errors.push(key);
     }
     if (null_check && o[key] == null) {
-      errors.push(key + " null");
+      //errors.push(key + " null");
+      errors.push("found no values for " + key + " from " + source);
     }
   });
   if (errors.length) {
@@ -24,7 +44,8 @@ function assert_keys(keys, o, null_check) {
 };
 
 function assert_domain(domain) {
-  assert_keys(["id", "name", "types", "instance_count"], domain, true);
+  assert_mql_keys(["id", "name", "types"], domain, true);
+  assert_bdb_keys(["instance_count"], domain, true);
 };
 
 test("domains", function() {
@@ -77,7 +98,9 @@ test("user_domains", function() {
 
 test("domain", function() {
   function assert_type(type, role) {
-    assert_keys(["name", "id", "properties", "instance_count", "blurb"], type, true);
+    assert_mql_keys(["name", "id", "properties"], type, true);
+    assert_bdb_keys(["instance_count"], type, true);
+    assert_cdb_keys(["blurb"], type, true);
     if (role) {
       equal(type.role, role);
     }
@@ -123,12 +146,13 @@ function assert_prop(prop) {
 }
 
 function assert_type(type) {
-  assert_keys(["id", "name", "domain",
+  assert_mql_keys(["id", "name", "domain",
                "role", "included_types",
                "creator", "timestamp", "date",
-               "blurb", "blob",
-               "instance_count",
                "properties"], type);
+  assert_cdb_keys(["instance_count"], type);
+  assert_bdb_keys(["blurb", "blob"], type);
+  
   if (type.properties && type.properties.length) {
     type.properties.forEach(function(p) {
       assert_prop(p);

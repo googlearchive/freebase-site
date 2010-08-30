@@ -145,8 +145,11 @@
     },
 
     row_message: function(row, msg, type) {
+      var close = $('<a class="close-msg" href="#">Close</a>').click(function(e) {
+        return fb.schema.close_message.apply(this, [e, '.row-msg:first']);
+      });
       var span = $("<span>").text(msg);
-      var td = $('<td colspan="5">').append(span);
+      var td = $('<td colspan="5">').append(close).append(span);
       var row_msg = $('<tr class="row-msg">').append(td);
       if (type) {
         row_msg.addClass("row-msg-" + type);

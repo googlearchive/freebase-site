@@ -30,6 +30,21 @@
       var row = $(this);
       $(".row-menu-trigger", row).css('visibility','hidden');
       row.removeClass("row-hover");
+    },
+
+    close_message: function(e, selector) {
+      var msg = $(this).parents(selector);
+      if (msg.is("tr")) {
+        msg.hideRow(function() {
+          msg.remove();
+        });
+      }
+      else {
+        msg.slideUp(function() {
+          msg.remove();
+        });
+      }
+      return false;
     }
   };
 

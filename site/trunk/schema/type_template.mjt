@@ -193,7 +193,7 @@
         <thead acre:attrs="c.type.incoming.domain.length || c.type.incoming.commons || c.type.incoming.bases ? {style:'display:none;'}:{}">
           <tr>
             <th colspan="5" class="table-empty-column" scope="col">
-              <p>This type has no Included Types</p>
+              <p>This type has no Incoming Properties</p>
             </th>
           </tr>
         </thead>

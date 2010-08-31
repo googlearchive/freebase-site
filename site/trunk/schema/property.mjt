@@ -63,7 +63,7 @@
 <acre:block def="content_body()">
   <acre:block if="c.property">
     <div class="page-meta">
-      <h1>$c.property.name</h1>
+      <h1>$c.property.name <span class="flags">Property</span></h1>
       <div class="meta">
         <span class="key"><strong>Key:</strong> $c.property.id</span>
         <span class="key"><strong>Belongs to:</strong> <a href="${h.url_for('schema', null, null, c.property.schema.id)}">$c.property.schema.name</a></span>

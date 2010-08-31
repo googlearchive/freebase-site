@@ -38,7 +38,7 @@
       
       <div class="page-meta">
 
-        <h1>$c.domain.name</h1>
+        <h1>$c.domain.name <span class="flags">Domain</span></h1>
         <div class="meta">
           <span class="key"><strong>Key:</strong> $c.domain.id</span>        
         </div>        

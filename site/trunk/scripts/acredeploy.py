@@ -143,6 +143,16 @@ class Context():
         return contents
 
 
+    def last_known_branch(self, app, version):
+        pass
+
+
+    def resolve_path(self, path):
+        pass
+
+    def read_manifest(self, app, version):
+        pass
+
 
     def figure_out_dependencies(self, trunk=False):
         pass
@@ -174,9 +184,6 @@ class Context():
             pass
         return 1
 
-    def svn_dev_url(self, app, version):
-        return 'https://svn.metaweb.com/svn/freebase_site/dev/{app}/{version}'.format(app=app, version=version)
-
     def svn_commit(self, path, msg, exit=False):
         '''
         Helper method for svn commit
@@ -192,7 +199,6 @@ class Context():
 
     def svn_trunk_url(self):
         return '{svn_url_root}/trunk/{app}'.format(svn_url_root=self.svn_url_root, app=self.options.app)
-
 
     def svn_deployed_path(self, svn_revision):
         return '{svn_path_root}/deployed/{app}/{svn_revision}'.format(svn_path_root=self.svn_path_root, app=self.options.app, svn_revision=svn_revision)
@@ -445,7 +451,7 @@ class ActionPush():
 
 
         ###### dry run until this point ##########
-        if len(delete_files.keys()) or len(push_files.keys()):
+        if len(delete_files.keys()) or len(push_files.keys()) or not trunk:
             success = c.freebase_login()
             if not success:
                 c.log('cannot push without logging in to freebase', 'error')
@@ -772,7 +778,7 @@ class ActionBranch():
 
         c = self.context
 
-        branch = c.svn_dev_url(c.options.app, c.options.version)
+        branch = c.svn_branch_url()
         cmd = ['svn', 'ls', branch]
         (r, output) = c.run_cmd(cmd, exit=False)
 

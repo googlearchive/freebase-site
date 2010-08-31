@@ -92,7 +92,7 @@
         <td colspan="4">
           <div class="edit-row-loader"></div>
           <div acre:if="prop.delegated" class="form-msg">
-            This property is being delgated to <a href="${h.url_for('schema', 'property', null, prop.delegated.id)}">${prop.delegated.id}</a>. You cannot change the <strong>Expected Type</strong> or <strong>Uniqueness</strong>.
+            This property is being delgated to <a href="${h.url_for('schema', null, null, prop.delegated.id)}">${prop.delegated.id}</a>. You cannot change the <strong>Expected Type</strong> or <strong>Uniqueness</strong>.
             <a href="${h.freebase_url('/view')}${prop.schema.id}/-${prop.id}">View instances &raquo;</a>
           </div>
           <div acre:elif="prop.used" class="form-msg">            
@@ -141,11 +141,11 @@
 
             <acre:block if="prop.master_property">
               Property links in as 
-              <a title="${prop.master_property.id}" href="${h.url_for('schema', 'property', null, prop.master_property.id)}"><strong>${prop.master_property.name}</strong></a>.
+              <a title="${prop.master_property.id}" href="${h.url_for('schema', null, null, prop.master_property.id)}"><strong>${prop.master_property.name}</strong></a>.
             </acre:block>
             <acre:block elif="prop.reverse_property">
               Property links in as 
-              <a title="${prop.reverse_property.id}" href="${h.url_for('schema', 'property', null, prop.reverse_property.id)}"><strong>${prop.reverse_property.name}</strong></a>.
+              <a title="${prop.reverse_property.id}" href="${h.url_for('schema', null, null, prop.reverse_property.id)}"><strong>${prop.reverse_property.name}</strong></a>.
            </acre:block>
           </div>
           <div class="form-field fb-property-description">
@@ -390,6 +390,6 @@
 
 <acre:block def="delegated_property_message(prop)">
   <div class="form-msg" acre:trim="">
-    This property will be delgated to <a href="${h.url_for('schema', 'property', null, prop.id)}" target="_new">${prop.id}</a><acre:block if="prop.expected_type"> with expected type <a href="${h.url_for('schema', 'type', null, prop.expected_type)}" target="_new">${prop.expected_type}</a></acre:block><acre:block if="prop.unit"> (${prop.unit.name})</acre:block>. You cannot change the <strong>Expected Type</strong> or <strong>Uniqueness</strong>.
+    This property will be delgated to <a href="${h.url_for('schema', null, null, prop.id)}" target="_new">${prop.id}</a><acre:block if="prop.expected_type"> with expected type <a href="${h.url_for('schema', null, null, prop.expected_type)}" target="_new">${prop.expected_type}</a></acre:block><acre:block if="prop.unit"> (${prop.unit.name})</acre:block>. You cannot change the <strong>Expected Type</strong> or <strong>Uniqueness</strong>.
   </div>
 </acre:block>

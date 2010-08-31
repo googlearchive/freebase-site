@@ -32,12 +32,12 @@
         </li>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.url_for('schema', 'domain', null, c.property.schema.domain.id)}">$c.property.schema.domain.name</a>
+            <a href="${h.url_for('schema', null, null, c.property.schema.domain.id)}">$c.property.schema.domain.name</a>
           </span>
         </li>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.url_for('schema', 'type', null, c.property.schema.id)}">$c.property.schema.name</a>
+            <a href="${h.url_for('schema', null, null, c.property.schema.id)}">$c.property.schema.name</a>
           </span>
         </li>
         <li class="breadcrumb-item last">
@@ -49,7 +49,7 @@
             <strong>Go to another $c.property.schema.name property</strong>
             <ul>
               <li acre:for="s in c.property.schema.properties">
-                <a href="${h.url_for('schema', 'property', null, s.id)}" title="Go to type">$s.name</a>
+                <a href="${h.url_for('schema', null, null, s.id)}" title="Go to type">$s.name</a>
               </li>
             </ul>
           </div>          
@@ -66,7 +66,7 @@
       <h1>$c.property.name</h1>
       <div class="meta">
         <span class="key"><strong>Key:</strong> $c.property.id</span>
-        <span class="key"><strong>Belongs to:</strong> <a href="${h.url_for('schema', 'type', null, c.property.schema.id)}">$c.property.schema.name</a></span>
+        <span class="key"><strong>Belongs to:</strong> <a href="${h.url_for('schema', null, null, c.property.schema.id)}">$c.property.schema.name</a></span>
       </div>
       <div class="admin-toolbox">
         <span class="creation-timestamp">
@@ -84,7 +84,7 @@
       <tbody>
         <tr>
           <td class="subject" rowspan="2">
-            <a href="${h.url_for('schema', 'type', null, c.property.schema.id)}">${c.property.schema.name}</a>
+            <a href="${h.url_for('schema', null, null, c.property.schema.id)}">${c.property.schema.name}</a>
           </td>
           <td class="predicate">
             <span class="current-prop">
@@ -94,7 +94,7 @@
             </span>
           </td> 
           <td class="object" rowspan="2">
-            <a href="${h.url_for('schema', 'type', null, c.property.expected_type.id)}">
+            <a href="${h.url_for('schema', null, null, c.property.expected_type.id)}">
               ${sh.isTypeType(c.property.expected_type.id) ? c.property.expected_type.id : c.property.expected_type.name}
             </a>
             <acre:block if="c.property.expected_type.role === 'mediator'">
@@ -111,11 +111,11 @@
         </tr>
         <tr>
           <td acre:if="c.property.reverse_property" class="rev_predicate">
-            <a href="${h.url_for('schema', 'property', null, c.property.reverse_property.id)}">${c.property.reverse_property.name}</a>     
+            <a href="${h.url_for('schema', null, null, c.property.reverse_property.id)}">${c.property.reverse_property.name}</a>     
             <span class="attribute" acre:if="c.property.reverse_property.unique">unique</span> 
           </td>
           <td acre:elif="c.property.master_property" class="rev_predicate">
-            <a href="${h.url_for('schema', 'property', null, c.property.master_property.id)}">${c.property.master_property.name}</a>  
+            <a href="${h.url_for('schema', null, null, c.property.master_property.id)}">${c.property.master_property.name}</a>  
             <span class="attribute">master</span>    
             <span class="attribute" acre:if="c.property.master_property.unique">unique</span>
           </td>
@@ -133,7 +133,7 @@
       </thead>
       <tbody>
         <td class="numeric odd">
-          <a href="${h.url_for('schema', 'type', null, c.property.expected_type.id)}">$c.property.expected_type.id</a>
+          <a href="${h.url_for('schema', null, null, c.property.expected_type.id)}">$c.property.expected_type.id</a>
         </td>
         <td class="numeric even">
           <acre:script>console.log(c.property.disambiguator);</acre:script>
@@ -149,7 +149,7 @@
           <span acre:else="">False</span>
         </td>
         <td class="numeric odd" acre:if="c.property_reverse">
-          <a href="${h.url_for('schema', 'property', null, c.property.reverse_property.id)}">${c.property.reverse_property.name}</a>
+          <a href="${h.url_for('schema', null, null, c.property.reverse_property.id)}">${c.property.reverse_property.name}</a>
         </td>          
       </tbody>
     </table>

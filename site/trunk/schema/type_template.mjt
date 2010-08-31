@@ -26,7 +26,7 @@
         </li>
         <li if="c.type.domain" class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.url_for('schema', 'domain', null, c.type.domain.id)}">$c.type.domain.name</a>
+            <a href="${h.url_for('schema', null, null, c.type.domain.id)}">$c.type.domain.name</a>
           </span>
         </li>
         <li class="breadcrumb-item last">
@@ -38,7 +38,7 @@
             <strong>Go to another type</strong>
             <ul>
               <li acre:for="s in c.type.domain.types">
-                <a href="${h.url_for('schema', 'type', null, s.id)}" title="Go to type">$s.name</a>
+                <a href="${h.url_for('schema', null, null, s.id)}" title="Go to type">$s.name</a>
               </li>
             </ul>
           </div>
@@ -73,7 +73,7 @@
         <strong>Includes: </strong>
         <acre:block trim="">
           <span acre:for="i, t in c.type.included_types" acre:trim="">
-            <acre:block if="i">, </acre:block><a href="${h.url_for('schema', 'type', null, t.id )}">$t.name</a>
+            <acre:block if="i">, </acre:block><a href="${h.url_for('schema', null, null, t.id )}">$t.name</a>
           </span>
         </acre:block>
       </span>
@@ -97,8 +97,8 @@
     
     <div class="nav clear">
       <ul class="nav-mode">
-        <li><a acre:attrs="c.diagram ? {href: h.url_for('schema', 'type', null, c.type.id)} : {'class':'current'}">Table</a></li>
-        <li><a acre:attrs="c.diagram ? {'class':'current'} : {href: h.url_for('schema', 'type', [['view','diagram']], c.type.id)}">Diagram</a></li>
+        <li><a acre:attrs="c.diagram ? {href: h.url_for('schema', null, null, c.type.id)} : {'class':'current'}">Table</a></li>
+        <li><a acre:attrs="c.diagram ? {'class':'current'} : {href: h.url_for('schema', null, [['view','diagram']], c.type.id)}">Diagram</a></li>
       </ul>
       <ul class="nav-utilities">
         <li class="edit">

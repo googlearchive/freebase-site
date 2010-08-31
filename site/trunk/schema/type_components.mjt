@@ -9,7 +9,7 @@
 <acre:block def="type_property_row(prop, type_id)">
   <tr class="hoverable">
     <th scope="row" class="row-header odd">
-      <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
+      <a href="${h.url_for('schema', null, null, prop.id)}">$prop.name</a>
       <a href="javascript:void(0);" class="row-menu-trigger">+</a>
       <ul class="row-menu tooltip">
         <li class="row-menu-item edit">
@@ -18,7 +18,7 @@
         <li class="row-menu-item edit">
           <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.delete_property, ['${prop.id}'], this);"><span class="delete-icon">Delete property</span></a>
         </li>
-        <li class="row-menu-item"><a href="${h.url_for('schema', 'property', null, prop.id)}">View property details</a></li>
+        <li class="row-menu-item"><a href="${h.url_for('schema', null, null, prop.id)}">View property details</a></li>
         <li class="row-menu-item" acre:if="prop.expected_type && prop.expected_type.id.indexOf('/type') === -1">
           <a href="${h.freebase_url('/view'+prop.expected_type.id)}">Browse instances</a>
         </li>
@@ -30,7 +30,7 @@
     <td class="even">$prop.id</td>
     <td class="odd">
       <acre:block if="prop.expected_type">
-        <a href="${h.url_for('schema', 'type', null, prop.expected_type.id)}">
+        <a href="${h.url_for('schema', null, null, prop.expected_type.id)}">
           $prop.expected_type.id
         </a>
         <acre:block if="prop.expected_type.role === 'mediator'">
@@ -130,7 +130,7 @@
     <tr acre:for="prop in props" class="hoverable">
       <td class="odd">
         <div>
-          <a href="${h.url_for('schema', 'type', null, prop.schema.id)}">$prop.schema.name</a>
+          <a href="${h.url_for('schema', null, null, prop.schema.id)}">$prop.schema.name</a>
           <acre:script>
             var other_property = prop.master_property || prop.reverse_property;
           </acre:script>
@@ -148,7 +148,7 @@
             <li acre:if="allow_return_link && !other_property" class="row-menu-item edit">
               <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.reverse_property, ['${prop.expected_type}','${prop.id}'], this);"><span class="create-return-link-icon">Create return link</span></a>
             </li>
-            <li class="row-menu-item"><a href="${h.url_for('schema', 'type', null, prop.schema.id)}">View type schema</a></li>
+            <li class="row-menu-item"><a href="${h.url_for('schema', null, null, prop.schema.id)}">View type schema</a></li>
             <li class="row-menu-item"><a href="${h.freebase_url('/view'+prop.schema.id)}">Browse instances</a></li>
             <li class="row-menu-item last"><a href="#">Build query</a></li>
           </ul>          
@@ -157,13 +157,13 @@
       </td>
       <td class="even">
         <div>
-          <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
+          <a href="${h.url_for('schema', null, null, prop.id)}">$prop.name</a>
           <acre:script>
             var other_property = prop.master_property || prop.reverse_property;
           </acre:script>
           <a href="javascript:void(0);" class="row-menu-trigger">+</a>
           <ul class="row-menu tooltip">
-            <li class="row-menu-item"><a href="${h.url_for('schema', 'property', null, prop.id)}">View property details</a></li>
+            <li class="row-menu-item"><a href="${h.url_for('schema', null, null, prop.id)}">View property details</a></li>
             <li class="row-menu-item last"><a href="#">Build query</a></li>
           </ul>          
         </div>
@@ -191,13 +191,13 @@
     <tr class="${global ? 'global' : 'local'} ${prop.inherited ? 'inherited' : ''}">
       <td nowrap="" class="c1 in_type ${prop.schema.mediator ? 'mediator' : 'truetype'}">
         <acre:block if="!same || i == 0">
-          <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.schema.id} ${prop.schema.mediator ? '| mediator' : ''}">$prop.schema.name</a>
+          <a href="${h.url_for('schema', null, null, prop.id)}" title="${prop.schema.id} ${prop.schema.mediator ? '| mediator' : ''}">$prop.schema.name</a>
           <a acre:if="prop.schema.instance_count" href="${h.freebase_url('/view' + prop.schema.id)}" title="Browse the ${h.commafy(prop.schema.instance_count)} instances of ${prop.schema.id}" class="instances">[h.commafy(prop.schema.instance_count)]</a>
         </acre:block>
       </td>
       <td class="${same ? '' : 'c2'} spacer"></td>
       <td nowrap="" class="in_prop ${(i == 0) ? 'c2' : same ? 'c4' : 'c5'} ${prop.master_property == null ? 'master' : ''} ${prop.unique ? 'unique' : ''}">
-        <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.id} ${prop.master_property == null ? '| master' : ''} ${prop.unique ? '| unique' : ''}">$prop.name</a>
+        <a href="${h.url_for('schema', null, null, prop.id)}" title="${prop.id} ${prop.master_property == null ? '| master' : ''} ${prop.unique ? '| unique' : ''}">$prop.name</a>
       </td>
     </tr>
   </acre:block>
@@ -222,12 +222,12 @@
     </tr>
     <tr class="${sh.isGlobal(prop.id) ? 'global' : 'local'} ${prop.inherited ? 'inherited' : ''}">
       <td nowrap="" class="out_prop ${(i == 0) ? 'c2' : same ? 'c4' : 'c6' } ${prop.master_property == null ? 'master' : ''} ${prop.unique ? 'unique' : ''}">
-        <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
+        <a href="${h.url_for('schema', null, null, prop.id)}">$prop.name</a>
       </td>
       <td class="${same && i != 0 ? '' : 'c3'} spacer"></td>
       <td nowrap="" class="c1 out_type ${prop.expected_type.mediator ? 'mediator' : 'truetype'} ${sh.isTypeType(prop.expected_type.id) ? 'typetype' : ''}">
         <acre:block if="!same || i == 0">
-          <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.expected_type.id} ${prop.expected_type.mediator ? '| mediator' : ''}">$prop.expected_type.name</a>
+          <a href="${h.url_for('schema', null, null, prop.id)}" title="${prop.expected_type.id} ${prop.expected_type.mediator ? '| mediator' : ''}">$prop.expected_type.name</a>
           <acre:script>var instances = prop.expected_type.instance_count;</acre:script>
           <a acre:if="instances" href="${acre.freebase.service_url}/view${prop.expected_type.id}" title="Browse the ${instances.value} instances of ${prop.expected_type.id}" class="instances" >[$instances.value]</a>
         </acre:block>
@@ -256,12 +256,12 @@
     </tr>
     <tr class="${sh.isGlobal(prop.id) ? 'global' : 'local'} ${prop.inherited ? 'inherited' : ''}">
       <td nowrap="" class="out_prop ${(i == 0) ? 'c2' : same ? 'c4' : 'c6' } ${prop.master_property == null ? 'master' : ''} ${prop.unique ? 'unique' : ''}">
-        <a href="${h.url_for('schema', 'property', null, prop.id)}">$prop.name</a>
+        <a href="${h.url_for('schema', null, null, prop.id)}">$prop.name</a>
       </td>
       <td class="${same && i != 0 ? '' : 'c3'} spacer"></td>
       <td nowrap="" class="c1 out_type ${prop.expected_type.mediator ? 'mediator' : 'truetype'} ${sh.isTypeType(prop.expected_type.id) ? 'typetype' : ''}">
         <acre:block if="!same || i == 0">
-          <a href="${h.url_for('schema', 'property', null, prop.id)}" title="${prop.expected_type.id} ${prop.expected_type.mediator ? '| mediator' : ''}">$prop.expected_type.name</a>
+          <a href="${h.url_for('schema', null, null, prop.id)}" title="${prop.expected_type.id} ${prop.expected_type.mediator ? '| mediator' : ''}">$prop.expected_type.name</a>
           <acre:script>var instances = prop.expected_type.instance_count;</acre:script>
           <a acre:if="instances" href="${acre.freebase.service_url}/view${prop.expected_type.id}" title="Browse the ${instances.value} instances of ${prop.expected_type.id}" class="instances" >[$instances.value]</a>
         </acre:block>

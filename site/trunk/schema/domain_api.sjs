@@ -50,7 +50,7 @@ var api = {
     return update_domain.update_domain(update_domain_options)
       .then(function(updated_id) {
         return {
-          location: h.url_for("schema", "domain", null, updated_id)
+          location: h.url_for("schema", null, null, updated_id)
         };
       });
   },

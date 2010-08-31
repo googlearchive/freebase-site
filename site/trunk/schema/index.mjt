@@ -44,7 +44,7 @@
 <!--           <li class="section-tab"><a href="#user-search">Users</a></li> -->
         </ul>
         <div class="search-box" id="domain-search">
-          <form id="domain-search-form" method="get" action="${h.url_for('schema', 'domain')}">
+          <form id="domain-search-form" method="get">
             <fieldset>
               <input type="text" name="id" class="text-input" id="domain-search-input" id="domain-search-input" placeholder="Start typing for suggested domains..." />
             </fieldset>
@@ -53,7 +53,7 @@
           <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" />All Domains</label>
         </div>
         <div class="search-box" id="type-search">
-          <form id="type-search-form" method="get" action="${h.url_for('schema', 'type')}">
+          <form id="type-search-form" method="get">
             <fieldset>
               <input type="text" name="id" class="text-input" id="type-search-input" placeholder="Start typing for suggested types..." />
             </fieldset>
@@ -62,7 +62,7 @@
           <label><input type="radio" name="type-search-toggle" class="search-toggle" id="type-search-toggle-all" />All Domains</label>
         </div>
         <div class="search-box" id="property-search">
-          <form id="property-search-form" method="get" action="${h.url_for('schema', 'property')}">
+          <form id="property-search-form" method="get">
             <fieldset>
               <input type="text" name="id" class="text-input" id="property-search-input" placeholder="Start typing for suggested properties..." />
             </fieldset>
@@ -95,7 +95,7 @@
           <tbody>
             <tr acre:for="d in c.domains">
               <th class="row-header odd" scope="row">
-                <a href="${h.url_for('schema', 'domain', null, d.id)}" title="View $d.name">$d.name</a>
+                <a href="${h.url_for('schema', null, null, d.id)}" title="View $d.name">$d.name</a>
               </th>
               <td class="even">$d.id</td>
               <td class="odd numeric">$d.types</td>
@@ -128,12 +128,12 @@
               <tr>
                 <td class="is-a">is a</td>
                 <td class="kind">type</td>
-                <td><a href="${h.url_for('schema', 'type', null, '/people/person')}">Person</a></td>
+                <td><a href="${h.url_for('schema', null, null, '/people/person')}">Person</a></td>
               </tr>
               <tr>
                 <td class="has-a">has a</td>
                 <td>property</td>
-                <td><a href="${h.url_for('schema', 'property', null, '/people/person/date_of_birth')}">Date of Birth</a></td>
+                <td><a href="${h.url_for('schema', null, null, '/people/person/date_of_birth')}">Date of Birth</a></td>
               </tr>
             </tbody>
           </table>

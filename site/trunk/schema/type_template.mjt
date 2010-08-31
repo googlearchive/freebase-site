@@ -134,7 +134,33 @@
 <acre:block def="table_view()">  
   <!-- Table View -->
   <div class="mode">
-    
+    <div acre:if="c.type['/freebase/type_hints/enumeration'] === true" class="section" id="topics-table">
+      <h2 class="table-title">
+        <a href="#" class="help-link">What Are Enumerated Types?</a>
+        Topics
+      </h2>
+      <table cellspacing="0" class="table">
+        <thead>
+          <tr class="hoverable">
+            <th class="column-header first">Topic</th>
+            <th class="column-header">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <th class="row-header first odd">
+            <a href="#">Topic Name</a>
+          </th>
+          <td class="even">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam vol.</td>
+        </tbody>
+        <tfoot class="table-edit edit">
+          <tr>
+            <td colspan="2">
+              <a href="#" class="icon-link"><span class="add-icon">Add New</span></a>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
     <!-- Native Props Table -->
     <div class="section" id="type-table">
       <h2 class="table-title">

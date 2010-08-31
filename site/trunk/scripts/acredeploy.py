@@ -81,7 +81,7 @@ class Context():
     
     def __init__(self, options):
         self.options = options
-        self.action = None
+        self.action = ''
 
         self.svn_temp_dirs = {}
 
@@ -118,11 +118,6 @@ class Context():
         return (True, stdout)
 
 
-    def svn(*args):
-        pass
-
-
-
     def fetch_url(self,url, isjson=False):
 
         c.log(url, 'fetchurl')
@@ -146,6 +141,11 @@ class Context():
             return json.loads(''.join(contents))
     
         return contents
+
+
+
+    def figure_out_dependencies(self, trunk=False):
+        pass
 
 
 
@@ -452,8 +452,7 @@ class ActionPush():
                 return False
 
         if not (len(delete_files.keys()) or len(push_files.keys())):
-            c.log('no files affected - push aborted', 'push')
-            return True
+            c.log('no files affected', 'push')
 
         files_changed = set()
 

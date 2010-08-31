@@ -118,12 +118,10 @@ class Context():
         return (True, stdout)
 
 
-    def fetch_url(self,url, isjson=False):
+    def fetch_url(self,url, isjson=False, tries=3):
 
         c.log(url, 'fetchurl')
         request = urllib2.Request(url, headers = {'Cache-control': 'no-cache' })
-
-        tries = 3
 
         while tries > 0:
             try:
@@ -794,6 +792,35 @@ class ActionBranch():
 
         return r
 
+class ActionCreate():
+    
+    def __init__(self, context):
+        self.context = context
+
+
+    def __call__(self):
+        c = self.context
+
+        if not (c.options.app and c.options.graph):
+            c.log('You must specify the app key (e.g. "schema") and a graph to create a new app', 'error')
+            return False
+
+        c.log('create app %s in graph %s' % (c.options.app, c.options.graph))
+        
+        if bool(c.freebase.mqlread({"id": c.options.appid})):
+            c.log('app already exists')
+        else:
+            success = c.freebase_login()
+            if not success:
+                c.log('failed to get freebase credentials - aborting app creation' , 'error')
+                return False
+            
+            name = "freebase.com %s" % c.options.app            
+            c.freebase.create_app(c.options.appid, name=name, extra_group="/m/043wdvg" )
+            
+        return True
+
+        
     
 def main():
 
@@ -803,7 +830,7 @@ def main():
         ('branch', 'creates a branch of your app', ActionBranch),
         ('push', 'pushes a specified directory to an app version', ActionPush),
         ('static', 'generates and deployes static bundles to the edge servers', ActionStatic),
-        ('create', 'creates an app'),
+        ('create', 'creates an app', ActionCreate),
         ('release', 'release a specific version of an app')
         ]
 

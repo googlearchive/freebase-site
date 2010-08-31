@@ -641,6 +641,17 @@ Type Page
     XXX: this should likely be in freebase.table.less
     waiting until we have the sprites sorted out
 */
+
+.tbody-header a.edit {
+    float: right;
+    font-size: 11px;
+    color: #aaa;
+}
+
+.tbody-header:hover a.edit {
+    color: @link-blue;
+}
+
 .tbody-header-title {
     padding-left: 16px;
     background: url(ui-icons.png) no-repeat 0 -83px;
@@ -837,8 +848,8 @@ Schema Editing
   display:none;
 }
 .close-msg {
-  display:block;
   float:right;
+  font-size: 11px;
 }
 
 .table-edit td,

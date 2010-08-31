@@ -102,8 +102,8 @@
     <tr>
       <th class="tbody-header ${expanded ? 'expanded' : ''}" colspan="4" 
          data-url="${h.url_for('schema', 'type', [['id',included_type.id]] , '/get_type_properties')}">
-        <span class="tbody-header-title">$included_type.name</span> <span class="key">$included_type.id</span>
         <a href="#" class="edit" onclick="return freebase.dispatch(event, freebase.schema.type.delete_included_type, ['${type_id}', '${included_type.id}'], this);"><span>delete</span></a>
+        <span class="tbody-header-title">$included_type.name</span> <span class="key">$included_type.id</span>
       </th>
     </tr>
   </thead>

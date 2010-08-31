@@ -322,8 +322,8 @@
 <acre:block def="delete_included_type_result(type_id, included_type_id)">
   <tr class="row-msg row-msg-info">
     <td colspan="4">
-      <a class="close-msg" href="#" onclick="return freebase.dispatch(event, freebase.schema.close_message, ['.row-msg:first'], this);">Close</a>
-      <strong>${included_type_id}</strong> is no longer included.
+      <a class="close-msg" href="#" onclick="return freebase.dispatch(event, freebase.schema.close_message, ['.row-msg:first'], this);">close</a>
+      <strong>${included_type_id}</strong> has been removed and will no longer be included.
       <a href="#" onclick="return freebase.dispatch(event, freebase.schema.type.undo_delete_included_type, ['${type_id}','${included_type_id}'], this);">Undo</a>
     </td>
   </tr>

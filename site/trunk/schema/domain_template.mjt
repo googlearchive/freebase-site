@@ -38,7 +38,18 @@
       
       <div class="page-meta">
 
-        <h1>$c.domain.name <span class="flags">Domain</span></h1>
+        <h1>
+          $c.domain.name 
+          <span class="flags">
+            <span acre:if="c.domain.id.indexOf('/user') === -1 && c.domain.id.indexOf('/base') === -1">
+              Commons
+            </span>
+            <span acre:else="">
+              User
+            </span>
+            Domain
+          </span>
+        </h1>
         <div class="meta">
           <span class="key"><strong>Key:</strong> $c.domain.id</span>        
         </div>        

@@ -100,7 +100,7 @@
         <table class="table table-sortable" cellspacing="0">
           <thead>
             <tr acre:attrs="c.domain.types.length ? {}:{style:'display:none;'}">
-              <th scope="col" class="column-header column-header-desc {sorter: 'schemaName'}"><span class="sort-icon">Type</span></th>
+              <th scope="col" class="column-header first column-header-desc {sorter: 'schemaName'}"><span class="sort-icon">Type</span></th>
               <th class="column-header" scope="col"><span class="sort-icon">ID</span></th>
               <th class="column-header numeric" scope="col"><span class="sort-icon"># of Properties</span></th>
               <th class="column-header numeric {sorter: 'commaDigit'}" scope="col"><span class="sort-icon"># of Instances</span></th>
@@ -145,7 +145,7 @@
         <table class="table table-sortable">
           <thead class="${JSON.stringify(c.domain['cvt:types'])}">
             <tr acre:attrs="c.domain['cvt:types'].length ? {}:{style:'display:none;'}">
-              <th scope="col" class="column-header column-header-desc {sorter: 'schemaName'}"><span class="sort-icon">Type</span></th>
+              <th scope="col" class="column-header first column-header-desc {sorter: 'schemaName'}"><span class="sort-icon">Type</span></th>
               <th class="column-header" scope="col"><span class="sort-icon">ID</span></th>
               <th class="column-header numeric" scope="col"><span class="sort-icon"># of Properties</span></th>
               <th class="column-header numeric {sorter: 'commaDigit'}" scope="col"><span class="sort-icon"># of Instances</span></th>
@@ -194,7 +194,7 @@
        <table class="table table-sortable">
          <thead class="${JSON.stringify(c.domain['mediator:types'])}">
            <tr acre:attrs="c.domain['mediator:types'].length ? {}:{style:'display:none;'}">
-             <th scope="col" class="column-header column-header-desc {sorter: 'schemaName'}"><span class="sort-icon">Type</span></th>
+             <th scope="col" class="column-header first column-header-desc {sorter: 'schemaName'}"><span class="sort-icon">Type</span></th>
              <th class="column-header" scope="col"><span class="sort-icon">ID</span></th>
              <th class="column-header numeric" scope="col"><span class="sort-icon"># of Properties</span></th>
              <th class="column-header numeric {sorter: 'commaDigit'}" scope="col"><span class="sort-icon"># of Instances</span></th>

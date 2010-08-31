@@ -80,7 +80,7 @@
 <acre:block def="native_properties(properties, type_id)">
   <tbody>
     <tr acre:attrs="properties.length ? {}:{style:'display:none;'}">
-      <th scope="col" class="column-header">Property</th>
+      <th scope="col" class="column-header first">Property</th>
       <th class="column-header">ID</th>
       <th class="column-header">Expected Type</th>
       <th class="column-header description">Description</th>
@@ -124,7 +124,7 @@
 <acre:block def="incoming_props_tbody(props, allow_return_link)">
   <tbody>
     <tr>
-      <th class="column-header" scope="col">Originating Type</th>              
+      <th class="column-header first" scope="col">Originating Type</th>              
       <th class="column-header" scope="col">Property</th>
     </tr>
     <tr acre:for="prop in props" class="hoverable">

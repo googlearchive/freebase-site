@@ -508,8 +508,12 @@ class ActionPush():
         local_dir = mkdtemp()
         
         cmd = ['svn', 'checkout', svn_url, local_dir]
-        c.run_cmd(cmd)
-        
+        (success, message) = c.run_cmd(cmd)
+
+        if not success:
+            c.log('Unable to perform svn checkout', 'error')
+            return False
+
         #push the checked out code
         result = self.push(local_dir, trunk=trunk)
 

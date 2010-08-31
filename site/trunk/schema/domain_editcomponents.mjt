@@ -25,7 +25,7 @@
               <span class="form-label">Description</span>
               <textarea name="description" class="textarea" rows="3">${type?type.blob:""}</textarea>
             </label>
-            <div class="fb-type-display">
+            <div class="fb-type-display" style="display:none">
               <acre:block if="role === 'mediator'">
                 <label for="role" class="boolean-field"><input type="checkbox" name="role" value="mediator" disabled="disabled" checked="checked">Mediator</label>
               </acre:block>

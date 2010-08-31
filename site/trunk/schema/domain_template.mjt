@@ -44,9 +44,6 @@
             <span acre:if="c.domain.id.indexOf('/user') === -1 && c.domain.id.indexOf('/base') === -1">
               Commons
             </span>
-            <span acre:else="">
-              User
-            </span>
             Domain
           </span>
         </h1>

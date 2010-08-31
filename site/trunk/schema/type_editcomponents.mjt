@@ -95,8 +95,9 @@
             This property is being delgated to <a href="${h.url_for('schema', null, null, prop.delegated.id)}">${prop.delegated.id}</a>. You cannot change the <strong>Expected Type</strong> or <strong>Uniqueness</strong>.
             <a href="${h.freebase_url('/view')}${prop.schema.id}/-${prop.id}">View instances &raquo;</a>
           </div>
-          <div acre:elif="prop.used" class="form-msg">            
-            This property is being used. You cannot change the <strong>Expected Type</strong> or <strong>Uniqueness</strong>.
+          <div acre:elif="prop.used" class="form-msg" acre:trim="">      
+            This property is being used. You cannot change the 
+            <strong>Expected Type</strong><acre:block if="!prop.unique"> or <strong>Uniqueness</strong></acre:block>.
             <a href="${h.freebase_url('/view')}${prop.schema.id}/-${prop.id}">View instances &raquo;</a>
           </div>            
           <div class="form-field fb-property-name">
@@ -164,7 +165,7 @@
                   if (prop.unique) {
                     unique.checked = 'checked';
                   }
-                  if (prop.used || prop.delegated) {
+                  if ((prop.used && !prop.unique) || prop.delegated) {
                     unique.disabled = 'disabled';
                   }
                 </acre:script>

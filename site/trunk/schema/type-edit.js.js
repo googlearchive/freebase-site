@@ -127,7 +127,6 @@
         var inst = delegated.data("suggest_property");
         if (!inst) {
           // init suggest
-          console.log("init delegated suggest");
           delegated
             .unbind()
             .suggest_property({
@@ -141,7 +140,6 @@
             })
             .keypress(function(e) {
               if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
-                console.log("enter");
                 form.row.trigger(form.event_prefix + "submit");
               }
             })
@@ -401,7 +399,6 @@
         $(":input:not(textarea)", form.row)
           .keypress(function(e) {
             if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
-              console.log("enter");
               form.row.trigger(form.event_prefix + "submit");
             }
           })
@@ -880,7 +877,7 @@
       if (!suggest) {
         name.suggest({
           service_url: acre.freebase.service_url,
-          //suggest_new: "Create new",
+          suggest_new: "Create new",
           category: "instance"
         })
         .bind("fb-select", function(e, data) {

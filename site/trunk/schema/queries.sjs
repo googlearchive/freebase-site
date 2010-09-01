@@ -441,56 +441,31 @@ function included_types(id) {
 };
 
 /**
- * Add types (included_types) to the /freebase/type_hints/included_types list of type (id).
+ * Minimal topic query to get name and description
  */
-function add_included_types(id, included_types) {
+function minimal_topic(id, get_blurb, get_blob) {
   var q = {
     id: id,
-    "/freebase/type_hints/included_types": []
+    name: null
   };
-  included_types.forEach(function(type_id) {
-    q["/freebase/type_hints/included_types"].push({id: type_id, connect: "insert"});
-  });
-  return freebase.mqlwrite(q)
-    .then(function(env) {
-      return env.result["/freebase/type_hints/included_types"];
-    });
-};
-
-/**
- * Delete an included type from type (id).
- */
-function delete_included_type(id, included_type) {
-  var q = {
-    id: id,
-    "/freebase/type_hints/included_types": {
-      id: included_type,
-      connect: "delete"
-    }
+  if (get_blurb || get_blob) {
+    q["/common/topic/article"] = qh.article_clause(true);
   };
-  return freebase.mqlwrite(q)
+  return freebase.mqlread(q)
     .then(function(env) {
-      return env.result["/freebase/type_hints/included_types"];
-    });
-};
-
-
-/**
- * Add a topic as an instance of a type AND its included types
- */
-function add_instance(id, type) {
-  return included_types(type)
-    .then(function(inc_types) {
-      var types = [{id:t.id, connect:"insert"} for each (t in inc_types)];
-      types.push({id:type, connect:"insert"});
-      var q = {
-        id: id,
-        type: types
-      };
-      return freebase.mqlwrite(q)
-        .then(function(env) {
-          return env.result;
-        });
+      return env.result;
+    })
+    .then(function(topic) {
+      if (get_blurb) {
+        return add_description(topic, "blurb", null, "blurb");
+      }
+      return topic;
+    })
+    .then(function(topic) {
+      if (get_blob) {
+        return add_description(topic, "blob", null, "blob");
+      }
+      return topic;
     });
 };
 
@@ -652,4 +627,78 @@ incoming.query = function(options) {
 };
 
 
+//
+//
+// Write queries should go under here
+//
+//
 
+/**
+ * Add types (included_types) to the /freebase/type_hints/included_types list of type (id).
+ */
+function add_included_types(id, included_types) {
+  var q = {
+    id: id,
+    "/freebase/type_hints/included_types": []
+  };
+  included_types.forEach(function(type_id) {
+    q["/freebase/type_hints/included_types"].push({id: type_id, connect: "insert"});
+  });
+  return freebase.mqlwrite(q)
+    .then(function(env) {
+      return env.result["/freebase/type_hints/included_types"];
+    });
+};
+
+/**
+ * Delete an included type from type (id).
+ */
+function delete_included_type(id, included_type) {
+  var q = {
+    id: id,
+    "/freebase/type_hints/included_types": {
+      id: included_type,
+      connect: "delete"
+    }
+  };
+  return freebase.mqlwrite(q)
+    .then(function(env) {
+      return env.result["/freebase/type_hints/included_types"];
+    });
+};
+
+/**
+ * Add a topic as an instance of a type AND its included types
+ */
+function add_instance(id, type) {
+  return included_types(type)
+    .then(function(inc_types) {
+      var types = [{id:t.id, connect:"insert"} for each (t in inc_types)];
+      types.push({id:type, connect:"insert"});
+      var q = {
+        id: id,
+        type: types
+      };
+      return freebase.mqlwrite(q)
+        .then(function(env) {
+          return env.result;
+        });
+    });
+};
+
+/**
+ * Remove a topic as an instance of a type.
+ */
+function delete_instance(id, type) {
+  var q = {
+    id: id,
+    type: {
+      id: type,
+      connect: "delete"
+    }
+  };
+  return freebase.mqlwrite(q)
+    .then(function(env) {
+      return env.result;
+    });
+};

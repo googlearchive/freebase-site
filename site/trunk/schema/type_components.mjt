@@ -96,6 +96,23 @@
   </tbody>
 </acre:block>
 
+<!-- enumerated topics -->
+<acre:block def="enumerated_topic_row(topic, type_id)">
+  <tr>
+    <th class="row-header first odd">
+      <a href="#">${topic.name}</a>
+      <a href="javascript:void(0);" class="row-menu-trigger">+</a>
+      <ul class="row-menu tooltip">
+        <li class="row-menu-item edit">
+          <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.delete_instance, ['${topic.id}','${type_id}'], this);"><span class="delete-icon">Remove topic</span></a>
+        </li>
+       <li class="row-menu-item"><a href="${h.freebase_url('/view', null, topic.id)}">View topic</a></li>
+     </ul>
+    </th>
+    <td class="even"><p>${topic.blurb}</p></td>
+  </tr>  
+</acre:block>
+
 <!-- Included Types markup pattern -->
 <acre:block def="included_type_thead(type_id, included_type, expanded)">
   <thead>

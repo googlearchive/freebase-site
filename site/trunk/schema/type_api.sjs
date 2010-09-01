@@ -8,6 +8,7 @@ var delete_property = mf.require("queries", "delete_property");
 var update_property = mf.require("queries", "update_property");
 var update_type = mf.require("queries", "update_type");
 var create_type = mf.require("queries", "create_type");
+var create_topic = mf.require("queries", "create_topic");
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 
@@ -289,6 +290,56 @@ var api = {
           unit: prop.unit
         };
       });
+  },
+
+  add_instance_begin: function(args) {
+    return {
+      html: acre.markup.stringify(edit.add_instance_form(args.id))
+    };
+  },
+
+  add_instance_submit: function(args) {
+    var promise;
+    if (!args.id && args.name) {
+      var create_topic_options = {name:args.name, type:args.type};
+      promise = create_topic.create_topic(create_topic_options)
+        .then(function(result) {
+          args.id = result.id;
+          return args;
+        });
+    }
+    else {
+      promise = deferred.resolved(args);
+    }
+    return promise
+      .then(function(args) {
+        return queries.add_instance(args.id, args.type);
+      })
+      .then(function() {
+        return queries.minimal_topic(args.id, true);
+      })
+      .then(function(topic) {
+        return {
+          html: acre.markup.stringify(tc.enumerated_topic_row(topic, args.type))
+        };
+      });
+  },
+
+  delete_instance_submit: function(args) {
+    return queries.delete_instance(args.id, args.type)
+      .then(function(result) {
+        return queries.minimal_topic(args.id)
+          .then(function(topic) {
+            return {
+              html: acre.markup.stringify(edit.delete_instance_result(topic, args.type))
+            };
+          });
+      });
+  },
+
+  undo_delete_instance_submit: function(args) {
+    // just re-run add_instance_submit
+    return api.add_instance_submit(args);
   }
 };
 
@@ -342,3 +393,18 @@ api.reverse_property_begin.auth = true;
 
 api.delegate_property_begin.args = ["id"]; // property id
 api.delegate_property_begin.auth = true;
+
+api.add_instance_begin.args = ["id"]; // type id
+api.add_instance_begin.auth = true;
+
+api.add_instance_submit.args = ["id", "type"]; // topic id, type id, name (optional - topic name if create new topic)
+api.add_instance_submit.auth = true;
+api.add_instance_submit.method = "POST";
+
+api.delete_instance_submit.args = ["id", "type"]; // topic id, type id
+api.delete_instance_submit.auth = true;
+api.delete_instance_submit.method = "POST";
+
+api.undo_delete_instance_submit.args = ["id", "type"]; // topic id, type id
+api.undo_delete_instance_submit.auth = true;
+api.undo_delete_instance_submit.method = "POST";

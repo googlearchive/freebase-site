@@ -813,6 +813,202 @@
       form.trigger_row.remove(); // old row
       form.row.remove();
       form.submit_row.remove();
+    },
+
+    /**
+     * Add a topic to an enumerated type.
+     */
+    add_instance_begin: function(trigger, type_id) {
+      var trigger_row = trigger.parents("tr:first");
+      $.ajax({
+        url: acre.request.app_url + "/schema/type/add_instance_begin",
+        data: {id: type_id},
+        dataType: "json",
+        success: function(data, status, xhr) {
+          if (data.code === "/api/status/error") {
+            return se.ajax_error_handler(xhr, trigger_row);
+          }
+          var html = $(data.result.html);
+
+          var form = {
+            mode: "add",
+            event_prefix: "fb.schema.type.add.instance.",
+            ajax: {
+              url: acre.request.app_url + "/schema/type/add_instance_submit",
+              data: {type:type_id}
+            },
+
+            init_form: te.init_instance_form,
+            validate_form: te.validate_instance_form,
+            submit_form: te.submit_instance_form,
+
+            table: trigger.parents("table:first"),
+            trigger: trigger,
+            trigger_row: trigger_row,
+            row: $(".edit-row", html).hide(),
+            submit_row: $(".edit-row-submit", html).hide()
+          };
+
+          se.init_edit_form(form);
+
+          /**
+           * after submit success, re-init form for additional adds
+           */
+          form.row.bind(form.event_prefix +"success", function() {
+            // show headers if showing the empty message
+            var empty_msg = $("tbody:first .table-empty-column", form.table);
+            if (empty_msg.length) {
+              empty_msg.parents("tr:first").hide().prev("tr").show();
+            }
+            $(".button-cancel", form.submit_row).text("Done");
+            te.init_instance_form(form);
+          });
+        },
+        error: function(xhr) {
+          se.ajax_error_handler(xhr, trigger_row);
+        }
+      });
+    },
+
+    init_instance_form: function(form) {
+      var name = $("input[name=name]", form.row);
+      var id =  $("input[name=id]", form.row);
+      name.val("");
+      id.val("");
+
+      var suggest = name.data("suggest");
+      if (!suggest) {
+        name.suggest({
+          service_url: acre.freebase.service_url,
+          //suggest_new: "Create new",
+          category: "instance"
+        })
+        .bind("fb-select", function(e, data) {
+          id.val(data.id);
+        })
+        .bind("fb-select-new", function() {
+          id.val("");
+        })
+        .bind("fb-textchange", function() {
+          id.val("");
+        });
+
+        // enter/escape key handler
+        name
+          .keypress(function(e) {
+            if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
+              form.row.trigger(form.event_prefix + "submit");
+            }
+          })
+          .keyup(function(e) {
+            if (e.keyCode === 27) { // escape
+              form.row.trigger(form.event_prefix + "cancel");
+            }
+          });
+      }
+    },
+
+    validate_instance_form: function(form) {
+      var name = $.trim($(":input[name=name]", form.row).val());
+      var id = $(":input[name=id]", form.row).val();
+      if (name === "" && id === "") {
+        form.row.trigger(form.event_prefix + "error", [form.row, "Please select or create a new topic"]);
+      }
+    },
+
+    submit_instance_form: function(form) {
+      var name = $(":input[name=name]", form.row);
+
+      var data = {
+        name: $.trim(name.val()),
+        id: $(":input[name=id]", form.row).val()
+      };
+
+      var ajax_options = {
+        url: form.ajax.url,
+        type: "POST",
+        dataType: "json",
+        data: $.extend(data, form.ajax.data),
+        success: function(data, status, xhr) {
+          if (data.code === "/api/status/error") {
+            return se.ajax_error_handler(xhr, form.row);
+          }
+          var new_row = $(data.result.html).addClass("new-row");
+          form.row.before(new_row);
+          new_row.hide();
+          new_row.showRow(function() {
+            // init row menu
+            fb.schema.init_row_menu(new_row);
+            // show edit controls in tooltip
+            $(".edit", new_row).show();
+            name.focus();
+          }, null, "slow");
+          form.row.trigger(form.event_prefix + "success");
+        },
+        error: function(xhr) {
+          se.ajax_error_handler(xhr, form.row);
+        }
+      };
+
+      $.ajax(ajax_options);
+    },
+
+    /**
+     * Remove a topic from an enumerated type.
+     */
+    delete_instance_begin: function(trigger, topic_id, type_id) {
+      var row = trigger.parents("tr:first");
+      var table = row.parents("table:first");
+      $.ajax({
+        url: acre.request.app_url + "/schema/type/delete_instance_submit",
+        data: {id: topic_id, type: type_id},
+        type: "POST",
+        dataType: "json",
+        success: function(data, status, xhr) {
+          if (data.code === "/api/status/error") {
+            return se.ajax_error_handler(xhr, row);
+          }
+          var new_row = $(data.result.html).addClass("new-row");
+          row.before(new_row);
+          new_row.hide();
+          row.remove();
+          new_row.showRow();
+        },
+        error: function(xhr) {
+          se.ajax_error_handler(xhr, row);
+        }
+      });
+    },
+
+    /**
+     * undo delete_instance
+     */
+    undo_delete_instance_begin: function(trigger, topic_id, type_id) {
+      var row = trigger.parents("tr:first");
+      var table = row.parents("table:first");
+      $.ajax({
+        url: acre.request.app_url + "/schema/type/undo_delete_instance_submit",
+        data: {id: topic_id, type: type_id},
+        type: "POST",
+        dataType: "json",
+        success: function(data, status, xhr) {
+          if (data.code === "/api/status/error") {
+            return se.ajax_error_handler(xhr, row);
+          }
+          var new_row = $(data.result.html).addClass("new-row");
+          row.before(new_row);
+          new_row.hide();
+          row.remove();
+          new_row.showRow(function() {
+            fb.schema.init_row_menu(new_row);
+            // show edit controls in tooltip
+            $(".edit", new_row).show();
+          }, null, "slow");
+        },
+        error: function(xhr) {
+          se.ajax_error_handler(xhr, row);
+        }
+      });
     }
 
   };

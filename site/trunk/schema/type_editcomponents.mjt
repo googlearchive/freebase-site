@@ -394,3 +394,42 @@
     This property will be delgated to <a href="${h.url_for('schema', null, null, prop.id)}" target="_new">${prop.id}</a><acre:block if="prop.expected_type"> with expected type <a href="${h.url_for('schema', null, null, prop.expected_type)}" target="_new">${prop.expected_type}</a></acre:block><acre:block if="prop.unit"> (${prop.unit.name})</acre:block>. You cannot change the <strong>Expected Type</strong> or <strong>Uniqueness</strong>.
   </div>
 </acre:block>
+
+
+<acre:block def="add_instance_form(type_id)">
+  <table class="edit-form clear">
+    <tbody>
+      <tr class="edit-row">
+        <td colspan="2">
+          <div class="edit-row-loader"></div>  
+
+          <div class="form-field">
+            <label>
+              <span class="form-label">Topic</span>
+              <input name="name" type="text" class="text-input suggest-input"/>
+              <input name="id" type="hidden"/>
+              <input name="type" type="hidden" value="${type_id}"/>
+           </label>
+          </div>
+       </td>
+      </tr>
+      <tr class="edit-row-submit">
+        <td colspan="2">
+          <button class="button button-primary button-submit" type="submit">Save</button>
+          <button class="button button-cancel">Cancel</button>
+        </td>
+      </tr>
+    <tbody>
+  </table>
+</acre:block>
+
+<acre:block def="delete_instance_result(topic, type_id)">
+  <tr class="row-msg row-msg-info">
+    <td colspan="2">
+      <a class="close-msg" href="#" onclick="return freebase.dispatch(event, freebase.schema.close_message, ['.row-msg:first'], this);">Close</a>
+      The topic <strong>${topic.name || topic.id}</strong> has been removed from this type.
+      <a href="#" onclick="return freebase.dispatch(event, freebase.schema.type.undo_delete_instance, ['${topic.id}','${type_id}'], this);">Undo</a>
+    </td>
+  </tr>
+</acre:block>
+

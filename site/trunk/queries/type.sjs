@@ -1,3 +1,5 @@
+
+var mf = acre.require("MANIFEST").MF;
 var freebase = mf.require("promise", "apis").freebase;
 
 /**

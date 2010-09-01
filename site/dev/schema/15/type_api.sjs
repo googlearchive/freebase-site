@@ -1,13 +1,17 @@
 var mf = acre.require("MANIFEST").MF;
-var h = mf.require("core", "helpers");
 var queries = mf.require("queries");
-var tc = mf.require("type_components");
-var edit = mf.require("type_editcomponents");
+var components = mf.require("type_components");
+var editcomponents = mf.require("type_editcomponents");
+
 var create_property = mf.require("queries", "create_property");
 var delete_property = mf.require("queries", "delete_property");
 var update_property = mf.require("queries", "update_property");
 var update_type = mf.require("queries", "update_type");
 var create_type = mf.require("queries", "create_type");
+var create_topic = mf.require("queries", "create_topic");
+var queries_type = mf.require("queries", "type");
+
+var h = mf.require("core", "helpers");
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 
@@ -16,7 +20,7 @@ var api = {
     return queries.type_properties(args.id)
       .then(function(type) {
         return {
-          html: acre.markup.stringify(tc.native_properties(type.properties, args.id))
+          html: acre.markup.stringify(components.native_properties(type.properties, args.id))
         };
       });
   },
@@ -28,7 +32,7 @@ var api = {
     return deferred.all(promises)
       .then(function([props, role]) {
         return {
-          html: acre.markup.stringify(tc.incoming_props_tbody(props, role !== "cvt"))
+          html: acre.markup.stringify(components.incoming_props_tbody(props, role !== "cvt"))
         };
       });
   },
@@ -40,7 +44,7 @@ var api = {
     return deferred.all(promises)
       .then(function([props, role]) {
         return {
-          html: acre.markup.stringify(tc.incoming_props_tbody(props))
+          html: acre.markup.stringify(components.incoming_props_tbody(props))
         };
       });
   },
@@ -59,7 +63,7 @@ var api = {
         }
         type.key = key;
         return {
-          html: acre.markup.stringify(edit.type_settings_form(type))
+          html: acre.markup.stringify(editcomponents.type_settings_form(type))
         };
       });
   },
@@ -76,7 +80,7 @@ var api = {
 
   add_property_begin: function(args) {
     return {
-      html: acre.markup.stringify(edit.add_property_form(args.id))
+      html: acre.markup.stringify(editcomponents.add_property_form(args.id))
     };
   },
 
@@ -112,7 +116,7 @@ var api = {
           })
           .then(function(prop) {
             return {
-              html: acre.markup.stringify(tc.type_property_row(prop))
+              html: acre.markup.stringify(components.type_property_row(prop))
             };
           });
       });
@@ -123,7 +127,7 @@ var api = {
     return delete_property.delete_property(args.id, args.user, false, true)
       .then(function([prop_info, result]) {
         return {
-          html: acre.markup.stringify(edit.delete_property_result(prop_info))
+          html: acre.markup.stringify(editcomponents.delete_property_result(prop_info))
         };
       });
   },
@@ -137,7 +141,7 @@ var api = {
       })
       .then(function(prop) {
         return {
-          html: acre.markup.stringify(tc.type_property_row(prop))
+          html: acre.markup.stringify(components.type_property_row(prop))
         };
       });
   },
@@ -150,7 +154,7 @@ var api = {
       .then(function(results) {
         var prop = results[0];
         prop.used = results[1];
-        return {html:acre.markup.stringify(edit.edit_property_form(prop))};
+        return {html:acre.markup.stringify(editcomponents.edit_property_form(prop))};
       });
   },
 
@@ -186,7 +190,7 @@ var api = {
           })
           .then(function(prop) {
             return {
-              html: acre.markup.stringify(tc.type_property_row(prop))
+              html: acre.markup.stringify(components.type_property_row(prop))
             };
           });
       });
@@ -194,13 +198,13 @@ var api = {
 
   add_included_type_begin: function(args) {
     return {
-      html: acre.markup.stringify(edit.add_included_type_form(args.id))
+      html: acre.markup.stringify(editcomponents.add_included_type_form(args.id))
     };
   },
 
   add_included_type_submit: function(args) {
     var promises = [];
-    promises.push(queries.included_types(args.included_type));
+    promises.push(queries_type.included_types(args.included_type));
     promises.push(freebase.mqlread({id:args.included_type, name:null})
       .then(function(env) {
         return env.result;
@@ -222,7 +226,7 @@ var api = {
               });
               var html = [];
               inserted.forEach(function(type) {
-                html.push(acre.markup.stringify(tc.included_type_thead(args.id, types_by_id[type])));
+                html.push(acre.markup.stringify(components.included_type_thead(args.id, types_by_id[type])));
               });
               return {
                 html: html.join("")
@@ -239,7 +243,7 @@ var api = {
     return queries.delete_included_type(args.id, args.included_type)
       .then(function(result) {
         return {
-          html: acre.markup.stringify(edit.delete_included_type_result(args.id, args.included_type))
+          html: acre.markup.stringify(editcomponents.delete_included_type_result(args.id, args.included_type))
         };
       });
   },
@@ -255,7 +259,7 @@ var api = {
     return deferred.all(promises)
       .then(function(result) {
         return {
-          html: acre.markup.stringify(tc.included_type_thead(args.id, result[1]))
+          html: acre.markup.stringify(components.included_type_thead(args.id, result[1]))
         };
       });
   },
@@ -264,7 +268,7 @@ var api = {
     return queries.property(args.master)
       .then(function(master_prop) {
         return {
-          html: acre.markup.stringify(edit.reverse_property_form(args.id, master_prop))
+          html: acre.markup.stringify(editcomponents.reverse_property_form(args.id, master_prop))
         };
       });
   },
@@ -283,12 +287,62 @@ var api = {
       })
       .then(function(prop) {
         return {
-          message: acre.markup.stringify(edit.delegated_property_message(prop)),
+          message: acre.markup.stringify(editcomponents.delegated_property_message(prop)),
           expected_type: prop.expected_type,
           unique: prop.unique,
           unit: prop.unit
         };
       });
+  },
+
+  add_instance_begin: function(args) {
+    return {
+      html: acre.markup.stringify(editcomponents.add_instance_form(args.id))
+    };
+  },
+
+  add_instance_submit: function(args) {
+    var promise;
+    if (!args.id && args.name) {
+      var create_topic_options = {name:args.name};
+      promise = create_topic.create_topic(create_topic_options)
+        .then(function(created) {
+          args.id = created.id;
+          return args;
+        });
+    }
+    else {
+      promise = deferred.resolved(args);
+    }
+    return promise
+      .then(function(args) {
+        return queries.add_instance(args.id, args.type);
+      })
+      .then(function() {
+        return queries.minimal_topic(args.id, true);
+      })
+      .then(function(topic) {
+        return {
+          html: acre.markup.stringify(components.enumerated_topic_row(topic, args.type))
+        };
+      });
+  },
+
+  delete_instance_submit: function(args) {
+    return queries.delete_instance(args.id, args.type)
+      .then(function(result) {
+        return queries.minimal_topic(args.id)
+          .then(function(topic) {
+            return {
+              html: acre.markup.stringify(editcomponents.delete_instance_result(topic, args.type))
+            };
+          });
+      });
+  },
+
+  undo_delete_instance_submit: function(args) {
+    // just re-run add_instance_submit
+    return api.add_instance_submit(args);
   }
 };
 
@@ -342,3 +396,18 @@ api.reverse_property_begin.auth = true;
 
 api.delegate_property_begin.args = ["id"]; // property id
 api.delegate_property_begin.auth = true;
+
+api.add_instance_begin.args = ["id"]; // type id
+api.add_instance_begin.auth = true;
+
+api.add_instance_submit.args = ["id", "type"]; // topic id, type id, name (optional - topic name if create new topic)
+api.add_instance_submit.auth = true;
+api.add_instance_submit.method = "POST";
+
+api.delete_instance_submit.args = ["id", "type"]; // topic id, type id
+api.delete_instance_submit.auth = true;
+api.delete_instance_submit.method = "POST";
+
+api.undo_delete_instance_submit.args = ["id", "type"]; // topic id, type id
+api.undo_delete_instance_submit.auth = true;
+api.undo_delete_instance_submit.method = "POST";

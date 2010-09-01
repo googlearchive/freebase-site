@@ -1,12 +1,15 @@
 var mf = acre.require("MANIFEST").MF;
+var h = mf.require("core", "helpers");
+var schema_helpers = mf.require("helpers");
+var mql = mf.require("mql");
+
+var queries_blob = mf.require("queries", "blob");
+var queries_helpers = mf.require("queries", "helpers");
+var queries_type = mf.require("queries", "type");
+
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 var urlfetch = mf.require("promise", "apis").urlfetch;
-var blob = mf.require("queries", "blob");
-var h = mf.require("core", "helpers");
-var sh = mf.require("helpers");
-var mql = mf.require("mql");
-var qh = mf.require("queries", "helpers");
 
 /**
  * get and attach blurb/blob to a mql result that has a "/common/topic/article" key
@@ -29,7 +32,7 @@ function add_description(o, mode, options, label) {
       options.maxlength = 1000;
     }
   }
-  return blob.get_blurb(o['/common/topic/article'][0].id, options)
+  return queries_blob.get_blurb(o['/common/topic/article'][0].id, options)
     .then(function(blob) {
       o[label] = blob;
       return o;
@@ -81,7 +84,7 @@ function domains(q) {
             return domain;
           });
       });
-      return domains.sort(sh.sort_by_name);
+      return domains.sort(schema_helpers.sort_by_name);
     });
 };
 
@@ -94,7 +97,7 @@ function minimal_domain(id) {
     name: null,
     type: "/type/domain",
     key: [{value: null, namespace: null}],
-    "/common/topic/article": qh.article_clause(true)
+    "/common/topic/article": queries_helpers.article_clause(true)
   };
   return freebase.mqlread(q)
     .then(function(env) {
@@ -136,7 +139,7 @@ function domain(id) {
       domain.types.forEach(function(type) {
         promises.push(add_description(type));
         type.instance_count = 0;
-        var role = qh.get_type_role(type, true);
+        var role = queries_helpers.get_type_role(type, true);
         if (role === "mediator") {
           mediators.push(type);
         }
@@ -147,9 +150,9 @@ function domain(id) {
           types.push(type);
         }
       });
-      types.sort(sh.sort_by_name);
-      mediators.sort(sh.sort_by_name);
-      cvts.sort(sh.sort_by_name);
+      types.sort(schema_helpers.sort_by_name);
+      mediators.sort(schema_helpers.sort_by_name);
+      cvts.sort(schema_helpers.sort_by_name);
 
       domain.types = types;
       domain["mediator:types"] = mediators;
@@ -188,7 +191,7 @@ function minimal_type(type_id) {
     type: "/type/type",
     key: [{namespace: null, value: null}],
     domain: {id: null, name: null, type: "/type/domain"},
-    "/common/topic/article": qh.article_clause(true),
+    "/common/topic/article": queries_helpers.article_clause(true),
     "/freebase/type_hints/role": {optional: true, id: null},
     "/freebase/type_hints/mediator": null,
     "/freebase/type_hints/enumeration": null,
@@ -199,7 +202,7 @@ function minimal_type(type_id) {
       return env.result || {};
     })
     .then(function(type) {
-      qh.get_type_role(type, true);
+      queries_helpers.get_type_role(type, true);
       var promises = [];
       // description
       promises.push(add_description(type, "blurb", null, "blurb"));
@@ -235,7 +238,7 @@ function type_role(type_id) {
   };
   return freebase.mqlread(q)
     .then(function(env) {
-      return qh.get_type_role(env.result || {});
+      return queries_helpers.get_type_role(env.result || {});
     });
 };
 
@@ -245,7 +248,7 @@ function normalize_prop(prop) {
   prop.disambiguator = prop["/freebase/property_hints/disambiguator"] === true;
   prop.display_none = prop["/freebase/property_hints/display_none"] === true;
   if (prop.expected_type && typeof prop.expected_type === "object") {
-    qh.get_type_role(prop.expected_type, true);
+    queries_helpers.get_type_role(prop.expected_type, true);
   }
   return prop;
 };
@@ -277,7 +280,7 @@ function base_type(id) {
       // readable timestamp
       result.date = h.format_date(acre.freebase.date_from_iso(result.timestamp), 'MMMM dd, yyyy');
       // type role
-      qh.get_type_role(result, true);
+      queries_helpers.get_type_role(result, true);
       // included_types
       result.included_types = result["/freebase/type_hints/included_types"] || [];
       // properties
@@ -316,7 +319,7 @@ function base_type(id) {
         })
         .then(function(siblings) {
           result.domain.types = siblings;
-          return siblings.sort(sh.sort_by_name);
+          return siblings.sort(schema_helpers.sort_by_name);
         }));
 
       return deferred.all(promises)
@@ -348,6 +351,28 @@ function type(id) {
           result.incoming.bases = props || 0;
         }));
 
+      if (result.role === "enumeration") {
+        promises.push(freebase.mqlread([{
+          id: null,
+          name: null,
+          type: id,
+          "/common/topic/article": queries_helpers.article_clause(true),
+          optional: true,
+          limit: 11
+        }])
+        .then(function(env) {
+          console.log("instances", env.result);
+          result.instance = env.result.sort(schema_helpers.sort_by_name);
+          var blurbs = [];
+          result.instance.forEach(function(topic) {
+            blurbs.push(add_description(topic, "blurb", null, "blurb"));
+          });
+          return deferred.all(blurbs)
+            .then(function() {
+              return result.instance;
+            });
+        }));
+      }
       return deferred.all(promises)
         .then(function() {
           return result;
@@ -404,53 +429,37 @@ function type_properties(id) {
     });
 };
 
+
+
 /**
- * Get all included types of a type
+ * Minimal topic query to get name and description
  */
-function included_types(id) {
-  return freebase.mqlread(mql.included_types({id:id}))
+function minimal_topic(id, get_blurb, get_blob) {
+  var q = {
+    id: id,
+    name: null
+  };
+  if (get_blurb || get_blob) {
+    q["/common/topic/article"] = queries_helpers.article_clause(true);
+  };
+  return freebase.mqlread(q)
     .then(function(env) {
       return env.result;
     })
-    .then(function(result) {
-      var types = result["/freebase/type_hints/included_types"];
-      return [{id: t.id, name: t.name} for each (t in types)];
+    .then(function(topic) {
+      if (get_blurb) {
+        return add_description(topic, "blurb", null, "blurb");
+      }
+      return topic;
+    })
+    .then(function(topic) {
+      if (get_blob) {
+        return add_description(topic, "blob", null, "blob");
+      }
+      return topic;
     });
 };
 
-/**
- * Add types (included_types) to the /freebase/type_hints/included_types list of type (id).
- */
-function add_included_types(id, included_types) {
-  var q = {
-    id: id,
-    "/freebase/type_hints/included_types": []
-  };
-  included_types.forEach(function(type_id) {
-    q["/freebase/type_hints/included_types"].push({id: type_id, connect: "insert"});
-  });
-  return freebase.mqlwrite(q)
-    .then(function(env) {
-      return env.result["/freebase/type_hints/included_types"];
-    });
-};
-
-/**
- * Delete an included type from type (id).
- */
-function delete_included_type(id, included_type) {
-  var q = {
-    id: id,
-    "/freebase/type_hints/included_types": {
-      id: included_type,
-      connect: "delete"
-    }
-  };
-  return freebase.mqlwrite(q)
-    .then(function(env) {
-      return env.result["/freebase/type_hints/included_types"];
-    });
-};
 
 /**
  * Full fledged property query
@@ -458,7 +467,7 @@ function delete_included_type(id, included_type) {
 function property(id) {
   var q = mql.property({
     id: id,
-    creator: qh.user_clause(),
+    creator: queries_helpers.user_clause(),
     timestamp:null,
     schema: {
       id: null,
@@ -609,4 +618,78 @@ incoming.query = function(options) {
 };
 
 
+//
+//
+// Write queries should go under here
+//
+//
 
+/**
+ * Add types (included_types) to the /freebase/type_hints/included_types list of type (id).
+ */
+function add_included_types(id, included_types) {
+  var q = {
+    id: id,
+    "/freebase/type_hints/included_types": []
+  };
+  included_types.forEach(function(type_id) {
+    q["/freebase/type_hints/included_types"].push({id: type_id, connect: "insert"});
+  });
+  return freebase.mqlwrite(q)
+    .then(function(env) {
+      return env.result["/freebase/type_hints/included_types"];
+    });
+};
+
+/**
+ * Delete an included type from type (id).
+ */
+function delete_included_type(id, included_type) {
+  var q = {
+    id: id,
+    "/freebase/type_hints/included_types": {
+      id: included_type,
+      connect: "delete"
+    }
+  };
+  return freebase.mqlwrite(q)
+    .then(function(env) {
+      return env.result["/freebase/type_hints/included_types"];
+    });
+};
+
+/**
+ * Add a topic as an instance of a type AND its included types
+ */
+function add_instance(id, type) {
+  return queries_type.included_types(type)
+    .then(function(inc_types) {
+      var types = [{id:t.id, connect:"insert"} for each (t in inc_types)];
+      types.push({id:type, connect:"insert"});
+      var q = {
+        id: id,
+        type: types
+      };
+      return freebase.mqlwrite(q)
+        .then(function(env) {
+          return env.result;
+        });
+    });
+};
+
+/**
+ * Remove a topic as an instance of a type.
+ */
+function delete_instance(id, type) {
+  var q = {
+    id: id,
+    type: {
+      id: type,
+      connect: "delete"
+    }
+  };
+  return freebase.mqlwrite(q)
+    .then(function(env) {
+      return env.result;
+    });
+};

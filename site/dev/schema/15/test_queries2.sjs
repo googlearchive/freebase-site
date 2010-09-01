@@ -1,8 +1,8 @@
 acre.require('/test/lib').enable(this);
 
-var q = acre.require("queries");
-var mql = acre.require("mql");
-
+var mf = acre.require("MANIFEST").MF;
+var q = mf.require("queries");
+var mql = mf.require("mql");
 
 
 test("incoming_from_domain", function() {

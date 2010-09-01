@@ -348,6 +348,28 @@ function type(id) {
           result.incoming.bases = props || 0;
         }));
 
+      if (result.role === "enumeration") {
+        promises.push(freebase.mqlread([{
+          id: null,
+          name: null,
+          type: id,
+          "/common/topic/article": qh.article_clause(true),
+          optional: true,
+          limit: 11
+        }])
+        .then(function(env) {
+          console.log("instances", env.result);
+          result.instance = env.result.sort(sh.sort_by_name);
+          var blurbs = [];
+          result.instance.forEach(function(topic) {
+            blurbs.push(add_description(topic, "blurb", null, "blurb"));
+          });
+          return deferred.all(blurbs)
+            .then(function() {
+              return result.instance;
+            });
+        }));
+      }
       return deferred.all(promises)
         .then(function() {
           return result;
@@ -451,6 +473,27 @@ function delete_included_type(id, included_type) {
       return env.result["/freebase/type_hints/included_types"];
     });
 };
+
+
+/**
+ * Add a topic as an instance of a type AND its included types
+ */
+function add_instance(id, type) {
+  return included_types(type)
+    .then(function(inc_types) {
+      var types = [{id:t.id, connect:"insert"} for each (t in inc_types)];
+      types.push({id:type, connect:"insert"});
+      var q = {
+        id: id,
+        type: types
+      };
+      return freebase.mqlwrite(q)
+        .then(function(env) {
+          return env.result;
+        });
+    });
+};
+
 
 /**
  * Full fledged property query

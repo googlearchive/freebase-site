@@ -7,24 +7,24 @@ var ht = mf.require("queries", "helpers_test");
 
 // Call one of these, specific to where your key comes from
 function assert_mql_keys(keys, o, null_check) {
-  assert_keys(keys, o, null_check, 'mql')
+  assert_keys(keys, o, null_check, 'mql');
 }
 
 function assert_bdb_keys(keys, o, null_check) {
-  assert_keys(keys, o, null_check, 'activity bdb')
+  assert_keys(keys, o, null_check, 'activity bdb');
 }
 
 function assert_cdb_keys(keys, o, null_check) {
-  assert_keys(keys, o, null_check, 'cdb')
+  assert_keys(keys, o, null_check, 'cdb');
 }
 
 // Called by one of the functions above
 function assert_keys(keys, o, null_check, source) {
-  
+
   if (!source) {
     source = 'unknown source';
   }
-  
+
   var errors = [];
   keys.forEach(function(key) {
     if (! (key in o)) {
@@ -152,7 +152,7 @@ function assert_type(type) {
                "properties"], type);
   assert_cdb_keys(["instance_count"], type);
   assert_bdb_keys(["blurb", "blob"], type);
-  
+
   if (type.properties && type.properties.length) {
     type.properties.forEach(function(p) {
       assert_prop(p);
@@ -252,6 +252,7 @@ test("type_role", function() {
 });
 
 //
+// Write tests
 //
 // All tests after this comment requires users to be logged in
 //
@@ -310,6 +311,32 @@ test("delete_included_type", function() {
   }
 });
 
+
+test("add_instance", function() {
+  var type = ht.create_type(user_domain, {"/freebase/type_hints/included_types": [{id: "/common/topic"},{id: "/people/person"}]});
+  try {
+    var topic = acre.freebase.mqlwrite({id:null, create:"unconditional"}).result;
+    ok(topic.id, topic.id);
+    var result;
+    q.add_instance(topic.id, type.id)
+      .then(function(instance) {
+        result = instance;
+      });
+    acre.async.wait_on_results();
+    ok(result);
+    result = acre.freebase.mqlread({id:topic.id, type:[]}).result;
+    var types = {};
+    result.type.forEach(function(t) {
+      types[t] = true;
+    });
+    [type.id, "/common/topic", "/people/person"].forEach(function(t) {
+      ok(types[t], t);
+    });
+  }
+  finally {
+    if (type) ht.delete_type(type);
+  }
+});
 
 acre.test.report();
 

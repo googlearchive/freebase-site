@@ -2,7 +2,6 @@ var mf = acre.require("MANIFEST").MF;
 var h = mf.require("core", "helpers");
 var qh = mf.require("helpers");
 var create_article = mf.require("create_article");
-var type = mf.require("type");
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 var validators = mf.require("validator", "validators");
@@ -54,7 +53,7 @@ function create_topic(options) {
     })
     .then(function(created) {
       if (o.type && o.included_types) {
-        return type.included_types(o.type)
+        return included_types(o.type)
           .then(function(types) {
             if (types.length) {
               var q = {
@@ -112,3 +111,28 @@ function create_topic(options) {
 
 };
 
+
+/**
+ * copied from schema queries included_types
+ */
+function included_types(id) {
+  return freebase.mqlread({
+    id: id,
+    "/freebase/type_hints/included_types": [{
+      optional: true,
+      id: null,
+      name: null,
+      type: "/type/type",
+      index: null,
+      sort: "index",
+      "!/freebase/domain_profile/base_type": {optional: "forbidden", id: null, limit: 0}
+    }]
+  })
+  .then(function(env) {
+    return env.result;
+  })
+  .then(function(result) {
+    var types = result["/freebase/type_hints/included_types"];
+    return [{id: t.id, name: t.name} for each (t in types)];
+  });
+};

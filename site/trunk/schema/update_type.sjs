@@ -1,8 +1,9 @@
 var mf = acre.require("MANIFEST").MF;
+var qh = mf.require("queries", "helpers");
+
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
-var create_article = mf.require("create_article");
-var qh = mf.require("helpers");
+var create_article = mf.require("queries", "create_article");
 var validators = mf.require("validator", "validators");
 
 /**

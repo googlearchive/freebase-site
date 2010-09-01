@@ -1,4 +1,5 @@
 var mf = acre.require("MANIFEST").MF;
+var queries = mf.require("queries");
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 
@@ -137,7 +138,7 @@ function prop_info(prop_id, user_id) {
   // prop info
   promises.push(prop_info_query(prop_id, user_id));
   // prop used?
-  promises.push(mf.require("property").used(prop_id));
+  promises.push(queries.property_used(prop_id));
   return deferred.all(promises)
     .then(function([info, used]) {
       info.used = used;

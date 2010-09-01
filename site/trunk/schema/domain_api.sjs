@@ -1,11 +1,14 @@
 var mf = acre.require("MANIFEST").MF;
 var h = mf.require("core", "helpers");
-var edit = mf.require("domain_editcomponents");
-var dc = mf.require("domain_components");
-var update_domain = mf.require("queries", "update_domain");
-var create_type = mf.require("queries", "create_type");
-var delete_type = mf.require("queries", "delete_type");
-var update_type = mf.require("queries", "update_type");
+var editcomponents = mf.require("domain_editcomponents");
+var components = mf.require("domain_components");
+
+var create_type = mf.require("create_type");
+var delete_type = mf.require("delete_type");
+var update_type = mf.require("update_type");
+
+var update_domain = mf.require("update_domain");
+
 var queries = mf.require("queries");
 var freebase = mf.require("promise", "apis").freebase;
 
@@ -40,7 +43,7 @@ var api = {
       })
       .then(function(domain) {
         return {
-          html: acre.markup.stringify(edit.domain_settings_form(domain))
+          html: acre.markup.stringify(editcomponents.domain_settings_form(domain))
         };
       });
   },
@@ -57,7 +60,7 @@ var api = {
 
   add_type_begin: function(args) {
     return {
-      html: acre.markup.stringify(edit.add_type_form(args.id, args.role))
+      html: acre.markup.stringify(editcomponents.add_type_form(args.id, args.role))
     };
   },
 
@@ -69,7 +72,7 @@ var api = {
         var created = {name:args.name, id: result.id, properties: 0, instance_count: 0, blurb: args.description};
         created.role = args.role;
         return {
-          html: acre.markup.stringify(dc.domain_type_row(created))
+          html: acre.markup.stringify(components.domain_type_row(created))
         };
       });
   },
@@ -79,7 +82,7 @@ var api = {
     return delete_type.delete_type(args.id, args.user, false, true)
       .then(function([type_info, result]) {
         return {
-          html: acre.markup.stringify(edit.delete_type_result(type_info))
+          html: acre.markup.stringify(editcomponents.delete_type_result(type_info))
         };
       });
   },
@@ -93,7 +96,7 @@ var api = {
       })
       .then(function(type) {
         return {
-          html: acre.markup.stringify(dc.domain_type_row(type))
+          html: acre.markup.stringify(components.domain_type_row(type))
         };
       });
   },
@@ -102,7 +105,7 @@ var api = {
     return queries.minimal_type(args.id)
     .then(function(type) {
       return {
-        html: acre.markup.stringify(edit.edit_type_form(type))
+        html: acre.markup.stringify(editcomponents.edit_type_form(type))
       };
     });
   },
@@ -115,7 +118,7 @@ var api = {
       })
       .then(function(type) {
         return {
-          html: acre.markup.stringify(dc.domain_type_row(type))
+          html: acre.markup.stringify(components.domain_type_row(type))
         };
       });
   }

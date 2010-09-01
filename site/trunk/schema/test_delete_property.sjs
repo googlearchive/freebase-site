@@ -2,7 +2,7 @@ acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").MF;
 var freebase = mf.require("promise", "apis").freebase;
-var h = mf.require("helpers_test");
+var h = mf.require("queries", "helpers_test");
 var delete_property = mf.require("delete_property").delete_property;
 var undo = mf.require("delete_property").undo;
 

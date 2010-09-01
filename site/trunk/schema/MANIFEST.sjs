@@ -6,6 +6,7 @@ var MF = {
       "promise": "//14.promise.site.freebase.dev",
       "jquerytools": "//14.jquerytools.site.freebase.dev",
       "queries": "//queries.site.freebase.dev",
+      "validator": "//1.validator.site.freebase.dev",
 
       // external apps
       "libraries": "//libraries.apps.freebase.dev"

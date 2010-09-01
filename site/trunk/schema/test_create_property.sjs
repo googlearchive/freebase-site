@@ -1,7 +1,7 @@
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").MF;
-var h = mf.require("helpers_test");
+var h = mf.require("queries", "helpers_test");
 var create_property = mf.require("create_property").create_property;
 
 // this test requires user to be logged in

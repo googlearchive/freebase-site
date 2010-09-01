@@ -3,13 +3,14 @@ var queries = mf.require("queries");
 var components = mf.require("type_components");
 var editcomponents = mf.require("type_editcomponents");
 
-var create_property = mf.require("queries", "create_property");
-var delete_property = mf.require("queries", "delete_property");
-var update_property = mf.require("queries", "update_property");
-var update_type = mf.require("queries", "update_type");
-var create_type = mf.require("queries", "create_type");
+var create_type = mf.require("create_type");
+var update_type = mf.require("update_type");
+
+var create_property = mf.require("create_property");
+var delete_property = mf.require("delete_property");
+var update_property = mf.require("update_property");
+
 var create_topic = mf.require("queries", "create_topic");
-var queries_type = mf.require("queries", "type");
 
 var h = mf.require("core", "helpers");
 var deferred = mf.require("promise", "deferred");
@@ -149,7 +150,7 @@ var api = {
   edit_property_begin: function(args) {
     var promises = [];
     promises.push(queries.property(args.id));
-    promises.push(mf.require("queries", "property").used(args.id));
+    promises.push(queries.property_used(args.id));
     return deferred.all(promises)
       .then(function(results) {
         var prop = results[0];
@@ -204,7 +205,7 @@ var api = {
 
   add_included_type_submit: function(args) {
     var promises = [];
-    promises.push(queries_type.included_types(args.included_type));
+    promises.push(queries.included_types(args.included_type));
     promises.push(freebase.mqlread({id:args.included_type, name:null})
       .then(function(env) {
         return env.result;

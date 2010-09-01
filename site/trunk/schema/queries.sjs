@@ -5,7 +5,6 @@ var mql = mf.require("mql");
 
 var queries_blob = mf.require("queries", "blob");
 var queries_helpers = mf.require("queries", "helpers");
-var queries_type = mf.require("queries", "type");
 
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
@@ -514,6 +513,50 @@ function property(id) {
     });
 };
 
+/**
+ * Query to determine if a property is being "used".
+ * A property is determined as being "used" if there is 1 or more
+ * /type/link instances with a master_property or reverse_property of the property id.
+ */
+function property_used(prop_id) {
+  var promises = [];
+  var master_query = {
+    source: null,
+    target: null,
+    target_value: null,
+    type: "/type/link",
+    master_property: prop_id,
+    limit: 1
+  };
+  promises.push(freebase.mqlread(master_query)
+    .then(function(env) {
+      return env.result;
+    }));
+
+  var reverse_query = {
+    source: null,
+    target: null,
+    target_value: null,
+    type: "/type/link",
+    master_property: {reverse_property: prop_id},
+    limit: 1
+  };
+  promises.push(freebase.mqlread(reverse_query)
+    .then(function(env) {
+      return env.result;
+    }));
+
+  return deferred.all(promises)
+    .then(function(results) {
+      for (var i=0,l=results.length; i<l; i++) {
+        if (results[i] != null) {
+          return true;
+        }
+      }
+      return false;
+    });
+};
+
 //
 // Incoming property queries from
 // 1. a given domain
@@ -617,6 +660,31 @@ incoming.query = function(options) {
   }, options)];
 };
 
+/**
+ * Get all included types of a type
+ */
+function included_types(id) {
+  return freebase.mqlread({
+    id: id,
+    "/freebase/type_hints/included_types": [{
+      optional: true,
+      id: null,
+      name: null,
+      type: "/type/type",
+      index: null,
+      sort: "index",
+      "!/freebase/domain_profile/base_type": {optional: "forbidden", id: null, limit: 0}
+    }]
+  })
+  .then(function(env) {
+    return env.result;
+  })
+  .then(function(result) {
+    var types = result["/freebase/type_hints/included_types"];
+    return [{id: t.id, name: t.name} for each (t in types)];
+  });
+};
+
 
 //
 //
@@ -662,7 +730,7 @@ function delete_included_type(id, included_type) {
  * Add a topic as an instance of a type AND its included types
  */
 function add_instance(id, type) {
-  return queries_type.included_types(type)
+  return included_types(type)
     .then(function(inc_types) {
       var types = [{id:t.id, connect:"insert"} for each (t in inc_types)];
       types.push({id:type, connect:"insert"});

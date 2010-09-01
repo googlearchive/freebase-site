@@ -232,6 +232,19 @@ def hash_for_file(f, block_size=2**20):
     return md5.hexdigest()
 
 
+
+
+
+
+
+######## READ args ##########
+
+
+
+
+
+
+
 # for each app name specified, determine
 # 1. app id (required)
 # 2. app version (required) - acre
@@ -270,6 +283,21 @@ for arg in args:
     apps.append((app, appid, version))
 
 
+
+
+
+
+
+
+
+################ BRANCH APP ###################
+
+
+
+
+
+
+
 # copy /trunk/app to /dev/app/version (svn branch) if /dev/app/version does NOT exist
 for app, appid, version in apps:
     branch = svn_dev_url(app, version)
@@ -285,6 +313,21 @@ for app, appid, version in apps:
     msg = 'Create branch version {version} of app {app}'.format(version=version, app=app)
     cmd = ['svn', 'copy', trunk, branch, '--parents', '-m', '"%s"' % msg]
     run_cmd(cmd)
+
+
+
+
+
+
+
+
+
+
+
+
+############# ACRE PUSH ################
+
+
 
 
 svn_temp_dirs = {}
@@ -304,6 +347,23 @@ for app, appid, version in apps:
                     
     # acre push branch
     acrepush.push(appid, graph, tempdir, version=version, user=user, pw=pw)
+
+
+
+
+
+
+
+
+##########    DEPLOY       ############
+
+
+
+
+
+
+
+
 
 
 # determine if we need to create a new deploy revision by
@@ -369,9 +429,9 @@ for app, appid, version in apps:
         # acre push branch
         acrepush.push(appid, graph, branch_dir, version=version, user=user, pw=pw)
 
-        mf_url = app_url(app, version) + "/MANIFEST"
-        print ">>>>>>>>>> fetch_url {url}".format(url=mf_url)
-        print json.dumps(fetch_url(mf_url, isjson=True), indent=2)
+        #mf_url = app_url(app, version) + "/MANIFEST"
+        #print ">>>>>>>>>> fetch_url {url}".format(url=mf_url)
+        #print json.dumps(fetch_url(mf_url, isjson=True), indent=2)
         
         
 # flag to tell us if we've created new freebaselibs deployed directory,
@@ -436,6 +496,20 @@ for app, appid, version in apps:
     restart_static_servers = True
 
 
+
+
+
+
+
+
+
+##########  ACREPUSH TRUNK ############
+
+
+
+
+
+
 # repush tip of svn:trunk to acre:trunk
 for app, appid, version in apps:
     # svn checkout
@@ -448,6 +522,12 @@ for app, appid, version in apps:
     
     # acrepush
     acrepush.push(appid, graph, tempdir, user=user, pw=pw)   
+
+
+
+
+########### RESTART STATIC SERVERS ############
+
 
 
 if restart_static_servers:

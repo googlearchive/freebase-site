@@ -74,7 +74,7 @@ JAVA_OPTS = ["-jar", COMPILER, "--warning_level", "QUIET"]
 
 class Context():
 
-    svn_path_root = '/home/masouras/src/freebase_site'
+    svn_path_root = '/home/%s/src/freebase_site' % os.getenv('USER')
     svn_url_root = 'https://svn.metaweb.com/svn/freebase_site'
     static_url_root =   'http://freebaselibs.com/static/freebase_site'
 
@@ -120,7 +120,7 @@ class Context():
 
     def fetch_url(self,url, isjson=False, tries=3):
 
-        c.log(url, 'fetchurl')
+        self.log(url, 'fetchurl')
         request = urllib2.Request(url, headers = {'Cache-control': 'no-cache' })
 
         while tries > 0:
@@ -761,6 +761,8 @@ class ActionStatic():
         result = self.evaluate_resource_base_url()
         if not result:
             return False
+
+        ActionPush(self.context)()
 
         self.inject_resources_with_base_url()
 

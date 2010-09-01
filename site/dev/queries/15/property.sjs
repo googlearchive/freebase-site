@@ -3,6 +3,10 @@ var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 
 /**
+ * Any /type/property specific queries should go here.
+ */
+
+/**
  * Query to determine if a property is being "used".
  * A property is determined as being "used" if there is 1 or more
  * /type/link instances with a master_property or reverse_property of the property id.

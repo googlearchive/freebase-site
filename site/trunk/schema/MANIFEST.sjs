@@ -2,7 +2,7 @@ var MF = {
   "apps": {
       "core": "//15.core.site.freebase.dev",
       "routing": "//15.routing.site.freebase.dev",
-      "template": "//15.template.site.freebase.dev",
+      "template": "//template.site.freebase.dev",
       "promise": "//14.promise.site.freebase.dev",
       "jquerytools": "//14.jquerytools.site.freebase.dev",
       "queries": "//queries.site.freebase.dev",

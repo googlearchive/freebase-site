@@ -3,7 +3,7 @@ var MF = {
     "core": "//15.core.site.freebase.dev",
     "promise": "//13.promise.site.freebase.dev",
     "toolbox": "//13.toolbox.site.freebase.dev",
-    "permission": "//13.permission.site.freebase.dev",
+    "permission": "//permission.site.freebase.dev",
     "jqueryui": "//13.jqueryui.site.freebase.dev"
   },
   "suggest" : {

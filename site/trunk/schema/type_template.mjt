@@ -216,33 +216,6 @@
         </tfoot>
      </table>      
     </div>
-
-
-    <!-- enumeration instances -->
-    <div acre:if="c.type.role === 'enumeration'" class="section">
-      <h2 class="table-title">        
-        Instances
-      </h2>    
-      <table class="table" cellspacing="0" id="enumerated-table">
-        <thead acre:attrs="c.type.incoming.domain.length || c.type.incoming.commons || c.type.incoming.bases ? {style:'display:none;'}:{}">
-          <tr>
-            <th colspan="5" class="table-empty-column" scope="col">
-              <p>This type has no Incoming Properties</p>
-            </th>
-          </tr>
-        </thead>
-        <acre:block if="c.type.incoming.domain.length">
-          ${tc.incoming_props_thead(c.type.domain.name, true)}
-          ${tc.incoming_props_tbody(c.type.incoming.domain, c.type.role !== 'cvt')}
-       </acre:block>
-        <acre:block if="c.type.incoming.commons">
-          ${tc.incoming_props_thead("Commons", false, h.url_for('schema', 'type', [['id',c.type.id],['exclude_domain',c.type.domain.id]], '/get_incoming_from_commons'))}
-        </acre:block>
-        <acre:block if="c.type.incoming.bases">
-          ${tc.incoming_props_thead("Bases", false, h.url_for('schema', 'type', [['id',c.type.id],['exclude_domain',c.type.domain.id]], '/get_incoming_from_bases'))}
-        </acre:block>
-      </table>  
-    </div>
  
     <!-- Incoming Properties Table -->
     <div class="section">

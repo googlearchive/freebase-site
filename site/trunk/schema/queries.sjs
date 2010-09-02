@@ -182,8 +182,8 @@ function domain(id) {
  * Get minimal type info (blurb, mediator, enumeration, #properties, instance_count).
  * If you want full type info, use base_type or type queries.
  */
-function minimal_type(type_id) {
-  var q = {
+function minimal_type(type_id, options) {
+  var q = h.extend({
     id: type_id,
     guid: null,
     name: null,
@@ -195,7 +195,7 @@ function minimal_type(type_id) {
     "/freebase/type_hints/mediator": null,
     "/freebase/type_hints/enumeration": null,
     properties: {optional: true, id: null, type: "/type/property", "return": "count"}
-  };
+  }, options);
   return freebase.mqlread(q)
     .then(function(env) {
       return env.result || {};
@@ -513,6 +513,23 @@ function property(id) {
     });
 };
 
+
+/**
+ * Simple type instance query if anything is an instance of a type.
+ */
+function type_used(type_id) {
+  var q = {
+    id: type_id,
+    type: "/type/type",
+    instance: {optional:true, id: null, limit: 1}
+  };
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result.instance !== null;
+    });
+};
+
+
 /**
  * Query to determine if a property is being "used".
  * A property is determined as being "used" if there is 1 or more
@@ -556,6 +573,7 @@ function property_used(prop_id) {
       return false;
     });
 };
+
 
 //
 // Incoming property queries from
@@ -632,6 +650,9 @@ function incoming(q) {
       return env.result;
     })
     .then(function(result) {
+      result.forEach(function(prop) {
+        queries_helpers.get_type_role(prop.schema, true);
+      });
       return result;
     });
 };
@@ -642,7 +663,14 @@ incoming.query = function(options) {
     name: null,
     type: "/type/property",
     expected_type: null,
-    schema: {id: null, name: null, type: "/type/type"},
+    schema: {
+      id: null,
+      name: null,
+      type: "/type/type",
+      "/freebase/type_hints/role": {optional: true, id: null},
+      "/freebase/type_hints/mediator": null,
+      "/freebase/type_hints/enumeration": null
+    },
     master_property: {
       optional: true,
       id: null,

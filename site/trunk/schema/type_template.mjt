@@ -54,7 +54,7 @@
       $c.type.name
       <span class="flags">
         <acre:block if="c.type.role === 'mediator'">
-          <span>Mediator</span>
+          <span>Compound Relationship Type</span>
         </acre:block>
         <acre:block elif="c.type.role === 'cvt'">
           <span>Compound Value Type</span>
@@ -65,6 +65,7 @@
         <acre:block else="">
           <span>Entity Type</span>
         </acre:block>
+        <a href="#" onclick="return freebase.dispatch(event, freebase.schema.type.type_role, ['${c.type.id}'], this);">change</a>
       </span>
     </h1>
     <div class="meta">

@@ -45,7 +45,7 @@ var api = {
     return deferred.all(promises)
       .then(function([props, role]) {
         return {
-          html: acre.markup.stringify(components.incoming_props_tbody(props))
+          html: acre.markup.stringify(components.incoming_props_tbody(props, role !== "cvt"))
         };
       });
   },
@@ -77,6 +77,47 @@ var api = {
           location: h.url_for("schema", "type", null, updated_id)
         };
       });
+  },
+
+  type_role_begin: function(args) {
+    var promises = [];
+    promises.push(queries.minimal_type(args.id, {
+      properties: [{
+        optional: true,
+        id: null,
+        type: "/type/property",
+        master_property: null,
+        reverse_property: null
+      }]
+    }));
+    promises.push(queries.type_used(args.id));
+    return deferred.all(promises)
+      .then(function(result) {
+        var type = result[0];
+        type.used = result[1];
+        return type;
+      })
+      .then(function(type) {
+        // are there any return link properties?
+        type.return_links = 0;
+        for (var i=0,l=type.properties.length; i<l; i++) {
+          var prop = type.properties[i];
+          if (prop.master_property || prop.reverse_property) {
+            type.return_links++;
+          }
+        }
+        type.properties = type.properties.length;
+        return type;
+      })
+      .then(function(type) {
+        return {
+          html: acre.markup.stringify(editcomponents.type_role_form(type))
+        };
+      });
+  },
+
+  type_role_submit: function(args) {
+
   },
 
   add_property_begin: function(args) {
@@ -359,6 +400,17 @@ api.get_incoming_from_commons.cache_policy = "fast";
 
 api.type_settings_begin.args = ["id"]; // type id
 api.type_settings_begin.auth = true;
+
+api.type_settings_submit.args = ["id", "name", "key", "role"]; // type id, name, key and role
+api.type_settings_submit.auth = true;
+api.type_settings_submit.method = "POST";
+
+api.type_role_begin.args = ["id"]; // type id
+api.type_role_begin.auth = true;
+
+api.type_role_submit.args = ["id", "role"]; // type id, type role
+api.type_role_submit.auth = true;
+api.type_role_submit.method = "POST";
 
 api.add_property_begin.args = ["id"]; // type id
 api.add_property_begin.auth = true;

@@ -423,3 +423,100 @@
   </tr>
 </acre:block>
 
+
+<acre:block def="type_role_form(type)">
+  <acre:script>
+    var attrs = {
+      entity: {value:""},
+      enumeration: {value:"enumeration"},
+      cvt: {value:"cvt"},
+      mediator: {value:"mediator"}
+    };
+    var role = type.role || "entity";
+    attrs[role].checked = "checked";
+    if (type.used) {
+      if (role === "entity" || role === "enumeration") {
+        attrs.cvt.disabled = attrs.mediator.disabled = "disabled";
+      }
+      else {
+        attrs.entity.disabled = attrs.enumeration.disabled = "disabled";
+      }
+    }
+    else if (type.return_links) {
+      attrs.cvt.disabled = "disabled";
+    }
+    // don't disable currently checked
+    delete attrs[role]['disabled'];
+  </acre:script>
+  <div class="modal" id="type-role">
+    <div class="modal-inner">
+      <h1 class="modal-title">Type Kind</h1>
+      <div class="modal-content">
+        <table cellspacing="0" class="table-type-role">
+          <tbody>
+            <tr acre:attrs="attrs.entity.disabled ? {'class':'disabled'} : {}">
+              <th class="row-title">
+                <label class="type-role-title">
+                  <input type="radio" name="role" class="type-role-option" acre:attrs="attrs.entity"/>
+                  Entity Type
+                </label>
+                <p class="type-role-description">Describe any person, place, or concept.</p>
+              </th>
+              <td acre:if="attrs.entity.disabled" class="odd warning">
+                You cannot change to an Entity Type with topics typed as ${type.name}.
+                <a href="#">View&nbsp;instances&nbsp;&raquo;</a>
+              </td>
+              <td acre:else="" class="odd">&nbsp;</td>
+            </tr>
+            <tr acre:attrs="attrs.enumeration.disabled ? {'class':'disabled'} : {}">
+              <th class="row-title">
+                <label class="type-role-title">
+                  <input type="radio" name="role" class="type-role-option" acre:attrs="attrs.enumeration"/>
+                  Enumerated Type
+                </label>
+                <p class="type-role-description">Describe any person, place, or concept, but limit the possible values to a finite set of topics.</p>
+              </th>
+              <td acre:if="attrs.enumeration.disabled" class="odd warning">
+                You cannot change to an Enumerated Type with topics typed as ${type.name}.
+                <a href="#">View&nbsp;instances&nbsp;&raquo;</a>
+              </td>
+              <td acre:else="" class="odd">&nbsp;</td>
+            </tr>
+            <tr acre:attrs="attrs.cvt.disabled ? {'class':'disabled'} : {}">
+              <th class="row-title">
+                <label class="type-role-title">
+                  <input type="radio" name="role" class="type-role-option" acre:attrs="attrs.cvt"/>
+                  Compound Value Type
+                </label>
+                <p class="type-role-description">Extend simple primary values</p>
+              </th>
+              <td acre:if="attrs.cvt.disabled" class="odd warning">
+                You cannot change to a Compound Value Type with topics typed as ${type.name}.
+                <a href="#">View&nbsp;instances&nbsp;&raquo;</a>
+              </td>
+              <td acre:else="" class="odd">&nbsp;</td>
+            </tr>
+            <tr  acre:attrs="attrs.mediator.disabled ? {'class':'disabled'} : {}">
+              <th class="row-title">
+                <label class="type-role-title">
+                  <input type="radio" name="role" class="type-role-option" acre:attrs="attrs.mediator"/>
+                  Compound Relationship Type
+                </label>
+                <p class="type-role-description">Describe the relationship between two or more Entity Types.<p>
+              </th>
+              <td acre:if="attrs.mediator.disabled" class="odd warning">
+                You cannot change to a Compound Relationship Type with topics typed as ${type.name}.
+                <a href="#">View&nbsp;instances&nbsp;&raquo;</a>
+              </td>
+              <td acre:else="" class="odd">&nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <button class="button button-submit button-primary" type="submit">Save</button>
+      <button class="button button-cancel">Cancel</button>
+    </div>
+  </div>
+</acre:block>

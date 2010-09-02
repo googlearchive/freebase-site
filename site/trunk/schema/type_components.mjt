@@ -162,7 +162,7 @@
           </acre:block>  
           <a href="javascript:void(0);" class="row-menu-trigger">+</a>
           <ul class="row-menu tooltip">          
-            <li acre:if="allow_return_link && !other_property" class="row-menu-item edit">
+            <li acre:if="allow_return_link && !other_property && prop.schema.role !== 'cvt'" class="row-menu-item edit">
               <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.reverse_property, ['${prop.expected_type}','${prop.id}'], this);"><span class="create-return-link-icon">Create return link</span></a>
             </li>
             <li class="row-menu-item"><a href="${h.url_for('schema', null, null, prop.schema.id)}">View type schema</a></li>
@@ -285,70 +285,4 @@
       </td>
     </tr>    
   </acre:block>
-</acre:block>
-
-<acre:block def="type_display_form()">
-<div class="modal" id="type-display">
-  <div class="modal-inner">
-    <h1 class="modal-title">Type Kind</h1>
-    <div class="modal-content">
-      <table cellspacing="0" class="table-type-kind">
-        <tbody>
-          <tr>
-            <th class="row-title">
-              <label class="type-kind-title">
-                <input type="radio" name="" value="" class="type-kind-option" />
-                Entity Type
-              </label>
-              <p class="type-kind-description">Describe any person, place, or concept.</p>
-            </th>
-            <td class="odd">
-              <!-- this is empty unless there is a warning message -->
-            </td>
-          </tr>
-          <tr>
-            <th class="row-title">
-              <label class="type-kind-title">
-                <input type="radio" name="" value="" class="type-kind-option" />
-                Enumerated Type
-              </label>
-              <p class="type-kind-description">Describe any person, place, or concept, but limit the possible values to a finite set of topics.</p>
-            </th>
-            <td class="odd">
-              <!-- this is empty unless there is a warning message -->
-            </td>
-          </tr>
-          <tr class="disabled">
-            <th class="row-title">
-              <label class="type-kind-title">
-                <input type="radio" name="" value="" class="type-kind-option" disabled="disabled" />
-                Compound Value Type
-              </label>
-              <p class="type-kind-description">Extend simple primary values</p>
-            </th>
-            <td class="odd warning">
-              You cannot change to a TYPE KIND with topics typed as TYPE NAME. <a href="#">View instances &raquo;</a>
-            </td>
-          </tr>
-          <tr class="disabled">
-            <th class="row-title">
-              <label class="type-kind-title">
-                <input type="radio" name="" value="" class="type-kind-option" disabled="disabled" />
-                Compound Relationship Type
-              </label>
-              <p class="type-kind-description">Describe the relationship between two or more Entity Types.<p>
-            </th>
-            <td class="odd warning">
-              You cannot change to a TYPE KIND with topics typed as TYPE NAME. <a href="#">View instances &raquo;</a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <div class="modal-buttons">
-    <button class="button button-submit button-primary" type="submit">Save</button>
-    <button class="button button-cancel">Cancel</button>
-  </div>
-</div>
 </acre:block>

@@ -90,6 +90,40 @@
       });
     },
 
+    /**
+     * type settings form
+     */
+    type_role_begin: function(trigger, type_id) {
+      $.ajax({
+        url: acre.request.app_url + "/schema/type/type_role_begin",
+        data: {id:type_id},
+        dataType: "json",
+        success: function(data, status, xhr) {
+          var html = $(data.result.html);
+          var form = {
+            event_prefix: "fb.schema.type.role.",
+            ajax: {
+              url: acre.request.app_url + "/schema/type/type_role_submit",
+              data: {id: type_id}
+            },
+/*
+            init_form: te.init_type_role_form,
+            validate_form: te.validate_type_role_form,
+            submit_form: te.submit_type_role_form,
+*/
+            form: html
+          };
+
+          se.init_settings_form(form);
+
+          form.form
+            .bind(form.event_prefix + "success", function(e, data) {
+              window.location = data.location;
+            });
+        }
+      });
+    },
+
     init_delegate_property: function(form) {
       $(".nav-toggle", form.row).click(function(e) {
         te.toggle_delegate_property($(this), form);

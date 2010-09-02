@@ -219,7 +219,7 @@
         // autofill key
         name.change(function() {
           if (!key.data("changed")) {
-            var val = $.trim(name.val()).toLowerCase().replace(/\s+/g, '-');
+            var val = $.trim(name.val()).toLowerCase().replace(/\s+/g, '_');
             key.val(val);
           }
         });

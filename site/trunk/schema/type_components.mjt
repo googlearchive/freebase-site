@@ -33,29 +33,29 @@
         <a href="${h.url_for('schema', null, null, prop.expected_type.id)}">
           $prop.expected_type.id
         </a>
+        <acre:script>
+          var other_property = prop.master_property || prop.reverse_property;
+        </acre:script>
+        <acre:block if="other_property">
+          <span class="return-link-trigger"></span>
+          <span class="return-link-description">
+            <strong>$prop.name</strong> has a return link of
+            <strong>$other_property.name</strong>
+            from <strong>$other_property.schema.name</strong>
+            <span class="return-link-pointer"></span>
+          </span>        
+        </acre:block>
         <acre:block if="prop.expected_type.role === 'mediator'">
-          <span class="ect-role"><abbr title="This is a mediator">mediator</abbr></span>
+          <span class="property-meta ect-role"><abbr title="This is a mediator">mediator</abbr></span>
         </acre:block>
         <acre:block if="prop.expected_type.role === 'cvt'">
-          <span class="ect-role"><abbr title="This is a compound value type">cvt</abbr></span>
+          <span class="property-meta ect-role"><abbr title="This is a compound value type">cvt</abbr></span>
         </acre:block>
         <acre:block if="prop.expected_type.role === 'enumeration'">
-          <span class="ect-role"><abbr title="This is an enumerated type">enumerated</abbr></span>
+          <span class="property-meta ect-role"><abbr title="This is an enumerated type">enumerated</abbr></span>
         </acre:block>      
       </acre:block>
       <span acre:if="prop.unit" class="measurement-unit">$prop.unit.name</span>
-      <acre:script>
-        var other_property = prop.master_property || prop.reverse_property;
-      </acre:script>
-      <acre:block if="other_property">
-        <span class="return-link-trigger"></span>
-        <span class="return-link-description">
-          <strong>$prop.name</strong> has a return link of
-          <strong>$other_property.name</strong>
-          from <strong>$other_property.schema.name</strong>
-          <span class="return-link-pointer"></span>
-        </span>        
-      </acre:block>
     </td>
     <td class="even description">
       <p acre:if="prop.tip">${prop.tip}</p>

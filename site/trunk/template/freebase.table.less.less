@@ -14,7 +14,7 @@ Global Table Style
     font-size: 1.6em;
     line-height: 1;
     margin-top: 1.7em;
-    padding: 0 7px 0.7em;
+    padding: 0 15px 0.7em;
 }
 
 /* Generic Table */
@@ -34,6 +34,11 @@ Global Table Style
     padding: 5px 7px;
 }
 
+.column-header.first,
+.tbody-header {
+    padding-left: 15px;
+}
+
 /*
     .table-sortable is a javascript hook for
     jQuery-based table sorting. Only tables that
@@ -47,7 +52,8 @@ Global Table Style
 
 
 .table tbody td,
-.table tbody th {
+.table tbody th,
+.table thead .row-msg td {
     color: #444;
     padding: 5px 7px;
     border-bottom: 1px solid #d5d7d8;
@@ -84,7 +90,7 @@ tbody th.tbody-header,
 thead th.tbody-header {
     background: #f5f5f5;
     font-size: 1.3em;
-    padding: 3px 7px;
+    padding: 3px 15px;
     border-bottom: 1px solid #d5d7d8;
 }
 
@@ -115,12 +121,12 @@ thead th.tbody-header.expanded {
     background: #dcdedf;
 }
 
-th.table-empty-column,
-td.table-empty-column {
+.table th.table-empty-column,
+.table td.table-empty-column {
     background: #fff;
     border: 1px solid #d5d7d8;
     border-top: 0;
-    padding: 1em;
+    padding: 1em 15px;
 }
 
 .table-empty-column p {

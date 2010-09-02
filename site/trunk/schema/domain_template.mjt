@@ -156,7 +156,7 @@
                     <p>
                     <strong>Extend simple primary values.</strong>
                     For example, asserting that <a href="${h.freebase_url('/view', '/en/san_francisco')}" title="View topic in Freebase">San Francisco</a> has a population of 808,977 is less useful than asserting that San Francisco had a population of 808,977 in 2008.
-                    Many Compound Value Types already exist for common patterns, including geocoordinates, image dimensions, currency values, and more. Be sure to explore before creating new Compound Value Types!
+                    Many Compound Value Types already exist for common patterns, including <a href="${h.url_for('schema', null, null, '/location/geocode')}" title="View Compound Value Type">geocoordinates</a>,<a href="${h.url_for('schema', null, null, '/measurement_unit/rect_size')}" title="View Compound Value Type"> image dimensions</a>, and more. Be sure to explore before creating new Compound Value Types!
                     </p>
                     <p><a href="http://wiki.freebase.com/wiki/Types" rel="external help">Learn more &raquo;</a></p> 
                   </div>

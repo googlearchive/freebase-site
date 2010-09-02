@@ -543,8 +543,8 @@ Type Page
 
 .nav-utilities li a {
     font-size: 1.2em;
-    line-height: 2.9;
-    padding: 0 1.2em;
+    line-height: 1;
+    padding: 7px 1.2em;
 }
 
 .row-menu-trigger {
@@ -703,7 +703,7 @@ tr:hover .tbody-header-title.expanded {
 }
 
 .table-empty-title {
-    font-size: 1.2em;
+    font-size: 12px;
     font-weight: bold;
     font-style: italic;
     color: #444;
@@ -1077,4 +1077,50 @@ ECT Measurment Dialog
 .ect-unit-field label {
     display: block;
     font-size: 12px;
+}
+
+/*
+---------------------------------
+TYPE KIND TABLE
+---------------------------------
+*/
+
+#type-display .modal-content {
+    padding: 0;
+}
+.table-type-kind {
+    width: 100%
+}
+
+.table-type-kind th,
+.table-type-kind td {
+    background: #f8f8f8;
+    padding: 7px 10px;
+    border-bottom: 1px solid #dcdbdc;
+}
+
+.type-kind-title {
+    font-size: 1.4em;
+    font-weight: bold; 
+}
+
+.type-kind-option {
+    float: left;
+    margin: 3px 7px 30px 0;
+}
+
+.type-kind-description {
+    font-size: 1.2em;
+}
+
+.disabled .type-kind-title,
+.disabled .type-kind-description {
+    color: #aaa;
+}
+
+td.warning {
+    background: #fff7d7;
+    font-size: 11px;
+    color: #444;
+    border-left: 1px solid #dcdbdc;
 }

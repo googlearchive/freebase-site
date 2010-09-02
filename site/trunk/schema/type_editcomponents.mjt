@@ -330,6 +330,43 @@
   </tr>
 </acre:block>
 
+<acre:block def="type_display_form()">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">Type Kind</h1>
+      <div class="modal-content">
+        <table cellspacing="0" class="table">
+          <tbody>
+            <tr>
+              <th class="row-title">
+                <label>
+                  <input type="radio" name="" value="" />
+                  <h3>Entity Type</h3>
+                  <p>Describe any person, place, or concept</p>
+              </th>
+              <td class="odd">
+                <!-- this is empty unless there is a warning message -->
+              </td>
+            </tr>
+            <tr>
+              <th class="row-title"></th>
+              <td class="odd"></td>
+            </tr>
+            <tr>
+              <th class="row-title"></th>
+              <td class="odd"></td>
+            </tr>
+            <tr>
+              <th class="row-title"></th>
+              <td class="odd"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</acre:block>
+
 <acre:block def="type_settings_form(type)">
   <div class="modal">
     <div class="modal-inner">

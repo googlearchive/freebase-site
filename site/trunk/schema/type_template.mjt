@@ -142,7 +142,7 @@
       <table cellspacing="0" class="table">
         <thead>
           <tr acre:attrs="c.type.instance.length ? {} : {style:'display:none;'}">
-            <th class="column-header first">Topic</th>
+            <th class="column-header first">Name</th>
             <th class="column-header">Description</th>
           </tr>
           <tr acre:attrs="c.type.instance.length ? {style:'display:none;'} : {}">
@@ -201,7 +201,7 @@
         <thead acre:attrs="c.type.included_types.length ? {style:'display:none;'}:{}">
           <tr>
             <th colspan="4" class="table-empty-column" scope="col">
-              <p>This type has no Included Types</p>
+              <h3 class="table-empty-title">This type doesn't have any included types.</h3>
             </th>
           </tr>
         </thead>
@@ -224,7 +224,7 @@
         <thead acre:attrs="c.type.incoming.domain.length || c.type.incoming.commons || c.type.incoming.bases ? {style:'display:none;'}:{}">
           <tr>
             <th colspan="5" class="table-empty-column" scope="col">
-              <p>This type has no Incoming Properties</p>
+              <h3 class="table-empty-title">This type doesn't have any incoming properties</h3>
             </th>
           </tr>
         </thead>
@@ -241,6 +241,7 @@
       </table>
    </div>   
   </div>     
+
 </acre:block>
 
 <acre:block def="diagram_view()">

@@ -137,7 +137,7 @@
   <div class="mode">
     <div acre:if="c.type.role === 'enumeration'" class="section" id="topics-table">
       <h2 class="table-title">
-        <a href="#" class="help-link">What Are Enumerated Types?</a>
+        <a class="help-link" href="http://wiki.freebase.com/wiki/Enumerated_type" rel="help external" title="Read help article">What Are Enumerated Types?</a>
         Topics
       </h2>
       <table cellspacing="0" class="table">

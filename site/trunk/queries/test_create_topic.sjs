@@ -1,6 +1,6 @@
 acre.require('/test/lib').enable(this);
 
-var mf = acre.require("MANIFEST").MF;
+var mf = acre.require("MANIFEST").mf;
 var h = mf.require("helpers_test");
 var create_topic = mf.require("create_topic").create_topic;
 

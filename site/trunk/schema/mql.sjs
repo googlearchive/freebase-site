@@ -26,6 +26,7 @@ function domain(options) {
     "/common/topic/article": qh.article_clause(true),
     types: [{
       optional: true,
+      limit: 1000,
       id: null,
       name: null,
       type: "/type/type",

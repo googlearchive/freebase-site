@@ -10,7 +10,7 @@ if (filename in md.files) {
   acre.route(relative_url); 
 }
 
-var mf = acre.require("MANIFEST").MF;
+var mf = acre.require("MANIFEST").mf;
 
 //XXX: TODO: should load page contents as promises, rather than in templates
 var data = {

@@ -1,5 +1,5 @@
 <acre:script>
-  var mf = acre.require("MANIFEST").MF;
+  var mf = acre.require("MANIFEST").mf;
 </acre:script>
 
 <acre:block def="toolbox(options)">

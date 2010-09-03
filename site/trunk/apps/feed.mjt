@@ -1,6 +1,6 @@
 <acre:script>
   acre.response.set_header("content-type", "application/atom+xml");
-  var mf = acre.require("MANIFEST").MF;
+  var mf = acre.require("MANIFEST").mf;
   var c = this.exports.c = {};
   var Datejs = mf.require("libraries", "date").Date;
   var bp = acre.request.base_path;

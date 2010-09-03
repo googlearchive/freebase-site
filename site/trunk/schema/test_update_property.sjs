@@ -1,6 +1,6 @@
 acre.require('/test/lib').enable(this);
 
-var mf = acre.require("MANIFEST").MF;
+var mf = acre.require("MANIFEST").mf;
 var h = mf.require("queries", "helpers_test");
 var update_property = mf.require("update_property").update_property;
 

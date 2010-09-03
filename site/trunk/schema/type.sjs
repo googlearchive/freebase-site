@@ -1,4 +1,4 @@
-var mf = acre.require("MANIFEST").MF;
+var mf = acre.require("MANIFEST").mf;
 var api = acre.require("type_api").api;
 var service = mf.require("core", "service");
 var queries = mf.require("queries");

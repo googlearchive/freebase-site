@@ -1,6 +1,6 @@
 acre.require('/test/lib').enable(this);
 
-var mf = acre.require("MANIFEST").MF;
+var mf = acre.require("MANIFEST").mf;
 var h = acre.require("helpers_url");
 var scope = this;
 
@@ -18,7 +18,7 @@ function resource_url(apppath, file, params, extra_path) {
 };
 
 test("url_for", function() {
-  var routes_mf = mf.require("routing", "MANIFEST").MF;
+  var routes_mf = mf.require("routing", "MANIFEST").mf;
   var routes =  mf.require("routing", "app_routes");
 
   if (h.is_client()) {

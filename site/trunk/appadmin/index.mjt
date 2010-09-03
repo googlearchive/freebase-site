@@ -1,6 +1,6 @@
 <acre:script>
 
-  var mf = acre.require("MANIFEST").MF;
+  var mf = acre.require("MANIFEST").mf;
   var h = mf.require('core', 'helpers');
   var freebase = mf.require('promise', 'apis').freebase;
   var lib_ae = mf.require('ae', 'lib_appeditor_service');

@@ -560,7 +560,7 @@ class ActionStatic():
                         data = static_file.read(2**20)
                         if not data:
                             break
-                        hash_file.write(data)   
+                        hash_file.write(data)
         with open(path, "rb") as hash_file:
             deploy_rev = c.hash_for_file(hash_file)
 
@@ -568,15 +568,15 @@ class ActionStatic():
 
     def deploy_static_files(self, source_dir, source_url, dest_dir, **kws):
 
-        c = self.context 
+        c = self.context
         #must return a list of filenames (js, css, img)
         files = []
         c.log('copying static files to deploy directory')
 
         ## LOAD MANIFEST ##
 
-        # load app MANIFEST.MF by doing an HTTP request for <app_url>/MANIFEST
-        url = "%s/MANIFEST" % source_url    
+        # load app MANIFEST.sjs by doing an HTTP request for <app_url>/MANIFEST
+        url = "%s/MANIFEST" % source_url
         mf = c.fetch_url(url, isjson=True)
         if not (mf and mf.get('result')):
             c.log('Aborting push of resource files - no manifest found!', 'error')
@@ -587,7 +587,7 @@ class ActionStatic():
         ## CSS and JS ##
 
         # go through javascript and css bundles specified in the manifest
-        # by doing an http request for <app_url>/MANIFEST/<bundle_name> 
+        # by doing an http request for <app_url>/MANIFEST/<bundle_name>
         # and copy them to the target directory
         for file_type in ['javascript', 'stylesheet']:
             for filename in mf[file_type]:
@@ -603,7 +603,7 @@ class ActionStatic():
                         
         # for images, read the local directory since images are not bundled together
         # 2. svn list version and copy images (*.png, *.gif, etc.) to dest_dir
-        img_files = [f for f in os.listdir(source_dir) if os.path.splitext(f)[1].lower() in IMG_EXTENSIONS]    
+        img_files = [f for f in os.listdir(source_dir) if os.path.splitext(f)[1].lower() in IMG_EXTENSIONS]
         for f in img_files:
             src = os.path.join(source_dir, f)
             # in local acre dev, we use double extensions for static files including image files
@@ -629,10 +629,10 @@ class ActionStatic():
         branch_url = c.svn_branch_url()
         branch_dir = c.svn_branch_path()
 
-        tempdir = mkdtemp() 
+        tempdir = mkdtemp()
         cmd = ['svn', 'checkout', branch_url, tempdir]
         c.run_cmd(cmd)
- 
+
         # update MANIFEST static_base_url
         manifest = os.path.join(branch_dir, "MANIFEST.sjs")
         if not os.path.exists(manifest):
@@ -640,7 +640,7 @@ class ActionStatic():
             return False
 
         # 1. urlfetch static files from app url (*.mf.js/*.mf.css)
-        deployed_dir = mkdtemp()    
+        deployed_dir = mkdtemp()
         url = c.app_url()
         # We need to pass use_acre_url=1, for the MANIFEST css_preprocessor to return consistent urls for css url declarations to
         # calculate deterministic hashes of all static files for an app.

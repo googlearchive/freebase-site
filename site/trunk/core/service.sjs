@@ -1,4 +1,4 @@
-var mf = acre.require("MANIFEST").MF;
+var mf = acre.require("MANIFEST").mf;
 var h = mf.require("helpers");
 var lib = mf.require("service", "lib");
 var deferred = mf.require("promise", "deferred");

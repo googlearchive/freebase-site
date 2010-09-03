@@ -1,4 +1,4 @@
-var mf = acre.require("MANIFEST").MF;
+var mf = acre.require("MANIFEST").mf;
 var h = mf.require("core", "helpers");
 var editcomponents = mf.require("domain_editcomponents");
 var components = mf.require("domain_components");

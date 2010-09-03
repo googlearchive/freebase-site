@@ -5,7 +5,7 @@ var exports = {
   "uppercase_alphabet": uppercase_alphabet
 };
 
-var mf = acre.require("MANIFEST").MF;
+var mf = acre.require("MANIFEST").mf;
 var h = mf.require("core", "helpers");
 
 function format_stat(number) {

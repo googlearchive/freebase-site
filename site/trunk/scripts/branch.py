@@ -124,8 +124,8 @@ def fetch_url(url, isjson=False):
     return contents
 
 def deploy_static_files(source_dir, source_url, dest_dir, **kws):
-    # load app MANIFEST.MF
-    url = "%s/MANIFEST" % source_url    
+    # load app MANIFEST.sjs
+    url = "%s/MANIFEST" % source_url
     mf = fetch_url(url, isjson=True)
     if not (mf and mf.get('result')):
         raise "Aborting push of resource files - no manifest found!"
@@ -134,7 +134,7 @@ def deploy_static_files(source_dir, source_url, dest_dir, **kws):
         get_manifest_files(mf[manifest], source_url, dest_dir, **kws)
 
     # 2. svn list version and copy images (*.png, *.gif, etc.) to dest_dir
-    img_files = [f for f in os.listdir(source_dir) if os.path.splitext(f)[1].lower() in IMG_EXTENSIONS]    
+    img_files = [f for f in os.listdir(source_dir) if os.path.splitext(f)[1].lower() in IMG_EXTENSIONS]
     for f in img_files:
         src = os.path.join(source_dir, f)
         # in local acre dev, we use double extensions for static files including image files

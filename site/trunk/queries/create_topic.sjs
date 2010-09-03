@@ -1,4 +1,4 @@
-var mf = acre.require("MANIFEST").MF;
+var mf = acre.require("MANIFEST").mf;
 var h = mf.require("core", "helpers");
 var qh = mf.require("helpers");
 var create_article = mf.require("create_article");

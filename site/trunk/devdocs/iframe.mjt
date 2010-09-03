@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <acre:script>
     acre.request.path_info = acre.request.url.substring(acre.request.base_url.length);
-    var mf = acre.require("MANIFEST").MF;
+    var mf = acre.require("MANIFEST").mf;
     var g = acre.require("/freebase/apps/global/templates", mf.version["/freebase/apps/global"]).g;
     var util = acre.require("util");
     var o = util.setup(g);

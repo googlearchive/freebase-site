@@ -8,7 +8,7 @@ var exports = {
  * Date library to parse and format dates using datejs library
  */
 
-var mf = acre.require("MANIFEST").MF;
+var mf = acre.require("MANIFEST").mf;
 var datejs = mf.require("libraries", "date").Date;
 
 /**

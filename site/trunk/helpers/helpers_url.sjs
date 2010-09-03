@@ -11,8 +11,8 @@ var exports = {
   "parse_uri": parse_uri
 };
 
-var mf = acre.require("MANIFEST").MF;
-var routes_mf = mf.require("routing", "MANIFEST").MF;
+var mf = acre.require("MANIFEST").mf;
+var routes_mf = mf.require("routing", "MANIFEST").mf;
 var routes = mf.require("routing", "app_routes");
 var extend = mf.require("helpers_util").extend;
 

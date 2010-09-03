@@ -1,6 +1,6 @@
 <acre:script>
 
-  var mf = acre.require("MANIFEST").MF;
+  var mf = acre.require("MANIFEST").mf;
   var id = acre.request.params['id'];
   var app_util = mf.require('app_util');
   

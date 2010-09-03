@@ -1,4 +1,4 @@
-var mf = acre.require("MANIFEST").MF;
+var mf = acre.require("MANIFEST").mf;
 var h = acre.require("helpers");
 var routes = acre.require("app_routes").routes;
 

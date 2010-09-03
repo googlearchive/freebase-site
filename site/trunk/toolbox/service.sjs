@@ -1,4 +1,4 @@
-var mf = acre.require("MANIFEST").MF;
+var mf = acre.require("MANIFEST").mf;
 var t = mf.require("template");
 var queries = mf.require("queries");
 var h = mf.require("core", "helpers");

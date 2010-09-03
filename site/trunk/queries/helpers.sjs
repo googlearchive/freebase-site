@@ -1,4 +1,4 @@
-var mf = acre.require("MANIFEST").MF;
+var mf = acre.require("MANIFEST").mf;
 var extend = mf.require("core", "helpers_util").extend;
 
 var LITERAL_TYPE_IDS = {

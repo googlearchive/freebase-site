@@ -1,6 +1,6 @@
 acre.require('/test/lib').enable(this);
 
-var mf = acre.require("MANIFEST").MF;
+var mf = acre.require("MANIFEST").mf;
 var freebase = mf.require("promise", "apis").freebase;
 var blob = acre.require("blob");
 

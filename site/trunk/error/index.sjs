@@ -1,5 +1,5 @@
 function main(scope, args) {
-  var mf = acre.require("MANIFEST").MF;
+  var mf = acre.require("MANIFEST").mf;
   var renderer = mf.require("template", "renderer");
   var error_template = mf.require("template");
 

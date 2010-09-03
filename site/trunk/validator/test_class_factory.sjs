@@ -1,6 +1,6 @@
 acre.require('/test/lib').enable(this);
 
-var mf = acre.require("MANIFEST").MF;
+var mf = acre.require("MANIFEST").mf;
 var validators = mf.require("validators");
 var Class = validators.Class;
 var Validator = validators.Validator;

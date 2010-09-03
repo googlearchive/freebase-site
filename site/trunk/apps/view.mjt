@@ -1,5 +1,5 @@
 <acre:script>
-  var mf = acre.require("MANIFEST").MF;
+  var mf = acre.require("MANIFEST").mf;
   var c = this.exports.c = {};
   var h = mf.require("core", "helpers");
   var image = mf.require("template", "imagecomponents");

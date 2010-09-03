@@ -84,7 +84,7 @@ test("img_src", function() {
   };
   m.extend_manifest(mf, scope);
 
-  var ext_mf = mf.require("core", "MANIFEST").MF;
+  var ext_mf = mf.require("core", "MANIFEST").mf;
 
   var tests = [
     [

@@ -1,4 +1,4 @@
-var mf = acre.require("MANIFEST").MF;
+var mf = acre.require("MANIFEST").mf;
 var util = acre.require("util");
 var host = util.get_doc_host();
 
@@ -60,7 +60,7 @@ function get_list() {
         {
           "name"     : "Freebase Suggest",
           "key"      : "suggest",
-          "content"  : mf.require('template','MANIFEST').MF.suggest.base_url + "/index.html"
+          "content"  : mf.require('template','MANIFEST').mf.suggest.base_url + "/index.html"
         }
       ]
     },

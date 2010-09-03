@@ -3,7 +3,7 @@ acre.require('/test/lib').enable(this);
 
 var router = acre.require("routes");
 var routes = acre.require("app_routes");
-var mf = acre.require("MANIFEST").MF;
+var mf = acre.require("MANIFEST").mf;
 
 test("match_route", function() {
 

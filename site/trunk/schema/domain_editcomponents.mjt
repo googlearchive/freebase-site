@@ -27,7 +27,7 @@
             </label>
             <div class="fb-type-display" style="display:none">
               <acre:block if="role === 'mediator'">
-                <label for="role" class="boolean-field"><input type="checkbox" name="role" value="mediator" disabled="disabled" checked="checked">Mediator</label>
+                <label for="role" class="boolean-field"><input type="checkbox" name="role" value="mediator" disabled="disabled" checked="checked">Compound Relationship Type</label>
               </acre:block>
               <acre:block elif="role === 'cvt'">
                 <label for="role" class="boolean-field"><input type="checkbox" name="role" value="cvt" disabled="disabled" checked="checked">Compound Value Type</label>

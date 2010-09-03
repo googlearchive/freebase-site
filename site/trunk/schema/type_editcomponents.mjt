@@ -358,7 +358,7 @@
         <div class="form-row" style="display:none;">
           <label acre:if="type.role === 'mediator'" class="form-label" for="role">
             <input type="checkbox" name="role" value="mediator" disabled="disabled" checked="checked"/>
-            Mediator
+            Compound Relationship Type
           </label>
           <label acre:elif="type.role === 'cvt'" class="form-label" for="role">
             <input type="checkbox" name="role" value="cvt" disabled="disabled" checked="checked"/>

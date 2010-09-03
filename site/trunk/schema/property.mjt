@@ -98,10 +98,10 @@
               ${sh.isTypeType(c.property.expected_type.id) ? c.property.expected_type.id : c.property.expected_type.name}
             </a>
             <acre:block if="c.property.expected_type.role === 'mediator'">
-              <span class="attribute">mediator</span>
+              <span class="attribute">compound relationship</span>
             </acre:block>
             <acre:block elif="c.property.expected_type.role === 'cvt'">
-              <span class="attribute">cvt</span>
+              <span class="attribute">compound value</span>
             </acre:block>
             <acre:block elif="c.property.expected_type.role === 'enumeration'">
               <span class="attribute">enumerated</span>

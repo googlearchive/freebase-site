@@ -204,7 +204,7 @@
                   <div class="table-empty-text">
                     <p>
                     <strong>Describe the relationship between two or more Entity Types.</strong>
-                    For example, the film performance mediator in Film describes the relationship between a movie, an actor, and a character. We use film performance  to assert that Heath Ledger played the character of The Joker in the film The Dark Knight.
+                    For example, the film performance Compound Relation Type in Film describes the relationship between a movie, an actor, and a character. We use film performance  to assert that Heath Ledger played the character of The Joker in the film The Dark Knight.
                     </p>
                     <p><a href="http://wiki.freebase.com/wiki/Types" rel="external help">Learn more &raquo;</a></p> 
                   </div>

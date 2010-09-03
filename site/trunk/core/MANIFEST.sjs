@@ -1,76 +1,39 @@
-var MF = {
-  "apps" : {
-    "routing": "//14.routing.site.freebase.dev",
-    "promise": "//14.promise.site.freebase.dev",
-
-    // external apps
-    "service" : "//4.service.libs.freebase.dev",
-    "libraries" : "//2.libraries.apps.freebase.dev"
-  },
-  "freebase": {
-    "resource": {
-      "hash" : "dd20b6623a39c3624ab666c6f4e69f80423c7186ab9f8add7c53dd927ad389fa",
-      "base_url": "http://res.freebase.com/s/"
-    }
-  }
-};
-MF.freebase.resource.base_url += MF.freebase.resource.hash;
-var CORE_MF = MF;
+var mf = JSON.parse(acre.require("CONFIG.json").body);
+mf.freebase.resource.base_url += mf.freebase.resource.hash;
+var core_mf = mf;
 
 var extend = acre.require("helpers_util").extend;
 var freebase_static_resource_url;
 
 
 /**
- * usage:
- *   var MF = {
- *     apps: {
- *       core: "//core.site.freebase.dev",
- *       ...
- *     }
- *     ...
- *   };
- *   acre.require(MF.apps.core).init(MF, this);
- */
-function init(MF, scope, options) {
-  if (/^https?\:\/\/devel\.(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(scope.acre.request.app_url)) {
-    // on our dev machines, we ALWYAYS want to use the trunk of all /freebase/site apps
-    var re = /^(\/\/(?:release|\d+)\.)[^\.]+\.site\.freebase\.dev$/;
-    for (var app in MF.apps) {
-      var m = re.exec(MF.apps[app]);
-      if (m) {
-        var old = MF.apps[app];
-        MF.apps[app] = MF.apps[app].replace(m[1], "//");
-        console.log("dev MANIFEST override from", old, "to", MF.apps[app]);
-      }
-    }
-  }
-
-  extend_manifest(MF, scope, options);
-
-  if (scope.acre.current_script === scope.acre.request.script) {
-    MF.main();
-  }
-};
-
-/**
- * All apps' MANIFEST.MF must extend the base_manifest to be able to:
+ * All apps' MANIFEST.mf must extend the base_manifest to be able to:
  * - serve (less)css/js as defined in the MANIFEST
- * - serve MANIFEST.MF as json/p
+ * - serve MANIFEST.mf as json/p
+ *
+ * usage:
+ *   var mf = JSON.parse(acre.require("CONFIG.json").body);
+ *   acre.require(mf.apps.core).init(mf, this);
  */
-function extend_manifest(MF, scope, options) {
-  var orig = extend({}, MF, options);
-  return extend(MF, base_manifest(MF, scope), orig);
-};
-
+function init(app_mf, scope, options) {
+  var original = extend({}, app_mf, options);
+  var apps = app_mf.apps;
+  delete original.apps;
+  
+  extend(app_mf, base_manifest(app_mf, scope), original);
+  extend(app_mf.apps, apps);
+  
+  if (scope.acre.current_script === scope.acre.request.script) {
+    app_mf.main();
+  }
+}
 
 function  get_app_base_url(scope) {
   if (/^https?:\/\/((www|devel)\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(scope.acre.request.app_url)) {
-  //if (/^https?\:\/\/devel\.(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(scope.acre.request.app_url)) {
-    var routes_mf = acre.require(CORE_MF.apps.routing + "/MANIFEST");
+    var routes_mf = acre.require(core_mf.apps.routing + "/MANIFEST");
     var app = routes_mf.get_app(scope.acre.current_script.app.path);
     if (app) {
-      var routes = acre.require(CORE_MF.apps.routing + "/app_routes");
+      var routes = acre.require(core_mf.apps.routing + "/app_routes");
       var rts = routes.get_routes(app);
       if (rts) {
         for (var i=0,l=rts.length; i<l; i++) {
@@ -89,22 +52,21 @@ function  get_app_base_url(scope) {
 /**
  * The base MANIFEST core library.
  */
-function base_manifest(MF, scope, undefined) {
+function base_manifest(app_mf, scope) {
   var base = {
     /**
-     * MF.apps, MF.stylesheet, MF.javascript default to empty dictionary
+     * mf.apps, mf.stylesheet, mf.javascript default to empty dictionary
      */
-    apps: {},
+    apps: extend({}, core_mf.apps),
     stylesheet: {},
     javascript: {},
 
     get_app_base_url: function() {
       if (/^https?:\/\/((www|devel)\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(scope.acre.request.app_url)) {
-        //if (/^https?\:\/\/devel\.(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(scope.acre.request.app_url)) {
-        var routes_mf = acre.require(CORE_MF.apps.routing + "/MANIFEST");
+        var routes_mf = acre.require(core_mf.apps.routing + "/MANIFEST");
         var app = routes_mf.get_app(scope.acre.current_script.app.path);
         if (app) {
-          var routes = acre.require(CORE_MF.apps.routing + "/app_routes");
+          var routes = acre.require(core_mf.apps.routing + "/app_routes");
           var rts = routes.get_routes(app);
           if (rts) {
             for (var i=0,l=rts.length; i<l; i++) {
@@ -121,8 +83,8 @@ function base_manifest(MF, scope, undefined) {
 
     /**
      * The base url prefix for retrieving css and js. All apps who extend the base_manifest
-     * will have a "/MANIFEST/..." entry-point to serve css and js as specified in their MF.stylesheet
-     * and MF.javascript.
+     * will have a "/MANIFEST/..." entry-point to serve css and js as specified in their mf.stylesheet
+     * and mf.javascript.
      *
      * The idea is that once an app is branched/deployed, this static_base_url will be changed
      * to a permanent static server (i.e., http://freebaselibs.com/statc/freebase_site/foo/[version]/...).
@@ -140,11 +102,11 @@ function base_manifest(MF, scope, undefined) {
     app_base_url: null,
 
     /**
-     * Generate the proper url to serve the css resource(s) specified by MF.stylesheet[key].
-     * MF.stylesheet[key] value must be an array of strings (local file) and/or tuples defining
+     * Generate the proper url to serve the css resource(s) specified by mf.stylesheet[key].
+     * mf.stylesheet[key] value must be an array of strings (local file) and/or tuples defining
      * the app label, file and any additional parameters.
      *
-     * var MF = {
+     * var mf = {
      *   ...
      *   stylesheet: {
      *     "my.mf.css": [
@@ -155,21 +117,21 @@ function base_manifest(MF, scope, undefined) {
      *   ...
      *   }
      * }
-     * For the tuple declarations, you MUST specify the app label in MF.apps.
+     * For the tuple declarations, you MUST specify the app label in mf.apps.
      *
      * usage:
-     *   <link rel="stylesheet" type="text/css" href="${MF.css_src("my.mf.css")}"/>
+     *   <link rel="stylesheet" type="text/css" href="${mf.css_src("my.mf.css")}"/>
      */
     css_src: function(key) {
-      return MF.static_base_url + "/" + key;
+      return app_mf.static_base_url + "/" + key;
     },
 
 
     /**
-     * Generate the proper url to serve the js resource(s) specified by MF.javascript[key].
-     * MF.javascript[key] value must be an array of strings (local file) and/or tuples defining
+     * Generate the proper url to serve the js resource(s) specified by mf.javascript[key].
+     * mf.javascript[key] value must be an array of strings (local file) and/or tuples defining
      * the app label, file and any additional parameters.
-     * var MF = {
+     * var mf = {
      *   ...
      *   javascript: {
      *     "my.mf.js": [
@@ -180,19 +142,19 @@ function base_manifest(MF, scope, undefined) {
      *   ...
      *   }
      * }
-     * For the tuple declarations, you MUST specify the app label in MF.apps.
+     * For the tuple declarations, you MUST specify the app label in mf.apps.
      *
      * usage:
-     *   <script type="text/javascript" src="${MF.js_src("my.mf.js")}"></script>
+     *   <script type="text/javascript" src="${mf.js_src("my.mf.js")}"></script>
      */
     js_src: function(key) {
-      return MF.static_base_url + "/" + key;
+      return app_mf.static_base_url + "/" + key;
     },
 
     /**
      * Helper method to parse app label, file arguments.
      * If one argument, first argument is the file name of the local resource.
-     * If two arguments, first argument is the app label (defined in MF.apps) and second is the file name.
+     * If two arguments, first argument is the app label (defined in mf.apps) and second is the file name.
      */
     require_args: function(app, file) {
       var args = [arg for each (arg in [app, file]) if (arg)];
@@ -213,18 +175,18 @@ function base_manifest(MF, scope, undefined) {
      * If two arguments, first argument is the app label and second is the file name.
      *
      * usage:
-     *   <img src="${MF.img_src('local.png')}" /><!-- local image -->
-     *   <img src="${MF.img_src('some_app_label', 'external.png')}" /><!-- external image -->
+     *   <img src="${mf.img_src('local.png')}" /><!-- local image -->
+     *   <img src="${mf.img_src('some_app_label', 'external.png')}" /><!-- external image -->
      */
     img_src: function(app, file) {
-      var args = MF.require_args(app, file);
+      var args = app_mf.require_args(app, file);
       if (args.local) {
         // local image files relative to the current app
-        return MF.image_base_url + "/" + args.file;
+        return app_mf.image_base_url + "/" + args.file;
       }
       else {
-        // get the url through the external app MANIFEST.MF.img_src(resource.name)
-        var ext_mf = MF.require(args.app, "MANIFEST").MF;
+        // get the url through the external app MANIFEST.mf.img_src(resource.name)
+        var ext_mf = app_mf.require(args.app, "MANIFEST").mf;
         return ext_mf.img_src(args.file);
       }
     },
@@ -233,10 +195,10 @@ function base_manifest(MF, scope, undefined) {
      * less (css) parser.
      */
     less: function(data /*required*/, callback /*required*/, errback /*optional*/) {
-      if (!MF.less.parser) {
-          MF.less.parser = new(MF.require("core", "less").less.Parser)({optimization:3});
+      if (!app_mf.less.parser) {
+          app_mf.less.parser = new(app_mf.require("core", "less").less.Parser)({optimization:3});
       }
-      MF.less.parser.parse(data, function(e, root) {
+      app_mf.less.parser.parse(data, function(e, root) {
         if (e) {
           if (errback) {
             errback(e);
@@ -249,13 +211,13 @@ function base_manifest(MF, scope, undefined) {
     },
 
     /**
-     * Serve (acre.write) all css declared in MF.stylesheet[key].
+     * Serve (acre.write) all css declared in mf.stylesheet[key].
      * Run the less css parser on all of the css afterwards
      */
     css: function(key, scope, buffer, use_acre_url) {
-      var mf_ss = MF.stylesheet[key];
+      var mf_ss = app_mf.stylesheet[key];
       if (! mf_ss) {
-        return MF.not_found(scope.acre.current_script.app.id + "/MANIFEST/" + key);
+        return app_mf.not_found(scope.acre.current_script.app.id + "/MANIFEST/" + key);
       }
       scope.acre.response.set_header("content-type", "text/css");
       var buf = [];
@@ -266,16 +228,16 @@ function base_manifest(MF, scope, undefined) {
         }
         if (ss.length === 2) {
           buf.push("\n/** " + ss[0] + ", " + ss[1] + "**/\n");
-          var ext_md = MF.get_metadata(ss[0]);
+          var ext_md = app_mf.get_metadata(ss[0]);
           if ("MANIFEST" in ext_md.files) {
-            // Go through external app's MF
-            var ext_mf = MF.require(ss[0], "MANIFEST").MF;
+            // Go through external app's mf
+            var ext_mf = app_mf.require(ss[0], "MANIFEST").mf;
             if (ss[1] in ext_mf.stylesheet) {
-              // Go through external app's MF.css() if ss[1] is in external app's MF.stylesheet
+              // Go through external app's mf.css() if ss[1] is in external app's mf.stylesheet
               buf = buf.concat(ext_mf.css(ss[1], scope, true, use_acre_url));
             }
             else {
-              // Otherwise, use external app's MF.css_preprocessor on the contents
+              // Otherwise, use external app's mf.css_preprocessor on the contents
               // of the external app's file
               try {
                 buf.push(ext_mf.css_preprocessor(ext_mf.require(ss[1]).body, use_acre_url));
@@ -290,7 +252,7 @@ function base_manifest(MF, scope, undefined) {
             // If no external app MANIFEST then just include the contents
             // of the external file
             try {
-              buf.push(MF.require(ss[0], ss[1]).body);
+              buf.push(app_mf.require(ss[0], ss[1]).body);
             }
             catch (ex) {
               scope.acre.write("\n/** " + ex.toString() + " **/\n");
@@ -300,15 +262,15 @@ function base_manifest(MF, scope, undefined) {
         }
         else if (ss.length === 1) {
           buf.push("\n/** " + ss[0] + "**/\n");
-          if (ss[0] in MF.stylesheet) {
-            // you can chain MF.stylesheet declarations
+          if (ss[0] in app_mf.stylesheet) {
+            // you can chain mf.stylesheet declarations
             // WARNING! DOES NOT CHECK FOR CIRCULAR DEPENDENCIES!!!
-            buf = buf.concat(MF.css(ss[0], scope, true, use_acre_url));
+            buf = buf.concat(app_mf.css(ss[0], scope, true, use_acre_url));
           }
           else {
             try {
               // css preprocessor to replace url(...) declarations
-              buf.push(MF.css_preprocessor(MF.require(ss[0]).body, use_acre_url));
+              buf.push(app_mf.css_preprocessor(app_mf.require(ss[0]).body, use_acre_url));
             }
             catch (ex) {
               scope.acre.write("\n/** " + ex.toString() + " **/\n");
@@ -318,12 +280,12 @@ function base_manifest(MF, scope, undefined) {
         }
       }
 
-      // MF.stylesheet[key].forEach(function(ss) {
+      // mf.stylesheet[key].forEach(function(ss) {
       //   if (!(ss instanceof Array)) {
       //     ss = [ss];
       //   }
       //   if (ss.length > 1) {
-      //     var ext_mf = MF.require(ss[0], "MANIFEST").MF;
+      //     var ext_mf = mf.require(ss[0], "MANIFEST").mf;
       //     if (ss.length === 2) {
       //       // run css_preprocessor within the context of ext_mf
       //       buf.push(ext_mf.css_preprocessor(ext_mf.require(ss[1]).body, use_acre_url));
@@ -337,7 +299,7 @@ function base_manifest(MF, scope, undefined) {
       //   else {
       //     try {
       //       // css preprocessor to replace url(...) declarations
-      //       buf.push(MF.css_preprocessor(MF.require.apply(null, ss).body, use_acre_url));
+      //       buf.push(mf.css_preprocessor(mf.require.apply(null, ss).body, use_acre_url));
       //     }
       //     catch (ex) {
       //       scope.acre.write("\n/** " + ex.toString() + " **/\n");
@@ -351,7 +313,7 @@ function base_manifest(MF, scope, undefined) {
       }
 
       // run less on concatenated css/less
-      MF.less(buf.join(""),
+      app_mf.less(buf.join(""),
               scope.acre.write,
               function(e) {
                 scope.acre.write(scope.JSON.stringify(e, null, 2));
@@ -360,7 +322,7 @@ function base_manifest(MF, scope, undefined) {
 
     css_preprocessor: function(str, use_acre_url) {
       if (!freebase_static_resource_url) {
-        freebase_static_resource_url = MF.require("core", "helpers_url").freebase_static_resource_url;
+        freebase_static_resource_url = app_mf.require("core", "helpers_url").freebase_static_resource_url;
       }
       var buf = [];
       var m, regex = /url\s*\(\s*([^\)]+)\s*\)/gi;
@@ -385,12 +347,12 @@ function base_manifest(MF, scope, undefined) {
             }
 
             if (use_acre_url) {
-              var args = MF.require_args.apply(null, params);
-              var app_path = args.local ? scope.acre.current_script.app.path : MF.apps[args.app];
+              var args = app_mf.require_args.apply(null, params);
+              var app_path = args.local ? scope.acre.current_script.app.path : app_mf.apps[args.app];
               return "url(" + app_path + "/" + args.file + ")";
             }
             else {
-              return "url(" + MF.img_src.apply(null, params).replace(/\s/g, '%20') + ")";
+              return "url(" + app_mf.img_src.apply(null, params).replace(/\s/g, '%20') + ")";
             }
           }
         }));
@@ -399,12 +361,12 @@ function base_manifest(MF, scope, undefined) {
     },
 
     /**
-     * Serve (acre.write) all js declared in MF.javascript[key].
+     * Serve (acre.write) all js declared in mf.javascript[key].
      */
     js: function(key, scope) {
-      var mf_script = MF.javascript[key];
+      var mf_script = app_mf.javascript[key];
       if (!mf_script) {
-        return MF.not_found(scope.acre.current_script.app.id + "/MANIFEST/" + key);
+        return app_mf.not_found(scope.acre.current_script.app.id + "/MANIFEST/" + key);
       }
       scope.acre.response.set_header("content-type", "text/javascript");
       for (var i=0,l=mf_script.length; i<l; i++) {
@@ -414,19 +376,19 @@ function base_manifest(MF, scope, undefined) {
         }
         if (script.length === 2) {
           scope.acre.write("\n/** " + script[0] + ", " + script[1] + " **/\n");
-          var ext_md = MF.get_metadata(script[0]);
+          var ext_md = app_mf.get_metadata(script[0]);
           if ("MANIFEST" in ext_md.files) {
-            // Go through external app's MF
-            // for further MF.js chaining if script[1] in external app's MF.javascript.
-            var ext_mf = MF.require(script[0], "MANIFEST").MF;
+            // Go through external app's mf
+            // for further mf.js chaining if script[1] in external app's mf.javascript.
+            var ext_mf = app_mf.require(script[0], "MANIFEST").mf;
             if (script[1] in ext_mf.javascript) {
               ext_mf.js(script[1], scope);
               continue;
             }
           }
-          // otherwise, just MF.require the contents of the external app's file
+          // otherwise, just mf.require the contents of the external app's file
           try {
-            scope.acre.write(MF.require(script[0], script[1]).body);
+            scope.acre.write(app_mf.require(script[0], script[1]).body);
           }
           catch (ex) {
             scope.acre.write("\n/** " + ex.toString() + " **/\n");
@@ -434,14 +396,14 @@ function base_manifest(MF, scope, undefined) {
         }
         else if (script.length === 1) {
           scope.acre.write("\n/** " + script[0] + " **/\n");
-          if (script[0] in MF.javascript) {
-            // you can chain MF.javascript declarations
+          if (script[0] in app_mf.javascript) {
+            // you can chain mf.javascript declarations
             // WARNING! DOES NOT CHECK FOR CIRCULAR DEPENDENCIES!!!
-            MF.js(script[0], scope);
+            app_mf.js(script[0], scope);
           }
           else {
             try {
-              scope.acre.write(MF.require(script[0]).body);
+              scope.acre.write(app_mf.require(script[0]).body);
             }
             catch (ex) {
               scope.acre.write("\n/** " + ex.toString() + " **/\n");
@@ -450,21 +412,21 @@ function base_manifest(MF, scope, undefined) {
         }
       }
 
-    //   MF.javascript[key].forEach(function(script) {
+    //   mf.javascript[key].forEach(function(script) {
     //     if (!(script instanceof Array)) {
     //       script = [script];
     //     }
     //     if (script.length === 2) {
-    //       scope.acre.write(MF.require(script[0], script[1]).body);
+    //       scope.acre.write(mf.require(script[0], script[1]).body);
     //     }
     //     else if (script.length === 3 && script[1] === "MANIFEST") {
-    //       var ext_mf = MF.require(script[0], "MANIFEST").MF;
+    //       var ext_mf = mf.require(script[0], "MANIFEST").mf;
     //       var f = script[2].split("/", 2).pop();
     //       ext_mf.js(f, scope);
     //     }
     //     else {
     //       try {
-    //         scope.acre.write(MF.require.apply(null, script).body);
+    //         scope.acre.write(mf.require.apply(null, script).body);
     //       }
     //       catch (ex) {
     //         scope.acre.write("\n/** " + ex.toString() + " **/\n");
@@ -475,15 +437,15 @@ function base_manifest(MF, scope, undefined) {
     },
 
     require: function(app, file) {
-      var args = MF.require_args(app, file);
+      var args = app_mf.require_args(app, file);
 
       if (args.local) {
         return scope.acre.require(args.file);
       }
-      if (!MF.apps[args.app]) {
+      if (!app_mf.apps[args.app]) {
         throw("An app label for \"" + args.app + "\" must be declared in the MANIFEST.");
       }
-      var path = [MF.apps[args.app], args.file].join("/");
+      var path = [app_mf.apps[args.app], args.file].join("/");
       return scope.acre.require(path);
     },
 
@@ -491,26 +453,26 @@ function base_manifest(MF, scope, undefined) {
       if (!app) {
         return scope.acre.get_metadata();
       }
-      if (!MF.apps[app]) {
+      if (!app_mf.apps[app]) {
         throw("An app label for \"" + app + "\" must be declared in the MANIFEST.");
       }
-      return scope.acre.get_metadata(MF.apps[app]);
+      return scope.acre.get_metadata(app_mf.apps[app]);
     },
 
     not_found: function(id) {
-      CORE_MF.require("routing", "routes").not_found(id);
+      core_mf.require("routing", "routes").not_found(id);
     },
 
     /**
      * Main block. DO NOT MODIFY!
      *
-     * Responsible for routing request to "/MANIFEST/..." or serve MF (json/p).
+     * Responsible for routing request to "/MANIFEST/..." or serve mf (json/p).
      *
      * usage:
-     *   var MF = {...};
-     *   acre.require("/freebase/site/core/MANIFEST").extend_manifest(MF, this);
+     *   var mf = {...};
+     *   acre.require("/freebase/site/core/MANIFEST").extend_manifest(mf, this);
      *   if (acre.current_script == acre.request.script) {
-     *     MF.main();
+     *     mf.main();
      *   };
      */
     main: function() {
@@ -518,18 +480,18 @@ function base_manifest(MF, scope, undefined) {
       if (path_info && path_info.length) {
         var path = path_info.substring(1);
         if (/\.js$/.exec(path)) {
-          return MF.js(path, scope);
+          return app_mf.js(path, scope);
         }
         else if (/\.css$/.exec(path)) {
           var use_acre_url = scope.acre.request.params.use_acre_url;
-          return MF.css(path, scope, false, use_acre_url);
+          return app_mf.css(path, scope, false, use_acre_url);
         }
         else if (path_info !== "/") {
-          return MF.not_found(scope.acre.current_script.app.id + path_info);
+          return app_mf.not_found(scope.acre.current_script.app.id + path_info);
         }
       }
-      CORE_MF.require("service", "lib").GetService(function() {
-        return MF;
+      core_mf.require("service", "lib").GetService(function() {
+        return app_mf;
       }, scope);
     }
   };
@@ -541,4 +503,4 @@ function base_manifest(MF, scope, undefined) {
   return base;
 };
 
-this.init(MF, this);
+this.init(mf, this);

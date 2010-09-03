@@ -650,9 +650,9 @@ class ActionStatic():
         #                                  != http://freebaselibs.com/static/freebase_site/externalapp/abcdef.../external.png
         # This is needed since we have not yet set the MANIFEST static_base_url/image_base_url.
         # The static_base_url/image_base_url is determined by the md5 hash of all static files of an app
-        # including the dynamically generated javascript/stylesheet MANIFEST files declared in MF.javascript and MF.stylesheet.
-        # The MF.javascript files are deterministic since we go through the external apps MANIFEST/ entry point (i.e., .../MANIFEST/foo.mf.js).
-        # The MF.stylesheet files also go through the external apps MANIFEST/ entry point (i.e., .../MANIFEST.foo.mf.css) but is
+        # including the dynamically generated javascript/stylesheet MANIFEST files declared in mf.javascript and mf.stylesheet.
+        # The mf.javascript files are deterministic since we go through the external apps MANIFEST/ entry point (i.e., .../MANIFEST/foo.mf.js).
+        # The mf.stylesheet files also go through the external apps MANIFEST/ entry point (i.e., .../MANIFEST.foo.mf.css) but is
         # only deterministic if we DO NOT preprocess the css url(...) declarations since it uses the image_base_url.
 
         (success, static_files) = self.deploy_static_files(branch_dir, url, deployed_dir, use_acre_url=1)
@@ -672,12 +672,12 @@ class ActionStatic():
             "image_base_url": base_url
             })
 
-        init_re = re.compile(r'\.init\s*\(\s*MF\s*\,\s*this.*$')
+        init_re = re.compile(r'\.init\s*\(\s*mf\s*\,\s*this.*$')
         temp = mkstemp()
         with open(temp[1], "w") as tmp:
             with open(os.path.join(manifest)) as mf:
                 for line in mf.xreadlines():
-                    tmp.write(init_re.sub('.init(MF, this, %s);' % cfg, line))
+                    tmp.write(init_re.sub('.init(mf, this, %s);' % cfg, line))
         shutil.copy2(temp[1], manifest)
 
         c.verbose('svn commit of branch directory %s' % branch_dir)

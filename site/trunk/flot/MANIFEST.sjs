@@ -3,9 +3,9 @@
  * http://raphaeljs.com/
  * http://g.raphaeljs.com/
  */
-var MF = {
+var mf = {
   "apps": {
-    "core": "//14.core.site.freebase.dev"
+    "core": "//core.site.freebase.dev"
   },
   "javascript": {
     "flot.core.mf.js": [
@@ -27,7 +27,4 @@ var MF = {
   }
 };
 
-if (/^https?\:\/\/devel\.(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url)) {
-  MF.apps.core = "//core.site.freebase.dev";
-}
-acre.require(MF.apps.core + "/MANIFEST").init(MF, this);
+acre.require(mf.apps.core + "/MANIFEST").init(mf, this);

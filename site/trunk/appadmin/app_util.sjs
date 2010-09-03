@@ -10,8 +10,8 @@ var ae = {
     'get_file' : acre.require('/freebase/apps/appeditor/get_file').get_file
 };
 
-var MF = acre.require('MANIFEST').MF;
-var helpers = acre.require('/freebase/site/core/helpers_date', MF['/freebase/site/core']);
+var mf = acre.require('MANIFEST').mf;
+var helpers = acre.require('/freebase/site/core/helpers_date', mf['/freebase/site/core']);
 
 
 var CURRENT_SERVICE_URL = acre.freebase.service_url;

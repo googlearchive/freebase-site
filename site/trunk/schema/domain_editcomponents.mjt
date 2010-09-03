@@ -3,12 +3,11 @@
     <tbody>
       <tr class="edit-row">
         <td colspan="5">
-          <div class="edit-row-loader"></div>
+          <div class="edit-row-loader"></div>  
           <div class="form-field fb-type-name">
             <label>
               <span class="form-label">Name</span>
               <input name="name" type="text" class="text-input" acre:attrs="type?{value:type.name}:{}"/>
-              <input name="domain" type="hidden" value="${domain_id}"/>
             </label>
           </div>
           <div class="form-field fb-type-key">
@@ -24,19 +23,13 @@
             <label>
               <span class="form-label">Description</span>
               <textarea name="description" class="textarea" rows="3">${type?type.blob:""}</textarea>
-            </label>
-            <div class="fb-type-display" style="display:none">
-              <acre:block if="role === 'mediator'">
-                <label for="role" class="boolean-field"><input type="checkbox" name="role" value="mediator" disabled="disabled" checked="checked">Compound Relationship Type</label>
-              </acre:block>
-              <acre:block elif="role === 'cvt'">
-                <label for="role" class="boolean-field"><input type="checkbox" name="role" value="cvt" disabled="disabled" checked="checked">Compound Value Type</label>
-              </acre:block>
-              <acre:block else="">
-                <label for="role" class="boolean-field"><input type="checkbox" name="role" value="enumeration" acre:attrs="(type && type.role === 'enumeration')?{checked:'checked'}:{}">Enumerated</label>
-              </acre:block>
-            </div>          
-          </div>        
+            </label>  
+          </div>
+          <input name="domain" type="hidden" value="${domain_id}"/>
+          <input acre:if="role === 'mediator'" type="hidden" name="role" value="mediator"/>
+          <input acre:elif="role === 'cvt'" type="hidden" name="role" value="cvt"/>
+          <input acre:elif="role === 'enumeration'" type="hidden" name="role" value="enumeration"/>
+          <input acre:else="" type="hidden" name="role" value=""/> 
         </td>
       </tr>
 

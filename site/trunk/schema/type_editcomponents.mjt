@@ -355,21 +355,6 @@
           <label class="form-label">Description</label>
           <textarea class="textarea" name="description" rows="4">${type.blob || ""}</textarea>
         </div>
-        <div class="form-row" style="display:none;">
-          <label acre:if="type.role === 'mediator'" class="form-label" for="role">
-            <input type="checkbox" name="role" value="mediator" disabled="disabled" checked="checked"/>
-            Compound Relationship Type
-          </label>
-          <label acre:elif="type.role === 'cvt'" class="form-label" for="role">
-            <input type="checkbox" name="role" value="cvt" disabled="disabled" checked="checked"/>
-            Compound Value Type
-          </label>
-          <label acre:else="" class="form-label" for="role">
-            <input type="checkbox" name="role" value="enumeration" acre:attrs="type.role === 'enumeration'?{checked:'checked'}:{}"/>
-            Enumerated
-          </label>
-          <span class="form-note">Constrain this type to a specific list of topics <a href="http://wiki.freebase.com/wiki/Enumerated_type" rel="help external">Learn more &raquo;</a></span>
-        </div>
       </div>
     </div>
     <div class="modal-buttons">

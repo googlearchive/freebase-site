@@ -28,7 +28,7 @@
             form: html
           };
 
-          se.init_settings_form(form);
+          se.init_modal_form(form);
 
           form.form
             .bind(form.event_prefix + "success", function(e, data) {
@@ -197,15 +197,11 @@
     init_type_form: function(form) {
       var name = $(":input[name=name]", form.row);
       var key =  $(":input[name=key]", form.row);
-      var role = $(":input[name=role]", form.row);
       var description = $(":input[name=description]", form.row);
 
       if (form.mode === "add") {
         name.val("");
         key.val("").data("changed", false);
-        if (!role.is(":disabled")) {
-          role.removeAttr("checked");
-        }
         description.val("");
       }
       else {
@@ -241,24 +237,20 @@
      * validate rows, if no errors submit
      */
     submit_type_form: function(form) {
-
-      // TODO We need to show a loading div here, but we have a problem with position:relative on <td> elements
-
-      //var loading_height = form.row.find("td:first").height();
-      //form.row.find(".edit-row-loader").css({height: loading_height}).show();
-
       var name = $.trim($(":input[name=name]", form.row).val());
       var key = $.trim($(":input[name=key]", form.row).val()).toLowerCase();
-      var role = $(":input[name=role]", form.row);
-      role = role.is(":checked") ? role.val() : "";
 
       var data = {
         domain:  $(":input[name=domain]", form.row).val(),
         name: name,
         key: key,
-        role: role,
         description: $(":input[name=description]", form.row).val()
       };
+
+      if (form.mode === "add") {
+        // can't edit role
+        data.role = $(":input[name=role]", form.row).val();
+      }
 
       $.ajax({
         url: form.ajax.url,

@@ -49,7 +49,11 @@ var api = {
   },
 
   domain_settings_submit: function(args) {
-    var update_domain_options = h.extend({}, args, {mqlkey_quote:true, empty_delete:true});
+    var update_domain_options = h.extend({}, args, {mqlkey_quote:true});
+    // if description is empty, remove from domain
+    if (!args.description) {
+      update_domain_options.remove = ["description"];
+    }
     return update_domain.update_domain(update_domain_options)
       .then(function(updated_id) {
         return {
@@ -65,8 +69,7 @@ var api = {
   },
 
   add_type_submit: function(args) {
-    var create_type_options = h.extend({}, args, {mqlkey_quote:true, empty_delete:false});
-
+    var create_type_options = h.extend({}, args, {mqlkey_quote:true});
     return create_type.create_type(create_type_options)
       .then(function(result) {
         var created = {name:args.name, id: result.id, properties: 0, instance_count: 0, blurb: args.description};
@@ -111,7 +114,11 @@ var api = {
   },
 
   edit_type_submit: function(args) {
-    var update_type_options = h.extend({}, args, {mqlkey_quote:true, empty_delete:true});
+    var update_type_options = h.extend({}, args, {mqlkey_quote:true});
+    // if description is empty, delete from type
+    if (!args.description) {
+      update_type_options.remove = ["description"];
+    }
     return update_type.update_type(update_type_options)
       .then(function(updated_id) {
         return queries.minimal_type(updated_id);
@@ -128,14 +135,14 @@ var api = {
 api.domain_settings_begin.args = ["id"]; // domain id
 api.domain_settings_begin.auth = true;
 
-api.domain_settings_submit.args = ["id", "name", "namespace", "key"]; // domain id
+api.domain_settings_submit.args = ["id", "name", "namespace", "key", "description"]; // domain id
 api.domain_settings_submit.auth = true;
 api.domain_settings_submit.method = "POST";
 
 api.add_type_begin.args = ["id"]; // domain id, mediator (optional)
 api.add_type_begin.auth = true;
 
-api.add_type_submit.args = ["domain", "name", "key"];
+api.add_type_submit.args = ["domain", "name", "key", "description", "role"];
 api.add_type_submit.auth = true;
 api.add_type_submit.method = "POST";
 
@@ -150,6 +157,6 @@ api.undo_delete_type_submit.method = "POST";
 api.edit_type_begin.args = ["id"]; // type id
 api.edit_type_begin.auth = true;
 
-api.edit_type_submit.args = ["id", "domain", "name", "key"];
+api.edit_type_submit.args = ["domain", "name", "key", "description"];
 api.edit_type_submit.auth = true;
 api.edit_type_submit.method = "POST";

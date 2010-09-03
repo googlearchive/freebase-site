@@ -70,7 +70,11 @@ var api = {
   },
 
   type_settings_submit: function(args) {
-    var update_type_options = h.extend({}, args, {mqlkey_quote:true, empty_delete:true});
+    var update_type_options = h.extend({}, args, {mqlkey_quote:true});
+    // if description is empty, delete from type
+    if (!args.description) {
+      update_type_options.remove = ["description"];
+    }
     return update_type.update_type(update_type_options)
       .then(function(updated_id) {
          return {
@@ -136,8 +140,7 @@ var api = {
             domain: env.result["/type/type/domain"],
             name: args.expected_type_new,
             key: args.expected_type_new.toLowerCase(),
-            mqlkey_quote: true,
-            empty_delete: false
+            mqlkey_quote: true
           };
           return create_type.create_type(create_type_options)
             .then(function(type) {
@@ -151,7 +154,7 @@ var api = {
     }
     return promise
       .then(function(args) {
-        var create_property_options = h.extend({}, args, {mqlkey_quote:true, empty_delete:false});
+        var create_property_options = h.extend({}, args, {mqlkey_quote:true});
         return create_property.create_property(create_property_options)
           .then(function(created) {
             return queries.property(created.id);
@@ -210,8 +213,7 @@ var api = {
             domain: env.result["/type/type/domain"],
             name: args.expected_type_new,
             key: args.expected_type_new.toLowerCase(),
-            mqlkey_quote: true,
-            empty_delete: false
+            mqlkey_quote: true
           };
           return create_type.create_type(create_type_options)
             .then(function(type) {
@@ -225,7 +227,10 @@ var api = {
     }
     return promise
       .then(function(args) {
-        var update_prop_options = h.extend({}, args, {mqlkey_quote:true, empty_delete:true});
+        var update_prop_options = h.extend({}, args, {mqlkey_quote:true});
+        if (!args.description) {
+          update_prop_options.remove = ["description"];
+        }
         return update_property.update_property(update_prop_options)
           .then(function(updated_id) {
             return queries.property(updated_id);
@@ -401,7 +406,7 @@ api.get_incoming_from_commons.cache_policy = "fast";
 api.type_settings_begin.args = ["id"]; // type id
 api.type_settings_begin.auth = true;
 
-api.type_settings_submit.args = ["id", "name", "key", "role"]; // type id, name, key and role
+api.type_settings_submit.args = ["id", "name", "key", "description"]; // type id, name, key and description
 api.type_settings_submit.auth = true;
 api.type_settings_submit.method = "POST";
 

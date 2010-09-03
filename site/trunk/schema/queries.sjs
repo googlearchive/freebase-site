@@ -133,6 +133,7 @@ function domain(id) {
 
       // categorize types by their roles (mediator, cvt, etc.)
       var types = [];
+      var enumerations = [];
       var mediators = [];
       var cvts = [];
       domain.types.forEach(function(type) {
@@ -145,15 +146,20 @@ function domain(id) {
         else if (role === "cvt") {
           cvts.push(type);
         }
+        else if (role === "enumeration") {
+          enumerations.push(type);
+        }
         else {
           types.push(type);
         }
       });
       types.sort(schema_helpers.sort_by_name);
+      enumerations.sort(schema_helpers.sort_by_name);
       mediators.sort(schema_helpers.sort_by_name);
       cvts.sort(schema_helpers.sort_by_name);
 
       domain.types = types;
+      domain["enumeration:types"] = enumerations;
       domain["mediator:types"] = mediators;
       domain["cvt:types"] = cvts;
 

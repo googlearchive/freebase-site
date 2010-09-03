@@ -29,9 +29,6 @@
     <td class="even">$type.id</td>
     <td class="odd numeric">$type.properties</td>
     <td class="even numeric"><a href="${acre.freebase.service_url}/view${type.id}">${h.commafy(type.instance_count)}</a></td>
-    <td class="odd description">
-      <p>$type.blurb</p>
-      <span acre:if="type.role === 'enumeration'" class="property-meta">Enumerated</span>
-    </td>
+    <td class="odd description"><p>${type.blurb || ""}</p></td>
   </tr>
 </acre:block>

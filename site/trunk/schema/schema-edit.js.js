@@ -193,20 +193,15 @@
       return msg_data != null;
     },
 
-
-
-
-
-
-    init_settings_form: function(form) {
+    init_modal_form: function(form) {
 
       $(document.body).append(form.form.hide());
 
-      var event_prefix = form.event_prefix || "fb.schema.edit.settings.";
+      var event_prefix = form.event_prefix || "fb.schema.edit.modal.";
       form.form
        .bind(event_prefix + "submit", function() {
           console.log(event_prefix + "submit");
-          se.submit_settings_form(form);
+          se.submit_modal_form(form);
         })
         .bind(event_prefix + "error", function(e, error) {
           console.log(event_prefix + "error", error);
@@ -239,7 +234,7 @@
         });
     },
 
-    submit_settings_form: function(form) {
+    submit_modal_form: function(form) {
       // are we already submitting?
       if (form.form.is(".loading")) {
         return;

@@ -27,8 +27,8 @@ function update_domain(options) {
       // if TRUE, acre.freebase.mqlkey_quote key. Default is FALSE
       mqlkey_quote: validators.StringBool(options, "mqlkey_quote", {if_empty:false}),
 
-      // if TRUE, name, key, description, is deleted if empty. Default is FALSE
-      empty_delete: validators.StringBool(options, "empty_delete", {if_empty:false})
+      // an array of options to remove/delete (name, key, description);
+      remove: validators.Array(options, "remove", {if_empty:[]})
     };
   }
   catch(e if e instanceof validators.Invalid) {
@@ -37,6 +37,11 @@ function update_domain(options) {
   if (o.mqlkey_quote) {
     o.key = acre.freebase.mqlkey_quote(o.key);
   }
+
+  var remove = {};
+  o.remove.forEach(function(k) {
+    remove[k] = true;
+  });
 
   var q = {
     id: o.id,
@@ -51,36 +56,34 @@ function update_domain(options) {
       return env.result;
     })
     .then(function(old) {
-      if (o.key === null) {
-        if (o.empty_delete && o.namespace) {
-          // delete key from o.namespace (required)
-          for (var i=0,l=old.key.length; i<l; i++) {
-            var k = old.key[i];
-            if (k.namespace === o.namespace) {
-              return freebase.mqlwrite({guid:old.guid, id:null, key:{namespace:o.namespace, value:k.value, connect:"delete"}})
-                .then(function(env) {
-                  // old id may no longer be valid since we deleted the key
-                  old.id = env.result.id;
-                  return old;
-                });
-            }
+      if (remove.key && o.namespace) {
+        // delete key from o.namespace (required)
+        for (var i=0,l=old.key.length; i<l; i++) {
+          var k = old.key[i];
+          if (k.namespace === o.namespace) {
+            return freebase.mqlwrite({guid:old.guid, id:null, key:{namespace:o.namespace, value:k.value, connect:"delete"}})
+              .then(function(env) {
+                // old id may no longer be valid since we deleted the key
+                old.id = env.result.id;
+                return old;
+              });
           }
         }
       }
       else if (o.namespace && o.key) {
         for (var i=0,l=old.key.length; i<l; i++) {
           var k = old.key[i];
-            if (k.namespace === o.namespace && k.value !== o.key) {
-              return freebase.mqlwrite({guid:old.guid, key:{namespace:o.namespace, value:k.value, connect:"delete"}})
-                .then(function(env) {
-                  // insert new key
-                  return freebase.mqlwrite({guid:old.guid, id:null, key:{namespace:o.namespace, value:o.key, connect:"insert"}})
-                    .then(function(env) {
-                      // id may have changed
-                      old.id = env.result.id;
-                      return old;
-                    });
-                });
+          if (k.namespace === o.namespace && k.value !== o.key) {
+            return freebase.mqlwrite({guid:old.guid, key:{namespace:o.namespace, value:k.value, connect:"delete"}})
+              .then(function(env) {
+                // insert new key
+                return freebase.mqlwrite({guid:old.guid, id:null, key:{namespace:o.namespace, value:o.key, connect:"insert"}})
+                  .then(function(env) {
+                    // id may have changed
+                    old.id = env.result.id;
+                    return old;
+                  });
+              });
             }
         }
       }
@@ -91,12 +94,11 @@ function update_domain(options) {
         guid: old.guid,
         type: "/type/domain"
       };
-      if (o.name === null) {
-        if (old.name && o.empty_delete) {
-          update.name = {value:old.name.value, lang:old.name.lang, connect:"delete"};
-        }
+
+      if (remove.name && old.name) {
+        update.name = {value:old.name.value, lang:old.name.lang, connect:"delete"};
       }
-      else {
+      else if (o.name != null) {
         update.name = {value:o.name, lang:o.lang, connect:"update"};
       }
       var d = old;
@@ -114,26 +116,26 @@ function update_domain(options) {
     })
     .then(function(old) {
       var article = old["/common/topic/article"].length ? old["/common/topic/article"][0].id : null;
-      if (o.description === null) {
-        if (article && o.empty_delete) {
-          return freebase.mqlwrite({id:old.id, "/common/topic/article":{id:article, connect:"delete"}})
+      if (remove.description && article) {
+        return freebase.mqlwrite({id:old.id, "/common/topic/article":{id:article, connect:"delete"}})
+          .then(function() {
+            return old.id;
+          });
+      }
+      else if (o.description != null) {
+        if (article) {
+          return freebase.upload(o.description, "text/html", {document:article})
+            .then(function(uploaded) {
+              return old.id;
+          });
+        }
+        else {
+          // create a new article with domain permission
+          return create_article.create_article(o.description, "text/html", {use_permission_of:o.domain, topic:old.id})
             .then(function() {
               return old.id;
             });
         }
-      }
-      else if (article) {
-        return freebase.upload(o.description, "text/html", {document:article})
-          .then(function(uploaded) {
-              return old.id;
-          });
-      }
-      else if (o.description) {
-        // create a new article with domain permission
-        return create_article.create_article(o.description, "text/html", {use_permission_of:o.domain, topic:old.id})
-          .then(function() {
-            return old.id;
-          });
       }
       return old.id;
     });

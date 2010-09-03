@@ -32,8 +32,8 @@ function update_property(options) {
       // if TRUE, acre.freebase.mqlkey_quote key. Default is FALSE
       mqlkey_quote: validators.StringBool(options, "mqlkey_quote", {if_empty:false}),
 
-      // if TRUE, name, key, ect, unit, description, disambiguator, unique, hidden is deleted if empty. Default is FALSE
-      empty_delete: validators.StringBool(options, "empty_delete", {if_empty:false})
+      // an array of options to remove/delete (name, key, ect, unit, description, disambiguator, unique, hidden);
+      remove: validators.Array(options, "remove", {if_empty:[]})
     };
   }
   catch(e if e instanceof validators.Invalid) {
@@ -42,6 +42,11 @@ function update_property(options) {
   if (o.mqlkey_quote) {
     o.key = acre.freebase.mqlkey_quote(o.key);
   }
+
+  var remove = {};
+  o.remove.forEach(function(k) {
+    remove[k] = true;
+  });
 
   var q = {
     id: o.id,
@@ -61,17 +66,15 @@ function update_property(options) {
       return env.result || {};
     })
     .then(function(old) {
-      if (o.key === null) {
-        if (o.empty_delete && old.key) {
-          return freebase.mqlwrite({guid:old.guid, id:null, key:{namespace:o.type, value:old.key.value, connect:"delete"}})
-            .then(function(env) {
-              // old id may no longer be valid since we deleted the key
-              old.id = env.result.id;
-              return old;
-            });
-        }
+      if (remove.key && old.key) {
+        return freebase.mqlwrite({guid:old.guid, id:null, key:{namespace:o.type, value:old.key.value, connect:"delete"}})
+          .then(function(env) {
+            // old id may no longer be valid since we deleted the key
+            old.id = env.result.id;
+            return old;
+          });
       }
-      else if (old.key.value !== o.key) {
+      else if (! (o.key == null || old.key.value == o.key)) {
         // delete old key
         return freebase.mqlwrite({guid:old.guid, key:{namespace:o.type, value:old.key.value, connect:"delete"}})
           .then(function(env) {
@@ -91,66 +94,52 @@ function update_property(options) {
         guid: old.guid,
         type: "/type/property"
       };
-      if (o.name === null) {
-        if (o.empty_delete && old.name) {
-          update.name = {value:old.name.value, lang:o.ang, connect:"delete"};
-        }
+      if (remove.name && old.name) {
+        update.name = {value:old.name.value, lang:old.name.lang, connect:"delete"};
       }
-      else {
+      else if (o.name != null) {
         update.name = {value:o.name, lang:o.lang, connect:"update"};
       }
 
-      if (o.expected_type === null) {
-        if (o.empty_delete && old.expected_type) {
-          update.expected_type = {id:old.expected_type, connect:"delete"};
-        }
+      if (remove.expected_type && old.expected_type) {
+        update.expected_type = {id:old.expected_type, connect:"delete"};
       }
-      else {
+      else if (o.expected_type != null) {
         update.expected_type = {id:o.expected_type, connect:"update"};
       }
 
-      if (o.unit === null) {
-        if (o.empty_delete && old.unit) {
-          update.unit = {id:old.unit, connect:"delete"};
-        }
+      if (remove.unit && old.unit) {
+        update.unit = {id:old.unit, connect:"delete"};
       }
-      else {
+      else if (o.unit != null) {
         update.unit = {id:o.unit, connect:"update"};
       }
 
-      if (o.unique === null) {
-        if (o.empty_delete && old.unique != null) {
-          update.unique = {value:old.unique, connect:"delete"};
-        }
+      if (remove.unique && old.unique != null) {
+        update.unique = {value:old.unique, connect:"delete"};
       }
-      else {
+      else if (o.unique != null) {
         update.unique = {value:o.unique, connect:"update"};
       }
 
-      if (o.description === null) {
-        if (o.empty_delete && old["/freebase/documented_object/tip"]) {
-          update["/freebase/documented_object/tip"] = {value:old["/freebase/documented_object/tip"].value, lang:o.lang, connect:"delete"};
-        }
+      if (remove.description && old["/freebase/documented_object/tip"]) {
+        update["/freebase/documented_object/tip"] = {value:old["/freebase/documented_object/tip"].value, lang:o.lang, connect:"delete"};
       }
-      else {
+      else if (o.description != null) {
         update["/freebase/documented_object/tip"] = {value:o.description, lang:o.lang, connect:"update"};
       }
 
-      if (o.disambiguator === null) {
-        if (o.empty_delete && old["/freebase/property_hints/disambiguator"] != null) {
-          update["/freebase/property_hints/disambiguator"] = {value:update["/freebase/property_hints/disambiguator"], connect:"delete"};
-        }
+      if (remove.disambiguator && old["/freebase/property_hints/disambiguator"] != null) {
+        update["/freebase/property_hints/disambiguator"] = {value:update["/freebase/property_hints/disambiguator"], connect:"delete"};
       }
-      else {
+      else if (o.disambiguator != null) {
         update["/freebase/property_hints/disambiguator"] = {value:o.disambiguator, connect:"update"};
       }
 
-      if (o.hidden === null) {
-        if (o.empty_delete && old["/freebase/property_hints/display_none"] != null) {
-          update["/freebase/property_hints/display_none"] = {value:update["/freebase/property_hints/display_none"], connect:"delete"};
-        }
+      if (remove.hidden &&  old["/freebase/property_hints/display_none"] != null) {
+        update["/freebase/property_hints/display_none"] = {value:update["/freebase/property_hints/display_none"], connect:"delete"};
       }
-      else {
+      else if (o.hidden != null) {
         update["/freebase/property_hints/display_none"] = {value:o.hidden, connect:"update"};
       }
 

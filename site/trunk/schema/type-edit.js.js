@@ -28,7 +28,7 @@
             form: html
           };
 
-          se.init_settings_form(form);
+          se.init_modal_form(form);
 
           form.form
             .bind(form.event_prefix + "success", function(e, data) {
@@ -62,15 +62,12 @@
     submit_type_settings_form: function(form) {
       var name = $.trim($(":input[name=name]", form.row).val());
       var key =  $.trim($("input[name=key]", form.form).val()).toLowerCase();
-      var role = $(":input[name=role]", form.row);
-      role = role.is(":checked") ? role.val() : "";
 
       var data = {
         name: name,
         key: key,
         domain: $("input[name=namespace]", form.form).val(),
-        description: $("textarea[name=description]", form.form).val(),
-        role: role
+        description: $("textarea[name=description]", form.form).val()
       };
 
       $.ajax({
@@ -114,7 +111,7 @@
             form: html
           };
 
-          se.init_settings_form(form);
+          se.init_modal_form(form);
 
           form.form
             .bind(form.event_prefix + "success", function(e, data) {

@@ -46,13 +46,13 @@
           </span>        
         </acre:block>
         <acre:block if="prop.expected_type.role === 'mediator'">
-          <span class="property-meta ect-role"><abbr title="This is a mediator">compound relationship</abbr></span>
+          <span class="property-meta ect-role"><abbr title="This is a Compound Relationship Type">compound relationship</abbr></span>
         </acre:block>
         <acre:block if="prop.expected_type.role === 'cvt'">
-          <span class="property-meta ect-role"><abbr title="This is a compound value type">compound value</abbr></span>
+          <span class="property-meta ect-role"><abbr title="This is a Compound Value Type">compound value</abbr></span>
         </acre:block>
         <acre:block if="prop.expected_type.role === 'enumeration'">
-          <span class="property-meta ect-role"><abbr title="This is an enumerated type">enumerated</abbr></span>
+          <span class="property-meta ect-role"><abbr title="This is an Enumerated Type">enumerated</abbr></span>
         </acre:block>      
       </acre:block>
       <span acre:if="prop.unit" class="measurement-unit">$prop.unit.name</span>

@@ -83,7 +83,7 @@
               <input class="text-input" type="text" name="key" value="${domain.key.value}"/>              
               <span class="form-note">
                 Four or more alphanumeric characters. No spaces.
-                <strong>Changing a key may break external apps that use this project</strong>
+                <strong>Changing a key may break external apps that use this domain</strong>
               </span>
             </acre:block>
             <acre:block else="">

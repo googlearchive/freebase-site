@@ -191,10 +191,11 @@
         site_host: "${acre.freebase.site_host}"
       },
       request: {
-        app_url: "${acre.request.app_url}"
+        app_url: "${acre.request.app_url}",
+        cookies: ${JSON.stringify(acre.request.cookies)}
       }
     };
-  </script>
+ </script>
   <script acre:if="typeof exports.c === 'object' && exports.c.id">
     acre.c = {id: "${exports.c.id}"};
  </script>

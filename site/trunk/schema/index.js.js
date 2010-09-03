@@ -26,6 +26,9 @@
     };
 
 
+    // delete placeholder plugin as part of suggest
+    $.fn.placeholder = $.noop;
+
     /*
         DOMAIN SUGGEST
     */
@@ -44,8 +47,7 @@
 
     $domain_input.suggest(domain_suggest_options)
       .bind("fb-select", function(e, data){
-        var url = $domain_form.attr("action");
-        window.location.href = url + data.id;
+        window.location.href = acre.request.app_url + "/schema" + data.id;
       })
       .focus(function() {
         this.select();
@@ -69,8 +71,7 @@
 
     $type_input.suggest(type_suggest_options)
       .bind("fb-select", function(e, data){
-        var url = $type_form.attr("action");
-        window.location.href = url + data.id;
+        window.location.href = acre.request.app_url + "/schema" + data.id;
       })
       .focus(function() {
         this.select();
@@ -94,8 +95,7 @@
 
     $property_input.suggest(property_suggest_options)
       .bind("fb-select", function(e, data){
-        var url = $property_form.attr("action");
-        window.location.href = url + data.id;
+        window.location.href = acre.request.app_url + "/schema" + data.id;
       })
       .focus(function() {
         this.select();
@@ -163,7 +163,7 @@
         $property_input.suggest(property_suggest_options);
       }
     });
-    
+
   };
 
   $(init);

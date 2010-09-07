@@ -420,6 +420,8 @@
     var role = type.role || "entity";
     attrs[role].checked = "checked";
     if (type.used) {
+      // if there are any instances of this type,
+      // can't switch between entity/enumeration and mediator/cvt
       if (role === "entity" || role === "enumeration") {
         attrs.cvt.disabled = attrs.mediator.disabled = "disabled";
       }
@@ -428,6 +430,7 @@
       }
     }
     else if (type.return_links) {
+      // can't switch to cvt if return links
       attrs.cvt.disabled = "disabled";
     }
     // don't disable currently checked
@@ -500,6 +503,8 @@
       </div>
     </div>
     <div class="modal-buttons">
+      <input type="hidden" name="domain" value="${type.domain.id}"/>
+      <input type="hidden" name="id" value="${type.id}"/>
       <button class="button button-submit button-primary" type="submit">Save</button>
       <button class="button button-cancel">Cancel</button>
     </div>

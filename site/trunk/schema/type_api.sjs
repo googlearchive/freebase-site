@@ -85,6 +85,7 @@ var api = {
 
   type_role_begin: function(args) {
     var promises = [];
+    // check if type has any properties that are reciprocated
     promises.push(queries.minimal_type(args.id, {
       properties: [{
         optional: true,
@@ -94,6 +95,7 @@ var api = {
         reverse_property: null
       }]
     }));
+    // is the type being used?
     promises.push(queries.type_used(args.id));
     return deferred.all(promises)
       .then(function(result) {
@@ -121,7 +123,17 @@ var api = {
   },
 
   type_role_submit: function(args) {
-
+    var update_type_options = h.extend({}, args);
+    // if description is empty, delete from type
+    if (!args.role) {
+      update_type_options.remove = ["role"];
+    }
+    return update_type.update_type(update_type_options)
+      .then(function(updated_id) {
+         return {
+          location: h.url_for("schema", "type", null, updated_id)
+        };
+      });
   },
 
   add_property_begin: function(args) {

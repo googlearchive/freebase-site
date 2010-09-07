@@ -1058,6 +1058,71 @@
           se.ajax_error_handler(xhr, row);
         }
       });
+    },
+
+
+    reorder_property_begin: function(trigger, type_id) {
+      $.ajax({
+        url: acre.request.app_url + "/schema/type/reorder_property_begin",
+        data: {id:type_id},
+        dataType: "json",
+        success: function(data, status, xhr) {
+          var html = $(data.result.html);
+          var form = {
+            event_prefix: "fb.schema.type.reorder.property",
+            ajax: {
+              url: acre.request.app_url + "/schema/type/reorder_property_submit",
+              data: {id: type_id}
+            },
+
+            init_form: te.init_reorder_property_form,
+            submit_form: te.submit_reorder_property_form,
+
+            form: html
+          };
+
+          se.init_modal_form(form);
+
+          form.form
+            .bind(form.event_prefix + "success", function(e, data) {
+              window.location = data.location;
+            });
+        }
+      });
+    },
+
+    init_reorder_property_form: function(form) {
+      var list = $(".reorderable", form.form).sortable();
+      $(".btn-mv-top", form.form).click(function(e) {
+        var row = $(this).parent(".reorderable-item");
+        list.prepend(row);
+      });
+    },
+
+    submit_reorder_property_form: function(form) {
+      var properties = [];
+      $("input[name=properties]", form.form).each(function() {
+        properties.push($(this).val());
+      });
+      var data = {
+        id: $("input[name=type]", form.form).val(),
+        properties: properties
+      };
+      $.ajax({
+        url: form.ajax.url,
+        type: "POST",
+        dataType: "json",
+        data: $.extend(data, form.ajax.data),
+        success: function(data, status, xhr) {
+          if (data.code === "/api/status/error") {
+            return se.ajax_error_handler(xhr, null, form.form);
+          }
+          form.form.trigger(form.event_prefix + "success", data.result);
+        },
+        error: function(xhr) {
+          se.ajax_error_handler(xhr, null, form.form);
+        }
+      });
     }
 
   };

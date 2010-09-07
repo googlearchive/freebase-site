@@ -136,6 +136,32 @@ var api = {
       });
   },
 
+  reorder_property_begin: function(args) {
+    return queries.type_properties(args.id)
+      .then(function(type) {
+        return {
+          html: acre.markup.stringify(editcomponents.reorder_property_form(type))
+        };
+      });
+  },
+
+  reorder_property_submit: function(args) {
+    var q = {
+      id: args.id,
+      type: "/type/type",
+      properties: []
+    };
+    args["properties[]"].forEach(function(prop_id, i) {
+      q.properties.push({id:prop_id, index:i});
+    });
+    return freebase.mqlwrite(q)
+      .then(function() {
+        return {
+          location: h.url_for("schema", "type", null, args.id)
+        };
+      });
+  },
+
   add_property_begin: function(args) {
     return {
       html: acre.markup.stringify(editcomponents.add_property_form(args.id))
@@ -428,6 +454,13 @@ api.type_role_begin.auth = true;
 api.type_role_submit.args = ["id", "role"]; // type id, type role
 api.type_role_submit.auth = true;
 api.type_role_submit.method = "POST";
+
+api.reorder_property_begin.args = ["id"]; // type id
+api.reorder_property_begin.auth = true;
+
+api.reorder_property_submit.args = ["id", "properties[]"];  // type id, array of property ids
+api.reorder_property_submit.auth = true;
+api.reorder_property_submit.method = "POST";
 
 api.add_property_begin.args = ["id"]; // type id
 api.add_property_begin.auth = true;

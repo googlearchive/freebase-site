@@ -511,32 +511,26 @@
   </div>
 </acre:block>
 
-<acre:block def="reorder_properties()">
+<acre:block def="reorder_property_form(type)">
 <div class="modal">
   <div class="modal-inner">
     <h1 class="modal-title">Reorder Properties</h1>
     <div class="modal-content">
       <div class="message">Drag and drop the properties below to change their order</div>
       <ul class="reorderable">
-        <li class="reorderable-item">
-          <a href="javascript:void(0);" class="btn-mv-top"></a>
-          <span class="reorderable-item-name">Property 1</span> 
-          <span class="key">/foo/bar</span>
-        </li>
-        <li class="reorderable-item">
-          <a href="javascript:void(0);" class="btn-mv-top"></a>
-          <span class="reorderable-item-name">Property 2</span> 
-          <span class="key">/foo/bar</span>
-        </li>
-        <li class="reorderable-item">
-          <a href="javascript:void(0);" class="btn-mv-top"></a>
-          <span class="reorderable-item-name">Property 3</span> 
-          <span class="key">/foo/bar</span>
-        </li>
+        <acre:block for="prop in type.properties">
+          <li class="reorderable-item">
+            <a href="javascript:void(0);" class="btn-mv-top"></a>
+            <span class="reorderable-item-name">${prop.name}</span> 
+            <span class="key">${prop.id}</span>
+            <input type="hidden" name="properties" value="${prop.id}"/>
+          </li>
+        </acre:block>
       </ul>
     </div>
   </div>
   <div class="modal-buttons">
+    <input type="hidden" name="id" value="${type.id}"/>
     <button class="button button-submit button-primary" type="submit">Save</button>
     <button class="button button-cancel">Cancel</button>
   </div>

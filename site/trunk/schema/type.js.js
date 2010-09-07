@@ -95,6 +95,18 @@
       return false;
     },
 
+    reorder_property: function(e, type_id) {
+      var trigger = $(this);
+      if (trigger.is(".editing")) { // are we already editing?
+        return false;
+      }
+      trigger.addClass("editing");
+      fb.get_script(acre.request.app_url + "/schema/MANIFEST/type-edit.mf.js", function() {
+        t.edit.reorder_property_begin(trigger, type_id);
+      });
+      return false;
+    },
+
     add_property: function(e, type_id) {
       var trigger = $(this);
       if (trigger.is(".editing")) { // are we already editing?

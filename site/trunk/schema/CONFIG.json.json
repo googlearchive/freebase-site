@@ -38,6 +38,8 @@
     "type-edit.mf.js": [
       ["jquerytools", "toolbox.expose.js"],
       ["jquerytools", "overlay.js"],
+      ["jqueryui", "jquery.ui.core.mf.js"],
+      ["jqueryui", "jquery.ui.sortable.js"],
       "schema-edit.js",
       "suggest_expected_type.js",
       "suggest_property.js",

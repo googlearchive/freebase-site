@@ -1128,3 +1128,49 @@ td.warning {
     color: #444;
     border-left: 1px solid #dcdbdc;
 }
+
+
+/*
+-----------------------------------
+Reorderable List
+-----------------------------------
+*/
+
+.reorderable {
+    list-style: none;
+    border-top: 1px solid #e7e7e7;
+}
+
+.modal .message {
+    margin: 1em 0;
+    padding: 0.3em 0.6em;
+    font-size: 1.2em;
+    background: #fff7d7; 
+    border: 1px solid #f1daa0;
+    .rounded_corners();
+}
+
+.reorderable-item {
+    border-bottom: 1px solid #e7e7e7;
+    padding: 7px;
+}
+
+.reorderable-item-name {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.reorderable-item:hover {
+    cursor: move;
+    background: #ececec;
+    .box_shadow();
+    color: #222;
+}
+
+.btn-mv-top {
+    float: left;
+    margin-right: 7px;
+    width: 16px;
+    height: 16px;
+    background: url(ui-icons.png) no-repeat 0 -342px;
+}

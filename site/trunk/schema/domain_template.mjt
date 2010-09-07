@@ -64,7 +64,7 @@
           <p class="blob">
             $c.domain.blob
           </p>
-          <a href="javascript:void(0);" class="blurb-trigger">More</a>          
+          <a acre:if="c.domain.blurb != c.domain.blob" href="javascript:void(0);" class="blurb-trigger">More</a>          
         </div>
         <acre:block if="c.domain.owners">
           <h2 class="user-list-title">Domain Owners:</h2>

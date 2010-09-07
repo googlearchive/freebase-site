@@ -120,7 +120,7 @@ function domain(id) {
       return envelope.result || {};
     })
     .then(function(domain) {
-      return add_description(domain, "blurb", null, "blurb");
+      return add_description(domain, "blurb", {maxlength: 250}, "blurb");
     })
     .then(function(domain) {
       return add_description(domain, "blob", null, "blob");
@@ -276,7 +276,7 @@ function base_type(id) {
       return envelope.result || {};
     })
     .then(function(result) {
-      return add_description(result, "blurb");
+      return add_description(result, "blurb", {maxlength: 250 });
     })
     .then(function(result) {
       return add_description(result, "blob");

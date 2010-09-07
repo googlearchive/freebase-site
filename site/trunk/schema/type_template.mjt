@@ -93,7 +93,7 @@
       <p class="blob">
         $c.type.blob
       </p>
-      <a href="javascript:void(0);" class="blurb-trigger">More</a>          
+      <a acre:if="c.type.blurb != c.type.blob" href="javascript:void(0);" class="blurb-trigger">More</a>          
     </div>
     
     <div class="nav clear">
@@ -182,6 +182,9 @@
             <td colspan="5">
               <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.add_property, ['${c.type.id}'], this);">
                 <span class="add-icon">Add New</span>
+              </a>
+              <a href="#" class="icon-link">
+                <span class="reorder-icon">Reorder</span>
               </a>
             </td>
           </tr>

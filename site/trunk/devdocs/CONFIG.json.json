@@ -22,9 +22,8 @@
     ]
   },
 
-  // devdoc-specific links
   "urls" : {
-    "cheatsheet"       : "http://download.freebase.com/MQLcheatsheet-081208.pdf", //XXX: this link is dead
+    "cheatsheet"       : "http://download.freebase.com/MQLcheatsheet-081208.pdf",
     "query_recipes"    : "http://wiki.freebase.com/wiki/MQL_Recipes",
     "client_libraries" : "http://wiki.freebase.com/wiki/Libraries",
     "acre_recipes"     : "http://wiki.freebase.com/wiki/Acre_Recipes",

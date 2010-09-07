@@ -183,7 +183,9 @@
               <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.add_property, ['${c.type.id}'], this);">
                 <span class="add-icon">Add New</span>
               </a>
-             <a acre:if="c.type.properties.length > 1" href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.reorder_property, ['${c.type.id}'], this);">
+              <a acre:attrs="c.type.properties.length > 1 ? {} : {style:'display:none'}" 
+                 href="#" class="icon-link reorder-link" 
+                 onclick="return freebase.dispatch(event, freebase.schema.type.reorder_property, ['${c.type.id}'], this);">
                 <span class="reorder-icon">Reorder</span>
               </a>
            </td>

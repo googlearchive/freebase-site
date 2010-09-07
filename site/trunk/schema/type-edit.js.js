@@ -308,6 +308,9 @@
             if (empty_msg.length) {
               empty_msg.parents("tr:first").hide().prev("tr").show();
             }
+            // show reorder link if props > 1
+            te.toggle_reorder_link(form.table);
+            // change submit text to 'Done'
             $(".button-cancel", form.submit_row).text("Done");
             te.init_property_form(form);
           });
@@ -573,6 +576,7 @@
           new_row.hide();
           row.remove();
           new_row.showRow();
+          te.toggle_reorder_link(table);
         },
         error: function(xhr) {
           se.ajax_error_handler(xhr, row);
@@ -603,6 +607,7 @@
             fb.schema.init_row_menu(new_row);
             // show edit controls in tooltip
             $(".edit", new_row).show();
+            te.toggle_reorder_link(table);
           }, null, "slow");
         },
         error: function(xhr) {
@@ -841,8 +846,8 @@
 
     reverse_property_success: function(form, data) {
       var new_row = $(data.result.html).addClass("new-row");
-
-      var prop_body = $("#type-table table:first > tbody");
+      var prop_table = $("#type-table table:first");
+      var prop_body = $("> tbody". prop_table);
       prop_body.append(new_row);
       new_row.hide();
       new_row.showRow(function() {
@@ -862,6 +867,8 @@
       form.trigger_row.remove(); // old row
       form.row.remove();
       form.submit_row.remove();
+
+      te.toggle_reorder_link(prop_table);
     },
 
     /**
@@ -1123,6 +1130,16 @@
           se.ajax_error_handler(xhr, null, form.form);
         }
       });
+    },
+
+    toggle_reorder_link: function(table) {
+      var reorder_link = $(".reorder-link", table);
+      if ($("> tbody > tr.hoverable", table).length > 1) {
+        reorder_link.show();
+      }
+      else {
+        reorder_link.hide();
+      }
     }
 
   };

@@ -273,7 +273,7 @@ function base_manifest(app_mf, scope) {
               buf.push(app_mf.css_preprocessor(app_mf.require(ss[0]).body, use_acre_url));
             }
             catch (ex) {
-              scope.acre.write("\n/** " + ex.toString() + " **/\n");
+              scope.acre.write("\n/** Processing file '" + ss[0] + "' - " + ex.toString() + ". **/\n");
               acre.exit();
             }
           }

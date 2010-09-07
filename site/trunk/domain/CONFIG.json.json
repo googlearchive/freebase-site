@@ -1,0 +1,19 @@
+{
+  "apps" : {
+    "core": "//core.site.freebase.dev"
+  },
+  "stylesheet": {
+    "domain.mf.css": [
+      ["template", "freebase.mf.css"],
+      "project.less"
+    ]
+  },
+  "javascript": {
+    "domain.mf.js": [
+      ["template", "freebase.mf.js"],
+      "jquery.lazyload.js",
+      "jquery.masonry.js",
+      "project.js"
+    ]
+  }
+}

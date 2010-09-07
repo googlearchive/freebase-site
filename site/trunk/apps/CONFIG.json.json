@@ -5,7 +5,10 @@
   "stylesheet": {
     "apps.mf.css": [
       ["template", "freebase.mf.css"],
-      ["template", "freebase.table.less"],
+      ["template", "freebase.ui.tabs.less"],
+      ["template", "freebase.ui.table.less"],
+      ["template", "freebase.ui.breadcrumbs.less"],
+      ["template", "freebase.ui.pageoverview.less"],
       "apps.less"
     ],
     "article.mf.css" : [

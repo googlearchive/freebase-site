@@ -159,6 +159,41 @@ GLOBAL CLASSES
 
 /*
 --------------------------------------------------
+FORM ELEMENTS
+--------------------------------------------------
+ */
+
+.text-input {
+    -webkit-transition-property: border, -webkit-box-shadow;
+    -webkit-transition-duration: 0.3s;
+    font-size: 1.4em;
+    border: 1px solid #e0e0e0;
+    padding: 5px 7px;
+    width: 300px;
+    .rounded_corners(5px);
+}
+
+.textarea {
+    -webkit-transition-property: border, -webkit-box-shadow;
+    -webkit-transition-duration: 0.3s;
+    border: 1px solid #e0e0e0;
+    padding: 5px 7px;
+    width: 300px;
+    .rounded_corners(5px);    
+}
+
+.text-input:focus,
+.textarea:focus {
+    border-color: #61d7f7;
+    .box_shadow(0px, 0px, 3px, #aaa);
+}
+
+input[disabled='disabled'] {
+    opacity: 0.6;
+}
+
+/*
+--------------------------------------------------
 PAGE STRUCTURE
 --------------------------------------------------
 */
@@ -184,9 +219,6 @@ body {
     margin: 0 auto;
     width: 96em;
 }
-
-/* liquid is the class appended to #content when we want a liquid layout */
-.liquid {}
 
 /*
 ------------------------
@@ -614,7 +646,3 @@ of all templates.
 }
 
 .user-image a { display: block; }
-
-
-
-

@@ -50,11 +50,13 @@
     <div id="content-main" role="main">
       <div class="page-meta" acre:if="c.app">
         <h1>$c.app.name</h1>
-        <span class="creation-timestamp" acre:if="c.app.modified_by">
-          ${image.user_image_small(c.app.modified_by)}
-          Last modified by <a href="${h.url_for('apps', null, null, c.app.modified_by.id)}">$c.app.modified_by.name</a> 
-          <time class="published" datetime="${c.app.modified}">${h.relative_date(acre.freebase.date_from_iso(c.app.modified))}</time>
-        </span>
+        <div class="admin-toolbox">
+          <span class="creation-timestamp" acre:if="c.app.modified_by">
+            ${image.user_image_small(c.app.modified_by)}
+            Last modified by <a href="${h.url_for('apps', null, null, c.app.modified_by.id)}">$c.app.modified_by.name</a> 
+            <time class="published" datetime="${c.app.modified}">${h.relative_date(acre.freebase.date_from_iso(c.app.modified))}</time>
+          </span>
+        </div>
         <img class="app-icon" acre:if="c.app.icon" src="$c.app.icon.src" alt="$c.app.name"/>
         <div class="app-description">
           <p acre:if="c.app.description">$c.app.description</p>

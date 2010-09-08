@@ -13,7 +13,7 @@ var freebase_static_resource_url;
  *
  * usage:
  *   var mf = JSON.parse(acre.require("CONFIG.json").body);
- *   acre.require(mf.apps.core).init(mf, this);
+ *   acre.require(mf.apps.core).init(mf, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/core/d41d8cd98f00b204e9800998ecf8427e", "static_base_url": "http://freebaselibs.com/static/freebase_site/core/d41d8cd98f00b204e9800998ecf8427e"});
  */
 function init(app_mf, scope, options) {
   var original = extend({}, app_mf, options);
@@ -503,4 +503,4 @@ function base_manifest(app_mf, scope) {
   return base;
 };
 
-this.init(mf, this);
+this.init(mf, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/core/d41d8cd98f00b204e9800998ecf8427e", "static_base_url": "http://freebaselibs.com/static/freebase_site/core/d41d8cd98f00b204e9800998ecf8427e"});

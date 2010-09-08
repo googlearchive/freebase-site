@@ -1,16 +1,16 @@
 {
   "apps" : {
-    "routing": "//routing.site.freebase.dev",
-    "promise": "//promise.site.freebase.dev",
-    "template": "//template.site.freebase.dev",
-    "queries": "//queries.site.freebase.dev",
-    "validator": "//validator.site.freebase.dev",
-    "toolbox": "//toolbox.site.freebase.dev",
-    "permission": "//permission.site.freebase.dev",
+    "routing": "//16.routing.site.freebase.dev",
+    "promise": "//16.promise.site.freebase.dev",
+    "template": "//16.template.site.freebase.dev",
+    "queries": "//16.queries.site.freebase.dev",
+    "validator": "//16.validator.site.freebase.dev",
+    "toolbox": "//16.toolbox.site.freebase.dev",
+    "permission": "//16.permission.site.freebase.dev",
     
-    "jqueryui": "//jqueryui.site.freebase.dev",
-    "flot": "//flot.site.freebase.dev",
-    "jquerytools": "//jquerytools.site.freebase.dev",
+    "jqueryui": "//16.jqueryui.site.freebase.dev",
+    "flot": "//16.flot.site.freebase.dev",
+    "jquerytools": "//16.jquerytools.site.freebase.dev",
 
     "service" : "//4.service.libs.freebase.dev",
     "libraries" : "//2.libraries.apps.freebase.dev",

@@ -1,0 +1,15 @@
+{
+  "apps": {
+    "core": "//core.site.freebase.dev"
+  },
+  stylesheet: {
+    "error.mf.css": [
+      ["template", "freebase.mf.css"]
+    ]
+  },
+  javascript: {
+    "error.mf.js": [
+      ["template", "freebase.mf.js"]
+    ]
+  }
+}

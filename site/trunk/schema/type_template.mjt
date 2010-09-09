@@ -65,7 +65,7 @@
         <acre:block else="">
           <span>Entity Type</span>
         </acre:block>
-        <a href="#" onclick="return freebase.dispatch(event, freebase.schema.type.type_role, ['${c.type.id}'], this);">change</a>
+        <a class="edit" href="#" onclick="return freebase.dispatch(event, freebase.schema.type.type_role, ['${c.type.id}'], this);">change</a>
       </span>
     </h1>
     <div class="meta">

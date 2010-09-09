@@ -15,8 +15,7 @@
       "jquery.placeholder.js",
       "jquery.metadata.js",
       ["jqueryui", "jquery.ui.core.mf.js"],
-      "freebase.js"/*,
-      ["toolbox", "toolbox.js"]*/
+      "freebase.js"
     ],
     "freebase-permission.mf.js": [
       "freebase.mf.js",
@@ -26,8 +25,7 @@
   "stylesheet": {
     "freebase.mf.css": [
       "freebase.less",
-      "components.less"/*,
-      ["toolbox", "toolbox.less"]*/
+      "components.less"
     ]
   }
 }

@@ -1,6 +1,6 @@
 {
   "apps" : {
-    "core": "//core.site.freebase.dev"
+    "core": "//21.core.site.freebase.dev"
   },
   "stylesheet": {
     "sample_page.mf.css": [

@@ -408,6 +408,13 @@ function typediagram(id) {
           result.incoming.bases = props || [];
         }));
 
+      result.included_types.forEach(function(inc_type) {
+        promises.push(type_properties(inc_type.id)
+          .then(function(type) {
+            inc_type.properties = type.properties;
+          }));
+      });
+
       return deferred.all(promises)
         .then(function() {
           return result;

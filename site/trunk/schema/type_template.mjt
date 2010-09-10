@@ -250,18 +250,27 @@
       <tr>
         <td class="left structure">
           <table>
-            <tbody class="commons">
+            <thead>
               <tr>
                 <th class="type-diagram-col-header" colspan="3">Incoming Properties</th>
+              </tr>              
+            </thead>
+            <tbody class="domain" acre:if="c.type.incoming.domain.length">   
+              <tr>
+                <th colspan="3">${c.type.domain.name}</th>
               </tr>
-              <acre:block if="c.type.incoming.domain.length">
-                ${tc.type_diagram_incoming_props(c.type.incoming.domain)}
-              </acre:block>
+              ${tc.type_diagram_incoming_props(c.type.incoming.domain)}
             </tbody>
-            <tbody class="bases" acre:if="c.type.incoming.commons.length">
+            <tbody class="commons" acre:if="c.type.incoming.commons.length">
+              <tr>
+                <th colspan="3">Commons</th>
+              </tr>
               ${tc.type_diagram_incoming_props(c.type.incoming.commons)}
             </tbody>
-            <tbody class="users" acre:if="c.type.incoming.bases.length">
+            <tbody class="bases" acre:if="c.type.incoming.bases.length">
+              <tr>
+                <th colspan="3">Bases</th>
+              </tr>
               ${tc.type_diagram_incoming_props(c.type.incoming.bases)}
             </tbody>
           </table>
@@ -275,15 +284,26 @@
         </td>
         <td class="right structure">
           <table>
-            <tr>
-              <th colspan="4" class="type-diagram-col-header">$c.type.name Properties</th>
-            </tr>            
-            ${tc.type_diagram_native_props(c.type.properties)}
-            <tr>
-              <th colspan="4" class="type-diagram-col-header">Inherited Properties</th>
-            </tr>                          
+            <thead>
+              <tr>
+                <th colspan="4" class="type-diagram-col-header">$c.type.name Properties</th>
+              </tr>             
+            </thead>
+            <tbody>
+              ${tc.type_diagram_native_props(c.type.properties)}
+            </tbody>
+            <thead>
+              <tr>
+                <th colspan="4" class="type-diagram-col-header">Inherited Properties</th>
+              </tr>             
+            </thead>
             <acre:block for="type in c.type.included_types"> 
-              ${tc.type_diagram_inherited_props(type.properties)}
+              <tbody>
+                <tr>
+                  <th colspan="4" class="type-diagram-col-header">${type.name}</th>
+                </tr> 
+                ${tc.type_diagram_inherited_props(type.properties)}
+              </tbody>
             </acre:block>
           </table>
         </td>

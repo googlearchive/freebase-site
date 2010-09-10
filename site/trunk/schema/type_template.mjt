@@ -224,16 +224,9 @@
     </div>
  
     <!-- Incoming Properties Table -->
-    <div class="section">
+    <div class="section" acre:if="c.type.incoming.domain.length || c.type.incoming.commons || c.type.incoming.bases">
       <h2 class="table-title">Incoming Properties</h2>
       <table class="table" cellspacing="0" id="incoming-properties-table">
-        <thead acre:attrs="c.type.incoming.domain.length || c.type.incoming.commons || c.type.incoming.bases ? {style:'display:none;'}:{}">
-          <tr>
-            <th colspan="5" class="table-empty-column" scope="col">
-              <h3 class="table-empty-title">This type doesn't have any incoming properties</h3>
-            </th>
-          </tr>
-        </thead>
         <acre:block if="c.type.incoming.domain.length">
           ${tc.incoming_props_thead(c.type.domain.name, true)}
           ${tc.incoming_props_tbody(c.type.incoming.domain, c.type.role !== 'cvt')}

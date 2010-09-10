@@ -1,5 +1,6 @@
 var mf = acre.require("MANIFEST").mf;
 var h = mf.require("core", "helpers");
+//var i18n = mf.require("i18n", "i18n");
 var schema_helpers = mf.require("helpers");
 var mql = mf.require("mql");
 
@@ -67,6 +68,7 @@ function domains(q) {
       var promises = [];
       // instance counts for each domain
       domains.forEach(function(domain) {
+        //domain.name = i18n.mql.result.name(domain.name);
         var activity_id = "summary_/guid/" + domain.guid.slice(1);
         promises.push(freebase.get_static("activity", activity_id)
           .then(function(activity) {
@@ -83,7 +85,7 @@ function domains(q) {
             return domain;
           });
       });
-      return domains.sort(schema_helpers.sort_by_name);
+      return domains.sort(schema_helpers.sort_by_id);
     });
 };
 
@@ -366,7 +368,6 @@ function type(id) {
           limit: 11
         }])
         .then(function(env) {
-          console.log("instances", env.result);
           result.instance = env.result.sort(schema_helpers.sort_by_name);
           var blurbs = [];
           result.instance.forEach(function(topic) {
@@ -596,6 +597,10 @@ function incoming_from_domain(type_id, domain_id, count) {
     // just get counts
     q = q[0];
     h.extend(q, {"return": "count"});
+    return freebase.mqlread(q)
+      .then(function(env) {
+        return env.result;
+      });
   }
   return incoming(q);
 };
@@ -619,6 +624,10 @@ function incoming_from_commons(type_id, exclude_domain_id, count) {
     // just get counts
     q = q[0];
     h.extend(q, {"return": "count"});
+    return freebase.mqlread(q)
+      .then(function(env) {
+        return env.result;
+      });
   }
   return incoming(q);
 };
@@ -646,6 +655,10 @@ function incoming_from_bases(type_id, exclude_domain_id, count) {
     // just get counts
     q = q[0];
     h.extend(q, {"return": "count"});
+    return freebase.mqlread(q)
+      .then(function(env) {
+        return env.result;
+      });
   }
   return incoming(q);
 };

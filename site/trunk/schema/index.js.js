@@ -118,9 +118,6 @@
       var $el = $(this);
       var $parent = $(this).parent().siblings("form");
 
-      // focus related input
-      var $text_input = $parent.find(".text-input").focus();
-
       /*
        We grab the radio buttons closest form
        and compare it's ID to decide which mql_filter
@@ -162,6 +159,12 @@
         }
         $property_input.suggest(property_suggest_options);
       }
+
+      // focus related input, preserving user input
+      var $text_input = $parent.find(".text-input");
+      var search_term = $text_input.val();
+      $text_input.val(search_term).focus().trigger(jQuery.Event("keyup"));
+      
     });
 
   };

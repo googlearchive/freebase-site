@@ -228,8 +228,12 @@
     var global = sh.isGlobal(prop.id);
     transition = global != previous_global;
     previous_global = global;
-    var same = (previous == prop.expected_type.id);
-    previous = prop.expected_type.id;
+    var same = false;
+    previous = null;
+    if (prop.expected_type) {
+      same = (previous == prop.expected_type.id);
+      previous = prop.expected_type.id;
+    }
   </acre:script>                
     <tr acre:if="transition && i > 0" class="separator">
       <td class="c1 spacer"></td>
@@ -242,13 +246,14 @@
         <a href="${h.url_for('schema', null, null, prop.id)}">$prop.name</a>
       </td>
       <td class="${same && i != 0 ? '' : 'c3'} spacer"></td>
-      <td nowrap="" class="c1 out_type ${prop.expected_type.mediator ? 'mediator' : 'truetype'} ${sh.isTypeType(prop.expected_type.id) ? 'typetype' : ''}">
+      <td acre:if="prop.expected_type" nowrap="" class="c1 out_type ${prop.expected_type.mediator ? 'mediator' : 'truetype'} ${sh.isTypeType(prop.expected_type.id) ? 'typetype' : ''}">
         <acre:block if="!same || i == 0">
           <a href="${h.url_for('schema', null, null, prop.id)}" title="${prop.expected_type.id} ${prop.expected_type.mediator ? '| mediator' : ''}">$prop.expected_type.name</a>
           <acre:script>var instances = prop.expected_type.instance_count;</acre:script>
           <a acre:if="instances" href="${acre.freebase.service_url}/view${prop.expected_type.id}" title="Browse the ${instances.value} instances of ${prop.expected_type.id}" class="instances" >[$instances.value]</a>
         </acre:block>
       </td>
+      <td acre:else="" class="c1 out_type">&nbsp;</td>
     </tr>    
   </acre:block>
 </acre:block>
@@ -258,12 +263,15 @@
 <acre:block def="type_diagram_native_props(properties)">
   <acre:block acre:for="i, prop in properties">
   <acre:script>
-    console.log('expected type id:', prop.expected_type.id);
     var global = sh.isGlobal(prop.id);
     transition = global != previous_global;
     previous_global = global;
-    var same = (previous == prop.expected_type.id);
-    previous = prop.expected_type.id;
+    var same = false;
+    previous = null; 
+    if (prop.expected_type) {
+      same = (previous == prop.expected_type.id);
+      previous = prop.expected_type.id;
+    }
   </acre:script>                
     <tr acre:if="transition && i > 0" class="separator">
       <td class="c1 spacer"></td>
@@ -276,13 +284,14 @@
         <a href="${h.url_for('schema', null, null, prop.id)}">$prop.name</a>
       </td>
       <td class="${same && i != 0 ? '' : 'c3'} spacer"></td>
-      <td nowrap="" class="c1 out_type ${prop.expected_type.mediator ? 'mediator' : 'truetype'} ${sh.isTypeType(prop.expected_type.id) ? 'typetype' : ''}">
+      <td acre:if="prop.expected_type" nowrap="" class="c1 out_type ${prop.expected_type.mediator ? 'mediator' : 'truetype'} ${sh.isTypeType(prop.expected_type.id) ? 'typetype' : ''}">
         <acre:block if="!same || i == 0">
           <a href="${h.url_for('schema', null, null, prop.id)}" title="${prop.expected_type.id} ${prop.expected_type.mediator ? '| mediator' : ''}">$prop.expected_type.name</a>
           <acre:script>var instances = prop.expected_type.instance_count;</acre:script>
           <a acre:if="instances" href="${acre.freebase.service_url}/view${prop.expected_type.id}" title="Browse the ${instances.value} instances of ${prop.expected_type.id}" class="instances" >[$instances.value]</a>
         </acre:block>
       </td>
+      <td acre:else="" class="c1 out_type">&nbsp;</td>
     </tr>    
   </acre:block>
 </acre:block>

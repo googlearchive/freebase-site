@@ -1097,7 +1097,8 @@ class ActionStatic():
         if d_app.app_key != 'routing':
           create_app_list(d_app, al)
 
-    create_app_list(c.app, app_list)
+    if not c.options.patch:
+      create_app_list(c.app, app_list)
 
     for static_app in app_list:
       self.app = static_app

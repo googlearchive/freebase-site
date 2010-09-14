@@ -52,6 +52,7 @@
         .bind(event_prefix + "error", function(e, row, error) {
           console.log(event_prefix + "error", row, error);
           se.row_error(row, error);
+          form.row.removeClass("loading");
         })
         .bind(event_prefix + "success", function() {
           console.log(event_prefix + "success");
@@ -134,9 +135,11 @@
       // TODO: make error expandable to see whole error message
       if (row) {
         se.row_error(row, msg);
+        row.removeClass("loading");
       }
       else if (form) {
         se.form_error(form, msg);
+        form.removeClass("loading");
       }
     },
 

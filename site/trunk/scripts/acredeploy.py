@@ -242,11 +242,11 @@ class App():
 
     if target_app.svn_exists():
       target_app.svn_update()
-      self.c.verbose('App %s version %s already exists in SVN - not branching' % (target_app.app_key, target_app.version))
+      self.c.log('App %s version %s already exists in SVN - not branching' % (target_app.app_key, target_app.version))
       return target_app
 
     msg = 'Creating branch version {version} of app {app}'.format(version=target_app.version, app=target_app.app_key)
-    self.c.log(msg)
+    self.c.log(msg, color=c.BLUE)
     cmd = ['svn', 'copy', self.svn_url(), target_app.svn_url(), '--parents', '-m', '"acredeploy: %s"' % msg]
     (r, output) = self.c.run_cmd(cmd)
 
@@ -432,7 +432,11 @@ class Context():
     if color:
       start_color, end_color = color, self.ENDC
 
-    print start_color + '[%s:%s %s%s] %s' % (self.action, self.current_app.app_key, self.current_app.version or ' trunk', subaction, msg) + end_color
+    cv = self.current_app.version
+    if not cv:
+      cv = 'trunk'
+
+    print start_color + '[%s:%s %s%s] %s' % (self.action, self.current_app.app_key, cv, subaction, msg) + end_color
 
     return True
 
@@ -1051,8 +1055,6 @@ class ActionStatic():
     cmd = ['svn', 'import', deployed_dir, deployed_url, '-m', '"%s"' % msg]
     c.run_cmd(cmd)
 
-    c.log('***** NOTE: You have to restart the freebaselibs.com static servers for your resources to be available *****')
-
     return True
 
   ##  STATIC ##
@@ -1120,6 +1122,8 @@ class ActionStatic():
       if not result:
         return False
 
+
+    c.log('***** NOTE: You have to restart the freebaselibs.com static servers for your resources to be available *****')
     return True
 
 class ActionBranch():
@@ -1134,6 +1138,8 @@ class ActionBranch():
 
     if not c.options.app:
       return c.error('You have to specify a valid app to branch')
+
+    c.log('Starting branching app %s' % c.app.app_key, color=c.BLUE)
 
     #first make sure we are not asked to branch a library app
     #you should only be able to branch a page app, or core (all libraries together)
@@ -1243,6 +1249,66 @@ class ActionCreate():
 
         return True
 
+class ActionDeploy:
+
+  def __init__(self, context):
+    self.context = context
+
+  def __call__(self):
+
+    c = self.context
+    c.set_action("static")
+
+    if not (c.options.app and c.options.graph):
+      return c.error('You must specify the app key (e.g. "schema") and a graph to deploy to')
+
+
+    c.log('Starting deploy of %s -- stage: branch' % c.app.app_key, color=c.BLUE)
+
+    success = ActionBranch(c)()
+
+    if not success:
+      return False
+
+    c.log('Action branch finished successfully', c.GREEN)
+    c.set_action("static")
+    c.log('Starting deploy of %s -- stage: static/push' % c.app.app_key, color=c.BLUE)
+
+    success = ActionStatic(c)()
+    if not success:
+      return False
+
+    c.log('Action static/push finished successfully', c.GREEN)
+
+    return True
+
+class ActionRelease:
+
+  def __init__(self, context):
+    self.context = context
+
+  def __call__(self):
+
+    c = self.context
+
+    c.set_action("release")
+    if not (c.options.app and c.options.graph and c.options.version):
+      return c.error('You must specify the app key (e.g. "schema"), a graph and a version to release')
+
+    c.log('Releasing app %s version %s' % (c.app.app_key, c.app.version), color=c.BLUE)
+
+    success = c.freebase_login()
+    if not success:
+      return c.error('You must provide valid freebase credentials in order to release an app')
+
+    try:
+      c.freebase.set_app_release(c.app.app_id, c.app.version)
+    except:
+      c.error('There was an error releasing the app.')
+      raise
+
+    return True
+
 def main():
 
     # OPTION PARSING
@@ -1252,7 +1318,8 @@ def main():
         ('push', 'pushes a specified directory to an app version', ActionPush),
         ('static', 'generates and deployes static bundles to the edge servers', ActionStatic),
         ('create', 'creates an app', ActionCreate),
-        ('release', 'release a specific version of an app')
+        ('release', 'release a specific version of an app', ActionRelease),
+        ('deploy', 'combine branch, static and push in one go', ActionDeploy)
         ]
 
 

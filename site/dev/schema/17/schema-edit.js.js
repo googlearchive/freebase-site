@@ -312,6 +312,12 @@
         return msg_data && msg_data[type] && msg_data[type].length;
       }
       return msg_data != null;
+    },
+
+    check_key: function(key) {
+      if (!(/^[a-z][a-z0-9_\-]{3,}$/.test(key))) {
+        throw("Key must be four or more alphanumeric characters, no spaces and not begin with a number");
+      }
     }
 
   };

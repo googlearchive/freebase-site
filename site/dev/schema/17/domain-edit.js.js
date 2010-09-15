@@ -54,8 +54,13 @@
       if (name === "" || key === "") {
         form.form.trigger(form.event_prefix + "error", "Name and Key are required");
       }
-      else if (!(/^[a-z][a-z0-9_\-]{3,}$/.test(key))) {
-        form.form.trigger(form.event_prefix + "error", "Key must be four or more alphanumeric characters, no spaces and not begin with a number");
+      else {
+        try {
+          se.check_key(key);
+        }
+        catch (e) {
+          form.form.trigger(form.event_prefix + "error", e);
+        }
       }
     },
 
@@ -287,7 +292,14 @@
       if (name === "" || key === "") {
         form.row.trigger(form.event_prefix + "error", [form.row, "Name and Key are required"]);
       }
-      // TODO: simple duplicate key check
+      else {
+        try {
+          se.check_key(key);
+        }
+        catch (e) {
+          form.row.trigger(form.event_prefix + "error", [form.row, e]);
+        }
+      }
     },
 
 

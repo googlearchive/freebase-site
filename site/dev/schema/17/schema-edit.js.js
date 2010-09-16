@@ -314,10 +314,99 @@
       return msg_data != null;
     },
 
-    check_key: function(key) {
-      if (!(/^[a-z][a-z0-9_\-]{3,}$/.test(key))) {
-        throw("Key must be four or more alphanumeric characters, no spaces and not begin with a number");
+    auto_key: function(input, output, type) {
+      var original_key = output.val();
+      if (original_key) {
+        // output already contains value, we do not want to overwrite
+        output.data("original", original_key);
       }
+      else {
+        output.data("autogen", true);
+        output.change(function() {
+          output.data("autogen", false);
+        });
+        input.change(function() {
+          if (output.data("autogen")) {
+            var key = $.trim(input.val()).toLowerCase();
+            key = key.replace(/\s+/g, '_');       // replace white space with _
+            key = key.replace(/\_\_+/g, '_');     // replace __+ with _
+            key = key.replace(/\-\-+/g, '-');     // replace --+ with -
+            key = key.replace(/[^a-z0-9]+$/, ''); // strip ending non-alphanumeric
+            key = key.replace(/^[^a-z]+/, '');    // strip beginning non-alpha
+            try {
+              se.check_key(key, type);
+            }
+            catch (ex) {
+              return;
+            }
+            output.val(key);
+          }
+        });
+      }
+    },
+
+    check_key: function(key, type) {
+      if (type === "/type/domain") {
+        return se.check_key_domain(key);
+      }
+      else if (type === "/type/type") {
+        return se.check_key_type(key);
+      }
+      else if (type === "/type/property") {
+        return se.check_key_property(key);
+      }
+      else {
+        return se.check_key_default(key);
+      }
+    },
+
+    check_key_domain: function(key) {
+      return se.check_key_default(key, 5);
+    },
+
+    check_key_type: function(key) {
+      return se.check_key_default(key);
+    },
+
+    check_key_property: function(key) {
+      return se.check_key_default(key);
+    },
+
+    check_key_default: function(key, minlen) {
+      if (!minlen) {
+        minlen = 1;
+      }
+      if (key.length === 1) {
+        if (/^[a-z]$/.test(key)) {
+          return key;
+        }
+      }
+      else {
+        var pattern = "^[a-z][a-z0-9_\-]";
+        if (minlen > 1) {
+          pattern += "{" + (minlen - 1) + ",}$";
+        }
+        else {
+          pattern += "+$";
+        }
+        var re = RegExp(pattern);
+        if (re.test(key)) {
+          if (! (key.match(/\-\-+/) ||
+                 key.match(/__+/) ||
+                 key.match(/[^a-z0-9]+$/))) {
+            return key;
+          }
+        }
+      }
+      var msg;
+      if (minlen > 1) {
+        msg = "Key must be " + minlen + " or more alphanumeric characters";
+      }
+      else {
+        msg = "Key must be alphanumeric";
+      }
+      msg += ", lowercase, begin with a letter and not end with a non-alphanumeric character. Dashes and underscores are allowed but not consecutively.";
+      throw(msg);
     }
 
   };

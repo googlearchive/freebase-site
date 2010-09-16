@@ -49,7 +49,7 @@ var api = {
   },
 
   domain_settings_submit: function(args) {
-    var update_domain_options = h.extend({}, args, {mqlkey_quote:true});
+    var update_domain_options = h.extend({}, args);
     // if description is empty, remove from domain
     if (!args.description) {
       update_domain_options.remove = ["description"];
@@ -69,7 +69,7 @@ var api = {
   },
 
   add_type_submit: function(args) {
-    var create_type_options = h.extend({}, args, {mqlkey_quote:true});
+    var create_type_options = h.extend({}, args);
     return create_type.create_type(create_type_options)
       .then(function(result) {
         var created = {name:args.name, id: result.id, properties: 0, instance_count: 0, blurb: args.description};
@@ -114,7 +114,7 @@ var api = {
   },
 
   edit_type_submit: function(args) {
-    var update_type_options = h.extend({}, args, {mqlkey_quote:true});
+    var update_type_options = h.extend({}, args);
     // if description is empty, delete from type
     if (!args.description) {
       update_type_options.remove = ["description"];

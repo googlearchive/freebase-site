@@ -56,7 +56,7 @@
       var name = $.trim($("input[name=name]", form.form).val());
       var key =  $("input[name=key]", form.form);
       var keyval = key.val();
-      if (name === "" || key === "") {
+      if (name === "" || keyval === "") {
         form.form.trigger(form.event_prefix + "error", "Name and Key are required");
       }
       else if (key.data("original") !== keyval) {

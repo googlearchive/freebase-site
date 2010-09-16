@@ -81,22 +81,6 @@ function user_clause(id, badges, options) {
   return q;
 };
 
-function image_clause(options) {
-  var q = {
-    "optional": true,
-    "id": null,
-    "name": null,
-    "type": "/common/image",
-    "limit": 1,
-    "link": {"timestamp": null},
-    "index": null,
-    "sort": ["index","link.timestamp"]
-  };
-  if (options) {
-    extend(q, options);
-  }
-  return [q];
-};
 
 /**
  Generic clause for getting the "/common/topic/article" (or any /common/document)

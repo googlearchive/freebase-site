@@ -297,4 +297,10 @@ window.freebase = window.fb = {mwLWTReloading: false};
      $(elt).removeAttr("disabled").removeClass("disabled");
    };
 
+   fb.lang_select = function(e, lang) {
+     setTimeout(function() {
+       $(window).trigger("fb.lang.select", lang);
+     }, 0);
+   };
+
 })(jQuery, window.freebase);

@@ -39,6 +39,10 @@
     },
 
     init_type_settings_form: function(form) {
+      var name = $("input[name=name]:visible", form.form);
+      var key = $("input[name=key]", form.form);
+      se.auto_key(name, key);
+
       // enter key
       $(":input:not(textarea)", form.form)
         .keypress(function(e) {
@@ -49,26 +53,37 @@
     },
 
     validate_type_settings_form: function(form) {
-      var name = $.trim($("input[name=name]", form.form).val());
-      var key =  $.trim($("input[name=key]", form.form).val()).toLowerCase();
-      if (name === "" || key === "") {
+      var name = $.trim($("input[name=name]:visible", form.form).val());
+      var key =  $("input[name=key]", form.form);
+      var keyval = key.val();
+      if (name === "" || keyval === "") {
         form.form.trigger(form.event_prefix + "error", "Name and Key are required");
       }
-      else if (!(/^[a-z][a-z0-9_\-]{3,}$/.test(key))) {
-        form.form.trigger(form.event_prefix + "error", "Key must be four or more alphanumeric characters, no spaces and not begin with a number");
+      else if (key.data("original") !== keyval) {
+        try {
+          se.check_key_type(keyval);
+        }
+        catch (e) {
+          form.form.trigger(form.event_prefix + "error", e);
+        }
       }
     },
 
     submit_type_settings_form: function(form) {
-      var name = $.trim($(":input[name=name]", form.row).val());
-      var key =  $.trim($("input[name=key]", form.form).val()).toLowerCase();
-
+      var key =  $("input[name=key]", form.form);
       var data = {
-        name: name,
-        key: key,
+        name: $.trim($(":input[name=name]", form.form).val()),
+        key: key.val(),
         domain: $("input[name=namespace]", form.form).val(),
-        description: $("textarea[name=description]", form.form).val()
+        description: $.trim($("textarea[name=description]", form.form).val())
       };
+      if (key.data("original") === data.key) {
+        // key wasn't touched
+        data.mqlkey_quote = false;
+      }
+      else {
+        data.mqlkey_quote = true;
+      }
 
       $.ajax({
         url: form.ajax.url,
@@ -388,7 +403,7 @@
       if (form.mode === "add") {
         $(".nav-toggle:first", form.row).click(); // reset delegate property form
         name.val("");
-        key.val("").data("changed", false);
+        key.val("");
         expected_type_input.val("");
         expected_type.val("");
         expected_type_new.val("");
@@ -400,21 +415,9 @@
           }
         });
       }
-      else {
-        key.data("changed", true);
-      }
 
       if (!form.row.data("initialized")) {
-        key.change(function() {
-          $(this).data("changed", true);
-        });
-        // autofill key
-        name.change(function() {
-          if (!key.data("changed")) {
-            var val = $.trim(name.val()).toLowerCase().replace(/\s+/g, '_');
-            key.val(val);
-          }
-        });
+        se.auto_key(name, key, "/type/property");
 
         // expected_type
         expected_type_input.suggest_expected_type({
@@ -473,26 +476,20 @@
      * validate rows, if no errors submit
      */
     submit_property_form: function(form) {
-      // TODO We need to show a loading div here, but we have a problem with position:relative on <td> elements
-
-      //var loading_height = form.row.find("td:first").height();
-      //form.row.find(".edit-row-loader").css({height: loading_height}).show();
-
       var name = $.trim($(":input[name=name]", form.row).val());
-      var key =  $.trim($(":input[name=key]", form.row).val()).toLowerCase();
+      var key =  $(":input[name=key]", form.row);
       var expected_type = $(":input[name=expected_type]", form.row).val();
       var expected_type_new = $(":input[name=expected_type_new]", form.row).val();
       var unit = $(":input[name=unit]", form.row).val();
-      var description = $(":input[name=description]", form.row).val();
+      var description = $.trim($(":input[name=description]", form.row).val());
       var disambiguator = $(":input[name=disambiguator]", form.row).is(":checked") ? 1 : 0;
       var unique = $(":input[name=unique]", form.row).is(":checked") ? 1 : 0;
       var hidden = $(":input[name=hidden]", form.row).is(":checked") ? 1 : 0;
 
-
       var data = {
         type:  $(":input[name=type]", form.row).val(),
         name: name,
-        key: key,
+        key: key.val(),
         expected_type: expected_type,
         expected_type_new: expected_type_new,
         unit: unit,
@@ -501,6 +498,13 @@
         unique: unique,
         hidden: hidden
       };
+      if (key.data("original") === data.key) {
+        // key wasn't touched
+        data.mqlkey_quote = false;
+      }
+      else {
+        data.mqlkey_quote = true;
+      }
 
       // special delgate property logic
       // we want to be careful submitting the "delegated" paramter
@@ -546,13 +550,21 @@
      */
     validate_property_form: function(form) {
       var name = $.trim($(":input[name=name]", form.row).val());
-      var key =  $.trim($(":input[name=key]", form.row).val());
+      var key =  $(":input[name=key]", form.row);
+      var keyval = key.val();
       var ect = $(":input[name=expected_type]", form.row).val();
       var ect_new = $(":input[name=expected_type_new]", form.row).val();
-      if (name === "" || key === "" || (ect === "" && ect_new === "")) {
+      if (name === "" || keyval === "" || (ect === "" && ect_new === "")) {
         form.row.trigger(form.event_prefix + "error", [form.row, "Name, Key and Expected Type are required"]);
       }
-      // TODO: simple duplicate key check
+      else if (key.data("original") !== keyval) {
+        try {
+          se.check_key_property(keyval);
+        }
+        catch (e) {
+          form.row.trigger(form.event_prefix + "error", [form.row, e]);
+        }
+      }
     },
 
 

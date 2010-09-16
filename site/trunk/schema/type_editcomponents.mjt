@@ -346,7 +346,7 @@
             <input type="hidden" name="namespace" value="${type.key.namespace}" />
             <input class="text-input" type="text" name="key" value="${type.key.value}"/>              
             <span class="form-note">
-              Four or more alphanumerica characters. No spaces.
+              Alphanumeric characters. No spaces.
               <strong>Changing a key may break external apps that use this domain</strong>
             </span>
           </div>

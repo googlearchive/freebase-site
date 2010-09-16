@@ -1,3 +1,6 @@
+//
+// i18n'ized
+//
 var mf = acre.require("MANIFEST").mf;
 var h = mf.require("core", "helpers");
 var editcomponents = mf.require("domain_editcomponents");
@@ -49,7 +52,7 @@ var api = {
   },
 
   domain_settings_submit: function(args) {
-    var update_domain_options = h.extend({}, args, {mqlkey_quote:true});
+    var update_domain_options = h.extend({}, args);
     // if description is empty, remove from domain
     if (!args.description) {
       update_domain_options.remove = ["description"];
@@ -69,13 +72,14 @@ var api = {
   },
 
   add_type_submit: function(args) {
-    var create_type_options = h.extend({}, args, {mqlkey_quote:true});
+    var create_type_options = h.extend({}, args);
     return create_type.create_type(create_type_options)
       .then(function(result) {
-        var created = {name:args.name, id: result.id, properties: 0, instance_count: 0, blurb: args.description};
-        created.role = args.role;
+        return queries.minimal_type(result.id);
+      })
+      .then(function(type) {
         return {
-          html: acre.markup.stringify(components.domain_type_row(created))
+          html: acre.markup.stringify(components.domain_type_row(type))
         };
       });
   },
@@ -114,7 +118,7 @@ var api = {
   },
 
   edit_type_submit: function(args) {
-    var update_type_options = h.extend({}, args, {mqlkey_quote:true});
+    var update_type_options = h.extend({}, args);
     // if description is empty, delete from type
     if (!args.description) {
       update_type_options.remove = ["description"];
@@ -135,14 +139,14 @@ var api = {
 api.domain_settings_begin.args = ["id"]; // domain id
 api.domain_settings_begin.auth = true;
 
-api.domain_settings_submit.args = ["id", "name", "namespace", "key", "description"]; // domain id
+api.domain_settings_submit.args = ["id", "name", "namespace", "key", "description", "lang"]; // domain id
 api.domain_settings_submit.auth = true;
 api.domain_settings_submit.method = "POST";
 
 api.add_type_begin.args = ["id"]; // domain id, mediator (optional)
 api.add_type_begin.auth = true;
 
-api.add_type_submit.args = ["domain", "name", "key", "description", "role"];
+api.add_type_submit.args = ["domain", "name", "key", "description", "role", "lang"];
 api.add_type_submit.auth = true;
 api.add_type_submit.method = "POST";
 
@@ -157,6 +161,6 @@ api.undo_delete_type_submit.method = "POST";
 api.edit_type_begin.args = ["id"]; // type id
 api.edit_type_begin.auth = true;
 
-api.edit_type_submit.args = ["domain", "name", "key", "description"];
+api.edit_type_submit.args = ["domain", "name", "key", "description", "lang"];
 api.edit_type_submit.auth = true;
 api.edit_type_submit.method = "POST";

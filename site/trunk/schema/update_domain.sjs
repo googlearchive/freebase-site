@@ -2,8 +2,9 @@ var mf = acre.require("MANIFEST").mf;
 var qh = mf.require("queries", "helpers");
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
-var create_article = mf.require("queries", "create_article");
+var update_article = mf.require("queries", "update_article");
 var validators = mf.require("validator", "validators");
+var i18n = mf.require("i18n", "i18n");
 
 /**
  * Update an existing domain values (name, key, description).
@@ -49,7 +50,7 @@ function update_domain(options) {
     type: "/type/domain",
     key: [{namespace:null,value:null,optional:true}],
     name: {value:null, lang:o.lang, optional:true},
-    "/common/topic/article": qh.article_clause(true)
+    "/common/topic/article": i18n.mql.article_clause(o.lang)
   };
   return freebase.mqlread(q)
     .then(function(env) {
@@ -115,27 +116,27 @@ function update_domain(options) {
       return d;
     })
     .then(function(old) {
-      var article = old["/common/topic/article"].length ? old["/common/topic/article"][0].id : null;
+      var article = i18n.mql.get_article(o.lang, old["/common/topic/article"], true);
+      if (article && article.source_uri) {
+        article = null;  // can't update/delete wp articles
+      }
       if (remove.description && article) {
-        return freebase.mqlwrite({id:old.id, "/common/topic/article":{id:article, connect:"delete"}})
+        return freebase.mqlwrite({id:old.id, "/common/topic/article":{id:article.id, connect:"delete"}})
           .then(function() {
             return old.id;
           });
       }
       else if (o.description != null) {
-        if (article) {
-          return freebase.upload(o.description, "text/html", {document:article})
-            .then(function(uploaded) {
-              return old.id;
+        var update_article_options = {
+          topic: old.id,
+          article: article ? article.id : null,
+          lang: o.lang,
+          use_permission_of: old.id
+        };
+        return update_article.update_article(o.description, "text/html", update_article_options)
+          .then(function() {
+            return old.id;
           });
-        }
-        else {
-          // create a new article with domain permission
-          return create_article.create_article(o.description, "text/html", {use_permission_of:o.domain, topic:old.id})
-            .then(function() {
-              return old.id;
-            });
-        }
       }
       return old.id;
     });

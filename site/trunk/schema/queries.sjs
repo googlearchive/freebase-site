@@ -1,6 +1,6 @@
 var mf = acre.require("MANIFEST").mf;
 var h = mf.require("core", "helpers");
-//var i18n = mf.require("i18n", "i18n");
+var i18n = mf.require("i18n", "i18n");
 var schema_helpers = mf.require("helpers");
 var mql = mf.require("mql");
 
@@ -10,6 +10,7 @@ var queries_helpers = mf.require("queries", "helpers");
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 var urlfetch = mf.require("promise", "apis").urlfetch;
+
 
 /**
  * get and attach blurb/blob to a mql result that has a "/common/topic/article" key
@@ -23,8 +24,8 @@ function add_description(o, mode, options, label) {
   mode = mode || "blurb";
   label = label || mode;
   options = options || {};
-  if (!o['/common/topic/article'] || o['/common/topic/article'].length === 0) {
-    o[label] = "";
+  var articles = i18n.mql.result.articles(o['/common/topic/article']);
+  if (!articles.length) {
     return o;
   }
   if (mode === "blob") {
@@ -32,13 +33,26 @@ function add_description(o, mode, options, label) {
       options.maxlength = 1000;
     }
   }
-  return queries_blob.get_blurb(o['/common/topic/article'][0].id, options)
-    .then(function(blob) {
-      o[label] = blob;
+  var promises = [];
+  for (var i=0,l=articles.length; i<l; i++) {
+    var article = articles[i];
+    if (article.id) {
+      promises.push(get_blurb(article, options, label));
+    }
+  }
+  return deferred.all(promises)
+    .then(function() {
       return o;
+    });
+};
+function get_blurb(article, options, label) {
+  return queries_blob.get_blurb(article.id, options)
+    .then(function(content) {
+      article[label] = content;
+      return article;
     }, function(error) {
-      o[label] = "";
-      return o;
+      article[label] = null;
+      return article;
     });
 };
 
@@ -68,7 +82,6 @@ function domains(q) {
       var promises = [];
       // instance counts for each domain
       domains.forEach(function(domain) {
-        //domain.name = i18n.mql.result.name(domain.name);
         var activity_id = "summary_/guid/" + domain.guid.slice(1);
         promises.push(freebase.get_static("activity", activity_id)
           .then(function(activity) {
@@ -95,10 +108,10 @@ function domains(q) {
 function minimal_domain(id) {
   var q = {
     id: id,
-    name: null,
+    name: i18n.mql.query.name(),
     type: "/type/domain",
     key: [{value: null, namespace: null}],
-    "/common/topic/article": queries_helpers.article_clause(true)
+    "/common/topic/article": i18n.mql.query.article()
   };
   return freebase.mqlread(q)
     .then(function(env) {
@@ -128,9 +141,6 @@ function domain(id) {
       return add_description(domain, "blob", null, "blob");
     })
     .then(function(domain) {
-      // readable timestamp
-      domain.date = h.format_date(acre.freebase.date_from_iso(domain.timestamp), 'MMMM dd, yyyy');
-
       var promises = [];
 
       // categorize types by their roles (mediator, cvt, etc.)
@@ -155,10 +165,10 @@ function domain(id) {
           types.push(type);
         }
       });
-      types.sort(schema_helpers.sort_by_name);
-      enumerations.sort(schema_helpers.sort_by_name);
-      mediators.sort(schema_helpers.sort_by_name);
-      cvts.sort(schema_helpers.sort_by_name);
+      types.sort(schema_helpers.sort_by_id);
+      enumerations.sort(schema_helpers.sort_by_id);
+      mediators.sort(schema_helpers.sort_by_id);
+      cvts.sort(schema_helpers.sort_by_id);
 
       domain.types = types;
       domain["enumeration:types"] = enumerations;
@@ -194,11 +204,11 @@ function minimal_type(type_id, options) {
   var q = h.extend({
     id: type_id,
     guid: null,
-    name: null,
+    name: i18n.mql.query.name(),
     type: "/type/type",
     key: [{namespace: null, value: null}],
-    domain: {id: null, name: null, type: "/type/domain"},
-    "/common/topic/article": queries_helpers.article_clause(true),
+    domain: {id: null, name: i18n.mql.query.name(), type: "/type/domain"},
+    "/common/topic/article": i18n.mql.query.article(),
     "/freebase/type_hints/role": {optional: true, id: null},
     "/freebase/type_hints/mediator": null,
     "/freebase/type_hints/enumeration": null,
@@ -284,8 +294,6 @@ function base_type(id) {
       return add_description(result, "blob");
     })
     .then(function(result) {
-      // readable timestamp
-      result.date = h.format_date(acre.freebase.date_from_iso(result.timestamp), 'MMMM dd, yyyy');
       // type role
       queries_helpers.get_type_role(result, true);
       // included_types
@@ -315,7 +323,7 @@ function base_type(id) {
         optional: true,
         id: null,
         "id!=": id,
-        name: null,
+        name: i18n.mql.query.name(),
         type: "/type/type",
         domain: result.domain.id,
         "!/freebase/domain_profile/base_type": {optional: "forbidden", id: null, limit: 0}
@@ -326,7 +334,7 @@ function base_type(id) {
         })
         .then(function(siblings) {
           result.domain.types = siblings;
-          return siblings.sort(schema_helpers.sort_by_name);
+          return siblings.sort(schema_helpers.sort_by_id);
         }));
 
       return deferred.all(promises)
@@ -361,14 +369,14 @@ function type(id) {
       if (result.role === "enumeration") {
         promises.push(freebase.mqlread([{
           id: null,
-          name: null,
+          name: i18n.mql.query.name(),
           type: id,
-          "/common/topic/article": queries_helpers.article_clause(true),
+          "/common/topic/article": i18n.mql.query.article(),
           optional: true,
           limit: 11
         }])
         .then(function(env) {
-          result.instance = env.result.sort(schema_helpers.sort_by_name);
+          result.instance = env.result.sort(schema_helpers.sort_by_id);
           var blurbs = [];
           result.instance.forEach(function(topic) {
             blurbs.push(add_description(topic, "blurb", null, "blurb"));
@@ -428,7 +436,7 @@ function typediagram(id) {
 function type_properties(id) {
   var q = {
     id: id,
-    name: null,
+    name: i18n.mql.query.name(),
     type: "/type/type",
     properties: [mql.property({optional: true, index: null, sort: "index"})]
   };
@@ -450,10 +458,10 @@ function type_properties(id) {
 function minimal_topic(id, get_blurb, get_blob) {
   var q = {
     id: id,
-    name: null
+    name: i18n.mql.query.name()
   };
   if (get_blurb || get_blob) {
-    q["/common/topic/article"] = queries_helpers.article_clause(true);
+    q["/common/topic/article"] = i18n.mql.query.article();
   };
   return freebase.mqlread(q)
     .then(function(env) {
@@ -485,9 +493,9 @@ function property(id) {
     schema: {
       id: null,
       guid: null,
-      name: null,
+      name: i18n.mql.query.name(),
       type: "/type/type",
-      domain: {id: null, name: null, type: "/type/domain"}
+      domain: {id: null, name: i18n.mql.query.name(), type: "/type/domain"}
     }
   });
   return freebase.mqlread(q)
@@ -495,9 +503,6 @@ function property(id) {
       return env.result || {};
     })
     .then(function(result) {
-      // readable timestamp
-      result.date = h.format_date(acre.freebase.date_from_iso(result.timestamp), 'MMMM dd, yyyy');
-
       normalize_prop(result);
 
       var promises = [];
@@ -506,7 +511,7 @@ function property(id) {
         optional: true,
         id: null,
         "id!=": id,
-        name: null,
+        name: i18n.mql.query.name(),
         type: "/type/property",
         schema: result.schema.id
       }];
@@ -686,12 +691,12 @@ incoming.query = function(options) {
   return [h.extend({
     optional: true,
     id: null,
-    name: null,
+    name: i18n.mql.query.name(),
     type: "/type/property",
     expected_type: null,
     schema: {
       id: null,
-      name: null,
+      name: i18n.mql.query.name(),
       type: "/type/type",
       "/freebase/type_hints/role": {optional: true, id: null},
       "/freebase/type_hints/mediator": null,
@@ -700,16 +705,16 @@ incoming.query = function(options) {
     master_property: {
       optional: true,
       id: null,
-      name: null,
+      name: i18n.mql.query.name(),
       type: "/type/property",
-      schema: {id: null, name: null}
+      schema: {id: null, name: i18n.mql.query.name()}
     },
     reverse_property: {
       optional: true,
       id: null,
-      name: null,
+      name: i18n.mql.query.name(),
       type: "/type/property",
-      schema: {id: null, name: null}
+      schema: {id: null, name: i18n.mql.query.name()}
     }
   }, options)];
 };
@@ -723,7 +728,7 @@ function included_types(id) {
     "/freebase/type_hints/included_types": [{
       optional: true,
       id: null,
-      name: null,
+      name: i18n.mql.query.name(),
       type: "/type/type",
       index: null,
       sort: "index",

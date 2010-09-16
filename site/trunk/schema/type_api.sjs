@@ -70,7 +70,7 @@ var api = {
   },
 
   type_settings_submit: function(args) {
-    var update_type_options = h.extend({}, args, {mqlkey_quote:true});
+    var update_type_options = h.extend({}, args);
     // if description is empty, delete from type
     if (!args.description) {
       update_type_options.remove = ["description"];
@@ -192,7 +192,7 @@ var api = {
     }
     return promise
       .then(function(args) {
-        var create_property_options = h.extend({}, args, {mqlkey_quote:true});
+        var create_property_options = h.extend({}, args);
         return create_property.create_property(create_property_options)
           .then(function(created) {
             return queries.property(created.id);
@@ -265,7 +265,7 @@ var api = {
     }
     return promise
       .then(function(args) {
-        var update_prop_options = h.extend({}, args, {mqlkey_quote:true});
+        var update_prop_options = h.extend({}, args);
         if (!args.description) {
           update_prop_options.remove = ["description"];
         }

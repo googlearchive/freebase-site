@@ -4,7 +4,7 @@ var h = mf.require("core", "helpers");
 
 /**
  * Create a /common/document and optionally attach to a topic by the /common/topic/article property.
- * 
+ *
  * @param content (string, required) - The content to upload.
  * @param content_type (string, required) - The MIME type of the content.
  * @param options (obj, optional) - Custom key/value options for the upload service
@@ -12,6 +12,7 @@ var h = mf.require("core", "helpers");
  *                                            /common/document object should have.
  *   - topic (string, optional) - ID for the object to which the /common/document object
  *                                should be linked by "/common/topic/article"
+ *   - lang (string, optional) - lang ID (i.e., /lang/en)
  */
 function create_article(content, content_type, options) {
   options = options || {};
@@ -30,9 +31,22 @@ function create_article(content, content_type, options) {
           return env.result;
         })
         .then(function(uploaded) {
-          return h.extend(doc, {
-            "/common/document/content": uploaded.result
-          });
+          h.extend(doc, {"/common/document/content": uploaded});
+          if (options.lang) {
+            // upload service does not accept content-language parameter
+            var q = {
+              id: uploaded.id,
+              "/type/content/language": {id:options.lang, connect:"update"}
+            };
+            return freebase.mqlwrite(q)
+              .then(function() {
+                uploaded["/type/content/language"] = options.lang;
+                return doc;
+              });
+          }
+          else {
+            return doc;
+          }
         });
     })
     .then(function(doc) {

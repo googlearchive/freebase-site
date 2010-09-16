@@ -1,12 +1,13 @@
 var mf = acre.require("MANIFEST").mf;
 var qh = mf.require("queries", "helpers");
 var h = mf.require("core", "helpers");
+var i18n = mf.require("i18n", "i18n");
 
 function domains(options) {
   return [h.extend({
     id: null,
     guid: null,
-    name: null,
+    name: i18n.mql.query.name(),
     type: "/type/domain",
     key: [{namespace: "/", limit: 0}],
     types: {"id": null, type: "/type/type", "return": "count"}
@@ -17,20 +18,20 @@ function domain(options) {
   return h.extend({
     id: null,
     guid: null,
-    name: null,
+    name: i18n.mql.query.name(),
     type: "/type/domain",
     timestamp: null,
     key: [{value: null, namespace: null}],
-    creator: qh.user_clause(),
-    owners: [{member: [qh.user_clause()]}],
-    "/common/topic/article": qh.article_clause(true),
+    creator: {id:null, name: i18n.mql.query.name()},
+    owners: [{member: [{id:null, name: i18n.mql.query.name()}]}],
+    "/common/topic/article": i18n.mql.query.article(),
     types: [{
       optional: true,
       limit: 1000,
       id: null,
-      name: null,
+      name: i18n.mql.query.name(),
       type: "/type/type",
-      "/common/topic/article": qh.article_clause(true),
+      "/common/topic/article": i18n.mql.query.article(),
       properties: {optional: true, id: null, type: "/type/property", "return": "count"},
       "/freebase/type_hints/role": {optional: true, id: null},
       "/freebase/type_hints/mediator": null,
@@ -44,20 +45,20 @@ function type(options) {
   return h.extend({
     id: null,
     guid: null,
-    name: null,
+    name: i18n.mql.query.name(),
     type: "/type/type",
     timestamp: null,
     key: [{value: null, namespace: null}],
-    creator: qh.user_clause(),
-    "/common/topic/article": qh.article_clause(true),
-    domain: {id: null, name: null, type: "/type/domain"},
+    creator: {id:null, name: i18n.mql.query.name()},
+    "/common/topic/article": i18n.mql.query.article(),
+    domain: {id: null, name: i18n.mql.query.name(), type: "/type/domain"},
     "/freebase/type_hints/role": {optional: true, id: null},
     "/freebase/type_hints/mediator": null,
     "/freebase/type_hints/enumeration": null,
     "/freebase/type_hints/included_types": [{
       optional: true,
       id: null,
-      name: null,
+      name: i18n.mql.query.name(),
       type: "/type/type",
       index: null,
       sort: "index",
@@ -71,13 +72,13 @@ function property(options) {
   return h.extend({
     id: null,
     guid: null,
-    name: null,
+    name: i18n.mql.query.name(),
     type: "/type/property",
     key: [{namespace: null, value: null}],
     expected_type: {
       optional: true,
       id: null,
-      name: null,
+      name:  i18n.mql.query.name(),
       type: "/type/type",
       "/freebase/type_hints/role": {optional: true, id: null},
       "/freebase/type_hints/mediator": null,
@@ -86,25 +87,25 @@ function property(options) {
     master_property: {
       optional: true,
       id: null,
-      name: null,
+      name:  i18n.mql.query.name(),
       type: "/type/property",
-      schema: {id: null, name: null},
+      schema: {id: null, name: i18n.mql.query.name()},
       unique: null
     },
     reverse_property: {
       optional: true,
       id: null,
-      name: null,
+      name: i18n.mql.query.name(),
       type: "/type/property",
-      schema: {id: null, name: null},
+      schema: {id: null, name: i18n.mql.query.name()},
       unique: null
     },
-    delegated: {optional: true, id: null, name: null},
-    unit: {optional: true, id: null, name: null, "/freebase/unit_profile/abbreviation": null},
+    delegated: {optional: true, id: null, name: i18n.mql.query.name()},
+    unit: {optional: true, id: null, name: i18n.mql.query.name(), "/freebase/unit_profile/abbreviation": null},
     "unique": null,
     "/freebase/property_hints/disambiguator": null,
     "/freebase/property_hints/display_none": null,
-    "/freebase/documented_object/tip": null
+    "/freebase/documented_object/tip":  i18n.mql.query.text()
   }, options);
 };
 

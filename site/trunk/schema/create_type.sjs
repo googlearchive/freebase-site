@@ -109,7 +109,8 @@ function create_type(options) {
         })
         .then(function(result) {
           if (o.description !== "") {
-            return create_article.create_article(o.description, "text/html", {use_permission_of: o.domain, topic: created.id})
+            return create_article.create_article(o.description, "text/html",
+                                                 {use_permission_of: o.domain, topic: created.id, lang:o.lang})
               .then(function(article) {
                 return created;
               });

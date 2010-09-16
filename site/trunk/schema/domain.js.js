@@ -11,7 +11,7 @@
         var table = $(this);
         if ($("> tbody > tr", table).length) {
           table.tablesorter();
-          $("thead th:nth-child(1)", table)[0].count = 1;
+          $("thead th:nth-child(2)", table)[0].count = 1;
           $("thead th:nth-child(3)", table)[0].count = 1;
           $("thead th:nth-child(4)", table)[0].count = 1;
         }
@@ -44,7 +44,7 @@
       // Show the help text for Entity Types if user has admin rights
       var $type_tables = $("table.table");
       $type_tables.first().find(".table-empty-msg").addClass("active").find(".table-empty-text").slideDown();
-     
+
       // If none of the type tables have rows, hide help links
       // outside of tables to accomodate for help links inside table
       if ($type_tables.find("tbody > tr").length === 0) {

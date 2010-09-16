@@ -4,7 +4,9 @@
   var cache = mf.require("core", "cache");
   if (h.is_client()) {
     cache.set_cache_policy('public');
- }
+  }
+  var i18n = mf.require("i18n", "i18n");
+  acre.response.set_header_default("Vary", "Cookie, Accept-Language");
 </acre:script>
 
 <acre:block def="page(exports)">
@@ -193,9 +195,13 @@
       request: {
         app_url: "${acre.request.app_url}",
         cookies: ${JSON.stringify(acre.request.cookies)}
+      },
+      lang: {
+        mql: "${i18n.lang}",
+        bundle: ${i18n.bundle_path ? "\"" + i18n.bundle_path + "\"" : "null"}
       }
     };
- </script>
+  </script>
   <script acre:if="typeof exports.c === 'object' && exports.c.id">
     acre.c = {id: "${exports.c.id}"};
  </script>

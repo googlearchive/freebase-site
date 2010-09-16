@@ -19,7 +19,8 @@ var mf = {
     "appeditor" : "//appeditor.apps.freebase.dev",
     "jqueryui": "//jqueryui.site.freebase.dev",
     "tasks":"//tasks.site.freebase.dev",
-    "validator": "//validator.site.freebase.dev"
+    "validator": "//validator.site.freebase.dev",
+    "i18n": "//i18n.site.freebase.dev"
   }
 };
 

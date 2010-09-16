@@ -8,6 +8,7 @@ include_helpers(this, "helpers_util");
 include_helpers(this, "helpers_date");
 include_helpers(this, "helpers_url");
 include_helpers(this, "helpers_format");
+include_helpers(this, "helpers_sprintf");
 
 //-----Functions for including new helpers-----
 function include_helpers(scope, script) {
@@ -26,7 +27,7 @@ function include_helpers(scope, script) {
 
 function extend_helpers(scope) {
   include_helpers(scope, self);
-  
+
   if (scope.acre.current_script === scope.acre.request.script) {
     output_helpers(scope);
   }
@@ -34,9 +35,9 @@ function extend_helpers(scope) {
 
 function output_helpers(scope) {
   var blacklist = ["AcreExitException", "URLError", "XMLHttpRequest"];
-  
+
   if (!scope.exports || typeof scope.exports !== "object") return;
-  
+
   acre.write("---Helper functions in this module---\n");
   for (var f in scope.exports) {
     var in_blacklist = false;
@@ -45,9 +46,9 @@ function output_helpers(scope) {
         in_blacklist = true;
       }
     });
-    
-    if (scope.exports.hasOwnProperty(f) && 
-        !in_blacklist && 
+
+    if (scope.exports.hasOwnProperty(f) &&
+        !in_blacklist &&
         typeof scope.exports[f] === 'function') {
       var code = scope.exports[f].toString();
       var signature = code.slice(code.indexOf("(")+1, code.indexOf(")"));

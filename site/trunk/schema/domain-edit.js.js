@@ -39,6 +39,10 @@
     },
 
     init_domain_settings_form: function(form) {
+      var name = $("input[name=name]:visible", form.form);
+      var key = $("input[name=key]", form.form);
+      se.auto_key(name, key);
+
       // enter key
       $(":input:not(textarea)", form.form)
         .keypress(function(e) {
@@ -49,26 +53,38 @@
     },
 
     validate_domain_settings_form: function(form) {
-      var name = $.trim($("input[name=name]", form.form).val());
-      var key =  $.trim($("input[name=key]", form.form).val()).toLowerCase();
-      if (name === "" || key === "") {
+      var name = $.trim($("input[name=name]:visible", form.form).val());
+      var key =  $("input[name=key]", form.form);
+      var keyval = key.val();
+      if (name === "" || keyval === "") {
         form.form.trigger(form.event_prefix + "error", "Name and Key are required");
       }
-      else if (!(/^[a-z][a-z0-9_\-]{3,}$/.test(key))) {
-        form.form.trigger(form.event_prefix + "error", "Key must be four or more alphanumeric characters, no spaces and not begin with a number");
+      else if (key.data("original") !== keyval) {
+        try {
+          se.check_key_domain(keyval);
+        }
+        catch (e) {
+          form.form.trigger(form.event_prefix + "error", e);
+        }
       }
     },
 
     submit_domain_settings_form: function(form) {
-      var name = $.trim($(":input[name=name]", form.row).val());
-      var key =  $.trim($("input[name=key]", form.form).val()).toLowerCase();
-
+      var key = $("input[name=key]", form.form);
       var data = {
-        name: name,
-        key: key,
+        name: $.trim($("input[name=name]:visible", form.row).val()),
+        key: key.val(),
         namespace: $("input[name=namespace]", form.form).val(),
-        description: $("textarea[name=description]", form.form).val()
+        description: $.trim($("textarea[name=description]:visible", form.form).val()),
+        lang: $("select[name=lang]", form.form).val()
       };
+      if (key.data("original") === data.key) {
+        // key wasn't touched
+        data.mqlkey_quote = false;
+      }
+      else {
+        data.mqlkey_quote = true;
+      }
 
       $.ajax({
         url: form.ajax.url,
@@ -195,30 +211,19 @@
      * init add_type row
      */
     init_type_form: function(form) {
-      var name = $(":input[name=name]", form.row);
-      var key =  $(":input[name=key]", form.row);
-      var description = $(":input[name=description]", form.row);
+      var name = $("input[name=name]:visible", form.row);
+      var key =  $("input[name=key]", form.row);
+      var description = $("textarea[name=description]:visible", form.row);
 
       if (form.mode === "add") {
         name.val("");
-        key.val("").data("changed", false);
+        key.val("");
         description.val("");
-      }
-      else {
-        key.data("changed", true);
       }
 
       if (!form.row.data("initialized")) {
-        key.change(function() {
-          $(this).data("changed", true);
-        });
-        // autofill key
-        name.change(function() {
-          if (!key.data("changed")) {
-            var val = $.trim(name.val()).toLowerCase().replace(/\s+/g, '_');
-            key.val(val);
-          }
-        });
+        se.auto_key(name, key, "/type/type");
+
         // enter/escape key handler
         $(":input:not(textarea)", form.row).keypress(function(e) {
           if (e.keyCode === 13) { // enter
@@ -237,19 +242,25 @@
      * validate rows, if no errors submit
      */
     submit_type_form: function(form) {
-      var name = $.trim($(":input[name=name]", form.row).val());
-      var key = $.trim($(":input[name=key]", form.row).val()).toLowerCase();
-
+      var key = $("input[name=key]", form.row);
       var data = {
-        domain:  $(":input[name=domain]", form.row).val(),
-        name: name,
-        key: key,
-        description: $(":input[name=description]", form.row).val()
+        domain:  $("input[name=domain]", form.row).val(),
+        name: $.trim($("input[name=name]:visible", form.row).val()),
+        key: key.val(),
+        description: $.trim($("textarea[name=description]:visible", form.row).val()),
+        lang: $("select[name=lang]", form.submit_row).val()
       };
+      if (key.data("original") === data.key) {
+        // key wasn't touched
+        data.mqlkey_quote = false;
+      }
+      else {
+        data.mqlkey_quote = true;
+      }
 
       if (form.mode === "add") {
         // can't edit role
-        data.role = $(":input[name=role]", form.row).val();
+        data.role = $("input[name=role]", form.row).val();
       }
 
       $.ajax({
@@ -282,12 +293,20 @@
      * validate row
      */
     validate_type_form: function(form) {
-      var name = $.trim($(":input[name=name]", form.row).val());
-      var key =  $.trim($(":input[name=key]", form.row).val());
-      if (name === "" || key === "") {
+      var name = $.trim($("input[name=name]:visible", form.row).val());
+      var key =  $("input[name=key]", form.row);
+      var keyval = key.val();
+      if (name === "" || keyval === "") {
         form.row.trigger(form.event_prefix + "error", [form.row, "Name and Key are required"]);
       }
-      // TODO: simple duplicate key check
+      else if (key.data("original") !== keyval) {
+        try {
+          se.check_key_type(keyval);
+        }
+        catch (e) {
+          form.row.trigger(form.event_prefix + "error", [form.row, e]);
+        }
+      }
     },
 
 

@@ -113,7 +113,7 @@ test("domain", function() {
     });
   acre.async.wait_on_results();
   ok(result);
-  assert_keys(["id", "name", "creator",  "owners", "timestamp", "date",
+  assert_keys(["id", "name", "creator",  "owners", "timestamp",
                "blurb", "blob", "types", "mediator:types", "cvt:types"], result, true);
   // regular types
   ok(result.types && result.types.length);
@@ -148,7 +148,7 @@ function assert_prop(prop) {
 function assert_type(type) {
   assert_mql_keys(["id", "name", "domain",
                "role", "included_types",
-               "creator", "timestamp", "date",
+               "creator", "timestamp",
                "properties"], type);
   assert_cdb_keys(["instance_count"], type);
   assert_bdb_keys(["blurb", "blob"], type);

@@ -7,6 +7,7 @@
     "validator": "//validator.site.freebase.dev",
     "toolbox": "//toolbox.site.freebase.dev",
     "permission": "//permission.site.freebase.dev",
+    "i18n": "//i18n.site.freebase.dev",
     
     "jqueryui": "//jqueryui.site.freebase.dev",
     "flot": "//flot.site.freebase.dev",

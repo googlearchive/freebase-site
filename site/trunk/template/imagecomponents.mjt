@@ -26,7 +26,7 @@
   </acre:script>
   
   <span class="user-image">
-    <a href="${url}" title="${user.name || user.id}">
+    <a href="${url}" title="${user.id}">
      ${image_thumb(user, size, options)}
     </a>
     ${user_badges(user["badges:/type/user/usergroup"], size)}
@@ -77,8 +77,8 @@
     if (o.pad && o.maxwidth) {
       attrs.height = o.maxheight;
     }
-    if (typeof image === "object" && image.name) {
-      attrs.alt = image.name;
+    if (typeof image === "object" && image.id) {
+      attrs.alt = image.id;
     }
     h.extend(attrs, o.attrs);
   </acre:script>

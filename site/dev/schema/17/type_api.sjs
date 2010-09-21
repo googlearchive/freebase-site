@@ -1,5 +1,6 @@
 var mf = acre.require("MANIFEST").mf;
 var queries = mf.require("queries");
+var sh = mf.require("helpers");
 var components = mf.require("type_components");
 var editcomponents = mf.require("type_editcomponents");
 
@@ -177,7 +178,7 @@ var api = {
           var create_type_options = {
             domain: env.result["/type/type/domain"],
             name: args.expected_type_new,
-            key: args.expected_type_new.toLowerCase(),
+            key: sh.generate_type_key(args.expected_type_new),
             mqlkey_quote: true
           };
           return create_type.create_type(create_type_options)
@@ -250,7 +251,7 @@ var api = {
           var create_type_options = {
             domain: env.result["/type/type/domain"],
             name: args.expected_type_new,
-            key: args.expected_type_new.toLowerCase(),
+            key: sh.generate_type_key(args.expected_type_new),
             mqlkey_quote: true
           };
           return create_type.create_type(create_type_options)

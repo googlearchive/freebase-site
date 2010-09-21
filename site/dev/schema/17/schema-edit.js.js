@@ -314,6 +314,9 @@
       return msg_data != null;
     },
 
+    /**
+     * If you change this, please change key generation methods in //schema.freebase.site.dev/helpers
+     */
     auto_key: function(input, output, type) {
       var original_key = output.val();
       if (original_key) {
@@ -328,11 +331,12 @@
         input.change(function() {
           if (output.data("autogen")) {
             var key = $.trim(input.val()).toLowerCase();
-            key = key.replace(/\s+/g, '_');       // replace white space with _
-            key = key.replace(/\_\_+/g, '_');     // replace __+ with _
-            key = key.replace(/\-\-+/g, '-');     // replace --+ with -
-            key = key.replace(/[^a-z0-9]+$/, ''); // strip ending non-alphanumeric
-            key = key.replace(/^[^a-z]+/, '');    // strip beginning non-alpha
+            key = key.replace(/[^a-z0-9_\-]/g, '');  // remove all non-alphanumeric
+            key = key.replace(/\s+/g, '_');          // replace white space with _
+            key = key.replace(/\_\_+/g, '_');        // replace __+ with _
+            key = key.replace(/\-\-+/g, '-');        // replace --+ with -
+            key = key.replace(/[^a-z0-9]+$/, '');    // strip ending non-alphanumeric
+            key = key.replace(/^[^a-z]+/, '');       // strip beginning non-alpha
             try {
               se.check_key(key, type);
             }

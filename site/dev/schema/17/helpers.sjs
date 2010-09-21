@@ -134,7 +134,6 @@ function compare_type(a,b){
    return 0;
 }
 
-
 function sort_by_id(a,b) {
   return b.id < a.id;
 };
@@ -143,3 +142,17 @@ function sort_by_name(a,b) {
   return (a.name || "").toLowerCase() > (b.name || "").toLowerCase();
 };
 
+function generate_key(name) {
+  var key = h.trim(name).toLowerCase();
+  key = key.replace(/[^a-z0-9_\-]/g, '');  // remove all non-alphanumeric
+  key = key.replace(/\s+/g, '_');       // replace white space with _
+  key = key.replace(/\_\_+/g, '_');     // replace __+ with _
+  key = key.replace(/\-\-+/g, '-');     // replace --+ with -
+  key = key.replace(/[^a-z0-9]+$/, ''); // strip ending non-alphanumeric
+  key = key.replace(/^[^a-z]+/, '');    // strip beginning non-alpha
+  return key;
+};
+
+function generate_type_key(name) {
+  return generate_key(name);
+};

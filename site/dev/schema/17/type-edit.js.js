@@ -857,7 +857,7 @@
     reverse_property_success: function(form, data) {
       var new_row = $(data.result.html).addClass("new-row");
       var prop_table = $("#type-table table:first");
-      var prop_body = $("> tbody". prop_table);
+      var prop_body = $("> tbody", prop_table);
       prop_body.append(new_row);
       new_row.hide();
       new_row.showRow(function() {

@@ -331,10 +331,8 @@
         input.change(function() {
           if (output.data("autogen")) {
             var key = $.trim(input.val()).toLowerCase();
-            key = key.replace(/[^a-z0-9_\-]/g, '');  // remove all non-alphanumeric
-            key = key.replace(/\s+/g, '_');          // replace white space with _
+            key = key.replace(/[^a-z0-9]/g, '_');    // remove all non-alphanumeric
             key = key.replace(/\_\_+/g, '_');        // replace __+ with _
-            key = key.replace(/\-\-+/g, '-');        // replace --+ with -
             key = key.replace(/[^a-z0-9]+$/, '');    // strip ending non-alphanumeric
             key = key.replace(/^[^a-z]+/, '');       // strip beginning non-alpha
             try {
@@ -386,7 +384,7 @@
         }
       }
       else {
-        var pattern = "^[a-z][a-z0-9_\-]";
+        var pattern = "^[a-z][a-z0-9_]";
         if (minlen > 1) {
           pattern += "{" + (minlen - 1) + ",}$";
         }
@@ -395,8 +393,7 @@
         }
         var re = RegExp(pattern);
         if (re.test(key)) {
-          if (! (key.match(/\-\-+/) ||
-                 key.match(/__+/) ||
+          if (! (key.match(/__+/) ||
                  key.match(/[^a-z0-9]+$/))) {
             return key;
           }
@@ -409,7 +406,7 @@
       else {
         msg = "Key must be alphanumeric";
       }
-      msg += ", lowercase, begin with a letter and not end with a non-alphanumeric character. Dashes and underscores are allowed but not consecutively.";
+      msg += ", lowercase, begin with a letter and not end with a non-alphanumeric character. Underscores are allowed but not consecutively.";
       throw(msg);
     }
 

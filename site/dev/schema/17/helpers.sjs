@@ -144,12 +144,10 @@ function sort_by_name(a,b) {
 
 function generate_key(name) {
   var key = h.trim(name).toLowerCase();
-  key = key.replace(/[^a-z0-9_\-]/g, '');  // remove all non-alphanumeric
-  key = key.replace(/\s+/g, '_');       // replace white space with _
-  key = key.replace(/\_\_+/g, '_');     // replace __+ with _
-  key = key.replace(/\-\-+/g, '-');     // replace --+ with -
-  key = key.replace(/[^a-z0-9]+$/, ''); // strip ending non-alphanumeric
-  key = key.replace(/^[^a-z]+/, '');    // strip beginning non-alpha
+  key = key.replace(/[^a-z0-9]/g, '_');    // remove all non-alphanumeric
+  key = key.replace(/\_\_+/g, '_');        // replace __+ with _
+  key = key.replace(/[^a-z0-9]+$/, '');    // strip ending non-alphanumeric
+  key = key.replace(/^[^a-z]+/, '');       // strip beginning non-alpha
   return key;
 };
 

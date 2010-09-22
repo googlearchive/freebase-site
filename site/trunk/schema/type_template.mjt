@@ -84,9 +84,10 @@
     <div class="admin-toolbox">
       <span class="creation-timestamp">
         ${image.user_image_small(c.type.creator)}
-        ${_("Created by")} <a href="${acre.freebase.service_url}/view${c.type.creator.id}" title="${_('View user profile')}">${i18n.display_name(c.type.creator)}</a> 
-        on <time class="published" datetime="${c.type.timestamp}">${i18n.format_timestamp(c.type.timestamp)}</time>
-      </span>    
+        ${h.bless_sprintf(_("Created by %s on %s"), 
+        h.tag("a", i18n.display_name(c.type.creator), "href", h.freebase_url("/view" + c.type.creator.id), "title", _("View user profile")),
+        h.tag("time", i18n.format_timestamp(c.type.timestamp), "class", "published", "datetime", c.type.timestamp))}
+     </span>    
     </div>
     <acre:script>
       var [blurb, blob] = i18n.display_article(c.type, ["blurb", "blob"]);      

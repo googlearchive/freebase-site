@@ -482,15 +482,15 @@ try {
     acre.response.clear_cookie("lang", {path:"/"});
     _set_lang_bundle("/lang/en", "en.properties");
   }
-  else if (/\/lang\/\w+/.test(plang)) {
+  else if (plang) {
     var lang_code = plang.split("/").pop();
     _set_lang_bundle(plang, lang_code + ".properties", true);
   }
   else {
-    var clang = acre.request.cookies.lang;
-    if (/\/lang\/\w+/.test(clang)) {
-      var lang_code = clang.split("/").pop();
-      _set_lang_bundle(clang, lang_code + ".properties");
+    plang = acre.request.cookies.lang;
+    if (plang) {
+      var lang_code = plang.split("/").pop();
+      _set_lang_bundle(plang, lang_code + ".properties");
     }
     else {
       _set_lang_bundle("/lang/en", "en.properties");

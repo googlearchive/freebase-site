@@ -329,7 +329,6 @@
         <td colspan="4">
           <button class="button button-primary button-submit" type="submit">${_("Add")}</button>
           <button class="button button-cancel">${_("Cancel")}</button>
-          ${i18n_editcomponents.lang_select()}
         </td>
       </tr>
     <tbody>

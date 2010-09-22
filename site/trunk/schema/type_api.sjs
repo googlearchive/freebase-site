@@ -178,8 +178,7 @@ var api = {
           var create_type_options = {
             domain: env.result["/type/type/domain"],
             name: args.expected_type_new,
-            key: sh.generate_type_key(args.expected_type_new),
-            lang: args.lang
+            key: sh.generate_type_key(args.expected_type_new)
           };
           return create_type.create_type(create_type_options)
             .then(function(type) {
@@ -251,8 +250,7 @@ var api = {
           var create_type_options = {
             domain: env.result["/type/type/domain"],
             name: args.expected_type_new,
-            key: sh.generate_type_key(args.expected_type_new),
-            lang: args.lang
+            key: sh.generate_type_key(args.expected_type_new)
           };
           return create_type.create_type(create_type_options)
             .then(function(type) {
@@ -297,8 +295,7 @@ var api = {
           var create_type_options = {
             domain: env.result["/type/type/domain"],
             name: args.included_type_new,
-            key: sh.generate_type_key(args.included_type_new),
-            lang: args.lang
+            key: sh.generate_type_key(args.included_type_new)
           };
           return create_type.create_type(create_type_options)
             .then(function(type) {

@@ -709,8 +709,7 @@
       var data = {
         id: $(":input[name=id]", form.row).val(),
         included_type: $.trim($(":input[name=included_type]", form.row).val()),
-        included_type_new: $(":input[name=included_type_new]", form.row).val(),
-        lang: $("select[name=lang]", form.form).val()
+        included_type_new: $(":input[name=included_type_new]", form.row).val()
       };
       $.ajax({
         url: form.ajax.url,
@@ -961,6 +960,7 @@
             }
           });
       }
+      name.focus();
     },
 
     validate_instance_form: function(form) {

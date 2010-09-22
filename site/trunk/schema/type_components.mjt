@@ -126,7 +126,8 @@
       <th class="tbody-header ${expanded ? 'expanded' : ''}" colspan="4" 
          data-url="${h.url_for('schema', 'type', [['id',included_type.id]] , '/get_type_properties')}">
         <a href="#" class="edit" onclick="return freebase.dispatch(event, freebase.schema.type.delete_included_type, ['${type_id}', '${included_type.id}'], this);"><span>${_('delete')}</span></a>
-        <span class="tbody-header-title">${i18n.display_name(included_type)}</span> <span class="key">$included_type.id</span>
+        <span class="tbody-header-title">${i18n.display_name(included_type)}</span> 
+        <a href="${h.url_for('schema', null, null, included_type.id)}"><span class="key">$included_type.id</span></a>
       </th>
     </tr>
   </thead>

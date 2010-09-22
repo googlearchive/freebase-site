@@ -1,5 +1,7 @@
 var mf = acre.require("MANIFEST").mf;
 var h = mf.require("core", "helpers");
+var deferred = mf.require("promise", "deferred");
+var freebase = mf.require("promise", "apis").freebase;
 
 var lang;
 var bundle;
@@ -601,6 +603,60 @@ function _set_lang_bundle(langs, bundles, set_cookie) {
     bundle_path = null;
     bundle = null;
   }
+};
+
+
+
+function get_blurb(topic, options, label, key) {
+  return _get_blob(topic, options, label, key, "blurb");
+};
+
+function get_blob(topic, options, label, key) {
+  return _get_blob(topic, options, label, key, "blob");
+};
+
+function _get_blob(topic, options, label, key, mode) {
+  key = key || "/common/topic/article";
+  var articles = mql.result.articles(topic[key]);
+  if (!articles.length) {
+    return topic;
+  }
+  options = options || {};
+  mode = mode || "blurb";
+  label = label || mode;
+  if (mode === "blurb") {
+    if (! ("maxlength" in options)) {
+      options.maxlength = 100;
+    }
+  }
+  var promises = [];
+  var blob = (mode === "blob");
+  for (var i=0,l=articles.length; i<l; i++) {
+    var article = articles[i];
+    if (article.id) {
+      if (blob) {
+        promises.push(_get_blob.closure(article, "raw", options, label));
+      }
+      else {
+        promises.push(_get_blob.closure(article, "blurb", options, label));
+      }
+    }
+  }
+  return deferred.all(promises)
+    .then(function() {
+      return topic;
+    });
+};
+_get_blob.closure = function(article, mode, options, label) {
+  return freebase.get_blob(article.id, mode, options)
+    .then(function(blob) {
+      article[label] = blob.body;
+      return article;
+    }, function(error) {
+      console.error("[i18n]", "freebase.get_blob", "error", ""+error);
+      article[label] = null;
+      return article;
+    });
 };
 
 

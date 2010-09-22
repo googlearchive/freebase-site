@@ -3,8 +3,6 @@ var h = mf.require("core", "helpers");
 var i18n = mf.require("i18n", "i18n");
 var schema_helpers = mf.require("helpers");
 var mql = mf.require("mql");
-
-var queries_blob = mf.require("queries", "blob");
 var queries_helpers = mf.require("queries", "helpers");
 
 var deferred = mf.require("promise", "deferred");
@@ -20,6 +18,7 @@ var urlfetch = mf.require("promise", "apis").urlfetch;
  * @param options:Object (optional) - Params to pass to acre.freebase.get_blob
  * @param label:String (optional) - The key to use to attach the blurb/blob content to o. Default is mode.
  */
+/**
 function add_description(o, mode, options, label) {
   mode = mode || "blurb";
   label = label || mode;
@@ -55,6 +54,7 @@ function get_blurb(article, options, label) {
       return article;
     });
 };
+*/
 
 /**
  * Get all "commons" domains. Domains with a key in "/".
@@ -118,7 +118,7 @@ function minimal_domain(id) {
       return env.result || {};
     })
     .then(function(domain) {
-      return add_description(domain, "blob", null, "blob");
+      return i18n.get_blob(domain);
     });
 };
 
@@ -135,10 +135,10 @@ function domain(id) {
       return envelope.result || {};
     })
     .then(function(domain) {
-      return add_description(domain, "blurb", {maxlength: 250}, "blurb");
+      return i18n.get_blurb(domain, {maxlength: 250});
     })
     .then(function(domain) {
-      return add_description(domain, "blob", null, "blob");
+      return i18n.get_blob(domain);
     })
     .then(function(domain) {
       var promises = [];
@@ -149,7 +149,7 @@ function domain(id) {
       var mediators = [];
       var cvts = [];
       domain.types.forEach(function(type) {
-        promises.push(add_description(type));
+        promises.push(i18n.get_blurb(type));
         type.instance_count = 0;
         var role = queries_helpers.get_type_role(type, true);
         if (role === "mediator") {
@@ -222,8 +222,8 @@ function minimal_type(type_id, options) {
       queries_helpers.get_type_role(type, true);
       var promises = [];
       // description
-      promises.push(add_description(type, "blurb", null, "blurb"));
-      promises.push(add_description(type, "blob", null, "blob"));
+      promises.push(i18n.get_blurb(type));
+      promises.push(i18n.get_blob(type));
       // domain activity, instance counts per type
       type.instance_count = 0;
       var activity_id = "summary_/guid/" + type.guid.slice(1);
@@ -288,10 +288,10 @@ function base_type(id) {
       return envelope.result || {};
     })
     .then(function(result) {
-      return add_description(result, "blurb", {maxlength: 250 });
+      return i18n.get_blurb(result, {maxlength: 250 });
     })
     .then(function(result) {
-      return add_description(result, "blob");
+      return i18n.get_blob(result);
     })
     .then(function(result) {
       // type role
@@ -379,7 +379,7 @@ function type(id) {
           result.instance = env.result.sort(schema_helpers.sort_by_id);
           var blurbs = [];
           result.instance.forEach(function(topic) {
-            blurbs.push(add_description(topic, "blurb", null, "blurb"));
+            blurbs.push(i18n.get_blurb(topic));
           });
           return deferred.all(blurbs)
             .then(function() {
@@ -469,13 +469,13 @@ function minimal_topic(id, get_blurb, get_blob) {
     })
     .then(function(topic) {
       if (get_blurb) {
-        return add_description(topic, "blurb", null, "blurb");
+        return i18n.get_blurb(topic);
       }
       return topic;
     })
     .then(function(topic) {
       if (get_blob) {
-        return add_description(topic, "blob", null, "blob");
+        return i18n.get_blob(topic);
       }
       return topic;
     });

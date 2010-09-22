@@ -3,7 +3,7 @@ acre.require('/test/lib').enable(this);
 var mf = acre.require("MANIFEST").mf;
 var q = mf.require("queries");
 var mql = mf.require("mql");
-var ht = mf.require("queries", "helpers_test");
+var ht = mf.require("test", "helpers");
 
 
 // this test requires user to be logged in

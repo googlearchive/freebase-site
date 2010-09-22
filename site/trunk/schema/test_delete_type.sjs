@@ -1,7 +1,7 @@
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").mf;
-var h = mf.require("queries", "helpers_test");
+var h = mf.require("test", "helpers");
 var delete_type = mf.require("delete_type").delete_type;
 var undo = mf.require("delete_type").undo;
 

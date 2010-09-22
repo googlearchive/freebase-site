@@ -3,7 +3,6 @@ acre.require('/test/lib').enable(this);
 var mf = acre.require("MANIFEST").mf;
 var q = mf.require("queries");
 var mql = mf.require("mql");
-var ht = mf.require("queries", "helpers_test");
 
 // Call one of these, specific to where your key comes from
 function assert_mql_keys(keys, o, null_check) {

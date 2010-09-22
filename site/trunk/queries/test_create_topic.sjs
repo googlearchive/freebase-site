@@ -1,7 +1,7 @@
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").mf;
-var h = mf.require("helpers_test");
+var h = mf.require("test", "helpers");
 var create_topic = mf.require("create_topic").create_topic;
 
 // this test requires user to be logged in

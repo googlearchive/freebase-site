@@ -39,7 +39,7 @@
     },
 
     init_domain_settings_form: function(form) {
-      var name = $("input[name=name]:visible", form.form);
+      var name = $("input[name=name]", form.form);
       var key = $("input[name=key]", form.form);
       se.auto_key(name, key);
 
@@ -78,13 +78,6 @@
         description: $.trim($("textarea[name=description]:visible", form.form).val()),
         lang: $("select[name=lang]", form.form).val()
       };
-      if (key.data("original") === data.key) {
-        // key wasn't touched
-        data.mqlkey_quote = false;
-      }
-      else {
-        data.mqlkey_quote = true;
-      }
 
       $.ajax({
         url: form.ajax.url,
@@ -211,9 +204,9 @@
      * init add_type row
      */
     init_type_form: function(form) {
-      var name = $("input[name=name]:visible", form.row);
+      var name = $("input[name=name]", form.row);
       var key =  $("input[name=key]", form.row);
-      var description = $("textarea[name=description]:visible", form.row);
+      var description = $("textarea[name=description]", form.row);
 
       if (form.mode === "add") {
         name.val("");
@@ -250,13 +243,6 @@
         description: $.trim($("textarea[name=description]:visible", form.row).val()),
         lang: $("select[name=lang]", form.submit_row).val()
       };
-      if (key.data("original") === data.key) {
-        // key wasn't touched
-        data.mqlkey_quote = false;
-      }
-      else {
-        data.mqlkey_quote = true;
-      }
 
       if (form.mode === "add") {
         // can't edit role

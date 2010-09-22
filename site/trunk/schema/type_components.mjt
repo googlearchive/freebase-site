@@ -42,9 +42,7 @@
         <acre:block if="other_property">
           <span class="return-link-trigger"></span>
           <span class="return-link-description">
-            <strong>${i18n.display_name(prop)}</strong> has a return link of
-            <strong>${i18n.display_name(other_property)}</strong>
-            from <strong>${i18n.display_name(other_property.schema)}</strong>
+            ${h.bless_sprintf(_("%s has a return link of %s from %s"), h.tag("strong", i18n.display_name(prop)), h.tag("strong", i18n.display_name(other_property)), h.tag("strong", i18n.display_name(other_property.schema)))}
             <span class="return-link-pointer"></span>
           </span>        
         </acre:block>

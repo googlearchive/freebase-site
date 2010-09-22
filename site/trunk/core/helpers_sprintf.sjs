@@ -1,5 +1,6 @@
 var exports = {
-  "sprintf": sprintf
+  "sprintf": sprintf,
+  "bless_sprintf": bless_sprintf
 };
 
 /**
@@ -64,6 +65,10 @@ var exports = {
 
 function sprintf() {
   return str_format.apply(null, arguments);
+};
+
+function bless_sprintf() {
+  return acre.markup.bless(sprintf.apply(null, arguments));
 };
 
 

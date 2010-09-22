@@ -73,7 +73,6 @@
         if (typeof form.init_form === "function") {
           form.init_form(form);
         }
-        $(":text:first", form.row).focus();
       });
       form.trigger_row.hide();
       form.submit_row.show();
@@ -224,11 +223,6 @@
         form.form.trigger(event_prefix + "submit");
       });
 
-      // init form
-      if (typeof form.init_form === "function") {
-        form.init_form(form);
-      }
-
       form.form.overlay({
           close: ".button-cancel",
           closeOnClick: false,
@@ -237,7 +231,13 @@
             color: '#000',
 	    loadSpeed: 200,
 	    opacity: 0.5
-	  }
+	  },
+          onLoad: function() {
+            // init form
+            if (typeof form.init_form === "function") {
+              form.init_form(form);
+            }
+          }
         });
 
       $("[placeholder]", form.form).textPlaceholder();
@@ -336,6 +336,9 @@
       });
     },
 
+    /**
+     * If you change this, please change key generation methods in //schema.freebase.site.dev/helpers
+     */
     auto_key: function(input, output, type) {
       var original_key = output.val();
       if (original_key) {
@@ -350,11 +353,10 @@
         input.change(function() {
           if (output.data("autogen")) {
             var key = $.trim(input.val()).toLowerCase();
-            key = key.replace(/\s+/g, '_');       // replace white space with _
-            key = key.replace(/\_\_+/g, '_');     // replace __+ with _
-            key = key.replace(/\-\-+/g, '-');     // replace --+ with -
-            key = key.replace(/[^a-z0-9]+$/, ''); // strip ending non-alphanumeric
-            key = key.replace(/^[^a-z]+/, '');    // strip beginning non-alpha
+            key = key.replace(/[^a-z0-9]/g, '_');    // remove all non-alphanumeric
+            key = key.replace(/\_\_+/g, '_');        // replace __+ with _
+            key = key.replace(/[^a-z0-9]+$/, '');    // strip ending non-alphanumeric
+            key = key.replace(/^[^a-z]+/, '');       // strip beginning non-alpha
             try {
               se.check_key(key, type);
             }
@@ -404,7 +406,7 @@
         }
       }
       else {
-        var pattern = "^[a-z][a-z0-9_\-]";
+        var pattern = "^[a-z][a-z0-9_]";
         if (minlen > 1) {
           pattern += "{" + (minlen - 1) + ",}$";
         }
@@ -413,8 +415,7 @@
         }
         var re = RegExp(pattern);
         if (re.test(key)) {
-          if (! (key.match(/\-\-+/) ||
-                 key.match(/__+/) ||
+          if (! (key.match(/__+/) ||
                  key.match(/[^a-z0-9]+$/))) {
             return key;
           }
@@ -427,7 +428,7 @@
       else {
         msg = "Key must be alphanumeric";
       }
-      msg += ", lowercase, begin with a letter and not end with a non-alphanumeric character. Dashes and underscores are allowed but not consecutively.";
+      msg += ", lowercase, begin with a letter and not end with a non-alphanumeric character. Underscores are allowed but not consecutively.";
       throw(msg);
     }
   };

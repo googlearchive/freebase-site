@@ -1,5 +1,6 @@
 var mf = acre.require("MANIFEST").mf;
 var queries = mf.require("queries");
+var sh = mf.require("helpers");
 var components = mf.require("type_components");
 var editcomponents = mf.require("type_editcomponents");
 
@@ -177,8 +178,8 @@ var api = {
           var create_type_options = {
             domain: env.result["/type/type/domain"],
             name: args.expected_type_new,
-            key: args.expected_type_new.toLowerCase(),
-            mqlkey_quote: true
+            key: sh.generate_type_key(args.expected_type_new),
+            lang: args.lang
           };
           return create_type.create_type(create_type_options)
             .then(function(type) {
@@ -250,8 +251,8 @@ var api = {
           var create_type_options = {
             domain: env.result["/type/type/domain"],
             name: args.expected_type_new,
-            key: args.expected_type_new.toLowerCase(),
-            mqlkey_quote: true
+            key: sh.generate_type_key(args.expected_type_new),
+            lang: args.lang
           };
           return create_type.create_type(create_type_options)
             .then(function(type) {
@@ -288,38 +289,62 @@ var api = {
   },
 
   add_included_type_submit: function(args) {
-    var promises = [];
-    promises.push(queries.included_types(args.included_type));
-    promises.push(freebase.mqlread({id:args.included_type, name:null})
-      .then(function(env) {
-        return env.result;
-      }));
-    return deferred.all(promises)
-      .then(function(result) {
-        // include the included types of args.included_type + args.included_type
-        var to_include = result[0].concat(result[1]);
-        return to_include;
-      })
-      .then(function(to_include) {
-        return queries.add_included_types(args.id, [t.id for each (t in to_include)])
-          .then(function(included) {
-            var inserted = [t.id for each (t in included) if (t.connect === "inserted")];
-            if (inserted.length) {
-              var types_by_id = {};
-              to_include.forEach(function(type) {
-                types_by_id[type.id] = type;
+    var promise;
+    if (!args.included_type && args.included_type_new) {
+      // do we need to create a new included type?
+      promise = freebase.mqlread({id: args.id, "/type/type/domain": null})
+        .then(function(env) {
+          var create_type_options = {
+            domain: env.result["/type/type/domain"],
+            name: args.included_type_new,
+            key: sh.generate_type_key(args.included_type_new),
+            lang: args.lang
+          };
+          return create_type.create_type(create_type_options)
+            .then(function(type) {
+              args.included_type = type.id;
+              return args;
+            });
+        });
+    }
+    else {
+      promise = deferred.resolved(args);
+    }
+    return promise
+      .then(function(args) {
+        var promises = [];
+        promises.push(queries.included_types(args.included_type));
+        promises.push(freebase.mqlread({id:args.included_type, name:null})
+          .then(function(env) {
+            return env.result;
+          }));
+        return deferred.all(promises)
+          .then(function(result) {
+            // include the included types of args.included_type + args.included_type
+            var to_include = result[0].concat(result[1]);
+            return to_include;
+          })
+          .then(function(to_include) {
+            return queries.add_included_types(args.id, [t.id for each (t in to_include)])
+              .then(function(included) {
+                var inserted = [t.id for each (t in included) if (t.connect === "inserted")];
+                if (inserted.length) {
+                  var types_by_id = {};
+                  to_include.forEach(function(type) {
+                    types_by_id[type.id] = type;
+                  });
+                  var html = [];
+                  inserted.forEach(function(type) {
+                    html.push(acre.markup.stringify(components.included_type_thead(args.id, types_by_id[type])));
+                  });
+                  return {
+                    html: html.join("")
+                  };
+                }
+                else {
+                  return deferred.rejected(args.included_type + " is already included");
+                }
               });
-              var html = [];
-              inserted.forEach(function(type) {
-                html.push(acre.markup.stringify(components.included_type_thead(args.id, types_by_id[type])));
-              });
-              return {
-                html: html.join("")
-              };
-            }
-            else {
-              return deferred.rejected(args.included_type + " is already included");
-            }
           });
       });
   },
@@ -444,7 +469,7 @@ api.get_incoming_from_commons.cache_policy = "fast";
 api.type_settings_begin.args = ["id"]; // type id
 api.type_settings_begin.auth = true;
 
-api.type_settings_submit.args = ["id", "name", "key", "description"]; // type id, name, key and description
+api.type_settings_submit.args = ["id", "name", "key", "description", "lang"]; // type id, name, key and description
 api.type_settings_submit.auth = true;
 api.type_settings_submit.method = "POST";
 
@@ -465,7 +490,7 @@ api.reorder_property_submit.method = "POST";
 api.add_property_begin.args = ["id"]; // type id
 api.add_property_begin.auth = true;
 
-api.add_property_submit.args = ["type", "name", "key", "expected_type"];
+api.add_property_submit.args = ["type", "name", "key", "expected_type", "lang"];
 api.add_property_submit.auth = true;
 api.add_property_submit.method = "POST";
 
@@ -480,7 +505,7 @@ api.undo_delete_property_submit.method = "POST";
 api.edit_property_begin.args = ["id"]; // property id
 api.edit_property_begin.auth = true;
 
-api.edit_property_submit.args = ["id", "type", "name", "key", "expected_type"];
+api.edit_property_submit.args = ["id", "type", "name", "key", "expected_type", "lang"];
 api.edit_property_submit.auth = true;
 
 api.add_included_type_begin.args = ["id"]; // type id

@@ -1,6 +1,7 @@
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").mf;
+var sh = mf.require("helpers");
 var h = mf.require("queries", "helpers_test");
 var update_type = mf.require("update_type").update_type;
 
@@ -51,8 +52,7 @@ test("update_type key", function() {
     update_type({
       domain: user_domain,
       id: type.id,
-      key: type.name+"updated",
-      mqlkey_quote: true
+      key: sh.generate_type_key(type.name+"updated")
     })
     .then(function(id) {
       updated = id;
@@ -61,7 +61,7 @@ test("update_type key", function() {
     ok(updated, updated);
 
     var result = acre.freebase.mqlread({id:updated, key:{namespace:user_domain, value:null}}).result;
-    equal(result.key.value, acre.freebase.mqlkey_quote(type.name+"updated"));
+    equal(result.key.value, sh.generate_type_key(type.name+"updated"));
   }
   finally {
     if (type) {

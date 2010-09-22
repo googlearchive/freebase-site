@@ -19,15 +19,11 @@ function create_type(options) {
       key: validators.String(options, "key", {required:true}),
       description: validators.String(options, "description", {if_empty:""}),
       role: validators.OneOf(options, "role", {oneof:["mediator", "cvt", "enumeration"], if_empty:""}),
-      mqlkey_quote: validators.StringBool(options, "mqlkey_quote", {if_empty:false}),
       lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"})
     };
   }
   catch(e if e instanceof validators.Invalid) {
     return deferred.rejected(e);
-  }
-  if (o.mqlkey_quote) {
-    o.key = acre.freebase.mqlkey_quote(o.key);
   }
 
   var q = {

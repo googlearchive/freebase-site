@@ -72,7 +72,7 @@
   <tr class="row-msg row-msg-info">
     <td colspan="5">
       <a class="close-msg" href="#" onclick="return freebase.dispatch(event, freebase.schema.close_message, ['.row-msg:first'], this);">${_('Close')}</a>
-      The type <strong>${type_info.name || type_info.id}</strong> has been deleted. 
+      ${h.bless_sprintf(_("%s has been deleted."), type_info.name || type_info.id)}
       <a href="#" onclick="return freebase.dispatch(event, freebase.schema.domain.undo_delete_type, null, this);"
          class="${JSON.stringify(type_info)}">${_('Undo')}</a>
     </td>
@@ -106,8 +106,8 @@
             <acre:block else="">
               <input class="text-input" type="text" name="key" value="${domain.key.value}" disabled="disabled"/>            
               <span class="form-note">
-                You do not permission to update this key in <span class="key">${domain.key.namespace}</span>.
-                Please contact a freebase administrator.
+                ${h.bless_sprintf(_("You do not permission to update this key in %s."), h.tag("span", domain.key.namespace, "class", "key"))}
+                ${_("Please contact a freebase administrator.")}
               </span>              
             </acre:block>
           </div>

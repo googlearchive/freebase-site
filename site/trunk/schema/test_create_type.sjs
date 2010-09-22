@@ -1,6 +1,7 @@
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").mf;
+var sh = mf.require("helpers");
 var h = mf.require("queries", "helpers_test");
 var create_type = mf.require("create_type").create_type;
 
@@ -29,15 +30,14 @@ test("create_type", function() {
     create_type({
       domain: user_domain,
       name: name,
-      key: name,
-      mqlkey_quote: true
+      key: sh.generate_type_key(name)
     })
     .then(function(r) {
       type = r;
     });
     acre.async.wait_on_results();
     ok(type);
-    equal(type.key.value, acre.freebase.mqlkey_quote(name));
+    equal(type.key.value, sh.generate_type_key(name));
 
     // assert included type /common/topic
     var result = acre.freebase.mqlread({
@@ -66,16 +66,15 @@ test("create_type mediator", function() {
     create_type({
       domain: user_domain,
       name: name,
-      key: name,
-      role: "mediator",
-      mqlkey_quote: true
+      key: sh.generate_type_key(name),
+      role: "mediator"
     })
     .then(function(r) {
       type = r;
     });
     acre.async.wait_on_results();
     ok(type);
-    equal(type.key.value, acre.freebase.mqlkey_quote(name));
+    equal(type.key.value, sh.generate_type_key(name));
 
     // assert /freebase/type_hints/mediator and /freebase/type_hints/role
     // and no included types
@@ -105,16 +104,15 @@ test("create_type cvt", function() {
     create_type({
       domain: user_domain,
       name: name,
-      key: name,
-      role: "cvt",
-      mqlkey_quote: true
+      key: sh.generate_type_key(name),
+      role: "cvt"
     })
     .then(function(r) {
       type = r;
     });
     acre.async.wait_on_results();
     ok(type);
-    equal(type.key.value, acre.freebase.mqlkey_quote(name));
+    equal(type.key.value, sh.generate_type_key(name));
 
     // assert /freebase/type_hints/mediator and /freebase/type_hints/role
     var result = acre.freebase.mqlread({
@@ -144,15 +142,14 @@ test("create_type enumeration", function() {
       domain: user_domain,
       name: name,
       role: "enumeration",
-      key: name,
-      mqlkey_quote: true
+      key: sh.generate_type_key(name)
     })
     .then(function(r) {
       type = r;
     });
     acre.async.wait_on_results();
     ok(type);
-    equal(type.key.value, acre.freebase.mqlkey_quote(name));
+    equal(type.key.value, sh.generate_type_key(name));
 
     // assert included type /common/topic
     var result = acre.freebase.mqlread({
@@ -181,8 +178,7 @@ test("create_type no name", function() {
   create_type({
     domain: user_domain,
     name: "",
-    key: name,
-    mqlkey_quote: true
+    key: sh.generate_type_key(name)
   })
   .then(function(r) {
     type = r;
@@ -198,8 +194,7 @@ test("create_type no key", function() {
   var name = get_name();
   create_type({
     domain: user_domain,
-    name: name,
-    mqlkey_quote: true
+    name: name
   })
   .then(function(r) {
     type = r;
@@ -232,8 +227,7 @@ test("create_type no domain", function() {
   var name = get_name();
   create_type({
     name: name,
-    key: name,
-    mqlkey_quote: true
+    key: sh.generate_type_key(name)
   })
   .then(function(r) {
     type = r;
@@ -252,8 +246,7 @@ test("create_type with description", function() {
     create_type({
       domain: user_domain,
       name: name,
-      key: name,
-      mqlkey_quote: true,
+      key: sh.generate_type_key(name),
       description: name
     })
     .then(function(r) {

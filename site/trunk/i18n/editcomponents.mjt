@@ -5,37 +5,47 @@
 </acre:script>
 
 <acre:block def="name(topic, attrs, key)">
+  ${text(topic, attrs, key || "name")}
+</acre:block>
+
+<acre:block def="text(topic, attrs, key, tag_name)">
   <acre:script>
     if (!attrs) {
       attrs = {};
     }
-    if (!attrs.type) {
+    if (!tag_name) {
+      tag_name = "input";
+    }
+    if (tag_name === "input" && !attrs.type) {
       attrs.type = "text";
     }
     if (!attrs.name) {
-      attrs.name = "name";
+      attrs.name = key;
     }
-    var names = i18n.get_edit_names(topic, key);
-
+    var texts = i18n.get_edit_texts(topic, key);
     if (!attrs.placeholder) {
-      for (var i=0,l=names.length; i<l; i++) {
-        if (names[i].lang === "/lang/en" && names[i].value) {
-          attrs.placeholder = names[i].value + " (English)";
+      for (var i=0,l=texts.length; i<l; i++) {
+        if (texts[i].lang === "/lang/en" && texts[i].value) {
+          attrs.placeholder = texts[i].value + " (English)";
           break;
         }
       }
     }
   </acre:script>
-  <acre:block for="i,name in names">
+  <acre:block for="i,text in texts">
     <acre:script>
       if (i > 0) {
         attrs["style"] = "display:none";
       }
     </acre:script>
-    <input value="${name.value || ''}" lang="${name.lang}" acre:attrs="attrs"/>
+    <acre:block if="tag_name === 'textarea'">  
+      <textarea lang="${text.lang}" acre:attrs="attrs">${text.value || ''}</textarea>
+    </acre:block>
+    <acre:block else="">
+      <input lang="${text.lang}" acre:attrs="attrs" value="${text.value || ''}"/>
+    </acre:block>
   </acre:block>
 </acre:block>
-
 
 <acre:block def="article(topic, attrs, key)">
   <acre:script>
@@ -49,7 +59,6 @@
       attrs.rows = 4;
     }
     var articles = i18n.get_edit_articles(topic, key);
-
     if (!attrs.placeholder) {
       for (var i=0,l=articles.length; i<l; i++) {
         if (articles[i].lang === "/lang/en" && articles[i].blob) {
@@ -69,7 +78,6 @@
   </acre:block>
 </acre:block>
 
-
 <acre:block def="lang_select()">
   <acre:script>
     var mql_langs = i18n.map_array(i18n.mql.langs(), "id");
@@ -78,9 +86,11 @@
       langs.push("/lang/en");
     }
   </acre:script>
-  <select name="lang" class="lang-select" onchange="return freebase.dispatch(event, freebase.lang_select, [this.value], this);">
+  <select name="lang" class="lang-select" 
+          onchange="return freebase.dispatch(event, freebase.lang_select, [this.value], this);"
+          acre:attrs="langs.length === 1 && langs[0] === '/lang/en' ? {style:'display:none;'} : {}">
     <acre:block for="lang in langs">
       <option value="${lang}">${mql_langs[lang].name}</option>
     </acre:block>
-  </select>  
+  </select>
 </acre:block>

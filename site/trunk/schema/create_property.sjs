@@ -25,15 +25,11 @@ function create_property(options) {
       master_property: validators.MqlId(options, "master_property", {if_empty:""}),
       delegated: validators.MqlId(options, "delegated", {if_empty:""}),
 
-      mqlkey_quote: validators.StringBool(options, "mqlkey_quote", {if_empty:false}),
       lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"})
     };
   }
   catch(e if e instanceof validators.Invalid) {
     return deferred.rejected(e);
-  }
-  if (o.mqlkey_quote) {
-    o.key = acre.freebase.mqlkey_quote(o.key);
   }
 
   var q = {

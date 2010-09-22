@@ -29,18 +29,12 @@ function update_property(options) {
       // default lang for text is /lang/en
       lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"}),
 
-      // if TRUE, acre.freebase.mqlkey_quote key. Default is FALSE
-      mqlkey_quote: validators.StringBool(options, "mqlkey_quote", {if_empty:false}),
-
       // an array of options to remove/delete (name, key, ect, unit, description, disambiguator, unique, hidden);
       remove: validators.Array(options, "remove", {if_empty:[]})
     };
   }
   catch(e if e instanceof validators.Invalid) {
     return deferred.rejected(e);
-  }
-  if (o.mqlkey_quote) {
-    o.key = acre.freebase.mqlkey_quote(o.key);
   }
 
   var remove = {};

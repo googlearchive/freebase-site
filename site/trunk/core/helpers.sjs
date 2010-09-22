@@ -9,6 +9,7 @@ include_helpers(this, "helpers_date");
 include_helpers(this, "helpers_url");
 include_helpers(this, "helpers_format");
 include_helpers(this, "helpers_sprintf");
+include_helpers(this, "helpers_markup");
 
 //-----Functions for including new helpers-----
 function include_helpers(scope, script) {

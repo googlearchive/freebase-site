@@ -52,7 +52,7 @@
      <div class="admin-toolbox">
        <span class="creation-timestamp">
          ${image.user_image_small(c.domain.creator)}
-          ${_("Created by")} <a href="${h.freebase_url('/view' + c.domain.creator.id)}" title=" ${_('View user profile')}">${i18n.display_name(c.domain.creator)}</a> 
+          ${_("Created by")} <a href="${h.freebase_url('/view' + c.domain.creator.id)}" title="${_('View user profile')}">${i18n.display_name(c.domain.creator)}</a> 
          on <time class="published" datetime="${c.domain.timestamp}">${i18n.format_timestamp(c.domain.timestamp)}</time>
        </span>
      </div>
@@ -106,7 +106,11 @@
              <div class="edit table-empty-msg">
                <a href="javascript:void(0)" class="table-empty-trigger">${_('Use Entity Types to')}&hellip;</a>
                <div class="table-empty-text">
-                 <p> <strong>${_('Describe any person, place, or concept')}</strong>. This is the most common type in Freebase and is used to describe an <strong><em>is a</em></strong> relationship between topics (eg. San Francisco <strong><em>is a</em></strong> city)</p>
+                 <p>       
+                   <strong>${_("Describe any person, place, or concept.")}</strong>
+                   ${h.bless_sprintf(_("This is the most common type in Freebase and is used to describe an %s relationship between topics (eg. San Francisco %s city)"),
+                   h.tag("strong", h.tag("em", "is a")), 
+                   h.tag("strong", h.tag("em", "is a")))}</p>
                  <p><a href="http://wiki.freebase.com/wiki/Types" rel="external help">${_('Learn more')} &raquo;</a></p> 
                </div>
              </div>
@@ -151,7 +155,9 @@
              <div class="edit table-empty-msg">
                <a href="javascript:void(0)" class="table-empty-trigger">${_('Use Entity Types to')}&hellip;</a>
                <div class="table-empty-text">
-                 <p> <strong>Describe any person, place, or concept</strong>, but limit the possible values to a finite set of topics.</p>
+                 <p> 
+                   ${h.bless_sprintf(_("%s, but limit the possible values to a finite set of topics."), 
+                   h.tag("strong", _("Describe any person, place, or concept")))}
                  <p><a href="http://wiki.freebase.com/wiki/Enumerated_type" rel="external help">${_('Learn more')} &raquo;</a></p> 
                </div>
              </div>
@@ -197,9 +203,18 @@
                <a href="javascript:void(0)" class="table-empty-trigger">${_('Use Compound Value Types to')}&hellip;</a>
                <div class="table-empty-text">
                  <p>
-                 <strong>${_('Extend simple primary values.')}</strong>
-                 For example, asserting that <a href="${h.freebase_url('/view', '/en/san_francisco')}" title="${_('View topic in Freebase')}">San Francisco</a> has a population of 808,977 is less useful than asserting that San Francisco had a population of 808,977 in 2008.
-                 Many Compound Value Types already exist for common patterns, including <a href="${h.url_for('schema', null, null, '/location/geocode')}" title="${_('View Compound Value Type')}">geocoordinates</a>,<a href="${h.url_for('schema', null, null, '/measurement_unit/rect_size')}" title="${_('View Compound Value Type')}"> image dimensions</a>, and more. Be sure to explore before creating new Compound Value Types!
+                   <strong>${_("Extend simple primary values.")}</strong>
+
+                   ${h.bless_sprintf(_("For example, asserting that %s has a population of %s is less useful than asserting that San Francisco had a population of %s in 2008."),
+                   h.tag("a", _("San Francisco"), "href", h.freebase_url('/view', '/en/san_francisco'), "title", _("View topic in Freebase")),
+                   i18n.format_number(808977),
+                   i18n.format_number(808977))}
+
+                   ${h.bless_sprintf(_("Many Compound Value Types already exist for common patterns, including %s, %s, and more."),
+                   h.tag("a", _("geocoordinates"), "href", h.url_for('schema', null, null, '/location/geocode'), "title", _('View Compound Value Type')),
+                   h.tag("a", _("image dimensions"), "href", h.url_for('schema', null, null, '/measurement_unit/rect_size'), "title", _('View Compound Value Type')))}
+
+                   ${_("Be sure to explore before creating new Compound Value Types!")}
                  </p>
                  <p><a href="http://wiki.freebase.com/wiki/Types" rel="external help">${_('Learn more')} &raquo;</a></p> 
                </div>
@@ -246,8 +261,9 @@
                <a href="javascript:void(0)" class="table-empty-trigger">${_('Use Compound Relationship Types to')}&hellip;</a>
                <div class="table-empty-text">
                  <p>
-                 <strong>${_('Describe the relationship between two or more Entity Types.')}</strong>
-                 ${_('For example, the film performance Compound Relation Type in Film describes the relationship between a movie, an actor, and a character. We use film performance  to assert that Heath Ledger played the character of The Joker in the film The Dark Knight.')}
+                 <strong>${_("Describe the relationship between two or more Entity Types.")}</strong>
+                 ${_("For example, the film performance Compound Relation Type in Film describes the relationship between a movie, an actor, and a character.")}
+                 ${_("We use film performance  to assert that Heath Ledger played the character of The Joker in the film The Dark Knight.")}
                  </p>
                  <p><a href="http://wiki.freebase.com/wiki/Types" rel="external help">${_('Learn more')} &raquo;</a></p> 
                </div>

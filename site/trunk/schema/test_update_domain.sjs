@@ -1,6 +1,7 @@
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").mf;
+var sh = mf.require("helpers");
 var h = mf.require("queries", "helpers_test");
 var update_domain = mf.require("update_domain").update_domain;
 
@@ -48,8 +49,7 @@ test("update_domain key", function() {
     update_domain({
       id: domain.id,
       namespace: user.id,
-      key: domain.name+"updated",
-      mqlkey_quote: true
+      key: sh.generate_domain_key(domain.name+"updated")
     })
     .then(function(id) {
       updated = id;
@@ -58,7 +58,7 @@ test("update_domain key", function() {
     ok(updated, updated);
 
     var result = acre.freebase.mqlread({id:updated, key:{namespace:user.id, value:null}}).result;
-    equal(result.key.value, acre.freebase.mqlkey_quote(domain.name+"updated"));
+    equal(result.key.value, sh.generate_domain_key(domain.name+"updated"));
   }
   finally {
     if (domain) {

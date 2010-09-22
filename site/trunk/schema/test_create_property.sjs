@@ -1,6 +1,7 @@
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").mf;
+var sh = mf.require("helpers");
 var h = mf.require("queries", "helpers_test");
 var create_property = mf.require("create_property").create_property;
 
@@ -30,9 +31,8 @@ test("create_property", function() {
     create_property({
       type: type.id,
       name: prop_name,
-      key: prop_name,
-      expected_type: type.id,
-      mqlkey_quote: true
+      key: sh.generate_property_key(prop_name),
+      expected_type: type.id
     })
     .then(function(r) {
       prop = r;
@@ -54,7 +54,7 @@ test("create_property", function() {
       "/freebase/property_hints/display_none": null
     }).result;
     equal(result.name, prop_name);
-    equal(result.key.value, acre.freebase.mqlkey_quote(prop_name));
+    equal(result.key.value, sh.generate_property_key(prop_name));
     equal(result.schema, type.id);
     ok(!result.unit);
     ok(!result.unique);
@@ -78,14 +78,13 @@ test("create_property options", function() {
     create_property({
       type: type.id,
       name: prop_name,
-      key: prop_name,
+      key: sh.generate_property_key(prop_name),
       expected_type: type.id,
       unit: "/en/meter",
       unique: true,
       disambiguator: true,
       hidden: true,
-      description: prop_name,
-      mqlkey_quote: true
+      description: prop_name
     })
     .then(function(r) {
       prop = r;
@@ -107,7 +106,7 @@ test("create_property options", function() {
       "/freebase/property_hints/display_none": null
     }).result;
     equal(result.name, prop_name);
-    equal(result.key.value, acre.freebase.mqlkey_quote(prop_name));
+    equal(result.key.value, sh.generate_property_key(prop_name));
     equal(result.schema, type.id);
     equal(result.unit, "/en/meter");
     ok(result.unique);

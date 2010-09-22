@@ -1,6 +1,7 @@
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").mf;
+var sh = mf.require("helpers");
 var h = mf.require("queries", "helpers_test");
 var update_property = mf.require("update_property").update_property;
 
@@ -51,8 +52,7 @@ test("update_property key", function() {
     update_property({
       type: type.id,
       id: prop.id,
-      key: prop.name + "updated",
-      mqlkey_quote: true
+      key: sh.generate_property_key(prop.name + "updated")
     })
     .then(function(id) {
       updated = id;
@@ -61,7 +61,7 @@ test("update_property key", function() {
     ok(updated, updated);
 
     var result = acre.freebase.mqlread({id:updated, key:{namespace:type.id, value:null}}).result;
-    equal(result.key.value, acre.freebase.mqlkey_quote(prop.name+"updated"));
+    equal(result.key.value, sh.generate_property_key(prop.name + "updated"));
   }
   finally {
     if (prop) h.delete_property(prop);

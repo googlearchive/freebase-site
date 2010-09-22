@@ -72,18 +72,12 @@
     submit_type_settings_form: function(form) {
       var key =  $("input[name=key]", form.form);
       var data = {
-        name: $.trim($(":input[name=name]", form.form).val()),
+        name: $.trim($("input[name=name]:visible", form.form).val()),
         key: key.val(),
         domain: $("input[name=namespace]", form.form).val(),
-        description: $.trim($("textarea[name=description]", form.form).val())
+        description: $.trim($("textarea[name=description]:visible", form.form).val()),
+        lang: $("select[name=lang]", form.form).val()
       };
-      if (key.data("original") === data.key) {
-        // key wasn't touched
-        data.mqlkey_quote = false;
-      }
-      else {
-        data.mqlkey_quote = true;
-      }
 
       $.ajax({
         url: form.ajax.url,
@@ -301,8 +295,9 @@
             row: $(".edit-row", html).hide(),
             submit_row: $(".edit-row-submit", html).hide()
           };
-
+          console.log("se.init_edit_form BEFORE");
           se.init_edit_form(form);
+          console.log("se.init_edit_form AFTER");
 
           var is_cvt = $.trim($(".page-meta .flags").text()) === "Compound Value Type";
           if (is_cvt) {
@@ -471,40 +466,24 @@
       name.focus();
     },
 
-
     /**
      * validate rows, if no errors submit
      */
     submit_property_form: function(form) {
-      var name = $.trim($(":input[name=name]", form.row).val());
       var key =  $(":input[name=key]", form.row);
-      var expected_type = $(":input[name=expected_type]", form.row).val();
-      var expected_type_new = $(":input[name=expected_type_new]", form.row).val();
-      var unit = $(":input[name=unit]", form.row).val();
-      var description = $.trim($(":input[name=description]", form.row).val());
-      var disambiguator = $(":input[name=disambiguator]", form.row).is(":checked") ? 1 : 0;
-      var unique = $(":input[name=unique]", form.row).is(":checked") ? 1 : 0;
-      var hidden = $(":input[name=hidden]", form.row).is(":checked") ? 1 : 0;
-
       var data = {
         type:  $(":input[name=type]", form.row).val(),
-        name: name,
+        name: $.trim($("input[name=name]:visible", form.row).val()),
         key: key.val(),
-        expected_type: expected_type,
-        expected_type_new: expected_type_new,
-        unit: unit,
-        description: description,
-        disambiguator: disambiguator,
-        unique: unique,
-        hidden: hidden
+        expected_type: $(":input[name=expected_type]", form.row).val(),
+        expected_type_new: $(":input[name=expected_type_new]", form.row).val(),
+        unit: $(":input[name=unit]", form.row).val(),
+        description: $.trim($("textarea[name=description]:visible", form.row).val()),
+        disambiguator: $(":input[name=disambiguator]", form.row).is(":checked") ? 1 : 0,
+        unique: $(":input[name=unique]", form.row).is(":checked") ? 1 : 0,
+        hidden: $(":input[name=hidden]", form.row).is(":checked") ? 1 : 0,
+        lang: $("select[name=lang]", form.submit_row).val()
       };
-      if (key.data("original") === data.key) {
-        // key wasn't touched
-        data.mqlkey_quote = false;
-      }
-      else {
-        data.mqlkey_quote = true;
-      }
 
       // special delgate property logic
       // we want to be careful submitting the "delegated" paramter
@@ -549,8 +528,8 @@
      * validate row
      */
     validate_property_form: function(form) {
-      var name = $.trim($(":input[name=name]", form.row).val());
-      var key =  $(":input[name=key]", form.row);
+      var name = $.trim($("input[name=name]:visible", form.row).val());
+      var key =  $("input[name=key]", form.row);
       var keyval = key.val();
       var ect = $(":input[name=expected_type]", form.row).val();
       var ect_new = $(":input[name=expected_type_new]", form.row).val();
@@ -681,6 +660,7 @@
     init_included_type_form: function(form) {
       var included_type_input = $("input[name=included_type_input]", form.row).val("");
       var included_type = $("input[name=included_type]", form.row).val("");
+      var included_type_new = $("input[name=included_type_new]", form.row).val("");
 
       if (!form.row.data("initialized")) {
         included_type_input.suggest({
@@ -693,6 +673,10 @@
           included_type.val(data.id);
         })
         .bind("fb-textchange", function() {
+          included_type.val("");
+        })
+        .bind("fb-select-new", function(e, val) {
+          included_type_new.val($.trim(val));
           included_type.val("");
         });
 
@@ -715,7 +699,8 @@
 
     validate_included_type_form: function(form) {
       var included_type = $.trim($(":input[name=included_type]", form.row).val());
-      if (included_type === "") {
+      var included_type_new = $(":input[name=included_type_new]", form.row).val();
+      if (included_type === "" && included_type_new === "") {
         form.row.trigger(form.event_prefix + "error", [form.row, "Please choose a type to include"]);
       }
     },
@@ -723,7 +708,9 @@
     submit_included_type_form: function(form) {
       var data = {
         id: $(":input[name=id]", form.row).val(),
-        included_type: $.trim($(":input[name=included_type]", form.row).val())
+        included_type: $.trim($(":input[name=included_type]", form.row).val()),
+        included_type_new: $(":input[name=included_type_new]", form.row).val(),
+        lang: $("select[name=lang]", form.form).val()
       };
       $.ajax({
         url: form.ajax.url,
@@ -859,7 +846,7 @@
     reverse_property_success: function(form, data) {
       var new_row = $(data.result.html).addClass("new-row");
       var prop_table = $("#type-table table:first");
-      var prop_body = $("> tbody". prop_table);
+      var prop_body = $("> tbody", prop_table);
       prop_body.append(new_row);
       new_row.hide();
       new_row.showRow(function() {

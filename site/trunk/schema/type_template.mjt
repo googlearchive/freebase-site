@@ -71,9 +71,9 @@
       </span>
     </h1>
     <div class="meta">
-      <span class="key"><strong>${_('Key:')} </strong>$c.type.id</span>
+      <span class="key"><strong>${_('Key')}: </strong>$c.type.id</span>
       <span class="included-types" acre:if="c.type.included_types.length > 0">
-        <strong>${_('Includes:')} </strong>
+        <strong>${_('Includes')}: </strong>
         <acre:block trim="">
           <span acre:for="i, t in c.type.included_types" acre:trim="">
             <acre:block if="i">, </acre:block><a href="${h.url_for('schema', null, null, t.id )}">${i18n.display_name(t)}</a>
@@ -108,7 +108,9 @@
         </a>
         </li>
         <li>
-          <a acre:if="c.type.instance_count" href="${h.freebase_url('/view'+c.type.id)}" class="icon-link"><span class="browse-icon">Browse <strong>${i18n.format_number(c.type.instance_count)}</strong> Instances</span></a>
+          <a acre:if="c.type.instance_count" href="${h.freebase_url('/view'+c.type.id)}" class="icon-link">
+            <span class="browse-icon">${h.bless_sprintf(_("Browse %s Instances"), h.tag("strong", i18n.format_number(c.type.instance_count)))}</span>
+          </a>
         </li>
         <li>
           <a href="${sh.build_query_url(c.type.id)}" class="icon-link"><span class="query-icon">${_('Build Query')}</span></a>

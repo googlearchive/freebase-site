@@ -463,34 +463,55 @@ var mql = {
 
 
 ///////////////////////////////
-// deterimine lang and bundle
+// determine lang and bundle
 ///////////////////////////////
-
 try {
   /**
    * Preferred langauge is determined in the following order
-   * 1. lang cookie
-   * 2. accept-language request header
-   * 3. default to "en"
+   * 1. lang parameter
+   * 2. lang cookie
+   * 3. accept-language request header
+   * 4. default to "en"
    */
-  var i,l;
-  var supported_langs = map_array(mql.langs(), "id");
-  var accept_langs;
-  if (acre.request.cookies.lang) {
-    accept_langs = [trim(acre.request.cookies.lang).split("/").pop()];
+  var plang = acre.request.params.lang;
+  if (plang === "1") {
+    var lang_bundle = _accept_language(acre.request.headers['accept-language'].split(","));
+    _set_lang_bundle(lang_bundle[0], lang_bundle[1], true);
+  }
+  else if (plang === "0") {
+    acre.response.clear_cookie("lang", {path:"/"});
+    _set_lang_bundle("/lang/en", "en.properties");
+  }
+  else if (/\/lang\/\w+/.test(plang)) {
+    var lang_code = plang.split("/").pop();
+    _set_lang_bundle(plang, lang_code + ".properties", true);
   }
   else {
-    accept_langs = acre.request.headers['accept-language'].split(",");
+    var clang = acre.request.cookies.lang;
+    if (/\/lang\/\w+/.test(clang)) {
+      var lang_code = clang.split("/").pop();
+      _set_lang_bundle(clang, lang_code + ".properties");
+    }
+    else {
+      _set_lang_bundle("/lang/en", "en.properties");
+    }
   }
-  var langs = [];
-  var map = {};
+}
+catch (e) {
+  // trap all exceptions
+  console.error("[i18n]", e);
+  _set_lang_bundle("/lang/en", "en.properties");
+};
+
+
+function _accept_language(accept_langs) {
+  var lang_bundles = [];
+  var qvalues = {};
+  var i,l;
   for (i=0,l=accept_langs.length; i<l; i++) {
     var lang_parts = trim(accept_langs[i]).split(";");
     var lang_code = trim(lang_parts[0].toLowerCase());
     var lang_id = "/lang/" + lang_code;
-    if (! (lang_id in supported_langs)) {
-      continue;
-    }
     /**
      * qvalue is a value from 0 to 1. 1 being the most preferred. qvalue defaults to 1 if not present.
      * so if you have the following:
@@ -508,55 +529,79 @@ try {
         qvalue = parseFloat(trim(qvalue_parts[1]));
       }
     }
-    if (lang_id in map) {
-      // if same langs
+    if (lang_id in qvalues) {
       // take the larger qvalue
-      if (map[lang_id][1] < qvalue) {
-        map[lang_id][1] = qvalue;
+      if (qvalues[lang_id] < qvalue) {
+        qvalues[lang_id] = qvalue;
       }
     }
     else {
-      var tuple = [lang_code, qvalue];
-      langs.push(tuple);
-      map[lang_id] = tuple;
+      qvalues[lang_id] = qvalue;
+      lang_bundles.push([lang_id, lang_code + ".properties"]);
     }
-  };
-  // default en ==> /lang/en must be present
-  if (!("/lang/en" in map)) {
-    var en = ["en", 0];
-    map["/lang/en"] = en;
-    langs.push(en);
+  }
+  // /lang/en must be present
+  if (!("/lang/en" in qvalues)) {
+    qvalues["/lang/en"] = 0;
+    lang_bundles.push(["/lang/en", "en.properties"]);
   }
   // sort langs by qvalue
-  langs.sort(function(a,b) {
-               return b[1] - a[1];
-             });
+  lang_bundles.sort(function(a,b) {
+    return qvalues[b[0]] - qvalues[a[0]];
+  });
+  var langs = [];
+  var bundles = [];
+  for (i=0,l=lang_bundles.length; i<l; i++) {
+    var lang_bundle = lang_bundles[i];
+    langs.push(lang_bundle[0]);
+    bundles.push(lang_bundle[1]);
+  }
+  return [langs, bundles];
+}
 
-
-  // Find the first lang bundle "[lang_code].properties"
-  var app = acre.get_metadata(acre.request.script.path);
+function _set_lang_bundle(langs, bundles, set_cookie) {
+  if (!is_array(langs)) {
+    langs = [langs];
+  }
+  if (!is_array(bundles)) {
+    bundles = [bundles];
+  }
+  var mql_langs = map_array(mql.langs(), "id");
+  var my_lang, my_bundle;
+  var i,l;
   for (i=0,l=langs.length; i<l; i++) {
-    var filename = langs[i][0] + ".properties";
-    if (filename in app.files) {
-      if (bundle === undefined) {
-        bundle_path = acre.request.script.app.path + "/" + filename;
-        bundle = acre.require(bundle_path).bundle;
-      }
-    }
-    else {
-      console.warn("[i18n]", acre.request.script.app.path + "/" + filename, undefined);
+    var lang_id = langs[i];
+    if (lang_id in mql_langs) {
+      my_lang = lang_id;
+      break;
     }
   }
-  // Note that /lang/en is in langs so result will always be >= 1
-  // This will be the language to query for all /type/text and /type/content
-  lang = "/lang/" + langs[0][0];
-}
-catch (e) {
-  // trap all exceptions
-  console.error("[i18n]", e);
-  bundle = null;
+  var app = acre.get_metadata(acre.request.script.path);
+  for (i=0,l=bundles.length; i<l; i++) {
+    var filename = bundles[i];
+    if (filename in app.files) {
+      my_bundle = filename;
+      break;
+    }
+  }
+  if (my_lang) {
+    lang = my_lang;
+    if (set_cookie) {
+      acre.response.set_cookie("lang", my_lang, {path:"/"});
+    }
+  }
+  else {
+    lang = "/lang/en";
+  }
+  if (my_bundle) {
+    bundle_path = acre.request.script.app.path + "/" + my_bundle;
+    bundle = acre.require(bundle_path).bundle;
+  }
+  else {
+    bundle_path = null;
+    bundle = null;
+  }
 };
-
 
 
 /////////

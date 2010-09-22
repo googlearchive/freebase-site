@@ -22,7 +22,7 @@ function create_domain(user_id, options) {
     id: null,
     guid: null,
     name: {value: name, lang:"/lang/en"},
-    key: {value: acre.freebase.mqlkey_quote(name), namespace: user_id},
+    key: {value: name.toLowerCase(), namespace: user_id},
     type: {id: "/type/domain"},
     create: "unconditional"
   };
@@ -60,7 +60,7 @@ function create_type(domain_id, options) {
     id: null,
     guid: null,
     name: {value: name, lang: "/lang/en"},
-    key: {value: acre.freebase.mqlkey_quote(name), namespace: domain_id},
+    key: {value: name.toLowerCase(), namespace: domain_id},
     type: {id: "/type/type"},
     "/type/type/domain": {id: domain_id},
     create: "unconditional"
@@ -101,7 +101,7 @@ function create_property(type_id, options) {
     id: null,
     guid: null,
     name: {value: name, lang: "/lang/en"},
-    key: {value: acre.freebase.mqlkey_quote(name), namespace: type_id},
+    key: {value: name.toLowerCase(), namespace: type_id},
     type: {id: "/type/property"},
     "/type/property/schema": {id: type_id},
     create: "unconditional"

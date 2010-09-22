@@ -3,7 +3,6 @@ var h = mf.require("core", "helpers");
 var i18n = mf.require("i18n", "i18n");
 var schema_helpers = mf.require("helpers");
 var mql = mf.require("mql");
-var queries_helpers = mf.require("queries", "helpers");
 
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
@@ -151,7 +150,7 @@ function domain(id) {
       domain.types.forEach(function(type) {
         promises.push(i18n.get_blurb(type));
         type.instance_count = 0;
-        var role = queries_helpers.get_type_role(type, true);
+        var role = h.get_type_role(type, true);
         if (role === "mediator") {
           mediators.push(type);
         }
@@ -219,7 +218,7 @@ function minimal_type(type_id, options) {
       return env.result || {};
     })
     .then(function(type) {
-      queries_helpers.get_type_role(type, true);
+      h.get_type_role(type, true);
       var promises = [];
       // description
       promises.push(i18n.get_blurb(type));
@@ -255,7 +254,7 @@ function type_role(type_id) {
   };
   return freebase.mqlread(q)
     .then(function(env) {
-      return queries_helpers.get_type_role(env.result || {});
+      return h.get_type_role(env.result || {});
     });
 };
 
@@ -265,7 +264,7 @@ function normalize_prop(prop) {
   prop.disambiguator = prop["/freebase/property_hints/disambiguator"] === true;
   prop.display_none = prop["/freebase/property_hints/display_none"] === true;
   if (prop.expected_type && typeof prop.expected_type === "object") {
-    queries_helpers.get_type_role(prop.expected_type, true);
+    h.get_type_role(prop.expected_type, true);
   }
   return prop;
 };
@@ -295,7 +294,7 @@ function base_type(id) {
     })
     .then(function(result) {
       // type role
-      queries_helpers.get_type_role(result, true);
+      h.get_type_role(result, true);
       // included_types
       result.included_types = result["/freebase/type_hints/included_types"] || [];
       // properties
@@ -682,7 +681,7 @@ function incoming(q) {
     })
     .then(function(result) {
       result.forEach(function(prop) {
-        queries_helpers.get_type_role(prop.schema, true);
+        h.get_type_role(prop.schema, true);
       });
       return result;
     });

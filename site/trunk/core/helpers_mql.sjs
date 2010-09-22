@@ -1,5 +1,7 @@
-var mf = acre.require("MANIFEST").mf;
-var extend = mf.require("core", "helpers_util").extend;
+var exports = {
+  "is_literal_type": is_literal_type,
+  "get_type_role": get_type_role
+};
 
 var LITERAL_TYPE_IDS = {
   "/type/int":1,

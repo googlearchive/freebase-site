@@ -3,6 +3,7 @@ acre.require('/test/lib').enable(this);
 var mf = acre.require("MANIFEST").mf;
 var q = mf.require("queries");
 var mql = mf.require("mql");
+var i18n = mf.require("i18n", "i18n");
 
 // Call one of these, specific to where your key comes from
 function assert_mql_keys(keys, o, null_check) {
@@ -16,6 +17,16 @@ function assert_bdb_keys(keys, o, null_check) {
 function assert_cdb_keys(keys, o, null_check) {
   assert_keys(keys, o, null_check, 'cdb');
 }
+
+function assert_article(keys, o, null_check) {
+  var article = i18n.mql.result.article(o["/common/topic/article"]);
+  if (article) {
+    assert_cdb_keys(keys, article, null_check);
+  }
+  else if (null_check) {
+    ok(false, "article is null");
+  }
+};
 
 // Called by one of the functions above
 function assert_keys(keys, o, null_check, source) {
@@ -99,7 +110,7 @@ test("domain", function() {
   function assert_type(type, role) {
     assert_mql_keys(["name", "id", "properties"], type, true);
     assert_bdb_keys(["instance_count"], type, true);
-    assert_cdb_keys(["blurb"], type, true);
+    assert_article(["blurb"], type);
     if (role) {
       equal(type.role, role);
     }
@@ -113,7 +124,9 @@ test("domain", function() {
   acre.async.wait_on_results();
   ok(result);
   assert_keys(["id", "name", "creator",  "owners", "timestamp",
-               "blurb", "blob", "types", "mediator:types", "cvt:types"], result, true);
+               "types", "mediator:types", "cvt:types"], result, true);
+  assert_article(["blurb", "blob"], result);
+
   // regular types
   ok(result.types && result.types.length);
   result.types.forEach(function(type) {
@@ -149,8 +162,8 @@ function assert_type(type) {
                "role", "included_types",
                "creator", "timestamp",
                "properties"], type);
-  assert_cdb_keys(["instance_count"], type);
-  assert_bdb_keys(["blurb", "blob"], type);
+  assert_bdb_keys(["instance_count"], type);
+  assert_article(["blurb", "blob"], type);
 
   if (type.properties && type.properties.length) {
     type.properties.forEach(function(p) {

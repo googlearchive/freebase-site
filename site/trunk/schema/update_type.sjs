@@ -1,5 +1,5 @@
 var mf = acre.require("MANIFEST").mf;
-var qh = mf.require("queries", "helpers");
+var h = mf.require("core", "helpers");
 
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
@@ -93,7 +93,7 @@ function update_type(options) {
         update.name = {value:o.name, lang:o.lang, connect:"update"};
       }
 
-      var old_role = qh.get_type_role(old);
+      var old_role = h.get_type_role(old);
 
       if (remove.role) {
         if (old_role === "mediator" || old_role === "cvt") {

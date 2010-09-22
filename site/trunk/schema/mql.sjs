@@ -1,5 +1,4 @@
 var mf = acre.require("MANIFEST").mf;
-var qh = mf.require("queries", "helpers");
 var h = mf.require("core", "helpers");
 var i18n = mf.require("i18n", "i18n");
 

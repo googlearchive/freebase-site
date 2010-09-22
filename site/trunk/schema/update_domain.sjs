@@ -1,5 +1,4 @@
 var mf = acre.require("MANIFEST").mf;
-var qh = mf.require("queries", "helpers");
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 var update_article = mf.require("queries", "update_article");

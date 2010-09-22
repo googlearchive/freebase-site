@@ -10,6 +10,7 @@ include_helpers(this, "helpers_url");
 include_helpers(this, "helpers_format");
 include_helpers(this, "helpers_sprintf");
 include_helpers(this, "helpers_markup");
+include_helpers(this, "helpers_mql");
 
 //-----Functions for including new helpers-----
 function include_helpers(scope, script) {

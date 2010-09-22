@@ -32,21 +32,25 @@ function is_literal_type(type_id) {
  */
 function get_type_role(type, set) {
   var role = null;
-  if (type["/freebase/type_hints/role"]) {
-    if (type["/freebase/type_hints/role"].id === "/freebase/type_role/mediator") {
+  var type_hints_role = type["/freebase/type_hints/role"];
+  if (type_hints_role) {
+    if (typeof type_hints_role === "object") {
+      type_hints_role = type_hints_role.id;
+    }
+    if (type_hints_role === "/freebase/type_role/mediator") {
       role = "mediator";
     }
-    else if (type["/freebase/type_hints/role"].id === "/freebase/type_role/cvt") {
+    else if (type_hints_role === "/freebase/type_role/cvt") {
       role = "cvt";
     }
-    else if (type["/freebase/type_hints/role"].id === "/freebase/type_role/enumeration") {
+    else if (type_hints_role === "/freebase/type_role/enumeration") {
       role = "enumeration";
     }
   }
-  else if (type["/freebase/type_hints/mediator"]) {
+  else if (type["/freebase/type_hints/mediator"] === true) {
     role = "mediator";
   }
-  else if (type["/freebase/type_hints/enumeration"]) {
+  else if (type["/freebase/type_hints/enumeration"] === true) {
     role = "enumeration";
   }
   if (set) {

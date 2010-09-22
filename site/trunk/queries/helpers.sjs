@@ -54,34 +54,6 @@ function get_type_role(type, set) {
 };
 
 
-
-function user_clause(id, badges, options) {
-  if (!id) {
-    id = null;
-  }
-  var q = {
-    "id": id,
-    "name": null,
-    "type": "/type/user"
-  };
-  if (badges) {
-    extend(q, {
-       "badges:/type/user/usergroup":  [{
-         "key": {"namespace": "/freebase/badges"},
-         "id": null,
-         "name": null,
-         "type": "/type/usergroup",
-         "optional": true
-       }]
-    });
-  }
-  if (options) {
-    extend(q, options);
-  }
-  return q;
-};
-
-
 /**
  Generic clause for getting the "/common/topic/article" (or any /common/document)
  of an object.

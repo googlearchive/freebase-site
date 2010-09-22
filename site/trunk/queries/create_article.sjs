@@ -26,27 +26,10 @@ function create_article(content, content_type, options) {
       return env.result;
     })
     .then(function(doc) {
-      return freebase.upload(content, content_type, h.extend({}, options, {document:doc.id}))
-        .then(function(env) {
-          return env.result;
-        })
+      return upload(content, content_type, h.extend({}, options, {document:doc.id}))
         .then(function(uploaded) {
           h.extend(doc, {"/common/document/content": uploaded});
-          if (options.lang) {
-            // upload service does not accept content-language parameter
-            var q = {
-              id: uploaded.id,
-              "/type/content/language": {id:options.lang, connect:"update"}
-            };
-            return freebase.mqlwrite(q)
-              .then(function() {
-                uploaded["/type/content/language"] = options.lang;
-                return doc;
-              });
-          }
-          else {
-            return doc;
-          }
+          return doc;
         });
     })
     .then(function(doc) {
@@ -64,5 +47,34 @@ function create_article(content, content_type, options) {
           });
       }
       return doc;
+    });
+};
+
+/**
+ * Upload new content.
+ * If options.lang is specified, this will set /type/content/language on the uploaded content.
+ */
+function upload(content, content_type, options) {
+  options = options || {};
+  return freebase.upload(content, content_type, options)
+    .then(function(env) {
+      return env.result;
+    })
+    .then(function(uploaded) {
+      if (options.lang) {
+        // upload service does not accept content-language parameter
+        var q = {
+          id: uploaded.id,
+          "/type/content/language": {id:options.lang, connect:"update"}
+        };
+        return freebase.mqlwrite(q)
+          .then(function() {
+            uploaded["/type/content/language"] = options.lang;
+            return uploaded;
+          });
+      }
+      else {
+        return uploaded;
+      }
     });
 };

@@ -22,28 +22,15 @@ function update_article(content, content_type, options) {
   options = options || {};
 
   if (options.article) {
-    return freebase.upload(content, content_type, {document:options.article})
-      .then(function(env) {
-        return env.result;
-      })
+    return create_article.upload(content, content_type, {document:options.article})
       .then(function(uploaded) {
-        if (options.lang) {
-          // upload service does not accept content-language parameter
-          var q = {
-            id: uploaded.id,
-            "/type/content/language": {id:options.lang, connect:"update"}
-          };
-          return freebase.mqlwrite(q)
-            .then(function() {
-              return options.article;
-            });
-        }
-        else {
-          return options.article;
-        }
+        return options.article;
       });
   }
   else {
-    return create_article.create_article(content, content_type, options);
+    return create_article.create_article(content, content_type, options)
+      .then(function(doc) {
+        return doc.id;
+      });
   }
 };

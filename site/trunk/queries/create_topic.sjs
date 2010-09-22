@@ -1,7 +1,7 @@
 var mf = acre.require("MANIFEST").mf;
 var h = mf.require("core", "helpers");
-var qh = mf.require("helpers");
-var create_article = mf.require("create_article");
+var i18n = mf.require("i18n", "i18n");
+var update_article = mf.require("update_article");
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 var validators = mf.require("validator", "validators");
@@ -78,37 +78,37 @@ function create_topic(options) {
       if (o.description) {
         if (created.create === "existed") {
           // look up if there's an existing /common/topic/article
-          return freebase.mqlread({id:created.id, "/common/topic/article": qh.article_clause(true)})
+          return freebase.mqlread({id:created.id, "/common/topic/article": i18n.mql.article_clause(o.lang)})
             .then(function(env) {
               var result = env.result;
-              var article = result["/common/topic/article"].length ? result["/common/topic/article"][0].id : null;
-              if (article) {
-                return freebase.upload(o.description, "text/html", {document:article})
-                  .then(function() {
-                    return created;
-                  });
-              }
-              else {
-                return create_article.create_article(o.description, "text/html", {topic:created.id})
-                  .then(function() {
-                    return created;
-                  });
-              }
-            });
-        }
-        else {
-          // otherwise just create a new /common/topic/article
-          return create_article.create_article(o.description, "text/html", {topic:created.id})
-            .then(function() {
+              created["/common/topic/article"] = result["/common/topic/article"];
               return created;
             });
         }
+      }
+      return created;
+    })
+    .then(function(created) {
+      if (o.description) {
+        var article = i18n.mql.get_article(o.lang, created["/common/topic/article"] || [], true);
+        if (article && article.source_uri) {
+          article = null;  // can't update/delete wp articles
+        }
+        var update_article_options = {
+          topic: created.id,
+          article: article ? article.id : null,
+          lang: o.lang,
+          use_permission_of: created.id
+        };
+        return update_article.update_article(o.description, "text/html", update_article_options)
+          .then(function() {
+              return created;
+          });
       }
       else {
         return created;
       }
     });
-
 };
 
 

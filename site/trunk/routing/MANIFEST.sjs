@@ -20,7 +20,14 @@ var mf = {
     "jqueryui": "//jqueryui.site.freebase.dev",
     "tasks":"//tasks.site.freebase.dev",
     "validator": "//validator.site.freebase.dev",
-    "i18n": "//i18n.site.freebase.dev"
+    "i18n": "//i18n.site.freebase.dev",
+    "about": "//about.apps.freebase.dev",
+    "topicblocks": "//topicbox.daepark.user.dev",
+    "cubed": "//cubed.dfhuynh.user.dev",
+    "parallax": "//parallax.dfhuynh.user.dev",
+    "labs": "//labs-site.dfhuynh.user.dev",
+    "queryeditor": "//cuecard.dfhuynh.user.dev",
+    "tmt": "//tmt.zenkat.user.dev"
   }
 };
 

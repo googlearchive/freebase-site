@@ -100,6 +100,30 @@ var routes = [
   {
     from: "/i18n",
     to: "i18n"
+  },
+  {
+    from: "/about",
+    to: "about"
+  },
+  {
+    from: "/labs/cubed",
+    to: "cubed"
+  },
+  {
+    from: "/labs/parallax",
+    to: "parallax"
+  },
+  {
+    from: "/labs",
+    to: "labs"
+  },
+  {
+    from: "/app/queryeditor",
+    to: "queryeditor"
+  },
+  {
+    from: "/app/tmt",
+    to: "tmt"
   }
 ];
 

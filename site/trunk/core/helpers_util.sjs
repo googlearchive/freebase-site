@@ -2,7 +2,9 @@ var exports = {
   "extend": extend,
   "first_element": first_element,
   "is_devel": is_devel,
-  "trim": trim
+  "trim": trim,
+  "map_array": map_array,
+  "is_array": is_array
 };
 
 /**
@@ -36,4 +38,16 @@ function is_devel() {
 
 function trim(s) {
   return s.replace(/^\s+|\s+$/g, "");
+};
+
+function map_array(a, key) {
+  var map = {};
+  for (var i=0,l=a.length; i<l; i++) {
+    map[a[i][key]] = a[i];
+  };
+  return map;
+};
+
+function is_array(obj) {
+  return toString.call(obj) === "[object Array]";
 };

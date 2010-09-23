@@ -33,27 +33,32 @@ function gettext(msgid) {
 /////////////////
 
 /**
- * Get the display of a topic specified by obj.
- *
- * Return the name in the following order
- * 1. obj[key]  - key defaults to "name"
- * 2. default_value
- * 3. obj.id
- * 4. null
+ * Get the display name of a topic. If null, return default_value or topic id.
  */
 function display_name(obj, default_value, key) {
   if (!key) {
     key = "name";
   }
-  var name = mql.result.name(obj[key]);
-  if (name) {
-    return name.value;
+  if (default_value == null) {
+    default_value = obj.id;
+  }
+  return display_text(obj, default_value, key);
+};
+
+/**
+ * Get the display text of obj[key]. If null, return default_value.
+ */
+function display_text(obj, default_value, key) {
+  var text = mql.result.text(obj[key]);
+  if (text) {
+    return text.value;
   }
   if (default_value != null) {
     return default_value;
   }
-  return obj.id || null;
+  return null;
 };
+
 
 /**
  * Usage:
@@ -73,7 +78,7 @@ function display_article(obj, keys, article_key) {
     mykeys = [mykeys];
     is_string = true;
   }
-  else if (!is_array(mykeys) || mykeys.length === 0) {
+  else if (!h.is_array(mykeys) || mykeys.length === 0) {
     return null;
   }
   var result = [];
@@ -221,9 +226,9 @@ var mql = {
   },
 
   text_clause: function(lang) {
-    var langs = ["/lang/en"];
+    var langs = [lang];
     if (lang !== "/lang/en") {
-      langs.push(lang);
+      langs.push("/lang/en");
     }
     return [{
       lang: null,
@@ -234,9 +239,9 @@ var mql = {
   },
 
   article_clause: function(lang) {
-    var langs = ["/lang/en"];
+    var langs = [lang];
     if (lang !== "/lang/en") {
-      langs.push(lang);
+      langs.push("/lang/en");
     }
     return [{
       optional:   true,
@@ -288,7 +293,7 @@ var mql = {
    * [{value:"foo", lang:"/lang/en"}]
    */
   get_texts: function(lang, result) {
-    var map = map_array(result || [], "lang");
+    var map = h.map_array(result || [], "lang");
     var texts = [];
     if (lang !== "/lang/en") {
       if (lang in map) {
@@ -464,148 +469,10 @@ var mql = {
 };
 
 
-///////////////////////////////
-// determine lang and bundle
-///////////////////////////////
-try {
-  /**
-   * Preferred langauge is determined in the following order
-   * 1. lang parameter
-   * 2. lang cookie
-   * 3. accept-language request header
-   * 4. default to "en"
-   */
-  var plang = acre.request.params.lang;
-  if (plang === "1") {
-    var lang_bundle = _accept_language(acre.request.headers['accept-language'].split(","));
-    _set_lang_bundle(lang_bundle[0], lang_bundle[1], true);
-  }
-  else if (plang === "0") {
-    acre.response.clear_cookie("lang", {path:"/"});
-    _set_lang_bundle("/lang/en", "en.properties");
-  }
-  else if (plang) {
-    var lang_code = plang.split("/").pop();
-    _set_lang_bundle(plang, lang_code + ".properties", true);
-  }
-  else {
-    plang = acre.request.cookies.lang;
-    if (plang) {
-      var lang_code = plang.split("/").pop();
-      _set_lang_bundle(plang, lang_code + ".properties");
-    }
-    else {
-      _set_lang_bundle("/lang/en", "en.properties");
-    }
-  }
-}
-catch (e) {
-  // trap all exceptions
-  console.error("[i18n]", e);
-  _set_lang_bundle("/lang/en", "en.properties");
-};
-
-
-function _accept_language(accept_langs) {
-  var lang_bundles = [];
-  var qvalues = {};
-  var i,l;
-  for (i=0,l=accept_langs.length; i<l; i++) {
-    var lang_parts = trim(accept_langs[i]).split(";");
-    var lang_code = trim(lang_parts[0].toLowerCase());
-    var lang_id = "/lang/" + lang_code;
-    /**
-     * qvalue is a value from 0 to 1. 1 being the most preferred. qvalue defaults to 1 if not present.
-     * so if you have the following:
-     *
-     * accept-language: ko-KR,ko;q=0.8,en-us;q=0.5,en;q=0.3
-     *
-     * ko-KR is the preferred, then ko if ko-KR is not available, then en-us, then en.
-     *
-     * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
-     */
-    var qvalue = 1;
-    if (lang_parts.length > 1) {
-      var qvalue_parts = lang_parts[1].split("=");
-      if (qvalue_parts.length > 1) {
-        qvalue = parseFloat(trim(qvalue_parts[1]));
-      }
-    }
-    if (lang_id in qvalues) {
-      // take the larger qvalue
-      if (qvalues[lang_id] < qvalue) {
-        qvalues[lang_id] = qvalue;
-      }
-    }
-    else {
-      qvalues[lang_id] = qvalue;
-      lang_bundles.push([lang_id, lang_code + ".properties"]);
-    }
-  }
-  // /lang/en must be present
-  if (!("/lang/en" in qvalues)) {
-    qvalues["/lang/en"] = 0;
-    lang_bundles.push(["/lang/en", "en.properties"]);
-  }
-  // sort langs by qvalue
-  lang_bundles.sort(function(a,b) {
-    return qvalues[b[0]] - qvalues[a[0]];
-  });
-  var langs = [];
-  var bundles = [];
-  for (i=0,l=lang_bundles.length; i<l; i++) {
-    var lang_bundle = lang_bundles[i];
-    langs.push(lang_bundle[0]);
-    bundles.push(lang_bundle[1]);
-  }
-  return [langs, bundles];
-}
-
-function _set_lang_bundle(langs, bundles, set_cookie) {
-  if (!is_array(langs)) {
-    langs = [langs];
-  }
-  if (!is_array(bundles)) {
-    bundles = [bundles];
-  }
-  var mql_langs = map_array(mql.langs(), "id");
-  var my_lang, my_bundle;
-  var i,l;
-  for (i=0,l=langs.length; i<l; i++) {
-    var lang_id = langs[i];
-    if (lang_id in mql_langs) {
-      my_lang = lang_id;
-      break;
-    }
-  }
-  var app = acre.get_metadata(acre.request.script.path);
-  for (i=0,l=bundles.length; i<l; i++) {
-    var filename = bundles[i];
-    if (filename in app.files) {
-      my_bundle = filename;
-      break;
-    }
-  }
-  if (my_lang) {
-    lang = my_lang;
-    if (set_cookie) {
-      acre.response.set_cookie("lang", my_lang, {path:"/"});
-    }
-  }
-  else {
-    lang = "/lang/en";
-  }
-  if (my_bundle) {
-    bundle_path = acre.request.script.app.path + "/" + my_bundle;
-    bundle = acre.require(bundle_path).bundle;
-  }
-  else {
-    bundle_path = null;
-    bundle = null;
-  }
-};
-
-
+//////////////////
+// get_blurb
+// get_blob
+///////////////////
 
 function get_blurb(topic, options, label, key) {
   return _get_blob(topic, options, label, key, "blurb");
@@ -659,23 +526,143 @@ _get_blob.closure = function(article, mode, options, label) {
     });
 };
 
-
-/////////
-// utils
-/////////
-
-function map_array(a, key) {
-  var map = {};
-  for (var i=0,l=a.length; i<l; i++) {
-    map[a[i][key]] = a[i];
-  };
-  return map;
+///////////////////////////////
+// determine lang and bundle
+///////////////////////////////
+try {
+  /**
+   * Preferred langauge is determined in the following order
+   * 1. lang parameter
+   * 2. lang cookie
+   * 3. accept-language request header
+   * 4. default to "en"
+   */
+  var plang = acre.request.params.lang;
+  if (plang === "1") {
+    var lang_bundle = _accept_language(acre.request.headers['accept-language'].split(","));
+    _set_lang_bundle(lang_bundle[0], lang_bundle[1], true);
+  }
+  else if (plang === "0") {
+    acre.response.clear_cookie("lang", {path:"/"});
+    _set_lang_bundle("/lang/en", "en.properties");
+  }
+  else if (plang) {
+    var lang_code = plang.split("/").pop();
+    _set_lang_bundle(plang, lang_code + ".properties", true);
+  }
+  else {
+    plang = acre.request.cookies.lang;
+    if (plang) {
+      var lang_code = plang.split("/").pop();
+      _set_lang_bundle(plang, lang_code + ".properties");
+    }
+    else {
+      _set_lang_bundle("/lang/en", "en.properties");
+    }
+  }
+}
+catch (e) {
+  // trap all exceptions
+  console.error("[i18n]", e);
+  _set_lang_bundle("/lang/en", "en.properties");
 };
 
-function trim(str) {
-  return str.replace(/^\s+|\s+$/g, "");
-};
 
-function is_array(obj) {
-  return toString.call(obj) === "[object Array]";
+function _accept_language(accept_langs) {
+  var lang_bundles = [];
+  var qvalues = {};
+  var i,l;
+  for (i=0,l=accept_langs.length; i<l; i++) {
+    var lang_parts = h.trim(accept_langs[i]).split(";");
+    var lang_code = h.trim(lang_parts[0].toLowerCase());
+    var lang_id = "/lang/" + lang_code;
+    /**
+     * qvalue is a value from 0 to 1. 1 being the most preferred. qvalue defaults to 1 if not present.
+     * so if you have the following:
+     *
+     * accept-language: ko-KR,ko;q=0.8,en-us;q=0.5,en;q=0.3
+     *
+     * ko-KR is the preferred, then ko if ko-KR is not available, then en-us, then en.
+     *
+     * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
+     */
+    var qvalue = 1;
+    if (lang_parts.length > 1) {
+      var qvalue_parts = lang_parts[1].split("=");
+      if (qvalue_parts.length > 1) {
+        qvalue = parseFloat(h.trim(qvalue_parts[1]));
+      }
+    }
+    if (lang_id in qvalues) {
+      // take the larger qvalue
+      if (qvalues[lang_id] < qvalue) {
+        qvalues[lang_id] = qvalue;
+      }
+    }
+    else {
+      qvalues[lang_id] = qvalue;
+      lang_bundles.push([lang_id, lang_code + ".properties"]);
+    }
+  }
+  // /lang/en must be present
+  if (!("/lang/en" in qvalues)) {
+    qvalues["/lang/en"] = 0;
+    lang_bundles.push(["/lang/en", "en.properties"]);
+  }
+  // sort langs by qvalue
+  lang_bundles.sort(function(a,b) {
+    return qvalues[b[0]] - qvalues[a[0]];
+  });
+  var langs = [];
+  var bundles = [];
+  for (i=0,l=lang_bundles.length; i<l; i++) {
+    var lang_bundle = lang_bundles[i];
+    langs.push(lang_bundle[0]);
+    bundles.push(lang_bundle[1]);
+  }
+  return [langs, bundles];
+}
+
+function _set_lang_bundle(langs, bundles, set_cookie) {
+  if (!h.is_array(langs)) {
+    langs = [langs];
+  }
+  if (!h.is_array(bundles)) {
+    bundles = [bundles];
+  }
+  var mql_langs = h.map_array(mql.langs(), "id");
+  var my_lang, my_bundle;
+  var i,l;
+  for (i=0,l=langs.length; i<l; i++) {
+    var lang_id = langs[i];
+    if (lang_id in mql_langs) {
+      my_lang = lang_id;
+      break;
+    }
+  }
+  var app = acre.get_metadata(acre.request.script.path);
+  for (i=0,l=bundles.length; i<l; i++) {
+    var filename = bundles[i];
+    if (filename in app.files) {
+      my_bundle = filename;
+      break;
+    }
+  }
+  if (my_lang) {
+    lang = my_lang;
+    if (set_cookie) {
+      acre.response.set_cookie("lang", my_lang, {path:"/"});
+    }
+  }
+  else {
+    lang = "/lang/en";
+  }
+  if (my_bundle) {
+    bundle_path = acre.request.script.app.path + "/" + my_bundle;
+    bundle = acre.require(bundle_path).bundle;
+  }
+  else {
+    bundle_path = null;
+    bundle = null;
+  }
 };

@@ -1,7 +1,7 @@
 <acre:script>
   var mf = acre.require("MANIFEST").mf;
+  var h = mf.require("core", "helpers");
   var i18n = mf.require("i18n");
-  var _ = i18n.gettext;
 </acre:script>
 
 <acre:block def="name(topic, attrs, key)">
@@ -80,7 +80,7 @@
 
 <acre:block def="lang_select()">
   <acre:script>
-    var mql_langs = i18n.map_array(i18n.mql.langs(), "id");
+    var mql_langs = h.map_array(i18n.mql.langs(), "id");
     var langs = [i18n.lang];
     if (langs[0] !== "/lang/en") {
       langs.push("/lang/en");

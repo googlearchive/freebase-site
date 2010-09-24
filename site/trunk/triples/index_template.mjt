@@ -1,0 +1,219 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").mf;
+  var c = this.exports.c = {};
+  var h = mf.require("core", "helpers");
+  var i18n = mf.require("i18n", "i18n");
+  var _ = i18n.gettext;
+</acre:script>
+
+<acre:block def="title()">
+  ${_('Explore')} - ${c.topic.id}
+</acre:block>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('index.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+</acre:block>
+
+<acre:block def="content_body()">
+  <table>
+    <thead>
+      <tr>
+        <th>${_("id")}</th>
+        <th>${_("mid")}</th>
+        <th>${_("guid (deprecated)")}</th>
+        <th>${_("creator")}</th>
+        <th>${_("timestamp")}</th>
+     </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>${c.topic["primary:id"]}</td>
+        <td>${c.topic.mid}</td>
+        <td>${c.topic.guid}</td>
+        <td acre:if="c.topic.creator">${a(c.topic.creator)}</td>
+        <td acre:else="">null</td>
+        <td>${c.topic.timestamp}</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <acre:block if="c.names && c.names.length">
+    <hr/>
+    <h3>${_("Names")}</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>${_("value")}</th>
+          <th>${_("lang")}</th>
+          <th>${_("creator")}</th>
+          <th>${_("timestamp")}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr acre:for="name in c.names">
+          <td>${name.value}</td>
+          <td>${a(name.lang)}</td>
+          <td acre:if="name.link.creator">${a(name.link.creator)}</td>
+          <td acre:else="">null</td>
+          <td>${name.link.timestamp}</td>
+        </tr>
+      </tbody>
+    </table>
+  </acre:block>
+
+  <acre:block if="c.keys">
+    <acre:block if="c.keys.outgoing && c.keys.outgoing.length">
+      <hr/>
+      <h3>${_("Keys")}</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>${_("namespace")}</th>
+            <th>${_("key")}</th>
+            <th>${_("creator")}</th>
+            <th>${_("timestamp")}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr acre:for="k in c.keys.outgoing">
+            <td>${a(k.namespace)}</td>
+            <td>${k.value}</td>
+            <td acre:if="k.link.creator">${a(k.link.creator)}</td>
+            <td acre:else="">null</td>
+            <td>${k.link.timestamp}</td>
+          </tr>
+        </tbody>
+      </table>
+    </acre:block>
+
+    <acre:block if="c.keys.incoming && c.keys.incoming.length">
+      <hr/>
+      <h3>${_("Incoming Keys")}</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>${_("namespace")}</th>
+            <th>${_("key")}</th>
+            <th>${_("creator")}</th>
+            <th>${_("timestamp")}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr acre:for="k in c.keys.incoming">
+            <td>${a(k.namespace)}</td>
+            <td>${k.value}</td>
+            <td acre:if="k.link.creator">${a(k.link.creator)}</td>
+            <td acre:else="">null</td>
+            <td>${k.link.timestamp}</td>
+          </tr>
+        </tbody>
+      </table>
+    </acre:block>
+  </acre:block>
+
+  <acre:block if="c.outgoing && c.outgoing.length">
+    <hr/>
+    <h3>${_("Outgoing Properties")}</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>${_("subject")}</th>
+          <th>${_("predicate")}</th>
+          <th>${_("object")}</th>
+          <th>${_("creator")}</th>
+          <th>${_("timestamp")}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr acre:for="o in c.outgoing">
+          <td><span class="self">-</span></td>
+          <td>${a(o.link.master_property)}</td>
+          <acre:block if="'value' in o">
+            <td>${literal(o)}</td>
+          </acre:block>
+          <acre:block else="">
+            <td>${a(o.id)}</td>
+          </acre:block>
+          <td acre:if="o.link.creator">${a(o.link.creator)}</td>
+          <td acre:else="">null</td>
+          <td>${o.link.timestamp}</td>
+        </tr>
+      </tbody>
+    </table>
+  </acre:block>
+
+  <acre:block if="c.incoming && c.incoming.length">
+    <hr/>
+    <h3>${_("Incoming Properties")}</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>${_("subject")}</th>
+          <th>${_("predicate")}</th>
+          <th>${_("object")}</th>
+          <th>${_("creator")}</th>
+          <th>${_("timestamp")}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr acre:for="o in c.incoming" >
+          <td>${a(o.id)}</td>
+          <td>${a(o.link.master_property)}</td>
+          <td><span class="self">-</span></td>
+          <td acre:if="o.link.creator">${a(o.link.creator)}</td>
+          <td acre:else="">null</td>
+          <td>${o.link.timestamp}</td>
+        </tr>
+      </tbody>
+    </table>
+  </acre:block>
+
+  <acre:block if="c.typelinks && c.typelinks.length">
+    <hr/>
+    <h3>${_("Links using this property")}</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>${_("subject")}</th>
+          <th>${_("predicate")}</th>
+          <th>${_("object")}</th>
+          <th>${_("creator")}</th>
+          <th>${_("timestamp")}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr acre:for="o in c.typelinks" >
+          <td>${a(o.source)}</td>
+          <td><span class="self">-</span></td>
+           <acre:block if="o.target_value">
+            <td>${literal(o.target_value)}</td>
+          </acre:block>
+          <acre:block else="">
+            <td>${a(o.target)}</td>
+          </acre:block>
+          <td acre:if="o.creator">${a(o.creator)}</td>
+          <td acre:else="">null</td>
+          <td>${o.timestamp}</td>
+        </tr>
+      </tbody>
+    </table>
+  </acre:block>
+
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="${mf.js_src('index.mf.js')}"></script>
+</acre:block>
+
+<acre:block def="a(id, name, url, title)" trim="">
+  <a href="${url || h.url_for('triples', null, null, id)}" title="${title || id}">${name || id}</a>
+</acre:block>
+
+<acre:block def="literal(o)" trim="">
+  <span class="literal-value literal-value-${o.type.split('/').pop()}">${o.value}</span>
+  <span class="literal-type">${a(o.type)}</span>
+  <span acre:if="o.type === '/type/text'" class="literal-lang">${a(o.lang || o.link.target_value.lang)}</a>
+</acre:block>

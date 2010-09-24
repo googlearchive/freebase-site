@@ -25,6 +25,10 @@ var routes = [
     to: "homepage"
   },
   {
+    from: "/triples",
+    to: "triples"
+  },
+  {
     from: "/schema",
     to: "schema"
   },

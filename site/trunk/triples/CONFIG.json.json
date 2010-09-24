@@ -3,8 +3,14 @@
     "core": "//core.site.freebase.dev"
   },
   "stylesheet": {
-    "index.mf.css": [
-      ["template", "freebase.mf.css"]
+    "triples.mf.css": [
+      ["template", "freebase.mf.css"],
+      ["template", "freebase.ui.tabs.less"],
+      ["template", "freebase.ui.table.less"],
+      ["template", "freebase.ui.breadcrumbs.less"],
+      ["template", "freebase.ui.pageoverview.less"],
+      ["template", "freebase.ui.modal.less"],
+      ["template", "freebase.ui.layout.twocol.less"]
     ]
   },
   "javascript": {

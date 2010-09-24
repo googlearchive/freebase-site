@@ -518,7 +518,10 @@
         url: form.ajax.url,
         type: "POST",
         dataType: "json",
-        data: $.extend(data, form.ajax.data)
+        data: $.extend(data, form.ajax.data),
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader("cache-control", "max-age: 3600");
+        }
       };
 
       ajax_options.success = form.ajax.success || function(data, status, xhr) {

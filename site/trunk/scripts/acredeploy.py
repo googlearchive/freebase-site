@@ -653,6 +653,8 @@ class ActionPush():
 
   def print_app_diff(self, delete_files, push_files, ignored_files):
 
+    self.context.log("Diff between %s:%s and acre trunk:" % (self.app.app_key, self.app.version))
+
     for filename in ignored_files:
       print "?\t%s" % filename
     for filename,d in delete_files.iteritems():

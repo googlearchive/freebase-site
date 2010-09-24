@@ -520,7 +520,7 @@
         dataType: "json",
         data: $.extend(data, form.ajax.data),
         beforeSend: function(xhr) {
-          xhr.setRequestHeader("cache-control", "max-age: 3600");
+          xhr.setRequestHeader("cache-control", "max-age: 3601");
         }
       };
 

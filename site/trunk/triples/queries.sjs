@@ -4,6 +4,7 @@ var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 
 var LIMIT = 100;
+var LIMIT2 = LIMIT*2;
 
 function topic(id, options) {
   var q = {

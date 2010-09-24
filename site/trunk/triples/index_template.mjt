@@ -18,6 +18,21 @@
 </acre:block>
 
 <acre:block def="content_body()">
+  <div style="float:right;">
+    <div class="limit">
+      ${h.sprintf(_("limit current at %s"), i18n.format_number(c.limit))}<br/>
+      <acre:block if="c.prev_limit">
+        ${h.bless_sprintf(_("set to %s or %s"), 
+        h.tag("a", i18n.format_number(c.prev_limit), "href", c.prev_limit_url), 
+        h.tag("a", i18n.format_number(c.next_limit), "href", c.next_limit_url))}<br/>
+      </acre:block>
+      <acre:block else="">
+        ${h.bless_sprintf(_("set to %s"), 
+        h.tag("a", i18n.format_number(c.next_limit), "href", c.next_limit_url))}<br/>
+      </acre:block>
+    </div>
+  </div>
+
   <table>
     <thead>
       <tr>
@@ -42,7 +57,7 @@
   
   <acre:block if="c.names && c.names.length">
     <hr/>
-    <h3>${_("Names")}</h3>
+    <h3>${_("Names")} (${i18n.format_number(c.names.length)})</h3>
     <table>
       <thead>
         <tr>
@@ -67,12 +82,12 @@
   <acre:block if="c.keys">
     <acre:block if="c.keys.outgoing && c.keys.outgoing.length">
       <hr/>
-      <h3>${_("Keys")}</h3>
+      <h3>${_("Keys")} (${i18n.format_number(c.keys.outgoing.length)})</h3>
       <table>
         <thead>
           <tr>
             <th>${_("namespace")}</th>
-            <th>${_("key")}</th>
+            <th>${_("value")}</th>
             <th>${_("creator")}</th>
             <th>${_("timestamp")}</th>
           </tr>
@@ -91,12 +106,12 @@
 
     <acre:block if="c.keys.incoming && c.keys.incoming.length">
       <hr/>
-      <h3>${_("Incoming Keys")}</h3>
+      <h3>${_("Incoming Keys")} (${i18n.format_number(c.keys.incoming.length)})</h3>
       <table>
         <thead>
           <tr>
             <th>${_("namespace")}</th>
-            <th>${_("key")}</th>
+            <th>${_("value")}</th>
             <th>${_("creator")}</th>
             <th>${_("timestamp")}</th>
           </tr>
@@ -116,7 +131,7 @@
 
   <acre:block if="c.outgoing && c.outgoing.length">
     <hr/>
-    <h3>${_("Outgoing Properties")}</h3>
+    <h3>${_("Outgoing Properties")} (${i18n.format_number(c.outgoing.length)})</h3>
     <table>
       <thead>
         <tr>
@@ -147,7 +162,7 @@
 
   <acre:block if="c.incoming && c.incoming.length">
     <hr/>
-    <h3>${_("Incoming Properties")}</h3>
+    <h3>${_("Incoming Properties")} (${i18n.format_number(c.incoming.length)})</h3>
     <table>
       <thead>
         <tr>
@@ -173,7 +188,7 @@
 
   <acre:block if="c.typelinks && c.typelinks.length">
     <hr/>
-    <h3>${_("Links using this property")}</h3>
+    <h3>${_("Links using this property")} (${i18n.format_number(c.typelink.length)})</h3>
     <table>
       <thead>
         <tr>

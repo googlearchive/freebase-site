@@ -10,6 +10,7 @@
       ["template", "freebase.ui.breadcrumbs.less"],
       ["template", "freebase.ui.pageoverview.less"],
       ["template", "freebase.ui.modal.less"],
+      ["template", "freebase.ui.bargraph.less"],
       ["template", "freebase.ui.layout.twocol.less"]
     ]
   },

@@ -2,6 +2,7 @@
   var mf = acre.require("MANIFEST").mf;
   var c = this.exports.c = {};
   var h = mf.require("core", "helpers");
+  var image = mf.require("template", "imagecomponents");  
   var i18n = mf.require("i18n", "i18n");
   var _ = i18n.gettext;
 </acre:script>
@@ -18,45 +19,35 @@
 </acre:block>
 
 <acre:block def="content_body()">
-  <div style="float:right;">
-    <div class="limit">
-      ${h.sprintf(_("limit current at %s"), i18n.format_number(c.limit))}<br/>
-      <acre:block if="c.prev_limit">
-        ${h.bless_sprintf(_("set to %s or %s"), 
-        h.tag("a", i18n.format_number(c.prev_limit), "href", c.prev_limit_url), 
-        h.tag("a", i18n.format_number(c.next_limit), "href", c.next_limit_url))}<br/>
-      </acre:block>
-      <acre:block else="">
-        ${h.bless_sprintf(_("set to %s"), 
-        h.tag("a", i18n.format_number(c.next_limit), "href", c.next_limit_url))}<br/>
-      </acre:block>
-    </div>
-  </div>
   
   <div class="page-meta">
-    <h1>Current Language Name Goes Here XXX</h1>
+    <h1>${i18n.display_name(c.topic)}</h1>
     <div class="meta">
       <span class="key">
-        <strong>id:</strong>
+        <strong>${_("id")}:</strong>
         ${c.topic["primary:id"]}
       </span>
       <span class="key">
-        <strong>mid:</strong>
+        <strong>${_("mid")}:</strong>
         ${c.topic.mid}
       </span>
       <span class="key">
-        <strong>guid:</strong>
+        <strong>${_("guid")}:</strong>
         ${c.topic.guid}
       </span>
     </div>
     <div class="admin-toolbox">
       <span class="creation-timestamp">
-        <span class="user-image"></span>
-        Created by
-        <span acre:if="c.topic.creator">${a(c.topic.creator)}</span>
-        <span acre:else="">null</span>
-        <time title="${c.topic.timestamp}" class="published">${c.topic.timestamp}</time>
-      </span>
+        <acre:block if="c.topic.creator">
+          ${image.user_image_small(c.topic.creator)}
+          ${h.bless_sprintf(_("Created by %s on %s"),
+          h.tag("a", c.topic.creator, "href", h.url_for("triples", null, null, c.topic.creator), "title", c.topic.creator),
+          c.topic.timestamp)}
+        </acre:block>
+        <acre:block else="">
+          ${h.bless_sprintf(_("Created on %s"), c.topic.timestamp)}
+        </acre:block>
+      </span>    
     </div>
   </div>
 
@@ -212,8 +203,23 @@
 
     </div>
     <div id="content-sub" role="aside">
+      <!-- please leave this in for debugging -->
       <div class="content-wrapper">
-        <h2 class="aside-title">Filter by:</h2>
+        <div class="limit">
+          ${h.sprintf(_("limit current at %s"), i18n.format_number(c.limit))}<br/>
+          <acre:block if="c.prev_limit">
+            ${h.bless_sprintf(_("set to %s or %s"), 
+            h.tag("a", i18n.format_number(c.prev_limit), "href", c.prev_limit_url), 
+            h.tag("a", i18n.format_number(c.next_limit), "href", c.next_limit_url))}<br/>
+          </acre:block>
+          <acre:block else="">
+            ${h.bless_sprintf(_("set to %s"), 
+            h.tag("a", i18n.format_number(c.next_limit), "href", c.next_limit_url))}<br/>
+          </acre:block>
+        </div>
+      </div>
+      <div class="content-wrapper">
+        <h2 class="aside-title">${_("Filter by")}:</h2>
         <ul class="bar-graph">
           <li class="bar-graph-item">
             <a class="bar-graph-value" href="#" style="width:80%">/foo</a>
@@ -241,8 +247,8 @@
   <script src="${mf.js_src('index.mf.js')}"></script>
 </acre:block>
 
-<acre:block def="a(id, name, url, title)" trim="">
-  <a href="${url || h.url_for('triples', null, null, id)}" title="${title || id}">${name || id}</a>
+<acre:block def="a(id, name)" trim="">
+  <a href="${h.url_for('triples', null, c.params, id)}" title="${id}">${name || id}</a>
 </acre:block>
 
 <acre:block def="literal(o)" trim="">

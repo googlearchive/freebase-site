@@ -10,8 +10,13 @@ var property = acre.request.params.p;
 var limits = get_limits();
 
 var options = {
-  limit: limits.limit
+  limit: limits.limit,
+  domain: domain,
+  type: type,
+  property: property
 };
+
+
 if (domain) {
   options.domain = domain;
 }

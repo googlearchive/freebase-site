@@ -176,7 +176,7 @@
       </acre:block>
 
       <acre:block if="c.typelinks && c.typelinks.length">
-      <h2 class="table-title">${_("Links using this property")} (${i18n.format_number(c.typelink.length)})</h2>
+      <h2 class="table-title">${_("Links using this property")} (${i18n.format_number(c.typelinks.length)})</h2>
       <table class="table">
         <thead>
           <tr>
@@ -189,10 +189,10 @@
         </thead>
         <tbody>
           <tr class="hoverable" acre:for="o in c.typelinks">
-            <th class="row-header odd" scope="row">${a(o.source)}</th>
+            <th class="row-header odd" scope="row">${a(o.source.id)}</th>
             <td class="even"><span class="self">-</span></td>
-            <td class="odd" acre:if="o.target_value">${literal(o.target_value)}</td>
-            <td class="odd" acre:else="">${a(o.target)}</td>
+            <td class="odd" acre:if="o.target_value">${literal(o.target_value, o.master_property, o.source.id)}</td>
+            <td class="odd" acre:else="">${a(o.target.id)}</td>
             <td class="even" acre:if="o.creator">${a(o.creator)}</td>
             <td class="even" acre:else="">null</td>
             <td class="odd numeric">${o.timestamp}</td>
@@ -251,8 +251,25 @@
   <a href="${h.url_for('triples', null, c.params, id)}" title="${id}">${name || id}</a>
 </acre:block>
 
-<acre:block def="literal(o)" trim="">
-  <span class="literal-value literal-value-${o.type.split('/').pop()}">${o.value}</span>
+<acre:block def="literal(o, master_property, topic)" trim="">
+  <acre:script>
+    master_property = master_property || o.link.master_property;
+    topic = topic || c.topic.id;
+  </acre:script>
+  <span class="literal-value literal-value-${o.type.split('/').pop()}">
+    <acre:block if="master_property === '/common/document/source_uri' && o.value.indexOf('http://wp/') === 0">
+      <a href="${h.freebase_url('/api/trans/blurb' + topic, [['maxlength', 1600]])}">${o.value}</a>
+    </acre:block>
+    <acre:block elif="master_property === '/type/content/blob_id'">
+      <a href="${h.freebase_url('/api/trans/raw' + topic)}">${o.value}</a>
+    </acre:block>    
+    <acre:block elif="o.type === '/type/uri'">
+      <a href="${o.value}" target="_new">${o.value}</a>
+    </acre:block>
+    <acre:block else="">
+      ${o.value}
+    </acre:block>                
+  </span>
   <span class="literal-type">${a(o.type)}</span>
   <span acre:if="o.type === '/type/text'" class="literal-lang">${a(o.lang || o.link.target_value.lang)}</a>
 </acre:block>

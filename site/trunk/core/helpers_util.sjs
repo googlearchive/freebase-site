@@ -4,7 +4,8 @@ var exports = {
   "is_devel": is_devel,
   "trim": trim,
   "map_array": map_array,
-  "is_array": is_array
+  "is_array": is_array,
+  "array_map": array_map
 };
 
 /**
@@ -46,6 +47,14 @@ function map_array(a, key) {
     map[a[i][key]] = a[i];
   };
   return map;
+};
+
+function array_map(map) {
+  var a = [];
+  for (k in map) {
+    a.push([k, map[k]]);
+  }
+  return a;
 };
 
 function is_array(obj) {

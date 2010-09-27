@@ -139,6 +139,10 @@
         type: "POST",
         dataType: "json",
         data: $.extend(data, form.ajax.data),
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader("cache-control", "max-age: 3600");
+          console.log("beforeSend", xhr);
+        },
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
             return se.ajax_error_handler(xhr, null, form.form);

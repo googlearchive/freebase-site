@@ -25,6 +25,11 @@ function topic(id, options) {
 
 function names(id, options) {
   options = options || {};
+  if ((options.domain && options.domain !== "/type") ||
+      (options.type && options.type !== "/type/object") ||
+      (options.property && options.property !== "/type/object/name")) {
+    return [];
+  }
   var q = {
     id: id,
     name: [{
@@ -44,6 +49,11 @@ function names(id, options) {
 
 function keys(id, options) {
   options = options || {};
+  if ((options.domain && options.domain !== "/type") ||
+      (options.type && options.type !== "/type/object") ||
+      (options.property && options.property !== "/type/object/key")) {
+    return [];
+  }
   var q = {
     id: id,
     key: [{
@@ -106,6 +116,24 @@ function outgoing(id, options) {
       sort: "-link.timestamp"
     }]
   };
+  if (options.domain) {
+    q["/type/reflect/any_master"][0].link["d:master_property"] =
+    q["/type/reflect/any_value"][0].link["d:master_property"] = {
+      schema: {domain: options.domain},
+      limit: 0
+    };
+  }
+  else if (options.type) {
+    q["/type/reflect/any_master"][0].link["t:master_property"] =
+    q["/type/reflect/any_value"][0].link["t:master_property"] = {
+      schema: options.type,
+      limit: 0
+    };
+  }
+  else if (options.property) {
+    q["/type/reflect/any_master"][0].link.master_property =
+    q["/type/reflect/any_value"][0].link.master_property = options.property;
+  }
   return freebase.mqlread(q)
     .then(function(env) {
       var result = env.result;
@@ -129,6 +157,21 @@ function incoming(id, options) {
       sort: "-link.timestamp"
     }]
   };
+  if (options.domain) {
+    q["/type/reflect/any_reverse"][0].link["d:master_property"] = {
+      schema: {domain: options.domain},
+      limit: 0
+    };
+  }
+  else if (options.type) {
+    q["/type/reflect/any_reverse"][0].link["t:master_property"] = {
+      schema: options.type,
+      limit: 0
+    };
+  }
+  else if (options.property) {
+    q["/type/reflect/any_reverse"][0].link.master_property = options.property;
+  }
   return freebase.mqlread(q)
     .then(function(env) {
       var result = env.result;
@@ -140,8 +183,8 @@ function typelinks(id, options) {
   var q = [{
     type: "/type/link",
     master_property: id,
-    source: null,
-    target: null,
+    source: {id:null},
+    target: {id:null, optional:true},
     target_value: {},
     creator: null,
     timestamp: null,

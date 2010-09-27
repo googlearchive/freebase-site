@@ -1,13 +1,15 @@
-#content-sub ul.bar-graph {
+ul.bar-graph {
   list-style: none;
   margin: 0;
 }
 
-#content-sub li.bar-graph-item {
+li.bar-graph-item {
   margin-bottom: 0.2em;
   background: #e5e6e7;
   line-height: 1;
   padding: 0;
+  .rounded_corners();
+  font-size: 12px;
 }
 
 a.bar-graph-value,
@@ -18,8 +20,10 @@ a.bar-graph-value,
   background: #aaa;
   text-shadow: 0 0 2px #999;
   font-weight: normal;
+  .rounded_corners();
 }
 
 .bar-graph-value:hover {
   background: #999;
+  text-decoration: none;
 }

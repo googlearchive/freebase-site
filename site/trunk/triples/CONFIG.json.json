@@ -11,7 +11,8 @@
       ["template", "freebase.ui.pageoverview.less"],
       ["template", "freebase.ui.modal.less"],
       ["template", "freebase.ui.bargraph.less"],
-      ["template", "freebase.ui.layout.twocol.less"]
+      ["template", "freebase.ui.layout.twocol.less"],
+      "triples.less"
     ]
   },
   "javascript": {

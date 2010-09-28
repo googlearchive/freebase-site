@@ -1,13 +1,13 @@
 var mf = acre.require("MANIFEST").mf;
 var i18n = mf.require("i18n", "i18n");
+var _ = i18n.gettext;
 var h = mf.require("core", "helpers");
+var f = mf.require("filters");
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 
-var LIMIT = 100;
-var LIMIT2 = LIMIT*2;
 
-function topic(id, options) {
+function topic(id, filters) {
   var q = {
     id: id,
     "primary:id": null,
@@ -23,13 +23,29 @@ function topic(id, options) {
     });
 };
 
-function names(id, options) {
-  options = options || {};
-  if ((options.domain && options.domain !== "/type") ||
-      (options.type && options.type !== "/type/object") ||
-      (options.property && options.property !== "/type/object/name")) {
-    return [];
-  }
+function last_edit(id, filters) {
+  var q = {
+    source: id,
+    master_property: null,
+    target: null,
+    target_value: null,
+    type: "/type/link",
+    valid: null,
+    timestamp: null,
+    sort: "-timestamp",
+    operation: null,
+    limit: 1,
+    creator: null
+  };
+  f.apply_creator(q, filters.creator);
+  f.apply_timestamp(q, filters.timestamp);
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result;
+    });
+};
+
+function names(id, filters) {
   var q = {
     id: id,
     name: [{
@@ -37,23 +53,17 @@ function names(id, options) {
       lang: null,
       link: {creator:null, timestamp:null},
       optional: true,
-      limit: options.limit || LIMIT,
       sort: "-link.timestamp"
     }]
   };
+  f.apply_filters(q.name[0], filters);
   return freebase.mqlread(q)
     .then(function(env) {
       return env.result.name;
     });
 };
 
-function keys(id, options) {
-  options = options || {};
-  if ((options.domain && options.domain !== "/type") ||
-      (options.type && options.type !== "/type/object") ||
-      (options.property && options.property !== "/type/object/key")) {
-    return [];
-  }
+function keys(id, filters) {
   var q = {
     id: id,
     key: [{
@@ -61,7 +71,6 @@ function keys(id, options) {
       value:null,
       link: {creator:null, timestamp:null},
       optional:true,
-      limit: options.limit || LIMIT,
       sort: "-link.timestamp"
     }],
     "/type/namespace/keys": [{
@@ -69,10 +78,11 @@ function keys(id, options) {
       value: null,
       link: {creator:null, timestamp:null},
       optional: true,
-      limit: options.limit || LIMIT,
       sort: "-link.timestamp"
     }]
   };
+  f.apply_filters(q.key[0], filters);
+  f.apply_filters(q["/type/namespace/keys"][0], filters);
   return freebase.mqlread(q)
     .then(function(env) {
       var result = env.result;
@@ -82,8 +92,7 @@ function keys(id, options) {
     });
 };
 
-
-function outgoing(id, options) {
+function outgoing(id, filters) {
   var q = {
     id: id,
     "/type/reflect/any_master":[{
@@ -94,7 +103,6 @@ function outgoing(id, options) {
         timestamp: null
       },
       optional: true,
-      limit: options.limit || LIMIT,
       sort: "-link.timestamp"
     }],
     "/type/reflect/any_value":[{
@@ -112,28 +120,11 @@ function outgoing(id, options) {
         timestamp: null
       },
       optional: true,
-      limit: options.limit || LIMIT,
       sort: "-link.timestamp"
     }]
   };
-  if (options.domain) {
-    q["/type/reflect/any_master"][0].link["d:master_property"] =
-    q["/type/reflect/any_value"][0].link["d:master_property"] = {
-      schema: {domain: options.domain},
-      limit: 0
-    };
-  }
-  else if (options.type) {
-    q["/type/reflect/any_master"][0].link["t:master_property"] =
-    q["/type/reflect/any_value"][0].link["t:master_property"] = {
-      schema: options.type,
-      limit: 0
-    };
-  }
-  else if (options.property) {
-    q["/type/reflect/any_master"][0].link.master_property =
-    q["/type/reflect/any_value"][0].link.master_property = options.property;
-  }
+  f.apply_filters(q["/type/reflect/any_master"][0], filters);
+  f.apply_filters(q["/type/reflect/any_value"][0], filters);
   return freebase.mqlread(q)
     .then(function(env) {
       var result = env.result;
@@ -141,8 +132,7 @@ function outgoing(id, options) {
     });
 };
 
-
-function incoming(id, options) {
+function incoming(id, filters) {
   var q = {
     id: id,
     "/type/reflect/any_reverse":[{
@@ -153,25 +143,10 @@ function incoming(id, options) {
         timestamp: null
       },
       optional: true,
-      limit: options.limit || LIMIT,
       sort: "-link.timestamp"
     }]
   };
-  if (options.domain) {
-    q["/type/reflect/any_reverse"][0].link["d:master_property"] = {
-      schema: {domain: options.domain},
-      limit: 0
-    };
-  }
-  else if (options.type) {
-    q["/type/reflect/any_reverse"][0].link["t:master_property"] = {
-      schema: options.type,
-      limit: 0
-    };
-  }
-  else if (options.property) {
-    q["/type/reflect/any_reverse"][0].link.master_property = options.property;
-  }
+  f.apply_filters(q["/type/reflect/any_reverse"][0], filters);
   return freebase.mqlread(q)
     .then(function(env) {
       var result = env.result;
@@ -179,7 +154,7 @@ function incoming(id, options) {
     });
 };
 
-function typelinks(id, options) {
+function typelinks(id, filters) {
   var q = [{
     type: "/type/link",
     master_property: id,
@@ -189,90 +164,15 @@ function typelinks(id, options) {
     creator: null,
     timestamp: null,
     optional: true,
-    limit: options.limit || LIMIT,
+    limit: filters.limit || LIMIT,
     sort: "-timestamp"
   }];
+  f.apply_limit(q[0], filters.limit);
+  f.apply_creator(q[0], filters.creator);
+  f.apply_timestamp(q[0], filters.timestamp);
   return freebase.mqlread(q)
     .then(function(env) {
       return env.result;
     });
 };
 
-function sort_link_timestamp(a, b) {
-  return b.link.timestamp > a.link.timestamp;
-};
-
-function sort_counts(a, b) {
-  return b[1] - a[1];
-};
-
-function pad(n) {
-  return n<10 ? '0'+n : n;
-};
-
-
-function distinct_properties(id) {
-  var today = new Date();
-  var as_of_time = [today.getFullYear(), pad(today.getMonth()+1), pad(today.getDate())].join("-");
-  var options = {as_of_time: as_of_time};
-
-  var promises = [];
-  promises.push(distinct_any_master(id, null, options));
-  promises.push(distinct_any_reverse(id, null, options));
-  promises.push(distinct_any_value(id, null, options));
-
-  return deferred.all(promises)
-    .then(function([any_master, any_reverse, any_value]) {
-      var props = any_master.concat(any_reverse).concat(any_value);
-      return props;
-    });
-};
-
-
-function distinct_any_master(id, forbid, options) {
-  return distinct_query(id, forbid, options, "/type/reflect/any_master");
-};
-
-function distinct_any_value(id, forbid, options) {
-  return distinct_query(id, forbid, options, "/type/reflect/any_value");
-};
-
-function distinct_any_reverse(id, forbid, options) {
-  return distinct_query(id, forbid, options, "/type/reflect/any_reverse");
-};
-
-function distinct_query(id, forbid, options, any_key) {
-  var q = {id: id};
-  q[any_key] = [{
-    link: {master_property:null}
-  }];
-  if (forbid) {
-    q[any_key][0].link["forbid:master_property"] = {
-      "id|=": forbid,
-      optional: "forbidden",
-      limit: 0
-    };
-  }
-  return freebase.mqlread(q, options)
-    .then(function(env) {
-      return env.result;
-    })
-    .then(function(result) {
-      if (result) {
-        if (!forbid) {
-          forbid = [];
-        }
-        var seen = {};
-        result[any_key].forEach(function(o) {
-          if (!seen[o.link.master_property]) {
-            seen[o.link.master_property] = 1;
-            forbid.push(o.link.master_property);
-          }
-        });
-        return distinct_query(id, forbid, options, any_key);
-      }
-      else {
-        return forbid || [];
-      }
-    });
-};

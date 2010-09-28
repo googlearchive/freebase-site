@@ -1,53 +1,27 @@
 var mf = acre.require("MANIFEST").mf;
 var queries = mf.require("queries");
+var f = mf.require("filters");
 var h = mf.require("core", "helpers");
+var datejs = mf.require("libraries", "date").Date;
 
 var id = acre.request.params.id || acre.request.path_info;
-var domain = acre.request.params.d;
-var type = acre.request.params.t;
-var property = acre.request.params.p;
 
-var limits = get_limits();
-
-var options = {
-  limit: limits.limit,
-  domain: domain,
-  type: type,
-  property: property
-};
-
-
-if (domain) {
-  options.domain = domain;
-}
-else if (type) {
-  options.type = type;
-}
-else if (property) {
-  options.property = property;
-}
-var params = h.extend({}, acre.request.params);
-if (limits.limit === queries.LIMIT) {
-  delete params.limit;
-}
+var filters = f.get_filters();
 
 var data = h.extend({
   id: id,
-  topic: queries.topic(id, options),
-  names: queries.names(id, options),
-  keys: queries.keys(id, options),
-  outgoing: queries.outgoing(id, options),
-  incoming: queries.incoming(id, options),
-  typelinks: queries.typelinks(id, options),
-  params: params
-}, limits);
-
+  // breadcrumb: queries.breadcrumb(id, options),
+  topic: queries.topic(id, filters),
+  // last_edit: queries.last_edit(id, options),
+  names: queries.names(id, filters),
+  keys: queries.keys(id, filters),
+  outgoing: queries.outgoing(id, filters),
+  incoming: queries.incoming(id, filters),
+  typelinks: queries.typelinks(id, filters),
+  filters: filters
+});
 
 mf.require("template", "renderer").render_page(data, mf.require("index_template"));
-
-
-
-
 
 function get_limits() {
   // calculate limit, prev_limit, next_limit

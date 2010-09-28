@@ -21,12 +21,12 @@
       <ol>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.url_for('homepage')}">${_("Home")}</a>
+            <a href="${h.url_for('triples')}">${_("Triples")}</a>
           </span>
         </li>  
         <li if="c.domain" class="breadcrumb-item last">
           <span class="breadcrumb-item-inner">
-            <a href="#">${_("Triples")}</a>
+            <a href="javascript:void(0);">${c.topic.id}</a>
           </span>
         </li>
       </ol>

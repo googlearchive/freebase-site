@@ -221,7 +221,7 @@ test("validators.Timestamp", timestamp_test, function() {
 
   timestamp_test.invalid.forEach(function(val) {
     try {
-      console.log(val, validators.Timestamp(val));
+      validators.Timestamp(val);
       ok(false, "not timestamp " + val);
     }
     catch(e if e instanceof validators.Invalid) {
@@ -232,5 +232,57 @@ test("validators.Timestamp", timestamp_test, function() {
     }
   });
 });
+
+
+var int_test = {
+  valid: [0, -0, +0, 1, -1, +1, 100.1, 3.24, "1.XX"],
+  invalid: ["foo", Number.NaN, "X123"]
+};
+test("validators.Int", int_test, function() {
+
+  int_test.valid.forEach(function(val) {
+    strictEqual(validators.Int(val), parseInt(val));
+  });
+
+  int_test.invalid.forEach(function(val) {
+    try {
+      validators.Int(val);
+      ok(false, "not integer " + val);
+    }
+    catch(e if e instanceof validators.Invalid) {
+      ok(e, e.toString());
+    }
+    catch(e) {
+      ok(false, "unexpected exception " + e);
+    }
+  });
+
+});
+
+var float_test = {
+  valid: ["0.123", "1.2.3", "1,3"].concat(int_test.valid),
+  invalid: ["foo", Number.NaN, ",123"]
+};
+
+test("validators.Float", int_test, function() {
+
+  float_test.valid.forEach(function(val) {
+    strictEqual(validators.Float(val), parseFloat(val));
+  });
+
+  float_test.invalid.forEach(function(val) {
+    try {
+      validators.Float(val);
+      ok(false, "not float " + val);
+    }
+    catch(e if e instanceof validators.Invalid) {
+      ok(e, e.toString());
+    }
+    catch(e) {
+      ok(false, "unexpected exception " + e);
+    }
+  });
+});
+
 
 acre.test.report();

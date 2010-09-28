@@ -412,3 +412,54 @@ Validator.factory(scope, "Timestamp", {
     }
   }
 });
+
+
+/**
+ * Integer
+ * if isNaN, invalid
+ */
+Validator.factory(scope, "Int", {
+  "string": function(val, options) {
+    return this.integer(val, options);
+  },
+  "number": function(val, options) {
+    return this.integer(val, options);
+  },
+  "integer": function(val, options) {
+    try {
+      var i = parseInt(val);
+      if (isNaN(i)) {
+        return this.invalid(this.key, val, "is not a valid integer");
+      }
+      return i;
+    }
+    catch (ex) {
+      return this.invalid(this.key, val, "is not a valid integer");
+    }
+  }
+});
+
+/**
+ * Integer
+ * if isNaN, invalid
+ */
+Validator.factory(scope, "Float", {
+  "string": function(val, options) {
+    return this["float"](val, options);
+  },
+  "number": function(val, options) {
+    return this["float"](val, options);
+  },
+  "float": function(val, options) {
+    try {
+      var i = parseFloat(val);
+      if (isNaN(i)) {
+        return this.invalid(this.key, val, "is not a valid float");
+      }
+      return i;
+    }
+    catch (ex) {
+      return this.invalid(this.key, val, "is not a valid float");
+    }
+  }
+});

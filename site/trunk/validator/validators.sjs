@@ -309,7 +309,7 @@ Validator.factory(scope, "Guid", {
       return validate_guid(val);
     }
     catch (e if e instanceof NotAGuid) {
-      return this.invalid(this.key, "is not a guid");
+      return this.invalid(this.key, val, "is not a guid");
     }
   }
 });
@@ -344,7 +344,7 @@ Validator.factory(scope, "MqlId", {
         return val;
       }
     }
-    return this.invalid(this.key, "is not a mql id");
+    return this.invalid(this.key, val, "is not a mql id");
   }
 });
 
@@ -378,7 +378,7 @@ Validator.factory(scope, "OneOf", {
           return val;
         }
       }
-      return this.invalid(this.key, "is not one of", JSON.stringify(options.oneof));
+      return this.invalid(this.key, val, "is not one of", JSON.stringify(options.oneof));
     }
     return this.invalid("oneof option not an array");
   }

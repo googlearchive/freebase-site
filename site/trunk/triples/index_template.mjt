@@ -2,6 +2,7 @@
   var mf = acre.require("MANIFEST").mf;
   var c = this.exports.c = {};
   var h = mf.require("core", "helpers");
+  var components = mf.require("components");
   var image = mf.require("template", "imagecomponents");  
   var i18n = mf.require("i18n", "i18n");
   var _ = i18n.gettext;
@@ -220,42 +221,9 @@
   </div>
 
   <div class="section" id="section-meta" role="aside">
-    <!-- please leave this in for debugging -->
-    <div class="content-wrapper">
-      <div class="limit">
-        ${h.sprintf(_("limit current at %s"), i18n.format_number(c.limit))}<br/>
-        <acre:block if="c.prev_limit">
-        ${h.bless_sprintf(_("set to %s or %s"), 
-        h.tag("a", i18n.format_number(c.prev_limit), "href", c.prev_limit_url), 
-        h.tag("a", i18n.format_number(c.next_limit), "href", c.next_limit_url))}<br/>
-        </acre:block>
-        <acre:block else="">
-        ${h.bless_sprintf(_("set to %s"), 
-        h.tag("a", i18n.format_number(c.next_limit), "href", c.next_limit_url))}<br/>
-        </acre:block>
-      </div>
-    </div>
-    <div class="content-wrapper">
-      <h2 class="aside-title">${_("Filter by")}:</h2>
-      <ul class="bar-graph">
-        <li class="bar-graph-item">
-          <a class="bar-graph-value" href="#" style="width:80%">/foo</a>
-        </li>
-        <li class="bar-graph-item">
-          <a class="bar-graph-value" href="#" style="width:100%">/bar</a>
-        </li>
-        <li class="bar-graph-item">
-          <a class="bar-graph-value" href="#" style="width:60%">/baz</a>
-        </li>
-        <li class="bar-graph-item">
-          <a class="bar-graph-value" href="#" style="width:20%">/domain</a>
-        </li>
-        <li class="bar-graph-item">
-          <a class="bar-graph-value" href="#" style="width:70%">/freebase</a>
-        </li>
-      </ul>
-    </div>
+    ${components.filters(c.filters)}
   </div>
+
 </acre:block>
 
 <acre:block def="footer_script()">

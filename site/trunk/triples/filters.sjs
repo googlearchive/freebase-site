@@ -8,17 +8,54 @@ var LIMIT2 = LIMIT*2;
 var TIMESTAMPS = {
  "today": function() {return datejs.today();},
  "yesterday" : function() {return datejs.today().addDays(-1);},
- "week" : function() {return datejs.today().moveToDayOfWeek(1, -1);},
- "month" : function() {return datejs.today().moveToFirstDayOfMonth();},
- "year" : function() {
+ "this week" : function() {return datejs.today().moveToDayOfWeek(1, -1);},
+ "this month" : function() {return datejs.today().moveToFirstDayOfMonth();},
+ "this year" : function() {
    var t = datejs.today();
    t.set({day:1,month:0,year:t.getFullYear()});
    return t;
  }
 };
 
-function get_filters() {
+function filter_url(filter_options, filter_key, filter_val) {
+  var o = h.extend({}, filter_options);
+  var url = h.url_for("triples", null, null, o.id);
+  delete o.id;
+  if (o.limit == LIMIT) {
+    delete o.limit;
+  }
+  o[filter_key] = filter_val;
+  var params = {};
+  for (var key in o) {
+    var v = o[key];
+    if (v != null) {
+      params[key] = v;
+    }
+  }
+  return acre.form.build_url(url, params);
+};
+
+function remove_filter_url(filter_options, filter_key) {
+  var o = h.extend({}, filter_options);
+  var url = h.url_for("triples", null, null, o.id);
+  delete o.id;
+  if (o.limit == LIMIT) {
+    delete o.limit;
+  }
+  delete o[filter_key];
+  var params = {};
+  for (var key in o) {
+    var v = o[key];
+    if (v != null) {
+      params[key] = v;
+    }
+  }
+  return acre.form.build_url(url, params);
+};
+
+function get_filters(id) {
   var filters = {
+    id: id,
     limit: get_limit(),
     timestamp: get_timestamp(),
     creator: get_creator()
@@ -47,11 +84,15 @@ function get_timestamp() {
     }
     else {
       if (h.is_array(timestamp) && timestamp.length === 2) {
-        return [timestamp[0], timestamp[1]];
+        if (timestamp[0]) {
+          if (timestamp[1]) {
+            console.log("timestamp", [timestamp[0], timestamp[1]]);
+            return [timestamp[0], timestamp[1]];
+          }
+          return timestamp[0];
+        }
       }
-      else {
-        return timestamp;
-      }
+      return timestamp;
     }
   }
   return null;
@@ -63,7 +104,7 @@ function get_limit() {
   if (acre.request.params.limit) {
     try {
       limit = parseInt(acre.request.params.limit);
-      if (!limit || limit < LIMIT) {
+      if (!limit || limit < 1) {
         limit = LIMIT;
       }
     }

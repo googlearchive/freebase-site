@@ -128,8 +128,17 @@ function outgoing(id, filters) {
   return freebase.mqlread(q)
     .then(function(env) {
       var result = env.result;
-      return result["/type/reflect/any_master"].concat(result["/type/reflect/any_value"]);
+      result = result["/type/reflect/any_master"].concat(result["/type/reflect/any_value"]);
+      result.sort(sort_link_timestamp);
+      if (filters.limit && result.length > filters.limit) {
+        result = result.slice(0, filters.limit);
+      }
+      return result;
     });
+};
+
+function sort_link_timestamp(a, b) {
+  return b.link.timestamp > a.link.timestamp;
 };
 
 function incoming(id, filters) {

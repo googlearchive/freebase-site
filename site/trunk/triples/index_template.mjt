@@ -68,166 +68,176 @@
     </div>
   </div>
 
-  <div class="section" id="section-names-keys">
-    <acre:block if="c.names && c.names.length">
-    <h2 class="table-title">${_("Names")} (${i18n.format_number(c.names.length)})</h2>
-    <table class="table">
-      <thead>
-        <tr>
-          <th class="column-header first">${_("value")}</th>
-          <th class="column-header">${_("lang")}</th>
-          <th class="column-header">${_("creator")}</th>
-          <th class="column-header">${_("timestamp")}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="hoverable" acre:for="name in c.names">
-          <th class="odd row-header" scope="row">${name.value}</th>
-          <td class="even">${a(name.lang)}</td>
-          <td class="odd" acre:if="name.link.creator">${a(name.link.creator)}</td>
-          <td class="odd" acre:else="">null</td>
-          <td class="even">${name.link.timestamp}</td>
-        </tr>
-      </tbody>
-    </table>
-    </acre:block>
 
-    <acre:block if="c.keys">
-      <acre:block if="c.keys.outgoing && c.keys.outgoing.length">
-      <h2 class="table-title">${_("Keys")} (${i18n.format_number(c.keys.outgoing.length)})</h2>
-      <table class="table">
-        <thead>
-          <tr>
-            <th class="column-header first">${_("namespace")}</th>
-            <th class="column-header">${_("value")}</th>
-            <th class="column-header">${_("creator")}</th>
-            <th class="column-header">${_("timestamp")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="hoverable" acre:for="k in c.keys.outgoing">
-            <th class="row-header odd" scope="row">${a(k.namespace)}</th>
-            <td class="even">${k.value}</td>
-            <td class="odd" acre:if="k.link.creator">${a(k.link.creator)}</td>
-            <td class="odd" acre:else="">null</td>
-            <td class="even">${k.link.timestamp}</td>
-          </tr>
-        </tbody>
-      </table>
-      </acre:block>
-    </acre:block>
+  <div id="content-wrapper">
+    <div id="content-main" role="main">
+      <div class="section" id="section-names-keys">
+        <acre:block if="c.names && c.names.length">
+        <h2 class="table-title">${_("Names")} (${i18n.format_number(c.names.length)})</h2>
+        <table class="table table-sortable">
+          <thead>
+            <tr>
+              <th scope="col" class="column-header first {sorter: 'schemaName'}"><span class="sort-icon">${_("value")}</span></th>
+              <th scope="col" class="column-header"><span class="sort-icon">${_("lang")}</span></th>
+              <th scope="col" class="column-header"><span class="sort-icon">${_("creator")}</span></th>
+              <th scope="col" class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hoverable" acre:for="name in c.names">
+              <th class="odd row-header" scope="row">${name.value}</th>
+              <td class="even">${a(name.lang)}</td>
+              <td class="odd" acre:if="name.link.creator">${a(name.link.creator)}</td>
+              <td class="odd" acre:else="">null</td>
+              <td class="numeric even">${name.link.timestamp}</td>
+            </tr>
+          </tbody>
+        </table>
+        </acre:block>
+
+        <acre:block if="c.keys">
+        <acre:block if="c.keys.outgoing && c.keys.outgoing.length">
+        <h2 class="table-title">${_("Keys")} (${i18n.format_number(c.keys.outgoing.length)})</h2>
+        <table class="table table-sortable">
+          <thead>
+            <tr>
+              <th class="column-header first">${_("namespace")}</th>
+              <th class="column-header">${_("value")}</th>
+              <th class="column-header">${_("creator")}</th>
+              <th class="column-header">${_("timestamp")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hoverable" acre:for="k in c.keys.outgoing">
+              <th class="row-header odd" scope="row">${a(k.namespace)}</th>
+              <td class="even">${k.value}</td>
+              <td class="odd" acre:if="k.link.creator">${a(k.link.creator)}</td>
+              <td class="odd" acre:else="">null</td>
+              <td class="even">${k.link.timestamp}</td>
+            </tr>
+          </tbody>
+        </table>
+        </acre:block>
+        </acre:block>
+      </div>
+
+      <div class="section" id="section-incoming-outgoing">
+        <acre:block if="c.keys && c.keys.incoming && c.keys.incoming.length">
+        <h2 class="table-title">${_("Incoming Keys")} (${i18n.format_number(c.keys.incoming.length)})</h2>
+        <table class="table table-sortable">
+          <thead>
+            <tr>
+              <th class="column-header first">${_("namespace")}</th>
+              <th class="column-header">${_("value")}</th>
+              <th class="column-header">${_("creator")}</th>
+              <th class="column-header">${_("timestamp")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hoverable" acre:for="k in c.keys.incoming">
+              <th class="row-header odd" scope="row">${a(k.namespace)}</th>
+              <td class="even">${k.value}</td>
+              <td class="odd" acre:if="k.link.creator">${a(k.link.creator)}</td>
+              <td class="odd" acre:else="">null</td>
+              <td class="even">${k.link.timestamp}</td>
+            </tr>
+          </tbody>
+        </table>
+        </acre:block>
+
+        <acre:block if="c.outgoing && c.outgoing.length">
+        <h2 class="table-title">${_("Outgoing Properties")} (${i18n.format_number(c.outgoing.length)})</h2>
+        <table class="table table-sortable">
+          <thead>
+            <tr>
+              <th class="column-header first">${_("subject")}</th>
+              <th class="column-header">${_("predicate")}</th>
+              <th class="column-header">${_("object")}</th>
+              <th class="column-header">${_("creator")}</th>
+              <th class="column-header numeric">${_("timestamp")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hoverable" acre:for="o in c.outgoing">
+              <th class="row-header odd" scope="row"><span class="self">-</span></th>
+              <td class="even">${a(o.link.master_property)}</td>
+              <td class="odd" acre:if="'value' in o">${literal(o)}</td>
+              <td class="odd" acre:else="">${a(o.id)}</td>
+              <td class="even" acre:if="o.link.creator">${a(o.link.creator)}</td>
+              <td class="even" acre:else="">null</td>
+              <td class="odd numeric">${o.link.timestamp}</td>
+            </tr>
+          </tbody>
+        </table>
+        </acre:block>
+
+        <acre:block if="c.incoming && c.incoming.length">
+        <h2 class="table-title">${_("Incoming Properties")} (${i18n.format_number(c.incoming.length)})</h2>
+        <table class="table table-sortable">
+          <thead>
+            <tr>
+              <th class="column-header first">${_("subject")}</th>
+              <th class="column-header">${_("predicate")}</th>
+              <th class="column-header">${_("object")}</th>
+              <th class="column-header">${_("creator")}</th>
+              <th class="column-header numeric">${_("timestamp")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hoverable" acre:for="o in c.incoming" >
+              <th class="row-header odd" scope="row">${a(o.id)}</th>
+              <td class="even">${a(o.link.master_property)}</td>
+              <td class="odd"><span class="self">-</span></td>
+              <td class="even" acre:if="o.link.creator">${a(o.link.creator)}</td>
+              <td class="even" acre:else="">null</td>
+              <td class="odd numeric">${o.link.timestamp}</td>
+            </tr>
+          </tbody>
+        </table>
+        </acre:block>
+
+        <acre:block if="c.typelinks && c.typelinks.length">
+        <h2 class="table-title">${_("Links using this property")} (${i18n.format_number(c.typelinks.length)})</h2>
+        <table class="table table-sortable">
+          <thead>
+            <tr>
+              <th class="column-header first">${_("subject")}</th>
+              <th class="column-header">${_("predicate")}</th>
+              <th class="column-header">${_("object")}</th>
+              <th class="column-header">${_("creator")}</th>
+              <th class="column-header">${_("timestamp")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hoverable" acre:for="o in c.typelinks">
+              <th class="row-header odd" scope="row">${a(o.source.id)}</th>
+              <td class="even"><span class="self">-</span></td>
+              <td class="odd" acre:if="o.target_value">${literal(o.target_value, o.master_property, o.source.id)}</td>
+              <td class="odd" acre:else="">${a(o.target.id)}</td>
+              <td class="even" acre:if="o.creator">${a(o.creator)}</td>
+              <td class="even" acre:else="">null</td>
+              <td class="odd numeric">${o.timestamp}</td>
+            </tr>
+          </tbody>
+        </table>
+        </acre:block>
+      </div>
+    </div>
+
+    <div id="content-sub" role="nav">
+      <div class="content-wrapper section" id="filter-pane">
+        <h1>Filter this data</h1>
+        ${components.filters(c.filters)}
+      </div>
+    </div>
   </div>
 
-  <div class="section" id="section-incoming-outgoing">
-    <acre:block if="c.keys && c.keys.incoming && c.keys.incoming.length">
-    <h2 class="table-title">${_("Incoming Keys")} (${i18n.format_number(c.keys.incoming.length)})</h2>
-    <table class="table">
-      <thead>
-        <tr>
-          <th class="column-header first">${_("namespace")}</th>
-          <th class="column-header">${_("value")}</th>
-          <th class="column-header">${_("creator")}</th>
-          <th class="column-header">${_("timestamp")}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="hoverable" acre:for="k in c.keys.incoming">
-          <th class="row-header odd" scope="row">${a(k.namespace)}</th>
-          <td class="even">${k.value}</td>
-          <td class="odd" acre:if="k.link.creator">${a(k.link.creator)}</td>
-          <td class="odd" acre:else="">null</td>
-          <td class="even">${k.link.timestamp}</td>
-        </tr>
-      </tbody>
-    </table>
-    </acre:block>
-
-    <acre:block if="c.outgoing && c.outgoing.length">
-    <h2 class="table-title">${_("Outgoing Properties")} (${i18n.format_number(c.outgoing.length)})</h2>
-    <table class="table">
-      <thead>
-        <tr>
-          <th class="column-header first">${_("subject")}</th>
-          <th class="column-header">${_("predicate")}</th>
-          <th class="column-header">${_("object")}</th>
-          <th class="column-header">${_("creator")}</th>
-          <th class="column-header numeric">${_("timestamp")}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="hoverable" acre:for="o in c.outgoing">
-          <th class="row-header odd" scope="row"><span class="self">-</span></th>
-          <td class="even">${a(o.link.master_property)}</td>
-          <td class="odd" acre:if="'value' in o">${literal(o)}</td>
-          <td class="odd" acre:else="">${a(o.id)}</td>
-          <td class="even" acre:if="o.link.creator">${a(o.link.creator)}</td>
-          <td class="even" acre:else="">null</td>
-          <td class="odd numeric">${o.link.timestamp}</td>
-        </tr>
-      </tbody>
-    </table>
-    </acre:block>
-
-    <acre:block if="c.incoming && c.incoming.length">
-    <h2 class="table-title">${_("Incoming Properties")} (${i18n.format_number(c.incoming.length)})</h2>
-    <table class="table">
-      <thead>
-        <tr>
-          <th class="column-header first">${_("subject")}</th>
-          <th class="column-header">${_("predicate")}</th>
-          <th class="column-header">${_("object")}</th>
-          <th class="column-header">${_("creator")}</th>
-          <th class="column-header numeric">${_("timestamp")}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="hoverable" acre:for="o in c.incoming" >
-          <th class="row-header odd" scope="row">${a(o.id)}</th>
-          <td class="even">${a(o.link.master_property)}</td>
-          <td class="odd"><span class="self">-</span></td>
-          <td class="even" acre:if="o.link.creator">${a(o.link.creator)}</td>
-          <td class="even" acre:else="">null</td>
-          <td class="odd numeric">${o.link.timestamp}</td>
-        </tr>
-      </tbody>
-    </table>
-    </acre:block>
-
-    <acre:block if="c.typelinks && c.typelinks.length">
-    <h2 class="table-title">${_("Links using this property")} (${i18n.format_number(c.typelinks.length)})</h2>
-    <table class="table">
-      <thead>
-        <tr>
-          <th class="column-header first">${_("subject")}</th>
-          <th class="column-header">${_("predicate")}</th>
-          <th class="column-header">${_("object")}</th>
-          <th class="column-header">${_("creator")}</th>
-          <th class="column-header">${_("timestamp")}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="hoverable" acre:for="o in c.typelinks">
-          <th class="row-header odd" scope="row">${a(o.source.id)}</th>
-          <td class="even"><span class="self">-</span></td>
-          <td class="odd" acre:if="o.target_value">${literal(o.target_value, o.master_property, o.source.id)}</td>
-          <td class="odd" acre:else="">${a(o.target.id)}</td>
-          <td class="even" acre:if="o.creator">${a(o.creator)}</td>
-          <td class="even" acre:else="">null</td>
-          <td class="odd numeric">${o.timestamp}</td>
-        </tr>
-      </tbody>
-    </table>
-    </acre:block>
-  </div>
-
-  <div class="section" id="section-meta" role="aside">
-    ${components.filters(c.filters)}
-  </div>
 
 </acre:block>
 
 <acre:block def="footer_script()">
-  <script src="${mf.js_src('index.mf.js')}"></script>
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+  <script src="${mf.js_src('triples.mf.js')}"></script>
 </acre:block>
 
 <acre:block def="a(id, name)" trim="">

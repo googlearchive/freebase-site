@@ -16,8 +16,9 @@
     ]
   },
   "javascript": {
-    "index.mf.js": [
-      ["template", "freebase.mf.js"]
+    "triples.mf.js": [
+      ["template", "freebase.mf.js"],
+      "triples.js"
     ]
   }
 }

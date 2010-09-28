@@ -11,7 +11,7 @@
     var o = filter_options || {};
     var limit = o.limit || f.LIMIT;
   </acre:script>
-  <h2 class="aside-title">${_("Limit")}:</h2>
+  <h2 class="filter-title">${_("Limit")}:</h2>
   <ul>
     <li>
       <a acre:if="limit !== f.LIMIT" href="${f.remove_filter_url(o, 'limit')}" class="remove-filter">x</a>
@@ -24,7 +24,80 @@
   </ul>
 
 
-  <h2 class="aside-title">${_("Created")}:</h2>
+  <h2 class="filter-title">${_("By Vertical")}:</h2>
+
+  <acre:block if="o.domain">
+  <ul>
+    <li>
+      <a href="${f.remove_filter_url(o, 'domain')}" class="remove-filter">x</a>
+      ${o.domain}
+    </li>
+  </ul>
+  </acre:block>
+  <acre:block elif="o.type">
+  <acre:script>
+  var type = acre.freebase.mqlread({id:o.type, type:"/type/type", domain:null}).result;
+  </acre:script>
+  <ul>
+    <li>
+      <a href="${f.remove_filter_url(o, 'type')}" class="remove-filter">x</a>
+      <acre:script>
+      var domain_options = h.extend({}, o);
+      delete domain_options.type;
+      </acre:script>
+      <a href="${f.filter_url(domain_options, 'domain', type.domain)}">${type.domain}</a>
+      <ul>
+        <li>
+          ${o.type}
+        </li>
+      </ul>
+    </li>
+  </ul>
+  </acre:block>
+  <acre:block elif="o.property">
+  <acre:script>
+  var prop = acre.freebase.mqlread({id:o.property, type:"/type/property", schema:{id:null, domain:null}}).result;
+  </acre:script>
+  <ul>
+    <li>
+      <a href="${f.remove_filter_url(o, 'property')}" class="remove-filter">x</a>
+      <acre:script>
+      var domain_options = h.extend({}, o);
+      delete domain_options.property;
+      </acre:script>
+      <a href="${f.filter_url(domain_options, 'domain', prop.schema.domain)}">${prop.schema.domain}</a>
+      <ul>
+        <li>
+          <a href="${f.filter_url(domain_options, 'type', prop.schema.id)}">${prop.schema.id}</a>
+          <ul>
+            <li>
+              ${o.property}
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+  </acre:block>
+
+  <ul class="bar-graph">
+    <li class="bar-graph-item">
+      <a class="bar-graph-value" href="#" style="width:80%">/foo</a>
+    </li>
+    <li class="bar-graph-item">
+      <a class="bar-graph-value" href="#" style="width:100%">/bar</a>
+    </li>
+    <li class="bar-graph-item">
+      <a class="bar-graph-value" href="#" style="width:60%">/baz</a>
+    </li>
+    <li class="bar-graph-item">
+      <a class="bar-graph-value" href="#" style="width:20%">/domain</a>
+    </li>
+    <li class="bar-graph-item">
+      <a class="bar-graph-value" href="#" style="width:70%">/freebase</a>
+    </li>
+  </ul>
+  <h2 class="filter-title">${_("By Time")}:</h2>
   <ul>
     <acre:script>
       var ts = acre.request.params.timestamp;
@@ -56,7 +129,7 @@
   </ul>
 
 
-  <h2 class="aside-title">${_("Creator")}:</h2>
+  <h2 class="filter-title">${_("By User")}:</h2>
   <ul>
     <li acre:if="o.creator">
       <a href="${f.remove_filter_url(o, 'creator')}" class="remove-filter">x</a>
@@ -69,81 +142,6 @@
   </ul>
 
 
-  <div class="content-wrapper">
-    <h2 class="aside-title">${_("Filter by")}:</h2>
-
-    <acre:block if="o.domain">
-      <ul>
-        <li>
-          <a href="${f.remove_filter_url(o, 'domain')}" class="remove-filter">x</a>
-          ${o.domain}
-        </li>
-      </ul>
-    </acre:block>
-    <acre:block elif="o.type">
-      <acre:script>
-        var type = acre.freebase.mqlread({id:o.type, type:"/type/type", domain:null}).result;
-      </acre:script>
-      <ul>
-        <li>
-          <a href="${f.remove_filter_url(o, 'type')}" class="remove-filter">x</a>
-          <acre:script>
-            var domain_options = h.extend({}, o);
-            delete domain_options.type;
-          </acre:script>
-          <a href="${f.filter_url(domain_options, 'domain', type.domain)}">${type.domain}</a>
-          <ul>
-            <li>
-              ${o.type}
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </acre:block>
-    <acre:block elif="o.property">
-      <acre:script>
-        var prop = acre.freebase.mqlread({id:o.property, type:"/type/property", schema:{id:null, domain:null}}).result;
-      </acre:script>
-      <ul>
-        <li>
-          <a href="${f.remove_filter_url(o, 'property')}" class="remove-filter">x</a>
-          <acre:script>
-            var domain_options = h.extend({}, o);
-            delete domain_options.property;
-          </acre:script>
-          <a href="${f.filter_url(domain_options, 'domain', prop.schema.domain)}">${prop.schema.domain}</a>
-          <ul>
-            <li>
-              <a href="${f.filter_url(domain_options, 'type', prop.schema.id)}">${prop.schema.id}</a>
-              <ul>
-                <li>
-                  ${o.property}
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </acre:block>
-
-    <ul class="bar-graph">
-      <li class="bar-graph-item">
-        <a class="bar-graph-value" href="#" style="width:80%">/foo</a>
-      </li>
-      <li class="bar-graph-item">
-        <a class="bar-graph-value" href="#" style="width:100%">/bar</a>
-      </li>
-      <li class="bar-graph-item">
-        <a class="bar-graph-value" href="#" style="width:60%">/baz</a>
-      </li>
-      <li class="bar-graph-item">
-        <a class="bar-graph-value" href="#" style="width:20%">/domain</a>
-      </li>
-      <li class="bar-graph-item">
-        <a class="bar-graph-value" href="#" style="width:70%">/freebase</a>
-      </li>
-    </ul>
-  </div>
 
   
 </acre:block>
@@ -163,13 +161,13 @@
       ${def()}
     </acre:block>
     <acre:block else="">
-      <input type="text" name="${filter_key}" placeholder="${_(filter_key)}"/>
+      <input type="text" class="text-input" name="${filter_key}" placeholder="${_(filter_key)}"/>
     </acre:block>
     <button type="submit" style="display:none;">submit</button>
   </form>
 </acre:block>
 
 <acre:block def="timestamp_inputs()">  
-  <input type="text" name="timestamp" placeholder="${_('from')}"/> to 
-  <input type="text" name="timestamp" placeholder="${_('to')}"/>
+  <input type="text" class="text-input" name="timestamp" placeholder="${_('from')}"/> to 
+  <input type="text" class="text-input" name="timestamp" placeholder="${_('to')}"/>
 </acre:block>

@@ -26,13 +26,13 @@ function get_filters(id) {
     creator: get_creator()
   };
   if (acre.request.params.domain) {
-    filters.domain = acre.request.params.domain;
+    filters.domain = validators.MqlId(acre.request.params.domain);
   }
   else if (acre.request.params.type) {
-    filters.type = acre.request.params.type;
+    filters.type = validators.MqlId(acre.request.params.type);
   }
   else if (acre.request.params.property) {
-    filters.property = acre.request.params.property;
+    filters.property = validators.MqlId(acre.request.params.property);
   }
   return filters;
 };
@@ -49,15 +49,16 @@ function get_timestamp() {
     }
     else {
       if (h.is_array(timestamp) && timestamp.length === 2) {
+        timestamp[0] = validators.Timestamp(timestamp[0], {if_empty:null});
+        timestamp[1] = validators.Timestamp(timestamp[1], {if_empty:null});
         if (timestamp[0]) {
           if (timestamp[1]) {
-            console.log("timestamp", [timestamp[0], timestamp[1]]);
-            return [timestamp[0], timestamp[1]];
+            return timestamp;
           }
           return timestamp[0];
         }
       }
-      return timestamp;
+      return validators.Timestamp(timestamp, {if_empty:null});
     }
   }
   return null;
@@ -65,17 +66,9 @@ function get_timestamp() {
 
 function get_limit() {
   // calculate limit, prev_limit, next_limit
-  var limit = LIMIT;
-  if (acre.request.params.limit) {
-    try {
-      limit = parseInt(acre.request.params.limit);
-      if (!limit || limit < 1) {
-        limit = LIMIT;
-      }
-    }
-    catch (ex) {
-      limit = LIMIT;
-    }
+  var limit = validators.Int(acre.request.params.limit, {if_invalid:LIMIT});
+  if (limit < 1) {
+    limit = LIMIT;
   }
   return limit;
 };

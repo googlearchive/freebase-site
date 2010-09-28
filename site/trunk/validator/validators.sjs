@@ -383,3 +383,32 @@ Validator.factory(scope, "OneOf", {
     return this.invalid("oneof option not an array");
   }
 });
+
+
+
+/**
+ * Timestamp (must pass acre.freebase.date_from_iso)
+ */
+Validator.factory(scope, "Timestamp", {
+  "defaults": {
+    date: false  // convert to date
+  },
+  "string": function(val, options) {
+    var date;
+    try {
+      date = acre.freebase.date_from_iso(val);
+      if (!date) {
+        throw(date);
+      }
+    }
+    catch (ex) {
+      return this.invalid(this.key, val, "is not a valid ISO8601 date string");
+    }
+    if (options.date) {
+      return date;
+    }
+    else {
+      return val;
+    }
+  }
+});

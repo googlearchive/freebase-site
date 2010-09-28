@@ -208,4 +208,29 @@ test("valdiators.OneOf", oneof_test, function() {
   }
 });
 
+
+var timestamp_test = {
+  valid: ["2009", "2009-01-01", "2009-12-31T23:00:01"],
+  invalid: ["2009/10/01", "10", "2009-1-1", "2009-10-10T1:1:1"]
+};
+
+test("validators.Timestamp", timestamp_test, function() {
+  timestamp_test.valid.forEach(function(val) {
+    strictEqual(validators.Timestamp(val), val);
+  });
+
+  timestamp_test.invalid.forEach(function(val) {
+    try {
+      console.log(val, validators.Timestamp(val));
+      ok(false, "not timestamp " + val);
+    }
+    catch(e if e instanceof validators.Invalid) {
+      ok(e, e.toString());
+    }
+    catch(e) {
+      ok(false, "unexpected exception " + e);
+    }
+  });
+});
+
 acre.test.report();

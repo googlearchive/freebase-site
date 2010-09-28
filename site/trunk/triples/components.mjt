@@ -1,0 +1,175 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").mf;
+  var h = mf.require("core", "helpers");
+  var f = mf.require("filters");
+  var i18n = mf.require("i18n", "i18n");
+  var _ = i18n.gettext;
+</acre:script>
+
+<acre:block def="filters(filter_options)">
+  <acre:script>
+    var o = filter_options || {};
+    var limit = o.limit || f.LIMIT;
+  </acre:script>
+  <h2 class="aside-title">${_("Limit")}:</h2>
+  <ul>
+    <li>
+      <a acre:if="limit !== f.LIMIT" href="${f.remove_filter_url(o, 'limit')}" class="remove-filter">x</a>
+      ${i18n.format_number(limit)}
+    </li>
+    <li>
+      <label>${_("other")}</label>
+      ${filter_form(o, 'limit')}
+    </li>
+  </ul>
+
+
+  <h2 class="aside-title">${_("Created")}:</h2>
+  <ul>
+    <acre:script>
+      var ts = acre.request.params.timestamp;
+    </acre:script>
+    <acre:block if="ts && !(ts in f.TIMESTAMPS) && o.timestamp">
+      <a href="${f.remove_filter_url(o, 'timestamp')}" class="remove-filter">x</a>
+      <acre:block if="h.is_array(o.timestamp) && o.timestamp.length === 2">
+        ${h.sprintf(_("%s to %s"), o.timestamp[0], o.timestamp[1])}
+      </acre:block>
+      <acre:block else="">
+        ${o.timestamp}
+      </acre:block>
+    </acre:block>
+    <acre:block for="key,val in f.TIMESTAMPS">
+      <li>
+        <acre:block if="key === ts">
+          <a href="${f.remove_filter_url(o, 'timestamp')}" class="remove-filter">x</a>
+          ${_(key)}
+        </acre:block>
+        <acre:block else="">
+          <a href="${f.filter_url(o, 'timestamp', key)}">${_(key)}</a>
+        </acre:block>
+      </li>
+    </acre:block>
+    <li>
+      <label>${_("other")}</label>
+      ${filter_form(o, 'timestamp', timestamp_inputs)}
+    </li>
+  </ul>
+
+
+  <h2 class="aside-title">${_("Creator")}:</h2>
+  <ul>
+    <li acre:if="o.creator">
+      <a href="${f.remove_filter_url(o, 'creator')}" class="remove-filter">x</a>
+      ${o.creator}
+    </li>
+    <li>
+      <label>${_("user")}</label>
+      ${filter_form(o, 'creator')}
+    </li>
+  </ul>
+
+
+  <div class="content-wrapper">
+    <h2 class="aside-title">${_("Filter by")}:</h2>
+
+    <acre:block if="o.domain">
+      <ul>
+        <li>
+          <a href="${f.remove_filter_url(o, 'domain')}" class="remove-filter">x</a>
+          ${o.domain}
+        </li>
+      </ul>
+    </acre:block>
+    <acre:block elif="o.type">
+      <acre:script>
+        var type = acre.freebase.mqlread({id:o.type, type:"/type/type", domain:null}).result;
+      </acre:script>
+      <ul>
+        <li>
+          <a href="${f.remove_filter_url(o, 'type')}" class="remove-filter">x</a>
+          <acre:script>
+            var domain_options = h.extend({}, o);
+            delete domain_options.type;
+          </acre:script>
+          <a href="${f.filter_url(domain_options, 'domain', type.domain)}">${type.domain}</a>
+          <ul>
+            <li>
+              ${o.type}
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </acre:block>
+    <acre:block elif="o.property">
+      <acre:script>
+        var prop = acre.freebase.mqlread({id:o.property, type:"/type/property", schema:{id:null, domain:null}}).result;
+      </acre:script>
+      <ul>
+        <li>
+          <a href="${f.remove_filter_url(o, 'property')}" class="remove-filter">x</a>
+          <acre:script>
+            var domain_options = h.extend({}, o);
+            delete domain_options.property;
+          </acre:script>
+          <a href="${f.filter_url(domain_options, 'domain', prop.schema.domain)}">${prop.schema.domain}</a>
+          <ul>
+            <li>
+              <a href="${f.filter_url(domain_options, 'type', prop.schema.id)}">${prop.schema.id}</a>
+              <ul>
+                <li>
+                  ${o.property}
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </acre:block>
+
+    <ul class="bar-graph">
+      <li class="bar-graph-item">
+        <a class="bar-graph-value" href="#" style="width:80%">/foo</a>
+      </li>
+      <li class="bar-graph-item">
+        <a class="bar-graph-value" href="#" style="width:100%">/bar</a>
+      </li>
+      <li class="bar-graph-item">
+        <a class="bar-graph-value" href="#" style="width:60%">/baz</a>
+      </li>
+      <li class="bar-graph-item">
+        <a class="bar-graph-value" href="#" style="width:20%">/domain</a>
+      </li>
+      <li class="bar-graph-item">
+        <a class="bar-graph-value" href="#" style="width:70%">/freebase</a>
+      </li>
+    </ul>
+  </div>
+
+  
+</acre:block>
+
+
+<acre:block def="filter_form(filter_options, filter_key, def)">
+  <form action="${h.url_for('triples', null, null, filter_options.id)}" method="GET">
+    <acre:block for="key,val in filter_options" if="key && val && (key !== 'id') && (key != filter_key)">
+      <acre:block if="h.is_array(val)">
+        <input acre:for="v in val" type="hidden" name="${key}" value="${v}"/>
+      </acre:block>
+      <acre:block else="">
+        <input type="hidden" name="${key}" value="${val}"/>
+      </acre:block>
+    </acre:block>
+    <acre:block if="def">
+      ${def()}
+    </acre:block>
+    <acre:block else="">
+      <input type="text" name="${filter_key}" placeholder="${_(filter_key)}"/>
+    </acre:block>
+    <button type="submit" style="display:none;">submit</button>
+  </form>
+</acre:block>
+
+<acre:block def="timestamp_inputs()">  
+  <input type="text" name="timestamp" placeholder="${_('from')}"/> to 
+  <input type="text" name="timestamp" placeholder="${_('to')}"/>
+</acre:block>

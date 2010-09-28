@@ -1,6 +1,7 @@
 var mf = acre.require("MANIFEST").mf;
 var h = mf.require("core", "helpers");
 var datejs = mf.require("libraries", "date").Date;
+var validators = mf.require("validator", "validators");
 
 var LIMIT = 100;
 var LIMIT2 = LIMIT*2;
@@ -15,42 +16,6 @@ var TIMESTAMPS = {
    t.set({day:1,month:0,year:t.getFullYear()});
    return t;
  }
-};
-
-function filter_url(filter_options, filter_key, filter_val) {
-  var o = h.extend({}, filter_options);
-  var url = h.url_for("triples", null, null, o.id);
-  delete o.id;
-  if (o.limit == LIMIT) {
-    delete o.limit;
-  }
-  o[filter_key] = filter_val;
-  var params = {};
-  for (var key in o) {
-    var v = o[key];
-    if (v != null) {
-      params[key] = v;
-    }
-  }
-  return acre.form.build_url(url, params);
-};
-
-function remove_filter_url(filter_options, filter_key) {
-  var o = h.extend({}, filter_options);
-  var url = h.url_for("triples", null, null, o.id);
-  delete o.id;
-  if (o.limit == LIMIT) {
-    delete o.limit;
-  }
-  delete o[filter_key];
-  var params = {};
-  for (var key in o) {
-    var v = o[key];
-    if (v != null) {
-      params[key] = v;
-    }
-  }
-  return acre.form.build_url(url, params);
 };
 
 function get_filters(id) {
@@ -73,7 +38,7 @@ function get_filters(id) {
 };
 
 function get_creator() {
-  return acre.request.params.creator;
+  return validators.MqlId(acre.request.params.creator, {if_empty:null});
 };
 
 function get_timestamp() {
@@ -168,4 +133,41 @@ function apply_domain_type_property(clause, domain, type, property) {
     clause.master_property = property;
   }
   return clause;
+};
+
+
+function filter_url(filter_options, filter_key, filter_val) {
+  var o = h.extend({}, filter_options);
+  var url = h.url_for("triples", null, null, o.id);
+  delete o.id;
+  if (o.limit == LIMIT) {
+    delete o.limit;
+  }
+  o[filter_key] = filter_val;
+  var params = {};
+  for (var key in o) {
+    var v = o[key];
+    if (v != null) {
+      params[key] = v;
+    }
+  }
+  return acre.form.build_url(url, params);
+};
+
+function remove_filter_url(filter_options, filter_key) {
+  var o = h.extend({}, filter_options);
+  var url = h.url_for("triples", null, null, o.id);
+  delete o.id;
+  if (o.limit == LIMIT) {
+    delete o.limit;
+  }
+  delete o[filter_key];
+  var params = {};
+  for (var key in o) {
+    var v = o[key];
+    if (v != null) {
+      params[key] = v;
+    }
+  }
+  return acre.form.build_url(url, params);
 };

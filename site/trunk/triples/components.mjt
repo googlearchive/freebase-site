@@ -13,25 +13,6 @@
     var ts = acre.request.params.timestamp;
   </acre:script>
    
-  <div class="current-filters">
-    <span class="filter-item" acre:if="o.creator">
-      <a href="${f.remove_filter_url(o, 'creator')}" class="remove-filter">x</a>
-      ${o.creator}
-    </span>
-    <span class="filter-item" acre:if="limit !== f.LIMIT">
-      <a href="${f.remove_filter_url(o, 'limit')}" class="remove-filter">x</a>
-      ${i18n.format_number(limit)}
-    </span>
-    <span class="filter-item" acre:if="ts && (ts in f.TIMESTAMPS) && o.timestamp">
-      <a href="${f.remove_filter_url(o, 'timestamp')}" class="remove-filter">x</a>
-      <acre:block if="h.is_array(o.timestamp) && o.timestamp.length === 2">
-        ${h.sprintf(_("%s to %s"), o.timestamp[0], o.timestamp[1])}
-      </acre:block>
-      <acre:block else="">
-        ${o.timestamp}
-      </acre:block>
-    </span>
-  </div>
   <div class="filter-group">
     <h2 class="filter-title">${_("By Vertical")}:</h2>
 
@@ -120,7 +101,7 @@
     </ul>
   </div>
 
-  <div acre:if="!ts" class="filter-group">
+  <div class="filter-group">
     <h2 class="filter-title">${_("By Time")}:</h2>
     <ul>
       <acre:block for="key,val in f.TIMESTAMPS">
@@ -143,8 +124,12 @@
     </ul>
   </div>
 
-  <div class="filter-group" acre:if="!o.creator">
+  <div class="filter-group">
     <h2 class="filter-title">${_("By User")}:</h2>
+    <span class="filter-item" acre:if="o.creator">
+      <a href="${f.remove_filter_url(o, 'creator')}" class="remove-filter">x</a>
+      ${o.creator}
+    </span>
     <ul>
       <li>
         ${filter_form(o, 'Start typing for suggestions')}
@@ -152,8 +137,12 @@
     </ul>
   </div>
 
-  <div acre:if="limit === f.LIMIT" class="filter-group">
+  <div class="filter-group">
     <h2 class="filter-title">${_("Limit")}:</h2>
+    <span class="filter-item" acre:if="limit !== f.LIMIT">
+      <a href="${f.remove_filter_url(o, 'limit')}" class="remove-filter">x</a>
+      ${i18n.format_number(limit)}
+    </span>
     ${filter_form(o, 'Default is 100')}
   </div>
 

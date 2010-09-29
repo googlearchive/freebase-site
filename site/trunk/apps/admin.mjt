@@ -53,11 +53,13 @@
   
     <div class="page-meta" acre:else="">
       <h1>$c.app.name</h1>
-      <span class="creation-timestamp" acre:if="c.app && c.app.oauth">
-          <b>OAuth Credentials</b><br/>
-          <em>Consumer Key:</em> $c.app.oauth.key<br/>
-          <em>Consumer Secret:</em> $c.app.oauth.secret
-      </span>
+	  <div class="admin-toolbox">
+	      <span class="creation-timestamp" acre:if="c.app && c.app.oauth">
+    	      <b>OAuth Credentials</b><br/>
+        	  <em>Consumer Key:</em> $c.app.oauth.key<br/>
+	          <em>Consumer Secret:</em> $c.app.oauth.secret
+    	  </span>
+   	  </div>
       <form id="edit-props" action="${h.url_for('apps', 'form', null, '/submit/set_app_properties')}" method="post" class="box-form">
         <input type="hidden" name="appid" value="$c.app.id" />
         <ul class="box-modechooser">

@@ -105,14 +105,12 @@
     <h2 class="filter-title">${_("By Time")}:</h2>
     <ul>
       <acre:block for="key,val in f.TIMESTAMPS">
-      <li>
-        <acre:block if="key === ts">
+      <li acre:if="key === ts" class="filter-item">
         <a href="${f.remove_filter_url(o, 'timestamp')}" class="remove-filter">x</a>
         ${_(key)}
-        </acre:block>
-        <acre:block else="">
+      </li>
+      <li acre:else="">
         <a href="${f.filter_url(o, 'timestamp', key)}">${_(key)}</a>
-        </acre:block>
       </li>
       </acre:block>
       <li>
@@ -144,6 +142,7 @@
       ${i18n.format_number(limit)}
     </span>
     ${filter_form(o, 'limit', null, 'Default is 100')}
+    </acre:block>
   </div>
 
 </acre:block>

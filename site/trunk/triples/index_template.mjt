@@ -6,6 +6,7 @@
   var image = mf.require("template", "imagecomponents");  
   var i18n = mf.require("i18n", "i18n");
   var _ = i18n.gettext;
+  var th = mf.require("helpers");
 </acre:script>
 
 <acre:block def="title()">
@@ -62,6 +63,10 @@
         <strong>${_("guid")}:</strong>
         ${c.topic.guid}
       </span>
+      <span class="key">
+        <strong>${_("permission")}:</strong>
+        ${a(c.topic.permission)}
+      </span>
     </div>
     <div class="admin-toolbox">
       <span class="creation-timestamp">
@@ -87,19 +92,22 @@
         <table class="table table-sortable">
           <thead>
             <tr>
-              <th scope="col" class="column-header first {sorter: 'schemaName'}"><span class="sort-icon">${_("value")}</span></th>
+              <th scope="col" class="column-header first"><span class="sort-icon">${_("value")}</span></th>
               <th scope="col" class="column-header"><span class="sort-icon">${_("lang")}</span></th>
               <th scope="col" class="column-header"><span class="sort-icon">${_("creator")}</span></th>
               <th scope="col" class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
             </tr>
           </thead>
           <tbody>
-            <tr class="hoverable" acre:for="name in c.names">
-              <th class="odd row-header" scope="row">${name.value}</th>
+            <tr acre:for="name in c.names" class="hoverable ${JSON.stringify(th.triple(c.topic.id, 'name', name))}">
+              <th class="odd row-header" scope="row">
+                ${name.value}
+                ${tooltip()}
+              </th>
               <td class="even">${lang(name.lang)}</td>
               <td class="odd" acre:if="name.link.creator">${a(name.link.creator)}</td>
               <td class="odd" acre:else="">null</td>
-              <td class="numeric even">${name.link.timestamp}</td>
+              <td class="even numeric">${name.link.timestamp}</td>
             </tr>
           </tbody>
         </table>
@@ -110,19 +118,22 @@
           <table class="table">
             <thead>
               <tr>
-                <th class="column-header first">${_("value")}</th>
-                <th class="column-header">${_("lang")}</th>
-                <th class="column-header">${_("creator")}</th>
-                <th class="column-header">${_("timestamp")}</th>
+                <th class="column-header first"><span class="sort-icon">${_("value")}</span></th>
+                <th class="column-header"><span class="sort-icon">${_("lang")}</span></th>
+                <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
+                <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
               </tr>
             </thead>
             <tbody>
-              <tr class="hoverable" acre:for="name in c.aliases">
-                <th class="odd row-header" scope="row">${name.value}</th>
+              <tr acre:for="name in c.aliases" class="hoverable ${JSON.stringify(th.triple(c.topic.id, '/common/topic/alias', name))}">
+                <th class="odd row-header" scope="row">
+                  ${name.value}
+                  ${tooltip()}
+                </th>
                 <td class="even">${lang(name.lang)}</td>
                 <td class="odd" acre:if="name.link.creator">${a(name.link.creator)}</td>
                 <td class="odd" acre:else="">null</td>
-                <td class="even">${name.link.timestamp}</td>
+                <td class="even numeric">${name.link.timestamp}</td>
               </tr>
             </tbody>
           </table>
@@ -133,15 +144,18 @@
           <table class="table">
             <thead>
               <tr>
-                <th class="column-header first">${_("document")}</th>
-                <th class="column-header">${_("content")}</th>
-                <th class="column-header">${_("creator")}</th>
-                <th class="column-header">${_("timestamp")}</th>
+                <th class="column-header first"><span class="sort-icon">${_("document")}</span></th>
+                <th class="column-header"><span class="sort-icon">${_("content")}</span></th>
+                <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
+                <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
               </tr>
             </thead>
             <tbody>
-              <tr class="hoverable" acre:for="article in c.articles">
-                <th class="odd row-header" scope="row">${a(article.id)}</th>
+              <tr acre:for="article in c.articles" class="hoverable ${JSON.stringify(th.triple(c.topic.id, '/common/topic/article', article))}">
+                <th class="odd row-header" scope="row">
+                  ${a(article.id)}
+                  ${tooltip()}
+                </th>
                 <td class="even">
                   <acre:block if="article.source_uri">
                     <a href="${h.freebase_url('/api/trans/blurb' + article.id, [['maxlength', 1600]])}">${article.source_uri}</a>
@@ -157,7 +171,7 @@
                 </td>
                 <td class="odd" acre:if="article.link.creator">${a(article.link.creator)}</td>
                 <td class="odd" acre:else="">null</td>
-                <td class="even">${article.link.timestamp}</td>
+                <td class="even numeric">${article.link.timestamp}</td>
               </tr>
             </tbody>
           </table>
@@ -169,19 +183,22 @@
         <table class="table table-sortable">
           <thead>
             <tr>
-              <th class="column-header first">${_("namespace")}</th>
-              <th class="column-header">${_("value")}</th>
-              <th class="column-header">${_("creator")}</th>
-              <th class="column-header">${_("timestamp")}</th>
+              <th class="column-header first"><span class="sort-icon">${_("namespace")}</span></th>
+              <th class="column-header"><span class="sort-icon">${_("value")}</span></th>
+              <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
+              <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
             </tr>
           </thead>
           <tbody>
-            <tr class="hoverable" acre:for="k in c.keys.outgoing">
-              <th class="row-header odd" scope="row">${a(k.namespace)}</th>
+            <tr acre:for="k in c.keys.outgoing" class="hoverable ${JSON.stringify(th.triple(c.topic.id, 'key', k))}">
+              <th class="row-header odd" scope="row">
+                ${a(k.namespace)}
+                ${tooltip()}
+              </th>
               <td class="even">${k.value}</td>
               <td class="odd" acre:if="k.link.creator">${a(k.link.creator)}</td>
               <td class="odd" acre:else="">null</td>
-              <td class="even">${k.link.timestamp}</td>
+              <td class="even numeric">${k.link.timestamp}</td>
             </tr>
           </tbody>
         </table>
@@ -195,19 +212,22 @@
         <table class="table table-sortable">
           <thead>
             <tr>
-              <th class="column-header first">${_("namespace")}</th>
-              <th class="column-header">${_("value")}</th>
-              <th class="column-header">${_("creator")}</th>
-              <th class="column-header">${_("timestamp")}</th>
+              <th class="column-header first"><span class="sort-icon">${_("namespace")}</span></th>
+              <th class="column-header"><span class="sort-icon">${_("value")}</span></th>
+              <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
+              <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
             </tr>
           </thead>
           <tbody>
-            <tr class="hoverable" acre:for="k in c.keys.incoming">
-              <th class="row-header odd" scope="row">${a(k.namespace)}</th>
+            <tr acre:for="k in c.keys.incoming" class="hoverable ${JSON.stringify(th.triple(c.topic.id, '/type/namespace/keys', k))}">
+              <th class="row-header odd" scope="row">
+                ${a(k.namespace)}
+                ${tooltip()}
+              </th>
               <td class="even">${k.value}</td>
               <td class="odd" acre:if="k.link.creator">${a(k.link.creator)}</td>
               <td class="odd" acre:else="">null</td>
-              <td class="even">${k.link.timestamp}</td>
+              <td class="even numeric">${k.link.timestamp}</td>
             </tr>
           </tbody>
         </table>
@@ -218,16 +238,19 @@
         <table class="table table-sortable">
           <thead>
             <tr>
-              <th class="column-header first">${_("subject")}</th>
-              <th class="column-header">${_("predicate")}</th>
-              <th class="column-header">${_("object")}</th>
-              <th class="column-header">${_("creator")}</th>
-              <th class="column-header numeric">${_("timestamp")}</th>
+              <th class="column-header first"><span class="sort-icon">${_("subject")}</span></th>
+              <th class="column-header"><span class="sort-icon">${_("predicate")}</span></th>
+              <th class="column-header"><span class="sort-icon">${_("object")}</span></th>
+              <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
+              <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
             </tr>
           </thead>
           <tbody>
-            <tr class="hoverable" acre:for="o in c.outgoing">
-              <th class="row-header odd" scope="row"><span class="self">-</span></th>
+            <tr acre:for="o in c.outgoing" class="hoverable ${JSON.stringify(th.triple(c.topic.id, o.link.master_property, o))}">
+              <th class="row-header odd" scope="row">
+                <span class="self">-</span>
+                ${tooltip()}
+              </th>
               <td class="even">${a(o.link.master_property)}</td>
               <td class="odd" acre:if="'value' in o">${literal(o)}</td>
               <td class="odd" acre:else="">${a(o.id)}</td>
@@ -244,16 +267,19 @@
         <table class="table table-sortable">
           <thead>
             <tr>
-              <th class="column-header first">${_("subject")}</th>
-              <th class="column-header">${_("predicate")}</th>
-              <th class="column-header">${_("object")}</th>
-              <th class="column-header">${_("creator")}</th>
-              <th class="column-header numeric">${_("timestamp")}</th>
+              <th class="column-header first"><span class="sort-icon">${_("subject")}</span></th>
+              <th class="column-header"><span class="sort-icon">${_("predicate")}</span></th>
+              <th class="column-header"><span class="sort-icon">${_("object")}</span></th>
+              <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
+              <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
             </tr>
           </thead>
           <tbody>
-            <tr class="hoverable" acre:for="o in c.incoming" >
-              <th class="row-header odd" scope="row">${a(o.id)}</th>
+            <tr acre:for="o in c.incoming" class="hoverable ${JSON.stringify(th.triple(o.id, o.link.master_property, c.topic))}">
+              <th class="row-header odd" scope="row">
+                ${a(o.id)}
+                ${tooltip()}
+              </th>
               <td class="even">${a(o.link.master_property)}</td>
               <td class="odd"><span class="self">-</span></td>
               <td class="even" acre:if="o.link.creator">${a(o.link.creator)}</td>
@@ -269,16 +295,19 @@
         <table class="table table-sortable">
           <thead>
             <tr>
-              <th class="column-header first">${_("subject")}</th>
-              <th class="column-header">${_("predicate")}</th>
-              <th class="column-header">${_("object")}</th>
-              <th class="column-header">${_("creator")}</th>
-              <th class="column-header">${_("timestamp")}</th>
+              <th class="column-header first"><span class="sort-icon">${_("subject")}</span></th>
+              <th class="column-header"><span class="sort-icon">${_("predicate")}</span></th>
+              <th class="column-header"><span class="sort-icon">${_("object")}</span></th>
+              <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
+              <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
             </tr>
           </thead>
           <tbody>
-            <tr class="hoverable" acre:for="o in c.typelinks">
-              <th class="row-header odd" scope="row">${a(o.source.id)}</th>
+            <tr acre:for="o in c.typelinks" class="hoverable ${JSON.stringify(th.triple(o.source.id, c.topic.id, o.target_value || o.target))}">
+              <th class="row-header odd" scope="row">
+                ${a(o.source.id)}
+                ${tooltip()}
+              </th>
               <td class="even"><span class="self">-</span></td>
               <td class="odd" acre:if="o.target_value">${literal(o.target_value, o.master_property, o.source.id)}</td>
               <td class="odd" acre:else="">${a(o.target.id)}</td>
@@ -300,7 +329,9 @@
     </div>
   </div>
 
-
+  <ul id="triples-tip" class="row-menu tooltip">
+    <li class="row-menu-item last"><a id="build-query" href="${h.url_for('queryeditor')}">${_("Build query")}</a></li>
+  </ul>
 </acre:block>
 
 <acre:block def="footer_script()">
@@ -339,4 +370,9 @@
 
 <acre:block def="lang(language)">
   <span class="lang">${a(language)}</a></span>
+</acre:block>
+
+
+<acre:block def="tooltip()">
+  <a href="javascript:void(0);" class="row-menu-trigger">+</a>
 </acre:block>

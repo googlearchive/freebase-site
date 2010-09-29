@@ -15,7 +15,8 @@ function topic(id, filters) {
     guid: null,
     creator: null,
     name: i18n.mql.query.name(),
-    timestamp: null
+    timestamp: null,
+    permission: null
   };
   return freebase.mqlread(q)
     .then(function(env) {
@@ -144,7 +145,7 @@ function outgoing(id, filters) {
         master_property: null,
         "forbid:master_property": {
           id: null,
-          "id|=": ["/common/topic/article"],
+          "id|=": ["/type/object/permission", "/common/topic/article"],
           optional: "forbidden",
           limit: 0
         },

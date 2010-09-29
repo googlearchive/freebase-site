@@ -18,6 +18,7 @@
   "javascript": {
     "triples.mf.js": [
       ["template", "freebase.mf.js"],
+      ["jquerytools", "tooltip.js"],
       "triples.js"
     ]
   }

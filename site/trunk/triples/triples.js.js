@@ -1,56 +1,69 @@
 (function($, fb) {
 
-  var schema = fb.schema = {};
+  var triples = fb.triples = {
+    tip: null,
+    build_query: null,
+    build_query_url: null,
 
-  function init() {
+    // trigger for row menus
+    init_row_menu: function(context) {
+      triples.tip = $("#triples-tip");
+      triples.build_query = $("#build-query");
+      triples.build_query_url = triples.build_query.attr("href");
 
-    /**
-     * $.tablesorter defaults
-     */
-    $.tablesorter.addParser({
-      id: "triplesName",
-      is: function(s) {
-        return false;
-      },
-      format: function(s) {
-        return $(s).text().toLowerCase();
-      },
-      type: 'text'
-    });
-    $.tablesorter.addParser({
-      // set a unique id
-      id: 'commaDigit',
-      is: function(s) {
-        // return false so this parser is not auto detected
-        return false;
-      },
-      format: function(s) {
-        // format your data for normalization
-        return parseInt(s.replace(/\,/g, ""));
-      },
-      // set type, either numeric or text
-      type: 'numeric'
-    });
+      $(".row-menu-trigger", context).each(function(){
+        var trigger = $(this);
+        trigger.tooltip({
+          events: {def: "click,mouseout"},
+          position: "bottom right",
+          offset: [-10, -10],
+          effect: "fade",
+          delay: 300,
+          tip: "#triples-tip",
+          onBeforeShow: function() {
+            var triple = this.getTrigger().parents("tr:first").metadata();
+            triples.build_query.attr("href", triples.build_query_url + "?q=" + triple.mql);
+          }
+        });
+        trigger.parents("tr:first").hover(triples.row_menu_hoverover, triples.row_menu_hoverout);
+      });
+    },
 
-    $.tablesorter.defaults.cssAsc = "column-header-asc";
-    $.tablesorter.defaults.cssDesc = "column-header-desc";
-    $.tablesorter.defaults.cssHeader =  "column-header";
- 
-    // init table sorter
-    var table = $(".table-sortable").tablesorter();
-    
-    $(".time-range-form-trigger").click(function(){
-      $form = $(this).siblings(".time-range-form");
-      if($form.is(":hidden")) {
-        $form.slideDown();
-      }
-      else {
-        $form.slideUp();
-      }
-    });
+    row_menu_hoverover: function(e) {
+      var row = $(this);
+      row.addClass("row-hover");
+      $(".row-menu-trigger", row).css('visibility','visible');
+    },
+
+    row_menu_hoverout: function(e) {
+      var row = $(this);
+      $(".row-menu-trigger", row).css('visibility','hidden');
+      row.removeClass("row-hover");
+    },
+
+    init: function() {
+      triples.init_row_menu();
+
+      $.tablesorter.defaults.cssAsc = "column-header-asc";
+      $.tablesorter.defaults.cssDesc = "column-header-desc";
+      $.tablesorter.defaults.cssHeader =  "column-header";
+
+      // init table sorter
+      var table = $(".table-sortable").tablesorter();
+
+      $(".time-range-form-trigger").click(function(){
+        var $form = $(this).siblings(".time-range-form");
+        if($form.is(":hidden")) {
+          $form.slideDown();
+        }
+        else {
+          $form.slideUp();
+        }
+      });
+    }
 
   };
 
-  $(init);
+  $(triples.init);
 
 })(jQuery, window.freebase);

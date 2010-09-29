@@ -46,3 +46,48 @@
 .time-range-form {
   display: none;
 }
+
+
+/** from schema.less.less */
+
+.row-menu-trigger {
+    visibility: hidden;
+    display: inline-block;
+    text-indent: -9999px;
+    width: 15px;
+    height: 15px;
+    background: url(template, ui-icons.png) no-repeat -2px -272px;
+}
+
+.row-menu {
+    z-index: 10;
+    display: none;
+    list-style: none;
+    background: #fff;
+    width: 130px;
+    border: 1px solid #c4c6c7;
+    .rounded_corners(5px);
+    .box_shadow();
+}
+
+.row-menu-item {
+    border-bottom: 1px solid #c4c6c7;
+}
+
+.row-menu-item.last {
+    border: 0;
+}
+
+.row-menu-item a  {
+    display: block;
+    font-size: 0.9em;
+    padding: 0.5em 0.8em;
+    line-height: 1;
+    -webkit-transition: all 0.2s;
+}
+
+.row-menu-item a:hover {
+    color: #fff;
+    background-color: @link-blue;
+    text-decoration: none;
+}

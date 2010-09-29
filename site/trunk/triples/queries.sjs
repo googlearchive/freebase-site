@@ -141,6 +141,8 @@ function outgoing(id, filters) {
     id: id,
     "/type/reflect/any_master":[{
       id: null,
+      mid: null,
+      name: i18n.mql.query.name(),
       link: {
         master_property: null,
         "forbid:master_property": {
@@ -197,6 +199,8 @@ function incoming(id, filters) {
     id: id,
     "/type/reflect/any_reverse":[{
       id: null,
+      mid: null,
+      name: i18n.mql.query.name(),
       link: {
         master_property: null,
         creator: null,
@@ -218,8 +222,8 @@ function typelinks(id, filters) {
   var q = [{
     type: "/type/link",
     master_property: id,
-    source: {id:null},
-    target: {id:null, optional:true},
+    source: {id:null, mid:null, name:i18n.mql.query.name()},
+    target: {id:null, mid:null, name:i18n.mql.query.name(), optional:true},
     target_value: {},
     creator: null,
     timestamp: null,

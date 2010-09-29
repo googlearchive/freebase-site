@@ -253,7 +253,7 @@
               </th>
               <td class="even">${a(o.link.master_property)}</td>
               <td class="odd" acre:if="'value' in o">${literal(o)}</td>
-              <td class="odd" acre:else="">${a(o.id)}</td>
+              <td class="odd" acre:else="">${topic(o)}</td>
               <td class="even" acre:if="o.link.creator">${a(o.link.creator)}</td>
               <td class="even" acre:else="">null</td>
               <td class="odd numeric">${o.link.timestamp}</td>
@@ -277,7 +277,7 @@
           <tbody>
             <tr acre:for="o in c.incoming" class="hoverable ${JSON.stringify(th.triple(o.id, o.link.master_property, c.topic))}">
               <th class="row-header odd" scope="row">
-                ${a(o.id)}
+                ${topic(o)}
                 ${tooltip()}
               </th>
               <td class="even">${a(o.link.master_property)}</td>
@@ -305,12 +305,12 @@
           <tbody>
             <tr acre:for="o in c.typelinks" class="hoverable ${JSON.stringify(th.triple(o.source.id, c.topic.id, o.target_value || o.target))}">
               <th class="row-header odd" scope="row">
-                ${a(o.source.id)}
+                ${topic(o.source)}
                 ${tooltip()}
               </th>
               <td class="even"><span class="self">-</span></td>
               <td class="odd" acre:if="o.target_value">${literal(o.target_value, o.master_property, o.source.id)}</td>
-              <td class="odd" acre:else="">${a(o.target.id)}</td>
+              <td class="odd" acre:else="">${topic(o.target)}</td>
               <td class="even" acre:if="o.creator">${a(o.creator)}</td>
               <td class="even" acre:else="">null</td>
               <td class="odd numeric">${o.timestamp}</td>
@@ -343,35 +343,53 @@
   <a href="${h.url_for('triples', null, c.params, id)}" title="${id}">${name || id}</a>
 </acre:block>
 
+<acre:block def="topic(o)" trim="">
+  <acre:script>
+    var id = o.id;
+    if (id.indexOf("/user/") === 0 ||
+        id.indexOf("/base/") === 0 ||
+        id.indexOf("/uri/") === 0) {
+      id = o.mid;
+    }
+    var name = null;
+    if (id === o.mid) {
+      if (o.name && o.name.length) {
+        name = i18n.display_name(o);
+      }
+    }
+  </acre:script>
+  ${a(id)}
+  <acre:block if="name != null"> ${name}</acre:block>
+</acre:block>
+
 <acre:block def="literal(o, master_property, topic)" trim="">
   <acre:script>
     master_property = master_property || o.link.master_property;
     topic = topic || c.topic.id;
   </acre:script>
-  <span class="literal-value literal-value-${o.type.split('/').pop()}">
-    <acre:block if="master_property === '/common/document/source_uri' && o.value.indexOf('http://wp/') === 0">
+  <span class="literal-value literal-value-${o.type.split('/').pop()}" acre:trim="">
+    <acre:block if="master_property === '/common/document/source_uri' && o.value.indexOf('http://wp/') === 0" trim="">
       <a href="${h.freebase_url('/api/trans/blurb' + topic, [['maxlength', 1600]])}">${o.value}</a>
     </acre:block>
-    <acre:block elif="master_property === '/type/content/blob_id'">
+    <acre:block elif="master_property === '/type/content/blob_id'" trim="">
       <a href="${h.freebase_url('/api/trans/raw' + topic)}">${o.value}</a>
     </acre:block>    
-    <acre:block elif="o.type === '/type/uri'">
+    <acre:block elif="o.type === '/type/uri'" trim="">
       <a href="${o.value}" target="_new">${o.value}</a>
     </acre:block>
-    <acre:block else="">
+    <acre:block else="" trim="">
       ${o.value}
     </acre:block>                
   </span>
   <span class="literal-type">${a(o.type)}</span>
-  <acre:block if="o.type === '/type/text'">
+  <acre:block if="o.type === '/type/text'" trim="">
     ${lang(o.lang || o.link.target_value.lang)}
   </acre:block>
 </acre:block>
 
-<acre:block def="lang(language)">
+<acre:block def="lang(language)" trim="">
   <span class="lang">${a(language)}</a></span>
 </acre:block>
-
 
 <acre:block def="tooltip()">
   <a href="javascript:void(0);" class="row-menu-trigger">+</a>

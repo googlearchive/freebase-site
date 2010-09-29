@@ -86,7 +86,7 @@
           <tbody>
             <tr class="hoverable" acre:for="name in c.names">
               <th class="odd row-header" scope="row">${name.value}</th>
-              <td class="even">${a(name.lang)}</td>
+              <td class="even">${lang(name.lang)}</td>
               <td class="odd" acre:if="name.link.creator">${a(name.link.creator)}</td>
               <td class="odd" acre:else="">null</td>
               <td class="numeric even">${name.link.timestamp}</td>
@@ -109,7 +109,7 @@
             <tbody>
               <tr class="hoverable" acre:for="name in c.aliases">
                 <th class="odd row-header" scope="row">${name.value}</th>
-                <td class="even">${a(name.lang)}</td>
+                <td class="even">${lang(name.lang)}</td>
                 <td class="odd" acre:if="name.link.creator">${a(name.link.creator)}</td>
                 <td class="odd" acre:else="">null</td>
                 <td class="even">${name.link.timestamp}</td>
@@ -141,7 +141,7 @@
                       <a href="${h.freebase_url('/api/trans/raw' + article.id)}">${article.content.blob_id}</a>
                     </acre:block>
                     <acre:block if="article.content.language">
-                      ${a(article.content.language)}
+                      ${lang(article.content.language)}
                     </acre:block>
                   </acre:block>
                 </td>
@@ -322,5 +322,11 @@
     </acre:block>                
   </span>
   <span class="literal-type">${a(o.type)}</span>
-  <span acre:if="o.type === '/type/text'" class="literal-lang">${a(o.lang || o.link.target_value.lang)}</a>
+  <acre:block if="o.type === '/type/text'">
+    ${lang(o.lang || o.link.target_value.lang)}
+  </acre:block>
+</acre:block>
+
+<acre:block def="lang(language)">
+  <span class="lang">${a(language)}</a></span>
 </acre:block>

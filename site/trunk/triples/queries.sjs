@@ -142,6 +142,12 @@ function outgoing(id, filters) {
       id: null,
       link: {
         master_property: null,
+        "forbid:master_property": {
+          id: null,
+          "id|=": ["/common/topic/article"],
+          optional: "forbidden",
+          limit: 0
+        },
         creator: null,
         timestamp: null
       },
@@ -156,7 +162,7 @@ function outgoing(id, filters) {
         target_value: {},
         "forbid:master_property": {
           id: null,
-          "id|=": ["/type/object/name", "/common/topic/alias", "/common/topic/article"],
+          "id|=": ["/type/object/name", "/common/topic/alias"],
           optional: "forbidden",
           limit: 0
         },

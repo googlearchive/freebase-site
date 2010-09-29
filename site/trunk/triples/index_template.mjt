@@ -95,6 +95,29 @@
         </table>
         </acre:block>
 
+        <acre:block if="c.aliases && c.aliases.length">
+          <h2 class="table-title">${_("Aliases")} (${i18n.format_number(c.aliases.length)})</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="column-header first">${_("value")}</th>
+                <th class="column-header">${_("lang")}</th>
+                <th class="column-header">${_("creator")}</th>
+                <th class="column-header">${_("timestamp")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="hoverable" acre:for="name in c.aliases">
+                <th class="odd row-header" scope="row">${name.value}</th>
+                <td class="even">${a(name.lang)}</td>
+                <td class="odd" acre:if="name.link.creator">${a(name.link.creator)}</td>
+                <td class="odd" acre:else="">null</td>
+                <td class="even">${name.link.timestamp}</td>
+              </tr>
+            </tbody>
+          </table>
+        </acre:block>
+
         <acre:block if="c.keys">
         <acre:block if="c.keys.outgoing && c.keys.outgoing.length">
         <h2 class="table-title">${_("Keys")} (${i18n.format_number(c.keys.outgoing.length)})</h2>

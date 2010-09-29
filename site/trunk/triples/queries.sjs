@@ -63,6 +63,24 @@ function names(id, filters) {
     });
 };
 
+function aliases(id, filters) {
+  var q = {
+    id: id,
+    "/common/topic/alias": [{
+      value: null,
+      lang: null,
+      link: {creator:null, timestamp:null},
+      optional: true,
+      sort: "-link.timestamp"
+    }]
+  };
+  f.apply_filters(q["/common/topic/alias"][0], filters);
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result["/common/topic/alias"];
+    });
+};
+
 function keys(id, filters) {
   var q = {
     id: id,
@@ -112,7 +130,8 @@ function outgoing(id, filters) {
         master_property: null,
         target_value: {},
         "forbid:master_property": {
-          id: "/type/object/name",
+          id: null,
+          "id|=": ["/type/object/name", "/common/topic/alias"],
           optional: "forbidden",
           limit: 0
         },

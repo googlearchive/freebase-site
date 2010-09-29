@@ -378,7 +378,7 @@
         </div>
         <!-- Only show if type is a mediator -->
         <div class="form-row">
-          <label class="form-label"><input type="checkbox" /> ${_('This mediator is terminal')}  <a href="#">What's this?</a></label>
+          <label class="form-label"><input type="checkbox" /> ${_('This is a terminal mediator.')}  <a class="help" href="#">What's this?</a></label>
         </div>
       </div>
     </div>

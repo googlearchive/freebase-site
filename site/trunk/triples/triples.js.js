@@ -60,6 +60,16 @@
           $form.slideUp();
         }
       });
+
+      // filter creator/user suggest
+      $("input[name=creator]").suggest({
+        service_url: acre.freebase.service_url,
+        type: "/type/user"
+      })
+      .bind("fb-select", function(e, data) {
+        $(this).val(data.id)
+          .parents("form:first").submit();
+      });
     }
 
   };

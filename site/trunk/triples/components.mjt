@@ -132,7 +132,7 @@
     </span>
     <ul>
       <li>
-        ${filter_form(o, 'Start typing for suggestions')}
+        ${filter_form(o, 'creator', null, 'Start typing for suggestions')}
       </li>
     </ul>
   </div>
@@ -143,13 +143,12 @@
       <a href="${f.remove_filter_url(o, 'limit')}" class="remove-filter">x</a>
       ${i18n.format_number(limit)}
     </span>
-    ${filter_form(o, 'Default is 100')}
+    ${filter_form(o, 'limit', null, 'Default is 100')}
   </div>
 
 </acre:block>
 
-
-<acre:block def="filter_form(filter_options, filter_key, def)">
+<acre:block def="filter_form(filter_options, filter_key, def, placeholder)">
   <form action="${h.url_for('triples', null, null, filter_options.id)}" method="GET">
     <acre:block for="key,val in filter_options" if="key && val && (key !== 'id') && (key != filter_key)">
       <acre:block if="h.is_array(val)">
@@ -163,7 +162,7 @@
       ${def()}
     </acre:block>
     <acre:block else="">
-      <input type="text" class="text-input" name="${filter_key}" placeholder="${_(filter_key)}"/>
+      <input type="text" class="text-input" name="${filter_key}" acre:attrs="placeholder ? {placeholder:placeholder}: {}"/>
     </acre:block>
     <button type="submit" style="display:none;">submit</button>
   </form>

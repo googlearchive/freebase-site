@@ -246,7 +246,7 @@ class App():
       return target_app
 
     msg = 'Creating branch version {version} of app {app}'.format(version=target_app.version, app=target_app.app_key)
-    self.c.log(msg, color=c.BLUE)
+    self.c.log(msg, color=self.c.BLUE)
     cmd = ['svn', 'copy', self.svn_url(), target_app.svn_url(), '--parents', '-m', '"acredeploy: %s"' % msg]
     (r, output) = self.c.run_cmd(cmd)
 

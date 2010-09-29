@@ -128,11 +128,16 @@
       <a href="${f.remove_filter_url(o, 'creator')}" class="remove-filter">x</a>
       ${o.creator}
     </span>
-    <ul>
-      <li>
-        ${filter_form(o, 'creator', null, 'Start typing for suggestions')}
-      </li>
-    </ul>
+    <acre:script>
+    var css_class = "";
+    if (o.creator) {
+      css_class = "display:none;"
+    }
+    </acre:script>
+    <a acre:if="o.creator" class="user-filter-form-trigger" href="javascript:void(0);">Add another&hellip;</a>
+    <div class="user-filter-form" style="$css_class">
+      ${filter_form(o, 'creator', null, 'Start typing for suggestions')}
+    </div>
   </div>
 
   <div class="filter-group">

@@ -61,6 +61,16 @@
         }
       });
 
+      $(".user-filter-form-trigger").click(function(){
+        var $form = $(this).siblings(".user-filter-form");
+        if($form.is(":hidden")) {
+          $form.slideDown();
+        }
+        else {
+          $form.slideUp();
+        }
+      });
+
       // filter creator/user suggest
       $("input[name=creator]").suggest({
         service_url: acre.freebase.service_url,

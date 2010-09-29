@@ -15,6 +15,7 @@ var data = h.extend({
   // last_edit: queries.last_edit(id, options),
   names: queries.names(id, filters),
   aliases: queries.aliases(id, filters),
+  articles: queries.articles(id, filters),
   keys: queries.keys(id, filters),
   outgoing: queries.outgoing(id, filters),
   incoming: queries.incoming(id, filters),

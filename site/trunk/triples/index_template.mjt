@@ -118,6 +118,41 @@
           </table>
         </acre:block>
 
+        <acre:block if="c.articles && c.articles.length">
+          <h2 class="table-title">${_("Articles")} (${i18n.format_number(c.articles.length)})</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="column-header first">${_("document")}</th>
+                <th class="column-header">${_("content")}</th>
+                <th class="column-header">${_("creator")}</th>
+                <th class="column-header">${_("timestamp")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="hoverable" acre:for="article in c.articles">
+                <th class="odd row-header" scope="row">${a(article.id)}</th>
+                <td class="even">
+                  <acre:block if="article.source_uri">
+                    <a href="${h.freebase_url('/api/trans/blurb' + article.id, [['maxlength', 1600]])}">${article.source_uri}</a>
+                  </acre:block>
+                  <acre:block elif="article.content">
+                    <acre:block if="article.content.blob_id">
+                      <a href="${h.freebase_url('/api/trans/raw' + article.id)}">${article.content.blob_id}</a>
+                    </acre:block>
+                    <acre:block if="article.content.language">
+                      ${a(article.content.language)}
+                    </acre:block>
+                  </acre:block>
+                </td>
+                <td class="odd" acre:if="article.link.creator">${a(article.link.creator)}</td>
+                <td class="odd" acre:else="">null</td>
+                <td class="even">${article.link.timestamp}</td>
+              </tr>
+            </tbody>
+          </table>
+        </acre:block>
+
         <acre:block if="c.keys">
         <acre:block if="c.keys.outgoing && c.keys.outgoing.length">
         <h2 class="table-title">${_("Keys")} (${i18n.format_number(c.keys.outgoing.length)})</h2>

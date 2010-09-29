@@ -38,6 +38,16 @@
  
     // init table sorter
     var table = $(".table-sortable").tablesorter();
+    
+    $(".time-range-form-trigger").click(function(){
+      $form = $(this).siblings(".time-range-form");
+      if($form.is(":hidden")) {
+        $form.slideDown();
+      }
+      else {
+        $form.slideUp();
+      }
+    });
 
   };
 

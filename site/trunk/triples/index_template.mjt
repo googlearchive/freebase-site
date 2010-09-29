@@ -14,6 +14,16 @@
 
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="${mf.css_src('triples.mf.css')}" />
+  <style type="text/css">
+    @-webkit-keyframes bars {
+      0% {
+        width: 0%;
+      }
+      100% {
+        width: 70%;
+      }
+    }
+  </style>
 </acre:block>
 
 <acre:block def="content_header()">

@@ -1,6 +1,5 @@
 #filter-pane {
   margin-top: 4.8em;
-  padding: 1em;
   border: 5px solid #e5e5e7;
   .rounded_corners();
   .linear_gradient(#f1f2f3, #e5e6e7);
@@ -11,9 +10,15 @@
   text-align: center;
 }
 
+.filter-group {
+  padding: 1em;
+  border-bottom: 1px solid #ddd;
+}
+
 .filter-title {
   font-weight: bold;
   font-size: 12px;
+  margin-bottom: 7px;
 }
 
 #filter-pane ul {
@@ -30,6 +35,14 @@
   width: 80%;
 }
 
+#filter-pane .date-input {
+  width: 70px;
+}
+
 .table tbody td, .table tbody th, .table thead .row-msg td {
   padding: 3px 7px;
+}
+
+.time-range-form {
+  display: none;
 }

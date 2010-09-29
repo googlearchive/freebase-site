@@ -11,151 +11,158 @@
     var o = filter_options || {};
     var limit = o.limit || f.LIMIT;
   </acre:script>
-  <h2 class="filter-title">${_("Limit")}:</h2>
-  <ul>
-    <li>
-      <a acre:if="limit !== f.LIMIT" href="${f.remove_filter_url(o, 'limit')}" class="remove-filter">x</a>
-      ${i18n.format_number(limit)}
-    </li>
-    <li>
-      <label>${_("other")}</label>
-      ${filter_form(o, 'limit')}
-    </li>
-  </ul>
 
+  <div class="filter-group">
+    <h2 class="filter-title">${_("Limit")}:</h2>
+    <ul>
+      <li>
+        <a acre:if="limit !== f.LIMIT" href="${f.remove_filter_url(o, 'limit')}" class="remove-filter">x</a>
+        ${i18n.format_number(limit)}
+      </li>
+      <li>
+        <label>${_("other")}</label>
+        ${filter_form(o, 'limit')}
+      </li>
+    </ul>
+  </div>
 
-  <h2 class="filter-title">${_("By Vertical")}:</h2>
+  <div class="filter-group">
+    <h2 class="filter-title">${_("By Vertical")}:</h2>
 
-  <acre:block if="o.domain">
-  <ul>
-    <li>
-      <a href="${f.remove_filter_url(o, 'domain')}" class="remove-filter">x</a>
-      ${o.domain}
-    </li>
-  </ul>
-  </acre:block>
-  <acre:block elif="o.type">
-  <acre:script>
-  var type = acre.freebase.mqlread({id:o.type, type:"/type/type", domain:null}).result;
-  </acre:script>
-  <ul>
-    <li>
-      <a href="${f.remove_filter_url(o, 'type')}" class="remove-filter">x</a>
-      <acre:script>
-      var domain_options = h.extend({}, o);
-      delete domain_options.type;
-      </acre:script>
-      <a href="${f.filter_url(domain_options, 'domain', type.domain)}">${type.domain}</a>
-      <ul>
-        <li>
-          ${o.type}
-        </li>
-      </ul>
-    </li>
-  </ul>
-  </acre:block>
-  <acre:block elif="o.property">
-  <acre:script>
-  var prop = acre.freebase.mqlread({id:o.property, type:"/type/property", schema:{id:null, domain:null}}).result;
-  </acre:script>
-  <ul>
-    <li>
-      <a href="${f.remove_filter_url(o, 'property')}" class="remove-filter">x</a>
-      <acre:script>
-      var domain_options = h.extend({}, o);
-      delete domain_options.property;
-      </acre:script>
-      <a href="${f.filter_url(domain_options, 'domain', prop.schema.domain)}">${prop.schema.domain}</a>
-      <ul>
-        <li>
-          <a href="${f.filter_url(domain_options, 'type', prop.schema.id)}">${prop.schema.id}</a>
-          <ul>
-            <li>
-              ${o.property}
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-  </ul>
-  </acre:block>
-
-  <ul class="bar-graph">
-    <li class="bar-graph-item">
-      <a href="#" class="clear">
-        <span class="bar-graph-item-name">/freebase</span>
-        <span class="bar-graph-values">
-          <span class="bar-graph-value incoming" href="#" style="width:70%"><b>23</b></span>
-          <span class="bar-graph-value outgoing" href="#" style="width:30%"><b>15</b></span>
-        </span>
-      </a>
-    </li>
-    <li class="bar-graph-item">
-      <a href="#" class="clear">
-        <span class="bar-graph-item-name">/common</span>
-        <span class="bar-graph-values">
-          <span class="bar-graph-value incoming" href="#" style="width:50%"><b>19</b></span>
-          <span class="bar-graph-value outgoing" href="#" style="width:20%"><b>11</b></span>
-        </span>
-      </a>
-    </li>
-    <li class="bar-graph-item">
-      <a href="#" class="clear">
-        <span class="bar-graph-item-name">/film</span>
-        <span class="bar-graph-values">
-          <span class="bar-graph-value incoming" href="#" style="width:10%"><b>19</b></span>
-          <span class="bar-graph-value outgoing" href="#" style="width:7%"><b>11</b></span>
-        </span>
-      </a>
-    </li>
-  </ul>
-  <h2 class="filter-title">${_("By Time")}:</h2>
-  <ul>
+    <acre:block if="o.domain">
+    <ul>
+      <li>
+        <a href="${f.remove_filter_url(o, 'domain')}" class="remove-filter">x</a>
+        ${o.domain}
+      </li>
+    </ul>
+    </acre:block>
+    <acre:block elif="o.type">
     <acre:script>
-      var ts = acre.request.params.timestamp;
+    var type = acre.freebase.mqlread({id:o.type, type:"/type/type", domain:null}).result;
     </acre:script>
-    <acre:block if="ts && !(ts in f.TIMESTAMPS) && o.timestamp">
+    <ul>
+      <li>
+        <a href="${f.remove_filter_url(o, 'type')}" class="remove-filter">x</a>
+        <acre:script>
+        var domain_options = h.extend({}, o);
+        delete domain_options.type;
+        </acre:script>
+        <a href="${f.filter_url(domain_options, 'domain', type.domain)}">${type.domain}</a>
+        <ul>
+          <li>
+            ${o.type}
+          </li>
+        </ul>
+      </li>
+    </ul>
+    </acre:block>
+    <acre:block elif="o.property">
+    <acre:script>
+    var prop = acre.freebase.mqlread({id:o.property, type:"/type/property", schema:{id:null, domain:null}}).result;
+    </acre:script>
+    <ul>
+      <li>
+        <a href="${f.remove_filter_url(o, 'property')}" class="remove-filter">x</a>
+        <acre:script>
+        var domain_options = h.extend({}, o);
+        delete domain_options.property;
+        </acre:script>
+        <a href="${f.filter_url(domain_options, 'domain', prop.schema.domain)}">${prop.schema.domain}</a>
+        <ul>
+          <li>
+            <a href="${f.filter_url(domain_options, 'type', prop.schema.id)}">${prop.schema.id}</a>
+            <ul>
+              <li>
+                ${o.property}
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    </acre:block>
+
+    <ul class="bar-graph">
+      <li class="bar-graph-item">
+        <a href="#" class="clear">
+          <span class="bar-graph-item-name">/freebase</span>
+          <span class="bar-graph-values">
+            <span class="bar-graph-value incoming" href="#" style="width:70%"><b>23</b></span>
+            <span class="bar-graph-value outgoing" href="#" style="width:30%"><b>15</b></span>
+          </span>
+        </a>
+      </li>
+      <li class="bar-graph-item">
+        <a href="#" class="clear">
+          <span class="bar-graph-item-name">/common</span>
+          <span class="bar-graph-values">
+            <span class="bar-graph-value incoming" href="#" style="width:50%"><b>19</b></span>
+            <span class="bar-graph-value outgoing" href="#" style="width:20%"><b>11</b></span>
+          </span>
+        </a>
+      </li>
+      <li class="bar-graph-item">
+        <a href="#" class="clear">
+          <span class="bar-graph-item-name">/film</span>
+          <span class="bar-graph-values">
+            <span class="bar-graph-value incoming" href="#" style="width:10%"><b>19</b></span>
+            <span class="bar-graph-value outgoing" href="#" style="width:7%"><b>11</b></span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="filter-group">
+    <h2 class="filter-title">${_("By Time")}:</h2>
+    <ul>
+      <acre:script>
+      var ts = acre.request.params.timestamp;
+      </acre:script>
+      <acre:block if="ts && !(ts in f.TIMESTAMPS) && o.timestamp">
       <a href="${f.remove_filter_url(o, 'timestamp')}" class="remove-filter">x</a>
       <acre:block if="h.is_array(o.timestamp) && o.timestamp.length === 2">
-        ${h.sprintf(_("%s to %s"), o.timestamp[0], o.timestamp[1])}
+      ${h.sprintf(_("%s to %s"), o.timestamp[0], o.timestamp[1])}
       </acre:block>
       <acre:block else="">
-        ${o.timestamp}
+      ${o.timestamp}
       </acre:block>
-    </acre:block>
-    <acre:block for="key,val in f.TIMESTAMPS">
+      </acre:block>
+      <acre:block for="key,val in f.TIMESTAMPS">
       <li>
         <acre:block if="key === ts">
-          <a href="${f.remove_filter_url(o, 'timestamp')}" class="remove-filter">x</a>
-          ${_(key)}
+        <a href="${f.remove_filter_url(o, 'timestamp')}" class="remove-filter">x</a>
+        ${_(key)}
         </acre:block>
         <acre:block else="">
-          <a href="${f.filter_url(o, 'timestamp', key)}">${_(key)}</a>
+        <a href="${f.filter_url(o, 'timestamp', key)}">${_(key)}</a>
         </acre:block>
       </li>
-    </acre:block>
-    <li>
-      <label>${_("other")}</label>
-      ${filter_form(o, 'timestamp', timestamp_inputs)}
-    </li>
-  </ul>
+      </acre:block>
+      <li>
+        <a class="time-range-form-trigger" href="javascript:void(0)">${_("custom&hellip;")}</a>
+        <div class="time-range-form">
+          ${filter_form(o, 'timestamp', timestamp_inputs)}
+        </div>
+      </li>
+    </ul>
+  </div>
 
+  <div class="filter-group">
+    <h2 class="filter-title">${_("By User")}:</h2>
+    <ul>
+      <li acre:if="o.creator">
+        <a href="${f.remove_filter_url(o, 'creator')}" class="remove-filter">x</a>
+        ${o.creator}
+      </li>
+      <li>
+        <label>${_("user")}</label>
+        ${filter_form(o, 'creator')}
+      </li>
+    </ul>
+  </div>
 
-  <h2 class="filter-title">${_("By User")}:</h2>
-  <ul>
-    <li acre:if="o.creator">
-      <a href="${f.remove_filter_url(o, 'creator')}" class="remove-filter">x</a>
-      ${o.creator}
-    </li>
-    <li>
-      <label>${_("user")}</label>
-      ${filter_form(o, 'creator')}
-    </li>
-  </ul>
-
-
-
-  
 </acre:block>
 
 
@@ -180,6 +187,6 @@
 </acre:block>
 
 <acre:block def="timestamp_inputs()">  
-  <input type="text" class="text-input" name="timestamp" placeholder="${_('from')}"/> to 
-  <input type="text" class="text-input" name="timestamp" placeholder="${_('to')}"/>
+  <input type="text" class="text-input date-input" name="timestamp" placeholder="${_('from')}"/> to 
+  <input type="text" class="text-input date-input" name="timestamp" placeholder="${_('to')}"/>
 </acre:block>

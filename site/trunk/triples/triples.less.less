@@ -21,9 +21,15 @@
 
 #filter-pane {
   margin-top: 4.8em;
+}
+
+#filters,
+#pager {
+  margin-top: 10px;
   border: 5px solid #e5e5e7;
   .rounded_corners();
-  .linear_gradient(#f1f2f3, #e5e6e7);
+  background: #f8f8f8;
+  -webkit-box-shadow: 0 0 2px #777;
 }
 
 #filter-title {
@@ -107,20 +113,30 @@ a.remove-filter {
 }
 
 #pager {
+  margin-top: 0;
   position: relative;
+  line-height: 1;
+  padding: 0;
 }
 
 #section-nav-current {
   display: block;
-  font-size: 14px;
-  text-align: center;
-  background: #e5e6e7;
-  -webkit-box-shadow: 1px 1px 1px #ccc;
+  background: #f8f8f8;
+  .linear_gradient(#fff, #f1f1f1);
 }
 
-#section-nav-current:hover {
+#section-nav-current b {
+  display: block;
+  background: url(menu-arrow.png) no-repeat center right;
+  padding: 5px 10px;
+  font-size: 14px;
+  color: #999;
+  text-align: center;
+}
+
+#section-nav-current:hover b{
   cursor: pointer;
-  color: #333;
+  color: #666;
 }
 
 #section-nav {
@@ -133,7 +149,7 @@ a.remove-filter {
   font-size: 14px;
   margin: 0;
   border-bottom: 5px solid #e5e6e7;
-  -webkit-box-shadow: 1px 1px 1px #ccc;
+  -webkit-box-shadow: 1px 1px 3px #999;
 }
 
 #pager ul li {
@@ -143,6 +159,7 @@ a.remove-filter {
 
 #pager ul li a {
   display: block;
+  font-size: 14px;
   padding: 3px 10px;
 }
 

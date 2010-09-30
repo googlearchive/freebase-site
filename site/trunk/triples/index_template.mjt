@@ -348,15 +348,17 @@
     <div id="content-sub" role="nav">
       <div class="content-wrapper section" id="filter-pane">
         <div id="pager">
-          <span id="section-nav-current">Scroll to&hellip;</span>
+          <span id="section-nav-current"><b>Scroll to&hellip;</b></span>
           <ul id="section-nav">
-            <li acre:for="i in menu_map">
+            <li class="toc-$i.key" acre:for="i in menu_map">
               <a href="#${i.key}">$i.name</a>
             </li>
           </ul>
         </div>
-        <h2 id="filter-title">Filter this data</h2>
-        ${components.filters(c.filters)}
+        <div id="filters">
+          <h2 id="filter-title">Filter this data</h2>
+          ${components.filters(c.filters)}
+        </div>
       </div>
     </div>
   </div>

@@ -44,15 +44,58 @@
 
     init: function() {
 
-      // Update in-page navgiation menu relative
-      // to current page viewport
-      var $reference = $("#content-wrapper");
-      var $menu = $("#content-sub");
-      var menu_position_y = $menu.offset().top;
-      var reference_offset_y = $reference.offset().top;
+      // ***********************************************
+      // Update in-page navgiation menu               **
+      // (1) Update Position of menu                  **
+      // (2) Update currently active section          **
+      // ***********************************************
+
+      var $reference = $("#content-wrapper"); // This is the effective starting point of 'content'
+      var $menu = $("#content-sub"); // The menu item
+      var menu_position_y = $menu.offset().top; // Starting vertical offset of menu object
+      var reference_offset_y = $reference.offset().top; // Starting vertical offset of content
+      var $nav_current = $("#section-nav-current"); // The currently selected section
+      var $nav_menu = $("#section-nav"); // The navigation menu for jumping between sections
+
+
+      // Build a map of vertical offsets for each section
+      // Use this to compare against current scroll position
+      var menu_map = {};
+      var menu_map_order = [];
+
+      // Iterate through the existing page sections
+      $(".table-title > a").each(function(){
+        var $target = $(this);
+        var target_offset = $target.offset().top;
+        var target_name = $target.attr("name");
+        menu_map[target_name] = target_offset; 
+        menu_map_order.push(target_name);
+      });
 
       $(window).scroll(function(){
+
+        var current_menu_item = null;
         var scrollTop = $(window).scrollTop();
+ 
+        menu_map_order.forEach(function(key){
+          
+          var menu_offset = menu_map[key];
+          if(menu_offset < scrollTop) {
+             current_menu_item = key;
+          }
+        }) 
+        
+        // If the scroll position enters a new section
+        // update the in-page menu
+        if (current_menu_item != null) {
+          var selector = ".toc-" + current_menu_item + "> a";
+          var new_menu_label = $(selector).html();
+          $("b", $nav_current).html(new_menu_label);
+        }
+
+        // Set the menu to position fixed once the page
+        // is scrolled past the first main section
+        // other wise reset it to default
         if(scrollTop >= reference_offset_y) {
           $menu.css({ "position": "fixed", "right": "30px"});
           $menu.animate({"top": "0"});
@@ -62,10 +105,8 @@
           $menu.css({"position": "absolute", "right": "0", "top": "0"});
         }
       });
-
-      // In-page navigation handling
-      var $nav_current = $("#section-nav-current");
-      var $nav_menu = $("#section-nav");
+      
+      // In-page navigation toggle
       var $nav_menu_trigger = $("#section-nav-current").click(function() {
         if ($nav_menu.is(":visible")) {
           $nav_menu.hide();
@@ -75,16 +116,17 @@
         }
       });
 
-      // Update currently selected and hide menu when user clicks
-      $("li > a", $nav_menu).click(function(){
-        $nav_current.html($(this).html());
-        $nav_menu.hide();
-      });
-
       // Hide menu when user leaves menu
       $nav_menu.mouseleave(function(){
         setTimeout(function(){ $nav_menu.fadeOut() }, 1500);
       });
+
+      // Update currently selected and hide menu when user clicks
+      $("li > a", $nav_menu).click(function(){
+       $("b", $nav_current).html($(this).html());
+        $nav_menu.hide();
+      });
+
 
       triples.init_row_menu();
 

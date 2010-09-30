@@ -48,6 +48,35 @@
 
 <acre:block def="content_body()">
   
+  <acre:script>
+     var menu_map = []
+
+     if(c.names && c.names.length) {
+       menu_map.push({ "key": "names", "name": "Names"})
+     }
+
+     if(c.aliases && c.aliases.length) {
+       menu_map.push({ "key": "aliases", "name": "Aliases"})
+     }
+     if(c.articles && c.articles.length) {
+       menu_map.push({ "key": "articles", "name": "Articles"})
+     }
+     if(c.keys && c.keys.outgoing && c.keys.outgoing.length) {
+       menu_map.push({ "key": "keys", "name": "Keys"})
+     }
+     if(c.keys && c.keys.incoming && c.keys.incoming.length) {
+       menu_map.push({ "key": "incomingkeys", "name": "Incoming Keys"})
+     }
+     if(c.outgoing && c.outgoing.length) {
+       menu_map.push({ "key": "outgoingproperties", "name": "Outgoing Properties"})
+     }
+     if(c.incoming && c.incoming.length) {
+       menu_map.push({ "key": "incomingproperties", "name": "Incoming Properties"})
+     }
+     if(c.typelinks && c.typelinks.length) {
+       menu_map.push({ "key": "typelinks", "name": "Links using this property"})
+     }
+  </acre:script>
   <div class="page-meta">
     <h1>${i18n.display_name(c.topic)}</h1>
     <div class="meta">
@@ -88,7 +117,7 @@
     <div id="content-main" role="main">
       <div class="section" id="section-names-keys">
         <acre:block if="c.names && c.names.length">
-        <h2 class="table-title">${_("Names")} (${i18n.format_number(c.names.length)})</h2>
+        <h2 class="table-title"><a name="names">${_("Names")} (${i18n.format_number(c.names.length)})</a></h2>
         <table class="table table-sortable">
           <thead>
             <tr>
@@ -114,7 +143,7 @@
         </acre:block>
 
         <acre:block if="c.aliases && c.aliases.length">
-          <h2 class="table-title">${_("Aliases")} (${i18n.format_number(c.aliases.length)})</h2>
+          <h2 class="table-title"><a name="aliases">${_("Aliases")} (${i18n.format_number(c.aliases.length)})</a></h2>
           <table class="table">
             <thead>
               <tr>
@@ -140,7 +169,7 @@
         </acre:block>
 
         <acre:block if="c.articles && c.articles.length">
-          <h2 class="table-title">${_("Articles")} (${i18n.format_number(c.articles.length)})</h2>
+          <h2 class="table-title"><a name="articles">${_("Articles")} (${i18n.format_number(c.articles.length)})</a></h2>
           <table class="table">
             <thead>
               <tr>
@@ -179,7 +208,7 @@
 
         <acre:block if="c.keys">
         <acre:block if="c.keys.outgoing && c.keys.outgoing.length">
-        <h2 class="table-title">${_("Keys")} (${i18n.format_number(c.keys.outgoing.length)})</h2>
+        <h2 class="table-title"><a name="keys">${_("Keys")} (${i18n.format_number(c.keys.outgoing.length)})</a></h2>
         <table class="table table-sortable">
           <thead>
             <tr>
@@ -208,7 +237,7 @@
 
       <div class="section" id="section-incoming-outgoing">
         <acre:block if="c.keys && c.keys.incoming && c.keys.incoming.length">
-        <h2 class="table-title">${_("Incoming Keys")} (${i18n.format_number(c.keys.incoming.length)})</h2>
+        <h2 class="table-title"><a name="incomingkeys">${_("Incoming Keys")} (${i18n.format_number(c.keys.incoming.length)})</a></h2>
         <table class="table table-sortable">
           <thead>
             <tr>
@@ -234,7 +263,7 @@
         </acre:block>
 
         <acre:block if="c.outgoing && c.outgoing.length">
-        <h2 class="table-title">${_("Outgoing Properties")} (${i18n.format_number(c.outgoing.length)})</h2>
+        <h2 class="table-title"><a name="outgoingproperties">${_("Outgoing Properties")} (${i18n.format_number(c.outgoing.length)})</a></h2>
         <table class="table table-sortable">
           <thead>
             <tr>
@@ -263,7 +292,7 @@
         </acre:block>
 
         <acre:block if="c.incoming && c.incoming.length">
-        <h2 class="table-title">${_("Incoming Properties")} (${i18n.format_number(c.incoming.length)})</h2>
+        <h2 class="table-title"><a name="incomingproperties">${_("Incoming Properties")} (${i18n.format_number(c.incoming.length)})</a></h2>
         <table class="table table-sortable">
           <thead>
             <tr>
@@ -291,7 +320,7 @@
         </acre:block>
 
         <acre:block if="c.typelinks && c.typelinks.length">
-        <h2 class="table-title">${_("Links using this property")} (${i18n.format_number(c.typelinks.length)})</h2>
+        <h2 class="table-title"><a name="typelinks">${_("Links using this property")} (${i18n.format_number(c.typelinks.length)})</a></h2>
         <table class="table table-sortable">
           <thead>
             <tr>
@@ -323,6 +352,12 @@
 
     <div id="content-sub" role="nav">
       <div class="content-wrapper section" id="filter-pane">
+      <ul id="section-nav">
+        <li>Jump to&hellip;</li>
+        <li acre:for="i in menu_map">
+          <a href="#${i.key}">$i.name</a>
+        </li>
+      </ul>
         <h1>Filter this data</h1>
         ${components.filters(c.filters)}
       </div>

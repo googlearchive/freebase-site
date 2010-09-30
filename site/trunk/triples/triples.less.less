@@ -26,7 +26,8 @@
   .linear_gradient(#f1f2f3, #e5e6e7);
 }
 
-#filter-pane h1 {
+#filter-title {
+  margin-top: 20px;
   font-size: 16px;
   text-align: center;
 }
@@ -103,4 +104,32 @@ a.remove-filter {
   max-width: 300px;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+#pager {
+  position: relative;
+}
+
+#section-nav-current {
+  display: block;
+  font-size: 14px;
+  text-align: center;
+  background: #fff;
+  border: 3px solid #e5e6e7;
+  -webkit-box-shadow: 1px 1px 1px #ccc;
+}
+
+#section-nav {
+  display: none;
+  width: 230px;
+  position: absolute;
+  top: 0; left: 0;
+  background: #f8f8f8;
+  background: rgba(255,255,255,0.8);
+  font-size: 14px;
+  margin: 0;
+}
+
+#section-nav li {
+  padding-left: 0;
 }

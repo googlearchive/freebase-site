@@ -44,10 +44,12 @@
 
     init: function() {
 
-      $reference = $("#content-wrapper");
-      $menu = $("#content-sub");
-      menu_position_y = $menu.offset().top;
-      reference_offset_y = $reference.offset().top;
+      // Update in-page navgiation menu relative
+      // to current page viewport
+      var $reference = $("#content-wrapper");
+      var $menu = $("#content-sub");
+      var menu_position_y = $menu.offset().top;
+      var reference_offset_y = $reference.offset().top;
 
       $(window).scroll(function(){
         var scrollTop = $(window).scrollTop(); 
@@ -59,6 +61,24 @@
         else {
           $menu.css({"position": "absolute", "right": "0", "top": "0"});
         }
+      });
+
+      // In-page navigation handling
+
+      var $nav_current = $("#section-nav-current");
+      var $nav_menu = $("#section-nav");
+      var $nav_menu_trigger = $("#section-nav-current").click(function() {
+        if ($nav_menu.is(":visible")) {
+          $nav_menu.hide(); 
+        }
+        else {
+          $nav_menu.show(); 
+        }
+      }); 
+
+      $("li > a", $nav_menu).click(function(){
+        $nav_current.html($(this).html());
+        $nav_menu.hide();
       });
 
       triples.init_row_menu();

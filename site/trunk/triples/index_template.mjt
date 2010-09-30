@@ -352,13 +352,15 @@
 
     <div id="content-sub" role="nav">
       <div class="content-wrapper section" id="filter-pane">
-      <ul id="section-nav">
-        <li>Jump to&hellip;</li>
-        <li acre:for="i in menu_map">
-          <a href="#${i.key}">$i.name</a>
-        </li>
-      </ul>
-        <h1>Filter this data</h1>
+        <div id="pager">
+          <span id="section-nav-current">Scroll to&hellip;</span>
+          <ul id="section-nav">
+            <li acre:for="i in menu_map">
+              <a href="#${i.key}">$i.name</a>
+            </li>
+          </ul>
+        </div>
+        <h2 id="filter-title">Filter this data</h2>
         ${components.filters(c.filters)}
       </div>
     </div>

@@ -27,7 +27,7 @@
 }
 
 #filter-title {
-  margin-top: 20px;
+  margin-top: 15px;
   font-size: 16px;
   text-align: center;
 }
@@ -114,9 +114,13 @@ a.remove-filter {
   display: block;
   font-size: 14px;
   text-align: center;
-  background: #fff;
-  border: 3px solid #e5e6e7;
+  background: #e5e6e7;
   -webkit-box-shadow: 1px 1px 1px #ccc;
+}
+
+#section-nav-current:hover {
+  cursor: pointer;
+  color: #333;
 }
 
 #section-nav {
@@ -125,11 +129,20 @@ a.remove-filter {
   position: absolute;
   top: 0; left: 0;
   background: #f8f8f8;
-  background: rgba(255,255,255,0.8);
+  .linear_gradient(#ffffff, #f1f1f1);
   font-size: 14px;
   margin: 0;
+  border-bottom: 5px solid #e5e6e7;
+  -webkit-box-shadow: 1px 1px 1px #ccc;
 }
 
-#section-nav li {
-  padding-left: 0;
+#pager ul li {
+  border-bottom: 1px solid #eee;
+  padding: 0;
 }
+
+#pager ul li a {
+  display: block;
+  padding: 3px 10px;
+}
+

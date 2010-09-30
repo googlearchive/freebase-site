@@ -64,7 +64,6 @@
       });
 
       // In-page navigation handling
-
       var $nav_current = $("#section-nav-current");
       var $nav_menu = $("#section-nav");
       var $nav_menu_trigger = $("#section-nav-current").click(function() {
@@ -76,9 +75,15 @@
         }
       }); 
 
+      // Update currently selected and hide menu when user clicks
       $("li > a", $nav_menu).click(function(){
         $nav_current.html($(this).html());
         $nav_menu.hide();
+      });
+
+      // Hide menu when user leaves menu
+      $nav_menu.mouseleave(function(){
+        setTimeout(function(){ $nav_menu.fadeOut() }, 1500);
       });
 
       triples.init_row_menu();

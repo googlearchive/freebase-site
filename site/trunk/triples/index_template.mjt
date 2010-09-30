@@ -195,7 +195,7 @@
                 ${a(k.namespace)}
                 ${tooltip()}
               </th>
-              <td class="even">${k.value}</td>
+              <td class="even"><span class="key" title="$k.value">${k.value}</span></td>
               <td class="odd" acre:if="k.link.creator">${a(k.link.creator)}</td>
               <td class="odd" acre:else="">null</td>
               <td class="even numeric">${k.link.timestamp}</td>
@@ -359,7 +359,9 @@
     }
   </acre:script>
   ${a(id)}
-  <acre:block if="name != null"> ${name}</acre:block>
+  <acre:block if="name != null">
+    ${name}
+  </acre:block>
 </acre:block>
 
 <acre:block def="literal(o, master_property, topic)" trim="">

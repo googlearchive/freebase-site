@@ -1,3 +1,24 @@
+#content-wrapper {
+  position: relative;
+}
+
+#content-main {
+  margin: 0 300px 0 0;
+  float: none;
+  display: block;
+}
+
+#content-sub {
+  position: absolute;
+  right: 0; top: 0;
+  float: none;
+  margin: 0;
+}
+
+#content-sub .content-wrapper {
+  margin-top: 0;
+}
+
 #filter-pane {
   margin-top: 4.8em;
   border: 5px solid #e5e5e7;
@@ -77,3 +98,9 @@ a.remove-filter {
   font-family: monospace;
 }
 
+.table .key {
+  display: block;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

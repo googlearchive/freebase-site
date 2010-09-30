@@ -106,10 +106,8 @@
     <ul>
       <acre:block for="key,val in f.TIMESTAMPS">
         <li acre:if="key === ts" class="filter-item">
-          <span class="filter-item">
-            <a href="${f.remove_filter_url(o, 'timestamp')}" class="remove-filter">x</a>
-            ${_(key)}
-          </span>
+          <a href="${f.remove_filter_url(o, 'timestamp')}" class="remove-filter">x</a>
+          ${_(key)}
         </li>
         <li acre:else="">
           <a href="${f.filter_url(o, 'timestamp', key)}">${_(key)}</a>

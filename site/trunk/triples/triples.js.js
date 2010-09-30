@@ -1,5 +1,6 @@
 (function($, fb) {
 
+
   var triples = fb.triples = {
     tip: null,
     build_query: null,
@@ -42,6 +43,24 @@
     },
 
     init: function() {
+
+      $reference = $("#content-wrapper");
+      $menu = $("#content-sub");
+      menu_position_y = $menu.offset().top;
+      reference_offset_y = $reference.offset().top;
+
+      $(window).scroll(function(){
+        var scrollTop = $(window).scrollTop(); 
+        if(scrollTop >= reference_offset_y) {
+          $menu.css({ "position": "fixed", "right": "30px"});
+          $menu.animate({"top": "0"});
+        }
+
+        else {
+          $menu.css({"position": "absolute", "right": "0", "top": "0"});
+        }
+      });
+
       triples.init_row_menu();
 
       $.tablesorter.defaults.cssAsc = "column-header-asc";

@@ -289,12 +289,12 @@
         <p>review topics for merge and delete.</p>
       </li>
       <li>
-        <a href="http://typewriter.freebaseapps.com">Typewriter</a>
-        <p>add types to topics.</p>
+        <a href="http://matchmaker.freebaseapps.com">Matchmaker</a>
+        <p>match imported data to topics.</p>
       </li>
       <li>
-        <a href="http://matchmaker.freebaseapps.com/queue/queue_1274213216597_0">WordHunger</a>
-        <p>connect WordNet to Freebase.</p>
+        <a href="http://hotdate.freebaseapps.com/">Hotdate</a>
+        <p>add dates to events.</p>
       </li>
     </ul>
     <a href="${h.wiki_url('Data_games')}" class="more-link">Learn More &raquo;</a>

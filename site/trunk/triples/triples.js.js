@@ -8,7 +8,7 @@
 
     // trigger for row menus
     init_row_menu: function(context) {
-      triples.tip = $("#triples-tip");
+      triples.tip = $("#triple-tip");
       triples.build_query = $("#build-query");
       triples.build_query_url = triples.build_query.attr("href");
 
@@ -20,7 +20,7 @@
           offset: [-10, -10],
           effect: "fade",
           delay: 300,
-          tip: "#triples-tip",
+          tip: "#triple-tip",
           onBeforeShow: function() {
             var triple = this.getTrigger().parents("tr:first").metadata();
             triples.build_query.attr("href", triples.build_query_url + "?q=" + triple.mql);
@@ -52,7 +52,7 @@
       var reference_offset_y = $reference.offset().top;
 
       $(window).scroll(function(){
-        var scrollTop = $(window).scrollTop(); 
+        var scrollTop = $(window).scrollTop();
         if(scrollTop >= reference_offset_y) {
           $menu.css({ "position": "fixed", "right": "30px"});
           $menu.animate({"top": "0"});
@@ -68,12 +68,12 @@
       var $nav_menu = $("#section-nav");
       var $nav_menu_trigger = $("#section-nav-current").click(function() {
         if ($nav_menu.is(":visible")) {
-          $nav_menu.hide(); 
+          $nav_menu.hide();
         }
         else {
-          $nav_menu.show(); 
+          $nav_menu.show();
         }
-      }); 
+      });
 
       // Update currently selected and hide menu when user clicks
       $("li > a", $nav_menu).click(function(){
@@ -116,8 +116,58 @@
         $(this).val(data.id)
           .parents("form:first").submit();
       });
-    }
 
+
+
+      // article/image tooltips
+      triples.article_tip = $("#article-tip");
+      triples.image_tip = $("#image-tip");
+      var tip_options = {
+        "article": {
+          tip: triples.article_tip,
+          onBeforeShow: function(id) {
+            $.ajax({
+              url: acre.freebase.service_url + "/api/trans/blurb" + id,
+              dataType: "jsonp",
+              jsonpCallback: "window.freebase.triples.article_callback"
+            });
+          }
+        },
+        "image": {
+          tip: triples.image_tip,
+          onBeforeShow: function(id) {
+            $("img", triples.image_tip).attr("src", acre.freebase.service_url + "/api/trans/raw" + id).show();
+          }
+        }
+      };
+
+      $(".article").add($(".image")).each(function() {
+        var trigger = $(this);
+        var tip_class = trigger.hasClass("article") ? "article" : "image";
+        var tip_option = tip_options[tip_class];
+        trigger
+          .removeAttr("title")
+          .tooltip({
+            position: "top center",
+            effect: "fade",
+            predelay: 500,
+            tip: tip_option.tip,
+            onBeforeShow: function() {
+              var id = this.getTrigger().metadata().id;
+              var current_id = tip_option.tip.data("id");
+              if (id === current_id) {
+                return;
+              }
+              tip_option.tip.data("id", id);
+              tip_option.onBeforeShow(id);
+            }
+          });
+        });
+    },
+
+    article_callback: function(data) {
+      triples.article_tip.text(data.result.body).show();
+    }
   };
 
   $(triples.init);

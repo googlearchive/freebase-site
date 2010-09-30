@@ -50,16 +50,11 @@
   
   <acre:script>
      var menu_map = []
-
      if(c.names && c.names.length) {
        menu_map.push({ "key": "names", "name": "Names"})
      }
-
      if(c.aliases && c.aliases.length) {
        menu_map.push({ "key": "aliases", "name": "Aliases"})
-     }
-     if(c.articles && c.articles.length) {
-       menu_map.push({ "key": "articles", "name": "Articles"})
      }
      if(c.keys && c.keys.outgoing && c.keys.outgoing.length) {
        menu_map.push({ "key": "keys", "name": "Keys"})
@@ -182,16 +177,16 @@
             <tbody>
               <tr acre:for="article in c.articles" class="hoverable ${JSON.stringify(th.triple(c.topic.id, '/common/topic/article', article))}">
                 <th class="odd row-header" scope="row">
-                  ${a(article.id)}
+                  ${a(article.id, null, th.tipattrs('article', article.id))}
                   ${tooltip()}
                 </th>
                 <td class="even">
                   <acre:block if="article.source_uri">
-                    <a href="${h.freebase_url('/api/trans/blurb' + article.id, [['maxlength', 1600]])}">${article.source_uri}</a>
+                    <a href="${h.freebase_url('/api/trans/blurb' + article.id, [['maxlength', 1600]])}" class="${th.tipclass('article', article.id)}">${article.source_uri}</a>
                   </acre:block>
                   <acre:block elif="article.content">
                     <acre:block if="article.content.blob_id">
-                      <a href="${h.freebase_url('/api/trans/raw' + article.id)}">${article.content.blob_id}</a>
+                      <a href="${h.freebase_url('/api/trans/raw' + article.id)}" class="${th.tipclass('article', article.id)}">${article.content.blob_id}</a>
                     </acre:block>
                     <acre:block if="article.content.language">
                       ${lang(article.content.language)}
@@ -366,9 +361,17 @@
     </div>
   </div>
 
-  <ul id="triples-tip" class="row-menu tooltip">
+  <ul id="triple-tip" class="row-menu tooltip">
     <li class="row-menu-item last"><a id="build-query" href="${h.url_for('queryeditor')}">${_("Build query")}</a></li>
   </ul>
+
+  <div id="article-tip" class="tooltip">
+  </div>
+
+  <div id="image-tip" class="tooltip">
+    <img/>
+  </div>
+
 </acre:block>
 
 <acre:block def="footer_script()">
@@ -376,8 +379,19 @@
   <script src="${mf.js_src('triples.mf.js')}"></script>
 </acre:block>
 
-<acre:block def="a(id, name)" trim="">
-  <a href="${h.url_for('triples', null, c.params, id)}" title="${id}">${name || id}</a>
+<acre:block def="a(id, name, attrs)" trim="">
+  <acre:script>
+    attrs = h.extend({
+      href: h.url_for('triples', null, c.params, id),
+      title: id
+    }, attrs);
+    var clazz = "";
+    if (attrs["class"]) {
+      clazz = attrs["class"];
+      delete attrs["class"];
+    }
+  </acre:script>
+  <a acre:attrs="attrs" class="${clazz}">${name || id}</a>
 </acre:block>
 
 <acre:block def="topic(o)" trim="">
@@ -394,8 +408,15 @@
         name = i18n.display_name(o);
       }
     }
+    var attrs;
+    if (o.link.master_property === "/common/topic/article") {
+      attrs = th.tipattrs('article', id);
+    }
+    else if (o.link.master_property === "/common/topic/image") {
+      attrs = th.tipattrs('image', id);
+    }
   </acre:script>
-  ${a(id)}
+  ${a(id, id, attrs)}
   <acre:block if="name != null">
     ${name}
   </acre:block>

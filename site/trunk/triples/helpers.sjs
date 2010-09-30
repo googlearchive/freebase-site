@@ -1,3 +1,5 @@
+var mf = acre.require("MANIFEST").mf;
+var h = mf.require("core", "helpers");
 
 /**
  * return a triples data structure.
@@ -31,4 +33,23 @@ function triple(subject, predicate, object) {
   o.mql[predicate] = h.extend({}, o.o);
   o.mql = JSON.stringify(o.mql);
   return o;
+};
+
+
+
+function tipattrs(type, id, attrs) {
+  attrs = attrs || {};
+  var c = attrs["class"];
+  if (c) {
+    c = h.sprintf("%s %s", c, tipclass(type, id));
+  }
+  else {
+    c = tipclass(type, id);
+  }
+  attrs["class"] = acre.markup.stringify(acre.markup.bless(c));
+  return attrs;
+};
+
+function tipclass(type, id) {
+  return h.sprintf("%s %s", type, JSON.stringify({id:id}));
 };

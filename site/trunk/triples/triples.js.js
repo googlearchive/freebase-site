@@ -42,6 +42,47 @@
       row.removeClass("row-hover");
     },
 
+    update_menu: function() {
+      var last_position = triples.last_position || 0;
+      var current_position = $(window).scrollTop();
+      var current_menu_item = null;
+      var scrollTop = $(window).scrollTop();
+
+
+      if (current_position > last_position) {
+        triples.menu_map_order.forEach(function(key){
+          var menu_offset = triples.menu_map[key];
+          // scrolling down
+          if (menu_offset < current_position) {
+            current_menu_item = key;
+          }
+        });
+        console.log("scroll down");
+      }
+      else {
+        for (var i=triples.menu_map_order.length-1; i>=0; i--) {
+          var key = triples.menu_map_order[i];
+          var table = $("[name=" + key + "]").parent().next("table");
+          var offset = table.offset().top + table.height() - 20;
+
+          console.log("offsets", table.offset().top, table.height(), offset);
+          if (current_position < offset) {
+            current_menu_item = key;
+          }
+        }
+        console.log("scroll up");
+      }
+
+      // If the scroll position enters a new section
+      // update the in-page menu
+      if (current_menu_item != null) {
+        var selector = ".toc-" + current_menu_item + "> a";
+        var new_menu_label = $(selector).html();
+        $("b", "#section-nav-current").html(new_menu_label);
+        triples.last_position = current_position;
+      }
+    },
+
     init: function() {
 
       // ***********************************************
@@ -60,42 +101,30 @@
 
       // Build a map of vertical offsets for each section
       // Use this to compare against current scroll position
-      var menu_map = {};
-      var menu_map_order = [];
+      triples.menu_map = {};
+      triples.menu_map_order = [];
 
       // Iterate through the existing page sections
       $(".table-title > a").each(function(){
         var $target = $(this);
         var target_offset = $target.offset().top;
         var target_name = $target.attr("name");
-        menu_map[target_name] = target_offset; 
-        menu_map_order.push(target_name);
+        triples.menu_map[target_name] = target_offset;
+        var table = $("[name=" + target_name + "]").parent().next("table");
+        triples.table_map[target_name] = table.offset().top + table.height() - 20;
+        triples.menu_map_order.push(target_name);
       });
 
-      $(window).scroll(function(){
+      var update_menu_timeout = null;
 
-        var current_menu_item = null;
-        var scrollTop = $(window).scrollTop();
- 
-        menu_map_order.forEach(function(key){
-          
-          var menu_offset = menu_map[key];
-          if(menu_offset < scrollTop) {
-             current_menu_item = key;
-          }
-        }) 
-        
-        // If the scroll position enters a new section
-        // update the in-page menu
-        if (current_menu_item != null) {
-          var selector = ".toc-" + current_menu_item + "> a";
-          var new_menu_label = $(selector).html();
-          $("b", $nav_current).html(new_menu_label);
-        }
+      $(window).scroll(function(){
+        clearTimeout(update_menu_timeout);
+        update_menu_timeout = setTimeout(triples.update_menu, 200);
 
         // Set the menu to position fixed once the page
         // is scrolled past the first main section
         // other wise reset it to default
+        var scrollTop = $(window).scrollTop();
         if(scrollTop >= reference_offset_y) {
           $menu.css({ "position": "fixed", "right": "30px"});
           $menu.animate({"top": "0"});
@@ -105,7 +134,7 @@
           $menu.css({"position": "absolute", "right": "0", "top": "0"});
         }
       });
-      
+
       // In-page navigation toggle
       var $nav_menu_trigger = $("#section-nav-current").click(function() {
         if ($nav_menu.is(":visible")) {

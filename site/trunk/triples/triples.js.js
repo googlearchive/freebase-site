@@ -51,20 +51,12 @@
       // init table sorter
       var table = $(".table-sortable").tablesorter();
 
-      $(".time-range-form-trigger").click(function(){
-        var $form = $(this).siblings(".time-range-form");
+      $(".filter-form-trigger").click(function(){
+        var $form = $(this).siblings(".filter-form");
         if($form.is(":hidden")) {
-          $form.slideDown();
-        }
-        else {
-          $form.slideUp();
-        }
-      });
-
-      $(".user-filter-form-trigger").click(function(){
-        var $form = $(this).siblings(".user-filter-form");
-        if($form.is(":hidden")) {
-          $form.slideDown();
+          $form.slideDown(function() {
+            $(":text:first", $form).focus();
+          });
         }
         else {
           $form.slideUp();

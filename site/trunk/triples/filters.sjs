@@ -38,7 +38,28 @@ function get_filters(id) {
 };
 
 function get_creator() {
-  return validators.MqlId(acre.request.params.creator, {if_empty:null});
+  var creator = acre.request.params.creator;
+  if (creator) {
+    if (h.is_array(creator)) {
+      var users = [];
+      creator.forEach(function(user) {
+        user = validators.MqlId(user, {if_empty:null});
+        if (user) {
+          users.push(user);
+        }
+      });
+      if (users.length) {
+        if (users.length === 1) {
+          return users[0];
+        }
+        return users;
+      }
+    }
+    else {
+      return validators.MqlId(creator, {if_empty:null});
+    }
+  }
+  return null;
 };
 
 function get_timestamp() {
@@ -110,7 +131,12 @@ function apply_timestamp(clause, timestamp) {
 
 function apply_creator(clause, creator) {
   if (creator) {
-    clause["filter:creator"] = creator;
+    if (h.is_array(creator) && creator.length) {
+      clause["filter:creator"] = {"id|=": creator};
+    }
+    else {
+      clause["filter:creator"] = creator;
+    }
   }
   return clause;
 };
@@ -147,14 +173,34 @@ function filter_url(filter_options, filter_key, filter_val) {
   return acre.form.build_url(url, params);
 };
 
-function remove_filter_url(filter_options, filter_key) {
+function remove_filter_url(filter_options, filter_key, filter_value) {
   var o = h.extend({}, filter_options);
   var url = h.url_for("triples", null, null, o.id);
   delete o.id;
   if (o.limit == LIMIT) {
     delete o.limit;
   }
-  delete o[filter_key];
+  if (filter_value == null) {
+    delete o[filter_key];
+  }
+  else {
+    var values = o[filter_key];
+    if (!h.is_array(values)) {
+      values = [values];
+    }
+    var filtered_values = [];
+    values.forEach(function(v) {
+      if (v !== filter_value) {
+        filtered_values.push(v);
+      }
+    });
+    if (filtered_values.length) {
+      o[filter_key] = filtered_values;
+    }
+    else {
+      delete o[filter_key];
+    }
+  }
   var params = {};
   for (var key in o) {
     var v = o[key];

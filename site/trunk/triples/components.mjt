@@ -105,17 +105,36 @@
     <h2 class="filter-title">${_("By Time")}:</h2>
     <ul>
       <acre:block for="key,val in f.TIMESTAMPS">
-      <li acre:if="key === ts" class="filter-item">
-        <a href="${f.remove_filter_url(o, 'timestamp')}" class="remove-filter">x</a>
-        ${_(key)}
-      </li>
-      <li acre:else="">
-        <a href="${f.filter_url(o, 'timestamp', key)}">${_(key)}</a>
-      </li>
+        <li acre:if="key === ts" class="filter-item">
+          <span class="filter-item">
+            <a href="${f.remove_filter_url(o, 'timestamp')}" class="remove-filter">x</a>
+            ${_(key)}
+          </span>
+        </li>
+        <li acre:else="">
+          <a href="${f.filter_url(o, 'timestamp', key)}">${_(key)}</a>
+        </li>
+      </acre:block>
+      <acre:script>
+        var change = false;
+      </acre:script>
+      <acre:block if="ts && !(ts in f.TIMESTAMPS) && o.timestamp">
+        <acre:script>
+          change = true;
+        </acre:script>
+        <span class="filter-item">
+          <a href="${f.remove_filter_url(o, 'timestamp')}" class="remove-filter">x</a>
+          <acre:block if="h.is_array(o.timestamp) && o.timestamp.length === 2">
+            ${h.sprintf(_("%s to %s"), o.timestamp[0], o.timestamp[1])}
+          </acre:block>
+          <acre:block else="">
+            ${o.timestamp}
+          </acre:block>
+        </span>
       </acre:block>
       <li>
-        <a class="time-range-form-trigger" href="javascript:void(0)">${_("custom&hellip;")}</a>
-        <div class="time-range-form">
+        <a class="filter-form-trigger" href="javascript:void(0)">${change ? _("change"): _("custom")}&hellip;</a>
+        <div class="filter-form" style="display:none;">
           ${filter_form(o, 'timestamp', timestamp_inputs)}
         </div>
       </li>
@@ -124,39 +143,46 @@
 
   <div class="filter-group">
     <h2 class="filter-title">${_("By User")}:</h2>
-    <span class="filter-item" acre:if="o.creator">
-      <a href="${f.remove_filter_url(o, 'creator')}" class="remove-filter">x</a>
-      ${o.creator}
-    </span>
-    <acre:script>
-    var css_class = "";
-    if (o.creator) {
-      css_class = "display:none;"
-    }
-    </acre:script>
-    <a acre:if="o.creator" class="user-filter-form-trigger" href="javascript:void(0);">Add another&hellip;</a>
-    <div class="user-filter-form" style="$css_class">
-      ${filter_form(o, 'creator', null, 'Start typing for suggestions')}
+    <acre:block if="o.creator">
+      <acre:script>
+        var creator = o.creator;
+        if (!h.is_array(creator)) {
+          creator = [creator];
+        }
+      </acre:script>
+      <span acre:for="user in creator" class="filter-item">
+        <a href="${f.remove_filter_url(o, 'creator', user)}" class="remove-filter">x</a>
+        ${user}
+      </span>
+    </acre:block>
+    <a acre:if="o.creator" class="filter-form-trigger" href="javascript:void(0);">${_("add another")}&hellip;</a>
+    <div class="filter-form" acre:attrs="o.creator ? {style:'display:none;'} : {}">
+      ${filter_form(o, 'creator', null, 'Start typing for suggestions', true)}
     </div>
   </div>
 
   <div class="filter-group">
     <h2 class="filter-title">${_("Limit")}:</h2>
-    <span class="filter-item" acre:if="limit !== f.LIMIT">
-      <a href="${f.remove_filter_url(o, 'limit')}" class="remove-filter">x</a>
+    <span class="filter-item">
+      <a acre:if="limit != f.LIMIT" href="${f.remove_filter_url(o, 'limit')}" class="remove-filter">x</a>
       ${i18n.format_number(limit)}
     </span>
-    ${filter_form(o, 'limit', null, 'Default is 100')}
+    <a class="filter-form-trigger" href="javascript:void(0);">${_("change")}&hellip;</a>
+    <div class="filter-form" style="display:none;">
+       ${filter_form(o, 'limit', null, 'Default is 100')}
+    </div>
     </acre:block>
   </div>
 
 </acre:block>
 
-<acre:block def="filter_form(filter_options, filter_key, def, placeholder)">
+<acre:block def="filter_form(filter_options, filter_key, def, placeholder, append)">
   <form action="${h.url_for('triples', null, null, filter_options.id)}" method="GET">
-    <acre:block for="key,val in filter_options" if="key && val && (key !== 'id') && (key != filter_key)">
+    <acre:block for="key,val in filter_options" if="key && val && (key !== 'id') && (append || key != filter_key)">
       <acre:block if="h.is_array(val)">
         <input acre:for="v in val" type="hidden" name="${key}" value="${v}"/>
+      </acre:block>
+      <acre:block elif="key === 'limit' && val === f.LIMIT">
       </acre:block>
       <acre:block else="">
         <input type="hidden" name="${key}" value="${val}"/>

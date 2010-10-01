@@ -1,5 +1,10 @@
 
 (function($, fb) {
+  $(window).ajaxSend(function(event, xhr, options) {
+    if (options.type === "POST") {
+      xhr.setRequestHeader("x-acre-cache-control", "max-age: 3600");
+    }
+  });
 
   var se = fb.schema.edit = {
 

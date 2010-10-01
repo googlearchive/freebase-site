@@ -12,10 +12,9 @@
     var limit = o.limit || f.LIMIT;
     var ts = acre.request.params.timestamp;
   </acre:script>
-   
+   <!--
   <div class="filter-group">
     <h2 class="filter-title">${_("By Vertical")}:</h2>
-
     <acre:block if="o.domain">
     <ul>
       <li>
@@ -70,7 +69,7 @@
     </ul>
     </acre:block>
 
-    <ul class="bar-graph">
+   <ul class="bar-graph">
       <li class="bar-graph-item">
         <a href="#" class="clear">
           <span class="bar-graph-item-name">/freebase</span>
@@ -99,7 +98,8 @@
         </a>
       </li>
     </ul>
-  </div>
+ </div>
+  -->
 
   <div class="filter-group">
     <h2 class="filter-title">${_("By Time")}:</h2>

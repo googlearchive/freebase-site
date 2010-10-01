@@ -106,14 +106,15 @@ var app = function(id, options) {
           sign : true,
           content : acre.form.encode(args)
         };
-        d.oauth = freebase.fetch(url, fetch_opts)
-          .then(function(res) {
-            app.oauth = {
-              key : res.key,
-              secret : res.secret
-            };
-            return app;
-          });
+
+        var oauth_result = acre.freebase.fetch(url, fetch_opts);
+        if (oauth_result) {
+          app.oauth = {
+            key: oauth_result.key,
+            secret: oauth_result.secret
+          }
+        }
+
       }
       
       return deferred.all(d)

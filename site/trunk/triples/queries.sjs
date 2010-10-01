@@ -18,7 +18,7 @@ function topic(id, filters) {
     timestamp: null,
     permission: null
   };
-  return freebase.mqlread(q)
+  return freebase.mqlread(q,  f.mqlread_options(filters))
     .then(function(env) {
       return env.result;
     });
@@ -40,7 +40,7 @@ function last_edit(id, filters) {
   };
   f.apply_creator(q, filters.creator);
   f.apply_timestamp(q, filters.timestamp);
-  return freebase.mqlread(q)
+  return freebase.mqlread(q, f.mqlread_options(filters))
     .then(function(env) {
       return env.result;
     });
@@ -58,7 +58,7 @@ function names(id, filters) {
     }]
   };
   f.apply_filters(q.name[0], filters);
-  return freebase.mqlread(q)
+  return freebase.mqlread(q, f.mqlread_options(filters))
     .then(function(env) {
       return env.result.name;
     });
@@ -76,7 +76,7 @@ function aliases(id, filters) {
     }]
   };
   f.apply_filters(q["/common/topic/alias"][0], filters);
-  return freebase.mqlread(q)
+  return freebase.mqlread(q, f.mqlread_options(filters))
     .then(function(env) {
       return env.result["/common/topic/alias"];
     });
@@ -102,7 +102,7 @@ function keys(id, filters) {
   };
   f.apply_filters(q.key[0], filters);
   f.apply_filters(q["/type/namespace/keys"][0], filters);
-  return freebase.mqlread(q)
+  return freebase.mqlread(q, f.mqlread_options(filters))
     .then(function(env) {
       var result = env.result;
       result.outgoing = result.key;
@@ -153,7 +153,7 @@ function outgoing(id, filters) {
   };
   f.apply_filters(q["/type/reflect/any_master"][0], filters);
   f.apply_filters(q["/type/reflect/any_value"][0], filters);
-  return freebase.mqlread(q)
+  return freebase.mqlread(q, f.mqlread_options(filters))
     .then(function(env) {
       var result = env.result;
       result = result["/type/reflect/any_master"].concat(result["/type/reflect/any_value"]);
@@ -186,7 +186,7 @@ function incoming(id, filters) {
     }]
   };
   f.apply_filters(q["/type/reflect/any_reverse"][0], filters);
-  return freebase.mqlread(q)
+  return freebase.mqlread(q, f.mqlread_options(filters))
     .then(function(env) {
       var result = env.result;
       return result["/type/reflect/any_reverse"];
@@ -209,7 +209,7 @@ function typelinks(id, filters) {
   f.apply_limit(q[0], filters.limit);
   f.apply_creator(q[0], filters.creator);
   f.apply_timestamp(q[0], filters.timestamp);
-  return freebase.mqlread(q)
+  return freebase.mqlread(q, f.mqlread_options(filters))
     .then(function(env) {
       return env.result;
     });

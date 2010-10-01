@@ -110,7 +110,7 @@
           ${_(key)}
         </li>
         <li acre:else="">
-          <a href="${f.filter_url(o, 'timestamp', key)}">${_(key)}</a>
+          <a href="${f.filter_url(o, 'timestamp', key)}" title="${h.sprintf(_('Added since %s'), _(key))}">${_(key)}</a>
         </li>
       </acre:block>
       <acre:script>
@@ -168,6 +168,22 @@
     <a class="filter-form-trigger" href="javascript:void(0);">${_("change")}&hellip;</a>
     <div class="filter-form" style="display:none;">
        ${filter_form(o, 'limit', null, 'Default is 100')}
+    </div>
+    </acre:block>
+  </div>
+
+
+  <div class="filter-group">
+    <h2 class="filter-title">${_("As of Time")}:</h2>
+    <acre:block if="o.as_of_time">
+      <span class="filter-item">
+        <a href="${f.remove_filter_url(o, 'as_of_time')}" class="remove-filter">x</a>
+        ${o.as_of_time}
+      </span>
+      <a class="filter-form-trigger" href="javascript:void(0);">${_("change")}&hellip;</a>
+    </acre:block>
+    <div class="filter-form" acre:attrs="o.as_of_time ? {style:'display:none;'} : {}">
+       ${filter_form(o, 'as_of_time', null, 'timestamp')}
     </div>
     </acre:block>
   </div>

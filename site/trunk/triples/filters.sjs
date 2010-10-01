@@ -23,7 +23,8 @@ function get_filters(id) {
     id: id,
     limit: get_limit(),
     timestamp: get_timestamp(),
-    creator: get_creator()
+    creator: get_creator(),
+    as_of_time: get_as_of_time()
   };
   if (acre.request.params.domain) {
     filters.domain = validators.MqlId(acre.request.params.domain);
@@ -92,6 +93,18 @@ function get_limit() {
     limit = LIMIT;
   }
   return limit;
+};
+
+function get_as_of_time() {
+  return validators.Timestamp(acre.request.params.as_of_time, {if_empty:null});
+};
+
+function mqlread_options(filters) {
+  var options = {};
+  if (filters.as_of_time) {
+    options.as_of_time = filters.as_of_time;
+  }
+  return options;
 };
 
 function apply_filters(clause, filters) {

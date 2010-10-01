@@ -1,5 +1,6 @@
 <acre:script>
   var mf = acre.require("MANIFEST").mf;
+  var h = mf.require("core", "helpers");
   var i18n = mf.require("i18n", "i18n");
   var i18n_editcomponents = mf.require("i18n", "editcomponents");
   var _ = i18n.gettext;

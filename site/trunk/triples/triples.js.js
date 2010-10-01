@@ -57,20 +57,15 @@
             current_menu_item = key;
           }
         });
-        console.log("scroll down");
       }
       else {
         for (var i=triples.menu_map_order.length-1; i>=0; i--) {
           var key = triples.menu_map_order[i];
-          var table = $("[name=" + key + "]").parent().next("table");
-          var offset = table.offset().top + table.height() - 20;
-
-          console.log("offsets", table.offset().top, table.height(), offset);
+          var offset = triples.table_map[key];
           if (current_position < offset) {
             current_menu_item = key;
           }
         }
-        console.log("scroll up");
       }
 
       // If the scroll position enters a new section
@@ -103,6 +98,7 @@
       // Use this to compare against current scroll position
       triples.menu_map = {};
       triples.menu_map_order = [];
+      triples.table_map = {};
 
       // Iterate through the existing page sections
       $(".table-title > a").each(function(){

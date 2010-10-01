@@ -6,100 +6,14 @@
   var _ = i18n.gettext;
 </acre:script>
 
-<acre:block def="filters(filter_options)">
+<acre:block def="filters(filter_options, prop_counts)">
   <acre:script>
     var o = filter_options || {};
     var limit = o.limit || f.LIMIT;
     var ts = acre.request.params.timestamp;
   </acre:script>
-   <!--
-  <div class="filter-group">
-    <h2 class="filter-title">${_("By Vertical")}:</h2>
-    <acre:block if="o.domain">
-    <ul>
-      <li>
-        <a href="${f.remove_filter_url(o, 'domain')}" class="remove-filter">x</a>
-        ${o.domain}
-      </li>
-    </ul>
-    </acre:block>
-    <acre:block elif="o.type">
-    <acre:script>
-    var type = acre.freebase.mqlread({id:o.type, type:"/type/type", domain:null}).result;
-    </acre:script>
-    <ul>
-      <li>
-        <a href="${f.remove_filter_url(o, 'type')}" class="remove-filter">x</a>
-        <acre:script>
-        var domain_options = h.extend({}, o);
-        delete domain_options.type;
-        </acre:script>
-        <a href="${f.filter_url(domain_options, 'domain', type.domain)}">${type.domain}</a>
-        <ul>
-          <li>
-            ${o.type}
-          </li>
-        </ul>
-      </li>
-    </ul>
-    </acre:block>
-    <acre:block elif="o.property">
-    <acre:script>
-    var prop = acre.freebase.mqlread({id:o.property, type:"/type/property", schema:{id:null, domain:null}}).result;
-    </acre:script>
-    <ul>
-      <li>
-        <a href="${f.remove_filter_url(o, 'property')}" class="remove-filter">x</a>
-        <acre:script>
-        var domain_options = h.extend({}, o);
-        delete domain_options.property;
-        </acre:script>
-        <a href="${f.filter_url(domain_options, 'domain', prop.schema.domain)}">${prop.schema.domain}</a>
-        <ul>
-          <li>
-            <a href="${f.filter_url(domain_options, 'type', prop.schema.id)}">${prop.schema.id}</a>
-            <ul>
-              <li>
-                ${o.property}
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-    </ul>
-    </acre:block>
 
-   <ul class="bar-graph">
-      <li class="bar-graph-item">
-        <a href="#" class="clear">
-          <span class="bar-graph-item-name">/freebase</span>
-          <span class="bar-graph-values">
-            <span class="bar-graph-value incoming" href="#" style="width:70%"><b>23</b></span>
-            <span class="bar-graph-value outgoing" href="#" style="width:30%"><b>15</b></span>
-          </span>
-        </a>
-      </li>
-      <li class="bar-graph-item">
-        <a href="#" class="clear">
-          <span class="bar-graph-item-name">/common</span>
-          <span class="bar-graph-values">
-            <span class="bar-graph-value incoming" href="#" style="width:50%"><b>19</b></span>
-            <span class="bar-graph-value outgoing" href="#" style="width:20%"><b>11</b></span>
-          </span>
-        </a>
-      </li>
-      <li class="bar-graph-item">
-        <a href="#" class="clear">
-          <span class="bar-graph-item-name">/film</span>
-          <span class="bar-graph-values">
-            <span class="bar-graph-value incoming" href="#" style="width:10%"><b>19</b></span>
-            <span class="bar-graph-value outgoing" href="#" style="width:7%"><b>11</b></span>
-          </span>
-        </a>
-      </li>
-    </ul>
- </div>
-  -->
+  ${prop_counts_filter(filter_options, prop_counts)}
 
   <div class="filter-group">
     <h2 class="filter-title">${_("By Time")}:</h2>
@@ -215,4 +129,78 @@
 <acre:block def="timestamp_inputs()">  
   <input type="text" class="text-input date-input" name="timestamp" placeholder="${_('from')}"/> to 
   <input type="text" class="text-input date-input" name="timestamp" placeholder="${_('to')}"/>
+</acre:block>
+
+
+
+<acre:block def="prop_counts_filter(filter_options, prop_counts)">
+  <acre:script>
+    var o = filter_options;
+    var show_counts = !o.timestamp && !o.creator && !o.as_of_time && prop_counts;
+   var show_filter = o.domain || o.type || o.property || show_counts;
+  </acre:script>
+  <div acre:if="show_filter" class="filter-group">
+    <h2 class="filter-title">${_("By Vertical")}:</h2>
+    <acre:block if="o.domain">
+      <span class="filter-item">
+        <a href="${f.remove_filter_url(o, 'domain')}" class="remove-filter">x</a>
+        ${o.domain}
+      </span>
+    </acre:block>
+    <acre:block elif="o.type">     
+      <span class="filter-item">
+        <a href="${f.remove_filter_url(o, 'type')}" class="remove-filter">x</a>
+        ${o.type}
+      </span>
+    </acre:block>
+    <acre:block elif="o.property">
+      <span class="filter-item">
+        <a href="${f.remove_filter_url(o, 'property')}" class="remove-filter">x</a>
+        ${o.property}
+      </span>
+    </acre:block>
+
+    <acre:block if="show_counts">
+      <acre:script>
+        var bar_graph_data = f.get_bar_graph_data(o, prop_counts);
+      </acre:script>
+
+      <acre:block if="bar_graph_data && bar_graph_data.length">
+        <ul class="bar-graph">
+          <acre:block for="i,data in bar_graph_data" if="i<10">
+            <acre:script>
+              var id = data.id;
+              var total = data.total;
+              var incoming = data.incoming;
+              var outgoing = data.outgoing;
+              if (o.domain || o.type || o.property) {
+                id = id.split("/").pop();
+              }
+            </acre:script>
+            <li class="bar-graph-item">
+              <a class="clear" acre:attrs="data.url ? {href:data.url} : {href:'javascript:void(0);'}">
+                <span class="bar-graph-item-name">${id}</span>
+                <span class="bar-graph-values">
+                  <acre:block if="incoming != null && outgoing != null">
+                    <span class="bar-graph-value incoming" title="${h.sprintf(_('%s incoming'), i18n.format_number(data.ti))}" style="width:${incoming}%">
+                      <b>${i18n.format_number(data.ti)}</b>
+                    </span>
+                    <span class="bar-graph-value outgoing" title="${h.sprintf(_('%s ougoing'), i18n.format_number(data.to))}" style="width:${outgoing}%">
+                      <b>${i18n.format_number(data.to)}</b>
+                    </span>
+                  </acre:block>
+                  <acre:block else="">
+                    <span class="bar-graph-value outgoing" title="${h.sprintf(_('%s total'), i18n.format_number(data.t))}" style="width:${total}%">
+                      <b>${i18n.format_number(data.t)}</b>
+                    </span>
+                  </acre:block>
+                </span>                
+              </a>
+            </li>
+          </acre:block>
+        </ul>
+      </acre:block>
+
+    </acre:block>
+  </div>
 </acre:block>

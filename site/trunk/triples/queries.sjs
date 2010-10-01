@@ -6,7 +6,6 @@ var f = mf.require("filters");
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 
-
 function topic(id, filters) {
   var q = {
     id: id,
@@ -18,9 +17,34 @@ function topic(id, filters) {
     timestamp: null,
     permission: null
   };
-  return freebase.mqlread(q,  f.mqlread_options(filters))
+  return freebase.mqlread(q, f.mqlread_options(filters))
     .then(function(env) {
       return env.result;
+    });
+};
+
+function prop_counts(id, filters) {
+  if (filters.as_of_time) {
+    // can't do prop_counts by as_of_time
+    return null;
+  }
+  var q = {
+    id: id,
+    guid: null
+  };
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return prop_counts_by_guid(env.result.guid);
+    });
+};
+
+function prop_counts_by_guid(guid) {
+  var bdb_id = guid.substring(25);
+  return freebase.get_static("prop_counts", bdb_id)
+    .then(function(counts) {
+      return counts;
+    }, function(error) {
+      return null;
     });
 };
 

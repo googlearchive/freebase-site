@@ -223,3 +223,111 @@ function remove_filter_url(filter_options, filter_key, filter_value) {
   }
   return acre.form.build_url(url, params);
 };
+
+/**
+ * Given the domain|type|property filter option, lookup the count data in prop_counts (bdb json format) and return
+ * the data suitable for a chart graph.
+ *
+ * If domain, the data is prop_counts[domain],
+ * If type, the data is prop_counts[domain][type],
+ * If property, the data is prop_counts[domain][type][property]
+ */
+function get_bar_graph_data(filter_options, prop_counts) {
+  var o = filter_options;
+  var domain = o.domain;
+  var type = o.type;
+  var property = o.property;
+
+  var data;
+  // keep track of the id_prefix since the prop_counts bdb splits the type/property id's to be as minimal as possible
+  var id_prefix = "";
+  if (domain) {
+    data = prop_counts[domain];
+    id_prefix = domain;
+  }
+  else if (type) {
+    domain = acre.freebase.mqlread({id:type, type:"/type/type", domain:null}).result.domain;
+    data = prop_counts[domain];
+    if (data) {
+      data = data["/"+type.split("/").pop()];
+      id_prefix = type;
+    }
+  }
+  else if (property) {
+    type = acre.freebase.mqlread({id:property, type:"/type/property", schema: {id:null, domain:null}}).result.schema;
+    domain = type.domain;
+    type = type.id;
+    data = prop_counts[domain];
+    if (data) {
+      data =  data["/"+type.split("/").pop()];
+      if (data) {
+        data = data["/"+property.split("/").pop()];
+        if (data != null) {
+          return [{id:"total", total:100, t:data}];
+        }
+      }
+    }
+    return null;
+  }
+  else {
+    data = prop_counts;
+  }
+  if (data == null) {
+    return null;
+  }
+  var list = [];
+  for (k in data) {
+    if (k === 'ti' || k == 'to') continue;
+    var counts = data[k];
+    if (typeof counts === "number") {
+      counts = {t:counts};
+    }
+    else {
+      counts.t = counts.ti + counts.to;
+    }
+    list.push([k, counts]);
+  }
+  if (!list.length) {
+    return null;
+  }
+  list.sort(function(a,b) {
+    return b[1].t - a[1].t;
+  });
+  var first = list[0];
+  var first_total = first[1].t;
+  if (first_total < 1) {
+    return null;
+  }
+  var new_options = h.extend({}, filter_options);
+  delete new_options.domain;
+  delete new_options.type;
+  delete new_options.property;
+  var filter_key;
+  if (o.domain) {
+    filter_key = "type";
+  }
+  else if (o.type) {
+    filter_key = "property";
+  }
+  else {
+    filter_key = "domain";
+  }
+  var chart_data = [];
+  list.forEach(function(item) {
+    var count = item[1];
+    data = {
+      id: id_prefix + item[0],
+      t: count.t,
+      total: Math.round((100*count.t)/first_total)
+    };
+    if ("ti" in count && "to" in count) {
+      data.ti = count.ti;
+      data.to = count.to;
+      data.incoming =  Math.round((100*count.ti)/first_total);
+      data.outgoing = Math.round((100*count.to)/first_total);
+    }
+    data.url = filter_url(new_options, filter_key, data.id);
+    chart_data.push(data);
+  });
+  return chart_data;
+};

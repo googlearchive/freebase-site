@@ -357,7 +357,7 @@
         </div>
         <div id="filters">
           <h2 id="filter-title">Filter this data</h2>
-          ${components.filters(c.filters)}
+          ${components.filters(c.filters, c.prop_counts)}
         </div>
       </div>
     </div>

@@ -11,6 +11,7 @@ var filters = f.get_filters(id);
 var data = h.extend({
   id: id,
   topic: queries.topic(id, filters),
+  prop_counts: queries.prop_counts(id, filters),
   // last_edit: queries.last_edit(id, options),
   names: queries.names(id, filters),
   aliases: queries.aliases(id, filters),

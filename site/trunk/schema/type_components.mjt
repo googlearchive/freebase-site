@@ -47,10 +47,7 @@
           </span>        
         </acre:block>
         <acre:block if="prop.expected_type.role === 'mediator'">
-          <span class="property-meta ect-role"><abbr title="${_('This is a Compound Relationship Type')}">${_('compound relationship')}</abbr></span>
-        </acre:block>
-        <acre:block if="prop.expected_type.role === 'cvt'">
-          <span class="property-meta ect-role"><abbr title="${_('This is a Compound Value Type')}">${_('compound value')}</abbr></span>
+          <span class="property-meta ect-role"><abbr title="${_('This is a Mediator')}">${_('mediator')}</abbr></span>
         </acre:block>
         <acre:block if="prop.expected_type.role === 'enumeration'">
           <span class="property-meta ect-role"><abbr title="${_('This is an Enumerated Type')}">${_('enumerated')}</abbr></span>
@@ -145,7 +142,7 @@
   </thead>
 </acre:block>
 
-<acre:block def="incoming_props_tbody(props, allow_return_link)">
+<acre:block def="incoming_props_tbody(props)">
   <tbody>
     <tr>
       <th class="column-header first" scope="col">${_('Originating Type')}</th>              
@@ -169,7 +166,7 @@
           </acre:block>  
           <a href="javascript:void(0);" class="row-menu-trigger">+</a>
           <ul class="row-menu tooltip">          
-            <li acre:if="allow_return_link && !other_property && prop.schema.role !== 'cvt'" class="row-menu-item edit">
+            <li acre:if="!other_property" class="row-menu-item edit">
               <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.reverse_property, ['${prop.expected_type}','${prop.id}'], this);"><span class="create-return-link-icon">${_('Create return link')}</span></a>
             </li>
             <li class="row-menu-item"><a href="${h.url_for('schema', null, null, prop.schema.id)}">${_('View type schema')}</a></li>

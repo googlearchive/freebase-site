@@ -134,6 +134,15 @@
         id: $("input[name=id]", form.form).val(),
         role: $(":radio:checked", form.form).val()
       };
+      if (data.role === "mediator") {
+        if ($("input[name=terminal]", form.form).is(":checked")) {
+          data.terminal = true;
+        }
+        else {
+          data.terminal = false;
+        }
+      }
+
       $.ajax({
         url: form.ajax.url,
         type: "POST",
@@ -303,15 +312,8 @@
           se.init_edit_form(form);
           console.log("se.init_edit_form AFTER");
 
-          var is_cvt = $.trim($(".page-meta .flags").text()) === "Compound Value Type";
-          if (is_cvt) {
-            // hide add existing property option
-            $(".nav", form.row).hide();
-          }
-          else {
-            // delegate property dialog
-            te.init_delegate_property(form);
-          }
+          // delegate property dialog
+          te.init_delegate_property(form);
 
           /**
            * after submit success, re-init form for additional adds

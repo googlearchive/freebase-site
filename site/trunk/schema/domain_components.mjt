@@ -36,6 +36,7 @@
         var blurb = i18n.display_article(type, "blurb");
       </acre:script>
       <p acre:if="blurb">${blurb}</p>
+      <span acre:if="type.role === 'mediator' && type['/freebase/type_hints/terminal']" class="property-meta">${_("terminal")}</span>        
     </td>
   </tr>
 </acre:block>

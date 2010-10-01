@@ -76,54 +76,15 @@ test("create_type mediator", function() {
     ok(type);
     equal(type.key.value, sh.generate_type_key(name));
 
-    // assert /freebase/type_hints/mediator and /freebase/type_hints/role
+    // assert /freebase/type_hints/mediator
     // and no included types
     var result = acre.freebase.mqlread({
       id: type.id,
       "/freebase/type_hints/mediator": null,
-      "/freebase/type_hints/role": {optional:true, id: null},
       "/freebase/type_hints/included_types": []
     }).result;
     ok(result);
     ok(result["/freebase/type_hints/mediator"]);
-    equal(result["/freebase/type_hints/role"].id, "/freebase/type_role/mediator");
-    var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
-    ok(!common_topic.length);
-  }
-  finally {
-    if (type) {
-      h.delete_type(type);
-    }
-  }
-});
-
-test("create_type cvt", function() {
-  var type;
-  try {
-    var name = get_name();
-    create_type({
-      domain: user_domain,
-      name: name,
-      key: sh.generate_type_key(name),
-      role: "cvt"
-    })
-    .then(function(r) {
-      type = r;
-    });
-    acre.async.wait_on_results();
-    ok(type);
-    equal(type.key.value, sh.generate_type_key(name));
-
-    // assert /freebase/type_hints/mediator and /freebase/type_hints/role
-    var result = acre.freebase.mqlread({
-      id: type.id,
-      "/freebase/type_hints/mediator": null,
-      "/freebase/type_hints/role": {optional:true, id: null},
-      "/freebase/type_hints/included_types": []
-    }).result;
-    ok(result);
-    ok(result["/freebase/type_hints/mediator"]);
-    equal(result["/freebase/type_hints/role"].id, "/freebase/type_role/cvt");
     var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
     ok(!common_topic.length);
   }
@@ -155,12 +116,10 @@ test("create_type enumeration", function() {
     var result = acre.freebase.mqlread({
       id:type.id,
       "/freebase/type_hints/enumeration": null,
-        "/freebase/type_hints/role": {optional:true, id: null},
       "/freebase/type_hints/included_types": []
     }).result;
     ok(result);
     ok(result["/freebase/type_hints/enumeration"]);
-    equal(result["/freebase/type_hints/role"].id, "/freebase/type_role/enumeration");
     var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
     ok(common_topic.length);
   }

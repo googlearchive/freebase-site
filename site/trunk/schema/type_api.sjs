@@ -34,7 +34,7 @@ var api = {
     return deferred.all(promises)
       .then(function([props, role]) {
         return {
-          html: acre.markup.stringify(components.incoming_props_tbody(props, role !== "cvt"))
+          html: acre.markup.stringify(components.incoming_props_tbody(props))
         };
       });
   },
@@ -46,7 +46,7 @@ var api = {
     return deferred.all(promises)
       .then(function([props, role]) {
         return {
-          html: acre.markup.stringify(components.incoming_props_tbody(props, role !== "cvt"))
+          html: acre.markup.stringify(components.incoming_props_tbody(props))
         };
       });
   },

@@ -124,7 +124,7 @@ test("domain", function() {
   acre.async.wait_on_results();
   ok(result);
   assert_keys(["id", "name", "creator",  "owners", "timestamp",
-               "types", "mediator:types", "cvt:types"], result, true);
+               "types", "mediator:types"], result, true);
   assert_article(["blurb", "blob"], result);
 
   // regular types
@@ -137,13 +137,6 @@ test("domain", function() {
   if (mediators && mediators.length) {
     mediators.forEach(function(mediator) {
       assert_type(mediator, "mediator");
-    });
-  }
-  // cvts
-  var cvts = result["cvt:types"];
-  if (cvts && cvts.length) {
-    cvts.forEach(function(cvt) {
-      assert_type(cvt, "cvt");
     });
   }
 });

@@ -18,7 +18,7 @@ function create_type(options) {
       name: validators.String(options, "name", {required:true}),
       key: validators.String(options, "key", {required:true}),
       description: validators.String(options, "description", {if_empty:""}),
-      role: validators.OneOf(options, "role", {oneof:["mediator", "cvt", "enumeration"], if_empty:""}),
+      role: validators.OneOf(options, "role", {oneof:["mediator", "enumeration"], if_empty:""}),
       lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"})
     };
   }
@@ -61,36 +61,17 @@ function create_type(options) {
         }
       };
       if (o.role === "mediator") {
-        // need to update both /freebase/type_hints/mediator and /freebase/type_hints/role
+        // need to update /freebase/type_hints/mediator
         q["/freebase/type_hints/mediator"] = {
           value: true,
-          connect: "update"
-        };
-        q["/freebase/type_hints/role"] = {
-          id: "/freebase/type_role/mediator",
-          connect: "update"
-        };
-      }
-      else if (o.role === "cvt") {
-        // need to update both /freebase/type_hints/mediator and /freebase/type_hints/role
-        q["/freebase/type_hints/mediator"] = {
-          value: true,
-          connect: "update"
-        };
-        q["/freebase/type_hints/role"] = {
-          id: "/freebase/type_role/cvt",
           connect: "update"
         };
       }
       else {
         if (o.role === "enumeration") {
-          // need to update both /freebase/type_hints/enumeration and /freebase/type_hints/role
+          // need to update /freebase/type_hints/enumeration
           q["/freebase/type_hints/enumeration"] = {
             value: true,
-            connect: "update"
-          };
-          q["/freebase/type_hints/role"] = {
-            id: "/freebase/type_role/enumeration",
             connect: "update"
           };
         }

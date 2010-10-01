@@ -376,10 +376,6 @@
           </acre:script>
           ${i18n_editcomponents.article(type, attrs)}
         </div>
-        <!-- Only show if type is a mediator -->
-        <div class="form-row">
-          <label class="form-label"><input type="checkbox" /> ${_('This is a terminal mediator.')}  <a class="help" href="#">What's this?</a></label>
-        </div>
       </div>
     </div>
     <div class="modal-buttons">
@@ -457,27 +453,32 @@
     var attrs = {
       entity: {value:""},
       enumeration: {value:"enumeration"},
-      cvt: {value:"cvt"},
-      mediator: {value:"mediator"}
+      mediator: {value:"mediator"},
+      terminal: {}
     };
     var role = type.role || "entity";
     attrs[role].checked = "checked";
     if (type.used) {
       // if there are any instances of this type,
-      // can't switch between entity/enumeration and mediator/cvt
+      // can't switch between entity/enumeration and mediator
       if (role === "entity" || role === "enumeration") {
-        attrs.cvt.disabled = attrs.mediator.disabled = "disabled";
+        attrs.mediator.disabled = "disabled";
       }
       else {
         attrs.entity.disabled = attrs.enumeration.disabled = "disabled";
       }
     }
-    else if (type.return_links) {
-      // can't switch to cvt if return links
-      attrs.cvt.disabled = "disabled";
-    }
     // don't disable currently checked
     delete attrs[role]['disabled'];
+
+    // terminal attrs
+    if (type["/freebase/type_hints/terminal"]) {
+      attrs.terminal.checked = "checked";
+    }
+    if (attrs.mediator.disabled) {
+      attrs.terminal.disabled = "disabled";
+    }
+
   </acre:script>
   <div class="modal" id="type-role">
     <div class="modal-inner">
@@ -513,30 +514,22 @@
               </td>
               <td acre:else="" class="odd">&nbsp;</td>
             </tr>
-            <tr acre:attrs="attrs.cvt.disabled ? {'class':'disabled'} : {}">
-              <th class="row-title">
-                <label class="type-role-title">
-                  <input type="radio" name="role" class="type-role-option" acre:attrs="attrs.cvt"/>
-                  ${_("Compound Value Type")}
-                </label>
-                <p class="type-role-description">${_("Extend simple primary values")}</p>
-              </th>
-              <td acre:if="attrs.cvt.disabled" class="odd warning">
-                ${h.sprintf(_("You cannot change to a Compound Value Type with topics typed as %s."), i18n.display_name(type))}
-                <a href="${h.freebase_url('/view'+type.id)}" target="_new">${_("View instances")} &raquo;</a>
-              </td>
-              <td acre:else="" class="odd">&nbsp;</td>
-            </tr>
             <tr  acre:attrs="attrs.mediator.disabled ? {'class':'disabled'} : {}">
               <th class="row-title">
                 <label class="type-role-title">
                   <input type="radio" name="role" class="type-role-option" acre:attrs="attrs.mediator"/>
-                  ${_("Compound Relationship Type")}
-                </label>
+                  ${_("Mediator")}
+                </label>             
                 <p class="type-role-description">${_("Describe the relationship between two or more Entity Types.")}<p>
+                <div>
+                  <label>
+                    <input type="checkbox" name="terminal" acre:attrs="attrs.terminal"/> ${_('This is a terminal mediator.')}
+                  </label>
+                  <a class="help" href="#">What's this?</a>
+                </div>
               </th>
               <td acre:if="attrs.mediator.disabled" class="odd warning">
-                ${h.sprintf(_("You cannot change to a Compound Relationship Type with topics typed as %s."), i18n.display_name(type))}
+                ${h.sprintf(_("You cannot change to a Mediator with topics typed as %s."), i18n.display_name(type))}
                 <a href="${h.freebase_url('/view'+type.id)}" target="_new">${_("View instances")} &raquo;</a>
               </td>
               <td acre:else="" class="odd">&nbsp;</td>

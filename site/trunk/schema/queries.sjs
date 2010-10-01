@@ -8,53 +8,6 @@ var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 var urlfetch = mf.require("promise", "apis").urlfetch;
 
-
-/**
- * get and attach blurb/blob to a mql result that has a "/common/topic/article" key
- *
- * @param o:Object (required) - A mql result that has a "/common/topic/article" key
- * @param mode:String (optional) - "blurb" will get blurb and "blob" will get blob with maxlength 1000. Default is "blurb".
- * @param options:Object (optional) - Params to pass to acre.freebase.get_blob
- * @param label:String (optional) - The key to use to attach the blurb/blob content to o. Default is mode.
- */
-/**
-function add_description(o, mode, options, label) {
-  mode = mode || "blurb";
-  label = label || mode;
-  options = options || {};
-  var articles = i18n.mql.result.articles(o['/common/topic/article']);
-  if (!articles.length) {
-    return o;
-  }
-  if (mode === "blob") {
-    if (! ("maxlength" in options)) {
-      options.maxlength = 1000;
-    }
-  }
-  var promises = [];
-  for (var i=0,l=articles.length; i<l; i++) {
-    var article = articles[i];
-    if (article.id) {
-      promises.push(get_blurb(article, options, label));
-    }
-  }
-  return deferred.all(promises)
-    .then(function() {
-      return o;
-    });
-};
-function get_blurb(article, options, label) {
-  return queries_blob.get_blurb(article.id, options)
-    .then(function(content) {
-      article[label] = content;
-      return article;
-    }, function(error) {
-      article[label] = null;
-      return article;
-    });
-};
-*/
-
 /**
  * Get all "commons" domains. Domains with a key in "/".
  */
@@ -142,20 +95,16 @@ function domain(id) {
     .then(function(domain) {
       var promises = [];
 
-      // categorize types by their roles (mediator, cvt, etc.)
+      // categorize types by their roles (mediator, etc.)
       var types = [];
       var enumerations = [];
       var mediators = [];
-      var cvts = [];
       domain.types.forEach(function(type) {
         promises.push(i18n.get_blurb(type));
         type.instance_count = 0;
         var role = h.get_type_role(type, true);
         if (role === "mediator") {
           mediators.push(type);
-        }
-        else if (role === "cvt") {
-          cvts.push(type);
         }
         else if (role === "enumeration") {
           enumerations.push(type);
@@ -167,12 +116,10 @@ function domain(id) {
       types.sort(schema_helpers.sort_by_id);
       enumerations.sort(schema_helpers.sort_by_id);
       mediators.sort(schema_helpers.sort_by_id);
-      cvts.sort(schema_helpers.sort_by_id);
 
       domain.types = types;
       domain["enumeration:types"] = enumerations;
       domain["mediator:types"] = mediators;
-      domain["cvt:types"] = cvts;
 
       // domain activity, instance counts per type
       var activity_id = "summary_/guid/" + domain.guid.slice(1);
@@ -208,8 +155,8 @@ function minimal_type(type_id, options) {
     key: [{namespace: null, value: null}],
     domain: {id: null, name: i18n.mql.query.name(), type: "/type/domain"},
     "/common/topic/article": i18n.mql.query.article(),
-    "/freebase/type_hints/role": {optional: true, id: null},
     "/freebase/type_hints/mediator": null,
+    "/freebase/type_hints/terminal": null,
     "/freebase/type_hints/enumeration": null,
     properties: {optional: true, id: null, type: "/type/property", "return": "count"}
   }, options);
@@ -248,8 +195,8 @@ function type_role(type_id) {
   var q = {
     id: type_id,
     type: "/type/type",
-    "/freebase/type_hints/role": {optional: true, id: null},
     "/freebase/type_hints/mediator": null,
+    "/freebase/type_hints/terminal": null,
     "/freebase/type_hints/enumeration": null
   };
   return freebase.mqlread(q)
@@ -697,8 +644,8 @@ incoming.query = function(options) {
       id: null,
       name: i18n.mql.query.name(),
       type: "/type/type",
-      "/freebase/type_hints/role": {optional: true, id: null},
       "/freebase/type_hints/mediator": null,
+      "/freebase/type_hints/terminal": null,
       "/freebase/type_hints/enumeration": null
     },
     master_property: {

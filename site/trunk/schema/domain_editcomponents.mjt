@@ -47,7 +47,6 @@
           </div>
           <input name="domain" type="hidden" value="${domain_id}"/>
           <input acre:if="role === 'mediator'" type="hidden" name="role" value="mediator"/>
-          <input acre:elif="role === 'cvt'" type="hidden" name="role" value="cvt"/>
           <input acre:elif="role === 'enumeration'" type="hidden" name="role" value="enumeration"/>
           <input acre:else="" type="hidden" name="role" value=""/> 
         </td>

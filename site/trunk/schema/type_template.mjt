@@ -56,16 +56,16 @@
       ${i18n.display_name(c.type)}
       <span class="flags">
         <acre:block if="c.type.role === 'mediator'">
-          <span>${_('Compound Relationship Type')}</span>
-        </acre:block>
-        <acre:block elif="c.type.role === 'cvt'">
-          <span>${_('Compound Value Type')}</span>
+          ${_('Mediator')}
+          <acre:block if="c.type['/freebase/type_hints/terminal']">
+            <span class="flags-terminal">(${_("terminal")})</span>
+          </acre:block>
         </acre:block>
         <acre:block elif="c.type.role === 'enumeration'">
-          <span>${_('Enumerated Entity Type')}</span>
+          ${_('Enumerated Type')}
         </acre:block>
         <acre:block else="">
-          <span>${_('Entity Type')}</span>
+          ${_('Entity Type')}
         </acre:block>
         <a class="edit" href="#" onclick="return freebase.dispatch(event, freebase.schema.type.type_role, ['${c.type.id}'], this);">${_('change')}</a>
       </span>
@@ -232,7 +232,7 @@
       <table class="table" cellspacing="0" id="incoming-properties-table">
         <acre:block if="c.type.incoming.domain.length">
           ${tc.incoming_props_thead(i18n.display_name(c.type.domain), true)}
-          ${tc.incoming_props_tbody(c.type.incoming.domain, c.type.role !== 'cvt')}
+          ${tc.incoming_props_tbody(c.type.incoming.domain)}
        </acre:block>
         <acre:block if="c.type.incoming.commons">
           ${tc.incoming_props_thead(_("Commons"), false, h.url_for('schema', 'type', [['id',c.type.id],['exclude_domain',c.type.domain.id]], '/get_incoming_from_commons'))}

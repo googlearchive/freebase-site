@@ -89,11 +89,9 @@ test("update_type mediator", function() {
     var result = acre.freebase.mqlread({
       id:updated,
       "/freebase/type_hints/mediator": null,
-      "/freebase/type_hints/role": {optional:true, id: null},
       "/freebase/type_hints/included_types": []
     }).result;
     ok(result["/freebase/type_hints/mediator"], "updated as mediator");
-    equal(result["/freebase/type_hints/role"].id, "/freebase/type_role/mediator");
     var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
     ok(!common_topic.length);
   }
@@ -104,14 +102,14 @@ test("update_type mediator", function() {
   }
 });
 
-test("update_type cvt", function() {
-  var type = h.create_type(user_domain, {"/freebase/type_hints/included_types": {id: "/common/topic"}});
+test("update_type terminal", function() {
+  var type = h.create_type(user_domain);
   try {
     var updated;
     update_type({
       domain: user_domain,
       id: type.id,
-      role: "cvt"
+      terminal: true
     })
     .then(function(id) {
       updated = id;
@@ -121,14 +119,9 @@ test("update_type cvt", function() {
 
     var result = acre.freebase.mqlread({
       id:updated,
-      "/freebase/type_hints/mediator": null,
-      "/freebase/type_hints/role": {optional:true, id: null},
-      "/freebase/type_hints/included_types": []
+      "/freebase/type_hints/terminal": null
     }).result;
-    ok(result["/freebase/type_hints/mediator"], "updated as cvt");
-    equal(result["/freebase/type_hints/role"].id, "/freebase/type_role/cvt");
-    var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
-    ok(!common_topic.length);
+    ok(result["/freebase/type_hints/terminal"], "updated as terminal");
   }
   finally {
     if (type) {
@@ -156,11 +149,9 @@ test("update_type enumeration", function() {
     var result = acre.freebase.mqlread({
       id:updated,
       "/freebase/type_hints/enumeration": null,
-      "/freebase/type_hints/role": {optional:true, id: null},
       "/freebase/type_hints/included_types": []
     }).result;
     ok(result["/freebase/type_hints/enumeration"], "updated as enumeration");
-    equal(result["/freebase/type_hints/role"].id, "/freebase/type_role/enumeration");
     var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
     ok(common_topic.length);
   }

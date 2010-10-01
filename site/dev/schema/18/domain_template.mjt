@@ -1,0 +1,240 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").mf;
+  var c = this.exports.c = {};
+  var h = mf.require("core", "helpers");
+  var dc = mf.require("domain_components");
+  var image = mf.require("template", "imagecomponents");  
+  var i18n = mf.require("i18n", "i18n");
+  var _ = i18n.gettext;
+</acre:script>
+
+<acre:block def="title()">
+  ${_("Domain")}<acre:block if="c.domain"> - ${i18n.display_name(c.domain)}</acre:block>
+</acre:block>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  <div class="page-header clear">
+    <div class="breadcrumb clear">
+      <ol>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.url_for('schema')}">${_("Schema")}</a>
+          </span>
+        </li>  
+        <li if="c.domain" class="breadcrumb-item last">
+          <span class="breadcrumb-item-inner">
+            <a href="#">${i18n.display_name(c.domain)}</a>
+          </span>
+        </li>
+      </ol>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="content_body()">
+  <div class="page-meta">
+     <h1>
+       ${i18n.display_name(c.domain)}
+       <span class="flags">
+         <span acre:if="c.domain.id.indexOf('/user') === -1 && c.domain.id.indexOf('/base') === -1">
+            ${_("Commons")}
+         </span>
+          ${_("Domain")}
+       </span>
+     </h1>
+     <div class="meta">
+       <span class="key"><strong> ${_("Key:")}</strong> $c.domain.id</span>        
+     </div>        
+     <div class="admin-toolbox">
+       <span class="creation-timestamp">
+         ${image.user_image_small(c.domain.creator)}
+          ${_("Created by")} <a href="${h.freebase_url('/view' + c.domain.creator.id)}" title="${_('View user profile')}">${i18n.display_name(c.domain.creator)}</a> 
+         on <time class="published" datetime="${c.domain.timestamp}">${i18n.format_timestamp(c.domain.timestamp)}</time>
+       </span>
+     </div>
+     <acre:script>
+      var [blurb, blob] = i18n.display_article(c.domain, ["blurb", "blob"]);      
+     </acre:script>
+     <div id="description" acre:if="blurb && blob">
+       <p class="blurb">${blurb}</p>
+       <p class="blob">${blob}</p>
+       <a acre:if="blurb != blob" href="javascript:void(0);" class="blurb-trigger">${_('More')}</a>          
+     </div>
+     <acre:block if="c.domain.owners">
+       <h2 class="user-list-title">${_('Domain Owners:')}</h2>
+       <ul class="user-list clear" acre:for="group in c.domain.owners">
+         <li acre:for="i,member in group.member" acre:for="i,member in group.member" class="vcard">
+           ${image.user_image_medium(member)}
+         </li>
+       </ul>
+     </acre:block>
+     <div class="nav clear">
+       <ul class="nav-utilities">
+         <li class="edit">
+           <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.domain_settings, ['${c.domain.id}', true], this);">
+             <span class="edit-icon">${_('Domain Settings')}</span>
+           </a>
+         </li>
+         <li>
+           <a href="${h.freebase_url('/view'+c.domain.id)}" class="icon-link"><span class="browse-icon">${_('Browse Domain')}</span></a>
+         </li>
+       </ul>
+     </div>
+   </div>
+
+   <!-- Entity Types -->
+   <div class="section">
+     <h2 class="table-title">
+       <a href="http://wiki.freebase.com/wiki/Types" rel="help external" title="${_('Read help article')}" class="help-link">${_('What are Types?')}</a>
+       ${_('Entity Types')}
+     </h2>
+     <table class="table table-sortable" cellspacing="0">
+       <thead>
+         <tr acre:attrs="c.domain.types.length ? {}:{style:'display:none;'}">
+           <th scope="col" class="column-header first {sorter: 'schemaName'}"><span class="sort-icon">${_('Type')}</span></th>
+           <th class="column-header column-header-desc" scope="col"><span class="sort-icon">${_('ID')}</span></th>
+           <th class="column-header numeric" scope="col"><span class="sort-icon">${_('# of Properties')}</span></th>
+           <th class="column-header numeric {sorter: 'commaDigit'}" scope="col"><span class="sort-icon">${_('# of Instances')}</span></th>
+           <th class="column-header description" scope="col"><span class="sort-icon">${_('Description')}</span></th>
+         </tr>
+         <tr acre:attrs="c.domain.types.length ? {style:'display:none;'}:{}">
+           <th colspan="5" class="table-empty-column" scope="col">
+             <div class="edit table-empty-msg">
+               <a href="javascript:void(0)" class="table-empty-trigger">${_('Use Entity Types to')}&hellip;</a>
+               <div class="table-empty-text">
+                 <p>       
+                   <strong>${_("Describe any person, place, or concept.")}</strong>
+                   ${h.bless_sprintf(_("This is the most common type in Freebase and is used to describe an %s relationship between topics (eg. San Francisco %s city)"),
+                   h.tag("strong", h.tag("em", "is a")), 
+                   h.tag("strong", h.tag("em", "is a")))}</p>
+                 <p><a href="http://wiki.freebase.com/wiki/Types" rel="external help">${_('Learn more')} &raquo;</a></p> 
+               </div>
+             </div>
+             <h3 class="table-empty-title">${_("This domain doesn't have any Entity Types.")}</h3>
+           </th>
+         </tr>
+       </thead>
+       <tbody>
+         <acre:block for="i,type in c.domain.types">
+           ${dc.domain_type_row(type)}
+         </acre:block>
+       </tbody>
+       <tfoot class="table-edit edit">
+         <tr>
+           <td colspan="5">
+             <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_type, ['${c.domain.id}'], this);">
+               <span class="add-icon">${_('Add New')}</span>
+             </a>
+           </td>
+         </tr>
+       </tfoot>
+     </table> 
+   </div>
+
+   <!-- Enumerated Types -->
+   <div class="section">
+     <h2 class="table-title">
+       <a href="http://wiki.freebase.com/wiki/Enumerated_type" rel="help external" title="${_('Read help article')}" class="help-link">${_('What are Enumerated Types?')}</a>
+       ${_('Enumerated Types')}
+     </h2>
+     <table class="table table-sortable" cellspacing="0">
+       <thead>
+         <tr acre:attrs="c.domain['enumeration:types'].length ? {}:{style:'display:none;'}">
+           <th scope="col" class="column-header first column-header-desc {sorter: 'schemaName'}"><span class="sort-icon">${_('Type')}</span></th>
+           <th class="column-header" scope="col"><span class="sort-icon">${_('ID')}</span></th>
+           <th class="column-header numeric" scope="col"><span class="sort-icon">${_('# of Properties')}</span></th>
+           <th class="column-header numeric {sorter: 'commaDigit'}" scope="col"><span class="sort-icon">${_('# of Instances')}</span></th>
+           <th class="column-header description" scope="col"><span class="sort-icon">${_('Description')}</span></th>
+         </tr>
+         <tr acre:attrs="c.domain['enumeration:types'].length ? {style:'display:none;'}:{}">
+           <th colspan="5" class="table-empty-column" scope="col">
+             <div class="edit table-empty-msg">
+               <a href="javascript:void(0)" class="table-empty-trigger">${_('Use Entity Types to')}&hellip;</a>
+               <div class="table-empty-text">
+                 <p> 
+                   ${h.bless_sprintf(_("%s, but limit the possible values to a finite set of topics."), 
+                   h.tag("strong", _("Describe any person, place, or concept")))}
+                 <p><a href="http://wiki.freebase.com/wiki/Enumerated_type" rel="external help">${_('Learn more')} &raquo;</a></p> 
+               </div>
+             </div>
+             <h3 class="table-empty-title">${_("This domain doesn't have any Enumerated Types.")}</h3>
+           </th>
+         </tr>
+       </thead>
+       <tbody>
+         <acre:block for="i,type in c.domain['enumeration:types']">
+           ${dc.domain_type_row(type)}
+         </acre:block>
+       </tbody>
+       <tfoot class="table-edit edit">
+         <tr>
+           <td colspan="5">
+             <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_type, ['${c.domain.id}', 'enumeration'], this);">
+               <span class="add-icon">${_('Add New')}</span>
+             </a>
+           </td>
+         </tr>
+       </tfoot>
+     </table> 
+   </div>
+
+
+  <!-- Mediators -->
+  <div class="section">
+    <h2 class="table-title">
+      <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="${_('Read help article')}" rel="help external" class="help-link">${_('What are Mediators?')}</a>
+      ${_('Mediators')}
+    </h2>
+    <table class="table table-sortable">
+      <thead class="${JSON.stringify(c.domain['mediator:types'])}">
+        <tr acre:attrs="c.domain['mediator:types'].length ? {}:{style:'display:none;'}">
+          <th scope="col" class="column-header first column-header-desc {sorter: 'schemaName'}"><span class="sort-icon">${_('Type')}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_('ID')}</span></th>
+          <th class="column-header numeric" scope="col"><span class="sort-icon">${_('# of Properties')}</span></th>
+          <th class="column-header numeric {sorter: 'commaDigit'}" scope="col"><span class="sort-icon">${_('# of Instances')}</span></th>
+          <th class="column-header description" scope="col"><span class="sort-icon">${_('Description')}</span></th>
+        </tr>
+        <tr acre:attrs="c.domain['mediator:types'].length ? {style:'display:none;'}:{}">
+          <th colspan="5" class="table-empty-column" scope="col">
+             <div class="edit table-empty-msg">
+               <a href="javascript:void(0)" class="table-empty-trigger">${_('Use Mediators to')}&hellip;</a>
+               <div class="table-empty-text">
+                 <p>
+                 <strong>${_("Describe the relationship between two or more Entity Types.")}</strong>
+                 ${_("For example, the film performance Mediator in Film describes the relationship between a movie, an actor, and a character.")}
+                 ${_("We use film performance  to assert that Heath Ledger played the character of The Joker in the film The Dark Knight.")}
+                 </p>
+                 <p><a href="http://wiki.freebase.com/wiki/Types" rel="external help">${_('Learn more')} &raquo;</a></p> 
+               </div>
+             </div>
+            <h3 class="table-empty-title">${_("This domain doesn't have any Mediators.")}</h3>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <acre:block for="i,type in c.domain['mediator:types']">
+        ${dc.domain_type_row(type)}
+        </acre:block>
+      </tbody>
+      <tfoot class="table-edit edit">
+        <tr>
+          <td colspan="5">
+            <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_type, ['${c.domain.id}', 'mediator'], this);">
+              <span class="add-icon">${_('Add New')}</span>
+            </a>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+  <script src="${mf.js_src('domain.mf.js')}"></script>
+</acre:block>
+

@@ -474,10 +474,26 @@ var mql = {
 // get_blob
 ///////////////////
 
+/**
+ * get and attach blurb to a mql result that has a "/common/topic/article" key
+ *
+ * @param topic:Object (required) - A mql result that has a "/common/topic/article" key
+ * @param options:Object (optional) - Params to pass to acre.freebase.get_blob
+ * @param label:String (optional) - The key to use to attach the blurb/blob content to o. Default is "blurb"
+ * @param key:String (optional) - The key of the article attached to topic. Default is "/common/topic/article".
+ */
 function get_blurb(topic, options, label, key) {
   return _get_blob(topic, options, label, key, "blurb");
 };
 
+/**
+ * get and attach blob to a mql result that has a "/common/topic/article" key
+ *
+ * @param topic:Object (required) - A mql result that has a "/common/topic/article" key
+ * @param options:Object (optional) - Params to pass to acre.freebase.get_blob
+ * @param label:String (optional) - The key to use to attach the blurb/blob content to o. Default is "blob"
+ * @param key:String (optional) - The key of the article attached to topic. Default is "/common/topic/article".
+ */
 function get_blob(topic, options, label, key) {
   return _get_blob(topic, options, label, key, "blob");
 };

@@ -97,7 +97,7 @@
         </td> 
         <td class="object" rowspan="2">
           <a href="${h.url_for('schema', null, null, c.property.expected_type.id)}">
-            ${sh.isTypeType(c.property.expected_type.id) ? c.property.expected_type.id : c.property.expected_type.name}
+            ${c.property.expected_type.id}
           </a>
           <acre:block if="c.property.expected_type.role === 'mediator'">
             <span class="attribute">${_("mediator")}</span>

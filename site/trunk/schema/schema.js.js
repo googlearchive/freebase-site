@@ -135,7 +135,7 @@
       if ($this.val() === "/lang/en") {
         en = $this;
       }
-      if ($this.val() === acre.lang.mql) {
+      if ($this.val() === fb.acre.lang.mql) {
         selected = $this.attr("selected", "selected");
         return false;
       };

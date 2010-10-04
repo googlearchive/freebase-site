@@ -9,7 +9,7 @@
      */
     domain_settings_begin: function(trigger, domain_id) {
       $.ajax({
-        url: acre.request.app_url + "/schema/domain/domain_settings_begin",
+        url: fb.acre.request.app_url + "/schema/domain/domain_settings_begin",
         data: {id:domain_id},
         dataType: "json",
         success: function(data, status, xhr) {
@@ -17,7 +17,7 @@
           var form = {
             event_prefix: "fb.schema.domain.settings.",
             ajax: {
-              url: acre.request.app_url + "/schema/domain/domain_settings_submit",
+              url: fb.acre.request.app_url + "/schema/domain/domain_settings_submit",
               data: {id: domain_id}
             },
 
@@ -101,7 +101,7 @@
      */
     add_type_begin: function(trigger, domain_id, role) {
       $.ajax({
-        url: acre.request.app_url + "/schema/domain/add_type_begin",
+        url: fb.acre.request.app_url + "/schema/domain/add_type_begin",
         data: {id: domain_id, role: role},
         dataType: "json",
         success: function(data, status, xhr) {
@@ -114,7 +114,7 @@
             mode: "add",
             event_prefix: "fb.schema.domain.add.type.",
             ajax: {
-              url: acre.request.app_url + "/schema/domain/add_type_submit"
+              url: fb.acre.request.app_url + "/schema/domain/add_type_submit"
             },
 
             init_form: de.init_type_form,
@@ -154,7 +154,7 @@
      */
     edit_type_begin: function(trigger, type_id) {
       $.ajax({
-        url: acre.request.app_url + "/schema/domain/edit_type_begin",
+        url: fb.acre.request.app_url + "/schema/domain/edit_type_begin",
         data: {id: type_id},
         dataType: "json",
         success: function(data, status, xhr) {
@@ -167,7 +167,7 @@
             mode: "edit",
             event_prefix: "fb.schema.domain.edit.type.",
             ajax: {
-              url: acre.request.app_url + "/schema/domain/edit_type_submit",
+              url: fb.acre.request.app_url + "/schema/domain/edit_type_submit",
               data: {id: type_id}
             },
 
@@ -303,7 +303,7 @@
       var row = trigger.parents("tr:first");
       var table = row.parents("table:first");
       $.ajax({
-        url: acre.request.app_url + "/schema/domain/delete_type_submit",
+        url: fb.acre.request.app_url + "/schema/domain/delete_type_submit",
         data: {id: type_id, user: fb.user.id},
         type: "POST",
         dataType: "json",
@@ -330,7 +330,7 @@
       var row = trigger.parents("tr:first");
       var table = row.parents("table:first");
       $.ajax({
-        url: acre.request.app_url + "/schema/domain/undo_delete_type_submit",
+        url: fb.acre.request.app_url + "/schema/domain/undo_delete_type_submit",
         data: {type_info: JSON.stringify(type_info)},
         type: "POST",
         dataType: "json",

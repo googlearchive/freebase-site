@@ -2,10 +2,11 @@
 
 var path_info = acre.request.path_info;
 
-var filename = path_info.split('/')[1];
+var parts = path_info.split('/');
+var filename = parts[1];
 
 var md = acre.get_metadata();
-if (filename in md.files) {
+if (filename !== "iframe" && filename in md.files) {
   var relative_url = path_info.replace(/^\//,''); //XXX: support query str?
   acre.route(relative_url); 
 }
@@ -22,6 +23,9 @@ var renderer = mf.require("template", "renderer");
 
 if (path_info==="/") {
   renderer.render_page(data,mf.require("index"));
+} else if (filename === "iframe") {
+	data.path_info = "/" + parts[2];
+	renderer.render_page(data, mf.require("doc"), mf.require("iframe"));
 } else {
   renderer.render_page(data,mf.require("doc"));
 }

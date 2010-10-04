@@ -60,7 +60,7 @@ function get_list() {
         {
           "name"     : "Freebase Suggest",
           "key"      : "suggest",
-          "content"  : mf.require('template','MANIFEST').mf.suggest.base_url + "/index.html"
+          "content"  : mf.lib_base_url('suggest') + "/index.html"
         }
       ]
     },

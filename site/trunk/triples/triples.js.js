@@ -30,25 +30,30 @@
       });
     },
 
+    // show row menu button on hover
     row_menu_hoverover: function(e) {
       var row = $(this);
       row.addClass("row-hover");
       $(".row-menu-trigger", row).css('visibility','visible');
     },
 
+    // hide row menu button on mouseout
     row_menu_hoverout: function(e) {
       var row = $(this);
       $(".row-menu-trigger", row).css('visibility','hidden');
       row.removeClass("row-hover");
     },
 
+    // Update right-hand menu item based on current scroll position
     update_menu: function() {
       var last_position = triples.last_position || 0;
       var current_position = $(window).scrollTop();
       var current_menu_item = null;
       var scrollTop = $(window).scrollTop();
+      var $label = $("b", "#section-nav-current");
+      var $current_display_label = $("#section-nav-current");
 
-
+      // scroll down
       if (current_position > last_position) {
         triples.menu_map_order.forEach(function(key){
           var menu_offset = triples.menu_map[key];
@@ -58,6 +63,7 @@
           }
         });
       }
+      // scroll up
       else {
         for (var i=triples.menu_map_order.length-1; i>=0; i--) {
           var key = triples.menu_map_order[i];
@@ -72,19 +78,25 @@
       // update the in-page menu
       if (current_menu_item != null) {
         var selector = ".toc-" + current_menu_item + "> a";
+        var current_menu_label = $("b", $current_display_label).html();
         var new_menu_label = $(selector).html();
-        $("b", "#section-nav-current").html(new_menu_label);
-        triples.last_position = current_position;
+        if (current_menu_label != new_menu_label) {
+          $label.html(new_menu_label);
+          triples.last_position = current_position;
+          $current_display_label.effect("highlight", {'color' : '#ececec'}, 500);
+        }
       }
     },
 
     init: function() {
 
-      // ***********************************************
-      // Update in-page navgiation menu               **
-      // (1) Update Position of menu                  **
-      // (2) Update currently active section          **
-      // ***********************************************
+      /*
+      **************************************************
+      ** Update in-page navgiation menu               **
+      ** (1) Update Position of menu                  **
+      ** (2) Update currently active section          **
+      **************************************************
+      */
 
       var $reference = $("#content-wrapper"); // This is the effective starting point of 'content'
       var $menu = $("#content-sub"); // The menu item
@@ -101,6 +113,9 @@
       triples.table_map = {};
 
       // Iterate through the existing page sections
+      // For each section found out it's offset relative
+      // to the viewport and add it to the map for later
+      // comparison
       $(".table-title > a").each(function(){
         var $target = $(this);
         var target_offset = $target.offset().top;
@@ -183,8 +198,6 @@
         $(this).val(data.id)
           .parents("form:first").submit();
       });
-
-
 
       // article/image tooltips
       triples.article_tip = $("#article-tip");

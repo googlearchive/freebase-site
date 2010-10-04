@@ -26,7 +26,6 @@ function do_route(script, path_info) {
   var query_string = acre.request.query_string;
   var path = [acre.request.script.app.path, "/" + script, path_info, query_string ? "?" + query_string : ""];
   path = path.join("");
-  console.log("routing", path);
   acre.route(path);
 };
 

@@ -282,19 +282,22 @@
 
 <acre:block def="contribute_to_freebase()">
   <div class="content-section contribute-section">
-    <h3>Contribute to <span class="emphasis">Freebase</span></h3>
+    <h3>Help improve <span class="emphasis">Freebase</span></h3>
     <ul>
       <li>
-        <a href="${h.freebase_url('/tools/flags/review')}">Review queue</a>
-        <p>review topics for merge and delete.</p>
+        <a href="${h.freebase_url('/tools/flags/review')}">
+          Review topics for merge and delete
+        </a>
       </li>
       <li>
-        <a href="http://matchmaker.freebaseapps.com">Matchmaker</a>
-        <p>match imported data to topics.</p>
+        <a href="http://matchmaker.freebaseapps.com">
+          Match imported data to Freebase topics
+        </a>
       </li>
       <li>
-        <a href="http://hotdate.freebaseapps.com/">Hotdate</a>
-        <p>add dates to events.</p>
+        <a href="http://hotdate.freebaseapps.com/">
+          Add dates to important events
+        </a>
       </li>
     </ul>
     <a href="${h.wiki_url('Data_games')}" class="more-link">Learn More &raquo;</a>

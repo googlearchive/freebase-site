@@ -1,0 +1,522 @@
+
+
+/* control-pane.css */
+div.cuecard-controlPane {
+    height: 100%;
+}
+
+div.cuecard-controlPane-tabBody.ui-tabs-panel {
+    padding: 10px 20px;
+}
+
+div.cuecard-controlPane-tabBody {
+    overflow: auto;
+}
+
+div.cuecard-controlPane-tabBody input {
+    vertical-align: middle;
+}
+
+.cuecard-controlPane-tabBody button {
+    margin-left: 0;
+}
+
+.cuecard-controlPane-configurations td {
+    padding: 2px;
+}
+
+.cuecard-controlPane-configurations select {
+    width: 8em;
+}
+
+select.cuecard-controlPane-configurations-languages {
+    width: 20em;
+}
+
+div.cuecard-controlPane-configurations-cursor {
+    padding: 1em;
+}
+.cuecard-controlPane-configurations-cursor input{
+    display: block;
+    width: 100%;
+    margin-bottom: 0.25em;
+}
+
+.cuecard-controlPane-explanation {
+    margin-bottom: 1em;
+}
+
+.cuecard-controlPane-hint {
+    color: #888;
+    font-size: 80%;
+    padding: 0.25em 0 0.5em 0;
+}
+
+.cuecard-controlPane .ui-tabs .ui-tabs-nav li a {
+    padding: 0.15em 1em;
+}
+
+.cuecard-controlPane-section table {
+    border-collapse: separate;
+    border-spacing: 10px;
+}
+
+.cuecard-controlPane-powerTool {
+    margin-bottom: 1em;
+}
+
+.cuecard-controlPane-powerTool button {
+    margin-left: 0;
+}
+
+div.cuecard-controlPane-powerTool-hint {
+    color: #aaa;
+    font-size: 80%;
+    margin-top: 0.25em;
+}
+
+
+.cuecard-controlPane-variables {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cuecard-controlPane-variables th {
+    padding: 2px;
+    text-align: left;
+    font-weight: bold;
+}
+.cuecard-controlPane-variables td {
+    padding-right: 2px;
+    padding-bottom: 2px;
+}
+.cuecard-controlPane-variables td input {
+    width: 100%;
+    border: 1px solid #ddd;
+}
+
+.cuecard-controlPane-customEnvelope {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cuecard-controlPane-customEnvelope th {
+    padding: 2px;
+    text-align: left;
+    font-weight: bold;
+}
+.cuecard-controlPane-customEnvelope td {
+    padding-right: 2px;
+    padding-bottom: 2px;
+}
+.cuecard-controlPane-customEnvelope td input {
+    width: 100%;
+    border: 1px solid #ddd;
+}
+
+
+/* cuecard.css */
+div.cuecard-progress {
+    z-index: 1000;
+    position: fixed;
+    top: 300px;
+    left: 40%;
+    right: 40%;
+    text-align: center;
+    padding: 2em;
+    background: rgba(192, 192, 192, 0.7);
+    font-size: 200%;
+    color: #a88;
+    font-weight: bold;
+    font-style: italic;
+    -moz-border-radius: 2em;
+}
+
+.ui-widget-overlay {
+    opacity: 0.7;
+}
+
+
+/* example-dialog.css */
+#cuecard-examples-dialog {
+    position: relative;
+    overflow: hidden;
+}
+
+.cuecard-examples-dialog-columnHeader {
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    height: 20px;
+}
+.cuecard-examples-dialog-columnBody {
+    position: absolute;
+    top: 35px;
+    overflow: auto;
+    border: 1px solid #ccc;
+}
+
+.cuecard-examples-dialog-column-0 {
+}
+
+.cuecard-examples-dialog-column-1 {
+}
+
+.cuecard-examples-dialog-column-2 {
+}
+
+a.cuecard-examples-example {
+    display: block;
+    text-decoration: none;
+    padding: 0.25em 0.5em;
+    border-bottom: 1px solid #ddd;
+}
+
+a.cuecard-examples-example:hover {
+    background: #eee;
+}
+
+.cuecard-examples-example-selected {
+    background: #FFFFE0;
+}
+
+a.cuecard-examples-technique {
+    display: block;
+    text-decoration: none;
+    padding: 0.25em 0.5em;
+    border-bottom: 1px solid #ddd;
+}
+
+a.cuecard-examples-technique:hover {
+    background: #eee;
+}
+
+.cuecard-examples-technique-selected {
+    background: #FFFFE0;
+}
+
+textarea.cuecard-examples-query {
+    border: 1px solid #ccc;
+    font-family: monospace;
+    font-size: 9pt;
+}
+
+
+/* output-pane.css */
+div.cuecard-outputPane {
+    overflow: hidden;
+}
+
+div.cuecard-outputPane-tabBody.ui-tabs-panel {
+    padding: 10px 20px;
+}
+
+div.cuecard-outputPane-tabBody {
+    position: relative;
+}
+
+div.cuecard-outputPane-status {
+    position: absolute;
+    overflow: auto;
+}
+
+textarea.cuecard-outputPane-textarea {
+    position: absolute;
+    display: block;
+    margin: 0px;
+    border: none;
+    font-family: monospace;
+    font-size: 10pt;
+}
+
+.cuecard-outputPane-tree {
+    position: absolute;
+    overflow: auto;
+}
+
+a.cuecard-outputPane-tree-explore {
+    vertical-align: super;
+    font-size: 80%;
+    color: #aaf;
+}
+
+div.cuecard-outputPane-tree-objectBody {
+}
+
+div.cuecard-outputPane-tree-objectField {
+    position: relative;
+    padding-left: 16px;
+}
+
+div.cuecard-outputPane-tree-arrayBody {
+}
+
+div.cuecard-outputPane-tree-arrayElement {
+    position: relative;
+    padding-left: 16px;
+}
+
+img.cuecard-outputPane-tree-toggle {
+    cursor: pointer;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+
+.cuecard-outputPane-tree-memberName {
+    color: #888;
+}
+
+.cuecard-outputPane-tree-toggles {
+    color: #ddd;
+}
+
+a.cuecard-outputPane-tree-all {
+    font-size: 80%;
+    color: #ff6600;
+}
+
+a.cuecard-outputPane-tree-flipControl {
+    font-size: 80%;
+    color: #ff6600;
+}
+
+a.cuecard-outputPane-tree-dataLink {
+    color: #000088;
+}
+
+.cuecard-outputPane-tree-normalMode > div > span > a.cuecard-outputPane-tree-flipControl {
+    display: none;
+}
+
+.cuecard-outputPane-tree-flipMode > div > span > a.cuecard-outputPane-tree-flipControl {
+    display: inline;
+}
+
+.cuecard-outputPane-responseHeaders a {
+    text-decoration: underline;
+}
+
+.cuecard-outputPane-responseHeaders h3 {
+    margin: 1em 0;
+}
+
+.cuecard-outputPane-responseHeaders table {
+    width: 100%;
+    margin-bottom: 1em;
+}
+
+.cuecard-outputPane-odd {
+    background: #eee;
+}
+
+.cuecard-outputPane-even {
+}
+
+div.cuecard-outputPane-tree-popup {
+    position: absolute;
+    z-index: 1000;
+}
+
+div.cuecard-outputPane-tree-popup-article {
+    background: #FFFFE0;
+    border: 1px solid #ddd;
+    padding: 1em;
+    font-size: 10px;
+    width: 28em;
+}
+
+div.cuecard-outputPane-tree-popup-topic {
+    background: #FFFFE0;
+    border: 1px solid #ddd;
+    padding: 1em;
+    font-size: 9px;
+    width: 28em;
+}
+
+.cuecard-outputPane-tree-popup-topic .freebase-hotshot-container {
+    height: 13em;
+    overflow: hidden;
+}
+
+div.cuecard-outputPane-tree-popup-topic td{
+    vertical-align: top;
+}
+
+.cuecard-outputPane-tree-popup-topic .freebase-hotshot-links {
+    display: none;
+}
+
+.cuecard-outputPane-cost-important td {
+    font-weight: bold;
+    color: #f33;
+}
+
+
+/* popup.css */
+div.cuecard-popup-container {
+    position: absolute;
+    z-index: 1000;
+    width: 30em;
+    border: 1px solid #ddd;
+    padding: 1px;
+    background: #FFFFE0;
+}
+
+div.cuecard-popup-container-wide {
+    width: 35em;
+}
+
+.cuecard-popup-message {
+    padding: 1em;
+    background: #FFFFE0;
+    color: #FF8000;
+    font-weight: bold;
+}
+
+
+/* query-editor.css */
+div.cuecard-queryEditor-inner {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+div.cuecard-queryEditor-content {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    border: 1px solid #ddd;
+}
+
+div.cuecard-queryEditor-controls-top {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    text-align: right;
+    padding-bottom: 0.35em;
+}
+
+div.cuecard-queryEditor-controls-bottom {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    text-align: right;
+    padding-top: 0.35em;
+}
+
+.cuecard-queryEditor-controls-top button, .cuecard-queryEditor-controls-bottom button {
+    line-height: 16px;
+}
+
+td.cuecard-queryEditor-controls-rightAligned {
+    text-align: right;
+}
+
+.cuecard-queryEditor-controls-leftAligned button {
+    margin-left: 0;
+    margin-right: 0.5em;
+}
+
+button.cuecard-queryEditor-run {
+    width: 8em;
+}
+
+button.cuecard-queryEditor-run, button.cuecard-queryEditor-queryAssist {
+    background: #F06010 url(http://www.freebase.com/resources/images/chrome/fb-grid-1px_v1.png) repeat-x scroll 0 -1183px;
+    font-weight: bold;
+    color: white;
+}
+
+.cuecard-queryEditor-buttonHint {
+    color: #888;
+    padding-top: 0.25em;
+}
+
+
+/* suggestion.css */
+div.cuecard-suggestion-container {
+    border-top: 1px solid #aaa;
+    height: 200px;
+    overflow: auto;
+}
+
+div.cuecard-suggestion-progress {
+    text-align: center;
+    padding: 2em;
+}
+
+div.cuecard-suggestion-hint-message {
+    padding: 0.5em;
+    font-weight: bold;
+    color: #FF8000;
+}
+
+a.cuecard-suggestion-entry {
+    display: block;
+    text-decoration: none;
+    padding: 3px 8px;
+    color: black;
+}
+
+a.cuecard-suggestion-entry:hover {
+}
+
+.cuecard-suggestion-selected {
+    background: #ccc;
+}
+
+.cuecard-suggestion-entry table {
+    font-size: 100%;
+}
+
+.cuecard-suggestion-entry tr {
+    vertical-align: top;
+}
+
+.cuecard-suggestion-entry td {
+    padding-right: 5px;
+    vertical-align: top;
+}
+
+.cuecard-suggestion-entry img {
+    border: none;
+}
+
+.cuecard-suggestion-noEntryMessage {
+    padding: 6px 15px;
+}
+
+.cuecard-suggestion-hint {
+    color: #aaa;
+}
+
+div.cuecard-suggestion-input-container {
+    padding: 3px;
+}
+.cuecard-suggestion-input-container input {
+    display: block;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    border: none;
+    background: white;
+    outline: none;
+}
+
+.cuecard-suggestion-input-container input:focus {
+    outline: none;
+}
+
+.cuecard-suggestion-thumbnail-empty {
+    width: 40px;
+    height: 40px;
+    background: #eee;
+}
+
+.cuecard-suggestion-id {
+    font-size: 90%;
+    color: #888;
+}

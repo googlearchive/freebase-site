@@ -2,13 +2,6 @@
   "apps" : {
     "core": "//core.site.freebase.dev"
   },
-  "suggest" : {
-    "version": "1.2.1",
-    "base_url": "http://freebaselibs.com/static/suggest/"
-  },
-  "jquery" : {
-    "version" : "1.4"
-  },
   "javascript": {
     "freebase.mf.js": [
       "jquery.cookie.js",

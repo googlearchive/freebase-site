@@ -16,7 +16,7 @@
 
     "service" : "//4.service.libs.freebase.dev",
     "libraries" : "//2.libraries.apps.freebase.dev",
-    "appeditor" : "//appeditor.apps.freebase.dev"
+    "appeditor" : "//appeditor-services.site.freebase.dev"
   },
   "libs" : {
 	  "suggest" : {

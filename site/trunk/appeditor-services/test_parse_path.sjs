@@ -29,7 +29,7 @@ var spec =  [
       //  'bug' : 'TODO: investiate app_path',
         'name' : 'file',
         'id' : 'foo',
-        'expected' : make_empty_result({'appid' : '/freebase/apps/appeditor', 'filename' : 'foo'}),
+        'expected' : make_empty_result({'appid' : '/freebase/site/appeditor', 'filename' : 'foo'}),
         'options' : { 'file' : true }
     },
     {

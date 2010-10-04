@@ -1,10 +1,11 @@
 /**
  * everything should go under the freebase namespace.
  */
-window.freebase = window.fb = {mwLWTReloading: false};
+window.freebase = window.fb = {mwLWTReloading: false, acre: SERVER.acre};
 
 // as early as possible, redirect if PAGE_LASTWRITEIME < mwLastWriteTime
 (function($,fb) {
+
   // mwLWTReloaded is reset after a page load, to avoid a refresh
   // loop. More or less: only reload any given page once, but allow
   // future reloads. See the mwLWTReload reference later
@@ -26,8 +27,8 @@ window.freebase = window.fb = {mwLWTReloading: false};
   var cookie_lwt = 0;
   var page_lwt = 0;
   // in acre, PAGE_LASTWRITEIME is acre.request.cookies.mwLastWriteTime
-  if (typeof acre === "object" && acre && acre.request && acre.request.cookies) {
-    page_lwt = acre.request.cookies[cookieName] || 0;
+  if (typeof acre === "object" && fb.acre && fb.acre.request && fb.acre.request.cookies) {
+    page_lwt = fb.acre.request.cookies[cookieName] || 0;
   }
   if (document.cookie && document.cookie != '') {
     var cookies = document.cookie.split(';');
@@ -172,7 +173,7 @@ window.freebase = window.fb = {mwLWTReloading: false};
   /**
    *  If metaweb client url? use metaweb-user-info cookie info
    */
-  if (/^https?\:\/\/((www|devel)\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url)) {
+  if (/^https?\:\/\/((www|devel)\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(fb.acre.request.app_url)) {
     /*
      * Returns a single item 'i' from a Metaweb cookie 'c'
      * Item codes: u=username, d=display name, g=guid, p=path
@@ -230,7 +231,7 @@ window.freebase = window.fb = {mwLWTReloading: false};
    */
   $(function() {
     var search = $("#SearchBox .SearchBox-input,#global-search-input");
-    var root = acre.freebase.site_host;
+    var root = fb.acre.freebase.site_host;
 
     search.suggest({
       service_url:root,

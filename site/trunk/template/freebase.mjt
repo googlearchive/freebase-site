@@ -22,7 +22,7 @@
       <title acre:else="">Freebase</title>
 
       <!-- freebase suggest -->
-      <link rel="stylesheet" type="text/css" href="${mf.suggest.base_url}/suggest.min.css" />
+      <link rel="stylesheet" type="text/css" href="${mf.lib_base_url('suggest')}/suggest.min.css" />
       <link rel="search" 
             type="application/opensearchdescription+xml" 
             href="/opensearch" 
@@ -179,15 +179,16 @@
 
 <acre:block def="footer_script(exports)">
   <!-- jquery -->
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/${mf.jquery.version}/jquery.min.js"></script>
-  <script src="${mf.suggest.base_url}/suggest.min.js"></script>
+  <script src="${mf.lib_base_url('jquery')}/jquery.min.js"></script>
+  <script src="${mf.lib_base_url('suggest')}/suggest.min.js"></script>
   <acre:block if="exports.footer_script">${exports.footer_script()}</acre:block>
 </acre:block>
 
 <!-- add any acre variables you wanted passed to client-side -->
 <acre:block def="acre_javascript_vars(exports)">
   <script>
-    var acre = {
+  	var SERVER = {};
+    SERVER.acre = {
       freebase: {
         service_url: "${acre.freebase.service_url}",
         site_host: "${acre.freebase.site_host}"
@@ -203,6 +204,6 @@
     };
   </script>
   <script acre:if="typeof exports.c === 'object' && exports.c.id">
-    acre.c = {id: "${exports.c.id}"};
+    SERVER.acre.c = {id: "${exports.c.id}"};
  </script>
 </acre:block>

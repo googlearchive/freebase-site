@@ -1,7 +1,7 @@
 {
   "apps" : {
       "core": "//core.site.freebase.dev",
-      "ae" : "//appeditor.apps.freebase.dev"
+      "ae" : "//appeditor-services.site.freebase.dev"
   },
   "stylesheet": {
     "appadmin.mf.css": [

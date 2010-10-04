@@ -1,17 +1,17 @@
+var mf = acre.require('MANIFEST').mf;
+var helpers = mf.require('core', 'helpers_date');
+
 var ae = { 
     'get_app' : function(app_id) { 
         if (app_id.indexOf('/trunk') == app_id.length - 6) { 
             app_id = app_id.slice(0, app_id.length-6); 
         }
 	try { 
-            return acre.require('/freebase/apps/appeditor/get_app').get_app(app_id);
+            return mf.require('ae', 'get_app').get_app(app_id);
 	} catch(e) { return null; }
     },
-    'get_file' : acre.require('/freebase/apps/appeditor/get_file').get_file
+    'get_file' : mf.require('ae', 'get_file').get_file
 };
-
-var mf = acre.require('MANIFEST').mf;
-var helpers = acre.require('/freebase/site/core/helpers_date', mf['/freebase/site/core']);
 
 
 var CURRENT_SERVICE_URL = acre.freebase.service_url;

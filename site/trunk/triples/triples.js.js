@@ -176,7 +176,7 @@
 
       // filter creator/user suggest
       $("input[name=creator]").suggest({
-        service_url: acre.freebase.service_url,
+        service_url: fb.acre.freebase.service_url,
         type: "/type/user"
       })
       .bind("fb-select", function(e, data) {
@@ -194,7 +194,7 @@
           tip: triples.article_tip,
           onBeforeShow: function(id) {
             $.ajax({
-              url: acre.freebase.service_url + "/api/trans/blurb" + id,
+              url: fb.acre.freebase.service_url + "/api/trans/blurb" + id,
               dataType: "jsonp",
               jsonpCallback: "window.freebase.triples.article_callback"
             });
@@ -203,7 +203,7 @@
         "image": {
           tip: triples.image_tip,
           onBeforeShow: function(id) {
-            $("img", triples.image_tip).attr("src", acre.freebase.service_url + "/api/trans/raw" + id).show();
+            $("img", triples.image_tip).attr("src", fb.acre.freebase.service_url + "/api/trans/raw" + id).show();
           }
         }
       };

@@ -25,10 +25,6 @@ var routes = [
     to: "homepage"
   },
   {
-    from: "/triples",
-    to: "triples"
-  },
-  {
     from: "/schema",
     to: "schema"
   },
@@ -126,8 +122,22 @@ var routes = [
     to: "queryeditor"
   },
   {
+    from: "/tools/queryeditor",
+    to: "/app/queryeditor",
+    redirect: 301
+  },
+  {
     from: "/app/tmt",
     to: "tmt"
+  },
+  {
+    from: "/tools/explore",
+    to: "triples"
+  },
+  {
+    from: "/tools/explore2",  // old explore2 just uses the new triples
+    to: "/tools/explore",
+    redirect: 301
   }
 ];
 
@@ -135,13 +145,20 @@ var routes = [
  * map[app(to)] = route
  */
 var _routes_map = {};
+var _routes_path = {};
 routes.forEach(function(route) {
+  var path = route.from;
   var app = route.to;
   var r = _routes_map[app];
   if (!r) {
     r = _routes_map[app] = [];
   }
   r.push(route);
+  var p = _routes_path[path];
+  if (!p) {
+    p = _routes_path[path] = [];
+  }
+  p.push(route);
 });
 
 
@@ -154,11 +171,23 @@ function get_route(app) {
     return r[0];
   }
   return null;
-}
+};
 
 function get_routes(app) {
   return _routes_map[app];
-}
+};
+
+function get_route_by_path(path) {
+  var r = get_routes_by_path(path);
+  if (r && r.length) {
+    return r[0];
+  }
+  return null;
+};
+
+function get_routes_by_path(path) {
+  return _routes_path[path];
+};
 
 if (acre.current_script === acre.request.script) {
   acre.require("//release.service.libs.freebase.dev/lib").GetService(function() {

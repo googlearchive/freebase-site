@@ -1,6 +1,7 @@
 var mf = acre.require("MANIFEST").mf;
-var h = acre.require("helpers");
-var routes = acre.require("app_routes").routes;
+var h = mf.require("helpers");
+var app_routes = mf.require("app_routes");
+var routes = app_routes.routes;
 
 /**
  * Does the given path match the given route object?
@@ -21,17 +22,15 @@ function match_route(path, route) {
   if (route.redirect) {
     return true;
   }
+  app = mf.apps[route.to];
+  if (!app) {
+    throw (route.to + " must be defined in the manifest");
+  }
+  if (route.script) {
+    script = route.script;
+  }
   else {
-    app = mf.apps[route.to];
-    if (!app) {
-      throw (route.to + " must be defined in the manifest");
-    }
-    if (route.script) {
-      script = route.script;
-    }
-    else {
-      var [script, path_info, qs] = h.split_path(path_info);
-    }
+    var [script, path_info, qs] = h.split_path(path_info);
   }
   return [app, script, path_info];
 };
@@ -83,15 +82,15 @@ function do_route(app, script, path_info, query_string) {
 //check if the top level domain does not start with www.
 //issue a 301 to the same url, starting with www.
 //cache the response
-function check_top_level_domain() { 
+function check_top_level_domain() {
 
     var req = acre.request;
     var must_redirect = ['freebase.com', 'sandbox-freebase.com'];
 
     for (var i in must_redirect) {
 
-        if (req.url.slice(7).indexOf(must_redirect[i]) == 0) { 
-            
+        if (req.url.slice(7).indexOf(must_redirect[i]) == 0) {
+
             var new_url = 'http://www.' + req.url.slice(7);
             acre.response.status = '301';
             acre.response.set_header("Location", new_url);
@@ -128,7 +127,13 @@ if (acre.current_script === acre.request.script) {
     }
     if (route.redirect) {
       acre.response.status = route.redirect;
-      acre.response.set_header("location", route.to);
+      if (/^https?:\/\//.test(route.to)) {
+        acre.response.set_header("location", route.to);
+      }
+      else {
+        var redirect_url = req.app_url + req_path.replace(route.from, route.to);
+        acre.response.set_header("location", redirect_url);
+      }
       acre.exit();
     }
     else {

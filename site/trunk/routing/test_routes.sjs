@@ -12,7 +12,15 @@ test("match_route", function() {
     var m = router.match_route(path, route);
     ok(m, path);
     if (route.redirect) {
-      ok(/https?\:\/\//.test(route.to), route.to);
+      if (/https?\:\/\//.test(route.to)) {
+        ok(route.to, route.to);
+      }
+      else {
+        var r = routes.get_route_by_path(route.to);
+        ok(r, JSON.stringify(r));
+        ok(!r.redirect, r.redirect);  // redirected path cannot be another redirect
+        deepEqual(r, routes.get_route(r.to), r.to);
+      }
       ok(route.redirect > 300, ""+route.redirect);
       ok(route.redirect < 400, ""+route.redirect);
     }

@@ -7,11 +7,11 @@
          // if no user, don't need to waste our time with the permission query
          return;
        }
-       if (typeof acre === "undefined" || typeof acre.c === "undefined") {
+       if (typeof fb.acre === "undefined" || typeof fb.acre.c === "undefined") {
          // all templates that go through /freebase/site/template/freebase.mjt will declare an "acre" var.
          return;
        }
-       var c = acre.c;
+       var c = fb.acre.c;
        if (!(c && c.id)) {
          // c.id is the primary node in question
          return;
@@ -29,7 +29,7 @@
 
        // does fb.user have permission on c.id?
        $.ajax({
-         url: acre.request.app_url + "/permission/service/has_permission",
+         url: fb.acre.request.app_url + "/permission/service/has_permission",
          data: {id:c.id, user_id:fb.user.id},
          dataType: "jsonp",
          jsonpCallback: "window.freebase.permission.jsonp"

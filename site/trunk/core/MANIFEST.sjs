@@ -100,6 +100,15 @@ function base_manifest(app_mf, scope) {
     image_base_url: null,
 
     app_base_url: null,
+    
+    /**
+     * Construct versioned base URL for a hosted JS library
+     *
+     */
+    lib_base_url: function(key) {
+    	var lib = core_mf.libs[key] || {};
+    	return (lib.base_url || "") + (lib.version || "");
+    },
 
     /**
      * Generate the proper url to serve the css resource(s) specified by mf.stylesheet[key].

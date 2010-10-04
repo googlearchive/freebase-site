@@ -26,7 +26,7 @@ var extend = mf.require("helpers_util").extend;
  */
 function is_client() {
   if (is_client.b == undefined) {
-    is_client.b = /^https?:\/\/((www|devel)\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url);
+    is_client.b = /^https?:\/\/((www|devel|a(cr)?e)\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url);
   }
   return is_client.b;
 };

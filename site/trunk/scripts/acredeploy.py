@@ -21,7 +21,7 @@ limitations under the License.
 __author__ = 'masouras@google.com (Michael Masouras)'
 
 
-import dir, sys, subprocess, shutil, os, hashlib, urllib, urllib2, tempfile, re, pwd, pdb, time
+import sys, subprocess, shutil, os, hashlib, urllib, urllib2, tempfile, re, pwd, pdb, time
 from optparse import OptionParser
 from tempfile import mkdtemp, mkstemp
 from cssmin import cssmin
@@ -67,7 +67,7 @@ IMG_EXTENSIONS = [".png", ".gif", ".jpg"]
 EXTENSIONS = [".js", ".css", ".less", ".txt"] + IMG_EXTENSIONS
 
 JAVA = os.environ.get("JAVA_EXE", "java")
-COMPILER = os.path.join(dir.scripts, "compiler.jar")
+COMPILER = os.path.join(os.path.abspath(os.path.dirname(os.path.join(os.getcwd(), __file__))), "compiler.jar")
 JAVA_OPTS = ["-jar", COMPILER, "--warning_level", "QUIET"]
 
 SVN_PATH_ROOT = '/home/%s/src/freebase_site' % os.getenv('USER')

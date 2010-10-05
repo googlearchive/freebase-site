@@ -139,7 +139,7 @@
 
         <acre:block if="c.aliases && c.aliases.length">
           <h2 class="table-title"><a name="aliases">${_("Aliases")} (${i18n.format_number(c.aliases.length)})</a></h2>
-          <table class="table">
+          <table class="table table-sortable">
             <thead>
               <tr>
                 <th class="column-header first"><span class="sort-icon">${_("value")}</span></th>

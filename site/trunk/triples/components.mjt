@@ -188,8 +188,15 @@
                   <span style="width:${total}%" class="index"></span>
                 </span>
               </th>
+              <acre:block if="o.domain || o.type">
               <td class="value">${incoming}</td>
               <td class="value">${outgoing}</td>
+              </acre:block>
+              <acre:block else="">
+              <td class="value">
+                ${total}
+              </td>
+              </acre:block>
             </tr>
           </acre:block>
         </table>

@@ -48,17 +48,18 @@
             <div class="fb-type-display">
               <acre:block if="role === 'mediator'">
                 <input type="checkbox" name="role" value="mediator" checked="checked" style="display:none;"/>
-                <label for="terminal">                  
+                <label for="terminal" class="boolean-field">                  
                   <input type="checkbox" name="terminal" acre:attrs="(type && type['/freebase/type_hints/terminal']) ? {checked:'checked'} : {}"/>
                   ${_("Terminal")}
                 </label>
-                <a class="help" href="#">${_("What's this?")}</a>
+                <a class="help" href="http://wiki.freebase.com/wiki/CVT#terminal">${_("What's this?")}</a>
               </acre:block>
               <acre:block else="">
-                <label for="role">
+                <label for="role" class="boolean-field">
                   <input type="checkbox" name="role" value="enumeration" acre:attrs="(type && type['/freebase/type_hints/enumeration']) ? {checked:'checked'} : {}"/>
                   ${_("Enumerated")}
                 </label>
+                <a class="help" href="http://wiki.freebase.com/wiki/Enumerated_type">${_("What's this?")}</a>
               </acre:block>
             </div>
           </div>

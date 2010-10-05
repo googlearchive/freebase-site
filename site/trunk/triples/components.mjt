@@ -165,42 +165,35 @@
         var bar_graph_data = f.get_bar_graph_data(o, prop_counts);
       </acre:script>
 
+
       <acre:block if="bar_graph_data && bar_graph_data.length">
-        <ul class="bar-graph">
-          <acre:block for="i,data in bar_graph_data" if="i<10">
+        <table class="bar-graph" cellspacing="0">
+          <acre:block for="i, data in bar_graph_data" if="i < 10">
             <acre:script>
               var id = data.id;
               var total = data.total;
               var incoming = data.incoming;
               var outgoing = data.outgoing;
+              console.log(total);
               if (o.domain || o.type || o.property) {
                 id = id.split("/").pop();
               }
             </acre:script>
-            <li class="bar-graph-item">
-              <a class="clear" acre:attrs="data.url ? {href:data.url} : {href:'javascript:void(0);'}">
-                <span class="bar-graph-item-name">${id}</span>
-                <span class="bar-graph-values">
-                  <acre:block if="incoming != null && outgoing != null">
-                    <span class="bar-graph-value incoming" title="${h.sprintf(_('%s incoming'), i18n.format_number(data.ti))}" style="width:${incoming}%">
-                      <b>${i18n.format_number(data.ti)}</b>
-                    </span>
-                    <span class="bar-graph-value outgoing" title="${h.sprintf(_('%s ougoing'), i18n.format_number(data.to))}" style="width:${outgoing}%">
-                      <b>${i18n.format_number(data.to)}</b>
-                    </span>
-                  </acre:block>
-                  <acre:block else="">
-                    <span class="bar-graph-value outgoing" title="${h.sprintf(_('%s total'), i18n.format_number(data.t))}" style="width:${total}%">
-                      <b>${i18n.format_number(data.t)}</b>
-                    </span>
-                  </acre:block>
-                </span>                
-              </a>
-            </li>
+            <tr class="bar-graph-row">
+              <th>
+                <span class="bar-graph-label">
+                  <a class="clear" acre:attrs="data.url ? {href:data.url} : {href:'javascript:void(0);'}">
+                    ${id}
+                  </a>
+                  <span style="width:${total}%" class="index"></span>
+                </span>
+              </th>
+              <td class="value">${incoming}</td>
+              <td class="value">${outgoing}</td>
+            </tr>
           </acre:block>
-        </ul>
+        </table>
       </acre:block>
-
     </acre:block>
   </div>
 </acre:block>

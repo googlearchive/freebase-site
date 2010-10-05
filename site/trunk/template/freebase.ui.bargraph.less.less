@@ -30,8 +30,8 @@ ul.bar-graph {
   text-align: right;
 }
 
-.bar-graph-values {
-  width: 70%;
+.bar-graph-values
+.index {
   -webkit-animation-duration:0.5s;
   -webkit-animation-iteration-count:1;
   -webkit-animation-timing-function:ease-out;
@@ -69,4 +69,48 @@ ul.bar-graph {
 .bar-graph-item a:hover {
   border-color: @link-blue;
   text-decoration: none;
+}
+
+table.bar-graph {
+  width: 100%;
+}
+
+.bar-graph tr:hover {
+  background: #eee;
+}
+
+.bar-graph th,
+.bar-graph td {
+  border-bottom: 1px solid #ececec;
+  font-size: 11px;
+}
+
+.bar-graph-label {
+  display: block;
+  position: relative;
+  width: 80%;
+  padding: 3px 5px;
+  text-align: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.bar-graph-label a {
+  position: relative;
+  z-index: 10;
+  display: block;
+}
+
+.bar-graph-label .index {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  top: 0;
+  background: #ddd;
+}
+
+#content .bar-graph td.value {
+  text-align: right;
 }

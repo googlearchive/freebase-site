@@ -120,9 +120,19 @@ var api = {
   edit_type_submit: function(args) {
     var update_type_options = h.extend({}, args);
     // if description is empty, delete from type
+    var remove = [];
     if (!args.description) {
-      update_type_options.remove = ["description"];
+      remove.push("description");
     }
+    if (args.role) {
+      if (args.role === "mediator" && !args.terminal) {
+        remove.push("terminal");
+      }
+    }
+    else {
+      remove.push("role");
+    }
+    update_type_options.remove = remove;
     return update_type.update_type(update_type_options)
       .then(function(updated_id) {
         return queries.minimal_type(updated_id);

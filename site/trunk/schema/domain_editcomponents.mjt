@@ -44,12 +44,24 @@
                 ${i18n_editcomponents.article(type, attrs)}
               </acre:block>
               <textarea acre:else="" acre:attrs="attrs"></textarea>
-            </label>  
+            </label>
+            <div class="fb-type-display">
+              <acre:block if="role === 'mediator'">
+                <input type="checkbox" name="role" value="mediator" checked="checked" style="display:none;"/>
+                <label for="terminal">                  
+                  <input type="checkbox" name="terminal" acre:attrs="(type && type['/freebase/type_hints/terminal']) ? {checked:'checked'} : {}"/>
+                  ${_("Terminal")}
+                </label>
+              </acre:block>
+              <acre:block else="">
+                <label for="role">
+                  <input type="checkbox" name="role" value="enumeration" acre:attrs="(type && type['/freebase/type_hints/enumeration']) ? {checked:'checked'} : {}"/>
+                  ${_("Enumerated")}
+                </label>
+              </acre:block>
+            </div>
           </div>
           <input name="domain" type="hidden" value="${domain_id}"/>
-          <input acre:if="role === 'mediator'" type="hidden" name="role" value="mediator"/>
-          <input acre:elif="role === 'enumeration'" type="hidden" name="role" value="enumeration"/>
-          <input acre:else="" type="hidden" name="role" value=""/> 
         </td>
       </tr>
 

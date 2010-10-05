@@ -243,10 +243,13 @@
         description: $.trim($("textarea[name=description]:visible", form.row).val()),
         lang: $("select[name=lang]", form.submit_row).val()
       };
-
-      if (form.mode === "add") {
-        // can't edit role
-        data.role = $("input[name=role]", form.row).val();
+      // type role and terminal flag (if mediator)
+      var role = $("input[name=role]:checked", form.row).val();
+      if (role) {
+        data.role = role;
+        if (role === "mediator") {
+          data.terminal = $("input[name=terminal]", form.row).is(":checked") ? 1 : 0;
+        }
       }
 
       $.ajax({

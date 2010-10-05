@@ -19,7 +19,9 @@ function create_type(options) {
       key: validators.String(options, "key", {required:true}),
       description: validators.String(options, "description", {if_empty:""}),
       role: validators.OneOf(options, "role", {oneof:["mediator", "enumeration"], if_empty:""}),
+      terminal: validators.StringBool(options, "terminal", {if_empty:false}),
       lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"})
+
     };
   }
   catch(e if e instanceof validators.Invalid) {
@@ -66,6 +68,12 @@ function create_type(options) {
           value: true,
           connect: "update"
         };
+        if (o.terminal) {
+          q["/freebase/type_hints/terminal"] = {
+            value: true,
+            connect: "update"
+          };
+        }
       }
       else {
         if (o.role === "enumeration") {

@@ -135,54 +135,6 @@
      </table> 
    </div>
 
-   <!-- Enumerated Types -->
-   <div class="section">
-     <h2 class="table-title">
-       <a href="http://wiki.freebase.com/wiki/Enumerated_type" rel="help external" title="${_('Read help article')}" class="help-link">${_('What are Enumerated Types?')}</a>
-       ${_('Enumerated Types')}
-     </h2>
-     <table class="table table-sortable" cellspacing="0">
-       <thead>
-         <tr acre:attrs="c.domain['enumeration:types'].length ? {}:{style:'display:none;'}">
-           <th scope="col" class="column-header first column-header-desc {sorter: 'schemaName'}"><span class="sort-icon">${_('Type')}</span></th>
-           <th class="column-header" scope="col"><span class="sort-icon">${_('ID')}</span></th>
-           <th class="column-header numeric" scope="col"><span class="sort-icon">${_('# of Properties')}</span></th>
-           <th class="column-header numeric {sorter: 'commaDigit'}" scope="col"><span class="sort-icon">${_('# of Instances')}</span></th>
-           <th class="column-header description" scope="col"><span class="sort-icon">${_('Description')}</span></th>
-         </tr>
-         <tr acre:attrs="c.domain['enumeration:types'].length ? {style:'display:none;'}:{}">
-           <th colspan="5" class="table-empty-column" scope="col">
-             <div class="edit table-empty-msg">
-               <a href="javascript:void(0)" class="table-empty-trigger">${_('Use Entity Types to')}&hellip;</a>
-               <div class="table-empty-text">
-                 <p> 
-                   ${h.bless_sprintf(_("%s, but limit the possible values to a finite set of topics."), 
-                   h.tag("strong", _("Describe any person, place, or concept")))}
-                 <p><a href="http://wiki.freebase.com/wiki/Enumerated_type" rel="external help">${_('Learn more')} &raquo;</a></p> 
-               </div>
-             </div>
-             <h3 class="table-empty-title">${_("This domain doesn't have any Enumerated Types.")}</h3>
-           </th>
-         </tr>
-       </thead>
-       <tbody>
-         <acre:block for="i,type in c.domain['enumeration:types']">
-           ${dc.domain_type_row(type)}
-         </acre:block>
-       </tbody>
-       <tfoot class="table-edit edit">
-         <tr>
-           <td colspan="5">
-             <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_type, ['${c.domain.id}', 'enumeration'], this);">
-               <span class="add-icon">${_('Add New')}</span>
-             </a>
-           </td>
-         </tr>
-       </tfoot>
-     </table> 
-   </div>
-
-
   <!-- Mediators -->
   <div class="section">
     <h2 class="table-title">

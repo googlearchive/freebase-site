@@ -97,7 +97,6 @@ function domain(id) {
 
       // categorize types by their roles (mediator, etc.)
       var types = [];
-      var enumerations = [];
       var mediators = [];
       domain.types.forEach(function(type) {
         promises.push(i18n.get_blurb(type));
@@ -106,19 +105,14 @@ function domain(id) {
         if (role === "mediator") {
           mediators.push(type);
         }
-        else if (role === "enumeration") {
-          enumerations.push(type);
-        }
         else {
           types.push(type);
         }
       });
       types.sort(schema_helpers.sort_by_id);
-      enumerations.sort(schema_helpers.sort_by_id);
       mediators.sort(schema_helpers.sort_by_id);
 
       domain.types = types;
-      domain["enumeration:types"] = enumerations;
       domain["mediator:types"] = mediators;
 
       // domain activity, instance counts per type

@@ -177,7 +177,7 @@
             <tbody>
               <tr acre:for="article in c.articles" class="hoverable ${JSON.stringify(th.triple(c.topic.id, '/common/topic/article', article))}">
                 <th class="odd row-header" scope="row">
-                  ${a(article.id, null, th.tipattrs('article', article.id))}
+                  ${a(article.id)}
                   ${tooltip()}
                 </th>
                 <td class="even">
@@ -328,6 +328,10 @@
           </thead>
           <tbody>
             <tr acre:for="o in c.typelinks" class="hoverable ${JSON.stringify(th.triple(o.source.id, c.topic.id, o.target_value || o.target))}">
+              <acre:script>
+                console.log("typelink", o);
+              </acre:script>
+
               <th class="row-header odd" scope="row">
                 ${topic(o.source)}
                 ${tooltip()}
@@ -367,13 +371,6 @@
     <li class="row-menu-item last"><a id="build-query" href="${h.url_for('queryeditor')}">${_("Build query")}</a></li>
   </ul>
 
-  <div id="article-tip" class="tooltip">
-  </div>
-
-  <div id="image-tip" class="tooltip">
-    <img/>
-  </div>
-
 </acre:block>
 
 <acre:block def="footer_script()">
@@ -410,16 +407,9 @@
         name = i18n.display_name(o);
       }
     }
-    var attrs;
-    if (o.link.master_property === "/common/topic/article") {
-      attrs = th.tipattrs('article', id);
-    }
-    else if (o.link.master_property === "/common/topic/image") {
-      attrs = th.tipattrs('image', id);
-    }
   </acre:script>
-  ${a(id, id, attrs)}
-  <acre:block if="name != null">
+  ${a(id, id)}
+  <acre:block if="name != null" trime="">
     ${name}
   </acre:block>
 </acre:block>

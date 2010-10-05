@@ -198,55 +198,6 @@
         $(this).val(data.id)
           .parents("form:first").submit();
       });
-
-      // article/image tooltips
-      triples.article_tip = $("#article-tip");
-      triples.image_tip = $("#image-tip");
-      var tip_options = {
-        "article": {
-          tip: triples.article_tip,
-          onBeforeShow: function(id) {
-            $.ajax({
-              url: fb.acre.freebase.service_url + "/api/trans/blurb" + id,
-              dataType: "jsonp",
-              jsonpCallback: "window.freebase.triples.article_callback"
-            });
-          }
-        },
-        "image": {
-          tip: triples.image_tip,
-          onBeforeShow: function(id) {
-            $("img", triples.image_tip).attr("src", fb.acre.freebase.service_url + "/api/trans/raw" + id).show();
-          }
-        }
-      };
-
-      $(".article").add($(".image")).each(function() {
-        var trigger = $(this);
-        var tip_class = trigger.hasClass("article") ? "article" : "image";
-        var tip_option = tip_options[tip_class];
-        trigger
-          .removeAttr("title")
-          .tooltip({
-            position: "top center",
-            effect: "fade",
-            predelay: 500,
-            tip: tip_option.tip,
-            onBeforeShow: function() {
-              var id = this.getTrigger().metadata().id;
-              var current_id = tip_option.tip.data("id");
-              if (id === current_id) {
-                return;
-              }
-              tip_option.tip.data("id", id);
-              tip_option.onBeforeShow(id);
-            }
-          });
-        });
-    },
-
-    article_callback: function(data) {
-      triples.article_tip.text(data.result.body).show();
     }
   };
 

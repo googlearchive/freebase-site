@@ -277,8 +277,17 @@ class App():
     if not target:
       target = self.svn_path()
 
-    cmd = ['svn', 'up', self.svn_url(), target]
-    (r, output) = self.c.run_cmd(cmd, exit=False)
+    if self.version:
+      d = '{svn_path_root}/dev/{app}'.format(svn_path_root=SVN_PATH_ROOT, app=self.app_key)
+      if not os.path.isdir(d):
+        cmd = ['svn', 'checkout', self.svn_url(), d, '--depth', 'empty']
+        (r, output) = self.c.run_cmd(cmd, exit=False)
+
+    if os.path.isdir(target):
+      cmd = ['svn', 'up', self.svn_url(), target]
+      (r, output) = self.c.run_cmd(cmd, exit=False)
+    else:
+      return self.svn_checkout(target)
 
     return r
 
@@ -460,6 +469,7 @@ class Context():
 
   def run_cmd(self, cmd, name='cmd', exit=True):
 
+    #pdb.set_trace()
     self.log(' '.join(cmd), subaction=name)
     stdout, stderr = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
 
@@ -1181,6 +1191,7 @@ class ActionBranch():
       #if we depend on a specific version of core, we are done
       elif 'core' in dependencies.keys():
         core_app = dependencies['core']
+        core_app.svn_update()
     #this is the core app
     else:
       core_app = branch_app

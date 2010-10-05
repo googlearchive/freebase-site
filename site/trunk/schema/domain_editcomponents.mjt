@@ -52,6 +52,7 @@
                   <input type="checkbox" name="terminal" acre:attrs="(type && type['/freebase/type_hints/terminal']) ? {checked:'checked'} : {}"/>
                   ${_("Terminal")}
                 </label>
+                <a class="help" href="#">${_("What's this?")}</a>
               </acre:block>
               <acre:block else="">
                 <label for="role">

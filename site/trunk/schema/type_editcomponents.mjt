@@ -525,7 +525,7 @@
                   <label>
                     <input type="checkbox" name="terminal" acre:attrs="attrs.terminal"/> ${_('This is a terminal mediator.')}
                   </label>
-                  <a class="help" href="#">What's this?</a>
+                  <a class="help" href="#">${_("What's this?")}</a>
                 </div>
               </th>
               <td acre:if="attrs.mediator.disabled" class="odd warning">

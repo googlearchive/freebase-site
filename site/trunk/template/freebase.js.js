@@ -1,7 +1,10 @@
 /**
  * everything should go under the freebase namespace.
  */
-window.freebase = window.fb = {mwLWTReloading: false, acre: SERVER.acre};
+window.freebase = window.fb = {mwLWTReloading: false};
+if (SERVER && SERVER.acre) {
+	window.fb.acre = SERVER.acre;
+}
 
 // as early as possible, redirect if PAGE_LASTWRITEIME < mwLastWriteTime
 (function($,fb) {

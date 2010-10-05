@@ -2,10 +2,10 @@
   "apps" : {
       "core": "//core.site.freebase.dev"
   },
-  test:{
-    files:[
-      'test_get_app',
-      'test_parse_path'
+  "test":{
+    "files":[
+      "test_get_app",
+      "test_parse_path"
     ]
   },
   "stylesheet": {

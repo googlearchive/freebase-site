@@ -24,7 +24,8 @@ function get_filters(id) {
     limit: get_limit(),
     timestamp: get_timestamp(),
     creator: get_creator(),
-    as_of_time: get_as_of_time()
+    as_of_time: get_as_of_time(),
+    history: get_history()
   };
   if (acre.request.params.domain) {
     filters.domain = validators.MqlId(acre.request.params.domain);
@@ -36,6 +37,10 @@ function get_filters(id) {
     filters.property = validators.MqlId(acre.request.params.property);
   }
   return filters;
+};
+
+function get_history() {
+  return validators.StringBool(acre.request.params.history, {if_empty:null,if_invalid:null});
 };
 
 function get_creator() {
@@ -117,6 +122,8 @@ function apply_filters(clause, filters) {
   apply_timestamp(clause.link, filters.timestamp);
   // creator
   apply_creator(clause.link, filters.creator);
+  // history
+  apply_history(clause.link, filters.history);
   // domain
   apply_domain_type_property(clause.link, filters.domain, filters.type, filters.property);
   return clause;
@@ -150,6 +157,14 @@ function apply_creator(clause, creator) {
     else {
       clause["filter:creator"] = creator;
     }
+  }
+  return clause;
+};
+
+function apply_history(clause, history) {
+  if (history) {
+    clause.valid = null;
+    clause.operation = null;
   }
   return clause;
 };

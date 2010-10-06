@@ -48,27 +48,6 @@ function prop_counts_by_guid(guid) {
     });
 };
 
-function last_edit(id, filters) {
-  var q = {
-    source: id,
-    master_property: null,
-    target: null,
-    target_value: null,
-    type: "/type/link",
-    valid: null,
-    timestamp: null,
-    sort: "-timestamp",
-    operation: null,
-    limit: 1,
-    creator: null
-  };
-  f.apply_creator(q, filters.creator);
-  f.apply_timestamp(q, filters.timestamp);
-  return freebase.mqlread(q, f.mqlread_options(filters))
-    .then(function(env) {
-      return env.result;
-    });
-};
 
 function names(id, filters) {
   var q = {
@@ -231,8 +210,9 @@ function typelinks(id, filters) {
     sort: "-timestamp"
   }];
   f.apply_limit(q[0], filters.limit);
-  f.apply_creator(q[0], filters.creator);
   f.apply_timestamp(q[0], filters.timestamp);
+  f.apply_creator(q[0], filters.creator);
+  f.apply_history(q[0], filters.history);
   return freebase.mqlread(q, f.mqlread_options(filters))
     .then(function(env) {
       return env.result;

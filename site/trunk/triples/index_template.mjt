@@ -33,7 +33,7 @@
       <ol>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.url_for('triples')}">${_("Triples")}</a>
+            <a href="${h.url_for('triples')}">${_("Inspect")}</a>
           </span>
         </li>  
         <li if="c.domain" class="breadcrumb-item last">

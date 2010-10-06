@@ -1,0 +1,12 @@
+{
+  "apps": {
+    "core": "//core.site.freebase.dev"
+  },
+  "stylesheet": {
+  },
+  "javascript": {
+    "codemirror.mf.js": [
+			"codemirror-inline.js"
+    ]
+  }
+}

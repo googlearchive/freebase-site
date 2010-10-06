@@ -120,11 +120,12 @@
             <tr class="valid"><th class="row-header" scope="row">${_("valid")}</th></tr>
             <tr class="invalid"><th class="row-header" scope="row">${_("invalid")}</th></tr>
          </tbody>
-        </table>
-          
+        </table>          
       </div>
-    </acre:block>
-    <a acre:else="" href="${f.filter_url(o, 'history', 1)}" title="${_('Show all operations')}">${_("show all")}</a>
+    </acre:block>    
+    <ul acre:else="">
+      <li><a href="${f.filter_url(o, 'history', 1)}" title="${_('Show all operations')}">${_("show all")}</a></li>
+    </ul>
   </div>
 </acre:block>
 

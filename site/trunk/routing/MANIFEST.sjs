@@ -6,6 +6,8 @@ var mf = {
     "apps"       : "//apps.site.freebase.dev",
     "core"       : "//core.site.freebase.dev",
     "cubed"      : "//cubed.dfhuynh.user.dev",
+    "codemirror" : "//codemirror.site.freebase.dev",
+    "cuecard"    : "//cuecard.site.freebase.dev",
     "devdocs"    : "//devdocs.site.freebase.dev",
     "domain"     : "//domain.site.freebase.dev",
     "error"      : "//error.site.freebase.dev",

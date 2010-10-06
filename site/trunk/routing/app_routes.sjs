@@ -33,6 +33,8 @@ var routes = [
   {from: "/labs/parallax",     to: "parallax"},
   {from: "/labs",              to: "labs"},
   {from: "/queryeditor",       to: "queryeditor"},
+  {from: "/codemirror",				 to: "codemirror" },
+  {from: "/cuecard",					 to: "cuecard" },
   {from: "/app/queryeditor",   to: "/queryeditor", redirect: 301},
   {from: "/tools/queryeditor", to: "/queryeditor", redirect: 301},
   {from: "/app/tmt",           to: "tmt"},

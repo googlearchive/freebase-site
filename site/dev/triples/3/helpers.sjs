@@ -56,7 +56,6 @@ function tipclass(type, id) {
   return h.sprintf("%s %s", type, JSON.stringify({id:id}));
 };
 
-
 function format_number(n) {
   if (n < 10) {
     return "<10";
@@ -76,4 +75,20 @@ function format_number(n) {
     return h.sprintf("%sk", Math.round(n/100)/10);
   }
   return h.sprintf("%sk", i18n.format_number(Math.round(n/1000)));
+};
+
+function is_valid(link) {
+  return (link.valid === false) ? false : true;
+};
+
+function valid_class(link) {
+  return is_valid(link) ? "valid": "invalid";
+};
+
+function link_class(link) {
+  var operation = "";
+  if (link.operation != null) {
+    operation = link.operation;
+  }
+  return h.trim(h.sprintf("%s %s", valid_class(link), operation));
 };

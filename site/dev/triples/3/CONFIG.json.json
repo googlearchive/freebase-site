@@ -1,1 +1,27 @@
-{"stylesheet": {"triples.mf.css": [["template", "freebase.mf.css"], ["template", "freebase.ui.tabs.less"], ["template", "freebase.ui.table.less"], ["template", "freebase.ui.breadcrumbs.less"], ["template", "freebase.ui.pageoverview.less"], ["template", "freebase.ui.modal.less"], ["template", "freebase.ui.bargraph.less"], ["template", "freebase.ui.layout.twocol.less"], "triples.less"]}, "javascript": {"triples.mf.js": [["template", "freebase.mf.js"], ["jquerytools", "tooltip.js"], ["jqueryui", "jquery.effects.core.js"], ["jqueryui", "jquery.effects.highlight.js"], "triples.js"]}, "apps": {"core": "//34.core.site.freebase.dev"}}
+{
+  "apps": {
+    "core": "//core.site.freebase.dev"
+  },
+  "stylesheet": {
+    "triples.mf.css": [
+      ["template", "freebase.mf.css"],
+      ["template", "freebase.ui.tabs.less"],
+      ["template", "freebase.ui.table.less"],
+      ["template", "freebase.ui.breadcrumbs.less"],
+      ["template", "freebase.ui.pageoverview.less"],
+      ["template", "freebase.ui.modal.less"],
+      ["template", "freebase.ui.bargraph.less"],
+      ["template", "freebase.ui.layout.twocol.less"],
+      "triples.less"
+    ]
+  },
+  "javascript": {
+    "triples.mf.js": [
+      ["template", "freebase.mf.js"],
+      ["jquerytools", "tooltip.js"],
+      ["jqueryui", "jquery.effects.core.js"],
+      ["jqueryui", "jquery.effects.highlight.js"],
+      "triples.js"
+    ]
+  }
+}

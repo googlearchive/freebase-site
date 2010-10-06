@@ -118,8 +118,7 @@
           <tbody>
             <tr class="valid"><th>${_("valid")}</th></tr>
             <tr class="invalid"><th>${_("invalid")}</th></tr>
-            <tr class="invalid delete"><th>${_("deleted")}</th></tr>
-          </tbody>
+         </tbody>
         </table>
           
       </div>

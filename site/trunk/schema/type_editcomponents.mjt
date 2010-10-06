@@ -490,12 +490,12 @@
               <th class="row-title">
                 <label class="type-role-title">
                   <input type="radio" name="role" class="type-role-option" acre:attrs="attrs.entity"/>
-                  ${_("Entity Type")}
+                  ${_("Type")}
                 </label>
                 <p class="type-role-description">${_("Describe any person, place, or concept.")}</p>
               </th>
               <td acre:if="attrs.entity.disabled" class="odd warning">
-                ${h.sprintf(_("You cannot change to an Entity Type with topics typed as %s."), i18n.display_name(type))}
+                ${h.sprintf(_("You cannot change to a Type with topics typed as %s."), i18n.display_name(type))}
                 <a href="${h.freebase_url('/view'+type.id)}" target="_new">${_("View instances")} &raquo;</a>
               </td>
               <td acre:else="" class="odd">&nbsp;</td>
@@ -522,7 +522,7 @@
                   ${_("Mediator")}
                 </label>      
                 <a class="help" href="http://wiki.freebase.com/wiki/CVT">${_("What's this?")}</a>       
-                <p class="type-role-description">${_("Describe the relationship between two or more Entity Types.")}<p>
+                <p class="type-role-description">${_("Describe the relationship between two or more Types.")}<p>
                 <div>
                   <label>
                     <input type="checkbox" name="terminal" acre:attrs="attrs.terminal"/> ${_('This is a terminal mediator.')}

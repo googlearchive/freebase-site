@@ -65,7 +65,7 @@
           ${_('Enumerated Type')}
         </acre:block>
         <acre:block else="">
-          ${_('Entity Type')}
+          ${_('Type')}
         </acre:block>
         <a class="edit" href="#" onclick="return freebase.dispatch(event, freebase.schema.type.type_role, ['${c.type.id}'], this);">${_('change')}</a>
       </span>

@@ -86,11 +86,11 @@
      </div>
    </div>
 
-   <!-- Entity Types -->
+   <!-- Types -->
    <div class="section">
      <h2 class="table-title">
        <a href="http://wiki.freebase.com/wiki/Types" rel="help external" title="${_('Read help article')}" class="help-link">${_('What are Types?')}</a>
-       ${_('Entity Types')}
+       ${_('Types')}
      </h2>
      <table class="table table-sortable" cellspacing="0">
        <thead>
@@ -104,7 +104,7 @@
          <tr acre:attrs="c.domain.types.length ? {style:'display:none;'}:{}">
            <th colspan="5" class="table-empty-column" scope="col">
              <div class="edit table-empty-msg">
-               <a href="javascript:void(0)" class="table-empty-trigger">${_('Use Entity Types to')}&hellip;</a>
+               <a href="javascript:void(0)" class="table-empty-trigger">${_('Use Types to')}&hellip;</a>
                <div class="table-empty-text">
                  <p>       
                    <strong>${_("Describe any person, place, or concept.")}</strong>
@@ -114,7 +114,7 @@
                  <p><a href="http://wiki.freebase.com/wiki/Types" rel="external help">${_('Learn more')} &raquo;</a></p> 
                </div>
              </div>
-             <h3 class="table-empty-title">${_("This domain doesn't have any Entity Types.")}</h3>
+             <h3 class="table-empty-title">${_("This domain doesn't have any Types.")}</h3>
            </th>
          </tr>
        </thead>
@@ -156,7 +156,7 @@
                <a href="javascript:void(0)" class="table-empty-trigger">${_('Use Mediators to')}&hellip;</a>
                <div class="table-empty-text">
                  <p>
-                 <strong>${_("Describe the relationship between two or more Entity Types.")}</strong>
+                 <strong>${_("Describe the relationship between two or more Types.")}</strong>
                  ${_("For example, the film performance Mediator in Film describes the relationship between a movie, an actor, and a character.")}
                  ${_("We use film performance  to assert that Heath Ledger played the character of The Joker in the film The Dark Knight.")}
                  </p>

@@ -10,7 +10,7 @@
 </acre:script>
 
 <acre:block def="title()">
-  ${_('Explore')} - ${c.topic.id}
+  ${_('Inspect')} - ${c.topic.id}
 </acre:block>
 
 <acre:block def="head()">

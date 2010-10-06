@@ -1,7 +1,7 @@
-CueCard.helper = SERVER.acre.freebase.site_host + "/cuecard/";
+CueCard.helper = SERVER.acre.request.app_url + "/cuecard/";
 CueCard.freebaseServiceUrl = SERVER.acre.freebase.service_url + "/";
 CueCard.urlPrefix = "/cuecard/";
-CueCard.apiProxy.base = SERVER.acre.freebase.site_host + "/cuecard/";
+CueCard.apiProxy.base = SERVER.acre.request.app_url + "/cuecard/";
 
 
 var c;

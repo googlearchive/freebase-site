@@ -79,6 +79,7 @@
     <span class="filter-item">
       <a acre:if="limit != f.LIMIT" href="${f.remove_filter_url(o, 'limit')}" class="remove-filter">x</a>
       ${i18n.format_number(limit)}
+      <a href="${f.filter_url(o, 'limit', limit*2)}" title="${i18n.format_number(limit*2)}"><strong>&uarr;</strong></a>
     </span>
     <a class="filter-form-trigger" href="javascript:void(0);">${_("change")}&hellip;</a>
     <div class="filter-form" style="display:none;">
@@ -111,13 +112,13 @@
         ${_("show all")}
       </span>
       <div class="history legend">
-        <table>
+        <table class="table">
           <thead>
-            <tr><th>${_("Legend")}</th></tr>
+            <tr><th class="column-header first">${_("Legend")}</th></tr>
           </thead>
           <tbody>
-            <tr class="valid"><th>${_("valid")}</th></tr>
-            <tr class="invalid"><th>${_("invalid")}</th></tr>
+            <tr class="valid"><th class="row-header" scope="row">${_("valid")}</th></tr>
+            <tr class="invalid"><th class="row-header" scope="row">${_("invalid")}</th></tr>
          </tbody>
         </table>
           

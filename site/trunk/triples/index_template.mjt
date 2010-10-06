@@ -120,6 +120,7 @@
                 <th scope="col" class="column-header"><span class="sort-icon">${_("lang")}</span></th>
                 <th scope="col" class="column-header"><span class="sort-icon">${_("creator")}</span></th>
                 <th scope="col" class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
+                <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
               </tr>
             </thead>
             <tbody>
@@ -133,6 +134,7 @@
                 <td class="odd" acre:if="name.link.creator">${a(name.link.creator)}</td>
                 <td class="odd" acre:else="">null</td>
                 <td class="even numeric">${name.link.timestamp}</td>
+                <td acre:if="c.filters.history" class="odd">${name.link.operation}</th>
               </tr>
             </tbody>
           </table>
@@ -147,6 +149,7 @@
                 <th class="column-header"><span class="sort-icon">${_("lang")}</span></th>
                 <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
                 <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
+                <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
               </tr>
             </thead>
             <tbody>
@@ -160,6 +163,7 @@
                 <td class="odd" acre:if="name.link.creator">${a(name.link.creator)}</td>
                 <td class="odd" acre:else="">null</td>
                 <td class="even numeric">${name.link.timestamp}</td>
+                <td acre:if="c.filters.history" class="odd">${name.link.operation}</th>
               </tr>
             </tbody>
           </table>
@@ -175,6 +179,7 @@
                   <th class="column-header"><span class="sort-icon">${_("value")}</span></th>
                   <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
                   <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
+                  <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
                 </tr>
               </thead>
               <tbody>
@@ -188,6 +193,7 @@
                   <td class="odd" acre:if="k.link.creator">${a(k.link.creator)}</td>
                   <td class="odd" acre:else="">null</td>
                   <td class="even numeric">${k.link.timestamp}</td>
+                  <td acre:if="c.filters.history" class="odd">${k.link.operation}</th>
                 </tr>
               </tbody>
             </table>
@@ -205,6 +211,7 @@
                 <th class="column-header"><span class="sort-icon">${_("value")}</span></th>
                 <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
                 <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
+                <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
               </tr>
             </thead>
             <tbody>
@@ -218,6 +225,7 @@
                 <td class="odd" acre:if="k.link.creator">${a(k.link.creator)}</td>
                 <td class="odd" acre:else="">null</td>
                 <td class="even numeric">${k.link.timestamp}</td>
+                <td acre:if="c.filters.history" class="odd">${k.link.operation}</th>
               </tr>
             </tbody>
           </table>
@@ -233,6 +241,7 @@
                 <th class="column-header"><span class="sort-icon">${_("object")}</span></th>
                 <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
                 <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
+                <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
               </tr>
             </thead>
             <tbody>
@@ -248,6 +257,7 @@
                 <td class="even" acre:if="o.link.creator">${a(o.link.creator)}</td>
                 <td class="even" acre:else="">null</td>
                 <td class="odd numeric">${o.link.timestamp}</td>
+                <td acre:if="c.filters.history" class="even">${o.link.operation}</th>
               </tr>
             </tbody>
           </table>
@@ -263,6 +273,7 @@
                 <th class="column-header"><span class="sort-icon">${_("object")}</span></th>
                 <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
                 <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
+                <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
               </tr>
             </thead>
             <tbody>
@@ -277,6 +288,7 @@
                 <td class="even" acre:if="o.link.creator">${a(o.link.creator)}</td>
                 <td class="even" acre:else="">null</td>
                 <td class="odd numeric">${o.link.timestamp}</td>
+                <td acre:if="c.filters.history" class="even">${o.link.operation}</th>
               </tr>
             </tbody>
           </table>
@@ -292,6 +304,7 @@
                 <th class="column-header"><span class="sort-icon">${_("object")}</span></th>
                 <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
                 <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
+                <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
               </tr>
             </thead>
             <tbody>
@@ -307,6 +320,7 @@
                 <td class="even" acre:if="o.creator">${a(o.creator)}</td>
                 <td class="even" acre:else="">null</td>
                 <td class="odd numeric">${o.timestamp}</td>
+                <td acre:if="c.filters.history" class="even">${o.operation}</th>
               </tr>
             </tbody>
           </table>

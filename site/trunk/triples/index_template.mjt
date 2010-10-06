@@ -38,7 +38,7 @@
         </li>  
         <li if="c.domain" class="breadcrumb-item last">
           <span class="breadcrumb-item-inner">
-            <a href="javascript:void(0);">${c.topic.id}</a>
+            <a href="${h.url_for('triples', null, null, c.topic.id)}">${c.topic.id}</a>
           </span>
         </li>
       </ol>

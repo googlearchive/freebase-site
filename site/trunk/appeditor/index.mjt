@@ -6,12 +6,10 @@
 	<acre:script>
 	  var mf = acre.require("MANIFEST").mf;
 	  var h = mf.require("core", "helpers");
-	  var cache = mf.require("core", "cache");
-	  if (h.is_client()) {
-  	  cache.set_cache_policy('public');
-	  }
   	var i18n = mf.require("i18n", "i18n");
-	  acre.response.set_header_default("Vary", "Cookie, Accept-Language");
+  	
+  	var codemirror_mf = mf.require("codemirror", "MANIFEST").mf;
+  	var cuecard_mf = mf.require("cuecard", "MANIFEST").mf;
 	  
 	  var SERVER = {
 	    appeditor: {
@@ -46,14 +44,19 @@
 	  <meta http-equiv="X-UA-Compatible" content="chrome=1" />
 	  <title>Freebase App Editor</title>
 	   
-	  <link rel="stylesheet" type="text/css" href="${mf.css_src('appeditor.mf.css')}" />
 	  <link rel="stylesheet" type="text/css" href="${mf.lib_base_url('suggest')}/suggest.min.css" />
+    <link rel="stylesheet" type="text/css" href="${cuecard_mf.css_src('cuecard.mf.css')}" />
+	  <link rel="stylesheet" type="text/css" href="${mf.css_src('appeditor.mf.css')}" />
+
 	  
 		<script type="text/javascript">
 			var SERVER = ${JSON.stringify(SERVER, null, 2)};
 		</script>
 	  <script src="${mf.lib_base_url('jquery')}/jquery.min.js"></script>
 	  <script src="${mf.lib_base_url('suggest')}/suggest.min.js"></script>
+	  <script src="${mf.lib_base_url('mjt')}/mjt.min.js"></script>
+	  <script src="${codemirror_mf.js_src('codemirror.mf.js')}"></script>
+	  <script src="${cuecard_mf.js_src('cuecard.mf.js')}"></script>
 	  <script src="${mf.lib_base_url('mjt')}/mjt.min.js"></script>
 		<script src="${mf.js_src('appeditor.mf.js')}"></script>
 	</head>

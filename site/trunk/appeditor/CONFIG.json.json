@@ -4,8 +4,7 @@
   },
   "stylesheet": {
     "appeditor.mf.css": [
-      "ui.css",
-      "cuecard-compilation.css"
+      "ui.css"
     ],
   },
   "javascript": {
@@ -15,7 +14,6 @@
       ["jqueryui", "jquery.ui.draggable.js"],
       "jquery.shortcut.js",
       "codemirror_inline.js",
-      "cuecard-compilation.js",
       "util.js",
       "zencoding.js",
       "freebase_store.js",

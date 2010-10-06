@@ -218,11 +218,10 @@ var QueryEditor = function(parent, editor_config, task) {
     QueryEditor.t_load = function(file, state) {
         
         // Make sure CueCard is correctly initialized
-        var cueCardVersion = "r" + CueCard.version.replace(/\./g, "-");
-        CueCard.freebaseServiceUrl = CONFIG.acre.freebase.service_url + '/';
-        CueCard.apiProxy.base = ui.get_store().get_service_path();
-        CueCard.apiProxy.read = 'mqlread?v=' + cueCardVersion + '&';
-        CueCard.apiProxy.write = 'mqlwrite?v=' + cueCardVersion  + '&';
+				CueCard.helper = SERVER.acre.freebase.site_host + "/cuecard/";
+				CueCard.freebaseServiceUrl = SERVER.acre.freebase.service_url + "/";
+				CueCard.urlPrefix = "/cuecard/";
+				CueCard.apiProxy.base = SERVER.acre.freebase.site_host + "/cuecard/";
         
         /* CREATE EDITOR CONFIG */
         // make a deep copy of the default config object so that each file can have different settings

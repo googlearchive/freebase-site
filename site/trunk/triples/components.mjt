@@ -140,7 +140,10 @@
    var show_filter = o.domain || o.type || o.property || show_counts;
   </acre:script>
   <div acre:if="show_filter" class="filter-group">
-    <h2 class="filter-title">${_("By Vertical")}:</h2>
+    <h2 class="filter-title" acre:if="o.domain">${_("By Type")}:</h2>
+    <h2 class="filter-title" acre:elif="o.type">${_("By Property")}:</h2>
+    <h2 class="filter-title" acre:elif="o.property">${_("By Total")}:</h2>
+    <h2 class="filter-title" acre:else="">${_("By Domain")}:</h2>
     <acre:block if="o.domain">
       <span class="filter-item">
         <a href="${f.remove_filter_url(o, 'domain')}" class="remove-filter">x</a>
@@ -148,16 +151,39 @@
       </span>
     </acre:block>
     <acre:block elif="o.type">     
+      <acre:script>
+        var temp = o.type.split("/");
+        temp.pop();
+        var domain = temp.join("/");
+        var domain_options = h.extend({}, o);
+        delete domain_options.type;
+      </acre:script>
       <span class="filter-item">
         <a href="${f.remove_filter_url(o, 'type')}" class="remove-filter">x</a>
-        ${o.type}
+        <a href="${f.filter_url(domain_options, 'domain', domain)}">
+          ${domain}
+        </a>
       </span>
+      <span class="filter-sub-item">${o.type.split("/").pop()}</span>
     </acre:block>
     <acre:block elif="o.property">
+      <acre:script>
+        var temp = o.property.split("/");
+        temp.pop();
+        var type = temp.join("/");
+        temp.pop();
+        var domain = temp.join("/");
+        var type_options = h.extend({}, o);
+        delete type_options.property;
+      </acre:script>
       <span class="filter-item">
         <a href="${f.remove_filter_url(o, 'property')}" class="remove-filter">x</a>
-        ${o.property}
+        ${domain}
       </span>
+      <a class="filter-sub-item" href="${f.filter_url(type_options, 'type', type)}">
+        ${type.split("/").pop()}
+      </a>
+      <span class="filter-sub-item">${o.property.split("/").pop()}</span>
     </acre:block>
 
     <acre:block if="show_counts">
@@ -172,9 +198,6 @@
             <acre:script>
               var id = data.id;
               var total = data.total;
-              var incoming = data.incoming;
-              var outgoing = data.outgoing;
-              console.log(total);
               if (o.domain || o.type || o.property) {
                 id = id.split("/").pop();
               }
@@ -188,15 +211,7 @@
                   <span style="width:${total}%" class="index"></span>
                 </span>
               </th>
-              <acre:block if="o.domain || o.type">
-              <td class="value">${incoming}</td>
-              <td class="value">${outgoing}</td>
-              </acre:block>
-              <acre:block else="">
-              <td class="value">
-                ${total}
-              </td>
-              </acre:block>
+              <td class="value">${i18n.format_number(data.t)}</td>
             </tr>
           </acre:block>
         </table>

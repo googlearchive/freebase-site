@@ -1,6 +1,7 @@
 <acre:script>
   var mf = acre.require("MANIFEST").mf;
   var h = mf.require("core", "helpers");
+  var th = mf.require("helpers");
   var f = mf.require("filters");
   var i18n = mf.require("i18n", "i18n");
   var _ = i18n.gettext;
@@ -211,7 +212,7 @@
                   <span style="width:${total}%" class="index"></span>
                 </span>
               </th>
-              <td class="value">${i18n.format_number(data.t)}</td>
+              <td class="value">${th.format_number(data.t)}</td>
             </tr>
           </acre:block>
         </table>

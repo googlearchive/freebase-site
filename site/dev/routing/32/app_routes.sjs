@@ -36,9 +36,9 @@ var routes = [
   {from: "/app/queryeditor",   to: "/queryeditor", redirect: 301},
   {from: "/tools/queryeditor", to: "/queryeditor", redirect: 301},
   {from: "/app/tmt",           to: "tmt"},
-  {from: "/triples",           to: "triples"},
-  {from: "/tools/explore",     to: "/triples", redirect: 301},
-  {from: "/tools/explore2",    to: "/triples", redirect: 301} // old explore2 just uses the new triples
+  {from: "/inspect",           to: "triples"},
+  {from: "/tools/explore",     to: "/inspect", redirect: 301},
+  {from: "/tools/explore2",    to: "/inspect", redirect: 301} // old explore2 just uses the new triples
 ];
 
 /**

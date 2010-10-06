@@ -2,7 +2,7 @@
  * everything should go under the freebase namespace.
  */
 window.freebase = window.fb = {mwLWTReloading: false};
-if (SERVER && SERVER.acre) {
+if (typeof SERVER === "object" && SERVER.acre) {
 	window.fb.acre = SERVER.acre;
 }
 

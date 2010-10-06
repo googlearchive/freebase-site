@@ -1,0 +1,101 @@
+body {
+    overflow: hidden;
+}
+
+#links {
+    float: right;
+    margin: 1em;
+}
+
+h1.page-title {
+    border-bottom: none;
+    padding-top: 0.5em;
+    padding-left: 80px;
+}
+
+#nav-footer {
+    padding-bottom: 1.4em;
+}
+#footer {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+}
+
+#body {
+    font-size: 120%;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+}
+
+#body-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#the-query-editor {
+    overflow: hidden;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+#the-control-pane {
+    overflow: hidden;
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+}
+#the-output-pane {
+    overflow: hidden;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+#the-splitter {
+    position: absolute;
+    background: url(splitter.png) center no-repeat;
+    cursor: pointer;
+}
+
+#left-column {
+    padding-right: 10px;
+    vertical-align: top;
+}
+#right-column {
+    padding-left: 10px;
+    vertical-align: top;
+}
+
+div.cuecard-popup-container {
+    font-size: 120%;
+}
+
+#starting-message-container {
+  position: absolute;
+  top: 0px;
+  left: 40%;
+  width: 20%;
+}
+
+#starting-message {
+  padding: 1em;
+  background: #ffffe0;
+  border: 1px solid #ddd;
+  border-top: none;
+  text-align: left;
+  font-size: 120%;
+  width: 20em;
+}
+
+#header {
+  background: #FFFFFF url(img_sprite_1px_vert) repeat-x scroll left -1050px
+}
+
+.tab { display: block; float: left; margin-right: 5px; padding: 5px 11px; background: #e8f5f9; color: #1170a3;
+    border: 1px solid #61d7f7; border-bottom: none; position: relative; top: 0px; }
+.ui-tabs-selected { background: #fff; z-index: 10; padding-bottom: 6px; border: 1px solid #ccc; border-bottom: none; }
+.ui-tabs-hide { display: none; }

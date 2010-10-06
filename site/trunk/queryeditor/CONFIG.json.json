@@ -1,0 +1,19 @@
+{
+  "apps": {
+    "core": "//core.site.freebase.dev"
+  },
+  "stylesheet": {
+    "queryeditor.mf.css": [
+    	["template", "freebase.mf.css"],
+			"index.css"
+    ]
+  },
+  "javascript": {
+    "queryeditor.mf.js": [
+      ["template", "freebase.mf.js"],
+      ["jqueryui", "jquery.ui.tabs.js"],
+    	"json2.js",
+    	"index.js",
+    ]
+  }
+}

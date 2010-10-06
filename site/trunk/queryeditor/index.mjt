@@ -1,0 +1,110 @@
+<html>
+	<acre:script>
+		var mf = acre.require("MANIFEST").mf;
+	  var h = mf.require("core", "helpers");
+  	var i18n = mf.require("i18n", "i18n");
+  	
+  	var codemirror_mf = mf.require("codemirror", "MANIFEST").mf;
+  	var cuecard_mf = mf.require("cuecard", "MANIFEST").mf;
+  		  
+  	var SERVER = {
+	    acre: {
+	    	host : acre.host,
+	      freebase: {
+	        service_url: acre.freebase.service_url,
+	        site_host: (acre.request.server_name.match(/^ae\./) ? (acre.freebase.site_host.replace(/http:\/\/(www\.)?/, "http://devel.") + ":" + acre.host.port) : acre.freebase.site_host)
+	      },
+	      request: {
+	        app_url: acre.request.app_url,
+	        base_path: acre.request.base_path,
+	        cookies: acre.request.cookies
+	      },
+	      lang: {
+	        mql: i18n.lang,
+	        bundle: i18n.bundle_path ? "\"" + i18n.bundle_path + "\"" : "null"
+	      }
+	    }
+	  };
+	</acre:script>
+  <head>
+    <title>Query Editor - Freebase</title>
+    
+    <link rel="stylesheet" type="text/css" href="${cuecard_mf.css_src('cuecard.mf.css')}" />
+    <link rel="stylesheet" type="text/css" href="${mf.css_src('queryeditor.mf.css')}" />
+		
+    <script>
+    	var SERVER = ${JSON.stringify(SERVER, null, 2)};
+		</script>
+    <script src="${mf.lib_base_url('jquery')}/jquery.min.js"></script>
+	  <script src="${mf.lib_base_url('suggest')}/suggest.min.js"></script>
+	  <script src="${codemirror_mf.js_src('codemirror.mf.js')}"></script>
+	  <script src="${cuecard_mf.js_src('cuecard.mf.js')}"></script>
+		<script src="${mf.js_src('queryeditor.mf.js')}"></script>
+    
+    <acre:block if="acre.environ.request_method == 'POST'">
+      <script>var initialQuery = ${JSON.stringify(acre.environ.body_params['q'])};</script>
+    </acre:block>
+  </head>
+  <body onload="onLoad();" onresize="onResize();">
+    
+    <div class="clear" id="header"> 
+      <div id="logo"> 
+        <a href="${acre.freebase.service_url}/" title="Return to Freebase homepage"> 
+          <img alt="Freebase logo" src="http://acre.freebase.com/img/logo-freebase.png">
+        </a> 
+      </div><!-- #logo --> 
+      
+      <div id="links">
+        <a href="${h.url_for('about')}" target="_blank">about</a> &bull;
+        <a href="javascript:refreshCache()">refresh cache</a> &bull;
+        <a href="javascript:{}" onmouseover="computeMqlReadLink(this);" target="_blank">mqlread</a> &bull;
+        <a href="javascript:{}" onmouseover="computeCompactLink(this);" target="_blank">permanent link</a>
+        <button onclick="computeTinyCompactLink();" title="Click to get tiny URL">tinyurl</button> &bull;
+         
+        <acre:script>
+          var user = acre.freebase.get_user_info();
+          var return_url = encodeURIComponent(acre.environ.request_url);
+        </acre:script>
+        <span acre:if="user">
+          Signed in as: <a href="${acre.freebase.service_url}/view$user.id">$user.username</a> |
+          <a href="/api/account/logout?mw_cookie_scope=domain&amp;onsucceed=$return_url">Sign Out</a>
+        </span>
+        <span acre:else=""><a href="/signin/login?mw_cookie_scope=domain&amp;onsignin=$return_url">Sign In</a></span>
+      </div>
+      
+      <h1 class="page-title" title="Freebase Query Editor">Query Editor</h1> 
+    </div><!-- #header --> 
+  
+    <div id="body"><div id="body-inner">
+      <div id="the-query-editor"></div>
+      <div id="the-splitter">&nbsp;</div>
+      <div id="the-control-pane" style="display: block;"></div>
+      <div id="the-output-pane"></div>
+    </div></div>
+    
+    <div id="starting-message-container"><center>
+      <div id="starting-message">
+        <a href="javascript:closeStartingMessage();" style="float: right;">Close</a>
+        Don't know where to start?<br/>
+        <a href="${h.url_for('about')}">Watch this screencast here</a>.
+      </div>
+    </center></div>
+    
+    <!-- Standard Freebase Footer --> 
+    <div class="clear" id="footer"> 
+      <div id="metaweb-attribution"> 
+        <span id="copyright">© 2010 Metaweb Technologies, Inc.</span> 
+        <a href="http://www.metaweb.com/" rel="nofollow" title="Learn more about Metaweb Technologies, Inc."> 
+          <img alt="Freebase: Powered by Metaweb logo" height="12" width="71" src="http://www.freebase.com/resources/images/chrome/metaweb-logo.png"> 
+        </a> 
+      </div> 
+      <ul class="clear" id="nav-footer"> 
+        <li class="nav-footer-item"><a href="${acre.freebase.site_host}/site/feedback" id="site-feedback" rel="nofollow" title="Send us your feedback">Feedback</a></li> 
+        <li class="nav-footer-item"><a href="${acre.freebase.site_host}/signin/licensing" rel="nofollow" title="View the Freebase Licensing Policy">Policies</a></li> 
+        <li class="nav-footer-item"><a href="http://www.metaweb.com/about/" rel="nofollow" title="Learn more about Metaweb">About Us</a></li> 
+        <li class="nav-footer-item"><a href="http://www.metaweb.com/jobs/" rel="nofollow" title="Come join us at Metaweb">Jobs</a></li> 
+        <li class="nav-footer-item"><a href="http://blog.freebase.com/" rel="nofollow" title="Visit our blog to keep up with the latest news from Freebase">Freebase Blog</a></li> 
+      </ul> 
+    </div>
+  </body>
+</html>

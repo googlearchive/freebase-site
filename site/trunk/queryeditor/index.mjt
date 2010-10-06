@@ -3,8 +3,6 @@
 		var mf = acre.require("MANIFEST").mf;
 	  var h = mf.require("core", "helpers");
   	var i18n = mf.require("i18n", "i18n");
-  	
-  	var codemirror_mf = mf.require("codemirror", "MANIFEST").mf;
   	var cuecard_mf = mf.require("cuecard", "MANIFEST").mf;
   		  
   	var SERVER = {
@@ -29,7 +27,7 @@
   <head>
     <title>Query Editor - Freebase</title>
     
-    <link rel="stylesheet" type="text/css" href="${cuecard_mf.css_src('cuecard.mf.css')}" />
+    <link rel="stylesheet" type="text/css" href="${cuecard_mf.css_src('editor-bundle.mf.css')}" />
     <link rel="stylesheet" type="text/css" href="${mf.css_src('queryeditor.mf.css')}" />
 		
     <script>
@@ -37,8 +35,7 @@
 		</script>
     <script src="${mf.lib_base_url('jquery')}/jquery.min.js"></script>
 	  <script src="${mf.lib_base_url('suggest')}/suggest.min.js"></script>
-	  <script src="${codemirror_mf.js_src('codemirror.mf.js')}"></script>
-	  <script src="${cuecard_mf.js_src('cuecard.mf.js')}"></script>
+	  <script src="${cuecard_mf.js_src('editor-bundle.mf.js')}"></script>
 		<script src="${mf.js_src('queryeditor.mf.js')}"></script>
     
     <acre:block if="acre.environ.request_method == 'POST'">

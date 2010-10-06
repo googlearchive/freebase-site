@@ -10,8 +10,10 @@
     	"suggestion.css",
     	"output-pane.css",
     	"control-pane.css",
-    	"example-dialog.css",
-    	"codemirror-jscolors.css"
+    	"example-dialog.css"
+    ],
+    "editor-bundle.mf.css": [
+    	"cuecard.mf.css"
     ]
   },
   "javascript": {
@@ -39,6 +41,10 @@
       "examples.js",
       "languages.js",
       "x-metaweb-costs.js"
+    ],
+    "editor-bundle.mf.js": [
+    	["codemirror", "codemirror.mf.js"],
+    	"cuecard.mf.js"
     ]
   }
 }

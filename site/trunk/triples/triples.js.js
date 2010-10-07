@@ -90,11 +90,29 @@
 
     init: function() {
 
+      // slider for controlling property limit
       var $limit_slider = $("#limit-slider");
       var $current_limit = $(".current-limit");
       var $input = $limit_slider.siblings("input[name=limit]");
+      var slider_value = 100;
+
+      // get current url params
+      var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+      var current_url = window.location.href.split("?");
+
+      // if we have url params, check if one of them is limit
+      if(current_url != hashes[0]) {
+        var count = hashes.length;
+        for(var i=0; i < count; i++) {
+          param = hashes[i].split("=");
+          if(param[0] === "limit") {
+            var slider_value = param[1];
+          }
+        }
+      }
+      
       $limit_slider.slider({
-        value: 100,
+        value: slider_value,
         min: 1,
         max: 1000,
         step: 10,

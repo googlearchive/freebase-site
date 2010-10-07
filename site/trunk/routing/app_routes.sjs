@@ -5,7 +5,7 @@
   3. If you are ever taking away a url for a user-facing app then you
      must provide a legacy redirect to an appropriate page.
  */
-console.log("acre", acre);
+
 var router = acre.require("router");
 var rules = new router.PrefixRouter();
 

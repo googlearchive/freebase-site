@@ -46,6 +46,20 @@
         </span>
       </acre:block>
       <li>
+        <acre:block if="o.as_of_time">
+        <span class="filter-item">
+          <a href="${f.remove_filter_url(o, 'as_of_time')}" class="remove-filter">x</a>
+          ${o.as_of_time}
+        </span>
+        <a class="filter-form-trigger" href="javascript:void(0);">${_("change")}&hellip;</a>
+        </acre:block>
+        <a acre:else="" href="javascript:void(0);" class="filter-form-trigger">as of&hellip;</a>
+        <div class="filter-form" style="display:none;"> 
+          ${filter_form(o, 'as_of_time', null, 'timestamp')}
+        </div>
+        </acre:block>
+      </li>
+      <li>
         <a class="filter-form-trigger" href="javascript:void(0)">${change ? _("change"): _("custom")}&hellip;</a>
         <div class="filter-form" style="display:none;">
           ${filter_form(o, 'timestamp', timestamp_inputs)}
@@ -76,32 +90,7 @@
 
   <div class="filter-group">
     <h2 class="filter-title">${_("Limit")}:</h2>
-    <span class="filter-item">
-      <a acre:if="limit != f.LIMIT" href="${f.remove_filter_url(o, 'limit')}" class="remove-filter">x</a>
-      ${i18n.format_number(limit)}
-      <a href="${f.filter_url(o, 'limit', limit*2)}" title="${i18n.format_number(limit*2)}"><strong>&uarr;</strong></a>
-    </span>
-    <a class="filter-form-trigger" href="javascript:void(0);">${_("change")}&hellip;</a>
-    <div class="filter-form" style="display:none;">
-       ${filter_form(o, 'limit', null, 'Default is 100')}
-    </div>
-    </acre:block>
-  </div>
-
-
-  <div class="filter-group">
-    <h2 class="filter-title">${_("As of Time")}:</h2>
-    <acre:block if="o.as_of_time">
-      <span class="filter-item">
-        <a href="${f.remove_filter_url(o, 'as_of_time')}" class="remove-filter">x</a>
-        ${o.as_of_time}
-      </span>
-      <a class="filter-form-trigger" href="javascript:void(0);">${_("change")}&hellip;</a>
-    </acre:block>
-    <div class="filter-form" acre:attrs="o.as_of_time ? {style:'display:none;'} : {}">
-       ${filter_form(o, 'as_of_time', null, 'timestamp')}
-    </div>
-    </acre:block>
+    ${filter_form(o, 'limit', limit_slider)}
   </div>
 
   <div class="filter-group">
@@ -142,13 +131,19 @@
       </acre:block>
     </acre:block>
     <acre:block if="def">
-      ${def()}
+      ${def(filter_options[filter_key])}
     </acre:block>
     <acre:block else="">
       <input type="text" class="text-input" name="${filter_key}" acre:attrs="placeholder ? {placeholder:placeholder}: {}"/>
     </acre:block>
     <button type="submit" style="display:none;">submit</button>
   </form>
+</acre:block>
+
+<acre:block def="limit_slider(limit)">
+  <input type="hidden" name="limit" value="${i18n.format_number(limit)}" />
+  <span class="current-limit">${i18n.format_number(limit)}</span>
+  <div id="limit-slider"></div>
 </acre:block>
 
 <acre:block def="timestamp_inputs()">  
@@ -164,7 +159,7 @@
     var show_counts = !o.timestamp && !o.creator && !o.as_of_time && prop_counts;
    var show_filter = o.domain || o.type || o.property || show_counts;
   </acre:script>
-  <div acre:if="show_filter" class="filter-group">
+  <div acre:if="show_filter" class="filter-group filter-chart">
     <h2 class="filter-title" acre:if="o.domain">${_("By Type")}:</h2>
     <h2 class="filter-title" acre:elif="o.type">${_("By Property")}:</h2>
     <h2 class="filter-title" acre:elif="o.property">${_("By Total")}:</h2>
@@ -177,10 +172,11 @@
     </acre:block>
     <acre:block elif="o.type">     
       <acre:script>
-        var temp = o.type.split("/");
-        temp.pop();
-        var domain = temp.join("/");
+        var path = o.type.split("/");
+        path.pop();
+        var domain = path.join("/");
         var domain_options = h.extend({}, o);
+        console.log(domain_options);
         delete domain_options.type;
       </acre:script>
       <span class="filter-item">
@@ -193,22 +189,25 @@
     </acre:block>
     <acre:block elif="o.property">
       <acre:script>
-        var temp = o.property.split("/");
-        temp.pop();
-        var type = temp.join("/");
-        temp.pop();
-        var domain = temp.join("/");
+        var path = o.property.split("/");
+        path.pop();
+        var type = path.join("/");
+        path.pop();
+        var domain = path.join("/");
         var type_options = h.extend({}, o);
+        console.log(type_options);
         delete type_options.property;
       </acre:script>
       <span class="filter-item">
         <a href="${f.remove_filter_url(o, 'property')}" class="remove-filter">x</a>
-        ${domain}
+        <a href="${f.filter_url(type_options, 'domain', domain)}">
+          ${domain}
+        </a>
       </span>
       <a class="filter-sub-item" href="${f.filter_url(type_options, 'type', type)}">
         ${type.split("/").pop()}
       </a>
-      <span class="filter-sub-item">${o.property.split("/").pop()}</span>
+      <span class="filter-sub-sub-item">${o.property.split("/").pop()}</span>
     </acre:block>
 
     <acre:block if="show_counts">

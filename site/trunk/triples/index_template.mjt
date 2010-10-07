@@ -104,7 +104,8 @@
 
   <div id="content-wrapper">
     <div id="content-main" role="main" acre:attrs="c.filters.history ? {'class':'history'} : {}">
-      <div class="section" id="section-names-keys">
+      <h2 acre:if="(c.names_aliases && c.names_aliases.length) && (c.keys && c.keys.length) && (c.incoming && !c.incoming.length) && (c.outgoing && !c.outgoing.length) && (c.typelinks && !c.typelinks.length)" class="table-title">Your filter criteria did not return any results. Try widening your serach.</h2>
+      <div acre:if="c.names_aliases && c.names_aliases.length" class="section" id="section-names-keys">
         <acre:block if="c.names_aliases && c.names_aliases.length">
           <h2 class="table-title"><a name="names_aliases">${_("Names & Aliases")} (${i18n.format_number(c.names_aliases.length)})</a></h2>
           <table class="table table-sortable">

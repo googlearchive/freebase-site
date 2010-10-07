@@ -20,7 +20,9 @@
       ["template", "freebase.mf.js"],
       ["jquerytools", "tooltip.js"],
       ["jqueryui", "jquery.effects.core.js"],
+      ["jqueryui", "jquery.ui.core.js"],
       ["jqueryui", "jquery.effects.highlight.js"],
+      ["jqueryui", "jquery.ui.slider.js"],
       "triples.js"
     ]
   }

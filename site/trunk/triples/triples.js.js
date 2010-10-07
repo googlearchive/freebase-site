@@ -90,6 +90,29 @@
 
     init: function() {
 
+      var $limit_slider = $("#limit-slider");
+      var $current_limit = $(".current-limit");
+      var $input = $limit_slider.siblings("input[name=limit]");
+      $limit_slider.slider({
+        value: 100,
+        min: 1,
+        max: 1000,
+        step: 10,
+        slide: function(e, ui) {
+          $current_limit.html(ui.value);
+        },
+        stop: function(e, ui) {
+          $input.val(ui.value);
+          $limit_slider.parents("form:first").submit();
+        }
+      });
+
+      // Because the filter menu is absolutely/fixed positioned
+      // we need to insure the content container is at least the
+      // same height as the menu
+      var target_height = $("#content-sub").height() + $("#page-footer").height();
+      $("#content-main").css({"min-height": target_height});
+
       /*
       **************************************************
       ** Update in-page navgiation menu               **

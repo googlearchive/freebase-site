@@ -43,6 +43,10 @@
   border-bottom: 1px solid #ddd;
 }
 
+.filter-chart .filter-item {
+  margin-bottom: 5px;
+}
+
 .filter-title {
   font-weight: bold;
   font-size: 12px;
@@ -101,9 +105,17 @@
   .rounded_corners(3px);
 }
 
-.filter-sub-item {
+.filter-sub-item,
+.filter-sub-sub-item {
   display: block;
-  padding-left: 20px;
+  margin: 5px 0;
+  font-size: 11px;
+  padding-left: 25px;
+  background: url(filter-level-indicator.png) no-repeat 5px 0;
+}
+
+.filter-sub-sub-item {
+  margin-left: 20px;
 }
 
 a.remove-filter {
@@ -179,3 +191,22 @@ tr.invalid td {
 .history tr.valid td {
     background-color: #CCFFCC;
 }**/
+
+
+
+#limit-slider {
+  width: 100%;
+  position: relative;
+  height: 20px;
+  background: #ececec;
+  border: 1px solid ccc;
+}
+
+.ui-slider-handle {
+  position: absolute;
+  display: block;
+  width: 10px;
+  height: 20px;
+  background: #f8f8f8;
+  border: 1px solid #aaa;
+}

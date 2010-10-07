@@ -1,4 +1,8 @@
-<!-- MAIN PAGE TEMPLATES -->
+<acre:script>
+	var mf = acre.require("MANIFEST").mf;
+  var h = mf.require("core", "helpers");
+	var i18n = mf.require("i18n", "i18n");
+</acre:script>
 
 <!-- called by ui.init -->
 <div mjt.def="body()">
@@ -15,51 +19,51 @@
   <span mjt.script="ondomready">
     var flw = parseInt(ui.get_editor_prefs('flw'));
     
-    $(window).resize(function(){
-      $('#list-column').width(flw);
-      $('#file-margin').css('left', flw);
-      $('#file-column').css('left', flw + $('#file-margin').width());
+    $$(window).resize(function(){
+      $$('#list-column').width(flw);
+      $$('#file-margin').css('left', flw);
+      $$('#file-column').css('left', flw + $$('#file-margin').width());
       
-      var fixer = $('#fixer');
+      var fixer = $$('#fixer');
       var fixerOffset = fixer.offset();
-      var filecolumn_offset = $('#file-column').offset();
+      var filecolumn_offset = $$('#file-column').offset();
       var filecolumn_height = 
-          Math.max(fixerOffset.top + fixer[0].offsetHeight, $(window).height()) - 
-          Math.max(filecolumn_offset.top, $('#header').height()+1);
+          Math.max(fixerOffset.top + fixer[0].offsetHeight, $$(window).height()) - 
+          Math.max(filecolumn_offset.top, $$('#header').height()+1);
       var filecolumn_width  = 
-          Math.max(fixerOffset.left + fixer[0].offsetWidth, $(window).width()) - 
+          Math.max(fixerOffset.left + fixer[0].offsetWidth, $$(window).width()) - 
           filecolumn_offset.left;
-      var filearea_offset = $('#file-area').offset();
+      var filearea_offset = $$('#file-area').offset();
       var filearea_height = 
-          Math.max(fixerOffset.top + fixer[0].offsetHeight, $(window).height()) - 
+          Math.max(fixerOffset.top + fixer[0].offsetHeight, $$(window).height()) - 
           filearea_offset.top;
           
-      $('.row').width( filecolumn_width );
-      $('.column').height( filecolumn_height - 1 );
-      $('#file-area').height( filearea_height - 1 );
-      $('#file-list').height( filearea_height - $('#app-search').height() - $('#app-edits').height() );
-      $('.refresh-right').show();
+      $$('.row').width( filecolumn_width );
+      $$('.column').height( filecolumn_height - 1 );
+      $$('#file-area').height( filearea_height - 1 );
+      $$('#file-list').height( filearea_height - $$('#app-search').height() - $$('#app-edits').height() );
+      $$('.refresh-right').show();
       if (ui.dialog) {
-        ui.dialog.css('left', ($(window).width() - ui.dialog.outerWidth())/2);
+        ui.dialog.css('left', ($$(window).width() - ui.dialog.outerWidth())/2);
       }
     });
     
-    $('#file-margin').draggable({ 
+    $$('#file-margin').draggable({ 
       axis: 'x',
       iframeFix: true,
       containment: [125,,400,],
       drag : function(event, jqui) {
-        flw = $('#file-margin').offset().left;
-        $(window).trigger('resize');            
+        flw = $$('#file-margin').offset().left;
+        $$(window).trigger('resize');            
       },
       stop : function(event, jqui) {
-        flw = $('#file-margin').offset().left;
+        flw = $$('#file-margin').offset().left;
         ui.set_editor_prefs({flw: flw});
-        $(window).trigger('resize');            
+        $$(window).trigger('resize');            
       }
     });
     
-    $('#file-area').click(ui.do_click_error);
+    $$('#file-area').click(ui.do_click_error);
   </span>
 </div>
 
@@ -75,7 +79,7 @@
   </p>
   <p mjt.elif="state == 'loading'"><span class="app-name">Loading...</span></p>
   <div mjt.else="" id="button-appsettings" class="app-name" mjt.onclick="ui.do_show_menu('appsettings')">
-    <p><span class="button-menu">${app.get_display_name()}</span></p>
+    <p><span class="button-menu">$${app.get_display_name()}</span></p>
   </div>
 </div>
 
@@ -98,7 +102,7 @@
   </span>
   <div id="about-bar-left" class="column left">
       <span mjt.if="version">
-        Version $version
+        Version $$version
       </span>
       <span mjt.else="">
         <span mjt.script="">version = "Current";</span>
@@ -108,7 +112,7 @@
   <div id="about-bar-margin" class="column margin"> </div>
   <div id="about-bar-middle" class="column row">
     <div mjt.if="is_remote">
-      <h2><em>This app is hosted on ${app.get_acre_host()}</em></h2>
+      <h2><em>This app is hosted on $${app.get_acre_host()}</em></h2>
     </div>
     <div mjt.elif="is_author">
       <button id="button-trunk" class="button-primary" mjt.onclick="ui.do_choose_app(ui.get_app().get_path())">
@@ -121,15 +125,15 @@
       <button id="button-clone" class="button-primary" mjt.attrs="user?{}:{'disabled':'disabled'}" mjt.onclick="ui.do_show_dialog('new_app', [true])" >
         Clone this App</button> 
         <span mjt.if="!user">
-          <a href="${$('#nav-signin').attr('href')}" title="Sign in to your Freebase account">Sign in</a>
+          <a href="$${$$('#nav-signin').attr('href')}" title="Sign in to your Freebase account">Sign in</a>
         </span> 
         to make an app based on this one!
     </div>
     <div id="about-bar-right" class="refresh-right">
       <span mjt.if="versions.length"><b>
         Versions:
-        <a mjt.if="ppath &amp;&amp; ppath != vpath" class="app-link" apppath="$ppath" href="${ui.get_appeditor_url(ppath)}">Release</a>
-        <a mjt.if="version &amp;&amp; version != 'Current'" class="app-link" apppath="$path" href="${ui.get_appeditor_url(path)}">Current</a>
+        <a mjt.if="ppath &amp;&amp; ppath != vpath" class="app-link" apppath="$$ppath" href="$${ui.get_appeditor_url(ppath)}">Release</a>
+        <a mjt.if="version &amp;&amp; version != 'Current'" class="app-link" apppath="$$path" href="$${ui.get_appeditor_url(path)}">Current</a>
         <a mjt.if="num > 0" href="#0" mjt.onclick="return ui.do_show_menu('appsettings',['general'])">more...</a>
       </b></span>
     </div>
@@ -143,13 +147,13 @@
   
   <div id="file-list"></div>
   <div id="app-edits-shim">
-    ${app_edits()}
+    $${app_edits()}
   </div>
   
   <div id="app-search">
-    <form id="codesearch-form" action="http://codesearch.${ui.get_app().get_acre_host()}/" target="_blank">
+    <form id="codesearch-form" action="http://codesearch.$${ui.get_app().get_acre_host()}/" target="_blank">
       <div class="file-list-section-title">Find code in app:</div>
-      <input id='codesearch-app' type='hidden' name="app" value='${ui.get_app().get_path()}' />
+      <input id='codesearch-app' type='hidden' name="app" value='$${ui.get_app().get_path()}' />
       <input type="text" name="q" value=""/>
     </form>
   </div>
@@ -167,7 +171,7 @@
       <div class="content">
         <span class="file-list-section-title">Active Author: </span>
         <span class="change">
-          $change.attribution.name edited '${mjt.freebase.mqlkey_unquote(change.file)}' ${ui.get_relative_timestamp(change.timestamp)}
+          $$change.attribution.name edited '$${mjt.freebase.mqlkey_unquote(change.file)}' $${ui.get_relative_timestamp(change.timestamp)}
         </span>
       </div>
     </div>
@@ -176,18 +180,18 @@
 <!-- called by ui.refresh_file_templates -->  
 <div mjt.def="file_list()">
   <div mjt.def="filelist_section(section_key, section_name, app, filenames, link)">
-    <ul section="$section_key">
+    <ul section="$$section_key">
       <li mjt.if="filenames" class="file-list-section-header">
-        <span class="file-list-section-toggle" section="$section_key" mjt.if="ui.get_editor_prefs('t_'+section_key)">&#9660;</span>
-        <span class="file-list-section-toggle" section="$section_key" mjt.else="">&#9658;</span>
+        <span class="file-list-section-toggle" section="$$section_key" mjt.if="ui.get_editor_prefs('t_'+section_key)">&#9660;</span>
+        <span class="file-list-section-toggle" section="$$section_key" mjt.else="">&#9658;</span>
         <a mjt.if="link" class="file-list-section-title app-link" 
-          apppath="${app.get_path()}" href="${ui.get_appeditor_url(app.get_path())}">$section_name</a>
-        <span mjt.else="" class="file-list-section-title">$section_name</span>
+          apppath="$${app.get_path()}" href="$${ui.get_appeditor_url(app.get_path())}">$$section_name</a>
+        <span mjt.else="" class="file-list-section-title">$$section_name</span>
       </li>
       <li mjt.if="filenames" mjt.for="filename in filenames" 
           mjt.attrs="{'class': make_file_classes(app.get_file(filename), section_key), 'fname' : app.get_file(filename).get_relative_path()}" >
           <div class="file-delete" mjt.attrs="app.is_writable() ? {'class':'file-delete'} : {'class':'file-nodelete'}" mjt.onclick="ui.do_show_dialog('delete_file', [filename])"></div>
-          <a href="${ui.get_appeditor_url(app.get_file(filename))}">$filename</a>
+          <a href="$${ui.get_appeditor_url(app.get_file(filename))}">$$filename</a>
       </li>
     </ul>
  </div>
@@ -207,31 +211,31 @@
   </span>
 
   <div mjt.for="handler_key, handler in ui.get_store().get_acre_handlers()" >
-    ${filelist_section( handler_key, handler.plural_name, app, ordered_filenames[handler_key])}
+    $${filelist_section( handler_key, handler.plural_name, app, ordered_filenames[handler_key])}
   </div>
   <div mjt.if="ordered_filenames['test'] &amp;&amp; ordered_filenames['test'].length">
-    ${filelist_section("test", "Tests", app, ordered_filenames["test"])}
+    $${filelist_section("test", "Tests", app, ordered_filenames["test"])}
   </div>
   
   <span mjt.script="ondomready">            
-    $('.file-list-section-toggle').click(function(e){
-      var section = $(this).attr("section");
-      if ($(this).text() == "&#9660;") {
-        $(this).text("&#9658;");
+    $$('.file-list-section-toggle').click(function(e){
+      var section = $$(this).attr("section");
+      if ($$(this).text() == "&#9660;") {
+        $$(this).text("&#9658;");
         ui.set_editor_prefs("t_"+section, false);
-        $("ul[section='"+section+"'] .file-list-item").addClass('hidden-file');
+        $$("ul[section='"+section+"'] .file-list-item").addClass('hidden-file');
       } else {
-        $(this).text("&#9660;");
+        $$(this).text("&#9660;");
         ui.set_editor_prefs("t_"+section, true);
-        $("ul[section='"+section+"'] .file-list-item").removeClass('hidden-file');
+        $$("ul[section='"+section+"'] .file-list-item").removeClass('hidden-file');
       }
     });
     
-    $('#file-list .file-list-item').click(function(e){
+    $$('#file-list .file-list-item').click(function(e){
       if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
         /* default browser behaviour = open link in new tab */
       } else {
-        var new_name = $(this).attr("fname");
+        var new_name = $$(this).attr("fname");
         ui.do_choose_file(new_name);
         return false;
       }
@@ -249,22 +253,22 @@
     var opts = file ? file.get_editor_supported_features() : false;
     var show_opts = opts.margin || opts.softwrap || opts.hotswap || opts.emql;
     
-    var fileactions_open = $('#button-fileactions').hasClass('button-open');
-    var editoroptions_open = $('#button-editoroptions').hasClass('button-open');
+    var fileactions_open = $$('#button-fileactions').hasClass('button-open');
+    var editoroptions_open = $$('#button-editoroptions').hasClass('button-open');
   </span>
     <div id="file-buttons">
       <div mjt.if="file">
       <div id="file-buttons-right" class="refresh-right">
-        <button id="button-view" mjt.onclick="ui.do_run_view(null, false);" title="${mjt.bless(ui.shortcut.get_keys('View'))}"
+        <button id="button-view" mjt.onclick="ui.do_run_view(null, false);" title="$${mjt.bless(ui.shortcut.get_keys('View'))}"
           mjt.attrs="file.get_editor_supported_features('inline_preview')?{'disabled':'disabled'}:{}">
           View</button>
-        <button id="button-preview" class="button-primary" mjt.onclick="ui.do_run_view(null, true);"  title="${mjt.bless(ui.shortcut.get_keys('View with Console'))}"
+        <button id="button-preview" class="button-primary" mjt.onclick="ui.do_run_view(null, true);"  title="$${mjt.bless(ui.shortcut.get_keys('View with Console'))}"
           mjt.attrs="file.get_editor_supported_features('inline_preview')?{'disabled':'disabled'}:{}">
           View with Console</button>
       </div>
       <span class="buttonset">
         <button id="button-save" class="button-left button-primary" mjt.onclick="ui.do_file_save()"
-          mjt.attrs="file.is_dirty()?{}:{'disabled':'disabled'}" title="${mjt.bless(ui.shortcut.get_keys('Save File'))}">
+          mjt.attrs="file.is_dirty()?{}:{'disabled':'disabled'}" title="$${mjt.bless(ui.shortcut.get_keys('Save File'))}">
           Save
         </button><button id="button-saveall" class="button-middle" mjt.onclick=" ui.do_app_save_all()" 
           mjt.attrs="app.is_dirty()?{}:{'disabled':'disabled'}">
@@ -273,12 +277,12 @@
           mjt.attrs="!ui.get_user()||file.get_acre_handler()=='binary'?{'disabled':'disabled'}:{}">
           Save As</button>
         <button id="button-undo" class="button-left" mjt.attrs="ui._has_undos?{}:{'disabled':'disabled'}"
-          mjt.onclick="ui.do_file_editor_undo()"  title="${mjt.bless(ui.shortcut.get_keys('Undo'))}">
+          mjt.onclick="ui.do_file_editor_undo()"  title="$${mjt.bless(ui.shortcut.get_keys('Undo'))}">
           Undo
         </button><button id="button-redo" class="button-right" mjt.attrs="ui._has_redos?{}:{'disabled':'disabled'}"
-          mjt.onclick="ui.do_file_editor_redo()"  title="${mjt.bless(ui.shortcut.get_keys('Redo'))}">
+          mjt.onclick="ui.do_file_editor_redo()"  title="$${mjt.bless(ui.shortcut.get_keys('Redo'))}">
           Redo</button>
-        <button id="button-indent" mjt.onclick="ui.do_file_editor_indent()" title="${mjt.bless(ui.shortcut.get_keys('Indent Selection'))}"
+        <button id="button-indent" mjt.onclick="ui.do_file_editor_indent()" title="$${mjt.bless(ui.shortcut.get_keys('Indent Selection'))}"
           mjt.attrs="file.get_editor_supported_features('indent')&amp;&amp;writable?{}:{'disabled':'disabled'}">
           Indent
         </button>
@@ -293,14 +297,14 @@
       </span>
       <span class="buttoncount">
         <span class=" buttonset linecount" mjt.if="file.get_editor_supported_features('linenumbers')">
-          Line <input id="linenumber" type="text" class="form-textbox" value="${ui.get_line()||''}" title="${mjt.bless(ui.shortcut.get_keys('Jump to Line'))}" />
+          Line <input id="linenumber" type="text" class="form-textbox" value="$${ui.get_line()||''}" title="$${mjt.bless(ui.shortcut.get_keys('Jump to Line'))}" />
         </span>
       </span>
     </div>
     <span mjt.script="ondomready">
-      $('#linenumber').keypress(function(e){
+      $$('#linenumber').keypress(function(e){
         if (e.which == 13) {
-          var line = parseInt($('#linenumber').val(),10);
+          var line = parseInt($$('#linenumber').val(),10);
           ui.do_file_editor_goto_line(line);
         }
       });
@@ -312,7 +316,7 @@
   <span mjt.script="">
     var writable = ui.get_app().is_writable();
   </span>
-  <button class="button-primary" mjt.onclick="ui.get_file()._current_editor.query_run()" title="${mjt.bless(ui.shortcut.get_keys('View'))}">
+  <button class="button-primary" mjt.onclick="ui.get_file()._current_editor.query_run()" title="$${mjt.bless(ui.shortcut.get_keys('View'))}">
     Run</button>
   <button mjt.onclick="ui.get_file()._current_editor.query_assist()" title="Tab"
     mjt.attrs="writable?{}:{'disabled':'disabled'}">Query Assist</button>
@@ -321,12 +325,12 @@
 </div>
 
 <!-- utilities -->  
-<div mjt.def="message_panel(type, msg, tid)" class="message-$type">
+<div mjt.def="message_panel(type, msg, tid)" class="message-$$type">
   <!--<span id="message-panel-close">x</span>-->
-  <div class="message-icon $type"></div> ${mjt.bless(msg)} 
-  <span class="message-tid">${tid||""}</span>
+  <div class="message-icon $$type"></div> $${mjt.bless(msg)} 
+  <span class="message-tid">$${tid||""}</span>
   <span mjt.script="ondomready">
-    $('#message-panel-close').click(function(){
+    $$('#message-panel-close').click(function(){
       ui.MessagePanel.clear();
     })
 </div>

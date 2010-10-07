@@ -1,3 +1,9 @@
+<acre:script>
+	var mf = acre.require("MANIFEST").mf;
+  var h = mf.require("core", "helpers");
+	var i18n = mf.require("i18n", "i18n");
+</acre:script>
+	
 <!-- Dirty files dialog -->
 <div mjt.def="files_dirty_dialog(new_app)">
   <h3 class="dialog-title">Abandon Changes?</h3>
@@ -18,12 +24,12 @@
 <div mjt.def="welcome_dialog(is_user)">
   <div id="welcome-panel">
     <div class="acre-logo">
-      <img src="logo-acre.png" width="211" height="47" alt="Acre: Open Code for Open Data" border="0" />
+      <img src="${mf.img_src('logo-acre.png')}" width="211" height="47" alt="Acre: Open Code for Open Data" border="0" />
     </div>
     <div>
       <ul mjt.if="is_user">
         <li><em>See what you can build!</em><br />
-          <small>Check out <a href="${ui.get_store().get_freebase_url()}/apps" target="_new" class="exit">the App Directory</a> or <a href="${ui.get_store().get_freebase_url()}/docs/acre" target="_new" class="exit">the documentation</a>.</small>
+          <small>Check out <a href="$${ui.get_store().get_freebase_url()}/apps" target="_new" class="exit">the App Directory</a> or <a href="$${ui.get_store().get_freebase_url()}/docs/acre" target="_new" class="exit">the documentation</a>.</small>
         </li>
         <li><em>Ready to go?</em><br />
           <small><button id="button-newapp" mjt.onclick="ui.do_show_dialog('new_app');">Create a New App</button> <button id="button-yourapps" mjt.onclick="ui.do_show_menu('yourapps');">
@@ -32,11 +38,11 @@
       </ul>
       <ul mjt.else="">  
         <li><em>Create your own Acre app</em><br />
-          <small><a href="${$('#nav-signin').attr('href')}" title="Sign in to your Freebase account">Sign in or Sign Up</a>
+          <small><a href="$${$$('#nav-signin').attr('href')}" title="Sign in to your Freebase account">Sign in or Sign Up</a>
           for Freebase to get started.</small>
         </li>
         <li><em>See what you can build!</em><br />
-          <small>Check out <a href="${ui.get_store().get_freebase_url()}/apps" target="_new" class="exit">the App Directory</a> or <a href="${ui.get_store().get_freebase_url()}/docs/acre" target="_new" class="exit">the documentation</a>.</small>
+          <small>Check out <a href="$${ui.get_store().get_freebase_url()}/apps" target="_new" class="exit">the App Directory</a> or <a href="$${ui.get_store().get_freebase_url()}/docs/acre" target="_new" class="exit">the documentation</a>.</small>
         </li>
       </ul>
     </div>
@@ -60,16 +66,16 @@
           <input name='new-app' id='new-app-clone' type='radio' value="clone" mjt.attrs="clone?{'checked':'checked'}:{}"/>
           <label for="new-app-clone">Clone an existing app</label>
           <span id="new-app-clone-field" mjt.attrs="clone?{}:{'style':'display:none'}">: 
-            <input id="new-app-clone-id" type="text" class="longfield" value="${clone ? ui.get_app().get_path() : '' }"/>
+            <input id="new-app-clone-id" type="text" class="longfield" value="$${clone ? ui.get_app().get_path() : '' }"/>
           </span>
         </div>
         <div class="form-row">
           <label for="new-app-dialog-name">Name your App: </label>
-          <input id="new-app-dialog-name" type="text" maxlength="50" value="$app_name" />
+          <input id="new-app-dialog-name" type="text" maxlength="50" value="$$app_name" />
         </div>
         <div class="form-row wide">
           <label for="new-app-dialog-key">Choose a URL: </label>      
-          <span class="url">http://<input id="new-app-dialog-key" class="shortfield" type="text" size="15" minlength="5" maxlength="20" value="$app_key" />.${ui.get_user().get_new_app_host()}</span>
+          <span class="url">http://<input id="new-app-dialog-key" class="shortfield" type="text" size="15" minlength="5" maxlength="20" value="$$app_key" />.$${ui.get_user().get_new_app_host()}</span>
         </div>
         <div class="form-tip">      
           This URL points to the development version of your code.
@@ -79,7 +85,7 @@
     </fieldset>
 
     <div class="cc-callout">
-      <a class="cc-logo" href="http://creativecommons.org/licenses/BSD/"><img src="cc-bsd.png" alt="CC-BSD" /></a>
+      <a class="cc-logo" href="http://creativecommons.org/licenses/BSD/"><img src="${mf.img_src('cc-bsd.png')}" alt="CC-BSD" /></a>
       <div class="cc-about">
         All Acre apps are published on Freebase under the
         <a href="http://creativecommons.org/licenses/BSD/">BSD license</a>
@@ -93,25 +99,25 @@
     <button class="exit">Cancel</button>
   </div>
   <span mjt.script="ondomready">
-    $('#new-app-dialog-name').focus().select();
+    $$('#new-app-dialog-name').focus().select();
   
-    $("#dialog-new_app input[name='new-app']").change(function(){
-      $('#new-app-clone-field').toggle();
+    $$("#dialog-new_app input[name='new-app']").change(function(){
+      $$('#new-app-clone-field').toggle();
     });
   
-    $("#new-app-clone-id")
+    $$("#new-app-clone-id")
         .suggest({ type: '/freebase/apps/acre_app' })
         .bind("fb-select", function(e, data) {
-            $(this).val(ui.id_to_path(data.id));
+            $$(this).val(ui.id_to_path(data.id));
         });
   
-    $('#button-new-app').click(function(){
+    $$('#button-new-app').click(function(){
       var args  = [
-        ui.get_user().get_new_app_path(jQuery.trim($('#new-app-dialog-key').val())),
-        jQuery.trim($('#new-app-dialog-name').val())
+        ui.get_user().get_new_app_path(jQuery.trim($$('#new-app-dialog-key').val())),
+        jQuery.trim($$('#new-app-dialog-name').val())
       ];
-      var radio = $("#dialog-new_app input[name='new-app']:checked").val();
-      var clone_id = $('#new-app-clone-id').val();
+      var radio = $$("#dialog-new_app input[name='new-app']:checked").val();
+      var clone_id = $$('#new-app-clone-id').val();
       if (radio == 'clone' &amp;&amp; clone_id !== '') {
         args.push(clone_id);
       }
@@ -121,7 +127,7 @@
 </div>
 
 <div mjt.def="delete_app_dialog()">
-  <h3 class="dialog-title">Delete app &#8220;${ui.get_app().get_display_name()}&#8221;?</h3>
+  <h3 class="dialog-title">Delete app &#8220;$${ui.get_app().get_display_name()}&#8221;?</h3>
   <div class="dialog-content">
     <div class="dialog-inset">
       <p>
@@ -158,14 +164,14 @@
         <fieldset>
           <div class="form-row">
             <label for="clone-filename">New file name: </label>
-            <input id="clone-filename" type="text" value="${ui.get_file().get_name()}"/>
+            <input id="clone-filename" type="text" value="$${ui.get_file().get_name()}"/>
           </div>
           <div class="form-row">
             <label for="clone-file-app">In app: </label>
             <select id="clone-file-app">
-              <option mjt.for="app in applist.result" value="$app.path"
+              <option mjt.for="app in applist.result" value="$$app.path"
                 mjt.attrs="(ui.get_app().get_path() == app.path)?{'selected':true}:{}">
-                $app.name
+                $$app.name
               </option>
             </select>
           </div>
@@ -179,11 +185,11 @@
     <div mjt.when="error">Error loading dialog.</div>
   </div>
   <span mjt.script="ondomready">
-    $('#clone-filename').focus().select();
+    $$('#clone-filename').focus().select();
   
-    $('#button-clone').click(function(e){
-      var new_name = jQuery.trim($('#clone-filename').val());
-      var app_path = jQuery.trim($('#clone-file-app :selected').val());
+    $$('#button-clone').click(function(e){
+      var new_name = jQuery.trim($$('#clone-filename').val());
+      var app_path = jQuery.trim($$('#clone-file-app :selected').val());
       var key_conflict = jQuery.inArray(new_name, ui.app_keys[app_path]);
       if (key_conflict == -1) {
         ui.do_file_save_as(app_path, new_name);
@@ -208,7 +214,7 @@
   
     <div class="form-row">
       <label for="add-file-name">New file name:</label>
-      <input id="add-file-name" type="text" value="$file"/>
+      <input id="add-file-name" type="text" value="$$file"/>
     </div>
   
     <div mjt.if="sup_mime_types.length > 1 &amp;&amp; handler != 'binary'">
@@ -216,17 +222,17 @@
         <label for="add-file-mimetype">MIME type: </label>
         <select id="add-file-mimetype">
           <option  mjt.for="sup_mime_type in sup_mime_types" 
-            mjt.attrs="(sup_mime_type == 'text/plain')?{'selected':''}:{}" value="$sup_mime_type" >
-            $sup_mime_type</option>
+            mjt.attrs="(sup_mime_type == 'text/plain')?{'selected':''}:{}" value="$$sup_mime_type" >
+            $$sup_mime_type</option>
         </select>
       </div>
     </div>
 
     <span mjt.script="ondomready">
-      $('#add-file-name')
+      $$('#add-file-name')
         .select()
         .keydown(function(e){
-          if (e.which == 13) { $('#button-add-file').click(); }
+          if (e.which == 13) { $$('#button-add-file').click(); }
         });
       
         ui.watch_inputs(null, {
@@ -244,9 +250,9 @@
     <div class="dialog-inset">
       <fieldset>
         <ul>
-          <li mjt.for="handler in ui.get_store().get_acre_handlers()" id="handler-$handler.key" class="handler-section">
-            <h4><input type="radio" name="new-file-handler" value="$handler.key" /> $handler.name</h4>
-            <p>$handler.description</p>
+          <li mjt.for="handler in ui.get_store().get_acre_handlers()" id="handler-$$handler.key" class="handler-section">
+            <h4><input type="radio" name="new-file-handler" value="$$handler.key" /> $$handler.name</h4>
+            <p>$$handler.description</p>
             <div class="handler-new"></div>
           </li>
         </ul>
@@ -265,17 +271,17 @@
       },
       change : function(inputs){
         var handler = inputs['new-file-handler'];
-        $('.handler-new').empty();
-        $('#handler-'+handler + ' .handler-new').mjt(add_file(handler));
-        $('.handler-section-active').removeClass('handler-section-active');
-        $('#handler-'+handler).addClass('handler-section-active');
+        $$('.handler-new').empty();
+        $$('#handler-'+handler + ' .handler-new').mjt(add_file(handler));
+        $$('.handler-section-active').removeClass('handler-section-active');
+        $$('#handler-'+handler).addClass('handler-section-active');
       },
       submit : function(inputs){
-        var filename = jQuery.trim($('#add-file-name').val());
+        var filename = jQuery.trim($$('#add-file-name').val());
         if (ui.get_store().validate_filename(filename)) {
           var metadata = { acre_handler: inputs['new-file-handler'] };
-          if ($('#add-file-mimetype :selected').val()) { 
-            metadata['content_type'] = $('#add-file-mimetype :selected').val();
+          if ($$('#add-file-mimetype :selected').val()) { 
+            metadata['content_type'] = $$('#add-file-mimetype :selected').val();
           }
           ui.do_file_create_new(filename, metadata);
           ui.do_hide_overlays();         
@@ -285,18 +291,18 @@
       }
     });
   
-    $("input[name='new-file-handler'][value='mjt']")
+    $$("input[name='new-file-handler'][value='mjt']")
       .attr('checked','checked')
       .trigger('click');
   </span>
 </div>
 
 <div mjt.def="delete_file_dialog(filename)">
-  <h3 class="dialog-title">Delete file &#8220;$filename&#8221;?</h3>
+  <h3 class="dialog-title">Delete file &#8220;$$filename&#8221;?</h3>
   <div class="dialog-content">
   <div class="dialog-inset">
     <p>
-      Are you sure you want to delete the file &#8220;<b>$filename</b>&#8221;?
+      Are you sure you want to delete the file &#8220;<b>$$filename</b>&#8221;?
     </p>
     <p>
       This can't be undone!
@@ -326,8 +332,8 @@
         var based_on = ui.get_file().get_based_on();
       </span>
       <p mjt.if="fh &amp;&amp; based_on">
-        <b>${ui.get_file().get_name()}</b> is based on:
-        <a class="external-link" href="${ui.get_store().get_url()}/view$based_on.id" target="_blank">$based_on.id</a>
+        <b>$${ui.get_file().get_name()}</b> is based on:
+        <a class="external-link" href="$${ui.get_store().get_url()}/view$$based_on.id" target="_blank">$$based_on.id</a>
       </p>              
       <table class="item-list">
         <thead>
@@ -362,53 +368,53 @@
                   if (av) { val = chg.as_of_time; }
                   if (ah || fh) { val = chg.timestamp; }
                 </span>
-                <input type="radio" name="diff-from" value="$val"/> |
-                <input type="radio" name="diff-to"   value="$val"/>
+                <input type="radio" name="diff-from" value="$$val"/> |
+                <input type="radio" name="diff-to"   value="$$val"/>
               </span>
             </td>
-            <td mjt.if="av">${chg.name}</td>
-            <td mjt.if="ah">${mjt.freebase.mqlkey_unquote(chg.file)}</td>
+            <td mjt.if="av">$${chg.name}</td>
+            <td mjt.if="ah">$${mjt.freebase.mqlkey_unquote(chg.file)}</td>
             <td>
               <span class="last_mod">
-                ${mjt.freebase.date_from_iso(chg.as_of_time||chg.timestamp).toLocaleString()}
+                $${mjt.freebase.date_from_iso(chg.as_of_time||chg.timestamp).toLocaleString()}
               </span>
             </td>
-            <td mjt.if="fh" class="center">${chg.length}</td>
-            <td mjt.if="ah || fh">${chg.attribution.name}</td>
+            <td mjt.if="fh" class="center">$${chg.length}</td>
+            <td mjt.if="ah || fh">$${chg.attribution.name}</td>
           </tr>
         </tbody>
       </table>
     </div>
     <span mjt.script="ondomready">
-      $('#dialog-diff_patch input, .show-revision, .revert-revision, .diff-button').unbind("click");
+      $$('#dialog-diff_patch input, .show-revision, .revert-revision, .diff-button').unbind("click");
               
       function disable_radios(){
-        $("input[name='diff-from'], input[name='diff-to']").removeAttr("disabled");
-        var fi = $("input[name='diff-to']").index($("input[name='diff-to']:checked")[0]);
-        var ti = $("input[name='diff-from']").index($("input[name='diff-from']:checked")[0]);
-        $("input[name='diff-to']").slice(0, ti+1).attr('disabled','disabled');
-        $("input[name='diff-from']").slice(fi).attr('disabled','disabled');
+        $$("input[name='diff-from'], input[name='diff-to']").removeAttr("disabled");
+        var fi = $$("input[name='diff-to']").index($$("input[name='diff-to']:checked")[0]);
+        var ti = $$("input[name='diff-from']").index($$("input[name='diff-from']:checked")[0]);
+        $$("input[name='diff-to']").slice(0, ti+1).attr('disabled','disabled');
+        $$("input[name='diff-from']").slice(fi).attr('disabled','disabled');
       }
       disable_radios();
 
-      $("input[name='diff-from'], input[name='diff-to']").click(function(e){
-        $('.button-patch').attr('disabled','disabled');
+      $$("input[name='diff-from'], input[name='diff-to']").click(function(e){
+        $$('.button-patch').attr('disabled','disabled');
         
         var args = {
-          timestamp1 : $("input[name='diff-to']:checked").val(),
-          timestamp2 : $("input[name='diff-from']:checked").val()
+          timestamp1 : $$("input[name='diff-to']:checked").val(),
+          timestamp2 : $$("input[name='diff-from']:checked").val()
         };
         
         if(av || ah) {
-          $('#diff-filelist-shim').mjt(filelist(true));
-          $('#diff-view-shim').mjt(diff_view());
+          $$('#diff-filelist-shim').mjt(filelist(true));
+          $$('#diff-view-shim').mjt(diff_view());
         
           args.appid1 = id;
           args.appid2 = id;
           
           ui.get_store().XhrGet('get_app_diff', args).enqueue()
             .onready(function(data){
-              $('#diff-filelist-shim').mjt(filelist(data));
+              $$('#diff-filelist-shim').mjt(filelist(data));
             });
         }
         
@@ -417,12 +423,12 @@
           args.fileid2 = id;
 
           ui.get_store().XhrGet('get_file_diff', args).enqueue().onready(function(data){
-            $('#diff-view-shim').mjt(diff_view(data, "get_file_diff"));
-            $('#button-file-revert, #button-file-revert-save').removeAttr('disabled').unbind('click');
-            $('#button-file-revert').click(function(){
+            $$('#diff-view-shim').mjt(diff_view(data, "get_file_diff"));
+            $$('#button-file-revert, #button-file-revert-save').removeAttr('disabled').unbind('click');
+            $$('#button-file-revert').click(function(){
                 ui.do_file_apply_change(data);
             });
-            $('#button-file-revert-save').click(function(){
+            $$('#button-file-revert-save').click(function(){
                 ui.do_file_apply_change(data, true);
             });
           });
@@ -435,7 +441,7 @@
       
   <!-- Used when the filelist needs to be dynamically updated -->
   <div mjt.def="filelist_shim(patch)" id="diff-filelist-shim">
-    ${filelist(patch)}
+    $${filelist(patch)}
   </div>
   
   <div mjt.def="filelist(patch)" id="diff-filelist">
@@ -458,10 +464,10 @@
         <span mjt.if="status">
           <input mjt.if="mode !== 'app_diff'" type='checkbox' mjt.attrs="status==='update'?{'checked':'checked'}:{}"/>
           <a href="#0" mjt.attrs="(mode === 'app_diff')?{'class':'diff-filelist-stub'}:{}">
-            ${mjt.freebase.mqlkey_unquote(fn)}</a>
+            $${mjt.freebase.mqlkey_unquote(fn)}</a>
         </span>
         <span mjt.else=""  class="diff-filelist-stub">
-          <i>${mjt.freebase.mqlkey_unquote(fn)}</i>
+          <i>$${mjt.freebase.mqlkey_unquote(fn)}</i>
         </span>
         <span mjt.choose="status" mjt.strip="1">
           <span mjt.when="add" class="file-merge-status">+</span>
@@ -471,20 +477,20 @@
         </span>
       </span>
       <p>
-        Select: <a href="#0" mjt.onclick="$('#diff-filelist input').attr('checked','checked')">All</a> | 
-        <a href="#0" mjt.onclick="$('#diff-filelist input').removeAttr('checked')">None</a>
+        Select: <a href="#0" mjt.onclick="$$('#diff-filelist input').attr('checked','checked')">All</a> | 
+        <a href="#0" mjt.onclick="$$('#diff-filelist input').removeAttr('checked')">None</a>
       </p>
       <ul>
-        <li class="file-list-item" mjt.for="fn in ordered_filenames" data-fn="$fn">
-          <span class="diff-filelist-stub">${mjt.freebase.mqlkey_unquote(fn)}</span>
+        <li class="file-list-item" mjt.for="fn in ordered_filenames" data-fn="$$fn">
+          <span class="diff-filelist-stub">$${mjt.freebase.mqlkey_unquote(fn)}</span>
         </li>
       </ul>
       <span mjt.script="ondomready">
-        var num_files = $('#diff-filelist .file-list-item').length;
+        var num_files = $$('#diff-filelist .file-list-item').length;
         
-        $('#diff-filelist .file-list-item').each(function(index){
-          var li = $(this);
-          var file = $(li).attr("data-fn");
+        $$('#diff-filelist .file-list-item').each(function(index){
+          var li = $$(this);
+          var file = $$(li).attr("data-fn");
 
           var method;
           var args = {};
@@ -509,16 +515,16 @@
           }
           
           function update_filelist_item(status, template, args) {
-            $(li).mjt(diff_file(file, status)).click(function(){
-              $('#diff-filelist .file-list-item').removeClass('selected-file');
-              $(li).addClass('selected-file');
-              $('#diff-view-shim').mjt(template.apply(this, args));
+            $$(li).mjt(diff_file(file, status)).click(function(){
+              $$('#diff-filelist .file-list-item').removeClass('selected-file');
+              $$(li).addClass('selected-file');
+              $$('#diff-view-shim').mjt(template.apply(this, args));
             });
             
             num_files -= 1;
             if (num_files === 0) {
-              $('.button-patch').removeAttr('disabled');
-              $('#diff-filelist .file-list-item input').click(function(e){
+              $$('.button-patch').removeAttr('disabled');
+              $$('#diff-filelist .file-list-item input').click(function(e){
                 e.stopPropagation();
               })
             }
@@ -545,34 +551,34 @@
     <span mjt.elif="patch" class="loader-square"></span>
     <p mjt.else="">Pick revisions above to see changed files</p>
     <span mjt.script="ondomready">
-      $('.patch-apply, .patch-apply-save').unbind('click');
-      $('.patch-apply, .patch-apply-save').click(function(){
+      $$('.patch-apply, .patch-apply-save').unbind('click');
+      $$('.patch-apply, .patch-apply-save').click(function(){
         var files = [];
-        $('#diff-filelist input:checked').each(function(){
-          var fn = $(this).closest('.file-list-item').attr('data-fn');
+        $$('#diff-filelist input:checked').each(function(){
+          var fn = $$(this).closest('.file-list-item').attr('data-fn');
           files.push(fn);
         });
-        ui.do_app_apply_changes(patch, files, $(this).hasClass('patch-apply-save'));
+        ui.do_app_apply_changes(patch, files, $$(this).hasClass('patch-apply-save'));
       });
     </span>
   </div>
 
   <!-- Used when the diff view needs to be dynamically updated -->
   <div mjt.def="diff_view_shim(diff)" id="diff-view-shim">
-    ${diff_view(diff)}
+    $${diff_view(diff)}
   </div>
   
   <div mjt.def="diff_view(data, method)" id="diff-view" class="diff">
     <div mjt.if="data" mjt.strip="1">
       <span mjt.script="ondomready">
-        ui.populate_diff($("#diff-view"), data, method);
+        ui.populate_diff($$("#diff-view"), data, method);
       </span>
     </div>
     <p mjt.else="">Click on a file or revision to see the changes.</p>
   </div>
   
   <div mjt.def="merge_error(msg, info)" id="diff-error-view">
-    <div class="message">$msg</div>
+    <div class="message">$$msg</div>
   </div>
       
   <!-- Main content for each mode -->    
@@ -597,8 +603,8 @@
       </div>
       <div id="history-diff" class="diff-bottom-short"></div>
       <div mjt.def="history_diff()" mjt.strip="1">
-        ${filelist_shim()}
-        <div class="diff-area-files">${diff_view_shim()}</div>
+        $${filelist_shim()}
+        <div class="diff-area-files">$${diff_view_shim()}</div>
       </div>
     </div>
     <div class="button-bar">
@@ -608,19 +614,19 @@
     </div>
     <span mjt.script="ondomready">
       function update_revlist(mode) {
-        $('#revision-list-shim').empty().addClass("loader-square");
+        $$('#revision-list-shim').empty().addClass("loader-square");
         var task = (mode == "versions") ? mjt.Succeed(ui.get_app().get_versions()) : ui.get_app().t_get_history();
         task.enqueue().onready(function(r){ 
-          $('#revision-list-shim')
+          $$('#revision-list-shim')
             .removeClass("loader-square")
             .mjt(revision_list(r.history || r, ui.get_app().get_path()));
-          $('#history-diff').mjt(history_diff());
-          $('.button-patch').attr('disabled','disabled');
+          $$('#history-diff').mjt(history_diff());
+          $$('.button-patch').attr('disabled','disabled');
         });
       }
       
-      $('input[name="app-history"]').change(function(){
-        update_revlist($(this).val());
+      $$('input[name="app-history"]').change(function(){
+        update_revlist($$(this).val());
       });
       
       update_revlist("versions");
@@ -630,8 +636,8 @@
   <div mjt.def="app_diff(diff)" mjt.strip="1">
     <div class="dialog-content">
       <div class="diff-bottom-tall">
-        ${filelist_shim(diff)}
-        <div class="diff-area-files">${diff_view_shim()}</div>
+        $${filelist_shim(diff)}
+        <div class="diff-area-files">$${diff_view_shim()}</div>
       </div>
     </div>
     <div class="button-bar">
@@ -642,10 +648,10 @@
   <div mjt.def="file_history(t)" mjt.strip="1">
     <div class="dialog-content">
       <div class="diff-top">
-        ${revision_list(t.history, t.fileid)}
+        $${revision_list(t.history, t.fileid)}
       </div>
       <div class="diff-bottom-short">
-        <div class="diff-area-full diff-area-short">${diff_view_shim()}</div>
+        <div class="diff-area-full diff-area-short">$${diff_view_shim()}</div>
       </div>
     </div>
     <div class="button-bar">
@@ -657,8 +663,8 @@
   <div mjt.def="merge_changes(patch)" mjt.strip="1">
     <div class="dialog-content">
       <div class="diff-bottom-tall">
-        ${filelist_shim(patch)}
-        <div class="diff-area-files">${diff_view_shim()}</div>
+        $${filelist_shim(patch)}
+        <div class="diff-area-files">$${diff_view_shim()}</div>
       </div>
     </div>
     <div class="button-bar">
@@ -683,7 +689,7 @@
         </p>
       </div>
       <div class="diff-bottom-short">
-        <div class="diff-area-full">${diff_view(diff, "get_file_diff")}</div>
+        <div class="diff-area-full">$${diff_view(diff, "get_file_diff")}</div>
       </div>
     </div>
     <div class="button-bar">
@@ -726,13 +732,13 @@
     }
   </div>
   
-  <h3 class="dialog-title">$title</h3>
+  <h3 class="dialog-title">$$title</h3>
   <div id="diff-dialog">
     <span class="loader-square"></span>
   </div>
   <span mjt.script="ondomready">
     task.enqueue().onready(function(r){ 
-      $('#diff-dialog').mjt(template(r));
+      $$('#diff-dialog').mjt(template(r));
     });
   </span>
   
@@ -746,8 +752,8 @@
     <div class="dialog-inset">
       <table>
         <tr mjt.for="shortcut in ui.shortcut.get_shortcuts()">
-          <th>${mjt.bless(ui.shortcut.get_keys(shortcut.op))}</th>
-          <td>$shortcut.op</td>
+          <th>$${mjt.bless(ui.shortcut.get_keys(shortcut.op))}</th>
+          <td>$$shortcut.op</td>
         </tr>
       </table>
     </div>
@@ -756,15 +762,15 @@
 
 <div mjt.def="about_appeditor_dialog()" mjt.strip="1">
   <h3 class="dialog-title">About App Editor</h3>
-  <iframe id="dialog-aboutappeditor" class="dialog-content" mjt.src="license.html"></iframe>
+  <iframe id="dialog-aboutappeditor" class="dialog-content" mjt.src="${h.url_for('appeditor', 'license.html')}"></iframe>
   <div class="button-bar">
     <b>Version: </b>
-    <span>$SERVER.appeditor.version</span>
-    <span>- ${ui.get_store().get_acre_version()}</span>
+    <span>$$SERVER.appeditor.version</span>
+    <span>- $${ui.get_store().get_acre_version()}</span>
   </div>
 </div>
 
 <div mjt.def="documentation_dialog(url)" mjt.strip="1">
-  <a class="doc-view-link" href="$url" target="_blank" mjt.onclick="ui.do_hide_overlays()">Open in a new window</a>
-  <iframe class="dialog-content" mjt.src="$url"></iframe>
+  <a class="doc-view-link" href="$$url" target="_blank" mjt.onclick="ui.do_hide_overlays()">Open in a new window</a>
+  <iframe class="dialog-content" mjt.src="$$url"></iframe>
 </div>

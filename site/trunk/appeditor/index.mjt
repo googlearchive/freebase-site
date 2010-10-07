@@ -11,7 +11,7 @@
 	  
 	  var SERVER = {
 	    appeditor: {
-	    	service_path : "/appeditor/",
+	    	service_path : acre.request.server_name.match(/^a(cr)?e\./) ? "/appeditor/" : "/appeditor/services/",
 	    	version: (acre.request.script.app.version || "trunk")
 	    },
 	    libs: {
@@ -63,7 +63,7 @@
 		<div id="header">
 		  <div id="header-appsmenu">
 		    <div id="button-apps">
-		      <img id="logo" src="logo-freebase.png" alt="" />
+		      <img id="logo" src="${mf.img_src('logo-freebase.png')}" alt="" />
           <p><span class="button-menu">Apps</span></p>
 		    </div>
 		  </div>
@@ -93,9 +93,9 @@
 		<!-- MJT TEMPLATE DEFINITIONS -->
 		<div id="mjtstuff" style="display:none">
 		  <div id="fixer" style="position: fixed; right: 0px; bottom: 0px; visibility: hidden;">&nbsp;</div>
-		  ${acre.markup.bless(acre.include("templates_main.html"))}
-		  ${acre.markup.bless(acre.include("templates_menus.html"))}
-		  ${acre.markup.bless(acre.include("templates_dialogs.html"))}
+		  ${acre.include("templates_main")}
+		  ${acre.include("templates_menus")}
+		  ${acre.include("templates_dialogs")}
 		</div>
 		
 		<!-- HACK: get rid of mjt.warn spews for those not running firebug -->

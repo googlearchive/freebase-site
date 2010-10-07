@@ -1,3 +1,9 @@
+<acre:script>
+	var mf = acre.require("MANIFEST").mf;
+  var h = mf.require("core", "helpers");
+	var i18n = mf.require("i18n", "i18n");
+</acre:script>
+
 <!-- Your Apps Menu -->
 <div mjt.def="apps_menu(auto_open)">
   <span mjt.script="">
@@ -12,7 +18,7 @@
     App Directory...     
   </div>
   <div mjt.if="ui.get_user()" id="your-apps-menu-item" class="section selectable">      
-    <div id="your-apps-opener"><img id="your-apps-loader" src='loader-tinyorange.gif' style='display:none;' /></div>
+    <div id="your-apps-opener"><img id="your-apps-loader" src="${mf.img_src('loader-tinyorange.gif')}" style="display:none;" /></div>
     Your Apps 
   </div>
   <div mjt.else="" class="section">
@@ -26,11 +32,11 @@
       <li mjt.for="(var i=0; i &lt; num_apps; i++)">
         <span mjt.script="">
           var app = apps[i];
-          var match = app.path.match(/\.dev\.([a-z0-9\.\-]*)\.$/);
+          var match = app.path.match(/\.dev\.([a-z0-9\.\-]*)\.$$/);
           var graph = match ? match[1] : null;
         </span>
-        <a href="${ui.get_appeditor_url(app.path)}" apppath="$app.path" class="app-link" title="$app.path">$app.name</a>
-        <em mjt.if="graph">on $graph</em>
+        <a href="$${ui.get_appeditor_url(app.path)}" apppath="$$app.path" class="app-link" title="$$app.path">$$app.name</a>
+        <em mjt.if="graph">on $$graph</em>
       </li>
     </ul>
     <div mjt.else="">If you work on multiple apps, recently opened ones will appear here.</div>
@@ -38,14 +44,14 @@
   <span mjt.script="ondomready">
     ui.do_setup_submenu('your-apps-menu-item', 'yourapps');
     if (auto_open) {
-      $('#your-apps-menu-item').trigger('mouseenter'); 
+      $$('#your-apps-menu-item').trigger('mouseenter'); 
     }
         
-    $('.file-link').click(function(e){
+    $$('.file-link').click(function(e){
       if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
         /* default browser behaviour = open link in new tab */
       } else {
-        var new_name = $(this).attr("fname");
+        var new_name = $$(this).attr("fname");
         ui.do_choose_file(new_name);
         ui.do_hide_overlays();
         return false;
@@ -62,17 +68,17 @@
     <p class="menu-message" mjt.if="user_apps.length === 0">Apps you create or clone will appear here.</p>
     <ul mjt.else="">
       <li mjt.for="app in user_apps">
-        <a href="${ui.get_appeditor_url(app.path)}" apppath="$app.path" class="app-link" title="$app.path">
-          $app.name
+        <a href="$${ui.get_appeditor_url(app.path)}" apppath="$$app.path" class="app-link" title="$$app.path">
+          $$app.name
         </a>
       </li>
     </ul>
     <span mjt.script="ondomready">
-      var submenu = $('#menu-yourapps');
-      var submenu_height = Math.min(submenu.height(), $(window).height() - submenu.offset().top - 25);
+      var submenu = $$('#menu-yourapps');
+      var submenu_height = Math.min(submenu.height(), $$(window).height() - submenu.offset().top - 25);
       submenu.height(submenu_height).css('visibility', 'visible');
       
-      $('#your-apps-loader').hide();
+      $$('#your-apps-loader').hide();
     </span>
   </div>
 
@@ -89,7 +95,7 @@
     <h3>Name</h3>
     <fieldset class="center">
       <label for="file-name">File name </label>
-      <input id="file-name" class="form-textbox" type="text" value="${ui.get_file().get_name()}"/>
+      <input id="file-name" class="form-textbox" type="text" value="$${ui.get_file().get_name()}"/>
       <button id="button-name" mjt.if="writable" class="exit" disabled="disabled">Rename</button>
     </fieldset>
   </div>
@@ -102,7 +108,7 @@
 
           var sup_acre_handlers = [];
           for (var key in acre_handlers) {
-            if ($.inArray(file.get_mime_type(), ui.get_store().get_supported_mime_types(key)) != -1) {
+            if ($$.inArray(file.get_mime_type(), ui.get_store().get_supported_mime_types(key)) != -1) {
               sup_acre_handlers.push(acre_handlers[key]);
             }
           }
@@ -112,8 +118,8 @@
           <label for="file-handler">Acre type </label>
           <select id="file-handler" mjt.attrs="sup_acre_handlers.length > 1 ? {} : {'disabled':'disabled'}">
             <option mjt.for="handler in sup_acre_handlers"
-                value="$handler.key"  mjt.attrs="(handler.key === file.get_acre_handler())?{'selected':''}:{}" >
-                $handler.name
+                value="$$handler.key"  mjt.attrs="(handler.key === file.get_acre_handler())?{'selected':''}:{}" >
+                $$handler.name
             </option>
           </select>
         </div>
@@ -121,25 +127,25 @@
           <label for="file-mimetype">MIME type </label>
           <select id="file-mimetype" 
             mjt.attrs="!file.get_editor_supported_features('mimetype_change') || (sup_mime_types.length &lt; 2) ? {}:{}">
-            <option  mjt.for="sup_mime_type in sup_mime_types" value="$sup_mime_type" 
+            <option  mjt.for="sup_mime_type in sup_mime_types" value="$$sup_mime_type" 
               mjt.attrs="(sup_mime_type === file.get_mime_type())?{'selected':''}:{}">
-              $sup_mime_type
+              $$sup_mime_type
             </option>
           </select>
         </div>
         <span mjt.script="ondomready">
-          $('#file-handler').change(function(){
-            ui.do_file_set_acre_handler($(':selected',this).val());
-            $('#metadata-section').mjt(metadata_section());
+          $$('#file-handler').change(function(){
+            ui.do_file_set_acre_handler($$(':selected',this).val());
+            $$('#metadata-section').mjt(metadata_section());
           });
 
-          $('#file-mimetype').change(function(){
-            ui.do_file_set_mime_type($(':selected',this).val());
-            $('#metadata-section').mjt(metadata_section());
+          $$('#file-mimetype').change(function(){
+            ui.do_file_set_mime_type($$(':selected',this).val());
+            $$('#metadata-section').mjt(metadata_section());
           });
         </span>
       </div>
-      <div id="metadata-section">${metadata_section()}</div>
+      <div id="metadata-section">$${metadata_section()}</div>
     </fieldset>
   </div>
   <div class="section" mjt.else="">
@@ -147,17 +153,17 @@
     <fieldset id="fieldset-metadata">
       <div class="form-row">
         <label for="file-handler">Acre type:</label>
-        <span class="form-static">${file.get_acre_handler()}</span>
+        <span class="form-static">$${file.get_acre_handler()}</span>
       </div>            
       <div class="form-row">            
         <label for="file-mimetype">MIME type: </label>
-        <span class="form-static">${file.get_mime_type()}</span>
+        <span class="form-static">$${file.get_mime_type()}</span>
       </div>              
     </fieldset>
   </div>
   <div class="section">
     <h3>Validate</h3>
-    <button mjt.onclick="ui.do_file_check()" title="${mjt.bless(ui.shortcut.get_keys('Check Syntax'))}"
+    <button mjt.onclick="ui.do_file_check()" title="$${mjt.bless(ui.shortcut.get_keys('Check Syntax'))}"
       mjt.attrs="ui.get_file_check_options().useful===1?{}:{'disabled':'disabled'}">
       Check Syntax</button>
   </div>
@@ -209,8 +215,8 @@
     <h3>Text Editor</h3>
     <fieldset>
       <div mjt.for="ed_class, ed in EDITORS" mjt.if="ed.supports.hotswap" class="line">
-        <input name='edopt-texteditor' id="edopt-texteditor-$ed_class" type='radio' value="$ed_class" mjt.attrs="ui.get_editor_prefs('texteditor') ===  ed_class ? {'checked':'checked'} : {}" />
-        <label for="edopt-texteditor-$ed_class">$ed.name</label><br/>
+        <input name='edopt-texteditor' id="edopt-texteditor-$$ed_class" type='radio' value="$$ed_class" mjt.attrs="ui.get_editor_prefs('texteditor') ===  ed_class ? {'checked':'checked'} : {}" />
+        <label for="edopt-texteditor-$$ed_class">$$ed.name</label><br/>
       </div>
     </fieldset>
   </div>
@@ -252,10 +258,10 @@
     </p>
   </div>
   <span mjt.script="ondomready">
-    $("#menu-editoroptions input[type='radio']").click(function(){
-      var name = $(this).attr('name').split('edopt-')[1];
+    $$("#menu-editoroptions input[type='radio']").click(function(){
+      var name = $$(this).attr('name').split('edopt-')[1];
       var pref = {};
-      pref[name] = $(this).val();
+      pref[name] = $$(this).val();
       ui.set_editor_prefs(pref);
       ui.do_refresh_file();
       ui.do_hide_overlays();
@@ -280,7 +286,7 @@
         Javascript Reference</a></li>
       <li><a href="#0" mjt.onclick="return ui.do_show_dialog('documentation', [ui.get_store().get_freebase_url() + '/docs/iframe/mql'])">
         MQL Reference Guide</a></li>
-      <li><a href="${ui.get_store().get_freebase_url()}/docs/" target="_new">
+      <li><a href="$${ui.get_store().get_freebase_url()}/docs/" target="_new">
         Freebase Documentation Hub</a></li>
     </ul>
   </div>
@@ -289,7 +295,7 @@
     <p>
       Not sure how to use a particular method or template tag?  See how someone else did!
     </p>
-    <form id="codesearch-form" action="http://codesearch.${ui.get_store().get_acre_host()}/" target="_blank">
+    <form id="codesearch-form" action="http://codesearch.$${ui.get_store().get_acre_host()}/" target="_blank">
       <fieldset>
           <input id="code-search" name="q" type="text" />
           <button id="button-codesearch">Find Code</button>
@@ -301,7 +307,7 @@
   </div>
   </div>
   <span mjt.script="ondomready">      
-    $("#help-menu-content a").click(function(){
+    $$("#help-menu-content a").click(function(){
       ui.do_hide_overlays();
     });
   </span>
@@ -346,17 +352,17 @@
     <button mjt.onclick="ui.do_hide_overlays()">Done</button>
   </div>
   <span mjt.script="ondomready">
-    $('#button-appsettings').addClass('button-open');
+    $$('#button-appsettings').addClass('button-open');
     var sel_tab = tab ? tab : 'general';
 
-    $("#settings-tabs").tabs({
+    $$("#settings-tabs").tabs({
       selected: null,
       show: function(e, tabs) {
-        setTimeout(function(){ $('#'+tabs.panel.id).mjt(ui.templates[tabs.panel.id]()); }, 0);
+        setTimeout(function(){ $$('#'+tabs.panel.id).mjt(ui.templates[tabs.panel.id]()); }, 0);
       }
     }).tabs("select", "#app_" + sel_tab);
     
-    $('#app-general-listing').click(function(){
+    $$('#app-general-listing').click(function(){
       window.open(ui.get_app().get_edit_url());
       return false;
     })
@@ -384,13 +390,13 @@
       <fieldset id="add-version" mjt.if="writable">
         <label for="add-version-key">Create a new version: </label>
         <input id='add-version-key' type='text' maxlength="10" />
-        <button id="button-version" mjt.onclick="ui.do_app_add_version($('#add-version-key').val())">
+        <button id="button-version" mjt.onclick="ui.do_app_add_version($$('#add-version-key').val())">
           Add Version</button>
         <button mjt.if="ui.get_app().get_versions().length" 
           mjt.onclick="ui.do_show_dialog('diff_patch',['app_diff']);">
           View Changes</button>
       </fieldset>
-      <div id="app-versions-add">${app_versions_list()}</div>
+      <div id="app-versions-add">$${app_versions_list()}</div>
     </div>
 
     <div class="tab-section">
@@ -404,13 +410,13 @@
           Your <strong>Dev URL</strong> points to <em>Current:</em>
         </p>
         <fieldset>
-            http://<input id="devurl" class="shortfield" type="text" minlength="5" maxlength="20" value="$name" />${app_root}.${app.get_acre_host()}
+            http://<input id="devurl" class="shortfield" type="text" minlength="5" maxlength="20" value="$$name" />$${app_root}.$${app.get_acre_host()}
           <button id='button-devurl' disabled='disabled'>Change URL</button>
         </fieldset>
       </div>
       <div mjt.else="" class="app-url">
         <p>URL to <em>Current</em> version:</p>
-        <p><a href="${app.get_base_url()}" target="current">${app.get_base_url()}</a></p>
+        <p><a href="$${app.get_base_url()}" target="current">$${app.get_base_url()}</a></p>
       </div>
       <span mjt.if="writable" mjt.script="ondomready">
         ui.watch_inputs('devurl', {
@@ -426,7 +432,7 @@
     </div>
     <div class="tab-section last">
       <div class="app-url">
-        ${app_hosts_list()}
+        $${app_hosts_list()}
       </div>
     </div>
   </div>
@@ -437,7 +443,7 @@
         var hosts = app.get_hosts();
         var release = app.get_released_version() || 'current';
 
-        var published_regex = /([^.]*)\.freebaseapps\.com$/;
+        var published_regex = /([^.]*)\.freebaseapps\.com$$/;
         var pub = null;
         for (var i=0; i &lt; hosts.length; i++) {
           var host = hosts[i];
@@ -453,7 +459,7 @@
       <div mjt.if="writable">
         <p>Your <strong>Release URL</strong> points to <em>Release:</em></p>
         <fieldset>
-          http://<input id="puburl" type="text" minlength="5" maxlength="20" value="${pub || ''}" />.${app.get_acre_host()} 
+          http://<input id="puburl" type="text" minlength="5" maxlength="20" value="$${pub || ''}" />.$${app.get_acre_host()} 
           <button id='button-puburl' disabled='disabled'>
             <span mjt.if="pub">Change URL</span>
             <span mjt.else="">Choose URL</span>
@@ -464,33 +470,33 @@
           <h4 class="list-title">Other URLs:</h4>
           <table class="edit-list">
             <tr mjt.for="host in hosts" mjt.if="host.host !== pub + '.freebaseapps.com'">
-              <td><a href="http://$host.host" target="_blank">$host.host</a></td>
-              <td><span mjt.if="host.version != release" class="version-bad">$host.version</span></td>
+              <td><a href="http://$$host.host" target="_blank">$$host.host</a></td>
+              <td><span mjt.if="host.version != release" class="version-bad">$$host.version</span></td>
             </tr>
           </table>
         </div>
         <span mjt.script="ondomready">            
           ui.watch_inputs('puburl', {
             inputs : {
-              puburl: $('#puburl').val()
+              puburl: $$('#puburl').val()
             },
             text_delay : 1000,
             update_on_submit : true,
             change : function(inputs) {
-              $('#button-puburl').attr('disabled', 'disabled');
-              $('#puburl-status').removeClass().html('').addClass('puburl-wait');
+              $$('#button-puburl').attr('disabled', 'disabled');
+              $$('#puburl-status').removeClass().html('').addClass('puburl-wait');
               ui.get_store().XhrGet('check_host_availability', { host: inputs['puburl']})
                 .enqueue()
                 .onready(function(r){
-                    $('#button-puburl').removeAttr('disabled');
-                    $('#puburl-status').removeClass().addClass('puburl-success').html(r.message); 
+                    $$('#button-puburl').removeAttr('disabled');
+                    $$('#puburl-status').removeClass().addClass('puburl-success').html(r.message); 
                 })
                 .onerror(function(code, message, info){
-                  $('#puburl-status').removeClass().addClass('puburl-fail').html(message);
+                  $$('#puburl-status').removeClass().addClass('puburl-fail').html(message);
                 });
             },
             submit : function(inputs){
-              $('#puburl-status').removeClass().empty();
+              $$('#puburl-status').removeClass().empty();
               ui.do_app_set_host(inputs['puburl']);
             }
           });
@@ -499,7 +505,7 @@
       <div mjt.else="">
         <div mjt.if="pub">
           <p>URL to <em>Release</em> version:</p>
-          <p mjt.if="pub"><a href="http://${pub + '.' + ui.get_app().get_acre_host()}" target="release">http://${pub}.${ui.get_app().get_acre_host()}</a>
+          <p mjt.if="pub"><a href="http://$${pub + '.' + ui.get_app().get_acre_host()}" target="release">http://$${pub}.$${ui.get_app().get_acre_host()}</a>
           </p>
         </div>
       </div>
@@ -545,11 +551,11 @@
                 <span mjt.else=""><em mjt.if="released_path == app_path">&#x2713;</em></span>
               </td>
               <td>
-                <a class="app-link" apppath="$app_path" href="${ui.get_appeditor_url(app_path)}">Current</a>
+                <a class="app-link" apppath="$$app_path" href="$${ui.get_appeditor_url(app_path)}">Current</a>
               </td>
               <td></td>
               <td mjt.if="writable"></td>
-              <td><a href="${app.get_base_url()}" target="_blank">view</a></td>
+              <td><a href="$${app.get_base_url()}" target="_blank">view</a></td>
               <td mjt.if="writable"></td>
             </tr>
             <tr class="version-listitem" mjt.for="i, version in versions">
@@ -568,51 +574,51 @@
                 }
               </td>
               <td mjt.if="release || writable" class="center">
-                <input mjt.if="writable" name="version-release" type="radio" value="$version.name" 
+                <input mjt.if="writable" name="version-release" type="radio" value="$$version.name" 
                   mjt.attrs="released_path != path ? {} : {'checked':'checked'}" />
                 <span mjt.else=""><em mjt.if="released_path == path">&#x2713;</em></span>
               </td>
               <td>
-                <a class="app-link" apppath="$path" href="${ui.get_appeditor_url(path)}">$version.name</a>
+                <a class="app-link" apppath="$$path" href="$${ui.get_appeditor_url(path)}">$$version.name</a>
               </td>     
               <td>
                 <span mjt.if="version.as_of_time">
-                  ${ui.get_relative_timestamp(version.as_of_time)}
+                  $${ui.get_relative_timestamp(version.as_of_time)}
                   <span mjt.if="writable &amp;&amp; show_update">
                     [<a href="#0" mjt.onclick="ui.do_app_add_version(version.name, '__now__')">set to now</a>]
                   </span>
                 </span>
               </td>
               <td mjt.if="writable" class="center">
-                <input class="version-service-url" type="checkbox" key="$version.name"
+                <input class="version-service-url" type="checkbox" key="$$version.name"
                   mjt.attrs="version.service_url == 'http://www.sandbox-freebase.com' ? {'checked':'checked'} : {}" />
               </td>
-              <td><a href="$view_url" target="_blank">view</a></td>
+              <td><a href="$$view_url" target="_blank">view</a></td>
               <td mjt.if="writable" class="remove">
-                <a mjt.if="released_path != path" href="#0" class="remove-version-button" key="$version.name">x</a>
+                <a mjt.if="released_path != path" href="#0" class="remove-version-button" key="$$version.name">x</a>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
       <div mjt.if="writable" mjt.script="ondomready">
-        $('#add-version-key').val(counter);
+        $$('#add-version-key').val(counter);
           
-        $('.remove-version-button').click(function() {
-          $(this).parents('tr').fadeOut('slow');
-          ui.do_app_remove_version($(this).attr('key'));
+        $$('.remove-version-button').click(function() {
+          $$(this).parents('tr').fadeOut('slow');
+          ui.do_app_remove_version($$(this).attr('key'));
           return false;
         });
     
-        $("input[name='version-release']").click(function() {
-          var ver = $(this).val();
+        $$("input[name='version-release']").click(function() {
+          var ver = $$(this).val();
           ui.do_app_set_release(ver);
           return false;
         });
         
-        $(".version-service-url").click(function() {
-          service_url = $(this).attr('checked') ? 'http://www.sandbox-freebase.com' : false;
-          ui.do_app_add_version($(this).attr('key'), null, service_url);
+        $$(".version-service-url").click(function() {
+          service_url = $$(this).attr('checked') ? 'http://www.sandbox-freebase.com' : false;
+          ui.do_app_add_version($$(this).attr('key'), null, service_url);
         });
       </div>
     </div>
@@ -661,10 +667,10 @@
           <tbody>
             <tr>
               <td class="left">
-                <a href="#0" class="app-link" apppath="${app.get_parent().path}">${app.get_parent().path}</a>
+                <a href="#0" class="app-link" apppath="$${app.get_parent().path}">$${app.get_parent().path}</a>
               </td>
               <td class="right">
-                <button class="button-get-changes" value="${app.get_parent().path}">View Changes</button>
+                <button class="button-get-changes" value="$${app.get_parent().path}">View Changes</button>
               </td>
             </tr>
           </tbody>
@@ -676,10 +682,10 @@
           <tbody>
             <tr mjt.for="a in app.get_children()">
               <td class="left">
-                <a href="#0" class="app-link" apppath="$a.path">$a.path</a>
+                <a href="#0" class="app-link" apppath="$$a.path">$$a.path</a>
               </td>
               <td class="right">
-                <button class="button-get-changes" value="$a.path">View Changes</button>
+                <button class="button-get-changes" value="$$a.path">View Changes</button>
               </td>
             </tr>
           </tbody>
@@ -701,16 +707,16 @@
       </fieldset>
     </div>
     <div mjt.script="ondomready">
-      $("#merge-app")
+      $$("#merge-app")
           .suggest({type: '/freebase/apps/acre_app'})
           .bind("fb-select", function(e, data) {
               var path = ui.id_to_path(data.id);
-              $(this).val(path);
-              $('#button-merge').removeAttr("disabled").val(path);
+              $$(this).val(path);
+              $$('#button-merge').removeAttr("disabled").val(path);
           });
           
-      $('.button-get-changes').click(function(){
-        ui.do_show_dialog('diff_patch',['merge_changes',{ appid : $(this).val() }]);
+      $$('.button-get-changes').click(function(){
+        ui.do_show_dialog('diff_patch',['merge_changes',{ appid : $$(this).val() }]);
       });
     </div>
   </div>
@@ -732,13 +738,13 @@
         </fieldset>
     
         <div id="app-authors-list">
-          ${app_authors_list(ui.get_app().get_authors())}
+          $${app_authors_list(ui.get_app().get_authors())}
         </div>
         <span mjt.script="ondomready">
-          $("#add-author-input")
+          $$("#add-author-input")
               .suggest({type: '/type/user'})
               .bind("fb-select", function(e, data) {
-                  $(this).val('');
+                  $$(this).val('');
                   ui.do_app_add_author(data.name);
               }).focus();
         </span>
@@ -746,7 +752,7 @@
       <div mjt.else="">
         <h3>Authors</h3>
         <div id="app-authors-list">
-          ${app_authors_list(ui.get_app().get_authors())}
+          $${app_authors_list(ui.get_app().get_authors())}
         </div>
       </div>
     </div>
@@ -762,25 +768,25 @@
         <tr mjt.for="user in user_dict" class="user-listitem">
           <td class="user-image-cell">
             <div class="user-image">
-              <a href="${user.get_view_url()}"  title="View profile for ${user.get_full_name() || user.get_name()}" target="user">
+              <a href="$${user.get_view_url()}"  title="View profile for $${user.get_full_name() || user.get_name()}" target="user">
                 <!-- dummy but valid img src -->
-                <img alt="mugshot" src="logo-acre.png" mjt.src="${user.get_image_url()}" />
+                <img alt="mugshot" src="#" mjt.src="$${user.get_image_url()}" />
               </a>
             </div>
           </td>
           <td>
-            <a href="${user.get_view_url()}" class="user-name" title="View profile for ${user.get_full_name() || user.get_name()}" target="user">${user.get_name()}</a>
+            <a href="$${user.get_view_url()}" class="user-name" title="View profile for $${user.get_full_name() || user.get_name()}" target="user">$${user.get_name()}</a>
           </td>
           <td class="remove">
-            <a mjt.if="!one_user &amp;&amp; ui.get_app().is_writable() &amp;&amp; user.is_admin()" class="remove-user-button" href="#0" user="${user.get_name()}">x</a>
+            <a mjt.if="!one_user &amp;&amp; ui.get_app().is_writable() &amp;&amp; user.is_admin()" class="remove-user-button" href="#0" user="$${user.get_name()}">x</a>
           </td>
         </tr>
       </table>
       <span mjt.script="ondomready">
-        $("#add-author-input").focus();
-        $('.remove-user-button').click(function() {
-          $(this).parents('tr').fadeOut('slow');
-          ui.do_app_remove_author($(this).attr('user'));
+        $$("#add-author-input").focus();
+        $$('.remove-user-button').click(function() {
+          $$(this).parents('tr').fadeOut('slow');
+          ui.do_app_remove_author($$(this).attr('user'));
           return false;
         });
       </span>
@@ -820,7 +826,7 @@
         <div class="radiogroup">
           <h5>
             <input id="permission-writeuser" type="checkbox" mjt.attrs="writeuser_attr" />
-            Allow <strong>${write_user ? write_user.get_name() : ui.get_user().get_name()}</strong> to write on behalf of any user
+            Allow <strong>$${write_user ? write_user.get_name() : ui.get_user().get_name()}</strong> to write on behalf of any user
           </h5>
           <p>
             <small>
@@ -851,7 +857,7 @@
             <span mjt.script="">
               var keys = apikeys.result.keys;
             </span>
-            <div id="app-apikeys-add">${app_apikeys_list(keys)}</div>
+            <div id="app-apikeys-add">$${app_apikeys_list(keys)}</div>
           </div>
           <p mjt.when="wait"><span id="version-loader" class="loader-square hidden"></span></p>
           <p mjt.when="error">Error loading API keys.</p>
@@ -859,16 +865,16 @@
       </div>
       <div mjt.else="">
         <p>
-          For your security, please <a href="https://${window.location.host + window.location.pathname + window.location.hash}">switch to App Editor over SSL</a> to add or edit your API keys.
+          For your security, please <a href="https://$${window.location.host + window.location.pathname + window.location.hash}">switch to App Editor over SSL</a> to add or edit your API keys.
         </p>
       </div>
     </div>
     <span mjt.script="ondomready">
-      $('#permission-oauth').change(function(){
-        ui.do_app_set_oauth(!!$(this).attr('checked'));
+      $$('#permission-oauth').change(function(){
+        ui.do_app_set_oauth(!!$$(this).attr('checked'));
       });
-      $('#permission-writeuser').change(function(){
-        ui.do_app_set_writeuser(!!$(this).attr('checked'));
+      $$('#permission-writeuser').change(function(){
+        ui.do_app_set_writeuser(!!$$(this).attr('checked'));
       });
     </span>
   </div>
@@ -903,11 +909,11 @@
           </thead>
           <tbody>
             <tr class="key-listitem" mjt.for="key in keys">
-              <td>$key.key_id</td>
-              <td>$key.token</td>
-              <td>$key.secret</td>
+              <td>$$key.key_id</td>
+              <td>$$key.token</td>
+              <td>$$key.secret</td>
               <td class="remove">
-                <a href="#0" class="remove-key-button" key="$key.key_id" mjt.if="key.key_id !== 'freebase.com'">x</a>
+                <a href="#0" class="remove-key-button" key="$$key.key_id" mjt.if="key.key_id !== 'freebase.com'">x</a>
               </td>
             </tr>
           </tbody>
@@ -926,9 +932,9 @@
           }
         });
       
-        $('.remove-key-button').click(function() {
-          $(this).parents('tr').fadeOut('slow');
-          ui.do_app_remove_apikey($(this).attr('key'));
+        $$('.remove-key-button').click(function() {
+          $$(this).parents('tr').fadeOut('slow');
+          ui.do_app_remove_apikey($$(this).attr('key'));
           return false;
         });
       </span>

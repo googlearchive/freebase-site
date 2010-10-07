@@ -84,8 +84,13 @@ var PrefixRouter = function() {
   };
   
   var route_for_app = this.route_for_app = function(app, script) {
-    var key = key_for_app(app, script);
-    return canonical_routes[key];
+    // First try to see if there is a specific route for this script
+    var route = canonical_routes[key_for_app(app, script)];
+    // Then check if there is just routing for this app
+    if (!route) {
+      route = canonical_routes[key_for_app(app)];
+    }
+    return route;
   };
   
   var route_for_path = this.route_for_path = function(path) {

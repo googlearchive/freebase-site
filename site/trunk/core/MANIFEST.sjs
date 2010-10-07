@@ -33,14 +33,11 @@ function  get_app_base_url(scope) {
     var routes_mf = acre.require(core_mf.apps.routing + "/MANIFEST");
     var app = routes_mf.get_app(scope.acre.current_script.app.path);
     if (app) {
-      var routes = acre.require(core_mf.apps.routing + "/app_routes");
-      var rts = routes.get_routes(app);
-      if (rts) {
-        for (var i=0,l=rts.length; i<l; i++) {
-          var rt = rts[i];
-          if (!rt.script) {
-            return scope.acre.request.app_url + rt.from;
-          }
+      var rules = acre.require(core_mf.apps.routing + "/app_routes").rules;
+      var route = rules.route_for_app(app);
+      if (route) {
+        if (!route.script) {
+          return scope.acre.request.app_url + route.prefix;
         }
       }
     }
@@ -66,14 +63,11 @@ function base_manifest(app_mf, scope) {
         var routes_mf = acre.require(core_mf.apps.routing + "/MANIFEST");
         var app = routes_mf.get_app(scope.acre.current_script.app.path);
         if (app) {
-          var routes = acre.require(core_mf.apps.routing + "/app_routes");
-          var rts = routes.get_routes(app);
-          if (rts) {
-            for (var i=0,l=rts.length; i<l; i++) {
-              var rt = rts[i];
-              if (!rt.script) {
-                return scope.acre.request.app_url + rt.from;
-              }
+          var rules = acre.require(core_mf.apps.routing + "/app_routes").rules;
+          var route = rules.route_for_app(app);
+          if (route) {
+            if (!route.script) {
+              return scope.acre.request.app_url + route.prefix;
             }
           }
         }

@@ -2,12 +2,12 @@
   "apps": {
     "core": "//core.site.freebase.dev"
   },
-  stylesheet: {
+  "stylesheet": {
     "error.mf.css": [
       ["template", "freebase.mf.css"]
     ]
   },
-  javascript: {
+  "javascript": {
     "error.mf.js": [
       ["template", "freebase.mf.js"]
     ]

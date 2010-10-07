@@ -6,13 +6,8 @@ var rules = mf.require("app_routes").rules;
  * Invoke the error app template with status=404 and exit.
  */
 function not_found(id) {
-  /*
   var path = acre.form.build_url(mf.apps.error + "/index", {status:404, not_found:id});
   acre.route(path);
-  acre.exit();
-   */
-  acre.response.status = 302;
-  acre.response.set_header("location", acre.freebase.site_host + "/error" + id);
   acre.exit();
 };
 
@@ -97,7 +92,10 @@ if (acre.current_script === acre.request.script) {
       
     } else if (route.app) {
       // Handle canonical app routing
-      var app = route.app;
+      var app = mf.apps[route.app];
+      if (!app) {
+ 	    throw (route.app + " must be defined in the MANIFEST for routing.");
+ 	  } 
       var script = route.script;
       var path_info = path.replace(route.prefix, '');
       

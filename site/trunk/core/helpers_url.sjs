@@ -13,7 +13,7 @@ var exports = {
 
 var mf = acre.require("MANIFEST").mf;
 var routes_mf = mf.require("routing", "MANIFEST").mf;
-var routes = mf.require("routing", "app_routes");
+var rules = mf.require("routing", "app_routes").rules;
 var extend = mf.require("helpers_util").extend;
 
 /**
@@ -71,32 +71,27 @@ function url_for(app, file, params, extra_path) {
   // http://www.sandbox-freebase.com
   // http://www.freebase.com
   if (is_client()) {
-    var rts = routes.get_routes(app);
-    if (!rts) {
-      throw("route undefined in routing app_routes: " + app);
+    var route = rules.route_for_app(app, file);
+    if (!route) {
+      throw("No route found in routing app_routes for app:"+app+" script:"+file);
     }
-    for (var i=0,l=rts.length; i<l; i++) {
-      var r = rts[i];
-      if (r.script) {
-        if (r.script === file) {
-          var url = acre.request.app_url /*+ acre.request.base_path*/ + r.from + extra_path;
-          return acre.form.build_url(url, params);
-        }
-      }
-      else {
-        var url = acre.request.app_url /*+ acre.request.base_path*/ + r.from + (file ? "/" + file : "") + extra_path;
-        return acre.form.build_url(url, params);
-      }
+    
+    if (route.script && route.script === file) {
+      var url = acre.request.app_url + route.prefix + extra_path;
+      return acre.form.build_url(url, params);
+    } else {
+      var url = acre.request.app_url + route.prefix + (file ? "/" + file : "") + extra_path;
+      return acre.form.build_url(url, params);
     }
-  }
-
-  // Else we are running a standalone acre app, i.e:
-  // http://schema.site.freebase.dev.acre.z:8115
-  // http://schema.site.freebase.dev.trunk.qa-freebaseapps.com
-  // http://schema.site.freebase.dev.branch.qa-freebaseapps.com
-  // http://schema.site.freebase.dev.sandbox-freebaseapps.com
-  // http://schema.site.freebase.dev.freebaseapps.com
-  else {
+    
+  } else {
+    // Else we are running a standalone acre app, i.e:
+    // http://schema.site.freebase.dev.acre.z:8115
+    // http://schema.site.freebase.dev.trunk.qa-freebaseapps.com
+    // http://schema.site.freebase.dev.branch.qa-freebaseapps.com
+    // http://schema.site.freebase.dev.sandbox-freebaseapps.com
+    // http://schema.site.freebase.dev.freebaseapps.com
+    
     // else absolute resource_url for external urls
     // new require path syntax (i.e., //app.site.freebase.dev/file)
     var url = acre.host.protocol + ":" + path + "." + acre.host.name + (acre.host.port !== 80 ? (":" + acre.host.port) : "") + (file ? "/" + file : "") + extra_path;

@@ -33,7 +33,7 @@ rules.add([
   {prefix:"/permission",         app:"permission"},
   {prefix:"/validator",          app:"validator"},
   {prefix:"/toolbox",            app:"toolbox"},
-  {prefix:"/cuecard",		    		 app:"cuecard" },
+  {prefix:"/cuecard",            app:"cuecard" },
   {prefix:"/appeditor/services", app:"appeditor-services" }
 ]);
 
@@ -52,7 +52,7 @@ rules.add([
   {prefix:"/template",           app:"template"},
   {prefix:"/routing",            app:"routing" },
   {prefix:"/queries",            app:"queries"},
-  {prefix:"/codemirror",				 app:"codemirror" }
+  {prefix:"/codemirror",         app:"codemirror" }
 ]);
 
 // Redirects for legacy urls

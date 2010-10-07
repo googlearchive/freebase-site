@@ -25,33 +25,33 @@ rules.add([
   {prefix:"/labs/parallax",     app:"parallax"},
   {prefix:"/labs",              app:"labs"},
   {prefix:"/queryeditor",       app:"queryeditor"},  
-  {prefix:"/inspect",           app:"triples"}
+  {prefix:"/inspect",           app:"triples"},
 ]);
 
 // Urls for exposed ajax libraries
 rules.add([
   {prefix:"/permission",        app:"permission"},
   {prefix:"/validator",         app:"validator"},
-  {prefix:"/toolbox",           app:"toolbox"}
+  {prefix:"/toolbox",           app:"toolbox"},
+  {prefix:"/cuecard",		    		app:"cuecard" }
 ]);
 
-// Urls for in-house tools
+// Urls for administrative tools
 rules.add([
-  {prefix:"/app/admin",         app:"appadmin"}
+  {prefix:"/app/admin",         app:"appadmin"},
+  {prefix:"/app/tmt",           app:"tmt"}
 ]);
 
 // Urls for development purposes only
 rules.add([
   {prefix:"/sample",            app:"sample"},
   {prefix:"/core",              app:"core"},
-  {prefix:"/app/tmt",           app:"tmt"},
   {prefix:"/jqueryui",          app:"jqueryui"},
   {prefix:"/i18n",              app:"i18n"},
   {prefix:"/template",          app:"template"},
   {prefix:"/routing",           app:"routing" },
   {prefix:"/queries",           app:"queries"},
-  {prefix: "/codemirror",		app:"codemirror" },
-  {prefix: "/cuecard",		    app:"cuecard" }
+  {prefix:"/codemirror",				app:"codemirror" }
 ]);
 
 // Redirects for legacy urls
@@ -60,6 +60,5 @@ rules.add([
   {prefix:"/app/queryeditor",   url:"/queryeditor", redirect:301},
   {prefix:"/tools/queryeditor", url:"/queryeditor", redirect:301},
   {prefix:"/tools/explore",     url:"/inspect", redirect:301},
-  // old explore2 just uses the new triples
   {prefix:"/tools/explore2",    url:"/inspect", redirect:301}
 ]);

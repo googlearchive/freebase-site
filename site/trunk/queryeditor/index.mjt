@@ -52,7 +52,6 @@
       </div><!-- #logo --> 
       
       <div id="links">
-        <a href="${h.url_for('about')}" target="_blank">about</a> &bull;
         <a href="javascript:refreshCache()">refresh cache</a> &bull;
         <a href="javascript:{}" onmouseover="computeMqlReadLink(this);" target="_blank">mqlread</a> &bull;
         <a href="javascript:{}" onmouseover="computeCompactLink(this);" target="_blank">permanent link</a>
@@ -83,7 +82,7 @@
       <div id="starting-message">
         <a href="javascript:closeStartingMessage();" style="float: right;">Close</a>
         Don't know where to start?<br/>
-        <a href="${h.url_for('about')}">Watch this screencast here</a>.
+        <a href="">Watch this screencast here</a>.
       </div>
     </center></div>
     

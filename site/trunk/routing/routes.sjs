@@ -1,39 +1,6 @@
 var mf = acre.require("MANIFEST").mf;
 var h = mf.require("helpers");
-var app_routes = mf.require("app_routes");
-var routes = app_routes.routes;
-
-/**
- * Does the given path match the given route object?
- * If so, return the target app id, target script and additional path_info.
- * Otherwise, return false.
- */
-function match_route(path, route) {
-  var from_re1 = RegExp("^" + route.from + "$");
-  var from_re2 = RegExp("^" + route.from + "/");
-  if (from_re1.test(path) || from_re2.test(path)) {
-    var path_info = path.replace(route.from, "");
-  }
-  else {
-    // no match
-    return false;
-  }
-  var app, script, path_info;
-  if (route.redirect) {
-    return true;
-  }
-  app = mf.apps[route.to];
-  if (!app) {
-    throw (route.to + " must be defined in the manifest");
-  }
-  if (route.script) {
-    script = route.script;
-  }
-  else {
-    var [script, path_info, qs] = h.split_path(path_info);
-  }
-  return [app, script, path_info];
-};
+var rules = mf.require("app_routes").rules;
 
 /**
  * Invoke the error app template with status=404 and exit.
@@ -76,30 +43,25 @@ function do_route(app, script, path_info, query_string) {
   path = path.join("");
   console.log("routing", path);
   acre.route(path);
-  acre.exit();
+  return acre.exit();
 };
 
 //check if the top level domain does not start with www.
 //issue a 301 to the same url, starting with www.
 //cache the response
 function check_top_level_domain() {
-
-    var req = acre.request;
-    var must_redirect = ['freebase.com', 'sandbox-freebase.com'];
-
-    for (var i in must_redirect) {
-
-        if (req.url.slice(7).indexOf(must_redirect[i]) == 0) {
-
-            var new_url = 'http://www.' + req.url.slice(7);
-            acre.response.status = '301';
-            acre.response.set_header("Location", new_url);
-            acre.response.set_header("cache-control", "public, max-age: 3600");
-            acre.exit();
-        }
-
+  var req = acre.request;
+  var must_redirect = ['freebase.com', 'sandbox-freebase.com'];
+  
+  for (var i in must_redirect) {
+    if (req.url.slice(7).indexOf(must_redirect[i]) == 0) {
+      var new_url = 'http://www.' + req.url.slice(7);
+      acre.response.status = '301';
+      acre.response.set_header("Location", new_url);
+      acre.response.set_header("cache-control", "public, max-age: 3600");
+      acre.exit();
     }
-
+  }
 };
 
 /**
@@ -107,8 +69,9 @@ function check_top_level_domain() {
  */
 if (acre.current_script === acre.request.script) {
   check_top_level_domain();
+  
   var req = acre.request;
-  var req_path = req.url.replace(req.app_url /*+ req.base_path*/, "");
+  var req_path = req.url.replace(req.app_url, "");
   // filter out query string
   var path = req_path;
   var query_string;
@@ -117,34 +80,39 @@ if (acre.current_script === acre.request.script) {
     path = path_segs[0];
     query_string = path_segs[1];
   }
-
-  // find the first route match
-  for (var i=0,len=routes.length; i<len; i++) {
-    var route = routes[i];
-    var match = match_route(path, route);
-    if (!match) {
-      continue;
-    }
-    if (route.redirect) {
+  
+  var route = rules.route_for_path(path);
+  if (route) {
+    if (route.redirect && route.url) {
+      // Handle both absolute and relative redirects
       acre.response.status = route.redirect;
-      if (/^https?:\/\//.test(route.to)) {
-        acre.response.set_header("location", route.to);
+      var redirect_url;
+      if (/^https?:\/\//.test(route.url)) {
+        redirect_url = route.url;
+      } else {
+        redirect_url = req.app_url + req_path.replace(route.prefix, route.url);
       }
-      else {
-        var redirect_url = req.app_url + req_path.replace(route.from, route.to);
-        acre.response.set_header("location", redirect_url);
-      }
+      acre.response.set_header("location", redirect_url);
       acre.exit();
-    }
-    else {
-      var app = match[0];
-      var script = match[1];
-      var path_info = match[2];
+      
+    } else if (route.app) {
+      // Handle canonical app routing
+      var app = route.app;
+      var script = route.script;
+      var path_info = path.replace(route.prefix, '');
+      
+      if (!script) {
+        var [script, path_info, qs] = h.split_path(path_info);
+      }
+      
       // acre.route and exit
       do_route(app, script, path_info, query_string);
     }
+  } else {
+    // default to local acre.route
+    var [script, path_info, query_string] = h.split_path(req_path);
+    do_route(null, script, path_info, query_string);
   }
-  // default to local acre.route
-  var [script, path_info, query_string] = h.split_path(req_path);
-  do_route(null, script, path_info, query_string);
+
+  throw 'Invalid route: '+route;
 }

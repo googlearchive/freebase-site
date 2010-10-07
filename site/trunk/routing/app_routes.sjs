@@ -3,9 +3,9 @@
   1. There must be a 1-1 mapping between a url prefix and (app,script) combo
   2. Please place your app in the correct section depending on type of url
   3. If you are ever taking away a url for a user-facing app then you
-     must provide a legacy redirect to an appropriate page. 
+     must provide a legacy redirect to an appropriate page.
  */
-
+console.log("acre", acre);
 var router = acre.require("router");
 var rules = new router.PrefixRouter();
 
@@ -24,14 +24,13 @@ rules.add([
   {prefix:"/labs/cubed",         app:"cubed"},
   {prefix:"/labs/parallax",      app:"parallax"},
   {prefix:"/labs",               app:"labs"},
-  {prefix:"/queryeditor",        app:"queryeditor"},  
+  {prefix:"/queryeditor",        app:"queryeditor"},
   {prefix:"/inspect",            app:"triples"}
 ]);
 
 // Urls for exposed ajax libraries
 rules.add([
   {prefix:"/permission",         app:"permission"},
-  {prefix:"/validator",          app:"validator"},
   {prefix:"/toolbox",            app:"toolbox"},
   {prefix:"/cuecard",            app:"cuecard" },
   {prefix:"/appeditor/services", app:"appeditor-services" }
@@ -52,7 +51,8 @@ rules.add([
   {prefix:"/template",           app:"template"},
   {prefix:"/routing",            app:"routing" },
   {prefix:"/queries",            app:"queries"},
-  {prefix:"/codemirror",         app:"codemirror" }
+  {prefix:"/codemirror",         app:"codemirror" },
+  {prefix:"/validator",          app:"validator"}
 ]);
 
 // Redirects for legacy urls

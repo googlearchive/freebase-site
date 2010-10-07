@@ -12,12 +12,15 @@ var _ = i18n.gettext;
  * @param predicate:String - mql property
  * @param object:Object - the object {id:String} or {value:String, lang:String(optional), namespace:String(optional)}
  */
-function triple(subject, predicate, object) {
+function triple(subject, predicate, object, namespace, value) {
   var o = {
     s: subject,
     p: predicate
   };
-  if ("id" in object) {
+  if (namespace && value) {
+    o.o = {namespace:namespace, value:value};
+  }
+  else if ("id" in object) {
     o.o = {id: object.id};
   }
   else if ("value" in object) {

@@ -170,14 +170,31 @@ function apply_history(clause, history) {
 };
 
 function apply_domain_type_property(clause, domain, type, property) {
-  if (domain) {
-    clause["filter:master_property"] = {schema:{domain:domain}};
+  if (clause.master_property === "/type/namespace/keys") {
+    /**
+     * set constraint on the master_property.reverse_property since we are
+     * showing the reverse_property for keys
+     */
+    if (domain) {
+      clause["filter:master_property"] = {reverse_property:{schema:{domain:domain}}};
+    }
+    else if (type) {
+      clause["filter:master_property"] = {reverse_property:{schema:type}};
+    }
+    else if (property) {
+      clause["filter:master_property"] = {reverse_property:property};
+    }
   }
-  else if (type) {
-    clause["filter:master_property"] = {schema:type};
-  }
-  else if (property) {
-    clause.master_property = property;
+  else {
+    if (domain) {
+      clause["filter:master_property"] = {schema:{domain:domain}};
+    }
+    else if (type) {
+      clause["filter:master_property"] = {schema:type};
+    }
+    else if (property) {
+      clause.master_property = property;
+    }
   }
   return clause;
 };

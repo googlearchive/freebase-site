@@ -241,9 +241,7 @@
             row: $(".edit-row", html).hide(),
             submit_row: $(".edit-row-submit", html).hide()
           };
-          console.log("se.init_edit_form BEFORE");
           se.init_edit_form(form);
-          console.log("se.init_edit_form AFTER");
 
           // delegate property dialog
           te.init_delegate_property(form);

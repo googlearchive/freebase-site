@@ -47,20 +47,20 @@
       var event_prefix = form.event_prefix || "fb.schema.edit.";
       form.row
         .bind(event_prefix + "submit", function() {
-          console.log(event_prefix + "submit");
+          // console.log(event_prefix + "submit");
           se.submit_edit_form(form);
         })
         .bind(event_prefix + "cancel", function() {
-          console.log(event_prefix + "cancel");
+          // console.log(event_prefix + "cancel");
           se.cancel_edit_form(form);
         })
         .bind(event_prefix + "error", function(e, row, error) {
-          console.log(event_prefix + "error", row, error);
+          // console.log(event_prefix + "error", row, error);
           se.row_error(row, error);
           form.row.removeClass("loading");
         })
         .bind(event_prefix + "success", function() {
-          console.log(event_prefix + "success");
+          // console.log(event_prefix + "success");
           form.row.removeClass("loading");
         });
 
@@ -211,15 +211,15 @@
       var event_prefix = form.event_prefix || "fb.schema.edit.modal.";
       form.form
        .bind(event_prefix + "submit", function() {
-          console.log(event_prefix + "submit");
+          // console.log(event_prefix + "submit");
           se.submit_modal_form(form);
         })
         .bind(event_prefix + "error", function(e, error) {
-          console.log(event_prefix + "error", error);
+          // console.log(event_prefix + "error", error);
           se.form_error(form.form, error);
         })
         .bind(event_prefix + "success", function() {
-          console.log(event_prefix + "success");
+          // console.log(event_prefix + "success");
           form.form.removeClass("loading");
         });
 

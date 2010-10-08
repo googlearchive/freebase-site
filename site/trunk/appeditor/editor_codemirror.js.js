@@ -160,7 +160,18 @@
             this.selectLines(this.prevLine(this.lastLine()), 0);
         }
     };
-    
+
+    var ACRETAG = 'xml-tagname-acre'; //TODO: better name in CSS
+    var special_class = { 'acre:doc':ACRETAG, 'acre:block':ACRETAG, 'acre:script':ACRETAG };
+
+    CodeMirror.style_token = function(span,token) {
+        var t = token.content.toLowerCase();
+  	if (token.style == "xml-tagname") {
+  	    if (special_class[t]) {
+    	        span.className += " " + special_class[t];
+     	    }
+    	}
+    };
 
 })();
 
@@ -178,15 +189,16 @@ EDITORS.CodeMirror = {
         codeassist          : true
     },
     config              : {
+        parserConfig        : { triggers:{"acre:script":"JSParser", "script":"JSParser", "style":"CSSParser"} },
+        activeTokens        : CodeMirror.style_token,
         height              : '100%',
         marginWidth         : 45,      // is actually used by CodeMirror?
         autoMatchParens     : true,
         passDelay           : 100,     // gap between highlighting runs (each run lasts 50ms - see passTime in codemirror.js)
         undoDelay           : 250,     // min time between onChange notifications (and undo history commit)
-        // These options must match settings in build.sh
-        path                : 'codemirror/js/',
-        parserfile          : ['parsexml.js', 'parsecss.js', 'tokenizejavascript.js', 'parsejavascript.js', 'parsehtmlmixed.js', 'parsedummy.js'],
-        stylesheet          : ['codemirror/css/xmlcolors_acrid.css', 'codemirror/css/jscolors_acrid.css', 'codemirror/css/csscolors_acrid.css'],
+        basefiles           : [],
+        parserfile          : ['codemirror/MANIFEST/codemirror-frame.mf.js'],  // XXX not served 
+        stylesheet          : ['codemirror/MANIFEST/codemirror-frame.mf.css'], // XXx from freebaselibs.com
         lineNumbers         : true,
         highlightActiveLine : true,
         tabMode             : "shift",

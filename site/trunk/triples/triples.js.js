@@ -244,13 +244,19 @@
       // Toggling for 'show all writes'
       $(".history-toggle").change(function() {
 
-        if($(this).is(":checked")) {
-          $(this).val('false');
-          $(this).parents("form:first").submit();
+        var $form = $(this).parents("form:first");
+        var $input = $(this); 
+ 
+        // set form value to false and submit
+        if($input.val() === "true") {
+          $input.val("false");
+          $form.submit();
         }
+
+        // set form value to true and submit
         else {
-          $(this).val('true');
-          $(this).parents("form:first").submit();
+          $input.val("true");
+          $form.submit();
         }
       });
 

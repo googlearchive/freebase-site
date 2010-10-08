@@ -121,8 +121,8 @@
 <acre:block def="history(history)">
 <h2 style="margin-top:10px;" class="filter-title">
   <label>
-    <input class="history-toggle" acre:if="history === true" type="checkbox" name="history" value="true" checked="checked"> 
-    <input class="history-toggle" acre:else="" type="checkbox" name="history" value="false"> 
+    <input class="history-toggle" acre:if="history === true" name="history" value="true" type="checkbox" checked="checked" /> 
+    <input class="history-toggle" acre:else="" name="history" value="false" type="checkbox" /> 
     Show historical writes
   </label>
 </h2>

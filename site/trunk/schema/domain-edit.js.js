@@ -99,10 +99,10 @@
     /**
      * retrieve add_type form (ajax).
      */
-    add_type_begin: function(trigger, domain_id, role) {
+    add_type_begin: function(trigger, domain_id, mediator) {
       $.ajax({
         url: fb.acre.request.app_url + "/schema/domain/add_type_begin",
-        data: {id: domain_id, role: role},
+        data: {id: domain_id, mediator: mediator},
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
@@ -206,12 +206,12 @@
     init_type_form: function(form) {
       var name = $("input[name=name]", form.row);
       var key =  $("input[name=key]", form.row);
-      var description = $("textarea[name=description]", form.row);
 
       if (form.mode === "add") {
         name.val("");
         key.val("");
-        description.val("");
+        $("textarea[name=description]", form.row).val("");
+        $("input[name=enumeration]", form.row).removeAttr("checked");
       }
 
       if (!form.row.data("initialized")) {
@@ -241,16 +241,10 @@
         name: $.trim($("input[name=name]:visible", form.row).val()),
         key: key.val(),
         description: $.trim($("textarea[name=description]:visible", form.row).val()),
+        mediator: $("input[name=mediator]", form.row).is(":checked") ? 1 : 0,
+        enumeration: $("input[name=enumeration]", form.row).is(":checked") ? 1 : 0,
         lang: $("select[name=lang]", form.submit_row).val()
       };
-      // type role and terminal flag (if mediator)
-      var role = $("input[name=role]:checked", form.row).val();
-      if (role) {
-        data.role = role;
-        if (role === "mediator") {
-          data.terminal = $("input[name=terminal]", form.row).is(":checked") ? 1 : 0;
-        }
-      }
 
       $.ajax({
         url: form.ajax.url,

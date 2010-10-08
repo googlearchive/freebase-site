@@ -33,7 +33,6 @@ function domain(options) {
       "/common/topic/article": i18n.mql.query.article(),
       properties: {optional: true, id: null, type: "/type/property", "return": "count"},
       "/freebase/type_hints/mediator": null,
-      "/freebase/type_hints/terminal": null,
       "/freebase/type_hints/enumeration": null,
       "!/freebase/domain_profile/base_type": {optional: "forbidden", id: null, limit: 0}
     }]
@@ -52,7 +51,6 @@ function type(options) {
     "/common/topic/article": i18n.mql.query.article(),
     domain: {id: null, name: i18n.mql.query.name(), type: "/type/domain"},
     "/freebase/type_hints/mediator": null,
-    "/freebase/type_hints/terminal": null,
     "/freebase/type_hints/enumeration": null,
     "/freebase/type_hints/included_types": [{
       optional: true,
@@ -80,7 +78,6 @@ function property(options) {
       name:  i18n.mql.query.name(),
       type: "/type/type",
       "/freebase/type_hints/mediator": null,
-      "/freebase/type_hints/terminal": null,
       "/freebase/type_hints/enumeration": null
     },
     master_property: {

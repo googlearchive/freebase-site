@@ -1,6 +1,4 @@
 var mf = acre.require("MANIFEST").mf;
-var h = mf.require("core", "helpers");
-
 var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 var update_article = mf.require("queries", "update_article");
@@ -8,7 +6,7 @@ var validators = mf.require("validator", "validators");
 var i18n = mf.require("i18n", "i18n");
 
 /**
- * Update an existing type values (name, key, description, role, etc.)
+ * Update an existing type values (name, key, description, enumeration, etc.)
  *
  * @param o:Object (required) - options specifying the updated values.
  */
@@ -24,13 +22,13 @@ function update_type(options) {
       name: validators.String(options, "name", {if_empty:null}),
       key: validators.String(options, "key", {if_empty:null}),
       description: validators.String(options, "description", {if_empty:null}),
-      role: validators.OneOf(options, "role", {oneof:["mediator", "enumeration"], if_empty:null}),
-      terminal: validators.StringBool(options, "terminal", {if_empty:null}),
+
+      enumeration: validators.StringBool(options, "enumeration", {if_empty:null}),
 
       // default to /lang/en
       lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"}),
 
-      // an array of options to remove/delete (name, key, description, role);
+      // an array of options to remove/delete (name, key, description, enumeration);
       remove: validators.Array(options, "remove", {if_empty:[]})
     };
   }
@@ -50,7 +48,6 @@ function update_type(options) {
     key: {namespace:o.domain, value:null, optional:true},
     name: {value:null, lang:o.lang, optional:true},
     "/freebase/type_hints/mediator": null,
-    "/freebase/type_hints/terminal": null,
     "/freebase/type_hints/enumeration": null,
     "/common/topic/article": i18n.mql.article_clause(o.lang)
   };
@@ -94,46 +91,22 @@ function update_type(options) {
         update.name = {value:o.name, lang:o.lang, connect:"update"};
       }
 
-      var old_role = h.get_type_role(old);
-
-      if (remove.role) {
-        if (old_role === "mediator") {
-          if (old["/freebase/type_hints/mediator"]) {
-            update["/freebase/type_hints/mediator"] = {value: true, connect: "delete"};
-          }
+      if (remove.enumeration) {
+        var old_enumeration = old["/freebase/type_hints/enumeration"];
+        if (old_enumeration !== null) {
+          update["/freebase/type_hints/enumeration"] = {value: old_enumeration, connect: "delete"};
+        }
+      }
+      else if (o.enumeration != null) {
+        update["/freebase/type_hints/enumeration"] = {value: o.enumeration, connect: "update"};
+        // insert /common/topic as included if not mediator
+        if (o.enumeration && !old["/freebase/type_hints/mediator"]) {
           update["/freebase/type_hints/included_types"] = {id: "/common/topic", connect: "insert"};
         }
-        if (old_role === "enumeration") {
-          if (old["/freebase/type_hints/enumeration"]) {
-            update["/freebase/type_hints/enumeration"] = {value: true, connect: "delete"};
-          }
-        }
-      }
-      else {
-        if (o.role === "mediator") {
-          update["/freebase/type_hints/mediator"] = {value: true, connect: "update"};
-          // remove /common/topic as included type
-          update["/freebase/type_hints/included_types"] = {id: "/common/topic", connect: "delete"};
-        }
-        if (o.role === "enumeration") {
-          update["/freebase/type_hints/enumeration"] = {value: true, connect: "update"};
-          // insert /common/topic as included type
-          update["/freebase/type_hints/included_types"] = {id: "/common/topic", connect: "insert"};
-        }
-      }
-
-      if (remove.terminal) {
-        var old_terminal = old["/freebase/type_hints/terminal"];
-        if (old_terminal !== null) {
-          update["/freebase/type_hints/terminal"] = {value: old_terminal, connect: "delete"};
-        }
-      }
-      else if (o.terminal != null) {
-        update["/freebase/type_hints/terminal"] = {value: o.terminal, connect: "update"};
       }
 
       var d = old;
-      var keys = ["name", "/freebase/type_hints/mediator", "/freebase/type_hints/terminal", "/freebase/type_hints/enumeration"];
+      var keys = ["name", "/freebase/type_hints/enumeration"];
       for (var i=0,l=keys.length; i<l; i++) {
         if (keys[i] in update) {
           d = freebase.mqlwrite(update)

@@ -18,10 +18,9 @@ function create_type(options) {
       name: validators.String(options, "name", {required:true}),
       key: validators.String(options, "key", {required:true}),
       description: validators.String(options, "description", {if_empty:""}),
-      role: validators.OneOf(options, "role", {oneof:["mediator", "enumeration"], if_empty:""}),
-      terminal: validators.StringBool(options, "terminal", {if_empty:false}),
+      mediator: validators.StringBool(options, "mediator", {if_empty:false}),
+      enumeration: validators.StringBool(options, "enumeration", {if_empty:false}),
       lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"})
-
     };
   }
   catch(e if e instanceof validators.Invalid) {
@@ -62,32 +61,28 @@ function create_type(options) {
           connect: "update"
         }
       };
-      if (o.role === "mediator") {
+      if (o.mediator) {
         // need to update /freebase/type_hints/mediator
         q["/freebase/type_hints/mediator"] = {
           value: true,
           connect: "update"
         };
-        if (o.terminal) {
-          q["/freebase/type_hints/terminal"] = {
-            value: true,
-            connect: "update"
-          };
-        }
       }
       else {
-        if (o.role === "enumeration") {
-          // need to update /freebase/type_hints/enumeration
-          q["/freebase/type_hints/enumeration"] = {
-            value: true,
-            connect: "update"
-          };
-        }
+        // non-mediators need /common/topic included type
         q["/freebase/type_hints/included_types"] = {
           id: "/common/topic",
           connect: "insert"
         };
       }
+      if (o.enumeration) {
+        // need to update /freebase/type_hints/enumeration
+        q["/freebase/type_hints/enumeration"] = {
+          value: true,
+          connect: "update"
+        };
+      }
+
       return freebase.mqlwrite(q)
         .then(function(env) {
           return env.result;

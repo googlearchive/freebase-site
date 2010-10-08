@@ -67,7 +67,7 @@ test("create_type mediator", function() {
       domain: user_domain,
       name: name,
       key: sh.generate_type_key(name),
-      role: "mediator"
+      mediator: true
     })
     .then(function(r) {
       type = r;
@@ -102,7 +102,7 @@ test("create_type enumeration", function() {
     create_type({
       domain: user_domain,
       name: name,
-      role: "enumeration",
+      enumeration: true,
       key: sh.generate_type_key(name)
     })
     .then(function(r) {

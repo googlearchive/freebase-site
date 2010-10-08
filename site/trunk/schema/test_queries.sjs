@@ -107,12 +107,12 @@ test("user_domains", function() {
 
 
 test("domain", function() {
-  function assert_type(type, role) {
+  function assert_type(type, mediator) {
     assert_mql_keys(["name", "id", "properties"], type, true);
     assert_bdb_keys(["instance_count"], type, true);
     assert_article(["blurb"], type);
-    if (role) {
-      equal(type.role, role);
+    if (mediator) {
+      ok(type.mediator);
     }
   };
 
@@ -136,7 +136,7 @@ test("domain", function() {
   var mediators = result["mediator:types"];
   if (mediators && mediators.length) {
     mediators.forEach(function(mediator) {
-      assert_type(mediator, "mediator");
+      assert_type(mediator, true);
     });
   }
 });
@@ -146,13 +146,14 @@ function assert_prop(prop) {
                "tip", "disambiguator", "display_none"], prop, true);
   assert_keys(["unique", "unit", "master_property", "reverse_property"], prop);
   if (prop.expected_type && typeof prop.expected_type === "object") {
-    assert_keys(["role"], prop.expected_type);
+    assert_keys(["mediator", "enumeration"], prop.expected_type);
   }
 }
 
 function assert_type(type) {
   assert_mql_keys(["id", "name", "domain",
-               "role", "included_types",
+               "mediator", "enumeration",
+               "included_types",
                "creator", "timestamp",
                "properties"], type);
   assert_bdb_keys(["instance_count"], type);
@@ -234,14 +235,14 @@ test("type_role", function() {
       result = role;
     });
   acre.async.wait_on_results();
-  equal(result, "mediator");
+  ok(result.mediator);
 
   q.type_role("/people/gender")
     .then(function(role) {
       result = role;
     });
   acre.async.wait_on_results();
-  equal(result, "enumeration");
+  ok(result.enumeration);
 });
 
 acre.test.report();

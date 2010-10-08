@@ -76,6 +76,7 @@
         key: key.val(),
         domain: $("input[name=namespace]", form.form).val(),
         description: $.trim($("textarea[name=description]:visible", form.form).val()),
+        enumeration: $("input[name=enumeration]", form.form).is(":checked") ? 1 : 0,
         lang: $("select[name=lang]", form.form).val()
       };
 
@@ -84,74 +85,6 @@
         type: "POST",
         dataType: "json",
         data: $.extend(data, form.ajax.data),
-        success: function(data, status, xhr) {
-          if (data.code === "/api/status/error") {
-            return se.ajax_error_handler(xhr, null, form.form);
-          }
-          form.form.trigger(form.event_prefix + "success", data.result);
-        },
-        error: function(xhr) {
-          se.ajax_error_handler(xhr, null, form.form);
-        }
-      });
-    },
-
-    /**
-     * type settings form
-     */
-    type_role_begin: function(trigger, type_id) {
-      $.ajax({
-        url: fb.acre.request.app_url + "/schema/type/type_role_begin",
-        data: {id:type_id},
-        dataType: "json",
-        success: function(data, status, xhr) {
-          var html = $(data.result.html);
-          var form = {
-            event_prefix: "fb.schema.type.role.",
-            ajax: {
-              url: fb.acre.request.app_url + "/schema/type/type_role_submit",
-              data: {id: type_id}
-            },
-
-            submit_form: te.submit_type_role_form,
-
-            form: html
-          };
-
-          se.init_modal_form(form);
-
-          form.form
-            .bind(form.event_prefix + "success", function(e, data) {
-              window.location = data.location;
-            });
-        }
-      });
-    },
-
-    submit_type_role_form: function(form) {
-      var data = {
-        domain: $("input[name=domain]", form.form).val(),
-        id: $("input[name=id]", form.form).val(),
-        role: $(":radio:checked", form.form).val()
-      };
-      if (data.role === "mediator") {
-        if ($("input[name=terminal]", form.form).is(":checked")) {
-          data.terminal = true;
-        }
-        else {
-          data.terminal = false;
-        }
-      }
-
-      $.ajax({
-        url: form.ajax.url,
-        type: "POST",
-        dataType: "json",
-        data: $.extend(data, form.ajax.data),
-        beforeSend: function(xhr) {
-          xhr.setRequestHeader("cache-control", "max-age: 3600");
-          console.log("beforeSend", xhr);
-        },
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
             return se.ajax_error_handler(xhr, null, form.form);

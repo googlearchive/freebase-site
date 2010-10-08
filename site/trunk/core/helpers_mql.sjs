@@ -27,18 +27,16 @@ function is_literal_type(type_id) {
  * /freebase/type_hints/enumeration.
  *
  * @param type:Object (required)
- * @param set:Boolean (optional) - Set type.role = mediator|enumeration|null if TRUE.
+ * @param set:Boolean (optional) - Set type[mediator|enumeration] if TRUE
  */
 function get_type_role(type, set) {
-  var role = null;
-  if (type["/freebase/type_hints/mediator"] === true) {
-    role = "mediator";
-  }
-  else if (type["/freebase/type_hints/enumeration"] === true) {
-    role = "enumeration";
-  }
+  var role = {
+    mediator: type["/freebase/type_hints/mediator"] === true,
+    enumeration: type["/freebase/type_hints/enumeration"] === true
+  };
   if (set) {
-    type.role = role;
+    type.mediator = role.mediator;
+    type.enumeration = role.enumeration;
   }
   return role;
 };

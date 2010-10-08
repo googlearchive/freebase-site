@@ -6,7 +6,7 @@
   var _ = i18n.gettext;
 </acre:script>
 
-<acre:block def="add_type_form(domain_id, role, type)">
+<acre:block def="add_type_form(domain_id, mediator, type)">
   <table class="edit-form clear">
     <tbody>
       <tr class="edit-row">
@@ -46,17 +46,13 @@
               <textarea acre:else="" acre:attrs="attrs"></textarea>
             </label>
             <div class="fb-type-display">
-              <acre:block if="role === 'mediator'">
-                <input type="checkbox" name="role" value="mediator" checked="checked" style="display:none;"/>
-                <label for="terminal" class="boolean-field">                  
-                  <input type="checkbox" name="terminal" acre:attrs="(type && type['/freebase/type_hints/terminal']) ? {checked:'checked'} : {}"/>
-                  ${_("Terminal")}
-                </label>
-                <a class="help" href="http://wiki.freebase.com/wiki/CVT#terminal">${_("What's this?")}</a>
+              <acre:block if="mediator">
+                <input type="checkbox" name="mediator" value="1" checked="checked" style="display:none;"/>
               </acre:block>
               <acre:block else="">
-                <label for="role" class="boolean-field">
-                  <input type="checkbox" name="role" value="enumeration" acre:attrs="(type && type['/freebase/type_hints/enumeration']) ? {checked:'checked'} : {}"/>
+                <label for="enumeration" class="boolean-field">
+                  <input type="checkbox" name="enumeration" value="1" 
+                         acre:attrs="(type && type.enumeration) ? {checked:'checked'} : {}"/>
                   ${_("Enumerated")}
                 </label>
                 <a class="help" href="http://wiki.freebase.com/wiki/Enumerated_type">${_("What's this?")}</a>
@@ -79,7 +75,7 @@
 </acre:block>
 
 <acre:block def="edit_type_form(type)">
-  ${add_type_form(type.domain.id, type.role, type)}
+  ${add_type_form(type.domain.id, type.mediator, type)}
 </acre:block>
 
 <acre:block def="delete_type_result(type_info)">

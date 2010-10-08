@@ -126,7 +126,7 @@
        <tfoot class="table-edit edit">
          <tr>
            <td colspan="5">
-             <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_type, ['${c.domain.id}'], this);">
+             <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_type, ['${c.domain.id}', false], this);">
                <span class="add-icon">${_('Add New')}</span>
              </a>
            </td>
@@ -175,7 +175,7 @@
       <tfoot class="table-edit edit">
         <tr>
           <td colspan="5">
-            <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_type, ['${c.domain.id}', 'mediator'], this);">
+            <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.add_type, ['${c.domain.id}', true], this);">
               <span class="add-icon">${_('Add New')}</span>
             </a>
           </td>

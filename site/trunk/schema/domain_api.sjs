@@ -5,6 +5,7 @@ var mf = acre.require("MANIFEST").mf;
 var h = mf.require("core", "helpers");
 var editcomponents = mf.require("domain_editcomponents");
 var components = mf.require("domain_components");
+var validators = mf.require("validator", "validators");
 
 var create_type = mf.require("create_type");
 var delete_type = mf.require("delete_type");
@@ -66,8 +67,9 @@ var api = {
   },
 
   add_type_begin: function(args) {
+    var mediator = validators.StringBool(args, "mediator", {if_empty:false});
     return {
-      html: acre.markup.stringify(editcomponents.add_type_form(args.id, args.role))
+      html: acre.markup.stringify(editcomponents.add_type_form(args.id, mediator))
     };
   },
 
@@ -124,14 +126,6 @@ var api = {
     if (!args.description) {
       remove.push("description");
     }
-    if (args.role) {
-      if (args.role === "mediator" && !args.terminal) {
-        remove.push("terminal");
-      }
-    }
-    else {
-      remove.push("role");
-    }
     update_type_options.remove = remove;
     return update_type.update_type(update_type_options)
       .then(function(updated_id) {
@@ -156,7 +150,7 @@ api.domain_settings_submit.method = "POST";
 api.add_type_begin.args = ["id"]; // domain id, mediator (optional)
 api.add_type_begin.auth = true;
 
-api.add_type_submit.args = ["domain", "name", "key", "description", "role", "lang"];
+api.add_type_submit.args = ["domain", "name", "key", "description", "mediator", "enumeration", "lang"];
 api.add_type_submit.auth = true;
 api.add_type_submit.method = "POST";
 
@@ -171,6 +165,6 @@ api.undo_delete_type_submit.method = "POST";
 api.edit_type_begin.args = ["id"]; // type id
 api.edit_type_begin.auth = true;
 
-api.edit_type_submit.args = ["domain", "name", "key", "description", "lang"];
+api.edit_type_submit.args = ["domain", "name", "key", "description", "enumeration", "lang"];
 api.edit_type_submit.auth = true;
 api.edit_type_submit.method = "POST";

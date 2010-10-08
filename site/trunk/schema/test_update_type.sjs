@@ -71,66 +71,6 @@ test("update_type key", function() {
 });
 
 
-test("update_type mediator", function() {
-  var type = h.create_type(user_domain, {"/freebase/type_hints/included_types": {id: "/common/topic"}});
-  try {
-    var updated;
-    update_type({
-      domain: user_domain,
-      id: type.id,
-      role: "mediator"
-    })
-    .then(function(id) {
-      updated = id;
-    });
-    acre.async.wait_on_results();
-    ok(updated, updated);
-
-    var result = acre.freebase.mqlread({
-      id:updated,
-      "/freebase/type_hints/mediator": null,
-      "/freebase/type_hints/included_types": []
-    }).result;
-    ok(result["/freebase/type_hints/mediator"], "updated as mediator");
-    var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
-    ok(!common_topic.length);
-  }
-  finally {
-    if (type) {
-      h.delete_type(type);
-    }
-  }
-});
-
-test("update_type terminal", function() {
-  var type = h.create_type(user_domain);
-  try {
-    var updated;
-    update_type({
-      domain: user_domain,
-      id: type.id,
-      terminal: true
-    })
-    .then(function(id) {
-      updated = id;
-    });
-    acre.async.wait_on_results();
-    ok(updated, updated);
-
-    var result = acre.freebase.mqlread({
-      id:updated,
-      "/freebase/type_hints/terminal": null
-    }).result;
-    ok(result["/freebase/type_hints/terminal"], "updated as terminal");
-  }
-  finally {
-    if (type) {
-      h.delete_type(type);
-    }
-  }
-});
-
-
 test("update_type enumeration", function() {
   var type = h.create_type(user_domain);
   try {
@@ -138,7 +78,7 @@ test("update_type enumeration", function() {
     update_type({
       domain: user_domain,
       id: type.id,
-      role: "enumeration"
+      enumeration: true
     })
     .then(function(id) {
       updated = id;

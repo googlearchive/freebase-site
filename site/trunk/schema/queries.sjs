@@ -102,7 +102,7 @@ function domain(id) {
         promises.push(i18n.get_blurb(type));
         type.instance_count = 0;
         var role = h.get_type_role(type, true);
-        if (role === "mediator") {
+        if (role.mediator) {
           mediators.push(type);
         }
         else {
@@ -150,7 +150,6 @@ function minimal_type(type_id, options) {
     domain: {id: null, name: i18n.mql.query.name(), type: "/type/domain"},
     "/common/topic/article": i18n.mql.query.article(),
     "/freebase/type_hints/mediator": null,
-    "/freebase/type_hints/terminal": null,
     "/freebase/type_hints/enumeration": null,
     properties: {optional: true, id: null, type: "/type/property", "return": "count"}
   }, options);
@@ -190,7 +189,6 @@ function type_role(type_id) {
     id: type_id,
     type: "/type/type",
     "/freebase/type_hints/mediator": null,
-    "/freebase/type_hints/terminal": null,
     "/freebase/type_hints/enumeration": null
   };
   return freebase.mqlread(q)
@@ -306,7 +304,7 @@ function type(id) {
           result.incoming.bases = props || 0;
         }));
 
-      if (result.role === "enumeration") {
+      if (result.enumeration && !result.mediator) {
         promises.push(freebase.mqlread([{
           id: null,
           name: i18n.mql.query.name(),
@@ -639,7 +637,6 @@ incoming.query = function(options) {
       name: i18n.mql.query.name(),
       type: "/type/type",
       "/freebase/type_hints/mediator": null,
-      "/freebase/type_hints/terminal": null,
       "/freebase/type_hints/enumeration": null
     },
     master_property: {

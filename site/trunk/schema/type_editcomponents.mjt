@@ -352,7 +352,7 @@
       <div class="modal-content">
         <div class="form-group">
           <div class="form-row form-row-inline">
-            <label class="form-label" for="type-name">${_('Name')}</label>
+            <label class="form-label" for="name">${_('Name')}</label>
             <acre:script>
               var attrs = {name:"name", type:"text", "class":"text-input"};
             </acre:script>
@@ -375,6 +375,13 @@
             var attrs = {name:"description", "class":"textarea", rows:4};
           </acre:script>
           ${i18n_editcomponents.article(type, attrs)}
+        </div>
+        <div acre:if="!type.mediator" class="form-row">
+          <label class="form-label" for="enumeration">
+            <input type="checkbox" name="enumeration" acre:attrs="type.enumeration ? {checked:'checked'} : {}"/>
+            ${_('Enumerated')}
+          </label>
+          <a class="help" href="http://wiki.freebase.com/wiki/Enumerated_type">${_("What's this?")}</a>
         </div>
       </div>
     </div>
@@ -447,107 +454,6 @@
   </tr>
 </acre:block>
 
-
-<acre:block def="type_role_form(type)">
-  <acre:script>
-    var attrs = {
-      entity: {value:""},
-      enumeration: {value:"enumeration"},
-      mediator: {value:"mediator"},
-      terminal: {}
-    };
-    var role = type.role || "entity";
-    attrs[role].checked = "checked";
-    if (type.used) {
-      // if there are any instances of this type,
-      // can't switch between entity/enumeration and mediator
-      if (role === "entity" || role === "enumeration") {
-        attrs.mediator.disabled = "disabled";
-      }
-      else {
-        attrs.entity.disabled = attrs.enumeration.disabled = "disabled";
-      }
-    }
-    // don't disable currently checked
-    delete attrs[role]['disabled'];
-
-    // terminal attrs
-    if (type["/freebase/type_hints/terminal"]) {
-      attrs.terminal.checked = "checked";
-    }
-    if (attrs.mediator.disabled) {
-      attrs.terminal.disabled = "disabled";
-    }
-
-  </acre:script>
-  <div class="modal" id="type-role">
-    <div class="modal-inner">
-      <h1 class="modal-title">${_("Type Kind")}</h1>
-      <div class="modal-content">
-        <table cellspacing="0" class="table-type-role">
-          <tbody>
-            <tr acre:attrs="attrs.entity.disabled ? {'class':'disabled'} : {}">
-              <th class="row-title">
-                <label class="type-role-title">
-                  <input type="radio" name="role" class="type-role-option" acre:attrs="attrs.entity"/>
-                  ${_("Type")}
-                </label>
-                <p class="type-role-description">${_("Describe any person, place, or concept.")}</p>
-              </th>
-              <td acre:if="attrs.entity.disabled" class="odd warning">
-                ${h.sprintf(_("You cannot change to a Type with topics typed as %s."), i18n.display_name(type))}
-                <a href="${h.freebase_url('/view'+type.id)}" target="_new">${_("View instances")} &raquo;</a>
-              </td>
-              <td acre:else="" class="odd">&nbsp;</td>
-            </tr>
-            <tr acre:attrs="attrs.enumeration.disabled ? {'class':'disabled'} : {}">
-              <th class="row-title">
-                <label class="type-role-title">
-                  <input type="radio" name="role" class="type-role-option" acre:attrs="attrs.enumeration"/>
-                  ${_("Enumerated Type")}
-                </label>
-                <a class="help" href="http://wiki.freebase.com/wiki/Enumerated_type">${_("What's this?")}</a>
-                <p class="type-role-description">${_("Describe any person, place, or concept, but limit the possible values to a finite set of topics.")}</p>
-              </th>
-              <td acre:if="attrs.enumeration.disabled" class="odd warning">
-                ${h.sprintf(_("You cannot change to an Enumerated Type with topics typed as %s."), i18n.display_name(type))}
-                <a href="${h.freebase_url('/view'+type.id)}" target="_new">${_("View instances")} &raquo;</a>
-              </td>
-              <td acre:else="" class="odd">&nbsp;</td>
-            </tr>
-            <tr  acre:attrs="attrs.mediator.disabled ? {'class':'disabled'} : {}">
-              <th class="row-title">
-                <label class="type-role-title">
-                  <input type="radio" name="role" class="type-role-option" acre:attrs="attrs.mediator"/>
-                  ${_("Mediator")}
-                </label>      
-                <a class="help" href="http://wiki.freebase.com/wiki/CVT">${_("What's this?")}</a>       
-                <p class="type-role-description">${_("Describe the relationship between two or more Types.")}<p>
-                <div>
-                  <label>
-                    <input type="checkbox" name="terminal" acre:attrs="attrs.terminal"/> ${_('This is a terminal mediator.')}
-                  </label>
-                  <a class="help" href="http://wiki.freebase.com/wiki/CVT#terminal">${_("What's this?")}</a>
-                </div>
-              </th>
-              <td acre:if="attrs.mediator.disabled" class="odd warning">
-                ${h.sprintf(_("You cannot change to a Mediator with topics typed as %s."), i18n.display_name(type))}
-                <a href="${h.freebase_url('/view'+type.id)}" target="_new">${_("View instances")} &raquo;</a>
-              </td>
-              <td acre:else="" class="odd">&nbsp;</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="modal-buttons">
-      <input type="hidden" name="domain" value="${type.domain.id}"/>
-      <input type="hidden" name="id" value="${type.id}"/>
-      <button class="button button-submit button-primary" type="submit">${_("Save")}</button>
-      <button class="button button-cancel">${_("Cancel")}</button>
-    </div>
-  </div>
-</acre:block>
 
 <acre:block def="reorder_property_form(type)">
 <div class="modal">

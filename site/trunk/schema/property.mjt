@@ -99,10 +99,10 @@
           <a href="${h.url_for('schema', null, null, c.property.expected_type.id)}">
             ${c.property.expected_type.id}
           </a>
-          <acre:block if="c.property.expected_type.role === 'mediator'">
+          <acre:block if="c.property.expected_type.mediator">
             <span class="attribute">${_("mediator")}</span>
           </acre:block>
-          <acre:block elif="c.property.expected_type.role === 'enumeration'">
+          <acre:block if="c.property.expected_type.enumeration">
             <span class="attribute">${_("enumerated")}</span>
           </acre:block>            
           <span class="attribute" acre:if="c.property.unit">${i18n.display_name(c.property.unit)}</a>

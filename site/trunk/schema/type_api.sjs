@@ -28,11 +28,8 @@ var api = {
   },
 
   get_incoming_from_commons: function(args) {
-    var promises = [];
-    promises.push(queries.incoming_from_commons(args.id, args.exclude_domain));
-    promises.push(queries.type_role(args.id));
-    return deferred.all(promises)
-      .then(function([props, role]) {
+    return queries.incoming_from_commons(args.id, args.exclude_domain)
+      .then(function(props) {
         return {
           html: acre.markup.stringify(components.incoming_props_tbody(props))
         };
@@ -40,11 +37,8 @@ var api = {
   },
 
   get_incoming_from_bases: function(args) {
-    var promises = [];
-    promises.push(queries.incoming_from_bases(args.id, args.exclude_domain));
-    promises.push(queries.type_role(args.id));
-    return deferred.all(promises)
-      .then(function([props, role]) {
+    return queries.incoming_from_bases(args.id, args.exclude_domain)
+      .then(function(props) {
         return {
           html: acre.markup.stringify(components.incoming_props_tbody(props))
         };
@@ -75,59 +69,6 @@ var api = {
     // if description is empty, delete from type
     if (!args.description) {
       update_type_options.remove = ["description"];
-    }
-    return update_type.update_type(update_type_options)
-      .then(function(updated_id) {
-         return {
-          location: h.url_for("schema", "type", null, updated_id)
-        };
-      });
-  },
-
-  type_role_begin: function(args) {
-    var promises = [];
-    // check if type has any properties that are reciprocated
-    promises.push(queries.minimal_type(args.id, {
-      properties: [{
-        optional: true,
-        id: null,
-        type: "/type/property",
-        master_property: null,
-        reverse_property: null
-      }]
-    }));
-    // is the type being used?
-    promises.push(queries.type_used(args.id));
-    return deferred.all(promises)
-      .then(function(result) {
-        var type = result[0];
-        type.used = result[1];
-        return type;
-      })
-      .then(function(type) {
-        // are there any return link properties?
-        type.return_links = 0;
-        for (var i=0,l=type.properties.length; i<l; i++) {
-          var prop = type.properties[i];
-          if (prop.master_property || prop.reverse_property) {
-            type.return_links++;
-          }
-        }
-        type.properties = type.properties.length;
-        return type;
-      })
-      .then(function(type) {
-        return {
-          html: acre.markup.stringify(editcomponents.type_role_form(type))
-        };
-      });
-  },
-
-  type_role_submit: function(args) {
-    var update_type_options = h.extend({}, args);
-    // if description is empty, delete from type
-    if (!args.role) {
-      update_type_options.remove = ["role"];
     }
     return update_type.update_type(update_type_options)
       .then(function(updated_id) {
@@ -469,13 +410,6 @@ api.type_settings_begin.auth = true;
 api.type_settings_submit.args = ["id", "name", "key", "description", "lang"]; // type id, name, key and description
 api.type_settings_submit.auth = true;
 api.type_settings_submit.method = "POST";
-
-api.type_role_begin.args = ["id"]; // type id
-api.type_role_begin.auth = true;
-
-api.type_role_submit.args = ["id", "role"]; // type id, type role
-api.type_role_submit.auth = true;
-api.type_role_submit.method = "POST";
 
 api.reorder_property_begin.args = ["id"]; // type id
 api.reorder_property_begin.auth = true;

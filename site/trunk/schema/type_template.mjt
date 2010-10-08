@@ -55,19 +55,13 @@
     <h1>
       ${i18n.display_name(c.type)}
       <span class="flags">
-        <acre:block if="c.type.role === 'mediator'">
+        <acre:block if="c.type.mediator">
           ${_('Mediator')}
-          <acre:block if="c.type['/freebase/type_hints/terminal']">
-            <span class="flags-terminal">(${_("terminal")})</span>
-          </acre:block>
         </acre:block>
-        <acre:block elif="c.type.role === 'enumeration'">
-          ${_('Enumerated Type')}
+        <acre:block if="c.type.enumeration">
+          ${_('Enumerated')}
         </acre:block>
-        <acre:block else="">
-          ${_('Type')}
-        </acre:block>
-        <a class="edit" href="#" onclick="return freebase.dispatch(event, freebase.schema.type.type_role, ['${c.type.id}'], this);">${_('change')}</a>
+        ${_('Type')}
       </span>
     </h1>
     <div class="meta">
@@ -138,7 +132,7 @@
 <acre:block def="table_view()">  
   <!-- Table View -->
   <div class="mode">
-    <div acre:if="c.type.role === 'enumeration'" class="section" id="topics-table">
+    <div acre:if="c.type.enumeration && !c.type.mediator" class="section" id="topics-table">
       <h2 class="table-title">
         <a class="help-link" href="http://wiki.freebase.com/wiki/Enumerated_type" rel="help external" title="${_('Read help article')}">${_('What Are Enumerated Types?')}</a>
         ${_('Topics')}

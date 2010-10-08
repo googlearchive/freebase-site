@@ -21,9 +21,9 @@
     init_toggle_help_messages: function() {
 
       $(".table-empty-trigger").click(function() {
-        $trigger = $(this);
-        $container = $trigger.parents(".table-empty-msg");
-        $help_text = $container.find(".table-empty-text");
+        var $trigger = $(this);
+        var $container = $trigger.parents(".table-empty-msg");
+        var $help_text = $container.find(".table-empty-text");
 
         if ($help_text.is(":hidden")) {
           $container.addClass("active");
@@ -63,14 +63,14 @@
       return false;
     },
 
-    add_type: function(e, domain_id, role) {
+    add_type: function(e, domain_id, mediator) {
       var trigger = $(this);
       if (trigger.is(".editing")) { // are we already editing?
         return false;
       }
       trigger.addClass("editing");
       fb.get_script(fb.acre.request.app_url + "/schema/MANIFEST/domain-edit.mf.js", function() {
-        d.edit.add_type_begin(trigger, domain_id, role);
+        d.edit.add_type_begin(trigger, domain_id, mediator);
       });
       return false;
     },

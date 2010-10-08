@@ -46,10 +46,10 @@
             <span class="return-link-pointer"></span>
           </span>        
         </acre:block>
-        <acre:block if="prop.expected_type.role === 'mediator'">
+        <acre:block if="prop.expected_type.mediator">
           <span class="property-meta ect-role"><abbr title="${_('This is a Mediator')}">${_('mediator')}</abbr></span>
         </acre:block>
-        <acre:block if="prop.expected_type.role === 'enumeration'">
+        <acre:block if="prop.expected_type.enumeration">
           <span class="property-meta ect-role"><abbr title="${_('This is an Enumerated Type')}">${_('enumerated')}</abbr></span>
         </acre:block>      
       </acre:block>

@@ -2,27 +2,37 @@ acre.require('/test/lib').enable(this);
 
 var h = acre.require("helpers_mql");
 
-test("get_type_role", function() {
-  strictEqual(h.get_type_role({}, true), null);
+
+function role(mediator, enumeration) {
+  return {
+    mediator: mediator === true,
+    enumeration: enumeration === true
+  };
+}
+
+var role_tests = [
+  {},
+  role(false, false),
+
+  {"/freebase/type_hints/mediator": true},
+  role(true, false),
+
+  {"/freebase/type_hints/mediator": false, "/freebase/type_hints/enumeration": true},
+  role(false, true),
+
+  {"/freebase/type_hints/mediator": true, "/freebase/type_hints/enumeration": true},
+  role(true, true)
+
+];
+
+test("get_type_role", role_tests, function() {
+
+  for (var i=0,l=role_tests.length; i<l; i+=2) {
+    deepEqual(h.get_type_role(role_tests[i]), role_tests[i+1]);
+  }
+
 });
 
-test("get_type_role mediator", function() {
-  var mediators = [
-    {"/freebase/type_hints/mediator": true}
-  ];
-  mediators.forEach(function(m) {
-    equal(h.get_type_role(m, true), "mediator");
-  });
-});
-
-test("get_type_role enumeration", function() {
-  var enums = [
-    {"/freebase/type_hints/enumeration": true}
-  ];
-  enums.forEach(function(enumeration) {
-    equal(h.get_type_role(enumeration, true), "enumeration");
-  });
-});
 
 acre.test.report();
 

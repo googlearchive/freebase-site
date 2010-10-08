@@ -87,14 +87,6 @@
       return false;
     },
 
-    type_role: function(e, type_id) {
-      var trigger = $(this);
-      fb.get_script(fb.acre.request.app_url + "/schema/MANIFEST/type-edit.mf.js", function() {
-        t.edit.type_role_begin(trigger, type_id);
-      });
-      return false;
-    },
-
     reorder_property: function(e, type_id) {
       var trigger = $(this);
       if (trigger.is(".editing")) { // are we already editing?

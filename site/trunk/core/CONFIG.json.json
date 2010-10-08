@@ -9,7 +9,6 @@
     "permission": "//permission.site.freebase.dev",
     "appeditor": "//appeditor-services.site.freebase.dev",
     "cuecard": "//cuecard.site.freebase.dev",
-    "codemirror": "//codemirror.site.freebase.dev",
     "i18n": "//i18n.site.freebase.dev",
     "test": "//test.site.freebase.dev",
     

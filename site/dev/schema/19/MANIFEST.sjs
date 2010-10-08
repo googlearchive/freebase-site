@@ -1,2 +1,2 @@
 var mf = JSON.parse(acre.require("CONFIG.json").body);
-acre.require(mf.apps.core + "/MANIFEST").init(mf, this);
+acre.require(mf.apps.core + "/MANIFEST").init(mf, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/schema/4882c82751c8dd53a3d4525b5536b506", "static_base_url": "http://freebaselibs.com/static/freebase_site/schema/4882c82751c8dd53a3d4525b5536b506"});

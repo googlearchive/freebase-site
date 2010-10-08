@@ -92,7 +92,7 @@
 
       // slider for controlling property limit
       var $limit_slider = $("#limit-slider");
-      var $current_limit = $(".current-limit");
+      var $current_limit = $(".filter-title > .current-limit");
       var $input = $limit_slider.siblings("input[name=limit]");
       var slider_value = 100;
 
@@ -117,9 +117,11 @@
         max: 1000,
         step: 10,
         slide: function(e, ui) {
+          $current_limit.css({'color': '#f71'});
           $current_limit.html(ui.value);
         },
         stop: function(e, ui) {
+          $current_limit.css({'color': '#333'});
           $input.val(ui.value);
           $limit_slider.parents("form:first").submit();
         }

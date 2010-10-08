@@ -196,17 +196,22 @@ tr.invalid td {
 
 #limit-slider {
   width: 100%;
+  background: url(slider-bg.png) no-repeat;
   position: relative;
-  height: 20px;
-  background: #ececec;
+  height: 40px;
   border: 1px solid ccc;
 }
 
 .ui-slider-handle {
   position: absolute;
   display: block;
-  width: 10px;
-  height: 20px;
-  background: #f8f8f8;
-  border: 1px solid #aaa;
+  top: -2px;
+  width: 20px;
+  height: 26px;
+  margin-left: -10px;
+  background: url(limit-indicator.png) no-repeat center center;
+}
+
+.filter-title .current-limit {
+  color: #333;
 }

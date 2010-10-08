@@ -46,20 +46,6 @@
         </span>
       </acre:block>
       <li>
-        <acre:block if="o.as_of_time">
-        <span class="filter-item">
-          <a href="${f.remove_filter_url(o, 'as_of_time')}" class="remove-filter">x</a>
-          ${o.as_of_time}
-        </span>
-        <a class="filter-form-trigger" href="javascript:void(0);">${_("change")}&hellip;</a>
-        </acre:block>
-        <a acre:else="" href="javascript:void(0);" class="filter-form-trigger">as of&hellip;</a>
-        <div class="filter-form" style="display:none;"> 
-          ${filter_form(o, 'as_of_time', null, 'timestamp')}
-        </div>
-        </acre:block>
-      </li>
-      <li>
         <a class="filter-form-trigger" href="javascript:void(0)">${change ? _("change"): _("custom")}&hellip;</a>
         <div class="filter-form" style="display:none;">
           ${filter_form(o, 'timestamp', timestamp_inputs)}
@@ -89,8 +75,21 @@
   </div>
 
   <div class="filter-group">
-    <h2 class="filter-title">${_("Limit")}:</h2>
     ${filter_form(o, 'limit', limit_slider)}
+  </div>
+
+  <div class="filter-group">
+    <h2 class="filter-title">As of</h2>
+    <acre:block if="o.as_of_time">
+    <span class="filter-item">
+      <a href="${f.remove_filter_url(o, 'as_of_time')}" class="remove-filter">x</a>
+      ${o.as_of_time}
+    </span>
+    </acre:block>
+    <div class="filter-form"> 
+      ${filter_form(o, 'as_of_time', null, 'timestamp')}
+    </div>
+    </acre:block>
   </div>
 
   <div class="filter-group">
@@ -141,9 +140,10 @@
 </acre:block>
 
 <acre:block def="limit_slider(limit)">
+  <h2 class="filter-title">${_("Limit")}: <span class="current-limit">${i18n.format_number(limit)}</span>
+</h2>
   <input type="hidden" name="limit" value="${i18n.format_number(limit)}" />
-  <span class="current-limit">${i18n.format_number(limit)}</span>
-  <div id="limit-slider"></div>
+    <div id="limit-slider"></div>
 </acre:block>
 
 <acre:block def="timestamp_inputs()">  

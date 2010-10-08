@@ -1,5 +1,1 @@
-{
-  "apps": {
-    "core": "//core.site.freebase.dev"
-  }
-}
+{"apps": {"core": "//42.core.site.freebase.dev"}}

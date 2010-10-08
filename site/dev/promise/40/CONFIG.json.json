@@ -1,8 +1,1 @@
-{
-  "apps": {
-    "core": "//core.site.freebase.dev"
-  },
-  "test": {
-    "files": ["test_apis", "test_deferred"]
-  }
-}
+{"test": {"files": ["test_apis", "test_deferred"]}, "apps": {"core": "//40.core.site.freebase.dev"}}

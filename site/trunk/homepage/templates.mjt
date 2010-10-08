@@ -195,9 +195,6 @@
         An entity graph of people, places and things, built by a community that loves open data.
       </span>
     </h1>
-    <div class="homepage-announce">
-      Freebase is joining <a href="http://www.google.com/"><img id="homepage-announce-logo" src="${mf.img_src('google.png')}" alt="Google" border="0" /></a><big>!</big> <a href="http://blog.freebase.com/2010/07/16/metaweb-joins-google/" class="homepage-announce-more">Learn more &raquo;</a></span>
-    </div>
   </div>
 </acre:block>
 
@@ -262,12 +259,12 @@
   </div>
 </acre:block>
 
-<acre:block def="gridworks()">
-  <div class="content-section-gridworks">
-    <a href="http://code.google.com/p/freebase-gridworks"><img src="${mf.img_src('gridworks-logo.png')}" border="0" class="gridworks-logo"/></a>
+<acre:block def="googlerefine()">
+  <div class="content-section-googlerefine">
+    <a href="http://code.google.com/p/google-refine"><img src="${mf.img_src('googlerefine-logo.png')}" border="0" class="googlerefine-logo"/></a>
     <p>
       An open source power tool to fix, discover, experiment, connect and customize your data.  
-      <a href="http://code.google.com/p/freebase-gridworks">Learn more &raquo;</a>
+      <a href="http://code.google.com/p/google-refine">Learn more &raquo;</a>
     </p>
   </div>
 </acre>

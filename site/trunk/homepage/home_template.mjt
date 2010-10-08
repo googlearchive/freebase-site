@@ -29,7 +29,7 @@
   <div id="content-side">
     ${templates.user_info(c.user)}
     ${templates.contribute_to_freebase()}
-    ${templates.gridworks()}
+    ${templates.googlerefine()}
   </div>
   
   <div id="content-footer">

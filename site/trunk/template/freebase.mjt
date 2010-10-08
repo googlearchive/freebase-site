@@ -133,12 +133,12 @@
 
 <acre:block def="footer(exports)">
   <div id="page-footer" class="clear">
-    <div id="metaweb-attribution">
-      <a href="http://www.metaweb.com/" id="copyright" title="Learn more about Metaweb, Inc." rel="nofollow">
-        &#169;2010&nbsp;
-        <img src="${mf.img_src('metaweb-logo.png')}" alt="Metaweb"  width="71" height="12" />
-      </a>
-      <a title="${acre.request.script.path}" href="${acre.response.headers['x-acre-source-url']}">View Source</a>
+    <div id="copyright">
+      <a href="http://www.google.com/" rel="nofollow">
+        &#169;2010 
+        <img src="${mf.img_src('google-logo.png')}" alt="Google" width="62" height="23" />
+      </a> 
+      <a title="${acre.request.script.path}" href="${acre.response.headers['x-acre-source-url']}" id="sourcelink">View Source</a>
     </div>
     <ul id="nav-footer" class="clear">
       <li class="nav-footer-item">

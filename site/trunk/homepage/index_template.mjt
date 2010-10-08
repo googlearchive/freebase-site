@@ -32,7 +32,7 @@
   </div>
   
   <div id="content-side">
-    ${templates.gridworks()}
+    ${templates.googlerefine()}
     ${templates.what_is_freebase()}
     ${templates.for_developers()}
   </div>

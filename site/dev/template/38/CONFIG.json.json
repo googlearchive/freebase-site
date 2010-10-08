@@ -1,0 +1,24 @@
+{
+  "apps" : {
+    "core": "//core.site.freebase.dev"
+  },
+  "javascript": {
+    "freebase.mf.js": [
+      "jquery.cookie.js",
+      "jquery.placeholder.js",
+      "jquery.metadata.js",
+      ["jqueryui", "jquery.ui.core.mf.js"],
+      "freebase.js"
+    ],
+    "freebase-permission.mf.js": [
+      "freebase.mf.js",
+      ["permission", "permission.js"]
+    ]
+  },
+  "stylesheet": {
+    "freebase.mf.css": [
+      "freebase.less",
+      "components.less"
+    ]
+  }
+}

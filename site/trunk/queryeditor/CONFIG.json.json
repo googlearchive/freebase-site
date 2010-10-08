@@ -12,6 +12,7 @@
     "queryeditor.mf.js": [
       ["template", "freebase.mf.js"],
       ["jqueryui", "jquery.ui.tabs.js"],
+      ["jqueryui", "jquery.ui.dialog.js"],
     	"index.js",
     ]
   }

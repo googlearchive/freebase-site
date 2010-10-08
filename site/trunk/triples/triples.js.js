@@ -146,7 +146,7 @@
       var table = $(".table-sortable").tablesorter();
 
       // *** Initialize triggers for showing/hiding hidden inputs
-      $(".filter-form-trigger").click(function(){
+      $(".filter-form-trigger, .time-form-trigger").click(function(){
         var $form = $(this).siblings(".filter-form");
         if($form.is(":hidden")) {
           $form.slideDown(function() {

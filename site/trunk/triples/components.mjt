@@ -46,7 +46,7 @@
         </span>
       </acre:block>
       <li>
-        <a class="filter-form-trigger" href="javascript:void(0)">${change ? _("change"): _("custom")}&hellip;</a>
+        <a class="time-form-trigger" href="javascript:void(0)">${change ? _("change"): _("custom")}&hellip;</a>
         <div class="filter-form" style="display:none;">
           ${filter_form(o, 'timestamp', timestamp_inputs)}
         </div>
@@ -68,7 +68,7 @@
         ${user}
       </span>
     </acre:block>
-    <a acre:if="o.creator" class="filter-form-trigger" href="javascript:void(0);">${_("Add another")}&hellip;</a>
+    <a acre:if="o.creator" class="filter-form-trigger" href="javascript:void(0);">${_("add another")}&hellip;</a>
     <div class="filter-form" acre:attrs="o.creator ? {style:'display:none;'} : {}">
       ${filter_form(o, 'creator', null, 'Start typing for suggestions', true)}
     </div>
@@ -81,7 +81,7 @@
       <a href="${f.remove_filter_url(o, 'as_of_time')}" class="remove-filter">x</a>
       ${o.as_of_time}
     </span>
-    <a href="javascript:void(0);" class="filter-form-trigger">${_("Change")}&hellip;</a>
+    <a href="javascript:void(0);" class="filter-form-trigger">${_("change")}&hellip;</a>
     <div class="filter-form" style="display:none">
       ${filter_form(o, 'as_of_time', null, 'timestamp')}
     </div>

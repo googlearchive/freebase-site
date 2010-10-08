@@ -75,10 +75,6 @@
   </div>
 
   <div class="filter-group">
-    ${filter_form(o, 'limit', limit_slider)}
-  </div>
-
-  <div class="filter-group">
     <h2 class="filter-title">As of</h2>
     <acre:block if="o.as_of_time">
     <span class="filter-item">
@@ -86,34 +82,17 @@
       ${o.as_of_time}
     </span>
     </acre:block>
-    <div class="filter-form"> 
+    <div class="filter-form">
       ${filter_form(o, 'as_of_time', null, 'timestamp')}
     </div>
     </acre:block>
   </div>
 
+
+  <h1 class="filter-section-title">Display Options</h1>
   <div class="filter-group">
-    <h2 class="filter-title">${_("History")}:</h2>
-    <acre:block if="o.history">
-      <span class="filter-item">
-        <a href="${f.remove_filter_url(o, 'history')}" class="remove-filter">x</a>
-        ${_("show all")}
-      </span>
-      <div class="history legend">
-        <table class="table">
-          <thead>
-            <tr><th class="column-header first">${_("Legend")}</th></tr>
-          </thead>
-          <tbody>
-            <tr class="valid"><th class="row-header" scope="row">${_("valid")}</th></tr>
-            <tr class="invalid"><th class="row-header" scope="row">${_("invalid")}</th></tr>
-         </tbody>
-        </table>          
-      </div>
-    </acre:block>    
-    <ul acre:else="">
-      <li><a href="${f.filter_url(o, 'history', 1)}" title="${_('Show all operations')}">${_("show all")}</a></li>
-    </ul>
+    ${filter_form(o, 'limit', limit_slider)}
+    ${filter_form(o, 'history', history)}
   </div>
 </acre:block>
 
@@ -139,15 +118,24 @@
   </form>
 </acre:block>
 
-<acre:block def="limit_slider(limit)">
-  <h2 class="filter-title">${_("Limit")}: <span class="current-limit">${i18n.format_number(limit)}</span>
+<acre:block def="history(history)">
+<h2 style="margin-top:10px;" class="filter-title">
+  <label>
+    <input class="history-toggle" acre:if="history === true" type="checkbox" name="history" value="true" checked="checked"> 
+    <input class="history-toggle" acre:else="" type="checkbox" name="history" value="false"> 
+    Show historical writes
+  </label>
 </h2>
-  <input type="hidden" name="limit" value="${i18n.format_number(limit)}" />
-    <div id="limit-slider"></div>
 </acre:block>
 
-<acre:block def="timestamp_inputs()">  
-  <input type="text" class="text-input date-input" name="timestamp" placeholder="${_('from')}"/> to 
+<acre:block def="limit_slider(limit)">
+  <h2 class="filter-title">${_("Limit")}: <span class="current-limit">${i18n.format_number(limit)}</span></h2>
+  <input type="hidden" name="limit" value="${i18n.format_number(limit)}" />
+  <div id="limit-slider"></div>
+</acre:block>
+
+<acre:block def="timestamp_inputs()">
+  <input type="text" class="text-input date-input" name="timestamp" placeholder="${_('from')}"/> to
   <input type="text" class="text-input date-input" name="timestamp" placeholder="${_('to')}"/>
 </acre:block>
 
@@ -170,7 +158,7 @@
         ${o.domain}
       </span>
     </acre:block>
-    <acre:block elif="o.type">     
+    <acre:block elif="o.type">
       <acre:script>
         var path = o.type.split("/");
         path.pop();

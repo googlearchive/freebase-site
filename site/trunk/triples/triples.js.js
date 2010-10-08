@@ -88,8 +88,8 @@
       }
     },
 
-    init: function() {
-
+    limit_slider: function() {
+                  
       // slider for controlling property limit
       var $limit_slider = $("#limit-slider");
       var $current_limit = $(".filter-title > .current-limit");
@@ -127,6 +127,48 @@
         }
       });
 
+    },
+
+
+    init: function() {
+
+      // Initialize row menu hovers & menus
+      triples.init_row_menu();
+
+      // Initialize the property limit slider
+      triples.limit_slider();
+
+      // Initialize table sorting
+      $.tablesorter.defaults.cssAsc = "column-header-asc";
+      $.tablesorter.defaults.cssDesc = "column-header-desc";
+      $.tablesorter.defaults.cssHeader =  "column-header";
+
+      var table = $(".table-sortable").tablesorter();
+
+      // *** Initialize triggers for showing/hiding hidden inputs
+      $(".filter-form-trigger").click(function(){
+        var $form = $(this).siblings(".filter-form");
+        if($form.is(":hidden")) {
+          $form.slideDown(function() {
+            $(":text:first", $form).focus();
+          });
+        }
+        else {
+          $form.slideUp();
+        }
+      });
+
+      // *** Initialize user/creator suggest input
+      $("input[name=creator]").suggest({
+        service_url: fb.acre.freebase.service_url,
+        type: "/type/user"
+      })
+      .bind("fb-select", function(e, data) {
+        $(this).val(data.id)
+          .parents("form:first").submit();
+      });
+      
+      // *** Initialize filter menu positioning
       // Because the filter menu is absolutely/fixed positioned
       // we need to insure the content container is at least the
       // same height as the menu
@@ -199,6 +241,19 @@
         }
       });
 
+      // Toggling for 'show all writes'
+      $(".history-toggle").change(function() {
+
+        if($(this).is(":checked")) {
+          $(this).val('false');
+          $(this).parents("form:first").submit();
+        }
+        else {
+          $(this).val('true');
+          $(this).parents("form:first").submit();
+        }
+      });
+
       // Hide menu when user leaves menu
       $nav_menu.mouseleave(function(){
         setTimeout(function(){ $nav_menu.fadeOut() }, 1500);
@@ -208,38 +263,6 @@
       $("li > a", $nav_menu).click(function(){
        $("b", $nav_current).html($(this).html());
         $nav_menu.hide();
-      });
-
-
-      triples.init_row_menu();
-
-      $.tablesorter.defaults.cssAsc = "column-header-asc";
-      $.tablesorter.defaults.cssDesc = "column-header-desc";
-      $.tablesorter.defaults.cssHeader =  "column-header";
-
-      // init table sorter
-      var table = $(".table-sortable").tablesorter();
-
-      $(".filter-form-trigger").click(function(){
-        var $form = $(this).siblings(".filter-form");
-        if($form.is(":hidden")) {
-          $form.slideDown(function() {
-            $(":text:first", $form).focus();
-          });
-        }
-        else {
-          $form.slideUp();
-        }
-      });
-
-      // filter creator/user suggest
-      $("input[name=creator]").suggest({
-        service_url: fb.acre.freebase.service_url,
-        type: "/type/user"
-      })
-      .bind("fb-select", function(e, data) {
-        $(this).val(data.id)
-          .parents("form:first").submit();
       });
     }
   };

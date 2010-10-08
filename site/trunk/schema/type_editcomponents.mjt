@@ -380,8 +380,8 @@
           <label class="form-label" for="enumeration">
             <input type="checkbox" name="enumeration" acre:attrs="type.enumeration ? {checked:'checked'} : {}"/>
             ${_('Enumerated')}
+            <a class="help" href="http://wiki.freebase.com/wiki/Enumerated_type">${_("What's this?")}</a>
           </label>
-          <a class="help" href="http://wiki.freebase.com/wiki/Enumerated_type">${_("What's this?")}</a>
         </div>
       </div>
     </div>

@@ -52,7 +52,6 @@
 		</script>
 	  <script src="${mf.lib_base_url('jquery')}/jquery.min.js"></script>
 	  <script src="${mf.lib_base_url('suggest')}/suggest.min.js"></script>
-	  <script src="${mf.lib_base_url('mjt')}/mjt.min.js"></script>
 	  <script src="${cuecard_mf.js_src('editor-bundle.mf.js')}"></script>
 		<script src="${mf.js_src('appeditor.mf.js')}"></script>
 	</head>

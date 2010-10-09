@@ -1,28 +1,5 @@
 [
     {
-        "host": "@ACRE_APPEDITOR_HOST@",
-        "rules": [
-            {
-                "from": {
-                    "path": "/appeditor" 
-                },
-                "to": {
-                    "route_as": "app",
-                    "location": "/freebase/site/appeditor-services" 
-                } 
-            },
-            {
-                "from": {
-                    "path": "/" 
-                },
-                "to": {
-                    "route_as": "app",
-                    "location": "/freebase/site/appeditor"
-                } 
-            } 
-        ] 
-    },
-    {
         "host": ".@ACRE_METAWEB_BASE_ADDR@",
         "rules": [
             {
@@ -34,47 +11,6 @@
                     "location": "/freebase/site/routing/release" 
                 } 
             } 
-        ] 
-    },
-    {
-        "host": ".metaweb.com",
-        "rules": [
-            {
-                "from": {
-                    "path": "/host.crl" 
-                },
-                "to": {
-                    "route_as": "script",
-                    "location": "/local/crls/host.crl" 
-                } 
-            },
-            {
-                "from": {
-                    "path": "/root.crl" 
-                },
-                "to": {
-                    "route_as": "script",
-                    "location": "/local/crls/root.crl" 
-                } 
-            },
-            {
-                "from": {
-                    "path": "/vpn.crl" 
-                },
-                "to": {
-                    "route_as": "script",
-                    "location": "/local/crls/vpn.crl" 
-                } 
-            },
-            {
-                "from": {
-                    "path": "/" 
-                },
-                "to": {
-                    "route_as": "app",
-                    "location": "/freebase/apps/about/release" 
-                } 
-            } 
-        ] 
+        ]
     }
 ]

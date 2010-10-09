@@ -281,7 +281,7 @@ function parse_path(path, options /* file : true|false */) {
     //if the current host was not resolved by the mappings (e.g. you are on a google internal host)
     //then just set the service_url to freebase service_url
     if (!resource.service_url) { 
-	resource.service_url = acre.freebase.service_url;
+	    resource.service_url = acre.freebase.service_url;
     }
       
     // break-down app host so we can work with it
@@ -330,7 +330,7 @@ function parse_path(path, options /* file : true|false */) {
   } else {
     resource.appid = acre.current_script.app.id;
     resource.version = acre.current_script.app.version;
-    resource.app_path = (resource.version.length ? resource.version[0] + "." : "" ) +
+    resource.app_path = (resource.version ? resource.version + "." : "" ) +
                         resource.appid.split("/").reverse().join(".") + "dev";
 
     // extract filename and path_info, if present

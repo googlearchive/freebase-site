@@ -13,6 +13,7 @@
       ["jqueryui", "jquery.ui.tabs.js"],
       ["jqueryui", "jquery.ui.draggable.js"],
       "jquery.shortcut.js",
+      "mjt.min.js",
       "util.js",
       "zencoding.js",
       "freebase_store.js",

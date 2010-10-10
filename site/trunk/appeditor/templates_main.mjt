@@ -119,7 +119,7 @@
         Edit Current</button>
       or
       <button id="button-clone" mjt.onclick="ui.do_show_dialog('new_app', [true])">
-        Clone this Version</button>      
+        Clone this App</button>      
     </div>
     <div mjt.else="">
       <button id="button-clone" class="button-primary" mjt.attrs="user?{}:{'disabled':'disabled'}" mjt.onclick="ui.do_show_dialog('new_app', [true])" >

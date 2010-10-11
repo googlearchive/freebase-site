@@ -231,3 +231,27 @@ function typelinks(id, filters) {
     });
 };
 
+
+function attribution_links(id, filters) {
+  var q = [{
+    type: "/type/link",
+    master_property: null,
+    source: {id:null, mid:null, guid:null, name:i18n.mql.query.name()},
+    target: {id:null, mid:null, name:i18n.mql.query.name(), optional:true},
+    target_value: {},
+    creator: id,
+    timestamp: null,
+    optional: true,
+    limit: filters.limit || LIMIT,
+    sort: "-timestamp"
+  }];
+  f.apply_limit(q[0], filters.limit);
+  f.apply_timestamp(q[0], filters.timestamp);
+  f.apply_creator(q[0], filters.creator);
+  f.apply_history(q[0], filters.history);
+  return freebase.mqlread(q, f.mqlread_options(filters))
+    .then(function(env) {
+      return env.result;
+    });
+};
+

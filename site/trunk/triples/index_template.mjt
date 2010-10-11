@@ -57,13 +57,16 @@
        menu_map.push({ "key": "keys", "name": _("Keys")})
      }
      if(c.outgoing && c.outgoing.length) {
-       menu_map.push({ "key": "outgoingproperties", "name": _("Outgoing Properties")})
+       menu_map.push({ "key": "outgoinglinks", "name": _("Outgoing Links")})
      }
      if(c.incoming && c.incoming.length) {
-       menu_map.push({ "key": "incomingproperties", "name": _("Incoming Properties")})
+       menu_map.push({ "key": "incominglinks", "name": _("Incoming Links")})
      }
      if(c.typelinks && c.typelinks.length) {
        menu_map.push({ "key": "typelinks", "name": _("Links using this property")})
+     }
+     if(c.attribution_links && c.attribution_links.length) {
+       menu_map.push({ "key": "attribution_links", "name": _("Links created by")})
      }
   </acre:script>
   <div class="page-meta">
@@ -188,7 +191,7 @@
       </acre:block>
 
       <acre:block if="c.outgoing && c.outgoing.length">
-        <h2 class="table-title"><a name="outgoingproperties">${_("Outgoing Properties")} (${i18n.format_number(c.outgoing.length)})</a></h2>
+        <h2 class="table-title"><a name="outgoinglinks">${_("Outgoing Links")} (${i18n.format_number(c.outgoing.length)})</a></h2>
         <table class="table table-sortable">
           <thead>
             <tr>
@@ -221,7 +224,7 @@
       </acre:block>
 
       <acre:block if="c.incoming && c.incoming.length">
-        <h2 class="table-title"><a name="incomingproperties">${_("Incoming Properties")} (${i18n.format_number(c.incoming.length)})</a></h2>
+        <h2 class="table-title"><a name="incominglinks">${_("Incoming Links")} (${i18n.format_number(c.incoming.length)})</a></h2>
         <table class="table table-sortable">
           <thead>
             <tr>
@@ -286,6 +289,44 @@
                   ${tooltip()}
                 </th>
                 <td class="even"><span class="self">-</span></td>
+                <td class="odd" acre:if="o.target_value">${literal(o.target_value, o.master_property, o.source.id)}</td>
+                <td class="odd" acre:else="">${topic(o.target)}</td>
+                <td class="even" acre:if="o.creator">${a(o.creator)}</td>
+                <td class="even" acre:else="">null</td>
+                <td class="odd numeric">${o.timestamp}</td>
+                <td acre:if="c.filters.history" class="even">${o.operation}</th>
+              </tr>
+            </acre:block>
+          </tbody>
+        </table>
+      </acre:block>
+
+      <acre:block if="c.attribution_links && c.attribution_links.length">
+        <h2 class="table-title"><a name="attribution_links">${_("Links created by this user/attribution")} (${i18n.format_number(c.attribution_links.length)})</a></h2>
+        <table class="table table-sortable">
+          <thead>
+            <tr>
+              <th class="column-header first"><span class="sort-icon">${_("source")}</span></th>
+              <th class="column-header"><span class="sort-icon">${_("property")}</span></th>
+              <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
+              <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
+              <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
+              <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <acre:block for="o in c.attribution_links">
+              <acre:script>
+                if (o.master_property === "/dataworld/gardening_hint/replaced_by") {
+                  o.source.id = "/guid/" + o.source.guid.substring(1);
+                }
+              </acre:script>
+              <tr class="hoverable ${JSON.stringify(th.triple(o.source.id, c.topic.id, o.target_value || o.target))} ${th.link_class(o)}">
+                <th class="row-header odd" scope="row">
+                  ${topic(o.source)}
+                  ${tooltip()}
+                </th>
+                <td class="even"><span class="self">${a(o.master_property)}</span></td>
                 <td class="odd" acre:if="o.target_value">${literal(o.target_value, o.master_property, o.source.id)}</td>
                 <td class="odd" acre:else="">${topic(o.target)}</td>
                 <td class="even" acre:if="o.creator">${a(o.creator)}</td>

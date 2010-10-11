@@ -17,6 +17,7 @@ var data = h.extend({
   outgoing: queries.outgoing(id, filters),
   incoming: queries.incoming(id, filters),
   typelinks: queries.typelinks(id, filters),
+  attribution_links: queries.attribution_links(id, filters),
   filters: filters
 });
 

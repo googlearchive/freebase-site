@@ -21,7 +21,8 @@ limitations under the License.
 __author__ = 'masouras@google.com (Michael Masouras)'
 
 
-import sys, subprocess, shutil, os, hashlib, urllib, urllib2, tempfile, re, pwd, pdb, time
+import sys, subprocess, shutil, os, hashlib, urllib, urllib2, tempfile, re, pwd, pdb, time, smtplib, socket
+from email.MIMEText import MIMEText
 from optparse import OptionParser
 from tempfile import mkdtemp, mkstemp
 from cssmin import cssmin
@@ -34,8 +35,10 @@ except ImportError:
 from freebase.api import HTTPMetawebSession, MetawebError
 from freebase.api.mqlkey import quotekey, unquotekey
 
+## EMAIL SETTINGS ##
 
-
+USER_EMAIL_ADDRESS = "%s@google.com" % os.getlogin()
+DESTINATION_EMAIL_ADDRESS = "masouras@google.com"
 
 ## GLOBAL CONFIGURATION ##
 
@@ -64,73 +67,261 @@ OUTBOUND = ["outbound01.ops.sjc1.metaweb.com", "outbound02.ops.sjc1.metaweb.com"
 
 # recognized extensions for static files
 IMG_EXTENSIONS = [".png", ".gif", ".jpg"]
-EXTENSIONS = [".js", ".css", ".less", ".txt"] + IMG_EXTENSIONS
+RES_EXTENSIONS = [".js", ".css", ".less"]
+EXTENSIONS = IMG_EXTENSIONS + RES_EXTENSIONS + [".txt"]
+
+FILE_TYPES = {
+    'png':'image/png',
+    'jpg':'image/jpeg',
+    'gif':'image/gif',
+    'html':'text/html',
+    'css':'text/css',
+    'js':'text/javascript'
+    }
 
 JAVA = os.environ.get("JAVA_EXE", "java")
 COMPILER = os.path.join(os.path.abspath(os.path.dirname(os.path.join(os.getcwd(), __file__))), "compiler.jar")
 JAVA_OPTS = ["-jar", COMPILER, "--warning_level", "QUIET"]
 
-SVN_PATH_ROOT = '/home/%s/src/freebase_site' % os.getenv('USER')
 SVN_URL_ROOT = 'https://svn.metaweb.com/svn/freebase_site'
 STATIC_URL_ROOT =   'http://freebaselibs.com/static/freebase_site'
 
 ROOT_NAMESPACE = '/freebase/site'
+CONFIG_FILE = 'CONFIG.json.json'
+MANIFEST_FILE = 'MANIFEST.sjs'
+FIRST_LINE_REQUIRE_CONFIG = 'var mf = JSON.parse(acre.require("CONFIG.json").body);'
 
+class AppFactory:
 
-class App():
+  #this is an app:version -> app object mapping
+  #we want to return the same app object for the same app:version combination
+  #in order to keep useful state (e.g. to not re-checkout the app in svn etc..)
+  #i.e. app objects are sigletons
+  apps = { }
+
+  def __init__(self, context):
+    self.c = context
+
+  #create an app object out of a path
+  #e.g. //4.schema.site.freebase.dev
+  def from_path(self, path):
+    parts = path[2:].split('.site.freebase.dev')[0].split('.')
+
+    if len(parts) == 2:
+      return self(parts[1], parts[0])
+    else:
+      return self(parts[0], None)
+
+  #return an App object
+  def __call__(self, app_key, version=None):
+    n = "%s:%s" % (app_key, version or 'trunk')
+    if self.apps.get(n):
+      return self.apps[n]
+
+    app_obj = App(self.c, app_key, version)
+
+    self.apps[n] = app_obj
+    return app_obj
+
+class App:
 
   def __init__(self, context, app_key, version=None):
-
     self.app_key = app_key
     self.version = version
+
     self.app_id = '%s/%s' % (ROOT_NAMESPACE, self.app_key)
 
     self.c = context
+    self.local_dir = None
+    self.checked_out = False
+    self.local_deployed_dir = None
 
-  def app_from_path(self, path):
+  def __str__(self):
+    return self.name()
 
-    parts = path[2:].split('.site.freebase.dev')[0].split('.')
+  def name(self):
+    return "%s:%s" % (self.app_key, self.version or 'trunk')
 
-    #[3, 'promise']
-    if len(parts) == 2:
-      return App(self.c, parts[1], parts[0])
+
+  def path(self):
+    if self.version:
+      return "//%s.%s.site.freebase.dev" % (self.version, self.app_key)
     else:
-      return App(self.c, parts[0], None)
+      return "//%s.site.freebase.dev" % self.app_key
 
-  def path_from_app(self, app):
-    if app.version:
-      return "//%s.%s.site.freebase.dev" % (app.version, app.app_key)
+
+  def type_for_extension(self, ext):
+    ct = FILE_TYPES.get(ext, 'text/plain')
+
+    if ct == 'text/plain' and ext == 'sjs':
+      return (ct, 'acre_script')
+    elif ct == 'text/plain' and ext == 'mql':
+      return (ct, 'mqlquery')
+    elif ct == 'text/plain' and ext == 'mjt':
+      return (ct, 'mjt')
+    elif ct == 'text/plain':
+      return (ct, 'passthrough')
+    elif ct.startswith('image'):
+      return (ct, 'binary')
     else:
-      return "//%s.site.freebase.dev" % app.app_key
+      return (ct, 'passthrough')
 
-  #will return a dictionary of labels -> app objects
-  #e.g.  { 'template' :  App() }
-  def read_config(self):
 
-    config_file = "%s/CONFIG.json.json" % self.svn_path()
+  def get_local_app(self, inject_config=True):
+
+    c = self.c
+    metadata = {}
+    def handle_file(f):
+        script = { 'id' : None, 'name' : None, 'acre_handler' : None, 'content_type' : None, 'contents': None, 'extension': None}
+        fn, ext = f.rsplit('.', 1)
+        script['id'] = self.app_id + '/' + quotekey(fn)
+        script['extension'] = ext
+        script['name'] = quotekey(fn)
+        script['unquoted_filename'] = fn
+        script['filehandle'] = file(os.path.join(self.svn_path(), f))
+        script['contents'] = script['filehandle'].read()
+        script['SHA256'] = hashlib.sha256(script['contents']).hexdigest()
+        ct, handler = self.type_for_extension(ext)
+        script['acre_handler'] = handler
+        script['content_type'] = ct
+
+        return script
+
+    metadata['files'] = {}
+    metadata['ignored_files'] = []
+
+    # Skip . .. .xxxx xxx.sh and directories
+
+    for f in os.listdir(self.svn_path()):
+      basename, extension = os.path.splitext(f)
+
+      if extension in ['.sh'] or f.startswith('.') or os.path.isdir(os.path.join(self.svn_path(), f)) or \
+             f[-1] == '~' or basename[len(basename)-4:] in ['.mql', '.sjs', '.mjt']:
+        metadata['ignored_files'].append(f)
+        continue
+
+      d = handle_file(f)
+      metadata['files'][d['name']] = d
+
+    manifest_filename = quotekey(MANIFEST_FILE.rsplit('.', 1)[0])
+    config_filename = quotekey(CONFIG_FILE.rsplit('.', 1)[0])
+
+    manifest_contents = metadata['files'].get(manifest_filename, {}).get('contents', None)
+    config_contents = metadata['files'].get(config_filename, {}).get('contents', None)
+
+    #if we can and should inject config file in the manifest file
+    if inject_config and manifest_contents and config_contents and manifest_contents.split('\n')[0] == FIRST_LINE_REQUIRE_CONFIG:
+      metadata['files'][manifest_filename]['contents'] = '\n'.join(['var mf=' + config_contents + ';'] + manifest_contents.split('\n')[1:])
+      metadata['files'][manifest_filename]['SHA256'] = hashlib.sha256(metadata['files'][manifest_filename]['contents']).hexdigest()
+    return metadata
+
+  def get_app_diff(self,app):
+    '''
+    Creates a diff between the local files of this  app and the graph stat of the app passed as an argument.
+    '''
+
+    #the files we need to delete either because they are not in the local directory
+    #or because their content-type or handler has changed
+    delete_files = {}
+    #the files we need to push because they have changed since the last push
+    push_files = {}
+
 
     try:
-      fd = open(config_file, 'r')
+      graph_app = app.get_graph_app()
     except:
-      return self.c.warn('Cannot open file %s for reading' % config_file)
+      graph_app = { 'files' : {} }
 
-    try:
-      file_contents = json.loads('\n'.join(fd))
-    except:
-      return self.c.error('Cannot JSON parse the config file %s' % config_file)
+    local_app = self.get_local_app()
 
-    fd.close()
+    graph_files, local_files = graph_app.get('files', {}), local_app.get('files', {})
 
-    return file_contents
+
+
+    #helper for comparing handlers and content type
+    def different_handler_and_content_type(graph_stat, local_stat):
+      for check in ['content_type', 'acre_handler']:
+        if graph_stat[check] != local_stat[check]:
+          return "%s updated" % check
+
+      return False
+
+    #first iterate through the graph files and delete any file that does not exist locally
+    for filename in graph_files.keys():
+      if not filename in local_files.keys():
+        delete_files[filename] = { 'reason' : 'not in local directory' }
+
+    #now iterate through the local files
+    for filename, local_stat in local_files.iteritems():
+        #if it's a new file, just push it
+      if not graph_files.get(filename):
+        local_stat['reason'] = 'new file'
+        push_files[filename] = local_stat
+        continue
+
+      graph_stat = graph_files[filename]
+
+      #if the handler or content type have changed, we need to delete the old file and re-push
+      different = different_handler_and_content_type(graph_stat, local_stat)
+      if different:
+        delete_files[filename] = { 'reason' : different }
+        local_stat['reason'] = different
+        push_files[filename] = local_stat
+        break
+
+      #now check if the file contents have changed
+      if graph_stat['SHA256'] != local_stat['SHA256']:
+        local_stat['reason'] = 'changed content'
+        push_files[filename] = local_stat
+
+    return (delete_files, push_files)
 
 
   def has_css(self):
-    file_contents = self.read_config()
+    (result, file_contents) = self.read_file(CONFIG_FILE, isjson=True)
     return (file_contents and 'stylesheet' in file_contents.keys())
 
-  def get_css_dependencies(self):
 
-    #this will hold the css dependencies
+  def last_resource_revision(self):
+    '''
+    Will go through the revision of all resource files and return the latest one
+    '''
+    revision = None
+
+    cmd = ['svn', 'ls', '--verbose', self.svn_url()]
+    (r, result) = self.c.run_cmd(cmd)
+
+
+    if not r:
+      return revision
+
+    #the result is a series of lines like this:
+    #  99777 kai              4178 Aug 12 16:18 loader-indicator-big.gif
+
+    for v in result.split('\n'):
+      parts = v.split(' ')
+
+      #last part of the returned line is the filname
+      filename = parts[-1]
+      file_parts = filename.split('.')
+
+      #does it have an extension
+      if not len(file_parts) > 1:
+        continue
+
+      #is this a resource file
+      if '.%s' % file_parts[-1] not in EXTENSIONS and file_parts[0] != 'CONFIG':
+        continue
+
+      if self.c.is_int(parts[1]) and int(parts[1]) > revision:
+        revision = int(parts[1])
+
+    return revision
+
+
+  def get_resource_dependencies(self):
+
+    #this will hold the resource dependencies
     dependencies = {}
     #this will hold the app dependencies of this app
     #i.e. usually just core
@@ -138,13 +329,10 @@ class App():
     #this will hold the dependencies of the core app
     core_dependencies = {}
 
-    file_contents = self.read_config()
+    (r, file_contents) = self.read_file(CONFIG_FILE, isjson=True)
 
-    if not file_contents:
+    if not (r and file_contents):
       return self.c.error('Did not find CONFIG file for app %s -- aborting' % self.app_key)
-
-    if 'stylesheet' not in file_contents.keys():
-      return dependencies
 
     #get the core version
     version = None
@@ -153,27 +341,32 @@ class App():
       core_dependencies = app_dependencies['core'].get_dependencies()
       version = app_dependencies['core'].version
 
-    #foobar.mf.css -> [ file1, file2, ....]
-    for css_label, css_files in file_contents['stylesheet'].iteritems():
-      for css_file in css_files:
-      #css_files might be a string (e.g. 'foobar_bg.css') or a label, string array (e.g. ['jqueryui', 'jqueryui.css'])
-      #there is a dependency to another app only for the second format
-        if isinstance(css_file, list):
-        #the label was found in the core app configuration
-          if css_file[0] in core_dependencies.keys():
-            dependencies[css_file[0]] = core_dependencies[css_file[0]]
-        #the label was not found in core, and was not found in the direct dependencies of this app
-          elif css_file[0] not in file_contents['apps'].keys():
-            return self.c.error('The css declaration %s in %s refers to label %s that is not present in the apps section of the configuration file or the core configuration file' % (css_label, self.app_key, css_file[0]))
+
+    for res in ["js", "stylesheet"]:
+
+      dependencies[res] = {}
+      if res not in file_contents.keys():
+        continue
+      #foobar.mf.css -> [ file1, file2, ....]
+      for label, files in file_contents['stylesheet'].iteritems():
+        for filename in files:
+          #css_files might be a string (e.g. 'foobar_bg.css') or a label, string array (e.g. ['jqueryui', 'jqueryui.css'])
+          #there is a dependency to another app only for the second format
+          if isinstance(filename, list):
+            #the label was found in the core app configuration
+            if filename[0] in core_dependencies.keys():
+              dependencies[res][filename[0]] = core_dependencies[filename[0]]
+            #the label was not found in core, and was not found in the direct dependencies of this app
+            elif filename[0] not in file_contents['apps'].keys():
+              return self.c.error('The %s declaration %s in %s refers to label %s that is not present in the apps section of the configuration file or the core configuration file' % (res, label, self, filename[0]))
 
     return dependencies
-
-
 
   def get_dependencies(self):
 
     dependencies = {}
-    file_contents = self.read_config()
+
+    (result, file_contents) = self.read_file(CONFIG_FILE, isjson=True)
 
     if not file_contents:
       return self.c.error('Did not find CONFIG file for app %s -- aborting' % self.app_key)
@@ -183,69 +376,101 @@ class App():
         if not ('.site.freebase.dev' in path and path.startswith('//')) :
           continue
 
-        dependencies[label] = self.app_from_path(path)
+        dependencies[label] = AppFactory(self.c).from_path(path)
 
     return dependencies
 
+
+  def read_file(self, filename, isjson=False):
+
+    filename = "%s/%s" % (self.svn_path(), filename)
+    contents = ''
+
+    try:
+      fd = open(filename, 'r')
+    except:
+      self.c.warn('Cannot open file %s for reading (%s)' % (filename, self.svn_url()))
+      return (False, contents)
+
+    contents = fd.read()
+
+    if isjson:
+      try:
+        contents = json.loads(contents)
+      except:
+        self.c.error('Cannot JSON parse the config file %s' % filename)
+        return (False, contents)
+
+    fd.close()
+
+    return (True, contents)
+
+
+  def write_file(self, filename, contents, commit=False, msg=None):
+
+    file_exists, _ = self.read_file(filename)
+    filename = "%s/%s" % (self.svn_path(), filename)
+
+    try:
+      fd = open(filename, 'w')
+    except:
+      self.c.warn('Cannot open file %s for writing' % filename)
+      return False
+
+    fd.write(contents)
+    fd.close()
+
+    if not file_exists:
+      svn_cmd = ['svn', 'add', filename]
+      r = self.c.run_cmd(svn_cmd)
+      if r:
+        self.c.log('Added the file %s to SVN' % filename)
+      else:
+        return self.c.error('Failed to add file %s to SVN' % filename)
+
+    return True
+
   def update_dependency(self, label, app):
 
-    config_file = "%s/CONFIG.json.json" % self.svn_path()
-    file_contents = self.read_config()
+    (result, file_contents) = self.read_file(CONFIG_FILE, isjson=True)
+    if not result:
+      return False
+
     config_file_existed = True
 
     if not file_contents:
       config_file_existed = False
       file_contents = { 'apps' : {} }
 
-    try:
-      fd = open(config_file, 'w')
-    except:
-      return self.c.error('Cannot open file %s for writing' % config_file)
-
     if 'apps' in file_contents.keys():
-      file_contents['apps'][label] = self.path_from_app(app)
-    self.c.verbose('Updating %s config: %s --> %s' % (self.app_key, label, self.path_from_app(app)))
-    fd.write(json.dumps(file_contents))
-    fd.close()
-
-    #we have to add the file to SVN - but NOT commit it
-    if not config_file_existed:
-      svn_cmd = ['svn', 'add', config_file]
-      r = self.c.run_cmd(svn_cmd)
-      if r:
-        self.c.log('Added the file %s to SVN' % config_file)
-      else:
-        return self.c.error('Failed to add file %s to SVN' % config_file)
+      file_contents['apps'][label] = app.path()
+    self.c.verbose('Updating %s config: %s --> %s' % (self.app_key, label, app.path()))
+    self.write_file(CONFIG_FILE, json.dumps(file_contents))
 
     return True
 
 
   def branch(self, target_version=None):
 
-    #you can't re-branch a branched app
-    #if we are asked to branch an app that is already branched
-    #just pass
-    #if self.version and self.svn_exists():
-    #  target_app.svn_update()
-    #  self.c.verbose('App %s version %s already exists in SVN - not branching.' % (self.app_key, self.version))
-    #  return self
-
     #figure out the next version if we were not given one
     if not target_version:
       target_version = self.next_svn_version()
       if not target_version:
-        return self.c.error('Cannot figure out next valid version of app %s to branch to' % self.app_key)
+        return self.c.error('Cannot figure out next valid version of %s to branch to' % self.app_key)
       else:
         self.c.verbose('Next available version for app %s is %s' % (self.app_key, target_version))
 
-    target_app = App(self.c, self.app_key, version=target_version)
+    target_app = AppFactory(self.c)(self.app_key, version=target_version)
 
-    if target_app.svn_exists():
-      target_app.svn_update()
-      self.c.log('App %s version %s already exists in SVN - not branching' % (target_app.app_key, target_app.version))
+    #if this version does not exist in svn, trying to get the local disk svn path will return false
+    #this is forcing a checkout, but it's ok because we are going to need to do that anyway down the road
+    path = target_app.svn_path()
+
+    if path:
+      self.c.log('%s already exists in SVN - not branching' % target_app.name())
       return target_app
 
-    msg = 'Creating branch version {version} of app {app}'.format(version=target_app.version, app=target_app.app_key)
+    msg = 'Creating branch version {version} of {app}'.format(version=target_app.version, app=target_app.app_key)
     self.c.log(msg, color=self.c.BLUE)
     cmd = ['svn', 'copy', self.svn_url(), target_app.svn_url(), '--parents', '-m', '"acredeploy: %s"' % msg]
     (r, output) = self.c.run_cmd(cmd)
@@ -253,81 +478,47 @@ class App():
     if not r:
       return False
 
-    target_app.svn_update()
     return target_app
 
-  def svn_exists(self):
-    branch = self.svn_url()
-    cmd = ['svn', 'ls', branch]
-    (r, output) = self.c.run_cmd(cmd, exit=False)
-
-    return r
-
-  def svn_checkout(self, target=None):
-    if not target:
-      target = self.svn_path()
-
-    cmd = ['svn', 'checkout', self.svn_url(), target]
-    (r, output) = self.c.run_cmd(cmd, exit=False)
-
-    return r
-
-  def svn_update(self, target=None):
-
-    if not target:
-      target = self.svn_path()
-
-    if self.version:
-      d = '{svn_path_root}/dev/{app}'.format(svn_path_root=SVN_PATH_ROOT, app=self.app_key)
-      if not os.path.isdir(d):
-        cmd = ['svn', 'checkout', self.svn_url(), d, '--depth', 'empty']
-        (r, output) = self.c.run_cmd(cmd, exit=False)
-
-    if os.path.isdir(target):
-      cmd = ['svn', 'up', self.svn_url(), target]
-      (r, output) = self.c.run_cmd(cmd, exit=False)
-    else:
-      return self.svn_checkout(target)
-
-    return r
-
-
-  def svn_commit(self, path=None):
+  def svn_commit(self, path=None, msg=None):
     if path == None:
       path = self.svn_path()
 
-    self.c.log('Committing %s to SVN' % path)
-    cmd = ['svn', 'commit', '-m', 'committing app %s version %s' % (self.app_key, self.version), path]
+    if not msg:
+      msg = 'committing app %s version %s' % (self.app_key, self.version)
+
+    self.c.log('Committing %s to SVN' % self.name())
+    cmd = ['svn', 'commit', '-m', msg, path]
     return self.c.run_cmd(cmd, name='commit app', exit=False)
 
 
-  def svn_commit_manifest(self, path=None):
-
-    if path == None:
-      path = self.svn_path()
-
-    self.c.log('Committing manifest of %s  to SVN' % self.app_key)
-    cmd = ['svn', 'commit', '-m', 'updating dependencies for branch of app %s version %s' % (self.app_key, self.version), '%s/MANIFEST.sjs' % path]
-    return self.c.run_cmd(cmd, name='commit manifest', exit=False)
-
-
-  def svn_commit_config(self):
-
-    self.c.log('Committing config of %s  to SVN' % self.app_key)
-    cmd = ['svn', 'commit', '-m', 'updating dependencies for branch of app %s version %s' % (self.app_key, self.version), '%s/CONFIG.json.json' % self.svn_path()]
-    return self.c.run_cmd(cmd, name='commit config', exit=False)
-
-
-
-  def get_app(self):
+  def get_graph_app(self):
     '''
     get app info using  graph/appeditor/get_app service
     '''
-    url = "{graph}/appeditor/get_app?{app_id}".format(graph=self.c.services['acre'], app_id=urllib.urlencode(dict(appid=self.app_id)))
-    return self.c.fetch_url(url, isjson=True).get('result')
+    url = "{graph}/appeditor/get_app?{app_id}".format(graph=self.c.services['acre'], app_id=urllib.urlencode(dict(appid=self.path())))
+    graph_app = None
+
+    def fetchit(app):
+      return app.c.fetch_url(url, isjson=True).get('result')
+
+    try:
+      graph_app = fetchit(self)
+    except:
+      if not self.version:
+        self.c.log("%s does not exist yet, will create it" % self.app_key)
+        try:
+          ActionCreate(c)(self)
+          graph_app = fetchit(self)
+        except:
+          return self.c.error('Cannot create %s - aborting.' % self.app_key)
+      else:
+        raise
+
+    return graph_app
 
   def next_svn_version(self):
-    (r, result) = self.c.run_cmd(['svn', 'ls', self.svn_url(dev=True)])
+    (r, result) = self.c.run_cmd(['svn', 'ls', self.svn_url(allversions=True)])
 
     versions = [int(v) for v in result.split('/\n') if self.c.is_int(v)]
     if len(versions):
@@ -337,35 +528,29 @@ class App():
     return 1
 
 
-  def next_graph_version(self):
-    '''
-    determine the next available version number for an app
-    1. use graph/appeditor/get_app service to list current versions
-    2. increment the highest version
-    3. if no versions, return "1"
-    '''
-    try:
-      app_info = self.get_app()
-      versions = app_info.get('versions', [])
-      versions = [v for v in versions if self.c.is_int(v['name'])]
-      versions.sort(key=lambda x: int(x['name']))
-      if versions:
-        return int(versions[-1]['name']) + 1
-    except urllib2.HTTPError, e:
-      pass
-
-    return 1
-
   def svn_deployed_url(self, svn_revision):
     return '{svn_url_root}/deployed/{app}/{svn_revision}'.format(svn_url_root=SVN_URL_ROOT, app=self.app_key, svn_revision=svn_revision)
 
   def svn_deployed_path(self, svn_revision):
-    return '{svn_path_root}/deployed/{app}/{svn_revision}'.format(svn_path_root=SVN_PATH_ROOT, app=self.app_key, svn_revision=svn_revision)
+
+    if self.local_deployed_dir:
+      return self.local_deployed_dir
+
+    self.local_deployed_dir = mkdtemp()
+
+    cmd = ['svn', 'checkout', self.svn_deployed_url(), self.local_deployed_dir]
+    (r, output) = self.c.run_cmd(cmd, exit=False)
+
+    if not r:
+      return False
+
+    return self.local_deployed_dir
 
 
-  def svn_url(self, dev=False):
 
-    if dev:
+  def svn_url(self, allversions=False):
+
+    if allversions:
       return '{svn_url_root}/dev/{app}'.format(svn_url_root=SVN_URL_ROOT, app=self.app_key)
     elif not self.version:
       return '{svn_url_root}/trunk/{app}'.format(svn_url_root=SVN_URL_ROOT, app=self.app_key)
@@ -374,11 +559,20 @@ class App():
 
   def svn_path(self):
 
-    if not self.version:
-      return '{svn_path_root}/trunk/{app}'.format(svn_path_root=SVN_PATH_ROOT, app=self.app_key)
-    else:
-      return '{svn_path_root}/dev/{app}/{version}'.format(svn_path_root=SVN_PATH_ROOT, app=self.app_key, version=self.version)
+    if self.checked_out:
+      return self.local_dir
 
+    if not self.local_dir:
+      self.local_dir = mkdtemp()
+
+    cmd = ['svn', 'checkout', self.svn_url(), self.local_dir]
+    (r, output) = self.c.run_cmd(cmd, exit=False)
+
+    if not r:
+      return False
+
+    self.checked_out = True
+    return self.local_dir
 
   def static_server_url(self, deploy_rev):
     return "{static_url_root}/{app}/{rev}".format(static_url_root=STATIC_URL_ROOT, app=self.app_key, rev=deploy_rev)
@@ -392,10 +586,6 @@ class Context():
   GREEN = '\033[92m'
   RED = '\033[91m'
   ENDC = '\033[0m'
-
-  svn_path_root = '/home/%s/src/freebase_site' % os.getenv('USER')
-  svn_url_root = 'https://svn.metaweb.com/svn/freebase_site'
-  static_url_root =   'http://freebaselibs.com/static/freebase_site'
 
 
   def __init__(self, options):
@@ -413,7 +603,7 @@ class Context():
     self.app = None
 
     if self.options.app:
-      self.current_app = self.app = App(self,self.options.app, self.options.version)
+      self.current_app = self.app = AppFactory(self)(self.options.app, self.options.version)
 
   def set_current_app(self, app):
     self.current_app = app
@@ -466,10 +656,24 @@ class Context():
     except ValueError, e:
       return False
 
+  def print_app_diff(self, delete_files, push_files, ignored_files=[]):
+
+    for filename in ignored_files:
+      print "?\t%s" % filename
+    for filename,d in delete_files.iteritems():
+      if filename not in push_files.keys():
+        print "R\t%s\t(%s)" % (unquotekey(filename), d.get('reason', ''))
+
+    for filename,d in push_files.iteritems():
+      if filename in delete_files.keys() or d.get('reason', '') == 'changed content':
+        print "M\t%s\t(%s)" % (d.get('unquoted_filename'), d.get('reason', ''))
+      else:
+        print "A\t%s\t(%s)" % (d.get('unquoted_filename'), d.get('reason', ''))
+
+    sys.stdout.flush()
 
   def run_cmd(self, cmd, name='cmd', exit=True):
 
-    #pdb.set_trace()
     self.log(' '.join(cmd), subaction=name)
     stdout, stderr = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
 
@@ -569,6 +773,33 @@ class Context():
         md5.update(data)
     return md5.hexdigest()
 
+
+  def send_email(self):
+
+    s = []
+    s.append('The following deployment finished succesfully: \n')
+    s.append('operator:\t%s\n' % os.getlogin())
+    s.append('action:\t%s\n' % self.action)
+    s.append('app:\t%s\n' % self.current_app)
+    s.append('graph:\t%s\n' % self.options.graph or '')
+
+    msg = MIMEText(''.join(s))
+    msg['Subject'] = '[acredeploy] success: %s of %s to %s' % (self.action, self.current_app, self.options.graph or '')
+    msg['To'] = DESTINATION_EMAIL_ADDRESS
+    msg['From'] = USER_EMAIL_ADDRESS
+
+    try:
+      #set the socket timeout to 5 seconds in case there is no smtp server responding
+      #socket.setdefaulttimeout(5)
+      server = smtplib.SMTP()
+      server.connect()
+      server.sendmail(USER_EMAIL_ADDRESS, [DESTINATION_EMAIL_ADDRESS], msg.as_string())
+    except:
+      self.warn('No deployment e-mail sent - error while sending email')
+      return False
+
+    return True
+
 class ActionPush():
 
   FILE_TYPES = {
@@ -585,213 +816,61 @@ class ActionPush():
     self.context = context
     self.app = None
 
-  def type_for_extension(self, ext):
-    ct = self.FILE_TYPES.get(ext, 'text/plain')
-
-    if ct == 'text/plain' and ext == 'sjs':
-      return (ct, 'acre_script')
-    elif ct == 'text/plain' and ext == 'mql':
-      return (ct, 'mqlquery')
-    elif ct == 'text/plain' and ext == 'mjt':
-      return (ct, 'mjt')
-    elif ct == 'text/plain':
-      return (ct, 'passthrough')
-    elif ct.startswith('image'):
-      return (ct, 'binary')
-    else:
-      return (ct, 'passthrough')
-
-
-  def metadata(self, directory):
-
-    c = self.context
-    app = self.app
-
-    mdpath = os.path.join(directory, '.metadata')
-    if not os.path.exists(mdpath):
-        metadata = {}
-    else:
-        mdf = file(mdpath)
-        metadata = json.load(mdf)
-        mdf.close()
-
-    if app.app_id:
-      metadata['id'] = app.app_id
-      f = file(os.path.join(directory, '.metadata'), 'w+')
-      json.dump(metadata, f)
-      f.close()
-
-    if 'id' not in metadata:
-        raise Exception("need to supply an id if .metadata is not present")
-
-    def handle_file(f):
-        script = { 'id' : None, 'name' : None, 'acre_handler' : None, 'content_type' : None, 'contents': None, 'extension': None}
-        fn, ext = f.rsplit('.', 1)
-        script['id'] = metadata['id'] + '/' + quotekey(fn)
-        script['extension'] = ext
-        script['name'] = quotekey(fn)
-        script['unquoted_filename'] = fn
-        script['contents'] = file(os.path.join(directory, f))
-        script['SHA256'] = hashlib.sha256(script['contents'].read()).hexdigest()
-        ct, handler = self.type_for_extension(ext)
-        script['acre_handler'] = handler
-        script['content_type'] = ct
-
-        return script
-
-    metadata['files'] = {}
-    metadata['ignored_files'] = []
-
-    # Skip . .. .xxxx xxx.sh and directories
-
-    for f in os.listdir(directory):
-      basename, extension = os.path.splitext(f)
-
-      if extension in ['.sh'] or f.startswith('.') or os.path.isdir(os.path.join(directory, f)) or \
-             f[-1] == '~' or basename[len(basename)-4:] in ['.mql', '.sjs', '.mjt']:
-        metadata['ignored_files'].append(f)
-        continue
-
-      d = handle_file(f)
-
-      if metadata['files'].get(d['name']):
-        print 'WARNING: file %s will override contents of %s' % (f, d['name'])
-
-      metadata['files'][d['name']] = d
-
-    return metadata
-
-  def print_app_diff(self, delete_files, push_files, ignored_files):
-
-    self.context.log("Diff between %s:%s and acre trunk:" % (self.app.app_key, self.app.version))
-
-    for filename in ignored_files:
-      print "?\t%s" % filename
-    for filename,d in delete_files.iteritems():
-      if filename not in push_files.keys():
-        print "R\t%s\t(%s)" % (unquotekey(filename), d.get('reason', ''))
-
-    for filename,d in push_files.iteritems():
-      if filename in delete_files.keys() or d.get('reason', '') == 'changed content':
-        print "M\t%s\t(%s)" % (d.get('unquoted_filename'), d.get('reason', ''))
-      else:
-        print "A\t%s\t(%s)" % (d.get('unquoted_filename'), d.get('reason', ''))
-
-    sys.stdout.flush()
-
-  def get_app_diff(self, graph_app, metadata):
-    graph_files, local_files = graph_app['files'], metadata['files']
-
-    #the files we need to delete either because they are not in the local directory
-    #or because their content-type or handler has changed
-    delete_files = {}
-    #the files we need to push because they have changed since the last push
-    push_files = {}
-
-    #helper for comparing handlers and content type
-    def different_handler_and_content_type(graph_stat, local_stat):
-      for check in ['content_type', 'acre_handler']:
-        if graph_stat[check] != local_stat[check]:
-          return "%s updated" % check
-
-      return False
-
-    #first iterate through the graph files and delete any file that does not exist locally
-    for filename in graph_files.keys():
-      if not filename in local_files.keys():
-        delete_files[filename] = { 'reason' : 'not in local directory' }
-
-
-    #now iterate through the local files
-    for filename, local_stat in local_files.iteritems():
-        #if it's a new file, just push it
-      if not graph_files.get(filename):
-        local_stat['reason'] = 'new file'
-        push_files[filename] = local_stat
-        continue
-
-      graph_stat = graph_files[filename]
-
-        #if the handler or content type have changed, we need to delete the old file and re-push
-      different = different_handler_and_content_type(graph_stat, local_stat)
-      if different:
-        delete_files[filename] = { 'reason' : different }
-        local_stat['reason'] = different
-        push_files[filename] = local_stat
-        break
-
-        #now check if the file contents have changed
-      if graph_stat['SHA256'] != local_stat['SHA256']:
-        local_stat['reason'] = 'changed content'
-        push_files[filename] = local_stat
-
-    self.print_app_diff(delete_files, push_files, metadata['ignored_files'])
-    return (delete_files, push_files)
-
   def push(self, app, dry=False):
 
     c = self.context
     self.app = app
 
-    c.log('Starting push of %s to app %s version %s on graph %s' % (app.svn_url(), app.app_key, app.version or 'trunk', c.options.graph), color=c.BLUE)
+    c.log('Starting push of %s to %s on %s' % (app.svn_url(), app, c.options.graph), color=c.BLUE)
 
-    #checkout the code into a temporary directory
-    local_dir = mkdtemp()
-    success = app.svn_checkout(target=local_dir)
+    #get the diff between the local files and the graph files for this app version
+    (version_delete_files, version_push_files) = app.get_app_diff(app)
+    c.log('Diff between local and graph of %s' % app)
+    c.print_app_diff(version_delete_files, version_push_files)
 
-    if not success:
-      return c.error('Unable to perform svn checkout')
+    if not (len(version_delete_files.keys()) or len(version_push_files.keys())):
+      c.log('No files changed between local and graph of %s' % app)
+      return True
 
-    metadata = self.metadata(local_dir)
-    graph_app = None
-
-    try:
-      graph_app = c.freebase.get_app(metadata['id'])
-    except MetawebError:
-      return c.error('app does not exist - use "create" action to create it first')
-
-    version_app_exists = False
-    if app.version and graph_app.get('versions') and len(graph_app['versions']) and app.version in [x['name'] for x in graph_app['versions']]:
-      version_app_exists = True
-
-    delete_files, push_files = {}, metadata['files']
-
-    if graph_app:
-      (delete_files, push_files) = self.get_app_diff(graph_app, metadata)
+    #if we are in a versioned app, we also need to get the diff against the graph trunk
+    #in order to actually know what files we need to push
+    if app.version:
+      delete_files, push_files = app.get_app_diff(AppFactory(c)(app.app_key, version=None))
+    #this is the trunk version of the app - so the diff is the same
+    else:
+      delete_files, push_files = version_delete_files, version_push_files
 
     if dry:
       print "Not making any changes (dry run)"
       return
 
-
         ###### dry run until this point ##########
+
+    #log-in to freebase if we are going to do any pushes or updates
     if len(delete_files.keys()) or len(push_files.keys()) or app.version:
       success = c.freebase_login()
       if not success:
         c.log('cannot push without logging in to freebase', 'error')
         return False
 
-    if not (len(delete_files.keys()) or len(push_files.keys())):
-      c.log('no files affected')
-
     files_changed = set()
 
+    #delete removed files
     for filename,val in delete_files.iteritems():
       print ".",
       sys.stdout.flush()
       c.freebase.delete_app_file(app.app_id, unquotekey(filename))
       files_changed.add(filename)
 
+    #update changed files
     for filename, val in push_files.iteritems():
       print ".",
       sys.stdout.flush()
-      val['contents'].seek(0);
       files_changed.add(filename)
       if val['acre_handler'] == 'binary':
-        c.freebase.save_binary_file(val['id'], val['contents'], val['content_type'])
+        c.freebase.save_binary_file(val['id'], val['filehandle'], val['content_type'])
       else:
-        contents = val['contents'].read()
-        c.freebase.save_text_file(val['id'], contents, val['acre_handler'], val['content_type'])
+        c.freebase.save_text_file(val['id'], val['contents'], val['acre_handler'], val['content_type'])
 
     if (len(push_files)):
       print "\n"
@@ -799,25 +878,26 @@ class ActionPush():
     if app.version:
       time.sleep(1)
       c.freebase.create_app_version(app.app_id, app.version, timestamp='__now__')
-      c.log('updated version %s' % app.version or 'trunk')
+      c.log('Updated timestamp of %s' % app.name())
 
     c.log('push succesfull, %s files affected' % len(files_changed))
     return True
 
-  def __call__(self, app=None, patch=False):
+  def __call__(self, app=None, nodeps=False):
 
     c = self.context
     if not app:
       app = c.app
     c.set_action("push")
-
-    if c.options.patch:
-      patch = True
+    c.log('Starting push of %s to %s' % (app, c.options.graph), color=c.BLUE)
 
     #validate options
     if not (c.options.graph and app):
       c.log('You have to supply a valid graph and app for a push', 'error')
       return False
+
+    if c.options.nodeps:
+      nodeps = c.options.nodeps
 
     app_list = set()
     app_list.add(app)
@@ -841,7 +921,7 @@ class ActionPush():
         if d_app.app_key != 'routing':
           create_app_list(d_app, al)
 
-    if not patch:
+    if not nodeps:
       create_app_list(app, app_list)
 
     #push the checked out code
@@ -849,13 +929,13 @@ class ActionPush():
       c.set_current_app(app)
       result = self.push(app)
       if not result:
-        return c.error('Failed to push app %s version %s to graph %s' % (app.app_key, app.version or 'trunk', c.options.graph))
+        return c.error('Failed to push %s to %s' % (app.name(), c.options.graph))
 
     #if this was a push to a specific app version, then re-push trunk
     #so that the current version is the same as trunk in SVN
     if app.version:
       c.log('restoring trunk')
-      return self.push(App(c, app.app_key))
+      return self.push(AppFactory(c)(app.app_key))
 
     return True
 
@@ -885,10 +965,15 @@ class ActionStatic():
 
     return deploy_rev
 
-  def deploy_static_files(self, source_dir, source_url, dest_dir, **kws):
 
+  def deploy_static_files(self, dest_dir, use_acre_url = False):
+    '''
+    This function will copy resource files such as css, js and images to a deployed directory in svn.
+    For CSS, and JS it will do a request for each file to the live acre app and concatanate the results into the filename specified in the manifest.
+    For images, it will just copy them verbatim.
+    '''
     c = self.context
-    app = c.app
+    app = self.app
       #must return a list of filenames (js, css, img)
     files = []
     c.log('copying static files to deploy directory')
@@ -896,7 +981,7 @@ class ActionStatic():
     ## LOAD MANIFEST ##
 
     # load app MANIFEST.sjs by doing an HTTP request for <app_url>/MANIFEST
-    url = "%s/MANIFEST" % source_url
+    url = "%s/MANIFEST" % app.url()
     mf = c.fetch_url(url, isjson=True)
     if not (mf and mf.get('result')):
         c.log('Aborting push of resource files - no manifest found!', 'error')
@@ -911,9 +996,9 @@ class ActionStatic():
     # and copy them to the target directory
     for file_type in ['javascript', 'stylesheet']:
         for filename in mf[file_type]:
-            file_url = "%s/MANIFEST/%s" % (source_url, filename)
-            if kws:
-                file_url = "%s?%s" % (url, urllib.urlencode(kws))
+            file_url = "%s/MANIFEST/%s" % (app.url(), filename)
+            if use_acre_url:
+                file_url = "%s?%s" % (url, urllib.urlencode({"use_acre_url" : 1}))
             filename = os.path.join(dest_dir, filename)
             with open(filename, 'w') as dest_file:
                 for line in c.fetch_url(file_url):
@@ -923,9 +1008,9 @@ class ActionStatic():
 
     # for images, read the local directory since images are not bundled together
     # 2. svn list version and copy images (*.png, *.gif, etc.) to dest_dir
-    img_files = [f for f in os.listdir(source_dir) if os.path.splitext(f)[1].lower() in IMG_EXTENSIONS]
+    img_files = [f for f in os.listdir(app.svn_path()) if os.path.splitext(f)[1].lower() in IMG_EXTENSIONS]
     for f in img_files:
-        src = os.path.join(source_dir, f)
+        src = os.path.join(app.svn_path(), f)
         # in local acre dev, we use double extensions for static files including image files
         # convert double extensions to single extension
         dest = os.path.join(dest_dir, os.path.splitext(f)[0])
@@ -944,21 +1029,15 @@ class ActionStatic():
     app = self.app
     # determine if we need to create a new deploy revision by
     # 1. determine the md5 hash of all the img files + javascript/stylesheet manifests sorted and concatenated together.
-    branch_url = app.svn_url()
-    branch_dir = app.svn_path()
+    deployed_dir = mkdtemp()
 
-    tempdir = mkdtemp()
-    app.svn_checkout(tempdir)
-
-    # update MANIFEST static_base_url
-    manifest = os.path.join(branch_dir, "MANIFEST.sjs")
-    if not os.path.exists(manifest):
-        c.log('No MANIFEST.sjs in app directory %s' % branch_dir)
-        return False
+    # read MANIFEST file
+    (result, manifest) = app.read_file(MANIFEST_FILE)
+    if not result:
+      c.log('No %s in app directory %s' % (MANIFEST_FILE, app.svn_path()))
+      return False
 
     # 1. urlfetch static files from app url (*.mf.js/*.mf.css)
-    deployed_dir = mkdtemp()
-    url = app.url()
     # We need to pass use_acre_url=1, for the MANIFEST css_preprocessor to return consistent urls for css url declarations to
     # calculate deterministic hashes of all static files for an app.
     # 1. url(local.png) = http://2.localapp.site.freebase.dev.../local.png
@@ -972,7 +1051,7 @@ class ActionStatic():
     # The mf.stylesheet files also go through the external apps MANIFEST/ entry point (i.e., .../MANIFEST.foo.mf.css) but is
     # only deterministic if we DO NOT preprocess the css url(...) declarations since it uses the image_base_url.
 
-    (success, static_files) = self.deploy_static_files(branch_dir, url, deployed_dir, use_acre_url=1)
+    (success, static_files) = self.deploy_static_files(deployed_dir, use_acre_url=True)
     if not success:
         c.log('Could not get a list of files from the MANIFEST - unable to do HTTP request, or your app does not have a manifest.', 'fatal error')
         return False
@@ -990,18 +1069,16 @@ class ActionStatic():
         })
 
     init_re = re.compile(r'\.init\s*\(\s*mf\s*\,\s*this.*$')
-    temp = mkstemp()
-    with open(temp[1], "w") as tmp:
-        with open(os.path.join(manifest)) as mf:
-            for line in mf.xreadlines():
-                tmp.write(init_re.sub('.init(mf, this, %s);' % cfg, line))
-    shutil.copy2(temp[1], manifest)
+    tmp = []
+    for line in manifest.split('\n'):
+      tmp.append(init_re.sub('.init(mf, this, %s);' % cfg, line))
 
-    app.svn_commit(path=branch_dir)
+    app.write_file(MANIFEST_FILE, '\n'.join(tmp))
+    app.svn_commit(msg='updated manifest with new static url')
 
     return True
 
-  def inject_resources_with_base_url(self):
+  def generate_resource_bundle(self):
 
     c = self.context
     app = self.app
@@ -1011,7 +1088,7 @@ class ActionStatic():
     url = app.url()
     branch_dir = app.svn_path()
     deployed_url = app.svn_deployed_url(self.deploy_rev)
-    c.log('static path is %s' % deployed_url)
+    c.log('static svn url is %s' % deployed_url)
 
     # check if a deployed_rev already exists or not
     cmd = ['svn', 'ls', deployed_url]
@@ -1021,11 +1098,11 @@ class ActionStatic():
         c.log('Deployed directory already exists %s' % deployed_url)
         return True
 
-    # deployed_rev does not exist, add it to svn    
+    # deployed_rev does not exist, add it to svn
     deployed_dir = mkdtemp()
     # now that we have deterministically calculated the deployed_rev and updated the MANIFEST static_base_url/image_base_url,
     # we now want to reget the static_files with the correct css url(...) pointing the http://freebaselibs...
-    (success, static_files) = self.deploy_static_files(branch_dir, url, deployed_dir)
+    (success, static_files) = self.deploy_static_files(deployed_dir)
     if not success:
         c.log('Could not get manifest for your app', 'fatal error')
         return False
@@ -1057,7 +1134,7 @@ class ActionStatic():
     for js_file in js_files:
         c.verbose(js_file, 'js file')
         js_path = os.path.join(deployed_dir, js_file)
-        status, temppath = mkstemp()        
+        status, temppath = mkstemp()
         with open(temppath, "w") as tempfile:
             cmd = [JAVA] + JAVA_OPTS + ["--js", js_path]
             subprocess.call(cmd, stdout=tempfile)
@@ -1069,38 +1146,22 @@ class ActionStatic():
 
     return True
 
-  ##  STATIC ##
-  def __call__(self):
-
+  def get_resource_dependency_apps(self):
     c = self.context
-    c.set_action("static")
-    self.app = c.app
-
-    if not (self.app and c.app.version and c.options.graph):
-      return c.error("You must specify a valid app, version and graph for static file generation")
-
-    #first push everything
-    ActionPush(self.context)(c.app)
-    c.set_action("static")
-
     app_list = [self.app]
-
     def create_app_list(app, al):
 
-      #if this app does not have any CSS rules, we are done here
-      if not app.has_css():
+      dependencies = app.get_resource_dependencies()
+      if not dependencies['stylesheet']:
         return
 
-      dependencies = app.get_css_dependencies()
-      if not dependencies:
-        return
-
-      for label, d_app in dependencies.iteritems():
-
-        #we have to compare the app keys because
+      for label, d_app in dependencies['stylesheet'].iteritems():
+        #we have to compare the app string signatures because
         #get_dependencies() will always create a new set of
         #app objects, so set de-duplication will not work
-        if d_app.app_key in [x.app_key for x in al]:
+          #if str(d_app) in [str(x) for x in al]:
+           # continue
+        if d_app in al:
           continue
 
         #prepend the dependency
@@ -1109,13 +1170,68 @@ class ActionStatic():
         if d_app.app_key != 'routing':
           create_app_list(d_app, al)
 
-    if not c.options.patch:
-      create_app_list(c.app, app_list)
+    create_app_list(c.app, app_list)
+    return app_list
 
+
+  def need_static(self, app_list):
+    #go through the dependency tree and find any app that had a resource file updated
+    #after the last static push
+    c = self.context
+    need_static = set()
     for static_app in app_list:
+      (r, last_recorded_revision) = static_app.read_file('.last_resource_revision')
+      if not r:
+        need_static.add(static_app)
+        continue
+
+      last_recorded_revision = int(''.join(last_recorded_revision))
+      last_revision = static_app.last_resource_revision()
+
+      #if the last revision of any resource file in the app is larger
+      #than the last revision when we created the static files the last time
+      #then we need to regenerate them.
+      #This means someone made a change to the static files
+      if last_revision > last_recorded_revision:
+        c.log('Change in resource files of %s detected - have to regenerate static bundle.' % static_app.app_key)
+        need_static.add(static_app)
+      else:
+        c.log('No need to generate static files for %s - no new resource files' % static_app)
+
+    return need_static
+
+
+  ##  STATIC ##
+  def __call__(self):
+
+    c = self.context
+    c.set_action("static")
+    self.app = c.app
+
+    if not (self.app and self.app.version and c.options.graph):
+      return c.error("You must specify a valid app, version and graph for static file generation")
+
+    c.set_action("static")
+    c.log('Starting action static for %s' % self.app.name(), color=c.BLUE)
+    c.verbose('Figuring out dependencies')
+    #get dependency tree for CSS for this app
+    app_list = self.get_resource_dependency_apps()
+
+    #if --force was passed, then we need to generate static files for all dependency apps
+
+    if c.options.force:
+      need_static = app_list
+    else:
+      c.verbose('Figuring out which apps need static generation')
+      need_static = self.need_static(app_list)
+
+    if not len(need_static):
+      #but we still need to push just this app because there were changes to other files
+      return ActionPush(self.context)(self.app, nodeps=True)
+
+    for static_app in need_static:
       self.app = static_app
       c.set_current_app(static_app)
-      c.log('Starting static generation of  %s' % self.app.app_key, color=c.BLUE)
       #figure out the base url for resources and get the concatanated and minified files
       result = self.evaluate_resource_base_url()
       if not result:
@@ -1124,19 +1240,21 @@ class ActionStatic():
       #re-push to update with the correct base url
       #at this point, we only need to push the specific app
       #not all its dependencies
-      result = ActionPush(self.context)(static_app, patch=True)
+      result = ActionPush(self.context)(static_app, nodeps=True)
       if not result:
         return False
 
       c.set_action("static")
 
       #inject resource files with new base url
-      result = self.inject_resources_with_base_url()
+      result = self.generate_resource_bundle()
       if not result:
         return False
 
+      self.app.write_file('.last_resource_revision', str(self.app.last_resource_revision()))
+      self.app.svn_commit(msg='commit last resource revision file')
 
-    c.log('***** NOTE: You have to restart the freebaselibs.com static servers for your resources to be available *****')
+    c.log('***** NOTE: You have to restart the freebaselibs.com static servers for your resources to be available *****', c.BLUE)
     return True
 
 class ActionBranch():
@@ -1156,7 +1274,7 @@ class ActionBranch():
 
     #first make sure we are not asked to branch a library app
     #you should only be able to branch a page app, or core (all libraries together)
-    library_apps = App(c, 'core').get_dependencies()
+    library_apps = AppFactory(c)('core').get_dependencies()
 
     for label, d_app in library_apps.iteritems():
       if c.options.app == d_app.app_key:
@@ -1164,7 +1282,7 @@ class ActionBranch():
 
     #first branch the app that was specified in the command line
     #if a version was specified and it exists already, this is a no-op (svn up)
-    from_app = App(c, c.options.app, c.options.version)
+    from_app = AppFactory(c)(c.options.app, c.options.version)
     branch_app = from_app.branch(c.options.version)
 
     #set the app object that is going to be used for here onwards
@@ -1174,24 +1292,22 @@ class ActionBranch():
     core_app = None
 
     updated_apps = set()
-    app_bundle = set()
-    app_bundle.add(branch_app)
+    app_bundle = set([branch_app])
 
     #if this is not the core app, and it depends on core
     #then branch the core app and update the version number in our app
     if branch_app.app_key != 'core':
       dependencies = branch_app.get_dependencies()
-      if not dependencies:
-        return False
-      #if we depend on core but not specify a version
-      if 'core' in dependencies.keys() and not dependencies['core'].version:
-        core_app = dependencies['core'].branch()
-        branch_app.update_dependency('core', core_app)
-        updated_apps.add(branch_app)
-      #if we depend on a specific version of core, we are done
-      elif 'core' in dependencies.keys():
-        core_app = dependencies['core']
-        core_app.svn_update()
+      if dependencies:
+        #if we depend on core but not specify a version
+        if 'core' in dependencies.keys() and (not dependencies['core'].version or c.options.core):
+          #c.options.core will be a version if specified in the command line or None
+          core_app = dependencies['core'].branch(c.options.core)
+          branch_app.update_dependency('core', core_app)
+          updated_apps.add(branch_app)
+        #if we depend on a specific version of core, we are done
+        elif 'core' in dependencies.keys():
+          core_app = dependencies['core']
     #this is the core app
     else:
       core_app = branch_app
@@ -1227,9 +1343,9 @@ class ActionBranch():
             updated_apps.add(branch_app)
 
       for app in updated_apps:
-        app.svn_commit_config()
+        app.svn_commit(msg='updated dependencies for %s' % app.name())
 
-      c.log('The following branches have been created or updated: ')
+      c.log('The following branches are going to be used: ')
       for app in app_bundle:
         c.log('\t%s\t\t%s' % (app.app_key, app.version))
 
@@ -1241,13 +1357,14 @@ class ActionCreate():
         self.context = context
 
 
-    def __call__(self):
+    def __call__(self, app=None):
         c = self.context
         c.set_action("create")
-        if not (c.options.app and c.options.graph):
+        if not ((c.options.app or app) and c.options.graph):
             return c.error('You must specify the app key (e.g. "schema") and a graph to create a new app')
 
-        app = App(c, c.options.app)
+        if not app:
+          app = AppFactory(c)(c.options.app)
 
         c.log('create app %s in graph %s' % (app.app_key, c.options.graph))
 
@@ -1271,29 +1388,50 @@ class ActionDeploy:
   def __call__(self):
 
     c = self.context
-    c.set_action("static")
+    c.set_action("deploy")
 
     if not (c.options.app and c.options.graph):
       return c.error('You must specify the app key (e.g. "schema") and a graph to deploy to')
 
+    ###    BRANCH    ###
 
-    c.log('Starting deploy of %s -- stage: branch' % c.app.app_key, color=c.BLUE)
-
+    c.set_action("branch")
+    c.log('Starting deploy of %s -- stage: branch' % c.app, color=c.BLUE)
     success = ActionBranch(c)()
-
     if not success:
       return False
-
     c.log('Action branch finished successfully', c.GREEN)
-    c.set_action("static")
-    c.log('Starting deploy of %s -- stage: static/push' % c.app.app_key, color=c.BLUE)
 
+    ###   INITIAL PUSH   ###
+
+    c.set_action("push")
+    c.log('Continuing with deploy of %s -- stage: initial push' % c.app, color=c.BLUE)
+    success = ActionPush(c)(c.app)
+    if not success:
+      return False
+    c.log('Action initial push finished successfully', c.GREEN)
+
+    ###   STATIC PUSH   ###
+
+    c.set_action("static")
+    c.log('Continuing with deploy of %s -- stage: static push' % c.app, color=c.BLUE)
     success = ActionStatic(c)()
     if not success:
       return False
-
     c.log('Action static/push finished successfully', c.GREEN)
 
+    return True
+
+
+class ActionTest:
+  '''dummy action used for experimenting'''
+
+  def __init__(self, context):
+    self.context = context
+
+  def __call__(self):
+
+    c = self.context
     return True
 
 class ActionRelease:
@@ -1333,7 +1471,8 @@ def main():
         ('static', 'generates and deployes static bundles to the edge servers', ActionStatic),
         ('create', 'creates an app', ActionCreate),
         ('release', 'release a specific version of an app', ActionRelease),
-        ('deploy', 'combine branch, static and push in one go', ActionDeploy)
+        ('deploy', 'combine branch, static and push in one go', ActionDeploy),
+        ('test', 'test', ActionTest)
         ]
 
 
@@ -1343,18 +1482,23 @@ def main():
     usage += '\n'.join(['\t%s\t%s' % a[:2] for a in valid_actions])
 
     parser = OptionParser(usage=usage)
-    parser.add_option('-g', '--graph', dest='graph', 
+    parser.add_option('-g', '--graph', dest='graph',
                       help='acre graph - i.e. otg|sandbox|qa')
-    parser.add_option('-u', '--user', dest='user', 
+    parser.add_option('-u', '--user', dest='user',
                       help='freebase username - e.g. namesbc')
     parser.add_option('-v', '--version', dest='version', default=None,
-                       help='a version of the app - e.g. 12')
-    parser.add_option('-b', '--verbose', dest='verbose', action='store_true', 
+                      help='a version of the app - e.g. 12')
+    parser.add_option('-b', '--verbose', dest='verbose', action='store_true',
                       default=False, help='verbose mode will print out more debugging output')
-    parser.add_option('-a', '--app', dest='app', default='no_app_id',
-                      help='an app id - e.g. /user/namesbc/mysuperapp or homepage - separate multiple ids with commas')
-    parser.add_option('-t', '--patch', dest='patch', action='store_true', 
-                      default=False, help='patch only applies to the push action, and will only push the app specified without resolving its dependency tree')
+    parser.add_option('-a', '--app', dest='app', default=None,
+                      help='an app id - e.g. /user/namesbc/mysuperapp or an app key under /freebase/site - e.g. homepage')
+    parser.add_option('-c', '--core', dest='core', default=None,
+                      help='the version of core you want to tie this app branch to')
+    parser.add_option('-f', '--force', dest='force', action='store_true', default=False,
+                      help='--force results depend on context: for action static, it means that all static bundles will be re-generated')
+    parser.add_option('-n', '--nodeps', dest='nodeps', action='store_true', default=False,
+                      help='will not resolve app dependencies for branching, pushing or static generation')
+
 
     (options, args) = parser.parse_args()
 
@@ -1375,7 +1519,8 @@ def main():
                 if not result:
                   context.error('FAILED: action %s failed' % action)
                 else:
-                  context.log('SUCCESS: action %s ended succesfully' % action, color=context.GREEN)
+                  context.log('SUCCESS: action %s ended succesfully, sending deployment e-mail.' % action, color=context.GREEN)
+                  context.send_email()
 
 
 if __name__ == '__main__':

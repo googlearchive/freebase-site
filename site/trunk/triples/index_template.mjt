@@ -121,7 +121,7 @@
           <tbody>
             <tr acre:for="o in c.names_aliases" 
                 class="hoverable ${JSON.stringify(th.triple(c.topic.id, o.link.master_property, o))} ${th.link_class(o.link)}">
-              <th class="row-header odd" scope="row">
+              <th class="row-header odd empty" scope="row">
                 <span class="self">-</span>
                 ${tooltip()}
               </th>
@@ -154,7 +154,7 @@
             <tbody>
               <tr acre:for="k in c.keys" 
                   class="hoverable ${JSON.stringify(th.triple(k.link.target.id, '/type/object/key', null, k.link.source.id, k.link.target_value))} ${th.link_class(k.link)}">
-                <th class="row-header odd" scope="row">
+                <th class="row-header odd empty" scope="row">
                   <acre:block if="k.link.target.id === c.topic.id">
                     <span class="self">-</span>
                   </acre:block>
@@ -240,7 +240,7 @@
                 ${tooltip()}
               </th>
               <td class="even">${a(o.link.master_property)}</td>
-              <td class="odd"><span class="self">-</span></td>
+              <td class="odd empty"><span class="self">-</span></td>
               <td class="even" acre:if="o.link.creator">${a(o.link.creator)}</td>
               <td class="even" acre:else="">null</td>
               <td class="odd numeric">${o.link.timestamp}</td>

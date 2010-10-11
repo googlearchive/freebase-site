@@ -1,6 +1,5 @@
 (function($, fb) {
 
-
   var triples = fb.triples = {
     tip: null,
     build_query: null,
@@ -123,12 +122,31 @@
         stop: function(e, ui) {
           $current_limit.css({'color': '#333'});
           $input.val(ui.value);
-          $limit_slider.parents("form:first").submit();
+          if (ui.value != slider_value) {
+            $limit_slider.parents("form:first").submit();
+          }
         }
       });
 
     },
+    
+    update_menu_position: function() {
 
+      var viewport_height = triples.viewport.height();
+      var menu_height = triples.menu.height();
+
+      if(viewport_height > menu_height) {
+        var scrollTop = $(window).scrollTop();
+        if(scrollTop >= triples.reference_offset_y) {
+          triples.menu.css({ "position": "fixed", "right": "30px"});
+          triples.menu.animate({"top": "0"});
+        }
+
+        else {
+          triples.menu.css({"position": "absolute", "right": "0", "top": "0"});
+        }
+      }
+    },
 
     init: function() {
 
@@ -183,12 +201,13 @@
       **************************************************
       */
 
-      var $reference = $("#content-wrapper"); // This is the effective starting point of 'content'
-      var $menu = $("#content-sub"); // The menu item
-      var menu_position_y = $menu.offset().top; // Starting vertical offset of menu object
-      var reference_offset_y = $reference.offset().top; // Starting vertical offset of content
-      var $nav_current = $("#section-nav-current"); // The currently selected section
-      var $nav_menu = $("#section-nav"); // The navigation menu for jumping between sections
+      triples.viewport = $(window);
+      triples.reference = $("#content-wrapper"); // This is the effective starting point of 'content'
+      triples.menu = $("#content-sub"); // The menu item
+      triples.menu_position_y = triples.menu.offset().top; // Starting vertical offset of menu object
+      triples.reference_offset_y = triples.reference.offset().top; // Starting vertical offset of content
+      triples.nav_current = $("#section-nav-current"); // The currently selected section
+      triples.nav_menu = $("#section-nav"); // The navigation menu for jumping between sections
 
 
       // Build a map of vertical offsets for each section
@@ -220,24 +239,21 @@
         // Set the menu to position fixed once the page
         // is scrolled past the first main section
         // other wise reset it to default
-        var scrollTop = $(window).scrollTop();
-        if(scrollTop >= reference_offset_y) {
-          $menu.css({ "position": "fixed", "right": "30px"});
-          $menu.animate({"top": "0"});
-        }
+        triples.update_menu_position();
+      });
 
-        else {
-          $menu.css({"position": "absolute", "right": "0", "top": "0"});
-        }
+      $(window).resize(function() {
+        triples.update_menu_position();
+        console.log('hi');
       });
 
       // In-page navigation toggle
-      var $nav_menu_trigger = $("#section-nav-current").click(function() {
-        if ($nav_menu.is(":visible")) {
-          $nav_menu.hide();
+      var nav_menu_trigger = $("#section-nav-current").click(function() {
+        if (triples.nav_menu.is(":visible")) {
+          triples.nav_menu.hide();
         }
         else {
-          $nav_menu.show();
+          triples.nav_menu.show();
         }
       });
 
@@ -261,14 +277,14 @@
       });
 
       // Hide menu when user leaves menu
-      $nav_menu.mouseleave(function(){
-        setTimeout(function(){ $nav_menu.fadeOut() }, 1500);
+      triples.nav_menu.mouseleave(function(){
+        setTimeout(function(){ triples.nav_menu.fadeOut() }, 1500);
       });
 
       // Update currently selected and hide menu when user clicks
-      $("li > a", $nav_menu).click(function(){
+      $("li > a", triples.nav_menu).click(function(){
        $("b", $nav_current).html($(this).html());
-        $nav_menu.hide();
+        triples.nav_menu.hide();
       });
     }
   };

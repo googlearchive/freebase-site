@@ -173,7 +173,9 @@
                   </acre:block>
                 </td>
                 <td class="even">
-                  ${k.link.target_value}
+                  <span class="truncate">
+                    ${k.link.target_value}
+                  </span>
                 </td>
                 <td class="odd" acre:if="k.link.creator">${a(k.link.creator)}</td>
                 <td class="odd" acre:else="">null</td>
@@ -190,7 +192,7 @@
         <table class="table table-sortable">
           <thead>
             <tr>
-              <th class="column-header first"><span class="sort-icon">${_("subject")}</span></th>
+              <th class="column-header first empty"><span class="sort-icon">${_("subject")}</span></th>
               <th class="column-header"><span class="sort-icon">${_("predicate")}</span></th>
               <th class="column-header"><span class="sort-icon">${_("object")}</span></th>
               <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
@@ -201,11 +203,11 @@
           <tbody>
             <tr acre:for="o in c.outgoing" 
                 class="hoverable ${JSON.stringify(th.triple(c.topic.id, o.link.master_property, o))} ${th.link_class(o.link)}">
-              <th class="row-header odd" scope="row">
+              <th class="row-header odd empty" scope="row">
                 <span class="self">-</span>
                 ${tooltip()}
               </th>
-              <td class="even">${a(o.link.master_property)}</td>
+              <td class="even"><span class="truncate">${a(o.link.master_property)}</span></td>
               <td class="odd" acre:if="'value' in o">${literal(o)}</td>
               <td class="odd" acre:else="">${topic(o)}</td>
               <td class="even" acre:if="o.link.creator">${a(o.link.creator)}</td>

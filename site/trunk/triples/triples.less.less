@@ -11,6 +11,7 @@
 #content-sub {
   position: absolute;
   right: 0; top: 0;
+  z-index: 1;
   float: none;
   margin: 0;
 }
@@ -33,7 +34,7 @@
 }
 
 .filter-section-title {
-  margin-top: 15px;
+  margin-top: 10px;
   font-size: 16px;
   text-align: center;
 }
@@ -184,7 +185,19 @@ a.remove-filter {
 
 tr.invalid th,
 tr.invalid td {
-    background-color: #FFE1E3;
+  opacity: 0.7;
+  text-decoration: line-through;
+}
+
+tr.invalid th:first-child,
+tr.invalid td:last-child {
+  text-decoration: none;
+}
+
+tr.invalid:hover th,
+tr.invalid:hover td {
+  opacity: 1;
+  text-decoration: none;
 }
 /**
 .history tr.valid th,
@@ -221,4 +234,26 @@ tr.invalid td {
   font-size: 12px;
   padding-left: 5px;
   margin-top: 5px;
+}
+
+#content th.empty,
+#content td.empty {
+  width: 100px;
+}
+
+.truncate {
+  display: block;
+  overflow:hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+td:hover .truncate {
+  position: absolute;
+  max-width: 1000px;
+  z-index: 10;
+  background: #f8f8f8;
+  padding: 3px;
+  .rounded_corners();
+  -webkit-box-shadow: 0 0 4px #999;
 }

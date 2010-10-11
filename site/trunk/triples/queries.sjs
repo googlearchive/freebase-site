@@ -183,6 +183,7 @@ function incoming(id, filters) {
     "/type/reflect/any_reverse":[{
       id: null,
       mid: null,
+      guid: null,
       name: i18n.mql.query.name(),
       link: {
         master_property: null,
@@ -211,7 +212,7 @@ function typelinks(id, filters) {
   var q = [{
     type: "/type/link",
     master_property: id,
-    source: {id:null, mid:null, name:i18n.mql.query.name()},
+    source: {id:null, mid:null, guid:null, name:i18n.mql.query.name()},
     target: {id:null, mid:null, name:i18n.mql.query.name(), optional:true},
     target_value: {},
     creator: null,

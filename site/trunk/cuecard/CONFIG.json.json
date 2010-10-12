@@ -1,7 +1,6 @@
 {
   "apps": {
-    "core": "//core.site.freebase.dev",
-    "codemirror": "//codemirror.site.freebase.dev"
+    "core": "//core.site.freebase.dev"
   },
   "stylesheet": {
     "cuecard.mf.css": [

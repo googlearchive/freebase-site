@@ -8,7 +8,7 @@
 	  var h = mf.require("core", "helpers");
   	var i18n = mf.require("i18n", "i18n");
   	var cuecard_mf = mf.require("cuecard", "MANIFEST").mf;
-	var codemirror_mf = mf.require("codemirror","MANIFEST").mf;
+	  var codemirror_mf = mf.require("codemirror","MANIFEST").mf;
   
 	  var SERVER = {
 	    appeditor: {
@@ -17,15 +17,15 @@
 	    },
 	    libs: {
 	    	fulljslint: mf.js_src("fulljslint.mf.js"),
-                codemirror:     codemirror_mf.js_src("codemirror-frame.mf.js"),
-                codemirror_css: codemirror_mf.js_src("codemirror-frame.mf.css"),
+        codemirror: codemirror_mf.js_src("codemirror-frame.mf.js"),
+        codemirror_css: codemirror_mf.js_src("codemirror-frame.mf.css"),
 	    	codeassist: mf.js_src("codeassist.mf.js")
 	    },
 	    acre: {
 	    	host : acre.host,
 	      freebase: {
 	        service_url: acre.freebase.service_url,
-	        site_host: (acre.request.server_name.match(/^ae\./) ? (acre.freebase.site_host.replace(/http:\/\/(www\.)?/, "http://devel.") + ":" + acre.host.port) : acre.freebase.site_host)
+	        site_host: (acre.request.server_name.match(/^devel\./) ? (acre.freebase.site_host.replace(/http:\/\/(www\.)?/, "http://devel.") + ":" + acre.host.port) : acre.freebase.site_host)
 	      },
 	      request: {
 	        app_url: acre.request.app_url,

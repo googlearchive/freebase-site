@@ -46,15 +46,18 @@ CueCard.QueryEditor = function(elmt, options) {
     }
     
     var codeMirrorOptions = {
-        path:               CueCard.codemirrorPrefix + "js/",
-        parserfile:         [ "tokenizejavascript.js", "parsejavascript.js" ],
+        basefiles           : [],
+        parserfile          : [SERVER.libs.codemirror],     // see index.sjs
+        stylesheet          : [SERVER.libs.codemirror_css], // see index.sjs
         parserConfig:       {json: true}, 
-        stylesheet:         CueCard.urlPrefix + "styles/codemirror-jscolors.css",
         height:             "100%",
         autoMatchParens:    true,
         textWrapping:       false,
+        highlightActiveLine : true,
         readOnly:           "readOnly" in options ? options.readOnly : false,
         content:            content,
+        passDelay           : 100,     // gap between highlighting runs (each run lasts 50ms - see passTime in codemirror.js)
+        undoDelay           : 250,     // min time between onChange notifications (and undo history commit)
         initCallback: function(codeMirror) {
             self._onReady();
             
@@ -71,6 +74,7 @@ CueCard.QueryEditor = function(elmt, options) {
             }
         }
     };
+    
     if ("onChange" in options) {
         codeMirrorOptions.onChange = options.onChange;
     }

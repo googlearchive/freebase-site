@@ -92,7 +92,7 @@ div.cuecard-popup-container {
 }
 
 #header {
-  background: #FFFFFF url(img_sprite_1px_vert) repeat-x scroll left -1050px
+  background: #FFFFFF url(img_sprite_1px_vert.png) repeat-x scroll left -1050px
 }
 
 .tab { display: block; float: left; margin-right: 5px; padding: 5px 11px; background: #e8f5f9; color: #1170a3;

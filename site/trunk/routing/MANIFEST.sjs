@@ -23,6 +23,7 @@ var mf = {
     "queryeditor"       : "//cuecard.dfhuynh.user.dev",
     "routing"           : "//routing.site.freebase.dev",
     "sample"            : "//sample.site.freebase.dev",
+    "sample2"            : "//sample2.site.freebase.dev",
     "schema"            : "//schema.site.freebase.dev",
     "tasks"             : "//tasks.site.freebase.dev",
     "template"          : "//template.site.freebase.dev",

@@ -45,6 +45,7 @@ rules.add([
 // Urls for development purposes only
 rules.add([
   {prefix:"/sample",             app:"sample"},
+  {prefix:"/sample2",            app:"sample2"},
   {prefix:"/core",               app:"core"},
   {prefix:"/jqueryui",           app:"jqueryui"},
   {prefix:"/i18n",               app:"i18n"},

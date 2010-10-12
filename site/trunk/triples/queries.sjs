@@ -15,7 +15,10 @@ function topic(id, filters) {
     creator: null,
     name: i18n.mql.query.name(),
     timestamp: null,
-    permission: null
+    permission: null,
+    type: [{id: null}],
+    "/freebase/type_hints/mediator": null,
+    "/freebase/type_hints/enumeration": null
   };
   return freebase.mqlread(q, f.mqlread_options(filters))
     .then(function(env) {
@@ -254,4 +257,3 @@ function attribution_links(id, filters) {
       return env.result;
     });
 };
-

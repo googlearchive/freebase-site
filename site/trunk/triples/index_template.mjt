@@ -15,16 +15,6 @@
 
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="${mf.css_src('triples.mf.css')}" />
-  <style type="text/css">
-    @-webkit-keyframes bars {
-      0% {
-        width: 0%;
-      }
-      100% {
-        width: 70%;
-      }
-    }
-  </style>
 </acre:block>
 
 <acre:block def="content_header()">
@@ -68,9 +58,72 @@
      if(c.attribution_links && c.attribution_links.length) {
        menu_map.push({ "key": "attribution_links", "name": _("Links created by")})
      }
+
+     // Figure out what kind of object this thing is
+     var object_map = [];
+     var object_kind = "";
+     for(i in c.topic.type) {
+       object_map.push(c.topic.type[i].id);
+     }
+
+     // Acre App
+     if (object_map.indexOf("/freebase/apps/acre_app") != -1) {
+       object_kind = "Acre App";
+     }
+
+     // Domain
+     else if (object_map.indexOf("/type/domain") != -1) {
+       object_kind = "Domain"; 
+     }
+
+     // Type
+     else if (object_map.indexOf("/type/type") != -1) {
+       // Mediator
+       if (c.topic["/freebase/type_hints/mediator"] === true) {
+         object_kind = "Mediator";
+       }
+       // Enumerated Type
+       else if (c.topic["/freebase/type_hints/enumeration"] === true) {
+         object_kind = "Enumerated Type";
+       }
+       // Type
+       else {
+         object_kind = "Type"; 
+       }
+     }
+
+     // Property
+     else if (object_map.indexOf("/type/property") != -1) {
+       object_kind = "Property"; 
+     }
+
+     // User
+     else if (object_map.indexOf("/type/user") != -1) {
+       object_kind = "User"; 
+     }
+
+     // Image
+     else if (object_map.indexOf("/common/image") != -1) {
+       object_kind = "Image"; 
+     }
+
+     // Document
+     else if (object_map.indexOf("/common/document") != -1) {
+       object_kind = "Article"; 
+     }
+
+     // Topic
+     else if (object_map.indexOf("/common/topic") != -1) {
+       object_kind = "Topic"; 
+     }
   </acre:script>
   <div class="page-meta">
-    <h1>${i18n.display_name(c.topic)}</h1>
+    <h1>
+      ${i18n.display_name(c.topic)}
+      <span class="flags">
+        $object_kind 
+      </span>
+    </h1>
     <div class="meta">
       <span class="key">
         <strong>${_("id")}:</strong>
@@ -94,7 +147,7 @@
         <acre:block if="c.topic.creator">
           ${image.user_image_small(c.topic.creator)}
           ${h.bless_sprintf(_("Created by %s on %s"),
-          h.tag("a", c.topic.creator, "href", h.url_for("triples", null, null, c.topic.creator), "title", c.topic.creator),
+          h.tag("a", c.topic.creator, "href", h.freebase_url("/view" + c.topic.creator) , "title", c.topic.creator),
           c.topic.timestamp)}
         </acre:block>
         <acre:block else="">
@@ -210,7 +263,14 @@
                   <span class="self">-</span>
                   ${tooltip()}
                 </th>
-                <td class="even"><span class="truncate">${a(o.link.master_property)}</span></td>
+                <td class="even">
+                  <span class="truncate" acre:if="o.link.master_property.indexOf('/user') != -1">
+                    ${a(o.link.master_property)}
+                  </span>
+                  <span acre:else="">
+                    ${a(o.link.master_property)}
+                  </span>
+                </td>
                 <td class="odd" acre:if="'value' in o">${literal(o)}</td>
                 <td class="odd" acre:else="">${topic(o)}</td>
                 <td class="even" acre:if="o.link.creator">${a(o.link.creator)}</td>

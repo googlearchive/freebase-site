@@ -19,7 +19,7 @@
   <html lang="en" dir="ltr">
     <head>
       <meta charset="utf-8" />
-      <title acre:if="exports.title">Freebase - ${exports.title()}</title>
+      <title acre:if="exports.title">Freebase - ${exports.pagetitle()}</title>
       <title acre:else="">Freebase</title>
 
       <!-- freebase suggest -->

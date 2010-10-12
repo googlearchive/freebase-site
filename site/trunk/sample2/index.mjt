@@ -9,6 +9,10 @@
   }
 </acre:script>
 
+<acre:block def="pagetitle()">
+  Page title goes here
+</acre:block>
+
 <acre:block def="title()">
   <!-- Page title goes here -->
   This is a sample page template

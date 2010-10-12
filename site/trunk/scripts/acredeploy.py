@@ -22,7 +22,7 @@ __author__ = 'masouras@google.com (Michael Masouras)'
 
 
 import sys, subprocess, shutil, os, hashlib, urllib, urllib2, tempfile, re, pwd, pdb, time, smtplib, socket
-from email.MIMEText import MIMEText
+from email.mime.text import MIMEText
 from optparse import OptionParser
 from tempfile import mkdtemp, mkstemp
 from cssmin import cssmin
@@ -38,7 +38,7 @@ from freebase.api.mqlkey import quotekey, unquotekey
 ## EMAIL SETTINGS ##
 
 USER_EMAIL_ADDRESS = "%s@google.com" % os.getlogin()
-DESTINATION_EMAIL_ADDRESS = "masouras@google.com"
+DESTINATION_EMAIL_ADDRESS = "freebase-site@google.com"
 
 ## GLOBAL CONFIGURATION ##
 
@@ -472,7 +472,7 @@ class App:
 
     msg = 'Creating branch version {version} of {app}'.format(version=target_app.version, app=target_app.app_key)
     self.c.log(msg, color=self.c.BLUE)
-    cmd = ['svn', 'copy', self.svn_url(), target_app.svn_url(), '--parents', '-m', '"acredeploy: %s"' % msg]
+    cmd = ['svn', 'copy', self.svn_url(), target_app.svn_url(), '--parents', '-m', '"appdeploy: %s"' % msg]
     (r, output) = self.c.run_cmd(cmd)
 
     if not r:
@@ -781,10 +781,10 @@ class Context():
     s.append('operator:\t%s\n' % os.getlogin())
     s.append('action:\t%s\n' % self.action)
     s.append('app:\t%s\n' % self.current_app)
-    s.append('graph:\t%s\n' % self.options.graph or '')
+    s.append('graph:\t%s\n' % (self.options.graph or ''))
 
     msg = MIMEText(''.join(s))
-    msg['Subject'] = '[acredeploy] success: %s of %s to %s' % (self.action, self.current_app, self.options.graph or '')
+    msg['Subject'] = '[appdeploy] success: %s of %s to %s' % (self.action, self.current_app, self.options.graph or '')
     msg['To'] = DESTINATION_EMAIL_ADDRESS
     msg['From'] = USER_EMAIL_ADDRESS
 
@@ -792,7 +792,7 @@ class Context():
       #set the socket timeout to 5 seconds in case there is no smtp server responding
       #socket.setdefaulttimeout(5)
       server = smtplib.SMTP()
-      server.connect()
+      server.connect('smtp')
       server.sendmail(USER_EMAIL_ADDRESS, [DESTINATION_EMAIL_ADDRESS], msg.as_string())
     except:
       self.warn('No deployment e-mail sent - error while sending email')
@@ -1514,13 +1514,14 @@ def main():
         for valid_action in valid_actions:
             if action == valid_action[0]:
 
-                result = valid_action[2](context)()
+              context.set_action(action)
+              result = valid_action[2](context)()
 
-                if not result:
-                  context.error('FAILED: action %s failed' % action)
-                else:
-                  context.log('SUCCESS: action %s ended succesfully, sending deployment e-mail.' % action, color=context.GREEN)
-                  context.send_email()
+              if not result:
+                context.error('FAILED: action %s failed' % action)
+              else:
+                context.log('SUCCESS: action %s ended succesfully, sending deployment e-mail.' % action, color=context.GREEN)
+                context.send_email()
 
 
 if __name__ == '__main__':

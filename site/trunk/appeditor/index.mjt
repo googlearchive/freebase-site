@@ -8,7 +8,8 @@
 	  var h = mf.require("core", "helpers");
   	var i18n = mf.require("i18n", "i18n");
   	var cuecard_mf = mf.require("cuecard", "MANIFEST").mf;
-	  
+	var codemirror_mf = mf.require("codemirror","MANIFEST").mf;
+  
 	  var SERVER = {
 	    appeditor: {
 	    	service_path : acre.request.server_name.match(/^a(cr)?e\./) ? "/appeditor/" : "/appeditor/services/",
@@ -16,6 +17,8 @@
 	    },
 	    libs: {
 	    	fulljslint: mf.js_src("fulljslint.mf.js"),
+                codemirror:     codemirror_mf.js_src("codemirror-frame.mf.js"),
+                codemirror_css: codemirror_mf.js_src("codemirror-frame.mf.css"),
 	    	codeassist: mf.js_src("codeassist.mf.js")
 	    },
 	    acre: {

@@ -6,4 +6,13 @@
 cd `dirname $0`/..
 
 # Copy all the JS files from CodeMirror's GitHub repo to a flat acre app
-cp -v third_party/codemirror/js/*.js codemirror/
+# and rename *.js --> *.js.js
+TMPDIR=/tmp/codemirrorjs
+rm -rf $TMPDIR 2>/dev/null
+mkdir $TMPDIR
+cp third_party/codemirror/js/*.js $TMPDIR
+rename s/js$/js.js/ $TMPDIR/*.js
+cp $TMPDIR/*.js codemirror/
+
+# show the changes
+ls -lrt codemirror/

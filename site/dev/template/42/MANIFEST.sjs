@@ -126,4 +126,4 @@ var mf = JSON.parse(acre.require("CONFIG.json").body);
 
 
 
-acre.require(mf.apps.core + "/MANIFEST").init(mf, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/template/b2b22e64abf038703c72f1b2aeb7fdb9", "static_base_url": "http://freebaselibs.com/static/freebase_site/template/b2b22e64abf038703c72f1b2aeb7fdb9"});
+acre.require(mf.apps.core + "/MANIFEST").init(mf, this, {"image_base_url": "http://freebaselibs.com/static/freebase_site/template/56b5bed3ed7b0ee466b373af6d62847b", "static_base_url": "http://freebaselibs.com/static/freebase_site/template/56b5bed3ed7b0ee466b373af6d62847b"});

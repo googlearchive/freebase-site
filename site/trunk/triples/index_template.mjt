@@ -63,6 +63,7 @@
      var object_map = [];
      var object_kind = "";
      for(i in c.topic.type) {
+       console.log(c.topic.type[i].id)
        object_map.push(c.topic.type[i].id);
      }
 
@@ -73,7 +74,12 @@
 
      // Domain
      else if (object_map.indexOf("/type/domain") != -1) {
-       object_kind = "Domain"; 
+       if (c.topic.id.indexOf("/base") === 0 || c.topic.id.indexOf("/user") === 0) {
+         object_kind = "User Domain"; 
+       }
+       else {
+         object_kind = "Domain"; 
+       }
      }
 
      // Type
@@ -155,6 +161,18 @@
         </acre:block>
       </span>    
     </div>
+    <div class="nav clear">
+      <ul class="nav-utilities">
+        <li>
+          <a href="${h.freebase_url('/view'+c.topic.mid)}" class="icon-link"><span class="browse-icon">${_('View')} ${_(object_kind)}</span></a>
+        </li>
+        <li>
+          <a href="${h.freebase_url('/view'+c.topic['primary:id'])}" class="icon-link">
+            <span class="query-icon">${_('Build Query')}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
 
 
@@ -229,8 +247,10 @@
                   </acre:block>
                 </td>
                 <td class="even">
-                  <span class="truncate">
-                    ${k.link.target_value}
+                  <span class="truncate-wrapper">
+                    <span class="truncate">
+                      ${k.link.target_value}
+                    </span>
                   </span>
                 </td>
                 <td class="odd" acre:if="k.link.creator">${a(k.link.creator)}</td>
@@ -419,7 +439,7 @@
   </div>
 
   <ul id="triple-tip" class="row-menu tooltip" acre:trim="">
-    <li class="row-menu-item last"><a id="build-query" href="${h.url_for('queryeditor')}">${_("Build query")}</a></li>
+    <li class="row-menu-item last"><a id="build-query" href="#">${_("Build query")}</a></li>
   </ul>
 
 </acre:block>

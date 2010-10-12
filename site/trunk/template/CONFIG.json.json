@@ -15,6 +15,10 @@
     "freebase-permission.mf.js": [
       "freebase.mf.js",
       ["permission", "permission.js"]
+    ],
+    "jquery.placeholder.test.mf.js": [
+      "jquery.placeholder.js",
+      "jquery.placeholder.test.js"
     ]
   },
   "stylesheet": {

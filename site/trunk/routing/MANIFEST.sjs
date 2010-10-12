@@ -26,6 +26,7 @@ var mf = {
     "sample2"            : "//sample2.site.freebase.dev",
     "schema"            : "//schema.site.freebase.dev",
     "tasks"             : "//tasks.site.freebase.dev",
+    "test"              : "//test.site.freebase.dev",
     "template"          : "//template.site.freebase.dev",
     "tmt"               : "//tmt.zenkat.user.dev",
     "toolbox"           : "//toolbox.site.freebase.dev",

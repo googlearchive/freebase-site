@@ -82,7 +82,7 @@
       form.trigger_row.hide();
       form.submit_row.show();
 
-      $("[placeholder]", form.row).textPlaceholder();
+      $("[placeholder]", form.row).placeholder();
       $(window).bind("fb.lang.select", function(e, lang) {
         se.toggle_lang(form.row, lang);
       });
@@ -245,7 +245,7 @@
           }
         });
 
-      $("[placeholder]", form.form).textPlaceholder();
+      $("[placeholder]", form.form).placeholder();
       $(window).bind("fb.lang.select", function(e, lang) {
         se.toggle_lang(form.form, lang);
       });

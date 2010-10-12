@@ -86,9 +86,6 @@ if (typeof SERVER === "object" && SERVER.acre) {
     };
   }
 
-  // delete placeholder plugin as part of suggest
-  $.fn.placeholder = $.noop;
-
   /**
    * simple event dispatcher
    */
@@ -290,7 +287,7 @@ if (typeof SERVER === "object" && SERVER.acre) {
         }
       });
 
-      $('input, textarea').textPlaceholder();
+      $('input, textarea').placeholder();
     });
 
   /**

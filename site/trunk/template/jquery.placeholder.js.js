@@ -1,51 +1,95 @@
-/**
- * @param {String} [color='#AAA'] placeholder text color
- */
-jQuery.fn.textPlaceholder = function (color) {
+(function($) {
 
-	color = color || '#AAA';
+   var f = document.createElement( 'input' );
 
-	return this.each(function(){
+   if ("placeholder" in f) {
+     return;
+   }
 
-		var that = this;
+   var base_val = $.fn.val;
+   $.fn.val = function(value) {
+     if (value === undefined) {
+       if (this.hasClass("placeholder")) {
+         return "";
+       }
+     }
+     return base_val.apply(this, [value]);
+   };
 
-		if (that.placeholder && 'placeholder' in document.createElement(that.tagName)) return;
+   function placeholder(input, options) {
+     this.options = $.extend(true, {}, options);
+     this.input = $(input);
+     this.placeholder = this.input.attr("placeholder") || "";
+     this.init();
+   };
+   placeholder.prototype = {
+     init: function() {
+       var self = this;
+       var val = this.input.val();
+       if (val === "" || val === this.placeholder) {
+         this.input.val(this.placeholder).addClass("placeholder");
+       }
+       this.input
+         .bind("focus.placeholder", function(e) {
+           return self.focus(e);
+         })
+         .bind("blur.placeholder", function(e) {
+           return self.blur(e);
+         });
+       if (this.input[0].form) {
+         $(this.input[0].form).bind("submit", function(e) {
+           return self.submit(e);
+         });
+       }
+     },
+     destroy: function() {
+       this.input.unbind(".placeholder");
+       if (this.input[0].form) {
+         $(this.input[0].form).unbind(".placeholder");
+       }
+     },
 
-		var default_color = that.style.color;
-		var placeholder = that.getAttribute('placeholder');
-		var input = $(that);
+     focus: function(e) {
+       if (this.input.hasClass("placeholder")) {
+         this.input.val("").removeClass("placeholder");
+       }
+     },
 
-		if (that.value === '' || that.value == placeholder) {
-			that.value = placeholder;
-			that.style.color = color;
-			input.data('placeholder-visible', true);
-		}
+     blur: function(e) {
+       if (this.input.val() === "") {
+         this.input.val(this.input.attr("placeholder")).addClass("placeholder");
+       }
+     },
 
-		input.focus(function(){
-			this.style.color = default_color;
-			if (input.data('placeholder-visible')) {
-				input.data('placeholder-visible', false);
-				this.value = '';
-			}
-		});
+     submit: function(e) {
+       if (this.input.hasClass("placeholder")) {
+         this.input.val("");
+       }
+     }
+   };
 
-		input.blur(function(){
-			if (this.value === '') {
-				input.data('placeholder-visible', true);
-				this.value = placeholder;
-				this.style.color = color;
-			} else {
-				this.style.color = default_color;
-				input.data('placeholder-visible', false);
-			}
-		});
+   /**
+    */
+   $.fn.placeholder = function (options) {
+     return this.each(function() {
+       var $this = $(this);
+       // rm fb suggest placeholder
+       $this.unbind(".placeholder");
+       if (!$this.is(":text") && !$this.is("textarea")) {
+         return;
+       }
+       var ph = $this.attr('placeholder');
+       if (!ph) {
+         return;
+       }
+       var instance = $.data(this, "placeholder");
+       if (instance) {
+         instance.destroy();
+       }
+       $.data(this, "placeholder", (new placeholder(this, options)));
+     });
 
-		that.form && $(that.form).submit(function(){
-			if (input.data('placeholder-visible')) {
-				that.value = '';
-			}
-		});
+   };
 
-	});
 
-};
+ })(jQuery);

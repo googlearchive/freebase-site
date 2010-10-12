@@ -53,7 +53,8 @@ rules.add([
   {prefix:"/routing",            app:"routing" },
   {prefix:"/queries",            app:"queries"},
   {prefix:"/codemirror",         app:"codemirror" },
-  {prefix:"/validator",          app:"validator"}
+  {prefix:"/validator",          app:"validator"},
+  {prefix:"/test",               app:"test"}
 ]);
 
 // Redirects for legacy urls

@@ -25,10 +25,6 @@
       property : [{ "/type/property/schema": { "type": "/type/type", "domain": [{ "key" : [{ "namespace" : "/" }] }], "a:domain" : { "id" : "/freebase", "optional" : "forbidden" } } }]
     };
 
-
-    // delete placeholder plugin as part of suggest
-    $.fn.placeholder = $.noop;
-
     /*
         DOMAIN SUGGEST
     */

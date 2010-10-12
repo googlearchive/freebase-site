@@ -24,9 +24,6 @@
     focus: $.suggest.suggest.prototype.focus
   };
 
-  // delete placeholder plugin as part of suggest
-  $.fn.placeholder = $.noop;
-
   $.suggest("suggest_expected_type",
     $.extend(true, {}, $.suggest.suggest.prototype, {
 

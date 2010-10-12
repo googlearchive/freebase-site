@@ -11,9 +11,6 @@
     create_item: $.suggest.suggest.prototype.create_item
   };
 
-  // delete placeholder plugin as part of suggest
-  $.fn.placeholder = $.noop;
-
   $.suggest("suggest_property",
     $.extend(true, {}, $.suggest.suggest.prototype, {
       create_item: function(data, response_data) {

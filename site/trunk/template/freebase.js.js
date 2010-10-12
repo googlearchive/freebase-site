@@ -86,6 +86,9 @@ if (typeof SERVER === "object" && SERVER.acre) {
     };
   }
 
+  // delete placeholder plugin as part of suggest
+  $.fn.placeholder = $.noop;
+
   /**
    * simple event dispatcher
    */

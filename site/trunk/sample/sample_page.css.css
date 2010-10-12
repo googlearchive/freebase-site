@@ -1,11 +1,2 @@
-/*
----------------------------
-Page Basics
----------------------------
-*/
 
-.content-body {
-	font-size: 1.2em;
-	margin-bottom: 0.5em;
-	color: red;
-}
+h1 { color: black; }

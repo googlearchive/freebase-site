@@ -30,8 +30,8 @@ if (typeof SERVER === "object" && SERVER.acre) {
   var cookie_lwt = 0;
   var page_lwt = 0;
   // in acre, PAGE_LASTWRITEIME is acre.request.cookies.mwLastWriteTime
-  if (typeof acre === "object" && fb.acre && fb.acre.request && fb.acre.request.cookies) {
-    page_lwt = fb.acre.request.cookies[cookieName] || 0;
+  if (typeof fb.acre === "object" && fb.acre && fb.acre[cookieName]) {
+    page_lwt = fb.acre[cookieName] || 0;
   }
   if (document.cookie && document.cookie != '') {
     var cookies = document.cookie.split(';');
@@ -306,5 +306,78 @@ if (typeof SERVER === "object" && SERVER.acre) {
        $(window).trigger("fb.lang.select", lang);
      }, 0);
    };
+
+   fb.devbar = {
+     div: $("#devbar"),
+
+     keydown: function(e) {
+       // check for f8 key:119, f12:123 + ctrl or shift modifiers
+       // or just in case those don't work,
+       // check for ctrl+shift+d
+       if (e.keyCode == 119 || e.keyCode == 123 ||
+           (e.keyCode == 68 && e.shiftKey && e.ctrlKey))
+         fb.devbar.toggle();
+       return true;
+     },
+
+     toggle: function() {
+       if (fb.devbar.div.is(":visible")) {
+         fb.devbar.div.hide();
+         $.localstore("devbar2", false);
+       }
+       else {
+         fb.devbar.div.show();
+         $.localstore("devbar2", true);
+       }
+       return false;
+     },
+
+     touch: function() {
+       if (/^https?\:\/\/((www|devel)\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(fb.acre.request.app_url)) {
+         $.ajax({
+           url: fb.acre.freebase.service_url + "/api/service/touch",
+           dataType: "jsonp"
+         });
+       }
+       else {
+         $.ajax({url: "/acre/touch"});
+       }
+       return false;
+     },
+
+     txn_ids: [],
+     txn: function(e) {
+       return fb.devbar.view_txn(this.href, fb.devbar.txn_ids);
+     },
+
+     view_txn: function(base_url, ids) {
+       if (ids && ids.length) {
+         window.location = base_url + "?" + $.param({tid:ids}, true);
+       }
+       return false;
+     },
+
+     ajaxComplete: function(xhr, status) {
+       if (xhr && xhr.readyState === 4) {
+         var tid = xhr.getResponseHeader("x-metaweb-tid");
+         if (tid) {
+           fb.devbar.txn_ids.push(tid);
+         }
+       }
+     },
+
+     init: function() {
+       $.localstore("devbar2") ? fb.devbar.div.show() : fb.devbar.div.hide();
+       $(document).keydown(fb.devbar.keydown);
+       $("#devbar-toggle > a").click(fb.devbar.toggle);
+       $("#devbar-touch > a").click(fb.devbar.touch);
+       if (fb.acre.tid) {
+         fb.devbar.txn_ids.push(fb.acre.tid);
+       }
+       $("#devbar-txn > a").click(fb.devbar.txn);
+       $.ajaxSetup({complete:fb.devbar.ajaxComplete});
+     }
+   };
+   fb.devbar.init();
 
 })(jQuery, window.freebase);

@@ -6,6 +6,7 @@
     cache.set_cache_policy('public');
   }
   var i18n = mf.require("i18n", "i18n");
+  var _ = i18n.gettext;
   acre.response.set_header_default("Vary", "Cookie, Accept-Language");
 </acre:script>
 
@@ -174,6 +175,18 @@
       </ul>
     </div>
   </div>
+
+  <div id="devbar" class="clear">
+    <ul>
+      <acre:block if="exports.c && exports.c.id">
+        <li><a title="${_('Inspect this topic')}" href="${h.url_for('triples', null, null, exports.c.id)}">${_('Inspect this topic')}</a></li>
+      </acre:block>      
+      <li><a title="${_('Query editor')}" href="${h.url_for('queryeditor')}">${_('Query editor')}</a></li>      
+      <li id="devbar-txn"><a title="${_('View transaction log')}" rel="nofollow" href="http://stats.metaweb.com/transaction">${_('View transaction log')}</a></li>
+      <li id="devbar-touch"><a title="${_('Refresh cache')}" rel="nofollow" href="#">${_('Refresh cache')}<a/></li>
+      <li id="devbar-toggle"><a title="${_('hide dev tools, press F8 to toggle visibility')}" rel="nofollow" href="#">${_('hide (F8)')}<a/></li>
+    </ul>    
+  </div>
 </acre:block>
 
 
@@ -186,16 +199,16 @@
 
 <!-- add any acre variables you wanted passed to client-side -->
 <acre:block def="acre_javascript_vars(exports)">
-  <script>
-  	var SERVER = {};
+ <script>
+    var SERVER = {};
     SERVER.acre = {
+      mwLastWriteTime: "${acre.request.cookies.mwLastWriteTime}",
       freebase: {
         service_url: "${acre.freebase.service_url}",
         site_host: "${acre.freebase.site_host}"
       },
       request: {
         app_url: "${acre.request.app_url}",
-        cookies: ${JSON.stringify(acre.request.cookies)}
       },
       lang: {
         mql: "${i18n.lang}",
@@ -203,7 +216,10 @@
       }
     };
   </script>
-  <script acre:if="typeof exports.c === 'object' && exports.c.id">
+  <script acre:if="exports.c && exports.c.id">
     SERVER.acre.c = {id: "${exports.c.id}"};
- </script>
+  </script>
+  <script acre:if="acre.request.headers['x-metaweb-tid']">
+    SERVER.acre.tid = "${acre.request.headers['x-metaweb-tid']}"
+  </script>
 </acre:block>

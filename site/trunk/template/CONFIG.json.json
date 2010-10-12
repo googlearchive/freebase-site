@@ -4,7 +4,9 @@
   },
   "javascript": {
     "freebase.mf.js": [
+      "json2.js",
       "jquery.cookie.js",
+      "jquery.localstore.js",
       "jquery.placeholder.js",
       "jquery.metadata.js",
       ["jqueryui", "jquery.ui.core.mf.js"],

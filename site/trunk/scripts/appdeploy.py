@@ -496,21 +496,14 @@ class App:
     '''
     get app info using  graph/appeditor/get_app service
     '''
-    url = "{graph}/appeditor/services/get_app?{app_id}".format(graph=self.c.services['acre'], app_id=urllib.urlencode(dict(appid=self.path())))
-    #url = "http:{appeditor_services}.{freebaseapps}/get_app?{app_id}".format(appeditor_services=AppFactory(self.c)('appeditor-services').path(), freebaseapps=self.c.services['freebaseapps'], app_id=urllib.urlencode(dict(appid=self.path())))
-    graph_app = None
-
-    def fetchit(app):
-      return app.c.fetch_url(url, isjson=True, tries=1).get('result')
-
     try:
-      graph_app = fetchit(self)
+      graph_app = self.c.freebase.get_app(self.path())
     except:
       if not self.version:
         self.c.log("%s does not exist yet, will create it" % self.app_key)
         try:
           ActionCreateGraph(c)(self)
-          graph_app = fetchit(self)
+          graph_app = self.c.freebase.get_app(self.path())
         except:
           return self.c.error('Cannot create %s - aborting.' % self.app_key)
       else:

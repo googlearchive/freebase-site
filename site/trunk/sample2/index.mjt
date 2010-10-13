@@ -11,8 +11,15 @@
 
 <acre:block def="title()">
   <!-- Page title goes here -->
-  This is a sample page template
+  Page title
 </acre:block>
+
+<acre:block def="content_header()">
+<div class="page-header">
+    <h1 id="page-title">This is a sample page template</h1>
+  </div>
+</acre:block>
+
 
 <acre:block def="head()">
   <!-- define additional CSS/JS files here -->
@@ -69,7 +76,7 @@
 
 
 	<div class="section">
-	 	<h1 class="section-title">This is a Section Title</h1>
+	 	<h1 class="table-title">This is a Table Title</h1>
 		<!-- this table will extend full col if you don't wrap it in content-main -->
 		 <table cellspacing="0" class="table table-sortable">
 		   <thead>

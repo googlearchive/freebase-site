@@ -166,4 +166,11 @@ rules.add([
   {prefix:"/view/userdomains",      url:"/domain/users", redirect:301},
   {prefix:"/newsfeed",              url:"/private/newsfeed", redirect:301}
 ]);
-
+                 
+// Host redirects
+var host_redirects = {
+  "acre.freebase.com": "/appeditor",
+  "acre.sandbox-freebase.com": "/appeditor",
+  "api.freebase.com": "http://wiki.freebase.com/wiki/Freebase_API",
+  "api.sandbox-freebase.com": "http://wiki.freebase.com/wiki/Freebase_API"
+};

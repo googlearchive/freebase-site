@@ -20,7 +20,7 @@ var mf = {
     "policies"          : "//policies.site.freebase.dev",
     "promise"           : "//promise.site.freebase.dev",
     "queries"           : "//queries.site.freebase.dev",
-    "queryeditor"       : "//queryeditor.site.freebase.dev",
+    "queryeditor"       : "//cuecard.dfhuynh.user.dev",
     "routing"           : "//routing.site.freebase.dev",
     "sample"            : "//sample.site.freebase.dev",
     "sample2"           : "//sample2.site.freebase.dev",

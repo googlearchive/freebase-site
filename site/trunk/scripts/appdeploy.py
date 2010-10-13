@@ -852,7 +852,6 @@ class ActionPush():
 
     #delete removed files
     for filename,val in delete_files.iteritems():
-      continue
       print ".",
       sys.stdout.flush()
       c.freebase.delete_app_file(app.app_id, unquotekey(filename))

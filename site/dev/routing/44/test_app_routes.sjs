@@ -41,6 +41,12 @@ test("all_rules", function() {
     
     if (route.redirect) {
       ok(route.url, 'Each redirect must have a url:'+route.url);
+
+      /*
+        Can't do this check now because some urls are still handled
+           by the client, so it's not actually finding duplicate redirects, just
+           a redirect to a client url
+           
       if (!(/https?\:\/\//.test(route.url))) {
         var redirect_route = rules.route_for_path(route.url);
         // if this route is handled by acre make sure that
@@ -48,7 +54,8 @@ test("all_rules", function() {
         if (redirect_route) {
           ok(!redirect_route.redirect, 'Not another redirect: '+route);
         }
-      }
+      }*/
+      
       ok(route.redirect > 300, 'Redirect code greater then 300');
       ok(route.redirect < 400, 'Redirect code less than 400');
       

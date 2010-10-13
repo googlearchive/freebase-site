@@ -5,13 +5,17 @@
   "stylesheet": {
     "queryeditor.mf.css": [
     	["template", "freebase.mf.css"],
-			"index.css"
+      ["template", "freebase.ui.tabs.less"],
+      ["template", "freebase.ui.breadcrumbs.less"],
+      ["template", "freebase.ui.pageoverview.less"],
+      ["template", "freebase.ui.modal.less"],
+      "index.css"
     ]
   },
   "javascript": {
     "queryeditor.mf.js": [
       ["template", "freebase.mf.js"],
-      ["jqueryui", "jquery.ui.tabs.js"],
+      ["jquerytools", "tabs.js"],
       ["jqueryui", "jquery.ui.dialog.js"],
     	"index.js",
     ]

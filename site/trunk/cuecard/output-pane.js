@@ -50,7 +50,7 @@ CueCard.OutputPane.prototype._constructUI = function() {
     var idPrefix = this._idPrefix = "t" + Math.floor(1000000 * Math.random());
     
     function makeTabHeaderHTML(index, label) {
-        return '<li class="tab"><a href="#' + idPrefix + '-' + index + '">' + label + '</a></li>';
+        return '<li class="section-tab tab"><a href="#' + idPrefix + '-' + index + '">' + label + '</a></li>';
     }
     function makeTabBodyHTML(index) {
         return '<div class="cuecard-outputPane-tabBody" id="' + idPrefix + '-' + index + '"></div>';
@@ -58,9 +58,9 @@ CueCard.OutputPane.prototype._constructUI = function() {
     
     this._elmt.css("overflow", "hidden");
     this._elmt.html(
-        '<div class="cuecard-outputPane">' +
+        '<div class="cuecard-outputPane section-tabs">' +
             '<div id="' + idPrefix + '">' +
-                '<ul>' +
+                '<ul class="section-tabset clear">' +
                     makeTabHeaderHTML(0, 'Tree') +
                     makeTabHeaderHTML(1, 'Text') +
                     makeTabHeaderHTML(2, 'Status') +
@@ -87,21 +87,24 @@ CueCard.OutputPane.prototype._constructUI = function() {
     this._constructStatusTabBody();
     //this._constructCustomTabBody();
     
-    this._tabs = $('#' + idPrefix);
-    this._tabs.tabs().bind('tabsselect', function(event, ui) {
+    var tabs = $('#' + idPrefix + " > .section-tabset");
+    tabs.tabs('#' + idPrefix + " > .tabbed-content > .cuecard-outputPane-tabBody", {
+      "initialIndex": (this._lastJsonOutputMode == "tree") ? 0 : 1,
+      "onBeforeClick": function(event, index) {
         window.__cc_tree_disposePopup();
-        if (ui.index == 0) { // tree
+        if (index == 0) { // tree
             self._lastJsonOutputMode = "tree";
             if (self._jsonResult != null && !self._treeConstructed) {
                 self._constructTree();
             }
-        } else if (ui.index == 1) {
+        } else if (index == 1) {
             self._lastJsonOutputMode = "text";
         }
         
         $.cookie("cc_op_mode", self._lastJsonOutputMode, { expires: 365 });
+      }
     });
-    this._tabs.tabs('select', (this._lastJsonOutputMode == "tree") ? 0 : 1)
+    this._tabs = tabs.data("tabs");
 };
 
 CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings) {
@@ -120,7 +123,7 @@ CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings) {
     
     var self = this;
     var selectTab = function() {
-        self._tabs.tabs('select', tabToSelect);
+        self._tabs.click(tabToSelect);
     };
     
     // tabs have to be selected asynchronously or Chrome will crash.
@@ -128,7 +131,7 @@ CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings) {
 };
 
 CueCard.OutputPane.prototype.setStatus = function(html) {
-    this._tabs.tabs('select', 2);
+    this._tabs.click(2);
     this._statusTabBody[0].firstChild.innerHTML = html;
     
     this._jsonResult = null;

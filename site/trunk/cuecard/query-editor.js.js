@@ -168,7 +168,7 @@ CueCard.QueryEditor.prototype._constructButtons = function() {
     };
     
     insertTopButton(0, true,
-        $('<button class="cuecard-queryEditor-examples">Examples...</button>')
+        $('<input type="submit" class="button cuecard-queryEditor-examples" value="Examples" />')
             .click(function(evt) { self._showExamples(); })[0]);
     insertTopButton(1, true,
         $('<span>' +
@@ -176,30 +176,30 @@ CueCard.QueryEditor.prototype._constructButtons = function() {
             '<a href="http://www.freebase.com/docs/mql" target="_blank">MQL&nbsp;Reference</a>' +
           '</span>')[0]);
     insertTopButton(3, false,
-        $('<button class="cuecard-queryEditor-undo">Undo</button>')
+        $('<input type="submit" class="button cuecard-queryEditor-undo" value="Undo" />')
             .click(function(evt) { self._editor.editor.history.undo(); })[0]);
     insertTopButton(4, false,
-        $('<button class="cuecard-queryEditor-redo">Redo</button>')
+        $('<input type="submit" class="button cuecard-queryEditor-redo" value="Redo" />')
             .click(function(evt) { self._editor.editor.history.redo(); })[0]);
     insertTopButton(5, false,
-        $('<button class="cuecard-queryEditor-redo">Clear</button>')
+        $('<input type="submit" class="button cuecard-queryEditor-redo" value="Clear" />')
             .click(function(evt) { self.content(""); self.focus(); })[0]);
         
     insertBottomButton(0, true,
-        $('<button class="cuecard-queryEditor-queryAssist">Query&nbsp;Assist</button>')
+        $('<input type="submit" class="button cuecard-queryEditor-queryAssist" value="Query Assist" />')
             .click(function(evt) { self.startAssistAtCursor(); })[0],
         'Tab');
         //(navigator.userAgent.toLowerCase().indexOf('mac') >= 0 ? 'Alt' : 'Ctrl') + '-Space');
     insertBottomButton(1, true,
-        $('<button class="cuecard-queryEditor-explainQuery">Explain&nbsp;Query</button>')
+        $('<input type="submit" class="button cuecard-queryEditor-explainQuery" value="Explain Query" />')
             .click(function(evt) { alert("Not Yet Implemented"); }).hide()[0],
         '');
     insertBottomButton(3, false,
-        $('<button class="cuecard-queryEditor-cleanUp">Clean&nbsp;Up</button>')
+        $('<input type="submit" class="button cuecard-queryEditor-cleanUp" value="Clean Up" />')
             .click(function(evt) { self._onCleanUp(); })[0],
         '' /*'Shift-'*/);
     insertBottomButton(4, false,
-        $('<button class="cuecard-queryEditor-run">Run</button>')
+        $('<input type="submit" class="button button-primary cuecard-queryEditor-run" value="Run" />')
             .click(function(evt) { self._onRun(false); })[0],
         'Ctrl-Enter');
 };

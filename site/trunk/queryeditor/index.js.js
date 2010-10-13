@@ -4,7 +4,7 @@ CueCard.urlPrefix = "/cuecard/";
 CueCard.apiProxy.base = SERVER.acre.request.app_url + "/cuecard/";
 
 
-var c;
+var c = {};
 var queryEditorOptions;
 
 function onLoad() {
@@ -123,19 +123,16 @@ function onLoad() {
 }
 
 function resizePanes() {
-    var margin = 20;
+    var margin = 0;
     var spacing = 10;
     var controlPaneHeight = 250;
     var splitterHeight = 12;
     
-    var width = ("innerWidth" in window ? window.innerWidth : document.body.offsetWidth);
-    var halfWidth = Math.round((width - 2 * margin - spacing) / 2) + "px";
-    var height = ("innerHeight" in window ? window.innerHeight : document.body.offsetHeight) - 
-        $("#footer")[0].offsetHeight - $("#header")[0].offsetHeight;
+    var width = $("#content-main").width();
+    var halfWidth = Math.round((width - 2 * margin - spacing) / 2);
+    var height = $(window).height() - $("#page-footer").height() - $("#page-header").height() - $(".page-header").height();
     
-    $("#body")
-        .css("top", $("#header")[0].offsetHeight + "px")
-        .css("height", height + "px");
+    $("#qe-container").css("height", height + "px");
         
     var innerHeight = height - 2 * margin;
     if ($("#the-control-pane")[0].style.display == "block") {
@@ -233,11 +230,11 @@ function closeStartingMessage() {
 }
 
 function refreshCache() {
-  if (document.location.href.indexOf(".freebase.com/") > 0) {
-    $.post("http://www.freebase.com/api/service/touch?mw_cookie_scope=domain", {}, null, function() {});
-  } else if (document.location.href.indexOf(".sandbox-freebase.com/") > 0) {
-    $.post("http://www.sandbox-freebase.com/api/service/touch?mw_cookie_scope=domain", {}, null, function() {});
-  } else {
-    $.get("/acre/touch", {}, null, function() {});
-  }
+  $.post(SERVER.acre.freebase.service_url + "/api/service/touch?mw_cookie_scope=domain", {}, null, function() {});
 }
+
+
+$(function(){
+  onLoad();
+  $(window).resize(onResize);
+});

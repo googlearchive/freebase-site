@@ -14,7 +14,7 @@ CueCard.ControlPane.prototype.layout = function() {
     var height = (
         this._elmt[0].firstChild.offsetHeight - 
         this._elmt[0].firstChild.firstChild.firstChild.offsetHeight - 
-        28 // paddings
+        10 // paddings
     ) + "px";
     this._elmt.find('.cuecard-controlPane-tabBody').css("height", height);
 };
@@ -23,16 +23,16 @@ CueCard.ControlPane.prototype._constructUI = function() {
     var idPrefix = this._idPrefix = "t" + Math.floor(1000000 * Math.random());
     
     function makeTabHeaderHTML(index, label) {
-        return '<li class="tab"><a href="#' + idPrefix + '-' + index + '"><span>' + label + '</span></a></li>';
+        return '<li class="section-tab tab"><a href="#' + idPrefix + '-' + index + '"><span>' + label + '</span></a></li>';
     }
     function makeTabBodyHTML(index) {
         return '<div class="cuecard-controlPane-tabBody" id="' + idPrefix + '-' + index + '"></div>';
     }
     
     this._elmt.html(
-        '<div class="cuecard-controlPane">' +
+        '<div class="cuecard-controlPane section-tabs">' +
             '<div id="' + idPrefix + '">' +
-                '<ul>' +
+                '<ul class="section-tabset clear">' +
                     makeTabHeaderHTML(0, 'Tools') +
                     makeTabHeaderHTML(1, 'Variables') +
                     makeTabHeaderHTML(2, 'Envelope') +
@@ -49,7 +49,7 @@ CueCard.ControlPane.prototype._constructUI = function() {
             '</div>' +
         '</div>'
     );
-    $('#' + idPrefix).tabs();
+    $('#' + idPrefix + " > .section-tabset").tabs('#' + idPrefix + " > .tabbed-content > .cuecard-controlPane-tabBody", { initialIndex: 0 });
     
     var tabBodies = this._elmt.find('.cuecard-controlPane-tabBody');
     this._toolsTabBody = $(tabBodies[0]);
@@ -71,7 +71,7 @@ CueCard.ControlPane.prototype._constructToolsTabBody = function() {
     
     var makeButton = function(command, label, hint) {
         return '<div class="cuecard-controlPane-powerTool">' +
-            '<button cc:command="' + command + '">' + label + '</button>' +
+            '<input type="submit" class="button" cc:command="' + command + '" value="' + label + '" />' +
             '<div class="cuecard-controlPane-powerTool-hint">' + hint + '</div>' +
         '</div>';
     };
@@ -98,7 +98,7 @@ CueCard.ControlPane.prototype._constructToolsTabBody = function() {
         '</div>'
     );
     
-    this._toolsTabBody.find("button").click(function(evt) {
+    this._toolsTabBody.find(".button").click(function(evt) {
         return self._onCommandClick(evt, this, this.getAttribute("cc:command"));
     });
 };
@@ -108,7 +108,7 @@ CueCard.ControlPane.prototype._constructVariablesTabBody = function() {
         '<table class="cuecard-controlPane-variables">' +
             '<tr><th width="30%">name</th><th width="50%">value</th><th></th></tr>' +
         '</table>' +
-        '<div><button>Add</button></div>'
+        '<div><input type="submit" class="button" value="Add" /></div>'
     );
     
     var self = this;
@@ -123,7 +123,7 @@ CueCard.ControlPane.prototype._constructVariablesTabBody = function() {
         td1.innerHTML = "<input />";
         
         var td2 = tr.insertCell(2);
-        td2.innerHTML = "<button>Remove</button>";
+        td2.innerHTML = '<input type="submit" class="button" value="Remove" />';
         $(td2.firstChild).click(function() { $(tr).remove(); });
         
         if (!(dontFocus)) {
@@ -131,7 +131,7 @@ CueCard.ControlPane.prototype._constructVariablesTabBody = function() {
         }
     };
     
-    this._variablesTabBody.find('button').click(add);
+    this._variablesTabBody.find('.button').click(add);
     add(true);
 };
 
@@ -175,7 +175,7 @@ CueCard.ControlPane.prototype._constructEnvelopeTabBody = function() {
             makeRow('use_permission_of', '<input name="' + this._envelopeUsePermissionOfID + '" ' + (use_permission_of != null ? 'value="' + use_permission_of + '"' : '') + '/>', 
                 'Specify the id of an object (typically a user, domain or type) whose permission you want to copy (<a href="http://freebaseapps.com/docs/mql/ch06.html#id2972357" target="_blank">more details</a>).') +
             makeRow('page', 
-                '<input name="' + this._envelopePageID + '" /> <button class="cuecard-controlPane-configurations-page">Previous</button><button class="cuecard-controlPane-configurations-page">Next</button>', 
+                '<input name="' + this._envelopePageID + '" /> <input type="submit" class="button cuecard-controlPane-configurations-page" value="Previous" /><input type="submit" class="button cuecard-controlPane-configurations-page" value="Next" />', 
                 'Page number starting from 1 if there is a "limit" property in the top level query node.'
             ) +
             makeRow('cursor',
@@ -184,7 +184,7 @@ CueCard.ControlPane.prototype._constructEnvelopeTabBody = function() {
                 '<div><input type="radio" name="' + this._envelopeCursorID + '" value="custom"> continue from cursor: ' +
                     '<div class="cuecard-controlPane-configurations-cursor">' +
                         '<input type="text" name="' + this._envelopeCursorID + '" />' +
-                        '<button class="cuecard-controlPane-configurations-cursor">Paste from Last Result</button> <button cc:run="true">Paste &amp; Run</button>' +
+                        '<input type="submit" class="button cuecard-controlPane-configurations-cursor" value="Paste from Last Result" /> <input type="submit" class="button" cc:run="true" value="Paste &amp; Run" />' +
                     '</div>' +
                 '</div>',
                 ''
@@ -201,7 +201,7 @@ CueCard.ControlPane.prototype._constructEnvelopeTabBody = function() {
             self._envelopeTabBody.find("input[type='radio'][value='custom']")[0].checked = true;
         }
     );
-    this._envelopeTabBody.find("button.cuecard-controlPane-configurations-cursor").click(
+    this._envelopeTabBody.find(".button .cuecard-controlPane-configurations-cursor").click(
         function() {
             if (self._options.outputPane != null) {
                 var o = self._options.outputPane.getJson();
@@ -216,7 +216,7 @@ CueCard.ControlPane.prototype._constructEnvelopeTabBody = function() {
             }
         }
     );
-    this._envelopeTabBody.find("button.cuecard-controlPane-configurations-page").click(
+    this._envelopeTabBody.find(".button .cuecard-controlPane-configurations-page").click(
         function() {
             var input = self._envelopeTabBody.find("input[type='text'][name='" + self._envelopePageID + "']")[0];
             var pageString = input.value;
@@ -253,7 +253,7 @@ CueCard.ControlPane.prototype._constructCustomEnvelopeTabBody = function() {
         '<table class="cuecard-controlPane-customEnvelope">' +
             '<tr><th width="30%">name</th><th width="50%">value</th><th></th></tr>' +
         '</table>' +
-        '<div><button>Add</button></div>'
+        '<div><input type="submit" class="button" value="Add" /></div>'
     );
     
     var self = this;
@@ -274,7 +274,7 @@ CueCard.ControlPane.prototype._constructCustomEnvelopeTabBody = function() {
         }
         
         var td2 = tr.insertCell(2);
-        td2.innerHTML = "<button>Remove</button>";
+        td2.innerHTML = '<input type="submit" class="button" value="Remove" />';
         $(td2.firstChild).click(function() { $(tr).remove(); });
         
         if (!(dontFocus)) {
@@ -282,7 +282,7 @@ CueCard.ControlPane.prototype._constructCustomEnvelopeTabBody = function() {
         }
     };
     
-    this._customEnvelopeTabBody.find('button').click(add);
+    this._customEnvelopeTabBody.find('.button').click(add);
     
     var count = 0;
     for (var n in env) {

@@ -285,7 +285,7 @@ div.Codemirror-current-line { background: #eee; color: #999; }
 
 .tab { display: block; float: left; margin-right: 5px; padding: 5px 11px; background: #e8f5f9; color: #1170a3;
     border: 1px solid #61d7f7; border-bottom: none; position: relative; top: 0px; }
-.ui-tabs-selected { background: #fff; z-index: 10; padding-bottom: 6px; border: 1px solid #ccc; border-bottom: none; }
+.ui-tabs-selected, .tab .current { background: #fff; z-index: 10; padding-bottom: 6px; border: 1px solid #ccc; border-bottom: none; }
 .ui-tabs-hide { display: none; }
 .tabbed-content { background: #fff; border: 1px solid #ccc; clear: both; position: relative; top: -1px; }
 .tab-section { border-bottom: dotted 1px #61d7f7; padding: 12px 12px 6px 12px; position: relative; }

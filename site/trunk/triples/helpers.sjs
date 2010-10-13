@@ -40,6 +40,7 @@ function triple(subject, predicate, object, namespace, value) {
   return o;
 };
 
+
 /**
  * Receive an object and it's list of types
  * return most relevant one
@@ -58,10 +59,10 @@ function get_object_kind(map, object) {
   else if (map["/type/domain"]) {
     object_kind = "Domain";
     if (object.id.indexOf("/base") === 0 || object.id.indexOf("/user") === 0) {
-      object_kind = _("User Domain"); 
+      object_kind = _("User Domain");
     }
     else {
-      object_kind = _("Domain"); 
+      object_kind = _("Domain");
     }
   }
 
@@ -73,7 +74,7 @@ function get_object_kind(map, object) {
       object_kind = _("Enumerated Type");
     }
     else {
-      object_kind = _("Type"); 
+      object_kind = _("Type");
     }
   }
 
@@ -86,7 +87,7 @@ function get_object_kind(map, object) {
   }
 
   else if (map["/type/user"] || map["/freebase/user_profile"]) {
-    object_kind = _("User Profile"); 
+    object_kind = _("User Profile");
   }
 
   else if (map["/common/image"]) {
@@ -100,27 +101,11 @@ function get_object_kind(map, object) {
   else if (map["/common/topic"]) {
     object_kind = _("Topic");
   }
-  
+
   return object_kind;
 
-}
-
-function tipattrs(type, id, attrs) {
-  attrs = attrs || {};
-  var c = attrs["class"];
-  if (c) {
-    c = h.sprintf("%s %s", c, tipclass(type, id));
-  }
-  else {
-    c = tipclass(type, id);
-  }
-  attrs["class"] = acre.markup.stringify(acre.markup.bless(c));
-  return attrs;
 };
 
-function tipclass(type, id) {
-  return h.sprintf("%s %s", type, JSON.stringify({id:id}));
-};
 
 function format_number(n) {
   if (n < 10) {

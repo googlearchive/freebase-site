@@ -50,10 +50,10 @@ var PrefixRouter = function() {
 
     routes.forEach(function(route) {
       if (!route || typeof route !== 'object') {
-        throw 'A routing rule must be a dict: '+route;
+        throw 'A routing rule must be a dict: '+JSON.stringify(route);
       }
       if (typeof route.prefix !== 'string' || route.prefix.indexOf('/') !== 0) {
-        throw 'A routing rule must contain a valid prefix: '+route;
+        throw 'A routing rule must contain a valid prefix: '+JSON.stringify(route);
       }
       if (route.redirect && (
           typeof route.redirect !== 'number' ||
@@ -65,7 +65,7 @@ var PrefixRouter = function() {
       var subtree = traverse_key_tree(routing_tree, route.prefix.split('/'), true);
       
       if (subtree.route) {
-        throw 'Prefix already exists: cannot override old route('+subtree.route+') with a new route ('+route+')';
+        throw 'Prefix already exists: cannot override old route('+JSON.stringify(subtree.route)+') with a new route ('+JSON.stringify(route)+')';
       }
       subtree.route = route;
       
@@ -74,7 +74,7 @@ var PrefixRouter = function() {
       if (route.app && !route.redirect) {
         var key = key_for_app(route.app, route.script);
         if(canonical_routes[key]) {
-          throw 'Canonical route already exists: cannot override old route('+canonical_routes[key]+') with a new route ('+route+')';
+          throw 'Canonical route already exists: cannot override old route('+JSON.stringify(canonical_routes[key])+') with a new route ('+JSON.stringify(route)+')';
         }
         canonical_routes[key] = route;
       }

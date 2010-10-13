@@ -21,7 +21,7 @@ var PrefixRouter = function() {
   };
 
   var traverse_key_tree = function(tree, keys, expand_leaves) {
-    // Find the subtree and the end of the list of keys
+    // Find the subtree at the end of the list of keys
     var current_tree = tree;
     
     for (var i in keys) {

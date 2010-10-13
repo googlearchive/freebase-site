@@ -83,6 +83,7 @@ rules.add([
   {prefix:"/discuss/hub",        url:"http://wiki.freebase.com", redirect:301},
   {prefix:"/tools",              url:"http://wiki.freebase.com", redirect:301},
   {prefix:"/community",          url:"http://wiki.freebase.com", redirect:301},
+  {prefix:"/build",              url:"http://wiki.freebase.com", redirect:301},
   
   // Feedback
   {prefix:"/view/feedback",        url:"/site/feedback", redirect:301},

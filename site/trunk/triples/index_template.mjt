@@ -229,7 +229,7 @@
                   ${tooltip()}
                 </th>
                 <td class="even">
-                  <span class="truncate" acre:if="o.link.master_property.indexOf('/user') != -1">
+                  <span acre:if="o.link.master_property.indexOf('/user') != -1">
                     ${a(o.link.master_property)}
                   </span>
                   <span acre:else="">

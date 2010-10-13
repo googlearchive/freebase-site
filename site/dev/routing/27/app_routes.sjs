@@ -94,6 +94,10 @@ var routes = [
     to : "appeditor"
   },
   {
+    from: "/appeditor-services",
+    to : "appeditor-services"
+  },
+  {
     from: "/jqueryui",
     to: "jqueryui"
   },

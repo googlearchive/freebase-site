@@ -50,6 +50,7 @@ rules.add([
   {prefix:"/jqueryui",           app:"jqueryui"},
   {prefix:"/i18n",               app:"i18n"},
   {prefix:"/template",           app:"template"},
+  {prefix:"/promise",            app:"promise"},
   {prefix:"/routing",            app:"routing" },
   {prefix:"/queries",            app:"queries"},
   {prefix:"/codemirror",         app:"codemirror" },
@@ -64,7 +65,7 @@ rules.add([
   {prefix:"/signin/recoverPassword3",  url:"/signin/changepassword", redirect:301},
   {prefix:"/private/account/activate", url:"/signin/activate", redirect:301},
   {prefix:"/signin/app",               url:"/signin/authorize_token", redirect:301},
-  
+
   // Account settings
   {prefix:"/view/account",       url:"/user/settings/account", redirect:301},
   {prefix:"/user/account",       url:"/user/settings/account", redirect:301},
@@ -84,7 +85,7 @@ rules.add([
   {prefix:"/tools",              url:"http://wiki.freebase.com", redirect:301},
   {prefix:"/community",          url:"http://wiki.freebase.com", redirect:301},
   {prefix:"/build",              url:"http://wiki.freebase.com", redirect:301},
-  
+
   // Feedback
   {prefix:"/view/feedback",        url:"/site/feedback", redirect:301},
   {prefix:"/view/feedback_thanks", url:"/site/feedback_thanks", redirect:301},
@@ -136,7 +137,7 @@ rules.add([
 
   // List Importer
   {prefix:"/import/list",        url:"/importer/list", redirect:301},
-  
+
   // Search
   {prefix:"/view/search",        url:"/search", redirect:301},
 
@@ -146,7 +147,7 @@ rules.add([
   {prefix:"/signin/freebaseid",  url:"/policies/freebaseid", redirect:301},
   {prefix:"/signin/licensing",   url:"/policies/licensing", redirect:301},
   {prefix:"/signin/privacy",     url:"/policies/privacy", redirect:301},
-  
+
   // View
   {prefix:"/view/filter",           url:"/view", redirect:301},
   {prefix:"/view/domain",           url:"/view", redirect:301},
@@ -160,9 +161,9 @@ rules.add([
   {prefix:"/helptopic",             url:"/view", redirect:301},
   {prefix:"/view/help",             url:"/view", redirect:301},
   {prefix:"/iv/fb",                 url:"/edit/topic", redirect:301},
-  
+
   // Other
   {prefix:"/view/userdomains",      url:"/domain/users", redirect:301},
   {prefix:"/newsfeed",              url:"/private/newsfeed", redirect:301}
 ]);
-                 
+

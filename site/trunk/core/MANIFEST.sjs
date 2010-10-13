@@ -5,6 +5,15 @@ var core_mf = mf;
 var extend = acre.require("helpers_util").extend;
 var freebase_static_resource_url;
 
+function extend_manifest(app_mf, scope, options) {
+  var original = extend({}, app_mf, options);
+  var apps = app_mf.apps;
+  delete original.apps;
+  
+  extend(app_mf, base_manifest(app_mf, scope), original);
+  extend(app_mf.apps, apps);
+  return app_mf;
+}
 
 /**
  * All apps' MANIFEST.mf must extend the base_manifest to be able to:
@@ -16,12 +25,7 @@ var freebase_static_resource_url;
  *   acre.require(mf.apps.core).init(mf, this);
  */
 function init(app_mf, scope, options) {
-  var original = extend({}, app_mf, options);
-  var apps = app_mf.apps;
-  delete original.apps;
-  
-  extend(app_mf, base_manifest(app_mf, scope), original);
-  extend(app_mf.apps, apps);
+  app_mf = extend_manifest(app_mf, scope, options);
   
   if (scope.acre.current_script === scope.acre.request.script) {
     app_mf.main();

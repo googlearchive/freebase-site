@@ -508,7 +508,7 @@ class App:
       if not self.version:
         self.c.log("%s does not exist yet, will create it" % self.app_key)
         try:
-          ActionCreate(c)(self)
+          ActionCreateGraph(c)(self)
           graph_app = fetchit(self)
         except:
           return self.c.error('Cannot create %s - aborting.' % self.app_key)
@@ -1351,7 +1351,7 @@ class ActionBranch():
 
     return True
 
-class ActionCreate():
+class ActionCreateGraph():
 
     def __init__(self, context):
         self.context = context
@@ -1422,6 +1422,27 @@ class ActionDeploy:
 
     return True
 
+class ActionCreateLocal:
+  '''Create a local app out of an existing app'''
+
+  def __init__(self, context):
+    self.context = context
+
+  def __call__(self):
+
+    c = self.context
+
+    if not (c.options.app and c.options.basedon):
+      return c.error('You must specify a valid app name and an app to base your new app on.')
+
+    basedon_app = AppFactory(c)(c.options.basedon)
+
+    cmd = ['svn', 'cp', basedon_app.svn_url(), c.current_app.svn_url(), '-m', 'creating %s out of %s' % (c.current_app, basedon_app)]
+    (r, result) = c.run_cmd(cmd)
+
+    return r
+
+
 
 class ActionTest:
   '''dummy action used for experimenting'''
@@ -1469,7 +1490,8 @@ def main():
         ('branch', 'creates a branch of your app', ActionBranch),
         ('push', 'pushes a specified directory to an app version', ActionPush),
         ('static', 'generates and deployes static bundles to the edge servers', ActionStatic),
-        ('create', 'creates an app', ActionCreate),
+        ('create_graph', 'creates an app on the given graph', ActionCreateGraph),
+        ('create_local', 'combine branch, static and push in one go', ActionCreateLocal),
         ('release', 'release a specific version of an app', ActionRelease),
         ('deploy', 'combine branch, static and push in one go', ActionDeploy),
         ('test', 'test', ActionTest)
@@ -1494,10 +1516,14 @@ def main():
                       help='an app id - e.g. /user/namesbc/mysuperapp or an app key under /freebase/site - e.g. homepage')
     parser.add_option('-c', '--core', dest='core', default=None,
                       help='the version of core you want to tie this app branch to')
+    parser.add_option('', '--basedon', dest='basedon', default=None,
+                      help='the app key you want to base a new app on - used for the action create_local')
     parser.add_option('-f', '--force', dest='force', action='store_true', default=False,
                       help='--force results depend on context: for action static, it means that all static bundles will be re-generated')
     parser.add_option('-n', '--nodeps', dest='nodeps', action='store_true', default=False,
                       help='will not resolve app dependencies for branching, pushing or static generation')
+    parser.add_option('', '--noemail', dest='noemail', action='store_true', default=False,
+                      help='do not send a notification email')
 
 
     (options, args) = parser.parse_args()
@@ -1520,8 +1546,10 @@ def main():
               if not result:
                 context.error('FAILED: action %s failed' % action)
               else:
-                context.log('SUCCESS: action %s ended succesfully, sending deployment e-mail.' % action, color=context.GREEN)
-                context.send_email()
+                context.log('SUCCESS: action %s ended succesfully.' % action, color=context.GREEN)
+                if not options.noemail:
+                  context.log('Sending deployment e-mail.')
+                  context.send_email()
 
 
 if __name__ == '__main__':

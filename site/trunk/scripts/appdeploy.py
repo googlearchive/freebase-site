@@ -47,19 +47,19 @@ SERVICES = {
 
   'otg' : { 'acre' : 'http://acre.freebase.com',
             'api' : 'http://api.freebase.com',
-            'freebaseapps' : 'dev.freebaseapps.com'
+            'freebaseapps' : 'freebaseapps.com'
             },
   'sandbox' : { 'acre' : 'http://acre.sandbox-freebase.com',
                 'api' : 'http://api.sandbox-freebase.com',
-                'freebaseapps' : 'dev.sandbox-freebaseapps.com'
+                'freebaseapps' : 'sandbox-freebaseapps.com'
                 },
   'qa' : { 'acre' : 'http://acre.branch.qa.metaweb.com',
            'api' : 'http://branch.qa.metaweb.com',
-           'freebaseapps' : 'dev.branch.qa-freebaseapps.com'
+           'freebaseapps' : 'branch.qa-freebaseapps.com'
            },
   'local' : { 'acre' : 'http://ae.sandbox-freebase.com:8115',
               'api' : 'http://api.sandbox-freebase.com',
-              'freebaseapps' : 'dev.acre.z.:8115'
+              'freebaseapps' : 'acre.z.:8115'
               }
 }
 
@@ -496,11 +496,12 @@ class App:
     '''
     get app info using  graph/appeditor/get_app service
     '''
-    url = "{graph}/appeditor/get_app?{app_id}".format(graph=self.c.services['acre'], app_id=urllib.urlencode(dict(appid=self.path())))
+    url = "{graph}/appeditor/services/get_app?{app_id}".format(graph=self.c.services['acre'], app_id=urllib.urlencode(dict(appid=self.path())))
+    #url = "http:{appeditor_services}.{freebaseapps}/get_app?{app_id}".format(appeditor_services=AppFactory(self.c)('appeditor-services').path(), freebaseapps=self.c.services['freebaseapps'], app_id=urllib.urlencode(dict(appid=self.path())))
     graph_app = None
 
     def fetchit(app):
-      return app.c.fetch_url(url, isjson=True).get('result')
+      return app.c.fetch_url(url, isjson=True, tries=1).get('result')
 
     try:
       graph_app = fetchit(self)
@@ -578,7 +579,7 @@ class App:
     return "{static_url_root}/{app}/{rev}".format(static_url_root=STATIC_URL_ROOT, app=self.app_key, rev=deploy_rev)
 
   def url(self):
-    return 'http://{version}.{app}.site.freebase.{freebaseapps}'.format(version=self.version, app=self.app_key, freebaseapps=self.c.services['freebaseapps'])
+    return 'http://{version}.{app}.site.freebase.dev.{freebaseapps}'.format(version=self.version, app=self.app_key, freebaseapps=self.c.services['freebaseapps'])
 
 
 class Context():
@@ -857,6 +858,7 @@ class ActionPush():
 
     #delete removed files
     for filename,val in delete_files.iteritems():
+      continue
       print ".",
       sys.stdout.flush()
       c.freebase.delete_app_file(app.app_id, unquotekey(filename))
@@ -868,6 +870,7 @@ class ActionPush():
       sys.stdout.flush()
       files_changed.add(filename)
       if val['acre_handler'] == 'binary':
+        val['filehandle'].seek(0)
         c.freebase.save_binary_file(val['id'], val['filehandle'], val['content_type'])
       else:
         c.freebase.save_text_file(val['id'], val['contents'], val['acre_handler'], val['content_type'])

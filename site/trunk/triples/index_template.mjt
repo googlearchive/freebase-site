@@ -59,8 +59,7 @@
        menu_map.push({ "key": "attribution_links", "name": _("Links created by")})
      }
 
-     var map = h.map_array(c.topic.type, "id");
-     var object_kind = th.get_object_kind(map, c.topic);
+     var object_kind = h.get_object_kind(c.topic, c.topic.type);
   </acre:script>
   <div class="page-meta">
     <h1>

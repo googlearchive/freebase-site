@@ -1,7 +1,6 @@
 var mf = acre.require("MANIFEST").mf;
 var h = mf.require("core", "helpers");
 var i18n = mf.require("i18n", "i18n");
-var _ = i18n.gettext;
 
 /**
  * return a triples data structure.
@@ -39,73 +38,6 @@ function triple(subject, predicate, object, namespace, value) {
   o.mql = JSON.stringify(o.mql);
   return o;
 };
-
-
-/**
- * Receive an object and it's list of types
- * return most relevant one
- * @param map: Object - a key and an ID
- * @param object: Object - the topic we are dealing with
- */
-function get_object_kind(map, object) {
-  console.log(map);
-
-  var object_kind = "";
-
-  if (map["/freebase/apps/acre_app"]) {
-    object_kind = _("Acre App");
-  }
-
-  else if (map["/type/domain"]) {
-    object_kind = "Domain";
-    if (object.id.indexOf("/base") === 0 || object.id.indexOf("/user") === 0) {
-      object_kind = _("User Domain");
-    }
-    else {
-      object_kind = _("Domain");
-    }
-  }
-
-  else if (map["/type/type"]) {
-    if (object["/freebase/type_hints/mediator"] === true) {
-      object_kind = _("Mediator");
-    }
-    else if (object["/freebase/type_hints/enumeration"] === true) {
-      object_kind = _("Enumerated Type");
-    }
-    else {
-      object_kind = _("Type");
-    }
-  }
-
-  else if (map["/freebase/query"]) {
-    object_kind = _("Collection");
-  }
-
-  else if (map["/type/property"]) {
-    object_kind = _("Property");
-  }
-
-  else if (map["/type/user"] || map["/freebase/user_profile"]) {
-    object_kind = _("User Profile");
-  }
-
-  else if (map["/common/image"]) {
-    object_kind = _("Image");
-  }
-
-  else if (map["/common/document"]) {
-    object_kind = _("Article");
-  }
-
-  else if (map["/common/topic"]) {
-    object_kind = _("Topic");
-  }
-
-  return object_kind;
-
-};
-
 
 function format_number(n) {
   if (n < 10) {

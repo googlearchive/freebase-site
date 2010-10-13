@@ -1,7 +1,11 @@
 var exports = {
   "is_literal_type": is_literal_type,
-  "get_type_role": get_type_role
+  "get_type_role": get_type_role,
+  "get_object_kind": get_object_kind
 };
+
+var mf = acre.require("MANIFEST").mf;
+var _ = mf.require("i18n", "i18n").gettext;
 
 var LITERAL_TYPE_IDS = {
   "/type/int":1,
@@ -39,5 +43,65 @@ function get_type_role(type, set) {
     type.enumeration = role.enumeration;
   }
   return role;
+};
+
+
+/**
+ * Receive an object and it's list of types
+ * return most relevant one
+ * @param topic:Object (required)
+ * @param types:Array (optional) - If not specified, use topic.type otherwise use this list of types
+ */
+function get_object_kind(topic, types) {
+  types = types || topic.type || [];
+  var map = {};
+  for (var i=0,l=types.length; i<l; i++) {
+    map[types[i].id] = types[i];
+  };
+  if ("/freebase/apps/acre_app" in map) {
+    return _("Acre App");
+  }
+  else if ("/type/domain" in map) {
+    if (topic.id.indexOf("/base/") === 0 || topic.id.indexOf("/user/") === 0) {
+      return _("User Domain");
+    }
+    else {
+      return _("Domain");
+    }
+  }
+  else if ("/type/user" in map) {
+    return _("User");
+  }
+  else if ("/type/namespace" in map) {
+    return _("Namespace");
+  }
+  else if ("/type/type" in map) {
+    var role = get_type_role(topic);
+    if (role.mediator) {
+      return _("Mediator");
+    }
+    else if (role.enumeration) {
+      return _("Enumerated Type");
+    }
+    else {
+      return _("Type");
+    }
+  }
+  else if ("/freebase/query" in map) {
+    return _("Collection");
+  }
+  else if ("/type/property" in map) {
+    return _("Property");
+  }
+  else if ("/common/image" in map) {
+    return _("Image");
+  }
+  else if ("/common/document" in map) {
+    return _("Article");
+  }
+  else if ("/common/topic" in map) {
+    return _("Topic");
+  }
+  return "";
 };
 

@@ -1,0 +1,158 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").mf;
+  var freebase = mf.require("promise", "apis").freebase;
+  
+  var c = this.exports.c = {"greeting": "Hello"};
+  var queries = {
+    "topic": freebase.mqlread({id: "/en/bob_dylan", name: null})
+      .then(function(envelope) {return envelope.result;})
+  }
+</acre:script>
+
+<acre:block def="title()">
+  <!-- Page title goes here -->
+  Page title
+</acre:block>
+
+<acre:block def="content_header()">
+<div class="page-header">
+    <h1 id="page-title">This is a sample page template</h1>
+  </div>
+</acre:block>
+
+
+<acre:block def="head()">
+  <!-- define additional CSS/JS files here -->
+  <!-- this is how you link to a stylesheet in the same app -->
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('core.mf.css')}" />
+  <!-- this is how you link to a stylesheet in a different app app -->
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('sample_page.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_body()">
+<div id="content-wrapper">
+   <div id="content-main" role="main"> <!-- for simple 2 col layout --> 
+
+     <div class="section"> <!-- each content "section" should be wrapped in a div like this -->
+		<h1 class="section-title">This is a Section Title</h1>
+		<p class="section-body">Any content can go here, wrapped in a paragraph tag. Lorem ipsum dolor sit amet, aliquam bibendum varius id in, nascetur mi nisl quis. Sapien dui nunc, rhoncus faucibus laoreet sem ornare suscipit. Dignissim porta lectus ac turpis.</p>	
+		<input class="button button-primary" type="submit" value="Primary Button">
+		<input class="button" type="submit" value="Secondary Button">		
+	</div><!-- end section -->
+	
+	<div class="section">
+      <h1 class="section-title">Tabbed Content Box</h1>
+      <div id="" class="section-tabs">
+        <ul class="section-tabset clear">
+          <li class="section-tab"><a href="#domain-search">Tab 1</a></li>
+          <li class="section-tab"><a href="#type-search">Tab 2</a></li>
+          <li class="section-tab"><a href="#property-search">Tab 3</a></li>
+        </ul>
+        <div class="search-box" id="domain-search">
+          <form id="domain-search-form" method="get">
+            <fieldset>
+              <input type="text" name="id" class="text-input" id="domain-search-input" id="domain-search-input" placeholder="" />
+            </fieldset>
+          </form>
+          <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-commons" checked="checked" />Option</label>
+          <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" />Alternate Option</label>
+        </div>
+   		<div class="search-box" id="domain-search">
+	     <p class="section-body">Any content can go here, wrapped in a paragraph tag. Lorem ipsum dolor sit amet, aliquam bibendum varius id in, nascetur mi nisl quis. Sapien dui nunc, rhoncus faucibus laoreet sem ornare suscipit. Dignissim porta lectus ac turpis.</p>	
+	    </div>
+		 <div class="search-box" id="domain-search">
+		   <form id="domain-search-form" method="get">
+		     <fieldset>
+		       <input type="text" name="id" class="text-input" id="domain-search-input" id="domain-search-input" placeholder="" />
+		     </fieldset>
+		   </form>
+		   <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-commons" checked="checked" />Option</label>
+		   <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" />Alternate Option</label>
+		  </div>
+        </div><!-- end section tabs -->
+      </div><!-- end section -->
+
+
+
+
+	<div class="section">
+	 	<h1 class="table-title">This is a Table Title</h1>
+		<!-- this table will extend full col if you don't wrap it in content-main -->
+		 <table cellspacing="0" class="table table-sortable">
+		   <thead>
+	         <tr>
+	           <th scope="col" class="column-header {sorter: 'schemaName'}"><span class="sort-icon">Table Head</span></th>
+	           <th scope="col" class="column-header column-header-desc"><span class="sort-icon">Table Head</span></th>
+	           <th scope="col" class="column-header numeric"><span class="sort-icon">Table Head</span></th>
+	           <th scope="col" class="column-header numeric {sorter: 'commaDigit'}"><span class="sort-icon">Table Head</span></th>
+	         </tr>
+	       </thead>
+		     <tbody>
+		       <tr>
+		           <th class="row-header odd" scope="row">
+		             <a href="" title="">Col One</a>
+		           </th>
+		           <td class="even">Column Two</td>
+		           <td class="odd numeric">Column Three</td>
+		           <td class="even numeric">Column Four</td>
+		         </tr>
+			   <tr>
+		           <th class="row-header odd" scope="row">
+		             <a href="" title="">Col One</a>
+		           </th>
+		           <td class="even">Column Two</td>
+		           <td class="odd numeric">Column Three</td>
+		           <td class="even numeric">Column Four</td>
+		         </tr>
+			   <tr>
+		           <th class="row-header odd" scope="row">
+		             <a href="" title="">Col One</a>
+		           </th>
+		           <td class="even">Column Two</td>
+		           <td class="odd numeric">Column Three</td>
+		           <td class="even numeric">Column Four</td>
+		       </tr>
+		     </tbody>
+	  </table>
+    </div><!-- end section -->
+  </div><!-- end content-main -->
+  <div class="aside" role="complimentary" id="content-sub">
+    <div class="content-wrapper">
+      <h2 class="aside-title">Sidebar Header</h2>
+      <p>Any sidebar content can go here, wrapped in a paragraph tag. Lorem ipsum dolor sit amet, aliquam bibendum varius id in, nascetur mi nisl quis. Sapien dui nunc, rhoncus faucibus laoreet sem ornare suscipit. Dignissim porta lectus ac turpis.</p>
+      <p><strong>Bolded content</strong></p> 
+      <h3>Sidebar Subheading</h3>
+	  <p>Any sidebar content can go here, wrapped in a paragraph tag. Lorem ipsum dolor sit amet, aliquam bibendum varius id in, nascetur mi nisl quis. Sapien dui nunc, rhoncus faucibus laoreet sem ornare suscipit. Dignissim porta lectus ac turpis.</p>
+      <h3><a href="" title="">Link as a header</a></h3> 
+	  <p>Any sidebar content can go here, wrapped in a paragraph tag. Lorem ipsum dolor sit amet, aliquam bibendum varius id in, nascetur mi nisl quis. Sapien dui nunc, rhoncus faucibus laoreet sem ornare suscipit. Dignissim porta lectus ac turpis.</p>
+	  <p><strong>Aside box header</strong></p>      
+	  <div class="aside-box">
+        <h4><a href="" title="">Header as link in aside box</a></h4>
+       Aside box content
+      </div>
+      <h2 class="aside-title">Header</h2>
+      <ul>
+        <li><a title="" href="">List Item One</a></li>
+        <li><a title="" href="">List Item Two</a></li>
+        <li>List Item No Link</li>
+      </ul>
+    </div>
+  </div><!-- end content-sub -->
+</div><!-- end content wrapper-->
+
+
+
+
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="${mf.js_src('sample_page.mf.js')}"></script>
+</acre:block>
+
+<acre:script>
+  console.log("render_page BEFORE");
+</acre:script>
+${mf.require("template", "renderer").render_page(queries, this.exports)}
+<acre:script>
+  console.log("render_page AFTER");
+</acre:script>

@@ -1,0 +1,29 @@
+{
+  "apps" : {
+    "core": "//core.site.freebase.dev"
+  },
+  "stylesheet": {
+    "sample_page.mf.css": [
+      ["template", "freebase.mf.css"],
+      ["template", "freebase.ui.tabs.less"],
+      ["template", "freebase.ui.table.less"],
+      ["template", "freebase.ui.breadcrumbs.less"],
+      ["template", "freebase.ui.pageoverview.less"],
+      ["template", "freebase.ui.modal.less"],
+      ["template", "freebase.ui.layout.twocol.less"],
+	  "sample_page.css",
+      "sample_page.less"
+    ]
+  },
+  "javascript": {
+    "sample_page.mf.js": [
+      ["jqueryui", "jquery.ui.tabs.js"],
+	  ["template", "freebase.mf.js"],
+	  ["template", "freebase-permission.mf.js"],
+      ["template", "jquery.showrow.js"],
+      ["jquerytools", "tabs.js"],
+      ["jquerytools", "tooltip.js"],
+	  "sample_page.js"
+    ]
+  }
+}

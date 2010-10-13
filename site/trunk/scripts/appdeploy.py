@@ -46,19 +46,19 @@ SERVICES = {
 
 
   'otg' : { 'acre' : 'http://acre.freebase.com',
-            'api' : 'http://api.freebase.com',
+            'www' : 'http://www.freebase.com',
             'freebaseapps' : 'freebaseapps.com'
             },
   'sandbox' : { 'acre' : 'http://acre.sandbox-freebase.com',
-                'api' : 'http://api.sandbox-freebase.com',
+                'www' : 'http://www.sandbox-freebase.com',
                 'freebaseapps' : 'sandbox-freebaseapps.com'
                 },
   'qa' : { 'acre' : 'http://acre.branch.qa.metaweb.com',
-           'api' : 'http://branch.qa.metaweb.com',
+           'www' : 'http://branch.qa.metaweb.com',
            'freebaseapps' : 'branch.qa-freebaseapps.com'
            },
   'local' : { 'acre' : 'http://ae.sandbox-freebase.com:8115',
-              'api' : 'http://api.sandbox-freebase.com',
+              'www' : 'http://www.sandbox-freebase.com',
               'freebaseapps' : 'acre.z.:8115'
               }
 }
@@ -597,7 +597,8 @@ class Context():
 
     if options.graph:
       self.services = SERVICES.get(options.graph)
-      self.freebase = HTTPMetawebSession(self.services['api'], acre_service_url=self.services['acre'])
+      #after appeditor-services moved to freebase site, all requests should go to www.freebase.com
+      self.freebase = HTTPMetawebSession(self.services['www'], acre_service_url=self.services['www'])
       self.freebase_logged_in = False
 
     self.current_app = None

@@ -59,69 +59,8 @@
        menu_map.push({ "key": "attribution_links", "name": _("Links created by")})
      }
 
-     // Figure out what kind of object this thing is
-     var object_map = [];
-     var object_kind = "";
-     for(i in c.topic.type) {
-       console.log(c.topic.type[i].id)
-       object_map.push(c.topic.type[i].id);
-     }
-
-     // Acre App
-     if (object_map.indexOf("/freebase/apps/acre_app") != -1) {
-       object_kind = "Acre App";
-     }
-
-     // Domain
-     else if (object_map.indexOf("/type/domain") != -1) {
-       if (c.topic.id.indexOf("/base") === 0 || c.topic.id.indexOf("/user") === 0) {
-         object_kind = "User Domain"; 
-       }
-       else {
-         object_kind = "Domain"; 
-       }
-     }
-
-     // Type
-     else if (object_map.indexOf("/type/type") != -1) {
-       // Mediator
-       if (c.topic["/freebase/type_hints/mediator"] === true) {
-         object_kind = "Mediator";
-       }
-       // Enumerated Type
-       else if (c.topic["/freebase/type_hints/enumeration"] === true) {
-         object_kind = "Enumerated Type";
-       }
-       // Type
-       else {
-         object_kind = "Type"; 
-       }
-     }
-
-     // Property
-     else if (object_map.indexOf("/type/property") != -1) {
-       object_kind = "Property"; 
-     }
-
-     // User
-     else if (object_map.indexOf("/type/user") != -1) {
-       object_kind = "User"; 
-     }
-
-     // Image
-     else if (object_map.indexOf("/common/image") != -1) {
-       object_kind = "Image"; 
-     }
-
-     // Document
-     else if (object_map.indexOf("/common/document") != -1) {
-       object_kind = "Article"; 
-     }
-
-     // Topic
-     else if (object_map.indexOf("/common/topic") != -1) {
-       object_kind = "Topic"; 
-     }
+     var map = h.map_array(c.topic.type, "id");
+     var object_kind = th.get_object_kind(map, c.topic);
   </acre:script>
   <div class="page-meta">
     <h1>
@@ -164,7 +103,7 @@
     <div class="nav clear">
       <ul class="nav-utilities">
         <li>
-          <a href="${h.freebase_url('/view'+c.topic.mid)}" class="icon-link"><span class="browse-icon">${_('View')} ${_(object_kind)}</span></a>
+          <a href="${h.freebase_url('/view'+c.topic.mid)}" class="icon-link"><span class="browse-icon">${_('View')} ${object_kind}</span></a>
         </li>
         <li>
           <a href="${h.freebase_url('/view'+c.topic['primary:id'])}" class="icon-link">

@@ -327,6 +327,7 @@ if (typeof SERVER === "object" && SERVER.acre) {
        }
        else {
          fb.devbar.div.show();
+         window.location.hash = "devbar";
          $.localstore("devbar2", true);
        }
        return false;

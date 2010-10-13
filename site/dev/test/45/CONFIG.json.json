@@ -1,11 +1,1 @@
-{
-  "apps" : {
-    "core": "//core.site.freebase.dev"
-  },
-  "stylesheet": {
-    "qunit.mf.css": ["qunit.css"]
-  },
-  "javascript": {
-    "qunit.mf.js": ["qunit.js"]
-  }
-}
+{"stylesheet": {"qunit.mf.css": ["qunit.css"]}, "javascript": {"qunit.mf.js": ["qunit.js"]}, "apps": {"core": "//45.core.site.freebase.dev"}}

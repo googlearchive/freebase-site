@@ -104,7 +104,7 @@
               ${h.bless_sprintf(_("This property is being used. You cannot change the %s."), h.tag("strong", _("Expected Type")))}
             </acre:block>
             <acre:block else="">
-              ${h.bless_sprintf(_("This property is being used. You cannot change the %s or %s."), h.tag("strong", _("Expected Type") , h.tag("strong", _("Uniqueness"))))}
+              ${h.bless_sprintf(_("This property is being used. You cannot change the %s or %s."), h.tag("strong", _("Expected Type")), h.tag("strong", _("Uniqueness")))}
             </acre:block>
             <a href="${h.freebase_url('/view')}${prop.schema.id}/-${prop.id}">${_('View instances')} &raquo;</a>
           </div>            
@@ -136,7 +136,7 @@
                 ect_input.value = ect.value = prop.expected_type.id;
                 if (prop.unit) {
                   unit.value = prop.unit.id; 
-                  ect_input.value = ect_input.value + " (" + prop.unit.name + ")";
+                  ect_input.value = ect_input.value + " (" + i18n.display_name(prop.unit) + ")";
                 }                
                 if (prop.used || prop.delegated) {
                   ect_input.disabled = 'disabled';
@@ -397,19 +397,19 @@
   <div class="form-msg" acre:trim="">
     <acre:block if="prop.expected_type">
       <acre:block if="prop.unit">
-        ${h.bless_sprintf(_("This property will be delgated to %s with expected type %s (%s)."), 
+        ${h.bless_sprintf(_("This property will be delegated to %s with expected type %s (%s)."), 
         h.tag("a", prop.id, "href", h.url_for('schema', null, null, prop.id), "target", "_new"),
         h.tag("a", prop.expected_type, "href", h.url_for('schema', null, null, prop.expected_type) , "target", "_new"),
         i18n.display_name(prop.unit))}
       </acre:block>
       <acre:block else="">
-        ${h.bless_sprintf(_("This property will be delgated to %s with expected type %s."), 
+        ${h.bless_sprintf(_("This property will be delegated to %s with expected type %s."), 
         h.tag("a", prop.id, "href", h.url_for('schema', null, null, prop.id), "target", "_new"),
         h.tag("a", prop.expected_type, "href", h.url_for('schema', null, null, prop.expected_type) , "target", "_new"))}
       </acre:block>
     </acre:block>
     <acre:block else="">
-      ${h.bless_sprintf(_("This property will be delgated to %s."), 
+      ${h.bless_sprintf(_("This property will be delegated to %s."), 
       h.tag("a", prop.id, "href", h.url_for('schema', null, null, prop.id), "target", "_new"))}
     </acre:block>
     ${h.bless_sprintf(_("You cannot change the %s or %s."), h.tag("strong", _("Expected Type")), h.tag("strong", _("Uniqueness")))}

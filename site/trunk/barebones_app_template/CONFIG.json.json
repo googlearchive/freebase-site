@@ -1,0 +1,11 @@
+{
+  "apps" : {
+      "core": "//core.site.freebase.dev"
+  }
+  "stylesheet": {
+
+  },
+  "javascript": {
+
+  }
+}

@@ -283,8 +283,9 @@ div.Codemirror-current-line { background: #eee; color: #999; }
 .remove a { padding: 0 4px 0 4px; -moz-border-radius: 2px; -webkit-border-radius: 2px; }
 .remove a:hover { background-color: #f00; color: #fff; text-decoration: none;}
 
-.tab { display: block; float: left; margin-right: 5px; padding: 5px 11px; background: #e8f5f9; color: #1170a3;
-    border: 1px solid #61d7f7; border-bottom: none; position: relative; top: 0px; }
+.tab { float: left; margin-right: 5px; }
+
+.tab a { display: block; position: relative; top: 0; padding: 5px 11px; background: #e8f5f9; color: #1170a3; border: 1px solid #61d7f7; border-bottom: none; }
 .ui-tabs-selected, .tab .current { background: #fff; z-index: 10; padding-bottom: 6px; border: 1px solid #ccc; border-bottom: none; }
 .ui-tabs-hide { display: none; }
 .tabbed-content { background: #fff; border: 1px solid #ccc; clear: both; position: relative; top: -1px; }

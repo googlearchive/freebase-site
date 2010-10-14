@@ -6,7 +6,7 @@ var datejs = mf.require("libraries", "date").Date;
 
 var id = acre.request.params.id || acre.request.path_info;
 
-var filters = f.get_filters(id);
+var filters = f.get_filters(id, acre.request.params);
 
 var data = h.extend({
   id: id,

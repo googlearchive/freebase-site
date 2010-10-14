@@ -18,33 +18,29 @@ var TIMESTAMPS = {
  }
 };
 
-function get_filters(id) {
-  var filters = {
-    id: id,
-    limit: get_limit(),
-    timestamp: get_timestamp(),
-    creator: get_creator(),
-    as_of_time: get_as_of_time(),
-    history: get_history()
-  };
-  if (acre.request.params.domain) {
-    filters.domain = validators.MqlId(acre.request.params.domain);
-  }
-  else if (acre.request.params.type) {
-    filters.type = validators.MqlId(acre.request.params.type);
-  }
-  else if (acre.request.params.property) {
-    filters.property = validators.MqlId(acre.request.params.property);
-  }
+var scope = this;
+
+function get_filters(id, args) {
+  args = h.extend({}, args);
+  var filters = {id: id};
+  ["limit", "timestamp", "creator", "as_of_time", "history"].forEach(function(k) {
+    filters[k] = scope["get_" + k](args[k]);
+  });
+  ["domain", "type", "property"].every(function(k) {
+    if (args[k]) {
+      filters[k] = validators.MqlId(args[k]);
+      return false;
+    }
+    return true;
+  });
   return filters;
 };
 
-function get_history() {
-  return validators.StringBool(acre.request.params.history, {if_empty:null,if_invalid:null});
+function get_history(history) {
+  return validators.StringBool(history, {if_empty:null,if_invalid:null});
 };
 
-function get_creator() {
-  var creator = acre.request.params.creator;
+function get_creator(creator) {
   if (creator) {
     if (h.is_array(creator)) {
       var users = [];
@@ -68,8 +64,7 @@ function get_creator() {
   return null;
 };
 
-function get_timestamp() {
-  var timestamp = acre.request.params.timestamp;
+function get_timestamp(timestamp) {
   if (timestamp) {
     if (timestamp in TIMESTAMPS) {
       return acre.freebase.date_to_iso(TIMESTAMPS[timestamp]());
@@ -91,21 +86,24 @@ function get_timestamp() {
   return null;
 };
 
-function get_limit() {
+function get_limit(limit) {
   // calculate limit, prev_limit, next_limit
-  var limit = validators.Int(acre.request.params.limit, {if_invalid:LIMIT});
+  limit = validators.Int(limit, {if_invalid:LIMIT});
   if (limit < 1) {
     limit = LIMIT;
   }
   return limit;
 };
 
-function get_as_of_time() {
-  return validators.Timestamp(acre.request.params.as_of_time, {if_empty:null});
+function get_as_of_time(as_of_time) {
+  return validators.Timestamp(as_of_time, {if_empty:null});
 };
 
 function mqlread_options(filters) {
   var options = {};
+  if (!filters) {
+    return options;
+  }
   if (filters.as_of_time) {
     options.as_of_time = filters.as_of_time;
   }

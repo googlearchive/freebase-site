@@ -60,7 +60,7 @@ function make_app(appinfo) {
     
     app.acre = {
       version : version,
-      source : acre.freebase.service_url + '/tools/appeditor/#app=' + appinfo.id
+      source : acre.freebase.site_host + '/appeditor/#app=' + appinfo.id
     };
   }
   

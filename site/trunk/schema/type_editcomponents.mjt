@@ -185,7 +185,7 @@
                 ${_('Unique')}
               </label>
               <label for="hidden" class="boolean-field">
-                <input type="checkbox" name="hidden" acre:attrs="prop.hidden?{checked:'checked'}:{}"/>
+                <input type="checkbox" name="hidden" acre:attrs="prop.display_none?{checked:'checked'}:{}"/>
                 ${_('Hidden')}
               </label>              
               <acre:block if="prop.delegated">

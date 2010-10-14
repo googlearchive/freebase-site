@@ -7,6 +7,7 @@ var deferred = mf.require("promise", "deferred");
 var freebase = mf.require("promise", "apis").freebase;
 
 function topic(id, filters) {
+  filters = h.extend({}, filters);
   var q = {
     id: id,
     "primary:id": null,
@@ -27,6 +28,7 @@ function topic(id, filters) {
 };
 
 function prop_counts(id, filters) {
+  filters = h.extend({}, filters);
   if (filters.as_of_time) {
     // can't do prop_counts by as_of_time
     return null;
@@ -52,6 +54,7 @@ function prop_counts_by_guid(guid) {
 };
 
 function names_aliases(id, filters) {
+ filters = h.extend({}, filters);
   var q = {
     id: id,
     "/type/reflect/any_value":[{
@@ -80,6 +83,7 @@ function names_aliases(id, filters) {
 };
 
 function keys(id, filters) {
+  filters = h.extend({}, filters);
   var q = {
     id: id,
     "/type/reflect/any_reverse": [{
@@ -123,6 +127,7 @@ function keys(id, filters) {
 };
 
 function outgoing(id, filters) {
+  filters = h.extend({}, filters);
   var q = {
     id: id,
     "/type/reflect/any_master":[{
@@ -181,6 +186,7 @@ function sort_link_timestamp(a, b) {
 };
 
 function incoming(id, filters) {
+  filters = h.extend({}, filters);
   var q = {
     id: id,
     "/type/reflect/any_reverse":[{
@@ -212,6 +218,7 @@ function incoming(id, filters) {
 };
 
 function typelinks(id, filters) {
+  filters = h.extend({}, filters);
   var q = [{
     type: "/type/link",
     master_property: id,
@@ -221,7 +228,6 @@ function typelinks(id, filters) {
     creator: null,
     timestamp: null,
     optional: true,
-    limit: filters.limit || LIMIT,
     sort: "-timestamp"
   }];
   f.apply_limit(q[0], filters.limit);
@@ -234,8 +240,8 @@ function typelinks(id, filters) {
     });
 };
 
-
 function attribution_links(id, filters) {
+  filters = h.extend({}, filters);
   var q = [{
     type: "/type/link",
     master_property: null,
@@ -245,7 +251,6 @@ function attribution_links(id, filters) {
     creator: id,
     timestamp: null,
     optional: true,
-    limit: filters.limit || LIMIT,
     sort: "-timestamp"
   }];
   f.apply_limit(q[0], filters.limit);

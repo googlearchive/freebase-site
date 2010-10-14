@@ -14,18 +14,64 @@
   Page title
 </acre:block>
 
+<!-- use this header for the standard page header 
 <acre:block def="content_header()">
 <div class="page-header">
     <h1 id="page-title">This is a sample page template</h1>
   </div>
 </acre:block>
+-->
+
+<!-- 	use this header for breadcrumb based page header.
+		there is an option shown for a js based drop down menu as well -->
+
+<acre:block def="content_header()">
+  <div class="page-header clear">
+    <div class="breadcrumb clear">
+      <ol class="clear">
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="">First Item</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="">Second Item</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="">Third Item</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item last">
+          <span class="breadcrumb-item-inner">
+            <a href="" class="breadcrumb-sibling-trigger">Last Item</a>
+          </span>
+          <div class="tooltip" id="breadcrumb-siblings">
+            <strong>3</strong>
+            <ul>
+              <li>
+                <a href="" title="">Drop down prop 1</a>
+              </li>
+			  <li>
+                <a href="" title="">Drop down prop 2</a>
+              </li>
+            </ul>
+          </div>          
+        </li>
+      </ol>
+    </div>
+  </div>
+</acre:block>
+
 
 
 <acre:block def="head()">
   <!-- define additional CSS/JS files here -->
   <!-- this is how you link to a stylesheet in the same app -->
   <link rel="stylesheet" type="text/css" href="${mf.css_src('core.mf.css')}" />
-  <!-- this is how you link to a stylesheet in a different app app -->
+  <!-- this is how you link to a stylesheet in a different app -->
   <link rel="stylesheet" type="text/css" href="${mf.css_src('sample_page.mf.css')}" />
 </acre:block>
 
@@ -52,10 +98,10 @@
           <form id="domain-search-form" method="get">
             <fieldset>
               <input type="text" name="id" class="text-input" id="domain-search-input" id="domain-search-input" placeholder="" />
+			  <input type="submit" class="button button-primary" value="Search"/>
             </fieldset>
           </form>
-          <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-commons" checked="checked" />Option</label>
-          <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" />Alternate Option</label>
+         
         </div>
    		<div class="search-box" id="domain-search">
 	     <p class="section-body">Any content can go here, wrapped in a paragraph tag. Lorem ipsum dolor sit amet, aliquam bibendum varius id in, nascetur mi nisl quis. Sapien dui nunc, rhoncus faucibus laoreet sem ornare suscipit. Dignissim porta lectus ac turpis.</p>	

@@ -45,15 +45,8 @@ function host_based_redirects(req) {
   var req_path = req.url.replace(req.app_url, "");
   var url = app_routes.host_redirects[req.server_name];
   if (url) {
-    // Handle both absolute and relative redirects
-    var redirect_url;
-    if (/^https?:\/\//.test(url)) {
-      redirect_url = url + req_path;
-    } else {
-      redirect_url = req.app_url + url + req_path;
-    }
     acre.response.status = 301;
-    acre.response.set_header("location", redirect_url);
+    acre.response.set_header("location", url + req_path);
     acre.response.set_header("cache-control", "public, max-age: 3600");
     acre.exit();
   }

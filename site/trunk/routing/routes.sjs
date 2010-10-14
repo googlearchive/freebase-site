@@ -1,6 +1,6 @@
 var mf = acre.require("MANIFEST").mf;
 var h = mf.require("helpers");
-var rules = mf.require("app_routes").rules;
+var app_routes = mf.require('app_routes');
 
 /**
  * Invoke the error app template with status=404 and exit.
@@ -41,31 +41,25 @@ function do_route(app, script, path_info, query_string) {
   return acre.exit();
 };
 
-//check if the top level domain does not start with www.
-//issue a 301 to the same url, starting with www.
-//cache the response
-function check_top_level_domain() {
-  var req = acre.request;
-  var must_redirect = ['freebase.com', 'sandbox-freebase.com'];
-  
-  for (var i in must_redirect) {
-    if (req.url.slice(7).indexOf(must_redirect[i]) == 0) {
-      var new_url = 'http://www.' + req.url.slice(7);
-      acre.response.status = '301';
-      acre.response.set_header("Location", new_url);
-      acre.response.set_header("cache-control", "public, max-age: 3600");
-      acre.exit();
+function host_based_redirects(req) {
+  var req_path = req.url.replace(req.app_url, "");
+  var url = app_routes.host_redirects[req.server_name];
+  if (url) {
+    // Handle both absolute and relative redirects
+    var redirect_url;
+    if (/^https?:\/\//.test(url)) {
+      redirect_url = url + req_path;
+    } else {
+      redirect_url = req.app_url + url + req_path;
     }
+    acre.response.status = 301;
+    acre.response.set_header("location", redirect_url);
+    acre.response.set_header("cache-control", "public, max-age: 3600");
+    acre.exit();
   }
-};
+}
 
-/**
- * Main route logic
- */
-if (acre.current_script === acre.request.script) {
-  check_top_level_domain();
-  
-  var req = acre.request;
+function path_based_routing(req) {
   var req_path = req.url.replace(req.app_url, "");
   // filter out query string
   var path = req_path;
@@ -76,7 +70,7 @@ if (acre.current_script === acre.request.script) {
     query_string = path_segs[1];
   }
   
-  var route = rules.route_for_path(path);
+  var route = app_routes.rules.route_for_path(path);
   if (route) {
     if (route.redirect && route.url) {
       // Handle both absolute and relative redirects
@@ -113,4 +107,12 @@ if (acre.current_script === acre.request.script) {
   }
 
   throw 'Invalid route: '+route;
+}
+
+/**
+ * Main route logic
+ */
+if (acre.current_script === acre.request.script) {
+  host_based_redirects(acre.request);
+  path_based_routing(acre.request);
 }

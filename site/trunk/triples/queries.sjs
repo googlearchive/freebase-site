@@ -16,7 +16,7 @@ function topic(id, filters) {
     name: i18n.mql.query.name(),
     timestamp: null,
     permission: null,
-    type: [{id: null}],
+    type: [{id: null, optional:true}],
     "/freebase/type_hints/mediator": null,
     "/freebase/type_hints/enumeration": null
   };

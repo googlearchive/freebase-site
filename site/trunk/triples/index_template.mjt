@@ -9,8 +9,8 @@
   var th = mf.require("helpers");
 </acre:script>
 
-<acre:block def="title()">
-  ${_('Inspect')} - ${c.topic.id}
+<acre:block def="title()" if="c.topic">
+ ${_('Inspect')} - ${c.topic.id}
 </acre:block>
 
 <acre:block def="head()">
@@ -26,7 +26,7 @@
             <a href="${h.url_for('triples')}">${_("Inspect")}</a>
           </span>
         </li>  
-        <li if="c.domain" class="breadcrumb-item last">
+        <li class="breadcrumb-item last" acre:if="c.topic">
           <span class="breadcrumb-item-inner">
             <a href="javascript:void(0);">${c.topic.id}</a>
           </span>
@@ -57,11 +57,12 @@
      }
      if(c.attribution_links && c.attribution_links.length) {
        menu_map.push({ "key": "attribution_links", "name": _("Links created by")})
-     }
-
-     var object_kind = h.get_object_kind(c.topic, c.topic.type);
+     }     
   </acre:script>
-  <div class="page-meta">
+  <div class="page-meta" acre:if="c.topic">
+    <acre:script>
+      var object_kind = h.get_object_kind(c.topic, c.topic.type);
+    </acre:script>
     <h1>
       ${i18n.display_name(c.topic)}
       <span class="flags">
@@ -122,8 +123,7 @@
 
 
   <div id="content-wrapper">
-    <div id="content-main" role="main" acre:attrs="c.filters.history ? {'class':'history'} : {}">
-      <h2 acre:if="(c.names_aliases && c.names_aliases.length) && (c.keys && c.keys.length) && (c.incoming && !c.incoming.length) && (c.outgoing && !c.outgoing.length) && (c.typelinks && !c.typelinks.length)" class="table-title">Your filter criteria did not return any results. Try widening your serach.</h2>
+    <div  acre:if="c.topic" id="content-main" role="main" acre:attrs="c.filters.history ? {'class':'history'} : {}">
       <acre:block if="c.names_aliases && c.names_aliases.length">
         <h2 class="table-title"><a name="names_aliases">${_("Names & Aliases")} (${i18n.format_number(c.names_aliases.length)})</a></h2>
         <table class="table table-sortable">
@@ -363,6 +363,10 @@
           </tbody>
         </table>
       </acre:block>
+    </div>
+
+    <div acre:else="" id="content-main" role="main">
+      <h2 class="table-title">Your filter criteria did not return any results. Try widening your serach.</h2>
     </div>
 
     <div id="content-sub" role="nav">

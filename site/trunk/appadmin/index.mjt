@@ -1,5 +1,6 @@
 <acre:script>
 
+
   var mf = acre.require("MANIFEST").mf;
   var h = mf.require('core', 'helpers');
   var freebase = mf.require('promise', 'apis').freebase;
@@ -82,7 +83,7 @@ App Admin
 	<acre:script>
 	  var app_path =  lib_ae.parse_path(app.id).path;
 	  var summary_url = app_summary_url + "?id=" + app_path.replace('\/\/', '%2f%2f');
-	  var details_url = app_details_url + "?id=" + app_path.replace('\/\/', '%2f%2f');
+	  //var details_url = app_details_url + "?id=" + app_path.replace('\/\/', '%2f%2f');
 	</acre:script>
 
 	<tr class="summary" id="summary-${util.html_id(app_path)}" app_id="${util.html_id(app_path)}" app_url="${summary_url}"></tr>

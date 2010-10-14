@@ -67,76 +67,7 @@ var get_env = function(env_id) {
     return null;
 }
 
-var get_version_timeline = function(apps) { 
 
-    var versions = { 'trunk' : {} };
-    var n_versions = 5;
-
-    now = new Date();
-
-    for (var i in ENV) { 
-
-        en = ENV[i];
-        if (!apps[en['id']]) { 
-            continue;
-        }
-
-        var app = apps[en['id']];
-        versions['trunk'][en['id']] = { 'class' : [], 'date' : now };
-
-        if (app['versions']) { 
-            for (var i in app['versions']) { 
-                var ver = app['versions'][i];
-                if (! versions[ver['name']]) { 
-                    versions[ver['name']] = {}
-                }
-                dd = acre.freebase.date_from_iso(ver['as_of_time']);
-                versions[ver['name']][en['id']] = {'class' : [], 'date' : dd };
-
-            }
-        }
-    }
-    
-
-    var versions_list = [];
-    for (var version_name in versions) { 
-        var version = versions[version_name];
-        
-        //mark the release version - it should be in apps['production']['release'] (or whatever env)
-        for (var env in version) { 
-
-            if (apps[env]['release'] == version_name) { 
-                version[env]['class'].push('release');
-            }
-
-            if (apps.reference_env == env && apps.reference_version == version_name) { 
-                version[env]['class'].push('reference');
-            } else{
-                version[env]['class'].push('diff');
-            }
-
-            version[env]['class'] = version[env]['class'].join(' ');
-        }
-
-        version['version'] = version_name;
-        
-        versions_list.push(version);
-    }
-
-    versions_list.sort(function(a,b) { 
-        for (var i in ENV) { 
-            var en = ENV[i];
-            if (a[en['id']] && b[en['id']]) { 
-                return b[en['id']]['date'] - a[en['id']]['date'];
-            }
-        }
-        return 0;
-    });
-    versions_list = versions_list.slice(0, n_versions);
-
-    return versions_list;
-    
-};
 
 
 var construct_id = function(env, id, version) { 
@@ -162,54 +93,6 @@ var deconstruct_id = function(id) {
     }
 
     return d;
-};
-
-var get_app = function(id) { 
-
-    var result = {};
-    var required_env = null;
-
-    var context = deconstruct_id(id);
-    var available_environments = [];
-
-    for (var i in ENV) { 
-        var en = ENV[i];
-
-        if (context.env && context.env != en['id']) {
-            continue;
-        }
-        acre.freebase.set_service_url(en['service_url']);
-        try {
-            result[en['id']] = ae.get_app(context.versionid);
-            available_environments.push(en['id']);
-        } catch(e) { 
-            result[en['id']] = null;
-            continue;
-        }
-
-        if (result[en['id']] && result[en['id']]['relative_date']) { 
-            result[en['id']]['relative_date'] = helpers.relative_date(acre.freebase.date_from_iso(result[en['id']]['creation_time']));
-        } else { 
-            result[en['id']]['relative_date'] = 'unkown';
-        }
-
-        //if the release is not set, set it to 'trunk'
-        if (!result[en['id']]['release']) { 
-            result[en['id']]['release'] = 'trunk';
-        }
-    }
-
-    revert_service_url();
-    console.log(result);
-    if (available_environments.length) { 
-        result.reference_env = context.env || available_environments[0];
-        result.reference_version = result[result.reference_env]['release'];
-    } else { 
-        result.error = true;
-    }
-
-    return result
-
 };
 
 /*
@@ -371,32 +254,6 @@ var get_file_diff = function(app1, app2) {
 };
 
 
-
-var get_app_diff = function(id1, id2) {
-
-    var result = get_app(id1);
-    var app1 = result[result.reference_env || 'production'];
-    
-    var result = get_app(id2);
-    var app2 = result[result.reference_env || 'production'];
-
-    if (!(app1 && app2)) { 
-        return {};
-    }
-
-    app1['manifest'] = get_manifest_contents(id1, app1);
-    app2['manifest'] = get_manifest_contents(id2, app2);
-
-    var diff = { 
-        'file' : get_file_diff(app1, app2), 
-        'manifest' : get_manifest_diff(app1, app2), 
-        'app1' : app1, 
-        'app2' : app2 
-    };
-
-    return diff;
-
-};
 
 var url = function(context, path) { 
 

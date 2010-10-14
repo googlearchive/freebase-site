@@ -65,34 +65,6 @@ var get_env = function(env_id) {
     }
 
     return null;
-}
-
-
-
-
-var construct_id = function(env, id, version) { 
-
-    //return env + ':' + id + (version != 'trunk' ? ':' + version : '');    
-    return env + ':' + id + ':' + version;
-
-};
-
-var deconstruct_id = function(id) { 
-
-    var d = { 'env' : null, 'id' : id, 'version' : 'trunk', 'versionid' : id };
-
-    parts = id.split(':');
-    if (parts.length > 1) { 
-        d['env'] = parts[0];
-        d['versionid'] = d['id'] = parts[1];
-    } 
-
-    if (parts.length > 2) { 
-        d['version'] = parts[2];
-        d['versionid'] += '/' + d['version'];
-    }
-
-    return d;
 };
 
 /*
@@ -135,7 +107,7 @@ var app_versions_to_release = function(app) {
 
     //if there are no more versions of this app, return
     if (!app.versions || app.versions.length == 0) { 
-	versions.latest = trunk
+	versions.latest = trunk;
 	versions.release = trunk;
 	return versions;
     }
@@ -150,8 +122,7 @@ var app_versions_to_release = function(app) {
 		'name' : version.name,
 		'id' : '//' + version.name + '.' + app.path.slice(2),
 		'date' : acre.freebase.date_from_iso(version.as_of_time)
-	    }
-	    
+	    };
 	}
 	
 	if (!app.release || !(version.name == app.release) ) {
@@ -167,7 +138,6 @@ var app_versions_to_release = function(app) {
 	break;
     }	
 
-
     if (!versions.release) { 
 	versions.release = versions.trunk;
     }
@@ -175,11 +145,9 @@ var app_versions_to_release = function(app) {
     console.log(versions);
     return versions;
 
-}
-
+};
 
 /*
-
 Given an app id, gets the app meta-data for each environment.
 input:
 id(string): app id
@@ -189,21 +157,17 @@ output:
 
 var get_app2 = function(id) { 
 
-    var result = {}
+    var result = {};
 
     for (var i in ENV) { 
 	var en = ENV[i];
 	result[en['id']] = ae.get_app(id + en['acre']);
     }
-    
 
     return result;
-
-}
-
+};
 
 /*
-
 converts an app id to something that can be used as an html id
 strips slashes  and . 
 input: 
@@ -239,20 +203,9 @@ var get_manifest_diff = function(app1, app2) {
         if (!(appid in m1)) { diff['add'].push({'appid' : appid, 'version' : m2[appid]}); }
     }
     
-    console.log(diff)
-
     return diff;
 
 };
-
-
-var get_file_diff = function(app1, app2) { 
-
-    var diff = { 'add' : [], 'remove' : [], 'changed' : [] };
-
-    return diff
-};
-
 
 
 var url = function(context, path) { 
@@ -260,7 +213,7 @@ var url = function(context, path) {
     var env = get_env(context.env);
     var id = context.id;
     if (context.version && context.version != 'trunk') { 
-        id += "/" + context.version
+        id += "/" + context.version;
     }
     var parts = id.split('/').reverse();    
 
@@ -273,19 +226,3 @@ var url = function(context, path) {
 
 };
 
-var get_manifest_contents = function(id) {
-
-    console.log('manifest');
-    var manifest = null;
-    var context = deconstruct_id(id);
-    var manifest_url = url(context, '/MANIFEST');
-    var env = get_env(context.env);
-    acre.freebase.set_service_url(env['service_url']);    
-    try { 
-    manifest = JSON.parse(acre.urlfetch(manifest_url).body).result;
-    } catch(e) { 
-        manifest = {'error' : 'no manifest found' };
-    }
-    return manifest;
-
-};

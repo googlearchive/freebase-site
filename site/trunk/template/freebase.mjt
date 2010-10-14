@@ -178,7 +178,7 @@
 
   <div id="devbar" class="clear">
     <h3><a name="devbar">Dev Tools</a></h3>
-    <ul>
+    <ul class="clear">
       <acre:block if="exports.c && exports.c.id">
         <li><a title="${_('Inspect this topic')}" href="${h.url_for('triples', null, null, exports.c.id)}">${_('Inspect this topic')}</a></li>
       </acre:block>      

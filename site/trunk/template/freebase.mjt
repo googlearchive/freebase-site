@@ -185,8 +185,7 @@
       <li><a title="${_('Query editor')}" href="${h.url_for('queryeditor')}">${_('Query editor')}</a></li>      
       <li id="devbar-txn"><a title="${_('View transaction log')}" rel="nofollow" href="http://stats.metaweb.com/transaction">${_('View transaction log')}</a></li>
       <li id="devbar-touch"><a title="${_('Refresh cache')}" rel="nofollow" href="#">${_('Refresh cache')}<a/></li>
-      <li id="devbar-toggle"><a title="${_('hide dev tools, press F8 to toggle visibility')}" rel="nofollow" href="#">${_('hide (F8)')}<a/></li>
-    </ul>    
+   </ul>    
   </div>
 </acre:block>
 

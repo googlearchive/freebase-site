@@ -310,29 +310,6 @@ if (typeof SERVER === "object" && SERVER.acre) {
    fb.devbar = {
      div: $("#devbar"),
 
-     keydown: function(e) {
-       // check for f8 key:119, f12:123 + ctrl or shift modifiers
-       // or just in case those don't work,
-       // check for ctrl+shift+d
-       if (e.keyCode == 119 || e.keyCode == 123 ||
-           (e.keyCode == 68 && e.shiftKey && e.ctrlKey))
-         fb.devbar.toggle();
-       return true;
-     },
-
-     toggle: function() {
-       if (fb.devbar.div.is(":visible")) {
-         fb.devbar.div.hide();
-         $.localstore("devbar2", false);
-       }
-       else {
-         fb.devbar.div.show();
-         fb.devbar.div[0].scrollIntoView(true);
-         $.localstore("devbar2", true);
-       }
-       return false;
-     },
-
      touch: function() {
        if (/^https?\:\/\/((www|devel)\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(fb.acre.request.app_url)) {
          $.ajax({
@@ -368,9 +345,6 @@ if (typeof SERVER === "object" && SERVER.acre) {
      },
 
      init: function() {
-       $.localstore("devbar2") ? fb.devbar.div.show() : fb.devbar.div.hide();
-       $(document).keydown(fb.devbar.keydown);
-       $("#devbar-toggle > a").click(fb.devbar.toggle);
        $("#devbar-touch > a").click(fb.devbar.touch);
        if (fb.acre.tid) {
          fb.devbar.txn_ids.push(fb.acre.tid);

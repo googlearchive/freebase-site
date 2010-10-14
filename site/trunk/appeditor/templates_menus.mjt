@@ -315,7 +315,7 @@
 
 
 <!-- App  menu -->
-<div mjt.def="appsettings_menu(tab)">
+<div mjt.def="appsettings_menu()">
   <span mjt.script="">
     var writable = ui.get_app().is_writable();
   </span>
@@ -353,14 +353,15 @@
   </div>
   <span mjt.script="ondomready">
     $$('#button-appsettings').addClass('button-open');
-    var sel_tab = tab ? tab : 'general';
 
-    $$("#settings-tabs").tabs({
-      selected: null,
-      show: function(e, tabs) {
-        setTimeout(function(){ $$('#'+tabs.panel.id).mjt(ui.templates[tabs.panel.id]()); }, 0);
+    $$("#settings-tabs").tabs("#settings-tab-content > div", {
+      api: true,
+      initialIndex: 0,
+      onBeforeClick: function(e, index) {
+        var tab_id = $(this.getPanes()[index]).attr("id");
+        setTimeout(function(){ $$('#'+tab_id).mjt(ui.templates[tab_id]()); }, 0);
       }
-    }).tabs("select", "#app_" + sel_tab);
+    });
     
     $$('#app-general-listing').click(function(){
       window.open(ui.get_app().get_edit_url());

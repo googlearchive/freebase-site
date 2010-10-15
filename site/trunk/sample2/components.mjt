@@ -131,7 +131,7 @@
           <div class="app-description">
             <p>Content</p>
           </div>
-          <div class="app-actions">
+          <div class="app-actions"> <!-- need to add a class to support this -->
           	<a class="button button-primary" href="">
             	Go to this App
             </a>      

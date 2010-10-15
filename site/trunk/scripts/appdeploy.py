@@ -49,7 +49,7 @@ SERVICES = {
             'www' : 'http://www.freebase.com',
             'freebaseapps' : 'freebaseapps.com'
             },
-  'sandbox' : { 'acre' : 'http://acre.sandbox-freebase.com',
+  'sandbox' : { 'acre' : 'http://www.sandbox-freebase.com',
                 'www' : 'http://www.sandbox-freebase.com',
                 'freebaseapps' : 'sandbox-freebaseapps.com'
                 },
@@ -83,7 +83,9 @@ JAVA = os.environ.get("JAVA_EXE", "java")
 COMPILER = os.path.join(os.path.abspath(os.path.dirname(os.path.join(os.getcwd(), __file__))), "compiler.jar")
 JAVA_OPTS = ["-jar", COMPILER, "--warning_level", "QUIET"]
 
-SVN_URL_ROOT = 'https://svn.metaweb.com/svn/freebase_site'
+#PUBLIC_SVN_URL_ROOT = 'https://freebase-site.googlecode.com/svn/site'
+PRIVATE_SVN_URL_ROOT = 'https://svn.metaweb.com/svn/freebase_site'
+PUBLIC_SVN_URL_ROOT = PRIVATE_SVN_URL_ROOT
 STATIC_URL_ROOT =   'http://freebaselibs.com/static/freebase_site'
 
 ROOT_NAMESPACE = '/freebase/site'
@@ -225,7 +227,6 @@ class App:
     delete_files = {}
     #the files we need to push because they have changed since the last push
     push_files = {}
-
 
     try:
       graph_app = app.get_graph_app()
@@ -502,7 +503,7 @@ class App:
       if not self.version:
         self.c.log("%s does not exist yet, will create it" % self.app_key)
         try:
-          ActionCreateGraph(c)(self)
+          ActionCreateGraph(self.c)(self)
           graph_app = self.c.freebase.get_app(self.path())
         except:
           return self.c.error('Cannot create %s - aborting.' % self.app_key)
@@ -523,7 +524,7 @@ class App:
 
 
   def svn_deployed_url(self, svn_revision):
-    return '{svn_url_root}/deployed/{app}/{svn_revision}'.format(svn_url_root=SVN_URL_ROOT, app=self.app_key, svn_revision=svn_revision)
+    return '{svn_url_root}/deployed/{app}/{svn_revision}'.format(svn_url_root=PRIVATE_SVN_URL_ROOT, app=self.app_key, svn_revision=svn_revision)
 
   def svn_deployed_path(self, svn_revision):
 
@@ -545,11 +546,11 @@ class App:
   def svn_url(self, allversions=False):
 
     if allversions:
-      return '{svn_url_root}/dev/{app}'.format(svn_url_root=SVN_URL_ROOT, app=self.app_key)
+      return '{svn_url_root}/dev/{app}'.format(svn_url_root=PUBLIC_SVN_URL_ROOT, app=self.app_key)
     elif not self.version:
-      return '{svn_url_root}/trunk/{app}'.format(svn_url_root=SVN_URL_ROOT, app=self.app_key)
+      return '{svn_url_root}/trunk/{app}'.format(svn_url_root=PUBLIC_SVN_URL_ROOT, app=self.app_key)
     else:
-      return '{svn_url_root}/dev/{app}/{version}'.format(svn_url_root=SVN_URL_ROOT, app=self.app_key, version=self.version)
+      return '{svn_url_root}/dev/{app}/{version}'.format(svn_url_root=PUBLIC_SVN_URL_ROOT, app=self.app_key, version=self.version)
 
   def svn_path(self):
 
@@ -591,7 +592,7 @@ class Context():
     if options.graph:
       self.services = SERVICES.get(options.graph)
       #after appeditor-services moved to freebase site, all requests should go to www.freebase.com
-      self.freebase = HTTPMetawebSession(self.services['www'], acre_service_url=self.services['www'])
+      self.freebase = HTTPMetawebSession(self.services['www'], acre_service_url=self.services['acre'])
       self.freebase_logged_in = False
 
     self.current_app = None
@@ -854,6 +855,7 @@ class ActionPush():
     for filename,val in delete_files.iteritems():
       print ".",
       sys.stdout.flush()
+      c.verbose("Deleting file %s" % unquotekey(filename))
       c.freebase.delete_app_file(app.app_id, unquotekey(filename))
       files_changed.add(filename)
 
@@ -862,11 +864,26 @@ class ActionPush():
       print ".",
       sys.stdout.flush()
       files_changed.add(filename)
-      if val['acre_handler'] == 'binary':
-        val['filehandle'].seek(0)
-        c.freebase.save_binary_file(val['id'], val['filehandle'], val['content_type'])
-      else:
-        c.freebase.save_text_file(val['id'], val['contents'], val['acre_handler'], val['content_type'])
+
+      uploaded = False
+      tries = 3
+      while tries > 0 and not uploaded:
+        try:
+          if val['acre_handler'] == 'binary':
+            c.verbose("Uploading binary file %s" % val['name'])
+            val['filehandle'].seek(0)
+            c.freebase.save_binary_file(val['id'], val['filehandle'], val['content_type'])
+          else:
+            c.verbose("Uploading file %s" % val['name'])
+            c.freebase.save_text_file(val['id'], val['contents'], val['acre_handler'], val['content_type'])
+          uploaded = True
+
+        except UnicodeDecodeError:
+          c.warn('Encountered error uploading file %s, trying again...' % val['name'])
+          tries -= 1
+
+      if not uploaded:
+        return c.error('Could not upload file %s - aborting push' % val['name'])
 
     if (len(push_files)):
       print "\n"
@@ -1538,6 +1555,7 @@ def main():
 
               context.set_action(action)
               result = valid_action[2](context)()
+              context.set_action(action)
 
               if not result:
                 context.error('FAILED: action %s failed' % action)

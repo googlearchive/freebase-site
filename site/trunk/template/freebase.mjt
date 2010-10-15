@@ -202,7 +202,6 @@
  <script>
     var SERVER = {};
     SERVER.acre = {
-      mwLastWriteTime: "${acre.request.cookies.mwLastWriteTime}",
       freebase: {
         service_url: "${acre.freebase.service_url}",
         site_host: "${acre.freebase.site_host}"
@@ -219,7 +218,10 @@
   <script acre:if="exports.c && exports.c.id">
     SERVER.acre.c = {id: "${exports.c.id}"};
   </script>
+  <script acre:if="acre.request.cookies && acre.request.cookies.mwLastWriteTime">
+    SERVER.acre.mwLastWriteTime = "${acre.request.cookies.mwLastWriteTime}";
+  </script>
   <script acre:if="acre.request.headers['x-metaweb-tid']">
-    SERVER.acre.tid = "${acre.request.headers['x-metaweb-tid']}"
+    SERVER.acre.tid = "${acre.request.headers['x-metaweb-tid']}";
   </script>
 </acre:block>

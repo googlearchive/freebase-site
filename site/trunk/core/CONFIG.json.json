@@ -27,7 +27,7 @@
 	  },
 	  "jquery" : {
 	  	"base_url": "http://ajax.googleapis.com/ajax/libs/jquery/",
-	    "version": "1.4"
+	    "version": "1.4.2"
 	  }
 	},
   "freebase": {

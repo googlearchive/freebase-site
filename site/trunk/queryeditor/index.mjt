@@ -43,23 +43,13 @@
 
 <acre:block def="content_body()">
 <div id="content-wrapper">
-  <div id="content-main" role="main">
-    
-    <div id="starting-message-container"><center>
-      <div id="starting-message">
-        <a href="javascript:closeStartingMessage();" style="float: right;">Close</a>
-        Don't know where to start?<br/>
-        <a href="">Watch this screencast here</a>.
-      </div>
-    </div>
-	
+  <div id="content-main" role="main">	
   	<div id="qe-container">
       <div id="the-query-editor"></div>
       <div id="the-splitter">&nbsp;</div>
       <div id="the-control-pane" style="display: block;"></div>
       <div id="the-output-pane"></div>
     </div>
-    
   </div>
 </div>
 </acre:block>

@@ -8,12 +8,6 @@ var c = {};
 var queryEditorOptions;
 
 function onLoad() {
-    // This is only for debugging the development untagged version of the acre app
-    // CueCard.apiProxy.base = "http://cuecard.dfhuynh.user.dev.freebaseapps.com/";
-
-    if ($.cookie('cc_greeting') == '0') {
-    	$("#starting-message-container").hide();
-  	}
 
     if ($.cookie("cc_cp") == "0") {
       $("#the-control-pane")[0].style.display = "none";
@@ -130,9 +124,10 @@ function resizePanes() {
     
     var width = $("#content-main").width();
     var halfWidth = Math.round((width - 2 * margin - spacing) / 2);
-    var height = $(window).height() - $("#page-footer").height() - $("#page-header").height() - $(".page-header").height();
+    var height = $(window).height() - $("#page-header").outerHeight(true) - $(".page-header").outerHeight(true) - 
+        $("#page-footer").outerHeight(true) - $("#devbar").outerHeight();
     
-    $("#qe-container").css("height", height + "px");
+    $("#qe-container").height(height - 30); // the margin on 
         
     var innerHeight = height - 2 * margin;
     if ($("#the-control-pane")[0].style.display == "block") {

@@ -9,6 +9,14 @@
   }
 </acre:script>
 
+<acre:block def="head()">
+  <!-- define additional CSS/JS files here -->
+  <!-- this is how you link to a stylesheet in the same app -->
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('core.mf.css')}" />
+  <!-- this is how you link to a stylesheet in a different app -->
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('sample_page.mf.css')}" />
+</acre:block>
+
 <acre:block def="title()">
   <!-- Page title goes here -->
   Page title
@@ -22,9 +30,7 @@
 </acre:block>
 -->
 
-<!-- 	use this header for breadcrumb based page header.
-		there is an option shown for a js based drop down menu as well -->
-
+<!-- 	use this header for breadcrumb based page header -->
 <acre:block def="content_header()">
   <div class="page-header clear">
     <div class="breadcrumb clear">
@@ -44,6 +50,7 @@
             <a href="">Third Item</a>
           </span>
         </li>
+				<!-- last item contains a trigger for an optional js based dropdown nav -->
         <li class="breadcrumb-item last">
           <span class="breadcrumb-item-inner">
             <a href="" class="breadcrumb-sibling-trigger">Last Item</a>
@@ -54,7 +61,7 @@
               <li>
                 <a href="" title="">Drop down prop 1</a>
               </li>
-			  <li>
+			  			<li>
                 <a href="" title="">Drop down prop 2</a>
               </li>
             </ul>
@@ -65,28 +72,21 @@
   </div>
 </acre:block>
 
-
-
-<acre:block def="head()">
-  <!-- define additional CSS/JS files here -->
-  <!-- this is how you link to a stylesheet in the same app -->
-  <link rel="stylesheet" type="text/css" href="${mf.css_src('core.mf.css')}" />
-  <!-- this is how you link to a stylesheet in a different app -->
-  <link rel="stylesheet" type="text/css" href="${mf.css_src('sample_page.mf.css')}" />
-</acre:block>
-
 <acre:block def="content_body()">
 <div id="content-wrapper">
-   <div id="content-main" role="main"> <!-- for simple 2 col layout --> 
+	<!-- for simple 2 col layout. remove content-sub for single column layout --> 
+	<div id="content-main" role="main">
+		<!-- each content "section" should be wrapped in a div like this -->
+		<div class="section">
+			<h1 class="section-title">This is a Section Title</h1>
+			<p class="section-body">Any content can go here, wrapped in a paragraph tag. Lorem ipsum dolor sit amet, aliquam bibendum varius id in, nascetur mi nisl quis. Sapien dui nunc, rhoncus faucibus laoreet sem ornare suscipit. Dignissim porta lectus ac turpis.</p>	
+			<input class="button button-primary" type="submit" value="Primary Button">
+			<input class="button" type="submit" value="Secondary Button">		
+		</div><!-- end section -->
 
-     <div class="section"> <!-- each content "section" should be wrapped in a div like this -->
-		<h1 class="section-title">This is a Section Title</h1>
-		<p class="section-body">Any content can go here, wrapped in a paragraph tag. Lorem ipsum dolor sit amet, aliquam bibendum varius id in, nascetur mi nisl quis. Sapien dui nunc, rhoncus faucibus laoreet sem ornare suscipit. Dignissim porta lectus ac turpis.</p>	
-		<input class="button button-primary" type="submit" value="Primary Button">
-		<input class="button" type="submit" value="Secondary Button">		
-	</div><!-- end section -->
-	
-	<div class="section">
+		<!-- Feature content area with tabbed navigation -->
+		<!-- Use only one Featured content area per page -->
+		<div class="section">
       <h1 class="section-title">Tabbed Content Box</h1>
       <div id="" class="section-tabs">
         <ul class="section-tabset clear">
@@ -98,83 +98,144 @@
           <form id="domain-search-form" method="get">
             <fieldset>
               <input type="text" name="id" class="text-input" id="domain-search-input" id="domain-search-input" placeholder="" />
-			  <input type="submit" class="button button-primary" value="Search"/>
+			  			<input type="submit" class="button button-primary" value="Search"/>
             </fieldset>
-          </form>
-         
+          </form> 
         </div>
-   		<div class="search-box" id="domain-search">
-	     <p class="section-body">Any content can go here, wrapped in a paragraph tag. Lorem ipsum dolor sit amet, aliquam bibendum varius id in, nascetur mi nisl quis. Sapien dui nunc, rhoncus faucibus laoreet sem ornare suscipit. Dignissim porta lectus ac turpis.</p>	
-	    </div>
-		 <div class="search-box" id="domain-search">
-		   <form id="domain-search-form" method="get">
-		     <fieldset>
-		       <input type="text" name="id" class="text-input" id="domain-search-input" id="domain-search-input" placeholder="" />
-		     </fieldset>
-		   </form>
-		   <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-commons" checked="checked" />Option</label>
-		   <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" />Alternate Option</label>
-		  </div>
-        </div><!-- end section tabs -->
-      </div><!-- end section -->
+   			<div class="search-box" id="domain-search">
+	    		<p class="section-body">Any content can go here, wrapped in a paragraph tag. Lorem ipsum dolor sit amet, aliquam bibendum varius id in, nascetur mi nisl quis. Sapien dui nunc, rhoncus faucibus laoreet sem ornare suscipit. Dignissim porta lectus ac turpis.</p>	
+	    	</div>
+		 		<div class="search-box" id="domain-search">
+		  		<form id="domain-search-form" method="get">
+		    		<fieldset>
+		      		<input type="text" name="id" class="text-input" id="domain-search-input" id="domain-search-input" placeholder="" />
+		    		</fieldset>
+		  		</form>
+		   		<label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-commons" checked="checked" />Option</label>
+		   		<label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" />Alternate Option</label>
+		 		</div>
+			</div><!-- end section tabs -->
+		</div><!-- end section -->
+	
+	  <!-- Feature content area with button action area-->
+		<!-- Use only one Featured content area per page -->
+	  <div class="section">
+    	<div class="page-meta">
+      	<h1>Title</h1>
+          <div class="admin-toolbox">
+            <span class="creation-timestamp">
+              Last modified by <a href="">Link</a> 
+              <time class="published" datetime=""></time>
+            </span>
+          </div>
+          <div class="app-description">
+            <p>Content</p>
+          </div>
+          <div class="app-actions">
+          	<a class="button button-primary" href="">
+            	Go to this App
+            </a>      
+            <a class="button" href="">
+            	View Source
+            </a>
+            <a class="button" href="">
+            	Edit Settings
+            </a>
+          </div>
+        </div>
+	  </div>
+		<!-- end section -->
+		
+		<!-- Feature content area with bottom navigation-->
+		<!-- Use only one Featured content area per page -->
+	 	<div class="section">
+   		<div class="page-meta">
+      	<h1>Content Section with Navigation</h1>
+          <div class="admin-toolbox">
+            <span class="creation-timestamp">
+              Last modified by <a href="">Link</a> 
+              <time class="published" datetime=""></time>
+            </span>
+          </div>
+          <div class="app-description">
+            <p>Content</p>
+          </div>
+		 			<div class="nav clear"> 
+		      	<ul class="nav-mode"> 
+		        	<li><a class="current">View 1</a></li> 
+		        	<li><a href="http://www.freebase.com/schema/type/american_football/football_coach_position?view=diagram">View 2</a></li> 
+		      	</ul> 
+		      	<ul class="nav-utilities"> 
+		        	<li> 
+		          	<a class="icon-link" href=""><span class="browse-icon">Browse</a> 
+		        	</li> 
+		        	<li> 
+		          	<a class="icon-link" href=""><span class="query-icon">Build</span></a> 
+		        	</li> 
+		        	<li> 
+		          	<a class="icon-link" href=""><span class="edit-icon">Edit</span></a> 
+		        	</li> 
+		      	</ul> 
+		    	</div>
+				</div><!-- end page-meta -->
+	  </div><!-- end section -->	
 
-
-
-
-	<div class="section">
-	 	<h1 class="table-title">This is a Table Title</h1>
-		<!-- this table will extend full col if you don't wrap it in content-main -->
-		 <table cellspacing="0" class="table table-sortable">
-		   <thead>
-	         <tr>
-	           <th scope="col" class="column-header {sorter: 'schemaName'}"><span class="sort-icon">Table Head</span></th>
-	           <th scope="col" class="column-header column-header-desc"><span class="sort-icon">Table Head</span></th>
-	           <th scope="col" class="column-header numeric"><span class="sort-icon">Table Head</span></th>
-	           <th scope="col" class="column-header numeric {sorter: 'commaDigit'}"><span class="sort-icon">Table Head</span></th>
-	         </tr>
-	       </thead>
-		     <tbody>
-		       <tr>
-		           <th class="row-header odd" scope="row">
-		             <a href="" title="">Col One</a>
-		           </th>
-		           <td class="even">Column Two</td>
-		           <td class="odd numeric">Column Three</td>
-		           <td class="even numeric">Column Four</td>
-		         </tr>
-			   <tr>
-		           <th class="row-header odd" scope="row">
-		             <a href="" title="">Col One</a>
-		           </th>
-		           <td class="even">Column Two</td>
-		           <td class="odd numeric">Column Three</td>
-		           <td class="even numeric">Column Four</td>
-		         </tr>
-			   <tr>
-		           <th class="row-header odd" scope="row">
-		             <a href="" title="">Col One</a>
-		           </th>
-		           <td class="even">Column Two</td>
-		           <td class="odd numeric">Column Three</td>
-		           <td class="even numeric">Column Four</td>
-		       </tr>
-		     </tbody>
-	  </table>
+		<!-- Table -->
+		<div class="section">
+	 		<h2 class="table-title">This is a Table Title <a class="help-link" href="" rel="help external" title="Read help article">Help link</a></h2>
+		 	<table cellspacing="0" class="table table-sortable">
+		  	<thead>
+	      	<tr>
+	        	<th scope="col" class="column-header {sorter: 'schemaName'}"><span class="sort-icon">Table Head</span></th>
+	          <th scope="col" class="column-header column-header-desc"><span class="sort-icon">Table Head</span></th>
+	          <th scope="col" class="column-header numeric"><span class="sort-icon">Table Head</span></th>
+	          <th scope="col" class="column-header numeric {sorter: 'commaDigit'}"><span class="sort-icon">Table Head</span></th>
+	        </tr>
+	      </thead>
+		    <tbody>
+		      <tr>
+		      	<th class="row-header odd" scope="row">
+		        	<a href="" title="">Col One</a>
+		        </th>
+		        <td class="even">Column Two</td>
+		        <td class="odd numeric">Column Three</td>
+		        <td class="even numeric">Column Four</td>
+		      </tr>
+			   	<tr>
+		      	<th class="row-header odd" scope="row">
+		        	<a href="" title="">Col One</a>
+		        </th>
+		        <td class="even">Column Two</td>
+		        <td class="odd numeric">Column Three</td>
+		        <td class="even numeric">Column Four</td>
+		      </tr>
+			   	<tr>
+		      	<th class="row-header odd" scope="row">
+		        	<a href="" title="">Col One</a>
+		        </th>
+		        <td class="even">Column Two</td>
+		        <td class="odd numeric">Column Three</td>
+		        <td class="even numeric">Column Four</td>
+		      </tr>
+		    </tbody>
+	  	</table>
     </div><!-- end section -->
   </div><!-- end content-main -->
-  <div class="aside" role="complimentary" id="content-sub">
+  
+	<!-- remove this sub-column if you would like a full column layout -->
+	<div class="aside" role="complimentary" id="content-sub">
     <div class="content-wrapper">
       <h2 class="aside-title">Sidebar Header</h2>
       <p>Any sidebar content can go here, wrapped in a paragraph tag. Lorem ipsum dolor sit amet, aliquam bibendum varius id in, nascetur mi nisl quis. Sapien dui nunc, rhoncus faucibus laoreet sem ornare suscipit. Dignissim porta lectus ac turpis.</p>
       <p><strong>Bolded content</strong></p> 
       <h3>Sidebar Subheading</h3>
-	  <p>Any sidebar content can go here, wrapped in a paragraph tag. Lorem ipsum dolor sit amet, aliquam bibendum varius id in, nascetur mi nisl quis. Sapien dui nunc, rhoncus faucibus laoreet sem ornare suscipit. Dignissim porta lectus ac turpis.</p>
+	  	<p>Any sidebar content can go here, wrapped in a paragraph tag. Lorem ipsum dolor sit amet, aliquam bibendum varius id in, nascetur mi nisl quis. Sapien dui nunc, rhoncus faucibus laoreet sem ornare suscipit. Dignissim porta lectus ac turpis.</p>
       <h3><a href="" title="">Link as a header</a></h3> 
-	  <p>Any sidebar content can go here, wrapped in a paragraph tag. Lorem ipsum dolor sit amet, aliquam bibendum varius id in, nascetur mi nisl quis. Sapien dui nunc, rhoncus faucibus laoreet sem ornare suscipit. Dignissim porta lectus ac turpis.</p>
-	  <p><strong>Aside box header</strong></p>      
-	  <div class="aside-box">
+	  	<p>Any sidebar content can go here, wrapped in a paragraph tag. Lorem ipsum dolor sit amet, aliquam bibendum varius id in, nascetur mi nisl quis. Sapien dui nunc, rhoncus faucibus laoreet sem ornare suscipit. Dignissim porta lectus ac turpis.</p>
+	  	<p><strong>Aside box header</strong></p>      
+	  	<div class="aside-box">
         <h4><a href="" title="">Header as link in aside box</a></h4>
-       Aside box content
+       	Aside box content
       </div>
       <h2 class="aside-title">Header</h2>
       <ul>
@@ -184,6 +245,7 @@
       </ul>
     </div>
   </div><!-- end content-sub -->
+
 </div><!-- end content wrapper-->
 
 

@@ -27,10 +27,10 @@
 
   var c = this.exports.c = {};
 
-  var app_summary_url = h.url_for('appadmin', 'app_summary');
-  var app_details_url = h.url_for('appadmin', 'app_details');
+  var app_summary_url = h.url_for('admin', 'app_summary');
+  var app_details_url = h.url_for('admin', 'app_details');
 
-  var admin_path = h.url_for('appadmin', 'index').slice(7);
+  var admin_path = h.url_for('admin', 'index').slice(7);
   admin_path = admin_path.slice(admin_path.indexOf('/'));
 
 

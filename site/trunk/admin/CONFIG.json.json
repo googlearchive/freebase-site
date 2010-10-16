@@ -3,15 +3,26 @@
       "core": "//core.site.freebase.dev"
   },
   "stylesheet": {
-    "appadmin.mf.css": [
+    "admin.mf.css": [
       ["template", "freebase.mf.css"],
-      "appadmin_core.css"
+      ["template", "freebase.ui.tabs.less"],
+      ["template", "freebase.ui.table.less"],
+      ["template", "freebase.ui.breadcrumbs.less"],
+      ["template", "freebase.ui.pageoverview.less"],
+      ["template", "freebase.ui.modal.less"],
+      ["template", "freebase.ui.layout.twocol.less"],
+      "admin_core.css"
     ]
   },
   "javascript": {
-    "appadmin.mf.js": [
-	  	["template", "freebase.mf.js"],
-	  	"appadmin_core.js"
+    "admin.mf.js": [
+     	["template", "freebase.mf.js"],
+    	["jqueryui", "jquery.ui.tabs.js"],
+	["template", "freebase-permission.mf.js"],
+     	["template", "jquery.showrow.js"],
+      	["jquerytools", "tabs.js"],
+      	["jquerytools", "tooltip.js"],
+  	"admin_core.js"
     ]
   }
 }

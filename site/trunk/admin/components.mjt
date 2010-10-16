@@ -12,9 +12,7 @@
 <acre:block def="head()">
   <!-- define additional CSS/JS files here -->
   <!-- this is how you link to a stylesheet in the same app -->
-  <link rel="stylesheet" type="text/css" href="${mf.css_src('core.mf.css')}" />
-  <!-- this is how you link to a stylesheet in a different app -->
-  <link rel="stylesheet" type="text/css" href="${mf.css_src('sample_page.mf.css')}" />
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('admin.mf.css')}" />
 </acre:block>
 
 <acre:block def="title()">
@@ -254,7 +252,7 @@
 </acre:block>
 
 <acre:block def="footer_script()">
-  <script src="${mf.js_src('sample_page.mf.js')}"></script>
+  <script src="${mf.js_src('admin.mf.js')}"></script>
 </acre:block>
 
 <acre:script>

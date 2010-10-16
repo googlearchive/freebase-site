@@ -38,7 +38,7 @@ rules.add([
 
 // Urls for administrative tools
 rules.add([
-  {prefix:"/app/admin",          app:"appadmin"},
+  {prefix:"/app/admin",          app:"admin"},
   {prefix:"/app/tmt",            app:"tmt"}
 ]);
 

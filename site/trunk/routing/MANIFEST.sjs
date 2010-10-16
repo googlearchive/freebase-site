@@ -1,6 +1,6 @@
 var mf = {
   "apps" : {
-    "appadmin"          : "//appadmin.site.freebase.dev",
+    "admin"             : "//admin.site.freebase.dev",
     "appeditor"         : "//appeditor.site.freebase.dev",
     "appeditor-services": "//appeditor-services.site.freebase.dev",
     "apps"              : "//apps.site.freebase.dev",
@@ -23,8 +23,8 @@ var mf = {
     "queryeditor"       : "//cuecard.dfhuynh.user.dev",
     "routing"           : "//routing.site.freebase.dev",
     "sample"            : "//sample.site.freebase.dev",
-    "app_template_barebones"           : "//app_template_barebones.site.freebase.dev",
-    "app_template_freebase"           : "//app_template_freebase.site.freebase.dev",
+    "app_template_barebones"  : "//app_template_barebones.site.freebase.dev",
+    "app_template_freebase"   : "//app_template_freebase.site.freebase.dev",
     "schema"            : "//schema.site.freebase.dev",
     "tasks"             : "//tasks.site.freebase.dev",
     "test"              : "//test.site.freebase.dev",

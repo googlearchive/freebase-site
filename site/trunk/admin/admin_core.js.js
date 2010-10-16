@@ -5,8 +5,9 @@ var html_id = function(id) {
     return id.replace(/[\/\.]/g, '');
 }
 
+var rown = 0;
 $(".summary").each(function(index) {  
-    load_app_summary($(this).attr('app_id'));
+    load_app_summary($(this).attr('app_id'), rown++);
     global_results.total_apps++;
 });
 
@@ -25,14 +26,17 @@ $("#test-all").click(function(e) {
 });
 
 
-function load_app_summary(appid) { 
-    $("#summary-" + appid).load(
-	$("#summary-" + appid).attr('app_url'),
-	[],
-	function(text, status, req) { 
-	    bind_app_buttons(appid);
-	}	
-    );
+function load_app_summary(appid, rown) { 
+  if (!rown) {
+    rown = 0;
+  }
+  $("#summary-" + appid).load(
+    $("#summary-" + appid).attr('app_url') + '&rown=' + rown,
+    [],
+    function(text, status, req) { 
+      bind_app_buttons(appid);
+    }	
+  );
 }
 
 function bind_app_buttons(appid) { 

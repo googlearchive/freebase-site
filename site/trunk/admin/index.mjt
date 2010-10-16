@@ -48,50 +48,66 @@ App Admin
 
   <div id="message" style="background-color: #ccf; font-weight: bold; font-size: 1.5em; text-align: center"></div>
   <br/>
-  <table>
-    <tr><th class="header">app</th>
-      <acre:block for="env in util.ENV">
-	<th class="header" acre:attrs=" env['service_domain'] == acre.request.server_name ? {'colspan' :3 } : {'colspan' : 2, 'width' : '30%' }">${env['name']}
-	  
-	  <!-- We are in this environment right now -->
-	   <acre:block if="env['service_domain'] == acre.request.server_name">
-	     all apps: 
-	     <a href="#" id="test-all">test</a> | <a href="#" id="release-all">release</a>
-	   </acre:block>
-	   <acre:block else="">
-	     (<a href="${env['service_url'] + admin_path}">switch to this environment</a>)
-	   </acre:block>
 
-	</th>
-      </acre:block>
-    </tr>
+  <div class="section">
+    <h2 class="table-title">Freebase Site Apps <a class="help-link" href="http://code.google.com/p/freebase-site/" rel="help external" title="Freebase Site on Google Code">Google Code</a></h2>
+    <table cellspacing="0" class="table table-sortable">
 
-    <tr>
-      <th></th>
-      <acre:block for="env in util.ENV">
-	<th>latest</th>
-	<th>release</th>
-	<acre:block if="env['service_domain'] == acre.request.server_name">
-	  <th>actions</th>
-	</acre:block>
-      </acre:block>
-    </tr>
-    
-    <acre:block for="app in c.apps.result">
+      <!-- HEAD -->
 
-	<acre:script>
-	  var app_path =  lib_ae.parse_path(app.id).path;
-	  var summary_url = app_summary_url + "?id=" + app_path.replace('\/\/', '%2f%2f');
-	  //var details_url = app_details_url + "?id=" + app_path.replace('\/\/', '%2f%2f');
-	</acre:script>
+      <thead>
 
-	<tr class="summary" id="summary-${util.html_id(app_path)}" app_id="${util.html_id(app_path)}" app_url="${summary_url}"></tr>
-	
-	<tr><td colspan="2">
-	    <div style="visibility: hidden;" id="details-${app_path}">Fetching details...</div>
-	</td></tr>
-    </acre:block>  
-  </table>
+        <!-- Row 1 of header - holds environments -->
+
+        <tr>
+          <th class="column-header">app</th>
+          <acre:block for="env in util.ENV">
+	    <th class="column-header" acre:attrs=" env['service_domain'] == acre.request.server_name ? {'colspan' :3 } : {'colspan' : 2, 'width' : '30%' }">${env['name']}
+	      
+	      <!-- We are in this environment right now -->
+	      <acre:block if="env['service_domain'] == acre.request.server_name">
+	        all apps: 
+	        <a href="#" id="test-all">test</a> | <a href="#" id="release-all">release</a>
+	      </acre:block>
+	      <acre:block else="">
+	        (<a href="${env['service_url'] + admin_path}">switch to this environment</a>)
+	      </acre:block>
+	    </th>
+          </acre:block>
+        </tr>
+
+        <!-- Row 2 of header - holds latest/release headings -->
+
+        <tr>
+          <th></th>
+          <acre:block for="env in util.ENV">
+	    <th class="column-header">latest</th>
+	    <th class="column-header">release</th>
+	    <acre:block if="env['service_domain'] == acre.request.server_name">
+	      <th class="column-header">actions</th>
+	    </acre:block>
+          </acre:block>
+        </tr>
+        
+      </thead>
+      
+      <!-- BODY -->
+
+      <tbody>
+        <acre:block for="app in c.apps.result">
+          
+	  <acre:script>
+	    var app_path =  lib_ae.parse_path(app.id).path;
+	    var summary_url = app_summary_url + "?id=" + app_path.replace('\/\/', '%2f%2f');
+	    //var details_url = app_details_url + "?id=" + app_path.replace('\/\/', '%2f%2f');
+	  </acre:script>
+
+	  <tr class="summary" id="summary-${util.html_id(app_path)}" app_id="${util.html_id(app_path)}" app_url="${summary_url}"><td colspan="2">fetching details...</td></tr>
+          
+        </acre:block>  
+      </tbody>
+    </table>
+  </div>
 </acre:block>
 
 <acre:block def="footer_script()">

@@ -497,7 +497,6 @@ class App:
     '''
     get app info using  graph/appeditor/get_app service
     '''
-    pdb.set_trace()
     try:
       graph_app = self.c.freebase.get_app(self.path())
     except:

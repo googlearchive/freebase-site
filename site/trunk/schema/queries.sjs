@@ -757,3 +757,41 @@ function delete_instance(id, type) {
       return env.result;
     });
 };
+
+/**
+ * Ensure the namespace specifed by id exists. If not, create within the namespace, implicitly specified by id.
+ * For example if id is /foo/bar/baz, the new namespace would be created under /foo/bar.
+ */
+function ensure_namespace(id) {
+  var q = {
+    id: id,
+    type: "/type/namespace"
+  };
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result;
+    })
+    .then(function(namespace) {
+      if (namespace) {
+        return namespace.id;
+      }
+      else {
+        var parts = id.split("/");
+        var key = parts.pop();
+        namespace = parts.join("/");
+        var q = {
+          id: null,
+          type: "/type/namespace",
+          key: {
+            namespace: namespace,
+            value: key
+          },
+          create: "unless_exists"
+        };
+        return freebase.mqlwrite(q, {use_permission_of: namespace})
+          .then(function(env) {
+            return env.result.id;
+          });
+      }
+    });
+};

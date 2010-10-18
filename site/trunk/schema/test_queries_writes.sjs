@@ -108,5 +108,50 @@ test("delete_instance", function() {
   ok(result.type == null, result.type);
 });
 
+test("ensure_namespace", function() {
+  var result;
+  q.ensure_namespace(user.id)
+    .then(function(namespace_id) {
+      result = namespace_id;
+    });
+  acre.async.wait_on_results();
+  equal(result, user.id);
+
+  result = null;
+  var key = ("test_ensure_namespace_" + ht.random()).toLowerCase();
+  var ns = user.id + "/" + key;
+  try {
+    q.ensure_namespace(ns)
+      .then(function(namespace_id) {
+        result = namespace_id;
+      });
+    acre.async.wait_on_results();
+    equal(result, ns);
+    // ensure same permission as the parent namespace
+    var permission1 = acre.freebase.mqlread({id:user.id, permission:null}).result.permission;
+    var permission2 = acre.freebase.mqlread({id:result, permission:null}).result.permission;
+    equal(permission2, permission1);
+  }
+  finally {
+    if (result) {
+      var mid = acre.freebase.mqlread({id:result, mid:null}).result.mid;
+      result = acre.freebase.mqlwrite({
+        id: mid,
+        type: {
+          id: "/type/namespace",
+          connect: "delete"
+        },
+        key: {
+          namespace: user.id,
+          value: key,
+          connect: "delete"
+        }
+      }).result;
+      console.log("deleted", result);
+    }
+  }
+
+});
+
 acre.test.report();
 

@@ -624,7 +624,7 @@ FOOTER
 
 #nav-footer {
     margin: 0 0 0 15px;
-    padding-top: 1.4em;
+    padding: 15px 0 0 0;
 }
 
 .nav-footer-item {
@@ -655,32 +655,6 @@ FOOTER
 #sourcelink {
     font-size: .9em;
 }
-
-#footer-categories {
-    clear: both;
-    border-top: 1px dotted #c4c4c4;
-    margin: 1em 0;
-    padding: 1em 0 0 30px;
-    color: #333;
-}
-
-#categories-header,
-#footer-categories-list {
-    float: left;
-}
-
-#footer-categories-list {
-    margin-bottom: 2em;
-}
-
-.category-list-item {
-    display: inline;
-    border-right: 1px solid #a9a9a9;
-    padding: 0 0.75em;
-    font-size: 1em;
-}
-
-.category-list-item-last { border: 0; }
 
 /*
 --------------------------------------
@@ -732,30 +706,34 @@ of all templates.
 Freebase developer tools (devbar)
 ----------------------------------
 */
+
+
 #devbar {
-    background: #e5e6e7;
-    .linear_gradient(#e5e6e7, #d0d0d0);
-    -webkit-box-shadow: 0 -2px 4px #ccc;
-    padding: 10px 30px;
+    clear: both;
+    border-top: 1px dotted #c4c4c4;
+    margin: 1em 0;
+    padding: 1em 0 0 30px;
+    color: #333;
 }
 
-#devbar h3 a {
-  display: block;
-  height: 0;
-  overflow: hidden;
+#devbar-title {
+  float: left;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+#devba-title a  {
+  color: #333;
 }
 
 #devbar li {
   float: left;
-  font-size: 1.2em;
+  font-size: 1.1em;
   list-style: none;
-  margin-right: 5px;
-  padding-right: 5px;
+  padding: 0 10px;
   border-right: 1px solid #aaa;
 }
-
-#devbar a {
-  color: #666;
-  font-weight: bold;
-  text-shadow: 0 1px 2px #fff;
+ 
+#devbar li.last  {
+  border: 0;
 }

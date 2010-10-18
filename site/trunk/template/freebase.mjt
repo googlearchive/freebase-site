@@ -162,31 +162,19 @@
            title="Visit our blog to keep up with the latest news from Freebase">Freebase Blog</a>
       </li>
     </ul>
-    <div id="footer-categories" class="clear">
-      <strong id="categories-header">Freebase contains information on:</strong>
-      <ul id="footer-categories-list" class="clear">  
-        <li class="category-list-item"><a href="${h.freebase_url('/view/category/arts-entertainment')}" title="Explore Arts &amp; Entertainment">Arts &amp; Entertainment</a></li>
-        <li class="category-list-item"><a href="${h.freebase_url('/view/category/products-services')}" title="Explore Products &amp; Services">Products &amp; Services</a></li>
-        <li class="category-list-item"><a href="${h.freebase_url('/view/category/science-technology')}" title="Explore Science &amp; Technology">Science &amp; Technology</a></li>
-        <li class="category-list-item"><a href="${h.freebase_url('/view/category/society')}" title="Explore Society">Society</a></li>
-        <li class="category-list-item"><a href="${h.freebase_url('/view/category/special-interests')}" title="Explore Special Interests">Special Interests</a></li>
-        <li class="category-list-item"><a href="${h.freebase_url('/view/category/sports')}" title="Explore Sports">Sports</a></li>
-        <li class="category-list-item"><a href="${h.freebase_url('/view/category/time-space')}" title="Explore Time &amp; Space">Time &amp; Space</a></li>
-      </ul>
+    <div id="devbar" class="clear">
+      <h3 id="devbar-title"><a name="devbar">Developer Tools:</a></h3>
+      <ul class="clear">
+        <acre:block if="exports.c && exports.c.id">
+        <li><a title="${_('Inspect this topic')}" href="${h.url_for('triples', null, null, exports.c.id)}">${_('Inspect this topic')}</a></li>
+        </acre:block>      
+        <li><a title="${_('Query editor')}" href="${h.url_for('queryeditor')}">${_('Query editor')}</a></li>      
+        <li id="devbar-txn"><a title="${_('View transaction log')}" rel="nofollow" href="http://stats.metaweb.com/transaction">${_('View transaction log')}</a></li>
+        <li id="devbar-touch" class="last"><a title="${_('Refresh cache')}" rel="nofollow" href="#">${_('Refresh cache')}<a/></li>
+      </ul>    
     </div>
   </div>
 
-  <div id="devbar" class="clear">
-    <h3><a name="devbar">Dev Tools</a></h3>
-    <ul class="clear">
-      <acre:block if="exports.c && exports.c.id">
-        <li><a title="${_('Inspect this topic')}" href="${h.url_for('triples', null, null, exports.c.id)}">${_('Inspect this topic')}</a></li>
-      </acre:block>      
-      <li><a title="${_('Query editor')}" href="${h.url_for('queryeditor')}">${_('Query editor')}</a></li>      
-      <li id="devbar-txn"><a title="${_('View transaction log')}" rel="nofollow" href="http://stats.metaweb.com/transaction">${_('View transaction log')}</a></li>
-      <li id="devbar-touch"><a title="${_('Refresh cache')}" rel="nofollow" href="#">${_('Refresh cache')}<a/></li>
-   </ul>    
-  </div>
 </acre:block>
 
 

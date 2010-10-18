@@ -21,7 +21,7 @@ limitations under the License.
 __author__ = 'masouras@google.com (Michael Masouras)'
 
 
-import sys, subprocess, shutil, os, hashlib, urllib, urllib2, tempfile, re, pwd, pdb, time, smtplib, socket
+import sys, subprocess, shutil, os, hashlib, urllib, urllib2, tempfile, re, pwd, pdb, time, smtplib, socket, getpass
 from email.mime.text import MIMEText
 from optparse import OptionParser
 from tempfile import mkdtemp, mkstemp
@@ -37,7 +37,7 @@ from freebase.api.mqlkey import quotekey, unquotekey
 
 ## EMAIL SETTINGS ##
 
-USER_EMAIL_ADDRESS = "%s@google.com" % os.getlogin()
+USER_EMAIL_ADDRESS = "%s@google.com" % getpass.getuser()
 DESTINATION_EMAIL_ADDRESS = "freebase-site@google.com"
 
 ## GLOBAL CONFIGURATION ##
@@ -83,9 +83,9 @@ JAVA = os.environ.get("JAVA_EXE", "java")
 COMPILER = os.path.join(os.path.abspath(os.path.dirname(os.path.join(os.getcwd(), __file__))), "compiler.jar")
 JAVA_OPTS = ["-jar", COMPILER, "--warning_level", "QUIET"]
 
-#PUBLIC_SVN_URL_ROOT = 'https://freebase-site.googlecode.com/svn/site'
+PUBLIC_SVN_URL_ROOT = 'https://freebase-site.googlecode.com/svn/site'
 PRIVATE_SVN_URL_ROOT = 'https://svn.metaweb.com/svn/freebase_site'
-PUBLIC_SVN_URL_ROOT = PRIVATE_SVN_URL_ROOT
+#PUBLIC_SVN_URL_ROOT = PRIVATE_SVN_URL_ROOT
 STATIC_URL_ROOT =   'http://freebaselibs.com/static/freebase_site'
 
 ROOT_NAMESPACE = '/freebase/site'
@@ -407,7 +407,7 @@ class App:
     return (True, contents)
 
 
-  def write_file(self, filename, contents, commit=False, msg=None):
+  def write_file(self, filename, contents):
 
     file_exists, _ = self.read_file(filename)
     filename = "%s/%s" % (self.svn_path(), filename)
@@ -473,7 +473,7 @@ class App:
 
     msg = 'Creating branch version {version} of {app}'.format(version=target_app.version, app=target_app.app_key)
     self.c.log(msg, color=self.c.BLUE)
-    cmd = ['svn', 'copy', self.svn_url(), target_app.svn_url(), '--parents', '-m', '"appdeploy: %s"' % msg]
+    cmd = ['svn', 'copy', self.svn_url(), target_app.svn_url(), '--parents', '-m', '"appdeploy: %s"' % msg, '--username', self.c.googlecode_username, '--password', self.c.googlecode_password]
     (r, output) = self.c.run_cmd(cmd)
 
     if not r:
@@ -489,7 +489,7 @@ class App:
       msg = 'committing app %s version %s' % (self.app_key, self.version)
 
     self.c.log('Committing %s to SVN' % self.name())
-    cmd = ['svn', 'commit', '-m', msg, path]
+    cmd = ['svn', 'commit', '-m', msg, path, '--username', self.c.googlecode_username, '--password', self.c.googlecode_password]
     return self.c.run_cmd(cmd, name='commit app', exit=False)
 
 
@@ -497,6 +497,7 @@ class App:
     '''
     get app info using  graph/appeditor/get_app service
     '''
+    pdb.set_trace()
     try:
       graph_app = self.c.freebase.get_app(self.path())
     except:
@@ -560,7 +561,7 @@ class App:
     if not self.local_dir:
       self.local_dir = mkdtemp()
 
-    cmd = ['svn', 'checkout', self.svn_url(), self.local_dir]
+    cmd = ['svn', 'checkout', self.svn_url(), self.local_dir, '--username', self.c.googlecode_username, '--password', self.c.googlecode_password]
     (r, output) = self.c.run_cmd(cmd, exit=False)
 
     if not r:
@@ -702,63 +703,106 @@ class Context():
 
     return contents
 
-  def remember_username(self, username):
+  def remember_data(self, data, site, key):
+
+     filename = os.path.join(os.environ['HOME'], '.%s_appdeploy_%s' % (site, key))
 
      try:
-         fd = open(os.path.join(os.environ['HOME'], '.acrepush_username'), "w")
-         fd.write(username)
+         fd = open(filename, "w")
+         fd.write(data)
          fd.close()
      except:
          #silently fail here - this is just a convenience function
          return False
 
 
-  def retrieve_username(self):
+  def retrieve_data(self, site, key):
 
-     username = ''
+     data = ''
+     filename = os.path.join(os.environ['HOME'], '.%s_appdeploy_%s' % (site, key))
 
      try:
-         fd = open(os.path.join(os.environ['HOME'], '.acrepush_username'), "r")
-         username = fd.readline()
+         fd = open(filename, "r")
+         data = fd.readline()
          fd.close()
      except:
          #silently fail here - this is just a convenience function
          pass
 
-     return username
+     return data
 
 
   def freebase_login(self):
 
-      if self.freebase_logged_in:
-          return True
-
-      try:
-          if not self.options.user:
-            username = self.retrieve_username()
-            user = raw_input("Username (%s): " % username)
-
-            if not user and username:
-              user = username
-            elif user:
-              self.remember_username(user)
-          else:
-            user = self.options.user
-
-          import getpass
-          pw = getpass.getpass()
-      except KeyboardInterrupt:
-          print "\nAborted."
-          return False
-
-      try:
-          self.freebase.login(user, pw)
-      except:
-          self.log('Could not log in with these credentials', 'error')
-          return False
-
-      self.freebase_logged_in = True
+    if self.freebase_logged_in:
       return True
+
+    try:
+      if not self.options.user:
+        username = self.retrieve_data(site='freebase', key='username')
+        user = raw_input("Freebase Username (%s): " % username)
+
+        if not user and username:
+          user = username
+        elif user:
+          self.remember_data(user, site='freebase', key='username')
+      else:
+        user = self.options.user
+
+      pw = getpass.getpass()
+    except KeyboardInterrupt:
+      return self.error('Could not log in to freebase with these credentials.')
+
+    try:
+        self.freebase.login(user, pw)
+    except:
+        return self.error('Could not log in to freebase with these credentials.')
+
+    self.freebase_logged_in = True
+    return True
+
+
+  def googlecode_login(self):
+
+    username = None
+    password = None
+
+    try:
+      #USERNAME
+      stored_username = self.retrieve_data(site='googlecode', key='username')
+      entered_username = raw_input("GoogleCode Username (%s): " % stored_username)
+
+      if not entered_username and stored_username:
+        username = stored_username
+      elif entered_username:
+        self.remember_data(entered_username, site='googlecode', key='username')
+        username = entered_username
+      else:
+        return self.error("You must provide valid credentials for Google Code SVN.")
+
+      #PASSWORD
+      stored_password = self.retrieve_data(site='googlecode', key='password')
+      if not stored_password:
+        entered_password = getpass.getpass()
+
+        if not entered_password:
+          return self.error("You must provide valid credentials for Google Code SVN.")
+
+        password = entered_password
+        self.remember_data(entered_password, site='googlecode', key='password')
+      else:
+        password = stored_password
+
+    except KeyboardInterrupt:
+      return self.error("You must provide valid credentials for Google Code SVN.")
+
+
+    self.googlecode_username = username
+    self.googlecode_password = password
+
+    return True
+
+
 
   def hash_for_file(self,f, block_size=2**20):
     md5 = hashlib.md5()
@@ -1548,6 +1592,10 @@ def main():
     #all options and args are good, let's do some clean-up / arg expansion
 
     context = Context(options)
+
+    success = context.googlecode_login()
+    if not success:
+      exit(-1)
 
     for action in args:
         for valid_action in valid_actions:

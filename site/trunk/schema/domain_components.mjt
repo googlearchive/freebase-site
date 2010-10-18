@@ -19,7 +19,7 @@
         <li class="row-menu-item edit">
           <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.delete_type, ['${type.id}'], this);"><span class="delete-icon">${_('Delete type')}</span></a>
         </li>
-        <li class="row-menu-item"><a href="${h.url_for('schema', null, null, type.id)}">${_('View type details')}</a></li>
+        <li class="row-menu-item"><a href="${h.url_for('triples', null, null, type.id)}">${_('Inspect Type')}</a></li>
         <li class="row-menu-item">
           <a href="${h.freebase_url('/view'+type.id)}">${h.sprintf(_('Browse %s instances'), i18n.format_number(type.instance_count))}</a>
         </li>

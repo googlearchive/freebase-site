@@ -21,7 +21,7 @@
         <li class="row-menu-item edit">
           <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.delete_property, ['${prop.id}'], this);"><span class="delete-icon">${_('Delete property')}</span></a>
         </li>
-        <li class="row-menu-item"><a href="${h.url_for('schema', null, null, prop.id)}">${_('View property details')}</a></li>
+        <li class="row-menu-item"><a href="${h.url_for('triples', null, null, prop.id)}">${_('Inspect Property')}</a></li>
         <li class="row-menu-item" acre:if="prop.expected_type && prop.expected_type.id.indexOf('/type') === -1">
           <a href="${h.freebase_url('/view'+prop.expected_type.id)}">${_('Browse instances')}</a>
         </li>

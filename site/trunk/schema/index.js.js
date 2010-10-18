@@ -9,10 +9,11 @@
 
     // Setup schema search tabset
     var $schema_explorer_search_tabset = $("#schema-search > .section-tabset").tabs("#schema-search > .search-box", {
-      initialIndex: 1
+      initialIndex: 1,
+      api: true
     });
-
-
+    
+    console.log($schema_explorer_search_tabset.getCurrentTab().parent("li:first"));
     /*
         MQL_FILTERS are config parameters passed to respective
         Freebase Suggest instances for Domain, Type, and Property

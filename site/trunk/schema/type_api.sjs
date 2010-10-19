@@ -133,6 +133,18 @@ var api = {
     }
     return promise
       .then(function(args) {
+        if (args.expected_type === "/type/enumeration" && args.enumeration) {
+          return queries.ensure_namespace(args.enumeration)
+            .then(function(namespace_id) {
+              args.enumeration = namespace_id;
+              return args;
+            });
+        }
+        else {
+          return args;
+        }
+      })
+      .then(function(args) {
         var create_property_options = h.extend({}, args);
         return create_property.create_property(create_property_options)
           .then(function(created) {
@@ -204,6 +216,18 @@ var api = {
       promise = deferred.resolved(args);
     }
     return promise
+      .then(function(args) {
+        if (args.expected_type === "/type/enumeration" && args.enumeration) {
+          return queries.ensure_namespace(args.enumeration)
+            .then(function(namespace_id) {
+              args.enumeration = namespace_id;
+              return args;
+            });
+        }
+        else {
+          return args;
+        }
+      })
       .then(function(args) {
         var update_prop_options = h.extend({}, args);
         if (!args.description) {

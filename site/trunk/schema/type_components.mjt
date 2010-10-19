@@ -52,6 +52,9 @@
         <acre:block if="prop.expected_type.enumeration">
           <span class="property-meta ect-role"><abbr title="${_('This is an Enumerated Type')}">${_('enumerated')}</abbr></span>
         </acre:block>      
+        <acre:block if="prop.enumeration">
+          <span class="property-meta ect-role"><abbr title="${_('Namespace')}">${prop.enumeration.id}</abbr></span>
+        </acre:block>  
       </acre:block>
       <span acre:if="prop.unit" class="measurement-unit">${i18n.display_name(prop.unit)}</span>
     </td>

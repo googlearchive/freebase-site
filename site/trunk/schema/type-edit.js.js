@@ -327,6 +327,8 @@
       var expected_type = $("input[name=expected_type]", form.row);
       var expected_type_new = $("input[name=expected_type_new]", form.row);
       var unit = $("input[name=unit]", form.row);
+      // this is /type/property/enumeration (namespace)
+      var enumeration = $("input[name=enumeration]", form.row);
       var description = $("textarea[name=description]", form.row);
       var disambiguator = $("input[name=disambiguator]", form.row);
       var unique = $("input[name=unique]", form.row);
@@ -354,7 +356,8 @@
         // expected_type
         expected_type_input.suggest_expected_type({
           service_url: fb.acre.freebase.service_url,
-          suggest_new: "Create new type"
+          suggest_new: "Create new type",
+          user: fb.user.id
         })
         .bind("fb-select", function(e, data) {
           if (data.unit) {
@@ -362,6 +365,12 @@
             expected_type.val(data.id);
             expected_type_new.val("");
             unit.val(data.unit.id);
+          }
+          else if (data.enumeration) { // /type/property/enumeration (namespace)
+            expected_type_input.val(data.id + " (" + data.enumeration + ")");
+            expected_type.val(data.id);
+            expected_type_new.val("");
+            enumeration.val(data.enumeration);
           }
           else {
             expected_type_input.val(data.id);
@@ -415,6 +424,8 @@
         expected_type: $(":input[name=expected_type]", form.row).val(),
         expected_type_new: $(":input[name=expected_type_new]", form.row).val(),
         unit: $(":input[name=unit]", form.row).val(),
+        // this is /type/prperty/enumeration (namespace)
+        enumeration: $("input[name=enumeration]", form.row).val(),
         description: $.trim($("textarea[name=description]:visible", form.row).val()),
         disambiguator: $(":input[name=disambiguator]", form.row).is(":checked") ? 1 : 0,
         unique: $(":input[name=unique]", form.row).is(":checked") ? 1 : 0,

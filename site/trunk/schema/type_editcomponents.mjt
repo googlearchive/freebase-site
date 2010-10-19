@@ -47,6 +47,7 @@
               <input name="expected_type" type="hidden"/>
               <input name="expected_type_new" type="hidden"/>
               <input name="unit" type="hidden"/>
+              <input name="enumeration" type="hidden"/>
             </label>
           </div>
           <div class="form-field fb-property-description">
@@ -142,6 +143,11 @@
                   ect_input.disabled = 'disabled';
                 }
               }
+              var enumeration = {};
+              if (prop.enumeration) {
+                enumeration.value = prop.enumeration.id;
+                ect_input.value = ect_input.value + " (" + prop.enumeration.id + ")";
+              }
            </acre:script>
             <label>
               <span class="form-label">${_('Expected Type')}</span>
@@ -149,6 +155,7 @@
               <input name="expected_type" type="hidden" acre:attrs="ect"/>
               <input name="expected_type_new" type="hidden"/>
               <input name="unit" type="hidden" acre:attrs="unit"/>
+              <input name="enumeration" type="hidden" acre:attrs="enumeration"/>
            </label>
 
             <acre:block if="prop.master_property">

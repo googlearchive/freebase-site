@@ -33,6 +33,10 @@
         // call super._init()
         base._init.call(self);
 
+        this.input.bind("remove", function() {
+          self._destroy();
+        });
+
         this.ect_pane = $('<div class="ect-pane fbs-reset">');
         this.ect_menu = $('<div class="ect-menu-dialog"><span class="ect-menu-title">or choose from the data types below</span></div>');
         this.ect_list = $('<ul class="ect-menu clear">');
@@ -40,6 +44,55 @@
           self.ect_list.append(self["create_ect_" + type].call(self));
         });
 
+        this.init_unit_dialog();  // this.ect_unit defined in init_unit_dialog
+
+        this.ect_pane.append(this.ect_menu);
+        this.ect_pane.append(this.ect_unit);
+        this.ect_menu.append(this.ect_list);
+
+        this.init_enumeration_dialog(); // this.ect_enumeration defined in init_enumeration_dialog
+
+        this.ect_pane
+          .bind("ect", function(e, data) {
+            // hide all menus
+            $(".trigger", this).each(function() {
+              var tooltip = $(this).data("tooltip");
+              if (tooltip) {
+                tooltip.hide();
+              }
+            });
+            if (data.id === "/type/float" && data.name === "Measurement") {
+              self.ect_menu.hide();
+              self.ect_enumeration.hide();
+              self.ect_unit.show();
+              self.status.hide();
+            }
+            else if (data.id === "/type/enumeration") {
+              self.ect_menu.hide();
+              self.ect_unit.hide();
+              self.ect_enumeration.show();
+              self.status.hide();
+            }
+            else {
+              self.input.val(data.name)
+                .data("data.suggest", data)
+                .trigger("fb-select", data);
+
+              self.hide_all();
+            }
+          })
+          .bind("mouseup", function(e) {
+            e.stopPropagation();
+          });
+
+        this.pane.append(this.ect_pane);
+
+        $.suggest.suggest_expected_type.load_dimensions();
+      },
+
+      init_unit_dialog: function() {
+        var self = this;
+        // initialize unit/measurment dialog
         var html =
           '<div class="ect-unit-dialog">' +
             '<h2 class="ect-unit-dialog-title">Select measurement type</h2>' +
@@ -103,46 +156,134 @@
           self.hide_all();
           e.stopPropagation();
         });
+      },
 
-        this.ect_pane.append(this.ect_menu);
-        this.ect_pane.append(this.ect_unit);
-        this.ect_menu.append(this.ect_list);
+      init_enumeration_dialog: function() {
+        if (!this.options.user) {
+          return;
+        }
+        var self = this;
+        // initialize /type/enumeration dialog
+        var html =
+          '<div class="ect-enumeration-dialog">' +
+            '<h2 class="ect-enumeration-dialog-title">Create Enumerated Namespace</h2>' +
+            '<div class="form-group">' +
+              '<div class="ect-enumeration-field">' +
+                '<label for="namespace">Create in...</label>' +
+                '<select name="namespace"></select>' +
+              '</div>' +
+              '<div class="ect-enumeration-field disabled">' +
+                '<label for="namespace2">Key <span style="display:none;" class="required">optional</span></label>' +
+                '<input type="text" name="namespace2" disabled="disabled"/>' +
+              '</div>' +
+              '<div class="ect-enumeration-submit">' +
+                '<button class="button button-primary button-submit">OK</button>' +
+                '<button class="button button-cancel">Cancel</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        this.ect_enumeration = $(html).hide();
+        this.ect_namespace = $('select:first', this.ect_enumeration);
+        this.ect_namespace2 = $(":text:first", this.ect_enumeration);
+        this.ect_namespace_required = $(".required", this.ect_enumeration);
 
-        this.ect_pane
-          .bind("ect", function(e, data) {
-            // hide all menus
-            $(".trigger", this).each(function() {
-              var tooltip = $(this).data("tooltip");
-              if (tooltip) {
-                tooltip.hide();
-              }
-            });
-            if (data.id === "/type/float" && data.name === "Measurement") {
-              self.ect_menu.hide();
-              self.ect_unit.show();
-              self.status.hide();
+        this.ect_namespace.change(function(e) {
+          fb.schema.edit.clear_form_message(self.ect_enumeration);
+          var data = $("[selected]", this).metadata();
+          if (data && data.id && data.type) {
+            self.ect_namespace2.removeAttr("disabled");
+            if (data.type === "/type/domain") {
+              // required namespace2
+              self.ect_namespace_required.text("required").show();
             }
             else {
-              self.input.val(data.name)
-                .data("data.suggest", data)
-                .trigger("fb-select", data);
-
-              self.hide_all();
+              // optional namespace2
+              self.ect_namespace2.parents(".ect-enumeration-field").removeClass("required");
+              self.ect_namespace_required.text("optional").show();
             }
-          })
-          .bind("mouseup", function(e) {
-            e.stopPropagation();
+          }
+          else {
+            self.ect_namespace_required.hide();
+            self.ect_namespace2.attr("disabled", "disabled");
+          }
+        });
+        $(".button-cancel", this.ect_enumeration).click(function(e) {
+          self.ect_menu.show();
+          self.ect_enumeration.hide();
+          self.status.show();
+          self.input.focus().removeData("dont_hide");
+          e.stopPropagation();
+        });
+        $(".button-submit", this.ect_enumeration).click(function(e) {
+          fb.schema.edit.clear_form_message(self.ect_enumeration);
+          var data = {
+            name: "Enumeration",
+            id: "/type/enumeration"
+          };
+          var selected = $("[selected]", self.ect_namespace);
+          var namespace = selected.metadata();
+          if (namespace.id) {
+            data.enumeration = namespace.id;
+          }
+          else {
+            fb.schema.edit.form_error(self.ect_enumeration, "Please select a namespace.");
+            return;
+          }
+          if (namespace.type === "/type/domain" || self.ect_namespace2.val() !== "") {
+            try {
+              var key = fb.schema.edit.check_key(self.ect_namespace2.val(), "/type/domain");
+              self.ect_namespace2.val(key);
+              data.enumeration = data.enumeration + "/" + key;
+            }
+            catch(ex) {
+              fb.schema.edit.form_error(self.ect_enumeration, ex);
+              return;
+            }
+          }
+          self.input.val(data.name)
+            .data("data.suggest", data)
+            .trigger("fb-select", data);
+          self.input.focus().removeData("dont_hide");
+          self.ect_menu.show();
+          self.ect_enumeration.hide();
+          self.hide_all();
+          e.stopPropagation();
+        });
+
+        this.ect_pane.append(this.ect_enumeration);
+
+        this.ect_enumeration.bind("namespaces.suggest_expected_type", function(e, user, data) {
+          self.ect_enumeration.unbind("namespaces.suggest_expected_type");
+          self.ect_list.append(self.create_ect_enumeration());
+          var buf = ["<option>Select...</option>"];
+          $.each(data, function(i,ns) {
+            var json = {id:ns.id};
+            $.each(ns.type, function(i, type) {
+              if (type === "/type/namespace") {
+                json.type = "/type/namespace";
+                json.unique = ns["/type/namespace/unique"];
+                return false;
+              }
+              else if (type === "/type/domain") {
+                json.type = "/type/domain";
+                return false;
+              }
+            });
+            buf.push('<option value="' + ns.id + '" class=' + JSON.stringify(json) + '>' + ns.id + '</option>');
           });
+          self.ect_namespace.html(buf.join(""));
+        });
+        $.suggest.suggest_expected_type.load_namespaces(this.options.user);
+      },
 
-        this.pane.append(this.ect_pane);
-
-        $.suggest.suggest_expected_type.load_dimensions();
+      namespace_option_html: function(data) {
+        return ;
       },
 
       status_start: function(response_data, start, first) {//console.log("status_start", this.ect_unit.is(":visible"));
         base.status_start.apply(this);
         this.ect_pane.show();
-        if (this.ect_unit.is(":visible")) {
+        if (this.ect_unit.is(":visible") || (this.ect_enumeration && this.ect_enumeration.is(":visible"))) {
           this.status.hide();
         }
       },
@@ -235,6 +376,16 @@
         return li;
       },
 
+      create_ect_enumeration: function() {
+        var li = this.create_ect_item("Namespace");
+        $("> a", li)
+          .data("ect", {name:"Enumeration", id:"/type/enumeration"})
+          .click(function() {
+            $(this).trigger("ect", $(this).data("ect"));
+          });
+        return li;
+      },
+
       create_ect_item: function(name, cname) {
         if (!cname) {
           cname = name.toLowerCase();
@@ -283,6 +434,7 @@
     $.extend(sect, {
         defaults:  $.extend(true, {}, $.suggest.suggest.defaults, {
           category: "expected_type",
+          user: null,
           tooltip_options: {
             events: {def: "click,mouseout"},
             position: "bottom right",
@@ -341,10 +493,10 @@
             url: "http://api.freebase.com/api/service/mqlread",
             data: {query: JSON.stringify({query: q, as_of_time: as_of_time})},
             dataType: "jsonp",
-            jsonpCallback: "jQuery.suggest.suggest_expected_type.jsonpCallback"
+            jsonpCallback: "jQuery.suggest.suggest_expected_type.load_dimensions_callback"
           });
         },
-        jsonpCallback: function(data) {
+        load_dimensions_callback: function(data) {
           //console.log("ajax.success", data);
           if (data.code === "/api/status/ok") {
             sect.dimensions = data.result.sort(sect.sort_by_name);
@@ -354,6 +506,61 @@
             sect.set_dimensions(sect.dimensions);
           }
         },
+
+        load_namespaces: function(user) {
+          if (!sect.namespaces) {
+            sect.namespaces = {};
+          }
+          if (!sect.namespaces[user]) {
+            sect.namespaces[user] = {};
+          }
+          if (sect.namespaces[user].data) {
+            sect.set_namespaces(user, sect.namespaces[user].data);
+            return;
+          }
+          if (sect.namespaces[user].lock) {
+            return;
+          }
+          // lock
+          sect.namespaces[user].lock = true;
+
+          var q = [{
+            id: null,
+            type: [],
+            "a:type|=": ["/type/namespace", "/type/domain"],
+            "/type/namespace/unique": null,
+            creator: user
+          }];
+
+          $.ajax({
+            url: fb.acre.freebase.service_url + "/api/service/mqlread",
+            data: {query: JSON.stringify({query:q})},
+            dataType: "jsonp",
+            jsonpCallback: "jQuery.suggest.suggest_expected_type.load_namespaces_callback"
+          });
+        },
+
+        load_namespaces_callback: function(data) {
+          //console.log("ajax.success", data);
+          if (data.code === "/api/status/ok") {
+            var result = data.result || [];
+            if (result.length) {
+              result.sort(function(a,b) {
+                return b.id < a.id;
+              });
+              var user = result[0].creator;
+              sect.namespaces[user].data = result;
+              sect.set_namespaces(user, result);
+            }
+          }
+        },
+
+        set_namespaces: function(user, data) {
+          setTimeout(function() {
+            $(".ect-enumeration-dialog").trigger("namespaces.suggest_expected_type", [user, data]);
+          }, 0);
+        },
+
         sort_by_name: function(a,b) {
           return b.name < a.name;
         }

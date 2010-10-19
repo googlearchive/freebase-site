@@ -97,8 +97,9 @@ function property(options) {
       unique: null
     },
     delegated: {optional: true, id: null, name: i18n.mql.query.name()},
-    unit: {optional: true, id: null, name: i18n.mql.query.name(), "/freebase/unit_profile/abbreviation": null},
-    "unique": null,
+    unit: {optional: true, id: null, name: i18n.mql.query.name()},
+    enumeration: {optional: true, id: null, name: i18n.mql.query.name()},
+    unique: null,
     "/freebase/property_hints/disambiguator": null,
     "/freebase/property_hints/display_none": null,
     "/freebase/documented_object/tip":  i18n.mql.query.text()

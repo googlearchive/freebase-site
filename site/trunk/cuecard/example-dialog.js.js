@@ -103,7 +103,7 @@ CueCard.ExampleDialog.prototype._constructUI = function() {
             handleTechnique(CueCard.ExampleTechniques[i]);
         }
         
-        $.ui.dialog.defaults.bgiframe = true;
+        
         CueCard.ExampleDialog._dialog.dialog({
             autoOpen: false,
             modal: true,

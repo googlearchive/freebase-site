@@ -32,6 +32,10 @@ function update_property(options) {
       // an array of options to remove/delete (name, key, ect, unit, description, disambiguator, unique, hidden);
       remove: validators.Array(options, "remove", {if_empty:[]})
     };
+    // if expected_type is /type/enumeration, enumeration namespace IS required
+    if (o.expected_type === "/type/enumeration") {
+      o.enumeration = validators.MqlId(options, "enumeration", {required:true});
+    }
   }
   catch(e if e instanceof validators.Invalid) {
     return deferred.rejected(e);
@@ -42,22 +46,55 @@ function update_property(options) {
     remove[k] = true;
   });
 
-  var q = {
-    id: o.id,
-    guid: null,
-    type: "/type/property",
-    key: {namespace:o.type, value:null, optional:true},
-    name: {value:null, lang:o.lang, optional:true},
-    expected_type: null,
-    unit: null,
-    unique: null,
-    "/freebase/documented_object/tip": {value:null, lang:o.lang, optional:true},
-    "/freebase/property_hints/disambiguator": null,
-    "/freebase/property_hints/display_none": null
-  };
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return env.result || {};
+  var q;
+  var promise;
+  if (o.expected_type === "/type/enumeration" && o.enumeration) {
+    /*
+     * If /type/enumeration, uniqueness needs to match with the enumerated namespace
+     */
+    q = {
+      id: o.enumeration,
+      type: "/type/namespace",
+      unique: null
+    };
+    promise = freebase.mqlread(q)
+      .then(function(env) {
+        return env.result;
+      })
+      .then(function(ns) {
+        if (ns) {
+          o.unique = (ns.unique === true);
+          o.unit = null;
+        }
+        else {
+          return deferred.rejected(o.enumeration + " is not a namespace for /type/enumeration");
+        }
+      });
+  }
+  else {
+    promise = deferred.resolved();
+  }
+
+  return promise
+    .then(function() {
+      q = {
+        id: o.id,
+        guid: null,
+        type: "/type/property",
+        key: {namespace:o.type, value:null, optional:true},
+        name: {value:null, lang:o.lang, optional:true},
+        expected_type: null,
+        unit: null,
+        unique: null,
+        enumeration: null,
+        "/freebase/documented_object/tip": {value:null, lang:o.lang, optional:true},
+        "/freebase/property_hints/disambiguator": null,
+        "/freebase/property_hints/display_none": null
+      };
+      return freebase.mqlread(q)
+        .then(function(env) {
+          return env.result || {};
+        });
     })
     .then(function(old) {
       if (remove.key && old.key) {
@@ -124,17 +161,24 @@ function update_property(options) {
       }
 
       if (remove.disambiguator && old["/freebase/property_hints/disambiguator"] != null) {
-        update["/freebase/property_hints/disambiguator"] = {value:update["/freebase/property_hints/disambiguator"], connect:"delete"};
+        update["/freebase/property_hints/disambiguator"] = {value:old["/freebase/property_hints/disambiguator"], connect:"delete"};
       }
       else if (o.disambiguator != null) {
         update["/freebase/property_hints/disambiguator"] = {value:o.disambiguator, connect:"update"};
       }
 
       if (remove.hidden &&  old["/freebase/property_hints/display_none"] != null) {
-        update["/freebase/property_hints/display_none"] = {value:update["/freebase/property_hints/display_none"], connect:"delete"};
+        update["/freebase/property_hints/display_none"] = {value:old["/freebase/property_hints/display_none"], connect:"delete"};
       }
       else if (o.hidden != null) {
         update["/freebase/property_hints/display_none"] = {value:o.hidden, connect:"update"};
+      }
+
+      if (remove.enumeration && old.enumeration != null) {
+        update.enumeration = {id:old.enumeration, connect:"delete"};
+      }
+      else if (o.expected_type === "/type/enumeration" && o.enumeration) {
+        update.enumeration = {id:o.enumeration, connect:"update"};
       }
 
       var d = old.id;

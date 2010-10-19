@@ -143,8 +143,8 @@ test("create_property enumeration in namespace", function() {
       key: sh.generate_property_key(prop_name),
       expected_type: "/type/enumeration",
       enumeration: namespace.id,
-      unit: "/en/meter",
-      unique: true,
+      unit: "/en/meter",   // unit should be ignored
+      unique: true,        // unique should be ignored
       disambiguator: true,
       hidden: true,
       description: prop_name
@@ -172,7 +172,7 @@ test("create_property enumeration in namespace", function() {
     equal(result.name, prop_name);
     equal(result.key.value, sh.generate_property_key(prop_name));
     equal(result.schema, type.id);
-    equal(result.unit, null);
+    ok(!result.unit);
     ok(!result.unique);
     equal(result.expected_type, "/type/enumeration");
     equal(result.enumeration, namespace.id);

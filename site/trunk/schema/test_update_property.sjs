@@ -212,5 +212,91 @@ test("update_property unit, unique, disambiguator, hidden", function() {
   }
 });
 
+test("update_property enumeration", function() {
+  var type = h.create_type(user_domain);
+  var prop = h.create_property(type.id);
+  var namespace =  acre.freebase.mqlwrite({
+    id: null,
+    mid: null,
+    type: "/type/namespace",
+    key: {
+      namespace: type.id,
+      value: h.random().toLowerCase()
+    },
+    create: "unconditional"
+  }).result;
+  try {
+    var updated;
+    update_property({
+      type: type.id,
+      id: prop.id,
+      expected_type: "/type/enumeration",
+      enumeration: namespace.id,
+      unit: "/en/meter",   // unit should be ignored
+      unique: true,        // unique should be ignored
+      disambiguator: true,
+      hidden: true
+    })
+    .then(function(id) {
+      updated = id;
+    });
+    acre.async.wait_on_results();
+    ok(updated, updated);
+
+    var result = acre.freebase.mqlread({
+      id:updated,
+      "/type/property/expected_type": null,
+      "/type/property/enumeration": null,
+      "/type/property/unit": null,
+      "/type/property/unique": null,
+      "/freebase/property_hints/disambiguator": null,
+      "/freebase/property_hints/display_none": null
+    }).result;
+    equal(result["/type/property/expected_type"], "/type/enumeration");
+    equal(result["/type/property/enumeration"], namespace.id);
+    ok(!result["/type/property/unit"]);
+    ok(!result["/type/property/unique"]);
+    ok(result["/freebase/property_hints/disambiguator"]);
+    ok(result["/freebase/property_hints/display_none"]);
+
+  }
+  finally {
+    if (prop) h.delete_property(prop);
+    if (namespace) {
+      acre.freebase.mqlwrite({
+        id: namespace.mid,
+        type: {id:"/type/namespace", connect:"delete"},
+        key: {namespace:namespace.key.namespace, value:namespace.key.value, connect:"delete"}
+      });
+    }
+    if (type) h.delete_type(type);
+  }
+});
+
+test("update_property enumeration in non-namespace", function() {
+  var type = h.create_type(user_domain);
+  var prop = h.create_property(type.id);
+
+  try {
+    var success, rejected;
+    update_property({
+      type: type.id,
+      id: prop.id,
+      expected_type: "/type/enumeration",
+      enumeration: type.id
+    })
+    .then(function(id) {
+      success = id;
+    }, function(error) {
+      rejected = error;
+    });
+    acre.async.wait_on_results();
+    ok(rejected, rejected);
+  }
+  finally {
+    if (prop) h.delete_property(prop);
+    if (type) h.delete_type(type);
+  }
+});
 
 acre.test.report();

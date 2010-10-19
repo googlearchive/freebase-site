@@ -21,7 +21,7 @@ limitations under the License.
 __author__ = 'masouras@google.com (Michael Masouras)'
 
 
-import sys, subprocess, shutil, os, hashlib, urllib, urllib2, tempfile, re, pwd, pdb, time, smtplib, socket, getpass
+import sys, subprocess, shutil, os, hashlib, urllib, urllib2, tempfile, re, pwd, pdb, time, smtplib, socket, getpass, stat
 from email.mime.text import MIMEText
 from optparse import OptionParser
 from tempfile import mkdtemp, mkstemp
@@ -227,6 +227,7 @@ class App:
     delete_files = {}
     #the files we need to push because they have changed since the last push
     push_files = {}
+
 
     try:
       graph_app = app.get_graph_app()
@@ -497,6 +498,7 @@ class App:
     '''
     get app info using  graph/appeditor/get_app service
     '''
+    #pdb.set_trace()
     try:
       graph_app = self.c.freebase.get_app(self.path())
     except:
@@ -713,6 +715,11 @@ class Context():
      except:
          #silently fail here - this is just a convenience function
          return False
+
+     #give the user rw permissions but not to group or other
+     os.chmod(filename, stat.S_IRUSR | stat.S_IWUSR)
+
+     return True
 
 
   def retrieve_data(self, site, key):

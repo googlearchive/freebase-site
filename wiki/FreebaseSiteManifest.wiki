@@ -4,16 +4,32 @@
 
 Acre allows you to version apps and libraries.
 
-The Freebase-Site Manifest System (Manifest) was built to manage an Acre app's external dependencies by explicitly declaring them in a MANIFEST file.
+The Freebase-Site Manifest System (Manifest) was built to manage an Acre app's external dependencies by using a single MANIFEST file.
 
 Manifest provides utilities for referring to these dependencies without the need to change code when dependencies change.
 
-It also supports client-side javascript and stylesheet (css) preprocessing including concatenation and [http://lesscss.org/ less css] support.
+Manifest provides dynamic client-side Javascript and CSS concatenation allowing you to modularize your code across multiple files but retrieve them with a single http request. 
 
+Manifest supports [http://lesscss.org/ less CSS].
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+= Syntax =
+*MANIFEST.sjs*
+{{{
+var mf = {
+  "apps": {
+    "core": "//release.core.site.freebase.dev",
+    "lib": "//2.mylib.foo.bar.dev"
+  },
+  "javascript": {
+    "base.mf.js": [
+      ["lib", "lib.js"],
+      "base.js"
+    ],
+    "foo.mf.js": [
+      "base.mf.js",
+      "foo.js"
+    ]
+  }
+};
+acre.require(mf.apps.core + "/MANIFEST").init(mf, this);
+}}}

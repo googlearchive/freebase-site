@@ -247,7 +247,7 @@ function base_manifest(app_mf, scope) {
               // Otherwise, use external app's mf.css_preprocessor on the contents
               // of the external app's file
               try {
-                buf.push(ext_mf.css_preprocessor(ext_mf.require(ss[1]).body, use_acre_url));
+                buf.push(ext_mf.css_preprocessor(ext_mf.get_source(ss[1]), use_acre_url));
               }
               catch (ex) {
                 scope.acre.write("\n/** " + ex.toString() + " **/\n");
@@ -259,7 +259,7 @@ function base_manifest(app_mf, scope) {
             // If no external app MANIFEST then just include the contents
             // of the external file
             try {
-              buf.push(app_mf.require(ss[0], ss[1]).body);
+              buf.push(app_mf.get_source(ss[0], ss[1]));
             }
             catch (ex) {
               scope.acre.write("\n/** " + ex.toString() + " **/\n");
@@ -395,7 +395,7 @@ function base_manifest(app_mf, scope) {
           }
           // otherwise, just mf.require the contents of the external app's file
           try {
-            scope.acre.write(app_mf.require(script[0], script[1]).body);
+            scope.acre.write(app_mf.get_source(script[0], script[1]));
           }
           catch (ex) {
             scope.acre.write("\n/** " + ex.toString() + " **/\n");
@@ -410,7 +410,7 @@ function base_manifest(app_mf, scope) {
           }
           else {
             try {
-              scope.acre.write(app_mf.require(script[0]).body);
+              scope.acre.write(app_mf.get_source(script[0]));
             }
             catch (ex) {
               scope.acre.write("\n/** " + ex.toString() + " **/\n");
@@ -455,7 +455,20 @@ function base_manifest(app_mf, scope) {
       var path = [app_mf.apps[args.app], args.file].join("/");
       return scope.acre.require(path);
     },
+    
+    get_source: function(app, file) {
+      var args = app_mf.require_args(app, file);
 
+      if (args.local) {
+        return scope.acre.get_source(args.file);
+      }
+      if (!app_mf.apps[args.app]) {
+        throw("An app label for \"" + args.app + "\" must be declared in the MANIFEST.");
+      }
+      var path = [app_mf.apps[args.app], args.file].join("/");
+      return scope.acre.get_source(path);
+    },
+    
     get_metadata: function(app) {
       if (!app) {
         return scope.acre.get_metadata();

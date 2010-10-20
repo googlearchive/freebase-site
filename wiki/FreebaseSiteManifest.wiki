@@ -22,14 +22,42 @@ var mf = {
   },
   "javascript": {
     "base.mf.js": [
-      ["lib", "lib.js"],
+      ["lib", "lib.mf.js"],
       "base.js"
     ],
-    "foo.mf.js": [
+    "mypage.mf.js": [
       "base.mf.js",
-      "foo.js"
+      "mypage.js"
+    ]
+  },
+  "stylesheet": {
+    "base.mf.css": [
+      ["lib", "lib.mf.css"],
+      "base.less"
+    ],
+    "mypage.mf.css": [
+      "base.mf.css",
+      "mypage.css"
     ]
   }
 };
 acre.require(mf.apps.core + "/MANIFEST").init(mf, this);
 }}}
+
+*mypage.mjt*
+{{{
+<acre:script>
+  var mf = acre.require("MANIFEST").mf;
+  var lib_helpers = mf.require("lib", "helpers");
+</acre:script>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="${mf.css_src('mypage.mf.css')}"/>
+    <script src="${mf.js_src('mypage.mf.js')}"></script>
+  </head>
+  <body>
+    ...
+  </body>
+</html>
+}}}
+

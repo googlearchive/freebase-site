@@ -50,6 +50,7 @@ rules.add([
   {prefix:"/core",               app:"core"},
   {prefix:"/jqueryui",           app:"jqueryui"},
   {prefix:"/i18n",               app:"i18n"},
+  {prefix:"/manifest",           app:"manifest"},
   {prefix:"/template",           app:"template"},
   {prefix:"/promise",            app:"promise"},
   {prefix:"/routing",            app:"routing" },
@@ -167,7 +168,7 @@ rules.add([
   {prefix:"/view/userdomains",      url:"/domain/users", redirect:301},
   {prefix:"/newsfeed",              url:"/private/newsfeed", redirect:301}
 ]);
-                 
+
 // Host redirects
 var host_redirects = {
   "freebase.com": "http://www.freebase.com",

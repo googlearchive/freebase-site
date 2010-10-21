@@ -15,6 +15,7 @@ var mf = {
     "i18n"              : "//i18n.site.freebase.dev",
     "jqueryui"          : "//jqueryui.site.freebase.dev",
     "labs"              : "//labs-site.dfhuynh.user.dev",
+    "manifest"          : "//manifest.site.freebase.dev",
     "parallax"          : "//parallax.dfhuynh.user.dev",
     "permission"        : "//permission.site.freebase.dev",
     "policies"          : "//policies.site.freebase.dev",

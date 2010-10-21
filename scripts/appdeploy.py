@@ -91,7 +91,7 @@ STATIC_URL_ROOT =   'http://freebaselibs.com/static/freebase_site'
 ROOT_NAMESPACE = '/freebase/site'
 CONFIG_FILE = 'CONFIG.json.json'
 MANIFEST_FILE = 'MANIFEST.sjs'
-FIRST_LINE_REQUIRE_CONFIG = 'var mf = JSON.parse(acre.require("CONFIG.json").body);'
+FIRST_LINE_REQUIRE_CONFIG = 'var config = JSON.parse(acre.require("CONFIG.json").body);'
 
 class AppFactory:
 
@@ -213,7 +213,7 @@ class App:
 
     #if we can and should inject config file in the manifest file
     if inject_config and manifest_contents and config_contents and manifest_contents.split('\n')[0] == FIRST_LINE_REQUIRE_CONFIG:
-      metadata['files'][manifest_filename]['contents'] = '\n'.join(['var mf=' + config_contents + ';'] + manifest_contents.split('\n')[1:])
+      metadata['files'][manifest_filename]['contents'] = '\n'.join(['var config=' + config_contents + ';'] + manifest_contents.split('\n')[1:])
       metadata['files'][manifest_filename]['SHA256'] = hashlib.sha256(metadata['files'][manifest_filename]['contents']).hexdigest()
     return metadata
 
@@ -1131,10 +1131,10 @@ class ActionStatic():
         "image_base_url": base_url
         })
 
-    init_re = re.compile(r'\.init\s*\(\s*mf\s*\,\s*this.*$')
+    init_re = re.compile(r'\.init\s*\(\s*this\s*\,\s*config.*$')
     tmp = []
     for line in manifest.split('\n'):
-      tmp.append(init_re.sub('.init(mf, this, %s);' % cfg, line))
+      tmp.append(init_re.sub('.init(this, config, %s);' % cfg, line))
 
     app.write_file(MANIFEST_FILE, '\n'.join(tmp))
     app.svn_commit(msg='updated manifest with new static url')

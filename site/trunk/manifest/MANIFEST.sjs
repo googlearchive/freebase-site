@@ -1,20 +1,29 @@
 var base_config = JSON.parse(acre.get_source("CONFIG.json"));
 
 function init(scope, config, options) {
-  var mf = new Manifest(scope, extend({}, config, options));
+  console.log("base init BEFORE");
+  var app_mf = new Manifest(scope, extend({}, config, options));
+  console.log("base init AFTER");
   if (scope.acre.current_script === scope.acre.request.script) {
-    mf.main();
+    app_mf.main();
   }
-  return mf;
+  return app_mf;
 }
+
 
 function Manifest(scope, config) {
   this.init.apply(this, arguments);
 };
 Manifest.prototype = {
   init: function(scope, config) {
+    console.log("Manifest.init", scope, config);
+
     this.scope = scope;
-    this.config = extend({}, base_config, config);
+
+    this.config = extend({}, base_config, config);  // extend with base_config
+    extend(this.config.apps, base_config.apps, this.config.apps); // update config.apps with base_config.
+
+    console.log(this.scope, this.config);
 
     this.apps = this.config.apps || {};
     this.stylesheet = this.config.stylesheet || {};
@@ -63,7 +72,7 @@ Manifest.prototype = {
 
   less: function(data /*required*/, callback /*required*/, errback /*optional*/) {
     if (!this.less_parser) {
-      this.less_parser = new(acre.require("less").less.Parser)({optimization:3});
+      this.less_parser = new(base_mf.require("less").less.Parser)({optimization:3});
     }
     this.less_parser.parse(data, function(e, root) {
       if (e) {
@@ -202,6 +211,22 @@ Manifest.prototype = {
   },
 
   /**
+   * Helper function for compiling .mjt files as javascript files to send to the browser
+   *  callable in jQuery as $(el).mjt(fb.templ.(<app>).<filename>(args))
+   *
+   * TODO: please make this more generic so that it does not depend on specific client-side javascript (dae).
+   */
+  compile_mjt: function(source, pkgid) {
+    var code = [];
+    code.push("if (!fb.tmpl) fb.tmpl = {};\n");
+    code.push("fb.tmpl['" + pkgid + "'] = ");
+    code.push("(new mjt.TemplatePackage()).init_from_js(");
+    code.push(this.scope.acre.template.string_to_js(source, pkgid));
+    code.push(").toplevel();");
+    return code.join("");
+  },
+
+  /**
    * Serve (acre.write) all js declared in mf.javascript[key].
    */
   js: function(key) {
@@ -229,11 +254,16 @@ Manifest.prototype = {
         }
         // otherwise, just mf.require the contents of the external app's file
         try {
-          acre.write(this.get_source(script[0], script[1]));
-        }
-        catch (ex) {
-          acre.write("\n/** " + ex.toString() + " **/\n");
-        }
+            var source = this.get_source(script[0], script[1]);
+            var handler = this.get_metadata(script[0]).files[script[1]].handler;
+            if (handler === 'mjt') {
+              source = this.compile.mjt(source, script.join("."));
+            }
+            this.scope.acre.write(source);
+          }
+          catch (ex) {
+            this.scope.acre.write("\n/** " + ex.toString() + " **/\n");
+          }
       }
       else if (script.length === 1) {
         acre.write("\n/** " + script[0] + " **/\n");
@@ -244,10 +274,15 @@ Manifest.prototype = {
         }
         else {
           try {
-            acre.write(this.get_source(script[0]));
+            var source = this.get_source(script[0]);
+            var handler = this.get_metadata().files[script[0]].handler;
+            if (handler === 'mjt') {
+              source = this.compile_mjt(source, script.join("."));
+            }
+            this.scope.acre.write(source);
           }
           catch (ex) {
-            acre.write("\n/** " + ex.toString() + " **/\n");
+            this.scope.acre.write("\n/** " + ex.toString() + " **/\n");
           }
         }
       }
@@ -332,4 +367,6 @@ function extend() {
   return a;
 };
 
+// the base MANIFEST.mf
 var mf = init(this);
+var base_mf = mf;

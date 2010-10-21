@@ -366,6 +366,20 @@ function base_manifest(app_mf, scope) {
       });
       return buf.join("\n");
     },
+    
+    /**
+     * Helper function for compiling .mjt files as javascript files to send to the browser
+     *  callable in jQuery as $(el).mjt(fb.templ.(<app>).<filename>(args))
+     */
+    compile_mjt: function(source, pkgid) {
+      var code = [];
+      code.push("if (!fb.tmpl) fb.tmpl = {};\n");
+      code.push("fb.tmpl['" + pkgid + "'] = ");
+      code.push("(new mjt.TemplatePackage()).init_from_js(");
+      code.push(acre.template.string_to_js(source, pkgid));
+      code.push(").toplevel();");
+      return code.join("");
+    },
 
     /**
      * Serve (acre.write) all js declared in mf.javascript[key].
@@ -395,7 +409,12 @@ function base_manifest(app_mf, scope) {
           }
           // otherwise, just mf.require the contents of the external app's file
           try {
-            scope.acre.write(app_mf.get_source(script[0], script[1]));
+            var source = app_mf.get_source(script[0], script[1]);
+            var handler = app_mf.get_metadata(script[0]).files[script[1]].handler;
+            if (handler === 'mjt') {
+              source = app_mf.compile.mjt(source, script.join("."));
+            }
+            scope.acre.write(source);
           }
           catch (ex) {
             scope.acre.write("\n/** " + ex.toString() + " **/\n");
@@ -410,7 +429,12 @@ function base_manifest(app_mf, scope) {
           }
           else {
             try {
-              scope.acre.write(app_mf.get_source(script[0]));
+              var source = app_mf.get_source(script[0]);
+              var handler = app_mf.get_metadata().files[script[0]].handler;
+              if (handler === 'mjt') {
+                source = app_mf.compile_mjt(source, script.join("."));
+              }
+              scope.acre.write(source);        
             }
             catch (ex) {
               scope.acre.write("\n/** " + ex.toString() + " **/\n");

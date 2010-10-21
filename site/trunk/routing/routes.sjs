@@ -1,6 +1,4 @@
-console.log("routes BEFORE");
 var mf = acre.require("MANIFEST").mf;
-console.log("routes AFTER");
 var h = mf.require("helpers");
 var app_routes = mf.require('app_routes');
 
@@ -38,7 +36,6 @@ function do_route(app, script, path_info, query_string) {
   ];
 
   path = path.join("");
-  console.log("routing", path);
   acre.route(path);
   return acre.exit();
 };

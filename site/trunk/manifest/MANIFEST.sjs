@@ -1,9 +1,7 @@
 var base_config = JSON.parse(acre.get_source("CONFIG.json"));
 
 function init(scope, config, options) {
-  console.log("base init BEFORE");
   var app_mf = new Manifest(scope, extend({}, config, options));
-  console.log("base init AFTER");
   if (scope.acre.current_script === scope.acre.request.script) {
     app_mf.main();
   }
@@ -16,14 +14,10 @@ function Manifest(scope, config) {
 };
 Manifest.prototype = {
   init: function(scope, config) {
-    console.log("Manifest.init", scope, config);
-
     this.scope = scope;
 
     this.config = extend({}, base_config, config);  // extend with base_config
     extend(this.config.apps, base_config.apps, this.config.apps); // update config.apps with base_config.
-
-    console.log(this.scope, this.config);
 
     this.apps = this.config.apps || {};
     this.stylesheet = this.config.stylesheet || {};
@@ -343,7 +337,6 @@ Manifest.prototype = {
         return this.not_found(this.scope.acre.current_script.app.id + path_info);
       }
     }
-    console.log("main config", this.config);
 
     var config = this.config;
     this.require("service", "lib").GetService(function() {

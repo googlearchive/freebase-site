@@ -4,7 +4,6 @@ var Manifest = base_manifest.Manifest;
 var extend = base_manifest.extend;
 
 function init(scope, config, options) {
-  console.log("core MANIFESt.init", scope, config, options);
   var app_mf = new CoreManifest(scope, extend({}, config, options));
   if (scope.acre.current_script === scope.acre.request.script) {
     app_mf.main();
@@ -17,15 +16,10 @@ function CoreManifest(scope, config) {
 };
 CoreManifest.prototype = extend({}, Manifest.prototype, {
   init: function(scope, config) {
-    console.log("CoreManifest.init", scope, config);
     config = extend({}, core_config, config);  // extend with core_config
     extend(config.apps, core_config.apps, config.apps); // update config.apps with core_config.apps
     Manifest.prototype.init.apply(this, [scope, config]);
     this.libs = this.config.libs || {};
-
-    console.log("config apps", this.config, this.apps);
-
-
   },
 
   get_app_base_url: function() {
@@ -42,7 +36,6 @@ CoreManifest.prototype = extend({}, Manifest.prototype, {
           }
       }
     }
-    console.log("Manifest.prototype.get_app_base_url");
     return Manifest.prototype.get_app_base_url.apply(this);
   },
 
@@ -68,7 +61,6 @@ CoreManifest.prototype = extend({}, Manifest.prototype, {
   }
 });
 
-console.log("core MANIFEST.mf");
 // core MANIFEST.mf
 var mf = init(this);
 

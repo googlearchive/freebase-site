@@ -5,7 +5,6 @@ var exports = {
   "account_url": account_url,
   "freebase_url": freebase_url,
   "wiki_url": wiki_url,
-  "freebase_static_resource_url": freebase_static_resource_url,
   "image_url": image_url,
   "parse_params": parse_params,
   "parse_uri": parse_uri
@@ -75,7 +74,7 @@ function url_for(app, file, params, extra_path) {
     if (!route) {
       throw("No route found in routing app_routes for app:"+app+" script:"+file);
     }
-    
+
     if (route.script && route.script === file) {
       var url = acre.request.app_url + route.prefix + extra_path;
       return acre.form.build_url(url, params);
@@ -83,7 +82,7 @@ function url_for(app, file, params, extra_path) {
       var url = acre.request.app_url + route.prefix + (file ? "/" + file : "") + extra_path;
       return acre.form.build_url(url, params);
     }
-    
+
   } else {
     // Else we are running a standalone acre app, i.e:
     // http://schema.site.freebase.dev.acre.z:8115
@@ -91,7 +90,7 @@ function url_for(app, file, params, extra_path) {
     // http://schema.site.freebase.dev.branch.qa-freebaseapps.com
     // http://schema.site.freebase.dev.sandbox-freebaseapps.com
     // http://schema.site.freebase.dev.freebaseapps.com
-    
+
     // else absolute resource_url for external urls
     // new require path syntax (i.e., //app.site.freebase.dev/file)
     var url = acre.host.protocol + ":" + path + "." + acre.host.name + (acre.host.port !== 80 ? (":" + acre.host.port) : "") + (file ? "/" + file : "") + extra_path;
@@ -161,13 +160,6 @@ function wiki_url(path, params) {
 };
 
 /**
- * url to freebase static resource (http://res.freebase.com/s/xxxx/resource/css/foo.css)
- */
-function freebase_static_resource_url(path) {
-  return mf.freebase.resource.base_url + (path || "");
-};
-
-/**
  * image_thumb takes an image guid and creates a blob url for fetching that image. It also passes
     appropriate dimension/cropping parameters.
     id: guid of image
@@ -232,17 +224,17 @@ function parse_uri(str) {
     },
     parser: /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
   };
-  
+
   var m = o.parser.exec(str);
   var uri = {};
   var i = 14;
-  
+
   while (i--) uri[o.key[i]] = m[i] || "";
-  
+
   uri[o.q.name] = {};
   uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
     if ($1) uri[o.q.name][$1] = $2;
   });
-  
+
   return uri;
 };

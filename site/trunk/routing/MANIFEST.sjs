@@ -1,4 +1,4 @@
-var mf = {
+var config = {
   "apps" : {
     "admin"             : "//admin.site.freebase.dev",
     "appeditor"         : "//appeditor.site.freebase.dev",
@@ -43,19 +43,19 @@ function is_release_pod() {
 };
 
 if (is_release_pod()) {
-  for (var app in mf.apps) {
-    mf.apps[app] = "//release." + mf.apps[app].slice(2);
+  for (var app in config.apps) {
+    config.apps[app] = "//release." + config.apps[app].slice(2);
   }
 }
 
 // map[path] = app label
 var _app_paths = {};
-for (var app in mf.apps) {
-  var path = mf.apps[app];
+for (var app in config.apps) {
+  var path = config.apps[app];
   _app_paths[path] = app;
 }
 function get_app(path) {
   return _app_paths[path];
 };
 
-acre.require(mf.apps.core + "/MANIFEST").init(mf, this);
+var mf = acre.require(config.apps.core + "/MANIFEST").init(this, config);

@@ -1,4 +1,6 @@
+console.log("routes BEFORE");
 var mf = acre.require("MANIFEST").mf;
+console.log("routes AFTER");
 var h = mf.require("helpers");
 var app_routes = mf.require('app_routes');
 
@@ -62,7 +64,7 @@ function path_based_routing(req) {
     path = path_segs[0];
     query_string = path_segs[1];
   }
-  
+
   var route = app_routes.rules.route_for_path(path);
   if (route) {
     if (route.redirect && route.url) {
@@ -76,20 +78,20 @@ function path_based_routing(req) {
       }
       acre.response.set_header("location", redirect_url);
       acre.exit();
-      
+
     } else if (route.app) {
       // Handle canonical app routing
       var app = mf.apps[route.app];
       if (!app) {
  	    throw (route.app + " must be defined in the MANIFEST for routing.");
- 	  } 
+ 	  }
       var script = route.script;
       var path_info = path.replace(route.prefix, '');
-      
+
       if (!script) {
         var [script, path_info, qs] = h.split_path(path_info);
       }
-      
+
       // acre.route and exit
       do_route(app, script, path_info, query_string);
     }

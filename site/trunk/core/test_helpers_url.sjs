@@ -44,12 +44,5 @@ test("freebase_url", function() {
   equal(h.freebase_url(null, {a:1,b:2}), acre.freebase.service_url + "?a=1&b=2");
 });
 
-test("freebase_static_resource_url", function() {
-  equal(h.freebase_static_resource_url(), mf.freebase.resource.base_url);
-  equal(h.freebase_static_resource_url(null), mf.freebase.resource.base_url);
-  equal(h.freebase_static_resource_url("/resources/images/chrome/metaweb-logo.png"), mf.freebase.resource.base_url + "/resources/images/chrome/metaweb-logo.png");
-});
-
-
 acre.test.report();
 

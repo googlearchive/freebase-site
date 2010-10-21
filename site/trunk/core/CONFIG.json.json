@@ -1,5 +1,7 @@
 {
   "apps" : {
+    "manifest": "//manifest.site.freebase.dev",
+
     "routing": "//routing.site.freebase.dev",
     "promise": "//promise.site.freebase.dev",
     "template": "//template.site.freebase.dev",
@@ -17,7 +19,6 @@
     "flot": "//flot.site.freebase.dev",
     "jquerytools": "//jquerytools.site.freebase.dev",
 
-    "service": "//4.service.libs.freebase.dev",
     "libraries": "//2.libraries.apps.freebase.dev"
   },
   "libs" : {

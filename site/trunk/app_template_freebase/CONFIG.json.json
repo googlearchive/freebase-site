@@ -17,9 +17,9 @@
   },
   "javascript": {
     "sample_page.mf.js": [
+      ["jqueryui", "jquery.ui.core.mf.js"],
       ["jqueryui", "jquery.ui.tabs.js"],
-	  ["template", "freebase.mf.js"],
-	  ["template", "freebase-permission.mf.js"],
+      ["template", "freebase-permission.mf.js"],
       ["template", "jquery.showrow.js"],
       ["jquerytools", "tabs.js"],
       ["jquerytools", "tooltip.js"],

@@ -1,2 +1,2 @@
-var mf = JSON.parse(acre.require("CONFIG.json").body);
-acre.require(mf.apps.core + "/MANIFEST").init(mf, this);
+var config = JSON.parse(acre.require("CONFIG.json").body);
+var mf = acre.require(config.apps.manifest + "/MANIFEST").init(this, config);

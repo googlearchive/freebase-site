@@ -1,6 +1,5 @@
+var config = JSON.parse(acre.require("CONFIG.json").body);
+var mf = acre.require(config.apps.core + "/MANIFEST").init(this, config);
 /**
  * Flot jQuery Library
  */
-
-var mf = JSON.parse(acre.require("CONFIG.json").body);
-acre.require(mf.apps.core + "/MANIFEST").init(mf, this);

@@ -1,5 +1,5 @@
 {
   "apps" : {
-      "core": "//core.site.freebase.dev"
+      "manifest": "//manifest.site.freebase.dev"
   }
 }

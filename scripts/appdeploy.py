@@ -288,11 +288,10 @@ class App:
     '''
     Will go through the revision of all resource files and return the latest one
     '''
-    revision = None
+    revision = 0
 
     cmd = ['svn', 'ls', '--verbose', self.svn_url()]
     (r, result) = self.c.run_cmd(cmd)
-
 
     if not r:
       return revision
@@ -1243,12 +1242,19 @@ class ActionStatic():
     c = self.context
     need_static = set()
     for static_app in app_list:
+
       (r, last_recorded_revision) = static_app.read_file('.last_resource_revision')
       if not r:
         need_static.add(static_app)
         continue
 
-      last_recorded_revision = int(''.join(last_recorded_revision))
+      #this is a fix for an old bug that used to write 'None' (the string)
+      #in the file under certain circumstances
+      try:
+          last_recorded_revision = int(''.join(last_recorded_revision))
+      except:
+          last_recorde_revision = 0
+
       last_revision = static_app.last_resource_revision()
 
       #if the last revision of any resource file in the app is larger
@@ -1314,7 +1320,9 @@ class ActionStatic():
       if not result:
         return False
 
-      self.app.write_file('.last_resource_revision', str(self.app.last_resource_revision()))
+      last_resource_revision = self.app.last_resource_revision()
+      if last_resource_revision:
+          self.app.write_file('.last_resource_revision', str(last_resource_revision))
       self.app.svn_commit(msg='commit last resource revision file')
 
     c.log('***** NOTE: You have to restart the freebaselibs.com static servers for your resources to be available *****', c.BLUE)

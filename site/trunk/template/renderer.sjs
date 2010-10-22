@@ -39,13 +39,8 @@ function _render(data, template, def_name, exports, args) {
     acre.write(response);
     
   } catch (e if /^https?:\/\/(www\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url)) {
-    /*
     var path = acre.form.build_url("//error.site.freebase.dev/index", {status:500});
     acre.route(path);
-    acre.exit();
-    */
-    acre.response.status = 302;
-    acre.response.set_header("location", acre.freebase.site_host+"/error");
     acre.exit();
   }
   

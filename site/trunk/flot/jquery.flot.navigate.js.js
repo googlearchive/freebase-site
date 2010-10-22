@@ -7,6 +7,7 @@ plot.zoomOut() and plot.pan(offset) so you easily can add custom
 controls. It also fires a "plotpan" and "plotzoom" event when
 something happens, useful for synchronizing plots.
 
+
 Options:
 
   zoom: {

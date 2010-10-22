@@ -17,18 +17,24 @@ function CoreManifest(scope, config) {
 CoreManifest.prototype = extend({}, Manifest.prototype, {
   init: function(scope, config) {
     config = extend({}, core_config, config);  // extend with core_config
-    extend(config.apps, core_config.apps, config.apps); // update config.apps with core_config.apps
+    
+    extend(config.apps, extend({}, core_config.apps, config.apps)); // update config.apps with core_config.apps
     Manifest.prototype.init.apply(this, [scope, config]);
     this.libs = this.config.libs || {};
   },
 
   get_app_base_url: function() {
     if (/^https?:\/\/((www|devel)\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(this.scope.acre.request.app_url)) {
-      var routes_mf = acre.require(this.apps.routing + "/MANIFEST");
-      var app = routes_mf.get_app(this.scope.acre.current_script.app.path);
+      var app_routes = acre.require(this.apps.routing + "/app_routes");
+      var app_path = this.scope.acre.current_script.app.path;
+      var app_version = this.scope.acre.current_script.app.version;
+      if (app_version) {
+        var replace_version = new RegExp("^\/\/" + app_version + "\.");
+        app_path = app_path.replace(replace_version, "//");
+      }
+      var app = app_routes.get_app(app_path);
       if (app) {
-          var rules = acre.require(this.apps.routing + "/app_routes").rules;
-          var route = rules.route_for_app(app);
+          var route = app_routes.rules.route_for_app(app);
           if (route) {
             if (!route.script) {
               return this.scope.acre.request.app_url + route.prefix;

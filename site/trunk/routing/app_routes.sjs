@@ -9,6 +9,42 @@
 var router = acre.require("router");
 var rules = new router.PrefixRouter();
 
+var app_labels = {
+  "admin"             : "//admin.site.freebase.dev",
+  "appeditor"         : "//appeditor.site.freebase.dev",
+  "appeditor-services": "//appeditor-services.site.freebase.dev",
+  "apps"              : "//apps.site.freebase.dev",
+  "cubed"             : "//cubed.dfhuynh.user.dev",
+  "devdocs"           : "//devdocs.site.freebase.dev",
+  "domain"            : "//domain.site.freebase.dev",
+  "error"             : "//error.site.freebase.dev",
+  "homepage"          : "//homepage.site.freebase.dev", 
+  "labs"              : "//labs-site.dfhuynh.user.dev",
+  "parallax"          : "//parallax.dfhuynh.user.dev",
+  "permission"        : "//permission.site.freebase.dev",
+  "policies"          : "//policies.site.freebase.dev",
+  "queryeditor"       : "//cuecard.dfhuynh.user.dev",
+  "sample"            : "//sample.site.freebase.dev",
+  "app_template_barebones"  : "//app_template_barebones.site.freebase.dev",
+  "app_template_freebase"   : "//app_template_freebase.site.freebase.dev",
+  "schema"            : "//schema.site.freebase.dev",
+  "tasks"             : "//tasks.site.freebase.dev",
+  "tmt"               : "//tmt.zenkat.user.dev",
+  "toolbox"           : "//toolbox.site.freebase.dev",
+  "topicblocks"       : "//topicbox.daepark.user.dev",
+  "triples"           : "//triples.site.freebase.dev"
+};
+
+// map[path] = app label
+var _app_paths = {};
+for (var app in app_labels) {
+  var path = app_labels[app];
+  _app_paths[path] = app;
+}
+function get_app(path, version) {
+  return _app_paths[path];
+};
+
 // Urls for user-facing apps
 rules.add([
   {prefix:"/",                   app:"homepage", script: "index"},
@@ -46,18 +82,7 @@ rules.add([
 rules.add([
   {prefix:"/sample",             app:"sample"},
   {prefix:"/app_template_barebones",  app:"app_template_barebones"},
-  {prefix:"/app_template_freebase",   app:"app_template_freebase"},
-  {prefix:"/core",               app:"core"},
-  {prefix:"/jqueryui",           app:"jqueryui"},
-  {prefix:"/i18n",               app:"i18n"},
-  {prefix:"/manifest",           app:"manifest"},
-  {prefix:"/template",           app:"template"},
-  {prefix:"/promise",            app:"promise"},
-  {prefix:"/routing",            app:"routing" },
-  {prefix:"/queries",            app:"queries"},
-  {prefix:"/codemirror",         app:"codemirror" },
-  {prefix:"/validator",          app:"validator"},
-  {prefix:"/test",               app:"test"}
+  {prefix:"/app_template_freebase",   app:"app_template_freebase"}
 ]);
 
 // Redirects for legacy urls

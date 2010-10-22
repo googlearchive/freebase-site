@@ -1,14 +1,17 @@
-var mf = acre.require("MANIFEST").mf;
-var h = mf.require("helpers");
-var app_routes = mf.require('app_routes');
+var h = acre.require("helpers");
+var app_routes = acre.require('app_routes');
 
 /**
  * Invoke the error app template with status=404 and exit.
  */
 function not_found(id) {
-  var path = acre.form.build_url(mf.apps.error + "/index", {status:404, not_found:id});
+  var path = acre.form.build_url(app_routes.app_labels.error + "/index", {status:404, not_found:id});
   acre.route(path);
   acre.exit();
+};
+
+function is_release_pod() {
+  return /^https?:\/\/(www\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url);
 };
 
 /**
@@ -16,12 +19,16 @@ function not_found(id) {
  * Before acre.route, we do an acre.get_medata and check existence of the app and script.
  * If success, acre.route. Otherwise, not_found()
  */
-function do_route(app, script, path_info, query_string) {
+function do_route(app_path, script, path_info, query_string) {
+  if (is_release_pod()) {
+    app_path = "//release." + app_path.slice(2);
+  }
+  
   try {
-    var md = acre.get_metadata(app);
+    var md = acre.get_metadata(app_path);
   }
   catch (ex) {
-    return not_found(app || acre.current_script.app.id);
+    return not_found(app_path || acre.current_script.app.id);
   }
 
   if (!md.files["routes"] && !md.files[script]) {
@@ -29,7 +36,7 @@ function do_route(app, script, path_info, query_string) {
   }
 
   var path = [
-    (app ? app + "/" : ""),
+    (app_path ? app_path + "/" : ""),
     script,
     path_info,
     (query_string ? "?" + query_string : "")
@@ -78,7 +85,7 @@ function path_based_routing(req) {
 
     } else if (route.app) {
       // Handle canonical app routing
-      var app = mf.apps[route.app];
+      var app = app_routes.app_labels[route.app];
       if (!app) {
  	    throw (route.app + " must be defined in the MANIFEST for routing.");
  	  }
@@ -88,7 +95,7 @@ function path_based_routing(req) {
       if (!script) {
         var [script, path_info, qs] = h.split_path(path_info);
       }
-
+      
       // acre.route and exit
       do_route(app, script, path_info, query_string);
     }

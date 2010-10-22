@@ -11,8 +11,7 @@ var exports = {
 };
 
 var mf = acre.require("MANIFEST").mf;
-var routes_mf = mf.require("routing", "MANIFEST").mf;
-var rules = mf.require("routing", "app_routes").rules;
+var app_routes = mf.require("routing", "app_routes");
 var extend = mf.require("helpers_util").extend;
 
 /**
@@ -50,7 +49,7 @@ function is_production() {
  * @param extra_path:String (optional) - Additional path information appended to the url, e.g., http://.../resource[extra_path]?query_params
  */
 function url_for(app, file, params, extra_path) {
-  var path = routes_mf.apps[app];
+  var path = app_routes.app_labels[app];
   if (!path) {
     throw("app is not defined in the routing MANIFEST: " + app);
   }
@@ -70,7 +69,7 @@ function url_for(app, file, params, extra_path) {
   // http://www.sandbox-freebase.com
   // http://www.freebase.com
   if (is_client()) {
-    var route = rules.route_for_app(app, file);
+    var route = app_routes.rules.route_for_app(app, file);
     if (!route) {
       throw("No route found in routing app_routes for app:"+app+" script:"+file);
     }

@@ -18,20 +18,17 @@ function resource_url(apppath, file, params, extra_path) {
 };
 
 test("url_for", function() {
-  var routes_mf = mf.require("routing", "MANIFEST").mf;
   var routes =  mf.require("routing", "app_routes");
 
   if (h.is_client()) {
-    equal(h.url_for("core", "test_helpers_url"), acre.request.app_url /*+ acre.request.base_path*/ + routes.get_route("core").from + "/test_helpers_url");
     equal(h.url_for("schema", "index"), acre.request.app_url /*+ acre.request.base_path*/ + routes.get_route("schema").from + "/index");
     equal(h.url_for("toolbox", "service", null, "/apps"), acre.request.app_url /*+ acre.request.base_path*/ + routes.get_route("toolbox").from + "/service/apps");
     equal(h.url_for("homepage", "index"), acre.request.app_url /*+ acre.request.base_path*/ + "/");
   }
   else {
-    equal(h.url_for("core", "test_helpers_url"),  resource_url(routes_mf.apps["core"],  "test_helpers_url"));
-    equal(h.url_for("schema", "index"), resource_url(routes_mf.apps["schema"], "index"));
-    equal(h.url_for("toolbox", "service", null, "/apps"),  resource_url(routes_mf.apps["toolbox"], "service", null, "/apps"));
-    equal(h.url_for("homepage", "index"), resource_url(routes_mf.apps["homepage"], "index"));
+    equal(h.url_for("schema", "index"), resource_url(routes.app_labels["schema"], "index"));
+    equal(h.url_for("toolbox", "service", null, "/apps"),  resource_url(routes.app_labels["toolbox"], "service", null, "/apps"));
+    equal(h.url_for("homepage", "index"), resource_url(routes.app_labels["homepage"], "index"));
   }
 });
 

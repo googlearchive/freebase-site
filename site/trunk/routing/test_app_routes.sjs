@@ -18,11 +18,13 @@ test("userfacing_apps", function() {
   ok(rules.route_for_path('/home'), 'Route for the logged-in homepage');
   ok(rules.route_for_path('/schema/people/person'), 'Route for schema type page');
   ok(rules.route_for_path('/apps'), 'Route for apps');
+  ok(rules.route_for_path('/appeditor'), 'Route for appeditor');
 
   ok(rules.route_for_app('homepage', 'index'), 'Url for the logged-out homepage');
   ok(rules.route_for_app('homepage', 'home'), 'Url for the logged-in homepage');
   ok(rules.route_for_app('schema'), 'Url for schema');
   ok(rules.route_for_app('apps'), 'Url for apps');
+  ok(rules.route_for_app('appeditor'), 'Url for appeditor');
 });
 
 test("redirects", function() {

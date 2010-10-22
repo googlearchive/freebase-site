@@ -57,7 +57,7 @@ SERVICES = {
            'www' : 'http://branch.qa.metaweb.com',
            'freebaseapps' : 'branch.qa-freebaseapps.com'
            },
-  'local' : { 'acre' : 'http://ae.sandbox-freebase.com:8115',
+  'local' : { 'acre' : 'http://devel.sandbox-freebase.com:8115',
               'www' : 'http://www.sandbox-freebase.com',
               'freebaseapps' : 'acre.z.:8115'
               }
@@ -408,7 +408,7 @@ class App:
 
 
   def write_file(self, filename, contents):
-
+          
     file_exists, _ = self.read_file(filename)
     filename = "%s/%s" % (self.svn_path(), filename)
 
@@ -639,7 +639,7 @@ class Context():
 
   def verbose(self, msg, subaction=None):
     if self.options.verbose and msg:
-      return self.log(msg, subaction=None)
+      return self.log(msg, subaction)
 
     return True
 
@@ -1407,7 +1407,8 @@ class ActionBranch():
           branch_app_dependencies = branch_app.get_dependencies()
 
           if not branch_app_dependencies:
-            return False
+              c.verbose("The app %s does not have a dependency to core" % branch_app_dependencies)
+              continue
 
           if not (branch_app_dependencies.get('core') and branch_app_dependencies['core'].version == core_app.version):
             branch_app.update_dependency('core', core_app)

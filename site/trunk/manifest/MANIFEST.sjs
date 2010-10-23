@@ -205,18 +205,17 @@ Manifest.prototype = {
   },
 
   /**
-   * Helper function for compiling .mjt files as javascript files to send to the browser
-   *  callable in jQuery as $(el).mjt(fb.templ.(<app>).<filename>(args))
-   *
-   * TODO: please make this more generic so that it does not depend on specific client-side javascript (dae).
+   * Helper function for compiling .mjt files as javascript files to send to the browser.
+   *  Triggers an event with the template source that must be handled to use the template.
+   *  ["mjt", "mjt-template.mf.js"] contains the necessary code to handle the event and run the template.
    */
   compile_mjt: function(source, pkgid) {
     var code = [];
-    code.push("if (!fb.tmpl) fb.tmpl = {};\n");
-    code.push("fb.tmpl['" + pkgid + "'] = ");
-    code.push("(new mjt.TemplatePackage()).init_from_js(");
-    code.push(this.scope.acre.template.string_to_js(source, pkgid));
-    code.push(").toplevel();");
+    code.push("if (jQuery) {\n");
+      code.push("jQuery(window).trigger('acre.template.register', {pkgid: '" + pkgid + "', source: ");
+        code.push(this.scope.acre.template.string_to_js(source, pkgid));
+      code.push("});\n");
+    code.push("}\n");
     return code.join("");
   },
 
@@ -251,7 +250,7 @@ Manifest.prototype = {
             var source = this.get_source(script[0], script[1]);
             var handler = this.get_metadata(script[0]).files[script[1]].handler;
             if (handler === 'mjt') {
-              source = this.compile.mjt(source, script.join("."));
+              source = this.compile.mjt(source, script.join("/"));
             }
             this.scope.acre.write(source);
           }
@@ -271,7 +270,7 @@ Manifest.prototype = {
             var source = this.get_source(script[0]);
             var handler = this.get_metadata().files[script[0]].handler;
             if (handler === 'mjt') {
-              source = this.compile_mjt(source, script.join("."));
+              source = this.compile_mjt(source, script.join("/"));
             }
             this.scope.acre.write(source);
           }

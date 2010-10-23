@@ -1,0 +1,40 @@
+{
+  "apps": {
+    "core": "//core.site.freebase.dev"
+  },
+  "javascript": {
+    "mjt.mf.js": [
+      'header.js',
+      'json2.js',
+      'util.js',
+      'task.js',
+      'pager.js',
+      'browserio.js',
+      'crc32.js',
+      'jsonp.js',
+      'xhr.js',
+      'freebase_api.js',
+      'freebase_isodate.js',
+      'freebase_misc.js',
+      'freebase_mqlkey.js',
+      'freebase_xhr.js',
+      'markup.js',
+      'eval.js',
+      'template.js',
+      'linker.js',
+      'runtime.js',
+      'compile.js',
+      'pageapp.js',
+      'mjtjquery.js'
+    ],
+    "mjt-template.mf.js": [
+      'header.js',
+      'util.js',
+      'markup.js',
+      'eval.js',
+      'template.js',
+      'linker.js',
+      'mjtjquery.js'
+    ]
+  }
+}

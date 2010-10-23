@@ -14,6 +14,7 @@
     "i18n": "//i18n.site.freebase.dev",
     "test": "//test.site.freebase.dev",
     "codemirror" : "//codemirror.site.freebase.dev",
+    "mjt": "//mjt.site.freebase.dev",
     
     "jqueryui": "//jqueryui.site.freebase.dev",
     "flot": "//flot.site.freebase.dev",

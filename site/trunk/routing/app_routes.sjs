@@ -15,6 +15,7 @@ var app_labels = {
   "appeditor-services": "//appeditor-services.site.freebase.dev",
   "apps"              : "//apps.site.freebase.dev",
   "cubed"             : "//cubed.dfhuynh.user.dev",
+  "cuecard"           : "//cuecard.site.freebase.dev",
   "devdocs"           : "//devdocs.site.freebase.dev",
   "domain"            : "//domain.site.freebase.dev",
   "error"             : "//error.site.freebase.dev",

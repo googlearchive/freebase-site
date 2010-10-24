@@ -10,7 +10,7 @@
       <div id="file-area"  class="refresh"></div>
     </div>
   </div>
-  <acre:block script="ondomready">
+  <acre:script script="ondomready">
     var flw = parseInt(ui.get_editor_prefs('flw'));
     
     $(window).resize(function(){
@@ -58,7 +58,7 @@
     });
     
     $('#file-area').click(ui.do_click_error);
-  </acre:block>
+  </acre:script>
 </acre:block>
 
 <!-- called by ui.refresh_app_templates -->    
@@ -214,7 +214,7 @@
     ${filelist_section("test", "Tests", app, ordered_filenames["test"])}
   </div>
   
-  <acre:block script="ondomready">            
+  <acre:script script="ondomready">            
     $('.file-list-section-toggle').click(function(e){
       var section = $(this).attr("section");
       if ($(this).text() == "&#9660;") {
@@ -237,7 +237,7 @@
         return false;
       }
     });
-  </acre:block>
+  </acre:script>
 </acre:block>
 
 <!-- called by ui.refresh_file_templates -->  
@@ -298,14 +298,14 @@
         </span>
       </span>
     </div>
-    <acre:block script="ondomready">
+    <acre:script script="ondomready">
       $('#linenumber').keypress(function(e){
         if (e.which == 13) {
           var line = parseInt($('#linenumber').val(),10);
           ui.do_file_editor_goto_line(line);
         }
       });
-    </acre:block>
+    </acre:script>
   </div>
 </acre:block>
 
@@ -326,9 +326,9 @@
   <!--<span id="message-panel-close">x</span>-->
   <div class="message-icon $type"></div> ${mjt.bless(msg)} 
   <span class="message-tid">${tid||""}</span>
-  <acre:block script="ondomready">
+  <acre:script script="ondomready">
     $('#message-panel-close').click(function(){
       ui.MessagePanel.clear();
     })
-  </acre:block>
+  </acre:script>
 </div>

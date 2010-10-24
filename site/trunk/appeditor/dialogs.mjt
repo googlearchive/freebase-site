@@ -92,7 +92,7 @@
     <button id="button-new-app" class="button-primary exit">Create</button>
     <button class="exit">Cancel</button>
   </div>
-  <acre:block script="ondomready">
+  <acre:script script="ondomready">
     $('#new-app-dialog-name').focus().select();
   
     $("#dialog-new_app input[name='new-app']").change(function(){
@@ -117,7 +117,7 @@
       }
       ui.do_app_create_new.apply(this, args);
     })
-  </acre:block>
+  </acre:script>
 </acre:block>
 
 <acre:block def="delete_app()">
@@ -174,7 +174,7 @@
       <button id="button-clone" class="button-primary">Save</button>
       <button class="exit">Cancel</button>
     </div>
-    <acre:block script="ondomready">
+    <acre:script script="ondomready">
       $('#clone-filename').focus().select();
 
       $('#button-clone').click(function(e){
@@ -188,17 +188,17 @@
           ui.MessagePanel.error("File exists!  Try a different file name.");
         } 
       });
-    </acre:block>
+    </acre:script>
   </acre:block>
   
-  <acre:block script="ondomready">
+  <acre:script script="ondomready">
     ui.get_store().XhrGet('list_user_apps', {'include_filenames': true})
       .enqueue()
       .onready(function(data){
         
         $("#applist").acre(save_file_applist(data));
       });
-  </acre:block>
+  </acre:script>
 </acre:block>
 
 <acre:block def="add_file()">
@@ -228,7 +228,7 @@
       </div>
     </div>
 
-    <acre:block script="ondomready">
+    <acre:script script="ondomready">
       $('#add-file-name')
         .select()
         .keydown(function(e){
@@ -243,7 +243,7 @@
             file = inputs['add-file-name']
           }
         });
-    </acre:block>
+    </acre:script>
   </acre:block>
   
   <div class="dialog-content">
@@ -264,7 +264,7 @@
     <button class="exit">Cancel</button>
   </div>
 
-  <acre:block script="ondomready"> 
+  <acre:script script="ondomready"> 
     ui.watch_inputs('add-file', {
       inputs : {
         'new-file-handler' : null
@@ -294,7 +294,7 @@
     $("input[name='new-file-handler'][value='mjt']")
       .attr('checked','checked')
       .trigger('click');
-  </acre:block>
+  </acre:script>
 </acre:block>
 
 <acre:block def="delete_file(filename)">
@@ -385,7 +385,7 @@
         </tbody>
       </table>
     </div>
-    <acre:block script="ondomready">
+    <acre:script script="ondomready">
       $('#dialog-diff_patch input, .show-revision, .revert-revision, .diff-button').unbind("click");
               
       function disable_radios(){
@@ -436,7 +436,7 @@
 
         disable_radios();
       });
-    </acre:block>
+    </acre:script>
   </div>
       
   <!-- Used when the filelist needs to be dynamically updated -->
@@ -485,7 +485,7 @@
           <span class="diff-filelist-stub">${mjt.freebase.mqlkey_unquote(fn)}</span>
         </li>
       </ul>
-      <acre:block script="ondomready">
+      <acre:script script="ondomready">
         var num_files = $('#diff-filelist .file-list-item').length;
         
         $('#diff-filelist .file-list-item').each(function(index){
@@ -546,11 +546,11 @@
               update_filelist_item(false, merge_error, [message, info]);
             });
         });
-      </acre:block>
+      </acre:script>
     </div>
     <span acre:elif="patch" class="loader-square"></span>
     <p acre:else="">Pick revisions above to see changed files</p>
-    <acre:block script="ondomready">
+    <acre:script script="ondomready">
       $('.patch-apply, .patch-apply-save').unbind('click');
       $('.patch-apply, .patch-apply-save').click(function(){
         var files = [];
@@ -560,7 +560,7 @@
         });
         ui.do_app_apply_changes(patch, files, $(this).hasClass('patch-apply-save'));
       });
-    </acre:block>
+    </acre:script>
   </div>
 
   <!-- Used when the diff view needs to be dynamically updated -->
@@ -570,9 +570,9 @@
   
   <div acre:def="diff_view(data, method)" id="diff-view" class="diff">
     <div acre:if="data" acre:strip="1">
-      <acre:block script="ondomready">
+      <acre:script script="ondomready">
         ui.populate_diff($("#diff-view"), data, method);
-      </acre:block>
+      </acre:script>
     </div>
     <p acre:else="">Click on a file or revision to see the changes.</p>
   </div>
@@ -612,7 +612,7 @@
       <button acre:if="writable" class="button-patch patch-apply-save exit" disabled="disabled">Revert &amp; Save</button>
       <button class="exit">Done</button>
     </div>
-    <acre:block script="ondomready">
+    <acre:script script="ondomready">
       function update_revlist(mode) {
         $('#revision-list-shim').empty().addClass("loader-square");
         var task = (mode == "versions") ? mjt.Succeed(ui.get_app().get_versions()) : ui.get_app().t_get_history();
@@ -630,7 +630,7 @@
       });
       
       update_revlist("versions");
-    </acre:block>
+    </acre:script>
   </acre:block>
   
   <acre:block def="app_diff(diff)">
@@ -736,11 +736,11 @@
   <div id="diff-dialog">
     <span class="loader-square"></span>
   </div>
-  <acre:block script="ondomready">
+  <acre:script script="ondomready">
     task.enqueue().onready(function(r){ 
       $('#diff-dialog').acre(template(r));
     });
-  </acre:block>
+  </acre:script>
   
 </acre:block>
 

@@ -1,4 +1,4 @@
-<!-- Copyright (c) 2007-2010 Metaweb Technologies unless otherwise stated. See license.html -->
+<!-- Copyright (c) 2007-2010 Google unless otherwise stated. See license.html -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -25,10 +25,11 @@
 	    	host : acre.host,
 	      freebase: {
 	        service_url: acre.freebase.service_url,
-	        site_host: (acre.request.server_name.match(/^devel\./) ? (acre.freebase.site_host.replace(/http:\/\/(www\.)?/, "http://devel.") + ":" + acre.host.port) : acre.freebase.site_host)
+	        site_host: acre.freebase.site_host
 	      },
 	      request: {
 	        app_url: acre.request.app_url,
+	        base_path: acre.request.base_path,
 	        cookies: acre.request.cookies
 	      },
 	      lang: {
@@ -48,7 +49,6 @@
 	  <link rel="stylesheet" type="text/css" href="${mf.lib_base_url('suggest')}/suggest.min.css" />
     <link rel="stylesheet" type="text/css" href="${cuecard_mf.css_src('editor-bundle.mf.css')}" />
 	  <link rel="stylesheet" type="text/css" href="${mf.css_src('appeditor.mf.css')}" />
-
 	  
 		<script type="text/javascript">
 			var SERVER = ${JSON.stringify(SERVER, null, 2)};
@@ -61,7 +61,7 @@
 	
 	<body>
 	  
-		<!-- STATIC CONTENT -->
+		<!-- HEADER -->
 		<div id="header">
 		  <div id="header-appsmenu">
 		    <div id="button-apps">
@@ -85,21 +85,15 @@
 		      <a href="${acre.markup.bless(h.account_url('signin', acre.request.url))}" title="Sign in to your Freebase account" rel="nofollow" id="nav-signin">Sign In or Sign Up</a>
 		    </div>
 	    </div>
-		</div>
+		</div>	
 		
 		
-		<!-- MAIN BODY -->
-		<div id="mjtmain"></div>
+		<!-- BODY -->
+		<div id="body"></div>
 		
 		
-		<!-- MJT TEMPLATE DEFINITIONS -->
-		<div id="mjtstuff" style="display:none">
-		  <div id="fixer" style="position: fixed; right: 0px; bottom: 0px; visibility: hidden;">&nbsp;</div>
-		  ${acre.include("templates_main")}
-		  ${acre.include("templates_menus")}
-		  ${acre.include("templates_dialogs")}
-		</div>
-		
+		<!-- HACK: used to calibrate positioning -->
+		<div id="fixer" style="position: fixed; right: 0px; bottom: 0px; visibility: hidden;">&nbsp;</div>
 		<!-- HACK: get rid of mjt.warn spews for those not running firebug -->
 		<div id="mjt_debug_output" style="display:none"></div>
 	

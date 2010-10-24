@@ -91,7 +91,7 @@ var QueryEditor = function(parent, editor_config, task) {
         
         $(window).bind('resize', resize);
         
-        $('.cuecard-queryEditor-controls-bottom').mjt(ui.templates.query_button_bar());
+        $('.cuecard-queryEditor-controls-bottom').acre("templates", "query_button_bar");
         $(self._file.get_element()).show();
         $(parent).show();
         

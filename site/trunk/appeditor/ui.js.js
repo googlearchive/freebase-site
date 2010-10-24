@@ -12,9 +12,7 @@ var ui = {};
     ///////////////////
     
     ui.init = function() {
-        // load mjt templates and run top-level
-        ui.templates = mjt.run('mjtstuff');
-        $('#mjtmain').mjt(ui.templates.body());
+        $('#body').acre("templates", "body");
         
         // initialize apps menu button
         $("#button-apps").click(function(){ ui.do_show_menu('apps'); }).attr("title", ui.shortcut.get_keys('Open App'));
@@ -54,21 +52,21 @@ var ui = {};
     ui.refresh_app_templates               = function(state) {
         var app = ui.get_app();
         
-        $('#header-apptitle').mjt(ui.templates.header(state));
+        $('#header-apptitle').acre("templates", "header", [state]);
         
         if (app) {
-            $('#list-column').mjt(ui.templates.list_column());
+            $('#list-column').acre("templates", "list_column");
             if (app.is_writable()) {
                 $('#about-bar').hide();
             } else {
-                $('#about-bar').mjt(ui.templates.about_bar()).show();
+                $('#about-bar').acre("templates", "about_bar").show();
             }
         }
     };
     
     ui.refresh_file_templates             = function() {
-        $('#file-list').mjt(ui.templates.file_list());
-        $('#button-bar').mjt(ui.templates.button_bar());
+        $('#file-list').acre("templates", "file_list");
+        $('#button-bar').acre("templates", "button_bar");
         ui.finish_drawing();
     };
     
@@ -92,13 +90,13 @@ var ui = {};
 
         if (dialogname == 'welcome') {
             ui.dialog = $("<div id='" + dialogname + "'></div>")
-                .mjt(ui.templates[dialogname + '_dialog'].apply(this, args || []))
+                .acre("dialogs", dialogname, args)
                 .prependTo(document.body);
         } else {
             $("<div id='dialog-overlay'></div>").prependTo(document.body);
             $(document).bind('keydown', _key_handler);
             ui.dialog = $("<div id='dialog-" + dialogname + "' class='dialog'></div>")
-                .mjt(ui.templates[dialogname + '_dialog'].apply(this, args || []))
+                .acre("dialogs", dialogname, args)
                 .prepend("<div class='dialog-close' onclick='ui.do_hide_overlays()'></div>")
                 .prependTo(document.body);
         }
@@ -128,7 +126,7 @@ var ui = {};
         $("<div id='menu-" + menuname + "' class='menu'></div>")
             .css({top: offset.top + button_height + 10, left: offset.left})
             .prependTo(document.body)
-            .mjt(ui.templates[menuname + '_menu'].apply(this, args || []));
+            .acre("menus", menuname, args);
         return false; // cancel click
     };
     
@@ -151,7 +149,7 @@ var ui = {};
                     left : parent_menu.offset().left + parent_menu.width()
                 })
                 .prependTo(document.body)
-                .mjt(ui.templates[submenuname + '_menu'].apply(this, args || []))
+                .acre("menus", submenuname, args)
                 .mouseenter(function(e){  
                     clearTimeout(mouseleave_timer);
                 })
@@ -551,7 +549,7 @@ var ui = {};
 										}
 										$(window).trigger("fb.user.signedin");
                 }
-                $('#app-edits-shim').mjt(ui.templates.app_edits());
+                $('#app-edits-shim').acre("templates", "app_edits");
                 ui.refresh_file_templates();
             });
     };
@@ -612,7 +610,7 @@ var ui = {};
         app.t_set_host(host)
             .onready(function() {
                 ui.MessagePanel.info("Release URL updated");
-                $('#app-hosts-list').mjt(ui.templates.app_hosts_list());
+                $('#app-hosts-list').acre("menus", "app_hosts_list");
             })
             .onerror(function(code, message, info) {
                 ui.MessagePanel.error(message ? message : 'Error updating release URL for: ' + app.get_display_name());
@@ -626,8 +624,8 @@ var ui = {};
         app.t_set_release(version)
             .onready(function() {
                 ui.MessagePanel.info("Release updated to " + version);
-                $('#app-versions-add').mjt(ui.templates.app_versions_list());
-                $('#app-hosts-list').mjt(ui.templates.app_hosts_list());
+                $('#app-versions-add').acre("menus", "app_versions_list");
+                $('#app-hosts-list').acre("menus", "app_hosts_list");
             })
             .onerror(function(code, message, info) {
                 ui.MessagePanel.error(message ? message : 'Error releasing: ' + app.get_display_name());
@@ -641,7 +639,7 @@ var ui = {};
         app.t_add_version(key, timestamp, service_url)
             .onready(function() {
                 ui.MessagePanel.info("Created version " + key);
-                $('#app-versions-add').mjt(ui.templates.app_versions_list());
+                $('#app-versions-add').acre("menus", "app_versions_list");
             })
             .onerror(function(code,msg,full,task) {
                 ui.MessagePanel.error('Failed to add version. '+msg);
@@ -655,7 +653,7 @@ var ui = {};
         app.t_remove_version(key)
             .onready(function(r) {
                 ui.MessagePanel.info("Removed version " + key);
-                $('#app-versions-add').mjt(ui.templates.app_versions_list(r));
+                $('#app-versions-add').acre("menus", "app_versions_list", [r]);
             });
     };
     
@@ -683,7 +681,7 @@ var ui = {};
         app.t_add_author(username)
             .onready(function() {
                 var authors = ui.get_app().get_authors();
-                $('#app-authors-list').mjt(ui.templates.app_authors_list(authors));
+                $('#app-authors-list').acre("menus", "app_authors_list", [authors]);
             });
     };
     
@@ -693,7 +691,7 @@ var ui = {};
         app.t_remove_author(username)
             .onready(function() {
                 var authors = ui.get_app().get_authors();
-                $('#app-authors-list').mjt(ui.templates.app_authors_list(authors));
+                $('#app-authors-list').acre("menus", "app_authors_list", [authors]);
             });
     };
     
@@ -730,7 +728,7 @@ var ui = {};
         app.t_add_apikey(name, key, secret)
             .onready(function(r) {
                 ui.MessagePanel.info(name + " API key added.");
-                $('#app-apikeys-add').mjt(ui.templates.app_apikeys_list(r.keys));
+                $('#app-apikeys-add').acre("menus", "app_apikeys_list", [r.keys]);
             })
             .onerror(function(code,msg,full,task) {
                 ui.MessagePanel.error('Failed to add API key: ' + msg);
@@ -744,7 +742,7 @@ var ui = {};
         app.t_remove_apikey(name)
             .onready(function(r) {
                 ui.MessagePanel.info(name + " API key deleted.");
-                $('#app-apikeys-add').mjt(ui.templates.app_apikeys_list(r.keys));
+                $('#app-apikeys-add').acre("menus", "app_apikeys_list", [r.keys]);
             })
             .onerror(function(code,msg,full,task) {
                 ui.MessagePanel.error('Failed to delete API key: ' + msg);
@@ -1309,6 +1307,11 @@ var ui = {};
     //                //
     ////////////////////
     
+    ui.url_for                  = function(filename) {
+        var base_path = SERVER.acre.request.base_path;
+        return base_path + "/" + filename;
+    };
+    
     ui.get_app_url              = function(host) {
         return 'http://' + host + ui.get_store().get_acre_host();
     };
@@ -1756,7 +1759,7 @@ var ui = {};
             } else {
                 // TODO - figure out how to get the tid
                 var tid = null;
-                $(el).hide().mjt(ui.templates.message_panel(log_type, str, tid));
+                $(el).hide().acre("templates", "message_panel", [log_type, str, tid]);
                 last_level = log_type;
                 window.clearTimeout(timer);
                 hide_func = function(){

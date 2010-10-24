@@ -25,7 +25,10 @@
       "editor_textarea.js",
       "editor_cuecard.js",
       "editor_codemirror.js",
-      "ui.js"
+      "ui.js",
+      "templates",
+      "dialogs",
+      "menus"
     ],
     "fulljslint.mf.js": [
     	"fulljslint.js"

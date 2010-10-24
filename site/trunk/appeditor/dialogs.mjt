@@ -8,7 +8,7 @@
   </div>
   <div class="button-bar">
     <button class="button-primary exit">No</button>
-    <button class="exit" onclick="ui.do_choose_app(new_app)">
+    <button class="exit" acre:onclick="ui.do_choose_app(new_app)">
       Yes, abandon changes and switch apps</button>
   </div>
 </acre:block>
@@ -26,7 +26,7 @@
           <small>Check out <a href="${ui.get_store().get_freebase_url()}/apps" target="_new" class="exit">the App Directory</a> or <a href="${ui.get_store().get_freebase_url()}/docs/acre" target="_new" class="exit">the documentation</a>.</small>
         </li>
         <li><em>Ready to go?</em><br />
-          <small><button id="button-newapp" onclick="ui.do_show('new_app');">Create a New App</button> <button id="button-yourapps" onclick="ui.do_show_menu('yourapps');">
+          <small><button id="button-newapp" acre:onclick="ui.do_show('new_app');">Create a New App</button> <button id="button-yourapps" acre:onclick="ui.do_show_menu('yourapps');">
             <span class="button-menu">Choose from Your Apps</span></button></small>
         </li>
       </ul>
@@ -133,7 +133,7 @@
     </div>
   </div>
   <div class="button-bar">
-    <button class="button-primary exit" onclick="ui.do_app_delete()">Delete App</button>
+    <button class="button-primary exit" acre:onclick="ui.do_app_delete()">Delete App</button>
     <button class="exit">Cancel</button>
   </div>
 </acre:block>  
@@ -310,7 +310,7 @@
   </div>
   </div>
   <div class="button-bar">
-    <button class="button-primary exit" onclick="ui.do_file_delete(filename)">Delete File</button>
+    <button class="button-primary exit" acre:onclick="ui.do_file_delete(filename)">Delete File</button>
     <button class="exit">Cancel</button>
   </div>
 </acre:block>  
@@ -477,8 +477,8 @@
         </span>
       </acre:block>
       <p>
-        Select: <a href="#0" onclick="$('#diff-filelist input').attr('checked','checked')">All</a> | 
-        <a href="#0" onclick="$('#diff-filelist input').removeAttr('checked')">None</a>
+        Select: <a href="#0" acre:onclick="$('#diff-filelist input').attr('checked','checked')">All</a> | 
+        <a href="#0" acre:onclick="$('#diff-filelist input').removeAttr('checked')">None</a>
       </p>
       <ul>
         <li class="file-list-item" acre:for="fn in ordered_filenames" data-fn="$fn">
@@ -693,7 +693,7 @@
       </div>
     </div>
     <div class="button-bar">
-      <button class="button exit" onclick="ui.do_file_save(true)">Save Anyway</button>
+      <button class="button exit" acre:onclick="ui.do_file_save(true)">Save Anyway</button>
       <button class="button-primary exit">Cancel</button>
     </div>
   </acre:block>
@@ -771,6 +771,6 @@
 </acre:block>
 
 <acre:block def="documentation(url)">
-  <a class="doc-view-link" href="$url" target="_blank" onclick="ui.do_hide_overlays()">Open in a new window</a>
+  <a class="doc-view-link" href="$url" target="_blank" acre:onclick="ui.do_hide_overlays()">Open in a new window</a>
   <iframe class="dialog-content" src="$url"></iframe>
 </acre:block>

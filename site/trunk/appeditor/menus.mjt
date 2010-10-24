@@ -5,10 +5,10 @@
     var apps = ui.get_recents('apps');
     var num_apps = Math.min(apps.length, 10);
   </acre:script>
-  <div class="section selectable" acre:if="user" onclick="ui.do_show_dialog('new_app')">
+  <div class="section selectable" acre:if="user" acre:onclick="ui.do_show_dialog('new_app')">
     New App...
   </div>
-  <div class="section selectable" onclick="ui.do_acre_home_link('/apps')">      
+  <div class="section selectable" acre:onclick="ui.do_acre_home_link('/apps')">      
     App Directory...     
   </div>
   <div acre:if="ui.get_user()" id="your-apps-menu-item" class="section selectable">      
@@ -17,7 +17,7 @@
   </div>
   <div acre:else="" class="section">
     <h3>Your Apps</h3>
-    <a href="#0" title="Sign in to your Freebase account" onclick="return ui.do_account_link('signin')">Sign in</a> to show your apps here.
+    <a href="#0" title="Sign in to your Freebase account" acre:onclick="return ui.do_account_link('signin')">Sign in</a> to show your apps here.
   </div>
 
   <div class="section last"> 
@@ -158,26 +158,26 @@
   </div>
   <div class="section">
     <h3>Validate</h3>
-    <button onclick="ui.do_file_check()" title="${mjt.bless(ui.shortcut.get_keys('Check Syntax'))}"
+    <button acre:onclick="ui.do_file_check()" title="${mjt.bless(ui.shortcut.get_keys('Check Syntax'))}"
       acre:attrs="ui.get_file_check_options().useful===1?{}:{'disabled':'disabled'}">
       Check Syntax</button>
   </div>
   <div class="section">
     <h3>History</h3>
     <fieldset>
-      <button acre:if="writable" onclick="ui.do_file_revert_to_saved()" class="exit"
+      <button acre:if="writable" acre:onclick="ui.do_file_revert_to_saved()" class="exit"
         acre:attrs="!file.is_dirty()?{'disabled':'disabled'}:{}">
         Revert to Saved</button> 
-      <button onclick="ui.do_show_dialog('diff_patch',['file_history', ui.get_file().get_name()]);">
+      <button acre:onclick="ui.do_show_dialog('diff_patch',['file_history', ui.get_file().get_name()]);">
         Review Older Versions</button>
     </fieldset>
   </div>
   <div class="section last">
     <h3>Actions</h3>
-    <button onclick="ui.do_show_dialog('save_file_as')" 
+    <button acre:onclick="ui.do_show_dialog('save_file_as')" 
       acre:attrs="ui.get_user()?{}:{'disabled':'disabled'}">
       Clone this File</button>
-    <button onclick="ui.do_show_dialog('delete_file',[ui.get_file().get_name()]);" 
+    <button acre:onclick="ui.do_show_dialog('delete_file',[ui.get_file().get_name()]);" 
       acre:attrs="writable?{}:{'disabled':'disabled'}">
       Delete this File</button>
   </div>
@@ -271,15 +271,15 @@
   <div class="section">
     <h3>Documentation</h3>
     <ul>
-      <li><a href="#0" onclick="return ui.do_show_dialog('keyboard_shortcuts')">
+      <li><a href="#0" acre:onclick="return ui.do_show_dialog('keyboard_shortcuts')">
         Keyboard Shortcuts</a></li>
-      <li><a href="#0" onclick="return ui.do_show_dialog('documentation', [ui.get_store().get_freebase_url() + '/docs/iframe/acre_api'])">
+      <li><a href="#0" acre:onclick="return ui.do_show_dialog('documentation', [ui.get_store().get_freebase_url() + '/docs/iframe/acre_api'])">
         Acre API Reference</a></li>
-      <li><a href="#0" onclick="return ui.do_show_dialog('documentation', [ui.get_store().get_freebase_url() + '/docs/iframe/acre_templates'])">
+      <li><a href="#0" acre:onclick="return ui.do_show_dialog('documentation', [ui.get_store().get_freebase_url() + '/docs/iframe/acre_templates'])">
         Acre Template Tag Reference</a></li>
-      <li><a href="#0" onclick="return ui.do_show_dialog('documentation', [ui.get_store().get_freebase_url() + '/docs/iframe/js_reference'])">
+      <li><a href="#0" acre:onclick="return ui.do_show_dialog('documentation', [ui.get_store().get_freebase_url() + '/docs/iframe/js_reference'])">
         Javascript Reference</a></li>
-      <li><a href="#0" onclick="return ui.do_show_dialog('documentation', [ui.get_store().get_freebase_url() + '/docs/iframe/mql'])">
+      <li><a href="#0" acre:onclick="return ui.do_show_dialog('documentation', [ui.get_store().get_freebase_url() + '/docs/iframe/mql'])">
         MQL Reference Guide</a></li>
       <li><a href="${ui.get_store().get_freebase_url()}/docs/" target="_new">
         Freebase Documentation Hub</a></li>
@@ -298,7 +298,7 @@
     </form>
   </div>
   <div class="section last">
-    <a href="#0" onclick="return ui.do_show_dialog('about_appeditor')">About App Editor</a>
+    <a href="#0" acre:onclick="return ui.do_show_dialog('about_appeditor')">About App Editor</a>
   </div>
   </div>
   <acre:block script="ondomready">      
@@ -314,7 +314,7 @@
   <acre:script>
     var writable = ui.get_app().is_writable();
   </acre:script>
-  <div class='dialog-close' onclick='ui.do_hide_overlays()'></div>
+  <div class='dialog-close' acre:onclick='ui.do_hide_overlays()'></div>
   <div id="app-settings-section" class="clear">
     <div id="settings-tabs">
       <ul id="settings-tabs-bar">
@@ -335,16 +335,16 @@
     <fieldset id="app-clonedelete" acre:if="!ui.get_app().is_remote()">
       <button id='app-general-listing' class="button-primary" acre:if="ui.get_app().is_author()">
         Edit Name &amp; Directory Listing</button>
-      <button id='app-general-clone' acre:if="ui.get_user()" onclick="ui.do_show_dialog('new_app',[true])">
+      <button id='app-general-clone' acre:if="ui.get_user()" acre:onclick="ui.do_show_dialog('new_app',[true])">
         Clone this App</button>
-      <button id='app-general-delete' acre:if="writable" onclick="ui.do_show_dialog('delete_app')">
+      <button id='app-general-delete' acre:if="writable" acre:onclick="ui.do_show_dialog('delete_app')">
         Delete this App</button>
     </fieldset>
     <fieldset id="app-clonedelete" acre:else="">
-      <button id='app-general-clone' acre:if="ui.get_user()" onclick="ui.do_show_dialog('new_app',[true])">
+      <button id='app-general-clone' acre:if="ui.get_user()" acre:onclick="ui.do_show_dialog('new_app',[true])">
         Clone this App</button>
     </fieldset>
-    <button onclick="ui.do_hide_overlays()">Done</button>
+    <button acre:onclick="ui.do_hide_overlays()">Done</button>
   </div>
   <acre:block script="ondomready">
     $('#button-appsettings').addClass('button-open');
@@ -386,10 +386,10 @@
       <fieldset id="add-version" acre:if="writable">
         <label for="add-version-key">Create a new version: </label>
         <input id='add-version-key' type='text' maxlength="10" />
-        <button id="button-version" onclick="ui.do_app_add_version($('#add-version-key').val())">
+        <button id="button-version" acre:onclick="ui.do_app_add_version($('#add-version-key').val())">
           Add Version</button>
         <button acre:if="ui.get_app().get_versions().length" 
-          onclick="ui.do_show_dialog('diff_patch',['app_diff']);">
+          acre:onclick="ui.do_show_dialog('diff_patch',['app_diff']);">
           View Changes</button>
       </fieldset>
       <div id="app-versions-add">${app_versions_list()}</div>
@@ -583,7 +583,7 @@
                 <span acre:if="version.as_of_time">
                   ${ui.get_relative_timestamp(version.as_of_time)}
                   <span acre:if="writable &amp;&amp; show_update">
-                    [<a href="#0" onclick="ui.do_app_add_version(version.name, '__now__')">set to now</a>]
+                    [<a href="#0" acre:onclick="ui.do_app_add_version(version.name, '__now__')">set to now</a>]
                   </span>
                 </span>
               </td>
@@ -638,7 +638,7 @@
         </p>
       </div>
       <h3>App History</h3>
-      <button id="button-app-history" onclick="ui.do_show_dialog('diff_patch', ['app_history'])">
+      <button id="button-app-history" acre:onclick="ui.do_show_dialog('diff_patch', ['app_history'])">
         Diff Versions &amp; Edits</button>
     </div>
     <div class="tab-section">

@@ -39,7 +39,7 @@ function remote_get_file(file, host) {
     revision : file.revision
   };
   
-  var url = acre.form.build_url(host + "/appeditor/get_file_revision", args);
+  var url = acre.form.build_url(host + "get_file_revision", args);
 
   FB.fetch(url, {
     callback: function(envelope) {
@@ -83,7 +83,7 @@ function prepare_clone_app(appid) {
       if (app.acre_host === current_host) {
         local_get_file(file);
       } else {
-        remote_get_file(file, app.repository.editor_url);
+        remote_get_file(file, app.repository.appeditor_service_base);
       }
     }
   }

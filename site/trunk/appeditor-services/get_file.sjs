@@ -12,7 +12,7 @@ function get_file(fileid, timestamp) {
         fileid : fileid,
         timestamp : timestamp
       };
-      var url = acre.form.build_url(resource.editor_url + "/appeditor/get_file", args);
+      var url = acre.form.build_url(resource.appeditor_service_base + "get_file", args);
       return FB.fetch(url).result;
     }
     

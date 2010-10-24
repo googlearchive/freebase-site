@@ -20,12 +20,14 @@ function create_app_query(app_path) {
     '/freebase/apps/application/oauth_enabled' : null,
     '/freebase/apps/acre_app/based_on': {
       id: null,
+      type: '/freebase/apps/acre_app',
       name: null,
       limit: 1,
       optional: true
     },
     '!/freebase/apps/acre_app/based_on': [{
       id: null,
+      type: '/freebase/apps/acre_app',
       name: null,
       timestamp: null,
       sort : "-timestamp",
@@ -197,7 +199,7 @@ function make_graph_app(md, just_files, timestamp) {
   
   var ret = _format_app_query_results(leaf, just_files);
   
-  if(md.versions.length) {
+  if(md.versions && md.versions.length) {
     ret.version = md.versions[0];
   }
 
@@ -210,9 +212,9 @@ function make_graph_app(md, just_files, timestamp) {
   }
   
   ret.repository     = {
-    url         : FB.service_url,
-    editor_url  : null,
-    versioned   : true
+    url                     : FB.service_url,
+    appeditor_service_base  : null,
+    versioned               : true
   };
   
   return ret;
@@ -227,9 +229,9 @@ function make_disk_app(appinfo) {
   r.appid          = appinfo.app_id;
   r.acre_host      = null;
   r.repository     = {
-      url        : null,
-      editor_url : null,
-      versioned  : false,
+      url                    : null,
+      appeditor_service_base : null,
+      versioned              : false,
   };
   r.guid           = appinfo.app_guid;
   r.name           = appinfo.app_id.split("/")[1];
@@ -283,7 +285,7 @@ function get_app (appid, just_files, timestamp) {
       just_file : just_files,
       timestamp : timestamp
     };
-    var url = acre.form.build_url(resource.editor_url + "/appeditor/get_app", args);
+    var url = acre.form.build_url(resource.appeditor_service_base + "get_app", args);
     return FB.fetch(url).result;
   }
   
@@ -307,7 +309,7 @@ function get_app (appid, just_files, timestamp) {
   }
   
   ret.acre_host = resource.acre_host;
-  ret.repository.editor_url = resource.editor_url;
+  ret.repository.appeditor_service_base = resource.appeditor_service_base;
   ret.current_file = resource.filename;
 
   return ret;

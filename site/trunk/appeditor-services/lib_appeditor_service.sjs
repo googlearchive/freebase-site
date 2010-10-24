@@ -4,15 +4,6 @@
 *
 */
 
-var DEFAULT_HOST_NS = "/freebase/apps/hosts";
-
-var ACRE_TO_FREEBASE_MAP = {
-  "freebaseapps.com"           : "http://www.freebase.com",
-  "sandbox-freebaseapps.com"   : "http://www.sandbox-freebase.com",
-  "branch.qa-freebaseapps.com" : "http://branch.qa.metaweb.com",
-  "trunk.qa-freebaseapps.com"  : "http://trunk.qa.metaweb.com"
-};
-
 
 ////////////////////
 //                //
@@ -177,28 +168,22 @@ function escape_re(s) {
 function parse_path(path, options /* file : true|false */) {
 
   var DEFAULT_HOST_NS = "/freebase/apps/hosts";
+  
+  var APPEDITOR_SERVICE_PATH = "/appeditor/service/"
 
   var ACRE_TO_FREEBASE_MAP = {
-    "freebaseapps.com"           : "http://www.freebase.com",
-    "sandbox-freebaseapps.com"   : "http://www.sandbox-freebase.com",
-    "branch.qa-freebaseapps.com" : "http://branch.qa.metaweb.com",
-    "trunk.qa-freebaseapps.com"  : "http://trunk.qa.metaweb.com",
-    "acre.z:8115"                : acre.freebase.service_url
-  };
-  
-  var APPEDITOR_TO_ACRE_MAP = {
-    "acre.freebase.com"           : "freebaseapps.com" ,
-    "acre.sandbox-freebase.com"   : "sandbox-freebaseapps.com",
-    "acre.branch.qa.metaweb.com"  : "branch.qa-freebaseapps.com",
-    "acre.trunk.qa.metaweb.com"   : "trunk.qa-freebaseapps.com"
-  };
-  
-  var ACRE_TO_APPEDITOR_MAP = {
-    "freebaseapps.com"           : "http://acre.freebase.com",
-    "sandbox-freebaseapps.com"   : "http://acre.sandbox-freebase.com",
-    "branch.qa-freebaseapps.com" : "http://acre.branch.qa.metaweb.com",
-    "trunk.qa-freebaseapps.com"  : "http://acre.trunk.qa.metaweb.com",
-    "acre.z:8115"                : "http://ae." + acre.freebase.service_url.replace(/^https?:\/\//,"") + (acre.host.port ? ":" + acre.host.port : "")
+    "freebaseapps.com"           : {
+        service_url : "http://api.freebase.com",
+        site_host   : "http://www.freebase.com"
+    },
+    "sandbox-freebaseapps.com"   : {
+        service_url : "http://api.sandbox-freebase.com",
+        site_host   : "http://www.sandbox-freebase.com"
+    },
+    "acre.z:8115"                : {
+        service_url : "http://api.sandbox-freebase.com",
+        site_host   : "http://devel.sandbox-freebase.com:8115"
+    }
   };
   
   var hosts = [];
@@ -206,11 +191,13 @@ function parse_path(path, options /* file : true|false */) {
       hosts.push(escape_re(host));
   }
   var acre_host_re = new RegExp("\.(" + hosts.join("|") +")\.$");
-
+  
   options = options || {};
   var app_ver_id_parts;   // arrary used to manipulate appid/host components
 
   // structure of object we'll be returning
+  var acre_host = acre.host.name + ((acre.host.port !== 80) ? ":" + acre.host.port : "");
+  var freebase_urls = ACRE_TO_FREEBASE_MAP[acre_host];
   var resource = {
     path        : null,
     id          : null,
@@ -220,11 +207,11 @@ function parse_path(path, options /* file : true|false */) {
     filename    : null,
     path_info   : "/",
     querystring : null,
-    service_url : acre.freebase.service_url,
-    acre_host   : acre.host.name + ((acre.host.port !== 80) ? ":" + acre.host.port : ""),
-    appeditor_host : ACRE_TO_APPEDITOR_MAP[acre.host.name]
-    
+    service_url : freebase_urls ? freebase_urls.service_url : acre.freebase.service_url,
+    site_host   : freebase_urls ? freebase_urls.site_host : acre.freebase.site_host,
+    acre_host   : acre_host
   };
+  resource.appeditor_service_base = resource.site_host + APPEDITOR_SERVICE_PATH;
 
   if (typeof path === 'undefined') return resource;
   if (typeof path !== 'string') {
@@ -263,7 +250,12 @@ function parse_path(path, options /* file : true|false */) {
 
         var ae_host = /^https?:\/\/([^\/]*)/.exec(source_url);
         if (ae_host) {
-            resource.acre_host = APPEDITOR_TO_ACRE_MAP[ae_host[1]];
+            for (var host in ACRE_TO_FREEBASE_MAP) {
+                var freebase_urls = ACRE_TO_FREEBASE_MAP[host];
+                if (freebase_urls.site_host = ae_host[0]) {
+                    resource.acre_host = host;
+                }
+            }
         }
         var app_host_res = /\#\!path=\/\/([^\/]*)/.exec(source_url);
         if (app_host_res) app_host_part = app_host_res[1];
@@ -274,14 +266,6 @@ function parse_path(path, options /* file : true|false */) {
             resource.acre_host = match[1];
             app_host_part = app_host_part.replace(acre_host_re,"");
         } 
-    }
-    resource.service_url = ACRE_TO_FREEBASE_MAP[resource.acre_host];
-    resource.editor_url  = ACRE_TO_APPEDITOR_MAP[resource.acre_host];
-    
-    //if the current host was not resolved by the mappings (e.g. you are on a google internal host)
-    //then just set the service_url to freebase service_url
-    if (!resource.service_url) { 
-	    resource.service_url = acre.freebase.service_url;
     }
       
     // break-down app host so we can work with it

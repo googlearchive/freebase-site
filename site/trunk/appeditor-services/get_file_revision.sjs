@@ -11,7 +11,7 @@ function get_file_revision(fileid, revision) {
       fileid : fileid,
       revision : revision
     };
-    var url = acre.form.build_url(resource.editor_url + "/appeditor/get_file_revision", args);
+    var url = acre.form.build_url(resource.appeditor_service_base + "get_file_revision", args);
     return FB.fetch(url).result;
   }
   

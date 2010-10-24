@@ -32,22 +32,26 @@
         });
     };
 
-    $.fn.acre = function(pkgid, def, args) {
-        var pkg = templates[pkgid];
-        if (typeof pkg === 'object') {
-            var template = pkg[def];
-            if (typeof template === 'function') {
-                var html = mjt.flatten_markup(template.apply(this, args));
-                return this.each(function(){
-                    this.innerHTML = html;
-                });
+    $.fn.acre = function(markup_or_pkgid, def, args) {
+        var html = "";
+        if (typeof def !== 'undefined') {
+            var pkg = templates[markup_or_pkgid];
+            if (typeof pkg === 'object') {
+                var template = pkg[def];
+                if (typeof template === 'function') {
+                    var html = mjt.flatten_markup(template.apply(this, args));
+                } else {
+                    console.warn("acre template '" + def + "' does not exist in package '" + pkgid + "'");
+                }
             } else {
-                console.warn("acre template '" + def + "' does not exist in package '" + pkgid + "'");
-            }
+                console.warn("acre template package '" + pkgid + "' has not been registered");
+            }            
         } else {
-            console.warn("acre template package '" + pkgid + "' has not been registered");
+            var html = mjt.flatten_markup(markup_or_pkgid);
         }
-        return this;
+        return this.each(function(){
+            this.innerHTML = html;
+        });
     };
 
 })(jQuery);

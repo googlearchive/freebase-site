@@ -1085,7 +1085,7 @@ mjt.TemplateCompiler.prototype.compile_element = function(n, choose_state, leadi
     if (mjttag) {
         switch (mjttag[1]) {
           case 'script':
-            mjtattrs.script = '';          // fake out the existing test
+            mjtattrs.script = mjtattrs.script || '';    // fake out the existing test
             break;
           case 'none':
             mjt.warn('<mjt:none> is deprecated, use <mjt:block> instead');

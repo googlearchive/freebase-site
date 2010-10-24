@@ -2,6 +2,11 @@
 * jQuery mjt glue
 *
 *  example usage: $('#some_id').mjt(my_mjt_lib.my_template(template_args));
+* 
+*  example usage: $('#some_id').acre(my_mjt_lib.my_template(template_args));
+*
+*  example usage: $(window).trigger("acre.template.register", { pkgid: "my_mjt_lib", source: my_mjt_js_source });
+*  example usage: $('#some_id').acre("my_mjt_lib", "my_template", template_args_array);
 */
 ;if (typeof jQuery != 'undefined') (function($) {
 

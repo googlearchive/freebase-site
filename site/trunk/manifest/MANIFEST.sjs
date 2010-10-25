@@ -17,7 +17,11 @@ Manifest.prototype = {
     this.scope = scope;
 
     this.config = extend({}, base_config, config);  // extend with base_config
-    extend(this.config.apps, base_config.apps, this.config.apps); // update config.apps with base_config.
+    var apps = extend({}, base_config.apps);
+    if (config) {
+      extend(apps, config.apps);
+    }
+    extend(this.config.apps, apps); // update config.apps with base_config.
 
     this.apps = this.config.apps || {};
     this.stylesheet = this.config.stylesheet || {};
@@ -317,8 +321,11 @@ Manifest.prototype = {
   },
 
   not_found: function(id) {
-    this.scope.acre.response.status = 404;
-    acre.exit();
+    this.error("Not Found: " + id);
+  },
+
+  error: function(errObj) {
+    throw(JSON.stringify(errObj, null, 2));
   },
 
   main: function() {

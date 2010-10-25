@@ -119,5 +119,17 @@ test("config", function() {
   equals(mf.image_base_url, 'bar');
 });
 
+
+test("extend config apps", function() {
+  var manifest_config = JSON.parse(acre.get_source("CONFIG.json"));
+  var mf = new lib.Manifest(scope, {
+    "apps": {
+      // overwrite service in base manifest CONFIG.json
+      "service": "//app.world.hello.dev"
+    }
+  });
+  equals(mf.apps.service, "//app.world.hello.dev");
+});
+
 acre.test.report();
 

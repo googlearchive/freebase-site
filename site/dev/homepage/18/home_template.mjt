@@ -1,0 +1,45 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").mf;
+  var templates = mf.require("templates");
+  var c = this.exports.c = {};
+</acre:script>
+
+<acre:block def="head()">
+  <script>
+    if (document.cookie.indexOf("metaweb-user-info") < 0) {window.location.reload(true);}
+  </script>
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('homepage.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  ${templates.homepage_header()}
+</acre:block>
+
+<acre:block def="content_body()">
+  <div id="content-main">
+    <acre:script>
+      var index = 0;
+      if (!c.has_membership) {
+        var index = 1;
+      }
+    </acre:script>
+    ${templates.domain_explorer(c.categories, c.user, index)}
+  </div>
+  
+  <div id="content-side">
+    ${templates.user_info(c.user)}
+    ${templates.contribute_to_freebase()}
+    ${templates.googlerefine()}
+  </div>
+  
+  <div id="content-footer">
+    ${templates.for_developers()}
+    ${templates.blog_entries(c.blog)}
+    ${templates.wiki_entries(c.wiki)}
+    ${templates.join_discussion()}
+  </div>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="${mf.js_src('homepage.mf.js')}"></script>
+</acre:block>

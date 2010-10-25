@@ -1446,11 +1446,11 @@ class ActionBranch():
         if branch_app and d_app.version != branch_app.version:
           #point core to this specific library app version
           #if the library is routing, then always point to release version
-          if branch_app.app_key == 'routing':
-            core_app.update_dependency(label, AppFactory(c)('routing', 'release'))
+          #if branch_app.app_key == 'routing':
+          #  core_app.update_dependency(label, AppFactory(c)('routing', 'release'))
           #otherwise point to the specific version that was just branched
-          else:
-            core_app.update_dependency(label, branch_app)
+          #else:
+          core_app.update_dependency(label, branch_app)
           updated_apps.add(core_app)
 
         if branch_app.app_key  != 'routing':

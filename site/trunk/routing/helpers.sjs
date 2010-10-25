@@ -1,3 +1,5 @@
+var rules = mf.require("routing", "app_routes").rules;
+
 /**
  * Split path to script_id and path_info pairs. This is not like an ordinary path split.
  *
@@ -38,3 +40,25 @@ function split_extension(path) {
   }
   return [path, "sjs"];
 };
+
+/**
+ * Get the canonical url for an acre resource specified by "app" label or path id
+ *   and "file" name.
+ * The "app" label MUST be defined in /freebase/site/routing/app_routes.
+ */
+
+function relative_url_for(app, file, params, extra_path) {
+  var route = rules.route_for_app(app, file);
+  if (!route) {
+    throw "No route found in routing app_routes for app:"+app+" script:"+file;
+  }
+
+  var url;
+  if (route.script && route.script === file) {
+    url = route.prefix + extra_path;
+  } else {
+    url = route.prefix + (file ? "/" + file : "") + extra_path;
+  }
+
+  return acre.form.build_url(url, params);
+}

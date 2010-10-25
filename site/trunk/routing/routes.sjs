@@ -87,7 +87,7 @@ function path_based_routing(req) {
       // Handle canonical app routing
       var app = app_routes.app_labels[route.app];
       if (!app) {
- 	    throw (route.app + " must be defined in the MANIFEST for routing.");
+ 	    throw route.app+" must be defined in the MANIFEST for routing.";
  	  }
       var script = route.script;
       var path_info = path.replace(route.prefix, '');

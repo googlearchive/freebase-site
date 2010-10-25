@@ -97,7 +97,7 @@ var PrefixRouter = function() {
     var subtree = traverse_key_tree(routing_tree, path.split('/'));
     return subtree.route;
   };
-
+  
   var all_routes = this.all_routes = function() {
     return route_list.slice(0);
   };

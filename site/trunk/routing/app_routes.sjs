@@ -33,7 +33,8 @@ var app_labels = {
   "tmt"               : "//tmt.zenkat.user.dev",
   "toolbox"           : "//toolbox.site.freebase.dev",
   "topicblocks"       : "//topicbox.daepark.user.dev",
-  "triples"           : "//triples.site.freebase.dev"
+  "triples"           : "//triples.site.freebase.dev",
+  "template"          : "//template.site.freebase.dev"
 };
 
 // map[path] = app label
@@ -65,12 +66,13 @@ rules.add([
   {prefix:"/inspect",            app:"triples"}
 ]);
 
-// Urls for exposed ajax libraries
+// Urls for exposed ajax libraries and static resources
 rules.add([
   {prefix:"/permission",         app:"permission"},
   {prefix:"/toolbox",            app:"toolbox"},
   {prefix:"/cuecard",            app:"cuecard" },
-  {prefix:"/appeditor/services", app:"appeditor-services" }
+  {prefix:"/appeditor/services", app:"appeditor-services" },
+  {prefix:"/template",           app:"template"}
 ]);
 
 // Urls for administrative tools

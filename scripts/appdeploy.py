@@ -493,11 +493,22 @@ class App:
     return self.c.run_cmd(cmd, name='commit app', exit=False)
 
 
-  def get_graph_app(self):
+  def get_graph_app_from_environment(self, service):
+
+    s = self.c.get_freebase_services(service)
+    if not s:
+      return self.c.error('Unable to instantiate freebase services.')
+
+    try:
+      return s.get_app(self.path())
+    except:
+      return self.c.error('Could not get %s from appeditor services' % self)
+
+
+  def get_graph_app(self, service=None):
     '''
     get app info using  graph/appeditor/get_app service
     '''
-    #pdb.set_trace()
     try:
       graph_app = self.c.freebase.get_app(self.path())
     except:
@@ -513,8 +524,8 @@ class App:
 
     return graph_app
 
-  def last_svn_revision(self):
-    return int(self.next_svn_revision() - 1)
+  def last_svn_version(self):
+    return int(self.next_svn_version() - 1)
 
   def next_svn_version(self):
     (r, result) = self.c.run_cmd(['svn', 'ls', self.svn_url(allversions=True)])
@@ -608,6 +619,17 @@ class Context():
     if self.options.app:
       self.current_app = self.app = AppFactory(self)(self.options.app, self.options.version)
 
+    self.quiet = False
+
+  def be_quiet(self):
+    self.quiet = True
+
+  def get_freebase_services(self,service):
+    if 'www' in service.keys() and 'acre' in service.keys():
+      return HTTPMetawebSession(service['www'], acre_service_url=service['acre'])
+
+    return False
+
   def set_current_app(self, app):
     self.current_app = app
 
@@ -625,10 +647,14 @@ class Context():
     return False
 
   def error(self, msg):
-    print self.RED + '[%s:%s:ERROR] %s' % (self.action, self.options.app, msg) + self.ENDC
+    self.log(msg, subaction='ERROR', color=self.RED)
+    #print self.RED + '[%s:%s:ERROR] %s' % (self.action, self.options.app, msg) + self.ENDC
     return False
 
   def log(self, msg, subaction='', color=None):
+
+    if self.quiet:
+      return True
 
     if subaction:
       subaction = ":%s" % subaction
@@ -1566,11 +1592,25 @@ class ActionInfo:
   def __init__(self, context):
     self.context = context
     context.no_email()
+    context.be_quiet()
 
 
   def info_app(self):
     c = self.context
     app = self.context.app
+
+    print "=== Versions ==="
+    print "svn: last: %s" % app.last_svn_version()
+
+    for environment in ['sandbox', 'otg']:
+      e_app = app.get_graph_app_from_environment(SERVICES['sandbox'])
+      e_released = e_app.release or 'trunk'
+      if e_app.versions:
+        e_last = e_app.versions[0]['name']
+      else:
+        e_last = 'trunk'
+
+      print "%s: released: %s last %s" % (environment, e_released, e_last)
 
     return True
 

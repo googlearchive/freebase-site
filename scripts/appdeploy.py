@@ -408,7 +408,7 @@ class App:
 
 
   def write_file(self, filename, contents):
-          
+
     file_exists, _ = self.read_file(filename)
     filename = "%s/%s" % (self.svn_path(), filename)
 
@@ -513,6 +513,9 @@ class App:
 
     return graph_app
 
+  def last_svn_revision(self):
+    return int(self.next_svn_revision() - 1)
+
   def next_svn_version(self):
     (r, result) = self.c.run_cmd(['svn', 'ls', self.svn_url(allversions=True)])
 
@@ -599,6 +602,9 @@ class Context():
     self.current_app = None
     self.app = None
 
+    self.googlecode_username = None
+    self.googlecode_password = None
+
     if self.options.app:
       self.current_app = self.app = AppFactory(self)(self.options.app, self.options.version)
 
@@ -610,6 +616,9 @@ class Context():
 
   def set_action(self, action):
     self.action = action
+
+  def no_email(self):
+    self.options.noemail = True
 
   def warn(self, msg):
     print '[%s:%s:WARNING] %s' % (self.action, self.options.app, msg)
@@ -628,11 +637,7 @@ class Context():
     if color:
       start_color, end_color = color, self.ENDC
 
-    cv = self.current_app.version
-    if not cv:
-      cv = 'trunk'
-
-    print start_color + '[%s:%s %s%s] %s' % (self.action, self.current_app.app_key, cv, subaction, msg) + end_color
+    print start_color + '[%s:%s:%s] %s' % (self.action, self.current_app or '', subaction, msg) + end_color
 
     return True
 
@@ -768,6 +773,9 @@ class Context():
 
 
   def googlecode_login(self):
+
+    if self.googlecode_username and self.googlecode_password:
+      return True
 
     username = None
     password = None
@@ -951,6 +959,10 @@ class ActionPush():
     if not app:
       app = c.app
     c.set_action("push")
+    success = c.googlecode_login()
+    if not success:
+      return c.error('You must provide valid google code credentials to complete this operation.')
+
     c.log('Starting push of %s to %s' % (app, c.options.graph), color=c.BLUE)
 
     #validate options
@@ -1280,6 +1292,10 @@ class ActionStatic():
     if not (self.app and self.app.version and c.options.graph):
       return c.error("You must specify a valid app, version and graph for static file generation")
 
+    success = c.googlecode_login()
+    if not success:
+      return c.error('You must provide valid google code credentials to complete this operation.')
+
     c.set_action("static")
     c.log('Starting action static for %s' % self.app.name(), color=c.BLUE)
     c.verbose('Figuring out dependencies')
@@ -1337,6 +1353,10 @@ class ActionBranch():
   def __call__(self):
     c = self.context
     c.set_action("branch")
+
+    success = c.googlecode_login()
+    if not success:
+      return c.error('You must provide valid google code credentials to complete this operation.')
 
     if not c.options.app:
       return c.error('You have to specify a valid app to branch')
@@ -1399,7 +1419,12 @@ class ActionBranch():
         #only if it used to point to trunk and is now a new version
         if branch_app and d_app.version != branch_app.version:
           #point core to this specific library app version
-          core_app.update_dependency(label, branch_app)
+          #if the library is routing, then always point to release version
+          if branch_app.app_key == 'routing':
+            core_app.update_dependency(label, AppFactory(c)('routing', 'release'))
+          #otherwise point to the specific version that was just branched
+          else:
+            core_app.update_dependency(label, branch_app)
           updated_apps.add(core_app)
 
         if branch_app.app_key  != 'routing':
@@ -1426,31 +1451,32 @@ class ActionBranch():
 class ActionCreateGraph():
 
     def __init__(self, context):
-        self.context = context
+      self.context = context
 
 
     def __call__(self, app=None):
-        c = self.context
-        c.set_action("create")
-        if not ((c.options.app or app) and c.options.graph):
-            return c.error('You must specify the app key (e.g. "schema") and a graph to create a new app')
+      c = self.context
+      c.set_action("create")
 
-        if not app:
-          app = AppFactory(c)(c.options.app)
+      if not ((c.options.app or app) and c.options.graph):
+        return c.error('You must specify the app key (e.g. "schema") and a graph to create a new app')
 
-        c.log('create app %s in graph %s' % (app.app_key, c.options.graph))
+      if not app:
+        app = AppFactory(c)(c.options.app)
 
-        if bool(c.freebase.mqlread({"id": app.app_id})):
-          c.log('app %s already exists' % app.app_id)
-        else:
-          success = c.freebase_login()
-          if not success:
-            return c.error('failed to get freebase credentials - aborting app creation')
+      c.log('Creating %s in %s' % (app.app_key, c.options.graph))
 
-          name = "freebase.com %s" % app.app_key
-          c.freebase.create_app(app.app_id, name=name, extra_group="/m/043wdvg" )
+      if bool(c.freebase.mqlread({"id": app.app_id})):
+        c.log('app %s already exists' % app.app_id)
+      else:
+        success = c.freebase_login()
+        if not success:
+          return c.error('failed to get freebase credentials - aborting app creation')
 
-        return True
+        name = "freebase.com %s" % app.app_key
+        c.freebase.create_app(app.app_id, name=name, extra_group="/m/043wdvg" )
+
+      return True
 
 class ActionDeploy:
 
@@ -1461,6 +1487,10 @@ class ActionDeploy:
 
     c = self.context
     c.set_action("deploy")
+    success = c.googlecode_login()
+    if not success:
+      return c.error('You must provide valid google code credentials to complete this operation.')
+
 
     if not (c.options.app and c.options.graph):
       return c.error('You must specify the app key (e.g. "schema") and a graph to deploy to')
@@ -1503,6 +1533,9 @@ class ActionCreateLocal:
   def __call__(self):
 
     c = self.context
+    success = c.googlecode_login()
+    if not success:
+      return c.error('You must provide valid google code credentials to complete this operation.')
 
     if not (c.options.app and c.options.basedon):
       return c.error('You must specify a valid app name and an app to base your new app on.')
@@ -1526,6 +1559,39 @@ class ActionTest:
 
     c = self.context
     return True
+
+class ActionInfo:
+  '''information about apps and versions'''
+
+  def __init__(self, context):
+    self.context = context
+    context.no_email()
+
+
+  def info_app(self):
+    c = self.context
+    app = self.context.app
+
+    return True
+
+  def info_all_apps(self):
+    c = self.context
+    app = self.context.app
+
+    return True
+
+  def __call__(self):
+
+    c = self.context
+
+    if c.options.app:
+      return self.info_app()
+    else:
+      return self.info_all_apps()
+
+
+
+
 
 class ActionRelease:
 
@@ -1566,6 +1632,7 @@ def main():
         ('create_local', 'combine branch, static and push in one go', ActionCreateLocal),
         ('release', 'release a specific version of an app', ActionRelease),
         ('deploy', 'combine branch, static and push in one go', ActionDeploy),
+        ('info', 'provide information on all apps or a specific app', ActionInfo),
         ('test', 'test', ActionTest)
         ]
 
@@ -1607,10 +1674,6 @@ def main():
     #all options and args are good, let's do some clean-up / arg expansion
 
     context = Context(options)
-
-    success = context.googlecode_login()
-    if not success:
-      exit(-1)
 
     for action in args:
         for valid_action in valid_actions:

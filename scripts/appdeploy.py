@@ -1242,9 +1242,9 @@ class ActionStatic():
 
     msg = 'Create static file deployed directory version {version} for app {app}'.format(version=self.deploy_rev, app=c.options.app)
     cmd = ['svn', 'import', deployed_dir, deployed_url, '-m', '"%s"' % msg]
-    c.run_cmd(cmd)
+    (r, result) = c.run_cmd(cmd)
 
-    return True
+    return r
 
   def get_resource_dependency_apps(self):
     c = self.context

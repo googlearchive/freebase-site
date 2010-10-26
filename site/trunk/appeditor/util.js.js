@@ -35,7 +35,6 @@ assert.critical = function(cond,message) {
     var html = '';
     html += '<div style="font-weight:bold;">Internal Error</div>';
     html += message;
-    html += '<div style="padding-top: 5px";><a href="http://www.metaweb.com/error-acre.html" target="_blank">Please report this error!</a></div>';
     assert.error_dialog(html);
     //TODO: maybe this is too brutal? perhaps the user can continue?
     //throw 'assert.critical failed: '+message;

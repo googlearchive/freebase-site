@@ -244,7 +244,6 @@
 
       $(window).resize(function() {
         triples.update_menu_position();
-        console.log('hi');
       });
 
       // In-page navigation toggle
@@ -264,7 +263,6 @@
 
       // Update currently selected and hide menu when user clicks
       $("li > a", triples.nav_menu).click(function(){
-        console.log('hi');
         $("b", triples.nav_current).html($(this).html());
         triples.nav_menu.hide();
       });

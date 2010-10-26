@@ -169,7 +169,7 @@ function parse_path(path, options /* file : true|false */) {
 
   var DEFAULT_HOST_NS = "/freebase/apps/hosts";
   
-  var APPEDITOR_SERVICE_PATH = "/appeditor/service/"
+  var APPEDITOR_SERVICE_PATH = "/appeditor/services/"
 
   var ACRE_TO_FREEBASE_MAP = {
     "freebaseapps.com"           : {

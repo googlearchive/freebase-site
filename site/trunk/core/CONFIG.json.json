@@ -9,7 +9,7 @@
     "validator": "//validator.site.freebase.dev",
     "toolbox": "//toolbox.site.freebase.dev",
     "permission": "//permission.site.freebase.dev",
-    "appeditor": "//appeditor-services.site.freebase.dev",
+    "appeditor-services": "//appeditor-services.site.freebase.dev",
     "cuecard": "//cuecard.site.freebase.dev",
     "i18n": "//i18n.site.freebase.dev",
     "test": "//test.site.freebase.dev",

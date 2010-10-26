@@ -29,7 +29,7 @@ function create_app(args) {
 
 function set_app_properties(args) {
   if (!args.appid) { throw "Missing appid argument"; }
-  var api = mf.require("appeditor", "set_app_properties");
+  var api = mf.require("appeditor-services", "set_app_properties");
   return api.set_app_properties(args.appid, args);
 }
 

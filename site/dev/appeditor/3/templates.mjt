@@ -45,7 +45,7 @@
     $('#file-margin').draggable({ 
       axis: 'x',
       iframeFix: true,
-      containment: [125,,400,],
+      containment: [125,,400],
       drag : function(event, jqui) {
         flw = $('#file-margin').offset().left;
         $(window).trigger('resize');            

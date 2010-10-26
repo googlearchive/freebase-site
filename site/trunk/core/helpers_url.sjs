@@ -30,7 +30,7 @@ function is_client() {
 };
 function is_production() {
   if (is_production.b == undefined) {
-    is_production.b = /\.freebase\.com$/.test(acre.request.server_name);
+    is_production.b = /www\.freebase\.com$/.test(acre.request.server_name);
   }
   return is_production.b;
 }

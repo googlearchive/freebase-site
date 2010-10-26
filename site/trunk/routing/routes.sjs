@@ -11,7 +11,7 @@ function not_found(id) {
 };
 
 function is_release_pod() {
-  return /\.(freebase|sandbox\-freebase)\.com$/.test(acre.request.server_name);
+  return /www.(freebase|sandbox\-freebase)\.com$/.test(acre.request.server_name);
 };
 
 /**

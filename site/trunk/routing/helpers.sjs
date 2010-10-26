@@ -1,4 +1,4 @@
-var rules = mf.require("routing", "app_routes").rules;
+var rules = acre.require("//routing.site.freebase.dev/app_routes").rules;
 
 /**
  * Split path to script_id and path_info pairs. This is not like an ordinary path split.

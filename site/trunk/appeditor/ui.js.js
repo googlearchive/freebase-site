@@ -1440,9 +1440,12 @@ var ui = {};
         function _update_inputs() {
             var res = _compare_inputs();
             
+            if (res && options.change) { 
+                res = options.change.apply(this, [res]); 
+            }
+            
             if (res) {
                 $('#button-' + button_name).removeAttr('disabled').addClass('button-primary');
-                if (options.change) { options.change.apply(this, [res]); }
             } else {
               $('#button-' + button_name).attr('disabled', 'disabled').removeClass('button-primary');
             }

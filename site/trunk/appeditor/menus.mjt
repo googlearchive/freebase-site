@@ -184,7 +184,10 @@
   <acre:script script="ondomready">      
     ui.watch_inputs('name', {
       inputs: {
-        'file-name' : ui.get_file().get_name()              
+        'file-name' : ui.get_file().get_name()
+      },
+      change: function(fields){
+        return ((fields['file-name'] !== "") ? fields : false);
       },
       submit: function(inputs) { 
         ui.do_file_move(inputs['file-name']);

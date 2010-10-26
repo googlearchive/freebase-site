@@ -333,6 +333,7 @@
       var disambiguator = $("input[name=disambiguator]", form.row);
       var unique = $("input[name=unique]", form.row);
       var hidden = $("input[name=hidden]", form.row);
+      var type = $("input[name=type]", form.row);
 
       if (form.mode === "add") {
         $(".nav-toggle:first", form.row).click(); // reset delegate property form
@@ -352,12 +353,17 @@
 
       if (!form.row.data("initialized")) {
         se.auto_key(name, key, "/type/property");
-
-        // expected_type
+        //
+        // suggest expected_type
+        //
+        // this is a hacky way to get the domain id of the current context of the property form
+        var domain = type.val().split("/");
+        domain.pop();
+        domain = domain.join("/");
         expected_type_input.suggest_expected_type({
           service_url: fb.acre.freebase.service_url,
           suggest_new: "Create new type",
-          user: fb.user.id
+          domain: domain
         })
         .bind("fb-select", function(e, data) {
           if (data.unit) {

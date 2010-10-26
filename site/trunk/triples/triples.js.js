@@ -257,6 +257,18 @@
         }
       });
 
+      // Hide menu when user leaves menu
+      triples.nav_menu.mouseleave(function(){
+        setTimeout(function(){ triples.nav_menu.fadeOut() }, 1500);
+      });
+
+      // Update currently selected and hide menu when user clicks
+      $("li > a", triples.nav_menu).click(function(){
+        console.log('hi');
+        $("b", triples.nav_current).html($(this).html());
+        triples.nav_menu.hide();
+      });
+
       // Toggling for 'show all writes'
       $(".history-toggle").change(function() {
 
@@ -276,16 +288,7 @@
         }
       });
 
-      // Hide menu when user leaves menu
-      triples.nav_menu.mouseleave(function(){
-        setTimeout(function(){ triples.nav_menu.fadeOut() }, 1500);
-      });
 
-      // Update currently selected and hide menu when user clicks
-      $("li > a", triples.nav_menu).click(function(){
-       $("b", $nav_current).html($(this).html());
-        triples.nav_menu.hide();
-      });
     }
   };
 

@@ -188,7 +188,7 @@
 <!-- add any acre variables you wanted passed to client-side -->
 <acre:block def="acre_javascript_vars(exports)">
  <script>
-    var SERVER = {};
+    SERVER = {};
     SERVER.acre = {
       freebase: {
         service_url: "${acre.freebase.service_url}",

@@ -11,7 +11,7 @@ function not_found(id) {
 };
 
 function is_release_pod() {
-  return /^https?:\/\/(www\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url);
+  return /\.(freebase|sandbox\-freebase)\.com$/.test(acre.request.server_name);
 };
 
 /**
@@ -23,7 +23,7 @@ function do_route(app_path, script, path_info, query_string) {
   if (is_release_pod()) {
     app_path = "//release." + app_path.slice(2);
   }
-  
+
   try {
     var md = acre.get_metadata(app_path);
   }
@@ -95,7 +95,7 @@ function path_based_routing(req) {
       if (!script) {
         var [script, path_info, qs] = h.split_path(path_info);
       }
-      
+
       // acre.route and exit
       do_route(app, script, path_info, query_string);
     }

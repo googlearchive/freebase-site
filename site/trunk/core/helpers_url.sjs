@@ -24,13 +24,13 @@ var extend = mf.require("helpers_util").extend;
  */
 function is_client() {
   if (is_client.b == undefined) {
-    is_client.b = /^https?:\/\/((www|devel|a(cr)?e)\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url);
+    is_client.b = /\.(freebase|sandbox\-freebase)\.com$/.test(acre.request.server_name);
   }
   return is_client.b;
 };
 function is_production() {
   if (is_production.b == undefined) {
-    is_production.b = /^https?:\/\/(www\.)?freebase\.com(\:\d+)?/.test(acre.request.app_url);
+    is_production.b = /\.freebase\.com$/.test(acre.request.server_name);
   }
   return is_production.b;
 }

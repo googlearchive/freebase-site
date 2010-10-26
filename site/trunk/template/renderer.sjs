@@ -1,6 +1,6 @@
 var mf = acre.require("MANIFEST").mf;
 var deferred = mf.require("promise", "deferred");
-var h = mf.require("core", "helpers_util");
+var h = mf.require("core", "helpers");
 
 // Call one of these once at the end of your controller to render a
 //  freebase page, or single def with the results
@@ -19,7 +19,7 @@ function _render(data, template, def_name, exports, args) {
     "data": deferred.all(data),
     "args": deferred.all(args)
   };
-  
+
   var finished_results;
   var results_p = deferred.all(d).then(function(results) {
     if (exports && exports.c && typeof exports.c === "object") {
@@ -27,22 +27,22 @@ function _render(data, template, def_name, exports, args) {
     }
     finished_results = results;
   });
-  
+
   acre.async.wait_on_results();
-  
+
   try {
     d.data.cleanup();
     d.args.cleanup();
     results_p.cleanup();
-    
+
     var response = template[def_name].apply(template, finished_results.args);
     acre.write(response);
-    
-  } catch (e if /^https?:\/\/(www\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(acre.request.app_url)) {
+
+  } catch (e if /www.(freebase|sandbox\-freebase)\.com$/.test(acre.request.server_name)) {
     var path = acre.form.build_url("//error.site.freebase.dev/index", {status:500});
     acre.route(path);
     acre.exit();
   }
-  
+
   return "";
 }

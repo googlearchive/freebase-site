@@ -192,10 +192,11 @@
     SERVER.acre = {
       freebase: {
         service_url: "${acre.freebase.service_url}",
-        site_host: "${acre.freebase.site_host}"
+        site_host: "${acre.freebase.site_host}",
       },
       request: {
         app_url: "${acre.request.app_url}",
+        server_name: "${acre.request.server_name}"
       },
       lang: {
         mql: "${i18n.lang}",

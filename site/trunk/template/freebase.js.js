@@ -176,7 +176,7 @@ if (typeof SERVER === "object" && SERVER.acre) {
   /**
    *  If metaweb client url? use metaweb-user-info cookie info
    */
-  if (/^https?\:\/\/((www|devel)\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(fb.acre.request.app_url)) {
+  if (/\.(freebase|sandbox\-freebase)\.com$/.test(fb.acre.request.server_name)) {
     /*
      * Returns a single item 'i' from a Metaweb cookie 'c'
      * Item codes: u=username, d=display name, g=guid, p=path
@@ -311,7 +311,7 @@ if (typeof SERVER === "object" && SERVER.acre) {
      div: $("#devbar"),
 
      touch: function() {
-       if (/^https?\:\/\/((www|devel)\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(fb.acre.request.app_url)) {
+       if (/\.(freebase|sandbox\-freebase)\.com$/.test(fb.acre.request.server_name)) {
          $.ajax({
            url: fb.acre.freebase.service_url + "/api/service/touch",
            dataType: "jsonp"

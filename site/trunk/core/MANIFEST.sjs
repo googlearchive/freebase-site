@@ -17,14 +17,17 @@ function CoreManifest(scope, config) {
 CoreManifest.prototype = extend({}, Manifest.prototype, {
   init: function(scope, config) {
     config = extend({}, core_config, config);  // extend with core_config
-    
-    extend(config.apps, extend({}, core_config.apps, config.apps)); // update config.apps with core_config.apps
+    var apps = extend({}, core_config.apps);
+    if (config) {
+      extend(apps, config.apps);
+    }
+    extend(config.apps, apps); // update config.apps with core_config.apps
     Manifest.prototype.init.apply(this, [scope, config]);
     this.libs = this.config.libs || {};
   },
 
   get_app_base_url: function() {
-    if (/^https?:\/\/((www|devel)\.)?(freebase|sandbox\-freebase|branch\.qa\.metaweb|trunk\.qa\.metaweb)\.com(\:\d+)?/.test(this.scope.acre.request.app_url)) {
+    if (/\.(freebase|sandbox\-freebase)\.com$/.test(this.scope.acre.request.server_name)) {
       var app_routes = acre.require(this.apps.routing + "/app_routes");
       var app_path = this.scope.acre.current_script.app.path;
       var app_version = this.scope.acre.current_script.app.version;

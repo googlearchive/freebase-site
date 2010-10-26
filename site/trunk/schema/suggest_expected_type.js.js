@@ -8,6 +8,7 @@
  * - image
  * - weblink
  * - address
+ * - namespace
  */
 ;(function($) {
 
@@ -166,22 +167,24 @@
         // initialize /type/enumeration dialog
         var html =
           '<div class="ect-enumeration-dialog">' +
-            '<h2 class="ect-enumeration-dialog-title">Create Enumerated Namespace</h2>' +
+            '<h2 class="ect-enumeration-dialog-title">Enumerated Namespace</h2>' +
             '<div class="form-group">' +
-              '<div class="ect-enumeration-field">' +
+              '<div class="ect-enumeration-field" id="new-enumeration-field">' +
                 '<label>' +
-                  '<input type="radio" name="namespace" checked="checked">' +
-                  '<span>in <span class="key">' + this.options.domain + '/</span></span>' +
+                  '<input type="radio" name="namespace" class="ect-enumeration-choice" checked="checked">' +
+                  'Create new namespace' +
                 '</label>' +
-                '<input type="text" placeholder="key"/>' +
+                '<input type="text" class="text-input" id="ect-namespace-new-input" placeholder="key"/>' +
+                '<span class="ect-namespace-root">' + this.options.domain + '/<span class="ect-namespace-key"></span></span>' +
               '</div>' +
-              '<div class="ect-enumeration-field">' +
+              '<div class="ect-enumeration-field" id="existing-enumeration-field" style="display:none">' +
                 '<label>' +
-                  '<input type="radio" name="namespace">' +
-                  '<span>or in</span>' +
+                  '<input type="radio" class="ect-enumeration-choice" name="namespace">' +
+                  '<span>Enter a namespace to which you have permisson</span>' +
                 '</label>' +
-                '<input type="text" placeholder="namespace"/>' +
+                '<input type="text" placeholder="eg. /authority/netflix" class="text-input"/>' +
               '</div>' +
+              '<a href="javascript:void(0);" class="namespace-toggle">or choose existing&hellip;</a>' +
               '<div class="ect-enumeration-submit">' +
                 '<button class="button button-primary button-submit">OK</button>' +
                 '<button class="button button-cancel">Cancel</button>' +
@@ -197,7 +200,32 @@
           .change(function(e) {
             fb.schema.edit.clear_form_message(self.ect_enumeration);
           });
-
+        // Capture user input into text field and append to namespace path
+        // NOTE: no error checking is currently being performed, there should be
+        $("#ect-namespace-new-input", this.ect_enumeration).keydown(function(){
+          var timeout = null;
+          var val = $(this);
+          var $output = $(".ect-namespace-key");
+          timeout = setTimeout(function(){
+            $output.html(val.val());
+          }, 500);
+        });
+        // Show/Hide New vs Existing namespace fields
+        $(".namespace-toggle", this.ect_enumeration).click(function(){
+          var $toggle = $(this);
+          var $new_namespace = $("#new-enumeration-field");
+          var $existing_namespace = $("#existing-enumeration-field");
+          if ($existing_namespace.is(":hidden")) {
+            $new_namespace.hide();
+            $existing_namespace.show();
+            $toggle.html("cancel");
+          }
+          else {
+            $existing_namespace.hide();
+            $new_namespace.show();
+            $toggle.html("or choose existing...");
+          }
+        });
         $(".button-cancel", this.ect_enumeration).click(function(e) {
           self.ect_menu.show();
           self.ect_enumeration.hide();

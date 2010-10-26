@@ -492,7 +492,7 @@ Expected Type Suggest Dialog
 .fbs-reset .ect-menu-item {
     list-style: none;
     float: left;
-    padding-right: 15px;
+    padding-right: 14px;
     text-align: center;
     font-size: 10px;
     margin-bottom: 8px;
@@ -555,12 +555,44 @@ ECT Measurment Dialog
 -------------------------------
 */
 
-.ect-unit-dialog {
+.ect-unit-dialog,
+.ect-enumeration-dialog {
     border: 1px solid #dce3e8;
     padding: 10px;
 }
 
-.ect-unit-dialog-title {
+.ect-enumeration-field,
+.namespace-toggle {
+    display: block;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.namespace-toggle {
+    font-size: 11px;
+    margin: 2px 0 10px 2px;
+}
+
+.ect-namespace-root,
+.ect-namespace-key {
+    font-weight: bold;
+}
+
+.ect-namespace-key {
+    color: #111;
+}
+
+#ect-namespace-new-input {
+    width: 100px;
+    margin-right: 10px;
+}
+
+.ect-enumeration-choice {
+    display: none;
+}
+
+.ect-unit-dialog-title,
+.ect-enumeration-dialog-title {
     font-size: 14px;
     font-weight: bold;
     margin-bottom: 10px;
@@ -570,7 +602,8 @@ ECT Measurment Dialog
     margin-bottom: 10px;
 }
 
-.ect-unit-field label {
+.ect-unit-field label,
+.ect-enumeration-field label {
     display: block;
     font-size: 12px;
 }

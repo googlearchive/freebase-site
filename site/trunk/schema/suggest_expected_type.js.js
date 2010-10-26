@@ -387,7 +387,7 @@
           cname = name.toLowerCase();
         }
         var li = $('<li class="ect-menu-item">');
-        var trigger = $('<a href="javascript:void(0);" class="ect-icon trigger">');
+        var trigger = $('<a href="javascript:void(0);" class="ect-icon trigger">&nbsp;</a>');
         trigger.addClass("ect-" + cname);
         li.append(trigger);
         li.append(document.createTextNode(name));
@@ -398,7 +398,7 @@
         var ul = $('<ul class="row-menu tooltip">');
         $.each(tips, function(i,tip) {
           var li = $('<li class="row-menu-item">');
-          var trigger = $('<a href="javascript:void(0);">').attr("title", tip.id)
+          var trigger = $('<a href="javascript:void(0);">&nbsp;</a>').attr("title", tip.id)
             .data("ect", tip)
             .click(function() {
               $(this).trigger("ect", $(this).data("ect"));

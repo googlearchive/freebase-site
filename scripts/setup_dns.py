@@ -1,6 +1,5 @@
-import os
-import pwd
-import pdb
+#!/usr/bin/python
+import os, pwd, pdb, re
 ROOT_RESOLVER = '/etc/resolver'
 ROOT_NAMED = '/var/named'
 
@@ -56,11 +55,43 @@ zone "%s" IN {
 
 
 named_conf_fh.close()
+
+#dns server on mac needs the file /etc/rndc.key to exist
+if not os.path.isfile('/etc/rndc.key'):
+    os.system('rndc-confgen -a')
+
+#make sure localhost is in the nameserver list
+need_localhost_nameserver = True
+
+resolve_fh = open('/etc/resolv.conf', 'r')
+lines = resolve_fh.readlines()
+first_nameserver_line = 0
+resolve_fh.close()
+
+for i,line in enumerate(lines):
+    #remember the line after the search statement
+    if line.startswith('search '):
+        first_nameserver_line = i+1
+
+    #if we find localhost, then we are done
+    if re.match("nameserver\s+127.0.0.1", line):
+        need_localhost_nameserver = False
+        break
+
+#re-open the file and inject the localhost nameserver above the other nameservers
+if need_localhost_nameserver:
+    lines.insert(first_nameserver_line, 'nameserver 127.0.0.1\n')
+    resolve_fh = open('/etc/resolv.conf', 'w')
+    resolve_fh.write(''.join(lines))
+    resolve_fh.close()
+
+
+#re-launch the dns server
 os.system('launchctl unload /System/Library/LaunchDaemons/org.isc.named.plist')
 os.system('launchctl load -w /System/Library/LaunchDaemons/org.isc.named.plist')
 os.system('dscacheutil -flushcache')
     
-    
+
 
 
         

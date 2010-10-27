@@ -4,40 +4,40 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 	<acre:script>
-	  var mf = acre.require("MANIFEST").mf;
-	  var h = mf.require("core", "helpers");
-  	var i18n = mf.require("i18n", "i18n");
-  	var cuecard_mf = mf.require("cuecard", "MANIFEST").mf;
-	  var codemirror_mf = mf.require("codemirror","MANIFEST").mf;
+    var mf = acre.require("MANIFEST").mf;
+    var h = mf.require("core", "helpers");
+    var i18n = mf.require("i18n", "i18n");
+    var cuecard_mf = mf.require("cuecard", "MANIFEST").mf;
+    var codemirror_mf = mf.require("codemirror","MANIFEST").mf;
   
-	  var SERVER = {
-	    appeditor: {
-	    	service_path : acre.request.server_name.match(/^a(cr)?e\./) ? "/appeditor/" : "/appeditor/services/",
-	    	version: (acre.request.script.app.version || "trunk")
-	    },
-	    libs: {
-	    	fulljslint: mf.js_src("fulljslint.mf.js"),
+    var SERVER = {
+      appeditor: {
+        service_path : acre.request.server_name.match(/^a(cr)?e\./) ? "/appeditor/" : "/appeditor/services/",
+        version: (acre.request.script.app.version || "trunk")
+      },
+      libs: {
+        fulljslint: mf.js_src("fulljslint.mf.js"),
         codemirror: codemirror_mf.js_src("codemirror-frame.mf.js"),
         codemirror_css: codemirror_mf.js_src("codemirror-frame.mf.css"),
-	    	codeassist: mf.js_src("codeassist.mf.js")
-	    },
-	    acre: {
-	    	host : acre.host,
-	      freebase: {
-	        service_url: acre.freebase.service_url,
-	        site_host: acre.freebase.site_host
-	      },
-	      request: {
-	        app_url: acre.request.app_url,
-	        base_path: acre.request.base_path,
-	        cookies: acre.request.cookies
-	      },
-	      lang: {
-	        mql: i18n.lang,
-	        bundle: i18n.bundle_path ? "\"" + i18n.bundle_path + "\"" : "null"
-	      }
-	    }
-	  };
+        codeassist: mf.js_src("codeassist.mf.js")
+      },
+      acre: {
+        host : acre.host,
+        freebase: {
+          service_url: acre.freebase.service_url,
+          site_host: acre.freebase.site_host
+        },
+        request: {
+          app_url: acre.request.app_url,
+          base_path: acre.request.base_path,
+          cookies: acre.request.cookies
+        },
+        lang: {
+          mql: i18n.lang,
+          bundle: i18n.bundle_path ? "\"" + i18n.bundle_path + "\"" : "null"
+        }
+      }
+    };
 	</acre:script>
 
 	<head>

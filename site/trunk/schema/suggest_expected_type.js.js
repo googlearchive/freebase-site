@@ -222,7 +222,7 @@
           }
           else {
             $existing_namespace.hide();
-            $new_namespace.showshow
+            $new_namespace.show();
             $toggle.html("or choose existing...");
           }
         });

@@ -1603,7 +1603,7 @@ class ActionInfo:
     print "svn: last: %s" % app.last_svn_version()
 
     for environment in ['sandbox', 'otg']:
-      e_app = app.get_graph_app_from_environment(SERVICES['sandbox'])
+      e_app = app.get_graph_app_from_environment(SERVICES[environment])
       e_released = e_app.release or 'trunk'
       if e_app.versions:
         e_last = e_app.versions[0]['name']

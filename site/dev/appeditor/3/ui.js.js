@@ -531,7 +531,12 @@ var ui = {};
             PreviewWindow.focus();
         });
     };
-
+    
+    ui.do_acre_home_link          = function(path) {
+        location.href = ui.get_store().get_freebase_url() + "/apps";
+        return false; // cancel click
+    };
+    
     ui.do_status_check         = function() {
         var args = {};
         if (ui.get_app()) { args.appid = ui.get_app().get_path(); }

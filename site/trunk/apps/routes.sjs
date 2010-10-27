@@ -1,6 +1,6 @@
 var mf = acre.require("MANIFEST").mf;
 var queries = mf.require("queries");
- 
+
 var CATEGORIES = {
   released  : {
     title        : "Recently Released Apps",
@@ -32,20 +32,20 @@ function do_route(path) {
   var segs = path.split("/");
   segs.shift();
   var file = segs.shift() || "";
-  var path = "/" + segs.join("/");
-  
+  path = "/" + segs.join("/");
+
   // Pass image requests through;
   if ( /\.(png|gif|jpg)$/.test(file)) {
     acre.route(file);
   }
-  
+
   switch (file) {
-    
+
     // special-case MANIFEST files
     case "MANIFEST" :
       acre.route("MANIFEST" + path);
       break;
-      
+
     // app lists
     case "" :
     case "index" :
@@ -71,37 +71,37 @@ function do_route(path) {
         do_explore("user");
       }
       break;
-    case "search" : 
+    case "search" :
       do_explore("search", acre.request.params.q, acre.request.params);
       break;
-      
+
     // app list feeds
     case "feed":
       do_feed(segs.shift(), segs.shift());
       break;
-    
+
     // app pages
     case "create" :
       do_app("create");
       break;
     case "admin" :
-    case "edit" : 
+    case "edit" :
     case "api_keys" :
       do_app("admin", path,  {article: true, api_keys:true});
       break;
-      
+
     // ajax entrypoints for editing
     case "get" :
     case "post" :
     case "form" :
       do_ajax(file, segs.shift(), segs.shift());
       break;
-    
+
     // these are for backwards-compatibility
     case "updated" :
       do_redirect( acre.request.url.replace("/updated","/recent"));
       break;
-    case "directory" : 
+    case "directory" :
       do_redirect(acre.request.url.replace("/directory",""));
       break;
     case "app" :
@@ -126,8 +126,8 @@ function do_redirect(url) {
 
 function do_explore(category, query, opts) {
   // Reset the base_path
-  acre.request.base_path = acre.request.base_path.replace(new RegExp("\/" + category + "(/.*)?$"), "")
-  
+  acre.request.base_path = acre.request.base_path.replace(new RegExp("\/" + category + "(/.*)?$"), "");
+
   var cat = CATEGORIES[category || "released"];
   var data = {
     category : category,
@@ -145,7 +145,7 @@ function do_explore(category, query, opts) {
 
 function do_feed(category, query) {
   var cat = CATEGORIES[category || "released"];
-  
+
   var data = {
     category : category,
     query : query,
@@ -164,18 +164,19 @@ function do_feed(category, query) {
 function do_app(page, appid, opts) {
   // Reset the base_path
   acre.request.base_path = acre.request.base_path.replace(new RegExp("(\/" + page + ")?" + (appid||"") + "\/?$"), "");
-  
+
   if (typeof appid === 'string') {
     // if it's a host-style ID use acre to resolve it, otherwise assume it's a graph ID
     var segs = appid.split("/");
-    appid = (segs.length === 2) ? acre.get_metadata("//" + segs[1]).app_id : segs.join("/");    
+    appid = (segs.length === 2) ? acre.get_metadata("//" + segs[1]).app_id : segs.join("/");
   }
-  
+
   var data = {
+    id: appid,
     user : queries.freebase.get_user_info(),
     app : queries.app(appid, opts)
   };
-    
+
   mf.require("template", "renderer").render_page(
     data,
     mf.require(page)
@@ -188,22 +189,22 @@ function do_ajax(method, file, funcname) {
 
   var f = function() {
     if (method !== "get") {
-      service.check_user();      
+      service.check_user();
     }
     var lib = mf.require(file);
     var args = service.parse_request_args();
     return lib[funcname].apply(this, [args]);
   };
-  
+
   var svc_method = method.substr(0,1).toUpperCase() + method.substr(1) + "Service";
   service[svc_method](f, this);
 }
 
 
 if (acre.current_script === acre.request.script) {
-  
+
   // HACK - kill trailing slash in case it's there
   var path = acre.request.path_info.replace(/\/$/,"");
-  
+
   do_route(path);
 }

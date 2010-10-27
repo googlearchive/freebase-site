@@ -28,8 +28,14 @@ function do_route(app_path, script, path_info, query_string) {
     var md = acre.get_metadata(app_path);
   }
   catch (ex) {
+    console.log('routing: get_metadata for ' + app_path ' + ' failed');
     return not_found(app_path || acre.current_script.app.id);
   }
+
+  if (md === null) { 
+    console.log('routing: get_metadata for ' + app_path ' + ' failed');
+    return not_found(app_path || acre.current_script.app.id);
+  } 
 
   if (!md.files["routes"] && !md.files[script]) {
     return not_found(md.app_id + "/" + script);

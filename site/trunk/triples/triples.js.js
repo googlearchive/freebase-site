@@ -88,7 +88,7 @@
     },
 
     limit_slider: function() {
-                  
+
       // slider for controlling property limit
       var $limit_slider = $("#limit-slider");
       var $current_limit = $(".filter-title > .current-limit");
@@ -109,7 +109,7 @@
           }
         }
       }
-      
+
       $limit_slider.slider({
         value: slider_value,
         min: 1,
@@ -129,7 +129,7 @@
       });
 
     },
-    
+
     update_menu_position: function() {
 
       var viewport_height = triples.viewport.height();
@@ -178,14 +178,14 @@
 
       // *** Initialize user/creator suggest input
       $("input[name=creator]").suggest({
-        service_url: fb.acre.freebase.service_url,
+        service_url: fb.acre.freebase.site_host,
         type: "/type/user"
       })
       .bind("fb-select", function(e, data) {
         $(this).val(data.id)
           .parents("form:first").submit();
       });
-      
+
       // *** Initialize filter menu positioning
       // Because the filter menu is absolutely/fixed positioned
       // we need to insure the content container is at least the
@@ -271,8 +271,8 @@
       $(".history-toggle").change(function() {
 
         var $form = $(this).parents("form:first");
-        var $input = $(this); 
- 
+        var $input = $(this);
+
         // set form value to false and submit
         if($input.val() === "true") {
           $input.val("false");

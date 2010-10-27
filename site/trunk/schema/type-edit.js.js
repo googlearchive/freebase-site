@@ -137,7 +137,7 @@
           delegated
             .unbind()
             .suggest_property({
-              service_url: fb.acre.freebase.service_url
+              service_url: fb.acre.freebase.site_host
             })
             .bind("fb-select", function(e, data) {
               $(this).val(data.id);
@@ -361,7 +361,7 @@
         domain.pop();
         domain = domain.join("/");
         expected_type_input.suggest_expected_type({
-          service_url: fb.acre.freebase.service_url,
+          service_url: fb.acre.freebase.site_host,
           suggest_new: "Create new type",
           domain: domain
         })
@@ -618,7 +618,7 @@
 
       if (!form.row.data("initialized")) {
         included_type_input.suggest({
-          service_url: fb.acre.freebase.service_url,
+          service_url: fb.acre.freebase.site_host,
           category: "cotype",
           suggest_new: "Create new type"
         })
@@ -887,7 +887,7 @@
       var suggest = name.data("suggest");
       if (!suggest) {
         name.suggest({
-          service_url: fb.acre.freebase.service_url,
+          service_url: fb.acre.freebase.site_host,
           suggest_new: "Create new",
           category: "instance"
         })

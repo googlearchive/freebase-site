@@ -509,7 +509,7 @@
               method = "get_file_merge";
               args = {
                 fileid1    : patch.files[file].file1 ? patch.files[file].file1.fileid    : undefined,
-                fileid2    : patch.files[file].file2 ? patch.files[file].file2.fileid    : undefined,
+                fileid2    : patch.files[file].file2 ? patch.files[file].file2.fileid    : undefined
               };
               break;
           }

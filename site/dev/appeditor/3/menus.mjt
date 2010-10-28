@@ -17,7 +17,7 @@
   </div>
   <div acre:else="" class="section">
     <h3>Your Apps</h3>
-    <a href="#0" title="Sign in to your Freebase account" acre:onclick="return ui.do_account_link('signin')">Sign in</a> to show your apps here.
+    <a href="${$('#nav-signin').attr('href')}" title="Sign in to your Freebase account">Sign in</a> to show your apps here.
   </div>
 
   <div class="section last"> 
@@ -40,17 +40,6 @@
     if (auto_open) {
       $('#your-apps-menu-item').trigger('mouseenter'); 
     }
-        
-    $('.file-link').click(function(e){
-      if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
-        /* default browser behaviour = open link in new tab */
-      } else {
-        var new_name = $(this).attr("fname");
-        ui.do_choose_file(new_name);
-        ui.do_hide_overlays();
-        return false;
-      }
-    });
   </acre:script>
 </acre:block>
 

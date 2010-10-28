@@ -82,7 +82,7 @@
                 editor._file = file;
                 editor._top_element = top_element;
                 file.trigger_editor_event('newframe', [editor.frame]);
-                editor_config.cursorActivity = function() { file.trigger_editor_event('linechange',[editor.currentLine()]); };
+                editor_config.cursorActivity = function() { editor.highlight_line(); };
             });
 
         if (!state && file.has_been_saved()) {
@@ -113,7 +113,7 @@
         setTimeout(function() {
           editor.setLineNumbers(prefs.margin);
           editor.setTextWrapping(prefs.softwrap);
-          file.trigger_editor_event('linechange',[editor.currentLine()]);
+          editor.highlight_line();
 
           $(editor._top_element).show();
           $('iframe',editor._top_element).focus();
@@ -150,6 +150,20 @@
         editor._last_selection = {start:start,end:end};
 
         $(editor._top_element).hide();
+    };
+    
+    CodeMirror.prototype.highlight_line = function() {
+        var editor = this;
+        var file =  editor._file;
+        
+        var linenum = editor.currentLine();
+        var $lineNumbers = $(editor.lineNumbers);
+        $lineNumbers.find('.Codemirror-current-line').removeClass('Codemirror-current-line');
+        $lineNumbers
+            .find('div')
+            .eq(linenum)
+            .addClass('Codemirror-current-line');
+        file.trigger_editor_event('linechange',[linenum]); 
     };
     
     CodeMirror.prototype.goto_line = function(linenum) {

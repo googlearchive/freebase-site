@@ -192,6 +192,19 @@ var QueryEditor = function(parent, editor_config, task) {
         ui.do_file_create_new(name, metadata, {text: text});
     };
     
+    CodeMirror.prototype.highlight_line = function() {
+        var editor = this;
+        var file =  editor._file;
+        
+        var linenum = editor.currentLine();
+        var $lineNumbers = $(editor.lineNumbers);
+        $lineNumbers.find('.Codemirror-current-line').removeClass('Codemirror-current-line');
+        $lineNumbers
+            .find('div')
+            .eq(linenum)
+            .addClass('Codemirror-current-line');
+        file.trigger_editor_event('linechange',[linenum]); 
+    };
     
     this.goto_line = function(linenum) {
         var cm = cuecardComposition.queryEditor._editor.editor;
@@ -218,10 +231,10 @@ var QueryEditor = function(parent, editor_config, task) {
     QueryEditor.t_load = function(file, state) {
         
         // Make sure CueCard is correctly initialized
-				CueCard.helper = SERVER.acre.freebase.site_host + "/cuecard/";
-				CueCard.freebaseServiceUrl = SERVER.acre.freebase.service_url + "/";
-				CueCard.urlPrefix = "/cuecard/";
-				CueCard.apiProxy.base = SERVER.acre.freebase.site_host + "/cuecard/";
+		CueCard.helper = SERVER.acre.freebase.site_host + "/cuecard/";
+		CueCard.freebaseServiceUrl = SERVER.acre.freebase.service_url + "/";
+		CueCard.urlPrefix = "/cuecard/";
+		CueCard.apiProxy.base = SERVER.acre.freebase.site_host + "/cuecard/";
         
         /* CREATE EDITOR CONFIG */
         // make a deep copy of the default config object so that each file can have different settings
@@ -233,12 +246,14 @@ var QueryEditor = function(parent, editor_config, task) {
         $(file.get_element()).hide().append(top_element);
         editor_config.codeMirror.onChange = function() {
             try {
-                var history = file._loaded_editors["QueryEditor"].composition.queryEditor._editor.historySize();
-                file.trigger_editor_event('change', [ history.undo, history.redo ]);                
+                var editor = file._loaded_editors["QueryEditor"].composition.queryEditor._editor;
+                var history = editor.historySize();
+                file.trigger_editor_event('change', [ history.undo, history.redo ]);        
             } catch(e) {}
         };
         editor_config.codeMirror.cursorActivity = function() { 
-            file.trigger_editor_event('linechange',[file._loaded_editors["QueryEditor"].composition.queryEditor._editor.currentLine()]); 
+            var editor = file._loaded_editors["QueryEditor"].composition.queryEditor._editor;
+            editor.highlight_line();
         };
         
         var loadtask;
@@ -247,7 +262,7 @@ var QueryEditor = function(parent, editor_config, task) {
                 editor.composition.queryEditor._editor.setParser('JSParser');     
                 if (state) { editor.set_state(state); }
                 else if (loadtask) { editor.set_state({text: loadtask.result.text}); }
-                editor._file = file;
+                editor._file = editor.composition.queryEditor._editor._file = file;
                 editor._top_element = top_element;
                 $('>div',top_element).css('height','100%');
                 $('.cuecard-queryEditor-controls-top').hide();

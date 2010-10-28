@@ -17,7 +17,7 @@
   </div>
   <div acre:else="" class="section">
     <h3>Your Apps</h3>
-    <a id="apps-signin" href="" title="Sign in to your Freebase account">Sign in</a> to show your apps here.
+    <a href="${$('#nav-signin').attr('href')}" title="Sign in to your Freebase account">Sign in</a> to show your apps here.
   </div>
 
   <div class="section last"> 
@@ -40,8 +40,6 @@
     if (auto_open) {
       $('#your-apps-menu-item').trigger('mouseenter'); 
     }
-    
-    $("#apps-signin").attr("href", $("#nav-signin").attr("href"));
   </acre:script>
 </acre:block>
 

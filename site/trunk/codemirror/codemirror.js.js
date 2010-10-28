@@ -549,5 +549,3 @@ var CodeMirror = (function(){
 
   return CodeMirror;
 })();
-
-console.error('HACK: will was here');

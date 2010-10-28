@@ -24,6 +24,7 @@
     };
 
     test("init", function() {
+      ok(typeof $.fn.placeholder === "function", "$.fn.placeholder defined");
       if (browser_support) {
         ok(!text.data("placeholder"), "browser supports placeholder :text");
         ok(!textarea.data("placeholder"), "browser supports placeholder textarea");

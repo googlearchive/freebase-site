@@ -3,6 +3,9 @@
    var f = document.createElement( 'input' );
 
    if ("placeholder" in f) {
+     $.fn.placeholder = function() {
+       return this;
+     };
      return;
    }
 

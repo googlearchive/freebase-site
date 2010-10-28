@@ -1289,14 +1289,6 @@ var ui = {};
     ui.editor_linechange_handler    = function(linenum) {
         _current_line = linenum;
         $('#linenumber').val(linenum);
-        var $lineNumbers = $(this._current_editor.lineNumbers);
-        // TODO(wdm) this shouldn't use a CodeMirror specific classname but TextArea doesn't fire
-        //           line changes for now.
-        $lineNumbers.find('.Codemirror-current-line').removeClass('Codemirror-current-line');
-        $lineNumbers
-          .find('div')
-          .eq(linenum)
-          .addClass('Codemirror-current-line');
     };
     
     ui.editor_newframe_handler      = function(frame) {

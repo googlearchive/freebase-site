@@ -6,7 +6,7 @@
 
 var internetExplorer = document.selection && window.ActiveXObject && /MSIE/.test(navigator.userAgent);
 var webkit = /AppleWebKit/.test(navigator.userAgent);
-var safari = /Apple Computers, Inc/.test(navigator.vendor);
+var safari = /Apple Computer, Inc/.test(navigator.vendor);
 var gecko = /gecko\/(\d{8})/i.test(navigator.userAgent);
 var mac = /Mac/.test(navigator.platform);
 
@@ -793,6 +793,11 @@ var Editor = (function(){
         }
         else {
           select.insertNewlineAtCursor();
+          if (webkit && !this.options.textWrapping) {
+            var temp = makePartSpan("\u200b");
+            select.insertNodeAtCursor(temp);
+            setTimeout(function(){removeElement(temp);}, 50);
+          }
           var mode = this.options.enterMode;
           if (mode != "flat") this.indentAtCursor(mode == "keep" ? "keep" : undefined);
           select.scrollToCursor(this.container);
@@ -1240,7 +1245,12 @@ var Editor = (function(){
 
       if (internetExplorer) {
         this.container.createTextRange().execCommand("unlink");
-        this.selectionSnapshot = select.getBookmark(this.container);
+        clearTimeout(this.saveSelectionSnapshot);
+        var self = this;
+        this.saveSelectionSnapshot = setTimeout(function() {
+          var snapshot = select.getBookmark(self.container);
+          if (snapshot) self.selectionSnapshot = snapshot;
+        }, 200);
       }
 
       var activity = this.options.cursorActivity;

@@ -20,10 +20,13 @@ function is_release_pod() {
  * If success, acre.route. Otherwise, not_found()
  */
 function do_route(app_path, script, path_info, query_string) {
-  if (is_release_pod()) {
+
+  //app_path might be null if there was no rule in app_routes
+  if (is_release_pod() && app_path) {
     app_path = "//release." + app_path.slice(2);
   }
 
+  //if app_path is null, get_metadata will return the current app
   try {
     var md = acre.get_metadata(app_path);
   }
@@ -37,6 +40,7 @@ function do_route(app_path, script, path_info, query_string) {
     return not_found(app_path || acre.current_script.app.id);
   } 
 
+  //if there is no 'routes' file or the file being requested in the app
   if (!md.files["routes"] && !md.files[script]) {
     return not_found(md.app_id + "/" + script);
   }

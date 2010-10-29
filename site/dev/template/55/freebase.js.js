@@ -2,8 +2,8 @@
  * everything should go under the freebase namespace.
  */
 window.freebase = window.fb = {mwLWTReloading: false};
-if (typeof SERVER === "object" && SERVER.acre) {
-	window.fb.acre = SERVER.acre;
+if (typeof window.SERVER === "object" && window.SERVER.acre) {
+	window.fb.acre = window.SERVER.acre;
 }
 
 // as early as possible, redirect if PAGE_LASTWRITEIME < mwLastWriteTime

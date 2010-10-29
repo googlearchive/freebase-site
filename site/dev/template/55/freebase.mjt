@@ -187,30 +187,40 @@
 
 <!-- add any acre variables you wanted passed to client-side -->
 <acre:block def="acre_javascript_vars(exports)">
- <script>
-    SERVER = {};
-    SERVER.acre = {
-      freebase: {
-        service_url: "${acre.freebase.service_url}",
-        site_host: "${acre.freebase.site_host}",
-      },
-      request: {
-        app_url: "${acre.request.app_url}",
-        server_name: "${acre.request.server_name}"
-      },
-      lang: {
-        mql: "${i18n.lang}",
-        bundle: ${i18n.bundle_path ? "\"" + i18n.bundle_path + "\"" : "null"}
+  <acre:script>
+    var SERVER = {
+      acre: {
+        freebase: {
+          service_url: acre.freebase.service_url,
+          site_host: acre.freebase.site_host,
+        },
+        request: {
+          app_url: acre.request.app_url,
+          server_name: acre.request.server_name
+        },
+        lang: {
+          mql: i18n.lang,
+          bundle: null
+        },
+        c: {},
+        mwLastWriteTime: null,
+        tid: null
       }
     };
-  </script>
-  <script acre:if="exports.c && exports.c.id">
-    SERVER.acre.c = {id: "${exports.c.id}"};
-  </script>
-  <script acre:if="acre.request.cookies && acre.request.cookies.mwLastWriteTime">
-    SERVER.acre.mwLastWriteTime = "${acre.request.cookies.mwLastWriteTime}";
-  </script>
-  <script acre:if="acre.request.headers['x-metaweb-tid']">
-    SERVER.acre.tid = "${acre.request.headers['x-metaweb-tid']}";
+    if (i18n.bundle_path) {
+      SERVER.acre.lang.bundle = i18n.bundle_path;
+    }
+    if (exports.c && exports.c.id) {
+      SERVER.acre.c.id = exports.c.id;
+    }
+    if (acre.request.cookies && acre.request.cookies.mwLastWriteTime) {
+      SERVER.acre.mwLastWriteTime = acre.request.cookies.mwLastWriteTime;
+    }
+    if (acre.request.headers['x-metaweb-tid']) {
+      SERVER.acre.tid = acre.request.headers['x-metaweb-tid'];
+    }
+  </acre:script>
+  <script>
+    window.SERVER = ${JSON.stringify(SERVER)};
   </script>
 </acre:block>

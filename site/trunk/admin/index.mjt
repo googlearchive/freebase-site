@@ -4,7 +4,7 @@
   var mf = acre.require("MANIFEST").mf;
   var h = mf.require('core', 'helpers');
   var freebase = mf.require('promise', 'apis').freebase;
-  var lib_ae = mf.require('appeditor', 'lib_appeditor_service');
+  var lib_ae = mf.require('appeditor-services', 'lib_appeditor_service');
   var util = mf.require('app_util');
 
   var queries = { }; 

@@ -7,10 +7,10 @@ var ae = {
             app_id = app_id.slice(0, app_id.length-6); 
         }
 	try { 
-            return mf.require('appeditor', 'get_app').get_app(app_id);
+            return mf.require('appeditor-services', 'get_app').get_app(app_id);
 	} catch(e) { return null; }
     },
-    'get_file' : mf.require('appeditor', 'get_file').get_file
+    'get_file' : mf.require('appeditor-services', 'get_file').get_file
 };
 
 

@@ -279,6 +279,7 @@ function get_app (appid, just_files, timestamp) {
   var resource = service.parse_path(appid);
   
   // it's remote... go get it
+  console.log('resource.service_url is ' + resource.service_url + '  FB.service_url is ' + FB.service_url);
   if (resource.service_url !== FB.service_url) {
     var args = {
       appid : appid,

@@ -197,7 +197,6 @@ function parse_path(path, options /* file : true|false */) {
 
   // structure of object we'll be returning
   var acre_host = acre.host.name + ((acre.host.port !== 80) ? ":" + acre.host.port : "");
-  var freebase_urls = ACRE_TO_FREEBASE_MAP[acre_host];
   var resource = {
     path        : null,
     id          : null,
@@ -207,8 +206,8 @@ function parse_path(path, options /* file : true|false */) {
     filename    : null,
     path_info   : "/",
     querystring : null,
-    service_url : freebase_urls ? freebase_urls.service_url : acre.freebase.service_url,
-    site_host   : freebase_urls ? freebase_urls.site_host : acre.freebase.site_host,
+    service_url : acre.freebase.service_url,
+    site_host   : acre.freebase.site_host,
     acre_host   : acre_host
   };
   resource.appeditor_service_base = resource.site_host + APPEDITOR_SERVICE_PATH;

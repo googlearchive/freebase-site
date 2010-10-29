@@ -27,6 +27,8 @@ from optparse import OptionParser
 from tempfile import mkdtemp, mkstemp
 from cssmin import cssmin
 
+PLUGIN_ACTIONS = []
+
 try:
     import json
 except ImportError:
@@ -86,7 +88,7 @@ JAVA_OPTS = ["-jar", COMPILER, "--warning_level", "QUIET"]
 PUBLIC_SVN_URL_ROOT = 'https://freebase-site.googlecode.com/svn/site'
 PRIVATE_SVN_URL_ROOT = 'https://svn.metaweb.com/svn/freebase_site'
 #PUBLIC_SVN_URL_ROOT = PRIVATE_SVN_URL_ROOT
-STATIC_URL_ROOT =   'http://freebaselibs.com/static/freebase_site'
+
 
 ROOT_NAMESPACE = '/freebase/site'
 CONFIG_FILE = 'CONFIG.json.json'
@@ -137,6 +139,7 @@ class App:
     self.local_dir = None
     self.checked_out = False
     self.local_deployed_dir = None
+    self.environment = None
 
   def __str__(self):
     return self.name()
@@ -363,17 +366,18 @@ class App:
 
     return dependencies
 
-  def get_dependencies(self):
+  def get_dependencies(self, config = None):
 
     dependencies = {}
 
-    (result, file_contents) = self.read_file(CONFIG_FILE, isjson=True)
+    if not config:
+        (result, config) = self.read_file(CONFIG_FILE, isjson=True)
 
-    if not file_contents:
+    if not config:
       return self.c.error('Did not find CONFIG file for app %s -- aborting' % self.app_key)
 
-    if 'apps' in file_contents.keys():
-      for label, path in file_contents['apps'].iteritems():
+    if 'apps' in config.keys():
+      for label, path in config['apps'].iteritems():
         if not ('.site.freebase.dev' in path and path.startswith('//')) :
           continue
 
@@ -584,12 +588,15 @@ class App:
     self.checked_out = True
     return self.local_dir
 
-  def static_server_url(self, deploy_rev):
-    return "{static_url_root}/{app}/{rev}".format(static_url_root=STATIC_URL_ROOT, app=self.app_key, rev=deploy_rev)
+  def url(self, services = None):
 
-  def url(self):
-    return 'http://{version}.{app}.site.freebase.dev.{freebaseapps}'.format(version=self.version, app=self.app_key, freebaseapps=self.c.services['freebaseapps'])
+      if not services:
+          services = self.c.services
 
+      if self.version:
+          return 'http://{version}.{app}.site.freebase.dev.{freebaseapps}'.format(version=self.version, app=self.app_key, freebaseapps=services['freebaseapps'])
+      else:
+          return 'http://{app}.site.freebase.dev.{freebaseapps}'.format(app=self.app_key, freebaseapps=services['freebaseapps'])          
 
 class Context():
   BLUE = '\033[94m'
@@ -604,10 +611,12 @@ class Context():
 
     self.svn_temp_dirs = {}
 
+    #each dictionary entry is a HTTPMetawebSession object to a freebase graph
+    #self.freebase = {}
+
     if options.graph:
-      self.services = SERVICES.get(options.graph)
-      #after appeditor-services moved to freebase site, all requests should go to www.freebase.com
-      self.freebase = HTTPMetawebSession(self.services['www'], acre_service_url=self.services['acre'])
+      self.services = SERVICES[options.graph]
+      self.freebase = self.get_freebase_services(options.graph)
       self.freebase_logged_in = False
 
     self.current_app = None
@@ -798,7 +807,7 @@ class Context():
     return True
 
 
-  def googlecode_login(self):
+  def googlecode_login(self, auto_reuse_username = False):
 
     if self.googlecode_username and self.googlecode_password:
       return True
@@ -809,7 +818,10 @@ class Context():
     try:
       #USERNAME
       stored_username = self.retrieve_data(site='googlecode', key='username')
-      entered_username = raw_input("GoogleCode Username (%s): " % stored_username)
+      entered_username = None
+
+      if not (stored_username and auto_reuse_username == True):
+          entered_username = raw_input("GoogleCode Username (%s): " % stored_username)
 
       if not entered_username and stored_username:
         username = stored_username
@@ -1045,6 +1057,9 @@ class ActionStatic():
     self.context = context
     self.app = context.app
 
+  def static_url(self):
+      return "http://freebaselibs.com/static/freebase_site/{app}/{rev}".format(app=self.app.app_key, rev=self.deploy_rev)
+
   def create_hash_for_directory(self, directory, static_files):
 
     c = self.context
@@ -1162,7 +1177,7 @@ class ActionStatic():
 
     # update MANIFEST static_base_url
     c.log('updating the manifest file with the new deployment hash')
-    base_url = app.static_server_url(self.deploy_rev)
+    base_url = self.static_url()
     cfg = json.dumps({
         "static_base_url": base_url,
         "image_base_url": base_url
@@ -1178,6 +1193,17 @@ class ActionStatic():
 
     return True
 
+  def bundle_already_exists(self):
+
+      c = self.context
+      self.deployed_url = self.app.svn_deployed_url(self.deploy_rev)
+      c.log('static svn url is %s' % self.deployed_url)
+      
+    # check if a deployed_rev already exists or not
+      cmd = ['svn', 'ls', self.deployed_url]
+      (success, message) = c.run_cmd(cmd, exit=False)
+      return success
+
   def generate_resource_bundle(self):
 
     c = self.context
@@ -1187,15 +1213,9 @@ class ActionStatic():
 
     url = app.url()
     branch_dir = app.svn_path()
-    deployed_url = app.svn_deployed_url(self.deploy_rev)
-    c.log('static svn url is %s' % deployed_url)
 
-    # check if a deployed_rev already exists or not
-    cmd = ['svn', 'ls', deployed_url]
-    (success, message) = c.run_cmd(cmd, exit=False)
-
-    if success:
-        c.log('Deployed directory already exists %s' % deployed_url)
+    if self.bundle_already_exists():
+        c.log('Deployed directory already exists %s' % self.deployed_url)
         return True
 
     # deployed_rev does not exist, add it to svn
@@ -1240,15 +1260,27 @@ class ActionStatic():
             subprocess.call(cmd, stdout=tempfile)
         shutil.copy2(temppath, js_path)
 
-    msg = 'Create static file deployed directory version {version} for app {app}'.format(version=self.deploy_rev, app=c.options.app)
-    cmd = ['svn', 'import', deployed_dir, deployed_url, '-m', '"%s"' % msg]
-    (r, result) = c.run_cmd(cmd)
 
-    return r
+    self.deployed_dir = deployed_dir
+
+    return True
+
+  def commit_static_bundle(self):
+
+      c = self.context
+      msg = 'Create static file deployed directory version {version} for app {app}'.format(version=self.deploy_rev, app=self.app)
+      cmd = ['svn', 'import', self.deployed_dir, self.deployed_url, '-m', '"%s"' % msg]
+      (r, result) = c.run_cmd(cmd)
+      return r
 
   def get_resource_dependency_apps(self):
     c = self.context
     app_list = [self.app]
+    
+    #if --nodeps was passed, just do the requested app without any dependencies
+    if c.options.nodeps:
+        return app_list
+
     def create_app_list(app, al):
 
       dependencies = app.get_resource_dependencies()
@@ -1361,6 +1393,10 @@ class ActionStatic():
       result = self.generate_resource_bundle()
       if not result:
         return False
+
+      result = self.commit_static_bundle()
+      if not result:
+          return False
 
       last_resource_revision = self.app.last_resource_revision()
       if last_resource_revision:
@@ -1595,23 +1631,65 @@ class ActionInfo:
     context.be_quiet()
 
 
+
   def info_app(self):
     c = self.context
     app = self.context.app
 
-    print "=== Versions ==="
-    print "svn: last: %s" % app.last_svn_version()
+    print "_" * 84
+    print "App: %s\n" % app.app_key
+    print "[svn]"
+    
+    last_version = app.last_svn_version()
+    dep = {}
+    if last_version:
+        dep = AppFactory(c)(app.app_key, last_version).get_dependencies()
+
+    if dep.get('core'):
+        last_version = "%s (%s)" % (last_version, dep.get('core').version)
+
+    print "Last Version:\t\t%s" % last_version
+
+    def get_core_dependency(c, app, version, services):
+        url = "%s/MANIFEST" % AppFactory(c)(app.app_key, version).url(services=services)
+        try:
+            mf = c.fetch_url(url, isjson=True)
+        except:
+            return None
+
+        if mf and mf.get('result'):
+            dep_released = app.get_dependencies(config=mf['result'])
+            if dep_released.get('core'):
+                return dep_released.get('core').version
+
+        return None
 
     for environment in ['sandbox', 'otg']:
-      e_app = app.get_graph_app_from_environment(SERVICES[environment])
-      e_released = e_app.release or 'trunk'
-      if e_app.versions:
-        e_last = e_app.versions[0]['name']
-      else:
-        e_last = 'trunk'
+        #pdb.set_trace()
+        print "\n[%s]" % environment
+        e_app = app.get_graph_app_from_environment(SERVICES[environment])
 
-      print "%s: released: %s last %s" % (environment, e_released, e_last)
+        #get the released version and its core dependency
+        e_released = e_app.release or None
+        released_core_dependency = get_core_dependency(c, app, e_released, SERVICES[environment])
+        if released_core_dependency:
+            e_released = "%s (%s)" % (e_released, released_core_dependency)
 
+        print "Released Version:\t%s" % e_released or 'trunk'
+
+        #get the last version and its core dependency
+        if e_app.versions:
+            e_last = e_app.versions[0]['name']
+            last_core_dependency = get_core_dependency(c, app, e_last, SERVICES[environment])
+            if last_core_dependency:
+                e_last = "%s (%s)" % (e_last, last_core_dependency)
+        else:
+            e_last = None
+
+        print "Last Version:\t\t%s" % e_last or 'trunk'
+
+
+    print
     return True
 
   def info_all_apps(self):
@@ -1623,6 +1701,10 @@ class ActionInfo:
   def __call__(self):
 
     c = self.context
+
+    success = c.googlecode_login(auto_reuse_username=True)
+    if not success:
+      return c.error('You must provide valid google code credentials to complete this operation.')
 
     if c.options.app:
       return self.info_app()
@@ -1676,6 +1758,15 @@ def main():
         ('test', 'test', ActionTest)
         ]
 
+    try:
+        sys.path.append('.')
+        from appdeploy_gstatic_plugin import ActionGoogleStatic
+        PLUGIN_ACTIONS.append(('gstatic', 'create static bundles that get pushed to gstatic servers', ActionGoogleStatic))
+    except ImportError:
+        pass
+
+    if len(PLUGIN_ACTIONS):
+        valid_actions.extend(PLUGIN_ACTIONS)
 
     usage = '''%prog action [options]
 \nActions:

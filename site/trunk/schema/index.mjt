@@ -41,7 +41,6 @@
           <li class="section-tab"><a href="#domain-search">${_("Domains")}</a></li>
           <li class="section-tab"><a href="#type-search">${_("Types")}</a></li>
           <li class="section-tab"><a href="#property-search">${_("Properties")}</a></li>
-<!--           <li class="section-tab"><a href="#user-search">Users</a></li> -->
         </ul>
         <div class="search-box" id="domain-search">
           <form id="domain-search-form" method="get">
@@ -116,9 +115,9 @@
           <a href="http://wiki.freebase.com/wiki/Domain">${_('domains')}</a>
         </h3>
         <p>${_('which define a common namespace for you to create')}</p>
-        <h3><a href="" title="${_('Learn more about')}">${_('types')}</a></h3> 
+        <h3><a href="http://wiki.freebase.com/wiki/Type" title="${_('Learn more about')}">${_('types')}</a></h3> 
         <p>${_('which define a particular kind of person, place or thing and contain')}</p>
-        <h3><a href="#" title="${_('Learn more about')}">${_('properties')}</a></h3>
+        <h3><a href="http://wiki.freebase.com/wiki/Property" title="${_('Learn more about')}">${_('properties')}</a></h3>
         <p>${_('which define the unique qualities of a type.')}</p>
         <p>${_('One simple way to understand the difference between types and properties is that types express &ldquo;is a&rdquo;, while properties express &ldquo;has a&rdquo;.')}</p>
         <p><strong>${_('Here\'s an example:')}</strong></p>

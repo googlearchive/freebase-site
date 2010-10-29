@@ -24,7 +24,7 @@ function do_route(app_path, script, path_info, query_string) {
   if (is_release_pod()) { 
 
     //dont run tests on freebase.com urls
-    if (script && (script.indexOf('test_') || script.indexOf('qunit_'))) { 
+    if (script && (script.indexOf('test_') === 0 || script.indexOf('qunit_') === 0)) { 
        console.log('Cannot run tests on production URLs - try freebaseapps');
        return not_found(script);
     }

@@ -652,8 +652,7 @@ class Context():
     self.options.noemail = True
 
   def warn(self, msg):
-    print '[%s:%s:WARNING] %s' % (self.action, self.options.app, msg)
-    return False
+    return self.log(msg, subaction='WARNING')
 
   def error(self, msg):
     self.log(msg, subaction='ERROR', color=self.RED)
@@ -1645,7 +1644,7 @@ class ActionInfo:
     if last_version:
         dep = AppFactory(c)(app.app_key, last_version).get_dependencies()
 
-    if dep.get('core'):
+    if dep and dep.get('core'):
         last_version = "%s (%s)" % (last_version, dep.get('core').version)
 
     print "Last Version:\t\t%s" % last_version
@@ -1658,9 +1657,9 @@ class ActionInfo:
             return None
 
         if mf and mf.get('result'):
-            dep_released = app.get_dependencies(config=mf['result'])
-            if dep_released.get('core'):
-                return dep_released.get('core').version
+            dep = app.get_dependencies(config=mf['result'])
+            if dep and dep.get('core'):
+                return dep.get('core').version
 
         return None
 

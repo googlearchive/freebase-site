@@ -60,7 +60,7 @@ var spec =  [
       //  'bug' : 'TODO: investiate app_path',
         'name' : 'file',
         'id' : 'foo',
-        'expected' : make_empty_result({'appid' : '/freebase/site/appeditor', 'filename' : 'foo'}),
+        'expected' : make_empty_result({'appid' : '/freebase/site/appeditor-services', 'filename' : 'foo'}),
         'options' : { 'file' : true }
     },
     {
@@ -86,13 +86,13 @@ var spec =  [
 
     {
         'name' : 'cross app cross graph published',
-        'id' : '//service.sandbox-freebaseapps.com./lib',
-        'expected' : make_empty_result({'appid' : _ROOT_HOST + 'service', 'filename' : 'lib', 'service_url' : 'http://www.sandbox-freebase.com'})
+        'id' : '//service.freebaseapps.com./lib',
+        'expected' : make_empty_result({'appid' : _ROOT_HOST + 'service', 'filename' : 'lib', 'service_url' : 'http://api.freebase.com'})
     },
     {
         'name' : 'cross app cross graph development',
-        'id' : '//r2-4-3.my_first_app.dfhuynh.user.dev.branch.qa-freebaseapps.com./lib',
-        'expected' : make_empty_result({'appid' : '/user/dfhuynh/my_first_app/r2-4-3', 'filename' : 'lib', 'service_url' : 'http://branch.qa.metaweb.com'})
+        'id' : '//r2-4-3.my_first_app.dfhuynh.user.dev.freebaseapps.com./lib',
+        'expected' : make_empty_result({'appid' : '/user/dfhuynh/my_first_app/r2-4-3', 'filename' : 'lib', 'service_url' : 'http://api.freebase.com'})
     }
 ];
 

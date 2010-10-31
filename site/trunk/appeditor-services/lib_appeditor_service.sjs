@@ -217,17 +217,18 @@ function parse_path(path, options /* file : true|false */) {
     }
   };
   
+  // setup environment URLs
   var hosts = [];
   for (var host in ACRE_TO_FREEBASE_MAP) {
       hosts.push(escape_re(host));
   }
   var acre_host_re = new RegExp("\.(" + hosts.join("|") +")\.$");
+  var acre_host = acre.host.name + ((acre.host.port !== 80) ? ":" + acre.host.port : "");
   
   options = options || {};
   var app_ver_id_parts;   // arrary used to manipulate appid/host components
 
   // structure of object we'll be returning
-  var acre_host = acre.host.name + ((acre.host.port !== 80) ? ":" + acre.host.port : "");
   var resource = {
     path        : null,
     id          : null,
@@ -282,20 +283,33 @@ function parse_path(path, options /* file : true|false */) {
         if (ae_host) {
             for (var host in ACRE_TO_FREEBASE_MAP) {
                 var freebase_urls = ACRE_TO_FREEBASE_MAP[host];
+                // known appeditor host, reset URLs
                 if (freebase_urls.site_host = ae_host[0]) {
                     resource.acre_host = host;
+                    resource.service_url = freebase_urls.service_url;
+                    resource.site_host = freebase_urls.site_host;
                 }
             }
         }
         var app_host_res = /\#\!path=\/\/([^\/]*)/.exec(source_url);
         if (app_host_res) app_host_part = app_host_res[1];
     } else {
-        // check whether path given is cross-graph
         var match = app_host_part.match(acre_host_re);
+        // check whether path given is absolute (ends in .) and is for a known host
         if(match) {
-            resource.acre_host = match[1];
+            // make the app host relative again
             app_host_part = app_host_part.replace(acre_host_re,"");
-        } 
+            // if it's x-graph, reset URLs
+            if (acre_host !== match[1]) {
+                // known appeditor host, reset service URLs
+                var freebase_urls = ACRE_TO_FREEBASE_MAP[match[1]];
+                resource.acre_host = match[1];
+                resource.service_url = freebase_urls.service_url;
+                resource.site_host = freebase_urls.site_host;
+            }
+        } else {
+            // TODO : what if it's absolute but not for a known host?
+        }
     }
       
     // break-down app host so we can work with it
@@ -333,7 +347,7 @@ function parse_path(path, options /* file : true|false */) {
 
     var parts = path.replace(/^freebase:/,"").split('/');
     if (options.file) {
-      resource.filename = FB.mqlkey_unquote(parts.pop());
+      resource.filename = acre.freebase.mqlkey_unquote(parts.pop());
       // NOTE: this mode does not support path_info (ambiguous)
     }
     resource.appid = parts.join('/');
@@ -355,7 +369,7 @@ function parse_path(path, options /* file : true|false */) {
     }
   }
 
-  resource.id = resource.appid + (resource.filename ? "/" + FB.mqlkey_quote(resource.filename) : "");
+  resource.id = resource.appid + (resource.filename ? "/" + acre.freebase.mqlkey_quote(resource.filename) : "");
   resource.path = resource.app_path + (resource.filename ? "/" + resource.filename : "");
   resource.url = acre.host.protocol + ":" + resource.app_path + "." + acre.host.name + 
                 (acre.host.port !== 80 ? (":" + acre.host.port) : "") +

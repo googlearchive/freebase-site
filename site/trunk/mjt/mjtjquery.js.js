@@ -77,10 +77,10 @@
                 if (typeof template === 'function') {
                     var html = mjt.flatten_markup(template.apply(this, args));
                 } else {
-                    console.warn("acre template '" + def + "' does not exist in package '" + pkgid + "'");
+                    console.warn("acre template '" + def + "' does not exist in package '" + markup_or_pkgid + "'");
                 }
             } else {
-                console.warn("acre template package '" + pkgid + "' has not been registered");
+                console.warn("acre template package '" + markup_or_pkgid + "' has not been registered");
             }            
         } else {
             var html = mjt.flatten_markup(markup_or_pkgid);

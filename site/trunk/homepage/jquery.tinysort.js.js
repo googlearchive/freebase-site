@@ -1,4 +1,4 @@
-/*
+/* @license
 * jQuery TinySort - A plugin to sort child nodes by (sub) contents or attributes.
 *
 * Version: 1.0.4

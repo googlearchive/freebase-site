@@ -1,5 +1,5 @@
 /**
- *
+ * @license
  * Copyright (c) 2007 Tom Deater (http://www.tomdeater.com)
  * Licensed under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php

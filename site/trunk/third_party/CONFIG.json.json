@@ -5,7 +5,7 @@
   "javascript": {
     "license.mf.js": [
       "license.jquery.cookie.js",
-      "license.jquery.flot.js"
+      "license.jquery.flot.js",
       "license.jquery.metadata.js",
       "license.jquery.tablesorter.js",
       "license.jquery.tools.js",

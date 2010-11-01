@@ -1,4 +1,4 @@
-/**
+/** @license
  * Cookie plugin
  *
  * Copyright (c) 2006 Klaus Hartl (stilbuero.de)

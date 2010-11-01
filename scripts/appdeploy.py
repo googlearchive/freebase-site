@@ -29,6 +29,9 @@ from cssmin import cssmin
 
 PLUGIN_ACTIONS = []
 
+#LICENSE_PREAMBLE = '''
+#'''
+
 try:
     import json
 except ImportError:
@@ -292,7 +295,7 @@ class App:
     Will go through the revision of all resource files and return the latest one
     '''
     revision = 0
-
+    pdb.set_trace()
     cmd = ['svn', 'ls', '--verbose', self.svn_url()]
     (r, result) = self.c.run_cmd(cmd)
 
@@ -317,8 +320,8 @@ class App:
       if '.%s' % file_parts[-1] not in EXTENSIONS and file_parts[0] != 'CONFIG':
         continue
 
-      if self.c.is_int(parts[1]) and int(parts[1]) > revision:
-        revision = int(parts[1])
+      if self.c.is_int(parts[3]) and int(parts[3]) > revision:
+        revision = int(parts[3])
 
     return revision
 
@@ -733,7 +736,7 @@ class Context():
             if tries > 1:
               self.log('trying again....', subaction='fetch url error')
             else:
-              raise
+              return None
 
         tries -= 1
 
@@ -1397,10 +1400,11 @@ class ActionStatic():
       if not result:
           return False
 
+      pdb.set_trace()
       last_resource_revision = self.app.last_resource_revision()
       if last_resource_revision:
           self.app.write_file('.last_resource_revision', str(last_resource_revision))
-      self.app.svn_commit(msg='commit last resource revision file')
+          self.app.svn_commit(msg='commit last resource revision file')
 
     c.log('***** NOTE: You have to restart the freebaselibs.com static servers for your resources to be available *****', c.BLUE)
     return True
@@ -1614,12 +1618,14 @@ class ActionTest:
   '''dummy action used for experimenting'''
 
   def __init__(self, context):
-    self.context = context
+      self.context = context
+      context.no_email()
 
   def __call__(self):
-
-    c = self.context
-    return True
+      print self.context.app.last_resource_revision()
+      
+      c = self.context
+      return True
 
 class ActionInfo:
   '''information about apps and versions'''
@@ -1628,7 +1634,6 @@ class ActionInfo:
     self.context = context
     context.no_email()
     context.be_quiet()
-
 
 
   def info_app(self):
@@ -1651,10 +1656,7 @@ class ActionInfo:
 
     def get_core_dependency(c, app, version, services):
         url = "%s/MANIFEST" % AppFactory(c)(app.app_key, version).url(services=services)
-        try:
-            mf = c.fetch_url(url, isjson=True)
-        except:
-            return None
+        mf = c.fetch_url(url, isjson=True)
 
         if mf and mf.get('result'):
             dep = app.get_dependencies(config=mf['result'])

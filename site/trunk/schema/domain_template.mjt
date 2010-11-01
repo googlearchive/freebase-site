@@ -92,7 +92,7 @@
      </acre:script>
      <div id="description" acre:if="blurb && blob">
        <p class="blurb">${blurb}</p>
-       <p class="blob">${blob}</p>
+       <div class="blob">${acre.markup.bless(blob)}</div>
        <a acre:if="blurb != blob" href="javascript:void(0);" class="blurb-trigger">${_('More')}</a>          
      </div>
      <acre:block if="c.domain.owners">

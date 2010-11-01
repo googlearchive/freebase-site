@@ -295,7 +295,6 @@ class App:
     Will go through the revision of all resource files and return the latest one
     '''
     revision = 0
-    pdb.set_trace()
     cmd = ['svn', 'ls', '--verbose', self.svn_url()]
     (r, result) = self.c.run_cmd(cmd)
 
@@ -1400,7 +1399,6 @@ class ActionStatic():
       if not result:
           return False
 
-      pdb.set_trace()
       last_resource_revision = self.app.last_resource_revision()
       if last_resource_revision:
           self.app.write_file('.last_resource_revision', str(last_resource_revision))
@@ -1666,7 +1664,6 @@ class ActionInfo:
         return None
 
     for environment in ['sandbox', 'otg']:
-        #pdb.set_trace()
         print "\n[%s]" % environment
         e_app = app.get_graph_app_from_environment(SERVICES[environment])
 
@@ -1806,6 +1803,13 @@ def main():
     #all options and args are good, let's do some clean-up / arg expansion
 
     context = Context(options)
+
+    if options.app and options.version and options.version == 'latest':
+        app = AppFactory(context)(options.app)
+        last_version = app.last_svn_version()
+        if last_version:
+            options.version = last_version
+
 
     for action in args:
         for valid_action in valid_actions:

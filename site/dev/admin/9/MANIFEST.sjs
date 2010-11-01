@@ -30,4 +30,4 @@
  */
 
 var config = JSON.parse(acre.require("CONFIG.json").body);
-var mf = acre.require(config.apps.core + "/MANIFEST").init(this, config, {"image_base_url": "http://freebaselibs.com/static/freebase_site/admin/1c160370ff18ad4a30d22a4f6de148ed", "static_base_url": "http://freebaselibs.com/static/freebase_site/admin/1c160370ff18ad4a30d22a4f6de148ed"});
+var mf = acre.require(config.apps.core + "/MANIFEST").init(this, config, {"image_base_url": "http://freebaselibs.com/static/freebase_site/admin/6b0a21e5e0ae807018672dd8c7f347a2", "static_base_url": "http://freebaselibs.com/static/freebase_site/admin/6b0a21e5e0ae807018672dd8c7f347a2"});

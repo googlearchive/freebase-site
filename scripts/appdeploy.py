@@ -616,7 +616,7 @@ class Context():
 
     if options.graph:
       self.services = SERVICES[options.graph]
-      self.freebase = self.get_freebase_services(options.graph)
+      self.freebase = self.get_freebase_services(SERVICES.get(options.graph, {}))
       self.freebase_logged_in = False
 
     self.current_app = None

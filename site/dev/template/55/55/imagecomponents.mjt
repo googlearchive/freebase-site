@@ -1,0 +1,87 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").mf;
+  var h = mf.require("core", "helpers");
+</acre:script>
+
+<acre:block def="user_image_small(user)">
+  ${user_image(user, 30)}
+</acre:block>
+
+<acre:block def="user_image_medium(user)">
+  ${user_image(user, 40)}
+</acre:block>
+
+<acre:block def="user_image_large(user)">
+  ${user_image(user, 75)}
+</acre:block>
+
+<acre:block def="user_image(user, size)" if="user">
+ <acre:script>
+    var url = h.freebase_url("/view" + user.id);
+    var options = {
+      mode: "fillcrop",
+      pad: 1,
+      errorid: "/freebase/user_profile/empty_user_image"
+    };
+  </acre:script>
+  
+  <span class="user-image">
+    <a href="${url}" title="${user.id}">
+     ${image_thumb(user, size, options)}
+    </a>
+    ${user_badges(user["badges:/type/user/usergroup"], size)}
+ </span>
+</acre:block>
+
+<acre:block def="user_badges(badges, size)" if="badges && badges.length">
+  <acre:block for="group in badges">
+    <acre:script>
+      var url = h.freebase_url("/view" + group.id);
+    </acre:script>
+    <a class="user-badge-${size} badge${group.id.replace(/\//g, '-')}"
+       title="This user is a ${group.name}"
+       href="${url}">${group.name}</a>
+  </acre:block>
+</acre:block>
+
+<acre:block def="image_thumb(image, size, options)" if="image">
+  <acre:script>
+    // The template can be called with image, size and options, 
+    //   of just image and options
+    if (typeof size !== "number") {
+      options = size || {};
+      size = null;
+    }
+    
+    // Get the id of an image whether passed an array, an object or an id
+    image_id = h.first_element(image);
+    if (typeof image_id === "object" && image['/common/topic/image']) {
+      image_id = image_id['/common/topic/image'];
+    }
+    image_id = h.first_element(image_id);
+    if (typeof image_id === "object" && (image_id.id || image_id.mid || image_id.guid)) {
+      image_id = image_id.id || image_id.mid || image_id.guid;
+    }
+    
+    var o = {mode:"fit"};
+    if (size) {
+      o.maxwidth = o.maxheight = size;
+    }
+    h.extend(o, options);
+    
+    var attrs = {src: h.image_url(image_id, o)};
+    
+    if (o.pad && o.maxwidth) {
+      attrs.width = o.maxwidth;
+    }
+    if (o.pad && o.maxwidth) {
+      attrs.height = o.maxheight;
+    }
+    if (typeof image === "object" && image.id) {
+      attrs.alt = image.id;
+    }
+    h.extend(attrs, o.attrs);
+  </acre:script>
+  <img acre:attrs="attrs">
+</acre:block>
+

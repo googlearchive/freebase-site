@@ -117,10 +117,8 @@ JAVA = os.environ.get("JAVA_EXE", "java")
 COMPILER = os.path.join(os.path.abspath(os.path.dirname(os.path.join(os.getcwd(), __file__))), "compiler.jar")
 JAVA_OPTS = ["-jar", COMPILER, "--warning_level", "QUIET"]
 
-PUBLIC_SVN_URL_ROOT = 'https://freebase-site.googlecode.com/svn/site'
+PUBLIC_SVN_URL_ROOT = 'https://freebase-site.googlecode.com/svn'
 PRIVATE_SVN_URL_ROOT = 'https://svn.metaweb.com/svn/freebase_site'
-#PUBLIC_SVN_URL_ROOT = PRIVATE_SVN_URL_ROOT
-
 
 ROOT_NAMESPACE = '/freebase/site'
 CONFIG_FILE = 'CONFIG.json.json'
@@ -579,11 +577,11 @@ class App:
   def svn_url(self, allversions=False):
 
     if allversions:
-      return '{svn_url_root}/dev/{app}'.format(svn_url_root=PUBLIC_SVN_URL_ROOT, app=self.app_key)
+      return '{svn_url_root}/branches/site/{app}'.format(svn_url_root=PUBLIC_SVN_URL_ROOT, app=self.app_key)
     elif not self.version:
-      return '{svn_url_root}/trunk/{app}'.format(svn_url_root=PUBLIC_SVN_URL_ROOT, app=self.app_key)
+      return '{svn_url_root}/trunk/site/{app}'.format(svn_url_root=PUBLIC_SVN_URL_ROOT, app=self.app_key)
     else:
-      return '{svn_url_root}/dev/{app}/{version}'.format(svn_url_root=PUBLIC_SVN_URL_ROOT, app=self.app_key, version=self.version)
+      return '{svn_url_root}/branches/site/{app}/{version}'.format(svn_url_root=PUBLIC_SVN_URL_ROOT, app=self.app_key, version=self.version)
 
   def svn_path(self):
 

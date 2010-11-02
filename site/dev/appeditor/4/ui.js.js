@@ -1446,7 +1446,8 @@ var ui = {};
             var res = _compare_inputs();
             
             if (res && options.change) { 
-                res = options.change.apply(this, [res]); 
+                var change_res = options.change.apply(this, [res]);
+                if (typeof change_res !== 'undefined') res = change_res;
             }
             
             if (res) {

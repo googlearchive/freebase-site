@@ -1,0 +1,44 @@
+98d97
+< <<<<<<< .mine
+105,111d103
+< =======
+<   function assert_type(type, role) {
+<     assert_keys(["name", "id", "properties", "instance_count", "blurb"], type, true);
+<     if (role) {
+<       equal(type.role, role);
+<     }
+< >>>>>>> .r99973
+122c114
+<                "blurb", "blob", "types", "mediator:types", "cvt:types"], result, true);
+---
+>                "blurb", "blob", "types", "mediator:types"], result, true);
+126c118
+<     assert_type(type);
+---
+>     assert_type(type, false);
+132,139c124
+<       assert_type(mediator, "mediator");
+<     });
+<   }
+<   // cvts
+<   var cvts = result["cvt:types"];
+<   if (cvts && cvts.length) {
+<     cvts.forEach(function(cvt) {
+<       assert_type(cvt, "cvt");
+---
+>       assert_type(mediator, true);
+149c134
+<     assert_keys(["role"], prop.expected_type);
+---
+>     assert_keys(["mediator"], prop.expected_type);
+154d138
+< <<<<<<< .mine
+161,168d144
+< =======
+<   assert_keys(["id", "name", "domain",
+<                "role", "included_types",
+<                "creator", "timestamp", "date",
+<                "blurb", "blob",
+<                "instance_count",
+<                "properties"], type);
+< >>>>>>> .r99973

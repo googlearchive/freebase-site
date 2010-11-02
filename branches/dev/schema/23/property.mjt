@@ -1,0 +1,164 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").mf;
+  var c = this.exports.c = {};  
+  var h = mf.require("core", "helpers");
+  var queries = mf.require("queries");
+  var image = mf.require("template", "imagecomponents");
+  var sh = mf.require("helpers");
+  var i18n = mf.require("i18n", "i18n");
+  var _ = i18n.gettext;
+
+  var id = acre.request.params.id || acre.request.path_info;
+  var data = {
+    id: id,
+    property : queries.property(id)
+  };
+</acre:script>
+
+<acre:block def="title()">
+  ${_("Property")}<acre:block if="c.property"> - ${i18n.display_name(c.property)}</acre:block>
+</acre:block>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  <div class="page-header clear">
+    <div class="breadcrumb clear">
+      <ol class="clear">
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.url_for('schema')}">${_("Schema")}</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.url_for('schema', null, null, c.property.schema.domain.id)}">${i18n.display_name(c.property.schema.domain)}</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.url_for('schema', null, null, c.property.schema.id)}">${i18n.display_name(c.property.schema)}</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item last">
+          <span class="breadcrumb-item-inner">
+            <a href="javascript:void(0);" class="breadcrumb-sibling-trigger" acre:if="c.property.schema.properties && c.property.schema.properties.length">${i18n.display_name(c.property)}</a>
+            <a href="javascript:void(0);" acre:else="">${i18n.display_name(c.property)}</a>
+          </span>
+          <div class="tooltip" id="breadcrumb-siblings" acre:if="c.property.schema.properties && c.property.schema.properties.length">
+            <strong>${h.sprintf(_("Go to another %s property"), i18n.display_name(c.property.schema))}</strong>
+            <ul>
+              <li acre:for="s in c.property.schema.properties">
+                <a href="${h.url_for('schema', null, null, s.id)}" title="${_('Go to type')}">${i18n.display_name(s)}</a>
+              </li>
+            </ul>
+          </div>          
+        </li>
+      </ol>
+    </div>
+  </div>
+
+</acre:block>
+
+<acre:block def="content_body()">
+ <div class="page-meta">
+    <h1>${i18n.display_name(c.property)} <span class="flags">${_("Property")}</span></h1>
+    <div class="meta">
+      <span class="key"><strong>${_("Key")}:</strong> $c.property.id</span>
+      <span class="key"><strong>${_("Belongs to")}:</strong> <a href="${h.url_for('schema', null, null, c.property.schema.id)}">${i18n.display_name(c.property.schema)}</a></span>
+    </div>
+    <div class="admin-toolbox">
+      <span class="creation-timestamp">
+        ${image.user_image_small(c.property.creator)}
+        ${h.bless_sprintf(_("Created by %s on %s"), 
+        h.tag("a", i18n.display_name(c.property.creator), "href", h.freebase_url("/view" + c.property.creator.id), "title", _("View user profile")),
+        h.tag("time", i18n.format_timestamp(c.property.timestamp), "class", "published", "datetime", c.property.timestamp))}
+      </span>
+    </div>
+    <div id="description" acre:if="c.property.tip">
+      <p class="blurb">${i18n.display_name(c.property, "", "tip")}</p>
+    </div>
+  </div>
+
+  <table class="skeleton">
+    <tbody>
+      <tr>
+        <td class="subject" rowspan="2">
+          <a href="${h.url_for('schema', null, null, c.property.schema.id)}">${i18n.display_name(c.property.schema)}</a>
+        </td>
+        <td class="predicate">
+          <span class="current-prop">
+            ${i18n.display_name(c.property)}
+            <span class="attribute" acre:if="!c.property.master_property">${_("master")}</span>
+            <span class="attribute" acre:if="c.property.unique">${_("unique")}</span>
+          </span>
+        </td> 
+        <td class="object" rowspan="2">
+          <a href="${h.url_for('schema', null, null, c.property.expected_type.id)}">
+            ${c.property.expected_type.id}
+          </a>
+          <acre:block if="c.property.expected_type.mediator">
+            <span class="attribute">${_("mediator")}</span>
+          </acre:block>
+          <acre:block if="c.property.expected_type.enumeration">
+            <span class="attribute">${_("enumerated")}</span>
+          </acre:block>            
+          <acre:block if="c.property.expected_type.id  === '/type/enumeration' && c.property.enumeration">
+            <span class="attribute">${c.property.enumeration.id}</span>
+          </acre:block>    
+          <span class="attribute" acre:if="c.property.unit">${i18n.display_name(c.property.unit)}</a>
+        </td>
+      </tr>
+      <tr>
+        <td acre:if="c.property.reverse_property" class="rev_predicate">
+          <a href="${h.url_for('schema', null, null, c.property.reverse_property.id)}">${i18n.display_name(c.property.reverse_property)}</a>     
+          <span class="attribute" acre:if="c.property.reverse_property.unique">${_("unique")}</span> 
+        </td>
+        <td acre:elif="c.property.master_property" class="rev_predicate">
+          <a href="${h.url_for('schema', null, null, c.property.master_property.id)}">${i18n.display_name(c.property.master_property)}</a>  
+          <span class="attribute">${_("master")}</span>    
+          <span class="attribute" acre:if="c.property.master_property.unique">${_("unique")}</span>
+        </td>
+       <td acre:else="">&nbsp;</td>
+      </tr>
+    </tbody>
+  </table>
+  <table class="table">
+    <thead>
+      <th class="numeric column-header" scope="column">${_("Expected Type")}</th>
+      <th class="numeric column-header" scope="column">${_("Disambiguating")}</th>
+      <th class="numeric column-header" scope="column">${_("Unique")}</th>
+      <th class="numeric column-header" scope="column">${_("Hidden")}</th>
+      <th class="numeric column-header" scope="column" acre:if="c.property_reverse">${_("Reverse")}</th>
+    </thead>
+    <tbody>
+      <td class="numeric odd">
+        <a href="${h.url_for('schema', null, null, c.property.expected_type.id)}">$c.property.expected_type.id</a>
+      </td>
+      <td class="numeric even">
+        <span acre:if="c.property.disambiguator === true">${_("True")}</span>
+        <span acre:else="">${_("False")}</span>
+      </td>
+      <td class="numeric odd">
+        <span acre:if="c.property.unique === true">${_("True")}</span>
+        <span acre:else="">${_("False")}</span>
+      </td>
+      <td class="numeric even">
+        <span acre:if="c.property.hidden === true">${_("True")}</span>
+        <span acre:else="">${_("False")}</span>
+      </td>
+      <td class="numeric odd" acre:if="c.property_reverse">
+        <a href="${h.url_for('schema', null, null, c.property.reverse_property.id)}">${i18n.display_name(c.property.reverse_property)}</a>
+      </td>          
+    </tbody>
+  </table>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+  <script src="${mf.js_src('schema.mf.js')}"></script>
+</acre:block>
+
+${mf.require("template", "renderer").render_page(data, this.exports)}

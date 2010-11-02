@@ -1,0 +1,37 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").mf;
+  var h = mf.require("core", "helpers");
+  var cache = mf.require("core", "cache");
+  if (h.is_client()) {
+    cache.set_cache_policy('public');
+  }
+  var i18n = mf.require("i18n", "i18n");
+  acre.response.set_header_default("Vary", "Cookie, Accept-Language");
+</acre:script>
+
+<acre:block def="page(exports)">
+	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	  <acre:script>
+	    acre.response.set_header('content-type', 'text/html');
+    	acre.response.status = 200;
+	    var util = acre.require("util");
+	    var o = util.setup(exports.c.path_info);
+	    console.log(o);
+	  </acre:script>
+	  <head>
+	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		  <link rel="stylesheet" type="text/css" href="${mf.css_src('docs_style.mf.css')}" />	  </head>
+	  <body id="help-viewer-standalone">
+	    <acre:block if="o.section_url">
+	      ${exports.helpsection(o)}
+	    </acre:block>
+	    <acre:block elif="o.doc_content">
+	      <div id="help-section">
+	        <div id="help-content" class="wide">
+	          ${acre.markup.bless(util.get_content(o.doc_content, o.query))}
+	        </div>
+	      </div>
+	    </acre:block>
+	  </body>
+	</html>
+</acre:block>

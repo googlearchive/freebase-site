@@ -1,0 +1,14 @@
+{
+  "id": "/user/daepark",
+  "/freebase/user_profile/favorite_types": [{
+    "id": null,
+    "name": null,
+    "type": "/type/type",
+    "limit": 500,
+    "!/freebase/domain_profile/base_type": {
+      "id": null,
+      "optional": "forbidden",
+      "limit": 0
+    }
+  }]
+}

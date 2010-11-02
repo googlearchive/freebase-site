@@ -1,0 +1,1 @@
+{"test": {"files": ["test_get_app", "test_parse_path"]}, "stylesheet": {"appadmin.mf.css": [["template", "freebase.mf.css"], "appadmin_core.css"]}, "javascript": {"appadmin.mf.js": [["template", "freebase.mf.js"], "appadmin_core.js"]}, "apps": {"core": "//55.core.site.freebase.dev"}}

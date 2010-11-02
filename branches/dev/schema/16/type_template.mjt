@@ -1,0 +1,337 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").mf;
+  var c = this.exports.c = {};
+  var h = mf.require("core", "helpers");
+  var tc = mf.require("type_components");
+  var image = mf.require("template", "imagecomponents");  
+  var sh = mf.require("helpers");
+</acre:script>
+
+<acre:block def="title()">
+  Type<acre:block if="c.type"> - $c.type.name</acre:block>
+</acre:block>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  <div class="page-header clear">
+    <div class="breadcrumb clear">
+      <ol class="clear">
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.url_for('schema')}">Schema</a>
+          </span>
+        </li>
+        <li if="c.type.domain" class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.url_for('schema', null, null, c.type.domain.id)}">$c.type.domain.name</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item last">
+          <span class="breadcrumb-item-inner">
+            <a href="javascript:void(0);" acre:if="c.type.domain.types && c.type.domain.types.length" class="breadcrumb-sibling-trigger">$c.type.name</a>
+            <a href="javascript:void(0);" acre:else="">$c.type.name</a>
+          </span>
+          <div class="tooltip" id="breadcrumb-siblings" acre:if="c.type.domain.types && c.type.domain.types.length">
+            <strong>Go to another type</strong>
+            <ul>
+              <li acre:for="s in c.type.domain.types">
+                <a href="${h.url_for('schema', null, null, s.id)}" title="Go to type">$s.name</a>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="content_body()">
+  <div class="page-meta">
+    <h1>
+      $c.type.name
+      <span class="flags">
+        <acre:block if="c.type.role === 'mediator'">
+          <span>Compound Relationship Type</span>
+        </acre:block>
+        <acre:block elif="c.type.role === 'cvt'">
+          <span>Compound Value Type</span>
+        </acre:block>
+        <acre:block elif="c.type.role === 'enumeration'">
+          <span>Enumerated Entity Type</span>
+        </acre:block>
+        <acre:block else="">
+          <span>Entity Type</span>
+        </acre:block>
+        <a href="#" onclick="return freebase.dispatch(event, freebase.schema.type.type_role, ['${c.type.id}'], this);">change</a>
+      </span>
+    </h1>
+    <div class="meta">
+      <span class="key"><strong>Key:</strong> $c.type.id</span>
+      <span class="included-types" acre:if="c.type.included_types.length > 0">
+        <strong>Includes: </strong>
+        <acre:block trim="">
+          <span acre:for="i, t in c.type.included_types" acre:trim="">
+            <acre:block if="i">, </acre:block><a href="${h.url_for('schema', null, null, t.id )}">$t.name</a>
+          </span>
+        </acre:block>
+      </span>
+    </div>
+    <div class="admin-toolbox">
+      <span class="creation-timestamp">
+        ${image.user_image_small(c.type.creator)}
+        Created by <a href="${acre.freebase.service_url}/view${c.type.creator.id}" title="View user profile">$c.type.creator.name</a> 
+        on <time class="published" datetime="${c.type.timestamp}">$c.type.date</time>
+      </span>    
+    </div>
+    <div id="description" acre:if="c.type.blurb">
+      <p class="blurb">
+        $c.type.blurb&hellip;
+      </p>
+      <p class="blob">
+        $c.type.blob
+      </p>
+      <a acre:if="c.type.blurb != c.type.blob" href="javascript:void(0);" class="blurb-trigger">More</a>          
+    </div>
+    
+    <div class="nav clear">
+      <ul class="nav-mode">
+        <li><a acre:attrs="c.diagram ? {href: h.url_for('schema', null, null, c.type.id)} : {'class':'current'}">Table</a></li>
+        <li><a acre:attrs="c.diagram ? {'class':'current'} : {href: h.url_for('schema', null, [['view','diagram']], c.type.id)}">Diagram</a></li>
+      </ul>
+      <ul class="nav-utilities">
+        <li class="edit">
+        <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.type_settings, ['${c.type.id}'], this);">
+          <span class="edit-icon">Type Settings</span>
+        </a>
+        </li>
+        <li>
+          <a acre:if="c.type.instance_count" href="${h.freebase_url('/view'+c.type.id)}" class="icon-link"><span class="browse-icon">Browse <strong>${h.commafy(c.type.instance_count)}</strong> Instances</span></a>
+        </li>
+        <li>
+          <a href="${sh.build_query_url(c.type.id)}" class="icon-link"><span class="query-icon">Build Query</span></a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <acre:block if="c.diagram">
+    ${diagram_view()}
+  </acre:block>  
+  <acre:block else="">
+    ${table_view()}
+  </acre:block>
+
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+  <script src="${mf.js_src('type.mf.js')}"></script>
+</acre:block>
+
+
+<acre:block def="table_view()">  
+  <!-- Table View -->
+  <div class="mode">
+    <div acre:if="c.type.role === 'enumeration'" class="section" id="topics-table">
+      <h2 class="table-title">
+        <a class="help-link" href="http://wiki.freebase.com/wiki/Enumerated_type" rel="help external" title="Read help article">What Are Enumerated Types?</a>
+        Topics
+      </h2>
+      <table cellspacing="0" class="table">
+        <thead>
+          <tr acre:attrs="c.type.instance.length ? {} : {style:'display:none;'}">
+            <th class="column-header first">Name</th>
+            <th class="column-header">Description</th>
+          </tr>
+          <tr acre:attrs="c.type.instance.length ? {style:'display:none;'} : {}">
+            <th colspan="2" class="table-empty-column" scope="col">
+              <p>This type has no Topics</p>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <acre:block for="i,topic in c.type.instance">
+            ${tc.enumerated_topic_row(topic, c.type.id)}
+          </acre:block>
+        </tbody>
+        <tfoot class="table-edit edit">
+          <tr>
+            <td colspan="2">
+              <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.add_instance, ['${c.type.id}'], this);"><span class="add-icon">Add New</span></a>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Native Props Table -->
+    <div class="section" id="type-table">
+      <h2 class="table-title">
+        <a class="help-link" href="http://wiki.freebase.com/wiki/Property" rel="help external" title="Read help article">What are Properties?</a>
+        Properties
+      </h2>
+      <table class="table" cellspacing="0">
+
+        ${tc.native_properties(c.type.properties, c.type.id)}
+
+        <tfoot class="table-edit edit">
+          <tr>
+            <td colspan="5">
+              <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.add_property, ['${c.type.id}'], this);">
+                <span class="add-icon">Add New</span>
+              </a>
+              <a acre:attrs="c.type.properties.length > 1 ? {} : {style:'display:none'}" 
+                 href="#" class="icon-link reorder-link" 
+                 onclick="return freebase.dispatch(event, freebase.schema.type.reorder_property, ['${c.type.id}'], this);">
+                <span class="reorder-icon">Reorder</span>
+              </a>
+           </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div> 
+
+   <!-- Included Types Table -->      
+    <div class="section">
+      <h2 class="table-title">
+        <a class="help-link" href="http://wiki.freebase.com/wiki/Included_Type" rel="help external" title="Read help article">What are Included Types?</a>
+        Included Types
+      </h2>
+      <table class="table" cellspacing="0" id="included-types-table">
+        <acre:block for="type in c.type.included_types">
+          ${tc.included_type_thead(c.type.id, type)}
+        </acre:block>
+        <thead acre:attrs="c.type.included_types.length ? {style:'display:none;'}:{}">
+          <tr>
+            <th colspan="4" class="table-empty-column" scope="col">
+              <h3 class="table-empty-title">This type doesn't have any included types.</h3>
+            </th>
+          </tr>
+        </thead>
+        <tfoot class="table-edit edit">
+          <tr>
+            <td colspan="5">
+              <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.add_included_type, ['${c.type.id}'], this);">
+                <span class="add-icon">Include another type</span>
+              </a>
+            </td>
+          </tr>
+        </tfoot>
+     </table>      
+    </div>
+ 
+    <!-- Incoming Properties Table -->
+    <div class="section">
+      <h2 class="table-title">Incoming Properties</h2>
+      <table class="table" cellspacing="0" id="incoming-properties-table">
+        <thead acre:attrs="c.type.incoming.domain.length || c.type.incoming.commons || c.type.incoming.bases ? {style:'display:none;'}:{}">
+          <tr>
+            <th colspan="5" class="table-empty-column" scope="col">
+              <h3 class="table-empty-title">This type doesn't have any incoming properties</h3>
+            </th>
+          </tr>
+        </thead>
+        <acre:block if="c.type.incoming.domain.length">
+          ${tc.incoming_props_thead(c.type.domain.name, true)}
+          ${tc.incoming_props_tbody(c.type.incoming.domain, c.type.role !== 'cvt')}
+       </acre:block>
+        <acre:block if="c.type.incoming.commons">
+          ${tc.incoming_props_thead("Commons", false, h.url_for('schema', 'type', [['id',c.type.id],['exclude_domain',c.type.domain.id]], '/get_incoming_from_commons'))}
+        </acre:block>
+        <acre:block if="c.type.incoming.bases">
+          ${tc.incoming_props_thead("Bases", false, h.url_for('schema', 'type', [['id',c.type.id],['exclude_domain',c.type.domain.id]], '/get_incoming_from_bases'))}
+        </acre:block>
+      </table>
+   </div>   
+  </div>     
+
+</acre:block>
+
+<acre:block def="diagram_view()">
+  <!-- Diagram View -->
+  <div class="mode" id="type-diagram">
+    <table id="skeleton">
+      <tr>
+        <td class="left structure">
+          <table>
+            <tbody class="commons">
+              <tr>
+                <th class="type-diagram-col-header" colspan="3">Incoming Properties</th>
+              </tr>
+              <acre:block if="c.type.incoming.domain.length">
+                ${tc.type_diagram_incoming_props(c.type.incoming.domain)}
+              </acre:block>
+            </tbody>
+            <tbody class="bases" acre:if="c.type.incoming.commons.length">
+              ${tc.type_diagram_incoming_props(c.type.incoming.commons)}
+            </tbody>
+            <tbody class="users" acre:if="c.type.incoming.bases.length">
+              ${tc.type_diagram_incoming_props(c.type.incoming.bases)}
+            </tbody>
+          </table>
+        </td>
+        <td class="center structure">
+          <div class="type-container">
+            <div class="type">
+              $c.type.name
+            </div>
+          </div>
+        </td>
+        <td class="right structure">
+          <table>
+            <tr>
+              <th colspan="4" class="type-diagram-col-header">$c.type.name Properties</th>
+            </tr>            
+            ${tc.type_diagram_native_props(c.type.properties)}
+            <tr>
+              <th colspan="4" class="type-diagram-col-header">Inherited Properties</th>
+            </tr>                          
+            <acre:block for="type in c.type.included_types"> 
+              ${tc.type_diagram_inherited_props(type.properties)}
+            </acre:block>
+          </table>
+        </td>
+      </tr>
+    </table>  
+  </div>
+</acre:block>
+
+<acre:block def="ect_init_dialog()">
+<div class="ect-menu-dialog">
+  <span class="ect-menu-title">or choose from the data types below</span>
+  <ul class="ect-menu">
+    <li class="ect-menu-item">
+      <a href="javascript:void(0);" class="ect-icon ect-text"></a>
+      Text
+    </li>
+    <li class="ect-menu-item">
+      <a href="javascript:void(0);" class="ect-icon ect-numeric"></a>
+      Numeric
+    </li>
+    <li class="ect-menu-item">
+      <a href="javascript:void(0);" class="ect-icon ect-date"></a>
+      Date/Time
+    </li>
+    <li class="ect-menu-item">
+      <a href="javascript:void(0);" class="ect-icon ect-boolean"></a>
+      Boolean
+    </li>
+    <li class="ect-menu-item">
+      <a href="javascript:void(0);" class="ect-icon ect-image"></a>
+      Image
+    </li>
+    <li class="ect-menu-item">
+      <a href="javascript:void(0);" class="ect-icon ect-weblink"></a>
+      Weblink
+    </li>
+    <li class="ect-menu-item">
+      <a href="javascript:void(0);" class="ect-icon ect-address"></a>
+      Address
+    </li>    
+  </ul>
+</div>
+</acre:block>
+

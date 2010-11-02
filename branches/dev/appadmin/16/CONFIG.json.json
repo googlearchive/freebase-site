@@ -1,0 +1,1 @@
+{"stylesheet": {"appadmin.mf.css": [["template", "freebase.mf.css"], "appadmin_core.css"]}, "javascript": {"appadmin.mf.js": [["template", "freebase.mf.js"], "appadmin_core.js"]}, "apps": {"core": "//23.core.site.freebase.dev", "ae": "//appeditor.apps.freebase.dev"}}

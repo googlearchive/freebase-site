@@ -50,7 +50,7 @@ var app_labels = {
   "devdocs"           : "//devdocs.site.freebase.dev",
   "domain"            : "//domain.site.freebase.dev",
   "error"             : "//error.site.freebase.dev",
-  "homepage"          : "//homepage.site.freebase.dev", 
+  "homepage"          : "//homepage.site.freebase.dev",
   "labs"              : "//labs-site.dfhuynh.user.dev",
   "parallax"          : "//parallax.dfhuynh.user.dev",
   "permission"        : "//permission.site.freebase.dev",
@@ -179,6 +179,9 @@ rules.add([
   {prefix:"/view/schema",        url:"/schema", redirect:301},
   {prefix:"/tools/schema",       url:"/schema", redirect:301},
   {prefix:"/type/schema",        url:"/schema", redirect: 301},
+  {prefix:"/schema/domain",      url:"/schema", redirect: 301},
+  {prefix:"/schema/type",        url:"/schema", redirect: 301},
+  {prefix:"/schema/property",    url:"/schema", redirect: 301},
 
   // Queryeditor
   {prefix:"/app/queryeditor",    url:"/queryeditor", redirect:301},

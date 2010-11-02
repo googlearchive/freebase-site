@@ -34,6 +34,8 @@ var h = mf.require("helpers");
 var lib = mf.require("service", "lib");
 var deferred = mf.require("promise", "deferred");
 
+var mock;
+
 /**
  * A generic service for json/p responses.
  *
@@ -69,6 +71,7 @@ var deferred = mf.require("promise", "deferred");
  * @see http://service.freebaseapps.com/index
  */
 function main(scope, api) {
+  api = api || {};
   var request = scope.acre.request;
   var method = request.method;
   var headers = request.headers;
@@ -111,16 +114,28 @@ function main(scope, api) {
   }
   // otherwise, let it fallthrough to error page to wrap the JS call stack
 
-  function success(result) {
-    svc(function() {
-      return result;
-    }, scope);
-  };
+  var success;
+  var error;
+  if (mock && typeof mock.success === "function") {
+    success = mock.success;
+  }
+  else {
+    success = function(result) {
+      svc(function() {
+        return result;
+      }, scope);
+    };
+  }
 
-  function error(e) {
-    svc(function() {
-      return handle_service_error(e);
-    }, scope);
+  if (mock && typeof mock.error === "function") {
+    error = mock.error;
+  }
+  else {
+    error = function(e) {
+      svc(function() {
+        return handle_service_error(e);
+      }, scope);
+    };
   };
 
   deferred.when(d, success, error);
@@ -153,6 +168,10 @@ function instanceof_service_error(e) {
 };
 
 function handle_service_error(e) {
+  if (mock && typeof mock.handle_service_error === "function") {
+    return mock.handle_service_error(e);
+  }
+
   /**
    * This series of catch blocks copied from
    * //service.libs.freebase.dev/lib (run_function_as_service)

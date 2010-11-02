@@ -1,0 +1,218 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var mf = acre.require("MANIFEST").mf;
+</acre:script>
+
+<acre:block def="toolbox(options)">
+  <div class="toolbox">
+    <div acre:if="options.search" class="toolbox-search">
+      ${options.search()}
+   </div>
+
+    <div acre:if="options.header" class="toolbox-header">
+      ${options.header()}
+    </div>
+
+    <div acre:if="options.content" class="toolbox-content">
+      ${options.content()}
+   </div>
+
+    <div acre:if="options.footer" class="toolbox-footer">
+      ${options.footer()}
+    </div>
+  </div>
+</acre:block>
+
+<!-- Projects -->
+
+<acre:block def="projects_toolbox(projects)">
+  <acre:script>
+    var options = {
+      search: projects_toolbox_search,
+      header: projects_toolbox_header,
+      content: function() {
+        return acre.markup.bless(acre.markup.stringify(projects_toolbox_content(projects)));
+      },
+      footer: projects_toolbox_footer
+    };
+  </acre:script>
+  ${toolbox(options)}
+</acre:block>
+
+<acre:block def="projects_toolbox_search()">
+  <form action="">
+    <input type="text" name="q" class="toolbox-textbox" placeholder="Filter your projects..."/>
+    <button type="submit" class="toolbox-searchbutton">Search All Projects</button>
+  </form>
+</acre:block>
+
+<acre:block def="projects_toolbox_header()">
+  <span class="toolbox-header-content">Your Projects</span>
+  <a class="help" href="">What are Projects?</a>
+</acre:block>
+
+<acre:block def="projects_toolbox_content(projects)">
+  <ul>
+    <li acre:for="project in projects" data-name="${project.name || project.id}" data-id="${project.id}">
+      <a href="${acre.freebase.service_url}/view${project.id}">${project.name || project.id}</a>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="projects_toolbox_footer()">
+  <a href="" class="toolbox-link-new">New Project</a>
+</acre:block>
+
+<!-- Apps -->
+
+<acre:block def="apps_toolbox(apps)">
+  <acre:script>
+    var options = {
+      search: apps_toolbox_search,
+      header: apps_toolbox_header,
+      content: function() {
+        return acre.markup.bless(acre.markup.stringify(apps_toolbox_content(apps)));
+      },
+      footer: apps_toolbox_footer
+    };
+  </acre:script>
+  ${toolbox(options)}
+</acre:block>
+
+<acre:block def="apps_toolbox_search()">
+  <form action="">
+    <input type="text" name="q" class="toolbox-textbox" placeholder="Search apps by name..."/>
+    <button type="submit" class="toolbox-searchbutton">Search All Apps</button>
+  </form>
+</acre:block>
+
+<acre:block def="apps_toolbox_header()">
+  <span class="toolbox-header-content">Your Apps</span>
+  <a class="help" href="">What are Apps?</a>
+</acre:block>
+
+<acre:block def="apps_toolbox_content(apps)">
+  <ul>
+    <li acre:for="app in apps" data-name="${app.name || app.appid}" data-id="${app.appid}">
+      <a href="${acre.freebase.service_url}/apps/app${app.appid}">${app.name || app.appid}</a>
+      <a href="" class="toolbox-link-edit">Edit this App</a>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="apps_toolbox_footer()">
+  <a href="" class="toolbox-link-new">New App</a>
+</acre:block>
+
+<!-- Queries -->
+
+<acre:block def="queries_toolbox(queries)">
+  <acre:script>
+    var options = {
+      search: queries_toolbox_search,
+      header: queries_toolbox_header,
+      content: function() {
+        return acre.markup.bless(acre.markup.stringify(queries_toolbox_content(queries)));
+      },
+      footer: queries_toolbox_footer
+    };
+  </acre:script>
+  ${toolbox(options)}
+</acre:block>
+
+<acre:block def="queries_toolbox_search()">
+  <form action="">
+    <input type="text" name="q" class="toolbox-textbox" placeholder="Search queries by name..."/>
+    <button type="submit" class="toolbox-searchbutton">Search</button>
+  </form>
+</acre:block>
+
+<acre:block def="queries_toolbox_header()">
+  <span class="toolbox-header-content">Your Queries</span>
+  <a class="help" href="">What are Queries?</a>
+</acre:block>
+
+<acre:block def="queries_toolbox_content(queries)">
+  <ul>
+    <li acre:for="query in queries" data-name="${query.name || query.id}" data-id="${query.id}">
+      <a href="${acre.freebase.service_url}/view${query.id}">${query.name || query.id}</a>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="queries_toolbox_footer()">
+  queries_toolbox_footer
+</acre:block>
+
+<!-- Schema -->
+
+<acre:block def="schema_toolbox(types)">
+  <acre:script>
+    var options = {
+      search: schema_toolbox_search,
+      header: schema_toolbox_header,
+      content: function() {
+        return acre.markup.bless(acre.markup.stringify(schema_toolbox_content(types)));
+      },
+      footer: schema_toolbox_footer
+    };
+  </acre:script>
+  ${toolbox(options)}
+</acre:block>
+
+<acre:block def="schema_toolbox_search()">
+  <form action="">
+    <input type="text" max="200" name="q" class="toolbox-textbox" placeholder="Filter your types..."/>
+    <button type="submit" class="toolbox-searchbutton">Search All Types</button>
+  </form>
+</acre:block>
+
+<acre:block def="schema_toolbox_header()">
+  <span class="toolbox-header-content">Your Schema</span>
+  <a class="help" href="">What are Schema?</a>
+</acre:block>
+
+<acre:block def="schema_toolbox_content(types)">
+  <ul>
+    <li acre:for="type in types" data-name="${type.name || type.id}" data-id="${type.id}">
+      <a href="${acre.freebase.service_url}/view${type.id}">${type.name || type.id}  </a>
+       <span class="schema-toolbox-id">${type.id}</span>
+      
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="schema_toolbox_footer()">
+  <a href="" class="toolbox-link-new">New Type</a>
+</acre:block>
+

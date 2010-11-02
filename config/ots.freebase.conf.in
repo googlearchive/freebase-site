@@ -1,0 +1,16 @@
+[
+    {
+        "host": ".@ACRE_METAWEB_BASE_ADDR@",
+        "rules": [
+            {
+                "from": {
+                    "path": "/" 
+                },
+                "to": {
+                    "route_as": "app",
+                    "location": "/freebase/site/routing/release" 
+                } 
+            } 
+        ]
+    }
+]

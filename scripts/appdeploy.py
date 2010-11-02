@@ -27,8 +27,6 @@ from optparse import OptionParser
 from tempfile import mkdtemp, mkstemp
 from cssmin import cssmin
 
-PLUGIN_ACTIONS = []
-
 LICENSE_PREAMBLE = '''
 /*
  * Copyright 2010, Google Inc.
@@ -672,7 +670,6 @@ class Context():
 
   def error(self, msg):
     self.log(msg, subaction='ERROR', color=self.RED)
-    #print self.RED + '[%s:%s:ERROR] %s' % (self.action, self.options.app, msg) + self.ENDC
     return False
 
   def log(self, msg, subaction='', color=None):
@@ -687,7 +684,7 @@ class Context():
     if color:
       start_color, end_color = color, self.ENDC
 
-    print start_color + '[%s:%s:%s] %s' % (self.action, self.current_app or '', subaction, msg) + end_color
+    print '%s[%s:%s:%s] %s%s' % (start_color, self.action, self.current_app or '', subaction, msg, end_color)
 
     return True
 
@@ -1766,7 +1763,6 @@ def main():
     valid_actions = [
         ('branch', 'creates a branch of your app', ActionBranch),
         ('push', 'pushes a specified directory to an app version', ActionPush),
-        ('static', 'generates and deployes static bundles to the edge servers', ActionStatic),
         ('create_graph', 'creates an app on the given graph', ActionCreateGraph),
         ('create_local', 'combine branch, static and push in one go', ActionCreateLocal),
         ('release', 'release a specific version of an app', ActionRelease),
@@ -1778,12 +1774,9 @@ def main():
     try:
         sys.path.append('.')
         from appdeploy_gstatic_plugin import ActionGoogleStatic
-        PLUGIN_ACTIONS.append(('gstatic', 'create static bundles that get pushed to gstatic servers', ActionGoogleStatic))
+        valid_actions.append(('static', 'create static bundles that get pushed to gstatic servers', ActionGoogleStatic))
     except ImportError:
-        pass
-
-    if len(PLUGIN_ACTIONS):
-        valid_actions.extend(PLUGIN_ACTIONS)
+        valid_actions.append(('static', 'generates and deployes static bundles to the edge servers', ActionStatic))
 
     usage = '''%prog action [options]
 \nActions:
@@ -1815,12 +1808,13 @@ def main():
 
     (options, args) = parser.parse_args()
 
+    #there was no action specified 
     if not len(args) or args[0] not in [a[0] for a in valid_actions]:
         parser.error('You did not provide a valid action')
         exit(-1)
 
-    #all options and args are good, let's do some clean-up / arg expansion
 
+    #resolve -v latest to the actual last svn version
     context = Context(options)
     if options.app and options.version and options.version == 'latest':
         app = AppFactory(context)(options.app)

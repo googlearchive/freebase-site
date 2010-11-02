@@ -1,7 +1,0 @@
-[{
-  "id": null,
-  "name": null,
-  "sort": "name",
-  "exclude_empty:domains": {"guid": null, "limit": 1},
-  "type": "/freebase/domain_category"
-}]

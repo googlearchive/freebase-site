@@ -1,1 +1,0 @@
-acre.require("lib_appeditor_service").dump_error(acre.error);

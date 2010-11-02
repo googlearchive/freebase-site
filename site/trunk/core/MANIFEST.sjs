@@ -91,7 +91,7 @@ CoreManifest.prototype = extend({}, Manifest.prototype, {
 
   css_resource_url: function(url, use_acre_url) {
     if (url.indexOf("static://") === 0) {
-      return "url(" + this.freebase_resource_url(url.substring(9)) + ")";
+      return 'url("' + this.freebase_resource_url(url.substring(9)) + '")';
     }
     return Manifest.prototype.css_resource_url.apply(this, [url, use_acre_url]);
   },

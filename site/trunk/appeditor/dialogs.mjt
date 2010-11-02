@@ -266,14 +266,14 @@
           if (e.which == 13) { $('#button-add-file').click(); }
         });
       
-        ui.watch_inputs(null, {
-          inputs : {
-            'add-file-name' : null
-          },
-          change : function(inputs){
-            file = inputs['add-file-name']
-          }
-        });
+      ui.watch_inputs(null, {
+        inputs : {
+          'add-file-name' : null
+        },
+        change : function(inputs){
+          file = inputs['add-file-name']
+        }
+      });
     </acre:script>
   </acre:block>
   

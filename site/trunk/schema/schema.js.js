@@ -153,6 +153,22 @@
       }
     });
 
+    // Show/Hide help menu in domain creation dialog
+    $(".modal-help-toggle").click(function() {
+
+      var $link = $(this);
+      var $help_pane = $(this).parents().find(".modal-help");
+      var $container = $(this).parents().find(".modal-content");
+
+      if ($help_pane.is(":hidden")) {
+        $help_pane.height(($container.height() - 5)).slideDown();
+        $link.html("[ - ] Hide Help");
+      } else {
+        $help_pane.slideUp();        
+        $link.html("[ + ] Show Help");
+      };
+
+    });
 
     // language select
     var lang_select = $("#language-select").change(function() {

@@ -36,7 +36,7 @@
   var i18n = mf.require("i18n", "i18n");
   var _ = i18n.gettext;
   var queries = mf.require("queries");
-    
+
   var user_id = acre.request.params.user_id;
 
   var data = {};
@@ -96,7 +96,7 @@
             <fieldset>
               <input type="text" name="id" class="text-input" id="property-search-input" placeholder="${_('Start typing for suggested properties...')}" />
             </fieldset>
-          </form>      
+          </form>
           <label><input type="radio" name="property-search-toggle" class="search-toggle" id="property-search-toggle-commons" checked="checked" />${_('Freebase Commons')}</label>
           <label><input type="radio" name="property-search-toggle" class="search-toggle" id="property-search-toggle-all" />${_('All Domains')}</label>
         </div>
@@ -106,7 +106,7 @@
             <fieldset>
               <input type="text" name="id" class="text-input" id="user-search-input" placeholder="Start typing for suggested users..." placeholder="Start typing for suggested users" />
             </fieldset>
-          </form>      
+          </form>
         </div>
 -->
       </div>
@@ -134,19 +134,19 @@
             </tr>
           </tbody>
         </table>
-      </div>  
+      </div>
     </div>
-    
+
     <div class="aside" role="complimentary" id="content-sub">
       <div class="content-wrapper">
         <h2 class="aside-title">${_('What is Schema?')}</h2>
         <p>${_('Schema describes how data in Freebase is structured.')}</p>
-        <p><strong>${_('Schema is made by creating:')}</strong></p> 
+        <p><strong>${_('Schema is made by creating:')}</strong></p>
         <h3>
           <a href="http://wiki.freebase.com/wiki/Domain">${_('domains')}</a>
         </h3>
         <p>${_('which define a common namespace for you to create')}</p>
-        <h3><a href="http://wiki.freebase.com/wiki/Type" title="${_('Learn more about')}">${_('types')}</a></h3> 
+        <h3><a href="http://wiki.freebase.com/wiki/Type" title="${_('Learn more about')}">${_('types')}</a></h3>
         <p>${_('which define a particular kind of person, place or thing and contain')}</p>
         <h3><a href="http://wiki.freebase.com/wiki/Property" title="${_('Learn more about')}">${_('properties')}</a></h3>
         <p>${_('which define the unique qualities of a type.')}</p>
@@ -178,7 +178,6 @@
         </ul>
       </div>
     </div>
-  
   </div>
 
 </acre:block>
@@ -188,4 +187,46 @@
   <script src="${mf.js_src('index.mf.js')}"></script>
 </acre:block>
 
+
+<acre:block def="create_domain_form()">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <a href="javascript:void(0);" class="modal-help-toggle">[ + ] Show Help</a>
+        ${_('Create a new domain')}
+      </h1>
+      <div class="modal-content">
+        <div class="modal-help">
+          <h2 class="modal-help-title">${_('What are domains?')}</h2>
+          <p>${_('Creating a domain is generally the first step in building a data model. A useful way to think of a Domain is as the bucket in which you create your Types, as they provide a common namespace in which you build your schema.')}</p> 
+          <p>
+            <a href="http://wiki.freebase.com/wiki/Domain">Read more &raquo;</a>
+          </p>
+        </div>
+        <div class="form-group clear">
+          <div class="form-row form-row-inline">
+            <label class="form-label" for="domain-name">${_('Name')}</label>
+            <input class="text-input" type="text" name="name" value="" autofocus/>
+            <span class="form-note">${_('You can change this at any time')}</span>
+          </div>
+          <div class="form-row form-row-inline">
+            <label class="form-label" for="domain-key">${_('Key')}</label>
+            <input class="text-input" type="text" name="key" value=""/>
+            <span class="form-note">
+              ${_('Five or more alphanumeric characters. No spaces. This cannot be changed')}
+            </span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">${_('Description')}</label>
+          <textarea class="textarea" rows="3">${_('Provide a brief description to help Freebase users find your domain and help contribute.')}</textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <button class="button button-submit button-primary" type="submit">Save</button>
+      <button class="button button-cancel">Cancel</button>
+    </div>
+  </div>
+</acre:block>
 ${mf.require("template", "renderer").render_page(data, this.exports)}

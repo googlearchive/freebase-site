@@ -1,0 +1,58 @@
+div.cuecard-queryEditor-inner {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+div.cuecard-queryEditor-content {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    border: 1px solid #ddd;
+}
+
+div.cuecard-queryEditor-controls-top {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    text-align: right;
+    padding-bottom: 0.35em;
+}
+
+div.cuecard-queryEditor-controls-bottom {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    text-align: right;
+    padding-top: 0.35em;
+}
+
+.cuecard-queryEditor-controls-top button, .cuecard-queryEditor-controls-bottom button {
+    line-height: 16px;
+}
+
+td.cuecard-queryEditor-controls-rightAligned {
+    text-align: right;
+}
+
+.cuecard-queryEditor-controls-leftAligned button {
+    margin-left: 0;
+    margin-right: 0.5em;
+}
+
+button.cuecard-queryEditor-run {
+    width: 8em;
+}
+
+button.cuecard-queryEditor-run, button.cuecard-queryEditor-queryAssist {
+    background: #F06010 repeat-x scroll 0 -1183px;
+    font-weight: bold;
+    color: white;
+}
+
+.cuecard-queryEditor-buttonHint {
+    color: #888;
+    padding-top: 0.25em;
+}

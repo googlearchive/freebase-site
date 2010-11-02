@@ -1,0 +1,206 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").mf;
+  var h = mf.require("core", "helpers");
+  var f = mf.require("filters");
+  var i18n = mf.require("i18n", "i18n");
+  var _ = i18n.gettext;
+</acre:script>
+
+<acre:block def="filters(filter_options, prop_counts)">
+  <acre:script>
+    var o = filter_options || {};
+    var limit = o.limit || f.LIMIT;
+    var ts = acre.request.params.timestamp;
+  </acre:script>
+
+  ${prop_counts_filter(filter_options, prop_counts)}
+
+  <div class="filter-group">
+    <h2 class="filter-title">${_("By Time")}:</h2>
+    <ul>
+      <acre:block for="key,val in f.TIMESTAMPS">
+        <li acre:if="key === ts" class="filter-item">
+          <a href="${f.remove_filter_url(o, 'timestamp')}" class="remove-filter">x</a>
+          ${_(key)}
+        </li>
+        <li acre:else="">
+          <a href="${f.filter_url(o, 'timestamp', key)}" title="${h.sprintf(_('Added since %s'), _(key))}">${_(key)}</a>
+        </li>
+      </acre:block>
+      <acre:script>
+        var change = false;
+      </acre:script>
+      <acre:block if="ts && !(ts in f.TIMESTAMPS) && o.timestamp">
+        <acre:script>
+          change = true;
+        </acre:script>
+        <span class="filter-item">
+          <a href="${f.remove_filter_url(o, 'timestamp')}" class="remove-filter">x</a>
+          <acre:block if="h.is_array(o.timestamp) && o.timestamp.length === 2">
+            ${h.sprintf(_("%s to %s"), o.timestamp[0], o.timestamp[1])}
+          </acre:block>
+          <acre:block else="">
+            ${o.timestamp}
+          </acre:block>
+        </span>
+      </acre:block>
+      <li>
+        <a class="filter-form-trigger" href="javascript:void(0)">${change ? _("change"): _("custom")}&hellip;</a>
+        <div class="filter-form" style="display:none;">
+          ${filter_form(o, 'timestamp', timestamp_inputs)}
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="filter-group">
+    <h2 class="filter-title">${_("By User")}:</h2>
+    <acre:block if="o.creator">
+      <acre:script>
+        var creator = o.creator;
+        if (!h.is_array(creator)) {
+          creator = [creator];
+        }
+      </acre:script>
+      <span acre:for="user in creator" class="filter-item">
+        <a href="${f.remove_filter_url(o, 'creator', user)}" class="remove-filter">x</a>
+        ${user}
+      </span>
+    </acre:block>
+    <a acre:if="o.creator" class="filter-form-trigger" href="javascript:void(0);">${_("add another")}&hellip;</a>
+    <div class="filter-form" acre:attrs="o.creator ? {style:'display:none;'} : {}">
+      ${filter_form(o, 'creator', null, 'Start typing for suggestions', true)}
+    </div>
+  </div>
+
+  <div class="filter-group">
+    <h2 class="filter-title">${_("Limit")}:</h2>
+    <span class="filter-item">
+      <a acre:if="limit != f.LIMIT" href="${f.remove_filter_url(o, 'limit')}" class="remove-filter">x</a>
+      ${i18n.format_number(limit)}
+    </span>
+    <a class="filter-form-trigger" href="javascript:void(0);">${_("change")}&hellip;</a>
+    <div class="filter-form" style="display:none;">
+       ${filter_form(o, 'limit', null, 'Default is 100')}
+    </div>
+    </acre:block>
+  </div>
+
+
+  <div class="filter-group">
+    <h2 class="filter-title">${_("As of Time")}:</h2>
+    <acre:block if="o.as_of_time">
+      <span class="filter-item">
+        <a href="${f.remove_filter_url(o, 'as_of_time')}" class="remove-filter">x</a>
+        ${o.as_of_time}
+      </span>
+      <a class="filter-form-trigger" href="javascript:void(0);">${_("change")}&hellip;</a>
+    </acre:block>
+    <div class="filter-form" acre:attrs="o.as_of_time ? {style:'display:none;'} : {}">
+       ${filter_form(o, 'as_of_time', null, 'timestamp')}
+    </div>
+    </acre:block>
+  </div>
+
+</acre:block>
+
+<acre:block def="filter_form(filter_options, filter_key, def, placeholder, append)">
+  <form action="${h.url_for('triples', null, null, filter_options.id)}" method="GET">
+    <acre:block for="key,val in filter_options" if="key && val && (key !== 'id') && (append || key != filter_key)">
+      <acre:block if="h.is_array(val)">
+        <input acre:for="v in val" type="hidden" name="${key}" value="${v}"/>
+      </acre:block>
+      <acre:block elif="key === 'limit' && val === f.LIMIT">
+      </acre:block>
+      <acre:block else="">
+        <input type="hidden" name="${key}" value="${val}"/>
+      </acre:block>
+    </acre:block>
+    <acre:block if="def">
+      ${def()}
+    </acre:block>
+    <acre:block else="">
+      <input type="text" class="text-input" name="${filter_key}" acre:attrs="placeholder ? {placeholder:placeholder}: {}"/>
+    </acre:block>
+    <button type="submit" style="display:none;">submit</button>
+  </form>
+</acre:block>
+
+<acre:block def="timestamp_inputs()">  
+  <input type="text" class="text-input date-input" name="timestamp" placeholder="${_('from')}"/> to 
+  <input type="text" class="text-input date-input" name="timestamp" placeholder="${_('to')}"/>
+</acre:block>
+
+
+
+<acre:block def="prop_counts_filter(filter_options, prop_counts)">
+  <acre:script>
+    var o = filter_options;
+    var show_counts = !o.timestamp && !o.creator && !o.as_of_time && prop_counts;
+   var show_filter = o.domain || o.type || o.property || show_counts;
+  </acre:script>
+  <div acre:if="show_filter" class="filter-group">
+    <h2 class="filter-title">${_("By Vertical")}:</h2>
+    <acre:block if="o.domain">
+      <span class="filter-item">
+        <a href="${f.remove_filter_url(o, 'domain')}" class="remove-filter">x</a>
+        ${o.domain}
+      </span>
+    </acre:block>
+    <acre:block elif="o.type">     
+      <span class="filter-item">
+        <a href="${f.remove_filter_url(o, 'type')}" class="remove-filter">x</a>
+        ${o.type}
+      </span>
+    </acre:block>
+    <acre:block elif="o.property">
+      <span class="filter-item">
+        <a href="${f.remove_filter_url(o, 'property')}" class="remove-filter">x</a>
+        ${o.property}
+      </span>
+    </acre:block>
+
+    <acre:block if="show_counts">
+      <acre:script>
+        var bar_graph_data = f.get_bar_graph_data(o, prop_counts);
+      </acre:script>
+
+      <acre:block if="bar_graph_data && bar_graph_data.length">
+        <ul class="bar-graph">
+          <acre:block for="i,data in bar_graph_data" if="i<10">
+            <acre:script>
+              var id = data.id;
+              var total = data.total;
+              var incoming = data.incoming;
+              var outgoing = data.outgoing;
+              if (o.domain || o.type || o.property) {
+                id = id.split("/").pop();
+              }
+            </acre:script>
+            <li class="bar-graph-item">
+              <a class="clear" acre:attrs="data.url ? {href:data.url} : {href:'javascript:void(0);'}">
+                <span class="bar-graph-item-name">${id}</span>
+                <span class="bar-graph-values">
+                  <acre:block if="incoming != null && outgoing != null">
+                    <span class="bar-graph-value incoming" title="${h.sprintf(_('%s incoming'), i18n.format_number(data.ti))}" style="width:${incoming}%">
+                      <b>${i18n.format_number(data.ti)}</b>
+                    </span>
+                    <span class="bar-graph-value outgoing" title="${h.sprintf(_('%s ougoing'), i18n.format_number(data.to))}" style="width:${outgoing}%">
+                      <b>${i18n.format_number(data.to)}</b>
+                    </span>
+                  </acre:block>
+                  <acre:block else="">
+                    <span class="bar-graph-value outgoing" title="${h.sprintf(_('%s total'), i18n.format_number(data.t))}" style="width:${total}%">
+                      <b>${i18n.format_number(data.t)}</b>
+                    </span>
+                  </acre:block>
+                </span>                
+              </a>
+            </li>
+          </acre:block>
+        </ul>
+      </acre:block>
+
+    </acre:block>
+  </div>
+</acre:block>

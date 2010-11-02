@@ -1,0 +1,1 @@
+{"stylesheet": {"homepage.mf.css": [["template", "freebase.mf.css"], "homepage.less"]}, "javascript": {"homepage.mf.js": [["template", "freebase.mf.js"], ["flot", "flot.core.mf.js"], "jquery.tinysort.js", "jquery.tools.tabs.min.js", "homepage.js"]}, "apps": {"core": "//42.core.site.freebase.dev"}}

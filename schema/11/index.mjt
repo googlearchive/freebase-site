@@ -1,0 +1,156 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var c = this.exports.c = {};
+  var h = mf.require("core", "helpers");
+  var queries = mf.require("queries");
+    
+  var user_id = acre.request.params.user_id;
+
+  var data = {};
+  if (user_id) {
+    data.domains = queries.user_domains(user_id);
+  } else {
+    data.domains = queries.common_domains();
+  }
+</acre:script>
+
+<acre:block def="title()">
+  Schema
+</acre:block>
+
+<acre:block def="head()">
+ <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  <div class="page-header">
+    <h1 id="page-title">
+      Schema
+    </h1>
+  </div>
+</acre:block>
+
+<acre:block def="content_body()">
+
+  <div id="content-wrapper">
+    <div id="content-main" role="main">
+      <div class="section">
+      <h1 class="section-title">Search</h1>
+      <div id="schema-search" class="section-tabs">
+        <ul class="section-tabset clear">
+          <li class="section-tab"><a href="#domain-search">Domains</a></li>
+          <li class="section-tab"><a href="#type-search">Types</a></li>
+          <li class="section-tab"><a href="#property-search">Properties</a></li>
+<!--           <li class="section-tab"><a href="#user-search">Users</a></li> -->
+        </ul>
+        <div class="search-box" id="domain-search">
+          <form id="domain-search-form" method="get" action="${h.url_for('schema', 'domain')}">
+            <fieldset>
+              <input type="text" name="id" class="text-input" id="domain-search-input" id="domain-search-input" placeholder="Start typing for suggested domains..." />
+            </fieldset>
+          </form>
+          <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-commons" checked="checked" />Freebase Commons</label>
+          <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" />All Domains</label>
+        </div>
+        <div class="search-box" id="type-search">
+          <form id="type-search-form" method="get" action="${h.url_for('schema', 'type')}">
+            <fieldset>
+              <input type="text" name="id" class="text-input" id="type-search-input" placeholder="Start typing for suggested types..." />
+            </fieldset>
+          </form>
+          <label><input type="radio" name="type-search-toggle" class="search-toggle" id="type-search-toggle-commons" checked="checked" />Freebase Commons</label>
+          <label><input type="radio" name="type-search-toggle" class="search-toggle" id="type-search-toggle-all" />All Domains</label>
+        </div>
+        <div class="search-box" id="property-search">
+          <form id="property-search-form" method="get" action="${h.url_for('schema', 'property')}">
+            <fieldset>
+              <input type="text" name="id" class="text-input" id="property-search-input" placeholder="Start typing for suggested properties..." />
+            </fieldset>
+          </form>      
+          <label><input type="radio" name="property-search-toggle" class="search-toggle" id="property-search-toggle-commons" checked="checked" />Freebase Commons</label>
+          <label><input type="radio" name="property-search-toggle" class="search-toggle" id="property-search-toggle-all" />All Domains</label>
+        </div>
+<!--
+        <div class="search-box" id="user-search">
+          <form id="user-search-form">
+            <fieldset>
+              <input type="text" name="id" class="text-input" id="user-search-input" placeholder="Start typing for suggested users..." placeholder="Start typing for suggested users" />
+            </fieldset>
+          </form>      
+        </div>
+-->
+      </div>
+      </div>
+      <div class="section">
+        <h1 class="section-title">Browse</h1>
+        <table cellspacing="0" class="table table-sortable {sortlist: [[0,0]]}">
+          <thead>
+            <tr>
+              <th scope="col" class="column-header {sorter: 'schemaName'}"><span class="sort-icon">Domain</span></th>
+              <th scope="col" class="column-header"><span class="sort-icon">ID</span></th>
+              <th scope="col" class="column-header numeric"><span class="sort-icon"># of Types</span></th>
+              <th scope="col" class="column-header numeric {sorter: 'commaDigit'}"><span class="sort-icon"># of Instances</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr acre:for="d in c.domains">
+              <th class="row-header odd" scope="row">
+                <a href="${h.url_for('schema', 'domain', null, d.id)}" title="View $d.name">$d.name</a>
+              </th>
+              <td class="even">$d.id</td>
+              <td class="odd numeric">$d.types</td>
+              <td class="even numeric">${h.commafy(d.instance_count)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>  
+    </div>
+    
+    <div class="aside" role="complimentary" id="content-sub">
+      <div class="content-wrapper">
+        <h2 class="aside-title">What is Schema?</h2>
+        <p>Schema describes how data in Freebase is structured.</p>
+        <p><strong>Schema is made by creating:</strong></p> 
+        <h3><a href="" title="Learn more about">types</a></h3> 
+        <p>which define a particular kind of person, place or thing and contain</p>
+        <h3><a href="#" title="Learn more about">properties</a></h3>
+        <p>which define the unique qualities of a type.</p>
+        <p>One simple way to understand the difference between types and properties is that types express &ldquo;is a&rdquo;, while properties express &ldquo;has a&rdquo;.</p>
+        <p><strong>Here's an example:</strong></p>
+        <div class="aside-box">
+          <h4><a href="${h.freebase_url('/view/en/william_shakespeare')}" title="View on Freebase">William Shakespeare</a></h4>
+          <table cellspacing="0">
+            <tbody>
+              <tr>
+                <td class="is-a">is a</td>
+                <td class="kind">type</td>
+                <td><a href="${h.url_for('schema', 'type', null, '/people/person')}">Person</a></td>
+              </tr>
+              <tr>
+                <td class="has-a">has a</td>
+                <td>property</td>
+                <td><a href="${h.url_for('schema', 'property', null, '/people/person/date_of_birth')}">Date of Birth</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <h2 class="aside-title">Learn more:</h2>
+        <ul>
+          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Schema">Wiki: Schema</a></li>
+          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Types">Wiki: Type</a></li>
+          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Properties">Wiki: Property</a></li>
+          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Domains">Wiki: Domain</a></li>
+        </ul>
+      </div>
+    </div>
+  
+  </div>
+
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+  <script src="${mf.js_src('schema.mf.js')}"></script>
+</acre:block>
+
+${mf.require("template", "renderer").render_page(data, this.exports)}

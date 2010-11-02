@@ -1,0 +1,126 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var c = this.exports.c = {};
+  var h = mf.require("core", "helpers");
+</acre:script>
+
+<acre:block def="title()" trim="">
+  <acre:script>
+    if (!c.user) {
+      acre.response.status = 302;
+      acre.response.set_header("location", h.account_url("signin", acre.request.url));
+      acre.exit();      
+    }
+    acre.response.set_cache_policy("fresh");
+  </acre:script>
+  Settings<acre:block if="c.app"> for $c.app.name</acre:block>
+</acre:block>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('apps.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  <div class="page-header">
+    <div class="breadcrumb clear">
+      <ol>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.url_for('apps')}">Apps</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item" acre:if="c.app.creator">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.url_for('apps',null, null, c.app.creator.id)}">$c.app.creator.name</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item last" if="c.app">
+          <span class="breadcrumb-item-inner">
+            <a href="#">$c.app.name</a>
+          </span>
+        </li>
+      </ol>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="content_body()">
+  <div id="content-main">
+    
+    <div class="page-meta" acre:if="!c.app">
+      <i>No app specified</i>
+    </div>
+  
+    <div class="page-meta" acre:else="">
+      <h1>$c.app.name</h1>
+      <span class="creation-timestamp" acre:if="c.app && c.app.oauth">
+          <b>OAuth Credentials</b><br/>
+          <em>Consumer Key:</em> $c.app.oauth.key<br/>
+          <em>Consumer Secret:</em> $c.app.oauth.secret
+      </span>
+      <form id="edit-props" action="${h.url_for('apps', 'form', null, '/submit/set_app_properties')}" method="post" class="box-form">
+        <input type="hidden" name="appid" value="$c.app.id" />
+        <ul class="box-modechooser">
+          <li>
+            <input type="radio" name="listed" value="1" acre:attrs="c.app.listed===true?{checked:'checked'}:{}" />
+            Ready to Publish
+          </li>
+          <li>
+            <input type="radio" name="listed" value="0" acre:attrs="c.app.listed===false?{checked:'checked'}:{}" />
+            Still in Development
+          </li>
+        </ul>
+      
+        <p>
+          <label>App Name</label> <input type="text" name="name" class="textbox" value="$c.app.name"/>
+        </p>
+      
+        <p>
+          <label>Homepage</label> 
+          <input type="text" name="homepage" class="textbox" value="${c.app.homepage||''}"/>
+          <span class="note" acre:if="false">Note: changing this value will not register a new URL within Acre</span>
+        </p>
+      
+        <p class="description">
+          <label>Short Description</label> <input type="text" name="description" class="textbox" value="${c.app.description||''}"/>
+        </p>
+      
+        <p>
+          <label>Detailed Description
+            <span class="markdownlink">Note: 
+              You can <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">use Markdown</a> here.</span></label>
+          <textarea name="article" acre:if="c.app.article" class="textarea">$c.app.article.text</textarea>
+          <textarea name="article" acre:else="" class="textarea"></textarea>
+        </p>
+        
+        <div class="box-nextactions">
+          <input class="button button-primary" type="submit" name="title" value="Update this App"/>
+          <a class="button" href="${h.url_for('apps', 'app', null, c.app.id)}">Cancel</a>
+        </div>
+      </form>
+    
+      <form id="icon_form" action="${h.url_for('apps', 'form', null, '/submit/add_icon')}" method="post">
+        <p>
+          <label>App Icon</label>
+          <input id="icon_file" type="file" name="file" />
+          <b>
+            <span id="icon_name" acre:if="c.app.icon">${c.app.icon.name}</span>
+            <span id="icon_name" acre:else=""></span>
+          </b> 
+          <a id="icon_delete" acre:if="c.app.icon" href="#">delete</a>
+          <a id="icon_delete" acre:else="" href="#"></a>
+          <span id="icon_upload_error"></span>
+        </p>
+      </form>
+    </div>
+    
+  </div>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script type="text/javascript">
+    var bp = "${h.url_for('apps')}";
+    var app = ${JSON.stringify(c.app)};
+  </script>
+  <script type="text/javascript" src="${mf.js_src('apps.mf.js')}"></script>
+</acre:block>

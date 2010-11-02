@@ -1,0 +1,1 @@
+{"stylesheet": {"freebase.mf.css": ["freebase.less", "components.less"]}, "javascript": {"freebase-permission.mf.js": ["freebase.mf.js", ["permission", "permission.js"]], "freebase.mf.js": ["jquery.cookie.js", "jquery.placeholder.js", "jquery.metadata.js", ["jqueryui", "jquery.ui.core.mf.js"], "freebase.js"]}, "apps": {"core": "//42.core.site.freebase.dev"}}

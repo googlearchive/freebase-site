@@ -1,0 +1,35 @@
+<acre:script>
+
+  var mf = acre.require("MANIFEST").MF;
+  var id = acre.request.params['id'];
+  var util = acre.require("app_util");
+
+  var apps = util.get_app2(id);
+  
+  for (var i in apps) { 
+
+  apps[i].timeline = util.app_versions_to_release(apps[i]);
+  
+  }
+
+
+</acre:script>
+
+<div id="reference-${id}">
+
+  <acre:block for="env in util.ENV">
+    <acre:script>var app = apps[env['id']]</acre:script>
+    ${env['id']}: 
+    <span>
+      <acre:block for="version in app.timeline">
+	<a href="${env['ae']}/#!path=${version.id}"><span acre:attrs="version.release ? { 'style' : 'font-weight: bold;' } : {}">${version.name}</a>
+
+      </acre:block>
+    </span>
+  </acre:script>
+
+
+
+</div>
+
+

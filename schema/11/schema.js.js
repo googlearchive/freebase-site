@@ -1,0 +1,302 @@
+
+
+(function($, fb) {
+  $(function(){
+    // Setup schema search tabset
+    var $schema_explorer_search_tabset = $("#schema-search > .section-tabset").tabs("#schema-search > .search-box");
+
+    //var $type_mode_tabset = $(".nav-mode").tabs("#content .mode");
+
+    $.tablesorter.addParser({
+      id: "schemaName",
+      is: function(s) {
+        return false;
+      },
+      format: function(s) {
+        console.log('schemaName', s);
+        return $(s).text().toLowerCase();
+      },
+      type: 'text'
+    });
+    $.tablesorter.addParser({
+      // set a unique id
+      id: 'commaDigit',
+      is: function(s) {
+        // return false so this parser is not auto detected
+        return false;
+      },
+      format: function(s) {
+        // format your data for normalization
+        return parseInt(s.replace(/\,/g, ""));
+      },
+      // set type, either numeric or text
+      type: 'numeric'
+    });
+
+    // Make all sortable tables sortable
+    $(".table-sortable").tablesorter({
+      cssAsc: "column-header-asc",
+      cssDesc: "column-header-desc",
+      cssHeader: "column-header"
+    });
+
+    // trigger for row menus
+    $(".row-menu-trigger").each(function(){
+      $(this).tooltip({
+        events: {def: "click,mouseout"},
+        position: "bottom right",
+        offset: [-10, -10],
+        effect: "fade",
+        delay: 300
+      });
+
+      var $menu = $(this).closest(".row-menu");
+      $menu.children().last().hide();
+    });
+
+    $(".blurb-trigger").click(function(){
+      var $trigger = $(this);
+      var $blurb = $trigger.siblings(".blurb");
+      var $blob = $trigger.siblings(".blob");
+      console.log($blurb);
+      console.log($blob);
+      if ($blob.is(":hidden")) {
+        $blob.show();
+        $blurb.hide();
+        $trigger.text('Less');
+      }
+      else {
+        $blob.hide();
+        $blurb.show();
+        $trigger.text('More');
+      }
+    });
+
+    /*
+        Breadcrumbs
+    */
+
+    // Offset the breadcrumb menu equivalent to the width of the trigger
+    var h_width = $(".breadcrumb-sibling-trigger").outerWidth();
+    var h_offset = (h_width);
+
+    $(".breadcrumb-sibling-trigger").tooltip({
+      events: {def: "click,mouseout"},
+      position: "bottom right",
+      offset: [-5, -h_offset],
+      effect: "fade",
+      delay: 300,
+      onBeforeShow: function(){
+        this.getTrigger().addClass("active");
+      },
+      onHide: function() {
+        this.getTrigger().removeClass("active");
+      }
+    });
+
+    /*
+        Return Link Tooltips
+    */
+
+    $(".return-link-trigger").tooltip({
+      events: {def: "click,mouseout"},
+      position: "top center",
+      effect: "fade",
+      delay: 300,
+      offset: [-8, 0]
+    });
+
+    // we use 'visibillity' here to prevent table shifting when shown
+    $(".row-menu-trigger").css({"visibility":"hidden"});
+
+    $(".hoverable").hover(function(){
+      var row = $(this);
+      row.addClass("row-hover");
+      $(".row-menu-trigger", row).css('visibility','visible').hide().fadeIn("fast");
+    }, function(){
+      var row = $(this);
+      $(".row-menu-trigger", row).css('visibility','hidden');
+      row.removeClass("row-hover");
+    });
+
+
+    /*
+        Show/Hide Included Types & Incoming Properties
+    */
+    var $included_types = $("#included-types-table");
+    var $inherited_properties = $included_types.find("tbody").hide();
+    var $incoming_properties = $("#incoming-properties-table").find("tbody:not(.expanded)").hide();
+
+    $("#included-types-table .tbody-header, #incoming-properties-table .tbody-header").click(function(){
+      var $row = $(this);
+      var $tbody = $("tbody." + $row.attr("data-target"));
+      var $trigger = $row.find(".tbody-header-title");
+
+      if ($tbody.is(":hidden")) {
+        $trigger.addClass("expanded");
+        $tbody.slideDown();
+        $row.addClass("expanded");
+      }
+      else {
+        $trigger.removeClass("expanded");
+        $tbody.slideUp();
+        $row.removeClass("expanded");
+      }
+    });
+
+    /*
+        MQL_FILTERS are config parameters passed to respective
+        Freebase Suggest instances for Domain, Type, and Property
+        depending on whether the user has toggled Freebase Commons / All Projects
+    */
+
+    var MQL_FILTERS = {
+      domain : [{ "key": [{"namespace" : "/" }] }],
+      type : [{ "/type/type/domain": [{ "key" : [{ "namespace" : "/" }] }], "a:/type/type/domain": { "id": "/freebase", "optional" : "forbidden" } }],
+      property : [{ "/type/property/schema": { "type": "/type/type", "domain": [{ "key" : [{ "namespace" : "/" }] }], "a:domain" : { "id" : "/freebase", "optional" : "forbidden" } } }]
+    };
+
+    /*
+        DOMAIN SUGGEST
+    */
+    var $domain_input = $("#domain-search-input");
+    var $domain_form = $domain_input.closest("form");
+
+    $domain_form.submit(function(){
+      return false;
+    });
+
+    var domain_suggest_options = { "type" : "/type/domain" };
+
+    if ($("#domain-search-toggle-commons").is(":checked")) {
+      domain_suggest_options.mql_filter = MQL_FILTERS.domain;
+    }
+
+    $domain_input.suggest(domain_suggest_options)
+      .bind("fb-select", function(e, data){
+        var url = $domain_form.attr("action");
+        window.location.href = url + data.id;
+      })
+      .focus(function() {
+        this.select();
+      });
+
+    /*
+        TYPE SUGGEST
+    */
+    var $type_input = $("#type-search-input");
+    var $type_form = $type_input.closest("form");
+
+    $type_form.submit(function(){
+      return false;
+    });
+
+    var type_suggest_options = { "type" : "/type/type" };
+
+    if ($("#type-search-toggle-commons").is(":checked")) {
+      type_suggest_options.mql_filter = MQL_FILTERS.type;
+    }
+
+    $type_input.suggest(type_suggest_options)
+      .bind("fb-select", function(e, data){
+        var url = $type_form.attr("action");
+        window.location.href = url + data.id;
+      })
+      .focus(function() {
+        this.select();
+      });
+
+    /*
+        PROPERTY SUGGEST
+    */
+    var $property_input = $("#property-search-input");
+    var $property_form = $property_input.closest("form");
+
+    $property_form.submit(function(){
+      return false;
+    });
+
+    var property_suggest_options = { "type" : "/type/property" };
+
+    if ($("#property-search-toggle-commons").is(":checked")) {
+      property_suggest_options.mql_filter = MQL_FILTERS.property;
+    }
+
+    $property_input.suggest(property_suggest_options)
+      .bind("fb-select", function(e, data){
+        var url = $property_form.attr("action");
+        window.location.href = url + data.id;
+      })
+      .focus(function() {
+        this.select();
+      });
+
+    /*
+        USER SUGGEST
+    */
+/*
+    var $user_input = $("#user-search-input");
+    var $user_form = $user_input.closest("form");
+*/
+
+
+    /*
+        Schema Search Toggles
+        On click for radio buttons, we have to update mql_filter params and reinitialize suggest
+
+    */
+    $(".search-toggle").click(function(e){
+      var $el = $(this);
+      var $parent = $(this).parent().siblings("form");
+
+      // focus related input
+      var $text_input = $parent.find(".text-input").focus();
+
+      /*
+       We grab the radio buttons closest form
+       and compare it's ID to decide which mql_filter
+       we need to update.
+       */
+
+      // Split ID to compare string
+      var el_id = $el.attr("id").split("-");
+
+      // Domain
+      if ($parent.attr("id") === $domain_form.attr("id")) {
+        if (el_id[el_id.length-1] === "commons") {
+          domain_suggest_options.mql_filter = MQL_FILTERS.domain;
+        }
+        else {
+          delete domain_suggest_options.mql_filter;
+        }
+        $domain_input.suggest(domain_suggest_options);
+      }
+
+      // Type
+      if ($parent.attr("id") === $type_form.attr("id")) {
+        if (el_id[el_id.length-1] === "commons") {
+          type_suggest_options.mql_filter = MQL_FILTERS.type;
+        }
+        else {
+          delete type_suggest_options.mql_filter;
+        }
+        $type_input.suggest(type_suggest_options);
+      }
+
+      // Property
+      if ($parent.attr("id") === $property_form.attr("id")) {
+        if (el_id[el_id.length-1] === "commons") {
+          property_suggest_options.mql_filter = MQL_FILTERS.property;
+        }
+        else {
+          delete property_suggest_options.mql_filter;
+        }
+        $property_input.suggest(property_suggest_options);
+      }
+    });
+  });
+
+
+
+
+})(jQuery, window.freebase);

@@ -1,0 +1,50 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var templates = mf.require("templates");
+  var c = this.exports.c = {};
+</acre:script>
+
+<acre:block def="head()">
+  <meta name="description" 
+        content="A social database about things you know and love, spanning millions of topics in 
+                 thousands of categories. Explore Freebase, add to it, or build applications with it.">
+  <meta name="keywords" 
+        content="database, open database, shared database, facts, fact sheet, information, community,
+                 discussion, semantic web, metaweb, arts &amp; entertainment, society, sports, 
+                 products &amp; services, time &amp; space, money, science &amp; technology, 
+                 special interests, system" >
+  <meta name="robots" content="noodp">
+  <link rel="canonical" href="http://www.freebase.com" />
+  
+  <script>
+    if (document.cookie.indexOf("metaweb-user-info") > 0) {window.location.href= "/home";}
+  </script>
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('homepage.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  ${templates.homepage_header()}
+</acre:block>
+
+<acre:block def="content_body()">
+  <div id="content-main">
+    ${templates.domain_explorer(c.categories)}
+  </div>
+  
+  <div id="content-side">
+    ${templates.gridworks()}
+    ${templates.what_is_freebase()}
+    ${templates.for_developers()}
+  </div>
+  
+  <div id="content-footer">
+    ${templates.join_freebase(c.reg_off)}
+    ${templates.blog_entries(c.blog)}
+    ${templates.wiki_entries(c.wiki)}
+    ${templates.join_discussion()}
+  </div>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="${mf.js_src('homepage.mf.js')}"></script>
+</acre:block>

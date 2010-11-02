@@ -1,0 +1,140 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").mf;
+  var h = mf.require("core", "helpers");
+  var i18n = mf.require("i18n", "i18n");
+  var i18n_editcomponents = mf.require("i18n", "editcomponents");
+  var _ = i18n.gettext;
+</acre:script>
+
+<acre:block def="add_type_form(domain_id, mediator, type)">
+  <table class="edit-form clear">
+    <tbody>
+      <tr class="edit-row">
+        <td colspan="5">
+          <div class="edit-row-loader"></div>  
+          <div class="form-field fb-type-name">
+            <label>
+              <span class="form-label">${_('Name')}</span>
+              <acre:script>
+                var attrs = {name:"name", type:"text", "class":"text-input"};
+              </acre:script>
+              <acre:block if="type">                
+                ${i18n_editcomponents.name(type, attrs)}
+              </acre:block>
+              <input acre:else="" acre:attrs="attrs"/>
+            </label>
+          </div>
+          <div class="form-field fb-type-key">
+            <label>
+              <span class="form-label">
+                ${_('Key')}
+                <span class="key">${domain_id}/</span>
+              </span>
+              <input acre:if="type" name="key" type="text" class="text-input" value="${type.key[0].value}"/>
+              <input acre:else=""   name="key" type="text" class="text-input"/>
+            </label>
+          </div>
+          <div class="form-field fb-type-description">
+            <label>
+              <span class="form-label">${_('Description')}</span>
+              <acre:script>
+                var attrs = {"name":"description", "class":"textarea", rows:3};
+              </acre:script>
+              <acre:block if="type">                
+                ${i18n_editcomponents.article(type, attrs)}
+              </acre:block>
+              <textarea acre:else="" acre:attrs="attrs"></textarea>
+            </label>
+            <div class="fb-type-display">
+              <acre:block if="mediator">
+                <input type="checkbox" name="mediator" value="1" checked="checked" style="display:none;"/>
+              </acre:block>
+              <acre:block else="">
+                <label for="enumeration" class="boolean-field">
+                  <input type="checkbox" name="enumeration" value="1" 
+                         acre:attrs="(type && type.enumeration) ? {checked:'checked'} : {}"/>
+                  ${_("Enumerated")}
+                </label>
+                <a class="help" href="http://wiki.freebase.com/wiki/Enumerated_type">${_("What's this?")}</a>
+              </acre:block>
+            </div>
+          </div>
+          <input name="domain" type="hidden" value="${domain_id}"/>
+        </td>
+      </tr>
+
+      <tr class="edit-row-submit">
+        <td colspan="5">
+          <button class="button button-primary button-submit" type="submit">${_('Save')}</button>
+          <button class="button button-cancel">${_('Cancel')}</button>
+          ${i18n_editcomponents.lang_select()}
+        </td>
+      </tr>
+    <tbody>
+  </table>
+</acre:block>
+
+<acre:block def="edit_type_form(type)">
+  ${add_type_form(type.domain.id, type.mediator, type)}
+</acre:block>
+
+<acre:block def="delete_type_result(type_info)">
+  <tr class="row-msg row-msg-info">
+    <td colspan="5">
+      <a class="close-msg" href="#" onclick="return freebase.dispatch(event, freebase.schema.close_message, ['.row-msg:first'], this);">${_('Close')}</a>
+      ${h.bless_sprintf(_("%s has been deleted."), type_info.name || type_info.id)}
+      <a href="#" onclick="return freebase.dispatch(event, freebase.schema.domain.undo_delete_type, null, this);"
+         class="${JSON.stringify(type_info)}">${_('Undo')}</a>
+    </td>
+  </tr>
+</acre:block>
+
+<acre:block def="domain_settings_form(domain)">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">${_('Domain Settings')}</h1>
+      <div class="modal-content">
+        <div class="form-group">
+          <div class="form-row form-row-inline">
+            <label class="form-label" for="domain-name">${_('Name')}</label>
+            <acre:script>
+              var attrs = {name:"name", type:"text", "class":"text-input"};
+            </acre:script>
+            ${i18n_editcomponents.name(domain, attrs)}
+            <span class="form-note">${_('You can change this at any time')}</span>
+          </div>
+          <div class="form-row form-row-inline">
+            <label class="form-label" for="domain-key">${_('Key')} <span class="key">${domain.key.namespace}${domain.key.namespace === "/" ? "" : "/"}</span></label>   
+            <input type="hidden" name="namespace" value="${domain.key.namespace}" />
+            <acre:block if="domain.key.permitted">
+              <input class="text-input" type="text" name="key" value="${domain.key.value}"/>              
+              <span class="form-note">
+                ${_('Five or more alphanumeric characters. No spaces.')}
+                <strong>${_('Changing a key may break external apps that use this domain')}</strong>
+              </span>
+            </acre:block>
+            <acre:block else="">
+              <input class="text-input" type="text" name="key" value="${domain.key.value}" disabled="disabled"/>            
+              <span class="form-note">
+                ${h.bless_sprintf(_("You do not permission to update this key in %s."), h.tag("span", domain.key.namespace, "class", "key"))}
+                ${_("Please contact a freebase administrator.")}
+              </span>              
+            </acre:block>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">${_('Description')}</label>
+          <acre:script>
+            var attrs = {name:"description", "class":"textarea", rows:4};
+          </acre:script>
+          ${i18n_editcomponents.article(domain, attrs)}
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <button class="button button-submit button-primary" type="submit">Save</button>
+      <button class="button button-cancel">Cancel</button>      
+      ${i18n_editcomponents.lang_select()}
+    </div>
+  </div>
+</acre:block>

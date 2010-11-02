@@ -1,0 +1,206 @@
+<acre:script>
+
+  var mf = acre.require("MANIFEST").MF;
+  var h = mf.require("core", "helpers");
+  var c = this.exports.c = {};
+
+  mf.require("libraries", "api_enhancer");
+
+  var id = acre.request.params.id || "/film";
+  var query = acre.require('base').query;
+  query = acre.freebase.extend_query(query, {'id':id});
+  var results = acre.freebase.mqlread(query).result;
+  
+  var activity_url = acre.freebase.service_url + '/api/trans/activity?id=' + id;
+  var activity = {}
+  try {
+      activity = JSON.parse(acre.urlfetch(activity_url).body)[id]['result'];
+  } catch (e) {}
+  
+  // define topic count
+  var topic_count = activity['instance'][0]['v'];
+  
+  // define top users. filter out '_bot', add username, and constrain to 5
+  var top_contributors = activity['users'].filter(function(user) {
+    return user.id.indexOf('_bot') === -1;
+  }).map(function(user) {
+    user.username = user.id.slice("/user/".length);
+    return user;
+  });
+
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('domain.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  <acre:script>
+    
+    if(results[0]['/freebase/domain_profile/theme']){
+
+        // We have a theme, so we need to find out what values are specified by the user
+        
+        var project_theme = true
+
+        var header_background = "";
+        var header_image = "";
+        var header_text = "";
+
+
+        // define background-color    
+        if (results[0]['/freebase/domain_profile/theme']['header_background_color']) {
+            header_background = "background-color:" + results[0]['/freebase/domain_profile/theme']['header_background_color'] + ";";
+        }
+    
+        // define header image
+        if (results[0]['/freebase/domain_profile/theme']['header_image']) {
+            header_image = "height:100px; background-image: url(http://img.freebase.com/api/trans/image_thumb" + results[0]['/freebase/domain_profile/theme']['header_image']['id'] + "?mode=fit&maxheight=100);background-repeat:no-repeat;";
+        }
+        
+        // define header text color
+        if (results[0]['/freebase/domain_profile/theme']['header_text_color']) {
+            header_text = "color:" + results[0]['/freebase/domain_profile/theme']['header_text_color'] + ";";
+        }
+
+        var background = header_background + header_image + header_text;
+        
+        if(header_image) {
+            hide_header_text = true;
+        }
+        else {
+            hide_header_text = false;
+        }    
+    }
+    else{
+        var project_theme = false;
+    }
+
+  </acre:script>
+
+  <acre:block if="id.startsWith('/base/')">
+    <header acre:if="project_theme" style="${background}" class="project-header-custom">
+      <h1 class="project-header-title" acre:if="hide_header_text" style="display:none;">${results[0]['name']}</h1>
+      <h1 class="project-header-title" acre:else="">${results[0]['name']}</h1>
+    </header>
+    <header acre:else="" class="project-header">
+      <h1 class="project-header-title">${results[0]['name']}</h1>    
+    </header>
+  </acre:block>
+  <acre:block else="">
+    <header class="project-header commons-header">
+      <h1 class="project-header-title">${results[0]['name']}</h1>
+    </header>    
+  </acre:block>  
+</acre:block>
+
+
+<acre:block def="content_body()">
+  <div class="section" id="content-main">
+    <div class="project-metadata">
+      <div class="wrapper">
+        <footer class="summary">
+          <span class="freebase-stamp">A Freebase Community Project</span>
+          <h2>
+            <span class="vcard">
+              <img class="photo" src="http://img.freebase.com/api/trans/image_thumb/${results[0]['creator']['id']}?pad=1&errorid=%2Ffreebase%2Fuser_profile%2Fempty_user_image&maxheight=30&mode=fillcrop&maxwidth=30" />
+              Started by <a href="#" class="url nickname" title="View user profile">${results[0]["creator"]["name"]}</a> on
+            </span>
+            <time class="published" datetime="${results[0]['timestamp']}"> ${h.format_date(acre.freebase.date_from_iso(results[0]["timestamp"]), 'MMMM dd, yyyy')}</time>
+            <a href="#project-summary" class="more">details</a>
+          </h2>
+        </footer>
+        <div class="summary-expanded">
+          <p><strong>Name:</strong> ${results[0]["name"]}</p>
+          <p><strong>Source:</strong> <a href="http://www.freebase.com/view${results[0]['id']}">http://www.freebase.com/view${results[0]['id']}</a></p>
+          <div class="project-description">${acre.markup.bless(acre.freebase.get_blob(results[0]['/common/topic/article']['id']).body)}</div>
+          <div class="top-contributors clear" acre:if="top_contributors && top_contributors.length">
+            <h3>Top Contributors:</h3>
+            <span class="vcard" acre:for="contributor in top_contributors">
+              <a href="#" class="url nickname" title="View user profile">
+                <img class="photo" src="http://img.freebase.com/api/trans/image_thumb/${contributor['id']}?pad=1&errorid=%2Ffreebase%2Fuser_profile%2Fempty_user_image&maxheight=50&mode=fillcrop&maxwidth=50" height="50" width="50" alt="${contributor['username']}" />
+              </a>
+            </span>
+          </div>
+        </div>
+        <header class="summary nav clear">
+          <ul class="view-mode-nav">
+            <li><a href="#gallery" class="view-mode-option selected" title="View collections as a gallery">Gallery</a></li>
+            <li><a href="#list" class="view-mode-option" title="View collections as a list">List</a></li>
+          </ul>
+          <h3>Explore <em>${results[0]['!views_count:/freebase/query_hints/related_domain']} collections</em> featuring <em>$topic_count topics</em></h3>
+        </header>      
+      </div>
+    </div>
+    <div id="collections">
+      <div id="gallery" class="view-mode">
+        <acre:block for="r in results[0]['/freebase/domain_profile/featured_views']">
+          ${chiclet(r)}
+        </acre:block>
+      </div>
+      <div id="list" class="view-mode" style="display:none;">
+        <table id="collection-table" cellspacing="0">
+          <thead>
+            <tr>
+              <th class="c-name" scope="col">Name</th>
+              <th class="c-creator" scope="col">Created by</th>
+              <th class="c-timestamp" scope="col">Created on</th>
+              <th class="c-view" scope="col">View</th>
+              <th class="c-description" scope="col">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <acre:block for="collection in results[0]['/freebase/domain_profile/featured_views']">
+              ${list_item(collection)}
+            </acre:block>
+          </tbody>
+        </table>
+      
+      </div>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="list_item(collection)">
+<tr>
+  <th class="c-name" scope="row"><a href="http://www.freebase.com/view$c.id">$collection.name</th>
+  <td class="c-creator"><span class="vcard"><a href="http://www.freebase.com/view${collection.creator.id}" class="url nickname" title="View user profile">${collection.creator.name}</a></span></td>
+  <td class="c-timestamp"><time class="published" datetime="${collection.timestamp}">${h.format_date(acre.freebase.date_from_iso(c.timestamp), 'MMMM dd, yyyy')}</time></td>
+  <td class="c-view">${collection['/freebase/query_hints/preferred_view']}</td>
+  <td class="c-description">
+    <acre:block if="collection['/common/topic/article'] && collection['/common/topic/article']['id']">
+      ${acre.markup.bless(acre.freebase.get_blob(collection['/common/topic/article']['id']).body)}
+    </acre:block>
+  </td>
+</tr>
+</acre:block>
+
+<acre:block def="chiclet(collection)">
+<div class="collection">
+  <div class="collection-inner">
+    <div class="collection-img">
+      <a href="http://www.freebase.com/view${collection['id']}">
+        <img src="http://www.freebase.com/type/chiclet${collection['id']}?spacing=1&limit=6&mode=fillcropmid&size=150" height="150" alt="Photos of topics from $collection.name" />
+      </a>
+    </div>
+    <div class="collection-info">
+      <h1>
+        <a href="http://www.freebase.com/view${collection['id']}" class="collection-title" title="${collection['name']}"><span>${collection['name']}</span></a>
+        <a href="javascript:void(0);" title="${collection['id']}" class="collection-show-topics" data-fb-query="false">info</a>
+        <span class="collection-title-fade"></span>
+      </h1>
+      <div class="collection-topics">
+        <p class="collection-view-all"><a href="http://www.freebase.com/view${collection['id']}">View all &raquo;</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+  <script src="${mf.js_src('domain.mf.js')}"></script>
+</acre:block>
+
+
+${mf.require("template", "renderer").render_page(null, this.exports)}

@@ -1,0 +1,19 @@
+div.cuecard-progress {
+    z-index: 1000;
+    position: fixed;
+    top: 300px;
+    left: 40%;
+    right: 40%;
+    text-align: center;
+    padding: 2em;
+    background: rgba(192, 192, 192, 0.7);
+    font-size: 200%;
+    color: #a88;
+    font-weight: bold;
+    font-style: italic;
+    -moz-border-radius: 2em;
+}
+
+.ui-widget-overlay {
+    opacity: 0.7;
+}

@@ -1,0 +1,172 @@
+{
+  "id": "/architecture/structure",
+  "type": "/type/type",
+  "timestamp": null,
+  "default_property": null,
+  "name": null,
+  "/freebase/type_hints/mediator": null,
+  "/freebase/type_hints/enumeration": null,
+  "domain": {
+    "id":       null,
+    "name": null,
+    "optional": true
+  },
+  "/common/topic/article": [{
+    "id":       null,
+    "optional": true,
+    "limit":    1
+  }],
+  "/freebase/type_profile/instance_count": {
+    "value":    null,
+    "optional": true
+  },
+  "/freebase/type_hints/included_types": [{
+    "id":            null,
+    "name": null,
+    "/freebase/type_hints/mediator": null,
+    "/freebase/type_profile/published": {
+    },
+    "domain": {
+      "id":       null,
+      "name": null,
+      "optional": true
+    },
+    "key": [{
+      "namespace": null,
+      "value":     null
+    }],
+    "properties": [{
+      "id":       null,
+      "name":     null,
+      "index":    null,
+      "sort":     "index",
+      "schema": {
+        "name": null
+      },
+      "expected_type": {
+        "id":            null,
+        "name": null,
+        "key": [{
+          "namespace": null,
+          "value":     null
+        }],
+        "/freebase/type_hints/mediator": null,
+        "/freebase/type_profile/instance_count": {
+          "value":    null,
+          "optional": true
+        }
+      },
+      "master_property": {
+        "optional": true,
+        "id":       null,
+        "name":     null
+      },
+      "reverse_property": {
+        "optional": true,
+        "id":       null,
+        "name":     null
+      },
+      "/freebase/property_hints/disambiguator": null,
+      "/freebase/property_hints/display_none": null,
+      "/freebase/documented_object/tip": null,    
+      "key": [{
+        "namespace": null,
+        "value":     null
+      }],
+      "unit": {
+          "id": null,
+          "name": null,
+          "/freebase/unit_profile/abbreviation": null,
+          "optional": true
+      },      
+      "unique":   null,
+      "optional": true
+    }],
+    "optional":      true
+  }],
+  "properties": [{
+    "id":       null,
+    "name":     null,
+    "index":    null,
+    "sort":     "index",
+    "expected_type": {
+      "id":            null,
+      "name": null,
+      "key": [{
+        "namespace": null,
+        "value":     null
+      }],
+      "/freebase/type_hints/mediator": null,
+      "/freebase/type_profile/instance_count": {
+        "value":    null,
+        "optional": true
+      }
+    },
+    "master_property": {
+      "id": null,
+      "name": null,
+      "optional": true,
+      "schema": {
+        "id":       null,
+        "name": null,
+        "optional": true
+      }
+    },
+    "reverse_property": {
+      "id": null,
+      "name": null,
+      "optional": true,
+      "schema": {
+        "id":       null,
+        "name": null,
+        "optional": true
+      }
+    },
+    "key": [{
+      "namespace": null,
+      "value":     null
+    }],
+    "unit": {
+        "id": null,
+        "name": null,
+        "/freebase/unit_profile/abbreviation": null,
+        "optional": true
+    },
+    "/freebase/property_hints/disambiguator": null,
+    "/freebase/property_hints/display_none": null, 
+    "/freebase/documented_object/tip": null,
+    "unique":   null,
+    "optional": true
+  }],
+  "expected_by": [{
+    "id":       null,
+    "name": null,
+    "schema": {
+      "id":            null,
+      "name": {
+        "value":    null,
+        "lang":     "/lang/en",
+        "optional": true
+      },
+      "domain": {
+        "id": null,
+        "name": null
+      },
+      "key": [{
+        "namespace": null,
+        "value":     null
+      }],
+      "/freebase/type_hints/mediator": null,
+      "/freebase/type_profile/instance_count": {
+        "value":    null,
+        "optional": true
+      }
+    },
+    "key": [{
+      "namespace": null,
+      "value":     null
+    }],
+    "unique":   null,
+    "optional": true
+  }]
+}

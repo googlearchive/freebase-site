@@ -1,0 +1,109 @@
+<acre:block def="add_type_form(domain_id, role, type)">
+  <table class="edit-form clear">
+    <tbody>
+      <tr class="edit-row">
+        <td colspan="5">
+          <div class="edit-row-loader"></div>
+          <div class="form-field fb-type-name">
+            <label>
+              <span class="form-label">Name</span>
+              <input name="name" type="text" class="text-input" acre:attrs="type?{value:type.name}:{}"/>
+              <input name="domain" type="hidden" value="${domain_id}"/>
+            </label>
+          </div>
+          <div class="form-field fb-type-key">
+            <label>
+              <span class="form-label">
+                Key
+                <span class="key">${domain_id}/</span>
+              </span>
+              <input name="key" type="text" class="text-input" acre:attrs="type?{value:type.key[0].value}:{}"/>
+            </label>
+          </div>
+          <div class="form-field fb-type-description">
+            <label>
+              <span class="form-label">Description</span>
+              <textarea name="description" class="textarea" rows="3">${type?type.blob:""}</textarea>
+            </label>
+            <div class="fb-type-display" style="display:none">
+              <acre:block if="role === 'mediator'">
+                <label for="role" class="boolean-field"><input type="checkbox" name="role" value="mediator" disabled="disabled" checked="checked">Mediator</label>
+              </acre:block>
+              <acre:block elif="role === 'cvt'">
+                <label for="role" class="boolean-field"><input type="checkbox" name="role" value="cvt" disabled="disabled" checked="checked">Compound Value Type</label>
+              </acre:block>
+              <acre:block else="">
+                <label for="role" class="boolean-field"><input type="checkbox" name="role" value="enumeration" acre:attrs="(type && type.role === 'enumeration')?{checked:'checked'}:{}">Enumerated</label>
+              </acre:block>
+            </div>          
+          </div>        
+        </td>
+      </tr>
+
+      <tr class="edit-row-submit">
+        <td colspan="5">
+          <button class="button button-primary button-submit" type="submit">Save</button>
+          <button class="button button-cancel">Cancel</button>
+        </td>
+      </tr>
+    <tbody>
+  </table>
+</acre:block>
+
+<acre:block def="edit_type_form(type)">
+  ${add_type_form(type.domain.id, type.role, type)}
+</acre:block>
+
+<acre:block def="delete_type_result(type_info)">
+  <tr class="row-msg row-msg-info">
+    <td colspan="5">
+      <a class="close-msg" href="#" onclick="return freebase.dispatch(event, freebase.schema.close_message, ['.row-msg:first'], this);">Close</a>
+      The type <strong>${type_info.name || type_info.id}</strong> has been deleted. 
+      <a href="#" onclick="return freebase.dispatch(event, freebase.schema.domain.undo_delete_type, null, this);"
+         class="${JSON.stringify(type_info)}">Undo</a>
+    </td>
+  </tr>
+</acre:block>
+
+<acre:block def="domain_settings_form(domain)">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">Domain Settings</h1>
+      <div class="modal-content">
+        <div class="form-group">
+          <div class="form-row form-row-inline">
+            <label class="form-label" for="domain-name">Name</label>
+            <input class="text-input" type="text" name="name" value="${domain.name}" />
+            <span class="form-note">You can change this at any time</span>
+          </div>
+          <div class="form-row form-row-inline">
+            <label class="form-label" for="domain-key">Key <span class="key">${domain.key.namespace}${domain.key.namespace === "/" ? "" : "/"}</span></label>   
+            <input type="hidden" name="namespace" value="${domain.key.namespace}" />
+            <acre:block if="domain.key.permitted">
+              <input class="text-input" type="text" name="key" value="${domain.key.value}"/>              
+              <span class="form-note">
+                Four or more alphanumeric characters. No spaces.
+                <strong>Changing a key may break external apps that use this project</strong>
+              </span>
+            </acre:block>
+            <acre:block else="">
+              <input class="text-input" type="text" name="key" value="${domain.key.value}" disabled="disabled"/>            
+              <span class="form-note">
+                You do not permission to update this key in <span class="key">${domain.key.namespace}</span>.
+                Please contact a freebase administrator.
+              </span>              
+            </acre:block>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Description</label>
+          <textarea class="textarea" name="description" rows="4">${domain.blob || ""}</textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <button class="button button-submit button-primary" type="submit">Save</button>
+      <button class="button button-cancel">Cancel</button>
+    </div>
+  </div>
+</acre:block>

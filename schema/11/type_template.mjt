@@ -1,0 +1,225 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").MF;
+  var c = this.exports.c = {};
+  var h = mf.require("core", "helpers");
+  var t = mf.require("templates");
+  var image = mf.require("template", "imagecomponents");  
+  var sh = mf.require("helpers");
+</acre:script>
+
+<acre:block def="title()">
+  Type<acre:block if="c.type"> - $c.type.name</acre:block>
+</acre:block>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  <div class="page-header clear">
+    <div class="breadcrumb clear">
+      <ol class="clear">
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.url_for('schema')}">Schema</a>
+          </span>
+        </li>
+        <li if="c.type.domain" class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.url_for('schema', 'domain', null, c.type.domain.id)}">$c.type.domain.name</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item last">
+          <span class="breadcrumb-item-inner">
+            <a href="javascript:void(0);" acre:if="c.type.domain.types && c.type.domain.types.length" class="breadcrumb-sibling-trigger">$c.type.name</a>
+            <a href="javascript:void(0);" acre:else="">$c.type.name</a>
+          </span>
+          <div class="tooltip" id="breadcrumb-siblings" acre:if="c.type.domain.types && c.type.domain.types.length">
+            <strong>Go to another type</strong>
+            <ul>
+              <li acre:for="s in c.type.domain.types">
+                <a href="${h.url_for('schema', 'type', null, s.id)}" title="Go to type">$s.name</a>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="content_body()">
+  <div class="page-meta">
+    <h1>$c.type.name</h1>
+    <div class="meta">
+      <span class="key"><strong>Key:</strong> $c.type.id</span>
+      <span class="display-type">
+        <strong>Display:</strong>
+        <span class="display-type" acre:if="c.type.cvt">Compound Value</span>
+        <span class="display-type" acre:elif="c.type.enumeration">Enumerated</span>
+        <span class="display-type" acre:else="">Standard</span>
+      </span>
+      <span class="included-types" acre:if="c.type.included_types.length > 0">
+        <strong>Includes: </strong>
+        <acre:block trim="">
+          <span acre:for="i, t in c.type.included_types" acre:trim="">
+            <acre:block if="i">, </acre:block><a href="${h.url_for('schema', 'type', null, t.id )}">$t.name</a>
+          </span>
+        </acre:block>
+      </span>
+    </div>
+    <span class="creation-timestamp">
+      ${image.user_image_small(c.type.creator)}
+      Created by <a href="${acre.freebase.service_url}/view${c.type.creator.id}" title="View user profile">$c.type.creator.name</a> 
+      on <time class="published" datetime="${c.type.timestamp}">$c.type.date</time>
+    </span>    
+    <div id="description">
+      <p class="blurb">
+        $c.type.blurb&hellip;
+      </p>
+      <p class="blob">
+        $c.type.blob
+      </p>
+      <a href="javascript:void(0);" class="blurb-trigger">More</a>          
+    </div>
+    
+    <div class="nav clear">
+      <ul class="nav-mode">
+        <li><a acre:attrs="c.diagram ? {href: h.url_for('schema', 'type', null, c.type.id)} : {'class':'current'}">Table</a></li>
+        <li><a acre:attrs="c.diagram ? {'class':'current'} : {href: h.url_for('schema', 'type', [['view','diagram']], c.type.id)}">Diagram</a></li>
+      </ul>
+      <ul class="nav-utilities">
+        <li>
+          <a acre:if="c.type.instance_count" href="${h.freebase_url('/view'+c.type.id)}" class="icon-link"><span class="browse-icon">Browse <strong>${h.commafy(c.type.instance_count)}</strong> Instances</span></a>
+        </li>
+        <li>
+          <a href="${sh.build_query_url(c.type.id)}" class="icon-link"><span class="query-icon">Build Query</span></a>
+        </li>
+        <li>
+          <a href="${h.freebase_url('/type/schema'+c.type.id)}" class="icon-link"><span class="edit-icon">Edit Schema</span></a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <acre:block if="c.diagram">
+    ${diagram_view()}
+  </acre:block>  
+  <acre:block else="">
+    ${table_view()}
+  </acre:block>
+
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+  <script src="${mf.js_src('schema.mf.js')}"></script>
+</acre:block>
+
+
+<acre:block def="table_view()">  
+  <!-- Table View -->
+  <div class="mode" id="type-table">
+    
+    <!-- Native Props Table -->
+    <div class="section" id="type-table">
+      <h2 class="table-title">
+        <a class="help-link" href="http://wiki.freebase.com/wiki/Property" rel="help external" title="Read help article">What are Properties?</a>
+        Properties
+      </h2>
+      <table class="table" cellspacing="0" acre:if="c.type.properties.length">
+        <thead>
+          <tr>
+            <th class="column-header">Property</th>
+            <th class="column-header">ID</th>
+            <th class="column-header">Expected Type</th>
+            <th class="column-header description">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${t.native_properties(c.type.properties, c.type.id)}
+        </tbody>
+      </table>
+      <h2 class="empty-table-msg" acre:else=""><strong>$c.type.name</strong> has no properties</h2>
+    </div>
+    
+    <!-- Included Types Table -->      
+    <div class="section">
+      <h2 class="table-title">
+        <a class="help-link" href="http://wiki.freebase.com/wiki/Included_type" rel="help external" title="Read help article">What are Included Types?</a>
+        Included Types
+      </h2>
+      <table class="table" cellspacing="0" id="included-types-table"  acre:if="c.type.included_types.length">
+        ${t.included_types(c.type.included_types)}
+      </table>
+      <h2 class="empty-table-msg" acre:else=""><strong>$c.type.name</strong> has no Included Types</h2>
+    </div>
+ 
+    <!-- Incoming Properties Table -->
+    <div class="section">
+      <h2 class="table-title">
+        Incoming Properties
+      </h2>
+      <table class="table" cellspacing="0" id="incoming-properties-table" acre:if="c.type.incoming.same.length || c.type.incoming.common.length || c.type.incoming.base.length">
+        <acre:block if="c.type.incoming.same.length">
+          ${t.incoming_props_group(c.type.domain.name, c.type.incoming.same, expanded=true)}
+        </acre:block>
+        <acre:block if="c.type.incoming.common.length">
+          ${t.incoming_props_group("Commons", c.type.incoming.common)}
+        </acre:block>
+        <acre:block if="c.type.incoming.base.length">
+          ${t.incoming_props_group("Bases", c.type.incoming.base)}
+        </acre:block>
+      </table>
+      <h2 class="empty-table-msg" acre:else=""><strong>$c.type.name</strong> has no Incoming Properties</h2>
+    </div>   
+  </div>     
+</acre:block>
+
+<acre:block def="diagram_view()">
+  <!-- Diagram View -->
+  <div class="mode" id="type-diagram">
+    <table id="skeleton">
+      <tr>
+        <td class="left structure">
+          <table>
+            <tbody class="commons">
+              <tr>
+                <th class="type-diagram-col-header" colspan="3">Incoming Properties</th>
+              </tr>
+              ${t.type_diagram_incoming_props(c.type.incoming.common)}
+            </tbody>
+            <tbody class="bases">
+              ${t.type_diagram_incoming_props(c.type.incoming.base)}
+            </tbody>
+            <tbody class="users">
+              ${t.type_diagram_incoming_props(c.type.incoming.user)}
+            </tbody>
+          </table>
+        </td>
+        <td class="center structure">
+          <div class="type-container">
+            <div class="type">
+              $c.type.name
+            </div>
+          </div>
+        </td>
+        <td class="right structure">
+          <table>
+            <tr>
+              <th colspan="4" class="type-diagram-col-header">$c.type.name Properties</th>
+            </tr>            
+            ${t.type_diagram_native_props(c.type.properties)}
+            <tr>
+              <th colspan="4" class="type-diagram-col-header">Inherited Properties</th>
+            </tr>                          
+            <acre:block for="type in c.type.included_types"> 
+              ${t.type_diagram_inherited_props(type.properties)}
+            </acre:block>
+          </table>
+        </td>
+      </tr>
+    </table>  
+  </div>
+</acre:block>
+

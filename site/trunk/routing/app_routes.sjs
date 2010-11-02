@@ -178,7 +178,7 @@ rules.add([
   // Schema
   {prefix:"/view/schema",        url:"/schema", redirect:301},
   {prefix:"/tools/schema",       url:"/schema", redirect:301},
-  {prefix:"/type/schema",        url:"/schema", redirect: 301}
+  {prefix:"/type/schema",        url:"/schema", redirect: 301},
 
   // Queryeditor
   {prefix:"/app/queryeditor",    url:"/queryeditor", redirect:301},

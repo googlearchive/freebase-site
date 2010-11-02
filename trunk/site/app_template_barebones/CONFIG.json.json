@@ -1,0 +1,5 @@
+{
+  "apps" : {
+      "manifest": "//manifest.site.freebase.dev"
+  }
+}

@@ -1,0 +1,807 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<!-- Dirty files dialog -->
+<acre:block def="files_dirty(new_app)">
+  <h3 class="dialog-title">Abandon Changes?</h3>
+  <div class="dialog-content">
+    <div class="dialog-inset">
+      <p>You haven't saved all the changes you made to the app you currently have open. <b>Abandon these changes?</b></p>
+    </div>
+  </div>
+  <div class="button-bar">
+    <button class="button-primary exit">No</button>
+    <button class="exit" acre:onclick="ui.do_choose_app(new_app)">
+      Yes, abandon changes and switch apps</button>
+  </div>
+</acre:block>
+
+
+<!-- New user dialog -->
+<acre:block def="welcome(is_user)">
+  <div id="welcome-panel">
+    <div class="acre-logo">
+      <img src="${ui.url_for('logo-acre.png')}" width="211" height="47" alt="Acre: Open Code for Open Data" border="0" />
+    </div>
+    <div>
+      <ul acre:if="is_user">
+        <li><em>See what you can build!</em><br />
+          <small>Check out <a href="${ui.get_store().get_freebase_url()}/apps" target="_new" class="exit">the App Directory</a> or <a href="${ui.get_store().get_freebase_url()}/docs/acre" target="_new" class="exit">the documentation</a>.</small>
+        </li>
+        <li><em>Ready to go?</em><br />
+          <small><button id="button-newapp" acre:onclick="ui.do_show('new_app');">Create a New App</button> <button id="button-yourapps" acre:onclick="ui.do_show_menu('yourapps');">
+            <span class="button-menu">Choose from Your Apps</span></button></small>
+        </li>
+      </ul>
+      <ul acre:else="">  
+        <li><em>Create your own Acre app</em><br />
+          <small><a href="${$('#nav-signin').attr('href')}" title="Sign in to your Freebase account">Sign in or Sign Up</a>
+          for Freebase to get started.</small>
+        </li>
+        <li><em>See what you can build!</em><br />
+          <small>Check out <a href="${ui.get_store().get_freebase_url()}/apps" target="_new" class="exit">the App Directory</a> or <a href="${ui.get_store().get_freebase_url()}/docs/acre" target="_new" class="exit">the documentation</a>.</small>
+        </li>
+      </ul>
+    </div>
+  </div>
+</acre:block>
+
+
+<!-- App action dialogs -->
+<acre:block def="new_app(clone)">
+  <acre:script>
+    var app_name = clone ? ui.get_app().get_display_name() + " copy" : "";
+    var app_key = clone ? ui.get_app().get_name() + "-copy" : "";
+  </acre:script>
+  <h3 class="dialog-title">Create New App</h3>
+  <div class="dialog-content">
+    <fieldset>
+      <div class="dialog-inset">
+        <div class="dialog-inset-header">
+          <input name='new-app' id='new-app-create' type='radio' value="create" acre:attrs="clone?{}:{'checked':'checked'}"/>
+          <label for="new-app-create">Create a new app</label>
+          <input name='new-app' id='new-app-clone' type='radio' value="clone" acre:attrs="clone?{'checked':'checked'}:{}"/>
+          <label for="new-app-clone">Clone an existing app</label>
+          <span id="new-app-clone-field" acre:attrs="clone?{}:{'style':'display:none'}">: 
+            <input id="new-app-clone-id" type="text" class="longfield" value="${clone ? ui.get_app().get_versioned_path() : '' }"/>
+          </span>
+        </div>
+        <div class="form-row">
+          <label for="new-app-dialog-name">Name your App: </label>
+          <input id="new-app-dialog-name" type="text" maxlength="50" value="$app_name" />
+        </div>
+        <div class="form-row wide">
+          <label for="new-app-dialog-key">Choose a URL: </label>      
+          <span class="url">http://<input id="new-app-dialog-key" class="shortfield" type="text" size="15" minlength="5" maxlength="20" value="$app_key" />.${ui.get_user().get_new_app_host()}</span>
+        </div>
+        <div class="form-tip">      
+          This URL points to the development version of your code.
+          Later you can choose a shorter Release URL to share with others.
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="cc-callout">
+      <a class="cc-logo" href="http://creativecommons.org/licenses/BSD/"><img src="${ui.url_for('cc-bsd.png')}" alt="CC-BSD" /></a>
+      <div class="cc-about">
+        All Acre apps are published on Freebase under the
+        <a href="http://creativecommons.org/licenses/BSD/">BSD license</a>
+        so everyone can "view source", clone code, and learn from each other.
+      </div>
+    </div>
+  </div>
+
+  <div class="button-bar">
+    <button id="button-new-app" class="button-primary exit">Create</button>
+    <button class="exit">Cancel</button>
+  </div>
+  <acre:script script="ondomready">
+    $('#new-app-dialog-name').focus().select();
+  
+    $("#dialog-new_app input[name='new-app']").change(function(){
+      $('#new-app-clone-field').toggle();
+    });
+  
+    $("#new-app-clone-id")
+        .suggest({ type: '/freebase/apps/acre_app' })
+        .bind("fb-select", function(e, data) {
+            $(this).val(ui.id_to_path(data.id));
+        });
+  
+    $('#button-new-app').click(function(){
+      var args  = [
+        ui.get_user().get_new_app_path($.trim($('#new-app-dialog-key').val())),
+        $.trim($('#new-app-dialog-name').val())
+      ];
+      var radio = $("#dialog-new_app input[name='new-app']:checked").val();
+      var clone_id = $('#new-app-clone-id').val();
+      if (radio == 'clone' &amp;&amp; clone_id !== '') {
+        args.push(clone_id);
+      }
+      ui.do_app_create_new.apply(this, args);
+    })
+  </acre:script>
+</acre:block>
+
+<acre:block def="delete_app()">
+  <h3 class="dialog-title">Delete app &#8220;${ui.get_app().get_display_name()}&#8221;?</h3>
+  <div class="dialog-content">
+    <div class="dialog-inset">
+      <p>
+        Are you sure you want to <b>delete this entire app</b>?
+      </p>
+      <p>
+        This can't be undone!
+      </p>
+    </div>
+  </div>
+  <div class="button-bar">
+    <button class="button-primary exit" acre:onclick="ui.do_app_delete()">Delete App</button>
+    <button class="exit">Cancel</button>
+  </div>
+</acre:block>  
+
+
+<!-- File action dialogs -->
+<acre:block def="save_file_as()">
+  <h3 class="dialog-title">Save File As</h3>
+  <div id="applist" class="dialog-content">
+    <span class="loader-square"></span>
+  </div>
+
+  <acre:block def="save_file_applist(applist)">
+    <acre:script>
+      ui.app_keys = {};
+      $.each(applist, function(){
+        ui.app_keys[this.appid] = this.files;
+      });
+    </acre:script>
+    <div class="dialog-inset">
+      <fieldset>
+        <div class="form-row">
+          <label for="clone-filename">New file name: </label>
+          <input id="clone-filename" type="text" value="${ui.get_file().get_name()}"/>
+        </div>
+        <div class="form-row">
+          <label for="clone-file-app">In app: </label>
+          <select id="clone-file-app">
+            <option acre:for="app in applist" value="$app.path"
+              acre:attrs="(ui.get_app().get_path() == app.path)?{'selected':true}:{}">
+              $app.name
+            </option>
+          </select>
+        </div>
+      </fieldset>
+    </div>
+    <div class="button-bar">
+      <button id="button-clone" class="button-primary">Save</button>
+      <button class="exit">Cancel</button>
+    </div>
+    <acre:script script="ondomready">
+      $('#clone-filename').focus().select();
+
+      $('#button-clone').click(function(e){
+        var new_name = $.trim($('#clone-filename').val());
+        var app_path = $.trim($('#clone-file-app :selected').val());
+        var key_conflict = $.inArray(new_name, ui.app_keys[app_path]);
+        if (key_conflict == -1) {
+          ui.do_file_save_as(app_path, new_name);
+          ui.do_hide_overlays();
+        } else {
+          ui.MessagePanel.error("File exists!  Try a different file name.");
+        } 
+      });
+    </acre:script>
+  </acre:block>
+  
+  <acre:script script="ondomready">
+    ui.get_store().XhrGet('list_user_apps', {'include_filenames': true})
+      .enqueue()
+      .onready(function(data){
+        
+        $("#applist").acre(save_file_applist(data));
+      });
+  </acre:script>
+</acre:block>
+
+<acre:block def="add_file()">
+  <acre:script>
+    var file = ui.get_app().get_untitled_file_name();
+  </acre:script>
+  <h3 class="dialog-title">Create a New...</h3>
+
+  <acre:block def="show_handler(handler)">
+    <acre:script>
+      var sup_mime_types = ui.get_store().get_supported_mime_types(handler);
+    </acre:script>
+  
+    <div class="form-row">
+      <label for="add-file-name">New file name:</label>
+      <input id="add-file-name" type="text" value="$file"/>
+    </div>
+  
+    <div acre:if="sup_mime_types.length > 1 &amp;&amp; handler != 'binary'">
+      <div class="form-row">
+        <label for="add-file-mimetype">MIME type: </label>
+        <select id="add-file-mimetype">
+          <option  acre:for="sup_mime_type in sup_mime_types" 
+            acre:attrs="(sup_mime_type == 'text/plain')?{'selected':''}:{}" value="$sup_mime_type" >
+            $sup_mime_type</option>
+        </select>
+      </div>
+    </div>
+
+    <acre:script script="ondomready">
+      $('#add-file-name')
+        .select()
+        .keydown(function(e){
+          if (e.which == 13) { $('#button-add-file').click(); }
+        });
+      
+      ui.watch_inputs(null, {
+        inputs : {
+          'add-file-name' : null
+        },
+        change : function(inputs){
+          file = inputs['add-file-name']
+        }
+      });
+    </acre:script>
+  </acre:block>
+  
+  <div class="dialog-content">
+    <div class="dialog-inset">
+      <fieldset>
+        <ul>
+          <li acre:for="handler in ui.get_store().get_acre_handlers()" id="handler-$handler.key" class="handler-section">
+            <h4><input type="radio" name="new-file-handler" value="$handler.key" /> $handler.name</h4>
+            <p>$handler.description</p>
+            <div class="handler-new"></div>
+          </li>
+        </ul>
+      </fieldset>
+    </div>
+  </div>
+  <div class="button-bar">
+    <button id="button-add-file" class="button-primary">Create New File</button>
+    <button class="exit">Cancel</button>
+  </div>
+
+  <acre:script script="ondomready"> 
+    ui.watch_inputs('add-file', {
+      inputs : {
+        'new-file-handler' : null
+      },
+      change : function(inputs){
+        var handler = inputs['new-file-handler'];
+        $('.handler-new').empty();
+        $('#handler-'+handler + ' .handler-new').acre(show_handler(handler));
+        $('.handler-section-active').removeClass('handler-section-active');
+        $('#handler-'+handler).addClass('handler-section-active');
+      },
+      submit : function(inputs){
+        var filename = $.trim($('#add-file-name').val());
+        if (ui.get_store().validate_filename(filename)) {
+          var metadata = { acre_handler: inputs['new-file-handler'] };
+          if ($('#add-file-mimetype :selected').val()) { 
+            metadata['content_type'] = $('#add-file-mimetype :selected').val();
+          }
+          ui.do_file_create_new(filename, metadata);
+          ui.do_hide_overlays();         
+        } else {
+          ui.MessagePanel.error("Invalid filename.  Only alphanumeric characters, '-', '_' and '.' are allowed.");
+        }
+      }
+    });
+  
+    $("input[name='new-file-handler'][value='mjt']")
+      .attr('checked','checked')
+      .trigger('click');
+  </acre:script>
+</acre:block>
+
+<acre:block def="delete_file(filename)">
+  <h3 class="dialog-title">Delete file &#8220;$filename&#8221;?</h3>
+  <div class="dialog-content">
+  <div class="dialog-inset">
+    <p>
+      Are you sure you want to delete the file &#8220;<b>$filename</b>&#8221;?
+    </p>
+    <p>
+      This can't be undone!
+    </p>
+  </div>
+  </div>
+  <div class="button-bar">
+    <button class="button-primary exit" acre:onclick="ui.do_file_delete(filename)">Delete File</button>
+    <button class="exit">Cancel</button>
+  </div>
+</acre:block>  
+  
+
+<!-- Diff/Patch dialogs -->
+
+<acre:block def="diff_patch(mode, opts)">
+          
+  <div acre:def="revision_list(history, id)">
+    <div class="revision-list">
+      <acre:script>
+        var test = history[0] || {};
+        var av = false; var ah = false; var fh = false;
+        if (test.revision) {
+          if (test.file) { ah = true; } 
+          else { fh = true; }
+        } else { av = true; }
+        var based_on = ui.get_file().get_based_on();
+      </acre:script>
+      <p acre:if="fh &amp;&amp; based_on">
+        <b>${ui.get_file().get_name()}</b> is based on:
+        <a class="external-link" href="${ui.get_store().get_url()}/view$based_on.id" target="_blank">$based_on.id</a>
+      </p>              
+      <table class="item-list">
+        <thead>
+          <tr>
+            <th>Compare</th>
+            <th class="left" acre:if="av">Version</th>
+            <th class="left" acre:if="ah">File</th>
+            <th class="left">Date</th>
+            <th acre:if="fh">Length</th>
+            <th class="left" acre:if="ah || fh">By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="center">
+              <span>
+                <input type="radio" name="diff-from" value="" checked="checked"/> |
+                <input type="radio" name="diff-to" value="" checked="checked" />
+              </span>
+            </td>
+            <td><b><i>Current</i></b></td>
+            <td acre:if="av"></td>
+            <td acre:if="ah"></td>
+            <td acre:if="fh"></td>
+            <td acre:if="ah || fh"></td>
+          </tr>
+          <tr acre:for="i, chg in history">
+            <td class="center">
+              <span>
+                <acre:script>
+                  var val;
+                  if (av) { val = chg.as_of_time; }
+                  if (ah || fh) { val = chg.timestamp; }
+                </acre:script>
+                <input type="radio" name="diff-from" value="$val"/> |
+                <input type="radio" name="diff-to"   value="$val"/>
+              </span>
+            </td>
+            <td acre:if="av">${chg.name}</td>
+            <td acre:if="ah">${mjt.freebase.mqlkey_unquote(chg.file)}</td>
+            <td>
+              <span class="last_mod">
+                ${mjt.freebase.date_from_iso(chg.as_of_time||chg.timestamp).toLocaleString()}
+              </span>
+            </td>
+            <td acre:if="fh" class="center">${chg.length}</td>
+            <td acre:if="ah || fh">${chg.attribution.name}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <acre:script script="ondomready">
+      $('#dialog-diff_patch input, .show-revision, .revert-revision, .diff-button').unbind("click");
+              
+      function disable_radios(){
+        $("input[name='diff-from'], input[name='diff-to']").removeAttr("disabled");
+        var fi = $("input[name='diff-to']").index($("input[name='diff-to']:checked")[0]);
+        var ti = $("input[name='diff-from']").index($("input[name='diff-from']:checked")[0]);
+        $("input[name='diff-to']").slice(0, ti+1).attr('disabled','disabled');
+        $("input[name='diff-from']").slice(fi).attr('disabled','disabled');
+      }
+      disable_radios();
+
+      $("input[name='diff-from'], input[name='diff-to']").click(function(e){
+        $('.button-patch').attr('disabled','disabled');
+        
+        var args = {
+          timestamp1 : $("input[name='diff-to']:checked").val(),
+          timestamp2 : $("input[name='diff-from']:checked").val()
+        };
+        
+        if(av || ah) {
+          $('#diff-filelist-shim').acre(filelist(true));
+          $('#diff-view-shim').acre(diff_view());
+        
+          args.appid1 = id;
+          args.appid2 = id;
+          
+          ui.get_store().XhrGet('get_app_diff', args).enqueue()
+            .onready(function(data){
+              $('#diff-filelist-shim').acre(filelist(data));
+            });
+        }
+        
+        if(fh) {
+          args.fileid1 = id;
+          args.fileid2 = id;
+
+          ui.get_store().XhrGet('get_file_diff', args).enqueue().onready(function(data){
+            $('#diff-view-shim').acre(diff_view(data, "get_file_diff"));
+            $('#button-file-revert, #button-file-revert-save').removeAttr('disabled').unbind('click');
+            $('#button-file-revert').click(function(){
+                ui.do_file_apply_change(data);
+            });
+            $('#button-file-revert-save').click(function(){
+                ui.do_file_apply_change(data, true);
+            });
+          });
+        }
+
+        disable_radios();
+      });
+    </acre:script>
+  </div>
+      
+  <!-- Used when the filelist needs to be dynamically updated -->
+  <div acre:def="filelist_shim(patch)" id="diff-filelist-shim">
+    ${filelist(patch)}
+  </div>
+  
+  <div acre:def="filelist(patch)" id="diff-filelist">
+    <div acre:if="patch &amp;&amp; patch.files" acre:strip="1">
+      <acre:script>
+        var appid = ui.get_app().get_path();
+        var ordered_filenames = [];
+        if ($.isArray(patch.files)) {
+          ordered_filenames = patch.files;
+        } else {
+          for (key in patch.files) {
+            ordered_filenames.push(key)
+          }            
+        }
+        ordered_filenames.sort(function(a, b) {
+            return a.localeCompare(b);
+        });
+      </acre:script>
+      <acre:block def="diff_file(fn, status)">
+        <span acre:if="status">
+          <input acre:if="mode !== 'app_diff'" type='checkbox' acre:attrs="status==='update'?{'checked':'checked'}:{}"/>
+          <a href="#0" acre:attrs="(mode === 'app_diff')?{'class':'diff-filelist-stub'}:{}">
+            ${mjt.freebase.mqlkey_unquote(fn)}</a>
+        </span>
+        <span acre:else=""  class="diff-filelist-stub">
+          <i>${mjt.freebase.mqlkey_unquote(fn)}</i>
+        </span>
+        <span acre:choose="status" acre:strip="1">
+          <span acre:when="add" class="file-merge-status">+</span>
+          <span acre:when="delete" class="file-merge-status">-</span>
+          <span acre:when="conflict" class="file-merge-status error-alert">!</span>
+          <span acre:when="update" class="file-merge-status"></span>
+        </span>
+      </acre:block>
+      <p>
+        Select: <a href="#0" acre:onclick="$('#diff-filelist input').attr('checked','checked')">All</a> | 
+        <a href="#0" acre:onclick="$('#diff-filelist input').removeAttr('checked')">None</a>
+      </p>
+      <ul>
+        <li class="file-list-item" acre:for="fn in ordered_filenames" data-fn="$fn">
+          <span class="diff-filelist-stub">${mjt.freebase.mqlkey_unquote(fn)}</span>
+        </li>
+      </ul>
+      <acre:script script="ondomready">
+        var num_files = $('#diff-filelist .file-list-item').length;
+        
+        $('#diff-filelist .file-list-item').each(function(index){
+          var li = $(this);
+          var file = $(li).attr("data-fn");
+
+          var method;
+          var args = {};
+          switch (mode) {
+            case "app_history"  :
+            case "app_diff" :
+              method = "get_file_diff";
+              args = {
+                fileid1    : patch.files[file].file1 ? patch.files[file].file1.fileid    : undefined,
+                fileid2    : patch.files[file].file2 ? patch.files[file].file2.fileid    : undefined,
+                timestamp1 : patch.app1 ? patch.app1.timestamp : undefined,
+                timestamp2 : patch.app2 ? patch.app2.timestamp : undefined
+              };
+              break;
+            case "merge_changes" :
+              method = "get_file_merge";
+              args = {
+                fileid1    : patch.files[file].file1 ? patch.files[file].file1.fileid    : undefined,
+                fileid2    : patch.files[file].file2 ? patch.files[file].file2.fileid    : undefined
+              };
+              break;
+          }
+          
+          function update_filelist_item(status, template, args) {
+            $(li).acre(diff_file(file, status)).click(function(){
+              $('#diff-filelist .file-list-item').removeClass('selected-file');
+              $(li).addClass('selected-file');
+              $('#diff-view-shim').acre(template.apply(this, args));
+            });
+            
+            num_files -= 1;
+            if (num_files === 0) {
+              $('.button-patch').removeAttr('disabled');
+              $('#diff-filelist .file-list-item input').click(function(e){
+                e.stopPropagation();
+              })
+            }
+          }
+
+          ui.get_store().XhrGet(method, args).enqueue()
+            .onready(function(r){
+              patch.files[file] = r;
+              if (!r.file1) { status = "delete"; }
+              else if (!r.file2) { status = "add"; }
+              else if (r.patch &amp;&amp; r.patch.conflict == true) {
+                status = "conflict";
+              } else {
+                status = "update"
+              }
+              update_filelist_item(status, diff_view, [patch.files[file], method]);
+            })
+            .onerror(function(code, message, info){
+              update_filelist_item(false, merge_error, [message, info]);
+            });
+        });
+      </acre:script>
+    </div>
+    <span acre:elif="patch" class="loader-square"></span>
+    <p acre:else="">Pick revisions above to see changed files</p>
+    <acre:script script="ondomready">
+      $('.patch-apply, .patch-apply-save').unbind('click');
+      $('.patch-apply, .patch-apply-save').click(function(){
+        var files = [];
+        $('#diff-filelist input:checked').each(function(){
+          var fn = $(this).closest('.file-list-item').attr('data-fn');
+          files.push(fn);
+        });
+        ui.do_app_apply_changes(patch, files, $(this).hasClass('patch-apply-save'));
+      });
+    </acre:script>
+  </div>
+
+  <!-- Used when the diff view needs to be dynamically updated -->
+  <div acre:def="diff_view_shim(diff)" id="diff-view-shim">
+    ${diff_view(diff)}
+  </div>
+  
+  <div acre:def="diff_view(data, method)" id="diff-view" class="diff">
+    <div acre:if="data" acre:strip="1">
+      <acre:script script="ondomready">
+        ui.populate_diff($("#diff-view"), data, method);
+      </acre:script>
+    </div>
+    <p acre:else="">Click on a file or revision to see the changes.</p>
+  </div>
+  
+  <div acre:def="merge_error(msg, info)" id="diff-error-view">
+    <div class="message">$msg</div>
+  </div>
+      
+  <!-- Main content for each mode -->    
+  <acre:block def="app_history(t)">
+    <div class="dialog-content">
+      <fieldset id="apphistory-mode">
+        <div class="radiogroup">
+          <h5>
+            <input name="app-history" type="radio" value="versions" checked="checked"/>
+            Versions
+          </h5>
+        </div>
+        <div class="radiogroup">
+          <h5>
+            <input name="app-history" type="radio" value="all-changes"/>
+            Edits
+          </h5>
+        </div>
+      </fieldset>
+      <div class="diff-top">
+        <div id="revision-list-shim"></div>
+      </div>
+      <div id="history-diff" class="diff-bottom-short"></div>
+      <acre:block def="history_diff()">
+        ${filelist_shim()}
+        <div class="diff-area-files">${diff_view_shim()}</div>
+      </acre:block>
+    </div>
+    <div class="button-bar">
+      <button acre:if="writable" class="button-patch patch-apply button-primary exit" disabled="disabled">Revert to Right</button>        
+      <button acre:if="writable" class="button-patch patch-apply-save exit" disabled="disabled">Revert &amp; Save</button>
+      <button class="exit">Done</button>
+    </div>
+    <acre:script script="ondomready">
+      function update_revlist(mode) {
+        $('#revision-list-shim').empty().addClass("loader-square");
+        var task = (mode == "versions") ? mjt.Succeed(ui.get_app().get_versions()) : ui.get_app().t_get_history();
+        task.enqueue().onready(function(r){ 
+          $('#revision-list-shim')
+            .removeClass("loader-square")
+            .acre(revision_list(r.history || r, ui.get_app().get_path()));
+          $('#history-diff').acre(history_diff());
+          $('.button-patch').attr('disabled','disabled');
+        });
+      }
+      
+      $('input[name="app-history"]').change(function(){
+        update_revlist($(this).val());
+      });
+      
+      update_revlist("versions");
+    </acre:script>
+  </acre:block>
+  
+  <acre:block def="app_diff(diff)">
+    <div class="dialog-content">
+      <div class="diff-bottom-tall">
+        ${filelist_shim(diff)}
+        <div class="diff-area-files">${diff_view_shim()}</div>
+      </div>
+    </div>
+    <div class="button-bar">
+      <button class="exit">Done</button>
+    </div>
+  </acre:block>
+  
+  <acre:block def="file_history(t)">
+    <div class="dialog-content">
+      <div class="diff-top">
+        ${revision_list(t.history, t.fileid)}
+      </div>
+      <div class="diff-bottom-short">
+        <div class="diff-area-full diff-area-short">${diff_view_shim()}</div>
+      </div>
+    </div>
+    <div class="button-bar">
+      <button acre:if="writable" id="button-file-revert" class="button-primary exit" disabled="disabled">Revert to Right</button>
+      <button acre:if="writable" id="button-file-revert-save" class="exit" disabled="disabled">Revert &amp; Save</button>        <button class="exit">Done</button>
+    </div>
+  </acre:block>
+  
+  <acre:block def="merge_changes(patch)">
+    <div class="dialog-content">
+      <div class="diff-bottom-tall">
+        ${filelist_shim(patch)}
+        <div class="diff-area-files">${diff_view_shim()}</div>
+      </div>
+    </div>
+    <div class="button-bar">
+      <button acre:if="writable" class="button-patch patch-apply button-primary exit" disabled="disabled">Apply Selected Changes</button>
+      <button acre:if="writable" class="button-patch patch-apply-save exit" disabled="disabled">Apply &amp; Save</button>
+      <button class="exit">Done</button>
+    </div>
+  </acre:block>
+
+  <acre:block def="save_conflict(diff)">
+    <acre:script>
+      diff.labels = ["Saved Copy", "Your Local Version"];
+    </acre:script>
+    <div class="dialog-content">
+      <div class="diff-top">
+        <p>
+          The saved version of this file has changed since it was loaded, likely because 
+          it was edited by another user or by you in another browser or tab.  
+        </p>
+        <p>
+          Decide how to proceed or view the details of the conflict.
+        </p>
+      </div>
+      <div class="diff-bottom-short">
+        <div class="diff-area-full">${diff_view(diff, "get_file_diff")}</div>
+      </div>
+    </div>
+    <div class="button-bar">
+      <button class="button exit" acre:onclick="ui.do_file_save(true)">Save Anyway</button>
+      <button class="button-primary exit">Cancel</button>
+    </div>
+  </acre:block>
+   
+  <!-- Setup the dialog for all modes -->
+  <acre:script>
+    var writable = ui.get_app().is_writable();
+    var title; var task; var template;
+    switch (mode) {
+      case "app_history" :
+        title = "App History";
+        task = mjt.Succeed(ui.get_app().get_versions());
+        template = app_history;
+        break;
+      case "app_diff" : 
+        var ver = ui.get_app().get_versions()[0];
+        title = "View changes since version " + ver.name;
+        task = ui.get_store().XhrGet("get_app_diff", { appid1 : ui.get_app().get_path(), appid2 : ui.get_app().get_path(), timestamp2: ver.as_of_time});
+        template = app_diff;
+        break;
+      case "file_history" :
+        title = "File History";
+        task = ui.get_file().t_get_history();
+        template = file_history;
+        break;
+      case "merge_changes" : 
+        title = "View changes from " + opts.appid;
+        task = ui.get_store().XhrGet("get_app_diff", { appid1 : opts.appid, appid2 : ui.get_app().get_path() });
+        template = merge_changes;
+        break;
+      case "save_conflict":
+        title = "File Save Conflict";
+        task = mjt.Succeed(opts);
+        template = save_conflict;
+        break;
+    }
+  </acre:script>
+  
+  <h3 class="dialog-title">$title</h3>
+  <div id="diff-dialog">
+    <span class="loader-square"></span>
+  </div>
+  <acre:script script="ondomready">
+    task.enqueue().onready(function(r){ 
+      $('#diff-dialog').acre(template(r));
+    });
+  </acre:script>
+  
+</acre:block>
+
+
+<!-- Help dialogs -->
+<acre:block def="keyboard_shortcuts()">
+  <h3 class="dialog-title">App Editor Keyboard Shortcuts</h3>
+  <div class="dialog-content">
+    <div class="dialog-inset">
+      <table>
+        <tr acre:for="shortcut in ui.shortcut.get_shortcuts()">
+          <th>${mjt.bless(ui.shortcut.get_keys(shortcut.op))}</th>
+          <td>$shortcut.op</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="about_appeditor()">
+  <h3 class="dialog-title">About App Editor</h3>
+  <iframe id="dialog-aboutappeditor" class="dialog-content" src="${ui.url_for('license.html')}"></iframe>
+  <div class="button-bar">
+    <b>Version: </b>
+    <span>$SERVER.appeditor.version</span>
+    <span>- ${ui.get_store().get_acre_version()}</span>
+  </div>
+</acre:block>
+
+<acre:block def="documentation(url)">
+  <a class="doc-view-link" href="$url" target="_blank" acre:onclick="ui.do_hide_overlays()">Open in a new window</a>
+  <iframe class="dialog-content" src="$url"></iframe>
+</acre:block>

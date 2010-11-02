@@ -575,25 +575,8 @@ class App:
     return 1
 
 
-  def svn_deployed_url(self, svn_revision):
-    return '{svn_url_root}/deployed/{app}/{svn_revision}'.format(svn_url_root=PRIVATE_SVN_URL_ROOT, app=self.app_key, svn_revision=svn_revision)
-
-  def svn_deployed_path(self, svn_revision):
-
-    if self.local_deployed_dir:
-      return self.local_deployed_dir
-
-    self.local_deployed_dir = mkdtemp()
-
-    cmd = ['svn', 'checkout', self.svn_deployed_url(), self.local_deployed_dir]
-    (r, output) = self.c.run_cmd(cmd, exit=False)
-
-    if not r:
-      return False
-
-    return self.local_deployed_dir
-
-
+  def svn_deployed_url(self, deployed_hash):
+    return '{svn_url_root}/deployed/{app}/{deployed_hash}'.format(svn_url_root=PRIVATE_SVN_URL_ROOT, app=self.app_key, deployed_hash=deployed_hash)
 
   def svn_url(self, allversions=False):
 

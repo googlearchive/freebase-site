@@ -343,7 +343,7 @@ div.Codemirror-current-line { background: #eee; color: #999; }
 #settings-tabs-bar { margin: 10px 0 0 0; color: #cdcecf; list-style-type: none; padding: 0; font-size: 1.2em; }
 .settings-tab-link { display: inline; color: #1170a3; }
 #settings-tab-content { width: 770px; height: 450px; margin: 0 0 8px 0; }
-#settings-tab-content .ui-tabs-panel { height: 450px; overflow: auto; }
+#settings-tab-content .tab-body { height: 450px; overflow: auto; }
 
 
 /* General Tab */

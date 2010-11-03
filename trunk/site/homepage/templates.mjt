@@ -292,7 +292,11 @@
 
 <acre:block def="googlerefine()">
   <div class="content-section-googlerefine">
-    <a href="http://code.google.com/p/google-refine"><img src="${mf.img_src('googlerefine-logo.png')}" border="0" class="googlerefine-logo"/></a>
+    <a href="http://code.google.com/p/google-refine">
+      <img src="${mf.img_src('googlerefine-logo.png')}"
+           border="0" class="googlerefine-logo"
+           width="105" height="82" />
+    </a>
     <p>
       An open source power tool to fix, discover, experiment, connect and customize your data.  
       <a href="http://code.google.com/p/google-refine">Learn more &raquo;</a>
@@ -414,4 +418,3 @@
     <a href="http://freebase.markmail.org/" class="bold-link">Read the List Archive</a>
   </div>
 </acre:block>
-

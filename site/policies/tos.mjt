@@ -129,8 +129,4 @@
   </div>
 </acre:block>
 
-<acre:block def="footer_script()">
-  <script src="${mf.js_src('policies.mf.js')}"></script>
-</acre:block>
-
 ${mf.require("template", "renderer").render_page(null, this.exports)}

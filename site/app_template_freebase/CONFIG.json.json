@@ -5,25 +5,20 @@
   "stylesheet": {
     "sample_page.mf.css": [
       ["template", "freebase.mf.css"],
-      ["template", "freebase.ui.tabs.less"],
-      ["template", "freebase.ui.table.less"],
-      ["template", "freebase.ui.breadcrumbs.less"],
-      ["template", "freebase.ui.pageoverview.less"],
-      ["template", "freebase.ui.modal.less"],
-      ["template", "freebase.ui.layout.twocol.less"],
-	  "sample_page.css",
+      ["template", "freebase.ui.mf.css"],
+      "sample_page.css",
       "sample_page.less"
     ]
   },
   "javascript": {
     "sample_page.mf.js": [
+      ["template", "freebase.mf.js"],
       ["jqueryui", "jquery.ui.core.mf.js"],
       ["jqueryui", "jquery.ui.tabs.js"],
-      ["template", "freebase-permission.mf.js"],
       ["template", "jquery.showrow.js"],
       ["jquerytools", "tabs.js"],
       ["jquerytools", "tooltip.js"],
-	  "sample_page.js"
+      "sample_page.js"
     ]
   }
 }

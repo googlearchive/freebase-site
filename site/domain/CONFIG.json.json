@@ -4,13 +4,12 @@
   },
   "stylesheet": {
     "domain.mf.css": [
-      ["template", "freebase.mf.css"],
+      ["template", "mixins.less"],
       "project.less"
     ]
   },
   "javascript": {
     "domain.mf.js": [
-      ["template", "freebase.mf.js"],
       "jquery.lazyload.js",
       "jquery.masonry.js",
       "project.js"

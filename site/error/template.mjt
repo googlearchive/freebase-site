@@ -34,19 +34,7 @@
   var c = this.exports.c = {};
 </acre:script>
 
-<acre:block def="title()">
-
-</acre:block>
-
-<acre:block def="head()">
-  <link rel="stylesheet" type="text/css" href="${mf.css_src('error.mf.css')}" />
-</acre:block>
-
 <acre:block def="content_body()">
   <h1>Error: ${c.status || ""}</h1>
   <h1 acre:if="c.not_found">NOT FOUND: ${c.not_found}</h1>
-</acre:block>
-
-<acre:block def="footer_script()">
-  <script src="${mf.js_src('error.mf.js')}"></script>
 </acre:block>

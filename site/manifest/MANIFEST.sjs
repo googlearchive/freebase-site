@@ -197,7 +197,14 @@ Manifest.prototype = {
   },
 
   css_resource_url: function(url, use_acre_url) {
-    return 'url("' + url + '")';
+    return this.quoted_css_url(url);
+  },
+
+  quoted_css_url: function(url) {
+    if (url.indexOf('"') !== 0 && url.indexOf("'") !== 0) {
+      url = '"'+url+'"';
+    }
+    return 'url('+url+')';
   },
 
   css_preprocessor: function(str, use_acre_url) {
@@ -210,7 +217,7 @@ Manifest.prototype = {
       buf.push(l.replace(url_regex, function(m, group) {
         var url = group.replace(/^\s+|\s+$/g, "");
         if (url.indexOf("http://") == 0 || url.indexOf("https://") === 0) {
-          return '"'+m+'"';
+          return self.quoted_css_url(url);
         }
         else if (scheme_regex.test(url)) {
           return self.css_resource_url(url, use_acre_url);
@@ -228,10 +235,10 @@ Manifest.prototype = {
           if (use_acre_url) {
             var args = self.require_args.apply(self, params);
             var app_path = args.local ? self.scope.acre.current_script.app.path : self.apps[args.app];
-            return 'url("' + app_path + "/" + args.file + '")';
+            return self.quoted_css_url(app_path + "/" + args.file);
           }
           else {
-            return 'url("' + self.img_src.apply(self, params).replace(/\s/g, '%20') + '")';
+            return self.quoted_css_url(self.img_src.apply(self, params).replace(/\s/g, '%20'));
           }
         }
       }));

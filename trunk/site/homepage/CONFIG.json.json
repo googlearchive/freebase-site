@@ -4,13 +4,12 @@
   },
   "stylesheet": {
     "homepage.mf.css": [
-      ["template", "freebase.mf.css"],
+      ["template", "mixins.less"],
       "homepage.less"
     ]
   },
   "javascript": {
     "homepage.mf.js": [
-      ["template", "freebase.mf.js"],
       ["flot", "flot.core.mf.js"],
       "jquery.tinysort.js",
       "jquery.tools.tabs.min.js",

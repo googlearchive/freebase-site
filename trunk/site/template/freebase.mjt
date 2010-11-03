@@ -55,6 +55,11 @@
 
       <!-- freebase suggest -->
       <link rel="stylesheet" type="text/css" href="${mf.lib_base_url('suggest')}/suggest.min.css" />
+
+      <!-- freebase.mf.css -->
+      <link rel="stylesheet" type="text/css" href="${mf.css_src('freebase.mf.css')}" />
+
+      <!-- opensearch -->
       <link rel="search" 
             type="application/opensearchdescription+xml" 
             href="/opensearch" 
@@ -212,7 +217,10 @@
 <acre:block def="footer_script(exports)">
   <!-- jquery -->
   <script src="${mf.lib_base_url('jquery')}/jquery.min.js"></script>
+  <!-- suggest -->
   <script src="${mf.lib_base_url('suggest')}/suggest.min.js"></script>
+  <!-- freebase.mf.js -->
+  <script src="${mf.js_src('freebase.mf.js')}"></script>
   <acre:block if="exports.footer_script">${exports.footer_script()}</acre:block>
 </acre:block>
 

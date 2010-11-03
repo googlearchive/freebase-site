@@ -156,7 +156,6 @@
 </acre:block>
 
 <acre:block def="footer_script()">
-  <script src="${mf.js_src('policies.mf.js')}"></script>
   <script type="text/javascript">
     $(document).ready(function(){
       

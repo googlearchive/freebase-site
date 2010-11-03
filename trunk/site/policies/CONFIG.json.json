@@ -4,13 +4,8 @@
   },
   "stylesheet": {
     "policies.mf.css": [
-      ["template", "freebase.mf.css"],
-      "css-policies.css"
+      ["template", "mixins.less"],
+      "css-policies.less"
     ]
-  },
-  "javascript": {
-    "policies.mf.js": [
-      ["template", "freebase.mf.js"]
-    ]
-  },
+  }
 }

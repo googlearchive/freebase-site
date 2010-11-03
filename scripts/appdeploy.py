@@ -1120,7 +1120,7 @@ class ActionStatic():
     # by doing an http request for <app_url>/MANIFEST/<bundle_name>
     # and copy them to the target directory
     for file_type in ['javascript', 'stylesheet']:
-        for filename in mf[file_type]:
+        for filename in mf.get(file_type, []):
             file_url = "%s/MANIFEST/%s" % (app.url(), filename)
             if use_acre_url:
                 file_url = "%s?%s" % (url, urllib.urlencode({"use_acre_url" : 1}))

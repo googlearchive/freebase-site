@@ -57,6 +57,10 @@ LICENSE_PREAMBLE = '''
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Additional Licenses for Third Party components can be found here:
+ * http://wiki.freebase.com/wiki/Freebase_Site_License
+ *
  */
 
 '''
@@ -79,7 +83,7 @@ DESTINATION_EMAIL_ADDRESS = "freebase-site@google.com"
 SERVICES = {
 
 
-  'otg' : { 'acre' : 'http://acre.freebase.com',
+  'otg' : { 'acre' : 'http://www.freebase.com',
             'www' : 'http://www.freebase.com',
             'freebaseapps' : 'freebaseapps.com'
             },
@@ -350,6 +354,30 @@ class App:
         revision = int(parts[3])
 
     return revision
+
+
+  def needs_static_bundle(self):
+    '''Determine if this app qualifies for static bundle generation.
+
+    An app qualifies if:
+    - it has any js/css/image files
+    - it has a css/js declaration in its config file
+    '''
+
+    local_app = self.get_local_app(inject_config = False)
+
+    for app_file in local_app['files']:
+      if app_file['extension'] in EXTENSIONS:
+        return True
+
+    dependencies = self.get_resource_dependencies()
+    for res in ['js', 'stylesheet']:
+      if len(dependencies[res].keys()):
+        return True
+        
+
+    return False
+
 
 
   def get_resource_dependencies(self):
@@ -1635,7 +1663,7 @@ class ActionTest:
 
   def __call__(self):
       print self.context.app.last_resource_revision()
-      
+
       c = self.context
       return True
 
@@ -1655,7 +1683,7 @@ class ActionInfo:
     print "_" * 84
     print "App: %s\n" % app.app_key
     print "[svn]"
-    
+
     last_version = app.last_svn_version()
     dep = {}
     if last_version:
@@ -1680,7 +1708,6 @@ class ActionInfo:
     for environment in ['sandbox', 'otg']:
         print "\n[%s]" % environment
         e_app = app.get_graph_app_from_environment(SERVICES[environment])
-
         #get the released version and its core dependency
         e_released = e_app.release or None
         released_core_dependency = get_core_dependency(c, app, e_released, SERVICES[environment])

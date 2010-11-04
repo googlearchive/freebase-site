@@ -48,7 +48,7 @@ test("i18n.mql.langs", function() {
     type: "/type/lang"
   }];
   var mql_langs = acre.freebase.mqlread(q).result;
-  equal(mql_langs.length, langs.length);
+  equal(langs.length, mql_langs.length, JSON.stringify(langs, null, 2));
 });
 
 test("i18n.mql.query.text", function() {

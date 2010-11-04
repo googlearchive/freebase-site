@@ -214,40 +214,34 @@ var mql = {
   langs: function() {
     if (!mql._langs) {
       var tier = [
-        ["en"], // Tier 0
-        ["en-GB", "fr", "it", "de", "es", "nl", "zh-CN", "zh-TW", "ja", "ko", "pt-BR", "ru", "pl", "tr", "th", "ar"], // Tier 1
-        ["sv", "fi", "da", "pt-PT", "ro", "hu", "iw", "id", "cs", "el", "no", "vi", "bg", "hr", "lt", "sk", "fil", "sl", "sr", "ca", "lv", "uk", "hi", "fa", "es-419"] // Tier 2
+        [ // Tier 0
+          "en"
+        ],
+        [ // Tier 1
+          "en-GB", "fr", "it", "de", "es",
+          "nl", "zh", "zh-Hant", "ja", "ko",
+          "pt-BR", "ru", "pl", "tr", "th",
+          "ar"
+        ],
+        [ // Tier 2
+          "sv", "fi", "da", "pt-PT", "ro",
+          "hu", "iw", "id", "cs", "el",
+          "no", "vi", "bg", "hr", "lt",
+          "sk", "fil", "sl", "sr", "ca",
+          "lv", "uk", "hi", "fa", "es-419"
+        ]
       ];
-      // freebase equivalent
-      var equiv = {
-        "en-GB" : "en",
-        "zh-CN" : "zh",
-        "zh-TW" : "zh",
-        "pt-BR" : "pt",
-        "pt-PT" : "pt",
-        "iw"    : "he",
-        "es-419": "es"
-      };
       var tiers = tier[0].concat(tier[1]).concat(tier[2]);
-      var ids = [];
-      var seen = {};
-      for (var i=0,l=tiers.length; i<l; i++) {
-        var id = tiers[i];
-        if (id in equiv) {
-          id = equiv[id];
-        }
-        if (! (id in seen)) {
-          ids.push("/lang/" + id);
-          seen[id] = 1;
-        }
-      }
       var q = [{
         id: null,
-        "id|=": ids,
+        "id|=": ["/lang/" + id.toLowerCase() for each (id in tiers)],
         name: null
       }];
       // langs don't change, so use as_of_time
-      var langs = acre.freebase.mqlread(q, {as_of_time: ""+(new Date()).getFullYear()}).result;
+      var today = (new Date());
+      function pad(n){ return n<10 ? '0'+n : n;};
+      var as_of_time = [today.getFullYear(), pad(today.getMonth()+1), pad(today.getDate())].join("-");
+      var langs = acre.freebase.mqlread(q, {as_of_time: as_of_time}).result;
       langs.sort(function(a,b) {
         return (a.name || "").toLowerCase() > (b.name || "").toLowerCase();
       });

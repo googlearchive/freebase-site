@@ -51,7 +51,7 @@
 	  </acre:script>
 	  <head>
 	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-		  <link rel="stylesheet" type="text/css" href="${mf.css_src('docs_style.mf.css')}" />	  </head>
+		  <link rel="stylesheet" type="text/css" href="${mf.css_src('iframe_style.mf.css')}" />	  </head>
 	  <body id="help-viewer-standalone">
 	    <acre:block if="o.section_url">
 	      ${exports.helpsection(o)}

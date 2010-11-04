@@ -419,7 +419,9 @@
   </div>
 
   <ul id="triple-tip" class="row-menu tooltip" acre:trim="">
-    <li class="row-menu-item last"><a id="build-query" href="#">${_("Build query")}</a></li>
+    <li class="row-menu-item last">
+      <a id="build-query" href="${h.url_for('queryeditor')}">${_("Build query")}</a>
+    </li>
   </ul>
 
 </acre:block>

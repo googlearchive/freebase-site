@@ -53,3 +53,5 @@ span.js-comment {
   color: #888;
 }
 
+span.whitespace { border: thin dotted gray; }
+br { border:thin dotted red; }

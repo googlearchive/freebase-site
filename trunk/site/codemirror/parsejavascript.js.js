@@ -1,34 +1,3 @@
-/*
- * Copyright 2010, Google Inc.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 /* Parse function for JavaScript. Makes use of the tokenizer from
  * tokenizejavascript.js. Note that your parsers do not have to be
  * this complicated -- if you don't want to recognize local variables,
@@ -105,7 +74,7 @@ var JSParser = Editor.Parser = (function() {
     // below to communicate with the driver loop in the 'next'
     // function.
     var consume, marked;
-  
+
     // The iterator object.
     var parser = {next: next, copy: copy};
 
@@ -168,7 +137,7 @@ var JSParser = Editor.Parser = (function() {
     // between runs of the parser.
     function copy(){
       var _context = context, _lexical = lexical, _cc = cc.concat([]), _tokenState = tokens.state;
-  
+
       return function copyParser(input){
         context = _context;
         lexical = _lexical;
@@ -226,7 +195,7 @@ var JSParser = Editor.Parser = (function() {
       }
       return false;
     }
-  
+
     // Push a new lexical context of the given type.
     function pushlex(type, info) {
       var result = function(){
@@ -245,7 +214,7 @@ var JSParser = Editor.Parser = (function() {
     // The 'lex' flag on these actions is used by the 'next' function
     // to know they can (and have to) be ran before moving on to the
     // next token.
-  
+
     // Creates an action that discards tokens until it finds one of
     // the given type.
     function expect(wanted){
@@ -376,7 +345,7 @@ var JSParser = Editor.Parser = (function() {
     function funarg(type, value){
       if (type == "variable"){register(value); cont();}
     }
-  
+
     return parser;
   }
 

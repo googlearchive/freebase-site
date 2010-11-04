@@ -1,34 +1,3 @@
-/*
- * Copyright 2010, Google Inc.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *     * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *     * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 // jslint.js
 // 2010-04-06
 
@@ -175,109 +144,109 @@ SOFTWARE.
     evil: true, nomen: false, onevar: false, regexp: false, strict: true
 */
 
-/*members "\b", "\t", "\n", "\f", "\r", "!=", "!==", "\"", "%", 
-    "(begin)", "(breakage)", "(context)", "(error)", "(global)", 
-    "(identifier)", "(last)", "(line)", "(loopage)", "(name)", "(onevar)", 
-    "(params)", "(scope)", "(verb)", "*", "+", "++", "-", "--", "\/", 
-    "<", "<=", "==", "===", ">", ">=", ADSAFE, ActiveXObject, 
-    Array, Boolean, COM, CScript, Canvas, CustomAnimation, Date, Debug, E, 
-    Enumerator, Error, EvalError, FadeAnimation, Flash, FormField, Frame, 
-    Function, HotKey, Image, JSON, LN10, LN2, LOG10E, LOG2E, MAX_VALUE, 
-    MIN_VALUE, Math, MenuItem, MoveAnimation, NEGATIVE_INFINITY, Number, 
-    Object, Option, PI, POSITIVE_INFINITY, Point, RangeError, Rectangle, 
-    ReferenceError, RegExp, ResizeAnimation, RotateAnimation, SQRT1_2, 
-    SQRT2, ScrollBar, String, Style, SyntaxError, System, Text, TextArea, 
-    Timer, TypeError, URIError, URL, VBArray, WScript, Web, Window, XMLDOM, 
-    XMLHttpRequest, "\\", a, abbr, acronym, addEventListener, address, 
-    adsafe, alert, aliceblue, animator, antiquewhite, appleScript, applet, 
-    apply, approved, aqua, aquamarine, area, arguments, arity, article, 
-    aside, audio, autocomplete, azure, b, background, 
-    "background-attachment", "background-color", "background-image", 
-    "background-position", "background-repeat", base, bdo, beep, beige, big, 
-    bisque, bitwise, black, blanchedalmond, block, blockquote, blue, 
-    blueviolet, blur, body, border, "border-bottom", "border-bottom-color", 
-    "border-bottom-style", "border-bottom-width", "border-collapse", 
-    "border-color", "border-left", "border-left-color", "border-left-style", 
-    "border-left-width", "border-right", "border-right-color", 
-    "border-right-style", "border-right-width", "border-spacing", 
-    "border-style", "border-top", "border-top-color", "border-top-style", 
-    "border-top-width", "border-width", bottom, br, brown, browser, 
-    burlywood, button, bytesToUIString, c, cadetblue, call, callee, caller, 
-    canvas, cap, caption, "caption-side", cases, center, charAt, charCodeAt, 
-    character, chartreuse, chocolate, chooseColor, chooseFile, chooseFolder, 
-    cite, clear, clearInterval, clearTimeout, clip, close, closeWidget, 
-    closed, closure, cm, code, col, colgroup, color, command, comment, 
-    condition, confirm, console, constructor, content, convertPathToHFS, 
-    convertPathToPlatform, coral, cornflowerblue, cornsilk, 
-    "counter-increment", "counter-reset", create, crimson, css, cursor, 
-    cyan, d, darkblue, darkcyan, darkgoldenrod, darkgray, darkgreen, 
-    darkkhaki, darkmagenta, darkolivegreen, darkorange, darkorchid, darkred, 
-    darksalmon, darkseagreen, darkslateblue, darkslategray, darkturquoise, 
-    darkviolet, data, datalist, dd, debug, decodeURI, decodeURIComponent, 
-    deeppink, deepskyblue, defaultStatus, defineClass, del, deserialize, 
-    details, devel, dfn, dialog, dimension, dimgray, dir, direction, 
-    display, div, dl, document, dodgerblue, dt, edition, else, em, embed, 
-    empty, "empty-cells", encodeURI, encodeURIComponent, entityify, eqeqeq, 
-    errors, es5, escape, eval, event, evidence, evil, ex, exception, exec, exps, 
-    fieldset, figure, filesystem, firebrick, first, float, floor, 
-    floralwhite, focus, focusWidget, font, "font-face", "font-family", 
-    "font-size", "font-size-adjust", "font-stretch", "font-style", 
-    "font-variant", "font-weight", footer, forestgreen, forin, form, 
-    fragment, frame, frames, frameset, from, fromCharCode, fuchsia, fud, 
-    funct, function, functions, g, gainsboro, gc, getComputedStyle, 
-    ghostwhite, global, globals, gold, goldenrod, gray, green, greenyellow, 
-    h1, h2, h3, h4, h5, h6, hasOwnProperty, head, header, height, help, 
-    hgroup, history, honeydew, hotpink, hr, html, i, iTunes, id, identifier, 
-    iframe, img, immed, implieds, in, include, indent, indexOf, indianred, 
-    indigo, init, input, ins, isAlpha, isApplicationRunning, isDigit, 
-    isFinite, isNaN, ivory, join, jslint, json, kbd, keygen, khaki, 
-    konfabulatorVersion, label, labelled, lang, last, lavender, 
-    lavenderblush, lawngreen, laxbreak, lbp, led, left, legend, 
-    lemonchiffon, length, "letter-spacing", li, lib, lightblue, lightcoral, 
-    lightcyan, lightgoldenrodyellow, lightgreen, lightpink, lightsalmon, 
-    lightseagreen, lightskyblue, lightslategray, lightsteelblue, 
-    lightyellow, lime, limegreen, line, "line-height", linen, link, 
-    "list-style", "list-style-image", "list-style-position", 
-    "list-style-type", load, loadClass, location, log, m, magenta, map, 
-    margin, "margin-bottom", "margin-left", "margin-right", "margin-top", 
-    mark, "marker-offset", maroon, match, "max-height", "max-width", maxerr, 
-    maxlen, md5, media, mediumaquamarine, mediumblue, mediumorchid, 
-    mediumpurple, mediumseagreen, mediumslateblue, mediumspringgreen, 
-    mediumturquoise, mediumvioletred, member, menu, message, meta, meter, 
-    midnightblue, "min-height", "min-width", mintcream, mistyrose, mm, 
-    moccasin, moveBy, moveTo, name, nav, navajowhite, navigator, navy, new, 
-    newcap, noframes, nomen, noscript, nud, object, ol, oldlace, olive, 
-    olivedrab, on, onbeforeunload, onblur, onerror, onevar, onfocus, onload, 
-    onresize, onunload, opacity, open, openURL, opener, opera, optgroup, 
-    option, orange, orangered, orchid, outer, outline, "outline-color", 
-    "outline-style", "outline-width", output, overflow, "overflow-x", 
-    "overflow-y", p, padding, "padding-bottom", "padding-left", 
-    "padding-right", "padding-top", page, "page-break-after", 
-    "page-break-before", palegoldenrod, palegreen, paleturquoise, 
-    palevioletred, papayawhip, param, parent, parseFloat, parseInt, 
-    passfail, pc, peachpuff, peru, pink, play, plum, plusplus, pop, 
-    popupMenu, position, powderblue, pre, predef, preferenceGroups, 
-    preferences, print, progress, prompt, prototype, pt, purple, push, px, 
-    q, quit, quotes, random, range, raw, reach, readFile, readUrl, reason, 
-    red, regexp, reloadWidget, removeEventListener, replace, report, 
-    reserved, resizeBy, resizeTo, resolvePath, resumeUpdates, rhino, right, 
-    rosybrown, royalblue, rp, rt, ruby, runCommand, runCommandInBg, 
-    saddlebrown, safe, salmon, samp, sandybrown, saveAs, savePreferences, 
-    screen, script, scroll, scrollBy, scrollTo, seagreen, seal, search, 
-    seashell, section, select, serialize, setInterval, setTimeout, shift, 
-    showWidgetPreferences, sienna, silver, skyblue, slateblue, slategray, 
-    sleep, slice, small, snow, sort, source, span, spawn, speak, split, 
-    springgreen, src, stack, status, steelblue, strict, strong, style, 
-    styleproperty, sub, substr, sup, supplant, suppressUpdates, sync, 
-    system, table, "table-layout", tan, tbody, td, teal, tellWidget, test, 
-    "text-align", "text-decoration", "text-indent", "text-shadow", 
-    "text-transform", textarea, tfoot, th, thead, thistle, time, title, 
-    toLowerCase, toString, toUpperCase, toint32, token, tomato, top, tr, tt, 
-    turquoise, type, u, ul, undef, unescape, "unicode-bidi", unused, 
-    unwatch, updateNow, urls, value, valueOf, var, version, 
-    "vertical-align", video, violet, visibility, watch, wheat, white, 
-    "white-space", whitesmoke, widget, width, windows, "word-spacing", 
-    "word-wrap", yahooCheckLogin, yahooLogin, yahooLogout, yellow, 
+/*members "\b", "\t", "\n", "\f", "\r", "!=", "!==", "\"", "%",
+    "(begin)", "(breakage)", "(context)", "(error)", "(global)",
+    "(identifier)", "(last)", "(line)", "(loopage)", "(name)", "(onevar)",
+    "(params)", "(scope)", "(verb)", "*", "+", "++", "-", "--", "\/",
+    "<", "<=", "==", "===", ">", ">=", ADSAFE, ActiveXObject,
+    Array, Boolean, COM, CScript, Canvas, CustomAnimation, Date, Debug, E,
+    Enumerator, Error, EvalError, FadeAnimation, Flash, FormField, Frame,
+    Function, HotKey, Image, JSON, LN10, LN2, LOG10E, LOG2E, MAX_VALUE,
+    MIN_VALUE, Math, MenuItem, MoveAnimation, NEGATIVE_INFINITY, Number,
+    Object, Option, PI, POSITIVE_INFINITY, Point, RangeError, Rectangle,
+    ReferenceError, RegExp, ResizeAnimation, RotateAnimation, SQRT1_2,
+    SQRT2, ScrollBar, String, Style, SyntaxError, System, Text, TextArea,
+    Timer, TypeError, URIError, URL, VBArray, WScript, Web, Window, XMLDOM,
+    XMLHttpRequest, "\\", a, abbr, acronym, addEventListener, address,
+    adsafe, alert, aliceblue, animator, antiquewhite, appleScript, applet,
+    apply, approved, aqua, aquamarine, area, arguments, arity, article,
+    aside, audio, autocomplete, azure, b, background,
+    "background-attachment", "background-color", "background-image",
+    "background-position", "background-repeat", base, bdo, beep, beige, big,
+    bisque, bitwise, black, blanchedalmond, block, blockquote, blue,
+    blueviolet, blur, body, border, "border-bottom", "border-bottom-color",
+    "border-bottom-style", "border-bottom-width", "border-collapse",
+    "border-color", "border-left", "border-left-color", "border-left-style",
+    "border-left-width", "border-right", "border-right-color",
+    "border-right-style", "border-right-width", "border-spacing",
+    "border-style", "border-top", "border-top-color", "border-top-style",
+    "border-top-width", "border-width", bottom, br, brown, browser,
+    burlywood, button, bytesToUIString, c, cadetblue, call, callee, caller,
+    canvas, cap, caption, "caption-side", cases, center, charAt, charCodeAt,
+    character, chartreuse, chocolate, chooseColor, chooseFile, chooseFolder,
+    cite, clear, clearInterval, clearTimeout, clip, close, closeWidget,
+    closed, closure, cm, code, col, colgroup, color, command, comment,
+    condition, confirm, console, constructor, content, convertPathToHFS,
+    convertPathToPlatform, coral, cornflowerblue, cornsilk,
+    "counter-increment", "counter-reset", create, crimson, css, cursor,
+    cyan, d, darkblue, darkcyan, darkgoldenrod, darkgray, darkgreen,
+    darkkhaki, darkmagenta, darkolivegreen, darkorange, darkorchid, darkred,
+    darksalmon, darkseagreen, darkslateblue, darkslategray, darkturquoise,
+    darkviolet, data, datalist, dd, debug, decodeURI, decodeURIComponent,
+    deeppink, deepskyblue, defaultStatus, defineClass, del, deserialize,
+    details, devel, dfn, dialog, dimension, dimgray, dir, direction,
+    display, div, dl, document, dodgerblue, dt, edition, else, em, embed,
+    empty, "empty-cells", encodeURI, encodeURIComponent, entityify, eqeqeq,
+    errors, es5, escape, eval, event, evidence, evil, ex, exception, exec, exps,
+    fieldset, figure, filesystem, firebrick, first, float, floor,
+    floralwhite, focus, focusWidget, font, "font-face", "font-family",
+    "font-size", "font-size-adjust", "font-stretch", "font-style",
+    "font-variant", "font-weight", footer, forestgreen, forin, form,
+    fragment, frame, frames, frameset, from, fromCharCode, fuchsia, fud,
+    funct, function, functions, g, gainsboro, gc, getComputedStyle,
+    ghostwhite, global, globals, gold, goldenrod, gray, green, greenyellow,
+    h1, h2, h3, h4, h5, h6, hasOwnProperty, head, header, height, help,
+    hgroup, history, honeydew, hotpink, hr, html, i, iTunes, id, identifier,
+    iframe, img, immed, implieds, in, include, indent, indexOf, indianred,
+    indigo, init, input, ins, isAlpha, isApplicationRunning, isDigit,
+    isFinite, isNaN, ivory, join, jslint, json, kbd, keygen, khaki,
+    konfabulatorVersion, label, labelled, lang, last, lavender,
+    lavenderblush, lawngreen, laxbreak, lbp, led, left, legend,
+    lemonchiffon, length, "letter-spacing", li, lib, lightblue, lightcoral,
+    lightcyan, lightgoldenrodyellow, lightgreen, lightpink, lightsalmon,
+    lightseagreen, lightskyblue, lightslategray, lightsteelblue,
+    lightyellow, lime, limegreen, line, "line-height", linen, link,
+    "list-style", "list-style-image", "list-style-position",
+    "list-style-type", load, loadClass, location, log, m, magenta, map,
+    margin, "margin-bottom", "margin-left", "margin-right", "margin-top",
+    mark, "marker-offset", maroon, match, "max-height", "max-width", maxerr,
+    maxlen, md5, media, mediumaquamarine, mediumblue, mediumorchid,
+    mediumpurple, mediumseagreen, mediumslateblue, mediumspringgreen,
+    mediumturquoise, mediumvioletred, member, menu, message, meta, meter,
+    midnightblue, "min-height", "min-width", mintcream, mistyrose, mm,
+    moccasin, moveBy, moveTo, name, nav, navajowhite, navigator, navy, new,
+    newcap, noframes, nomen, noscript, nud, object, ol, oldlace, olive,
+    olivedrab, on, onbeforeunload, onblur, onerror, onevar, onfocus, onload,
+    onresize, onunload, opacity, open, openURL, opener, opera, optgroup,
+    option, orange, orangered, orchid, outer, outline, "outline-color",
+    "outline-style", "outline-width", output, overflow, "overflow-x",
+    "overflow-y", p, padding, "padding-bottom", "padding-left",
+    "padding-right", "padding-top", page, "page-break-after",
+    "page-break-before", palegoldenrod, palegreen, paleturquoise,
+    palevioletred, papayawhip, param, parent, parseFloat, parseInt,
+    passfail, pc, peachpuff, peru, pink, play, plum, plusplus, pop,
+    popupMenu, position, powderblue, pre, predef, preferenceGroups,
+    preferences, print, progress, prompt, prototype, pt, purple, push, px,
+    q, quit, quotes, random, range, raw, reach, readFile, readUrl, reason,
+    red, regexp, reloadWidget, removeEventListener, replace, report,
+    reserved, resizeBy, resizeTo, resolvePath, resumeUpdates, rhino, right,
+    rosybrown, royalblue, rp, rt, ruby, runCommand, runCommandInBg,
+    saddlebrown, safe, salmon, samp, sandybrown, saveAs, savePreferences,
+    screen, script, scroll, scrollBy, scrollTo, seagreen, seal, search,
+    seashell, section, select, serialize, setInterval, setTimeout, shift,
+    showWidgetPreferences, sienna, silver, skyblue, slateblue, slategray,
+    sleep, slice, small, snow, sort, source, span, spawn, speak, split,
+    springgreen, src, stack, status, steelblue, strict, strong, style,
+    styleproperty, sub, substr, sup, supplant, suppressUpdates, sync,
+    system, table, "table-layout", tan, tbody, td, teal, tellWidget, test,
+    "text-align", "text-decoration", "text-indent", "text-shadow",
+    "text-transform", textarea, tfoot, th, thead, thistle, time, title,
+    toLowerCase, toString, toUpperCase, toint32, token, tomato, top, tr, tt,
+    turquoise, type, u, ul, undef, unescape, "unicode-bidi", unused,
+    unwatch, updateNow, urls, value, valueOf, var, version,
+    "vertical-align", video, violet, visibility, watch, wheat, white,
+    "white-space", whitesmoke, widget, width, windows, "word-spacing",
+    "word-wrap", yahooCheckLogin, yahooLogin, yahooLogout, yellow,
     yellowgreen, "z-index"
 */
 
@@ -2476,7 +2445,7 @@ loop:   for (;;) {
             } else if (token.reserved && !option.es5) {
                 warning("Expected an identifier and instead saw '{a}' (a reserved word).",
                         token, token.id);
-            } 
+            }
             return token.value;
         }
     }
@@ -4547,8 +4516,8 @@ loop:   for (;;) {
         advance(']', this);
         return this;
     }, 160);
-    
-    
+
+
     function property_name() {
         var i = optionalidentifier(true);
         if (!i) {
@@ -4562,7 +4531,7 @@ loop:   for (;;) {
         }
         return i;
     }
-    
+
 
     function functionparams() {
         var i, t = nexttoken, p = [];
@@ -4586,7 +4555,7 @@ loop:   for (;;) {
             }
         }
     }
-    
+
 
     function doFunction(i) {
         var f, s = scope;
@@ -4614,7 +4583,7 @@ loop:   for (;;) {
         return f;
     }
 
-    
+
     (function (x) {
         x.nud = function () {
             var b, f, i, j, p, seen = {}, t;
@@ -4642,7 +4611,7 @@ loop:   for (;;) {
                         error("Missing property name.");
                     }
                     t = nexttoken;
-                    adjacent(token, nexttoken); 
+                    adjacent(token, nexttoken);
                     f = doFunction(i);
                     if (funct['(loopage)']) {
                         warning("Don't make functions within a loop.", t);
@@ -4651,7 +4620,7 @@ loop:   for (;;) {
                     if (p) {
                         warning("Unexpected parameter '{a}' in get {b} function.", t, p[0], i);
                     }
-                    adjacent(token, nexttoken); 
+                    adjacent(token, nexttoken);
                     advance(',');
                     indentation();
                     advance('set');
@@ -4660,7 +4629,7 @@ loop:   for (;;) {
                         error("Expected {a} and instead saw {b}.", token, i, j);
                     }
                     t = nexttoken;
-                    adjacent(token, nexttoken); 
+                    adjacent(token, nexttoken);
                     f = doFunction(i);
                     p = f['(params)'];
                     if (!p || p.length !== 1 || p[0] !== 'value') {

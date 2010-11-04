@@ -19,6 +19,12 @@
       "schema.mf.js",
       "index.js"
     ],
+    "index-edit.mf.js": [
+      ["jquerytools", "toolbox.expose.js"],
+      ["jquerytools", "overlay.js"],
+      "schema-edit.js",
+      "index-edit.js"
+    ],
     "domain.mf.js": [
       "schema.mf.js",
       "domain.js"

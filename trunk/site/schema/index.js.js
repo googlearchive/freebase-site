@@ -43,8 +43,7 @@
       initialIndex: 1,
       api: true
     });
-    
-    console.log($schema_explorer_search_tabset.getCurrentTab().parent("li:first"));
+
     /*
         MQL_FILTERS are config parameters passed to respective
         Freebase Suggest instances for Domain, Type, and Property
@@ -192,9 +191,25 @@
       var $text_input = $parent.find(".text-input");
       var search_term = $text_input.val();
       $text_input.val(search_term).focus().trigger(jQuery.Event("keyup"));
-
     });
 
+  };
+
+  // show create new domain button if logged in
+  $(window)
+     .bind("fb.user.signedin", function(e, user) {
+        $("#create-new-domain").show();
+     });
+
+
+  fb.schema.index = {
+    add_domain: function(e) {
+      var trigger = $(this);
+      fb.get_script(fb.acre.request.app_url + "/schema/MANIFEST/index-edit.mf.js", function() {
+        fb.schema.index.edit.add_domain_begin(trigger);
+      });
+      return false;
+    }
   };
 
   $(init);

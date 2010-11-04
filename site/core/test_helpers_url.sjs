@@ -64,12 +64,21 @@ test("url_for", function() {
 });
 
 test("freebase_url", function() {
-  equal(h.freebase_url(), acre.freebase.service_url);
-  equal(h.freebase_url(null), acre.freebase.service_url);
-  equal(h.freebase_url(""), acre.freebase.service_url);
-  equal(h.freebase_url("/foo/bar"), acre.freebase.service_url + "/foo/bar");
-  equal(h.freebase_url("/foo/bar", {a:1,b:2}), acre.freebase.service_url + "/foo/bar?a=1&b=2");
-  equal(h.freebase_url(null, {a:1,b:2}), acre.freebase.service_url + "?a=1&b=2");
+  equal(h.freebase_url(), acre.freebase.site_host);
+  equal(h.freebase_url(null), acre.freebase.site_host);
+  equal(h.freebase_url(""), acre.freebase.site_host);
+  equal(h.freebase_url("/foo/bar"), acre.freebase.site_host + "/foo/bar");
+  equal(h.freebase_url("/foo/bar", {a:1,b:2}), acre.freebase.site_host + "/foo/bar?a=1&b=2");
+  equal(h.freebase_url(null, {a:1,b:2}), acre.freebase.site_host + "?a=1&b=2");
+});
+
+test("freebase_service_url", function() {
+  equal(h.freebase_service_url(), acre.freebase.service_url);
+  equal(h.freebase_service_url(null), acre.freebase.service_url);
+  equal(h.freebase_service_url(""), acre.freebase.service_url);
+  equal(h.freebase_service_url("/foo/bar"), acre.freebase.service_url + "/foo/bar");
+  equal(h.freebase_service_url("/foo/bar", {a:1,b:2}), acre.freebase.service_url + "/foo/bar?a=1&b=2");
+  equal(h.freebase_service_url(null, {a:1,b:2}), acre.freebase.service_url + "?a=1&b=2");
 });
 
 acre.test.report();

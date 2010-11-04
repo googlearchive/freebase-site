@@ -35,6 +35,7 @@ var exports = {
   "url_for": url_for,
   "account_url": account_url,
   "freebase_url": freebase_url,
+  "freebase_service_url": freebase_service_url,
   "wiki_url": wiki_url,
   "image_url": image_url,
   "parse_params": parse_params,
@@ -171,11 +172,17 @@ function account_url(kind, return_url) {
   return url;
 };
 
-
 /**
- * freebase url
+ * freebase url (i.e, http://www.freebase.com/path?params)
  */
 function freebase_url(path, params) {
+  return acre.form.build_url(acre.freebase.site_host + (path || ""), parse_params(params));
+};
+
+/**
+ * freebase service url (i.e., http://api.freebase.com/path?params)
+ */
+function freebase_service_url(path, params) {
   return acre.form.build_url(acre.freebase.service_url + (path || ""), parse_params(params));
 };
 

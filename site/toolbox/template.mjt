@@ -31,6 +31,7 @@
 
 <acre:script>
   var mf = acre.require("MANIFEST").mf;
+  var h = mf.require("core", "helpers");
 </acre:script>
 
 <acre:block def="toolbox(options)">
@@ -84,7 +85,7 @@
 <acre:block def="projects_toolbox_content(projects)">
   <ul>
     <li acre:for="project in projects" data-name="${project.name || project.id}" data-id="${project.id}">
-      <a href="${acre.freebase.service_url}/view${project.id}">${project.name || project.id}</a>
+      <a href="${h.freebase_url('/view' + project.id)}">${project.name || project.id}</a>
     </li>
   </ul>
 </acre:block>
@@ -124,7 +125,7 @@
 <acre:block def="apps_toolbox_content(apps)">
   <ul>
     <li acre:for="app in apps" data-name="${app.name || app.appid}" data-id="${app.appid}">
-      <a href="${acre.freebase.service_url}/apps/app${app.appid}">${app.name || app.appid}</a>
+      <a href="${h.url_for('apps', 'app', null, app.appid)}">${app.name || app.appid}</a>
       <a href="" class="toolbox-link-edit">Edit this App</a>
     </li>
   </ul>
@@ -165,7 +166,7 @@
 <acre:block def="queries_toolbox_content(queries)">
   <ul>
     <li acre:for="query in queries" data-name="${query.name || query.id}" data-id="${query.id}">
-      <a href="${acre.freebase.service_url}/view${query.id}">${query.name || query.id}</a>
+      <a href="${h.freebase_url('/view' + query.id)}">${query.name || query.id}</a>
     </li>
   </ul>
 </acre:block>
@@ -205,7 +206,7 @@
 <acre:block def="schema_toolbox_content(types)">
   <ul>
     <li acre:for="type in types" data-name="${type.name || type.id}" data-id="${type.id}">
-      <a href="${acre.freebase.service_url}/view${type.id}">${type.name || type.id}  </a>
+      <a href="${h.freebase_url('/view' + type.id)}">${type.name || type.id}  </a>
        <span class="schema-toolbox-id">${type.id}</span>
       
     </li>

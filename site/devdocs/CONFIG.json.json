@@ -14,6 +14,10 @@
   "stylesheet": {
     "docs_style.mf.css": [
       "docs_style.css"
+    ],
+    "iframe_style.mf.css": [
+      ["template", "freebase.mf.css"],
+      "docs_style.css"
     ]
   },
 

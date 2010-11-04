@@ -436,7 +436,7 @@
       if (!minlen) {
         minlen = 1;
       }
-      if (key.length === 1) {
+      if (minlen === 1 && key.length === 1) {
         if (/^[a-z]$/.test(key)) {
           return key;
         }

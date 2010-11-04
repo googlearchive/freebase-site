@@ -7,7 +7,8 @@
 var internetExplorer = document.selection && window.ActiveXObject && /MSIE/.test(navigator.userAgent);
 var webkit = /AppleWebKit/.test(navigator.userAgent);
 var safari = /Apple Computer, Inc/.test(navigator.vendor);
-var gecko = /gecko\/(\d{8})/i.test(navigator.userAgent);
+var gecko = navigator.userAgent.match(/gecko\/(\d{8})/i);
+if (gecko) gecko = Number(gecko[1]);
 var mac = /Mac/.test(navigator.platform);
 
 // TODO this is related to the backspace-at-end-of-line bug. Remove
@@ -37,7 +38,7 @@ function fixSpaces(string) {
 }
 
 function cleanText(text) {
-  return text.replace(/\u00a0/g, " ");
+  return text.replace(/\u00a0/g, " ").replace(/\u200b/g, "");
 }
 
 // Create a SPAN node with the expected properties for document part
@@ -91,7 +92,7 @@ var Editor = (function(){
 
     function simplifyNode(node, top) {
       if (node.nodeType == 3) {
-        var text = node.nodeValue = fixSpaces(node.nodeValue.replace(/\r/g, "").replace(/\n/g, " "));
+        var text = node.nodeValue = fixSpaces(node.nodeValue.replace(/[\r\u200b]/g, "").replace(/\n/g, " "));
         if (text.length) leaving = false;
         result.push(node);
       }
@@ -351,7 +352,7 @@ var Editor = (function(){
           }
           node = next;
           offset = 0;
-        }
+        }        
       }
     },
 
@@ -691,7 +692,7 @@ var Editor = (function(){
     },
 
     reroutePasteEvent: function() {
-      if (this.capturingPaste || window.opera) return;
+      if (this.capturingPaste || window.opera || (gecko && gecko >= 20101026)) return;
       this.capturingPaste = true;
       var te = window.frameElement.CodeMirror.textareaHack;
       parent.focus();
@@ -793,11 +794,6 @@ var Editor = (function(){
         }
         else {
           select.insertNewlineAtCursor();
-          if (webkit && !this.options.textWrapping) {
-            var temp = makePartSpan("\u200b");
-            select.insertNodeAtCursor(temp);
-            setTimeout(function(){removeElement(temp);}, 50);
-          }
           var mode = this.options.enterMode;
           if (mode != "flat") this.indentAtCursor(mode == "keep" ? "keep" : undefined);
           select.scrollToCursor(this.container);
@@ -919,6 +915,17 @@ var Editor = (function(){
           }, 20);
         }
       }
+
+      // Magic incantation that works abound a webkit bug when you
+      // can't type on a blank line following a line that's wider than
+      // the window.
+      if (webkit && !this.options.textWrapping)
+        setTimeout(function () {
+          var node = select.selectionTopNode(self.container, true);
+          if (node && node.nodeType == 3 && node.previousSibling && isBR(node.previousSibling)
+              && node.nextSibling && isBR(node.nextSibling))
+            node.parentNode.replaceChild(document.createElement("BR"), node.previousSibling);
+        }, 50);
     },
 
     // Mark the node at the cursor dirty when a non-safe key is
@@ -964,7 +971,7 @@ var Editor = (function(){
         else if (Editor.Parser.firstIndentation)
           newIndent = Editor.Parser.firstIndentation(nextChars, curIndent, direction);
       }
-
+      
       var indentDiff = newIndent - curIndent;
 
       // If there is too much, this is just a matter of shrinking a span.
@@ -1420,7 +1427,7 @@ var Editor = (function(){
       }
       // Create a part corresponding to a given token.
       function tokenPart(token){
-        var part = makePartSpan(token.value);
+        var part = makePartSpan(token.value);     
         part.className = token.style;
         return part;
       }
@@ -1498,7 +1505,7 @@ var Editor = (function(){
               select.snapshotMove(old.firstChild, part && (part.firstChild || part), 0);
             }
           }
-
+          
           return part;
         }
       };

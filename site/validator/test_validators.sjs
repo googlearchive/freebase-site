@@ -316,4 +316,71 @@ test("validators.Float", int_test, function() {
 });
 
 
+var key_test = {
+  valid: ["a", "bcd", "e_f", "g123", "h_4", "i_1_j"],
+  invalid: [1, null, NaN, "", "1", "-", "_", "2ab", "c-d", "e345-", "k_"]
+};
+
+test("validators.PropertyKey", key_test, function() {
+  key_test.valid.forEach(function(val) {
+    strictEqual(validators.PropertyKey(val), val);
+  });
+
+  key_test.invalid.forEach(function(val) {
+    try {
+      validators.PropertyKey(val);
+      ok(false, "not property key " + val);
+    }
+    catch(e if e instanceof validators.Invalid) {
+      ok(e, e.toString());
+    }
+    catch(e) {
+      ok(false, "unexpected exception " + e);
+    }
+  });
+});
+
+test("validators.TypeKey", key_test, function() {
+  key_test.valid.forEach(function(val) {
+    strictEqual(validators.TypeKey(val), val);
+  });
+
+  key_test.invalid.forEach(function(val) {
+    try {
+      validators.TypeKey(val);
+      ok(false, "not type key " + val);
+    }
+    catch(e if e instanceof validators.Invalid) {
+      ok(e, e.toString());
+    }
+    catch(e) {
+      ok(false, "unexpected exception " + e);
+    }
+  });
+});
+
+
+var domain_key_test = {
+  valid: ["abcde", "fghijklmno", "p_qrs", "t1234", "u_56789", "v_0_w", "x_1_2"],
+  invalid: [12345, null, "abcd", "efg1", "h-ijk", "2lmno", "pqrst_", "u-vwxy", "z345-", "abcd_"]
+};
+
+test("validators.DomainKey", domain_key_test, function() {
+  domain_key_test.valid.forEach(function(val) {
+    strictEqual(validators.DomainKey(val), val);
+  });
+
+  domain_key_test.invalid.forEach(function(val) {
+    try {
+      validators.DomainKey(val);
+      ok(false, "not domain key " + val);
+    }
+    catch(e if e instanceof validators.Invalid) {
+      ok(e, e.toString());
+    }
+    catch(e) {
+      ok(false, "unexpected exception " + e);
+    }
+  });
+});
 acre.test.report();

@@ -494,3 +494,51 @@ Validator.factory(scope, "Float", {
     }
   }
 });
+
+
+
+var schema_key_proto = {
+  defaults: {
+    minlen: 1
+  },
+  "string": function(key, options) {
+    var minlen = options.minlen;
+    if (!minlen) {
+      minlen = 1;
+    }
+    if (minlen === 1 && key.length === 1) {
+      if (/^[a-z]$/.test(key)) {
+        return key;
+      }
+    }
+    else {
+      var pattern = "^[a-z][a-z0-9_]";
+      if (minlen > 1) {
+        pattern += "{" + (minlen - 1) + ",}$";
+      }
+      else {
+        pattern += "+$";
+      }
+      var re = RegExp(pattern);
+      if (re.test(key)) {
+        if (! (key.match(/__+/) ||
+               key.match(/[^a-z0-9]+$/))) {
+          return key;
+        }
+      }
+    }
+    var msg;
+    if (minlen > 1) {
+      msg = "Key must be " + minlen + " or more alphanumeric characters";
+    }
+    else {
+      msg = "Key must be alphanumeric";
+    }
+    msg += ", lowercase, begin with a letter and not end with a non-alphanumeric character. Underscores are allowed but not consecutively.";
+    return this.invalid(this.key, key, (msg));
+  }
+};
+
+Validator.factory(scope, "DomainKey", h.extend({}, schema_key_proto, {defaults:{minlen:5}}));
+Validator.factory(scope, "TypeKey", h.extend({}, schema_key_proto));
+Validator.factory(scope, "PropertyKey", h.extend({}, schema_key_proto));

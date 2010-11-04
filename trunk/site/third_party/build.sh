@@ -19,6 +19,8 @@ cd `dirname $0`/..
 
 # Copy all the JS files from CodeMirror's GitHub repo to a flat acre app
 # and rename *.js --> *.js.js
+# Note: the CSS files are not copied,
+#       the site/codemirror*.css.css files are hand written
 TMPDIR=/tmp/codemirrorjs
 rm -rf $TMPDIR 2>/dev/null
 mkdir $TMPDIR

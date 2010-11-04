@@ -76,6 +76,22 @@
         });
       }
       return false;
+    },
+
+    init_modal_help: function(context) {
+      // Show/Hide help menu in domain creation dialog
+      $(".modal-help-toggle", context).click(function() {
+        var $link = $(this);
+        var $help_pane = $link.parents().find(".modal-help");
+        var $container = $link.parents().find(".modal-content");
+        if ($help_pane.is(":hidden")) {
+          $help_pane.height(($container.height() - 5)).slideDown();
+          $link.html("[ - ] Hide Help");
+        } else {
+          $help_pane.slideUp();
+          $link.html("[ + ] Show Help");
+        };
+      });
     }
   };
 
@@ -151,23 +167,6 @@
       onHide: function() {
         this.getTrigger().removeClass("active");
       }
-    });
-
-    // Show/Hide help menu in domain creation dialog
-    $(".modal-help-toggle").click(function() {
-
-      var $link = $(this);
-      var $help_pane = $(this).parents().find(".modal-help");
-      var $container = $(this).parents().find(".modal-content");
-
-      if ($help_pane.is(":hidden")) {
-        $help_pane.height(($container.height() - 5)).slideDown();
-        $link.html("[ - ] Hide Help");
-      } else {
-        $help_pane.slideUp();        
-        $link.html("[ + ] Show Help");
-      };
-
     });
 
     // language select

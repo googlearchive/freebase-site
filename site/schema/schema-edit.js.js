@@ -277,6 +277,8 @@
         });
 
       $("[placeholder]", form.form).placeholder();
+      fb.schema.init_modal_help(form.form);
+
       $(window).bind("fb.lang.select", function(e, lang) {
         se.toggle_lang(form.form, lang);
       });

@@ -91,6 +91,9 @@ function create_base(options) {
           value: o.name,
           lang: o.lang
         },
+        owners: {
+          id: group.id
+        },
         create: "unconditional"
       };
       return freebase.mqlwrite(q, {use_permission_of: group.id})

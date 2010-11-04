@@ -113,6 +113,11 @@
       </div>
       <div class="section">
         <h1 class="section-title">${_('Browse')}</h1>
+        <button id="create-new-domain" class="edit button button-primary" 
+                title="${_('Create a new domain')}"
+                onclick="return freebase.dispatch(event, freebase.schema.index.add_domain, null, this);">
+          ${_("Create New")}
+        </button>
         <table cellspacing="0" class="table table-sortable">
           <thead>
             <tr>
@@ -186,47 +191,3 @@
   <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
   <script src="${mf.js_src('index.mf.js')}"></script>
 </acre:block>
-
-
-<acre:block def="create_domain_form()">
-  <div class="modal">
-    <div class="modal-inner">
-      <h1 class="modal-title">
-        <a href="javascript:void(0);" class="modal-help-toggle">[ + ] Show Help</a>
-        ${_('Create a new domain')}
-      </h1>
-      <div class="modal-content">
-        <div class="modal-help">
-          <h2 class="modal-help-title">${_('What are domains?')}</h2>
-          <p>${_('Creating a domain is generally the first step in building a data model. A useful way to think of a Domain is as the bucket in which you create your Types, as they provide a common namespace in which you build your schema.')}</p> 
-          <p>
-            <a href="http://wiki.freebase.com/wiki/Domain">Read more &raquo;</a>
-          </p>
-        </div>
-        <div class="form-group clear">
-          <div class="form-row form-row-inline">
-            <label class="form-label" for="domain-name">${_('Name')}</label>
-            <input class="text-input" type="text" name="name" value="" autofocus/>
-            <span class="form-note">${_('You can change this at any time')}</span>
-          </div>
-          <div class="form-row form-row-inline">
-            <label class="form-label" for="domain-key">${_('Key')}</label>
-            <input class="text-input" type="text" name="key" value=""/>
-            <span class="form-note">
-              ${_('Five or more alphanumeric characters. No spaces. This cannot be changed')}
-            </span>
-          </div>
-        </div>
-        <div class="form-row">
-          <label class="form-label">${_('Description')}</label>
-          <textarea class="textarea" rows="3">${_('Provide a brief description to help Freebase users find your domain and help contribute.')}</textarea>
-        </div>
-      </div>
-    </div>
-    <div class="modal-buttons">
-      <button class="button button-submit button-primary" type="submit">Save</button>
-      <button class="button button-cancel">Cancel</button>
-    </div>
-  </div>
-</acre:block>
-${mf.require("template", "renderer").render_page(data, this.exports)}

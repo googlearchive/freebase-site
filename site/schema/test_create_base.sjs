@@ -108,6 +108,13 @@ test("create_base", function() {
     }).result;
     ok(has_permission, user.id + " has permission to " + base.id);
 
+    // check owners
+    var owners = acre.freebase.mqlread({
+      id: base.id,
+      "/type/domain/owners": [{member: [{id: user.id}]}]
+    }).result;
+    ok(owners, user.id + " is an owner of " + base.id);
+
     // check is /type/domain
     var is_domain = acre.freebase.mqlread({
       id: base.id,

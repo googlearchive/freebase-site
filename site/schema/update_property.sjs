@@ -49,7 +49,7 @@ function update_property(options) {
 
       // optional
       name: validators.String(options, "name", {if_empty:null}),
-      key: validators.String(options, "key", {if_empty:null}),
+      key: validators.PropertyKey(options, "key", {if_empty:null}),
       expected_type: validators.MqlId(options, "expected_type", {if_empty:null}),
       unit: validators.MqlId(options, "unit", {if_empty:null}),
       description: validators.String(options, "description", {if_empty:null}),

@@ -51,7 +51,7 @@ function update_type(options) {
 
       // optional
       name: validators.String(options, "name", {if_empty:null}),
-      key: validators.String(options, "key", {if_empty:null}),
+      key: validators.TypeKey(options, "key", {if_empty:null}),
       description: validators.String(options, "description", {if_empty:null}),
 
       enumeration: validators.StringBool(options, "enumeration", {if_empty:null}),

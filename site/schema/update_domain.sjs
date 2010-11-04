@@ -51,7 +51,7 @@ function update_domain(options) {
       // optional
       name: validators.String(options, "name", {if_empty:null}),
       namespace: validators.MqlId(options, "namespace", {if_empty:null}),  // assuming has permission on namespace
-      key: validators.String(options, "key", {if_empty:null}),
+      key: validators.DomainKey(options, "key", {if_empty:null}),
       description: validators.String(options, "description", {if_empty:null}),
       lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"}),
 

@@ -46,7 +46,7 @@ function create_property(options) {
     o = {
       type: validators.MqlId(options, "type", {required:true}),
       name: validators.String(options, "name", {required:true}),
-      key: validators.String(options, "key", {required:true}),
+      key: validators.PropertyKey(options, "key", {required:true}),
       expected_type: validators.MqlId(options, "expected_type", {required:true}),
       unit: validators.MqlId(options, "unit", {if_empty:""}),
       description: validators.String(options, "description", {if_empty:""}),

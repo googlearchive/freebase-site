@@ -61,7 +61,7 @@
     </th>
     <td class="even">$type.id</td>
     <td class="odd numeric">$type.properties</td>
-    <td class="even numeric"><a href="${acre.freebase.service_url}/view${type.id}">${i18n.format_number(type.instance_count)}</a></td>
+    <td class="even numeric"><a href="${h.freebase_url('/view' + type.id)}">${i18n.format_number(type.instance_count)}</a></td>
     <td class="odd description">
       <acre:script>
         var blurb = i18n.display_article(type, "blurb");

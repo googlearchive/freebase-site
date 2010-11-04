@@ -472,10 +472,10 @@
   </acre:script>
   <span class="literal-value literal-value-${o.type.split('/').pop()}" acre:trim="">
     <acre:block if="master_property === '/common/document/source_uri' && o.value.indexOf('http://wp/') === 0" trim="">
-      <a href="${h.freebase_url('/api/trans/blurb' + topic, [['maxlength', 1600]])}">${o.value}</a>
+      <a href="${h.freebase_service_url('/api/trans/blurb' + topic, [['maxlength', 1600]])}">${o.value}</a>
     </acre:block>
     <acre:block elif="master_property === '/type/content/blob_id'" trim="">
-      <a href="${h.freebase_url('/api/trans/raw' + topic)}">${o.value}</a>
+      <a href="${h.freebase_service_url('/api/trans/raw' + topic)}">${o.value}</a>
     </acre:block>    
     <acre:block elif="o.type === '/type/uri'" trim="">
       <a href="${o.value}" target="_new">${o.value}</a>

@@ -47,7 +47,7 @@ function create_type(options) {
     o = {
       domain: validators.MqlId(options, "domain", {required:true}),
       name: validators.String(options, "name", {required:true}),
-      key: validators.String(options, "key", {required:true}),
+      key: validators.TypeKey(options, "key", {required:true}),
       description: validators.String(options, "description", {if_empty:""}),
       mediator: validators.StringBool(options, "mediator", {if_empty:false}),
       enumeration: validators.StringBool(options, "enumeration", {if_empty:false}),

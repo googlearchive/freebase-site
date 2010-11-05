@@ -366,7 +366,7 @@ class App:
 
     local_app = self.get_local_app(inject_config = False)
 
-    for app_file in local_app['files']:
+    for app_file in local_app['files'].values():
       if app_file['extension'] in EXTENSIONS:
         return True
 
@@ -649,8 +649,7 @@ class Context():
     self.options = options
     self.action = ''
 
-    self.svn_temp_dirs = {}
-
+    self.reminders = []
     #each dictionary entry is a HTTPMetawebSession object to a freebase graph
     #self.freebase = {}
 
@@ -690,6 +689,9 @@ class Context():
 
   def no_email(self):
     self.options.noemail = True
+
+  def reminder(self, msg):
+      self.reminders.append(msg)
 
   def warn(self, msg):
     return self.log(msg, subaction='WARNING')
@@ -1446,7 +1448,7 @@ class ActionStatic():
           self.app.write_file('.last_resource_revision', str(last_resource_revision))
           self.app.svn_commit(msg='commit last resource revision file')
 
-    c.log('***** NOTE: You have to restart the freebaselibs.com static servers for your resources to be available *****', c.BLUE)
+    c.reminder('***** NOTE: You have to restart the freebaselibs.com static servers for your resources to be available *****')
     return True
 
 class ActionBranch():
@@ -1662,9 +1664,8 @@ class ActionTest:
       context.no_email()
 
   def __call__(self):
-      print self.context.app.last_resource_revision()
-
       c = self.context
+      c.reminder('Foo Bar')
       return True
 
 class ActionInfo:
@@ -1864,6 +1865,8 @@ def main():
                   context.log('Sending deployment e-mail.')
                   context.send_email()
 
+    for reminder in context.reminders:
+        context.log(reminder, 'reminder', color=context.RED)
 
 if __name__ == '__main__':
     main()

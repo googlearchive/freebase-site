@@ -112,12 +112,12 @@
       </div>
       </div>
       <div class="section">
-        <h1 class="section-title">${_('Browse')}</h1>
         <button id="create-new-domain" class="edit button button-primary" 
                 title="${_('Create a new domain')}"
                 onclick="return freebase.dispatch(event, freebase.schema.index.add_domain, null, this);">
           ${_("Create New")}
         </button>
+        <h1 class="section-title">${_('Browse')}</h1>
         <table cellspacing="0" class="table table-sortable">
           <thead>
             <tr>

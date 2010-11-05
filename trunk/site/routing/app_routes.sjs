@@ -232,6 +232,7 @@ rules.add([
 var host_redirects = {
   "freebase.com": "http://www.freebase.com",
   "sandbox-freebase.com": "http://www.sandbox-freebase.com",
+  "sandbox.freebase.com": "http://www.sandbox-freebase.com",
   "acre.freebase.com": "http://www.freebase.com/appeditor",
   "acre.sandbox-freebase.com": "http://www.sandbox-freebase.com/appeditor",
   "api.freebase.com": "http://wiki.freebase.com/wiki/Freebase_API",

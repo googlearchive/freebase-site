@@ -30,8 +30,7 @@
  */
 
 var mf = acre.require("MANIFEST").mf;
-var util = acre.require("util");
-var host = util.get_doc_host();
+var docs_base = acre.request.app_url + "/docs";
 
 // could not use h.url_for because it requires the app to in core/MANIFEST, not the local manifest
 // var h = mf.require("core", "helpers");
@@ -61,17 +60,17 @@ function get_list() {
         {
           "name"     : "MQL Read",
           "key"      : "mqlread",
-          "content": host + "/web_service/en/api_service_mqlread"
+          "content": docs_base + "/web_service/en/api_service_mqlread"
         },
         {
           "name"     : "MQL Write",
           "key"      : "mqlwrite",
-          "content"  : host + "/web_service/en/api_service_mqlwrite"
+          "content"  : docs_base + "/web_service/en/api_service_mqlwrite"
         },
         {
           "name"     : "MQL Extensions",
           "key"      : "mql_extensions",
-          "sections" : url_for("devdocs","mql_extensions_list")
+          "sections" : docs_base + "/mql_extensions_list"
         },
         {
           "name"     : "Topic API",
@@ -81,7 +80,7 @@ function get_list() {
         {
           "name"     : "All Web Service APIs",
           "key"      : "web_services",
-          "sections" : url_for("devdocs","web_services_list")
+          "sections" : docs_base + "/web_services_list"
         }
       ]
     },

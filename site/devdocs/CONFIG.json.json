@@ -1,8 +1,7 @@
 {
   "apps": {
     "core": "//core.site.freebase.dev",
-        
-    "devdocs":      "//release.devdocs.site.freebase.dev",
+    
     "datadocs":     "//release.datadocs.dfhuynh.user.dev",
     "acredocs":     "//release.acredocs.stefanomazzocchi.user.dev",
     "mql":          "//release.mql.jdouglas.user.dev",

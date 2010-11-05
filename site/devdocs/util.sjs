@@ -68,23 +68,6 @@ function get_content(url, query) {
     }
     return text;
 }
-
-
-// generate the host of this app for re-entrant urlfetches
-function get_doc_host() {
-  var host = "http://docs." + acre.host.name;
-  
-  var appid = acre.current_script.app.id;
-  var version;
-  if (acre.current_script.app.version) { version = acre.current_script.app.version; }
-  var dev_url = acre.make_dev_url(appid, version);
-  
-  if (dev_url +  '/' == acre.request.base_url) {
-    host = dev_url;
-  }
-  
-  return host;
-}
     
     
 function setup(path_info) {
@@ -126,6 +109,7 @@ function setup(path_info) {
         
 
         if (section_url) {
+          console.log(section_url);
           var feed = JSON.parse(acre_get(section_url).body);
           var sections = feed.contents;
           var sel_section = sel_section || (sections ? ("defaultSection" in feed ? sections[feed.defaultSection].key : sections[0].key) : null);

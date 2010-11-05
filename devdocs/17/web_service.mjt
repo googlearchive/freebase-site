@@ -46,7 +46,7 @@
     <table>
       <tr acre:if="o['accessible_via']">
         <th>Service path</th>
-        <td>http://api.freebase.com${o['accessible_via']}</td>
+        <td>https://api.freebase.com${o['accessible_via']}</td>
       </tr>
       <tr acre:if="o['permits_http_get'] !== null">
         <th>Permits HTTP GET</th>

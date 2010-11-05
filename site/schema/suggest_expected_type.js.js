@@ -41,10 +41,11 @@
  * - address
  * - namespace
  */
-;(function($) {
+;(function($, fb) {
 
   if (!$.suggest) {
     alert("$.suggest required");
+    return;
   }
 
   var base = {
@@ -538,4 +539,4 @@
         }
     });
 
-})(jQuery);
+})(jQuery, window.freebase);

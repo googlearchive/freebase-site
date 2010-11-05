@@ -48,6 +48,11 @@
       "suggest_expected_type.js",
       "suggest_property.js",
       "type-edit.js"
+    ],
+
+    "jquery.mqlkey.test.mf.js": [
+      "jquery.mqlkey.js",
+      "jquery.mqlkey.test.js"
     ]
   }
 }

@@ -55,7 +55,8 @@ var renderer = mf.require("template", "renderer");
 if (path_info==="/") {
   renderer.render_page(data,mf.require("index"));
 } else if (filename === "iframe") {
-	data.path_info = "/" + parts[2];
+    data.base_path = data.base_path + "/iframe";
+	data.path_info = path_info.replace("/iframe","");
 	renderer.render_page(data, mf.require("doc"), mf.require("iframe"));
 } else {
   renderer.render_page(data,mf.require("doc"));

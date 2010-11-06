@@ -121,7 +121,6 @@ JAVA = os.environ.get("JAVA_EXE", "java")
 COMPILER = os.path.join(os.path.abspath(os.path.dirname(os.path.join(os.getcwd(), __file__))), "compiler.jar")
 JAVA_OPTS = ["-jar", COMPILER, "--warning_level", "QUIET"]
 
-PUBLIC_SVN_URL_ROOT = 'https://freebase-site.googlecode.com/svn'
 PRIVATE_SVN_URL_ROOT = 'https://svn.metaweb.com/svn/freebase_site'
 
 ROOT_NAMESPACE = '/freebase/site'
@@ -603,13 +602,13 @@ class App:
     return '{svn_url_root}/deployed/{app}/{deployed_hash}'.format(svn_url_root=PRIVATE_SVN_URL_ROOT, app=self.app_key, deployed_hash=deployed_hash)
 
   def svn_url(self, allversions=False):
-
+    
     if allversions:
-      return '{svn_url_root}/branches/site/{app}'.format(svn_url_root=PUBLIC_SVN_URL_ROOT, app=self.app_key)
+      return '{svn_url_root}/branches/site/{app}'.format(svn_url_root=self.c.SITE_SVN_URL, app=self.app_key)
     elif not self.version:
-      return '{svn_url_root}/trunk/site/{app}'.format(svn_url_root=PUBLIC_SVN_URL_ROOT, app=self.app_key)
+      return '{svn_url_root}/trunk/site/{app}'.format(svn_url_root=self.c.SITE_SVN_URL, app=self.app_key)
     else:
-      return '{svn_url_root}/branches/site/{app}/{version}'.format(svn_url_root=PUBLIC_SVN_URL_ROOT, app=self.app_key, version=self.version)
+      return '{svn_url_root}/branches/site/{app}/{version}'.format(svn_url_root=self.c.SITE_SVN_URL, app=self.app_key, version=self.version)
 
   def svn_path(self):
 
@@ -636,7 +635,7 @@ class App:
       if self.version:
           return 'http://{version}.{app}.site.freebase.dev.{freebaseapps}'.format(version=self.version, app=self.app_key, freebaseapps=services['freebaseapps'])
       else:
-          return 'http://{app}.site.freebase.dev.{freebaseapps}'.format(app=self.app_key, freebaseapps=services['freebaseapps'])          
+          return 'http://{app}.site.freebase.dev.{freebaseapps}'.format(app=self.app_key, freebaseapps=services['freebaseapps'])
 
 class Context():
   BLUE = '\033[94m'
@@ -644,6 +643,8 @@ class Context():
   RED = '\033[91m'
   ENDC = '\033[0m'
 
+  ACRE_SVN_URL = 'https://acre.googlecode.com/svn'
+  SITE_SVN_URL = 'https://freebase-site.googlecode.com/svn'
 
   def __init__(self, options):
     self.options = options
@@ -653,7 +654,7 @@ class Context():
     #each dictionary entry is a HTTPMetawebSession object to a freebase graph
     #self.freebase = {}
 
-    if options.graph:
+    if getattr(options, 'graph', False):
       self.services = SERVICES[options.graph]
       self.freebase = self.get_freebase_services(SERVICES.get(options.graph, {}))
       self.freebase_logged_in = False
@@ -664,7 +665,7 @@ class Context():
     self.googlecode_username = None
     self.googlecode_password = None
 
-    if self.options.app:
+    if getattr(self.options, 'app', False):
       self.current_app = self.app = AppFactory(self)(self.options.app, self.options.version)
 
     self.quiet = False

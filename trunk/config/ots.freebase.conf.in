@@ -3,6 +3,15 @@
         "host": ".@ACRE_METAWEB_BASE_ADDR@",
         "rules": [
             {
+                "from":{
+                    "path":"/api"
+                },
+                "to":{
+                    "route_as":"servlet",
+                    "servlet":"ProxyPassServlet"
+                }
+            },
+            {
                 "from": {
                     "path": "/" 
                 },
@@ -10,7 +19,7 @@
                     "route_as": "app",
                     "location": "/freebase/site/routing/release" 
                 } 
-            } 
+            }
         ]
     }
 ]

@@ -47,6 +47,7 @@ var app_labels = {
   "apps"              : "//apps.site.freebase.dev",
   "cubed"             : "//cubed.dfhuynh.user.dev",
   "cuecard"           : "//cuecard.site.freebase.dev",
+  "codemirror"        : "//codemirror.site.freebase.dev",
   "devdocs"           : "//devdocs.site.freebase.dev",
   "domain"            : "//domain.site.freebase.dev",
   "error"             : "//error.site.freebase.dev",
@@ -103,7 +104,8 @@ rules.add([
   {prefix:"/toolbox",            app:"toolbox"},
   {prefix:"/cuecard",            app:"cuecard" },
   {prefix:"/appeditor/services", app:"appeditor-services" },
-  {prefix:"/template",           app:"template"}
+  {prefix:"/template",           app:"template"},
+  {prefix:"/codemirror",         app:"codemirror"}
 ]);
 
 // Urls for administrative tools

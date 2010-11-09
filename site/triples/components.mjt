@@ -264,6 +264,7 @@
         </table>
       </acre:block>
     </acre:block>
+    <!--
     <div class="other-graph-value">
       <a href="javascript:void(0);" class="filter-form-trigger">
         choose&hellip;
@@ -272,5 +273,6 @@
         ${filter_form(o, 'domain', null, 'Start typing for suggestions', true)}
       </div>
     </div>
+    -->
   </div>
 </acre:block>

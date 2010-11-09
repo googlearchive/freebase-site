@@ -1,0 +1,86 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var mf = acre.require("MANIFEST").mf;
+  var h = mf.require("core", "helpers");
+  var i18n = mf.require("i18n", "i18n");
+  var i18n_editcomponents = mf.require("i18n", "editcomponents");
+  var _ = i18n.gettext;
+</acre:script>
+
+<acre:block def="add_domain_form()">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <a href="javascript:void(0);" class="modal-help-toggle">[ + ] Show Help</a>
+        ${_('Create a new domain')}
+      </h1>
+      <div class="modal-content">
+        <div class="modal-help">
+          <h2 class="modal-help-title">${_('What are domains?')}</h2>
+          <p>${_('Creating a domain is generally the first step in building a data model. A useful way to think of a Domain is as the bucket in which you create your Types, as they provide a common namespace in which you build your schema.')}</p> 
+          <p>
+            <a href="http://wiki.freebase.com/wiki/Domain">${_("Read more")} &raquo;</a>
+          </p>
+        </div>
+        <div class="form-group clear">
+          <div class="form-row form-row-inline">
+            <label class="form-label" for="domain-name">${_('Name')}</label>
+            <input class="text-input" type="text" name="name" value=""/>
+            <span class="form-note">${_('You can change this at any time')}</span>
+          </div>
+          <div class="form-row form-row-inline">
+            <label class="form-label" for="domain-key">
+              ${_('Key')}
+              <span class="key">/base/</span>
+            </label>
+            <input class="text-input" type="text" name="key" value=""/>
+            <span class="form-note">
+              ${_('Five or more alphanumeric characters. No spaces. This cannot be changed.')}
+            </span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">${_('Description')}</label>
+          <textarea class="textarea" name="description" 
+                    rows="3" 
+                    placeholder="${_('Provide a brief description to help Freebase users find your domain and help contribute.')}"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <button class="button button-submit button-primary" type="submit">Save</button>
+      <button class="button button-cancel">Cancel</button>
+      ${i18n_editcomponents.lang_select()}
+    </div>
+  </div>
+</acre:block>

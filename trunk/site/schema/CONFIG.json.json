@@ -15,14 +15,18 @@
       ["jquerytools", "tooltip.js"],
       "schema.js"
     ],
+    "schema-edit.mf.js": [
+      ["jquerytools", "toolbox.expose.js"],
+      ["jquerytools", "overlay.js"],
+      "jquery.mqlkey.js",
+      "schema-edit.js"
+    ],
     "index.mf.js": [
       "schema.mf.js",
       "index.js"
     ],
     "index-edit.mf.js": [
-      ["jquerytools", "toolbox.expose.js"],
-      ["jquerytools", "overlay.js"],
-      "schema-edit.js",
+      "schema-edit.mf.js",
       "index-edit.js"
     ],
     "domain.mf.js": [
@@ -30,9 +34,7 @@
       "domain.js"
     ],
     "domain-edit.mf.js": [
-      ["jquerytools", "toolbox.expose.js"],
-      ["jquerytools", "overlay.js"],
-      "schema-edit.js",
+      "schema-edit.mf.js",
       "domain-edit.js"
     ],
     "type.mf.js": [
@@ -40,11 +42,9 @@
       "type.js"
     ],
     "type-edit.mf.js": [
-      ["jquerytools", "toolbox.expose.js"],
-      ["jquerytools", "overlay.js"],
+      "schema-edit.mf.js",
       ["jqueryui", "jquery.ui.core.mf.js"],
       ["jqueryui", "jquery.ui.sortable.js"],
-      "schema-edit.js",
       "suggest_expected_type.js",
       "suggest_property.js",
       "type-edit.js"

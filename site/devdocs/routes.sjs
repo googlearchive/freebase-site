@@ -37,9 +37,9 @@ var parts = path_info.split('/');
 var filename = parts[1];
 
 var md = acre.get_metadata();
-if (filename !== "iframe" && filename in md.files) {
+if (filename !== "index" && filename !== "iframe" && filename in md.files) {
   var relative_url = path_info.replace(/^\//,''); //XXX: support query str?
-  acre.route(relative_url); 
+  acre.route(relative_url);
 }
 
 var mf = acre.require("MANIFEST").mf;
@@ -52,7 +52,7 @@ var data = {
 
 var renderer = mf.require("template", "renderer");
 
-if (path_info==="/") {
+if (!filename || filename === "index") {
   renderer.render_page(data,mf.require("index"));
 } else if (filename === "iframe") {
     data.base_path = data.base_path + "/iframe";

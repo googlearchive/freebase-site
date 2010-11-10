@@ -67,7 +67,27 @@
     init_add_domain_form: function(form) {
       var name = $("input[name=name]", form.form);
       var key = $("input[name=key]", form.form);
-      se.auto_key(name, key);
+
+      key.mqlkey({
+        minlen: 5,
+        source: name,
+        namespace: "/base",
+        mqlread_url: fb.acre.freebase.service_url + "/api/service/mqlread"
+      })
+      .bind("valid", function(e, val) {
+        $(this).next(".key-status")
+          .removeClass("key-invalid")
+          .addClass("key-valid")
+          .text("valid")
+          .removeAttr("title");
+      })
+      .bind("invalid", function(e, msg) {
+        $(this).next(".key-status")
+          .removeClass("key-valid")
+          .addClass("key-invalid")
+          .text("invalid")
+          .attr("title", msg);
+      });
 
       // enter key
       $(":input:not(textarea)", form.form)
@@ -85,13 +105,9 @@
       if (name === "" || keyval === "") {
         form.form.trigger(form.event_prefix + "error", "Name and Key are required");
       }
-      else if (key.data("original") !== keyval) {
-        try {
-          se.check_key_domain(keyval);
-        }
-        catch (e) {
-          form.form.trigger(form.event_prefix + "error", e);
-        }
+      var key_status = key.next(".key-status");
+      if (key_status.is(".key-invalid")) {
+        form.form.trigger(form.event_prefix + "error", key_status.attr("title"));
       }
     },
 

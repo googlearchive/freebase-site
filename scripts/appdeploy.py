@@ -932,6 +932,25 @@ class Context():
 
     return True
 
+
+  def symlink(self, source, destination):
+
+    if os.path.islink(destination):
+      return True
+
+    if os.path.exists(destination):
+      return self.error('The destination symlink %s you are trying to create already exists' % destination)
+
+    try:
+      os.symlink(source, destination)
+    except:
+      return self.error('Error creating symlink %s ---> %s' % (destination, source))
+
+    self.log('%s  --->  %s' % (destination, source), subaction='symlink')
+
+    return True
+
+
 class ActionPush():
 
   FILE_TYPES = {

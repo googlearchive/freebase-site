@@ -28,16 +28,18 @@ from appdeploy import Context
 
 class SVNLocation:
 
-  def __init__(self, context, svn_url, local_dir):
+  def __init__(self, context, svn_url=None, local_dir=None):
     self.context = context
 
     self.svn_url = svn_url
     self.local_dir = local_dir
 
-  def checkout(self):
+  def checkout(self, empty=False):
     c = self.context
 
     cmd = ['svn', 'checkout', self.svn_url, self.local_dir, '--username', c.googlecode_username, '--password', c.googlecode_password]
+    if empty:
+      cmd.extend(['--depth', 'empty'])
     (r, result) = c.run_cmd(cmd)
 
     if not r:
@@ -56,7 +58,7 @@ class SVNLocation:
     if not r:
       return c.error(result)
 
-    return True
+    return (r, result)
 
 
 #checkout and install acre
@@ -133,12 +135,12 @@ class ActionSetupAcre:
       c.error('Failed to build acre. Error:')
       return c.error(result)
 
-    c.log('*' * 100)
+    c.log('*' * 65)
     c.log('')
     c.log('To run acre, type: cd %s; ./acre run -c sandbox' % c.options.acre_dir)
     c.log('And then on your browser: http://%s:%s/acre/status' % (c.options.acre_host, c.options.acre_port))
     c.log('')
-    c.log('*' * 100)
+    c.log('*' * 65)
 
     return True
 
@@ -165,11 +167,26 @@ class ActionSetupSite:
     except:
       return c.error('The directory %s already exists, or unable to create directory.' % c.options.site_dir)
 
+    c.log('Starting site checkout')
 
-    svn = SVNLocation(c, c.SITE_SVN_URL + '/trunk', c.options.site_dir)
+    if c.options.branches:
+      c.log('Note: this will take a while, go make a coffee....')
+      svn = SVNLocation(c, c.SITE_SVN_URL, c.options.site_dir)
+    else:
+      try:
+        os.mkdir(c.options.site_dir + '/trunk')
+      except:
+        return c.error('Unable to create directory.' % c.options.site_dir)
+
+      c.log('Note: This should take a minute...')
+      #first checkout the top level directory without any files/directories in it
+      svn = SVNLocation(c, c.SITE_SVN_URL, c.options.site_dir)
+      svn.checkout(empty=True)
+      #and now checkout the trunk directory under the top level dir
+      svn = SVNLocation(c, c.SITE_SVN_URL + '/trunk', c.options.site_dir + '/trunk')
 
     # CHECKOUT #
-    c.log('Starting site checkout')
+
     r = svn.checkout()
 
     if not r:
@@ -183,8 +200,6 @@ class ActionSetupSite:
 
     return True
 
-
-
 #sync the local repository and create symlinks between acre <-> site
 class ActionSync:
 
@@ -192,8 +207,111 @@ class ActionSync:
     self.context = context
 
   def __call__(self):
+
+    c = self.context
+
+    success = c.googlecode_login()
+    if not success:
+      return c.error('You must provide valid google code credentials to complete this operation.')
+
+
+    if not (c.options.site_dir and c.options.acre_dir):
+      return c.error('You must specify both the directory where you have set-up acre and freebase site for sync to work')
+
+
+    ACRE_DIR = c.options.acre_dir + '/webapp'
+    SITE_TRUNK_DIR = c.options.site_dir + '/trunk/site'
+    SITE_BRANCH_DIR = c.options.site_dir + '/branches/site'
+
+    #svn update site
+
+    svn = SVNLocation(c, local_dir=c.options.site_dir)
+
+    #(r, result) = svn.update()
+
+    #if not r:
+    #  c.error('Something went wrong with the update')
+    #  return c.error(result)
+
+    #do freebase.ots symlink
+
+    source_link = c.options.site_dir + '/trunk/config/ots.freebase.conf.in'
+    target_link = ACRE_DIR + '/META-INF/ots.freebase.conf.in'
+    c.log('Setting up freebase OTS rules.')
+
+    r = c.symlink(source_link, target_link)
+    if not r:
+      return c.error('Failed to create the freebase site OTS symlink.')
+
+    c.log('Starting acre build.')
+    os.chdir(c.options.acre_dir)
+
+    cmd = ['./acre', 'build']
+    (r, result) = c.run_cmd(cmd)
+
+    if not r:
+      c.error('Failed to build acre. Error:')
+      return c.error(result)
+
+    #do site symlink
+
+    #first link ACRE/freebase/site --> site/trunk/site
+
+    c.log('Linking acre and site')
+    acre_freebase_dir = ACRE_DIR + '/WEB-INF/scripts/freebase'
+
+    if not os.path.isdir(acre_freebase_dir):
+      try:
+        os.mkdir(acre_freebase_dir)
+      except:
+        return c.error('Unable to create directory %s.' % acre_freebase_dir)
+
+    source_link = SITE_TRUNK_DIR
+    target_link = acre_freebase_dir + '/site'
+
+    r = c.symlink(source_link, target_link)
+
+    if not r:
+      return c.error('There was an error linking the acre and site dirs')
+
+    #make the released version of the routing app to be itself
+
+    source_link = SITE_TRUNK_DIR + '/routing'
+    target_link = SITE_TRUNK_DIR + '/routing/release'
+
+    r = c.symlink(source_link, target_link)
+
+    if not r:
+      return c.error('There was an error linking the released version of the routing app to its trunk version')
+
+
+    #link the individual branches of each app to the trunk directory of that app
+    #this will result in this structure in the disk in the end:
+    #<ACRE_DIR>/webapp/WEB-INF/scripts/freebase/site --> <SITE_DIR>/trunk/site
+    #   <SITE_DIR>/trunk/site/<app>/<version> ---> <SITE_DIR>/branches/site/<app>/<version>
+
+    #inject appengine_sdk_dir into acre start file
+
+    if not os.path.isdir(SITE_BRANCH_DIR):
+      c.log('Cannot sync site branches because they are not checked out. Syncing of acre and site trunk has completed successfully', color=c.BLUE)
+      return True
+
+    for app_key in os.listdir(SITE_BRANCH_DIR):
+
+      if not (os.path.isdir(SITE_BRANCH_DIR + '/' + app_key) and os.path.isdir(SITE_TRUNK_DIR + '/' + app_key)):
+        continue
+
+      for version in os.listdir(SITE_BRANCH_DIR + '/' + app_key):
+        try:
+          int(version)
+        except:
+          continue
+
+        c.symlink(c.options.site_dir + '/branches/site/' + app_key + '/' + version, c.options.site_dir + '/trunk/site/' + app_key + '/' + version)
+
+
     return True
-    pass
+
 
 
 class ActionSetup:
@@ -202,11 +320,25 @@ class ActionSetup:
     self.context = context
 
   def __call__(self):
+
+    c = self.context
+
+    r = ActionSetupAcre(c)()
+
+    if not r:
+      return c.error('Acre setup failed.')
+
+    r = ActionSetupSite(c)()
+
+    if not r:
+      return c.error('Site setup failed.')
+
+    r = ActionSync(c)()
+
+    if not r:
+      return c.error('Sync failed.')
+
     return True
-    pass
-
-
-
 
 #set-up wildcard dns for Mac OS X only
 class ActionSetupDNS:
@@ -241,7 +373,6 @@ class ActionSetupDNS:
     fh.close()
 
     def create_zone(domain):
-        #pdb.set_trace()
         new_lines = []
         for line in zone:
             new_lines.append(line.replace('localhost', domain))
@@ -353,6 +484,8 @@ def main():
                     help='google code password')
   parser.add_option('-b', '--verbose', dest='verbose', action='store_true',
                     default=False, help='verbose mode will print out more debugging output')
+  parser.add_option('', '--branches', dest='branches', action='store_true',
+                    default=False, help='checkout branches when setting up a site')
   parser.add_option('', '--acre_dir', dest='acre_dir',
                     default=None, help='the local acre directory')
   parser.add_option('', '--acre_host', dest='acre_host',

@@ -200,8 +200,9 @@ class ActionSetupSite:
 
     return True
 
-#sync the local repository and create symlinks between acre <-> site
-class ActionSync:
+
+#sync the local repository and create symlinks between acre <-> site for branches
+class ActionLink:
 
   def __init__(self, context):
     self.context = context
@@ -222,16 +223,6 @@ class ActionSync:
     ACRE_DIR = c.options.acre_dir + '/webapp'
     SITE_TRUNK_DIR = c.options.site_dir + '/trunk/site'
     SITE_BRANCH_DIR = c.options.site_dir + '/branches/site'
-
-    #svn update site
-
-    svn = SVNLocation(c, local_dir=c.options.site_dir)
-
-    #(r, result) = svn.update()
-
-    #if not r:
-    #  c.error('Something went wrong with the update')
-    #  return c.error(result)
 
     #do freebase.ots symlink
 
@@ -285,16 +276,57 @@ class ActionSync:
       return c.error('There was an error linking the released version of the routing app to its trunk version')
 
 
+    return True
+
+
+#sync the local repository and create symlinks between acre <-> site
+class ActionSync:
+
+  def __init__(self, context):
+    self.context = context
+
+  def __call__(self):
+
+    c = self.context
+
+    success = c.googlecode_login()
+    if not success:
+      return c.error('You must provide valid google code credentials to complete this operation.')
+
+
+    if not (c.options.site_dir and c.options.acre_dir):
+      return c.error('You must specify both the directory where you have set-up acre and freebase site for sync to work')
+
+    ACRE_DIR = c.options.acre_dir + '/webapp'
+    SITE_TRUNK_DIR = c.options.site_dir + '/trunk/site'
+    SITE_BRANCH_DIR = c.options.site_dir + '/branches/site'
+
+    if not os.path.islink(ACRE_DIR + '/WEB-INF/scripts/freebase/site'):
+      return c.error('You must first link this acre and site installations using sitedeploy.py link')
+
+    if not os.path.isdir(SITE_BRANCH_DIR):
+      c.log('Cannot sync site branches because they are not checked out.', color=c.BLUE)
+      c.log('To checkout site branches, run this:', color=c.BLUE)
+      c.log('svn checkout %s/branches %s/branches' % (c.SITE_SVN_URL, c.options.site_dir), color=c.BLUE)
+      return True
+
+    #svn update site
+
+    svn = SVNLocation(c, local_dir=c.options.site_dir)
+
+    (r, result) = svn.update()
+
+    if not r:
+      c.error('Something went wrong with the update')
+      return c.error(result)
+
+
     #link the individual branches of each app to the trunk directory of that app
     #this will result in this structure in the disk in the end:
     #<ACRE_DIR>/webapp/WEB-INF/scripts/freebase/site --> <SITE_DIR>/trunk/site
     #   <SITE_DIR>/trunk/site/<app>/<version> ---> <SITE_DIR>/branches/site/<app>/<version>
 
     #inject appengine_sdk_dir into acre start file
-
-    if not os.path.isdir(SITE_BRANCH_DIR):
-      c.log('Cannot sync site branches because they are not checked out. Syncing of acre and site trunk has completed successfully', color=c.BLUE)
-      return True
 
     for app_key in os.listdir(SITE_BRANCH_DIR):
 
@@ -333,10 +365,18 @@ class ActionSetup:
     if not r:
       return c.error('Site setup failed.')
 
-    r = ActionSync(c)()
+    r = ActionLink(c)()
 
     if not r:
-      return c.error('Sync failed.')
+      return c.error('Link failed.')
+
+    c.log('Setup has finished successfully.')
+    c.log('If you wish to link your local acre installation with all the app branches on your filesystem, run this:', color=c.BLUE)
+
+    if not c.options.branches:
+      c.log('svn checkout %s/branches %s/branches' % (c.SITE_SVN_URL, c.options.site_dir), color=c.BLUE)
+
+    c.log('sitedeploy.py sync --acre_dir %s --site_dir %s' % (c.options.acre_dir, c.options.site_dir), color=c.BLUE)
 
     return True
 
@@ -465,7 +505,8 @@ def main():
   valid_actions = [
       ('setup_acre', 'create a local acre instance', ActionSetupAcre),
       ('setup_site', 'create a local site svn checkout', ActionSetupSite),
-      ('sync', 'sync a local acre instance with a local site checkout and update the local site', ActionSync),
+      ('sync', 'sync acre and site app branches so that acre will read all branches from the filesystem', ActionSync),
+      ('link', 'setup and link acre and site so that acre will read site trunk apps from the filesystem', ActionLink),
       ('setup', 'setup acre, site and sync', ActionSetup),
       ('setup_dns', 'setup wildcard dns for your host - Mac OS X only', ActionSetupDNS),
       ('test', 'test', ActionTest)

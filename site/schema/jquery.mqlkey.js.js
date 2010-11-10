@@ -30,6 +30,27 @@
  */
 ;(function($) {
 
+  /**
+   * Validate key input on text change. If options.check_key is TRUE (default),
+   * the key value will be checked against options.namespace ("/" default) of whether
+   * or not the key already exists using the mqlread service specified by
+   * options.mqlread_url (http://www.freebase.com/api/service/mqlread default).
+   */
+  $.fn.mqlkey = function (options) {
+    return this.each(function() {
+      var $this = $(this);
+      if (!$this.is(":text")) {
+        return;
+      }
+      var inst = $this.data("mqlkey");
+      if (inst) {
+        inst._destroy();
+      }
+      inst = new mqlkey(this, options);
+      $this.data("mqlkey", inst);
+    });
+  };
+
   // property and type names have more restrictive rules that match the rules for javascript identifiers.
   var __high_ident_str = "[a-z](?:_?[a-z0-9])*";
 
@@ -51,22 +72,11 @@
       var self = this;
       this.input
         .bind("keyup.mqlkey", function(e) {
-          self.keyup(e);
+          self.textchange(e);
         })
-        .bind("textchange.mqlkey",
-              function() {
-                clearTimeout(self.textchange_timeout);
-                self.textchange_timeout = setTimeout(function() {
-                  self.textchange();
-                }, 0);
-              })
-        .bind($.browser.msie ? "paste.mqlkey" : "input.mqlkey",
-              function(e) {
-                clearTimeout(self.paste_timeout);
-                self.paste_timeout = setTimeout(function() {
-                  self.textchange();
-                }, 0);
-              });
+        .bind($.browser.msie ? "paste.mqlkey" : "input.mqlkey", function(e) {
+          self.textchange(e);
+        });
 
       if (this.options.source) {
         this.source = $(this.options.source);
@@ -77,7 +87,7 @@
         this.source.bind("change.mqlkey", function() {
           if (self.source_generate) {
             var key = mqlkey.from(self.source.val());
-            self.input.val(key).trigger("textchange");
+            self.input.val(key).trigger("keyup");
           }
         });
       }
@@ -88,15 +98,15 @@
         this.source.unbind("change.mqlkey");
       }
     },
-    keyup: function(e) {
-      clearTimeout(this.keyup.timeout);
+    textchange: function(e) {
+      clearTimeout(this.textchange_timeout);
       var self = this;
-      this.keyup.timeout = setTimeout(function() {
-        self.textchange();
+      this.textchange_timeout = setTimeout(function() {
+        self.textchange_delay(e);
       }, 0);
-      return true;
     },
-    textchange: function() {
+    textchange_delay: function(e) {
+      this.input.trigger("textchange");
       var val = $.trim(this.input.val());
       if (val === this.original && val !== "") {
         return this.valid(val);
@@ -170,24 +180,6 @@
 
       this.input.trigger("invalid", msg);
     }
-
-  };
-
-  /**
-   */
-  $.fn.mqlkey = function (options) {
-    return this.each(function() {
-      var $this = $(this);
-      if (!$this.is(":text")) {
-        return;
-      }
-      var inst = $this.data("mqlkey");
-      if (inst) {
-        inst._destroy();
-      }
-      inst = new mqlkey(this, options);
-      $this.data("mqlkey", inst);
-    });
   };
 
   $.extend(mqlkey, {

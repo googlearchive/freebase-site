@@ -68,25 +68,11 @@
       var name = $("input[name=name]", form.form);
       var key = $("input[name=key]", form.form);
 
-      key.mqlkey({
+      se.init_mqlkey(key, {
         minlen: 5,
         source: name,
         namespace: "/base",
         mqlread_url: fb.acre.freebase.service_url + "/api/service/mqlread"
-      })
-      .bind("valid", function(e, val) {
-        $(this).next(".key-status")
-          .removeClass("key-invalid")
-          .addClass("key-valid")
-          .text("valid")
-          .removeAttr("title");
-      })
-      .bind("invalid", function(e, msg) {
-        $(this).next(".key-status")
-          .removeClass("key-valid")
-          .addClass("key-invalid")
-          .text("invalid")
-          .attr("title", msg);
       });
 
       // enter key
@@ -98,21 +84,22 @@
         });
     },
 
-    validate_add_domain_form: function(form) {
+    validate_add_domain_form: function(form) {console.log("validate_add_domain_form");
       var name = $.trim($("input[name=name]:visible", form.form).val());
-      var key =  $("input[name=key]", form.form);
-      var keyval = key.val();
-      if (name === "" || keyval === "") {
-        form.form.trigger(form.event_prefix + "error", "Name and Key are required");
+      if (name === "") {
+        form.form.trigger(form.event_prefix + "error", "Name is required");
       }
-      var key_status = key.next(".key-status");
-      if (key_status.is(".key-invalid")) {
-        form.form.trigger(form.event_prefix + "error", key_status.attr("title"));
-      }
+      var key = $("input[name=key]", form.form);
+      se.validate_mqlkey(form, key);
     },
 
-    submit_add_domain_form: function(form) {
+    submit_add_domain_form: function(form) {console.log("submit_add_domain_form");
       var key = $("input[name=key]", form.form);
+      if (!se.validate_mqlkey(form, key)) {
+        form.form.removeClass("loading");
+        return;
+      }
+
       var data = {
         name: $.trim($("input[name=name]:visible", form.form).val()),
         key: key.val(),

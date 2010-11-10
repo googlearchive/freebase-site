@@ -374,6 +374,61 @@
       });
     },
 
+    init_mqlkey: function(input, mqlkey_options) {
+      input
+        .mqlkey(mqlkey_options)
+        .bind("valid", function(e, val) {
+          $(this).next(".key-status")
+            .removeClass("key-status-invalid")
+            .removeClass("key-status-loading")
+            .addClass("key-status-valid")
+            .text("valid")
+            .attr("title", "Key is available");
+        })
+        .bind("invalid", function(e, msg) {
+          $(this).next(".key-status")
+            .removeClass("key-status-valid")
+            .removeClass("key-status-loading")
+            .addClass("key-status-invalid")
+            .text("invalid")
+            .attr("title", msg);
+        })
+        .bind("textchange", function(e) {
+          $(this).next(".key-status")
+            .removeClass("key-status-invalid")
+            .removeClass("key-status-valid")
+            .addClass("key-status-loading")
+            .removeAttr("title");
+        });
+    },
+
+    validate_mqlkey: function(form, input) {
+      var form_elt = form.form || form.row;
+      var key_status = input.next(".key-status");
+      var keyval = input.val();
+      if (keyval === "") {
+        console.log("VALIDATE MQLKEY", "EMPTY");
+        form_elt.trigger(form.event_prefix + "error", "Key is required");
+        return false;
+      }
+      if (keyval === input.data("mqlkey").original) {
+        console.log("VALIDATE MQLKEY", "ORIGINAL");
+        return true;
+      }
+      if (key_status.is(".key-status-invalid")) {
+        console.log("VALIDATE MQLKEY", "INVALID");
+        form_elt.trigger(form.event_prefix + "error", key_status.attr("title"));
+        return false;
+      }
+      else if (key_status.is(".key-status-loading")) {
+        console.log("VALIDATE MQLKEY", "LOADING");
+        return false;
+      }
+      console.log("VALIDATE MQLKEY", "VALID");
+      return true;
+    },
+
+
     /**
      * If you change this, please change key generation methods in //schema.freebase.site.dev/helpers
      */

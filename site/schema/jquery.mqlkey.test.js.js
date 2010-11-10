@@ -79,7 +79,7 @@
         .bind("valid", function(e, val) {
           ok(true, "valid: " + val);
           if (current < tests.length) {
-            key.val(tests[current++]).trigger("textchange");
+            key.val(tests[current++]).trigger("keyup");
           }
           else {
             start();
@@ -90,7 +90,7 @@
           start();
         });
       stop(5000);
-      key.val(tests[current++]).trigger("textchange");
+      key.val(tests[current++]).trigger("keyup");
     });
 
     test("valid keys check_key=false", key_test.valid.length, function() {
@@ -101,7 +101,7 @@
         .bind("valid", function(e, val) {
           ok(true, "valid: " + val);
           if (current < tests.length) {
-            key.val(tests[current++]).trigger("textchange");
+            key.val(tests[current++]).trigger("keyup");
           }
           else {
             start();
@@ -112,7 +112,7 @@
           start();
         });
       stop(5000);
-      key.val(tests[current++]).trigger("textchange");
+      key.val(tests[current++]).trigger("keyup");
     });
 
     test("invalid keys check_key=true", key_test.invalid.length, function() {
@@ -127,14 +127,14 @@
         .bind("invalid", function(e, msg) {
           ok(true, "invalid: " + msg);
           if (current < tests.length) {
-            key.val(tests[current++]).trigger("textchange");
+            key.val(tests[current++]).trigger("keyup");
           }
           else {
             start();
           }
         });
       stop(5000);
-      key.val(tests[current++]).trigger("textchange");
+      key.val(tests[current++]).trigger("keyup");
     });
 
     test("invalid keys check_key=false", key_test.invalid.length, function() {
@@ -149,14 +149,14 @@
         .bind("invalid", function(e, msg) {
           ok(true, "invalid: " + msg);
           if (current < tests.length) {
-            key.val(tests[current++]).trigger("textchange");
+            key.val(tests[current++]).trigger("keyup");
           }
           else {
             start();
           }
         });
       stop(5000);
-      key.val(tests[current++]).trigger("textchange");
+      key.val(tests[current++]).trigger("keyup");
     });
 
     test("valid minlen", 1, function() {
@@ -167,7 +167,7 @@
           start();
         });
       stop(5000);
-      key.val("abcde").trigger("textchange");
+      key.val("abcde").trigger("keyup");
     });
 
     test("invalid minlen", 1, function() {
@@ -178,7 +178,7 @@
           start();
         });
       stop(5000);
-      key.val("abcd").trigger("textchange");
+      key.val("abcd").trigger("keyup");
     });
 
     test("valid check_key", 1, function() {

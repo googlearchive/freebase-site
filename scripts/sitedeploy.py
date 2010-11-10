@@ -504,10 +504,10 @@ def main():
 
   valid_actions = [
       ('setup_acre', 'create a local acre instance', ActionSetupAcre),
-      ('setup_site', 'create a local site svn checkout', ActionSetupSite),
-      ('sync', 'sync acre and site app branches so that acre will read all branches from the filesystem', ActionSync),
-      ('link', 'setup and link acre and site so that acre will read site trunk apps from the filesystem', ActionLink),
-      ('setup', 'setup acre, site and sync', ActionSetup),
+      ('setup_site', 'create a local site instance', ActionSetupSite),
+      ('sync', 'connect acre and site so that acre will read all branches from the filesystem', ActionSync),
+      ('link', 'connect acre and site so that acre will read site trunk apps from the filesystem', ActionLink),
+      ('setup', 'setup acre, site and link', ActionSetup),
       ('setup_dns', 'setup wildcard dns for your host - Mac OS X only', ActionSetupDNS),
       ('test', 'test', ActionTest)
       ]

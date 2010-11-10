@@ -67,9 +67,26 @@
                   self.textchange();
                 }, 0);
               });
+
+      if (this.options.source) {
+        this.source = $(this.options.source);
+        this.source_generate = true;
+        this.input.bind("change.mqlkey", function() {
+          self.source_generate = false;
+        });
+        this.source.bind("change.mqlkey", function() {
+          if (self.source_generate) {
+            var key = mqlkey.from(self.source.val());
+            self.input.val(key).trigger("textchange");
+          }
+        });
+      }
     },
-    destroy: function() {
+    _destroy: function() {
       this.input.unbind(".mqlkey");
+      if (this.source) {
+        this.source.unbind("change.mqlkey");
+      }
     },
     keyup: function(e) {
       clearTimeout(this.keyup.timeout);
@@ -161,16 +178,15 @@
   $.fn.mqlkey = function (options) {
     return this.each(function() {
       var $this = $(this);
-      // rm fb suggest placeholder
-      $this.unbind(".mqlkey");
       if (!$this.is(":text")) {
         return;
       }
-      var instance = $.data(this, "mqlkey");
-      if (instance) {
-        instance.destroy();
+      var inst = $this.data("mqlkey");
+      if (inst) {
+        inst._destroy();
       }
-      $.data(this, "mqlkey", (new mqlkey(this, options)));
+      inst = new mqlkey(this, options);
+      $this.data("mqlkey", inst);
     });
   };
 
@@ -179,7 +195,8 @@
       minlen: 1,
       check_key: true,  // If TRUE, check if key already exists in namespace. namespace and mqlread_url must be specified. Otherwise, just apply valid_mql_key regular expression
       namespace: "/",
-      mqlread_url: "http://www.freebase.com/api/service/mqlread"
+      mqlread_url: "http://www.freebase.com/api/service/mqlread",
+      source: null // jQuery selector to auto generate key from
     },
     use_jsonp: function(service_url) {
       /*
@@ -199,6 +216,14 @@
         return false;
       }
       return true;
+    },
+    from: function(val) {
+      var key = val.toLowerCase();
+      key = key.replace(/[^a-z0-9]/g, '_');    // remove all non-alphanumeric
+      key = key.replace(/\_\_+/g, '_');        // replace __+ with _
+      key = key.replace(/[^a-z0-9]+$/, '');    // strip ending non-alphanumeric
+      key = key.replace(/^[^a-z]+/, '');       // strip beginning non-alpha
+      return key;
     }
   });
 

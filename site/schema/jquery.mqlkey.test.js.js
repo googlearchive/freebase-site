@@ -30,25 +30,13 @@
  */
 ;(function($) {
 
-  function test_timeout() {
-    return setTimeout(function() {
-        ok(false, "test_timeout");
-        start();
-    }, 5000);
-  };
-
   function run_tests() {
-    var key = $("#key");
+    var key;
+    var source;
 
     QUnit.testStart = function(name) {
-
-    };
-    QUnit.testDone = function(name, failures, total) {
-      var inst = key.data("mqlkey");
-      if (inst) {
-        inst.destroy();
-      }
-      key.unbind().val("");
+      key = $("#key");
+      source = $("#source");
     };
 
     test("init", function() {
@@ -101,7 +89,7 @@
           ok(false, "valid expected: " + msg);
           start();
         });
-      stop();
+      stop(5000);
       key.val(tests[current++]).trigger("textchange");
     });
 
@@ -123,7 +111,7 @@
           ok(false, "valid expected: " + msg);
           start();
         });
-      stop();
+      stop(5000);
       key.val(tests[current++]).trigger("textchange");
     });
 
@@ -145,7 +133,7 @@
             start();
           }
         });
-      stop();
+      stop(5000);
       key.val(tests[current++]).trigger("textchange");
     });
 
@@ -167,60 +155,73 @@
             start();
           }
         });
-      stop();
+      stop(5000);
       key.val(tests[current++]).trigger("textchange");
     });
 
     test("valid minlen", 1, function() {
       key.mqlkey({minlen:5, check_key: false});
-      var timeout = test_timeout();
       key
         .bind("valid", function(e, val) {
-          clearTimeout(timeout);
           ok(true, "valid: " + val);
           start();
         });
-      stop();
+      stop(5000);
       key.val("abcde").trigger("textchange");
     });
 
     test("invalid minlen", 1, function() {
       key.mqlkey({minlen:5, check_key: false});
-      var timeout = test_timeout();
       key
         .bind("invalid", function(e, msg) {
-          clearTimeout(timeout);
           ok(true, "invalid: " + msg);
           start();
         });
-      stop();
+      stop(5000);
       key.val("abcd").trigger("textchange");
     });
 
     test("valid check_key", 1, function() {
       key.mqlkey({check_key: true, namespace: "/"});
-      var timeout = test_timeout();
       key
         .bind("valid", function(e, val) {
-          clearTimeout(timeout);
           ok(true, "valid: " + val);
           start();
         });
-      stop();
+      stop(5000);
       key.val("foobar").trigger("keyup");
     });
 
     test("invalid check_key", 1, function() {
       key.mqlkey({check_key: true, namespace: "/"});
-      var timeout = test_timeout();
       key
         .bind("invalid", function(e, msg) {
-          clearTimeout(timeout);
           ok(true, "invalid: " + msg);
           start();
         });
-      stop();
+      stop(5000);
       key.val("film").trigger("keyup");
+    });
+
+    test("valid source", 2, function() {
+      key.mqlkey({check_key: true, namespace: "/", source:"#source"});
+      key.bind("valid", function(e, val) {
+        equal(val, "foo_bar", "valid");
+        equal(key.val(), "foo_bar", "valid");
+        start();
+      });
+      stop(5000);
+      source.val("1Foo-Bar-").trigger("change");
+    });
+
+    test("invalid source", 1, function() {
+      key.mqlkey({check_key: true, namespace: "/", source:source});
+      key.bind("invalid", function(e, msg) {
+        ok(true, "invalid:" + msg);
+        start();
+      });
+      stop(5000);
+      source.val("Film").trigger("change");
     });
 
   };

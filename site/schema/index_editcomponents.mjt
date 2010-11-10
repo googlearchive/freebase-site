@@ -64,6 +64,7 @@
               <span class="key">/base/</span>
             </label>
             <input class="text-input" type="text" name="key" value=""/>
+            <span class="key-status"></span>
             <span class="form-note">
               ${_('Five or more alphanumeric characters. No spaces. This cannot be changed.')}
             </span>

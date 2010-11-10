@@ -39,17 +39,11 @@
 
 <acre:block def="head()">
   <script src="${mf.js_src('jquery.mqlkey.test.mf.js')}"></script>
-  <style>
-#qunit-fixture {
-  left:0;
-top: 0;
-position: relative;
-}
-  </style>
 </acre:block>
 
 <acre:block def="fixture()">
   <input type="text" id="key"/>
+  <input type="text" id="source"/>
 </acre:block>
 
 ${mf.require("template", "renderer").render_page(null, this.exports, mf.require("test", "qunit"))}

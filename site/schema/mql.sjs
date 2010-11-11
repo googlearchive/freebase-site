@@ -53,7 +53,7 @@ function domain(options) {
     timestamp: null,
     key: [{value: null, namespace: null}],
     creator: {id:null, name: i18n.mql.query.name()},
-    owners: [{member: [{id:null, name: i18n.mql.query.name()}]}],
+    owners: [{optional:true, member: [{id:null, name: i18n.mql.query.name()}]}],
     "/common/topic/article": i18n.mql.query.article(),
     types: [{
       optional: true,

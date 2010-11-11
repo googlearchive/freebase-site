@@ -2,7 +2,8 @@
         "apps" : {
 
                "homepage" : { 
-                          "release" : "18"
+                          "release" : "18",
+                          "type" : "page"
                }
 
         }

@@ -423,11 +423,14 @@
           };
           var message;
           var kind = "regular";
+          var display_name = "Entity Type";
           if (type.enumeration) {
             kind = "enumeration";
+            display_name = "Enumerated Type";
           }
           else if (type.mediator) {
             kind = "mediator";
+            display_name = "Mediator";
           }
           attrs[kind].checked = "checked";
           if (type.used) {
@@ -435,47 +438,53 @@
             // can't switch between regular/enumeration and mediator
             if (kind === "regular" || kind === "enumeration") {
               attrs.mediator.disabled = "disabled";
-              message = _("This type can't be made Mediator because it already contains topics.");
+              message = _("This type can't be made a Mediator because it already contains topics.");
             }
             else {
               attrs.regular.disabled = attrs.enumeration.disabled = "disabled";
-              message = _("This type can't be made regular Type or Enumerated Type because it already contains topics.");
+              message = _("This type can't be made a regular Type or Enumerated Type because it already contains topics.");
             }
           }
           // don't disable currently checked
           delete attrs[kind]['disabled'];
         </acre:script>
 
-        <div class="form-row ${attrs.regular.disabled ? 'disabled' : ''}">
-          <label class="form-label" for="kind">
-            <input type="radio" acre:attrs="attrs.regular"/>
-            ${_("Type")} <a href="http://wiki.freebase.com/wiki/Types" rel="help external" title="${_('Read help article')}" class="help-link">${_("What's this?")}</a>
-          </label>
-          <p>${_("Describe any person, place, or concept.")}</p>
-        </div>
+        <h3 class="form-label">What kind of Type is this?</h3>
+        <div id="type-kind-options" class="clear">
+          <div class="form-row type-kind-row ${attrs.regular.disabled ? 'disabled' : ''}">
+            <label class="form-label" for="kind">
+              <input type="radio" acre:attrs="attrs.regular"/>
+              ${_("Regular Type")} 
+            </label>
+            <p>${_("Describe any person, place, or concept.")}</p>
+            <a href="http://wiki.freebase.com/wiki/Types" rel="help external" title="${_('Read help article')}" class="help-link">${_("Learn more &raquo;")}</a>
+          </div>
 
-        <div class="form-row ${attrs.enumeration.disabled ? 'disabled' : ''}">
-          <label class="form-label" for="kind">
-            <input type="radio" acre:attrs="attrs.enumeration"/>
-            ${_("Enumerated Type")}  <a href="http://wiki.freebase.com/wiki/Enumerated_type" rel="help external" title="${_('Read help article')}" class="help-link">${_("What's this?")}</a>
-          </label>
-          <p>${_("Describe any person, place, or concept, but limit possible values to a particular set of topics.")}</p>
-        </div>
+          <div class="form-row type-kind-row middle ${attrs.enumeration.disabled ? 'disabled' : ''}">
+            <label class="form-label" for="kind">
+              <input type="radio" acre:attrs="attrs.enumeration"/>
+              ${_("Enumerated Type")}  
+            </label>
+            <p>${_("Describe any person, place, or concept, but limit possible values to a particular set of topics.")}</p>
+            <a href="http://wiki.freebase.com/wiki/Enumerated_type" rel="help external" title="${_('Read help article')}" class="help-link">${_("Learn more &raquo;")}</a>
+          </div>
 
-        <div class="form-row ${attrs.mediator.disabled ? 'disabled' : ''}">
-          <label class="form-label" for="kind">
-            <input type="radio" acre:attrs="attrs.mediator"/>
-            ${_("Mediator")}  <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="${_('Read help article')}" rel="help external" class="help-link">${_("What's this?")}</a>
-          </label>
-          <p>${_("Describes the relationship between two or more regular Types.")}</p>
+          <div class="form-row type-kind-row ${attrs.mediator.disabled ? 'disabled' : ''}">
+            <label class="form-label" for="kind">
+              <input type="radio" acre:attrs="attrs.mediator"/>
+              ${_("Mediator")}  
+            </label>
+            <p>${_("Describes the relationship between two or more regular Types.")}</p>
+            <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="${_('Read help article')}" rel="help external" class="help-link">${_("Learn more &raquo;")}</a>
+          </div>
         </div>
-
         <div acre:if="message" class="form-row">
           <p class="warning">
             ${message}
             <a href="${h.freebase_url('/view'+type.id)}" target="_new">${_("View topics")} &raquo;</a>
           </p>
         </div>
+
 
       </div>
     </div>

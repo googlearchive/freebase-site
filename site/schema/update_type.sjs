@@ -55,6 +55,7 @@ function update_type(options) {
       description: validators.String(options, "description", {if_empty:null}),
 
       enumeration: validators.StringBool(options, "enumeration", {if_empty:null}),
+      mediator: validators.StringBool(options, "mediator", {if_empty:null}),
 
       // default to /lang/en
       lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"}),
@@ -70,7 +71,12 @@ function update_type(options) {
   var remove = {};
   o.remove.forEach(function(k) {
     remove[k] = true;
+    o[k] = null;
   });
+
+  if (o.enumeration && o.mediator) {
+    return deferred.rejected("Type can't be both Enumerated and Mediator.");
+  }
 
   var q = {
     id: o.id,
@@ -128,16 +134,35 @@ function update_type(options) {
           update["/freebase/type_hints/enumeration"] = {value: old_enumeration, connect: "delete"};
         }
       }
-      else if (o.enumeration != null) {
-        update["/freebase/type_hints/enumeration"] = {value: o.enumeration, connect: "update"};
-        // insert /common/topic as included if not mediator
-        if (o.enumeration && !old["/freebase/type_hints/mediator"]) {
-          update["/freebase/type_hints/included_types"] = {id: "/common/topic", connect: "insert"};
+      if (remove.mediator) {
+        var old_mediator = old["/freebase/type_hints/mediator"];
+        if (old_mediator !== null) {
+          update["/freebase/type_hints/mediator"] = {value: old_mediator, connect: "delete"};
         }
+        // re-add /common/topic as included
+        update["/freebase/type_hints/included_types"] = {id: "/common/topic", connect: "insert"};
+      }
+
+      // if (o.enumeration && o.mediator) NOT allowed
+      if (o.enumeration && !o.mediator) {
+        update["/freebase/type_hints/enumeration"] = {value:true, connect:"update"};
+        update["/freebase/type_hints/mediator"] = {value:false, connect:"update"};
+        update["/freebase/type_hints/included_types"] = {id: "/common/topic", connect: "insert"};
+      }
+      else if (!o.enumeration && o.mediator) {
+        update["/freebase/type_hints/enumeration"] = {value:false, connect:"update"};
+        update["/freebase/type_hints/mediator"] = {value:true, connect:"update"};
+        update["/freebase/type_hints/included_types"] = {id: "/common/topic", connect: "delete"};
+      }
+      else if (!o.enumeration && !o.mediator) {
+        update["/freebase/type_hints/enumeration"] = {value:false, connect:"update"};
+        update["/freebase/type_hints/mediator"] = {value:false, connect:"update"};
+        update["/freebase/type_hints/included_types"] = {id: "/common/topic", connect: "insert"};
       }
 
       var d = old;
-      var keys = ["name", "/freebase/type_hints/enumeration"];
+      var keys = ["name", "/freebase/type_hints/enumeration",
+                  "/freebase/type_hints/mediator", "/freebase/type_hints/included_types"];
       for (var i=0,l=keys.length; i<l; i++) {
         if (keys[i] in update) {
           d = freebase.mqlwrite(update)

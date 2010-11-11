@@ -120,11 +120,73 @@ test("update_type enumeration", function() {
     var result = acre.freebase.mqlread({
       id:updated,
       "/freebase/type_hints/enumeration": null,
+      "/freebase/type_hints/mediator": null,
       "/freebase/type_hints/included_types": []
     }).result;
     ok(result["/freebase/type_hints/enumeration"], "updated as enumeration");
+    ok(!result["/freebase/type_hints/mediator"]);
     var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
     ok(common_topic.length);
+  }
+  finally {
+    if (type) {
+      h.delete_type(type);
+    }
+  }
+});
+
+
+test("update_type mediator", function() {
+  var type = h.create_type(user_domain);
+  try {
+    var updated;
+    update_type({
+      domain: user_domain,
+      id: type.id,
+      mediator: true
+    })
+    .then(function(id) {
+      updated = id;
+    });
+    acre.async.wait_on_results();
+    ok(updated, updated);
+
+    var result = acre.freebase.mqlread({
+      id:updated,
+      "/freebase/type_hints/enumeration": null,
+      "/freebase/type_hints/mediator": null,
+      "/freebase/type_hints/included_types": []
+    }).result;
+    ok(result["/freebase/type_hints/mediator"], "updated as mediator");
+    ok(!result["/freebase/type_hints/enumeration"]);
+    var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
+    ok(!common_topic.length);
+  }
+  finally {
+    if (type) {
+      h.delete_type(type);
+    }
+  }
+});
+
+test("update_type enumeration && mediator", function() {
+  var type = h.create_type(user_domain);
+  try {
+    var updated, error;
+    update_type({
+      domain: user_domain,
+      id: type.id,
+      enumeration: true,
+      mediator: true
+    })
+    .then(function(id) {
+      updated = id;
+    }, function(e) {
+      error = e;
+    });
+    acre.async.wait_on_results();
+    ok(!updated);
+    ok(error, error);
   }
   finally {
     if (type) {

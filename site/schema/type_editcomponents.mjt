@@ -414,13 +414,69 @@
           </acre:script>
           ${i18n_editcomponents.article(type, attrs)}
         </div>
-        <div acre:if="!type.mediator" class="form-row">
-          <label class="form-label" for="enumeration">
-            <input type="checkbox" name="enumeration" acre:attrs="type.enumeration ? {checked:'checked'} : {}"/>
-            ${_('Enumerated')}
-            <a class="help" href="http://wiki.freebase.com/wiki/Enumerated_type">${_("What's this?")}</a>
+
+        <acre:script>
+          var attrs = {
+            regular: {type:"radio", name:"kind", value:"regular"},
+            enumeration: {type:"radio", name:"kind", value:"enumeration"},
+            mediator: {type:"radio", name:"kind", value:"mediator"}
+          };
+          var message;
+          var kind = "regular";
+          if (type.enumeration) {
+            kind = "enumeration";
+          }
+          else if (type.mediator) {
+            kind = "mediator";
+          }
+          attrs[kind].checked = "checked";
+          if (type.used) {
+            // if there are any instances of this type,
+            // can't switch between regular/enumeration and mediator
+            if (kind === "regular" || kind === "enumeration") {
+              attrs.mediator.disabled = "disabled";
+              message = _("This type can't be made Mediator because it already contains topics.");
+            }
+            else {
+              attrs.regular.disabled = attrs.enumeration.disabled = "disabled";
+              message = _("This type can't be made regular Type or Enumerated Type because it already contains topics.");
+            }
+          }
+          // don't disable currently checked
+          delete attrs[kind]['disabled'];
+        </acre:script>
+
+        <div class="form-row ${attrs.regular.disabled ? 'disabled' : ''}">
+          <label class="form-label" for="kind">
+            <input type="radio" acre:attrs="attrs.regular"/>
+            ${_("Type")} <a href="http://wiki.freebase.com/wiki/Types" rel="help external" title="${_('Read help article')}" class="help-link">${_("What's this?")}</a>
           </label>
+          <p>${_("Describe any person, place, or concept.")}</p>
         </div>
+
+        <div class="form-row ${attrs.enumeration.disabled ? 'disabled' : ''}">
+          <label class="form-label" for="kind">
+            <input type="radio" acre:attrs="attrs.enumeration"/>
+            ${_("Enumerated Type")}  <a href="http://wiki.freebase.com/wiki/Enumerated_type" rel="help external" title="${_('Read help article')}" class="help-link">${_("What's this?")}</a>
+          </label>
+          <p>${_("Describe any person, place, or concept, but limit possible values to a particular set of topics.")}</p>
+        </div>
+
+        <div class="form-row ${attrs.mediator.disabled ? 'disabled' : ''}">
+          <label class="form-label" for="kind">
+            <input type="radio" acre:attrs="attrs.mediator"/>
+            ${_("Mediator")}  <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="${_('Read help article')}" rel="help external" class="help-link">${_("What's this?")}</a>
+          </label>
+          <p>${_("Describes the relationship between two or more regular Types.")}</p>
+        </div>
+
+        <div acre:if="message" class="form-row">
+          <p class="warning">
+            ${message}
+            <a href="${h.freebase_url('/view'+type.id)}" target="_new">${_("View topics")} &raquo;</a>
+          </p>
+        </div>
+
       </div>
     </div>
     <div class="modal-buttons">

@@ -161,6 +161,32 @@ test("create_type enumeration", function() {
   }
 });
 
+test("create_type enumeration && mediator", function() {
+  var type, error;
+  try {
+    var name = get_name();
+    create_type({
+      domain: user_domain,
+      name: name,
+      enumeration: true,
+      mediator: true,
+      key: sh.generate_type_key(name)
+    })
+    .then(function(r) {
+      type = r;
+    }, function(e) {
+      error = e;
+    });
+    acre.async.wait_on_results();
+    ok(!type);
+    ok(error, error);
+  }
+  finally {
+    if (type) {
+      h.delete_type(type);
+    }
+  }
+});
 
 test("create_type no name", function() {
   var type, error;

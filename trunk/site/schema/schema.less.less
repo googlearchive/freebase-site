@@ -41,16 +41,26 @@ Candidates for global
 
 .key-status {
   display: inline-block;
-  width: 14px;
+  width: 16px;
   text-indent: -9999px;
+  margin-left: 5px;
 }
 
-.key-invalid {
-  background: red;
+.key-status.invalid,
+.key-status.valid {
+  background: url(template, ui-icons.png) no-repeat;
 }
 
-.key-valid {
-  background: green;
+.key-status.loading {
+  background: url(template, loader-snake-small-grey.gif) no-repeat;
+}
+
+.key-status.invalid {
+  background-position: 0 -440px;
+}
+
+.key-status.valid {
+  background-position: 0 -420px;
 }
 
 /*

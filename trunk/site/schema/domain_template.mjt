@@ -95,7 +95,7 @@
        <div class="blob">${acre.markup.bless(blob)}</div>
        <a acre:if="blurb != blob" href="javascript:void(0);" class="blurb-trigger">${_('More')}</a>          
      </div>
-     <acre:block if="c.domain.owners">
+     <acre:block if="c.domain.owners && c.domain.owners.length">
        <h2 class="user-list-title">${_('Domain Owners:')}</h2>
        <ul class="user-list clear" acre:for="group in c.domain.owners">
          <li acre:for="i,member in group.member" acre:for="i,member in group.member" class="vcard">

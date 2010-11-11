@@ -77,7 +77,15 @@ var api = {
   },
 
   type_settings_begin: function(args) {
-    return queries.minimal_type(args.id)
+    var promises = [];
+    promises.push(queries.minimal_type(args.id));
+    promises.push(queries.type_used(args.id));
+    return deferred.all(promises)
+      .then(function(result) {
+        var type = result[0];
+        type.used = result[1];
+        return type;
+      })
       .then(function(type) {
         // choose the best key
         var key = type.key[0];
@@ -96,11 +104,13 @@ var api = {
   },
 
   type_settings_submit: function(args) {
-    var update_type_options = h.extend({}, args);
+    var update_type_options = h.extend({remove:[]}, args);
     // if description is empty, delete from type
-    if (!args.description) {
-      update_type_options.remove = ["description"];
-    }
+    ["description", "enumeration", "mediator"].forEach(function(arg) {
+      if (!args[arg]) {
+        update_type_options.remove.push(arg);
+      }
+    });
     return update_type.update_type(update_type_options)
       .then(function(updated_id) {
          return {
@@ -462,7 +472,7 @@ api.get_incoming_from_commons.cache_policy = "fast";
 api.type_settings_begin.args = ["id"]; // type id
 api.type_settings_begin.auth = true;
 
-api.type_settings_submit.args = ["id", "name", "key", "description", "lang"]; // type id, name, key and description
+api.type_settings_submit.args = ["id", "name", "key", "description", "lang", "enumeration", "mediator"]; // type id, name, key and description
 api.type_settings_submit.auth = true;
 api.type_settings_submit.method = "POST";
 

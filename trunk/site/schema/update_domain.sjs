@@ -66,6 +66,7 @@ function update_domain(options) {
   var remove = {};
   o.remove.forEach(function(k) {
     remove[k] = true;
+    o[k] = null;
   });
 
   var q = {

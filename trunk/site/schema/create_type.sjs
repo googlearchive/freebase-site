@@ -57,6 +57,9 @@ function create_type(options) {
   catch(e if e instanceof validators.Invalid) {
     return deferred.rejected(e);
   }
+  if (o.enumeration && o.mediator) {
+    return deferred.rejected("Type can't be both Enumerated and Mediator.");
+  }
 
   var q = {
     id: null,
@@ -100,19 +103,20 @@ function create_type(options) {
         };
       }
       else {
+        if (o.enumeration) {
+          // need to update /freebase/type_hints/enumeration
+          q["/freebase/type_hints/enumeration"] = {
+            value: true,
+            connect: "update"
+          };
+        }
         // non-mediators need /common/topic included type
         q["/freebase/type_hints/included_types"] = {
           id: "/common/topic",
           connect: "insert"
         };
       }
-      if (o.enumeration) {
-        // need to update /freebase/type_hints/enumeration
-        q["/freebase/type_hints/enumeration"] = {
-          value: true,
-          connect: "update"
-        };
-      }
+
 
       return freebase.mqlwrite(q)
         .then(function(env) {

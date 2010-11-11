@@ -107,9 +107,21 @@
         key: key.val(),
         domain: $("input[name=namespace]", form.form).val(),
         description: $.trim($("textarea[name=description]:visible", form.form).val()),
-        enumeration: $("input[name=enumeration]", form.form).is(":checked") ? 1 : 0,
         lang: $("select[name=lang]", form.form).val()
       };
+
+      var kind = $("input[name=kind]:checked", form.form).val();
+      if (kind === "regular") {
+        data.enumeration = data.mediator = 0;
+      }
+      else if (kind === "enumeration") {
+        data.enumeration = 1;
+        data.mediator = 0;
+      }
+      else if (kind === "mediator") {
+        data.enumeration = 0;
+        data.mediator = 1;
+      }
 
       $.ajax({
         url: form.ajax.url,

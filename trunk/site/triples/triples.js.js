@@ -207,8 +207,30 @@
         }
       });
 
+      // *** Initialize domain/type/property suggest input
+      $(":text[name=domain], :text[name=type], :text[name=property]").suggest({
+        service_url: fb.acre.freebase.site_host,
+        type: ["/type/domain", "/type/type", "/type/property"],
+        type_strict: "any"
+      })
+      .bind("fb-select", function(e, data) {
+        var $this = $(this);
+        $this.val(data.id);
+        var type = data["n:type"].id;
+        if (type === "/type/domain") {
+          $this.attr("name", "domain");
+        }
+        else if (type === "/type/type") {
+          $this.attr("name", "type");
+        }
+        else if (type === "/type/property") {
+          $this.attr("name", "property");
+        }
+        $this.parents("form:first").submit();
+      });
+
       // *** Initialize user/creator suggest input
-      $("input[name=creator]").suggest({
+      $(":text[name=creator]").suggest({
         service_url: fb.acre.freebase.site_host,
         type: "/type/user"
       })

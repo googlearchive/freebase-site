@@ -180,7 +180,7 @@
   <acre:script>
     var o = filter_options;
     var show_counts = !o.timestamp && !o.creator && !o.as_of_time && prop_counts;
-   var show_filter = o.domain || o.type || o.property || show_counts;
+    var show_filter = o.domain || o.type || o.property || show_counts;
   </acre:script>
   <div acre:if="show_filter" class="filter-group filter-chart">
     <h2 class="filter-title" acre:if="o.domain">${_("By Type")}:</h2>
@@ -264,15 +264,24 @@
         </table>
       </acre:block>
     </acre:block>
-    <!--
+
     <div class="other-graph-value">
       <a href="javascript:void(0);" class="filter-form-trigger">
-        choose&hellip;
+        ${o.domain || o.type || o.property ? _("change"): _("choose")}&hellip;
       </a>
       <div class="filter-form" style="display:none;">
-        ${filter_form(o, 'domain', null, 'Start typing for suggestions', true)}
+        <acre:script>
+          var name = "domain";
+          if (o.type) {
+            name = "type";
+          }
+          else if (o.property) {
+            name = "property";
+          }
+        </acre:script>
+        ${filter_form(o, name, null, 'Start typing for suggestions')}
       </div>
     </div>
-    -->
+
   </div>
 </acre:block>

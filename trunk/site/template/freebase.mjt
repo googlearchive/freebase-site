@@ -202,8 +202,11 @@
       <h3 id="devbar-title"><a name="devbar">Developer Tools:</a></h3>
       <ul class="clear">
         <acre:block if="exports.c && exports.c.id">
-        <li><a title="${_('Inspect this topic')}" href="${h.url_for('triples', null, null, exports.c.id)}">${_('Inspect this topic')}</a></li>
-        </acre:block>      
+          <li><a title="${_('Inspect')}" href="${h.url_for('triples', null, null, exports.c.id)}">${_('Inspect')}</a></li>
+        </acre:block>
+        <acre:block else="">
+          <li><a title="${_('Inspect')}" href="${h.url_for('triples')}">${_('Inspect')}</a></li>
+        </acre:block>
         <li><a title="${_('Query editor')}" href="${h.url_for('queryeditor')}">${_('Query editor')}</a></li>      
         <li id="devbar-txn"><a title="${_('View transaction log')}" rel="nofollow" href="http://stats.metaweb.com/transaction">${_('View transaction log')}</a></li>
         <li id="devbar-touch" class="last"><a title="${_('Refresh cache')}" rel="nofollow" href="#">${_('Refresh cache')}<a/></li>

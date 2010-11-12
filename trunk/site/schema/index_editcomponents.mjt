@@ -42,7 +42,7 @@
     <div class="modal-inner">
       <h1 class="modal-title">
         <a href="javascript:void(0);" class="modal-help-toggle">[ + ] Show Help</a>
-        ${_('Create a new domain')}
+        <span>${_('Create a new domain')}</span>
       </h1>
       <div class="modal-content">
         <div class="modal-help">

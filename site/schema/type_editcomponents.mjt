@@ -386,7 +386,7 @@
 <acre:block def="type_settings_form(type)">
   <div class="modal">
     <div class="modal-inner">
-      <h1 class="modal-title">${_('Type Settings')}</h1>
+      <h1 class="modal-title"><span>${_('Type Settings')}</span></h1>
       <div class="modal-content">
         <div class="form-group">
           <div class="form-row form-row-inline">
@@ -561,7 +561,7 @@
 <acre:block def="reorder_property_form(type)">
 <div class="modal">
   <div class="modal-inner">
-    <h1 class="modal-title">${_("Reorder Properties")}</h1>
+    <h1 class="modal-title"><span>${_("Reorder Properties")}</span></h1>
     <div class="modal-content">
       <div class="message">${_("Drag and drop the properties below to change their order")}</div>
       <ul class="reorderable">

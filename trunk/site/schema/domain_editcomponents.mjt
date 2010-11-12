@@ -169,7 +169,7 @@
       </div>
     </div>
     <div class="modal-buttons">
-      <a href="javascript:void(0);" class="button button-delete">Delete this domain&hellip;</a>
+      <!--<a href="javascript:void(0);" class="button button-delete">Delete this domain&hellip;</a>-->
       <button class="button button-submit button-primary" type="submit">Save</button>
       <button class="button button-cancel">Cancel</button>
       ${i18n_editcomponents.lang_select()}

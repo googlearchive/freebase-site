@@ -81,6 +81,18 @@
             form.form.trigger(form.event_prefix + "submit");
           }
         });
+
+      //Confirm dialog for deleting a domain
+      $(".button-delete").click(function() {
+        var container = $(this).parent().siblings().find(".modal-content");
+        var button_row = $(".modal-buttons").animate({opacity:0}, 500);
+        var confirm_dialog = $(".modal-help", container).height(container.height()).slideDown();
+
+        var cancel_button = $(".button-cancel", container).click(function() {
+          button_row.animate({opacity:1}, 500);
+          confirm_dialog.slideUp();
+        });
+      });
     },
 
     validate_domain_settings_form: function(form) {

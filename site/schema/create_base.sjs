@@ -35,7 +35,6 @@ var freebase = mf.require("promise", "apis").freebase;
 var h = mf.require("core", "helpers");
 var create_article = mf.require("queries", "create_article");
 var validators = mf.require("validator", "validators");
-var routes = mf.require("routing", "routes");
 
 /**
  * Create a new base:
@@ -119,7 +118,7 @@ function create_base(options) {
         }
       };
       var options = null;
-      if (routes.is_release_pod()) {
+      if (/www.(freebase|sandbox\-freebase)\.com$/.test(acre.request.server_name)) {
         // http_sign: false only works on www.freebase|sandbox-freebase.com
         options = {
           http_sign: false

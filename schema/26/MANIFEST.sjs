@@ -30,4 +30,4 @@
  */
 
 var config = JSON.parse(acre.require("CONFIG.json").body);
-var mf = acre.require(config.apps.core + "/MANIFEST").init(this, config);
+var mf = acre.require(config.apps.core + "/MANIFEST").init(this, config, {"image_base_url": "http://freebaselibs.com/static/freebase_site/schema/5120c88076291591eccccea2e6f105e3", "static_base_url": "http://freebaselibs.com/static/freebase_site/schema/5120c88076291591eccccea2e6f105e3"});

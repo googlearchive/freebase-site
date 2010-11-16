@@ -255,12 +255,12 @@
         });
 
      // submit handler
-      $(".button-submit", form.form).click(function() {
+      $(".modal-buttons .button-submit", form.form).click(function() {
         form.form.trigger(event_prefix + "submit");
       });
 
       form.form.overlay({
-          close: ".button-cancel",
+          close: ".modal-buttons .button-cancel",
           closeOnClick: false,
           load: true,
           mask: {

@@ -43,6 +43,7 @@ var delete_type = mf.require("delete_type");
 var update_type = mf.require("update_type");
 
 var update_domain = mf.require("update_domain");
+var delete_domain = mf.require("delete_domain");
 
 var queries = mf.require("queries");
 var freebase = mf.require("promise", "apis").freebase;
@@ -93,6 +94,15 @@ var api = {
       .then(function(updated_id) {
         return {
           location: h.url_for("schema", null, null, updated_id)
+        };
+      });
+  },
+
+  delete_domain_submit: function(args) {
+    return delete_domain.delete_domain(args.id, args.user)
+      .then(function(deleted) {
+        return {
+          location: h.url_for("schema")
         };
       });
   },
@@ -177,6 +187,10 @@ api.domain_settings_begin.auth = true;
 api.domain_settings_submit.args = ["id", "name", "namespace", "key", "description", "lang"]; // domain id
 api.domain_settings_submit.auth = true;
 api.domain_settings_submit.method = "POST";
+
+api.delete_domain_submit.args = ["id", "user"];  // domain id, user id
+api.delete_domain_submit.auth = true;
+api.delete_domain_submit.method = "POST";
 
 api.add_type_begin.args = ["id"]; // domain id, mediator (optional)
 api.add_type_begin.auth = true;

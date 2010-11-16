@@ -109,12 +109,24 @@ function create_type(domain_id, options) {
  * @param type:Object (required) - the type returned by create_test_type
  */
 function delete_type(type) {
+  // we need to look up type info since domain/namespace id may no longer be valid
+  var type_info = acre.freebase.mqlread({
+    guid: type.guid,
+    key: [{value: null, namespace: null, optional:true}],
+    "/type/type/domain": {id:null, optional:true}
+  }).result;
   var q = {
     guid: type.guid,
-    key: {value: type.key.value, namespace: type.key.namespace, connect: "delete"},
-    type: {id: "/type/type", connect: "delete"},
-    "/type/type/domain": {id: type.domain.id, connect: "delete"}
+    type: {id: "/type/type", connect: "delete"}
   };
+  if (type_info) {
+    if (type_info.key && type_info.key.length) {
+      q.key = [{value:k.value, namespace:k.namespace, connect:"delete"} for each (k in type_info.key)];
+    }
+    if (type_info["/type/type/domain"]) {
+      q["/type/type/domain"] = {id:type_info["/type/type/domain"].id, connect: "delete"};
+    }
+  }
   var deleted = acre.freebase.mqlwrite(q).result;
   deleted.domain = deleted["/type/type/domain"];
   return deleted;

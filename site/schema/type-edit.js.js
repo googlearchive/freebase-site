@@ -81,6 +81,44 @@
             form.form.trigger(form.event_prefix + "submit");
           }
         });
+
+      //Confirm dialog for deleting a type
+      $(".button-delete", form.form).click(function() {
+        var container = $(this).parent().siblings().find(".modal-content");
+        var button_row = $(".modal-buttons", form.form).animate({opacity:0}, 500);
+        var confirm_dialog = $(".modal-help", container).height(container.height()).slideDown();
+        var cancel_button = $(".button-cancel", container).click(function(e) {
+          button_row.animate({opacity:1}, 500);
+          confirm_dialog.slideUp();
+        });
+        var delete_button = $(".button-submit", container).click(function(e) {
+          if (form.form.is(".loading")) {
+            return;
+          }
+          form.form.addClass("loading");
+          var data = {
+            id : form.ajax.data.id,
+            user: fb.user.id
+          };
+          $.ajax({
+            url: fb.acre.request.app_url + "/schema/type/delete_type_submit",
+            type: "POST",
+            dataType: "json",
+            data: data,
+            success: function(data, status, xhr) {
+              if (data.code === "/api/status/error") {
+                return se.ajax_error_handler(xhr, null, form.form);
+              }
+              form.form.trigger(form.event_prefix + "success", data.result);
+            },
+            error: function(xhr) {
+              se.ajax_error_handler(xhr, null, form.form);
+              cancel_button.click();
+            }
+          });
+        });
+      });
+
     },
 
     validate_type_settings_form: function(form) {

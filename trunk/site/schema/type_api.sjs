@@ -37,6 +37,7 @@ var editcomponents = mf.require("type_editcomponents");
 
 var create_type = mf.require("create_type");
 var update_type = mf.require("update_type");
+var delete_type = mf.require("delete_type");
 
 var create_property = mf.require("create_property");
 var delete_property = mf.require("delete_property");
@@ -115,6 +116,15 @@ var api = {
       .then(function(updated_id) {
          return {
           location: h.url_for("schema", "type", null, updated_id)
+        };
+      });
+  },
+
+  delete_type_submit: function(args) {
+    return delete_type.delete_type(args.id, args.user)
+      .then(function([info, result]) {
+        return {
+          location: h.url_for("schema", null, null, info.domain.id)
         };
       });
   },
@@ -475,6 +485,10 @@ api.type_settings_begin.auth = true;
 api.type_settings_submit.args = ["id", "name", "key", "description", "lang", "enumeration", "mediator"]; // type id, name, key and description
 api.type_settings_submit.auth = true;
 api.type_settings_submit.method = "POST";
+
+api.delete_type_submit.args = ["id", "user"]; // type id, user id
+api.delete_type_submit.auth = true;
+api.delete_type_submit.method = "POST";
 
 api.reorder_property_begin.args = ["id"]; // type id
 api.reorder_property_begin.auth = true;

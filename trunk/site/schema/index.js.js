@@ -196,10 +196,15 @@
   };
 
   // show create new domain button if logged in
-  $(window)
-     .bind("fb.user.signedin", function(e, user) {
-        $("#create-new-domain").show();
-     });
+  if (fb.user) {
+    $("#create-new-domain").show();
+  }
+  else {
+    $(window)
+       .bind("fb.user.signedin", function(e, user) {
+          $("#create-new-domain").show();
+       });
+  }
 
 
   fb.schema.index = {

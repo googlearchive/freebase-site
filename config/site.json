@@ -1,11 +1,10 @@
 {
-        "apps" : {
+  "apps" : {
+    "homepage" : { 
+       "release" : "17",
+       "type" : "page"
+    }
 
-               "homepage" : { 
-                          "release" : "18",
-                          "type" : "page"
-               }
-
-        }
+  }
 
 }

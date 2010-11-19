@@ -1,1 +1,21 @@
-{"stylesheet": {"triples.mf.css": [["template", "freebase.ui.mf.css"], "triples.less"]}, "javascript": {"triples.mf.js": [["jquerytools", "tooltip.js"], ["jqueryui", "jquery.effects.core.js"], ["jqueryui", "jquery.ui.core.js"], ["jqueryui", "jquery.effects.highlight.js"], ["jqueryui", "jquery.ui.slider.js"], "triples.js"]}, "apps": {"core": "//60.core.site.freebase.dev"}}
+{
+    "stylesheet": {
+        "triples.mf.css": [
+        ["template", "freebase.ui.mf.css"], 
+        "triples.less"
+        ]
+    }, 
+    "javascript": {
+        "triples.mf.js": [
+        ["jquerytools", "tooltip.js"], 
+        ["jqueryui", "jquery.effects.core.js"], 
+        ["jqueryui", "jquery.ui.core.js"], 
+        ["jqueryui", "jquery.effects.highlight.js"], 
+        ["jqueryui", "jquery.ui.slider.js"], 
+        "triples.js"
+        ]
+    }, 
+    "apps": {
+        "core": "//60.core.site.branches.svn.dev.freebase-site.googlecode.com."
+    }
+}

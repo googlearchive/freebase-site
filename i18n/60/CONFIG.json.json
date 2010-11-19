@@ -1,1 +1,5 @@
-{"apps": {"core": "//60.core.site.freebase.dev"}}
+{
+    "apps": {
+        "core": "//60.core.site.branches.svn.dev.freebase-site.googlecode.com."
+    }  
+}

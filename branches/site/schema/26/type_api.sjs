@@ -121,7 +121,7 @@ var api = {
   },
 
   delete_type_submit: function(args) {
-    return delete_type.delete_type(args.id, args.user)
+    return delete_type.delete_type(args.id, args.user, false, true)
       .then(function([info, result]) {
         return {
           location: h.url_for("schema", null, null, info.domain.id)

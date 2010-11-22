@@ -7,6 +7,9 @@
       "csscolors.css",
       "jscolors.css",
       "xmlcolors.css"
+    ],
+    "codemirror-frame.javascript.mf.css": [
+      "jscolors.css"
     ]
   },
   "javascript": {
@@ -16,6 +19,11 @@
     "codemirror-frame.mf.js" : [
       "util.js", "stringstream.js", "select.js", "undo.js", "editor.js", "tokenize.js",
       "parsexml.js", "parsecss.js", "tokenizejavascript.js", "parsejavascript.js", "parsehtmlmixed.js", "parsedummy.js"
+    ],
+    "codemirror-frame.javascript.mf.js": [
+      "util.js", "stringstream.js", "select.js", "undo.js", "editor.js", "tokenize.js",
+      "tokenizejavascript.js",
+      "parsejavascript.js"
     ]
   }
 }

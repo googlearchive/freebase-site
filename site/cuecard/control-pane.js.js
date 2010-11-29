@@ -52,6 +52,24 @@ CueCard.ControlPane.prototype._constructUI = function() {
     $('#' + idPrefix + " > .section-tabset").tabs('#' + idPrefix + " > .tabbed-content > .cuecard-controlPane-tabBody", { initialIndex: 0 });
 };
 
+CueCard.ControlPane.prototype._getDefaults = function() {
+    var opts = this._options;
+    var env = opts.env || {};
+    
+    var defaults = {};
+    
+    defaults.extended = opts.extended || env.extended;
+    defaults.extended = (defaults.extended === 1) ? true : false;
+    defaults.as_of_time = opts.as_of_time || env.as_of_time || null;
+    defaults.use_permission_of = opts.use_permission_of || env.use_permission_of || null;
+    
+    delete env["extended"];
+    delete env["as_of_time"];
+    delete env["use_permission_of"];
+    
+    return defaults;
+};
+
 CueCard.ControlPane.prototype._getTab = function(name) {
     return $("#" + this._idPrefix + "-" + name);
 };
@@ -106,6 +124,37 @@ CueCard.ControlPane.prototype._setOutputJSON = function(o) {
             this._options.outputPane.setJSONContent(o, this.getJsonizingSettings());
             break;
         }
+};
+
+CueCard.ControlPane.prototype._runPage = function(increment) {
+    var input = this._getTab("envelope").find("input[name='page']");
+    var pageString = input.val();
+    var page = parseInt(pageString) || 1;
+    page += increment;
+
+    if (page < 1) {
+        input.val("1");
+        return;
+    } else {
+        input.val(page);
+        if (this._options.queryEditor != null) {
+            this._options.queryEditor.run();
+        }
+    }
+};
+
+CueCard.ControlPane.prototype._runCursor = function(auto_run) {
+    if (this._options.outputPane != null) {
+        var o = this._options.outputPane.getJson();
+        if (o !== undefined && o !== null && "cursor" in o) {
+            this._getTab("envelope").find("input[name='cursor']").val(o.cursor);
+            this._getTab("envelope").find("input[name='cursor-opt'][value='custom']").attr("checked", "checked");
+
+            if (this._options.queryEditor != null && auto_run) {
+                this._options.queryEditor.run();
+            }
+        }
+    }
 };
 
 CueCard.ControlPane.prototype.getQueryEnvelopeSetting = function(name) {
@@ -166,12 +215,12 @@ CueCard.ControlPane.prototype.getQueryEnvelope = function(e, ignorePaging) {
             } catch (e) {}
         }
     
-        switch (this._getTab("envelope").find("input[type='radio'][name='cursor']:checked").val()) {
+        switch (this._getTab("envelope").find("input[name='cursor-opt']:checked").val()) {
             case "true":
                 e.cursor = true;
                 break;
             case "custom":
-                e.cursor = this._getTab("envelope").find("input[type='text'][name='cursor']").val();
+                e.cursor = this._getTab("envelope").find("input[name='cursor']").val();
                 break;
             }
     }

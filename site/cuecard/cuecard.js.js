@@ -57,3 +57,25 @@ CueCard.createComposition = function(options) {
         controlPane: cp
     };
 };
+
+CueCard.showDialog           = function(dialogname /*, arg1, arg2, etc. */) {
+    var args = Array.prototype.slice.call(arguments);
+    args.shift();
+
+    var dialog = $("<div id='dialog-" + dialogname + "' class='modal'></div>").acre("dialogs", dialogname, args);   
+    $(document.body).append(dialog.hide());
+
+    dialog.overlay({
+        load: true,
+        mask: {
+            color: '#000',
+            loadSpeed: 200,
+            opacity: 0.5
+        },
+        close: ".modal-buttons .button",
+        closeOnClick: false,
+        onClose: function() {
+            dialog.remove();
+        }
+    });
+};

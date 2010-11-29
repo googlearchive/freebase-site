@@ -984,5 +984,11 @@ CueCard.QueryEditor.prototype._prepareQueryForSuggestions = function(mc, lineNo,
 
 CueCard.QueryEditor.prototype._showExamples = function(evt) {
     var self = this;
-    new CueCard.ExampleDialog({ onDone: function(q) { self.content(q); self._onRun(false); } });
+    
+    CueCard.showDialog("examples", { 
+        onDone: function(q) { 
+            self.content(q); 
+            self._onRun(false);
+        } 
+    });
 };

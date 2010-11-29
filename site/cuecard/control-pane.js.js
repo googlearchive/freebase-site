@@ -42,314 +42,18 @@ CueCard.ControlPane.prototype.dispose = function() {
 };
 
 CueCard.ControlPane.prototype.layout = function() {
-    var height = (
-        this._elmt[0].firstChild.offsetHeight - 
-        this._elmt[0].firstChild.firstChild.firstChild.offsetHeight - 
-        10 // paddings
-    ) + "px";
+    var height = this._elmt.height() - this._elmt.find('.section-tabset').height() - 10;
     this._elmt.find('.cuecard-controlPane-tabBody').css("height", height);
 };
 
 CueCard.ControlPane.prototype._constructUI = function() {
     var idPrefix = this._idPrefix = "t" + Math.floor(1000000 * Math.random());
-    
-    function makeTabHeaderHTML(index, label) {
-        return '<li class="section-tab tab"><a href="#' + idPrefix + '-' + index + '"><span>' + label + '</span></a></li>';
-    }
-    function makeTabBodyHTML(index) {
-        return '<div class="cuecard-controlPane-tabBody" id="' + idPrefix + '-' + index + '"></div>';
-    }
-    
-    this._elmt.html(
-        '<div class="cuecard-controlPane section-tabs">' +
-            '<div id="' + idPrefix + '">' +
-                '<ul class="section-tabset clear">' +
-                    makeTabHeaderHTML(0, 'Tools') +
-                    makeTabHeaderHTML(1, 'Variables') +
-                    makeTabHeaderHTML(2, 'Envelope') +
-                    makeTabHeaderHTML(3, 'Custom Envelope') +
-                    makeTabHeaderHTML(4, 'Settings') +
-                '</ul>' +
-                '<div class="tabbed-content">' +
-                    makeTabBodyHTML(0) +
-                    makeTabBodyHTML(1) +
-                    makeTabBodyHTML(2) +
-                    makeTabBodyHTML(3) +
-                    makeTabBodyHTML(4) +
-                '</div>' +
-            '</div>' +
-        '</div>'
-    );
+    this._elmt.acre("control-pane", "tabs", [idPrefix, this]);
     $('#' + idPrefix + " > .section-tabset").tabs('#' + idPrefix + " > .tabbed-content > .cuecard-controlPane-tabBody", { initialIndex: 0 });
-    
-    var tabBodies = this._elmt.find('.cuecard-controlPane-tabBody');
-    this._toolsTabBody = $(tabBodies[0]);
-    this._variablesTabBody = $(tabBodies[1]);
-    this._envelopeTabBody = $(tabBodies[2]);
-    this._customEnvelopeTabBody = $(tabBodies[3]);
-    this._settingsTabBody = $(tabBodies[4]);
-    
-    this._constructToolsTabBody();
-    this._constructVariablesTabBody();
-    this._constructEnvelopeTabBody();
-    this._constructCustomEnvelopeTabBody();
-    this._constructSettingsTabBody();
 };
 
-CueCard.ControlPane.prototype._constructToolsTabBody = function() {
-    var id = "r" + Math.floor(1000000 * Math.random());
-    var self = this;
-    
-    var makeButton = function(command, label, hint) {
-        return '<div class="cuecard-controlPane-powerTool">' +
-            '<input type="submit" class="button" cc:command="' + command + '" value="' + label + '" />' +
-            '<div class="cuecard-controlPane-powerTool-hint">' + hint + '</div>' +
-        '</div>';
-    };
-    
-    this._toolsTabBody.html(
-        '<div class="cuecard-controlPane-section">' +
-            '<table><tr valign="top">' +
-                '<td>' +
-                    makeButton('qualify', 'Qualify All Properties',
-                        'Expand all properties to their full IDs (e.g., "id" &rarr; "/type/object/id").') +
-                    makeButton('redangle', 'Turn Inside Out',
-                        'Take the inner most query node {...} that contains the text cursor and make it the outermost query node.') +
-                    makeButton('generate', 'Generate Acre Template',
-                        'Generate an ACRE template that can render the result of this query.') +
-                    makeButton('one-liner', 'One-liner',
-                        'Reformat query into a one-liner.') +
-                '</td>' +
-                '<td width="40%">' +
-                    'Results of tools<br/>' +
-                    '<input type="radio" name="' + id + '" value="replace" checked="true"> replace query (undo-able)<br/>' +
-                    '<input type="radio" name="' + id + '" value="output"> go into output pane' +
-                '</td>' +
-            '</tr></table>' +
-        '</div>'
-    );
-    
-    this._toolsTabBody.find(".button").click(function(evt) {
-        return self._onCommandClick(evt, this, this.getAttribute("cc:command"));
-    });
-};
-
-CueCard.ControlPane.prototype._constructVariablesTabBody = function() {
-    this._variablesTabBody.html(
-        '<table class="cuecard-controlPane-variables">' +
-            '<tr><th width="30%">name</th><th width="50%">value</th><th></th></tr>' +
-        '</table>' +
-        '<div><input type="submit" class="button" value="Add" /></div>'
-    );
-    
-    var self = this;
-    var add = function(dontFocus) {
-        var table = self._variablesTabBody.find('table')[0];
-        var tr = table.insertRow(table.rows.length);
-        
-        var td0 = tr.insertCell(0);
-        td0.innerHTML = "<input />";
-        
-        var td1 = tr.insertCell(1);
-        td1.innerHTML = "<input />";
-        
-        var td2 = tr.insertCell(2);
-        td2.innerHTML = '<input type="submit" class="button" value="Remove" />';
-        $(td2.firstChild).click(function() { $(tr).remove(); });
-        
-        if (!(dontFocus)) {
-            td0.firstChild.focus();
-        }
-    };
-    
-    this._variablesTabBody.find('.button').click(add);
-    add(true);
-};
-
-CueCard.ControlPane.prototype._constructEnvelopeTabBody = function() {
-    var makeRow = function(label, controls, hint) {
-        return '<tr><td>' + 
-            label + '</td><td>' + controls + 
-            (hint.length > 0 ? ('<div class="cuecard-controlPane-hint">' + hint + '</div>') : '') +
-            '</td></tr>';
-    };
-    
-    var languageOptions = [ '<option value="">--</option>' ];
-    for (var i = 0; i < CueCard.Languages.length; i++) {
-        var l = CueCard.Languages[i];
-        languageOptions.push('<option value="' + l.id + '">' + l.name + ' (' + l.id + ')</option>');
-    }
-    
-    this._envelopeExtendedID = "i" + Math.floor(1000000 * Math.random());
-    this._envelopeAsOfTimeID = "i" + Math.floor(1000000 * Math.random());
-    this._envelopeUsePermissionOfID = "i" + Math.floor(1000000 * Math.random());
-    this._envelopeCursorID = "i" + Math.floor(1000000 * Math.random());
-    this._envelopePageID = "i" + Math.floor(1000000 * Math.random());
-    
-    var env = "env" in this._options ? this._options.env : {};
-    var extended = ("extended" in this._options ? (this._options.extended == 1) : false) || ("extended" in env ? env.extended == 1 : false);
-    var as_of_time = "as_of_time" in this._options ? this._options.as_of_time : ("as_of_time" in env ? env.as_of_time : null);
-    var use_permission_of = "use_permission_of" in this._options ? this._options.use_permission_of : ("use_permission_of" in env ? env.use_permission_of : null);
-    delete env["extended"];
-    delete env["as_of_time"];
-    delete env["use_permission_of"];
-    
-    this._envelopeTabBody.html(
-        '<div class="cuecard-controlPane-explanation">' +
-            'The query envelope contains directives to the query engine, specifying how to execute the query or how to return the results.' +
-        '</div>' +
-        '<table class="cuecard-controlPane-configurations">' +
-            makeRow('extended', '<input type="checkbox" name="' + this._envelopeExtendedID + '" ' + (extended ? 'checked' : '') + '/>', 
-                'Enable MQL extensions') +
-            makeRow('as_of_time', '<input name="' + this._envelopeAsOfTimeID + '" ' + (as_of_time != null  ? 'value="' + as_of_time + '"' : '') + '/>', 
-                'Resolve the query based on data in Freebase as of the given time in ISO8601 format, e.g., 2009-02-28, 2009-03-13T22:16:40') +
-            makeRow('use_permission_of', '<input name="' + this._envelopeUsePermissionOfID + '" ' + (use_permission_of != null ? 'value="' + use_permission_of + '"' : '') + '/>', 
-                'Specify the id of an object (typically a user, domain or type) whose permission you want to copy (<a href="http://freebaseapps.com/docs/mql/ch06.html#id2972357" target="_blank">more details</a>).') +
-            makeRow('page', 
-                '<input name="' + this._envelopePageID + '" /> <input type="submit" class="button cuecard-controlPane-configurations-page" value="Previous" /><input type="submit" class="button cuecard-controlPane-configurations-page" value="Next" />', 
-                'Page number starting from 1 if there is a "limit" property in the top level query node.'
-            ) +
-            makeRow('cursor',
-                '<div><input type="radio" name="' + this._envelopeCursorID + '" checked value=""> unspecified (return all results, possibly time-out)</div>' +
-                '<div><input type="radio" name="' + this._envelopeCursorID + '" value="true"> true (start pagination with page size equal "limit" option in query)</div>' +
-                '<div><input type="radio" name="' + this._envelopeCursorID + '" value="custom"> continue from cursor: ' +
-                    '<div class="cuecard-controlPane-configurations-cursor">' +
-                        '<input type="text" name="' + this._envelopeCursorID + '" />' +
-                        '<input type="submit" class="button cuecard-controlPane-configurations-cursor" value="Paste from Last Result" /> <input type="submit" class="button" cc:run="true" value="Paste &amp; Run" />' +
-                    '</div>' +
-                '</div>',
-                ''
-            ) +
-            makeRow('lang', '<select class="cuecard-controlPane-configurations-languages">' + languageOptions.join("") + '</select>', 'Return text values in the given language (specified with the language\'s Freebase ID)') +
-            makeRow('escape', '<select><option value="">--</option><option value="html">html</option><option value="false">false</option></select>', '') +
-            makeRow('uniqueness_failure', '<select><option value="">--</option><option value="soft">soft</option></select>', '') +
-        '</table>'
-    );
-    
-    var self = this;
-    this._envelopeTabBody.find("input[type='text'][name='" + this._envelopeCursorID + "']").bind("change",
-        function() {
-            self._envelopeTabBody.find("input[type='radio'][value='custom']")[0].checked = true;
-        }
-    );
-    this._envelopeTabBody.find(".button .cuecard-controlPane-configurations-cursor").click(
-        function() {
-            if (self._options.outputPane != null) {
-                var o = self._options.outputPane.getJson();
-                if (o !== undefined && o !== null && "cursor" in o) {
-                    self._envelopeTabBody.find("input[type='text'][name='" + self._envelopeCursorID + "']")[0].value = o.cursor;
-                    self._envelopeTabBody.find("input[type='radio'][value='custom']")[0].checked = true;
-                    
-                    if (self._options.queryEditor != null && this.getAttribute("cc:run") == "true") {
-                        self._options.queryEditor.run();
-                    }
-                }
-            }
-        }
-    );
-    this._envelopeTabBody.find(".button .cuecard-controlPane-configurations-page").click(
-        function() {
-            var input = self._envelopeTabBody.find("input[type='text'][name='" + self._envelopePageID + "']")[0];
-            var pageString = input.value;
-            var page;
-            try {
-                page = parseInt(pageString);
-            } catch (e) {}
-            if (typeof page != "number" || isNaN(page)) {
-                page = 1;
-            }
-            
-            if (this.innerHTML == "Previous") {
-                page--;
-            } else {
-                page++;
-            }
-            if (page < 1) {
-                input.value = "1";
-                return;
-            } else {
-                input.value = page;
-                if (self._options.queryEditor != null) {
-                    self._options.queryEditor.run();
-                }
-            }
-        }
-    );
-};
-
-CueCard.ControlPane.prototype._constructCustomEnvelopeTabBody = function() {
-    var env = "env" in this._options ? this._options.env : {};
-    
-    this._customEnvelopeTabBody.html(
-        '<table class="cuecard-controlPane-customEnvelope">' +
-            '<tr><th width="30%">name</th><th width="50%">value</th><th></th></tr>' +
-        '</table>' +
-        '<div><input type="submit" class="button" value="Add" /></div>'
-    );
-    
-    var self = this;
-    var add = function(dontFocus, name, value) {
-        var table = self._customEnvelopeTabBody.find('table')[0];
-        var tr = table.insertRow(table.rows.length);
-        
-        var td0 = tr.insertCell(0);
-        td0.innerHTML = "<input />";
-        if (name) {
-            td0.firstChild.value = name;
-        }
-        
-        var td1 = tr.insertCell(1);
-        td1.innerHTML = "<input />";
-        if (value) {
-            td1.firstChild.value = value;
-        }
-        
-        var td2 = tr.insertCell(2);
-        td2.innerHTML = '<input type="submit" class="button" value="Remove" />';
-        $(td2.firstChild).click(function() { $(tr).remove(); });
-        
-        if (!(dontFocus)) {
-            td0.firstChild.focus();
-        }
-    };
-    
-    this._customEnvelopeTabBody.find('.button').click(add);
-    
-    var count = 0;
-    for (var n in env) {
-        count++;
-        add(true, n, JSON.stringify(env[n]));
-    }
-    
-    if (count == 0) {
-        add(true);
-    }
-};
-
-CueCard.ControlPane.prototype._constructSettingsTabBody = function() {
-    this._settingsTabBody.html(
-        '<div><input type="checkbox"' + ($.cookie("cc_cp_clean") == "1" ? ' checked' : '') + '> Always clean up query before running</div>' +
-        '<div><input type="checkbox"' + ($.cookie("cc_cp_align") == "0" ? '' : ' checked') + '> Align JSON property values with spaces</div>' +
-        '<div style="display: none;"><input type="checkbox"> Try running query as you edit</div>' +
-        '<div><input type="checkbox"' + ($.cookie("cc_cp_multi") == "0" ? '' : ' checked') + '> Show error messages with multiple lines on multiple lines</div>'
-    );
-};
-
-CueCard.ControlPane.prototype._onCommandClick = function(evt, button, command) {
-    switch (command) {
-    case "redangle":
-        this._redangle();
-        break;
-    case "qualify":
-        this._qualify();
-        break;
-    case "generate":
-        this._generateCode();
-        break;
-    case "one-liner":
-        this._oneLiner();
-        break;
-    }
+CueCard.ControlPane.prototype._getTab = function(name) {
+    return $("#" + this._idPrefix + "-" + name);
 };
 
 CueCard.ControlPane.prototype._redangle = function() {
@@ -379,26 +83,7 @@ CueCard.ControlPane.prototype._generateCode = function() {
     var q = m.model.toQueryJson();
     var t = CueCard.CodeGeneration.generate(q, CueCard.CodeGeneration.serializers["acre-template"], { variables: this.getVariables() });
     
-    var dialog = $(
-        '<div title="Generated Acre Template">' +
-            '<textarea style="width: 100%; height: 100%; font-family: monospace; font-size: 12px;" wrap="off"></textarea>' +
-        '</div>'
-    ).appendTo(document.body);
-    dialog.find("textarea")[0].value = t;
-    dialog.find("textarea")[0].select();
-    
-    dialog.dialog({
-        modal: true,
-        position: "center",
-        width:  800,
-        height: 500,
-        buttons: {
-            "OK" : function() {
-                dialog.dialog("close");
-                dialog.remove();
-            }
-        }
-    });
+    CueCard.showDialog("acre_template", t);
 };
 
 CueCard.ControlPane.prototype._oneLiner = function() {
@@ -413,26 +98,26 @@ CueCard.ControlPane.prototype._oneLiner = function() {
 };
 
 CueCard.ControlPane.prototype._setOutputJSON = function(o) {
-    switch (this._toolsTabBody.find("input:checked")[0].value) {
-    case "replace":
-        this._options.queryEditor.content(CueCard.jsonize(o, this.getJsonizingSettings()));
-        break;
-    case "output":
-        this._options.outputPane.setJSONContent(o, this.getJsonizingSettings());
-        break;
-    }
+    switch (this._getTab("tools").find("input[name='tools-result']:checked").val()) {
+        case "replace":
+            this._options.queryEditor.content(CueCard.jsonize(o, this.getJsonizingSettings()));
+            break;
+        case "output":
+            this._options.outputPane.setJSONContent(o, this.getJsonizingSettings());
+            break;
+        }
 };
 
 CueCard.ControlPane.prototype.getQueryEnvelopeSetting = function(name) {
     switch (name) {
-    case "extended":
-        return this._envelopeTabBody.find("input[name='" + this._envelopeExtendedID + "']")[0].checked ? 1 : 0;
-    case "as_of_time":
-        var asOfTime = this._envelopeTabBody.find("input[name='" + this._envelopeAsOfTimeID + "']")[0].value;
-        if (asOfTime.length > 0) {
-            return asOfTime;
-        }
-        break;
+        case "extended":
+            return this._getTab("envelope").find("input[name='extended']").attr("checked") ? 1 : 0;
+        case "as_of_time":
+            var asOfTime = this._getTab("envelope").find("input[name='as_of_time']").val();
+            if (asOfTime.length > 0) {
+                return asOfTime;
+            }
+            break;
     }
     return null;
 };
@@ -444,16 +129,16 @@ CueCard.ControlPane.prototype.getQueryEnvelope = function(e, ignorePaging) {
     if (extended == 1) {
         e.extended = 1;
     }
-    var asOfTime = this._envelopeTabBody.find("input[name='" + this._envelopeAsOfTimeID + "']")[0].value;
+    var asOfTime = this._getTab("envelope").find("input[name='as_of_time']").val();
     if (asOfTime.length > 0) {
         e.as_of_time = asOfTime;
     }
-    var usePermissionOf = this._envelopeTabBody.find("input[name='" + this._envelopeUsePermissionOfID + "']")[0].value;
+    var usePermissionOf = this._getTab("envelope").find("input[name='use_permission_of']").val();
     if (usePermissionOf.length > 0) {
         e.use_permission_of = usePermissionOf;
     }
     
-    var selects = this._envelopeTabBody.find("select");
+    var selects = this._getTab("envelope").find("select");
     var getSelectValue = function(i) {
         return selects[i].options[selects[i].selectedIndex].value;
     };
@@ -474,21 +159,21 @@ CueCard.ControlPane.prototype.getQueryEnvelope = function(e, ignorePaging) {
     }
     
     if (!(ignorePaging)) {
-        var page = this._envelopeTabBody.find("input[name='" + this._envelopePageID + "']")[0].value;
+        var page = this._getTab("envelope").find("input[name='page']").val();
         if (page.length > 0) {
             try {
                 e.page = parseInt(page);
             } catch (e) {}
         }
     
-        switch (this._envelopeTabBody.find("input[type='radio'][name='" + this._envelopeCursorID + "']:checked")[0].value) {
-        case "true":
-            e.cursor = true;
-            break;
-        case "custom":
-            e.cursor = this._envelopeTabBody.find("input[type='text'][name='" + this._envelopeCursorID + "']")[0].value;
-            break;
-        }
+        switch (this._getTab("envelope").find("input[type='radio'][name='cursor']:checked").val()) {
+            case "true":
+                e.cursor = true;
+                break;
+            case "custom":
+                e.cursor = this._getTab("envelope").find("input[type='text'][name='cursor']").val();
+                break;
+            }
     }
     
     this.getCustomEnvelope(e); // customize it
@@ -499,7 +184,7 @@ CueCard.ControlPane.prototype.getQueryEnvelope = function(e, ignorePaging) {
 CueCard.ControlPane.prototype.getCustomEnvelope = function(env) {
     env = env || {};
     
-    var table = this._customEnvelopeTabBody.find('table')[0];
+    var table = this._getTab("customEnvelope").find('table')[0];
     for (var i = 1; i < table.rows.length; i++) {
         var tr = table.rows[i];
         var name = tr.cells[0].firstChild.value;
@@ -516,28 +201,28 @@ CueCard.ControlPane.prototype.getCustomEnvelope = function(env) {
 };
 
 CueCard.ControlPane.prototype.getSetting = function(name) {
-    var checkboxes = this._settingsTabBody.find("input");
+    var checkboxes = this._getTab("settings").find("input");
     switch (name) {
-    case "cleanup" :
-        var r = checkboxes[0].checked;
-        $.cookie('cc_cp_clean', r ? "1" : "0", { expires: 365 });
-        return r;
-    case "alignJSONPropertyValues" :
-        var r = checkboxes[1].checked;
-        $.cookie('cc_cp_align', r ? "1" : "0", { expires: 365 });
-        return r;
-    case "liveQuery" :
-        var r = checkboxes[2].checked;
-        $.cookie('cc_cp_live', r ? "1" : "0", { expires: 365 });
-        return r;
-    case "multilineErrorMessages" :
-        var r = checkboxes[3].checked;
-        $.cookie('cc_cp_multi', r ? "1" : "0", { expires: 365 });
-        return r;
-    case "extended" :
-        var extended = this._envelopeTabBody.find("input[name='" + this._envelopeExtendedID + "']")[0].checked ? 1 : 0;
-        $.cookie('cc_cp_extended', extended, { expires: 365 });
-        return extended;
+        case "cleanup" :
+            var r = checkboxes[0].checked;
+            $.cookie('cc_cp_clean', r ? "1" : "0", { expires: 365 });
+            return r;
+        case "alignJSONPropertyValues" :
+            var r = checkboxes[1].checked;
+            $.cookie('cc_cp_align', r ? "1" : "0", { expires: 365 });
+            return r;
+        case "liveQuery" :
+            var r = checkboxes[2].checked;
+            $.cookie('cc_cp_live', r ? "1" : "0", { expires: 365 });
+            return r;
+        case "multilineErrorMessages" :
+            var r = checkboxes[3].checked;
+            $.cookie('cc_cp_multi', r ? "1" : "0", { expires: 365 });
+            return r;
+        case "extended" :
+            var extended = this._getTab("envelope").find("input[name='extended']").attr("checked") ? 1 : 0;
+            $.cookie('cc_cp_extended', extended, { expires: 365 });
+            return extended;
     }
     return false;
 };
@@ -552,7 +237,7 @@ CueCard.ControlPane.prototype.getJsonizingSettings = function(o) {
 
 CueCard.ControlPane.prototype.getVariables = function() {
     var r = {};
-    var table = this._variablesTabBody.find('table')[0];
+    var table = this._getTab("variables").find('table')[0];
     for (var i = 1; i < table.rows.length; i++) {
         var tr = table.rows[i];
         var name = tr.cells[0].firstChild.value;

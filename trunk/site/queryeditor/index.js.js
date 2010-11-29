@@ -148,33 +148,32 @@ function onLoad() {
 }
 
 function resizePanes() {
-    var margin = 0;
     var spacing = 10;
     var controlPaneHeight = 250;
     var splitterHeight = 12;
     
     var width = $("#content-main").width();
-    var halfWidth = Math.round((width - 2 * margin - spacing) / 2);
-    var height = $(window).height() - $("#page-header").outerHeight(true) - $(".page-header").outerHeight(true) - 
-        $("#page-footer").outerHeight(true) - $("#devbar").outerHeight();
+    var halfWidth = Math.round((width - spacing) / 2);
+    var height = $(window).height() - $("#page-header").outerHeight(true) 
+                 - $(".page-header").outerHeight(true) - $("#page-footer").outerHeight(true);
     
-    $("#qe-container").height(height - 30); // the margin on 
+    $("#qe-container").height(height - 30); // top margin on #page-footer
         
-    var innerHeight = height - 2 * margin;
+    var innerHeight = height - 20; // bottom margin on query editor
     if ($("#the-control-pane")[0].style.display == "block") {
         var queryEditorHeight = innerHeight - splitterHeight - controlPaneHeight - 2 * spacing;
-        $("#the-query-editor").css("top", margin + "px").css("height", queryEditorHeight + "px");
-        $("#the-splitter").css("top", (margin + queryEditorHeight + spacing) + "px").css("height", splitterHeight + "px");
-        $("#the-control-pane").css("top", (margin + queryEditorHeight + spacing + splitterHeight + spacing) + "px").css("height", controlPaneHeight + "px");
-        $("#the-control-pane").css("left", margin + "px").css("width", halfWidth);
+        $("#the-query-editor").height(queryEditorHeight);
+        $("#the-splitter").height(splitterHeight).css("top", queryEditorHeight + spacing);
+        $("#the-control-pane").height(controlPaneHeight).css("top", queryEditorHeight + spacing + splitterHeight + spacing);
+        $("#the-control-pane").width(halfWidth);
     } else {
         var queryEditorHeight = innerHeight - splitterHeight - spacing;
-        $("#the-query-editor").css("top", margin + "px").css("height", queryEditorHeight + "px");
-        $("#the-splitter").css("top", (margin + queryEditorHeight + spacing) + "px").css("height", splitterHeight + "px");
+        $("#the-query-editor").height(queryEditorHeight);
+        $("#the-splitter").height(splitterHeight).css("top", queryEditorHeight + spacing);
     }
-    $("#the-splitter").css("left", margin + "px").css("width", halfWidth);
-    $("#the-query-editor").css("left", margin + "px").css("width", halfWidth)
-    $("#the-output-pane").css("right", margin + "px").css("width", halfWidth).css("top", margin + "px").css("height", innerHeight + "px");
+    $("#the-splitter").width(halfWidth);
+    $("#the-query-editor").width(halfWidth);
+    $("#the-output-pane").width(halfWidth).height(innerHeight);
 };
 
 function onResize() {

@@ -29,6 +29,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+/*
+ *  Generate Acre Template Dialog
+ */
+#dialog-acre_template { 
+    width: 800px; 
+    height: 500px; 
+}
+ 
+#template-code {
+    width: 780px; 
+    height: 400px; 
+    font-family: monospace; 
+    font-size: 12px;
+}
+
+
+/*
+ *  Examples Dialog
+ */
+#dialog-examples { 
+    width: 90%; 
+    height: 70%; 
+}
+
 #cuecard-examples-dialog {
     position: relative;
     overflow: hidden;
@@ -36,24 +61,33 @@
 
 .cuecard-examples-dialog-columnHeader {
     font-weight: bold;
-    position: absolute;
+    /*position: absolute;*/
+    float: left;
     top: 10px;
     height: 20px;
 }
 .cuecard-examples-dialog-columnBody {
-    position: absolute;
+    /*position: absolute;*/
+    float: left;
     top: 35px;
     overflow: auto;
     border: 1px solid #ccc;
 }
 
 .cuecard-examples-dialog-column-0 {
+    width : 18%;
 }
 
 .cuecard-examples-dialog-column-1 {
+    width: 40%;
 }
 
 .cuecard-examples-dialog-column-2 {
+    width: 40%;
+}
+
+.cuecard-examples-query {
+    height: 100%;
 }
 
 a.cuecard-examples-example {

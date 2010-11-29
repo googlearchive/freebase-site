@@ -4,13 +4,14 @@
   },
   "stylesheet": {
     "cuecard.mf.css": [
+        ["template", "freebase.ui.mf.css"],
     	"cuecard.css",
     	"query-editor.css",
     	"popup.css",
     	"suggestion.css",
     	"output-pane.css",
     	"control-pane.css",
-    	"example-dialog.css"
+    	"dialogs.css"
     ],
     "editor-bundle.mf.css": [
     	"cuecard.mf.css"
@@ -18,9 +19,11 @@
   },
   "javascript": {
     "cuecard.mf.js": [
-    	"cuecard-api.js",
-			"cuecard.js",
-			"mql-syntax.js",
+      ["mjt", "mjt.mf.js"],
+      ["jquerytools", "overlay.js"],
+      "cuecard-api.js",
+      "cuecard.js",
+      "mql-syntax.js",
       "indent-writer.js",
       "jsonize.js",
       "queue.js",
@@ -37,7 +40,8 @@
       "output-pane.js",
       "control-pane.js",
       "code-generation.js",
-      "example-dialog.js",
+      "dialogs",
+      "control-pane",
       "examples.js",
       "languages.js",
       "x-metaweb-costs.js"

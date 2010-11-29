@@ -335,3 +335,20 @@ CueCard.Examples = [
         techniques: [ "adding data" ]
     }
 ];
+
+CueCard.ExampleTechniqueMap = {
+    "all" : []
+};
+
+for (var i=0; i < CueCard.Examples.length; i++) {
+    var example = CueCard.Examples[i];
+    CueCard.ExampleTechniqueMap["all"].push(i);
+    for (var x = 0; x < example.techniques.length; x++) {
+        var technique = example.techniques[x];
+        if (technique in CueCard.ExampleTechniqueMap) {
+            CueCard.ExampleTechniqueMap[technique].push(i);
+        } else {
+            CueCard.ExampleTechniqueMap[technique] = [ i ];
+        }
+    }
+}

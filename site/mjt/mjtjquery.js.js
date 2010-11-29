@@ -54,6 +54,26 @@
             templates[pkgid] = pkg;
         }
     }
+    
+    function get_html(markup_or_pkgid, def, args) {
+        var html = "";
+        if (typeof markup_or_pkgid === 'string') {
+            var pkg = templates[markup_or_pkgid];
+            if (typeof pkg === 'object') {
+                var template = pkg[def];
+                if (typeof template === 'function') {
+                    html = mjt.flatten_markup(template.apply(this, args));
+                } else {
+                    console.warn("acre template '" + def + "' does not exist in package '" + markup_or_pkgid + "'");
+                }
+            } else {
+                console.warn("acre template package '" + markup_or_pkgid + "' has not been registered");
+            }            
+        } else {
+            html = mjt.flatten_markup(markup_or_pkgid);
+        }
+        return html;
+    }
 
     // Handle compiled template package source sent from the server
     $(window).bind('acre.template.register', function(e, data){
@@ -69,25 +89,13 @@
     };
 
     $.fn.acre = function(markup_or_pkgid, def, args) {
-        var html = "";
-        if (typeof def !== 'undefined') {
-            var pkg = templates[markup_or_pkgid];
-            if (typeof pkg === 'object') {
-                var template = pkg[def];
-                if (typeof template === 'function') {
-                    var html = mjt.flatten_markup(template.apply(this, args));
-                } else {
-                    console.warn("acre template '" + def + "' does not exist in package '" + markup_or_pkgid + "'");
-                }
-            } else {
-                console.warn("acre template package '" + markup_or_pkgid + "' has not been registered");
-            }            
-        } else {
-            var html = mjt.flatten_markup(markup_or_pkgid);
-        }
         return this.each(function(){
-            this.innerHTML = html;
+            $(this).html(get_html(markup_or_pkgid, def, args));
         });
     };
-
+    
+    $.acre = function(markup_or_pkgid, def, args) {
+        return get_html(markup_or_pkgid, def, args);
+    };
+    
 })(jQuery);

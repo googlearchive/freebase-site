@@ -125,7 +125,7 @@
   </table>
   <div>
     <input class="button" type="submit" value="Add" 
-            acre:onclick="controlPane._getTab('customEnvelope').find('.cuecard-controlPane-variables').append($.acre(add_row()))"/>
+            acre:onclick="controlPane._getTab('variables').find('.cuecard-controlPane-variables').append($.acre(add_row()))"/>
   </div>
 </acre:block>
 

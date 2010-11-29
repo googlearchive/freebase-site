@@ -54,5 +54,18 @@
       "jquery.mqlkey.js",
       "jquery.mqlkey.test.js"
     ]
+  },
+
+  "test": {
+    "test_create_base.sjs": {"fbauth": true},
+    "test_create_property.sjs": {"fbauth": true},
+    "test_create_type.sjs": {"fbauth": true},
+    "test_delete_domain.sjs": {"fbauth": true},
+    "test_delete_property.sjs": {"fbauth": true},
+    "test_delete_type.sjs": {"fbauth": true},
+    "test_queries_writes.sjs": {"fbauth": true},
+    "test_update_domain.sjs": {"fbauth": true},
+    "test_update_property.sjs": {"fbauth": true},
+    "test_update_type.sjs": {"fbauth": true}
   }
 }

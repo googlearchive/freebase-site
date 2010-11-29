@@ -30,7 +30,7 @@
  !!-->
  
 
-<acre:block def="tabs(id, control_pane)">
+<acre:block def="tabs(id, controlPane)">
 
   <acre:script>
     var TABS = [
@@ -46,12 +46,12 @@
     <div id="$id">
       <ul class="section-tabset clear">
         <li acre:for="index, tab in TABS" class="section-tab tab">
-          <a href="#$id-index"><span>$tab.name</span></a>
+          <a href="#${id}-${tab.key}"><span>$tab.name</span></a>
         </li>
       </ul>
       <div class="tabbed-content">
-        <div acre:for="tab in TABS" class="cuecard-controlPane-tabBody" id="$id-$tab.key">
-          ${tab.template(control_pane)}
+        <div acre:for="tab in TABS" class="cuecard-controlPane-tabBody" id="${id}-${tab.key}">
+          ${tab.template(controlPane)}
         </div>
       </div>
     </div>
@@ -60,7 +60,7 @@
 </acre:block>
 
 
-<acre:block def="tools(control_pane)">
+<acre:block def="tools(controlPane)">
 
   <acre:script>
     var BUTTONS = [
@@ -91,7 +91,7 @@
     <table><tr valign="top">
       <td>
         <div acre:for="b in BUTTONS" class="cuecard-controlPane-powerTool">
-          <input type="submit" class="button" value="$b.label" acre:onclick="control_pane[b.command]()"/>
+          <input type="submit" class="button" value="$b.label" acre:onclick="controlPane[b.command]()"/>
           <div class="cuecard-controlPane-powerTool-hint">$b.hint</div>
         </div>
       </td>
@@ -106,7 +106,7 @@
 </acre:block>
 
 
-<acre:block def="variables(control_pane)">
+<acre:block def="variables(controlPane)">
   <table class="cuecard-controlPane-variables">
     <tr>
       <th width="30%">name</th>
@@ -125,24 +125,14 @@
   </table>
   <div>
     <input class="button" type="submit" value="Add" 
-            acre:onclick="$('.cuecard-controlPane-variables').append($.acre(add_row()))"/>
+            acre:onclick="controlPane._getTab('customEnvelope').find('.cuecard-controlPane-variables').append($.acre(add_row()))"/>
   </div>
 </acre:block>
 
 
-<acre:block def="envelope(control_pane)">
+<acre:block def="envelope(controlPane)">
 
   <acre:script>
-    var opts = control_pane._options;
-    var env = opts.env || {};
-    var extended = opts.extended || env.extended;
-    extended = (extended === 1) ? true : false;
-    var as_of_time = opts.as_of_time || env.as_of_time || null;
-    var use_permission_of = opts.use_permission_of || env.use_permission_of || null;
-    delete env["extended"];
-    delete env["as_of_time"];
-    delete env["use_permission_of"];
-    
     var ENV = [
       {name: 'extended', hint: 'Enable MQL extensions'},
       {name: 'as_of_time', hint: 'Resolve the query based on data in Freebase as of the given time in ISO8601 format, e.g., 2009-02-28, 2009-03-13T22:16:40'},
@@ -153,6 +143,8 @@
       {name: 'escape', hint: ''},
       {name: 'uniqueness_failure', hint: ''}
     ];
+    
+    var def = controlPane._getDefaults();
   </acre:script>
   
   <div class="cuecard-controlPane-explanation">
@@ -161,37 +153,37 @@
   <table class="cuecard-controlPane-configurations">
     <tr acre:for="e in ENV">
       <td>$e.name</td>
-      <td id="cuecard-controlPane-envelope-$e.name">
+      <td>
         <acre:block choose="e.name">
         
-          <input acre:when="extended" name="extended" type="checkbox" acre:attrs="extended ? {'checked':''} : {}" />
+          <input acre:when="extended" name="extended" type="checkbox" acre:attrs="def.extended ? {'checked':''} : {}" />
         
-          <input acre:when="as_of_time" name="as_of_time" value="${as_of_time||''}" />
+          <input acre:when="as_of_time" name="as_of_time" value="${def.as_of_time||''}" />
         
-          <input acre:when="use_permission_of" name="use_permission_of" value="${use_permission_of||''}" />
+          <input acre:when="use_permission_of" name="use_permission_of" value="${def.use_permission_of||''}" />
         
-          <acre:block when="page">
+          <div acre:when="page" class="cuecard-controlPane-configurations-page">
             <input name="page" type="text" />
-            <input type="submit" class="button cuecard-controlPane-configurations-page" value="Previous" />
-            <input type="submit" class="button cuecard-controlPane-configurations-page" value="Next" />
-          </acre:block>
+            <input type="submit" class="button" value="Previous" acre:onclick="controlPane._runPage(-1)"/>
+            <input type="submit" class="button" value="Next" acre:onclick="controlPane._runPage(1)"/>
+          </div>
         
           <acre:block when="cursor">
             <div>
-              <input type="radio" name="cursor" checked value="">
+              <input type="radio" name="cursor-opt" checked value="">
               unspecified (return all results, possibly time-out)
             </div>
             <div>
-              <input type="radio" name="cursor" value="true">
+              <input type="radio" name="cursor-opt" value="true">
               true (start pagination with page size equal "limit" option in query)
             </div>
             <div>
-              <input type="radio" name="cursor" value="custom">
+              <input type="radio" name="cursor-opt" value="custom">
               continue from cursor: 
               <div class="cuecard-controlPane-configurations-cursor">
-                <input type="text" name="cursor" acre:onchange="$('#cuecard-controlPane-envelope-cursor').find('input[value=\'custom\']').attr('checked','checked')"/>
-                <input type="submit" class="button" value="Paste from Last Result" /> 
-                <input type="submit" class="button" cc:run="true" value="Paste &amp; Run" />
+                <input type="text" name="cursor" acre:onchange="controlPane._getTab('envelope').find('input[name=\'cursor\'][value=\'custom\']').attr('checked','checked')"/>
+                <input type="submit" class="button" value="Paste from Last Result" acre:onclick="controlPane._runCursor(false)"/> 
+                <input type="submit" class="button" value="Paste &amp; Run" acre:onclick="controlPane._runCursor(true)"/>
               </div>
             </div>
           </acre:block>
@@ -211,59 +203,19 @@
             <option value="">--</option>
             <option value="soft">soft</option>
           </select>
-          
+
         </acre:block>
-        <div acre:if="e.hint.length > 0" class="cuecard-controlPane-hint">$e.hint</div>
+        <div acre:if="e.hint.length > 0" class="cuecard-controlPane-hint">${mjt.bless(e.hint)}</div>
       </td>
     </tr>
   </table>
-  
-  <acre:block script="ondomready">
-    var self = control_pane;
-    
-    $(".cuecard-controlPane-configurations-cursor > .button").click(function() {
-      if (self._options.outputPane != null) {
-        var o = self._options.outputPane.getJson();
-        if (o !== undefined && o !== null && "cursor" in o) {
-          $('#cuecard-controlPane-envelope-cursor').find("input[type='text']").val(o.cursor);
-          $('#cuecard-controlPane-envelope-cursor').find("input[type='radio'][value='custom']").attr("checked", "checked");
-
-          if (self._options.queryEditor != null && $(this).attr("cc:run") == "true") {
-            self._options.queryEditor.run();
-          }
-        }
-      }
-    });
-    
-    $("#cuecard-controlPane-envelope-page > .button").click(function() {
-      var input = $("#cuecard-controlPane-envelope-page").find("input[type='text'][name='page']");
-      var pageString = input.val();
-      var page = parseInt(pageString) || 1;
-      
-      if ($(this).val() == "Previous") {
-        page--;
-      } else {
-        page++;
-      }
-      
-      if (page < 1) {
-        input.val("1");
-        return;
-      } else {
-        input.val(page);
-        if (self._options.queryEditor != null) {
-          self._options.queryEditor.run();
-        }
-      }
-    });
-  </acre:block>
 
 </acre:block>
 
 
-<acre:block def="custom_envelope(control_pane)">
+<acre:block def="custom_envelope(controlPane)">
   <acre:script>
-    var env = "env" in control_pane._options ? control_pane._options.env : {};
+    var env = "env" in controlPane._options ? controlPane._options.env : {};
     var has_env = false;
   </acre:script>
   
@@ -294,12 +246,12 @@
   </table>
   <div>
     <input type="submit" class="button" value="Add" 
-           acre:onclick="$('.cuecard-controlPane-customEnvelope').append($.acre(add_row()))"/>
+           acre:onclick="controlPane._getTab('customEnvelope').find('.cuecard-controlPane-customEnvelope').append($.acre(add_row()))"/>
   </div>
 </acre:block>
 
 
-<acre:block def="settings(control_pane)">
+<acre:block def="settings(controlPane)">
   <div>
     <input type="checkbox" acre:attrs="($.cookie('cc_cp_clean') == '1') ? {'checked' : ''} : {}">
     Always clean up query before running

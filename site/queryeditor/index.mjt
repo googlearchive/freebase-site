@@ -59,7 +59,7 @@
       <ol>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.url_for('schema')}">${_("Query Editor")}</a>
+            <a href="/queryeditor">${_("Query Editor")}</a>
           </span>
         </li>  
       </ol>
@@ -73,7 +73,6 @@
 </acre:block>
 
 <acre:block def="content_body()">
-<div id="content-wrapper">
   <div id="content-main" role="main">	
   	<div id="qe-container">
       <div id="the-query-editor"></div>
@@ -82,7 +81,6 @@
       <div id="the-output-pane"></div>
     </div>
   </div>
-</div>
 </acre:block>
 
 <acre:block def="footer_script()">

@@ -56,6 +56,15 @@
       </div>
     </div>
   </div>
+  
+  <acre:block script="ondomready">
+    controlPane.layout = function(){
+      var el = this._elmt;
+      var height = el.find('.section-tabs').innerHeight() - el.find('.section-tabset').outerHeight();
+      el.find('.cuecard-controlPane-tabBody').css("height", height);      
+    }
+    controlPane.layout();
+  </acre:block>
 
 </acre:block>
 

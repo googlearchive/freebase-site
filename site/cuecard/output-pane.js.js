@@ -38,85 +38,17 @@ CueCard.OutputPane = function(elmt, options) {
     this._treeConstructed = false;
     
     this._constructUI();
-    this.layout();
 };
 
 CueCard.OutputPane.prototype.dispose = function() {
     // TODO
 };
 
-CueCard.OutputPane.prototype.layout = function() {
-    var tabContainer = this._elmt[0];
-    var firstTab = this._elmt[0].firstChild.firstChild.firstChild.firstChild;
-    
-    var padding = 10;
-    var fullHeight = tabContainer.offsetHeight - firstTab.offsetHeight - ("verticalPadding" in this._options ? this._options.verticalPadding : 12);
-    var fullWidth = tabContainer.offsetWidth - ("horizontalPadding" in this._options ? this._options.horizontalPadding : 8);
-    var height = fullHeight - ($.support.boxModel ? 2 * padding : 0); // paddings
-    var width = fullWidth - ($.support.boxModel ? 2 * padding : 0);
-    
-    try {
-        this._elmt.find('.cuecard-outputPane-tabBody')
-            .css("padding", "0px")
-            .width(fullWidth)
-            .height(fullHeight);
-        this._elmt.find('.cuecard-outputPane-status, .cuecard-outputPane-tree')
-            .css("padding", padding + "px")
-            .css("left", "0px")
-            .css("top", "0px")
-            .width(width)
-            .height(height);
-        this._elmt.find('.cuecard-outputPane-textarea')
-            .css("padding", "0px")
-            .css("left", "0px")
-            .css("top", "0px")
-            .width(fullWidth)
-            .height(fullHeight);
-    } catch (e) {
-    }
-};
-
 CueCard.OutputPane.prototype._constructUI = function() {
     var self = this;
     var idPrefix = this._idPrefix = "t" + Math.floor(1000000 * Math.random());
     
-    function makeTabHeaderHTML(index, label) {
-        return '<li class="section-tab tab"><a href="#' + idPrefix + '-' + index + '">' + label + '</a></li>';
-    }
-    function makeTabBodyHTML(index) {
-        return '<div class="cuecard-outputPane-tabBody" id="' + idPrefix + '-' + index + '"></div>';
-    }
-    
-    this._elmt.css("overflow", "hidden");
-    this._elmt.html(
-        '<div class="cuecard-outputPane section-tabs">' +
-            '<div id="' + idPrefix + '">' +
-                '<ul class="section-tabset clear">' +
-                    makeTabHeaderHTML(0, 'Tree') +
-                    makeTabHeaderHTML(1, 'Text') +
-                    makeTabHeaderHTML(2, 'Status') +
-                    //makeTabHeaderHTML(3, 'Custom') +
-                '</ul>' +
-                '<div class="tabbed-content">' +
-                    makeTabBodyHTML(0) +
-                    makeTabBodyHTML(1) +
-                    makeTabBodyHTML(2) +
-                    //makeTabBodyHTML(3) +
-                '</div>' +
-            '</div>' +
-        '</div>'
-    );
-    
-    var tabBodies = this._elmt.find('.cuecard-outputPane-tabBody');
-    this._treeTabBody = $(tabBodies[0]);
-    this._textTabBody = $(tabBodies[1]);
-    this._statusTabBody = $(tabBodies[2]);
-    //this._customTabBody = $(tabBodies[3]);
-
-    this._constructTextTabBody();
-    this._constructTreeTabBody();
-    this._constructStatusTabBody();
-    //this._constructCustomTabBody();
+    this._elmt.acre("output-pane", "tabs", [idPrefix, this]);
     
     var tabs = $('#' + idPrefix + " > .section-tabset");
     tabs.tabs('#' + idPrefix + " > .tabbed-content > .cuecard-outputPane-tabBody", {
@@ -136,6 +68,14 @@ CueCard.OutputPane.prototype._constructUI = function() {
       }
     });
     this._tabs = tabs.data("tabs");
+    
+    this._tree = this._getTab("tree").find("div");
+    this._textarea = this._getTab("text").find("textarea");
+    this._status = this._getTab("status").find("div");
+};
+
+CueCard.OutputPane.prototype._getTab = function(name) {
+    return $("#" + this._idPrefix + "-" + name);
 };
 
 CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings) {
@@ -163,10 +103,10 @@ CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings) {
 
 CueCard.OutputPane.prototype.setStatus = function(html) {
     this._tabs.click(2);
-    this._statusTabBody[0].firstChild.innerHTML = html;
+    this._status.html(html);
     
     this._jsonResult = null;
-    this._textarea[0].value = "";
+    this._textarea.val("");
     this._tree.empty();
     this._treeConstructed = false;
 };
@@ -176,74 +116,7 @@ CueCard.OutputPane.prototype.getJson = function() {
 };
 
 CueCard.OutputPane.prototype.renderResponseHeaders = function(headers) {
-    var html = [];
-    html.push('<div class="cuecard-outputPane-responseHeaders">');
-    
-    if ("x-metaweb-tid") {
-        var tid = headers["x-metaweb-tid"];
-        
-        html.push("<h3>x-metaweb-tid (transaction ID)</h3>");
-        html.push('<div><a target="_blank" href="http://stats.metaweb.com/query/transaction?tid=' + encodeURIComponent(tid) + '">' + tid + '</a></div>');
-    }
-    
-    var xmc = headers["x-metaweb-cost"];
-    if (xmc) {
-        xmc = xmc.split(",");
-        
-        html.push("<h3>x-metaweb-cost header components</h3>");
-        html.push("<table>");
-        html.push("<tr><th>code</th><th>value</th><th>meaning</th><th>subsystem</th></tr>");
-        var odd = true;
-        for (var i = 0; i < xmc.length; i++) {
-            var pair = xmc[i].split("=");
-            pair[0] = pair[0].replace(/^\s+/, '').replace(/\s+$/, '');
-            
-            var cost = CueCard.XMetawebCosts[pair[0]];
-            html.push("<tr class='" + (odd ? "cuecard-outputPane-odd" : "cuecard-outputPane-even") + 
-                ((cost !== undefined && "important" in cost && cost.important) ? " cuecard-outputPane-cost-important" : "") +
-                "'>");
-            html.push("<td>" + pair[0] + "</td>");
-            html.push("<td>" + pair[1] + "</td>");
-            html.push("<td>" + (cost !== undefined ? cost.meaning : "--") + "</td>");
-            html.push("<td>" + (cost !== undefined ? cost.subsystem : "--") + "</td>");
-            html.push("</tr>");
-            odd = !odd;
-        }
-        html.push("</table>");
-    }
-    
-    html.push("<h3>response headers</h3>");
-    html.push("<table>");
-    var odd = true;
-    for (var n in headers) {
-        if (n != "x-metaweb-cost" && n != "x-metaweb-tid") {
-            html.push("<tr class='" + (odd ? "cuecard-outputPane-odd" : "cuecard-outputPane-even") + "'><td>" + n + "</td><td>" + headers[n] + "</td></tr>");
-            odd = !odd;
-        }
-    }
-    html.push("</table>");
-    
-    html.push('</div>');
-    this.setStatus(html.join(""));
-};
-
-CueCard.OutputPane.prototype._constructTextTabBody = function() {
-    this._textarea = $('<textarea readonly="true" wrap="off"></textarea>')
-        .addClass('cuecard-outputPane-textarea')
-        .appendTo(this._textTabBody);
-};
-
-CueCard.OutputPane.prototype._constructTreeTabBody = function() {
-    this._tree = $('<div></div>')
-        .addClass("cuecard-outputPane-tree")
-        .appendTo(this._treeTabBody);
-};
-
-CueCard.OutputPane.prototype._constructStatusTabBody = function() {
-    this._statusTabBody.html('<div class="cuecard-outputPane-status"></div>');
-};
-
-CueCard.OutputPane.prototype._constructCustomTabBody = function() {
+    this.setStatus($.acre("output-pane", "status", [headers]));
 };
 
 CueCard.OutputPane.prototype._constructTree = function() {

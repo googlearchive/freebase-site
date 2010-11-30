@@ -40,33 +40,7 @@ CueCard.QueryEditor = function(elmt, options) {
     this._popup = null;
     
     var self = this;
-    
-    this._overflowInput = $('<input></input>')
-        .css("position", "absolute")
-        .css("left", "-500px")
-        .css("top", "0px")
-        .appendTo(document.body);
-    
-    this._container.innerHTML = '<div class="cuecard-queryEditor-inner"></div>';
-    this._controlTopContainer = $(
-        '<div class="cuecard-queryEditor-controls-top"><table width="100%" cellspacing="0" cellpadding="0">' +
-            '<tr><td width="99%"></td></tr>' +
-        '</table></div>'
-    ).appendTo(this._container.firstChild);
-    
-    this._iframeContainer = $('<div class="cuecard-queryEditor-content"></div>')
-        .appendTo(this._container.firstChild);
-    
-    this._controlBottomContainer = $(
-        '<div class="cuecard-queryEditor-controls-bottom"><table width="100%" cellspacing="0" cellpadding="0">' +
-            '<tr><td width="90%"></td></tr>' +
-            '<tr><td width="90%"></td></tr>' +
-        '</table></div>'
-    ).appendTo(this._container.firstChild);
-    
-    this._constructButtons();
-    this.layout();
-        
+            
     var content = "[{\n  \n}]";
     var selectLine = 1;
     var selectCol = 2;
@@ -113,12 +87,13 @@ CueCard.QueryEditor = function(elmt, options) {
         $.extend(codeMirrorOptions, options.codeMirror);
     }
     
-    this._editor = new CodeMirror(
-        function(iframe) {
-            self._iframeContainer.append(iframe);
-        },
-        codeMirrorOptions
-    );
+    this._overflowInput = $('<input></input>')
+        .css("position", "absolute")
+        .css("left", "-500px")
+        .css("top", "0px")
+        .appendTo(document.body);
+        
+    $(this._container).acre("query-editor", "query_editor", [this, codeMirrorOptions]);
 };
 
 CueCard.QueryEditor.nativeTypes = {
@@ -152,12 +127,13 @@ CueCard.QueryEditor.prototype.dispose = function() {
     this._iframeContainer = null;
 };
 
-CueCard.QueryEditor.prototype.layout = function() {
-    var height = this._container.offsetHeight - this._controlTopContainer[0].offsetHeight - this._controlBottomContainer[0].offsetHeight;
-    
-    this._iframeContainer
-        .css("top", this._controlTopContainer[0].offsetHeight + "px")
-        .css("height", height + "px");
+CueCard.QueryEditor.prototype._addCodemirror = function(el, options) {
+    this._editor = new CodeMirror(
+        function(iframe) {
+            el.append(iframe);
+        },
+        options
+    );
 };
 
 CueCard.QueryEditor.prototype.setOutputPane = function(outputPane) {
@@ -174,65 +150,6 @@ CueCard.QueryEditor.prototype.setControlPane = function(controlPane) {
 
 CueCard.QueryEditor.prototype.getControlPane = function() {
     return this._controlPane;
-};
-
-CueCard.QueryEditor.prototype._constructButtons = function() {
-    var self = this;
-    
-    var topTRs = this._controlTopContainer.find('tr');
-    var insertTopButton = function(index, left, button) {
-        var td = topTRs[0].insertCell(index);
-        td.className = left ? "cuecard-queryEditor-controls-leftAligned" : "cuecard-queryEditor-controls-rightAligned";
-        td.appendChild(button);
-    };
-    
-    var bottomTRs = this._controlBottomContainer.find('tr');
-    var insertBottomButton = function(index, left, button, hint) {
-        var tdTop = bottomTRs[0].insertCell(index);
-        var tdBottom = bottomTRs[1].insertCell(index);
-        
-        tdTop.className = left ? "cuecard-queryEditor-controls-leftAligned" : "cuecard-queryEditor-controls-rightAligned";
-        tdBottom.className = tdTop.className + " cuecard-queryEditor-buttonHint";
-            
-        tdTop.appendChild(button);
-        tdBottom.appendChild($('<span class="cuecard-queryEditor-buttonHint">' + hint + '</span>')[0]);
-    };
-    
-    insertTopButton(0, true,
-        $('<input type="submit" class="button cuecard-queryEditor-examples" value="Examples" />')
-            .click(function(evt) { self._showExamples(); })[0]);
-    insertTopButton(1, true,
-        $('<span>' +
-            '<a href="http://www.freebase.com/docs/data" target="_blank">MQL&nbsp;Tutorial</a>&nbsp;&bull;&nbsp;' +
-            '<a href="http://www.freebase.com/docs/mql" target="_blank">MQL&nbsp;Reference</a>' +
-          '</span>')[0]);
-    insertTopButton(3, false,
-        $('<input type="submit" class="button cuecard-queryEditor-undo" value="Undo" />')
-            .click(function(evt) { self._editor.editor.history.undo(); })[0]);
-    insertTopButton(4, false,
-        $('<input type="submit" class="button cuecard-queryEditor-redo" value="Redo" />')
-            .click(function(evt) { self._editor.editor.history.redo(); })[0]);
-    insertTopButton(5, false,
-        $('<input type="submit" class="button cuecard-queryEditor-redo" value="Clear" />')
-            .click(function(evt) { self.content(""); self.focus(); })[0]);
-        
-    insertBottomButton(0, true,
-        $('<input type="submit" class="button cuecard-queryEditor-queryAssist" value="Query Assist" />')
-            .click(function(evt) { self.startAssistAtCursor(); })[0],
-        'Tab');
-        //(navigator.userAgent.toLowerCase().indexOf('mac') >= 0 ? 'Alt' : 'Ctrl') + '-Space');
-    insertBottomButton(1, true,
-        $('<input type="submit" class="button cuecard-queryEditor-explainQuery" value="Explain Query" />')
-            .click(function(evt) { alert("Not Yet Implemented"); }).hide()[0],
-        '');
-    insertBottomButton(3, false,
-        $('<input type="submit" class="button cuecard-queryEditor-cleanUp" value="Clean Up" />')
-            .click(function(evt) { self._onCleanUp(); })[0],
-        '' /*'Shift-'*/);
-    insertBottomButton(4, false,
-        $('<input type="submit" class="button button-primary cuecard-queryEditor-run" value="Run" />')
-            .click(function(evt) { self._onRun(false); })[0],
-        'Ctrl-Enter');
 };
 
 CueCard.QueryEditor.prototype.focus = function() {

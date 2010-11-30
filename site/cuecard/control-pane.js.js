@@ -34,16 +34,10 @@ CueCard.ControlPane = function(elmt, options) {
     this._options = options || {};
     
     this._constructUI();
-    this.layout();
 };
 
 CueCard.ControlPane.prototype.dispose = function() {
     // TODO
-};
-
-CueCard.ControlPane.prototype.layout = function() {
-    var height = this._elmt.height() - this._elmt.find('.section-tabset').height() - 10;
-    this._elmt.find('.cuecard-controlPane-tabBody').css("height", height);
 };
 
 CueCard.ControlPane.prototype._constructUI = function() {

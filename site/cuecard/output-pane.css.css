@@ -39,6 +39,7 @@ div.cuecard-outputPane-tabBody.ui-tabs-panel {
 
 div.cuecard-outputPane-tabBody {
     position: relative;
+    padding: 0;
 }
 
 div.cuecard-outputPane-status {
@@ -49,13 +50,14 @@ div.cuecard-outputPane-status {
 textarea.cuecard-outputPane-textarea {
     position: absolute;
     display: block;
-    margin: 0px;
+    margin: 0;
+    padding: 0;
     border: none;
     font-family: monospace;
     font-size: 10pt;
 }
 
-.cuecard-outputPane-tree {
+div.cuecard-outputPane-tree {
     position: absolute;
     overflow: auto;
 }

@@ -40,11 +40,13 @@
       "output-pane.js",
       "control-pane.js",
       "code-generation.js",
-      "dialogs",
-      "control-pane",
       "examples.js",
       "languages.js",
-      "x-metaweb-costs.js"
+      "x-metaweb-costs.js",
+      "dialogs",
+      "query-editor",
+      "control-pane",
+      "output-pane"
     ],
     "editor-bundle.mf.js": [
     	["codemirror", "codemirror.mf.js"],

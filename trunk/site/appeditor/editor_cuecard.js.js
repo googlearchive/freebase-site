@@ -72,7 +72,7 @@ var QueryEditor = function(parent, editor_config, task) {
         queryEditorElement: queryEditorDiv,
         queryEditorOptions: editor_config,
         outputPaneElement: outputPaneDiv,
-        outputPaneOptions: { verticalPadding: 4, horizontalPadding: 4 }
+        outputPaneOptions: { verticalPadding: 2, horizontalPadding: 2 }
     });
     this.composition = cuecardComposition;
     

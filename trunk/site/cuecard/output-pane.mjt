@@ -60,9 +60,9 @@
   
   <acre:block script="ondomready">
     outputPane.layout = function(){
-      var el = this._elmt;  
-      var fullHeight = el.innerHeight() - el.find('.section-tabset').outerHeight() - (outputPane._options.verticalPadding || 12);
-      var fullWidth = el.find('.section-tabs').innerWidth();
+      var el = this._elmt;
+      var fullHeight = el.innerHeight() - el.find('.section-tab').outerHeight() - (outputPane._options.verticalPadding || 12);
+      var fullWidth = el.find('.section-tabs').innerWidth() - (outputPane._options.horizontalPadding || 0);
 
       var padding = 10;
       var height = fullHeight - (2 * padding);

@@ -104,10 +104,10 @@
     
     queryEditor.layout = function(){
       var height = el.height() - 
-                   queryEditor._controlTopContainer.height() - 
-                   queryEditor._controlBottomContainer.height();
+                   queryEditor._controlTopContainer[0].offsetHeight - 
+                   queryEditor._controlBottomContainer[0].offsetHeight;
 
-      queryEditor._iframeContainer.height(height).css("top", queryEditor._controlTopContainer.height());
+      queryEditor._iframeContainer.height(height).css("top", queryEditor._controlTopContainer[0].offsetHeight);
     };    
     queryEditor.layout();
   </acre:block>

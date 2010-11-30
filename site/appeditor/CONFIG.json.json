@@ -12,7 +12,6 @@
       ["template", "freebase.mf.js"],
       ["jquerytools", "tabs.js"],
       ["jqueryui", "jquery.ui.draggable.js"],
-      ["mjt", "mjt.mf.js"],
       "jquery.shortcut.js",
       "util.js",
       "zencoding.js",

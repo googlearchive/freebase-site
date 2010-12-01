@@ -377,7 +377,7 @@
       initialIndex: 0,
       onBeforeClick: function(e, index) {
         var tab_id = $(this.getPanes()[index]).attr("id");
-        setTimeout(function(){ $('#'+tab_id).acre(fb.acre.get_path("appeditor", "menus"), tab_id); }, 0);
+        setTimeout(function(){ $('#'+tab_id).acre(fb.acre.apps.appeditor + "/menus", tab_id); }, 0);
       }
     });
     

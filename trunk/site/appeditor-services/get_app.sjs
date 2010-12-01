@@ -41,10 +41,10 @@ function fix_timestamp(timestamp) {
   }
 }
 
-function create_app_query(app_path) {
+function create_app_query(app_guid) {
   var q = {
     id: null,
-    guid: null,
+    guid: app_guid,
     timestamp: null,
     name: null,
     '/freebase/apps/acre_app/write_user' : {},
@@ -118,7 +118,6 @@ function create_app_query(app_path) {
     }],
     optional:true
   };
-  FB.extend_query(q, service.decompose_id(app_path));
 
   // assemble app query
   return q;
@@ -225,7 +224,7 @@ function make_graph_app(md, just_files, timestamp) {
   FB.touch();
   var env = {};
   if (md.as_of) { env.as_of_time = fix_timestamp(md.as_of); }
-  var leaf = FB.mqlread(create_app_query(md.app_id), env).result;
+  var leaf = FB.mqlread(create_app_query(md.app_guid), env).result;
   if (!leaf) { bad_appid(md.app_id); }
   
   var ret = _format_app_query_results(leaf, just_files);

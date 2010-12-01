@@ -122,7 +122,7 @@ var QueryEditor = function(parent, editor_config, task) {
         
         $(window).bind('resize', resize);
         
-        $('.cuecard-queryEditor-controls-bottom').acre("templates", "query_button_bar");
+        $('.cuecard-queryEditor-controls-bottom').acre(fb.acre.get_path("appeditor", "templates"), "query_button_bar");
         $(self._file.get_element()).show();
         $(parent).show();
         
@@ -262,10 +262,10 @@ var QueryEditor = function(parent, editor_config, task) {
     QueryEditor.t_load = function(file, state) {
         
         // Make sure CueCard is correctly initialized
-		CueCard.helper = SERVER.acre.freebase.site_host + "/cuecard/";
-		CueCard.freebaseServiceUrl = SERVER.acre.freebase.service_url + "/";
+		CueCard.helper = fb.acre.freebase.site_host + "/cuecard/";
+		CueCard.freebaseServiceUrl = fb.acre.freebase.service_url + "/";
 		CueCard.urlPrefix = "/cuecard/";
-		CueCard.apiProxy.base = SERVER.acre.freebase.site_host + "/cuecard/";
+		CueCard.apiProxy.base = fb.acre.freebase.site_host + "/cuecard/";
         
         /* CREATE EDITOR CONFIG */
         // make a deep copy of the default config object so that each file can have different settings

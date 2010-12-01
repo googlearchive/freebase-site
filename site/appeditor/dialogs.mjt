@@ -796,7 +796,7 @@
   <iframe id="dialog-aboutappeditor" class="dialog-content" src="${ui.url_for('license.html')}"></iframe>
   <div class="button-bar">
     <b>Version: </b>
-    <span>$SERVER.appeditor.version</span>
+    <span>$fb.acre.appeditor.version</span>
     <span>- ${ui.get_store().get_acre_version()}</span>
   </div>
 </acre:block>

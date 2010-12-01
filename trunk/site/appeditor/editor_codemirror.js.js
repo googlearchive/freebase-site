@@ -159,7 +159,7 @@
 
 					// Lazy-load CodeAssist if it's turned on
           if (prefs.dotTrigger && file.is_writable()) {
-            fb.get_script(SERVER.libs["codeassist"], function(){
+            fb.get_script(fb.acre.libs["codeassist"], function(){
             	if (!editor._codeAssist) {
 		          	editor._codeAssist = new CodeAssist(editor.frame, editor, {
 									isMjt: file.get_acre_handler() == 'mjt'
@@ -242,8 +242,8 @@ EDITORS.CodeMirror = {
         passDelay           : 100,     // gap between highlighting runs (each run lasts 50ms - see passTime in codemirror.js)
         undoDelay           : 250,     // min time between onChange notifications (and undo history commit)
         basefiles           : [],
-        parserfile          : [SERVER.libs.codemirror],     // see index.sjs
-        stylesheet          : [SERVER.libs.codemirror_css], // see index.sjs
+        parserfile          : [fb.acre.libs.codemirror],     // see index.sjs
+        stylesheet          : [fb.acre.libs.codemirror_css], // see index.sjs
         lineNumbers         : true,
         highlightActiveLine : true,
         tabMode             : "shift",

@@ -36,9 +36,9 @@
  /////////////////////////
 
  function FreebaseStore(service_url, acre_server) {
-     this._url = service_url || SERVER.acre.freebase.service_url;
-     this._site_url = SERVER.acre.freebase.site_host;
-     this._acre_server = acre_server || (SERVER.acre.host.name + (SERVER.acre.host.port===80 ? "" : ":" + SERVER.acre.host.port));
+     this._url = service_url || fb.acre.freebase.service_url;
+     this._site_url = fb.acre.freebase.site_host;
+     this._acre_server = acre_server || (fb.acre.host.name + (fb.acre.host.port===80 ? "" : ":" + fb.acre.host.port));
      
      this._handlers = [];
      
@@ -50,7 +50,7 @@
 
 (function() {
     
-    var APP_EDITOR_SERVICE_PATH = SERVER.appeditor.service_path;
+    var APP_EDITOR_SERVICE_PATH = fb.acre.appeditor.service_path;
     
     
     //    App Editor JSONP

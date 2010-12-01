@@ -48,7 +48,7 @@ CueCard.OutputPane.prototype._constructUI = function() {
     var self = this;
     var idPrefix = this._idPrefix = "t" + Math.floor(1000000 * Math.random());
     
-    this._elmt.acre(fb.acre.get_path("cuecard", "output-pane"), "tabs", [idPrefix, this]);
+    this._elmt.acre(fb.acre.apps.cuecard + "/output-pane", "tabs", [idPrefix, this]);
     
     var tabs = $('#' + idPrefix + " > .section-tabset");
     tabs.tabs('#' + idPrefix + " > .tabbed-content > .cuecard-outputPane-tabBody", {
@@ -116,7 +116,7 @@ CueCard.OutputPane.prototype.getJson = function() {
 };
 
 CueCard.OutputPane.prototype.renderResponseHeaders = function(headers) {
-    this.setStatus($.acre(fb.acre.get_path("cuecard", "output-pane"), "status", [headers]));
+    this.setStatus($.acre(fb.acre.apps.cuecard + "/output-pane", "status", [headers]));
 };
 
 CueCard.OutputPane.prototype._constructTree = function() {

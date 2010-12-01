@@ -21,10 +21,138 @@ limitations under the License.
 __author__ = 'masouras@google.com (Michael Masouras)'
 
 
-import sys, subprocess, shutil, os, hashlib, urllib, urllib2, tempfile, re, pwd, pdb, time, smtplib, socket, getpass, stat
+import sys, shutil, os, urllib2, tempfile, re, pwd, pdb, stat, json
 from optparse import OptionParser
 
-from appdeploy import Context
+from appdeploy import Context, AppFactory
+from tempfile import mkdtemp, mkstemp
+
+ACRE_INSTANCE = None
+SITE_INSTANCE = None
+
+#local acre should be a singleton across the session
+def GetAcre(context):
+
+  global ACRE_INSTANCE
+
+  if ACRE_INSTANCE:
+    return ACRE_INSTANCE
+
+  ACRE_INSTANCE = Acre(context)
+
+  return ACRE_INSTANCE
+
+def GetSite(context):
+  pass
+
+class Acre:
+  '''Represents a local acre instance'''
+
+  def __init__(self, context):
+    self.context = context
+    self.url = None
+
+  def read_config(self):
+
+    c = self.context
+    filename = os.path.join(c.options.acre_dir, 'config', 'project.local.conf')
+    contents = None
+    config = {}
+
+    try:
+      fh = open(filename, 'r')
+    except:
+      return c.error('Cannot open file %s for reading' % filename)
+    else:
+      contents = fh.read()
+      fh.close()
+
+    if not len(contents):
+      return c.error('File %s has no contents' % filename)
+
+    for line in contents.split('\n'):
+      if len(line) <= 1 or line.startswith('#'):
+        continue
+
+      (key, value) = line.split('=')
+      value = value.strip('"')
+      config[key] = value
+
+    return config
+
+  def url(self):
+    if self.url:
+      return self.url
+
+    #this is an acre host and port
+    #e.g. myhostname.sfo:8113
+    #this must be a freebaseapps-style url so that individual app versions can be addressed as
+    #http://<version>.<app>.dev.<acre_host>:<acre_port>
+    acre_config = self.read_config()
+    ak = acre_config.keys()
+
+    if 'ACRE_PORT' in ak and 'ACRE_HOST_BASE' in ak:
+      self.url = "%s:%s" % (acre_config['ACRE_HOST_BASE'], acre_config['ACRE_PORT'])
+
+    return self.url
+
+
+  def site_dir(self):
+    '''Returns the freebase site directory under the specified acre instance'''
+
+    ad = self.context.options.acre_dir + '/_build/war/WEB-INF/scripts'
+    sd = ad + '/freebase/site'
+
+    if not os.path.isdir(sd):
+      try:
+        os.makedirs(sd)
+      except:
+        return c.error('There was a problem creating the directory %s' % SITE_DIR)
+
+    return sd
+
+
+class Site:
+  '''Represents a freebase site instance'''
+
+  def __init__(self, context):
+    self.context = context
+    self.config = None
+
+  def read_config(self):
+
+    c = self.context
+
+    if self.config:
+      return self.config
+
+    self.config_dir =  mkdtemp()
+
+    cmd = ['svn', 'checkout', c.SITE_SVN_URL + '/trunk/config', self.config_dir, '--username', c.googlecode_username, '--password', c.googlecode_password]
+    (r, result) = c.run_cmd(cmd)
+
+    if not r:
+      return c.error(result)
+
+
+    filename = self.config_dir + '/site.json'
+
+    try:
+      fd = open(filename, 'r')
+    except:
+      return c.error('Cannot open file %s for reading.' % filename)
+
+    contents = fd.read()
+    fd.close()
+
+    try:
+      contents = json.loads(contents)
+    except:
+      return c.error('Cannot JSON parse the config file %s' % filename)
+
+    return contents
+
+
 
 class SVNLocation:
 
@@ -346,6 +474,95 @@ class ActionSync:
 
 
 
+class ActionSetupAppengine:
+
+  def __init__(self, context):
+    self.context = context
+
+  def __call__(self):
+
+    c = self.context
+
+    success = c.googlecode_login()
+    if not success:
+      return c.error('You must provide valid google code credentials to complete this operation.')
+
+    if not c.options.acre_dir:
+      return c.error('You must specify the acre directory to put apps files in.')
+
+    #set-up the /freebase directory structure if not there
+
+    ACRE_DIR = c.options.acre_dir + '/_build/war/WEB-INF/scripts'
+    SITE_DIR = ACRE_DIR + '/freebase/site'
+
+    if not os.path.isdir(SITE_DIR):
+      try:
+        os.makedirs(SITE_DIR)
+      except:
+        return c.error('There was a problem creating the directory %s' % SITE_DIR)
+
+
+    site = Site(c)
+    config = site.read_config()
+    #list of apps to attach to acre appengine
+    apps =set()
+
+    #gather all the apps and versions we need to push
+
+    for app_key, settings in config['apps'].iteritems():
+      if settings.get('release'):
+        app = AppFactory(c)(app_key, settings.get('release'))
+        apps = apps.union(app.get_code_dependencies_list())
+
+        #for push_app in apps:
+        #  c.set_current_app(push_app)
+        #  ActionStatic(c)(push_app)
+
+    #for each app we need to push, add it to the local acre AE dir
+
+    for app in apps:
+      app.copy_to_appengine_dir()
+
+    c.log('The following apps have been attached to the appengine acre instance under %s/_build/war/WEB-INF/scripts/freebase/site' % c.options.acre_dir, color=c.BLUE)
+
+    for app in sorted(apps):
+      c.log('%s\t\t\t%s' % (app.app_key, app.version))
+
+    return True
+
+
+
+class ActionStatic:
+
+  def __init__(self, context):
+    self.context = context
+
+  def __call__(self, app=None):
+
+    c = self.context
+
+    if not c.options.acre_dir:
+      return c.error('You must specify the acre directory for static generation.')
+
+    success = c.googlecode_login()
+    if not success:
+      return c.error('You must provide valid google code credentials to complete this operation.')
+
+    if not app:
+      app = c.current_app
+
+    pdb.set_trace()
+    c.set_acre(GetAcre(c))
+
+    static_apps = app.get_static_dependencies_list()
+
+    for static_app in static_apps:
+      c.log('Will statify %s' % static_app, color=c.BLUE)
+      static_app.statify()
+
+
+    return True
+
 class ActionSetup:
 
   def __init__(self, context):
@@ -505,10 +722,12 @@ def main():
   valid_actions = [
       ('setup_acre', 'create a local acre instance', ActionSetupAcre),
       ('setup_site', 'create a local site instance', ActionSetupSite),
+      ('setup_appengine', 'create a local appendine instance of acre/site', ActionSetupAppengine),
       ('sync', 'connect acre and site so that acre will read all branches from the filesystem', ActionSync),
       ('link', 'connect acre and site so that acre will read site trunk apps from the filesystem', ActionLink),
       ('setup', 'setup acre, site and link', ActionSetup),
       ('setup_dns', 'setup wildcard dns for your host - Mac OS X only', ActionSetupDNS),
+      ('static', 'static', ActionStatic),
       ('test', 'test', ActionTest)
       ]
 
@@ -535,6 +754,10 @@ def main():
                     default=None, help='the local site directory')
   parser.add_option('', '--acre_port', dest='acre_port',
                     default=8115, help='the port you want to serve acre from')
+  parser.add_option('-v', '--version', dest='version', default=None,
+                    help='a version of the app - e.g. 12')
+  parser.add_option('-a', '--app', dest='app', default=None,
+                    help='an app id - e.g. /user/namesbc/mysuperapp or an app key under /freebase/site - e.g. homepage')
 
   (options, args) = parser.parse_args()
 

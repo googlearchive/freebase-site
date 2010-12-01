@@ -52,8 +52,8 @@ CueCard.QueryEditor = function(elmt, options) {
     
     var codeMirrorOptions = {
         basefiles           : [],
-        parserfile          : [SERVER.libs.codemirror],     // see index.sjs
-        stylesheet          : [SERVER.libs.codemirror_css], // see index.sjs
+        parserfile          : [fb.acre.libs.codemirror],     // see index.sjs
+        stylesheet          : [fb.acre.libs.codemirror_css], // see index.sjs
         parserConfig:       {json: true}, 
         height:             "100%",
         autoMatchParens:    true,
@@ -93,7 +93,7 @@ CueCard.QueryEditor = function(elmt, options) {
         .css("top", "0px")
         .appendTo(document.body);
         
-    $(this._container).acre("query-editor", "query_editor", [this, codeMirrorOptions]);
+    $(this._container).acre(fb.acre.get_path("cuecard", "query-editor"), "query_editor", [this, codeMirrorOptions]);
 };
 
 CueCard.QueryEditor.nativeTypes = {

@@ -87,8 +87,8 @@
   <script src="${cuecard_mf.js_src('editor-bundle.mf.js')}"></script>
 	<script src="${mf.js_src('queryeditor.mf.js')}"></script>
   <script>  	
-	  SERVER.acre.host = ${JSON.stringify(acre.host, null, 2)};
-    SERVER.libs = ${JSON.stringify(libs, null, 2)};
+    window.SERVER.acre.apps = ${JSON.stringify(mf.apps)};
+    window.SERVER.acre.libs = ${JSON.stringify(libs)};
   </script>
   <acre:block if="acre.environ.request_method == 'POST'">
     <script>var initialQuery = ${JSON.stringify(acre.environ.body_params['q'])};</script>

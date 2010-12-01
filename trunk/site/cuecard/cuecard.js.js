@@ -62,7 +62,7 @@ CueCard.showDialog           = function(dialogname /*, arg1, arg2, etc. */) {
     var args = Array.prototype.slice.call(arguments);
     args.shift();
 
-    var dialog = $("<div id='dialog-" + dialogname + "' class='modal'></div>").acre(fb.acre.get_path("cuecard", "dialogs"), dialogname, args);   
+    var dialog = $("<div id='dialog-" + dialogname + "' class='modal'></div>").acre(fb.acre.apps.cuecard + "/dialogs", dialogname, args);   
     $(document.body).append(dialog.hide());
 
     dialog.overlay({

@@ -93,7 +93,7 @@ CueCard.QueryEditor = function(elmt, options) {
         .css("top", "0px")
         .appendTo(document.body);
         
-    $(this._container).acre(fb.acre.get_path("cuecard", "query-editor"), "query_editor", [this, codeMirrorOptions]);
+    $(this._container).acre(fb.acre.apps.cuecard + "/query-editor", "query_editor", [this, codeMirrorOptions]);
 };
 
 CueCard.QueryEditor.nativeTypes = {

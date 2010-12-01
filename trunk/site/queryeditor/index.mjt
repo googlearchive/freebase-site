@@ -41,6 +41,9 @@
     codemirror: codemirror_mf.js_src("codemirror-frame.mf.js"),
     codemirror_css: codemirror_mf.js_src("codemirror-frame.mf.css")
   };
+  var apps = {
+    cuecard : mf.apps.cuecard
+  };
 </acre:script>
 
 <acre:block def="title()">
@@ -87,7 +90,7 @@
   <script src="${cuecard_mf.js_src('editor-bundle.mf.js')}"></script>
 	<script src="${mf.js_src('queryeditor.mf.js')}"></script>
   <script>  	
-    window.SERVER.acre.apps = ${JSON.stringify(mf.apps)};
+    window.SERVER.acre.apps = ${JSON.stringify(apps)};
     window.SERVER.acre.libs = ${JSON.stringify(libs)};
   </script>
   <acre:block if="acre.environ.request_method == 'POST'">

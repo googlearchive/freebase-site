@@ -42,7 +42,7 @@ CueCard.ControlPane.prototype.dispose = function() {
 
 CueCard.ControlPane.prototype._constructUI = function() {
     var idPrefix = this._idPrefix = "t" + Math.floor(1000000 * Math.random());
-    this._elmt.acre(fb.acre.get_path("cuecard", "control-pane"), "tabs", [idPrefix, this]);
+    this._elmt.acre(fb.acre.apps.cuecard + "/control-pane", "tabs", [idPrefix, this]);
     $('#' + idPrefix + " > .section-tabset").tabs('#' + idPrefix + " > .tabbed-content > .cuecard-controlPane-tabBody", { initialIndex: 0 });
 };
 

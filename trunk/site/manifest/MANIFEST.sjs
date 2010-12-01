@@ -289,10 +289,11 @@ Manifest.prototype = {
         }
         // otherwise, just mf.require the contents of the external app's file
         try {
-            var md = this.get_metadata().files[script[0]];
+            var app = this.get_metadata(script[0]);
+            var file = app.files[script[1]];
             var source = this.get_source(script[0], script[1]);
-            if (md && md.handler && md.handler === 'mjt') {
-              source = this.compile_mjt(source, script.join("/"));
+            if (file && file.handler && file.handler === 'mjt') {
+              source = this.compile_mjt(source, "//" + app.host + "/" + file.name);
             }
             this.scope.acre.write(source);
           }
@@ -309,10 +310,11 @@ Manifest.prototype = {
         }
         else {
           try {
-            var md = this.get_metadata().files[script[0]];
-            var source = this.get_source(script[0], script[1]);
-            if (md && md.handler && md.handler === 'mjt') {
-              source = this.compile_mjt(source, script.join("/"));
+            var app = this.get_metadata();
+            var file = app.files[script[0]];
+            var source = this.get_source(script[0]);
+            if (file && file.handler && file.handler === 'mjt') {
+              source = this.compile_mjt(source, "//" + app.host + "/" + file.name);
             }
             this.scope.acre.write(source);
           }

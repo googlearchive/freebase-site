@@ -25,8 +25,7 @@
       "runtime.js",
       "compile.js",
       "pageapp.js",
-      "mjtjquery.js",
-      "mjtfreebase.js"
+      "mjtjquery.js"
     ],
     "mjt-template.mf.js": [
       "header.js",
@@ -35,8 +34,7 @@
       "eval.js",
       "template.js",
       "linker.js",
-      "mjtjquery.js",
-      "mjtfreebase.js"
+      "mjtjquery.js"
     ]
   }
 }

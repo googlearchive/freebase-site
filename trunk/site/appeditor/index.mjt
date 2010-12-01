@@ -63,10 +63,13 @@
         c: {},
         mwLastWriteTime: null,
         tid: null,
-        apps : mf.apps,
         appeditor: {
           service_path : acre.request.server_name.match(/^a(cr)?e\./) ? "/appeditor/" : "/appeditor/services/",
           version: (acre.request.script.app.version || "trunk")
+        },
+        apps : {
+          appeditor:  acre.current_script.app.path,
+          cuecard: mf.apps.cuecard
         },
         libs: {
           fulljslint: mf.js_src("fulljslint.mf.js"),
@@ -85,7 +88,6 @@
     if (acre.request.headers['x-metaweb-tid']) {
       SERVER.acre.tid = acre.request.headers['x-metaweb-tid'];
     }
-    SERVER.acre.apps.appeditor = acre.current_script.app.path;
 	</acre:script>
 
 	<head>

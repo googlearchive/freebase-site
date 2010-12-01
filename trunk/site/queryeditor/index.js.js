@@ -29,10 +29,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-CueCard.helper = SERVER.acre.request.app_url + "/cuecard/";
-CueCard.freebaseServiceUrl = SERVER.acre.freebase.service_url + "/";
+CueCard.helper = fb.acre.request.app_url + "/cuecard/";
+CueCard.freebaseServiceUrl = fb.acre.freebase.service_url + "/";
 CueCard.urlPrefix = "/cuecard/";
-CueCard.apiProxy.base = SERVER.acre.request.app_url + "/cuecard/";
+CueCard.apiProxy.base = fb.acre.request.app_url + "/cuecard/";
 
 
 var c = {};
@@ -255,7 +255,7 @@ function closeStartingMessage() {
 }
 
 function refreshCache() {
-  $.post(SERVER.acre.freebase.service_url + "/api/service/touch?mw_cookie_scope=domain", {}, null, function() {});
+  $.post(fb.acre.freebase.service_url + "/api/service/touch?mw_cookie_scope=domain", {}, null, function() {});
 }
 
 

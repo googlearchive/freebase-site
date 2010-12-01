@@ -49,7 +49,7 @@ function get_file(fileid, timestamp) {
     
     var file;
     var app = app_lib.get_app(resource.appid, true, timestamp);
-    file = app.files[resource.filename];
+    file = app.files[acre.freebase.mqlkey_quote(resource.filename)];
 
     if (!file) {
         throw new service.ServiceError("400 Bad Request", null, {

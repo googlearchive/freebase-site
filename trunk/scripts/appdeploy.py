@@ -169,10 +169,14 @@ class App:
     self.app_id = '%s/%s' % (ROOT_NAMESPACE, self.app_key)
 
     self.c = context
-    self.local_dir = None
     self.checked_out = False
+    self.local_dir = None
     self.local_deployed_dir = None
     self.environment = None
+
+    self.needs_static_generation = False
+    self.pending_static_hash = None
+    self.done_static_generation = False
 
   def __str__(self):
     return self.name()
@@ -315,11 +319,6 @@ class App:
     return (delete_files, push_files)
 
 
-  def has_css(self):
-    (result, file_contents) = self.read_file(CONFIG_FILE, isjson=True)
-    return (file_contents and 'stylesheet' in file_contents.keys())
-
-
   def last_resource_revision(self):
     '''
     Will go through the revision of all resource files and return the latest one
@@ -355,29 +354,297 @@ class App:
     return revision
 
 
+  def write_static_files(self, dest_dir):
+    '''
+    This function will copy resource files such as css, js and images to a deployed directory in svn.
+    For CSS, and JS it will do a request for each file to the live acre app and concatanate the results into the filename specified in the manifest.
+    For images, it will just copy them verbatim.
+    '''
+    c = self.context
+
+      #must return a list of filenames (js, css, img)
+    files = []
+    c.log('copying static files to deploy directory')
+
+    ## LOAD MANIFEST ##
+
+    # load app MANIFEST.sjs by doing an HTTP request for <app_url>/MANIFEST
+    url = "%s/MANIFEST" % self.url()
+    mf = c.fetch_url(url, isjson=True)
+    if not (mf and mf.get('result')):
+        c.log('Aborting push of resource files - no manifest found!', 'error')
+        return (False, files)
+
+    mf = mf['result']
+
+    ## CSS and JS ##
+
+    # go through javascript and css bundles specified in the manifest
+    # by doing an http request for <app_url>/MANIFEST/<bundle_name>
+    # and copy them to the target directory
+    for file_type in ['javascript', 'stylesheet']:
+        for filename in mf.get(file_type, []):
+            file_url = "%s/MANIFEST/%s?use_pending_static_hash=1" % (self.static_url(), filename)
+            filename = os.path.join(dest_dir, filename)
+            with open(filename, 'w') as dest_file:
+                for line in c.fetch_url(file_url):
+                    dest_file.write(line)
+
+    ## IMAGES ##
+
+    # for images, read the local directory since images are not bundled together
+    # 2. svn list version and copy images (*.png, *.gif, etc.) to dest_dir
+    img_files = [f for f in os.listdir(self.svn_path()) if os.path.splitext(f)[1].lower() in IMG_EXTENSIONS]
+    for f in img_files:
+        src = os.path.join(self.svn_path(), f)
+        # in local acre dev, we use double extensions for static files including image files
+        # convert double extensions to single extension
+        dest = os.path.join(dest_dir, os.path.splitext(f)[0])
+        shutil.copy2(src, dest)
+
+
+    # read the destination directory and return the list of filenames
+    # 3. if static files, import to svn deployed dir
+    files = sorted([f for f in os.listdir(dest_dir) if os.path.splitext(f)[1].lower() in EXTENSIONS])
+    return (True, files)
+
+
+
+  def generate_static_bundle(self):
+
+    c = self.c
+
+    url = self.url()
+    branch_dir = self.svn_path()
+    deployed_dir = mkdtemp()
+
+    # we now want to reget the static_files with the correct css url(...) pointing the http://freebaselibs...
+    (success, static_files) = self.write_static_files(deployed_dir)
+    if not success:
+        c.log('Could not get manifest for your app', 'fatal error')
+        return False
+
+    # css min
+    css_files = [f for f in os.listdir(deployed_dir) if os.path.splitext(f)[1].lower() == ".css"]
+    for css_file in css_files:
+      c.verbose(css_file, 'css file')
+      css_path = os.path.join(deployed_dir, css_file)
+
+      # we should not have any css url declrations that look like 'url(http://3.template.site.freebase.dev...)'
+      cmd = ['grep', '-E', 'url\s*\(\s*https?\:\/\/[0-9]+\.', css_path]
+      (r, response) = c.run_cmd(cmd)
+      if not r:
+        prompt = '{f} contains 1 or more acre url declarations. Continue with deploying {app} [y/n]?'.format(f=f, app=str(self))
+        if raw_input(prompt).lower() != 'y':
+          return False
+
+      with open(css_path, "r") as infile:
+        min_css = cssmin(infile.read())
+      with open(css_path, "w") as outfile:
+        outfile.write(LICENSE_PREAMBLE)
+        outfile.write(min_css)
+
+    c.log('compiling (closure) js files')
+    # js min (closure compiler)
+    js_files = [f for f in os.listdir(deployed_dir) if os.path.splitext(f)[1].lower() == ".js"]
+    for js_file in js_files:
+      c.verbose(js_file, 'js file')
+      js_path = os.path.join(deployed_dir, js_file)
+      status, temppath = mkstemp()
+      with open(temppath, "w") as tempfile:
+        cmd = [JAVA] + JAVA_OPTS + ["--js", js_path]
+        subprocess.call(cmd, stdout=tempfile)
+
+      with open(temppath, "r") as infile:
+        bundled_js = infile.read()
+      with open(js_path, "w") as outfile:
+        outfile.write(LICENSE_PREAMBLE)
+        outfile.write(bundled_js)
+
+    self.deployed_dir = deployed_dir
+
+    return True
+
+  def commit_static_bundle(self):
+
+    msg = 'Create static file deployed directory version {version} for app {app}'.format(version=self.deploy_rev, app=str(self))
+    cmd = ['svn', 'import', self.deployed_dir, self.svn_static_url(), '-m', '"%s"' % msg]
+    (r, result) = self.c.run_cmd(cmd)
+    return r
+
+
+  def generate_static_hash(self, last_revision=None):
+    if not last_revision:
+      last_revision = self.last_resource_revision
+
+    return "%s_%s" % (self.version, last_revision)
+
+
+  def statify(self):
+
+    #we have already done this for this app in this session
+    if self.done_static_generation:
+      return True
+
+    #get the static hash (<version>_<last_svn_revision>)
+    if not self.pending_static_hash:
+      self.pending_static_hash = self.generate_static_hash()
+
+    #read the configuration file and update it with the new static hash as pending
+    (r, config) = self.read_file(CONFIG_FILE, isjson=True, warn=False)
+
+    if not (r and config):
+      return self.c.error('%s does not have a CONFIG.json file, so static bundles cannot be created' % self)
+
+    config['pending_static_hash'] = self.pending_static_hash
+    self.write_file(CONFIG_FILE, json.dumps(config))
+
+    self.svn_commit(msg="%s pending static hash" % self.pending_static_hash)
+    self.copy_to_appengine()
+
+    #inject resource files with new base url
+    result = self.generate_static_bundle()
+    if not result:
+        return False
+
+    #result = self.commit_static_bundle()
+    #if not result:
+    #  return False
+
+    last_static_revision = self.app.last_resource_revision()
+    if last_static_revision:
+      self.write_file('.last_static_revision', str(last_static_revision))
+      self.svn_commit(msg='commit last resource revision file')
+
+    self.done_static_generation = True
+
+
   def needs_static_bundle(self):
-    '''Determine if this app qualifies for static bundle generation.
+    '''Determine if this app qualifies for static bundle generation,
+    and if it doesn, whether we need to create a new one.
+
+    This function does NOT take into account app dependencies.
 
     An app qualifies if:
     - it has any js/css/image files
     - it has a css/js declaration in its config file
+    - it does not have a static bundle generated since the last update
+    of its resource files / CONFIG
+
+    Returns True or False
+    You can call this as many times for a given app, it will remember the last calculated result.
     '''
+
+    c = self.c
+
+    if self.needs_static_generation:
+      return True
 
     local_app = self.get_local_app(inject_config = False)
 
+    needs = False
+
     for app_file in local_app['files'].values():
-      if app_file['extension'] in EXTENSIONS:
-        return True
+      if '.%s' % app_file['extension'] in EXTENSIONS:
+        needs = True
+        break
 
-    dependencies = self.get_resource_dependencies()
-    for res in ['js', 'stylesheet']:
-      if len(dependencies[res].keys()):
-        return True
-        
+    if not needs:
+      dependencies = self.get_resource_dependencies()
+      if dependencies:
+        for res in ['js', 'stylesheet']:
+          if len(dependencies.get(res, {}).keys()):
+            needs = True
+            break
 
+    if not needs:
+      return False
+
+    (r, last_recorded_revision) = self.read_file('.last_static_revision', warn=False)
+
+    #if there was a stamp
+    if r:
+      try:
+        last_recorded_revision = int(last_recorded_revision)
+      except:
+        last_recorded_revision = 0
+
+    last_revision = self.last_resource_revision()
+
+    #if the last revision of any resource file in the app is larger
+    #than the last revision when we created the static files the last time
+    #then we need to regenerate them.
+    #This means someone made a change to the static files
+    if not r or last_revision > last_recorded_revision:
+      self.needs_static_generation = True
+      self.pending_static_hash = self.generate_static_hash(last_revision)
+      c.log('Change in resource files of %s detected - have to generate static bundle, new hash is %s' % (self, self.pending_static_hash))
+      return True
+
+    c.log('No need to generate static files for %s - no new resource files' % self)
     return False
 
 
+  def get_code_dependencies_list(self):
+    '''Return a list of apps that this app has code dependencies on.
+    '''
+
+    apps = set()
+    apps.add(self)
+
+    def create_app_list(app, al):
+
+      dependencies = app.get_dependencies()
+      if not dependencies:
+        return
+
+      for label, d_app in dependencies.iteritems():
+        if d_app in al:
+          continue
+
+        al.add(d_app)
+        create_app_list(d_app, al)
+
+    create_app_list(self, apps)
+    return apps
+
+  def get_static_dependencies_list(self):
+    '''Return a list of apps that this app has static dependencies on.
+    '''
+
+    #ordering is important, so we can't use sets here
+    apps = []
+
+    if not self.needs_static_bundle():
+      return apps
+
+    apps = [self]
+
+    dependencies = self.get_resource_dependencies()
+    if not dependencies.get('stylesheet', None):
+      return apps
+
+    def create_app_list(app, al):
+
+      dependencies = app.get_resource_dependencies()
+      if not dependencies['stylesheet']:
+        return
+
+      #if we 've already seen this app, or it does not need a static bundle
+      #then we can ommit it from the list of apps
+      for label, d_app in dependencies['stylesheet'].iteritems():
+        if d_app in al or not d_app.needs_static_bundle():
+          continue
+
+        #prepend the dependency
+        al.insert(0, d_app)
+
+        if d_app.app_key != 'routing':
+          create_app_list(d_app, al)
+
+    create_app_list(self, apps)
+
+    return apps
 
   def get_resource_dependencies(self):
 
@@ -389,10 +656,10 @@ class App:
     #this will hold the dependencies of the core app
     core_dependencies = {}
 
-    (r, file_contents) = self.read_file(CONFIG_FILE, isjson=True)
+    (r, file_contents) = self.read_file(CONFIG_FILE, isjson=True, warn=False)
 
     if not (r and file_contents):
-      return self.c.error('Did not find CONFIG file for app %s -- aborting' % self.app_key)
+      return dependencies
 
     #get the core version
     version = None
@@ -429,8 +696,10 @@ class App:
     if not config:
         (result, config) = self.read_file(CONFIG_FILE, isjson=True)
 
+    self.c.verbose('Could not open CONFIG file for %s' % self)
+
     if not config:
-      return self.c.error('Did not find CONFIG file for app %s -- aborting' % self.app_key)
+      return False
 
     if 'apps' in config.keys():
       for label, path in config['apps'].iteritems():
@@ -442,7 +711,7 @@ class App:
     return dependencies
 
 
-  def read_file(self, filename, isjson=False):
+  def read_file(self, filename, isjson=False, warn=True):
 
     filename = "%s/%s" % (self.svn_path(), filename)
     contents = ''
@@ -450,7 +719,8 @@ class App:
     try:
       fd = open(filename, 'r')
     except:
-      self.c.warn('Cannot open file %s for reading (%s)' % (filename, self.svn_url()))
+      if warn:
+        self.c.warn('Cannot open file %s for reading (%s)' % (filename, self.svn_url()))
       return (False, contents)
 
     contents = fd.read()
@@ -459,7 +729,8 @@ class App:
       try:
         contents = json.loads(contents)
       except:
-        self.c.error('Cannot JSON parse the config file %s' % filename)
+        if warn:
+          self.c.error('Cannot JSON parse the config file %s' % filename)
         return (False, contents)
 
     fd.close()
@@ -598,11 +869,18 @@ class App:
     return 1
 
 
+  def svn_static_url(self):
+
+    if self.pending_static_hash:
+      return '%s/static/%s/%s' (self.c.SITE_SVN_URL, self.app_key, self.pending_static_hash)
+
+    return self.c.error('Cannot compute static SVN path because there is no pending static hash')
+
   def svn_deployed_url(self, deployed_hash):
     return '{svn_url_root}/deployed/{app}/{deployed_hash}'.format(svn_url_root=PRIVATE_SVN_URL_ROOT, app=self.app_key, deployed_hash=deployed_hash)
 
   def svn_url(self, allversions=False):
-    
+
     if allversions:
       return '{svn_url_root}/branches/site/{app}'.format(svn_url_root=self.c.SITE_SVN_URL, app=self.app_key)
     elif not self.version:
@@ -610,6 +888,46 @@ class App:
     else:
       return '{svn_url_root}/branches/site/{app}/{version}'.format(svn_url_root=self.c.SITE_SVN_URL, app=self.app_key, version=self.version)
 
+
+  #will copy the app from its checked out directory to the target directory
+  #and then get rid of the .svn directory
+  #it will REMOVE the target directory before copying the app over first
+  def copy(self, target_dir):
+    if os.path.isdir(target_dir):
+      try:
+        shutil.rmtree(target_dir)
+      except:
+        return self.c.error('Cannot copy app to existing directory %s (cannot delete directory first)' % self)
+
+    shutil.copytree(self.svn_path(), target_dir)
+    shutil.rmtree(target_dir + '/.svn')
+    return True
+
+  def copy_to_appengine_dir(self):
+    app_dir = self.c.acre.site_dir() + '/' + self.app_key
+    self.copy(app_dir)
+
+    if self.version:
+      self.copy(app_dir + '/' + self.version)
+      self.copy(app_dir + '/release')
+
+  def copy_static(self, target_dir):
+    pass
+
+  #checks out the app from SVN into the specified directory
+  def svn_checkout(self, target_dir):
+
+    cmd = ['svn', 'checkout', self.svn_url(), target_dir, '--username', self.c.googlecode_username, '--password', self.c.googlecode_password]
+    (r, output) = self.c.run_cmd(cmd, exit=False)
+
+    if not r:
+      return self.c.error(output)
+
+    return True
+
+  #creates a directory and checks out the path
+  #returns the directory where the app is checked out
+  #the local path is remembered for future use
   def svn_path(self):
 
     if self.checked_out:
@@ -618,8 +936,7 @@ class App:
     if not self.local_dir:
       self.local_dir = mkdtemp()
 
-    cmd = ['svn', 'checkout', self.svn_url(), self.local_dir, '--username', self.c.googlecode_username, '--password', self.c.googlecode_password]
-    (r, output) = self.c.run_cmd(cmd, exit=False)
+    r = self.svn_checkout(self.local_dir)
 
     if not r:
       return False
@@ -627,15 +944,21 @@ class App:
     self.checked_out = True
     return self.local_dir
 
-  def url(self, services = None):
+  def static_url(self):
+    return self.url(host = self.c.acre.url())
 
-      if not services:
-          services = self.c.services
+  def url(self, services = None, host = None):
 
-      if self.version:
-          return 'http://{version}.{app}.site.freebase.dev.{freebaseapps}'.format(version=self.version, app=self.app_key, freebaseapps=services['freebaseapps'])
-      else:
-          return 'http://{app}.site.freebase.dev.{freebaseapps}'.format(app=self.app_key, freebaseapps=services['freebaseapps'])
+    if not services:
+      services = self.c.services
+
+    if not host:
+      host = services['freebaseapps']
+
+    if self.version:
+      return 'http://{version}.{app}.site.freebase.dev.{freebaseapps}'.format(version=self.version, app=self.app_key, freebaseapps=host)
+    else:
+      return 'http://{app}.site.freebase.dev.{freebaseapps}'.format(app=self.app_key, freebaseapps=host)
 
 class Context():
   BLUE = '\033[94m'
@@ -669,6 +992,11 @@ class Context():
       self.current_app = self.app = AppFactory(self)(self.options.app, self.options.version)
 
     self.quiet = False
+    self.acre = None
+
+
+  def set_acre(self, acre):
+    self.acre = acre
 
   def be_quiet(self):
     self.quiet = True
@@ -1015,6 +1343,7 @@ class ActionPush():
       files_changed.add(filename)
 
     #update changed files
+
     for filename, val in push_files.iteritems():
       print ".",
       sys.stdout.flush()

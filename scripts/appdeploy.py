@@ -70,7 +70,12 @@ try:
 except ImportError:
     import simplejson as json
 
-from freebase.api import HTTPMetawebSession, MetawebError
+try:
+    from freebase.api import HTTPMetawebSession, MetawebError
+except ImportError:
+    print "ERROR: You have to install freebase-python for this to work. http://code.google.com/p/freebase-python/source/checkout"
+    exit(-1)
+
 from freebase.api.mqlkey import quotekey, unquotekey
 
 ## EMAIL SETTINGS ##

@@ -1,0 +1,13 @@
+[apptests]
+username = youruser
+password = yourpassword
+freebase_service_host = sandbox-freebase.com
+freebase_service_port = 80
+acre_service_host = 
+# e.g. acre_service_host = acre.myhost.com
+acre_service_port = 8117
+apps_path =  /home/bneutra/fs/build/acre/webapp/WEB-INF/scripts/freebase/site
+# apps_path =  /home/foo/acre/webapp/WEB-INF/scripts/freebase/site
+
+# space separated list of apps in apps_path, else leave blank to test all
+app_list = 

@@ -3,8 +3,7 @@
     "core": "//core.site.freebase.dev"
   },
 
-  "test": {
-    "test_create_article.sjs": {"fbauth": true},
-    "test_create_topic.sjs": {"fbauth": true}
-  }
+  "tests": {
+    "all": {"fbauth": true, "bugs":["000"]}
+   }
 }

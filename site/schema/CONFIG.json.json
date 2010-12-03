@@ -55,17 +55,9 @@
       "jquery.mqlkey.test.js"
     ]
   },
-
-  "test": {
-    "test_create_base.sjs": {"fbauth": true},
-    "test_create_property.sjs": {"fbauth": true},
-    "test_create_type.sjs": {"fbauth": true},
-    "test_delete_domain.sjs": {"fbauth": true},
-    "test_delete_property.sjs": {"fbauth": true},
-    "test_delete_type.sjs": {"fbauth": true},
-    "test_queries_writes.sjs": {"fbauth": true},
-    "test_update_domain.sjs": {"fbauth": true},
-    "test_update_property.sjs": {"fbauth": true},
-    "test_update_type.sjs": {"fbauth": true}
+  "tests": {
+    "all": {"fbauth": true},
+    "test_delete_domain:/user/fstester_has_permission_to_/base": {"bugs":["000"]},
+    "test_create_base:/user/fstester_has_permission_to_/base": {"bugs":["000"]}
   }
 }

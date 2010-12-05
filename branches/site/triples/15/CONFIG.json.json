@@ -16,6 +16,6 @@
         ]
     }, 
     "apps": {
-        "core": "//60.core.site.branches.svn.dev.freebase-site.googlecode.com."
+        "core": "//60.core.site.branches.svn.freebase-site.googlecode.dev"
     }
 }

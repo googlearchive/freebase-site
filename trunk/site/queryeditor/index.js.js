@@ -255,7 +255,7 @@ function closeStartingMessage() {
 }
 
 function refreshCache() {
-  $.post(fb.acre.freebase.service_url + "/api/service/touch?mw_cookie_scope=domain", {}, null, function() {});
+  $.post(fb.acre.freebase.site_host + "/api/service/touch?mw_cookie_scope=domain", {}, null, function() {});
 }
 
 

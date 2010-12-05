@@ -52,7 +52,14 @@ function shorten(url) {
 }
 
 function process() {
-  var url = acre.require("utils").getBaseURL() + "?";
+  var url;
+  
+  var base_url = acre.request.params["base_url"];
+  if (base_url != null) {
+    url = base_url + "?";
+  } else {
+    url = acre.request.app_url + "/queryeditor?"
+  }
   
   var q = acre.request.params["q"];
   if (q != null && q.length > 0) {

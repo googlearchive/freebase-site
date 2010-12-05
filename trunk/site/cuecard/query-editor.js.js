@@ -374,6 +374,7 @@ CueCard.QueryEditor.prototype._onReady = function() {
     }
     
     if ("cleanUp" in this._options && this._options.cleanUp) {
+        this._editor.getCode();     // XXX fulhack... seem to run into timing issues on startup without this
         this._onCleanUp();
     }
 };

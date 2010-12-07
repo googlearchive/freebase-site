@@ -49,12 +49,12 @@ function resource_url(apppath, file, params, extra_path) {
 };
 
 test("url_for", function() {
-  var routes =  mf.require("routing", "app_routes");
+  var router =  mf.require("routing", "app_routes").rules;
 
   if (h.is_client()) {
-    equal(h.url_for("schema", "index"), acre.request.app_url /*+ acre.request.base_path*/ + routes.get_route("schema").from + "/index");
-    equal(h.url_for("toolbox", "service", null, "/apps"), acre.request.app_url /*+ acre.request.base_path*/ + routes.get_route("toolbox").from + "/service/apps");
-    equal(h.url_for("homepage", "index"), acre.request.app_url /*+ acre.request.base_path*/ + "/");
+    equal(h.url_for("schema", "index"), acre.request.app_url /*+ acre.request.base_path*/ + router.route_for_app("schema").prefix + "/index");
+    equal(h.url_for("toolbox", "service", null, "/apps"), acre.request.app_url /*+ acre.request.base_path*/ + router.route_for_app("toolbox").prefix + "/service/apps");
+    equal(h.url_for("homepage", "index"), acre.request.app_url /*+ acre.request.base_path*/ + router.route_for_app("homepage", "index").prefix);
   }
   else {
     equal(h.url_for("schema", "index"), resource_url(routes.app_labels["schema"], "index"));

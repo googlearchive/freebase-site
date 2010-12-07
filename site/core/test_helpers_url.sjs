@@ -49,7 +49,8 @@ function resource_url(apppath, file, params, extra_path) {
 };
 
 test("url_for", function() {
-  var router =  mf.require("routing", "app_routes").rules;
+  var routes =  mf.require("routing", "app_routes");
+  var router = routes.rules;
 
   if (h.is_client()) {
     equal(h.url_for("schema", "index"), acre.request.app_url /*+ acre.request.base_path*/ + router.route_for_app("schema").prefix + "/index");

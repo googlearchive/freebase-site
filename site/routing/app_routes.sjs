@@ -79,6 +79,28 @@ function get_app(path, version) {
   return _app_paths[path];
 };
 
+// add test routing rules to test non-user facing apps (core libraries, etc.)
+if (!/www.(freebase|sandbox\-freebase)\.com$/.test(acre.request.server_name)) {
+  var tests = [
+    "/test/core", "core", "//core.site.freebase.dev",
+    "/test/i18n", "i18n", "//i18n.site.freebase.dev",
+    "/test/manifest", "manifest", "//manifest.site.freebase.dev",
+    "/test/promise", "promise", "//promise.site.freebase.dev",
+    "/test/queries", "queries", "//queries.site.freebase.dev",
+    "/test/routing", "routing", "//routing.site.freebase.dev",
+    "/test/test", "test", "//test.site.freebase.dev",
+    "/test/validator", "validator", "//validator.site.freebase.dev"
+  ];
+  for (var i=0,l=tests.length; i<l; i+=3) {
+    var prefix = tests[i];
+    var app_label = tests[i+1];
+    var path = tests[i+2];
+    app_labels[app_label] = path;
+    _app_paths[path] = app_label;
+    rules.add([{prefix:prefix, app:app_label}]);
+  }
+}
+
 // Urls for user-facing apps
 rules.add([
   {prefix:"/",                   app:"homepage", script: "index"},
@@ -240,3 +262,15 @@ var host_redirects = {
   "api.freebase.com": "http://wiki.freebase.com/wiki/Freebase_API",
   "api.sandbox-freebase.com": "http://wiki.freebase.com/wiki/Freebase_API"
 };
+
+// Dump all routing info and rules.
+// This is primarily for our automated buildbot/testrunners
+if (acre.current_script === acre.request.script) {
+  var all_routes = rules.all_routes();
+  var config = {
+    app_labels: app_labels,
+    app_paths: _app_paths,
+    rules: all_routes
+  };
+  acre.write(JSON.stringify(config, null, 2));
+}

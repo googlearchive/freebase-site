@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var base_config = JSON.parse(acre.get_source("CONFIG.json"));
+var base_config = JSON.parse(acre.require("CONFIG.json").body);
 
 function init(scope, config, options) {
   var app_mf = new Manifest(scope, extend({}, config, options));
@@ -341,13 +341,13 @@ Manifest.prototype = {
   get_source: function(app, file) {
     var args = this.require_args(app, file);
     if (args.local) {
-      return this.scope.acre.get_source(args.file);
+      return this.scope.acre.require(args.file).body;
     }
     if (!this.apps[args.app]) {
       throw("An app label for \"" + args.app + "\" must be declared in the MANIFEST.");
     }
     var path = [this.apps[args.app], args.file].join("/");
-    return this.scope.acre.get_source(path);
+    return this.scope.acre.require(path).body;
   },
 
   get_metadata: function(app) {

@@ -152,7 +152,7 @@ test("config", function() {
 
 
 test("extend config apps", function() {
-  var manifest_config = JSON.parse(acre.get_source("CONFIG.json"));
+  var manifest_config = JSON.parse(acre.require("CONFIG.json").body);
   var mf = new lib.Manifest(scope, {
     "apps": {
       // overwrite service in base manifest CONFIG.json

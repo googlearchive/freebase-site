@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var core_config = JSON.parse(acre.get_source("CONFIG.json"));
+var core_config = JSON.parse(acre.require("CONFIG.json").body);
 var base_manifest = acre.require(core_config.apps.manifest + "/MANIFEST");
 var Manifest = base_manifest.Manifest;
 var extend = base_manifest.extend;

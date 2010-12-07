@@ -272,7 +272,7 @@ var AcreApp;
     };
     
     AcreApp.prototype.get_base_url = function() {
-        return "http:" + this.get_path() + "." + this.get_acre_host();
+        return "http:" + this.get_versioned_path() + "." + this.get_acre_host();
     };
         
     AcreApp.prototype.get_view_url = function() {

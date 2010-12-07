@@ -18,141 +18,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-__author__ = 'masouras@google.com (Michael Masouras)'
-
-
-import sys, shutil, os, urllib2, tempfile, re, pwd, pdb, stat, json
+import sys, shutil, os, urllib2, tempfile, re, pwd, pdb, stat
 from optparse import OptionParser
 
-from appdeploy import Context, AppFactory
+from siteutil import Context, AppFactory, GetAcre, SERVICES
 from tempfile import mkdtemp, mkstemp
 
-ACRE_INSTANCE = None
-SITE_INSTANCE = None
-
-#local acre should be a singleton across the session
-def GetAcre(context):
-
-  global ACRE_INSTANCE
-
-  if ACRE_INSTANCE:
-    return ACRE_INSTANCE
-
-  ACRE_INSTANCE = Acre(context)
-
-  return ACRE_INSTANCE
-
-def GetSite(context):
-  pass
-
-class Acre:
-  '''Represents a local acre instance'''
-
-  def __init__(self, context):
-    self.context = context
-    self.url = None
-
-  def read_config(self):
-
-    c = self.context
-    filename = os.path.join(c.options.acre_dir, 'config', 'project.local.conf')
-    contents = None
-    config = {}
-
-    try:
-      fh = open(filename, 'r')
-    except:
-      return c.error('Cannot open file %s for reading' % filename)
-    else:
-      contents = fh.read()
-      fh.close()
-
-    if not len(contents):
-      return c.error('File %s has no contents' % filename)
-
-    for line in contents.split('\n'):
-      if len(line) <= 1 or line.startswith('#'):
-        continue
-
-      (key, value) = line.split('=')
-      value = value.strip('"')
-      config[key] = value
-
-    return config
-
-  def url(self):
-    if self.url:
-      return self.url
-
-    #this is an acre host and port
-    #e.g. myhostname.sfo:8113
-    #this must be a freebaseapps-style url so that individual app versions can be addressed as
-    #http://<version>.<app>.dev.<acre_host>:<acre_port>
-    acre_config = self.read_config()
-    ak = acre_config.keys()
-
-    if 'ACRE_PORT' in ak and 'ACRE_HOST_BASE' in ak:
-      self.url = "%s:%s" % (acre_config['ACRE_HOST_BASE'], acre_config['ACRE_PORT'])
-
-    return self.url
-
-
-  def site_dir(self):
-    '''Returns the freebase site directory under the specified acre instance'''
-
-    ad = self.context.options.acre_dir + '/_build/war/WEB-INF/scripts'
-    sd = ad + '/freebase/site'
-
-    if not os.path.isdir(sd):
-      try:
-        os.makedirs(sd)
-      except:
-        return c.error('There was a problem creating the directory %s' % SITE_DIR)
-
-    return sd
-
-
-class Site:
-  '''Represents a freebase site instance'''
-
-  def __init__(self, context):
-    self.context = context
-    self.config = None
-
-  def read_config(self):
-
-    c = self.context
-
-    if self.config:
-      return self.config
-
-    self.config_dir =  mkdtemp()
-
-    cmd = ['svn', 'checkout', c.SITE_SVN_URL + '/trunk/config', self.config_dir, '--username', c.googlecode_username, '--password', c.googlecode_password]
-    (r, result) = c.run_cmd(cmd)
-
-    if not r:
-      return c.error(result)
-
-
-    filename = self.config_dir + '/site.json'
-
-    try:
-      fd = open(filename, 'r')
-    except:
-      return c.error('Cannot open file %s for reading.' % filename)
-
-    contents = fd.read()
-    fd.close()
-
-    try:
-      contents = json.loads(contents)
-    except:
-      return c.error('Cannot JSON parse the config file %s' % filename)
-
-    return contents
-
-
+try:
+  import json
+except ImportError:
+  import simplejson as json
+except ImportError:
+  print "ERROR: One of json or simplejson python packages must be installed for this to work."
 
 class SVNLocation:
 
@@ -551,7 +428,6 @@ class ActionStatic:
     if not app:
       app = c.current_app
 
-    pdb.set_trace()
     c.set_acre(GetAcre(c))
 
     static_apps = app.get_static_dependencies_list()
@@ -708,12 +584,351 @@ class ActionTest:
     self.context = context
 
   def __call__(self):
+    c = self.context
+    c.googlecode_login()
+    from_branch_app = AppFactory(c)(c.options.app, c.options.version)
+    tag_app = from_branch_app.create_tag()
+
+
     return True
-    pass
 
 
-def update_context(c):
-  pass
+class ActionCreateAppBranch():
+
+  def __init__(self, context):
+    self.context = context
+
+
+  def __call__(self):
+    c = self.context
+    c.set_action("branch")
+
+    success = c.googlecode_login()
+    if not success:
+      return c.error('You must provide valid google code credentials to complete this operation.')
+
+    if not c.options.app:
+      return c.error('You have to specify a valid app to branch')
+
+    c.log('Starting branching app %s' % c.app.app_key, color=c.BLUE)
+
+    #first make sure we are not asked to branch a library app
+    #you should only be able to branch a page app, or core (all libraries together)
+    library_apps = AppFactory(c)('core').get_dependencies()
+
+    for label, d_app in library_apps.iteritems():
+      if c.options.app == d_app.app_key:
+        return c.error('You cannot branch a library app on its own')
+
+    #first branch the app that was specified in the command line
+    #if a version was specified and it exists already, this is a no-op (svn up)
+    from_app = AppFactory(c)(c.options.app, c.options.version)
+    branch_app = from_app.branch(c.options.version)
+
+    #set the app object that is going to be used for here onwards
+    #by any other stage
+    c.set_app(branch_app)
+
+    core_app = None
+
+    updated_apps = set()
+    app_bundle = set([branch_app])
+
+    #if this is not the core app, and it depends on core
+    #then branch the core app and update the version number in our app
+    if branch_app.app_key != 'core':
+      dependencies = branch_app.get_dependencies()
+      if dependencies:
+        #if we depend on core but not specify a version
+        if 'core' in dependencies.keys() and (not dependencies['core'].version or c.options.core):
+          #c.options.core will be a version if specified in the command line or None
+          #this means that we 'll either get back the core app version c.options.core
+          #or we 'll branch the core app to the next available version
+          core_app = dependencies['core'].branch(c.options.core)
+          #update the dependency of the branched app to the new core version
+          #e.g. homepage:16 --> core:56 instead of homepage:trunk --> core:trunk
+          branch_app.update_dependency('core', core_app)
+          updated_apps.add(branch_app)
+        #if we depend on a specific version of core, we are done
+        elif 'core' in dependencies.keys():
+          core_app = dependencies['core']
+    #this is the core app
+    else:
+      core_app = branch_app
+
+    #if there was a dependency on core, or this was the core app
+    if core_app:
+
+      app_bundle.add(core_app)
+      #for each of the dependent apps of core (i.e. all the library apps)
+      for label, d_app in core_app.get_dependencies().iteritems():
+
+        #branch the library app and update the core CONFIG file
+        branch_app = d_app.branch(core_app.version)
+
+        app_bundle.add(branch_app)
+
+        #update the core config file with the new dependency version
+        #only if it used to point to trunk and is now a new version
+        if branch_app and d_app.version != branch_app.version:
+          #point core to this specific library app version
+          #if the library is routing, then always point to release version
+          #if branch_app.app_key == 'routing':
+          #  core_app.update_dependency(label, AppFactory(c)('routing', 'release'))
+          #otherwise point to the specific version that was just branched
+          #else:
+          core_app.update_dependency(label, branch_app)
+          updated_apps.add(core_app)
+
+        if branch_app.app_key  != 'routing':
+
+          branch_app_dependencies = branch_app.get_dependencies()
+
+          if not branch_app_dependencies:
+              c.verbose("The app %s does not have a dependency to core" % branch_app_dependencies)
+              continue
+
+          if not (branch_app_dependencies.get('core') and branch_app_dependencies['core'].version == core_app.version):
+            branch_app.update_dependency('core', core_app)
+            updated_apps.add(branch_app)
+
+      for app in updated_apps:
+        app.svn_commit(msg='updated dependencies for %s' % app.name())
+
+      c.log('The following branches are going to be used: ')
+      for app in app_bundle:
+        c.log('\t%s\t\t%s' % (app.app_key, app.version))
+
+    return True
+
+
+class ActionCreateAppTag():
+
+  def __init__(self, context):
+    self.context = context
+
+    self.updated_apps = set()
+
+  def tag_core_libraries(self, core_app):
+
+    c = self.context
+    
+    #STEP 1: create a tag for the core app
+    #or retrieve the latest tag if it already exists
+    tag = core_app.last_tag()
+
+    if not tag:
+      tag = core_app.create_tag()
+      if not tag:
+        return c.error('Failed to create tag for %s' % core_app)
+
+    core_app = AppFactory(c)(core_app.app_key, core_app.version, tag)
+      
+    #STEP 2: create a tag for each library app
+    #or retrieve the latest tag if it already exists
+
+    #this just makes sure that if we need to update the core app config file, we do so
+    updated_core_app_dependency = set()
+
+    #for each of the dependent apps of core (i.e. all the library apps)
+    for label, d_app in core_app.get_dependencies().iteritems():
+
+      #core always depends on release of routing - no tags for routing
+      if d_app.app_key == 'routing':
+        updated_core_app_dependency.add(core_app.update_dependency(label, AppFactory(c)('routing', 'release')))
+        continue
+
+      #if the tag already exists, make sure the core app points to it and we are done
+      lib_app = d_app.get_tag(tag)
+
+      #tag does not exist and this is not the routing app
+      #so create a new tag for this library app
+      if not lib_app:
+        lib_app = d_app.create_tag(tag)
+
+      if not lib_app:
+        return c.error("Failed to create tag %s for %s" % (tag, d_app))
+
+      updated_core_app_dependency.add(core_app.update_dependency(label, lib_app))
+
+      lib_app_dependencies = lib_app.get_dependencies()
+      
+      if not lib_app_dependencies:
+        c.verbose("The app %s does not have a dependency to core" % lib_app)
+        continue
+
+      #update the library app to point to the correct tag of core
+      if lib_app.update_dependency('core', core_app):
+        self.updated_apps.add(lib_app)
+
+    if True in updated_core_app_dependency:
+        self.updated_apps.add(core_app)
+
+    return core_app
+
+
+  def __call__(self):
+    c = self.context
+    c.set_action("create_tag")
+
+    success = c.googlecode_login()
+    if not success:
+      return c.error('You must provide valid google code credentials to complete this operation.')
+
+    if not (c.options.app and c.options.version):
+      return c.error('You have to specify a valid app and version to create a tag out of.')
+
+    c.log('Creating tag for %s:%s' % (c.app.app_key, c.options.version), color=c.BLUE)
+
+    #first make sure we are not asked to branch a library app
+    #you should only be able to branch a page app, or core (all libraries together)
+    if c.is_library_app(c.options.app):
+      return c.error('You cannot create a tag of a library app on its own')
+
+    #first create a tag for the app that was specified in the command line
+    from_branch_app = AppFactory(c)(c.options.app, c.options.version)
+    tag_app = from_branch_app.create_tag()
+
+    #set the app object that is going to be used for here onwards
+    #by any other stage
+    c.set_app(tag_app)
+
+    core_app = None
+
+    #if this is not the core app, and it depends on core
+    #then branch the core app and update the version number in our app
+    if tag_app.app_key != 'core':
+      dependencies = tag_app.get_dependencies()
+      if dependencies and 'core' in dependencies.keys():
+        core_app = self.tag_core_libraries(dependencies['core'])
+        if tag_app.update_dependency('core', core_app):
+          self.updated_apps.add(tag_app)
+    else:
+      core_app = self.tag_core_libraries(tag_app)
+
+    for app in self.updated_apps:
+      app.svn_commit(msg='updated dependencies for %s' % app)
+
+    c.log('The following tags are going to be used: ')
+    for app in self.updated_apps:
+      c.log('\t%s\t\t%s' % (app.app_key, app.tag))
+
+    return True
+
+class ActionInfo:
+  '''information about apps and versions'''
+
+  def __init__(self, context):
+    self.context = context
+    context.no_email()
+    context.be_quiet()
+
+
+  def info_app(self):
+    c = self.context
+    app = self.context.app
+
+    print "_" * 84
+    print "App: %s\n" % app.app_key
+    print "[svn]"
+
+    last_version = app.last_svn_version()
+    dep = {}
+    if last_version:
+        dep = AppFactory(c)(app.app_key, last_version).get_dependencies()
+
+    if dep and dep.get('core'):
+        last_version = "%s (%s)" % (last_version, dep.get('core').version)
+
+    print "Last Version:\t\t%s" % last_version
+
+    def get_core_dependency(c, app, version, services):
+        url = "%s/MANIFEST" % AppFactory(c)(app.app_key, version).url(services=services)
+        mf = c.fetch_url(url, isjson=True)
+
+        if mf and mf.get('result'):
+            dep = app.get_dependencies(config=mf['result'])
+            if dep and dep.get('core'):
+                return dep.get('core').version
+
+        return None
+
+    for environment in ['sandbox', 'otg']:
+        print "\n[%s]" % environment
+        e_app = app.get_graph_app_from_environment(SERVICES[environment])
+        #get the released version and its core dependency
+        e_released = e_app.release or None
+        released_core_dependency = get_core_dependency(c, app, e_released, SERVICES[environment])
+        if released_core_dependency:
+            e_released = "%s (%s)" % (e_released, released_core_dependency)
+
+        print "Released Version:\t%s" % e_released or 'trunk'
+
+        #get the last version and its core dependency
+        if e_app.versions:
+            e_last = e_app.versions[0]['name']
+            last_core_dependency = get_core_dependency(c, app, e_last, SERVICES[environment])
+            if last_core_dependency:
+                e_last = "%s (%s)" % (e_last, last_core_dependency)
+        else:
+            e_last = None
+
+        print "Last Version:\t\t%s" % e_last or 'trunk'
+
+
+    print
+    return True
+
+  def info_all_apps(self):
+    c = self.context
+    app = self.context.app
+
+    return True
+
+  def __call__(self):
+
+    c = self.context
+
+    success = c.googlecode_login(auto_reuse_username=True)
+    if not success:
+      return c.error('You must provide valid google code credentials to complete this operation.')
+
+    if c.options.app:
+      return self.info_app()
+    else:
+      return self.info_all_apps()
+
+
+
+
+
+class ActionRelease:
+
+  def __init__(self, context):
+    self.context = context
+
+  def __call__(self):
+
+    c = self.context
+
+    c.set_action("release")
+    if not (c.options.app and c.options.graph and c.options.version):
+      return c.error('You must specify the app key (e.g. "schema"), a graph and a version to release')
+
+    c.log('Releasing app %s version %s' % (c.app.app_key, c.app.version), color=c.BLUE)
+
+    success = c.freebase_login()
+    if not success:
+      return c.error('You must provide valid freebase credentials in order to release an app')
+
+    try:
+      c.freebase.set_app_release(c.app.app_id, c.app.version)
+    except:
+      c.error('There was an error releasing the app.')
+      raise
+
+    return True
+
 
 def main():
 
@@ -728,6 +943,10 @@ def main():
       ('setup', 'setup acre, site and link', ActionSetup),
       ('setup_dns', 'setup wildcard dns for your host - Mac OS X only', ActionSetupDNS),
       ('static', 'static', ActionStatic),
+      ('release', 'release a specific version of an app', ActionRelease),
+      ('info', 'provide information on all apps or a specific app', ActionInfo),
+      ('create_branch', 'creates a branch of your app', ActionCreateAppBranch),
+      ('create_tag', 'creates a tag of your app', ActionCreateAppTag),
       ('test', 'test', ActionTest)
       ]
 
@@ -768,7 +987,6 @@ def main():
 
 
   context = Context(options)
-  update_context(context)
   for action in args:
     for valid_action in valid_actions:
       if action == valid_action[0]:

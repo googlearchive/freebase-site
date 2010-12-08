@@ -202,7 +202,7 @@ if (!has_permission) {
 }
 **/
 
-if (has_permission) {
+//if (has_permission) {
   test("delete domain base domain", function() {
     var domain = h.create_domain(user.id);
     try {
@@ -238,6 +238,6 @@ if (has_permission) {
 
     }
   });
-}
+//}
 
 acre.test.report();

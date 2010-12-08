@@ -202,42 +202,42 @@ if (!has_permission) {
 }
 **/
 
-//if (has_permission) {
-  test("delete domain base domain", function() {
-    var domain = h.create_domain(user.id);
-    try {
-      // add a base key
-      acre.freebase.mqlwrite({
-        id:domain.id, key:{value:domain.key.value, namespace:"/base", connect:"insert"}
+
+test("delete domain base domain", function() {
+  var domain = h.create_domain(user.id);
+  try {
+    // add a base key
+    acre.freebase.mqlwrite({
+      id:domain.id, key:{value:domain.key.value, namespace:"/base", connect:"insert"}
+    });
+    var result;
+    delete_domain(domain.id, user.id)
+      .then(function(deleted_info) {
+        result = deleted_info;
       });
-      var result;
-      delete_domain(domain.id, user.id)
-        .then(function(deleted_info) {
-          result = deleted_info;
-        });
-      acre.async.wait_on_results();
+    acre.async.wait_on_results();
 
-      var [domain_info, deleted_base_key, deleted_domain] = assert_deleted_result(result, domain);
+    var [domain_info, deleted_base_key, deleted_domain] = assert_deleted_result(result, domain);
 
-      // assert /base key is deleted
-      equal(deleted_base_key.key.length, 1);
-      equal(deleted_base_key.key[0].value, domain.key.value);
-      equal(deleted_base_key.key[0].namespace, "/base");
-      equal(deleted_base_key.key[0].connect, "deleted", "key deleted");
-      var has_key = acre.freebase.mqlread({id:domain.guid, key:{value:domain.key.value, namespace:"/base"}}).result;
-      ok(!has_key, "key delete confirmed");
+    // assert /base key is deleted
+    equal(deleted_base_key.key.length, 1);
+    equal(deleted_base_key.key[0].value, domain.key.value);
+    equal(deleted_base_key.key[0].namespace, "/base");
+    equal(deleted_base_key.key[0].connect, "deleted", "key deleted");
+    var has_key = acre.freebase.mqlread({id:domain.guid, key:{value:domain.key.value, namespace:"/base"}}).result;
+    ok(!has_key, "key delete confirmed");
 
+  }
+  finally {
+    if (domain) {
+      h.delete_domain(domain);
+      acre.freebase.mqlwrite({
+        guid:domain.guid, key:{value:domain.key.value, namespace:"/base", connect:"delete"}
+      });
     }
-    finally {
-      if (domain) {
-        h.delete_domain(domain);
-        acre.freebase.mqlwrite({
-          guid:domain.guid, key:{value:domain.key.value, namespace:"/base", connect:"delete"}
-        });
-      }
 
-    }
-  });
-//}
+  }
+});
+
 
 acre.test.report();

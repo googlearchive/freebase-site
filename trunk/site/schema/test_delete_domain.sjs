@@ -172,7 +172,8 @@ test("delete_domain with types", function() {
     var [domain_info, deleted_base_key, deleted_domain] = assert_deleted_result(result, domain);
 
     // assert type id is no longer valid
-    result = acre.freebase.mqlread({id:type.id, type:"/type/type", domain:{id:null}}).result;
+    result = acre.freebase.mqlread({guid:type.guid, type:"/type/type", "/type/type/domain":{id:domain.id}}).result;
+    console.log(result);
     ok(!result, type.id + " is no longer valid");
   }
   finally {

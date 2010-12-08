@@ -56,11 +56,7 @@
     ]
   },
   "tests": {
-    "all": {"fbauth": true},
-    "test_delete_domain:delete_domain_base_domain": {"bugs":["000"]},
-    "test_delete_domain:delete_domain_with_types": {"bugs":["000"]},
-    "test_create_base:create_base": {"bugs":["000"]},
-    "test_create_base:create_base_with_description": {"bugs":["000"]}
+    "all": {"fbauth": true}
   }
 }
 

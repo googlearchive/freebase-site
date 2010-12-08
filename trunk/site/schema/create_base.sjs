@@ -117,13 +117,9 @@ function create_base(options) {
           connect: "insert"
         }
       };
-      var options = null;
-      if (/www.(freebase|sandbox\-freebase)\.com$/.test(acre.request.server_name)) {
-        // http_sign: false only works on www.freebase|sandbox-freebase.com
-        options = {
-          http_sign: false
-        };
-      }
+      var options = {
+        http_sign: false
+      };
       created = acre.freebase.mqlwrite(q, null, options).result;
 
       if (o.description !== "") {

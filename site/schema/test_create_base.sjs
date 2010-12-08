@@ -59,23 +59,6 @@ if (!user) {
   acre.exit();
 }
 
-// does current user have permission on /base?
-/**
-var has_permission = acre.freebase.mqlread({
-  id: "/base",
-  permission: {permits: [{member: [{id: user.id}]}]}
-}).result;
-
-test(user.id + " has permission to /base", function() {
-  ok(has_permission, "User needs permission to /base to run this test");
-});
-
-if (!has_permission) {
-  acre.test.report();
-  acre.exit();
-}
-**/
-
 function get_name() {
   return "test_create_base_" + h.random();
 };
@@ -87,7 +70,11 @@ function delete_base(base) {
       value: base.key.value,
       namespace: base.key.namespace,
       connect: "delete"
-    },
+    }
+  };
+  acre.freebase.mqlwrite(q, null, {http_sign: false});
+  var q = {
+    guid: base.guid,
     type: {
       id: "/type/domain",
       connect: "delete"

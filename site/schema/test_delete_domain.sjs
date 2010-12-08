@@ -185,31 +185,13 @@ test("delete_domain with types", function() {
   }
 });
 
-/**
-// does current user have permission on /base?
-var has_permission = acre.freebase.mqlread({
-  id: "/base",
-  permission: {permits: [{member: [{id: user.id}]}]}
-}).result;
-
-test(user.id + " has permission to /base", function() {
-  ok(has_permission, "User needs permission to /base to run this test");
-});
-
-if (!has_permission) {
-  acre.test.report();
-  acre.exit();
-}
-**/
-
-
 test("delete domain base domain", function() {
   var domain = h.create_domain(user.id);
   try {
     // add a base key
     acre.freebase.mqlwrite({
       id:domain.id, key:{value:domain.key.value, namespace:"/base", connect:"insert"}
-    });
+    }, null, {http_sign:false});
     var result;
     delete_domain(domain.id, user.id)
       .then(function(deleted_info) {
@@ -233,7 +215,7 @@ test("delete domain base domain", function() {
       h.delete_domain(domain);
       acre.freebase.mqlwrite({
         guid:domain.guid, key:{value:domain.key.value, namespace:"/base", connect:"delete"}
-      });
+      }, null, {http_sign:false});
     }
 
   }

@@ -58,14 +58,9 @@ function delete_domain(domain_id, user_id, dry_run) {
         // We need special permission to remove base keys.
         // We need to write as /freebase/site/schema app's permitted user: /user/appeditoruser
         // by setting http_sign=false.
-        // However, this is only available on production and sandbox.
-        var options = null;
-        if (/www.(freebase|sandbox\-freebase)\.com$/.test(acre.request.server_name)) {
-          // http_sign: false only works on www.freebase|sandbox-freebase.com
-          options = {
-            http_sign: false
-          };
-        }
+        var options = {
+          http_sign: false
+        };
         try {
           var q = {
             guid: info.guid,

@@ -4,6 +4,6 @@
   },
 
   "tests": {
-    "all": {"fbauth": true, "bugs":["000"]}
+    "all": {"fbauth": true}
    }
 }

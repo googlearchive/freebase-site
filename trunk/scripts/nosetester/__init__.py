@@ -64,6 +64,9 @@ class Controller:
         else:
             self.freebase_service = freebase_service_host
 
+        self.devel_service = 'http://devel.' + \
+                              self.freebase_service_host + \
+                             ':' + str(self.acre_service_port) 
         self.apps_path = config.get('apptests','apps_path')
         app_list = config.get('apptests','app_list')
         if app_list == '': 
@@ -73,11 +76,30 @@ class Controller:
         self.app_config = {}
         self.test_urls = []
         self.path_for_url = {}
+        self.app_to_path = {}
+        self.gen_paths()
         self.gen_test_urls()
 
+    def gen_paths(self):
+        url = self.devel_service + '/test/routing/app_routes'
+        r=self.request_url(url)
+        data = r['body_json']
+        apps = []
+        # get the site app name
+        for k, v in data['app_paths'].iteritems():
+            m = re.match('^\/\/\S+\.site\.freebase.+', k)
+            if m: apps.append(v)
+        for r in data['rules']:
+            app = r.get('app')
+            if not app: continue
+            if app in apps:
+                self.app_to_path[app] = r['prefix']
+
     def gen_test_urls(self):
-        site_files = os.listdir(self.apps_path)
-        if self.app_list: site_files = self.app_list
+        if self.app_list:
+            site_files = self.app_list
+        else:
+            site_files = self.app_to_path.keys()
         for f1 in site_files:
             app_path = self.apps_path + '/' + f1
             if os.path.isdir(app_path):
@@ -90,25 +112,17 @@ class Controller:
                         require_login = self.get_tst_attribute(app_path, 'all', 'fbauth')
                         if not require_login:
                             require_login = self.get_tst_attribute(app_path, t, 'fbauth')
-                        if require_login is True:
-                            u = 'http://devel.' + \
-                                 self.freebase_service_host + \
-                                 ':' + str(self.acre_service_port) + \
-                                 '/' + f1 + '/' + t + '?output=json'
-                        else:
-                            u = 'http://' + f1 + '.site.freebase.dev.' + \
-                                self.acre_service + '/' + t + '?output=json'
+                        u = self.devel_service + \
+                            self.app_to_path[f1] + '/' + t
                         self.test_urls.append(u)  
                         self.path_for_url[u] = app_path
         for u in  self.test_urls: print u
                                   
     def get_tst_attribute(self, app_path, key, attr):
         data = self.app_config[app_path]
-        print data
         if data.get('tests'):
             for k, v in data['tests'].iteritems():
                 if k == key:
-                    print "MATCH! %s" % k
                     ret = v.get(attr)
                     return ret
         else:
@@ -122,22 +136,25 @@ class Controller:
             try:
                 self.app_config[app_path] = simplejson.loads(data)
             except:
-                print 'WARNING: %s is not a valid json file' % cfg
+                print "%s invalid json?" % cfg
+                raise
                 
     def run_acre_tst(self, url):
         fails = 0
         results = {}
+        path = url.replace(self.devel_service, '')
         app_path = self.path_for_url.get(url)
         bugs = self.get_tst_attribute(app_path, 'all', 'bugs')
         if bugs:
             print 'SKIP. this whole app has bugs %s' % ' '.join(bugs)
-            results[url] = ['skip', 'app has known bugs %s' % bugs]
+            results[path] = ['skip', 'app has known bugs %s' % bugs]
             return results
-        r=self.request_url(url)
+        runurl = url + '?output=json'
+        r=self.request_url(runurl)
         if r is None:
-            msg = 'url request failed for %s' % url
+            msg = 'url request failed for %s' % runurl
         elif 'body_json' not in r: 
-            msg = 'no valid json found at %s' % url
+            msg = 'no valid json found at %s' % runurl
         else:
             msg = None
         if msg:
@@ -145,7 +162,6 @@ class Controller:
             return results
         thisresult = r['body_json']
         modules = thisresult['testfiles'][0]['modules']
-        path = thisresult['testfiles'][0]['run_url']
         test_prefix = thisresult['testfiles'][0]['file']
         bugs = self.get_tst_attribute(app_path, test_prefix, 'bugs')
         print "TEST PREFIX %s" % test_prefix
@@ -153,8 +169,6 @@ class Controller:
             print 'SKIP. this test file has bugs %s' % ' '.join(bugs)
             results[test_prefix] = ['skip', 'test file has known bugs %s' % bugs]
             return results
-        print "BUGS %s" % bugs
-        target = path
         output = ''
         for m in modules:
             mname = m['name']
@@ -170,6 +184,7 @@ class Controller:
                 short_testid = '%s:%s%s' % (test_prefix, mname, name)
                 testid = '%s:%s%s' % (path, mname, name)
                 bugs = self.get_tst_attribute(app_path, short_testid, 'bugs')
+                print "TESTID %s BUGS %s" % (short_testid, bugs)
                 if bugs:
                   print 'SKIP. this test has bugs %s' % ' '.join(bugs)    
                   results[testid] = ['skip', 'test has known bugs %s' % bugs]
@@ -178,17 +193,11 @@ class Controller:
                 if f > 0:
                     # test assertions failed
                     flog = self.get_fail_logs(t['log'])
-                    output = 'FAIL\n' + flog
-                    output += '-'*77 + '\n'
-                    output = msg + output
+                    flog += '\nURL: %s' % runurl
                     results[testid] = [False, flog]
                 else:
                     results[testid] = [True, None]
         
-        if fails > 0:
-            print 'some tests for %s failed' % url
-            print output
-            #assert 'some tests failed' is True
         return results
 
     def get_fail_logs(self, obj):
@@ -196,8 +205,11 @@ class Controller:
         i = 0
         for r in obj:
             i += 1
-            if r['result'] is False or r['result'] is None:
-                out += 'assert %s: %s\n' % (i, r['message'])
+            res = r.get('result') 
+            msg = r.get('message') 
+            if not msg: msg = "fail but no message found"
+            if res is False or res is None:
+                out += 'assert %s: %s\n' % (i, msg)
         return out
 
     def get_response_headers(self, response=None):
@@ -227,23 +239,19 @@ class Controller:
         return self.response_headers
 
     def parse_headers(self, headers=None):
-        #print self.response.info()
         p = re.compile("[\r\n]+")
         if headers is None:
             headers = p.split("%s" % self.response.info())
         else:
             headers = p.split("%s" % headers)
-        #print "headers: %s " % headers
         sep = re.compile('[a-zA-Z\-]+:[\s]*')
         for h in headers:
-            #print "header line: " + h
             h = sep.split(h)
             if len(h) > 1:
                 field = h.pop(0)
                 value = h.pop()
                 value = (value.rstrip()).lstrip()
                 self.response.headers[field] = value
-                #print "field: " + field + " value: " + value
 
 
     def freebase_login(self):
@@ -267,8 +275,6 @@ class Controller:
             cookies = self.cookiejar.make_cookies(respobj, request)
             for c in cookies:
                 print "Cookie: %s" % c
-
-            #print "Got response: %s" % respdata
 
         except urllib2.HTTPError, e:
             print "Login failed: %s " % e

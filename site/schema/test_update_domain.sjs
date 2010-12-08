@@ -28,7 +28,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+/**
+ * In order to successfully RUN this test, you must be
+ *
+ * logged in on *freebase.com
+ *
+ * AND
+ *
+ * If on devel url
+ *   1. have permission on /base OR
+ *   2. have local write_user as appeditoruser with the auth secrect
+ */
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").mf;

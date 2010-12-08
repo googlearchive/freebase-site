@@ -29,6 +29,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * In order to successfully RUN this test, you must be
+ *
+ * logged in on *freebase.com
+ *
+ * AND
+ *
+ * If on devel url
+ *   1. have permission on /base OR
+ *   2. have local write_user as appeditoruser with the auth secrect
+ */
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").mf;
@@ -49,6 +60,7 @@ if (!user) {
 }
 
 // does current user have permission on /base?
+/**
 var has_permission = acre.freebase.mqlread({
   id: "/base",
   permission: {permits: [{member: [{id: user.id}]}]}
@@ -62,6 +74,7 @@ if (!has_permission) {
   acre.test.report();
   acre.exit();
 }
+**/
 
 function get_name() {
   return "test_create_base_" + h.random();

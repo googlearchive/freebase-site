@@ -327,7 +327,7 @@ function get_app (appid, just_files, timestamp) {
     if (!md) { bad_appid(appid); }
     
     switch (md.__source__) {
-      case "file" :
+      case "disk" :
         ret = make_disk_app(md);
         ret.repository.url = "http://" + resource.acre_host;
         break;

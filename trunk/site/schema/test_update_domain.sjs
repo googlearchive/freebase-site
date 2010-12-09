@@ -85,12 +85,13 @@ test("update_domain name", function() {
 
 test("update_domain key", function() {
   var domain = h.create_domain(user.id);
+  var new_key = sh.generate_domain_key(domain.name+"updated");
   try {
     var updated;
     update_domain({
       id: domain.id,
       namespace: user.id,
-      key: sh.generate_domain_key(domain.name+"updated")
+      key: new_key
     })
     .then(function(id) {
       updated = id;
@@ -98,8 +99,10 @@ test("update_domain key", function() {
     acre.async.wait_on_results();
     ok(updated, updated);
 
-    var result = acre.freebase.mqlread({id:updated, key:{namespace:user.id, value:null}}).result;
-    equal(result.key.value, sh.generate_domain_key(domain.name+"updated"));
+    var q = {id:updated, key:{namespace:user.id, value:null}};
+    var env = acre.freebase.mqlread(q);
+    ok(env.result, JSON.stringify({q:q, env:env}));
+    equal(env.result.key.value, new_key);
   }
   finally {
     if (domain) {

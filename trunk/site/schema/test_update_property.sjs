@@ -91,8 +91,10 @@ test("update_property key", function() {
     acre.async.wait_on_results();
     ok(updated, updated);
 
-    var result = acre.freebase.mqlread({id:updated, key:{namespace:type.id, value:null}}).result;
-    equal(result.key.value, sh.generate_property_key(prop.name + "updated"));
+    var q = {id:updated, key:{namespace:type.id, value:null}};
+    var env = acre.freebase.mqlread(q);
+    ok(env.result, JSON.stringify({q:q, env:env}));
+    equal(env.result.key.value, sh.generate_property_key(prop.name + "updated"));
   }
   finally {
     if (prop) h.delete_property(prop);

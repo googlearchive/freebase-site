@@ -78,12 +78,13 @@ test("update_type name", function() {
 
 test("update_type key", function() {
   var type = h.create_type(user_domain);
+  var new_key = sh.generate_type_key(type.name+"updated");
   try {
     var updated;
     update_type({
       domain: user_domain,
       id: type.id,
-      key: sh.generate_type_key(type.name+"updated")
+      key: new_key
     })
     .then(function(id) {
       updated = id;
@@ -94,8 +95,7 @@ test("update_type key", function() {
     var q = {id:updated, key:{namespace:user_domain, value:null}};
     var env = acre.freebase.mqlread(q);
     ok(env.result, JSON.stringify({q:q, env:env}));
-    var result = env.result;
-    equal(result.key.value, sh.generate_type_key(type.name+"updated"));
+    equal(env.result.key.value, new_key);
   }
   finally {
     if (type) {

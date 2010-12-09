@@ -273,7 +273,15 @@ if (typeof window.SERVER === "object" && window.SERVER.acre) {
       category: "object",
       parent: "#site-search-box",
       align: "right",
-      status: null
+      advanced: true,
+      // TODO: get static urls for codemirror from CONFIG
+      codemirror: {
+        path: "http://freebaselibs.com/static/freebase_site/codemirror/a9a6a3d5a293b55143be441e4196871f/",
+        codemirrorjs: "codemirror.mf.js",
+        basefiles: [],
+        parserfile: ["codemirror-frame.mf.js"],
+        stylesheet: ["http://freebaselibs.com/static/freebase_site/codemirror/a9a6a3d5a293b55143be441e4196871f/codemirror-frame.mf.css"]
+      }
     });
     var search_label = $("#site-search-label"),
     search_suggest = $("#site-search-box .fbs-pane");
@@ -282,7 +290,7 @@ if (typeof window.SERVER === "object" && window.SERVER.acre) {
       .bind("fb-select", function(e, data) {
          window.location = root + "/view" + data.id;
         return false;
-      })
+      })/**
       .bind("fb-pane-show", function(e, data) {
         search_label.html("<span>Select an item from the list</span>").removeClass("loading");
       })
@@ -306,7 +314,7 @@ if (typeof window.SERVER === "object" && window.SERVER.acre) {
         if (!search_suggest.is(":visible") && search_label.is(":visible")) {
           $('#site-search-label').slideUp("fast");
         }
-      });
+      })**/;
 
       $('.SearchBox-form').submit(function(e) {
         /* Do not allow form to be submitted without content */

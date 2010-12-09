@@ -57,7 +57,10 @@
     $.extend($.suggest.suggest_property, {
       defaults: $.extend(true, {}, $.suggest.suggest.defaults, {
         type: "/type/property",
-        type_strict: "any"
+        type_strict: "any",
+        css: {
+          status: "fbs-status fbs-ect-status"
+        }
       })
     });
 

@@ -1,6 +1,6 @@
 [
     {
-        "host": ".@ACRE_HOST_BASE@",
+        "host": ["@ACRE_HOST_BASE@", "www.@ACRE_HOST_BASE@"],
         "rules": [
             {
                 "from": {

@@ -462,6 +462,9 @@
     $.extend(sect, {
         defaults:  $.extend(true, {}, $.suggest.suggest.defaults, {
           category: "expected_type",
+          css: {
+            status: "fbs-status fbs-ect-status"
+          },
           tooltip_options: {
             events: {def: "click,mouseout"},
             position: "bottom right",

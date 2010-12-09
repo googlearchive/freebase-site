@@ -459,22 +459,32 @@ Global Search Box
     font-style: normal;
 }
 
-#site-search-label {
-    display: none;
-    text-align: center;
+#site-search-box .fbs-status a,
+#site-search-box .fbs-advanced-link-on {
     color: #fff;
-    font-size: 1.1em;
-    margin-top: 0.5em;
 }
 
+
+#site-search-box .loading .fbs-advanced-link {
+    padding-right: 20px;
+    background: url(static:///resources/images/ui/loader-sm-snake-orange.gif) no-repeat center right;
+}
+
+#site-search-box .fbs-status  {
+    color: #fff;
+    margin-top: 0.5em;
+    background: #f70;
+    border: none;
+}
+
+#site-search-label {
+  display:none;
+}
 #site-search-label span {
     padding: 0.5em 0;
 }
 
-#page-header .loading span {
-    padding-right: 20px;
-    background: url(static:///resources/images/ui/loader-sm-snake-orange.gif) no-repeat center right;
-}
+
 
 /*
 -----------------------------------------

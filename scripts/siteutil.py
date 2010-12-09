@@ -50,8 +50,7 @@ except ImportError:
 try:
     from freebase.api import HTTPMetawebSession, MetawebError
 except ImportError:
-    print "ERROR: You have to install freebase-python for this to work. http://code.google.com/p/freebase-python/source/checkout"
-    exit(-1)
+    pass
 
 from freebase.api.mqlkey import quotekey, unquotekey
 

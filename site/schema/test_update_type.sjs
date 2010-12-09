@@ -91,7 +91,10 @@ test("update_type key", function() {
     acre.async.wait_on_results();
     ok(updated, updated);
 
-    var result = acre.freebase.mqlread({id:updated, key:{namespace:user_domain, value:null}}).result;
+    var q = {id:updated, key:{namespace:user_domain, value:null}};
+    var env = acre.freebase.mqlread(q);
+    ok(env.result, JSON.stringify({q:q, env:env}));
+    var result = env.result;
     equal(result.key.value, sh.generate_type_key(type.name+"updated"));
   }
   finally {

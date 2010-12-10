@@ -1,11 +1,1 @@
-{
-  "apps" : {
-    "core": "//core.site.freebase.dev"
-  },
-  "stylesheet": {
-    "qunit.mf.css": ["qunit.css"]
-  },
-  "javascript": {
-    "qunit.mf.js": ["qunit.js"]
-  }
-}
+{"app_tag": null, "javascript": {"qunit.mf.js": ["qunit.js"]}, "apps": {"core": "//61.core.site.freebase.dev"}, "app_key": "test", "stylesheet": {"qunit.mf.css": ["qunit.css"]}, "app_version": 61}

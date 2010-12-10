@@ -1,1 +1,1 @@
-{"apps": {"core": "//52.core.site.freebase.dev"}}
+{"app_tag": "52h", "app_version": "52", "apps": {"core": "//52h.core.site.tags.svn.freebase-site.googlecode.dev"}, "app_key": "validator"}

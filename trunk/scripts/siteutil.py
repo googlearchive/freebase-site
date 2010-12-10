@@ -49,10 +49,9 @@ except ImportError:
 
 try:
     from freebase.api import HTTPMetawebSession, MetawebError
+    from freebase.api.mqlkey import quotekey, unquotekey
 except ImportError:
     pass
-
-from freebase.api.mqlkey import quotekey, unquotekey
 
 ## EMAIL SETTINGS ##
 

@@ -291,7 +291,7 @@ Manifest.prototype = {
         try {
             var app = this.get_metadata(script[0]);
             var file = app.files[script[1]];
-            var source = this.get_source(script[0], script[1]);
+            var source = this.get_mjt_source(script[0], script[1]);
             if (file && file.handler && file.handler === 'mjt') {
               source = this.compile_mjt(source, "//" + app.host + "/" + file.name);
             }
@@ -312,7 +312,7 @@ Manifest.prototype = {
           try {
             var app = this.get_metadata();
             var file = app.files[script[0]];
-            var source = this.get_source(script[0]);
+            var source = this.get_mjt_source(script[0]);
             if (file && file.handler && file.handler === 'mjt') {
               source = this.compile_mjt(source, "//" + app.host + "/" + file.name);
             }
@@ -348,6 +348,18 @@ Manifest.prototype = {
     }
     var path = [this.apps[args.app], args.file].join("/");
     return this.scope.acre.require(path).body;
+  },
+  
+  get_mjt_source: function(app, file) {
+    var args = this.require_args(app, file);
+    if (args.local) {
+      return this.scope.acre.get_source(args.file);
+    }
+    if (!this.apps[args.app]) {
+      throw("An app label for \"" + args.app + "\" must be declared in the MANIFEST.");
+    }
+    var path = [this.apps[args.app], args.file].join("/");
+    return this.scope.acre.get_source(path);
   },
 
   get_metadata: function(app) {

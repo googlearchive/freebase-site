@@ -1,1 +1,1 @@
-{"test": {"files": ["test_apis", "test_deferred"]}, "app_tag": null, "app_version": 61, "apps": {"core": "//61.core.site.freebase.dev"}, "app_key": "promise"}
+{"test": {"files": ["test_apis", "test_deferred"]}, "app_version": "61", "app_tag": "61a", "apps": {"core": "//61a.core.site.tags.svn.freebase-site.googlecode.dev"}, "app_key": "promise"}

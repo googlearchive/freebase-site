@@ -1,0 +1,19 @@
+{
+  "apps" : {
+      "core": "//core.site.freebase.dev"
+  },
+  "stylesheet": {
+    "admin.mf.css": [
+      "admin_core.css"
+    ]
+  },
+  "javascript": {
+    "admin.mf.js": [
+    	["jqueryui", "jquery.ui.tabs.js"],
+     	["template", "jquery.showrow.js"],
+      	["jquerytools", "tabs.js"],
+      	["jquerytools", "tooltip.js"],
+  	"admin_core.js"
+    ]
+  }
+}

@@ -55,6 +55,10 @@ Manifest.prototype = {
     var args = this.require_args(app, file);
     if (args.local) {
       // local image files relative to the current app
+      if ('app_key' in this.config && 'app_tag' in this.config) { 
+        return "/static/" + this.config.app_key + "/" + this.config.app_tag + "/" + args.file;
+      }
+        
       return this.image_base_url + "/" + args.file;
     }
     else {

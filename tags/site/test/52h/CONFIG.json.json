@@ -1,1 +1,1 @@
-{"stylesheet": {"qunit.mf.css": ["qunit.css"]}, "javascript": {"qunit.mf.js": ["qunit.js"]}, "apps": {"core": "//52.core.site.freebase.dev"}}
+{"app_tag": "52h", "javascript": {"qunit.mf.js": ["qunit.js"]}, "apps": {"core": "//52h.core.site.tags.svn.freebase-site.googlecode.dev"}, "app_key": "test", "stylesheet": {"qunit.mf.css": ["qunit.css"]}, "app_version": "52"}

@@ -1,3 +1,34 @@
+/*
+ * Copyright 2010, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 var base_config = JSON.parse(acre.get_source("CONFIG.json"));
 
 function init(scope, config, options) {
@@ -17,7 +48,11 @@ Manifest.prototype = {
     this.scope = scope;
 
     this.config = extend({}, base_config, config);  // extend with base_config
-    extend(this.config.apps, base_config.apps, this.config.apps); // update config.apps with base_config.
+    var apps = extend({}, base_config.apps);
+    if (config) {
+      extend(apps, config.apps);
+    }
+    extend(this.config.apps, apps); // update config.apps with base_config.
 
     this.apps = this.config.apps || {};
     this.stylesheet = this.config.stylesheet || {};
@@ -31,6 +66,13 @@ Manifest.prototype = {
   },
 
   css_src: function(key) {
+
+    //new-style static urls - the presence of all these keys in the CONFIG file
+    //mean we need to print out a /fss/<app_key>/<app_tag>/<bundle_filename> url
+    if ("static" in this.config && 'app_key' in this.config && 'app_tag' in this.config) { 
+      return "/fss/" + this.config.app_key + "/" + this.config.app_tag + "/" + args.file;
+    }
+
     return this.static_base_url + "/" + key;
   },
 
@@ -55,10 +97,12 @@ Manifest.prototype = {
     var args = this.require_args(app, file);
     if (args.local) {
       // local image files relative to the current app
+
+      //static bundle generation - this is for /MANIFEST/foo.mf.css requests that spit-out CSS files that have url() calls in them
       if (("use_static_urls" in acre.request.params || "static" in this.config) && 'app_key' in this.config && 'app_tag' in this.config) { 
         return "/fss/" + this.config.app_key + "/" + this.config.app_tag + "/" + args.file;
       }
-        
+
       return this.image_base_url + "/" + args.file;
     }
     else {
@@ -166,7 +210,14 @@ Manifest.prototype = {
   },
 
   css_resource_url: function(url, use_acre_url) {
-    return "url(" + url + ")";
+    return this.quoted_css_url(url);
+  },
+
+  quoted_css_url: function(url) {
+    if (url.indexOf('"') !== 0 && url.indexOf("'") !== 0) {
+      url = '"'+url+'"';
+    }
+    return 'url('+url+')';
   },
 
   css_preprocessor: function(str, use_acre_url) {
@@ -179,7 +230,7 @@ Manifest.prototype = {
       buf.push(l.replace(url_regex, function(m, group) {
         var url = group.replace(/^\s+|\s+$/g, "");
         if (url.indexOf("http://") == 0 || url.indexOf("https://") === 0) {
-          return m;
+          return self.quoted_css_url(url);
         }
         else if (scheme_regex.test(url)) {
           return self.css_resource_url(url, use_acre_url);
@@ -197,10 +248,10 @@ Manifest.prototype = {
           if (use_acre_url) {
             var args = self.require_args.apply(self, params);
             var app_path = args.local ? self.scope.acre.current_script.app.path : self.apps[args.app];
-            return "url(" + app_path + "/" + args.file + ")";
+            return self.quoted_css_url(app_path + "/" + args.file);
           }
           else {
-            return "url(" + self.img_src.apply(self, params).replace(/\s/g, '%20') + ")";
+            return self.quoted_css_url(self.img_src.apply(self, params).replace(/\s/g, '%20'));
           }
         }
       }));
@@ -251,10 +302,11 @@ Manifest.prototype = {
         }
         // otherwise, just mf.require the contents of the external app's file
         try {
-            var md = this.get_metadata().files[script[0]];
+            var app = this.get_metadata(script[0]);
+            var file = app.files[script[1]];
             var source = this.get_source(script[0], script[1]);
-            if (md && md.handler && md.handler === 'mjt') {
-              source = this.compile_mjt(source, script.join("/"));
+            if (file && file.handler && file.handler === 'mjt') {
+              source = this.compile_mjt(source, "//" + app.host + "/" + file.name);
             }
             this.scope.acre.write(source);
           }
@@ -271,10 +323,11 @@ Manifest.prototype = {
         }
         else {
           try {
-            var md = this.get_metadata().files[script[0]];
-            var source = this.get_source(script[0], script[1]);
-            if (md && md.handler && md.handler === 'mjt') {
-              source = this.compile_mjt(source, script.join("/"));
+            var app = this.get_metadata();
+            var file = app.files[script[0]];
+            var source = this.get_source(script[0]);
+            if (file && file.handler && file.handler === 'mjt') {
+              source = this.compile_mjt(source, "//" + app.host + "/" + file.name);
             }
             this.scope.acre.write(source);
           }
@@ -321,8 +374,11 @@ Manifest.prototype = {
   },
 
   not_found: function(id) {
-    this.scope.acre.response.status = 404;
-    acre.exit();
+    this.error("Not Found: " + id);
+  },
+
+  error: function(errObj) {
+    throw(JSON.stringify(errObj, null, 2));
   },
 
   main: function() {

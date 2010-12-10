@@ -1,0 +1,83 @@
+div.cuecard-suggestion-container {
+    border-top: 1px solid #aaa;
+    height: 200px;
+    overflow: auto;
+}
+
+div.cuecard-suggestion-progress {
+    text-align: center;
+    padding: 2em;
+}
+
+div.cuecard-suggestion-hint-message {
+    padding: 0.5em;
+    font-weight: bold;
+    color: #FF8000;
+}
+
+a.cuecard-suggestion-entry {
+    display: block;
+    text-decoration: none;
+    padding: 3px 8px;
+    color: black;
+}
+
+a.cuecard-suggestion-entry:hover {
+}
+
+.cuecard-suggestion-selected {
+    background: #ccc;
+}
+
+.cuecard-suggestion-entry table {
+    font-size: 100%;
+}
+
+.cuecard-suggestion-entry tr {
+    vertical-align: top;
+}
+
+.cuecard-suggestion-entry td {
+    padding-right: 5px;
+    vertical-align: top;
+}
+
+.cuecard-suggestion-entry img {
+    border: none;
+}
+
+.cuecard-suggestion-noEntryMessage {
+    padding: 6px 15px;
+}
+
+.cuecard-suggestion-hint {
+    color: #aaa;
+}
+
+div.cuecard-suggestion-input-container {
+    padding: 3px;
+}
+.cuecard-suggestion-input-container input {
+    display: block;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    border: none;
+    background: white;
+    outline: none;
+}
+
+.cuecard-suggestion-input-container input:focus {
+    outline: none;
+}
+
+.cuecard-suggestion-thumbnail-empty {
+    width: 40px;
+    height: 40px;
+    background: #eee;
+}
+
+.cuecard-suggestion-id {
+    font-size: 90%;
+    color: #888;
+}

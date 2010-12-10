@@ -1,9 +1,1 @@
-{
-  "apps" : {
-    "core": "//core.site.freebase.dev"
-  },
-
-  "tests": {
-    "all": {"fbauth": true}
-   }
-}
+{"app_tag": null, "tests": {"all": {"fbauth": true}}, "app_version": 61, "apps": {"core": "//61.core.site.freebase.dev"}, "app_key": "queries"}

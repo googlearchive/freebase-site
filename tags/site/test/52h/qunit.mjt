@@ -1,0 +1,60 @@
+<acre:script>
+  var mf = acre.require("MANIFEST").mf;
+  var i18n = mf.require("i18n", "i18n");
+  var _ = i18n.gettext;
+</acre:script>
+
+<acre:block def="page(exports)">
+  <acre:script>
+    acre.response.set_header('content-type', 'text/html');
+    acre.response.status = 200;
+  </acre:script>
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="utf-8" />
+      <title acre:if="exports.title">Freebase - ${exports.title()}</title>
+      <title acre:else="">Freebase - Qunit</title>  
+
+      <!-- freebase suggest -->
+      <link rel="stylesheet" type="text/css" href="${mf.css_src('qunit.mf.css')}" />
+      <!-- jquery -->
+      <script src="${mf.lib_base_url('jquery')}/jquery.min.js"></script>
+      <script src="${mf.js_src('qunit.mf.js')}"></script>
+
+      <!-- any additional head content (i.e., css, js, etc.)-->
+      <acre:block if="exports.head">
+        ${exports.head()}
+      </acre:block>    
+    </head>
+    <acre:block if="exports.body">
+      ${exports.body()}
+    </acre:block>
+    <acre:block else="">
+      ${body(exports)}
+    </acre:block>
+
+  </html>
+</acre:block>
+
+<acre:block def="body(exports)">
+  <body>
+    <h1 id="qunit-header">
+      <acre:block if="exports.title">
+        ${exports.title()}
+      </acre:block>
+      <acre:block else="">
+        QUnit example
+      </acre:block>
+    </h1>
+    <h2 id="qunit-banner"></h2>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">
+      <acre:block if="exports.fixture">
+        ${exports.fixture()}
+      </acre:block>
+      test markup, will be hidden
+    </div>
+  </body>
+</acre:block>

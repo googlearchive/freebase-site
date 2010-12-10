@@ -56,7 +56,7 @@ Manifest.prototype = {
     if (args.local) {
       // local image files relative to the current app
       if (("use_static_urls" in acre.request.params || "static" in this.config) && 'app_key' in this.config && 'app_tag' in this.config) { 
-        return "/static/" + this.config.app_key + "/" + this.config.app_tag + "/" + args.file;
+        return "/fss/" + this.config.app_key + "/" + this.config.app_tag + "/" + args.file;
       }
         
       return this.image_base_url + "/" + args.file;

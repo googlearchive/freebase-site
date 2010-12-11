@@ -56,7 +56,8 @@
     ]
   },
   "tests": {
-    "all": {"fbauth": true}
+    "all": {"fbauth": true},
+    "test_delete_domain:delete_domain_with_types":{"bugs":["flaky"]}
   }
 }
 

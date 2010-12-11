@@ -66,10 +66,24 @@ Manifest.prototype = {
   },
 
   css_src: function(key) {
+
+    //new-style static urls - the presence of all these keys in the CONFIG file
+    //mean we need to print out a /fss/<app_key>/<app_tag>/<bundle_filename> url
+    if ("static" in this.config && 'app_key' in this.config && 'app_tag' in this.config) { 
+      return "/fss/" + this.config.app_key + "/" + this.config.app_tag + "/" + key;
+    }
+
     return this.static_base_url + "/" + key;
   },
 
   js_src: function(key) {
+
+    //new-style static urls - the presence of all these keys in the CONFIG file
+    //mean we need to print out a /fss/<app_key>/<app_tag>/<bundle_filename> url
+    if ("static" in this.config && 'app_key' in this.config && 'app_tag' in this.config) { 
+      return "/fss/" + this.config.app_key + "/" + this.config.app_tag + "/" + key;
+    }
+
     return this.static_base_url + "/" + key;
   },
 
@@ -90,6 +104,12 @@ Manifest.prototype = {
     var args = this.require_args(app, file);
     if (args.local) {
       // local image files relative to the current app
+
+      //static bundle generation - this is for /MANIFEST/foo.mf.css requests that spit-out CSS files that have url() calls in them
+      if (("use_static_urls" in acre.request.params || "static" in this.config) && 'app_key' in this.config && 'app_tag' in this.config) { 
+        return "/fss/" + this.config.app_key + "/" + this.config.app_tag + "/" + args.file;
+      }
+
       return this.image_base_url + "/" + args.file;
     }
     else {

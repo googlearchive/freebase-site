@@ -67,7 +67,7 @@ Manifest.prototype = {
         this.static_base_url = this.config.static_base_url || this.get_app_base_url() + "/MANIFEST";
         this.image_base_url = this.config.image_base_url || this.get_app_base_url();
     }
-  }
+  },
 
   is_freebase_host: function() { 
     return /\.(freebase|sandbox\-freebase)\.com$/.test(acre.request.server_name)

@@ -18,7 +18,8 @@ class TstResult:
         if r[0] is False:
             print r[1]
             assert 'an acre test failed' is True
-        if r[0] == 'skip' :
+        if 'skip' in str(r[0]):
+            print r[1]
             # see __init__.py for details on when tests are skipped
             raise skip.SkipTest
 

@@ -527,10 +527,15 @@ var AcreDoc;
     
     AcreDoc.prototype.trigger_editor_event = function(event_name, args) {
         if (event_name === 'change') {
-            this.set_dirty("content");
-            // we'd flagged to update the revision of the doc in the background...
-            // but now the user has clearly loaded and modified that revision, so don't
-            this.set_dirty("revision", false);
+            var undos = args[0];
+            if (undos > 0) {
+                this.set_dirty("content");
+                // we'd flagged to update the revision of the doc in the background...
+                // but now the user has clearly loaded and modified that revision, so don't
+                this.set_dirty("revision", false);                
+            } else {
+                this.set_dirty("content", false);
+            }
         }
         
         if (this._event_handlers[event_name]) { 

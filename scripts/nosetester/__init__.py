@@ -103,58 +103,27 @@ class Controller:
         for f1 in site_files:
             app_path = self.apps_path + '/' + f1
             if os.path.isdir(app_path):
-                self.read_app_config(app_path)
                 app_files = os.listdir(app_path)
                 for f2 in app_files:
                     m = re.match('(test_.+)\.sjs', f2) 
                     if m:
                         t = m.groups()[0]
-                        require_login = self.get_tst_attribute(app_path, 'all', 'fbauth')
-                        if not require_login:
-                            require_login = self.get_tst_attribute(app_path, t, 'fbauth')
                         u = self.devel_service + \
                             self.app_to_path[f1] + '/' + t
                         self.test_urls.append(u)  
                         self.path_for_url[u] = app_path
         for u in  self.test_urls: print u
                                   
-    def get_tst_attribute(self, app_path, key, attr):
-        data = self.app_config[app_path]
-        if data.get('tests'):
-            for k, v in data['tests'].iteritems():
-                if k == key:
-                    ret = v.get(attr)
-                    return ret
-        else:
-            return None
-
-    def read_app_config(self, app_path):
-        cfg = app_path + '/' + 'CONFIG.json.json'
-        self.app_config[app_path] = {}
-        if os.path.exists(cfg):
-            data = open(cfg).read()
-            try:
-                self.app_config[app_path] = simplejson.loads(data)
-            except:
-                print "%s invalid json?" % cfg
-                raise
-                
     def run_acre_tst(self, url):
         fails = 0
         results = {}
         path = url.replace(self.devel_service, '')
-        app_path = self.path_for_url.get(url)
-        bugs = self.get_tst_attribute(app_path, 'all', 'bugs')
-        if bugs:
-            print 'SKIP. this whole app has bugs %s' % ' '.join(bugs)
-            results[path] = ['skip', 'app has known bugs %s' % bugs]
-            return results
         runurl = url + '?output=json'
         r=self.request_url(runurl)
         if r is None:
             msg = 'url request failed for %s' % runurl
         elif 'body_json' not in r: 
-            msg = 'no valid json found at %s' % runurl
+            msg = 'no valid json found at %s\n%s' % (runurl, r)
         else:
             msg = None
         if msg:
@@ -163,12 +132,6 @@ class Controller:
         thisresult = r['body_json']
         modules = thisresult['testfiles'][0]['modules']
         test_prefix = thisresult['testfiles'][0]['file']
-        bugs = self.get_tst_attribute(app_path, test_prefix, 'bugs')
-        print "TEST PREFIX %s" % test_prefix
-        if bugs:
-            print 'SKIP. this test file has bugs %s' % ' '.join(bugs)
-            results[test_prefix] = ['skip', 'test file has known bugs %s' % bugs]
-            return results
         output = ''
         for m in modules:
             mname = m['name']
@@ -178,23 +141,21 @@ class Controller:
                 mname = '.' + mname
             for t in m['tests']:
                 name = t['name'].replace(' ', '_')
+                first_log = t['log'][0]['result']
+                first_msg = t['log'][0]['message']
                 runtime = t.get('runtime')
                 f = int(t['failures'])  
                 fails += f
                 short_testid = '%s:%s%s' % (test_prefix, mname, name)
                 testid = '%s:%s%s' % (path, mname, name)
-                bugs = self.get_tst_attribute(app_path, short_testid, 'bugs')
-                print "TESTID %s BUGS %s" % (short_testid, bugs)
-                if bugs:
-                  print 'SKIP. this test has bugs %s' % ' '.join(bugs)    
-                  results[testid] = ['skip', 'test has known bugs %s' % bugs]
-                  continue
                 msg = testid + '.'*(77-len(testid))
                 if f > 0:
                     # test assertions failed
                     flog = self.get_fail_logs(t['log'])
                     flog += '\nURL: %s' % runurl
                     results[testid] = [False, flog]
+                elif isinstance(first_log, str):
+                    if 'Skipping' in first_log: results[testid] = ['skip', first_msg]
                 else:
                     results[testid] = [True, None]
         

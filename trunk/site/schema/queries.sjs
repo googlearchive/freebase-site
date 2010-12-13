@@ -62,25 +62,37 @@ function domains(q) {
       return envelope.result || [];
     })
     .then(function(domains) {
-      var promises = [];
-      // instance counts for each domain
-      domains.forEach(function(domain) {
-        var activity_id = "summary_/guid/" + domain.guid.slice(1);
-        promises.push(freebase.get_static("activity", activity_id)
-          .then(function(activity) {
-            return activity || {};
-          })
-          .then(function(activity) {
-            if (activity.total) {
-              domain.instance_count = activity.total.t || 0;
-            }
-            return activity;
-          }));
-        return deferred.all(promises)
-          .then(function() {
-            return domain;
-          });
+      var summary_guids = [];
+      var domains_by_summary_guids = {};
+      domains.forEach(function(d) {
+        var summary_guid = "summary_/guid/" + d.guid.substring(1);
+        summary_guids.push(summary_guid);
+        domains_by_summary_guids[summary_guid] = d;
       });
+      var promises = [];
+      // we request allotments of 40 summary guids since the url may be too long
+      for (var i=0,l=summary_guids.length; i<l; i+=40) {
+        var slice = summary_guids.slice(i, i+40);
+        console.log("slice index", i, "length", slice.length, slice);
+        promises.push(freebase.get_static("activity", slice));
+      }
+      return deferred.all(promises)
+        .then(function(results) {
+          var activities = {};
+          results.forEach(function(result) {
+            h.extend(activities, result);
+          });
+          return activities;
+        })
+        .then(function(activities) {
+          domains.forEach(function(domain) {
+            var activity = activities["summary_/guid/" + domain.guid.substring(1)];
+            domain.instance_count = activity && activity.total && activity.total.t || 0;
+          });
+          return domains;
+        });
+    })
+    .then(function(domains) {
       return domains.sort(schema_helpers.sort_by_id);
     });
 };

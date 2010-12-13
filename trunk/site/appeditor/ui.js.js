@@ -1296,7 +1296,7 @@ var ui = {};
             ui.do_status_check();
         }
         
-        if (_current_file_is_dirty != ui.get_file().is_dirty()) {            
+        if ((_current_file_is_dirty != ui.get_file().is_dirty()) || (undos === 0)) {        
             ui.refresh_file_templates();
         }
         

@@ -154,10 +154,10 @@ class Controller:
                     flog = self.get_fail_logs(t['log'])
                     flog += '\nURL: %s' % runurl
                     results[testid] = [False, flog]
-                elif isinstance(first_log, str):
-                    if 'Skipping' in first_log: results[testid] = ['skip', first_msg]
                 else:
                     results[testid] = [True, None]
+                if isinstance(first_log, str):
+                    if 'Skipping' in first_log: results[testid] = ['skip', first_msg]
         
         return results
 

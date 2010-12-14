@@ -57,8 +57,20 @@ Manifest.prototype = {
     this.apps = this.config.apps || {};
     this.stylesheet = this.config.stylesheet || {};
     this.javascript = this.config.javascript || {};
-    this.static_base_url = this.config.static_base_url || this.get_app_base_url() + "/MANIFEST";
-    this.image_base_url = this.config.image_base_url || this.get_app_base_url();
+
+    //new-style static urls - the presence of all these keys in the CONFIG file
+    //mean we need to print out a /fss/<app_key>/<app_tag>/<bundle_filename> url
+    //if we are in a freebase.com host or if use_static_urls is passed as a url param
+    if (("use_static_urls" in acre.request.params || (this.is_freebase_host() && "static" in this.config)) && 'app_key' in this.config && 'app_tag' in this.config) { 
+        this.static_base_url = this.image_base_url = "/fss/" + this.config.app_key + "/" + this.config.app_tag;
+    } else { 
+        this.static_base_url = this.config.static_base_url || this.get_app_base_url() + "/MANIFEST";
+        this.image_base_url = this.config.image_base_url || this.get_app_base_url();
+    }
+  }
+
+  is_freebase_host: function() { 
+    return /\.(freebase|sandbox\-freebase)\.com$/.test(acre.request.server_name)
   },
 
   get_app_base_url: function() {
@@ -66,13 +78,6 @@ Manifest.prototype = {
   },
 
   css_src: function(key) {
-
-    //new-style static urls - the presence of all these keys in the CONFIG file
-    //mean we need to print out a /fss/<app_key>/<app_tag>/<bundle_filename> url
-    if ("static" in this.config && 'app_key' in this.config && 'app_tag' in this.config) { 
-      return "/fss/" + this.config.app_key + "/" + this.config.app_tag + "/" + args.file;
-    }
-
     return this.static_base_url + "/" + key;
   },
 
@@ -97,12 +102,6 @@ Manifest.prototype = {
     var args = this.require_args(app, file);
     if (args.local) {
       // local image files relative to the current app
-
-      //static bundle generation - this is for /MANIFEST/foo.mf.css requests that spit-out CSS files that have url() calls in them
-      if (("use_static_urls" in acre.request.params || "static" in this.config) && 'app_key' in this.config && 'app_tag' in this.config) { 
-        return "/fss/" + this.config.app_key + "/" + this.config.app_tag + "/" + args.file;
-      }
-
       return this.image_base_url + "/" + args.file;
     }
     else {

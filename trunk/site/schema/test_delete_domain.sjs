@@ -40,7 +40,6 @@
  *   2. have local write_user as appeditoruser with the auth secrect
  */
 acre.require('/test/lib').enable(this);
-var testEnv = new Object();
 
 var mf = acre.require("MANIFEST").mf;
 var h = mf.require("test", "helpers");
@@ -160,8 +159,7 @@ test("delete_domain user domain", function() {
 });
 
 
-testEnv.bug = "flaky";
-test("delete_domain with types", testEnv, function() {
+test("delete_domain with types", {"bug": "flakey test"}, function() {
   var domain = h.create_domain(user.id);
   var type = h.create_type(domain.id);
   try {

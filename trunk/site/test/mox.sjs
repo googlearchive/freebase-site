@@ -4,6 +4,22 @@ var h = mf.require("core", "helpers");
 
 var self = this;
 
+/**
+ * Mock record phase.
+ *
+ * Usage:
+ *
+ *   acre.require("/test/lib").enable(this);
+ *   var mf = acre.require("MANIFEST").mf;
+ *   mf.require("test", "mox").record(this);
+ *   test(...);
+ *   acre.test.report();
+ *
+ * 1. This will wrap all promise api calls (i.e. freebase.mqlread, freebase.mqlwrite, urlfetch.)
+ * 2. Record all requests/responses made through the promise apis.
+ * 3. Output the playback data as JSON at the end of acre.test.report().
+ * 4. You can then just copy and paste the JSON for the mock playback phase.
+ */
 function record(scope) {
 
   var test_data = [];
@@ -53,8 +69,24 @@ function record(scope) {
     acre_test_report.apply(scope, arguments);
     acre.write(JSON.stringify(playback_data));
   };
-}
+};
 
+/**
+ * Mock playback phase.
+ *
+ * Usage:
+ *
+ *   acre.require("/test/lib").enable(this);
+ *   var mf = acre.require("MANIFEST").mf;
+ *   mf.require("test", "mox").playback(this, "playback_file.json");
+ *   test(...);
+ *   acre.test.report();
+ *
+ * 1. This will wrap all promise api calls (i.e. freebase.mqlread, freebase.mqlwrite, urlfetch.)
+ * 2. Match each test's promise api call (request/response) to what's in the JSON playback file.
+ * 3. Mock the response and return it without making an actual (live http) request.
+ * 4. Your tests should no longer be dependent on "live" api calls.
+ */
 function playback(scope, playback_file) {
   var playback_data = JSON.parse(scope.acre.require(playback_file).body);
 
@@ -98,7 +130,6 @@ function playback(scope, playback_file) {
     };
   };
 
-
   // Override async apis.freebase.* methods to playback response
   var freebase_apis = apis.freebase;
   for(var api_name in freebase_apis) {
@@ -118,10 +149,11 @@ function playback(scope, playback_file) {
     test_info = {name:name, index:0};
     acre_test.apply(scope, arguments);
   };
-}
+};
 
-
-
+/**
+ * Convert arguments object into a proper Array
+ */
 function arguments_array() {
   var args = [];
   for (var i=0,l=arguments.length; i<l; i++) {
@@ -130,7 +162,3 @@ function arguments_array() {
   return args;
 };
 
-
-function deepEqual(actual, expected) {
-
-};

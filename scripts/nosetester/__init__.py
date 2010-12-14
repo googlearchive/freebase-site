@@ -141,8 +141,6 @@ class Controller:
                 mname = '.' + mname
             for t in m['tests']:
                 name = t['name'].replace(' ', '_')
-                first_log = t['log'][0]['result']
-                first_msg = t['log'][0]['message']
                 runtime = t.get('runtime')
                 f = int(t['failures'])  
                 fails += f
@@ -156,6 +154,9 @@ class Controller:
                     results[testid] = [False, flog]
                 else:
                     results[testid] = [True, None]
+                # seems this is the only way to know it skipped
+                first_log = t['log'][0].get('result')
+                first_msg = t['log'][0].get('message')
                 if isinstance(first_log, str):
                     if 'Skipping' in first_log: results[testid] = ['skip', first_msg]
         

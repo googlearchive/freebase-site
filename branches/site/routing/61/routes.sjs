@@ -108,6 +108,23 @@ function host_based_redirects(req) {
   }
 }
 
+//serve a request of the kind /fss/<app_key>/<app_tag>/filename
+//while setting long-lived cache-control headers
+function serve_static_file(path) { 
+
+    //get the app key and app tag (version as far as acre is concerned) 
+    var parts = path.split('/');
+    console.log(parts);
+    var app_id = parts[3] + "." + parts[2] + ".site.tags.svn.freebase-site.googlecode.dev/" + parts[4];
+
+    //require the app/file, serve it and set the correct cache headers (TTL: 1 year)
+    acre.response.set_header("cache-control", "public, max-age: 31536000");
+    acre.write(acre.require(app_id).body);
+    acre.exit();
+
+}
+
+
 function path_based_routing(req) {
   var req_path = req.url.replace(req.app_url, "");
   // filter out query string
@@ -117,6 +134,11 @@ function path_based_routing(req) {
     var path_segs = req_path.split("?", 2);
     path = path_segs[0];
     query_string = path_segs[1];
+  }
+
+  //all requests that start with /fss/ are for static files
+  if (path.indexOf("/fss/") == 0) {
+      return serve_static_file(path);
   }
 
   var route = app_routes.rules.route_for_path(path);

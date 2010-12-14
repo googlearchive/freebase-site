@@ -5,10 +5,11 @@ var extend = mf.require("core", "helpers").extend;
 var self = this;
 
 function record(scope) {
-  // Override async urlfetch
+
   var responses = [];
   var all_responses = {};
 
+  // Override async apis.freebase.* methods to record response
   var freebase_apis = apis.freebase;
   for(var api_name in freebase_apis) {
     (function() {
@@ -28,6 +29,7 @@ function record(scope) {
     })();
   }
 
+  // Override async apis.urlfetch to record response
   var urlfetch = apis.urlfetch;
   apis.urlfetch = function() {
     var p = urlfetch.apply(this, arguments)
@@ -42,7 +44,7 @@ function record(scope) {
     return p;
   };
 
-  // Override test
+  // Override test() to reset response array
   var acre_test = scope.test;
   scope.test = function(name) {
     responses.length = 0;
@@ -50,18 +52,19 @@ function record(scope) {
     all_responses[name] = [].concat(responses);
   };
 
+  // Override acre.test.report() to serialize playback JSON
   var acre_test_report = scope.acre.test.report;
   scope.acre.test.report = function(name) {
-//    acre_test_report.apply(scope, arguments);
+    acre_test_report.apply(scope, arguments);
     acre.write(JSON.stringify(all_responses));
   };
 }
 
 function playback(scope, playback_file) {
   var test_responses = JSON.parse(scope.acre.require(playback_file).body);
-
   var test_info;
 
+  // Override async apis.freebase.* methods to playback response
   var freebase_apis = apis.freebase;
   for(var api_name in freebase_apis) {
     (function() {
@@ -74,6 +77,7 @@ function playback(scope, playback_file) {
      })();
   }
 
+  // Override async apis.urlfetch to playback response
   var urlfetch = apis.urlfetch;
   apis.urlfetch = function() {
     var responses = test_responses[test_info.name];
@@ -81,7 +85,7 @@ function playback(scope, playback_file) {
     return deferred.resolved(response);
   };
 
-
+  // Override test() to reset current playback response
   var acre_test = scope.test;
   scope.test = function(name) {
     test_info = {name:name, index:0};

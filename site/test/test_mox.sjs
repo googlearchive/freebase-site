@@ -2,7 +2,7 @@ acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").mf;
 
-mf.require("test", "mox").playback(this, "test_mox_playback.json");
+mf.require("test", "mox").playback(this, "playback_test_mox.json");
 
 var queries = mf.require("queries");
 

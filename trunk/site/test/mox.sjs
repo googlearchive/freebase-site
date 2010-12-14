@@ -63,31 +63,36 @@ function playback(scope, playback_file) {
   function wrapper(api_name, api) {
     return function() {
       var test_data = playback_data[test_info.name];
+      // Assert playback data exist for current test (name)
       if (!test_data) {
         throw(h.sprintf("Playback data does not exist: %s", test_info.name));
       }
+      // Assert playback data exists for current index in the api callstack
       var current;
       try {
         current = test_data[test_info.index++];
         if (!current) {
-          throw(null);
+          throw(test_info.index - 1);
         }
       }
       catch(ex) {
         throw(h.sprintf("Playback data IndexOutOfBoundsException: %s", ex));
       }
-      var args = arguments_array.apply(null, arguments);
 
+      var api_args = arguments_array.apply(null, arguments);
       var recorded_api_name = current[0];
       var recorded_args = current[1];
       var recorded_response = current[2];
 
-
+      // Assert current api callstack is the same as api_name
       if (recorded_api_name !== api_name) {
-        throw("Playback data mismatch api name: %s, expected: %s", api_name, recorded_api_name);
+        throw(h.sprintf("Playback data api: %s, expected: %s", api_name, recorded_api_name));
       }
 
-      // TODO: assert api_args == recorded_args (deep equals)
+      // Assert api_args == recorded_args (deep equals)
+      if (!scope.QUnit.equiv(api_args, recorded_args)) {
+        throw(h.sprintf("Playback data arguments: %s, expected: %s", JSON.stringify(api_args), JSON.stringify(recorded_args)));
+      }
 
       return deferred.resolved(recorded_response);
     };
@@ -123,4 +128,9 @@ function arguments_array() {
     args[i] = arguments[i];
   }
   return args;
+};
+
+
+function deepEqual(actual, expected) {
+
 };

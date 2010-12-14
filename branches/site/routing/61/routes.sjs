@@ -113,19 +113,20 @@ function host_based_redirects(req) {
 function serve_static_file(path) { 
 
     //get the app key and app tag (version as far as acre is concerned) 
-    var parts = path.split('/');
+    var parts = path.split("/");
     console.log(parts);
-    var app_id = parts[3] + "." + parts[2] + ".site.tags.svn.freebase-site.googlecode.dev/" + parts[4];
+    var app_id = "//" + parts[3] + "." + parts[2] + ".site.tags.svn.freebase-site.googlecode.dev/" + parts[4];
 
     //require the app/file, serve it and set the correct cache headers (TTL: 1 year)
     acre.response.set_header("cache-control", "public, max-age: 31536000");
+    console.log('requiring ' + app_id);
     acre.write(acre.require(app_id).body);
     acre.exit();
 
 }
 
 
-function path_based_routing(req) {
+function path_based_routing(req, app_labels) {
   var req_path = req.url.replace(req.app_url, "");
   // filter out query string
   var path = req_path;
@@ -157,7 +158,7 @@ function path_based_routing(req) {
 
     } else if (route.app) {
       // Handle canonical app routing
-      var app = app_routes.app_labels[route.app];
+      var app = app_labels ? app_labels[route.app] : app_routes.app_labels[route.app];
       if (!app) {
  	    throw route.app+" must be defined in the MANIFEST for routing.";
  	  }

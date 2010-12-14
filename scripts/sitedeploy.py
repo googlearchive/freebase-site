@@ -48,6 +48,8 @@ class SVNLocation:
     (r, result) = c.run_cmd(cmd)
 
     if not r:
+      if "svn: invalid option" in result:
+        c.error("You might have an older version of svn - please update to the latest version. The option --depth is not supported in your version.")
       return c.error(result)
 
     return True
@@ -125,7 +127,7 @@ class ActionSetupAcre:
       else:
         fh.write(line)
 
-    fh.write('ACRE_PORT=%s\n' % c.options.acre_port)
+    fh.write('ACRE_PORT="%s"\n' % c.options.acre_port)
     fh.close()
     c.log('Done modifying configuration.')
 
@@ -143,7 +145,7 @@ class ActionSetupAcre:
     c.log('*' * 65)
     c.log('')
     c.log('To run acre, type: cd %s; ./acre run -c sandbox' % c.options.acre_dir)
-    c.log('And then on your browser: http://%s:%s/acre/status' % (c.options.acre_host, c.options.acre_port))
+    c.log('And then on your browser: http://acre.%s:%s/acre/status' % (c.options.acre_host, c.options.acre_port))
     c.log('')
     c.log('*' * 65)
 
@@ -270,6 +272,22 @@ class ActionLink:
     if not r:
       return c.error('There was an error linking the acre and site dirs')
 
+    acre_freebase_dir = ACRE_DIR + '/WEB-INF/scripts/googlecode/freebase-site'
+
+    if not os.path.isdir(acre_freebase_dir):
+      try:
+        os.makedirs(acre_freebase_dir)
+      except:
+        return c.error('Unable to create directory %s.' % acre_freebase_dir)
+
+    source_link = c.options.site_dir
+    target_link = acre_freebase_dir + "/svn"
+
+    r = c.symlink(source_link, target_link)
+
+    if not r:
+      return c.error('There was an error linking the acre and site dirs')
+
     #make the released version of the routing app to be itself
 
     source_link = SITE_TRUNK_DIR + '/routing'
@@ -351,64 +369,6 @@ class ActionSync:
 
 
 
-class ActionSetupAppengine:
-
-  def __init__(self, context):
-    self.context = context
-
-  def __call__(self):
-
-    c = self.context
-
-    success = c.googlecode_login()
-    if not success:
-      return c.error('You must provide valid google code credentials to complete this operation.')
-
-    if not c.options.acre_dir:
-      return c.error('You must specify the acre directory to put apps files in.')
-
-    #set-up the /freebase directory structure if not there
-
-    ACRE_DIR = c.options.acre_dir + '/_build/war/WEB-INF/scripts'
-    SITE_DIR = ACRE_DIR + '/freebase/site'
-
-    if not os.path.isdir(SITE_DIR):
-      try:
-        os.makedirs(SITE_DIR)
-      except:
-        return c.error('There was a problem creating the directory %s' % SITE_DIR)
-
-
-    site = Site(c)
-    config = site.read_config()
-    #list of apps to attach to acre appengine
-    apps =set()
-
-    #gather all the apps and versions we need to push
-
-    for app_key, settings in config['apps'].iteritems():
-      if settings.get('release'):
-        app = AppFactory(c)(app_key, settings.get('release'))
-        apps = apps.union(app.get_code_dependencies_list())
-
-        #for push_app in apps:
-        #  c.set_current_app(push_app)
-        #  ActionStatic(c)(push_app)
-
-    #for each app we need to push, add it to the local acre AE dir
-
-    for app in apps:
-      app.copy_to_appengine_dir()
-
-    c.log('The following apps have been attached to the appengine acre instance under %s/_build/war/WEB-INF/scripts/freebase/site' % c.options.acre_dir, color=c.BLUE)
-
-    for app in sorted(apps):
-      c.log('%s\t\t\t%s' % (app.app_key, app.version))
-
-    return True
-
-
-
 class ActionStatic:
 
   def __init__(self, context):
@@ -428,13 +388,73 @@ class ActionStatic:
     if not app:
       app = c.current_app
 
+    if not app.tag:
+      return c.error('You can only create static files for app tags')
+
     c.set_acre(GetAcre(c))
 
-    static_apps = app.get_static_dependencies_list()
+    acre = GetAcre(c)
 
-    for static_app in static_apps:
-      c.log('Will statify %s' % static_app, color=c.BLUE)
-      static_app.statify()
+    while not acre.is_running():
+      c.error('The acre instance installed in %s is not running.' % c.options.acre_dir)
+      cont = raw_input("Please start the server and press (c) to continue or any other key to abort:")
+      if not cont or cont != 'c':
+        return c.error("Could not find a running acre instance, aborting")
+
+
+    #we have to do 2 things:
+    #1. statify every library app 
+    #(because there might client-side dependencies that are not specified int he app manifest)
+    #2. statify the requested app
+
+
+    #create a list of all the library apps and then this app
+    app_list = []
+    core_dependencies = []
+    core_app = None
+
+    if app.app_key == 'core':
+      core_dependencies = app.get_dependencies()
+      core_app = app
+    else:
+      app_dependencies = app.get_dependencies()
+      if 'core' in app_dependencies.keys():
+        core_app = app_dependencies['core']
+        core_dependencies = app_dependencies['core'].get_dependencies() 
+
+    if len(core_dependencies):
+      for label, d_app in core_dependencies.iteritems():
+        app_list.append(d_app)
+        
+    app_list.append(app)
+
+    #we 'll need the manifest and core apps locally 
+    #so that we can do /MANIFEST/<css/js bundle> calls 
+    #for static generation
+    if core_app:
+      core_app.copy_to_appengine_dir()
+      core_dependencies['manifest'].copy_to_appengine_dir()
+
+    #for d_app in app.get_code_dependencies_list():
+    #  d_app.copy_to_appengine_dir()
+    #  c.log('Copied %s to acre directory' % d_app)
+
+    #for every app in the list, get its static dependencies
+    #and statify each one starting at the bottom
+    #in this way, if subsequent apps need to statify other library apps
+    #then we are guaranteed to have done so already
+
+    for d_app in app_list:
+      if d_app.app_key == 'routing':
+        continue
+
+      static_apps = d_app.get_static_dependencies_list()
+
+      for static_app in static_apps:
+        result = static_app.statify()
+        #fail if statifying any app failed
+        if not result:
+          return result
 
 
     return True
@@ -585,12 +605,10 @@ class ActionTest:
 
   def __call__(self):
     c = self.context
-    c.googlecode_login()
-    from_branch_app = AppFactory(c)(c.options.app, c.options.version)
-    tag_app = from_branch_app.create_tag()
+    
+    acre = GetAcre(c)
 
-
-    return True
+    return acre.is_running()
 
 
 class ActionCreateAppBranch():
@@ -693,7 +711,7 @@ class ActionCreateAppBranch():
             updated_apps.add(branch_app)
 
       for app in updated_apps:
-        app.svn_commit(msg='updated dependencies for %s' % app.name())
+        app.svn_commit(msg='updated dependencies for %s' % app)
 
       c.log('The following branches are going to be used: ')
       for app in app_bundle:
@@ -718,12 +736,17 @@ class ActionCreateAppTag():
     tag = core_app.last_tag()
 
     if not tag:
-      tag = core_app.create_tag()
-      if not tag:
-        return c.error('Failed to create tag for %s' % core_app)
+      core_app = core_app.create_tag()
+    else:
+      core_app = AppFactory(c)(core_app.app_key, core_app.version, tag) 
 
-    core_app = AppFactory(c)(core_app.app_key, core_app.version, tag)
-      
+    if not core_app:
+      return c.error('Failed to create tag for core')
+
+
+    #XXXX REMOVE AFTER DEBUGGING
+    #return core_app
+
     #STEP 2: create a tag for each library app
     #or retrieve the latest tag if it already exists
 
@@ -778,40 +801,75 @@ class ActionCreateAppTag():
     if not (c.options.app and c.options.version):
       return c.error('You have to specify a valid app and version to create a tag out of.')
 
+    no_static = False
+
+    if not (c.options.acre_dir):
+      c.error('WARNING: You did not specify an acre directory, so static generation for this app will fail (if needed). You can always re-create static files for a given app by running sitedeploy.py static -a %s -t <tag> --acre_dir <acre_dir>' % c.options.app)
+      no_static = raw_input("Would you like to bypass static generation and continue ? (y to continue, n to abort):")
+      if no_static == 'y':
+        no_static = True
+      else:
+        return False
+
+    if not no_static:
+      acre = GetAcre(c)
+      while not acre.is_running():
+        c.error('The acre instance installed in %s is not running.' % c.options.acre_dir)
+        cont = raw_input("Please start the server and press (c) to continue or any other key to abort:")
+        if not cont or cont != 'c':
+          return c.error("Could not find a running acre instance, aborting")
+        
     c.log('Creating tag for %s:%s' % (c.app.app_key, c.options.version), color=c.BLUE)
 
     #first make sure we are not asked to branch a library app
     #you should only be able to branch a page app, or core (all libraries together)
-    if c.is_library_app(c.options.app):
+    #XXXX REMOVE AFTER DEBUGGING
+    if False and c.is_library_app(c.options.app):
       return c.error('You cannot create a tag of a library app on its own')
 
     #first create a tag for the app that was specified in the command line
     from_branch_app = AppFactory(c)(c.options.app, c.options.version)
     tag_app = from_branch_app.create_tag()
 
+    if not tag_app:
+      return c.error("There was an error creating a new tag for %s" % from_branch_app)
+
     #set the app object that is going to be used for here onwards
     #by any other stage
     c.set_app(tag_app)
 
     core_app = None
-
     #if this is not the core app, and it depends on core
     #then branch the core app and update the version number in our app
     if tag_app.app_key != 'core':
       dependencies = tag_app.get_dependencies()
       if dependencies and 'core' in dependencies.keys():
         core_app = self.tag_core_libraries(dependencies['core'])
+        
+        #error
+        if not core_app:
+          return c.error('A library app failed to create a new tag - aborting')
+
         if tag_app.update_dependency('core', core_app):
           self.updated_apps.add(tag_app)
     else:
       core_app = self.tag_core_libraries(tag_app)
+      #error
+      if not core_app:
+        return c.error('A library app failed to create a new tag - aborting')
+
 
     for app in self.updated_apps:
-      app.svn_commit(msg='updated dependencies for %s' % app)
+      (r, result) = app.svn_commit(msg='updated dependencies for %s' % app)
+      if not r:
+        return c.error('Failed to commit CONFIG file for %s - WARNING: this will leave this tag in an inconsistent state. You should create a new tag for this app' % app)
 
     c.log('The following tags are going to be used: ')
     for app in self.updated_apps:
       c.log('\t%s\t\t%s' % (app.app_key, app.tag))
+
+    if not no_static:
+      ActionStatic(c)(app=tag_app)
 
     return True
 
@@ -834,47 +892,25 @@ class ActionInfo:
 
     last_version = app.last_svn_version()
     dep = {}
+
+    if not last_version: 
+      return True
+
     if last_version:
         dep = AppFactory(c)(app.app_key, last_version).get_dependencies()
 
     if dep and dep.get('core'):
-        last_version = "%s (%s)" % (last_version, dep.get('core').version)
+        last_version_str = "%s (%s)" % (last_version, dep.get('core').version)
+        print "Last Version:\t\t%s" % last_version_str
 
-    print "Last Version:\t\t%s" % last_version
+    versioned_app = AppFactory(c)(app.app_key, last_version)
+    last_tag = versioned_app.last_tag()
+    if last_tag:
+      dep = AppFactory(c)(versioned_app.app_key, last_version, last_tag).get_dependencies()
 
-    def get_core_dependency(c, app, version, services):
-        url = "%s/MANIFEST" % AppFactory(c)(app.app_key, version).url(services=services)
-        mf = c.fetch_url(url, isjson=True)
-
-        if mf and mf.get('result'):
-            dep = app.get_dependencies(config=mf['result'])
-            if dep and dep.get('core'):
-                return dep.get('core').version
-
-        return None
-
-    for environment in ['sandbox', 'otg']:
-        print "\n[%s]" % environment
-        e_app = app.get_graph_app_from_environment(SERVICES[environment])
-        #get the released version and its core dependency
-        e_released = e_app.release or None
-        released_core_dependency = get_core_dependency(c, app, e_released, SERVICES[environment])
-        if released_core_dependency:
-            e_released = "%s (%s)" % (e_released, released_core_dependency)
-
-        print "Released Version:\t%s" % e_released or 'trunk'
-
-        #get the last version and its core dependency
-        if e_app.versions:
-            e_last = e_app.versions[0]['name']
-            last_core_dependency = get_core_dependency(c, app, e_last, SERVICES[environment])
-            if last_core_dependency:
-                e_last = "%s (%s)" % (e_last, last_core_dependency)
-        else:
-            e_last = None
-
-        print "Last Version:\t\t%s" % e_last or 'trunk'
-
+    if dep and dep.get('core'):
+        last_tag_str = "%s (%s)" % (last_tag, dep.get('core').tag)
+        print "Last Tag:\t\t%s" % last_tag_str
 
     print
     return True
@@ -937,7 +973,7 @@ def main():
   valid_actions = [
       ('setup_acre', 'create a local acre instance', ActionSetupAcre),
       ('setup_site', 'create a local site instance', ActionSetupSite),
-      ('setup_appengine', 'create a local appendine instance of acre/site', ActionSetupAppengine),
+      #('setup_appengine', 'create a local appendine instance of acre/site', ActionSetupAppengine),
       ('sync', 'connect acre and site so that acre will read all branches from the filesystem', ActionSync),
       ('link', 'connect acre and site so that acre will read site trunk apps from the filesystem', ActionLink),
       ('setup', 'setup acre, site and link', ActionSetup),
@@ -947,6 +983,8 @@ def main():
       ('info', 'provide information on all apps or a specific app', ActionInfo),
       ('create_branch', 'creates a branch of your app', ActionCreateAppBranch),
       ('create_tag', 'creates a tag of your app', ActionCreateAppTag),
+      ('create_static', 'creates a static bundle and writes it to the provided tag', ActionStatic),
+
       ('test', 'test', ActionTest)
       ]
 
@@ -975,8 +1013,12 @@ def main():
                     default=8115, help='the port you want to serve acre from')
   parser.add_option('-v', '--version', dest='version', default=None,
                     help='a version of the app - e.g. 12')
+  parser.add_option('-t', '--tag', dest='tag', default=None,
+                    help='a tag of the app - e.g. 12b')
   parser.add_option('-a', '--app', dest='app', default=None,
                     help='an app id - e.g. /user/namesbc/mysuperapp or an app key under /freebase/site - e.g. homepage')
+  parser.add_option('-c', '--core', dest='core', default=None,
+                    help='the version of core you want to tie this app branch to')
 
   (options, args) = parser.parse_args()
 

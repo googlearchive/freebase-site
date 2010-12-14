@@ -126,7 +126,7 @@ function serve_static_file(path) {
 }
 
 
-function path_based_routing(req) {
+function path_based_routing(req, app_labels) {
   var req_path = req.url.replace(req.app_url, "");
   // filter out query string
   var path = req_path;
@@ -158,7 +158,7 @@ function path_based_routing(req) {
 
     } else if (route.app) {
       // Handle canonical app routing
-      var app = app_routes.app_labels[route.app];
+      var app = app_labels ? app_labels[route.app] : app_routes.app_labels[route.app];
       if (!app) {
  	    throw route.app+" must be defined in the MANIFEST for routing.";
  	  }

@@ -110,22 +110,57 @@ function host_based_redirects(req) {
 
 //serve a request of the kind /fss/<app_key>/<app_tag>/filename
 //while setting long-lived cache-control headers
-function serve_static_file(path) { 
-    //get the app key and app tag (version as far as acre is concerned) 
-    var parts = path.split("/");
-    var app_id = "//" + parts[3] + "." + parts[2] + ".site.tags.svn.freebase-site.googlecode.dev";
-    var file = parts[4];
+function static_based_routing(req) { 
 
-    //require the app/file, serve it and set the correct cache headers (TTL: 1 year)
-    var app_md = acre.get_metadata(app_id);
-    acre.response.set_header("content-type", app_md.files[file].media_type);
-    acre.response.set_header("cache-control", "public, max-age: 31536000");
+  var req_path = req.url.replace(req.app_url, "");
+
+  //all requests that start with /fss/ are for static files
+  if (req_path.indexOf("/fss/") != 0) {
+      return false;
+  }
+
+  // filter out query string
+  var path = req_path;
+  var query_string;
+  if (req_path.indexOf("?") !== -1) {
+    var path_segs = req_path.split("?", 2);
+    path = path_segs[0];
+    query_string = path_segs[1];
+  }
+
+  //get the app key and app tag (version as far as acre is concerned) 
+  var parts = path.split("/", 5);
+  if (parts.length < 5) { 
+    acre.write("//the path " + path + " is an invalid static path id");
+    acre.exit()
+  }
+  
+  //this svn app suffix will move to configuration
+  var app_id = "//" + parts[3] + "." + parts[2] + ".site.tags.svn.freebase-site.googlecode.dev";
+  var file = parts[4];
+  //require the app/file, serve it and set the correct cache headers (TTL: 1 year)
+  var max_age = 31536000;
+  var expires = new Date(acre.request.start_time.getTime() + max_age * 1000);
+  acre.response.headers["expires"] = expires.toUTCString();
+  acre.response.headers["cache-control"]  ="public, max-age: " + max_age;
+
+  var app_md = acre.get_metadata(app_id);
+  if (file in app_md.files) {
+      acre.response.set_header("content-type", app_md.files[file].media_type);
+  }
+
+  try {  
     acre.write(acre.require(app_id + "/" + file).body);
-    acre.exit();
+  } catch(e) { 
+    acre.write("//failed to require the path " + app_id + "/" + file);
+  }
+  
+  acre.exit();
+
 }
 
 
-function path_based_routing(req, app_labels) {
+function path_based_routing(req) {
   var req_path = req.url.replace(req.app_url, "");
   // filter out query string
   var path = req_path;
@@ -157,7 +192,7 @@ function path_based_routing(req, app_labels) {
 
     } else if (route.app) {
       // Handle canonical app routing
-      var app = app_labels ? app_labels[route.app] : app_routes.app_labels[route.app];
+      var app = app_routes.app_labels[route.app];
       if (!app) {
  	    throw route.app+" must be defined in the MANIFEST for routing.";
  	  }
@@ -185,5 +220,6 @@ function path_based_routing(req, app_labels) {
  */
 if (acre.current_script === acre.request.script) {
   host_based_redirects(acre.request);
+  static_based_routing(acre.request);
   path_based_routing(acre.request);
 }

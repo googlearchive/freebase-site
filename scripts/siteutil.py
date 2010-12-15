@@ -396,7 +396,8 @@ class App:
           return c.error("Failed to get valid response from acre for url %s - aborting" % file_url)
 
         file_contents = LICENSE_PREAMBLE + cssmin(''.join(response))
-        self.write_file(bundle_name, file_contents)
+        #acre needs double extensions for filesystem text files
+        self.write_file("%s.css" % bundle_name, file_contents)
 
     for bundle_name in config.get('javascript', []):
         static_files.append(bundle_name)
@@ -416,7 +417,7 @@ class App:
         fh = open(temppath)
         file_contents = LICENSE_PREAMBLE + fh.read()
         fh.close()
-        self.write_file(bundle_name, file_contents)
+        self.write_file("%s.js" % bundle_name, file_contents)
 
 
     if len(static_files):

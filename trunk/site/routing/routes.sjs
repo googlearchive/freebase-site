@@ -171,11 +171,6 @@ function path_based_routing(req) {
     query_string = path_segs[1];
   }
 
-  //all requests that start with /fss/ are for static files
-  if (path.indexOf("/fss/") == 0) {
-      return serve_static_file(path);
-  }
-
   var route = app_routes.rules.route_for_path(path);
   if (route) {
     if (route.redirect && route.url) {

@@ -111,18 +111,17 @@ function host_based_redirects(req) {
 //serve a request of the kind /fss/<app_key>/<app_tag>/filename
 //while setting long-lived cache-control headers
 function serve_static_file(path) { 
-
     //get the app key and app tag (version as far as acre is concerned) 
     var parts = path.split("/");
-    console.log(parts);
-    var app_id = "//" + parts[3] + "." + parts[2] + ".site.tags.svn.freebase-site.googlecode.dev/" + parts[4];
+    var app_id = "//" + parts[3] + "." + parts[2] + ".site.tags.svn.freebase-site.googlecode.dev";
+    var file = parts[4];
 
     //require the app/file, serve it and set the correct cache headers (TTL: 1 year)
+    var app_md = acre.get_metadata(app_id);
+    acre.response.set_header("content-type", app_md.files[file].media_type);
     acre.response.set_header("cache-control", "public, max-age: 31536000");
-    console.log('requiring ' + app_id);
-    acre.write(acre.require(app_id).body);
+    acre.write(acre.require(app_id + "/" + file).body);
     acre.exit();
-
 }
 
 

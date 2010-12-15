@@ -1,5 +1,5 @@
 {
-  "app_version": "61", 
+  "app_tag": "61f", 
   "javascript": {
     "appadmin.mf.js": [
       [
@@ -22,11 +22,12 @@
       "appadmin_core.css"
     ]
   }, 
+  "static": true, 
   "test": {
     "files": [
       "test_get_app", 
       "test_parse_path"
     ]
   }, 
-  "app_tag": "61f"
+  "app_version": "61"
 }

@@ -189,7 +189,7 @@ test("delete_domain with types", {"bug": "flakey test"}, function() {
   }
 });
 
-test("delete domain base domain", function() {
+test("delete domain base domain", {"bug":"write_user not working"}, function() {
   var domain = h.create_domain(user.id);
   try {
     // add a base key

@@ -28,6 +28,4 @@ var app_labels = {
   "routing"           : "//61.routing.site.branches.svn.freebase-site.googlecode.dev"
 };
 
-var routing = acre.require(app_labels["routing"] + "/routes");
-routing.host_based_redirects(acre.request);
-routing.path_based_routing(acre.request, app_labels);
+acre.require(app_labels["routing"] + "/routes").route();

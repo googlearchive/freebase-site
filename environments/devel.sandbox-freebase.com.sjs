@@ -14,7 +14,7 @@ var app_labels = {
   "parallax"          : "//parallax.dfhuynh.user.dev",
   "permission"        : "//permission.site.trunk.svn.freebase-site.googlecode.dev",
   "policies"          : "//policies.site.trunk.svn.freebase-site.googlecode.dev",
-  "queryeditor"       : "//cuecard.dfhuynh.user.dev",
+  "queryeditor"       : "//queryeditor.site.trunk.svn.freebase-site.googlecode.dev",
   "sample"            : "//sample.site.trunk.svn.freebase-site.googlecode.dev",
   "app_template_barebones"  : "//app_template_barebones.site.trunk.svn.freebase-site.googlecode.dev",
   "app_template_freebase"   : "//app_template_freebase.site.trunk.svn.freebase-site.googlecode.dev",
@@ -28,6 +28,4 @@ var app_labels = {
   "routing"           : "//routing.site.trunk.svn.freebase-site.googlecode.dev"
 };
 
-var routing = acre.require(app_labels["routing"] + "/routes");
-routing.host_based_redirects(acre.request);
-routing.path_based_routing(acre.request, app_labels);
+acre.require(app_labels["routing"] + "/routes").route();

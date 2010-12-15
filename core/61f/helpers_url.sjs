@@ -221,7 +221,7 @@ function image_url(id, options) {
     }
   }
 
-  return acre.form.build_url(freebase_url("/api/trans/image_thumb"), o);
+  return acre.form.build_url(freebase_service_url("/api/trans/image_thumb"), o);
 };
 
 

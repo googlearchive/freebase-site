@@ -83,7 +83,7 @@ function delete_base(base) {
   return acre.freebase.mqlwrite(q).result;
 };
 
-test("create_base", function() {
+test("create_base", {"bug":"write_user not working"}, function() {
   var base;
   try {
     var name = get_name();
@@ -161,7 +161,7 @@ test("create base with existing key", function() {
   }
 });
 
-test("create base with description", function() {
+test("create base with description", {"bug":"write_user not working"}, function() {
   var base;
   try {
     var name = get_name();

@@ -41,7 +41,7 @@ var router = acre.require("router");
 var rules = new router.PrefixRouter();
 
 var app_labels = {
-  "admin"             : "//admin.site.freebase.dev",
+  "admin"             : "//12f.admin.site.tags.svn.freebase-site.googlecode.dev",
   "appeditor"         : "//appeditor.site.freebase.dev",
   "appeditor-services": "//appeditor-services.site.freebase.dev",
   "apps"              : "//apps.site.freebase.dev",

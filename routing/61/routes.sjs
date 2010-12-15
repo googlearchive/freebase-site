@@ -136,23 +136,21 @@ function static_based_routing(req) {
   }
   
   //this svn app suffix will move to configuration
-  var app_id = "//" + parts[3] + "." + parts[2] + ".site.tags.svn.freebase-site.googlecode.dev";
-  var file = parts[4];
+  var file_path = "//" + parts[3] + "." + parts[2] + ".site.tags.svn.freebase-site.googlecode.dev" + "/" + parts[4];
+
   //require the app/file, serve it and set the correct cache headers (TTL: 1 year)
   var max_age = 31536000;
   var expires = new Date(acre.request.start_time.getTime() + max_age * 1000);
   acre.response.headers["expires"] = expires.toUTCString();
   acre.response.headers["cache-control"]  ="public, max-age: " + max_age;
 
-  var app_md = acre.get_metadata(app_id);
-  if (file in app_md.files) {
-      acre.response.set_header("content-type", app_md.files[file].media_type);
-  }
-
-  try {  
-    acre.write(acre.require(app_id + "/" + file).body);
+  try {
+    var file = acre.require(file_path);
+    acre.response.set_header("content-type", file.headers["content-type"]);
+    acre.write(file.body);
   } catch(e) { 
-    acre.write("//failed to require the path " + app_id + "/" + file);
+    console.log(e);
+    acre.write("//failed to require the path " + file_path);
   }
   
   acre.exit();
@@ -210,11 +208,18 @@ function path_based_routing(req) {
   throw 'Invalid route: '+route;
 }
 
+
 /**
  * Main route logic
  */
+function route(req, app_labels) {
+  req = acre.request || req;
+  host_based_redirects(req);
+  static_based_routing(req);
+  path_based_routing(req, app_labels);
+}
+
+
 if (acre.current_script === acre.request.script) {
-  host_based_redirects(acre.request);
-  static_based_routing(acre.request);
-  path_based_routing(acre.request);
+  route();
 }

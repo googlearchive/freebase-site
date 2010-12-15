@@ -1,1 +1,47 @@
-{"app_tag": null, "javascript": {"jquery.placeholder.test.mf.js": ["jquery.placeholder.js", "jquery.placeholder.test.js"], "freebase.mf.js": ["json2.js", "jquery.cookie.js", "jquery.localstore.js", "jquery.placeholder.js", "jquery.metadata.js", ["jqueryui", "jquery.ui.core.mf.js"], "freebase.js", ["permission", "permission.js"]]}, "apps": {"core": "//61.core.site.freebase.dev"}, "app_key": "template", "stylesheet": {"freebase.mf.css": ["mixins.less", "freebase.less", "components.less"], "freebase.ui.mf.css": ["mixins.less", "freebase.ui.tabs.less", "freebase.ui.table.less", "freebase.ui.breadcrumbs.less", "freebase.ui.pageoverview.less", "freebase.ui.modal.less", "freebase.ui.layout.twocol.less", "freebase.ui.bargraph.less"]}, "app_version": 61}
+{
+  "app_tag": "61f", 
+  "javascript": {
+    "jquery.placeholder.test.mf.js": [
+      "jquery.placeholder.js", 
+      "jquery.placeholder.test.js"
+    ], 
+    "freebase.mf.js": [
+      "json2.js", 
+      "jquery.cookie.js", 
+      "jquery.localstore.js", 
+      "jquery.placeholder.js", 
+      "jquery.metadata.js", 
+      [
+        "jqueryui", 
+        "jquery.ui.core.mf.js"
+      ], 
+      "freebase.js", 
+      [
+        "permission", 
+        "permission.js"
+      ]
+    ]
+  }, 
+  "apps": {
+    "core": "//61f.core.site.tags.svn.freebase-site.googlecode.dev"
+  }, 
+  "app_key": "template", 
+  "stylesheet": {
+    "freebase.mf.css": [
+      "mixins.less", 
+      "freebase.less", 
+      "components.less"
+    ], 
+    "freebase.ui.mf.css": [
+      "mixins.less", 
+      "freebase.ui.tabs.less", 
+      "freebase.ui.table.less", 
+      "freebase.ui.breadcrumbs.less", 
+      "freebase.ui.pageoverview.less", 
+      "freebase.ui.modal.less", 
+      "freebase.ui.layout.twocol.less", 
+      "freebase.ui.bargraph.less"
+    ]
+  }, 
+  "app_version": "61"
+}

@@ -1,0 +1,28 @@
+{
+  "app_tag": null, 
+  "javascript": {
+    "homepage.mf.js": [
+      [
+        "flot", 
+        "flot.core.mf.js"
+      ], 
+      "jquery.tinysort.js", 
+      "jquery.tools.tabs.min.js", 
+      "homepage.js"
+    ]
+  }, 
+  "apps": {
+    "core": "//61.core.site.freebase.dev"
+  }, 
+  "app_key": "homepage", 
+  "stylesheet": {
+    "homepage.mf.css": [
+      [
+        "template", 
+        "mixins.less"
+      ], 
+      "homepage.less"
+    ]
+  }, 
+  "app_version": 20
+}

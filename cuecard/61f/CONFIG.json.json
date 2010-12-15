@@ -67,5 +67,6 @@
       "dialogs.css"
     ]
   }, 
+  "static": true, 
   "app_version": "61"
 }

@@ -1,1 +1,18 @@
-{"app_tag": null, "javascript": {"qunit.mf.js": ["qunit.js"]}, "apps": {"core": "//61.core.site.freebase.dev"}, "app_key": "test", "stylesheet": {"qunit.mf.css": ["qunit.css"]}, "app_version": 61}
+{
+  "app_tag": "61f", 
+  "javascript": {
+    "qunit.mf.js": [
+      "qunit.js"
+    ]
+  }, 
+  "apps": {
+    "core": "//61f.core.site.tags.svn.freebase-site.googlecode.dev"
+  }, 
+  "app_key": "test", 
+  "stylesheet": {
+    "qunit.mf.css": [
+      "qunit.css"
+    ]
+  }, 
+  "app_version": "61"
+}

@@ -32,6 +32,9 @@
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").mf;
+
+mf.require("test", "mox").playback(this, "playback_test_queries.json");
+
 var q = mf.require("queries");
 var mql = mf.require("mql");
 var i18n = mf.require("i18n", "i18n");

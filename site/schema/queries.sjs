@@ -63,17 +63,15 @@ function domains(q) {
     })
     .then(function(domains) {
       var summary_guids = [];
-      var domains_by_summary_guids = {};
       domains.forEach(function(d) {
         var summary_guid = "summary_/guid/" + d.guid.substring(1);
         summary_guids.push(summary_guid);
-        domains_by_summary_guids[summary_guid] = d;
       });
+      summary_guids.sort();
       var promises = [];
       // we request allotments of 40 summary guids since the url may be too long
       for (var i=0,l=summary_guids.length; i<l; i+=40) {
         var slice = summary_guids.slice(i, i+40);
-        console.log("slice index", i, "length", slice.length, slice);
         promises.push(freebase.get_static("activity", slice));
       }
       return deferred.all(promises)

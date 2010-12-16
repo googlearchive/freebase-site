@@ -1,5 +1,6 @@
 var mf = acre.require("MANIFEST").mf;
 var apis = mf.require("promise", "apis");
+var deferred = mf.require("promise", "deferred");
 var h = mf.require("core", "helpers");
 
 var self = this;

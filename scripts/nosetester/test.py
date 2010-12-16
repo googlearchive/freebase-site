@@ -19,7 +19,8 @@ class TstResult:
         r = self.results[k]
         print 'time for %s: %2.3f seconds' % (k.split(':')[0], self.elapsed)
         if r[0] is False:
-            if 'timed out' in str(r[1]):
+            if ('timed out' in str(r[1]) )\
+            or ('script was taking too long' in str(r[1]) ):
                 r[0] = 'skip'
                 print 'skip: test ran but failed on timeout'
             else:

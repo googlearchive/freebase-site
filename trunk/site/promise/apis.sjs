@@ -35,9 +35,9 @@ var freebase = {};
 (function() {
   var deferred = acre.require("deferred");
 
-  urlfetch = function() {
+  var _urlfetch = function() {
     // Wrap async urlfetch to handle redirects
-    var _urlfetch = deferred.makePromise(
+    var internal_urlfetch = deferred.makePromise(
       acre.async.urlfetch,
       {position:1, key:"callback"},
       {position:1, key:"errback"}
@@ -63,7 +63,7 @@ var freebase = {};
 
       // Lets try this again, this time with the new url
       args[0] = error.info.headers['Location'];
-      return _urlfetch.apply(null, args);
+      return internal_urlfetch.apply(null, args);
     };
 
     var handle_timeout_error = function(error) {
@@ -71,12 +71,13 @@ var freebase = {};
         throw new deferred.RequestTimeout(error.message);
       }
       return error;
-    }
+    };
 
-    return _urlfetch.apply(null, args)
+    return internal_urlfetch.apply(null, args)
       .then(null, handle_redirect_error)
       .then(null, handle_timeout_error);
   };
+  urlfetch = _urlfetch;
 
   freebase.get_static = function(bdb, ids) {
     var retrieve_ids;
@@ -93,9 +94,9 @@ var freebase = {};
       url += (i ? "&" : "") +  "id="+ id;
     });
 
-    return urlfetch(url)
+    return _urlfetch(url)
       .then(function(response) {
-        var response = JSON.parse(response.body);
+        response = JSON.parse(response.body);
         var results = {};
         retrieve_ids.forEach(function (id) {
           results[id] = response[id].result;
@@ -109,7 +110,7 @@ var freebase = {};
           return results;
         }
       });
-  }
+  };
 
   var freebase_apis = [
       {name: "fetch",            options_pos: 1},

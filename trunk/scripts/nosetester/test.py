@@ -19,8 +19,12 @@ class TstResult:
         r = self.results[k]
         print 'time for %s: %2.3f seconds' % (k.split(':')[0], self.elapsed)
         if r[0] is False:
-            print r[1]
-            assert 'an acre test failed' is True
+            if 'timed out' in str(r[1]):
+                r[0] = 'skip'
+                print 'skip: test ran but failed on timeout'
+            else:
+                print r[1]
+                assert 'an acre test failed' is True
         if 'skip' in str(r[0]):
             print r[1]
             # see __init__.py for details on when tests are skipped

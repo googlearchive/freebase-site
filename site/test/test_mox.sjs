@@ -4,8 +4,6 @@ var mf = acre.require("MANIFEST").mf;
 
 mf.require("test", "mox").playback(this, "playback_test_mox.json");
 
-var queries = mf.require("queries");
-
 var urlfetch = mf.require("promise", "apis").urlfetch;
 var freebase = mf.require("promise", "apis").freebase;
 var deferred = mf.require("promise", "deferred");

@@ -1,12 +1,12 @@
 {
-  "app_tag": null, 
+  "app_tag": "62b", 
   "javascript": {
     "qunit.mf.js": [
       "qunit.js"
     ]
   }, 
   "apps": {
-    "core": "//62a.core.site.tags.svn.freebase-site.googlecode.dev"
+    "core": "//62b.core.site.tags.svn.freebase-site.googlecode.dev"
   }, 
   "app_key": "test", 
   "stylesheet": {

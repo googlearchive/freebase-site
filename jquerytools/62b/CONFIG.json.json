@@ -1,0 +1,8 @@
+{
+  "app_version": "62", 
+  "app_tag": null, 
+  "apps": {
+    "core": "//62a.core.site.tags.svn.freebase-site.googlecode.dev"
+  }, 
+  "app_key": "jquerytools"
+}

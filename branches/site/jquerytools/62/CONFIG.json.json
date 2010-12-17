@@ -1,5 +1,8 @@
 {
+  "app_tag": null, 
+  "app_version": 62, 
   "apps": {
-    "core": "//core.site.freebase.dev"
-  }
+    "core": "//62.core.site.freebase.dev"
+  }, 
+  "app_key": "jquerytools"
 }

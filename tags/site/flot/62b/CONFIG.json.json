@@ -1,0 +1,26 @@
+{
+  "app_tag": null, 
+  "app_version": "62", 
+  "apps": {
+    "core": "//62a.core.site.tags.svn.freebase-site.googlecode.dev"
+  }, 
+  "app_key": "flot", 
+  "javascript": {
+    "flot.core.mf.js": [
+      "excanvas.js", 
+      "jquery.flot.js", 
+      "jquery.colorhelpers.js"
+    ], 
+    "flot.all.mf.js": [
+      "flot.core.mf.js", 
+      "jquery.flot.fillbetween.js", 
+      "jquery.flot.navigate.js", 
+      "jquery.flot.stack.js", 
+      "jquery.flot.image.js", 
+      "jquery.flot.pie.js", 
+      "jquery.flot.threshold.js", 
+      "jquery.flot.crosshair.js", 
+      "jquery.flot.selection.js"
+    ]
+  }
+}

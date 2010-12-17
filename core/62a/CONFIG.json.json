@@ -1,0 +1,41 @@
+{
+  "app_version": 62, 
+  "freebase": {
+    "resource": {
+      "hash": "dd20b6623a39c3624ab666c6f4e69f80423c7186ab9f8add7c53dd927ad389fa", 
+      "base_url": "http://res.freebase.com/s/"
+    }
+  }, 
+  "apps": {
+    "cuecard": "//62.cuecard.site.freebase.dev", 
+    "libraries": "//2.libraries.apps.freebase.dev", 
+    "permission": "//62.permission.site.freebase.dev", 
+    "appeditor-services": "//62.appeditor-services.site.freebase.dev", 
+    "manifest": "//62.manifest.site.freebase.dev", 
+    "mjt": "//62.mjt.site.freebase.dev", 
+    "test": "//62.test.site.freebase.dev", 
+    "validator": "//62.validator.site.freebase.dev", 
+    "jquerytools": "//62.jquerytools.site.freebase.dev", 
+    "routing": "//62.routing.site.freebase.dev", 
+    "template": "//62.template.site.freebase.dev", 
+    "queries": "//62.queries.site.freebase.dev", 
+    "i18n": "//62.i18n.site.freebase.dev", 
+    "promise": "//62.promise.site.freebase.dev", 
+    "toolbox": "//62.toolbox.site.freebase.dev", 
+    "flot": "//62.flot.site.freebase.dev", 
+    "codemirror": "//62.codemirror.site.freebase.dev", 
+    "jqueryui": "//62.jqueryui.site.freebase.dev"
+  }, 
+  "app_key": "core", 
+  "libs": {
+    "jquery": {
+      "version": "1.4.2", 
+      "base_url": "http://ajax.googleapis.com/ajax/libs/jquery/"
+    }, 
+    "suggest": {
+      "version": "1.4.1", 
+      "base_url": "http://freebaselibs.com/static/suggest/"
+    }
+  }, 
+  "app_tag": null
+}

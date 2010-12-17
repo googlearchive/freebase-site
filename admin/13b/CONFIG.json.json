@@ -30,5 +30,6 @@
       "admin_core.css"
     ]
   }, 
+  "static": true, 
   "app_version": "13"
 }

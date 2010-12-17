@@ -24,5 +24,6 @@
       "homepage.less"
     ]
   }, 
+  "static": true, 
   "app_version": "21"
 }

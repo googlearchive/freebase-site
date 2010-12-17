@@ -1,6 +1,10 @@
 {
-  "app_tag": null, 
+  "app_tag": "27a", 
   "javascript": {
+    "domain.mf.js": [
+      "schema.mf.js", 
+      "domain.js"
+    ], 
     "index.mf.js": [
       "schema.mf.js", 
       "index.js"
@@ -43,6 +47,10 @@
       "jquery.mqlkey.js", 
       "schema-edit.js"
     ], 
+    "type.mf.js": [
+      "schema.mf.js", 
+      "type.js"
+    ], 
     "schema.mf.js": [
       [
         "template", 
@@ -57,18 +65,10 @@
         "tooltip.js"
       ], 
       "schema.js"
-    ], 
-    "type.mf.js": [
-      "schema.mf.js", 
-      "type.js"
-    ], 
-    "domain.mf.js": [
-      "schema.mf.js", 
-      "domain.js"
     ]
   }, 
   "apps": {
-    "core": "//62.core.site.freebase.dev"
+    "core": "//62b.core.site.tags.svn.freebase-site.googlecode.dev"
   }, 
   "app_key": "schema", 
   "stylesheet": {
@@ -80,5 +80,5 @@
       "schema.less"
     ]
   }, 
-  "app_version": 27
+  "app_version": "27"
 }

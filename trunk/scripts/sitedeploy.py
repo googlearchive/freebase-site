@@ -737,12 +737,12 @@ class ActionCreateAppTag():
 
     if not tag:
       core_app = core_app.create_tag()
+      tag = core_app.tag
     else:
       core_app = AppFactory(c)(core_app.app_key, core_app.version, tag) 
 
     if not core_app:
       return c.error('Failed to create tag for core')
-
 
     #XXXX REMOVE AFTER DEBUGGING
     #return core_app
@@ -757,9 +757,9 @@ class ActionCreateAppTag():
     for label, d_app in core_app.get_dependencies().iteritems():
 
       #core always depends on release of routing - no tags for routing
-      if d_app.app_key == 'routing':
-        updated_core_app_dependency.add(core_app.update_dependency(label, AppFactory(c)('routing', 'release')))
-        continue
+      #if d_app.app_key == 'routing':
+      #  updated_core_app_dependency.add(core_app.update_dependency(label, AppFactory(c)('routing', 'release')))
+      #  continue
 
       #if the tag already exists, make sure the core app points to it and we are done
       lib_app = d_app.get_tag(tag)
@@ -768,9 +768,8 @@ class ActionCreateAppTag():
       #so create a new tag for this library app
       if not lib_app:
         lib_app = d_app.create_tag(tag)
-
-      if not lib_app:
-        return c.error("Failed to create tag %s for %s" % (tag, d_app))
+        if not lib_app:
+          return c.error("Failed to create tag %s for %s" % (tag, d_app))
 
       updated_core_app_dependency.add(core_app.update_dependency(label, lib_app))
 

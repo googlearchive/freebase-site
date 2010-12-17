@@ -1,59 +1,84 @@
 {
+  "app_tag": null, 
+  "javascript": {
+    "index.mf.js": [
+      "schema.mf.js", 
+      "index.js"
+    ], 
+    "domain-edit.mf.js": [
+      "schema-edit.mf.js", 
+      "domain-edit.js"
+    ], 
+    "index-edit.mf.js": [
+      "schema-edit.mf.js", 
+      "index-edit.js"
+    ], 
+    "jquery.mqlkey.test.mf.js": [
+      "jquery.mqlkey.js", 
+      "jquery.mqlkey.test.js"
+    ], 
+    "type-edit.mf.js": [
+      "schema-edit.mf.js", 
+      [
+        "jqueryui", 
+        "jquery.ui.core.mf.js"
+      ], 
+      [
+        "jqueryui", 
+        "jquery.ui.sortable.js"
+      ], 
+      "suggest_expected_type.js", 
+      "suggest_property.js", 
+      "type-edit.js"
+    ], 
+    "schema-edit.mf.js": [
+      [
+        "jquerytools", 
+        "toolbox.expose.js"
+      ], 
+      [
+        "jquerytools", 
+        "overlay.js"
+      ], 
+      "jquery.mqlkey.js", 
+      "schema-edit.js"
+    ], 
+    "schema.mf.js": [
+      [
+        "template", 
+        "jquery.showrow.js"
+      ], 
+      [
+        "jquerytools", 
+        "tabs.js"
+      ], 
+      [
+        "jquerytools", 
+        "tooltip.js"
+      ], 
+      "schema.js"
+    ], 
+    "type.mf.js": [
+      "schema.mf.js", 
+      "type.js"
+    ], 
+    "domain.mf.js": [
+      "schema.mf.js", 
+      "domain.js"
+    ]
+  }, 
   "apps": {
-      "core": "//core.site.freebase.dev"
-  },
+    "core": "//62.core.site.freebase.dev"
+  }, 
+  "app_key": "schema", 
   "stylesheet": {
     "schema.mf.css": [
-      ["template", "freebase.ui.mf.css"],
+      [
+        "template", 
+        "freebase.ui.mf.css"
+      ], 
       "schema.less"
     ]
-  },
-  "javascript": {
-    "schema.mf.js": [
-      ["template", "jquery.showrow.js"],
-      ["jquerytools", "tabs.js"],
-      ["jquerytools", "tooltip.js"],
-      "schema.js"
-    ],
-    "schema-edit.mf.js": [
-      ["jquerytools", "toolbox.expose.js"],
-      ["jquerytools", "overlay.js"],
-      "jquery.mqlkey.js",
-      "schema-edit.js"
-    ],
-    "index.mf.js": [
-      "schema.mf.js",
-      "index.js"
-    ],
-    "index-edit.mf.js": [
-      "schema-edit.mf.js",
-      "index-edit.js"
-    ],
-    "domain.mf.js": [
-      "schema.mf.js",
-      "domain.js"
-    ],
-    "domain-edit.mf.js": [
-      "schema-edit.mf.js",
-      "domain-edit.js"
-    ],
-    "type.mf.js": [
-      "schema.mf.js",
-      "type.js"
-    ],
-    "type-edit.mf.js": [
-      "schema-edit.mf.js",
-      ["jqueryui", "jquery.ui.core.mf.js"],
-      ["jqueryui", "jquery.ui.sortable.js"],
-      "suggest_expected_type.js",
-      "suggest_property.js",
-      "type-edit.js"
-    ],
-
-    "jquery.mqlkey.test.mf.js": [
-      "jquery.mqlkey.js",
-      "jquery.mqlkey.test.js"
-    ]
-  }
+  }, 
+  "app_version": 27
 }
-

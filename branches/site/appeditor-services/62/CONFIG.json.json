@@ -1,12 +1,14 @@
 {
-  "apps" : {
-      "core": "//core.site.freebase.dev"
-  },
-  "test":{
-    "files":[
-      "test_get_app",
+  "test": {
+    "files": [
+      "test_get_app", 
       "test_parse_path"
     ]
-  }
-
+  }, 
+  "app_tag": null, 
+  "app_version": 62, 
+  "apps": {
+    "core": "//62.core.site.freebase.dev"
+  }, 
+  "app_key": "appeditor-services"
 }

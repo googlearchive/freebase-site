@@ -43,5 +43,6 @@
       "freebase.ui.bargraph.less"
     ]
   }, 
+  "static": true, 
   "app_version": "62"
 }

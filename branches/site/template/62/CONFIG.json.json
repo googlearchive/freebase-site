@@ -23,7 +23,7 @@
     ]
   }, 
   "apps": {
-    "core": "//62.core.site.freebase.dev"
+    "core": "//62a.core.site.tags.svn.freebase-site.googlecode.dev"
   }, 
   "app_key": "template", 
   "stylesheet": {
@@ -43,5 +43,5 @@
       "freebase.ui.bargraph.less"
     ]
   }, 
-  "app_version": 62
+  "app_version": "62"
 }

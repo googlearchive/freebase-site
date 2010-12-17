@@ -38,5 +38,6 @@
       "triples.less"
     ]
   }, 
+  "static": true, 
   "app_version": "16"
 }

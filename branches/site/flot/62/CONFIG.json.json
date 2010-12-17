@@ -1,6 +1,10 @@
 {
-  "app_version": 62, 
   "app_tag": null, 
+  "app_version": "62", 
+  "apps": {
+    "core": "//62a.core.site.tags.svn.freebase-site.googlecode.dev"
+  }, 
+  "app_key": "flot", 
   "javascript": {
     "flot.core.mf.js": [
       "excanvas.js", 
@@ -18,9 +22,5 @@
       "jquery.flot.crosshair.js", 
       "jquery.flot.selection.js"
     ]
-  }, 
-  "apps": {
-    "core": "//62.core.site.freebase.dev"
-  }, 
-  "app_key": "flot"
+  }
 }

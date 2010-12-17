@@ -1,0 +1,118 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var mf = acre.require("MANIFEST").mf;
+  var h = mf.require("core", "helpers");
+</acre:script>
+
+<acre:block def="user_image_small(user)">
+  ${user_image(user, 30)}
+</acre:block>
+
+<acre:block def="user_image_medium(user)">
+  ${user_image(user, 40)}
+</acre:block>
+
+<acre:block def="user_image_large(user)">
+  ${user_image(user, 75)}
+</acre:block>
+
+<acre:block def="user_image(user, size)" if="user">
+ <acre:script>
+    var url = h.freebase_url("/view" + user.id);
+    var options = {
+      mode: "fillcrop",
+      pad: 1,
+      errorid: "/freebase/user_profile/empty_user_image"
+    };
+  </acre:script>
+  
+  <span class="user-image">
+    <a href="${url}" title="${user.id}">
+     ${image_thumb(user, size, options)}
+    </a>
+    ${user_badges(user["badges:/type/user/usergroup"], size)}
+ </span>
+</acre:block>
+
+<acre:block def="user_badges(badges, size)" if="badges && badges.length">
+  <acre:block for="group in badges">
+    <acre:script>
+      var url = h.freebase_url("/view" + group.id);
+    </acre:script>
+    <a class="user-badge-${size} badge${group.id.replace(/\//g, '-')}"
+       title="This user is a ${group.name}"
+       href="${url}">${group.name}</a>
+  </acre:block>
+</acre:block>
+
+<acre:block def="image_thumb(image, size, options)" if="image">
+  <acre:script>
+    // The template can be called with image, size and options, 
+    //   of just image and options
+    if (typeof size !== "number") {
+      options = size || {};
+      size = null;
+    }
+    
+    // Get the id of an image whether passed an array, an object or an id
+    image_id = h.first_element(image);
+    if (typeof image_id === "object" && image['/common/topic/image']) {
+      image_id = image_id['/common/topic/image'];
+    }
+    image_id = h.first_element(image_id);
+    if (typeof image_id === "object" && (image_id.id || image_id.mid || image_id.guid)) {
+      image_id = image_id.id || image_id.mid || image_id.guid;
+    }
+    
+    var o = {mode:"fit"};
+    if (size) {
+      o.maxwidth = o.maxheight = size;
+    }
+    h.extend(o, options);
+    
+    var attrs = {src: h.image_url(image_id, o)};
+    
+    if (o.pad && o.maxwidth) {
+      attrs.width = o.maxwidth;
+    }
+    if (o.pad && o.maxwidth) {
+      attrs.height = o.maxheight;
+    }
+    if (typeof image === "object" && image.id) {
+      attrs.alt = image.id;
+    }
+    h.extend(attrs, o.attrs);
+  </acre:script>
+  <img acre:attrs="attrs">
+</acre:block>
+

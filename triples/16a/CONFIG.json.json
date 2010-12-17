@@ -1,0 +1,42 @@
+{
+  "app_tag": null, 
+  "javascript": {
+    "triples.mf.js": [
+      [
+        "jquerytools", 
+        "tooltip.js"
+      ], 
+      [
+        "jqueryui", 
+        "jquery.effects.core.js"
+      ], 
+      [
+        "jqueryui", 
+        "jquery.ui.core.js"
+      ], 
+      [
+        "jqueryui", 
+        "jquery.effects.highlight.js"
+      ], 
+      [
+        "jqueryui", 
+        "jquery.ui.slider.js"
+      ], 
+      "triples.js"
+    ]
+  }, 
+  "apps": {
+    "core": "//62.core.site.freebase.dev"
+  }, 
+  "app_key": "triples", 
+  "stylesheet": {
+    "triples.mf.css": [
+      [
+        "template", 
+        "freebase.ui.mf.css"
+      ], 
+      "triples.less"
+    ]
+  }, 
+  "app_version": 16
+}

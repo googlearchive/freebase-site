@@ -1,0 +1,34 @@
+{
+  "app_tag": null, 
+  "javascript": {
+    "admin.mf.js": [
+      [
+        "jqueryui", 
+        "jquery.ui.tabs.js"
+      ], 
+      [
+        "template", 
+        "jquery.showrow.js"
+      ], 
+      [
+        "jquerytools", 
+        "tabs.js"
+      ], 
+      [
+        "jquerytools", 
+        "tooltip.js"
+      ], 
+      "admin_core.js"
+    ]
+  }, 
+  "apps": {
+    "core": "//62.core.site.freebase.dev"
+  }, 
+  "app_key": "admin", 
+  "stylesheet": {
+    "admin.mf.css": [
+      "admin_core.css"
+    ]
+  }, 
+  "app_version": 13
+}

@@ -1,0 +1,193 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var mf = acre.require("MANIFEST").mf;
+  var c = this.exports.c = {};
+  var h = mf.require("core", "helpers");
+  var i18n = mf.require("i18n", "i18n");
+  var _ = i18n.gettext;
+  var queries = mf.require("queries");
+
+  var user_id = acre.request.params.user_id;
+
+  var data = {};
+  if (user_id) {
+    data.domains = queries.user_domains(user_id);
+  } else {
+    data.domains = queries.common_domains();
+  }
+</acre:script>
+
+<acre:block def="title()">
+  ${_("Schema")}
+</acre:block>
+
+<acre:block def="head()">
+ <link rel="stylesheet" type="text/css" href="${mf.css_src('schema.mf.css')}" />
+</acre:block>
+
+<acre:block def="content_header()">
+  <div class="page-header">
+    <h1 id="page-title">${_("Schema")}</h1>
+  </div>
+</acre:block>
+
+<acre:block def="content_body()">
+
+  <div id="content-wrapper">
+    <div id="content-main" role="main">
+      <div class="section">
+      <h1 class="section-title">${_("Search")}</h1>
+      <div id="schema-search" class="section-tabs">
+        <ul class="section-tabset clear">
+          <li class="section-tab"><a href="#domain-search">${_("Domains")}</a></li>
+          <li class="section-tab"><a href="#type-search">${_("Types")}</a></li>
+          <li class="section-tab"><a href="#property-search">${_("Properties")}</a></li>
+        </ul>
+        <div class="search-box" id="domain-search">
+          <form id="domain-search-form" method="get">
+            <fieldset>
+              <input type="text" name="id" class="text-input" id="domain-search-input" id="domain-search-input" placeholder="${_('Start typing for suggested domains...')}" />
+            </fieldset>
+          </form>
+          <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-commons" checked="checked" />${_('Freebase Commons')}</label>
+          <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" />${_('All Domains')}</label>
+        </div>
+        <div class="search-box" id="type-search">
+          <form id="type-search-form" method="get">
+            <fieldset>
+              <input type="text" name="id" class="text-input" id="type-search-input" placeholder="${_('Start typing for suggested types...')}" />
+            </fieldset>
+          </form>
+          <label><input type="radio" name="type-search-toggle" class="search-toggle" id="type-search-toggle-commons" checked="checked" />${_('Freebase Commons')}</label>
+          <label><input type="radio" name="type-search-toggle" class="search-toggle" id="type-search-toggle-all" />${_('All Domains')}</label>
+        </div>
+        <div class="search-box" id="property-search">
+          <form id="property-search-form" method="get">
+            <fieldset>
+              <input type="text" name="id" class="text-input" id="property-search-input" placeholder="${_('Start typing for suggested properties...')}" />
+            </fieldset>
+          </form>
+          <label><input type="radio" name="property-search-toggle" class="search-toggle" id="property-search-toggle-commons" checked="checked" />${_('Freebase Commons')}</label>
+          <label><input type="radio" name="property-search-toggle" class="search-toggle" id="property-search-toggle-all" />${_('All Domains')}</label>
+        </div>
+<!--
+        <div class="search-box" id="user-search">
+          <form id="user-search-form">
+            <fieldset>
+              <input type="text" name="id" class="text-input" id="user-search-input" placeholder="Start typing for suggested users..." placeholder="Start typing for suggested users" />
+            </fieldset>
+          </form>
+        </div>
+-->
+      </div>
+      </div>
+      <div class="section">
+        <button id="create-new-domain" class="edit button button-primary" 
+                title="${_('Create a new domain')}"
+                onclick="return freebase.dispatch(event, freebase.schema.index.add_domain, null, this);">
+          ${_("Create New")}
+        </button>
+        <h1 class="section-title">${_('Browse')}</h1>
+        <table cellspacing="0" class="table table-sortable">
+          <thead>
+            <tr>
+              <th scope="col" class="column-header {sorter: 'schemaName'}"><span class="sort-icon">${_('Domain')}</span></th>
+              <th scope="col" class="column-header column-header-desc"><span class="sort-icon">${_('ID')}</span></th>
+              <th scope="col" class="column-header numeric"><span class="sort-icon">${_('# of Types')}</span></th>
+              <th scope="col" class="column-header numeric {sorter: 'commaDigit'}"><span class="sort-icon">${_('# of Instances')}</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr acre:for="d in c.domains">
+              <th class="row-header odd" scope="row">
+                <acre:script>var name = i18n.display_name(d);</acre:script>
+                <a href="${h.url_for('schema', null, null, d.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
+              </th>
+              <td class="even">$d.id</td>
+              <td class="odd numeric">$d.types</td>
+              <td class="even numeric">${i18n.format_number(d.instance_count)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="aside" role="complimentary" id="content-sub">
+      <div class="content-wrapper">
+        <h2 class="aside-title">${_('What is Schema?')}</h2>
+        <p>${_('Schema describes how data in Freebase is structured.')}</p>
+        <p><strong>${_('Schema is made by creating:')}</strong></p>
+        <h3>
+          <a href="http://wiki.freebase.com/wiki/Domain">${_('domains')}</a>
+        </h3>
+        <p>${_('which define a common namespace for you to create')}</p>
+        <h3><a href="http://wiki.freebase.com/wiki/Type" title="${_('Learn more about')}">${_('types')}</a></h3>
+        <p>${_('which define a particular kind of person, place or thing and contain')}</p>
+        <h3><a href="http://wiki.freebase.com/wiki/Property" title="${_('Learn more about')}">${_('properties')}</a></h3>
+        <p>${_('which define the unique qualities of a type.')}</p>
+        <p>${_('One simple way to understand the difference between types and properties is that types express &ldquo;is a&rdquo;, while properties express &ldquo;has a&rdquo;.')}</p>
+        <p><strong>${_('Here\'s an example:')}</strong></p>
+        <div class="aside-box">
+          <h4><a href="${h.freebase_url('/view/en/william_shakespeare')}" title="${_('View on Freebase')}">${_('William Shakespeare')}</a></h4>
+          <table cellspacing="0">
+            <tbody>
+              <tr>
+                <td class="is-a">${_('is a')}</td>
+                <td class="kind">${_('type')}</td>
+                <td><a href="${h.url_for('schema', null, null, '/people/person')}">${_('Person')}</a></td>
+              </tr>
+              <tr>
+                <td class="has-a">${_('has a')}</td>
+                <td>${_('property')}</td>
+                <td><a href="${h.url_for('schema', null, null, '/people/person/date_of_birth')}">${_('Date of Birth')}</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <h2 class="aside-title">${_('Learn more:')}</h2>
+        <ul>
+          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Schema">${_('Wiki: Schema')}</a></li>
+          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Types">${_('Wiki: Type')}</a></li>
+          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Properties">${_('Wiki: Property')}</a></li>
+          <li><a title="View help page" href="http://wiki.freebase.com/wiki/Domains">${_('Wiki: Domain')}</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+  <script src="${mf.js_src('index.mf.js')}"></script>
+</acre:block>

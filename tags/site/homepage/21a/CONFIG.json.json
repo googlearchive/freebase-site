@@ -1,5 +1,5 @@
 {
-  "app_tag": null, 
+  "app_tag": "21a", 
   "javascript": {
     "homepage.mf.js": [
       [
@@ -12,7 +12,7 @@
     ]
   }, 
   "apps": {
-    "core": "//62.core.site.freebase.dev"
+    "core": "//62b.core.site.tags.svn.freebase-site.googlecode.dev"
   }, 
   "app_key": "homepage", 
   "stylesheet": {

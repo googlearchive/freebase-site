@@ -1,6 +1,10 @@
 {
-  "app_version": 62, 
   "app_tag": null, 
+  "app_version": "62", 
+  "apps": {
+    "core": "//62a.core.site.tags.svn.freebase-site.googlecode.dev"
+  }, 
+  "app_key": "jqueryui", 
   "javascript": {
     "jquery.ui.core.mf.js": [
       "jquery.ui.core.js", 
@@ -8,9 +12,5 @@
       "jquery.ui.mouse.js", 
       "jquery.ui.position.js"
     ]
-  }, 
-  "apps": {
-    "core": "//62.core.site.freebase.dev"
-  }, 
-  "app_key": "jqueryui"
+  }
 }

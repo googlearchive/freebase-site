@@ -20,7 +20,7 @@ var app_labels = {
   "topicblocks"       : "//topicbox",
   "triples"           : "//16a.triples.site.tags.svn.freebase-site.googlecode.dev",
   "template"          : "//62b.template.site.tags.svn.freebase-site.googlecode.dev",
-  "routing"           : "//62b.routing.site.branches.svn.freebase-site.googlecode.dev"
+  "routing"           : "//62b.routing.site.tags.svn.freebase-site.googlecode.dev"
 };
 
 acre.require(app_labels["routing"] + "/routes").route(acre.request, app_labels);

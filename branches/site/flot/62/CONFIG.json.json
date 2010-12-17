@@ -1,23 +1,26 @@
 {
-  "apps": {
-    "core": "//core.site.freebase.dev"
-  },
+  "app_version": 62, 
+  "app_tag": null, 
   "javascript": {
     "flot.core.mf.js": [
-      "excanvas.js",
-      "jquery.flot.js",
+      "excanvas.js", 
+      "jquery.flot.js", 
       "jquery.colorhelpers.js"
-    ],
+    ], 
     "flot.all.mf.js": [
-      "flot.core.mf.js",
-      "jquery.flot.fillbetween.js",
-      "jquery.flot.navigate.js",
-      "jquery.flot.stack.js",
-      "jquery.flot.image.js",
-      "jquery.flot.pie.js",
-      "jquery.flot.threshold.js",
-      "jquery.flot.crosshair.js",
+      "flot.core.mf.js", 
+      "jquery.flot.fillbetween.js", 
+      "jquery.flot.navigate.js", 
+      "jquery.flot.stack.js", 
+      "jquery.flot.image.js", 
+      "jquery.flot.pie.js", 
+      "jquery.flot.threshold.js", 
+      "jquery.flot.crosshair.js", 
       "jquery.flot.selection.js"
     ]
-  }
+  }, 
+  "apps": {
+    "core": "//62.core.site.freebase.dev"
+  }, 
+  "app_key": "flot"
 }

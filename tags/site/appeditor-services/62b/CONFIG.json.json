@@ -1,0 +1,14 @@
+{
+  "test": {
+    "files": [
+      "test_get_app", 
+      "test_parse_path"
+    ]
+  }, 
+  "app_version": "62", 
+  "app_tag": null, 
+  "apps": {
+    "core": "//62a.core.site.tags.svn.freebase-site.googlecode.dev"
+  }, 
+  "app_key": "appeditor-services"
+}

@@ -1,5 +1,5 @@
 {
-  "app_tag": null, 
+  "app_tag": "13b", 
   "javascript": {
     "admin.mf.js": [
       [
@@ -22,7 +22,7 @@
     ]
   }, 
   "apps": {
-    "core": "//62.core.site.freebase.dev"
+    "core": "//62b.core.site.tags.svn.freebase-site.googlecode.dev"
   }, 
   "app_key": "admin", 
   "stylesheet": {
@@ -30,5 +30,5 @@
       "admin_core.css"
     ]
   }, 
-  "app_version": 13
+  "app_version": "13"
 }

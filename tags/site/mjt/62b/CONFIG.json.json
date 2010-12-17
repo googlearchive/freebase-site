@@ -1,8 +1,8 @@
 {
-  "app_tag": null, 
   "app_version": "62", 
+  "app_tag": "62b", 
   "apps": {
-    "core": "//62a.core.site.tags.svn.freebase-site.googlecode.dev"
+    "core": "//62b.core.site.tags.svn.freebase-site.googlecode.dev"
   }, 
   "app_key": "mjt", 
   "javascript": {

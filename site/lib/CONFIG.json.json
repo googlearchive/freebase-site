@@ -1,0 +1,194 @@
+{
+  "apps" : {
+    "libraries": "//2.libraries.apps.freebase.dev"
+  },
+  "libs" : {
+	  "suggest" : {
+	    "base_url": "http://freebaselibs.com/static/suggest/",
+	    "version": "1.4.1"
+	  },
+	  "jquery" : {
+	    "base_url": "http://ajax.googleapis.com/ajax/libs/jquery/",
+	    "version": "1.4.2"
+	  }
+	},
+  "freebase": {
+    "resource": {
+      "hash": "dd20b6623a39c3624ab666c6f4e69f80423c7186ab9f8add7c53dd927ad389fa",
+      "base_url": "http://res.freebase.com/s/"
+    }
+  },
+  "stylesheet": {
+    "freebase.mf.css": [
+      "template/mixins.less",
+      "template/freebase.less",
+      "template/components.less"
+    ],
+    "freebase.ui.mf.css": [
+      "template/mixins.less",
+      "template/freebase.ui.tabs.less",
+      "template/freebase.ui.table.less",
+      "template/freebase.ui.breadcrumbs.less",
+      "template/freebase.ui.pageoverview.less",
+      "template/freebase.ui.modal.less",
+      "template/freebase.ui.layout.twocol.less",
+      "template/freebase.ui.bargraph.less"
+    ],
+    "qunit.mf.css": [
+      "test/qunit.css"
+    ],
+    "codemirror-frame.mf.css":[
+      "codemirror/csscolors.css",
+      "codemirror/jscolors.css",
+      "codemirror/xmlcolors.css"
+    ],
+    "codemirror-frame.javascript.mf.css": [
+      "codemirror/jscolors.css"
+    ],
+    "cuecard.mf.css": [
+      "freebase.ui.mf.css",
+    	"cuecard/cuecard.css",
+    	"cuecard/query-editor.css",
+    	"cuecard/popup.css",
+    	"cuecard/suggestion.css",
+    	"cuecard/output-pane.css",
+    	"cuecard/control-pane.css",
+    	"cuecard/dialogs.css"
+    ],
+    "editor-bundle.mf.css": [
+    	"cuecard.mf.css"
+    ]
+  },
+  "javascript": {
+    "freebase.mf.js": [
+      "template/json2.js",
+      "template/jquery.cookie.js",
+      "template/jquery.localstore.js",
+      "template/jquery.placeholder.js",
+      "template/jquery.metadata.js",
+      "jqueryui/jquery.ui.core.mf.js",
+      "template/freebase.js",
+      "permission/permission.js"
+    ],
+    "jquery.ui.core.mf.js": [
+      "jqueryui/jquery.ui.core.js",
+      "jqueryui/jquery.ui.widget.js",
+      "jqueryui/jquery.ui.mouse.js",
+      "jqueryui/jquery.ui.position.js"
+    ],
+    "jquery.placeholder.test.mf.js": [
+      "template/jquery.placeholder.js",
+      "template/jquery.placeholder.test.js"
+    ],
+    "flot.core.mf.js": [
+      "flot/excanvas.js",
+      "flot/jquery.flot.js",
+      "flot/jquery.colorhelpers.js"
+    ],
+    "flot.all.mf.js": [
+      "flot.core.mf.js",
+      "flot/jquery.flot.fillbetween.js",
+      "flot/jquery.flot.navigate.js",
+      "flot/jquery.flot.stack.js",
+      "flot/jquery.flot.image.js",
+      "flot/jquery.flot.pie.js",
+      "flot/jquery.flot.threshold.js",
+      "flot/jquery.flot.crosshair.js",
+      "flot/jquery.flot.selection.js"
+    ],
+    "qunit.mf.js": [
+      "test/qunit.js"
+    ],
+    "mjt-template.mf.js": [
+      "mjt/header.js",
+      "mjt/util.js",
+      "mjt/markup.js",
+      "mjt/eval.js",
+      "mjt/template.js",
+      "mjt/linker.js",
+      "mjt/mjtjquery.js"
+    ],
+    "mjt.mf.js": [
+      "mjt-template.mf.js",
+      "mjt/json2.js",
+      "mjt/task.js",
+      "mjt/pager.js",
+      "mjt/browserio.js",
+      "mjt/crc32.js",
+      "mjt/jsonp.js",
+      "mjt/xhr.js",
+      "mjt/freebase_api.js",
+      "mjt/freebase_isodate.js",
+      "mjt/freebase_misc.js",
+      "mjt/freebase_mqlkey.js",
+      "mjt/freebase_xhr.js",
+      "mjt/runtime.js",
+      "mjt/compile.js",
+      "mjt/pageapp.js",
+    ],
+    "codemirror.mf.js": [
+      "codemirror/codemirror.js"
+    ],
+    "codemirror-frame.mf.js" : [
+      "codemirror/util.js", 
+      "codemirror/stringstream.js", 
+      "codemirror/select.js", 
+      "codemirror/undo.js", 
+      "codemirror/editor.js", 
+      "codemirror/tokenize.js",
+      "codemirror/parsexml.js", 
+      "codemirror/parsecss.js", 
+      "codemirror/tokenizejavascript.js", 
+      "codemirror/parsejavascript.js", 
+      "codemirror/parsehtmlmixed.js", 
+      "codemirror/parsedummy.js"
+    ],
+    "codemirror-frame.javascript.mf.js": [
+      "codemirror/util.js", 
+      "codemirror/stringstream.js", 
+      "codemirror/select.js", 
+      "codemirror/undo.js", 
+      "codemirror/editor.js", 
+      "codemirror/tokenize.js",
+      "codemirror/tokenizejavascript.js",
+      "codemirror/parsejavascript.js"
+    ],
+    "cuecard.mf.js": [
+      "mjt.mf.js",
+      "jquerytools/overlay.js",
+      "cuecard/cuecard-api.js",
+      "cuecard/cuecard.js",
+      "cuecard/mql-syntax.js",
+      "cuecard/indent-writer.js",
+      "cuecard/jsonize.js",
+      "cuecard/queue.js",
+      "cuecard/query-parser.js",
+      "cuecard/query-model.js",
+      "cuecard/ui.js",
+      "cuecard/popup.js",
+      "cuecard/topic-suggestors.js",
+      "cuecard/static-choices-suggestor.js",
+      "cuecard/property-suggestor.js",
+      "cuecard/type-suggestor.js",
+      "cuecard/suggestion-controller.js",
+      "cuecard/query-editor.js",
+      "cuecard/output-pane.js",
+      "cuecard/control-pane.js",
+      "cuecard/code-generation.js",
+      "cuecard/examples.js",
+      "cuecard/languages.js",
+      "cuecard/x-metaweb-costs.js",
+      "cuecard/dialogs",
+      "cuecard/query-editor",
+      "cuecard/control-pane",
+      "cuecard/output-pane"
+    ],
+    "editor-bundle.mf.js": [
+    	"codemirror.mf.js",
+    	"cuecard.mf.js"
+    ]
+  },
+  "test": {
+    "files": ["test_apis", "test_deferred"]
+  }
+}

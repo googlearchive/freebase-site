@@ -1,9 +1,6 @@
 {
-  "app_tag": null, 
+  "app_tag": "5a", 
   "javascript": {
-    "fulljslint.mf.js": [
-      "fulljslint.js"
-    ], 
     "appeditor.mf.js": [
       [
         "jquerytools", 
@@ -30,12 +27,15 @@
       "dialogs", 
       "menus"
     ], 
+    "fulljslint.mf.js": [
+      "fulljslint.js"
+    ], 
     "codeassist.mf.js": [
       "codeassist.js"
     ]
   }, 
   "apps": {
-    "core": "//62.core.site.freebase.dev"
+    "core": "//62b.core.site.tags.svn.freebase-site.googlecode.dev"
   }, 
   "app_key": "appeditor", 
   "stylesheet": {
@@ -43,5 +43,5 @@
       "ui.css"
     ]
   }, 
-  "app_version": 5
+  "app_version": "5"
 }

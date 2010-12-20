@@ -1,11 +1,17 @@
 {
-  "apps": {
-    "core": "//core.site.freebase.dev"
-  },
+  "app_tag": null, 
   "stylesheet": {
     "policies.mf.css": [
-      ["template", "mixins.less"],
+      [
+        "template", 
+        "mixins.less"
+      ], 
       "css-policies.less"
     ]
-  }
+  }, 
+  "app_version": 15, 
+  "apps": {
+    "core": "//62.core.site.freebase.dev"
+  }, 
+  "app_key": "policies"
 }

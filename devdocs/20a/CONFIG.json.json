@@ -23,6 +23,7 @@
       "docs_style.css"
     ]
   }, 
+  "static": true, 
   "urls": {
     "client_libraries": "http://wiki.freebase.com/wiki/Libraries", 
     "acre_wiki": "http://wiki.freebase.com/wiki/Acre", 

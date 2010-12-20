@@ -1,5 +1,5 @@
 {
-  "app_tag": null, 
+  "app_version": "19", 
   "javascript": {
     "apps.mf.js": [
       [
@@ -11,7 +11,7 @@
     ]
   }, 
   "apps": {
-    "core": "//62.core.site.freebase.dev"
+    "core": "//62b.core.site.tags.svn.freebase-site.googlecode.dev"
   }, 
   "featured": [
     "/user/namesbc/tippify", 
@@ -51,5 +51,5 @@
     "/user/stefanomazzocchi/detypewriter", 
     "/user/stefanomazzocchi/dater"
   ], 
-  "app_version": 19
+  "app_tag": "19a"
 }

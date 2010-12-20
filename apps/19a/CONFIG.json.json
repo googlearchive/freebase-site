@@ -1,5 +1,5 @@
 {
-  "app_version": "19", 
+  "app_tag": "19a", 
   "javascript": {
     "apps.mf.js": [
       [
@@ -51,5 +51,6 @@
     "/user/stefanomazzocchi/detypewriter", 
     "/user/stefanomazzocchi/dater"
   ], 
-  "app_tag": "19a"
+  "static": true, 
+  "app_version": "19"
 }

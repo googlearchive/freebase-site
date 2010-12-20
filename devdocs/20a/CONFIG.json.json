@@ -1,7 +1,7 @@
 {
-  "app_version": 20, 
+  "app_version": "20", 
   "apps": {
-    "core": "//62.core.site.freebase.dev", 
+    "core": "//62b.core.site.tags.svn.freebase-site.googlecode.dev", 
     "acreassist": "//release.acreassist.dfhuynh.user.dev", 
     "mql": "//release.mql.jdouglas.user.dev", 
     "libtopic": "//release.libtopic.fbclient.user.dev", 
@@ -31,5 +31,5 @@
     "query_recipes": "http://wiki.freebase.com/wiki/MQL_Recipes", 
     "acre_recipes": "http://wiki.freebase.com/wiki/Acre_Recipes"
   }, 
-  "app_tag": null
+  "app_tag": "20a"
 }

@@ -1,6 +1,9 @@
 {
   "app_tag": "5a", 
   "javascript": {
+    "fulljslint.mf.js": [
+      "fulljslint.js"
+    ], 
     "appeditor.mf.js": [
       [
         "jquerytools", 
@@ -27,9 +30,6 @@
       "dialogs", 
       "menus"
     ], 
-    "fulljslint.mf.js": [
-      "fulljslint.js"
-    ], 
     "codeassist.mf.js": [
       "codeassist.js"
     ]
@@ -43,5 +43,6 @@
       "ui.css"
     ]
   }, 
+  "static": true, 
   "app_version": "5"
 }

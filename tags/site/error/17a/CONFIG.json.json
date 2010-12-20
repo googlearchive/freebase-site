@@ -1,8 +1,8 @@
 {
-  "app_tag": null, 
-  "app_version": 17, 
+  "app_version": "17", 
+  "app_tag": "17a", 
   "apps": {
-    "core": "//62.core.site.freebase.dev"
+    "core": "//62b.core.site.tags.svn.freebase-site.googlecode.dev"
   }, 
   "app_key": "error"
 }

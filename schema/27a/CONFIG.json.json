@@ -1,10 +1,6 @@
 {
   "app_tag": "27a", 
   "javascript": {
-    "domain.mf.js": [
-      "schema.mf.js", 
-      "domain.js"
-    ], 
     "index.mf.js": [
       "schema.mf.js", 
       "index.js"
@@ -35,21 +31,9 @@
       "suggest_property.js", 
       "type-edit.js"
     ], 
-    "schema-edit.mf.js": [
-      [
-        "jquerytools", 
-        "toolbox.expose.js"
-      ], 
-      [
-        "jquerytools", 
-        "overlay.js"
-      ], 
-      "jquery.mqlkey.js", 
-      "schema-edit.js"
-    ], 
-    "type.mf.js": [
+    "domain.mf.js": [
       "schema.mf.js", 
-      "type.js"
+      "domain.js"
     ], 
     "schema.mf.js": [
       [
@@ -65,6 +49,22 @@
         "tooltip.js"
       ], 
       "schema.js"
+    ], 
+    "type.mf.js": [
+      "schema.mf.js", 
+      "type.js"
+    ], 
+    "schema-edit.mf.js": [
+      [
+        "jquerytools", 
+        "toolbox.expose.js"
+      ], 
+      [
+        "jquerytools", 
+        "overlay.js"
+      ], 
+      "jquery.mqlkey.js", 
+      "schema-edit.js"
     ]
   }, 
   "apps": {
@@ -80,5 +80,6 @@
       "schema.less"
     ]
   }, 
+  "static": true, 
   "app_version": "27"
 }

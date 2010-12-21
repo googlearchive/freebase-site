@@ -1,6 +1,6 @@
 var app_labels = {
   "admin"             : "//13b.admin.site.tags.svn.freebase-site.googlecode.dev",
-  "appeditor"         : "//5a.appeditor.site.tags.svn.freebase-site.googlecode.dev",
+  "appeditor"         : "//5b.appeditor.site.tags.svn.freebase-site.googlecode.dev",
   "appeditor-services": "//62b.appeditor-services.site.tags.svn.freebase-site.googlecode.dev",
   "apps"              : "//19a.apps.site.tags.svn.freebase-site.googlecode.dev",
   "cubed"             : "//cubed",

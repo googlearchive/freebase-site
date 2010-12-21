@@ -31,6 +31,7 @@
 
 var mf = acre.require("MANIFEST").mf;
 var h = mf.require("core", "helpers");
+var freebase = mf.require("promise", "apis").freebase;
 
 function random() {
   var r = [];
@@ -170,5 +171,77 @@ function delete_property(prop) {
   };
   var deleted = acre.freebase.mqlwrite(q).result;
   deleted.schema = deleted["/type/property/schema"];
+  return deleted;
+};
+
+
+
+
+var __counter = 0;
+var __name = acre.request.script.id.replace(/[^\w]/g, "_").toLowerCase();
+function _name(prefix) {
+  prefix = prefix || "";
+  return prefix + __name + __counter++;
+};
+
+function create_type2(domain_id, options) {
+  var name = _name("test_type_");
+  var q = {
+    id: null,
+    guid: null,
+    mid: null,
+    name: {value: name, lang: "/lang/en"},
+    key: {value: name.toLowerCase(), namespace: domain_id},
+    type: {id: "/type/type"},
+    "/type/type/domain": {id: domain_id},
+    create: "unless_exists"
+  };
+  h.extend(q, options);
+  var type;
+  freebase.mqlwrite(q, {use_permission_of: domain_id})
+    .then(function(env) {
+      type = env.result;
+      if (type.create !== "created") {
+        console.warn("create_type_async create", type.create, type.id);
+      }
+      type.name = type.name.value;
+      type.domain = type["/type/type/domain"];
+    });
+  acre.async.wait_on_results();
+  return type;
+};
+
+function delete_type2(type) {
+  var deleted;
+  freebase.mqlread({
+    // we need to look up type info since domain/namespace id may no longer be valid
+    guid: type.guid,
+    key: [{value: null, namespace: null, optional:true}],
+    "/type/type/domain": {id:null, optional:true}
+  })
+  .then(function(env) {
+    return env.result;
+  })
+  .then(function(type_info) {
+    var q = {
+      guid: type.guid,
+      type: {id: "/type/type", connect: "delete"}
+    };
+    if (type_info) {
+      if (type_info.key && type_info.key.length) {
+        q.key = [{value:k.value, namespace:k.namespace, connect:"delete"} for each (k in type_info.key)];
+      }
+      if (type_info["/type/type/domain"]) {
+        q["/type/type/domain"] = {id:type_info["/type/type/domain"].id, connect: "delete"};
+      }
+    }
+    return freebase.mqlwrite(q)
+      .then(function(env) {
+        deleted = env.result;
+        deleted.domain = deleted["/type/type/domain"];
+        return deleted;
+      });
+  });
+  acre.async.wait_on_results();
   return deleted;
 };

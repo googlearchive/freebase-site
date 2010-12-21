@@ -191,14 +191,19 @@ function get_user_info() {
 
 var __counter = 0;
 var __name = acre.request.script.id.replace(/[^\w]/g, "_").toLowerCase();
-function _name(prefix) {
+
+/**
+ * Generate a consistent test name given a test name prefix
+ */
+function gen_test_name(prefix) {
   prefix = prefix || "";
-  return prefix + __name + __counter++;
+  var test_name =  prefix + __name + __counter++;
+  return test_name.replace(/_{2,}/g, "_");
 };
 
 
 function create_type2(domain_id, options) {
-  var name = _name("test_type_");
+  var name = gen_test_name("test_type_");
   var q = {
     id: null,
     guid: null,

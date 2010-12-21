@@ -44,14 +44,18 @@ if (mox) {
 
     function wrapper(api_name, api) {
       return function() {
-        var args = arguments_array.apply(null, arguments);
+        // The original arguments we want to record.
+        // Some api's modify it's arguments under the hood (mqlwrite).
+        // The original arguments is what we compare for playback.
+        var orig_args = arguments_array.apply(null, arguments);
+        var args = deep_copy(orig_args);
         var p = api.apply(this, args)
           .then(function(response) {
-                  test_data.push([api_name, args, response]);
+                  test_data.push([api_name, orig_args, response]);
                   return response;
                 },
                 function (error) {
-                  test_data.push([api_name, args, error]);
+                  test_data.push([api_name, orig_args, error]);
                   return error;
                 });
         acre.async.wait_on_results();
@@ -181,6 +185,23 @@ function arguments_array() {
   return args;
 };
 
+function deep_copy(obj) {
+    if (toString.call(obj) === "[object Array]") {
+        var out = [], i = 0, len = obj.length;
+        for ( ; i < len; i++ ) {
+            out[i] = deep_copy(obj[i]);
+        }
+        return out;
+    }
+    if (obj && typeof obj === 'object') {
+        var out = {}, i;
+        for ( i in obj ) {
+            out[i] = deep_copy(obj[i]);
+        }
+        return out;
+    }
+    return obj;
+}
 
 self.record = exports.record;
 self.playback = exports.playback;

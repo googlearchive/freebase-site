@@ -32,21 +32,36 @@
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").mf;
-var lib = acre.require("create_article");
+
+mf.require("test", "mox").playback(this, "playback_test_create_article.json");
+
+var lib = mf.require("create_article");
 var create_article = lib.create_article;
 var upload = lib.upload;
+var h = mf.require("test", "helpers");
+var freebase = mf.require("promise", "apis").freebase;
 
 // this test requires user to be logged in
-var user = acre.freebase.get_user_info();
-
+var user;
 test("login required", function() {
+  user = h.get_user_info();
   ok(user, "login required");
 });
-
 if (!user) {
   acre.test.report();
   acre.exit();
 }
+
+function check_blurb(document_id, expected_blurb) {
+  // check blob
+  var blurb;
+  freebase.get_blob(document_id, "blurb")
+    .then(function(blob) {
+      blurb = blob.body;
+    });
+  acre.async.wait_on_results();
+  equal(blurb, expected_blurb);
+};
 
 test("upload", function() {
   var result;
@@ -56,29 +71,31 @@ test("upload", function() {
       result = uploaded;
     });
   acre.async.wait_on_results();
-  ok(result);
+  ok(result, "got upload result");
 
-  // check blob
-  result = acre.freebase.get_blob(result.id, "blurb").body;
-  equal(result, content);
+  check_blurb(result.id, content);
 });
 
 test("upload with document", function() {
+
+  var article;
+  freebase.mqlwrite({id:null, type:"/common/document", create:"unconditional"})
+    .then(function(env) {
+      article = env.result;
+    });
+  acre.async.wait_on_results();
+  ok(article, "created article");
+
   var result;
-
-  var article = acre.freebase.mqlwrite({id:null, type:"/common/document", create:"unconditional"}).result;
-
   var content = "test_upload with document";
   upload(content, "text/html", {document: article.id})
     .then(function(uploaded) {
       result = uploaded;
     });
   acre.async.wait_on_results();
-  ok(result);
+  ok(result, "got upload result");
 
-  // check blob
-  result = acre.freebase.get_blob(article.id, "blurb").body;
-  equal(result, content);
+  check_blurb(article.id, content);
 });
 
 test("upload with lang", function() {
@@ -89,11 +106,16 @@ test("upload with lang", function() {
       result = uploaded;
     });
   acre.async.wait_on_results();
-  ok(result);
+  ok(result, "got upload result");
 
   // check lang
-  result = acre.freebase.mqlread({id:result.id, "/type/content/language": null}).result;
-  equal(result["/type/content/language"], "/lang/ko");
+  var lang;
+  freebase.mqlread({id:result.id, "/type/content/language": null})
+    .then(function(env) {
+      lang = env.result && env.result["/type/content/language"] || null;
+    });
+  acre.async.wait_on_results();
+  equal(lang, "/lang/ko");
 });
 
 test("create_article", function() {
@@ -104,11 +126,10 @@ test("create_article", function() {
       result = doc;
     });
   acre.async.wait_on_results();
-  ok(result);
+  ok(result, "got create_article result");
 
   // check blob
-  result = acre.freebase.get_blob(result.id, "blurb").body;
-  equal(result, content);
+  check_blurb(result.id, content);
 });
 
 test("create_article with permission", function() {
@@ -119,7 +140,7 @@ test("create_article with permission", function() {
       result = doc;
     });
   acre.async.wait_on_results();
-  ok(result);
+  ok(result, "got create_article result");
 
   // check permission
   var q = {
@@ -131,35 +152,50 @@ test("create_article with permission", function() {
       }
     }
   };
-  result = acre.freebase.mqlread(q).result;
-  ok(result, result.permission["!/type/object/permission"].id);
+  var permission;
+  freebase.mqlread(q)
+    .then(function(env) {
+      var r = env.result;
+      if (r && r.permission && r.permission["!/type/object/permission"]) {
+        permission = r.permission["!/type/object/permission"].id;
+      }
+    });
+  acre.async.wait_on_results();
+  ok(permission, "got proper permission");
 });
 
 test("create_article with topic", function() {
   var result, topic;
   var content = "test_create_article with topic";
-
-  var q = {
+  freebase.mqlwrite({
     id: null,
     create: "unconditional"
-  };
-  topic = acre.freebase.mqlwrite(q).result.id;
+  })
+  .then(function(env) {
+    topic = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(topic, "created topic");
 
-  create_article(content, "text/html", {topic:topic})
+  create_article(content, "text/html", {topic:topic.id})
     .then(function(doc) {
       result = doc;
     });
   acre.async.wait_on_results();
-  ok(result, result.id);
+  ok(result, "got create_article result");
 
-  q = {
-    id: topic,
+  var check_result;
+  freebase.mqlread({
+    id: topic.id,
     "/common/topic/article": {
       id: result.id
     }
-  };
-  result = acre.freebase.mqlread(q).result;
-  ok(result, result["/common/topic/article"].id);
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
 });
 
 acre.test.report();

@@ -255,7 +255,7 @@ test("create_type no domain", function() {
 });
 
 
-test("create_type with description", function() {
+test("create_type with description",{"bug":"flakey test"}, function() {
   var type;
   try {
     var name = get_name();

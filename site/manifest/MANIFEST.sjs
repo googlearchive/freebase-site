@@ -160,7 +160,9 @@ Manifest.prototype = {
               buf.push(ext_mf.css_preprocessor(ext_mf.get_source(ss[1]), use_acre_url));
             }
             catch (ex) {
+              console.log(ex.toString());
               acre.write("\n/** " + ex.toString() + " **/\n");
+              acre.response.status = 500;
               acre.exit();
             }
           }
@@ -172,7 +174,9 @@ Manifest.prototype = {
             buf.push(this.get_source(ss[0], ss[1]));
           }
           catch (ex) {
+            console.log(ex.toString());
             acre.write("\n/** " + ex.toString() + " **/\n");
+            acre.response.status = 500;
             acre.exit();
           }
         }
@@ -310,7 +314,10 @@ Manifest.prototype = {
             this.scope.acre.write(source);
           }
           catch (ex) {
+            console.log(ex.toString());
             this.scope.acre.write("\n/** " + ex.toString() + " **/\n");
+            acre.response.status = 500;
+            acre.exit();
           }
       }
       else if (script.length === 1) {
@@ -331,7 +338,10 @@ Manifest.prototype = {
             this.scope.acre.write(source);
           }
           catch (ex) {
+            console.log(ex.toString());
             this.scope.acre.write("\n/** " + ex.toString() + " **/\n");
+            acre.response.status = 500;
+            acre.exit();
           }
         }
       }

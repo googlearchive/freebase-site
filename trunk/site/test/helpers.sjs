@@ -28,7 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 var mf = acre.require("MANIFEST").mf;
 var h = mf.require("core", "helpers");
 var freebase = mf.require("promise", "apis").freebase;
@@ -177,12 +176,26 @@ function delete_property(prop) {
 
 
 
+/**
+ * Get user info using promise.apis.freebase.get_user_info synchronously.
+ */
+function get_user_info() {
+  var user;
+  freebase.get_user_info()
+    .then(function(user_info) {
+      user = user_info;
+    });
+  acre.async.wait_on_results();
+  return user;
+};
+
 var __counter = 0;
 var __name = acre.request.script.id.replace(/[^\w]/g, "_").toLowerCase();
 function _name(prefix) {
   prefix = prefix || "";
   return prefix + __name + __counter++;
 };
+
 
 function create_type2(domain_id, options) {
   var name = _name("test_type_");

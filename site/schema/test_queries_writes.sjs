@@ -42,20 +42,14 @@ var freebase = mf.require("promise", "apis").freebase;
 
 // this test requires user to be logged in
 var user;
-
 test("login required", function() {
-  freebase.get_user_info()
-    .then(function(user_info) {
-      user = user_info;
-    });
-  acre.async.wait_on_results();
+  user = test_helpers.get_user_info();
   ok(user, "login required");
-  if (!user) {
-    acre.test.report();
-    acre.exit();
-  }
 });
-
+if (!user) {
+  acre.test.report();
+  acre.exit();
+}
 
 var user_domain = user.id + "/default_domain";
 

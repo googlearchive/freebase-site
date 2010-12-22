@@ -38,13 +38,13 @@ mf.require("test", "mox").playback(this, "playback_test_create_article.json");
 var lib = mf.require("create_article");
 var create_article = lib.create_article;
 var upload = lib.upload;
-var h = mf.require("test", "helpers");
+var test_helpers = mf.require("test", "helpers");
 var freebase = mf.require("promise", "apis").freebase;
 
 // this test requires user to be logged in
 var user;
 test("login required", function() {
-  user = h.get_user_info();
+  user = test_helpers.get_user_info();
   ok(user, "login required");
 });
 if (!user) {

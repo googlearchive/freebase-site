@@ -34,7 +34,7 @@ var mf = acre.require("MANIFEST").mf;
 
 mf.require("test", "mox").playback(this, "playback_test_queries_type.json");
 
-var h = mf.require("helpers_test");
+var ht = mf.require("helpers_test");
 var q = mf.require("queries");
 
 test("base_type", function() {
@@ -45,7 +45,7 @@ test("base_type", function() {
     });
   acre.async.wait_on_results();
   ok(result);
-  h.assert_type(result);
+  ht.assert_type(result);
 });
 
 test("type", function() {
@@ -56,9 +56,9 @@ test("type", function() {
     });
   acre.async.wait_on_results();
   ok(result);
-  h.assert_type(result);
+  ht.assert_type(result);
   ok(result.incoming);
-  h.assert_keys(["domain", "commons", "bases"], result.incoming);
+  ht.assert_keys(["domain", "commons", "bases"], result.incoming);
 });
 
 test("typediagram", function() {
@@ -69,9 +69,9 @@ test("typediagram", function() {
     });
   acre.async.wait_on_results();
   ok(result);
-  h.assert_type(result);
+  ht.assert_type(result);
   ok(result.incoming);
-  h.assert_keys(["domain", "commons", "bases"], result.incoming);
+  ht.assert_keys(["domain", "commons", "bases"], result.incoming);
 });
 
 

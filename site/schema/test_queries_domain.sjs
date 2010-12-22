@@ -34,7 +34,7 @@ var mf = acre.require("MANIFEST").mf;
 
 mf.require("test", "mox").playback(this, "playback_test_queries_domain.json");
 
-var h = mf.require("helpers_test");
+var ht = mf.require("helpers_test");
 var q = mf.require("queries");
 var mql = mf.require("mql");
 
@@ -49,7 +49,7 @@ test("domains", function() {
   ok(result.length === 1, "got /base/slamdunk domain");
   result = result[0];
   equal(result.id, "/base/slamdunk");
-  h.assert_domain_keys(result);
+  ht.assert_domain_keys(result);
 });
 
 test("common_domains", function() {
@@ -61,7 +61,7 @@ test("common_domains", function() {
   acre.async.wait_on_results();
   ok(result && result.length, "got commons domains");
   result.forEach(function(domain) {
-    h.assert_domain_keys(domain);
+    ht.assert_domain_keys(domain);
   });
 });
 
@@ -75,7 +75,7 @@ test("user_domains", function() {
   ok(result && result.length, "got user domains");
   var slamdunk_base;
   result.forEach(function(domain) {
-    h.assert_domain_keys(domain);
+    ht.assert_domain_keys(domain);
     if (domain.id === "/base/slamdunk") {
       slamdunk_base = domain;
     }
@@ -86,9 +86,9 @@ test("user_domains", function() {
 
 test("domain", function() {
   function assert_type(type, mediator) {
-    h.assert_mql_keys(["name", "id", "properties"], type, true);
-    h.assert_bdb_keys(["instance_count"], type, true, "activity");
-    h.assert_article(["blurb"], type);
+    ht.assert_mql_keys(["name", "id", "properties"], type, true);
+    ht.assert_bdb_keys(["instance_count"], type, true, "activity");
+    ht.assert_article(["blurb"], type);
     if (mediator) {
       ok(type.mediator, "expected mediator type: " + type.id);
     }
@@ -101,9 +101,9 @@ test("domain", function() {
     });
   acre.async.wait_on_results();
   ok(result);
-  h.assert_mql_keys(["id", "name", "creator",  "owners", "timestamp",
-                     "types", "mediator:types"], result, true);
-  h.assert_article(["blurb", "blob"], result);
+  ht.assert_mql_keys(["id", "name", "creator",  "owners", "timestamp",
+                      "types", "mediator:types"], result, true);
+  ht.assert_article(["blurb", "blob"], result);
 
   // regular types
   ok(result.types && result.types.length);

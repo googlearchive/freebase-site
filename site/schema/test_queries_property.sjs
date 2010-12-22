@@ -34,7 +34,7 @@ var mf = acre.require("MANIFEST").mf;
 
 mf.require("test", "mox").playback(this, "playback_test_queries_property.json");
 
-var h = mf.require("helpers_test");
+var ht = mf.require("helpers_test");
 var q = mf.require("queries");
 
 test("type_properties", function() {
@@ -46,7 +46,7 @@ test("type_properties", function() {
   acre.async.wait_on_results();
   ok(result && result.length, "got properties for /base/slamdunk/player");
   result.forEach(function(prop) {
-    h.assert_prop(prop);
+    ht.assert_prop(prop);
   });
 });
 
@@ -58,7 +58,7 @@ test("property", function() {
     });
   acre.async.wait_on_results();
   ok(result, "got /film/film/starring property");
-  h.assert_prop(result);
+  ht.assert_prop(result);
 });
 
 

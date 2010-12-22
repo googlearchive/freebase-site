@@ -31,6 +31,10 @@
 
 acre.require('/test/lib').enable(this);
 
+var mf = acre.require("MANIFEST").mf;
+
+mf.require("test", "mox").playback(this, "playback_test_queries.json");
+
 var q = acre.require("queries");
 
 test("has_permission.domain", function() {
@@ -40,7 +44,7 @@ test("has_permission.domain", function() {
       result = has_permission;
     });
   acre.async.wait_on_results();
-  ok(result);
+  ok(result, "expected has_permission=true");
 });
 
 test("has_permission.domain.dont_allow_experts", function() {
@@ -50,7 +54,7 @@ test("has_permission.domain.dont_allow_experts", function() {
       result = has_permission;
     });
   acre.async.wait_on_results();
-  ok(!result);
+  ok(!result, "expected has_permission=false");
 });
 
 test("has_permission.domain.allow_experts", function() {
@@ -60,7 +64,7 @@ test("has_permission.domain.allow_experts", function() {
       result = has_permission;
     });
   acre.async.wait_on_results();
-  ok(result);
+  ok(result, "expected has_permission=true");
 });
 
 test("has_permission.type", function() {
@@ -70,7 +74,7 @@ test("has_permission.type", function() {
       result = has_permission;
     });
   acre.async.wait_on_results();
-  ok(result);
+  ok(result, "expected has_permission=true");
 });
 
 acre.test.report();

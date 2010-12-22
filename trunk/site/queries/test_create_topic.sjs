@@ -53,7 +53,7 @@ if (!user) {
 var user_domain = user.id + "/default_domain";
 
 function get_name() {
-  return  test_helpers.gen_test_name("test_create_topic_");
+  return test_helpers.gen_test_name("test_create_topic_");
 };
 
 function check_blurb(document_id, expected_blurb) {

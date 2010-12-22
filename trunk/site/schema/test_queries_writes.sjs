@@ -54,99 +54,106 @@ if (!user) {
 var user_domain = user.id + "/default_domain";
 
 test("add_included_types", function() {
-  var type = test_helpers.create_type2(user_domain);
-  try {
-    var result;
-    q.add_included_types(type.mid, ["/people/person", "/film/actor"])
-      .then(function(included) {
-        result = included;
-      });
-    acre.async.wait_on_results();
-    ok(result && result.length == 2, "/people/person and /film/actor have been included");
-    var included = h.map_array(result, "id");
-    ["/people/person", "/film/actor"].forEach(function(type) {
-      ok(included[type], type + " is included");
+  var type;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
     });
+  acre.async.wait_on_results();
+  ok(type, "test type created");
 
-    // now mqlread and check included
-    var mqlread_result = null;
-    freebase.mqlread({id: type.mid, "/freebase/type_hints/included_types": [{id:null}]})
-      .then(function(env) {
-         mqlread_result = env.result && env.result["/freebase/type_hints/included_types"] || null;
-      });
-    acre.async.wait_on_results();
-    ok( mqlread_result &&  mqlread_result.length == 2, "/people/person and /film/actor have been included");
-    included = h.map_array( mqlread_result, "id");
-    ["/people/person", "/film/actor"].forEach(function(type) {
-      ok(included[type], type + " is included");
+  var result;
+  q.add_included_types(type.mid, ["/people/person", "/film/actor"])
+    .then(function(included) {
+      result = included;
     });
-  }
-  finally {
-    if (type) test_helpers.delete_type2(type);
-  }
+  acre.async.wait_on_results();
+  ok(result && result.length == 2, "/people/person and /film/actor have been included");
+  var included = h.map_array(result, "id");
+  ["/people/person", "/film/actor"].forEach(function(type) {
+    ok(included[type], type + " is included");
+  });
+
+  // now mqlread and check included
+  var mqlread_result = null;
+  freebase.mqlread({id: type.mid, "/freebase/type_hints/included_types": [{id:null}]})
+    .then(function(env) {
+       mqlread_result = env.result && env.result["/freebase/type_hints/included_types"] || null;
+    });
+  acre.async.wait_on_results();
+  ok( mqlread_result &&  mqlread_result.length == 2, "/people/person and /film/actor have been included");
+  included = h.map_array( mqlread_result, "id");
+  ["/people/person", "/film/actor"].forEach(function(type) {
+    ok(included[type], type + " is included");
+  });
 });
 
 test("delete_included_type", function() {
-  var type = test_helpers.create_type2(user_domain, {"/freebase/type_hints/included_types": {id: "/people/person"}});
+  var type;
+  test_helpers.create_type2(user_domain, {"/freebase/type_hints/included_types": {id: "/people/person"}})
+    .then(function(created) {
+      type = created;
+    });
+  acre.async.wait_on_results();
+  ok(type, "test type created");
+
   // make sure of included type
   equal(type["/freebase/type_hints/included_types"].id, "/people/person");
-  try {
-    var result;
-    q.delete_included_type(type.mid, "/people/person")
-      .then(function(deleted) {
-        result = deleted;
-      });
-    acre.async.wait_on_results();
-    ok(result, "got delete_included_type result");
 
-    var mqlread_result = null;
-    freebase.mqlread({id: type.mid, "/freebase/type_hints/included_types": {id: "/people/person", optional:true}})
-      .then(function(env) {
-         mqlread_result = env.result;
-      });
-    acre.async.wait_on_results();
-    ok(! mqlread_result["/freebase/type_hints/included_types"], "/people/person should no longer be included");
-  }
-  finally {
-    if (type) test_helpers.delete_type2(type);
-  }
+  var result;
+  q.delete_included_type(type.mid, "/people/person")
+    .then(function(deleted) {
+      result = deleted;
+    });
+  acre.async.wait_on_results();
+  ok(result, "got delete_included_type result");
+
+  var mqlread_result = null;
+  freebase.mqlread({id: type.mid, "/freebase/type_hints/included_types": {id: "/people/person", optional:true}})
+    .then(function(env) {
+       mqlread_result = env.result;
+    });
+  acre.async.wait_on_results();
+  ok(! mqlread_result["/freebase/type_hints/included_types"], "/people/person should no longer be included");
 });
 
 test("add_instance", function() {
-  var type = test_helpers.create_type2(user_domain, {
+  var type;
+  test_helpers.create_type2(user_domain, {
     "/freebase/type_hints/included_types": [{id: "/common/topic"},{id: "/people/person"}]
+  })
+  .then(function(created) {
+    type = created;
   });
-  try {
-    var topic;
-    freebase.mqlwrite({id:null, create:"unconditional"})
-      .then(function(env) {
-        topic = env.result;
-      });
-    acre.async.wait_on_results();
-    ok(topic && topic.id, "new topic created");
-    var result;
-    q.add_instance(topic.id, type.mid)
-      .then(function(instance) {
-        result = instance;
-      });
-    acre.async.wait_on_results();
-    ok(result, "got add_instance result");
+  acre.async.wait_on_results();
+  ok(type, "test type created");
 
-    result = null;
-    freebase.mqlread({id:topic.id, type:[{id:null}]})
-      .then(function(env) {
-        result = env.result;
-      });
-    acre.async.wait_on_results();
-    ok(result, "got mqlread result");
-    var types = h.map_array(result.type, "id");
-    [type.id, "/common/topic", "/people/person"].forEach(function(t) {
-      ok(types[t], t);
+  var topic;
+  freebase.mqlwrite({id:null, create:"unconditional"})
+    .then(function(env) {
+      topic = env.result;
     });
-  }
-  finally {
-    if (type) test_helpers.delete_type2(type);
-  }
+  acre.async.wait_on_results();
+  ok(topic && topic.id, "new topic created");
+  var result;
+  q.add_instance(topic.id, type.mid)
+    .then(function(instance) {
+      result = instance;
+    });
+  acre.async.wait_on_results();
+  ok(result, "got add_instance result");
+
+  result = null;
+  freebase.mqlread({id:topic.id, type:[{id:null}]})
+    .then(function(env) {
+      result = env.result;
+    });
+  acre.async.wait_on_results();
+  ok(result, "got mqlread result");
+  var types = h.map_array(result.type, "id");
+  [type.id, "/common/topic", "/people/person"].forEach(function(t) {
+    ok(types[t], t);
+  });
 });
 
 test("delete_instance", function() {
@@ -213,7 +220,7 @@ test("ensure_namespace", function() {
   finally {
     if (test_ns) {
       freebase.mqlwrite({
-        id: test_ns,
+        mid: test_ns,
         type: {
           id: "/type/namespace",
           connect: "delete"

@@ -35,15 +35,14 @@ var mf = acre.require("MANIFEST").mf;
 
 mf.require("test", "mox").playback(this, "playback_test_create_topic.json");
 
-var h = mf.require("test", "helpers");
-var core_helpers = mf.require("core", "helpers");
+var test_helpers = mf.require("test", "helpers");
 var create_topic = mf.require("create_topic").create_topic;
 var freebase = mf.require("promise", "apis").freebase;
 
 // this test requires user to be logged in
 var user;
 test("login required", function() {
-  user = h.get_user_info();
+  user = test_helpers.get_user_info();
   ok(user, "login required");
 });
 if (!user) {
@@ -54,7 +53,7 @@ if (!user) {
 var user_domain = user.id + "/default_domain";
 
 function get_name() {
-  return  h.gen_test_name("test_create_topic_");
+  return  test_helpers.gen_test_name("test_create_topic_");
 };
 
 function check_blurb(document_id, expected_blurb) {

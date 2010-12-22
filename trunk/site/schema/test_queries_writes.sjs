@@ -36,8 +36,7 @@ var mf = acre.require("MANIFEST").mf;
 mf.require("test", "mox").playback(this, "playback_test_queries_writes.json");
 
 var q = mf.require("queries");
-var mql = mf.require("mql");
-var ht = mf.require("test", "helpers");
+var test_helpers = mf.require("test", "helpers");
 var h = mf.require("core", "helpers");
 var freebase = mf.require("promise", "apis").freebase;
 
@@ -61,7 +60,7 @@ test("login required", function() {
 var user_domain = user.id + "/default_domain";
 
 test("add_included_types", function() {
-  var type = ht.create_type2(user_domain);
+  var type = test_helpers.create_type2(user_domain);
   try {
     var result;
     q.add_included_types(type.mid, ["/people/person", "/film/actor"])
@@ -89,12 +88,12 @@ test("add_included_types", function() {
     });
   }
   finally {
-    if (type) ht.delete_type2(type);
+    if (type) test_helpers.delete_type2(type);
   }
 });
 
 test("delete_included_type", function() {
-  var type = ht.create_type2(user_domain, {"/freebase/type_hints/included_types": {id: "/people/person"}});
+  var type = test_helpers.create_type2(user_domain, {"/freebase/type_hints/included_types": {id: "/people/person"}});
   // make sure of included type
   equal(type["/freebase/type_hints/included_types"].id, "/people/person");
   try {
@@ -115,12 +114,12 @@ test("delete_included_type", function() {
     ok(! mqlread_result["/freebase/type_hints/included_types"], "/people/person should no longer be included");
   }
   finally {
-    if (type) ht.delete_type2(type);
+    if (type) test_helpers.delete_type2(type);
   }
 });
 
 test("add_instance", function() {
-  var type = ht.create_type2(user_domain, {
+  var type = test_helpers.create_type2(user_domain, {
     "/freebase/type_hints/included_types": [{id: "/common/topic"},{id: "/people/person"}]
   });
   try {
@@ -152,7 +151,7 @@ test("add_instance", function() {
     });
   }
   finally {
-    if (type) ht.delete_type2(type);
+    if (type) test_helpers.delete_type2(type);
   }
 });
 

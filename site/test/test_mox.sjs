@@ -102,7 +102,16 @@ test("mock_freebase_upload", function() {
 
 test("mock_freebase_create_group", function() {
   /** async create_group is NOT working **/
-  ok("skip");
+  var result;
+  freebase.create_group("mock_freebase_create_group", {
+    extra_group: "/boot/schema_group"
+  })
+  .then(function(env) {
+    result = env;
+  });
+  acre.async.wait_on_results();
+  assert_freebase_result(result);
+  ok(result.result && result.result.id, "got new group id");
 });
 
 test("mock_freebase_get_blob", function() {

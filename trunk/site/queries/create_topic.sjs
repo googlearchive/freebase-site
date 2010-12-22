@@ -55,8 +55,6 @@ function create_topic(options) {
       type: validators.MqlId(options, "type", {if_empty:""}),
       included_types: validators.StringBool(options, "included_types", {if_empty:true}),
       description: validators.String(options, "description", {if_empty:""}),
-
-      create: validators.OneOf(options, "create", {oneof:["unconditional", "unless_exists"], if_empty:"unconditional"}),
       lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"})
     };
   }
@@ -70,7 +68,7 @@ function create_topic(options) {
       value: o.name,
       lang: o.lang
     },
-    create: o.create
+    create: "unconditional"
   };
   if (o.type) {
     q.type = o.type;

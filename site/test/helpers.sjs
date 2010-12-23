@@ -206,8 +206,6 @@ function create_type2(domain_id, options) {
   var name = gen_test_name("test_type_");
   var key = name.toLowerCase();
   return freebase.mqlread({
-    id: null,
-    mid: null,
     guid: null,
     key: {
       namespace: domain_id,
@@ -219,7 +217,7 @@ function create_type2(domain_id, options) {
     if (existing) {
       // delete existing type
       return freebase.mqlwrite({
-        mid: existing.mid,
+        guid: existing.guid,
         key: {
           namespace: domain_id,
           value: key,
@@ -257,6 +255,60 @@ function create_type2(domain_id, options) {
         type.name = type.name.value;
         type.domain = type["/type/type/domain"];
         return type;
+      });
+  });
+};
+
+/**
+ * Create a test domain in user_id namespace.
+ */
+function create_domain2(user_id, options) {
+  var name = gen_test_name("test_domain_");
+  var key = name.toLowerCase();
+  return freebase.mqlread({
+    guid: null,
+    key: {
+      namespace: user_id,
+      value: key
+    }
+  })
+  .then(function(env) {
+    var existing = env.result;
+    if (existing) {
+      // delete existing type
+      return freebase.mqlwrite({
+        guid: existing.guid,
+        key: {
+          namespace: user_id,
+          value: key,
+          connect: "delete"
+        },
+        type: {
+          id: "/type/domain",
+          connect: "delete"
+        }
+      });
+    }
+    else {
+      return true;
+    }
+  })
+  .then(function() {
+    var q = {
+      id: null,
+      guid: null,
+      mid: null,
+      name: {value: name, lang: "/lang/en"},
+      key: {value: key, namespace: user_id},
+      type: {id:"/type/domain"},
+      create: "unconditional"
+    };
+    h.extend(q, options);
+    return freebase.mqlwrite(q, {use_permission_of: user_id})
+      .then(function(env) {
+        var domain = env.result;
+        domain.name = domain.name.value;
+        return domain;
       });
   });
 };

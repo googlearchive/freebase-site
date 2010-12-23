@@ -215,7 +215,7 @@ test("mock_deferreds", function() {
     equal(r.length, 2, "expected freebase.touch and freebase.get_user_info results");
     ok(r[0], "expected valid result for freebase.touch");
     ok(r[1], "expected valid result for freebase.get_user_info");
-    ok(r[1].name, "expected name from freebase.get_user_info");
+    ok(r[1].guid, "expected guid from freebase.get_user_info");
 
     // mqlwrite
     r = results[2];

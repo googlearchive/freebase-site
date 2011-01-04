@@ -366,7 +366,7 @@ class App:
       return True
 
     #copy from the svn checkout directory to the appengine directory
-    self.copy_to_appengine_dir()
+    self.copy_to_acre_dir()
 
     #reason we are checking again is that there are apps that are
     #static dependencies of other apps but they don't actually have
@@ -900,7 +900,7 @@ class App:
     shutil.rmtree(target_dir + '/.svn')
     return True
 
-  def copy_to_appengine_dir(self):
+  def copy_to_acre_dir(self):
 
     target_dir = self.context.acre.site_dir() + '/' + self.app_dir()
     self.copy(target_dir)
@@ -908,9 +908,6 @@ class App:
     #if self.version:
     #  self.copy(app_dir + '/' + self.version)
     #  self.copy(app_dir + '/release')
-
-  def copy_static(self, target_dir):
-    pass
 
   #checks out the app from SVN into the specified directory
   def svn_checkout(self, target_dir, warn=True):

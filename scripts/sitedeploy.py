@@ -432,12 +432,8 @@ class ActionStatic:
     #so that we can do /MANIFEST/<css/js bundle> calls 
     #for static generation
     if core_app:
-      core_app.copy_to_appengine_dir()
-      core_dependencies['manifest'].copy_to_appengine_dir()
-
-    #for d_app in app.get_code_dependencies_list():
-    #  d_app.copy_to_appengine_dir()
-    #  c.log('Copied %s to acre directory' % d_app)
+      core_app.copy_to_acre_dir()
+      core_dependencies['manifest'].copy_to_acre_dir()
 
     #for every app in the list, get its static dependencies
     #and statify each one starting at the bottom
@@ -885,9 +881,8 @@ class ActionInfo:
     c = self.context
     app = self.context.app
 
-    print "_" * 84
-    print "App: %s\n" % app.app_key
-    print "[svn]"
+    #print "_" * 84
+    print "App: %s" % app.app_key
 
     last_version = app.last_svn_version()
     dep = {}
@@ -895,21 +890,28 @@ class ActionInfo:
     if not last_version: 
       return True
 
-    if last_version:
+    if last_version and app.app_key != 'core':
         dep = AppFactory(c)(app.app_key, last_version).get_dependencies()
 
     if dep and dep.get('core'):
-        last_version_str = "%s (%s)" % (last_version, dep.get('core').version)
-        print "Last Version:\t\t%s" % last_version_str
+      last_version_str = "%s (%s)" % (last_version, dep.get('core').version)
+    else:
+      last_version_str = "%s" % last_version
+
+    print "Last Version:\t\t%s" % last_version_str
 
     versioned_app = AppFactory(c)(app.app_key, last_version)
     last_tag = versioned_app.last_tag()
-    if last_tag:
+
+    if last_tag and app.app_key != 'core':
       dep = AppFactory(c)(versioned_app.app_key, last_version, last_tag).get_dependencies()
 
     if dep and dep.get('core'):
-        last_tag_str = "%s (%s)" % (last_tag, dep.get('core').tag)
-        print "Last Tag:\t\t%s" % last_tag_str
+      last_tag_str = "%s (%s)" % (last_tag, dep.get('core').tag)
+    else:
+      last_tag_str = "%s" % last_tag
+
+    print "Last Tag:\t\t%s" % last_tag_str
 
     print
     return True

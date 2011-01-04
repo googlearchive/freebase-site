@@ -173,22 +173,6 @@ function delete_property(prop) {
   return deleted;
 };
 
-
-
-
-/**
- * Get user info using promise.apis.freebase.get_user_info synchronously.
- */
-function get_user_info() {
-  var user;
-  freebase.get_user_info()
-    .then(function(user_info) {
-      user = user_info;
-    });
-  acre.async.wait_on_results();
-  return user;
-};
-
 var __counter = 0;
 var __name = acre.request.script.id.replace(/[^\w]/g, "_").toLowerCase();
 
@@ -200,7 +184,6 @@ function gen_test_name(prefix) {
   var test_name =  prefix + __name + __counter++;
   return test_name.replace(/_{2,}/g, "_");
 };
-
 
 function create_type2(domain_id, options) {
   var name = gen_test_name("test_type_");

@@ -32,17 +32,24 @@
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").mf;
-var sh = mf.require("helpers");
-var h = mf.require("test", "helpers");
+
+mf.require("test", "mox").playback(this, "playback_test_create_type.json");
+
+var schema_helpers = mf.require("helpers");
+var test_helpers = mf.require("test", "helpers");
+var freebase = mf.require("promise", "apis").freebase;
 var create_type = mf.require("create_type").create_type;
 
 // this test requires user to be logged in
-var user = acre.freebase.get_user_info();
-
+var user;
 test("login required", function() {
+  freebase.get_user_info()
+    .then(function(user_info) {
+      user = user_info;
+    });
+  acre.async.wait_on_results();
   ok(user, "login required");
 });
-
 if (!user) {
   acre.test.report();
   acre.exit();
@@ -51,248 +58,330 @@ if (!user) {
 var user_domain = user.id + "/default_domain";
 
 function get_name() {
-  return  "test_create_type_" + h.random();
+  return test_helpers.gen_test_name("test_create_base_");
+};
+
+function delete_type(key, domain) {
+  return freebase.mqlread({
+    id: null,
+    mid: null,
+    guid: null,
+    key: {
+      namespace: domain || user_domain,
+      value: key
+    }
+  })
+  .then(function(env) {
+    var existing = env.result;
+    if (existing) {
+      return freebase.mqlwrite({
+        guid: existing.guid,
+        key: {
+          namespace: domain || user_domain,
+          value: key,
+          connect: "delete"
+        },
+        type: {
+          id: "/type/type",
+          connect: "delete"
+        },
+        "/type/type/domain": {
+          id: domain || user_domain,
+          connect: "delete"
+        }
+      });
+    }
+    return true;
+  });
 };
 
 test("create_type", function() {
+  var name = get_name();
+  var key = schema_helpers.generate_type_key(name);
   var type;
-  try {
-    var name = get_name();
-    create_type({
-      domain: user_domain,
-      name: name,
-      key: sh.generate_type_key(name)
+  delete_type(key)
+    .then(function() {
+      return create_type({
+        domain: user_domain,
+        name: name,
+        key: key
+      });
     })
     .then(function(r) {
       type = r;
     });
-    acre.async.wait_on_results();
-    ok(type);
-    equal(type.key.value, sh.generate_type_key(name));
+  acre.async.wait_on_results();
+  ok(type, "type created");
+  ok(type.id, "expected type id: " + type.id);
+  ok(type.guid, "expected type guid:" + type.guid);
+  equal(type.key.value, key);
 
-    // assert included type /common/topic
-    var result = acre.freebase.mqlread({
-      id: type.id,
-      "/freebase/type_hints/included_types": {id:"/common/topic"},
-      permission: {
-        id: null,
-        "!/type/object/permission": {id: user_domain}
-      }
-    }).result;
-    ok(result);
-    equal(result["/freebase/type_hints/included_types"].id, "/common/topic");
-    equal(result.permission["!/type/object/permission"].id,  user_domain);
-  }
-  finally {
-    if (type) {
-      h.delete_type(type);
+  // check /common/topic included type and permission
+  var check_result;
+  freebase.mqlread({
+    id: type.id,
+    "/freebase/type_hints/included_types": {id:"/common/topic"},
+    permission: {
+      id: null,
+      "!/type/object/permission": {id: user_domain}
     }
-  }
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
 });
 
 test("create_type mediator", function() {
+  var name = get_name();
+  var key = schema_helpers.generate_type_key(name);
   var type;
-  try {
-    var name = get_name();
-    create_type({
-      domain: user_domain,
-      name: name,
-      key: sh.generate_type_key(name),
-      mediator: true
+  delete_type(key)
+    .then(function() {
+      return create_type({
+        domain: user_domain,
+        name: name,
+        key: key,
+        mediator: true
+      });
     })
     .then(function(r) {
       type = r;
     });
-    acre.async.wait_on_results();
-    ok(type);
-    equal(type.key.value, sh.generate_type_key(name));
+  acre.async.wait_on_results();
+  ok(type, "type created");
 
-    // assert /freebase/type_hints/mediator
-    // and no included types
-    var result = acre.freebase.mqlread({
-      id: type.id,
-      "/freebase/type_hints/mediator": null,
-      "/freebase/type_hints/included_types": []
-    }).result;
-    ok(result);
-    ok(result["/freebase/type_hints/mediator"]);
-    var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
-    ok(!common_topic.length);
-  }
-  finally {
-    if (type) {
-      h.delete_type(type);
+  var check_result;
+  freebase.mqlread({
+    id: type.id,
+    "/freebase/type_hints/mediator": true,
+    "/freebase/type_hints/enumeration": {
+      value: true,
+      optional: "forbidden"
+    },
+    "/freebase/type_hints/included_types": {
+      id: "/common/topic",
+      optional: "forbidden"
     }
-  }
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
+  ok(check_result["/freebase/type_hints/mediator"], "expected mediator");
+  ok(!check_result["/freebase/type_hints/enumeration"],
+    "did not expect enumeration");
+  ok(!check_result["/freebase/type_hints/included_types"],
+    "did not expect /common/topic as an included type");
 });
 
 test("create_type enumeration", function() {
+  var name = get_name();
+  var key = schema_helpers.generate_type_key(name);
   var type;
-  try {
-    var name = get_name();
-    create_type({
-      domain: user_domain,
-      name: name,
-      enumeration: true,
-      key: sh.generate_type_key(name)
+  delete_type(key)
+    .then(function() {
+      return create_type({
+        domain: user_domain,
+        name: name,
+        key: key,
+        enumeration: true
+      });
     })
     .then(function(r) {
       type = r;
     });
-    acre.async.wait_on_results();
-    ok(type);
-    equal(type.key.value, sh.generate_type_key(name));
+  acre.async.wait_on_results();
+  ok(type, "type created");
 
-    // assert included type /common/topic
-    var result = acre.freebase.mqlread({
-      id:type.id,
-      "/freebase/type_hints/enumeration": null,
-      "/freebase/type_hints/included_types": []
-    }).result;
-    ok(result);
-    ok(result["/freebase/type_hints/enumeration"]);
-    var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
-    ok(common_topic.length);
-  }
-  finally {
-    if (type) {
-      h.delete_type(type);
+  var check_result;
+  freebase.mqlread({
+    id: type.id,
+    "/freebase/type_hints/enumeration": true,
+    "/freebase/type_hints/mediator": {
+      value: true,
+      optional: "forbidden"
+    },
+    "/freebase/type_hints/included_types": {
+      id: "/common/topic"
     }
-  }
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
+  ok(check_result["/freebase/type_hints/enumeration"], "expected enumeration");
+  ok(!check_result["/freebase/type_hints/mediator"],
+    "did not expect mediator");
+  ok(check_result["/freebase/type_hints/included_types"],
+    "expected /common/topic as an included type");
 });
 
 test("create_type enumeration && mediator", function() {
-  var type, error;
-  try {
-    var name = get_name();
-    create_type({
-      domain: user_domain,
-      name: name,
-      enumeration: true,
-      mediator: true,
-      key: sh.generate_type_key(name)
+  var name = get_name();
+  var key = schema_helpers.generate_type_key(name);
+  var type;
+  var error;
+  delete_type(key)
+    .then(function() {
+      return create_type({
+        domain: user_domain,
+        name: name,
+        key: key,
+        mediator: true,
+        enumeration: true
+      });
     })
     .then(function(r) {
       type = r;
     }, function(e) {
       error = e;
     });
-    acre.async.wait_on_results();
-    ok(!type);
-    ok(error, error);
-  }
-  finally {
-    if (type) {
-      h.delete_type(type);
-    }
-  }
+  acre.async.wait_on_results();
+  ok(!type, "expected error");
+  ok(error, "expected error");
 });
 
 test("create_type no name", function() {
-  var type, error;
   var name = get_name();
-  create_type({
-    domain: user_domain,
-    name: "",
-    key: sh.generate_type_key(name)
-  })
-  .then(function(r) {
-    type = r;
-  }, function(e) {
-    error = e;
-  });
+  var key = schema_helpers.generate_type_key(name);
+  var type;
+  var error;
+  delete_type(key)
+    .then(function() {
+      return create_type({
+        domain: user_domain,
+        name: "",
+        key: key
+      });
+    })
+    .then(function(r) {
+      type = r;
+    }, function(e) {
+      error = e;
+    });
   acre.async.wait_on_results();
-  ok(error, ""+error);
+  ok(!type, "expected error");
+  ok(error, "expected error");
 });
 
 test("create_type no key", function() {
-  var type, error;
   var name = get_name();
-  create_type({
-    domain: user_domain,
-    name: name
-  })
-  .then(function(r) {
-    type = r;
-  }, function(e) {
-    error = e;
-  });
+  var key = schema_helpers.generate_type_key(name);
+  var type;
+  var error;
+  delete_type(key)
+    .then(function() {
+      return create_type({
+        domain: user_domain,
+        name: name,
+        key: ""
+      });
+    })
+    .then(function(r) {
+      type = r;
+    }, function(e) {
+      error = e;
+    });
   acre.async.wait_on_results();
-  ok(error, ""+error);
+  ok(!type, "expected error");
+  ok(error, "expected error");
 });
 
 test("create_type bad key", function() {
-  var type, error;
   var name = get_name();
-  create_type({
-    domain: user_domain,
-    name: name,
-    key: "!@#$%^&*()_+"
-  })
-  .then(function(r) {
-    type = r;
-  }, function(e) {
-    error = e;
-  });
+  var key = schema_helpers.generate_type_key(name);
+  var type;
+  var error;
+  delete_type(key)
+    .then(function() {
+      return create_type({
+        domain: user_domain,
+        name: name,
+        key: "!@#$%^&*()_+"
+      });
+    })
+    .then(function(r) {
+      type = r;
+    }, function(e) {
+      error = e;
+    });
   acre.async.wait_on_results();
-  ok(error, ""+error);
+  ok(!type, "expected error");
+  ok(error, "expected error");
 });
 
 test("create_type no domain", function() {
-  var type, error;
   var name = get_name();
-  create_type({
-    name: name,
-    key: sh.generate_type_key(name)
-  })
-  .then(function(r) {
-    type = r;
-  }, function(e) {
-    error = e;
-  });
+  var key = schema_helpers.generate_type_key(name);
+  var type;
+  var error;
+  delete_type(key)
+    .then(function() {
+      return create_type({
+        name: name,
+        key: key
+      });
+    })
+    .then(function(r) {
+      type = r;
+    }, function(e) {
+      error = e;
+    });
   acre.async.wait_on_results();
-  ok(error, ""+error);
+  ok(!type, "expected error");
+  ok(error, "expected error");
 });
 
-
-test("create_type with description",{"bug":"flakey test"}, function() {
+test("create_type with description", function() {
+  var name = get_name();
+  var key = schema_helpers.generate_type_key(name);
   var type;
-  try {
-    var name = get_name();
-    create_type({
-      domain: user_domain,
-      name: name,
-      key: sh.generate_type_key(name),
-      description: name
+  delete_type(key)
+    .then(function() {
+      return create_type({
+        domain: user_domain,
+        name: name,
+        key: key,
+        description: name
+      });
     })
     .then(function(r) {
       type = r;
     });
-    acre.async.wait_on_results();
-    ok(type);
+  acre.async.wait_on_results();
+  ok(type, "type created");
 
-    // assert /common/topic/article
-    var result = acre.freebase.mqlread({
-      id: type.id,
-      "/common/topic/article": {
+  var check_result;
+  freebase.mqlread({
+    guid: type.guid,
+    "/common/topic/article": {
+      id: null,
+      permission: {
         id: null,
-        permission: {
-          id: null,
-          "!/type/object/permission": {
-            id: user.id + "/default_domain"
-          }
+        "!/type/object/permission": {
+          id: user_domain
         }
       }
-    }).result;
+    }
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
+  ok(check_result["/common/topic/article"], "got check result article: " + check_result["/common/topic/article"].id);
 
-    var blurb = acre.freebase.get_blob(result["/common/topic/article"].id, "blurb").body;
-    equal(blurb, name);
-  }
-  finally {
-      if (type) {
-        h.delete_type(type);
-      }
-  }
+  var blurb;
+  freebase.get_blob(check_result["/common/topic/article"].id, "blurb")
+    .then(function(blob) {
+      blurb = blob.body;
+    });
+  acre.async.wait_on_results();
+  equal(blurb, name);
 });
 
 acre.test.report();

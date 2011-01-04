@@ -64,74 +64,80 @@ function create_type(options) {
   var q = {
     id: null,
     guid: null,
+    mid: null,
     key: {
       value: o.key,
       namespace: o.domain
-    },
-    type: {
-      id: "/type/type"
-    },
-    "/type/type/domain": {
-      id: o.domain
-    },
-    create: "unless_exists"
+    }
   };
-  return freebase.mqlwrite(q, {use_permission_of: o.domain})
+  return freebase.mqlread(q)
     .then(function(env) {
-      return env.result;
-    })
-    .then(function(created) {
-      if (created.create === "existed") {
+      if (env.result) {
         return deferred.rejected("key already exists: " + o.key);
       }
-      // cleanup result
-      created.domain = created["/type/type/domain"];
-
+      return true;
+    })
+    .then(function() {
       q = {
-        id: created.id,
+        id: null,
+        guid: null,
+        key: {
+          value: o.key,
+          namespace: o.domain
+        },
+        type: {
+          id: "/type/type"
+        },
+        "/type/type/domain": {
+          id: o.domain
+        },
         name: {
           value: o.name,
-          lang: o.lang,
-          connect: "update"
-        }
+          lang: o.lang
+        },
+        create: "unconditional"
       };
+
       if (o.mediator) {
         // need to update /freebase/type_hints/mediator
         q["/freebase/type_hints/mediator"] = {
-          value: true,
-          connect: "update"
+          value: true
         };
       }
       else {
         if (o.enumeration) {
           // need to update /freebase/type_hints/enumeration
           q["/freebase/type_hints/enumeration"] = {
-            value: true,
-            connect: "update"
+            value: true
           };
         }
         // non-mediators need /common/topic included type
         q["/freebase/type_hints/included_types"] = {
-          id: "/common/topic",
-          connect: "insert"
+          id: "/common/topic"
         };
       }
 
-
-      return freebase.mqlwrite(q)
+      return freebase.mqlwrite(q, {use_permission_of: o.domain})
         .then(function(env) {
           return env.result;
-        })
-        .then(function(result) {
-          if (o.description !== "") {
-            return create_article.create_article(o.description, "text/html",
-                                                 {use_permission_of: o.domain, topic: created.id, lang:o.lang})
-              .then(function(article) {
-                return created;
-              });
-          }
-          return created;
         });
+    })
+    .then(function(created) {
+      // cleanup result
+      created.domain = created["/type/type/domain"];
+
+      if (o.description !== "") {
+        return create_article.create_article(o.description, "text/html",
+                                             {
+                                               use_permission_of: created.id,
+                                               topic: created.id,
+                                               lang: o.lang
+                                             })
+          .then(function(article) {
+            return created;
+          });
+      }
+      return created;
     });
 };
 

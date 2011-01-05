@@ -122,8 +122,6 @@ class ActionSetupAcre:
     for line in lines:
       if line.startswith('ACRE_HOST_BASE='):
         fh.write('ACRE_HOST_BASE="acre.%s"\n' % c.options.acre_host)
-      elif line.startswith('ACRE_HOST_SUFFIX='):
-        fh.write('ACRE_HOST_SUFFIX="dev.acre.%s"\n' % c.options.acre_host)
       else:
         fh.write(line)
 

@@ -81,6 +81,7 @@ function update_type(options) {
   var q = {
     id: o.id,
     guid: null,
+    mid: null,
     key: {namespace:o.domain, value:null, optional:true},
     name: {value:null, lang:o.lang, optional:true},
     "/freebase/type_hints/mediator": null,
@@ -178,17 +179,17 @@ function update_type(options) {
         article = null;  // can't update/delete wp articles
       }
       if (remove.description && article) {
-        return freebase.mqlwrite({id:old.id, "/common/topic/article":{id:article.id, connect:"delete"}})
+        return freebase.mqlwrite({id:old.mid, "/common/topic/article":{id:article.id, connect:"delete"}})
           .then(function() {
             return old.id;
           });
       }
       else if (o.description != null) {
         var update_article_options = {
-          topic: old.id,
+          topic: old.mid,
           article: article ? article.id : null,
           lang: o.lang,
-          use_permission_of: old.id
+          use_permission_of: old.mid
         };
         return update_article.update_article(o.description, "text/html", update_article_options)
           .then(function() {

@@ -28,21 +28,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").mf;
-var sh = mf.require("helpers");
-var h = mf.require("test", "helpers");
+
+mf.require("test", "mox").playback(this, "playback_test_update_type.json");
+
+var schema_helpers = mf.require("helpers");
+var test_helpers = mf.require("test", "helpers");
+var freebase = mf.require("promise", "apis").freebase;
 var update_type = mf.require("update_type").update_type;
 
 // this test requires user to be logged in
-var user = acre.freebase.get_user_info();
-
+var user;
 test("login required", function() {
+  freebase.get_user_info()
+    .then(function(user_info) {
+      user = user_info;
+    });
+  acre.async.wait_on_results();
   ok(user, "login required");
 });
-
 if (!user) {
   acre.test.report();
   acre.exit();
@@ -51,179 +57,232 @@ if (!user) {
 var user_domain = user.id + "/default_domain";
 
 test("update_type name", function() {
-  var type = h.create_type(user_domain);
-  try {
-    var updated;
-    update_type({
-      domain: user_domain,
-      id: type.id,
-      name: type.name + "updated"
-    })
-    .then(function(id) {
-      updated = id;
+  var type;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
     });
-    acre.async.wait_on_results();
-    ok(updated, updated);
+  acre.async.wait_on_results();
+  ok(type, "test type created");
 
-    var result = acre.freebase.mqlread({id:updated, name:null}).result;
-    equal(result.name, type.name + "updated");
-  }
-  finally {
-    if (type) {
-      h.delete_type(type);
-    }
-  }
+  var result;
+  update_type({
+    domain: user_domain,
+    id: type.mid,
+    name: type.name + "updated"
+  })
+  .then(function(id) {
+    result = id;
+  });
+  acre.async.wait_on_results();
+  ok(result, "Got update_type result: " + result);
+
+  var check_result;
+  freebase.mqlread({
+    id: type.mid,
+    name: null
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
+  equal(check_result.name, type.name + "updated");
 });
-
 
 test("update_type key", function() {
-  var type = h.create_type(user_domain);
-  var new_key = sh.generate_type_key(type.name+"updated");
-  try {
-    var updated;
-    update_type({
-      domain: user_domain,
-      id: type.id,
-      key: new_key
+  var type;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
+    });
+  acre.async.wait_on_results();
+  ok(type, "test type created");
+
+  var result;
+  var new_key = type.key.value + "updated";
+  test_helpers.delete_type2(new_key, user_domain)
+    .then(function() {
+      return update_type({
+        domain: user_domain,
+        id: type.mid,
+        key: new_key
+      });
     })
     .then(function(id) {
-      updated = id;
+      result = id;
     });
-    acre.async.wait_on_results();
-    ok(updated, updated);
+  acre.async.wait_on_results();
+  ok(result, "Got update_type result: " + result);
 
-    var q = {id:updated, key:{namespace:user_domain, value:null}};
-    var env = acre.freebase.mqlread(q);
-    ok(env.result, JSON.stringify({q:q, env:env}));
-    equal(env.result.key.value, new_key);
-  }
-  finally {
-    if (type) {
-      h.delete_type(type);
+  var check_result;
+  freebase.mqlread({
+    id: type.mid,
+    key: {
+      namespace: user_domain,
+      value: null
     }
-  }
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  ok(check_result, "got check result");
+  equal(check_result.key.value, type.key.value + "updated");
 });
-
 
 test("update_type enumeration", function() {
-  var type = h.create_type(user_domain);
-  try {
-    var updated;
-    update_type({
-      domain: user_domain,
-      id: type.id,
-      enumeration: true
-    })
-    .then(function(id) {
-      updated = id;
+  var type;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
     });
-    acre.async.wait_on_results();
-    ok(updated, updated);
+  acre.async.wait_on_results();
+  ok(type, "test type created");
 
-    var result = acre.freebase.mqlread({
-      id:updated,
-      "/freebase/type_hints/enumeration": null,
-      "/freebase/type_hints/mediator": null,
-      "/freebase/type_hints/included_types": []
-    }).result;
-    ok(result["/freebase/type_hints/enumeration"], "updated as enumeration");
-    ok(!result["/freebase/type_hints/mediator"]);
-    var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
-    ok(common_topic.length);
-  }
-  finally {
-    if (type) {
-      h.delete_type(type);
+  var result;
+  update_type({
+    domain: user_domain,
+    id: type.mid,
+    enumeration: true
+  })
+  .then(function(id) {
+    result = id;
+  });
+  acre.async.wait_on_results();
+  ok(result, "Got update_type result: " + result);
+
+  var check_result;
+  freebase.mqlread({
+    id: type.mid,
+    "/freebase/type_hints/enumeration": true,
+    "/freebase/type_hints/mediator": {
+      value: true,
+      optional: "forbidden"
+    },
+    "/freebase/type_hints/included_types": {
+      id: "/common/topic"
     }
-  }
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
+  ok(check_result["/freebase/type_hints/enumeration"], "expected enumeration");
+  ok(!check_result["/freebase/type_hints/mediator"], "did not expect mediator");
 });
 
-
 test("update_type mediator", function() {
-  var type = h.create_type(user_domain);
-  try {
-    var updated;
-    update_type({
-      domain: user_domain,
-      id: type.id,
-      mediator: true
-    })
-    .then(function(id) {
-      updated = id;
+  var type;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
     });
-    acre.async.wait_on_results();
-    ok(updated, updated);
+  acre.async.wait_on_results();
+  ok(type, "test type created");
 
-    var result = acre.freebase.mqlread({
-      id:updated,
-      "/freebase/type_hints/enumeration": null,
-      "/freebase/type_hints/mediator": null,
-      "/freebase/type_hints/included_types": []
-    }).result;
-    ok(result["/freebase/type_hints/mediator"], "updated as mediator");
-    ok(!result["/freebase/type_hints/enumeration"]);
-    var common_topic = [t for each (t in result["/freebase/type_hints/included_types"]) if (t === "/common/topic")];
-    ok(!common_topic.length);
-  }
-  finally {
-    if (type) {
-      h.delete_type(type);
+  var result;
+  update_type({
+    domain: user_domain,
+    id: type.mid,
+    mediator: true
+  })
+  .then(function(id) {
+    result = id;
+  });
+  acre.async.wait_on_results();
+  ok(result, "Got update_type result: " + result);
+
+  var check_result;
+  freebase.mqlread({
+    id: type.mid,
+    "/freebase/type_hints/enumeration": {
+      value: true,
+      optional: "forbidden"
+    },
+    "/freebase/type_hints/mediator": true,
+    "/freebase/type_hints/included_types": {
+      id: "/common/topic",
+      optional: "forbidden"
     }
-  }
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
+  ok(!check_result["/freebase/type_hints/enumeration"], "did not expect enumeration");
+  ok(check_result["/freebase/type_hints/mediator"], "expected mediator");
 });
 
 test("update_type enumeration && mediator", function() {
-  var type = h.create_type(user_domain);
-  try {
-    var updated, error;
-    update_type({
-      domain: user_domain,
-      id: type.id,
-      enumeration: true,
-      mediator: true
-    })
-    .then(function(id) {
-      updated = id;
-    }, function(e) {
-      error = e;
+  var type;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
     });
-    acre.async.wait_on_results();
-    ok(!updated);
-    ok(error, error);
-  }
-  finally {
-    if (type) {
-      h.delete_type(type);
-    }
-  }
+  acre.async.wait_on_results();
+  ok(type, "test type created");
+
+  var result, error;
+  update_type({
+    domain: user_domain,
+    id: type.mid,
+    enumeration: true,
+    mediator: true
+  })
+  .then(function(id) {
+    result = id;
+  }, function(e) {
+    error = e;
+  });
+  acre.async.wait_on_results();
+  ok(!result, "Expected error");
+  ok(error, "Expected error: " + error);
 });
 
 test("update_type description", function() {
-  var type = h.create_type(user_domain);
-  try {
-    var updated, description;
-    update_type({
-      domain: user_domain,
-      id: type.id,
-      description: type.name + "updated"
-    })
-    .then(function(id) {
-      updated = id;
+  var type;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
     });
-    acre.async.wait_on_results();
-    ok(updated, updated);
+  acre.async.wait_on_results();
+  ok(type, "test type created");
 
-    var result = acre.freebase.mqlread({id: updated, "/common/topic/article": {id: null}}).result;
-    var blurb = acre.freebase.get_blob(result["/common/topic/article"].id, "blurb").body;
-    equal(blurb, type.name + "updated");
-  }
-  finally {
-    if (type) {
-      h.delete_type(type);
+  var result;
+  update_type({
+    domain: user_domain,
+    id: type.mid,
+    description: type.name + "updated"
+  })
+  .then(function(id) {
+    result = id;
+  });
+  acre.async.wait_on_results();
+  ok(result, "Got update_type result: " + result);
+
+  var check_result;
+  freebase.mqlread({
+    mid: type.mid,
+    "/common/topic/article": {
+      id: null
     }
-  }
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
+  ok(check_result["/common/topic/article"], "got check result article: " + check_result["/common/topic/article"].id);
+
+  var blurb;
+  freebase.get_blob(check_result["/common/topic/article"].id, "blurb")
+    .then(function(blob) {
+      blurb = blob.body;
+    });
+  acre.async.wait_on_results();
+  equal(blurb, type.name + "updated");
 });
-
-
 
 acre.test.report();

@@ -194,7 +194,7 @@ function create_type2(domain_id, options) {
         id: null,
         guid: null,
         mid: null,
-        name: {value: name, lang: "/lang/en"},
+        "/type/object/name": {value: name, lang: "/lang/en"},
         key: {value: key, namespace: domain_id},
         type: {id: "/type/type"},
         "/type/type/domain": {id: domain_id},
@@ -204,7 +204,7 @@ function create_type2(domain_id, options) {
       return freebase.mqlwrite(q, {use_permission_of: domain_id})
         .then(function(env) {
           var type = env.result;
-          type.name = type.name.value;
+          type.name = type["/type/object/name"].value;
           type.domain = type["/type/type/domain"];
           return type;
         });
@@ -226,7 +226,7 @@ function delete_type2(key, domain) {
   })
   .then(function(env) {
     var existing = env.result;
-    if (existing) { console.log("delete_type2 existing", existing);
+    if (existing) {
       return freebase.mqlwrite({
         guid: existing.guid,
         key: [{
@@ -244,7 +244,6 @@ function delete_type2(key, domain) {
         }
       });
     }
-    console.log("delete_type2 existing: FALSE");
     return true;
   });
 };

@@ -61,45 +61,11 @@ function get_name() {
   return test_helpers.gen_test_name("test_create_base_");
 };
 
-function delete_type(key, domain) {
-  return freebase.mqlread({
-    id: null,
-    mid: null,
-    guid: null,
-    key: {
-      namespace: domain || user_domain,
-      value: key
-    }
-  })
-  .then(function(env) {
-    var existing = env.result;
-    if (existing) {
-      return freebase.mqlwrite({
-        guid: existing.guid,
-        key: {
-          namespace: domain || user_domain,
-          value: key,
-          connect: "delete"
-        },
-        type: {
-          id: "/type/type",
-          connect: "delete"
-        },
-        "/type/type/domain": {
-          id: domain || user_domain,
-          connect: "delete"
-        }
-      });
-    }
-    return true;
-  });
-};
-
 test("create_type", function() {
   var name = get_name();
   var key = schema_helpers.generate_type_key(name);
   var type;
-  delete_type(key)
+  test_helpers.delete_type2(key, user_domain)
     .then(function() {
       return create_type({
         domain: user_domain,
@@ -137,7 +103,7 @@ test("create_type mediator", function() {
   var name = get_name();
   var key = schema_helpers.generate_type_key(name);
   var type;
-  delete_type(key)
+  test_helpers.delete_type2(key, user_domain)
     .then(function() {
       return create_type({
         domain: user_domain,
@@ -181,7 +147,7 @@ test("create_type enumeration", function() {
   var name = get_name();
   var key = schema_helpers.generate_type_key(name);
   var type;
-  delete_type(key)
+  test_helpers.delete_type2(key, user_domain)
     .then(function() {
       return create_type({
         domain: user_domain,
@@ -225,7 +191,7 @@ test("create_type enumeration && mediator", function() {
   var key = schema_helpers.generate_type_key(name);
   var type;
   var error;
-  delete_type(key)
+  test_helpers.delete_type2(key, user_domain)
     .then(function() {
       return create_type({
         domain: user_domain,
@@ -250,7 +216,7 @@ test("create_type no name", function() {
   var key = schema_helpers.generate_type_key(name);
   var type;
   var error;
-  delete_type(key)
+  test_helpers.delete_type2(key, user_domain)
     .then(function() {
       return create_type({
         domain: user_domain,
@@ -273,7 +239,7 @@ test("create_type no key", function() {
   var key = schema_helpers.generate_type_key(name);
   var type;
   var error;
-  delete_type(key)
+  test_helpers.delete_type2(key, user_domain)
     .then(function() {
       return create_type({
         domain: user_domain,
@@ -296,7 +262,7 @@ test("create_type bad key", function() {
   var key = schema_helpers.generate_type_key(name);
   var type;
   var error;
-  delete_type(key)
+  test_helpers.delete_type2(key, user_domain)
     .then(function() {
       return create_type({
         domain: user_domain,
@@ -319,7 +285,7 @@ test("create_type no domain", function() {
   var key = schema_helpers.generate_type_key(name);
   var type;
   var error;
-  delete_type(key)
+  test_helpers.delete_type2(key, user_domain)
     .then(function() {
       return create_type({
         name: name,
@@ -340,7 +306,7 @@ test("create_type with description", function() {
   var name = get_name();
   var key = schema_helpers.generate_type_key(name);
   var type;
-  delete_type(key)
+  test_helpers.delete_type2(key, user_domain)
     .then(function() {
       return create_type({
         domain: user_domain,

@@ -58,25 +58,17 @@ function delete_domain(domain_id, user_id, dry_run) {
         // We need special permission to remove base keys.
         // We need to write as /freebase/site/schema app's permitted user: /user/appeditoruser
         // by setting http_sign=false.
-        var options = {
-          http_sign: false
-        };
-        try {
-          var q = {
-            guid: info.guid,
-            key: [{value:k.value, namespace:"/base", connect:"delete"} for each (k in base_key)]
-          };
-          var env = acre.freebase.mqlwrite(q, null, options);
-          if (env.code !== "/api/status/ok") {
-            return deferred.rejected(env);
-          }
-          base_key = env.result;
-        }
-        catch(ex) {
-          return deferred.rejected(ex);
-        }
+        return freebase.mqlwrite({
+          guid: info.guid,
+          key: [{value:k.value, namespace:"/base", connect:"delete"} for each (k in base_key)]
+        }, null, {http_sign: false})
+        .then(function(env) {
+          return [info, env.result];
+        });
       }
-
+      return [info, base_key];
+    })
+    .then(function([info, base_key]) {
       var q = {
         guid: info.guid,
         type: {id: "/type/domain", connect:"delete"},
@@ -97,8 +89,8 @@ function domain_info(domain_id, user_id) {
   var q = {
     id : domain_id,
     guid: null,
+    mid: null,
     name: null,
-    type: "/type/domain",
     "commons:key": [{
       optional: true,
       value: null,

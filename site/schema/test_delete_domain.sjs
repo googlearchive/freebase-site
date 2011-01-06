@@ -42,16 +42,23 @@
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").mf;
-var h = mf.require("test", "helpers");
+
+mf.require("test", "mox").playback(this, "playback_test_delete_domain.json");
+
+var freebase = mf.require("promise", "apis").freebase;
+var test_helpers = mf.require("test", "helpers");
 var delete_domain = mf.require("delete_domain").delete_domain;
 
 // this test requires user to be logged in
-var user = acre.freebase.get_user_info();
-
+var user;
 test("login required", function() {
+  freebase.get_user_info()
+    .then(function(user_info) {
+      user = user_info;
+    });
+  acre.async.wait_on_results();
   ok(user, "login required");
 });
-
 if (!user) {
   acre.test.report();
   acre.exit();
@@ -60,51 +67,42 @@ if (!user) {
 var user_domain = user.id + "/default_domain";
 
 test("delete_domain no permission", function() {
-  try {
-    var result, error;
-    delete_domain("/base/slamdunk", "/user/tfmorris", true)
-      .then(function(info) {
-        result = info;
-      }, function(e) {
-        error = e;
-      });
-    acre.async.wait_on_results();
-    ok(error, error);
-  }
-  finally {
-  }
+  var result, error;
+  delete_domain("/base/slamdunk", "/user/tfmorris", true)
+    .then(function(info) {
+      result = info;
+    }, function(e) {
+      error = e;
+    });
+  acre.async.wait_on_results();
+  ok(!result, "expected error");
+  ok(error, "expected error: " + error);
 });
 
 test("delete_domain user default_domain", function() {
-  try {
-    var result, error;
-    delete_domain(user_domain, user.id, true)
-      .then(function(info) {
-        result = info;
-      }, function(e) {
-        error = e;
-      });
-    acre.async.wait_on_results();
-    ok(error, error);
-  }
-  finally {
-  }
+  var result, error;
+  delete_domain(user_domain, user.id, true)
+    .then(function(info) {
+      result = info;
+    }, function(e) {
+      error = e;
+    });
+  acre.async.wait_on_results();
+  ok(!result, "expected error");
+  ok(error, "expected error: " + error);
 });
 
 test("delete_domain commons domain", function() {
-  try {
-    var result, error;
-    delete_domain("/freebase", user.id, true)
-      .then(function(info) {
-        result = info;
-      }, function(e) {
-        error = e;
-      });
-    acre.async.wait_on_results();
-    ok(error, error);
-  }
-  finally {
-  }
+  var result, error;
+  delete_domain("/freebase", user.id, true)
+    .then(function(info) {
+      result = info;
+    }, function(e) {
+      error = e;
+    });
+  acre.async.wait_on_results();
+  ok(!result, "expected error");
+  ok(error, "expected error: " + error);
 });
 
 function assert_deleted_result(result, domain) {
@@ -119,111 +117,96 @@ function assert_deleted_result(result, domain) {
   var is_type_domain = acre.freebase.mqlread({guid:domain.guid, type:"/type/domain"}).result;
   ok(!is_type_domain, "/type/domain delete confirmed");
 
-  equal(deleted_domain.key.length, 1);
-  equal(deleted_domain.key[0].value, domain.key.value);
-  equal(deleted_domain.key[0].namespace, domain.key.namespace);
-  equal(deleted_domain.key[0].connect, "deleted", "key deleted");
-  var has_key = acre.freebase.mqlread({id:domain.guid, key:{value:domain.key.value, namespace:user.id}}).result;
-  ok(!has_key, "key delete confirmed");
+  if (deleted_domain.key) {
+    equal(deleted_domain.key.length, 1);
+    equal(deleted_domain.key[0].value, domain.key.value);
+    equal(deleted_domain.key[0].namespace, domain.key.namespace);
+    equal(deleted_domain.key[0].connect, "deleted", "key deleted");
+    var has_key = acre.freebase.mqlread({id:domain.guid, key:{value:domain.key.value, namespace:user.id}}).result;
+    ok(!has_key, "key delete confirmed");
+  }
 
   // check "/dataworld/gardening_task/async_delete"
   ok(deleted_domain["/dataworld/gardening_task/async_delete"].value === true &&
      deleted_domain["/dataworld/gardening_task/async_delete"].connect === "inserted",
      "/dataworld/gardening_task/async_delete set");
-  var async_delete =  acre.freebase.mqlread({id:domain.guid, "/dataworld/gardening_task/async_delete":null}).result;
-  ok(async_delete["/dataworld/gardening_task/async_delete"],  "/dataworld/gardening_task/async_delete set confirmed");
 
   return result;
 };
 
 test("delete_domain user domain", function() {
-  var domain = h.create_domain(user.id);
-  try {
-    var result;
-    delete_domain(domain.id, user.id)
-      .then(function(deleted_info) {
-        result = deleted_info;
-      });
-    acre.async.wait_on_results();
+  var domain;
+  test_helpers.create_domain2(user.id)
+    .then(function(created) {
+      domain = created;
+    });
+  acre.async.wait_on_results();
+  ok(domain, "test domain created");
 
-    var [domain_info, deleted_base_key, deleted_domain] = assert_deleted_result(result, domain);
+  var result;
+  delete_domain(domain.mid, user.id)
+    .then(function(deleted_info) {
+      result = deleted_info;
+    });
+  acre.async.wait_on_results();
+  ok(result, "got delete_domain_result");
+  var [domain_info, deleted_base_key, deleted_domain] = assert_deleted_result(result, domain);
 
-    // no base keys
-    ok(!deleted_base_key.length);
-  }
-  finally {
-    if (domain) {
-      h.delete_domain(domain);
-    }
-  }
+  // no base keys
+  ok(!deleted_base_key.length);
 });
 
-
-test("delete_domain with types", {"bug": "flakey test"}, function() {
-  var domain = h.create_domain(user.id);
-  var type = h.create_type(domain.id);
-  try {
-    var result;
-    delete_domain(domain.id, user.id)
-      .then(function(deleted_info) {
-        result = deleted_info;
-      });
-    acre.async.wait_on_results();
-    var [domain_info, deleted_base_key, deleted_domain] = assert_deleted_result(result, domain);
-
-    // assert type id is no longer valid
-    // may need to revisit delete domain logic
-    /**
-    result = acre.freebase.mqlread({guid:type.guid, type:"/type/type", "/type/type/domain":{id:domain.id}}).result;
-    console.log(result);
-    ok(!result, type.id + " is no longer valid");
-     **/
-  }
-  finally {
-    if (type) {
-      h.delete_type(type);
-    }
-    if (domain) {
-      h.delete_domain(domain);
-    }
-  }
-});
-
-test("delete domain base domain", {"bug":"write_user not working"}, function() {
-  var domain = h.create_domain(user.id);
-  try {
-    // add a base key
-    acre.freebase.mqlwrite({
-      id:domain.id, key:{value:domain.key.value, namespace:"/base", connect:"insert"}
-    }, null, {http_sign:false});
-    var result;
-    delete_domain(domain.id, user.id)
-      .then(function(deleted_info) {
-        result = deleted_info;
-      });
-    acre.async.wait_on_results();
-
-    var [domain_info, deleted_base_key, deleted_domain] = assert_deleted_result(result, domain);
-
-    // assert /base key is deleted
-    equal(deleted_base_key.key.length, 1);
-    equal(deleted_base_key.key[0].value, domain.key.value);
-    equal(deleted_base_key.key[0].namespace, "/base");
-    equal(deleted_base_key.key[0].connect, "deleted", "key deleted");
-    var has_key = acre.freebase.mqlread({id:domain.guid, key:{value:domain.key.value, namespace:"/base"}}).result;
-    ok(!has_key, "key delete confirmed");
-
-  }
-  finally {
-    if (domain) {
-      h.delete_domain(domain);
-      acre.freebase.mqlwrite({
-        guid:domain.guid, key:{value:domain.key.value, namespace:"/base", connect:"delete"}
+test("delete domain base domain", function() {
+  var name = test_helpers.gen_test_name("test_base_");
+  var key = name.toLowerCase();
+  // create test base
+  var domain;
+  freebase.mqlread({
+    guid: null,
+    key: {namespace: "/base", value: key}
+  })
+  .then(function(env) {
+    if (env.result) {
+      return freebase.mqlwrite({
+        guid: env.result.guid,
+        key: {namespace: "/base", value: key, connect:"delete"},
+        type: {id: "/type/domain", connect:"delete"}
       }, null, {http_sign:false});
     }
+  })
+  .then(function() {
+    return freebase.mqlwrite({
+      id: null,
+      guid: null,
+      mid: null,
+      name: name,
+      key: {value:key, namespace:"/base"},
+      type: {id: "/type/domain"},
+      create: "unconditional"
+    }, null, {http_sign:false})
+    .then(function(env) {
+      domain = env.result;
+    });
+  });
+  acre.async.wait_on_results();
+  ok(domain, "test domain created");
 
-  }
+  var result;
+  delete_domain(domain.mid, user.id)
+    .then(function(deleted_info) {
+      result = deleted_info;
+    });
+  acre.async.wait_on_results();
+  ok(result, "got delete_domain_result");
+  var [domain_info, deleted_base_key, deleted_domain] = assert_deleted_result(result, domain);
+
+  // assert /base key is deleted
+  equal(deleted_base_key.key.length, 1);
+  equal(deleted_base_key.key[0].value, domain.key.value);
+  equal(deleted_base_key.key[0].namespace, "/base");
+  equal(deleted_base_key.key[0].connect, "deleted", "key deleted");
+  var has_key = acre.freebase.mqlread({id:domain.guid, key:{value:domain.key.value, namespace:"/base"}}).result;
+  ok(!has_key, "key delete confirmed");
 });
-
 
 acre.test.report();

@@ -58,7 +58,7 @@ if (!user) {
 var user_domain = user.id + "/default_domain";
 
 function get_name() {
-  return test_helpers.gen_test_name("test_create_base_");
+  return test_helpers.gen_test_name("test_create_type_");
 };
 
 test("create_type", function() {
@@ -85,7 +85,7 @@ test("create_type", function() {
   // check /common/topic included type and permission
   var check_result;
   freebase.mqlread({
-    id: type.id,
+    guid: type.guid,
     "/freebase/type_hints/included_types": {id:"/common/topic"},
     permission: {
       id: null,
@@ -120,7 +120,7 @@ test("create_type mediator", function() {
 
   var check_result;
   freebase.mqlread({
-    id: type.id,
+    guid: type.guid,
     "/freebase/type_hints/mediator": true,
     "/freebase/type_hints/enumeration": {
       value: true,
@@ -164,7 +164,7 @@ test("create_type enumeration", function() {
 
   var check_result;
   freebase.mqlread({
-    id: type.id,
+    guid: type.guid,
     "/freebase/type_hints/enumeration": true,
     "/freebase/type_hints/mediator": {
       value: true,

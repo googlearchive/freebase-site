@@ -43,102 +43,132 @@
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").mf;
-var sh = mf.require("helpers");
-var h = mf.require("test", "helpers");
+
+mf.require("test", "mox").playback(this, "playback_test_create_base.json");
+
+var schema_helpers = mf.require("helpers");
+var test_helpers = mf.require("test", "helpers");
 var create_base = mf.require("create_base").create_base;
+var freebase = mf.require("promise", "apis").freebase;
 
 // this test requires user to be logged in
-var user = acre.freebase.get_user_info();
-
+var user;
 test("login required", function() {
+  freebase.get_user_info()
+    .then(function(user_info) {
+      user = user_info;
+    });
+  acre.async.wait_on_results();
   ok(user, "login required");
 });
-
 if (!user) {
   acre.test.report();
   acre.exit();
 }
 
 function get_name() {
-  return "test_create_base_" + h.random();
+  return test_helpers.gen_test_name("test_create_base_");
 };
 
-function delete_base(base) {
-  var q = {
-    guid: base.guid,
+function delete_base(key) {
+  return freebase.mqlread({
+    id: null,
+    guid: null,
     key: {
-      value: base.key.value,
-      namespace: base.key.namespace,
-      connect: "delete"
+      namespace: "/base",
+      value: key
+    },
+    "a:key": [{
+      namespace: null,
+      value: null
+    }]
+  })
+  .then(function(env) {
+    var existing = env.result;
+    if (existing) {
+      return freebase.mqlwrite({
+        guid: existing.guid,
+        key: {
+          namespace: "/base",
+          value: key,
+          connect: "delete"
+        }
+      }, null, {http_sign: false})
+      .then(function() {
+        var q = {
+          guid: existing.guid,
+          type: {
+            id : "/type/domain",
+            connect: "delete"
+          }
+        };
+        var keys = [];
+        existing["a:key"].forEach(function(k) {
+          if (k.namespace !== "/base") {
+            keys.push({namespace:k.namespace, value:k.value, connect:"delete"});
+          }
+        });
+        return freebase.mqlwrite(q);
+      });
     }
-  };
-  acre.freebase.mqlwrite(q, null, {http_sign: false});
-  var q = {
-    guid: base.guid,
-    type: {
-      id: "/type/domain",
-      connect: "delete"
+    else {
+      return true;
     }
-  };
-  return acre.freebase.mqlwrite(q).result;
+  });
 };
 
-test("create_base", {"bug":"write_user not working"}, function() {
+test("create_base", function() {
+  var name = get_name();
+  var key = schema_helpers.generate_domain_key(name);
   var base;
-  try {
-    var name = get_name();
-    create_base({
-      name: name,
-      key: sh.generate_domain_key(name)
-    })
-    .then(function(r) {
-      base = r;
+  delete_base(key)
+    .then(function() {
+      return create_base({
+        name: name,
+        key: key
+      })
+      .then(function(r) {
+        base = r;
+      });
     });
-    acre.async.wait_on_results();
-    ok(base, "base created");
-    ok(base.id, base.id);
-    ok(base.guid, base.guid);
-    equal(base.key.value, sh.generate_domain_key(name));
-    equal(base.key.namespace, "/base");
+  acre.async.wait_on_results();
+  ok(base, "base created");
+  ok(base.id, base.id);
+  ok(base.guid, base.guid);
+  equal(base.key.value, key);
+  equal(base.key.namespace, "/base");
 
-    // check user has permission
-    var has_permission = acre.freebase.mqlread({
-      id: base.id,
-      permission: {permits: [{member: [{id: user.id}]}]}
-    }).result;
-    ok(has_permission, user.id + " has permission to " + base.id);
+  // check user has permission
+  var has_permission = acre.freebase.mqlread({
+    guid: base.guid,
+    permission: {permits: [{member: [{id: user.id}]}]}
+  }).result;
+  ok(has_permission, user.id + " has permission to " + base.id);
 
-    // check owners
-    var owners = acre.freebase.mqlread({
-      id: base.id,
-      "/type/domain/owners": [{member: [{id: user.id}]}]
-    }).result;
-    ok(owners, user.id + " is an owner of " + base.id);
+  // check owners
+  var owners = acre.freebase.mqlread({
+   guid: base.guid,
+    "/type/domain/owners": [{member: [{id: user.id}]}]
+  }).result;
+  ok(owners, user.id + " is an owner of " + base.id);
 
-    // check is /type/domain
-    var is_domain = acre.freebase.mqlread({
-      id: base.id,
-      type: "/type/domain"
-    }).result;
-    ok(is_domain, base.id + " is /type/domain");
+  // check is /type/domain
+  var is_domain = acre.freebase.mqlread({
+   guid: base.guid,
+    type: "/type/domain"
+  }).result;
+  ok(is_domain, base.id + " is /type/domain");
 
-    // check permits /boot/schema_group
-    var permits_schema_group = acre.freebase.mqlread({
-      id: base.id,
-      permission: {permits: {id: "/boot/schema_group"}}
-    }).result;
-    ok(permits_schema_group, base.id + " permits /boot/schema_group");
-  }
-  finally {
-    if (base) {
-      delete_base(base);
-    }
-  }
+  // check permits /boot/schema_group
+  var permits_schema_group = acre.freebase.mqlread({
+   guid: base.guid,
+    permission: {permits: {id: "/boot/schema_group"}}
+  }).result;
+  ok(permits_schema_group, base.id + " permits /boot/schema_group");
 });
 
 test("create base with existing key", function() {
-  var base;
-  var error;
+  var base, error;
   try {
     var name = get_name();
     create_base({
@@ -151,8 +181,8 @@ test("create base with existing key", function() {
       error = e;
     });
     acre.async.wait_on_results();
-    ok(!base, "base not created");
-    ok(error, ""+error);
+    ok(!base, "expected error");
+    ok(error, "expected error: " + error);
   }
   finally {
     if (base) {
@@ -161,42 +191,51 @@ test("create base with existing key", function() {
   }
 });
 
-test("create base with description", {"bug":"write_user not working"}, function() {
+test("create base with description", function() {
+  var name = get_name();
+  var key = schema_helpers.generate_domain_key(name);
   var base;
-  try {
-    var name = get_name();
-    create_base({
-      name: name,
-      key: sh.generate_domain_key(name),
-      description: name
-    })
-    .then(function(r) {
-      base = r;
+  delete_base(key)
+    .then(function() {
+      return create_base({
+        name: name,
+        key: key,
+        description: name
+      })
+      .then(function(r) {
+        base = r;
+      });
     });
-    acre.async.wait_on_results();
-    ok(base, "base created");
+  acre.async.wait_on_results();
+  ok(base, "base created");
 
-    // assert /common/topic/article
-    var result = acre.freebase.mqlread({
-      id: base.id,
-      "/common/topic/article": {
+  var check_result;
+  freebase.mqlread({
+   guid: base.guid,
+   "/common/topic/article": {
+      id: null,
+      permission: {
         id: null,
-        permission: {
-          id: null,
-          "!/type/object/permission": {
-            id: base.id
-          }
+        "!/type/object/permission": {
+          mid: base.mid
         }
       }
-    }).result;
-    var blurb = acre.freebase.get_blob(result["/common/topic/article"].id, "blurb").body;
-    equal(blurb, name);
-  }
-  finally {
-    if (base) {
-      delete_base(base);
     }
-  }
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
+  ok(check_result["/common/topic/article"], "got check result article: " + check_result["/common/topic/article"].id);
+
+  var blurb;
+  freebase.get_blob(check_result["/common/topic/article"].id, "blurb")
+    .then(function(blob) {
+      blurb = blob.body;
+    });
+  acre.async.wait_on_results();
+  equal(blurb, name);
 });
 
 acre.test.report();

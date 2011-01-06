@@ -81,7 +81,6 @@ function update_type(options) {
   var q = {
     id: o.id,
     guid: null,
-    type: "/type/type",
     key: {namespace:o.domain, value:null, optional:true},
     name: {value:null, lang:o.lang, optional:true},
     "/freebase/type_hints/mediator": null,
@@ -118,8 +117,7 @@ function update_type(options) {
     })
     .then(function(old) {
       var update = {
-        guid: old.guid,
-        type: "/type/type"
+        guid: old.guid
       };
       if (remove.name && old.name) {
         update.name = {value:old.name.value, lang:old.name.lang, connect:"delete"};

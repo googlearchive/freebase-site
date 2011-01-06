@@ -59,6 +59,7 @@ function create_base(options) {
 
   var q = {
     id: null,
+    guid: null,
     key: {
       value: o.key,
       namespace: "/base"
@@ -78,13 +79,18 @@ function create_base(options) {
        * The key will be inserted in the next callback since you need special
        * permission to add keys to /base.
        */
-      var group = acre.freebase.create_group(h.sprintf("Owners of %s domain", o.name), {
+      return freebase.create_group(h.sprintf("Owners of %s domain", o.name), {
         extra_group: "/boot/schema_group"
-      }).result;
-
+      })
+      .then(function(env) {
+        return env.result;
+      });
+    })
+    .then(function(group) {
       q = {
         id: null,
         guid: null,
+        mid: null,
         type: "/type/domain",
         name: {
           value: o.name,
@@ -109,8 +115,8 @@ function create_base(options) {
        * mqlwrite(q, null, {http_sign: false}
        */
       q = {
-        id: null,
         guid: created.guid,
+        id: null,
         key: {
           value: o.key,
           namespace: "/base",
@@ -120,13 +126,23 @@ function create_base(options) {
       var options = {
         http_sign: false
       };
-      created = acre.freebase.mqlwrite(q, null, options).result;
 
+      return freebase.mqlwrite(q, null, options)
+        .then(function(env) {
+          var result = env.result;
+          if (result) {
+            created.id = result.id;
+            created.key = result.key;
+          }
+          return created;
+        });
+    })
+    .then(function(created) {
       if (o.description !== "") {
         return create_article.create_article(o.description, "text/html",
                                              {
-                                               use_permission_of: created.id,
-                                               topic: created.id,
+                                               use_permission_of: created.mid,
+                                               topic: created.mid,
                                                lang: o.lang
                                              })
           .then(function(article) {

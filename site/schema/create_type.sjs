@@ -81,6 +81,7 @@ function create_type(options) {
       q = {
         id: null,
         guid: null,
+        mid: null,
         key: {
           value: o.key,
           namespace: o.domain
@@ -129,8 +130,8 @@ function create_type(options) {
       if (o.description !== "") {
         return create_article.create_article(o.description, "text/html",
                                              {
-                                               use_permission_of: created.id,
-                                               topic: created.id,
+                                               use_permission_of: created.mid,
+                                               topic: created.mid,
                                                lang: o.lang
                                              })
           .then(function(article) {

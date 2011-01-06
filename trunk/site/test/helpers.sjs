@@ -188,57 +188,64 @@ function gen_test_name(prefix) {
 function create_type2(domain_id, options) {
   var name = gen_test_name("test_type_");
   var key = name.toLowerCase();
+  return delete_type2(key, domain_id)
+    .then(function() {
+      var q = {
+        id: null,
+        guid: null,
+        mid: null,
+        name: {value: name, lang: "/lang/en"},
+        key: {value: key, namespace: domain_id},
+        type: {id: "/type/type"},
+        "/type/type/domain": {id: domain_id},
+        create: "unconditional"
+      };
+      h.extend(q, options);
+      return freebase.mqlwrite(q, {use_permission_of: domain_id})
+        .then(function(env) {
+          var type = env.result;
+          type.name = type.name.value;
+          type.domain = type["/type/type/domain"];
+          return type;
+        });
+    });
+};
+
+function delete_type2(key, domain) {
   return freebase.mqlread({
+    id: null,
     guid: null,
     key: {
-      namespace: domain_id,
+      namespace: domain,
       value: key
-    }
+    },
+    "a:key": [{
+      namespace: null,
+      value: null
+    }]
   })
   .then(function(env) {
     var existing = env.result;
-    if (existing) {
-      // delete existing type
+    if (existing) { console.log("delete_type2 existing", existing);
       return freebase.mqlwrite({
         guid: existing.guid,
-        key: {
-          namespace: domain_id,
-          value: key,
+        key: [{
+          namespace: k.namespace,
+          value: k.value,
           connect: "delete"
-        },
+        } for each (k in existing["a:key"])],
         type: {
           id: "/type/type",
           connect: "delete"
         },
         "/type/type/domain": {
-          id: domain_id,
+          id: domain,
           connect: "delete"
         }
       });
     }
-    else {
-      return true;
-    }
-  })
-  .then(function() {
-    var q = {
-      id: null,
-      guid: null,
-      mid: null,
-      name: {value: name, lang: "/lang/en"},
-      key: {value: key, namespace: domain_id},
-      type: {id: "/type/type"},
-      "/type/type/domain": {id: domain_id},
-      create: "unconditional"
-    };
-    h.extend(q, options);
-    return freebase.mqlwrite(q, {use_permission_of: domain_id})
-      .then(function(env) {
-        var type = env.result;
-        type.name = type.name.value;
-        type.domain = type["/type/type/domain"];
-        return type;
-      });
+    console.log("delete_type2 existing: FALSE");
+    return true;
   });
 };
 

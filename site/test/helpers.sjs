@@ -248,56 +248,62 @@ function delete_type2(key, domain) {
   });
 };
 
-/**
- * Create a test domain in user_id namespace.
- */
-function create_domain2(user_id, options) {
-  var name = gen_test_name("test_domain_");
-  var key = name.toLowerCase();
+function delete_domain2(key, user_id) {
   return freebase.mqlread({
+    id: null,
     guid: null,
     key: {
       namespace: user_id,
       value: key
-    }
+    },
+    "a:key": [{
+      namespace: null,
+      value: null
+    }]
   })
   .then(function(env) {
     var existing = env.result;
     if (existing) {
-      // delete existing type
       return freebase.mqlwrite({
         guid: existing.guid,
-        key: {
-          namespace: user_id,
-          value: key,
+        key: [{
+          namespace: k.namespace,
+          value: k.value,
           connect: "delete"
-        },
+        } for each (k in existing["a:key"])],
         type: {
           id: "/type/domain",
           connect: "delete"
         }
       });
     }
-    else {
-      return true;
-    }
-  })
-  .then(function() {
-    var q = {
-      id: null,
-      guid: null,
-      mid: null,
-      name: {value: name, lang: "/lang/en"},
-      key: {value: key, namespace: user_id},
-      type: {id:"/type/domain"},
-      create: "unconditional"
-    };
-    h.extend(q, options);
-    return freebase.mqlwrite(q, {use_permission_of: user_id})
-      .then(function(env) {
-        var domain = env.result;
-        domain.name = domain.name.value;
-        return domain;
-      });
+    return true;
   });
+};
+
+/**
+ * Create a test domain in user_id namespace.
+ */
+function create_domain2(user_id, options) {
+  var name = gen_test_name("test_domain_");
+  var key = name.toLowerCase();
+  return delete_domain2(key, user_id)
+    .then(function(dr) {
+      var q = {
+        id: null,
+        guid: null,
+        mid: null,
+        "/type/object/name": {value: name, lang: "/lang/en"},
+        key: {value: key, namespace: user_id},
+        type: {id:"/type/domain"},
+        create: "unconditional"
+      };
+      h.extend(q, options);
+      return freebase.mqlwrite(q, {use_permission_of: user_id})
+        .then(function(env) {
+          var domain = env.result;
+          domain.name = domain["/type/object/name"].value;
+          return domain;
+        });
+    });
 };

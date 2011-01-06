@@ -42,101 +42,143 @@
 acre.require('/test/lib').enable(this);
 
 var mf = acre.require("MANIFEST").mf;
-var sh = mf.require("helpers");
-var h = mf.require("test", "helpers");
+
+mf.require("test", "mox").playback(this, "playback_test_update_domain.json");
+
+var schema_helpers = mf.require("helpers");
+var test_helpers = mf.require("test", "helpers");
+var freebase = mf.require("promise", "apis").freebase;
 var update_domain = mf.require("update_domain").update_domain;
 
 // this test requires user to be logged in
-var user = acre.freebase.get_user_info();
-
+var user;
 test("login required", function() {
+  freebase.get_user_info()
+    .then(function(user_info) {
+      user = user_info;
+    });
+  acre.async.wait_on_results();
   ok(user, "login required");
 });
-
 if (!user) {
   acre.test.report();
   acre.exit();
 }
 
 test("update_domain name", function() {
-  var domain = h.create_domain(user.id);
-  try {
-    var updated;
-    update_domain({
-      id: domain.id,
-      name: domain.name + "updated"
-    })
-    .then(function(id) {
-      updated = id;
+  var domain;
+  test_helpers.create_domain2(user.id)
+    .then(function(r) {
+      domain = r;
     });
-    acre.async.wait_on_results();
-    ok(updated, updated);
+  acre.async.wait_on_results();
+  ok(domain, "test domain created: " + domain.id);
 
-    var result = acre.freebase.mqlread({id:updated, name:null}).result;
-    equal(result.name, domain.name + "updated");
-  }
-  finally {
-    if (domain) {
-      h.delete_domain(domain);
-    }
-  }
+  var result;
+  update_domain({
+    id: domain.mid,
+    name: domain.name + "updated"
+  })
+  .then(function(id) {
+    result = id;
+  });
+  acre.async.wait_on_results();
+  ok(result, "Got update_type result: " + result);
+
+  var check_result;
+  freebase.mqlread({
+    id: domain.mid,
+    name: null
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
+  equal(check_result.name, domain.name + "updated");
 });
 
-
 test("update_domain key", function() {
-  var domain = h.create_domain(user.id);
-  var new_key = sh.generate_domain_key(domain.name+"updated");
-  try {
-    var updated;
-    update_domain({
-      id: domain.id,
-      namespace: user.id,
-      key: new_key
+  var domain;
+  test_helpers.create_domain2(user.id)
+    .then(function(created) {
+      domain = created;
+    });
+  acre.async.wait_on_results();
+  ok(domain, "test domain created");
+
+  var result;
+  var new_key = domain.key.value + "updated";
+  test_helpers.delete_domain2(new_key, user.id)
+    .then(function() {
+      return update_domain({
+        id: domain.mid,
+        namespace: user.id,
+        key: new_key
+      });
     })
     .then(function(id) {
-      updated = id;
+      result = id;
     });
-    acre.async.wait_on_results();
-    ok(updated, updated);
+  acre.async.wait_on_results();
+  ok(result, "Got update_domain result: " + result);
 
-    var q = {id:updated, key:{namespace:user.id, value:null}};
-    var env = acre.freebase.mqlread(q);
-    ok(env.result, JSON.stringify({q:q, env:env}));
-    equal(env.result.key.value, new_key);
-  }
-  finally {
-    if (domain) {
-      h.delete_domain(domain);
+  var check_result;
+  freebase.mqlread({
+    id: domain.mid,
+    key: {
+      namespace: user.id,
+      value: null
     }
-  }
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  ok(check_result, "got check result");
+  equal(check_result.key.value, domain.key.value + "updated");
 });
 
 test("update_domain description", function() {
-  var domain = h.create_domain(user.id);
-  try {
-    var updated, description;
-    update_domain({
-      domain: user.id,
-      id: domain.id,
-      description: domain.name + "updated"
-    })
-    .then(function(id) {
-      updated = id;
+  var domain;
+  test_helpers.create_domain2(user.id)
+    .then(function(created) {
+      domain = created;
     });
-    acre.async.wait_on_results();
-    ok(updated, updated);
+  acre.async.wait_on_results();
+  ok(domain, "test domain created");
 
-    var result = acre.freebase.mqlread({id: updated, "/common/topic/article": {id: null}}).result;
-    var blurb = acre.freebase.get_blob(result["/common/topic/article"].id, "blurb").body;
-    equal(blurb, domain.name + "updated");
-  }
-  finally {
-    if (domain) {
-      h.delete_domain(domain);
+  var result;
+  update_domain({
+    id: domain.mid,
+    description: domain.name + "updated"
+  })
+  .then(function(id) {
+    result = id;
+  });
+  acre.async.wait_on_results();
+  ok(result, "Got update_domain result: " + result);
+
+  var check_result;
+  freebase.mqlread({
+    mid: domain.mid,
+    "/common/topic/article": {
+      id: null
     }
-  }
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
+  ok(check_result["/common/topic/article"], "got check result article: " + check_result["/common/topic/article"].id);
+
+  var blurb;
+  freebase.get_blob(check_result["/common/topic/article"].id, "blurb")
+    .then(function(blob) {
+      blurb = blob.body;
+    });
+  acre.async.wait_on_results();
+  equal(blurb, domain.name + "updated");
 });
-
-
 
 acre.test.report();

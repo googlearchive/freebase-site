@@ -72,7 +72,7 @@ function update_domain(options) {
   var q = {
     id: o.id,
     guid: null,
-    type: "/type/domain",
+    mid: null,
     key: [{namespace:null,value:null,optional:true}],
     name: {value:null, lang:o.lang, optional:true},
     "/common/topic/article": i18n.mql.article_clause(o.lang)
@@ -117,10 +117,8 @@ function update_domain(options) {
     })
     .then(function(old) {
       var update = {
-        guid: old.guid,
-        type: "/type/domain"
+        guid: old.guid
       };
-
       if (remove.name && old.name) {
         update.name = {value:old.name.value, lang:old.name.lang, connect:"delete"};
       }
@@ -146,17 +144,17 @@ function update_domain(options) {
         article = null;  // can't update/delete wp articles
       }
       if (remove.description && article) {
-        return freebase.mqlwrite({id:old.id, "/common/topic/article":{id:article.id, connect:"delete"}})
+        return freebase.mqlwrite({id:old.mid, "/common/topic/article":{id:article.id, connect:"delete"}})
           .then(function() {
             return old.id;
           });
       }
       else if (o.description != null) {
         var update_article_options = {
-          topic: old.id,
+          topic: old.mid,
           article: article ? article.id : null,
           lang: o.lang,
-          use_permission_of: old.id
+          use_permission_of: old.mid
         };
         return update_article.update_article(o.description, "text/html", update_article_options)
           .then(function() {

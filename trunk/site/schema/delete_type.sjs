@@ -150,6 +150,7 @@ function type_info_query(type_id, user_id) {
   var q = {
     id: type_id,
     guid: null,
+    mid: null,
     name: null,
     type: "/type/type",
     domain: {id: null, name: null},

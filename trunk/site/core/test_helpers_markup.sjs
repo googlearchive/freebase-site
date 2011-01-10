@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-var h = acre.require("helpers_markup");
+var h = acre.require("core/helpers_markup");
 
 test("tag", function() {
   equal(h.tag("div", "foo", "id", "mydiv"), '<div id="mydiv">foo</div>');

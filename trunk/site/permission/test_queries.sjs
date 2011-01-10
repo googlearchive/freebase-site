@@ -31,11 +31,9 @@
 
 acre.require('/test/lib').enable(this);
 
-var mf = acre.require("MANIFEST").mf;
+acre.require("test/mox").playback(this, "playback_test_queries.json");
 
-mf.require("test", "mox").playback(this, "playback_test_queries.json");
-
-var q = acre.require("queries");
+var q = acre.require("permission/queries");
 
 test("has_permission.domain", function() {
   var result;

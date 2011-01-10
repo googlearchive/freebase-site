@@ -29,17 +29,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var mf = acre.require("MANIFEST").mf;
-var h = mf.require("helpers");
-var lib = mf.require("service", "lib");
-var deferred = mf.require("promise", "deferred");
+var h = acre.require("core/helpers");
+var lib = acre.require("service/lib");
+var deferred = acre.require("promise/deferred");
 
 /**
  * A generic service for json/p responses.
  *
  * Usage:
  *
- * var service = acre.require("/freebase/site/core/service").service;
+ * var service = acre.require("lib/core/service").service;
  *
  * var myapis = {
  *   myservice_1: function(args, headers) {

@@ -30,7 +30,7 @@
  */
 
 var callback = acre.environ.params["callback"];
-var worker = acre.require("worker");
+var worker = acre.require("cuecard/worker");
 
 var t = acre.environ.params["t"];
 var q = acre.environ.params["q"];

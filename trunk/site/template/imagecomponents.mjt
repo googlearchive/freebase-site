@@ -30,8 +30,7 @@
  !!-->
 
 <acre:script>
-  var mf = acre.require("MANIFEST").mf;
-  var h = mf.require("core", "helpers");
+  var h = acre.require("core/helpers");
 </acre:script>
 
 <acre:block def="user_image_small(user)">

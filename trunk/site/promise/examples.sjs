@@ -29,11 +29,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-acre.require("es5");
+acre.require("lib/promise/es5");
 
-var deferred = acre.require("/freebase/site/promise/deferred");
-var freebase = acre.require("/freebase/site/promise/apis").freebase;
-var urlfetch = acre.require("/freebase/site/promise/apis").urlfetch;
+var deferred = acre.require("lib/promise/deferred");
+var freebase = acre.require("lib/promise/apis").freebase;
+var urlfetch = acre.require("lib/promise/apis").urlfetch;
 
 //---Simple---
 acre.write("---Simple---\n");

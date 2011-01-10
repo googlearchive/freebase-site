@@ -44,7 +44,7 @@
 // Written by Bryan Culbertson
 // BSD Licensed - http://creativecommons.org/licenses/BSD/
 
-acre.require("es5");
+acre.require("promise/es5");
 
 // Exports
 var Deferred;

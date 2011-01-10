@@ -81,7 +81,8 @@ function do_route(app_path, script, path_info, query_string) {
   } 
 
   //if there is no 'routes' file or the file being requested in the app
-  if (!md.files["routes"] && !md.files[script]) {
+  if ((!md.files["routes"] && !md.files[script]) && 
+      (!md.filenames || (!md.filenames["routes"] && !md.filenames[script]))) {
     return not_found(md.app_id + "/" + script);
   }
 

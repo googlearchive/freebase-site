@@ -37,7 +37,8 @@ var parts = path_info.split('/');
 var filename = parts[1];
 
 var md = acre.get_metadata();
-if (filename !== "index" && filename !== "iframe" && filename in md.files) {
+if (filename !== "index" && filename !== "iframe" && 
+   (md.files[filename] || (md.filenames && md.filenames[filename]))) {
   var relative_url = path_info.replace(/^\//,''); //XXX: support query str?
   acre.route(relative_url);
 }

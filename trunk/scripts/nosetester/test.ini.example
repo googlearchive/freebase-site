@@ -1,4 +1,5 @@
 [apptests]
+# some tests write, put a valid username and password here...
 username = youruser
 password = yourpassword
 freebase_service_host = sandbox-freebase.com

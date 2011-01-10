@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# NOTE: cp scripts/nosetester/test.ini.example scripts/nosetester/test.ini 
+# and make appropriate edits before running this script
+
+cd `dirname $0`
+
+nosetests -vd scripts/nosetester

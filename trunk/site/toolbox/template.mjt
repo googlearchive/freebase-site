@@ -30,7 +30,8 @@
  !!-->
 
 <acre:script>
-  var h = acre.require("core/helpers");
+  var mf = acre.require("MANIFEST").mf;
+  var h = mf.require("core", "helpers");
 </acre:script>
 
 <acre:block def="toolbox(options)">

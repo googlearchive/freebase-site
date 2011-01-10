@@ -37,7 +37,7 @@
      must provide a legacy redirect to an appropriate page.
  */
 
-var router = acre.require("routing/router");
+var router = acre.require("router");
 var rules = new router.PrefixRouter();
 
 var app_labels = {

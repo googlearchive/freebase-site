@@ -30,8 +30,9 @@
  */
 
 
-var h = acre.require("core/helpers");
-var queries = acre.require("queries/queries");
+var mf = acre.require("MANIFEST").mf;
+var h = mf.require("core", "helpers");
+var queries = mf.require("queries");
 
 var api = {
   has_permission: function(args) {
@@ -47,7 +48,7 @@ function main(scope) {
   if (h.is_client()) {
     acre.response.set_cache_policy('fast');
   }
-  var service = acre.require("core/service");
+  var service = mf.require("core", "service");
   service.main(scope, api);
 };
 

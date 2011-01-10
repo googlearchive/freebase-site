@@ -87,7 +87,7 @@ function expandIncludedTypes(typesString, idsString, guidsString, typeArray, typ
     if (typeArray.length > 0) {
       var r = acre.freebase.mqlread(
         acre.freebase.extend_query(
-          acre.require("cuecard/included-types").query,
+          acre.require("included-types").query,
           { "id|=" : typeArray }
         )
       ).result;
@@ -127,7 +127,7 @@ function getPropertiesOfTypes(types, typeMap, visitor) {
   try {
     var r = acre.freebase.mqlread(
       acre.freebase.extend_query(
-        acre.require("cuecard/properties-query").query,
+        acre.require("properties-query").query,
         { "id|=" : types }
       )
     ).result;

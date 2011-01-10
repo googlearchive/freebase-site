@@ -35,7 +35,8 @@ var exports = {
   "get_object_kind": get_object_kind
 };
 
-var _ = acre.require("i18n/i18n").gettext;
+var mf = acre.require("MANIFEST").mf;
+var _ = mf.require("i18n", "i18n").gettext;
 
 var LITERAL_TYPE_IDS = {
   "/type/int":1,

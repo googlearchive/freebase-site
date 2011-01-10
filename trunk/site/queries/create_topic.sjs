@@ -29,12 +29,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("core/helpers");
-var i18n = acre.require("i18n/i18n");
-var update_article = acre.require("queries/update_article");
-var deferred = acre.require("promise/deferred");
-var freebase = acre.require("promise/apis").freebase;
-var validators = acre.require("validator/validators");
+var mf = acre.require("MANIFEST").mf;
+var h = mf.require("core", "helpers");
+var i18n = mf.require("i18n", "i18n");
+var update_article = mf.require("update_article");
+var deferred = mf.require("promise", "deferred");
+var freebase = mf.require("promise", "apis").freebase;
+var validators = mf.require("validator", "validators");
 
 /**
  * Create a new topic with name, type (optional) and description (optional).

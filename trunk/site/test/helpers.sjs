@@ -28,9 +28,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-var h = acre.require("core/helpers");
-var freebase = acre.require("promise/apis").freebase;
+var mf = acre.require("MANIFEST").mf;
+var h = mf.require("core", "helpers");
+var freebase = mf.require("promise", "apis").freebase;
 
 function random() {
   var r = [];

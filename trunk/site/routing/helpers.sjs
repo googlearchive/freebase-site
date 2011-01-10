@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var rules = acre.require("routing/app_routes").rules;
+var rules = acre.require("app_routes").rules;
 
 /**
  * Split path to script_id and path_info pairs. This is not like an ordinary path split.

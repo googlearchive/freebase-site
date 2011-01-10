@@ -4,6 +4,7 @@ password = yourpassword
 freebase_service_host = sandbox-freebase.com
 freebase_service_port = 80
 acre_service_host = 
+mox = 1
 # e.g. acre_service_host = acre.myhost.com
 acre_service_port = 8115
 apps_path =  /home/bneutra/fs/build/acre/webapp/WEB-INF/scripts/freebase/site

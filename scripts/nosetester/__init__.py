@@ -72,6 +72,7 @@ class Controller:
                              ':' + str(self.acre_service_port) 
         self.apps_path = config.get('apptests','apps_path')
         app_list = config.get('apptests','app_list')
+        self.mox = config.get('apptests','mox')
         if app_list == '': 
             self.app_list = None
         else:
@@ -122,6 +123,8 @@ class Controller:
         results = {}
         path = url.replace(self.devel_service, '')
         runurl = url + '?output=json'
+        if self.mox == '0':
+            runurl = url + '&mox=0'
         r=self.request_url(runurl)
         if r is None:
             msg = 'url request failed for %s' % runurl

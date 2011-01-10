@@ -146,7 +146,7 @@ Manifest.prototype = {
       if (ss.length === 2) {
         buf.push("\n/** " + ss[0] + ", " + ss[1] + "**/\n");
         var ext_md = this.get_metadata(ss[0]);
-        if ("MANIFEST" in ext_md.files) {
+        if ("MANIFEST" in ext_md.files || (ext_md.filenames && ext_md.filenames["MANIFEST"])) {
           // Go through external app's mf
           var ext_mf = this.require(ss[0], "MANIFEST").mf;
           if (ss[1] in ext_mf.stylesheet) {
@@ -294,7 +294,7 @@ Manifest.prototype = {
       if (script.length === 2) {
         acre.write("\n/** " + script[0] + ", " + script[1] + " **/\n");
         var ext_md = this.get_metadata(script[0]);
-        if ("MANIFEST" in ext_md.files) {
+        if ("MANIFEST" in ext_md.files || (ext_md.filenames && ext_md.filenames["MANIFEST"])) {
           // Go through external app's mf
           // for further mf.js chaining if script[1] in external app's mf.javascript.
           var ext_mf = this.require(script[0], "MANIFEST").mf;

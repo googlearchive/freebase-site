@@ -30,7 +30,7 @@
  !!-->
 
 <acre:script>
-  var mf = acre.require("MANIFEST").mf;
+  var h = acre.require("core/helpers");
 </acre:script>
 
 <acre:block def="title()">
@@ -38,7 +38,7 @@
 </acre:block>
 
 <acre:block def="head()">
-  <script src="${mf.js_src('jquery.placeholder.test.mf.js')}"></script>
+  <script src="${h.static_url('template/jquery.placeholder.test.mf.js')}"></script>
 </acre:block>
 
 <acre:block def="fixture()">
@@ -49,5 +49,5 @@
   </form>
 </acre:block>
 
-${mf.require("template/renderer").render_page(null, this.exports, mf.require("test/qunit"))}
+${acre.require("template/renderer").render_page(null, this.exports, acre.require("test/qunit"))}
 

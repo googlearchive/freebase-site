@@ -29,10 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var mf = acre.require("MANIFEST").mf;
-mf.require('/test/lib').enable(this);
+acre.require('/test/lib').enable(this);
 
-var h = mf.require("core/helpers");
+var h = acre.require("routing/helpers");
 
 test("split_path", function() {
   var s = h.split_path;

@@ -29,13 +29,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var mf = acre.require("MANIFEST").mf;
-var h = mf.require("core/helpers");
-var i18n = mf.require("i18n/i18n");
-var update_article = mf.require("queries/update_article");
-var deferred = mf.require("promise/deferred");
-var freebase = mf.require("promise/apis").freebase;
-var validators = mf.require("validator/validators");
+var h = acre.require("core/helpers");
+var i18n = acre.require("i18n/i18n");
+var update_article = acre.require("queries/update_article");
+var deferred = acre.require("promise/deferred");
+var freebase = acre.require("promise/apis").freebase;
+var validators = acre.require("validator/validators");
 
 /**
  * Create a new topic with name, type (optional) and description (optional).
@@ -55,8 +54,6 @@ function create_topic(options) {
       type: validators.MqlId(options, "type", {if_empty:""}),
       included_types: validators.StringBool(options, "included_types", {if_empty:true}),
       description: validators.String(options, "description", {if_empty:""}),
-
-      create: validators.OneOf(options, "create", {oneof:["unconditional", "unless_exists"], if_empty:"unconditional"}),
       lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"})
     };
   }
@@ -70,7 +67,7 @@ function create_topic(options) {
       value: o.name,
       lang: o.lang
     },
-    create: o.create
+    create: "unconditional"
   };
   if (o.type) {
     q.type = o.type;

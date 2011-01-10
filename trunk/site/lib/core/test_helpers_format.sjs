@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-var h = acre.require("helpers_format");
+var h = acre.require("core/helpers_format");
 
 test("commafy", function() {
   equals(h.commafy(1000), "1,000");

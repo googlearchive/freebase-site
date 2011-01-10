@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-var h = acre.require("helpers_sprintf");
+var h = acre.require("core/helpers_sprintf");
 
 
 test("sprintf", function() {

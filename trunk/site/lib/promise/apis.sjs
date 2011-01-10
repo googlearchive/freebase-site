@@ -120,7 +120,7 @@ var freebase = {};
       {name: "mqlread_multiple", options_pos: 2},
       {name: "mqlwrite",         options_pos: 2},
       {name: "upload",           options_pos: 2},
-      {name: "create_group",     options_pos: 0},
+      {name: "create_group",     options_pos: 1},
       {name: "get_blob",         options_pos: 2},
       {name: "get_topic",        options_pos: 1},
       {name: "get_topic_multi",  options_pos: 1},

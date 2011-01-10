@@ -30,7 +30,7 @@
  */
 
 var callback = acre.environ.params["callback"];
-var worker = acre.require("worker");
+var worker = acre.require("cuecard/worker");
 
 var uniqueTypes = [];
 var uniqueTypeMap = {};

@@ -29,8 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var freebase = acre.require("promise/apis").freebase;
-var h = acre.require("core/helpers");
+var mf = acre.require("MANIFEST").mf;
+var freebase = mf.require("promise", "apis").freebase;
+var h = mf.require("core", "helpers");
 
 /**
  * Create a /common/document and optionally attach to a topic by the /common/topic/article property.

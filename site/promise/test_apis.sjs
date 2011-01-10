@@ -31,9 +31,9 @@
 
 acre.require('/test/lib').enable(this);
 
-var deferred = acre.require("promise/deferred");
-var freebase = acre.require("promise/apis").freebase;
-var urlfetch = acre.require("promise/apis").urlfetch;
+var deferred = acre.require("deferred");
+var freebase = acre.require("apis").freebase;
+var urlfetch = acre.require("apis").urlfetch;
 
 test("urlfetch_success", function() {
   // Basic url fetch should call the callback

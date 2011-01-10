@@ -29,7 +29,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var freebase = acre.require("promise/apis").freebase;
+var mf = acre.require("MANIFEST").mf;
+var freebase = mf.require("promise", "apis").freebase;
 
 /**
  * Return a promise to check whether or not user_id is a member of a permission group for topic_id.

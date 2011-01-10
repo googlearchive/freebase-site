@@ -29,13 +29,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var deferred = acre.require("promise/deferred");
-var h = acre.require("core/helpers");
+var mf = acre.require("MANIFEST").mf;
+var deferred = mf.require("promise", "deferred");
+var h = mf.require("core", "helpers");
 
 // Call one of these once at the end of your controller to render a
 //  freebase page, or single def with the results
 function render_page(data, exports, base_template) {
-  base_template = base_template || acre.require("template/freebase");
+  base_template = base_template || mf.require("freebase");
   return _render(data, base_template, "page", exports, [exports]);
 }
 

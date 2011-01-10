@@ -29,9 +29,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("core/helpers");
-var deferred = acre.require("promise/deferred");
-var freebase = acre.require("promise/apis").freebase;
+var mf = acre.require("MANIFEST").mf;
+var h = mf.require("core", "helpers");
+var deferred = mf.require("promise", "deferred");
+var freebase = mf.require("promise", "apis").freebase;
 
 var lang;
 var bundle;

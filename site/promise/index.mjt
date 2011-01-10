@@ -36,9 +36,9 @@
 <body>
   <h2>Get the apis</h2>
   <pre>
-    var deferred = acre.require("lib/promise/deferred");
-    var freebase = acre.require("lib/promise/apis").freebase;
-    var urlfetch = acre.require("lib/promise/apis").urlfetch;
+    var deferred = acre.require("/freebase/site/promise/deferred");
+    var freebase = acre.require("/freebase/site/promise/apis").freebase;
+    var urlfetch = acre.require("/freebase/site/promise/apis").urlfetch;
   </pre>
   
   <h2>Simple</h2>
@@ -124,7 +124,7 @@
   
   <h2>Passing along arguments</h2>
   <pre>
-    acre.require("lib/promise/es5");
+    acre.require("es5");
     deferred.resolved("time")
       .then(function(result, extra) {
         return result + " " + extra;

@@ -1,3 +1,5 @@
+var mf = acre.require("MANIFEST").mf;
+
 var exports = {
   record: function(scope) {
     console.log("mox.record", scope.acre.request.script.id, "OFF");
@@ -7,7 +9,7 @@ var exports = {
   }
 };
 
-var validators = acre.require("validator/validators");
+var validators = mf.require("validator", "validators");
 
 // ?mox=0 to disabled mox record/playback
 var mox = validators.StringBool(acre.request.params, "mox", {if_empty: true});
@@ -15,9 +17,9 @@ var mox = validators.StringBool(acre.request.params, "mox", {if_empty: true});
 var self = this;
 
 if (mox) {
-  var apis = acre.require("promise/apis");
-  var deferred = acre.require("promise/deferred");
-  var h = acre.require("core/helpers");
+  var apis = mf.require("promise", "apis");
+  var deferred = mf.require("promise", "deferred");
+  var h = mf.require("core", "helpers");
 
   /**
    * Mock record phase.
@@ -25,7 +27,8 @@ if (mox) {
    * Usage:
    *
    *   acre.require("/test/lib").enable(this);
-   *   acre.require("test/mox").record(this);
+   *   var mf = acre.require("MANIFEST").mf;
+   *   mf.require("test", "mox").record(this);
    *   test(...);
    *   acre.test.report();
    *
@@ -95,7 +98,8 @@ if (mox) {
    * Usage:
    *
    *   acre.require("/test/lib").enable(this);
-   *   acre.require("test/mox").playback(this, "playback_file.json");
+   *   var mf = acre.require("MANIFEST").mf;
+   *   mf.require("test", "mox").playback(this, "playback_file.json");
    *   test(...);
    *   acre.test.report();
    *

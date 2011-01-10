@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-var q = acre.require("queries");
+var q = acre.require("toolbox/queries");
 
 test("domain_membership", function() {
   var result;

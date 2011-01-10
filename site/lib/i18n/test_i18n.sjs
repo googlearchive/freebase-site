@@ -31,9 +31,8 @@
 
 acre.require('/test/lib').enable(this);
 
-var mf = acre.require("MANIFEST").mf;
-var h = mf.require("core/helpers");
-var i18n = mf.require("i18n/i18n");
+var h = acre.require("core/helpers");
+var i18n = acre.require("i18n/i18n");
 
 test("i18n", function() {
   ok(i18n.lang, i18n.lang);   // must have a preferred lang

@@ -29,8 +29,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var mf = acre.require("MANIFEST").mf;
-var h = mf.require("core/helpers");
+var h = acre.require("core/helpers");
+var freebase = acre.require("promise/apis").freebase;
 
 function random() {
   var r = [];
@@ -171,4 +171,202 @@ function delete_property(prop) {
   var deleted = acre.freebase.mqlwrite(q).result;
   deleted.schema = deleted["/type/property/schema"];
   return deleted;
+};
+
+var __counter = 0;
+var __name = acre.request.script.id.replace(/[^\w]/g, "_").toLowerCase();
+
+/**
+ * Generate a consistent test name given a test name prefix
+ */
+function gen_test_name(prefix) {
+  prefix = prefix || "";
+  var test_name =  prefix + __name + __counter++;
+  return test_name.replace(/_{2,}/g, "_");
+};
+
+function create_type2(domain_id, options) {
+  var name = gen_test_name("test_type_");
+  var key = name.toLowerCase();
+  return delete_type2(key, domain_id)
+    .then(function() {
+      var q = {
+        id: null,
+        guid: null,
+        mid: null,
+        "/type/object/name": {value: name, lang: "/lang/en"},
+        key: {value: key, namespace: domain_id},
+        type: {id: "/type/type"},
+        "/type/type/domain": {id: domain_id},
+        create: "unconditional"
+      };
+      h.extend(q, options);
+      return freebase.mqlwrite(q, {use_permission_of: domain_id})
+        .then(function(env) {
+          var type = env.result;
+          type.name = type["/type/object/name"].value;
+          type.domain = type["/type/type/domain"];
+          return type;
+        });
+    });
+};
+
+function delete_type2(key, domain) {
+  return freebase.mqlread({
+    id: null,
+    guid: null,
+    key: {
+      namespace: domain,
+      value: key
+    },
+    "a:key": [{
+      namespace: null,
+      value: null
+    }]
+  })
+  .then(function(env) {
+    var existing = env.result;
+    if (existing) {
+      return freebase.mqlwrite({
+        guid: existing.guid,
+        key: [{
+          namespace: k.namespace,
+          value: k.value,
+          connect: "delete"
+        } for each (k in existing["a:key"])],
+        type: {
+          id: "/type/type",
+          connect: "delete"
+        },
+        "/type/type/domain": {
+          id: domain,
+          connect: "delete"
+        }
+      });
+    }
+    return true;
+  });
+};
+
+function delete_domain2(key, user_id) {
+  return freebase.mqlread({
+    id: null,
+    guid: null,
+    key: {
+      namespace: user_id,
+      value: key
+    },
+    "a:key": [{
+      namespace: null,
+      value: null
+    }]
+  })
+  .then(function(env) {
+    var existing = env.result;
+    if (existing) {
+      return freebase.mqlwrite({
+        guid: existing.guid,
+        key: [{
+          namespace: k.namespace,
+          value: k.value,
+          connect: "delete"
+        } for each (k in existing["a:key"])],
+        type: {
+          id: "/type/domain",
+          connect: "delete"
+        }
+      });
+    }
+    return true;
+  });
+};
+
+/**
+ * Create a test domain in user_id namespace.
+ */
+function create_domain2(user_id, options) {
+  var name = gen_test_name("test_domain_");
+  var key = name.toLowerCase();
+  return delete_domain2(key, user_id)
+    .then(function(dr) {
+      var q = {
+        id: null,
+        guid: null,
+        mid: null,
+        "/type/object/name": {value: name, lang: "/lang/en"},
+        key: {value: key, namespace: user_id},
+        type: {id:"/type/domain"},
+        create: "unconditional"
+      };
+      h.extend(q, options);
+      return freebase.mqlwrite(q, {use_permission_of: user_id})
+        .then(function(env) {
+          var domain = env.result;
+          domain.name = domain["/type/object/name"].value;
+          return domain;
+        });
+    });
+};
+
+function delete_property2(key, type_id) {
+  return freebase.mqlread({
+    id: null,
+    guid: null,
+    key: {
+      namespace: type_id,
+      value: key
+    },
+    "a:key": [{
+      namespace: null,
+      value: null
+    }]
+  })
+  .then(function(env) {
+    var existing = env.result;
+    if (existing) {
+      return freebase.mqlwrite({
+        guid: existing.guid,
+        key: [{
+          namespace: k.namespace,
+          value: k.value,
+          connect: "delete"
+        } for each (k in existing["a:key"])],
+        type: {
+          id: "/type/property",
+          connect: "delete"
+        },
+        "/type/property/schema": {
+          id: type_id,
+          connect: "delete"
+        }
+      });
+    }
+    return true;
+  });
+};
+
+function create_property2(type_id, options) {
+  var name = gen_test_name("test_domain_");
+  var key = name.toLowerCase();
+  return delete_property2(key, type_id)
+    .then(function() {
+      var q = {
+        id: null,
+        guid: null,
+        mid: null,
+        "/type/object/name": {value: name, lang: "/lang/en"},
+        key: {value: key, namespace: type_id},
+        type: {id:"/type/property"},
+        "/type/property/schema": {id: type_id},
+        create: "unconditional"
+      };
+      h.extend(q, options);
+      return freebase.mqlwrite(q, {use_permission_of: type_id})
+        .then(function(env) {
+          var prop = env.result;
+          prop.name = prop["/type/object/name"].value;
+          prop.schema = prop["/type/property/schema"];
+          return prop;
+        });
+    });
 };

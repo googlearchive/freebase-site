@@ -39,8 +39,7 @@ var exports = {
  * Date library to parse and format dates using datejs library
  */
 
-var mf = acre.require("MANIFEST").mf;
-var datejs = mf.require("libraries", "date").Date;
+var datejs = acre.require("libraries/date").Date;
 
 /**
  * Converts the specified string value into its JavaScript Date equivalent using conventional format recognized by datejs,

@@ -39,12 +39,15 @@ var exports = {
   "wiki_url": wiki_url,
   "image_url": image_url,
   "parse_params": parse_params,
-  "parse_uri": parse_uri
+  "parse_uri": parse_uri,
+  "lib_base_url": lib_base_url,
+  "freebase_resource_url": freebase_resource_url,
+  "static_url": static_url,
+  "ajax_url": ajax_url
 };
 
-var mf = acre.require("MANIFEST").mf;
-var app_routes = mf.require("routing/app_routes");
-var extend = mf.require("core/helpers_util").extend;
+var app_routes = acre.require("routing/app_routes");
+var extend = acre.require("core/helpers_util").extend;
 
 /**
  * Known client urls:
@@ -59,7 +62,8 @@ function is_client() {
     is_client.b = /\.(freebase|sandbox\-freebase)\.com$/.test(acre.request.server_name);
   }
   return is_client.b;
-};
+}
+
 function is_production() {
   if (is_production.b == undefined) {
     is_production.b = /www\.freebase\.com$/.test(acre.request.server_name);
@@ -127,7 +131,7 @@ function url_for(app, file, params, extra_path) {
     var url = acre.host.protocol + ":" + path + "." + acre.host.name + (acre.host.port !== 80 ? (":" + acre.host.port) : "") + (file ? "/" + file : "") + extra_path;
     return acre.form.build_url(url, params);
   }
-};
+}
 
 /**
  * Get the signin/signout urls depending on client/acre environment.
@@ -170,21 +174,21 @@ function account_url(kind, return_url) {
       break;
   }
   return url;
-};
+}
 
 /**
  * freebase url (i.e, http://www.freebase.com/path?params)
  */
 function freebase_url(path, params) {
   return acre.form.build_url(acre.freebase.site_host + (path || ""), parse_params(params));
-};
+}
 
 /**
  * freebase service url (i.e., http://api.freebase.com/path?params)
  */
 function freebase_service_url(path, params) {
   return acre.form.build_url(acre.freebase.service_url + (path || ""), parse_params(params));
-};
+}
 
 /**
  * freebase wiki url
@@ -194,7 +198,7 @@ function wiki_url(path, params) {
     path = "/wiki/" + path;
   }
   return acre.form.build_url("http://wiki.freebase.com" + (path || ""), parse_params(params));
-};
+}
 
 /**
  * image_thumb takes an image guid and creates a blob url for fetching that image. It also passes
@@ -222,7 +226,7 @@ function image_url(id, options) {
   }
 
   return acre.form.build_url(freebase_service_url("/api/trans/image_thumb"), o);
-};
+}
 
 
 /**
@@ -242,7 +246,7 @@ function parse_params(params) {
     params = dict;
   }
   return params;
-};
+}
 
 
 // Adapted from parseUri 1.2.2
@@ -274,4 +278,24 @@ function parse_uri(str) {
   });
 
   return uri;
-};
+}
+
+function lib_base_url(key) {
+  var md = acre.get_metadata();
+  var lib = md.libs[key];
+  return lib.base_url + lib.version;
+}
+
+function freebase_resource_url(path) {
+  var r = acre.get_metadata().freebase.resource;
+  return r.base_url + r.hash + path;
+}
+
+function static_url(path) {
+  var static_base = acre.get_metadata().static_base || "";
+  return path.replace("//", static_base + "/static/");
+}
+
+function ajax_url(path) {
+  return path.replace("//", "/ajax/");
+}

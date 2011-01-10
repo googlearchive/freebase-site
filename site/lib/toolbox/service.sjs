@@ -29,10 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var mf = acre.require("MANIFEST").mf;
-var t = mf.require("toolbox/template");
-var queries = mf.require("toolbox/queries");
-var h = mf.require("core/helpers");
+var t = acre.require("toolbox/template");
+var queries = acre.require("toolbox/queries");
+var h = acre.require("core/helpers");
 
 var api = {
 
@@ -47,7 +46,7 @@ var api = {
   },
 
   apps: function(args, headers) {
-    var list_user_apps = mf.require("acre/list_user_apps").list_user_apps;
+    var list_user_apps = acre.require("appeditor-services/list_user_apps").list_user_apps;
     var apps = list_user_apps(args.id, args.include_filenames);
     return h.extend({}, args, {
       data: apps,
@@ -86,7 +85,7 @@ function main(scope) {
   if (h.is_client()) {
     acre.response.set_cache_policy('fast');
   }
-  var service = mf.require("core/service");
+  var service = acre.require("core/service");
   service.main(scope, api);
 };
 

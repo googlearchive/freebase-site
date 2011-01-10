@@ -29,11 +29,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var mf = acre.require("MANIFEST").mf;
 acre.require('/test/lib').enable(this);
 
 test("rules", function() {
-  var rules = acre.require("app_routes").rules;
+  var rules = acre.require("routing/app_routes").rules;
   ok(rules, 'Make sure that routes are valid by loading rules');
   
   rules.all_routes().forEach(function(route) {
@@ -44,7 +43,7 @@ test("rules", function() {
 });
 
 test("userfacing_apps", function() {
-  var rules = acre.require("app_routes").rules;
+  var rules = acre.require("routing/app_routes").rules;
 
   ok(rules.route_for_path('/'), 'Route for the logged-out homepage');
   ok(rules.route_for_path('/home'), 'Route for the logged-in homepage');
@@ -60,14 +59,14 @@ test("userfacing_apps", function() {
 });
 
 test("redirects", function() {
-  var rules = acre.require("app_routes").rules;
+  var rules = acre.require("routing/app_routes").rules;
   
   ok(rules.route_for_path('/tools/explore'), 'Redirect for old explore page');
   ok(rules.route_for_path('/developer'), 'Redirect for developer wiki page');
 });
 
 test("all_rules", function() {
-  var rules = acre.require("app_routes").rules;
+  var rules = acre.require("routing/app_routes").rules;
   rules.all_routes().forEach(function(route) {
     var path = route.prefix + "/foo/bar/baz";
     var path_route = rules.route_for_path(path);

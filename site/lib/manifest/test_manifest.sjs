@@ -55,7 +55,7 @@ test("css_preprocessor", function() {
   });
 
   var tests = [
-    ["background: url(manifest, freebase-logo.png) no-repeat", "background: url(\"" + mf.img_src("manifest", "freebase-logo.png") + "\") no-repeat"],
+    ["background: url(manifest/freebase-logo.png) no-repeat", "background: url(\"" + mf.img_src("manifest", "freebase-logo.png") + "\") no-repeat"],
     ["background: url(icon-chiclet.png)", "background: url(\"" + mf.img_src("icon-chiclet.png") + "\")"],
     ["background: url(http://www.freebase.com/logo.png)", "background: url(\"http://www.freebase.com/logo.png\")"],
     ["background: url(static:///logo.png)", "background: url(\"static:///logo.png\")"]
@@ -106,7 +106,7 @@ test("img_src", function() {
     }
   });
 
-  var ext_mf = mf.require("manifest/MANIFEST").mf;
+  var ext_mf = mf.require("manifest", "MANIFEST").mf;
 
   var tests = [
     [

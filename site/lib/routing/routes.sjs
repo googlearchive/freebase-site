@@ -29,10 +29,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-var mf = acre.require("MANIFEST").mf;
-var h = mf.require("routing/helpers");
-var app_routes = mf.require('routing/app_routes');
+var h = acre.require("routing/helpers");
+var app_routes = acre.require('routing/app_routes');
 
 /**
  * Invoke the error app template with status=404 and exit.
@@ -83,7 +81,8 @@ function do_route(app_path, script, path_info, query_string) {
   } 
 
   //if there is no 'routes' file or the file being requested in the app
-  if (!md.files["routes"] && !md.files[script]) {
+  var b = "//" + md.host + "/";
+  if (!acre.resolve(b + "routes") && !acre.resolve(b + script)) {
     return not_found(md.app_id + "/" + script);
   }
 
@@ -110,53 +109,17 @@ function host_based_redirects(req) {
   }
 }
 
-//serve a request of the kind /fss/<app_key>/<app_tag>/filename
-//while setting long-lived cache-control headers
-function static_based_routing(req) { 
-
+// route a request of the kind /[global]/file_path
+function global_routing(req) {
   var req_path = req.url.replace(req.app_url, "");
 
   //all requests that start with /fss/ are for static files
-  if (req_path.indexOf("/fss/") != 0) {
-      return false;
-  }
-
-  // filter out query string
-  var path = req_path;
-  var query_string;
-  if (req_path.indexOf("?") !== -1) {
-    var path_segs = req_path.split("?", 2);
-    path = path_segs[0];
-    query_string = path_segs[1];
-  }
-
-  //get the app key and app tag (version as far as acre is concerned) 
-  var parts = path.split("/", 5);
-  if (parts.length < 5) { 
-    acre.write("//the path " + path + " is an invalid static path id");
-    acre.exit()
+  if (req_path.indexOf("/static/") != 0) {
+    return false;
   }
   
-  //this svn app suffix will move to configuration
-  var file_path = "//" + parts[3] + "." + parts[2] + ".site.tags.svn.freebase-site.googlecode.dev" + "/" + parts[4];
-
-  //require the app/file, serve it and set the correct cache headers (TTL: 1 year)
-  var max_age = 31536000;
-  var expires = new Date(acre.request.start_time.getTime() + max_age * 1000);
-  acre.response.headers["expires"] = expires.toUTCString();
-  acre.response.headers["cache-control"]  ="public, max-age: " + max_age;
-
-  try {
-    var file = acre.require(file_path);
-    acre.response.set_header("content-type", file.headers["content-type"]);
-    acre.write(file.body);
-  } catch(e) { 
-    console.log(e);
-    acre.write("//failed to require the path " + file_path);
-  }
-  
-  acre.exit();
-
+  var file_path = req_path.replace("/static/", "//");
+  acre.route(file_path);
 }
 
 
@@ -189,8 +152,8 @@ function path_based_routing(req, app_labels) {
       // Handle canonical app routing
       var app = app_labels ? app_labels[route.app] : app_routes.app_labels[route.app];
       if (!app) {
- 	    throw route.app+" must be defined in the MANIFEST for routing.";
- 	  }
+        throw route.app+" must be defined in the MANIFEST for routing.";
+      }
       var script = route.script;
       var path_info = path.replace(route.prefix, '');
 
@@ -217,7 +180,7 @@ function path_based_routing(req, app_labels) {
 function route(req, app_labels) {
   req = acre.request || req;
   host_based_redirects(req);
-  static_based_routing(req);
+  global_routing(req);
   path_based_routing(req, app_labels);
 }
 

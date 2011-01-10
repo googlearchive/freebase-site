@@ -31,13 +31,11 @@
 
 acre.require('/test/lib').enable(this);
 
-var mf = acre.require("MANIFEST").mf;
+acre.require("test/mox").playback(this, "playback_test_create_topic.json");
 
-mf.require("test", "mox").playback(this, "playback_test_create_topic.json");
-
-var test_helpers = mf.require("test", "helpers");
-var create_topic = mf.require("create_topic").create_topic;
-var freebase = mf.require("promise", "apis").freebase;
+var test_helpers = acre.require("test/helpers");
+var create_topic = acre.require("queries/create_topic").create_topic;
+var freebase = acre.require("promise/apis").freebase;
 
 // this test requires user to be logged in
 var user;

@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var extend = acre.require("helpers_util").extend;
+var extend = acre.require("core/helpers_util").extend;
 
 var CACHE_POLICIES = {
   "nocache": {

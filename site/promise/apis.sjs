@@ -33,7 +33,7 @@ var urlfetch;
 var freebase = {};
 
 (function() {
-  var deferred = acre.require("deferred");
+  var deferred = acre.require("promise/deferred");
 
   var _urlfetch = function() {
     // Wrap async urlfetch to handle redirects

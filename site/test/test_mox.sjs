@@ -1,12 +1,10 @@
 acre.require('/test/lib').enable(this);
 
-var mf = acre.require("MANIFEST").mf;
+acre.require("test/mox").playback(this, "playback_test_mox.json");
 
-mf.require("test", "mox").playback(this, "playback_test_mox.json");
-
-var urlfetch = mf.require("promise", "apis").urlfetch;
-var freebase = mf.require("promise", "apis").freebase;
-var deferred = mf.require("promise", "deferred");
+var urlfetch = acre.require("promise/apis").urlfetch;
+var freebase = acre.require("promise/apis").freebase;
+var deferred = acre.require("promise/deferred");
 
 function assert_freebase_result(result) {
   ok(result, "got result");

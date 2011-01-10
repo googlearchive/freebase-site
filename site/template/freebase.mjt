@@ -30,13 +30,12 @@
  !!-->
 
 <acre:script>
-  var mf = acre.require("MANIFEST").mf;
-  var h = mf.require("core", "helpers");
-  var cache = mf.require("core", "cache");
+  var h = acre.require("core/helpers");
+  var cache = acre.require("core/cache");
   if (h.is_client()) {
     cache.set_cache_policy('public');
   }
-  var i18n = mf.require("i18n", "i18n");
+  var i18n = acre.require("i18n/i18n");
   var _ = i18n.gettext;
   acre.response.set_header_default("Vary", "Cookie, Accept-Language");
 </acre:script>
@@ -54,10 +53,10 @@
       <title acre:else="">Freebase</title>
 
       <!-- freebase suggest -->
-      <link rel="stylesheet" type="text/css" href="${mf.lib_base_url('suggest')}/suggest.min.css" />
+      <link rel="stylesheet" type="text/css" href="${h.lib_base_url('suggest')}/suggest.min.css" />
 
       <!-- freebase.mf.css -->
-      <link rel="stylesheet" type="text/css" href="${mf.css_src('freebase.mf.css')}" />
+      <link rel="stylesheet" type="text/css" href="${h.static_url(acre.resolve('template/freebase.mf.css'))}" />
 
       <!-- opensearch -->
       <link rel="search" 
@@ -104,7 +103,7 @@
     <div id="logo">
       <a href="${h.url_for('homepage', 'index')}" title="Return to Freebase homepage">
         <img alt="Freebase" 
-             acre:attrs="h.is_production() ? {src: mf.img_src('freebase-logo-production.png')} : {src: mf.img_src('freebase-logo-sandbox.png')}"
+             acre:attrs="h.is_production() ? {src: h.static_url(acre.resolve('template/freebase-logo-production.png'))} : {src: h.static_url(acre.resolve('template/freebase-logo-sandbox.png'))}"
              border="0" height="21" width="87" /></a>
     </div>
     <div class="site-search" searchUrl="${h.freebase_url('/search')}" id="SearchBox">
@@ -173,7 +172,7 @@
     <div id="copyright">
       <a href="http://www.google.com/" rel="nofollow">
         &#169;2010 
-        <img src="${mf.img_src('google-logo.png')}" alt="Google" width="62" height="23" />
+        <img src="${h.static_url(acre.resolve('template/google-logo.png'))}" alt="Google" width="62" height="23" />
       </a> 
       <a title="${acre.request.script.path}" href="${acre.response.headers['x-acre-source-url']}" id="sourcelink">View Source</a>
     </div>
@@ -219,11 +218,11 @@
 
 <acre:block def="footer_script(exports)">
   <!-- jquery -->
-  <script src="${mf.lib_base_url('jquery')}/jquery.min.js"></script>
+  <script src="${h.lib_base_url('jquery')}/jquery.min.js"></script>
   <!-- suggest -->
-  <script src="${mf.lib_base_url('suggest')}/suggest.min.js"></script>
+  <script src="${h.lib_base_url('suggest')}/suggest.min.js"></script>
   <!-- freebase.mf.js -->
-  <script src="${mf.js_src('freebase.mf.js')}"></script>
+  <script src="${h.static_url(acre.resolve('template/freebase.mf.js'))}"></script>
   <acre:block if="exports.footer_script">${exports.footer_script()}</acre:block>
 </acre:block>
 

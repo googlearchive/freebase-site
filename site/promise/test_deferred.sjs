@@ -31,8 +31,8 @@
 
 acre.require('/test/lib').enable(this);
 
-acre.require("es5");
-var deferred = acre.require("deferred");
+acre.require("promise/es5");
+var deferred = acre.require("promise/deferred");
 
 test("callback", function() {
   var value = 0;

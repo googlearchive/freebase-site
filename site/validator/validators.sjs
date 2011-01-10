@@ -29,8 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var mf = acre.require("MANIFEST").mf;
-var h = mf.require("core", "helpers");
+var h = acre.require("core/helpers");
 
 var Class = {
   factory: function(clazz, clazz_args) {

@@ -71,6 +71,7 @@ function do_route(app_path, script, path_info, query_string) {
     var md = acre.get_metadata(app_path);
   }
   catch (ex) {
+    console.log(ex);
     console.log('routing: get_metadata for ' + app_path + ' failed');
     return not_found(app_path || acre.current_script.app.id);
   }

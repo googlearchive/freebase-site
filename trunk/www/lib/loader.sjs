@@ -28,15 +28,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
-function make_metadata() {
-  var lib = "//" + acre.get_metadata().host;
-  var md = JSON.parse(acre.require("METADATA").body);
 
-  md.mounts.lib = lib;
+
+function extend_metadata(md) {
+  
+  function splice_o(target, source) {
+    for (var key in source) {
+      if (typeof source[key] === 'object' && source[key] !== null) {
+        target[key] = target[key] || {};
+        splice_o(target[key], source[key]);
+      } else if (!target[key]){
+        target[key] = source[key];
+      }
+    }
+  }
+
+  var lib_md = JSON.parse(acre.require("METADATA").body);
+  splice_o(md, lib_md);
+  
   for (var h in md.handlers) {
     md.handlers[h] = "lib/" + md.handlers[h];
   }
-  
-  return md;
 };

@@ -49,13 +49,8 @@ class Controller:
         self.username = config.get('apptests', 'username')
         self.password = config.get('apptests', 'password')
         
-        acre_service_host = config.get('apptests', 'acre_service_host')
         acre_service_port = config.getint('apptests','acre_service_port')
         self.acre_service_port = acre_service_port
-        if acre_service_port != 80:
-            self.acre_service = '%s:%s' % (acre_service_host, acre_service_port)
-        else:
-            self.acre_service = acre_service_host
 
         freebase_service_host = config.get('apptests', 'freebase_service_host')
         if '.freebase.com' in freebase_service_host or freebase_service_host.startswith('freebase.com'):

@@ -119,7 +119,7 @@ class Controller:
         path = url.replace(self.devel_service, '')
         runurl = url + '?output=json'
         if self.mox == '0':
-            runurl = url + '&mox=0'
+            runurl += '&mox=0'
         r=self.request_url(runurl)
         if r is None:
             msg = 'url request failed for %s' % runurl

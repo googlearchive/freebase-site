@@ -156,7 +156,7 @@ test("delete_domain user domain", function() {
   ok(!deleted_base_key.length);
 });
 
-test("delete domain base domain", function() {
+test("delete domain base domain", {bug: "async write_user not working in acre/dev/33"}, function() {
   var name = test_helpers.gen_test_name("test_base_");
   var key = name.toLowerCase();
   // create test base

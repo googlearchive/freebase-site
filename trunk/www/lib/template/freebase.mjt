@@ -56,7 +56,7 @@
       <link rel="stylesheet" type="text/css" href="${h.lib_base_url('suggest')}/suggest.min.css" />
 
       <!-- freebase.mf.css -->
-      <link rel="stylesheet" type="text/css" href="${h.static_url('template/freebase.mf.css')}" />
+      <link rel="stylesheet" type="text/css" href="template/freebase.mf.css" />
 
       <!-- opensearch -->
       <link rel="search" 
@@ -103,7 +103,7 @@
     <div id="logo">
       <a href="${h.url_for('homepage', 'index')}" title="Return to Freebase homepage">
         <img alt="Freebase" 
-             acre:attrs="h.is_production() ? {src: h.static_url(acre.resolve('template/freebase-logo-production.png'))} : {src: h.static_url('template/freebase-logo-sandbox.png')}"
+             acre:attrs="h.is_production() ? {src: h.static_url(acre.resolve('template/freebase-logo-production.png'))} : {src: h.static_url(acre.resolve('template/freebase-logo-sandbox.png'))}"
              border="0" height="21" width="87" /></a>
     </div>
     <div class="site-search" searchUrl="${h.freebase_url('/search')}" id="SearchBox">
@@ -172,7 +172,7 @@
     <div id="copyright">
       <a href="http://www.google.com/" rel="nofollow">
         &#169;2010 
-        <img src="${h.static_url('template/google-logo.png')}" alt="Google" width="62" height="23" />
+        <img src="template/google-logo.png" alt="Google" width="62" height="23" />
       </a> 
       <a title="${acre.request.script.path}" href="${acre.response.headers['x-acre-source-url']}" id="sourcelink">View Source</a>
     </div>
@@ -222,7 +222,7 @@
   <!-- suggest -->
   <script src="${h.lib_base_url('suggest')}/suggest.min.js"></script>
   <!-- freebase.mf.js -->
-  <script src="${h.static_url('template/freebase.mf.js')}"></script>
+  <script src="template/freebase.mf.js"></script>
   <acre:block if="exports.footer_script">${exports.footer_script()}</acre:block>
 </acre:block>
 

@@ -31,7 +31,6 @@
 
 <acre:script>
   var templates = acre.require("templates");
-  var h = acre.require("lib/core/helpers");
   var c = this.exports.c = {};
 </acre:script>
 
@@ -39,7 +38,7 @@
   <script>
     if (document.cookie.indexOf("metaweb-user-info") < 0) {window.location.reload(true);}
   </script>
-  <link rel="stylesheet" type="text/css" href="${h.static_url('homepage.mf.css')}" />
+  <link rel="stylesheet" type="text/css" href="homepage.mf.css" />
 </acre:block>
 
 <acre:block def="content_header()">
@@ -72,5 +71,5 @@
 </acre:block>
 
 <acre:block def="footer_script()">
-  <script src="${h.static_url('homepage.mf.js')}"></script>
+  <script src="homepage.mf.js"></script>
 </acre:block>

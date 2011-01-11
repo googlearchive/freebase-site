@@ -2,6 +2,7 @@ var app_labels = {
   "lib"               : "//lib.www.trunk.svn.freebase-site.googlecode.dev",
 
   "homepage"          : "//homepage.www.trunk.svn.freebase-site.googlecode.dev",
+  "schema"            : "//schema.www.trunk.svn.freebase-site.googlecode.dev",
 
   "cubed"             : "//cubed",
   "labs"              : "//labs",

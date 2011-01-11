@@ -5,10 +5,11 @@
     "service": "//service"
   },
   "handlers": {
-    "css": "manifest/css_handler.sjs",
-    "css_manifest": "manifest/css_manifest_handler.sjs",
-    "js_manifest": "manifest/js_manifest_handler.sjs",
-    "mjt": "manifest/mjt_handler.sjs"
+    "mjt": "handlers/mjt_handler.sjs",
+    "css": "handlers/css_handler.sjs",
+    "css_manifest": "handlers/css_manifest_handler.sjs",
+    "js_manifest": "handlers/js_manifest_handler.sjs",
+    "tagged_static": "handlers/tagged_static_handler.sjs"
   },
   "extensions": {
     "css": {

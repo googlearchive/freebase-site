@@ -32,25 +32,16 @@
 var handler = function() {
   return {
     'to_js': function(script) {
-      delete script.scope;	
       return "var res = ("+JSON.stringify(script.get_content())+");";
     },
     'to_module' : function(compiled_js, script) {
-      return compiled_js.module;
+      return compiled_js.res;
     },
     'to_http_response': function(module, script) {
-
-      if (script.name.indexOf(".js") !== -1) {
-        module.headers['content-type'] = 'application/x-javascript';        
-      } else if (script.name.indexOf(".css") !== -1)
-        module.headers['content-type'] = 'text/css';
-      }
-      
       var max_age = 31536000;
       var expires = new Date(acre.request.start_time.getTime() + max_age * 1000);
       module.headers["expires"] = expires.toUTCString();
       module.headers["cache-control"]  ="public, max-age: " + max_age;
-
       return module;
     }
   };

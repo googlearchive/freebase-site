@@ -1,0 +1,12 @@
+[{
+  "post": {
+    "author": {"id": null},
+    "timestamp": null,
+    "limit":     1
+  },
+  "replies:post": [{
+    "author": {"id!=": null},
+    "timestamp": null
+  }],
+  "type": "/community/discussion_thread"
+}]

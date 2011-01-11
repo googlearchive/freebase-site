@@ -291,17 +291,18 @@ function freebase_resource_url(path) {
   return r.base_url + r.hash + path;
 }
 
-// kind of a hack
-// xxx - replace with handler?
-function resolve_rel_path(rel_path) {
-  var host;
-  if (path.indexOf("lib/") == -1) {
-    host = acre.get_metadata().host;
-    rel_path.replace("lib/","");
+// xxx - this is awful... replace with handler
+function resolve_rel_path(path) {
+  if (path.indexOf("//") == 0) {
+    return path;
+  } else if (path.indexOf("lib/") == 0) {
+    path.replace("lib/",acre.get_metadata().mounts.lib + "/");
+  } else if (path.indexOf("/") == -1) {
+    path = acre.request.script.app.path + "/" + path;
   } else {
-    host = acre.request.script.app.host;
+    path = "//" + acre.get_metadata().host + "/" + path;
   }
-  return "//" + host + "/" + rel_path;
+  return path;
 };
 
 function static_url(rel_path) {

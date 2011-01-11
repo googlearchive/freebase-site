@@ -117,7 +117,7 @@ function delete_base(key) {
   });
 };
 
-test("create_base", function() {
+test("create_base", {bug: "async write_user not working in acre/dev/33"}, function() {
   var name = get_name();
   var key = schema_helpers.generate_domain_key(name);
   var base;
@@ -167,7 +167,7 @@ test("create_base", function() {
   ok(permits_schema_group, base.id + " permits /boot/schema_group");
 });
 
-test("create base with existing key", function() {
+test("create base with existing key", {bug: "async write_user not working in acre/dev/33"}, function() {
   var base, error;
   try {
     var name = get_name();
@@ -191,7 +191,7 @@ test("create base with existing key", function() {
   }
 });
 
-test("create base with description", function() {
+test("create base with description", {bug: "async write_user not working in acre/dev/33"}, function() {
   var name = get_name();
   var key = schema_helpers.generate_domain_key(name);
   var base;

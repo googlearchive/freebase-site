@@ -38,7 +38,7 @@
 </acre:block>
 
 <acre:block def="head()">
-  <script src="${h.static_url('jquery.mqlkey.test.mf.js')}"></script>
+  <script src="jquery.mqlkey.test.mf.js"></script>
 </acre:block>
 
 <acre:block def="fixture()">

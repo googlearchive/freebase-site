@@ -7,7 +7,8 @@
   "handlers": {
     "css": "manifest/css_handler.sjs",
     "css_manifest": "manifest/css_manifest_handler.sjs",
-    "js_manifest": "manifest/js_manifest_handler.sjs"
+    "js_manifest": "manifest/js_manifest_handler.sjs",
+    "mjt": "manifest/mjt_handler.sjs"
   },
   "extensions": {
     "css": {

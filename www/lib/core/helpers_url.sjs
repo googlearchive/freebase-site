@@ -291,25 +291,11 @@ function freebase_resource_url(path) {
   return r.base_url + r.hash + path;
 }
 
-// xxx - this is awful... replace with handler
-function resolve_rel_path(path) {
-  if (path.indexOf("//") == 0) {
-    return path;
-  } else if (path.indexOf("lib/") == 0) {
-    path.replace("lib/",acre.get_metadata().mounts.lib + "/");
-  } else if (path.indexOf("/") == -1) {
-    path = acre.request.script.app.path + "/" + path;
-  } else {
-    path = "//" + acre.get_metadata().host + "/" + path;
-  }
-  return path;
-};
-
-function static_url(rel_path) {
+function static_url(path) {
   var static_base = acre.get_metadata().static_base || "";
-  return resolve_rel_path(rel_path).replace("//", static_base + "/static/");
+  return path.replace("//", static_base + "/static/");
 }
 
 function ajax_url(path) {
-  resolve_rel_path(rel_path).replace("//", "/ajax/");
+  path.replace("//", "/ajax/");
 }

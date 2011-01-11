@@ -292,7 +292,7 @@
 <acre:block def="googlerefine()">
   <div class="content-section-googlerefine">
     <a href="http://code.google.com/p/google-refine">
-      <img src="${h.static_url('googlerefine-logo.png')}"
+      <img src="googlerefine-logo.png"
            border="0" class="googlerefine-logo"
            width="105" height="82" />
     </a>

@@ -30,7 +30,7 @@
 */
 
 var less = function(data) {
-  var less_parser = new(acre.require("manifest/less").less.Parser)({optimization:3});
+  var less_parser = new(acre.require("handlers/less").less.Parser)({optimization:3});
   var result;
   less_parser.parse(data, function(e, root) {
     result = root.toCSS();
@@ -71,9 +71,7 @@ var handler = function() {
       return res;
     },
     'to_http_response': function(module, script) {
-      console.log(module.body.length)
       module.body = less(module.body);
-      console.log(module.body.length)
       module.headers['content-type'] = 'text/css';
       return module;
     }

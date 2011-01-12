@@ -29,53 +29,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-CueCard.createComposition = function(options) {
-    var qe = new CueCard.QueryEditor(options.queryEditorElement, options["queryEditorOptions"]);
-    var op = null;
-    var cp = null;
-    if ("outputPaneElement" in options) {
-        var opo = options["outputPaneOptions"] || {};
-        opo.queryEditor = qe;
-        
-        op = new CueCard.OutputPane(options.outputPaneElement, opo);
-        qe.setOutputPane(op);
-    }
-    if ("controlPaneElement" in options) {
-        var cpo = options["controlPaneOptions"] || {};
-        cpo.queryEditor = qe;
-        if (op != null) {
-            cpo.outputPane = op;
-        }
-        
-        cp = new CueCard.ControlPane(options.controlPaneElement, cpo);
-        qe.setControlPane(cp);
-    }
-    
-    return {
-        queryEditor: qe,
-        outputPane: op,
-        controlPane: cp
-    };
-};
+// EDITORS is a registry of the constructor, default configuration 
+// and supported features for each editor
 
-CueCard.showDialog           = function(dialogname /*, arg1, arg2, etc. */) {
-    var args = Array.prototype.slice.call(arguments);
-    args.shift();
+var EDITORS = {};
 
-    var dialog = $("<div id='dialog-" + dialogname + "' class='modal'></div>").acre(fb.acre.apps.cuecard + "/dialogs.mjt", dialogname, args);   
-    $(document.body).append(dialog.hide());
+/*
+    FEATURES    :
+        * hotswap               - ability to switch editors on the fly (pure text editors only)
+        * mimetype_change       - ability to switch mime-types on the fly
+        * margin                - show margin with linenumbers, etc.
+        * linenumbers           - show linenumber, go to line
+        * softwrap              - able to switch between hard and soft-wrap
+        * undo                  - supports undoing and redoing
+        * indent                - support re-indenting selection
+        * inline_preview        - previews within editor... disable View and View with Console (query only)
 
-    dialog.overlay({
-        load: true,
-        mask: {
-            color: '#000',
-            loadSpeed: 200,
-            opacity: 0.5
-        },
-        close: ".modal-buttons .button",
-        closeOnClick: false,
-        onClose: function() {
-            dialog.remove();
-        }
-    });
-};
+    EVENTS      :
+        * change(undos, redos)  - on any text change
+        * linechange(num)       - whenever the linenumber changes
+        * newframe(element)     - hack for dealing with attaching new handlers for frames
+*/

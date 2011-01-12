@@ -31,37 +31,22 @@
 
 <acre:script>
   var h = acre.require("lib/core/helpers");
-  var cache = acre.require("lib/core/cache");
-  if (h.is_client()) {
-    cache.set_cache_policy('public');
-  }
-  var i18n = acre.require("lib/i18n/i18n");
-  acre.response.set_header_default("Vary", "Cookie, Accept-Language");
 </acre:script>
 
-<acre:block def="page(exports)">
-  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-    <acre:script>
-      acre.response.set_header('content-type', 'text/html');
-      acre.response.status = 200;
-      var util = acre.require("util");
-      var o = util.setup(exports.c.path_info);
-    </acre:script>
-    <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-      <link rel="stylesheet" type="text/css" href="iframe_style.mf.css" />
-    </head>
-    <body id="help-viewer-standalone">
-      <acre:block if="o.section_url">
-        ${exports.helpsection(o)}
-      </acre:block>
-      <acre:block elif="o.doc_content">
-        <div id="help-section">
-          <div id="help-content" class="wide">
-            ${acre.markup.bless(util.get_content(o.doc_content, o.query))}
-          </div>
-        </div>
-      </acre:block>
-    </body>
-  </html>
+<acre:block def="policy_nav()">
+  <acre:script>
+    var sn = acre.request.script.name;
+  </acre:script>
+
+  <h2>Freebase Terms and Policies</h2>
+  
+  <ul class="toc">
+    <li class="toc-item" acre:attrs="sn=='attribution'?{'class':'toc-item on'}:{}"><a href="${h.url_for('policies','attribution')}">How to Attribute</a></li>
+    <li class="toc-item" acre:attrs="sn=='licensing'?{'class':'toc-item on'}:{}"><a href="${h.url_for('policies','licensing')}">Licensing Policy</a></li>
+    <li class="toc-item" acre:attrs="sn=='copyright'?{'class':'toc-item on'}:{}"><a href="${h.url_for('policies','copyright')}">Copyright Policy</a></li>
+    <li class="toc-item" acre:attrs="sn=='privacy'?{'class':'toc-item on'}:{}"><a href="${h.url_for('policies','privacy')}">Privacy Policy</a></li>
+    <li class="toc-item" acre:attrs="sn=='tos'?{'class':'toc-item on'}:{}"><a href="${h.url_for('policies','tos')}">Terms of Service</a></li>
+    <li class="toc-item" acre:attrs="sn=='freebaseid'?{'class':'toc-item on'}:{}"><a href="${h.url_for('policies','freebaseid')}">Freebase ID</a></li>
+  </ul>
+  
 </acre:block>

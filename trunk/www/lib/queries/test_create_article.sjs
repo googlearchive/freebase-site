@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mox").playback(this, "playback_test_create_article.json");
+acre.require("test/mox").playback(this, "queries/playback_test_create_article.json");
 
 var lib = acre.require("queries/create_article");
 var create_article = lib.create_article;

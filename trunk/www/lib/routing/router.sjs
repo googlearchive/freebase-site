@@ -145,7 +145,6 @@ var PrefixRouter = function() {
     }
 
     var rule = route_for_path(path);
-    console.log(path);
     if (rule) {
       if (rule.redirect && rule.url) {
         // Handle both absolute and relative redirects

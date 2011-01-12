@@ -7,7 +7,7 @@
  */
 
 // This is the error handler that handles all routing and not found errors
-//acre.response.set_error_handler("//error.www.trunk.svn.freebase-site.googlecode.dev/error");
+acre.response.set_error_handler("//error.www.trunk.svn.freebase-site.googlecode.dev/index.sjs");
 
 // lib to get routing helpers
 var lib = "//lib.www.trunk.svn.freebase-site.googlecode.dev";
@@ -50,16 +50,16 @@ router.add([
   {prefix:"/index",              url:"/", redirect:301},
   {prefix:"/home",               app:"//homepage.www.trunk.svn.freebase-site.googlecode.dev", script: "home"},
   {prefix:"/homepage",           app:"//homepage.www.trunk.svn.freebase-site.googlecode.dev"},
-  {prefix:"/schema",             app:"//schema.www.trunk.svn.freebase-site.googlecode.dev"}/**,
+  {prefix:"/schema",             app:"//schema.www.trunk.svn.freebase-site.googlecode.dev"},
   {prefix:"/apps",               app:"//apps.www.trunk.svn.freebase-site.googlecode.dev"},
-  {prefix:"/docs",               app:"//devdocs.www.trunk.svn.freebase-site.googlecode.dev"},
-  {prefix:"/policies",           app:"//policies.www.trunk.svn.freebase-site.googlecode.dev"},
   {prefix:"/appeditor",          app:"//appeditor.www.trunk.svn.freebase-site.googlecode.dev"},
-  {prefix:"/labs/cubed",         app:"//cubed.dfhuynh.user.dev"},
-  {prefix:"/labs/parallax",      app:"//parallax.dfhuynh.user.dev"},
-  {prefix:"/labs",               app:"//labs.dfhuynh.user.dev"},
-  {prefix:"/queryeditor",        app:"//cuecard.dfhuynh.user.dev"},
-  {prefix:"/inspect",            app:"//triples.www.trunk.svn.freebase-site.googlecode.dev"}**/
+  {prefix:"/docs",               app:"//devdocs.www.trunk.svn.freebase-site.googlecode.dev"},
+  {prefix:"/inspect",            app:"//triples.www.trunk.svn.freebase-site.googlecode.dev"},
+  {prefix:"/policies",           app:"//policies.www.trunk.svn.freebase-site.googlecode.dev"},
+  {prefix:"/queryeditor",        app:"//queryeditor.www.trunk.svn.freebase-site.googlecode.dev"},
+  {prefix:"/labs/cubed",         app:"//cubed"},
+  {prefix:"/labs/parallax",      app:"//parallax"},
+  {prefix:"/labs",               app:"//labs"}
 ]);
 
 // add test routing rules to test non-user facing apps (core libraries, etc.)
@@ -72,3 +72,4 @@ router.route(acre.request);
 
 
 // TODO: not found
+acre.route("//error.www.trunk.svn.freebase-site.googlecode.dev/index.sjs");

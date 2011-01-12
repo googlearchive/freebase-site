@@ -1,3 +1,0 @@
-[
-  "codemirror/codemirror.js"
-]

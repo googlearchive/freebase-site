@@ -59,7 +59,7 @@ function get_versions(appid) {
         }
     }
     
-    var q = acre.require('query_app_versions').query;
+    var q = acre.require('appeditor-services/query_app_versions').query;
     var links = FB.mqlread(FB.extend_query(q, {id: appid})).result;
     
     if (links == null) { 

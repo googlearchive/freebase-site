@@ -11,13 +11,12 @@ acre.response.set_error_handler("//error.www.trunk.svn.freebase-site.googlecode.
 
 // lib to get routing helpers
 var lib = "//lib.www.trunk.svn.freebase-site.googlecode.dev";
-
+var routing = acre.require(lib + "/routing/router");
 
 //
 // 1. HostRouter
 //
-var HostRouter =  new acre.require(lib + "/routing/router").HostRouter;
-var router = new HostRouter();
+var router = new routing.HostRouter();
 router.add([
   {host:"freebase.com", url:"http://www.freebase.com"},
   {host:"sandbox-freebase.com", url:"http://www.sandbox-freebase.com"},
@@ -29,20 +28,16 @@ router.add([
 ]);
 router.route(acre.request);
 
-
 //
 // 2. GlobalRouter
 //
-var GlobalRouter = new acre.require(lib + "/routing/router").GlobalRouter;
-router = new GlobalRouter();
+router = new routing.GlobalRouter();
 router.route(acre.request);
-
 
 //
 // 3. PrefixRouter
 //
-var PrefixRouter = acre.require(lib + "/routing/router").PrefixRouter;
-router = new PrefixRouter();
+router = new routing.PrefixRouter();
 
 // Urls for user-facing apps
 router.add([
@@ -69,7 +64,6 @@ router.add([
 ]);
 
 router.route(acre.request);
-
 
 // TODO: not found
 acre.route("//error.www.trunk.svn.freebase-site.googlecode.dev/index.sjs");

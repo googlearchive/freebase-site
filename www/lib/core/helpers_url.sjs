@@ -293,9 +293,9 @@ function freebase_resource_url(path) {
 
 function static_url(path) {
   var static_base = acre.get_metadata().static_base || "";
-  return path.replace("//", static_base + "/static/");
+  return path.replace("//", static_base + "/global/");
 }
 
 function ajax_url(path) {
-  path.replace("//", "/ajax/");
+  path.replace("//", "/global/");
 }

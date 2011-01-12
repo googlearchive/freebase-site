@@ -152,11 +152,12 @@ function type_info_query(type_id, user_id) {
     mid: null,
     name: null,
     type: "/type/type",
-    domain: {id: null, name: null},
+    domain: {id: null, mid:null, name: null},
     key: [{
       optional: true,
       namespace: {
         id: null,
+        mid: null,
         permission: [{permits: [{member: {id: user_id}}]}]
       },
       value: null
@@ -165,6 +166,7 @@ function type_info_query(type_id, user_id) {
     // These links can be removed.
     expected_by: [{
       id: null,
+      mid: null,
       optional: true,
       permission: [{permits: [{member: {id: user_id}}]}]
     }],
@@ -172,6 +174,7 @@ function type_info_query(type_id, user_id) {
     // These cannot be removed
     "opp:expected_by": [{
       id: null,
+      mid: null,
       optional: true,
       permission:[{"permits": [{optional:"forbidden", member:{id: user_id}}]}]
     }]
@@ -184,12 +187,13 @@ function type_info_query(type_id, user_id) {
       return {
         id: result.id,
         guid: result.guid,
+        mid: result.mid,
         name: result.name,
-        domain: result.domain,
-        key: [{namespace:k.namespace.id, value:k.value} for each (k in result.key)],
+        domain: {id:result.domain.mid, name:result.domain.name},
+        key: [{namespace:k.namespace.mid, value:k.value} for each (k in result.key)],
         expected_by: {
-          permitted: [{id:p.id} for each (p in result.expected_by)],
-          not_permitted: [{id:p.id} for each (p in result["opp:expected_by"])]
+          permitted: [{id:p.mid} for each (p in result.expected_by)],
+          not_permitted: [{id:p.mid} for each (p in result["opp:expected_by"])]
         }
       };
     });

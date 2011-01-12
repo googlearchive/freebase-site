@@ -346,7 +346,7 @@ function delete_property2(key, type_id) {
 };
 
 function create_property2(type_id, options) {
-  var name = gen_test_name("test_domain_");
+  var name = gen_test_name("test_property_");
   var key = name.toLowerCase();
   return delete_property2(key, type_id)
     .then(function() {

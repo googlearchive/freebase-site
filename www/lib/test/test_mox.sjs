@@ -1,6 +1,6 @@
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mox").playback(this, "playback_test_mox.json");
+acre.require("test/mox").playback(this, "test/playback_test_mox.json");
 
 var urlfetch = acre.require("promise/apis").urlfetch;
 var freebase = acre.require("promise/apis").freebase;

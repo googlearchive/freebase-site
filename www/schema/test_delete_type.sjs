@@ -74,19 +74,29 @@ test("delete_type", function() {
   ok(info, "got delete_type info");
   ok(result, "got delete_type result");
 
-  ok(result.type.id === "/type/type" &&
-     result.type.connect === "deleted", "type link deleted: " + type.id);
-
-  ok(result.key[0].value === type.key.value &&
-     result.key[0].namespace === type.key.namespace &&
-     result.key[0].connect === "deleted", "key deleted: " + type.key.value);
-
-  ok(result.domain.id === type.domain.id &&
-     result.domain.connect === "deleted", "domain link deleted: " + type.domain.id);
-
-  ok(result["/dataworld/gardening_task/async_delete"].value === true &&
-     result["/dataworld/gardening_task/async_delete"].connect === "inserted",
-     "/dataworld/gardening_task/async_delete set");
+  var check_result;
+  freebase.mqlread({
+    id: type.mid,
+    type: {
+      id: "/type/type",
+      optional: "forbidden"
+    },
+    key: {
+      namespace: type.key.namespace,
+      value: type.key.value,
+      optional: "forbidden"
+    },
+    "/type/type/domain": {
+      id: type.domain.id,
+      optional: "forbidden"
+    },
+    "/dataworld/gardening_task/async_delete": true
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
 });
 
 test("delete_type dry_run", function() {
@@ -99,20 +109,16 @@ test("delete_type dry_run", function() {
   ok(type, "test type created");
 
   var info, result;
-  delete_type(type.mid, user.id)
+  delete_type(type.mid, user.id, true)
     .then(function([i, r]) {
       info = i;
       result = r;
     });
   acre.async.wait_on_results();
   ok(info, "got delete_type info");
-  ok(result, "got delete_type result");
+  ok(!result, "did not expect delete_type result");
 
   equal(info.guid, type.guid, "type info.guid: " + info.guid);
-  ok(info.key[0].value === type.key.value &&
-     info.key[0].namespace === type.key.namespace, "type info.key: " + type.key.value);
-
-  ok(info.domain.id === type.domain.id, "type info.domain: " + type.domain.id);
 });
 
 test("undo", function() {
@@ -134,7 +140,6 @@ test("undo", function() {
   ok(info, "got delete_type info");
   ok(result, "got delete_type result");
 
-
   // assert deleted
   ok(result.type.id === "/type/type" && result.type.connect === "deleted", "/type/type deleted");
 
@@ -149,11 +154,30 @@ test("undo", function() {
   ok(undo_info, "get undo info");
   ok(undo_result, "got undo result");
 
-  ok(undo_result.type.id === "/type/type" && undo_result.type.connect === "inserted", "/type/type inserted");
 
-  ok(undo_result["/dataworld/gardening_task/async_delete"].value === true &&
-     undo_result["/dataworld/gardening_task/async_delete"].connect === "deleted",
-     "/dataworld/gardening_task/async_delete unset");
+  var check_result;
+  freebase.mqlread({
+    id: type.mid,
+    type: {
+      id: "/type/type"
+    },
+    key: {
+      namespace: type.key.namespace,
+      value: type.key.value
+    },
+    "/type/type/domain": {
+      id: type.domain.id
+    },
+    "/dataworld/gardening_task/async_delete": {
+      value: true,
+      optional: "forbidden"
+    }
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
 });
 
 test("delete_type expected_by property", function() {
@@ -204,7 +228,7 @@ test("delete_type expected_by property", function() {
     check_ect = env.result;
   });
   acre.async.wait_on_results();
-  ok(!check_ect, "did not expect ect");
+  ok(check_ect, "did not expect ect");
 
   // undo
   undo(info);

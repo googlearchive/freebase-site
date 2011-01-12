@@ -28,43 +28,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
  
+function compile_mjt(source, pkgid) {
+  var code = [];
+  code.push("if (jQuery) {\n");
+  code.push("jQuery(window).trigger('acre.template.register', {pkgid: '" + pkgid + "', source: ");
+  code.push(acre.template.string_to_js(source, pkgid));
+  code.push("});\n");
+  code.push("}\n");
+  return code.join("");
+};
+
 var handler = function() {
-  var mjt_js_path = acre.resolve("handlers/mjt_to_js_handler.sjs");
-  
   return {
     'to_js': function(script) {
-      return "var res = ("+JSON.stringify(script.get_content())+");";
+      var res = script.get_content();
+      var pkgid = "//" + script.app.host + "/" + script.name;
+      res.body = compile_mjt(res.body, pkgid);
+      var str = "var module = ("+ JSON.stringify(res) +");";
+      return str;
     },
-    'to_module' : function(compiled_js, script) {
-      var res = compiled_js.res;
-
-      try {
-        var mf = JSON.parse(res.body);
-      } catch(e) {
-        throw new Error(".mf files must be valid JSON.  " + e);
-      }
-
-      if (!(mf instanceof Array)) {
-        throw new Error("Manifest file must be an array."); 
-      }
-
-      // acquire all the files
-      var buf = [];
-      for (var i=0; i < mf.length; i++) {
-        var path = mf[i];
-        buf.push("\n/** " + path + "**/\n");
-
-        // XXX - fulhack
-        script.scope.acre.get_metadata(path).handlers.mjt = mjt_js_path;
-        
-        var req = script.scope.acre.require(path);
-        buf.push(req.body);    
-      }
-      res.body = buf.join("");
-
-      return res;
+    'to_module': function(compiled_js, script) {
+      return compiled_js.module;
     },
     'to_http_response': function(module, script) {
       module.headers['content-type'] = 'application/x-javascript';

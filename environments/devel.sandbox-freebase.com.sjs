@@ -21,7 +21,9 @@ var rules = {
     {host:"acre.freebase.com", url:"http://www.freebase.com/appeditor"},
     {host:"acre.sandbox-freebase.com", url:"http://www.sandbox-freebase.com/appeditor"},
     {host:"api.freebase.com", url:"http://wiki.freebase.com/wiki/Freebase_API"},
-    {host:"api.sandbox-freebase.com", url:"http://wiki.freebase.com/wiki/Freebase_API"}
+    {host:"api.sandbox-freebase.com", url:"http://wiki.freebase.com/wiki/Freebase_API"},
+    {host:"metaweb.com", url:"http://www.freebase.com"},
+    {host:"www.metaweb.com", url:"http://www.freebase.com"}
   ],
 
   "GlobalRouter": null,
@@ -44,17 +46,17 @@ var rules = {
     {prefix:"/labs",               app:"//labs"},
 
     // Urls for exposed ajax libraries and static resources
-    {prefix:"/permission",         app:"//lib.www.trunk.svn.freebase-site.googlecode.dev/permission"},
-    {prefix:"/template",           app:"//lib.www.trunk.svn.freebase-site.googlecode.dev/template"},
+    {prefix:"/permission",         app:lib + "/permission"},
+    {prefix:"/template",           app:lib + "/template"},
 
     // Test routing rules to test non-user facing apps (core libraries, etc.)
-    {prefix:"/lib/core",           app:"//lib.www.trunk.svn.freebase-site.googlecode.dev/core"},
-    {prefix:"/lib/routing",        app:"//lib.www.trunk.svn.freebase-site.googlecode.dev/routing"},
-    {prefix:"/lib/i18n",           app:"//lib.www.trunk.svn.freebase-site.googlecode.dev/i18n"},
-    {prefix:"/lib/promise",        app:"//lib.www.trunk.svn.freebase-site.googlecode.dev/promise"},
-    {prefix:"/lib/queries",        app:"//lib.www.trunk.svn.freebase-site.googlecode.dev/queries"},
-    {prefix:"/lib/test",           app:"//lib.www.trunk.svn.freebase-site.googlecode.dev/test"},
-    {prefix:"/lib/validator",      app:"//lib.www.trunk.svn.freebase-site.googlecode.dev/validator"},
+    {prefix:"/lib/core",           app:lib + "/core"},
+    {prefix:"/lib/routing",        app:lib + "/routing"},
+    {prefix:"/lib/i18n",           app:lib + "/i18n"},
+    {prefix:"/lib/promise",        app:lib + "/promise"},
+    {prefix:"/lib/queries",        app:lib + "/queries"},
+    {prefix:"/lib/test",           app:lib + "/test"},
+    {prefix:"/lib/validator",      app:lib + "/validator"},
 
     // Urls for administrative tools
     {prefix:"/app/admin",          app:"admin"},

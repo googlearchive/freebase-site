@@ -6,12 +6,12 @@
  * 3. PrefixRouter - the main prefix-based routing rules
  */
 
-// This is the error handler that handles all routing and not found errors
-acre.response.set_error_handler("//error.www.trunk.svn.freebase-site.googlecode.dev/index.sjs");
-
 // lib to get routing helpers
 var lib = "//1f.lib.www.tags.svn.freebase-site.googlecode.dev";
 var routing = acre.require(lib + "/routing/router");
+
+// This is the error handler that handles all routing and not found errors
+acre.response.set_error_handler(lib + "/error/error.mjt");
 
 var rules = {
   "HostRouter": [
@@ -197,6 +197,4 @@ if (acre.current_script === acre.request.script) {
 });
 
 // TODO: not found
-acre.route("//error.www.trunk.svn.freebase-site.googlecode.dev/index.sjs");
-
 

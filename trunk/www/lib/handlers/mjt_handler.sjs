@@ -49,7 +49,7 @@ var to_process = {
 };
 
 function handler() {
-  var handler = acre.handlers.mjt;
+  var handler = {};
   
   handler.to_js = function(script) {
 
@@ -103,6 +103,10 @@ function handler() {
     script.linemap = cpkg.debug_locs;
     return 'var pkgdef = (' + cpkg.toJS() +');';
   };
+  
+  // the rest is no different than standard Mjt
+  handler.to_module = acre.handlers.mjt.to_module;
+  handler.to_http_response = acre.handlers.mjt.to_http_response;
   
   return handler;
 };

@@ -1,3 +1,3 @@
 [
-  "qunit/qunit.js"
+  "test/qunit.js"
 ]

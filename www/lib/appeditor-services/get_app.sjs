@@ -268,7 +268,7 @@ function make_disk_app(appinfo) {
   r.creation_time  = null;
   r.version        = appinfo.versions.length ? appinfo.versions[0] : null;
   r.oauth_enabled  = null;
-  r.write_user     = appinfo.service_metadata.write_user;
+  r.write_user     = appinfo.freebase ? (appinfo.freebase.write_user || null) : null;
   r.parent         = null;
   r.children       = [];
   r.listed         = false;
@@ -327,13 +327,12 @@ function get_app (appid, just_files, timestamp) {
     if (!md) { bad_appid(appid); }
     
     switch (md.__source__) {
-      case "disk" :
+      case "graph" :
+        ret = make_graph_app(md, just_files);
+        break;
+      default :
         ret = make_disk_app(md);
         ret.repository.url = "http://" + resource.acre_host;
-        break;
-      case "graph" :
-      default :
-        ret = make_graph_app(md, just_files);
         break;
     }    
   }

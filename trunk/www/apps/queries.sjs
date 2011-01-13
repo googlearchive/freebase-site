@@ -134,17 +134,18 @@ var app = function(id, options) {
         var fetch_opts = {
           method : "POST",
           sign : true,
-          content : acre.form.encode(args)
+          content : acre.form.encode(args),
         };
 
-        var oauth_result = acre.freebase.fetch(url, fetch_opts);
-        if (oauth_result) {
+        try {
+          var oauth_result = acre.freebase.fetch(url, fetch_opts);
           app.oauth = {
             key: oauth_result.key,
             secret: oauth_result.secret
-          }
+          };
+        } catch(e) {
+          console.warn("Couldn't fetch API keys", e);
         }
-
       }
       
       return deferred.all(d)

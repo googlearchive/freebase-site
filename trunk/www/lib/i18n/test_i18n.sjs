@@ -31,23 +31,30 @@
 
 acre.require('/test/lib').enable(this);
 
+acre.require("test/mox").playback(this, "i18n/playback_test_i18n.json");
+
 var h = acre.require("core/helpers");
 var i18n = acre.require("i18n/i18n");
+var freebase = acre.require("promise/apis").freebase;
 
 test("i18n", function() {
-  ok(i18n.lang, i18n.lang);   // must have a preferred lang
+  ok(i18n.lang, "lang: " + i18n.lang);   // must have a preferred lang
 });
 
 test("i18n.mql.langs", function() {
   var langs = i18n.mql.langs();
   var map = h.map_array(langs, "id");
-  var q = [{
+  var result;
+  freebase.mqlread([{
     id: null,
     "id|=": [lang.id for each (lang in langs)],
     type: "/type/lang"
-  }];
-  var mql_langs = acre.freebase.mqlread(q).result;
-  equal(langs.length, mql_langs.length, JSON.stringify(langs, null, 2));
+  }])
+  .then(function(env) {
+    result = env.result;
+  });
+  acre.async.wait_on_results();
+  equal(langs.length, result.length, JSON.stringify(langs, null, 2));
 });
 
 test("i18n.mql.query.text", function() {

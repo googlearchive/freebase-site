@@ -212,27 +212,3 @@ var HostRouter = function() {
     return false;
   };
 };
-
-
-/**
- * /static/path -> //path router
- */
-var GlobalRouter = function() {
-  var add = this.add = function(routes) {
-    if (!(routes instanceof Array)) {
-      routes = [routes];
-    }
-    // no op for now
-  };
-
-  var route = this.route = function(req) {
-    var req_path = req.url.replace(req.app_url, "");
-    //all requests that start with /fss/ are for static files
-    if (req_path.indexOf("/global/") != 0) {
-      return false;
-    }
-    var file_path = req_path.replace("/global/", "//");
-    acre.route(file_path);
-    acre.exit();
-  };
-};

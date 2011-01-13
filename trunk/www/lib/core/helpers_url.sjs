@@ -293,9 +293,11 @@ function freebase_resource_url(path) {
 
 function static_url(path) {
   var static_base = acre.get_metadata().static_base || "";
+  path = path.replace(".svn.freebase-site.googlecode.dev", "");
   return path.replace("//", static_base + "/global/");
 }
 
 function ajax_url(path) {
-  path.replace("//", "/global/");
+  path = path.replace(".svn.freebase-site.googlecode.dev", "");
+  return path.replace("//", "/global/");
 }

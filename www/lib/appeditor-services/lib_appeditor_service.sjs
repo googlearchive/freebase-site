@@ -448,6 +448,8 @@ function output_response(ret, mode) {
 
 
 function run_function_as_service(func, scope, args) {
+    acre.response.set_error_handler("appeditor-services/error.sjs");
+    
     var ret = null;
 
     try {

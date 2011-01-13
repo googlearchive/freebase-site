@@ -49,7 +49,7 @@
 <acre:block def="welcome(is_user)">
   <div id="welcome-panel">
     <div class="acre-logo">
-      <img src="${ui.url_for('logo-acre.png')}" width="211" height="47" alt="Acre: Open Code for Open Data" border="0" />
+      <img src="logo-acre.png" width="211" height="47" alt="Acre: Open Code for Open Data" border="0" />
     </div>
     <div>
       <ul acre:if="is_user">

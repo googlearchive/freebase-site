@@ -1,9 +1,8 @@
 /**
- * Routing happens in 3 stages
+ * Routing happens in 2 stages
  *
  * 1. HostRouter - redirect legacy hosts to the canonical domain/host.
- * 2. GlobalRouter -  route a request of the kind /[global]/file_path (e.g., /fss/file_path and /static/file_path).
- * 3. PrefixRouter - the main prefix-based routing rules
+ * 2. PrefixRouter - the main prefix-based routing rules
  */
 
 // lib to get routing helpers
@@ -26,8 +25,6 @@ var rules = {
     {host:"www.metaweb.com", url:"http://www.freebase.com"}
   ],
 
-  "GlobalRouter": null,
-
   "PrefixRouter": [
     // Urls for user-facing apps
     {prefix:"/",                   app:"//1r.homepage.www.tags.svn.freebase-site.googlecode.dev", script: "index"},
@@ -46,9 +43,10 @@ var rules = {
     {prefix:"/labs",               app:"//labs"},
 
     // Urls for exposed ajax libraries and static resources
+    {prefix:"/global",             app:lib, script: "global/router.sjs"},
     {prefix:"/permission",         app:lib + "/permission"},
     {prefix:"/template",           app:lib + "/template"},
-
+    
     // Test routing rules to test non-user facing apps (core libraries, etc.)
     {prefix:"/lib/core",           app:lib + "/core"},
     {prefix:"/lib/routing",        app:lib + "/routing"},
@@ -183,7 +181,7 @@ if (acre.current_script === acre.request.script) {
   }
 }
 
-["HostRouter", "GlobalRouter", "PrefixRouter"].forEach(function(name) {
+["HostRouter", "PrefixRouter"].forEach(function(name) {
   var RouterClass = routing[name];
   if (!RouterClass) {
     throw name + " not found in " + lib + "/routing/router";

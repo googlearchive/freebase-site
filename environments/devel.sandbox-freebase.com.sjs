@@ -1,17 +1,16 @@
 /**
- * Routing happens in 3 stages
+ * Routing happens in 2 stages
  *
  * 1. HostRouter - redirect legacy hosts to the canonical domain/host.
- * 2. GlobalRouter -  route a request of the kind /[global]/file_path (e.g., /fss/file_path and /static/file_path).
- * 3. PrefixRouter - the main prefix-based routing rules
+ * 2. PrefixRouter - the main prefix-based routing rules
  */
-
-// This is the error handler that handles all routing and not found errors
-acre.response.set_error_handler("//error.www.trunk.svn.freebase-site.googlecode.dev/index.sjs");
 
 // lib to get routing helpers
 var lib = "//lib.www.trunk.svn.freebase-site.googlecode.dev";
 var routing = acre.require(lib + "/routing/router");
+
+// This is the error handler that handles all routing and not found errors
+acre.response.set_error_handler(lib + "/error/error.mjt");
 
 var rules = {
   "HostRouter": [
@@ -25,8 +24,6 @@ var rules = {
     {host:"metaweb.com", url:"http://www.freebase.com"},
     {host:"www.metaweb.com", url:"http://www.freebase.com"}
   ],
-
-  "GlobalRouter": null,
 
   "PrefixRouter": [
     // Urls for user-facing apps
@@ -46,6 +43,7 @@ var rules = {
     {prefix:"/labs",               app:"//labs"},
 
     // Urls for exposed ajax libraries and static resources
+    {prefix:"/global",             app:lib, script: "global/router.sjs"},
     {prefix:"/permission",         app:lib + "/permission"},
     {prefix:"/template",           app:lib + "/template"},
 
@@ -183,7 +181,7 @@ if (acre.current_script === acre.request.script) {
   }
 }
 
-["HostRouter", "GlobalRouter", "PrefixRouter"].forEach(function(name) {
+["HostRouter", "PrefixRouter"].forEach(function(name) {
   var RouterClass = routing[name];
   if (!RouterClass) {
     throw name + " not found in " + lib + "/routing/router";

@@ -45,11 +45,7 @@ var rules = {
 
     // Urls for exposed ajax libraries and static resources
     {prefix:"/permission",         app:"//lib.www.trunk.svn.freebase-site.googlecode.dev/permission"},
-    {prefix:"/toolbox",            app:"//toolbox.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/cuecard",            app:"//lib.www.trunk.svn.freebase-site.googlecode.dev/cuecard" },
-    {prefix:"/appeditor/services", app:"//lib.www.trunk.svn.freebase-site.googlecode.dev/appeditor-services" },
     {prefix:"/template",           app:"//lib.www.trunk.svn.freebase-site.googlecode.dev/template"},
-    {prefix:"/codemirror",         app:"//lib.www.trunk.svn.freebase-site.googlecode.dev/codemirror"},
 
     // Test routing rules to test non-user facing apps (core libraries, etc.)
     {prefix:"/lib/core",           app:"//lib.www.trunk.svn.freebase-site.googlecode.dev/core"},

@@ -2,7 +2,8 @@
   "ttl": 0,
   "mounts": {
     "libraries": "//2.libraries.apps.freebase.dev",
-    "service": "//service"
+    "service": "//service",
+    "global": "lib/global/router.sjs"
   },
   "handlers": {
     "error": "error/error.mjt",

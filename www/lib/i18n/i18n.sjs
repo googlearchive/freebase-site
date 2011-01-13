@@ -29,6 +29,186 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * @see https://sites.google.com/a/google.com/40-language-initiative/home/language-details
+ */
+var LANGS = [
+
+  // Tier 0
+  {
+    "id" : "/lang/en",
+    "name" : "English"
+  },
+
+  // Tier 1
+  {
+    "id" : "/lang/en-gb",
+    "name" : "British English"
+  },
+  {
+    "id" : "/lang/fr",
+    "name" : "French"
+  },
+  {
+    "id" : "/lang/it",
+    "name" : "Italian"
+  },
+  {
+    "id" : "/lang/de",
+    "name" : "German"
+  },
+  {
+    "id" : "/lang/es",
+    "name" : "Spanish"
+  },
+  {
+    "id" : "/lang/nl",
+    "name" : "Dutch"
+  },
+  {
+    "id" : "/lang/zh",
+    "name" : "Chinese"
+  },
+  {
+    "id" : "/lang/zh-hant",
+    "name" : "Chinese (traditional)"
+  },
+  {
+    "id" : "/lang/ja",
+    "name" : "Japanese"
+  },
+  {
+    "id" : "/lang/ko",
+    "name" : "Korean"
+  },
+  {
+    "id" : "/lang/pt-br",
+    "name" : "Portuguese"
+  },
+  {
+    "id" : "/lang/ru",
+    "name" : "Russian"
+  },
+  {
+    "id" : "/lang/pl",
+    "name" : "Polish"
+  },
+  {
+    "id" : "/lang/tr",
+    "name" : "Turkish"
+  },
+  {
+    "id" : "/lang/th",
+    "name" : "Thai"
+  },
+  {
+    "id" : "/lang/ar",
+    "name" : "Arabic"
+  },
+
+  // Tier 2
+  {
+    "id" : "/lang/sv",
+    "name" : "Swedish"
+  },
+  {
+    "id" : "/lang/fi",
+    "name" : "Finnish"
+  },
+  {
+    "id" : "/lang/da",
+    "name" : "Danish"
+  },
+  {
+    "id" : "/lang/pt-pt",
+    "name" : "Iberian Portuguese"
+  },
+  {
+    "id" : "/lang/ro",
+    "name" : "Romanian"
+  },
+  {
+    "id" : "/lang/hu",
+    "name" : "Hungarian"
+  },
+  {
+    "id" : "/lang/iw",
+    "name" : "Hebrew"
+  },
+  {
+    "id" : "/lang/id",
+    "name" : "Indonesian"
+  },
+  {
+    "id" : "/lang/cs",
+    "name" : "Czech"
+  },
+  {
+    "id" : "/lang/el",
+    "name" : "Greek"
+  },
+  {
+    "id" : "/lang/no",
+    "name" : "Norwegian"
+  },
+  {
+    "id" : "/lang/vi",
+    "name" : "Vietnamese"
+  },
+  {
+    "id" : "/lang/bg",
+    "name" : "Bulgarian"
+  },
+  {
+    "id" : "/lang/hr",
+    "name" : "Croatian"
+  },
+  {
+    "id" : "/lang/lt",
+    "name" : "Lithuanian"
+  },
+  {
+    "id" : "/lang/sk",
+    "name" : "Slovak"
+  },
+  {
+    "id" : "/lang/fil",
+    "name" : "Filipino"
+  },
+  {
+    "id" : "/lang/sl",
+    "name" : "Slovenian"
+  },
+  {
+    "id" : "/lang/sr",
+    "name" : "Serbian"
+  },
+  {
+    "id" : "/lang/ca",
+    "name" : "Catalan"
+  },
+  {
+    "id" : "/lang/lv",
+    "name" : "Latvian"
+  },
+  {
+    "id" : "/lang/uk",
+    "name" : "Ukrainian"
+  },
+  {
+    "id" : "/lang/hi",
+    "name" : "Hindi"
+  },
+  {
+    "id" : "/lang/fa",
+    "name" : "Persian"
+  },
+  {
+    "id" : "/lang/es-419",
+    "name" : "Latin American Spanish"
+  }
+];
+
 var h = acre.require("core/helpers");
 var deferred = acre.require("promise/deferred");
 var freebase = acre.require("promise/apis").freebase;
@@ -202,51 +382,11 @@ var mql = {
   },
 
   /**
-   * cached result of mql.langs()
-   */
-  _langs:null,
-
-  /**
    * Get all freebase/mql lang equivalents (/lang/<code>) of the languages in the 40+ language initiative
    * @see https://sites.google.com/a/google.com/40-language-initiative/home/language-details
    */
   langs: function() {
-    if (!mql._langs) {
-      var tier = [
-        [ // Tier 0
-          "en"
-        ],
-        [ // Tier 1
-          "en-GB", "fr", "it", "de", "es",
-          "nl", "zh", "zh-Hant", "ja", "ko",
-          "pt-BR", "ru", "pl", "tr", "th",
-          "ar"
-        ],
-        [ // Tier 2
-          "sv", "fi", "da", "pt-PT", "ro",
-          "hu", "iw", "id", "cs", "el",
-          "no", "vi", "bg", "hr", "lt",
-          "sk", "fil", "sl", "sr", "ca",
-          "lv", "uk", "hi", "fa", "es-419"
-        ]
-      ];
-      var tiers = tier[0].concat(tier[1]).concat(tier[2]);
-      var q = [{
-        id: null,
-        "id|=": ["/lang/" + id.toLowerCase() for each (id in tiers)],
-        name: null
-      }];
-      // langs don't change, so use as_of_time
-      var today = (new Date());
-      function pad(n){ return n<10 ? '0'+n : n;};
-      var as_of_time = [today.getFullYear(), pad(today.getMonth()+1), pad(today.getDate())].join("-");
-      var langs = acre.freebase.mqlread(q, {as_of_time: as_of_time}).result;
-      langs.sort(function(a,b) {
-        return (a.name || "").toLowerCase() > (b.name || "").toLowerCase();
-      });
-      mql._langs = langs;
-    }
-    return mql._langs;
+    return LANGS;
   },
 
   text_clause: function(lang) {

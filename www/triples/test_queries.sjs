@@ -31,11 +31,13 @@
 
 acre.require('/test/lib').enable(this);
 
+acre.require("lib/test/mox").playback(this, "playback_test_queries.json");
+
 var q = acre.require("queries");
 var h = acre.require("lib/core/helpers");
 
 ["/en/jack_kerouac", "/guid/9202a8c04000641f80000000059587ef"].forEach(function(id) {
-  test("topic", function() {
+  test("topic " + id, function() {
     var result;
     q.topic(id)
       .then(function(topic) {
@@ -103,7 +105,7 @@ test("keys", function() {
   ok(result && result.length);
 });
 
-test("keys with filter", function() {
+test("keys with type filter", function() {
   var result;
   q.keys("/freebase", {type:"/type/namespace"})
     .then(function(keys) {
@@ -113,7 +115,7 @@ test("keys with filter", function() {
   ok(!result.length);
 });
 
-test("keys with filter", function() {
+test("keys with property filter", function() {
   var result;
   q.keys("/freebase", {property:"/type/object/key", limit:5})
     .then(function(keys) {

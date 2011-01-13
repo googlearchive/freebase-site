@@ -5,6 +5,7 @@
     "service": "//service"
   },
   "handlers": {
+    "error": "error/error.mjt",
     "mjt": "handlers/mjt_handler.sjs",
     "css": "handlers/css_handler.sjs",
     "css_manifest": "handlers/css_manifest_handler.sjs",

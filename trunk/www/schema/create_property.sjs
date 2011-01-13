@@ -66,13 +66,12 @@ function create_property(options) {
     return deferred.rejected(e);
   }
 
-  var q;
   var promise;
   if (o.expected_type === "/type/enumeration" && o.enumeration) {
     /*
      * If /type/enumeration, uniqueness needs to match with the enumerated namespace
      */
-    q = {
+    var q = {
       id: o.enumeration,
       type: "/type/namespace",
       unique: null
@@ -98,95 +97,96 @@ function create_property(options) {
   }
   return promise
     .then(function() {
-      q = {
+      var q = {
         id: null,
-        guid: null,
         key: {
           value: o.key,
           namespace: o.type
-        },
+        }
+      };
+      return freebase.mqlread(q)
+        .then(function(env) {
+          if (env.result) {
+            return deferred.rejected("key already exists: " + o.key);
+          }
+          return true;
+        });
+    })
+    .then(function() {
+      var q = {
+        id: null,
+        guid: null,
+        mid: null,
         type: {
           id: "/type/property"
         },
         "/type/property/schema": {
           id: o.type
         },
-        create: "unless_exists"
-      };
-      return freebase.mqlwrite(q, {use_permission_of: o.type})
-        .then(function(env) {
-          return env.result;
-        });
-    })
-    .then(function(created) {
-      if (created.create === "existed") {
-        return deferred.rejected("key already exists: " + o.key);
-      }
-      // cleanup result
-      created.schema = created["/type/property/schema"];
-      q = {
-        id: created.id,
-        type: "/type/property",
+        key: {
+          namespace: o.type,
+          value: o.key
+        },
         name: {
           value: o.name,
-          lang: o.lang,
-          connect: "update"
+          lang: o.lang
         },
-        expected_type: {
-          id: o.expected_type,
-          connect: "update"
+        "/type/property/expected_type": {
+          id: o.expected_type
         },
-        unique: {
-          value: o.unique,
-          connect: "update"
+        "/type/property/unique": {
+          value: o.unique
         },
         "/freebase/property_hints/disambiguator": {
-          value: o.disambiguator,
-          connect: "update"
+          value: o.disambiguator
         },
         "/freebase/property_hints/display_none": {
-          value: o.hidden,
-          connect: "update"
-        }
+          value: o.hidden
+        },
+        create: "unconditional"
       };
+
       if (o.unit) {
-        q.unit = {
-          id: o.unit,
-          connect: "update"
+        q["/type/property/unit"] = {
+          id: o.unit
         };
       }
       if (o.description) {
         q["/freebase/documented_object/tip"] = {
-          value:o.description,
-          lang:o.lang,
-          connect:"update"
+          value: o.description,
+          lang: o.lang
         };
       }
       if (o.master_property) {
-        q.master_property = {
-          id: o.master_property,
-          connect: "update"
+        q["/type/property/master_property"] = {
+          id: o.master_property
         };
       }
       if (o.delegated) {
-        q.delegated = {
-          id: o.delegated,
-          connect: "update"
+        q["/type/property/delegated"] = {
+          id: o.delegated
         };
       }
       if (o.expected_type === "/type/enumeration" && o.enumeration) {
-        q.enumeration = {
-          id: o.enumeration,
-          connect: "update"
+        q["/type/property/enumeration"] = {
+          id: o.enumeration
         };
       }
-      return freebase.mqlwrite(q)
+
+      return freebase.mqlwrite(q, {use_permission_of: o.type})
         .then(function(env) {
           return env.result;
         })
-        .then(function(result) {
+        .then(function(created) {
+          created.schema = created["/type/property/schema"];
+          created.expected_type = created["/type/property/expected_type"];
+          created.unique = created["/type/property/unique"];
+          created.unit = created["/type/property/unit"];
+          created.delegated = created["/type/property/delegated"];
+          created.enumeration = created["/type/property/enumeration"];
           return created;
         });
     });
+
 };
 

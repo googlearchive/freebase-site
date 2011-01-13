@@ -27,15 +27,6 @@
           "route_as": "app",
           "location": "//release.routing.site.freebase.dev"
         } 
-      },
-      {
-        "from": {
-          "path": "/" 
-        },
-        "to": {
-          "route_as": "script",
-          "location": "//environments.svn.freebase-site.googlecode.dev/@ACRE_FREEBASE_SITE_ADDR@"
-        } 
       }
     ]
   }

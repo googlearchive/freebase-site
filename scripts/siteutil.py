@@ -99,9 +99,11 @@ PRIVATE_SVN_URL_ROOT = 'https://svn.metaweb.com/svn/freebase_site'
 ROOT_NAMESPACE = '/freebase/site'
 CONFIG_FILE = 'CONFIG.json.json'
 MANIFEST_FILE = 'MANIFEST.sjs'
+METADATA_FILE = 'METADATA.sjs'
+METADATA_LIB_FILE = 'METADATA.json'
 FIRST_LINE_REQUIRE_CONFIG = 'var config = JSON.parse(acre.require("CONFIG.json").body);'
 
-ACRE_ID_SVN_SUFFIX = ".site.tags.svn.freebase-site.googlecode.dev"
+ACRE_ID_SVN_SUFFIX = ".svn.freebase-site.googlecode.dev"
 ACRE_ID_GRAPH_SUFFIX = ".site.freebase.dev"
 
 class AppFactory:
@@ -119,14 +121,14 @@ class AppFactory:
   #e.g. //4.schema.site.freebase.dev
   def from_path(self, path):
       
-    separator = ACRE_ID_GRAPH_SUFFIX
-    if ACRE_ID_SVN_SUFFIX in path:  
-        separator = ACRE_ID_SVN_SUFFIX
+    #separator = ACRE_ID_GRAPH_SUFFIX
+    #if ACRE_ID_SVN_SUFFIX in path:  
+    #separator = ACRE_ID_SVN_SUFFIX
 
-    parts = path[2:].split(separator)[0].split('.')
+    parts = path[2:].split(ACRE_ID_SVN_SUFFIX)[0].split('.')
 
     #if this was of the form <version or tag>.<app_key>.ID_SUFFIX
-    if len(parts) == 2:
+    if len(parts) == 4:
       #if this was an app tag of the form 16b.<app_key>.ID_SUFFIX
       matches = re.match('(\d+)(\D)$', parts[0])
       if matches:
@@ -138,6 +140,14 @@ class AppFactory:
 
   #return an App object
   def __call__(self, app_key, version=None, tag=None):
+
+    if tag and not version:
+      matches = re.match('(\d+)(\D)$', tag)
+      if matches:
+        return self(app_key, version = matches.group(1), tag=tag)
+      else:
+        return self.c.error('Could not create an app object out of app_key: %s app_tag: %s without an app version' % (app_key, tag))
+
     n = "%s:%s:%s" % (app_key, version or 'trunk', tag or 'none')
     if self.apps.get(n):
       return self.apps[n]
@@ -167,161 +177,57 @@ class App:
     self.done_static_generation = False
 
   def __str__(self):
-    return "%s:%s:%s" % (self.app_key, self.version or 'trunk', self.tag or 'none')
+    if self.tag:
+        return "%s:%s:%s" % (self.app_key, self.version, self.tag)
+    elif self.version:
+        return "%s:%s" % (self.app_key, self.version)
+    else:
+        return "%s:trunk" % self.app_key
 
   def path(self):
 
     if self.tag:
-      #return "//%s.%s.site.freebase.dev" % (self.tag, self.app_key)
-      return "//%s.%s%s" % (self.tag, self.app_key, ACRE_ID_SVN_SUFFIX)
+      return "//%s.%s.www.tags%s" % (self.tag, self.app_key, ACRE_ID_SVN_SUFFIX)
     elif self.version:
-      return "//%s.%s%s" % (self.version, self.app_key, ACRE_ID_GRAPH_SUFFIX)
+      return "//%s.%s.www.branches%s" % (self.version, self.app_key, ACRE_ID_SVN_SUFFIX)
     else:
-      return "//%s%s" % (self.app_key, ACRE_ID_GRAPH_SUFFIX)
+      return "//%s.www.trunk%s" % (self.app_key, ACRE_ID_SVN_SUFFIX)
+
 
   def app_dir(self):
       
-      id_suffix = ACRE_ID_GRAPH_SUFFIX
-      if ACRE_ID_SVN_SUFFIX in self.path():
-          id_suffix = ACRE_ID_SVN_SUFFIX
-          
-      parts = id_suffix[1:].split('.')[0:-1]
-      parts.reverse()
+    parts = ACRE_ID_SVN_SUFFIX[1:].split('.')[0:-1]
+    parts.reverse()
 
-      parts.append(self.app_key)
-      if self.tag:
-        parts.append(self.tag)
-      elif self.version:
-        parts.append(self.version)
-
-      return "/".join(parts)
-
-  def type_for_extension(self, ext):
-    ct = FILE_TYPES.get(ext, 'text/plain')
-
-    if ct == 'text/plain' and ext == 'sjs':
-      return (ct, 'acre_script')
-    elif ct == 'text/plain' and ext == 'mql':
-      return (ct, 'mqlquery')
-    elif ct == 'text/plain' and ext == 'mjt':
-      return (ct, 'mjt')
-    elif ct == 'text/plain':
-      return (ct, 'passthrough')
-    elif ct.startswith('image'):
-      return (ct, 'binary')
+    if self.tag:
+      parts.extend(['tags', 'www', self.app_key, self.tag])
+    elif self.version:
+      parts.extend(['branches', 'www', self.app_key, self.version])
     else:
-      return (ct, 'passthrough')
+      parts.extend(['trunk', 'www', self.app_key])
 
+    return "/".join(parts)
 
-  def get_local_app(self, inject_config=True):
-
-    c = self.context
-    metadata = {}
-    def handle_file(f):
-        script = { 'id' : None, 'name' : None, 'acre_handler' : None, 'content_type' : None, 'contents': None, 'extension': None}
-        fn, ext = f.rsplit('.', 1)
-        script['id'] = self.app_id + '/' + c.quotekey(fn)
-        script['extension'] = ext
-        script['name'] = c.quotekey(fn)
-        script['unquoted_filename'] = fn
-        script['filehandle'] = file(os.path.join(self.svn_path(), f))
-        script['contents'] = script['filehandle'].read()
-        script['SHA256'] = hashlib.sha256(script['contents']).hexdigest()
-        ct, handler = self.type_for_extension(ext)
-        script['acre_handler'] = handler
-        script['content_type'] = ct
-
-        return script
-
-    metadata['files'] = {}
-    metadata['ignored_files'] = []
-
-    # Skip . .. .xxxx xxx.sh and directories
-
-    for f in os.listdir(self.svn_path()):
-      basename, extension = os.path.splitext(f)
-
-      if extension in ['.sh'] or f.startswith('.') or os.path.isdir(os.path.join(self.svn_path(), f)) or \
-             f[-1] == '~' or basename[len(basename)-4:] in ['.mql', '.sjs', '.mjt']:
-        metadata['ignored_files'].append(f)
-        continue
-
-      d = handle_file(f)
-      metadata['files'][d['name']] = d
-
-    manifest_filename = c.quotekey(MANIFEST_FILE.rsplit('.', 1)[0])
-    config_filename = c.quotekey(CONFIG_FILE.rsplit('.', 1)[0])
-
-    manifest_contents = metadata['files'].get(manifest_filename, {}).get('contents', None)
-    config_contents = metadata['files'].get(config_filename, {}).get('contents', None)
-
-    #if we can and should inject config file in the manifest file
-    if inject_config and manifest_contents and config_contents and manifest_contents.split('\n')[0] == FIRST_LINE_REQUIRE_CONFIG:
-      metadata['files'][manifest_filename]['contents'] = '\n'.join(['var config=' + config_contents + ';'] + manifest_contents.split('\n')[1:])
-      metadata['files'][manifest_filename]['SHA256'] = hashlib.sha256(metadata['files'][manifest_filename]['contents']).hexdigest()
-    return metadata
-
-  def get_app_diff(self,app):
+  def get_app_files(self):
     '''
-    Creates a diff between the local files of this  app and the graph stat of the app passed as an argument.
+    returns a list of filenames routed at the top of the app
+    e.g. ['index.mjt', 'mydir/foobar.sjs']
     '''
+    files = []
+    def scan_directory(directory = ''):
+      
+      for f in os.listdir(os.path.join(self.svn_path(), directory)):
+        if f.startswith('.'):
+          continue
 
-    #the files we need to delete either because they are not in the local directory
-    #or because their content-type or handler has changed
-    delete_files = {}
-    #the files we need to push because they have changed since the last push
-    push_files = {}
+        if os.path.isdir(os.path.join(self.svn_path(), directory, f)):
+          scan_directory(os.path.join(directory, f))
 
+        files.append(os.path.join(directory, f))
+      
 
-    try:
-      graph_app = app.get_graph_app()
-    except:
-      graph_app = { 'files' : {} }
-
-    local_app = self.get_local_app()
-
-    graph_files, local_files = graph_app.get('files', {}), local_app.get('files', {})
-
-
-
-    #helper for comparing handlers and content type
-    def different_handler_and_content_type(graph_stat, local_stat):
-      for check in ['content_type', 'acre_handler']:
-        if graph_stat[check] != local_stat[check]:
-          return "%s updated" % check
-
-      return False
-
-    #first iterate through the graph files and delete any file that does not exist locally
-    for filename in graph_files.keys():
-      if not filename in local_files.keys():
-        delete_files[filename] = { 'reason' : 'not in local directory' }
-
-    #now iterate through the local files
-    for filename, local_stat in local_files.iteritems():
-        #if it's a new file, just push it
-      if not graph_files.get(filename):
-        local_stat['reason'] = 'new file'
-        push_files[filename] = local_stat
-        continue
-
-      graph_stat = graph_files[filename]
-
-      #if the handler or content type have changed, we need to delete the old file and re-push
-      different = different_handler_and_content_type(graph_stat, local_stat)
-      if different:
-        delete_files[filename] = { 'reason' : different }
-        local_stat['reason'] = different
-        push_files[filename] = local_stat
-        break
-
-      #now check if the file contents have changed
-      if graph_stat['SHA256'] != local_stat['SHA256']:
-        local_stat['reason'] = 'changed content'
-        push_files[filename] = local_stat
-
-    return (delete_files, push_files)
-
+    scan_directory()
+    return files
 
   def last_resource_revision(self):
     '''
@@ -353,257 +259,112 @@ class App:
         continue
 
       if self.context.is_int(parts[3]) and int(parts[3]) > revision:
-        revision = int(parts[3])
+        revision = sint(parts[3])
 
     return revision
+
+  def statify_css(self, filename):
+    '''
+    For a given filename, it will call the local acre instance
+    to generate the concatanated css file, minify the result, 
+    and then replace the file with the new contents in-place in the file system. 
+    '''
+
+    c = self.context
+
+    file_url = "%s/%s" % (self.static_url(), filename)
+    #write back to the *svn checkout directory - not to the local acre directory*
+    response = c.fetch_url(file_url)
+    if not response:
+      return c.error("Failed to get valid response from acre for %s" % file_url)
+
+    file_contents = LICENSE_PREAMBLE + cssmin(''.join(response))
+    return self.write_file(filename, file_contents)
+
+  def statify_js(self, filename):
+    '''
+    For a given filename, it will call the local acre instance
+    to generate the concatanated js file, run the result through the closure compiler
+    and then replace the contents of the file in-place in the file system. 
+    '''
+
+    c = self.context
+    file_url = "%s/%s" % (self.static_url(), filename)
+    #write back to the *svn checkout directory - not to the local acre directory*
+    response = c.fetch_url(file_url)
+    if not response:
+        return c.error("Failed to get valid response from acre for url %s - aborting" % file_url)
+
+    self.write_file(filename, ''.join(response))
+    js_path = os.path.join(self.svn_path(), filename)
+    status, temppath = mkstemp()
+    fh = open(temppath, 'w')
+    cmd = [JAVA] + JAVA_OPTS + ["--js", js_path]
+    subprocess.call(cmd, stdout=fh)
+    fh.close()
+    fh = open(temppath)
+    file_contents = LICENSE_PREAMBLE + fh.read()
+    fh.close()
+    return self.write_file(filename, file_contents)
 
 
   def statify(self):
 
     c = self.context
-    #we have already done this for this app in this session
-    if self.done_static_generation:
-      return True
 
-    #copy from the svn checkout directory to the appengine directory
+    #this will make sure that the manifest handler will parse .mf.* files
+    self.update_handlers(static = False)
     self.copy_to_acre_dir()
+    
+    lib_app = self.lib_dependency()
+    
+    if lib_app:
+      lib_app.copy_to_acre_dir()
 
-    #reason we are checking again is that there are apps that are
-    #static dependencies of other apps but they don't actually have
-    #bundles of their own. template depending on permission is an example
-    #Even though we WANT permission to be copied to the appengine directory
-    #before template, we don't actually need to generate any static bundles for it
-    if not self.needs_static_bundle():
-      return True
+    #app files will be a list of file paths starting at the app route 
+    #i.e. app.svn_path()/<file> is the actual path on disk
+    app_files = self.get_app_files()
 
     c.log('Creating static bundles for %s' % self, color=c.BLUE)
 
-    (r, config) = self.read_file(CONFIG_FILE, isjson=True, warn=False)
-
-    if not (r and config):
-      self.done_static_generation = True
-      return True
-
     static_files = []
-    #bundle_name is like 'homepage.mf.css'
-    for bundle_name in config.get('stylesheet', []):
-        #get the bundle from acre 
-        static_files.append(bundle_name)
-        file_url = "%s/MANIFEST/%s?use_static_urls=1" % (self.static_url(), bundle_name)
-        #write back to the *svn checkout directory - not to the local acre directory*
-        response = c.fetch_url(file_url)
-        if not response:
-          return c.error("Failed to get valid response from acre for url %s - aborting" % file_url)
+    for filename in app_files:
 
-        file_contents = LICENSE_PREAMBLE + cssmin(''.join(response))
-        #acre needs double extensions for filesystem text files
-        self.write_file("%s.css" % bundle_name, file_contents)
+      done = False
 
-    for bundle_name in config.get('javascript', []):
-        static_files.append(bundle_name)
-        file_url = "%s/MANIFEST/%s" % (self.static_url(), bundle_name)
-        #write back to the *svn checkout directory - not to the local acre directory*
-        response = c.fetch_url(file_url)
-        if not response:
-          return c.error("Failed to get valid response from acre for url %s - aborting" % file_url)
+      if filename.endswith(".mf.css"):
+        done = self.statify_css(filename)
+        if not done:
+          return c.error('Failed to generate static files, aborting.')
 
-        self.write_file(bundle_name, ''.join(response))
-        js_path = os.path.join(self.svn_path(), bundle_name)
-        status, temppath = mkstemp()
-        fh = open(temppath, 'w')
-        cmd = [JAVA] + JAVA_OPTS + ["--js", js_path]
-        subprocess.call(cmd, stdout=fh)
-        fh.close()
-        fh = open(temppath)
-        file_contents = LICENSE_PREAMBLE + fh.read()
-        fh.close()
-        self.write_file("%s.js" % bundle_name, file_contents)
+      elif filename.endswith(".mf.js"):
+        done = self.statify_js(filename)
+        if not done:
+          return c.error('Failed to generate static files, aborting.')
+        
+      if done:
+        static_files.append(filename)
 
+    
+    if not len(static_files):
+        return c.log('No static files generated')
 
     if len(static_files):
-      config['static'] = True
-      self.write_file(CONFIG_FILE, json.dumps(config, indent=2))
+      self.update_handlers(static = True)
     
     (r, result) = self.svn_commit(msg = 'created static files %s' % ' '.join(static_files))
 
     if not r:
-        return c.error("Failed to commit new static files and CONFIG file for %s" % self)
-
-    self.done_static_generation = True
-    return True
-
-
-  def needs_static_bundle(self):
-    '''Determine if this app qualifies for static bundle generation,
-    and if it doesn, whether we need to create a new one.
-
-    This function does NOT take into account app dependencies.
-
-    An app qualifies if:
-    - it has a css/js declaration in its config file
-    - it does not have a static bundle generated since the last update
-    of its resource files / CONFIG
-
-    Returns True or False
-    You can call this as many times for a given app, it will remember the last calculated result.
-    '''
-
-    c = self.context
-
-    (r, config) = self.read_file(CONFIG_FILE, isjson=True, warn=False)
-
-    #check if we are already done here
-    if r and config and 'static' in config:
-        return False
-
-    if not self.needs_static_generation:
-      return False
-
-    local_app = self.get_local_app(inject_config = False)
-
-    needs = False
-
-    if not needs:
-      dependencies = self.get_resource_dependencies()
-      if dependencies:
-        for res in ['javascript', 'stylesheet']:
-          if len(dependencies.get(res, {}).keys()):
-            needs = True
-            break
-
-    if not needs:
-      self.needs_static_generation = False
-      return False
+        return c.error("Failed to commit new static files for %s" % self)
 
     return True
-
-  def get_code_dependencies_list(self):
-    '''Return a list of apps that this app has code dependencies on.
-    '''
-
-    apps = set()
-    apps.add(self)
-
-    def create_app_list(app, al):
-
-      dependencies = app.get_dependencies()
-      if not dependencies:
-        return
-
-      for label, d_app in dependencies.iteritems():
-        if d_app in al:
-          continue
-
-        al.add(d_app)
-        create_app_list(d_app, al)
-
-    create_app_list(self, apps)
-    return apps
-
-
-  def get_static_dependencies_list(self):
-    '''Return a list of apps that this app has static dependencies on.
-    '''
-
-    #ordering is important, so we can't use sets here
-    apps = []
-
-    if not self.needs_static_bundle():
-      return apps
-
-    apps = [self]
-
-    def create_app_list(app, al):
-
-      dependencies = app.get_resource_dependencies()
-
-      #if we 've already seen this app, or it does not need a static bundle
-      #then we can ommit it from the list of apps
-      for dep in ['stylesheet', 'javascript']:
-        if not dependencies.get(dep, None):
-            continue
-
-        for label, d_app in dependencies[dep].iteritems():
-          if d_app in al or not d_app.needs_static_bundle():
-            continue
-
-          #prepend the dependency
-          al.insert(0, d_app)
-
-          if d_app.app_key != 'routing':
-            create_app_list(d_app, al)
-
-    create_app_list(self, apps)
-
-    return apps
-
-
-  def get_resource_dependencies(self):
-
-    #this will hold the resource dependencies
-    dependencies = {}
-    #this will hold the app dependencies of this app
-    #i.e. usually just core
-    app_dependencies = {}
-    #this will hold the dependencies of the core app
-    core_dependencies = {}
-
-    (r, file_contents) = self.read_file(CONFIG_FILE, isjson=True, warn=False)
-
-    if not (r and file_contents):
-      return dependencies
-
-    #get the core version
-    version = None
-    app_dependencies = self.get_dependencies()
-    if app_dependencies and 'core' in app_dependencies:
-      core_dependencies = app_dependencies['core'].get_dependencies()
-      version = app_dependencies['core'].version
-
-
-    for res in ["javascript", "stylesheet"]:
-
-      dependencies[res] = {}
-      if res not in file_contents.keys():
-        continue
-      #foobar.mf.css -> [ file1, file2, ....]
-      for label, files in file_contents[res].iteritems():
-        for filename in files:
-          #css_files might be a string (e.g. 'foobar_bg.css') or a label, string array (e.g. ['jqueryui', 'jqueryui.css'])
-          #there is a dependency to another app only for the second format
-          if isinstance(filename, list):
-            #the label was found in the core app configuration
-            if filename[0] in core_dependencies.keys():
-              dependencies[res][filename[0]] = core_dependencies[filename[0]]
-            #the label was not found in core, and was not found in the direct dependencies of this app
-            elif filename[0] not in file_contents['apps'].keys():
-              return self.context.error('The %s declaration %s in %s refers to label %s that is not present in the apps section of the configuration file or the core configuration file' % (res, label, self, filename[0]))
-
-    return dependencies
-
-  def get_dependencies(self, config = None):
-
-    dependencies = {}
-
-    if not config:
-        (result, config) = self.read_file(CONFIG_FILE, isjson=True)
-
-    self.context.verbose('Could not open CONFIG file for %s' % self)
-
-    if not config:
-      return False
-
-    if 'apps' in config.keys():
-      for label, path in config['apps'].iteritems():
-        if not ((ACRE_ID_GRAPH_SUFFIX in path or ACRE_ID_SVN_SUFFIX in path) and path.startswith('//')) :
-          continue
-
-        dependencies[label] = AppFactory(self.context).from_path(path)
-
-    return dependencies
 
 
   def read_file(self, filename, isjson=False, warn=True):
+
+    svn_path = self.svn_path()
+    if not svn_path:
+        return self.context.error('Cannot checkout the app from SVN')
 
     filename = "%s/%s" % (self.svn_path(), filename)
     contents = ''
@@ -623,6 +384,7 @@ class App:
       except:
         if warn:
           self.context.error('Cannot JSON parse the config file %s' % filename)
+        fd.close()
         return (False, contents)
 
     fd.close()
@@ -639,6 +401,7 @@ class App:
       fd = open(full_filename, 'w')
     except:
       self.context.warn('Cannot open file %s for writing' % filename)
+      fd.close()
       return False
 
     fd.write(contents)
@@ -654,31 +417,124 @@ class App:
 
     return True
 
+  def update_lib_dependency(self, app):
+    '''
+    update the dependency to the lib app of this app
+    '''
+    metadata = self.read_metadata()
 
-  def update_dependency(self, label, app):
+    #fail silently if there is no metadata dependencies to update
+    if not metadata or not ('mounts' in metadata.keys() and 'lib' in metadata['mounts'].keys()):
+        return False
 
-    (result, file_contents) = self.read_file(CONFIG_FILE, isjson=True)
+    metadata['mounts']['lib'] = app.path()
+
+    #stamp the metadata file with additional useful SVN info
+    metadata['app_key'] = self.app_key
+    metadata['app_version'] = self.version
+    metadata['app_tag'] = self.tag
+
+    return self.write_metadata(metadata)
+
+  def update_handlers(self, static = False, cache_forever = False):
+    '''
+    updates the metadata file to use the appropriate handlers for static files
+    if static is False, it will use the manifest handlers for outputing mf.* style files dynamically
+      this is the mode that we need when we generate static files when we create a tag
+    if static is True, it will use the static handler for outputing pre-generated mf files and setting cache headers
+      this is the mode that we need in production (i.e. in tagged apps)
+    '''
+
+    metadata = self.read_metadata()
+    if not metadata:
+        return self.context.error('Cannot open metadata file in order to update handlers')
+
+    handlers =  {
+        "mf.css": {
+            "handler": "css_manifest"
+            },
+        "mf.js": {
+            "handler": "js_manifest"
+            }
+        }
+    
+    if static:
+      for file_extension, v in handlers.iteritems():
+        v['handler'] = 'tagged_static'
+      for file_extension in IMG_EXTENSIONS:
+          handlers[file_extension[1:]] = { 'handler' : 'tagged_static' }
+
+    if cache_forever:
+        metadata['ttl'] = -1
+
+    if metadata.get('extensions'):
+      metadata['extensions'].update(handlers)
+    else:
+      metadata['extensions'] = handlers
+
+    self.write_metadata(metadata)
+
+  def lib_dependency(self):
+
+    #the lib app does not have a dependency on itself
+    if self.app_key == 'lib':
+        return None
+
+    metadata = self.read_metadata()
+
+    #check if there is a lib dependency in the metadata['mounts'] dictionary
+    if not metadata or not ('mounts' in metadata.keys() and 'lib' in metadata['mounts'].keys()):
+        return None
+
+    #return the lib app object by constructing it from the app path
+    return AppFactory(self.context).from_path(metadata['mounts']['lib'])
+
+
+  def is_lib(self):
+      return self.app_key == 'lib'
+
+  def read_metadata(self, full_file_contents = False):
+
+    filename = METADATA_FILE
+    if self.is_lib():
+        filename = METADATA_LIB_FILE
+        
+    (result, file_contents) = self.read_file(filename, isjson=False)
     if not result:
       return False
 
-    if not file_contents:
-      file_contents = { 'apps' : {} }
 
-    if 'apps' in file_contents.keys():
-      if file_contents['apps'].get(label, None) == app.path():
-        return False
+    contents = file_contents
+    before = ''
+    after = ''
 
-    file_contents['apps'][label] = app.path()
-    self.context.verbose('Updating %s config: %s --> %s' % (self.app_key, label, app.path()))
+    if not self.is_lib():
+        res = re.match('(var METADATA\s?=\s?)([^;]*)(.*)', file_contents, re.DOTALL)
+        if not res:
+            return self.context.error('Cannot parse metadata file for %s' % self)
 
-    #write the current app settings (key, version, tag) in the CONFIG file
-    file_contents['app_key'] = self.app_key
-    file_contents['app_version'] = self.version
-    file_contents['app_tag'] = self.tag
+        before, contents, after = res.group(1), res.group(2), res.group(3)
 
-    self.write_file(CONFIG_FILE, json.dumps(file_contents, indent=2))
+    try: 
+      metadata = json.loads(contents)
+    except:
+      return self.context.error('Cannot convert metadata file of %s to json' % self)
 
-    return True
+
+    if full_file_contents:
+        return metadata, before, after
+
+    return metadata
+
+  def write_metadata(self, metadata):
+
+    _, before, after = self.read_metadata(full_file_contents = True)
+
+    filename = METADATA_FILE
+    if self.is_lib():
+        filename = METADATA_LIB_FILE
+
+    return self.write_file(filename, ''.join([before, json.dumps(metadata, indent=2), after]))      
 
 
   def last_tag(self):
@@ -721,22 +577,6 @@ class App:
     matches = re.match('\d+(\D)$', last_tag)
     return "%s%s" % (self.version, chr(ord(matches.group(1)) + 1))
       
-  def get_tag(self, tag):
-    '''
-    Returns an app object if the tag exists for this app
-    or False if it does not
-    '''
-
-    tagged_app = AppFactory(self.context)(self.app_key, version=self.version, tag=tag)
-
-    #this will fail if it's not in svn
-    r = tagged_app.svn_path(warn=False)
-    
-    if not r:
-        return False
-
-    return tagged_app
-
   def create_tag(self, tag=None):
     '''
     Creates a new tag directory and copies the branched app there
@@ -752,7 +592,7 @@ class App:
 
     target_app = AppFactory(c)(self.app_key, version=self.version, tag=tag)
 
-    cmd = ['svn', 'copy', self.svn_url(), target_app.svn_url(), '--parents', '-m', '"sitecfg: %s"' % msg, '--username', c.googlecode_username, '--password', c.googlecode_password]
+    cmd = ['svn', 'copy', self.svn_url(), target_app.svn_url(), '--parents', '-m', '"sitedeploy: %s"' % msg, '--username', c.googlecode_username, '--password', c.googlecode_password]
     (r, output) = self.context.run_cmd(cmd)
 
     if not r:
@@ -869,15 +709,15 @@ class App:
     c = self.context
 
     if allversions:
-        return '{svn_url_root}/branches/site/{app}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key)
+        return '{svn_url_root}/branches/www/{app}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key)
     elif alltags:
-        return '{svn_url_root}/tags/site/{app}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key)
+        return '{svn_url_root}/tags/www/{app}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key)
     elif not self.version:
-        return '{svn_url_root}/trunk/site/{app}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key)
+        return '{svn_url_root}/trunk/www/{app}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key)
     elif not self.tag:
-        return '{svn_url_root}/branches/site/{app}/{version}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key, version=self.version)
+        return '{svn_url_root}/branches/www/{app}/{version}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key, version=self.version)
     else:
-        return '{svn_url_root}/tags/site/{app}/{tag}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key, tag=self.tag)        
+        return '{svn_url_root}/tags/www/{app}/{tag}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key, tag=self.tag)        
 
 
   #will copy the app from its checked out directory to the target directory
@@ -981,7 +821,6 @@ class Context():
 
       try:
         from freebase.api import HTTPMetawebSession, MetawebError
-        from freebase.api.mqlkey import quotekey, unquotekey
       except ImportError:
         return self.error("You need to install freebase-python for this operation. http://code.google.com/p/freebase-python/source/checkout")
 
@@ -1013,81 +852,6 @@ class Context():
       return HTTPMetawebSession(service['www'], acre_service_url=service['acre'])
 
     return False
-
-
-  ######
-  # quotekey() and unquotekey() copied here from freebase-python/freebase/api/mqlkey
-  #######
-
-
-  def quotekey(self, ustr):
-    """
-    quote a unicode string to turn it into a valid namespace key
-    copied from freebase-python/freebase/api/mqlkey.py    
-    """
-    valid_always = string.ascii_letters + string.digits
-    valid_interior_only = valid_always + '_-'
-
-    if isinstance(ustr, str):
-        s = unicode(ustr,'utf-8')        
-    elif isinstance(ustr, unicode):
-        s = ustr
-    else:
-        raise ValueError, 'quotekey() expects utf-8 string or unicode'
-
-    output = []
-    if s[0] in valid_always:
-        output.append(s[0])
-    else:
-        output.append('$%04X' % ord(s[0]))
-
-    for c in s[1:-1]:
-        if c in valid_interior_only:
-            output.append(c)
-        else:
-            output.append('$%04X' % ord(c))
-
-    if len(s) > 1:
-        if s[-1] in valid_always:
-            output.append(s[-1])
-        else:
-            output.append('$%04X' % ord(s[-1]))
-
-    return str(''.join(output))
-
-
-  def unquotekey(self, key, encoding=None):
-    """
-    unquote a namespace key and turn it into a unicode string
-    copied from freebase-python/freebase/api/mqlkey.py
-    """
-
-    valid_always = string.ascii_letters + string.digits
-
-    output = []
-    i = 0
-    while i < len(key):
-        if key[i] in valid_always:
-            output.append(key[i])
-            i += 1
-        elif key[i] in '_-' and i != 0 and i != len(key):
-            output.append(key[i])
-            i += 1
-        elif key[i] == '$' and i+4 < len(key):
-            # may raise ValueError if there are invalid characters
-            output.append(unichr(int(key[i+1:i+5],16)))
-            i += 5
-        else:
-            raise ValueError, "unquote key saw invalid character '%s' at position %d" % (key[i], i)
-
-    ustr = u''.join(output)
-    
-    if encoding is None:
-        return ustr
-
-    return ustr.encode(encoding)
-
-
 
 
   def set_current_app(self, app):
@@ -1124,7 +888,7 @@ class Context():
     if color:
       start_color, end_color = color, self.ENDC
 
-    print '%s[%s:%s:%s] %s%s' % (start_color, self.action, self.current_app or '', subaction, msg, end_color)
+    print '%s[%s:%s%s] %s%s' % (start_color, self.action, self.current_app or '', subaction, msg, end_color)
 
     return True
 
@@ -1146,33 +910,6 @@ class Context():
       return False
 
     
-
-  def is_library_app(self, app_key):
-      library_apps = AppFactory(self)('core').get_dependencies()
-      
-      for label, d_app in library_apps.iteritems():
-          if app_key == d_app.app_key:
-              return True
-
-      return False
-
-    
-  def print_app_diff(self, delete_files, push_files, ignored_files=[]):
-
-    for filename in ignored_files:
-      print "?\t%s" % filename
-    for filename,d in delete_files.iteritems():
-      if filename not in push_files.keys():
-        print "R\t%s\t(%s)" % (self.unquotekey(filename), d.get('reason', ''))
-
-    for filename,d in push_files.iteritems():
-      if filename in delete_files.keys() or d.get('reason', '') == 'changed content':
-        print "M\t%s\t(%s)" % (d.get('unquoted_filename'), d.get('reason', ''))
-      else:
-        print "A\t%s\t(%s)" % (d.get('unquoted_filename'), d.get('reason', ''))
-
-    sys.stdout.flush()
-
   def run_cmd(self, cmd, name='cmd', exit=True, warn=True):
 
     self.log(' '.join(cmd), subaction=name)
@@ -1186,26 +923,57 @@ class Context():
     return (True, stdout)
 
 
+  def duration_human(self, date):
+    seconds = date.seconds
+    seconds = long(round(seconds))
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    days, hours = divmod(hours, 24)
+    years, days = divmod(days, 365.242199)
+ 
+    minutes = long(minutes)
+    hours = long(hours)
+    days = long(days)
+    years = long(years)
+ 
+    duration = []
+    if years > 0:
+        duration.append('%d year' % years + 's'*(years != 1))
+    else:
+        if days > 0:
+            duration.append('%d day' % days + 's'*(days != 1))
+        if hours > 0:
+            duration.append('%d hour' % hours + 's'*(hours != 1))
+        if minutes > 0:
+            duration.append('%d minute' % minutes + 's'*(minutes != 1))
+        if seconds > 0:
+            duration.append('%d second' % seconds + 's'*(seconds != 1))
+    return ' '.join(duration)
+
+
+
   def fetch_url(self,url, isjson=False, tries=3):
 
     #request = urllib2.Request(url, headers = {'Cache-control': 'no-cache' })
     request = urllib2.Request(url)
-
+    contents = None
     while tries > 0:
       try:
         self.log(url, 'fetchurl')
         contents = urllib2.urlopen(request, timeout=30).readlines()
         break
-      except:
+      except urllib2.HTTPError as exc:
         self.error(url, subaction='fetch url error')
-        if tries > 1:
+        if tries:
           tries -= 1
-          self.log('trying again....', subaction='fetch url error')
-        else:
-          return None
+          self.log('%s\nTrying again....' % ''.join(exc.readlines()), subaction=exc.msg)
+      except urllib2.URLError as exc:
+        self.error(url, subaction='fetch url error')
+        if tries:
+          tries -= 1
+          self.log('Trying again....')
 
-
-    if isjson:
+    if isjson and contents:
         return json.loads(''.join(contents))
 
     return contents
@@ -1418,7 +1186,11 @@ class Acre:
   def is_running(self):
 
     c = self.context
-    url = "http://%s/acre/status" % self.url()
+    acre_url = self.url()
+    if not acre_url:
+        return False
+
+    url = "http://%s/acre/status" % acre_url
 
     response = c.fetch_url(url)
 
@@ -1437,6 +1209,9 @@ class Acre:
     #this must be a freebaseapps-style url so that individual app versions can be addressed as
     #http://<version>.<app>.dev.<acre_host>:<acre_port>
     acre_config = self.read_config()
+    if not acre_config:
+        return False
+
     ak = acre_config.keys()
 
     if 'ACRE_PORT' in ak and 'ACRE_HOST_BASE' in ak:

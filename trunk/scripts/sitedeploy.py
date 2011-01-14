@@ -315,6 +315,7 @@ class ActionLink:
       return c.error('There was an error linking the released version of the routing app to its trunk version')
 
     '''
+    GetAcre(c).build()
     return True
 
 
@@ -470,6 +471,11 @@ class ActionSetup:
 
     if not r:
       return c.error('Link failed.')
+
+    c.log('In order to run the freebase site:', color=c.BLUE)
+    c.log('\t1. Run the acre server: \n cd %s; ./acre run' % c.options.acre_dir)
+    c.log('\t2. Visit http://devel.sandbox-freebase.com:%s' % c.options.acre_port)
+
 
     return c.log('Setup has finished successfully.')
 
@@ -911,6 +917,8 @@ def main():
                     help='the version of lib you want to tie this app branch to')
 
   (options, args) = parser.parse_args()
+
+  
 
   #there was no action specified
   if not len(args) or args[0] not in [a[0] for a in valid_actions]:

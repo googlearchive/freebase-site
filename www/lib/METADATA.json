@@ -11,7 +11,8 @@
     "css": "handlers/css_handler.sjs",
     "css_manifest": "handlers/css_manifest_handler.sjs",
     "js_manifest": "handlers/js_manifest_handler.sjs",
-    "tagged_static": "handlers/tagged_static_handler.sjs"
+    "tagged_static": "handlers/tagged_static_handler.sjs",
+    "ws": "handlers/ws_handler.sjs"
   },
   "extensions": {
     "css": {
@@ -25,6 +26,9 @@
     },
     "mf.js": {
       "handler": "js_manifest"
+    },
+    "ws": {
+      "handler": "ws"
     }
   },
   "static_base": "",

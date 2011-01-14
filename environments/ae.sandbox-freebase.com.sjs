@@ -48,8 +48,8 @@ var rules = {
     {prefix:"/template",           app:lib + "/template"},
 
     // Urls for administrative tools
-    {prefix:"/app/admin",          app:"admin"},
-    {prefix:"/app/tmt",            app:"tmt"},
+    {prefix:"/admin",              app:"//admin.www.trunk.svn.freebase-site.googlecode.dev"},
+    {prefix:"/app/tmt",            app:"//tmt"},
 
     //
     // Redirects for legacy urls

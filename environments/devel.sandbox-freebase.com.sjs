@@ -57,8 +57,8 @@ var rules = {
     {prefix:"/lib/validator",      app:lib + "/validator"},
 
     // Urls for administrative tools
-    {prefix:"/app/admin",          app:"admin"},
-    {prefix:"/app/tmt",            app:"tmt"},
+    {prefix:"/admin",              app:"//admin.www.trunk.svn.freebase-site.googlecode.dev"},
+    {prefix:"/app/tmt",            app:"//tmt"},
 
     //
     // Redirects for legacy urls
@@ -195,6 +195,6 @@ if (acre.current_script === acre.request.script) {
 });
 
 // TODO: not found
-acre.route("//error.www.trunk.svn.freebase-site.googlecode.dev/index.sjs");
+acre.route(lib + "/error/error.mjt");
 
 

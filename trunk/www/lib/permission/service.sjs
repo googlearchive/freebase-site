@@ -31,7 +31,7 @@
 
 
 var h = acre.require("core/helpers");
-var queries = acre.require("queries/queries");
+var queries = acre.require("permission/queries");
 
 var api = {
   has_permission: function(args) {

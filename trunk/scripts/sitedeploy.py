@@ -154,6 +154,7 @@ class ActionSetupAcre:
 #checkout a site
 class ActionSetupSite:
 
+
   def __init__(self, context):
     self.context = context
 
@@ -422,12 +423,38 @@ class ActionStatic:
 
 class ActionSetup:
 
+  ACRE_DIR_DEFAULT = '~/acre'
+  SITE_DIR_DEFAULT = '~/freebase-site'
+
   def __init__(self, context):
     self.context = context
+
+  def get_directory_locations(self):
+
+    c = self.context
+
+    acre_dir = c.options.acre_dir or self.ACRE_DIR_DEFAULT
+    site_dir = c.options.site_dir or self.SITE_DIR_DEFAULT
+
+    name = raw_input("Enter the directory where you want to install acre (%s):" % acre_dir)
+    if not name:
+      name = acre_dir
+      
+    c.options.acre_dir = os.path.expanduser(name.strip())
+
+    name = raw_input("Enter the directory where you want to install freebase-site (%s):" % site_dir)
+    if not name:
+      name = site_dir
+      
+    c.options.site_dir = os.path.expanduser(name.strip())
+
 
   def __call__(self):
 
     c = self.context
+
+    if not (c.options.site_dir and c.options.acre_dir):
+      self.get_directory_locations()
 
     r = ActionSetupAcre(c)()
 

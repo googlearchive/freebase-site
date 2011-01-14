@@ -1152,6 +1152,14 @@ class Acre:
     self.context = context
     self.host_url = None
 
+  def build(self):
+
+    c = self.context
+    os.chdir(c.options.acre_dir)
+    cmd = ['./acre', 'build']
+    return c.run_cmd(cmd)
+      
+
   def read_config(self):
     '''
     Reads the acre project.local.conf and returns its property/value pairs as a dictionary

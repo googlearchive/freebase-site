@@ -215,7 +215,7 @@ function do_app(page, appid, opts) {
 
 
 function do_ajax(method, file, funcname) {
-  acre.response.set_error_handler("service/error");
+  acre.response.set_error_page("service/error");
   var service = acre.require("service/lib");
 
   var f = function() {

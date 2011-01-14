@@ -43,10 +43,13 @@ function extend_metadata(md) {
     }
   }
 
+  // overlay lib metadata onto app metadata (but don't over-ride)
   var lib_md = JSON.parse(acre.require("METADATA").body);
   splice_o(md, lib_md);
   
+  // fix-up lib paths
   for (var h in md.handlers) {
     md.handlers[h] = "lib/" + md.handlers[h];
   }
+  md.error_page = "lib/" + md.error_page;
 };

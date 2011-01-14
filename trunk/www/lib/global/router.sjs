@@ -31,4 +31,8 @@
 
 var segs = acre.request.path_info.split("/");
 segs[1] = segs[1] + ".svn.freebase-site.googlecode.dev";
-acre.route("/" + segs.join("/"));
+
+var qs = acre.request.query_string;
+var path = "/" + segs.join("/") + (qs ? "?" + qs : "");
+
+acre.route(path);

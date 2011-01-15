@@ -34,7 +34,7 @@
   <acre:script>
     var TABS = [
       { name: 'Tree', key: "tree"},
-      { name: 'Text', key: "text"}, 
+      { name: 'Text', key: "json"}, 
       { name: 'Status', key: "status"}
     ];
   </acre:script>
@@ -48,11 +48,7 @@
       </ul>
       <div class="tabbed-content">
         <div acre:for="tab in TABS" class="cuecard-outputPane-tabBody" id="${id}-${tab.key}">
-          <acre:block choose="tab.key">
-            <div acre:when="tree" class="cuecard-outputPane-tree" ></div>
-            <textarea acre:when="text" class="cuecard-outputPane-textarea" readonly="true" wrap="off"></textarea>
-            <div acre:when="status" class="cuecard-outputPane-status"></div>
-          </acre:block>
+          <div class="cuecard-outputPane-$tab.key" ></div>
         </div>
       </div>
     </div>

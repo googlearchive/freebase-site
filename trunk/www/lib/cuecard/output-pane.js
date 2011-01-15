@@ -70,17 +70,30 @@ CueCard.OutputPane.prototype._constructUI = function() {
     this._tabs = tabs.data("tabs");
     
     this._tree = this._getTab("tree").find("div");
-    this._textarea = this._getTab("text").find("textarea");
+    this._json = this._getTab("json").find("div");
     this._status = this._getTab("status").find("div");
+    
+    // setup JSON iframe
+    this._json_iframe = document.createElement('iframe');
+    this._json.append(this._json_iframe);
 };
 
 CueCard.OutputPane.prototype._getTab = function(name) {
     return $("#" + this._idPrefix + "-" + name);
 };
 
+CueCard.OutputPane.prototype._setIFrameText = function(text) {
+  text = text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+  var json_doc = this._json_iframe.contentWindow.document;  
+  json_doc.open();
+  json_doc.write("<pre style='white-space:pre-wrap;'>" + text + "</pre>");
+  json_doc.close();
+};
+
 CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings) {
     this._jsonResult = o;
-    this._textarea[0].value = CueCard.jsonize(o, jsonizingSettings || { indentCount: 2 });
+    this._setIFrameText(CueCard.jsonize(o, jsonizingSettings || { indentCount: 2 }));
     
     var tabToSelect;
     if (this._lastJsonOutputMode == "tree") {
@@ -106,7 +119,7 @@ CueCard.OutputPane.prototype.setStatus = function(html) {
     this._status.html(html);
     
     this._jsonResult = null;
-    this._textarea.val("");
+    this._setIFrameText("");
     this._tree.empty();
     this._treeConstructed = false;
 };

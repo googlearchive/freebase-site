@@ -10,7 +10,7 @@ var lib = "//lib.www.trunk.svn.freebase-site.googlecode.dev";
 var routing = acre.require(lib + "/routing/router");
 
 // This is the error handler that handles all routing and not found errors
-acre.response.set_error_handler(lib + "/error/error.mjt");
+acre.response.set_error_page(lib + "/error/error.mjt");
 
 var rules = {
   "HostRouter": [

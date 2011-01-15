@@ -49,7 +49,7 @@
     <ul>
       <acre:block for="domain in domains">
         <li>
-          <a href="${h.freebase_url('/view'+domain.id)}">${domain.name}</a>
+          <a href="${h.legacy_fb_url('/view'+domain.id)}">${domain.name}</a>
         </li>
       </acre:block>
     </ul>
@@ -203,7 +203,7 @@
        data-topics="${domain.activity ? domain.activity.total.t : 0}"
        >
     <h3 class="domain-title">
-      <a href="${h.freebase_url('/view'+domain.id)}">${domain.name}</a>
+      <a href="${h.legacy_fb_url('/view'+domain.id)}">${domain.name}</a>
     </h3>
     <div class="member-count">
       ${domain.member_count > 100 ? '100+' : domain.member_count || 0}
@@ -244,7 +244,7 @@
         <a name="all-domains-${letter}" class="letter">${letter}</a>
         <ul>
           <li acre:for="domain in grouped_domains[letter]">
-            <a href="${h.freebase_url('/view'+domain.id)}">
+            <a href="${h.legacy_fb_url('/view'+domain.id)}">
               ${domain.name}
             </a>
           </li>
@@ -257,7 +257,7 @@
 <acre:block def="user_info(user)">
   <div class="content-section user-data">
     <div>
-      <a href="${h.freebase_url('/view'+user.id)}" class="bold-link">${user.name}</a>
+      <a href="${h.legacy_fb_url('/view'+user.id)}" class="bold-link">${user.name}</a>
     </div>
     <div class="user-stats">
       joined in ${h.format_date(user.created, "MMMM yyyy")}
@@ -265,21 +265,21 @@
     <div class="user-stats">
       ${h.commafy(user.assertions)} total assertions
     </div>
-    <a href="${h.freebase_url('/user/settings/following')}"
+    <a href="${h.legacy_fb_url('/user/settings/following')}"
        class="stat-box">
       <span class="stat-box-label">following</span>
       <div class="stat-box-number">
         ${h.commafy(user.following_count)}
       </div>
     </a>
-    <a href="${h.freebase_url('/user/settings/followers')}"
+    <a href="${h.legacy_fb_url('/user/settings/followers')}"
        class="stat-box">
       <span class="stat-box-label">followers</span>
       <div class="stat-box-number">
         ${h.commafy(user.followers_count)}
       </div>
     </a>
-    <a href="${h.freebase_url('/user/replies')}"
+    <a href="${h.legacy_fb_url('/user/replies')}"
        class="stat-box stat-box-last">
       <span class="stat-box-label">messages</span>
       <div class="stat-box-number">
@@ -316,7 +316,7 @@
     <h3>Help improve <span class="emphasis">Freebase</span></h3>
     <ul>
       <li>
-        <a href="${h.freebase_url('/tools/flags/review')}">
+        <a href="${h.legacy_fb_url('/tools/flags/review')}">
           Review topics for merge and delete
         </a>
       </li>
@@ -381,7 +381,7 @@
         <a href="$item.link" 
            class="item-title">$item.title</a>
         by 
-        <a href="${h.freebase_url('/view/user/'+item['dc:creator'])}">${item['dc:creator']}</a>
+        <a href="${h.legacy_fb_url('/view/user/'+item['dc:creator'])}">${item['dc:creator']}</a>
         on ${h.format_date(h.parse_date(item.pubDate), 'MMMM d')}
       </div>
     </div>

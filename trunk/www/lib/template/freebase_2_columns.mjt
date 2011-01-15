@@ -101,8 +101,8 @@
              acre:attrs="h.is_production() ? {src: h.static_url(acre.resolve('template/freebase-logo-production.png'))} : {src: h.static_url(acre.resolve('template/freebase-logo-sandbox.png'))}"
              border="0" height="21" width="87" /></a>
     </div>
-    <div class="site-search" searchUrl="${h.freebase_url('/search')}" id="SearchBox">
-      <form method="get" action="${h.freebase_url('/search')}" class="SearchBox-form">
+    <div class="site-search" searchUrl="${h.legacy_fb_url('/search')}" id="SearchBox">
+      <form method="get" action="${h.legacy_fb_url('/search')}" class="SearchBox-form">
         <fieldset class="search-form-header">
           <input type="hidden" value="30" name="limit" />
           <input type="hidden" value="0" name="start" />
@@ -140,7 +140,7 @@
     <div id="nav-account">
       <div class="nav-user-controls" id="signedin" style="display:none;">
         <strong id="nav-username">
-          <a href="${h.freebase_url('/view')}" title="View your profile"></a></strong>
+          <a href="${h.legacy_fb_url('/view')}" title="View your profile"></a></strong>
         <a href="${acre.markup.bless(h.account_url('settings'))}" title="View your account info on Freebase" rel="nofollow" id="nav-settings">Settings</a>
         <a href="${acre.markup.bless(h.account_url('signout', h.url_for('homepage', 'index')))}" title="Sign out of Freebase" rel="nofollow" id="nav-signout">Sign Out</a>
       </div>
@@ -174,17 +174,17 @@
     </div>
     <ul id="nav-footer" class="clear">
       <li class="nav-footer-item">
-        <a id="site-feedback" href="${h.freebase_url('/site/feedback')}" 
+        <a id="site-feedback" href="${h.legacy_fb_url('/site/feedback')}" 
            rel="nofollow" 
            title="Send us your feedback">Feedback</a>
       </li>
       <li class="nav-footer-item">
-        <a href="${h.freebase_url('/policies/attribution')}" 
+        <a href="${h.fb_url('/policies/attribution')}" 
            rel="nofollow" 
            title="View the Freebase Licensing Policy">Attribution Policy</a>
       </li>
       <li class="nav-footer-item">
-        <a href="${h.freebase_url('/policies/tos')}" 
+        <a href="${h.fb_url('/policies/tos')}" 
            rel="nofollow"
            title="View the Freebase Terms of Service">Terms of Service</a>
       </li>
@@ -196,13 +196,13 @@
     <div id="footer-categories" class="clear">
       <strong id="categories-header">Freebase contains information on:</strong>
       <ul id="footer-categories-list" class="clear">  
-        <li class="category-list-item"><a href="${h.freebase_url('/view/category/arts-entertainment')}" title="Explore Arts &amp; Entertainment">Arts &amp; Entertainment</a></li>
-        <li class="category-list-item"><a href="${h.freebase_url('/view/category/products-services')}" title="Explore Products &amp; Services">Products &amp; Services</a></li>
-        <li class="category-list-item"><a href="${h.freebase_url('/view/category/science-technology')}" title="Explore Science &amp; Technology">Science &amp; Technology</a></li>
-        <li class="category-list-item"><a href="${h.freebase_url('/view/category/society')}" title="Explore Society">Society</a></li>
-        <li class="category-list-item"><a href="${h.freebase_url('/view/category/special-interests')}" title="Explore Special Interests">Special Interests</a></li>
-        <li class="category-list-item"><a href="${h.freebase_url('/view/category/sports')}" title="Explore Sports">Sports</a></li>
-        <li class="category-list-item"><a href="${h.freebase_url('/view/category/time-space')}" title="Explore Time &amp; Space">Time &amp; Space</a></li>
+        <li class="category-list-item"><a href="${h.legacy_fb_url('/view/category/arts-entertainment')}" title="Explore Arts &amp; Entertainment">Arts &amp; Entertainment</a></li>
+        <li class="category-list-item"><a href="${h.legacy_fb_url('/view/category/products-services')}" title="Explore Products &amp; Services">Products &amp; Services</a></li>
+        <li class="category-list-item"><a href="${h.legacy_fb_url('/view/category/science-technology')}" title="Explore Science &amp; Technology">Science &amp; Technology</a></li>
+        <li class="category-list-item"><a href="${h.legacy_fb_url('/view/category/society')}" title="Explore Society">Society</a></li>
+        <li class="category-list-item"><a href="${h.legacy_fb_url('/view/category/special-interests')}" title="Explore Special Interests">Special Interests</a></li>
+        <li class="category-list-item"><a href="${h.legacy_fb_url('/view/category/sports')}" title="Explore Sports">Sports</a></li>
+        <li class="category-list-item"><a href="${h.legacy_fb_url('/view/category/time-space')}" title="Explore Time &amp; Space">Time &amp; Space</a></li>
       </ul>
     </div>
   </div>

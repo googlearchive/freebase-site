@@ -82,7 +82,7 @@
      <div class="admin-toolbox">
        <span class="creation-timestamp">
          ${image.user_image_small(c.domain.creator)}
-          ${_("Created by")} <a href="${h.freebase_url('/view' + c.domain.creator.id)}" title="${_('View user profile')}">${i18n.display_name(c.domain.creator)}</a> 
+          ${_("Created by")} <a href="${h.legacy_fb_url('/view' + c.domain.creator.id)}" title="${_('View user profile')}">${i18n.display_name(c.domain.creator)}</a> 
          on <time class="published" datetime="${c.domain.timestamp}">${i18n.format_timestamp(c.domain.timestamp)}</time>
        </span>
      </div>
@@ -110,7 +110,7 @@
            </a>
          </li>
          <li>
-           <a href="${h.freebase_url('/view'+c.domain.id)}" class="icon-link"><span class="browse-icon">${_('Browse Domain')}</span></a>
+           <a href="${h.legacy_fb_url('/view'+c.domain.id)}" class="icon-link"><span class="browse-icon">${_('Browse Domain')}</span></a>
          </li>
        </ul>
      </div>
@@ -219,4 +219,3 @@
   <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
   <script src="domain.mf.js"></script>
 </acre:block>
-

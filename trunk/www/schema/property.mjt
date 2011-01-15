@@ -103,7 +103,7 @@
       <span class="creation-timestamp">
         ${image.user_image_small(c.property.creator)}
         ${h.bless_sprintf(_("Created by %s on %s"), 
-        h.tag("a", i18n.display_name(c.property.creator), "href", h.freebase_url("/view" + c.property.creator.id), "title", _("View user profile")),
+        h.tag("a", i18n.display_name(c.property.creator), "href", h.legacy_fb_url("/view" + c.property.creator.id), "title", _("View user profile")),
         h.tag("time", i18n.format_timestamp(c.property.timestamp), "class", "published", "datetime", c.property.timestamp))}
       </span>
     </div>

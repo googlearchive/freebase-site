@@ -109,7 +109,7 @@
       <span class="creation-timestamp">
         ${image.user_image_small(c.type.creator)}
         ${h.bless_sprintf(_("Created by %s on %s"), 
-        h.tag("a", i18n.display_name(c.type.creator), "href", h.freebase_url("/view" + c.type.creator.id), "title", _("View user profile")),
+        h.tag("a", i18n.display_name(c.type.creator), "href", h.legacy_fb_url("/view" + c.type.creator.id), "title", _("View user profile")),
         h.tag("time", i18n.format_timestamp(c.type.timestamp), "class", "published", "datetime", c.type.timestamp))}
      </span>    
     </div>
@@ -133,7 +133,7 @@
         </a>
         </li>
         <li>
-          <a href="${h.freebase_url('/view'+c.type.id)}" class="icon-link">
+          <a href="${h.legacy_fb_url('/view'+c.type.id)}" class="icon-link">
             <span acre:if="c.type.instance_count" class="browse-icon">${h.bless_sprintf(_("Browse %s Topics"), h.tag("strong", i18n.format_number(c.type.instance_count)))}</span>
             <span acre:else="" class="add-icon">Add Topics</span>
           </a>

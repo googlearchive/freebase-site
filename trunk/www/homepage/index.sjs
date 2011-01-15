@@ -29,6 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+console.log(acre.freebase);
+console.log(acre.request);
+
 var queries = acre.require("queries");
 
 var data = {

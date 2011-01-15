@@ -127,8 +127,8 @@
         <td colspan="4">
           <div class="edit-row-loader"></div>
           <div acre:if="prop.delegated" class="form-msg">
-            ${h.bless_sprintf(_("This property is being delegated to %s. You cannot change the %s or %s."), h.tag("a", prop.delegated.id, "href", h.url_for("schema", null, null, prop.delegated.id), "target", "_new"), h.tag("strong", _("Expected Type")), h.tag("strong", _("Uniqueness")))}
-          <a href="${h.freebase_url('/view')}${prop.schema.id}/-${prop.id}">${_('View instances')} &raquo;</a>
+            ${h.bless_sprintf(_("This property is being delegated to %s. You cannot change the %s or %s."), h.tag("a", prop.delegated.id, "href", h.fb_url("/schema"+prop.delegated.id), "target", "_new"), h.tag("strong", _("Expected Type")), h.tag("strong", _("Uniqueness")))}
+          <a href="${h.legacy_fb_url('/view')}${prop.schema.id}/-${prop.id}">${_('View instances')} &raquo;</a>
           </div>
           <div acre:elif="prop.used" class="form-msg" acre:trim="">      
             <acre:block if="prop.unique">
@@ -137,7 +137,7 @@
             <acre:block else="">
               ${h.bless_sprintf(_("This property is being used. You cannot change the %s or %s."), h.tag("strong", _("Expected Type")), h.tag("strong", _("Uniqueness")))}
             </acre:block>
-            <a href="${h.freebase_url('/view')}${prop.schema.id}/-${prop.id}">${_('View instances')} &raquo;</a>
+            <a href="${h.legacy_url('/view')}${prop.schema.id}/-${prop.id}">${_('View instances')} &raquo;</a>
           </div>            
           <div class="form-field fb-property-name">
             <label>
@@ -189,10 +189,10 @@
            </label>
 
             <acre:block if="prop.master_property">
-              ${h.bless_sprintf(_("Property links in as %s."), h.tag("a", h.tag("strong", prop.master_property.name), "title", prop.master_property.id, "href", h.url_for('schema', null, null, prop.master_property.id)))}
+              ${h.bless_sprintf(_("Property links in as %s."), h.tag("a", h.tag("strong", prop.master_property.name), "title", prop.master_property.id, "href", h.fb_url('/schema' + prop.master_property.id)))}
             </acre:block>
             <acre:block elif="prop.reverse_property">
-              ${h.bless_sprintf(_("Property links in as %s."), h.tag("a", h.tag("strong", prop.reverse_property.name), "title", prop.reverse_property.id, "href", h.url_for('schema', null, null, prop.reverse_property.id)))}
+              ${h.bless_sprintf(_("Property links in as %s."), h.tag("a", h.tag("strong", prop.reverse_property.name), "title", prop.reverse_property.id, "href", h.fb_url('/schema' + prop.reverse_property.id)))}
             </acre:block>
           </div>
           <div class="form-field fb-property-description">
@@ -480,13 +480,13 @@
               ${_("Mediator")}  
             </label>
             <p>${_("Describes the relationship between two or more regular Types.")}</p>
-            <a href="http://wiki.freebase.com/wiki/Compound_Value_Type" title="${_('Read help article')}" rel="help external" class="help-link">${_("Learn more &raquo;")}</a>
+            <a href="${h.wiki_url('Compound_Value_Type')}" title="${_('Read help article')}" rel="help external" class="help-link">${_("Learn more &raquo;")}</a>
           </div>
         </div>
         <div acre:if="message" class="form-row">
           <p class="warning">
             ${message}
-            <a href="${h.freebase_url('/view'+type.id)}" target="_new">${_("View topics")} &raquo;</a>
+            <a href="${h.legacy_fb_url('/view', type.id)}" target="_new">${_("View topics")} &raquo;</a>
           </p>
         </div>
       </div>
@@ -505,19 +505,19 @@
     <acre:block if="prop.expected_type">
       <acre:block if="prop.unit">
         ${h.bless_sprintf(_("This property will be delegated to %s with expected type %s (%s)."), 
-        h.tag("a", prop.id, "href", h.url_for('schema', null, null, prop.id), "target", "_new"),
-        h.tag("a", prop.expected_type, "href", h.url_for('schema', null, null, prop.expected_type) , "target", "_new"),
+        h.tag("a", prop.id, "href", h.fb_url('/schema', prop.id), "target", "_new"),
+        h.tag("a", prop.expected_type, "href", h.fb_url('/schema', prop.expected_type) , "target", "_new"),
         i18n.display_name(prop.unit))}
       </acre:block>
       <acre:block else="">
         ${h.bless_sprintf(_("This property will be delegated to %s with expected type %s."), 
-        h.tag("a", prop.id, "href", h.url_for('schema', null, null, prop.id), "target", "_new"),
-        h.tag("a", prop.expected_type, "href", h.url_for('schema', null, null, prop.expected_type) , "target", "_new"))}
+        h.tag("a", prop.id, "href", h.fb_url('/schema', prop.id), "target", "_new"),
+        h.tag("a", prop.expected_type, "href", h.fb_url('/schema', prop.expected_type) , "target", "_new"))}
       </acre:block>
     </acre:block>
     <acre:block else="">
       ${h.bless_sprintf(_("This property will be delegated to %s."), 
-      h.tag("a", prop.id, "href", h.url_for('schema', null, null, prop.id), "target", "_new"))}
+      h.tag("a", prop.id, "href", h.fb_url('/schema', prop.id), "target", "_new"))}
     </acre:block>
     ${h.bless_sprintf(_("You cannot change the %s or %s."), h.tag("strong", _("Expected Type")), h.tag("strong", _("Uniqueness")))}
   </div>

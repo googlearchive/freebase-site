@@ -47,38 +47,34 @@ function resource_url(apppath, file, params, extra_path) {
   return acre.form.build_url(url, params);
 };
 
-test("url_for", function() {
-  var routes =  acre.require("routing/app_routes");
-  var router = routes.rules;
-
-  if (h.is_client()) {
-    equal(h.url_for("schema", "index"), acre.request.app_url /*+ acre.request.base_path*/ + router.route_for_app("schema").prefix + "/index");
-    equal(h.url_for("toolbox", "service", null, "/apps"), acre.request.app_url /*+ acre.request.base_path*/ + router.route_for_app("toolbox").prefix + "/service/apps");
-    equal(h.url_for("homepage", "index"), acre.request.app_url /*+ acre.request.base_path*/ + router.route_for_app("homepage", "index").prefix);
-  }
-  else {
-    equal(h.url_for("schema", "index"), resource_url(routes.app_labels["schema"], "index"));
-    equal(h.url_for("toolbox", "service", null, "/apps"),  resource_url(routes.app_labels["toolbox"], "service", null, "/apps"));
-    equal(h.url_for("homepage", "index"), resource_url(routes.app_labels["homepage"], "index"));
-  }
+test("fb_url", function() {
+  equal(h.fb_url(), "/");
+  equal(h.fb_url(null), "/");
+  equal(h.fb_url(""), "/");
+  equal(h.fb_url("/foo/bar"), "/foo/bar");
+  equal(h.fb_url("/foo/bar", {a:1,b:2}), "/foo/bar?a=1&b=2");
+  equal(h.fb_url(null, {a:1,b:2}), "/?a=1&b=2");
+  equal(h.fb_url("/foo", "/en/bar"), "/foo/en/bar");
+  equal(h.fb_url("/foo", "/en/bar", {a:1,b:2}), "/foo/en/bar?a=1&b=2");
 });
 
-test("freebase_url", function() {
-  equal(h.freebase_url(), acre.freebase.site_host);
-  equal(h.freebase_url(null), acre.freebase.site_host);
-  equal(h.freebase_url(""), acre.freebase.site_host);
-  equal(h.freebase_url("/foo/bar"), acre.freebase.site_host + "/foo/bar");
-  equal(h.freebase_url("/foo/bar", {a:1,b:2}), acre.freebase.site_host + "/foo/bar?a=1&b=2");
-  equal(h.freebase_url(null, {a:1,b:2}), acre.freebase.site_host + "?a=1&b=2");
+test("legacy_fb_url", function() {
+  var host =  acre.freebase.site_host.replace("devel.", "www.");
+  equal(h.legacy_fb_url(), host);
+  equal(h.legacy_fb_url(null), host);
+  equal(h.legacy_fb_url(""), host);
+  equal(h.legacy_fb_url("/foo/bar"), host + "/foo/bar");
+  equal(h.legacy_fb_url("/foo/bar", {a:1,b:2}), host + "/foo/bar?a=1&b=2");
+  equal(h.legacy_fb_url(null, {a:1,b:2}), host + "?a=1&b=2");
 });
 
-test("freebase_service_url", function() {
-  equal(h.freebase_service_url(), acre.freebase.service_url);
-  equal(h.freebase_service_url(null), acre.freebase.service_url);
-  equal(h.freebase_service_url(""), acre.freebase.service_url);
-  equal(h.freebase_service_url("/foo/bar"), acre.freebase.service_url + "/foo/bar");
-  equal(h.freebase_service_url("/foo/bar", {a:1,b:2}), acre.freebase.service_url + "/foo/bar?a=1&b=2");
-  equal(h.freebase_service_url(null, {a:1,b:2}), acre.freebase.service_url + "?a=1&b=2");
+test("fb_api_url", function() {
+  equal(h.fb_api_url(), acre.freebase.service_url);
+  equal(h.fb_api_url(null), acre.freebase.service_url);
+  equal(h.fb_api_url(""), acre.freebase.service_url);
+  equal(h.fb_api_url("/foo/bar"), acre.freebase.service_url + "/foo/bar");
+  equal(h.fb_api_url("/foo/bar", {a:1,b:2}), acre.freebase.service_url + "/foo/bar?a=1&b=2");
+  equal(h.fb_api_url(null, {a:1,b:2}), acre.freebase.service_url + "?a=1&b=2");
 });
 
 acre.test.report();

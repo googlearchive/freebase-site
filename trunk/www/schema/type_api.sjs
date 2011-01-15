@@ -114,7 +114,7 @@ var api = {
     return update_type.update_type(update_type_options)
       .then(function(updated_id) {
          return {
-          location: h.url_for("schema", "type", null, updated_id)
+          location: h.fb_url("/schema/type", updated_id)
         };
       });
   },
@@ -123,7 +123,7 @@ var api = {
     return delete_type.delete_type(args.id, args.user, false, true)
       .then(function([info, result]) {
         return {
-          location: h.url_for("schema", null, null, info.domain.id)
+          location: h.fb_url("/schema", info.domain.id)
         };
       });
   },
@@ -149,7 +149,7 @@ var api = {
     return freebase.mqlwrite(q)
       .then(function() {
         return {
-          location: h.url_for("schema", "type", null, args.id)
+          location: h.fb_url("/schema/type", args.id)
         };
       });
   },

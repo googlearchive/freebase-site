@@ -49,7 +49,7 @@ var api = {
     return create_base.create_base(create_base_options)
       .then(function(domain) {
         return {
-          location: h.url_for("schema", null, null, domain.id)
+          location: h.fb_url("/schema", domain.id)
         };
       });
   }

@@ -92,7 +92,7 @@ var api = {
     return update_domain.update_domain(update_domain_options)
       .then(function(updated_id) {
         return {
-          location: h.url_for("schema", null, null, updated_id)
+          location: h.fb_url("/schema", updated_id)
         };
       });
   },
@@ -101,7 +101,7 @@ var api = {
     return delete_domain.delete_domain(args.id, args.user)
       .then(function(deleted) {
         return {
-          location: h.url_for("schema")
+          location: h.fb_url("/schema")
         };
       });
   },

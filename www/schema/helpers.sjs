@@ -53,7 +53,7 @@ function build_query_url(type_id, prop_id) {
   };
   q[prop_id || "*"] = [];
   q = [q];
-  return h.freebase_url("/app/queryeditor", {autorun: true, q: JSON.stringify(q)});
+  return h.fb_url("/queryeditor", {autorun: true, q: JSON.stringify(q)});
 };
 
 function sort_by_id(a,b) {

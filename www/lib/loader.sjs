@@ -51,5 +51,8 @@ function extend_metadata(md) {
   for (var h in md.handlers) {
     md.handlers[h] = "lib/" + md.handlers[h];
   }
-  md.error_page = "lib/" + md.error_page;
+  
+  if (md.error_page) {
+      md.error_page = "lib/" + md.error_page;      
+  }
 };

@@ -31,7 +31,15 @@
 
  
 var handler = function() {
-  var mjt_js_path = acre.resolve("handlers/mjt_to_js_handler.sjs");
+    
+  // metadata overrides to use in processing
+  // currently, just make sure mjt is compiled
+  // to raw js rather than a package.
+  var md = {
+    "handlers": {
+      "mjt": "handlers/mjt_to_js_handler.sjs"
+    }
+  };
   
   return {
     'to_js': function(script) {
@@ -55,11 +63,7 @@ var handler = function() {
       for (var i=0; i < mf.length; i++) {
         var path = mf[i];
         buf.push("\n/** " + path + "**/\n");
-
-        // XXX - fulhack
-        script.scope.acre.get_metadata(path).handlers.mjt = mjt_js_path;
-        
-        var req = script.scope.acre.require(path);
+        var req = script.scope.acre.require(md, path);
         buf.push(req.body);    
       }
       res.body = buf.join("");

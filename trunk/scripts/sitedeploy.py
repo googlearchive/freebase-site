@@ -838,26 +838,7 @@ class ActionRelease:
     self.context = context
 
   def __call__(self):
-
-    c = self.context
-
-    c.set_action("release")
-    if not (c.options.app and c.options.graph and c.options.version):
-      return c.error('You must specify the app key (e.g. "schema"), a graph and a version to release')
-
-    c.log('Releasing app %s version %s' % (c.app.app_key, c.app.version), color=c.BLUE)
-
-    success = c.freebase_login()
-    if not success:
-      return c.error('You must provide valid freebase credentials in order to release an app')
-
-    try:
-      c.freebase.set_app_release(c.app.app_id, c.app.version)
-    except:
-      c.error('There was an error releasing the app.')
-      raise
-
-    return True
+    pass
 
 
 def main():
@@ -870,12 +851,10 @@ def main():
       ('setup_acre', 'create a local acre instance', ActionSetupAcre),
       ('setup_site', 'create a local site instance', ActionSetupSite),
       #('setup_appengine', 'create a local appendine instance of acre/site', ActionSetupAppengine),
-      ('sync', 'connect acre and site so that acre will read all branches from the filesystem', ActionSync),
+      #('sync', 'connect acre and site so that acre will read all branches from the filesystem', ActionSync),
       ('link', 'connect acre and site so that acre will read site trunk apps from the filesystem', ActionLink),
       ('setup', 'setup acre, site and link', ActionSetup),
       ('setup_dns', 'setup wildcard dns for your host - Mac OS X only', ActionSetupDNS),
-      ('static', 'static', ActionStatic),
-      ('release', 'release a specific version of an app', ActionRelease),
       ('info', 'provide information on all apps or a specific app', ActionInfo),
       ('create_branch', 'creates a branch of your app', ActionCreateAppBranch),
       ('create_tag', 'creates a tag of your app', ActionCreateAppTag),

@@ -34,11 +34,11 @@ var lib = acre.require("service/lib");
 var deferred = acre.require("promise/deferred");
 
 /**
- * A JSON/P web service handler for *.ws.
+ * A JSON/P web service handler for *.ajax.
  *
- * A web service can be specified by declaring a ws specification as follows:
+ * A web service can be specified by declaring a SPEC as follows:
  *
- * var ws = {
+ * var SPEC = {
  *   method: "POST",
  *   auth: true,
  *   validate: function(params) {
@@ -83,20 +83,20 @@ var handler = function() {
 };
 
 var handle = function(module, script) {
-  var ws = module.ws;
-  if (!(ws && typeof ws === "object")) {
-    throw new lib.ServiceError(null, null, "ws is undefined");
+  var spec = module.SPEC;
+  if (!(spec && typeof spec === "object")) {
+    throw new lib.ServiceError(null, null, "SPEC is undefined");
   }
-  ws = h.extend({}, {
+  spec = h.extend({}, {
     method: "GET",
     auth: false,
     validate: function(params) { return []; },
     run: function() {}
-  }, ws);
+  }, spec);
 
   ["validate", "run"].forEach(function(m) {
-    if (typeof ws[m] !== "function") {
-      throw new lib.ServiceError(null, null, "ws." + m + " is undefined");
+    if (typeof spec[m] !== "function") {
+      throw new lib.ServiceError(null, null, "SPEC." + m + " is undefined");
     }
   });
 
@@ -106,11 +106,11 @@ var handle = function(module, script) {
   //
   // 1. check method is supported (i.e., GET, POST, etc.)
   //
-  if (typeof ws.method === "string") {
-    ws.method = [ws.method];
+  if (typeof spec.method === "string") {
+    spec.method = [spec.method];
   }
   var methods = {};
-  ws.method.forEach(function(m) {
+  spec.method.forEach(function(m) {
     if (m) {
       methods[m] = 1;
     }
@@ -122,7 +122,7 @@ var handle = function(module, script) {
   //
   // 2. check authentication
   //
-  if (ws.auth) {
+  if (spec.auth) {
     console.log("check_user");
     lib.check_user();
   }
@@ -132,7 +132,7 @@ var handle = function(module, script) {
   //
   // TODO: handle binary POSTs
   var req_params = req.method === "POST" ? req.body_params : req.params;
-  var args = ws.validate.apply(ws, [req_params]);
+  var args = spec.validate.apply(spec, [req_params]);
 
   //
   // 4. run web service
@@ -155,7 +155,7 @@ var handle = function(module, script) {
     }, scope);
   };
 
-  var d = ws.run.apply(ws, args);
+  var d = spec.run.apply(spec, args);
   deferred.when(d, success, error);
 
   acre.async.wait_on_results();

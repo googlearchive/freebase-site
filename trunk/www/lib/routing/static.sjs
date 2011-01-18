@@ -29,10 +29,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var segs = acre.request.path_info.split("/");
-segs[1] = segs[1] + ".svn.freebase-site.googlecode.dev";
+var exports = {
+  router: StaticRouter
+};
 
-var qs = acre.request.query_string;
-var path = "/" + segs.join("/") + (qs ? "?" + qs : "");
+function StaticRouter() {
+  var add = this.add = function(routes) {};
 
-acre.route(path);
+  var route = this.route = function(req) {
+    var segs = req.path_info.split("/");
+    segs[1] = segs[1] + ".svn.freebase-site.googlecode.dev";
+
+    var qs = req.query_string;
+    var path = "/" + segs.join("/") + (qs ? "?" + qs : "");
+
+    acre.route(path);
+  };
+};
+
+if (acre.current_script === acre.request.script) {
+  var router = new exports.router();
+  router.route(acre.request);
+}
+
+

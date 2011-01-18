@@ -7,13 +7,12 @@
 
 // lib to get routing helpers
 var lib = "//lib.www.trunk.svn.freebase-site.googlecode.dev";
-var routing = acre.require(lib + "/routing/router");
 
 // This is the error handler that handles all routing and not found errors
 acre.response.set_error_page(lib + "/error/error.mjt");
 
 var rules = {
-  "HostRouter": [
+  "host": [
     {host:"freebase.com", url:"http://www.freebase.com"},
     {host:"sandbox-freebase.com", url:"http://www.sandbox-freebase.com"},
     {host:"sandbox.freebase.com", url:"http://www.sandbox-freebase.com"},
@@ -25,7 +24,7 @@ var rules = {
     {host:"www.metaweb.com", url:"http://www.freebase.com"}
   ],
 
-  "PrefixRouter": [
+  "prefix": [
     // Urls for user-facing apps
     {prefix:"/",                   app:"//homepage.www.trunk.svn.freebase-site.googlecode.dev", script: "index"},
     {prefix:"/index",              url:"/", redirect:301},
@@ -43,8 +42,9 @@ var rules = {
     {prefix:"/labs",               app:"//labs"},
 
     // Urls for exposed ajax libraries and static resources
-    {prefix:"/global",             app:lib, script: "global/router.sjs"},
-    {prefix:"/permission",         app:lib + "/permission"},
+    // TODO: remove this and use ajax router
+    {prefix:"/static",             app:lib, script:"routing/static.sjs"},
+    {prefix:"/ajax",               app:lib, script:"routing/ajax.sjs"},
     {prefix:"/template",           app:lib + "/template"},
 
     // Test routing rules to test non-user facing apps (core libraries, etc.)
@@ -181,18 +181,30 @@ if (acre.current_script === acre.request.script) {
   }
 }
 
-["HostRouter", "PrefixRouter"].forEach(function(name) {
-  var RouterClass = routing[name];
-  if (!RouterClass) {
-    throw name + " not found in " + lib + "/routing/router";
+var router_path = lib + "/routing/";
+["host", "prefix"].forEach(function(name) {
+  var router_file = acre.require(router_path + name);
+
+  console.log("router_file", router_file);
+
+  var router_class;
+  if (router_file.router) {
+    router_class = router_file.router;
   }
-  var router = new RouterClass();
+  else if (router_file.exports && typeof router_file.exports === "object" && router_file.exports.router) {
+    router_class = router_file.exports.router;
+  }
+  else {
+    throw "A router needs to be defined in " + router_path + name;
+  }
+  var router = new router_class();
   var rule = rules[name];
   if (rule) {
     router.add(rule);
   }
   router.route(acre.request);
 });
+
 
 // TODO: not found
 acre.route(lib + "/error/error.mjt");

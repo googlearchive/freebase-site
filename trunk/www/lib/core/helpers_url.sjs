@@ -32,7 +32,7 @@
 var exports = {
   "is_client": is_client,
   "is_production": is_production,
-  
+
   "parse_params": parse_params,
   "build_url": build_url,
   "fb_url": fb_url,
@@ -46,7 +46,7 @@ var exports = {
 
   "lib_base_url": lib_base_url,
   "freebase_resource_url": freebase_resource_url,
-  
+
   "parse_uri": parse_uri,
 
   //---DEPRECATED---//
@@ -108,11 +108,11 @@ function build_url(host, path, params) {
   if (host && host.search('://') === -1) {
     throw "Host must contain scheme: " + host;
   }
-  
+
   if (path && path[0] !== "/") {
     throw "Path must begin with a '/': " + path;
   }
-  
+
   var url = (host || "") + (path || "");
   if (url.length === 0) {
     url = "/";
@@ -141,7 +141,7 @@ function fb_url(path, id, params) {
   } else if (typeof id === 'object' && !params) {
     params = id;
   }
-  
+
   return build_url(host, path, params);
 }
 
@@ -152,7 +152,7 @@ function fb_url(path, id, params) {
 function static_url(path) {
   var static_base = acre.get_metadata().static_base || "";
   path = path.replace(".svn.freebase-site.googlecode.dev", "");
-  return path.replace("//", static_base + "/global/");
+  return path.replace("//", static_base + "/static/");
 }
 
 /**
@@ -161,7 +161,7 @@ function static_url(path) {
  */
 function ajax_url(path, params) {
   path = path.replace(".svn.freebase-site.googlecode.dev", "");
-  path = path.replace("//", "/global/");
+  path = path.replace("//", "/ajax/");
   return fb_url(path, params);
 }
 
@@ -227,7 +227,7 @@ function account_url(kind, return_url) {
   default :
     throw "Must pass 'kind' to account_url";
   }
-  
+
   return url.replace(/^http/, "https");
 }
 
@@ -250,7 +250,7 @@ function image_url(id, params) {
     onfail: null,
     errorid: "/freebase/no_image_png"
   }, parse_params(params));
-  
+
   for (var key in params) {
     if (params[key] === null || params[key] === undefined) {
       delete params[key];
@@ -325,7 +325,7 @@ function parse_uri(str) {
  */
 function url_for(app, file, params, extra_path) {
   var app_routes = acre.require("routing/app_routes");
-  
+
   var path = app_routes.app_labels[app];
   if (!path) {
     throw("app is not defined in the routing MANIFEST: " + app);

@@ -28,26 +28,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-var validators = acre.require("validator/validators");
-var queries = acre.require("permission/queries");
 
-var ws = {
-
-  method: ["POST", "GET"],
-
-  auth: false,
-
-  validate: function(params) {
-    return [
-      validators.MqlId(params, "id", {required:true}),
-      validators.MqlId(params, "user_id", {required:true}),
-      validators.StringBool(params, "allow_experts", {if_empty:false})
-    ];
-  },
-
-  run: function(id, user_id, allow_experts) {
-    return queries.has_permission(id, user_id, allow_experts);
-  }
-
+var exports = {
+  router: acre.require("routing/static.sjs").StaticRouter
 };
 
+if (acre.current_script === acre.request.script) {
+  var router = new exports.router();
+  router.route(acre.request);
+}

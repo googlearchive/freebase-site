@@ -28,6 +28,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+var exports = {
+  router: PrefixRouter
+};
+
 var h = acre.require("routing/helpers");
 
 /**
@@ -38,7 +42,7 @@ var h = acre.require("routing/helpers");
    2. Find the route for app, script combo with router.route_for_app(app, script?)
    3. Find the route for request path with router.route_for_path(path)
  */
-var PrefixRouter = function() {
+function PrefixRouter() {
   var route_list = [];
   var routing_tree = {};
   var canonical_routes = {};
@@ -174,40 +178,6 @@ var PrefixRouter = function() {
         ].join(""));
         acre.exit();
       }
-    }
-    return false;
-  };
-};
-
-
-/**
- * host->url redirector
- */
-var HostRouter = function() {
-  var route_list = [];
-  var route_map = {};
-
-  var add = this.add = function(routes) {
-    if (!(routes instanceof Array)) {
-      routes = [routes];
-    }
-    routes.forEach(function(route) {
-      if (!route || !route.host || !route.url) {
-        throw 'A routing rule must be a dict with valid host and url: ' + JSON.stringify(route);
-      }
-      route_list.push(route);
-      route_map[route.host] = route.url;
-    });
-  };
-
-  var route = this.route = function(req) {
-    var url = route_map[req.server_name];
-    if (url) {
-      var req_path = req.url.replace(req.app_url, "");
-      acre.response.status = 301;
-      acre.response.set_header("location", url + req_path);
-      acre.response.set_header("cache-control", "public, max-age: 3600");
-      acre.exit();
     }
     return false;
   };

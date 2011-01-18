@@ -1,45 +1,54 @@
 {
-  "ttl": 0,
-  "mounts": {
-    "libraries": "//2.libraries.apps.freebase.dev",
-    "service": "//service"
-  },
   "handlers": {
-    "mjt": "handlers/mjt_handler.sjs",
-    "css": "handlers/css_handler.sjs",
-    "css_manifest": "handlers/css_manifest_handler.sjs",
-    "js_manifest": "handlers/js_manifest_handler.sjs",
-    "tagged_static": "handlers/tagged_static_handler.sjs"
-  },
-  "extensions": {
-    "css": {
-      "handler": "css"
-    },
-    "less": {
-      "handler": "css"
-    },
-    "mf.css": {
-      "handler": "css_manifest"
-    },
-    "mf.js": {
-      "handler": "js_manifest"
-    }
-  },
-  "static_base": "",
-  "libs" : {
-    "suggest" : {
-      "base_url": "http://freebaselibs.com/static/suggest/",
-      "version": "1.4.1"
-    },
-    "jquery" : {
-      "base_url": "http://ajax.googleapis.com/ajax/libs/jquery/",
-      "version": "1.4.2"
-    }
-  },
+    "mjt": "handlers/mjt_handler.sjs", 
+    "tagged_static": "handlers/tagged_static_handler.sjs", 
+    "css_manifest": "handlers/css_manifest_handler.sjs", 
+    "js_manifest": "handlers/js_manifest_handler.sjs", 
+    "css": "handlers/css_handler.sjs"
+  }, 
   "freebase": {
     "resource": {
-      "hash": "dd20b6623a39c3624ab666c6f4e69f80423c7186ab9f8add7c53dd927ad389fa",
+      "hash": "dd20b6623a39c3624ab666c6f4e69f80423c7186ab9f8add7c53dd927ad389fa", 
       "base_url": "http://res.freebase.com/s/"
+    }
+  }, 
+  "mounts": {
+    "libraries": "//2.libraries.apps.freebase.dev", 
+    "service": "//service"
+  }, 
+  "extensions": {
+    "less": {
+      "handler": "css"
+    }, 
+    "mf.css": {
+      "handler": "tagged_static"
+    }, 
+    "jpg": {
+      "handler": "tagged_static"
+    }, 
+    "mf.js": {
+      "handler": "tagged_static"
+    }, 
+    "png": {
+      "handler": "tagged_static"
+    }, 
+    "gif": {
+      "handler": "tagged_static"
+    }, 
+    "css": {
+      "handler": "css"
+    }
+  }, 
+  "static_base": "", 
+  "ttl": -1, 
+  "libs": {
+    "jquery": {
+      "version": "1.4.2", 
+      "base_url": "http://ajax.googleapis.com/ajax/libs/jquery/"
+    }, 
+    "suggest": {
+      "version": "1.4.1", 
+      "base_url": "http://freebaselibs.com/static/suggest/"
     }
   }
 }

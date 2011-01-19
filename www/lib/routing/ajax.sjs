@@ -30,7 +30,23 @@
  */
 
 var exports = {
-  router: acre.require("routing/static.sjs").StaticRouter
+  router: AjaxRouter
+};
+
+function AjaxRouter() {
+  var add = this.add = function(routes){};
+
+  var route = this.route = function(req) {
+    var segs = req.path_info.split("/");
+    segs[1] = segs[1] + ".svn.freebase-site.googlecode.dev";
+
+    var qs = req.query_string;
+    var path = "/" + segs.join("/") + (qs ? "?" + qs : "");
+
+    // console.log("AjaxRouter path", path);
+
+    acre.route(path);
+  };
 };
 
 if (acre.current_script === acre.request.script) {

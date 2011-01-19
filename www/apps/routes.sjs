@@ -63,11 +63,6 @@ function do_route(path) {
   segs.shift();
   var file = segs.shift() || "";
   path = "/" + segs.join("/");
-  
-  // pass global requests through
-  if (acre.request.base_path.indexOf("/global/") == 0) {
-    acre.route(file);
-  }
 
   switch (file) {
 

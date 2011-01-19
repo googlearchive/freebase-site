@@ -41,6 +41,7 @@
   var apps = {
     cuecard : acre.get_metadata().mounts.lib + "/cuecard"
   };
+  var ajax_base = h.ajax_url(acre.resolve('lib/cuecard/mqlread.sjs')).replace('mqlread.sjs',"");
 </acre:script>
 
 <acre:block def="title()">
@@ -86,8 +87,9 @@
 <acre:block def="footer_script()">
   <script src="lib/editor-bundle.mf.js"></script>
   <script>
-    window.SERVER.acre.apps = ${JSON.stringify(apps)};
-    window.SERVER.acre.libs = ${JSON.stringify(libs)};
+    window.SERVER.acre.apps      = ${JSON.stringify(apps)};
+    window.SERVER.acre.libs      = ${JSON.stringify(libs)};
+    window.SERVER.acre.ajax_base = ${JSON.stringify(ajax_base)};
   </script>
 	<script src="queryeditor.mf.js"></script>
   <acre:block if="acre.environ.request_method == 'POST'">

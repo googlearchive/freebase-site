@@ -31,10 +31,7 @@
 
 CueCard.helper = fb.acre.request.app_url + "/cuecard/";
 CueCard.freebaseServiceUrl = fb.acre.freebase.service_url + "/";
-CueCard.urlPrefix = CueCard.apiProxy.base = fb.acre.apps.cuecard
-                                              .replace("//","/global/")
-                                              .replace(".svn.freebase-site.googlecode.dev","") +  
-                                              "/";
+CueCard.urlPrefix = CueCard.apiProxy.base = fb.acre.ajax_base;
 
 var c = {};
 var queryEditorOptions;

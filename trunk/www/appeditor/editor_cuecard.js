@@ -264,10 +264,7 @@ var QueryEditor = function(parent, editor_config, task) {
         // Make sure CueCard is correctly initialized
         CueCard.helper = fb.acre.freebase.site_host + "/cuecard/";
         CueCard.freebaseServiceUrl = fb.acre.freebase.service_url + "/";
-        CueCard.urlPrefix = CueCard.apiProxy.base = fb.acre.apps.cuecard
-                                                      .replace("//","/global/")
-                                                      .replace(".svn.freebase-site.googlecode.dev","") +  
-                                                      "/";
+        CueCard.urlPrefix = CueCard.apiProxy.base = fb.acre.appeditor.cuecard_api;
         
         /* CREATE EDITOR CONFIG */
         // make a deep copy of the default config object so that each file can have different settings

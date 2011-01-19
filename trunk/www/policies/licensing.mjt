@@ -183,7 +183,7 @@
         We ask that you provide attribution at the most detailed level possible; please link to individual topics rather than to the Freebase homepage wherever you can. This makes it easier for people visiting your site to locate the source data and attribution information and, by directing people to the Freebase site, helps us build the Freebase community, which means more and better quality information for everyone. In cases where this is not feasible due to user interface constraints, etc., you must provide a General Attribution Notice linking back to the Freebase homepage, as described below. Attribution notices must be placed such that users viewing the Freebase content will be reasonably certain to see them. For example, if you are displaying a table with Freebase data on your webpage, you must place the attribution notice in close proximity to the table.
       </p>
       <p>
-        <b><a href="${h.url_for('policies','index')}">Learn more about How to Attribute Freebase here.</a></b>
+        <b><a href="/policies/">Learn more about How to Attribute Freebase here.</a></b>
       </p>
       <h3>
         Wikipedia attribution

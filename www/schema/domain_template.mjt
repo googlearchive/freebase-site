@@ -52,7 +52,7 @@
       <ol>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.url_for('schema')}">${_("Schema")}</a>
+            <a href="${h.fb_url('/schema')}">${_("Schema")}</a>
           </span>
         </li>  
         <li if="c.domain" class="breadcrumb-item last">

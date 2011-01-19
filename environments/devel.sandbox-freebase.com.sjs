@@ -5,8 +5,9 @@
  * 2. PrefixRouter - the main prefix-based routing rules
  */
 
-// lib to get routing helpers
-var lib = "//lib.www.trunk.svn.freebase-site.googlecode.dev";
+// Shared base urls
+var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
+var lib = "//lib" + codebase;
 
 // This is the error handler that handles all routing and not found errors
 acre.response.set_error_page(lib + "/error/error.mjt");
@@ -26,17 +27,17 @@ var rules = {
 
   "prefix": [
     // Urls for user-facing apps
-    {prefix:"/",                   app:"//homepage.www.trunk.svn.freebase-site.googlecode.dev", script: "index"},
-    {prefix:"/index",              url:"/", redirect:301},
-    {prefix:"/home",               app:"//homepage.www.trunk.svn.freebase-site.googlecode.dev", script: "home"},
-    {prefix:"/homepage",           app:"//homepage.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/schema",             app:"//schema.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/apps",               app:"//apps.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/appeditor",          app:"//appeditor.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/docs",               app:"//devdocs.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/inspect",            app:"//triples.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/policies",           app:"//policies.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/queryeditor",        app:"//queryeditor.www.trunk.svn.freebase-site.googlecode.dev"},
+    {prefix:"/",                   app:"//homepage" + codebase, script: "index"},
+    {prefix:"/index",              url:"/", redirect: 301},
+    {prefix:"/home",               app:"//homepage" + codebase, script: "home"},
+    {prefix:"/homepage",           app:"//homepage" + codebase},
+    {prefix:"/schema",             app:"//schema" + codebase},
+    {prefix:"/apps",               app:"//apps" + codebase},
+    {prefix:"/appeditor",          app:"//appeditor" + codebase},
+    {prefix:"/docs",               app:"//devdocs" + codebase},
+    {prefix:"/inspect",            app:"//triples" + codebase},
+    {prefix:"/policies",           app:"//policies" + codebase},
+    {prefix:"/queryeditor",        app:"//queryeditor" + codebase},
     {prefix:"/labs/cubed",         app:"//cubed"},
     {prefix:"/labs/parallax",      app:"//parallax"},
     {prefix:"/labs",               app:"//labs"},
@@ -57,7 +58,7 @@ var rules = {
     {prefix:"/lib/validator",      app:lib + "/validator"},
 
     // Urls for administrative tools
-    {prefix:"/admin",              app:"//admin.www.trunk.svn.freebase-site.googlecode.dev"},
+    {prefix:"/admin",              app:"//admin" + codebase},
     {prefix:"/app/tmt",            app:"//tmt"},
 
     //

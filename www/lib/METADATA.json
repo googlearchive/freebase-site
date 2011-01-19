@@ -11,7 +11,8 @@
     "css_manifest": "handlers/css_manifest_handler.sjs",
     "js_manifest": "handlers/js_manifest_handler.sjs",
     "tagged_static": "handlers/tagged_static_handler.sjs",
-    "ajax": "handlers/ajax_handler.sjs"
+    "ajax": "handlers/ajax_handler.sjs",
+    "template": "handlers/template_handler.sjs"
   },
   "extensions": {
     "css": {
@@ -28,6 +29,9 @@
     },
     "ajax": {
       "handler": "ajax"
+    },
+    "template": {
+      "handler": "template"
     }
   },
   "static_base": "",

@@ -42,7 +42,7 @@ var get_apps = function(environment) {
       return JSON.parse(res.body);
     })
     .then(function(env) {
-      var rules = env.PrefixRouter;
+      var rules = env.prefix;
 
       // de-dupe and clean-up apps
       var apps = {};

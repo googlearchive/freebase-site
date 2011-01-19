@@ -35,9 +35,10 @@ var handler = function() {
   // metadata overrides to use in processing
   // currently, just make sure mjt is compiled
   // to raw js rather than a package.
+  var lib_path = acre.get_metadata().path;
   var metadata_overrides = {
     "handlers": {
-      "mjt": "handlers/mjt_to_js_handler.sjs"
+      "mjt": lib_path + "/handlers/mjt_to_js_handler.sjs"
     }
   };
 

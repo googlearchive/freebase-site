@@ -43,11 +43,13 @@ var to_process = {
 
 function compile_mjt(source, pkgid) {
   var code = [];
+  code.push("(function(acre, h) {\n");
   code.push("if (jQuery) {\n");
   code.push("jQuery(window).trigger('acre.template.register', {pkgid: '" + pkgid + "', source: ");
   code.push(acre.template.string_to_js(source, pkgid));
   code.push("});\n");
   code.push("}\n");
+  code.push("})(window.freebase.acre, window.freebase.h);\n\n")
   return code.join("");
 };
 

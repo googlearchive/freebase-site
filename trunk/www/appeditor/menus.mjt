@@ -43,7 +43,7 @@
     App Directory...     
   </div>
   <div acre:if="ui.get_user()" id="your-apps-menu-item" class="section selectable">      
-    <div id="your-apps-opener"><img id="your-apps-loader" src="${ui.url_for('loader-tinyorange.gif')}" style="display:none;" /></div>
+    <div id="your-apps-opener"><img id="your-apps-loader" src="loader-tinyorange.gif" style="display:none;" /></div>
     Your Apps 
   </div>
   <div acre:else="" class="section">

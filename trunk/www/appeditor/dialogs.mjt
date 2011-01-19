@@ -110,7 +110,7 @@
     </fieldset>
 
     <div class="cc-callout">
-      <a class="cc-logo" href="http://creativecommons.org/licenses/BSD/"><img src="${ui.url_for('cc-bsd.png')}" alt="CC-BSD" /></a>
+      <a class="cc-logo" href="http://creativecommons.org/licenses/BSD/"><img src="cc-bsd.png" alt="CC-BSD" /></a>
       <div class="cc-about">
         All Acre apps are published on Freebase under the
         <a href="http://creativecommons.org/licenses/BSD/">BSD license</a>
@@ -793,7 +793,7 @@
 
 <acre:block def="about_appeditor()">
   <h3 class="dialog-title">About App Editor</h3>
-  <iframe id="dialog-aboutappeditor" class="dialog-content" src="${ui.url_for('license.html')}"></iframe>
+  <iframe id="dialog-aboutappeditor" class="dialog-content" src="/appeditor/license.html"></iframe>
   <div class="button-bar">
     <b>Version: </b>
     <span>$fb.acre.appeditor.version</span>

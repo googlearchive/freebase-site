@@ -171,7 +171,9 @@ function ajax_url(path, params) {
  * (i.e, http://www.freebase.com/path?params)
  */
 function legacy_fb_url(path, params) {
-  var host = acre.freebase.site_host.replace('devel.', 'www.');
+  var host = acre.freebase.site_host
+    .replace('devel.', 'www.')
+    .replace(':'+acre.request.server_port, '');
   return build_url(host, path, params);
 }
 
@@ -310,19 +312,20 @@ function parse_uri(str) {
 
 //-----------------DEPRECATED----------------//
 
-/**
- * Get the canonical url for an acre resource specified by "app" label and "file" name.
- * The "app" label MUST be defined in the /freebase/site/routing/MANIFEST and /freebase/site/routing/app_routes.
- * This is to ensure we prefix the proper routing path when we are served under
- * a known client url (@see is_client).
- *
- * @param app:String (required) - The app label defined in /freebase/site/routing/MANIFEST and /freebase/site/routing/app_routes.
- * @param file:String (require) - The file name where /app/label/id/file = the graph id.
- * @param params:Object,Array (optional) - Query string parameters can be
- *                                         a dictonary of {name: value, ...} or
- *                                         an array of [ [name, value] .., ] tuples.
- * @param extra_path:String (optional) - Additional path information appended to the url, e.g., http://.../resource[extra_path]?query_params
- */
+// Very simply converts to new fb_url style.
+// ***THIS SHOULD NOT GO TO PRODUCTION***
 function url_for(app, file, params, extra_path) {
-  return "/";
+  if (app === 'triples') {
+    app = 'inspect';
+  } else if (app === 'homepage' && file === 'index') {
+    app = '';
+    file = null;
+  } else if (app === 'homepage' && file === 'home') {
+    app = 'home';
+    file = null;
+  }
+  var path = '/'+app;
+  if (file) path += '/'+file;
+  if (extra_path) path += extra_path;
+  return fb_url(path, params);
 }

@@ -40,7 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   var lib_path = acre.get_metadata().mounts.lib;
   
   var surl = function(path) {
-    return acre.resolve(path).replace("//", "/global/");
+    return h.static_url(acre.resolve(path));
   };
 
   var SERVER = {
@@ -61,7 +61,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       mwLastWriteTime: null,
       tid: null,
       appeditor: {
-        service_path : lib_path.replace("//", "/global/") + "/appeditor-services/",
+        service_path : h.ajax_url(lib_path) + "/appeditor-services/",
         version: (acre.request.script.app.version || "trunk")
       },
       apps : {

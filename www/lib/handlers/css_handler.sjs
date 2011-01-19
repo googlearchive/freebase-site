@@ -72,7 +72,7 @@ var handler = function() {
         });
         return buf.join("\n");
       };
-      
+
       var res = script.get_content();
       res.body = css_preprocessor(res.body);
       return "var module = ("+JSON.stringify(res)+");";
@@ -81,8 +81,8 @@ var handler = function() {
       return compiled_js.module;
     },
     'to_http_response': function(module, script) {
-      module.headers['content-type'] = 'text/css';
-      return module;      
+      acre.response.set_header('content-type', 'text/css');
+      return module;
     }
-  }
+  };
 };

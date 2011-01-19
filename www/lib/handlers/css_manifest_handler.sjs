@@ -35,7 +35,7 @@ var less = function(data) {
   less_parser.parse(data, function(e, root) {
     result = root.toCSS();
   });
-  
+
   // XXX - dangerous to rely on callback completing?
   return result;
 };
@@ -47,7 +47,7 @@ var handler = function() {
     },
     'to_module' : function(compiled_js, script) {
       var res = compiled_js.res;
-      
+
       try {
         var mf = JSON.parse(res.body);
       } catch(e) {
@@ -55,7 +55,7 @@ var handler = function() {
       }
 
       if (!(mf instanceof Array)) {
-        throw new Error("Manifest file must be an array."); 
+        throw new Error("Manifest file must be an array.");
       }
 
       // acquire all the files
@@ -67,12 +67,12 @@ var handler = function() {
         buf.push(req.body);
       }
       res.body = buf.join("");
-      
+
       return res;
     },
     'to_http_response': function(module, script) {
       module.body = less(module.body);
-      module.headers['content-type'] = 'text/css';
+      acre.response.set_header("content-type", "text/css");
       return module;
     }
   };

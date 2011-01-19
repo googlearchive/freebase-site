@@ -29,9 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- 
+
 var handler = function() {
-    
+
   // metadata overrides to use in processing
   // currently, just make sure mjt is compiled
   // to raw js rather than a package.
@@ -40,7 +40,7 @@ var handler = function() {
       "mjt": "handlers/mjt_to_js_handler.sjs"
     }
   };
-  
+
   return {
     'to_js': function(script) {
       return "var res = ("+JSON.stringify(script.get_content())+");";
@@ -55,7 +55,7 @@ var handler = function() {
       }
 
       if (!(mf instanceof Array)) {
-        throw new Error("Manifest file must be an array."); 
+        throw new Error("Manifest file must be an array.");
       }
 
       // acquire all the files
@@ -64,14 +64,14 @@ var handler = function() {
         var path = mf[i];
         buf.push("\n/** " + path + "**/\n");
         var req = script.scope.acre.require(path, metadata_overrides);
-        buf.push(req.body);    
+        buf.push(req.body);
       }
       res.body = buf.join("");
 
       return res;
     },
     'to_http_response': function(module, script) {
-      module.headers['content-type'] = 'application/x-javascript';
+      acre.response.set_header("content-type", "application/x-javascript");
       return module;
     }
   };

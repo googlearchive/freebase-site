@@ -43,7 +43,9 @@ function StaticRouter() {
     var qs = req.query_string;
     var path = "/" + segs.join("/") + (qs ? "?" + qs : "");
 
-    acre.route(path);
+    // console.log("StaticRouter path", path);
+
+    acre.write(acre.include(path));
   };
 };
 

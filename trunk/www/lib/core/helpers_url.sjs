@@ -324,49 +324,5 @@ function parse_uri(str) {
  * @param extra_path:String (optional) - Additional path information appended to the url, e.g., http://.../resource[extra_path]?query_params
  */
 function url_for(app, file, params, extra_path) {
-  var app_routes = acre.require("routing/app_routes");
-
-  var path = app_routes.app_labels[app];
-  if (!path) {
-    throw("app is not defined in the routing MANIFEST: " + app);
-  }
-  // params can be an array of tuples
-  // [ [name1,value1], [name2,value2], ...]
-  params = parse_params(params);
-  if (!extra_path) {
-    extra_path = "";
-  }
-  // If served by client/routing, look up the client route
-  // information from /freebase/site/routing/app_routes table.
-  //
-  // Known client urls:
-  // http://www.sandbox-freebase.com
-  // http://www.freebase.com
-  if (is_client()) {
-    var route = app_routes.rules.route_for_app(app, file);
-    if (!route) {
-      throw("No route found in routing app_routes for app:"+app+" script:"+file);
-    }
-
-    if (route.script && route.script === file) {
-      var url = acre.request.app_url + route.prefix + extra_path;
-      return acre.form.build_url(url, params);
-    } else {
-      var url = acre.request.app_url + route.prefix + (file ? "/" + file : "") + extra_path;
-      return acre.form.build_url(url, params);
-    }
-
-  } else {
-    // Else we are running a standalone acre app, i.e:
-    // http://schema.site.freebase.dev.acre.z:8115
-    // http://schema.site.freebase.dev.trunk.qa-freebaseapps.com
-    // http://schema.site.freebase.dev.branch.qa-freebaseapps.com
-    // http://schema.site.freebase.dev.sandbox-freebaseapps.com
-    // http://schema.site.freebase.dev.freebaseapps.com
-
-    // else absolute resource_url for external urls
-    // new require path syntax (i.e., //app.site.freebase.dev/file)
-    var url = acre.host.protocol + ":" + path + "." + acre.host.name + (acre.host.port !== 80 ? (":" + acre.host.port) : "") + (file ? "/" + file : "") + extra_path;
-    return acre.form.build_url(url, params);
-  }
+  return "/";
 }

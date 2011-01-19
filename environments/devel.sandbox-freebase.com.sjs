@@ -184,9 +184,6 @@ if (acre.current_script === acre.request.script) {
 var router_path = lib + "/routing/";
 ["host", "prefix"].forEach(function(name) {
   var router_file = acre.require(router_path + name);
-
-  console.log("router_file", router_file);
-
   var router_class;
   if (router_file.router) {
     router_class = router_file.router;

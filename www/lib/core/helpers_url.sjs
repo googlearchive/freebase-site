@@ -315,6 +315,9 @@ function parse_uri(str) {
 // Very simply converts to new fb_url style.
 // ***THIS SHOULD NOT GO TO PRODUCTION***
 function url_for(app, file, params, extra_path) {
+  params = parse_params(params || {});
+  params['***DEPRECATED***'] = 'Move from url_for to fb_url';
+  
   if (app === 'triples') {
     app = 'inspect';
   } else if (app === 'homepage' && file === 'index') {

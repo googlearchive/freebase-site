@@ -242,8 +242,6 @@ class ActionLink:
 
 
     ACRE_DIR = c.options.acre_dir + '/webapp'
-    #SITE_TRUNK_DIR = c.options.site_dir + '/trunk/www'
-    #SITE_BRANCH_DIR = c.options.site_dir + '/branches/www'
 
     #do freebase.ots symlink
 
@@ -258,35 +256,8 @@ class ActionLink:
     c.log('Starting acre build.')
     os.chdir(c.options.acre_dir)
 
-    cmd = ['./acre', 'build']
-    (r, result) = c.run_cmd(cmd)
-
-    if not r:
-      c.error('Failed to build acre. Error:')
-      return c.error(result)
-
     #do site symlink
     c.log('Linking acre and site')
-
-    '''
-    #first link ACRE/freebase/site --> site/trunk/site
-    acre_freebase_dir = ACRE_DIR + '/WEB-INF/scripts/freebase'
-
-    if not os.path.isdir(acre_freebase_dir):
-      try:
-        os.mkdir(acre_freebase_dir)
-      except:
-        return c.error('Unable to create directory %s.' % acre_freebase_dir)
-
-    source_link = SITE_TRUNK_DIR
-    target_link = acre_freebase_dir + '/site'
-
-    r = c.symlink(source_link, target_link)
-
-    if not r:
-      return c.error('There was an error linking the acre and site dirs')
-
-    '''
 
     acre_freebase_dir = ACRE_DIR + '/WEB-INF/scripts/googlecode/freebase-site'
 
@@ -304,17 +275,6 @@ class ActionLink:
     if not r:
       return c.error('There was an error linking the acre and site dirs')
 
-    #make the released version of the routing app to be itself
-    '''
-    source_link = SITE_TRUNK_DIR + '/routing'
-    target_link = SITE_TRUNK_DIR + '/routing/release'
-
-    r = c.symlink(source_link, target_link)
-
-    if not r:
-      return c.error('There was an error linking the released version of the routing app to its trunk version')
-
-    '''
     GetAcre(c).build()
     return True
 
@@ -630,7 +590,7 @@ class ActionCreateAppBranch():
 
     #if this is not the core app, and it depends on core
     #then branch the core app and update the version number in our app
-    if branch_app.app_key != 'lib':
+    if not branch_app.is_lib():
       #XXX to be implemented
       updated = branch_app.update_lib_dependency(AppFactory(c)('lib', version=c.options.lib))
       if updated:
@@ -737,7 +697,7 @@ class ActionCreateAppTag():
 
     #if this is not the core app, and it depends on core
     #then branch the core app and update the version number in our app
-    if tag_app.app_key != 'lib':
+    if not tag_app.is_lib():
 
       if lib_app:
         update = tag_app.update_lib_dependency(lib_app)

@@ -263,13 +263,13 @@ class App:
 
     return revision
 
+
   def statify_css(self, filename):
     '''
     For a given filename, it will call the local acre instance
     to generate the concatanated css file, minify the result, 
     and then replace the file with the new contents in-place in the file system. 
     '''
-
     c = self.context
 
     file_url = "%s/%s" % (self.static_url(), filename)
@@ -346,16 +346,17 @@ class App:
         static_files.append(filename)
 
     
-    if not len(static_files):
-        return c.log('No static files generated')
+    self.update_handlers(static = True, cache_forever = True)
 
-    if len(static_files):
-      self.update_handlers(static = True)
-    
-    (r, result) = self.svn_commit(msg = 'created static files %s' % ' '.join(static_files))
+
+    if not len(static_files):
+        c.log('No static files generated')
+        (r, result) = self.svn_commit(msg = 'updated static handlers and cache forever')
+    else:
+        (r, result) = self.svn_commit(msg = 'updated static handlers, cache forever, created static files:  %s' % ' '.join(static_files))
 
     if not r:
-        return c.error("Failed to commit new static files for %s" % self)
+        return c.error("Failed to commit handlers and static files for %s" % self)
 
     return True
 
@@ -455,14 +456,21 @@ class App:
             },
         "mf.js": {
             "handler": "js_manifest"
+            },
+        "omf.css": {
+            "handler": "css_manifest"
+            },
+        "omf.js": {
+            "handler": "js_manifest"
             }
         }
     
     if static:
-      for file_extension, v in handlers.iteritems():
-        v['handler'] = 'tagged_static'
+      #omf files never get the tagged_static handler
+      for i in ['mf.css', 'mf.js']:
+        handlers[i]['handler'] = 'tagged_static'
       for file_extension in IMG_EXTENSIONS:
-          handlers[file_extension[1:]] = { 'handler' : 'tagged_static' }
+        handlers[file_extension[1:]] = { 'handler' : 'tagged_static' }
 
     if cache_forever:
         metadata['ttl'] = -1
@@ -588,18 +596,102 @@ class App:
     if not tag:
         tag = self.next_tag()
 
-    msg = 'Creating tag %s' % tag
+    msg = '[sitedeploy] Creating tag %s' % tag
 
     target_app = AppFactory(c)(self.app_key, version=self.version, tag=tag)
 
-    cmd = ['svn', 'copy', self.svn_url(), target_app.svn_url(), '--parents', '-m', '"sitedeploy: %s"' % msg, '--username', c.googlecode_username, '--password', c.googlecode_password]
+    cmd = ['svn', 'copy', self.svn_url(), target_app.svn_url(), '--parents', '-m', msg, '--username', c.googlecode_username, '--password', c.googlecode_password]
     (r, output) = self.context.run_cmd(cmd)
 
     if not r:
         return r
 
+    new_files = []
+    for filename in target_app.get_app_files():
+      if filename.endswith(".mf.css") or filename.endswith('.mf.js'):
+        #manifest css and js files need special handling when creating a tag
+        r = target_app.process_manifest_resource_file(filename)
+          
+        if not r:
+          return r
+        
+        new_files.append(filename)
+
+
+    if len(new_files):
+        target_app.svn_commit(msg = 'Modified manifest resource files: %s' % ' '.join(new_files))
+
     return target_app
+
+
+  def process_manifest_resource_file(self, filename):
+    '''
+    Given a filename of the form *.mf.{css,js} this function will:
+    1. Substitute all references to other manifest files with their omf equivalent
+    2. Create a copy of the manifest file to <original_filename>.omf.<original_extension>
+
+    E.g. given the file path foo/bar.mf.css with contents "['lib/template/freebase.mf.css']"
+    1. The contents of the file will become ['lib/template/freebase.omf.css']
+    2. A second file will be created with the path foo/bar.omf.css with the new contents
+       (i.e. both files will point to the omf versions of mf files)
+
+    '''
+
+    #nothing to do
+    if not (filename.endswith('.mf.css') or filename.endswith('.mf.js')):
+      return True
+
+    c = self.context
+
+    #utility function for converting a file path to a modified path
+    #e.g. foo/bar.mf.css --> foo/bar.omf.css
+    def get_modified_filename(f):
+      path_parts = f.split('.mf.')
+      return '.omf.'.join(path_parts)
+        
+    #first copy the file to the modified path
+    target_filename = get_modified_filename(filename)
+    (r, contents) = self.read_file(filename)
+
+    if not r:
+        return r
+
+    new_mf_files = []
+    rewrite = False    
+
+    #now modify the manifest file in place to point to the converted files
+    try:
+      mf_files = json.loads(contents)
+    except:
+      #theoretically, the contents of a manifest file can be actual code (css or js)
+      #so we have to pass silently here
+      pass
+    else:
+      for file_path in mf_files:
+        if file_path.endswith('.mf.css') or file_path.endswith('.mf.js'):
+          new_file_path = get_modified_filename(file_path)
+          rewrite = True
+        else:
+          new_file_path = file_path
+
+        new_mf_files.append(new_file_path)
+                  
+      if rewrite:
+          contents = json.dumps(new_mf_files)
+
+
+    #always write the new converted filename
+    r = self.write_file(target_filename, contents=contents)
+
+    if not r:
+        return r
+
+    #if necessary, also overwrite the original file's contents
+    if rewrite:
+        return self.write_file(filename, contents = contents)
     
+    return True
+
   def branch(self, target_version=None):
 
     c = self.context
@@ -622,9 +714,9 @@ class App:
       c.log('%s already exists in SVN - not branching' % target_app)
       return target_app
 
-    msg = 'Creating branch version {version} of {app}'.format(version=target_app.version, app=target_app.app_key)
+    msg = '[sitedeploy] Creating branch %s' % target_app
     c.log(msg, color=c.BLUE)
-    cmd = ['svn', 'copy', self.svn_url(), target_app.svn_url(), '--parents', '-m', '"appdeploy: %s"' % msg, '--username', c.googlecode_username, '--password', c.googlecode_password]
+    cmd = ['svn', 'copy', self.svn_url(), target_app.svn_url(), '--parents', '-m', msg, '--username', c.googlecode_username, '--password', c.googlecode_password]
     (r, output) = c.run_cmd(cmd)
 
     if not r:
@@ -640,9 +732,10 @@ class App:
       path = self.svn_path()
 
     if not msg:
-      msg = 'committing app %s version %s' % (self.app_key, self.version)
+      msg = '[sitedeploy] committing ' % self
+    else:
+      msg = '[sitedeploy] %s' % msg
 
-    c.log('Committing %s to SVN' % self)
     cmd = ['svn', 'commit', '-m', msg, path, '--username', c.googlecode_username, '--password', c.googlecode_password]
     return c.run_cmd(cmd, name='commit app', exit=False)
 

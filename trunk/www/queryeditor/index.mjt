@@ -33,15 +33,16 @@
   var h = acre.require("lib/core/helpers");
   var i18n = acre.require("lib/i18n/i18n");
   var _ = i18n.gettext;
+  var lib_path = acre.get_metadata().mounts.lib;
 
 	var libs = {
-    codemirror: h.static_url(acre.resolve("lib/codemirror/codemirror-frame.mf.js")),
-    codemirror_css: h.static_url(acre.resolve("lib/codemirror/codemirror-frame.mf.css"))
+    codemirror: h.static_url(lib_path + "/codemirror/codemirror-frame.mf.js"),
+    codemirror_css: h.static_url(lib_path + "/codemirror/codemirror-frame.mf.css")
   };
   var apps = {
-    cuecard : acre.get_metadata().mounts.lib + "/cuecard"
+    cuecard : lib_path + "/cuecard"
   };
-  var ajax_base = h.ajax_url(acre.resolve('lib/cuecard/mqlread.sjs')).replace('mqlread.sjs',"");
+  var ajax_base = h.ajax_url(lib_path + "/cuecard/");
 </acre:script>
 
 <acre:block def="title()">

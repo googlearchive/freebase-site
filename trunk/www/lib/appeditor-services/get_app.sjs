@@ -255,16 +255,16 @@ function make_disk_app(appinfo) {
   var r = {};
   
   // properties  
-  r.path           = "//" + appinfo.app_id.split("/").reverse().join(".") + "dev";
-  r.appid          = appinfo.app_id;
+  r.path           = "//" + appinfo.id.split("/").reverse().join(".") + "dev";
+  r.appid          = appinfo.id;
   r.acre_host      = null;
   r.repository     = {
       url                    : null,
       appeditor_service_base : null,
       versioned              : false,
   };
-  r.guid           = appinfo.app_guid;
-  r.name           = appinfo.app_id.split("/")[1];
+  r.guid           = appinfo.guid;
+  r.name           = appinfo.id.split("/")[1];
   r.creation_time  = null;
   r.version        = appinfo.versions.length ? appinfo.versions[0] : null;
   r.oauth_enabled  = null;

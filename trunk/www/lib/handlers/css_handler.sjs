@@ -35,46 +35,9 @@ var h = acre.require("core/helpers");
 var handler = function() {
   return {
     'to_js': function(script) {
-
-      function css_resource_url(url, use_acre_url) {
-        if (url.indexOf("static://") === 0) {
-          return quoted_css_url(h.freebase_resource_url(url.substring(9)));
-        }
-        return quoted_css_url(url);
+      var res = {
+        body: preprocessor(script)
       };
-
-      function quoted_css_url(url) {
-        if (url.indexOf('"') !== 0 && url.indexOf("'") !== 0) {
-          url = '"'+url+'"';
-        }
-        return 'url('+url+')';
-      };
-
-      function css_preprocessor(str) {
-        var buf = [],
-            m,
-            url_regex = /url\s*\(\s*([^\)]+)\s*\)/gi,
-            scheme_regex = /^\w+\:\/\//;
-
-        str.split(/[\n\r\f]/).forEach(function(l) {
-          buf.push(l.replace(url_regex, function(m, group) {
-            var url = group.replace(/^\s+|\s+$/g, "");
-
-            if (url.indexOf("http://") == 0 || url.indexOf("https://") === 0) {
-              return quoted_css_url(url);
-            } else if (scheme_regex.test(url)) {
-              return css_resource_url(url);
-            } else {
-              var path = script.scope.acre.resolve(url);
-              return quoted_css_url(h.static_url(path));
-            }
-          }));
-        });
-        return buf.join("\n");
-      };
-
-      var res = script.get_content();
-      res.body = css_preprocessor(res.body);
       return "var module = ("+JSON.stringify(res)+");";
     },
     'to_module': function(compiled_js, script) {
@@ -85,4 +48,56 @@ var handler = function() {
       return module;
     }
   };
+};
+
+/**
+ * The less parser requires all urls to be in quotes
+ */
+function quote_url(url) {
+  // convert beginning/ending single quotes to double quotes
+  url = url.replace(/^'|'$/g, '"');
+  // if url does not begin/end with double quotes, wrap it in double quotes
+  if (!(url.indexOf('"') === 0 || url.lastIndexOf('"') === (url.length - 1))) {
+    url = '"' + url + '"';
+  }
+  return url;
+};
+
+/**
+ * Convert all static://* to cached python client resource urls.
+ * This should go away once we convert all pages to acre.
+ */
+function resource_url(url) {
+  url = quote_url(url);
+  return url.replace(/^"static:\/\/(.*)"$/, function(m, group) {
+    return '"' + h.freebase_resource_url(group) + '"';
+  });
+};
+
+function preprocessor(script) {
+  var str = script.get_content().body;
+
+  var buf = [],
+      m,
+      url_regex = /url\s*\(\s*([^\)]+)\s*\)/gi,
+      scheme_regex = /^\w+\:\/\//;
+
+  str.split(/[\n\r\f]/).forEach(function(l) {
+    buf.push(l.replace(url_regex, function(m, group) {
+      var url = group.replace(/^\s+|\s+$/g, "");
+
+      if (url.indexOf("http://") === 0 || url.indexOf("https://") === 0) {
+        url = quote_url(url);
+      }
+      else if (scheme_regex.test(url)) {
+        url = resource_url(url);
+      }
+      else {
+        var path = script.scope.acre.resolve(url);
+        url = quote_url(h.static_url(path));
+      }
+      return "url(" + url + ")";
+    }));
+  });
+  return buf.join("\n");
 };

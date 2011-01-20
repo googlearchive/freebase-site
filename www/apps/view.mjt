@@ -90,7 +90,7 @@
         <img class="app-icon" acre:if="c.app.icon" src="$c.app.icon.src" alt="$c.app.name"/>
         <div class="app-description">
           <p acre:if="c.app.description">$c.app.description</p>
-          <p acre:if="c.app.article">${acre.markup.bless(c.app.article.html)}</p>
+          <p acre:if="c.app.article">${c.app.article.html}</p>
         </div>
         <acre:block if="c.app.authors">
           <h2 class="user-list-title">Authors:</h2>

@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mox").playback(this, "i18n/playback_test_i18n.json");
+acre.require("test/mock").playback(this, "i18n/playback_test_i18n.json");
 
 var h = acre.require("core/helpers");
 var i18n = acre.require("i18n/i18n");

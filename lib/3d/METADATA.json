@@ -1,54 +1,76 @@
 {
-  "ttl": 0,
-  "error_page" : "error/error.mjt",
-  "mounts": {
-    "libraries": "//2.libraries.apps.freebase.dev",
-    "service": "//service"
-  },
   "handlers": {
-    "mjt": "handlers/mjt_handler.sjs",
-    "css": "handlers/css_handler.sjs",
-    "css_manifest": "handlers/css_manifest_handler.sjs",
-    "js_manifest": "handlers/js_manifest_handler.sjs",
-    "tagged_static": "handlers/tagged_static_handler.sjs",
-    "ajax": "handlers/ajax_handler.sjs",
-    "template": "handlers/template_handler.sjs"
-  },
-  "extensions": {
-    "css": {
-      "handler": "css"
-    },
-    "less": {
-      "handler": "css"
-    },
-    "mf.css": {
-      "handler": "css_manifest"
-    },
-    "mf.js": {
-      "handler": "js_manifest"
-    },
-    "ajax": {
-      "handler": "ajax"
-    },
-    "template": {
-      "handler": "template"
-    }
-  },
-  "static_base": "",
-  "libs" : {
-    "suggest" : {
-      "base_url": "http://freebaselibs.com/static/suggest/",
-      "version": "1.4.1"
-    },
-    "jquery" : {
-      "base_url": "http://ajax.googleapis.com/ajax/libs/jquery/",
-      "version": "1.4.2"
-    }
-  },
+    "js_manifest": "handlers/js_manifest_handler.sjs", 
+    "mjt": "handlers/mjt_handler.sjs", 
+    "ajax": "handlers/ajax_handler.sjs", 
+    "css_manifest": "handlers/css_manifest_handler.sjs", 
+    "template": "handlers/template_handler.sjs", 
+    "tagged_static": "handlers/tagged_static_handler.sjs", 
+    "css": "handlers/css_handler.sjs"
+  }, 
   "freebase": {
     "resource": {
-      "hash": "dd20b6623a39c3624ab666c6f4e69f80423c7186ab9f8add7c53dd927ad389fa",
+      "hash": "dd20b6623a39c3624ab666c6f4e69f80423c7186ab9f8add7c53dd927ad389fa", 
       "base_url": "http://res.freebase.com/s/"
     }
-  }
+  }, 
+  "mounts": {
+    "libraries": "//2.libraries.apps.freebase.dev", 
+    "service": "//service"
+  }, 
+  "extensions": {
+    "omf.css": {
+      "media_type": "text/css", 
+      "handler": "css_manifest"
+    }, 
+    "less": {
+      "handler": "css"
+    }, 
+    "mf.css": {
+      "media_type": "text/css", 
+      "handler": "tagged_static"
+    }, 
+    "jpg": {
+      "media_type": "image/jpg", 
+      "handler": "tagged_static"
+    }, 
+    "omf.js": {
+      "media_type": "text/javascript", 
+      "handler": "js_manifest"
+    }, 
+    "mf.js": {
+      "media_type": "text/javascript", 
+      "handler": "tagged_static"
+    }, 
+    "ajax": {
+      "handler": "ajax"
+    }, 
+    "png": {
+      "media_type": "image/png", 
+      "handler": "tagged_static"
+    }, 
+    "template": {
+      "handler": "template"
+    }, 
+    "gif": {
+      "media_type": "image/gif", 
+      "handler": "tagged_static"
+    }, 
+    "css": {
+      "handler": "css"
+    }
+  }, 
+  "static_base": "", 
+  "ttl": -1, 
+  "libs": {
+    "jquery": {
+      "version": "1.4.2", 
+      "base_url": "http://ajax.googleapis.com/ajax/libs/jquery/"
+    }, 
+    "suggest": {
+      "version": "1.4.1", 
+      "base_url": "http://freebaselibs.com/static/suggest/"
+    }
+  }, 
+  "error_page": "error/error.mjt"
 }

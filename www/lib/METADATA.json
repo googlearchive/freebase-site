@@ -34,8 +34,7 @@
       "handler": "ajax"
     },
     "template": {
-      "handler": "template",
-      "media_type": "text/html"
+      "handler": "template"
     }
   },
   "static_base": "",

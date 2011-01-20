@@ -452,33 +452,40 @@ class App:
 
     handlers =  {
         "mf.css": {
-            "handler": "css_manifest"
+            "handler": "css_manifest",
+            "media_type" : "text/css"
             },
         "mf.js": {
-            "handler": "js_manifest"
+            "handler": "js_manifest",
+            "media_type" : "text/javascript"
             },
         "omf.css": {
-            "handler": "css_manifest"
+            "handler": "css_manifest",
+            "media_type" : "text/css"
             },
         "omf.js": {
-            "handler": "js_manifest"
+            "handler": "js_manifest",
+            "media_type" : "text/javascript"
             }
         }
-    
+
+    if not metadata.get('extensions'):
+        metadata['extensions'] = {}
+
     if static:
       #omf files never get the tagged_static handler
-      for i in ['mf.css', 'mf.js']:
-        handlers[i]['handler'] = 'tagged_static'
-      for file_extension in IMG_EXTENSIONS:
-        handlers[file_extension[1:]] = { 'handler' : 'tagged_static' }
+      handlers['mf.css']['handler'] = 'tagged_static'
+      handlers['mf.js']['handler'] = 'tagged_static'
+      metadata['extensions'].update(handlers)
 
+      for file_extension in [x[1:] for x in IMG_EXTENSIONS]:
+        if metadata['extensions'].get(file_extension):
+          metadata['extensions'][file_extension].update({ 'handler' : 'tagged_static' })
+        else:
+          metadata['extensions'][file_extension] = { 'handler' : 'tagged_static', 'media_type' : 'image/%s' % file_extension }
+            
     if cache_forever:
         metadata['ttl'] = -1
-
-    if metadata.get('extensions'):
-      metadata['extensions'].update(handlers)
-    else:
-      metadata['extensions'] = handlers
 
     self.write_metadata(metadata)
 

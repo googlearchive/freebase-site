@@ -174,7 +174,7 @@ function delete_property(prop) {
 };
 
 var __counter = 0;
-var __name = acre.request.script.id.replace(/[^\w]/g, "_").toLowerCase();
+var __name = acre.request.script.name.replace(/[^\w]/g, "_").toLowerCase();
 
 /**
  * Generate a consistent test name given a test name prefix

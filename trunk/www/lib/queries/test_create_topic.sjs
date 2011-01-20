@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mox").playback(this, "queries/playback_test_create_topic.json");
+acre.require("test/mock").playback(this, "queries/playback_test_create_topic.json");
 
 var test_helpers = acre.require("test/helpers");
 var create_topic = acre.require("queries/create_topic").create_topic;

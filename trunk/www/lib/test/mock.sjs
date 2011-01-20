@@ -1,20 +1,20 @@
 var exports = {
   record: function(scope) {
-    console.log("mox.record", scope.acre.request.script.id, "OFF");
+    console.log("mock.record", scope.acre.request.script.id, "OFF");
   },
   playback: function(scope, playback_file) {
-    console.log("mox.playback", scope.acre.request.script.id, playback_file, "OFF");
+    console.log("mock.playback", scope.acre.request.script.id, playback_file, "OFF");
   }
 };
 
 var validators = acre.require("validator/validators");
 
-// ?mox=0 to disabled mox record/playback
-var mox = validators.StringBool(acre.request.params, "mox", {if_empty: true});
+// ?mock=0 to disabled mock record/playback
+var mock = validators.StringBool(acre.request.params, "mock", {if_empty: true});
 
 var self = this;
 
-if (mox) {
+if (mock) {
   var apis = acre.require("promise/apis");
   var deferred = acre.require("promise/deferred");
   var h = acre.require("core/helpers");
@@ -25,7 +25,7 @@ if (mox) {
    * Usage:
    *
    *   acre.require("/test/lib").enable(this);
-   *   acre.require("test/mox").record(this);
+   *   acre.require("test/mock").record(this);
    *   test(...);
    *   acre.test.report();
    *
@@ -35,7 +35,7 @@ if (mox) {
    * 4. You can then just copy and paste the JSON for the mock playback phase.
    */
   exports.record = function(scope) {
-    console.log("mox.record", scope.acre.request.script.id, "ON");
+    console.log("mock.record", scope.acre.request.script.id, "ON");
     var test_data = [];
     var playback_data = {};
 
@@ -95,7 +95,7 @@ if (mox) {
    * Usage:
    *
    *   acre.require("/test/lib").enable(this);
-   *   acre.require("test/mox").playback(this, "playback_file.json");
+   *   acre.require("test/mock").playback(this, "playback_file.json");
    *   test(...);
    *   acre.test.report();
    *
@@ -105,7 +105,7 @@ if (mox) {
    * 4. Your tests should no longer be dependent on "live" api calls.
    */
   exports.playback = function(scope, playback_file) {
-    console.log("mox.playback", scope.acre.request.script.id, playback_file, "ON");
+    console.log("mock.playback", scope.acre.request.script.id, playback_file, "ON");
     var playback_data = JSON.parse(scope.acre.require(playback_file).body);
 
     var test_info;

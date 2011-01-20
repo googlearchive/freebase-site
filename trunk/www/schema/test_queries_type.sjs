@@ -30,10 +30,11 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("lib/test/mox").playback(this, "playback_test_queries_type.json");
+acre.require("lib/test/mock").playback(this, "playback_test_queries_type.json");
 
 var ht = acre.require("helpers_test");
 var q = acre.require("queries");
+var self = this;
 
 test("base_type", function() {
   var result;
@@ -43,7 +44,7 @@ test("base_type", function() {
     });
   acre.async.wait_on_results();
   ok(result);
-  ht.assert_type(result);
+  ht.assert_type(self, result);
 });
 
 test("type", function() {
@@ -54,9 +55,9 @@ test("type", function() {
     });
   acre.async.wait_on_results();
   ok(result);
-  ht.assert_type(result);
+  ht.assert_type(self, result);
   ok(result.incoming);
-  ht.assert_keys(["domain", "commons", "bases"], result.incoming);
+  ht.assert_keys(self, ["domain", "commons", "bases"], result.incoming);
 });
 
 test("typediagram", function() {
@@ -67,9 +68,9 @@ test("typediagram", function() {
     });
   acre.async.wait_on_results();
   ok(result);
-  ht.assert_type(result);
+  ht.assert_type(self, result);
   ok(result.incoming);
-  ht.assert_keys(["domain", "commons", "bases"], result.incoming);
+  ht.assert_keys(self, ["domain", "commons", "bases"], result.incoming);
 });
 
 

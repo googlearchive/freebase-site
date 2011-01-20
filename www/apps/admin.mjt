@@ -56,12 +56,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       <ol>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.url_for('apps')}">Apps</a>
+            <a href="/apps">Apps</a>
           </span>
         </li>
         <li class="breadcrumb-item" acre:if="c.app.creator">
           <span class="breadcrumb-item-inner">
-            <a href="${h.url_for('apps',null, null, c.app.creator.id)}">$c.app.creator.name</a>
+            <a href="${h.fb_url('/apps', c.app.creator.id)}">$c.app.creator.name</a>
           </span>
         </li>
         <li class="breadcrumb-item last" if="c.app">
@@ -90,7 +90,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           <em>Consumer Secret:</em> $c.app.oauth.secret
         </span>
       </div>
-      <form id="edit-props" action="${h.url_for('apps', 'form', null, '/submit/set_app_properties')}" method="post" class="box-form">
+      <form id="edit-props" action="/apps/form/submit/set_app_properties" method="post" class="box-form">
         <input type="hidden" name="appid" value="$c.app.id" />
         <ul class="box-modechooser">
           <li>
@@ -131,7 +131,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         </div>
       </form>
 
-      <form id="icon_form" action="${h.url_for('apps', 'form', null, '/submit/add_icon')}" method="post">
+      <form id="icon_form" action="/apps/form/submit/add_icon" method="post">
         <p>
           <label>App Icon</label>
           <input id="icon_file" type="file" name="file" />
@@ -151,7 +151,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <acre:block def="footer_script()">
   <script type="text/javascript">
-    var bp = "${h.url_for('apps')}";
+    var bp = "/apps";
     var app = ${JSON.stringify(c.app)};
   </script>
   <script type="text/javascript" src="apps.mf.js"></script>

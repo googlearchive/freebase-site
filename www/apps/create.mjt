@@ -55,7 +55,7 @@
       <ol>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.url_for('apps')}">Apps</a>
+            <a href="/apps">Apps</a>
           </span>
         </li>
         <li class="breadcrumb-item last">
@@ -102,7 +102,7 @@
 
 <acre:block def="footer_script()">
   <script type="text/javascript">
-    var bp = "${h.url_for('apps')}";
+    var bp = "/apps";
   </script>
   <script type="text/javascript" src="apps.mf.js"></script>
 </acre:block>

@@ -19,19 +19,23 @@
       "handler": "css"
     },
     "less": {
-      "handler": "css"
+      "handler": "css",
+      "media_type": "text/css"
     },
     "mf.css": {
-      "handler": "css_manifest"
+      "handler": "css_manifest",
+      "media_type": "text/css"
     },
     "mf.js": {
-      "handler": "js_manifest"
+      "handler": "js_manifest",
+      "media_type": "application/x-javascript"
     },
     "ajax": {
       "handler": "ajax"
     },
     "template": {
-      "handler": "template"
+      "handler": "template",
+      "media_type": "text/html"
     }
   },
   "static_base": "",

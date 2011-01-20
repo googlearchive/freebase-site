@@ -127,7 +127,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         <div class="editapp-actions">
           <input class="button button-primary" type="submit" name="title" value="Update this App"/>
-          <a class="button" href="${h.url_for('apps', 'app', null, c.app.id)}">Cancel</a>
+          <a class="button" href="${h.fb_url('/apps/app', c.app.id)}">Cancel</a>
         </div>
       </form>
 

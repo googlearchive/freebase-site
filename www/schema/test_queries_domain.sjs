@@ -30,11 +30,13 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("lib/test/mox").playback(this, "playback_test_queries_domain.json");
+acre.require("lib/test/mock").playback(this, "playback_test_queries_domain.json");
 
 var ht = acre.require("helpers_test");
 var q = acre.require("queries");
 var mql = acre.require("mql");
+
+var self = this;
 
 test("domains", function() {
   var result;
@@ -47,7 +49,7 @@ test("domains", function() {
   ok(result.length === 1, "got /base/slamdunk domain");
   result = result[0];
   equal(result.id, "/base/slamdunk");
-  ht.assert_domain_keys(result);
+  ht.assert_domain_keys(self, result);
 });
 
 test("common_domains", function() {
@@ -59,7 +61,7 @@ test("common_domains", function() {
   acre.async.wait_on_results();
   ok(result && result.length, "got commons domains");
   result.forEach(function(domain) {
-    ht.assert_domain_keys(domain);
+    ht.assert_domain_keys(self, domain);
   });
 });
 
@@ -73,7 +75,7 @@ test("user_domains", function() {
   ok(result && result.length, "got user domains");
   var slamdunk_base;
   result.forEach(function(domain) {
-    ht.assert_domain_keys(domain);
+    ht.assert_domain_keys(self, domain);
     if (domain.id === "/base/slamdunk") {
       slamdunk_base = domain;
     }
@@ -84,9 +86,9 @@ test("user_domains", function() {
 
 test("domain", function() {
   function assert_type(type, mediator) {
-    ht.assert_mql_keys(["name", "id", "properties"], type, true);
-    ht.assert_bdb_keys(["instance_count"], type, true, "activity");
-    ht.assert_article(["blurb"], type);
+    ht.assert_mql_keys(self, ["name", "id", "properties"], type, true);
+    ht.assert_bdb_keys(self, ["instance_count"], type, true, "activity");
+    ht.assert_article(self, ["blurb"], type);
     if (mediator) {
       ok(type.mediator, "expected mediator type: " + type.id);
     }
@@ -99,9 +101,9 @@ test("domain", function() {
     });
   acre.async.wait_on_results();
   ok(result);
-  ht.assert_mql_keys(["id", "name", "creator",  "owners", "timestamp",
+  ht.assert_mql_keys(self, ["id", "name", "creator",  "owners", "timestamp",
                       "types", "mediator:types"], result, true);
-  ht.assert_article(["blurb", "blob"], result);
+  ht.assert_article(self, ["blurb", "blob"], result);
 
   // regular types
   ok(result.types && result.types.length);

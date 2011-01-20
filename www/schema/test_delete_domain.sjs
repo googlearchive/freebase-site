@@ -41,7 +41,7 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("lib/test/mox").playback(this, "playback_test_delete_domain.json");
+acre.require("lib/test/mock").playback(this, "playback_test_delete_domain.json");
 
 var freebase = acre.require("lib/promise/apis").freebase;
 var test_helpers = acre.require("lib/test/helpers");

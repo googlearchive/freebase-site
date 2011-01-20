@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-acre.require("lib/test/mox").playback(this, "playback_test_create_property.json");
+acre.require("lib/test/mock").playback(this, "playback_test_create_property.json");
 
 var schema_helpers = acre.require("helpers");
 var test_helpers = acre.require("lib/test/helpers");

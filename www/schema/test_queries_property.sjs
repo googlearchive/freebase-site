@@ -30,10 +30,11 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("lib/test/mox").playback(this, "playback_test_queries_property.json");
+acre.require("lib/test/mock").playback(this, "playback_test_queries_property.json");
 
 var ht = acre.require("helpers_test");
 var q = acre.require("queries");
+var self = this;
 
 test("type_properties", function() {
   var result;
@@ -44,7 +45,7 @@ test("type_properties", function() {
   acre.async.wait_on_results();
   ok(result && result.length, "got properties for /base/slamdunk/player");
   result.forEach(function(prop) {
-    ht.assert_prop(prop);
+    ht.assert_prop(self, prop);
   });
 });
 
@@ -56,7 +57,7 @@ test("property", function() {
     });
   acre.async.wait_on_results();
   ok(result, "got /film/film/starring property");
-  ht.assert_prop(result);
+  ht.assert_prop(self, result);
 });
 
 

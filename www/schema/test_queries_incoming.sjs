@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-acre.require("lib/test/mox").playback(this, "playback_test_queries_incoming.json");
+acre.require("lib/test/mock").playback(this, "playback_test_queries_incoming.json");
 
 var q = acre.require("queries");
 

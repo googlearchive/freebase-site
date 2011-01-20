@@ -1,6 +1,6 @@
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mox").playback(this, "test/playback_test_mox.json");
+acre.require("test/mock").playback(this, "test/playback_test_mock.json");
 
 var urlfetch = acre.require("promise/apis").urlfetch;
 var freebase = acre.require("promise/apis").freebase;
@@ -72,7 +72,7 @@ test("mock_freebase_mqlread_multiple", function() {
 test("mock_freebase_mqlwrite", function() {
   var result;
   freebase.mqlwrite({
-    id:null, name:{value:"test_mox.mock_freebase_mqlwrite", lang:"/lang/en"}, create:"unconditional"
+    id:null, name:{value:"test_mock.mock_freebase_mqlwrite", lang:"/lang/en"}, create:"unconditional"
   })
   .then(function(env) {
     result = env;
@@ -86,7 +86,7 @@ test("mock_freebase_mqlwrite", function() {
 
 test("mock_freebase_upload", function() {
   var result;
-  freebase.upload("test_mox.mock_freebase_upload", "text/plain")
+  freebase.upload("test_mock.mock_freebase_upload", "text/plain")
     .then(function(env) {
       result = env;
     });
@@ -95,7 +95,7 @@ test("mock_freebase_upload", function() {
   result = result.result;
   ok(result, "got result");
   equal(result["/type/content/media_type"], "text/plain");
-  equal(result["/type/content/length"], "test_mox.mock_freebase_upload".length);
+  equal(result["/type/content/length"], "test_mock.mock_freebase_upload".length);
 });
 
 test("mock_freebase_create_group", function() {
@@ -165,7 +165,7 @@ test("mock_freebase_get_static", function() {
   acre.async.wait_on_results();
   ok(result, "got result");
   ok(result.notable_for && result.notable_for.length, "got notable_for");
-  equal(result.notable_for[0].name, "Musician");
+  equal(result.notable_for[0].o, "/en/singer-songwriter");
 });
 
 var self = this;
@@ -183,7 +183,7 @@ test("mock_deferreds", function() {
       results.push(result);
       return deferred.all([
         freebase.mqlwrite({
-          id:null, name:{value:"test_mox.mock_deferreds", lang:"/lang/en"}, create:"unconditional"
+          id:null, name:{value:"test_mock.mock_deferreds", lang:"/lang/en"}, create:"unconditional"
         }),
         freebase.mqlwrite({
           id:null, type:"/common/document", create:"unconditional"
@@ -231,7 +231,7 @@ test("mock_deferreds", function() {
     var topic_with_article;
 
     // add article to topic
-    freebase.upload("test_mox.mock_deferreds", "text/plain", {document:document.id})
+    freebase.upload("test_mock.mock_deferreds", "text/plain", {document:document.id})
       .then(function(uploaded) {
         return freebase.mqlwrite({
           id: topic.id,
@@ -254,7 +254,7 @@ test("mock_deferreds", function() {
     acre.async.wait_on_results();
     ok(topic_with_article, "got topic with article");
     ok(topic_with_article.name, "got topic name");
-    equal(topic_with_article.name.value, "test_mox.mock_deferreds");
+    equal(topic_with_article.name.value, "test_mock.mock_deferreds");
     ok(topic_with_article["/common/topic/article"], "got topic article");
 
     var blobs;
@@ -270,8 +270,8 @@ test("mock_deferreds", function() {
     equal(blobs.length, 2, "expected 2 blobs");
     ok(blobs[0], "expected valid blob for topic id");
     ok(blobs[1], "expected valid blob for document id");
-    equal(blobs[0].body, "test_mox.mock_deferreds");
-    equal(blobs[1].body, "test_mox.mock_deferreds");
+    equal(blobs[0].body, "test_mock.mock_deferreds");
+    equal(blobs[1].body, "test_mock.mock_deferreds");
 });
 
 acre.test.report();

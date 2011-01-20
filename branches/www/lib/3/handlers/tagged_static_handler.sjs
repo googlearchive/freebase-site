@@ -42,6 +42,7 @@ var handler = function() {
       var expires = new Date(acre.request.start_time.getTime() + max_age * 1000);
       acre.response.set_header("expires", expires.toUTCString());
       acre.response.set_header("cache-control", "public, max-age: " + max_age);
+      acre.response.set_header("content-type", script.media_type || "text/plain");
       return module;
     }
   };

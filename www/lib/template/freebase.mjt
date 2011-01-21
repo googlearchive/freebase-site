@@ -102,7 +102,7 @@
   <div id="page-header" class="clear" role="banner">
     <div id="logo">
       <a href="${h.fb_url()}" title="Return to Freebase homepage">
-        <img alt="Freebase" 
+        <img alt="Freebase"
              acre:attrs="h.is_production() ? {src: h.static_url(acre.resolve('template/freebase-logo-production.png'))} : {src: h.static_url(acre.resolve('template/freebase-logo-sandbox.png'))}"
              border="0" height="21" width="87" /></a>
     </div>
@@ -111,7 +111,7 @@
         <fieldset class="search-form-header">
           <input type="hidden" value="30" name="limit" />
           <input type="hidden" value="0" name="start" />
-          <input type="text" 
+          <input type="text"
                  autocomplete="off"
                  placeholder="Find topics..."
                  name="query" id="global-search-input"

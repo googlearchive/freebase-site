@@ -269,9 +269,11 @@ if (window.SERVER && typeof window.SERVER === "object") {
   $(function() {
     var search = $("#SearchBox .SearchBox-input,#global-search-input");
     var root = fb.acre.freebase.site_host;
+    // Get rid of devel and port to use the legacy python client in development
+    var legacy_root = root.replace('devel.', 'www.').replace(':8115', '');
 
     search.suggest({
-      service_url:root,
+      service_url:legacy_root,
       soft:true,
       category: "object",
       parent: "#site-search-box",
@@ -291,7 +293,7 @@ if (window.SERVER && typeof window.SERVER === "object") {
 
     search
       .bind("fb-select", function(e, data) {
-         window.location = root + "/view" + data.id;
+         window.location = legacy_root + "/view" + data.id;
         return false;
       })/**
       .bind("fb-pane-show", function(e, data) {

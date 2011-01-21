@@ -222,7 +222,7 @@ class ActionSetupSite:
     return True
 
 
-#sync the local repository and create symlinks between acre <-> site for branches
+#sync the local repository and create symlinks between acre <-> site 
 class ActionLink:
 
   def __init__(self, context):
@@ -743,6 +743,7 @@ class ActionInfo:
       print "Last Version: no version created"
       return True
 
+    lib_app = None
     if last_version and not app.is_lib():
         lib_app = AppFactory(c)(app.app_key, version=last_version).lib_dependency()
 

@@ -363,12 +363,13 @@ class App:
 
   def read_file(self, filename, isjson=False, warn=True):
 
+    contents = ''
+
     svn_path = self.svn_path()
     if not svn_path:
-        return self.context.error('Cannot checkout the app from SVN')
+        return (self.context.error('Cannot checkout the app from SVN'), contents)
 
     filename = "%s/%s" % (self.svn_path(), filename)
-    contents = ''
 
     try:
       fd = open(filename, 'r')
@@ -387,7 +388,7 @@ class App:
           self.context.error('Cannot JSON parse the config file %s' % filename)
         fd.close()
         return (False, contents)
-
+      
     fd.close()
 
     return (True, contents)
@@ -496,6 +497,9 @@ class App:
         return None
 
     metadata = self.read_metadata()
+
+    if metadata == False:
+        return False
 
     #check if there is a lib dependency in the metadata['mounts'] dictionary
     if not metadata or not ('mounts' in metadata.keys() and 'lib' in metadata['mounts'].keys()):

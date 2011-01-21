@@ -30,7 +30,7 @@
 */
 var test_helpers = acre.require("test/helpers");
 
-function metadata(extension, filename) {
+function metadata(extension, handler, filename) {
   var md =  {
     handlers: {
       /**
@@ -53,9 +53,11 @@ function metadata(extension, filename) {
     }
   };
 
-  md.handlers[extension] = filename;
+  md.handlers[extension] = handler;
   md.extensions[extension] = {handler: extension};
   md.files[filename] = {content_hash: test_helpers.random()};
+
+  //console.log("metadata", md);
 
   return md;
 };

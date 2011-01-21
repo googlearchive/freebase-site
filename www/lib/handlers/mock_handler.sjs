@@ -38,6 +38,7 @@ var exports = {
   }
 };
 
+var h = acre.require("core/helpers");
 var mock_lib = acre.require("test/mock");
 var validators = acre.require("validator/validators");
 

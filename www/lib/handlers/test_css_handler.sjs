@@ -36,7 +36,7 @@ var test_helpers = acre.require("handlers/helpers_test");
 
 var css_handler = acre.require("handlers/css_handler");
 
-acre.require("handlers/mock_handler").record(this, css_handler, "handlers/playback_test_css_handler.json");
+acre.require("handlers/mock_handler").playback(this, css_handler, "handlers/playback_test_css_handler.json");
 
 test("quote_url", function() {
   equal(css_handler.quote_url("some url"),   '"some url"');
@@ -44,38 +44,43 @@ test("quote_url", function() {
   equal(css_handler.quote_url("'some url'"), '"some url"');
 });
 
+
+function assert_content(content) {
+  // assert transformation of urls in handlers/handle_me.css
+  ok(content.indexOf("url(template/ui-icons.png)") === -1, "expected url(template/ui-icons.png) to be transformed");
+  ok(content.indexOf('url("' + h.static_url(acre.resolve("template/ui-icons.png")) + '")') >= 0, "expected url(template/ui-icons.png) to be transformed");
+
+  ok(content.indexOf("url(http") === -1, "expected url to be quoted");
+  ok(content.indexOf('url("http') >= 0, "expected url to be quoted");
+};
+
 var self = this;
 test("preprocessor", function() {
-   var css = [
-     "div { background: url(template/ui-icons.png) no-repeat; display: inline-block;}",
-     "img { background: url(http://www.google.com/logo.png); }"
-   ];
-
+  var content = acre.get_source("handlers/handle_me.css");
   var script = {
     get_content: function() {
       return {
-        body: css.join("\n")
+        body: acre.get_source("handlers/handle_me.css")
       };
     },
     scope: self
   };
 
-  var expected = css.join("\n");
-  expected = expected.replace("url(template/ui-icons.png)", "url(\"" + h.static_url(acre.resolve("template/ui-icons.png")) + "\")")
-    .replace("url(http://www.google.com/logo.png)", "url(\"http://www.google.com/logo.png\")");
-
-  equal(css_handler.preprocessor(script), expected);
+  var result = css_handler.preprocessor(script);
+  assert_content(result);
 });
 
 test("require", function() {
-  var module = acre.require("handlers/handle_me.css", test_helpers.metadata("css", "handlers/css_handler"));
-  console.log("require", module);
+  var module = acre.require("handlers/handle_me.css", test_helpers.metadata("css", "handlers/css_handler", "handlers/handle_me.css"));
+  ok(module.body, "got acre.require module.body");
+  assert_content(module.body);
 });
 
 test("include", function() {
-  var module = acre.include("handlers/handle_me.css", test_helpers.metadata("css", "handlers/css_handler"));
-  console.log("include", module);
-  //equal(acre.response.header["content-type"], "text/css");
+  var resp = acre.include("handlers/handle_me.css", test_helpers.metadata("css", "handlers/css_handler", "handlers/handle_me.css"));
+  ok(resp, "got acre.include response");
+  assert_content(resp);
+  equal(acre.response.headers["content-type"], "text/css");
 });
 
 

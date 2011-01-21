@@ -38,14 +38,27 @@ var css_manifest_handler = acre.require("handlers/css_manifest_handler");
 
 acre.require("handlers/mock_handler").playback(this, css_manifest_handler, "handlers/playback_test_css_manifest_handler.json");
 
+function assert_content(content, lessified) {
+  if (lessified) {
+    ok(content.indexOf("@") === -1, "did not expect mixin variables");
+  }
+  else {
+    ok(content.indexOf("@") >= 0, "expected mixin variables");
+  }
+  ok(content.indexOf("#global-search-input") >= 0, "expected concatenated content");
+};
+
 test("require", function() {
-  var module = acre.require("handlers/handle_me.mf.css", test_helpers.metadata("mf.css", "handlers/css_manifest_handler"));
-  console.log("require", module);
+  var module = acre.require("handlers/handle_me.mf.css", test_helpers.metadata("mf.css", "handlers/css_manifest_handler", "handlers/handle_me.mf.css"));
+  ok(module.body, "got acre.require module.body");
+  assert_content(module.body, false);
 });
 
 test("include", function() {
-  var module = acre.include("handlers/handle_me.mf.css", test_helpers.metadata("mf.css", "handlers/css_manifest_handler"));
-  console.log("include", module);
+  var resp = acre.include("handlers/handle_me.mf.css", test_helpers.metadata("mf.css", "handlers/css_manifest_handler", "handlers/handle_me.mf.css"));
+  ok(resp, "got acre.include response");
+  equal(acre.response.headers["content-type"], "text/css");
+  assert_content(resp, true);
 });
 
 

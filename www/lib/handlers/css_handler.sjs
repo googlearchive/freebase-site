@@ -44,7 +44,7 @@ var handler = function() {
       return compiled_js.module;
     },
     'to_http_response': function(module, script) {
-      acre.response.set_header('content-type', 'text/css');
+      script.scope.acre.response.set_header('content-type', 'text/css');
       return module;
     }
   };
@@ -63,17 +63,6 @@ function quote_url(url) {
   return url;
 };
 
-/**
- * Convert all static://* to cached python client resource urls.
- * This should go away once we convert all pages to acre.
- */
-function resource_url(url) {
-  url = quote_url(url);
-  return url.replace(/^"static:\/\/(.*)"$/, function(m, group) {
-    return '"' + h.freebase_resource_url(group) + '"';
-  });
-};
-
 function preprocessor(script) {
   var str = script.get_content().body;
 
@@ -88,9 +77,6 @@ function preprocessor(script) {
 
       if (url.indexOf("http://") === 0 || url.indexOf("https://") === 0) {
         url = quote_url(url);
-      }
-      else if (scheme_regex.test(url)) {
-        url = resource_url(url);
       }
       else {
         var path = script.scope.acre.resolve(url);

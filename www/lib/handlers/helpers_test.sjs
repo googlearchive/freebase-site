@@ -28,54 +28,34 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-var h = acre.require("core/helpers");
+var test_helpers = acre.require("test/helpers");
 
-var less = function(data) {
-  var less_parser = new(acre.require("handlers/less").less.Parser)({optimization:3});
-  var result;
-  less_parser.parse(data, function(e, root) {
-    result = root.toCSS();
-  });
-
-  // XXX - dangerous to rely on callback completing?
-  return result;
-};
-
-var handler = function() {
-  return {
-    'to_js': function(script) {
-      return "var res = ("+JSON.stringify(script.get_content())+");";
+function metadata(extension, filename) {
+  var md =  {
+    handlers: {
+      /**
+      "mf.css": "handlers/css_manifest_handler"
+       **/
     },
-    'to_module' : function(compiled_js, script) {
-      var res = compiled_js.res;
-
-      try {
-        var mf = JSON.parse(res.body);
-      } catch(e) {
-        throw new Error(".mf files must be valid JSON.  " + e);
+    extensions: {
+      /**
+      "mf.css": {
+        handler: "mf.css"
       }
-
-      if (!(mf instanceof Array)) {
-        throw new Error("Manifest file must be an array.");
-      }
-
-      // acquire all the files
-      var buf = [];
-      for (var i=0; i < mf.length; i++) {
-        var path = mf[i];
-        buf.push("\n/** " + path + "**/\n");
-        var req = script.scope.acre.require(path);
-        buf.push(req.body);
-      }
-      res.body = buf.join("");
-
-      return res;
+       **/
     },
-    'to_http_response': function(module, script) {
-      module = h.extend({}, module);
-      module.body = less(module.body);
-      acre.response.set_header("content-type", "text/css");
-      return module;
+    files: {
+      /**
+      "handlers/handle_me.mf.css": {
+        content_hash: test_helpers.random()   // this invalidates the compiled_js cache so that "to_js" will run
+      }
+       **/
     }
   };
+
+  md.handlers[extension] = filename;
+  md.extensions[extension] = {handler: extension};
+  md.files[filename] = {content_hash: test_helpers.random()};
+
+  return md;
 };

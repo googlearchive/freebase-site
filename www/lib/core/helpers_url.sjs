@@ -45,7 +45,6 @@ var exports = {
   "image_url": image_url,
 
   "lib_base_url": lib_base_url,
-  "freebase_resource_url": freebase_resource_url,
 
   "parse_uri": parse_uri,
 
@@ -268,11 +267,6 @@ function lib_base_url(key) {
   return lib.base_url + lib.version;
 }
 
-function freebase_resource_url(path) {
-  var r = acre.get_metadata().freebase.resource;
-  return r.base_url + r.hash + path;
-}
-
 /**
  * parse uri
  * Used to convert a url string into ints components parts
@@ -317,7 +311,7 @@ function parse_uri(str) {
 function url_for(app, file, params, extra_path) {
   params = parse_params(params || {});
   params['***DEPRECATED***'] = 'Move from url_for to fb_url';
-  
+
   if (app === 'triples') {
     app = 'inspect';
   } else if (app === 'homepage' && file === 'index') {

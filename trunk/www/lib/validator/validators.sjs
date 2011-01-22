@@ -174,7 +174,7 @@ Validator.Class.prototype = {
       if (val === null) {
         t = "null";
       }
-      else if (this.is_array(val)) {
+      else if (h.isArray(val)) {
         t = "array";
       }
       else {
@@ -232,9 +232,6 @@ Validator.Class.prototype = {
       return false;
     }
     return true;
-  },
-  is_array: function(val) {
-    return toString.call(val) === "[object Array]";
   },
   strip: function(str) {
     return str.replace(/^\s+|\s+$/g, "");
@@ -402,7 +399,7 @@ Validator.factory(scope, "OneOf", {
     return this.check_oneof(val, options);
   },
   check_oneof: function(val, options) {
-    if (this.is_array(options.oneof)) {
+    if (h.isArray(options.oneof)) {
       for (var i=0,l=options.oneof.length; i<l; i++) {
         if (val === options.oneof[i]) {
           return val;

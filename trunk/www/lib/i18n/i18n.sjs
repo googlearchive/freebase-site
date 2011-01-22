@@ -288,7 +288,7 @@ function display_article(obj, keys, article_key) {
     mykeys = [mykeys];
     is_string = true;
   }
-  else if (!h.is_array(mykeys) || mykeys.length === 0) {
+  else if (!h.isArray(mykeys) || mykeys.length === 0) {
     return null;
   }
   var result = [];
@@ -804,10 +804,10 @@ function _accept_language(accept_langs) {
 }
 
 function _set_lang_bundle(langs, bundles, set_cookie) {
-  if (!h.is_array(langs)) {
+  if (!h.isArray(langs)) {
     langs = [langs];
   }
-  if (!h.is_array(bundles)) {
+  if (!h.isArray(bundles)) {
     bundles = [bundles];
   }
   var mql_langs = h.map_array(mql.langs(), "id");

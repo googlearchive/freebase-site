@@ -47,7 +47,6 @@ var rules = {
     // TODO: remove this and use ajax router
     {prefix:"/static",             app:lib, script:"routing/static.sjs"},
     {prefix:"/ajax",               app:lib, script:"routing/ajax.sjs"},
-    {prefix:"/template",           app:lib + "/template"},
 
     // Test routing rules to test non-user facing apps (core libraries, etc.)
     {prefix:"/lib/core",           app:lib + "/core"},
@@ -57,6 +56,9 @@ var rules = {
     {prefix:"/lib/queries",        app:lib + "/queries"},
     {prefix:"/lib/test",           app:lib + "/test"},
     {prefix:"/lib/validator",      app:lib + "/validator"},
+    {prefix:"/lib/handlers",       app:lib + "/handlers"},
+    {prefix:"/lib/template",       app:lib + "/template"},
+    {prefix:"/lib/permission",     app:lib + "/permission"},
 
     // Urls for administrative tools
     {prefix:"/admin",              app:"//admin" + codebase},

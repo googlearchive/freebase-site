@@ -64,7 +64,7 @@ test("i18n.mql.query.text", function() {
   }
   [i18n.mql.query.text, i18n.mql.query.name].forEach(function(fn) {
     var clause = fn.call();
-    ok(clause instanceof Array);
+    ok(h.isArray(clause));
     ok(clause.length === 1);
     deepEqual(clause, [{
       optional: true,
@@ -81,7 +81,7 @@ test("i18n.mql.query.article", function() {
     langs.push("/lang/en");
   }
   var clause = i18n.mql.query.article();
-  ok(clause instanceof Array);
+  ok(h.isArray(clause));
   ok(clause.length === 1);
   deepEqual(clause, [{
     optional:   true,

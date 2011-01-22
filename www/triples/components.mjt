@@ -67,7 +67,7 @@
         </acre:script>
         <span class="filter-item">
           <a href="${f.remove_filter_url(o, 'timestamp')}" class="remove-filter">x</a>
-          <acre:block if="h.is_array(o.timestamp) && o.timestamp.length === 2">
+          <acre:block if="h.isArray(o.timestamp) && o.timestamp.length === 2">
             ${h.sprintf(_("%s to %s"), o.timestamp[0], o.timestamp[1])}
           </acre:block>
           <acre:block else="">
@@ -89,7 +89,7 @@
     <acre:block if="o.creator">
       <acre:script>
         var creator = o.creator;
-        if (!h.is_array(creator)) {
+        if (!h.isArray(creator)) {
           creator = [creator];
         }
       </acre:script>
@@ -133,7 +133,7 @@
 <acre:block def="filter_form(filter_options, filter_key, def, placeholder, append)">
   <form action="${h.url_for('triples', null, null, filter_options.id)}" method="GET">
     <acre:block for="key,val in filter_options" if="key && val && (key !== 'id') && (append || key != filter_key)">
-      <acre:block if="h.is_array(val)">
+      <acre:block if="h.isArray(val)">
         <input acre:for="v in val" type="hidden" name="${key}" value="${v}"/>
       </acre:block>
       <acre:block elif="key === 'limit' && val === f.LIMIT">

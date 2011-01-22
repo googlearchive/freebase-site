@@ -30,42 +30,157 @@
  */
 
 var exports = {
-  "extend": extend,
-  "first_element": first_element,
+  "type": type,
+  "isFunction": isFunction,
+  "isArray": isArray,
+  "isPlainObject": isPlainObject,
+  "isEmptyObject": isEmptyObject,
+
   "trim": trim,
+  "extend": extend,
+
+  "first_element": first_element,
   "map_array": map_array,
-  "is_array": is_array,
   "array_map": array_map
 };
 
+// Used for trimming whitespace
+var trimLeft = /^\s+/;
+var trimRight = /\s+$/;
+
+// [[Class]] -> type pairs
+var class2type = {};
+"Boolean Number String Function Array Date RegExp Object".split(" ").forEach(function(c) {
+  class2type["[object " + c + "]"] = c.toLowerCase();
+});
+
+
+function type(obj) {
+  return obj == null ? String(obj) : class2type[Object.prototype.toString.call(obj)] || "object";
+};
+
+function isFunction(obj) {
+  return type(obj) === "function";
+};
+
+function isArray(obj) {
+  return type(obj) === "array";
+};
+
+function isPlainObject(obj) {
+  var hasOwn = Object.prototype.hasOwnProperty;
+  if (!obj || type(obj) !== "object") {
+    return false;
+  }
+  // Not own constructor property must be Object
+  if ( obj.constructor &&
+       !hasOwn.call(obj, "constructor") &&
+       !hasOwn.call(obj.constructor.prototype, "isPrototypeOf") ) {
+    return false;
+  }
+  var key;
+  for (key in obj) {}
+  return key === undefined || hasOwn.call(obj, key);
+};
+
+function isEmptyObject(obj) {
+  for ( var name in obj ) {
+    return false;
+  }
+  return true;
+};
+
+function trim(text) {
+  return text == null ? "" : text.toString().replace(trimLeft, "").replace(trimRight, "");
+};
+
+var self =this;
 /**
  * TODO: this should go in some library
  *
  * @see jQuery.extend()
  */
 function extend() {
-  var a = arguments[0];
-  for (var i=1,len=arguments.length; i<len; i++) {
-    var b = arguments[i];
-    for (var prop in b) {
-      a[prop] = b[prop];
+    var options, name, src, copy, copyIsArray, clone,
+    target = arguments[0] || {},
+    i = 1,
+    length = arguments.length,
+    deep = false;
+
+    // Handle a deep copy situation
+    if ( typeof target === "boolean" ) {
+      deep = target;
+      target = arguments[1] || {};
+      // skip the boolean and the target
+      i = 2;
     }
-  }
-  return a;
+
+    // Handle case when target is a string or something (possible in deep copy)
+    if ( typeof target !== "object" && !isFunction(target) ) {
+      target = {};
+    }
+
+    // extend h itself if only one argument is passed
+    if ( length === i ) {
+      target = self;
+      --i;
+    }
+
+    for ( ; i < length; i++ ) {
+      // Only deal with non-null/undefined values
+      if ( (options = arguments[ i ]) != null ) {
+	// Extend the base object
+	for ( name in options ) {
+	  src = target[ name ];
+	  copy = options[ name ];
+
+	  // Prevent never-ending loop
+	  if ( target === copy ) {
+	    continue;
+	  }
+
+	  // Recurse if we're merging plain objects or arrays
+	  if ( deep && copy && ( isPlainObject(copy) || (copyIsArray = isArray(copy)) ) ) {
+	    if ( copyIsArray ) {
+	      copyIsArray = false;
+	      clone = src && isArray(src) ? src : [];
+
+	    } else {
+	      clone = src && isPlainObject(src) ? src : {};
+	    }
+
+	    // Never move original objects, clone them
+	    target[ name ] = extend( deep, clone, copy );
+
+	    // Don't bring in undefined values
+	  } else if ( copy !== undefined ) {
+	    target[ name ] = copy;
+	  }
+	}
+      }
+    }
+
+    // Return the modified object
+    return target;
 };
 
+/**
+ * if array and array.length > 0, return first element of the array otherwise return array
+ */
 function first_element(array) {
-  if (array instanceof Array) {
+  if (isArray(array)) {
     return array.length ? array[0] : null;
-  } else {
+  }
+  else {
     return array;
   }
 };
 
-function trim(s) {
-  return s.replace(/^\s+|\s+$/g, "");
-};
-
+/**
+ * Convert an array of objects to a dictionary using each object's key as the dictionary key.
+ *
+ * map_array([{a:"foo"}, {a:"bar"}], "a")  => {foo: {a:"foo"}, bar: {a:"bar"}}
+ */
 function map_array(a, key) {
   var map = {};
   for (var i=0,l=a.length; i<l; i++) {
@@ -74,6 +189,11 @@ function map_array(a, key) {
   return map;
 };
 
+/**
+ * Flatten a dictionary to a list of key, value tuples.
+ *
+ * array_map({foo: {a:"foo"}, bar: {a:"bar"}}) => [ ["foo", {a:"foo"}], ["bar", {a:"bar"}] ]
+ */
 function array_map(map) {
   var a = [];
   for (k in map) {
@@ -82,6 +202,3 @@ function array_map(map) {
   return a;
 };
 
-function is_array(obj) {
-  return toString.call(obj) === "[object Array]";
-};

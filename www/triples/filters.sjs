@@ -72,7 +72,7 @@ function get_history(history) {
 
 function get_creator(creator) {
   if (creator) {
-    if (h.is_array(creator)) {
+    if (h.isArray(creator)) {
       var users = [];
       creator.forEach(function(user) {
         user = validators.MqlId(user, {if_empty:null});
@@ -100,7 +100,7 @@ function get_timestamp(timestamp) {
       return acre.freebase.date_to_iso(TIMESTAMPS[timestamp]());
     }
     else {
-      if (h.is_array(timestamp) && timestamp.length === 2) {
+      if (h.isArray(timestamp) && timestamp.length === 2) {
         timestamp[0] = validators.Timestamp(timestamp[0], {if_empty:null});
         timestamp[1] = validators.Timestamp(timestamp[1], {if_empty:null});
         if (timestamp[0]) {
@@ -166,7 +166,7 @@ function apply_limit(clause, limit) {
 
 function apply_timestamp(clause, timestamp) {
   if (timestamp) {
-    if (h.is_array(timestamp) && timestamp.length === 2) {
+    if (h.isArray(timestamp) && timestamp.length === 2) {
       clause["a:timestamp>="] = timestamp[0];
       clause["b:timestamp<"] = timestamp[1];
     }
@@ -179,7 +179,7 @@ function apply_timestamp(clause, timestamp) {
 
 function apply_creator(clause, creator) {
   if (creator) {
-    if (h.is_array(creator) && creator.length) {
+    if (h.isArray(creator) && creator.length) {
       clause["filter:creator"] = {"id|=": creator};
     }
     else {
@@ -258,7 +258,7 @@ function remove_filter_url(filter_options, filter_key, filter_value) {
   }
   else {
     var values = o[filter_key];
-    if (!h.is_array(values)) {
+    if (!h.isArray(values)) {
       values = [values];
     }
     var filtered_values = [];

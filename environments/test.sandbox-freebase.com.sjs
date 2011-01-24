@@ -6,7 +6,7 @@
  */
 
 // lib to get routing helpers
-var lib = "//1f.lib.www.tags.svn.freebase-site.googlecode.dev";
+var lib = "//3d.lib.www.tags.svn.freebase-site.googlecode.dev";
 var routing = acre.require(lib + "/routing/router");
 
 // This is the error handler that handles all routing and not found errors
@@ -27,11 +27,11 @@ var rules = {
 
   "PrefixRouter": [
     // Urls for user-facing apps
-    {prefix:"/",                   app:"//1r.homepage.www.tags.svn.freebase-site.googlecode.dev", script: "index"},
+    {prefix:"/",                   app:"//2a.homepage.www.tags.svn.freebase-site.googlecode.dev", script: "index"},
     {prefix:"/index",              url:"/", redirect:301},
-    {prefix:"/home",               app:"//1r.homepage.www.tags.svn.freebase-site.googlecode.dev", script: "home"},
-    {prefix:"/homepage",           app:"//1r.homepage.www.tags.svn.freebase-site.googlecode.dev"},
-    {prefix:"/schema",             app:"//schema.www.trunk.svn.freebase-site.googlecode.dev"},
+    {prefix:"/home",               app:"//2a.homepage.www.tags.svn.freebase-site.googlecode.dev", script: "home"},
+    {prefix:"/homepage",           app:"//2a.homepage.www.tags.svn.freebase-site.googlecode.dev"},
+    {prefix:"/schema",             app:"//3d.schema.www.tags.svn.freebase-site.googlecode.dev"},
     {prefix:"/apps",               app:"//apps.www.trunk.svn.freebase-site.googlecode.dev"},
     {prefix:"/appeditor",          app:"//appeditor.www.trunk.svn.freebase-site.googlecode.dev"},
     {prefix:"/docs",               app:"//devdocs.www.trunk.svn.freebase-site.googlecode.dev"},

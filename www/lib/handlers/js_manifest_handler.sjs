@@ -72,8 +72,7 @@ var handler = function() {
       return res;
     },
     'to_http_response': function(module, script) {
-      acre.response.set_header("content-type", "application/x-javascript");
-      return module;
+      return {body:module.body, headers:{"content-type": "application/x-javascript"}};
     }
   };
 };

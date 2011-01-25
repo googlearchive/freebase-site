@@ -36,7 +36,11 @@ var ajax_handler = acre.require("handlers/ajax_handler");
 var lib = acre.require("handlers/ajax_lib");
 var validators = acre.require("validator/validators");
 
-//acre.require("handlers/mock_handler").record(this, ajax_handler, "handlers/playback_test_ajx_handler.json");
+acre.require("handlers/mock_handler").playback(this, ajax_handler, {
+  to_module: function(result) {
+    return JSON.stringify(result.SPEC);
+  }
+}, "handlers/playback_test_ajax_handler.json");
 
 var mock_script = {
   scope: this
@@ -198,5 +202,77 @@ test("handle_service run promise", function() {
   same(result.result, {p1:"p1", p2:"p2"});
 });
 
+test("require", function() {
+  var module = acre.require("handlers/handle_me.ajax", test_helpers.metadata("ajax", "handlers/ajax_handler", "handlers/handle_me.ajax"));
+  ok(module, "got acre.require module");
+  ok(module.SPEC && typeof module.SPEC === "object", "got module.SPEC");
+  ["method", "auth"].forEach(function(m) {
+    ok(m in module.SPEC, "got module.SPEC." + m);
+  });
+  ["validate", "run"].forEach(function(m) {
+    ok(typeof module.SPEC[m] === "function", "got module.SPEC." + m);
+  });
+});
+
+test("include", function() {
+  function check_response(resp, jsonp) {
+    if (jsonp) {
+      var rjsonp = new RegExp(["^\\s*", jsonp, "\\s*\\(\\s*"].join(""));
+      resp = resp.replace(rjsonp, "").replace(/\s*\)\s*;\s*$/, "");
+    }
+    var json = JSON.parse(resp);
+    ok(json, "acre.include response is proper JSON");
+    equal(json.status, "200 OK");
+    equal(json.code, "/api/status/ok");
+    ok(json.transaction_id, "got transaction_id");
+    same(json.result, {topic1:"/en/blade_runner", topic2:"/en/bob_dylan"});
+  };
+
+  var resp = acre.include("handlers/handle_me.ajax", test_helpers.metadata("ajax", "handlers/ajax_handler", "handlers/handle_me.ajax"));
+  ok(resp, "got acre.include response");
+  check_response(resp);
+
+  try {
+    // callback
+    acre.request.params.callback = "foo";
+    resp = acre.include("handlers/handle_me.ajax", test_helpers.metadata("ajax", "handlers/ajax_handler", "handlers/handle_me.ajax"));
+    ok(resp, "got acre.include response");
+    check_response(resp, "foo");
+  }
+  finally {
+    // remove callback param
+    delete acre.request.params.callback;
+  }
+});
+
+test("include error", function() {
+  function check_response(resp, jsonp) {
+    if (jsonp) {
+      var rjsonp = new RegExp(["^\\s*", jsonp, "\\s*\\(\\s*"].join(""));
+      resp = resp.replace(rjsonp, "").replace(/\s*\)\s*;\s*$/, "");
+    }
+    var json = JSON.parse(resp);
+    ok(json, "acre.include response is proper JSON");
+    equal(json.status, "400 Bad Request");
+    equal(json.code, "/api/status/error");
+    ok(json.transaction_id, "got transaction_id");
+  };
+
+  var resp = acre.include("handlers/handle_me.error.ajax", test_helpers.metadata("ajax", "handlers/ajax_handler", "handlers/handle_me.error.ajax"));console.log("resp1", resp);
+  ok(resp, "got acre.include response");
+  check_response(resp);
+
+  try {
+    // callback
+    acre.request.params.callback = "foo";
+    resp = acre.include("handlers/handle_me.error.ajax", test_helpers.metadata("ajax", "handlers/ajax_handler", "handlers/handle_me.error.ajax"));
+    ok(resp, "got acre.include response");
+    check_response(resp, "foo");
+  }
+  finally {
+    // remove callback param
+    delete acre.request.params.callback;
+  }
+});
 
 acre.test.report();

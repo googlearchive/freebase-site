@@ -484,6 +484,8 @@ class App:
           metadata['extensions'][file_extension].update({ 'handler' : 'tagged_static' })
         else:
           metadata['extensions'][file_extension] = { 'handler' : 'tagged_static', 'media_type' : 'image/%s' % file_extension }
+    else:
+      metadata['extensions'].update(handlers)  
             
     if cache_forever:
         metadata['ttl'] = -1

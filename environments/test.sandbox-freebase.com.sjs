@@ -28,10 +28,10 @@ var rules = {
 
   "prefix": [
     // Urls for user-facing apps
-    {prefix:"/",                   app:"//2a.homepage" + tags_codebase, script: "index"},
+    {prefix:"/",                   app:"//2d.homepage" + tags_codebase, script: "index"},
     {prefix:"/index",              url:"/", redirect: 301},
-    {prefix:"/home",               app:"//2a.homepage" + tags_codebase, script: "home"},
-    {prefix:"/homepage",           app:"//2a.homepage" + tags_codebase},
+    {prefix:"/home",               app:"//2d.homepage" + tags_codebase, script: "home"},
+    {prefix:"/homepage",           app:"//2d.homepage" + tags_codebase},
     {prefix:"/schema",             app:"//3d.schema" + tags_codebase},
     {prefix:"/apps",               app:"//apps" + codebase},
     {prefix:"/appeditor",          app:"//appeditor" + codebase},

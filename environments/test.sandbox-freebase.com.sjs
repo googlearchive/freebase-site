@@ -5,15 +5,16 @@
  * 2. PrefixRouter - the main prefix-based routing rules
  */
 
-// lib to get routing helpers
-var lib = "//3d.lib.www.tags.svn.freebase-site.googlecode.dev";
-var routing = acre.require(lib + "/routing/router");
+// Shared base urls
+var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
+var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
+var lib = "//3d.lib" + tags_codebase;
 
 // This is the error handler that handles all routing and not found errors
 acre.response.set_error_page(lib + "/error/error.mjt");
 
 var rules = {
-  "HostRouter": [
+  "host": [
     {host:"freebase.com", url:"http://www.freebase.com"},
     {host:"sandbox-freebase.com", url:"http://www.sandbox-freebase.com"},
     {host:"sandbox.freebase.com", url:"http://www.sandbox-freebase.com"},
@@ -25,28 +26,29 @@ var rules = {
     {host:"www.metaweb.com", url:"http://www.freebase.com"}
   ],
 
-  "PrefixRouter": [
+  "prefix": [
     // Urls for user-facing apps
-    {prefix:"/",                   app:"//2a.homepage.www.tags.svn.freebase-site.googlecode.dev", script: "index"},
-    {prefix:"/index",              url:"/", redirect:301},
-    {prefix:"/home",               app:"//2a.homepage.www.tags.svn.freebase-site.googlecode.dev", script: "home"},
-    {prefix:"/homepage",           app:"//2a.homepage.www.tags.svn.freebase-site.googlecode.dev"},
-    {prefix:"/schema",             app:"//3d.schema.www.tags.svn.freebase-site.googlecode.dev"},
-    {prefix:"/apps",               app:"//apps.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/appeditor",          app:"//appeditor.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/docs",               app:"//devdocs.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/inspect",            app:"//triples.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/policies",           app:"//policies.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/queryeditor",        app:"//queryeditor.www.trunk.svn.freebase-site.googlecode.dev"},
+    {prefix:"/",                   app:"//2a.homepage" + tags_codebase, script: "index"},
+    {prefix:"/index",              url:"/", redirect: 301},
+    {prefix:"/home",               app:"//2a.homepage" + tags_codebase, script: "home"},
+    {prefix:"/homepage",           app:"//2a.homepage" + tags_codebase},
+    {prefix:"/schema",             app:"//3d.schema" + tags_codebase},
+    {prefix:"/apps",               app:"//apps" + codebase},
+    {prefix:"/appeditor",          app:"//appeditor" + codebase},
+    {prefix:"/docs",               app:"//devdocs" + codebase},
+    {prefix:"/inspect",            app:"//triples" + codebase},
+    {prefix:"/policies",           app:"//policies" + codebase},
+    {prefix:"/queryeditor",        app:"//queryeditor" + codebase},
+    {prefix:"/examples",           app:"//examples" + codebase},
     {prefix:"/labs/cubed",         app:"//cubed"},
     {prefix:"/labs/parallax",      app:"//parallax"},
     {prefix:"/labs",               app:"//labs"},
 
     // Urls for exposed ajax libraries and static resources
-    {prefix:"/global",             app:lib, script: "global/router.sjs"},
-    {prefix:"/permission",         app:lib + "/permission"},
-    {prefix:"/template",           app:lib + "/template"},
-    
+    // TODO: remove this and use ajax router
+    {prefix:"/static",             app:lib, script:"routing/static.sjs"},
+    {prefix:"/ajax",               app:lib, script:"routing/ajax.sjs"},
+
     // Test routing rules to test non-user facing apps (core libraries, etc.)
     {prefix:"/lib/core",           app:lib + "/core"},
     {prefix:"/lib/routing",        app:lib + "/routing"},
@@ -55,9 +57,12 @@ var rules = {
     {prefix:"/lib/queries",        app:lib + "/queries"},
     {prefix:"/lib/test",           app:lib + "/test"},
     {prefix:"/lib/validator",      app:lib + "/validator"},
+    {prefix:"/lib/handlers",       app:lib + "/handlers"},
+    {prefix:"/lib/template",       app:lib + "/template"},
+    {prefix:"/lib/permission",     app:lib + "/permission"},
 
     // Urls for administrative tools
-    {prefix:"/admin",              app:"//admin.www.trunk.svn.freebase-site.googlecode.dev"},
+    {prefix:"/admin",              app:"//admin" + codebase},
     {prefix:"/app/tmt",            app:"//tmt"},
 
     //
@@ -181,12 +186,20 @@ if (acre.current_script === acre.request.script) {
   }
 }
 
-["HostRouter", "PrefixRouter"].forEach(function(name) {
-  var RouterClass = routing[name];
-  if (!RouterClass) {
-    throw name + " not found in " + lib + "/routing/router";
+var router_path = lib + "/routing/";
+["host", "prefix"].forEach(function(name) {
+  var router_file = acre.require(router_path + name);
+  var router_class;
+  if (router_file.router) {
+    router_class = router_file.router;
   }
-  var router = new RouterClass();
+  else if (router_file.exports && typeof router_file.exports === "object" && router_file.exports.router) {
+    router_class = router_file.exports.router;
+  }
+  else {
+    throw "A router needs to be defined in " + router_path + name;
+  }
+  var router = new router_class();
   var rule = rules[name];
   if (rule) {
     router.add(rule);
@@ -194,5 +207,8 @@ if (acre.current_script === acre.request.script) {
   router.route(acre.request);
 });
 
+
 // TODO: not found
+acre.route(lib + "/error/error.mjt");
+
 

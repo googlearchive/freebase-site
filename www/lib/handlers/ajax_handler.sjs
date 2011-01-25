@@ -70,6 +70,7 @@ var validators = acre.require("validator/validators");
 var handler = function() {
   return h.extend({}, acre.handlers.acre_script, {
     to_http_response: function(module, script) {
+      var resp;
       var d = deferred.resolved()
         .then(function() {
           return handle_service(module, script);
@@ -84,12 +85,12 @@ var handler = function() {
             throw e;
           }
         })
-        .then(function(body) {
-          module.body = body;
+        .then(function(r) {
+         resp = r;
         });
       acre.async.wait_on_results();
       d.cleanup();
-      return module;
+      return resp;
     }
   });
 };

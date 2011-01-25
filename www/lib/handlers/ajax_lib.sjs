@@ -65,6 +65,8 @@ function check_user() {
 };
 
 function to_http_response(ret) {
+  var resp = {body:null, headers:{}};
+
   // update transaction id and extract the timestamp from it
   var tid = acre.request.headers['x-metaweb-tid'];
   if (tid) {
@@ -73,18 +75,20 @@ function to_http_response(ret) {
   } else {
     ret.transaction_id = "Doh!  Sorry, no transaction id available.";
   }
-  acre.response.set_header('content-type', 'text/javascript; charset=utf-8');
+  resp.headers["content-type"] = 'text/javascript; charset=utf-8';
+
   var callback = acre.request.params.callback;
   if (callback) {
-    return [callback, "(", JSON.stringify(ret, null, 2), ");"].join("");
+    resp.body = [callback, "(", JSON.stringify(ret, null, 2), ");"].join("");
   } else {
     // only set non-200 status code if not in a JSONP request
     var status_code = (typeof ret.status === "number") ? ret.status : parseInt(ret.status.split(' ')[0]);
     if (status_code) {
-      acre.response.status = status_code;
+      resp.status = status_code;
     }
-    return JSON.stringify(ret, null, 2);
+    resp.body = JSON.stringify(ret, null, 2);
   }
+  return resp;
 };
 
 /**

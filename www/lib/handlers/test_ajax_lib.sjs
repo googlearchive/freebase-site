@@ -82,12 +82,19 @@ test("check_user", function() {
 });
 
 test("to_http_response", function() {
-  var res = new lib.ServiceResult({foo:"bar"});
-
-  function check_response(json) {
+  function check_response(resp, jsonp) {
+    ok(resp && typeof resp === "object", "got to_http_response");
+    ok(resp.body && typeof resp.body === "string", "got to_http_response.body");
+    ok(resp.headers && typeof resp.headers === "object", "got to_http_response.headers");
+    equal(resp.headers["content-type"], "text/javascript; charset=utf-8");
+    var body = resp.body;
+    if (jsonp) {
+      var rjsonp = new RegExp(["^\\s*", jsonp, "\\s*\\(\\s*"].join(""));
+      console.log("rjsonp", rjsonp);
+      body = body.replace(rjsonp, "").replace(/\s*\)\s*;\s*$/, "");
+    }
+    var json = JSON.parse(body);
     ok(json.transaction_id, "expected transaction_id in response");
-    equal(acre.response.headers["content-type"], "text/javascript; charset=utf-8");
-    equal(acre.response.status, "200");
     equal(json.status, "200 OK");
     equal(json.code, "/api/status/ok");
     same(json.result, {foo:"bar"});
@@ -95,41 +102,52 @@ test("to_http_response", function() {
 
   // no callback
   delete acre.request.params.callback;
-  var json_resp = lib.to_http_response(res);
-  check_response(JSON.parse(json_resp));
+  var resp = lib.to_http_response(new lib.ServiceResult({foo:"bar"}));
+  check_response(resp);
 
   // with callback
-  acre.request.params.callback = "foo";
-  var jsonp_resp = lib.to_http_response(res);
-  ok(/^foo\(/.test(jsonp_resp) && /\);$/.test(jsonp_resp), "expected valid jsonp response");
-  jsonp_resp = jsonp_resp.replace(/^foo\(/, "").replace(/\);$/, "");
-  check_response(JSON.parse(jsonp_resp));
+  try {
+    acre.request.params.callback = "foo";
+    resp = lib.to_http_response(new lib.ServiceResult({foo:"bar"}));
+    check_response(resp, "foo");
+  }
+  finally {
+    // remove callback param
+    delete acre.request.params.callback;
+  }
 
-  function check_error(json, msg) {
+  function check_error(resp, jsonp) {
+    ok(resp, "got to_http_response");
+    ok(resp.body && typeof resp.body === "string", "got to_http_response.body");
+    ok(resp.headers && typeof resp.headers === "object", "got to_http_response.headers");
+    equal(resp.headers["content-type"], "text/javascript; charset=utf-8");
+    var body = resp.body;
+    if (jsonp) {
+      var rjsonp = new RegExp(["^\\s*", jsonp, "\\s*\\(\\s*"].join(""));
+      body = body.replace(rjsonp, "").replace(/\s*\)\s*;\s*$/, "");
+    }
+    var json = JSON.parse(body);
     ok(json.transaction_id, "expected transaction_id in response");
-    equal(acre.response.headers["content-type"], "text/javascript; charset=utf-8");
-    equal(acre.response.status, "500");
     equal(json.status, "500 Internal Server Error");
     equal(json.code, "/api/status/error");
     ok(json.messages && json.messages.length === 1);
-    same(json.messages[0], msg);
+    same(json.messages[0], "some message");
   };
 
   // error - no callback
-  delete acre.request.params.callback;
-  res = new lib.ServiceError(null, null, "some message");
-  json_resp = lib.to_http_response(res);
-  check_error(JSON.parse(json_resp), "some message");
+  resp = lib.to_http_response(new lib.ServiceError(null, null, "some message"));
+  check_error(resp, null);
 
   // error - with callback
-  acre.request.params.callback = "foo";
-  jsonp_resp = lib.to_http_response(res);
-  ok(/^foo\(/.test(jsonp_resp) && /\);$/.test(jsonp_resp), "expected valid jsonp response");
-  jsonp_resp = jsonp_resp.replace(/^foo\(/, "").replace(/\);$/, "");
-  check_error(JSON.parse(jsonp_resp), "some message");
-
-  // set http response status back to 200
-  acre.response.status = 200;
+  try {
+    acre.request.params.callback = "foo";
+    resp = lib.to_http_response(new lib.ServiceError(null, null, "some message"));
+    check_error(resp, "foo");
+  }
+  finally {
+    // remove callback param
+    delete acre.request.params.callback;
+  }
 });
 
 test("instanceof_service_error", function() {

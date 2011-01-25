@@ -30,8 +30,9 @@
  */
 
 var h = acre.require("core/helpers");
-var lib = acre.require("service/lib");
+var lib = acre.require("handlers/ajax_lib");
 var deferred = acre.require("promise/deferred");
+var validators = acre.require("validator/validators");
 
 /**
  * A JSON/P web service handler for *.ajax.
@@ -69,20 +70,31 @@ var deferred = acre.require("promise/deferred");
 var handler = function() {
   return h.extend({}, acre.handlers.acre_script, {
     to_http_response: function(module, script) {
-      try {
-        handle(module, script);
-      }
-      catch (e) {
-        handle_service_error(e);
-      }
-      finally {
-        return null;
-      }
+      var d = deferred.resolved()
+        .then(function() {
+          return handle_service(module, script);
+        })
+        .then(function(result) {
+          return lib.to_http_response(result);
+        }, function(e) {
+          if (lib.instanceof_service_error(e)) {
+            return lib.to_http_response(lib.handle_service_error(e));
+          }
+          else {
+            throw e;
+          }
+        })
+        .then(function(body) {
+          module.body = body;
+        });
+      acre.async.wait_on_results();
+      d.cleanup();
+      return module;
     }
   });
 };
 
-var handle = function(module, script) {
+function handle_service(module, script) {
   var spec = module.SPEC;
   if (!(spec && typeof spec === "object")) {
     throw new lib.ServiceError(null, null, "SPEC is undefined");
@@ -94,6 +106,7 @@ var handle = function(module, script) {
     run: function() {}
   }, spec);
 
+  // SPEC needs to implement validate and run
   ["validate", "run"].forEach(function(m) {
     if (typeof spec[m] !== "function") {
       throw new lib.ServiceError(null, null, "SPEC." + m + " is undefined");
@@ -116,14 +129,23 @@ var handle = function(module, script) {
     }
   });
   if (!methods[req.method]) {
-    throw new lib.ServiceError(null, null, req.method + " not supported");
+    throw new ServiceError("405 Method Not Allowed", null, {
+      message: "Request method not supported: " + req.method,
+      code: "/api/status/error/request/method"
+    });
+  }
+  if (req.method === "POST" && !acre.request.headers['x-requested-with']) {
+    throw new ServiceError("400 Bad Request", null, {
+      message: "Request must include 'X-Requested-With' header",
+      code: "/api/status/error/request/method"
+    });
   }
 
   //
   // 2. check authentication
   //
   if (spec.auth) {
-    console.log("check_user");
+    //console.log("check_user");
     lib.check_user();
   }
 
@@ -132,80 +154,24 @@ var handle = function(module, script) {
   //
   // TODO: handle binary POSTs
   var req_params = req.method === "POST" ? req.body_params : req.params;
-  var args = spec.validate.apply(spec, [req_params]);
+  var args;
+  try {
+    args = spec.validate.apply(null, [req_params]);
+  }
+  catch(e if (e instanceof validators.Invalid ||
+              e instanceof validators.IfException)) {
+    throw new lib.ServiceError("400 Bad Request", null, {
+      message: e.message,
+      code : "/api/status/error/input/validation"
+    });
+  }
 
   //
   // 4. run web service
   //
-  var svc;
-  if (req.method === "POST") {
-    svc = lib.PostService;
-  }
-  else {
-    svc = lib.GetService;
-  }
-  function success(result) {
-    svc(function() {
-      return result;
-    }, scope);
-  };
-  function error(e) {
-    svc(function() {
-      return handle_service_error(e);
-    }, scope);
-  };
-
-  var d = spec.run.apply(spec, args);
-  deferred.when(d, success, error);
-
-  acre.async.wait_on_results();
-
-  return null;
+  var d = spec.run.apply(null, args);
+  return deferred.whenPromise(d,
+    function(result) {
+      return new lib.ServiceResult(result);
+    });
 };
-
-function handle_service_error(e) {
-  /**
-   * This series of catch blocks copied from
-   * //service.libs.freebase.dev/lib (run_function_as_service)
-   */
-
-  if (e instanceof lib.ServiceError) {
-    return lib.output_response(e);
-  }
-  else if (e instanceof acre.freebase.Error) {
-    // it's an acre.freebase error so pass along original error from Freebase
-    return lib.output_response(e.response);
-  }
-  else if (e instanceof acre.errors.URLError) {
-    // it's an unknown urlfetch error so parse it
-    var response = e.response.body;
-    var info;
-    try {
-      // is it a JSON-formatted error?
-      info = JSON.parse(response);
-    }
-    catch(e) {
-      // otherwise just package the response as string
-      info = response;
-    }
-    var msg = e.request_url ? "Error fetching " + e.request_url : "Error fetching external URL";
-    return lib.output_response(new lib.ServiceError("500 Service Error", null, {
-      message: msg,
-      code : "/api/status/error/service/external",
-      info :info
-    }));
-  }
-  else {
-    // catch all defaults to validation errors
-    var msg = e;
-    if (e instanceof Error) {
-      msg = (typeof e.toString === "function") ? e.toString() : ""+e;
-    }
-    return lib.output_response(new lib.ServiceError("400 Bad Request", null, {
-      message: msg,
-      code : "/api/status/error/input/validation"
-    }));
-  }
-};
-
-

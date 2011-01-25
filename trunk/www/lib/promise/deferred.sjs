@@ -55,30 +55,30 @@ var all, any;
 var RequestCanceled, RequestTimeout;
 
 (function() {
-  
+
   // --- Possible Errors for Deferreds ---
-  
+
   // Used to signal that a deferred has been canceled
   RequestCanceled = function(message) {
     this.message = message;
   };
   RequestCanceled.prototype = new Error();
-  
+
   // Used to signal that a deferred has timed out
   RequestTimeout = function(message) {
     this.message = message;
   };
   RequestTimeout.prototype = new Error();
-  
+
   // --- Deferred Implementation ---
   Deferred = function() {
     var result, finished;
     var waiting = [];
     var promise = this.promise = {};
-    
-    // Calls the listener's errback or callback depending on the 
+
+    // Calls the listener's errback or callback depending on the
     //  current result. It will resolve returned promises before
-    //  passing them on. If this listener doesn't handle this type of 
+    //  passing them on. If this listener doesn't handle this type of
     //  result then it passes it along.
     function notify(listener) {
       // Determine which callback (if any) to call based on whether
@@ -91,7 +91,7 @@ var RequestCanceled, RequestTimeout;
         listener.deferred.reject(e);
         return;
       }
-      
+
       // Pass along the result down the chain
       // If its a deferred then resolve it first
       when(value, function(new_result) {
@@ -100,10 +100,10 @@ var RequestCanceled, RequestTimeout;
         listener.deferred.reject(new_error);
       });
     }
-    
+
     // A deferred can be completed by either resolving, or rejecting it
     //  based on success or error.
-    
+
     // Calling resolve will put the deferred in a success state
     // Resolve can only be called once for each deferred
     // It records the result and notifies all the listeners
@@ -111,16 +111,16 @@ var RequestCanceled, RequestTimeout;
       if (finished) {
         throw new Error("This deferred has already been resolved");
       }
-      
+
       result = value;
       finished = true;
-      
+
       waiting.forEach(notify);
       waiting = [];
-      
+
       return promise;
     };
-    
+
     // Calling reject will put the deferred in a failure state
     //  by coercing the value into an error
     var reject = this.reject = function(error) {
@@ -131,21 +131,21 @@ var RequestCanceled, RequestTimeout;
       resolve(error);
       return promise;
     };
-    
+
     // Adds a new success and/or failure listener to this deferred's promise
-    // All of these listeners will be called when the deferred 
+    // All of these listeners will be called when the deferred
     //   is resolved or rejected.
     // Call patterns:
     //  .then(callback)
     //  .then(null, errback)
     this.then = promise.then = function(callback, errback) {
-      
+
       var listener = {
         callback: callback,
         errback: errback,
         deferred: new Deferred()
-      }; 
-      
+      };
+
       if (finished) {
         notify(listener);
       } else {
@@ -153,10 +153,10 @@ var RequestCanceled, RequestTimeout;
       }
       return listener.deferred.promise;
     };
-    
+
     // Cancels an uncompleted deferred by rejecting it with a canceled error.
     //  This just cancels the callback chain, if the deferred creator wants to
-    //  cancel the request as well then they should attach an errback to 
+    //  cancel the request as well then they should attach an errback to
     //  catch RequestCanceled errors
     this.cancel = function(reason) {
       // Cancels the asynchronous operation
@@ -164,37 +164,37 @@ var RequestCanceled, RequestTimeout;
         reject(new RequestCanceled(reason));
       }
     };
-    
+
     this.cleanup = promise.cleanup = function() {
       if (result instanceof Error) {
         throw result;
       }
     };
   };
-  
+
   // Convenience function to return an unresolved deferred
   unresolved = function() {
     return new Deferred();
   };
-  
+
   // Convenience function to return a resolved promise
   resolved = function(value) {
     return unresolved().resolve(value);
   };
-  
+
   // Convenience function to return a rejected promise
   rejected = function(error) {
     return unresolved().reject(error);
   };
-  
+
   // Determines whether a value is a promise by checking
   //  for a .then method
   function is_promise(value) {
     return value && typeof value.then === "function";
   }
-  
+
   // Call either the async or sync function depending on
-  //  whether value is a promise or not, returns a 
+  //  whether value is a promise or not, returns a
   //  promise for when its fulfilled
   function perform(value, async, sync){
     try {
@@ -203,21 +203,21 @@ var RequestCanceled, RequestTimeout;
       } else {
         value = sync(value);
       }
-      
+
       if (is_promise(value)) {
         return value;
       }
-      
-      return resolved(value).promise;
+
+      return resolved(value);
     } catch(e) {
-      return rejected(e).promise;
+      return rejected(e);
     }
   }
-  
+
   // Returns a promise with callback and errback already
   //   set on the promise
   whenPromise = function(value, callback, errback) {
-    return perform(value, 
+    return perform(value,
       function(value) {
         return value.then(callback, errback);
       },
@@ -226,28 +226,28 @@ var RequestCanceled, RequestTimeout;
       }
     );
   };
-  
-  // Takes any value and calls either the callback 
+
+  // Takes any value and calls either the callback
   //   or the errback depending on the value
   when = function(value, callback, errback) {
     if (is_promise(value)){
       return whenPromise(value, callback, errback);
     }
-    
+
     if (value instanceof Error) {
       return errback(value);
     } else {
       return callback(value);
     }
   };
-  
-  // Takes an array or dict of promises and returns a promise that 
+
+  // Takes an array or dict of promises and returns a promise that
   //   is fulfilled when all of those promises have been fulfilled
   // Each returned result will be either the result, or an Error on
   //   failure. Errbacks of "all" will never be called.
   all = function(promises) {
     var deferred = new Deferred();
-    
+
     var fulfilled = 0;
     var length = Object.size(promises);
     var results;
@@ -256,12 +256,12 @@ var RequestCanceled, RequestTimeout;
     } else {
       results = {};
     }
-    
+
     if (length === 0) {
       deferred.resolve(results);
       return deferred.promise;
     }
-    
+
     var handle_promise = function(k) {
       return function(value) {
         results[k] = value;
@@ -271,28 +271,28 @@ var RequestCanceled, RequestTimeout;
         }
       };
     };
-    
+
     for (var key in promises) {
       if (promises.hasOwnProperty(key)) {
         var hp = handle_promise(key);
         when(promises[key], hp, hp);
       }
     }
-    
+
     return deferred.promise;
   };
-  
-  // Takes an array or dict of promises and returns a promise that 
+
+  // Takes an array or dict of promises and returns a promise that
   //   is fulfilled with the result of the first fulfilled promise
   any = function(promises) {
     var deferred = new Deferred();
     var fulfilled = false;
-    
+
     if (Object.size(promises) === 0) {
       deferred.resolve();
       return deferred.promise;
     }
-    
+
     for (var key in promises) {
       if (promises.hasOwnProperty(key)) {
         when(promises[key], function(value){
@@ -308,10 +308,10 @@ var RequestCanceled, RequestTimeout;
         });
       }
     }
-    
+
     return deferred.promise;
   };
-  
+
   //  Return a promise whether func returns a promise or not
   maybePromise = function(func, args) {
     var value = func.apply(this, args);
@@ -329,12 +329,12 @@ var RequestCanceled, RequestTimeout;
   //      - key = key if argument is an object
   //    - errback_pos = same as callback_pos, but for errback
   makePromise = function(func, callback_pos, errback_pos) {
-    
+
     function _normalize_pos(pos) {
       switch (typeof pos) {
         case "undefined" :
           return { position: null, key: null };
-        case "number" : 
+        case "number" :
           return { position: pos, key: null };
         case "object" :
           if (pos.position && typeof pos.position !== "number") {
@@ -345,28 +345,28 @@ var RequestCanceled, RequestTimeout;
           throw "Unrecognized type for callback position -- must be a number or object with 'position' and/or 'key' values";
       }
     }
-    
+
     function _place_callback(args, pos, func) {
       if (typeof pos.position === 'undefined') {
         return args;
       }
-      
+
       if(!pos.key) {
         args[pos.position] = func;
         return args;
       }
-      
+
       if (typeof args[pos.position] !== "object") {
         args[pos.position] = {};
       }
-      
+
       args[pos.position][pos.key] = func;
       return args;
     }
-    
+
     return function() {
       var d = new Deferred();
-      
+
       args = Array.prototype.slice.call(arguments);
       _place_callback(args, _normalize_pos(callback_pos), function(res) {
           d.resolve(res);
@@ -374,7 +374,7 @@ var RequestCanceled, RequestTimeout;
       _place_callback(args, _normalize_pos(errback_pos), function(e) {
           d.reject(e);
       });
-      
+
       try {
         func.apply(null, args);
       } catch(e) {
@@ -383,5 +383,5 @@ var RequestCanceled, RequestTimeout;
       return d.promise;
     }
   }
-  
+
 })();

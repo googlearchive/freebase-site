@@ -37,6 +37,21 @@ var urlfetch = acre.require("promise/apis").urlfetch;
 var freebase = acre.require("promise/apis").freebase;
 var deferred = acre.require("promise/deferred");
 
+
+var user;
+test("login required", function() {
+  freebase.get_user_info()
+    .then(function(user_info) {
+      user = user_info;
+    });
+  acre.async.wait_on_results();
+  ok(user, "login required");
+});
+if (!user) {
+  acre.test.report();
+  acre.exit();
+}
+
 function assert_freebase_result(result) {
   ok(result, "got result");
   equal(result.code, "/api/status/ok");
@@ -196,7 +211,7 @@ test("mock_freebase_get_static", function() {
   acre.async.wait_on_results();
   ok(result, "got result");
   ok(result.notable_for && result.notable_for.length, "got notable_for");
-  equal(result.notable_for[0].o, "/en/singer-songwriter");
+  equal(result.notable_for[0].o, "/en/musician");
 });
 
 var self = this;

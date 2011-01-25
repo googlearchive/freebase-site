@@ -102,8 +102,8 @@ function handle_service(module, script) {
   spec = h.extend({}, {
     method: "GET",
     auth: false,
-    validate: function(params) { return []; },
-    run: function() {}
+    validate: null,
+    run: null
   }, spec);
 
   // SPEC needs to implement validate and run
@@ -129,13 +129,13 @@ function handle_service(module, script) {
     }
   });
   if (!methods[req.method]) {
-    throw new ServiceError("405 Method Not Allowed", null, {
+    throw new lib.ServiceError("405 Method Not Allowed", null, {
       message: "Request method not supported: " + req.method,
       code: "/api/status/error/request/method"
     });
   }
   if (req.method === "POST" && !acre.request.headers['x-requested-with']) {
-    throw new ServiceError("400 Bad Request", null, {
+    throw new lib.ServiceError("400 Bad Request", null, {
       message: "Request must include 'X-Requested-With' header",
       code: "/api/status/error/request/method"
     });
@@ -171,7 +171,7 @@ function handle_service(module, script) {
   //
   var d = spec.run.apply(null, args);
   return deferred.whenPromise(d,
-    function(result) {
-      return new lib.ServiceResult(result);
+    function(r) {
+      return new lib.ServiceResult(r);
     });
 };

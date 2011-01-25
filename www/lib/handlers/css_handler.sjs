@@ -44,8 +44,7 @@ var handler = function() {
       return compiled_js.module;
     },
     'to_http_response': function(module, script) {
-      script.scope.acre.response.set_header('content-type', 'text/css');
-      return module;
+      return {body: module.body, headers: {"content-type": "text/css"}};
     }
   };
 };

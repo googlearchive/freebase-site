@@ -36,7 +36,7 @@ var test_helpers = acre.require("handlers/helpers_test");
 
 var css_manifest_handler = acre.require("handlers/css_manifest_handler");
 
-acre.require("handlers/mock_handler").playback(this, css_manifest_handler, "handlers/playback_test_css_manifest_handler.json");
+acre.require("handlers/mock_handler").playback(this, css_manifest_handler, null, "handlers/playback_test_css_manifest_handler.json");
 
 function assert_content(content, lessified) {
   if (lessified) {
@@ -57,7 +57,6 @@ test("require", function() {
 test("include", function() {
   var resp = acre.include("handlers/handle_me.mf.css", test_helpers.metadata("mf.css", "handlers/css_manifest_handler", "handlers/handle_me.mf.css"));
   ok(resp, "got acre.include response");
-  equal(acre.response.headers["content-type"], "text/css");
   assert_content(resp, true);
 });
 

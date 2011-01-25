@@ -36,7 +36,11 @@ var test_helpers = acre.require("handlers/helpers_test");
 
 var css_handler = acre.require("handlers/css_handler");
 
-acre.require("handlers/mock_handler").playback(this, css_handler, "handlers/playback_test_css_handler.json");
+acre.require("handlers/mock_handler").playback(this, css_handler, {
+  to_module: function(result) {
+    return result.body;
+  }
+}, "handlers/playback_test_css_handler.json");
 
 test("quote_url", function() {
   equal(css_handler.quote_url("some url"),   '"some url"');
@@ -78,9 +82,8 @@ test("require", function() {
 
 test("include", function() {
   var resp = acre.include("handlers/handle_me.css", test_helpers.metadata("css", "handlers/css_handler", "handlers/handle_me.css"));
-  ok(resp, "got acre.include response");
+  ok(resp, "got acre.include response"); console.log("include", resp);
   assert_content(resp);
-  equal(acre.response.headers["content-type"], "text/css");
 });
 
 

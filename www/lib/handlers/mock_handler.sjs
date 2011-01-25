@@ -47,8 +47,9 @@ var mock = validators.StringBool(acre.request.params, "mock", {if_empty: true});
 
 if (mock) {
 
-  exports.record = function(scope, handler) {
-
+  exports.record = function(scope, handler, transform) {
+    console.log("mock_handler.record", scope.acre.request.script.id, "ON");
+    transform = transform || {};
     var test_data = [];
     var playback_data = {};
 
@@ -58,7 +59,12 @@ if (mock) {
           var orig_method = handler_obj[m];
           handler_obj[m] = function() {
             var result = orig_method.apply(this, arguments);
-            test_data.push([m, result]);
+            if (typeof transform[m] === "function") {
+              test_data.push([m, transform[m](result)]);
+            }
+            else {
+              test_data.push([m, result]);
+            }
             return result;
           };
         })();
@@ -82,17 +88,18 @@ if (mock) {
 
     // Override acre.test.report() to serialize playback JSON
     var acre_test_report = scope.acre.test.report;
-    scope.acre.test.report = function(name) {
+    scope.acre.test.report = function() {
       acre_test_report.apply(scope, arguments);
+      console.log("test.report playback_data", playback_data);
       acre.write("<pre>"+JSON.stringify(playback_data)+"</pre>");
     };
 
   };
 
-  exports.playback = function(scope, handler, playback_file) {
+  exports.playback = function(scope, handler, transform, playback_file) {
     console.log("mock_handler.playback", scope.acre.request.script.id, playback_file, "ON");
+    transform = transform || {};
     var playback_data = JSON.parse(scope.acre.require(playback_file).body);
-
     var test_info;
 
     function wrapper(handler_obj) {
@@ -127,8 +134,13 @@ if (mock) {
 
             // test result
             var result = orig_method.apply(this, arguments);
+            if (typeof transform[m] === "function") {
+              scope.same(transform[m](result), recorded_result, m);
+            }
+            else {
+              scope.same(result, recorded_result, m);
+            }
 
-            scope.deepEqual(result, recorded_result, m);
 
             return result;
           };

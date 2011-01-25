@@ -74,8 +74,7 @@ var handler = function() {
     'to_http_response': function(module, script) {
       module = h.extend({}, module);
       module.body = less(module.body);
-      acre.response.set_header("content-type", "text/css");
-      return module;
+      return {body:module.body, headers:{"content-type": "text/css"}};
     }
   };
 };

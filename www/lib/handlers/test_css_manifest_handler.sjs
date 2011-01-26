@@ -30,13 +30,13 @@
 */
 acre.require('/test/lib').enable(this);
 
-var h = acre.require("core/helpers");
+var h = acre.require("core/helpers.sjs");
 
-var test_helpers = acre.require("handlers/helpers_test");
+var test_helpers = acre.require("handlers/helpers_test.sjs");
 
-var css_manifest_handler = acre.require("handlers/css_manifest_handler");
+var css_manifest_handler = acre.require("handlers/css_manifest_handler.sjs");
 
-acre.require("handlers/mock_handler").playback(this, css_manifest_handler, null, "handlers/playback_test_css_manifest_handler.json");
+acre.require("handlers/mock_handler.sjs").playback(this, css_manifest_handler, null, "handlers/playback_test_css_manifest_handler.json");
 
 function assert_content(content, lessified) {
   if (lessified) {
@@ -58,6 +58,7 @@ test("include", function() {
   var resp = acre.include("handlers/handle_me.mf.css", test_helpers.metadata("mf.css", "handlers/css_manifest_handler", "handlers/handle_me.mf.css"));
   ok(resp, "got acre.include response");
   assert_content(resp, true);
+  ok(resp.headers && resp.headers["content-type"] === "text/css", "content-type is text/css");
 });
 
 

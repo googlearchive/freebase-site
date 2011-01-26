@@ -30,13 +30,13 @@
 */
 acre.require('/test/lib').enable(this);
 
-var h = acre.require("core/helpers");
+var h = acre.require("core/helpers.sjs");
 
-var test_helpers = acre.require("handlers/helpers_test");
+var test_helpers = acre.require("handlers/helpers_test.sjs");
 
-var css_handler = acre.require("handlers/css_handler");
+var css_handler = acre.require("handlers/css_handler.sjs");
 
-acre.require("handlers/mock_handler").playback(this, css_handler, {
+acre.require("handlers/mock_handler.sjs").playback(this, css_handler, {
   to_module: function(result) {
     return result.body;
   }
@@ -82,8 +82,9 @@ test("require", function() {
 
 test("include", function() {
   var resp = acre.include("handlers/handle_me.css", test_helpers.metadata("css", "handlers/css_handler", "handlers/handle_me.css"));
-  ok(resp, "got acre.include response"); console.log("include", resp);
+  ok(resp, "got acre.include response");
   assert_content(resp);
+  ok(resp.headers && resp.headers["content-type"] === "text/css", "content-type is text/css");
 });
 
 

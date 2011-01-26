@@ -28,37 +28,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+acre.require('/test/lib').enable(this);
 
-var exports = {
-  router: StaticRouter
-};
+var hh = acre.require("handlers/helpers.sjs");
 
-function StaticRouter() {
-  var add = this.add = function(routes) {};
+test("to_http_response_result", function() {
+  var r = hh.to_http_response_result("body", "headers", "status");
+  equal(r.body, "body");
+  ok(r.body !== "body", "r.body is a String object");
+  equal(r.headers, "headers");
+  equal(r.status, "status");
+  equal(r.body.headers, "headers");
+  equal(r.body.status, "status");
+  equal(typeof r.body, "object");
+  equal(JSON.stringify(r.body), '"body"');
+});
 
-  var route = this.route = function(req) {
-    var segs = req.path_info.split("/");
-    segs[1] = segs[1] + ".svn.freebase-site.googlecode.dev";
-
-    var qs = req.query_string;
-    var path = "/" + segs.join("/") + (qs ? "?" + qs : "");
-
-    // console.log("StaticRouter path", path);
-    var content = acre.include(path);
-    acre.write(content);
-    var headers = content.headers;
-    console.log("static headers", headers);
-    if (headers) {
-      for (var k in headers) {
-        acre.response.set_header(k, headers[k]);
-      }
-    }
-  };
-};
-
-if (acre.current_script === acre.request.script) {
-  var router = new exports.router();
-  router.route(acre.request);
-}
-
-
+acre.test.report();

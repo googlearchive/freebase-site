@@ -28,6 +28,7 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+var hh = acre.require("handlers/helpers.sjs");
 
 var handler = function() {
   return {
@@ -40,10 +41,12 @@ var handler = function() {
     'to_http_response': function(module, script) {
       var max_age = 31536000;
       var expires = new Date(acre.request.start_time.getTime() + max_age * 1000);
-      acre.response.set_header("expires", expires.toUTCString());
-      acre.response.set_header("cache-control", "public, max-age: " + max_age);
-      acre.response.set_header("content-type", script.media_type || "text/plain");
-      return module;
+      var headers = {
+        expires: expires.toUTCString(),
+        "cache-control": "public, max-age: " + max_age,
+        "content-type": script.media_type || "text/plain"
+      };
+      return hh.to_http_response_result(module.body, headers);
     }
   };
 };

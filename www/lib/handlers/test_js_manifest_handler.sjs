@@ -30,16 +30,16 @@
 */
 acre.require('/test/lib').enable(this);
 
-var h = acre.require("core/helpers");
+var h = acre.require("core/helpers.sjs");
 
-var test_helpers = acre.require("handlers/helpers_test");
+var test_helpers = acre.require("handlers/helpers_test.sjs");
 
-var js_manifest_handler = acre.require("handlers/js_manifest_handler");
+var js_manifest_handler = acre.require("handlers/js_manifest_handler.sjs");
 
-acre.require("handlers/mock_handler").playback(this, js_manifest_handler, null, "handlers/playback_test_js_manifest_handler.json");
+acre.require("handlers/mock_handler.sjs").playback(this, js_manifest_handler, null, "handlers/playback_test_js_manifest_handler.json");
 
 function assert_content(content) {
-  ok(content.indexOf('var name = "handle_me.js";') >= 1);
+  ok(content.indexOf('var name = "handle_me.js";') >= 0);
 };
 
 test("require", function() {
@@ -52,7 +52,7 @@ test("include", function() {
   var resp = acre.include("handlers/handle_me.mf.js", test_helpers.metadata("mf.js", "handlers/js_manifest_handler", "handlers/handle_me.mf.js"));
   ok(resp, "got acre.include response");
   assert_content(resp);
+  ok(resp.headers && resp.headers["content-type"] === "application/x-javascript", "content-type is application/x-javascript");
 });
-
 
 acre.test.report();

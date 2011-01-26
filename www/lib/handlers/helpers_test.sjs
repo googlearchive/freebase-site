@@ -30,6 +30,15 @@
 */
 var test_helpers = acre.require("test/helpers");
 
+/**
+ * Generate a valid metadata object to overwrite the default handler for a given extension.
+ * This will also ensure the content hash of the filename being acre required/included with the metadata
+ * will be random so that the "to_js" part of the handler will be run.
+ *
+ * @param extension:String (required) - e.g. "css"
+ * @param handler:String (required) - e.g. "handlers/my_handler"
+ * @param filename:String (required) - e.g. "some/filename" being required/included with this metadata
+ */
 function metadata(extension, handler, filename) {
   var md =  {
     handlers: {

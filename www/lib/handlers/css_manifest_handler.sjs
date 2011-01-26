@@ -28,10 +28,11 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-var h = acre.require("core/helpers");
+var h = acre.require("core/helpers.sjs");
+var hh = acre.require("handlers/helpers.sjs");
 
 var less = function(data) {
-  var less_parser = new(acre.require("handlers/less").less.Parser)({optimization:3});
+  var less_parser = new(acre.require("handlers/less.sjs").less.Parser)({optimization:3});
   var result;
   less_parser.parse(data, function(e, root) {
     result = root.toCSS();
@@ -72,9 +73,8 @@ var handler = function() {
       return res;
     },
     'to_http_response': function(module, script) {
-      module = h.extend({}, module);
-      module.body = less(module.body);
-      return {body:module.body, headers:{"content-type": "text/css"}};
+      var body = less(module.body);
+      return hh.to_http_response_result(body, {"content-type": "text/css"});
     }
   };
 };

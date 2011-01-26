@@ -29,10 +29,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("core/helpers");
-var lib = acre.require("handlers/ajax_lib");
-var deferred = acre.require("promise/deferred");
-var validators = acre.require("validator/validators");
+var h = acre.require("core/helpers.sjs");
+var hh = acre.require("handlers/helpers.sjs");
+var lib = acre.require("handlers/ajax_lib.sjs");
+var deferred = acre.require("promise/deferred.sjs");
+var validators = acre.require("validator/validators.sjs");
 
 /**
  * A JSON/P web service handler for *.ajax.
@@ -90,7 +91,7 @@ var handler = function() {
         });
       acre.async.wait_on_results();
       d.cleanup();
-      return resp;
+      return hh.to_http_response_result(resp.body, resp.headers, resp.status);
     }
   });
 };

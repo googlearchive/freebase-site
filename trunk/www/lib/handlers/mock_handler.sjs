@@ -30,10 +30,10 @@
 */
 
 var exports = {
-  record: function(scope, handler) {
+  record: function(scope, handler, transform) {
     console.log("mock_handler.record", scope.acre.request.script.id, "OFF");
   },
-  playback: function(scope, handler, playback_file) {
+  playback: function(scope, handler, transform, playback_file) {
     console.log("mock_handler.playback", scope.acre.request.script.id, playback_file, "OFF");
   }
 };
@@ -47,6 +47,23 @@ var mock = validators.StringBool(acre.request.params, "mock", {if_empty: true});
 
 if (mock) {
 
+  /**
+   * Record every phase of a handler (to_js, to_module, to_http_response);
+   * A transform object can optionally implment a method to transform the results of each method
+   * to a "recordable" object since not all object can be serialized to a playback file.
+   *
+   * Usage:
+   *
+   *   acre.require("/test/lib").enable(this);
+   *   var some_handler = acre.require("handlers/some_handler");
+   *   acre.require("handlers/mock_handler").record(this, some_handler, {
+   *     to_module: function(result) { return JSON.stringify(result.body); }
+   *   });
+   *   test(...);
+   *   acre.test.report();
+   *
+   * acre.test.report() will serialize the playback data, which you can copy and paste into a playback file.
+   */
   exports.record = function(scope, handler, transform) {
     console.log("mock_handler.record", scope.acre.request.script.id, "ON");
     transform = transform || {};
@@ -90,12 +107,28 @@ if (mock) {
     var acre_test_report = scope.acre.test.report;
     scope.acre.test.report = function() {
       acre_test_report.apply(scope, arguments);
-      console.log("test.report playback_data", playback_data);
       acre.write("<pre>"+JSON.stringify(playback_data)+"</pre>");
     };
 
   };
 
+  /**
+   * When playing back each phase of a handler (to_js, to_module, to_http_response),
+   * assert the result is the same as what was recorded in the record phase.
+   *
+   * On playback, one assertion will be made on each handler method
+   * so be careful when you specify the number of expected assertions to be made in your tests (i.e., expect()).
+   *
+   * Usage:
+   *
+   *   acre.require("/test/lib").enable(this);
+   *   var some_handler = acre.require("handlers/some_handler");
+   *   acre.require("handlers/mock_handler").record(this, some_handler, {
+   *     to_module: function(result) { return JSON.stringify(result.body); }
+   *   }, "playback_file.json");
+   *   test(...);
+   *   acre.test.report();
+   */
   exports.playback = function(scope, handler, transform, playback_file) {
     console.log("mock_handler.playback", scope.acre.request.script.id, playback_file, "ON");
     transform = transform || {};
@@ -133,16 +166,22 @@ if (mock) {
             }
 
             // test result
-            var result = orig_method.apply(this, arguments);
+            var orig_result = orig_method.apply(this, arguments);
+            var result = orig_result;
             if (typeof transform[m] === "function") {
-              scope.same(transform[m](result), recorded_result, m);
+              result = transform[m](result);
             }
-            else {
-              scope.same(result, recorded_result, m);
+            if (result && typeof result === "object") {
+              // JSON.stringify then JSON.parse since the result may contain
+              // a real object that can be serialized into JSON
+              //
+              // this is similar to !!variable to get a Boolean value
+              result = JSON.parse(JSON.stringify(result));
             }
 
+            scope.same(result, recorded_result, m);
 
-            return result;
+            return orig_result;
           };
         })();
       });
@@ -162,7 +201,6 @@ if (mock) {
       acre_test.apply(scope, arguments);
     };
   };
-
 };
 
 var self = this;

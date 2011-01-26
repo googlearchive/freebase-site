@@ -28,7 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+var hh = acre.require("handlers/helpers.sjs");
 
 var handler = function() {
 
@@ -72,7 +72,7 @@ var handler = function() {
       return res;
     },
     'to_http_response': function(module, script) {
-      return {body:module.body, headers:{"content-type": "application/x-javascript"}};
+      return hh.to_http_response_result(module.body, {"content-type":"application/x-javascript"});
     }
   };
 };

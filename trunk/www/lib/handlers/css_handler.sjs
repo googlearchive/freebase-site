@@ -29,7 +29,8 @@
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-var h = acre.require("core/helpers");
+var h = acre.require("core/helpers.sjs");
+var hh = acre.require("handlers/helpers.sjs");
 
 // return actual handler from custom handler registration function
 var handler = function() {
@@ -44,7 +45,7 @@ var handler = function() {
       return compiled_js.module;
     },
     'to_http_response': function(module, script) {
-      return {body: module.body, headers: {"content-type": "text/css"}};
+      return hh.to_http_response_result(module.body, {"content-type": "text/css"});
     }
   };
 };

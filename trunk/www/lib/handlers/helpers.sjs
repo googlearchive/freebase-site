@@ -29,36 +29,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var exports = {
-  router: StaticRouter
+
+/**
+ * Currently there is no way of passing back metadata of a handler's to_http_response,
+ * such as headers and status, on acre.include.
+ *
+ * We use a Javascript abnomally of passing back a String object as the body with headers and status
+ * as expando attributes.
+ *
+ * var content = acre.include("some/handled/file");
+ * if (content.headers) {
+ *   //acre.response.set_header(...)
+ * }
+ * if (content.status) {
+ *   //acre.response.status = content.status
+ * }
+ *
+ * Passing back String objects also assures that it will get serialized into a
+ * native "string" particulary when using JSON.stringify.
+ */
+function to_http_response_result(body, headers, status) {
+    body = new String(body);
+    body.headers = headers;
+    body.status = status;
+    return {body:body, headers:headers, status:status};
 };
-
-function StaticRouter() {
-  var add = this.add = function(routes) {};
-
-  var route = this.route = function(req) {
-    var segs = req.path_info.split("/");
-    segs[1] = segs[1] + ".svn.freebase-site.googlecode.dev";
-
-    var qs = req.query_string;
-    var path = "/" + segs.join("/") + (qs ? "?" + qs : "");
-
-    // console.log("StaticRouter path", path);
-    var content = acre.include(path);
-    acre.write(content);
-    var headers = content.headers;
-    console.log("static headers", headers);
-    if (headers) {
-      for (var k in headers) {
-        acre.response.set_header(k, headers[k]);
-      }
-    }
-  };
-};
-
-if (acre.current_script === acre.request.script) {
-  var router = new exports.router();
-  router.route(acre.request);
-}
-
-

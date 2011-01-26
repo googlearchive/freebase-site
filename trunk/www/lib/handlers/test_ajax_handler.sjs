@@ -30,13 +30,13 @@
  */
 acre.require("/test/lib").enable(this);
 
-var test_helpers = acre.require("handlers/helpers_test");
-var deferred = acre.require("promise/deferred");
-var ajax_handler = acre.require("handlers/ajax_handler");
-var lib = acre.require("handlers/ajax_lib");
-var validators = acre.require("validator/validators");
+var test_helpers = acre.require("handlers/helpers_test.sjs");
+var deferred = acre.require("promise/deferred.sjs");
+var ajax_handler = acre.require("handlers/ajax_handler.sjs");
+var lib = acre.require("handlers/ajax_lib.sjs");
+var validators = acre.require("validator/validators.sjs");
 
-acre.require("handlers/mock_handler").playback(this, ajax_handler, {
+acre.require("handlers/mock_handler.sjs").playback(this, ajax_handler, {
   to_module: function(result) {
     return JSON.stringify(result.SPEC);
   }
@@ -216,9 +216,14 @@ test("require", function() {
 
 test("include", function() {
   function check_response(resp, jsonp) {
+    ok(resp.headers && resp.headers["content-type"] === "text/javascript; charset=utf-8", "content-type is text/javascript");
     if (jsonp) {
+      ok(resp.status == null, "status should not be set for jsonp");
       var rjsonp = new RegExp(["^\\s*", jsonp, "\\s*\\(\\s*"].join(""));
       resp = resp.replace(rjsonp, "").replace(/\s*\)\s*;\s*$/, "");
+    }
+    else {
+      equal(resp.status, "200", "status 200");
     }
     var json = JSON.parse(resp);
     ok(json, "acre.include response is proper JSON");
@@ -247,9 +252,14 @@ test("include", function() {
 
 test("include error", function() {
   function check_response(resp, jsonp) {
+    ok(resp.headers && resp.headers["content-type"] === "text/javascript; charset=utf-8", "content-type is text/javascript");
     if (jsonp) {
+      ok(resp.status == null, "status should not be set for jsonp");
       var rjsonp = new RegExp(["^\\s*", jsonp, "\\s*\\(\\s*"].join(""));
       resp = resp.replace(rjsonp, "").replace(/\s*\)\s*;\s*$/, "");
+    }
+    else {
+      equal(resp.status, "400", "status 400");
     }
     var json = JSON.parse(resp);
     ok(json, "acre.include response is proper JSON");

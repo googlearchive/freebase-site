@@ -171,7 +171,7 @@
   <div id="page-footer" class="clear">
     <div id="copyright">
       <a href="http://www.google.com/" rel="nofollow">
-        &#169;2010
+        &#169; <script> document.write(new Date().getFullYear());</script>
         <img src="template/google-logo.png" alt="Google" width="62" height="23" />
       </a>
       <a title="${acre.request.script.path}" href="${acre.response.headers['x-acre-source-url']}" id="sourcelink">View Source</a>

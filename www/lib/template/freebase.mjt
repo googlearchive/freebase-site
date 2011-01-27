@@ -237,7 +237,8 @@
         },
         request: {
           app_url: acre.request.app_url,
-          server_name: acre.request.server_name
+          server_name: acre.request.server_name,
+          server_port: acre.request.server_port
         },
         lang: {
           mql: i18n.lang,

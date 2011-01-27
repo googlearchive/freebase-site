@@ -38,7 +38,8 @@
 </acre:block>
 
 <acre:block def="head()">
-  <script src="template/jquery.placeholder.test.mf.js"></script>
+  <script src="template/jquery.placeholder.js"></script>
+  <script src="template/jquery.placeholder.test.js"></script>
 </acre:block>
 
 <acre:block def="fixture()">

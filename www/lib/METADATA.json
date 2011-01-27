@@ -56,7 +56,7 @@
     "gif": {
       "media_type": "image/gif", 
       "handler": "tagged_binary"
-    }, 
+    } 
   },
   "static_base": "",
   "libs" : {

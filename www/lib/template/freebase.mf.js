@@ -6,5 +6,6 @@
   "template/jquery.metadata.js",
   "jqueryui/jquery.ui.core.mf.js",
   "template/freebase.js",
+  "template/helpers.js",
   "permission/permission.js"
 ]

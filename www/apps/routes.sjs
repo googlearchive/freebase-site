@@ -64,12 +64,6 @@ function do_route(path) {
   var file = segs.shift() || "";
   path = "/" + segs.join("/");
 
-  //these kinds of files are handled by specific handlers
-  //route here because the catch-all below is to route to /view
-  if (file.indexOf('.mf.css') > 0 || file.indexOf('.mf.js')) { 
-      acre.route(file + path);
-  }
-
   switch (file) {
 
     // special-case MANIFEST files

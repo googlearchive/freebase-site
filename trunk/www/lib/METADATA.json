@@ -11,6 +11,7 @@
     "css_manifest": "handlers/css_manifest_handler.sjs",
     "js_manifest": "handlers/js_manifest_handler.sjs",
     "tagged_static": "handlers/tagged_static_handler.sjs",
+    "tagged_binary": "handlers/tagged_binary_handler.sjs", 
     "ajax": "handlers/ajax_handler.sjs",
     "template": "handlers/template_handler.sjs"
   },
@@ -35,7 +36,27 @@
     },
     "template": {
       "handler": "template"
-    }
+    },
+    "omf.js": {
+      "media_type": "text/javascript", 
+      "handler": "js_manifest"
+    }, 
+    "omf.css": {
+      "media_type": "text/css", 
+      "handler": "css_manifest"
+    }, 
+    "jpg": {
+      "media_type": "image/jpg", 
+      "handler": "tagged_binary"
+    }, 
+    "png": {
+      "media_type": "image/png", 
+      "handler": "tagged_binary"
+    }, 
+    "gif": {
+      "media_type": "image/gif", 
+      "handler": "tagged_binary"
+    }, 
   },
   "static_base": "",
   "libs" : {

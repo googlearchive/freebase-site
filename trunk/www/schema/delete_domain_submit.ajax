@@ -29,35 +29,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-//
-// i18n'ized
-//
-var h = acre.require("lib/core/helpers");
-var editcomponents = acre.require("index_editcomponents");
-var create_base = acre.require("create_base");
+var h = acre.require("lib/core/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var delete_domain = acre.require("delete_domain.sjs").delete_domain;
 
-var api = {
+/**
+ * delete domain
+ */
+var SPEC = {
 
-  add_domain_begin: function(args) {
-    return {
-      html: acre.markup.stringify(editcomponents.add_domain_form())
-    };
+  method: "POST",
+
+  auth: true,
+
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {required:true}),           // domain to delete
+      validators.MqlId(params, "user", {required:true}),         // user performing the delete
+      validators.StringBool(params, "dry_run", {if_empty:false}) // see what will be deleted
+    ];
   },
 
-  add_domain_submit: function(args) {
-    var create_base_options = h.extend({}, args);
-    return create_base.create_base(create_base_options)
-      .then(function(domain) {
+  run: function(id, user, dry_run) {
+    return delete_domain(id, user, dry_run)
+      .then(function(deleted) {
         return {
-          location: h.fb_url("/schema", domain.id)
+          location: h.fb_url("/schema")
         };
       });
   }
 };
-
-// required args and authorization
-api.add_domain_begin.auth = true;
-
-api.add_domain_submit.args = ["name", "key", "description", "lang"];
-api.add_domain_submit.auth = true;
-api.add_domain_submit.method = "POST";

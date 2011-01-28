@@ -28,18 +28,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+var h = acre.require("lib/core/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
 var queries = acre.require("queries");
+var editcomponents = acre.require("type_editcomponents.mjt");
 
-var user_id = acre.request.params.user_id;
+/**
+ * delete a topic instance from an enumeration type
+ */
+var SPEC = {
 
-var data = {};
-if (user_id) {
-  data.domains = queries.user_domains(user_id);
-} else {
-  data.domains = queries.common_domains();
-}
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("index_template")
-);
+  method: "POST",
+
+  auth: true,
+
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {required:true}),
+      validators.MqlId(params, "type", {required:true})
+    ];
+  },
+
+  run: function(id, type) {
+    return queries.delete_instance(id, type)
+      .then(function(result) {
+        return queries.minimal_topic(id)
+          .then(function(topic) {
+            return {
+              html: acre.markup.stringify(editcomponents.delete_instance_result(topic, type))
+            };
+          });
+      });
+  }
+};

@@ -29,17 +29,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var queries = acre.require("queries");
+var validators = acre.require("lib/validator/validators.sjs");
+var queries = acre.require("queries.sjs");
+var editcomponents = acre.require("type_editcomponents.mjt");
+var deferred = acre.require("lib/promise/deferred.sjs");
 
-var user_id = acre.request.params.user_id;
+/**
+ * domain settings form
+ */
+var SPEC = {
 
-var data = {};
-if (user_id) {
-  data.domains = queries.user_domains(user_id);
-} else {
-  data.domains = queries.common_domains();
-}
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("index_template")
-);
+  method: "GET",
+
+  auth: true,
+
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {required:true})    // type id
+    ];
+  },
+
+  run: function(id) {
+    var promises = [];
+    promises.push(queries.minimal_type(id));
+    promises.push(queries.type_used(id));
+    return deferred.all(promises)
+      .then(function(result) {
+        var type = result[0];
+        type.used = result[1];
+        return type;
+      })
+      .then(function(type) {
+        // choose the best key
+        var key = type.key[0];
+        for (var i=0,l=type.key.length; i<l; i++) {
+          var k = type.key[i];
+          if (k.namespace === type.domain.id) {
+            key = k;
+            break;
+          }
+        }
+        type.key = key;
+        return {
+          html: acre.markup.stringify(editcomponents.type_settings_form(type))
+        };
+      });
+  }
+
+};

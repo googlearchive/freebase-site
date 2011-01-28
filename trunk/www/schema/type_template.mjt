@@ -260,11 +260,10 @@
           ${tc.incoming_props_tbody(c.type.incoming.domain)}
        </acre:block>
         <acre:block if="c.type.incoming.commons">
-          ${tc.incoming_props_thead(_("Commons"), false, h.url_for('schema', 'type', [['id',c.type.id],['exclude_domain',c.type.domain.id]], '/get_incoming_from_commons'))}
-        </acre:block>
+          ${tc.incoming_props_thead(_("Commons"), false, h.ajax_url(acre.request.script.app.path + "/get_incoming_from_commons", [['id',c.type.id],['exclude_domain',c.type.domain.id]]))}
+       </acre:block>
         <acre:block if="c.type.incoming.bases">
-          ${tc.incoming_props_thead(_("Bases"), false, h.url_for('schema', 'type', [['id',c.type.id],['exclude_domain',c.type.domain.id]], '/get_incoming_from_bases'))}
-        </acre:block>
+          ${tc.incoming_props_thead(_("Bases"), false, h.ajax_url(acre.request.script.app.path + "/get_incoming_from_bases", [['id',c.type.id],['exclude_domain',c.type.domain.id]]))}
       </table>
    </div>   
   </div>     

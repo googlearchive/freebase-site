@@ -66,7 +66,7 @@
       return false;
     });
 
-    var domain_suggest_options = { "type" : "/type/domain" };
+    var domain_suggest_options = { "type" : "/type/domain" , service_url: fb.h.legacy_fb_url() };
 
     if ($("#domain-search-toggle-commons").is(":checked")) {
       domain_suggest_options.mql_filter = MQL_FILTERS.domain;
@@ -90,7 +90,7 @@
       return false;
     });
 
-    var type_suggest_options = { "type" : "/type/type" };
+    var type_suggest_options = { "type" : "/type/type" , service_url: fb.h.legacy_fb_url() };
 
     if ($("#type-search-toggle-commons").is(":checked")) {
       type_suggest_options.mql_filter = MQL_FILTERS.type;
@@ -114,7 +114,7 @@
       return false;
     });
 
-    var property_suggest_options = { "type" : "/type/property" };
+    var property_suggest_options = { "type" : "/type/property" , service_url: fb.h.legacy_fb_url() };
 
     if ($("#property-search-toggle-commons").is(":checked")) {
       property_suggest_options.mql_filter = MQL_FILTERS.property;

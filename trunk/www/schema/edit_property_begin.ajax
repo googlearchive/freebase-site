@@ -29,17 +29,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var queries = acre.require("queries");
+var h = acre.require("lib/core/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var editcomponents = acre.require("type_editcomponents.mjt");
+var queries = acre.require("queries.sjs");
+var deferred = acre.require("lib/promise/deferred");
 
-var user_id = acre.request.params.user_id;
+/**
+ * edit property form
+ */
+var SPEC = {
 
-var data = {};
-if (user_id) {
-  data.domains = queries.user_domains(user_id);
-} else {
-  data.domains = queries.common_domains();
-}
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("index_template")
-);
+  method: "GET",
+
+  auth: true,
+
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {required:true})             // property id being edited
+    ];
+  },
+
+  run: function(id) {
+    var promises = [];
+    promises.push(queries.property(id));
+    promises.push(queries.property_used(id));
+    return deferred.all(promises)
+      .then(function(results) {
+        var prop = results[0];
+        prop.used = results[1];
+        return {html:acre.markup.stringify(editcomponents.edit_property_form(prop))};
+      });
+  }
+};

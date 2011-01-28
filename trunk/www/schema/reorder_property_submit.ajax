@@ -29,17 +29,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var queries = acre.require("queries");
+var h = acre.require("lib/core/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var freebase = acre.require("lib/promise/apis").freebase;
 
-var user_id = acre.request.params.user_id;
+/**
+ * reorder property
+ */
+var SPEC = {
 
-var data = {};
-if (user_id) {
-  data.domains = queries.user_domains(user_id);
-} else {
-  data.domains = queries.common_domains();
-}
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("index_template")
-);
+  method: "POST",
+
+  auth: true,
+
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {required:true}),           // type id
+      validators.Array(params, "properties[]", {required:true})  // array of property ids sorted in order
+    ];
+  },
+
+  run: function(id, properties) {
+    var q = {
+      id: id,
+      type: "/type/type",
+      properties: []
+    };
+    properties.forEach(function(prop_id, i) {
+      q.properties.push({id:prop_id, index:i});
+    });
+    return freebase.mqlwrite(q)
+      .then(function() {
+        return {
+          location: h.fb_url("/schema", id)
+        };
+      });
+  }
+};

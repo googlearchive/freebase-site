@@ -29,17 +29,58 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var queries = acre.require("queries");
+var validators = acre.require("lib/validator/validators.sjs");
+var queries = acre.require("queries.sjs");
+var editcomponents = acre.require("domain_editcomponents.mjt");
+var freebase = acre.require("lib/promise/apis.sjs").freebase;
 
-var user_id = acre.request.params.user_id;
+/**
+ * domain settings form
+ */
+var SPEC = {
 
-var data = {};
-if (user_id) {
-  data.domains = queries.user_domains(user_id);
-} else {
-  data.domains = queries.common_domains();
-}
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("index_template")
-);
+  method: "GET",
+
+  auth: true,
+
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {required:true})    // domain id
+    ];
+  },
+
+  run: function(id) {
+    return queries.minimal_domain(id)
+      .then(function(domain) {
+        // choose the best key
+        var key = domain.key[0];
+        for (var i=0,l=domain.key.length; i<l; i++) {
+          var k = domain.key[i];
+          if ((k.namespace + "/" + k.value) ===  id) {
+            key = k;
+            break;
+          }
+        }
+        domain.key = key;
+
+        // does the user have permission to change the key?
+        var q = {
+          id: key.namespace,
+          permission: [{permits: [{member: {id: acre.freebase.get_user_info().id}}]}]
+        };
+        return freebase.mqlread(q)
+          .then(function(env) {
+              if (env.result) {
+                domain.key.permitted = true;
+              }
+              return domain;
+            });
+      })
+      .then(function(domain) {
+        return {
+          html: acre.markup.stringify(editcomponents.domain_settings_form(domain))
+        };
+      });
+  }
+
+};

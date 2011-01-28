@@ -40,7 +40,7 @@
      */
     type_settings_begin: function(trigger, type_id) {
       $.ajax({
-        url: fb.acre.request.app_url + "/schema/type/type_settings_begin",
+        url: fb.ajax.app + "/type_settings_begin.ajax",
         data: {id:type_id},
         dataType: "json",
         success: function(data, status, xhr) {
@@ -48,7 +48,7 @@
           var form = {
             event_prefix: "fb.schema.type.settings.",
             ajax: {
-              url: fb.acre.request.app_url + "/schema/type/type_settings_submit",
+              url: fb.ajax.app + "/type_settings_submit.ajax",
               data: {id: type_id}
             },
 
@@ -98,10 +98,11 @@
           form.form.addClass("loading");
           var data = {
             id : form.ajax.data.id,
-            user: fb.user.id
+            user: fb.user.id,
+            redirect: true
           };
           $.ajax({
-            url: fb.acre.request.app_url + "/schema/type/delete_type_submit",
+            url: fb.ajax.app + "/delete_type_submit.ajax",
             type: "POST",
             dataType: "json",
             data: data,
@@ -218,7 +219,7 @@
           delegated
             .unbind()
             .suggest_property({
-              service_url: fb.acre.freebase.site_host
+              service_url: fb.h.legacy_fb_url()
             })
             .bind("fb-select", function(e, data) {
               $(this).val(data.id);
@@ -256,7 +257,7 @@
     delegate_property_begin: function(form, prop_id) {
       form.row.addClass("loading");
       $.ajax({
-        url: fb.acre.request.app_url + "/schema/type/delegate_property_begin",
+        url: fb.ajax.app + "/delegate_property_begin.ajax",
         data: {id: prop_id},
         dataType: "json",
         success: function(data, status, xhr) {
@@ -295,7 +296,7 @@
     add_property_begin: function(trigger, type_id) {
       var trigger_row = trigger.parents("tr:first");
       $.ajax({
-        url: fb.acre.request.app_url + "/schema/type/add_property_begin",
+        url: fb.ajax.app + "/add_property_begin.ajax",
         data: {id: type_id},
         dataType: "json",
         success: function(data, status, xhr) {
@@ -309,7 +310,7 @@
             mode: "add",
             event_prefix: "fb.schema.type.add.property.",
             ajax: {
-              url: fb.acre.request.app_url + "/schema/type/add_property_submit"
+              url: fb.ajax.app + "/add_property_submit.ajax"
             },
 
             init_form: te.init_property_form,
@@ -353,7 +354,7 @@
     edit_property_begin: function(trigger, prop_id) {
       var trigger_row = trigger.parents("tr:first");
       $.ajax({
-        url: fb.acre.request.app_url + "/schema/type/edit_property_begin",
+        url: fb.ajax.app + "/edit_property_begin.ajax",
         data: {id: prop_id},
         dataType: "json",
         success: function(data, status, xhr) {
@@ -366,7 +367,7 @@
             mode: "edit",
             event_prefix: "fb.schema.type.edit.property.",
             ajax: {
-              url: fb.acre.request.app_url + "/schema/type/edit_property_submit",
+              url: fb.ajax.app + "/edit_property_submit.ajax",
               data: {id: prop_id}
             },
 
@@ -442,7 +443,7 @@
         domain.pop();
         domain = domain.join("/");
         expected_type_input.suggest_expected_type({
-          service_url: fb.acre.freebase.site_host,
+          service_url: fb.h.legacy_fb_url(),
           suggest_new: "Create new type",
           domain: domain
         })
@@ -589,7 +590,7 @@
       var row = trigger.parents("tr:first");
       var table = row.parents("table:first");
       $.ajax({
-        url: fb.acre.request.app_url + "/schema/type/delete_property_submit",
+        url: fb.ajax.app + "/delete_property_submit.ajax",
         data: {id: prop_id, user: fb.user.id},
         type: "POST",
         dataType: "json",
@@ -617,7 +618,7 @@
       var row = trigger.parents("tr:first");
       var table = row.parents("table:first");
       $.ajax({
-        url: fb.acre.request.app_url + "/schema/type/undo_delete_property_submit",
+        url: fb.ajax.app + "/undo_delete_property_submit.ajax",
         data: {prop_info: JSON.stringify(prop_info)},
         type: "POST",
         dataType: "json",
@@ -648,7 +649,7 @@
     add_included_type_begin: function(trigger, type_id) {
       var trigger_row = trigger.parents("tr:first");
       $.ajax({
-        url: fb.acre.request.app_url + "/schema/type/add_included_type_begin",
+        url: fb.ajax.app + "/add_included_type_begin.ajax",
         data: {id: type_id},
         dataType: "json",
         success: function(data, status, xhr) {
@@ -662,7 +663,7 @@
             mode: "edit",
             event_prefix: "fb.schema.type.add.included_type.",
             ajax: {
-              url: fb.acre.request.app_url + "/schema/type/add_included_type_submit"
+              url: fb.ajax.app + "/add_included_type_submit.ajax"
             },
 
             init_form: te.init_included_type_form,
@@ -699,7 +700,7 @@
 
       if (!form.row.data("initialized")) {
         included_type_input.suggest({
-          service_url: fb.acre.freebase.site_host,
+          service_url: fb.h.legacy_fb_url(),
           category: "cotype",
           suggest_new: "Create new type"
         })
@@ -780,7 +781,7 @@
       var row = trigger.parents("tr:first");
       var table = row.parents("table:first");
       $.ajax({
-        url: fb.acre.request.app_url + "/schema/type/delete_included_type_submit",
+        url: fb.ajax.app + "/delete_included_type_submit.ajax",
         data: {id: type_id, included_type: included_type_id},
         type: "POST",
         dataType: "json",
@@ -805,7 +806,7 @@
       var row = trigger.parents("tr:first");
       var table = row.parents("table:first");
       $.ajax({
-        url: fb.acre.request.app_url + "/schema/type/undo_delete_included_type_submit",
+        url: fb.ajax.app + "/undo_delete_included_type_submit.ajax",
         data: {id: type_id, included_type: included_type_id},
         type: "POST",
         dataType: "json",
@@ -836,7 +837,7 @@
     reverse_property_begin: function(trigger, type_id, master_id) {
       var trigger_row = trigger.parents("tr:first");
       $.ajax({
-        url: fb.acre.request.app_url + "/schema/type/reverse_property_begin",
+        url: fb.ajax.app + "/reverse_property_begin.ajax",
         data: {id: type_id, master: master_id},
         dataType: "json",
         success: function(data, status, xhr) {
@@ -848,7 +849,7 @@
             mode: "edit",
             event_prefix: "fb.schema.type.reverse.property.",
             ajax: {
-              url: fb.acre.request.app_url + "/schema/type/add_property_submit",
+              url: fb.ajax.app + "/add_property_submit.ajax",
               data: {master_property: master_id},
               success: function(data, status, xhr) {
                 if (data.code === "/api/status/error") {
@@ -910,7 +911,7 @@
     add_instance_begin: function(trigger, type_id) {
       var trigger_row = trigger.parents("tr:first");
       $.ajax({
-        url: fb.acre.request.app_url + "/schema/type/add_instance_begin",
+        url: fb.ajax.app + "/add_instance_begin.ajax",
         data: {id: type_id},
         dataType: "json",
         success: function(data, status, xhr) {
@@ -923,7 +924,7 @@
             mode: "add",
             event_prefix: "fb.schema.type.add.instance.",
             ajax: {
-              url: fb.acre.request.app_url + "/schema/type/add_instance_submit",
+              url: fb.ajax.app + "/add_instance_submit.ajax",
               data: {type:type_id}
             },
 
@@ -968,7 +969,7 @@
       var suggest = name.data("suggest");
       if (!suggest) {
         name.suggest({
-          service_url: fb.acre.freebase.site_host,
+          service_url: fb.h.legacy_fb_url(),
           suggest_new: "Create new",
           category: "instance"
         })
@@ -1050,7 +1051,7 @@
       var row = trigger.parents("tr:first");
       var table = row.parents("table:first");
       $.ajax({
-        url: fb.acre.request.app_url + "/schema/type/delete_instance_submit",
+        url: fb.ajax.app + "/delete_instance_submit.ajax",
         data: {id: topic_id, type: type_id},
         type: "POST",
         dataType: "json",
@@ -1077,7 +1078,7 @@
       var row = trigger.parents("tr:first");
       var table = row.parents("table:first");
       $.ajax({
-        url: fb.acre.request.app_url + "/schema/type/undo_delete_instance_submit",
+        url: fb.ajax.app + "/undo_delete_instance_submit.ajax",
         data: {id: topic_id, type: type_id},
         type: "POST",
         dataType: "json",
@@ -1104,7 +1105,7 @@
 
     reorder_property_begin: function(trigger, type_id) {
       $.ajax({
-        url: fb.acre.request.app_url + "/schema/type/reorder_property_begin",
+        url: fb.ajax.app + "/reorder_property_begin.ajax",
         data: {id:type_id},
         dataType: "json",
         success: function(data, status, xhr) {
@@ -1112,7 +1113,7 @@
           var form = {
             event_prefix: "fb.schema.type.reorder.property",
             ajax: {
-              url: fb.acre.request.app_url + "/schema/type/reorder_property_submit",
+              url: fb.ajax.app + "/reorder_property_submit.ajax",
               data: {id: type_id}
             },
 

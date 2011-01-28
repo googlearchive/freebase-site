@@ -28,18 +28,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+var h = acre.require("lib/core/helpers.sjs");
+var add_instance_submit = acre.require("add_instance_submit.ajax");
 
-var queries = acre.require("queries");
-
-var user_id = acre.request.params.user_id;
-
-var data = {};
-if (user_id) {
-  data.domains = queries.user_domains(user_id);
-} else {
-  data.domains = queries.common_domains();
-}
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("index_template")
-);
+/**
+ * undo delete instance - just re-run add_instance_submit
+ */
+var SPEC = h.extend({}, add_instance_submit.SPEC);

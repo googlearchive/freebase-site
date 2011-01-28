@@ -28,18 +28,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+var h = acre.require("lib/core/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var queries = acre.require("queries.sjs");
+var components = acre.require("type_components.mjt");
+var deferred = acre.require("lib/promise/deferred");
+var freebase = acre.require("lib/promise/apis").freebase;
 
-var queries = acre.require("queries");
+/**
+ * undo delete included type
+ */
+var SPEC = {
 
-var user_id = acre.request.params.user_id;
+  method: "POST",
 
-var data = {};
-if (user_id) {
-  data.domains = queries.user_domains(user_id);
-} else {
-  data.domains = queries.common_domains();
-}
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("index_template")
-);
+  auth: true,
+
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {required:true}),             // type id
+      validators.MqlId(params, "included_type", {required:true})   // included type to remove from id
+    ];
+  },
+
+  run: function(id, included_type) {
+    var promises = [];
+    promises.push(queries.add_included_types(id, [included_type]));
+    promises.push(freebase.mqlread({id:included_type, name:null})
+      .then(function(env) {
+        return env.result;
+      }));
+    return deferred.all(promises)
+      .then(function(result) {
+        return {
+          html: acre.markup.stringify(components.included_type_thead(id, result[1]))
+        };
+      });
+  }
+};

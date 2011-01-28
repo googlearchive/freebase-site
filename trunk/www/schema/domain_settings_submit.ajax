@@ -29,17 +29,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var queries = acre.require("queries");
+var h = acre.require("lib/core/helpers");
+var validators = acre.require("lib/validator/validators");
+var update_domain = acre.require("update_domain").update_domain;
 
-var user_id = acre.request.params.user_id;
+/**
+ * domain settings form submit - update_domain
+ */
+var SPEC = {
 
-var data = {};
-if (user_id) {
-  data.domains = queries.user_domains(user_id);
-} else {
-  data.domains = queries.common_domains();
-}
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("index_template")
-);
+  method: "POST",
+
+  auth: true,
+
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {required:true}),           // domain to update
+      validators.String(params, "name", {if_empty:null}),        // domain name
+      validators.MqlId(params, "namespace", {if_empty:null}),    // domain namespace ( required to update key)
+      validators.DomainKey(params, "key", {if_empty:null}),      // domain key
+      validators.String(params, "description", {if_empty:null}), // domain description
+      validators.MqlId(params, "lang", {if_empty:"/lang/en"})    // name,description lang
+    ];
+  },
+
+  run: function(id, name, namespace, key, description, lang) {
+    var remove = [];
+    if (description == null) {
+      remove.push("description");
+    }
+    return update_domain({
+      id: id,
+      name: name,
+      namespace: namespace,
+      key: key,
+      description: description,
+      lang: lang,
+      remove: remove
+    })
+    .then(function(updated_id) {
+      return  {
+        location: h.fb_url("/schema", updated_id)
+      };
+    });
+  }
+};

@@ -67,6 +67,13 @@ var validators = acre.require("validator/validators.sjs");
  * run:Function (required)
  * - main run method of the web service
  * - return JSON or a promise returning JSON.
+ *
+ *
+ * TODO:
+ *   // cache_policy
+ * if (h.is_client() && fn.cache_policy) {
+ *   acre.response.set_cache_policy(fn.cache_policy);
+ * }
  */
 var handler = function() {
   return h.extend({}, acre.handlers.acre_script, {

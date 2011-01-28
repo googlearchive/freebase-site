@@ -62,6 +62,7 @@ function domains(q) {
     })
     .then(function(domains) {
       var summary_guids = [];
+      domains = domains.slice(0, 10);
       domains.forEach(function(d) {
         var summary_guid = "summary_/guid/" + d.guid.substring(1);
         summary_guids.push(summary_guid);

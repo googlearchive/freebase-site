@@ -1,0 +1,275 @@
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/core/helpers");
+  var image = acre.require("lib/template/imagecomponents");  
+  var i18n = acre.require("lib/i18n/i18n");
+  var _ = i18n.gettext;
+</acre:script>
+
+<acre:block def="head()">
+ <link rel="stylesheet" type="text/css" href="topic.mf.css" />
+</acre:block>
+
+<acre:block def="content_header()">
+  <div class="page-header clear">
+    <div class="breadcrumb clear">
+      <ol>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.fb_url('/home')}">${_("Home")}</a>
+          </span>
+        </li>  
+        <li if="c.domain" class="breadcrumb-item last">
+          <span class="breadcrumb-item-inner">
+            <a href="#">${_("Topic Name")}</a>
+          </span>
+        </li>
+      </ol>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="content_body()">
+<div class="page-meta">
+  <h1>
+    ${_("Topic Name")}
+  </h1>
+  <div class="meta">   
+    <!-- Show topic MID -->
+    <span class="key">
+      <strong><abbr title="${_('Machine ID')}">${_("mid")}</abbr></strong>: ${_("/m/foobar")}
+    </span>
+    <!-- Show top-ranked notable type -->
+    <span class="key">
+      <strong>notable type</strong>: <a href="">${_("/domain/type_id")}</a>
+    </span>
+    <!-- If topic is a person, show notable_for-->
+    <!--<span class="key">-->
+      <!--<strong>notable for</strong>: <a href="">${_("/domain/type_id")}</a>-->
+    <!--</span>-->
+  </div>
+
+  <div class="admin-toolbox">
+    <span class="creation-timestamp">
+      <span class="user-image">
+        <a href="http://www.sandbox-freebase.com/view/user/domain_administrator" title="/user/domain_administrator">
+          <img src="http://api.sandbox-freebase.com/api/trans/image_thumb?errorid=/freebase/user_profile/empty_user_image&amp;amp;id=/user/domain_administrator&amp;amp;maxheight=30&amp;amp;maxwidth=30&amp;amp;mode=fillcrop&amp;amp;pad=1" width="30" height="30" alt="/user/domain_administrator">
+        </a>
+      </span>
+      ${_("Created by")} <a href="#" title="${_('View user profile')}">${_('User Display Name')}</a> 
+      on <time class="published" datetime="ISO 8601 Format">December 21, 2007</time>
+    </span>
+  </div>
+  <div id="description"> 
+    <!-- blurb should be sentence-level truncation at ~50 words -->
+    <p class="blurb">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+    <div class="blob"></div>
+    <a href="javascript:void(0);" class="blurb-trigger">${_('more')}</a>
+  </div>
+  <div class="nav clear">
+    <ul class="tab-nav">
+      <li><a href="#" class="current"><span>${_('View')}</span></a></li>
+      <li><a href="#"><span>${_('Inspect')}</span></a></li>
+      <li><a href="#"><span>${_('History')}</span></a></li>
+      <li><a href="#"><span>${_('On the Web')}</span></a></li>
+    </ul>
+    <ul class="nav-utilities">
+      <li>
+        <a href="#" class="icon-link">
+          <span class="browse-icon">${_('Discuss Topic')}</span>
+        </a>
+      </li>
+      <li>
+      <a href="#" class="icon-link">
+        <span class="browse-icon">${_('Flag Topic')}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="column nav">
+  <div class="module">
+    <h2 class="module-title">
+      <a href="javascript:void(0);" class="trigger">Collapse column</a>
+      <span>Filter this data</span>
+    </h2>
+    <div class="module-section">
+      <h3 class="module-section-title">Domain</h3>
+      <table cellspacing="0" class="bar-graph">
+        <tbody>
+          <tr class="bar-graph-row">
+            <th>
+              <span class="bar-graph-label">
+                <a href="" class="clear">/domain</a>
+                <span class="index" style="width:100%;"></span>
+              </span>
+            </th>
+            <td class="value">200+</td>
+          </tr>
+          <tr class="bar-graph-row">
+            <th>
+              <span class="bar-graph-label">
+                <a href="" class="clear">/domain</a>
+                <span class="index" style="width:90%;"></span>
+              </span>
+            </th>
+            <td class="value">200+</td>
+          </tr>
+          <tr class="bar-graph-row">
+            <th>
+              <span class="bar-graph-label">
+                <a href="" class="clear">/domain</a>
+                <span class="index" style="width:80%;"></span>
+              </span>
+            </th>
+            <td class="value">200+</td>
+          </tr>
+          <tr class="bar-graph-row">
+            <th>
+              <span class="bar-graph-label">
+                <a href="" class="clear">/domain</a>
+                <span class="index" style="width:70%;"></span>
+              </span>
+            </th>
+            <td class="value">200+</td>
+          </tr>
+          <tr class="bar-graph-row">
+            <th>
+              <span class="bar-graph-label">
+                <a href="" class="clear">/domain</a>
+                <span class="index" style="width:60%;"></span>
+              </span>
+            </th>
+            <td class="value">200+</td>
+          </tr>
+          <tr class="bar-graph-row">
+            <th>
+              <span class="bar-graph-label">
+                <a href="" class="clear">/domain</a>
+                <span class="index" style="width:50%;"></span>
+              </span>
+            </th>
+            <td class="value">200+</td>
+          </tr>
+          <tr class="bar-graph-row">
+            <th>
+              <span class="bar-graph-label">
+                <a href="" class="clear">/domain</a>
+                <span class="index" style="width:40%;"></span>
+              </span>
+            </th>
+            <td class="value">200+</td>
+          </tr>
+          <tr class="bar-graph-row">
+            <th>
+              <span class="bar-graph-label">
+                <a href="" class="clear">/domain</a>
+                <span class="index" style="width:30%;"></span>
+              </span>
+            </th>
+            <td class="value">200+</td>
+          </tr>
+          <tr class="bar-graph-row">
+            <th>
+              <span class="bar-graph-label">
+                <a href="" class="clear">/domain</a>
+                <span class="index" style="width:20%;"></span>
+              </span>
+            </th>
+            <td class="value">200+</td>
+          </tr>
+          <tr class="bar-graph-row">
+            <th>
+              <span class="bar-graph-label">
+                <a href="" class="clear">/domain</a>
+                <span class="index" style="width:10%;"></span>
+              </span>
+            </th>
+            <td class="value">200+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="module-section">
+      <h3 class="module-section-title"><label for="">Language</label></h3>
+      <div class="filter-form">
+        <form action="" method="post">
+          <select name="">
+            <option value="eng-usa">English</option>
+          </select>
+        </form>
+      </div>
+    </div>
+    <div class="module-section">
+      <h3 class="module-section-title"><label for="">As of</label></h3>
+      <div class="filter-form">
+        <form action="" method="post">
+          <input class="text-input" type="text" name="" value="" placeholder="" />
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="module">
+    <div class="module-section alt">
+      <h3 class="module-section-title">
+        <label for="">Show up to <strong>10</strong> properties</label>
+      </h3>
+      <div class="filter-form">
+        <input type="hidden" name="" value="10" />
+        <div id="limit-slider"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="column" id="topic-data">
+  <div class="section domain">
+    <div class="header">
+      <h1>
+        <a href=""#link-to-domain"">Domain Name</a>
+      </h1>
+    </div>
+    <h2 class="foobar">
+      <a title="" href="#link-to-type">Type Name</a>
+      <span class="key">/type/id</span>
+    </h2>
+    <h3 class="sub-foobar">
+      <!--view all link is shown for any non-unique property-->
+      <a href="#" class="more">view all</a>
+      Property Name
+    </h3>
+    <ul class="data-list">
+      <li>
+        <a href="[#">Simple Property Value</a>
+      </li>
+      <li>
+        <a href="[#">Simple Property Value</a>
+      </li>
+    </ul>
+    <h3 class="sub-foobar">
+      Property Name
+    </h3>
+    <div class="empty-property">-</div>
+    <h3 class="sub-foobar">
+      <!--view all link is shown for any non-unique property-->
+      <a href="#" class="more">view all</a>
+      Property Name
+    </h3>
+    <table class="data-table">
+      <thead>
+        <th scope="col">Property heading</th>
+        <th scope="col">Property heading</th>
+        <th scope="col">Property heading</th>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">
+            <a href="#">Topic Name</a>
+          </th>
+          <td>Lorem ipsum</td>
+          <td><a href="#">Property value</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</acre:block>

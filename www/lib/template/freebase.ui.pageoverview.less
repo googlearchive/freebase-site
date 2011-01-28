@@ -33,8 +33,10 @@
     position: relative;
     background: #fff;
     border: 5px solid #e4e6e7;
-    .rounded_corners(10px);
     padding: 1em;
+    margin-bottom: 30px;
+    .rounded_corners(10px);
+    .box_shadow();
 }
 
 .page-meta h1 {
@@ -171,7 +173,7 @@ font-weight: bold;
 
 .nav-mode a {
     font-size: 1.4em;
-    line-height: 2.5;
+    line-height: 2.2;
     font-weight: bold;
     padding: 0 1em;
     color: #888;
@@ -184,10 +186,60 @@ font-weight: bold;
     .linear_gradient(#ececec, #fff);
 }
 
+.tab-nav li {
+    float: left;
+    list-style: none;
+    line-height: 1;
+    margin-bottom: -20px;
+}
+
+.tab-nav a {
+    font-size: 1.4em;
+    line-height: 2.2;
+    font-weight: bold;
+    color: #888;
+}
+
+.tab-nav a span {
+    display: block;
+    border-right: 1px solid #e4e6e7;
+    padding: 0 30px;
+    background: #efefef;
+    .linear_gradient(#fff, #ececec);
+}
+
+.tab-nav a:hover {
+    text-decoration: none;
+}
+
+.tab-nav a:hover span {
+    .linear_gradient(#fff, #ddd);
+    color: #3e7896;
+}
+
+.tab-nav a.current span {
+    border: 0;
+    height: 50px;
+    color: #fff;
+    background: url(template/tab-bg.png) no-repeat top center;
+}
+
+.nav-mode a.current2 {
+    position: relative;
+    margin-bottom: -20px;
+    color: #fff;
+}
+
+.nav-mode a span {
+    display: block;
+    background: purple;
+    height: 55px;
+}
+
 .nav-utilities li a {
     font-size: 1.2em;
     line-height: 1;
-    padding: 7px 1.2em;
+    padding: 6px 1.2em;
 }
 
 

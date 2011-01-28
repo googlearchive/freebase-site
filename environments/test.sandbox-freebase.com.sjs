@@ -29,7 +29,7 @@ var rules = {
     {prefix:"/index",              url:"/", redirect: 301},
     {prefix:"/home",               app:"//3a.homepage" + tags_codebase, script: "home"},
     {prefix:"/homepage",           app:"//3a.homepage" + tags_codebase},
-    {prefix:"/schema",             app:"//4a.schema" + tags_codebase},
+    {prefix:"/schema",             app:"//4b.schema" + tags_codebase},
     {prefix:"/apps",               app:"//1e.apps" + tags_codebase},
     {prefix:"/appeditor",          app:"//appeditor" + codebase},
     {prefix:"/docs",               app:"//devdocs" + codebase},

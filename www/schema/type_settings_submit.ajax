@@ -29,17 +29,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var queries = acre.require("queries");
+var h = acre.require("lib/core/helpers.sjs");
+var edit_type_submit = acre.require("edit_type_submit");
+var update_type = acre.require("update_type.sjs").update_type;
 
-var user_id = acre.request.params.user_id;
-
-var data = {};
-if (user_id) {
-  data.domains = queries.user_domains(user_id);
-} else {
-  data.domains = queries.common_domains();
-}
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("index_template")
-);
+/**
+ * edit type
+ */
+var SPEC = h.extend({}, edit_type_submit.SPEC, {
+  run: function(id, domain, name, key, description, enumeration, mediator, lang) {
+    // if description, enumeration, mediator is empty, remove from type
+    var remove = [];
+    if (!description) {
+      remove.push("description");
+    }
+    if (!enumeration) {
+      remove.push("enumeration");
+    }
+    if (!mediator) {
+      remove.push("mediator");
+    }
+    return update_type({
+      id: id,
+      domain: domain,
+      name: name,
+      key: key,
+      description: description,
+      enumeration: enumeration,
+      mediator: mediator,
+      lang: lang,
+      remove: remove
+    })
+    .then(function(updated_id) {
+       return {
+        location: h.fb_url("/schema/type", updated_id)
+      };
+    });
+  }
+});

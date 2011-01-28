@@ -28,18 +28,63 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+var h = acre.require("lib/core/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
 var queries = acre.require("queries");
+var components = acre.require("type_components.mjt");
+var deferred = acre.require("lib/promise/deferred");
+var freebase = acre.require("lib/promise/apis").freebase;
+var create_topic = acre.require("lib/queries/create_topic").create_topic;
 
-var user_id = acre.request.params.user_id;
+/**
+ * add a topic instance to an enumeration type
+ */
+var SPEC = {
 
-var data = {};
-if (user_id) {
-  data.domains = queries.user_domains(user_id);
-} else {
-  data.domains = queries.common_domains();
-}
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("index_template")
-);
+  method: "POST",
+
+  auth: true,
+
+  validate: function(params) {
+    var id = validators.MqlId(params, "id", {if_empty:null});
+    var name = validators.String(params, "name", {if_empty:null});
+    if (! (id || name)) {
+      throw new validators.Invalid("id or name is required");
+    }
+    return [
+      id,
+      validators.MqlId(params, "type", {required:true}),             // type id
+      validators.MqlId(params, "lang", {if_empty:"/lang/en"}),
+      name
+    ];
+  },
+
+  run: function(id, type, lang, name) {
+    var promise;
+    if (!id && name) {
+      promise = create_topic({
+        name: name,
+        lang: lang
+      })
+      .then(function(created) {
+        id = created.id;
+        return true;
+      });
+    }
+    else {
+      promise = deferred.resolved(true);
+    }
+    return promise
+      .then(function() {
+        return queries.add_instance(id, type);
+      })
+      .then(function() {
+        return queries.minimal_topic(id, true);
+      })
+      .then(function(topic) {
+        return {
+          html: acre.markup.stringify(components.enumerated_topic_row(topic, type))
+        };
+      });
+  }
+};

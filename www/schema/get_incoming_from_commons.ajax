@@ -29,17 +29,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var queries = acre.require("queries");
+var h = acre.require("lib/core/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var queries = acre.require("queries.sjs");
+var components = acre.require("type_components");
 
-var user_id = acre.request.params.user_id;
 
-var data = {};
-if (user_id) {
-  data.domains = queries.user_domains(user_id);
-} else {
-  data.domains = queries.common_domains();
-}
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("index_template")
-);
+/**
+ * get properties of a type
+ */
+var SPEC = {
+
+  method: "GET",
+
+  auth: false,
+
+  cache_policy: "fast",
+
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {required:true}),            // type id,
+      validators.MqlId(params, "exclude_domain", {if_empty:null}) // domain to exclude
+    ];
+  },
+
+  run: function(id, exclude_domain) {
+    return queries.incoming_from_commons(id, exclude_domain)
+      .then(function(props) {
+        return {
+          html: acre.markup.stringify(components.incoming_props_tbody(props))
+        };
+      });
+  }
+};

@@ -29,17 +29,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var queries = acre.require("queries");
+var h = acre.require("lib/core/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var create_base = acre.require("create_base.sjs").create_base;
 
-var user_id = acre.request.params.user_id;
+/**
+ * create base
+ */
+var SPEC = {
 
-var data = {};
-if (user_id) {
-  data.domains = queries.user_domains(user_id);
-} else {
-  data.domains = queries.common_domains();
-}
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("index_template")
-);
+  method: "POST",
+
+  auth: true,
+
+  validate: function(params) {
+    return [
+      validators.String(params, "name", {required:true}),        // name of base
+      validators.DomainKey(params, "key", {required:true}),      // base key
+      validators.String(params, "description", {if_emtpy:null}), // description
+      validators.MqlId(params, "lang", {if_empty:"/lang/en"})    // name,description lang
+    ];
+  },
+
+  run: function(name, key, description, lang) {
+    return create_base({
+      name: name,
+      key: key,
+      description: description,
+      lang: lang
+    })
+    .then(function(domain) {
+      return {
+        location: h.fb_url("/schema", domain.id)
+      };
+    });
+  }
+};

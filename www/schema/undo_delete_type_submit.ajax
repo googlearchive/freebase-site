@@ -29,17 +29,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var queries = acre.require("queries");
+var h = acre.require("lib/core/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var delete_type_undo = acre.require("delete_type.sjs").undo;
+var components = acre.require("domain_components.mjt");
+var queries = acre.require("queries.sjs");
 
-var user_id = acre.request.params.user_id;
+/**
+ * undo delete type
+ */
+var SPEC = {
 
-var data = {};
-if (user_id) {
-  data.domains = queries.user_domains(user_id);
-} else {
-  data.domains = queries.common_domains();
-}
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("index_template")
-);
+  method: "POST",
+
+  auth: true,
+
+  validate: function(params) {
+    return [
+      validators.String(params, "type_info", {required:true})  // type_info returned by delete_type
+    ];
+  },
+
+  run: function(type_info) {
+    type_info = JSON.parse(type_info);
+    return delete_type_undo(type_info)
+      .then(function([info, result]) {
+         return queries.minimal_type(type_info.id);
+      })
+      .then(function(type) {
+        return {
+          html: acre.markup.stringify(components.domain_type_row(type))
+        };
+      });
+  }
+};

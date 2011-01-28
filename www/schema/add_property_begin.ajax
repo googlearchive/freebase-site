@@ -29,17 +29,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var queries = acre.require("queries");
+var h = acre.require("lib/core/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var editcomponents = acre.require("type_editcomponents.mjt");
 
-var user_id = acre.request.params.user_id;
+/**
+ * add property form
+ */
+var SPEC = {
 
-var data = {};
-if (user_id) {
-  data.domains = queries.user_domains(user_id);
-} else {
-  data.domains = queries.common_domains();
-}
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("index_template")
-);
+  method: "GET",
+
+  auth: true,
+
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {required:true})           // type id
+    ];
+  },
+
+  run: function(id) {
+    return {
+      html: acre.markup.stringify(editcomponents.add_property_form(id))
+    };
+  }
+};

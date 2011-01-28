@@ -37,14 +37,14 @@
 
     add_domain_begin: function(trigger) {
       $.ajax({
-        url: fb.acre.request.app_url + "/schema/index/add_domain_begin",
+        url: fb.ajax.app + "/add_domain_begin.ajax",
         dataType: "json",
         success: function(data, status, xhr) {
           var html = $(data.result.html);
           var form = {
             event_prefix: "fb.schema.index.add.domain.",
             ajax: {
-              url: fb.acre.request.app_url + "/schema/index/add_domain_submit"
+              url: fb.ajax.app + "/add_domain_submit.ajax"
             },
 
             init_form: ie.init_add_domain_form,

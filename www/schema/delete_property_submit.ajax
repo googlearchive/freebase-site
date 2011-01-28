@@ -29,17 +29,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var queries = acre.require("queries");
+var h = acre.require("lib/core/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var editcomponents = acre.require("type_editcomponents.mjt");
+var delete_property = acre.require("delete_property.sjs").delete_property;
 
-var user_id = acre.request.params.user_id;
+/**
+ * delete property
+ */
+var SPEC = {
 
-var data = {};
-if (user_id) {
-  data.domains = queries.user_domains(user_id);
-} else {
-  data.domains = queries.common_domains();
-}
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("index_template")
-);
+  method: "POST",
+
+  auth: true,
+
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {required:true}),             // property id
+      validators.MqlId(params, "user", {required:true}),          // user performing the delete
+      validators.StringBool(params, "dry_run", {if_empty:false}), // dry run to see what will be deleted
+      validators.StringBool(params, "force", {if_empty:true})     // force delete if "used"
+    ];
+  },
+
+  run: function(id, user, dry_run, force) {
+    return delete_property(id, user, dry_run, force)
+      .then(function([prop_info, result]) {
+        return {
+          html: acre.markup.stringify(editcomponents.delete_property_result(prop_info))
+        };
+      });
+  }
+};

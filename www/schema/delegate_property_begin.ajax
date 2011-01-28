@@ -29,17 +29,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var queries = acre.require("queries");
+var h = acre.require("lib/core/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var queries = acre.require("queries.sjs");
+var editcomponents = acre.require("type_editcomponents");
+var freebase = acre.require("lib/promise/apis").freebase;
 
-var user_id = acre.request.params.user_id;
+/**
+ * reverse property form (aka, create a return link)
+ */
+var SPEC = {
 
-var data = {};
-if (user_id) {
-  data.domains = queries.user_domains(user_id);
-} else {
-  data.domains = queries.common_domains();
-}
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("index_template")
-);
+  method: "GET",
+
+  auth: true,
+
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {required:true})           // property id (being delegated to)
+    ];
+  },
+
+  run: function(id) {
+    var q = {
+      id: id,
+      type: "/type/property",
+      expected_type: null,
+      unique: null,
+      unit: {optional: true, id: null, name: null}
+    };
+    return freebase.mqlread(q)
+      .then(function(env) {
+        return env.result;
+      })
+      .then(function(prop) {
+        return {
+          message: acre.markup.stringify(editcomponents.delegated_property_message(prop)),
+          expected_type: prop.expected_type,
+          unique: prop.unique,
+          unit: prop.unit
+        };
+      });
+  }
+};

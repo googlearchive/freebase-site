@@ -184,14 +184,18 @@ class App:
     else:
         return "%s:trunk" % self.app_key
 
-  def path(self):
+  def path(self, short=False):
+
+    suffix = ACRE_ID_SVN_SUFFIX
+    if short:
+        suffix = ''
 
     if self.tag:
-      return "//%s.%s.www.tags%s" % (self.tag, self.app_key, ACRE_ID_SVN_SUFFIX)
+      return "//%s.%s.www.tags%s" % (self.tag, self.app_key, suffix)
     elif self.version:
-      return "//%s.%s.www.branches%s" % (self.version, self.app_key, ACRE_ID_SVN_SUFFIX)
+      return "//%s.%s.www.branches%s" % (self.version, self.app_key, suffix)
     else:
-      return "//%s.www.trunk%s" % (self.app_key, ACRE_ID_SVN_SUFFIX)
+      return "//%s.www.trunk%s" % (self.app_key, suffix)
 
 
   def app_dir(self):
@@ -800,13 +804,6 @@ class App:
     return 1
 
 
-  def svn_static_url(self):
-
-    if self.pending_static_hash:
-      return '%s/static/%s/%s' (self.context.SITE_SVN_URL, self.app_key, self.pending_static_hash)
-
-    return self.context.error('Cannot compute static SVN path because there is no pending static hash')
-
   def svn_deployed_url(self, deployed_hash):
     return '{svn_url_root}/deployed/{app}/{deployed_hash}'.format(svn_url_root=PRIVATE_SVN_URL_ROOT, app=self.app_key, deployed_hash=deployed_hash)
 
@@ -891,19 +888,7 @@ class App:
     return self.local_dir
 
   def static_url(self):
-    return self.url(host = self.context.acre.url())
-
-  def url(self, services = None, host = None):
-
-    #first check if a host was provided
-    if not host:
-        #if not, check if services exists (i.e. a -g graph was provided that maps to hosts)
-        if not services:
-            services = self.context.services
-
-        host = services['freebaseapps']
-
-    return 'http:%s.%s' % (self.path(), host)
+    return "http://%s/static/%s" % (self.context.acre.url(), self.path(short=True)[2:])
 
 
 class Context():
@@ -1369,8 +1354,8 @@ class Acre:
 
     ak = acre_config.keys()
 
-    if 'ACRE_PORT' in ak and 'ACRE_HOST_BASE' in ak:
-      self.host_url = "%s:%s" % (acre_config['ACRE_HOST_BASE'], acre_config['ACRE_PORT'])
+    if 'ACRE_FREEBASE_SITE_ADDR_PORT':
+      self.host_url = "devel.sandbox-freebase.com:%s" % acre_config['ACRE_FREEBASE_SITE_ADDR_PORT']
 
     return self.host_url
 

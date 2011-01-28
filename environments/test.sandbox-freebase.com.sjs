@@ -8,10 +8,7 @@
 // Shared base urls
 var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
-var lib = "//3d.lib" + tags_codebase;
-
-// This is the error handler that handles all routing and not found errors
-acre.response.set_error_page(lib + "/error/error.mjt");
+var lib = "//5d.lib" + codebase;
 
 var rules = {
   "host": [
@@ -28,12 +25,12 @@ var rules = {
 
   "prefix": [
     // Urls for user-facing apps
-    {prefix:"/",                   app:"//2d.homepage" + tags_codebase, script: "index"},
+    {prefix:"/",                   app:"//3a.homepage" + tags_codebase, script: "index"},
     {prefix:"/index",              url:"/", redirect: 301},
-    {prefix:"/home",               app:"//2d.homepage" + tags_codebase, script: "home"},
-    {prefix:"/homepage",           app:"//2d.homepage" + tags_codebase},
-    {prefix:"/schema",             app:"//3d.schema" + tags_codebase},
-    {prefix:"/apps",               app:"//apps" + codebase},
+    {prefix:"/home",               app:"//3a.homepage" + tags_codebase, script: "home"},
+    {prefix:"/homepage",           app:"//3a.homepage" + tags_codebase},
+    {prefix:"/schema",             app:"//4a.schema" + tags_codebase},
+    {prefix:"/apps",               app:"//1e.apps" + tags_codebase},
     {prefix:"/appeditor",          app:"//appeditor" + codebase},
     {prefix:"/docs",               app:"//devdocs" + codebase},
     {prefix:"/inspect",            app:"//triples" + codebase},
@@ -176,39 +173,4 @@ var rules = {
   ]
 };
 
-// Dump all routing info and rules.
-// This is primarily for our automated buildbot/testrunners
-if (acre.current_script === acre.request.script) {
-  var d = acre.request.server_name.length - acre.host.name.length;
-  if (d >=0 && acre.request.server_name.lastIndexOf(acre.host.name) === d) {
-    acre.write(JSON.stringify(rules, null, 2));
-    acre.exit();
-  }
-}
-
-var router_path = lib + "/routing/";
-["host", "prefix"].forEach(function(name) {
-  var router_file = acre.require(router_path + name);
-  var router_class;
-  if (router_file.router) {
-    router_class = router_file.router;
-  }
-  else if (router_file.exports && typeof router_file.exports === "object" && router_file.exports.router) {
-    router_class = router_file.exports.router;
-  }
-  else {
-    throw "A router needs to be defined in " + router_path + name;
-  }
-  var router = new router_class();
-  var rule = rules[name];
-  if (rule) {
-    router.add(rule);
-  }
-  router.route(acre.request);
-});
-
-
-// TODO: not found
-acre.route(lib + "/error/error.mjt");
-
-
+acre.require(lib + "/routing/router.sjs").route(rules, this);

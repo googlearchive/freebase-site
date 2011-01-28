@@ -141,7 +141,7 @@ function fb_url(path, id, params) {
     params = id;
   }
 
-  return build_url(host, path, params);
+  return build_url(host, path, parse_params(params));
 }
 
 /**

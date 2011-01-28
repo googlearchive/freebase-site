@@ -59,7 +59,7 @@ test("fb_url", function() {
 });
 
 test("legacy_fb_url", function() {
-  var host =  acre.freebase.site_host.replace("devel.", "www.");
+  var host =  acre.freebase.site_host.replace("devel.", "www.").replace(":" + acre.request.server_port, "");
   equal(h.legacy_fb_url(), host);
   equal(h.legacy_fb_url(null), host);
   equal(h.legacy_fb_url(""), host);

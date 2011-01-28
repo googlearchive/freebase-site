@@ -66,7 +66,7 @@ function do_route(path) {
 
   //these kinds of files are handled by specific handlers
   //route here because the catch-all below is to route to /view
-  if (file.indexOf('.mf.css') > 0 || file.indexOf('.mf.js')) { 
+  if ((file.indexOf('.mf.css') > 0) || (file.indexOf('.mf.js') > 0)) { 
       acre.route(file + path);
   }
 

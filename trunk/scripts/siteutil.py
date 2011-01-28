@@ -481,9 +481,9 @@ class App:
 
       for file_extension in [x[1:] for x in IMG_EXTENSIONS]:
         if metadata['extensions'].get(file_extension):
-          metadata['extensions'][file_extension].update({ 'handler' : 'tagged_static' })
+          metadata['extensions'][file_extension].update({ 'handler' : 'tagged_binary' })
         else:
-          metadata['extensions'][file_extension] = { 'handler' : 'tagged_static', 'media_type' : 'image/%s' % file_extension }
+          metadata['extensions'][file_extension] = { 'handler' : 'tagged_binary', 'media_type' : 'image/%s' % file_extension }
     else:
       metadata['extensions'].update(handlers)  
             
@@ -515,7 +515,7 @@ class App:
       return self.app_key == 'lib'
 
   def read_metadata(self, full_file_contents = False):
-
+ 
     filename = METADATA_FILE
     if self.is_lib():
         filename = METADATA_LIB_FILE
@@ -1258,6 +1258,11 @@ class Acre:
     self.context = context
     self.host_url = None
 
+    self._acre_dir = None
+    if context.options.acre_dir:
+        self._acre_dir = context.options.acre_dir
+
+
   def build(self):
 
     c = self.context
@@ -1272,7 +1277,7 @@ class Acre:
     '''
 
     c = self.context
-    filename = os.path.join(c.options.acre_dir, 'config', 'project.local.conf')
+    filename = os.path.join(self.acre_dir(), 'config', 'project.local.conf')
     contents = None
     config = {}
 
@@ -1297,9 +1302,45 @@ class Acre:
 
     return config
 
+  def acre_dir(self):
+      
+    if self._acre_dir:
+      return self._acre_dir
+
+    c = self.context
+    cmd = ['ps']
+    
+    (r, contents) = c.run_cmd(cmd)
+    
+    if not r:
+        return self._acre_dir
+    
+    for line in contents.split('\n'):
+      parts = line.split()
+      if not len(parts):
+          continue
+      if parts[-1] == 'com.google.acre.Main':
+        try: 
+          for i, v in enumerate(parts):
+            if v == '-cp':
+              dir_parts = parts[i+1].split('/')
+              self._acre_dir =  '/'.join(dir_parts[:dir_parts.index('library')])
+              c.log("Will use acre instance under %s that is currently running." % self._acre_dir, color=c.BLUE)
+              break
+        except:
+          #something went wrong while parsing the ps line, just fail silently and let the user define the acre_dir
+          continue
+
+
+    return self._acre_dir
+
   def is_running(self):
 
     c = self.context
+
+    if not self.acre_dir():
+      return c.error("You have not specified an acre directory with --acre_dir and a running acre instance could not be found")
+
     acre_url = self.url()
     if not acre_url:
         return False
@@ -1339,9 +1380,9 @@ class Acre:
     '''Returns the acre scripts directory under the specified acre instance'''
 
     #App Engine directory location
-    #target_dir = self.context.options.acre_dir + '/_build/war/WEB-INF/scripts'
+    #target_dir = self.acre_dir + '/_build/war/WEB-INF/scripts'
     #Jetty/Acre directory location
-    target_dir = self.context.options.acre_dir + '/webapp/WEB-INF/scripts'
+    target_dir = self.acre_dir() + '/webapp/WEB-INF/scripts'
 
     if not os.path.isdir(target_dir):
       try:

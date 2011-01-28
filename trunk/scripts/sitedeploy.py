@@ -118,14 +118,27 @@ class ActionSetupAcre:
     except:
       fh.close()
       return c.error('Could not open the file %s for writing.' % os.path.join(c.options.acre_dir, 'config', 'project.local.conf'))
+    
+    params = { 
+      'ACRE_HOST_BASE' : 'acre.%s' % c.options.acre_host,
+      'ACRE_PORT' : c.options.acre_port,
+      'ACRE_FREEBASE_SITE_ADDR_PORT' : c.options.acre_port
+      }
+
+    written_params = {}
 
     for line in lines:
-      if line.startswith('ACRE_HOST_BASE='):
-        fh.write('ACRE_HOST_BASE="acre.%s"\n' % c.options.acre_host)
+      parts = line.split('=')
+      if len(parts) and parts[0] in params.keys():
+        fh.write('%s="%s"\n' % (parts[0], params.get(parts[0])))
+        written_params[parts[0]] = True
       else:
         fh.write(line)
 
-    fh.write('ACRE_PORT="%s"\n' % c.options.acre_port)
+    for k, v in params.iteritems():
+      if not written_params.get(k):
+        fh.write('%s="%s"\n' % (k,v))
+
     fh.close()
     c.log('Done modifying configuration.')
 
@@ -356,8 +369,15 @@ class ActionStatic:
 
     c = self.context
 
-    if not c.options.acre_dir:
-      return c.error('You must specify the acre directory for static generation.')
+    c.set_acre(GetAcre(c))
+
+    acre = GetAcre(c)
+
+    while not acre.is_running():
+      c.error('The acre instance installed in %s is not running.' % c.options.acre_dir)
+      cont = raw_input("Please start the acre server and press (c) to continue or any other key to abort:")
+      if not cont or cont != 'c':
+        return c.error("Could not find a running acre instance, aborting")
 
     success = c.googlecode_login()
     if not success:
@@ -368,16 +388,6 @@ class ActionStatic:
 
     if not app.tag:
       return c.error('You can only create static files for app tags')
-
-    c.set_acre(GetAcre(c))
-
-    acre = GetAcre(c)
-
-    while not acre.is_running():
-      c.error('The acre instance installed in %s is not running.' % c.options.acre_dir)
-      cont = raw_input("Please start the acre server and press (c) to continue or any other key to abort:")
-      if not cont or cont != 'c':
-        return c.error("Could not find a running acre instance, aborting")
 
 
     return app.statify()
@@ -595,12 +605,11 @@ class ActionCreateAppBranch():
       updated = branch_app.update_lib_dependency(AppFactory(c)('lib', version=c.options.lib))
       if updated:
         (r, contents) = branch_app.svn_commit(msg='updated lib dependency to %s' % c.options.lib)
-        c.log('Created branch %s linked to lib:%s' % (branch_app, c.options.lib))
+        c.log('Created branch %s linked to lib:%s' % (branch_app, c.options.lib), color=c.BLUE)
       else:
         c.error('There was an error updating the lib dependency of %s' % branch_app)
     else:
-      #XXX to be implemented - logic to change the lib/MANIFEST.sjs file for production
-      c.log('Created %s' % branch_app)
+      c.log('Created %s' % branch_app, color=c.BLUE)
 
 
     return True
@@ -656,25 +665,18 @@ class ActionCreateAppTag():
 
     no_static = False
 
-    if not (c.options.acre_dir):
-      c.error('WARNING: You did not specify an acre directory, so static generation for this app will fail (if needed). You can always re-create static files for a given app by running sitedeploy.py static -a %s -t <tag> --acre_dir <acre_dir>' % c.options.app)
+
+    acre = GetAcre(c)
+
+    if not acre.is_running():
+      c.error('WARNING: You did not specify an acre directory, and no acre process has been detected, so static generation for this app will fail (if needed). You can always re-create static files for a given app by running sitedeploy.py static -a %s -t <tag> --acre_dir <acre_dir>' % c.options.app)
       no_static = raw_input("Would you like to bypass static generation and continue ? (y to continue, n to abort):")
       if no_static == 'y':
         no_static = True
       else:
         return False
 
-    if not no_static:
-      acre = GetAcre(c)
-      while not acre.is_running():
-        c.error('The acre instance installed in %s is not running.' % c.options.acre_dir)
-        cont = raw_input("Please start the server and press (c) to continue or any other key to abort:")
-        if not cont or cont != 'c':
-          return c.error("Could not find a running acre instance, aborting")
-        
-
     c.log('Creating tag for %s:%s' % (c.app.app_key, c.options.version), color=c.BLUE)
-
 
     #first create a tag for the app that was specified in the command line
     from_branch_app = AppFactory(c)(c.options.app, c.options.version)
@@ -709,15 +711,15 @@ class ActionCreateAppTag():
             return c.error('Failed to commit to SVN - aborting')
         else:
           return c.error('There was an error updating the lib dependency of %s' % tag_app)
-      else:
-        c.log('Created %s' % tag_app)
 
-    else:
-      c.log('Created %s' % tag_app)
+
 
     if not no_static:
-      return ActionStatic(c)(app=tag_app)
+      r = ActionStatic(c)(app=tag_app)
+      if not r:
+        return c.error('Failed to create static files for %s' % tag_app)
 
+    c.log('Created %s' % tag_app, color=c.BLUE)
     return True
 
 class ActionInfo:

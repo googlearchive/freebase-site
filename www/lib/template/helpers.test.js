@@ -9,7 +9,11 @@
         service_url: "http://api.SERVICE_URL"
       },
       request: {
-        server_port: "SERVER_PORT"
+        server_port: "SERVER_PORT",
+        script: {app:{path:"//schema.www.trunk.svn.freebase-site.googlecode.dev"}}
+      },
+      current_script: {
+        app:{path:"//lib.www.trunk.svn.freebase-site.googlecode.dev"}
       }
     },
     ajax: {
@@ -82,23 +86,66 @@ function run_tests($, fb) {
     equal(h.fb_url("/path1/path2", [["a",1]]), "/path1/path2?a=1");
   });
 
-  test("ajax_app_url", function() {
-    equal(h.ajax_url(), fb.ajax.app);
-    equal(h.ajax_app_url(), fb.ajax.app);
-    equal(h.ajax_app_url(null), fb.ajax.app);
-    equal(h.ajax_app_url(""), fb.ajax.app);
-    equal(h.ajax_app_url("/service.ajax", {a:1}), fb.ajax.app + "/service.ajax?a=1");
-    equal(h.ajax_app_url("/path1/path2", "/service.ajax", [["a",1]]),
-          fb.ajax.app + "/path1/path2/service.ajax?a=1");
+  test("resolve_reentrant_path", function() {
+console.log(fb.acre.request.script.app.path, fb.acre.current_script.app.path, h.resolve_reentrant_path);
+
+    var app_path = fb.acre.request.script.app.path;
+    var lib_path = fb.acre.current_script.app.path;
+
+    equal(h.resolve_reentrant_path(), app_path);
+    equal(h.resolve_reentrant_path(null), app_path);
+    equal(h.resolve_reentrant_path(""), app_path);
+    equal(h.resolve_reentrant_path("foo"), app_path + "/foo");
+    equal(h.resolve_reentrant_path("/foo"), app_path + "/foo");
+    equal(h.resolve_reentrant_path("lib/foo"), lib_path + "/foo");
+    equal(h.resolve_reentrant_path("/lib/foo"), app_path + "/lib/foo");
+
+    equal(h.resolve_reentrant_path("//lib/foo"), "//lib/foo");
   });
 
-  test("ajax_lib_url", function() {
-    equal(h.ajax_lib_url(), fb.ajax.lib);
-    equal(h.ajax_lib_url(null), fb.ajax.lib);
-    equal(h.ajax_lib_url(""), fb.ajax.lib);
-    equal(h.ajax_lib_url("/service.ajax", {a:1}), fb.ajax.lib + "/service.ajax?a=1");
-    equal(h.ajax_lib_url("/path1/path2", "/service.ajax", [["a",1]]),
-          fb.ajax.lib + "/path1/path2/service.ajax?a=1");
+  test("reentrant_url", function() {
+    var app_path = fb.acre.request.script.app.path
+      .replace(/^\/\//, "/")
+      .replace(".svn.freebase-site.googlecode.dev", "");
+    var lib_path = fb.acre.current_script.app.path
+      .replace(/^\/\//, "/")
+      .replace(".svn.freebase-site.googlecode.dev", "");
+
+    equal(h.reentrant_url("/PREFIX"), "/PREFIX" + app_path);
+    equal(h.reentrant_url("/PREFIX", null), "/PREFIX" + app_path);
+    equal(h.reentrant_url("/PREFIX", ""), "/PREFIX" + app_path);
+    equal(h.reentrant_url("/PREFIX", "foo"), "/PREFIX" + app_path + "/foo");
+    equal(h.reentrant_url("/PREFIX", "/foo"), "/PREFIX" + app_path + "/foo");
+    equal(h.reentrant_url("/PREFIX", "lib/foo"), "/PREFIX" + lib_path + "/foo");
+    equal(h.reentrant_url("/PREFIX", "/lib/foo"), "/PREFIX" + app_path + "/lib/foo");
+    equal(h.reentrant_url("/PREFIX", "//schema.www.trunk.svn.freebase-site.googlecode.dev/foo"),
+          "/PREFIX/schema.www.trunk/foo");
+    equal(h.reentrant_url("/PREFIX", "lib/foo", {a:1}),
+          "/PREFIX" + lib_path + "/foo?a=1");
+    equal(h.reentrant_url("/PREFIX", "foo/bar", {a:1}),
+          "/PREFIX" + app_path + "/foo/bar?a=1");
+  });
+
+  test("ajax_url", function() {
+    var app_path = fb.acre.request.script.app.path
+      .replace(/^\/\//, "/")
+      .replace(".svn.freebase-site.googlecode.dev", "");
+    var lib_path = fb.acre.current_script.app.path
+      .replace(/^\/\//, "/")
+      .replace(".svn.freebase-site.googlecode.dev", "");
+    var PREFIX = "/ajax";
+
+    equal(h.ajax_url(), PREFIX + app_path);
+    equal(h.ajax_url(null), PREFIX + app_path);
+    equal(h.ajax_url(""), PREFIX + app_path);
+    equal(h.ajax_url("foo"), PREFIX + app_path + "/foo");
+    equal(h.ajax_url("/foo"), PREFIX + app_path + "/foo");
+    equal(h.ajax_url("lib/foo"), PREFIX + lib_path + "/foo");
+    equal(h.ajax_url("/lib/foo"), PREFIX + app_path + "/lib/foo");
+    equal(h.ajax_url("//1b.schema.www.trunk.svn.freebase-site.googlecode.dev/foo"),
+          PREFIX + "/1b.schema.www.trunk/foo");
+    equal(h.ajax_url("lib/permission/has_permission", {id:"foo"}),
+          PREFIX + lib_path + "/permission/has_permission?id=foo");
   });
 
   test("legacy_fb_url", function() {

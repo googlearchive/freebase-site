@@ -33,7 +33,7 @@
 </acre:script>
 
 <acre:block def="title()">
-  jquery.placeholder.js
+  template/helpers.js
 </acre:block>
 
 <acre:block def="head()">

@@ -29,6 +29,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * IMPORTANT!!!
+ * If you are modifying helpers (especially url helpers), please update the corresponding client-side helpers
+ * so that their functionality and usages (method signatures) are the same.
+ */
+
 var exports = {
   "is_client": is_client,
   "is_production": is_production,
@@ -36,11 +42,12 @@ var exports = {
   "parse_params": parse_params,
   "build_url": build_url,
   "fb_url": fb_url,
-  "static_url": static_url,
   "ajax_url": ajax_url,
+  "static_url": static_url,
   "legacy_fb_url": legacy_fb_url,
   "fb_api_url": fb_api_url,
   "wiki_url": wiki_url,
+
   "account_url": account_url,
   "image_url": image_url,
 
@@ -52,7 +59,7 @@ var exports = {
   "url_for": url_for
 };
 
-var extend = acre.require("core/helpers_util").extend;
+var h = acre.require("core/helpers_util");
 
 /**
  * Known client urls:
@@ -84,40 +91,67 @@ function is_production() {
  */
 function parse_params(params) {
   // [ [name1,value1], [name2,value2], ...]
-  if (params && (params instanceof Array)) {
+  if (h.isArray(params)) {
     var dict = {};
     params.forEach(function([name,value]) {
       dict[name] = value;
     });
-    params = dict;
+    return dict;
   }
   return params;
 }
+
+
+/**
+ * All url helpers take variable number of arguments (varargs),
+ * where you can pass it a list of paths followed by
+ * a querystring dicionary or tuple array (@see parse_params).
+ *
+ * xxx_url(path1, path2, path3, ..., params) => path1 + path2 + path3 + ? + $.params(params)
+ */
+
 
 /**
  * build url
  * Use to construct urls to any host
  * (i.e, host/path?params)
  */
-function build_url(host, path, params) {
-  // params can be a dictionary or an array of tuples
-  // [ [key1, value1], [key2, value2], ...]
-  params = parse_params(params);
-
-  if (host && host.search('://') === -1) {
+function build_url(host /**, path1, path2, ..., params **/) {
+  if (host && host.indexOf('://') === -1) {
     throw "Host must contain scheme: " + host;
   }
-
-  if (path && path[0] !== "/") {
+  var url = (host || "");
+  var path;
+  var params;
+  if (arguments.length > 1) {
+    var args = Array.prototype.slice.call(arguments);
+    args.shift();
+    var paths = [];
+    args.forEach(function(arg) {
+      var t = h.type(arg);
+      if (t === "string") {
+        paths.push(arg);
+      }
+      else {
+        // last argument is the params dictionary or array
+        params = parse_params(arg);
+        return false;
+      }
+    });
+    path = paths.join("");
+  }
+  if (path && path.indexOf("/") !== 0) {
     throw "Path must begin with a '/': " + path;
   }
-
-  var url = (host || "") + (path || "");
-  if (url.length === 0) {
+  if (path) {
+    url += path;
+  }
+  if (url === "") {
     url = "/";
   }
   return acre.form.build_url(url, params);
-}
+};
+
 
 /**
  * freebase url
@@ -127,53 +161,85 @@ function build_url(host, path, params) {
  * id is optional, and if not included then
  * params takes precidents
  */
-function fb_url(path, id, params) {
+function fb_url() {
   // Use an absolute url if we are currently being
   // served under an app style url
-  var host;
-  if (!is_client()) {
-    host = acre.freebase.site_host;
-  }
-
-  if (typeof id === 'string') {
-    path += id;
-  } else if (typeof id === 'object' && !params) {
-    params = id;
-  }
-
-  return build_url(host, path, parse_params(params));
-}
+  var args = Array.prototype.slice.call(arguments);
+  args.unshift(null); // host is null to specify relative url
+  return build_url.apply(null, args);
+};
 
 /**
- * static url
- * Use to link to static resources
- */
-function static_url(path) {
-  var static_base = acre.get_metadata().static_base || "";
-  path = path.replace(".svn.freebase-site.googlecode.dev", "");
-  return path.replace("//", static_base + "/static/");
-}
-
-/**
- * ajax url
- * Use to call ajax entry points
+ * Create an ajax reenrant url: /ajax/...
+ *
+ * ajax_url can take a full app path syntax (e.g., //1a.schema.www.trunk.svn.freebase-site.googlecode.dev)
+ * or a regular path.
+ *
+ * If a regular path and starts with "lib/" (without a beginning "/"),
+ * the ajax url will be mapped to the lib app which is acre.current_script.app.path:
+ *
+ * ajax_url("lib/path") => /ajax/lib.www.trunk/path
+ *
+ * All other paths will default to the current request script app path which is acre.request.script.app.path:
+ *
+ * ajax_url("path") => /ajax/app.www.trunk/path
+ * ajax_url("/path") => /ajax/app.www.trunk/path
  */
 function ajax_url(path, params) {
+  var args = Array.prototype.slice.call(arguments);
+  args.unshift("/ajax");
+  return reentrant_url.apply(null, args);
+};
+
+/**
+ * Create a static reentrant url: /static/...
+ *
+ * @see ajax_url
+ */
+function static_url(path) {
+  var args = Array.prototype.slice.call(arguments);
+  var static_base = acre.get_metadata().static_base || "";
+  args.unshift(static_base + "/static");
+  return reentrant_url.apply(null, args);
+};
+
+function reentrant_url(prefix, path) {
+  path = resolve_reentrant_path(path);
+  path = path.replace(/^\/\//, prefix + "/");
   path = path.replace(".svn.freebase-site.googlecode.dev", "");
-  path = path.replace("//", "/ajax/");
-  return fb_url(path, params);
-}
+  var args = Array.prototype.slice.call(arguments, 2);
+  args.unshift(path);
+  return fb_url.apply(null, args);
+};
+
+function resolve_reentrant_path(path) {
+  path = path || "";
+  if (path.indexOf("//") == 0) {
+    return path;
+  }
+  if (path.indexOf("lib/") === 0) {
+    return acre.current_script.app.path + path.substring(3);
+  }
+  else {
+    if (path && path[0] != "/") {
+      path = "/" + path;
+    }
+    return acre.request.script.app.path + path;
+  }
+};
 
 /**
  * legacy freebase url
  * Use for pages that haven't been ported to acre yet
  * (i.e, http://www.freebase.com/path?params)
  */
-function legacy_fb_url(path, params) {
+function legacy_fb_url() {
+  var args = Array.prototype.slice.call(arguments);
   var host = acre.freebase.site_host
     .replace('devel.', 'www.')
     .replace(':'+acre.request.server_port, '');
-  return build_url(host, path, params);
+  args.unshift(host);
+  return build_url.apply(null, args);
 }
 
 /**
@@ -181,21 +247,28 @@ function legacy_fb_url(path, params) {
  * Use for links to freebase apis
  * (i.e., http://api.freebase.com/path?params)
  */
-function fb_api_url(path, params) {
-  return build_url(acre.freebase.service_url, path, params);
-}
+function fb_api_url() {
+  var args = Array.prototype.slice.call(arguments);
+  args.unshift(acre.freebase.service_url);
+  return build_url.apply(null, args);
+};
 
 /**
  * freebase wiki url
  * Use for links to the freebase wiki
+ * (i.e., http://wiki.freebase.com/wiki//<page>)
+ *
+ * Note that this is a little bit different from other forms of url helpers
+ * in that the path, "/wiki/" is automatically prepended to the page parameter
+ * so that you only need to pass the name of the wiki page
+ *
+ * wiki_url("Enumerated_type") => http://wiki.freebase.com/wiki/Enumerated_type
  */
-function wiki_url(page, params) {
-  var path;
-  if (page) {
-    path = "/wiki/" + page;
-  }
-  return build_url("http://wiki.freebase.com", path, params);
-}
+function wiki_url(page) {
+  var args = Array.prototype.slice.call(arguments);
+  args.unshift("http://wiki.freebase.com", "/wiki/");
+  return build_url.apply(null, args);
+};
 
 /**
  * Get the signin/signout urls depending on environment.
@@ -241,7 +314,7 @@ function account_url(kind, return_url) {
     raw: do not user the thumbnailing service - return the raw image with the original dimensions
 */
 function image_url(id, params) {
-  params = extend({
+  params = h.extend({
     id: id,
     maxheight: null,
     maxwidth: null,

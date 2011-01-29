@@ -61,8 +61,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       mwLastWriteTime: null,
       tid: null,
       appeditor: {
-        service_path : h.ajax_url(lib_path + "/appeditor-services/"),
-        cuecard_api: h.ajax_url(lib_path + "/cuecard/"),
+        service_path : h.ajax_url("lib/appeditor-services/"),
+        cuecard_api: h.ajax_url("lib/cuecard/"),
         version: (acre.request.script.app.version || "trunk")
       },
       apps : {
@@ -71,10 +71,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         lib: lib_path
       },
       libs: {
-        fulljslint: surl("fulljslint.mf.js"),
-        codemirror: surl("lib/codemirror/codemirror-frame.mf.js"),
-        codemirror_css: surl("lib/codemirror/codemirror-frame.mf.css"),
-        codeassist: surl("codeassist.mf.js")
+        fulljslint: h.static_url("fulljslint.mf.js"),
+        codemirror: h.static_url("lib/codemirror/codemirror-frame.mf.js"),
+        codemirror_css: h.static_url("lib/codemirror/codemirror-frame.mf.css"),
+        codeassist: h.static_url("codeassist.mf.js")
       }
     }
   };

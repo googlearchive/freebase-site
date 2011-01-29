@@ -142,25 +142,34 @@
      * Use to call ajax entry points
      */
     ajax_url: function() {
-      return h.ajax_app_url.apply(null, arguments);
+      var args = Array.prototype.slice.call(arguments);
+      args.unshift("/ajax");
+      return h.reentrant_url.apply(null, args);
     },
 
-    /**
-     * /ajax/app.www.trunk/...
-     */
-    ajax_app_url: function() {
-      var args = Array.prototype.slice.call(arguments);
-      args.unshift(fb.ajax.app);
+    reentrant_url: function(prefix, path) {
+      path = h.resolve_reentrant_path(path);
+      path = path.replace(/^\/\//, prefix + "/");
+      path = path.replace(".svn.freebase-site.googlecode.dev", "");
+      var args = Array.prototype.slice.call(arguments, 2);
+      args.unshift(path);
       return h.fb_url.apply(null, args);
     },
 
-    /**
-     * /ajax/lib.www.trunk/...
-     */
-    ajax_lib_url: function() {
-      var args = Array.prototype.slice.call(arguments);
-      args.unshift(fb.ajax.lib);
-      return h.fb_url.apply(null, args);
+    resolve_reentrant_path: function(path) {
+      path = path || "";
+      if (path.indexOf("//") == 0) {
+        return path;
+      }
+      if (path.indexOf("lib/") === 0) {
+        return fb.acre.current_script.app.path + path.substring(3);
+      }
+      else {
+        if (path && path[0] != "/") {
+          path = "/" + path;
+        }
+        return fb.acre.request.script.app.path + path;
+      }
     },
 
     /**

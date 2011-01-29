@@ -238,7 +238,17 @@
         request: {
           app_url: acre.request.app_url,
           server_name: acre.request.server_name,
-          server_port: acre.request.server_port
+          server_port: acre.request.server_port,
+          script: {
+            app: {
+              path: acre.request.script.app.path
+            }
+          }
+        },
+        current_script: {
+          app: {
+            path: acre.current_script.app.path
+          }
         },
         lang: {
           mql: i18n.lang,

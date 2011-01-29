@@ -159,7 +159,7 @@
     $(document).ready(function(){
       
       function load_template() {
-        var bp = "${h.ajax_url(acre.resolve('json.sjs'))}";
+        var bp = "${h.ajax_url('json.sjs')}";
         var template = $("input[name='fb-type']:checked").val();
         var wp = $('#includesWiki').attr('checked') ? "_wp" : "";
         

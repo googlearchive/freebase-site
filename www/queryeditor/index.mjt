@@ -42,7 +42,7 @@
   var apps = {
     cuecard : lib_path + "/cuecard"
   };
-  var ajax_base = h.ajax_url(lib_path + "/cuecard/");
+  var ajax_base = h.ajax_url("lib/cuecard/");
 </acre:script>
 
 <acre:block def="title()">

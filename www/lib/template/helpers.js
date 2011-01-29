@@ -31,7 +31,11 @@
 
 (function($, fb) {
 
-
+  /**
+   * IMPORTANT!!!
+   * If you are modifying helpers (especially url helpers), please update the corresponding server-side helpers
+   * so that their functionality and usages (method signatures) are the same.
+   */
 
   var h = fb.h = {
 
@@ -75,7 +79,7 @@
    * where you can pass it a list of paths followed by
    * a querystring dicionary or tuple array (@see parse_params).
    *
-   * *_url(path1, path2, path3, ..., params) => path1 + path2 + path3 + ? + $.params(params)
+   * xxx_url(path1, path2, path3, ..., params) => path1 + path2 + path3 + ? + $.params(params)
    */
 
    /**
@@ -87,35 +91,37 @@
       if (host && host.indexOf('://') === -1) {
         throw "Host must contain scheme: " + host;
       }
-
-      console.log("build_url host", host);
-
       var url = (host || "");
+      var path;
+      var params;
       if (arguments.length > 1) {
         var args = Array.prototype.slice.call(arguments);
         args.shift();
-        console.log("build_url args", args);
-
-        var path_params = {path:[], params:null};
+        var paths = [];
         $.each(args, function(i, arg) {
           var t = h.type(arg);
           if (t === "string") {
-            path_params.path.push(arg);
+            paths.push(arg);
           }
           else {
             // last argument is the params dictionary or array
-            path_params.params = h.parse_params(arg);
+            params = h.parse_params(arg);
             return false;
           }
         });
-        var path = path_params.path.join("");
-        if (path && path.indexOf("/") !== 0) {
-          throw "Path must begin with a '/': " + path;
-        }
+        path = paths.join("");
+      }
+      if (path && path.indexOf("/") !== 0) {
+        throw "Path must begin with a '/': " + path;
+      }
+      if (path) {
         url += path;
-        if (!$.isEmptyObject(path_params.params)) {
-          url += ("?" + $.param(path_params.params, true));
-        }
+      }
+      if (url === "") {
+        url = "/";
+      }
+      if (!$.isEmptyObject(params)) {
+        url += ("?" + $.param(params, true));
       }
       return url;
     },
@@ -124,9 +130,6 @@
     * freebase url
     * Use to link to pages on freebase.com
     * (i.e, http://www.freebase.com/path?params)
-    *
-    * id is optional, and if not included then
-    * params takes precidents
     */
     fb_url: function() {
       var args = Array.prototype.slice.call(arguments);
@@ -185,13 +188,20 @@
       return h.build_url.apply(null, args);
     },
 
-    /**
-     * freebase wiki url
-     * Use for links to the freebase wiki
-     */
-    wiki_url: function() {
+   /**
+    * freebase wiki url
+    * Use for links to the freebase wiki
+    * (i.e., http://wiki.freebase.com/wiki//<page>)
+    *
+    * Note that this is a little bit different from other forms of url helpers
+    * in that the path, "/wiki/" is automatically prepended to the page parameter
+    * so that you only need to pass the name of the wiki page
+    *
+    * wiki_url("Enumerated_type") => http://wiki.freebase.com/wiki/Enumerated_type
+    */
+    wiki_url: function(page) {
       var args = Array.prototype.slice.call(arguments);
-      args.unshift("http://wiki.freebase.com", "/wiki");
+      args.unshift("http://wiki.freebase.com", "/wiki/");
       return h.build_url.apply(null, args);
     }
 

@@ -154,7 +154,7 @@
   <thead>
     <tr>
       <th class="tbody-header ${expanded ? 'expanded' : ''}" colspan="4" 
-         data-url="${h.ajax_url(acre.request.script.app.path + '/get_type_properties.ajax', [['id',included_type.id]])}">
+         data-url="${h.ajax_url('/get_type_properties.ajax', [['id',included_type.id]])}">
         <a href="#" class="edit" onclick="return freebase.dispatch(event, freebase.schema.type.delete_included_type, ['${type_id}', '${included_type.id}'], this);"><span>${_('delete')}</span></a>
         <span class="tbody-header-title">${i18n.display_name(included_type)}</span> 
         <a href="${h.fb_url('/schema', included_type.id)}"><span class="key">$included_type.id</span></a>

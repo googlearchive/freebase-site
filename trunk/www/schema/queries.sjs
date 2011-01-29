@@ -68,9 +68,9 @@ function domains(q) {
       });
       summary_guids.sort();
       var promises = [];
-      // we request allotments of 40 summary guids since the url may be too long
-      for (var i=0,l=summary_guids.length; i<l; i+=40) {
-        var slice = summary_guids.slice(i, i+40);
+      // we request allotments of 30 summary guids since the url may be too long
+      for (var i=0,l=summary_guids.length; i<l; i+=30) {
+        var slice = summary_guids.slice(i, i+30);
         promises.push(freebase.get_static("activity", slice));
       }
       return deferred.all(promises)

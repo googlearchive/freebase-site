@@ -39,6 +39,7 @@ var rules = {
     {prefix:"/labs/cubed",         app:"//cubed"},
     {prefix:"/labs/parallax",      app:"//parallax"},
     {prefix:"/labs",               app:"//labs"},
+    {prefix:"/sample",             app:"//sample" + codebase},
 
     // Urls for exposed ajax libraries and static resources
     // TODO: remove this and use ajax router
@@ -46,7 +47,7 @@ var rules = {
     {prefix:"/ajax",               app:lib, script:"routing/ajax.sjs"},
 
     // Test routing rules to test non-user facing apps (core libraries, etc.)
-    {prefix:"/lib/core",           app:lib + "/core"},
+    {prefix:"/lib/helper",         app:lib + "/helper"},
     {prefix:"/lib/routing",        app:lib + "/routing"},
     {prefix:"/lib/i18n",           app:lib + "/i18n"},
     {prefix:"/lib/promise",        app:lib + "/promise"},

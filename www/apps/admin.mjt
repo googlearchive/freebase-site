@@ -41,7 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       acre.response.set_header("location", h.account_url("signin", acre.request.url));
       acre.exit();
     }
-    acre.require("lib/core/cache").set_cache_policy("nocache");
+    h.set_cache_policy("nocache");
   </acre:script>
   Settings<acre:block if="c.app"> for $c.app.name</acre:block>
 </acre:block>

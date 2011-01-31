@@ -37,7 +37,7 @@
 
 <acre:block def="title()" trim="">
   <acre:script>
-    acre.require("lib/core/cache").set_cache_policy("nocache");
+    h.set_cache_policy("nocache");
   </acre:script>
   <acre:block if="c.app">
     $c.app.name

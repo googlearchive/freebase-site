@@ -32,6 +32,7 @@
 console.log(acre.freebase);
 console.log(acre.request);
 
+var h = acre.require("lib/helper/helpers.sjs");
 var queries = acre.require("queries");
 
 var data = {
@@ -46,4 +47,4 @@ acre.require("lib/template/renderer").render_page(
   acre.require("index_template")
 );
 
-acre.require("lib/core/cache").set_cache_policy("public");
+h.set_cache_policy("public");

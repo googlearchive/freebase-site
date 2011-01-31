@@ -59,7 +59,7 @@ var exports = {
   "url_for": url_for
 };
 
-var h = acre.require("core/helpers_util");
+var h = acre.require("helper/helpers_util.sjs");
 
 /**
  * Known client urls:

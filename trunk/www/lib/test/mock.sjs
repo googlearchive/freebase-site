@@ -48,7 +48,7 @@ var self = this;
 if (mock) {
   var apis = acre.require("promise/apis");
   var deferred = acre.require("promise/deferred");
-  var h = acre.require("core/helpers");
+  var h = acre.require("helper/helpers.sjs");
 
   /**
    * Mock record phase.

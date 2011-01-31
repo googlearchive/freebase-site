@@ -31,7 +31,7 @@
 acre.require("/test/lib").enable(this);
 
 var lib = acre.require("handlers/ajax_lib");
-var h = acre.require("core/helpers");
+var h = acre.require("helper/helpers.sjs");
 
 test("ServiceResult", function() {
   var sr = new lib.ServiceResult();

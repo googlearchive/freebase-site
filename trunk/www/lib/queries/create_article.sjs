@@ -30,7 +30,7 @@
  */
 
 var freebase = acre.require("promise/apis").freebase;
-var h = acre.require("core/helpers");
+var h = acre.require("helper/helpers.sjs");
 
 /**
  * Create a /common/document and optionally attach to a topic by the /common/topic/article property.

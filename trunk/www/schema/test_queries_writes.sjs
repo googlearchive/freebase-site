@@ -35,7 +35,7 @@ acre.require("lib/test/mock").playback(this, "playback_test_queries_writes.json"
 
 var q = acre.require("queries");
 var test_helpers = acre.require("lib/test/helpers");
-var h = acre.require("lib/core/helpers");
+var h = acre.require("lib/helper/helpers.sjs");
 var freebase = acre.require("lib/promise/apis").freebase;
 
 // this test requires user to be logged in

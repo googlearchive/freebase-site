@@ -29,7 +29,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  !!-->
 <acre:script>
-  var h = acre.require("core/helpers");
+  var h = acre.require("helper/helpers.sjs");
 </acre:script>
 
 <acre:block def="title()">

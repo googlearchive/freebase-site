@@ -28,10 +28,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
-var h = acre.require("lib/core/helpers");
 var create_article = acre.require("lib/queries/create_article");
 var validators = acre.require("lib/validator/validators");
 
@@ -78,7 +76,7 @@ function create_base(options) {
        * The key will be inserted in the next callback since you need special
        * permission to add keys to /base.
        */
-      return freebase.create_group(h.sprintf("Owners of %s domain", o.name), {
+      return freebase.create_group("Owners of " + o.name + " domain", {
         extra_group: "/boot/schema_group"
       })
       .then(function(env) {

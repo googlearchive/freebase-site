@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <acre:script>
   var c = this.exports.c = {};
-  var h = acre.require("lib/core/helpers");
+  var h = acre.require("lib/helper/helpers.sjs");
 </acre:script>
 
 <acre:block def="title()" trim="">

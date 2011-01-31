@@ -28,10 +28,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 var queries = acre.require("queries");
 var f = acre.require("filters");
-var h = acre.require("lib/core/helpers");
+var h = acre.require("lib/helper/helpers.sjs");
 var datejs = acre.require("lib/libraries/date").Date;
 
 var id = acre.request.params.id || acre.request.path_info;

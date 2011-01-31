@@ -30,7 +30,7 @@
  !!-->
 
 <acre:script>
-  var h = acre.require("core/helpers");
+  var h = acre.require("helper/helpers.sjs");
   var i18n = acre.require("i18n/i18n");
   var _ = i18n.gettext;
 </acre:script>

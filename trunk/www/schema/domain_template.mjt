@@ -31,7 +31,7 @@
 
 <acre:script>
   var c = this.exports.c = {};
-  var h = acre.require("lib/core/helpers");
+  var h = acre.require("lib/helper/helpers.sjs");
   var dc = acre.require("domain_components");
   var image = acre.require("lib/template/imagecomponents");  
   var i18n = acre.require("lib/i18n/i18n");

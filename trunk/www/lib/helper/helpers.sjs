@@ -46,7 +46,7 @@ include_helpers(this, "helpers_mql");
 //-----Functions for including new helpers-----
 function include_helpers(scope, script) {
   if (typeof script === "string") {
-    script = acre.require("core/" + script);
+    script = acre.require("helper/" + script);
   }
   if (script.exports && typeof script.exports === "object") {
     for (var n in script.exports) {

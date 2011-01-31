@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("core/helpers");
+var h = acre.require("helper/helpers.sjs");
 var i18n = acre.require("i18n/i18n");
 var update_article = acre.require("queries/update_article");
 var deferred = acre.require("promise/deferred");

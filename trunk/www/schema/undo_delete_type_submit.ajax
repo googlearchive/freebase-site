@@ -28,8 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-var h = acre.require("lib/core/helpers.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var delete_type_undo = acre.require("delete_type.sjs").undo;
 var components = acre.require("domain_components.mjt");

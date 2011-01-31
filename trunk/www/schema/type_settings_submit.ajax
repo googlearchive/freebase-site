@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("lib/core/helpers.sjs");
+var h = acre.require("lib/helper/helpers.sjs");
 var edit_type_submit = acre.require("edit_type_submit");
 var update_type = acre.require("update_type.sjs").update_type;
 

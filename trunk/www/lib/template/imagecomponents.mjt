@@ -30,7 +30,7 @@
  !!-->
 
 <acre:script>
-  var h = acre.require("core/helpers");
+  var h = acre.require("helper/helpers.sjs");
 </acre:script>
 
 <acre:block def="user_image_small(user)">

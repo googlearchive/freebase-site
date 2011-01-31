@@ -36,7 +36,7 @@
 * into static URLs for certain tag combos
 */
 
-var h = acre.require("core/helpers");
+var h = acre.require("helper/helpers.sjs");
 
 var to_process = {
   "src": {
@@ -50,7 +50,7 @@ var to_process = {
 
 function handler() {
   var handler = {};
-  
+
   handler.to_js = function(script) {
 
     mjt.TemplateCompiler.prototype.get_attributes = function(n, attrs, mjtattrs) {
@@ -77,7 +77,7 @@ function handler() {
           throw new Error('template compiler: ambiguous template attribute: both '
           + aname + ' and ' + attr.nodeName + ' are specified');
           mjtattrs[aname] = attr.nodeValue;
-          continue;            
+          continue;
         }
 
         var a = {
@@ -91,7 +91,7 @@ function handler() {
         if (to_process[a.name] && to_process[a.name][n.nodeName] && /^[^/:$][^:$]*$/.test(a.value)) {
           var full_path = script.scope.acre.resolve(a.value);
           if (full_path) {
-            a.value = h.static_url(full_path)           
+            a.value = h.static_url(full_path)
           }
         }
 
@@ -103,11 +103,11 @@ function handler() {
     script.linemap = cpkg.debug_locs;
     return 'var pkgdef = (' + cpkg.toJS() +');';
   };
-  
+
   // the rest is no different than standard Mjt
   handler.to_module = acre.handlers.mjt.to_module;
   handler.to_http_response = acre.handlers.mjt.to_http_response;
-  
+
   return handler;
 };
 

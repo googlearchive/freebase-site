@@ -30,7 +30,7 @@
  !!-->
 
 <acre:script>
-  var h = acre.require("lib/core/helpers");
+  var h = acre.require("lib/helper/helpers.sjs");
   var i18n = acre.require("lib/i18n/i18n");
   var _ = i18n.gettext;
   var lib_path = acre.get_metadata().mounts.lib;

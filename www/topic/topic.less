@@ -7,6 +7,7 @@
   float: left;
   width: 230px;
   margin-right: 20px;
+  margin-top: -7px;
 }
 
 .section.domain {
@@ -62,12 +63,21 @@
 
 .sub-foobar .more {
   float: right;
+  position: relative;
+  overflow: hidden;
   margin: 3px 0 0 0;
   opacity: 0.6;
-  background: url(lib/template/ui-icons.png) no-repeat 2px -611px;
-  text-indent: -9999px;
-  width: 14px;
+  background: url(lib/template/ui-icons.png) no-repeat right -610px;
   height: 14px;
+  padding-right: 155px;
+}
+
+.sub-foobar .more span {
+  position: absolute;
+  top: 30px;
+  font-weight: normal;
+  color: #777;
+  -webkit-transition: all 0.3s ease-in-out;
 }
 
 .sub-foobar:hover .more {
@@ -75,7 +85,16 @@
 }
 
 .sub-foobar .more:hover {
-  background-position: 2px -635px;
+  text-decoration: none;
+  background-position: right -634px;
+}
+
+.sub-foobar:hover a span {
+  top: 0;
+}
+
+.sub-foobar a:hover span {
+  color: #222;
 }
 
 .data-list {
@@ -115,4 +134,17 @@
 .data-table .alt th,
 .data-table .alt td {
   background: #ecedef;
+}
+
+
+.toolbar {
+  margin: 0 0 20px 250px;
+  padding: 5px 15px;
+  line-height: 1;
+  .linear_gradient(#e4e6e7, #d5d7d8);
+}
+
+.toolbar ul {
+  list-style: none;
+  font-size: 12px;
 }

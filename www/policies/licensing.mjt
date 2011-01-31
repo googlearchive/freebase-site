@@ -31,7 +31,6 @@
 
 <acre:script>
   var c = this.exports.c = {};
-  var h = acre.require("lib/core/helpers");  
   var t = acre.require("templates");
 </acre:script>
 

@@ -28,8 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-var h = acre.require("lib/core/helpers.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var queries = acre.require("queries.sjs");
 var components = acre.require("type_components.mjt");
@@ -142,7 +140,7 @@ function create_sibling_type(type, name, lang) {
     })
     .then(function(domain) {
       if (!domain) {
-        throw h.sprintf("Can not create a new sibling type of %s - not a valid type.", type);
+        throw "Can not create a new sibling type of " + type + " - not a valid type.";
       }
       return create_type({
         domain: domain,

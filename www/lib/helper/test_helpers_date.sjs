@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-var h = acre.require("core/helpers_date");
+var h = acre.require("helper/helpers_date.sjs");
 
 
 test("parse_date", function() {

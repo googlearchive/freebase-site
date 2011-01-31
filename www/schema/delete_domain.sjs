@@ -32,7 +32,7 @@
 var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
 var delete_type = acre.require("delete_type").delete_type;
-var h = acre.require("lib/core/helpers");
+var h = acre.require("lib/helper/helpers.sjs");
 
 function delete_domain(domain_id, user_id, dry_run) {
   return domain_info(domain_id, user_id)

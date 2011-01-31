@@ -28,7 +28,7 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-var h = acre.require("core/helpers.sjs");
+var h = acre.require("helper/helpers.sjs");
 var hh = acre.require("handlers/helpers.sjs");
 
 var less = function(data) {

@@ -30,7 +30,7 @@
  */
 
 var freebase = acre.require("promise/apis").freebase;
-var h = acre.require("core/helpers");
+var h = acre.require("helper/helpers.sjs");
 var create_article = acre.require("queries/create_article");
 
 /**

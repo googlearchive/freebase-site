@@ -30,7 +30,7 @@
  !!-->
 
 <acre:script>
-  var h = acre.require("core/helpers");
+  var h = acre.require("helper/helpers.sjs");
   var cache = acre.require("core/cache");
   if (h.is_client()) {
     cache.set_cache_policy('public');

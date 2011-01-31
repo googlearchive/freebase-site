@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("lib/core/helpers.sjs");
+var h = acre.require("lib/helper/helpers.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var create_base = acre.require("create_base.sjs").create_base;
 

@@ -30,7 +30,6 @@
  !!-->
 
 <acre:script>
-  var h = acre.require("lib/core/helpers");
   var i18n = acre.require("lib/i18n/i18n");
   var i18n_editcomponents = acre.require("lib/i18n/editcomponents");
   var _ = i18n.gettext;

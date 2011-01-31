@@ -28,8 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-var h = acre.require("lib/core/helpers");
+var h = acre.require("lib/helper/helpers.sjs");
 var i18n = acre.require("lib/i18n/i18n");
 
 /**

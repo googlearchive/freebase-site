@@ -28,8 +28,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
-var h = acre.require("core/helpers");
+
+var h = acre.require("helper/helpers.sjs");
 
 var to_process = {
   "src": {
@@ -56,7 +56,7 @@ function compile_mjt(source, pkgid) {
 var handler = function() {
   return {
     'to_js': function(script) {
-      
+
       mjt.TemplateCompiler.prototype.get_attributes = function(n, attrs, mjtattrs) {
         // if the tag was namespaced with the mjt namespace, then treat any attributes
         //  without an explicit namespace as mjt attributes
@@ -81,7 +81,7 @@ var handler = function() {
             throw new Error('template compiler: ambiguous template attribute: both '
             + aname + ' and ' + attr.nodeName + ' are specified');
             mjtattrs[aname] = attr.nodeValue;
-            continue;            
+            continue;
           }
 
           var a = {
@@ -95,14 +95,14 @@ var handler = function() {
           if (to_process[a.name] && to_process[a.name][n.nodeName] && /^[^/:$][^:$]*$/.test(a.value)) {
             var full_path = script.scope.acre.resolve(a.value);
             if (full_path) {
-              a.value = h.static_url(full_path)           
+              a.value = h.static_url(full_path)
             }
           }
 
           attrs.push(a);
         }
       };
-        
+
       var res = script.get_content();
       var pkgid = "//" + script.app.host + "/" + script.name;
       res.body = compile_mjt(res.body, pkgid);

@@ -29,14 +29,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("lib/core/helpers");
+var h = acre.require("lib/helper/helpers.sjs");
 
 var docs_base = acre.request.app_url + "/docs";
 
 function url_for(app,file) {
   var apps = acre.get_metadata().mounts;
   if (!(app in apps)) { console.error('Could not find '+app+' in mf.apps:', apps); return null; }
-  var url = acre.host.protocol + ":" + apps[app] + "." + acre.host.name + 
+  var url = acre.host.protocol + ":" + apps[app] + "." + acre.host.name +
             (acre.host.port !== 80 ? (":" + acre.host.port) : "") + (file ? "/" + file : "");
   return url;
 }

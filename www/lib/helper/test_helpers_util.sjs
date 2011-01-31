@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-var h = acre.require("core/helpers_util");
+var h = acre.require("helper/helpers_util.sjs");
 
 test("trim", function() {
   expect(9);

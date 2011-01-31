@@ -30,7 +30,7 @@
  !!-->
 
 <acre:script>
-  var h = acre.require("lib/core/helpers");
+  var h = acre.require("lib/helper/helpers.sjs");
   var th = acre.require("helpers");
   var f = acre.require("filters");
   var i18n = acre.require("lib/i18n/i18n");

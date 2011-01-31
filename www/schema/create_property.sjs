@@ -28,8 +28,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-var h = acre.require("lib/core/helpers");
 var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
 var validators = acre.require("lib/validator/validators");

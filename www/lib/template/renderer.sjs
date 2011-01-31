@@ -30,7 +30,7 @@
  */
 
 var deferred = acre.require("promise/deferred");
-var h = acre.require("core/helpers");
+var h = acre.require("helper/helpers.sjs");
 
 // Call one of these once at the end of your controller to render a
 //  freebase page, or single def with the results

@@ -36,7 +36,7 @@ var exports = {
   "uppercase_alphabet": uppercase_alphabet
 };
 
-var h = acre.require("lib/core/helpers");
+var h = acre.require("lib/helper/helpers.sjs");
 
 function format_stat(number) {
   var abbr = ["K", "M", "B", "T"];
@@ -61,18 +61,18 @@ function facts_per_topic(domain) {
 }
 
 function lowercase_alphabet() {
-  return ['a', 'b', 'c', 'd', 'e', 'f', 
-          'g', 'h', 'i', 'j', 'k', 'l', 
-          'm', 'n', 'o', 'p', 'q', 'r', 
-          's', 't', 'u', 'v', 'w', 'x', 
+  return ['a', 'b', 'c', 'd', 'e', 'f',
+          'g', 'h', 'i', 'j', 'k', 'l',
+          'm', 'n', 'o', 'p', 'q', 'r',
+          's', 't', 'u', 'v', 'w', 'x',
           'y', 'z'];
 }
 
 function uppercase_alphabet() {
-  return ['A', 'B', 'C', 'D', 'E', 'F', 
-          'G', 'H', 'I', 'J', 'K', 'L', 
-          'M', 'N', 'O', 'P', 'Q', 'R', 
-          'S', 'T', 'U', 'V', 'W', 'X', 
+  return ['A', 'B', 'C', 'D', 'E', 'F',
+          'G', 'H', 'I', 'J', 'K', 'L',
+          'M', 'N', 'O', 'P', 'Q', 'R',
+          'S', 'T', 'U', 'V', 'W', 'X',
           'Y', 'Z'];
 }
 

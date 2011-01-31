@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-var h = acre.require("core/helpers_url");
+var h = acre.require("helper/helpers_url.sjs");
 var scope = this;
 
 test("parse_params", function() {

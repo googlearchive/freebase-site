@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <acre:script>
-  var h = acre.require("lib/core/helpers");
+  var h = acre.require("lib/helper/helpers.sjs");
   var i18n = acre.require("lib/i18n/i18n");
   var lib_path = acre.get_metadata().mounts.lib;
   

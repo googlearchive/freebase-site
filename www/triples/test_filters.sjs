@@ -32,7 +32,7 @@
 acre.require('/test/lib').enable(this);
 
 var f = acre.require("filters");
-var h = acre.require("lib/core/helpers");
+var h = acre.require("lib/helper/helpers.sjs");
 
 var tests;
 

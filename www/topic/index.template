@@ -224,6 +224,9 @@
 <div class="column" id="topic-data">
   <div class="section domain">
     <div class="header">
+      <span class="status">
+        Freebase Commons
+      </span>
       <h1>
         <a href=""#link-to-domain"">Domain Name</a>
       </h1>
@@ -262,6 +265,13 @@
       </thead>
       <tbody>
         <tr>
+          <th scope="row">
+            <a href="#">Topic Name</a>
+          </th>
+          <td>Lorem ipsum</td>
+          <td><a href="#">Property value</td>
+        </tr>
+        <tr class="alt">
           <th scope="row">
             <a href="#">Topic Name</a>
           </th>

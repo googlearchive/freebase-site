@@ -58,4 +58,4 @@ acre.require("lib/template/renderer").render_page(
   acre.require("home_template")
 );
 
-acre.require("lib/core/cache").set_cache_policy("nocache");
+h.set_cache_policy("nocache");

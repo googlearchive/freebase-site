@@ -31,9 +31,8 @@
 
 <acre:script>
   var h = acre.require("helper/helpers.sjs");
-  var cache = acre.require("core/cache");
   if (h.is_client()) {
-    cache.set_cache_policy('public');
+    h.set_cache_policy('public');
   }
   var i18n = acre.require("i18n/i18n");
   var _ = i18n.gettext;

@@ -28,7 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+var h = acre.require("lib/helper/helpers.sjs");
 var queries = acre.require("queries");
 
 var FEATURED_DOMAIN_IDS =  [
@@ -65,7 +65,7 @@ if (acre.request.params.category) {
     "domain_toc_panel",
     queries.alphabetically_grouped_domains(true)
   );
-  acre.require("lib/core/cache").set_cache_policy(cache_policy);
+  h.set_cache_policy(cache_policy);
   acre.exit();
 } else if (acre.request.params.domains) {
   p_domains = queries.domains_for_letter(acre.request.params.domains);
@@ -130,4 +130,4 @@ acre.require("lib/template/renderer").render_def(
   p_domains
 );
 
-acre.require("lib/core/cache").set_cache_policy(cache_policy);
+h.set_cache_policy(cache_policy);

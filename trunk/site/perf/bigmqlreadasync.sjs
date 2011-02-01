@@ -3,6 +3,7 @@
 test: 6 large sized mqlread requests
 
 */
+var util = acre.require('util.sjs');
 
 //films
 
@@ -83,16 +84,17 @@ acre.freebase.touch();
 var t1 = new Date();
 
 var callback = function(result) { };
-film_query = acre.async.urlfetch(acre.freebase.service_url + '/api/service/mqlread?q=' + acre.form.quote(JSON.stringify({'query' : film_query})), {'callback' : callback });
-book_query = acre.async.urlfetch(acre.freebase.service_url + '/api/service/mqlread?q=' + acre.form.quote(JSON.stringify({'query' : book_query})), {'callback' : callback });
-artist_query = acre.async.urlfetch(acre.freebase.service_url + '/api/service/mqlread?q=' + acre.form.quote(JSON.stringify({'query' : artist_query})), {'callback' : callback });
-architect_query = acre.async.urlfetch(acre.freebase.service_url + '/api/service/mqlread?q=' + acre.form.quote(JSON.stringify({'query' : architect_query})), {'callback' : callback });
-celebrities_query = acre.async.urlfetch(acre.freebase.service_url + '/api/service/mqlread?q=' + acre.form.quote(JSON.stringify({'query' : celebrities_query})), {'callback' : callback });
-location_query = acre.async.urlfetch(acre.freebase.service_url + '/api/service/mqlread?q=' + acre.form.quote(JSON.stringify({'query' : location_query})), {'callback' : callback });
+film_query = acre.async.urlfetch(acre.freebase.service_url + '/api/service/mqlread?q=' + acre.form.quote(JSON.stringify({'query' : film_query})), {'callback' : util.callback });
+book_query = acre.async.urlfetch(acre.freebase.service_url + '/api/service/mqlread?q=' + acre.form.quote(JSON.stringify({'query' : book_query})), {'callback' : util.callback });
+artist_query = acre.async.urlfetch(acre.freebase.service_url + '/api/service/mqlread?q=' + acre.form.quote(JSON.stringify({'query' : artist_query})), {'callback' : util.callback });
+architect_query = acre.async.urlfetch(acre.freebase.service_url + '/api/service/mqlread?q=' + acre.form.quote(JSON.stringify({'query' : architect_query})), {'callback' : util.callback });
+celebrities_query = acre.async.urlfetch(acre.freebase.service_url + '/api/service/mqlread?q=' + acre.form.quote(JSON.stringify({'query' : celebrities_query})), {'callback' : util.callback });
+location_query = acre.async.urlfetch(acre.freebase.service_url + '/api/service/mqlread?q=' + acre.form.quote(JSON.stringify({'query' : location_query})), {'callback' : util.callback });
 
 
 acre.async.wait_on_results();
 
-//acre.write(JSON.stringify(film_query));
+acre.response.set_header('content-type', 'text/html');
 var t2 = new Date();
 acre.write('duration: ' + (t2-t1)/1000 + ' secs');
+util.print_stats();

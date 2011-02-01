@@ -105,6 +105,10 @@ table.bar-graph {
   width: 100%;
 }
 
+.bar-graph tr {
+  .transition(all, 0.2s);
+}
+
 .bar-graph tr:hover {
   background: #eee;
 }
@@ -134,7 +138,7 @@ table.bar-graph {
 
 .bar-graph-label a:hover {
   text-decoration: none;
-}
+} 
 
 .bar-graph-label .index {
   display: block;
@@ -143,6 +147,7 @@ table.bar-graph {
   left: 0;
   top: 0;
   background: #ddd;
+  -webkit-transition: all 0.3s linear;
 }
 
 .module:hover .index {

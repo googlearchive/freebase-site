@@ -1,5 +1,17 @@
+<acre:script>
+
+  var metadata = acre.get_metadata();
+
+</acre:script>
+
+
 <html>
   <body>
-    <p>Hello World!</p>
+    <p>Performance testing endpoints: </p>
+    <acre:block for="file in metadata.files">
+      <acre:block if="file.name != 'index.mjt'">
+        <br/><a href="${acre.request.base_path + file.name.slice(0, file.name.indexOf('.'))}">/${file.name.slice(0, file.name.indexOf('.'))}</a>
+      </acre:block>
+    </acre:block>
   </body>
 </html>

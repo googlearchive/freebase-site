@@ -10,9 +10,13 @@
     <p>Performance testing endpoints: </p>
     <acre:block for="file in metadata.files">
       <acre:block if="file.name != 'index.mjt'">
-        <br/><a href="${acre.request.base_path + file.name.slice(0, file.name.indexOf('.'))}">/${file.name.slice(0, file.name.indexOf('.'))}</a>
+        <acre:block if="file.name.indexOf('.')>0">
+          <br/><a href="${acre.request.base_path + file.name.slice(0, file.name.indexOf('.'))}">/${file.name.slice(0, file.name.indexOf('.'))}</a>
+        </acre:block>
+        <acre:block else="">
+          <br/><a href="${acre.request.base_path + file.name}">/${file.name}</a>
+        </acre:block>
       </acre:block>
     </acre:block>
-    <pre>${JSON.stringify(metadata.files, null, 2)}</pre>
   </body>
 </html>

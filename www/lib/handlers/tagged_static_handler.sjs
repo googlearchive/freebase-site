@@ -40,7 +40,7 @@ var handler = function() {
     },
     'to_http_response': function(module, script) {
       var max_age = 31536000;
-      var expires = new Date(acre.request.start_time.getTime() + max_age * 1000);
+      var expires = new Date((new Date()).getTime() + max_age * 1000);
       var headers = {
         expires: expires.toUTCString(),
         "cache-control": "public, max-age: " + max_age,

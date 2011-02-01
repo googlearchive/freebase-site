@@ -16,6 +16,7 @@ var get_cost = function(header_value, cost_key) {
 
 var callback = function(result) { 
 
+    console.log(result);
     if (typeof result.transaction_id != 'undefined') { tids.push([result.transaction_id, '']); return;}
     r = JSON.parse(result.body);
     tids.push([r['transaction_id'], get_cost(result['headers']['X-Metaweb-Cost'] || result['headers']['x-metaweb-cost'], 'dt')]);

@@ -47,6 +47,11 @@
     background-repeat: @mode;
 }
 
+.transition(@property: all, @duration: 0.3s, @mode: linear, @delay: 0s) {
+    -webkit-transition: @property @duration @mode @delay;
+    -moz-transition: @property @duration @mode @delay;
+}
+
 /*-----------------------------------------------------------
 
     Global Color Palette

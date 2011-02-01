@@ -6,6 +6,8 @@ test: 3 medium sized mqlread requests
 
 //films
 
+var util = acre.require('util.sjs');
+
 var film_query = [{ 'type' : '/film/film',
                     'name' : null,
                     'id' : null,
@@ -40,13 +42,14 @@ var artist_query = [{ 'type' : '/music/artist',
 acre.freebase.touch();
 var t1 = new Date();
 
-var callback = function(result) { };
-film_query = acre.async.urlfetch(acre.freebase.service_url + '/api/service/mqlread?q=' + acre.form.quote(JSON.stringify({'query' : film_query})), {'callback' : callback });
-book_query = acre.async.urlfetch(acre.freebase.service_url + '/api/service/mqlread?q=' + acre.form.quote(JSON.stringify({'query' : book_query})), {'callback' : callback });
-artist_query = acre.async.urlfetch(acre.freebase.service_url + '/api/service/mqlread?q=' + acre.form.quote(JSON.stringify({'query' : artist_query})), {'callback' : callback });
+film_query = acre.async.urlfetch(acre.freebase.service_url + '/api/service/mqlread?q=' + acre.form.quote(JSON.stringify({'query' : film_query})), {'callback' : util.callback });
+book_query = acre.async.urlfetch(acre.freebase.service_url + '/api/service/mqlread?q=' + acre.form.quote(JSON.stringify({'query' : book_query})), {'callback' : util.callback });
+artist_query = acre.async.urlfetch(acre.freebase.service_url + '/api/service/mqlread?q=' + acre.form.quote(JSON.stringify({'query' : artist_query})), {'callback' : util.callback });
 
 
 acre.async.wait_on_results();
 
 var t2 = new Date();
-acre.write('duration: ' + (t2-t1)/1000 + ' secs');
+acre.response.set_header('content-type', 'text/html');
+acre.write('duration: ' + (t2-t1)/1000 + ' secs\n');
+util.print_stats();

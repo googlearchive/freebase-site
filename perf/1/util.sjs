@@ -16,7 +16,6 @@ var get_cost = function(header_value, cost_key) {
 
 var callback = function(result) { 
 
-    console.log(result);
     if (typeof result.transaction_id != 'undefined') { tids.push([result.transaction_id, '']); return;}
     r = JSON.parse(result.body);
     tids.push([r['transaction_id'], get_cost(result['headers']['X-Metaweb-Cost'] || result['headers']['x-metaweb-cost'], 'dt')]);
@@ -73,7 +72,6 @@ var big_film_query = [{ 'type' : '/film/film',
                     'directed_by' : [],
                     'starring' : [{}],
                     'genre' : [],
-                    'album' : [{}],
                     'limit' : 20
                   }];
 
@@ -95,6 +93,7 @@ var big_artist_query = [{ 'type' : '/music/artist',
                       'album' : [{}],
                       'genre' : [],
                       'origin' : [],
+                      'album' : [{}],
                       'limit' : 20
                     }];
 

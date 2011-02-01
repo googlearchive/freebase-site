@@ -13,5 +13,6 @@
         <br/><a href="${acre.request.base_path + file.name.slice(0, file.name.indexOf('.'))}">/${file.name.slice(0, file.name.indexOf('.'))}</a>
       </acre:block>
     </acre:block>
+    <pre>${JSON.stringify(metadata.files, null, 2)}</pre>
   </body>
 </html>

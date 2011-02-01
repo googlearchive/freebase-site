@@ -72,7 +72,6 @@ var big_film_query = [{ 'type' : '/film/film',
                     'directed_by' : [],
                     'starring' : [{}],
                     'genre' : [],
-                    'album' : [{}],
                     'limit' : 20
                   }];
 
@@ -94,6 +93,7 @@ var big_artist_query = [{ 'type' : '/music/artist',
                       'album' : [{}],
                       'genre' : [],
                       'origin' : [],
+                      'album' : [{}],
                       'limit' : 20
                     }];
 

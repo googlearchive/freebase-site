@@ -2,6 +2,9 @@ var tids = [];
 
 var get_cost = function(header_value, cost_key) { 
     var parts =  header_value.split(',');
+    if (! parts) { 
+        return '';
+    }
     for (var i = 0; i < parts.length; i++) { 
         var pp = parts[i].split('='); 
         pp[0] = pp[0].replace(/^\s*/, "").replace(/\s*$/, "");
@@ -14,7 +17,9 @@ var get_cost = function(header_value, cost_key) {
 var callback = function(result) { 
 
     r = JSON.parse(result.body);
-    tids.push([r['transaction_id'], get_cost(result['headers']['X-Metaweb-Cost'], 'dt')]);
+    console.log(result);
+    
+    tids.push([r['transaction_id'], get_cost(result['headers']['X-Metaweb-Cost'] || result['headers']['x-metaweb-cost'], 'dt')]);
 
 };
 

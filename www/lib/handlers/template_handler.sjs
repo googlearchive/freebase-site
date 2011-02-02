@@ -111,7 +111,7 @@ function handler() {
 
   handler.to_http_response = function(module, script) {
     var result = h.extend({template:module}, module.c);
-    var d = controller.render(result, module, script.scope)
+    var d = controller.render(result, null, script.scope)
       .then(function(render_result) {
         module.body = acre.markup.stringify(render_result);
       });

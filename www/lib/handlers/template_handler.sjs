@@ -48,6 +48,8 @@ var to_process = {
   }
 };
 
+var controller = acre.require("handlers/controller_handler.sjs");
+
 function handler() {
   var handler = {};
 
@@ -108,8 +110,14 @@ function handler() {
   handler.to_module = acre.handlers.mjt.to_module;
 
   handler.to_http_response = function(module, script) {
-    acre.require("template/renderer").render_page(module.c, module);
-    return {'body': '', 'headers':{}};
+    var result = h.extend({template:module}, module.c);
+    var d = controller.render(result, module)
+      .then(function(render_result) {
+        module.body = acre.markup.bless(acre.markup.stringify(render_result));
+      });
+    acre.async.wait_on_results();
+    d.cleanup();
+    return module;
   };
 
   return handler;

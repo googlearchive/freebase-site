@@ -28,6 +28,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+var h = acre.require("helper/helpers.sjs");
+var deferred = acre.require("promise/deferred.sjs");
+var validators = acre.require("validator/validators.sjs");
 
 function ServiceResult(result) {
   this.status = "200 OK";
@@ -64,32 +67,6 @@ function check_user() {
   return user;
 };
 
-function to_http_response(ret) {
-  var resp = {body:null, headers:{}};
-
-  // update transaction id and extract the timestamp from it
-  var tid = acre.request.headers['x-metaweb-tid'];
-  if (tid) {
-    ret.transaction_id = tid;
-    ret.timestamp = (tid.split(';')[2].match(/.*Z$/) || [null])[0];
-  } else {
-    ret.transaction_id = "Doh!  Sorry, no transaction id available.";
-  }
-  resp.headers["content-type"] = 'text/javascript; charset=utf-8';
-
-  var callback = acre.request.params.callback;
-  if (callback) {
-    resp.body = [callback, "(", JSON.stringify(ret, null, 2), ");"].join("");
-  } else {
-    // only set non-200 status code if not in a JSONP request
-    var status_code = (typeof ret.status === "number") ? ret.status : parseInt(ret.status.split(' ')[0]);
-    if (status_code) {
-      resp.status = status_code;
-    }
-    resp.body = JSON.stringify(ret, null, 2);
-  }
-  return resp;
-};
 
 /**
  * known errors this library can handle
@@ -154,3 +131,127 @@ function handle_service_error(e) {
   return e;
 };
 
+
+
+/**
+ * A web service can be specified by declaring a SPEC as follows:
+ *
+ * var SPEC = {
+ *   method: "POST",
+ *   auth: true,
+ *   validate: function(params) {
+ *     // return an array to be applied to the run method
+ *   },
+ *   run: function(...) {
+ *     // return JSON or a promise returning JSON
+ *   }
+ * };
+ *
+ * method:String (optional)
+ * - supported http method(s)
+ * - can be a single http method or an array of methods (i.e., ["GET", "POST"]
+ * - default is "GET"
+ *
+ * auth:Boolean (optional)
+ * - if true, check user authentication
+ * - default is false
+ *
+ * validate:Function (required)
+ * - validate request params
+ * - return an array of validated arguments that will be applied to the run method
+ *
+ * run:Function (required)
+ * - main run method of the web service
+ * - return JSON or a promise returning JSON.
+ */
+function handle_service(module, script) {
+  var spec = module.SPEC;
+  if (!(spec && typeof spec === "object")) {
+    throw new ServiceError(null, null, "SPEC is undefined");
+  }
+  spec = h.extend({}, {
+    method: "GET",
+    auth: false,
+    validate: null,
+    run: null
+  }, spec);
+
+  // SPEC needs to implement validate and run
+  ["validate", "run"].forEach(function(m) {
+    if (typeof spec[m] !== "function") {
+      return deferred.rejected(new ServiceError(null, null, "SPEC." + m + " is undefined"));
+    }
+  });
+
+  var scope = script.scope;
+  var req = scope.acre.request;
+
+  //
+  // 1. check method is supported (i.e., GET, POST, etc.)
+  //
+  if (typeof spec.method === "string") {
+    spec.method = [spec.method];
+  }
+  var methods = {};
+  spec.method.forEach(function(m) {
+    if (m) {
+      methods[m] = 1;
+    }
+  });
+  if (!methods[req.method]) {
+    return deferred.rejected(new ServiceError("405 Method Not Allowed", null, {
+      message: "Request method not supported: " + req.method,
+      code: "/api/status/error/request/method"
+    }));
+  }
+  if (req.method === "POST" && !acre.request.headers['x-requested-with']) {
+    return deferred.rejected(new ServiceError("400 Bad Request", null, {
+      message: "Request must include 'X-Requested-With' header",
+      code: "/api/status/error/request/method"
+    }));
+  }
+
+  //
+  // 2. check authentication
+  //
+  if (spec.auth) {
+    //console.log("check_user");
+    try {
+      check_user();
+    }
+    catch (e if e instanceof ServiceError) {
+      return deferred.rejected(e);
+    }
+  }
+
+  //
+  // 3. validate required arguments
+  //
+  // TODO: handle binary POSTs
+  var req_params = req.method === "POST" ? req.body_params : req.params;
+  var args;
+  try {
+    args = spec.validate.apply(null, [req_params]);
+  }
+  catch(e if (e instanceof validators.Invalid ||
+              e instanceof validators.IfException)) {
+    return deferred.rejected(new ServiceError("400 Bad Request", null, {
+      message: e.message,
+      code : "/api/status/error/input/validation"
+    }));
+  }
+
+  //
+  // 4. run web service
+  //
+  return deferred.resolved()
+    .then(function() {
+      return spec.run.apply(null, args);
+    })
+    .then(function(r) {
+      return deferred.all(r, true);
+    })
+    .then(function(r) {
+      return new ServiceResult(r);
+    });
+};

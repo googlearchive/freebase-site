@@ -33,70 +33,84 @@ var h = acre.require("helper/helpers.sjs");
 var hh = acre.require("handlers/helpers.sjs");
 var lib = acre.require("handlers/service_lib.sjs");
 var deferred = acre.require("promise/deferred.sjs");
-var validators = acre.require("validator/validators.sjs");
-var handle_service = acre.require("handlers/controller_handler.sjs").handle_service;
 
-/**
- * A JSON/P web service handler for *.ajax.
- *
- *
- *
- * TODO:
- *   // cache_policy
- * if (h.is_client() && fn.cache_policy) {
- *   acre.response.set_cache_policy(fn.cache_policy);
- * }
- */
-function handler() {
+var handler = function() {
   return h.extend({}, acre.handlers.acre_script, {
     to_http_response: function(module, script) {
-      var resp;
       var d = lib.handle_service(module, script)
-        .then(
-          function(result) {
-            return to_ajax_response(result);
-          },
-          function(e) {
-            if (lib.instanceof_service_error(e)) {
-              return to_ajax_response(lib.handle_service_error(e));
-            }
-            return e;
-          }
-        )
-        .then(function(r) {
-         resp = r;
+        .then(function(service_result) {
+          return render(service_result.result, module.SPEC);
+        })
+        .then(function(render_result) {
+          module.body = acre.markup.stringify(render_result);
         });
+
       acre.async.wait_on_results();
+
       d.cleanup();
-      return hh.to_http_response_result(resp.body, resp.headers, resp.status);
+
+      return module;
     }
   });
 };
 
+function render(service_result, spec) {
+  // make a shallow copy of the result
+  var result = h.extend({}, service_result);
 
-function to_ajax_response(ret) {
-  var resp = {body:null, headers:{}};
+  // render options
+  var o = {};
 
-  // update transaction id and extract the timestamp from it
-  var tid = acre.request.headers['x-metaweb-tid'];
-  if (tid) {
-    ret.transaction_id = tid;
-    ret.timestamp = (tid.split(';')[2].match(/.*Z$/) || [null])[0];
-  } else {
-    ret.transaction_id = "Doh!  Sorry, no transaction id available.";
-  }
-  resp.headers["content-type"] = 'text/javascript; charset=utf-8';
-
-  var callback = acre.request.params.callback;
-  if (callback) {
-    resp.body = [callback, "(", JSON.stringify(ret, null, 2), ");"].join("");
-  } else {
-    // only set non-200 status code if not in a JSONP request
-    var status_code = (typeof ret.status === "number") ? ret.status : parseInt(ret.status.split(' ')[0]);
-    if (status_code) {
-      resp.status = status_code;
+  // get render options (keywords) and remove for result dictionary
+  ["template", "template_base", "def", "def_args"].forEach(function(reserved_key) {
+    if (reserved_key in result) {
+      o[reserved_key] = result[reserved_key];
+      delete result[reserved_key];
     }
-    resp.body = JSON.stringify(ret, null, 2);
+  });
+  o.c = result;
+
+  // is there a service SPEC?
+  spec = spec || {};
+  o.template = o.template || spec.template;
+  o.template_base = o.template_base || spec.template_base || "template/freebase.mjt";
+
+  // template needs to be defined
+  if (!o.template) {
+    throw "template needs to be defined";
   }
-  return resp;
+
+  return deferred.all(o.def_args || [], true)
+    .then(function(def_args) {
+      o.def_args = def_args;
+      return o;
+    })
+    .then(function() {
+      var template;
+      var exports;
+      if (o.def) {
+        template = is_module(o.template) ? o.template : acre.require(acre.resolve(o.template));
+        exports = template;
+      }
+      else {
+
+        template = is_module(o.template_base) ? o.template_base : acre.require(acre.resolve(o.template_base));
+        exports = is_module(o.template) ? o.template : acre.require(acre.resolve(o.template));
+        o.def = "page";
+        o.def_args = [exports];
+      }
+      if (exports.c && typeof exports.c === "object") {
+        h.extend(exports.c, o.c);
+      }
+      return template[o.def].apply(template, o.def_args);
+    });
 };
+
+/**
+ * Is this already a module (as a result of acre.require) or
+ * a string path that we need to perform an acre.require?
+ */
+function is_module(module) {
+  return typeof module !== "string";
+};
+

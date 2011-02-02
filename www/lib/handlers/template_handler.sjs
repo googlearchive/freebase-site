@@ -113,7 +113,7 @@ function handler() {
     var result = h.extend({template:module}, module.c);
     var d = controller.render(result, module)
       .then(function(render_result) {
-        module.body = acre.markup.bless(acre.markup.stringify(render_result));
+        module.body = acre.markup.stringify(render_result);
       });
     acre.async.wait_on_results();
     d.cleanup();

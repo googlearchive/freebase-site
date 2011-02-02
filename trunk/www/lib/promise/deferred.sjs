@@ -245,7 +245,7 @@ var RequestCanceled, RequestTimeout;
   //   is fulfilled when all of those promises have been fulfilled
   // Each returned result will be either the result, or an Error on
   //   failure. Errbacks of "all" will never be called.
-  all = function(promises) {
+  all = function(promises, throw_errors) {
     var deferred = new Deferred();
 
     var fulfilled = 0;
@@ -275,9 +275,23 @@ var RequestCanceled, RequestTimeout;
     for (var key in promises) {
       if (promises.hasOwnProperty(key)) {
         var hp = handle_promise(key);
-        when(promises[key], hp, hp);
+        when(promises[key], hp, function(e) {
+          if (throw_errors) {
+            return deferred.reject(e);
+          }
+          return hp(e);
+        });
       }
     }
+
+    deferred.promise.cleanup = function() {
+      for (var key in promises) {
+        var promise = promises[key];
+        if (promises.hasOwnProperty(key) && is_promise(promise)) {
+          promise.cleanup();
+        }
+      }
+    };
 
     return deferred.promise;
   };

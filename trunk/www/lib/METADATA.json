@@ -12,8 +12,9 @@
     "js_manifest": "handlers/js_manifest_handler.sjs",
     "tagged_static": "handlers/tagged_static_handler.sjs",
     "tagged_binary": "handlers/tagged_binary_handler.sjs", 
+    "template": "handlers/template_handler.sjs",
+    "controller": "handlers/controller_handler.sjs",
     "ajax": "handlers/ajax_handler.sjs",
-    "template": "handlers/template_handler.sjs"
   },
   "extensions": {
     "css": {
@@ -31,11 +32,14 @@
       "handler": "js_manifest",
       "media_type": "application/x-javascript"
     },
-    "ajax": {
-      "handler": "ajax"
-    },
     "template": {
       "handler": "template"
+    },
+    "controller": {
+      "handler": "controller"
+    },
+    "ajax": {
+      "handler": "ajax"
     },
     "omf.js": {
       "media_type": "text/javascript", 

@@ -61,7 +61,7 @@ function render(service_result, spec, scope) {
   // render options
   var o = {};
 
-  // get render options (keywords) and remove for result dictionary
+  // get render options (keywords) and remove from result dictionary
   ["template", "template_base", "def", "def_args"].forEach(function(reserved_key) {
     if (reserved_key in result) {
       o[reserved_key] = result[reserved_key];
@@ -73,17 +73,17 @@ function render(service_result, spec, scope) {
   // is there a service SPEC?
   spec = spec || {};
   o.template = o.template || spec.template;
-  o.template_base = o.template_base || spec.template_base || "template/freebase.mjt";
+  o.template_base = o.template_base || spec.template_base;
 
   // template needs to be defined
   if (!o.template) {
     throw "template needs to be defined";
   }
 
-  return deferred.all(o.c || {}, true)
+  return deferred.all(o.c || {}, true)  // resolve all promises in c
     .then(function(c) {
       o.c = c;
-      return deferred.all(o.def_args || [], true);
+      return deferred.all(o.def_args || [], true); // resolve all promises in def_args
     })
     .then(function(def_args) {
       o.def_args = def_args;
@@ -92,12 +92,18 @@ function render(service_result, spec, scope) {
       var template;
       var exports;
       if (o.def) {
-        template = is_module(o.template) ? o.template : acre.require(scope.acre.resolve(o.template));
+        template = is_module(o.template) ? o.template : scope.acre.require(o.template);
         exports = template;
       }
       else {
-        template = is_module(o.template_base) ? o.template_base : acre.require(acre.resolve(o.template_base));
-        exports = is_module(o.template) ? o.template : acre.require(scope.acre.resolve(o.template));
+        if (o.template_base) {
+          template = is_module(o.template_base) ? o.template_base : scope.acre.require(o.template_base);
+        }
+        else {
+          // default to template/freebase.mjt
+          template = acre.require("template/freebase.mjt");
+        }
+        exports = is_module(o.template) ? o.template : scope.acre.require(o.template);
         o.def = "page";
         o.def_args = [exports];
       }

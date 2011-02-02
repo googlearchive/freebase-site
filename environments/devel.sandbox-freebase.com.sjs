@@ -40,6 +40,9 @@ var rules = {
     {prefix:"/labs/parallax",      app:"//parallax"},
     {prefix:"/labs",               app:"//labs"},
     {prefix:"/sample",             app:"//sample" + codebase},
+    {prefix:"/topic",              app:"//topic" + codebase},
+    {prefix:"/topic/view",         url:"/topic",   redirect: 301},
+    {prefix:"/topic/inspect",      url:"/inspect", redirect: 301},
 
     // Urls for exposed ajax libraries and static resources
     // TODO: remove this and use ajax router

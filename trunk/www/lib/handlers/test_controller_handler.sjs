@@ -55,6 +55,7 @@ acre.require("handlers/mock_handler.sjs").playback(this, controller_handler, {
   }
 }, "handlers/playback_test_controller_handler.json");
 
+var self = this;
 
 test("render", function() {
   var result;
@@ -65,7 +66,7 @@ test("render", function() {
     topic2: "Bob Dylan",
     template: "handlers/handle_me.mjt"
   };
-  render(service_result)
+  render(service_result, null, self)
     .then(function(render_result) {
       result = acre.markup.stringify(render_result);
     });
@@ -84,7 +85,7 @@ test("render", function() {
     ]
   };
   result = null;
-  render(service_result)
+  render(service_result, null, self)
     .then(function(render_result) {
       result = acre.markup.stringify(render_result);
     });
@@ -105,7 +106,7 @@ test("render", function() {
     template: "handlers/handle_me.mjt"
   };
   result = null;
-  render(service_result, spec)
+  render(service_result, spec, self)
     .then(function(render_result) {
       result = acre.markup.stringify(render_result);
     });

@@ -167,7 +167,7 @@ function handle_service_error(e) {
 function handle_service(module, script) {
   var spec = module.SPEC;
   if (!(spec && typeof spec === "object")) {
-    throw new ServiceError(null, null, "SPEC is undefined");
+    return deferred.rejected(new ServiceError(null, null, "SPEC is undefined"));
   }
   spec = h.extend({}, {
     method: "GET",
@@ -177,11 +177,12 @@ function handle_service(module, script) {
   }, spec);
 
   // SPEC needs to implement validate and run
-  ["validate", "run"].forEach(function(m) {
-    if (typeof spec[m] !== "function") {
-      return deferred.rejected(new ServiceError(null, null, "SPEC." + m + " is undefined"));
-    }
-  });
+  if (typeof spec.validate !== "function") {
+    return deferred.rejected(new ServiceError(null, null, "SPEC.validate is undefined"));
+  }
+  if (typeof spec.run !== "function") {
+    return deferred.rejected(new ServiceError(null, null, "SPEC.run is undefined"));
+  }
 
   var scope = script.scope;
   var req = scope.acre.request;

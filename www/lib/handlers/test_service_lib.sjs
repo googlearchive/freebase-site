@@ -153,47 +153,59 @@ var mock_script = {
 function no_op() {};
 
 test("handle_service undefined SPEC", function() {
-  expect(1);
-  try {
-    lib.handle_service({SPEC:null}, mock_script);
-  }
-  catch(e if e instanceof lib.ServiceError) {
-    ok(e, "expected ServiceError: " + e);
-  }
+  expect(3);
+  var result, error;
+  lib.handle_service(module, mock_script)
+    .then(function(r) {
+      result = r;
+    }, function(e) {
+      error = e;
+    });
+  ok(!result, "expected error");
+  ok(error, "expected error");
+  ok(error instanceof lib.ServiceError, "expected ServiceError:" + error);
 });
 
 test("handle_service undefined SPEC.validate", function() {
-  expect(1);
+  expect(3);
   var module = {
     SPEC: {
       run: no_op
     }
   };
-  try {
-    lib.handle_service(module, mock_script);
-  }
-  catch(e if e instanceof lib.ServiceError) {
-    ok(e, "expected ServiceError: " + e);
-  }
+  var result, error;
+  lib.handle_service(module, mock_script)
+    .then(function(r) {
+      result = r;
+    }, function(e) {
+      error = e;
+    });
+  ok(!result, "expected error");
+  ok(error, "expected error");
+  ok(error instanceof lib.ServiceError, "expected ServiceError:" + error);
 });
 
 test("handle_service undefined SPEC.run", function() {
-  expect(1);
+  expect(3);
   var module = {
     SPEC: {
       validate: no_op
     }
   };
-  try {
-    lib.handle_service(module, mock_script);
-  }
-  catch(e if e instanceof lib.ServiceError) {
-    ok(e, "expected ServiceError: " + e);
-  }
+  var result, error;
+  lib.handle_service(module, mock_script)
+    .then(function(r) {
+      result = r;
+    }, function(e) {
+      error = e;
+    });
+  ok(!result, "expected error");
+  ok(error, "expected error");
+  ok(error instanceof lib.ServiceError, "expected ServiceError:" + error);
 });
 
 test("handle_service method", function() {
-  expect(2);
+  expect(8);
 
   var orig_method = acre.request.method;
   var module = {
@@ -203,20 +215,34 @@ test("handle_service method", function() {
       run: no_op
     }
   };
-  try {
-    lib.handle_service(module, mock_script);
-  }
-  catch(e if e instanceof lib.ServiceError) {
-    ok(e && e.status === "405 Method Not Allowed", "expected 405");
-  }
+  var result, error;
+  lib.handle_service(module, mock_script)
+    .then(function(r) {
+      result = r;
+    }, function(e) {
+      error = e;
+    });
+  ok(!result, "expected error");
+  ok(error, "expected error");
+  ok(error instanceof lib.ServiceError, "expected ServiceError:" + error);
+  equal(error.status, "405 Method Not Allowed", "expected status: 405 Method Not Allowed");
+
 
   // fake a POST w/o x-requested-with
+  result = null;
+  error = null;
   try {
     acre.request.method = "POST";
-    lib.handle_service(module, mock_script);
-  }
-  catch(e if e instanceof lib.ServiceError) {
-    ok(e && e.status === "400 Bad Request", "expected 400");
+    lib.handle_service(module, mock_script)
+      .then(function(r) {
+        result = r;
+      }, function(e) {
+        error = e;
+      });
+    ok(!result, "expected error");
+    ok(error, "expected error");
+    ok(error instanceof lib.ServiceError, "expected ServiceError:" + error);
+    equal(error.status, "400 Bad Request", "expected status: 400 Bad Request");
   }
   finally {
     acre.request.method = orig_method;
@@ -225,7 +251,6 @@ test("handle_service method", function() {
 
 
 test("handle_service auth", function() {
-  expect(1);
   var user = acre.freebase.get_user_info();
   var module = {
     SPEC: {
@@ -235,21 +260,35 @@ test("handle_service auth", function() {
     }
   };
   if (user) {
-    lib.handle_service(module, mock_script);
-    ok(true, "auth check succeeded");
+    expect(2);
+    var result, error;
+    lib.handle_service(module, mock_script)
+      .then(function(r) {
+        result = r;
+      }, function(e) {
+        error = e;
+      });
+    ok(result, "auth check succeeded");
+    ok(!error, "no errors");
   }
   else {
-    try {
-      lib.handle_service(module, mock_script);
-    }
-    catch(e if e instanceof lib.ServiceError) {
-      ok(e && e.status === "401 User Authorization Required", "expected 401");
-    }
+    expect(4);
+    var result, error;
+    lib.handle_service(module, mock_script)
+      .then(function(r) {
+        result = r;
+      }, function(e) {
+        error = e;
+      });
+    ok(!result, "expected error");
+    ok(error, "expected error");
+    ok(error instanceof lib.ServiceError, "expected ServiceError:" + error);
+    equal(error.status,  "401 User Authorization Required", "expected status: 401 User Authorization Required");
   }
 });
 
 test("handle_service validate", function() {
-  expect(2);
+  expect(5);
   var module = {
     SPEC: {
       validate: function(params) {
@@ -258,13 +297,19 @@ test("handle_service validate", function() {
       run: no_op
     }
   };
-  try {
-    lib.handle_service(module, mock_script);
-  }
-  catch(e if e instanceof lib.ServiceError) {
-    ok(e && e.status === "400 Bad Request", "expected 400");
-    ok(e.messages && e.messages.length && e.messages[0].code === "/api/status/error/input/validation", "expected /api/status/error/input/validation");
-  }
+  var result, error;
+  lib.handle_service(module, mock_script)
+    .then(function(r) {
+      result = r;
+    }, function(e) {
+      error = e;
+    });
+  ok(!result, "expected error");
+  ok(error, "expected error");
+  ok(error instanceof lib.ServiceError, "expected ServiceError:" + error);
+  equal(error.status,  "400 Bad Request", "expected status: 400 Bad Request");
+  ok(error.messages && error.messages.length && error.messages[0].code === "/api/status/error/input/validation",
+    "expected /api/status/error/input/validation");
 });
 
 test("handle_service run", function() {

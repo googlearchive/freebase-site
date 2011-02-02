@@ -91,7 +91,7 @@ function set_cache_policy(policy, options) {
   acre.response.headers["cache-control"] = cache_control_value;
 
   if (typeof cache_options["max-age"] === "number") {
-    var expires = new Date(acre.request.start_time.getTime() + cache_options["max-age"] * 1000);
+    var expires = new Date((new Date()).getTime() + cache_options["max-age"] * 1000);
     acre.response.headers["expires"] = expires.toUTCString();
   }
 }

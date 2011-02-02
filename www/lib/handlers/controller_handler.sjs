@@ -39,7 +39,7 @@ var handler = function() {
     to_http_response: function(module, script) {
       var d = lib.handle_service(module, script)
         .then(function(service_result) {
-          return render(service_result.result, module.SPEC);
+          return render(service_result.result, module.SPEC, script.scope);
         })
         .then(function(render_result) {
           module.body = acre.markup.stringify(render_result);
@@ -54,7 +54,7 @@ var handler = function() {
   });
 };
 
-function render(service_result, spec) {
+function render(service_result, spec, scope) {
   // make a shallow copy of the result
   var result = h.extend({}, service_result);
 
@@ -92,12 +92,12 @@ function render(service_result, spec) {
       var template;
       var exports;
       if (o.def) {
-        template = is_module(o.template) ? o.template : acre.require(acre.resolve(o.template));
+        template = is_module(o.template) ? o.template : acre.require(scope.acre.resolve(o.template));
         exports = template;
       }
       else {
         template = is_module(o.template_base) ? o.template_base : acre.require(acre.resolve(o.template_base));
-        exports = is_module(o.template) ? o.template : acre.require(acre.resolve(o.template));
+        exports = is_module(o.template) ? o.template : acre.require(scope.acre.resolve(o.template));
         o.def = "page";
         o.def_args = [exports];
       }

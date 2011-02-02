@@ -80,10 +80,13 @@ function render(service_result, spec) {
     throw "template needs to be defined";
   }
 
-  return deferred.all(o.def_args || [], true)
+  return deferred.all(o.c || {}, true)
+    .then(function(c) {
+      o.c = c;
+      return deferred.all(o.def_args || [], true);
+    })
     .then(function(def_args) {
       o.def_args = def_args;
-      return o;
     })
     .then(function() {
       var template;
@@ -93,7 +96,6 @@ function render(service_result, spec) {
         exports = template;
       }
       else {
-
         template = is_module(o.template_base) ? o.template_base : acre.require(acre.resolve(o.template_base));
         exports = is_module(o.template) ? o.template : acre.require(acre.resolve(o.template));
         o.def = "page";

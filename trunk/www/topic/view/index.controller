@@ -30,6 +30,7 @@
  */
 
 var validators = acre.require("lib/validator/validators.sjs");
+var queries = acre.require("queries.sjs");
 
 var SPEC = {
 
@@ -55,7 +56,7 @@ var SPEC = {
   run: function(id) {
     console.log("run", id);
     return {
-      id: id
+      topic_meta: queries.topic_meta(id)
     };
   }
 

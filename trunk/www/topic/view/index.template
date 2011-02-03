@@ -21,7 +21,7 @@
         </li>  
         <li if="c.domain" class="breadcrumb-item last">
           <span class="breadcrumb-item-inner">
-            <a href="#">${_("Topic Name")}</a>
+            <a href="#" onclick="return false;">${c.topic_meta.name}</a>
           </span>
         </li>
       </ol>
@@ -32,38 +32,37 @@
 <acre:block def="content_body()">
 <div class="page-meta">
   <h1>
-    ${_("Topic Name")}
+    ${c.topic_meta.name}
   </h1>
   <div class="meta">   
     <!-- Show topic MID -->
     <span class="key">
-      <strong><abbr title="${_('Machine ID')}">${_("mid")}</abbr></strong>: ${_("/m/foobar")}
+      <strong><abbr title="${_('Machine ID')}">${_("mid")}</abbr></strong>: ${c.topic_meta.mid}
     </span>
     <!-- Show top-ranked notable type -->
-    <span class="key">
-      <strong>notable type</strong>: <a href="">${_("/domain/type_id")}</a>
+    <span acre:if="c.topic_meta.notable_type" class="key">
+      <strong>${_('notable type')}</strong>: <a href="${h.fb_url('/schema', c.topic_meta.notable_type)}">${c.topic_meta.notable_type}</a>
     </span>
-    <!-- If topic is a person, show notable_for-->
-    <!--<span class="key">-->
-      <!--<strong>notable for</strong>: <a href="">${_("/domain/type_id")}</a>-->
-    <!--</span>-->
-  </div>
+    <span acre:elif="c.topic_meta.notable_for" class="key">
+      <strong>${_('notable for')}</strong>: <a href="${h.fb_url('/topic', c.topic_meta.notable_for)}">${c.topic_meta.notable_for}</a>
+    </span>
+ </div>
 
   <div class="admin-toolbox">
     <span class="creation-timestamp">
-      <span class="user-image">
-        <a href="http://www.sandbox-freebase.com/view/user/domain_administrator" title="/user/domain_administrator">
-          <img src="http://api.sandbox-freebase.com/api/trans/image_thumb?errorid=/freebase/user_profile/empty_user_image&amp;amp;id=/user/domain_administrator&amp;amp;maxheight=30&amp;amp;maxwidth=30&amp;amp;mode=fillcrop&amp;amp;pad=1" width="30" height="30" alt="/user/domain_administrator">
-        </a>
-      </span>
-      ${_("Created by")} <a href="#" title="${_('View user profile')}">${_('User Display Name')}</a> 
-      on <time class="published" datetime="ISO 8601 Format">December 21, 2007</time>
+      ${image.user_image_small(c.topic_meta.creator)}
+      ${_("Created by")} <a href="${h.legacy_fb_url('/view', c.topic_meta.creator.id)}" title="${_('View user profile')}">${c.topic_meta.creator.name}</a> 
+      on <time class="published" datetime="${c.topic_meta.timestamp}">${i18n.format_timestamp(c.topic_meta.timestamp)}</time>
     </span>
   </div>
-  <div id="description"> 
+  <acre:script>
+    var blurb = c.topic_meta.blurb;
+    var blob = c.topic_meta.blob;
+  </acre:script>
+  <div id="description" acre:if="blurb && blob"> 
     <!-- blurb should be sentence-level truncation at ~50 words -->
-    <p class="blurb">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-    <div class="blob"></div>
+    <p class="blurb">${blurb}</p>
+    <div class="blob">${blob}</div>
     <a href="javascript:void(0);" class="blurb-trigger">${_('more')}</a>
   </div>
   <div class="nav clear">
@@ -75,13 +74,13 @@
     </ul>
     <ul class="nav-utilities">
       <li>
-        <a href="#" class="icon-link">
+        <a href="${h.wiki_url('discuss', c.topic_meta.mid)}" class="icon-link">
           <span class="browse-icon">${_('Discuss Topic')}</span>
         </a>
       </li>
       <li>
-      <a href="#" class="icon-link">
-        <span class="flag-icon">${_('Flag Topic')}</span>
+        <a href="${h.wiki_url('discuss', c.topic_meta.mid)}" class="icon-link">
+          <span class="flag-icon">${_('Flag Topic')}</span>
         </a>
       </li>
     </ul>

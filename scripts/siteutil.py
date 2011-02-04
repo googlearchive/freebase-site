@@ -1248,11 +1248,20 @@ class Acre:
         self._acre_dir = context.options.acre_dir
 
 
-  def build(self):
+  def build(self, target = None, use_freebase_site_config = False):
 
     c = self.context
-    os.chdir(c.options.acre_dir)
-    cmd = ['./acre', 'build']
+    c.log('Building acre under %s' % self._acre_dir)
+    os.chdir(self._acre_dir)
+
+    config_dir = None
+    if use_freebase_site_config:
+        config_dir = os.path.join(self._acre_dir, 'webapp/WEB-INF/scripts/googlecode/freebase-site/svn/appengine-config')
+
+    cmd = ['./acre', 'appengine-build']
+    if target and config_dir and os.path.isdir(config_dir):
+        cmd = ['./acre', '-c', target, '-d', config_dir, 'appengine-build']
+
     return c.run_cmd(cmd)
       
 

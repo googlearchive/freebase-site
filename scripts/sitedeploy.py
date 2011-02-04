@@ -74,7 +74,7 @@ class ActionSetupAcre:
   def __init__(self, context):
     self.context = context
 
-  def __call__(self):
+  def __call__(self, build=True):
     c = self.context
 
     if not c.options.acre_dir:
@@ -143,25 +143,19 @@ class ActionSetupAcre:
     c.log('Done modifying configuration.')
 
     # BUILD #
-    c.log('Starting acre build.')
-    os.chdir(c.options.acre_dir)
-
-    cmd = ['./acre', 'build']
-    (r, result) = c.run_cmd(cmd)
-
-    if not r:
-      c.error('Failed to build acre. Error:')
-      return c.error(result)
+    if build:
+      r = GetAcre(c).build()
+      if not r:
+        return c.error('Failed to build acre at %s' % c.options.acre_dir)
 
     c.log('*' * 65)
     c.log('')
-    c.log('To run acre, type: cd %s; ./acre run -c local' % c.options.acre_dir)
+    c.log('To run acre, type: cd %s; ./acre appengine-run' % c.options.acre_dir)
     c.log('And then on your browser: http://acre.%s:%s/acre/status' % (c.options.acre_host, c.options.acre_port))
     c.log('')
     c.log('*' * 65)
 
     return True
-
 
 
 #checkout a site
@@ -181,8 +175,8 @@ class ActionSetupSite:
 
       path_parts = path.split('/')
 
-      full_local_path = c.options.site_dir
       full_svn_path = c.SITE_SVN_URL
+      full_local_path = self.site_checkout
 
       for i, directory in enumerate(path_parts):
 
@@ -208,18 +202,24 @@ class ActionSetupSite:
     if not c.options.site_dir:
       return c.error('You must specify a valid directory to install the site in')
 
+    if not c.options.acre_dir:
+      return c.error('You must specify an acre directory to install site in for acre on app-engine')
+
     success = c.googlecode_login()
     if not success:
       return c.error('You must provide valid google code credentials to complete this operation.')
 
+    self.site_checkout = c.options.acre_dir + '/webapp/WEB-INF/scripts/googlecode/freebase-site'
+
     try:
-      os.mkdir(c.options.site_dir)
+      os.makedirs(self.site_checkout)
+      self.site_checkout += '/svn'
     except:
-      return c.error('The directory %s already exists, or unable to create directory.' % c.options.site_dir)
+      return c.error('The directory %s already exists, or unable to create directory.' % self.site_checkout)
 
     c.log('Starting site checkout')
 
-    paths = [ '/environments', '/trunk/www', '/trunk/config', '/trunk/scripts']
+    paths = [ '/environments', '/appengine-config', '/trunk/www', '/trunk/config', '/trunk/scripts']
 
     if c.options.everything:
       c.log('Note: this will take a while, go make a coffee....')
@@ -231,12 +231,24 @@ class ActionSetupSite:
     if not r:
       return False
 
+    r = c.symlink(self.site_checkout, c.options.site_dir)
+
     c.log('Site checkout done')
+
+    r = GetAcre(c).build(target='acre', use_freebase_site_config=True)
+    if not r:
+      return c.error('Failed to build acre under %s' % c.options.acre_dir)
+
     return True
 
 
 #sync the local repository and create symlinks between acre <-> site 
 class ActionLink:
+  '''
+  Connect an acre directory and a freebase-site directory
+  This assumes freebase-site is checked-out OUTSIDE of acre and
+  then creates appropriate symlinks IN acre TO freebase-site. 
+  '''
 
   def __init__(self, context):
     self.context = context
@@ -290,74 +302,6 @@ class ActionLink:
 
     GetAcre(c).build()
     return True
-
-
-#sync the local repository and create symlinks between acre <-> site
-class ActionSync:
-
-  def __init__(self, context):
-    self.context = context
-
-  def __call__(self):
-
-    c = self.context
-
-    success = c.googlecode_login()
-    if not success:
-      return c.error('You must provide valid google code credentials to complete this operation.')
-
-
-    if not (c.options.site_dir and c.options.acre_dir):
-      return c.error('You must specify both the directory where you have set-up acre and freebase site for sync to work')
-
-    ACRE_DIR = c.options.acre_dir + '/webapp'
-    SITE_TRUNK_DIR = c.options.site_dir + '/trunk/www'
-    SITE_BRANCH_DIR = c.options.site_dir + '/branches/www'
-
-    if not os.path.islink(ACRE_DIR + '/WEB-INF/scripts/googlecode/freebase-site/svn'):
-      return c.error('You must first link this acre and site installations using sitedeploy.py link')
-
-    if not os.path.isdir(SITE_BRANCH_DIR):
-      c.log('Cannot sync site branches because they are not checked out.', color=c.BLUE)
-      c.log('To checkout site branches, run this:', color=c.BLUE)
-      c.log('svn checkout %s/branches %s/branches' % (c.SITE_SVN_URL, c.options.site_dir), color=c.BLUE)
-      return True
-
-    #svn update site
-
-    svn = SVNLocation(c, local_dir=c.options.site_dir)
-
-    (r, result) = svn.update()
-
-    if not r:
-      c.error('Something went wrong with the update')
-      return c.error(result)
-
-    '''
-    #link the individual branches of each app to the trunk directory of that app
-    #this will result in this structure in the disk in the end:
-    #<ACRE_DIR>/webapp/WEB-INF/scripts/googlecode/freebase-site/svn --> <SITE_DIR>
-    #   <SITE_DIR>/trunk/www/<app>/<version> ---> <SITE_DIR>/branches/site/<app>/<version>
-
-    #inject appengine_sdk_dir into acre start file
-
-    for app_key in os.listdir(SITE_BRANCH_DIR):
-
-      if not (os.path.isdir(SITE_BRANCH_DIR + '/' + app_key) and os.path.isdir(SITE_TRUNK_DIR + '/' + app_key)):
-        continue
-
-      for version in os.listdir(SITE_BRANCH_DIR + '/' + app_key):
-        try:
-          int(version)
-        except:
-          continue
-
-        c.symlink(c.options.site_dir + '/branches/www/' + app_key + '/' + version, c.options.site_dir + '/trunk/www/' + app_key + '/' + version)
-
-
-    '''
-    return True
-
 
 
 class ActionStatic:
@@ -427,7 +371,7 @@ class ActionSetup:
     if not (c.options.site_dir and c.options.acre_dir):
       self.get_directory_locations()
 
-    r = ActionSetupAcre(c)()
+    r = ActionSetupAcre(c)(build=False)
 
     if not r:
       return c.error('Acre setup failed.')
@@ -437,13 +381,12 @@ class ActionSetup:
     if not r:
       return c.error('Site setup failed.')
 
-    r = ActionLink(c)()
-
-    if not r:
-      return c.error('Link failed.')
+    #r = ActionLink(c)()
+    #if not r:
+    #  return c.error('Link failed.')
 
     c.log('In order to run the freebase site:', color=c.BLUE)
-    c.log('\t1. Run the acre server: \n cd %s; ./acre run' % c.options.acre_dir)
+    c.log('\t1. Run the acre server: \n cd %s; ./acre appengine-run' % c.options.acre_dir)
     c.log('\t2. Visit http://devel.sandbox-freebase.com:%s' % c.options.acre_port)
 
 
@@ -561,8 +504,10 @@ class ActionTest:
 
   def __call__(self):
     c = self.context
-    acre = GetAcre(c)
-    return acre.is_running()
+    r = GetAcre(c).build(target='acre', use_freebase_site_config=True)
+    if not r:
+      return c.error('Failed to build acre under %s' % c.options.acre_dir)
+
   
 
 class ActionCreateAppBranch():
@@ -813,17 +758,15 @@ def main():
   valid_actions = [
       ('setup_acre', 'create a local acre instance', ActionSetupAcre),
       ('setup_site', 'create a local site instance', ActionSetupSite),
-      #('setup_appengine', 'create a local appendine instance of acre/site', ActionSetupAppengine),
-      #('sync', 'connect acre and site so that acre will read all branches from the filesystem', ActionSync),
-      ('link', 'connect acre and site so that acre will read site trunk apps from the filesystem', ActionLink),
-      ('setup', 'setup acre, site and link', ActionSetup),
+      ('link', '\tDEPRECATED: connect acre and site so that acre will read site trunk apps from the filesystem', ActionLink),
+      ('setup', '\tsetup acre and freebase-site and link them', ActionSetup),
       ('setup_dns', 'setup wildcard dns for your host - Mac OS X only', ActionSetupDNS),
       ('info', 'provide information on all apps or a specific app', ActionInfo),
       ('create_branch', 'creates a branch of your app', ActionCreateAppBranch),
       ('create_tag', 'creates a tag of your app', ActionCreateAppTag),
       ('create_static', 'creates a static bundle and writes it to the provided tag', ActionStatic),
 
-      ('test', 'test', ActionTest)
+      ('test', '\ttest', ActionTest)
       ]
 
 

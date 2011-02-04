@@ -7,7 +7,7 @@
 </acre:script>
 
 <acre:block def="head()">
-  <link rel="stylesheet" type="text/css" href="topic.less" />
+  <link rel="stylesheet" type="text/css" href="topic.mf.css" />
 </acre:block>
 
 <acre:block def="nav_utilities()">

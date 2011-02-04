@@ -52,7 +52,7 @@
   <link rel="stylesheet" type="text/css" href="article.mf.css" />
 </acre:block>
 
-<acre:block def="content_header()">
+<acre:block def="breadcrumb()">
   <div class="page-header">
     <div class="breadcrumb clear">
       <ol>

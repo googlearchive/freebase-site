@@ -41,22 +41,22 @@ function onLoad() {
     if ($.cookie("cc_cp") == "0") {
       $("#the-control-pane")[0].style.display = "none";
     }
-  
+
     resizePanes();
-    
+
     var params = CueCard.parseURLParameters();
-        
+
     var outputPaneOptions = {};
     var controlPaneOptions = {
         extended: 0 // Don't make this sticky: $.cookie("cc_cp_extended") == "1" ? 1 : 0
     };
-    
+
     queryEditorOptions = {
         focusOnReady: true,
         onUnauthorizedMqlWrite: function() {
             if (window.confirm("Query editor needs to be authorized to write data on your behalf. Proceed to authorization?")) {
                 saveQueryInWindow();
-                
+
                 var url = document.location.href;
                 var hash = url.indexOf("#");
                 if (hash > 0) {
@@ -67,36 +67,36 @@ function onLoad() {
                         url = url.substr(0, question);
                     }
                 }
-                
+
                 var url2 = "/signin/login?mw_cookie_scope=domain&onsignin=" + encodeURIComponent(url);
-                
+
                 document.location = url2;
             }
         },
         emql: "emql" in params && params["emql"] == "1",
         service: "service" in params ? params["service"] : null
     };
-    
+
     if ("debug" in params) {
         queryEditorOptions.debug = params.debug;
     }
-    
+
     if ("q" in params || "query" in params) {
         var s = "q" in params ? params.q : params.query;
         try {
             var o = JSON.parse(s);
             if ("query" in o) {
                 s = JSON.stringify(o.query);
-                
+
                 delete o.query;
                 controlPaneOptions["env"] = o;
             }
         } catch (e) {
         }
-        
+
         queryEditorOptions.content = s;
         queryEditorOptions.cleanUp = true;
-        
+
         if ("extended" in params) {
             controlPaneOptions["extended"] = params["extended"] == "1" ? 1 : 0;
         }
@@ -122,7 +122,7 @@ function onLoad() {
             }
         }
     }
-    
+
     c = CueCard.createComposition({
         queryEditorElement: $('#the-query-editor')[0],
         queryEditorOptions: queryEditorOptions,
@@ -131,13 +131,13 @@ function onLoad() {
         controlPaneElement: $('#the-control-pane')[0],
         controlPaneOptions: controlPaneOptions
     });
-    
+
     $("#the-splitter").click(onToggleControlPane);
-    
+
     $(window).bind("beforeunload", function(evt) {
         saveQueryInWindow();
     });
-    
+
     if ("autorun" in params) {
     	queryEditorOptions.onReady = function() {
       c.queryEditor.run(false);
@@ -149,14 +149,14 @@ function resizePanes() {
     var spacing = 10;
     var controlPaneHeight = 250;
     var splitterHeight = 12;
-    
+
     var width = $("#content-main").width();
     var halfWidth = Math.round((width - spacing) / 2);
-    var height = $(window).height() - $("#page-header").outerHeight(true) 
-                 - $(".page-header").outerHeight(true) - $("#page-footer").outerHeight(true);
-    
-    $("#qe-container").height(height - 30); // top margin on #page-footer
-        
+    var height = $(window).height() - $("#header").outerHeight(true)
+                 - $(".page-header").outerHeight(true) - $("#footer").outerHeight(true);
+
+    $("#qe-container").height(height - 30); // top margin on #footer
+
     var innerHeight = height - 20; // bottom margin on query editor
     if ($("#the-control-pane")[0].style.display == "block") {
         var queryEditorHeight = innerHeight - splitterHeight - controlPaneHeight - 2 * spacing;
@@ -176,7 +176,7 @@ function resizePanes() {
 
 function onResize() {
     resizePanes();
-    
+
     c.queryEditor.layout();
     c.controlPane.layout();
     c.outputPane.layout();
@@ -185,9 +185,9 @@ function onResize() {
 function onToggleControlPane() {
     var cp = $("#the-control-pane")[0];
     cp.style.display = cp.style.display == "block" ? "none" : "block";
-    
+
     onResize();
-    
+
     $.cookie("cc_cp", $("#the-control-pane")[0].style.display == "none" ? "0" : "1", { expires: 365 });
 }
 
@@ -205,13 +205,13 @@ function computeMqlReadLink(a) {
 
 function getUrlFlags() {
     var params = [];
-    
+
     var env = c.controlPane.getQueryEnvelope({}, true);
     for (var n in env) {
         params.push("env=" + JSON.stringify(env));
         break;
     }
-    
+
     if (queryEditorOptions.emql) {
         params.push("emql=1");
     }
@@ -221,7 +221,7 @@ function getUrlFlags() {
     if (queryEditorOptions.service != null) {
         params.push("service=" + encodeURIComponent(queryEditorOptions.service));
     }
-    
+
     return params.length == 0 ? "" : ("&" + params.join("&"));
 }
 
@@ -232,7 +232,7 @@ function saveQueryInWindow() {
             e: c.controlPane.getQueryEnvelope({}, true)
         },
         {
-            breakLines: false 
+            breakLines: false
         }
     );
 }
@@ -243,7 +243,7 @@ function computeTinyCompactLink() {
   var cont = CueCard.UI.createBlockingContinuations(function(cont, o) {
     window.prompt("Tiny URL to copy", o);
   });
-  
+
   $.post(url, {}, cont.onDone, "json");
 }
 

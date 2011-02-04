@@ -49,7 +49,12 @@
   Query Editor
 </acre:block>
 
-<acre:block def="content_header()">
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="lib/editor-bundle.mf.css" />
+  <link rel="stylesheet" type="text/css" href="queryeditor.mf.css" />
+</acre:block>
+
+<acre:block def="breadcrumb()">
   <div id="links">
     <a href="javascript:refreshCache()">${_("refresh cache")}</a> &bull;
     <a href="javascript:{}" onmouseover="computeMqlReadLink(this);" target="_blank">${_("mqlread")}</a> &bull;
@@ -69,10 +74,7 @@
   </div>
 </acre:block>
 
-<acre:block def="head()">
-  <link rel="stylesheet" type="text/css" href="lib/editor-bundle.mf.css" />
-  <link rel="stylesheet" type="text/css" href="queryeditor.mf.css" />
-</acre:block>
+
 
 <acre:block def="content_body()">
   <div id="content-main" role="main">	
@@ -93,9 +95,12 @@
     window.SERVER.acre.ajax_base = ${JSON.stringify(ajax_base)};
   </script>
 	<script src="queryeditor.mf.js"></script>
+
+<!!--
   <acre:block if="acre.environ.request_method == 'POST'">
     <script>var initialQuery = ${JSON.stringify(acre.environ.body_params['q'])};</script>
   </acre:block>
+!!-->
 </acre:block>
 
 ${acre.require("lib/template/renderer").render_page(null, this.exports)}

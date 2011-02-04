@@ -1,0 +1,153 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<!!--
+  This is the base template for any object (with an ID) in freebase
+  Uses template/freebase.mjt for chrome
+!!-->
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("helper/helpers.sjs");
+  var i18n = acre.require("i18n/i18n");
+  var _ = i18n.gettext;
+  var image = acre.require("template/imagecomponents");  
+
+  var base = acre.require("template/freebase.mjt");
+  var this_exports = this.exports;
+  var that_exports;
+</acre:script>
+
+<acre:block def="page(exports)">
+  <acre:script>
+    that_exports = exports;
+  </acre:script>
+  ${base.page(this_exports)}
+</acre:block>
+
+<acre:block def="freebase_css()">
+  <link rel="stylesheet" type="text/css" href="template/freebase_object.mf.css" />
+</acre:block>
+
+<acre:block def="head()">
+  <acre:block if="that_exports.head">
+    ${that_exports.head()}
+  </acre:block>
+</acre:block>
+
+<acre:block def="breadcrumb()">
+  <acre:block if="that_exports.breadcrumb">
+    ${that_exports.breadcrumb()}
+  </acre:block>
+  <acre:block else="">
+    <div class="page-header clear">
+      <div class="breadcrumb clear">
+        <ol>
+          <li class="breadcrumb-item">
+            <span class="breadcrumb-item-inner">
+              <a href="${h.fb_url('/home')}">${_("Home")}</a>
+            </span>
+          </li>  
+          <acre:block if="c.object">
+            <li class="breadcrumb-item">
+              <span class="breadcrumb-item-inner">
+                <a href="#" onclick="return false">${c.object.name}</a>
+              </span>
+            </li>
+          </acre:block>
+        </ol>
+      </div>
+    </div>
+  </acre:block>
+</acre:block>
+
+<acre:block def="content_body()">
+  <div id="page-header">
+    <div class="page-meta">
+      <!!--
+         topic meta information @see queries/topic
+      !!-->
+      <acre:block if="c.object">
+        <h1>
+          ${c.object.name}
+        </h1>
+        <div class="meta">   
+          <!-- Show topic MID -->
+          <span class="key">
+            <strong><abbr title="${_('Machine ID')}">${_("mid")}</abbr></strong>: ${c.object.mid}
+          </span>
+          <!-- Show top-ranked notable type -->
+          <span acre:if="c.object.notable_type" class="key">
+            <strong>${_('notable type')}</strong>: <a href="${h.fb_url('/schema', c.object.notable_type)}">${c.object.notable_type}</a>
+          </span>
+          <span acre:elif="c.object.notable_for" class="key">
+            <strong>${_('notable for')}</strong>: <a href="${h.fb_url('/topic', c.object.notable_for)}">${c.object.notable_for}</a>
+          </span>
+        </div>    
+        <div class="admin-toolbox">
+          <span class="creation-timestamp">
+            ${image.user_image_small(c.object.creator)}
+            ${_("Created by")} <a href="${h.legacy_fb_url('/view', c.object.creator.id)}" title="${_('View user profile')}">${c.object.creator.name}</a> 
+            on <time class="published" datetime="${c.object.timestamp}">${i18n.format_timestamp(c.object.timestamp)}</time>
+          </span>
+        </div>
+        <acre:script>
+          var blurb = c.object.blurb;
+          var blob = c.object.blob;
+        </acre:script>
+        <div id="description" acre:if="blurb && blob"> 
+          <!-- blurb should be sentence-level truncation at ~50 words -->
+          <p class="blurb">${blurb}</p>
+          <div class="blob">${blob}</div>
+          <a href="javascript:void(0);" class="blurb-trigger">${_('more')}</a>
+        </div>
+        <div class="nav clear">
+          <ul acre:if="that_exports.nav_tabs" class="tab-nav">
+            ${that_exports.nav_tabs()}
+          </ul>
+          <ul acre:if="that_exports.nav_utilities" class="nav-utilities">
+            ${that_exports.nav_utilities()}
+          </ul>
+        </div>
+      </acre:block>
+    </div>
+  </div>
+  <div id="page-content">
+    <acre:block if="that_exports.page_content">
+      ${that_exports.page_content()}
+    </acre:block>
+  </div>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <acre:block if="that_exports.footer_script">
+    ${that_exports.footer_script()}
+  </acre:block>
+</acre:block>

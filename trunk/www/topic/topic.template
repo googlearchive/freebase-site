@@ -10,13 +10,6 @@
   <link rel="stylesheet" type="text/css" href="topic.less" />
 </acre:block>
 
-<acre:block def="nav_tabs()">
-  <li><a href="#" class="current"><span>${_('View')}</span></a></li>
-  <li><a href="#"><span>${_('Inspect')}</span></a></li>
-  <li><a href="#"><span>${_('History')}</span></a></li>
-  <li><a href="#"><span>${_('On the Web')}</span></a></li>
-</acre:block>
-
 <acre:block def="nav_utilities()">
   <acre:block if="c.object">
     <li>

@@ -36,9 +36,10 @@
 <acre:script>
   var c = this.exports.c = {};
   var h = acre.require("helper/helpers.sjs");
-  var i18n = acre.require("i18n/i18n");
+  var i18n = acre.require("i18n/i18n.sjs");
   var _ = i18n.gettext;
-  var image = acre.require("template/imagecomponents");  
+  var image = acre.require("template/imagecomponents.mjt");  
+  var components = acre.require("template/components.mjt");
 
   var base = acre.require("template/freebase.mjt");
   var this_exports = this.exports;
@@ -129,8 +130,11 @@
           <a href="javascript:void(0);" class="blurb-trigger">${_('more')}</a>
         </div>
         <div class="nav clear">
-          <ul acre:if="that_exports.nav_tabs" class="tab-nav">
-            ${that_exports.nav_tabs()}
+          <ul class="tab-nav">
+            ${components.nav_tabs(c.object)}
+            <acre:block if="that_exports.nav_tabs">
+              ${that_exports.nav_tabs()}
+            </acre:block>
           </ul>
           <ul acre:if="that_exports.nav_utilities" class="nav-utilities">
             ${that_exports.nav_utilities()}

@@ -82,5 +82,8 @@ function route(script, path) {
   if (query_string) {
     script += ("?" + query_string);
   }
-  acre.route(script);
+  if (script) {
+    acre.route(script);
+    return;
+  }
 };

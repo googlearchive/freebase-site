@@ -103,6 +103,9 @@ function render(service_result, spec, scope) {
           // default to template/freebase.mjt
           template = acre.require("template/freebase.mjt");
         }
+        if (template.c && typeof template.c === "object") {
+          h.extend(template.c, o.c);
+        }
         exports = is_module(o.template) ? o.template : scope.acre.require(o.template);
         o.def = "page";
         o.def_args = [exports];
@@ -110,6 +113,7 @@ function render(service_result, spec, scope) {
       if (exports.c && typeof exports.c === "object") {
         h.extend(exports.c, o.c);
       }
+
       return template[o.def].apply(template, o.def_args);
     });
 };

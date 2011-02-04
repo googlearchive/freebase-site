@@ -36,28 +36,6 @@ acre.require("lib/test/mock").playback(this, "playback_test_queries.json");
 var q = acre.require("queries");
 var h = acre.require("lib/helper/helpers.sjs");
 
-["/en/jack_kerouac", "/guid/9202a8c04000641f80000000059587ef"].forEach(function(id) {
-  test("topic " + id, function() {
-    var result;
-    q.topic(id)
-      .then(function(topic) {
-         result = topic;
-      });
-    acre.async.wait_on_results();
-    ok(result);
-  });
-});
-
-test("topic as_of_time", function() {
-  var result;
-  q.topic("/en/lady_gaga", {as_of_time:"2008"})
-    .then(function(topic) {
-       result = topic;
-    });
-  acre.async.wait_on_results();
-  ok(!result);
-});
-
 test("prop_counts", function() {
   var result;
   q.prop_counts("/en/united_states")

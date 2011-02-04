@@ -28,26 +28,48 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+var validators = acre.require("lib/validator/validators.sjs");
+var object_query = acre.require("lib/queries/object.sjs").object;
 var queries = acre.require("queries");
 var f = acre.require("filters");
 var h = acre.require("lib/helper/helpers.sjs");
-var datejs = acre.require("lib/libraries/date").Date;
 
-var id = acre.request.params.id || acre.request.path_info;
+var SPEC = {
 
-var filters = f.get_filters(id, acre.request.params);
+  method: "GET",
 
-var data = h.extend({
-  id: id,
-  topic: queries.topic(id, filters),
-  prop_counts: queries.prop_counts(id, filters),
-  names_aliases: queries.names_aliases(id, filters),
-  keys: queries.keys(id, filters),
-  outgoing: queries.outgoing(id, filters),
-  incoming: queries.incoming(id, filters),
-  typelinks: queries.typelinks(id, filters),
-  attribution_links: queries.attribution_links(id, filters),
-  filters: filters
-});
+  auth: false,
 
-acre.require("lib/template/renderer").render_page(data, acre.require("index_template"));
+  cache_policy: "public",
+
+  template: "triples.template",
+
+  template_base: "lib/template/freebase_object.mjt",
+
+  validate: function(params) {
+    var id = validators.MqlId(acre.request.path_info, {required:true});
+    return [
+      id,
+      f.get_filters(id, params)
+    ];
+  },
+
+  run: function(id, filters) {
+    console.log("run", id, filters);
+    return {
+      object: object_query(id),
+
+      id: id,
+      prop_counts: queries.prop_counts(id, filters),
+      names_aliases: queries.names_aliases(id, filters),
+      keys: queries.keys(id, filters),
+      outgoing: queries.outgoing(id, filters),
+      incoming: queries.incoming(id, filters),
+      typelinks: queries.typelinks(id, filters),
+      attribution_links: queries.attribution_links(id, filters),
+      filters: filters
+    };
+  }
+
+
+};

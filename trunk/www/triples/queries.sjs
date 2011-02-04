@@ -35,27 +35,6 @@ var f = acre.require("filters");
 var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
 
-function topic(id, filters) {
-  filters = h.extend({}, filters);
-  var q = {
-    id: id,
-    "primary:id": null,
-    mid: null,
-    guid: null,
-    creator: null,
-    name: i18n.mql.query.name(),
-    timestamp: null,
-    permission: null,
-    type: [{id: null, optional:true}],
-    "/freebase/type_hints/mediator": null,
-    "/freebase/type_hints/enumeration": null
-  };
-  return freebase.mqlread(q, f.mqlread_options(filters))
-    .then(function(env) {
-      return env.result;
-    });
-};
-
 function prop_counts(id, filters) {
   filters = h.extend({}, filters);
   if (filters.as_of_time) {

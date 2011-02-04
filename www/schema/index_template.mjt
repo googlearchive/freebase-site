@@ -54,10 +54,8 @@
  <link rel="stylesheet" type="text/css" href="schema.mf.css" />
 </acre:block>
 
-<acre:block def="content_header()">
-  <div class="page-header">
-    <h1 id="page-title">${_("Schema")}</h1>
-  </div>
+<acre:block def="breadcrumb()">
+  <h1>${_("Schema")}</h1>
 </acre:block>
 
 <acre:block def="content_body()">

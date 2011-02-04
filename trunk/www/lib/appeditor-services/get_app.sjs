@@ -224,8 +224,8 @@ function make_graph_app(md, just_files, timestamp) {
   FB.touch();
   var env = {};
   if (md.as_of) { env.as_of_time = fix_timestamp(md.as_of); }
-  var leaf = FB.mqlread(create_app_query(md.app_guid), env).result;
-  if (!leaf) { bad_appid(md.app_id); }
+  var leaf = FB.mqlread(create_app_query(md.guid), env).result;
+  if (!leaf) { bad_appid(md.id); }
   
   var ret = _format_app_query_results(leaf, just_files);
   
@@ -234,7 +234,7 @@ function make_graph_app(md, just_files, timestamp) {
   }
 
   if (!just_files) {
-    var versions = acre.require('appeditor-services/lib_app_versions').get_versions(md.app_id);
+    var versions = acre.require('appeditor-services/lib_app_versions').get_versions(md.id);
     ret.listed         = versions.listed;
     ret.release        = versions.release;
     ret.hosts          = versions.hosts;
@@ -326,8 +326,8 @@ function get_app (appid, just_files, timestamp) {
     var md = acre.get_metadata(resource.app_path);
     if (!md) { bad_appid(appid); }
     
-    switch (md.__source__) {
-      case "graph" :
+    switch (md.source) {
+      case "freebase" :
         ret = make_graph_app(md, just_files);
         break;
       default :

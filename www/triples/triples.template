@@ -39,8 +39,8 @@
   var th = acre.require("helpers");
 </acre:script>
 
-<acre:block def="title()" if="c.topic">
- ${_('Inspect')} - ${c.topic.id}
+<acre:block def="title()" if="c.object">
+ ${_('Inspect')} - ${c.object.id}
 </acre:block>
 
 <acre:block def="head()">
@@ -56,9 +56,9 @@
             <a href="${h.url_for('triples')}">${_("Inspect")}</a>
           </span>
         </li>  
-        <li class="breadcrumb-item last" acre:if="c.topic">
+        <li class="breadcrumb-item last">
           <span class="breadcrumb-item-inner">
-            <a href="javascript:void(0);">${c.topic.id}</a>
+            <a href="javascript:void(0);">${c.object.id}</a>
           </span>
         </li>
       </ol>
@@ -66,7 +66,21 @@
   </div>
 </acre:block>
 
-<acre:block def="content_body()">
+<acre:block def="nav_utilities()">
+  <li>
+    <acre:script>
+      var query = {
+        q: JSON.stringify({"id":c.object.id})
+      };
+    </acre:script>
+    <a href="${h.url_for('queryeditor', null, query)}" class="icon-link">
+     <span class="query-icon">${_('Build Query')}</span>
+    </a>
+  </li>
+</acre:block>
+
+
+<acre:block def="page_content()">
   
   <acre:script>
      var menu_map = []
@@ -89,71 +103,10 @@
        menu_map.push({ "key": "attribution_links", "name": _("Links created by")})
      }     
   </acre:script>
-  <div class="page-meta" acre:if="c.topic">
-    <acre:script>
-      var object_kind = h.get_object_kind(c.topic, c.topic.type);
-    </acre:script>
-    <h1>
-      ${i18n.display_name(c.topic)}
-      <span class="flags">
-        $object_kind 
-      </span>
-    </h1>
-    <div class="meta">
-      <span class="key">
-        <strong>${_("id")}:</strong>
-        ${c.topic["primary:id"]}
-      </span>
-      <span class="key">
-        <strong>${_("mid")}:</strong>
-        ${c.topic.mid}
-      </span>
-      <span class="key">
-        <strong>${_("guid")}:</strong>
-        ${c.topic.guid}
-      </span>
-      <span class="key">
-        <strong>${_("permission")}:</strong>
-        ${a(c.topic.permission)}
-      </span>
-    </div>
-    <div class="admin-toolbox">
-      <span class="creation-timestamp">
-        <acre:block if="c.topic.creator">
-          ${image.user_image_small(c.topic.creator)}
-          ${h.bless_sprintf(_("Created by %s on %s"),
-          h.tag("a", c.topic.creator, "href", h.legacy_fb_url("/view" + c.topic.creator) , "title", c.topic.creator),
-          c.topic.timestamp)}
-        </acre:block>
-        <acre:block else="">
-          ${h.bless_sprintf(_("Created on %s"), c.topic.timestamp)}
-        </acre:block>
-      </span>    
-    </div>
-    <div class="nav clear">
-      <ul class="nav-utilities">
-        <li>
-          <a href="${h.legacy_fb_url('/view'+c.topic.id)}" class="icon-link">
-            <span class="browse-icon">${_("View")} ${object_kind}</span>
-          </a>
-        </li>
-        <li>
-          <acre:script>
-            var query = {
-              q: JSON.stringify({"id":c.topic.id})
-            };
-          </acre:script>
-          <a href="${h.url_for('queryeditor', null, query)}" class="icon-link">
-           <span class="query-icon">${_('Build Query')}</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
 
 
   <div id="content-wrapper">
-    <div  acre:if="c.topic" id="content-main" role="main" acre:attrs="c.filters.history ? {'class':'history'} : {}">
+    <div id="content-main" role="main" acre:attrs="c.filters.history ? {'class':'history'} : {}">
       <acre:block if="c.names_aliases && c.names_aliases.length">
         <h2 class="table-title"><a name="names_aliases">${_("Names & Aliases")} (${i18n.format_number(c.names_aliases.length)})</a></h2>
         <table class="table table-sortable">
@@ -169,7 +122,7 @@
           </thead>
           <tbody>
             <tr acre:for="o in c.names_aliases" 
-                class="hoverable ${JSON.stringify(th.triple(c.topic.id, o.link.master_property, o))} ${th.link_class(o.link)}">
+                class="hoverable ${JSON.stringify(th.triple(c.object.id, o.link.master_property, o))} ${th.link_class(o.link)}">
               <th class="row-header odd empty" scope="row">
                 <span class="self">-</span>
                 ${tooltip()}
@@ -204,7 +157,7 @@
               <tr acre:for="k in c.keys" 
                   class="hoverable ${JSON.stringify(th.triple(k.link.target.id, '/type/object/key', null, k.link.source.id, k.link.target_value))} ${th.link_class(k.link)}">
                 <th class="row-header odd empty" scope="row">
-                  <acre:block if="k.link.target.id === c.topic.id">
+                  <acre:block if="k.link.target.id === c.object.id">
                     <span class="self">-</span>
                   </acre:block>
                   <acre:block else="">
@@ -214,7 +167,7 @@
                 </th>
                 <td class="even">${a("/type/object/key")}</td>
                 <td class="odd">
-                  <acre:block if="k.link.source.id === c.topic.id">
+                  <acre:block if="k.link.source.id === c.object.id">
                     <span class="self">-</span>
                   </acre:block>
                   <acre:block else="">
@@ -253,7 +206,7 @@
           </thead>
           <tbody>
             <acre:block for="o in c.outgoing">
-              <tr class="hoverable ${JSON.stringify(th.triple(c.topic.id, o.link.master_property, o))} ${th.link_class(o.link)}">
+              <tr class="hoverable ${JSON.stringify(th.triple(c.object.id, o.link.master_property, o))} ${th.link_class(o.link)}">
                 <th class="row-header odd empty" scope="row">
                   <span class="self">-</span>
                   ${tooltip()}
@@ -298,7 +251,7 @@
                   o.id = "/guid/" + o.guid.substring(1);
                 }
               </acre:script>
-              <tr class="hoverable ${JSON.stringify(th.triple(o.id, o.link.master_property, c.topic))} ${th.link_class(o.link)}">
+              <tr class="hoverable ${JSON.stringify(th.triple(o.id, o.link.master_property, c.object))} ${th.link_class(o.link)}">
                 <th class="row-header odd" scope="row">
                   ${topic(o)}
                   ${tooltip()}
@@ -330,7 +283,7 @@
           </thead>
           <tbody>
             <acre:script>
-              var replaced_by = (c.topic.id === "/dataworld/gardening_hint/replaced_by");
+              var replaced_by = (c.object.id === "/dataworld/gardening_hint/replaced_by");
             </acre:script>
             <acre:block for="o in c.typelinks">
               <acre:script>
@@ -338,7 +291,7 @@
                   o.source.id = "/guid/" + o.source.guid.substring(1);
                 }
               </acre:script>
-              <tr class="hoverable ${JSON.stringify(th.triple(o.source.id, c.topic.id, o.target_value || o.target))} ${th.link_class(o)}">
+              <tr class="hoverable ${JSON.stringify(th.triple(o.source.id, c.object.id, o.target_value || o.target))} ${th.link_class(o)}">
                 <th class="row-header odd" scope="row">
                   ${topic(o.source)}
                   ${tooltip()}
@@ -376,7 +329,7 @@
                   o.source.id = "/guid/" + o.source.guid.substring(1);
                 }
               </acre:script>
-              <tr class="hoverable ${JSON.stringify(th.triple(o.source.id, c.topic.id, o.target_value || o.target))} ${th.link_class(o)}">
+              <tr class="hoverable ${JSON.stringify(th.triple(o.source.id, c.object.id, o.target_value || o.target))} ${th.link_class(o)}">
                 <th class="row-header odd" scope="row">
                   ${topic(o.source)}
                   ${tooltip()}
@@ -393,10 +346,6 @@
           </tbody>
         </table>
       </acre:block>
-    </div>
-
-    <div acre:else="" id="content-main" role="main">
-      <h2 class="table-title">Your filter criteria did not return any results. Try widening your serach.</h2>
     </div>
 
     <div id="content-sub" role="nav">
@@ -469,7 +418,7 @@
 <acre:block def="literal(o, master_property, topic)" trim="">
   <acre:script>
     master_property = master_property || o.link.master_property;
-    topic = topic || c.topic.id;
+    topic = topic || c.object.id;
   </acre:script>
   <span class="literal-value literal-value-${o.type.split('/').pop()}" acre:trim="">
     <acre:block if="master_property === '/common/document/source_uri' && o.value.indexOf('http://wp/') === 0" trim="">

@@ -7,85 +7,32 @@
 </acre:script>
 
 <acre:block def="head()">
- <link rel="stylesheet" type="text/css" href="view/topic.mf.css" />
+  <link rel="stylesheet" type="text/css" href="topic.less" />
 </acre:block>
 
-<acre:block def="content_header()">
-  <div class="page-header clear">
-    <div class="breadcrumb clear">
-      <ol>
-        <li class="breadcrumb-item">
-          <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url('/home')}">${_("Home")}</a>
-          </span>
-        </li>  
-        <li if="c.domain" class="breadcrumb-item last">
-          <span class="breadcrumb-item-inner">
-            <a href="#" onclick="return false;">${c.topic_meta.name}</a>
-          </span>
-        </li>
-      </ol>
-    </div>
-  </div>
+<acre:block def="nav_tabs()">
+  <li><a href="#" class="current"><span>${_('View')}</span></a></li>
+  <li><a href="#"><span>${_('Inspect')}</span></a></li>
+  <li><a href="#"><span>${_('History')}</span></a></li>
+  <li><a href="#"><span>${_('On the Web')}</span></a></li>
 </acre:block>
 
-<acre:block def="content_body()">
-<div class="page-meta">
-  <h1>
-    ${c.topic_meta.name}
-  </h1>
-  <div class="meta">   
-    <!-- Show topic MID -->
-    <span class="key">
-      <strong><abbr title="${_('Machine ID')}">${_("mid")}</abbr></strong>: ${c.topic_meta.mid}
-    </span>
-    <!-- Show top-ranked notable type -->
-    <span acre:if="c.topic_meta.notable_type" class="key">
-      <strong>${_('notable type')}</strong>: <a href="${h.fb_url('/schema', c.topic_meta.notable_type)}">${c.topic_meta.notable_type}</a>
-    </span>
-    <span acre:elif="c.topic_meta.notable_for" class="key">
-      <strong>${_('notable for')}</strong>: <a href="${h.fb_url('/topic', c.topic_meta.notable_for)}">${c.topic_meta.notable_for}</a>
-    </span>
- </div>
+<acre:block def="nav_utilities()">
+  <acre:block if="c.object">
+    <li>
+      <a href="${h.wiki_url('discuss', c.object.mid)}" class="icon-link">
+        <span class="browse-icon">${_('Discuss Topic')}</span>
+      </a>
+    </li>
+    <li>
+      <a href="${h.wiki_url('discuss', c.object.mid)}" class="icon-link">
+        <span class="flag-icon">${_('Flag Topic')}</span>
+      </a>
+    </li>
+  </acre:block>
+</acre:block>
 
-  <div class="admin-toolbox">
-    <span class="creation-timestamp">
-      ${image.user_image_small(c.topic_meta.creator)}
-      ${_("Created by")} <a href="${h.legacy_fb_url('/view', c.topic_meta.creator.id)}" title="${_('View user profile')}">${c.topic_meta.creator.name}</a> 
-      on <time class="published" datetime="${c.topic_meta.timestamp}">${i18n.format_timestamp(c.topic_meta.timestamp)}</time>
-    </span>
-  </div>
-  <acre:script>
-    var blurb = c.topic_meta.blurb;
-    var blob = c.topic_meta.blob;
-  </acre:script>
-  <div id="description" acre:if="blurb && blob"> 
-    <!-- blurb should be sentence-level truncation at ~50 words -->
-    <p class="blurb">${blurb}</p>
-    <div class="blob">${blob}</div>
-    <a href="javascript:void(0);" class="blurb-trigger">${_('more')}</a>
-  </div>
-  <div class="nav clear">
-    <ul class="tab-nav">
-      <li><a href="#" class="current"><span>${_('View')}</span></a></li>
-      <li><a href="#"><span>${_('Inspect')}</span></a></li>
-      <li><a href="#"><span>${_('History')}</span></a></li>
-      <li><a href="#"><span>${_('On the Web')}</span></a></li>
-    </ul>
-    <ul class="nav-utilities">
-      <li>
-        <a href="${h.wiki_url('discuss', c.topic_meta.mid)}" class="icon-link">
-          <span class="browse-icon">${_('Discuss Topic')}</span>
-        </a>
-      </li>
-      <li>
-        <a href="${h.wiki_url('discuss', c.topic_meta.mid)}" class="icon-link">
-          <span class="flag-icon">${_('Flag Topic')}</span>
-        </a>
-      </li>
-    </ul>
-  </div>
-</div>
+<acre:block def="page_content()">
 <div class="column nav">
   <div class="module">
     <h2 class="module-title">

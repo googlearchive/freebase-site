@@ -28,59 +28,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-var h = acre.require("lib/helper/helpers.sjs");
-var validators = acre.require("lib/validator/validators.sjs");
-var split_path = acre.require("lib/routing/helpers.sjs").split_path;
 
-var path_info = acre.request.path_info;
-var query_string = acre.request.query_string;
+acre.require("/test/lib").enable(this);
 
-//console.log("path_info", path_info, "query_string", query_string);
+var f = acre.require("filters.sjs");
 
-/**
- * path_info defaults "/" to "/index", so for consistency, convert "/" and "/index.*" to "/"
- * and treat it as the root namespace id ("/")
- */
-if (/^\/index(?:\.\w+)*$/.test(path_info)) {
-  path_info = "/";
-}
-
-var result;
-
-// is path_info a valid mql id?
-var id = validators.MqlId(path_info, {if_invalid:null});
-if (id) {
-  /**
-   * MQL to determine if this topic is viewable by topic/view,
-   * otherwise, redirect to associated views
-   */
-  var q = {
-    id: id,
-    "type": "/common/topic"
-  };
-  try {
-    result = acre.freebase.mqlread(q).result;
+// make sure param name mapped values are unique
+test("_p", function() {
+  expect(0);
+  var seen = {};
+  for (var t in f._p) {
+    for (var k in f._p[t]) {
+      var v = f._p[t][k];
+      if (seen[v]) {
+        ok(false, "param name duplicate found: " + v);
+      }
+      else {
+        seen[v] = 1;
+      }
+    }
   }
-  catch (e) {
-    result = null;
-  }
-}
+});
 
-if (result) {
-  // common topic
-  route("topic.controller", id);
-}
-else {
-  route(path_info.substring(1));
-}
 
-function route(script, path) {
-  script = acre.resolve(script);
-  if (path) {
-    script += path;
-  }
-  if (query_string) {
-    script += ("?" + query_string);
-  }
-  acre.route(script);
-};
+
+acre.test.report();

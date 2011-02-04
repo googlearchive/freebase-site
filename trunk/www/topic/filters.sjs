@@ -28,37 +28,62 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 var validators = acre.require("lib/validator/validators.sjs");
-var queries = acre.require("queries.sjs");
 
-var SPEC = {
+/**
+ * "readable" param names mapped to actual param names used in the url
+ */
+var _p = {
+  global: {
+    // global
+    "domain":     "gd",
+    "type":       "gt",
+    "property":   "gp",
+    "lang":       "gl",
+    "as_of_time": "ga"
+  },
+  view: {
+    // view
+    "limit":      "vl"
+  }
+};
+function _pn(type, name) {
+  return _p[type][name];
+};
+function _pv(params, type, name) {
+  return params[_pn(type, name)];
+};
 
-  method: "GET",
-
-  auth: false,
-
-  cache_policy: "public",
-
-  template: "view/index.template",
+var global = {
 
   validate: function(params) {
-    var path_id = validators.MqlId(acre.request.path_info, {if_invalid:null});
-    var qs_id = validators.MqlId(params, "id", {if_invalid:null});
-    if (! (path_id || qs_id)) {
-      throw new validators.Invalid("id is required");
-    }
-    return [
-      path_id || qs_id
-    ];
-  },
-
-  run: function(id) {
-    console.log("run", id);
-    return {
-      topic_meta: queries.topic_meta(id)
-    };
+    var filters = {};
+    filters.lang = validators.MqlId(_pv(params, "global", "lang"), {if_invalid:null});
+    filters.as_of_time = validators.Timestamp(_pv(params, "global", "as_of_time"), {if_invalid:null});
+    ["domain", "type", "property"].every(function(name) {
+      var v = _pv(params, "global", name);
+      if (v) {
+        filters[name] = validators.MqlId(v, {if_invalid:null});
+        return false;
+      }
+      return true;
+    });
+    return filters;
   }
 
+};
+
+
+var view = {
+
+  validate: function(params) {
+    var filters = {
+      limit: validators.Int(_pv(params, "view", "limit"), {if_invalid:10})
+    };
+    if (filters.limit < 1) {
+      filters.limit = 10;
+    }
+    return filters;
+  }
 
 };

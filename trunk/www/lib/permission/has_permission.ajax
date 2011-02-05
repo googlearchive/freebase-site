@@ -46,7 +46,9 @@ var SPEC = {
   },
 
   run: function(id, user_id, allow_experts) {
-    return queries.has_permission(id, user_id, allow_experts);
+    return {
+      has_permission: queries.has_permission(id, user_id, allow_experts)
+    };
   }
 
 };

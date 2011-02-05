@@ -56,7 +56,7 @@
          data: {id:c.id, user_id:fb.user.id},
          dataType: "json",
          success: function(data) {
-           p.has_permission = data.result === true;
+           p.has_permission = ( data.result && data.result.has_permission === true );
            console.log("has_permission", p.has_permission);
            $(window).trigger("fb.permission.has_permission", p.has_permission);
          }

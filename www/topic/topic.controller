@@ -42,7 +42,7 @@ var SPEC = {
 
   cache_policy: "public",
 
-  template: "topic.template",
+  template: "topic.mjt",
 
   template_base: "lib/template/freebase_object.mjt",
 

@@ -29,15 +29,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// TODO: typediagram
+
+var validators = acre.require("lib/validator/validators.sjs");
+var object_query = acre.require("lib/queries/object.sjs").object;
 var queries = acre.require("queries");
 
-var domain_id = acre.request.params.id || acre.request.path_info;
-var data = {
-  id: domain_id,
-  domain: queries.domain(domain_id)
-};
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("domain_template")
-);
+var SPEC = {
 
+  method: "GET",
+
+  auth: false,
+
+  template: "type.mjt",
+
+  template_base: "lib/template/freebase_object.mjt",
+
+  validate: function(params) {
+    var id = validators.MqlId(acre.request.path_info, {required:true});
+    return [
+      id
+    ];
+  },
+
+  run: function(id) {
+    console.log("run", id);
+    return {
+      object: object_query(id),
+      id: id,
+      type: queries.type(id)
+    };
+  }
+};

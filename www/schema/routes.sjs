@@ -28,66 +28,90 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+var h = acre.require("lib/helper/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var split_path = acre.require("lib/routing/helpers.sjs").split_path;
 
-var h = acre.require("lib/routing/helpers");
-
+var base_path = acre.request.base_path;
+var path_info = acre.request.path_info;
 var query_string = acre.request.query_string;
 
+//console.log("base_path", base_path, "path_info", path_info, "query_string", query_string);
+
+if (h.endsWith(base_path, "/index") || h.endsWith(base_path, "/index/")) {
+  // /index in request path not allowed
+  redirect(base_path.replace(/\/index.*$/, ""));
+}
+
 /**
- * MQL to determine if acre.request.path_info is a domain, type or property.
+ * path_info defaults "/" to "/index", so for consistency, convert "/" and "/index.*" to "/"
+ * and treat it as the root namespace id ("/")
  */
-var q = {
-  id: acre.request.path_info,
-  "d:type": {id:"/type/domain", optional:true},
-  "t:type": {id:"/type/type", optional:true},
-  "p:type": {id:"/type/property", optional:true}
-};
+if (/^\/index$/.test(path_info)) {
+  path_info = "/";
+}
 
 var result;
-try {
-  result = acre.freebase.mqlread(q).result;
+
+// is path_info a valid mql id?
+var id = validators.MqlId(path_info, {if_invalid:null});
+if (id) {
+  /**
+   * MQL to determine if this topic is viewable by topic/view,
+   * otherwise, redirect to associated views
+   */
+  var q = {
+    id: id,
+    type: {
+      id: null,
+      "id|=": ["/type/domain", "/type/type", "/type/property"]
+    }
+  };
+  try {
+    result = acre.freebase.mqlread(q).result;
+  }
+  catch (e) {
+    result = null;
+  }
 }
-catch (e) {
-  result = null;
-}
+
 if (result) {
-  if (result["d:type"]) {
-    do_route_domain(result.id);
+  var type = result.type.id;
+  if (type === "/type/domain") {
+    route("/domain.controller", id);
   }
-  else if (result["t:type"]) {
-    do_route_type(result.id);
-  }
-  else if (result["p:type"]) {
-    do_route_property(result.id);
+  else if (type === "/type/type") {
+    route("/type.controller", id);
   }
   else {
-    do_route_local();
+    route("/property.controller", id);
   }
 }
 else {
-  do_route_local();
+  route(path_info);
 }
 
-function do_route(script, path_info) {
-  var path = [acre.request.script.app.path, "/" + script, path_info, query_string ? "?" + query_string : ""];
-  path = path.join("");
-  console.log("routing", path);
-  acre.route(path);
-}
-
-function do_route_domain(id) {
-  do_route("domain", id);
+function route(script, path) {
+  console.log("schema/routes", script, path);
+  if (script === "/") {
+    script = "/index";
+  }
+  script = script.substring(1);
+  script = acre.resolve(script);
+  if (path) {
+    script += path;
+  }
+  if (query_string) {
+    script += ("?" + query_string);
+  }
+  acre.route(script);
 };
 
-function do_route_type(id) {
-  do_route("type", id);
-};
-
-function do_route_property(id) {
-  do_route("property", id);
-};
-
-function do_route_local() {
-  var [script, path_info, qs] = h.split_path(acre.request.path_info);
-  do_route(script, path_info);
+function redirect(path) {
+  if (query_string) {
+    path += query_string;
+  }
+  acre.response.status = 301;
+  acre.response.set_header("location", path);
+  acre.exit();
 };

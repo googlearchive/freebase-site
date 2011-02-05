@@ -28,18 +28,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+var validators = acre.require("lib/validator/validators.sjs");
+var object_query = acre.require("lib/queries/object.sjs").object;
 var queries = acre.require("queries");
 
-var type_id = acre.request.params.id || acre.request.path_info;
-var diagram = acre.request.params.view === "diagram";
-var data = {
-  id: type_id,
-  diagram: diagram,
-  type: diagram ? queries.typediagram(type_id) : queries.type(type_id)
+var SPEC = {
+
+  method: "GET",
+
+  auth: false,
+
+  template: "domain.mjt",
+
+  template_base: "lib/template/freebase_object.mjt",
+
+  validate: function(params) {
+    var id = validators.MqlId(acre.request.path_info, {required:true});
+    return [
+      id
+    ];
+  },
+
+  run: function(id) {
+    console.log("run", id);
+    return {
+      object: object_query(id),
+      id: id,
+      domain: queries.domain(id)
+    };
+  }
 };
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("type_template")
-);
+
 

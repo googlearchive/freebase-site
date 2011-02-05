@@ -33,7 +33,6 @@
   var c = this.exports.c = {};
   var h = acre.require("lib/helper/helpers.sjs");
   var tc = acre.require("type_components");
-  var image = acre.require("lib/template/imagecomponents");  
   var sh = acre.require("helpers");
   var i18n = acre.require("lib/i18n/i18n");
   var _ = i18n.gettext;
@@ -80,8 +79,25 @@
   </div>
 </acre:block>
 
-<acre:block def="content_body()">
-  <div class="page-meta">
+<acre:block def="nav_utilities()">
+  <li class="edit">
+  <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.type_settings, ['${c.type.id}'], this);">
+    <span class="edit-icon">${_('Type Settings')}</span>
+  </a>
+  </li>
+  <li>
+    <a href="${h.legacy_fb_url('/view'+c.type.id)}" class="icon-link">
+      <span acre:if="c.type.instance_count" class="browse-icon">${h.bless_sprintf(_("Browse %s Topics"), h.tag("strong", i18n.format_number(c.type.instance_count)))}</span>
+      <span acre:else="" class="add-icon">Add Topics</span>
+    </a>
+  </li>
+  <li>
+    <a href="${sh.build_query_url(c.type.id)}" class="icon-link"><span class="query-icon">${_('Build Query')}</span></a>
+  </li>
+</acre:block>
+
+<acre:block def="page_content()">
+<!--
     <h1>
       ${i18n.display_name(c.type)}
       <span class="flags">
@@ -105,52 +121,10 @@
         </acre:block>
       </span>
     </div>
-    <div class="admin-toolbox">
-      <span class="creation-timestamp">
-        ${image.user_image_small(c.type.creator)}
-        ${h.bless_sprintf(_("Created by %s on %s"), 
-        h.tag("a", i18n.display_name(c.type.creator), "href", h.legacy_fb_url("/view" + c.type.creator.id), "title", _("View user profile")),
-        h.tag("time", i18n.format_timestamp(c.type.timestamp), "class", "published", "datetime", c.type.timestamp))}
-     </span>    
-    </div>
-    <acre:script>
-      var [blurb, blob] = i18n.display_article(c.type, ["blurb", "blob"]);      
-    </acre:script>
-    <div id="description" acre:if="blurb && blob">
-      <p class="blurb">${blurb}</p>
-      <div class="blob">${acre.markup.bless(blob)}</div>
-      <a acre:if="blurb != blob" href="javascript:void(0);" class="blurb-trigger">${_('More')}</a>          
-    </div>    
-    <div class="nav clear">
-      <ul class="nav-mode">
-        <li><a acre:attrs="c.diagram ? {href: h.url_for('schema', null, null, c.type.id)} : {'class':'current'}">${_('Table')}</a></li>
-        <li><a acre:attrs="c.diagram ? {'class':'current'} : {href: h.url_for('schema', null, [['view','diagram']], c.type.id)}">${_('Diagram')}</a></li>
-      </ul>
-      <ul class="nav-utilities">
-        <li class="edit">
-        <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.type_settings, ['${c.type.id}'], this);">
-          <span class="edit-icon">${_('Type Settings')}</span>
-        </a>
-        </li>
-        <li>
-          <a href="${h.legacy_fb_url('/view'+c.type.id)}" class="icon-link">
-            <span acre:if="c.type.instance_count" class="browse-icon">${h.bless_sprintf(_("Browse %s Topics"), h.tag("strong", i18n.format_number(c.type.instance_count)))}</span>
-            <span acre:else="" class="add-icon">Add Topics</span>
-          </a>
-        </li>
-        <li>
-          <a href="${sh.build_query_url(c.type.id)}" class="icon-link"><span class="query-icon">${_('Build Query')}</span></a>
-        </li>
-      </ul>
-    </div>
-  </div>
+!!-->
 
-  <acre:block if="c.diagram">
-    ${diagram_view()}
-  </acre:block>  
-  <acre:block else="">
-    ${table_view()}
-  </acre:block>
+  ${table_view()}
+
 
 </acre:block>
 

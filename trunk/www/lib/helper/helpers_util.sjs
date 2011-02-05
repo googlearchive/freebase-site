@@ -41,7 +41,10 @@ var exports = {
 
   "first_element": first_element,
   "map_array": map_array,
-  "array_map": array_map
+  "array_map": array_map,
+
+  "endsWith": endsWith,
+  "startsWith": startsWith
 };
 
 // Used for trimming whitespace
@@ -202,3 +205,13 @@ function array_map(map) {
   return a;
 };
 
+
+
+function endsWith(str, end) {
+  var d = str.length - end.length;
+  return d >= 0 && str.lastIndexOf(end) === d;
+};
+
+function startsWith(str, start) {
+  return str.indexOf(start) === 0;
+};

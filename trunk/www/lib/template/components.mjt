@@ -42,25 +42,36 @@
 <acre:block def="nav_tabs(object)">
   <acre:script>
     var types = h.map_array(object.type, "id");
+    var current = {
+      "class": "current",
+      "onclick": "return false;",
+      "href": "#"
+    };
+    var app_path = acre.request.script.app.path;
+    console.log("app_path", app_path);
   </acre:script>
 
   <!!-- schema !!-->
   <acre:block if="types['/type/domain'] || types['/type/type'] || types['/type/property']">
-    <li><a href="${h.fb_url('/schema', object.id)}"><span>${_('Schema')}</span></a></li>
-    <li><a href="${h.fb_url('/inspect', object.id)}"><span>${_('Inspect')}</span></a></li>
+    <li><a acre:attrs="h.startsWith(app_path,  '//schema.') ? current : {href: h.fb_url('/schema', object.id)}">
+        <span>${_('Schema')}</span></a></li>
+    <li><a acre:attrs="h.startsWith(app_path,  '//triples.') ? current : {href: h.fb_url('/inspect', object.id)}">
+        <span>${_('Inspect')}</span></a></li>
   </acre:block>
 
   <!!-- user !!-->
 
   <!!-- topic !!-->
   <acre:block elif="types['/common/topic']">
-    <li><a href="${h.fb_url('/topic', object.id)}"><span>${_('Topic')}</span></a></li>
-    <li><a href="${h.fb_url('/inspect', object.id)}"><span>${_('Inspect')}</span></a></li>
+    <li><a acre:attrs="h.startsWith(app_path,  '//topic.') ? current : {href: h.fb_url('/topic', object.id)}">
+        <span>${_('Topic')}</span></a></li>
+    <li><a acre:attrs="h.startsWith(app_path,  '//triples.') ? current : {href: h.fb_url('/inspect', object.id)}">
+        <span>${_('Inspect')}</span></a></li>
   </acre:block>
                  
   <!!-- inspect [default] !!-->
   <acre:block else="">
-   <li><a href="${h.fb_url('/inspect', object.id)}"><span>${_('Inspect')}</span></a></li>
+    <li><a acre:attrs="current"><span>${_('Inspect')}</span></a></li>
   </acre:block> 
 
 </acre:block>

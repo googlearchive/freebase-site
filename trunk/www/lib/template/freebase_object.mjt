@@ -63,6 +63,12 @@
   </acre:block>
 </acre:block>
 
+<acre:block def="title()">
+  <acre:block if="that_exports.title">
+    ${that_exports.title()}
+  </acre:block>
+</acre:block>
+
 <acre:block def="breadcrumb()">
   <acre:block if="that_exports.breadcrumb">
     ${that_exports.breadcrumb()}
@@ -98,6 +104,11 @@
       <acre:block if="c.object">
         <h1>
           ${c.object.name}
+          <acre:block if="that_exports.flags">
+            <span class="flags">
+              ${that_exports.flags()}
+            </span>
+          </acre:block>
         </h1>
         <div class="meta">   
           <!-- Show topic MID -->
@@ -111,6 +122,9 @@
           <span acre:elif="c.object.notable_for" class="key">
             <strong>${_('notable for')}</strong>: <a href="${h.fb_url('/topic', c.object.notable_for)}">${c.object.notable_for}</a>
           </span>
+          <acre:block if="that_exports.keys">
+            ${that_exports.keys()}
+          </acre:block>
         </div>    
         <div class="admin-toolbox">
           <span class="creation-timestamp">

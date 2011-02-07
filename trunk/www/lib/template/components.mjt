@@ -53,25 +53,35 @@
 
   <!!-- schema !!-->
   <acre:block if="types['/type/domain'] || types['/type/type'] || types['/type/property']">
-    <li><a acre:attrs="h.startsWith(app_path,  '//schema.') ? current : {href: h.fb_url('/schema', object.id)}">
+    <li><a acre:attrs="h.is_schema_app(app_path) ? current : {href: h.fb_url('/schema', object.id)}">
         <span>${_('Schema')}</span></a></li>
-    <li><a acre:attrs="h.startsWith(app_path,  '//triples.') ? current : {href: h.fb_url('/inspect', object.id)}">
+    <li><a acre:attrs="h.is_inspect_app(app_path) ? current : {href: h.fb_url('/inspect', object.id)}">
         <span>${_('Inspect')}</span></a></li>
-  </acre:block>
+    <li acre:if="types['/type/domain']">
+      <a acre:attrs="h.is_group_app(app_path) ? current : {href: h.fb_url('/group', object.id)}">
+        <span>${_('Owners')}</span>
+      </a>
+    </li>
+ </acre:block>
 
   <!!-- user !!-->
 
   <!!-- topic !!-->
   <acre:block elif="types['/common/topic']">
-    <li><a acre:attrs="h.startsWith(app_path,  '//topic.') ? current : {href: h.fb_url('/topic', object.id)}">
+    <li><a acre:attrs="h.is_topic_app(app_path) ? current : {href: h.fb_url('/topic', object.id)}">
         <span>${_('Topic')}</span></a></li>
-    <li><a acre:attrs="h.startsWith(app_path,  '//triples.') ? current : {href: h.fb_url('/inspect', object.id)}">
+    <li><a acre:attrs="h.is_inspect_app(app_path) ? current : {href: h.fb_url('/inspect', object.id)}">
         <span>${_('Inspect')}</span></a></li>
   </acre:block>
                  
   <!!-- inspect [default] !!-->
   <acre:block else="">
     <li><a acre:attrs="current"><span>${_('Inspect')}</span></a></li>
+    <li acre:if="types['/type/domain']">
+      <a acre:attrs="h.is_group_app(app_path) ? current : {href: h.fb_url('/group', object.id)}">
+        <span>${_('Owners')}</span>
+      </a>
+    </li>
   </acre:block> 
 
 </acre:block>

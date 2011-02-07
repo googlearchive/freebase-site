@@ -34,6 +34,7 @@
   Uses template/freebase.mjt for chrome
 !!-->
 <acre:script>
+console.log("acre.request", acre.request);
   var c = this.exports.c = {};
   var h = acre.require("helper/helpers.sjs");
   var i18n = acre.require("i18n/i18n.sjs");
@@ -51,6 +52,10 @@
     that_exports = exports;
   </acre:script>
   ${base.page(this_exports)}
+</acre:block>
+
+<acre:block def="freebase_js()">
+  <script src="template/freebase_object.mf.js"></script>
 </acre:block>
 
 <acre:block def="freebase_css()">

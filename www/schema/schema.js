@@ -131,21 +131,6 @@
 
     schema.init_row_menu();
 
-    $(".blurb-trigger").click(function(){
-      var $trigger = $(this);
-      var $blurb = $trigger.siblings(".blurb");
-      var $blob = $trigger.siblings(".blob");
-      if ($blob.is(":hidden")) {
-        $blob.show();
-        $blurb.hide();
-        $trigger.text('Less');
-      }
-      else {
-        $blob.hide();
-        $blurb.show();
-        $trigger.text('More');
-      }
-    });
 
     /*
         Breadcrumbs

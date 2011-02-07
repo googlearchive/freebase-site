@@ -216,7 +216,10 @@
   <!-- suggest -->
   <script src="${h.lib_base_url('suggest')}/suggest.min.js"></script>
   <!-- freebase.mf.js -->
-  <script src="template/freebase.mf.js"></script>
+  <acre:block if="exports.freebase_js">
+    ${exports.freebase_js()}
+  </acre:block>
+  <script acre:else="" src="template/freebase.mf.js"></script>
   <acre:block if="exports.footer_script">${exports.footer_script()}</acre:block>
 </acre:block>
 

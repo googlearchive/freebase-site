@@ -293,7 +293,7 @@ if (window.SERVER && typeof window.SERVER === "object") {
 
     search
       .bind("fb-select", function(e, data) {
-         window.location = legacy_root + "/view" + data.id;
+         window.location = root + data.id;
         return false;
       })/**
       .bind("fb-pane-show", function(e, data) {

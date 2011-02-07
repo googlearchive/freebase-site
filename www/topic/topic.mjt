@@ -57,240 +57,290 @@
 </acre:block>
 
 <acre:block def="page_content()">
-<div class="column nav">
-  <div class="module">
-    <h2 class="module-title">
-      <a href="javascript:void(0);" class="trigger">Collapse column</a>
-      <span>Filter this data</span>
-    </h2>
-    <div class="module-section">
-      <h3 class="module-section-title">Domain</h3>
-      <table cellspacing="0" class="bar-graph">
-        <tbody>
-          <tr class="bar-graph-row">
-            <th>
-              <span class="bar-graph-label">
-                <a href="" class="clear">/domain</a>
-                <span class="index" style="width:100%;"></span>
-              </span>
-            </th>
-            <td class="value">200+</td>
-          </tr>
-          <tr class="bar-graph-row">
-            <th>
-              <span class="bar-graph-label">
-                <a href="" class="clear">/domain</a>
-                <span class="index" style="width:90%;"></span>
-              </span>
-            </th>
-            <td class="value">200+</td>
-          </tr>
-          <tr class="bar-graph-row">
-            <th>
-              <span class="bar-graph-label">
-                <a href="" class="clear">/domain</a>
-                <span class="index" style="width:80%;"></span>
-              </span>
-            </th>
-            <td class="value">200+</td>
-          </tr>
-          <tr class="bar-graph-row">
-            <th>
-              <span class="bar-graph-label">
-                <a href="" class="clear">/domain</a>
-                <span class="index" style="width:70%;"></span>
-              </span>
-            </th>
-            <td class="value">200+</td>
-          </tr>
-          <tr class="bar-graph-row">
-            <th>
-              <span class="bar-graph-label">
-                <a href="" class="clear">/domain</a>
-                <span class="index" style="width:60%;"></span>
-              </span>
-            </th>
-            <td class="value">200+</td>
-          </tr>
-          <tr class="bar-graph-row">
-            <th>
-              <span class="bar-graph-label">
-                <a href="" class="clear">/domain</a>
-                <span class="index" style="width:50%;"></span>
-              </span>
-            </th>
-            <td class="value">200+</td>
-          </tr>
-          <tr class="bar-graph-row">
-            <th>
-              <span class="bar-graph-label">
-                <a href="" class="clear">/domain</a>
-                <span class="index" style="width:40%;"></span>
-              </span>
-            </th>
-            <td class="value">200+</td>
-          </tr>
-          <tr class="bar-graph-row">
-            <th>
-              <span class="bar-graph-label">
-                <a href="" class="clear">/domain</a>
-                <span class="index" style="width:30%;"></span>
-              </span>
-            </th>
-            <td class="value">200+</td>
-          </tr>
-          <tr class="bar-graph-row">
-            <th>
-              <span class="bar-graph-label">
-                <a href="" class="clear">/domain</a>
-                <span class="index" style="width:20%;"></span>
-              </span>
-            </th>
-            <td class="value">200+</td>
-          </tr>
-          <tr class="bar-graph-row">
-            <th>
-              <span class="bar-graph-label">
-                <a href="" class="clear">/domain</a>
-                <span class="index" style="width:10%;"></span>
-              </span>
-            </th>
-            <td class="value">200+</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="module-section">
-      <h3 class="module-section-title"><label for="">Language</label></h3>
-      <div class="filter-form">
-        <form action="" method="post">
-          <select name="">
-            <option value="eng-usa">English</option>
-          </select>
-        </form>
+  <div class="column nav">
+    <div class="module">
+      <h2 class="module-title">
+        <a href="javascript:void(0);" class="trigger">Collapse column</a>
+        <span>Filter this data</span>
+      </h2>
+      <div class="module-section">
+        <h3 class="module-section-title">Domain</h3>
+        <table cellspacing="0" class="bar-graph">
+          <tbody>
+            <tr class="bar-graph-row">
+              <th>
+                <span class="bar-graph-label">
+                  <a href="" class="clear">/domain</a>
+                  <span class="index" style="width:100%;"></span>
+                </span>
+              </th>
+              <td class="value">200+</td>
+            </tr>
+            <tr class="bar-graph-row">
+              <th>
+                <span class="bar-graph-label">
+                  <a href="" class="clear">/domain</a>
+                  <span class="index" style="width:90%;"></span>
+                </span>
+              </th>
+              <td class="value">200+</td>
+            </tr>
+            <tr class="bar-graph-row">
+              <th>
+                <span class="bar-graph-label">
+                  <a href="" class="clear">/domain</a>
+                  <span class="index" style="width:80%;"></span>
+                </span>
+              </th>
+              <td class="value">200+</td>
+            </tr>
+            <tr class="bar-graph-row">
+              <th>
+                <span class="bar-graph-label">
+                  <a href="" class="clear">/domain</a>
+                  <span class="index" style="width:70%;"></span>
+                </span>
+              </th>
+              <td class="value">200+</td>
+            </tr>
+            <tr class="bar-graph-row">
+              <th>
+                <span class="bar-graph-label">
+                  <a href="" class="clear">/domain</a>
+                  <span class="index" style="width:60%;"></span>
+                </span>
+              </th>
+              <td class="value">200+</td>
+            </tr>
+            <tr class="bar-graph-row">
+              <th>
+                <span class="bar-graph-label">
+                  <a href="" class="clear">/domain</a>
+                  <span class="index" style="width:50%;"></span>
+                </span>
+              </th>
+              <td class="value">200+</td>
+            </tr>
+            <tr class="bar-graph-row">
+              <th>
+                <span class="bar-graph-label">
+                  <a href="" class="clear">/domain</a>
+                  <span class="index" style="width:40%;"></span>
+                </span>
+              </th>
+              <td class="value">200+</td>
+            </tr>
+            <tr class="bar-graph-row">
+              <th>
+                <span class="bar-graph-label">
+                  <a href="" class="clear">/domain</a>
+                  <span class="index" style="width:30%;"></span>
+                </span>
+              </th>
+              <td class="value">200+</td>
+            </tr>
+            <tr class="bar-graph-row">
+              <th>
+                <span class="bar-graph-label">
+                  <a href="" class="clear">/domain</a>
+                  <span class="index" style="width:20%;"></span>
+                </span>
+              </th>
+              <td class="value">200+</td>
+            </tr>
+            <tr class="bar-graph-row">
+              <th>
+                <span class="bar-graph-label">
+                  <a href="" class="clear">/domain</a>
+                  <span class="index" style="width:10%;"></span>
+                </span>
+              </th>
+              <td class="value">200+</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="module-section">
+        <h3 class="module-section-title"><label for="">Language</label></h3>
+        <div class="filter-form">
+          <form action="" method="post">
+            <select name="">
+              <option value="eng-usa">English</option>
+            </select>
+          </form>
+        </div>
+      </div>
+      <div class="module-section">
+        <h3 class="module-section-title"><label for="">As of</label></h3>
+        <div class="filter-form">
+          <form action="" method="post">
+            <input class="text-input" type="text" name="" value="" placeholder="" />
+          </form>
+        </div>
       </div>
     </div>
-    <div class="module-section">
-      <h3 class="module-section-title"><label for="">As of</label></h3>
-      <div class="filter-form">
-        <form action="" method="post">
-          <input class="text-input" type="text" name="" value="" placeholder="" />
-        </form>
+    <div class="module">
+      <div class="module-section alt">
+        <h3 class="module-section-title">
+          <label for="">Show up to <strong>10</strong> properties</label>
+        </h3>
+        <div class="filter-form">
+          <input type="hidden" name="" value="10" />
+          <div id="limit-slider"></div>
+        </div>
       </div>
     </div>
   </div>
-  <div class="module">
-    <div class="module-section alt">
-      <h3 class="module-section-title">
-        <label for="">Show up to <strong>10</strong> properties</label>
-      </h3>
-      <div class="filter-form">
-        <input type="hidden" name="" value="10" />
-        <div id="limit-slider"></div>
-      </div>
+
+  <div class="column" id="topic-data">
+    <div class="toolbar">
+      <ul>
+        <li>
+          <a href="#" class="icon-link">
+            <span class="add-icon">Add Type</span>
+          </a>
+        </li>
+      </ul>
     </div>
+    <acre:script>
+      var structure = c.topic && c.topic.structure;
+    </acre:script>
+    <acre:block if="structure && structure.order">
+      <acre:script>
+        var order = structure.order;
+      </acre:script>
+      <acre:block for="domain_id in order">
+        <acre:script>
+          var domain_structure = structure.domains[domain_id];
+        </acre:script>
+        ${domain_section(domain_id, domain_structure)}
+      </acre:block>   
+    </acre:block>
   </div>
-</div>
-<div class="column" id="topic-data">
-  <div class="toolbar">
-    <ul>
-      <li>
-        <a href="#" class="icon-link">
-          <span class="add-icon">Add Type</span>
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div class="section domain">
-    <div class="header">
-      <span class="status">
-        Freebase Commons
-      </span>
-      <h1>
-        <a href=""#link-to-domain"">Domain Name</a>
-      </h1>
-    </div>
-    <h2 class="foobar">
-      <a title="" href="#link-to-type">Type Name</a>
-      <span class="key">/type/id</span>
-    </h2>
-    <h3 class="sub-foobar">
-      <!--view all link is shown for any non-unique property-->
-      <a href="#" class="more"><span>View all property values</span></a>
-      Property Name
-    </h3>
-    <ul class="data-list">
-      <li>
-        <a href="[#">Simple Property Value</a>
-      </li>
-      <li>
-        <a href="[#">Simple Property Value</a>
-      </li>
-    </ul>
-    <h3 class="sub-foobar">
-      Property Name
-    </h3>
-    <div class="empty-property">-</div>
-    <h3 class="sub-foobar">
-      <!--view all link is shown for any non-unique property-->
-      <a href="#" class="more">view all</a>
-      Property Name
-    </h3>
-    <table class="data-table">
-      <thead>
-        <th scope="col">Property heading</th>
-        <th scope="col">Property heading</th>
-        <th scope="col">Property heading</th>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row">
-            <a href="#">Topic Name</a>
-          </th>
-          <td>Lorem ipsum</td>
-          <td><a href="#">Property value</td>
-        </tr>
-        <tr class="alt">
-          <th scope="row">
-            <a href="#">Topic Name</a>
-          </th>
-          <td>Lorem ipsum</td>
-          <td><a href="#">Property value</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+
 </acre:block>
+
 <acre:block def="footer_script()">
-<script type="text/javascript">
-  $(document).ready(function(){
+  <script type="text/javascript">
+    $(document).ready(function(){
 
-      // the trigger for expanding/collapsing the column
-      var $trigger = $(".module-title > .trigger"); 
-      var column_offset = $(".section").css("margin-left");
-      var $main_module = $(".module:first");
-      var $sub_modules = $(".module-section", $main_module);
-      var $modules = $(".module:gt(0)");
+        // the trigger for expanding/collapsing the column
+        var $trigger = $(".module-title > .trigger"); 
+        var column_offset = $(".section").css("margin-left");
+        var $main_module = $(".module:first");
+        var $sub_modules = $(".module-section", $main_module);
+        var $modules = $(".module:gt(0)");
 
-      $trigger.click(function(){
-        if($trigger.hasClass("collapsed")) {
-          $trigger.removeClass("collapsed");
-          $(".section").animate({marginLeft: column_offset},function(){
-            $sub_modules.slideDown();
-            $modules.fadeIn();
-          });
-        }
-        else {
-          $trigger.addClass("collapsed");
-          $modules.fadeOut();
-          $sub_modules.slideUp(function(){
-            $(".section").animate({marginLeft: 0});
-          });
-        }
-        
-      });
+        $trigger.click(function(){
+          if($trigger.hasClass("collapsed")) {
+            $trigger.removeClass("collapsed");
+            $(".section").animate({marginLeft: column_offset},function(){
+              $sub_modules.slideDown();
+              $modules.fadeIn();
+            });
+          }
+          else {
+            $trigger.addClass("collapsed");
+            $modules.fadeOut();
+            $sub_modules.slideUp(function(){
+              $(".section").animate({marginLeft: 0});
+            });
+          }
 
-  });
-</script>
+        });
+
+    });
+  </script>
+</acre:block>
+
+<acre:block def="domain_section(id, structure)">
+  <div class="section domain">  
+    <div class="header">
+      <span class="status">${_('Freebase Commons')}</span>
+    </div>    
+    <h1>
+      <a href="${h.fb_url(id)}">${structure.text}</a>
+    </h1>
+    <acre:block for="type_id in structure.types">
+      <acre:script>
+        var type_structure = c.topic.structure.types[type_id];
+      </acre:script>
+      ${type_section(type_id, type_structure)}
+    </acre:block>   
+  </div>
+</acre:block>
+
+<acre:block def="type_section(id, structure)">
+  <h2 class="foobar">
+    <a title="${id}" href="${h.fb_url(id)}">${structure.text}</a>
+    <span class="key">${id}</span>
+  </h2>
+  <acre:block for="property_id in structure.properties">
+    <acre:script>
+      var property = c.topic.properties[property_id];
+    </acre:script>
+    ${property_section(property_id, property)}
+  </acre:block>
+</acre:block>
+
+<acre:block def="property_section(id, property)">
+  <h3 class="sub-foobar">
+    <!--view all link is shown for any non-unique property-->
+    <a href="#" class="more"><span>${_('View all property values')}</span></a>
+    ${property.text}
+  </h3>  
+  <acre:block if="property.properties && property.properties.length">
+    ${property_table(id, property)}
+  </acre:block>
+  <acre:block else="">
+    ${property_list(id, property)}
+  </acre:block>
+</acre:block>
+
+<acre:block def="property_table(id, property)">
+  <table class="data-table">
+    <thead>
+      <th acre:for="subproperty in property.properties" scope="col">
+        ${subproperty.text}
+      </th>
+    </thead>
+    <tbody>
+      <tr acre:for="value in property.values">
+        <acre:block for="subproperty in property.properties">
+          <td>
+            ${property_list(subproperty.id, value[subproperty.id])}
+          </td>
+        </acre:block>
+      </tr>
+    </tbody>
+  </table>
+</acre:block>
+
+<acre:block def="property_list(id, property)">
+  <acre:block if="property && property.values && property.values.length">
+    <ul class="data-list">
+      <li acre:for="value in property.values">
+        ${property_value(value, property)}
+      </li>
+    </ul>  
+  </acre:block>
+  <acre:block else="">
+    <div class="empty-property">-</div>
+  </acre:block>
+</acre:block>
+
+<acre:block def="property_value(value, property)">
+  <acre:block if="value">
+    <acre:block if="value.url && value.id">
+      <a title="${value.id}" href="${h.fb_url(value.id)}">${value.text}</a>
+    </acre:block>
+    <acre:block else="">
+      ${value.text}
+    </acre:block>
+  </acre:block>
+
+  <acre:block else="">
+    <span class="empty-property">-</span>
+  </acre:block>
+
 </acre:block>

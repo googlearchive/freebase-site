@@ -31,8 +31,8 @@
 
 var validators = acre.require("lib/validator/validators.sjs");
 var object_query = acre.require("lib/queries/object.sjs").object;
-
-var filters = acre.require("filters.sjs");
+var deferred = acre.require("lib/promise/deferred");
+var freebase = acre.require("lib/promise/apis").freebase;
 
 var SPEC = {
 
@@ -42,24 +42,42 @@ var SPEC = {
 
   cache_policy: "public",
 
-  template: "topic.mjt",
+  template: "group.mjt",
 
   template_base: "lib/template/freebase_object.mjt",
 
   validate: function(params) {
     return [
-      validators.MqlId(acre.request.path_info, {required:true}),
-      filters.global.validate(params),
-      filters.view.validate(params)
+      validators.MqlId(acre.request.path_info, {required:true})
     ];
   },
 
-  run: function(id, gf, vf) {
-    console.log("run", id, gf, vf, acre.h);
+  run: function(id) {
     return {
-      object: object_query(id)
+      object: object_query(id),
+      owners: domain_owners(id)
     };
   }
+};
 
 
+function domain_owners(id) {
+  return freebase.mqlread({
+    id: id,
+    type: "/type/domain",
+    owners: [{
+      optional: true,
+      member: [{
+        id: null,
+        name: null
+      }]
+    }]
+  })
+  .then(function(env) {
+    var domain = env.result;
+    if (domain) {
+      return domain.owners;
+    }
+    return [];
+  });
 };

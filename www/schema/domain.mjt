@@ -76,31 +76,18 @@
   </li>
 </acre:block>
 
+<acre:block def="flags()">
+  <span acre:if="c.domain.id.indexOf('/user') === -1 && c.domain.id.indexOf('/base') === -1">
+     ${_("Commons")}
+  </span>
+   ${_("Domain")}
+</acre:block>
+
+<acre:block def="keys()">
+  <span class="key"><strong> ${_("Key:")}</strong> $c.domain.id</span>        
+</acre:block>
+
 <acre:block def="page_content()">
-<!--
-     <h1>
-       ${i18n.display_name(c.domain)}
-       <span class="flags">
-         <span acre:if="c.domain.id.indexOf('/user') === -1 && c.domain.id.indexOf('/base') === -1">
-            ${_("Commons")}
-         </span>
-          ${_("Domain")}
-       </span>
-     </h1>
-     <div class="meta">
-       <span class="key"><strong> ${_("Key:")}</strong> $c.domain.id</span>        
-     </div>    
-
-<acre:block if="c.domain.owners && c.domain.owners.length">
-       <h2 class="user-list-title">${_('Domain Owners:')}</h2>
-       <ul class="user-list clear" acre:for="group in c.domain.owners">
-         <li acre:for="i,member in group.member" acre:for="i,member in group.member" class="vcard">
-           ${image.user_image_medium(member)}
-         </li>
-       </ul>
-     </acre:block>
-!!-->
-
    <!-- Types -->
    <div class="section">
      <h2 class="table-title">

@@ -31,7 +31,7 @@
 
 var validators = acre.require("lib/validator/validators.sjs");
 var object_query = acre.require("lib/queries/object.sjs").object;
-
+var queries = acre.require("queries.sjs");
 var filters = acre.require("filters.sjs");
 
 var SPEC = {
@@ -57,7 +57,8 @@ var SPEC = {
   run: function(id, gf, vf) {
     console.log("run", id, gf, vf, acre.h);
     return {
-      object: object_query(id)
+      object: object_query(id),
+      topic: queries.topic(id)
     };
   }
 

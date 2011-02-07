@@ -32,27 +32,60 @@ acre.require('/test/lib').enable(this);
 
 var h = acre.require("helper/helpers.sjs");
 
-var test_helpers = acre.require("handlers/helpers_test.sjs");
+var test_helpers = acre.require("handlers/test/helpers.sjs");
 
-var js_manifest_handler = acre.require("handlers/js_manifest_handler.sjs");
+var css_handler = acre.require("handlers/css_handler.sjs");
 
-acre.require("handlers/mock_handler.sjs").playback(this, js_manifest_handler, null, "handlers/playback_test_js_manifest_handler.json");
+acre.require("handlers/test/mock_handler.sjs").playback(this, css_handler, {
+  to_module: function(result) {
+    return result.body;
+  }
+}, "handlers/test/playback_test_css_handler.json");
+
+test("quote_url", function() {
+  equal(css_handler.quote_url("some url"),   '"some url"');
+  equal(css_handler.quote_url('"some url"'), '"some url"');
+  equal(css_handler.quote_url("'some url'"), '"some url"');
+});
+
 
 function assert_content(content) {
-  ok(content.indexOf('var name = "handle_me.js";') >= 0);
+  // assert transformation of urls in handlers/test/handle_me.css
+  ok(content.indexOf("url(template/ui-icons.png)") === -1, "expected url(template/ui-icons.png) to be transformed");
+  ok(content.indexOf('url("' + h.static_url(acre.resolve("template/ui-icons.png")) + '")') >= 0, "expected url(template/ui-icons.png) to be transformed");
+
+  ok(content.indexOf("url(http") === -1, "expected url to be quoted");
+  ok(content.indexOf('url("http') >= 0, "expected url to be quoted");
 };
 
+var self = this;
+test("preprocessor", function() {
+  var content = acre.get_source("handlers/test/handle_me.css");
+  var script = {
+    get_content: function() {
+      return {
+        body: acre.get_source("handlers/test/handle_me.css")
+      };
+    },
+    scope: self
+  };
+
+  var result = css_handler.preprocessor(script);
+  assert_content(result);
+});
+
 test("require", function() {
-  var module = acre.require("handlers/handle_me.mf.js", test_helpers.metadata("mf.js", "handlers/js_manifest_handler", "handlers/handle_me.mf.js"));
+  var module = acre.require("handlers/test/handle_me.css", test_helpers.metadata("css", "handlers/css_handler", "handlers/test/handle_me.css"));
   ok(module.body, "got acre.require module.body");
   assert_content(module.body);
 });
 
 test("include", function() {
-  var resp = acre.include("handlers/handle_me.mf.js", test_helpers.metadata("mf.js", "handlers/js_manifest_handler", "handlers/handle_me.mf.js"));
+  var resp = acre.include("handlers/test/handle_me.css", test_helpers.metadata("css", "handlers/css_handler", "handlers/test/handle_me.css"));
   ok(resp, "got acre.include response");
   assert_content(resp);
-  ok(resp.headers && resp.headers["content-type"] === "application/x-javascript", "content-type is application/x-javascript");
+  ok(resp.headers && resp.headers["content-type"] === "text/css", "content-type is text/css");
 });
+
 
 acre.test.report();

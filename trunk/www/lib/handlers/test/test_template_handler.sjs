@@ -31,7 +31,7 @@
 acre.require("/test/lib").enable(this);
 
 var h = acre.require("helper/helpers.sjs");
-var test_helpers = acre.require("handlers/helpers_test.sjs");
+var test_helpers = acre.require("handlers/test/helpers.sjs");
 var deferred = acre.require("promise/deferred.sjs");
 var template_handler = acre.require("handlers/template_handler.sjs");
 var render = template_handler.render;
@@ -49,7 +49,7 @@ function find(str, start_pattern, end_pattern) {
   return null;
 };
 
-acre.require("handlers/mock_handler.sjs").playback(this, template_handler, {
+acre.require("handlers/test/mock_handler.sjs").playback(this, template_handler, {
   to_js: function(result) {
     var link_href = find(result, "<link href=", ">");
     var script_src = find(result, "<script src=", "</script>");
@@ -72,29 +72,29 @@ acre.require("handlers/mock_handler.sjs").playback(this, template_handler, {
       content_body: content_body
     };
   }
-}, "handlers/playback_test_template_handler.json");
+}, "handlers/test/playback_test_template_handler.json");
 
 test("require", function() {
-  var module = acre.require("handlers/handle_me.template",
+  var module = acre.require("handlers/test/handle_me.template",
                             test_helpers.metadata("template", "handlers/template_handler",
-                                                  "handlers/handle_me.template"));
+                                                  "handlers/test/handle_me.template"));
   ok(module, "got acre.require module");
 
   console.log("acre.require module", module);
 });
 
 test("include", function() {
-  var resp = acre.include("handlers/handle_me.template",
+  var resp = acre.include("handlers/test/handle_me.template",
                           test_helpers.metadata("template", "handlers/template_handler",
-                                                "handlers/handle_me.template"));
+                                                "handlers/test/handle_me.template"));
   ok(resp, "got acre.include response");
 
   // make sure <link href> and <script src> have transformed static urls
   var expected;
-  expected = "<link href=\"" + h.static_url("handlers/handle_me.css") + "\"";
+  expected = "<link href=\"" + h.static_url("handlers/test/handle_me.css") + "\"";
   ok(resp.indexOf(expected) !== -1, "expected transformed <link href>: " + expected);
 
-  expected = "<script src=\"" + h.static_url("handlers/handle_me.mf.js") + "\"";
+  expected = "<script src=\"" + h.static_url("handlers/test/handle_me.mf.js") + "\"";
   ok(resp.indexOf(expected) !== -1, "expected transformed <script src>: " + expected);
 
   expected = "<p>content_body id:/en/blade_runner, id2:/en/bob_dylan</p>";

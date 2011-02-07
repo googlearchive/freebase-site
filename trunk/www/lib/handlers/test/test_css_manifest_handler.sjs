@@ -32,11 +32,11 @@ acre.require('/test/lib').enable(this);
 
 var h = acre.require("helper/helpers.sjs");
 
-var test_helpers = acre.require("handlers/helpers_test.sjs");
+var test_helpers = acre.require("handlers/test/helpers.sjs");
 
 var css_manifest_handler = acre.require("handlers/css_manifest_handler.sjs");
 
-acre.require("handlers/mock_handler.sjs").playback(this, css_manifest_handler, null, "handlers/playback_test_css_manifest_handler.json");
+acre.require("handlers/test/mock_handler.sjs").playback(this, css_manifest_handler, null, "handlers/test/playback_test_css_manifest_handler.json");
 
 function assert_content(content, lessified) {
   if (lessified) {
@@ -49,13 +49,13 @@ function assert_content(content, lessified) {
 };
 
 test("require", function() {
-  var module = acre.require("handlers/handle_me.mf.css", test_helpers.metadata("mf.css", "handlers/css_manifest_handler", "handlers/handle_me.mf.css"));
+  var module = acre.require("handlers/test/handle_me.mf.css", test_helpers.metadata("mf.css", "handlers/css_manifest_handler", "handlers/test/handle_me.mf.css"));
   ok(module.body, "got acre.require module.body");
   assert_content(module.body, false);
 });
 
 test("include", function() {
-  var resp = acre.include("handlers/handle_me.mf.css", test_helpers.metadata("mf.css", "handlers/css_manifest_handler", "handlers/handle_me.mf.css"));
+  var resp = acre.include("handlers/test/handle_me.mf.css", test_helpers.metadata("mf.css", "handlers/css_manifest_handler", "handlers/test/handle_me.mf.css"));
   ok(resp, "got acre.include response");
   assert_content(resp, true);
   ok(resp.headers && resp.headers["content-type"] === "text/css", "content-type is text/css");

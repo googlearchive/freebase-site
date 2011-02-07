@@ -30,17 +30,17 @@
  */
 acre.require("/test/lib").enable(this);
 
-var test_helpers = acre.require("handlers/helpers_test.sjs");
+var test_helpers = acre.require("handlers/test/helpers.sjs");
 var deferred = acre.require("promise/deferred.sjs");
 var ajax_handler = acre.require("handlers/ajax_handler.sjs");
 var lib = acre.require("handlers/service_lib.sjs");
 var validators = acre.require("validator/validators.sjs");
 
-acre.require("handlers/mock_handler.sjs").playback(this, ajax_handler, {
+acre.require("handlers/test/mock_handler.sjs").playback(this, ajax_handler, {
   to_module: function(result) {
     return JSON.stringify(result.SPEC);
   }
-}, "handlers/playback_test_ajax_handler.json");
+}, "handlers/test/playback_test_ajax_handler.json");
 
 var mock_script = {
   scope: this
@@ -117,8 +117,8 @@ test("to_ajax_response", function() {
 });
 
 test("require", function() {
-  var module = acre.require("handlers/handle_me.ajax",
-                            test_helpers.metadata("ajax", "handlers/ajax_handler", "handlers/handle_me.ajax"));
+  var module = acre.require("handlers/test/handle_me.ajax",
+                            test_helpers.metadata("ajax", "handlers/ajax_handler", "handlers/test/handle_me.ajax"));
   ok(module, "got acre.require module");
   ok(module.SPEC && typeof module.SPEC === "object", "got module.SPEC");
   ["method", "auth"].forEach(function(m) {
@@ -149,16 +149,16 @@ test("include", function() {
     same(json.result, {topic1:"/en/blade_runner", topic2:"/en/bob_dylan"});
   };
 
-  var resp = acre.include("handlers/handle_me.ajax",
-                          test_helpers.metadata("ajax", "handlers/ajax_handler", "handlers/handle_me.ajax"));
+  var resp = acre.include("handlers/test/handle_me.ajax",
+                          test_helpers.metadata("ajax", "handlers/ajax_handler", "handlers/test/handle_me.ajax"));
   ok(resp, "got acre.include response");
   check_response(resp);
 
   try {
     // callback
     acre.request.params.callback = "foo";
-    resp = acre.include("handlers/handle_me.ajax",
-                        test_helpers.metadata("ajax", "handlers/ajax_handler", "handlers/handle_me.ajax"));
+    resp = acre.include("handlers/test/handle_me.ajax",
+                        test_helpers.metadata("ajax", "handlers/ajax_handler", "handlers/test/handle_me.ajax"));
     ok(resp, "got acre.include response");
     check_response(resp, "foo");
   }
@@ -187,16 +187,16 @@ test("include error", function() {
     ok(json.transaction_id, "got transaction_id");
   };
 
-  var resp = acre.include("handlers/handle_me.error.ajax",
-                          test_helpers.metadata("ajax", "handlers/ajax_handler", "handlers/handle_me.error.ajax"));
+  var resp = acre.include("handlers/test/handle_me.error.ajax",
+                          test_helpers.metadata("ajax", "handlers/ajax_handler", "handlers/test/handle_me.error.ajax"));
   ok(resp, "got acre.include response");
   check_response(resp);
 
   try {
     // callback
     acre.request.params.callback = "foo";
-    resp = acre.include("handlers/handle_me.error.ajax",
-                        test_helpers.metadata("ajax", "handlers/ajax_handler", "handlers/handle_me.error.ajax"));
+    resp = acre.include("handlers/test/handle_me.error.ajax",
+                        test_helpers.metadata("ajax", "handlers/ajax_handler", "handlers/test/handle_me.error.ajax"));
     ok(resp, "got acre.include response");
     check_response(resp, "foo");
   }

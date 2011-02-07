@@ -10,7 +10,7 @@ var SPEC = {
     return ["/en/blade_runner", "/en/bob_dylan"];
   },
 
-  template: "handlers/handle_me.mjt",
+  template: "handlers/test/handle_me.mjt",
 
   run: function(id, id2) {
     return {

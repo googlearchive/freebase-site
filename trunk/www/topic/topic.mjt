@@ -41,6 +41,10 @@
   <link rel="stylesheet" type="text/css" href="topic.mf.css" />
 </acre:block>
 
+<acre:block def="title()">
+  ${_('Topic')} - ${c.object.name}
+</acre:block>
+
 <acre:block def="nav_utilities()">
   <acre:block if="c.object">
     <li>

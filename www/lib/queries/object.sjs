@@ -95,7 +95,7 @@ function object(id) {
           })
       );
       promises.push(
-        freebase.get_blob(article.id, "blurb")
+        freebase.get_blob(article.id, "blurb", {maxlength:500})
           .then(function(blob) {
             topic.blurb = blob.body;
             return article;

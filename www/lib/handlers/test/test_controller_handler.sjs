@@ -30,14 +30,14 @@
  */
 acre.require("/test/lib").enable(this);
 
-var test_helpers = acre.require("handlers/helpers_test.sjs");
+var test_helpers = acre.require("handlers/test/helpers.sjs");
 var deferred = acre.require("promise/deferred.sjs");
 var controller_handler = acre.require("handlers/controller_handler.sjs");
 var render = controller_handler.render;
 var lib = acre.require("handlers/service_lib.sjs");
 var validators = acre.require("validator/validators.sjs");
 
-acre.require("handlers/mock_handler.sjs").playback(this, controller_handler, {
+acre.require("handlers/test/mock_handler.sjs").playback(this, controller_handler, {
   to_module: function(result) {
     return JSON.stringify(result.SPEC);
   },
@@ -53,7 +53,7 @@ acre.require("handlers/mock_handler.sjs").playback(this, controller_handler, {
     }
     return body;
   }
-}, "handlers/playback_test_controller_handler.json");
+}, "handlers/test/playback_test_controller_handler.json");
 
 var self = this;
 
@@ -64,7 +64,7 @@ test("render", function() {
   var service_result = {
     topic: "Blade Runner",
     topic2: "Bob Dylan",
-    template: "handlers/handle_me.mjt"
+    template: "handlers/test/handle_me.mjt"
   };
   render(service_result, null, self)
     .then(function(render_result) {
@@ -78,7 +78,7 @@ test("render", function() {
   // render def in template
   service_result = {
     topic: "Sakuragi",
-    template: "handlers/handle_me.mjt",
+    template: "handlers/test/handle_me.mjt",
     def: "render_def",
     def_args: [
       deferred.resolved("Hanamichi")
@@ -103,7 +103,7 @@ test("render", function() {
     ]
   };
   var spec = {
-    template: "handlers/handle_me.mjt"
+    template: "handlers/test/handle_me.mjt"
   };
   result = null;
   render(service_result, spec, self)
@@ -118,9 +118,9 @@ test("render", function() {
 
 
 test("require", function() {
-  var module = acre.require("handlers/handle_me.controller",
+  var module = acre.require("handlers/test/handle_me.controller",
                             test_helpers.metadata("controller", "handlers/controller_handler",
-                                                  "handlers/handle_me.controller"));
+                                                  "handlers/test/handle_me.controller"));
   ok(module, "got acre.require module");
   ok(module.SPEC && typeof module.SPEC === "object", "got module.SPEC");
   ["method", "auth"].forEach(function(m) {
@@ -132,9 +132,9 @@ test("require", function() {
 });
 
 test("include", function() {
-  var resp = acre.include("handlers/handle_me.controller",
+  var resp = acre.include("handlers/test/handle_me.controller",
                           test_helpers.metadata("controller", "handlers/controller_handler",
-                                                "handlers/handle_me.controller"));
+                                                "handlers/test/handle_me.controller"));
   ok(resp, "got acre.include response");
   var expected = "<p>content_body topic:Blade Runner, topic2:Bob Dylan</p>";
   ok(resp.indexOf(expected) !== -1, "expected content: " + expected);

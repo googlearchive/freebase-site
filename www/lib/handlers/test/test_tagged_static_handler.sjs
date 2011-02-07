@@ -31,29 +31,29 @@
 acre.require('/test/lib').enable(this);
 
 var h = acre.require("helper/helpers.sjs");
-var test_helpers = acre.require("handlers/helpers_test.sjs");
+var test_helpers = acre.require("handlers/test/helpers.sjs");
 
 var tagged_static_handler = acre.require("handlers/tagged_static_handler.sjs");
 
-acre.require("handlers/mock_handler.sjs").playback(this, tagged_static_handler, {
+acre.require("handlers/test/mock_handler.sjs").playback(this, tagged_static_handler, {
   to_http_response: function(result) {
     result.headers.expires = "in the future";
     return result;
   }
-}, "handlers/playback_test_tagged_static_handler.json");
+}, "handlers/test/playback_test_tagged_static_handler.json");
 
 function assert_content(content) {
   ok(content.indexOf('var name = "handle_me.js";') >= 0);
 };
 
 test("require", function() {
-  var module = acre.require("handlers/handle_me.js", test_helpers.metadata("js", "handlers/tagged_static_handler", "handlers/handle_me.js"));
+  var module = acre.require("handlers/test/handle_me.js", test_helpers.metadata("js", "handlers/tagged_static_handler", "handlers/test/handle_me.js"));
   ok(module.body, "got acre.require module.body");
   assert_content(module.body);
 });
 
 test("include", function() {
-  var resp = acre.include("handlers/handle_me.js", test_helpers.metadata("js", "handlers/tagged_static_handler", "handlers/handle_me.js"));
+  var resp = acre.include("handlers/test/handle_me.js", test_helpers.metadata("js", "handlers/tagged_static_handler", "handlers/test/handle_me.js"));
   ok(resp, "got acre.include response");
   assert_content(resp);
   ok(resp.headers, "got headers");

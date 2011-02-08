@@ -30,9 +30,9 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("lib/test/mock").playback(this, "playback_test_queries_domain.json");
+acre.require("lib/test/mock").playback(this, "test/playback_test_queries_domain.json");
 
-var ht = acre.require("helpers_test");
+var ht = acre.require("test/helpers.sjs");
 var q = acre.require("queries");
 var mql = acre.require("mql");
 

@@ -34,7 +34,8 @@
 </acre:block>
 
 <acre:block def="head()">
-  <script src="jquery.mqlkey.test.mf.js"></script>
+  <script src="jquery.mqlkey.js"></script>
+  <script src="test/qunit_jquery_mqlkey.js"></script>
 </acre:block>
 
 <acre:block def="fixture()">

@@ -87,8 +87,6 @@ function run_tests($, fb) {
   });
 
   test("resolve_reentrant_path", function() {
-console.log(fb.acre.request.script.app.path, fb.acre.current_script.app.path, h.resolve_reentrant_path);
-
     var app_path = fb.acre.request.script.app.path;
     var lib_path = fb.acre.current_script.app.path;
 

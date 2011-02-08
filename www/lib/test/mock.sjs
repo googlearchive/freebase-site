@@ -116,7 +116,7 @@ if (mock) {
     var acre_test_report = scope.acre.test.report;
     scope.acre.test.report = function(name) {
       acre_test_report.apply(scope, arguments);
-      acre.write("<pre>"+JSON.stringify(playback_data)+"</pre>");
+      acre.write("<h1>Playback data:</h1><textarea cols=100 rows=10>"+JSON.stringify(playback_data)+"</textarea>");
     };
   };
 

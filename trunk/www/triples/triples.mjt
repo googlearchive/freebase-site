@@ -442,7 +442,12 @@
   </span>
   <span class="literal-type">${a(o.type)}</span>
   <acre:block if="o.type === '/type/text'" trim="">
-    ${lang(o.lang || o.link.target_value.lang)}
+    <acre:script>
+      var l = o.lang || (o.link && o.link.target_value && o.link.target_value.lang);
+    </acre:script>
+    <acre:block if="l">
+      ${lang(l)}
+    </acre:block>
   </acre:block>
 </acre:block>
 

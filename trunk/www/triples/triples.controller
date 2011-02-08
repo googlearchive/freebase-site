@@ -55,7 +55,6 @@ var SPEC = {
   },
 
   run: function(id, filters) {
-    console.log("run", id, filters);
     return {
       object: object_query(id),
 

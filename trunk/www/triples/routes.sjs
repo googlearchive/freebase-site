@@ -80,8 +80,6 @@ else {
 }
 
 function route(script, path) {
-  console.log("triples/routes", script, path);
-
   if (script === "/") {
     script = "/index";
   }

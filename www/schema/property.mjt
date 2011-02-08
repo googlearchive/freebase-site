@@ -88,8 +88,7 @@
 </acre:block>
 
 <acre:block def="keys()">
-  <span class="key"><strong>${_("Key")}:</strong> $c.property.id</span>
-  <span class="key"><strong>${_("Belongs to")}:</strong> <a href="${h.url_for('schema', null, null, c.property.schema.id)}">${i18n.display_name(c.property.schema)}</a></span>
+  <span class="key"><strong>${_("schema")}:</strong> <a href="${h.url_for('schema', null, null, c.property.schema.id)}">${c.property.schema.id}</a></span>
 </acre:block>
 
 <acre:block def="page_content()">

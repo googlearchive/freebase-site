@@ -83,10 +83,6 @@
    ${_("Domain")}
 </acre:block>
 
-<acre:block def="keys()">
-  <span class="key"><strong> ${_("Key:")}</strong> $c.domain.id</span>        
-</acre:block>
-
 <acre:block def="page_content()">
    <!-- Types -->
    <div class="section">

@@ -56,7 +56,8 @@ function object(id) {
     type: [{
       id: null,
       optional: true
-    }]
+    }],
+    permission: null
   })
   .then(function(env) {
     return env.result;

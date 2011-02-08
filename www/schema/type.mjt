@@ -107,8 +107,8 @@
 </acre:block>
 
 <acre:block def="keys()">
-  <span class="key"><strong>${_('Key')}: </strong>$c.type.id</span>
-  <span class="included-types" acre:if="c.type.included_types.length > 0">
+  <span class="key"><strong>${_("domain")}:</strong> <a href="${h.url_for('schema', null, null, c.type.domain.id)}">${c.type.domain.id}</a></span>
+  <span class="included-types key" acre:if="c.type.included_types.length > 0">
     <strong>${_('Includes')}: </strong>
     <acre:block trim="">
       <span acre:for="i, t in c.type.included_types" acre:trim="">

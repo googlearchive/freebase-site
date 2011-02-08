@@ -30,34 +30,65 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("lib/test/mock").playback(this, "playback_test_queries_property.json");
+acre.require("lib/test/mock").playback(this, "test/playback_test_queries_type.json");
 
-var ht = acre.require("helpers_test");
+var ht = acre.require("test/helpers.sjs");
 var q = acre.require("queries");
 var self = this;
 
-test("type_properties", function() {
+test("base_type", function() {
   var result;
-  q.type_properties("/base/slamdunk/player")
-    .then(function(type) {
-      result = type.properties;
+  q.base_type("/base/slamdunk/player")
+    .then(function(t) {
+      result = t;
     });
   acre.async.wait_on_results();
-  ok(result && result.length, "got properties for /base/slamdunk/player");
-  result.forEach(function(prop) {
-    ht.assert_prop(self, prop);
-  });
+  ok(result);
+  ht.assert_type(self, result);
 });
 
-test("property", function() {
+test("type", function() {
   var result;
-  q.property("/film/film/starring")
-    .then(function(p) {
-      result = p;
+  q.type("/base/slamdunk/player")
+    .then(function(t) {
+      result = t;
     });
   acre.async.wait_on_results();
-  ok(result, "got /film/film/starring property");
-  ht.assert_prop(self, result);
+  ok(result);
+  ht.assert_type(self, result);
+  ok(result.incoming);
+  ht.assert_keys(self, ["domain", "commons", "bases"], result.incoming);
+});
+
+test("typediagram", function() {
+  var result;
+  q.typediagram("/base/slamdunk/player")
+    .then(function(t) {
+      result = t;
+    });
+  acre.async.wait_on_results();
+  ok(result);
+  ht.assert_type(self, result);
+  ok(result.incoming);
+  ht.assert_keys(self, ["domain", "commons", "bases"], result.incoming);
+});
+
+
+test("type_role", function() {
+  var result;
+  q.type_role("/film/performance")
+    .then(function(role) {
+      result = role;
+    });
+  acre.async.wait_on_results();
+  ok(result.mediator, "expected /film/performance to be a mediator");
+
+  q.type_role("/people/gender")
+    .then(function(role) {
+      result = role;
+    });
+  acre.async.wait_on_results();
+  ok(result.enumeration, "expected /people/gender to be an enumeration");
 });
 
 

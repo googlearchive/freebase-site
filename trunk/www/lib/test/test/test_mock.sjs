@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mock").playback(this, "test/playback_test_mock.json");
+acre.require("test/mock").playback(this, "test/test/playback_test_mock.json");
 
 var urlfetch = acre.require("promise/apis").urlfetch;
 var freebase = acre.require("promise/apis").freebase;
@@ -211,7 +211,7 @@ test("mock_freebase_get_static", function() {
   acre.async.wait_on_results();
   ok(result, "got result");
   ok(result.notable_for && result.notable_for.length, "got notable_for");
-  equal(result.notable_for[0].o, "/en/musician");
+  equal(result.notable_for[0].o, "/en/singer-songwriter");
 });
 
 var self = this;

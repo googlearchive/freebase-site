@@ -34,7 +34,6 @@
   Uses template/freebase.mjt for chrome
 !!-->
 <acre:script>
-console.log("acre.request", acre.request);
   var c = this.exports.c = {};
   var h = acre.require("helper/helpers.sjs");
   var i18n = acre.require("i18n/i18n.sjs");
@@ -139,9 +138,15 @@ console.log("acre.request", acre.request);
         </div>    
         <div class="admin-toolbox">
           <span class="creation-timestamp">
-            ${image.user_image_small(c.object.creator)}
-            ${_("Created by")} <a href="${h.legacy_fb_url('/view', c.object.creator.id)}" title="${_('View user profile')}">${c.object.creator.name}</a> 
-            on <time class="published" datetime="${c.object.timestamp}">${i18n.format_timestamp(c.object.timestamp)}</time>
+            <acre:block if="c.object.creator">
+              ${image.user_image_small(c.object.creator)}
+              ${_("Created by")} <a href="${h.legacy_fb_url('/view', c.object.creator.id)}" title="${_('View user profile')}">${c.object.creator.name}</a> 
+              on 
+            </acre:block>
+            <acre:block else="">
+              ${_("Created on")}
+            </acre:block>
+            <time class="published" datetime="${c.object.timestamp}">${i18n.format_timestamp(c.object.timestamp)}</time>
           </span>
         </div>
         <acre:script>

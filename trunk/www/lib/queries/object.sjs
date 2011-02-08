@@ -44,6 +44,7 @@ function object(id) {
     mid: null,
     name: null,
     creator: {
+      optional: true,
       id: null,
       name: null
     },
@@ -64,7 +65,9 @@ function object(id) {
   })
   .then(function(topic) {
     topic.name = topic.name || topic.mid;
-    topic.creator.name = topic.creator.name || topic.creator.id;
+    if (topic.creator) {
+      topic.creator.name = topic.creator.name || topic.creator.id;
+    }
     var promises = [];
     promises.push(
       freebase.get_static("notable_types_2", topic.guid.substring(1))

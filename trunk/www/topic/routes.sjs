@@ -81,8 +81,6 @@ else {
 }
 
 function route(script, path) {
-  console.log("topic/routes", script, path);
-
   if (script === "/") {
     script = "/index";
   }

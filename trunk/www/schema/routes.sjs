@@ -92,7 +92,6 @@ else {
 }
 
 function route(script, path) {
-  console.log("schema/routes", script, path);
   if (script === "/") {
     script = "/index";
   }

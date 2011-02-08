@@ -61,6 +61,7 @@ var rules = {
     {prefix:"/lib/handlers",       app:lib + "/handlers"},
     {prefix:"/lib/template",       app:lib + "/template"},
     {prefix:"/lib/permission",     app:lib + "/permission"},
+    {prefix:"/lib/appeditor-services",     app:lib + "/appeditor-services"},
 
     // Urls for administrative tools
     {prefix:"/admin",              app:"//admin" + codebase},

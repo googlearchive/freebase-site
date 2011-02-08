@@ -120,8 +120,14 @@ console.log("acre.request", acre.request);
           <span class="key">
             <strong><abbr title="${_('Machine ID')}">${_("mid")}</abbr></strong>: ${c.object.mid}
           </span>
+          <span class="key">
+            <strong><abbr title="${_('ID')}">${_("id")}</abbr></strong>: ${c.object.id}
+          </span>
+          <span class="key">
+            <strong><abbr title="${_('GUID')}">${_("guid")}</abbr></strong>: ${c.object.guid}
+          </span>
           <!-- Show top-ranked notable type -->
-          <span acre:if="c.object.notable_type" class="key">
+          <span acre:if="c.object.notable_type && c.object.notable_type !== '/type/type'" class="key">
             <strong>${_('notable type')}</strong>: <a href="${h.fb_url('/schema', c.object.notable_type)}">${c.object.notable_type}</a>
           </span>
           <span acre:elif="c.object.notable_for" class="key">

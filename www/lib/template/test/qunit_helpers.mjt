@@ -28,27 +28,14 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  !!-->
-
-<acre:script>
-  var h = acre.require("helper/helpers.sjs");
-</acre:script>
-
 <acre:block def="title()">
-  jquery.placeholder.js
+  template/helpers.js
 </acre:block>
 
 <acre:block def="head()">
-  <script src="template/jquery.placeholder.js"></script>
-  <script src="template/jquery.placeholder.test.js"></script>
+  <script src="template/test/qunit_helpers.js"></script>
+  <script src="template/helpers.js"></script>
 </acre:block>
 
-<acre:block def="fixture()">
-  <form id="form">
-    <input type="text" id="text" placeholder="text"/>
-    <textarea id="textarea" placeholder="textarea"></textarea>
-    <input type="checkbox" id="checkbox" placeholder="checkbox"/>
-  </form>
-</acre:block>
-
-${acre.require("template/renderer").render_page(null, this.exports, acre.require("test/qunit"))}
+${acre.require("template/renderer").render_page(null, this.exports, acre.require("test/qunit.mjt"))}
 

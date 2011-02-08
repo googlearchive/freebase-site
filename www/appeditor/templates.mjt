@@ -355,7 +355,7 @@
 <!-- utilities -->  
 <div acre:def="message_panel(type, msg, tid)" class="message-$type">
   <!--<span id="message-panel-close">x</span>-->
-  <div class="message-icon $type"></div> ${mjt.bless(msg)} 
+  <div class="message-icon $type"></div>$msge
   <span class="message-tid">${tid||""}</span>
   <acre:script script="ondomready">
     $('#message-panel-close').click(function(){

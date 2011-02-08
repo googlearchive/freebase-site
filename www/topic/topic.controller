@@ -55,7 +55,6 @@ var SPEC = {
   },
 
   run: function(id, gf, vf) {
-    console.log("run", id, gf, vf, acre.h);
     return {
       id: id,
       object: object_query(id),

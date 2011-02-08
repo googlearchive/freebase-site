@@ -48,7 +48,6 @@
       "href": "#"
     };
     var app_path = acre.request.script.app.path;
-    console.log("app_path", app_path);
   </acre:script>
 
   <!!-- schema !!-->

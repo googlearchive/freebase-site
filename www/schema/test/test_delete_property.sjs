@@ -31,18 +31,23 @@
 
 acre.require('/test/lib').enable(this);
 
+acre.require("lib/test/mock").playback(this, "test/playback_test_delete_property.json");
+
 var freebase = acre.require("lib/promise/apis").freebase;
-var h = acre.require("lib/test/helpers");
+var test_helpers = acre.require("lib/test/helpers");
 var delete_property = acre.require("delete_property").delete_property;
 var undo = acre.require("delete_property").undo;
 
 // this test requires user to be logged in
-var user = acre.freebase.get_user_info();
-
+var user;
 test("login required", function() {
+  freebase.get_user_info()
+    .then(function(user_info) {
+      user = user_info;
+    });
+  acre.async.wait_on_results();
   ok(user, "login required");
 });
-
 if (!user) {
   acre.test.report();
   acre.exit();
@@ -51,227 +56,485 @@ if (!user) {
 var user_domain = user.id + "/default_domain";
 
 test("delete_property", function() {
-  var type = h.create_type(user_domain);
-  var type2 = h.create_type(user_domain);
-  var prop = h.create_property(type.id, {"/type/property/expected_type": {id: type2.id}});
-  try {
-    var info, result;
-    delete_property(prop.id, user.id, false, true)
-      .then(function([prop_info, delete_result]) {
-        info = prop_info;
-        result = delete_result;
-      });
-    acre.async.wait_on_results();
-    ok(result);
+  var type, type2, prop;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
+    });
+  acre.async.wait_on_results();
+  ok(type, "test type created");
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type2 = created;
+    });
+  acre.async.wait_on_results();
+  ok(type2, "test type2 created");
+  test_helpers.create_property2(type.mid, {"/type/property/expected_type": {id: type2.mid}})
+    .then(function(created) {
+      prop = created;
+    });
+  acre.async.wait_on_results();
+  ok(prop, "test prop created");
 
-    ok(result.type.id === "/type/property" &&
-       result.type.connect === "deleted", "type link deleted: " + prop.id);
+  var info, result;
+  delete_property(prop.mid, user.id, false, true)
+    .then(function([i, r]) {
+      info = i;
+      result = r;
+    });
+  acre.async.wait_on_results();
+  ok(info, "got delete_property info");
+  ok(result, "got delete_property result");
 
-    ok(result.key[0].value === prop.key.value &&
-       result.key[0].namespace === prop.key.namespace &&
-       result.key[0].connect === "deleted", "key deleted: " + prop.key.value);
+  var check_result;
+  freebase.mqlread({
+    id: prop.mid,
+    type: {
+      id: "/type/property",
+      optional: "forbidden"
+    },
+    key: {
+      namespace: prop.key.namespace,
+      value: prop.key.value,
+      optional: "forbidden"
+    },
+    "/type/property/schema": {
+      id: prop.schema.id,
+      optional: "forbidden"
+    },
+    "/dataworld/gardening_task/async_delete": true
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
+});
 
-    ok(result.schema.id === prop.schema.id &&
-       result.schema.connect === "deleted", "schema link deleted: " + prop.schema.id);
 
-    ok(result.expected_type.id === type2.id &&
-       result.expected_type.connect === "deleted", "expected_type link deleted: " + type2.id);
+test("delete_property dry_run", function() {
+  var type, type2, prop;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
+    });
+  acre.async.wait_on_results();
+  ok(type, "test type created");
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type2 = created;
+    });
+  acre.async.wait_on_results();
+  ok(type2, "test type2 created");
+  test_helpers.create_property2(type.mid, {"/type/property/expected_type": {id: type2.mid}})
+    .then(function(created) {
+      prop = created;
+    });
+  acre.async.wait_on_results();
+  ok(prop, "test prop created");
 
-    ok(result["/dataworld/gardening_task/async_delete"].value === true &&
-       result["/dataworld/gardening_task/async_delete"].connect === "inserted",
-       "/dataworld/gardening_task/async_delete set");
-  }
-  finally {
-    if (prop) h.delete_property(prop);
-    if (type2) h.delete_type(type2);
-    if (type) h.delete_type(type);
-  }
+  var info, result;
+  delete_property(prop.mid, user.id, true)
+    .then(function([i, r]) {
+      info = i;
+      result = r;
+    });
+  acre.async.wait_on_results();
+  ok(info, "got delete_property info");
+  ok(!result, "did not expect delete_property result");
+
+  equal(info.guid, prop.guid, "property info.guid: " + info.guid);
 });
 
 test("undo", function() {
-  var type = h.create_type(user_domain);
-  var type2 = h.create_type(user_domain);
-  var prop = h.create_property(type.id, {"/type/property/expected_type": {id: type2.id}});
+  var type, type2, prop;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
+    });
+  acre.async.wait_on_results();
+  ok(type, "test type created");
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type2 = created;
+    });
+  acre.async.wait_on_results();
+  ok(type2, "test type2 created");
+  test_helpers.create_property2(type.mid, {"/type/property/expected_type": {id: type2.mid}})
+    .then(function(created) {
+      prop = created;
+    });
+  acre.async.wait_on_results();
+  ok(prop, "test prop created");
 
-  try {
-    var info, result;
-    delete_property(prop.id, user.id)
-      .then(function([prop_info, delete_result]) {
-        info = prop_info;
-        result = delete_result;
-      });
-    acre.async.wait_on_results();
-    ok(result);
-    ok(result.type.id === "/type/property" &&
-       result.type.connect === "deleted", "type link deleted: " + prop.id);
+  var info, result;
+  delete_property(prop.mid, user.id, false, true)
+    .then(function([i, r]) {
+      info = i;
+      result = r;
+    });
+  acre.async.wait_on_results();
+  ok(info, "got delete_property info");
+  ok(result, "got delete_property result");
 
-    // undo
-    undo(info)
-      .then(function([prop_info, undo_result]) {
-        info = prop_info;
-        result = undo_result;
-      });
-    acre.async.wait_on_results();
-    ok(result);
-    ok(result.type.id === "/type/property" && result.type.connect === "inserted", JSON.stringify(result));
+  // assert deleted
+  ok(result.type.id === "/type/property" && result.type.connect === "deleted", "/type/property deleted");
 
-    ok(result["/dataworld/gardening_task/async_delete"].value === true &&
-       result["/dataworld/gardening_task/async_delete"].connect === "deleted",
-       "/dataworld/gardening_task/async_delete unset");
-  }
-  finally {
-    if (prop) h.delete_property(prop);
-    if (type2) h.delete_type(type2);
-    if (type) h.delete_type(type);
-  }
+  // undo
+  var undo_info, undo_result;
+  undo(info)
+    .then(function([i, r]) {
+      undo_info = i;
+      undo_result = r;
+    });
+  acre.async.wait_on_results();
+  ok(undo_info, "get undo info");
+  ok(undo_result, "got undo result");
+
+
+  var check_result;
+  freebase.mqlread({
+    id: prop.mid,
+    type: {
+      id: "/type/property"
+    },
+    key: {
+      namespace: prop.key.namespace,
+      value: prop.key.value
+    },
+    "/type/property/schema": {
+      id: prop.schema.id
+    },
+    "/dataworld/gardening_task/async_delete": {
+      value: true,
+      optional: "forbidden"
+    }
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
 });
 
 test("delete_property with master_property", function() {
-  var type = h.create_type(user_domain);
-  var type2 = h.create_type(user_domain);
-  var prop2 = h.create_property(type2.id);
-  var prop = h.create_property(type.id, {"/type/property/master_property": {id: prop2.id}});
+  var type, type2, prop, prop2;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
+    });
+  acre.async.wait_on_results();
+  ok(type, "test type created");
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type2 = created;
+    });
+  acre.async.wait_on_results();
+  ok(type2, "test type2 created");
+  test_helpers.create_property2(type2.mid)
+    .then(function(created) {
+      prop2 = created;
+    });
+  acre.async.wait_on_results();
+  ok(prop2, "test prop2 created");
+  test_helpers.create_property2(type.mid, {"/type/property/master_property": {id: prop2.mid}})
+    .then(function(created) {
+      prop = created;
+    });
+  acre.async.wait_on_results();
+  ok(prop, "test prop created");
 
-  // assert master_property present
-  var result = acre.freebase.mqlread({id:prop.id, type:"/type/property", master_property: null}).result;
-  equal(result.master_property, prop2.id);
+  // check master_property
+  var check_master;
+  freebase.mqlread({
+    id: prop.mid,
+    "/type/property/master_property": null
+  })
+  .then(function(env) {
+    check_master = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_master && check_master["/type/property/master_property"], "expected master_property on " + prop.id);
 
-  try {
-    var info;
-    delete_property(prop.id, user.id, false, true)
-      .then(function([prop_info, delete_result]) {
-        info = prop_info;
-        result = delete_result;
-      });
-    acre.async.wait_on_results();
-    ok(result);
+  var info, result;
+  delete_property(prop.mid, user.id, false, true)
+    .then(function([i, r]) {
+      info = i;
+      result = r;
+    });
+  acre.async.wait_on_results();
+  ok(info, "got delete_property info");
+  ok(result, "got delete_property result");
 
-    result = acre.freebase.mqlread({id:prop.guid, "/type/property/master_property": null}).result;
-    ok(!result["/type/property/master_property"]);
+  // check master_property deleted
+  var check_master_deleted;
+  freebase.mqlread({
+    id: prop.mid,
+    "/type/property/master_property": null
+  })
+  .then(function(env) {
+    check_master_deleted = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_master_deleted && !check_master_deleted["/type/property/master_property"],
+     "expected master_property deleted on " + prop.id);
 
-    undo(info);
-    acre.async.wait_on_results();
+  // undo delete
+  undo(info);
+  acre.async.wait_on_results();
 
-    result = acre.freebase.mqlread({id:prop.id, type:"/type/property", master_property: null}).result;
-    equal(result.master_property, prop2.id);
-  }
-  finally {
-    if (prop) h.delete_property(prop);
-    if (prop2) h.delete_property(prop2);
-    if (type2) h.delete_type(type2);
-    if (type) h.delete_type(type);
-  }
+  // check master_property undo
+  var check_master_undo;
+  freebase.mqlread({
+    id: prop.mid,
+    "/type/property/master_property": null
+  })
+  .then(function(env) {
+    check_master_undo = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_master_undo && check_master_undo["/type/property/master_property"],
+     "expected master_property undo on " + prop.id);
 });
 
 test("delete_property with reverse_property", function() {
-  var type = h.create_type(user_domain);
-  var type2 = h.create_type(user_domain);
-  var prop2 = h.create_property(type2.id);
-  var prop = h.create_property(type.id, {"/type/property/master_property": {id: prop2.id}});
+  var type, type2, prop, prop2;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
+    });
+  acre.async.wait_on_results();
+  ok(type, "test type created");
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type2 = created;
+    });
+  acre.async.wait_on_results();
+  ok(type2, "test type2 created");
+  test_helpers.create_property2(type2.mid)
+    .then(function(created) {
+      prop2 = created;
+    });
+  acre.async.wait_on_results();
+  ok(prop2, "test prop2 created");
+  test_helpers.create_property2(type.mid, {"/type/property/master_property": {id: prop2.mid}})
+    .then(function(created) {
+      prop = created;
+    });
+  acre.async.wait_on_results();
+  ok(prop, "test prop created");
 
-  // assert master_property present
-  var result = acre.freebase.mqlread({id:prop2.id, type:"/type/property", reverse_property: null}).result;
-  equal(result.reverse_property, prop.id);
+  // check master_property
+  var check_reverse;
+  freebase.mqlread({
+    id: prop2.mid,
+    "/type/property/reverse_property": null
+  })
+  .then(function(env) {
+    check_reverse = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_reverse && check_reverse["/type/property/reverse_property"], "expected reverse_property on " + prop2.id);
 
-  try {
-    var info;
-    delete_property(prop2.id, user.id, false, true)
-      .then(function([prop_info, delete_result]) {
-        info = prop_info;
-        result = delete_result;
-      });
-    acre.async.wait_on_results();
-    ok(result, JSON.stringify(info));
+  var info, result;
+  delete_property(prop2.mid, user.id, false, true)
+    .then(function([i, r]) {
+      info = i;
+      result = r;
+    });
+  acre.async.wait_on_results();
+  ok(info, "got delete_property info");
+  ok(result, "got delete_property result");
 
-    result = acre.freebase.mqlread({id:prop2.guid, "/type/property/reverse_property": null}).result;
-    ok(!result["/type/property/reverse_property"]);
+  // check reverse_property deleted
+  var check_reverse_deleted;
+  freebase.mqlread({
+    id: prop2.mid,
+    "/type/property/reverse_property": null
+  })
+  .then(function(env) {
+    check_reverse_deleted = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_reverse_deleted && !check_reverse_deleted["/type/property/reverse_property"],
+     "expected reverse_property deleted on " + prop2.id);
 
-    undo(info);
-    acre.async.wait_on_results();
+  // undo delete
+  undo(info);
+  acre.async.wait_on_results();
 
-    result = acre.freebase.mqlread({id:prop2.id, type:"/type/property", reverse_property: null}).result;
-    equal(result.reverse_property, prop.id);
-  }
-  finally {
-    if (prop) h.delete_property(prop);
-    if (prop2) h.delete_property(prop2);
-    if (type2) h.delete_type(type2);
-    if (type) h.delete_type(type);
-  }
+  // check reverse_property undo
+  var check_reverse_undo;
+  freebase.mqlread({
+    id: prop2.mid,
+    "/type/property/reverse_property": null
+  })
+  .then(function(env) {
+    check_reverse_undo = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_reverse_undo && check_reverse_undo["/type/property/reverse_property"],
+     "expected reverse_property undo on " + prop2.id);
 });
 
 test("delete_property with delegated property", function() {
-  var type = h.create_type(user_domain);
-  var type2 = h.create_type(user_domain);
-  var prop2 = h.create_property(type2.id);
-  var prop = h.create_property(type.id, {"/type/property/delegated": {id: prop2.id}});
+  var type, type2, prop, prop2;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
+    });
+  acre.async.wait_on_results();
+  ok(type, "test type created");
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type2 = created;
+    });
+  acre.async.wait_on_results();
+  ok(type2, "test type2 created");
+  test_helpers.create_property2(type2.mid)
+    .then(function(created) {
+      prop2 = created;
+    });
+  acre.async.wait_on_results();
+  ok(prop2, "test prop2 created");
+  test_helpers.create_property2(type.mid, {"/type/property/delegated": {id: prop2.mid}})
+    .then(function(created) {
+      prop = created;
+    });
+  acre.async.wait_on_results();
+  ok(prop, "test prop created");
 
-  // assert master_property present
-  var result = acre.freebase.mqlread({id:prop.id, type:"/type/property", delegated: null}).result;
-  equal(result.delegated, prop2.id);
+  // check delegated
+  var check_delegated;
+  freebase.mqlread({
+    id: prop.mid,
+    "/type/property/delegated": null
+  })
+  .then(function(env) {
+    check_delegated = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_delegated && check_delegated["/type/property/delegated"], "expected delegated on " + prop.id);
 
-  try {
-    var info;
-    delete_property(prop.id, user.id, false, true)
-      .then(function([prop_info, delete_result]) {
-        info = prop_info;
-        result = delete_result;
-      });
-    acre.async.wait_on_results();
-    ok(result);
+  var info, result;
+  delete_property(prop.mid, user.id, false, true)
+    .then(function([i, r]) {
+      info = i;
+      result = r;
+    });
+  acre.async.wait_on_results();
+  ok(info, "got delete_property info");
+  ok(result, "got delete_property result");
 
-    result = acre.freebase.mqlread({id:prop.guid, "/type/property/delegated": null}).result;
-    ok(!result["/type/property/delegated"]);
+  // check delegated deleted
+  var check_delegated_deleted;
+  freebase.mqlread({
+    id: prop.mid,
+    "/type/property/delegated": null
+  })
+  .then(function(env) {
+    check_delegated_deleted = env.result;
+a  });
+  acre.async.wait_on_results();
+  ok(check_delegated_deleted && !check_delegated_deleted["/type/property/delegated"],
+     "expected delegated deleted on " + prop.id);
 
-    undo(info);
-    acre.async.wait_on_results();
+  // undo delete
+  undo(info);
+  acre.async.wait_on_results();
 
-    result = acre.freebase.mqlread({id:prop.id, type:"/type/property", delegated: null}).result;
-    equal(result.delegated, prop2.id);
-  }
-  finally {
-    if (prop) h.delete_property(prop);
-    if (prop2) h.delete_property(prop2);
-    if (type2) h.delete_type(type2);
-    if (type) h.delete_type(type);
-  }
+  // check delegated undo
+  var check_delegated_undo;
+  freebase.mqlread({
+    id: prop.mid,
+    "/type/property/delegated": null
+  })
+  .then(function(env) {
+    check_delegated_undo = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_delegated_undo && check_delegated_undo["/type/property/delegated"],
+     "expected delegated undo on " + prop.id);
 });
 
 test("delete_property delegated by a property", function() {
-  var type = h.create_type(user_domain);
-  var type2 = h.create_type(user_domain);
-  var prop2 = h.create_property(type2.id);
-  var prop = h.create_property(type.id, {"/type/property/delegated": {id: prop2.id}});
+  var type, type2, prop, prop2;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
+    });
+  acre.async.wait_on_results();
+  ok(type, "test type created");
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type2 = created;
+    });
+  acre.async.wait_on_results();
+  ok(type2, "test type2 created");
+  test_helpers.create_property2(type2.mid)
+    .then(function(created) {
+      prop2 = created;
+    });
+  acre.async.wait_on_results();
+  ok(prop2, "test prop2 created");
+  test_helpers.create_property2(type.mid, {"/type/property/delegated": {id: prop2.mid}})
+    .then(function(created) {
+      prop = created;
+    });
+  acre.async.wait_on_results();
+  ok(prop, "test prop created");
 
-  // assert master_property present
-  var result = acre.freebase.mqlread({id:prop2.id, "!/type/property/delegated": null}).result;
-  equal(result["!/type/property/delegated"], prop.id);
+  // check delegated_by
+  var check_delegated;
+  freebase.mqlread({
+    id: prop2.mid,
+    "!/type/property/delegated": null
+  })
+  .then(function(env) {
+    check_delegated = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_delegated && check_delegated["!/type/property/delegated"], "expected delegated_by on " + prop2.id);
 
-  try {
-    var info;
-    delete_property(prop2.id, user.id, false, true)
-      .then(function([prop_info, delete_result]) {
-        info = prop_info;
-        result = delete_result;
-      });
-    acre.async.wait_on_results();
-    ok(result);
+  var info, result;
+  delete_property(prop2.mid, user.id, false, true)
+    .then(function([i, r]) {
+      info = i;
+      result = r;
+    });
+  acre.async.wait_on_results();
+  ok(info, "got delete_property info");
+  ok(result, "got delete_property result");
 
-    result = acre.freebase.mqlread({id:prop2.guid, "!/type/property/delegated": null}).result;
-    ok(!result["!/type/property/delegated"]);
+  // check delegated_by deleted
+  var check_delegated_deleted;
+  freebase.mqlread({
+    id: prop2.mid,
+    "!/type/property/delegated": null
+  })
+  .then(function(env) {
+    check_delegated_deleted = env.result;
+a  });
+  acre.async.wait_on_results();
+  ok(check_delegated_deleted && !check_delegated_deleted["!/type/property/delegated"],
+     "expected delegated_by deleted on " + prop2.id);
 
-    undo(info);
-    acre.async.wait_on_results();
+  // undo delete
+  undo(info);
+  acre.async.wait_on_results();
 
-    result = acre.freebase.mqlread({id:prop2.id, "!/type/property/delegated": null}).result;
-    equal(result["!/type/property/delegated"], prop.id);
-  }
-  finally {
-    if (prop) h.delete_property(prop);
-    if (prop2) h.delete_property(prop2);
-    if (type2) h.delete_type(type2);
-    if (type) h.delete_type(type);
-  }
+  // check delegated_by undo
+  var check_delegated_undo;
+  freebase.mqlread({
+    id: prop2.mid,
+    "!/type/property/delegated": null
+  })
+  .then(function(env) {
+    check_delegated_undo = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_delegated_undo && check_delegated_undo["!/type/property/delegated"],
+     "expected delegated_by undo on " + prop2.id);
 });
 
 acre.test.report();

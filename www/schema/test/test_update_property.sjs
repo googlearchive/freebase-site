@@ -31,304 +31,432 @@
 
 acre.require('/test/lib').enable(this);
 
-var sh = acre.require("helpers");
-var h = acre.require("lib/test/helpers");
+acre.require("lib/test/mock").playback(this, "test/playback_test_update_property.json");
+
+var freebase = acre.require("lib/promise/apis").freebase;
+var schema_helpers = acre.require("helpers");
+var test_helpers = acre.require("lib/test/helpers");
 var update_property = acre.require("update_property").update_property;
 
 // this test requires user to be logged in
-var user = acre.freebase.get_user_info();
-
+var user;
 test("login required", function() {
+  freebase.get_user_info()
+    .then(function(user_info) {
+      user = user_info;
+    });
+  acre.async.wait_on_results();
   ok(user, "login required");
 });
-
 if (!user) {
   acre.test.report();
   acre.exit();
 }
-
 var user_domain = user.id + "/default_domain";
 
 test("update_property name", function() {
-  var type = h.create_type(user_domain);
-  var prop = h.create_property(type.id);
-  try {
-    var updated;
-    update_property({
-      type: type.id,
-      id: prop.id,
-      name: prop.name + "updated"
-    })
-    .then(function(id) {
-      updated = id;
+  var type, prop;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
     });
-    acre.async.wait_on_results();
-    ok(updated, updated);
+  acre.async.wait_on_results();
+  ok(type, "test type created");
+  test_helpers.create_property2(type.mid)
+    .then(function(created) {
+      prop = created;
+    });
+  acre.async.wait_on_results();
+  ok(prop, "test prop created");
 
-    var result = acre.freebase.mqlread({id:updated, name:null}).result;
-    equal(result.name, prop.name + "updated");
-  }
-  finally {
-    if (prop) h.delete_property(prop);
-    if (type) h.delete_type(type);
-  }
+  var result;
+  update_property({
+    type: type.mid,
+    id: prop.mid,
+    name: prop.name + "updated"
+  })
+  .then(function(id) {
+    result = id;
+  });
+  acre.async.wait_on_results();
+  ok(result, "got update_property result: " + result);
+
+  var check_result;
+  freebase.mqlread({
+    id: prop.mid,
+    name: null
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
+  equal(check_result.name, prop.name + "updated");
 });
 
 test("update_property key", function() {
-  var type = h.create_type(user_domain);
-  var prop = h.create_property(type.id);
-  try {
-    var updated;
-    update_property({
-      type: type.id,
-      id: prop.id,
-      key: sh.generate_property_key(prop.name + "updated")
-    })
-    .then(function(id) {
-      updated = id;
+  var type, prop;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
     });
-    acre.async.wait_on_results();
-    ok(updated, updated);
+  acre.async.wait_on_results();
+  ok(type, "test type created");
+  test_helpers.create_property2(type.mid)
+    .then(function(created) {
+      prop = created;
+    });
+  acre.async.wait_on_results();
+  ok(prop, "test prop created");
 
-    var q = {id:updated, key:{namespace:type.id, value:null}};
-    var env = acre.freebase.mqlread(q);
-    ok(env.result, JSON.stringify({q:q, env:env}));
-    equal(env.result.key.value, sh.generate_property_key(prop.name + "updated"));
-  }
-  finally {
-    if (prop) h.delete_property(prop);
-    if (type) h.delete_type(type);
-  }
+  var result;
+  var new_key = schema_helpers.generate_property_key(prop.name + "updated");
+  update_property({
+    type: type.mid,
+    id: prop.mid,
+    key: new_key
+  })
+  .then(function(id) {
+    result = id;
+  });
+  acre.async.wait_on_results();
+  ok(result, "got update_property result: " + result);
+
+  var check_result;
+  freebase.mqlread({
+    id: prop.mid,
+    key: {
+      namespace: type.mid,
+      value: new_key
+    }
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
 });
 
 test("update_property expected_type", function() {
-  var type = h.create_type(user_domain);
-  var type2 = h.create_type(user_domain);
-  var prop = h.create_property(type.id);
-  try {
-    var updated;
-    update_property({
-      type: type.id,
-      id: prop.id,
-      expected_type: type.id
-    })
-    .then(function(id) {
-      updated = id;
+  var type, type2, prop;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
     });
-    acre.async.wait_on_results();
-    ok(updated, updated);
-
-    var result = acre.freebase.mqlread({id:updated, "/type/property/expected_type":null}).result;
-    equal(result["/type/property/expected_type"], type.id);
-
-    update_property({
-      type: type.id,
-      id: prop.id,
-      expected_type: type2.id
-    })
-    .then(function(id) {
-      updated = id;
+  acre.async.wait_on_results();
+  ok(type, "test type created");
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type2 = created;
     });
-    acre.async.wait_on_results();
-    ok(updated, updated);
+  acre.async.wait_on_results();
+  ok(type2, "test type2 created");
+  test_helpers.create_property2(type.mid)
+    .then(function(created) {
+      prop = created;
+    });
+  acre.async.wait_on_results();
+  ok(prop, "test prop created");
 
-    result = acre.freebase.mqlread({id:updated, "/type/property/expected_type":null}).result;
-    equal(result["/type/property/expected_type"], type2.id);
-  }
-  finally {
-    if (prop) h.delete_property(prop);
-    if (type2) h.delete_type(type2);
-    if (type) h.delete_type(type);
-  }
+  var result;
+  update_property({
+    type: type.mid,
+    id: prop.mid,
+    expected_type: type.mid
+  })
+  .then(function(id) {
+    result = id;
+  });
+  acre.async.wait_on_results();
+  ok(result, "got update_property result: " + result);
+
+  var check_result;
+  freebase.mqlread({
+    id: prop.mid,
+    "/type/property/expected_type": {
+      id: type.mid
+    }
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
+
+  var result2;
+  update_property({
+    type: type.mid,
+    id: prop.mid,
+    expected_type: type2.mid
+  })
+  .then(function(id) {
+    result2 = id;
+  });
+  acre.async.wait_on_results();
+  ok(result2, "got update_property result: " + result2);
+
+  var check_result2;
+  freebase.mqlread({
+    id: prop.mid,
+    "/type/property/expected_type": {
+      id: type2.mid
+    }
+  })
+  .then(function(env) {
+    check_result2 = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result2, "got check result");
 });
 
 test("update_property description", function() {
-  var type = h.create_type(user_domain);
-  var prop = h.create_property(type.id);
-  try {
-    var updated;
-    update_property({
-      type: type.id,
-      id: prop.id,
-      description: prop.name + "updated"
-    })
-    .then(function(id) {
-      updated = id;
+  var type, prop;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
     });
-    acre.async.wait_on_results();
-    ok(updated, updated);
-
-    var result = acre.freebase.mqlread({id:updated, "/freebase/documented_object/tip":null}).result;
-    equal(result["/freebase/documented_object/tip"], prop.name + "updated");
-
-    update_property({
-      type: type.id,
-      id: prop.id,
-      description: prop.name + "updated again"
-    })
-    .then(function(id) {
-      updated = id;
+  acre.async.wait_on_results();
+  ok(type, "test type created");
+  test_helpers.create_property2(type.mid)
+    .then(function(created) {
+      prop = created;
     });
-    acre.async.wait_on_results();
-    ok(updated, updated);
+  acre.async.wait_on_results();
+  ok(prop, "test prop created");
 
-    result = acre.freebase.mqlread({id:updated, "/freebase/documented_object/tip":null}).result;
-    equal(result["/freebase/documented_object/tip"], prop.name + "updated again");
-  }
-  finally {
-    if (prop) h.delete_property(prop);
-    if (type) h.delete_type(type);
-  }
+  var result;
+  update_property({
+    type: type.mid,
+    id: prop.mid,
+    description: prop.name + "updated"
+  })
+  .then(function(id) {
+    result = id;
+  });
+  acre.async.wait_on_results();
+  ok(result, "got update_property result: " + result);
+
+  var check_result;
+  freebase.mqlread({
+    id: prop.mid,
+    "/freebase/documented_object/tip": null
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
+  equal(check_result["/freebase/documented_object/tip"], prop.name + "updated");
+
+  var result2;
+  update_property({
+    type: type.mid,
+    id: prop.mid,
+    description: prop.name + "updated again"
+  })
+  .then(function(id) {
+    result = id;
+  });
+  acre.async.wait_on_results();
+  ok(result, "got update_property result: " + result);
+
+  var check_result2;
+  freebase.mqlread({
+    id: prop.mid,
+    "/freebase/documented_object/tip": null
+  })
+  .then(function(env) {
+    check_result2 = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result2, "got check result");
+  equal(check_result2["/freebase/documented_object/tip"], prop.name + "updated again");
 });
 
 test("update_property unit, unique, disambiguator, hidden", function() {
-  var type = h.create_type(user_domain);
-  var prop = h.create_property(type.id);
-  try {
-    var updated;
-    update_property({
-      type: type.id,
-      id: prop.id,
-      unit: "/en/meter",
-      unique: true,
-      disambiguator: true,
-      hidden: true
-    })
-    .then(function(id) {
-      updated = id;
+  var type, prop;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
     });
-    acre.async.wait_on_results();
-    ok(updated, updated);
-
-    var result = acre.freebase.mqlread({
-      id:updated,
-      "/type/property/unit": null,
-      "/type/property/unique": null,
-      "/freebase/property_hints/disambiguator": null,
-      "/freebase/property_hints/display_none": null
-    }).result;
-    equal(result["/type/property/unit"], "/en/meter");
-    ok(result["/type/property/unique"]);
-    ok(result["/freebase/property_hints/disambiguator"]);
-    ok(result["/freebase/property_hints/display_none"]);
-
-    update_property({
-      type: type.id,
-      id: prop.id,
-      unit: "/en/kilogram",
-      unique: false,
-      disambiguator: false,
-      hidden: false
-    })
-    .then(function(id) {
-      updated = id;
+  acre.async.wait_on_results();
+  ok(type, "test type created");
+  test_helpers.create_property2(type.mid)
+    .then(function(created) {
+      prop = created;
     });
-    acre.async.wait_on_results();
-    ok(updated, updated);
+  acre.async.wait_on_results();
+  ok(prop, "test prop created");
 
-    result = acre.freebase.mqlread({
-      id:updated,
-      "/type/property/unit": null,
-      "/type/property/unique": null,
-      "/freebase/property_hints/disambiguator": null,
-      "/freebase/property_hints/display_none": null
-    }).result;
-    equal(result["/type/property/unit"], "/en/kilogram");
-    ok(!result["/type/property/unique"]);
-    ok(!result["/freebase/property_hints/disambiguator"]);
-    ok(!result["/freebase/property_hints/display_none"]);
-  }
-  finally {
-    if (prop) h.delete_property(prop);
-    if (type) h.delete_type(type);
-  }
+  var result;
+  update_property({
+    type: type.mid,
+    id: prop.mid,
+    unit: "/en/meter",
+    unique: true,
+    disambiguator: true,
+    hidden: true
+  })
+  .then(function(id) {
+    result = id;
+  });
+  acre.async.wait_on_results();
+  ok(result, "got update_property result: " + result);
+
+  var check_result;
+  freebase.mqlread({
+    id: prop.mid,
+    "/type/property/unit": null,
+    "/type/property/unique": null,
+    "/freebase/property_hints/disambiguator": null,
+    "/freebase/property_hints/display_none": null
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
+  equal(check_result["/type/property/unit"], "/en/meter");
+  ok(check_result["/type/property/unique"]);
+  ok(check_result["/freebase/property_hints/disambiguator"]);
+  ok(check_result["/freebase/property_hints/display_none"]);
+
+  var result2;
+  update_property({
+    type: type.mid,
+    id: prop.mid,
+    unit: "/en/kilogram",
+    unique: false,
+    disambiguator: false,
+    hidden: false
+  })
+  .then(function(id) {
+    result2 = id;
+  });
+  acre.async.wait_on_results();
+  ok(result, "got update_property result: " + result);
+
+  var check_result2;
+  freebase.mqlread({
+    id: prop.mid,
+    "/type/property/unit": null,
+    "/type/property/unique": null,
+    "/freebase/property_hints/disambiguator": null,
+    "/freebase/property_hints/display_none": null
+  })
+  .then(function(env) {
+    check_result2 = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result2, "got check result");
+  equal(check_result2["/type/property/unit"], "/en/kilogram");
+  ok(!check_result2["/type/property/unique"]);
+  ok(!check_result2["/freebase/property_hints/disambiguator"]);
+  ok(!check_result2["/freebase/property_hints/display_none"]);
 });
 
 test("update_property enumeration", function() {
-  var type = h.create_type(user_domain);
-  var prop = h.create_property(type.id);
-  var namespace =  acre.freebase.mqlwrite({
+  var type, prop;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
+    });
+  acre.async.wait_on_results();
+  ok(type, "test type created");
+  test_helpers.create_property2(type.mid)
+    .then(function(created) {
+      prop = created;
+    });
+  acre.async.wait_on_results();
+  ok(prop, "test prop created");
+  var namespace;
+  var ns_key = test_helpers.gen_test_name("test_namespace_");
+  freebase.mqlwrite({
     id: null,
     mid: null,
     type: "/type/namespace",
     key: {
-      namespace: type.id,
-      value: h.random().toLowerCase()
+      namespace: type.mid,
+      value: ns_key
     },
-    create: "unconditional"
-  }).result;
-  try {
-    var updated;
-    update_property({
-      type: type.id,
-      id: prop.id,
-      expected_type: "/type/enumeration",
-      enumeration: namespace.id,
-      unit: "/en/meter",   // unit should be ignored
-      unique: true,        // unique should be ignored
-      disambiguator: true,
-      hidden: true
-    })
-    .then(function(id) {
-      updated = id;
-    });
-    acre.async.wait_on_results();
-    ok(updated, updated);
+    create: "unless_exists"
+  })
+  .then(function(env) {
+    namespace = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(namespace, "test namespace created");
 
-    var result = acre.freebase.mqlread({
-      id:updated,
-      "/type/property/expected_type": null,
-      "/type/property/enumeration": null,
-      "/type/property/unit": null,
-      "/type/property/unique": null,
-      "/freebase/property_hints/disambiguator": null,
-      "/freebase/property_hints/display_none": null
-    }).result;
-    equal(result["/type/property/expected_type"], "/type/enumeration");
-    equal(result["/type/property/enumeration"], namespace.id);
-    ok(!result["/type/property/unit"]);
-    ok(!result["/type/property/unique"]);
-    ok(result["/freebase/property_hints/disambiguator"]);
-    ok(result["/freebase/property_hints/display_none"]);
+  var result;
+  update_property({
+    type: type.mid,
+    id: prop.mid,
+    expected_type: "/type/enumeration",
+    enumeration: namespace.id,
+    unit: "/en/meter",   // unit should be ignored
+    unique: true,        // unique should be ignored
+    disambiguator: true,
+    hidden: true
+  })
+  .then(function(id) {
+    result = id;
+  });
+  acre.async.wait_on_results();
+  ok(result, "got update_property result: " + result);
 
-  }
-  finally {
-    if (prop) h.delete_property(prop);
-    if (namespace) {
-      acre.freebase.mqlwrite({
-        id: namespace.mid,
-        type: {id:"/type/namespace", connect:"delete"},
-        key: {namespace:namespace.key.namespace, value:namespace.key.value, connect:"delete"}
-      });
-    }
-    if (type) h.delete_type(type);
-  }
+  var check_result;
+  freebase.mqlread({
+    id: prop.mid,
+    "/type/property/expected_type": null,
+    "/type/property/enumeration": null,
+    "/type/property/unit": null,
+    "/type/property/unique": null,
+    "/freebase/property_hints/disambiguator": null,
+    "/freebase/property_hints/display_none": null
+  })
+  .then(function(env) {
+    check_result = env.result;
+  });
+  acre.async.wait_on_results();
+  ok(check_result, "got check result");
+  equal(check_result["/type/property/expected_type"], "/type/enumeration");
+  equal(check_result["/type/property/enumeration"], namespace.id);
+  ok(!check_result["/type/property/unit"]);
+  ok(!check_result["/type/property/unique"]);
+  ok(check_result["/freebase/property_hints/disambiguator"]);
+  ok(check_result["/freebase/property_hints/display_none"]);
 });
 
 test("update_property enumeration in non-namespace", function() {
-  var type = h.create_type(user_domain);
-  var prop = h.create_property(type.id);
-
-  try {
-    var success, rejected;
-    update_property({
-      type: type.id,
-      id: prop.id,
-      expected_type: "/type/enumeration",
-      enumeration: type.id
-    })
-    .then(function(id) {
-      success = id;
-    }, function(error) {
-      rejected = error;
+  var type, prop;
+  test_helpers.create_type2(user_domain)
+    .then(function(created) {
+      type = created;
     });
-    acre.async.wait_on_results();
-    ok(rejected, rejected);
-  }
-  finally {
-    if (prop) h.delete_property(prop);
-    if (type) h.delete_type(type);
-  }
+  acre.async.wait_on_results();
+  ok(type, "test type created");
+  test_helpers.create_property2(type.mid)
+    .then(function(created) {
+      prop = created;
+    });
+  acre.async.wait_on_results();
+  ok(prop, "test prop created");
+
+  var result, error;
+  update_property({
+    type: type.mid,
+    id: prop.mid,
+    expected_type: "/type/enumeration",
+    enumeration: type.mid
+  })
+  .then(function(r) {
+    result = r;
+  }, function(e) {
+    error = e;
+  });
+  acre.async.wait_on_results();
+  ok(!result, "expected result");
+  ok(error, "expected error: " + error);
 });
 
 acre.test.report();

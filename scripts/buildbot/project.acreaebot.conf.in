@@ -1,0 +1,60 @@
+
+#
+# These are the local parameters that override the default ones
+# 
+# *DO NOT* change this file, make a copy called "project.local.conf" and change that instead
+# 
+
+####### select what URL acre expects to be responding to (your DNS or /etc/host should mount *.acre.z to 127.0.0.1)
+ACRE_HOST_BASE="acre.acrebb.hot.corp.google.com"
+ACRE_PORT="8118"
+JVM_JMX_PORT="8127"
+JVM_JMX="-Dcom.sun.management.jmxremote.port=${JVM_JMX_PORT} -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+
+# edit these
+# auth secret?
+FSTEST_USERNAME="VALID_USER"
+FSTEST_PASSWORD="VALID_PASSWORD"
+
+ACRE_FREEBASE_SITE_ADDR="devel.$ACRE_METAWEB_BASE_ADDR"
+ACRE_FREEBASE_SITE_ADDR_PORT="$ACRE_PORT"
+ACRE_APIARY_ADDR="googleapis.com/freebase-sandbox"
+
+####### for development is better to autoreload and avoid committing suicide
+#ACRE_AUTORELOADING="TRUE"
+ACRE_SUICIDE="FALSE"
+
+# developer mode exposes testing hooks that should never be present
+# in a production server
+ACRE_DEVELOPER_MODE="TRUE"
+
+# trusted mode exposes APIs that should not be exposed to apps we can't trust
+ACRE_TRUSTED_MODE="TRUE"
+
+####### Uncomment this if you're on MacOSX and you want to use java6 instead of java5 to run acre
+#JAVA_HOME="/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home"
+
+#JVM_MEM="-Xms64m -Xmx512m"
+#JVM_PERM_MEM="-XX:PermSize=32m -XX:MaxPermSize=512m -XX:+CMSClassUnloadingEnabled"
+#JVM_JMX="-Dcom.sun.management.jmxremote.port=11111 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+
+######### This enables log4j debug mode
+#DEBUG="-Dlog4j.debug=true $DEBUG"
+
+######### This enable JVM debug mode
+#DEBUG="-agentlib:jdwp=transport=dt_socket,server=y,address=8000 $DEBUG"
+
+######### This enables DTrace hooks in the hotspot JVM (only works on a Mac and with java6 only)
+#DEBUG="-XX:+ExtendedDTraceProbes $DEBUG"
+
+######### This Enables YourKit Profiling (make sure /Application/Yourkit*.app is symlinked to /opt/yourkit)
+#DEBUG="-agentpath:/opt/yourkit/bin/mac/libyjpagent.jnilib=sessionname=Acre $DEBUG"
+#DEBUG="-agentpath:/opt/yourkit/bin/linux-x86-64/libyjpagent.so=sessionname=Acre $DEBUG"
+
+######### This Enables NetBeams Profiling (make sure /Application/Netbeans*.app is symlinked to /opt/netbeans)
+#DEBUG="-agentpath:/opt/netbeans/Contents/Resources/NetBeans/profiler3/lib/deployed/jdk15/mac/libprofilerinterface.jnilib $DEBUG"
+#DEBUG="-agentpath:/opt/netbeans/Contents/Resources/NetBeans/profiler3/lib/deployed/jdk16/mac/libprofilerinterface.jnilib $DEBUG"
+
+######### Google AppEngine Java SDK Location
+#APPENGINE_HOME="/opt/appengine"
+

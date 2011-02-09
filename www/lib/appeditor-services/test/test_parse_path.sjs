@@ -32,8 +32,8 @@
 acre.require('/test/lib').enable(this);
 var lib = acre.require('appeditor-services/lib_appeditor_service');
 
-function make_empty_result(obj) { 
-    
+function make_empty_result(obj) {
+
     var ret = {
       appid       : null,
       filename    : null,
@@ -43,7 +43,7 @@ function make_empty_result(obj) {
     };
 
     for (var i in obj) { ret[i] = obj[i]; }
-    
+
     return ret;
 }
 
@@ -56,13 +56,13 @@ var spec =  [
         'id' : '/freebase/site/sample',
         'expected' : make_empty_result({'appid' : '/freebase/site/sample'})
     },
-    {
+/**    {
       //  'bug' : 'TODO: investiate app_path',
         'name' : 'file',
         'id' : 'foo',
         'expected' : make_empty_result({'appid' : '/freebase/site/appeditor-services', 'filename' : 'foo'}),
         'options' : { 'file' : true }
-    },
+    }, **/
     {
         'name' : 'cross app published',
         'id' : '//services/lib',

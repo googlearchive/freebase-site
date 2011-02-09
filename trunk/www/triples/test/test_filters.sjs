@@ -204,15 +204,15 @@ test("filter_url", function() {
   var url = f.filter_url(filters, "creator", "/user/baz");
   var params = h.extend({}, filters, {creator: "/user/baz"});
   delete params.id;
-  equal(url, acre.form.build_url(h.url_for("triples", null, null, "/foo"), params));
+  equal(url, h.fb_url("/inspect", "/foo", params));
 });
 
 test("remove_filter_url", function() {
-  var base_url = h.url_for("triples", null, null, "/foo");
+  var base_url = h.fb_url("/inspect", "/foo");
   equal(f.remove_filter_url({id:"/foo",limit:f.LIMIT, creator:"/user/foo"}, "creator"), base_url);
   equal(f.remove_filter_url({id:"/foo",creator:"/user/foo"}, "creator", "/user/foo"), base_url);
   equal(f.remove_filter_url({id:"/foo",creator:["/user/foo", "/user/bar"]}, "creator", "/user/foo"),
-        acre.form.build_url(base_url, {creator:"/user/bar"}));
+        h.fb_url("/inspect", "/foo", {creator:"/user/bar"}));
 });
 
 acre.test.report();

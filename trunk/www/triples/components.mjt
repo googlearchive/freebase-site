@@ -131,7 +131,7 @@
 </acre:block>
 
 <acre:block def="filter_form(filter_options, filter_key, def, placeholder, append)">
-  <form action="${h.url_for('triples', null, null, filter_options.id)}" method="GET">
+  <form action="${h.fb_url('/inspect', filter_options.id)}" method="GET">
     <acre:block for="key,val in filter_options" if="key && val && (key !== 'id') && (append || key != filter_key)">
       <acre:block if="h.isArray(val)">
         <input acre:for="v in val" type="hidden" name="${key}" value="${v}"/>

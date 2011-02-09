@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	
+  <servlet>
+    <description>Dispatch request to javascript</description>
+    <display-name>DISPATCH REQUEST TO JAVASCRIPT</display-name>
+    <servlet-name>DispatchServlet</servlet-name>
+    <servlet-class>com.google.acre.servlet.DispatchServlet</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <description>proxy</description>
+    <display-name>ProxyPassServlet</display-name>
+    <servlet-name>ProxyPassServlet</servlet-name>
+    <servlet-class>com.google.acre.servlet.ProxyPassServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <description>Provides write access to the Freebase KeyStore</description>
+    <display-name>KeyStoreServlet</display-name>
+    <servlet-name>KeyStoreServlet</servlet-name>
+    <servlet-class>com.google.acre.servlet.KeyStoreServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <description>One Servlet to rule them all, One Servlet to find them, 
+      One Servlet to bring them all, and in the darkness bind them
+    </description>
+    <display-name>OneTrueServlet</display-name>
+    <servlet-name>OneTrueServlet</servlet-name>
+    <servlet-class>com.google.acre.servlet.OneTrueServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <description>static content</description>
+    <display-name>DefaultServlet</display-name>
+    <servlet-name>DefaultServlet</servlet-name>
+    <servlet-class>org.mortbay.jetty.servlet.DefaultServlet</servlet-class>
+    <init-param>
+        <param-name>relativeResourceBase</param-name>
+        <param-value>WEB-INF</param-value>
+    </init-param>
+    <init-param>
+        <param-name>aliases</param-name>
+        <param-value>1</param-value>
+    </init-param>
+    <init-param>
+        <param-name>dirAllowed</param-name>
+        <param-value>0</param-value>
+    </init-param>
+    <init-param>
+        <param-name>gzip</param-name>
+        <param-value>true</param-value>
+    </init-param>
+  </servlet>
+
+  <filter>
+    <description>GZIP Filter This filter will gzip the content of a response</description>
+    <filter-name>GzipFilter</filter-name>
+    <filter-class>org.mortbay.servlet.GzipFilter</filter-class>
+  </filter>
+
+  <servlet-mapping>
+    <servlet-name>OneTrueServlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+
+  <!-- filter-mapping>
+    <filter-name>GzipFilter</filter-name>
+    <url-pattern>*</url-pattern>
+  </filter-mapping -->
+  
+<!-- TODO: Prevent access to '.svn' directories. -->
+<!-- The following should work, but doesn't. -->
+<!--
+  <security-constraint>
+    <web-resources-collection>
+      <web-resource-name>Forbidden</web-resource-name>
+      <url-pattern>/.svn/*</url-pattern>
+    </web-resources-collection>
+  </security-constraint>
+-->
+ 
+  <!--
+  appstats configuration below, see: 
+  code.google.com/appengine/docs/java/tools/appstats.html
+  -->
+   <filter>
+    <filter-name>appstats</filter-name>
+    <filter-class>com.google.appengine.tools.appstats.AppstatsFilter</filter-class>
+    <init-param>
+      <param-name>logMessage</param-name>
+      <param-value>Appstats available: /appstats/details?time={ID}</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>appstats</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+    <servlet-name>appstats</servlet-name>
+      <servlet-class>com.google.appengine.tools.appstats.AppstatsServlet</servlet-class>
+    </servlet>
+  <servlet-mapping>
+    <servlet-name>appstats</servlet-name>
+    <url-pattern>/appstats/*</url-pattern>
+  </servlet-mapping>
+
+  <security-constraint>
+    <web-resource-collection>
+       <url-pattern>/appstats/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>admin</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <!--
+  end appstats cfg block
+  -->
+ 
+  <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+</web-app>

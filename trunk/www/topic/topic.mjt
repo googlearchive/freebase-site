@@ -225,36 +225,7 @@
 </acre:block>
 
 <acre:block def="footer_script()">
-  <script type="text/javascript">
-    $(document).ready(function(){
-
-        // the trigger for expanding/collapsing the column
-        var $trigger = $(".module-title > .trigger"); 
-        var column_offset = $(".section").css("margin-left");
-        var $main_module = $(".module:first");
-        var $sub_modules = $(".module-section", $main_module);
-        var $modules = $(".module:gt(0)");
-
-        $trigger.click(function(){
-          if($trigger.hasClass("collapsed")) {
-            $trigger.removeClass("collapsed");
-            $(".section").animate({marginLeft: column_offset},function(){
-              $sub_modules.slideDown();
-              $modules.fadeIn();
-            });
-          }
-          else {
-            $trigger.addClass("collapsed");
-            $modules.fadeOut();
-            $sub_modules.slideUp(function(){
-              $(".section").animate({marginLeft: 0});
-            });
-          }
-
-        });
-
-    });
-  </script>
+  <script src="topic.mf.js"></script>
 </acre:block>
 
 <acre:block def="domain_section(id, structure)">

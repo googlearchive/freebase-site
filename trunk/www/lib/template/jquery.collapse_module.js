@@ -45,8 +45,8 @@
    *
    * $(".module").collapse_module("#main-column");
    *
-   * Will collapse/expand all ".modules" except the first module;
-   * the first module's ".module-section" will be collapsed/expanded.
+   * Will collapse/expand all ".modules" except the first module.
+   * The first module's ".module-section" will be collapsed/expanded.
    * "#main-column"'s margin-left will be toggled with respect to the collapsing/expanding of the modules
    * The ".trigger" should be inside the first ".module".
    */
@@ -78,6 +78,7 @@
           trigger.addClass("collapsed");
         });
       }
+      return false;
     });
   };
 

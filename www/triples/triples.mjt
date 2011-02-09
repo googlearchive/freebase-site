@@ -53,7 +53,7 @@
       <ol>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.url_for('triples')}">${_("Inspect")}</a>
+            <a href="${h.fb_url('/inspect')}">${_("Inspect")}</a>
           </span>
         </li>  
         <li class="breadcrumb-item last">
@@ -79,7 +79,7 @@
         q: JSON.stringify({"id":c.object.id})
       };
     </acre:script>
-    <a href="${h.url_for('queryeditor', null, query)}" class="icon-link">
+    <a href="${h.fb_url('/queryeditor', query)}" class="icon-link">
      <span class="query-icon">${_('Build Query')}</span>
     </a>
   </li>
@@ -374,7 +374,7 @@
 
   <ul id="triple-tip" class="row-menu tooltip" acre:trim="">
     <li class="row-menu-item last">
-      <a id="build-query" href="${h.url_for('queryeditor')}">${_("Build query")}</a>
+      <a id="build-query" href="${h.fb_url('/queryeditor')}">${_("Build query")}</a>
     </li>
   </ul>
 
@@ -388,7 +388,7 @@
 <acre:block def="a(id, name, attrs)" trim="">
   <acre:script>
     attrs = h.extend({
-      href: h.url_for('triples', null, c.params, id),
+      href: h.fb_url('/inspect', id, c.params),
       title: id
     }, attrs);
     var clazz = "";

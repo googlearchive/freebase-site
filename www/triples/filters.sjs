@@ -230,7 +230,7 @@ function apply_domain_type_property(clause, domain, type, property) {
 
 function filter_url(filter_options, filter_key, filter_val) {
   var o = h.extend({}, filter_options);
-  var url = h.url_for("triples", null, null, o.id);
+  var url = h.fb_url("/inspect", o.id);
   delete o.id;
   if (o.limit == LIMIT) {
     delete o.limit;
@@ -248,7 +248,7 @@ function filter_url(filter_options, filter_key, filter_val) {
 
 function remove_filter_url(filter_options, filter_key, filter_value) {
   var o = h.extend({}, filter_options);
-  var url = h.url_for("triples", null, null, o.id);
+  var url = h.fb_url("/inspect", o.id);
   delete o.id;
   if (o.limit == LIMIT) {
     delete o.limit;

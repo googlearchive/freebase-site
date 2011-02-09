@@ -180,46 +180,55 @@ function prop_info_query(prop_id, user_id) {
   var q = {
     id: prop_id,
     guid: null,
+    mid: null,
     name: null,
     type: "/type/property",
-    schema: {id: null, name: null},
+    schema: {id: null, mid:null, name: null},
     key: [{
       optional: true,
       namespace: {
         id: null,
+        mid: null,
         permission: [{permits: [{member: {id: user_id}}]}]
       },
       value: null
     }],
     expected_type: {
       id: null,
+      mid: null,
       optional: true
     },
     master_property: {
       id: null,
+      mid: null,
       optional: true
     },
     reverse_property: {
       id: null,
+      mid: null,
       optional: true,
       permission: [{permits: [{member: {id: user_id}}]}]
     },
     "opp:reverse_property": {
       id: null,
+      mid: null,
       optional: true,
       permission:[{"permits": [{optional:"forbidden", member:{id: user_id}}]}]
     },
     delegated: {
       id: null,
+      mid: null,
       optional: true
     },
     "!/type/property/delegated": [{
       id: null,
+      mid: null,
       optional: true,
       permission: [{permits: [{member: {id: user_id}}]}]
     }],
     "!opp:/type/property/delegated": [{
       id: null,
+      mid: null,
       optional: true,
       permission:[{"permits": [{optional:"forbidden", member:{id: user_id}}]}]
     }]
@@ -232,19 +241,20 @@ function prop_info_query(prop_id, user_id) {
       var info = {
         id: result.id,
         guid: result.guid,
+        mid: result.mid,
         name: result.name,
-        schema: result.schema,
-        key: [{namespace:k.namespace.id, value:k.value} for each (k in result.key)],
-        expected_type: result.expected_type ? {id:result.expected_type.id} : null,
-        master_property: result.master_property ? {id:result.master_property.id} : null,
+        schema: {id:result.schema.mid, name:result.schema.domain},
+        key: [{namespace:k.namespace.mid, value:k.value} for each (k in result.key)],
+        expected_type: result.expected_type ? {id:result.expected_type.mid} : null,
+        master_property: result.master_property ? {id:result.master_property.mid} : null,
         reverse_property: {
-          permitted: result.reverse_property ? {id:result.reverse_property.id} : null,
-          not_permitted: result["opp:reverse_property"] ? {id:result["opp:reverse_property"].id} : null
+          permitted: result.reverse_property ? {id:result.reverse_property.mid} : null,
+          not_permitted: result["opp:reverse_property"] ? {id:result["opp:reverse_property"].mid} : null
         },
-        delegated: result.delegated ? {id:result.delegated.id} : null,
+        delegated: result.delegated ? {id:result.delegated.mid} : null,
         delegated_by: {
-          permitted:  [{id:d.id} for each (d in result["!/type/property/delegated"])],
-          not_permitted: [{id:d.id} for each (d in result["!opp:/type/property/delegated"])]
+          permitted:  [{id:d.mid} for each (d in result["!/type/property/delegated"])],
+          not_permitted: [{id:d.mid} for each (d in result["!opp:/type/property/delegated"])]
         }
       };
       return info;

@@ -124,6 +124,7 @@ test("update_type key", function() {
   .then(function(env) {
     check_result = env.result;
   });
+  acre.async.wait_on_results();
   ok(check_result, "got check result");
   equal(check_result.key.value, type.key.value + "updated");
 });

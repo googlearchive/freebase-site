@@ -132,6 +132,7 @@ test("update_domain key", function() {
   .then(function(env) {
     check_result = env.result;
   });
+  acre.async.wait_on_results();
   ok(check_result, "got check result");
   equal(check_result.key.value, domain.key.value + "updated");
 });

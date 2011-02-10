@@ -264,6 +264,19 @@ test("validators.Timestamp", timestamp_test, function() {
 });
 
 
+var datejs_test = {
+  valid: ["today", "yesterday", "now", "2009/11/05", "2009-1-1"].concat(timestamp_test.valid)
+};
+
+test("validators.Datejs", datejs_test, function() {
+  datejs_test.valid.forEach(function(val) {
+    var d = validators.Datejs(val);
+    ok(d, "validate datejs string: " + d);
+    ok(acre.freebase.date_from_iso(d), "valid iso8601");
+  });
+});
+
+
 var int_test = {
   valid: [0, -0, +0, 1, -1, +1, 100.1, 3.24, "1.XX"],
   invalid: ["foo", Number.NaN, "X123"]

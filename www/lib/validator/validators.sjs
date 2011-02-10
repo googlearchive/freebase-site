@@ -442,6 +442,35 @@ Validator.factory(scope, "Timestamp", {
 
 
 /**
+ * Accepts any (or specific) datejs format
+ */
+Validator.factory(scope, "Datejs", {
+  "defaults": {
+    format: null, // specific datejs format for parsing @see http://code.google.com/p/datejs/wiki/FormatSpecifiers
+    date: false    // if TRUE convert to date, else converted to ISO8601
+  },
+  "string": function(val, options) {
+    var date;
+    try {
+      date = h.parse_date(val, options.format);
+      if (!date) {
+        throw(date);
+      }
+    }
+    catch (ex) {
+      return this.invalid(this.key, val, "is not a recognized date string");
+    }
+    if (options.date) {
+      return date;
+    }
+    else {
+      return date.toString("yyyy-MM-ddTHH:mm:ss");
+    }
+  }
+});
+
+
+/**
  * Integer
  * if isNaN, invalid
  */

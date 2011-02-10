@@ -54,7 +54,7 @@ var PARAMS = {
     options: {if_invalid:null}
   },
   "as_of_time": {
-    validator: validators.Timestamp,
+    validator: validators.Datejs,
     options: {if_invalid:null}
   }
 };

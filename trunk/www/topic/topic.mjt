@@ -69,26 +69,13 @@
         <span>Filter this data</span>
       </h2>
       <div class="module-section">
-        ${filter_components.prop_filters(c.filters, c.prop_counts, "/topic" + c.id)}
-      </div>
-
-      <div class="module-section">
-        <h3 class="module-section-title"><label for="">Language</label></h3>
-        <div class="filter-form">
-          <form action="" method="post">
-            <select name="">
-              <option value="eng-usa">English</option>
-            </select>
-          </form>
-        </div>
+        ${filter_components.prop_counts_filter("/topic" + c.id, c.filters, c.prop_counts)}
       </div>
       <div class="module-section">
-        <h3 class="module-section-title"><label for="">As of</label></h3>
-        <div class="filter-form">
-          <form action="" method="post">
-            <input class="text-input" type="text" name="" value="" placeholder="" />
-          </form>
-        </div>
+        ${filter_components.lang_filter("/topic" + c.id, c.filters)}
+      </div>
+      <div class="module-section">
+        ${filter_components.as_of_time_filter("/topic" + c.id, c.filters)}
       </div>
     </div>
     <div class="module">

@@ -37,7 +37,7 @@
   var fh = acre.require("filter/helpers.sjs");
 </acre:script>
 
-<acre:block def="prop_filters(filters, prop_counts, fb_path)">
+<acre:block def="prop_counts_filter(base_url, filters, prop_counts)">
   <acre:script>
     var domain = filters.domain;
     var type = filters.type;
@@ -52,7 +52,7 @@
     <h2 class="filter-title" acre:else="">${_("By Domain")}:</h2>
     <acre:block if="domain">
       <span class="filter-item">
-        <a href="${h.fb_url(fb_path, fh.remove_filter(filters, 'domain'))}" class="remove-filter">x</a>
+        <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'domain'))}" class="remove-filter">x</a>
         ${domain}
       </span>
     </acre:block>
@@ -65,8 +65,8 @@
         delete domain_filters.type;
       </acre:script>
       <span class="filter-item">
-        <a href="${h.fb_url(fb_path, fh.remove_filter(filters, 'type'))}" class="remove-filter">x</a>
-        <a href="${h.fb_url(fb_path, fh.add_filter(domain_filters, 'domain', domain))}">
+        <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'type'))}" class="remove-filter">x</a>
+        <a href="${h.fb_url(base_url, fh.add_filter(domain_filters, 'domain', domain))}">
           ${domain}
         </a>
       </span>
@@ -83,12 +83,12 @@
         delete type_filters.property;
       </acre:script>
       <span class="filter-item">
-        <a href="${h.fb_url(fb_path, fh.remove_filter(filters, 'property'))}" class="remove-filter">x</a>
-        <a href="${h.fb_url(fb_path, fh.add_filter(type_filters, 'domain', domain))}">
+        <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'property'))}" class="remove-filter">x</a>
+        <a href="${h.fb_url(base_url, fh.add_filter(type_filters, 'domain', domain))}">
          ${domain}
         </a>
       </span>
-      <a class="filter-sub-item" href="${h.fb_url(fb_path, fh.add_filter(type_filters, 'type', type))}">
+      <a class="filter-sub-item" href="${h.fb_url(base_url, fh.add_filter(type_filters, 'type', type))}">
         ${type.split("/").pop()}
       </a>
       <span class="filter-sub-sub-item">${property.split("/").pop()}</span>
@@ -114,8 +114,8 @@
                 <th>
                   <span class="bar-graph-label">
                     <a class="clear" 
-                       acre:attrs="data.params ? {href:h.fb_url(fb_path, data.params)} : {href:'#', onclick:'return false;'}">
-                       ${id}
+                       href="${data.params ? h.fb_url(base_url, data.params) : 'javascript:void(0);'}">
+                      ${id}
                     </a>
                     <span style="width:${total}%" class="index"></span>
                   </span>
@@ -127,24 +127,80 @@
         </table>
       </acre:block>
     </acre:block>
-<!!--
     <div class="other-graph-value">
       <a href="javascript:void(0);" class="filter-form-trigger">
-        ${o.domain || o.type || o.property ? _("change"): _("choose")}&hellip;
+        ${domain || type || property ? _("change"): _("choose")}&hellip;
       </a>
       <div class="filter-form" style="display:none;">
         <acre:script>
-          var name = "domain";
-          if (o.type) {
-            name = "type";
+          var key = "domain";
+          if (type) {
+            key = "type";
           }
-          else if (o.property) {
-            name = "property";
+          else if (property) {
+            key = "property";
           }
         </acre:script>
-        ${filter_form(o, name, null, 'Start typing for suggestions')}
+        ${filter_form(base_url, filters, key, suggest_input, [key, 'Start typing for suggestions'])}
       </div>
     </div>
-!!-->
   </div>
+</acre:block>
+
+
+<acre:block def="lang_filter(base_url, filters)">
+  <h3 class="module-section-title"><label for="">${_("Language")}</label></h3>
+  ${filter_form(base_url, filters, 'lang', lang_input, ['lang', filters.lang])}
+</acre:block>
+
+
+<acre:block def="as_of_time_filter(base_url, filters)">
+  <h3 class="module-section-title"><label for="">${_("As of")}</label></h3>
+  <acre:block if="filters.as_of_time">
+    <span class="filter-item">
+      <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'as_of_time'))}" class="remove-filter">x</a>
+      ${filters.as_of_time}
+    </span>
+    <a href="javascript:void(0);" class="filter-form-trigger">${_("change")}&hellip;</a>
+    <div class="filter-form" style="display:none">
+      ${filter_form(base_url, filters, 'as_of_time', datejs_input, ['as_of_time'])}
+    </div>
+  </acre:block>
+  <acre:block else="">
+    ${filter_form(base_url, filters, 'as_of_time', datejs_input, ['as_of_time'])}
+  </acre:block>
+</acre:block>
+
+<acre:block def="filter_form(base_url, filters, param_name, def, def_params)">
+  <form action="${base_url}" method="GET" class="filter-form">
+    <acre:block for="key,val in filters" if="val != null && key != param_name">
+      <input type="hidden" name="${key}" value="${val}"/>
+    </acre:block>
+    ${def.apply(null, def_params)}
+  </form>
+</acre:block>
+
+<acre:block def="suggest_input(name, placeholder)">
+  <input type="text" name="${name}" acre:attrs="placeholder ? {placeholder:placeholder}: {}"/>
+</acre:block>
+
+<acre:block def="lang_input(name, value)">
+  <acre:script>
+    var langs = i18n.mql.langs().sort(function(a,b) {
+      return b.name < a.name;
+    });
+    if (!value) {
+      value = "/lang/en";
+    }
+  </acre:script>
+  <select name="${name}"
+          onchange="this.form.submit()">
+    <acre:block for="lang in langs">
+      <option value="${lang.id}" acre:attrs="lang.id == value ? {'selected':value} : {}">${lang.name}</option>
+    </acre:block>
+  </select>
+</acre:block>
+
+<acre:block def="datejs_input(name, placeholder)">
+  <input type="text" name="${name}" acre:attrs="placeholder ? {placeholder:placeholder}: {}"/>
 </acre:block>

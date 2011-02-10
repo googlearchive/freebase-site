@@ -28,62 +28,67 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-var validators = acre.require("lib/validator/validators.sjs");
 
-/**
- * "readable" param names mapped to actual param names used in the url
- */
-var _p = {
-  global: {
-    // global
-    "domain":     "gd",
-    "type":       "gt",
-    "property":   "gp",
-    "lang":       "gl",
-    "as_of_time": "ga"
-  },
-  view: {
-    // view
-    "limit":      "vl"
+acre.require('/test/lib').enable(this);
+
+var h = acre.require("helper/helpers.sjs");
+var fh = acre.require("filter/helpers.sjs");
+
+test("add_filter", function() {
+  var filters = {
+    limit: "500",
+    timestamp: "today",
+    as_of_time: "2010",
+    history: "1",
+    property: "/type/object/name"
+  };
+  var params = fh.add_filter(filters, "timestamp", "yesterday");
+  same(params, h.extend({}, filters, {timestamp: "yesterday"}));
+
+  params = fh.add_filter(filters, "hello", "world");
+  same(params, h.extend({}, filters, {hello: "world"}));
+});
+
+
+test("remove_filter", function() {
+  var filters = {
+    limit: "500",
+    timestamp: "today",
+    as_of_time: "2010",
+    history: "1",
+    property: "/type/object/name"
+  };
+  var params = fh.remove_filter(filters, "timestamp");
+  delete filters.timestamp;
+  same(params, filters);
+});
+
+var tests = [
+  0, "<10",
+  5, "<10",
+  10, "10+",
+  19, "10+",
+  45, "40+",
+  100, "100+",
+  150, "100+",
+  1000, "1k",
+  1500, "1.5k",
+  9149, "9.1k",
+  9150, "9.2k",
+  9999, "10k",
+  10000, "10k",
+  10001, "10k",
+  10101, "10k",
+  14999, "15k",
+  19499, "19k",
+  99999, "100k",
+  999999, "1,000k"
+];
+
+test("format_number", tests, function() {
+  for(var i=0,l=tests.length; i<l; i+=2) {
+    equal(fh.format_number(tests[i]), tests[i+1]);
   }
-};
-function _pn(type, name) {
-  return _p[type][name];
-};
-function _pv(params, type, name) {
-  return params[_pn(type, name)];
-};
+});
 
-var global = {
-
-  validate: function(params) {
-    var filters = {};
-    filters.lang = validators.MqlId(_pv(params, "global", "lang"), {if_invalid:null});
-    filters.as_of_time = validators.Timestamp(_pv(params, "global", "as_of_time"), {if_invalid:null});
-    ["domain", "type", "property"].every(function(name) {
-      var v = _pv(params, "global", name);
-      if (v) {
-        filters[name] = validators.MqlId(v, {if_invalid:null});
-        return false;
-      }
-      return true;
-    });
-    return filters;
-  }
-
-};
-
-
-var view = {
-
-  validate: function(params) {
-    var filters = {
-      limit: validators.Int(_pv(params, "view", "limit"), {if_invalid:10})
-    };
-    if (filters.limit < 1) {
-      filters.limit = 10;
-    }
-    return filters;
-  }
-
-};
+acre.test.report();

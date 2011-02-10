@@ -29,46 +29,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var validators = acre.require("lib/validator/validators.sjs");
-var object_query = acre.require("lib/queries/object.sjs").object;
-var queries = acre.require("queries.sjs");
-var filters = acre.require("lib/filter/filters.sjs");
-var filter_queries = acre.require("lib/filter/queries.sjs");
+acre.require('/test/lib').enable(this);
 
-var topic_filters = {
-  limit: {
-    validator: validators.Int,
-    options: {if_empty:null}
-  }
-};
+acre.require("test/mock").playback(this, "filter/test/playback_test_queries.json");
 
-var SPEC = {
+var q = acre.require("filter/queries.sjs");
+var h = acre.require("helper/helpers.sjs");
 
-  method: "GET",
+test("prop_counts", function() {
+  var result;
+  q.prop_counts("/en/united_states")
+    .then(function(counts) {
+      result = counts;
+    });
+  acre.async.wait_on_results();
+  ok(result);
+  ok(result.ti > 0, h.sprintf("incoming %s", result.ti));
+  ok(result.to > 0, h.sprintf("outgoing %s", result.to));
+});
 
-  auth: false,
 
-  cache_policy: "public",
 
-  template: "topic.mjt",
-
-  template_base: "lib/template/freebase_object.mjt",
-
-  validate: function(params) {
-    return [
-      validators.MqlId(acre.request.path_info, {required:true}),
-      filters.validate(params, topic_filters)
-    ];
-  },
-
-  run: function(id, f) {console.log("filters", f);
-    return {
-      id: id,
-      filters: f,
-      object: object_query(id),
-      topic: queries.topic(id),
-      prop_counts: f.as_of_time ? null : filter_queries.prop_counts(id)
-    };
-  }
-
-};
+acre.test.report();

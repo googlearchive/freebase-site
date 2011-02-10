@@ -35,6 +35,7 @@
   var image = acre.require("lib/template/imagecomponents");  
   var i18n = acre.require("lib/i18n/i18n");
   var _ = i18n.gettext;
+  var filter_components = acre.require("lib/filter/components.mjt");
 </acre:script>
 
 <acre:block def="head()">
@@ -68,102 +69,9 @@
         <span>Filter this data</span>
       </h2>
       <div class="module-section">
-        <h3 class="module-section-title">Domain</h3>
-        <table cellspacing="0" class="bar-graph">
-          <tbody>
-            <tr class="bar-graph-row">
-              <th>
-                <span class="bar-graph-label">
-                  <a href="" class="clear">/domain</a>
-                  <span class="index" style="width:100%;"></span>
-                </span>
-              </th>
-              <td class="value">200+</td>
-            </tr>
-            <tr class="bar-graph-row">
-              <th>
-                <span class="bar-graph-label">
-                  <a href="" class="clear">/domain</a>
-                  <span class="index" style="width:90%;"></span>
-                </span>
-              </th>
-              <td class="value">200+</td>
-            </tr>
-            <tr class="bar-graph-row">
-              <th>
-                <span class="bar-graph-label">
-                  <a href="" class="clear">/domain</a>
-                  <span class="index" style="width:80%;"></span>
-                </span>
-              </th>
-              <td class="value">200+</td>
-            </tr>
-            <tr class="bar-graph-row">
-              <th>
-                <span class="bar-graph-label">
-                  <a href="" class="clear">/domain</a>
-                  <span class="index" style="width:70%;"></span>
-                </span>
-              </th>
-              <td class="value">200+</td>
-            </tr>
-            <tr class="bar-graph-row">
-              <th>
-                <span class="bar-graph-label">
-                  <a href="" class="clear">/domain</a>
-                  <span class="index" style="width:60%;"></span>
-                </span>
-              </th>
-              <td class="value">200+</td>
-            </tr>
-            <tr class="bar-graph-row">
-              <th>
-                <span class="bar-graph-label">
-                  <a href="" class="clear">/domain</a>
-                  <span class="index" style="width:50%;"></span>
-                </span>
-              </th>
-              <td class="value">200+</td>
-            </tr>
-            <tr class="bar-graph-row">
-              <th>
-                <span class="bar-graph-label">
-                  <a href="" class="clear">/domain</a>
-                  <span class="index" style="width:40%;"></span>
-                </span>
-              </th>
-              <td class="value">200+</td>
-            </tr>
-            <tr class="bar-graph-row">
-              <th>
-                <span class="bar-graph-label">
-                  <a href="" class="clear">/domain</a>
-                  <span class="index" style="width:30%;"></span>
-                </span>
-              </th>
-              <td class="value">200+</td>
-            </tr>
-            <tr class="bar-graph-row">
-              <th>
-                <span class="bar-graph-label">
-                  <a href="" class="clear">/domain</a>
-                  <span class="index" style="width:20%;"></span>
-                </span>
-              </th>
-              <td class="value">200+</td>
-            </tr>
-            <tr class="bar-graph-row">
-              <th>
-                <span class="bar-graph-label">
-                  <a href="" class="clear">/domain</a>
-                  <span class="index" style="width:10%;"></span>
-                </span>
-              </th>
-              <td class="value">200+</td>
-            </tr>
-          </tbody>
-        </table>
+        ${filter_components.prop_filters(c.filters, c.prop_counts, "/topic" + c.id)}
       </div>
+
       <div class="module-section">
         <h3 class="module-section-title"><label for="">Language</label></h3>
         <div class="filter-form">

@@ -29,46 +29,74 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var validators = acre.require("lib/validator/validators.sjs");
-var object_query = acre.require("lib/queries/object.sjs").object;
-var queries = acre.require("queries.sjs");
-var filters = acre.require("lib/filter/filters.sjs");
-var filter_queries = acre.require("lib/filter/queries.sjs");
+acre.require("/test/lib").enable(this);
 
-var topic_filters = {
-  limit: {
-    validator: validators.Int,
-    options: {if_empty:null}
+var f = acre.require("filter/filters.sjs");
+var validators = acre.require("validator/validators.sjs");
+
+test("check_param_spec", function() {
+  expect(0);
+  try {
+    f.check_param_spec({
+        param1: {
+          validator: validators.String
+        },
+        param2: {
+          validator: validators.Int
+        }
+    });
   }
-};
-
-var SPEC = {
-
-  method: "GET",
-
-  auth: false,
-
-  cache_policy: "public",
-
-  template: "topic.mjt",
-
-  template_base: "lib/template/freebase_object.mjt",
-
-  validate: function(params) {
-    return [
-      validators.MqlId(acre.request.path_info, {required:true}),
-      filters.validate(params, topic_filters)
-    ];
-  },
-
-  run: function(id, f) {console.log("filters", f);
-    return {
-      id: id,
-      filters: f,
-      object: object_query(id),
-      topic: queries.topic(id),
-      prop_counts: f.as_of_time ? null : filter_queries.prop_counts(id)
-    };
+  catch(e) {
+    ok(false, "failed on valid param spec: " + e);
   }
+});
 
-};
+test("check_param_spec no validator", function() {
+  expect(1);
+  try {
+    f.check_param_spec({
+        param1: {
+          validator: validators.String
+        },
+        param2: {
+          // empty spec
+        }
+    });
+  }
+  catch(e) {
+    ok(true, "expected invalid param spec: " + e);
+  }
+});
+
+test("validate", function() {
+  var params = {
+    domain: "/some/domain",
+    lang: "/lang/ko",
+    as_of_time: "invalid timestamp",
+    foo: "true",
+    bar: "false",
+    baz: "1"
+  };
+  var filters = f.validate(params, {
+    foo: {
+      validator: validators.StringBool
+    },
+    bar: {
+      validator: validators.StringBool
+    },
+    baz: {
+      validator: validators.Int
+    }
+  });
+
+  ok(filters, "got validate result");
+  same(filters.domain, "/some/domain");
+  same(filters.lang, "/lang/ko");
+  same(filters.as_of_time, null);
+  same(filters.foo, true);
+  same(filters.bar, false);
+  same(filters.baz, 1);
+});
+
+
+acre.test.report();

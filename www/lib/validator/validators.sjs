@@ -464,7 +464,7 @@ Validator.factory(scope, "Datejs", {
       return date;
     }
     else {
-      return date.toString("yyyy-MM-ddTHH:mm:ss");
+      return date.toString("yyyy-MM-ddTHH:mm:ss").replace(/T00\:00\:00$/, "");
     }
   }
 });

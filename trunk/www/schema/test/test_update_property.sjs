@@ -392,7 +392,7 @@ test("update_property enumeration", function() {
     type: type.mid,
     id: prop.mid,
     expected_type: "/type/enumeration",
-    enumeration: namespace.id,
+    enumeration: namespace.mid,
     unit: "/en/meter",   // unit should be ignored
     unique: true,        // unique should be ignored
     disambiguator: true,

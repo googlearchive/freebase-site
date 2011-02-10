@@ -29,27 +29,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-acre.require("/test/lib").enable(this);
+var deferred = acre.require("promise/deferred");
+var freebase = acre.require("promise/apis").freebase;
 
-var f = acre.require("filters.sjs");
+function prop_counts(id) {
+  var q = {
+    id: id,
+    guid: null
+  };
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return prop_counts_by_guid(env.result.guid);
+    });
+};
 
-// make sure param name mapped values are unique
-test("_p", function() {
-  expect(0);
-  var seen = {};
-  for (var t in f._p) {
-    for (var k in f._p[t]) {
-      var v = f._p[t][k];
-      if (seen[v]) {
-        ok(false, "param name duplicate found: " + v);
-      }
-      else {
-        seen[v] = 1;
-      }
-    }
-  }
-});
-
-
-
-acre.test.report();
+function prop_counts_by_guid(guid) {
+  var bdb_id = guid.substring(25);
+  return freebase.get_static("prop_counts", bdb_id)
+    .then(function(counts) {
+      return counts;
+    }, function(error) {
+      return null;
+    });
+};

@@ -11,10 +11,9 @@ ACRE_PORT="8117"
 JVM_JMX_PORT="8126"
 JVM_JMX="-Dcom.sun.management.jmxremote.port=${JVM_JMX_PORT} -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
 
-# edit these
-# auth secret?
-FSTEST_USERNAME="VALID_USER"
-FSTEST_PASSWORD="VALID_PASSWORD"
+# uncomment when not mocking backend reqs
+#FSTEST_USERNAME="VALID_USER"
+#FSTEST_PASSWORD="VALID_PASSWORD"
 
 ACRE_FREEBASE_SITE_ADDR="devel.$ACRE_METAWEB_BASE_ADDR"
 ACRE_FREEBASE_SITE_ADDR_PORT="$ACRE_PORT"

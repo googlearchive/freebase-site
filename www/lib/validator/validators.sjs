@@ -30,6 +30,7 @@
  */
 
 var h = acre.require("helper/helpers.sjs");
+var i18n = acre.require("i18n/i18n.sjs");
 
 var Class = {
   factory: function(clazz, clazz_args) {
@@ -447,12 +448,12 @@ Validator.factory(scope, "Timestamp", {
 Validator.factory(scope, "Datejs", {
   "defaults": {
     format: null, // specific datejs format for parsing @see http://code.google.com/p/datejs/wiki/FormatSpecifiers
-    date: false    // if TRUE convert to date, else converted to ISO8601
+    date: false   // if TRUE convert to date, else converted to ISO8601 (yyyy-MM-ddTHH:mm:ss)
   },
   "string": function(val, options) {
     var date;
     try {
-      date = h.parse_date(val, options.format);
+      date = i18n.parse_date(val);
       if (!date) {
         throw(date);
       }

@@ -48,7 +48,10 @@
     "omf.css": {
       "media_type": "text/css", 
       "handler": "css_manifest"
-    }
+    },
+    "properties": {
+      "handler": "acre_script"
+    }             
   },
   "static_base": "",
   "libs" : {

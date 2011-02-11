@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mock").playback(this, "i18n/test/playback_test_i18n.json");
+ acre.require("test/mock").playback(this, "i18n/test/playback_test_i18n.json");
 
 var h = acre.require("helper/helpers.sjs");
 var i18n = acre.require("i18n/i18n");
@@ -45,6 +45,7 @@ test("i18n.mql.langs", function() {
   var langs = i18n.mql.langs();
   var map = h.map_array(langs, "id");
   var result;
+  // ensure we have lang codes in freebase
   freebase.mqlread([{
     id: null,
     "id|=": [lang.id for each (lang in langs)],
@@ -54,7 +55,51 @@ test("i18n.mql.langs", function() {
     result = env.result;
   });
   acre.async.wait_on_results();
-  equal(langs.length, result.length, JSON.stringify(langs, null, 2));
+  equal(langs.length, result.length);
+});
+
+test("i18n.datejs", function() {
+  var langs = i18n.mql.langs();
+  var map = h.map_array(langs, "id");
+
+  // ensure datejs file for each lang
+  var lib_files = acre.get_metadata().files;
+  for (var i=0,l=langs.length; i<l; i++) {
+    var code = langs[i].code;
+    if (!h.isArray(code)) {
+      code = [code];
+    }
+    // ensure in datejs/src/*.js
+    var found = false;
+    code.every(function(c) {
+      var filename = h.sprintf("datejs/src/date-%s.js", c);
+      if (lib_files[filename]) {
+        found = filename;
+        return false;
+      }
+      return true;
+    });
+    ok(found, found);
+
+    // ensure in datejs/*.sjs
+    found = false;
+    code.every(function(c) {
+      var filename = h.sprintf("datejs/date-%s.sjs", c);
+      if (lib_files[filename]) {
+        found = filename;
+        return false;
+      }
+      return true;
+    });
+    ok(found, found);
+
+    //acre.write(h.sprintf("cp src/date-%s.js date-%s.sjs </br>", code, code));
+  };
+
+  ok(typeof i18n.datejs !== "undefined", "locale datejs initialized");
+  ok(i18n.datejs.CultureInfo, "datejs CultureInfo found");
+  equal(i18n.datejs.CultureInfo.name, map[i18n.lang].code);
+  same(i18n.format.date, i18n.datejs.CultureInfo.formatPatterns, "CultureInfo.formatPatterns loaded");
 });
 
 test("i18n.mql.query.text", function() {

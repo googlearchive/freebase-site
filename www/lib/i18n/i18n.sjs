@@ -29,6 +29,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var h = acre.require("helper/helpers.sjs");
+var deferred = acre.require("promise/deferred");
+var freebase = acre.require("promise/apis").freebase;
+
 /**
  * @see https://sites.google.com/a/google.com/40-language-initiative/home/language-details
  */
@@ -36,187 +40,260 @@ var LANGS = [
 
   // Tier 0
   {
-    "id" : "/lang/en",
-    "name" : "English"
+    "id": "/lang/en",
+    "name": "English",
+    "code": "en-US"
   },
 
   // Tier 1
   {
-    "id" : "/lang/en-gb",
-    "name" : "British English"
+    "id": "/lang/en-gb",
+    "name": "British English",
+    "code": "en-GB"
   },
   {
-    "id" : "/lang/fr",
-    "name" : "French"
+    "id": "/lang/fr",
+    "name": "French",
+    "code": "fr-FR"
   },
   {
-    "id" : "/lang/it",
-    "name" : "Italian"
+    "id": "/lang/it",
+    "name": "Italian",
+    "code": "it-IT"
   },
   {
-    "id" : "/lang/de",
-    "name" : "German"
+    "id": "/lang/de",
+    "name": "German",
+    "code": "de-DE"
   },
   {
-    "id" : "/lang/es",
-    "name" : "Spanish"
+    "id": "/lang/es",
+    "name": "Spanish",
+    "code": "es-ES"
   },
   {
-    "id" : "/lang/nl",
-    "name" : "Dutch"
+    "id": "/lang/nl",
+    "name": "Dutch",
+    "code": "nl-NL"
   },
   {
-    "id" : "/lang/zh",
-    "name" : "Chinese"
+    "id": "/lang/zh",
+    "name": "Chinese",
+    "code": ["zh-Hans-CN", "zh-CN"]
   },
   {
-    "id" : "/lang/zh-hant",
-    "name" : "Chinese (traditional)"
+    "id": "/lang/zh-hant",
+    "name": "Chinese (traditional)",
+    "code": ["zh-Hant-TW", "zh-TW"]
   },
   {
-    "id" : "/lang/ja",
-    "name" : "Japanese"
+    "id": "/lang/ja",
+    "name": "Japanese",
+    "code": "ja-JP"
   },
   {
-    "id" : "/lang/ko",
-    "name" : "Korean"
+    "id": "/lang/ko",
+    "name": "Korean",
+    "code": "ko-KR"
   },
   {
-    "id" : "/lang/pt-br",
-    "name" : "Portuguese"
+    "id": "/lang/pt-br",
+    "name": "Portuguese",
+    "code": "pt-BR"
   },
   {
-    "id" : "/lang/ru",
-    "name" : "Russian"
+    "id": "/lang/ru",
+    "name": "Russian",
+    "code": "ru-RU"
   },
   {
-    "id" : "/lang/pl",
-    "name" : "Polish"
+    "id": "/lang/pl",
+    "name": "Polish",
+    "code": "pl-PL"
   },
   {
-    "id" : "/lang/tr",
-    "name" : "Turkish"
+    "id": "/lang/tr",
+    "name": "Turkish",
+    "code": "tr-TR"
   },
   {
-    "id" : "/lang/th",
-    "name" : "Thai"
+    "id": "/lang/th",
+    "name": "Thai",
+    "code": "th-TH"
   },
   {
-    "id" : "/lang/ar",
-    "name" : "Arabic"
+    "id": "/lang/ar",
+    "name": "Arabic",
+    "code": "ar-EG"
   },
 
   // Tier 2
   {
-    "id" : "/lang/sv",
-    "name" : "Swedish"
+    "id": "/lang/sv",
+    "name": "Swedish",
+    "code": "sv-SE"
   },
   {
-    "id" : "/lang/fi",
-    "name" : "Finnish"
+    "id": "/lang/fi",
+    "name": "Finnish",
+    "code": "fi-FI"
   },
   {
-    "id" : "/lang/da",
-    "name" : "Danish"
+    "id": "/lang/da",
+    "name": "Danish",
+    "code": "da-DK"
   },
   {
-    "id" : "/lang/pt-pt",
-    "name" : "Iberian Portuguese"
+    "id": "/lang/pt-pt",
+    "name": "Iberian Portuguese",
+    "code": "pt-PT"
   },
   {
-    "id" : "/lang/ro",
-    "name" : "Romanian"
+    "id": "/lang/ro",
+    "name": "Romanian",
+    "code": "ro-RO"
   },
   {
-    "id" : "/lang/hu",
-    "name" : "Hungarian"
+    "id": "/lang/hu",
+    "name": "Hungarian",
+    "code": "hu-HU"
   },
   {
-    "id" : "/lang/iw",
-    "name" : "Hebrew"
+    "id": "/lang/iw",
+    "name": "Hebrew",
+    "code": ["iw-IL", "he-IL"]
   },
   {
-    "id" : "/lang/id",
-    "name" : "Indonesian"
+    "id": "/lang/id",
+    "name": "Indonesian",
+    "code": "id-ID"
   },
   {
-    "id" : "/lang/cs",
-    "name" : "Czech"
+    "id": "/lang/cs",
+    "name": "Czech",
+    "code": "cs-CZ"
   },
   {
-    "id" : "/lang/el",
-    "name" : "Greek"
+    "id": "/lang/el",
+    "name": "Greek",
+    "code": "el-GR"
   },
   {
-    "id" : "/lang/no",
-    "name" : "Norwegian"
+    "id": "/lang/no",
+    "name": "Norwegian",
+    "code": "nb-NO"
   },
   {
-    "id" : "/lang/vi",
-    "name" : "Vietnamese"
+    "id": "/lang/vi",
+    "name": "Vietnamese",
+    "code": "vi-VN"
   },
   {
-    "id" : "/lang/bg",
-    "name" : "Bulgarian"
+    "id": "/lang/bg",
+    "name": "Bulgarian",
+    "code": "bg-BG"
   },
   {
-    "id" : "/lang/hr",
-    "name" : "Croatian"
+    "id": "/lang/hr",
+    "name": "Croatian",
+    "code": "hr-HR"
   },
   {
-    "id" : "/lang/lt",
-    "name" : "Lithuanian"
+    "id": "/lang/lt",
+    "name": "Lithuanian",
+    "code": "lt-LT"
   },
   {
-    "id" : "/lang/sk",
-    "name" : "Slovak"
+    "id": "/lang/sk",
+    "name": "Slovak",
+    "code": "sk-SK"
   },
   {
-    "id" : "/lang/fil",
-    "name" : "Filipino"
+    "id": "/lang/fil",
+    "name": "Filipino",
+    "code": ["fil-PH", "en-PH"]
   },
   {
-    "id" : "/lang/sl",
-    "name" : "Slovenian"
+    "id": "/lang/sl",
+    "name": "Slovenian",
+    "code": "sl-SI"
   },
   {
-    "id" : "/lang/sr",
-    "name" : "Serbian"
+    "id": "/lang/sr",
+    "name": "Serbian",
+    "code": ["sr-Cyrl-RS", "sr-Cyrl-CS"]
   },
   {
-    "id" : "/lang/ca",
-    "name" : "Catalan"
+    "id": "/lang/ca",
+    "name": "Catalan",
+    "code": "ca-ES"
   },
   {
-    "id" : "/lang/lv",
-    "name" : "Latvian"
+    "id": "/lang/lv",
+    "name": "Latvian",
+    "code": "lv-LV"
   },
   {
-    "id" : "/lang/uk",
-    "name" : "Ukrainian"
+    "id": "/lang/uk",
+    "name": "Ukrainian",
+    "code": "uk-UA"
   },
   {
-    "id" : "/lang/hi",
-    "name" : "Hindi"
+    "id": "/lang/hi",
+    "name": "Hindi",
+    "code": "hi-IN"
   },
   {
-    "id" : "/lang/fa",
-    "name" : "Persian"
+    "id": "/lang/fa",
+    "name": "Persian",
+    "code": "fa-IR"
   },
   {
-    "id" : "/lang/es-419",
-    "name" : "Latin American Spanish"
+    "id": "/lang/es-419",
+    "name": "Latin American Spanish",
+    "code": ["es-419", "es-MX"]
   }
 ];
-
-var h = acre.require("helper/helpers.sjs");
-var deferred = acre.require("promise/deferred");
-var freebase = acre.require("promise/apis").freebase;
+var LANGS_BY_CODE = {};
+var LANGS_BY_ID = h.map_array(LANGS, "id");
+LANGS.forEach(function(l) {
+  var code = l.code;
+  if (!h.isArray(code)) {
+    code = [code];
+  }
+  code.push(l.id.split("/lang/").pop());
+  code.forEach(function(lc) {
+    LANGS_BY_CODE[lc] = l;
+  });
+});
 
 var lang;
 var bundle;
 var bundle_path;
 var undefined;
+
+/**
+ * Lang specific datejs and format patterns.
+ * This will be intialized when lang is determined.
+ */
+var datejs;
+var format = {
+  date: {
+/**
+    shortDate: null,                 // M/d/yyyy
+    longDate: null,                  // dddd, MMMM dd, yyyy
+    shortTime: null,                 // h:mm tt
+    longTime: null,                  // h:mm:ss tt
+    fullDateTime: null,              // dddd, MMMM dd, yyyy h:mm:ss tt
+    sortableDateTime: null,          // yyyy-MM-ddTHH:mm:ss
+    universalSortableDateTime: null, // yyyy-MM-dd HH:mm:ssZ
+    rfc1123: null,                   // ddd, dd MMM yyyy HH:mm:ss GMT
+    monthDay: null,                  // MMMM dd
+    yearMonth: null                  // MMMM, yyyy
+**/
+  }
+};
+
 
 ///////////
 // gettext
@@ -304,19 +381,52 @@ function display_article(obj, keys, article_key) {
 
 
 /**
- * TODO: convert all format methods to use locale specific formats
+ * TODO: convert number format to use locale specific formats
  */
-
 function format_number(val) {
   return h.commafy(val);
 };
 
-function format_timestamp(timestamp) {
-  return format_date(acre.freebase.date_from_iso(timestamp));
+/**
+ * @param timestamp:String ISO8601
+ * @param pattern:String
+ * @see datejs.CultureInfo.formatPatterns
+ */
+function format_timestamp(timestamp, pattern) {
+  return format_date(acre.freebase.date_from_iso(timestamp), pattern);
 };
 
-function format_date(date) {
-  return h.format_date(date, "MMMM dd, yyyy");
+/**
+ * @param date:Date
+ * @param pattern:String
+ * @see datejs.CultureInfo.formatPatterns
+ */
+function format_date(date, pattern) {
+  if (!pattern) {
+    pattern = format.date.shortDate;
+  }
+  return date.toString(pattern);
+};
+
+/**
+ * Parse a date string into a Date object using current lang specific datejs.
+ * If a pattern or an Array of patterns is specified, then uses datejs.parseExact,
+ * otherwise, use datejs.parse.
+ *
+ * @param date_str:String date string
+ * @param pattern:String|Array
+ * @see datejs.CultureInfo.formatPatterns
+ * @see http://code.google.com/p/datejs/wiki/FormatSpecifiers
+ */
+function parse_date(date_str, pattern) {
+  var d;
+  if (pattern) {
+    d = datejs.parseExact(date_str, pattern);
+  }
+  else {
+    d = datejs.parse(date_str);
+  }
+  return d;
 };
 
 
@@ -709,53 +819,94 @@ _get_blob.closure = function(article, mode, options, label) {
 ///////////////////////////////
 // determine lang and bundle
 ///////////////////////////////
-try {
-  /**
-   * Preferred langauge is determined in the following order
-   * 1. lang parameter
-   * 2. lang cookie
-   * 3. accept-language request header
-   * 4. default to "en"
-   */
-  var plang = acre.request.params.lang;
-  if (plang === "1") {
-    var lang_bundle = _accept_language(acre.request.headers['accept-language'].split(","));
-    _set_lang_bundle(lang_bundle[0], lang_bundle[1], true);
+
+/**
+ * Preferred langauge is determined in the following order
+ * 1. lang parameter
+ * 2. lang cookie
+ * 3. accept-language request header
+ * 4. default to "en"
+ */
+var accept_langs = get_accept_langs();
+set_bundle(accept_langs);
+set_lang(acre.request.params.lang || "/lang/en");
+
+function set_lang(lang_id) {
+  var l = LANGS_BY_ID[lang_id];
+  if (!l) {
+    l = LANGS[0]; // lang/en
   }
-  else if (plang === "0") {
-    acre.response.clear_cookie("lang", {path:"/"});
-    _set_lang_bundle("/lang/en", "en.properties");
+  // mql lang id
+  lang = l.id;
+
+  // determin lang specific datejs
+  var lib_files = acre.get_metadata().files;
+  var lang_codes = l.code;
+  if (!h.isArray(lang_codes)) {
+    lang_codes = [lang_codes];
   }
-  else if (plang) {
-    var lang_code = plang.split("/").pop();
-    _set_lang_bundle(plang, lang_code + ".properties", true);
-  }
-  else {
-    plang = acre.request.cookies.lang;
-    if (plang) {
-      var lang_code = plang.split("/").pop();
-      _set_lang_bundle(plang, lang_code + ".properties");
+  lang_codes.every(function(lang_code) {
+    var filename = h.sprintf("datejs/date-%s.sjs", lang_code);
+    if (lib_files[filename]) {
+      datejs = acre.require(filename).Date;
+      return false;
     }
-    else {
-      _set_lang_bundle("/lang/en", "en.properties");
-    }
+    return true;
+  });
+  if (!datejs) {
+    datejs = acre.require("datejs/date-en-US.sjs").Date;
   }
-}
-catch (e) {
-  // trap all exceptions
-  console.error("[i18n]", e);
-  _set_lang_bundle("/lang/en", "en.properties");
+  h.extend(format.date, datejs.CultureInfo.formatPatterns);
+};
+
+function set_bundle(lang_codes) {
+  if (!h.isArray(lang_codes)) {
+    lang_codes = [lang_codes];
+  }
+  var lib = acre.get_metadata();
+  var app = acre.get_metadata(acre.request.script.app.path);
+  var lib_bundle;
+  var app_bundle;
+  lang_codes.every(function(lang_code) {
+    var lang_by_code = LANGS_BY_CODE[lang_code];
+    if (lang_by_code) {
+      var filename = lang_code + ".properties";
+      if (!lib_bundle && filename in lib.files) {
+        lib_bundle = lib.path + "/" + filename;
+      }
+      if (!app_bundle && filename in app.files) {
+        app_bundle = app.path + "/" + filename;
+      }
+      if (lib_bundle && app_bundle) {
+        return false;
+      }
+    }
+    return true;
+  });
+  if (lib_bundle) {
+    lib_bundle = acre.require(lib_bundle).bundle;
+  }
+  if (app_bundle) {
+    app_bundle = acre.require(app_bundle).bundle;
+  }
+  bundle = h.extend(true, lib_bundle || {}, app_bundle);
 };
 
 
-function _accept_language(accept_langs) {
-  var lang_bundles = [];
+function get_accept_langs() {
+  var accept_langs = acre.request.headers['accept-language'];
+  if (accept_langs) {
+    accept_langs = accept_langs.split(",");
+  }
+  else {
+    accept_langs = ["en-US"];
+  }
   var qvalues = {};
+  var lang_codes = [];
   var i,l;
-  for (i=0,l=accept_langs.length; i<l; i++) {
-    var lang_parts = h.trim(accept_langs[i]).split(";");
-    var lang_code = h.trim(lang_parts[0].toLowerCase());
-    var lang_id = "/lang/" + lang_code;
+  accept_langs.forEach(function(accept_lang) {
+    var lang_parts = h.trim(accept_lang).split(";");
+    var lang_code = h.trim(lang_parts[0]);
     /**
      * qvalue is a value from 0 to 1. 1 being the most preferred. qvalue defaults to 1 if not present.
      * so if you have the following:
@@ -773,76 +924,24 @@ function _accept_language(accept_langs) {
         qvalue = parseFloat(h.trim(qvalue_parts[1]));
       }
     }
-    if (lang_id in qvalues) {
+    if (lang_code in qvalues) {
       // take the larger qvalue
-      if (qvalues[lang_id] < qvalue) {
-        qvalues[lang_id] = qvalue;
+      if (qvalues[lang_code] < qvalue) {
+        qvalues[lang_code] = qvalue;
       }
     }
     else {
-      qvalues[lang_id] = qvalue;
-      lang_bundles.push([lang_id, lang_code + ".properties"]);
+      qvalues[lang_code] = qvalue;
     }
-  }
-  // /lang/en must be present
-  if (!("/lang/en" in qvalues)) {
-    qvalues["/lang/en"] = 0;
-    lang_bundles.push(["/lang/en", "en.properties"]);
-  }
-  // sort langs by qvalue
-  lang_bundles.sort(function(a,b) {
-    return qvalues[b[0]] - qvalues[a[0]];
+    lang_codes.push(lang_code);
   });
-  var langs = [];
-  var bundles = [];
-  for (i=0,l=lang_bundles.length; i<l; i++) {
-    var lang_bundle = lang_bundles[i];
-    langs.push(lang_bundle[0]);
-    bundles.push(lang_bundle[1]);
+  // /lang/en must be present
+  if (!("en-US" in qvalues)) {
+    qvalues["en-US"] = 0;
+    lang_codes.push("en-US");
   }
-  return [langs, bundles];
-}
-
-function _set_lang_bundle(langs, bundles, set_cookie) {
-  if (!h.isArray(langs)) {
-    langs = [langs];
-  }
-  if (!h.isArray(bundles)) {
-    bundles = [bundles];
-  }
-  var mql_langs = h.map_array(mql.langs(), "id");
-  var my_lang, my_bundle;
-  var i,l;
-  for (i=0,l=langs.length; i<l; i++) {
-    var lang_id = langs[i];
-    if (lang_id in mql_langs) {
-      my_lang = lang_id;
-      break;
-    }
-  }
-  var app = acre.get_metadata(acre.request.script.path);
-  for (i=0,l=bundles.length; i<l; i++) {
-    var filename = bundles[i];
-    if (filename in app.files) {
-      my_bundle = filename;
-      break;
-    }
-  }
-  if (my_lang) {
-    lang = my_lang;
-    if (set_cookie) {
-      acre.response.set_cookie("lang", my_lang, {path:"/"});
-    }
-  }
-  else {
-    lang = "/lang/en";
-  }
-  if (my_bundle) {
-    bundle_path = acre.request.script.app.path + "/" + my_bundle;
-    bundle = acre.require(bundle_path).bundle;
-  }
-  else {
-    bundle_path = null;
-    bundle = null;
-  }
+  lang_codes.sort(function(a,b) {
+    return qvalues[b] - qvalues[a];
+  });
+  return lang_codes;
 };

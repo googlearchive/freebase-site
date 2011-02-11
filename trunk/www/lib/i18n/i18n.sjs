@@ -821,11 +821,9 @@ _get_blob.closure = function(article, mode, options, label) {
 ///////////////////////////////
 
 /**
- * Preferred langauge is determined in the following order
- * 1. lang parameter
- * 2. lang cookie
- * 3. accept-language request header
- * 4. default to "en"
+ * lang is determined by the "?lang=" parameter, where the value must be a valid mql lang id
+ *
+ * The language bundle used for chrome is determined by the "accept-language' request header..
  */
 var accept_langs = get_accept_langs();
 set_bundle(accept_langs);
@@ -891,7 +889,6 @@ function set_bundle(lang_codes) {
   }
   bundle = h.extend(true, lib_bundle || {}, app_bundle);
 };
-
 
 function get_accept_langs() {
   var accept_langs = acre.request.headers['accept-language'];

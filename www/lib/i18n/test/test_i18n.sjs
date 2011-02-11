@@ -69,20 +69,8 @@ test("i18n.datejs", function() {
     if (!h.isArray(code)) {
       code = [code];
     }
-    // ensure in datejs/src/*.js
-    var found = false;
-    code.every(function(c) {
-      var filename = h.sprintf("datejs/src/date-%s.js", c);
-      if (lib_files[filename]) {
-        found = filename;
-        return false;
-      }
-      return true;
-    });
-    ok(found, found);
-
     // ensure in datejs/*.sjs
-    found = false;
+    var found = false;
     code.every(function(c) {
       var filename = h.sprintf("datejs/date-%s.sjs", c);
       if (lib_files[filename]) {

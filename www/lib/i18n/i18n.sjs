@@ -896,7 +896,7 @@ function get_accept_langs() {
     accept_langs = accept_langs.split(",");
   }
   else {
-    accept_langs = ["en-US"];
+    return ["en-US"];
   }
   var qvalues = {};
   var lang_codes = [];

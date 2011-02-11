@@ -51,17 +51,18 @@ var rules = {
     {prefix:"/ajax",               app:lib, script:"routing/ajax.sjs"},
 
     // Test routing rules to test non-user facing apps (core libraries, etc.)
+    {prefix:"/lib/appeditor-services",  app:lib + "/appeditor-services"},
+    {prefix:"/lib/filter",         app:lib + "/filter"},
+    {prefix:"/lib/handlers",       app:lib + "/handlers"},
     {prefix:"/lib/helper",         app:lib + "/helper"},
-    {prefix:"/lib/routing",        app:lib + "/routing"},
     {prefix:"/lib/i18n",           app:lib + "/i18n"},
+    {prefix:"/lib/permission",     app:lib + "/permission"},
     {prefix:"/lib/promise",        app:lib + "/promise"},
     {prefix:"/lib/queries",        app:lib + "/queries"},
+    {prefix:"/lib/routing",        app:lib + "/routing"},
+    {prefix:"/lib/template",       app:lib + "/template"},
     {prefix:"/lib/test",           app:lib + "/test"},
     {prefix:"/lib/validator",      app:lib + "/validator"},
-    {prefix:"/lib/handlers",       app:lib + "/handlers"},
-    {prefix:"/lib/template",       app:lib + "/template"},
-    {prefix:"/lib/permission",     app:lib + "/permission"},
-    {prefix:"/lib/appeditor-services",     app:lib + "/appeditor-services"},
 
     // Urls for administrative tools
     {prefix:"/admin",              app:"//admin" + codebase},

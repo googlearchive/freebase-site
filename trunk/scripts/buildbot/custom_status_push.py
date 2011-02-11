@@ -90,7 +90,7 @@ class CustomStatusPush(StatusPush):
                     if "pre-check" in payload["text"][0]:
                         outcome = "yellow"
                     blame = payload.get("blame")
-                    if blame: blame = ' '.join(blame)
+                    if not blame: blame = []
                     tmppayload = {
                       "builder": payload["builderName"],
                       "blamelist": blame,

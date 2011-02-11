@@ -239,6 +239,15 @@ class ActionSetupSite:
     if not r:
       return c.error('Failed to build acre under %s' % c.options.acre_dir)
 
+    c.log('*' * 65)
+    c.log('')
+    c.log('In order to run the freebase site:', color=c.BLUE)
+    c.log('\t1. Run the acre server: \n cd %s; ./acre appengine-run' % c.options.acre_dir)
+    c.log('\t2. Visit http://devel.sandbox-freebase.com:%s' % c.options.acre_port)
+    c.log('freebase-site is now installed in %s' c.options.site_dir)
+    c.log('')
+    c.log('*' * 65)
+
     return True
 
 
@@ -384,11 +393,6 @@ class ActionSetup:
     #r = ActionLink(c)()
     #if not r:
     #  return c.error('Link failed.')
-
-    c.log('In order to run the freebase site:', color=c.BLUE)
-    c.log('\t1. Run the acre server: \n cd %s; ./acre appengine-run' % c.options.acre_dir)
-    c.log('\t2. Visit http://devel.sandbox-freebase.com:%s' % c.options.acre_port)
-
 
     return c.log('Setup has finished successfully.')
 

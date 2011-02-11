@@ -2144,7 +2144,7 @@ def main():
         ('branch', 'creates a branch of your app', ActionBranch),
         ('push', 'pushes a specified directory to an app version', ActionPush),
         ('create_graph', 'creates an app on the given graph', ActionCreateGraph),
-        ('create_local', 'combine branch, static and push in one go', ActionCreateLocal),
+        ('create_local', 'creates an app in the filesystem', ActionCreateLocal),
         ('release', 'release a specific version of an app', ActionRelease),
         ('deploy', 'combine branch, static and push in one go', ActionDeploy),
         ('info', 'provide information on all apps or a specific app', ActionInfo),

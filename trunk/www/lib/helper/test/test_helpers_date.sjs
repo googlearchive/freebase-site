@@ -33,52 +33,6 @@ acre.require('/test/lib').enable(this);
 
 var h = acre.require("helper/helpers_date.sjs");
 
-
-test("parse_date", function() {
-  var tests = [
-    "August 3, 1998",
-    "Aug 03, 98",
-    "3 August 1998",
-    "8/3/98",
-    "08/03/1998"
-  ];
-
-  function assert_equals(d) {
-    equals(d.getMonth(), 7);
-    equals(d.getDate(), 3);
-    equals(d.getFullYear(), 1998);
-  }
-
-  tests.forEach(function(test) {
-    var d = h.parse_date(test);
-    assert_equals(d);
-  });
-
-  var d = h.parse_date(tests[4], "MM/dd/yyyy");
-  assert_equals(d);
-
-  d = h.parse_date(tests[3], "MM/dd/yyyy");
-  strictEqual(d, null);
-});
-
-test("format_date", function() {
-  var tests = [
-    ["MMMM d, yyyy", "August 3, 1998"],
-    ["MMM dd, yy", "Aug 03, 98"],
-    ["d MM yy", "3 08 98"],
-    ["M/d/yy", "8/3/98"],
-    ["MM/dd/yyyy", "08/03/1998"]
-  ];
-  var d = new Date(1998, 7, 3);
-
-  tests.forEach(function([format, expected]) {
-    equals(h.format_date(d, format), expected);
-  });
-
-  var [format, expected] = tests[4];
-  ok(h.format_date(d));
-});
-
 test("relative_date", function() {
   var d = new Date();
   d.setTime(d.getTime() - 30 * 1000);

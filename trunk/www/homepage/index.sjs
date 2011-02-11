@@ -29,9 +29,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-console.log(acre.freebase);
-console.log(acre.request);
-
 var h = acre.require("lib/helper/helpers.sjs");
 var queries = acre.require("queries");
 

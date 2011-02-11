@@ -32,6 +32,8 @@
 <acre:script>
   var image_components = acre.require("lib/template/imagecomponents");
   var h = acre.require("helpers");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var _ = i18n.gettext;
 </acre:script>
 
 <acre:block def="categories_list(categories)">
@@ -81,14 +83,14 @@
           var two_months_ago = new Date();
           two_months_ago.setDate(two_months_ago.getDate()-7*8)
         </acre:script>
-        ${h.format_date(two_months_ago, "MMM d")}
+        ${i18n.format_date(two_months_ago, "MMMM")}
       </div>
       <div class="activity-chart-date activity-chart-date-second">
         <acre:script>
           var one_month_ago = new Date();
           one_month_ago.setDate(one_month_ago.getDate()-7*4)
         </acre:script>
-        ${h.format_date(one_month_ago, "MMM d")}
+        ${i18n.format_date(one_month_ago, "MMMM")}
       </div>
       <div class="activity-chart-date activity-chart-date-last">
         last week
@@ -260,7 +262,7 @@
       <a href="${h.legacy_fb_url('/view'+user.id)}" class="bold-link">${user.name}</a>
     </div>
     <div class="user-stats">
-      joined in ${h.format_date(user.created, "MMMM yyyy")}
+      joined in ${i18n.format_date(user.created, i18n.format.date.yearMonth)}
     </div>
     <div class="user-stats">
       ${h.commafy(user.assertions)} total assertions
@@ -371,7 +373,7 @@
 </acre:block>
 
 <!-- Note: We trust feedburner to escape HTML entities in the description -->
-<acre:block def="blog_entries(blog)">
+<acre:block def="blog_entries(blog)">  
   <div acre:if="blog" class="content-section">
     <h3 class="sidebar-header"><a href="$blog.url">Blog</a></h3>
     <a href="$blog.rss_url" class="rss-icon">RSS</a>
@@ -382,7 +384,7 @@
            class="item-title">$item.title</a>
         by 
         <a href="${h.legacy_fb_url('/view/user/'+item['dc:creator'])}">${item['dc:creator']}</a>
-        on ${h.format_date(h.parse_date(item.pubDate), 'MMMM d')}
+       on ${i18n.format_date(new Date(item.pubDate), i18n.format.date.monthDay)}
       </div>
     </div>
   </div>
@@ -397,7 +399,7 @@
       <div acre:for="item in wiki.items" class="wiki-item">
         <a href="$item.link" class="item-title">$item.title</a>
         by <a href="$wiki.user_url:${item['dc:creator']}">${item['dc:creator']}</a>
-        on ${h.format_date(h.parse_date(item.pubDate), 'MMMM d')}
+        on ${i18n.format_date(new Date(item.pubDate), i18n.format.date.monthDay)}
       </div>
     </div>
   </div>

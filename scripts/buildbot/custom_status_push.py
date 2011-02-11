@@ -1,3 +1,6 @@
+# this is a subclass of buildbot StatusPush for use with our test results db.
+# it updates the database when the build starts and finishes
+
 from buildbot.status.status_push import StatusPush
 
 import datetime
@@ -22,7 +25,7 @@ from twisted.web import client
 class CustomStatusPush(StatusPush):
     """Event streamer to a HTTP server."""
 
-    def __init__(self, serverUrl, debug=None, maxMemoryItems=None,
+    def __init__(self, serverUrl, authkey, debug=None, maxMemoryItems=None,
                  maxDiskItems=None, chunkSize=200, maxHttpRequestSize=2**20,
                  **kwargs):
         """
@@ -37,6 +40,7 @@ class CustomStatusPush(StatusPush):
         """
         # Parameters.
         self.serverUrl = serverUrl
+        self.authkey = authkey
         self.debug = debug
         self.chunkSize = chunkSize
         self.lastPushWasSuccessful = True
@@ -79,19 +83,50 @@ class CustomStatusPush(StatusPush):
                 if event == "buildFinished":
                     state = "finished"
                     payload = i["payload"]["build"]
-                    # several k of junk
-                    payload.pop("steps")
-                    
+                    testoutput = {}
+                    outcome = "green"
+                    if "failed" in payload["text"][0]:
+                        outcome = "red"
+                    if "pre-check" in payload["text"][0]:
+                        outcome = "yellow"
+                    blame = payload.get("blame")
+                    if blame: blame = ' '.join(blame)
+                    tmppayload = {
+                      "builder": payload["builderName"],
+                      "blamelist": blame,
+                      "status" : outcome,
+                      "build_num": payload["number"],
+                      "revision":payload["sourceStamp"].get("revision"),
+                    }
+                    for p in payload["properties"]:
+                        if "testoutput:" in p[0]:
+                            tmppayload[p[0]] = p[1]
+                    payload = tmppayload
                 elif event == "stepFinished":
                     state = "started"
                     if i["payload"]["step"]["name"] == start_step_name:
                         payload = i["payload"]
+                        builder = ""
+                        buildnum = ""
+                        rev = ""
+                        for p in payload["properties"]:
+                            if "buildername" in p[0]:
+                                builder = p[1]
+                            if "buildnumber" in p[0]:
+                                buildnum = p[1]
+                            if "revision" in p[0]:
+                                rev = p[1]
+                        payload = {
+                          "builder": builder,
+                          "build_num": buildnum,
+                          "revision": rev
+                        }
           
             if payload is None:
                 return (False, items)
             
             stuff = json.dumps(payload, separators=(',',':'))
-            data = urllib.urlencode({'state':state, 'payload': stuff})
+            data = urllib.urlencode({'authkey':self.authkey, 'state':state, 'payload': stuff})
 
             if (not self.maxHttpRequestSize or
                 len(data) < self.maxHttpRequestSize):

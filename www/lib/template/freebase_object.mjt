@@ -161,9 +161,9 @@
         </div>
         <div class="nav clear">
           <ul class="tab-nav">
-            ${components.nav_tabs(c.object)}
+            ${components.nav_tabs(c.object, c.filters)}
             <acre:block if="that_exports.nav_tabs">
-              ${that_exports.nav_tabs()}
+              ${that_exports.nav_tabs(c.object, c.filters)}
             </acre:block>
           </ul>
           <ul acre:if="that_exports.nav_utilities" class="nav-utilities">

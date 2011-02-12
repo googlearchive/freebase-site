@@ -34,6 +34,26 @@ acre.require('/test/lib').enable(this);
 var h = acre.require("helper/helpers.sjs");
 var fh = acre.require("filter/helpers.sjs");
 
+test("global_filters", function() {
+  var filters = {
+    domain: "domain",
+    lang: "/lang/ko",
+    as_of_time: null,
+    foo: "bar"
+  };
+  same(fh.global_filters(filters), {domain:"domain", lang:"/lang/ko"});
+  same(fh.global_filters(), {});
+  same(fh.global_filters(null), {});
+  same(fh.global_filters({}), {});
+  same(fh.global_filters({
+    domain: null,
+    type: null,
+    property: null,
+    lang: null,
+    as_of_time: null
+  }), {});
+});
+
 test("add_filter", function() {
   var filters = {
     limit: "500",
@@ -48,7 +68,6 @@ test("add_filter", function() {
   params = fh.add_filter(filters, "hello", "world");
   same(params, h.extend({}, filters, {hello: "world"}));
 });
-
 
 test("remove_filter", function() {
   var filters = {

@@ -843,7 +843,7 @@ function set_lang(lang_id) {
   if (!h.isArray(lang_codes)) {
     lang_codes = [lang_codes];
   }
-  lang_codes.every(function(lang_code) {
+  lang_codes.every(function(lang_code) {console.log("set_lang code", lang_code);
     var filename = h.sprintf("datejs/date-%s.sjs", lang_code);
     if (lib_files[filename]) {
       datejs = acre.require(filename).Date;

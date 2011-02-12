@@ -33,6 +33,21 @@ var h = acre.require("helper/helpers.sjs");
 var i18n = acre.require("i18n/i18n");
 
 /**
+ * extract only the known global filters from filters dict.
+ */
+function global_filters(filters) {
+  var g = {};
+  filters = filters || {};
+  ["domain", "type", "property", "lang", "as_of_time"].forEach(function(k) {
+    var v = filters[k];
+    if (v != null) {
+      g[k] = v;
+    }
+  });
+  return g;
+};
+
+/**
  * remove a filter from filters.
  * filters is untouched and a copy is returned.
  */

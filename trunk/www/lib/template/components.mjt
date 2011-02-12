@@ -33,13 +33,14 @@
   var h = acre.require("helper/helpers.sjs");
   var i18n = acre.require("i18n/i18n");
   var _ = i18n.gettext;
+  var fh = acre.require("filter/helpers.sjs");
 </acre:script>
 
 <!!--
   display the available nav tabs for a freebase object.
   @see queries/object.sjs
 !!-->
-<acre:block def="nav_tabs(object)">
+<acre:block def="nav_tabs(object, filters)">
   <acre:script>
     var types = h.map_array(object.type, "id");
     var current = {
@@ -48,6 +49,8 @@
       "href": "#"
     };
     var app_path = acre.request.script.app.path;
+
+    var global_filters = fh.global_filters(filters);
   </acre:script>
 
   <!!-- schema !!-->
@@ -67,9 +70,9 @@
 
   <!!-- topic !!-->
   <acre:block elif="types['/common/topic']">
-    <li><a acre:attrs="h.is_topic_app(app_path) ? current : {href: h.fb_url('/topic', object.id)}">
+    <li><a acre:attrs="h.is_topic_app(app_path) ? current : {href: h.fb_url('/topic', object.id, global_filters)}">
         <span>${_('Topic')}</span></a></li>
-    <li><a acre:attrs="h.is_inspect_app(app_path) ? current : {href: h.fb_url('/inspect', object.id)}">
+    <li><a acre:attrs="h.is_inspect_app(app_path) ? current : {href: h.fb_url('/inspect', object.id, global_filters)}">
         <span>${_('Inspect')}</span></a></li>
   </acre:block>
                  

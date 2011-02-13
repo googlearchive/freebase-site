@@ -54,7 +54,7 @@ CueCard.QueryEditor = function(elmt, options) {
         basefiles           : [],
         parserfile          : [fb.acre.libs.codemirror],     // see index.sjs
         stylesheet          : [fb.acre.libs.codemirror_css], // see index.sjs
-        parserConfig:       {json: true}, 
+        parserConfig:       {json: true},
         height:             "100%",
         autoMatchParens:    true,
         textWrapping:       false,
@@ -64,6 +64,7 @@ CueCard.QueryEditor = function(elmt, options) {
         passDelay           : 100,     // gap between highlighting runs (each run lasts 50ms - see passTime in codemirror.js)
         undoDelay           : 250,     // min time between onChange notifications (and undo history commit)
         initCallback: function(codeMirror) {
+            self._editor.setParser("JSParser");
             self._onReady();
             
             try {
@@ -442,16 +443,16 @@ CueCard.QueryEditor.prototype.startAssistAtCursor = function() {
         node = node.nextSibling;
     }
     
+    var offset = $(node).offset();
     if (node == null || node.tagName.toLowerCase() == "br") {
         // Case: end of content or end of line
         if (node != null) {
-            var offset = $(node).offset();
             if ($.browser.msie && previousNode != null && previousNode.tagName.toLowerCase() != "br") {
                 var left = previousNode.offsetWidth;
                 var height = previousNode.offsetHeight;
             } else {
-                var left = offset.left;
-                var height = node.offsetHeight;
+                var left = previousNode.offsetLeft + previousNode.offsetWidth;
+                var height = previousNode.offsetTop + previousNode.offsetHeight;
             }
         } else {
             var offset = $(previousNode).offset();
@@ -459,13 +460,13 @@ CueCard.QueryEditor.prototype.startAssistAtCursor = function() {
             var left = offset.left + (charCount == 0 ? 0 : (c * previousNode.offsetWidth / charCount));
             var height = previousNode.offsetHeight;
         }
+        
         this._startAssist(l, col, {
             left:   left,
             top:    offset.top,
             height: height
         });
     } else {
-        var offset = $(node).offset();
         var charCount = node.firstChild ? node.firstChild.nodeValue.length : 0;
         this._startAssist(l, col, {
             left:   offset.left + (charCount == 0 ? 0 : (c * node.offsetWidth / charCount)), 
@@ -563,7 +564,6 @@ CueCard.QueryEditor.prototype._startAssist = function(lineNo, columnNo, position
             'Thank you!' +
         '</div>'
     );
-    //console.log(mc);
 };
 
 CueCard.QueryEditor.prototype._cancelPopup = function() {

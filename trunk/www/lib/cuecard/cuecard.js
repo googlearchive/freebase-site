@@ -58,7 +58,7 @@ CueCard.createComposition = function(options) {
     };
 };
 
-CueCard.showDialog           = function(dialogname /*, arg1, arg2, etc. */) {
+CueCard.showDialog = function(dialogname /*, arg1, arg2, etc. */) {
     var args = Array.prototype.slice.call(arguments);
     args.shift();
 

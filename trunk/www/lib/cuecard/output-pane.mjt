@@ -29,52 +29,57 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  !!-->
  
+<acre:script>
+  var templates = this.exports;
+</acre:script>
+ 
 <acre:block def="tabs(id, outputPane)">
 
   <acre:script>
     var TABS = [
-      { name: 'Tree', key: "tree"},
-      { name: 'Text', key: "json"}, 
-      { name: 'Status', key: "status"}
+      { name: 'Result', key: "json"}, 
+      { name: 'Status', key: "status"},
     ];
+    if (!outputPane._options.hideHelp) {
+      TABS.push({ name: 'Help', key: "help"});
+    }
   </acre:script>
   
-  <div class="cuecard-outputPane section-tabs">
-    <div id="$id">
-      <ul class="section-tabset clear">
-        <li acre:for="index, tab in TABS" class="section-tab tab">
+  <div id="$id" class="cuecard-outputPane">
+    <div class="cuecard-outputPane-tabs">
+      <ul class="tab-nav clear">
+        <li acre:for="index, tab in TABS" class="tab">
           <a href="#${id}-${tab.key}"><span>$tab.name</span></a>
         </li>
       </ul>
-      <div class="tabbed-content">
-        <div acre:for="tab in TABS" class="cuecard-outputPane-tabBody" id="${id}-${tab.key}">
-          <div class="cuecard-outputPane-$tab.key" ></div>
+    </div>
+    <div class="cuecard-outputPane-content tabbed-content">
+      <div acre:for="tab in TABS" class="cuecard-outputPane-tabBody" id="${id}-${tab.key}">
+        <div class="cuecard-outputPane-$tab.key" >
+          ${templates[tab.key]()}
         </div>
       </div>
     </div>
   </div>
   
   <acre:block script="ondomready">
+    var el = $(outputPane._elmt);
+    outputPane._container = el.find(".cuecard-outputPane");
+    outputPane._tabsContainer = el.find(".cuecard-outputPane-tabs");
+    outputPane._contentContainer = el.find(".cuecard-outputPane-content");
+
     outputPane.layout = function(){
-      var el = this._elmt;
-      var fullHeight = el.innerHeight() - el.find('.section-tab').outerHeight() - (outputPane._options.verticalPadding || 12);
-      var fullWidth = el.find('.section-tabs').innerWidth() - (outputPane._options.horizontalPadding || 0);
-
-      var padding = 10;
-      var height = fullHeight - (2 * padding);
-      var width = fullWidth - (2 * padding);
-
-      el.find('.cuecard-outputPane-tabBody, .cuecard-outputPane-textarea').height(fullHeight).width(fullWidth);
-      el.find('.cuecard-outputPane-status, .cuecard-outputPane-tree').css("padding", padding).height(height).width(width);
-    }
+      outputPane._contentContainer.height(outputPane._container.innerHeight() - outputPane._tabsContainer.outerHeight());
+    };
     outputPane.layout();
   </acre:block>
-  
 </acre:block>
+
+<acre:block def="json()"></acre:block>
 
 
 <acre:block def="status(headers)">
-  <div class="cuecard-outputPane-responseHeaders">
+  <div acre:if="headers" class="cuecard-outputPane-responseHeaders">
 
     <acre:block if="headers['x-metaweb-tid']">
       <acre:script>var tid = headers["x-metaweb-tid"];</acre:script>
@@ -123,5 +128,17 @@
       </acre:block>
     </table>
 
+  </div>
+</acre:block>
+
+<acre:block def="help()">
+  <div class="cuecard-outputPane-helpContent">
+    <div>
+      <a href="http://www.freebase.com/docs/data" target="_blank">MQL&nbsp;Tutorial</a>&nbsp;•&nbsp;<a href="http://www.freebase.com/docs/mql" target="_blank">MQL&nbsp;Reference</a>
+    </div>
+    <button class="button cuecard-queryEditor-examples"
+            acre:onclick="c.queryEditor._showExamples()">
+      Examples...
+    </button>
   </div>
 </acre:block>

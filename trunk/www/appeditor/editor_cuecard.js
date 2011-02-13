@@ -332,22 +332,7 @@ EDITORS.QueryEditor = {
     },
     config              : {
         codeMirror: {
-            parserConfig: {json: true},  //TODO: remove once cuecard version is greater than 1.3.4
             lineNumbers: false
         }
-      /* HACK: David - are any of these options actually respected by cuecard/api/scripts/query-editor.js?
-        height              : '100%',
-        marginWidth         : 45,      // is actually used by QueryEditor?
-        autoMatchParens     : true,
-        passDelay           : 100,     // gap between highlighting runs (each run lasts 50ms - see passTime in codemirror.js)
-        undoDelay           : 250,     // min time between onChange notifications (and undo history commit)
-        // These options must match settings in build.sh
-        path                : 'codemirror/js/',
-        parserfile          : ['parsexml.js', 'parsecss.js', 'tokenizejavascript.js', 'parsejavascript.js', 'parsehtmlmixed.js', 'parsedummy.js'],
-        stylesheet          : ['codemirror/css/xmlcolors_acrid.css', 'codemirror/css/jscolors_acrid.css', 'codemirror/css/csscolors_acrid.css'],
-        lineNumbers         : true,
-        tabMode             : "shift",
-        emql                : false
-        */
     }
 };

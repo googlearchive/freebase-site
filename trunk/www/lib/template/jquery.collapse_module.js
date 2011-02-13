@@ -59,8 +59,6 @@
     var other_modules = modules.slice(1);
     var column_offset = $column.css("margin-left");
 
-    console.log("column_offset", column_offset);
-
     trigger.click(function() {
       var collapsed = trigger.hasClass("collapsed");
       if (collapsed) {

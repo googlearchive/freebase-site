@@ -72,7 +72,7 @@ var QueryEditor = function(parent, editor_config, task) {
         queryEditorElement: queryEditorDiv,
         queryEditorOptions: editor_config,
         outputPaneElement: outputPaneDiv,
-        outputPaneOptions: { verticalPadding: 2, horizontalPadding: 2 }
+        outputPaneOptions: { verticalPadding: 2, horizontalPadding: 2, hideHelp: true }
     });
     this.composition = cuecardComposition;
     
@@ -295,10 +295,9 @@ var QueryEditor = function(parent, editor_config, task) {
                 editor._file = editor.composition.queryEditor._editor._file = file;
                 editor._top_element = top_element;
                 $('>div',top_element).css('height','100%');
-                $('.cuecard-queryEditor-controls-top').hide();
                 if (editor_config.readOnly) { 
                     $(file.get_element()).addClass('readonly');
-                    $('.cuecard-queryEditor-inner', file.get_element()).append("<div class='readonly-warning'>READ ONLY</div>");
+                    $('.cuecard-queryEditor', file.get_element()).append("<div class='readonly-warning'>READ ONLY</div>");
                 }
                 $('<a class="cuecard-permalink" href="javascript:{}">Open in Query Editor</a>')
                     .click(function(evt) {

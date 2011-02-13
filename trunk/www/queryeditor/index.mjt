@@ -33,20 +33,20 @@
   var h = acre.require("lib/helper/helpers.sjs");
   var i18n = acre.require("lib/i18n/i18n");
   var _ = i18n.gettext;
+  
   var lib_path = acre.get_metadata().mounts.lib;
-
 	var libs = {
     codemirror: h.static_url(lib_path + "/codemirror/codemirror-frame.mf.js"),
     codemirror_css: h.static_url(lib_path + "/codemirror/codemirror-frame.mf.css")
   };
   var apps = {
+    lib: lib_path,
     cuecard : lib_path + "/cuecard"
   };
-  var ajax_base = h.ajax_url("lib/cuecard/");
 </acre:script>
 
 <acre:block def="title()">
-  Query Editor
+  Query
 </acre:block>
 
 <acre:block def="head()">
@@ -55,36 +55,51 @@
 </acre:block>
 
 <acre:block def="breadcrumb()">
-  <div id="links">
-    <a href="javascript:refreshCache()">${_("refresh cache")}</a> &bull;
-    <a href="javascript:{}" onmouseover="computeMqlReadLink(this);" target="_blank">${_("mqlread")}</a> &bull;
-    <a href="javascript:{}" onmouseover="computeCompactLink(this);" target="_blank">${_("permanent link")}</a>
-    <input type="submit" class="button" onclick="computeTinyCompactLink();" title="Click to get tiny URL" value="${_('tinyurl')}" />
-  </div>
   <div class="page-header clear">
     <div class="breadcrumb clear">
       <ol>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="/queryeditor">${_("Query Editor")}</a>
+            <a href="/queryeditor">${_("Query")}</a>
           </span>
-        </li>  
+        </li>
       </ol>
     </div>
   </div>
 </acre:block>
 
-
-
 <acre:block def="content_body()">
-  <div id="content-main" role="main">	
-  	<div id="qe-container">
-      <div id="the-query-editor"></div>
-      <div id="the-splitter">&nbsp;</div>
-      <div id="the-control-pane" style="display: block;"></div>
-      <div id="the-output-pane"></div>
+    <div id="qe-module" class="module">
+      <h2 id="qe-title" class="module-title">
+        Query
+        <a class="trigger" href="javascript:void(0);">Collapse column</a>
+      </h2>
+      <div id="the-query-editor" class="module-section"></div>
+      <div class="module-section">
+        <div id="the-control-pane"></div>
+      </div>
     </div>
-  </div>
+    <div id="the-output-pane"></div>
+
+    <!-- additions to be moved inline once cuecard is loaded -->
+    <div style="display:none">
+      <a id="qe-options" class="icon-link" href="javascript:void(0)">
+        <span class="edit-icon">Hide Options</span>
+      </a>
+      <div id="links">
+        <a href="javascript:void(0)" onmouseover="computeMqlReadLink(this);" target="_blank">
+          mqlread link
+        </a>
+        &bull;
+        <a href="javascript:void(0)" onmouseover="computeCompactLink(this);" target="_blank">
+          permanent link
+        </a>
+        &bull;
+        <a href="javascript:void(0)" onclick="computeTinyCompactLink();" title="Click to get tiny URL">
+          tinyurl
+        </a>
+      </div>
+    </div>
 </acre:block>
 
 <acre:block def="footer_script()">
@@ -92,15 +107,8 @@
   <script>
     window.SERVER.acre.apps      = ${JSON.stringify(apps)};
     window.SERVER.acre.libs      = ${JSON.stringify(libs)};
-    window.SERVER.acre.ajax_base = ${JSON.stringify(ajax_base)};
   </script>
 	<script src="queryeditor.mf.js"></script>
-
-<!!--
-  <acre:block if="acre.environ.request_method == 'POST'">
-    <script>var initialQuery = ${JSON.stringify(acre.environ.body_params['q'])};</script>
-  </acre:block>
-!!-->
 </acre:block>
 
 ${acre.require("lib/template/renderer").render_page(null, this.exports)}

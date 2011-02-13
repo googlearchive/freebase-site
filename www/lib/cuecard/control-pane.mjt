@@ -65,7 +65,6 @@
     }
     controlPane.layout();
   </acre:block>
-
 </acre:block>
 
 

@@ -597,3 +597,41 @@ var schema_key_proto = {
 Validator.factory(scope, "DomainKey", h.extend({}, schema_key_proto, {defaults:{minlen:5}}));
 Validator.factory(scope, "TypeKey", h.extend({}, schema_key_proto));
 Validator.factory(scope, "PropertyKey", h.extend({}, schema_key_proto));
+
+
+
+/**
+ * MultiValue
+ */
+Validator.factory(scope, "MultiValue", {
+  defaults: {
+    validator: null
+  },
+  "boolean": function(val, options) {
+    return [options.validator ? options.validator(val, options) : val];
+  },
+  "string": function(val, options) {
+    return [options.validator ? options.validator(val, options) : val];
+  },
+  "number": function(val, options) {
+    return [options.validator ? options.validator(val, options) : val];
+  },
+  "undefined": function(val, options) {
+    return [];
+  },
+  "null": function(val, options) {
+    return [];
+  },
+  "array": function(val, options) {
+    var values = [];
+    val.forEach(function(v) {
+      if (v != null) {
+        values.push(options.validator ? options.validator(v, options) : v);
+      }
+    });
+    return values;
+  },
+  "dict": function(val, options) {
+    return [options.validator ? options.validator(val, options) : val];
+  }
+});

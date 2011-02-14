@@ -426,5 +426,15 @@ test("MultiValue", function() {
   same(validators.MultiValue("/user/daepark", {validator:validators.MqlI}), ["/user/daepark"]);
 });
 
+
+test("Json", function() {
+  var json = {foo:"bar", "hello":"world", baz: {bap:"bop"}};
+  same(validators.Json(JSON.stringify(json)), json);
+
+  [{}, []].forEach(function(o) {
+    same(validators.Json(JSON.stringify(o)), o);
+  });
+});
+
 acre.test.report();
 

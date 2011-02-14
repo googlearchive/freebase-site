@@ -635,3 +635,19 @@ Validator.factory(scope, "MultiValue", {
     return [options.validator ? options.validator(val, options) : val];
   }
 });
+
+
+
+/**
+ * JSON
+ */
+Validator.factory(scope, "Json", {
+  "string": function(val, options) {
+    try {
+      return JSON.parse(val);
+    }
+    catch(ex) {
+      return this.invalid("Invalid JSON: " + ex);
+    }
+  }
+});

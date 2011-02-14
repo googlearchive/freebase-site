@@ -68,7 +68,11 @@ function onLoad() {
       }
     },
     emql: "emql" in params && params["emql"] == "1",
-    service: "service" in params ? params["service"] : null
+    service: "service" in params ? params["service"] : null,
+    codeMirror: {
+      parserfile: [$("#codemirror-js").attr("href")],
+      stylesheet: [$("#codemirror-css").attr("href")]
+    }
   };
 
   if ("debug" in params) {

@@ -64,7 +64,6 @@ function sort_by_id(a,b) {
  * If you change schema key validation logic please update:
  *
  * lib/validator/validators.sjs
- * schema/schema-edit.js
  * schema/helpers.sjs
  * schema/jquery.mqlkey.js
  */

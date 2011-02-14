@@ -72,7 +72,13 @@
     init_type_settings_form: function(form) {
       var name = $("input[name=name]:visible", form.form);
       var key = $("input[name=key]", form.form);
-      se.auto_key(name, key);
+
+      var domain = $("input[name=namespace]", form.form).val();
+      se.init_mqlkey(key, {
+        source: name,
+        namespace: domain,
+        mqlread_url: fb.acre.freebase.service_url + "/api/service/mqlread"
+      });
 
       // enter key
       $(":input:not(textarea)", form.form)
@@ -124,23 +130,20 @@
 
     validate_type_settings_form: function(form) {
       var name = $.trim($("input[name=name]:visible", form.form).val());
-      var key =  $("input[name=key]", form.form);
-      var keyval = key.val();
-      if (name === "" || keyval === "") {
-        form.form.trigger(form.event_prefix + "error", "Name and Key are required");
+      if (name === "") {
+        form.form.trigger(form.event_prefix + "error", "Name is required");
       }
-      else if (key.data("original") !== keyval) {
-        try {
-          se.check_key_type(keyval);
-        }
-        catch (e) {
-          form.form.trigger(form.event_prefix + "error", e);
-        }
-      }
+      var key = $("input[name=key]", form.form);
+      se.validate_mqlkey(form, key);
     },
 
     submit_type_settings_form: function(form) {
       var key =  $("input[name=key]", form.form);
+      if (!se.validate_mqlkey(form, key)) {
+        form.form.removeClass("loading");
+        return;
+      }
+
       var data = {
         name: $.trim($("input[name=name]:visible", form.form).val()),
         key: key.val(),
@@ -434,7 +437,12 @@
       }
 
       if (!form.row.data("initialized")) {
-        se.auto_key(name, key, "/type/property");
+        se.init_mqlkey(key, {
+          source: name,
+          namespace: type.val(),
+          mqlread_url: fb.acre.freebase.service_url + "/api/service/mqlread"
+        });
+
         //
         // suggest expected_type
         //
@@ -505,6 +513,11 @@
      */
     submit_property_form: function(form) {
       var key =  $(":input[name=key]", form.row);
+      if (!se.validate_mqlkey(form, key)) {
+        form.row.removeClass("loading");
+        return;
+      }
+
       var data = {
         type:  $(":input[name=type]", form.row).val(),
         name: $.trim($("input[name=name]:visible", form.row).val()),
@@ -565,20 +578,15 @@
      */
     validate_property_form: function(form) {
       var name = $.trim($("input[name=name]:visible", form.row).val());
-      var key =  $("input[name=key]", form.row);
-      var keyval = key.val();
+      if (name === "") {
+        form.row.trigger(form.event_prefix + "error", "Name is required");
+      }
+      var key = $("input[name=key]", form.row);
+      se.validate_mqlkey(form, key);
       var ect = $(":input[name=expected_type]", form.row).val();
       var ect_new = $(":input[name=expected_type_new]", form.row).val();
-      if (name === "" || keyval === "" || (ect === "" && ect_new === "")) {
-        form.row.trigger(form.event_prefix + "error", [form.row, "Name, Key and Expected Type are required"]);
-      }
-      else if (key.data("original") !== keyval) {
-        try {
-          se.check_key_property(keyval);
-        }
-        catch (e) {
-          form.row.trigger(form.event_prefix + "error", [form.row, e]);
-        }
+      if (ect === "" && ect_new === "") {
+        form.row.trigger(form.event_prefix + "error", [form.row, "Expected Type is required"]);
       }
     },
 

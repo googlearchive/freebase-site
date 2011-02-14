@@ -67,6 +67,7 @@
                 <input name="type" type="hidden" value="${type_id}"/>
               </span>              
               <input name="key" type="text" class="text-input"/>
+              <span class="key-status"></span>
             </label>
           </div>
           <div class="form-field fb-property-expected-type">
@@ -156,6 +157,7 @@
                 <input name="type" type="hidden" value="${type_id}"/>
               </span>
               <input name="key" type="text" class="text-input" value="${prop.key[0].value}"/>
+              <span class="key-status"></span>
             </label>
           </div>
           <div class="form-field fb-property-expected-type">
@@ -278,6 +280,7 @@
                 <input name="type" type="hidden" value="${type_id}"/>
               </span>
               <input name="key" type="text" class="text-input"/>
+              <span class="key-status"></span>
             </label>
           </div>
           <div class="form-field fb-property-expected-type">
@@ -406,6 +409,7 @@
             <label class="form-label" for="key">${_('Key')} <span class="key">${type.key.namespace}/</span></label>   
             <input type="hidden" name="namespace" value="${type.key.namespace}" />
             <input class="text-input" type="text" name="key" value="${type.key.value}"/>              
+            <span class="key-status"></span>
             <span class="form-note">
               ${_('Alphanumeric characters. No spaces.')}
               <strong>${_('Changing a key may break external apps that use this domain')}</strong>

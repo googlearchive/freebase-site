@@ -72,7 +72,14 @@
     init_domain_settings_form: function(form) {
       var name = $("input[name=name]", form.form);
       var key = $("input[name=key]", form.form);
-      se.auto_key(name, key);
+
+      var domain_ns = $("input[name=namespace]", form.form).val();
+      se.init_mqlkey(key, {
+        minlen: 5,
+        source: name,
+        namespace: domain_ns,
+        mqlread_url: fb.acre.freebase.service_url + "/api/service/mqlread"
+      });
 
       // enter key
       $(":input:not(textarea)", form.form)
@@ -122,23 +129,20 @@
 
     validate_domain_settings_form: function(form) {
       var name = $.trim($("input[name=name]:visible", form.form).val());
-      var key =  $("input[name=key]", form.form);
-      var keyval = key.val();
-      if (name === "" || keyval === "") {
-        form.form.trigger(form.event_prefix + "error", "Name and Key are required");
+      if (name === "") {
+        form.form.trigger(form.event_prefix + "error", "Name is required");
       }
-      else if (key.data("original") !== keyval) {
-        try {
-          se.check_key_domain(keyval);
-        }
-        catch (e) {
-          form.form.trigger(form.event_prefix + "error", e);
-        }
-      }
+      var key = $("input[name=key]", form.form);
+      se.validate_mqlkey(form, key);
     },
 
     submit_domain_settings_form: function(form) {
       var key = $("input[name=key]", form.form);
+      if (!se.validate_mqlkey(form, key)) {
+        form.form.removeClass("loading");
+        return;
+      }
+
       var data = {
         name: $.trim($("input[name=name]:visible", form.row).val()),
         key: key.val(),
@@ -283,7 +287,12 @@
       }
 
       if (!form.row.data("initialized")) {
-        se.auto_key(name, key, "/type/type");
+        var domain = $("input[name=domain]", form.row).val();
+        se.init_mqlkey(key, {
+          source: name,
+          namespace: domain,
+          mqlread_url: fb.acre.freebase.service_url + "/api/service/mqlread"
+        });
 
         // enter/escape key handler
         $(":input:not(textarea)", form.row).keypress(function(e) {
@@ -304,6 +313,11 @@
      */
     submit_type_form: function(form) {
       var key = $("input[name=key]", form.row);
+      if (!se.validate_mqlkey(form, key)) {
+        form.row.removeClass("loading");
+        return;
+      }
+
       var data = {
         domain:  $("input[name=domain]", form.row).val(),
         name: $.trim($("input[name=name]:visible", form.row).val()),
@@ -345,19 +359,11 @@
      */
     validate_type_form: function(form) {
       var name = $.trim($("input[name=name]:visible", form.row).val());
-      var key =  $("input[name=key]", form.row);
-      var keyval = key.val();
-      if (name === "" || keyval === "") {
-        form.row.trigger(form.event_prefix + "error", [form.row, "Name and Key are required"]);
+      if (name === "") {
+        form.row.trigger(form.event_prefix + "error", "Name is required");
       }
-      else if (key.data("original") !== keyval) {
-        try {
-          se.check_key_type(keyval);
-        }
-        catch (e) {
-          form.row.trigger(form.event_prefix + "error", [form.row, e]);
-        }
-      }
+      var key = $("input[name=key]", form.row);
+      se.validate_mqlkey(form, key);
     },
 
 

@@ -34,11 +34,9 @@
     * If you change schema key validation logic please update:
     *
     * lib/validator/validators.sjs
-    * schema/schema-edit.js
     * schema/helpers.sjs
     * schema/jquery.mqlkey.js
     */
-
 
 
   /**
@@ -71,7 +69,7 @@
   // a high_idname with an optional prefix and optional leading ! for reversal.
   var valid_mql_key =  new RegExp("^(\\!)?(?:(" + __high_ident_str + ")\\:)?(/|/?" + __high_ident_str + "(?:/" + __high_ident_str + ")*)$");
 
-  function mqlkey(input, options) {
+  var mqlkey = $.mqlkey = function(input, options) {
     this.options = $.extend(true, {}, mqlkey.defaults, options);
     this.options.jsonp = mqlkey.use_jsonp(this.options.mqlread_url);
     this.input = $(input);
@@ -114,7 +112,7 @@
       var self = this;
       this.textchange_timeout = setTimeout(function() {
         self.textchange_delay(e);
-      }, 0);
+      }, 200);
     },
     textchange_delay: function(e) {
       this.input.trigger("textchange");
@@ -201,7 +199,7 @@
       minlen: 1,
       check_key: true,  // If TRUE, check if key already exists in namespace. namespace and mqlread_url must be specified. Otherwise, just apply valid_mql_key regular expression
       namespace: "/",
-      mqlread_url: "http://www.freebase.com/api/service/mqlread",
+      mqlread_url: "http://api.freebase.com/api/service/mqlread",
       source: null // jQuery selector to auto generate key from
     },
     use_jsonp: function(service_url) {

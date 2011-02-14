@@ -275,7 +275,13 @@
           if ($(":radio:first", self.ect_enumeration).is(":checked")) {
             try {
               var input = $(":text:first", self.ect_enumeration);
-              var key = fb.schema.edit.check_key(input.val(), "/type/domain");
+              var key = $.mqlkey.from(input.val());
+              if ($.mqlkey.reserved_word(key)) {
+                throw (key + " is a reserved word.");
+              }
+              else if (key.length < 5) {
+                throw ("Key must be 5 or more alphanumeric characters");
+              }
               namespace = self.options.domain + "/" + key;
             }
             catch(ex) {

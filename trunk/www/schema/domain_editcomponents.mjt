@@ -62,6 +62,7 @@
               </span>
               <input acre:if="type" name="key" type="text" class="text-input" value="${type.key[0].value}"/>
               <input acre:else=""   name="key" type="text" class="text-input"/>
+              <span class="key-status"></span>
             </label>
           </div>
           <div class="form-field fb-type-description">
@@ -144,6 +145,7 @@
             <input type="hidden" name="namespace" value="${domain.key.namespace}" />
             <acre:block if="domain.key.permitted">
               <input class="text-input" type="text" name="key" value="${domain.key.value}"/>
+              <span class="key-status"></span>
               <span class="form-note">
                 ${_('Five or more alphanumeric characters. No spaces.')}
                 <strong>${_('Changing a key may break external apps that use this domain')}</strong>

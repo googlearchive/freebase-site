@@ -52,8 +52,6 @@ CueCard.QueryEditor = function(elmt, options) {
     
     var codeMirrorOptions = {
         basefiles           : [],
-        parserfile          : [fb.acre.libs.codemirror],     // see index.sjs
-        stylesheet          : [fb.acre.libs.codemirror_css], // see index.sjs
         parserConfig:       {json: true},
         height:             "100%",
         autoMatchParens:    true,
@@ -94,7 +92,7 @@ CueCard.QueryEditor = function(elmt, options) {
         .css("top", "0px")
         .appendTo(document.body);
         
-    $(this._container).acre(fb.acre.apps.cuecard + "/query-editor.mjt", "query_editor", [this, codeMirrorOptions]);
+    $(this._container).acre(fb.acre.current_script.app.path + "/cuecard/query-editor.mjt", "query_editor", [this, codeMirrorOptions]);
 };
 
 CueCard.QueryEditor.nativeTypes = {
@@ -322,6 +320,7 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
         
         var self = this;
         var onDone = function(o) {
+            o = o.result;
             if (o["error"] == "unauthorized") {
                 self._outputPane.setStatus("Query editor is not authorized to write on your behalf.");
                 self._options.onUnauthorizedMqlWrite();

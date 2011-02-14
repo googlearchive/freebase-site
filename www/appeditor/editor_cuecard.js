@@ -332,7 +332,9 @@ EDITORS.QueryEditor = {
     },
     config              : {
         codeMirror: {
-            lineNumbers: false
+            lineNumbers: false,
+            parserfile: [fb.acre.libs.codemirror],
+            stylesheet: [fb.acre.libs.codemirror_css]
         }
     }
 };

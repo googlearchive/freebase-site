@@ -51,7 +51,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         site_host: acre.freebase.site_host,
       },
       request: {
-        base_path: acre.request.base_path
+        app_url: acre.request.app_url,
+        server_name: acre.request.server_name,
+        server_port: acre.request.server_port,
+        script: {
+          app: {
+            path: acre.request.script.app.path
+          }
+        }
+      },
+      current_script: {
+        app: {
+          path: lib_path
+        }
       },
       lang: {
         mql: i18n.lang,
@@ -76,10 +88,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         codemirror_css: h.static_url("lib/codemirror/codemirror-frame.mf.css"),
         codeassist: h.static_url("codeassist.mf.js")
       }
+    },
+    ajax: {
+      lib: h.ajax_url(acre.current_script.app.path),
+      app: h.ajax_url(acre.request.script.app.path)
     }
   };
   if (i18n.bundle_path) {
     SERVER.acre.lang.bundle = i18n.bundle_path;
+  }
+  if (exports.c && exports.c.id) {
+    SERVER.acre.c.id = exports.c.id;
   }
   if (acre.request.cookies && acre.request.cookies.mwLastWriteTime) {
     SERVER.acre.mwLastWriteTime = acre.request.cookies.mwLastWriteTime;

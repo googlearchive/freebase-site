@@ -523,6 +523,33 @@ Validator.factory(scope, "Float", {
 
 
 
+/***
+ * If you change schema key validation logic please update:
+ *
+ * lib/validator/validators.sjs
+ * schema/schema-edit.js
+ * schema/helpers.sjs
+ * schema/jquery.mqlkey.js
+ */
+
+// from python client mw.utils
+var reserved = null;
+var reservedwords = 'meta typeguid left right datatype scope attribute relationship property link class future update insert delete replace create destroy default sort limit offset optional pagesize cursor index !index for while as in is if else return count function read write select var connect this self super xml sql mql any all macro estimate-count';
+var typeonlywords = 'guid id object domain name key type keys value timestamp creator permission namespace unique schema reverse';
+
+function reserved_word(word) {
+  if (!reserved) {
+    reserved = {};
+    // lazily build up reserved word dictionary
+    [reservedwords, typeonlywords].forEach(function(l) {
+      l.split(' ').forEach(function(word) {
+        reserved[word] = 1;
+      });
+    });
+  }
+  return reserved[word] === 1;
+};
+
 var schema_key_proto = {
   defaults: {
     minlen: 1
@@ -531,6 +558,9 @@ var schema_key_proto = {
     var minlen = options.minlen;
     if (!minlen) {
       minlen = 1;
+    }
+    if (reserved_word(key)) {
+      return this.invalid(this.key, key, key, " is a reserved word.");
     }
     if (minlen === 1 && key.length === 1) {
       if (/^[a-z]$/.test(key)) {

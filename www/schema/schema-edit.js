@@ -428,9 +428,34 @@
     },
 
 
-    /**
-     * If you change this, please change key generation methods in //schema.freebase.site.dev/helpers
+    /***
+     * If you change schema key validation logic please update:
+     *
+     * lib/validator/validators.sjs
+     * schema/schema-edit.js
+     * schema/helpers.sjs
+     * schema/jquery.mqlkey.js
      */
+
+    reservedwords: 'meta typeguid left right datatype scope attribute relationship property link class future update insert delete replace create destroy default sort limit offset optional pagesize cursor index !index for while as in is if else return count function read write select var connect this self super xml sql mql any all macro estimate-count',
+
+    typeonlywords: 'guid id object domain name key type keys value timestamp creator permission namespace unique schema reverse',
+
+    _reserved_word: null,
+
+    reserved_word: function(word) {
+      if (!se._reserved_word) {
+        se._reserved_word = {};
+        // lazily build up reserved word dictionary
+        $.each([se.reservedwords, se.typeonlywords], function(i, words) {
+          $.each(words.split(' '), function(j, word) {
+            se._reserved_word[word] = 1;
+          });
+        });
+      }
+      return se.reserved_word[word] === 1;
+    },
+
     auto_key: function(input, output, type) {
       var original_key = output.val();
       if (original_key) {
@@ -491,6 +516,9 @@
     check_key_default: function(key, minlen) {
       if (!minlen) {
         minlen = 1;
+      }
+      if (se.reserved_word(key)) {
+        throw (key + " is a reserved word.");
       }
       if (minlen === 1 && key.length === 1) {
         if (/^[a-z]$/.test(key)) {

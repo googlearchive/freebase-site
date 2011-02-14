@@ -30,6 +30,17 @@
  */
 ;(function($) {
 
+  /***
+    * If you change schema key validation logic please update:
+    *
+    * lib/validator/validators.sjs
+    * schema/schema-edit.js
+    * schema/helpers.sjs
+    * schema/jquery.mqlkey.js
+    */
+
+
+
   /**
    * Validate key input on text change. If options.check_key is TRUE (default),
    * the key value will be checked against options.namespace ("/" default) of whether
@@ -110,6 +121,9 @@
       var val = $.trim(this.input.val());
       if (val === this.original && val !== "") {
         return this.valid(val);
+      }
+      else if (mqlkey.reserved_word(val)) {
+        return this.invalid(val, val + " is a reserved word.");
       }
       else if (!valid_mql_key.test(val)) {
         return this.invalid(val);
@@ -215,7 +229,28 @@
       key = key.replace(/\_\_+/g, '_');        // replace __+ with _
       key = key.replace(/[^a-z0-9]+$/, '');    // strip ending non-alphanumeric
       key = key.replace(/^[^a-z]+/, '');       // strip beginning non-alpha
+      if (mqlkey.reserved_word(key)) {
+        key = "x_" + key;
+      }
       return key;
+    },
+    reservedwords: 'meta typeguid left right datatype scope attribute relationship property link class future update insert delete replace create destroy default sort limit offset optional pagesize cursor index !index for while as in is if else return count function read write select var connect this self super xml sql mql any all macro estimate-count',
+
+    typeonlywords: 'guid id object domain name key type keys value timestamp creator permission namespace unique schema reverse',
+
+    _reserved_word: null,
+
+    reserved_word: function(word) {
+      if (!mqlkey._reserved_word) {
+        mqlkey._reserved_word = {};
+        // lazily build up reserved word dictionary
+        $.each([mqlkey.reservedwords, mqlkey.typeonlywords], function(i, words) {
+          $.each(words.split(' '), function(j, word) {
+            mqlkey._reserved_word[word] = 1;
+          });
+        });
+      }
+      return mqlkey._reserved_word[word] === 1;
     }
   });
 

@@ -395,4 +395,12 @@ test("validators.DomainKey", domain_key_test, function() {
     }
   });
 });
+
+
+test("reserved_word", function() {
+  'meta typeguid left right datatype scope attribute relationship property link class future update insert delete replace create destroy default sort limit offset optional pagesize cursor index !index for while as in is if else return count function read write select var connect this self super xml sql mql any all macro estimate-count guid id object domain name key type keys value timestamp creator permission namespace unique schema reverse'.split(' ').forEach(function(word) {
+    ok(validators.reserved_word(word), "reserved word: " + word);
+  });
+});
+
 acre.test.report();

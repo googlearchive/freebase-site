@@ -29,6 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 var h = acre.require("lib/helper/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
 var i18n = acre.require("lib/i18n/i18n");
 
 function isTypeType(id) {
@@ -59,12 +60,24 @@ function sort_by_id(a,b) {
   return b.id < a.id;
 };
 
+/***
+ * If you change schema key validation logic please update:
+ *
+ * lib/validator/validators.sjs
+ * schema/schema-edit.js
+ * schema/helpers.sjs
+ * schema/jquery.mqlkey.js
+ */
+
 function generate_key(name) {
   var key = h.trim(name).toLowerCase();
   key = key.replace(/[^a-z0-9]/g, '_');    // remove all non-alphanumeric
   key = key.replace(/\_\_+/g, '_');        // replace __+ with _
   key = key.replace(/[^a-z0-9]+$/, '');    // strip ending non-alphanumeric
   key = key.replace(/^[^a-z]+/, '');       // strip beginning non-alpha
+  if (validators.reserved_word(key)) {
+    key = "x_" + key;
+  }
   return key;
 };
 

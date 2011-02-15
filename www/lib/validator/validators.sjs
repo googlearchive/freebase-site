@@ -447,7 +447,6 @@ Validator.factory(scope, "Timestamp", {
  */
 Validator.factory(scope, "Datejs", {
   "defaults": {
-    format: null, // specific datejs format for parsing @see http://code.google.com/p/datejs/wiki/FormatSpecifiers
     date: false   // if TRUE convert to date, else converted to ISO8601 (yyyy-MM-ddTHH:mm:ss)
   },
   "string": function(val, options) {

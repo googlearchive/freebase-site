@@ -30,6 +30,19 @@
  */
 var h = acre.require("lib/helper/helpers.sjs");
 var i18n = acre.require("lib/i18n/i18n");
+var datejs = i18n.datejs;
+
+var TIMESTAMPS = {
+ "today": function() {return datejs.today();},
+ "yesterday" : function() {return datejs.today().addDays(-1);},
+ "this week" : function() {return datejs.today().moveToDayOfWeek(1, -1);},
+ "this month" : function() {return datejs.today().moveToFirstDayOfMonth();},
+ "this year" : function() {
+   var t = datejs.today();
+   t.set({day:1,month:0,year:t.getFullYear()});
+   return t;
+ }
+};
 
 /**
  * return a triples data structure.
@@ -58,9 +71,6 @@ function triple(subject, predicate, object, namespace, value) {
         o.o[key] = object[key];
       }
     });
-    if (object.link && object.link.target_value && object.link.target_value.lang) {
-      o.o.lang = object.link.target_value.lang;
-    }
   }
   o.mql = {id: subject};
   o.mql[predicate] = h.extend({}, o.o);

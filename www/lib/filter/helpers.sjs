@@ -51,9 +51,31 @@ function global_filters(filters) {
  * remove a filter from filters.
  * filters is untouched and a copy is returned.
  */
-function remove_filter(filters, name) {
+function remove_filter(filters, name, value) {
   var f = h.extend(true, {}, filters);
-  f[name] = null;
+  if (typeof value !== "undefined") {
+    var existing = f[name];
+    if (h.isArray(existing)) {
+      var updated = [];
+      existing.forEach(function(v) {
+        if (v !== value) {
+          updated.push(v);
+        }
+      });
+      if (updated.length) {
+        f[name] = updated;
+      }
+      else {
+        f[name] = null;
+      }
+    }
+    else if (existing === value) {
+      f[name] = null;
+    }
+  }
+  else {
+    f[name] = null;
+  }
   for (var k in f) {
     if (f[k] == null) {
       delete f[k];

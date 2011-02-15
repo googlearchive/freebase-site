@@ -28,11 +28,61 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+var h = acre.require("lib/helper/helpers.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var object_query = acre.require("lib/queries/object.sjs").object;
+var filters = acre.require("lib/filter/filters.sjs");
+var filter_queries = acre.require("lib/filter/queries.sjs");
+var th = acre.require("helpers.sjs");
+
 var queries = acre.require("queries");
-var f = acre.require("filters");
-var h = acre.require("lib/helper/helpers.sjs");
+
+var scope = this;
+
+/**
+ * Like validators.Datejs but handles strings/keys in th.TIMESTAMPS (e.g, "this week|month|year")
+ */
+validators.Validator.factory(scope, "TimestampValidator", {
+  "defaults": {
+    date: false   // if TRUE convert to date, else converted to ISO8601 (yyyy-MM-ddTHH:mm:ss)
+  },
+  "string": function(val, options) {
+    var date;
+    if (val in th.TIMESTAMPS) {
+      date = th.TIMESTAMPS[val]();
+    }
+    else {
+      date = validators.Datejs(val, {date:true});
+    }
+    if (options.date) {
+      return date;
+    }
+    else {
+      return date.toString("yyyy-MM-ddTHH:mm:ss").replace(/T00\:00\:00$/, "");
+    }
+  }
+});
+
+var inspect_filters = {
+  limit: {
+    validator: validators.Int,
+    options: {if_empty:null}
+  },
+  history: {
+    validator: validators.StringBool,
+    options: {if_empty:null}
+  },
+  timestamp: {
+    validator: validators.MultiValue,
+    options: {validator: TimestampValidator, if_empty:null}
+  },
+  creator: {
+    validator: validators.MultiValue,
+    options: {validator: validators.MqlId, if_empty:null}
+  }
+};
+
 
 var SPEC = {
 
@@ -47,26 +97,29 @@ var SPEC = {
   template_base: "lib/template/freebase_object.mjt",
 
   validate: function(params) {
-    var id = validators.MqlId(acre.request.path_info, {required:true});
     return [
-      id,
-      f.get_filters(id, params)
+      validators.MqlId(acre.request.path_info, {required:true}),
+      filters.validate(params, inspect_filters)
     ];
   },
 
-  run: function(id, filters) {
+  run: function(id, f) {console.log("filters", f);
     return {
+      id: id,
       object: object_query(id),
 
-      id: id,
-      prop_counts: queries.prop_counts(id, filters),
-      names_aliases: queries.names_aliases(id, filters),
-      keys: queries.keys(id, filters),
-      outgoing: queries.outgoing(id, filters),
-      incoming: queries.incoming(id, filters),
-      typelinks: queries.typelinks(id, filters),
-      attribution_links: queries.attribution_links(id, filters),
-      filters: filters
+      // filter components
+      filters: f,
+      prop_counts: filter_queries.prop_counts(id),
+
+      // inspect components
+      names_aliases: queries.names_aliases(id, f),
+      keys: queries.keys(id, f),
+      outgoing: queries.outgoing(id, f),
+      incoming: queries.incoming(id, f),
+      typelinks: queries.typelinks(id, f),
+      attribution_links: queries.attribution_links(id, f)
+
     };
   }
 

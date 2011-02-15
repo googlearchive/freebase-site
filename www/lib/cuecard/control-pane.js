@@ -248,23 +248,23 @@ CueCard.ControlPane.prototype.getSetting = function(name) {
     switch (name) {
         case "cleanup" :
             var r = checkboxes[0].checked;
-            $.cookie('cc_cp_clean', r ? "1" : "0", { expires: 365 });
+            $.localstore('cc_cp_clean', r ? "1" : "0", false);
             return r;
         case "alignJSONPropertyValues" :
             var r = checkboxes[1].checked;
-            $.cookie('cc_cp_align', r ? "1" : "0", { expires: 365 });
+            $.localstore('cc_cp_align', r ? "1" : "0", false);
             return r;
         case "liveQuery" :
             var r = checkboxes[2].checked;
-            $.cookie('cc_cp_live', r ? "1" : "0", { expires: 365 });
+            $.localstore('cc_cp_live', r ? "1" : "0", false);
             return r;
         case "multilineErrorMessages" :
             var r = checkboxes[3].checked;
-            $.cookie('cc_cp_multi', r ? "1" : "0", { expires: 365 });
+            $.localstore('cc_cp_multi', r ? "1" : "0", false);
             return r;
         case "extended" :
             var extended = this._getTab("envelope").find("input[name='extended']").attr("checked") ? 1 : 0;
-            $.cookie('cc_cp_extended', extended, { expires: 365 });
+            $.localstore('cc_cp_extended', extended, false);
             return extended;
     }
     return false;

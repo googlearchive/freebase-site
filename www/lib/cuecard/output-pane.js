@@ -34,7 +34,7 @@ CueCard.OutputPane = function(elmt, options) {
   this._options = options || {};
 
   this._jsonResult = null;
-  this._lastJsonOutputMode = $.cookie("cc_op_mode") == "json" ? "json" : "json";
+  this._lastJsonOutputMode = $.localstore("cc_op_mode") == "json" ? "json" : "json";
 
   this._constructUI();
 };
@@ -57,7 +57,7 @@ CueCard.OutputPane.prototype._constructUI = function() {
         self._lastJsonOutputMode = "json";
       }
 
-      $.cookie("cc_op_mode", self._lastJsonOutputMode, { expires: 365 });
+      $.localstore("cc_op_mode", self._lastJsonOutputMode, false);
     }
   });
   this._tabs = tabs.data("tabs");

@@ -42,7 +42,7 @@ function onLoad() {
 
   var outputPaneOptions = {};
   var controlPaneOptions = {
-    extended: 0 // Don't make this sticky: $.cookie("cc_cp_extended") == "1" ? 1 : 0
+    extended: 0 // Don't make this sticky: $.localstore("cc_cp_extended") == "1" ? 1 : 0
   };
 
   queryEditorOptions = {
@@ -148,7 +148,7 @@ function onLoad() {
   };
   
   resizePanes();
-  toggleControlPane(($.cookie("cc_cp") == "1"));
+  toggleControlPane(($.localstore("cc_cp") == "1"));
 
   $(window).bind("beforeunload", function(evt) {
     saveQueryInWindow();
@@ -180,9 +180,9 @@ function onResize() {
 }
 
 function onToggleControlPane() {
-  var on = ($.cookie("cc_cp") == "1");
+  var on = ($.localstore("cc_cp") == "1");
   toggleControlPane(!on);
-  $.cookie("cc_cp", (on ? "0" : "1"), { expires: 365 });
+  $.localstore("cc_cp", (on ? "0" : "1"), false);
 }
 
 function toggleControlPane(show) {
@@ -259,7 +259,7 @@ function computeTinyCompactLink() {
 
 function closeStartingMessage() {
   $("#starting-message-container").hide();
-  $.cookie('cc_greeting', '0', { expires: 365 });
+  $.localstore('cc_greeting', '0', false);
 }
 
 function refreshCache() {

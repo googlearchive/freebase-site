@@ -261,11 +261,11 @@
 
 <acre:block def="settings(controlPane)">
   <div>
-    <input type="checkbox" acre:attrs="($.cookie('cc_cp_clean') == '1') ? {'checked' : ''} : {}">
+    <input type="checkbox" acre:attrs="($.localstore('cc_cp_clean') == '1') ? {'checked' : ''} : {}">
     Always clean up query before running
   </div>
   <div>
-    <input type="checkbox" acre:attrs="($.cookie('cc_cp_align') == '1') ? {'checked' : ''} : {}">
+    <input type="checkbox" acre:attrs="($.localstore('cc_cp_align') == '1') ? {'checked' : ''} : {}">
     Align JSON property values with spaces
   </div>
   <div style="display: none;">
@@ -273,7 +273,7 @@
     Try running query as you edit
   </div>
   <div>
-    <input type="checkbox" acre:attrs="($.cookie('cc_cp_multi') == '1') ? {'checked' : ''} : {}">
+    <input type="checkbox" acre:attrs="($.localstore('cc_cp_multi') == '1') ? {'checked' : ''} : {}">
     Show error messages with multiple lines on multiple lines
   </div>
 </acre:block>

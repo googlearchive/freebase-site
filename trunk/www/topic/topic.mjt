@@ -95,11 +95,22 @@
     <div class="toolbar">
       <ul>
         <li>
-          <a href="#" class="icon-link">
+          <a href="#" class="toolbar-trigger icon-link">
             <span class="add-icon">Add Type</span>
           </a>
         </li>
       </ul>
+    </div>
+    <div class="add-type toolbar-pane">
+      <div class="column">
+        <h3>Add a new Type to $c.object.name</h3>
+        <form action="" method="post" name="add-type-form" class="add-type">
+          <input type="" class="text-input" value="" placeholder="Start typing for suggestions..." name="" />
+        </form>
+      </div>
+      <div class="column">
+        <h3>Suggested Types:</h3>
+      </div>
     </div>
     <acre:script>
       var structure = c.topic && c.topic.structure;

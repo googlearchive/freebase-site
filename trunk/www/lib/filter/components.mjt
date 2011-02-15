@@ -46,10 +46,10 @@
     var show_filter = domain || type || property || show_counts;
   </acre:script>
   <div acre:if="show_filter" class="filter-group filter-chart">
-    <h2 class="filter-title" acre:if="domain">${_("By Type")}:</h2>
-    <h2 class="filter-title" acre:elif="type">${_("By Property")}:</h2>
-    <h2 class="filter-title" acre:elif="property">${_("By Total")}:</h2>
-    <h2 class="filter-title" acre:else="">${_("By Domain")}:</h2>
+    <h2 class="module-section-title" acre:if="domain">${_("By Type")}:</h2>
+    <h2 class="module-section-title" acre:elif="type">${_("By Property")}:</h2>
+    <h2 class="module-section-title" acre:elif="property">${_("By Total")}:</h2>
+    <h2 class="module-section-title" acre:else="">${_("By Domain")}:</h2>
     <acre:block if="domain">
       <span class="filter-item">
         <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'domain'))}" class="remove-filter">x</a>

@@ -11,6 +11,9 @@
 
 ------------------------------------------------------------*/
 
+/*
+  ### BORDER TREATMENTS
+*/
 .rounded_corners (@radius: 5px) {
     -moz-border-radius: @radius;
     -webkit-border-radius: @radius;
@@ -35,27 +38,70 @@
     border-top-right-radius: @radius;
 }
 
+/*
+  ### SHADOWS
+*/
+
 .box_shadow (@h: 0px, @v: 0px, @blur: 3px, @color: #aaa) {
     -webkit-box-shadow: @h @v @blur @color;
     -moz-box-shadow: @h @v @blur @color;
     box-shadow: @h @v @blur @color;
 }
 
+/*
+  ### GRADIENTS
+*/
+
 .linear_gradient(@start: #efefef, @end: #dcdcdc, @mode: repeat) {
-    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(@start), to(@end));
+    bkckground-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(@start), to(@end));
+    background-image: -webkit-linear-gradient(@start, @end);
     background-image: -moz-linear-gradient(0% 55% 90deg,@end, @start);
     background-repeat: @mode;
 }
 
+/*
+  ### CSS TRANSITIONS
+*/
+
 .transition(@property: all, @duration: 0.3s, @mode: linear, @delay: 0s) {
     -webkit-transition: @property @duration @mode @delay;
     -moz-transition: @property @duration @mode @delay;
+    -o-transition: @property @duration @mode @delay;
+    transition: @property @duration @mode @delay;
+}
+
+
+/*
+  ### CSS TRANSFORMS
+
+  Note: css transforms are not additive. Therefore, you cannot do something like the following:
+
+  .foo {
+    .translate();
+    .skew();
+  }
+
+  You must declare all css transforms in a single statement:
+
+  .bar {
+    -webkit-transform: translate(2px, 0) skew(5deg);
+  }
+
+  Unforunately, LessCSS doesn't currently allow you to pass
+  arrays in mixins, so if you need more than one css transform
+  for an single interaction, you cannot use mixins.
+*/
+
+.translate(@x: 5px, @y: 0px) {
+  -webkit-transform: translate(@x, @y);
+  -moz-transform: translate(@x, @y);
+  -o-transform: translate(@x, @y);
+  -ms-transform: translate(@x, @y);
+  transform: translate(@x, @y);
 }
 
 /*-----------------------------------------------------------
-
-    Global Color Palette
-    
+Global Color Palette
 ------------------------------------------------------------*/
 
 @freebase-orange: #f71;

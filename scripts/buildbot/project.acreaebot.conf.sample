@@ -55,5 +55,5 @@ ACRE_TRUSTED_MODE="TRUE"
 #DEBUG="-agentpath:/opt/netbeans/Contents/Resources/NetBeans/profiler3/lib/deployed/jdk16/mac/libprofilerinterface.jnilib $DEBUG"
 
 ######### Google AppEngine Java SDK Location
-#APPENGINE_HOME="/opt/appengine"
+APPENGINE_HOME="/opt/appengine"
 

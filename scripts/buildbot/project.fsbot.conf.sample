@@ -28,7 +28,7 @@ ACRE_SUICIDE="FALSE"
 ACRE_DEVELOPER_MODE="TRUE"
 
 # trusted mode exposes APIs that should not be exposed to apps we can't trust
-ACRE_TRUSTED_MODE="TRUE"
+ACRE_TRUSTED_MODE="FALSE"
 
 ####### Uncomment this if you're on MacOSX and you want to use java6 instead of java5 to run acre
 #JAVA_HOME="/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home"

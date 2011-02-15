@@ -171,10 +171,15 @@
   </acre:block>
 </acre:block>
 
-<acre:block def="filter_form(base_url, filters, param_name, def, def_params)">
-  <form action="${base_url}" method="GET" class="filter-form">
+<acre:block def="filter_form(base_url, filters, param_name, def, def_params, hide)">
+  <form action="${base_url}" method="GET" class="filter-form" acre:attrs="hide ? {style: 'display:none;'} : {}">
     <acre:block for="key,val in filters" if="val != null && key != param_name">
-      <input type="hidden" name="${key}" value="${val}"/>
+      <acre:block if="h.isArray(val)">
+        <input acre:for="v in val" type="hidden" name="${key}" value="${v}"/>
+      </acre:block>
+      <acre:block else="">
+        <input type="hidden" name="${key}" value="${val}"/>
+      </acre:block>
     </acre:block>
     ${def.apply(null, def_params)}
   </form>
@@ -202,5 +207,6 @@
 </acre:block>
 
 <acre:block def="datejs_input(name, placeholder)">
-  <input type="text" name="${name}" acre:attrs="placeholder ? {placeholder:placeholder}: {}"/>
+  <input type="text" class="text-input date-input" 
+         name="${name}" acre:attrs="placeholder ? {placeholder:placeholder}: {}"/>
 </acre:block>

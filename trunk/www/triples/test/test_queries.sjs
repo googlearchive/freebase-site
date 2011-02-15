@@ -31,10 +31,11 @@
 
 acre.require('/test/lib').enable(this);
 
-acre.require("lib/test/mock").playback(this, "test/playback_test_queries.json");
+acre.require("lib/test/mock.sjs").playback(this, "test/playback_test_queries.json");
 
-var q = acre.require("queries");
 var h = acre.require("lib/helper/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var q = acre.require("queries.sjs");
 
 test("prop_counts", function() {
   var result;
@@ -48,7 +49,6 @@ test("prop_counts", function() {
   ok(result.to > 0, h.sprintf("outgoing %s", result.to));
 });
 
-
 test("names_aliases", function() {
   var result;
   q.names_aliases("/en/united_states")
@@ -59,7 +59,6 @@ test("names_aliases", function() {
   ok(result && result.length);
 });
 
-
 test("names_aliases with filter", function() {
   var result;
   q.names_aliases("/en/united_states", {type:"/type/object"})
@@ -69,7 +68,7 @@ test("names_aliases with filter", function() {
   acre.async.wait_on_results();
   ok(result && result.length);
   result.forEach(function(name) {
-    equal(name.link.master_property, "/type/object/name");
+    equal(name.master_property, "/type/object/name");
   });
 });
 
@@ -85,17 +84,7 @@ test("keys", function() {
 
 test("keys with type filter", function() {
   var result;
-  q.keys("/freebase", {type:"/type/namespace"})
-    .then(function(keys) {
-      result = keys;
-    });
-  acre.async.wait_on_results();
-  ok(!result.length);
-});
-
-test("keys with property filter", function() {
-  var result;
-  q.keys("/freebase", {property:"/type/object/key", limit:5})
+  q.keys("/freebase", {type:"/type/namespace", limit:5})
     .then(function(keys) {
       result = keys;
     });
@@ -103,6 +92,15 @@ test("keys with property filter", function() {
   equal(result.length, 5);
 });
 
+test("keys with property filter", function() {
+  var result;
+  q.keys("/freebase", {property:"/type/object/key"})
+    .then(function(keys) {
+      result = keys;
+    });
+  acre.async.wait_on_results();
+  ok(!result.length);
+});
 
 test("outgoing", function() {
   var result;
@@ -114,7 +112,6 @@ test("outgoing", function() {
   ok(result && result.length);
 });
 
-
 test("outgoing with filter", function() {
   var result;
   q.outgoing("/", {domain:"/type", limit:1})
@@ -123,7 +120,7 @@ test("outgoing with filter", function() {
     });
   acre.async.wait_on_results();
   equal(result.length, 1);
-  equal(result[0].link.master_property.indexOf("/type/"), 0, result[0].link.master_property);
+  equal(result[0].master_property.indexOf("/type/"), 0, result[0].master_property);
 });
 
 test("incoming", function() {
@@ -136,7 +133,6 @@ test("incoming", function() {
   ok(result && result.length);
 });
 
-
 test("incoming with filter", function() {
   var result;
   q.incoming("/en/united_states", {property:"/people/person/nationality", limit:1})
@@ -145,7 +141,7 @@ test("incoming with filter", function() {
     });
   acre.async.wait_on_results();
   equal(result.length, 1);
-  equal(result[0].link.master_property, "/people/person/nationality");
+  equal(result[0].master_property, "/people/person/nationality");
 });
 
 test("typelinks", function() {
@@ -186,6 +182,94 @@ test("attribution_links with filter", function() {
     });
   acre.async.wait_on_results();
   equal(result.length, 1);
+});
+
+test("mqlread_options", function() {
+  deepEqual(q.mqlread_options(), {});
+  deepEqual(q.mqlread_options(null), {});
+  deepEqual(q.mqlread_options({as_of_time:null}), {});
+  deepEqual(q.mqlread_options({as_of_time:"2010"}), {as_of_time:"2010"});
+});
+
+test("apply null filters", function() {
+  ["limit", "timestamp", "creator", "history", "domain_type_property"].forEach(function(k) {
+    deepEqual(q["apply_" + k]({}), {});
+    deepEqual(q["apply_" + k]({}, null), {});
+  });
+});
+
+test("apply_limit filter", function() {
+  deepEqual(q.apply_limit({}, 500), {limit:500});
+});
+
+test("apply_timestamp filter", function() {
+  var today = validators.Datejs("today");
+  var yesterday =  validators.Datejs("yesterday");
+
+  deepEqual(q.apply_timestamp({}, today), {
+    "filter:timestamp>=": today
+  });
+  deepEqual(q.apply_timestamp({}, [yesterday, today]), {
+    "filter:timestamp>=": yesterday,
+    "filter:timestamp<": today
+  });
+});
+
+test("apply_creator filter", function() {
+  deepEqual(q.apply_creator({}, "/user/foo"), {"filter:creator": {"id|=": ["/user/foo"]}});
+  deepEqual(q.apply_creator({}, ["/user/foo", "/user/bar", "/user/baz"]), {
+    "filter:creator": {
+      "id|=": ["/user/foo", "/user/bar", "/user/baz"]
+    }
+  });
+});
+
+test("apply_history filter", function() {
+  deepEqual(q.apply_history({}, false), {});
+  deepEqual(q.apply_history({}, true), {valid:null, operation:null});
+});
+
+test("apply_domain filter", function() {
+  deepEqual(q.apply_domain_type_property({}, "/my/domain"), {
+    "filter:master_property": {
+      schema: {
+        domain:"/my/domain"
+      }
+    }
+  });
+  deepEqual(q.apply_domain_type_property({master_property: "/type/namespace/keys"}, "/my/domain"), {
+    master_property: "/type/namespace/keys",
+    "filter:master_property": {
+      schema: {
+        domain: "/my/domain"
+      }
+    }
+  });
+});
+
+test("apply_type filter", function() {
+  deepEqual(q.apply_domain_type_property({}, null, "/my/type"), {
+    "filter:master_property": {
+      schema: "/my/type"
+    }
+  });
+  // for /type/namespace/keys we are actually showing the reverse /type/object/key
+  deepEqual(q.apply_domain_type_property({master_property: "/type/namespace/keys"}, null, "/my/type"), {
+    master_property: "/type/namespace/keys",
+    "filter:master_property": {
+      schema: "/my/type"
+    }
+  });
+});
+
+test("apply_property filter", function() {
+  deepEqual(q.apply_domain_type_property({}, null, null, "/my/property"), {
+    "master_property": "/my/property"
+  });
+  // for /type/namespace/keys we are actually showing the reverse /type/object/key
+  deepEqual(q.apply_domain_type_property({master_property: "/type/namespace/keys"}, null, null, "/my/property"), {
+    master_property: "/my/property"
+  });
 });
 
 acre.test.report();

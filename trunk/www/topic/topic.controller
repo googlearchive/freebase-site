@@ -64,10 +64,14 @@ var SPEC = {
   run: function(id, f) {console.log("filters", f);
     return {
       id: id,
-      filters: f,
       object: object_query(id),
-      topic: queries.topic(id),
-      prop_counts: f.as_of_time ? null : filter_queries.prop_counts(id)
+
+      // filter components
+      filters: f,
+      prop_counts: filter_queries.prop_counts(id),
+
+      // topic data
+      topic: queries.topic(id, f)
     };
   }
 

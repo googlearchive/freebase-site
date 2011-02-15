@@ -80,6 +80,12 @@ test("remove_filter", function() {
   var params = fh.remove_filter(filters, "timestamp");
   delete filters.timestamp;
   same(params, filters);
+
+  filters = {
+    creator: ["/user/foo", "/user/bar"]
+  };
+  params = fh.remove_filter(filters, "creator", "/user/bar");
+  same(params, {creator: ["/user/foo"]});
 });
 
 var tests = [

@@ -49,7 +49,7 @@ var tests = [
   ["foo", "/bar/baz", null, "/", "hello"],
   {s:"foo", p:"/bar/baz", o:{value:"hello", namespace:"/"}, mql:{id:"foo", "/bar/baz":{value:"hello", namespace:"/"}}},
 
-  ["foo", "/bar/baz", {value:"hello", link:{target_value:{valud:"hello", lang:"/lang/ko"}}}],
+  ["foo", "/bar/baz", {value:"hello", lang:"/lang/ko"}],
   {s:"foo", p:"/bar/baz", o:{value:"hello", lang:"/lang/ko"}, mql:{id:"foo", "/bar/baz":{value:"hello", lang:"/lang/ko"}}}
 ];
 

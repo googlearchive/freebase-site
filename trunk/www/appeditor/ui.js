@@ -351,14 +351,14 @@ var ui = {};
     };
 
     ui.get_recents              = function(kind, keep_first) {
-        var recent = $.localStore('recent_'+kind, undefined, false);
+        var recent = $.localstore('recent_'+kind, undefined, false);
         if (recent === null) { recent = []; }
         if (!keep_first && recent && recent.length > 0) { recent.shift(); }
         return recent;
     };
 
     ui.add_recent               = function(kind, value, replace) {
-        var recent = $.localStore('recent_'+ kind, undefined, false);
+        var recent = $.localstore('recent_'+ kind, undefined, false);
         if (!recent || !jQuery.isArray(recent)) { recent = []; }
 
         var val = JSON.stringify(value);
@@ -381,11 +381,11 @@ var ui = {};
             }            
         }
 
-        $.localStore('recent_'+ kind, recent, false);
+        $.localstore('recent_'+ kind, recent, false);
     };
     
     ui.clear_recents            = function(kind) {
-        $.localStore('recent_'+ kind, null, false);
+        $.localstore('recent_'+ kind, null, false);
     };
 
 
@@ -413,7 +413,7 @@ var ui = {};
                 ui.do_show_dialog('new_app');
             } else if (recent_apps.length > 0) {
                 var last_app = recent_apps.shift();
-                $.localStore('recent_apps', recent_apps, false);
+                $.localstore('recent_apps', recent_apps, false);
                 ui.do_choose_app(last_app.path);
             } else if (ui.get_user()){
                 ui.do_show_dialog('welcome',[true]);
@@ -1214,7 +1214,7 @@ var ui = {};
     ui.get_editor_prefs         = function(key) {
         
         function _get_pref(key) {
-            var setting = $.localStore(key);
+            var setting = $.localstore(key);
             if (setting === null) { return DEFAULT_PREFS[key]; }
             else if (setting == '1') { return true; }
             else if (setting == '0') { return false; }
@@ -1251,7 +1251,7 @@ var ui = {};
             else if (prefs[key] === false) { value = '0'; }
             else { value = prefs[key]; }
             
-            $.localStore(key, value);
+            $.localstore(key, value);
         }
     };
     

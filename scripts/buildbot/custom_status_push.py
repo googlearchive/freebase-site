@@ -22,6 +22,12 @@ from twisted.internet import defer, reactor
 from twisted.python import log
 from twisted.web import client
 
+def latest_green(builder, rev):
+    here = os.path.split(os.path.abspath(__file__))[0]
+    fh=open(here+ '/' + builder + '.latest', 'w')
+    fh.write(str(rev))
+    fh.close()
+
 class CustomStatusPush(StatusPush):
     """Event streamer to a HTTP server."""
 
@@ -91,13 +97,18 @@ class CustomStatusPush(StatusPush):
                         outcome = "yellow"
                     blame = payload.get("blame")
                     if not blame: blame = []
+                    rev = None
+                    ss = payload.get("sourceStamp")
+                    if ss: rev = ss.get("revision")
+                    builder = payload["builderName"]
                     tmppayload = {
-                      "builder": payload["builderName"],
+                      "builder": builder,
                       "blamelist": blame,
                       "status" : outcome,
                       "build_num": payload["number"],
-                      "revision":payload["sourceStamp"].get("revision"),
+                      "revision": rev
                     }
+                    if outcome == 'green': latest_green(builder, rev)
                     for p in payload["properties"]:
                         if "testoutput:" in p[0]:
                             tmppayload[p[0]] = p[1]

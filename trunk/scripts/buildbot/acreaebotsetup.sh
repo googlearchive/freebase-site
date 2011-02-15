@@ -2,7 +2,8 @@
 cd `dirname $0`
 SRC=`pwd`
 BASE=~/acreaebot/acreae/build
-${SRC}/sitesetup.sh ~/acreaebot/acreae/build ~/acreaebot/acreae/build/freebase-site
+#${BASE}/acre get-mysql-driver
+${SRC}/sitesetup.sh ~/acreaebot/acreae/build ~/freebase-site
 cp ${SRC}/project.acreaebot.conf ${BASE}/config
 ${BASE}/acre distclean
 

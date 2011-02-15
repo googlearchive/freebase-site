@@ -227,7 +227,7 @@ CueCard.ControlPane.prototype.getQueryEnvelope = function(e, ignorePaging) {
 CueCard.ControlPane.prototype.getCustomEnvelope = function(env) {
     env = env || {};
     
-    var table = this._getTab("customEnvelope").find('table')[0];
+    var table = this._getTab("envelope").find('table.cuecard-controlPane-customEnvelope')[0];
     for (var i = 1; i < table.rows.length; i++) {
         var tr = table.rows[i];
         var name = tr.cells[0].firstChild.value;

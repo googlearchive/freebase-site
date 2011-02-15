@@ -37,11 +37,11 @@
     <div class="cuecard-queryEditor-controls-bottom">
       <button title="Tab" class="button cuecard-queryEditor-queryAssist"
               acre:onclick="queryEditor.startAssistAtCursor()">
-        Query&nbsp;Assist
+        Query&nbsp;assist
       </button>
       <button class="button cuecard-queryEditor-cleanUp"
               acre:onclick="queryEditor._onCleanUp()">
-        Clean&nbsp;Up
+        Tidy
       </button>
       <button title="Ctrl-Enter" class="button button-primary cuecard-queryEditor-run"
               acre:onclick="queryEditor._onRun(false)">

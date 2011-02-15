@@ -72,9 +72,14 @@
 
     <!-- additions to be moved inline once cuecard is loaded -->
     <div style="display:none">
-      <a id="qe-options" class="icon-link" href="javascript:void(0)">
-        <span class="edit-icon">${_("Hide Options")}</span>
-      </a>
+      <span id="qe-options">
+        <a id="qe-options-on" class="icon-link" href="javascript:void(0)">
+          <span class="edit-icon">${_("Hide Options")}</span>
+        </a>
+        <a id="qe-options-off" class="icon-link" href="javascript:void(0)">
+          <span class="edit-icon">${_("Show Options")}</span>
+        </a>
+      </span>
       <div id="links">
         <a href="javascript:void(0)" onmouseover="computeMqlReadLink(this);" target="_blank">
           ${_("mqlread link")}

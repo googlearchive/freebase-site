@@ -189,13 +189,15 @@ function toggleControlPane(show) {
   if (show) {
     $("#the-control-pane").height(heights.controlPane);
     $(".cuecard-queryEditor-content").animate({height: "-=" + heights.controlPane}, function() {
-      $("#qe-options .edit-icon").text("Hide Options");
+      $("#qe-options-on").show();
+      $("#qe-options-off").hide();
       onResize();    
     });
   } else {
     $(".cuecard-queryEditor-content").animate({height: "+=" + heights.controlPane}, function() {
       $("#the-control-pane").height(0);
-      $("#qe-options .edit-icon").text("Show Options");
+      $("#qe-options-on").hide();
+      $("#qe-options-off").show();
       onResize();
     });
   }

@@ -28,16 +28,15 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  !!-->
- 
+
 
 <acre:block def="tabs(id, controlPane)">
 
   <acre:script>
     var TABS = [
       { name: 'Tools', template: tools, key: "tools"},
-      { name: 'Variables', template: variables, key: "variables"}, 
-      { name: 'Envelope', template: envelope, key: "envelope"}, 
-      { name: 'Custom Envelope', template: custom_envelope, key: "customEnvelope"}, 
+      { name: 'Query Envelope', template: envelope, key: "envelope"}, 
+      { name: 'Variables', template: variables, key: "variables"},
       { name: 'Settings', template: settings, key: "settings"}
     ];
   </acre:script>
@@ -73,43 +72,46 @@
   <acre:script>
     var BUTTONS = [
       {
-        label: 'Qualify All Properties',
+        label: 'Expand properties',
         command: '_qualify',
-        hint: 'Expand all properties to their full IDs (e.g., "id" &rarr; "/type/object/id").'
+        hint: 'E.g., "id" becomes "/type/object/id"'
       },
       {
-        label: 'Turn Inside Out',
+        label: 'Invert query',
         command: '_redangle',
-        hint: 'Take the inner most query node {...} that contains the text cursor and make it the outermost query node.'
+        hint: 'Make innermost cursour-containing node the outermost node'
+      },
+      {
+        label: 'Remove linebreaks',
+        command: '_oneLiner', 
+        hint: 'Reformat query to a single line'
       },
       {
         label: 'Generate Acre Template',
         command: '_generateCode',
-        hint: 'Generate an ACRE template that can render the result of this query.'
+        hint: 'Create an Acre template that displays the result of this query'
       },
-      {
-        label: 'One-liner',
-        command: '_oneLiner', 
-        hint: 'Reformat query into a one-liner.'
-      }
     ];
   </acre:script>
+  
+  <div acre:def="button(buttons)" acre:for="b in buttons" class="cuecard-controlPane-powerTool">
+    <input type="submit" class="button" value="$b.label" acre:onclick="controlPane[b.command]()"/>
+    <span class="cuecard-controlPane-powerTool-hint">$b.hint</span>
+  </div>
+  
 
   <div class="cuecard-controlPane-section">
-    <table><tr valign="top">
-      <td>
-        <div acre:for="b in BUTTONS" class="cuecard-controlPane-powerTool">
-          <input type="submit" class="button" value="$b.label" acre:onclick="controlPane[b.command]()"/>
-          <div class="cuecard-controlPane-powerTool-hint">$b.hint</div>
-        </div>
-      </td>
-      <td width="40%">
-        Results of tools<br/>
-        <input type="radio" name="tools-result" value="replace" checked="true"> replace query (undo-able)<br/>
-        <input type="radio" name="tools-result" value="output"> go into output pane
-      </td>
-    </tr></table>
+    <em>Transform query</em>, outputting to:
+      <input type="radio" name="tools-result" value="replace" checked="true">query pane
+      <input type="radio" name="tools-result" value="output">results pane<br/>
+    ${button(BUTTONS.slice(0,3))}
   </div>
+  
+  <div class="cuecard-controlPane-section">
+    <em>Acre Templates</em><br/>
+    ${button(BUTTONS.slice(3))}
+  </div>
+  
 
 </acre:block>
 
@@ -218,15 +220,12 @@
     </tr>
   </table>
 
-</acre:block>
-
-
-<acre:block def="custom_envelope(controlPane)">
   <acre:script>
     var env = "env" in controlPane._options ? controlPane._options.env : {};
     var has_env = false;
   </acre:script>
-  
+
+  <h3>Custom</h3>
   <table class="cuecard-controlPane-customEnvelope">
     <tr>
       <th width="30%">name</th>
@@ -241,7 +240,7 @@
                acre:onclick="$(this).closest('.cuecard-controlPane-customEnvelope-row').remove()"/>
       </td>
       <acre:block if="!dontFocus" script="ondomready">
-        
+
       </acre:block>
     </tr>
     <acre:block for="key, value in env">
@@ -252,28 +251,31 @@
       ${add_row(true)}
     </acre:block>
   </table>
+  
   <div>
     <input type="submit" class="button" value="Add" 
-           acre:onclick="controlPane._getTab('customEnvelope').find('.cuecard-controlPane-customEnvelope').append($.acre(add_row()))"/>
+           acre:onclick="controlPane._getTab('envelope').find('table.cuecard-controlPane-customEnvelope').append($.acre(add_row()))"/>
   </div>
 </acre:block>
-
 
 <acre:block def="settings(controlPane)">
-  <div>
-    <input type="checkbox" acre:attrs="($.localstore('cc_cp_clean') == '1') ? {'checked' : ''} : {}">
-    Always clean up query before running
-  </div>
-  <div>
-    <input type="checkbox" acre:attrs="($.localstore('cc_cp_align') == '1') ? {'checked' : ''} : {}">
-    Align JSON property values with spaces
-  </div>
-  <div style="display: none;">
-    <input type="checkbox">
-    Try running query as you edit
-  </div>
-  <div>
-    <input type="checkbox" acre:attrs="($.localstore('cc_cp_multi') == '1') ? {'checked' : ''} : {}">
-    Show error messages with multiple lines on multiple lines
+  <div class="cuecard-controlPane-section">
+    <div>
+      <input type="checkbox" acre:attrs="($.localstore('cc_cp_clean') == '1') ? {'checked' : ''} : {}">
+      Always tidy running query
+    </div>
+    <div>
+      <input type="checkbox" acre:attrs="($.localstore('cc_cp_align') == '1') ? {'checked' : ''} : {}">
+      Align JSON values with spaces
+    </div>
+    <div style="display: none;">
+      <input type="checkbox">
+      Try running query as you edit
+    </div>
+    <div>
+      <input type="checkbox" acre:attrs="($.localstore('cc_cp_multi') == '1') ? {'checked' : ''} : {}">
+      Show multi-line errors on multiple lines
+    </div>
   </div>
 </acre:block>
+

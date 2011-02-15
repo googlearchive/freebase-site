@@ -11,7 +11,7 @@
 }
 
 .section.domain {
-  margin-left: 250px;
+  margin: 20px 0 20px 250px;
   background: #fff;
   padding: 15px;
   .box_shadow(1px, 2px, 3px, #bbb);
@@ -107,6 +107,11 @@
   padding: 5px 15px;
 }
 
+.data-table .data-list li,
+.data-table .empty-property {
+  padding: 0;
+}
+
 .data-table th,
 .data-table td {
   font-size: 12px;
@@ -120,13 +125,18 @@
   padding-bottom: 5px;
 }
 
+.data-table thead th {
+  border-bottom: 2px solid #d5d7d8;
+}
+
 .data-table tbody th,
 .data-table tbody td {
-  padding: 3px 3px 3px 0;
+  padding: 4px 3px 4px 0;
   border-top: 1px solid #d5d7d8;
 }
 
 .data-table tbody tr th:first-child,
+.data-table tbody tr td:first-child,
 .data-table thead tr th:first-child {
   padding-left: 15px;
 }
@@ -137,21 +147,34 @@
 }
 
 .empty-property {
+  line-height: 1;
   padding: 0 0 5px 15px;
-}
-
-.empty-property:hover {
-  background: grey;
+  color: #ccc;
 }
 
 .toolbar {
-  margin: 0 0 20px 250px;
+  margin: 0 0 0 250px;
   padding: 5px 15px;
   line-height: 1;
   .linear_gradient(#e4e6e7, #d5d7d8);
+  .transition(all);
+}
+
+.toolbar.active {
+  position: relative;
+  z-index: 1;
+  .box_shadow(0, 2px, 2px, #c1c2c3);
 }
 
 .toolbar ul {
   list-style: none;
   font-size: 12px;
+}
+
+.toolbar-pane {
+  display: none;
+  margin: 0 0 20px 250px;
+  padding: 15px;
+  background: #fff;
+  border: 1px solid #d6d8d9;
 }

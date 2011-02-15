@@ -119,6 +119,10 @@ table.bar-graph {
   font-size: 11px;
 }
 
+.bar-graph tr:hover {
+  cursor: pointer;
+}
+
 .bar-graph-label {
   display: block;
   position: relative;
@@ -131,13 +135,15 @@ table.bar-graph {
 }
 
 .bar-graph-label a {
+  .transition(all, 0.2s, linear);
   position: relative;
   z-index: 10;
   display: block;
 }
 
-.bar-graph-label a:hover {
+.bar-graph-row:hover > th > .bar-graph-label > a {
   text-decoration: none;
+  .translate(5px, 0);
 } 
 
 .bar-graph-label .index {
@@ -147,7 +153,7 @@ table.bar-graph {
   left: 0;
   top: 0;
   background: #ddd;
-  -webkit-transition: all 0.3s linear;
+  .transition(all, 0.3s, linear);
 }
 
 .module:hover .index {
@@ -160,4 +166,48 @@ table.bar-graph {
 
 #content .bar-graph td.value {
   text-align: right;
+}
+
+.filter-chart .filter-item {
+  display: block;
+  font-size: 11px;
+  padding: 3px 5px;
+  .linear_gradient(#7d87ac, #6f7997);
+}
+
+.filter-item .remove-filter {
+  float: right;
+  margin-top: 2px;
+  line-height: 1;
+  padding: 0 2px;
+  font-family: monospace;
+  border: 1px solid #57617c;
+  .linear_gradient(#7d87ac, #6f7997);
+}
+
+.filter-chart .filter-item, 
+.filter-chart .filter-item a {
+  color: #fff
+}
+
+.filter-chart a:hover {
+  text-decoration: none;
+  cursor: default;
+}
+
+.filter-chart a.remove-filter {
+  cursor: pointer;
+}
+
+.filter-sub-item,
+.filter-sub-sub-item {
+  display: block;
+  margin: 5px 0;
+  font-size: 11px;
+  padding-left: 25px;
+  background: url(template/filter-level-indicator.png) no-repeat 5px 0;
+}
+
+.filter-sub-sub-item {
+  margin-left: 20px;
 }

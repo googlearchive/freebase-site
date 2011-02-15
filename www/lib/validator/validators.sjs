@@ -642,9 +642,13 @@ Validator.factory(scope, "MultiValue", {
  * JSON
  */
 Validator.factory(scope, "Json", {
+  "defaults": {
+    json: true  // return object
+  },
   "string": function(val, options) {
     try {
-      return JSON.parse(val);
+      var o = JSON.parse(val);
+      return options.json ? o : val;
     }
     catch(ex) {
       return this.invalid("Invalid JSON: " + ex);

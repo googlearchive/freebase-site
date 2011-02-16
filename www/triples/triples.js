@@ -74,6 +74,7 @@
       row.removeClass("row-hover");
     },
 
+/****
     // Update right-hand menu item based on current scroll position
     update_menu: function() {
       var last_position = triples.last_position || 0;
@@ -118,37 +119,6 @@
       }
     },
 
-    limit_slider: function() {
-      var section = $("#limit");
-      // slider for controlling property limit
-      var slider = $(".limit-slider", section);
-      var current = $(".current-limit", section);
-      var input = $("input[name=limit]", section);
-      var val = parseInt(input.val() || 100);
-
-      console.log("slider value", val);
-
-      slider.slider({
-        value: val,
-        min: 1,
-        max: 1000,
-        step: 10,
-        slide: function(e, ui) {
-          current.css({'color': '#f71'});
-          current.text(ui.value);
-        },
-        stop: function(e, ui) {
-          current.css({'color': '#333'});
-          input.val(ui.value);
-          if (ui.value != val) {
-            input[0].form.submit();
-          }
-        }
-      });
-
-    },
-
-/****
     update_menu_position: function() {
 
       var viewport_height = triples.viewport.height();
@@ -169,58 +139,16 @@
 ****/
     init: function() {
 
-      // collapse/expand filter menu
+      // Initialize filter menu collapse/expand
       $(".column.nav > .module").collapse_module(".section");
 
-      // Initialize row menu hovers & menus
-      triples.init_row_menu();
+      // Initialize prop counts filter suggest input
+      fb.filters.init_domain_type_property_suggest(".column.nav");
 
       // Initialize the property limit slider
-      triples.limit_slider();
+      fb.filters.init_limit_slider("#limit-slider", 100, 1, 1000, 10);
 
-      // Initialize table sorting
-      $.tablesorter.defaults.cssAsc = "column-header-asc";
-      $.tablesorter.defaults.cssDesc = "column-header-desc";
-      $.tablesorter.defaults.cssHeader =  "column-header";
-
-      var table = $(".table-sortable").tablesorter();
-
-      // *** Initialize triggers for showing/hiding hidden inputs
-      $(".filter-form-trigger, .time-form-trigger").click(function(){
-        var $form = $(this).siblings(".filter-form");
-        if($form.is(":hidden")) {
-          $form.slideDown(function() {
-            $(":text:first", $form).focus();
-          });
-        }
-        else {
-          $form.slideUp();
-        }
-      });
-
-      // *** Initialize domain/type/property suggest input
-      $(":text[name=domain], :text[name=type], :text[name=property]").suggest({
-        service_url: fb.h.legacy_fb_url(),
-        type: ["/type/domain", "/type/type", "/type/property"],
-        type_strict: "any"
-      })
-      .bind("fb-select", function(e, data) {
-        var $this = $(this);
-        $this.val(data.id);
-        var type = data["n:type"].id;
-        if (type === "/type/domain") {
-          $this.attr("name", "domain");
-        }
-        else if (type === "/type/type") {
-          $this.attr("name", "type");
-        }
-        else if (type === "/type/property") {
-          $this.attr("name", "property");
-        }
-        this.form.submit();
-      });
-
-      // *** Initialize user/creator suggest input
+      // Initialize user/creator suggest input
       $(":text[name=creator]").suggest({
         service_url: fb.h.legacy_fb_url(),
         type: "/type/user"
@@ -229,6 +157,16 @@
         $(this).val(data.id)
           .parents("form:first").submit();
       });
+
+      // Initialize row menu hovers & menus
+      triples.init_row_menu();
+
+      // Initialize table sorting
+      $.tablesorter.defaults.cssAsc = "column-header-asc";
+      $.tablesorter.defaults.cssDesc = "column-header-desc";
+      $.tablesorter.defaults.cssHeader =  "column-header";
+
+      var table = $(".table-sortable").tablesorter();
 
       // *** Initialize filter menu positioning
       // Because the filter menu is absolutely/fixed positioned

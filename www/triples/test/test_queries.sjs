@@ -264,11 +264,12 @@ test("apply_type filter", function() {
 
 test("apply_property filter", function() {
   deepEqual(q.apply_domain_type_property({}, null, null, "/my/property"), {
-    "master_property": "/my/property"
+    "filter:master_property": "/my/property"
   });
   // for /type/namespace/keys we are actually showing the reverse /type/object/key
   deepEqual(q.apply_domain_type_property({master_property: "/type/namespace/keys"}, null, null, "/my/property"), {
-    master_property: "/my/property"
+    master_property: "/type/namespace/keys",
+    "filter:master_property": "/my/property"
   });
 });
 

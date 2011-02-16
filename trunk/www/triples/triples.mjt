@@ -112,8 +112,14 @@
       <div class="module-section alt">
         ${components.creator_filter("/inspect" + c.id, c.filters)}
       </div>
-      <div class="module-section alt" id="limit">
-        ${components.limit_filter("/inspect" + c.id, c.filters)}
+      <div class="module-section alt" id="limit-slider">
+        <acre:script>
+          var limit = c.filters.limit || 100;
+        </acre:script>
+        <h3 class="module-section-title">
+          <label for="">Show up to <strong class="current-limit">${limit}</strong> links</label>
+        </h3>
+        ${filter_components.filter_form("/inspect" + c.id, c.filters, 'limit', filter_components.limit_slider, ['limit', limit])}     
       </div>
       <div class="module-section alt">
         ${components.history_filter("/inspect" + c.id, c.filters)}

@@ -210,3 +210,8 @@
   <input type="text" class="text-input date-input" 
          name="${name}" acre:attrs="placeholder ? {placeholder:placeholder}: {}"/>
 </acre:block>
+
+<acre:block def="limit_slider(name, value)">
+  <input type="hidden" name="${name}" value="${value}" />
+  <div class="limit-slider"></div>
+</acre:block>

@@ -32,7 +32,14 @@
 
   $(function() {
 
+    // Initialize filter menu collapse/expand
     $(".column.nav > .module").collapse_module(".section");
+
+    // Initialize prop counts filter suggest input
+    fb.filters.init_domain_type_property_suggest(".column.nav");
+
+    // Initialize the property limit slider
+    fb.filters.init_limit_slider("#limit-slider", 10, 1, 100, 1);
 
     $(".toolbar-trigger").click(function(){
       var $add_type_pane = $(".add-type").first();
@@ -40,8 +47,8 @@
       var $trigger = $(this);
 
       if($add_type_pane.is(":visible")) {
-        $toolbar.removeClass("active");      
-        $trigger.removeClass("active");      
+        $toolbar.removeClass("active");
+        $trigger.removeClass("active");
         $add_type_pane.slideUp();
       }
       else {

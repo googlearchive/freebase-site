@@ -79,15 +79,16 @@
       </div>
     </div>
     <div class="module">
-      <div class="module-section alt">
+      <div class="module-section alt" id="limit-slider">    
+        <acre:script>
+          var limit = c.filters.limit || 10;
+        </acre:script>
         <h3 class="module-section-title">
-          <label for="">Show up to <strong>10</strong> properties</label>
+          <label for="">Show up to <strong class="current-limit">${limit}</strong> properties</label>
         </h3>
-        <div class="filter-form">
-          <input type="hidden" name="" value="10" />
-          <div id="limit-slider"></div>
-        </div>
+        ${filter_components.filter_form("/topic" + c.id, c.filters, 'limit', filter_components.limit_slider, ['limit', limit])}
       </div>
+
     </div>
   </div>
 

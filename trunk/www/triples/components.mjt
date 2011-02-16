@@ -85,7 +85,6 @@
   <input type="submit" style="display:none;" />
 </acre:block>
 
-
 <acre:block def="creator_filter(base_url, filters)">
   <acre:script>
     var creators = filters.creator || [];
@@ -107,30 +106,12 @@
   ${fc.filter_form(base_url, filters, 'creator', creator_input, def_params, hide)}
 </acre:block>
 
-
 <acre:block def="creator_input(name)">
   <acre:script>
     var users = Array.prototype.slice.call(arguments, 1);
   </acre:script>
   <input acre:for="user in users" type="hidden" name="${name}" value="${user}"/>
   ${fc.suggest_input(name, 'Start typing for suggestions')}
-</acre:block>
-
-
-<acre:block def="limit_filter(base_url, filters)">
-  <acre:script>
-    var limit = filters.limit || 100;
-  </acre:script>
-  <h3 class="module-section-title">
-    <label for="">${_("Limit")}:</label> 
-    <span class="current-limit">${limit}</span>
-  </h3>
-  ${fc.filter_form(base_url, filters, 'limit', limit_input, ['limit', limit])}
-</acre:block>
-
-<acre:block def="limit_input(name, value)">
-  <input type="hidden" name="${name}" value="${i18n.format_number(value)}" />
-  <div class="limit-slider"></div>
 </acre:block>
 
 <acre:block def="history_filter(base_url, filters)">

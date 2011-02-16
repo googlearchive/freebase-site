@@ -3,15 +3,23 @@
   color: #111;
 }
 
+#page-content {
+  position: relative;
+}
+
 .nav.column {
-  float: left;
+  position: absolute;
   width: 230px;
   margin-right: 20px;
   margin-top: -7px;
 }
 
+.column.data {
+}
+
 .section.domain {
-  margin: 20px 0 20px 250px;
+  margin: 20px 0;
+  margin-left: 250px;
   background: #fff;
   padding: 15px;
   .box_shadow(1px, 2px, 3px, #bbb);
@@ -153,9 +161,9 @@
 }
 
 .toolbar {
-  margin: 0 0 0 250px;
-  padding: 5px 15px;
+  margin-left: 250px;
   line-height: 1;
+  padding-left: 15px;
   .linear_gradient(#e4e6e7, #d5d7d8);
   .transition(all);
 }
@@ -167,8 +175,32 @@
 }
 
 .toolbar ul {
+  float: left;
   list-style: none;
   font-size: 12px;
+  border-right: 1px solid #e3e5e6;
+}
+
+.toolbar li {
+  float: left;
+  border-left: 1px solid #e3e5e6;
+}
+
+.toolbar li a {
+  display: block;
+  padding: 5px 15px;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  .transition(all);
+}
+
+.toolbar li a:hover {
+  background: rgba(100,100,100,0.1);
+}
+
+.toolbar li a.active {
+  opacity: 1;
+  .linear_gradient(#d5d7d8, #e4e6e7);
 }
 
 .toolbar-pane {

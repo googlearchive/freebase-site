@@ -91,9 +91,9 @@
     </div>
   </div>
 
-  <div class="column" id="topic-data">
-    <div class="toolbar">
-      <ul>
+  <div class="column data" id="topic-data">
+    <div class="toolbar clear">
+      <ul class="">
         <li>
           <a href="#" class="toolbar-trigger icon-link">
             <span class="add-icon">Add Type</span>

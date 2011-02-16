@@ -60,14 +60,14 @@
       <acre:script>
         var path = type.split("/");
         path.pop();
-        var domain = path.join("/");
+        var domain_ns = path.join("/");
         var domain_filters = h.extend(true, {}, filters);
         delete domain_filters.type;
       </acre:script>
       <span class="filter-item">
         <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'type'))}" class="remove-filter">x</a>
-        <a href="${h.fb_url(base_url, fh.add_filter(domain_filters, 'domain', domain))}">
-          ${domain}
+        <a href="${h.fb_url(base_url, fh.add_filter(domain_filters, 'domain', domain_ns))}">
+          ${domain_ns}
         </a>
       </span>
       <span class="filter-sub-item">${type.split("/").pop()}</span>
@@ -76,20 +76,20 @@
       <acre:script>
         var path = property.split("/");
         path.pop();
-        var type = path.join("/");
+        var type_ns = path.join("/");
         path.pop();
-        var domain = path.join("/");
+        var domain_ns = path.join("/");
         var type_filters = h.extend(true, {}, filters);
         delete type_filters.property;
       </acre:script>
       <span class="filter-item">
         <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'property'))}" class="remove-filter">x</a>
-        <a href="${h.fb_url(base_url, fh.add_filter(type_filters, 'domain', domain))}">
-         ${domain}
+        <a href="${h.fb_url(base_url, fh.add_filter(type_filters, 'domain', domain_ns))}">
+         ${domain_ns}
         </a>
       </span>
-      <a class="filter-sub-item" href="${h.fb_url(base_url, fh.add_filter(type_filters, 'type', type))}">
-        ${type.split("/").pop()}
+      <a class="filter-sub-item" href="${h.fb_url(base_url, fh.add_filter(type_filters, 'type', type_ns))}">
+        ${type_ns.split("/").pop()}
       </a>
       <span class="filter-sub-sub-item">${property.split("/").pop()}</span>
     </acre:block>

@@ -112,14 +112,14 @@
   </acre:script>
   <h3 class="module-section-title">
     <label for="">${_("Limit")}:</label> 
-    <span class="current-limit">${i18n.format_number(limit)}</span>
+    <span class="current-limit">${limit}</span>
   </h3>
   ${fc.filter_form(base_url, filters, 'limit', limit_input, ['limit', limit])}
 </acre:block>
 
 <acre:block def="limit_input(name, value)">
   <input type="hidden" name="${name}" value="${i18n.format_number(value)}" />
-  <div id="limit-slider"></div>
+  <div class="limit-slider"></div>
 </acre:block>
 
 <acre:block def="history_filter(base_url, filters)">

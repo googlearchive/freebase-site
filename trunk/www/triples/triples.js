@@ -119,48 +119,36 @@
     },
 
     limit_slider: function() {
-
+      var section = $("#limit");
       // slider for controlling property limit
-      var $limit_slider = $("#limit-slider");
-      var $current_limit = $(".filter-title > .current-limit");
-      var $input = $limit_slider.siblings("input[name=limit]");
-      var slider_value = 100;
+      var slider = $(".limit-slider", section);
+      var current = $(".current-limit", section);
+      var input = $("input[name=limit]", section);
+      var val = parseInt(input.val() || 100);
 
-      // get current url params
-      var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-      var current_url = window.location.href.split("?");
+      console.log("slider value", val);
 
-      // if we have url params, check if one of them is limit
-      if(current_url != hashes[0]) {
-        var count = hashes.length;
-        for(var i=0; i < count; i++) {
-          param = hashes[i].split("=");
-          if(param[0] === "limit") {
-            var slider_value = param[1];
-          }
-        }
-      }
-
-      $limit_slider.slider({
-        value: slider_value,
+      slider.slider({
+        value: val,
         min: 1,
         max: 1000,
         step: 10,
         slide: function(e, ui) {
-          $current_limit.css({'color': '#f71'});
-          $current_limit.html(ui.value);
+          current.css({'color': '#f71'});
+          current.text(ui.value);
         },
         stop: function(e, ui) {
-          $current_limit.css({'color': '#333'});
-          $input.val(ui.value);
-          if (ui.value != slider_value) {
-            $limit_slider.parents("form:first").submit();
+          current.css({'color': '#333'});
+          input.val(ui.value);
+          if (ui.value != val) {
+            input[0].form.submit();
           }
         }
       });
 
     },
 
+/****
     update_menu_position: function() {
 
       var viewport_height = triples.viewport.height();
@@ -178,8 +166,11 @@
         }
       }
     },
-
+****/
     init: function() {
+
+      // collapse/expand filter menu
+      $(".column.nav > .module").collapse_module(".section");
 
       // Initialize row menu hovers & menus
       triples.init_row_menu();
@@ -243,8 +234,9 @@
       // Because the filter menu is absolutely/fixed positioned
       // we need to insure the content container is at least the
       // same height as the menu
-      var target_height = $("#content-sub").height() + $("#footer").height();
+/***      var target_height = $("#content-sub").height() + $("#footer").height();
       $("#content-main").css({"min-height": target_height});
+***/
 
       /*
       **************************************************
@@ -253,7 +245,7 @@
       ** (2) Update currently active section          **
       **************************************************
       */
-
+/***
       triples.viewport = $(window);
       triples.reference = $("#content-wrapper"); // This is the effective starting point of 'content'
       triples.menu = $("#content-sub"); // The menu item
@@ -338,7 +330,7 @@
           $form.submit();
         }
       });
-
+***/
 
     }
   };

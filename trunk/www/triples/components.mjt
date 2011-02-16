@@ -88,10 +88,12 @@
     }
   </acre:script>
   <h3 class="module-section-title"><label for="">${_("By User")}:</label></h3>
-  <span acre:for="user in creators" class="filter-item">
-    <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'creator', user))}" class="remove-filter">x</a>
-    ${user}
-  </span>
+  <ul acre:if="creators.length">
+    <li acre:for="user in creators" class="filter-item">
+      <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'creator', user))}" class="remove-filter">x</a>
+      ${user}
+    </li>
+  </ul>
   <a acre:if="hide" class="filter-form-trigger" href="javascript:void(0);">${_("add another")}&hellip;</a>
   ${fc.filter_form(base_url, filters, 'creator', creator_input, def_params, hide)}
 </acre:block>

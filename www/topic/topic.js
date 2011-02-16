@@ -36,10 +36,10 @@
     $(".column.nav > .module").collapse_module(".section");
 
     // Initialize prop counts filter suggest input
-    fb.filters.init_domain_type_property_suggest(".column.nav");
+    fb.filters.init_domain_type_property_filter(".column.nav");
 
     // Initialize the property limit slider
-    fb.filters.init_limit_slider("#limit-slider", 10, 1, 100, 1);
+    fb.filters.init_limit_slider_filter("#limit-slider", 10, 1, 100, 1);
 
     $(".toolbar-trigger").click(function(){
       var $add_type_pane = $(".add-type").first();

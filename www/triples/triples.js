@@ -143,10 +143,10 @@
       $(".column.nav > .module").collapse_module(".section");
 
       // Initialize prop counts filter suggest input
-      fb.filters.init_domain_type_property_suggest(".column.nav");
+      fb.filters.init_domain_type_property_filter(".column.nav");
 
       // Initialize the property limit slider
-      fb.filters.init_limit_slider("#limit-slider", 100, 1, 1000, 10);
+      fb.filters.init_limit_slider_filter("#limit-slider", 100, 1, 1000, 10);
 
       // Initialize user/creator suggest input
       $(":text[name=creator]").suggest({

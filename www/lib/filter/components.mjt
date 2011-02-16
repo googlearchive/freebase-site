@@ -186,7 +186,7 @@
 </acre:block>
 
 <acre:block def="suggest_input(name, placeholder)">
-  <input type="text" name="${name}" acre:attrs="placeholder ? {placeholder:placeholder}: {}"/>
+  <input type="text" class="text-input suggest-input" name="${name}" acre:attrs="placeholder ? {placeholder:placeholder}: {}"/>
 </acre:block>
 
 <acre:block def="lang_input(name, value)">

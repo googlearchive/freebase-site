@@ -413,6 +413,7 @@ test("MultiValue", function() {
   same(validators.MultiValue(null), []);
   same(validators.MultiValue(undefined), []);
   same(validators.MultiValue([]), []);
+  same(validators.MultiValue([null, undefined]), []);
   same(validators.MultiValue({foo:"bar", hello:"world"}), [{hello:"world", foo:"bar"}]);
   same(validators.MultiValue([true, false, "", "foo bar", 0, null, undefined, {foo:"bar", hello:"world"}]), [true, false, "", "foo bar", 0, {foo:"bar", hello:"world"}]);
 

@@ -624,9 +624,13 @@ Validator.factory(scope, "MultiValue", {
   "array": function(val, options) {
     var values = [];
     val.forEach(function(v) {
-      if (v != null) {
-        values.push(options.validator ? options.validator(v, options) : v);
+      if (options.validator) {
+        v = options.validator(v, options);
       }
+      if (v != null) {
+        values.push(v);
+      }
+      return values;
     });
     return values;
   },

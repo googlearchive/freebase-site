@@ -143,243 +143,255 @@
      }     
   </acre:script>
 
-    <div class="column" id="topic-data" role="main" acre:attrs="c.filters.history ? {'class':'history'} : {}">
-      <acre:block if="c.names_aliases && c.names_aliases.length">
-        <h2 class="table-title"><a name="names_aliases">${_("Names & Aliases")} (${i18n.format_number(c.names_aliases.length)})</a></h2>
-        <table class="table table-sortable">
-          <thead>
-            <tr>
-              <th class="column-header first"><span class="sort-icon">${_("source")}</span></th>
-              <th class="column-header"><span class="sort-icon">${_("property")}</span></th>
-              <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
-              <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
-              <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
-              <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr acre:for="o in c.names_aliases" 
-                class="hoverable ${JSON.stringify(th.triple(c.id, o.master_property, o.target_value))} ${th.link_class(o)}">
-              <th class="row-header odd empty" scope="row">
-                <span class="self">-</span>
-                ${tooltip()}
-              </th>
-              <td class="even">${a(o.master_property)}</td>
-              <td class="odd">${literal(c.id, o.master_property, o.target_value)}</td>
-              <td class="even" acre:if="o.creator">${a(o.creator)}</td>
-              <td class="even" acre:else="">null</td>
-              <td class="odd numeric">${o.timestamp}</td>
-              <td acre:if="c.filters.history" class="even">${o.operation}</td>
-            </tr>
-          </tbody>
-        </table>
-      </acre:block>
-
-      <acre:block if="c.keys">
-        <acre:block if="c.keys && c.keys.length">
-          <h2 class="table-title"><a name="keys">${_("Keys")} (${i18n.format_number(c.keys.length)})</a></h2>
-          <table class="table table-sortable">
-            <thead>
-              <tr>
-                <th class="column-header first"><span class="sort-icon">${_("source")}</span></th>
-                <th class="column-header"><span class="sort-icon">${_("property")}</span></th>                  
-                <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
-                <th class="column-header"><span class="sort-icon">${_("value")}</span></th>
-                <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
-                <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
-                <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr acre:for="k in c.keys" 
-                  class="hoverable ${JSON.stringify(th.triple(k.source.id, k.master_property, k.target.id, k.target_value.namespace, k.target_value.value))} ${th.link_class(k)}">
-                <th class="row-header odd empty" scope="row">
-                  <acre:block if="k.source.id === c.id">
-                    <span class="self">-</span>
-                  </acre:block>
-                  <acre:block else="">
-                    ${a(k.source.id)}
-                  </acre:block>                                         
-                  ${tooltip()}
-                </th>
-                <td class="even">${a(k.master_property)}</td>
-                <td class="odd">
-                  <acre:block if="k.target.id === c.id">
-                    <span class="self">-</span>
-                  </acre:block>
-                  <acre:block else="">
-                    ${a(k.target.id)}
-                  </acre:block>
-                </td>
-                <td class="even">
-                  <span class="truncate-wrapper">
-                    <span class="truncate">
-                      ${k.target_value.value}
-                    </span>
-                  </span>
-                </td>
-                <td class="odd" acre:if="k.creator">${a(k.creator)}</td>
-                <td class="odd" acre:else="">null</td>
-                <td class="even numeric">${k.timestamp}</td>
-                <td acre:if="c.filters.history" class="odd">${k.operation}</th>
-              </tr>
-            </tbody>
-          </table>
-        </acre:block>
-      </acre:block>
-
-      <acre:block if="c.outgoing && c.outgoing.length">
-        <h2 class="table-title"><a name="outgoinglinks">${_("Outgoing Links")} (${i18n.format_number(c.outgoing.length)})</a></h2>
-        <table class="table table-sortable">
-          <thead>
-            <tr>
-              <th class="column-header first empty"><span class="sort-icon">${_("source")}</span></th>
-              <th class="column-header"><span class="sort-icon">${_("property")}</span></th>
-              <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
-              <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
-              <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
-              <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <acre:block for="o in c.outgoing">
-              <acre:script>console.log(o)</acre:script>
-              <tr class="hoverable ${JSON.stringify(th.triple(c.id, o.master_property, o.target_value || o.target))} ${th.link_class(o)}">
-                <th class="row-header odd empty" scope="row">
-                  <span class="self">-</span>
-                  ${tooltip()}
-                </th>
-                <td class="even">
-                  ${a(o.master_property)}
-                </td>
-                <td class="odd" acre:if="o.target_value">${literal(c.id, o.master_property, o.target_value)}</td>
-                <td class="odd" acre:else="">${topic(o.target)}</td>
-                <td class="even" acre:if="o.creator">${a(o.creator)}</td>
-                <td class="even" acre:else="">null</td>
-                <td class="odd numeric">${o.timestamp}</td>
-                <td acre:if="c.filters.history" class="even">${o.operation}</th>
-              </tr>
-            </acre:block>
-          </tbody>
-        </table>
-      </acre:block>
-
-      <acre:block if="c.incoming && c.incoming.length">
-        <h2 class="table-title"><a name="incominglinks">${_("Incoming Links")} (${i18n.format_number(c.incoming.length)})</a></h2>
-        <table class="table table-sortable">
-          <thead>
-            <tr>
-              <th class="column-header first"><span class="sort-icon">${_("source")}</span></th>
-              <th class="column-header"><span class="sort-icon">${_("property")}</span></th>
-              <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
-              <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
-              <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
-              <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <acre:block for="o in c.incoming">
-              <acre:script>
-                if (o.master_property === "/dataworld/gardening_hint/replaced_by") {
-                  o.source.id = "/guid/" + o.source.guid.substring(1);
-                }
-              </acre:script>
-              <tr class="hoverable ${JSON.stringify(th.triple(o.source.id, o.master_property, o.target))} ${th.link_class(o)}">
-                <th class="row-header odd" scope="row">
-                  ${topic(o.source)}
-                  ${tooltip()}
-                </th>
-                <td class="even">${a(o.master_property)}</td>
-                <td class="odd empty"><span class="self">-</span></td>
-                <td class="even" acre:if="o.creator">${a(o.creator)}</td>
-                <td class="even" acre:else="">null</td>
-                <td class="odd numeric">${o.timestamp}</td>
-                <td acre:if="c.filters.history" class="even">${o.operation}</th>
-              </tr>
-            </acre:block>
-          </tbody>
-        </table>
-      </acre:block>
-
-      <acre:block if="c.typelinks && c.typelinks.length">
-        <h2 class="table-title"><a name="typelinks">${_("Links using this property")} (${i18n.format_number(c.typelinks.length)})</a></h2>
-        <table class="table table-sortable">
-          <thead>
-            <tr>
-              <th class="column-header first"><span class="sort-icon">${_("source")}</span></th>
-              <th class="column-header"><span class="sort-icon">${_("property")}</span></th>
-              <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
-              <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
-              <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
-              <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <acre:script>
-              var replaced_by = (c.id === "/dataworld/gardening_hint/replaced_by");
-            </acre:script>
-            <acre:block for="o in c.typelinks">
-              <acre:script>
-                if (replaced_by) {
-                  o.source.id = "/guid/" + o.source.guid.substring(1);
-                }
-              </acre:script>
-              <tr class="hoverable ${JSON.stringify(th.triple(o.source.id, c.id, o.target_value || o.target))} ${th.link_class(o)}">
-                <th class="row-header odd" scope="row">
-                  ${topic(o.source)}
-                  ${tooltip()}
-                </th>
-                <td class="even"><span class="self">-</span></td>
-                <td class="odd" acre:if="o.target_value">${literal(o.source.id, o.master_property, o.target_value)}</td>
-                <td class="odd" acre:else="">${topic(o.target)}</td>
-                <td class="even" acre:if="o.creator">${a(o.creator)}</td>
-                <td class="even" acre:else="">null</td>
-                <td class="odd numeric">${o.timestamp}</td>
-                <td acre:if="c.filters.history" class="even">${o.operation}</th>
-              </tr>
-            </acre:block>
-          </tbody>
-        </table>
-      </acre:block>
-
-      <acre:block if="c.attribution_links && c.attribution_links.length">
-        <h2 class="table-title"><a name="attribution_links">${_("Links created by this user/attribution")} (${i18n.format_number(c.attribution_links.length)})</a></h2>
-        <table class="table table-sortable">
-          <thead>
-            <tr>
-              <th class="column-header first"><span class="sort-icon">${_("source")}</span></th>
-              <th class="column-header"><span class="sort-icon">${_("property")}</span></th>
-              <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
-              <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
-              <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
-              <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <acre:block for="o in c.attribution_links">
-              <acre:script>
-                if (o.master_property === "/dataworld/gardening_hint/replaced_by") {
-                  o.source.id = "/guid/" + o.source.guid.substring(1);
-                }
-              </acre:script>
-              <tr class="hoverable ${JSON.stringify(th.triple(o.source.id, c.object.id, o.target_value || o.target))} ${th.link_class(o)}">
-                <th class="row-header odd" scope="row">
-                  ${topic(o.source)}
-                  ${tooltip()}
-                </th>
-                <td class="even"><span class="self">${a(o.master_property)}</span></td>
-                <td class="odd" acre:if="o.target_value">${literal(o.source.id, o.master_property, o.target_value)}</td>
-                <td class="odd" acre:else="">${topic(o.target)}</td>
-                <td class="even" acre:if="o.creator">${a(o.creator)}</td>
-                <td class="even" acre:else="">null</td>
-                <td class="odd numeric">${o.timestamp}</td>
-                <td acre:if="c.filters.history" class="even">${o.operation}</th>
-              </tr>
-            </acre:block>
-          </tbody>
-        </table>
-      </acre:block>
+  <div class="column" id="triples-data" role="main" acre:attrs="c.filters.history ? {'class':'history'} : {}">
+    <acre:block if="c.names_aliases && c.names_aliases.length">
+    <div class="section">
+      <h2 class="table-title"><a name="names_aliases">${_("Names & Aliases")} (${i18n.format_number(c.names_aliases.length)})</a></h2>
+      <table class="table table-sortable">
+        <thead>
+          <tr>
+            <th class="column-header first"><span class="sort-icon">${_("source")}</span></th>
+            <th class="column-header"><span class="sort-icon">${_("property")}</span></th>
+            <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
+            <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
+            <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
+            <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr acre:for="o in c.names_aliases" 
+            class="hoverable ${JSON.stringify(th.triple(c.id, o.master_property, o.target_value))} ${th.link_class(o)}">
+            <th class="row-header odd empty" scope="row">
+              <span class="self">-</span>
+              ${tooltip()}
+            </th>
+            <td class="even">${a(o.master_property)}</td>
+            <td class="odd">${literal(c.id, o.master_property, o.target_value)}</td>
+            <td class="even" acre:if="o.creator">${a(o.creator)}</td>
+            <td class="even" acre:else="">null</td>
+            <td class="odd numeric">${o.timestamp}</td>
+            <td acre:if="c.filters.history" class="even">${o.operation}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+    </acre:block>
+
+    <acre:block if="c.keys">
+    <acre:block if="c.keys && c.keys.length">
+    <div class="section">
+      <h2 class="table-title"><a name="keys">${_("Keys")} (${i18n.format_number(c.keys.length)})</a></h2>
+      <table class="table table-sortable">
+        <thead>
+          <tr>
+            <th class="column-header first"><span class="sort-icon">${_("source")}</span></th>
+            <th class="column-header"><span class="sort-icon">${_("property")}</span></th>                  
+            <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
+            <th class="column-header"><span class="sort-icon">${_("value")}</span></th>
+            <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
+            <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
+            <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr acre:for="k in c.keys" 
+            class="hoverable ${JSON.stringify(th.triple(k.source.id, k.master_property, k.target.id, k.target_value.namespace, k.target_value.value))} ${th.link_class(k)}">
+            <th class="row-header odd empty" scope="row">
+              <acre:block if="k.source.id === c.id">
+              <span class="self">-</span>
+              </acre:block>
+              <acre:block else="">
+              ${a(k.source.id)}
+              </acre:block>                                         
+              ${tooltip()}
+            </th>
+            <td class="even">${a(k.master_property)}</td>
+            <td class="odd">
+              <acre:block if="k.target.id === c.id">
+              <span class="self">-</span>
+              </acre:block>
+              <acre:block else="">
+              ${a(k.target.id)}
+              </acre:block>
+            </td>
+            <td class="even">
+              <span class="truncate-wrapper">
+                <span class="truncate">
+                  ${k.target_value.value}
+                </span>
+              </span>
+            </td>
+            <td class="odd" acre:if="k.creator">${a(k.creator)}</td>
+            <td class="odd" acre:else="">null</td>
+            <td class="even numeric">${k.timestamp}</td>
+            <td acre:if="c.filters.history" class="odd">${k.operation}</th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    </acre:block>
+    </acre:block>
+
+    <acre:block if="c.outgoing && c.outgoing.length">
+    <div class="section">
+      <h2 class="table-title"><a name="outgoinglinks">${_("Outgoing Links")} (${i18n.format_number(c.outgoing.length)})</a></h2>
+      <table class="table table-sortable">
+        <thead>
+          <tr>
+            <th class="column-header first empty"><span class="sort-icon">${_("source")}</span></th>
+            <th class="column-header"><span class="sort-icon">${_("property")}</span></th>
+            <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
+            <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
+            <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
+            <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <acre:block for="o in c.outgoing">
+          <acre:script>console.log(o)</acre:script>
+          <tr class="hoverable ${JSON.stringify(th.triple(c.id, o.master_property, o.target_value || o.target))} ${th.link_class(o)}">
+            <th class="row-header odd empty" scope="row">
+              <span class="self">-</span>
+              ${tooltip()}
+            </th>
+            <td class="even">
+              ${a(o.master_property)}
+            </td>
+            <td class="odd" acre:if="o.target_value">${literal(c.id, o.master_property, o.target_value)}</td>
+            <td class="odd" acre:else="">${topic(o.target)}</td>
+            <td class="even" acre:if="o.creator">${a(o.creator)}</td>
+            <td class="even" acre:else="">null</td>
+            <td class="odd numeric">${o.timestamp}</td>
+            <td acre:if="c.filters.history" class="even">${o.operation}</th>
+          </tr>
+          </acre:block>
+        </tbody>
+      </table>
+    </div>
+    </acre:block>
+
+    <acre:block if="c.incoming && c.incoming.length">
+    <div class="section">
+      <h2 class="table-title"><a name="incominglinks">${_("Incoming Links")} (${i18n.format_number(c.incoming.length)})</a></h2>
+      <table class="table table-sortable">
+        <thead>
+          <tr>
+            <th class="column-header first"><span class="sort-icon">${_("source")}</span></th>
+            <th class="column-header"><span class="sort-icon">${_("property")}</span></th>
+            <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
+            <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
+            <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
+            <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <acre:block for="o in c.incoming">
+          <acre:script>
+          if (o.master_property === "/dataworld/gardening_hint/replaced_by") {
+          o.source.id = "/guid/" + o.source.guid.substring(1);
+          }
+          </acre:script>
+          <tr class="hoverable ${JSON.stringify(th.triple(o.source.id, o.master_property, o.target))} ${th.link_class(o)}">
+            <th class="row-header odd" scope="row">
+              ${topic(o.source)}
+              ${tooltip()}
+            </th>
+            <td class="even">${a(o.master_property)}</td>
+            <td class="odd empty"><span class="self">-</span></td>
+            <td class="even" acre:if="o.creator">${a(o.creator)}</td>
+            <td class="even" acre:else="">null</td>
+            <td class="odd numeric">${o.timestamp}</td>
+            <td acre:if="c.filters.history" class="even">${o.operation}</th>
+          </tr>
+          </acre:block>
+        </tbody>
+      </table>
+    </div>
+    </acre:block>
+
+    <acre:block if="c.typelinks && c.typelinks.length">
+    <div class="section">
+      <h2 class="table-title"><a name="typelinks">${_("Links using this property")} (${i18n.format_number(c.typelinks.length)})</a></h2>
+      <table class="table table-sortable">
+        <thead>
+          <tr>
+            <th class="column-header first"><span class="sort-icon">${_("source")}</span></th>
+            <th class="column-header"><span class="sort-icon">${_("property")}</span></th>
+            <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
+            <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
+            <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
+            <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <acre:script>
+          var replaced_by = (c.id === "/dataworld/gardening_hint/replaced_by");
+          </acre:script>
+          <acre:block for="o in c.typelinks">
+          <acre:script>
+          if (replaced_by) {
+          o.source.id = "/guid/" + o.source.guid.substring(1);
+          }
+          </acre:script>
+          <tr class="hoverable ${JSON.stringify(th.triple(o.source.id, c.id, o.target_value || o.target))} ${th.link_class(o)}">
+            <th class="row-header odd" scope="row">
+              ${topic(o.source)}
+              ${tooltip()}
+            </th>
+            <td class="even"><span class="self">-</span></td>
+            <td class="odd" acre:if="o.target_value">${literal(o.source.id, o.master_property, o.target_value)}</td>
+            <td class="odd" acre:else="">${topic(o.target)}</td>
+            <td class="even" acre:if="o.creator">${a(o.creator)}</td>
+            <td class="even" acre:else="">null</td>
+            <td class="odd numeric">${o.timestamp}</td>
+            <td acre:if="c.filters.history" class="even">${o.operation}</th>
+          </tr>
+          </acre:block>
+        </tbody>
+      </table>
+    </div>
+    </acre:block>
+
+    <acre:block if="c.attribution_links && c.attribution_links.length">
+    <div class="section">
+      <h2 class="table-title"><a name="attribution_links">${_("Links created by this user/attribution")} (${i18n.format_number(c.attribution_links.length)})</a></h2>
+      <table class="table table-sortable">
+        <thead>
+          <tr>
+            <th class="column-header first"><span class="sort-icon">${_("source")}</span></th>
+            <th class="column-header"><span class="sort-icon">${_("property")}</span></th>
+            <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
+            <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
+            <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
+            <th acre:if="c.filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <acre:block for="o in c.attribution_links">
+          <acre:script>
+          if (o.master_property === "/dataworld/gardening_hint/replaced_by") {
+          o.source.id = "/guid/" + o.source.guid.substring(1);
+          }
+          </acre:script>
+          <tr class="hoverable ${JSON.stringify(th.triple(o.source.id, c.object.id, o.target_value || o.target))} ${th.link_class(o)}">
+            <th class="row-header odd" scope="row">
+              ${topic(o.source)}
+              ${tooltip()}
+            </th>
+            <td class="even"><span class="self">${a(o.master_property)}</span></td>
+            <td class="odd" acre:if="o.target_value">${literal(o.source.id, o.master_property, o.target_value)}</td>
+            <td class="odd" acre:else="">${topic(o.target)}</td>
+            <td class="even" acre:if="o.creator">${a(o.creator)}</td>
+            <td class="even" acre:else="">null</td>
+            <td class="odd numeric">${o.timestamp}</td>
+            <td acre:if="c.filters.history" class="even">${o.operation}</th>
+          </tr>
+          </acre:block>
+        </tbody>
+      </table>
+    </div>
+    </acre:block>
+  </div>
 <!!--
     <div id="content-sub" role="nav">
       <div class="content-wrapper section" id="filter-pane">

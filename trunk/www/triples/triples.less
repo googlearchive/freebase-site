@@ -29,39 +29,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#content-wrapper {
-  position: relative;
+.nav.column {
+  float: left;
+  width: 230px;
+  margin-right: 20px;
+  margin-top: -7px;
 }
 
-#content-main {
-  margin: 0 300px 0 0;
-  float: none;
-  display: block;
+.section {
+  margin: 20px 0 20px 250px;
+  /*background: #fff;
+  padding: 15px;
+  .box_shadow(1px, 2px, 3px, #bbb);*/
 }
 
-#content-sub {
-  position: absolute;
-  right: 0; top: 0;
-  z-index: 1;
-  float: none;
-  margin: 0;
-}
-
-#content-sub .content-wrapper {
+.section .table-title {
   margin-top: 0;
-}
-
-#filter-pane {
-  margin-top: 4.8em;
-}
-
-#filters,
-#pager {
-  margin-top: 10px;
-  border: 5px solid #e5e5e7;
-  background: #f8f8f8;
-  .rounded_corners();
-  -webkit-box-shadow: 0 0 2px #777;
 }
 
 .table-title a:hover {
@@ -72,11 +55,6 @@
   margin-top: 10px;
   font-size: 16px;
   text-align: center;
-}
-
-.filter-group {
-  padding: 1em;
-  border-bottom: 1px solid #ddd;
 }
 
 .filter-chart .filter-item {

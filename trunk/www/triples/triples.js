@@ -217,7 +217,7 @@
         else if (type === "/type/property") {
           $this.attr("name", "property");
         }
-        $this.parents("form:first").submit();
+        this.form.submit();
       });
 
       // *** Initialize user/creator suggest input

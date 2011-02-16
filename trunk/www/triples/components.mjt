@@ -41,11 +41,23 @@
 <acre:block def="timestamp_filter(base_url, filters)">
   <h3 class="module-section-title"><label for="">${_("By Time")}:</label></h3>
   <acre:script>
-    var ptimestamp = acre.request.params.timestamp;
+    var known_ts, custom_ts;
+    if (filters.timestamp) {
+      var len = filters.timestamp.length;
+      if (len) {
+        if (len === 1 && filters.timestamp[0] in th.TIMESTAMPS) {
+          known_ts = filters.timestamp[0];
+          custom_ts = false;
+        }
+        else {
+          custom_ts = true;
+        }
+      }
+   }
   </acre:script>
-  <ul>
-    <acre:block for="key, val in th.TIMESTAMPS">
-      <li acre:if="key === ptimestamp" class="filter-item">
+  <ul>    
+    <acre:block for="key, val in th.TIMESTAMPS">      
+      <li acre:if="key === known_ts" class="filter-item">
         <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'timestamp'))}" class="remove-filter">x</a>
         ${_(key)}
       </li>
@@ -53,26 +65,23 @@
         <a href="${h.fb_url(base_url, fh.add_filter(filters, 'timestamp', key))}" title="${h.sprintf(_('Added since %s'), _(key))}">${_(key)}</a>
       </li>
     </acre:block>    
+    <li acre:if="custom_ts" class="filter-item">
+      <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'timestamp'))}" class="remove-filter">x</a>
+      ${filters.timestamp[0]} 
+      <acre:block if="filters.timestamp.length === 2">
+        ${_("to")} ${filters.timestamp[1]} 
+      </acre:block>
+    </li>
     <li>
       <a class="filter-form-trigger" href="javascript:void(0)">${_("custom")}&hellip;</a>
-      <acre:script>
-        var hide = true;
-        var def_params = ["timestamp"];
-        if (filters && filters.timestamp && filters.timestamp.length == 2) {
-          hide = false;
-          def_params = def_params.concat(filters.timestamp);
-        }
-      </acre:script>
-      ${fc.filter_form(base_url, filters, 'timestamp', timestamp_input, def_params, hide)}
+      ${fc.filter_form(base_url, filters, 'timestamp', timestamp_input, ['timestamp'], true)}
     </li>
   </ul>
 </acre:block>
 
-<acre:block def="timestamp_input(name, from, to)">
-  <input type="text" class="text-input date-input" 
-         name="timestamp" value="${from || ''}" placeholder="${_('from')}"/> to
-  <input type="text" class="text-input date-input" 
-         name="timestamp" value="${to || ''}" placeholder="${_('to')}"/>
+<acre:block def="timestamp_input(name)">
+  <input type="text" class="text-input date-input" name="timestamp" placeholder="${_('from')}"/> to
+  <input type="text" class="text-input date-input" name="timestamp" placeholder="${_('to')}"/>
   <input type="submit" style="display:none;" />
 </acre:block>
 

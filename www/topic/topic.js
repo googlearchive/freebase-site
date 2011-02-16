@@ -34,6 +34,22 @@
 
     $(".column.nav > .module").collapse_module(".section");
 
+    $(".toolbar-trigger").click(function(){
+      var $add_type_pane = $(".add-type").first();
+      var $toolbar = $(this).closest(".toolbar");
+      var $trigger = $(this);
+
+      if($add_type_pane.is(":visible")) {
+        $toolbar.removeClass("active");      
+        $trigger.removeClass("active");      
+        $add_type_pane.slideUp();
+      }
+      else {
+        $trigger.addClass("active");
+        $toolbar.addClass("active");
+        $add_type_pane.slideDown();
+      }
+    });
 
   });
 

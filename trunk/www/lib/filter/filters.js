@@ -33,7 +33,7 @@
 (function($, fb) {
 
   var filters = fb.filters = {
-    init_domain_type_property_suggest: function(context) {
+    init_domain_type_property_filter: function(context) {
       // *** Initialize domain/type/property suggest input
       $(":text[name=domain], :text[name=type], :text[name=property]", context).suggest({
         service_url: fb.h.legacy_fb_url(),
@@ -57,7 +57,7 @@
       });
     },
 
-    init_limit_slider: function(context, default_value, min, max, step) {
+    init_limit_slider_filter: function(context, default_value, min, max, step) {
       // slider for controlling property limit
       var slider = $(".limit-slider", context);
       var current = $(".current-limit", context);

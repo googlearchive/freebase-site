@@ -305,7 +305,7 @@ function apply_domain_type_property(clause, domain, type, property) {
     clause["filter:master_property"] = {schema:type};
   }
   else if (property) {
-    clause.master_property = property;
+    clause["filter:master_property"] = property;
   }
   return clause;
 };

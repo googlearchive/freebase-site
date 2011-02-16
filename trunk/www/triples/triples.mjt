@@ -200,6 +200,7 @@
           </tr>
         </thead>
         <tbody>
+          <acre:script>console.log("c.keys", c.keys)</acre:script>
           <tr acre:for="k in c.keys" 
             class="hoverable ${JSON.stringify(th.triple(k.source.id, k.master_property, k.target.id, k.target_value.namespace, k.target_value.value))} ${th.link_class(k)}">
             <th class="row-header odd empty" scope="row">

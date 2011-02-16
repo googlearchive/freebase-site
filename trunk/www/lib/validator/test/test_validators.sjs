@@ -406,25 +406,54 @@ test("reserved_word", function() {
 
 test("MultiValue", function() {
   same(validators.MultiValue(true), [true]);
+  same(validators.MultiValue([true]), [true]);
   same(validators.MultiValue(false), [false]);
+  same(validators.MultiValue([false]), [false]);
   same(validators.MultiValue(""), [""]);
+  same(validators.MultiValue([""]), [""]);
   same(validators.MultiValue("foo bar"), ["foo bar"]);
+  same(validators.MultiValue(["foo bar"]), ["foo bar"]);
   same(validators.MultiValue(0), [0]);
+  same(validators.MultiValue([0]), [0]);
   same(validators.MultiValue(null), []);
+  same(validators.MultiValue([null]), []);
+  same(validators.MultiValue(null, {allow_null:true}), [null]);
+  same(validators.MultiValue([null], {allow_null:true}), [null]);
   same(validators.MultiValue(undefined), []);
-  same(validators.MultiValue([]), []);
+  same(validators.MultiValue([undefined]), []);
+  same(validators.MultiValue(undefined, {allow_null:true}), [undefined]);
+  same(validators.MultiValue([undefined], {allow_null:true}), [undefined]);
   same(validators.MultiValue([null, undefined]), []);
-  same(validators.MultiValue({foo:"bar", hello:"world"}), [{hello:"world", foo:"bar"}]);
-  same(validators.MultiValue([true, false, "", "foo bar", 0, null, undefined, {foo:"bar", hello:"world"}]), [true, false, "", "foo bar", 0, {foo:"bar", hello:"world"}]);
+  same(validators.MultiValue([null, undefined], {allow_null:true}), [null, undefined]);
+  same(validators.MultiValue([]), []);
+  same(validators.MultiValue([], {allow_null:true}), []);
+  same(validators.MultiValue({foo:"bar"}), [{foo:"bar"}]);
+  same(validators.MultiValue([{foo:"bar"}]), [{foo:"bar"}]);
 
+  same(validators.MultiValue([true, false, "", "foo bar", 0, null, undefined, ["hello"], {foo:"bar"}]),
+                             [true, false, "", "foo bar", 0, ["hello"], {foo:"bar"}]);
+  same(validators.MultiValue([true, false, "", "foo bar", 0, null, undefined, ["hello"], {foo:"bar"}], {allow_null:true}),
+                             [true, false, "", "foo bar", 0, null, undefined, ["hello"], {foo:"bar"}]);
 
-  same(validators.MultiValue(["yes", "1", "true", "no", "0", "false"], {validator:validators.StringBool}),
-       [true, true, true, false, false, false]);
+  same(validators.MultiValue(["yes", "1", "true", 1, -1,
+                              "no", "0", "false", 0, null, undefined], {validator:validators.StringBool}),
+                             [true, true, true, true, true,
+                              false, false, false, false, false, false]);
 
-  same(validators.MultiValue(["today", "yesterday"], {validator:validators.Datejs}),
-       [validators.Datejs("today"), validators.Datejs("yesterday")]);
+  try {
+    validators.MultiValue(["today", "yesterday", "bad date", {bad:"date"}],
+                          {validator:validators.Datejs});
+    ok(false, "expected invalid exception");
+  }
+  catch (e if e instanceof validators.Invalid) {
+    ok(true, "got expected invalid exception: " + e);
+  }
 
-  same(validators.MultiValue("/user/daepark", {validator:validators.MqlI}), ["/user/daepark"]);
+  same(validators.MultiValue(["today", "yesterday", "bad date", {bad:"date"}], {validator:validators.Datejs, if_invalid:null}),
+    [validators.Datejs("today"), validators.Datejs("yesterday")]);
+
+  same(validators.MultiValue(["today", "yesterday", "bad date", {bad:"date"}], {validator:validators.Datejs, if_invalid:null, allow_null:true}),
+    [validators.Datejs("today"), validators.Datejs("yesterday"), null, null]);
 });
 
 

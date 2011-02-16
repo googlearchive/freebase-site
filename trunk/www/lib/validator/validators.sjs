@@ -604,38 +604,48 @@ Validator.factory(scope, "PropertyKey", h.extend({}, schema_key_proto));
  */
 Validator.factory(scope, "MultiValue", {
   defaults: {
-    validator: null
+    validator: null,
+    allow_null: false
   },
   "boolean": function(val, options) {
-    return [options.validator ? options.validator(val, options) : val];
+    return this.native_value(val, options);
   },
   "string": function(val, options) {
-    return [options.validator ? options.validator(val, options) : val];
+    return this.native_value(val, options);
   },
   "number": function(val, options) {
-    return [options.validator ? options.validator(val, options) : val];
+    return this.native_value(val, options);
   },
   "undefined": function(val, options) {
-    return [];
+    return this.native_value(val, options);
   },
   "null": function(val, options) {
-    return [];
+    return this.native_value(val, options);
   },
   "array": function(val, options) {
-    var values = [];
-    val.forEach(function(v) {
+    return this.check_null(val.map(function(v) {
       if (options.validator) {
         v = options.validator(v, options);
       }
-      if (v != null) {
-        values.push(v);
-      }
-      return values;
-    });
-    return values;
+      return v;
+    }), options);
   },
   "dict": function(val, options) {
-    return [options.validator ? options.validator(val, options) : val];
+    return this.native_value(val, options);
+  },
+  native_value: function(val, options) {
+    if (options.validator) {
+      val = options.validator(val, options);
+    }
+    return this.check_null([val], options);
+  },
+  check_null: function(arr, options) {
+    return arr.filter(function(val) {
+      if (val == null && !options.allow_null) {
+        return false;
+      }
+      return true;
+    });
   }
 });
 

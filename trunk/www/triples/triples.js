@@ -200,7 +200,7 @@
 
       // *** Initialize domain/type/property suggest input
       $(":text[name=domain], :text[name=type], :text[name=property]").suggest({
-        service_url: fb.acre.freebase.site_host,
+        service_url: fb.h.legacy_fb_url("/private/suggest"),
         type: ["/type/domain", "/type/type", "/type/property"],
         type_strict: "any"
       })
@@ -222,7 +222,7 @@
 
       // *** Initialize user/creator suggest input
       $(":text[name=creator]").suggest({
-        service_url: fb.acre.freebase.site_host,
+        service_url: fb.h.legacy_fb_url("/private/suggest"),
         type: "/type/user"
       })
       .bind("fb-select", function(e, data) {

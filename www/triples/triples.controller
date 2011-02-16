@@ -44,22 +44,12 @@ var scope = this;
  * Like validators.Datejs but handles strings/keys in th.TIMESTAMPS (e.g, "this week|month|year")
  */
 validators.Validator.factory(scope, "TimestampValidator", {
-  "defaults": {
-    date: false   // if TRUE convert to date, else converted to ISO8601 (yyyy-MM-ddTHH:mm:ss)
-  },
   "string": function(val, options) {
-    var date;
     if (val in th.TIMESTAMPS) {
-      date = th.TIMESTAMPS[val]();
+      return val;
     }
     else {
-      date = validators.Datejs(val, {date:true});
-    }
-    if (options.date) {
-      return date;
-    }
-    else {
-      return date.toString("yyyy-MM-ddTHH:mm:ss").replace(/T00\:00\:00$/, "");
+      return validators.Datejs(val, h.extend({}, options, {date:false}));
     }
   }
 });

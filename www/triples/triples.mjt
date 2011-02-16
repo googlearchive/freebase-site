@@ -112,7 +112,7 @@
       <div class="module-section alt">
         ${components.creator_filter("/inspect" + c.id, c.filters)}
       </div>
-      <div class="module-section alt">
+      <div class="module-section alt" id="limit">
         ${components.limit_filter("/inspect" + c.id, c.filters)}
       </div>
       <div class="module-section alt">

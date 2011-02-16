@@ -270,10 +270,9 @@ if (window.SERVER && typeof window.SERVER === "object") {
     var search = $("#SearchBox .SearchBox-input,#global-search-input");
     var root = fb.acre.freebase.site_host;
     // Get rid of devel and port to use the legacy python client in development
-    var legacy_root = root.replace('devel.', 'www.').replace(':8115', '');
 
     search.suggest({
-      service_url:legacy_root,
+      service_url: fb.h.legacy_fb_url(),
       soft:true,
       category: "object",
       parent: "#site-search-box",

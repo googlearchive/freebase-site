@@ -144,9 +144,9 @@ test("incoming with filter", function() {
   equal(result[0].master_property, "/people/person/nationality");
 });
 
-test("typelinks", function() {
+test("type_links", function() {
   var result;
-  q.typelinks("/people/person/nationality")
+  q.type_links("/people/person/nationality")
     .then(function(typelinks) {
       result = typelinks;
     });
@@ -154,9 +154,9 @@ test("typelinks", function() {
   ok(result && result.length);
 });
 
-test("typelinks with filter", function() {
+test("type_links with filter", function() {
   var result;
-  q.typelinks("/people/person/nationality", {limit:1})
+  q.type_links("/people/person/nationality", {limit:1})
     .then(function(typelinks) {
       result = typelinks;
     });

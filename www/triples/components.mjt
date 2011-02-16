@@ -122,9 +122,9 @@
   <h2 style="margin-top:10px;" class="filter-title">
     <label>
       <input acre:if="checked === true" class="history-toggle" 
-             name="history" value="false" type="checkbox" checked="checked" onchange="this.form.submit()"/> 
+             name="history" value="0" type="checkbox" checked="checked" onchange="this.form.submit()"/> 
       <input acre:else="" class="history-toggle" 
-             name="history" value="true" type="checkbox" onchange="this.form.submit()"/> 
+             name="history" value="1" type="checkbox" onchange="this.form.submit()"/> 
       Show historical writes
     </label>
   </h2>

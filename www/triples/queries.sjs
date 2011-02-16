@@ -185,7 +185,7 @@ function incoming(id, filters) {
     });
 };
 
-function typelinks(id, filters) {
+function type_links(id, filters) {
   filters = h.extend({}, filters);
   var q = [{
     type: "/type/link",
@@ -206,7 +206,6 @@ function typelinks(id, filters) {
   apply_history(q[0], filters.history);
   return freebase.mqlread(q, mqlread_options(filters))
     .then(function(env) {
-            console.log("typelinks", env.result);
       return env.result;
     });
 };

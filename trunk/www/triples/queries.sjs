@@ -32,6 +32,7 @@ var i18n = acre.require("lib/i18n/i18n");
 var h = acre.require("lib/helper/helpers.sjs");
 var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
+var th = acre.require("helpers.sjs");
 
 function prop_counts(id) {
   var q = {
@@ -263,14 +264,14 @@ function apply_timestamp(clause, timestamp) {
     }
     var len = timestamp.length;
     if (len === 1) {
-      clause["filter:timestamp>="] = timestamp[0];
+      clause["filter:timestamp>="] = th.timestamp(timestamp[0]);
     }
     else if (len === 2) {
       timestamp.sort(function(a,b) {
         return b < a;
       });
-      clause["filter:timestamp>="] = timestamp[0];
-      clause["filter:timestamp<"] = timestamp[1];
+      clause["filter:timestamp>="] = th.timestamp(timestamp[0]);
+      clause["filter:timestamp<"] = th.timestamp(timestamp[1]);
     }
   }
   return clause;

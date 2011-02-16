@@ -108,4 +108,11 @@ test("link_class", function() {
 });
 
 
+test("timestamp", function() {
+  ["today", "yesterday", "this week", "this month", "this year"].forEach(function(ts) {
+    same(h.timestamp(ts), h.TIMESTAMPS[ts]());
+  });
+  same(h.timestamp("2006"), "2006");
+});
+
 acre.test.report();

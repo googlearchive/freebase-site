@@ -45,6 +45,17 @@ var TIMESTAMPS = {
 };
 
 /**
+ * if ts is defined in TIMESTAMPS, return the actual timestamp
+ * otherwise just return ts;
+ */
+function timestamp(ts) {
+  if (ts in TIMESTAMPS) {
+    return TIMESTAMPS[ts]();
+  }
+  return ts;
+};
+
+/**
  * return a triples data structure.
  * where s=subject, p=predicate and o=object.
  * In addition, a mql query representing the triple is provided.

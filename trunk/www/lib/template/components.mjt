@@ -43,26 +43,20 @@
 <acre:block def="nav_tabs(object, filters)">
   <acre:script>
     var types = h.map_array(object.type, "id");
-    var current = {
-      "class": "current",
-      "onclick": "return false;",
-      "href": "#"
-    };
     var app_path = acre.request.script.app.path;
-
     var global_filters = fh.global_filters(filters);
   </acre:script>
 
   <!!-- schema !!-->
   <acre:block if="types['/type/domain'] || types['/type/type'] || types['/type/property']">
-    <li><a acre:attrs="h.is_schema_app(app_path) ? current : {href: h.fb_url('/schema', object.id)}">
-        <span>${_('Schema')}</span></a></li>
-    <li><a acre:attrs="h.is_inspect_app(app_path) ? current : {href: h.fb_url('/inspect', object.id)}">
-        <span>${_('Inspect')}</span></a></li>
+    <li>
+      ${nav_url(h.is_schema_app(app_path), _("Schema"), "/schema" + object.id)}
+    </li>
+    <li>
+      ${nav_url(h.is_inspect_app(app_path), _("Inspect"), "/inspect" + object.id)}
+    </li>
     <li acre:if="types['/type/domain']">
-      <a acre:attrs="h.is_group_app(app_path) ? current : {href: h.fb_url('/group', object.id)}">
-        <span>${_('Owners')}</span>
-      </a>
+       ${nav_url(h.is_group_app(app_path), _("People"), "/group" + object.id)}
     </li>
  </acre:block>
 
@@ -70,20 +64,27 @@
 
   <!!-- topic !!-->
   <acre:block elif="types['/common/topic']">
-    <li><a acre:attrs="h.is_topic_app(app_path) ? current : {href: h.fb_url('/topic', object.id, global_filters)}">
-        <span>${_('Topic')}</span></a></li>
-    <li><a acre:attrs="h.is_inspect_app(app_path) ? current : {href: h.fb_url('/inspect', object.id, global_filters)}">
-        <span>${_('Inspect')}</span></a></li>
+    <li>
+      ${nav_url(h.is_topic_app(app_path), _("Topic"), "/topic" + object.id, global_filters)}
+    </li>
+    <li>
+      ${nav_url(h.is_inspect_app(app_path), _("Inspect"), "/inspect" + object.id, global_filters)}
+    </li>
   </acre:block>
                  
   <!!-- inspect [default] !!-->
   <acre:block else="">
-    <li><a acre:attrs="current"><span>${_('Inspect')}</span></a></li>
+    <li>
+     ${nav_url(true, _("Inspect"))}
+    </li>
     <li acre:if="types['/type/domain']">
-      <a acre:attrs="h.is_group_app(app_path) ? current : {href: h.fb_url('/group', object.id)}">
-        <span>${_('Owners')}</span>
-      </a>
+      ${nav_url(h.is_group_app(app_path), _("People"), "/group" + object.id)}
     </li>
   </acre:block> 
 
+</acre:block>
+
+<acre:block def="nav_url(current, label, base_url, params)">
+  <a acre:if="current" href="#" onclick="return false;" class="current"><span>${label}</span></a>
+  <a acre:else="" href="${h.fb_url(base_url, params)}"><span>${label}</span></a>
 </acre:block>

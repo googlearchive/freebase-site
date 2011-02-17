@@ -95,8 +95,13 @@
         <a href="javascript:void(0);" class="trigger">Collapse column</a>
         <span>Filter this data</span>
       </h2>
-      <div class="module-section" acre:if="c.prop_counts">
-        ${filter_components.prop_counts_filter("/inspect" + c.id, c.filters, c.prop_counts)}
+      <acre:script>
+        var hide_counts = c.filters.as_of_time ||
+          (c.filters.timestamp && c.filters.timestamp.length) ||
+          (c.filters.creator && c.filters.creator.length);
+      </acre:script>
+      <div class="module-section">
+        ${filter_components.prop_counts_filter("/inspect" + c.id, c.filters, c.prop_counts, hide_counts)}
       </div>
       <div class="module-section">
         ${filter_components.lang_filter("/inspect" + c.id, c.filters)}
@@ -377,7 +382,7 @@
         o.source.id = "/guid/" + o.source.guid.substring(1);
         }
         </acre:script>
-        <tr class="hoverable ${JSON.stringify(th.triple(o.source.id, c.object.id, o.target_value || o.target))} ${th.link_class(o)}">
+        <tr class="hoverable ${JSON.stringify(th.triple(o.source.id, id, o.target_value || o.target))} ${th.link_class(o)}">
           <th class="row-header odd" scope="row">
             ${topic(o.source)}
             ${tooltip()}
@@ -404,7 +409,7 @@
 <acre:block def="a(id, name, attrs)" trim="">
   <acre:script>
     attrs = h.extend({
-      href: h.fb_url('/inspect', id, c.params),
+      href: h.fb_url('/inspect', id),
       title: id
     }, attrs);
     var clazz = "";

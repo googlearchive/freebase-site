@@ -167,6 +167,7 @@ var RequestCanceled, RequestTimeout;
 
     this.cleanup = promise.cleanup = function() {
       if (result instanceof Error) {
+        console.log("deferred.cleanup", result);
         throw result;
       }
     };

@@ -172,7 +172,21 @@
   <h3 class="sub-foobar">
     <!--view all link is shown for any non-unique property-->
     <a href="#" class="more"><span>${_('View all property values')}</span></a>
-    ${property.text}
+    <span class="sub-foobar-label">
+      ${property.text}
+      <a href="javascript:void(0);" class="menu-trigger">Actions</a>
+    </span>
+    <ul class="tooltip row-menu">
+      <li class="row-menu-item">
+        <a href="#">foobar</a>
+      </li>
+      <li class="row-menu-item">
+        <a href="#">foobar</a>
+      </li>
+      <li class="row-menu-item">
+        <a href="#">foobar</a>
+      </li>
+    </ul>
   </h3>  
   <acre:block if="property.properties && property.properties.length">
     ${property_table(id, property)}

@@ -63,7 +63,7 @@
   font-size: 12px;
   font-weight: bold;
   line-height: 1;
-  padding: 7px 15px;
+  padding-right: 15px;
   margin-bottom: 5px;
   border-bottom: 1px solid #d5d7d8;
   .linear_gradient(#f7f7f7, #eaeaea);
@@ -73,7 +73,7 @@
   float: right;
   position: relative;
   overflow: hidden;
-  margin: 3px 0 0 0;
+  margin: 8px 0 0 0;
   opacity: 0.6;
   background: url(lib/template/ui-icons.png) no-repeat right -610px;
   height: 14px;
@@ -103,6 +103,39 @@
 
 .sub-foobar a:hover span {
   color: #222;
+}
+
+.sub-foobar-label {
+  display: inline-block;
+  padding: 7px 15px;
+  .transition(all);
+}
+
+.sub-foobar:hover .sub-foobar-label {
+  background: rgba(0,0,0,0.05);
+}
+
+.sub-foobar:hover .sub-foobar-label:hover {
+  cursor: pointer;
+  background: rgba(0,0,0,0.1);
+}
+
+.sub-foobar .menu-trigger {
+  display: inline-block;
+  opacity: 0.1;
+  text-indent: -9999px;
+  width: 20px;
+  height: 10px;
+  background: url(lib/template/ui-icons.png) no-repeat 0 -654px;
+  .transition(all);
+}
+
+.sub-foobar:hover .menu-trigger {
+  opacity: 0.3;
+}
+
+.sub-foobar:hover .sub-foobar-label:hover .menu-trigger {
+  opacity: 0.5;
 }
 
 .data-list {
@@ -141,6 +174,16 @@
 .data-table tbody td {
   padding: 4px 3px 4px 0;
   border-top: 1px solid #d5d7d8;
+  .transition(all, 0.3s);
+}
+
+.data-table tbody tr:hover td,
+.data-list li:hover {
+  background: #e6e7e8;
+}
+
+.data-table .data-list li:hover {
+  background: transparent;
 }
 
 .data-table tbody tr th:first-child,
@@ -209,4 +252,11 @@
   padding: 15px;
   background: #fff;
   border: 1px solid #d6d8d9;
+}
+
+.tooltip {
+  display: none;
+  background: #fff;
+  padding: 10px;
+  .box_shadow();
 }

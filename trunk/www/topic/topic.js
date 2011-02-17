@@ -57,7 +57,15 @@
         $add_type_pane.slideDown();
       }
     });
+  });
 
+  $(".sub-foobar-label").tooltip({
+    relative: true,
+    position: 'bottom center',
+    events: {
+      def: 'click, mouseout'
+    },
+    delay: 4
   });
 
 })(jQuery, window.freebase);

@@ -37,18 +37,15 @@
   var fh = acre.require("filter/helpers.sjs");
 </acre:script>
 
-<acre:block def="prop_counts_filter(base_url, filters, prop_counts)">
+<acre:block def="prop_counts_filter(base_url, filters, prop_counts, hide_counts)">
   <acre:script>
     var domain = filters.domain;
     var type = filters.type;
     var property = filters.property;
-    var show_counts = prop_counts;
-    var show_filter = domain || type || property || show_counts;
   </acre:script>
-  <div acre:if="show_filter" class="filter-group filter-chart">
-    <h2 class="module-section-title" acre:if="domain">${_("By Type")}:</h2>
-    <h2 class="module-section-title" acre:elif="type">${_("By Property")}:</h2>
-    <h2 class="module-section-title" acre:elif="property">${_("By Total")}:</h2>
+  <div class="filter-group filter-chart">
+    <h2 class="module-section-title" acre:if="type">${_("By Type")}:</h2>
+    <h2 class="module-section-title" acre:elif="property">${_("By Property")}:</h2>
     <h2 class="module-section-title" acre:else="">${_("By Domain")}:</h2>
     <acre:block if="domain">
       <span class="filter-item">
@@ -94,7 +91,7 @@
       <span class="filter-sub-sub-item">${property.split("/").pop()}</span>
     </acre:block>
 
-    <acre:block if="show_counts">
+    <acre:block if="prop_counts && !hide_counts">
       <acre:script>
         var bar_graph_data = fh.get_bar_graph_data(filters, prop_counts);
       </acre:script>
@@ -127,6 +124,7 @@
         </table>
       </acre:block>
     </acre:block>
+
     <div class="other-graph-value">
       <a href="javascript:void(0);" class="filter-form-trigger">
         ${domain || type || property ? _("change"): _("choose")}&hellip;

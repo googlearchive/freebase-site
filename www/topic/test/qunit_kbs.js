@@ -72,6 +72,14 @@ function run_tests($, fb) {
     current = $("#ds3-ts1-ps2-kbs");
     next = kbs._next_domain(current);
     ok(next.is("#ds1"), 'next.is("#ds1")');
+
+    current = $("#ds1-ts1-ps1-ls1-r3");
+    next = kbs._next_domain(current);
+    ok(next.is("#ds2"), 'next.is("#ds2")');
+
+    current = $("#ds3-ts1-ps2-ls1");
+    next = kbs._next_domain(current);
+    ok(next.is("#ds1"), 'next.is("#ds1")');
   });
 
   test("next_domain", function() {
@@ -97,6 +105,11 @@ function run_tests($, fb) {
     $("#ds3-ts1-ps2-kbs").addClass("current");
     kbs.next_domain();
     ok(kbs.get_current().is("#ds1-kbs"), 'kbs.get_current().is("#ds1-kbs")');
+
+    $("#test .current").removeClass("current");
+    $("#ds3-ts1-ps2-ls1-r1").addClass("current");
+    kbs.next_domain();
+    ok(kbs.get_current().is("#ds1-kbs"), 'kbs.get_current().is("#ds1-kbs")');
   });
 
 
@@ -119,6 +132,14 @@ function run_tests($, fb) {
     current = $("#ds1-ts2-kbs");
     prev = kbs._prev_domain(current);
     ok(prev.is("#ds1"), 'prev.is("#ds1")');
+
+    current = $("#ds1-ts3-ps1-ls1");
+    prev = kbs._prev_domain(current);
+    ok(prev.is("#ds1"), 'prev.is("#ds1")');
+
+    current = $("#ds3-ts1-ps2-ls1-r1");
+    prev = kbs._prev_domain(current);
+    ok(prev.is("#ds3"), 'prev.is("#ds3")');
   });
 
   test("prev_domain", function() {
@@ -144,6 +165,11 @@ function run_tests($, fb) {
     $("#ds3-ts1-ps2-kbs").addClass("current");
     kbs.prev_domain();
     ok(kbs.get_current().is("#ds3-kbs"), 'kbs.get_current().is("#ds3-kbs")');
+
+    $("#test .current").removeClass("current");
+    $("#ds1-ts1-ps1-ls1-r2").addClass("current");
+    kbs.prev_domain();
+    ok(kbs.get_current().is("#ds1-kbs"), 'kbs.get_current().is("#ds1-kbs")');
   });
 
 
@@ -180,6 +206,15 @@ function run_tests($, fb) {
     current = $("#ds1-ts3-ps2-kbs");
     next = kbs._next_type(current);
     ok(next.is("#ds3-ts1"), 'next.is("#ds3-ts1")');
+
+    current = $("#ds1-ts1-ps1-ls1-r2");
+    next = kbs._next_type(current);
+    ok(next.is("#ds1-ts2"), 'next.is("#ds1-ts2")');
+
+    current = $("#ds1-ts3-ps2-ls1");
+    next = kbs._next_type(current);
+    ok(next.is("#ds3-ts1"), 'next.is("#ds3-ts1")');
+
   });
 
   test("next_type", function() {
@@ -208,6 +243,11 @@ function run_tests($, fb) {
     $("#ds2-kbs").addClass("current");
     kbs.next_type();
     ok(kbs.get_current().is("#ds3-ts1-kbs"), 'kbs.get_current().is("#ds3-ts1-kbs")');
+
+    $("#test .current").removeClass("current");
+    $("#ds3-ts1-ps2-ls1-r1").addClass("current");
+    kbs.next_type();
+    ok(kbs.get_current().is("#ds1-ts1-kbs"), 'kbs.get_current().is("#ds1-ts1-kbs")');
   });
 
   test("_prev_type", function() {
@@ -239,6 +279,14 @@ function run_tests($, fb) {
     current = $("#ds1-ts1-kbs");
     prev = kbs._prev_type(current);
     ok(prev.is("#ds3-ts1"), 'prev.is("#ds3-ts1")');
+
+    current = $("#ds1-ts3-ps2-ls1");
+    prev = kbs._prev_type(current);
+    ok(prev.is("#ds1-ts3"), 'prev.is("#ds1-ts3")');
+
+    current = $("#ds3-ts1-ps2-ls1-r1");
+    prev = kbs._prev_type(current);
+    ok(prev.is("#ds3-ts1"), 'prev.is("#ds3-ts1")');
   });
 
   test("prev_type", function() {
@@ -267,6 +315,11 @@ function run_tests($, fb) {
     $("#ds3-ts1-ps2-kbs").addClass("current");
     kbs.prev_type();
     ok(kbs.get_current().is("#ds3-ts1-kbs"), 'kbs.get_current().is("#ds3-ts1-kbs")');
+
+    $("#test .current").removeClass("current");
+    $("#ds1-ts3-ps2-ls1-r1").addClass("current");
+    kbs.prev_type();
+    ok(kbs.get_current().is("#ds1-ts3-kbs"), 'kbs.get_current().is("#ds1-ts3-kbs")');
   });
 
 
@@ -305,6 +358,18 @@ function run_tests($, fb) {
     current = $("#ds1-ts1-ps2-kbs");
     next = kbs._next_prop(current);
     ok(next.is("#ds1-ts3-ps1"), 'next.is("#ds1-ts3-ps1")');
+
+    current = $("#ds1-ts1-ps1-ls1-r3");
+    next = kbs._next_prop(current);
+    ok(next.is("#ds1-ts1-ps2"), 'next.is("#ds1-ts1-ps2")');
+
+    current = $("#ds1-ts1-ps2-ls1-r2");
+    next = kbs._next_prop(current);
+    ok(next.is("#ds1-ts3-ps1"), 'next.is("#ds1-ts3-ps1")');
+
+    current = $("#ds3-ts1-ps2-ls1-r1");
+    next = kbs._next_prop(current);
+    ok(next.is("#ds1-ts1-ps1"), 'next.is("#ds1-ts1-ps1")');
   });
 
   test("next_prop", function() {
@@ -339,6 +404,16 @@ function run_tests($, fb) {
     $("#ds2-kbs").addClass("current");
     kbs.next_prop();
     ok(kbs.get_current().is("#ds3-ts1-ps1-kbs"), 'kbs.get_current().is("#ds3-ts1-ps1-kbs")');
+
+    $("#test .current").removeClass("current");
+    $("#ds3-ts1-ps2-ls1-r1").addClass("current");
+    kbs.next_prop();
+    ok(kbs.get_current().is("#ds1-ts1-ps1-kbs"), 'kbs.get_current().is("#ds1-ts1-ps1-kbs")');
+
+    $("#test .current").removeClass("current");
+    $("#ds1-ts1-ps2-ls1-r2").addClass("current");
+    kbs.next_prop();
+    ok(kbs.get_current().is("#ds1-ts3-ps1-kbs"), 'kbs.get_current().is("#ds1-ts3-ps1-kbs")');
   });
 
   test("_prev_prop", function() {
@@ -376,5 +451,117 @@ function run_tests($, fb) {
     current = $("#ds1-ts2");
     prev = kbs._prev_prop(current);
     ok(prev.is("#ds1-ts1-ps2"), 'prev.is("#ds1-ts1-ps2")');
+
+    current = $("#ds1-ts1-ps1-ls1-r2");
+    prev = kbs._prev_prop(current);
+    ok(prev.is("#ds1-ts1-ps1"), 'prev.is("#ds1-ts1-ps1")');
+
+    current = $("#ds3-ts1-ps2-ls1-r1");
+    prev = kbs._prev_prop(current);
+    ok(prev.is("#ds3-ts1-ps2"), 'prev.is("#ds3-ts1-ps2")');
   });
+
+  test("prev_prop", function() {
+    var kbs = fb.kbs.init("#test");
+    kbs.prev_prop();
+    ok(kbs.get_current().is("#ds3-ts1-ps2-kbs"), 'kbs.get_current().is("#ds3-ts1-ps2-kbs")');
+
+    kbs.prev_prop();
+    ok(kbs.get_current().is("#ds3-ts1-ps1-kbs"), 'prev.is("#ds3-ts1-ps1-kbs")');
+
+    kbs.prev_prop();
+    ok(kbs.get_current().is("#ds1-ts3-ps2-kbs"), 'prev.is("#ds1-ts3-ps2-kbs")');
+
+    kbs.prev_prop();
+    ok(kbs.get_current().is("#ds1-ts3-ps1-kbs"), 'prev.is("#ds1-ts3-ps1-kbs")');
+
+    kbs.prev_prop();
+    ok(kbs.get_current().is("#ds1-ts1-ps2-kbs"), 'prev.is("#ds1-ts1-ps2-kbs")');
+
+    kbs.prev_prop();
+    ok(kbs.get_current().is("#ds1-ts1-ps1-kbs"), 'prev.is("#ds1-ts1-ps1-kbs")');
+
+    kbs.prev_prop();
+    ok(kbs.get_current().is("#ds3-ts1-ps2-kbs"), 'kbs.get_current().is("#ds3-ts1-ps2-kbs")');
+
+    $("#test .current").removeClass("current");
+    $("#ds1-ts1-ps1-ls1-r3").addClass("current");
+    kbs.prev_prop();
+    ok(kbs.get_current().is("#ds1-ts1-ps1-kbs"), 'kbs.get_current().is("#ds1-ts1-ps1-kbs")');
+
+    $("#test .current").removeClass("current");
+    $("#ds1-ts3-ps1-kbs").addClass("current");
+    kbs.prev_prop();
+    ok(kbs.get_current().is("#ds1-ts1-ps2-kbs"), 'kbs.get_current().is("#ds1-ts1-ps2-kbs")');
+  });
+
+
+  test("next", function() {
+    var kbs = fb.kbs.init("#test");
+    var order = [
+      "#ds1-kbs",
+      "#ds1-ts1-kbs",
+      "#ds1-ts1-ps1-kbs",
+      "#ds1-ts1-ps1-ls1-r1",
+      "#ds1-ts1-ps1-ls1-r2",
+      "#ds1-ts1-ps1-ls1-r3",
+      "#ds1-ts1-ps2-kbs",
+      "#ds1-ts1-ps2-ls1-r1",
+      "#ds1-ts1-ps2-ls1-r2",
+      "#ds1-ts2-kbs",
+      "#ds1-ts3-kbs",
+      "#ds1-ts3-ps1-kbs",
+      "#ds1-ts3-ps2-kbs",
+      "#ds1-ts3-ps2-ls1-r1",
+      "#ds2-kbs",
+      "#ds3-kbs",
+      "#ds3-ts1-kbs",
+      "#ds3-ts1-ps1-kbs",
+      "#ds3-ts1-ps2-kbs",
+      "#ds3-ts1-ps2-ls1-r1",
+      "#ds1-kbs"
+    ];
+    var current = $(order.shift());
+    var next;
+    order.forEach(function(id) {
+      next = kbs._next(current);
+      ok(next.is(id), "next.is(" + id + ")");
+      current = next;
+    });
+  });
+
+  test("prev", function() {
+    var kbs = fb.kbs.init("#test");
+    var order = [
+      "#ds1-kbs",
+      "#ds3-ts1-ps2-ls1-r1",
+      "#ds3-ts1-ps2-kbs",
+      "#ds3-ts1-ps1-kbs",
+      "#ds3-ts1-kbs",
+      "#ds3-kbs",
+      "#ds2-kbs",
+      "#ds1-ts3-ps2-ls1-r1",
+      "#ds1-ts3-ps2-kbs",
+      "#ds1-ts3-ps1-kbs",
+      "#ds1-ts3-kbs",
+      "#ds1-ts2-kbs",
+      "#ds1-ts1-ps2-ls1-r2",
+      "#ds1-ts1-ps2-ls1-r1",
+      "#ds1-ts1-ps2-kbs",
+      "#ds1-ts1-ps1-ls1-r3",
+      "#ds1-ts1-ps1-ls1-r2",
+      "#ds1-ts1-ps1-ls1-r1",
+      "#ds1-ts1-ps1-kbs",
+      "#ds1-ts1-kbs",
+      "#ds1-kbs"
+    ];
+    var current = $(order.shift());
+    var prev;
+    order.forEach(function(id) {
+      prev = kbs._prev(current);
+      ok(prev.is(id), "prev.is(" + id + ")");
+      current = prev;
+    });
+  });
+
 };

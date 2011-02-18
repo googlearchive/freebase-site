@@ -3,6 +3,9 @@
   color: #111;
 }
 
+/*
+ ### Page Structure
+*/
 #page-content {
   position: relative;
 }
@@ -14,9 +17,6 @@
   margin-top: -7px;
 }
 
-.column.data {
-}
-
 .section.domain {
   margin: 20px 0;
   margin-left: 250px;
@@ -25,12 +25,30 @@
   .box_shadow(1px, 2px, 3px, #bbb);
 }
 
+.kbs.current .mark,
+li.kbs.current,
+tr.kbs.current td:first-child li:first-child {
+  background: url(lib/template/ui-icons.png) no-repeat 5px -762px;
+}
+
+h1 .mark,
+h2 .mark,
+h3 .mark {
+  display: inline-block;
+  padding-left: 15px;
+}
+
+/*
+ ### Domain Box Styling
+*/
+
+/* The Domain Name */
 .section h1 {
   font-size: 16px;
-  padding: 0 15px;
   margin-bottom: 15px;
 }
 
+ /* Domain status: Commons, Base, Unpublished, etc.*/
 .header .status {
   float: right;
   margin-top: 7px;
@@ -40,17 +58,13 @@
   padding-left: 20px;
 }
 
-.data-table {
-  width: 100%;
-}
-
 .foobar {
   position: relative;
   z-index: 1;
   font-size: 12px;
   font-weight: bold;
   line-height: 1;
-  padding: 7px 15px;
+  padding: 7px 15px 7px 0;
   .box_shadow(0, 1px, 2px, #aaa);
   .linear_gradient(#ccc, #c1c2c3);
 }
@@ -107,7 +121,7 @@
 
 .sub-foobar-label {
   display: inline-block;
-  padding: 7px 15px;
+  padding: 7px 15px 7px 0;
   .transition(all);
 }
 
@@ -136,6 +150,17 @@
 
 .sub-foobar:hover .sub-foobar-label:hover .menu-trigger {
   opacity: 0.5;
+}
+
+/*
+  ### Data Handling
+*/
+
+/*
+The .data-table object should hold non-simple data (eg. Mediator or CVT)
+*/
+.data-table {
+  width: 100%;
 }
 
 .data-list {
@@ -202,6 +227,11 @@
   padding: 0 0 5px 15px;
   color: #ccc;
 }
+
+/*
+  The .toolbar class is meant to contain utility links that act upon
+  the data directly below.
+*/
 
 .toolbar {
   margin-left: 250px;
@@ -316,8 +346,4 @@
 
 .menu-trigger:hover .more-action:hover {
   background-position: 2px -689px;
-}
-
-.kbs.current {
-  background: yellow;
 }

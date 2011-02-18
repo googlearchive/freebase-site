@@ -142,10 +142,10 @@
   <div class="section domain domain-section">  
     <div class="header">
       <span class="status">${_('Freebase Commons')}</span>
+      <h1 class="kbs">
+        <span class="mark"><a href="${h.fb_url(id)}">${structure.text}</a></span>
+      </h1>
     </div>    
-    <h1 class="kbs">
-      <a href="${h.fb_url(id)}">${structure.text}</a>
-    </h1>
     <acre:block for="type_id in structure.types">
       <acre:script>
         var type_structure = c.topic.structure.types[type_id];
@@ -157,10 +157,12 @@
 
 <acre:block def="type_section(id, structure)">
   <div class="type-section">
-    <h2 class="foobar kbs">
-      <a title="${id}" href="${h.fb_url(id)}">${structure.text}</a>
-      <span class="key">${id}</span>
-    </h2>
+    <div class="header">
+      <h2 class="foobar kbs">
+        <span class="mark"><a title="${id}" href="${h.fb_url(id)}">${structure.text}</a></span>
+        <span class="key">${id}</span>
+      </h2>
+    </div>
     <acre:block for="property_id in structure.properties">
       <acre:script>
         var property = c.topic.properties[property_id];
@@ -176,7 +178,7 @@
       <!--view all link is shown for any non-unique property-->
       <a href="#" class="more"><span>${_('View all property values')}</span></a>
       <span class="sub-foobar-label">
-        ${property.text}
+        <span class="mark">${property.text}</span>
         <a href="javascript:void(0);" class="menu-trigger">Actions</a>
       </span>
       <ul class="tooltip row-menu">

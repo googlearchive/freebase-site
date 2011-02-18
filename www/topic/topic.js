@@ -32,6 +32,9 @@
 
   $(function() {
 
+    var kbs = fb.kbs.init();
+    kbs.next_domain(true);
+
     // Initialize filter menu collapse/expand
     $(".column.nav > .module").collapse_module(".section");
 

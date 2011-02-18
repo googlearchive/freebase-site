@@ -211,9 +211,17 @@
     </thead>
     <tbody>
       <tr acre:for="value in property.values" acre:attrs="kbs ? {'class':'kbs'} : {}">
-        <acre:block for="subproperty in property.properties">
+        <acre:block for="i,subproperty in property.properties">
           <td>
             ${property_list(subproperty.id, value[subproperty.id])}
+            <span acre:if="kbs && i === 0" class="menu-trigger">
+              <a href="javascript:void(0)" class="default-action edit-action">
+                edit
+              </a>
+              <a href="javascript:void(0)" class="more-action">
+                menu
+              </a>
+            </span>
           </td>
         </acre:block>
       </tr>
@@ -225,7 +233,8 @@
   <acre:block if="property && property.values && property.values.length">
     <ul class="data-list">
       <li acre:for="value in property.values" acre:attrs="kbs ? {'class':'kbs'} : {}">
-        <span class="menu-trigger">
+        ${property_value(value, property)}
+        <span acre:if="kbs" class="menu-trigger">
           <a href="javascript:void(0)" class="default-action edit-action">
             edit
           </a>
@@ -233,7 +242,6 @@
             menu
           </a>
         </span>
-        ${property_value(value, property)}
       </li>
     </ul>  
   </acre:block>

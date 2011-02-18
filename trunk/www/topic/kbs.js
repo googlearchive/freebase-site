@@ -45,10 +45,6 @@
 
     var first_domain = $(".domain-section:first", context);
     var last_domain = $(".domain-section:last", context);
-    var first_type = $(".type-section:first", context);
-    var last_type = $(".type-section:last", context);
-    var first_prop = $(".property-section:first", context);
-    var last_prop = $(".property-section:last", context);
 
     //$(".kbs:first", first_domain).addClass("current");
 
@@ -253,6 +249,10 @@
       var current_domain = current.closest(".domain-section");
       var current_type = current.closest(".type-section");
       var current_prop = current.closest(".property-section");
+      var current_list = current.closest(".list-section");
+      if (current_list.length) {
+        return current_prop;
+      }
       var prev;
       if (current_prop.length) {
         prev = current_prop.prev(".property-section");
@@ -278,6 +278,133 @@
       return prev;
     };
 
+    this.next = function() {
+      var current = get_current();
+      var next = this._next(current);
+      set_next(current, next);
+    };
+
+    this._next = function(current) {
+      var current_domain = current.closest(".domain-section");
+      var current_type = current.closest(".type-section");
+      var current_prop = current.closest(".property-section");
+      var current_list = current.closest(".list-section");
+      var next;
+      if (current_list.length) {
+        next = current.next(".kbs");
+        if (next.length) {
+          return next;
+        }
+        next = current_prop.next(".property-section").find(".kbs:first");
+        if (next.length) {
+          return next;
+        }
+        next = current_type.next(".type-section").find(".kbs:first");
+        if (next.length) {
+          return next;
+        }
+        if (current_domain.get(0) === last_domain.get(0)) {
+          return first_domain.find(".kbs:first");
+        }
+        else {
+          return current_domain.next(".domain-section").find(".kbs:first");
+        }
+      }
+      else if (current_prop.length) {
+        next = current_prop.find(".list-section:first .kbs:first");
+        if (next.length) {
+          return next;
+        }
+        next = current_prop.next(".property-section").find(".kbs:first");
+        if (next.length) {
+          return next;
+        }
+        next = current_type.next(".type-section").find(".kbs:first");
+        if (next.length) {
+          return next;
+        }
+        if (current_domain.get(0) === last_domain.get(0)) {
+          return first_domain.find(".kbs:first");
+        }
+        else {
+          return current_domain.next(".domain-section").find(".kbs:first");
+        }
+      }
+      else if (current_type.length) {
+        next = current_type.find(".property-section:first .kbs:first");
+        if (next.length) {
+          return next;
+        }
+        next = current_type.next(".type-section").find(".kbs:first");
+        if (next.length) {
+          return next;
+        }
+        if (current_domain.get(0) === last_domain.get(0)) {
+          return first_domain.find(".kbs:first");
+        }
+        else {
+          return current_domain.next(".domain-section").find(".kbs:first");
+        }
+      }
+      else {
+        next = current_domain.find(".type-section:first .kbs:first");
+        if (next.length) {
+          return next;
+        }
+        if (current_domain.get(0) === last_domain.get(0)) {
+          return first_domain.find(".kbs:first");
+        }
+        else {
+          return current_domain.next(".domain-section").find(".kbs:first");
+        }
+      }
+    };
+
+    this.prev = function() {
+      var current = get_current();
+      var prev = this._prev(current);
+      set_next(current, prev);
+    };
+
+    this._prev = function(current) {
+      var current_domain = current.closest(".domain-section");
+      var current_type = current.closest(".type-section");
+      var current_prop = current.closest(".property-section");
+      var current_list = current.closest(".list-section");
+      var prev;
+      if (current_list.length) {
+        prev = current.prev(".kbs");
+        if (prev.length) {
+          return prev;
+        }
+        return current_prop.find(".kbs:first");
+      }
+      else if (current_prop.length) {
+        prev = current_prop.prev(".property-section").find(".kbs:last");
+        if (prev.length) {
+          return prev;
+        }
+        return current_type.find(".kbs:first");
+      }
+      else if (current_type.length) {
+        prev = current_type.prev(".type-section").find(".kbs:last");
+        if (prev.length) {
+          return prev;
+        }
+        return current_domain.find(".kbs:first");
+      }
+      else {
+        if (current_domain.get(0) === first_domain.get(0)) {
+          return last_domain.find(".kbs:last");
+        }
+        else {
+          return current_domain.prev(".domain-section").find(".kbs:last");
+        }
+      }
+
+    };
+
+    var self = this;
     $(document)
       .unbind(".kbs")
       .bind("keydown.kbs", function(e) {
@@ -287,7 +414,6 @@
             target == window ||
             target == $("html")[0]) {
           var keyCode = e.keyCode;
-          console.log("keyCode", keyCode);
           if (keyCode === 68) { // d
             if (e.shiftKey) {
               prev_domain();
@@ -313,10 +439,10 @@
             }
           }
           else if (keyCode === 74) { // j
-//            next_prop();
+            self.next();
           }
           else if (keyCode === 75) { // k
-//            prev_prop();
+            self.prev();
           }
         }
       });

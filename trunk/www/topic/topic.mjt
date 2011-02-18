@@ -191,16 +191,18 @@
         </li>
       </ul>
     </h3>  
-    <acre:block if="property.properties && property.properties.length">
-      ${property_table(id, property)}
-    </acre:block>
-    <acre:block else="">
-      ${property_list(id, property)}
-    </acre:block>
+    <div class="list-section">
+      <acre:block if="property.properties && property.properties.length">      
+       ${property_table(id, property, true)}
+      </acre:block>
+      <acre:block else="">
+        ${property_list(id, property, true)}
+      </acre:block>
+    </div>
   </div>
 </acre:block>
 
-<acre:block def="property_table(id, property)">
+<acre:block def="property_table(id, property, kbs)">
   <table class="data-table">
     <thead>
       <th acre:for="subproperty in property.properties" scope="col">
@@ -208,7 +210,7 @@
       </th>
     </thead>
     <tbody>
-      <tr acre:for="value in property.values">
+      <tr acre:for="value in property.values" acre:attrs="kbs ? {'class':'kbs'} : {}">
         <acre:block for="subproperty in property.properties">
           <td>
             ${property_list(subproperty.id, value[subproperty.id])}
@@ -219,10 +221,10 @@
   </table>
 </acre:block>
 
-<acre:block def="property_list(id, property)">
+<acre:block def="property_list(id, property, kbs)">
   <acre:block if="property && property.values && property.values.length">
     <ul class="data-list">
-      <li acre:for="value in property.values">
+      <li acre:for="value in property.values" acre:attrs="kbs ? {'class':'kbs'} : {}">
         <span class="menu-trigger">
           <a href="javascript:void(0)" class="default-action edit-action">
             edit

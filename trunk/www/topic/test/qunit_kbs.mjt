@@ -34,6 +34,9 @@
   var ds = "domain-section";
   var ts = "type-section";
   var ps = "property-section";
+  var ls = "list-section";
+  var dt = "data-table";
+  var dl = "data-list";
 </acre:script>
 
 <acre:block def="title()">
@@ -58,9 +61,22 @@
         <div class="kbs" id="ds1-ts1-kbs"></div>
         <div class="${ps}" id="ds1-ts1-ps1">
           <div class="kbs" id="ds1-ts1-ps1-kbs"></div>
+          <div class="${ls}" id="ds1-ts1-ps1-ls1">
+            <ul class="${dl}">
+              <li class="kbs" id="ds1-ts1-ps1-ls1-r1"></tr>
+              <li class="kbs" id="ds1-ts1-ps1-ls1-r2"></tr>
+              <li class="kbs" id="ds1-ts1-ps1-ls1-r3"></tr>
+            </ul>
+          </div>
         </div>
         <div class="${ps}" id="ds1-ts1-ps2">
           <div class="kbs" id="ds1-ts1-ps2-kbs"></div>
+          <div class="${ls}" id="ds1-ts1-ps2-ls1">
+            <table class="${dt}">
+              <tr class="kbs" id="ds1-ts1-ps2-ls1-r1"></tr>
+              <tr class="kbs" id="ds1-ts1-ps2-ls1-r2"></tr>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -72,12 +88,21 @@
         <div class="kbs" id="ds1-ts3-kbs"></div>
         <div class="${ps}" id="ds1-ts3-ps1">
           <div class="kbs" id="ds1-ts3-ps1-kbs"></div>
+          <div class="${ls}" id="ds1-ts3-ps1-ls1">
+            <table class="${dt}">
+              <!-- empty -->
+            </table>
+          </div>
         </div>
         <div class="${ps}" id="ds1-ts3-ps2">
           <div class="kbs" id="ds1-ts3-ps2-kbs"></div>
+          <div class="${ls}" id="ds1-ts3-ps2-ls1">
+            <ul class="${dl}">
+              <li class="kbs" id="ds1-ts3-ps2-ls1-r1"></tr>
+            </ul>
+          </div>
         </div>
       </div>
-
     </div>
 
     <div class="${ds}" id="ds2">
@@ -95,6 +120,11 @@
         </div>
         <div class="${ps}" id="ds3-ts1-ps2">
           <div class="kbs" id="ds3-ts1-ps2-kbs"></div>
+          <div class="${ls}" id="ds3-ts1-ps2-ls1">
+            <table class="${dt}">
+              <tr class="kbs" id="ds3-ts1-ps2-ls1-r1"></tr>
+            </table>
+          </div>
         </div>
       </div>
 

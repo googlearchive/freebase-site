@@ -178,13 +178,13 @@
     </span>
     <ul class="tooltip row-menu">
       <li class="row-menu-item">
-        <a href="#">foobar</a>
+        <a href="#">Add new value</a>
       </li>
       <li class="row-menu-item">
-        <a href="#">foobar</a>
+        <a href="#">Inspect Property</a>
       </li>
       <li class="row-menu-item">
-        <a href="#">foobar</a>
+        <a href="#">View schema</a>
       </li>
     </ul>
   </h3>  
@@ -219,6 +219,14 @@
   <acre:block if="property && property.values && property.values.length">
     <ul class="data-list">
       <li acre:for="value in property.values">
+        <span class="menu-trigger">
+          <a href="javascript:void(0)" class="default-action edit-action">
+            edit
+          </a>
+          <a href="javascript:void(0)" class="more-action">
+            menu
+          </a>
+        </span>
         ${property_value(value, property)}
       </li>
     </ul>  

@@ -65,7 +65,7 @@
     events: {
       def: 'click, mouseout'
     },
-    delay: 4
+    delay: 500
   });
 
 })(jQuery, window.freebase);

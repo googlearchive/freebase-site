@@ -260,3 +260,60 @@
   padding: 10px;
   .box_shadow();
 }
+
+/* menu styling for property value triggers */
+
+.data-list li {
+  position: relative;
+}
+.data-list li .menu-trigger {
+  position: absolute;
+  right: 0;
+  top: -6px;
+  visibility: hidden;
+  padding: 2px;
+  border: 1px solid transparent;
+}
+
+.data-list li:hover .menu-trigger {
+  visibility: visible;
+  border: 1px solid #d4d6d7;
+  .linear_gradient(#e4e6e7, #d4d6d7);
+}
+
+.menu-trigger .default-action {
+  display: inline-block;
+  background: #fff;
+  width: 17px;
+  height: 17px;
+  text-indent: -9999px;
+  line-height: 1;
+}
+
+.menu-trigger .more-action {
+  display: inline-block;
+  width: 11px;
+  height: 17px;
+  text-indent: -9999px;
+  background: url(lib/template/ui-icons.png) no-repeat 2px -664px;
+}
+
+.default-action.edit-action {
+  background: #fff url(lib/template/ui-icons.png) no-repeat 2px -707px;
+}
+
+.menu-trigger:hover .edit-action {
+  background-position: 2px -727px;
+}
+
+.menu-trigger:hover .edit-action:hover {
+  background-position: 2px -747px;
+}
+
+.menu-trigger:hover .more-action {
+  background-position: 2px -677px;
+}
+
+.menu-trigger:hover .more-action:hover {
+  background-position: 2px -689px;
+}

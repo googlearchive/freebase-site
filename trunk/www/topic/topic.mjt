@@ -139,11 +139,11 @@
 </acre:block>
 
 <acre:block def="domain_section(id, structure)">
-  <div class="section domain">  
+  <div class="section domain domain-section">  
     <div class="header">
       <span class="status">${_('Freebase Commons')}</span>
     </div>    
-    <h1>
+    <h1 class="kbs">
       <a href="${h.fb_url(id)}">${structure.text}</a>
     </h1>
     <acre:block for="type_id in structure.types">
@@ -156,44 +156,48 @@
 </acre:block>
 
 <acre:block def="type_section(id, structure)">
-  <h2 class="foobar">
-    <a title="${id}" href="${h.fb_url(id)}">${structure.text}</a>
-    <span class="key">${id}</span>
-  </h2>
-  <acre:block for="property_id in structure.properties">
-    <acre:script>
-      var property = c.topic.properties[property_id];
-    </acre:script>
-    ${property_section(property_id, property)}
-  </acre:block>
+  <div class="type-section">
+    <h2 class="foobar kbs">
+      <a title="${id}" href="${h.fb_url(id)}">${structure.text}</a>
+      <span class="key">${id}</span>
+    </h2>
+    <acre:block for="property_id in structure.properties">
+      <acre:script>
+        var property = c.topic.properties[property_id];
+      </acre:script>
+      ${property_section(property_id, property)}
+    </acre:block>
+  </div>
 </acre:block>
 
 <acre:block def="property_section(id, property)">
-  <h3 class="sub-foobar">
-    <!--view all link is shown for any non-unique property-->
-    <a href="#" class="more"><span>${_('View all property values')}</span></a>
-    <span class="sub-foobar-label">
-      ${property.text}
-      <a href="javascript:void(0);" class="menu-trigger">Actions</a>
-    </span>
-    <ul class="tooltip row-menu">
-      <li class="row-menu-item">
-        <a href="#">Add new value</a>
-      </li>
-      <li class="row-menu-item">
-        <a href="#">Inspect Property</a>
-      </li>
-      <li class="row-menu-item">
-        <a href="#">View schema</a>
-      </li>
-    </ul>
-  </h3>  
-  <acre:block if="property.properties && property.properties.length">
-    ${property_table(id, property)}
-  </acre:block>
-  <acre:block else="">
-    ${property_list(id, property)}
-  </acre:block>
+  <div class="property-section">
+    <h3 class="sub-foobar kbs">
+      <!--view all link is shown for any non-unique property-->
+      <a href="#" class="more"><span>${_('View all property values')}</span></a>
+      <span class="sub-foobar-label">
+        ${property.text}
+        <a href="javascript:void(0);" class="menu-trigger">Actions</a>
+      </span>
+      <ul class="tooltip row-menu">
+        <li class="row-menu-item">
+          <a href="#">Add new value</a>
+        </li>
+        <li class="row-menu-item">
+          <a href="#">Inspect Property</a>
+        </li>
+        <li class="row-menu-item">
+          <a href="#">View schema</a>
+        </li>
+      </ul>
+    </h3>  
+    <acre:block if="property.properties && property.properties.length">
+      ${property_table(id, property)}
+    </acre:block>
+    <acre:block else="">
+      ${property_list(id, property)}
+    </acre:block>
+  </div>
 </acre:block>
 
 <acre:block def="property_table(id, property)">

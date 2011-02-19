@@ -237,14 +237,16 @@
   <acre:block if="property && property.values && property.values.length">
     <ul class="data-list">
       <li acre:for="value in property.values" acre:attrs="kbs ? {'class':'kbs'} : {}">
-        ${property_value(value, property)}
-        <span acre:if="kbs" class="menu-trigger">
-          <a href="javascript:void(0)" class="default-action edit-action">
-            edit
-          </a>
-          <a href="javascript:void(0)" class="more-action">
-            menu
-          </a>
+        <span class="wrapper">
+          ${property_value(value, property)}
+          <span acre:if="kbs" class="menu-trigger">
+            <a href="javascript:void(0)" class="default-action edit-action">
+              edit
+            </a>
+            <a href="javascript:void(0)" class="more-action">
+              menu
+            </a>
+          </span>
         </span>
       </li>
     </ul>  
@@ -257,10 +259,10 @@
 <acre:block def="property_value(value, property)">
   <acre:block if="value">
     <acre:block if="value.url && value.id">
-      <span class="wrapper"><a title="${value.id}" href="${h.fb_url(value.id)}">${value.text}</a></span>
+    <a title="${value.id}" class="property-value" href="${h.fb_url(value.id)}">${value.text}</a>
     </acre:block>
     <acre:block else="">
-      <span class="wrapper">${value.text}</span>
+    <span class="property-value">${value.text}</span>
     </acre:block>
   </acre:block>
 

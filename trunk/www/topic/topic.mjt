@@ -255,10 +255,10 @@
 <acre:block def="property_value(value, property)">
   <acre:block if="value">
     <acre:block if="value.url && value.id">
-      <a title="${value.id}" href="${h.fb_url(value.id)}">${value.text}</a>
+      <span class="wrapper"><a title="${value.id}" href="${h.fb_url(value.id)}">${value.text}</a></span>
     </acre:block>
     <acre:block else="">
-      ${value.text}
+      <span class="wrapper">${value.text}</span>
     </acre:block>
   </acre:block>
 

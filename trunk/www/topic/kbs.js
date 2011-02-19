@@ -98,7 +98,7 @@
       }
     };
 
-    var set_next = function(current, next, dont_scroll) {
+    var set_next = this.set_next = function(current, next, dont_scroll) {
       if (next.length) {
         current.removeClass("current");
         next.addClass("current");

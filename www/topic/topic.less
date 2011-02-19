@@ -302,13 +302,17 @@ The .data-table object should hold non-simple data (eg. Mediator or CVT)
 
 /* menu styling for property value triggers */
 
-.data-list li {
+.data-list li .wrapper {
   position: relative;
+  display: inline-block;
+  padding: 5px 45px 6px 0;
 }
 
 .data-list li .menu-trigger {
+  position: absolute;
+  right: 0;
+  top: 0;
   display: inline-block;
-  margin-left: 5px;
   visibility: hidden;
   padding: 2px;
   border: 1px solid transparent;

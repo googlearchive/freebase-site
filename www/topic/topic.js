@@ -32,8 +32,14 @@
 
   $(function() {
 
-    var kbs = fb.kbs.init();
+    // Init keyboard shortcuts @see kbs.js
+    var kbs = fb.kbs.init("#topic-data");
     kbs.next_domain(true);
+    $("#topic-data .kbs").live("click", function() {
+      // set current on click
+      var current = kbs.get_current();
+      kbs.set_next(current, $(this), true);
+    });
 
     // Initialize filter menu collapse/expand
     $(".column.nav > .module").collapse_module(".section");

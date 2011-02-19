@@ -207,9 +207,11 @@
 <acre:block def="property_table(id, property, kbs)">
   <table class="data-table">
     <thead>
-      <th acre:for="subproperty in property.properties" scope="col">
-        ${subproperty.text}
-      </th>
+      <tr>
+        <th acre:for="subproperty in property.properties" scope="col">
+          ${subproperty.text}
+        </th>
+      </tr>
     </thead>
     <tbody>
       <tr acre:for="value in property.values" acre:attrs="kbs ? {'class':'kbs'} : {}">

@@ -213,23 +213,10 @@ function handle_service(module, script) {
   }
 
   //
-  // 2. check authentication
-  //
-  if (spec.auth) {
-    //console.log("check_user");
-    try {
-      check_user();
-    }
-    catch (e if e instanceof ServiceError) {
-      return deferred.rejected(e);
-    }
-  }
-
-  //
-  // 3. validate required arguments
+  // 2. validate required arguments
   //
   // TODO: handle binary POSTs
-  var req_params = req.method === "POST" ? req.body_params : req.params;
+  var req_params = h.extend({}, req.params, req.body_params);
   var args;
   try {
     args = spec.validate.apply(null, [req_params]);
@@ -241,6 +228,23 @@ function handle_service(module, script) {
       code : "/api/status/error/input/validation"
     }));
   }
+
+  //
+  // 3. check authentication
+  //
+  if (typeof spec.auth == 'function') {
+    spec.auth = spec.auth.apply(null, args);
+  }
+  if (spec.auth) {
+    //console.log("check_user");
+    try {
+      check_user();
+    }
+    catch (e if e instanceof ServiceError) {
+      return deferred.rejected(e);
+    }
+  }
+
 
   //
   // 4. run web service

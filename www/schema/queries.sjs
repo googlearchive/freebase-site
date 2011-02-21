@@ -127,13 +127,11 @@ function domain(id) {
       return envelope.result || {};
     })
     .then(function(domain) {
-      return i18n.get_blurb(domain, {maxlength: 250});
-    })
-    .then(function(domain) {
-      return i18n.get_blob(domain);
-    })
-    .then(function(domain) {
       var promises = [];
+      
+      // description
+      promises.push(i18n.get_blurb(domain, {maxlength: 250}));
+      promises.push(i18n.get_blob(domain));
 
       // categorize types by their roles (mediator, etc.)
       var types = [];

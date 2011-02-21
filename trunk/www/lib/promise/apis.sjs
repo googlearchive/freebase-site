@@ -29,11 +29,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var deferred = acre.require("promise/deferred");
 var urlfetch;
 var freebase = {};
 
 (function() {
-  var deferred = acre.require("promise/deferred");
 
   var _urlfetch = function() {
     // Wrap async urlfetch to handle redirects

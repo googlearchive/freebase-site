@@ -130,6 +130,37 @@
 
     </div>
   </div>
+
+  <div id="test_empty">
+  </div>
+
+  <div id="test_one_domain">
+    <div class="${ds}" id="test_one_domain_ds">
+      <div class="kbs" id="test_one_domain_kbs"></div>        
+    </div>
+  </div>
+
+  <div id="test_one_type">
+    <div class="${ds}" id="test_one_type_ds">
+      <div class="kbs" id="test_one_type_ds_kbs"></div>      
+      <div class="${ts}" id="test_one_type_ts">
+        <div class="kbs" id="test_one_type_ts_kbs"></div>  
+      </div>
+    </div>
+  </div>
+
+  <div id="test_one_prop">
+    <div class="${ds}" id="test_one_prop_ds">
+      <div class="kbs" id="test_one_prop_ds_kbs"></div>      
+      <div class="${ts}" id="test_one_prop_ts">
+        <div class="kbs" id="test_one_prop_ts_kbs"></div>  
+        <div class="${ps}" id="test_one_prop_ps">
+          <div class="kbs" id="test_one_prop_ps_kbs"></div>  
+        </div>
+      </div>
+    </div>
+  </div>
+
 </acre:block>
 
 ${acre.require("lib/template/renderer").render_page(null, this.exports, acre.require("lib/test/qunit"))}

@@ -110,11 +110,17 @@
 
     var next_domain = this.next_domain = function(dont_scroll) {
       var current = get_current();
-      var next = _next_domain(current).find(".kbs:first");
-      set_next(current, next, dont_scroll);
+      var next = _next_domain(current);
+      if (next) {
+        next = next.find(".kbs:first");
+        set_next(current, next, dont_scroll);
+      }
     };
 
     var _next_domain = this._next_domain = function(current) {
+      if (! (current && current.length)) {
+        return $(".domain-section:first", context);
+      }
       var current_domain = current.closest(".domain-section");
       if (!current_domain.length || current_domain[0] === last_domain[0]) {
         return first_domain;
@@ -126,11 +132,17 @@
 
     var prev_domain = this.prev_domain = function() {
       var current = get_current();
-      var prev = _prev_domain(current).find(".kbs:first");
-      set_next(current, prev);
+      var prev = _prev_domain(current);
+      if (prev) {
+        prev = prev.find(".kbs:first");
+        set_next(current, prev);
+      }
     };
 
     var _prev_domain = this._prev_domain = function(current) {
+      if (! (current && current.length)) {
+        return $(".domain-section:last", context);
+      }
       var current_domain = current.closest(".domain-section");
       if (current.closest(".property-section").length ||
           current.closest(".type-section").length) {
@@ -146,11 +158,17 @@
 
     var next_type = this.next_type = function() {
       var current = get_current();
-      var next = _next_type(current).find(".kbs:first");
-      set_next(current, next);
+      var next = _next_type(current);
+      if (next) {
+        next = next.find(".kbs:first");
+        set_next(current, next);
+      }
     };
 
     var _next_type = this._next_type = function(current) {
+      if (! (current && current.length)) {
+        return $(".type-section:first", context);
+      }
       var current_domain = current.closest(".domain-section");
       var current_type = current.closest(".type-section");
       var next;
@@ -162,12 +180,14 @@
       }
       if (!(next && next.length)) {
         var next_domain = _next_domain(current_domain);
-        while (next_domain.get(0) !== current_domain.get(0)) {
-          next = next_domain.find(".type-section:first");
-          if (next.length) {
-            break;
+        if (next_domain) {
+          while (next_domain.get(0) !== current_domain.get(0)) {
+            next = next_domain.find(".type-section:first");
+            if (next.length) {
+              break;
+            }
+            next_domain = _next_domain(next_domain);
           }
-          next_domain = _next_domain(next_domain);
         }
       }
       return next;
@@ -175,11 +195,17 @@
 
     var prev_type = this.prev_type = function() {
       var current = get_current();
-      var prev = _prev_type(current).find(".kbs:first");
-      set_next(current, prev);
+      var prev = _prev_type(current);
+      if (prev) {
+        prev = prev.find(".kbs:first");
+        set_next(current, prev);
+      }
     };
 
     var _prev_type = this._prev_type = function(current) {
+      if (! (current && current.length)) {
+        return $(".type-section:last", context);
+      }
       var current_domain = current.closest(".domain-section");
       var current_type = current.closest(".type-section");
       var current_prop = current.closest(".property-section");
@@ -192,12 +218,14 @@
       }
       if (!(prev && prev.length)) {
         var prev_domain = _prev_domain(current_domain);
-        while (prev_domain.get(0) !== current_domain.get(0)) {
-          prev = prev_domain.find(".type-section:last");
-          if (prev.length) {
-            break;
+        if (prev_domain) {
+          while (prev_domain.get(0) !== current_domain.get(0)) {
+            prev = prev_domain.find(".type-section:last");
+            if (prev.length) {
+              break;
+            }
+            prev_domain = _prev_domain(prev_domain);
           }
-          prev_domain = _prev_domain(prev_domain);
         }
       }
       return prev;
@@ -205,11 +233,17 @@
 
     var next_prop = this.next_prop = function() {
       var current = get_current();
-      var next = _next_prop(current).find(".kbs:first");
-      set_next(current, next);
+      var next = _next_prop(current);
+      if (next) {
+        next = next.find(".kbs:first");
+        set_next(current, next);
+      }
     };
 
     var _next_prop = this._next_prop = function(current) {
+      if (! (current && current.length)) {
+        return $(".property-section:first", context);
+      }
       var current_domain = current.closest(".domain-section");
       var current_type = current.closest(".type-section");
       var current_prop = current.closest(".property-section");
@@ -225,15 +259,17 @@
       }
       if (!(next && next.length)) {
         var next_type = _next_type(current);
-        while (next_type.get(0) !== current_type.get(0)) {
-          next = next_type.find(".property-section:first");
-          if (next.length) {
-            break;
+        if (next_type) {
+          while (next_type.get(0) !== current_type.get(0)) {
+            next = next_type.find(".property-section:first");
+            if (next.length) {
+              break;
+            }
+            if (current_type.get(0) == null) {
+              current_type = next_type;
+            }
+            next_type = _next_type(next_type);
           }
-          if (current_type.get(0) == null) {
-            current_type = next_type;
-          }
-          next_type = _next_type(next_type);
         }
       }
       return next;
@@ -241,11 +277,17 @@
 
     var prev_prop = this.prev_prop = function() {
       var current = get_current();
-      var prev = _prev_prop(current).find(".kbs:first");
-      set_next(current, prev);
+      var prev = _prev_prop(current);
+      if (prev) {
+        prev = prev.find(".kbs:first");
+        set_next(current, prev);
+      }
     };
 
     var _prev_prop = this._prev_prop = function(current) {
+      if (! (current && current.length)) {
+        return $(".property-section:last", context);
+      }
       var current_domain = current.closest(".domain-section");
       var current_type = current.closest(".type-section");
       var current_prop = current.closest(".property-section");
@@ -264,15 +306,17 @@
         else {
           prev_type = _prev_type(current_domain);
         }
-        while(prev_type.get(0) !== current_type.get(0)) {
-          prev = prev_type.find(".property-section:last");
-          if (prev.length) {
-            break;
+        if (prev_type) {
+          while(prev_type.get(0) !== current_type.get(0)) {
+            prev = prev_type.find(".property-section:last");
+            if (prev.length) {
+              break;
+            }
+            if (current_type.get(0) == null) {
+              current_type = prev_type;
+            }
+            prev_type = _prev_type(prev_type);
           }
-          if (current_type.get(0) == null) {
-            current_type = prev_type;
-          }
-          prev_type = _prev_type(prev_type);
         }
       }
       return prev;
@@ -281,10 +325,15 @@
     this.next = function() {
       var current = get_current();
       var next = this._next(current);
-      set_next(current, next);
+      if (next) {
+        set_next(current, next);
+      }
     };
 
     this._next = function(current) {
+      if (! (current && current.length)) {
+        return $(".domain-section:first .kbs:first", context);
+      }
       var current_domain = current.closest(".domain-section");
       var current_type = current.closest(".type-section");
       var current_prop = current.closest(".property-section");
@@ -363,15 +412,30 @@
     this.prev = function() {
       var current = get_current();
       var prev = this._prev(current);
-      set_next(current, prev);
+      if (prev) {
+        set_next(current, prev);
+      }
     };
 
     this._prev = function(current) {
+      var prev;
+      if (! (current && current.length)) {
+        prev = $(".list-section:last .kbs:last", context);
+        if (!prev.length) {
+          prev = $(".property-section:last .kbs:first", context);
+        }
+        if (!prev.length) {
+          prev = $(".type-section:last .kbs:first", context);
+        }
+        if (!prev.length) {
+          prev = $(".domain-section:last .kbs:first", context);
+        }
+        return prev;
+      }
       var current_domain = current.closest(".domain-section");
       var current_type = current.closest(".type-section");
       var current_prop = current.closest(".property-section");
       var current_list = current.closest(".list-section");
-      var prev;
       if (current_list.length) {
         prev = current.prev(".kbs");
         if (prev.length) {

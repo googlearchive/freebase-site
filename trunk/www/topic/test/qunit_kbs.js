@@ -495,73 +495,187 @@ function run_tests($, fb) {
     ok(kbs.get_current().is("#ds1-ts1-ps2-kbs"), 'kbs.get_current().is("#ds1-ts1-ps2-kbs")');
   });
 
+  var order = [
+    "#ds1-kbs",
+    "#ds1-ts1-kbs",
+    "#ds1-ts1-ps1-kbs",
+    "#ds1-ts1-ps1-ls1-r1",
+    "#ds1-ts1-ps1-ls1-r2",
+    "#ds1-ts1-ps1-ls1-r3",
+    "#ds1-ts1-ps2-kbs",
+    "#ds1-ts1-ps2-ls1-r1",
+    "#ds1-ts1-ps2-ls1-r2",
+    "#ds1-ts2-kbs",
+    "#ds1-ts3-kbs",
+    "#ds1-ts3-ps1-kbs",
+    "#ds1-ts3-ps2-kbs",
+    "#ds1-ts3-ps2-ls1-r1",
+    "#ds2-kbs",
+    "#ds3-kbs",
+    "#ds3-ts1-kbs",
+    "#ds3-ts1-ps1-kbs",
+    "#ds3-ts1-ps2-kbs",
+    "#ds3-ts1-ps2-ls1-r1"
+  ];
 
   test("next", function() {
     var kbs = fb.kbs.init("#test");
-    var order = [
-      "#ds1-kbs",
-      "#ds1-ts1-kbs",
-      "#ds1-ts1-ps1-kbs",
-      "#ds1-ts1-ps1-ls1-r1",
-      "#ds1-ts1-ps1-ls1-r2",
-      "#ds1-ts1-ps1-ls1-r3",
-      "#ds1-ts1-ps2-kbs",
-      "#ds1-ts1-ps2-ls1-r1",
-      "#ds1-ts1-ps2-ls1-r2",
-      "#ds1-ts2-kbs",
-      "#ds1-ts3-kbs",
-      "#ds1-ts3-ps1-kbs",
-      "#ds1-ts3-ps2-kbs",
-      "#ds1-ts3-ps2-ls1-r1",
-      "#ds2-kbs",
-      "#ds3-kbs",
-      "#ds3-ts1-kbs",
-      "#ds3-ts1-ps1-kbs",
-      "#ds3-ts1-ps2-kbs",
-      "#ds3-ts1-ps2-ls1-r1",
-      "#ds1-kbs"
-    ];
-    var current = $(order.shift());
-    var next;
+    var current, next;
     order.forEach(function(id) {
       next = kbs._next(current);
       ok(next.is(id), "next.is(" + id + ")");
       current = next;
     });
+    ok(current.is("#ds3-ts1-ps2-ls1-r1"));
+    ok(kbs._next(current).is("#ds1-kbs"));
   });
 
   test("prev", function() {
     var kbs = fb.kbs.init("#test");
-    var order = [
-      "#ds1-kbs",
-      "#ds3-ts1-ps2-ls1-r1",
-      "#ds3-ts1-ps2-kbs",
-      "#ds3-ts1-ps1-kbs",
-      "#ds3-ts1-kbs",
-      "#ds3-kbs",
-      "#ds2-kbs",
-      "#ds1-ts3-ps2-ls1-r1",
-      "#ds1-ts3-ps2-kbs",
-      "#ds1-ts3-ps1-kbs",
-      "#ds1-ts3-kbs",
-      "#ds1-ts2-kbs",
-      "#ds1-ts1-ps2-ls1-r2",
-      "#ds1-ts1-ps2-ls1-r1",
-      "#ds1-ts1-ps2-kbs",
-      "#ds1-ts1-ps1-ls1-r3",
-      "#ds1-ts1-ps1-ls1-r2",
-      "#ds1-ts1-ps1-ls1-r1",
-      "#ds1-ts1-ps1-kbs",
-      "#ds1-ts1-kbs",
-      "#ds1-kbs"
-    ];
-    var current = $(order.shift());
-    var prev;
-    order.forEach(function(id) {
+    var current, prev;
+    order.reverse().forEach(function(id) {
       prev = kbs._prev(current);
       ok(prev.is(id), "prev.is(" + id + ")");
       current = prev;
     });
+
+    ok(current.is("#ds1-kbs"));
+    ok(kbs._prev(current).is("#ds3-ts1-ps2-ls1-r1"));
   });
 
+  test("test empty", function() {
+    var kbs = fb.kbs.init("#test_empty");
+    [
+      "next_domain", "prev_domain",
+      "next_type", "prev_type",
+      "next_prop", "prev_prop",
+      "next", "prev"
+    ].forEach(function(m) {
+      kbs[m].apply(kbs);
+      ok(!$("#test_empty .kbs.current").length, m);
+    });
+  });
+
+  test("test_one_domain", function() {
+    var kbs = fb.kbs.init("#test_one_domain");
+    [
+      "next_domain", "prev_domain",
+      "next_type", "prev_type",
+      "next_prop", "prev_prop",
+      "next", "prev"
+    ].forEach(function(m) {
+      kbs[m].apply(kbs);
+      ok($("#test_one_domain_kbs").is(".current"), m);
+    });
+  });
+
+  test("test_one_type", function() {
+    var kbs = fb.kbs.init("#test_one_type");
+    [
+      "next_domain", "next_domain"
+    ].forEach(function(m) {
+      kbs[m].apply(kbs);
+      ok($("#test_one_type_ds_kbs").is(".current"), m);
+    });
+
+    kbs.get_current().removeClass("current");
+    [
+      "prev_domain", "prev_domain"
+    ].forEach(function(m) {
+      kbs[m].apply(kbs);
+      ok($("#test_one_type_ds_kbs").is(".current"), m);
+    });
+
+    kbs.get_current().removeClass("current");
+    [
+      "next_type", "prev_type"
+    ].forEach(function(m) {
+      kbs[m].apply(kbs);
+      ok($("#test_one_type_ts_kbs").is(".current"), m);
+    });
+
+    kbs.get_current().removeClass("current");
+    [
+      "next", "next", "next"
+    ].forEach(function(m, i) {
+      kbs[m].apply(kbs);
+      if (i % 2 === 0) {
+        ok($("#test_one_type_ds_kbs").is(".current"), m);
+      }
+      else {
+        ok($("#test_one_type_ts_kbs").is(".current"), m);
+      }
+    });
+
+    kbs.get_current().removeClass("current");
+    [
+      "prev", "prev", "prev"
+    ].forEach(function(m, i) {
+      kbs[m].apply(kbs);
+      if (i % 2 === 0) {
+        ok($("#test_one_type_ts_kbs").is(".current"), m);
+      }
+      else {
+        ok($("#test_one_type_ds_kbs").is(".current"), m);
+      }
+    });
+  });
+
+  test("test_one_prop", function() {
+    var kbs = fb.kbs.init("#test_one_prop");
+    [
+      "next_domain", "prev_domain"
+    ].forEach(function(m) {
+      kbs[m].apply(kbs);
+      ok($("#test_one_prop_ds_kbs").is(".current"), m);
+    });
+
+    kbs.get_current().removeClass("current");
+    [
+      "next_type", "prev_type"
+    ].forEach(function(m) {
+      kbs[m].apply(kbs);
+      ok($("#test_one_prop_ts_kbs").is(".current"), m);
+    });
+
+    kbs.get_current().removeClass("current");
+    [
+      "next_prop", "prev_prop"
+    ].forEach(function(m) {
+      kbs[m].apply(kbs);
+      ok($("#test_one_prop_ps_kbs").is(".current"), m);
+    });
+
+    kbs.get_current().removeClass("current");
+    [
+      "next", "next", "next", "next"
+    ].forEach(function(m, i) {
+      kbs[m].apply(kbs);
+      if (i % 3 === 0) {
+        ok($("#test_one_prop_ds_kbs").is(".current"), m);
+      }
+      else if (i % 3 === 1) {
+        ok($("#test_one_prop_ts_kbs").is(".current"), m);
+      }
+      else {
+        ok($("#test_one_prop_ps_kbs").is(".current"), m);
+      }
+    });
+
+    kbs.get_current().removeClass("current");
+    [
+      "prev", "prev", "prev", "prev"
+    ].forEach(function(m, i) {
+      kbs[m].apply(kbs);
+      if (i % 3 === 0) {
+        ok($("#test_one_prop_ps_kbs").is(".current"), m);
+      }
+      else if (i % 3 === 1) {
+        ok($("#test_one_prop_ts_kbs").is(".current"), m);
+      }
+      else {
+        ok($("#test_one_prop_ds_kbs").is(".current"), m);
+      }
+    });
+  });
 };

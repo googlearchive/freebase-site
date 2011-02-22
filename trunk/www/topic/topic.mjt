@@ -195,16 +195,16 @@
     </h3>  
     <div class="list-section">
       <acre:block if="property.properties && property.properties.length">      
-       ${property_table(id, property, true)}
+       ${property_table(id, property)}
       </acre:block>
       <acre:block else="">
-        ${property_list(id, property, true)}
+        ${property_list(id, property)}
       </acre:block>
     </div>
   </div>
 </acre:block>
 
-<acre:block def="property_table(id, property, kbs)">
+<acre:block def="property_table(id, property)">
   <table class="data-table">
     <thead>
       <tr>
@@ -214,46 +214,78 @@
       </tr>
     </thead>
     <tbody>
-      <tr acre:for="value in property.values" acre:attrs="kbs ? {'class':'kbs'} : {}">
-        <acre:block for="i,subproperty in property.properties">
-          <td>
-            ${property_list(subproperty.id, value[subproperty.id])}
-            <span acre:if="kbs && i === 0" class="menu-trigger">
-              <a href="javascript:void(0)" class="default-action edit-action">
-                edit
-              </a>
-              <a href="javascript:void(0)" class="more-action">
-                menu
-              </a>
-            </span>
-          </td>
-        </acre:block>
-      </tr>
+      <acre:block for="value in property.values">
+        ${property_table_row(id, property, value)}
+      </acre:block>
     </tbody>
   </table>
 </acre:block>
 
-<acre:block def="property_list(id, property, kbs)">
+<acre:block def="property_table_row(id, property, value)">
+  <tr class="kbs">
+    <acre:block for="i, subproperty in property.properties">
+      <acre:block if="i === 0">
+        ${property_table_primary_cell(id, property, value, subproperty, value[subproperty.id])}
+      </acre:block>
+      <acre:block else="">
+        ${property_table_cell(id, property, value, subproperty, value[subproperty.id])}
+      </acre:block>
+    </acre:block>
+  </tr>
+</acre:block>
+
+<acre:block def="property_table_primary_cell(id, property, value, subproperty, subvalue)">
+  <td>
+    ${subproperty_list(id, property, value, subproperty, subvalue, true)}
+  </td>
+</acre:block>
+
+<acre:block def="property_table_cell(id, property, value, subproperty, subvalue)">
+  <td>
+    ${subproperty_list(id, property, value, subproperty, subvalue)}
+  </td>
+</acre:block>
+
+<acre:block def="subproperty_list(id, property, value, subproperty, subvalue, primary)">
+  <acre:block if="subvalue && subvalue.values && subvalue.values.length">
+    <ul class="data-list">
+      <acre:block for="i,value in subvalue.values">
+        <li>
+          <span class="wrapper">
+            ${property_value(value)}
+            <acre:block if="i === 0 && primary">
+              ${property_value_menu()}
+            </acre:block>
+          </span>
+        </li>
+      </acre:block>
+    </ul>
+  </acre:block>
+  <acre:block else="">
+    <div class="empty-property">-</div>
+  </acre:block>  
+</acre:block>
+
+<acre:block def="property_list(id, property)">
   <acre:block if="property && property.values && property.values.length">
     <ul class="data-list">
-      <li acre:for="value in property.values" acre:attrs="kbs ? {'class':'kbs'} : {}">
-        <span class="wrapper">
-          ${property_value(value, property)}
-          <span acre:if="kbs" class="menu-trigger">
-            <a href="javascript:void(0)" class="default-action edit-action">
-              edit
-            </a>
-            <a href="javascript:void(0)" class="more-action">
-              menu
-            </a>
-          </span>
-        </span>
-      </li>
-    </ul>  
+      <acre:block for="value in property.values">
+        ${property_list_row(id, property, value)}
+      </acre:block>
+    </ul>
   </acre:block>
   <acre:block else="">
     <div class="empty-property">-</div>
   </acre:block>
+</acre:block>
+
+<acre:block def="property_list_row(id, property, value)">
+  <li class="kbs">
+    <span class="wrapper">
+      ${property_value(value)}
+      ${property_value_menu()}
+    </span>
+  </li>
 </acre:block>
 
 <acre:block def="property_value(value, property)">
@@ -270,4 +302,15 @@
     <span class="empty-property">-</span>
   </acre:block>
 
+</acre:block>
+
+<acre:block def="property_value_menu()">
+  <span class="menu-trigger">
+    <a href="javascript:void(0)" class="default-action edit-action">
+      edit
+    </a>
+    <a href="javascript:void(0)" class="more-action">
+      menu
+    </a>
+  </span>
 </acre:block>

@@ -82,6 +82,7 @@ function object(id) {
                 topic.notable_for = notable_for.o;
               }
             }
+            topic.notable_types = r;
           }
           return r;
         })

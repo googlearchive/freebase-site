@@ -32,12 +32,12 @@ var h = acre.require("lib/helper/helpers.sjs");
 var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
 
-function topic(id) {
-
-console.log("service url", acre.freebase.service_url);
-
+/**
+ * @param object - result of object query @see lib/queries/object.sjs
+ */
+function topic(object) {
   // topic api
-  var url = h.fb_api_url("/api/experimental/topic/extended", id);
+  var url = h.fb_api_url("/api/experimental/topic/extended", object.id);
   return freebase.fetch(url)
     .then(function(env) {
       return env.result;

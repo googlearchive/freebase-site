@@ -95,12 +95,12 @@
         <a href="javascript:void(0);" class="trigger">Collapse column</a>
         <span>Filter this data</span>
       </h2>
-      <acre:script>
-        var hide_counts = c.filters.as_of_time ||
-          (c.filters.timestamp && c.filters.timestamp.length) ||
-          (c.filters.creator && c.filters.creator.length);
-      </acre:script>
       <div class="module-section">
+        <acre:script>
+          var hide_counts = c.filters.as_of_time ||
+            (c.filters.timestamp && c.filters.timestamp.length) ||
+            (c.filters.creator && c.filters.creator.length);
+        </acre:script>
         ${filter_components.prop_counts_filter("/inspect" + c.id, c.filters, c.prop_counts, hide_counts)}
       </div>
       <div class="module-section">

@@ -29,51 +29,62 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var callback = acre.environ.params["callback"];
-var worker = acre.require("cuecard/worker");
+var validators = acre.require("validator/validators.sjs");
+var apis = acre.require("promise/apis.sjs");
+var urlfetch = apis.urlfetch;
 
-var q = acre.environ.params["q"];
+var SPEC = {
+  
+  method: "POST",
 
-var infoQ = [{
-  "id" : null,
-  "guid" : null,
-  "name" : null,
-  "key" : [],
-  "/type/property/schema" : [{
-    "id" : null,
-    "name" : null,
-    "optional" : true
-  }],
-  "/type/property/expected_type" : [],
-  "/type/property/unique" : null
-}];
+  auth: false,
 
-var o = acre.freebase.search(
-  q + "*", 
-  {
-    type:        "/type/property",
-    type_strict: "any",
-    limit:       "10", 
-    mql_output:  JSON.stringify(infoQ)
-  }
-);
-
-if (q.charAt(0) == "/") {
-  infoQ[0]["id"] = q;
-  try {
-    var o2 = acre.freebase.mqlread(infoQ);
-    if (o2.result.length > 0) {
-      o.result.unshift(o2.result[0]);
+  validate: function(params) {
+    var args = {};
+    
+    var q = validators.String(params, 'q', {if_empty: false});
+    var r = validators.String(params, 'r', {if_empty: false});
+    
+    if (q) {
+      args.q = q;
+    } else if (r) {
+      args.r = r;
+    } else {
+      // throw?
     }
-  } catch (e) {
+    
+    ['service', 'env'].forEach(function(key) {
+     var val = validators.String(params, key, {if_empty: false});
+     if (val) args[key] = val;
+    });
+    
+    ['emql', 'debug', 'autorun'].forEach(function(key) {
+     var val = validators.StringBoolean(params, key, {if_empty: false});
+     if (val) args[key] = val;
+    });
+    
+    ['as_of_time'].forEach(function(key) {
+     var val = validators.Timestamp(params, key, {if_empty: false});
+     if (val) args[key] = val;
+    });
+    
+    return [
+      validators.String(params, 'base_url', {if_empty: false}),
+      args
+    ];
+  },
+  
+  run: function(base_url, params) {
+    var qe_base = base_url || acre.request.app_url + "/queryeditor";
+    var qe_url = acre.form.build_url(qe_base, params);
+    
+    return urlfetch("http://tinyurl.com/api-create.php?url=" + qe_url)
+      .then(function(res) {
+        return {
+          url: res.body, 
+          qe_url: qe_url
+        };
+      });
   }
-}
-
-acre.start_response(200);
-if (callback) {
-  acre.write(callback + "(");
-}
-acre.write(JSON.stringify(o));
-if (callback) {
-  acre.write(")");
-}
+  
+};

@@ -140,12 +140,11 @@ CueCard.OutputPane.prototype._createIframe = function() {
 
   var __cc_tree_mouseOverTopic = function(elmt) {
     var id = elmt.getAttribute("fbid");
-    $.getJSON("http://hotshot.dfhuynh.user.dev.freebaseapps.com/html?id=" + id + "&callback=?",
-      function(html) {
+    CueCard.JsonpQueue.call(fb.h.legacy_fb_url("/private/flyout", id),
+      function(r) {
         var div = __cc_tree_createPopup(elmt);
-        $(div).addClass("cuecard-outputPane-tree-popup-topic").html(html);
-      }
-    );
+        $(div).addClass("cuecard-outputPane-tree-popup-topic").html(r.html);
+      });
   };
     
   var __cc_tree_mouseOutTopic = function(elmt) {

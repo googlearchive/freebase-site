@@ -325,7 +325,7 @@ CueCard.QueryNode.prototype._qualifyAllProperties = function(expectedTypes, glob
         if (guids.length > 0) {
             params.push("g=" + encodeURIComponent(guids.join(",")));
         }
-        var url = CueCard.helper + "qualify-properties?" + params.join("&");
+        var url = CueCard.helper + "qualify-properties.ajax?" + params.join("&");
             
         CueCard.JsonpQueue.call(
             url,

@@ -52,24 +52,24 @@ CueCard.TypeBasedTopicSuggestor.prototype.getSuggestions = function(prefix, onDo
         onDone(entries);
     } else {
         var self = this;
-        var cont = CueCard.UI.createBlockingContinuations(function(cont2, o) {
+        var cont = CueCard.UI.createBlockingContinuations(function(cont2, result) {
             var entries = [];
             
-            for (var i = 0; i < o.result.length; i++) {
-                var topic = o.result[i];
-                var imageURL = null;
+            for (var i = 0; i < result.length; i++) {              
+                var topic = result[i];
+                topic.imageURL = null;
                 if ("/common/topic/image" in topic && topic["/common/topic/image"] != null && topic["/common/topic/image"].length > 0) {
-                    imageURL = CueCard.freebaseServiceUrl + "api/trans/image_thumb" + topic["/common/topic/image"][0].id + "?mode=fillcrop&maxwidth=40&maxheight=40";
+                    topic.imageURL = CueCard.freebaseServiceUrl + "api/trans/image_thumb" + topic["/common/topic/image"][0].id + "?mode=fillcrop&maxwidth=40&maxheight=40";
                 }
-                
+
                 entries.push({
                     result: topic[self._desiredProperty],
                     elmt: $(
                         '<a class="cuecard-suggestion-entry" href="javascript:{}"><table cellpadding="0" cellspacing="0"><tr valign="top">' + 
                             '<td valign="top">' + 
-                                (imageURL == null ? 
+                                (topic.imageURL == null ? 
                                     '<div class="cuecard-suggestion-thumbnail-empty"> </div>' :
-                                    ('<img src="' + imageURL + '" />')) + 
+                                    ('<img src="' + topic.imageURL + '" />')) + 
                             '</td>' +
                             '<td valign="top">' +
                                 topic.name + 
@@ -79,7 +79,7 @@ CueCard.TypeBasedTopicSuggestor.prototype.getSuggestions = function(prefix, onDo
                     )
                 });
             }
-            
+
             onDone(entries);
         });
         this._popup.addPendingContinuation(cont);

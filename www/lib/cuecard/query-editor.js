@@ -320,7 +320,6 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
         
         var self = this;
         var onDone = function(o) {
-            o = o.result;
             if (o["error"] == "unauthorized") {
                 self._outputPane.setStatus("Query editor is not authorized to write on your behalf.");
                 self._options.onUnauthorizedMqlWrite();
@@ -603,7 +602,7 @@ CueCard.QueryEditor.prototype._startSuggestProperties = function(lineNo, columnN
                 params.push("r=" + result.reverse);
             }
             
-            var url = CueCard.helper + "suggest-properties?" + params.join("&");
+            var url = CueCard.helper + "suggest-properties.ajax?" + params.join("&");
             CueCard.JsonpQueue.call(
                 url,
                 cont2.extend(onGotSuggestedProperties).onDone,

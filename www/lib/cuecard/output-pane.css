@@ -94,16 +94,17 @@ div.cuecard-outputPane-tree-popup {
 }
 
 div.cuecard-outputPane-tree-popup-topic {
-  background: #FFFFE0;
-  border: 1px solid #ddd;
-  padding: 1em;
-  font-size: 9px;
-  width: 28em;
+  width: 30em;
 }
 
 .cuecard-outputPane-tree-popup-topic .freebase-hotshot-container {
   height: 13em;
   overflow: hidden;
+}
+
+.cuecard-outputPane-tree-popup-topic .freebase-hotshot-name {
+  font-size: 1.4em;
+  font-weight: bold;
 }
 
 div.cuecard-outputPane-tree-popup-topic td{

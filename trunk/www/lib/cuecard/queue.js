@@ -81,7 +81,7 @@ CueCard.JsonpQueue.call = function(url, onDone, onError, debug) {
     var callback = function(o) {
         if (cleanup()) {
             try {
-                onDone(o);
+                onDone(o.result || o);
             } catch (e) {
                 //console.log(e);
             }
@@ -112,7 +112,7 @@ CueCard.JsonpQueue.queryOne = function(query, onDone, onError, debug) {
 
 CueCard.JsonpQueue.queryOneEnvelope = function(queryEnvelope, onDone, onError, debug) {
     var q = CueCard.jsonize({ "q1" : queryEnvelope }, { breakLines: false });
-    var url = CueCard.freebaseServiceUrl + 'api/service/mqlread?queries=' + encodeURIComponent(q);
+    var url = CueCard.freebaseServiceUrl + 'api/service/mqlread.ajax?queries=' + encodeURIComponent(q);
     var onDone2 = function(o) {
         if (o.q1.code == "/api/status/error") {
             if (typeof onError == "function") {

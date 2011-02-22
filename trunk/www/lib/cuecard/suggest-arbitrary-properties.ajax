@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Google Inc.
+ * Copyright 2011, Google Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,46 +29,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var callback = acre.environ.params["callback"];
-var worker = acre.require("cuecard/worker");
+var validators = acre.require("validator/validators.sjs");
 
-var t = acre.environ.params["t"];
-var q = acre.environ.params["q"];
+var SPEC = {
 
-var infoQ = [{
-  "id" : null,
-  "guid" : null,
-  "name" : null,
-  "/common/topic/image" : [{ "optional" : true, "id" : null, "limit" : 1 }]
-}];
+  method: "GET",
 
-var options = { 
-  limit: "10", 
-  mql_output: JSON.stringify(infoQ)
+  auth: false,
+
+  cache_policy: "fast",
+
+  validate: function(params) {
+    return [
+      validators.String(params, "q", {required: true})
+    ];
+  },
+  
+  run: acre.require("cuecard/queries").suggest_arbitrary_properties
 };
-if (t.length > 0) {
-  options.type = t;
-  options.type_strict = 'any';
-}
 
-var o = acre.freebase.search(q + "*", options);
 
-if (q.charAt(0) == "/") {
-  infoQ[0]["id"] = q;
-  try {
-    var o2 = acre.freebase.mqlread(infoQ);
-    if (o2.result.length > 0) {
-      o.result.unshift(o2.result[0]);
-    }
-  } catch (e) {
-  }
-}
-
-acre.start_response(200);
-if (callback) {
-  acre.write(callback + "(");
-}
-acre.write(JSON.stringify(o));
-if (callback) {
-  acre.write(")");
-}

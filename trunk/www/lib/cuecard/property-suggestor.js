@@ -79,9 +79,9 @@ CueCard.PropertySuggestor.prototype.getSuggestions = function(prefix, onDone) {
         onDone(entries);
     } else {
         var self = this;
-        var cont = CueCard.UI.createBlockingContinuations(function(cont2, o) {
-            for (var i = 0; i < o.result.length; i++) {
-                var property = o.result[i];
+        var cont = CueCard.UI.createBlockingContinuations(function(cont2, result) {
+            for (var i = 0; i < result.length; i++) {
+                var property = result[i];
                 if (!(property.id in propertyMap) && 
                     "/type/property/schema" in property && 
                     property["/type/property/schema"] != null && 
@@ -111,7 +111,7 @@ CueCard.PropertySuggestor.prototype.getSuggestions = function(prefix, onDone) {
         });
         this._popup.addPendingContinuation(cont);
             
-        var url = CueCard.helper + "suggest-arbitrary-properties?q=" + encodeURIComponent(prefix);
+        var url = CueCard.helper + "suggest-arbitrary-properties.ajax?q=" + encodeURIComponent(prefix);
         
         CueCard.JsonpQueue.call(
             url,

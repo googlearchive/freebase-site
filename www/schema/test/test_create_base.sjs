@@ -71,7 +71,7 @@ function get_name() {
 function delete_base(key) {
   return freebase.mqlread({
     id: null,
-    guid: null,
+    mid: null,
     key: {
       namespace: "/base",
       value: key
@@ -85,7 +85,7 @@ function delete_base(key) {
     var existing = env.result;
     if (existing) {
       return freebase.mqlwrite({
-        guid: existing.guid,
+        id: existing.mid,
         key: {
           namespace: "/base",
           value: key,
@@ -94,7 +94,7 @@ function delete_base(key) {
       }, null, {http_sign: false})
       .then(function() {
         var q = {
-          guid: existing.guid,
+          id: existing.mid,
           type: {
             id : "/type/domain",
             connect: "delete"
@@ -132,34 +132,34 @@ test("create_base", function() {
   acre.async.wait_on_results();
   ok(base, "base created");
   ok(base.id, base.id);
-  ok(base.guid, base.guid);
+  ok(base.mid, base.mid);
   equal(base.key.value, key);
   equal(base.key.namespace, "/base");
 
   // check user has permission
   var has_permission = acre.freebase.mqlread({
-    guid: base.guid,
+    id: base.mid,
     permission: {permits: [{member: [{id: user.id}]}]}
   }).result;
   ok(has_permission, user.id + " has permission to " + base.id);
 
   // check owners
   var owners = acre.freebase.mqlread({
-   guid: base.guid,
+   id: base.mid,
     "/type/domain/owners": [{member: [{id: user.id}]}]
   }).result;
   ok(owners, user.id + " is an owner of " + base.id);
 
   // check is /type/domain
   var is_domain = acre.freebase.mqlread({
-   guid: base.guid,
+   id: base.mid,
     type: "/type/domain"
   }).result;
   ok(is_domain, base.id + " is /type/domain");
 
   // check permits /boot/schema_group
   var permits_schema_group = acre.freebase.mqlread({
-   guid: base.guid,
+   id: base.mid,
     permission: {permits: {id: "/boot/schema_group"}}
   }).result;
   ok(permits_schema_group, base.id + " permits /boot/schema_group");
@@ -209,7 +209,7 @@ test("create base with description", function() {
 
   var check_result;
   freebase.mqlread({
-   guid: base.guid,
+   id: base.mid,
    "/common/topic/article": {
       id: null,
       permission: {

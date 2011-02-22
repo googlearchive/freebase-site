@@ -54,6 +54,11 @@ function object(id) {
       optional: true,
       limit: 1
     },
+    "/common/topic/image": {
+      id: null,
+      optional: true,
+      limit: 1
+    },
     type: [{
       id: null,
       optional: true

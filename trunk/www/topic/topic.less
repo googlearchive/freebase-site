@@ -206,14 +206,14 @@ The .data-table object should hold non-simple data (eg. Mediator or CVT)
 
 .data-table tbody th,
 .data-table tbody td {
-  padding: 4px 3px 4px 0;
+  padding: 0 3px 0 0;
   border-top: 1px solid #d5d7d8;
   .transition(all, 0.3s);
 }
 
 .data-table tbody tr:hover td,
 .data-list li:hover {
-  background: #e6e7e8;
+  background-color: #e6e7e8;
 }
 
 .data-table .data-list li:hover {
@@ -221,8 +221,16 @@ The .data-table object should hold non-simple data (eg. Mediator or CVT)
 }
 
 .data-table tbody tr th:first-child,
-.data-table tbody tr td:first-child,
+.data-table tbody tr td:first-child {
+  padding-left: 0;
+}
+
 .data-table thead tr th:first-child {
+  padding-left: 15px;
+}
+
+.data-table tbody tr th:first-child li,
+.data-table tbody tr td:first-child li {
   padding-left: 15px;
 }
 

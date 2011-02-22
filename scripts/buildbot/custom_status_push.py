@@ -8,6 +8,7 @@ import logging
 import os
 import urllib
 import urlparse
+import re
 
 try:
     import simplejson as json
@@ -23,9 +24,11 @@ from twisted.python import log
 from twisted.web import client
 
 def latest_green(builder, rev):
+    rev = str(rev)
+    if not re.match('\d+', rev): return 0
     here = os.path.split(os.path.abspath(__file__))[0]
     fh=open(here+ '/' + builder + '.latest', 'w')
-    fh.write(str(rev))
+    fh.write(rev)
     fh.close()
 
 class CustomStatusPush(StatusPush):

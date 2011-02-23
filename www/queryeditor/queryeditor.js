@@ -251,9 +251,9 @@ function saveQueryInWindow() {
 
 function computeTinyCompactLink() {
   var q = c.queryEditor.getUnresolvedQuery();
-  var url = CueCard.helper + "tinyurl?q=" + encodeURIComponent(q) + getUrlFlags() + "&autorun=1";
+  var url = CueCard.helper + "tinyurl.ajax?q=" + encodeURIComponent(q) + getUrlFlags() + "&autorun=1";
   var cont = CueCard.UI.createBlockingContinuations(function(cont, o) {
-    window.prompt("Tiny URL to copy", o);
+    window.prompt("Tiny URL to copy", o.result.url);
   });
 
   $.post(url, {}, cont.onDone, "json");

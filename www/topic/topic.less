@@ -321,7 +321,7 @@ The .data-table object should hold non-simple data (eg. Mediator or CVT)
   padding: 5px 45px 6px 0;
 }
 
-.data-list li .menu-trigger {
+.data-list li .combo-menu {
   position: absolute;
   right: 0;
   top: 0;
@@ -331,18 +331,18 @@ The .data-table object should hold non-simple data (eg. Mediator or CVT)
   border: 1px solid transparent;
 }
 
-.kbs.current .menu-trigger,
-.data-list li:hover .menu-trigger {
+.kbs.current .combo-menu,
+.data-list li:hover .combo-menu{
   visibility: visible;
 }
 
-.data-list li:hover .menu-trigger:hover {
+.data-list li:hover .combo-menu:hover {
   border: 1px solid #d4d6d7;
   .linear_gradient(#e4e6e7, #d4d6d7);
   .box_shadow(0 2px 2px, #a1a2a3);
 }
 
-.menu-trigger .default-action {
+.combo-menu .default-action {
   display: inline-block;
   background: #fff;
   width: 17px;
@@ -351,7 +351,7 @@ The .data-table object should hold non-simple data (eg. Mediator or CVT)
   line-height: 1;
 }
 
-.menu-trigger .more-action {
+.combo-menu .more-action {
   display: inline-block;
   width: 11px;
   height: 17px;
@@ -363,22 +363,22 @@ The .data-table object should hold non-simple data (eg. Mediator or CVT)
   background: url(lib/template/ui-icons.png) no-repeat 2px -707px;
 }
 
-.menu-trigger:hover .default-action.edit-action {
+.combo-menu:hover .default-action.edit-action {
   background-color: #fff;
 }
 
-.menu-trigger:hover .edit-action {
+.combo-menu:hover .edit-action {
   background-position: 2px -727px;
 }
 
-.menu-trigger:hover .edit-action:hover {
+.combo-menu:hover .edit-action:hover {
   background-position: 2px -747px;
 }
 
-.menu-trigger:hover .more-action {
+.combo-menu:hover .more-action {
   background-position: 2px -677px;
 }
 
-.menu-trigger:hover .more-action:hover {
+.combo-menu:hover .more-action:hover {
   background-position: 2px -689px;
 }

@@ -299,7 +299,7 @@
 </acre:block>
 
 <acre:block def="property_value_menu()">
-  <span class="combo-menu"></span>
+  <span class="combo-menu">
     <a href="javascript:void(0)" class="default-action edit-action">edit</a>
     <a href="javascript:void(0)" class="more-action menu-trigger">menu</a>
   </span>

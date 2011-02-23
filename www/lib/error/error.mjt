@@ -95,7 +95,7 @@
           </acre:block>
         </acre:block>
     
-        <h1>${acre.html.encode(einfo.message)}</h1>
+        <h1>$einfo.message</h1>
     
         <div class="meta">
         <p class="line" acre:if="user_script">
@@ -135,13 +135,13 @@
             </pre>
             <h4>Response Body</h4>
             <pre class="body">
-              ${acre.html.encode(body.replace('\\n','\n'))}
+              ${body.replace('\\n','\n')}
             </pre>
           </acre:block>
 
           <acre:block else="">
             <pre class="query">
-              ${acre.html.encode(JSON.stringify(einfo.info,null,2))}
+              ${JSON.stringify(einfo.info,null,2)}
             </pre>
           </acre:block>
 

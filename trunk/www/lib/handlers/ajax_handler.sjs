@@ -67,7 +67,13 @@ function handler() {
          resp = r;
         });
       acre.async.wait_on_results();
-      d.cleanup();
+      try {
+        d.cleanup();
+      }
+      catch(ex) {
+        // unhandled error - don't want to redirect to error page
+        resp = to_ajax_response(new lib.ServiceError(null, null, ex));
+      }
       return hh.to_http_response_result(resp.body, resp.headers, resp.status);
     }
   });

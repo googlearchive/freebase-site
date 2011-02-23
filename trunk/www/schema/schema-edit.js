@@ -166,9 +166,14 @@
       var msg;
       try {
         msg = JSON.parse(xhr.responseText);
-        msg = msg.messages[0].message; // display the first message
+        if (msg.messages && msg.messages.length) {
+          msg = JSON.stringify(msg.messages[0]); // display the first message
+        }
       }
       catch(e) {
+        // ignore
+      }
+      if (!msg) {
         msg = xhr.responseText;
       }
       // TODO: make error expandable to see whole error message

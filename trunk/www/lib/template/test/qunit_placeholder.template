@@ -30,7 +30,9 @@
  !!-->
 
 <acre:script>
-  var h = acre.require("helper/helpers.sjs");
+  var c = exports.c = {
+    template_base: "test/qunit.mjt"
+  };
 </acre:script>
 
 <acre:block def="title()">
@@ -50,5 +52,4 @@
   </form>
 </acre:block>
 
-${acre.require("template/renderer").render_page(null, this.exports, acre.require("test/qunit"))}
 

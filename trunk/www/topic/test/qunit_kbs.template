@@ -31,6 +31,10 @@
 
 <acre:script>
   var h = acre.require("lib/helper/helpers.sjs");
+  var c = exports.c = {
+    template_base: "lib/test/qunit.mjt"
+  };
+
   var ds = "domain-section";
   var ts = "type-section";
   var ps = "property-section";
@@ -163,5 +167,4 @@
 
 </acre:block>
 
-${acre.require("lib/template/renderer").render_page(null, this.exports, acre.require("lib/test/qunit"))}
 

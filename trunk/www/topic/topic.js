@@ -85,6 +85,12 @@
       // init row context menu
       topic.init_row_menu("#topic-data");
 
+      // init combo-menu default actions
+      $(".combo-menu .default-action")
+        .live("click", function() {
+          $(this).parents(".kbs:first").trigger("edit");
+        });
+
       // Initialize filter menu collapse/expand
       $(".column.nav > .module").collapse_module(".section");
 

@@ -29,6 +29,12 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  !!-->
 
+<acre:script>
+ var c = exports.c = {
+    template_base: "lib/test/qunit.mjt"
+  };
+</acre:script>
+
 <acre:block def="title()">
   jquery.mqlkey.js
 </acre:block>
@@ -42,6 +48,3 @@
   <input type="text" id="key"/>
   <input type="text" id="source"/>
 </acre:block>
-
-${acre.require("lib/template/renderer").render_page(null, this.exports, acre.require("lib/test/qunit"))}
-

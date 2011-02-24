@@ -60,6 +60,21 @@
       });
     },
 
+    // show row menu button on hover
+    row_menu_hoverover: function(e) {
+      var row = $(this);
+      topic.row_menu_hoverover.timeout = setTimeout(function() {
+        row.addClass("row-hover");
+      }, 300);
+    },
+
+    // hide row menu button on mouseout
+    row_menu_hoverout: function(e) {
+      clearTimeout(topic.row_menu_hoverover.timeout);
+      var row = $(this);
+      row.removeClass("row-hover");
+    },
+
     init: function() {
       // Init keyboard shortcuts @see kbs.js
       var kbs = fb.kbs.init("#topic-data");
@@ -80,7 +95,8 @@
               method(trigger, md);
             }
           }
-        });
+        })
+        .hover(topic.row_menu_hoverover, topic.row_menu_hoverout);
 
       // init row context menu
       topic.init_row_menu("#topic-data");

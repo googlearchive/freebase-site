@@ -1,6 +1,8 @@
 #!/bin/bash -x
 BASE=~/acreaebot/acreae/build
 cd $BASE
+# die!
+ps ax | grep 'acreae/build/webapp' | grep -v grep | awk '{print $1}' | xargs kill
 RUN_CMD="./acre -c acreaebot appengine-run"
 mkdir -p _logs
 mkdir -p _data/acre

@@ -30,15 +30,14 @@
  */
 var h = acre.require("lib/helper/helpers.sjs");
 var i18n = acre.require("lib/i18n/i18n");
-var datejs = i18n.datejs;
 
 var TIMESTAMPS = {
- "today": function() {return datejs.today();},
- "yesterday" : function() {return datejs.today().addDays(-1);},
- "this week" : function() {return datejs.today().moveToDayOfWeek(1, -1);},
- "this month" : function() {return datejs.today().moveToFirstDayOfMonth();},
+ "today": function() {return i18n.datejs.Date.today();},
+ "yesterday" : function() {return i18n.datejs.Date.today().addDays(-1);},
+ "this week" : function() {return i18n.datejs.Date.today().moveToDayOfWeek(1, -1);},
+ "this month" : function() {return i18n.datejs.Date.today().moveToFirstDayOfMonth();},
  "this year" : function() {
-   var t = datejs.today();
+   var t = i18n.datejs.Date.today();
    t.set({day:1,month:0,year:t.getFullYear()});
    return t;
  }

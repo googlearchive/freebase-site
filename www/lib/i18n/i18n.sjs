@@ -390,7 +390,7 @@ function format_number(val) {
 /**
  * @param timestamp:String ISO8601
  * @param pattern:String
- * @see datejs.CultureInfo.formatPatterns
+ * @see datejs.Date.CultureInfo.formatPatterns
  */
 function format_timestamp(timestamp, pattern) {
   return format_date(acre.freebase.date_from_iso(timestamp), pattern);
@@ -399,7 +399,7 @@ function format_timestamp(timestamp, pattern) {
 /**
  * @param date:Date
  * @param pattern:String
- * @see datejs.CultureInfo.formatPatterns
+ * @see datejs.Date.CultureInfo.formatPatterns
  */
 function format_date(date, pattern) {
   if (!pattern) {
@@ -410,21 +410,21 @@ function format_date(date, pattern) {
 
 /**
  * Parse a date string into a Date object using current lang specific datejs.
- * If a pattern or an Array of patterns is specified, then uses datejs.parseExact,
- * otherwise, use datejs.parse.
+ * If a pattern or an Array of patterns is specified, then uses datejs.Date.parseExact,
+ * otherwise, use datejs.Date.parse.
  *
  * @param date_str:String date string
  * @param pattern:String|Array
- * @see datejs.CultureInfo.formatPatterns
+ * @see datejs.Date.CultureInfo.formatPatterns
  * @see http://code.google.com/p/datejs/wiki/FormatSpecifiers
  */
 function parse_date(date_str, pattern) {
   var d;
   if (pattern) {
-    d = datejs.parseExact(date_str, pattern);
+    d = datejs.Date.parseExact(date_str, pattern);
   }
   else {
-    d = datejs.parse(date_str);
+    d = datejs.Date.parse(date_str);
   }
   return d;
 };
@@ -846,15 +846,15 @@ function set_lang(lang_id) {
   lang_codes.every(function(lang_code) {console.log("set_lang code", lang_code);
     var filename = h.sprintf("datejs/date-%s.sjs", lang_code);
     if (lib_files[filename]) {
-      datejs = acre.require(filename).Date;
+      datejs = acre.require(filename);
       return false;
     }
     return true;
   });
   if (!datejs) {
-    datejs = acre.require("datejs/date-en-US.sjs").Date;
+    datejs = acre.require("datejs/date-en-US.sjs");
   }
-  h.extend(format.date, datejs.CultureInfo.formatPatterns);
+  h.extend(format.date, datejs.Date.CultureInfo.formatPatterns);
 };
 
 function set_bundle(lang_codes) {

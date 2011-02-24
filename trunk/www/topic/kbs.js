@@ -465,7 +465,10 @@
           return current_domain.prev(".domain-section").find(".kbs:last");
         }
       }
+    };
 
+    var edit = this.edit = function() {
+      this.get_current().trigger("edit");
     };
 
     var self = this;
@@ -478,6 +481,7 @@
             target == window ||
             target == $("html")[0]) {
           var keyCode = e.keyCode;
+          //console.log(keyCode);
           if (keyCode === 68) { // d
             if (e.shiftKey) {
               prev_domain();
@@ -507,6 +511,9 @@
           }
           else if (keyCode === 75) { // k
             self.prev();
+          }
+          else if (keyCode === 69) { // e
+            self.edit();
           }
         }
       });

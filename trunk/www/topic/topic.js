@@ -69,6 +69,17 @@
            // set current on click
            var current = kbs.get_current();
            kbs.set_next(current, $(this), true);
+        })
+        .live("edit", function() {
+          var md = $(this).metadata();
+          if (md && md.m && md.m.length) {
+            var action = md.m[0].action;
+            var method = topic[action + "_trigger"];
+            if (typeof method === "function") {
+              var trigger = $(this).find(".menu-trigger:first");
+              method(trigger, md);
+            }
+          }
         });
 
       // init row context menu
@@ -116,18 +127,37 @@
     value_edit: function(e) {
       var trigger =  $("#row-menu").data("trigger");
       topic.value_edit_trigger(trigger);
+      return false;
     },
 
-    prop_edit_trigger: function(trigger) {
-      console.log("prop_edit_trigger", trigger.parents(".kbs:first").metadata());
+    value_delete: function(e) {
+      var trigger =  $("#row-menu").data("trigger");
+      topic.value_delete_trigger(trigger);
+      return false;
     },
 
-    prop_add_trigger: function(trigger) {
-      console.log("prop_add_trigger", trigger.parents(".kbs:first").metadata());
+    prop_edit_trigger: function(trigger, md) {
+      md = md || trigger.parents(".kbs:first").metadata();
+      trigger.data("tooltip").hide();
+      console.log("prop_edit_trigger", trigger, md);
     },
 
-    value_edit_trigger: function(trigger) {
-      console.log("value_edit_trigger", trigger.parents(".kbs:first").metadata());
+    prop_add_trigger: function(trigger, md) {
+      md = md || trigger.parents(".kbs:first").metadata();
+      trigger.data("tooltip").hide();
+      console.log("prop_add_trigger", trigger, md);
+    },
+
+    value_edit_trigger: function(trigger, md) {
+      md = md || trigger.parents(".kbs:first").metadata();
+      trigger.data("tooltip").hide();
+      console.log("value_edit_trigger", trigger, md);
+    },
+
+    value_delete_trigger: function(trigger, md) {
+      md = md || trigger.parents(".kbs:first").metadata();
+      trigger.data("tooltip").hide();
+      console.log("value_delete_trigger", trigger, md);
     }
   };
 

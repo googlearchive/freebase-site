@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
- acre.require("test/mock").playback(this, "i18n/test/playback_test_i18n.json");
+acre.require("test/mock").playback(this, "i18n/test/playback_test_i18n.json");
 
 var h = acre.require("helper/helpers.sjs");
 var i18n = acre.require("i18n/i18n");
@@ -85,9 +85,9 @@ test("i18n.datejs", function() {
   };
 
   ok(typeof i18n.datejs !== "undefined", "locale datejs initialized");
-  ok(i18n.datejs.CultureInfo, "datejs CultureInfo found");
-  equal(i18n.datejs.CultureInfo.name, map[i18n.lang].code);
-  same(i18n.format.date, i18n.datejs.CultureInfo.formatPatterns, "CultureInfo.formatPatterns loaded");
+  ok(i18n.datejs.Date.CultureInfo, "datejs CultureInfo found");
+  equal(i18n.datejs.Date.CultureInfo.name, map[i18n.lang].code);
+  same(i18n.format.date, i18n.datejs.Date.CultureInfo.formatPatterns, "CultureInfo.formatPatterns loaded");
 });
 
 test("i18n.mql.query.text", function() {

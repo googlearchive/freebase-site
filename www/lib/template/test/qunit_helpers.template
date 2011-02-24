@@ -28,6 +28,13 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  !!-->
+
+<acre:script>
+ var c = exports.c = {
+    template_base: "test/qunit.mjt"
+  };
+</acre:script>
+
 <acre:block def="title()">
   template/helpers.js
 </acre:block>
@@ -36,6 +43,3 @@
   <script src="template/test/qunit_helpers.js"></script>
   <script src="template/helpers.js"></script>
 </acre:block>
-
-${acre.require("template/renderer").render_page(null, this.exports, acre.require("test/qunit.mjt"))}
-

@@ -34,11 +34,11 @@ var _ = i18n.gettext;
 
 function prop_metadata(prop) {
   var md = {
-    s: h.extend({}, prop),   // prop schema/structure
-    m: []                    // menu data
+    p: h.extend({}, prop),   // prop schema/structure
+    m: []                   // menu data
   };
   // delete values from schema
-  delete md.s.values;
+  delete md.p.values;
   // prop menu
   var add_item = {
     attrs: {
@@ -48,10 +48,12 @@ function prop_metadata(prop) {
   if (prop.unique && prop.values.length) {
     add_item.text = _("Edit value");
     add_item.attrs.onclick = "return freebase.dispatch(event, freebase.topic.prop_edit, null, this);";
+    add_item.action = "prop_edit";
   }
   else {
     add_item.text = _("Add new value");
     add_item.attrs.onclick = "return freebase.dispatch(event, freebase.topic.prop_add, null, this);";
+    add_item.action = "prop_add";
   }
   md.m.push(add_item);
   md.m.push({
@@ -72,14 +74,21 @@ function prop_metadata(prop) {
 
 function value_metadata(value) {
   var md = {
-    m: []       // menu data
+    v: value.id || value.value,
+    m: [{                // menu data
+      text: _("Edit"),
+      action: "value_edit",
+      attrs: {
+        href: "#",
+        onclick: "return freebase.dispatch(event, freebase.topic.value_edit, null, this);"
+      }
+    },{
+      text: _("Delete"),
+      attrs: {
+        href: "#",
+        onclick: "return freebase.dispatch(event, freebase.topic.value_delete, null, this);"
+      }
+    }]
   };
-  md.m.push({
-    text: _("Edit value"),
-    attrs: {
-      href: "#",
-      onclick: "return freebase.dispatch(event, freebase.topic.value_edit, null, this);"
-    }
-  });
   return md;
 };

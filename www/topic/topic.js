@@ -32,30 +32,13 @@
 
   var topic = fb.topic = {
     init_row_menu: function(context) {
-      var row_menu = $("#row-menu");
       $(".menu-trigger", context).each(function() {
         $(this).tooltip({
           events: {def: "click,mouseout"},
-          position: "bottom right",
-          offset: [-10, -10],
+          relative: true,
+          position: ["bottom", "right"],
           effect: "fade",
-          delay: 300,
-          tip: "#row-menu",
-          onBeforeShow: function() {
-            var trigger = this.getTrigger();
-            var md = trigger.parents(".kbs:first").metadata();
-            row_menu.empty();
-            $.each(md.m, function(i, menu) {
-              var li = $('<li class="row-menu-item">');
-              var a = $('<a>').text(menu.text);
-              $.each(menu.attrs, function(k,v) {
-                a.attr(k, v);
-              });
-              li.append(a);
-              row_menu.append(li);
-            });
-            row_menu.data("trigger", trigger);
-          }
+          delay: 300
         });
       });
     },
@@ -86,15 +69,7 @@
            kbs.set_next(current, $(this), true);
         })
         .live("edit", function() {
-          var md = $(this).metadata();
-          if (md && md.m && md.m.length) {
-            var action = md.m[0].action;
-            var method = topic[action + "_trigger"];
-            if (typeof method === "function") {
-              var trigger = $(this).find(".menu-trigger:first");
-              method(trigger, md);
-            }
-          }
+          var menu_item = $(this).find(".row-menu-item:first a").click();
         })
         .hover(topic.row_menu_hoverover, topic.row_menu_hoverout);
 
@@ -135,52 +110,49 @@
     },
 
     prop_edit: function(e) {
-      var trigger = $("#row-menu").data("trigger");
-      topic.prop_edit_trigger(trigger);
+      var trigger = $(this).parents(".row-menu:first").prev(".menu-trigger");
+      trigger.data("tooltip").hide();
+      var prop = trigger.parents(".property-section").attr("data-id");
+      console.log("prop_edit", prop);
       return false;
     },
 
     prop_add: function(e) {
-      var trigger = $("#row-menu").data("trigger");
-      topic.prop_add_trigger(trigger);
+      var trigger = $(this).parents(".row-menu:first").prev(".menu-trigger");
+      trigger.data("tooltip").hide();
+      var prop = trigger.parents(".property-section").attr("data-id");
+      console.log("prop_add", prop);
       return false;
     },
 
     value_edit: function(e) {
-      var trigger =  $("#row-menu").data("trigger");
-      topic.value_edit_trigger(trigger);
+      var trigger = $(this).parents(".row-menu:first").prev(".menu-trigger");
+      trigger.data("tooltip").hide();
+      var prop_value = trigger.parents(".combo-menu:first").prev(".property-value");
+      var kbs = prop_value.parents(".kbs:first");
+      if (kbs.is("tr")) {
+        console.log("value_edit CVT", kbs.attr("data-id"));
+      }
+      else {
+        console.log("value_edit", prop_value.attr("data-id") || prop_value.attr("data-value"));
+      }
       return false;
     },
 
     value_delete: function(e) {
-      var trigger =  $("#row-menu").data("trigger");
-      topic.value_delete_trigger(trigger);
+      var trigger = $(this).parents(".row-menu:first").prev(".menu-trigger");
+      trigger.data("tooltip").hide();
+      var prop_value = trigger.parents(".combo-menu:first").prev(".property-value");
+      var kbs = prop_value.parents(".kbs:first");
+      if (kbs.is("tr")) {
+        console.log("value_delete CVT", kbs.attr("data-id"));
+      }
+      else {
+        console.log("value_delete", prop_value.attr("data-id") || prop_value.attr("data-value"));
+      }
       return false;
-    },
-
-    prop_edit_trigger: function(trigger, md) {
-      md = md || trigger.parents(".kbs:first").metadata();
-      trigger.data("tooltip").hide();
-      console.log("prop_edit_trigger", trigger, md);
-    },
-
-    prop_add_trigger: function(trigger, md) {
-      md = md || trigger.parents(".kbs:first").metadata();
-      trigger.data("tooltip").hide();
-      console.log("prop_add_trigger", trigger, md);
-    },
-
-    value_edit_trigger: function(trigger, md) {
-      md = md || trigger.parents(".kbs:first").metadata();
-      trigger.data("tooltip").hide();
-      console.log("value_edit_trigger", trigger, md);
-    },
-
-    value_delete_trigger: function(trigger, md) {
-      md = md || trigger.parents(".kbs:first").metadata();
-      trigger.data("tooltip").hide();
-      console.log("value_delete_trigger", trigger, md);
     }
+
   };
 
 

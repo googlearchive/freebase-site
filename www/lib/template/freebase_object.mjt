@@ -142,12 +142,12 @@
           <span acre:if="c.object.notable_type && c.object.notable_type !== '/type/type'" class="key">
             <strong>${_('notable type')}</strong>: 
             <a acre:attrs="itemprop('/common/topic/notable_types')"
-               href="${h.fb_url(object.notable_type)}">${c.object.notable_type}</a>
+               href="${h.fb_url(true, object.notable_type)}">${c.object.notable_type}</a>
           </span>
           <span acre:elif="c.object.notable_for" class="key">
             <strong>${_('notable for')}</strong>: 
             <a acre:attrs="itemprop('/common/topic/notable_for')"
-               href="${h.fb_url(c.object.notable_for)}">${c.object.notable_for}</a>
+               href="${h.fb_url(true, c.object.notable_for)}">${c.object.notable_for}</a>
           </span>
           <acre:block if="that_exports.keys">
             ${that_exports.keys()}

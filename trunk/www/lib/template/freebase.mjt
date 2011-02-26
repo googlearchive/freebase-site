@@ -94,7 +94,12 @@
    <!--[if IE 6 ]><body class="ie6"><![endif]-->
    <!--[if !IE]>--><body class=""><!--<![endif]-->
     ${header(exports)}
-    ${content(exports)}
+    <acre:block if="exports.content" trim="">
+      ${exports.content(exports)}
+    </acre:block>
+    <acre:block else="" trim="">
+      ${content(exports)}
+    </acre:block>
     ${footer(exports)}
     ${footer_script(exports)}
   </body>

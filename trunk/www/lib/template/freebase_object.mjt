@@ -44,6 +44,10 @@
   var base = acre.require("template/freebase.mjt");
   var this_exports = this.exports;
   var that_exports;
+
+  // microdata helpers
+  var microdata = acre.require("helper/microdata.sjs");
+  var itemprop = microdata.itemprop;
 </acre:script>
 
 <acre:block def="page(exports)">
@@ -99,6 +103,12 @@
   </acre:block>
 </acre:block>
 
+<acre:block def="content(exports)">
+  <div id="content" class="clear" itemscope="" data-id="c.object.mid">
+    ${content_body()}
+  </div>
+</acre:block>
+
 <acre:block def="content_body()">
   <div id="page-header">
     <div class="page-meta">
@@ -107,7 +117,7 @@
       !!-->
       <acre:block if="c.object">
         <h1>
-          ${c.object.name}
+          <span acre:attrs="itemprop('/type/object/name')">${c.object.name}</span>
           <acre:block if="that_exports.flags">
             <span class="flags">
               ${that_exports.flags()}
@@ -117,20 +127,27 @@
         <div class="meta">   
           <!-- Show topic MID -->
           <span class="key">
-            <strong><abbr title="${_('Machine ID')}">${_("mid")}</abbr></strong>: ${c.object.mid}
+            <strong><abbr title="${_('Machine ID')}">${_("mid")}</abbr></strong>: 
+            <span acre:attrs="itemprop('/type/object/mid')">${c.object.mid}</span>
           </span>
           <span class="key">
-            <strong><abbr title="${_('ID')}">${_("id")}</abbr></strong>: ${c.object.id}
+            <strong><abbr title="${_('ID')}">${_("id")}</abbr></strong>: 
+            <span acre:attrs="itemprop('/type/object/id')">${c.object.id}</span>
           </span>
           <span class="key">
-            <strong><abbr title="${_('GUID')}">${_("guid")}</abbr></strong>: ${c.object.guid}
+            <strong><abbr title="${_('GUID')}">${_("guid")}</abbr></strong>: 
+            <span acre:attrs="itemprop('/type/object/guid')">${c.object.guid}</span>
           </span>
           <!-- Show top-ranked notable type -->
           <span acre:if="c.object.notable_type && c.object.notable_type !== '/type/type'" class="key">
-            <strong>${_('notable type')}</strong>: <a href="${h.fb_url('/schema', c.object.notable_type)}">${c.object.notable_type}</a>
+            <strong>${_('notable type')}</strong>: 
+            <a acre:attrs="itemprop('/common/topic/notable_types')"
+               href="${h.fb_url(object.notable_type)}">${c.object.notable_type}</a>
           </span>
           <span acre:elif="c.object.notable_for" class="key">
-            <strong>${_('notable for')}</strong>: <a href="${h.fb_url('/topic', c.object.notable_for)}">${c.object.notable_for}</a>
+            <strong>${_('notable for')}</strong>: 
+            <a acre:attrs="itemprop('/common/topic/notable_for')"
+               href="${h.fb_url(c.object.notable_for)}">${c.object.notable_for}</a>
           </span>
           <acre:block if="that_exports.keys">
             ${that_exports.keys()}
@@ -138,15 +155,20 @@
         </div>    
         <div class="admin-toolbox">
           <span class="creation-timestamp">
-            <acre:block if="c.object.creator">
+            <span acre:if="c.object.creator" 
+                  acre:attrs="itemprop('/type/object/creator', true)">
               ${image.user_image_small(c.object.creator)}
-              ${_("Created by")} <a href="${h.legacy_fb_url('/view', c.object.creator.id)}" title="${_('View user profile')}">${c.object.creator.name}</a> 
-              on 
-            </acre:block>
-            <acre:block else="">
+              ${_("Created by")} 
+              <a href="${h.legacy_fb_url('/view', c.object.creator.id)}" 
+                 title="${_('View user profile')}">${c.object.creator.name}</a> 
+              ${_("on")}
+            </span>
+           <span acre:else="">
               ${_("Created on")}
-            </acre:block>
-            <time class="published" datetime="${c.object.timestamp}">${i18n.format_timestamp(c.object.timestamp)}</time>
+           </span>
+           <time class="published" 
+                 acre:attrs="itemprop('/type/object/timestamp')"
+                 datetime="${c.object.timestamp}">${i18n.format_timestamp(c.object.timestamp)}</time>
           </span>
         </div>
         <acre:script>
@@ -155,8 +177,8 @@
         </acre:script>
         <div id="description" acre:if="blurb && blob"> 
           <!-- blurb should be sentence-level truncation at ~50 words -->
-          <p class="blurb">${blurb}</p>
-          <div class="blob">${blob}</div>
+          <p class="blurb" itemprop="desc">${blurb}</p>
+          <div class="blob" itemprop="desc">${blob}</div>
           <a href="javascript:void(0);" class="blurb-trigger">${_('more')}</a>
         </div>
         <div class="nav clear">

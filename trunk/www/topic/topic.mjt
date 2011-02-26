@@ -32,11 +32,14 @@
 <acre:script>
   var c = this.exports.c = {};
   var h = acre.require("lib/helper/helpers.sjs");
-  var th = acre.require("helpers.sjs");
   var image = acre.require("lib/template/imagecomponents");  
   var i18n = acre.require("lib/i18n/i18n");
   var _ = i18n.gettext;
   var filter_components = acre.require("lib/filter/components.mjt");
+
+  // microdata helpers
+  var microdata = acre.require("lib/helper/microdata.sjs");
+  var itemprop = microdata.itemprop;
 </acre:script>
 
 <acre:block def="head()">
@@ -136,17 +139,16 @@
 </acre:block>
 
 <acre:block def="footer_script()">
-  <ul id="row-menu" class="row-menu tooltip" acre:trim="">
-  </ul>
   <script src="topic.mf.js"></script>
 </acre:block>
 
 <acre:block def="domain_section(id, structure)">
-  <div class="section domain domain-section">  
+  <div class="section domain domain-section" data-id="${structure.id}">
     <div class="header">
       <span class="status">${_('Freebase Commons')}</span>
       <h1 class="kbs">
-        <span class="mark"><a href="${h.fb_url(structure.id)}">${structure.text}</a></span>
+        <span class="mark">
+          <a href="${h.fb_url(structure.id)}">${structure.text}</a></span>
       </h1>
     </div>    
     <acre:block for="type_id in structure.types">
@@ -160,10 +162,14 @@
 </acre:block>
 
 <acre:block def="type_section(id, structure)">
-  <div class="type-section">
+  <div class="type-section" data-id="${structure.id}">
     <div class="header">
       <h2 class="foobar kbs">
-        <span class="mark"><a title="${structure.id}" href="${h.fb_url(structure.id)}">${structure.text}</a></span>
+        <span class="mark">
+          <a title="${structure.id}" 
+             acre:attrs="itemprop('/type/object/type')"
+             href="${h.fb_url(true, structure.id)}">${structure.text}</a>
+        </span>
         <span class="key">${structure.id}</span>
       </h2>
     </div>
@@ -178,13 +184,13 @@
 </acre:block>
 
 <acre:block def="property_section(id, property)">
-  <div class="property-section">
-    <h3 class="sub-foobar kbs ${JSON.stringify(th.prop_metadata(property))}">
+  <div class="property-section" data-id="${property.id}">
+    <h3 class="sub-foobar kbs">
       <!--view all link is shown for any non-unique property-->
       <a href="#" class="more"><span>${_('View all property values')}</span></a>
       <span class="sub-foobar-label">
         <span class="mark">${property.text}</span>
-        <a href="javascript:void(0);" class="menu-trigger">Actions</a>
+        ${property_menu(id, property)}
       </span>
     </h3>  
     <div class="list-section">
@@ -216,7 +222,13 @@
 </acre:block>
 
 <acre:block def="property_table_row(id, property, value)">
-  <tr class="kbs ${JSON.stringify(th.value_metadata(value))}">
+<acre:script>
+  console.log("property_table_row", id, property, value);
+</acre:script>
+
+  <tr class="kbs" 
+      acre:attrs="itemprop(property.id, true)"
+      data-id="${value.id}">
     <acre:block for="i, subproperty in property.properties">
       <acre:block if="i === 0">
         ${property_table_primary_cell(id, property, value, subproperty, value[subproperty.id])}
@@ -243,10 +255,10 @@
 <acre:block def="subproperty_list(id, property, value, subproperty, subvalue, primary)">
   <acre:block if="subvalue && subvalue.values && subvalue.values.length">
     <ul class="data-list">
-      <acre:block for="i,value in subvalue.values">
+      <acre:block for="i,subvalue in subvalue.values">
         <li>
           <span class="wrapper">
-            ${property_value(value)}
+            ${property_value(value.id, subproperty, subvalue)}
             <acre:block if="i === 0 && primary">
               ${property_value_menu()}
             </acre:block>
@@ -274,21 +286,23 @@
 </acre:block>
 
 <acre:block def="property_list_row(id, property, value)">
-  <li class="kbs ${JSON.stringify(th.value_metadata(value))}">
+  <li class="kbs">
     <span class="wrapper">
-      ${property_value(value)}
+      ${property_value(id, property, value)}
       ${property_value_menu()}
     </span>
   </li>
 </acre:block>
 
-<acre:block def="property_value(value, property)">
+<acre:block def="property_value(id, property, value)">
   <acre:block if="value">
     <acre:block if="value.url && value.id">
-    <a title="${value.id}" class="property-value" href="${h.fb_url(value.id)}">${value.text}</a>
+    <a title="${value.id}" class="property-value"
+       acre:attrs="itemprop(property.id)" href="${h.fb_url(true, value.id)}"
+       data-id="${value.id}">${value.text}</a>
     </acre:block>
     <acre:block else="">
-    <span class="property-value">${value.text}</span>
+    <span class="property-value" acre:attrs="itemprop(property.id)" data-value="${value.value}">${value.text}</span>
     </acre:block>
   </acre:block>
 
@@ -298,9 +312,37 @@
 
 </acre:block>
 
+<acre:block def="property_menu(id, property)">
+  <a href="javascript:void(0)" class="more-action menu-trigger">menu</a>
+  <ul class="row-menu tooltip">
+    <li class="row-menu-item">
+      <acre:block if="property.unique && property.values.length">
+        <a href="#" onclick="return freebase.dispatch(event, freebase.topic.prop_edit, null, this);">${_("Edit value")}</a>
+      </acre:block>
+      <acre:block else="">
+        <a href="#" onclick="return freebase.dispatch(event, freebase.topic.prop_add, null, this);">${_("Add new value")}</a>
+      </acre:block>
+    </li>
+    <li class="row-menu-item">
+      <a href="h.fb_url('/inspect', property.id)">${_("Inspect property")}</a>
+    </li>
+    <li class="row-menu-item">
+      <a href="h.fb_url('/schema', property.id)">${_("View schema")}</a>
+    </li>       
+  </ul>
+</acre:block>
+
 <acre:block def="property_value_menu()">
   <span class="combo-menu">
     <a href="javascript:void(0)" class="default-action edit-action">edit</a>
     <a href="javascript:void(0)" class="more-action menu-trigger">menu</a>
+    <ul class="row-menu tooltip">
+      <li class="row-menu-item">
+        <a href="#" onclick="return freebase.dispatch(event, freebase.topic.value_edit, null, this);">${ _("Edit")}</a>
+      </li>
+      <li class="row-menu-item">
+        <a href="#" onclick="return freebase.dispatch(event, freebase.topic.value_delete, null, this);">${ _("Delete")}</a>
+      </li>
+    </ul>
   </span>
 </acre:block>

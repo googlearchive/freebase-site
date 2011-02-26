@@ -222,11 +222,7 @@
 </acre:block>
 
 <acre:block def="property_table_row(id, property, value)">
-<acre:script>
-  console.log("property_table_row", id, property, value);
-</acre:script>
-
-  <tr class="kbs" 
+ <tr class="kbs" 
       acre:attrs="itemprop(property.id, true)"
       data-id="${value.id}">
     <acre:block for="i, subproperty in property.properties">

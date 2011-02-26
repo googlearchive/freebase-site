@@ -42,3 +42,17 @@ function itemprop(property_id, itemscope, type_id) {
   }
   return md;
 };
+
+/**
+ * look at expected_type of property and return microdata equivalent value attrs.
+ *
+ * For example, for /type/datetime, we want <span datetime="xxx">
+ */
+function value(propObj, valObj) {
+  if (propObj.expected_type.id === "/type/datetime") {
+    return {
+      datetime: valObj.value
+    };
+  }
+  return null;
+};

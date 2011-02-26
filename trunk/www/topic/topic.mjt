@@ -298,7 +298,9 @@
        data-id="${value.id}">${value.text}</a>
     </acre:block>
     <acre:block else="">
-    <span class="property-value" acre:attrs="itemprop(property.id)" data-value="${value.value}">${value.text}</span>
+    <span class="property-value" 
+          acre:attrs="h.extend(itemprop(property.id), microdata.value(property, value))" 
+          data-value="${value.value}">${value.text}</span>
     </acre:block>
   </acre:block>
 

@@ -76,7 +76,7 @@ var SPEC = {
       .then(function([object, prop_counts]) {
         result.object = object;
         result.prop_counts = prop_counts;
-        return queries.topic(object)
+        return queries.topic(object, f)
           .then(function(topic) {
             result.topic = topic;
             return result;

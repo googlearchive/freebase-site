@@ -31,13 +31,26 @@
 var h = acre.require("lib/helper/helpers.sjs");
 var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
+var i18n = acre.require("lib/i18n/i18n.sjs");
 
 /**
  * @param object - result of object query @see lib/queries/object.sjs
  */
-function topic(object) {
+function topic(object, f) {
   // topic api
-  var url = h.fb_api_url("/api/experimental/topic/extended", object.id);
+  var params = {
+    lang: i18n.lang
+  };
+  if (params.lang !== "/lang/en") {
+    params.lang = [params.lang, "/lang/en"];
+  }
+  if (f.as_of_time) {
+    params.as_of_time = f.as_of_time;
+  }
+  if (f.limit) {
+    params.prop_limit = f.limit;
+  }
+  var url = h.fb_api_url("/api/experimental/topic/full", object.id, params);
   return freebase.fetch(url)
     .then(function(env) {
       return env.result;

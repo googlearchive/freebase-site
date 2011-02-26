@@ -162,10 +162,17 @@ function build_url(host /**, path1, path2, ..., params **/) {
  * params takes precidents
  */
 function fb_url() {
-  // Use an absolute url if we are currently being
-  // served under an app style url
   var args = Array.prototype.slice.call(arguments);
-  args.unshift(null); // host is null to specify relative url
+  var absolute = false;
+  if (args.length && typeof args[0] === "boolean") {
+    absolute = args.shift();
+  }
+  if (absolute) {
+    args.unshift(acre.freebase.site_host);
+  }
+  else {
+    args.unshift(null); // host is null to specify relative url
+  }
   return build_url.apply(null, args);
 };
 

@@ -85,6 +85,8 @@ test("fb_url", function() {
   equal(h.fb_url(""), "/");
   equal(h.fb_url("/path1", "/path2", {a:1}), "/path1/path2?a=1");
   equal(h.fb_url("/path1/path2", [["a",1]]), "/path1/path2?a=1");
+  equal(h.fb_url(true), acre.freebase.site_host);
+  equal(h.fb_url(true, "/path1/path2", [["a",1]]), acre.freebase.site_host + "/path1/path2?a=1");
 });
 
 test("resolve_reentrant_path", function() {

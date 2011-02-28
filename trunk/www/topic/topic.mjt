@@ -205,24 +205,29 @@
 </acre:block>
 
 <acre:block def="property_table(id, property)">
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th acre:for="subproperty in property.properties" scope="col">
-          ${subproperty.text}
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <acre:block for="value in property.values">
-        ${property_table_row(id, property, value)}
-      </acre:block>
-    </tbody>
-  </table>
+  <acre:block if="property && property.values && property.values.length">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th acre:for="subproperty in property.properties" scope="col">
+            ${subproperty.text}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <acre:block for="value in property.values">
+          ${property_table_row(id, property, value)}
+        </acre:block>
+      </tbody>
+    </table>
+  </acre:block>
+  <acre:block else="">
+    <div class="empty-property">-</div>
+  </acre:block>
 </acre:block>
 
 <acre:block def="property_table_row(id, property, value)">
- <tr class="kbs" 
+  <tr class="kbs" 
       acre:attrs="itemprop(property.id, true)"
       data-id="${value.id}">
     <acre:block for="i, subproperty in property.properties">
@@ -264,7 +269,16 @@
     </ul>
   </acre:block>
   <acre:block else="">
-    <div class="empty-property">-</div>
+    <ul class="data-list">
+      <li>
+        <span class="wrapper">
+          <span class="property-value empty-property">-</span>
+          <acre:block if="primary">
+            ${property_value_menu()}
+          </acre:block>
+        </span>
+      </li>
+    </ul>
   </acre:block>  
 </acre:block>
 

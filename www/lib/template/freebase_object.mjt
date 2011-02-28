@@ -141,7 +141,7 @@
           <!-- Show top-ranked notable type -->
           <span acre:if="c.object.notable_type && c.object.notable_type !== '/type/type'" class="key">
             <strong>${_('notable type')}</strong>: 
-            <a acre:attrs="itemprop('/common/topic/notable_types')"
+            <a acre:attrs="itemprop('/common/topic/notable_for')"
                href="${h.fb_url(true, object.notable_type)}">${c.object.notable_type}</a>
           </span>
           <span acre:elif="c.object.notable_for" class="key">

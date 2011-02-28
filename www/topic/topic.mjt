@@ -307,17 +307,21 @@
 <acre:block def="property_value(id, property, value)">
   <acre:block if="value">
     <acre:block if="value.url && value.id">
-    <a title="${value.id}" class="property-value"
-       acre:attrs="itemprop(property.id)" href="${h.fb_url(true, value.id)}"
-       data-id="${value.id}">${value.text}</a>
+      <a title="${value.id}" class="property-value"
+         acre:attrs="itemprop(property.id)" href="${h.fb_url(true, value.id)}"
+         data-id="${value.id}">${value.text}</a>
+    </acre:block>
+    <acre:block elif="property.expected_type.id === '/type/datetime'">      
+      <time class="property-value"
+            acre:attrs="h.extend(itemprop(property.id), microdata.value(property, value))" 
+            data-value="${value.value}">${value.text}</time>
     </acre:block>
     <acre:block else="">
-    <span class="property-value" 
-          acre:attrs="h.extend(itemprop(property.id), microdata.value(property, value))" 
-          data-value="${value.value}">${value.text}</span>
+      <span class="property-value" 
+            acre:attrs="h.extend(itemprop(property.id), microdata.value(property, value))" 
+            data-value="${value.value}">${value.text}</span>
     </acre:block>
   </acre:block>
-
   <acre:block else="">
     <span class="empty-property">-</span>
   </acre:block>

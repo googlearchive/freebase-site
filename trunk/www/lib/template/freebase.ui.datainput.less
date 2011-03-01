@@ -1,0 +1,45 @@
+.data-input {
+  display: inline-block;
+  padding-right: 23px;
+  background: #e1e2e3;
+  border: 2px solid #e1e2e3;
+  .transition(all);
+}
+
+.data-input.focus {
+  .box_shadow(0,0,6px, #61D7F7);
+}
+
+.input-icon {
+}
+
+.fb-input {
+  line-height: 1;
+  color: #999;
+  padding: 4px 7px;
+  border: 0;
+  border-top: 1px solid #fff;
+  .linear_gradient(#f1f2f3, #fff);
+}
+
+.fb-input:focus {
+  color: #666;
+  background: #fff;
+}
+
+.fb-input.valid {
+  font-weight: bold;
+  color: #222;
+}
+
+/*
+Webkit browsers (including Chrome and Safari) have an
+inconsistency from other browsers in the way they treat
+inline-block element.
+*/
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  .data-input {
+    border: 0;
+  }
+}

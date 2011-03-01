@@ -182,10 +182,12 @@
     <h3 class="sub-foobar kbs">
       <!--view all link is shown for any non-unique property-->
       <a href="#" class="more"><span>${_('View all property values')}</span></a>
-      <span class="sub-foobar-label">
-        <span class="mark">${property.text}</span>
-        ${property_menu(id, property)}
-      </span>
+        <span class="sub-foobar-label">
+          <a href="javascript:void(0)" class="more-action menu-trigger">
+            <span class="mark">${property.text}</span>
+          </a>
+          ${property_menu(id, property)}
+        </span>
     </h3>  
     <div class="list-section">
       <acre:block if="property.properties && property.properties.length">      
@@ -323,7 +325,6 @@
 </acre:block>
 
 <acre:block def="property_menu(id, property)">
-  <a href="javascript:void(0)" class="more-action menu-trigger">menu</a>
   <ul class="row-menu tooltip">
     <li class="row-menu-item">
       <acre:block if="property.unique && property.values.length">

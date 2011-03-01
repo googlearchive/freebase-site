@@ -39,6 +39,7 @@
           events: {def: "click,mouseout"},
           relative: true,
           position: ["bottom", "right"],
+          offset: [8, "-" + offset_width],
           effect: "fade",
           delay: 300
         });

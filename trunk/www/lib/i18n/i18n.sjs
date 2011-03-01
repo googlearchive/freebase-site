@@ -29,6 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+
+
 var h = acre.require("helper/helpers.sjs");
 var deferred = acre.require("promise/deferred");
 var freebase = acre.require("promise/apis").freebase;
@@ -843,16 +846,28 @@ function set_lang(lang_id) {
   if (!h.isArray(lang_codes)) {
     lang_codes = [lang_codes];
   }
+  var lib_path = acre.get_metadata().path;
+  var js_to_sjs_metadata = {
+    extensions: {
+      js: {
+        handler: "js"
+      }
+    },
+    handlers: {
+      js: lib_path + "/handlers/js_to_sjs_handler.sjs"
+    }
+  };
   lang_codes.every(function(lang_code) {console.log("set_lang code", lang_code);
-    var filename = h.sprintf("datejs/date-%s.sjs", lang_code);
+    var filename = h.sprintf("datejs/globalization/%s.js", lang_code);
     if (lib_files[filename]) {
-      datejs = acre.require(filename);
+      var globalization = acre.require(filename, js_to_sjs_metadata); // Date.CultureInfo needs to load before core date.js
+      datejs = acre.require("datejs/date.js", js_to_sjs_metadata);
       return false;
     }
     return true;
   });
   if (!datejs) {
-    datejs = acre.require("datejs/date-en-US.sjs");
+    datejs = acre.require("datejs/date.js", js_to_sjs_metadata);
   }
   h.extend(format.date, datejs.Date.CultureInfo.formatPatterns);
 };
@@ -942,3 +957,4 @@ function get_accept_langs() {
   });
   return lang_codes;
 };
+

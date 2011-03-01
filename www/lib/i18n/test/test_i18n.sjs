@@ -72,7 +72,7 @@ test("i18n.datejs", function() {
     // ensure in datejs/*.sjs
     var found = false;
     code.every(function(c) {
-      var filename = h.sprintf("datejs/date-%s.sjs", c);
+      var filename = h.sprintf("datejs/globalization/%s.js", c);
       if (lib_files[filename]) {
         found = filename;
         return false;

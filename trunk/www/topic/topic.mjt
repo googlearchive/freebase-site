@@ -159,12 +159,17 @@
   <div class="type-section" data-id="${structure.id}">
     <div class="header">
       <h2 class="foobar kbs">
-        <span class="mark">
-          <a title="${structure.id}" 
-             acre:attrs="itemprop('/type/object/type')"
-             href="${h.fb_url(true, structure.id)}">${structure.text}</a>
+        <span class="header-label">
+          <span class="menu-trigger">
+            <a title="${structure.id}" 
+              acre:attrs="itemprop('/type/object/type')"
+              href="${h.fb_url(true, structure.id)}">
+              <span class="mark">${structure.text}</span>
+            </a>
+            <span class="key">${structure.id}</span>
+          </span>
         </span>
-        <span class="key">${structure.id}</span>
+        </a>
       </h2>
     </div>
     <acre:block for="property_id in structure.properties">
@@ -182,12 +187,12 @@
     <h3 class="sub-foobar kbs">
       <!--view all link is shown for any non-unique property-->
       <a href="#" class="more"><span>${_('View all property values')}</span></a>
-        <span class="sub-foobar-label">
-          <a href="javascript:void(0)" class="more-action menu-trigger">
-            <span class="mark">${property.text}</span>
-          </a>
-          ${property_menu(id, property)}
-        </span>
+      <span class="header-label">
+        <a href="javascript:void(0)" class="menu-trigger">
+          <span class="mark">${property.text}</span>
+        </a>
+        ${property_menu(id, property)}
+      </span>
     </h3>  
     <div class="list-section">
       <acre:block if="property.properties && property.properties.length">      

@@ -33,7 +33,7 @@ h1.kbs.current {
 .kbs.current .mark,
 li.kbs.current,
 tr.kbs.current td:first-child li:first-child {
-  background: url(lib/template/ui-icons.png) no-repeat 5px -763px;
+  background: url(lib/template/ui-icons.png) no-repeat 5px -814px;
 }
 
 h1 .mark,
@@ -44,11 +44,11 @@ h3 .mark {
 }
 
 h2.kbs.current .mark {
-  background-position: 5px -768px;
+  background-position: 5px -819px;
 }
 
 h3.kbs.current .mark {
-  background-position: 5px -768px;
+  background-position: 5px -818px;
 }
 
 
@@ -78,12 +78,11 @@ h3.kbs.current .mark {
   font-size: 12px;
   font-weight: bold;
   line-height: 1;
-  padding: 7px 15px 7px 0;
   .box_shadow(0, 1px, 2px, #aaa);
   .linear_gradient(#ccc, #c1c2c3);
 }
 
-.foobar span {
+.foobar .key {
   font-weight: normal;
 }
 
@@ -133,33 +132,32 @@ h3.kbs.current .mark {
   color: #5a5a5a;
 }
 
-.sub-foobar-label {
+.header-label {
   display: inline-block;
-  padding: 7px 7px 7px 0;
   .transition(all);
 }
 
-.sub-foobar:hover .sub-foobar-label {
+.foobar:hover .header-label,
+.sub-foobar:hover .header-label {
   background: rgba(0,0,0,0.05);
 }
 
-.sub-foobar:hover .sub-foobar-label:hover {
+.foobar:hover .header-label:hover,
+.sub-foobar:hover .header-label:hover {
   cursor: pointer;
   background: rgba(0,0,0,0.1);
 }
 
-.sub-foobar .menu-trigger {
+.header-label .menu-trigger {
   display: inline-block;
   color: #666;
-  background: url(lib/template/ui-icons.png) no-repeat right -664px;
-  padding-right: 25px;
+  background: url(lib/template/ui-icons.png) no-repeat right -679px;
+  padding: 7px 25px 7px 0;
 }
 
+.foobar:hover .menu-trigger,
 .sub-foobar:hover .menu-trigger {
-  background-position: right -677px;
-}
-
-.sub-foobar:hover .sub-foobar-label:hover .menu-trigger {
+  background-position: right -713px;
 }
 
 /*
@@ -352,11 +350,19 @@ The .data-table object should hold non-simple data (eg. Mediator or CVT)
   width: 11px;
   height: 17px;
   text-indent: -9999px;
-  background: url(lib/template/ui-icons.png) no-repeat 2px -664px;
+  background: url(lib/template/ui-icons.png) no-repeat 2px -686px;
+}
+
+.combo-menu:hover .more-action {
+  background-position: 2px -720px;
+}
+
+.combo-menu:hover .more-action:hover {
+  background-position: 2px -753px;
 }
 
 .default-action.edit-action {
-  background: url(lib/template/ui-icons.png) no-repeat 2px -707px;
+  background: url(lib/template/ui-icons.png) no-repeat 2px -855px;
 }
 
 .combo-menu:hover .default-action.edit-action {
@@ -364,19 +370,11 @@ The .data-table object should hold non-simple data (eg. Mediator or CVT)
 }
 
 .combo-menu:hover .edit-action {
-  background-position: 2px -727px;
+  background-position: 2px -875px;
 }
 
 .combo-menu:hover .edit-action:hover {
-  background-position: 2px -747px;
-}
-
-.combo-menu:hover .more-action {
-  background-position: 2px -677px;
-}
-
-.combo-menu:hover .more-action:hover {
-  background-position: 2px -689px;
+  background-position: 2px -895px;
 }
 
 .row-menu {

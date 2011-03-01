@@ -42,10 +42,15 @@
 
 <acre:block def="head()">
   <script src="${h.lib_base_url('suggest')}/suggest.min.js"></script>
-  <script src="validator/test/qunit_validate_input.js"></script>
+  <script>
+    window.freebase = {};
+  </script>
   <script src="datejs/date.js"></script>
   <script src="validator/isodate.js"></script>
   <script src="validator/jquery.validate_input.js"></script>
+
+  <script src="validator/test/qunit_validate_input.js"></script>
+  <script src="validator/test/qunit_validate_input.datetime.js"></script>
 </acre:block>
 
 <acre:block def="fixture()">  

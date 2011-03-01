@@ -33,6 +33,8 @@
   var topic = fb.topic = {
     init_row_menu: function(context) {
       $(".menu-trigger", context).each(function() {
+        // figure out the width of the menu, so we can offset it accordingly
+        var offset_width = $(".row-menu:first").outerWidth();
         $(this).tooltip({
           events: {def: "click,mouseout"},
           relative: true,
@@ -107,6 +109,17 @@
           $add_type_pane.slideDown();
         }
       });
+
+      // DAE: this basic handling for data input styling
+      // Feel free to refactor, but I need a focus class
+      // on .data-input
+      $(".fb-input").focusin(function(){
+        $(this).parents(".data-input").addClass("focus");
+      })
+
+      $(".fb-input").focusout(function(){
+        $(this).parents(".data-input").removeClass("focus");
+      })
     },
 
     prop_edit: function(e) {

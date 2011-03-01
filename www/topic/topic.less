@@ -130,12 +130,12 @@ h3.kbs.current .mark {
 }
 
 .sub-foobar a:hover span {
-  color: #222;
+  color: #5a5a5a;
 }
 
 .sub-foobar-label {
   display: inline-block;
-  padding: 7px 15px 7px 0;
+  padding: 7px 7px 7px 0;
   .transition(all);
 }
 
@@ -150,20 +150,16 @@ h3.kbs.current .mark {
 
 .sub-foobar .menu-trigger {
   display: inline-block;
-  opacity: 0.1;
-  text-indent: -9999px;
-  width: 20px;
-  height: 10px;
-  background: url(lib/template/ui-icons.png) no-repeat 0 -654px;
-  .transition(all);
+  color: #666;
+  background: url(lib/template/ui-icons.png) no-repeat right -664px;
+  padding-right: 25px;
 }
 
 .sub-foobar:hover .menu-trigger {
-  opacity: 0.3;
+  background-position: right -677px;
 }
 
 .sub-foobar:hover .sub-foobar-label:hover .menu-trigger {
-  opacity: 0.5;
 }
 
 /*
@@ -329,6 +325,7 @@ The .data-table object should hold non-simple data (eg. Mediator or CVT)
   visibility: hidden;
   padding: 2px;
   border: 1px solid transparent;
+  .transition(all);
 }
 
 .kbs.row-hover .combo-menu {
@@ -380,4 +377,8 @@ The .data-table object should hold non-simple data (eg. Mediator or CVT)
 
 .combo-menu:hover .more-action:hover {
   background-position: 2px -689px;
+}
+
+.row-menu {
+  .rounded_corners(0);
 }

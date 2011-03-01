@@ -85,18 +85,6 @@
         ${filter_components.as_of_time_filter("/topic" + c.id, c.filters)}
       </div>
     </div>
-    <div class="module">
-      <div class="module-section alt" id="limit-slider">    
-        <acre:script>
-          var limit = c.filters.limit || 10;
-        </acre:script>
-        <h3 class="module-section-title">
-          <label for="">Show up to <strong class="current-limit">${limit}</strong> properties</label>
-        </h3>
-        ${filter_components.filter_form("/topic" + c.id, c.filters, 'limit', filter_components.limit_slider, ['limit', limit])}
-      </div>
-
-    </div>
   </div>
 
   <div class="column data" id="topic-data">
@@ -120,6 +108,13 @@
         <h3>Suggested Types:</h3>
       </div>
     </div>
+<!--
+    <div class="domain section">
+      <span class="data-input text">
+        <input type="text" class="fb-input" />
+      </span>
+    </div>
+-->
     <acre:script>
       var structure = c.topic && c.topic.structure;
     </acre:script>
@@ -137,7 +132,6 @@
     </acre:block>
   </div>
 </acre:block>
-
 <acre:block def="footer_script()">
   <script src="topic.mf.js"></script>
 </acre:block>

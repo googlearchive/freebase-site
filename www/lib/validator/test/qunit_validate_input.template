@@ -51,6 +51,7 @@
   <script src="datejs/date-en-US.js"></script>
   <script src="validator/isodate.js"></script>
   <script src="validator/jquery.validate_input.js"></script>
+  <script src="validator/jquery.validate_datetime.js"></script>
   <script src="validator/test/qunit_validate_input.js"></script>
   <script src="validator/test/qunit_validate_input.datetime.js"></script>
 </acre:block>

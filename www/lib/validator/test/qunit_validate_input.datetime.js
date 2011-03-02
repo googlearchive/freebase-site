@@ -72,7 +72,7 @@ var SKIP_TESTS = {
         if (src.indexOf("date-en-US.js") !== -1) {
           datejs_path = src.replace("date-en-US.js", "");
         }
-        if (src.indexOf("validator/jquery.validate_input.js") !== -1) {
+        if (src.indexOf("validator/jquery.validate_datetime.js") !== -1) {
           validatejs = src;
         }
       }
@@ -191,7 +191,7 @@ var SKIP_TESTS = {
 
     var t = 0;
     for (var i=t,l=datejss.length; i<l; i++) {
-      if (i > 1) {
+      if (i > t) {
         //break;
       }
       var datejs = datejss[i];

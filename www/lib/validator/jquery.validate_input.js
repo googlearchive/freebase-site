@@ -35,6 +35,9 @@
    * date.js
    * isodate.js
    */
+  (function(Date) {
+     fix_datejs(Date);
+  })(Date);
 
   $.fn.validate_input = function (options) {
     return this.each(function() {
@@ -42,16 +45,16 @@
       if (!$this.is(":text")) {
         return;
       }
-      var inst = $this.data("validate_input");
+      var inst = $this.data("$.validate_input");
       if (inst) {
         inst._destroy();
       }
-      inst = new validate_input(this, options);
-      $this.data("validate_input", inst);
+      inst = new vi(this, options);
+      $this.data("$.validate_input", inst);
     });
   };
-  var validate_input = $.validate_input = function(input, options) {
-    this.options = $.extend(true, {}, validate_input.defaults, options);
+  var vi = $.validate_input = function(input, options) {
+    this.options = $.extend(true, {}, vi.defaults, options);
     if (typeof this.options.validator !== "function") {
       throw ("A validator is required");
     }
@@ -65,19 +68,19 @@
     });
     return this;
   };
-  validate_input.prototype = {
+  vi.prototype = {
     init: function() {
       var self = this;
       this.input
-        .bind("keyup.validate_input", function(e) {
+        .bind("keyup.vi", function(e) {
           self.textchange(e);
         })
-        .bind($.browser.msie ? "paste.validate_input" : "input.validate_input", function(e) {
+        .bind($.browser.msie ? "paste.vi" : "input.vi", function(e) {
           self.textchange(e);
         });
     },
     _destroy: function() {
-      this.input.unbind(".validate_input");
+      this.input.unbind(".vi");
     },
     valid: function(data) {
       this.input.trigger("valid", data);
@@ -113,7 +116,7 @@
       }
     }
   };
-  $.extend(validate_input, {
+  $.extend(vi, {
     defaults: {
       allow_empty: null,
       validator: function(v) {
@@ -122,28 +125,145 @@
       }
     },
 
+    rdatetime_quotes: /[\'\"]/g,
+    rdatetime_daynames: new RegExp(Date.CultureInfo.dayNames.join("|"), "gi"),
+
+    datetime_parts: (function(Date) {
+      var seen = {};
+      var parts = ["\\d+"];
+      var digit = /^\d+$/;
+
+      $.each([Date.CultureInfo.monthNames, Date.CultureInfo.abbreviatedMonthNames], function(i, ms) {
+        $.each(ms, function(j, m) {
+          if (digit.test(m)) {
+            return false;  // don't need to continue
+          }
+          m = m.toLowerCase();
+          if (!seen[m]) {
+            if (i === 1) {
+              // for month abbreviations, we don't substring match
+              m = m + "(?!\\w)";
+            }
+            parts.push(m);
+            seen[m] = 1;
+          }
+        });
+      });
+      var rparts = new RegExp(parts.join("|"), "gi");
+      return function(val) {
+        var parts = [];
+        val = val.replace(vi.rdatetime_daynames, function(m) {
+          return "";
+        });
+        val.replace(rparts, function(m) {
+          parts.push(m);
+        });
+        return parts;
+      };
+    })(Date),
+
+    datetime_formats: (function(Date) {
+      var f = [
+        "yyyy", "yyyy", "yyyy",
+
+        "M-yyyy", "y", "yyyy-MM",
+        "MM-yyyy", "y", "yyyy-MM",
+        "yyyy-M", "y", "yyyy-MM",
+        "yyyy-MM", "y", "yyyy-MM",
+
+        "yyyy-M-d", "D", "yyyy-MM-dd",
+        "yyyy-M-dd", "D", "yyyy-MM-dd",
+        "yyyy-MM-d", "D", "yyyy-MM-dd",
+        "yyyy-MM-dd", "D", "yyyy-MM-dd"
+      ];
+      if (Date.CultureInfo.dateElementOrder === "mdy") {
+        f = f.concat([
+          "M-d-yyyy", "D", "yyyy-MM-dd",
+          "MM-dd-yyy", "D", "yyyy-MM-dd",
+          "MM-d-yyyy", "D", "yyyy-MM-dd",
+          "M-dd-yyyy", "D", "yyyy-MM-dd"
+        ]);
+      }
+      else if (Date.CultureInfo.dateElementOrder === "dmy") {
+        f = f.concat([
+          "d-MM-yyyy", "D", "yyyy-MM-dd",
+          "dd-MM-yyyy", "D", "yyyy-MM-dd",
+          "d-M-yyyy", "D", "yyyy-MM-dd",
+          "dd-M-yyyy", "D", "yyyy-MM-dd"
+        ]);
+      }
+      var digit = /^\d+$/;
+      if (!digit.test(Date.CultureInfo.abbreviatedMonthNames[0])) {
+        f = f.concat([
+          "MMM-yyyy", "y", "yyyy-MM",
+          "yyyy-MMM", "y", "yyyy-MM",
+          "d-MMM-yyyy", "D", "yyyy-MM-dd",
+          "dd-MMM-yyyy", "D", "yyyy-MM-dd",
+          "MMM-d-yyyy", "D", "yyyy-MM-dd",
+          "MMM-dd-yyyy", "D", "yyyy-MM-dd",
+          "yyyy-MMM-d", "D", "yyyy-MM-dd",
+          "yyyy-MMM-dd", "D", "yyyy-MM-dd",
+          "yyyy-d-MMM", "D", "yyyy-MM-dd",
+          "yyyy-dd-MMM", "D", "yyyy-MM-dd"
+        ]);
+      }
+      if (!digit.test(Date.CultureInfo.monthNames[0])) {
+        f = f.concat([
+          "MMMM-yyyy", "y", "yyyy-MM",
+          "yyyy-MMMM", "y", "yyyy-MM",
+          "d-MMMM-yyyy", "D", "yyyy-MM-dd",
+          "dd-MMMM-yyyy", "D", "yyyy-MM-dd",
+          "MMMM-d-yyyy", "D", "yyyy-MM-dd",
+          "MMMM-dd-yyyy", "D", "yyyy-MM-dd",
+          "yyyy-MMMM-d", "D", "yyyy-MM-dd",
+          "yyyy-MMMM-dd", "D", "yyyy-MM-dd",
+          "yyyy-d-MMMM", "D", "yyyy-MM-dd",
+          "yyyy-dd-MMMM", "D", "yyyy-MM-dd"
+        ]);
+      }
+      return f;
+    })(Date),
+
     datetime: function(val) {
       var date;
-      // replace all non-date characters to "-"
-      var datepart = val.replace(/[\s\.\,\/\x27]/g, "-");
-      // 1. try Date.parseExact using datetime_formats
-      datepart = datepart.replace(/\-+/g, "-");
-      for (var i=0,l=datetime_formats.length; i<l; i+=3) {
-        var input_format = datetime_formats[i];
-        var text_format = datetime_formats[i+1];
-        var value_format = datetime_formats[i+2];
+/**
+      // replace known delimeters with "-"
+      var datepart = val.replace(vi.rdatetime_delimiters, "-");
+
+      // remove quotes
+      datepart = datepart.replace(vi.rdatetime_quotes, "");
+      // replace months with numbers
+      datepart = vi.datetime_months_to_digit(datepart);
+      // remove all non-digit/dashes
+      datepart = datepart.replace(vi.rdatetime_nondigit, "");
+      // trim non-digits
+      datepart = datepart.replace(vi.rdatetime_nondigit_trimL, "").replace(vi.rdatetime_nondigit_trimR, "");
+      datepart = datepart.replace(vi.rdatetime_dashes, "-");
+**/
+
+      // rm dayNames
+      var datepart = vi.datetime_parts(val).join("-");
+
+//      console.log("val", val, "datepart", datepart);
+
+      for (var i=0,l=vi.datetime_formats.length; i<l; i+=3) {
+        var input_format = vi.datetime_formats[i];
+        var text_format = vi.datetime_formats[i+1];
+        var value_format = vi.datetime_formats[i+2];
         try {
+          //console.log("Date.parseExact(" + datepart + ", " + input_format + ")");
           date = Date.parseExact(datepart, input_format);
+        }
+        catch (ex) {
+
+        }
+        if (date) {
           return {
-            text: date.toString(Date.CultureInfo.formatPatterns[text_format]),
+            text: date.toString(text_format),
             value: date.toString(value_format)
           };
         }
-        catch (ex) {
-          // ignore and continue
-        }
       };
-
       // try isodate
       date = fb.date_from_iso(val);
       if (date) {
@@ -152,39 +272,18 @@
           value: val
         };
       }
-
       throw "Unrecoginzed datetime: " + val;
     }
 
   });
 
+  function fix_datejs(Date) {
 
-  var datetime_formats = [
-    "M-yyyy", "yearMonth", "yyyy-MM",
-    "MM-yyyy", "yearMonth", "yyyy-MM",
-    "yyyy-MM", "yearMonth", "yyyy-MM",
-    "yyyy-M", "yearMonth", "yyyy-MM",
+    var locale = Date.CultureInfo.name;
 
-    "M-d-yyyy", "shortDate", "yyyy-MM-dd",
-    "MM-dd-yyy", "shortDate", "yyyy-MM-dd",
-    "MM-d-yyyy", "shortDate", "yyyy-MM-dd",
-    "M-dd-yyyy", "shortDate", "yyyy-MM-dd",
 
-    "yyyy-M-d", "shortDate", "yyyy-MM-dd",
-    "yyyy-M-dd", "shortDate", "yyyy-MM-dd",
-    "yyyy-MM-d", "shortDate", "yyyy-MM-dd",
-    "yyyy-MM-dd", "shortDate", "yyyy-MM-dd",
 
-    "d-MMM-yyyy", "shortDate", "yyyy-MM-dd",
-    "dd-MMM-yyyy", "shortDate", "yyyy-MM-dd",
-    "d-MMMMM-yyyy", "shortDate", "yyyy-MM-dd",
-    "dd-MMMM-yyyy", "shortDate", "yyyy-MM-dd",
 
-    "MMM-d-yyyy", "shortDate", "yyyy-MM-dd",
-    "MMM-dd-yyyy", "shortDate", "yyyy-MM-dd",
-    "MMMM-d-yyyy", "shortDate", "yyyy-MM-dd",
-    "MMMM-dd-yyyy", "shortDate", "yyyy-MM-dd"
-  ];
-
+  };
 
 })(jQuery, window.freebase);

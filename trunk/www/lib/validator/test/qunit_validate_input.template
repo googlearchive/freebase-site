@@ -31,6 +31,7 @@
 
 <acre:script>
   var h = acre.require("helper/helpers.sjs");
+  var i18n = acre.require("i18n/i18n.sjs");
   var c = exports.c = {
     template_base: "test/qunit.mjt"
   };
@@ -44,11 +45,12 @@
   <script src="${h.lib_base_url('suggest')}/suggest.min.js"></script>
   <script>
     window.freebase = {};
+    /** copied from i18n/i18n.sjs **/
+    var LANGS = ${JSON.stringify(i18n.LANGS)}
   </script>
-  <script src="datejs/date.js"></script>
+  <script src="datejs/date-en-US.js"></script>
   <script src="validator/isodate.js"></script>
   <script src="validator/jquery.validate_input.js"></script>
-
   <script src="validator/test/qunit_validate_input.js"></script>
   <script src="validator/test/qunit_validate_input.datetime.js"></script>
 </acre:block>

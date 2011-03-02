@@ -260,13 +260,15 @@ var LANGS = [
 var LANGS_BY_CODE = {};
 var LANGS_BY_ID = h.map_array(LANGS, "id");
 LANGS.forEach(function(l) {
+  // make a copy
+  l = h.extend(true, {}, l);
   var code = l.code;
   if (!h.isArray(code)) {
     code = [code];
   }
   code.push(l.id.split("/lang/").pop());
   code.forEach(function(lc) {
-    LANGS_BY_CODE[lc] = l;
+    LANGS_BY_CODE[lc] = h.extend(l);
   });
 });
 
@@ -857,17 +859,16 @@ function set_lang(lang_id) {
       js: lib_path + "/handlers/js_to_sjs_handler.sjs"
     }
   };
-  lang_codes.every(function(lang_code) {console.log("set_lang code", lang_code);
-    var filename = h.sprintf("datejs/globalization/%s.js", lang_code);
+  lang_codes.every(function(lang_code) {//console.log("set_lang code", lang_code);
+    var filename = h.sprintf("datejs/date-%s.js", lang_code);
     if (lib_files[filename]) {
-      var globalization = acre.require(filename, js_to_sjs_metadata); // Date.CultureInfo needs to load before core date.js
-      datejs = acre.require("datejs/date.js", js_to_sjs_metadata);
+      datejs = acre.require(filename, js_to_sjs_metadata); // lang specific datejs
       return false;
     }
     return true;
   });
   if (!datejs) {
-    datejs = acre.require("datejs/date.js", js_to_sjs_metadata);
+    datejs = acre.require("datejs/date-en-US.js", js_to_sjs_metadata);
   }
   h.extend(format.date, datejs.Date.CultureInfo.formatPatterns);
 };

@@ -35,9 +35,9 @@
    * date.js
    * isodate.js
    */
-  (function(Date) {
-     fix_datejs(Date);
-  })(Date);
+  (function() {
+     fix_datejs();
+  })();
 
   $.fn.validate_input = function (options) {
     return this.each(function() {
@@ -128,7 +128,7 @@
     rdatetime_quotes: /[\'\"]/g,
     rdatetime_daynames: new RegExp(Date.CultureInfo.dayNames.join("|"), "gi"),
 
-    datetime_parts: (function(Date) {
+    datetime_parts: (function() {
       var seen = {};
       var parts = ["\\d+"];
       var digit = /^\d+$/;
@@ -160,12 +160,10 @@
         });
         return parts;
       };
-    })(Date),
+    })(),
 
-    datetime_formats: (function(Date) {
+    datetime_formats: (function() {
       var f = [
-        "yyyy", "yyyy", "yyyy",
-
         "M-yyyy", "y", "yyyy-MM",
         "MM-yyyy", "y", "yyyy-MM",
         "yyyy-M", "y", "yyyy-MM",
@@ -222,40 +220,23 @@
         ]);
       }
       return f;
-    })(Date),
+    })(),
 
     datetime: function(val) {
       var date;
-/**
-      // replace known delimeters with "-"
-      var datepart = val.replace(vi.rdatetime_delimiters, "-");
 
-      // remove quotes
-      datepart = datepart.replace(vi.rdatetime_quotes, "");
-      // replace months with numbers
-      datepart = vi.datetime_months_to_digit(datepart);
-      // remove all non-digit/dashes
-      datepart = datepart.replace(vi.rdatetime_nondigit, "");
-      // trim non-digits
-      datepart = datepart.replace(vi.rdatetime_nondigit_trimL, "").replace(vi.rdatetime_nondigit_trimR, "");
-      datepart = datepart.replace(vi.rdatetime_dashes, "-");
-**/
-
-      // rm dayNames
+      // just get the date parts
       var datepart = vi.datetime_parts(val).join("-");
-
-//      console.log("val", val, "datepart", datepart);
 
       for (var i=0,l=vi.datetime_formats.length; i<l; i+=3) {
         var input_format = vi.datetime_formats[i];
         var text_format = vi.datetime_formats[i+1];
         var value_format = vi.datetime_formats[i+2];
         try {
-          //console.log("Date.parseExact(" + datepart + ", " + input_format + ")");
           date = Date.parseExact(datepart, input_format);
         }
         catch (ex) {
-
+          // ignore
         }
         if (date) {
           return {
@@ -264,26 +245,51 @@
           };
         }
       };
+
       // try isodate
-      date = fb.date_from_iso(val);
+      try {
+        date = fb.date_from_iso(val);
+      }
+      catch(ex) {
+        // ignore
+      };
       if (date) {
+        console.log("iso", val, date);
         return {
           text: val,
           value: val
         };
       }
+
+      // try default Date.parse
+      try {
+        date = Date.parse(val);
+        if (date) {
+          return {
+            text: date.toString("D"),
+            value: date.toString("yyyy-MM-dd")
+          };
+        }
+      }
+      catch (ex) {
+        // ignore
+      }
+
       throw "Unrecoginzed datetime: " + val;
     }
 
   });
 
-  function fix_datejs(Date) {
-
+  function fix_datejs() {
     var locale = Date.CultureInfo.name;
-
-
-
-
+    switch (locale) {
+      case "es-ES":
+      case "es-MX":
+      case "pt-BR":
+      case "pt-PT":
+        // TODO: overwrite formatPatterns that use "de" - can't use 'd' in format
+        break;
+    };
   };
 
 })(jQuery, window.freebase);

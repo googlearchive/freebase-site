@@ -128,52 +128,83 @@ var SKIP_TESTS = {
         datejss.push([datejs_path + datejs, datejs]);
       });
     });
+
     function test_datejs(datejs) {
       var path = datejs[0];
       datejs = datejs[1];
-      test(datejs, function() {
-        if (datejs) {
+
+      module(datejs);
+
+      test("$.validate_input.datetime", function() {
+        stop();
+        if (load_datejs(path)) {
+          start();
+          var tests = get_tests();
+          var i,l;
+          for(i=0,l=tests.length; i<l; i++) {
+            var datestr = tests[i][0];
+            var text = tests[i][1];
+            var value = tests[i][2];
+            //console.log("datestr", datestr, "expected", value);
+            try {
+              var result = $.validate_input.datetime(datestr);
+              equal(result.text, text, "datestr: " + datestr + ", text: " + text);
+              equal(result.value, value, "datestr: " + datestr + ", value: " + value);
+            }
+            catch (ex) {
+              console.warn(ex);
+              ok(false, "Can't parse: " + datestr + ", expected: " + value);
+              //break;
+            }
+          }
+        }
+      });
+/**
+
+
+
+        test("validate_input", function() {
           stop();
           if (load_datejs(path)) {
             start();
             var tests = get_tests(Date);
-            for(var j=0,l2=tests.length; j<l2; j++) {
-              var datestr = tests[j][0];
-              var text = tests[j][1];
-              var value = tests[j][2];
-              //console.log("datestr", datestr, "expected", value);
-              try {
-                var result = $.validate_input.datetime(datestr);
-                equal(result.text, text, "datestr: " + datestr + ", text: " + text);
-                equal(result.value, value, "datestr: " + datestr + ", value: " + value);
-              }
-              catch (ex) {
-                //console.warn(ex);
-                ok(false, "Can't parse: " + datestr + ", expected: " + value);
-                //break;
-              }
+            var i,l;
+            for(i=0,l=tests.length; i<l; i++) {
+                 var datestr = tests[i][0];
+                 var text = tests[i][1];
+                 var value = tests[i][2];
+                 input.unbind()
+                   .validate_input({validator:$.validate_input.datetime})
+                   .bind("valid", function(e, data) {
+                     same(data, {text:text, value:value});
+                     start();
+                   });
+                 stop();
+                 input.val(datestr).trigger("keyup");
             }
-          }
-          else {
-            start();
-          }
-        }
-      });
+          };
+        });
+**/
+
+
     };
 
     var t = 0;
     for (var i=t,l=datejss.length; i<l; i++) {
-      if (i > t) {
+      if (i > 1) {
         //break;
       }
       var datejs = datejss[i];
       test_datejs(datejs);
     }
 
-    function get_tests(Date) {
+    function get_tests() {
       var d = (new Date()).set({month:0, day:12, year:2000});
       var tests = [
-        ["2000", "2000", "2000"]
+        ["2000", "2000", "2000"],
+        ["-0002", "-0002", "-0002"],
+        ["2006-01-31T23:59:59+07:00", "2006-01-31T23:59:59+07:00", "2006-01-31T23:59:59+07:00"],
+        ["2006-10-22T07:34:24.0001Z", "2006-10-22T07:34:24.0001Z", "2006-10-22T07:34:24.0001Z"]
       ];
       for (var m=0; m<12; m++) {
         var d = (new Date()).set({month:m, day:(m+1)*2, year:2000 + m});
@@ -246,13 +277,7 @@ var SKIP_TESTS = {
       Date.parseExact(Date.CultureInfo.monthNames[0] + " 31, 2006", "MMM d, yyyy").toString(Date.CultureInfo.formatPatterns.shortDate),
       "2006-01-31",
 
-      "2006-01-31T23:59:59+07:00",
-      "2006-01-31T23:59:59+07:00",
-      "2006-01-31T23:59:59+07:00",
 
-      "2006-10-22T07:34:24.0001Z",
-      "2006-10-22T07:34:24.0001Z",
-      "2006-10-22T07:34:24.0001Z"
     ];
 **/
 /**

@@ -42,7 +42,6 @@
 </acre:block>
 
 <acre:block def="head()">
-  <script src="${h.lib_base_url('suggest')}/suggest.min.js"></script>
   <script src="validator/jquery.validate_input.js"></script>
   <script src="validator/test/qunit_validate_input.js"></script>
 </acre:block>

@@ -30,18 +30,6 @@
  */
 
 /**
- * No equivalent datejs files. Use alternatives
- */
-var SKIP_CODES = {
-  "zh-Hans-CN": 1,
-  "zh-Hant-TW": 1,
-  "iw-IL": 1,
-  "fil-PH": 1,
-  "sr-Cyrl-RS": 1,
-  "es-419": 1
-};
-
-/**
  * Known failures
  */
 var skip_tests = true;
@@ -60,7 +48,6 @@ var SKIP_TESTS = {
 (function($) {
 
   $(function() {
-    var input =  $("#validate_input");
 
     module("datetime");
 
@@ -117,9 +104,6 @@ var SKIP_TESTS = {
         codes = [codes];
       }
       $.each(codes, function(j, code) {
-        if (SKIP_CODES[code]) {
-          return;
-        }
         var datejs = "date-" + code + ".js";
         if (skip_tests && SKIP_TESTS[code]) {
           console.warn("SKIP", datejs);
@@ -158,34 +142,10 @@ var SKIP_TESTS = {
             }
           }
         }
+        else {
+          start();
+        }
       });
-/**
-
-
-
-        test("validate_input", function() {
-          stop();
-          if (load_datejs(path)) {
-            start();
-            var tests = get_tests(Date);
-            var i,l;
-            for(i=0,l=tests.length; i<l; i++) {
-                 var datestr = tests[i][0];
-                 var text = tests[i][1];
-                 var value = tests[i][2];
-                 input.unbind()
-                   .validate_input({validator:$.validate_input.datetime})
-                   .bind("valid", function(e, data) {
-                     same(data, {text:text, value:value});
-                     start();
-                   });
-                 stop();
-                 input.val(datestr).trigger("keyup");
-            }
-          };
-        });
-**/
-
 
     };
 
@@ -224,94 +184,7 @@ var SKIP_TESTS = {
       }
       return tests;
     };
-/**
-    var date_tests = [
-      "2006", "2006", "2006",
-      "-0002", "-0002", "-0002",
 
-      "1/2006",
-      Date.parseExact("1/2006", "M/yyyy").toString(Date.CultureInfo.formatPatterns.yearMonth),
-      "2006-01",
-
-      "01-2011",
-      Date.parseExact("01-2011", "MM-yyyy").toString(Date.CultureInfo.formatPatterns.yearMonth),
-      "2011-01",
-
-      "2010.1",
-      Date.parseExact("2010.1", "yyyy.M").toString(Date.CultureInfo.formatPatterns.yearMonth),
-      "2010-01",
-
-      "2000 01",
-      Date.parseExact("2000 01", "yyyy MM").toString(Date.CultureInfo.formatPatterns.yearMonth),
-      "2000-01",
-
-      "2006/1/31",
-      Date.parseExact("2006/1/31", "yyyy/M/d").toString(Date.CultureInfo.formatPatterns.shortDate),
-      "2006-01-31",
-
-      "2006.01.31",
-      Date.parseExact("2006.01.31", "yyyy.MM.dd").toString(Date.CultureInfo.formatPatterns.shortDate),
-      "2006-01-31",
-
-      "31 " + Date.CultureInfo.monthNames[0] + ", 2006",
-      Date.parseExact("31 " + Date.CultureInfo.monthNames[0] + ", 2006", "d MMM, yyyy").toString(Date.CultureInfo.formatPatterns.shortDate),
-      "2006-01-31",
-
-      "31 " + Date.CultureInfo.abbreviatedMonthNames[0] + ", 2006",
-      Date.parseExact("31 " + Date.CultureInfo.abbreviatedMonthNames[0] + ", 2006", "dd MMM, yyyy").toString(Date.CultureInfo.formatPatterns.shortDate),
-      "2006-01-31",
-
-      "1/12/2006",
-       Date.parseExact("1/12/2006", "M/d/yyyy").toString(Date.CultureInfo.formatPatterns.shortDate),
-      "2006-01-12",
-
-      "12-01-2006",
-      Date.parseExact("12-01-2006", "M-dd-yyyy").toString(Date.CultureInfo.formatPatterns.shortDate),
-      "2006-12-01",
-
-      Date.CultureInfo.monthNames[0] + " 1, 2006",
-      Date.parseExact(Date.CultureInfo.monthNames[0] + " 1, 2006", "MMM d, yyyy").toString(Date.CultureInfo.formatPatterns.shortDate),
-      "2006-01-01",
-
-      Date.CultureInfo.abbreviatedMonthNames[0] + " 31, 2006",
-      Date.parseExact(Date.CultureInfo.monthNames[0] + " 31, 2006", "MMM d, yyyy").toString(Date.CultureInfo.formatPatterns.shortDate),
-      "2006-01-31",
-
-
-    ];
-**/
-/**
-    test("$.validate_input.datetime", function() {
-      for(var i=0,l=date_tests.length; i<l; i+=3) {
-        var val = date_tests[i];
-        var text = date_tests[i+1];
-        var value = date_tests[i+2];
-        var result = $.validate_input.datetime(val);
-        equal(result.text, text);
-        equal(result.value, value);
-      }
-    });
-
-    for(var i=0,l=date_tests.length; i<l; i+=3) {
-      (function() {
-        var val = date_tests[i];
-        var text = date_tests[i+1];
-        var value = date_tests[i+2];
-         test(val, function() {
-           expect(1);
-           stop();
-           input.val(val);
-           input.validate_input({validator:$.validate_input.datetime})
-             .bind("valid", function(e, data) {
-               same(data, {text:text, value:value});
-               start();
-             });
-           input.trigger("keyup");
-         });
-
-      })();
-    };
-**/
   });
 
 })(jQuery);

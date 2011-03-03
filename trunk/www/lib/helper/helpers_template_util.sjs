@@ -63,6 +63,9 @@ function is_group_app(app_path) {
 
 
 function fb_input_type(type_id) {
+  if (!type_id) {
+    return "";
+  }
   if (mql.is_literal_type(type_id)) {
     return type_id.split("/").pop();
   }

@@ -1,21 +1,56 @@
+/*
+Styling for form elements that allow data entry
+on Freebase topics.
+
+Given the markup pattern:
+
+<span class="data-input">
+  <input type="text" class="fb-input" />
+</span>
+
+.data-input is a generic class that can be used
+standalone. However, it can be extended with the 
+following classes for additional context:
+
+  - .text
+  - .date
+  - .uri
+  - .int
+
+Doing so will provide visual icons to help communicate to
+the user the expected data format for a given input.
+
+Note, due to rendering inconsistencies in Webkit browsers
+using display: inline-block, an explicity width must be
+set on .fb-input. A default width of 100px is assigned,
+but can (and should) be tailored to your app.
+*/
+
 .data-input {
   display: inline-block;
-  padding-right: 23px;
+  color: #999;
   background: #e1e2e3;
   border: 2px solid #e1e2e3;
+  .rounded_corners(3px);
   .transition(all);
+}
+
+.data-input.string,
+.data-input.date,
+.data-input.uri,
+.data-input.int {
+  background-image: url(template/ui-icons.png);
+  background-repeat: no-repeat;
+  padding-right: 23px;
 }
 
 .data-input.focus {
   .box_shadow(0,0,6px, #61D7F7);
 }
 
-.input-icon {
-}
-
 .fb-input {
-  line-height: 1;
-  color: #999;
+  width: 100px;
+  height: 15px;
   padding: 4px 7px;
   border: 0;
   border-top: 1px solid #fff;
@@ -27,19 +62,52 @@
   background: #fff;
 }
 
-.fb-input.valid {
+.data-input.valid .fb-input {
   font-weight: bold;
   color: #222;
 }
 
-/*
-Webkit browsers (including Chrome and Safari) have an
-inconsistency from other browsers in the way they treat
-inline-block element.
-*/
+.data-input.error {
+  background-color: #d66819;
+  border-color: #d66819;
+}
 
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-  .data-input {
-    border: 0;
-  }
+.data-input.error .fb-input {
+  color: #666;
+}
+
+.data-input.disabled {
+  opacity: 0.5;
+}
+
+/*
+### String inputs
+*/
+.data-input.string {
+  background-position: right -931px;
+}
+
+.data-input.string.error {
+  background-position: right -968px;
+}
+
+/*
+### Date Inputs
+*/
+.data-input.date {
+  background-position: right -1009px;
+}
+
+.data-input.date.error {
+  background-position: right -1052px;
+}
+
+/*
+### Integer/Float inputs
+*/
+.data-input.int {
+  background-position: right -1094px;
+}
+.data-input.int.error {
+  background-position: right -1136px;
 }

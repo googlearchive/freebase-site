@@ -86,7 +86,7 @@ test("i18n.datejs", function() {
 
   ok(typeof i18n.datejs !== "undefined", "locale datejs initialized");
   ok(i18n.datejs.Date.CultureInfo, "datejs CultureInfo found");
-  equal(i18n.datejs.Date.CultureInfo.name, map[i18n.lang].code);
+  ok(map[i18n.lang].code.indexOf(i18n.datejs.Date.CultureInfo.name) !== -1);
   same(i18n.format.date, i18n.datejs.Date.CultureInfo.formatPatterns, "CultureInfo.formatPatterns loaded");
 });
 

@@ -159,6 +159,7 @@
           // ignore
         }
         if (date) {
+          console.log("input_format", input_format);
           return {
             text: date.toString(text_format),
             value: date.toString(value_format)
@@ -179,6 +180,7 @@
           value: val
         };
       }
+/**
       // try default Date.parse
       try {
         date = Date.parse(val);
@@ -192,6 +194,7 @@
       catch (ex) {
         // ignore
       }
+**/
       throw "Unrecoginzed datetime: " + val;
     }
   });

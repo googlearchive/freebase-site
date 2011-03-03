@@ -53,7 +53,7 @@ jQuery(function($){
 		prevText: '&#x3c;السابق',
 		nextText: 'التالي&#x3e;',
 		currentText: 'اليوم',
-		monthNames: ['كانون الثاني', 'شباط', 'آذار', 'نيسان', 'آذار', 'حزيران',
+		monthNames: ['كانون الثاني', 'شباط', 'آذار', 'نيسان', 'مايو', 'حزيران',
 		'تموز', 'آب', 'أيلول',	'تشرين الأول', 'تشرين الثاني', 'كانون الأول'],
 		monthNamesShort: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
 		dayNames: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
@@ -116,10 +116,10 @@ jQuery(function($){
 /* Written by Kenan Konjo. */
 jQuery(function($){
 	$.datepicker.regional['bs'] = {
-		closeText: 'Zatvori', 
-		prevText: '&#x3c;', 
-		nextText: '&#x3e;', 
-		currentText: 'Danas', 
+		closeText: 'Zatvori',
+		prevText: '&#x3c;',
+		nextText: '&#x3e;',
+		currentText: 'Danas',
 		monthNames: ['Januar','Februar','Mart','April','Maj','Juni',
 		'Juli','August','Septembar','Oktobar','Novembar','Decembar'],
 		monthNamesShort: ['Jan','Feb','Mar','Apr','Maj','Jun',
@@ -815,7 +815,7 @@ jQuery(function($){
 jQuery(function($){
 	$.datepicker.regional['ml'] = {
 		closeText: 'ശരി',
-		prevText: 'മുന്നത്തെ',  
+		prevText: 'മുന്നത്തെ',
 		nextText: 'അടുത്തത് ',
 		currentText: 'ഇന്ന്',
 		monthNames: ['ജനുവരി','ഫെബ്രുവരി','മാര്‍ച്ച്','ഏപ്രില്‍','മേയ്','ജൂണ്‍',

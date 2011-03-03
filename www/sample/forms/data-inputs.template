@@ -104,6 +104,81 @@
       <input type="text" class="fb-input" value="Lorem ipsum" />
     </span>
   </div>
+  <h1>URI input</h1>
+  <div>
+    <h2>Default</h2>
+    <span class="data-input uri">
+      <input type="text" class="fb-input" />
+    </span>
+  </div>
+  <div>
+    <h2>Disabled</h2>
+    <span class="data-input uri disabled">
+      <input type="text" class="fb-input" disabled=disabled />
+    </span>
+  </div>
+  <div>
+    <h2>Valid</h2>
+    <span class="data-input uri valid">
+      <input type="text" class="fb-input" value="Lorem ipsum" />
+    </span>
+  </div>
+  <div>
+    <h2>Error</h2>
+    <span class="data-input uri error">
+      <input type="text" class="fb-input" value="Lorem ipsum" />
+    </span>
+  </div>
+  <h1>Topic input</h1>
+  <div>
+    <h2>Default</h2>
+    <span class="data-input topic">
+      <input type="text" class="fb-input" />
+    </span>
+  </div>
+  <div>
+    <h2>Disabled</h2>
+    <span class="data-input topic disabled">
+      <input type="text" class="fb-input" disabled=disabled />
+    </span>
+  </div>
+  <div>
+    <h2>Valid</h2>
+    <span class="data-input topic valid">
+      <input type="text" class="fb-input" value="Lorem ipsum" />
+    </span>
+  </div>
+  <div>
+    <h2>Error</h2>
+    <span class="data-input topic error">
+      <input type="text" class="fb-input" value="Lorem ipsum" />
+    </span>
+  </div>
+  <h1>Enumerated input</h1>
+  <div>
+    <h2>Default</h2>
+    <span class="data-input enumerated">
+      <input type="text" class="fb-input" />
+    </span>
+  </div>
+  <div>
+    <h2>Disabled</h2>
+    <span class="data-input enumerated disabled">
+      <input type="text" class="fb-input" disabled=disabled />
+    </span>
+  </div>
+  <div>
+    <h2>Valid</h2>
+    <span class="data-input enumerated valid">
+      <input type="text" class="fb-input" value="Lorem ipsum" />
+    </span>
+  </div>
+  <div>
+    <h2>Error</h2>
+    <span class="data-input enumerated error">
+      <input type="text" class="fb-input" value="Lorem ipsum" />
+    </span>
+  </div>
 </div>
 
 </acre:block>

@@ -29,44 +29,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var exports = {
-  "is_literal_type": is_literal_type,
-  "get_type_role": get_type_role
-};
+acre.require('/test/lib').enable(this);
 
-var LITERAL_TYPE_IDS = {
-  "/type/int":1,
-  "/type/float":1,
-  "/type/boolean":1,
-  "/type/rawstring":1,
-  "/type/uri":1,
-  "/type/text":1,
-  "/type/datetime":1,
-  "/type/id":1,
-  "/type/key":1,
-  "/type/value":1,
-  "/type/enumeration":1
-};
-function is_literal_type(type_id) {
-  return  LITERAL_TYPE_IDS[type_id] === 1;
-};
+var h = acre.require("helper/helpers_template_util.sjs");
 
-/**
- * Get the type role looking at type hints,
- * /freebase/type_hints/mediator,
- * /freebase/type_hints/enumeration.
- *
- * @param type:Object (required)
- * @param set:Boolean (optional) - Set type[mediator|enumeration] if TRUE
- */
-function get_type_role(type, set) {
-  var role = {
-    mediator: type["/freebase/type_hints/mediator"] === true,
-    enumeration: type["/freebase/type_hints/enumeration"] === true
-  };
-  if (set) {
-    type.mediator = role.mediator;
-    type.enumeration = role.enumeration;
+
+test("fb_input_type", function() {
+
+  var tests = [
+  "/type/int", "int",
+  "/type/float", "float",
+  "/type/boolean", "boolean",
+  "/type/rawstring", "rawstring",
+  "/type/uri", "uri",
+  "/type/text", "text",
+  "/type/datetime", "datetime",
+  "/type/id", "id",
+  "/type/key", "key",
+  "/type/value", "value",
+  "/type/enumeration", "enumeration"
+  ];
+
+  for (var i=0,l=tests.length; i<l; i+=2) {
+    equal(h.fb_input_type(tests[i]), tests[i+1]);
   }
-  return role;
-};
+
+});
+
+
+
+acre.test.report();
+
+

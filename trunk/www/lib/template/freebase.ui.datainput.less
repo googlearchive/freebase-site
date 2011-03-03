@@ -38,7 +38,9 @@ but can (and should) be tailored to your app.
 .data-input.string,
 .data-input.date,
 .data-input.uri,
-.data-input.int {
+.data-input.int,
+.data-input.topic,
+.data-input.enumerated {
   background-image: url(template/ui-icons.png);
   background-repeat: no-repeat;
   padding-right: 23px;
@@ -110,4 +112,34 @@ but can (and should) be tailored to your app.
 }
 .data-input.int.error {
   background-position: right -1136px;
+}
+
+/*
+### URI inputs
+*/
+.data-input.uri {
+  background-position: right -1175px;
+}
+.data-input.uri.error {
+  background-position: right -1218px;
+}
+
+/*
+### Topic inputs
+*/
+.data-input.topic {
+  background-position: right -1259px;
+}
+.data-input.topic.error {
+  background-position: right -1300px;
+}
+
+/*
+### Enumerated inputs
+*/
+.data-input.enumerated {
+  background-position: right -1342px;
+}
+.data-input.enumerated.error {
+  background-position: right -1385px;
 }

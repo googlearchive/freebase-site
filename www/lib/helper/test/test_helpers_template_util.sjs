@@ -51,11 +51,16 @@ test("fb_input_type", function() {
   ];
 
   for (var i=0,l=tests.length; i<l; i+=2) {
-    equal(h.fb_input_type(tests[i]), tests[i+1]);
+    same(h.fb_input_type(tests[i]), tests[i+1]);
   }
 
-});
+  same(h.fb_input_type(), "");
+  same(h.fb_input_type(null), "");
 
+  same(h.fb_input_type("/freebase/type_hints/enumeration"), "enumerated");
+  same(h.fb_input_type("/film/film"), "topic");
+
+});
 
 
 acre.test.report();

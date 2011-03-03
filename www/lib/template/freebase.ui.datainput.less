@@ -13,9 +13,10 @@ standalone. However, it can be extended with the
 following classes for additional context:
 
   - .text
-  - .date
+  - .datetime
   - .uri
   - .int
+  - .float
 
 Doing so will provide visual icons to help communicate to
 the user the expected data format for a given input.
@@ -35,10 +36,11 @@ but can (and should) be tailored to your app.
   .transition(all);
 }
 
-.data-input.string,
-.data-input.date,
+.data-input.text,
+.data-input.datetime,
 .data-input.uri,
 .data-input.int,
+.data-input.float,
 .data-input.topic,
 .data-input.enumerated {
   background-image: url(template/ui-icons.png);
@@ -85,32 +87,34 @@ but can (and should) be tailored to your app.
 /*
 ### String inputs
 */
-.data-input.string {
+.data-input.text {
   background-position: right -931px;
 }
 
-.data-input.string.error {
+.data-input.text.error {
   background-position: right -968px;
 }
 
 /*
 ### Date Inputs
 */
-.data-input.date {
+.data-input.datetime {
   background-position: right -1009px;
 }
 
-.data-input.date.error {
+.data-input.datetime.error {
   background-position: right -1052px;
 }
 
 /*
 ### Integer/Float inputs
 */
-.data-input.int {
+.data-input.int,
+.data-input.float {
   background-position: right -1094px;
 }
-.data-input.int.error {
+.data-input.int.error,
+.data-input.float.error {
   background-position: right -1136px;
 }
 

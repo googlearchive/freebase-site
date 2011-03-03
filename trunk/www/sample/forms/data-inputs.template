@@ -1,0 +1,122 @@
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="forms.mf.css" />
+</acre:block>
+
+<acre:block def="content_body()">
+<div class="section">
+  <h1>Generic input</h1>
+  <div>
+    <h2>Default</h2>
+    <span class="data-input">
+      <input type="text" class="fb-input" />
+    </span>
+  </div>
+  <div>
+    <h2>Disabled</h2>
+    <span class="data-input disabled">
+      <input type="text" class="fb-input" disabled=disabled />
+    </span>
+  </div>
+  <div>
+    <h2>Valid</h2>
+    <span class="data-input valid">
+      <input type="text" class="fb-input" value="Lorem ipsum" />
+    </span>
+  </div>
+  <div>
+    <h2>Error</h2>
+    <span class="data-input error">
+      <input type="text" class="fb-input" value="Lorem ipsum" />
+    </span>
+  </div>
+  <h1>String input</h1>
+  <div>
+    <h2>Default</h2>
+    <span class="data-input string">
+      <input type="text" class="fb-input" />
+    </span>
+  </div>
+  <div>
+    <h2>Disabled</h2>
+    <span class="data-input string disabled">
+      <input type="text" class="fb-input" disabled=disabled />
+    </span>
+  </div>
+  <div>
+    <h2>Valid</h2>
+    <span class="data-input string valid">
+      <input type="text" class="fb-input" value="Lorem ipsum" />
+    </span>
+  </div>
+  <div>
+    <h2>Error</h2>
+    <span class="data-input string error">
+      <input type="text" class="fb-input" value="Lorem ipsum" />
+    </span>
+  </div>
+  <h1>Date input</h1>
+  <div>
+    <h2>Default</h2>
+    <span class="data-input date">
+      <input type="text" class="fb-input" />
+    </span>
+  </div>
+  <div>
+    <h2>Disabled</h2>
+    <span class="data-input date disabled">
+      <input type="text" class="fb-input" disabled=disabled />
+    </span>
+  </div>
+  <div>
+    <h2>Valid</h2>
+    <span class="data-input date valid">
+      <input type="text" class="fb-input" value="Lorem ipsum" />
+    </span>
+  </div>
+  <div>
+    <h2>Error</h2>
+    <span class="data-input date error">
+      <input type="text" class="fb-input" value="Lorem ipsum" />
+    </span>
+  </div>
+  <h1>Integer/Float input</h1>
+  <div>
+    <h2>Default</h2>
+    <span class="data-input int">
+      <input type="text" class="fb-input" />
+    </span>
+  </div>
+  <div>
+    <h2>Disabled</h2>
+    <span class="data-input int disabled">
+      <input type="text" class="fb-input" disabled=disabled />
+    </span>
+  </div>
+  <div>
+    <h2>Valid</h2>
+    <span class="data-input int valid">
+      <input type="text" class="fb-input" value="Lorem ipsum" />
+    </span>
+  </div>
+  <div>
+    <h2>Error</h2>
+    <span class="data-input int error">
+      <input type="text" class="fb-input" value="Lorem ipsum" />
+    </span>
+  </div>
+</div>
+
+</acre:block>
+
+<acre:block def="footer_script()">
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".fb-input").focusin(function(){
+      $(this).parents(".data-input").addClass("focus");  
+    });
+    $(".fb-input").focusout(function(){
+      $(this).parents(".data-input").removeClass("focus");  
+    });
+  });
+</script>
+</acre:block>

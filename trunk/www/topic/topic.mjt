@@ -108,13 +108,11 @@
         <h3>Suggested Types:</h3>
       </div>
     </div>
-<!--
     <div class="domain section">
-      <span class="data-input text">
+      <span class="data-input uri error">
         <input type="text" class="fb-input" />
       </span>
     </div>
--->
     <acre:script>
       var structure = c.topic && c.topic.structure;
     </acre:script>

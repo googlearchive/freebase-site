@@ -45,7 +45,6 @@
   <style>
     .fail ol { display: none; }
   </style>
-  <script src="${h.lib_base_url('suggest')}/suggest.min.js"></script>
   <script>
     window.freebase = {};
     /** copied from i18n/i18n.sjs **/
@@ -55,8 +54,8 @@
   <script src="jqueryui/jquery.ui.datepicker.js"></script>
   <script src="jqueryui/i18n/jquery-ui-i18n.js"></script>
   <script src="validator/jquery.validate_input.js"></script>
-  <script src="validator/jquery.validate_datetime2.js"></script>
-  <script src="validator/test/qunit_validate_datetime2.js"></script>
+  <script src="validator/jquery.validate_datetime.js"></script>
+  <script src="validator/test/qunit_validate_datetime.js"></script>
 </acre:block>
 
 <acre:block def="fixture()">  

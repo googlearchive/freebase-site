@@ -28,7 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-;(function($, fb) {
+;(function($) {
 
   $.fn.validate_input = function (options) {
     return this.each(function() {
@@ -99,7 +99,7 @@
         }
       }
       try {
-        var data = o.validator(val);
+        var data = o.validator(val, o);
         return this.valid(data);
       }
       catch(ex) {
@@ -110,13 +110,16 @@
   $.extend(vi, {
     defaults: {
       allow_empty: null,
-      validator: function(v) {
+      validator: function(v, options) {
         // default validator just echo value
         return {text:v, value:v};
       }
+    },
+    log: function() {
+      //console.log.apply(null, arguments);
     }
   });
 
 
 
-})(jQuery, window.freebase);
+})(jQuery);

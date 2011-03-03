@@ -49,22 +49,22 @@
       });
     });
 
-    test("$.datepicker.validator.regional", function() {
+    test("$.validate_input.datetime.regional", function() {
       $.each(LANGS, function(i, lang) {
-        var regional = $.datepicker.validator.regional(lang.id);
+        var regional = $.validate_input.datetime.regional(lang.id);
         ok(regional, "Got $.datepicker.regional for " + lang.id);
       });
     });
 
-    test("$.datepicker.validator.pad", function() {
+    test("$.validate_input.datetime.pad", function() {
       for (var i=1; i<32; i++) {
-        same($.datepicker.validator.pad(i), i < 10 ? "0" + i : "" + i);
+        same($.validate_input.datetime.pad(i), i < 10 ? "0" + i : "" + i);
       }
-      same($.datepicker.validator.pad("01"), "01");
+      same($.validate_input.datetime.pad("01"), "01");
     });
 
-    test("$.datepicker.validator.format", function() {
-      var format = $.datepicker.validator.format;
+    test("$.validate_input.datetime.format", function() {
+      var format = $.validate_input.datetime.format;
       same(format("mm/dd/yy", 2006), "2006");
       same(format("yy/mm/dd", null, 2, null), "2");
       same(format("yy/mm/dd", null, "02", null), "02");
@@ -84,7 +84,7 @@
          var lang = LANGS[i];
          module(lang.id);
          test("validator", function() {
-         var validator = $.datepicker.validator(lang.id);
+         var validator = $.validate_input.datetime(lang.id);
            var tests = validator_tests(lang.id);
            $.each(tests, function(j, t) {
              var n = j*2+1;
@@ -118,7 +118,7 @@
   });
 
   function validator_tests(lang_id) {
-    var regional = $.datepicker.validator.regional(lang_id);
+    var regional = $.validate_input.datetime.regional(lang_id);
     var tests = [
       ["2006", "2006", "2006"],
       ["-0100", "-0100", "-0100"]
@@ -144,11 +144,11 @@
    * mm-yyyy, yyyy-mm
    */
   function year_month_tests(regional, year, month) {
-    var pmonth =  $.datepicker.validator.pad(month); // padded month
+    var pmonth =  $.validate_input.datetime.pad(month); // padded month
     var months = month_enumeration(regional, month);
     var dateFormat = regional.dateFormat;
-    var value = $.datepicker.validator.format("yy-mm", year, pmonth);
-    var text = $.datepicker.validator.format(dateFormat, year, pmonth);
+    var value = $.validate_input.datetime.format("yy-mm", year, pmonth);
+    var text = $.validate_input.datetime.format(dateFormat, year, pmonth);
     var tests = [];
     var delimiter = ["-", "/", ".", " "];
     for (var i=0; i<2; i++) {
@@ -167,8 +167,8 @@
   };
 
   function year_month_day_tests(regional, year, month, day) {
-    var pmonth = $.datepicker.validator.pad(month); // padded month
-    var pday = $.datepicker.validator.pad(day); // padded day
+    var pmonth = $.validate_input.datetime.pad(month); // padded month
+    var pday = $.validate_input.datetime.pad(day); // padded day
     var months = month_enumeration(regional, month);
     var days = [
       day
@@ -180,7 +180,7 @@
     var format_parts = dateFormat.split(/[^ymd]/);
 
     var date = new Date(year, month-1, day);
-    var value = $.datepicker.validator.format("yy-mm-dd", year, pmonth, pday);
+    var value = $.validate_input.datetime.format("yy-mm-dd", year, pmonth, pday);
     var text = $.datepicker.formatDate(dateFormat, date, regional);
     var tests = [];
     var delimiter = ["-", "/", ".", " "];
@@ -191,7 +191,7 @@
       var delim = delimiter[j];
       $.each(days, function(j, day) {
         var dd = day;
-        var datestr = $.datepicker.validator._format(format_parts, delim, yy, mm, dd);
+        var datestr = $.validate_input.datetime._format(format_parts, delim, yy, mm, dd);
         tests.push([datestr, text, value]);
       });
     });
@@ -206,7 +206,7 @@
     * 4. regional.monthNames
     */
   function month_enumeration(regional, month) {
-    var pmonth =  $.datepicker.validator.pad(month); // padded month
+    var pmonth =  $.validate_input.datetime.pad(month); // padded month
     var months = [];
     var seen = {};
     $.each([month, pmonth, regional.monthNamesShort[month-1], regional.monthNames[month-1]], function(i, m) {
@@ -220,7 +220,7 @@
   };
 
   function log() {
-    $.datepicker.validator.log.apply(null, arguments);
+    $.validate_input.log.apply(null, arguments);
   }
 
 })(jQuery);

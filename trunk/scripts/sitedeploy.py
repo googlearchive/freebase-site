@@ -244,7 +244,7 @@ class ActionSetupSite:
     c.log('In order to run the freebase site:', color=c.BLUE)
     c.log('\t1. Run the acre server: \n cd %s; ./acre appengine-run' % c.options.acre_dir)
     c.log('\t2. Visit http://devel.sandbox-freebase.com:%s' % c.options.acre_port)
-    c.log('freebase-site is now installed in %s' c.options.site_dir)
+    c.log('freebase-site is now installed in %s' % c.options.site_dir)
     c.log('')
     c.log('*' * 65)
 

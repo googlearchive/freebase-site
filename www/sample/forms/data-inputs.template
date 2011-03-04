@@ -66,12 +66,15 @@
     $(".valid .data-input").addClass("valid");
     $(".error .data-input").addClass("error");
 
-    $(".fb-input").focusin(function(){
+    $(".fb-input, .fb-boolean-input").focusin(function(){
       $(this).parents(".data-input").addClass("focus");  
     });
-    $(".fb-input").focusout(function(){
+    $(".fb-input, .fb-boolean-input").focusout(function(){
       $(this).parents(".data-input").removeClass("focus");  
     });
+    // Note, we need logic to change radio button labels on chage
+    // but Webkit acts weird, here is a potential fix
+    // http://evilstreak.co.uk/blog/fixing-change-events-on-radios
   });
 </script>
 </acre:block>

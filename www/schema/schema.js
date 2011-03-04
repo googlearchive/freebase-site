@@ -119,7 +119,7 @@
       },
       format: function(s) {
         // format your data for normalization
-        return parseInt(s.replace(/\,/g, ""));
+        return parseInt(s.replace(/\,/g, ""), 10);
       },
       // set type, either numeric or text
       type: 'numeric'

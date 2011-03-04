@@ -62,7 +62,7 @@
       var slider = $(".limit-slider", context);
       var current = $(".current-limit", context);
       var input = $("input[name=limit]", context);
-      var val = parseInt(input.val() || default_value);
+      var val = parseInt(input.val() || default_value, 10);
 
       slider.slider({
         value: val,

@@ -44,7 +44,18 @@
   <acre:script>
     var type = h.fb_input_type(type_id);
   </acre:script>
-  <span class="data-input ${type}">
+  <span acre:if="type === 'enumerated'" class="data-input">
+    <select class="enumerated-input" name="">
+      <option value="">Foo</option>
+      <option value="">Bar</option>
+      <option value="">Dude</option>
+    </select>
+  </span>
+  <span acre:elif="type === 'boolean'" class="data-input">
+    <label><input type="radio" name="foobar" class="fb-boolean-input "/> Yes</label>
+    <label><input type="radio" name="foobar" class="fb-boolean-input "/> No</label>
+  </span>
+  <span acre:else="" class="data-input ${type}">
     <input class="fb-input" type="text" value="${value == null ? '' : value}">
   </span>
 </acre:block>

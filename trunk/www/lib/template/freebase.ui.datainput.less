@@ -85,7 +85,7 @@ but can (and should) be tailored to your app.
 }
 
 /*
-### String inputs
+### text inputs
 */
 .data-input.text {
   background-position: right -931px;
@@ -96,7 +96,7 @@ but can (and should) be tailored to your app.
 }
 
 /*
-### Date Inputs
+### datetime Inputs
 */
 .data-input.datetime {
   background-position: right -1009px;
@@ -146,4 +146,44 @@ but can (and should) be tailored to your app.
 }
 .data-input.enumerated.error {
   background-position: right -1385px;
+}
+
+/*
+### Boolean inputs
+*/
+.fb-boolean-input {
+  float: left;
+  margin: 0 7px 0 0;
+}
+
+.data-input label {
+  float: left;
+  position: relative;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+  color: #666;
+  padding: 6px 10px;
+  border-right: 1px solid #d1d2d3;
+  border: 1px solid #c1c2c3;
+  .linear_gradient();
+}
+
+.data-input label:hover {
+  cursor: pointer;
+  z-index: 1;
+}
+
+.data-input label.selected {
+  color: #333;
+  .linear_gradient(#d1d2d3,#f1f2f3);
+}
+
+.data-input:focus {
+  .box_shadow(0,0,6px, #61D7F7);
+}
+
+.data-input label:first-child {
+  border-right: 0;
 }

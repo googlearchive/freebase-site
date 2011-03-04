@@ -50,8 +50,7 @@
       throw ("A validator is required");
     }
     this.input = $(input);
-    this.original = this.input.val(); // original value
-    this.value = null;                // validated value
+    this.original_value = this.input.val(); // original value
     this.init();
     var self = this;
     this.input.bind("remove", function() {
@@ -63,21 +62,25 @@
     init: function() {
       var self = this;
       this.input
-        .bind("keyup.vi", function(e) {
+        .bind("keyup.validate_input", function(e) {
           self.textchange(e);
         })
-        .bind($.browser.msie ? "paste.vi" : "input.vi", function(e) {
+        .bind($.browser.msie ? "paste.validate_input" : "input.validate_input", function(e) {
           self.textchange(e);
         });
     },
     _destroy: function() {
-      this.input.unbind(".vi");
+      this.input.unbind(".validate_input");
+    },
+    original: function(val) {
+      // trigger an original event signifying the value is exactly the same as when
+      // this input was initialized with $.fn.validate_input
+      this.input.trigger("original");
     },
     valid: function(data) {
       this.input.trigger("valid", data);
     },
     invalid: function(val, msg) {
-      this.value = null;
       this.input.trigger("invalid", msg);
     },
     textchange: function(e) {
@@ -88,16 +91,12 @@
       }, 200);
     },
     textchange_delay: function() {
-      var val = $.trim(this.input.val());
-      var o = this.options;
-      if (val === "") {
-        if (o.allow_empty === true) {
-          return this.valid({text:"", value:""});
-        }
-        else if (o.allow_empty === false) {
-          return this.invalid("", "");
-        }
+      var val = this.input.val();
+      if (this.original_value === val) {
+        return this.original(val);
       }
+      val = $.trim(val);
+      var o = this.options;
       try {
         var data = o.validator(val, o);
         return this.valid(data);
@@ -109,7 +108,6 @@
   };
   $.extend(vi, {
     defaults: {
-      allow_empty: null,
       validator: function(v, options) {
         // default validator just echo value
         return {text:v, value:v};
@@ -119,7 +117,5 @@
       //console.log.apply(null, arguments);
     }
   });
-
-
 
 })(jQuery);

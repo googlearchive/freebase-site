@@ -55,38 +55,17 @@
       }
     });
 
-    test("validate_input allow_empty=null", function() {
+    test("validat_input original", function() {
       expect(1);
       stop();
-      input.validate_input()
-        .bind("valid", function(e, v) {
-  console.log("v", v);
-          same(v, {text:"",value:""});
+      input
+        .val("original value")
+        .validate_input()
+        .bind("original", function() {
+          ok(true, "original value");
           start();
-        });
-      input.trigger("keyup");
-    });
-
-    test("validate_input allow_empty=true", function() {
-      expect(1);
-      stop();
-      input.validate_input({allow_empty:true})
-        .bind("valid", function() {
-          ok(true, "allow_empty=true");
-          start();
-        });
-      input.trigger("keyup");
-    });
-
-    test("validate_input allow_empty=false", function() {
-      expect(1);
-      stop();
-      input.validate_input({allow_empty:false})
-        .bind("invalid", function() {
-          ok(true, "allow_empty=false");
-          start();
-        });
-      input.trigger("keyup");
+        })
+        .trigger("keyup");
     });
 
     test("validate_input validator=foo", function() {
@@ -97,7 +76,7 @@
           same(val, {text:"foo",value:"bar"});
           start();
         });
-      input.trigger("keyup");
+      input.val("foo").trigger("keyup");
     });
   });
 })(jQuery);

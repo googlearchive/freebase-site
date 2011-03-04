@@ -78,10 +78,6 @@
     ]
   };
 
-  function toInt(i) {
-    return parseInt((""+i).replace(/^0+/g, ""));
-  };
-
   $.extend($.validate_input, {
     datetime: function(lang_id) { // $.datepicker region
       var log = $.validate_input.log;
@@ -135,7 +131,7 @@
       function _year_month(y, m) {
         try {
           log("_year_month(before)", y, m);
-          m = month_map[m] || toInt(m);
+          m = month_map[m] || parseInt(m, 10);
           log("_year_month(after)", y, m);
           var check = regional.monthNames[m-1]; // check it's valid month number
         }
@@ -217,7 +213,7 @@
   };
 
   $.validate_input.datetime.pad = function(i) {
-    i = toInt(i);
+    i = parseInt(i, 10);
     return i < 10 ? "0" + i : "" + i;
   };
 

@@ -98,7 +98,7 @@ function to_ajax_response(ret) {
     resp.body = [callback, "(", JSON.stringify(ret, null, 2), ");"].join("");
   } else {
     // only set non-200 status code if not in a JSONP request
-    var status_code = (typeof ret.status === "number") ? ret.status : parseInt(ret.status.split(' ')[0]);
+    var status_code = (typeof ret.status === "number") ? ret.status : parseInt(ret.status.split(' ')[0], 10);
     if (status_code) {
       resp.status = status_code;
     }

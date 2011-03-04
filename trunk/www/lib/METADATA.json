@@ -14,7 +14,7 @@
     "tagged_binary": "handlers/tagged_binary_handler.sjs", 
     "template": "handlers/template_handler.sjs",
     "controller": "handlers/controller_handler.sjs",
-    "ajax": "handlers/ajax_handler.sjs",
+    "ajax": "handlers/ajax_handler.sjs"
   },
   "extensions": {
     "css": {

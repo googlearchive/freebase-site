@@ -62,7 +62,7 @@
 <acre:block def="footer_script()">
 <script type="text/javascript">
   $(document).ready(function(){
-    $(".disabled .data-input").addClass("disabled").find(".fb-input").attr("disabled", "disabled");
+    $(".disabled .data-input").addClass("disabled").find(".fb-input, .fb-boolean-input, .fb-enumerated-input").attr("disabled", "disabled");
     $(".valid .data-input").addClass("valid");
     $(".error .data-input").addClass("error");
 

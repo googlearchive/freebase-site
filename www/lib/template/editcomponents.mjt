@@ -45,8 +45,8 @@
     var type = h.fb_input_type(type_id);
   </acre:script>
   <span acre:if="type === 'enumerated'" class="data-input">
-    <select class="enumerated-input" name="">
-      <option value="">Foo</option>
+    <select class="fb-enumerated-input" name="">
+      <option value="">Lorem ipsum</option>
       <option value="">Bar</option>
       <option value="">Dude</option>
     </select>

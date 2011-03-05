@@ -317,7 +317,9 @@ class App:
     c = self.context
 
     #this will make sure that the manifest handler will parse .mf.* files
-    self.update_handlers(static = False)
+    result = self.update_handlers(static = False)
+    if not result:
+        return c.error('Cannot create static resources for %s - error opening/parsing the app metadata file' % self)
     self.copy_to_acre_dir()
     
     lib_app = self.lib_dependency()
@@ -348,7 +350,6 @@ class App:
         
       if done:
         static_files.append(filename)
-
     
     self.update_handlers(static = True, cache_forever = True)
 
@@ -494,7 +495,7 @@ class App:
     if cache_forever:
         metadata['ttl'] = -1
 
-    self.write_metadata(metadata)
+    return self.write_metadata(metadata)
 
   def lib_dependency(self):
 
@@ -931,7 +932,6 @@ class Context():
     self.quiet = False
     self.acre = None
 
-
   def set_acre(self, acre):
     self.acre = acre
 
@@ -1051,19 +1051,19 @@ class Context():
     while tries > 0:
       try:
         self.log(url, 'fetchurl')
-        contents = urllib2.urlopen(request, timeout=30).readlines()
+        fd = urllib2.urlopen(request, timeout=30.0)
+        contents = []
+        for l in fd:
+            contents.append(l)
         break
-      except urllib2.HTTPError as exc:
-        self.error(url, subaction='fetch url error')
-        if tries:
-          tries -= 1
-          self.log('%s\nTrying again....' % ''.join(exc.readlines()), subaction=exc.msg)
-      except urllib2.URLError as exc:
+      except (urllib2.HTTPError, socket.error) as exc:
         self.error(url, subaction='fetch url error')
         if tries:
           tries -= 1
           self.log('Trying again....')
-
+        else:
+          raise
+          
     if isjson and contents:
         return json.loads(''.join(contents))
 
@@ -1302,17 +1302,22 @@ class Acre:
       return self._acre_dir
 
     c = self.context
-    cmd = ['ps']
-    
+    cmd = ['ps', 'wax']
     (r, contents) = c.run_cmd(cmd)
     
     if not r:
         return self._acre_dir
     
     for line in contents.split('\n'):
+
       parts = line.split()
       if not len(parts):
           continue
+
+      if len(parts) > 11 and 'appengine-java-sdk' in parts[6] and 'acre' in parts[13]:
+          self._acre_dir = '/'.join(parts[13].split('/')[:-1])
+          break
+
       if parts[-1] == 'com.google.acre.Main':
         try: 
           for i, v in enumerate(parts):

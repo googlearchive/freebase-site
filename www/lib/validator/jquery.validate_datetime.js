@@ -31,219 +31,169 @@
 
 ;(function($) {
 
-  var ryear = /^-?\d{4}$/;
-  var rdigit = /^\d+$/;
-  var rmonth_year = /^([^-]+)\-(\d{4})$/;
-  var ryear_month = /^(\d{4})\-([^-]+)$/;
-  var rymd = /[^ymd]/;
-
-  // mql lang ids ==> $.datepicker regional codes
-  var REGIONS = { "/lang/en": "", "/lang/en-gb": "en-GB", "/lang/fr": "fr", "/lang/it": "it", "/lang/de": "de", "/lang/es": "es", "/lang/nl": "nl", "/lang/zh": "zh-CN", "/lang/zh-hant": "zh-TW", "/lang/ja": "ja", "/lang/ko": "ko", "/lang/pt-br": "pt-BR", "/lang/ru": "ru", "/lang/pl": "pl", "/lang/tr": "tr", "/lang/th": "th", "/lang/ar": "ar", "/lang/sv": "sv", "/lang/fi": "fi", "/lang/da": "da", "/lang/pt-pt": "pt", "/lang/ro": "ro", "/lang/hu": "hu", "/lang/iw": "he", "/lang/id": "id", "/lang/cs": "cs", "/lang/el": "el", "/lang/no": "no", "/lang/vi": "vi", "/lang/bg": "bg", "/lang/hr": "hr", "/lang/lt": "lt", "/lang/sk": "sk", "/lang/sl": "sl", "/lang/sr": "sr", "/lang/ca": "ca", "/lang/lv": "lv", "/lang/uk": "uk", "/lang/fa": "fa" };
-
-  // $.datepicker regions that do not exist, so we just default them to a similar region
-  REGIONS["/lang/fil"] = "";      // en
-  REGIONS["/lang/hi"] = "";       // en
-  REGIONS["/lang/es-419"] = "es"; // es
-
-  var ymd_formats = {
-    yymmdd: [
-      "yy-m-d",
-      "yy-m-dd",
-      "yy-mm-d",
-      "yy-mm-dd",
-      "yy-M-d",
-      "yy-M-dd",
-      "yy-MM-d",
-      "yy-MM-dd"
-    ],
-    ddmmyy: [
-      "d-m-yy",
-      "dd-m-yy",
-      "d-mm-yy",
-      "dd-mm-yy",
-      "d-M-yy",
-      "dd-M-yy",
-      "d-MM-yy",
-      "dd-MM-yy"
-    ],
-    mmddyy: [
-      "m-d-yy",
-      "m-dd-yy",
-      "mm-d-yy",
-      "mm-dd-yy",
-      "M-d-yy",
-      "M-dd-yy",
-      "MM-d-yy",
-      "MM-dd-yy"
-    ]
-  };
-
   $.extend($.validate_input, {
-    datetime: function(lang_id) { // $.datepicker region
-      var log = $.validate_input.log;
-      var regional = $.validate_input.datetime.regional(lang_id);
-      var month_names = [];    // month names (e.g., january, jan, etc.)
-      var month_map = {};      // month name => month number (1-12)
-      var format_parts = regional.dateFormat.split(/[^ymd]/);
-      var ymd_format = format_parts.join(""); // @see ymd_formats
-      var ymd_format_order = [];
-      $.each(ymd_formats, function(k) {
-        if (k === ymd_format) { // $.datepicker.regional.dateFormat is first
-          ymd_format_order.unshift(k);
-        }
-        else {
-          ymd_format_order.push(k);
-        }
-      });
 
-      var delimiter = regional.dateFormat.replace(/[ymd]/g, "").split("")[0];
-
-      $.each([regional.monthNamesShort,
-              regional.monthNames], function(i, names) {
-        if (!rdigit.test(names[0])) {
-          $.each(names, function(j, name) {
-            name = name.toLowerCase();
-            if (!month_map[name]) {
-              month_names.push(name);
-              month_map[name] = j+1; // 1-12
-            }
-          });
-        }
-      });
-
-      // reverse month name lookup so we match things like 十一 before 十 (zh-CN)
-      // also, some months contain "." so we need to escape it in our RegExp.
-      var rmonth_names = month_names.reverse().join("|").replace(/([\.])/g, "\\$1");
-      var rdateparts = new RegExp("\\d+|" + rmonth_names, "gi");
-
-      function dateparts(val) {
-        var parts = [];
-        val.replace(rdateparts, function(m) {
-          parts.push(m);
-        });
-        return parts;
-      };
-
-      function _year(y) {
-        return {text:y, value:y, date:new Date(y, 0)};
-      };
-
-      function _year_month(y, m) {
-        try {
-          log("_year_month(before)", y, m);
-          m = month_map[m] || parseInt(m, 10);
-          log("_year_month(after)", y, m);
-          var check = regional.monthNames[m-1]; // check it's valid month number
-        }
-        catch (ex) {
-          throw ("Invalid month: " + m);
-        }
-        var d = new Date(y, m-1);
-        m = $.validate_input.datetime.pad(m);
-        var value = $.validate_input.datetime._format(["yy", "mm"], "-", y, m);
-        var text = $.validate_input.datetime._format(format_parts, delimiter, y, m);
-        return {text:text, value:value, date:d};
-      };
-
-      return function(val, options) {
-        //
-        // year?
-        //
-        if (ryear.test(val)) {
-          return _year(val);
-        }
-
-        var parts = dateparts(val).join("-");
-        log("normalized", parts);
-
-        //
-        // year+month?
-        //
-        var match = rmonth_year.exec(parts);
-
-        if (match) {
-          return _year_month(match[2], match[1].toLowerCase());
-        }
-        else {
-          match = ryear_month.exec(parts);
-          if (match) {
-            return _year_month(match[1], match[2].toLowerCase());
-          }
-        }
-
-        //
-        // year+month+day?
-        //
-        for (var i=0,l=ymd_format_order.length; i<l; i++) {
-          var formats = ymd_formats[ymd_format_order[i]];
-          for (var j=0,l2=formats.length; j<l2; j++) {
-            var format = formats[j];
-            var date;
-            try {
-              date = $.datepicker.parseDate(format, parts, regional);
-            }
-            catch (ex) {
-              //log("$.datepicker.parseDate error", format, parts, ex);
-              // ignore and continue
-            }
-            if (date) {
-              return {
-                text: $.datepicker.formatDate(regional.dateFormat, date, regional),
-                value: $.datepicker.formatDate("yy-mm-dd", date, regional)
-              };
-            }
-          }
-        }
-        throw "Unrecoginzed datetime: " + val;
-      };
+    datetime: function(val, options) {
+      var date = $.validate_input.datetime.fromISOString(val);
+      if (date) {
+        return {text:val, value:val, date:date};
+      }
+      throw new Error("Invalid datetime: " + val);
     }
+
   });
 
-  $.validate_input.datetime.regional = function(lang_id) {
-    var region = REGIONS[lang_id];
-    if (region == null) {
-      console.warn("$.datepicker region not available for", lang_id);
-      region = REGIONS["/lang/en"];
+  $.extend($.validate_input.datetime, {
+
+    /**
+     * From dojo.date.stamp
+     *
+     * according to http://svn.dojotoolkit.org/src/trunk/LICENSE :
+     *    Dojo is availble under *either* the terms of the modified BSD license *or* the
+     *    Academic Free License version 2.1.
+     */
+
+    // Methods to convert dates to or from a wire (string) format using well-known conventions
+
+    fromISOString: function(/*String*/formattedString, /*Number?*/defaultTime){
+      //	summary:
+      //		Returns a Date object given a string formatted according to a subset of the ISO-8601 standard.
+      //
+      //	description:
+      //		Accepts a string formatted according to a profile of ISO8601 as defined by
+      //		[RFC3339](http://www.ietf.org/rfc/rfc3339.txt), except that partial input is allowed.
+      //		Can also process dates as specified [by the W3C](http://www.w3.org/TR/NOTE-datetime)
+      //		The following combinations are valid:
+      //
+      //			* dates only
+      //			|	* yyyy
+      //			|	* yyyy-MM
+      //			|	* yyyy-MM-dd
+      // 			* times only, with an optional time zone appended
+      //			|	* THH:mm
+      //			|	* THH:mm:ss
+      //			|	* THH:mm:ss.SSS
+      // 			* and "datetimes" which could be any combination of the above
+      //
+      //		timezones may be specified as Z (for UTC) or +/- followed by a time expression HH:mm
+      //		Assumes the local time zone if not specified.  Does not validate.  Improperly formatted
+      //		input may return null.  Arguments which are out of bounds will be handled
+      // 		by the Date constructor (e.g. January 32nd typically gets resolved to February 1st)
+      //		Only years between 100 and 9999 are supported.
+      //
+      //	formattedString:
+      //		A string such as 2005-06-30T08:05:00-07:00 or 2005-06-30 or T08:05:00
+      //
+      //	defaultTime:
+      //		Used for defaults for fields omitted in the formattedString.
+      //		Uses 1970-01-01T00:00:00.0Z by default.
+
+      if(!$.validate_input.datetime._isoRegExp){
+        $.validate_input.datetime._isoRegExp =
+          //TODO: could be more restrictive and check for 00-59, etc.
+          /^(?:(-?\d{4})(?:-(\d{2})(?:-(\d{2}))?)?)?(?:T(\d{2}):(\d{2})(?::(\d{2})(.\d+)?)?((?:[+-](\d{2}):(\d{2}))|Z)?)?$/;
+      }
+
+      var match = $.validate_input.datetime._isoRegExp.exec(formattedString),
+      result = null;
+
+      if(match){
+        match.shift();
+
+        // remove leading zeros from year
+        match[0] = match[0].replace(/^(-)*0+/g, "$1");
+
+        if(match[1]){match[1]--;} // Javascript Date months are 0-based
+        if(match[6]){match[6] *= 1000;} // Javascript Date expects fractional seconds as milliseconds
+
+        if(defaultTime){
+          // mix in defaultTime.  Relatively expensive, so use || operators for the fast path of defaultTime === 0
+          defaultTime = new Date(defaultTime);
+          $.each($.map(["FullYear", "Month", "Date", "Hours", "Minutes", "Seconds", "Milliseconds"], function(prop){
+                         return defaultTime["get" + prop]();
+                       }),
+                 function(value, index){
+                   match[index] = match[index] || value;
+                 });
+        }
+
+        result = new Date(match[0]||1970, match[1]||0, match[2]||1, match[3]||0, match[4]||0, match[5]||0, match[6]||0); //TODO: UTC defaults
+        if(match[0] < 100){
+          result.setFullYear(match[0] || 1970);
+        }
+
+        var offset = 0,
+        zoneSign = match[7] && match[7].charAt(0);
+        if(zoneSign != 'Z'){
+          offset = ((match[8] || 0) * 60) + (Number(match[9]) || 0);
+          if(zoneSign != '-'){ offset *= -1; }
+        }
+        if(zoneSign){
+          offset -= result.getTimezoneOffset();
+        }
+        if(offset){
+          result.setTime(result.getTime() + offset * 60000);
+        }
+      }
+
+      return result; // Date or null
+    },
+
+    /*=====
+            dojo.date.stamp.__Options = function(){
+                    //	selector: String
+                    //		"date" or "time" for partial formatting of the Date object.
+                    //		Both date and time will be formatted by default.
+                    //	zulu: Boolean
+                    //		if true, UTC/GMT is used for a timezone
+                    //	milliseconds: Boolean
+                    //		if true, output milliseconds
+                    this.selector = selector;
+                    this.zulu = zulu;
+                    this.milliseconds = milliseconds;
+            }
+    =====*/
+
+    toISOString: function(/*Date*/dateObject, /*dojo.date.stamp.__Options?*/options){
+            //	summary:
+            //		Format a Date object as a string according a subset of the ISO-8601 standard
+            //
+            //	description:
+            //		When options.selector is omitted, output follows [RFC3339](http://www.ietf.org/rfc/rfc3339.txt)
+            //		The local time zone is included as an offset from GMT, except when selector=='time' (time without a date)
+            //		Does not check bounds.  Only years between 100 and 9999 are supported.
+            //
+            //	dateObject:
+            //		A Date object
+
+            var _ = function(n){ return (n < 10) ? "0" + n : n; };
+            options = options || {};
+            var formattedDate = [],
+                    getter = options.zulu ? "getUTC" : "get",
+                    date = "";
+            if(options.selector != "time"){
+                    var year = dateObject[getter+"FullYear"]();
+                    date = ["0000".substr((year+"").length)+year, _(dateObject[getter+"Month"]()+1), _(dateObject[getter+"Date"]())].join('-');
+            }
+            formattedDate.push(date);
+            if(options.selector != "date"){
+                    var time = [_(dateObject[getter+"Hours"]()), _(dateObject[getter+"Minutes"]()), _(dateObject[getter+"Seconds"]())].join(':');
+                    var millis = dateObject[getter+"Milliseconds"]();
+                    if(options.milliseconds){
+                            time += "."+ (millis < 100 ? "0" : "") + _(millis);
+                    }
+                    if(options.zulu){
+                            time += "Z";
+                    }else if(options.selector != "time"){
+                            var timezoneOffset = dateObject.getTimezoneOffset();
+                            var absOffset = Math.abs(timezoneOffset);
+                            time += (timezoneOffset > 0 ? "-" : "+") +
+                                    _(Math.floor(absOffset/60)) + ":" + _(absOffset%60);
+                    }
+                    formattedDate.push(time);
+            }
+            return formattedDate.join('T'); // String
     }
-    var regional = $.datepicker.regional[region] || $.datepicker.regional[''];
-    if (!regional) {
-      throw "$.datepicker region not found: " + region;
-    }
-    return regional;
-  };
-
-  $.validate_input.datetime.pad = function(i) {
-    i = parseInt(i, 10);
-    return i < 10 ? "0" + i : "" + i;
-  };
-
-  $.validate_input.datetime.format = function(dateFormat, y, m, d) {
-    var format_parts = dateFormat.split(/[^ymd]/);
-    var delimiter = dateFormat.replace(/[ymd]/g, "").split("")[0];
-    return $.validate_input.datetime._format(format_parts, delimiter, y, m, d);
-  };
-
-  $.validate_input.datetime._format = function(format_parts, delimiter, y, m, d) {
-    var parts = [];
-    $.each(format_parts, function(i, f) {
-      if (f === "yy") {
-        if (y != null) {
-          parts.push(y);
-        }
-      }
-      else if (f === "mm") {
-        if (m != null) {
-          parts.push(m);
-        }
-      }
-      else if (f === "dd") {
-        if (d != null) {
-          parts.push(d);
-        }
-      }
-    });
-    return parts.join(delimiter);
-  };
-
+  });
 
 })(jQuery);

@@ -38,21 +38,14 @@
 </acre:script>
 
 <acre:block def="title()">
-  jquery.validate_datetime2.js ($$.datepicker)
+  jquery.validate_datetime.js
 </acre:block>
 
 <acre:block def="head()">
-  <style>
-    .fail ol { display: none; }
-  </style>
   <script>
-    window.freebase = {};
-    /** copied from i18n/i18n.sjs **/
+   /** copied from i18n/i18n.sjs **/
     var LANGS = ${JSON.stringify(i18n.LANGS)};
   </script>
-  <script src="jqueryui/jquery.ui.core.js"></script>
-  <script src="jqueryui/jquery.ui.datepicker.js"></script>
-  <script src="jqueryui/i18n/jquery-ui-i18n.js"></script>
   <script src="validator/jquery.validate_input.js"></script>
   <script src="validator/jquery.validate_datetime.js"></script>
   <script src="validator/test/qunit_validate_datetime.js"></script>

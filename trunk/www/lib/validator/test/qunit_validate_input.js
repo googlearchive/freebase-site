@@ -29,18 +29,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+
 ;(function($) {
 
-  $(function() {
-    var input =  $("#validate_input");
+  var input;
 
-    QUnit.testStart = function(name) {
-      // init
-    };
-    QUnit.testDone = function(name, failures, total) {
-      // cleanup
-      input.unbind().val("");
-    };
+  QUnit.testStart = function(name) {
+    // init
+  };
+  QUnit.testDone = function(name, failures, total) {
+    // cleanup
+    input.unbind().val("");
+  };
+
+  $(function() {
+    input =  $("#validate_input");
+    test_options();
+    test_uri();
+    test_int();
+    test_float();
+    test_datetime();
+  });
+
+
+  function test_options() {
 
     module("options");
 
@@ -78,7 +91,175 @@
         });
       input.val("foo").trigger("keyup");
     });
-  });
+  };
+
+  function test_uri() {
+    module("uri");
+
+    test("$.validate_input.uri", function() {
+      equal(typeof $.validate_input.uri, "function");
+    });
+
+    test("valid", function() {
+      var tests = [
+        "http://www.freebase.com",
+        "https://foo.com/#name",
+        "http://xyz.org/p/a/t/h.cgi?a=http://foo.bar"
+      ];
+      expect(tests.length);
+      $.each(tests, function(i,t) {
+        try {
+          same($.validate_input.uri(t), {text:t, value:t});
+        }
+        catch(ex) {
+          ok(false, ex);
+        };
+      });
+    });
+
+    test("invalid", function() {
+      var tests = [
+        "www.freebase.com",
+        "/some/path",
+        "file:///User/blah/private",
+        "http://foo/bar"
+      ];
+      expect(tests.length);
+      $.each(tests, function(i,t) {
+        try {
+          $.validate_input.uri(t);
+          ok(false, "Expected invalid: " + t);
+        }
+        catch(ex) {
+          ok(true, ""+ex);
+        };
+      });
+
+    });
+  };
+
+
+  var valid_numbers = [
+    "1", 1, 1,
+    "0", 0, 0,
+    "-1", -1, -1,
+    "1000", 1000, 1000,
+    "1,000,000.1", 1000000, 1000000.1,
+    "1.003", 1, 1.003,
+    "+100.01", 100, 100.01,
+    "-1.234", -1, -1.234
+  ];
+
+  var invalid_numbers = [
+    "foo",
+    ""
+  ];
+
+  function test_int() {
+    module("int");
+
+    test("$.validate_input.int", function() {
+      equal(typeof $.validate_input["int"], "function");
+    });
+
+    test("valid", function() {
+      var n = valid_numbers;
+      expect(n.length / 3);
+      for(var i=0,l=n.length; i<l; i+=3) {
+        try {
+          same($.validate_input["int"](n[i]), {text:(new Number(n[i+1])).toLocaleString(), value:n[i+1]});
+        }
+        catch(ex) {
+          ok(false, ex);
+        };
+      }
+    });
+
+    test("invalid", function() {
+      expect(invalid_numbers.length);
+      $.each(invalid_numbers, function(i,t) {
+        try {
+          var v = $.validate_input["int"](t);
+          ok(false, "Expected invalid: " + t + ", actual: " + JSON.stringify(v));
+        }
+        catch(ex) {
+          ok(true, "Invalid int: " + t);
+        };
+      });
+
+    });
+  };
+
+  function test_float() {
+    module("float");
+
+    test("$.validate_input.float", function() {
+      equal(typeof $.validate_input["float"], "function");
+    });
+
+    test("valid", function() {
+      var n = valid_numbers;
+      expect(n.length / 3);
+      for(var i=0,l=n.length; i<l; i+=3) {
+        try {
+          same($.validate_input["float"](n[i]), {text:(new Number(n[i+2])).toLocaleString(), value:n[i+2]});
+        }
+        catch(ex) {
+          ok(false, ex);
+        };
+      }
+    });
+
+    test("invalid", function() {
+      expect(invalid_numbers.length);
+      $.each(invalid_numbers, function(i,t) {
+        try {
+          var v = $.validate_input["float"](t);
+          ok(false, "Expected invalid: " + t + ", actual: " + JSON.stringify(v));
+        }
+        catch(ex) {
+          ok(true, "Invalid int: " + t);
+        };
+      });
+
+    });
+  };
+
+  function test_datetime() {
+    module("datetime");
+
+    test("$.validate_input.datetime", function() {
+      equal(typeof $.validate_input.datetime, "function");
+    });
+
+    var valid = [
+      "2000", new Date(2000, 0),
+      "-0100", new Date(-100, 0),
+      "2000-04", new Date(2000, 3),
+      "2000-04-05", new Date(2000, 3, 5),
+      "2000-04-05T23:59:59", new Date(2000, 3, 5, 23, 59, 59)
+    ];
+
+    test("valid", function() {
+
+      for(var i=0,l=valid.length; i<l; i+=2) {
+        var val = valid[i];
+        var date = valid[i+1];
+        try {
+          var result = $.validate_input.datetime(val);
+
+          equal(result.text, val);
+          equal(result.value, val);
+          equal(result.date.toString(), date.toString());
+        }
+        catch(ex) {
+          ok(false, ""+ex);
+        }
+      }
+
+    });
+  };
+
 })(jQuery);
 
 

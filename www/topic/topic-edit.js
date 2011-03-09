@@ -98,6 +98,12 @@
           })
           .bind("invalid", function(e, data) {
             $(this).parent().removeClass("valid").addClass("error");
+          })
+          .focusin(function() {
+            $(this).parent().addClass("focus");
+          })
+          .focusout(function() {
+            $(this).parent().removeClass("focus");
           });
       });
     },

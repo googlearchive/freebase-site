@@ -111,19 +111,6 @@
         }
       });
 
-      // DAE: this basic handling for data input styling
-      // Feel free to refactor, but I need a focus class
-      // on .data-input
-/**
-      $(".fb-input").focusin(function(){
-        $(this).parents(".data-input").addClass("focus");
-      })
-
-      $(".fb-input").focusout(function(){
-        $(this).parents(".data-input").removeClass("focus");
-      })
-**/
-
     },
 
     prop_edit: function(e) {
@@ -139,9 +126,9 @@
       trigger.data("tooltip").hide();
       var prop_section = trigger.parents(".property-section");
       if (prop_section.is(".editing")) {
-        return;
+        return false;
       }
-      prop_section.addClass(".editing");
+      prop_section.addClass("editing");
       fb.get_script(fb.h.fb_url("/topic/topic-edit.mf.js"), function() {
         topic.edit.prop_add_begin(fb.acre.c.id, prop_section, fb.acre.lang.primary);
       });

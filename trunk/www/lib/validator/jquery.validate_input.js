@@ -122,11 +122,54 @@
       throw new Error("Invalid " + type + (msg ? ": " + msg : ""));
     },
 
+    get_validator: function(data_input) {
+      if (data_input.is(".text")) {
+        return vi.text;
+      }
+      else if (data_input.is(".topic")) {
+        return vi.topic;
+      }
+      else if (data_input.is(".enumerated")) {
+        return vi.enumerated;
+      }
+      else if (data_input.is(".boolean")) {
+        return vi.boolean;
+      }
+      else if (data_input.is(".datetime")) {
+        return vi.datetime;
+      }
+      else if (data_input.is(".uri")) {
+        return vi.uri;
+      }
+      else if (data_input.is(".int")) {
+        return vi["int"];
+      }
+      else if (data_input.is(".float")) {
+        return vi["float"];
+      }
+      else if (data_input.is(".rawstring")) {
+        return vi.text;
+      }
+      throw new Error("Invalid data-input: " + data_input.attr("class"));
+    },
+
     text: function(val, options) {
       if (val.lengh > 4096) {
         return this.invalid(val, options, type, "Text too long");
       }
       return {text:val, value:val};
+    },
+
+    topic: function(val, options) {
+      return vi.defaults.validator;
+    },
+
+    enumerated: function(val, options) {
+      return vi.defaults.validator;
+    },
+
+    "boolean": function(val, options) {
+      return vi.defaults.validator;
     },
 
     uri: function(val, options) {

@@ -34,7 +34,53 @@
 
     init: function(context) {
       return new kbs(context);
-    }
+    },
+
+    scroll_to: function(item) {
+      var scrollTop = $(document).scrollTop();
+      var scrollBottom = $(document).height();
+      var viewHeight = fb.kbs.viewport().h;
+      var viewBottom = scrollTop + viewHeight;
+      var offsetTop = item.offset().top;
+      var offsetBottom = offsetTop + item.height();
+
+      if (offsetTop < scrollTop) {
+        $(document).scrollTop(offsetTop);
+      }
+      else if (offsetBottom > viewBottom) {
+        $(document).scrollTop(offsetTop);
+      }
+    },
+
+    viewport: (function() {
+      if (typeof window.innerWidth != 'undefined') {
+       return function() {
+          return {
+            w: window.innerWidth,
+            h: window.innerHeight
+          };
+        };
+      }
+      else if (typeof document.documentElement != 'undefined' &&
+               typeof document.documentElement.clientWidth != 'undefined' &&
+               document.documentElement.clientWidth != 0)
+      {
+        return function() {
+          return {
+            w: document.documentElement.clientWidth,
+            h: document.documentElement.clientHeight
+          };
+        };
+      }
+      else {
+        return function() {
+          return {
+            w: document.getElementsByTagName('body')[0].clientWidth,
+            h: document.getElementsByTagName('body')[0].clientHeight
+          };
+        };
+      };
+    })()
 
   };
 
@@ -52,58 +98,12 @@
       return $(".kbs.current:first", context);
     };
 
-    var viewport;
-
-    if (typeof window.innerWidth != 'undefined') {
-      viewport = function() {
-        return {
-          w: window.innerWidth,
-          h: window.innerHeight
-        };
-      };
-    }
-    else if (typeof document.documentElement != 'undefined' &&
-             typeof document.documentElement.clientWidth != 'undefined' &&
-             document.documentElement.clientWidth != 0)
-    {
-      viewport = function() {
-        return {
-          w: document.documentElement.clientWidth,
-          h: document.documentElement.clientHeight
-        };
-      };
-    }
-    else {
-      viewport = function() {
-        return {
-          w: document.getElementsByTagName('body')[0].clientWidth,
-          h: document.getElementsByTagName('body')[0].clientHeight
-        };
-      };
-    };
-
-    var scroll_to = function(item) {
-      var scrollTop = $(document).scrollTop();
-      var scrollBottom = $(document).height();
-      var viewHeight = viewport().h;
-      var viewBottom = scrollTop + viewHeight;
-      var offsetTop = item.offset().top;
-      var offsetBottom = offsetTop + item.height();
-
-      if (offsetTop < scrollTop) {
-        $(document).scrollTop(offsetTop);
-      }
-      else if (offsetBottom > viewBottom) {
-        $(document).scrollTop(offsetTop);
-      }
-    };
-
     var set_next = this.set_next = function(current, next, dont_scroll) {
       if (next.length) {
         current.removeClass("current");
         next.addClass("current");
         if (!dont_scroll) {
-          scroll_to(next);
+          fb.kbs.scroll_to(next);
         }
       }
     };

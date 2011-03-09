@@ -1,4 +1,4 @@
-/*
+7/*
  * Copyright 2010, Google Inc.
  * All rights reserved.
  *
@@ -31,7 +31,9 @@
 
 var exports = {
   "is_literal_type": is_literal_type,
-  "get_type_role": get_type_role
+  "get_type_role": get_type_role,
+  "is_reciprocal": is_reciprocal,
+  "visible_subprops": visible_subprops
 };
 
 var LITERAL_TYPE_IDS = {
@@ -70,3 +72,71 @@ function get_type_role(type, set) {
   }
   return role;
 };
+
+
+function is_reciprocal(prop1, prop2) {
+  if (!prop2) {
+    return prop1["reverse_property"] || prop1["master_property"];
+  }
+
+  //console.log("is_reciprocal", prop1, prop2);
+
+  var otherprop = is_reciprocal(prop1);
+  if (otherprop) {
+    if (otherprop.id == prop2.id) {
+      return true;
+    }
+    else if (prop2.delegated) {
+      if (otherprop.id == prop2.delegated.id) {
+        return true;
+      }
+    }
+  }
+  otherprop = is_reciprocal(prop2);
+  if (otherprop) {
+    if (otherprop.id == prop1.id) {
+      return true;
+    }
+    else if (prop1.delegated) {
+      if (otherprop.id == prop1.delegated.id) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
+
+function visible_subprops(prop, subprops) {
+  if (!subprops) {
+    subprops = prop.expected_type.properties;
+  }
+  var visible = [];
+  subprops.forEach(function(subprop, i) {
+    if (subprop.unique && is_reciprocal(prop, subprop)) {
+      return;
+    }
+    if (unique_ish(subprop.id)) {
+      subprop.unique = true;
+    }
+    visible.push(subprop);
+  });
+  return visible;
+};
+
+function unique_ish(prop_id) {
+  return unique_ish.map[prop_id] === 1;
+};
+
+unique_ish.map = (function() {
+  var map = {};
+  [
+    '/people/sibling_relationship/sibling', '/people/marriage/spouse',
+    '/fictional_universe/sibling_relationship_of_fictional_characters/siblings',
+    '/fictional_universe/marriage_of_fictional_characters/spouses'
+  ].forEach(function(pid) {
+    map[pid] = 1;
+  });
+  return map;
+})();
+
+

@@ -114,6 +114,7 @@
       // DAE: this basic handling for data input styling
       // Feel free to refactor, but I need a focus class
       // on .data-input
+/**
       $(".fb-input").focusin(function(){
         $(this).parents(".data-input").addClass("focus");
       })
@@ -121,21 +122,29 @@
       $(".fb-input").focusout(function(){
         $(this).parents(".data-input").removeClass("focus");
       })
+**/
+
     },
 
     prop_edit: function(e) {
       var trigger = $(this).parents(".row-menu:first").prev(".menu-trigger");
       trigger.data("tooltip").hide();
-      var prop = trigger.parents(".property-section").attr("data-id");
-      console.log("prop_edit", prop);
+      var prop = trigger.parents(".property-section");
+      prop.find(".list-section .kbs:first .combo-menu .row-menu-item:first a").click();
       return false;
     },
 
     prop_add: function(e) {
       var trigger = $(this).parents(".row-menu:first").prev(".menu-trigger");
       trigger.data("tooltip").hide();
-      var prop = trigger.parents(".property-section").attr("data-id");
-      console.log("prop_add", prop);
+      var prop_section = trigger.parents(".property-section");
+      if (prop_section.is(".editing")) {
+        return;
+      }
+      prop_section.addClass(".editing");
+      fb.get_script(fb.h.fb_url("/topic/topic-edit.mf.js"), function() {
+        topic.edit.prop_add_begin(fb.acre.c.id, prop_section, fb.acre.lang.primary);
+      });
       return false;
     },
 
@@ -166,7 +175,6 @@
       }
       return false;
     }
-
   };
 
 

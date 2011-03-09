@@ -31,7 +31,7 @@
 
 <acre:script>
   var h = acre.require("helper/helpers.sjs");
-  var i18n = acre.require("i18n/i18n");
+  var i18n = acre.require("i18n/i18n.sjs");
   var _ = i18n.gettext;
 </acre:script>
 
@@ -40,22 +40,33 @@
     For topics use any type.
     For enumerated types, use /freebase/type_hints/enumeration property id
 !!-->
-<acre:block def="fb_input(type_id, value, attrs)">
+<acre:block def="fb_input(type_id, name, value, lang, instances)">
   <acre:script>
     var type = h.fb_input_type(type_id);
   </acre:script>
-  <span acre:if="type === 'enumerated'" class="data-input">
-    <select class="fb-enumerated-input" name="">
-      <option value="">Lorem ipsum</option>
-      <option value="">Bar</option>
-      <option value="">Dude</option>
+  <span acre:if="type === 'enumerated'" class="data-input enumerated">
+    <select class="fb-enumerated-input" name="${name}">
+      <acre:block for="inst in instances">
+       <option value="${inst.id}"
+               acre:attrs="value === inst.id ? {selected:'selected'} : {}">
+         ${i18n.mql.get_text(lang, inst.name).value}
+       </option>
+      </acre:block>
     </select>
   </span>
-  <span acre:elif="type === 'boolean'" class="data-input">
-    <label><input type="radio" name="foobar" class="fb-boolean-input "/> Yes</label>
-    <label><input type="radio" name="foobar" class="fb-boolean-input "/> No</label>
+  <span acre:elif="type === 'boolean'" class="data-input boolean">
+    <label>
+      <input type="radio" name="${name}" class="fb-boolean-input"
+             acre:attrs="value === true ? {selected:'selected'} : {}"/> 
+      Yes
+    </label>
+    <label>
+      <input type="radio" name="${name}" class="fb-boolean-input"
+             acre:attrs="value === false ? {selected:'selected'} : {}"/> /> 
+      No
+    </label>
   </span>
   <span acre:else="" class="data-input ${type}">
-    <input class="fb-input" type="text" value="${value == null ? '' : value}">
+    <input class="fb-input" type="text" name="${name}" value="${value == null ? '' : value}">
   </span>
 </acre:block>

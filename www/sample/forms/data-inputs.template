@@ -38,22 +38,22 @@
   
   <div class="default">
     <h2>Default</h2>
-    ${fb_input(type)}
+    ${fb_input(type, label+"default")}
   </div>
 
   <div class="disabled">
     <h2>Disabled</h2>
-    ${fb_input(type)}
+    ${fb_input(type, label+"disabled")}
   </div>
 
   <div class="valid">
     <h2>Valid</h2>
-    ${fb_input(type, "Lorem ipsum")}
+    ${fb_input(type, label+"valid", "Lorem ipsum")}
   </div>
 
   <div class="error">
     <h2>Error</h2>
-    ${fb_input(type, "Lorem ipsum")}
+    ${fb_input(type, label+"error", "Lorem ipsum")}
   </div>  
   
 </acre:block>

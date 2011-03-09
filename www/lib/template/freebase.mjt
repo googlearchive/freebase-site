@@ -253,8 +253,7 @@
           }
         },
         lang: {
-          mql: i18n.lang,
-          bundle: null
+          primary: i18n.lang
         },
         c: {},
         mwLastWriteTime: null,
@@ -265,9 +264,6 @@
         app: h.ajax_url(acre.request.script.app.path)
       }
     };
-    if (i18n.bundle_path) {
-      SERVER.acre.lang.bundle = i18n.bundle_path;
-    }
     if (exports.c && exports.c.id) {
       SERVER.acre.c.id = exports.c.id;
     }

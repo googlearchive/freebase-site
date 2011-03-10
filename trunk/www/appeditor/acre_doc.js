@@ -48,10 +48,10 @@ var AcreDoc;
             this._name = this._app.get_untitled_file_name();
         }
         
-        this._acre_handler   = properties.acre_handler  || DEFAULT_ACRE_HANDLER_KEY;
-        this._mime_type      = properties.content_type  || DEFAULT_MEDIA_TYPE;
-        this._revision       = properties.revision      || null;
-        this._based_on       = properties.based_on      || null;
+        this._acre_handler   = properties.handler        || DEFAULT_ACRE_HANDLER_KEY;
+        this._mime_type      = properties.media_type     || DEFAULT_MEDIA_TYPE;
+        this._revision       = properties.content_id     || null;
+        this._based_on       = properties.based_on       || null;
         this._has_been_saved = properties.has_been_saved || false;
 
         this._dom_element = document.createElement('div');
@@ -311,7 +311,7 @@ var AcreDoc;
         
         save_task
             .onready(function (r) {
-                if (r.revision) { file._revision = r.revision; }
+                if (r.content_id) { file._revision = r.content_id; }
                 if (r.content_type) { file._mime_type = r.content_type; }
                 
                 delete file._old_name;
@@ -376,9 +376,9 @@ var AcreDoc;
         var task = file.get_store().XhrGet('get_file', args)
             .onready(function(r) {
                file.set_name(r.name);
-               file.set_acre_handler(r.acre_handler);
+               file.set_acre_handler(r.handler);
                file.set_mime_type(r.content_type);
-               file.set_revision(r.revision);
+               file.set_revision(r.content_id);
                file.set_dirty("all", false);
                file.clear_editors();
             })

@@ -39,7 +39,7 @@ var appeditor_path = "//appeditor.apps.freebase.dev"
 function add_text_revision(file, text) {
   FB.upload(text, file.content_type, {
     callback : function(envelope) {
-      file.revision = envelope.result.id;
+      file.content_id = envelope.result.id;
     }
   });
 };
@@ -48,7 +48,7 @@ function add_text_revision(file, text) {
 function add_binary_revision(file, url) {
   // Don't try to do a url upload from a local Acre server... we're not going to be able to reach it
   if (/acre\.z\//.test(url)) {
-    file.revision = null;
+    file.content_id = null;
     return;
   }
 
@@ -58,7 +58,7 @@ function add_binary_revision(file, url) {
     content : "uri=" + encodeURIComponent(url),
     sign : true,
     callback : function(envelope) {
-      file.revision = envelope.result.id;      
+      file.content_id = envelope.result.id;      
     }
   });
 }
@@ -67,7 +67,7 @@ function add_binary_revision(file, url) {
 function remote_get_file(file, host) {
   var args = {
     fileid : file.fileid,
-    revision : file.revision
+    revision : file.content_id
   };
   
   var url = acre.form.build_url(host + "get_file_revision", args);
@@ -82,7 +82,7 @@ function remote_get_file(file, host) {
     },
     errback : function(e) {
       console.log(e);
-      file.revision = null;
+      file.content_id = null;
     }
   });
 };
@@ -98,7 +98,7 @@ function local_get_file(file) {
       add_binary_revision(file, resource.url);
     }          
   } catch (e) {
-    file.revision = null;
+    file.content_id = null;
   }
 };
 
@@ -109,7 +109,7 @@ function prepare_clone_app(appid) {
   for (var filekey in app.files) {
     var file = app.files[filekey];
 
-    if (!(file.revision && (app.repository.url === FB.service_url))) {
+    if (!(file.content_id && (app.repository.url === FB.service_url))) {
       var current_host = acre.host.name + (acre.host.port ? ":" + acre.host.port : "");
       if (app.acre_host === current_host) {
         local_get_file(file);
@@ -162,8 +162,8 @@ function copy_files(from, to_id) {
       }
     };
 
-    if (file.revision) {
-      add_file.namespace['/common/document/content'] = file.revision;
+    if (file.content_id) {
+      add_file.namespace['/common/document/content'] = file.content_id;
     }
     
     if (local) {

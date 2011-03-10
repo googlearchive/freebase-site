@@ -73,7 +73,7 @@ var AcreApp;
                 };
                 
                 app._path               = r.path;
-                app._appid				= r.appid;
+                app._appid				= r.id;
                 app._version            = r.version;
                 app._name               = r.name || 'Untitled';
 
@@ -85,7 +85,7 @@ var AcreApp;
                 app._listed             = r.listed;
                 app._release            = r.release;
                 app._hosts              = r.hosts;
-                app._versions           = r.versions;
+                app._versions           = r.all_versions || [];
                 app._last_edit          = null;
                 
                 app._initial_file       = r.current_file;

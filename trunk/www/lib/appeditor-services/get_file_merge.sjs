@@ -137,7 +137,7 @@ function merge_files(sourceid, targetid) {
     }
      
     // no change in content        
-    if (source.revision === target.revision) {
+    if (source.content_id === target.content_id) {
         return check_metadata_change("No content changes")
     }
     
@@ -145,14 +145,14 @@ function merge_files(sourceid, targetid) {
     var ancestor_rev = find_common_revision(sourceid, targetid);
     
     // no new changes, so don't provide diff
-    if (ancestor_rev === source.revision) {
+    if (ancestor_rev === source.content_id) {
         // make sure the revert doesn't happen client-side
-        delete source.revision
+        delete source.content_id
         return check_metadata_change("This is an older version of the same file.");
     }
     
     // it's a simple, fast-forward merge
-    if (ancestor_rev === target.revision) {
+    if (ancestor_rev === target.content_id) {
         ret.diff = lib_patch.diff_lines(target.text, source.text);
         return ret;
     }

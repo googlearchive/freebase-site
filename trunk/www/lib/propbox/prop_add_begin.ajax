@@ -29,10 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var validators = acre.require("lib/validator/validators.sjs");
-var editcomponents = acre.require("topic_editcomponents.mjt");
-
-var queries = acre.require("queries.sjs");
+var validators = acre.require("validator/validators.sjs");
+var propbox = acre.require("propbox/propbox.mjt");
+var queries = acre.require("propbox/queries.sjs");
 
 /**
  * prop add form
@@ -58,7 +57,7 @@ var SPEC = {
         return queries.get_enumerated_types(prop_schema, lang)
           .then(function(enum_types) {
             return {
-              html: acre.markup.stringify(editcomponents.prop_add_form(id, prop_schema, lang))
+              html: acre.markup.stringify(propbox.prop_add_form(id, prop_schema, lang))
             };
           });
       });

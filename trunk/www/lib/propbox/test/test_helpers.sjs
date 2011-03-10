@@ -31,10 +31,10 @@
 
 acre.require('/test/lib').enable(this);
 
-var h = acre.require("helper/helpers_template_util.sjs");
+var h = acre.require("propbox/helpers.sjs");
 
 
-test("fb_input_type", function() {
+test("data_input_type", function() {
 
   var tests = [
   "/type/int", "int",
@@ -51,14 +51,14 @@ test("fb_input_type", function() {
   ];
 
   for (var i=0,l=tests.length; i<l; i+=2) {
-    same(h.fb_input_type(tests[i]), tests[i+1]);
+    same(h.data_input_type(tests[i]), tests[i+1]);
   }
 
-  same(h.fb_input_type(), "");
-  same(h.fb_input_type(null), "");
+  same(h.data_input_type(), "");
+  same(h.data_input_type(null), "");
 
-  same(h.fb_input_type("/freebase/type_hints/enumeration"), "enumerated");
-  same(h.fb_input_type("/film/film"), "topic");
+  same(h.data_input_type("/freebase/type_hints/enumeration"), "enumerated");
+  same(h.data_input_type("/film/film"), "topic");
 
 });
 

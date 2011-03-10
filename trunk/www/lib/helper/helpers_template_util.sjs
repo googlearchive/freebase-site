@@ -33,11 +33,8 @@ var exports = {
   "is_schema_app": is_schema_app,
   "is_inspect_app": is_inspect_app,
   "is_topic_app": is_topic_app,
-  "is_group_app": is_group_app,
-  "fb_input_type": fb_input_type
+  "is_group_app": is_group_app
 };
-
-var mql = acre.require("helper/helpers_mql.sjs");
 
 var schema_app = /^\/\/(\w+\.)*schema\.www\./;
 var inspect_app = /^\/\/(\w+\.)*triples\.www\./;
@@ -59,20 +56,6 @@ function is_topic_app(app_path) {
 
 function is_group_app(app_path) {
   return group_app.test(app_path);
-};
-
-
-function fb_input_type(type_id) {
-  if (!type_id) {
-    return "";
-  }
-  if (mql.is_literal_type(type_id)) {
-    return type_id.split("/").pop();
-  }
-  else if (type_id === "/freebase/type_hints/enumeration") {
-    return "enumerated";
-  }
-  return "topic";
 };
 
 

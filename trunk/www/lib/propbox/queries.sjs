@@ -28,46 +28,50 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-;(function($, fb, propbox) {
 
-  var topic = fb.topic = {
+var h = acre.require("helper/helpers.sjs");
+var deferred = acre.require("promise/deferred");
+var freebase = acre.require("promise/apis").freebase;
+var i18n = acre.require("i18n/i18n.sjs");
+var mql = acre.require("propbox/mql.sjs");
 
-    init: function() {
+function prop_schema(pid, lang) {
+  var q = mql.prop_schema({id: pid}, lang);
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result;
+    });
+};
 
-      propbox.init("#topic-data", {
-        id: fb.acre.c.id,
-        base_url: fb.h.ajax_url("lib/propbox"),
-        lang: fb.acre.lang.primary || "/lang/en"
+function get_enumerated_types(schema, lang) {
+  schema = schema.expected_type || schema;
+  var promises = [];
+  if (schema["/freebase/type_hints/enumeration"] === true) {
+    var promise = freebase.mqlread([{
+      optional: true,
+      id: null,
+      name: i18n.mql.text_clause(lang),
+      type: {id:schema.id, limit:0},
+      limit: 500
+    }])
+    .then(function(env) {
+      var topics = env.result;
+      topics.forEach(function(t) {
+        t.text = i18n.mql.get_text(lang, t.name).value;
       });
-
-      // Initialize filter menu collapse/expand
-      $(".column.nav > .module").collapse_module(".section");
-
-      // Initialize prop counts filter suggest input
-      fb.filters.init_domain_type_property_filter(".column.nav");
-
-      // Initialize the property limit slider
-      fb.filters.init_limit_slider_filter("#limit-slider", 10, 1, 100, 1);
-
-      $(".toolbar-trigger").click(function(){
-        var $add_type_pane = $(".add-type").first();
-        var $toolbar = $(this).closest(".toolbar");
-        var $trigger = $(this);
-
-        if($add_type_pane.is(":visible")) {
-          $toolbar.removeClass("active");
-          $trigger.removeClass("active");
-          $add_type_pane.slideUp();
-        }
-        else {
-          $trigger.addClass("active");
-          $toolbar.addClass("active");
-          $add_type_pane.slideDown();
-        }
+      topics.sort(function(a, b) {
+        return b.text < a.text;
       });
+      schema.instances = topics;
+      return topics;
+    });
+    promises.push(promise);
+  }
+  if (schema.properties) {
+    for (var i=0,l=schema.properties.length; i<l; i++) {
+      promises = promises.concat(get_enumerated_types(schema.properties[i], lang));
     }
-  };
+  }
+  return deferred.all(promises);
+};
 
-
-  $(topic.init);
-})(jQuery, window.freebase, window.propbox);

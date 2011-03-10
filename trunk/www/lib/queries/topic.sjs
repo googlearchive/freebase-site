@@ -28,46 +28,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-;(function($, fb, propbox) {
 
-  var topic = fb.topic = {
+var h = acre.require("helper/helpers.sjs");
+var freebase = acre.require("promise/apis").freebase;
 
-    init: function() {
-
-      propbox.init("#topic-data", {
-        id: fb.acre.c.id,
-        base_url: fb.h.ajax_url("lib/propbox"),
-        lang: fb.acre.lang.primary || "/lang/en"
-      });
-
-      // Initialize filter menu collapse/expand
-      $(".column.nav > .module").collapse_module(".section");
-
-      // Initialize prop counts filter suggest input
-      fb.filters.init_domain_type_property_filter(".column.nav");
-
-      // Initialize the property limit slider
-      fb.filters.init_limit_slider_filter("#limit-slider", 10, 1, 100, 1);
-
-      $(".toolbar-trigger").click(function(){
-        var $add_type_pane = $(".add-type").first();
-        var $toolbar = $(this).closest(".toolbar");
-        var $trigger = $(this);
-
-        if($add_type_pane.is(":visible")) {
-          $toolbar.removeClass("active");
-          $trigger.removeClass("active");
-          $add_type_pane.slideUp();
-        }
-        else {
-          $trigger.addClass("active");
-          $toolbar.addClass("active");
-          $add_type_pane.slideDown();
-        }
-      });
-    }
+/**
+ * Get topic data/structure from Topic API
+ */
+function topic(id, lang, limit, as_of_time) {
+  var params = {
+    lang: lang || "/lang/en"
   };
-
-
-  $(topic.init);
-})(jQuery, window.freebase, window.propbox);
+  if (params.lang != "/lang/en") {
+    params.lang = [params.lang, "/lang/en"];
+  }
+  if (limit) {
+    params.limit = limit;
+  }
+  if (as_of_time) {
+    params.as_of_time = as_of_time;
+  }
+  var url = h.fb_api_url("/api/experimental/topic/full", id, params);
+  return freebase.fetch(url)
+    .then(function(env) {
+      return env.result;
+    });
+};

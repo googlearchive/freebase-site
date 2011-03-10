@@ -1,6 +1,6 @@
 
 <acre:script>
-  var fb_input = acre.require("lib/template/editcomponents.mjt").fb_input
+  var data_input = acre.require("lib/propbox/propbox.mjt").data_input
 </acre:script>
 
 <acre:block def="head()">
@@ -26,34 +26,47 @@
 
   <div class="section">
     <acre:block for="(var i=0; i<inputs.length; i+=2)">
-      ${fb_input_states(inputs[i], inputs[i+1])}
+      ${data_input_states(inputs[i], inputs[i+1])}
     </acre:block>
   </div>
 
 </acre:block>
 
-<acre:block def="fb_input_states(label, type)">
+<acre:block def="data_input_states(label, type)">
+
+  <acre:script>
+    var instances;
+    if (type === "/freebase/type_hints/enumeration") {
+      instances = [{
+        id: "foo",
+        text: "foo"   
+      }, {
+        id: "bar",
+        text: "bar"   
+      }]
+    }
+  </acre:script>
 
   <h1>${label}</h1>
   
   <div class="default">
     <h2>Default</h2>
-    ${fb_input(type, label+"default")}
+    ${data_input(type, label+"default", "Lorem ipsum", instances)}
   </div>
 
   <div class="disabled">
     <h2>Disabled</h2>
-    ${fb_input(type, label+"disabled")}
+    ${data_input(type, label+"disabled", "Lorem ipsum", instances)}
   </div>
 
   <div class="valid">
     <h2>Valid</h2>
-    ${fb_input(type, label+"valid", "Lorem ipsum")}
+    ${data_input(type, label+"valid", "Lorem ipsum", instances)}
   </div>
 
   <div class="error">
     <h2>Error</h2>
-    ${fb_input(type, label+"error", "Lorem ipsum")}
+    ${data_input(type, label+"error", "Lorem ipsum", instances)}
   </div>  
   
 </acre:block>

@@ -992,8 +992,8 @@ var ui = {};
                     file.t_editor_show("TextareaEditor", { margin : false}, {text:text});
                     file.hide();
                 }           
-            } else if (sfile.revision && (sfile.revision !== tfile.revision)) {
-                file.set_revision(sfile.revision);
+            } else if (sfile.content_id && (sfile.content_id !== tfile.content_id)) {
+                file.set_revision(sfile.content_id);
             }
         }
         if (tfile && (tfile.name === ui.get_file().get_name())) {
@@ -1138,31 +1138,31 @@ var ui = {};
         }
         
         fb.get_script(fb.acre.libs["fulljslint"], function(){
-	        var ok = JSLINT(source_code, jslint_options);
-	        if (ok) {
-	            ui.MessagePanel.info('No syntax errors found');
-	        } else {
-	            var errors = JSLINT.errors;
-	            var popup_text = 'Found '+errors.length +' errors.  Click any of the red line numbers below to see corresponding error details.';
-	            var linenumbers = $('>div', linenumber_container);
-	            if (!linenumbers.length) {
-	              // no linenumber control available (example: queryeditor)
-	              errors = errors.slice(0,3); // first 3 errors 
-	              popup_text = $.map(errors,function(e) { if (e) { return 'Line: '+e.line+' '+e.reason; } });
-	            } else {
-	              for (var i=0;i<errors.length;i++) {
-	                var e=errors[i];
-	                if (e) {
-	                  var line = linenumbers.eq(e.line-1);
-	                  line.addClass('jslint-error');
-	                  line.attr('title', line.attr('title') + ' ' + e.reason);
-	                }
-	              }
-	            }
-	            ui.MessagePanel.error(popup_text);
-	            // scroll to the first error
-	            ui.get_file().editor_goto_line( errors[0].line );
-	        }
+            var ok = JSLINT(source_code, jslint_options);
+            if (ok) {
+                ui.MessagePanel.info('No syntax errors found');
+            } else {
+                var errors = JSLINT.errors;
+                var popup_text = 'Found '+errors.length +' errors.  Click any of the red line numbers below to see corresponding error details.';
+                var linenumbers = $('>div', linenumber_container);
+                if (!linenumbers.length) {
+                  // no linenumber control available (example: queryeditor)
+                  errors = errors.slice(0,3); // first 3 errors 
+                  popup_text = $.map(errors,function(e) { if (e) { return 'Line: '+e.line+' '+e.reason; } });
+                } else {
+                  for (var i=0;i<errors.length;i++) {
+                    var e=errors[i];
+                    if (e) {
+                      var line = linenumbers.eq(e.line-1);
+                      line.addClass('jslint-error');
+                      line.attr('title', line.attr('title') + ' ' + e.reason);
+                    }
+                  }
+                }
+                ui.MessagePanel.error(popup_text);
+                // scroll to the first error
+                ui.get_file().editor_goto_line( errors[0].line );
+            }
         });
     };
 
@@ -1641,7 +1641,7 @@ var ui = {};
         
         function md_change(file1,file2) {
           if (file1 && file2) {
-            return (file1.acre_handler !== file2.acre_handler) || (file1.content_type !== file2.content_type);
+            return (file1.handler !== file2.handler) || (file1.content_type !== file2.content_type);
           } else { return false; }
         }
         
@@ -1681,11 +1681,11 @@ var ui = {};
 
                 if (name_change(data.file1, data.file2)) { f2_name.addClass("change"); }
                 f2_name.append(data.file2.name);
-                if (appid(data.file2) !== ui.get_app().get_path()) { f2_name.append("in " + appid(data.file2)); }
+                if (appid(data.file2) !== ui.get_app().get_path()) { f2_name.append(" in " + appid(data.file2)); }
 
                 var f2_md = $('<h3></h3>');
                 if (md_change(data.file1, data.file2)) { f2_md.addClass("change"); }
-                f2_md.append(ui.get_store().get_acre_handlers()[data.file2.acre_handler].name);
+                f2_md.append(ui.get_store().get_acre_handlers()[data.file2.handler].name);
                 if (data.file2.content_type) { f2_md.append(" (" + data.file2.content_type + ")"); }
                 f2_head.append(f2_name).append(f2_md);
 
@@ -1706,10 +1706,10 @@ var ui = {};
                 }
                 else if (method == "get_file_merge") { f1_name.append("After Merge: "); }
                 f1_name.append(data.file1.name);
-                if (method == "get_file_diff" && appid(data.file1) !== ui.get_app().get_path()) { f1_name.append("in " + appid(data.file1)); }
+                if (method == "get_file_diff" && appid(data.file1) !== ui.get_app().get_path()) { f1_name.append(" in " + appid(data.file1)); }
 
                 var f1_md = $('<h3></h3>');
-                f1_md.append(ui.get_store().get_acre_handlers()[data.file1.acre_handler].name);
+                f1_md.append(ui.get_store().get_acre_handlers()[data.file1.handler].name);
                 if (data.file1.content_type) { f1_md.append(" (" + data.file1.content_type + ")"); }
                 f1_head.append(f1_name).append(f1_md);
 
@@ -1726,7 +1726,7 @@ var ui = {};
         
         if (data.message) {
             el.append($('<div class="message"></div>').text(data.message));
-        } else if (data.file1 && data.file2 && data.file1.revision === data.file2.revision) {
+        } else if (data.file1 && data.file2 && data.file1.content_id === data.file2.content_id) {
             el.append('<div class="message">No change in content</div>');
         } else if ((data.file2 && data.file2.binary) || (data.file1 && data.file1.binary)) {
             if(data.file2 && data.file2.binary) {

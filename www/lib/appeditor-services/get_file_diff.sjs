@@ -32,7 +32,7 @@
 var FB = acre.freebase;
 var service = acre.require('appeditor-services/lib_appeditor_service');
 
-var lib_p       = acre.require("appeditor-services/lib_diff_match_patch");
+var lib_p       = acre.require("appeditor-services/lib_diff_match_patch.sjs");
 var lib_patch   = new lib_p.diff_match_patch;
 var lib_file     = acre.require("appeditor-services/get_file");
 
@@ -45,11 +45,15 @@ function diff_file(fileid1, fileid2, timestamp1, timestamp2) {
     
     try {
         ret.file1 = lib_file.get_file(fileid1, timestamp1);
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
     
     try {
         ret.file2 = lib_file.get_file(fileid2, timestamp2);
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
     
     // If no files, don't do a diff
     if (!ret.file1 && !ret.file2) {
@@ -62,7 +66,7 @@ function diff_file(fileid1, fileid2, timestamp1, timestamp2) {
     }
     
     // If the files haven't changed, don't do a diff
-    if (ret.file1 && ret.file2 && (ret.file1.revision === ret.file2.revision)) {
+    if (ret.file1 && ret.file2 && (ret.file1.content_id === ret.file2.content_id)) {
         return ret;
     }
     

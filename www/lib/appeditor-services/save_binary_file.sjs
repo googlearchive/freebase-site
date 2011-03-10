@@ -95,7 +95,7 @@ function save_file_binary(id, form_request, props) {
     var result = {
         path         : filepath,
         fileid       : fileid,
-        revision     : ret.id,
+        content_id   : ret.id,
         content_type : ret['/type/content/media_type']
     };
     

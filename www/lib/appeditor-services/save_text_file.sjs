@@ -108,7 +108,7 @@ function save_file_text(fileid, props) {
     };
     
     if (upload) {
-        result.revision = upload.id;
+        result.content_id = upload.id;
         result.content_type = upload['/type/content/media_type'];
     };
     

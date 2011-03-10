@@ -63,7 +63,7 @@ function diff_apps(appid1, appid2, timestamp1, timestamp2) {
         var file1 = app1.files[fn];
         var file2 = app2.files[fn];
         if (file2) {
-            if ((file1.revision !== file2.revision) || (file1.acre_handler !== file2.acre_handler)) {
+            if ((file1.content_id !== file2.content_id) || (file1.acre_handler !== file2.acre_handler)) {
                 ret.files[fn] = {
                     file1 : file1,
                     file2 : file2

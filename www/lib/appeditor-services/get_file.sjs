@@ -49,7 +49,8 @@ function get_file(fileid, timestamp) {
     
     var file;
     var app = app_lib.get_app(resource.appid, true, timestamp);
-    file = app.files[acre.freebase.mqlkey_quote(resource.filename)];
+    var filekey = acre.freebase.mqlkey_quote(resource.filename);
+    file = app.files[filekey];
 
     if (!file) {
         throw new service.ServiceError("400 Bad Request", null, {
@@ -59,17 +60,19 @@ function get_file(fileid, timestamp) {
         });
     }
     
-    if (file.revision) {
-        var content = acre.require('appeditor-services/get_file_revision').get_file_revision(fileid, file.revision);
+    if (file.content_id) {
+        var content = acre.require('appeditor-services/get_file_revision').get_file_revision(fileid, file.content_id);
         if (content.text) { file.text = content.text; }
         else if (content.binary) { file.binary = content.binary; }
     }
 
     file.app = {
-      appid : app.appid,
+      appid : app.id,
       version : app.version,
       service_url : acre.freebase.service_url
     };
+    
+    file.fileid = file.app.appid + "/" + filekey;
 
     return file;
 }

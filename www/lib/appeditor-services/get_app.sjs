@@ -31,6 +31,7 @@
 
 var FB = acre.freebase;
 var service = acre.require('appeditor-services/lib_appeditor_service');
+var h = acre.require("helper/helpers.sjs");
 
 function fix_timestamp(timestamp) {
   // TODO: regex is becuase of MQL-474
@@ -148,7 +149,7 @@ function _format_app_query_results(appinfo, just_files) {
 
   // properties
   r.path           = "//" + appinfo.id.split("/").reverse().join(".") + "dev";
-  r.appid          = appinfo.id;
+  r.id             = appinfo.id;
   r.acre_host      = null;
   r.repository     = null;
   r.guid           = appinfo.guid;
@@ -161,9 +162,9 @@ function _format_app_query_results(appinfo, just_files) {
     r.listed         = null;
 
     // versions
+    r.version        = null;
     r.release        = null;
     r.hosts          = [];
-    r.versions       = [];
   }
 
   // permissions
@@ -199,17 +200,17 @@ function _format_app_query_results(appinfo, just_files) {
 
     var key = entry.value;
     var file = {
-      path : r.path + "/" + key,
-      fileid : r.appid + "/" + key
+      path:   r.path + "/" + key,
+      fileid: r.id + "/" + key
     };
     file.name = FB.mqlkey_unquote(key);
     file.guid = doc.guid;
 
-    file.acre_handler   = doc.handler ? doc.handler.handler_key : 'passthrough';
-    file.content_type   = doc['/common/document/content'] ? doc['/common/document/content'].media_type.split('/').slice(2).join('/') : null;
-    file.revision       = doc['/common/document/content'] ? doc['/common/document/content'].id : null;
+    file.handler        = doc.handler ? doc.handler.handler_key : 'passthrough';
+    file.media_type     = doc['/common/document/content'] ? doc['/common/document/content'].media_type.split('/').slice(2).join('/') : null;
+    file.content_id     = doc['/common/document/content'] ? doc['/common/document/content'].id : null;
+    file.content_hash   = doc['/common/document/content'] ? doc['/common/document/content'].blob_id : null;
     file.content_length = doc['/common/document/content'] ? doc['/common/document/content'].length : null;
-    file.SHA256         = doc['/common/document/content'] ? doc['/common/document/content'].blob_id : null;
     file.based_on       = doc.based_on;
     
     r.files[key] = file;
@@ -227,18 +228,18 @@ function make_graph_app(md, just_files, timestamp) {
   var leaf = FB.mqlread(create_app_query(md.guid), env).result;
   if (!leaf) { bad_appid(md.id); }
   
-  var ret = _format_app_query_results(leaf, just_files);
+  var ret = h.extend(md, _format_app_query_results(leaf, just_files));
   
-  if(md.versions && md.versions.length) {
-    ret.version = md.versions[0];
+  if(ret.versions && ret.versions.length) {
+    ret.version = ret.versions[0];
   }
-
+  
   if (!just_files) {
-    var versions = acre.require('appeditor-services/lib_app_versions').get_versions(md.id);
-    ret.listed         = versions.listed;
-    ret.release        = versions.release;
-    ret.hosts          = versions.hosts;
-    ret.versions       = versions.versions;
+    var versions = acre.require('appeditor-services/lib_app_versions').get_versions(ret.id);
+    ret.listed          = versions.listed;
+    ret.release         = versions.release;
+    ret.hosts           = versions.hosts;
+    ret.all_versions    = versions.versions;
   }
   
   ret.repository     = {
@@ -252,48 +253,25 @@ function make_graph_app(md, just_files, timestamp) {
 
 
 function make_disk_app(appinfo) {
-  var r = {};
-  
-  // properties  
-  r.path           = "//" + appinfo.id.split("/").reverse().join(".") + "dev";
-  r.appid          = appinfo.id;
-  r.acre_host      = null;
-  r.repository     = {
+  // properties
+  appinfo.acre_host      = null;
+  appinfo.repository     = {
       url                    : null,
       appeditor_service_base : null,
-      versioned              : false,
+      versioned              : false
   };
-  r.guid           = appinfo.guid;
-  r.name           = appinfo.id.split("/")[1];
-  r.creation_time  = null;
-  r.version        = appinfo.versions.length ? appinfo.versions[0] : null;
-  r.oauth_enabled  = null;
-  r.write_user     = appinfo.freebase ? (appinfo.freebase.write_user || null) : null;
-  r.parent         = null;
-  r.children       = [];
-  r.listed         = false;
-  r.release        = null;
-  r.hosts          = [];
-  r.versions       = [];
-  r.files          = {};
   
-  for (var name in appinfo.files) {
-    var key = FB.mqlkey_quote(name);
-    var file = appinfo.files[name];
-    
-    r.files[key] = {
-      path : r.path + "/" + name,
-      fileid : appinfo.app_id + "/" + key,
-      name : name,
-      acre_handler : file.handler,
-      content_type : file.media_type,
-      content_hash : file.content_hash,
-      revision : null,
-      based_on : null
-    };
-  }
+  appinfo.name           = appinfo.id.split("/").pop();
+  appinfo.creation_time  = null;
+  appinfo.oauth_enabled  = null;
+  appinfo.parent         = null;
+  appinfo.children       = [];
   
-  return r;
+  appinfo.listed         = false;
+  appinfo.release        = null;
+  appinfo.versions       = [];
+  
+  return appinfo;
 };
 
 function bad_appid(appid) {
@@ -320,10 +298,10 @@ function get_app (appid, just_files, timestamp) {
   }
   
   var ret;
+  var md = acre.get_metadata(resource.app_path);
   if (timestamp) {
-    ret = make_graph_app({app_id:resource.appid, as_of:timestamp}, just_files);
+    ret = make_graph_app({guid:md.guid, as_of:timestamp}, just_files);
   } else {
-    var md = acre.get_metadata(resource.app_path);
     if (!md) { bad_appid(appid); }
     
     switch (md.source) {

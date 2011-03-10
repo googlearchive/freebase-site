@@ -59,6 +59,7 @@ var rules = {
     {prefix:"/lib/i18n",           app:lib + "/i18n"},
     {prefix:"/lib/permission",     app:lib + "/permission"},
     {prefix:"/lib/promise",        app:lib + "/promise"},
+    {prefix:"/lib/propbox",        app:lib + "/propbox"},
     {prefix:"/lib/queries",        app:lib + "/queries"},
     {prefix:"/lib/routing",        app:lib + "/routing"},
     {prefix:"/lib/template",       app:lib + "/template"},

@@ -124,6 +124,7 @@
 				var tab = tabs.eq(i);												 
 				
 				if (typeof i == 'string' && i.replace("#", "")) {
+				    i = i.replace(/([\"\#\$\%\&\'\(\)\*\+\,\.\/\:\;\<\=\>\?\@\[\\\]\^\`\{\|\}\~])/g, "\\$1");   // XXX - added for appeditor compatibility
 					tab = tabs.filter("[href*=" + i.replace("#", "") + "]");
 					i = Math.max(tabs.index(tab), 0);
 				}

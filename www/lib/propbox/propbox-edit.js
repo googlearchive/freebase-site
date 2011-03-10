@@ -35,6 +35,7 @@
   var base_url = propbox.options.base_url;
   var topic_id = propbox.options.id;
   var lang_id = propbox.options.lang;
+  var suggest_options = propbox.options.suggest;
 
   var edit = propbox.edit = {
 
@@ -83,7 +84,20 @@
     },
 
     validate_prop_add_form: function(form) {
-
+      var valid = true;
+      $(".data-input", form.form).each(function(i) {
+        var data_input = $(this);
+        var data_input_instance = data_input.data("$.data_input");
+        data_input_instance.validate(true);
+        if (i === 0 && !data_input.is(".valid")) {
+          // first data_input is always required
+          valid = edit.data_input_required(form, data_input);
+        }
+        else if (data_input.is(".error")) {
+          valid = edit.data_input_invalid(form, data_input);
+        }
+      });
+      return valid;
     },
 
     submit_prop_add_form: function(form) {
@@ -92,26 +106,18 @@
 
     init_input_elements: function(form) {
       $(".data-input", form.form).each(function() {
-        var $this = $(this);
-        $(":input", $this)
-          .validate_input({
-            validator: $.validate_input.get_validator($this)
+        $(this)
+          .data_input({
+            suggest: suggest_options
           })
-          .bind("valid", function(e, data) {
-            $(this).parent().removeClass("error").addClass("valid");
+          .bind("submit", function() {
+            form.form.trigger(form.event_prefix + "submit");
           })
-          .bind("invalid", function(e, data) {
-            $(this).parent().removeClass("valid").addClass("error");
-          })
-          .focusin(function() {
-            $(this).parent().addClass("focus");
-          })
-          .focusout(function() {
-            $(this).parent().removeClass("focus");
+          .bind("cancel", function() {
+            form.form.trigger(form.event_prefix + "cancel");
           });
       });
     },
-
 
     init: function(form) {
       if (form.mode === "add") {
@@ -154,7 +160,7 @@
     },
 
     cancel: function(form) {
-      form.form.hide();
+      form.form.hide().remove();
       form.prop_section
         .find(">.data-section")
         .show()
@@ -163,11 +169,60 @@
     },
 
     submit: function(form) {
+      // are we already submitting?
+      if (form.form.is(".loading")) {
+        return;
+      }
 
+      // remove focus from activeElement
+      if (document.activeElement) {
+        $(document.activeElement).blur();
+      }
+
+      if (form.validate) {
+        if (!form.validate(form)) {
+          return;
+        }
+      }
+
+      form.form.addClass("loading");
+
+      if (form.submit) {
+        form.submit(form);
+      }
     },
 
-    error: function(form, msg) {
-      var form_msg = $("<div class='form-msg'>").text(msg);
+    data_input_required: function(form, data_input) {
+      var label = data_input.prev(".form-label").text();
+      edit.form_error(form, "Required: " + label);
+    },
+
+    data_input_invalid: function(form, data_input) {
+      var label = data_input.prev(".form-label").text();
+      edit.form_error(form, "Invalid: " + label);
+    },
+
+    form_error: function(form, msg) {
+      return edit.form_message(form, msg, "error");
+    },
+
+    form_message: function(form, msg, type) {
+      var close = $('<a class="close-msg" href="#">x</a>').click(function(e) {
+        $(this).parents("tr:first").remove();
+        return false;
+      });
+      var span =  $("<span>").text(msg);
+      var td = $('<td>').append(close).append(span);
+      var row_msg = $('<tr class="row-msg">').append(td);
+      if (type) {
+        row_msg.addClass("row-msg-" + type);
+      }
+
+      var row = $(".edit-row", form.form);
+      // prepend row_msg to row
+      row.before(row_msg);
+
+      return row_msg;
     },
 
     ajax_error: function(xhr, form) {
@@ -187,6 +242,7 @@
       edit.error(form, msg);
       form.form.removeClass("loading");
     }
+
   };
 
 

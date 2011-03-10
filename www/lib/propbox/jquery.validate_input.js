@@ -87,10 +87,13 @@
       clearTimeout(this.textchange_timeout);
       var self = this;
       this.textchange_timeout = setTimeout(function() {
-        self.textchange_delay();
+        self.validate();
       }, 200);
     },
-    textchange_delay: function() {
+    validate: function(force) {
+      if (force) {
+        clearTimeout(this.textchange_timeout);
+      }
       var val = this.input.val();
       if (this.original_value === val) {
         return this.original(val);
@@ -120,37 +123,6 @@
 
     invalid: function(val, options, type, msg) {
       throw new Error("Invalid " + type + (msg ? ": " + msg : ""));
-    },
-
-    get_validator: function(data_input) {
-      if (data_input.is(".text")) {
-        return vi.text;
-      }
-      else if (data_input.is(".topic")) {
-        return vi.topic;
-      }
-      else if (data_input.is(".enumerated")) {
-        return vi.enumerated;
-      }
-      else if (data_input.is(".boolean")) {
-        return vi.boolean;
-      }
-      else if (data_input.is(".datetime")) {
-        return vi.datetime;
-      }
-      else if (data_input.is(".uri")) {
-        return vi.uri;
-      }
-      else if (data_input.is(".int")) {
-        return vi["int"];
-      }
-      else if (data_input.is(".float")) {
-        return vi["float"];
-      }
-      else if (data_input.is(".rawstring")) {
-        return vi.text;
-      }
-      throw new Error("Invalid data-input: " + data_input.attr("class"));
     },
 
     text: function(val, options) {

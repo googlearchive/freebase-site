@@ -52,6 +52,13 @@ function extend_metadata(md) {
     md.handlers[h] = "lib/" + md.handlers[h];
   }
   
+  for (var h in md.mounts) {
+    var mount = md.mounts[h];
+    if(mount.indexOf("/") !== 0) {
+      md.mounts[h] = "lib/" + mount; 
+    }
+  }
+  
   if (md.error_page) {
       md.error_page = "lib/" + md.error_page;      
   }

@@ -327,7 +327,7 @@ propbox edit forms
   <acre:script>
     var visible_subprops = h.visible_subprops(prop_schema);
   </acre:script>
- <table class="edit-form clear">
+  <table class="edit-form clear">
     <tbody>
       <tr class="edit-row">
         <td>
@@ -408,7 +408,7 @@ propbox edit forms
       No
     </label>
   </span>
-  <span acre:else="" class="data-input ${type}">
+  <span acre:else="" class="data-input ${type}" acre:attrs="type === 'topic' ? {'data-ect': type_id} : {}">
     <input class="fb-input" type="text" name="${name}" value="${value == null ? '' : value}">
   </span>
 </acre:block>

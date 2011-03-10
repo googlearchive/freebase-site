@@ -37,7 +37,15 @@
       propbox.init("#topic-data", {
         id: fb.acre.c.id,
         base_url: fb.h.ajax_url("lib/propbox"),
-        lang: fb.acre.lang.primary || "/lang/en"
+        lang: fb.acre.lang.primary || "/lang/en",
+        suggest: {
+          service_url: fb.h.legacy_fb_url(),
+          service_path: "/private/suggest",
+          flyout_service_url: fb.h.legacy_fb_url(),
+          flyout_service_path: "/private/flyout",
+          category: "object",
+          type: "/common/topic"
+        }
       });
 
       // Initialize filter menu collapse/expand

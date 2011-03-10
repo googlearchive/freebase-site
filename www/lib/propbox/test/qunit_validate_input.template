@@ -42,8 +42,8 @@
 </acre:block>
 
 <acre:block def="head()">
-  <script src="validator/jquery.validate_input.js"></script>
-  <script src="validator/test/qunit_validate_input.js"></script>
+  <script src="propbox/jquery.validate_input.js"></script>
+  <script src="propbox/test/qunit_validate_input.js"></script>
 </acre:block>
 
 <acre:block def="fixture()">  

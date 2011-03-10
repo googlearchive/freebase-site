@@ -28,15 +28,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-;(function($, fb) {
+;(function($, propbox) {
 
-  // fb.topic namespace required (topic.js)
+  // propbox namespace required @see propbox.js
 
-  var edit = fb.topic.edit = {
+  var base_url = propbox.options.base_url;
+  var topic_id = propbox.options.id;
+  var lang_id = propbox.options.lang;
 
-    prop_add_begin: function(topic_id, prop_section, lang_id) {
+  var edit = propbox.edit = {
+
+    prop_add_begin: function(prop_section) {
       $.ajax({
-        url: fb.h.fb_url("/topic/prop_add_begin.ajax"),
+        url: base_url + "/prop_add_begin.ajax",
         data: {
           id: topic_id,
           pid: prop_section.attr("data-id"),
@@ -45,12 +49,12 @@
         dataType: "json",
         success: function(data, status, xhr) {
           var html = $(data.result.html);
-          var event_prefix = "fb.topic.add.property.";
+          var event_prefix = "propbox.edit.prop_add.";
           var form = {
             mode: "add",
             event_prefix: event_prefix,
             ajax: {
-              url: fb.h.fb_url("/topic/prop_add_submit.ajax")
+              url: base_url + "/prop_add_submit.ajax"
             },
             init: edit.init_prop_add_form,
             validate: edit.validate_prop_add_form,
@@ -111,7 +115,7 @@
 
     init: function(form) {
       if (form.mode === "add") {
-        var ls = $(">.list-section", form.prop_section);
+        var ls = $(">.data-section", form.prop_section);
         if ($(">.empty-property", ls).length) {
           // hide empty prop placeholder
           ls.hide();
@@ -119,7 +123,7 @@
         form.prop_section.append(form.form);
       }
 
-      var event_prefix = form.event_prefix || "fb.topic.edit.";
+      var event_prefix = form.event_prefix || "propbox.edit.";
 
       form.form
         .bind(event_prefix + "submit", function() {
@@ -145,14 +149,14 @@
       });
 
       form.form.show();
-      fb.kbs.scroll_to(form.form);
+      propbox.kbs.scroll_to(form.prop_section);
       form.init(form);
     },
 
     cancel: function(form) {
       form.form.hide();
       form.prop_section
-        .find(">.list-section")
+        .find(">.data-section")
         .show()
         .end()
         .removeClass("editing");
@@ -186,4 +190,4 @@
   };
 
 
-})(jQuery, window.freebase);
+})(jQuery, window.propbox);

@@ -28,46 +28,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-;(function($, fb, propbox) {
 
-  var topic = fb.topic = {
+var mql = acre.require("helper/helpers_mql.sjs");
 
-    init: function() {
-
-      propbox.init("#topic-data", {
-        id: fb.acre.c.id,
-        base_url: fb.h.ajax_url("lib/propbox"),
-        lang: fb.acre.lang.primary || "/lang/en"
-      });
-
-      // Initialize filter menu collapse/expand
-      $(".column.nav > .module").collapse_module(".section");
-
-      // Initialize prop counts filter suggest input
-      fb.filters.init_domain_type_property_filter(".column.nav");
-
-      // Initialize the property limit slider
-      fb.filters.init_limit_slider_filter("#limit-slider", 10, 1, 100, 1);
-
-      $(".toolbar-trigger").click(function(){
-        var $add_type_pane = $(".add-type").first();
-        var $toolbar = $(this).closest(".toolbar");
-        var $trigger = $(this);
-
-        if($add_type_pane.is(":visible")) {
-          $toolbar.removeClass("active");
-          $trigger.removeClass("active");
-          $add_type_pane.slideUp();
-        }
-        else {
-          $trigger.addClass("active");
-          $toolbar.addClass("active");
-          $add_type_pane.slideDown();
-        }
-      });
-    }
-  };
-
-
-  $(topic.init);
-})(jQuery, window.freebase, window.propbox);
+function data_input_type(type_id) {
+  if (!type_id) {
+    return "";
+  }
+  if (mql.is_literal_type(type_id)) {
+    return type_id.split("/").pop();
+  }
+  else if (type_id === "/freebase/type_hints/enumeration") {
+    return "enumerated";
+  }
+  return "topic";
+};

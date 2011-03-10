@@ -31,19 +31,17 @@
 
 ;(function($) {
 
-  window.freebase = window.fb = {};
-
   $(function() {
-    run_tests($, fb);
+    run_tests($);
   });
 
 })(jQuery);
 
 
-function run_tests($, fb) {
+function run_tests($) {
 
   test("current", function() {
-    var kbs = fb.kbs.init("#test");
+    var kbs = new window.kbs("#test");
     ok(!$("#test .kbs.current").length, "current should not be set");
     ok(!kbs.get_current().length, "current should not be set");
     $("#ds1-ts2-kbs").addClass("current");
@@ -52,7 +50,7 @@ function run_tests($, fb) {
   });
 
   test("_next_domain", function() {
-    var kbs = fb.kbs.init("#test");
+    var kbs = new window.kbs("#test");
     var current = $("#ds1-kbs");
     var next = kbs._next_domain(current);
     ok(next.is("#ds2"), 'next.is("#ds2")');
@@ -83,7 +81,7 @@ function run_tests($, fb) {
   });
 
   test("next_domain", function() {
-    var kbs = fb.kbs.init("#test");
+    var kbs = new window.kbs("#test");
     kbs.next_domain();
     ok(kbs.get_current().is("#ds1-kbs"), 'kbs.get_current().is("#ds1-kbs")');
 
@@ -114,7 +112,7 @@ function run_tests($, fb) {
 
 
   test("_prev_domain", function() {
-    var kbs = fb.kbs.init("#test");
+    var kbs = new window.kbs("#test");
     var current = $("#ds1-kbs");
     var prev = kbs._prev_domain(current);
     ok(prev.is("#ds3"), 'prev.is("#ds3")');
@@ -143,7 +141,7 @@ function run_tests($, fb) {
   });
 
   test("prev_domain", function() {
-    var kbs = fb.kbs.init("#test");
+    var kbs = new window.kbs("#test");
     kbs.prev_domain();
     ok(kbs.get_current().is("#ds3-kbs"), 'kbs.get_current().is("#ds3-kbs")');
 
@@ -174,7 +172,7 @@ function run_tests($, fb) {
 
 
   test("_next_type", function() {
-    var kbs = fb.kbs.init("#test");
+    var kbs = new window.kbs("#test");
     var current = $("#ds1-kbs");
     var next = kbs._next_type(current);
     ok(next.is("#ds1-ts1"), 'next.is("#ds1-ts1")');
@@ -218,7 +216,7 @@ function run_tests($, fb) {
   });
 
   test("next_type", function() {
-    var kbs = fb.kbs.init("#test");
+    var kbs = new window.kbs("#test");
     kbs.next_type();
     ok(kbs.get_current().is("#ds1-ts1-kbs"), 'kbs.get_current().is("#ds1-ts1-kbs")');
 
@@ -251,7 +249,7 @@ function run_tests($, fb) {
   });
 
   test("_prev_type", function() {
-    var kbs = fb.kbs.init("#test");
+    var kbs = new window.kbs("#test");
     var current = $("#ds1-kbs");
     var prev = kbs._prev_type(current);
     ok(prev.is("#ds3-ts1"), 'prev.is("#ds3-ts1")');
@@ -290,7 +288,7 @@ function run_tests($, fb) {
   });
 
   test("prev_type", function() {
-    var kbs = fb.kbs.init("#test");
+    var kbs = new window.kbs("#test");
     kbs.prev_type();
     ok(kbs.get_current().is("#ds3-ts1-kbs"), 'kbs.get_current().is("#ds3-ts1-kbs")');
 
@@ -324,7 +322,7 @@ function run_tests($, fb) {
 
 
   test("_next_prop", function() {
-    var kbs = fb.kbs.init("#test");
+    var kbs = new window.kbs("#test");
     var current = $("#ds1-kbs");
     var next = kbs._next_prop(current);
     ok(next.is("#ds1-ts1-ps1"), 'next.is("#ds1-ts1-ps1")');
@@ -373,7 +371,7 @@ function run_tests($, fb) {
   });
 
   test("next_prop", function() {
-    var kbs = fb.kbs.init("#test");
+    var kbs = new window.kbs("#test");
     kbs.next_prop();
     ok(kbs.get_current().is("#ds1-ts1-ps1-kbs"), 'kbs.get_current().is("#ds1-ts1-ps1-kbs")');
 
@@ -417,7 +415,7 @@ function run_tests($, fb) {
   });
 
   test("_prev_prop", function() {
-    var kbs = fb.kbs.init("#test");
+    var kbs = new window.kbs("#test");
     var current = $("#ds1-kbs");
     var prev = kbs._prev_prop(current);
     ok(prev.is("#ds3-ts1-ps2"), 'prev.is("#ds3-ts1-ps2")');
@@ -462,7 +460,7 @@ function run_tests($, fb) {
   });
 
   test("prev_prop", function() {
-    var kbs = fb.kbs.init("#test");
+    var kbs = new window.kbs("#test");
     kbs.prev_prop();
     ok(kbs.get_current().is("#ds3-ts1-ps2-kbs"), 'kbs.get_current().is("#ds3-ts1-ps2-kbs")');
 
@@ -519,7 +517,7 @@ function run_tests($, fb) {
   ];
 
   test("next", function() {
-    var kbs = fb.kbs.init("#test");
+    var kbs = new window.kbs("#test");
     var current, next;
     order.forEach(function(id) {
       next = kbs._next(current);
@@ -531,7 +529,7 @@ function run_tests($, fb) {
   });
 
   test("prev", function() {
-    var kbs = fb.kbs.init("#test");
+    var kbs = new window.kbs("#test");
     var current, prev;
     order.reverse().forEach(function(id) {
       prev = kbs._prev(current);
@@ -544,7 +542,7 @@ function run_tests($, fb) {
   });
 
   test("test empty", function() {
-    var kbs = fb.kbs.init("#test_empty");
+    var kbs = new window.kbs("#test_empty");
     [
       "next_domain", "prev_domain",
       "next_type", "prev_type",
@@ -557,7 +555,7 @@ function run_tests($, fb) {
   });
 
   test("test_one_domain", function() {
-    var kbs = fb.kbs.init("#test_one_domain");
+    var kbs = new window.kbs("#test_one_domain");
     [
       "next_domain", "prev_domain",
       "next_type", "prev_type",
@@ -570,7 +568,7 @@ function run_tests($, fb) {
   });
 
   test("test_one_type", function() {
-    var kbs = fb.kbs.init("#test_one_type");
+    var kbs = new window.kbs("#test_one_type");
     [
       "next_domain", "next_domain"
     ].forEach(function(m) {
@@ -622,7 +620,7 @@ function run_tests($, fb) {
   });
 
   test("test_one_prop", function() {
-    var kbs = fb.kbs.init("#test_one_prop");
+    var kbs = new window.kbs("#test_one_prop");
     [
       "next_domain", "prev_domain"
     ].forEach(function(m) {

@@ -28,8 +28,8 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-var h = acre.require("lib/helper/helpers.sjs");
-var i18n = acre.require("lib/i18n/i18n.sjs");
+var h = acre.require("helper/helpers.sjs");
+var i18n = acre.require("i18n/i18n.sjs");
 
 function prop_schema(options, lang) {
   return h.extend({

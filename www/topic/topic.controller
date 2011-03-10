@@ -31,10 +31,10 @@
 
 var validators = acre.require("lib/validator/validators.sjs");
 var object_query = acre.require("lib/queries/object.sjs").object;
-var queries = acre.require("queries.sjs");
 var filters = acre.require("lib/filter/filters.sjs");
 var filter_queries = acre.require("lib/filter/queries.sjs");
 var deferred = acre.require("lib/promise/deferred.sjs");
+var topic_api = acre.require("lib/queries/topic.sjs");
 
 var topic_filters = {
   limit: {
@@ -76,7 +76,7 @@ var SPEC = {
       .then(function([object, prop_counts]) {
         result.object = object;
         result.prop_counts = prop_counts;
-        return queries.topic(object, f)
+        return topic_api.topic(object.id, f.lang, f.limit, f.as_of_time)
           .then(function(topic) {
             result.topic = topic;
             return result;

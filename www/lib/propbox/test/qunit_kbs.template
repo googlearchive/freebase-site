@@ -30,15 +30,15 @@
  !!-->
 
 <acre:script>
-  var h = acre.require("lib/helper/helpers.sjs");
+  var h = acre.require("helper/helpers.sjs");
   var c = exports.c = {
-    template_base: "lib/test/qunit.mjt"
+    template_base: "test/qunit.mjt"
   };
 
   var ds = "domain-section";
   var ts = "type-section";
   var ps = "property-section";
-  var ls = "list-section";
+  var ls = "data-section";
   var dt = "data-table";
   var dl = "data-list";
 </acre:script>
@@ -48,8 +48,8 @@
 </acre:block>
 
 <acre:block def="head()">
-  <script src="test/qunit_kbs.js"></script>
-  <script src="kbs.js"></script>
+  <script src="propbox/test/qunit_kbs.js"></script>
+  <script src="propbox/kbs.js"></script>
 </acre:block>
 
 <acre:block def="fixture()">  

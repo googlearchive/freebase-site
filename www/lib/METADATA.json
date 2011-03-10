@@ -2,6 +2,8 @@
   "ttl": 0,
   "error_page" : "error/error.mjt",
   "mounts": {
+    "ajax": "routing/ajax.sjs",
+    "static": "routing/static.sjs",
     "libraries": "//2.libraries.apps.freebase.dev",
     "service": "//service"
   },

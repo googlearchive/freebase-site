@@ -1,4 +1,4 @@
 [
-  "validator/jquery.validate_input.js",
+  "propbox/jquery.validate_input.js",
   "propbox/propbox-edit.js"
 ]

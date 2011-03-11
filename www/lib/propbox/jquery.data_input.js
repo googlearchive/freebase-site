@@ -230,7 +230,7 @@
         if (this.value) {
           self.valid({
             text: $(":selected", this).text(),
-            value: this.value
+            id: this.value
           });
         }
         else {

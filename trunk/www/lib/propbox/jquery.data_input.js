@@ -67,7 +67,7 @@
       else if (c.is(".datetime")) {
         i.validate_input({validator: $.validate_input.datetime});
       }
-      else if (c.is(".enumerated")) {
+      else if (c.is(".enumerated")) {  // /freebase/type_hints/enumeration (<select>)
         i.validate_enumerated();
       }
       else if (c.is(".int")) {
@@ -81,6 +81,9 @@
       }
       else if (c.is(".boolean")) {
         i.validate_boolean();
+      }
+      else if (c.is(".enumeration")) {  // /type/enumeration
+        i.validate_input({validator: $.validate_input.key});
       }
       else if (c.is(".rawstring")) {
         i.validate_input({validator: $.validate_input.text});
@@ -140,8 +143,13 @@
       if (this.input.is(":text")) {
         this.input.val("");
       }
-      if (this.input.is("select")) {
+      else if (this.input.is("select")) {
         this.input[0].selectedIndex = 0;
+      }
+      else if (this.input.is(":radio")) {
+        this.input.each(function() {
+          this.checked = false;
+        });
       }
     }
   };
@@ -259,8 +267,44 @@
     validate: function(force) {}
   };
 
+  $.fn.validate_boolean = function(options) {
+    return this.each(function() {
+      var $this = $(this);
+      if (!$this.is(":radio")) {
+        return;
+      }
+      var inst = $this.data("$.validate_boolean");
+      if (inst) {
+        inst._destroy();
+      }
+      inst =  new $.validate_boolean(this, options);
+      $this.data("$.validate_boolean", inst);
+    });
+  };
 
+  $.validate_boolean = function(input, options) {
+    this.options = $.extend(true, {}, options);
+    this.input = $(input);
+    this.init();
+  };
 
-  $.fn.validate_boolean = function() {};
+  $.validate_boolean.prototype = {
+    init: function() {
+      var self = this;
+      this.input.bind("change.validate_boolean", function() {
+        self.valid({text:$(this).text(), value:this.value});
+      });
+    },
+
+    _destroy: function() {
+      this.input.unbind(".validate_boolean");
+    },
+
+    valid: function(data) {
+      this.input.trigger("valid", data);
+    },
+
+    validate: function(force) {}
+  };
 
 })(jQuery);

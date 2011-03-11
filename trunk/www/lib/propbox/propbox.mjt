@@ -420,13 +420,13 @@ propbox edit forms
   </span>
   <span acre:elif="type === 'boolean'" class="data-input boolean">
     <label>
-      <input type="radio" name="${name}" class="fb-boolean-input"
+      <input type="radio" name="${name}" class="fb-boolean-input" value="true"
              acre:attrs="value === true ? {selected:'selected'} : {}"/> 
       Yes
     </label>
     <label>
-      <input type="radio" name="${name}" class="fb-boolean-input"
-             acre:attrs="value === false ? {selected:'selected'} : {}"/> /> 
+      <input type="radio" name="${name}" class="fb-boolean-input" value="false"
+             acre:attrs="value === false ? {selected:'selected'} : {}"/>
       No
     </label>
   </span>

@@ -147,7 +147,7 @@ function minimal_prop_structure(prop_schema) {
   };
   if (prop_schema.unit) {
     structure.unit = {
-      abbreviation: structure.unit["/freebase/unit_profile/abbreviation"]
+      abbreviation: prop_schema.unit["/freebase/unit_profile/abbreviation"]
     };
   }
   return structure;

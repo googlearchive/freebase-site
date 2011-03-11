@@ -40,13 +40,14 @@
   var edit = propbox.edit = {
 
     prop_add_begin: function(prop_section) {
+      var submit_data = {
+        id: topic_id,
+        pid: prop_section.attr("data-id"),
+        lang: lang_id
+      };
       $.ajax({
         url: base_url + "/prop_add_begin.ajax",
-        data: {
-          id: topic_id,
-          pid: prop_section.attr("data-id"),
-          lang: lang_id
-        },
+        data: submit_data,
         dataType: "json",
         success: function(data, status, xhr) {
           var html = $(data.result.html);
@@ -55,6 +56,7 @@
             mode: "add",
             event_prefix: event_prefix,
             ajax: {
+              data: submit_data,
               url: base_url + "/prop_add_submit.ajax"
             },
             init: edit.init_prop_add_form,
@@ -68,7 +70,8 @@
 
           form.form
             .bind(event_prefix + "success", function() {
-
+              edit.reset_data_input(form);
+              $(":input:visible:first", form.form).focus();
             });
 
         },
@@ -79,7 +82,7 @@
     },
 
     init_prop_add_form: function(form) {
-      edit.init_input_elements(form);
+      edit.init_data_input(form);
       $(":input:visible:first", form.form).focus();
     },
 
@@ -101,10 +104,41 @@
     },
 
     submit_prop_add_form: function(form) {
+      var submit_data = $.extend({}, form.ajax.data);  // id, pid, lang
+      $(".data-input", form.form).each(function() {
+        var name_value = $(this).data("name_value");
+        if (name_value) {
+          submit_data[name_value[0]] = name_value[1];
+        }
+      });
+      console.log("submit_data", submit_data);
+      $.ajax({
+        url: form.ajax.url,
+        type: "POST",
+        dataType: "json",
+        data: submit_data,
+        success: function(data, status, xhr) {
+          if (data.code === "/api/status/error") {
+            return edit.ajax_error_handler(xhr, form);
+          }
+          var new_row = $(data.result.html);
 
+          if (new_row.is("tr")) {
+            $(".data-table > tbody", form.prop_section).append(new_row);
+            $(".data-table > thead", form.prop_section).show();
+          }
+          else {
+            $(".data-list", form.prop_section).append(new_row);
+          }
+          form.form.trigger(form.event_prefix + "success");
+        },
+        error: function(xhr) {
+          edit.ajax_error_handler(xhr, form);
+        }
+      });
     },
 
-    init_input_elements: function(form) {
+    init_data_input: function(form) {
       $(".data-input", form.form).each(function() {
         $(this)
           .data_input({
@@ -119,13 +153,16 @@
       });
     },
 
+    reset_data_input: function(form) {
+      $(".data-input", form.form).each(function() {
+        var inst = $(this).data("$.data_input").reset();
+      });
+    },
+
     init: function(form) {
       if (form.mode === "add") {
         var ls = $(">.data-section", form.prop_section);
-        if ($(">.empty-property", ls).length) {
-          // hide empty prop placeholder
-          ls.hide();
-        }
+        $(".data-table tr.empty-row, .data-list li.empty-row", ls).hide();
         form.prop_section.append(form.form);
       }
 
@@ -162,10 +199,11 @@
     cancel: function(form) {
       form.form.hide().remove();
       form.prop_section
-        .find(">.data-section")
-        .show()
-        .end()
         .removeClass("editing");
+      var ls = $(">.data-section", form.prop_section);
+      if (!$(".data-table tr, .data-list li", ls).filter(":not(.empty-row)").length) {
+        $(".data-table tr.empty-row, .data-list li.empty-row", ls).show();
+      }
     },
 
     submit: function(form) {
@@ -179,14 +217,20 @@
         $(document.activeElement).blur();
       }
 
+      // clear messages
+      edit.clear_form_message(form);
+
+      // validate form
       if (form.validate) {
         if (!form.validate(form)) {
           return;
         }
       }
 
+      // form submitting/loading
       form.form.addClass("loading");
 
+      // submit form
       if (form.submit) {
         form.submit(form);
       }
@@ -223,6 +267,10 @@
       row.before(row_msg);
 
       return row_msg;
+    },
+
+    clear_form_message: function(form) {
+      $(".row-msg", form.form).remove();
     },
 
     ajax_error: function(xhr, form) {

@@ -97,11 +97,13 @@
           self.container.removeClass("focus");
         })
         .bind("valid.data_input", function(e, data) {
-          self.container.data("value", data);
+          var name = self.input.attr("name");
+          var value = data.id || data.value;
+          self.container.data("name_value", [name, value]);
           self.container.removeClass("error").addClass("valid");
         })
         .bind("invalid.data_input", function() {
-          self.container.removeData("value");
+          self.container.removeData("name_value");
           self.container.removeClass("valid").addClass("error");
         })
         .bind("keypress.data_input", function(e) {
@@ -131,6 +133,11 @@
           return false;
         }
       });
+    },
+
+    reset: function() {
+      this.container.removeData("name_value");
+      this.input.val("");
     }
   };
 
@@ -174,6 +181,7 @@
           self.invalid();
         })
         .bind("fb-select.validate_topic", function(e, data) {
+          self.input.val(data.id);
           self.valid(data);
         });
     },

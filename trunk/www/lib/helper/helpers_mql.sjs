@@ -31,6 +31,7 @@
 
 var exports = {
   "is_literal_type": is_literal_type,
+  "to_literal_value": to_literal_value,
   "get_type_role": get_type_role,
   "is_reciprocal": is_reciprocal,
   "visible_subprops": visible_subprops
@@ -51,6 +52,25 @@ var LITERAL_TYPE_IDS = {
 };
 function is_literal_type(type_id) {
   return  LITERAL_TYPE_IDS[type_id] === 1;
+};
+
+function to_literal_value(type_id, value /** string **/) {
+  if (type_id === "/type/text") {
+    return value;
+  }
+  else if (type_id === "/type/int") {
+    return parseInt(value, 10);
+  }
+  else if (type_id === "/type/float") {
+    return parseFloat(value);
+  }
+  else if (type_id === "/type/boolean") {
+    var b = value.toLowerCase();
+    return b === "true" || b === "yes";
+  }
+  else {
+    return value;
+  }
 };
 
 /**

@@ -131,25 +131,28 @@
 </acre:block>
 
 <acre:block def="datatable(topic, prop_structure, prop_values)">
-  <acre:block if="prop_values && prop_values.length">
-    <table class="data-table">
-      <thead acre:attrs="">
-        <tr>
-          <th acre:for="subprop_structure in prop_structure.properties" scope="col">
-            ${subprop_structure.text}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
+  <acre:script>
+    var empty = !prop_values || !prop_values.length;
+  </acre:script>
+  <table class="data-table">
+    <thead acre:attrs="empty ? {style:'display:none;'} : {}">
+      <tr>
+        <th acre:for="subprop_structure in prop_structure.properties" scope="col">
+          ${subprop_structure.text}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <acre:block if="empty">
+        ${empty_row_tr(prop_structure.properties.length)}
+      </acre:block>
+      <acre:block else="">
         <acre:block for="prop_value in prop_values">
           ${datatable_row(topic, prop_structure, prop_value)}
         </acre:block>
-      </tbody>
-    </table>
-  </acre:block>
-  <acre:block else="">
-    <div class="empty-property">-</div>
-  </acre:block>
+      </acre:block>
+    </tbody>
+  </table>
 </acre:block>
 
 <acre:block def="datatable_row(topic, prop_structure, prop_value)">
@@ -174,9 +177,15 @@
 </acre:block>
 
 <acre:block def="datatable_cell(topic, prop_structure, prop_value, subprop_structure, subprop_values, primary)">
+  <acre:script>
+    var empty = !subprop_values || !subprop_values.length;
+  </acre:script>
   <td>
     <ul class="data-list">
-      <acre:block if="subprop_values && subprop_values.length">
+      <acre:block if="empty">
+        ${empty_row_li(primary)}
+      </acre:block>
+      <acre:block else="">
         <acre:block for="i, subprop_value in subprop_values">
           <li>
             <span class="wrapper">
@@ -188,31 +197,24 @@
           </li>
         </acre:block>
       </acre:block>
-      <acre:block else="">
-        <li>
-          <span class="wrapper">
-            <span class="property-value empty-property">-</span>
-            <acre:block if="primary">
-              ${value_menu()}
-            </acre:block>
-          </span>
-        </li>
-      </acre:block>
     </ul>
   </td>
 </acre:block>
 
 <acre:block def="datalist(topic, prop_structure, prop_values)">
-  <acre:block if="prop_values && prop_values.length">
-    <ul class="data-list">
+  <acre:script>
+    var empty = !prop_values || !prop_values.length;
+  </acre:script>
+  <ul class="data-list">
+    <acre:block if="empty">
+      ${empty_row_li()}
+    </acre:block>
+    <acre:block else="">
       <acre:block for="prop_value in prop_values">
         ${datalist_row(topic, prop_structure, prop_value)}
       </acre:block>
-    </ul>
-  </acre:block>
-  <acre:block else="">
-    <div class="empty-property">-</div>
-  </acre:block>
+    </acre:block>
+  </ul>
 </acre:block>
 
 <acre:block def="datalist_row(topic, prop_structure, prop_value)">
@@ -225,25 +227,20 @@
 </acre:block>
 
 <acre:block def="value(id, prop_structure, prop_value)">
-  <acre:block if="prop_value">
-    <acre:block if="prop_value.url && prop_value.id">
-      <a title="${prop_value.id}" class="property-value"
-         acre:attrs="itemprop(prop_structure.id)" href="${h.fb_url(true, prop_value.id)}"
-         data-id="${prop_value.id}">${prop_value.text}</a>
-    </acre:block>
-    <acre:block elif="prop_structure.expected_type.id === '/type/datetime'">      
-      <time class="property-value"
-            acre:attrs="h.extend(itemprop(prop_structure.id), microdata.value(prop_structure, prop_value))" 
-            data-value="${prop_value.value}">${prop_value.text}</time>
-    </acre:block>
-    <acre:block else="">
-      <span class="property-value" 
-            acre:attrs="h.extend(itemprop(prop_structure.id), microdata.value(prop_structure, prop_value))" 
-            data-value="${prop_value.value}">${prop_value.text}</span>
-    </acre:block>
+  <acre:block if="prop_value.url && prop_value.id">
+    <a title="${prop_value.id}" class="property-value"
+       acre:attrs="itemprop(prop_structure.id)" href="${h.fb_url(true, prop_value.id)}"
+       data-id="${prop_value.id}">${prop_value.text}</a>
+  </acre:block>
+  <acre:block elif="prop_structure.expected_type.id === '/type/datetime'">      
+    <time class="property-value"
+          acre:attrs="h.extend(itemprop(prop_structure.id), microdata.value(prop_structure, prop_value))" 
+          data-value="${prop_value.value}">${prop_value.text}</time>
   </acre:block>
   <acre:block else="">
-    <span class="empty-property">-</span>
+    <span class="property-value" 
+          acre:attrs="h.extend(itemprop(prop_structure.id), microdata.value(prop_structure, prop_value))" 
+          data-value="${prop_value.value}">${prop_value.text}</span>
   </acre:block>
 </acre:block>
 
@@ -258,10 +255,10 @@
       </acre:block>
     </li>
     <li class="row-menu-item">
-      <a href="h.fb_url('/inspect', prop_structure.id)">${_("Inspect property")}</a>
+      <a href="${h.fb_url('/inspect', prop_structure.id)}">${_("Inspect property")}</a>
     </li>
     <li class="row-menu-item">
-      <a href="h.fb_url('/schema', prop_structure.id)">${_("View schema")}</a>
+      <a href="${h.fb_url('/schema', prop_structure.id)}">${_("View schema")}</a>
     </li>       
   </ul>
 </acre:block>
@@ -281,6 +278,26 @@
   </span>
 </acre:block>
 
+<acre:block def="empty_row_tr(cols)">
+  <tr class="empty-row">
+    <td colspan="${cols || 1}">
+      <ul class="data-list">
+        ${empty_row_li()}
+      </ul>
+    </td>
+  </tr>
+</acre:block>
+
+<acre:block def="empty_row_li(menu)">
+  <li class="empty-row">
+    <span class="wrapper">
+      <span class="property-value empty-property">-</span>
+      <acre:block if="menu">
+        ${value_menu()}
+      </acre:block>
+    </span>
+  </li>
+</acre:block>
 
 
 
@@ -315,11 +332,13 @@ propbox edit forms
       <tr class="edit-row-submit">
         <td>
           <input type="hidden" name="id" value="${topic_id}"/>
+          <input type="hidden" name="pid" value="${prop_schema.id}"/>
+          <input type="hidden" name="lang" value="${lang}"/>
           <button class="button button-primary button-submit" type="submit">${_('Save')}</button>
           <button class="button button-cancel">${_('Cancel')}</button>
        </td>
       </tr>      
-    <tbody>
+    </tbody>
   </table>
 </acre:block>
 
@@ -340,11 +359,13 @@ propbox edit forms
       <tr class="edit-row-submit">
         <td>
           <input type="hidden" name="id" value="${topic_id}"/>
+          <input type="hidden" name="pid" value="${prop_schema.id}"/>
+          <input type="hidden" name="lang" value="${lang}"/>
           <button class="button button-primary button-submit" type="submit">${_('Save')}</button>
           <button class="button button-cancel">${_('Cancel')}</button>
        </td>
       </tr>      
-    <tbody>
+    </tbody>
   </table>
 </acre:block>
 

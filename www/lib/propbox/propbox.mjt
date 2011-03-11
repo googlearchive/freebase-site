@@ -409,6 +409,7 @@ propbox edit forms
   </acre:script>
   <span acre:if="type === 'enumerated'" class="data-input enumerated">
     <select class="fb-enumerated-input" name="${name}">
+      <option>${_("select")}...</option>
       <acre:block for="inst in instances">
        <option value="${inst.id}"
                acre:attrs="value === inst.id ? {selected:'selected'} : {}">

@@ -202,7 +202,60 @@
   };
 
 
-  $.fn.validate_enumerated = function() {};
+  $.fn.validate_enumerated = function(options) {
+    return this.each(function() {
+      var $this = $(this);
+      if (!$this.is("select")) {
+        return;
+      }
+      var inst = $this.data("$.validate_enumerated");
+      if (inst) {
+        inst._destroy();
+      }
+      inst =  new $.validate_enumerated(this, options);
+      $this.data("$.validate_enumerated", inst);
+    });
+  };
+
+  $.validate_enumerated = function(input, options) {
+    this.options = $.extend(true, {}, options);
+    this.input = $(input);
+    this.init();
+  };
+
+  $.validate_enumerated.prototype = {
+    init: function() {
+      var self = this;
+      this.input.bind("change.validate_enumerated", function(e) {
+        if (this.value) {
+          self.valid({
+            text: $(":selected", this).text(),
+            value: this.value
+          });
+        }
+        else {
+          self.invalid();
+        }
+      });
+    },
+
+    invalid: function() {
+      this.input.trigger("invalid");
+    },
+
+    valid: function(data) {
+      this.input.trigger("valid", data);
+    },
+
+    _destroy: function() {
+      this.input.unbind(".validate_enumerated");
+    },
+
+    validate: function(force) {}
+  };
+
+
+
   $.fn.validate_boolean = function() {};
 
 })(jQuery);

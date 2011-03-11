@@ -128,7 +128,7 @@
       $.each(["$.validate_topic", "$.validate_input",
               "$.validate_enumerated", "$.validate_boolean"], function(i, name) {
         var validator = input.data(name);
-        if (validator) {console.log("validator", name, validator);
+        if (validator) {
           validator.validate(true);
           return false;
         }
@@ -137,7 +137,12 @@
 
     reset: function() {
       this.container.removeData("name_value");
-      this.input.val("");
+      if (this.input.is(":text")) {
+        this.input.val("");
+      }
+      if (this.input.is("select")) {
+        this.input[0].selectedIndex = 0;
+      }
     }
   };
 

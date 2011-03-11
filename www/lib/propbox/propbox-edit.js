@@ -67,11 +67,11 @@
           };
           edit.init(form);
 
-
           form.form
             .bind(event_prefix + "success", function() {
               edit.reset_data_input(form);
               $(":input:visible:first", form.form).focus();
+              $(".button-cancel", form.form).text("Done");
             });
 
         },

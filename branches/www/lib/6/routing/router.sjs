@@ -31,9 +31,9 @@
 function route(rules, scope) {
   // Dump all routing info and rules.
   // This is primarily for our automated buildbot/testrunners
-  if (scope.acre.current_script === scope.acre.request.script) {
+  if (scope.acre.current_script === scope.acre.request.script || acre.request.base_path == "/_fs_routing") {
     var d = scope.acre.request.server_name.length - scope.acre.host.name.length;
-    if (d >=0 && scope.acre.request.server_name.lastIndexOf(scope.acre.host.name) === d) {
+      if ((d >=0 && scope.acre.request.server_name.lastIndexOf(scope.acre.host.name) === d) || acre.request.base_path == "/_fs_routing") {
       scope.acre.write(JSON.stringify(rules, null, 2));
       scope.acre.exit();
     }

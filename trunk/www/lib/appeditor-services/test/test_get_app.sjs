@@ -33,7 +33,7 @@ acre.require('/test/lib').enable(this);
 
 test('check get_app',{args:{appid:'//fmdb'}}, function() {
   var result = acre.require("appeditor-services/get_app").get_app(this.args.appid);
-  equals(result.appid, "/user/jh/fmdb", 'get_app should be able to load this app');
+  equals(result.id, "/user/jh/fmdb", 'get_app should be able to load this app');
 });
 
 acre.test.report();

@@ -83,7 +83,7 @@
     init_combo_menu: function(context) {
       $(".combo-menu .default-action", context)
         .live("click", function() {
-          $(this).parents(".kbs:first").trigger("edit");
+          $(this).parents(".data-row:first").trigger("edit");
         });
     },
 
@@ -153,7 +153,7 @@
       var trigger = $(context).parents(".row-menu:first").prev(".menu-trigger");
       trigger.data("tooltip").hide();
       var prop = trigger.parents(".property-section");
-      prop.find(".list-section .kbs:first .combo-menu .row-menu-item:first a").click();
+      prop.find(".list-section .data-row:first .combo-menu .row-menu-item:first a").click();
       return false;
     },
 
@@ -174,14 +174,15 @@
     value_edit: function(context) {
       var trigger = $(context).parents(".row-menu:first").prev(".menu-trigger");
       trigger.data("tooltip").hide();
-      var prop_value = trigger.parents(".combo-menu:first").prev(".property-value");
-      var kbs = prop_value.parents(".kbs:first");
-      if (kbs.is("tr")) {
-        console.log("value_edit CVT", kbs.attr("data-id"));
+      var prop_row = trigger.parents(".data-row:first");
+      var prop_section = prop_row.parents(".property-section");
+      if (prop_section.is(".editing")) {
+        return false;
       }
-      else {
-        console.log("value_edit", prop_value.attr("data-id") || prop_value.attr("data-value"));
-      }
+      prop_section.addClass("editing");
+      propbox.get_script("/propbox-edit.mf.js", function() {
+        propbox.edit.value_edit_begin(prop_section, prop_row);
+      });
       return false;
     },
 
@@ -189,13 +190,18 @@
       var trigger = $(context).parents(".row-menu:first").prev(".menu-trigger");
       trigger.data("tooltip").hide();
       var prop_value = trigger.parents(".combo-menu:first").prev(".property-value");
-      var kbs = prop_value.parents(".kbs:first");
-      if (kbs.is("tr")) {
-        console.log("value_delete CVT", kbs.attr("data-id"));
+      var row = prop_value.parents(".data-row:first");
+      if (row.is("tr")) {
+        console.log("value_edit CVT", row.attr("data-id"));
       }
       else {
-        console.log("value_delete", prop_value.attr("data-id") || prop_value.attr("data-value"));
+        console.log("value_edit", prop_value.attr("data-id") || prop_value.attr("data-value"));
       }
+      var prop_section = row.parents(".property-section");
+      if (prop_section.is(".editing")) {
+        return false;
+      }
+
       return false;
     }
   };

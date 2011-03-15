@@ -32,6 +32,7 @@ var h = acre.require("helper/helpers.sjs");
 var validators = acre.require("validator/validators.sjs");
 var propbox = acre.require("propbox/propbox.mjt");
 var queries = acre.require("propbox/queries.sjs");
+var ph = acre.require("propbox/helpers.sjs");
 
 /**
  * prop add form
@@ -54,24 +55,20 @@ var SPEC = {
   },
 
   run: function(id, pid, lang, params) {
-    return queries.prop_schema(pid, lang)
-      .then(function(prop_schema) {
-        var q = mqlwrite_query(prop_schema, id, pid, lang, params);
+    return queries.prop_structure(pid, lang)
+      .then(function(prop_structure) {
+        var q = ph.mqlwrite_query(id, prop_structure, params, lang);
 
-        // write
+        // TODO: write
 
-        // transform prop_schema, write result into prop_structure data (topic api)
-        var prop_structure = to_prop_structure(prop_schema, q);
-
-        var ect = prop_schema.expected_type;
-        var is_cvt =  ect["/freebase/type_hints/mediator"] === true;
+        var prop_values = ph.to_prop_values(prop_structure, q[pid]);
 
         var new_row;
-        if (is_cvt) {
-          new_row = propbox.datatable_row(q, prop_structure, prop_structure.values[0]);
+        if (prop_structure.expected_type.mediator) {
+          new_row = propbox.datatable_row(q, prop_structure, prop_values[0]);
         }
         else {
-          new_row = propbox.datalist_row(q, prop_structure, prop_structure.values[0]);
+          new_row = propbox.datalist_row(q, prop_structure, prop_values[0]);
         };
         return {
           html: acre.markup.stringify(new_row),
@@ -79,190 +76,4 @@ var SPEC = {
         };
       });
   }
-};
-
-
-function to_prop_structure(prop_schema, data) {
-  var ect = prop_schema.expected_type;
-  var is_cvt =  ect["/freebase/type_hints/mediator"] === true;
-
-  var structure = minimal_prop_structure(prop_schema);
-  var values = [];
-  var prop_data = data[prop_schema.id];
-  if (is_cvt) {
-    var properties = [];
-    if (prop_data) {
-      var value = {
-        id: prop_data.id || "newid"
-      };
-    }
-
-
-
-    ect.properties.forEach(function(subprop) {
-
-      properties.push(minimal_prop_structure(subprop));
-      var subprop_data = prop_data[subprop.id] || [];
-      value[subprop.id] = {
-        values: []
-      };
-      (prop_data[subprop.id] || []).forEach(function(data) {
-        value[subprop.id].values.push(minimal_prop_value(data));
-      });
-    });
-    structure.properties = properties;
-    values.push(value);
-  }
-  else {
-    if (prop_data) {
-      values.push(minimal_prop_value(prop_data));
-    }
-  }
-  structure.values = values;
-  return structure;
-};
-
-function minimal_prop_value(data) {
-  var value = {
-    text: data.id || data.value
-  };
-  if (data.id) {
-    value.id = data.id;
-  }
-  else {
-    value.value = value.text;
-  }
-  return value;
-};
-
-
-function minimal_prop_structure(prop_schema) {
-  var structure = {
-    id: prop_schema.id,
-    disambiguator: prop_schema["/freebase/property_hints/disambiguator"] === true,
-    expected_type: {
-      id: prop_schema.expected_type.id
-    },
-    unique: prop_schema.unique
-  };
-  if (prop_schema.unit) {
-    structure.unit = {
-      abbreviation: prop_schema.unit["/freebase/unit_profile/abbreviation"]
-    };
-  }
-  return structure;
-};
-
-
-function mqlwrite_query(prop_schema, id, pid, lang, params) {
-  var ect = prop_schema.expected_type;
-  var is_cvt =  ect["/freebase/type_hints/mediator"] === true;
-  if (is_cvt) {
-    return mqlwrite_cvt(prop_schema, id, pid, lang, params);
-  }
-  else {
-    // assert params[pid]
-    if (h.is_literal_type(ect.id)) {
-      return mqlwrite_literal(prop_schema, id, pid, lang, params);
-    }
-    else {
-      return mqlwrite_topic(prop_schema, id, pid, lang, params);
-    }
-  }
-};
-
-function mqlwrite_cvt(prop_schema, id, pid, lang, params) {
-  var ect = prop_schema.expected_type;
-  var clause = {
-    id: null,
-    type: [{
-      id: ect.id
-    }],
-    create: "unconditional",
-    connect: prop_schema.unique ? "update" : "insert"
-  };
-  ect["/freebase/type_hints/included_types"].forEach(function(t) {
-    clause.type.push({id:t});
-  });
-
-  ect.properties.forEach(function(subprop, i) {
-    var subprop_ect = subprop.expected_type;
-    var subprop_value = params[subprop.id];
-    var subprop_clause = [];
-    var subprop_is_literal = h.is_literal_type(subprop_ect.id);
-    if (subprop_value) {
-      if (!h.isArray(subprop_value)) {
-        subprop_value = [subprop_value];
-      }
-      subprop_value.forEach(function(v) {
-        if (subprop_is_literal) {
-          v = validators.String(v, {if_empty:null});
-        }
-        else {
-          v = validators.MqlId(v, {if_empty:null});
-        }
-        if (v != null) {
-          subprop_clause.push(mqlwrite_clause(subprop, v, lang));
-        }
-      });
-    }
-/**
-    if (i === 0 && !subprop_clause.length) {
-      throw validators.Invalid.factory(subprop.id, "is required");
-    }
-**/
-    if (subprop_clause.length) {
-      clause[subprop.id] = subprop_clause;
-    }
-  });
-
-  var q = {
-    id: id
-  };
-  q[prop_schema.id] = clause;
-
-  return q;
-};
-
-function mqlwrite_literal(prop_schema, id, pid, lang, params) {
-  var value = validators.String(params, pid, {required:true});
-  var q = {
-    id: id
-  };
-  q[pid] = mqlwrite_clause(prop_schema, value, lang);
-  return q;
-};
-
-function mqlwrite_topic(prop_schema, id, pid, lang, params) {
-  var object_id = validators.MqlId(params, pid, {required:true});
-  var q = {
-    id: id
-  };
-  q[pid] = mqlwrite_clause(prop_schema, object_id, lang);
-  return q;
-};
-
-function mqlwrite_clause(prop_schema, value, lang) {
-  var clause = {
-    connect: prop_schema.unique ? "update" : "insert"
-  };
-  var ect = prop_schema.expected_type;
-  var is_literal = h.is_literal_type(ect.id);
-  if (is_literal) {
-    clause.value = h.to_literal_value(ect.id, value);
-    if (ect.id === "/type/text") {
-      clause.lang = lang;
-    }
-  }
-  else {
-    clause.id = value;
-    clause.type = [{
-      id: ect.id,
-      connect: "insert"
-    }];
-    ect["/freebase/type_hints/included_types"].forEach(function(t) {
-      clause.type.push({id:t, connect:"insert"});
-    });
-  }
-  return clause;
 };

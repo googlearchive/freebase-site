@@ -34,8 +34,9 @@ var deferred = acre.require("promise/deferred");
 var freebase = acre.require("promise/apis").freebase;
 var i18n = acre.require("i18n/i18n.sjs");
 var mql = acre.require("propbox/mql.sjs");
+var ph = acre.require("propbox/helpers.sjs");
 
-function prop_schema(pid, lang) {
+function _prop_schema(pid, lang) {
   var q = mql.prop_schema({id: pid}, lang);
   return freebase.mqlread(q)
     .then(function(env) {
@@ -43,15 +44,23 @@ function prop_schema(pid, lang) {
     });
 };
 
-function get_enumerated_types(schema, lang) {
-  schema = schema.expected_type || schema;
+function prop_structure(pid, lang) {
+  return _prop_schema(pid, lang)
+    .then(function(schema) {
+      return ph.minimal_prop_structure(schema, lang);
+    });
+};
+
+
+function get_enumerated_types(structure, lang) {
+  var ect = structure.expected_type;
   var promises = [];
-  if (schema["/freebase/type_hints/enumeration"] === true) {
+  if (ect.enumeration === true) {
     var promise = freebase.mqlread([{
       optional: true,
       id: null,
       name: i18n.mql.text_clause(lang),
-      type: {id:schema.id, limit:0},
+      type: {id:ect.id, limit:0},
       limit: 500
     }])
     .then(function(env) {
@@ -62,14 +71,14 @@ function get_enumerated_types(schema, lang) {
       topics.sort(function(a, b) {
         return b.text < a.text;
       });
-      schema.instances = topics;
+      ect.instances = topics;
       return topics;
     });
     promises.push(promise);
   }
-  if (schema.properties) {
-    for (var i=0,l=schema.properties.length; i<l; i++) {
-      promises = promises.concat(get_enumerated_types(schema.properties[i], lang));
+  if (structure.properties) {
+    for (var i=0,l=structure.properties.length; i<l; i++) {
+      promises = promises.concat(get_enumerated_types(structure.properties[i], lang));
     }
   }
   return deferred.all(promises);

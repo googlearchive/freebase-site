@@ -83,7 +83,7 @@
         i.validate_boolean();
       }
       else if (c.is(".enumeration")) {  // /type/enumeration
-        i.validate_input({validator: $.validate_input.key});
+        i.validate_input({validator: $.validate_input.mqlkey});
       }
       else if (c.is(".rawstring")) {
         i.validate_input({validator: $.validate_input.text});

@@ -39,6 +39,9 @@
 
   var edit = propbox.edit = {
 
+    /**
+     * Add a new value to a property (topic, literal, cvt)
+     */
     prop_add_begin: function(prop_section) {
       var submit_data = {
         id: topic_id,
@@ -50,7 +53,7 @@
         data: submit_data,
         dataType: "json",
         success: function(data, status, xhr) {
-          var html = $(data.result.html);
+          var html = $(data.result.html).hide();
           var event_prefix = "propbox.edit.prop_add.";
           var form = {
             mode: "add",
@@ -62,7 +65,7 @@
             init: edit.init_prop_add_form,
             validate: edit.validate_prop_add_form,
             submit: edit.submit_prop_add_form,
-            form: html.hide(),
+            form: html,
             prop_section: prop_section
           };
           edit.init(form);
@@ -87,20 +90,7 @@
     },
 
     validate_prop_add_form: function(form) {
-      var valid = true;
-      $(".data-input", form.form).each(function(i) {
-        var data_input = $(this);
-        var data_input_instance = data_input.data("$.data_input");
-        data_input_instance.validate(true);
-        if (i === 0 && !data_input.is(".valid")) {
-          // first data_input is always required
-          valid = edit.data_input_required(form, data_input);
-        }
-        else if (data_input.is(".error")) {
-          valid = edit.data_input_invalid(form, data_input);
-        }
-      });
-      return valid;
+      return edit.validate_data_input(form);
     },
 
     submit_prop_add_form: function(form) {
@@ -111,7 +101,6 @@
           submit_data[name_value[0]] = name_value[1];
         }
       });
-      console.log("submit_data", submit_data);
       $.ajax({
         url: form.ajax.url,
         type: "POST",
@@ -138,6 +127,67 @@
       });
     },
 
+    /**
+     * Edit an existing value (topic, literal, cvt).
+     */
+    value_edit_begin: function(prop_section, prop_row) {
+      var value;
+      if (prop_row.is("tr")) {
+        value = prop_row.attr("data-id");
+      }
+      else {
+        var prop_value = $(".property-value:first", prop_row);
+        value = prop_value.attr("data-id") || prop_value.attr("data-value");
+      }
+      var submit_data = {
+        id: topic_id,
+        pid: prop_section.attr("data-id"),
+        lang: lang_id,
+        edit: value
+      };
+      $.ajax({
+        url: base_url +  "/value_edit_begin.ajax",
+        data: submit_data,
+        dataType: "json",
+        success: function(data, status, xhr) {
+          var html = $(data.result.html).hide();
+          var event_prefix = "propbox.edit.value_edit.";
+          var form = {
+            mode: "edit",
+            event_prefix: event_prefix,
+            ajax: {
+              data: submit_data,
+              url: base_url + "/value_edit_submit.ajax"
+            },
+            init: edit.init_value_edit_form,
+            validate: edit.validate_value_edit_form,
+            submit: edit.submit_value_edit_form,
+            form: html,
+            prop_section: prop_section,
+            prop_row: prop_row
+          };
+          edit.init(form);
+
+          form.form
+            .bind(event_prefix + "success", function() {
+              console.log(event_prefix + "success");
+            });
+
+        },
+        error: function(xhr) {
+          edit.ajax_error(xhr, form);
+        }
+      });
+
+    },
+
+
+
+
+
+
+
+
     init_data_input: function(form) {
       $(".data-input", form.form).each(function() {
         $(this)
@@ -153,6 +203,24 @@
       });
     },
 
+    validate_data_input: function(form) {
+      var valid = true;
+      $(".data-input", form.form).each(function(i) {
+        var data_input = $(this);
+        var data_input_instance = data_input.data("$.data_input");
+        // force validation
+        data_input_instance.validate(true);
+        if (i === 0 && !data_input.is(".valid")) {
+          // first data_input is always required
+          valid = edit.data_input_required(form, data_input);
+        }
+        else if (data_input.is(".error")) {
+          valid = edit.data_input_invalid(form, data_input);
+        }
+      });
+      return valid;
+    },
+
     reset_data_input: function(form) {
       $(".data-input", form.form).each(function() {
         var inst = $(this).data("$.data_input").reset();
@@ -164,6 +232,10 @@
         var ls = $(">.data-section", form.prop_section);
         $(".data-table tr.empty-row, .data-list li.empty-row", ls).hide();
         form.prop_section.append(form.form);
+      }
+      else if (form.mode === "edit") {
+        form.prop_row.hide();
+        form.prop_row.after(form.form);
       }
 
       var event_prefix = form.event_prefix || "propbox.edit.";

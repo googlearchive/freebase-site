@@ -476,14 +476,14 @@ Validator.factory(scope, "Datejs", {
  */
 Validator.factory(scope, "Int", {
   "string": function(val, options) {
-    return this.integer(val, options);
+    return this["int"](val, options);
   },
   "number": function(val, options) {
-    return this.integer(val, options);
+    return this["int"](val, options);
   },
-  "integer": function(val, options) {
+  "int": function(val, options) {
     try {
-      var i = parseInt(val);
+      var i = parseInt(val, 10);
       if (isNaN(i)) {
         return this.invalid(this.key, val, "is not a valid integer");
       }
@@ -558,7 +558,7 @@ var schema_key_proto = {
       minlen = 1;
     }
     if (reserved_word(key)) {
-      return this.invalid(this.key, key, key, " is a reserved word.");
+      return this.invalid(this.key, key, " is a reserved word.");
     }
     if (minlen === 1 && key.length === 1) {
       if (/^[a-z]$/.test(key)) {
@@ -664,7 +664,40 @@ Validator.factory(scope, "Json", {
       return options.json ? o : val;
     }
     catch(ex) {
-      return this.invalid("Invalid JSON: " + ex);
+      return this.invalid("Invalid JSON", ex);
     }
+  }
+});
+
+
+/***
+ * Uri
+ */
+var regex_uri;
+Validator.factory(scope, "Uri", {
+  "string": function(val, options) {
+    if (!regex_uri) {
+      regex_uri = /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
+    }
+    if (regex_uri.test(val)) {
+      return val;
+    }
+    return this.invalid(this.key, val, "is invalid URI");
+  }
+});
+
+var regex_mqlkey;
+Validator.factory(scope, "MqlKey", {
+  "string": function(val, options) {
+    if (!regex_mqlkey) {
+      regex_mqlkey = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
+    }
+    if (regex_mqlkey.test(val)) {
+      if (reserved_word(val.toLowerCase())) {
+          return this.invalid(this.key, val, "is a reserved word.");
+      }
+      return val;
+    }
+    return this.invalid(this.key, val, "is invalid MQL key");
   }
 });

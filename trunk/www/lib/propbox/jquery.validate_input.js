@@ -206,15 +206,15 @@
       throw vi.invalid("datetime", val);
     },
 
-    key: function(val, options) {
-      var regex = vi.key.regex;
+    mqlkey: function(val, options) {
+      var regex = vi.mqlkey.regex;
       if (!regex) {
-        regex = vi.key.regex = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
+        regex = vi.mqlkey.regex = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
       }
       if (regex.test(val)) {
         return {text:val, value:val};
       }
-      return vi.invalid(val, options, "key");
+      return vi.invalid(val, options, "mqlkey");
     }
   });
 

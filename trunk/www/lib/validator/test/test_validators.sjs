@@ -284,7 +284,7 @@ var int_test = {
 test("validators.Int", int_test, function() {
 
   int_test.valid.forEach(function(val) {
-    strictEqual(validators.Int(val), parseInt(val));
+    strictEqual(validators.Int(val), parseInt(val, 10));
   });
 
   int_test.invalid.forEach(function(val) {
@@ -456,7 +456,6 @@ test("MultiValue", function() {
     [validators.Datejs("today"), validators.Datejs("yesterday"), null, null]);
 });
 
-
 test("Json", function() {
   var json = {foo:"bar", "hello":"world", baz: {bap:"bop"}};
   same(validators.Json(JSON.stringify(json)), json);
@@ -465,6 +464,63 @@ test("Json", function() {
     same(validators.Json(JSON.stringify(o)), o);
   });
 });
+
+test("Uri", function() {
+  var valid = [
+    "http://www.freebase.com",
+    "https://foo.com/#name",
+    "http://xyz.org/p/a/t/h.cgi?a=http://foo.bar"
+  ];
+  var invalid = [
+    "www.freebase.com",
+    "/some/path",
+    "file:///User/blah/private",
+    "http://foo/bar"
+  ];
+  valid.forEach(function(val) {
+    strictEqual(validators.Uri(val), val);
+  });
+  invalid.forEach(function(val) {
+    try {
+      validators.Uri(val);
+      ok(false, "not Uri " + val);
+    }
+    catch(e if e instanceof validators.Invalid) {
+      ok(e, e.toString());
+    }
+    catch(e) {
+      ok(false, "unexpected exception " + e);
+    }
+  });
+});
+
+test("MqlKey", function() {
+  var valid = [
+    "A", "a", "0", "a-b", "0-A-9_", "0-",
+    "abc", "1023"
+  ];
+  var invalid = [
+    "a$001",
+    "0.ca",
+    "key"
+  ];
+  valid.forEach(function(val) {
+    strictEqual(validators.MqlKey(val), val);
+  });
+  invalid.forEach(function(val) {
+    try {
+      validators.MqlKey(val);
+      ok(false, "not valid mql key " + val);
+    }
+    catch(e if e instanceof validators.Invalid) {
+      ok(e, e.toString());
+    }
+    catch(e) {
+      ok(false, "unexpected exception " + e);
+    }
+  });
+});
+
 
 acre.test.report();
 

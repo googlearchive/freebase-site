@@ -39,9 +39,12 @@ function prop_schema(options, lang) {
     unique: null,
     unit: {
       optional: true,
+      id: null,
+      name: i18n.mql.text_clause(lang),
       type: "/type/unit",
       "/freebase/unit_profile/abbreviation": null
     },
+    "/freebase/property_hints/disambiguator": null,
     master_property: {
       optional: true,
       id: null,
@@ -68,6 +71,8 @@ function prop_schema(options, lang) {
         unique: null,
         unit: {
           optional: true,
+          id: null,
+          name: i18n.mql.text_clause(lang),
           type: "/type/unit",
           "/freebase/unit_profile/abbreviation": null
         },

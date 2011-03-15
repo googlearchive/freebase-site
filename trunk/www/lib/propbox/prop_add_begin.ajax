@@ -51,13 +51,12 @@ var SPEC = {
   },
 
   run: function(id, pid, lang) {
-    return queries.prop_schema(pid, lang)
-      .then(function(prop_schema) {
-        // TODO: assert prop_schema
-        return queries.get_enumerated_types(prop_schema, lang)
+    return queries.prop_structure(pid, lang)
+      .then(function(prop_structure) {
+        return queries.get_enumerated_types(prop_structure, lang)
           .then(function(enum_types) {
             return {
-              html: acre.markup.stringify(propbox.prop_add_form(id, prop_schema, lang))
+              html: acre.markup.stringify(propbox.prop_add_form(id, prop_structure, lang))
             };
           });
       });

@@ -44,7 +44,8 @@
           flyout_service_url: fb.h.legacy_fb_url(),
           flyout_service_path: "/private/flyout",
           category: "object",
-          type: "/common/topic"
+          type: "/common/topic",
+          status: ["", "Searching...", "Select an item from the list:"]
         }
       });
 

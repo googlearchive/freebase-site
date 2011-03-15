@@ -49,11 +49,15 @@
     <acre:block for="domain_id in domain_order">
       <acre:script>
         var domain_structure = topic_structure.domains[domain_id];
-        domain_structure.id = domain_id;
       </acre:script>
-      ${domainbox(topic, domain_structure)}
-    </acre:block>
-  </acre:block>  
+      <acre:block if="domain_structure">
+        <acre:script>
+          domain_structure.id = domain_id;
+        </acre:script>
+        ${domainbox(topic, domain_structure)}
+      </acre:block>
+    </acre:block>  
+  </acre:block>
 </acre:block>
 
 <acre:block def="domainbox(topic, domain_structure)">
@@ -69,10 +73,14 @@
     <acre:block for="type_id in domain_structure.types">
       <acre:script>
         var type_structure = topic.structure.types[type_id];
-        type_structure.id = type_id;
       </acre:script>
-      ${typebox(topic, type_structure)}
-    </acre:block>   
+      <acre:block if="type_structure">
+        <acre:script>
+          type_structure.id = type_id;
+        </acre:script>
+        ${typebox(topic, type_structure)}
+      </acre:block>   
+    </acre:block>
   </div>
 </acre:block>
 
@@ -96,9 +104,13 @@
     <acre:block for="prop_id in type_structure.properties">
       <acre:script>
         var prop_structure = topic.properties[prop_id];
-        prop_structure.id = prop_id;
       </acre:script>
-      ${propbox(topic, prop_structure, prop_structure.values)}
+      <acre:block if="prop_structure">
+        <acre:script>
+          prop_structure.id = prop_id;
+        </acre:script>
+        ${propbox(topic, prop_structure, prop_structure.values)}
+      </acre:block>
     </acre:block>
   </div>
 </acre:block>
@@ -156,7 +168,7 @@
 </acre:block>
 
 <acre:block def="datatable_row(topic, prop_structure, prop_value)">
-  <tr class="kbs" 
+  <tr class="kbs data-row" 
       acre:attrs="itemprop(prop_structure.id, true)"
       data-id="${prop_value.id}">
     <acre:block for="i, subprop_structure in prop_structure.properties">
@@ -218,7 +230,7 @@
 </acre:block>
 
 <acre:block def="datalist_row(topic, prop_structure, prop_value)">
-  <li class="kbs">
+  <li class="kbs data-row">
     <span class="wrapper">
       ${value(topic.id, prop_structure, prop_value)}
       ${value_menu()}
@@ -307,32 +319,28 @@ propbox edit forms
 
 !!-->
 
-<acre:block def="prop_add_form(topic_id, prop_schema, lang)">
-  <acre:script>
-    var ect = prop_schema.expected_type;
-    var is_cvt = ect["/freebase/type_hints/mediator"] === true;
-  </acre:script>
-  <acre:block if="is_cvt">
-    ${prop_add_form_cvt(topic_id, prop_schema, lang)}
+<acre:block def="prop_add_form(topic_id, prop_structure, lang)">
+  <acre:block if="prop_structure.expected_type.mediator">
+    ${prop_add_form_cvt(topic_id, prop_structure, lang)}
   </acre:block>
   <acre:block else="">
-    ${prop_add_form_simple(topic_id, prop_schema, lang)}
+    ${prop_add_form_simple(topic_id, prop_structure, lang)}
   </acre:block>
 </acre:block>
 
-<acre:block def="prop_add_form_simple(topic_id, prop_schema, lang)">
+<acre:block def="prop_add_form_simple(topic_id, prop_structure, lang)">
   <table class="edit-form clear">
     <tbody>
       <tr class="edit-row">
         <td>
           <div class="edit-row-loader"></div>  
-          ${form_field(prop_schema, null, lang)}
+          ${form_field(prop_structure, null, lang)}
         </td>
       </tr>
       <tr class="edit-row-submit">
         <td>
           <input type="hidden" name="id" value="${topic_id}"/>
-          <input type="hidden" name="pid" value="${prop_schema.id}"/>
+          <input type="hidden" name="pid" value="${prop_structure.id}"/>
           <input type="hidden" name="lang" value="${lang}"/>
           <button class="button button-primary button-submit" type="submit">${_('Save')}</button>
           <button class="button button-cancel">${_('Cancel')}</button>
@@ -342,24 +350,21 @@ propbox edit forms
   </table>
 </acre:block>
 
-<acre:block def="prop_add_form_cvt(topic_id, prop_schema, lang)">
-  <acre:script>
-    var visible_subprops = h.visible_subprops(prop_schema);
-  </acre:script>
+<acre:block def="prop_add_form_cvt(topic_id, prop_structure, lang)">
   <table class="edit-form clear">
     <tbody>
       <tr class="edit-row">
         <td>
           <div class="edit-row-loader"></div>  
-          <acre:block for="subprop in visible_subprops">
-            ${form_field(subprop, null, lang)}
+          <acre:block for="subprop_structure in prop_structure.properties">
+            ${form_field(subprop_structure, null, lang)}
           </acre:block>
        </td>
       </tr>
       <tr class="edit-row-submit">
         <td>
           <input type="hidden" name="id" value="${topic_id}"/>
-          <input type="hidden" name="pid" value="${prop_schema.id}"/>
+          <input type="hidden" name="pid" value="${prop_structure.id}"/>
           <input type="hidden" name="lang" value="${lang}"/>
           <button class="button button-primary button-submit" type="submit">${_('Save')}</button>
           <button class="button button-cancel">${_('Cancel')}</button>
@@ -369,29 +374,23 @@ propbox edit forms
   </table>
 </acre:block>
 
-<acre:block def="form_field(prop_schema, value, lang)">
+<acre:block def="form_field(prop_structure, value, lang)">
   <acre:script>
-    var ect = prop_schema.expected_type;
-    var is_enumerated = ect["/freebase/type_hints/enumeration"] === true;    
+    var ect = prop_structure.expected_type;
   </acre:script>
   <div class="form-field">
     <label>           
-      <span class="form-label">        
-        <acre:block if="prop_schema['/freebase/property_hints/disambiguator']">
-          ${i18n.mql.get_text(lang, prop_schema.name).value}
-        </acre:block>
-        <acre:block else="">
-          ${i18n.mql.get_text(lang, prop_schema.expected_type.name).value}
-        </acre:block>
+      <span class="form-label">
+        ${prop_structure.text}
       </span>
-      <acre:block if="is_enumerated">
-        ${data_input("/freebase/type_hints/enumeration", prop_schema.id, value, prop_schema.expected_type.instances || [])}
+      <acre:block if="ect.enumeration">
+        ${data_input("/freebase/type_hints/enumeration", prop_structure.id, value, ect.instances || [])}
       </acre:block>
       <acre:block else="">
-        ${data_input(prop_schema.expected_type.id, prop_schema.id, value, lang)}
+        ${data_input(ect.id, prop_structure.id, value, lang)}
       </acre:block>
-      <span acre:if="prop_schema.unit" class="unit">
-        ${prop_schema.unit["/freebase/unit_profile/abbreviation"]}
+      <span acre:if="prop_structure.unit" class="unit">
+        ${prop_structure.abbreviation}
       </span>
     </label>            
   </div>
@@ -431,7 +430,8 @@ propbox edit forms
     </label>
   </span>
   <span acre:else="" class="data-input ${type}" acre:attrs="type === 'topic' ? {'data-ect': type_id} : {}">
-    <input class="fb-input" type="text" name="${name}" value="${value == null ? '' : value}">
+    <input class="fb-input" type="text" name="${name}" value="${value == null ? '' : value}"
+           acre:attrs="type === 'topic' ? {placeholder: _('Start typing to get suggestions...')} : {}">
   </span>
 </acre:block>
 

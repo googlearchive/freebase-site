@@ -29,37 +29,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 function extend_metadata(md) {
-  
-  function splice_o(target, source) {
-    for (var key in source) {
-      if (typeof source[key] === 'object' && source[key] !== null) {
-        target[key] = target[key] || {};
-        splice_o(target[key], source[key]);
-      } else if (!target[key]){
-        target[key] = source[key];
-      }
-    }
-  }
+  var h = acre.require("helper/helpers.sjs");
 
-  // overlay lib metadata onto app metadata (but don't over-ride)
+  // get lib METADATA
   var lib_md = JSON.parse(acre.require("METADATA").body);
-  splice_o(md, lib_md);
   
   // fix-up lib paths
-  for (var h in md.handlers) {
-    md.handlers[h] = "lib/" + md.handlers[h];
+  for (var hdlr in lib_md.handlers) {
+    lib_md.handlers[hdlr] = "lib/" + lib_md.handlers[hdlr];
   }
   
-  for (var h in md.mounts) {
-    var mount = md.mounts[h];
+  for (var mnt in lib_md.mounts) {
+    var mount = lib_md.mounts[mnt];
     if(mount.indexOf("/") !== 0) {
-      md.mounts[h] = "lib/" + mount; 
+      lib_md.mounts[mnt] = "lib/" + mount; 
     }
   }
   
-  if (md.error_page) {
-      md.error_page = "lib/" + md.error_page;      
+  if (lib_md.error_page) {
+      lib_md.error_page = "lib/" + lib_md.error_page;
   }
+  
+  md = h.extend(true, {}, lib_md, md);
+  return md;
 };

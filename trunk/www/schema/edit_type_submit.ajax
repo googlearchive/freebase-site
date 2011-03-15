@@ -50,7 +50,7 @@ var SPEC = {
       validators.String(params, "description", {if_empty:null}),      // type description
       validators.StringBool(params, "enumeration", {if_empty:null}),  // enumeration?
       validators.StringBool(params, "mediator", {if_empty:null}),     // mediator?
-      validators.MqlId(params, "lang", {if_empty:"/lang/en"})         // name,description lang
+      validators.LangId(params, "lang", {if_empty:"/lang/en"})        // name,description lang
     ];
   },
 

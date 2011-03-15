@@ -70,7 +70,7 @@ var SPEC = {
       validators.MqlId(params, "master_property", {if_empty:null}),
       validators.MqlId(params, "delegated", {if_empty:null}),
 
-      validators.MqlId(params, "lang", {if_empty:"/lang/en"}),     // name,description lang
+      validators.LangId(params, "lang", {if_empty:"/lang/en"}),    // name,description lang
       ect_new,                                                     // new ect name
       enumeration
     ];

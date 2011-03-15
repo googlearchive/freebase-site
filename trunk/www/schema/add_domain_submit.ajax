@@ -47,7 +47,7 @@ var SPEC = {
       validators.String(params, "name", {required:true}),        // name of base
       validators.DomainKey(params, "key", {required:true}),      // base key
       validators.String(params, "description", {if_emtpy:null}), // description
-      validators.MqlId(params, "lang", {if_empty:"/lang/en"})    // name,description lang
+      validators.LangId(params, "lang", {if_empty:"/lang/en"})   // name,description lang
     ];
   },
 

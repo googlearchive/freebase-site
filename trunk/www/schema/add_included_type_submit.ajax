@@ -53,7 +53,7 @@ var SPEC = {
     return [
       validators.MqlId(params, "id", {required:true}),             // type id
       inc,
-      validators.MqlId(params, "lang", {if_empty:"/lang/en"}),
+      validators.LangId(params, "lang", {if_empty:"/lang/en"}),
       inc_new
     ];
   },

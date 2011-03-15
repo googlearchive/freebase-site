@@ -53,7 +53,7 @@ function create_property(options) {
       master_property: validators.MqlId(options, "master_property", {if_empty:""}),
       delegated: validators.MqlId(options, "delegated", {if_empty:""}),
 
-      lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"})
+      lang: validators.LangId(options, "lang", {if_empty:"/lang/en"})
     };
     // if expected_type is /type/enumeration, enumeration namespace IS required
     if (o.expected_type === "/type/enumeration") {

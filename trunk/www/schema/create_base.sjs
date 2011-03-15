@@ -47,7 +47,7 @@ function create_base(options) {
       name: validators.String(options, "name", {required:true}),
       key: validators.DomainKey(options, "key", {required:true}),
       description: validators.String(options, "description", {if_empty:""}),
-      lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"})
+      lang: validators.LangId(options, "lang", {if_empty:"/lang/en"})
     };
   }
   catch(e if e instanceof validators.Invalid) {

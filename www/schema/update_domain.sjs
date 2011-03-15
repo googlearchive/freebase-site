@@ -52,7 +52,7 @@ function update_domain(options) {
       namespace: validators.MqlId(options, "namespace", {if_empty:null}),  // assuming has permission on namespace
       key: validators.DomainKey(options, "key", {if_empty:null}),
       description: validators.String(options, "description", {if_empty:null}),
-      lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"}),
+      lang: validators.LangId(options, "lang", {if_empty:"/lang/en"}),
 
       // an array of options to remove/delete (name, key, description);
       remove: validators.Array(options, "remove", {if_empty:[]})

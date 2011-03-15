@@ -66,7 +66,7 @@ var SPEC = {
       validators.StringBool(params, "disambiguator", {if_empty:false}), // disambiguator?
       validators.StringBool(params, "unique", {if_empty:false}),        // unique?
       validators.StringBool(params, "hidden", {if_empty:false}),        // hidden?
-      validators.MqlId(params, "lang", {if_empty:"/lang/en"}),     // name,description lang
+      validators.LangId(params, "lang", {if_empty:"/lang/en"}),    // name,description lang
       ect_new,                                                     // new ect name
       enumeration
     ];

@@ -48,7 +48,7 @@ var SPEC = {
       validators.MqlId(params, "namespace", {if_empty:null}),    // domain namespace ( required to update key)
       validators.DomainKey(params, "key", {if_empty:null}),      // domain key
       validators.String(params, "description", {if_empty:null}), // domain description
-      validators.MqlId(params, "lang", {if_empty:"/lang/en"})    // name,description lang
+      validators.LangId(params, "lang", {if_empty:"/lang/en"})   // name,description lang
     ];
   },
 

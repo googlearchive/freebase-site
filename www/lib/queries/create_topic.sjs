@@ -54,7 +54,7 @@ function create_topic(options) {
       type: validators.MqlId(options, "type", {if_empty:""}),
       included_types: validators.StringBool(options, "included_types", {if_empty:true}),
       description: validators.String(options, "description", {if_empty:""}),
-      lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"})
+      lang: validators.LangId(options, "lang", {if_empty:"/lang/en"})
     };
   }
   catch(e if e instanceof validators.Invalid) {

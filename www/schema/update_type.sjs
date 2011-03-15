@@ -57,7 +57,7 @@ function update_type(options) {
       mediator: validators.StringBool(options, "mediator", {if_empty:null}),
 
       // default to /lang/en
-      lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"}),
+      lang: validators.LangId(options, "lang", {if_empty:"/lang/en"}),
 
       // an array of options to remove/delete (name, key, description, enumeration);
       remove: validators.Array(options, "remove", {if_empty:[]})

@@ -57,7 +57,7 @@ function update_property(options) {
       hidden: validators.StringBool(options, "hidden", {if_empty:null}),
 
       // default lang for text is /lang/en
-      lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"}),
+      lang: validators.LangId(options, "lang", {if_empty:"/lang/en"}),
 
       // an array of options to remove/delete (name, key, ect, unit, description, disambiguator, unique, hidden);
       remove: validators.Array(options, "remove", {if_empty:[]})

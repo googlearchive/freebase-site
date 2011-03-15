@@ -48,7 +48,7 @@ function create_type(options) {
       description: validators.String(options, "description", {if_empty:""}),
       mediator: validators.StringBool(options, "mediator", {if_empty:false}),
       enumeration: validators.StringBool(options, "enumeration", {if_empty:false}),
-      lang: validators.MqlId(options, "lang", {if_empty:"/lang/en"})
+      lang: validators.LangId(options, "lang", {if_empty:"/lang/en"})
     };
   }
   catch(e if e instanceof validators.Invalid) {

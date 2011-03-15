@@ -47,7 +47,7 @@ var SPEC = {
     var args = [
       validators.MqlId(params, "id", {required:true}),           // topic id
       validators.MqlId(params, "pid", {required:true}),          // property id
-      validators.MqlId(params, "lang", {if_empty:"/lang/en"}),   // lang
+      validators.LangId(params, "lang", {if_empty:"/lang/en"}),  // lang
       params
     ];
 

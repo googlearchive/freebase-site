@@ -35,6 +35,7 @@ acre.require("test/mock").playback(this, "propbox/test/playback_test_helpers.jso
 
 var h = acre.require("helper/helpers.sjs");
 var ph = acre.require("propbox/helpers.sjs");
+var i18n = acre.require("i18n/i18n.sjs");
 var freebase = acre.require("promise/apis.sjs").freebase;
 var queries = acre.require("propbox/queries.sjs");
 var topic_api = acre.require("queries/topic.sjs");
@@ -148,6 +149,16 @@ test("literal_validator", function() {
   });
 });
 
+test("is_name_lang", function() {
+  var valid = [];
+  i18n.LANGS.forEach(function(lang) {
+    valid.push("/m/id.name." + lang.id);
+  });
+  valid.forEach(function(val, i) {
+    same(ph.is_name_lang(val, "__VALUE__", "/m/id"), {value:"__VALUE__", lang:i18n.LANGS[i].id});
+  });
+});
+
 test("mqlwrite_clause /common/topic/alias", function() {
   var lang = "/lang/en";
   var alias;
@@ -233,7 +244,30 @@ test("mqlwrite_clause /people/person/nationality", function() {
       o.type.push({id:t, connect:"insert"});
     });
   });
-  same(ph.mqlwrite_clause(nationality, {"/people/person/nationality": ["/en/united_states", "/en/mexico"]}, lang), expected);
+  same(ph.mqlwrite_clause(nationality, {
+    "/people/person/nationality": ["/en/united_states", "/en/mexico"]
+  }, lang), expected);
+
+  expected[0].name = [{
+    value: "USA",
+    lang: "/lang/en",
+    connect: "update"
+  }, {
+    value: "EEU",
+    lang: "/lang/es-419",
+    connect: "update"
+  }];
+  expected[1].name = [{
+    value: "El Mexico",
+    lang: "/lang/es",
+    connect: "update"
+  }];
+  same(ph.mqlwrite_clause(nationality, {
+    "/people/person/nationality": ["/en/united_states", "/en/mexico"],
+    "/en/united_states.name./lang/en": "USA",
+    "/en/united_states.name./lang/es-419": "EEU",
+    "/en/mexico.name./lang/es": "El Mexico"
+  }, lang), expected);
 });
 
 test("mqlwrite_object /people/person/height_meters", function() {

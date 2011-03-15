@@ -266,10 +266,36 @@ function mqlwrite_clause(prop_structure, params, lang) {
           connect:"insert"
         });
       });
+      for (var key in params) {
+        var m = is_name_lang(key, params[key], object_value);
+        if (m) {
+          var name = clause.name;
+          if (!name) {
+            name = clause.name = [];
+          }
+          name.push({
+            value: m.value,
+            lang: m.lang,
+            connect: "update"
+          });
+        }
+      }
     }
     clauses.push(clause);
   });
   return clauses;
+};
+
+function is_name_lang(key, value, topic_id) {
+  if (value) {
+    var parts = key.split(".");
+    if (parts.length === 3 && parts[0] === topic_id && parts[1] === "name") {
+      topic_id = validators.MqlId(topic_id, {required:true});  // assert topic_id
+      var lang = validators.LangId(parts[2], {required:true});
+      return {value:value, lang:lang};
+    }
+  }
+  return null;
 };
 
 /**

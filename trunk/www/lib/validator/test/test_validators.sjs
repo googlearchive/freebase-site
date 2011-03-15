@@ -32,6 +32,7 @@
 acre.require('/test/lib').enable(this);
 
 var validators = acre.require("validator/validators");
+var i18n = acre.require("i18n/i18n.sjs");
 
 var undefined;
 function fn() {};
@@ -521,6 +522,34 @@ test("MqlKey", function() {
   });
 });
 
+
+test("LangId", function() {
+  i18n.LANGS.forEach(function(lang) {
+    equal(validators.LangId(lang.id), lang.id);
+  });
+  var invalid = [
+    "/lang/en@",
+    "/LANG/bad",
+    "/lan/en",
+    "/language/en",
+    "/m/1234_",
+    "/guid/en",
+    "/en/lang",
+    "#9813313419073481097001090000134a"
+  ];
+  invalid.forEach(function(val) {
+    try {
+      validators.LangId(val);
+      ok(false, "not valid lang " + val);
+    }
+    catch(e if e instanceof validators.Invalid) {
+      ok(e, e.toString());
+    }
+    catch(e) {
+      ok(false, "unexpected exception " + e);
+    }
+  });
+});
 
 acre.test.report();
 

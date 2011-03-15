@@ -37,7 +37,10 @@ function extend_metadata(md) {
   
   // fix-up lib paths
   for (var hdlr in lib_md.handlers) {
-    lib_md.handlers[hdlr] = "lib/" + lib_md.handlers[hdlr];
+    var handler = lib_md.handlers[hdlr];
+    if (handler.indexOf("/") !== 0) {
+      lib_md.handlers[hdlr] = "lib/" + handler;      
+    }
   }
   
   for (var mnt in lib_md.mounts) {
@@ -47,10 +50,10 @@ function extend_metadata(md) {
     }
   }
   
-  if (lib_md.error_page) {
+  if (lib_md.error_page && (lib_md.error_page.indexOf("/") !== 0)) {
       lib_md.error_page = "lib/" + lib_md.error_page;
   }
   
-  md = h.extend(true, {}, lib_md, md);
+  md = h.extend(true, md, lib_md, md);
   return md;
 };

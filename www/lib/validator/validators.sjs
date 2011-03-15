@@ -376,6 +376,22 @@ Validator.factory(scope, "MqlId", {
   }
 });
 
+/**
+ * LangId
+ */
+var regex_lang;
+Validator.factory(scope, "LangId", {
+  "string": function(val, options) {
+    if (!regex_lang) {
+      regex_lang = /^\/lang\/[A-Za-z0-9][A-Za-z0-9_-]*$/;
+    }
+    if (regex_lang.test(val)) {
+      return val;
+    }
+    return this.invalid(this.key, val, "is invalid lang");
+  }
+});
+
 
 /**
  * OneOf

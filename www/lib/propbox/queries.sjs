@@ -51,6 +51,23 @@ function prop_structure(pid, lang) {
     });
 };
 
+function prop_data(topic_id, prop /** pid or prop_structure **/, value, lang) {
+  var promise;
+  if (typeof prop === "string") {
+    promise = prop_structure(pid, lang);
+  }
+  else {
+    promise = deferred.resolved(prop);
+  }
+  return promise
+    .then(function(prop_structure) {
+       var q = ph.mqlread_query(topic_id, prop_structure, value, lang);
+       return freebase.mqlread(q)
+         .then(function(env) {
+           return env.result;
+         });
+    });
+};
 
 function get_enumerated_types(structure, lang) {
   var ect = structure.expected_type;

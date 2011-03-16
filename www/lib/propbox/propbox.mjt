@@ -339,8 +339,8 @@ propbox edit forms
       </tr>
       <tr class="edit-row-submit">
         <td>
-          <input type="hidden" name="id" value="${topic_id}"/>
-          <input type="hidden" name="pid" value="${prop_structure.id}"/>
+          <input type="hidden" name="s" value="${topic_id}"/>
+          <input type="hidden" name="p" value="${prop_structure.id}"/>
           <input type="hidden" name="lang" value="${lang}"/>
           <button class="button button-primary button-submit" type="submit">${_('Save')}</button>
           <button class="button button-cancel">${_('Cancel')}</button>
@@ -363,8 +363,8 @@ propbox edit forms
       </tr>
       <tr class="edit-row-submit">
         <td>
-          <input type="hidden" name="id" value="${topic_id}"/>
-          <input type="hidden" name="pid" value="${prop_structure.id}"/>
+          <input type="hidden" name="s" value="${topic_id}"/>
+          <input type="hidden" name="p" value="${prop_structure.id}"/>
           <input type="hidden" name="lang" value="${lang}"/>
           <button class="button button-primary button-submit" type="submit">${_('Save')}</button>
           <button class="button button-cancel">${_('Cancel')}</button>
@@ -374,7 +374,7 @@ propbox edit forms
   </table>
 </acre:block>
 
-<acre:block def="form_field(prop_structure, value, lang)">
+<acre:block def="form_field(prop_structure, prop_data, lang)">
   <acre:script>
     var ect = prop_structure.expected_type;
   </acre:script>
@@ -384,10 +384,10 @@ propbox edit forms
         ${prop_structure.text}
       </span>
       <acre:block if="ect.enumeration">
-        ${data_input("/freebase/type_hints/enumeration", prop_structure.id, value, ect.instances || [])}
+        ${data_input("/freebase/type_hints/enumeration", prop_structure.id, prop_data, lang, ect.instances || [])}
       </acre:block>
       <acre:block else="">
-        ${data_input(ect.id, prop_structure.id, value, lang)}
+        ${data_input(ect.id, prop_structure.id, prop_data, lang)}
       </acre:block>
       <span acre:if="prop_structure.unit" class="unit">
         ${prop_structure.abbreviation}
@@ -402,39 +402,99 @@ propbox edit forms
     For topics use any type.
     For enumerated types, use /freebase/type_hints/enumeration property id
 !!-->
-<acre:block def="data_input(type_id, name, value, instances)">
+<acre:block def="data_input(type_id, name, prop_data, lang, instances)">
   <acre:script>
     var type = ph.data_input_type(type_id);
   </acre:script>
-  <span acre:if="type === 'enumerated'" class="data-input enumerated">
-    <select class="fb-enumerated-input" name="${name}">
-      <option>${_("select")}...</option>
-      <acre:block for="inst in instances">
-       <option value="${inst.id}"
-               acre:attrs="value === inst.id ? {selected:'selected'} : {}">
-         ${inst.text}
-       </option>
-      </acre:block>
-    </select>
-  </span>
-  <span acre:elif="type === 'boolean'" class="data-input boolean">
-    <label>
-      <input type="radio" name="${name}" class="fb-boolean-input" value="true"
-             acre:attrs="value === true ? {selected:'selected'} : {}"/> 
-      Yes
-    </label>
-    <label>
-      <input type="radio" name="${name}" class="fb-boolean-input" value="false"
-             acre:attrs="value === false ? {selected:'selected'} : {}"/>
-      No
-    </label>
-  </span>
-  <span acre:else="" class="data-input ${type}" acre:attrs="type === 'topic' ? {'data-ect': type_id} : {}">
-    <input class="fb-input" type="text" name="${name}" value="${value == null ? '' : value}"
-           acre:attrs="type === 'topic' ? {placeholder: _('Start typing to get suggestions...')} : {}">
-  </span>
+  <acre:block if="type === 'enumerated'">
+    <span class="data-input enumerated">
+      <select class="fb-enumerated-input" name="${name}">
+        <option>${_("select")}...</option>
+        <acre:block for="inst in instances">
+          <option value="${inst.id}"
+                  acre:attrs="prop_data && prop_data.id === inst.id ? {selected:'selected'} : {}">
+           ${inst.text}
+         </option>
+        </acre:block>
+      </select>
+    </span>
+  </acre:block>
+  <acre:block elif="type === 'boolean'">
+    <span class="data-input boolean">
+      <label>
+        <input type="radio" name="${name}" class="fb-boolean-input" value="true"
+               acre:attrs="value === true ? {selected:'selected'} : {}"/> 
+        Yes
+      </label>
+      <label>
+        <input type="radio" name="${name}" class="fb-boolean-input" value="false"
+               acre:attrs="value === false ? {selected:'selected'} : {}"/>
+        No
+      </label>
+    </span>
+  </acre:block>
+  <acre:block elif="type === 'topic'">
+    <span class="data-input topic" data-ect="${type_id}">
+      <input class="fb-input" type="text" name="${name}" acre:attrs="prop_data ? {value:prop_data.id} : {}"
+             placeholder="_('Start typing to get suggestions...')"/>
+    </span>
+    ${lang_inputs(prop_data, lang)}
+  </acre:block>
+  <acre:block else="">
+    <span class="data-input ${type}">
+      <input class="fb-input" type="text" name="${name}" acre:attrs="prop_data ? {value:prop_data.value} : {}"/>
+    </span>
+  </acre:block>
 </acre:block>
 
 
+<acre:block def="lang_inputs(prop_data, lang)">
+  <acre:script>
+    var names = ph.lang_inputs(prop_data, lang);
+  </acre:script>
+  <acre:block for="name in names">
+      ${lang_input(name.value, name.lang)}
+  </acre:block>
+</acre:block>
+
+<acre:block def="lang_input(value, lang)">
+  <label>${lang}<input type="text" name="${lang}" acre:attrs="value ? {'value':value} : {}" data-lang="${lang}"/></label>
+</acre:block>
 
 
+<acre:block def="value_edit_form(topic_id, prop_structure, prop_data, lang)">
+  <acre:block if="prop_structure.expected_type.mediator">
+    ${value_edit_form_cvt(topic_id, prop_structure, prop_data, lang)}
+  </acre:block>
+  <acre:block else="">
+    ${value_edit_form_simple(topic_id, prop_structure, prop_data, lang)}
+  </acre:block>  
+</acre:block>
+
+
+<acre:block def="value_edit_form_cvt(topic_id, prop_structure, prop_data, lang)">
+</acre:block>
+
+<acre:block def="value_edit_form_simple(topic_id, prop_structure, prop_data, lang)">
+  <table class="edit-form clear">
+    <tbody>
+      <tr class="edit-row">
+        <td>
+          <div class="edit-row-loader"></div>  
+          ${form_field(prop_structure, prop_data, lang)}
+        </td>
+      </tr>
+      <tr class="edit-row-submit">
+        <td>
+          <input type="hidden" name="s" value="${topic_id}"/>
+          <input type="hidden" name="p" value="${prop_structure.id}"/>
+          <input type="hidden" name="o" value="${prop_data.id || prop_data.value}"/>
+          <input type="hidden" name="lang" value="${lang}"/>
+          <button class="button button-primary button-submit" type="submit">${_('Save')}</button>
+          <button class="button button-cancel">${_('Cancel')}</button>
+          <button class="button button-delete">${_('Delete')}</button>
+       </td>
+      </tr>      
+    </tbody>
+  </table>
+</acre:block>

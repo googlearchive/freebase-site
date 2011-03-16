@@ -44,19 +44,19 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      validators.MqlId(params, "id", {required:true}),           // topic id
-      validators.MqlId(params, "pid", {required:true}),          // property id
-      validators.LangId(params, "lang", {if_empty:"/lang/en"})   // lang
+      validators.MqlId(params, "s", {required:true}),            // subject id
+      validators.MqlId(params, "p", {required:true}),            // property id
+      validators.LangId(params, "lang", {if_empty:"/lang/en"})   // lang id
     ];
   },
 
-  run: function(id, pid, lang) {
-    return queries.prop_structure(pid, lang)
+  run: function(s, p, lang) {
+    return queries.prop_structure(p, lang)
       .then(function(prop_structure) {
         return queries.get_enumerated_types(prop_structure, lang)
           .then(function(enum_types) {
             return {
-              html: acre.markup.stringify(propbox.prop_add_form(id, prop_structure, lang))
+              html: acre.markup.stringify(propbox.prop_add_form(s, prop_structure, lang))
             };
           });
       });

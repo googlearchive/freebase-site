@@ -43,6 +43,7 @@
           service_path: "/private/suggest",
           flyout_service_url: fb.h.legacy_fb_url(),
           flyout_service_path: "/private/flyout",
+          mqlread_url: fb.h.fb_api_url("/api/service/mqlread"),
           category: "object",
           type: "/common/topic",
           status: ["", "Searching...", "Select an item from the list:"]

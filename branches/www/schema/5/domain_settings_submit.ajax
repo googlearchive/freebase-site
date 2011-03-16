@@ -1,0 +1,75 @@
+/*
+ * Copyright 2010, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+var h = acre.require("lib/helper/helpers.sjs");
+var validators = acre.require("lib/validator/validators");
+var update_domain = acre.require("update_domain").update_domain;
+
+/**
+ * domain settings form submit - update_domain
+ */
+var SPEC = {
+
+  method: "POST",
+
+  auth: true,
+
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {required:true}),           // domain to update
+      validators.String(params, "name", {if_empty:null}),        // domain name
+      validators.MqlId(params, "namespace", {if_empty:null}),    // domain namespace ( required to update key)
+      validators.DomainKey(params, "key", {if_empty:null}),      // domain key
+      validators.String(params, "description", {if_empty:null}), // domain description
+      validators.LangId(params, "lang", {if_empty:"/lang/en"})   // name,description lang
+    ];
+  },
+
+  run: function(id, name, namespace, key, description, lang) {
+    var remove = [];
+    if (description == null) {
+      remove.push("description");
+    }
+    return update_domain({
+      id: id,
+      name: name,
+      namespace: namespace,
+      key: key,
+      description: description,
+      lang: lang,
+      remove: remove
+    })
+    .then(function(updated_id) {
+      return  {
+        location: h.fb_url("/schema", updated_id)
+      };
+    });
+  }
+};

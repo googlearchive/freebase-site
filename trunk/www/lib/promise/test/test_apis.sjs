@@ -104,7 +104,7 @@ test("urlfetch_failure", function() {
 
 });
 
-test("urlfetch_timeout",{"bug":"jetty returns msg, appengine raises, need fix per bryan's email"}, function() {
+test("urlfetch_timeout", function() {
   // Check that a timeout calls the errback with the right error
 
   var errback_called = false;

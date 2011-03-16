@@ -111,8 +111,8 @@
         dataType: "json",
         data: submit_data,
         success: function(data, status, xhr) {
-          if (data.code === "/api/status/error") {
-            return edit.ajax_error_handler(xhr, form);
+          if (data.code !== "/api/status/ok") {
+            return edit.ajax_error(xhr, form);
           }
           var new_row = $(data.result.html);
 
@@ -126,7 +126,7 @@
           form.form.trigger(form.event_prefix + "success");
         },
         error: function(xhr) {
-          edit.ajax_error_handler(xhr, form);
+          edit.ajax_error(xhr, form);
         }
       });
     },
@@ -163,9 +163,9 @@
               data: submit_data,
               url: base_url + "/value_edit_submit.ajax"
             },
-/**            init: edit.init_value_edit_form,
+            init: edit.init_value_edit_form,
             validate: edit.validate_value_edit_form,
-            submit: edit.submit_value_edit_form, **/
+            submit: edit.submit_value_edit_form,
             form: html,
             prop_section: prop_section,
             prop_row: prop_row
@@ -174,9 +174,10 @@
           form.form
             .bind(event_prefix + "success", function() {
               console.log(event_prefix + "success");
+              form.form.remove();
             })
             .bind(event_prefix + "cancel", function() {
-                    console.log(event_prefix + "cancel");
+              console.log(event_prefix + "cancel");
               form.prop_row.show();
             });
         },
@@ -185,6 +186,54 @@
         }
       });
     },
+
+    init_value_edit_form: function(form) {
+      edit.init_data_input(form);
+      $(":input:visible:first", form.form).focus();
+    },
+
+    validate_value_edit_form: function(form) {
+      return edit.validate_data_input(form);
+    },
+
+    submit_value_edit_form: function(form) {
+      var submit_data = $.extend({}, form.ajax.data);  // s, p, o, lang
+      $(".data-input", form.form).each(function() {
+        var name_value = $(this).data("name_value");
+        if (name_value) {
+          submit_data[name_value[0]] = name_value[1];
+        }
+      });
+      $(".lang-input :text[data-lang]", form.form).each(function() {
+        var $this = $(this);
+        submit_data[$this.attr("name")] = $this.val();
+      });
+      $.ajax({
+        url: form.ajax.url,
+        type: "POST",
+        dataType: "json",
+        data: submit_data,
+        success: function(data, status, xhr) {
+          if (data.code !== "/api/status/ok") {
+            return edit.ajax_error(xhr, form);
+          }
+          var new_row = $(data.result.html);
+          if (new_row.is("tr")) {
+            $(".data-table > thead", form.prop_section).show();
+          }
+          form.prop_row.after(new_row);
+          form.prop_row.remove();
+          form.form.trigger(form.event_prefix + "success");
+        },
+        error: function(xhr) {
+          edit.ajax_error(xhr, form);
+        }
+      });
+    },
+
+    /**
+     * Generic form utiltiies
+     */
 
     init_data_input: function(form) {
       $(".data-input", form.form).each(function() {
@@ -345,7 +394,7 @@
         row_msg.addClass("row-msg-" + type);
       }
 
-      var row = $(".edit-row", form.form);
+      var row = form.prop_row || $(".edit-row", form.form);
       // prepend row_msg to row
       row.before(row_msg);
 
@@ -353,7 +402,12 @@
     },
 
     clear_form_message: function(form) {
-      $(".row-msg", form.form).remove();
+      if (form.prop_row) {
+        form.prop_row.prev(".row-msg").remove();
+      }
+      else {
+        $(".row-msg", form.form).remove();
+      }
     },
 
     ajax_error: function(xhr, form) {
@@ -370,7 +424,7 @@
       if (!msg) {
         msg = xhr.responseText;
       }
-      edit.error(form, msg);
+      edit.form_error(form, msg);
       form.form.removeClass("loading");
     }
 

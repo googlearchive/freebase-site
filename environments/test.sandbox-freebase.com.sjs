@@ -8,7 +8,7 @@
 // Shared base urls
 var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
-var lib = "//6o.lib" + tags_codebase;
+var lib = "//7j.lib" + tags_codebase;
 
 var rules = {
   "host": [
@@ -25,11 +25,11 @@ var rules = {
 
   "prefix": [
     // Urls for user-facing apps
-    {prefix:"/",                   app:"//3a.homepage" + tags_codebase, script: "index"},
+    {prefix:"/",                   app:"//4a.homepage" + tags_codebase, script: "index"},
     {prefix:"/index",              url:"/", redirect: 301},
-    {prefix:"/home",               app:"//3a.homepage" + tags_codebase, script: "home"},
-    {prefix:"/homepage",           app:"//3a.homepage" + tags_codebase},
-    {prefix:"/schema",             app:"//4b.schema" + tags_codebase},
+    {prefix:"/home",               app:"//4a.homepage" + tags_codebase, script: "home"},
+    {prefix:"/homepage",           app:"//4a.homepage" + tags_codebase},
+    {prefix:"/schema",             app:"//5b.schema" + tags_codebase},
     {prefix:"/apps",               app:"//1f.apps" + tags_codebase},
     {prefix:"/appeditor",          app:"//appeditor" + codebase},
     {prefix:"/docs",               app:"//devdocs" + codebase},
@@ -40,7 +40,7 @@ var rules = {
     {prefix:"/labs/cubed",         app:"//cubed"},
     {prefix:"/labs/parallax",      app:"//parallax"},
     {prefix:"/labs",               app:"//labs"},
-    {prefix:"/topic",              app:"//1a.topic" + tags_codebase},
+    {prefix:"/topic",              app:"//2a.topic" + tags_codebase},
 
     // Urls for exposed ajax libraries and static resources
     // TODO: remove this and use ajax router

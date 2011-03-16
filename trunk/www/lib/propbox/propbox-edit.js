@@ -308,9 +308,11 @@
         .bind(event_prefix + "error", function(e, msg) {
           edit.error(form, msg);
           form.form.removeClass("loading");
+          form.prop_section.removeClass("editing");
         })
         .bind(event_prefix + "success", function() {
           form.form.removeClass("loading");
+          form.prop_section.removeClass("editing");
         });
 
       // submit handler
@@ -361,7 +363,6 @@
 
       // form submitting/loading
       form.form.addClass("loading");
-
       // submit form
       if (form.submit) {
         form.submit(form);

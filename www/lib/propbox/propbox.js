@@ -149,11 +149,11 @@
       }
     },
 
-    prop_edit: function(context) {
+    prop_edit: function(context) {console.log("prop_edit");
       var trigger = $(context).parents(".row-menu:first").prev(".menu-trigger");
       trigger.data("tooltip").hide();
       var prop = trigger.parents(".property-section");
-      prop.find(".list-section .data-row:first .combo-menu .row-menu-item:first a").click();
+      prop.find(".data-section .data-row:first .combo-menu .row-menu-item:first a").click();
       return false;
     },
 

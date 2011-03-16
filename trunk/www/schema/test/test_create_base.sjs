@@ -115,7 +115,7 @@ function delete_base(key) {
   });
 };
 
-test("create_base", {"bug":"broken for weeks. broke on r5633. no clue"}, function() {
+test("create_base", function() {
   var name = get_name();
   var key = schema_helpers.generate_domain_key(name);
   var base;
@@ -189,7 +189,7 @@ test("create base with existing key", function() {
   }
 });
 
-test("create base with description", {"bug":"broken for weeks. broke on r5633. no clue"}, function() {
+test("create base with description", function() {
   var name = get_name();
   var key = schema_helpers.generate_domain_key(name);
   var base;

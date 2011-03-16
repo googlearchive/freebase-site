@@ -59,7 +59,13 @@
           c = this.container,
           i = this.input;
       if (c.is(".topic")) {
-        i.validate_topic($.extend(true, {}, this.options.suggest, {type:c.attr("data-ect")}));
+        i.validate_topic($.extend(true, {}, this.options.suggest, {type:c.attr("data-ect")}))
+          .bind("fb-select.data_input", function(e, data) {
+            self.fb_select(data);
+          })
+          .bind("fb-textchange.data_input", function() {
+            self.fb_textchange();
+          });
       }
       else if (c.is(".text")) {
         i.validate_input({validator: $.validate_input.text});
@@ -151,6 +157,54 @@
           this.checked = false;
         });
       }
+      this.container.siblings().find("[data-lang]").val("");
+    },
+
+    fb_textchange: function(data) {
+      this.container.siblings().find("[data-lang]").val("");
+    },
+
+    fb_select: function(data) {
+      var langs = [];
+      var langputs = this.container.siblings().find("[data-lang]");
+      langputs.each(function() {
+        var lang = $(this).attr("data-lang");
+        if (lang) {
+          langs.push(lang);
+        }
+      });
+      if (langs.length) {
+        var q = {
+          id: data.id,
+          name: [{
+            value: null,
+            lang: null,
+            optional: true,
+            "lang|=": langs
+          }]
+        };
+        $.ajax({
+          url: this.options.suggest.mqlread_url,
+          data: {query: JSON.stringify({query: q})},
+          dataType: "jsonp",
+          success: function(data) {console.log(data);
+            if (data.code == "/api/status/ok" && data.result) {
+              var names = data.result.name;
+              if (names && names.length) {
+                var langs = {};
+                $.each(names, function(i, name) {
+                  langs[name.lang] = name.value;
+                });
+                langputs.each(function() {
+                  var v = langs[$(this).attr("data-lang")];
+                  $(this).val(v || "");
+                });
+              }
+            }
+          }
+        });
+      }
+
     }
   };
 

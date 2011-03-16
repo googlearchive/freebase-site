@@ -44,8 +44,8 @@
      */
     prop_add_begin: function(prop_section) {
       var submit_data = {
-        id: topic_id,
-        pid: prop_section.attr("data-id"),
+        s: topic_id,
+        p: prop_section.attr("data-id"),
         lang: lang_id
       };
       $.ajax({
@@ -94,7 +94,7 @@
     },
 
     submit_prop_add_form: function(form) {
-      var submit_data = $.extend({}, form.ajax.data);  // id, pid, lang
+      var submit_data = $.extend({}, form.ajax.data);  // s, p, lang
       $(".data-input", form.form).each(function() {
         var name_value = $(this).data("name_value");
         if (name_value) {
@@ -140,10 +140,10 @@
         value = prop_value.attr("data-id") || prop_value.attr("data-value");
       }
       var submit_data = {
-        id: topic_id,
-        pid: prop_section.attr("data-id"),
-        lang: lang_id,
-        edit: value
+        s: topic_id,
+        p: prop_section.attr("data-id"),
+        o: value,
+        lang: lang_id
       };
       $.ajax({
         url: base_url +  "/value_edit_begin.ajax",
@@ -159,9 +159,9 @@
               data: submit_data,
               url: base_url + "/value_edit_submit.ajax"
             },
-            init: edit.init_value_edit_form,
+/**            init: edit.init_value_edit_form,
             validate: edit.validate_value_edit_form,
-            submit: edit.submit_value_edit_form,
+            submit: edit.submit_value_edit_form, **/
             form: html,
             prop_section: prop_section,
             prop_row: prop_row
@@ -171,6 +171,10 @@
           form.form
             .bind(event_prefix + "success", function() {
               console.log(event_prefix + "success");
+            })
+            .bind(event_prefix + "cancel", function() {
+                    console.log(event_prefix + "cancel");
+              form.prop_row.show();
             });
 
         },
@@ -180,10 +184,6 @@
       });
 
     },
-
-
-
-
 
 
 
@@ -265,7 +265,10 @@
 
       form.form.show();
       propbox.kbs.scroll_to(form.prop_section);
-      form.init(form);
+
+      if (form.init) {
+        form.init(form);
+      }
     },
 
     cancel: function(form) {

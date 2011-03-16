@@ -45,23 +45,23 @@ var SPEC = {
 
   validate: function(params) {
     var args = [
-      validators.MqlId(params, "id", {required:true}),           // topic id
-      validators.MqlId(params, "pid", {required:true}),          // property id
-      validators.LangId(params, "lang", {if_empty:"/lang/en"}),  // lang
-      params
+      validators.MqlId(params, "s", {required:true}),            // subject id
+      validators.MqlId(params, "p", {required:true}),            // property id
+      params,
+      validators.LangId(params, "lang", {if_empty:"/lang/en"})  // lang
     ];
 
     return args;
   },
 
-  run: function(id, pid, lang, params) {
-    return queries.prop_structure(pid, lang)
+  run: function(s, p, params, lang) {
+    return queries.prop_structure(p, lang)
       .then(function(prop_structure) {
-        var q = ph.mqlwrite_query(id, prop_structure, params, lang);
+        var q = ph.mqlwrite_query(s, prop_structure, params, lang);
 
         // TODO: write
 
-        var prop_values = ph.to_prop_values(prop_structure, q[pid]);
+        var prop_values = ph.to_prop_values(prop_structure, q[p]);
 
         var new_row;
         if (prop_structure.expected_type.mediator) {
@@ -71,8 +71,7 @@ var SPEC = {
           new_row = propbox.datalist_row(q, prop_structure, prop_values[0]);
         };
         return {
-          html: acre.markup.stringify(new_row),
-          structure: prop_structure
+          html: acre.markup.stringify(new_row)
         };
       });
   }

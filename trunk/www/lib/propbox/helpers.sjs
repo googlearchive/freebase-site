@@ -298,6 +298,31 @@ function is_name_lang(key, value, topic_id) {
   return null;
 };
 
+function lang_inputs(prop_data, lang) {
+  var langs = {};
+  if (prop_data && prop_data.name) {
+    prop_data.name.forEach(function(n) {
+      langs[n.lang] = n.value;
+    });
+  }
+  if (!langs["/lang/en"]) {
+    langs["/lang/en"] = null;
+  }
+  if (lang !== "/lang/en" && !langs[lang]) {
+    langs[lang] = null;
+  }
+  var names = [];
+  for (var k in langs) {
+    names.push({value:langs[k], lang:k});
+  }
+  names.sort(function(a,b) {
+    if (a.lang === "/lang/en") return 1;
+    else if (b.lang === "/lang/en") return -1;
+    else return b.lang < a.lang;
+  });
+  return names;
+};
+
 /**
  * Get the corresponding validator for a literal type.
  */
@@ -323,4 +348,47 @@ function literal_validator(type_id) {
   else {
     return validators.String;
   }
+};
+
+
+
+
+function mqlread_query(topic_id, prop_structure, prop_value, lang) {
+  if (prop_structure.expected_type.mediator) {
+    return mqlread_cvt(topic_id, prop_structure, prop_value, lang);
+  }
+  else {
+    return mqlread_object(topic_id, prop_structure, prop_value, lang);
+  }
+};
+
+
+function mqlread_cvt(topic_id, prop_structure, prop_value, lang) {
+
+};
+
+
+function mqlread_object(topic_id, prop_structure, prop_value, lang) {
+  var clause = {
+    id: topic_id
+  };
+  clause[prop_structure.id] = mqlread_clause(prop_structure, prop_value, lang);
+  return clause;
+};
+
+function mqlread_clause(prop_structure, prop_value, lang) {
+  var ect = prop_structure.expected_type;
+  var is_literal = h.is_literal_type(ect.id);
+  var clause = {};
+  if (is_literal) {
+    clause.value = prop_value;
+    if (ect.id === "/type/text") {
+      clause.lang = lang;
+    }
+  }
+  else {
+    clause.id = prop_value;
+    clause.name = i18n.mql.text_clause(lang);
+  }
+  return clause;
 };

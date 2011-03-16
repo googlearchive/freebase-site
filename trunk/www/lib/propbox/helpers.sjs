@@ -366,7 +366,18 @@ function mqlread_query(topic_id, prop_structure, prop_value, lang) {
 
 
 function mqlread_cvt(topic_id, prop_structure, prop_value, lang) {
-
+  var clause = {
+    id: topic_id
+  };
+  clause[prop_structure.id] = {
+    id: prop_value
+  };
+  prop_structure.properties.forEach(function(subprop_structure) {
+    var subclause = mqlread_clause(subprop_structure, null, lang);
+    subclause.optional = true;
+     clause[prop_structure.id][subprop_structure.id] = [subclause];
+  });
+  return clause;
 };
 
 

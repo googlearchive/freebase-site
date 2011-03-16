@@ -47,6 +47,7 @@ var SPEC = {
     var args = [
       validators.MqlId(params, "s", {required:true}),            // subject id
       validators.MqlId(params, "p", {required:true}),            // property id
+      validators.String(params, "o", {required:true}),           // object id or value
       validators.LangId(params, "lang", {if_empty:"/lang/en"}),  // lang
       params
     ];
@@ -54,7 +55,7 @@ var SPEC = {
     return args;
   },
 
-  run: function(s, p, lang, params) {
+  run: function(s, p, o, lang, params) {
     return queries.prop_structure(p, lang)
       .then(function(prop_structure) {
         var q = ph.mqlwrite_query(s, prop_structure, params, lang);
@@ -71,7 +72,8 @@ var SPEC = {
           new_row = propbox.datalist_row(q, prop_structure, prop_values[0]);
         };
         return {
-          html: acre.markup.stringify(new_row)
+          html: acre.markup.stringify(new_row),
+          q: q
         };
       });
   }

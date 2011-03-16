@@ -62,10 +62,8 @@ function prop_data(topic_id, prop /** pid or prop_structure **/, value, lang) {
   return promise
     .then(function(prop_structure) {
        var q = ph.mqlread_query(topic_id, prop_structure, value, lang);
-console.log("prop_data query", JSON.stringify(q));
        return freebase.mqlread(q)
          .then(function(env) {
-console.log("prop_data result", env);
            return env.result;
          });
     });

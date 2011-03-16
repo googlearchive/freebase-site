@@ -60,10 +60,10 @@
           i = this.input;
       if (c.is(".topic")) {
         i.validate_topic($.extend(true, {}, this.options.suggest, {type:c.attr("data-ect")}))
-          .bind("fb-select.data_input", function(e, data) {
+          .bind("valid.data_input", function(e, data) {
             self.fb_select(data);
           })
-          .bind("fb-textchange.data_input", function() {
+          .bind("invalid.data_input", function() {
             self.fb_textchange();
           });
       }
@@ -74,7 +74,13 @@
         i.validate_input({validator: $.validate_input.datetime});
       }
       else if (c.is(".enumerated")) {  // /freebase/type_hints/enumeration (<select>)
-        i.validate_enumerated();
+        i.validate_enumerated()
+          .bind("valid.data_input", function(e, data) {
+            self.fb_select(data);
+          })
+          .bind("invalid.data_input", function() {
+            self.fb_textchange();
+          });
       }
       else if (c.is(".int")) {
         i.validate_input({validator: $.validate_input["int"]});
@@ -166,7 +172,7 @@
 
     fb_select: function(data) {
       var langs = [];
-      var langputs = this.container.siblings().find("[data-lang]");
+      var langputs = this.container.siblings(".lang-input").find(":text[data-lang]");
       langputs.each(function() {
         var lang = $(this).attr("data-lang");
         if (lang) {
@@ -183,28 +189,66 @@
             "lang|=": langs
           }]
         };
-        $.ajax({
+        var self = this;
+        if (this.fb_select.jqXHR) {
+          this.fb_select.jqXHR.abort();
+        }
+        this.fb_select.jqXHR = $.ajax({
           url: this.options.suggest.mqlread_url,
           data: {query: JSON.stringify({query: q})},
           dataType: "jsonp",
-          success: function(data) {console.log(data);
+          beforeSend: function(jqXHR, settings) {
+            self.ajax_beforeSend(jqXHR, settings);
+          },
+          success: function(data) {
             if (data.code == "/api/status/ok" && data.result) {
-              var names = data.result.name;
-              if (names && names.length) {
-                var langs = {};
-                $.each(names, function(i, name) {
-                  langs[name.lang] = name.value;
-                });
-                langputs.each(function() {
-                  var v = langs[$(this).attr("data-lang")];
-                  $(this).val(v || "");
-                });
+              var name_value = self.container.data("name_value");
+              if (name_value && name_value[1] === data.result.id) {
+                var names = data.result.name;
+                if (names && names.length) {
+                  var langs = {};
+                  $.each(names, function(i, name) {
+                    langs[name.lang] = name.value;
+                  });
+                  langputs.each(function() {
+                    var $this = $(this);
+                    var lang = $this.attr("data-lang");
+                    var name = data.result.id + ".name." + lang;
+                    var val =  langs[lang];
+                    $this.val(val || "").attr("name", name);
+                  });
+                }
               }
             }
+          },
+          complete: function(jqXHR, textStatus) {
+            self.ajax_complete(jqXHR, textStatus);
           }
         });
       }
+    },
 
+    ajax_beforeSend: function(jqXHR, settings) {
+      if (!this.xhr_queue) {
+        this.xhr_queue = [];
+      }
+      this.xhr_queue.push(jqXHR);
+      this.container.trigger("loading");
+    },
+
+    ajax_complete: function(jqXHR, textStatus) {
+      if (!this.xhr_queue) {
+        this.xhr_queue = [];
+      }
+      for (var i=0,l=this.xhr_queue.length; i<l; i++) {
+        if (jqXHR === this.xhr_queue[i]) {
+          this.xhr_queue.splice(i, 1);
+          break;
+        }
+      }
+      if (this.xhr_queue.length === 0) {
+        this.container.trigger("loading_complete");
+      }
     }
   };
 
@@ -295,7 +339,7 @@
     init: function() {
       var self = this;
       this.input.bind("change.validate_enumerated", function(e) {
-        if (this.value) {
+        if (this.selectedIndex > 0) {
           self.valid({
             text: $(":selected", this).text(),
             id: this.value
@@ -313,6 +357,7 @@
 
     valid: function(data) {
       this.input.trigger("valid", data);
+      this.input.trigger("fb-select", data);
     },
 
     _destroy: function() {

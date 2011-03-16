@@ -383,16 +383,16 @@ propbox edit forms
       <span class="form-label">
         ${prop_structure.text}
       </span>
-      <acre:block if="ect.enumeration">
-        ${data_input("/freebase/type_hints/enumeration", prop_structure.id, prop_data, lang, ect.instances || [])}
-      </acre:block>
-      <acre:block else="">
-        ${data_input(ect.id, prop_structure.id, prop_data, lang)}
-      </acre:block>
-      <span acre:if="prop_structure.unit" class="unit">
-        ${prop_structure.abbreviation}
-      </span>
-    </label>            
+    </label>
+    <acre:block if="ect.enumeration">
+      ${data_input("/freebase/type_hints/enumeration", prop_structure.id, prop_data, lang, ect.instances || [])}
+    </acre:block>
+    <acre:block else="">
+      ${data_input(ect.id, prop_structure.id, prop_data, lang)}
+    </acre:block>
+    <span acre:if="prop_structure.unit" class="unit">
+      ${prop_structure.abbreviation}
+    </span>
   </div>
 </acre:block>
 
@@ -418,6 +418,7 @@ propbox edit forms
         </acre:block>
       </select>
     </span>
+    ${lang_inputs(prop_data, lang)}
   </acre:block>
   <acre:block elif="type === 'boolean'">
     <span class="data-input boolean">
@@ -436,7 +437,7 @@ propbox edit forms
   <acre:block elif="type === 'topic'">
     <span class="data-input topic" data-ect="${type_id}">
       <input class="fb-input" type="text" name="${name}" acre:attrs="prop_data ? {value:prop_data.id} : {}"
-             placeholder="_('Start typing to get suggestions...')"/>
+             placeholder="${_('Start typing to get suggestions...')}"/>
     </span>
     ${lang_inputs(prop_data, lang)}
   </acre:block>
@@ -447,20 +448,18 @@ propbox edit forms
   </acre:block>
 </acre:block>
 
-
 <acre:block def="lang_inputs(prop_data, lang)">
   <acre:script>
     var names = ph.lang_inputs(prop_data, lang);
   </acre:script>
   <acre:block for="name in names">
-      ${lang_input(name.value, name.lang)}
-  </acre:block>
+    <label class="lang-input">
+      ${name.lang}
+      <input type="text" name="${name.lang}" 
+             acre:attrs="name.value ? {'value':name.value} : {}" data-lang="${name.lang}"/>
+    </label>
+ </acre:block>
 </acre:block>
-
-<acre:block def="lang_input(value, lang)">
-  <label>${lang}<input type="text" name="${lang}" acre:attrs="value ? {'value':value} : {}" data-lang="${lang}"/></label>
-</acre:block>
-
 
 <acre:block def="value_edit_form(topic_id, prop_structure, prop_data, lang)">
   <acre:block if="prop_structure.expected_type.mediator">

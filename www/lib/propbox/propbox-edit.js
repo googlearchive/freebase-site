@@ -101,6 +101,10 @@
           submit_data[name_value[0]] = name_value[1];
         }
       });
+      $(".lang-input :text[data-lang]", form.form).each(function() {
+        var $this = $(this);
+        submit_data[$this.attr("name")] = $this.val();
+      });
       $.ajax({
         url: form.ajax.url,
         type: "POST",
@@ -167,7 +171,6 @@
             prop_row: prop_row
           };
           edit.init(form);
-
           form.form
             .bind(event_prefix + "success", function() {
               console.log(event_prefix + "success");
@@ -176,17 +179,12 @@
                     console.log(event_prefix + "cancel");
               form.prop_row.show();
             });
-
         },
         error: function(xhr) {
           edit.ajax_error(xhr, form);
         }
       });
-
     },
-
-
-
 
     init_data_input: function(form) {
       $(".data-input", form.form).each(function() {
@@ -199,6 +197,12 @@
           })
           .bind("cancel", function() {
             form.form.trigger(form.event_prefix + "cancel");
+          })
+          .bind("loading", function() {
+            $(this).addClass("loading");
+          })
+          .bind("loading_complete", function() {
+            $(this).removeClass("loading");
           });
       });
     },
@@ -207,6 +211,11 @@
       var valid = true;
       $(".data-input", form.form).each(function(i) {
         var data_input = $(this);
+        if (data_input.is(".loading")) {
+          console.log("data_input.is(.loading)");
+          valid = false;
+          return false;
+        }
         var data_input_instance = data_input.data("$.data_input");
         // force validation
         data_input_instance.validate(true);
@@ -273,8 +282,7 @@
 
     cancel: function(form) {
       form.form.hide().remove();
-      form.prop_section
-        .removeClass("editing");
+      form.prop_section.removeClass("editing");
       var ls = $(">.data-section", form.prop_section);
       if (!$(".data-table tr, .data-list li", ls).filter(":not(.empty-row)").length) {
         $(".data-table tr.empty-row, .data-list li.empty-row", ls).show();

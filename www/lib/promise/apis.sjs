@@ -67,6 +67,10 @@ var freebase = {};
     };
 
     var handle_timeout_error = function(error) {
+      if (error.message === "Deadline must be > 0, got 0.0") {
+        // same same for appengine
+        error.message = "Time limit exceeded";
+      }
       if (error.message === "Time limit exceeded") {
         throw new deferred.RequestTimeout(error.message);
       }

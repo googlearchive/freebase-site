@@ -61,7 +61,7 @@ var SPEC = {
 
         // TODO: write
 
-        var prop_values = ph.to_prop_values(prop_structure, q[p]);
+        var prop_values = ph.to_prop_values(prop_structure, q[p], lang);
 
         var new_row;
         if (prop_structure.expected_type.mediator) {
@@ -71,7 +71,8 @@ var SPEC = {
           new_row = propbox.datalist_row(q, prop_structure, prop_values[0]);
         };
         return {
-          html: acre.markup.stringify(new_row)
+          html: acre.markup.stringify(new_row),
+          q: q
         };
       });
   }

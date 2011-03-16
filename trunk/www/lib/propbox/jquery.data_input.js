@@ -215,6 +215,7 @@
         service_path: "/private/suggest",
         flyout_service_url: "http://www.freebase.com",
         flyout_service_path: "/private/flyout",
+        mqlread_url: "http://api.freebase.com/api/service/mqlread",
         category: "object",
         type: "/common/topic"
       }

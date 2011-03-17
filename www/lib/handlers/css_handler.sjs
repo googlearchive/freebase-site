@@ -75,7 +75,7 @@ function preprocessor(script) {
     buf.push(l.replace(url_regex, function(m, group) {
       var url = group.replace(/^\s+|\s+$/g, "");
 
-      if (url.indexOf("http://") === 0 || url.indexOf("https://") === 0) {
+      if (url.indexOf("http://") === 0 || url.indexOf("https://") === 0 || url.indexOf("/") === 0) {
         url = quote_url(url);
       }
       else {

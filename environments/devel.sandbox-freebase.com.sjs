@@ -8,7 +8,7 @@
 // Shared base urls
 var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
-var lib = "//lib" + codebase;
+var lib = "//7j.lib" + tags_codebase;
 
 var rules = {
   "host": [

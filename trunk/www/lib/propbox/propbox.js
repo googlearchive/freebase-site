@@ -54,37 +54,11 @@
            propbox.kbs.set_next(current, $(this), true);
         })
         .live("edit", function() {
-          var menu_item = $(this).find(".row-menu-item:first a").click();
+          var menu_item = $(this).find(".submenu:first a").click();
         })
         .hover(propbox.row_menu_hoverover, propbox.row_menu_hoverout);
 
-      // init row context menu
-      propbox.init_row_menu(context);
-
-      // init combo menu
-      propbox.init_combo_menu(context);
-    },
-
-    init_row_menu: function(context) {
-      $(".menu-trigger", context).each(function() {
-        // figure out the width of the menu, so we can offset it accordingly
-        var offset_width = $(".row-menu:first").outerWidth();
-        $(this).tooltip({
-          events: {def: "click,mouseout"},
-          relative: true,
-          position: ["bottom", "right"],
-          offset: [0, "-" + offset_width],
-          effect: "fade",
-          delay: 300
-        });
-      });
-    },
-
-    init_combo_menu: function(context) {
-      $(".combo-menu .default-action", context)
-        .live("click", function() {
-          $(this).parents(".data-row:first").trigger("edit");
-        });
+      $(".nicemenu", context).nicemenu();
     },
 
     // show row menu button on hover
@@ -149,18 +123,14 @@
       }
     },
 
-    prop_edit: function(context) {console.log("prop_edit");
-      var trigger = $(context).parents(".row-menu:first").prev(".menu-trigger");
-      trigger.data("tooltip").hide();
-      var prop = trigger.parents(".property-section");
-      prop.find(".data-section .data-row:first .combo-menu .row-menu-item:first a").click();
+    prop_edit: function(context) { console.log("prop_edit");
+      var prop = $(context).parents(".property-section");
+      prop.find(".data-section .data-row:first .combo-menu .head-menu-item:first a").click();
       return false;
     },
 
-    prop_add: function(context) {
-      var trigger = $(context).parents(".row-menu:first").prev(".menu-trigger");
-      trigger.data("tooltip").hide();
-      var prop_section = trigger.parents(".property-section");
+    prop_add: function(context) { console.log("prop_add");
+      var prop_section = $(context).parents(".property-section");
       if (prop_section.is(".editing")) {
         return false;
       }
@@ -172,9 +142,7 @@
     },
 
     value_edit: function(context) {
-      var trigger = $(context).parents(".row-menu:first").prev(".menu-trigger");
-      trigger.data("tooltip").hide();
-      var prop_row = trigger.parents(".data-row:first");
+      var prop_row = $(context).parents(".data-row:first");
       var prop_section = prop_row.parents(".property-section");
       if (prop_section.is(".editing")) {
         return false;
@@ -187,9 +155,7 @@
     },
 
     value_delete: function(context) {
-      var trigger = $(context).parents(".row-menu:first").prev(".menu-trigger");
-      trigger.data("tooltip").hide();
-      var prop_value = trigger.parents(".combo-menu:first").prev(".property-value");
+      var prop_value = $(context).parents(".combo-menu:first").prev(".property-value");
       var row = prop_value.parents(".data-row:first");
       if (row.is("tr")) {
         console.log("value_edit CVT", row.attr("data-id"));

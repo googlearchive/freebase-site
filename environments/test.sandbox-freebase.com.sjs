@@ -10,6 +10,8 @@ var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 var lib = "//7j.lib" + tags_codebase;
 
+{ }{}{}}}}} ;;; //intentional breakage
+
 var rules = {
   "host": [
     {host:"freebase.com", url:"http://www.freebase.com"},

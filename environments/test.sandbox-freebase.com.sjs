@@ -25,21 +25,21 @@ var rules = {
 
   "prefix": [
     // Urls for user-facing apps
-    {prefix:"/",                   app:"//4c.homepage" + tags_codebase, script: "index"},
+    {prefix:"/",                   app:"//4d.homepage" + tags_codebase, script: "index"},
     {prefix:"/index",              url:"/", redirect: 301},
-    {prefix:"/home",               app:"//4c.homepage" + tags_codebase, script: "home"},
-    {prefix:"/homepage",           app:"//4c.homepage" + tags_codebase},
-    {prefix:"/schema",             app:"//5b.schema" + tags_codebase},
-    {prefix:"/apps",               app:"//1f.apps" + tags_codebase},
+    {prefix:"/home",               app:"//4d.homepage" + tags_codebase, script: "home"},
+    {prefix:"/homepage",           app:"//4d.homepage" + tags_codebase},
+    {prefix:"/schema",             app:"//5c.schema" + tags_codebase},
+    {prefix:"/apps",               app:"//2a.apps" + tags_codebase},
     {prefix:"/appeditor",          app:"//appeditor" + codebase},
-    {prefix:"/docs",               app:"//1a.devdocs" + tags_codebase},
-    {prefix:"/inspect",            app:"//1b.triples" + tags_codebase},
+    {prefix:"/docs",               app:"//1b.devdocs" + tags_codebase},
+    {prefix:"/inspect",            app:"//1c.triples" + tags_codebase},
     {prefix:"/policies",           app:"//2j.policies" + tags_codebase},
     {prefix:"/queryeditor",        app:"//queryeditor" + codebase},
     {prefix:"/labs/cubed",         app:"//cubed"},
     {prefix:"/labs/parallax",      app:"//parallax"},
     {prefix:"/labs",               app:"//labs"},
-    {prefix:"/topic",              app:"//2a.topic" + tags_codebase},
+    {prefix:"/topic",              app:"//2b.topic" + tags_codebase},
 
     // Urls for exposed ajax libraries and static resources
     // TODO: remove this and use ajax router

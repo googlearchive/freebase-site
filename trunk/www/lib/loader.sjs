@@ -54,6 +54,9 @@ function extend_metadata(md) {
       lib_md.error_page = "lib/" + lib_md.error_page;
   }
   
-  h.extend(true, md, lib_md, md);
+  var final_md = h.extend(true, {}, lib_md, md);
+  
+  // make sure we update the original object
+  h.extend(true, md, final_md);
   return md;
 };

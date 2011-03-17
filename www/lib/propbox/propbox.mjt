@@ -121,10 +121,13 @@
       <!--view all link is shown for any non-unique property-->
       <a href="#" class="more"><span>${_('View all property values')}</span></a>
       <span class="header-label">
+        <!!--
         <a href="javascript:void(0)" class="menu-trigger">
           <span class="mark">${prop_structure.text}</span>
         </a>
         ${prop_menu(topic, prop_structure)}
+        !!-->
+        ${prop_menu2(topic, prop_structure)}
       </span>
     </h3>  
     ${databox(topic, prop_structure, prop_values)}
@@ -203,7 +206,7 @@
             <span class="wrapper">
               ${value(value.id, subprop_structure, subprop_value)}
               <acre:block if="i === 0 && primary">
-                ${value_menu()}
+                ${value_menu2()}
               </acre:block>
             </span>      
           </li>
@@ -233,7 +236,7 @@
   <li class="kbs data-row">
     <span class="wrapper">
       ${value(topic.id, prop_structure, prop_value)}
-      ${value_menu()}
+      ${value_menu2()}
     </span>
   </li>  
 </acre:block>
@@ -275,9 +278,28 @@
   </ul>
 </acre:block>
 
+<acre:block def="prop_menu2(topic, prop_structure)">
+  <ul class="nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="#" onclick="return false;">${prop_structure.text}</a><span class="nicemenu-arrow">&#9660;</span>
+      </span>
+      <div class="submenu">
+        <acre:block if="prop_structure.unique && prop_structure.values.length">
+          <a href="#" onclick="return propbox.prop_edit(this);">${_("Edit value")}</a>
+        </acre:block>
+        <acre:block else="">
+          <a href="#" onclick="return propbox.prop_add(this);">${_("Add new value")}</a>
+        </acre:block>      
+        <a href="${h.fb_url('/inspect', prop_structure.id)}">${_("Inspect property")}</a>
+        <a href="${h.fb_url('/schema', prop_structure.id)}">${_("View schema")}</a>
+      </div>
+   </li>
+  </ul>
+</acre:block>
+
 <acre:block def="value_menu()">
-  <span class="combo-menu">
-    <a href="javascript:void(0)" class="default-action edit-action">edit</a>
+  <span class="combo-menu">   
     <a href="javascript:void(0)" class="more-action menu-trigger">menu</a>
     <ul class="row-menu tooltip">
       <li class="row-menu-item">
@@ -288,6 +310,20 @@
       </li>
     </ul>
   </span>
+</acre:block>
+
+<acre:block def="value_menu2()">
+  <ul class="nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="#" onclick="return false;" class="default-action">edit</a><span class="nicemenu-arrow">&#9660;</span>
+      </span>
+      <div class="submenu">
+        <a href="#" onclick="return propbox.value_edit(this);">${ _("Edit")}</a>
+        <a href="#" onclick="return propbox.value_delete(this);">${ _("Delete")}</a>
+      </div>
+    </li>
+  </ul>
 </acre:block>
 
 <acre:block def="empty_row_tr(cols)">
@@ -305,7 +341,7 @@
     <span class="wrapper">
       <span class="property-value empty-property">-</span>
       <acre:block if="menu">
-        ${value_menu()}
+        ${value_menu2()}
       </acre:block>
     </span>
   </li>

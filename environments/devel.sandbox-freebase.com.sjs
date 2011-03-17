@@ -8,7 +8,7 @@
 // Shared base urls
 var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
-var lib = "//7j.lib" + tags_codebase;
+var lib = "//lib" + codebase;
 
 var rules = {
   "host": [
@@ -25,6 +25,7 @@ var rules = {
 
   "prefix": [
     // Urls for user-facing apps
+    {prefix:"/favicon.ico",        app:lib, script: "template/favicon.ico"},
     {prefix:"/",                   app:"//homepage" + codebase, script: "index"},
     {prefix:"/index",              url:"/", redirect: 301},
     {prefix:"/home",               app:"//homepage" + codebase, script: "home"},

@@ -25,6 +25,7 @@ var rules = {
 
   "prefix": [
     // Urls for user-facing apps
+    {prefix:"/favicon.ico",        app:lib, script: "template/favicon.ico"},
     {prefix:"/",                   app:"//4d.homepage" + tags_codebase, script: "index"},
     {prefix:"/index",              url:"/", redirect: 301},
     {prefix:"/home",               app:"//4d.homepage" + tags_codebase, script: "home"},

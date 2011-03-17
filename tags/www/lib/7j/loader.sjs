@@ -30,6 +30,39 @@
  */
 
 function extend_metadata(md) {
+  
+  function splice_o(target, source) {
+    for (var key in source) {
+      if (typeof source[key] === 'object' && source[key] !== null) {
+        target[key] = target[key] || {};
+        splice_o(target[key], source[key]);
+      } else if (!target[key]){
+        target[key] = source[key];
+      }
+    }
+  }
+
+  // overlay lib metadata onto app metadata (but don't over-ride)
+  var lib_md = JSON.parse(acre.require("METADATA").body);
+  splice_o(md, lib_md);
+  
+  // fix-up lib paths
+  for (var h in md.handlers) {
+    md.handlers[h] = "lib/" + md.handlers[h];
+  }
+  
+  for (var h in md.mounts) {
+    var mount = md.mounts[h];
+    if(mount.indexOf("/") !== 0) {
+      md.mounts[h] = "lib/" + mount; 
+    }
+  }
+  
+  if (md.error_page) {
+      md.error_page = "lib/" + md.error_page;      
+  }
+};
+function extend_metadata_new(md) {
   var h = acre.require("helper/helpers.sjs");
 
   // get lib METADATA

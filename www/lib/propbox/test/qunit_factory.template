@@ -39,8 +39,8 @@
 </acre:block>
 
 <acre:block def="head()">
-  <script src="template/jquery.factory.js"></script>
-  <script src="template/test/qunit_factory.js"></script>
+  <script src="propbox/jquery.factory.js"></script>
+  <script src="propbox/test/qunit_factory.js"></script>
 </acre:block>
 
 <acre:block def="fixture()">

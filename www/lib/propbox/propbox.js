@@ -123,13 +123,13 @@
       }
     },
 
-    prop_edit: function(context) { console.log("prop_edit");
+    prop_edit: function(context) {
       var prop = $(context).parents(".property-section");
       prop.find(".data-section .data-row:first .combo-menu .head-menu-item:first a").click();
       return false;
     },
 
-    prop_add: function(context) { console.log("prop_add");
+    prop_add: function(context) {
       var prop_section = $(context).parents(".property-section");
       if (prop_section.is(".editing")) {
         return false;

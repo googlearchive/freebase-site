@@ -10,8 +10,6 @@ var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 var lib = "//7j.lib" + tags_codebase;
 
-}}}}F wlefkj24lfij 34lil3.4l4#$$##$$$##$#$;
-
 var rules = {
   "host": [
     {host:"freebase.com", url:"http://www.freebase.com"},

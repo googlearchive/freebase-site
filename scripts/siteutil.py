@@ -3,10 +3,10 @@ import sys
 if sys.version_info < (2, 6):
     raise "Must use python version 2.6 or higher."
 
-import subprocess, shutil, os, hashlib, urllib, urllib2, tempfile, re, pwd, pdb, time, smtplib, socket, getpass, stat, string, json
+import subprocess, shutil, os, hashlib, urllib, urllib2, re, pwd, pdb, time, smtplib, socket, getpass, stat, string, json
 from email.mime.text import MIMEText
 from optparse import OptionParser
-from tempfile import mkdtemp, mkstemp
+from tempfile import mkdtemp, mkstemp, NamedTemporaryFile
 from cssmin import cssmin
 
 LICENSE_PREAMBLE = '''
@@ -275,10 +275,9 @@ class App:
     and then replace the file with the new contents in-place in the file system. 
     '''
     c = self.context
-
     file_url = "%s/%s" % (self.static_url(), filename)
     #write back to the *svn checkout directory - not to the local acre directory*
-    response = c.fetch_url(file_url)
+    response = c.fetch_url(file_url, acre=True)
     if not response:
       return c.error("Failed to get valid response from acre for %s" % file_url)
 
@@ -291,11 +290,10 @@ class App:
     to generate the concatanated js file, run the result through the closure compiler
     and then replace the contents of the file in-place in the file system. 
     '''
-
     c = self.context
     file_url = "%s/%s" % (self.static_url(), filename)
     #write back to the *svn checkout directory - not to the local acre directory*
-    response = c.fetch_url(file_url)
+    response = c.fetch_url(file_url, acre=True)
     if not response:
         return c.error("Failed to get valid response from acre for url %s - aborting" % file_url)
 
@@ -318,6 +316,7 @@ class App:
 
     #this will make sure that the manifest handler will parse .mf.* files
     result = self.update_handlers(static = False)
+
     if not result:
         return c.error('Cannot create static resources for %s - error opening/parsing the app metadata file' % self)
     self.copy_to_acre_dir()
@@ -755,7 +754,7 @@ class App:
       msg = '[sitedeploy] %s' % msg
 
     cmd = ['svn', 'commit', '-m', msg, path, '--username', c.googlecode_username, '--password', c.googlecode_password]
-    return c.run_cmd(cmd, name='commit app', exit=False)
+    return c.run_cmd(cmd, name='commit app')
 
 
   def get_graph_app_from_environment(self, service):
@@ -824,42 +823,62 @@ class App:
         return '{svn_url_root}/tags/www/{app}/{tag}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key, tag=self.tag)        
 
 
+  def remove_from_svn(self):
+    return self.context.run_cmd(['svn', 'rm', self.svn_url()])
+
   #will copy the app from its checked out directory to the target directory
   #and then get rid of the .svn directory
   #it will REMOVE the target directory before copying the app over first
   def copy(self, target_dir):
 
+    c = self.context
+
     if os.path.isdir(target_dir):
       try:
         shutil.rmtree(target_dir)
       except:
-        return self.context.error('Cannot copy app to existing directory %s (cannot delete directory first)' % self)
+        return c.error('Cannot copy app to existing directory %s (cannot delete directory first)' % self)
 
     #try:
     #  os.makedirs(target_dir)
     #except:
     #  return c.error('There was a problem creating the directory %s - cannot copy app to appengine directory.' % target_dir)
 
+    path = self.svn_path()
+
+    if not path:
+        return c.error('Cannot copy %s to %s - svn checkout failed' % (self, target_dir))
+
     shutil.copytree(self.svn_path(), target_dir)
-    shutil.rmtree(target_dir + '/.svn')
+    
+    def remove_unwanted_directories(directory = ''):
+      
+      for f in os.listdir(os.path.join(target_dir, directory)):
+        if f.startswith('.'):
+          #print "will delete %s" % os.path.join(target_dir, directory, f)
+          shutil.rmtree(os.path.join(target_dir, directory, f))
+          continue
+
+        if os.path.isdir(os.path.join(target_dir, directory, f)):
+          remove_unwanted_directories(os.path.join(directory, f))
+
+    remove_unwanted_directories()
+
     return True
 
-  def copy_to_acre_dir(self):
+  def copy_to_acre_dir(self, war=False):
 
-    target_dir = self.context.acre.site_dir() + '/' + self.app_dir()
-    self.copy(target_dir)
-
-    #if self.version:
-    #  self.copy(app_dir + '/' + self.version)
-    #  self.copy(app_dir + '/release')
+    target_dir = GetAcre(self.context).site_dir(war=war) + '/' + self.app_dir()
+    return self.copy(target_dir)
 
   #checks out the app from SVN into the specified directory
   def svn_checkout(self, target_dir, warn=True):
 
     c = self.context
 
-    cmd = ['svn', 'checkout', self.svn_url(), target_dir, '--username', c.googlecode_username, '--password', c.googlecode_password]
-    (r, output) = c.run_cmd(cmd, exit=False, warn=warn)
+    cmd = c.add_svn_credentials(['svn', 'checkout', self.svn_url(), target_dir])
+
+    (r, output) = c.run_cmd(cmd, warn=warn)
 
     if not r:
       if warn:
@@ -932,6 +951,8 @@ class Context():
     self.quiet = False
     self.acre = None
 
+    self.log_color = None
+
   def set_acre(self, acre):
     self.acre = acre
 
@@ -944,6 +965,11 @@ class Context():
 
     return False
 
+  def add_svn_credentials(self, cmd):
+      if self.googlecode_username and self.googlecode_password:
+          cmd.extend(['--username', self.googlecode_username, '--password', self.googlecode_password])
+          
+      return cmd
 
   def set_current_app(self, app):
     self.current_app = app
@@ -967,7 +993,11 @@ class Context():
     self.log(msg, subaction, color=self.RED)
     return False
 
-  def log(self, msg, subaction='', color=None):
+  def log(self, msg, subaction='', color=None, nocontext=False):
+
+    #global color set - this might be None too
+    if not color:
+        color = self.log_color
 
     if self.quiet:
       return True
@@ -979,7 +1009,10 @@ class Context():
     if color:
       start_color, end_color = color, self.ENDC
 
-    print '%s[%s:%s%s] %s%s' % (start_color, self.action, self.current_app or '', subaction, msg, end_color)
+    if nocontext:
+        print '%s %s%s' % (start_color,msg, end_color)
+    else:
+        print '%s[%s:%s%s] %s%s' % (start_color, self.action, self.current_app or '', subaction, msg, end_color)
 
     return True
 
@@ -1001,9 +1034,16 @@ class Context():
       return False
 
     
-  def run_cmd(self, cmd, name='cmd', exit=True, warn=True):
+  def run_cmd(self, cmd, name='cmd', warn=True, interactive=False):
 
     self.log(' '.join(cmd), subaction=name)
+    
+    #interactive mode - stdout/stderr will go straight to the console
+    if interactive:
+        subprocess.Popen(cmd).communicate()
+        return (True, '')
+    
+    #non-interactive mode, invocation will finish before output can be used
     stdout, stderr = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
 
     if stderr:
@@ -1043,7 +1083,7 @@ class Context():
 
 
 
-  def fetch_url(self,url, isjson=False, tries=3):
+  def fetch_url(self,url, isjson=False, tries=3, acre=False, silent=False, wait=1):
 
     #request = urllib2.Request(url, headers = {'Cache-control': 'no-cache' })
     request = urllib2.Request(url)
@@ -1056,11 +1096,16 @@ class Context():
         for l in fd:
             contents.append(l)
         break
-      except (urllib2.HTTPError, socket.error) as exc:
-        self.error(url, subaction='fetch url error')
+      except Exception as ex:
+        if not silent:
+            self.error("%s\n%s" % (url, str(ex)), subaction='fetch url error')
+        if acre:
+            GetAcre(self).display_error_log(url)
         if tries:
           tries -= 1
-          self.log('Trying again....')
+          time.sleep(wait)
+          if not silent:
+              self.log('Trying again....')
         else:
           raise
           
@@ -1239,6 +1284,8 @@ class Context():
 class Acre:
   '''Represents a local acre instance'''
 
+  _standard_port = "8121"
+
   def __init__(self, context):
     self.context = context
     self.host_url = None
@@ -1247,23 +1294,151 @@ class Acre:
     if context.options.acre_dir:
         self._acre_dir = context.options.acre_dir
 
+    #will hold instances of Popen objects
+    #these are handlers to the current running acre process
+    self._acre_process = None
 
-  def build(self, target = None, use_freebase_site_config = False):
+    self.log = NamedTemporaryFile()
+
+
+  def build(self, target = None, use_freebase_site_config = False, config_dir = None, war=False):
 
     c = self.context
     c.log('Building acre under %s' % self._acre_dir)
     os.chdir(self._acre_dir)
 
-    config_dir = None
     if use_freebase_site_config:
-        config_dir = os.path.join(self._acre_dir, 'webapp/WEB-INF/scripts/googlecode/freebase-site/svn/appengine-config')
+        config_dir = os.path.join(c.options.site_dir, 'appengine-config')
 
-    cmd = ['./acre', 'appengine-build']
+    #by default, build for local appengine
+    build_mode = 'appengine-build'
+    if war:
+        build_mode = 'appengine-build-war'
+
+    cmd = ['./acre', build_mode]
     if target and config_dir and os.path.isdir(config_dir):
-        cmd = ['./acre', '-c', target, '-d', config_dir, 'appengine-build']
+        cmd = ['./acre', '-c', target, '-d', config_dir, build_mode]
 
-    return c.run_cmd(cmd)
+    (r, result) = c.run_cmd(cmd)
+
+    if not r:
+        return c.error('Failed to build acre.'), result
+
+    #shutil.rmtree(os.path.join(self.site_dir(war=True), 'googlecode'))
+
+    return r, result
       
+  def deploy(self):
+      
+      os.chdir(self._acre_dir)
+
+      cmd = ['./acre', 'appengine-deploy']
+      self.context.run_cmd(cmd, interactive=True)
+      return True
+
+
+  def start(self, war=False):
+
+      c = self.context
+
+      self.stop()
+      
+      bundle = "%s/webapp" % self._acre_dir
+      if war:
+          bundle = "%s/_build/war" % self._acre_dir
+
+      c.log('Starting Acre dir[%s] port[%s] log[%s]' % (bundle, self._standard_port, self.log.name), color=c.BLUE)
+      
+      if not os.environ['APPENGINE_HOME']:
+          return c.error('The environment variable APPENGINE_HOME must point to your AppEngine SDK directory')
+
+      cmd = ['%s/bin/dev_appserver.sh' % os.environ['APPENGINE_HOME'], '--disable_update_check', '--port=%s' % self._standard_port, bundle]
+      try:
+          self._acre_process = subprocess.Popen(cmd, stdout=self.log, stderr=self.log)
+          #wait a bit for acre to start
+          time.sleep(5)
+          #and then keep trying to hit it until we get a valid response
+          while not self.is_running():
+              c.log('Still waiting for acre to start...')
+          c.log('Acre started succesfully')
+      except:
+          c.error('There was an error starting the acre process')
+          raise
+
+      if self._acre_process:
+          return True
+
+      return False
+
+  def stop(self):
+
+    if self._acre_process:
+      self.context.log('Stoping Acre', color=self.context.BLUE)
+      self._acre_process.kill()
+      self._acre_process = None
+
+    self.kill_running_acre()
+
+    return True
+
+
+  def prepare_failover(self):
+    '''
+    We have to do 2 things:
+    1. Substitute the version in _build/war/WEB-INF/web.xml to 'failover' 
+    2. Bundle the environments freebase-site directory in the _build/war
+    '''
+    c = self.context
+
+    #Mark the version as failover
+    filename = self.acre_dir(war=True) + "/WEB-INF/appengine-web.xml"
+    try:
+      #open and read the existing file
+      fd = open(filename)
+      lines = fd.readlines()
+      fd.close()
+      #re-open the file in write mode and write all the existing data
+      #but substitute the version with 'failover'
+      fd = open(filename, "w")
+      for line in lines:
+        if line.strip()  == "<version>live</version>":
+            fd.write("\t<version>failover</version>\n")
+        else:
+            fd.write(line)
+              
+      fd.close()
+    except Exception as ex:
+        return c.error("Failed to overwrite file %s:\n%s" % (filename, str(ex)))
+    
+    c.log('Changed version to failover in %s' % filename)
+
+
+    #Copy the environments directory into the correct place
+
+
+    svn_url = c.SITE_SVN_URL + "/environments"
+    parts = ACRE_ID_SVN_SUFFIX[1:].split('.')[0:-1]
+    parts.reverse()
+    
+    target_dir = os.path.join(self.acre_dir(war=True), "WEB-INF/scripts", *parts)
+    target_dir = os.path.join(target_dir, 'environments')
+
+    if os.path.isdir(target_dir):
+      shutil.rmtree(target_dir)
+
+    cmd = ['svn', 'checkout', svn_url, target_dir]
+    r = c.run_cmd(cmd)
+
+    if not r:
+        return c.error('Failed to svn checkout %s into %s' % (svn_url, target_dir))
+
+    shutil.rmtree(target_dir + '/.svn')
+
+    c.log('Copied freebase-site environments file into acre: %s' % target_dir)
+
+    return True
+
+    
 
   def read_config(self):
     '''
@@ -1271,7 +1446,7 @@ class Acre:
     '''
 
     c = self.context
-    filename = os.path.join(self.acre_dir(), 'config', 'project.local.conf')
+    filename = os.path.join(self._acre_dir, 'config', 'project.local.conf')
     contents = None
     config = {}
 
@@ -1296,11 +1471,26 @@ class Acre:
 
     return config
 
-  def acre_dir(self):
-      
-    if self._acre_dir:
-      return self._acre_dir
+  def kill_running_acre(self):
+    '''
+    kills a running acre on appengine instance by looking at running processes
+    useful to kill stranglers that stayed up after a previous script invocation
+    '''
 
+    c = self.context
+    cmd = ['ps', 'wax']
+    (r, contents) = c.run_cmd(cmd)
+    
+    for line in contents.split('\n'):
+
+      #poor man's running acre under appengine detection
+      if '--port=%s' % self._standard_port in line and 'appengine' in line and 'acre' in line:
+        r = c.run_cmd(['kill', line.split()[0]])
+        time.sleep(1)
+        return r
+      
+
+  def find_running_acre(self):
     c = self.context
     cmd = ['ps', 'wax']
     (r, contents) = c.run_cmd(cmd)
@@ -1331,7 +1521,62 @@ class Acre:
           continue
 
 
-    return self._acre_dir
+      if self._acre_dir: 
+          return True
+
+      return False
+
+  def acre_dir(self, war=False, root=False):
+      
+    if not self._acre_dir:
+        self.find_running_acre()
+
+    if self._acre_dir:
+      if war:
+        return self._acre_dir + "/_build/war"
+      else:
+        return self._acre_dir + "/webapp"
+
+
+    return c.error('Could not find acre directory - none specified in command line, and no running acre on appengine process found.')
+
+  def fs_routed_apps(self):
+    '''
+    Returns a list of app objects that are used by the environment file of this acre/fs instance
+    '''
+
+    c = self.context
+    if not self.acre_dir():
+      return c.error("You have not specified an acre directory with --acre_dir and a running acre instance could not be found")
+
+    acre_url = self.url()
+    if not acre_url:
+        return False
+
+    url = "http://%s/_fs_routing" % acre_url
+      
+    response = c.fetch_url(url, acre=True)
+    
+    if not response:
+        return c.error("There is no acre running: %s" % url)
+
+    try:
+      routing_table = json.loads(''.join(response))
+    except:
+      return c.error('Failed to parse the routing table')
+
+    apps = set()
+    for rule in routing_table.get('prefix'):
+        if rule.get('app') and ACRE_ID_SVN_SUFFIX in rule.get('app'):
+            app = AppFactory(c).from_path(rule['app'])
+            apps.add(app)
+
+            lib_dependency = app.lib_dependency()
+            if lib_dependency:
+                apps.add(lib_dependency)
+
+    return apps
+
 
   def is_running(self):
 
@@ -1346,42 +1591,47 @@ class Acre:
 
     url = "http://%s/acre/status" % acre_url
 
-    response = c.fetch_url(url)
-
+    response = c.fetch_url(url, acre=True, silent=True, wait=2)
+    
     if not response:
-        return c.error("There is no acre running: %s" % url)
+        c.log("There is no acre running: %s" % url)
+        return False
 
-    return True
+    return response
 
 
   def url(self):
     if self.host_url:
       return self.host_url
 
-    #this is an acre host and port
-    #e.g. myhostname.sfo:8113
-    #this must be a freebaseapps-style url so that individual app versions can be addressed as
-    #http://<version>.<app>.dev.<acre_host>:<acre_port>
-    acre_config = self.read_config()
-    if not acre_config:
+    if self._acre_process:
+      self.host_url = "devel.sandbox-freebase.com:%s" % self._standard_port
+    #read the acre configuration and try to figure out the hostname
+    else:
+      #this is an acre host and port
+      #e.g. myhostname.sfo:8113
+      #this must be a freebaseapps-style url so that individual app versions can be addressed as
+      #http://<version>.<app>.dev.<acre_host>:<acre_port>
+      acre_config = self.read_config()
+      if not acre_config:
         return False
 
-    ak = acre_config.keys()
+      ak = acre_config.keys()
 
-    if 'ACRE_FREEBASE_SITE_ADDR_PORT':
       self.host_url = "devel.sandbox-freebase.com:%s" % acre_config['ACRE_FREEBASE_SITE_ADDR_PORT']
+
 
     return self.host_url
 
 
 
-  def site_dir(self):
+  def site_dir(self, war=False):
     '''Returns the acre scripts directory under the specified acre instance'''
 
     #App Engine directory location
     #target_dir = self.acre_dir + '/_build/war/WEB-INF/scripts'
     #Jetty/Acre directory location
-    target_dir = self.acre_dir() + '/webapp/WEB-INF/scripts'
+    target_dir = self.acre_dir(war) + '/WEB-INF/scripts'
 
     if not os.path.isdir(target_dir):
       try:
@@ -1391,47 +1641,50 @@ class Acre:
 
     return target_dir
 
+  def display_error_log(self, url):
 
-class Site:
-  '''Represents a freebase site instance'''
+      c = self.context
+      fd = open(self.log.name)
 
-  def __init__(self, context):
-    self.context = context
-    self.config = None
+      in_request = False
+      
+      if url.startswith('http://'):
+          url = url[7:]
 
-  def read_config(self):
+      request_logs = []
 
-    c = self.context
+      for line in fd:
 
-    if self.config:
-      return self.config
+          color = None
+          line = line.rstrip()
+          if 'com.google.acre.logging.AcreLogger log' in line:
+              continue
+          elif line.startswith('INFO: [****** request *******]') and url in line:
+              #reset the request logs so it will only hold the last request of this url
+              request_logs = []
+              in_request = True
+              color = c.BLUE
+          elif '[request.end]' in line:
+              in_request = False
+              color = c.BLUE
+          elif not in_request:
+              continue
 
-    self.config_dir =  mkdtemp()
 
-    cmd = ['svn', 'checkout', c.SITE_SVN_URL + '/trunk/config', self.config_dir, '--username', c.googlecode_username, '--password', c.googlecode_password]
-    (r, result) = c.run_cmd(cmd)
+          if line.startswith('ERROR') or line.startswith('SEVERE') or line.startswith('WARNING'):
+              color = c.RED
 
-    if not r:
-      return c.error(result)
+          request_logs.append((line, color))
+
+      fd.close()      
+
+      for line, color in request_logs:
+          c.log(line, color=color, nocontext=True)
+              
 
 
-    filename = self.config_dir + '/site.json'
-
-    try:
-      fd = open(filename, 'r')
-    except:
-      return c.error('Cannot open file %s for reading.' % filename)
-
-    contents = fd.read()
-    fd.close()
-
-    try:
-      contents = json.loads(contents)
-    except:
-      return c.error('Cannot JSON parse the config file %s' % filename)
-
-    return contents
-
+              
+              
 
 #local acre should be a singleton across the session
 ACRE_INSTANCE = None
@@ -1447,9 +1700,6 @@ def GetAcre(context):
 
   return ACRE_INSTANCE
 
-SITE_INSTANCE = None
-def GetSite(context):
-  pass
 
 
 

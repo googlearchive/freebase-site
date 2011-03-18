@@ -18,11 +18,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import sys, shutil, os, urllib2, tempfile, re, pwd, pdb, stat, datetime
+import sys, shutil, os, re, pwd, pdb, datetime
 from optparse import OptionParser
 
 from siteutil import Context, AppFactory, GetAcre, SERVICES
-from tempfile import mkdtemp, mkstemp
 
 try:
   import json
@@ -235,7 +234,7 @@ class ActionSetupSite:
 
     c.log('Site checkout done')
 
-    r = GetAcre(c).build(target='acre', use_freebase_site_config=True)
+    r = GetAcre(c).build(target='devel', config_dir = '%s/appengine-config' % c.options.site_dir)
     if not r:
       return c.error('Failed to build acre under %s' % c.options.acre_dir)
 
@@ -325,14 +324,14 @@ class ActionStatic:
     c.set_acre(GetAcre(c))
 
     acre = GetAcre(c)
-
-    while not acre.is_running():
-      c.error('The acre instance installed in %s is not running.' % c.options.acre_dir)
-      cont = raw_input("Please start the acre server and press (c) to continue or any other key to abort:")
-      if not cont or cont != 'c':
-        return c.error("Could not find a running acre instance, aborting")
+    if acre.build(target='devel', use_freebase_site_config = True):
+      if not acre.start():
+        return c.error('There was an error starting acre - cannot generate static files without a running acre instance.')
+    else:
+      return c.error('Failed to build acre - static generation aborted.')
 
     success = c.googlecode_login()
+
     if not success:
       return c.error('You must provide valid google code credentials to complete this operation.')
 
@@ -342,8 +341,90 @@ class ActionStatic:
     if not app.tag:
       return c.error('You can only create static files for app tags')
 
+    r = app.statify()
 
-    return app.statify()
+    return r
+
+class ActionDeployAcre:
+
+  def __init__(self, context):
+    self.context = context
+
+  def __call__(self):
+
+    c = self.context
+
+    if not (c.options.site_dir and c.options.acre_dir):
+      return c.error("Both --site_dir and --acre_dir must be provided to deploy acre.")
+
+    acre = GetAcre(c)
+
+    (r, result) = acre.build(c.options.acre_config, config_dir= "%s/appengine-config" % c.options.site_dir, war=True)
+
+    print result
+
+    if not r:
+      return c.error("Acre failed to build, aborting.")
+
+    acre.start(war=True)
+
+    status = acre.is_running()
+
+    if not status:
+      return c.error('Could not start new acre war bundle under appengine development server, aborting deployment')
+    
+    c.log_color = c.BLUE
+
+    c.log('*' * 65)
+    c.log('')
+    c.log('Acre Deployment Summary')
+    c.log('')
+    c.log('\tConfig: %s' % c.options.acre_config)
+    c.log('\tAppEngine URL: http://%s.appspot.com/' % c.options.acre_config)
+    c.log('\tAppEngine Dashboard: https://appengine.google.com/dashboard?&app_id=%s' % c.options.acre_config)
+    c.log('')
+    c.log('Acre Status Result from war bundle:')
+    for status_line in status:
+      status_line = status_line.rstrip('\n')
+      c.log('\t%s' % status_line)
+    c.log('')
+    c.log('*' * 65)
+
+    c.log_color = None
+
+
+    if os.path.isdir(acre.site_dir(war=True) + '/googlecode'):
+      shutil.rmtree(acre.site_dir(war=True)+ '/googlecode')
+
+
+    apps = acre.fs_routed_apps()
+
+    for app in apps:
+      result = app.copy_to_acre_dir(war=True)
+      if not result:
+        c.error('Failed to copy %s to app-engine bundle, continuing with other apps...' % app)
+
+
+    c.log('The following apps are bundled with acre:')
+    for app in sorted(apps):
+      c.log('\t%s' % app)
+
+    pdb.set_trace()
+    c.log('Starting deployment of live version, handing off to appcfg...', color=c.BLUE)
+    if not acre.deploy(): 
+      return c.error('Deployment failed.')
+
+    if c.options.failover:
+      c.log('Starting deployment of failover version.', color=c.BLUE)
+      r = acre.prepare_failover()
+      
+      if not r:
+        return c.error('Failed to prepare failover version of acre, aborting.')
+    
+      if not acre.deploy(): 
+        return c.error('Deployment failed.')
+      
+    return True
 
 class ActionSetup:
 
@@ -508,9 +589,8 @@ class ActionTest:
 
   def __call__(self):
     c = self.context
-    r = GetAcre(c).build(target='acre', use_freebase_site_config=True)
-    if not r:
-      return c.error('Failed to build acre under %s' % c.options.acre_dir)
+
+    GetAcre(c).prepare_failover()
 
   
 
@@ -563,7 +643,7 @@ class ActionCreateAppBranch():
 
     return True
 
-
+#TAG
 class ActionCreateAppTag():
 
   def __init__(self, context):
@@ -605,25 +685,18 @@ class ActionCreateAppTag():
     c = self.context
     c.set_action("create_tag")
 
-    success = c.googlecode_login()
-    if not success:
-      return c.error('You must provide valid google code credentials to complete this operation.')
-
     if not (c.options.app and c.options.version):
       return c.error('You have to specify a valid app and version to create a tag out of.')
 
-    no_static = False
+    if not c.options.acre_dir:
+      return c.error('You have to specify an acre directory to use.')
 
+    if not c.options.site_dir:
+      return c.error('You have to specify a freebase-site directory to use.')
 
-    acre = GetAcre(c)
-
-    if not acre.is_running():
-      c.error('WARNING: You did not specify an acre directory, and no acre process has been detected, so static generation for this app will fail (if needed). You can always re-create static files for a given app by running sitedeploy.py static -a %s -t <tag> --acre_dir <acre_dir>' % c.options.app)
-      no_static = raw_input("Would you like to bypass static generation and continue ? (y to continue, n to abort):")
-      if no_static == 'y':
-        no_static = True
-      else:
-        return False
+    success = c.googlecode_login()
+    if not success:
+      return c.error('You must provide valid google code credentials to complete this operation.')
 
     c.log('Creating tag for %s:%s' % (c.app.app_key, c.options.version), color=c.BLUE)
 
@@ -657,18 +730,22 @@ class ActionCreateAppTag():
           if r:
             c.log('Created tag %s linked to %s' % (tag_app, lib_app))
           else:
+            self.remove_from_svn()
             return c.error('Failed to commit to SVN - aborting')
         else:
+          self.remove_from_svn()
           return c.error('There was an error updating the lib dependency of %s' % tag_app)
 
 
 
-    if not no_static:
-      r = ActionStatic(c)(app=tag_app)
-      if not r:
-        return c.error('Failed to create static files for %s' % tag_app)
+    #if not no_static:
+    r = ActionStatic(c)(app=tag_app)
+    if not r:
+      tag_app.remove_from_svn()
+      return c.error('Failed to create static files for %s - tag removed from SVN.' % tag_app)
 
     c.log('Created %s' % tag_app, color=c.BLUE)
+
     return True
 
 class ActionInfo:
@@ -740,10 +817,6 @@ class ActionInfo:
     else:
       return self.info_all_apps()
 
-
-
-
-
 class ActionRelease:
 
   def __init__(self, context):
@@ -764,6 +837,7 @@ def main():
       ('setup_site', 'create a local site instance', ActionSetupSite),
       ('link', '\tDEPRECATED: connect acre and site so that acre will read site trunk apps from the filesystem', ActionLink),
       ('setup', '\tsetup acre and freebase-site and link them', ActionSetup),
+      ('deploy_acre', 'deploy an acre instance to production app-engine', ActionDeployAcre),
       ('setup_dns', 'setup wildcard dns for your host - Mac OS X only', ActionSetupDNS),
       ('info', 'provide information on all apps or a specific app', ActionInfo),
       ('create_branch', 'creates a branch of your app', ActionCreateAppBranch),
@@ -796,6 +870,8 @@ def main():
                     default=None, help='the local site directory')
   parser.add_option('', '--acre_port', dest='acre_port',
                     default=8115, help='the port you want to serve acre from')
+  parser.add_option('-c', '--acre_config', dest='acre_config',
+                    help='acre configuration target - e.g. acre-sandbox-freebasesite or devel')
   parser.add_option('-v', '--version', dest='version', default=None,
                     help='a version of the app - e.g. 12')
   parser.add_option('-t', '--tag', dest='tag', default=None,
@@ -804,6 +880,8 @@ def main():
                     help='an app id - e.g. /user/namesbc/mysuperapp or an app key under /freebase/site - e.g. homepage')
   parser.add_option('-l', '--lib', dest='lib', default=None,
                     help='the version of lib you want to tie this app branch to')
+  parser.add_option('-f', '--failover', dest='failover', action='store_true',
+                    default=False, help='will deploy acre to the failover version of appengine')
 
   (options, args) = parser.parse_args()
 
@@ -821,7 +899,12 @@ def main():
       if action == valid_action[0]:
 
         context.set_action(action)
-        result = valid_action[2](context)()
+
+        try:
+          result = valid_action[2](context)()
+        finally:
+          GetAcre(context).stop()
+
         context.set_action(action)
 
         t2 = datetime.datetime.now()

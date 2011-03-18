@@ -125,7 +125,7 @@
 
     prop_edit: function(context) {
       var prop = $(context).parents(".property-section");
-      prop.find(".data-section .data-row:first .combo-menu .head-menu-item:first a").click();
+      prop.find(".data-section .data-row:first .nicemenu:first .headmenu:first a").click();
       return false;
     },
 

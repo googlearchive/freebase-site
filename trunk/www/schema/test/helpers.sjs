@@ -28,7 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-var i18n = acre.require("lib/i18n/i18n");
+var i18n = acre.require("lib/i18n/i18n.sjs");
 
 function assert_keys(scope, keys, o, null_check, source) {
   source = source || "unknown";

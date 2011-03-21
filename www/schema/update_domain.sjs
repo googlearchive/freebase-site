@@ -29,11 +29,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var deferred = acre.require("lib/promise/deferred");
-var freebase = acre.require("lib/promise/apis").freebase;
-var update_article = acre.require("lib/queries/update_article");
-var validators = acre.require("lib/validator/validators");
-var i18n = acre.require("lib/i18n/i18n");
+var apis = acre.require("lib/promise/apis.sjs");
+var freebase = apis.freebase;
+var deferred = apis.deferred;
+var update_article = acre.require("lib/queries/update_article.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var i18n = acre.require("lib/i18n/i18n.sjs");
 
 /**
  * Update an existing domain values (name, key, description).

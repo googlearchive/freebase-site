@@ -28,10 +28,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-var i18n = acre.require("lib/i18n/i18n");
+var i18n = acre.require("lib/i18n/i18n.sjs");
 var h = acre.require("lib/helper/helpers.sjs");
-var deferred = acre.require("lib/promise/deferred");
-var freebase = acre.require("lib/promise/apis").freebase;
+var apis = acre.require("lib/promise/apis.sjs");
+var deferred = apis.deferred;
+var freebase = apis.freebase;
 var th = acre.require("helpers.sjs");
 
 function prop_counts(id) {

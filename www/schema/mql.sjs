@@ -30,7 +30,7 @@
  */
 
 var h = acre.require("lib/helper/helpers.sjs");
-var i18n = acre.require("lib/i18n/i18n");
+var i18n = acre.require("lib/i18n/i18n.sjs");
 
 function domains(options) {
   return [h.extend({

@@ -30,11 +30,11 @@
  */
 
 var h = acre.require("helper/helpers.sjs");
-var i18n = acre.require("i18n/i18n");
-var update_article = acre.require("queries/update_article");
-var deferred = acre.require("promise/deferred");
-var freebase = acre.require("promise/apis").freebase;
-var validators = acre.require("validator/validators");
+var i18n = acre.require("i18n/i18n.sjs");
+var update_article = acre.require("queries/update_article.sjs");
+var deferred = acre.require("promise/deferred.sjs");
+var freebase = acre.require("promise/apis.sjs").freebase;
+var validators = acre.require("validator/validators.sjs");
 
 /**
  * Create a new topic with name, type (optional) and description (optional).

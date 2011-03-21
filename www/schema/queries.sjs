@@ -30,13 +30,14 @@
  */
 
 var h = acre.require("lib/helper/helpers.sjs");
-var i18n = acre.require("lib/i18n/i18n");
-var schema_helpers = acre.require("helpers");
-var mql = acre.require("mql");
+var i18n = acre.require("lib/i18n/i18n.sjs");
+var schema_helpers = acre.require("helpers.sjs");
+var mql = acre.require("mql.sjs");
 
-var deferred = acre.require("lib/promise/deferred");
-var freebase = acre.require("lib/promise/apis").freebase;
-var urlfetch = acre.require("lib/promise/apis").urlfetch;
+var apis = acre.require("lib/promise/apis");
+var freebase = apis.freebase;
+var urlfetch = apis.urlfetch;
+var deferred = apis.deferred;
 
 /**
  * Get all "commons" domains. Domains with a key in "/".
@@ -128,7 +129,7 @@ function domain(id) {
     })
     .then(function(domain) {
       var promises = [];
-      
+
       // description
       promises.push(i18n.get_blurb(domain, {maxlength: 250}));
       promises.push(i18n.get_blob(domain));

@@ -30,7 +30,7 @@
  */
 var h = acre.require("lib/helper/helpers.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
-var i18n = acre.require("lib/i18n/i18n");
+var i18n = acre.require("lib/i18n/i18n.sjs");
 
 function isTypeType(id) {
   return id.indexOf('/type/') == 0;

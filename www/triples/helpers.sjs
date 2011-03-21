@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 var h = acre.require("lib/helper/helpers.sjs");
-var i18n = acre.require("lib/i18n/i18n");
+var i18n = acre.require("lib/i18n/i18n.sjs");
 
 var TIMESTAMPS = {
  "today": function() {return i18n.datejs.Date.today();},

@@ -33,8 +33,8 @@
   var c = this.exports.c = {};
   var h = acre.require("lib/helper/helpers.sjs");
   var tc = acre.require("type_components");
-  var sh = acre.require("helpers");
-  var i18n = acre.require("lib/i18n/i18n");
+  var sh = acre.require("helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
   var _ = i18n.gettext;
 </acre:script>
 

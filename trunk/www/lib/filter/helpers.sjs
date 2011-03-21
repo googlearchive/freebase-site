@@ -30,7 +30,7 @@
  */
 
 var h = acre.require("helper/helpers.sjs");
-var i18n = acre.require("i18n/i18n");
+var i18n = acre.require("i18n/i18n.sjs");
 
 /**
  * extract only the known global filters from filters dict.

@@ -66,7 +66,7 @@ function is_group_app(app_path) {
  * @param types:Array (optional) - If not specified, use topic.type otherwise use this list of types
  */
 /**
-var _ = acre.require("i18n/i18n").gettext;
+var _ = acre.require("i18n/i18n.sjs").gettext;
 
 function get_object_kind(topic, types) {
 

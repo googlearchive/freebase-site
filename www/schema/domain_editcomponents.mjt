@@ -31,7 +31,7 @@
 
 <acre:script>
   var h = acre.require("lib/helper/helpers.sjs");
-  var i18n = acre.require("lib/i18n/i18n");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
   var i18n_editcomponents = acre.require("lib/i18n/editcomponents");
   var _ = i18n.gettext;
 </acre:script>

@@ -35,9 +35,9 @@
   var components = acre.require("components");
   var image = acre.require("lib/template/imagecomponents");  
   var filter_components = acre.require("lib/filter/components.mjt");
-  var i18n = acre.require("lib/i18n/i18n");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
   var _ = i18n.gettext;
-  var th = acre.require("helpers");
+  var th = acre.require("helpers.sjs");
 </acre:script>
 
 <acre:block def="title()" if="c.object">

@@ -34,7 +34,7 @@ acre.require('/test/lib').enable(this);
 acre.require("test/mock").playback(this, "i18n/test/playback_test_i18n.json");
 
 var h = acre.require("helper/helpers.sjs");
-var i18n = acre.require("i18n/i18n");
+var i18n = acre.require("i18n/i18n.sjs");
 var freebase = acre.require("promise/apis").freebase;
 
 test("i18n", function() {

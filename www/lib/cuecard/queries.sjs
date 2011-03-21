@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var i18n = acre.require("i18n/i18n");
+var i18n = acre.require("i18n/i18n.sjs");
 var apis = acre.require("promise/apis.sjs");
 var deferred = apis.deferred;
 var urlfetch = apis.urlfetch;
@@ -37,26 +37,26 @@ var freebase = apis.freebase;
 
 
 function expandIncludedTypes(typesString, idsString, guidsString, typeArray, typeMap) {
-  
+
   var promises = [];
-  
+
   function enterUniqueType(type, explicit) {
     if (!(type in typeMap)) {
       typeMap[type] = { index: typeArray.length, explicit: explicit }; // we'll use this later for sorting
       typeArray.push(type);
     }
   }
-  
+
   function enterUniqueTypes(types, explicit) {
     for (var i = 0; i < types.length; i++) {
       enterUniqueType(types[i], explicit);
     }
   }
-  
+
   if (typesString !== undefined && typesString.length > 0) {
     enterUniqueTypes(typesString.split(","), true);
   }
-  
+
   if (idsString !== undefined && idsString.length > 0) {
     promises.push(freebase.mqlread([{
         "type" : "/type/type",
@@ -72,7 +72,7 @@ function expandIncludedTypes(typesString, idsString, guidsString, typeArray, typ
       })
     );
   }
-  
+
   if (guidsString !== undefined && guidsString.length > 0) {
     promises.push(freebase.mqlread([{
         "type" : "/type/type",
@@ -88,7 +88,7 @@ function expandIncludedTypes(typesString, idsString, guidsString, typeArray, typ
       })
     );
   }
-  
+
   return deferred.all(promises)
     .then(function() {
        //Get all the included types.
@@ -99,7 +99,7 @@ function expandIncludedTypes(typesString, idsString, guidsString, typeArray, typ
               { "id|=" : typeArray }
             )
           ).then(function(env) {
-            return env.result; 
+            return env.result;
           }).then(function(r) {
             for (var i = 0; i < r.length; i++) {
               var entry = r[i];
@@ -111,11 +111,11 @@ function expandIncludedTypes(typesString, idsString, guidsString, typeArray, typ
               }
             }
           })
-        );    
+        );
       }
     })
     .then(function() {
-      enterUniqueType("/type/object", true);      
+      enterUniqueType("/type/object", true);
     })
 }
 
@@ -135,7 +135,7 @@ var valueTypes = {
 
 function getPropertiesOfTypes(types, typeMap, visitor) {
   var propertyMap = {};
-  
+
   return freebase.mqlread(
       acre.freebase.extend_query(
         acre.require("cuecard/properties-query").query,
@@ -149,7 +149,7 @@ function getPropertiesOfTypes(types, typeMap, visitor) {
       r.sort(function(a, b) {
         return typeMap[a.id].index - typeMap[b.id].index;
       });
-      
+
       var hasValueType = false;
       for (var i = 0; i < r.length; i++) {
         var typeEntry = r[i];
@@ -174,8 +174,8 @@ function getPropertiesOfTypes(types, typeMap, visitor) {
               result = propertyMap[propertyEntry.id];
             } else {
               result = propertyMap[propertyEntry.id] = {
-                expectedTypes: [], 
-                explicit: explicit, 
+                expectedTypes: [],
+                explicit: explicit,
                 unique: "unique" in propertyEntry ? propertyEntry.unique : false
               };
               visitor(propertyEntry);
@@ -193,17 +193,17 @@ function getPropertiesOfTypes(types, typeMap, visitor) {
           }
         }
       }
-      
+
       if (hasValueType) {
         propertyMap["value"] = {
           expectedTypes: [],
-          explicit: true, 
+          explicit: true,
           unique: true
         };
       }
     })
     .then(function() {
-      return propertyMap;      
+      return propertyMap;
     });
 }
 
@@ -211,7 +211,7 @@ function getPropertiesOfTypes(types, typeMap, visitor) {
 function addCVTProperties(properties, uniqueTypes, uniqueTypeMap) {
   var cvtProperties = {};
   var promises = [];
-  
+
   for (var propertyID in properties) {
     var expectedTypes = properties[propertyID].expectedTypes;
     for (var t = 0; t < expectedTypes.length; t++) {
@@ -231,12 +231,12 @@ function addCVTProperties(properties, uniqueTypes, uniqueTypeMap) {
       }
     }
   }
-  
+
   return deferred.all(promises)
     .then(function() {
       for (var n in cvtProperties) {
         properties[n] = cvtProperties[n];
-      }      
+      }
     });
 }
 
@@ -247,7 +247,7 @@ function qualify_properties(typesString, idsString, guidsString) {
 
   var uniqueTypes = [];
   var uniqueTypeMap = {};
-  
+
   return expandIncludedTypes(typesString, idsString, guidsString, uniqueTypes, uniqueTypeMap)
     .then(function() {
       var qualificationMap = {};
@@ -257,7 +257,7 @@ function qualify_properties(typesString, idsString, guidsString) {
         if (!(shortID in qualificationMap)) {
           qualificationMap[shortID] = propertyEntry.id;
         }
-      });      
+      });
     })
     .then(function(propertyMap) {
       return { qualifications: qualificationMap, properties: propertyMap };
@@ -292,24 +292,24 @@ function suggest_properties(property, reverse, typesString, idsString, guidsStri
               uniqueTypeMap[expectedType.id] = { index: uniqueTypes.length, explicit: true };
               uniqueTypes.push(expectedType.id);
             }
-          }            
+          }
         })
       );
     }
   }
-  
+
   return deferred.all(promises)
     .then(function() {
-      return expandIncludedTypes(typesString, idsString, guidsString, uniqueTypes, uniqueTypeMap);      
+      return expandIncludedTypes(typesString, idsString, guidsString, uniqueTypes, uniqueTypeMap);
     })
     .then(function() {
       if (uniqueTypes.length == 0) {
         uniqueTypes.push("/type/object");
         uniqueTypeMap["/type/object"] = { index: 0, explicit: true };
-      }      
+      }
     })
     .then(function() {
-      return getPropertiesOfTypes(uniqueTypes, uniqueTypeMap, function(){});      
+      return getPropertiesOfTypes(uniqueTypes, uniqueTypeMap, function(){});
     })
     .then(function(properties) {
       return addCVTProperties(properties, uniqueTypes, uniqueTypeMap)
@@ -338,7 +338,7 @@ function suggest_arbitrary_properties(query) {
   return freebase.search(query + "*", {
       type:        "/type/property",
       type_strict: "any",
-      limit:       "10", 
+      limit:       "10",
       mql_output:  JSON.stringify(infoQ)
   })
     .then(function(o) {
@@ -367,11 +367,11 @@ function suggest_values_of_types(query, typeId) {
     "/common/topic/image" : [{ "optional" : true, "id" : null, "limit" : 1 }]
   }];
 
-  var options = { 
-    limit: "10", 
+  var options = {
+    limit: "10",
     mql_output: JSON.stringify(infoQ)
   };
-  
+
   if (t.length > 0) {
     options.type = typeId;
     options.type_strict = 'any';
@@ -393,7 +393,7 @@ function suggest_values_of_types(query, typeId) {
         return o.result;
       }
     });
-  
+
 }
 
 
@@ -412,11 +412,11 @@ function hotshot(id, settings) {
       });
   }).then(function(result) {
     var o = { "id" : id };
-    
+
     if ("name" in result && result["name"].length > 0) {
       o["name"] = result["name"][0].value;
     }
-    
+
     if ("/common/topic/article" in result && result["/common/topic/article"].length > 0) {
       o["blurb"] = result["/common/topic/article"][0].blurb;
     }
@@ -431,7 +431,7 @@ function hotshot(id, settings) {
             "title" : entry["name"] || "",
             "id" : entry["id"],
             "url" : "http://freebase.com/api/trans/image_thumb/%23" + entry["guid"].substr(1) +
-            "?" + [ 
+            "?" + [
             "mode=fillcrop",
             "maxheight=" + settings.thumbnailMaxHeight,
             "maxwidth=" + settings.thumbnailMaxWidth

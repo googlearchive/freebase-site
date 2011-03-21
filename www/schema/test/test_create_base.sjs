@@ -137,31 +137,51 @@ test("create_base", function() {
   equal(base.key.namespace, "/base");
 
   // check user has permission
-  var has_permission = acre.freebase.mqlread({
+  var has_permission;
+  freebase.mqlread({
     id: base.mid,
     permission: {permits: [{member: [{id: user.id}]}]}
-  }).result;
+  })
+  .then(function(env) {
+    has_permission = env.result;
+  });
+  acre.async.wait_on_results();
   ok(has_permission, user.id + " has permission to " + base.id);
 
   // check owners
-  var owners = acre.freebase.mqlread({
-   id: base.mid,
+  var owners;
+  freebase.mqlread({
+    id: base.mid,
     "/type/domain/owners": [{member: [{id: user.id}]}]
-  }).result;
+   })
+  .then(function(env) {
+    owners = env.result;
+  });
+  acre.async.wait_on_results();
   ok(owners, user.id + " is an owner of " + base.id);
 
   // check is /type/domain
-  var is_domain = acre.freebase.mqlread({
-   id: base.mid,
+  var is_domain;
+  freebase.mqlread({
+    id: base.mid,
     type: "/type/domain"
-  }).result;
+  })
+  .then(function(env) {
+    is_domain = env.result;
+  });
+  acre.async.wait_on_results();
   ok(is_domain, base.id + " is /type/domain");
 
   // check permits /boot/schema_group
-  var permits_schema_group = acre.freebase.mqlread({
-   id: base.mid,
+  var permits_schema_group;
+  freebase.mqlread({
+    id: base.mid,
     permission: {permits: {id: "/boot/schema_group"}}
-  }).result;
+  })
+  .then(function(env) {
+    permits_schema_group = env.result;
+  });
+  acre.async.wait_on_results();
   ok(permits_schema_group, base.id + " permits /boot/schema_group");
 });
 

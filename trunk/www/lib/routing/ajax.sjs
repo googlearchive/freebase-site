@@ -37,6 +37,11 @@ function AjaxRouter() {
   var add = this.add = function(routes){};
 
   var route = this.route = function(req) {
+    // assert X-Requested-With header
+    if (req.headers['x-requested-with'] !== "XMLHttpRequest") {
+      throw "Request must have a valid 'X-Requested-With header";
+    }
+
     var segs = req.path_info.split("/");
     segs[1] = segs[1] + ".svn.freebase-site.googlecode.dev";
 

@@ -29,9 +29,9 @@
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-CueCard.helper = fb.ajax.lib + "/cuecard/";
+CueCard.helper = fb.h.ajax_url("lib/cuecard/");
 CueCard.freebaseServiceUrl = fb.acre.freebase.service_url + "/";
-CueCard.urlPrefix = CueCard.apiProxy.base = fb.ajax.lib + "/cuecard/";
+CueCard.urlPrefix = CueCard.apiProxy.base = fb.h.ajax_url("lib/cuecard/");
 
 var c = {};
 var queryEditorOptions;
@@ -98,7 +98,7 @@ function onLoad() {
     if ("extended" in params) {
       controlPaneOptions["extended"] = params["extended"] == "1" ? 1 : 0;
     }
-    
+
     if ("as_of_time" in params) {
       controlPaneOptions["as_of_time"] = params["as_of_time"];
     }
@@ -130,14 +130,14 @@ function onLoad() {
     controlPaneElement: $('#the-control-pane')[0],
     controlPaneOptions: controlPaneOptions
   });
-  
+
   // patch in our changes to cuecard's default layout
   $("#links").prependTo("#the-output-pane .cuecard-outputPane-tabs");
   $("#qe-options").click(onToggleControlPane).prependTo(".cuecard-queryEditor-controls-bottom");
   $("#the-control-pane").appendTo('#the-query-editor .cuecard-queryEditor');
-  
+
   $(".module").collapse_module("#the-output-pane .cuecard-outputPane-content");
-  
+
   heights = {
     controlPane: 250,
     header: $("#header").outerHeight(),
@@ -146,7 +146,7 @@ function onLoad() {
     qeTitle: $("#qe-title").outerHeight(),
     qeButtons: $(".cuecard-queryEditor-controls-bottom").outerHeight()
   };
-  
+
   resizePanes();
   toggleControlPane(($.localstore("cc_cp") == "1"));
 
@@ -164,7 +164,7 @@ function onLoad() {
 function resizePanes() {
   var innerHeight = $("body").outerHeight() - heights.header - heights.breadcrumb - heights.footer - 30; //padding
   $(".cuecard-outputPane").height(innerHeight);
-  
+
   var qeHeight = innerHeight - heights.qeTitle;
   $(".cuecard-queryEditor").height(qeHeight);
 
@@ -191,7 +191,7 @@ function toggleControlPane(show) {
     $(".cuecard-queryEditor-content").animate({height: "-=" + heights.controlPane}, function() {
       $("#qe-options-on").show();
       $("#qe-options-off").hide();
-      onResize();    
+      onResize();
     });
   } else {
     $(".cuecard-queryEditor-content").animate({height: "+=" + heights.controlPane}, function() {
@@ -244,7 +244,7 @@ function saveQueryInWindow() {
       e: c.controlPane.getQueryEnvelope({}, true)
     },
     {
-      breakLines: false 
+      breakLines: false
     }
   );
 }

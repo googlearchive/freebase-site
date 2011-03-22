@@ -52,7 +52,7 @@
 
        // does fb.user have permission on c.id?
        $.ajax({
-         url: fb.ajax.lib + "/permission/has_permission",
+         url: fb.h.ajax_url("lib/permission/has_permission"),
          data: {id:c.id, user_id:fb.user.id},
          dataType: "json",
          success: function(data) {

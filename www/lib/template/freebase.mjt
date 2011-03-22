@@ -258,10 +258,6 @@
         c: {},
         mwLastWriteTime: null,
         tid: null
-      },
-      ajax: {
-        lib: h.ajax_url(acre.current_script.app.path),
-        app: h.ajax_url(acre.request.script.app.path)
       }
     };
     if (exports.c && exports.c.id) {

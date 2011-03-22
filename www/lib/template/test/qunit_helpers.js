@@ -14,11 +14,15 @@
       },
       current_script: {
         app:{path:"//lib.www.trunk.svn.freebase-site.googlecode.dev"}
+      },
+      metadata: {
+        libs: {
+          foo: {
+            base_url: "foo_base/",
+            version: "foo_version"
+          }
+        }
       }
-    },
-    ajax: {
-      app: "/AJAX/APP",
-      lib: "/AJAX/LIB"
     }
   };
 
@@ -167,6 +171,10 @@ function run_tests($, fb) {
     equal(h.wiki_url(null), "http://wiki.freebase.com/wiki/");
     equal(h.wiki_url(""), "http://wiki.freebase.com/wiki/");
     equal(h.wiki_url("Enumerated_types"), "http://wiki.freebase.com/wiki/Enumerated_types");
+  });
+
+  test("lib_base_url", function() {
+    equal(h.lib_base_url("foo"), fb.acre.metadata.libs.foo.base_url + fb.acre.metadata.libs.foo.version);
   });
 };
 

@@ -33,15 +33,15 @@
 /**
  * everything should go under the freebase namespace.
  */
-window.freebase = window.fb = {mwLWTReloading: false};
-if (window.SERVER && typeof window.SERVER === "object") {
-  $.each(["acre", "ajax"], function(i,n) {
-    window.fb[n] = window.SERVER[n];
-  });
-}
+;(function($) {
+  window.freebase = window.fb = {mwLWTReloading: false};
+  if (window.SERVER && typeof window.SERVER === "object") {
+    $.extend(window.freebase, window.SERVER);
+  }
+})(jQuery);
 
 // as early as possible, redirect if PAGE_LASTWRITEIME < mwLastWriteTime
-(function($,fb) {
+;(function($,fb) {
 
   // mwLWTReloaded is reset after a page load, to avoid a refresh
   // loop. More or less: only reload any given page once, but allow
@@ -64,8 +64,8 @@ if (window.SERVER && typeof window.SERVER === "object") {
   var cookie_lwt = 0;
   var page_lwt = 0;
   // in acre, PAGE_LASTWRITEIME is acre.request.cookies.mwLastWriteTime
-  if (typeof fb.acre === "object" && fb.acre && fb.acre[cookieName]) {
-    page_lwt = fb.acre[cookieName] || 0;
+  if (fb[cookieName]) {
+    page_lwt = fb[cookieName] || 0;
   }
   if (document.cookie && document.cookie != '') {
     var cookies = document.cookie.split(';');
@@ -389,8 +389,8 @@ if (window.SERVER && typeof window.SERVER === "object") {
 
      init: function() {
        $("#devbar-touch > a").click(fb.devbar.touch);
-       if (fb.acre.tid) {
-         fb.devbar.txn_ids.push(fb.acre.tid);
+       if (fb.tid) {
+         fb.devbar.txn_ids.push(fb.tid);
        }
        $("#devbar-txn > a").click(fb.devbar.txn);
        $.ajaxSetup({complete:fb.devbar.ajaxComplete});

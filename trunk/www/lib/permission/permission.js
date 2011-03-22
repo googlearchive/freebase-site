@@ -38,11 +38,7 @@
          // if no user, don't need to waste our time with the permission query
          return;
        }
-       if (typeof fb.acre === "undefined" || typeof fb.acre.c === "undefined") {
-         // all templates that go through /freebase/site/template/freebase.mjt will declare an "acre" var.
-         return;
-       }
-       var c = fb.acre.c;
+       var c = fb.c;
        if (!(c && c.id)) {
          // c.id is the primary node in question
          return;

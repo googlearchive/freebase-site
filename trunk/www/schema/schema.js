@@ -166,7 +166,7 @@
       if ($this.val() === "/lang/en") {
         en = $this;
       }
-      if ($this.val() === fb.acre.lang.primary) {
+      if ($this.val() === fb.lang) {
         selected = $this.attr("selected", "selected");
         return false;
       };

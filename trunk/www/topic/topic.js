@@ -35,9 +35,9 @@
     init: function() {
 
       propbox.init("#topic-data", {
-        id: fb.acre.c.id,
+        id: fb.c.id,
         base_url: fb.h.ajax_url("lib/propbox"),
-        lang: fb.acre.lang.primary || "/lang/en",
+        lang: fb.lang || "/lang/en",
         suggest: {
           service_url: fb.h.legacy_fb_url(),
           service_path: "/private/suggest",

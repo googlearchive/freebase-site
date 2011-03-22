@@ -30,6 +30,8 @@
  */
 ;(function($) {
 
+  dojo.require("dojo.date.locale");
+
   $.fn.validate_input = function (options) {
     return this.each(function() {
       var $this = $(this);
@@ -45,10 +47,24 @@
     });
   };
   var vi = $.validate_input = function(input, options) {
-    this.options = $.extend(true, {}, vi.defaults, options);
-    if (typeof this.options.validator !== "function") {
+    var o = this.options = $.extend(true, {}, vi.defaults, options);
+    if (typeof o.validator !== "function") {
       throw ("A validator is required");
     }
+    if (!o.lang) {
+      o.lang = "/lang/en";
+    }
+    if (o.lang === "/lang/en") {
+      o.lang = ["lang/en"];
+    }
+    else {
+      o.lang = [o.lang, "/lang/en"];
+    }
+    // convert mql lang ids to locale strings understood by dojo (cldr)
+    o.locales = [];
+    $.each(o.lang, function(i, lang) {
+      o.locales[i] = dojo.i18n.normalizeLocale(lang.split("/").pop().toLowerCase());
+    });
     this.input = $(input);
     this.original_value = this.input.val(); // original value
     this.init();
@@ -199,11 +215,7 @@
     },
 
     datetime: function(val, options) {
-      var date = vi.datetime.fromISOString(val);
-      if (date) {
-        return {text:val, value:val, date:date};
-      }
-      throw vi.invalid("datetime", val);
+      return vi.datetime.parse(val, options);
     },
 
     mqlkey: function(val, options) {
@@ -227,6 +239,50 @@
    *    Academic Free License version 2.1.
    */
   $.extend(vi.datetime, {
+
+    formats: [
+      "yyyy"  , ["dateFormatItem-y"],
+      "yyyy-MM" , ["dateFormatItem-yM", "dateFormatItem-yMMM"],
+      "yyyy-MM-dd", ["dateFormat-short", "dateFormat-medium", "dateFormat-long"]
+    ],
+
+    parse: function(val, options) {
+      // try iso date first
+      var date = vi.datetime.fromISOString(val);
+      if (date) {
+        return {text:val, value:val, date:date};
+      }
+
+      // try dojo.date.locale.parse
+      var locales = options && options.locales || ["en"];
+      var i,l,j,k,n,m;
+      for (i=0,l=locales.length; i<l; i++) {
+        var locale = locales[i];
+        var bundle = dojo.date.locale._getGregorianBundle(locale);
+        for (j=0,k=vi.datetime.formats.length; j<k; j+=2) {
+          var ymd = vi.datetime.formats[j];
+          var formats = vi.datetime.formats[j+1];
+          for (n=0,m=formats.length; n<m; n++) {
+            var format = formats[n];
+            var datePattern = bundle[format];
+            if (datePattern) {
+              /**
+               * HACK: some dojo cldr formats use Greek Alphabet, 'L' to denote month
+               */
+              datePattern = datePattern.replace(/L/g, "M");
+              try {
+                var d = dojo.date.locale.parse(val, {datePattern:datePattern, selector:"date", locale:locale});
+                return {text:val, value:dojo.date.locale.format(d, {datePattern:ymd, selector:"date"})};
+              }
+              catch (ex) {
+                // ignore and continue
+              }
+            }
+          }
+        }
+      }
+      throw vi.invalid("datetime", val);
+    },
 
     // Methods to convert dates to or from a wire (string) format using well-known conventions
 

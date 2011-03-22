@@ -256,8 +256,47 @@
           ok(false, ""+ex);
         }
       }
-
     });
+
+    var somedate = new Date(2000, 3, 5);
+    var formats = $.validate_input.datetime.formats;
+
+    for (var i=0,l=locales.length; i<l; i++) {
+      (function() {
+         var locale = locales[i];
+         test(locale, function() {
+           var bundle = dojo.date.locale._getGregorianBundle(locale);
+           ok(bundle, "Got gregorian bundle for locale: " + locale);
+
+           for (var j=0,k=formats.length; j<k; j+=2) {
+             var ymd = formats[j];
+             var dateFormats = formats[j+1];
+             for (var n=0,m=dateFormats.length; n<m; n++) {
+               var dateFormat = dateFormats[n];
+               var datePattern = bundle[dateFormat];
+               if (!datePattern) {
+                 ok(false, "datePattern does not exist: " + dateFormat);
+                 return;
+               }
+               var parsed;
+               try {
+                 /**
+                  * HACK: some dojo cldr formats use Greek Alphabet, 'L' to denote month
+                  */
+                 datePattern = datePattern.replace(/L/g, "M");
+                 var somedatestr = dojo.date.locale.format(somedate, {datePattern:datePattern, selector:"date", locale:locale});
+                 parsed = $.validate_input.datetime(somedatestr, {locales:[locale]});
+                 var expected_value = dojo.date.locale.format(somedate, {datePattern:ymd, selector:"date"});
+                 ok(parsed && parsed.value === expected_value, [datePattern, somedatestr, parsed.value].join(" => "));
+               }
+               catch (ex) {
+                 ok(false, [datePattern, ex].join(": "));
+               }
+             }
+           }
+         });
+       })();
+    }
   };
 
 })(jQuery);

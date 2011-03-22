@@ -239,6 +239,7 @@
       $(".data-input", form.form).each(function() {
         $(this)
           .data_input({
+            lang: lang_id,
             suggest: suggest_options
           })
           .bind("submit", function() {

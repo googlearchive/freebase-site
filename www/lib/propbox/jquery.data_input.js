@@ -71,7 +71,7 @@
         i.validate_input({validator: $.validate_input.text});
       }
       else if (c.is(".datetime")) {
-        i.validate_input({validator: $.validate_input.datetime});
+        i.validate_input({validator: $.validate_input.datetime, lang:this.options.lang});
       }
       else if (c.is(".enumerated")) {  // /freebase/type_hints/enumeration (<select>)
         i.validate_enumerated()

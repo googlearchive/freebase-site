@@ -42,6 +42,20 @@
 </acre:block>
 
 <acre:block def="head()">
+  <script>
+    var locales = [
+      'en',
+      'ar','ca','cs','da','de','el','en-gb','es','fi','fr',
+      'he','hu','it','ja','ko','nb','nl','pl','pt','pt-pt',
+      'ro','ru','sk','sl','sv','th','tr','zh','zh-hant','zh-tw'
+    ];
+    var djConfig = {
+      parseOnLoad: true,
+      locale: 'en',
+      extraLocale: locales.slice(1)
+    };
+  </script>
+  <script src="${h.lib_base_url('dojo')}/dojo/dojo.xd.js"></script>
   <script src="propbox/jquery.validate_input.js"></script>
   <script src="propbox/test/qunit_validate_input.js"></script>
 </acre:block>

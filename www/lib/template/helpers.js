@@ -162,12 +162,18 @@
         return path;
       }
       if (path.indexOf("lib/") === 0) {
+        /**
+         * acre.current_script is always lib since fb.acre variable is initialized in lib/template/freebase.mjt
+         */
         return fb.acre.current_script.app.path + path.substring(3);
       }
       else {
         if (path && path[0] != "/") {
           path = "/" + path;
         }
+        /**
+         * Everything else resolves to acre.request.script
+         */
         return fb.acre.request.script.app.path + path;
       }
     },
@@ -212,6 +218,12 @@
       var args = Array.prototype.slice.call(arguments);
       args.unshift("http://wiki.freebase.com", "/wiki/");
       return h.build_url.apply(null, args);
+    },
+
+
+    lib_base_url: function(key) {
+      var lib = fb.acre.metadata.libs[key];
+      return lib.base_url + lib.version;
     }
 
   };

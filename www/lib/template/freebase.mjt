@@ -252,22 +252,25 @@
             path: acre.current_script.app.path
           }
         },
-        lang: {
-          primary: i18n.lang
-        },
-        c: {},
-        mwLastWriteTime: null,
-        tid: null
-      }
+        metadata: {}
+      },
+      lang: i18n.lang,
+      c: {},
+      mwLastWriteTime: null,
+      tid: null
     };
+    var md = acre.get_metadata();
+    ["static_base", "libs"].forEach(function(k) {
+      SERVER.acre.metadata[k] = md[k];
+    });
     if (exports.c && exports.c.id) {
-      SERVER.acre.c.id = exports.c.id;
+      SERVER.c.id = exports.c.id;
     }
     if (acre.request.cookies && acre.request.cookies.mwLastWriteTime) {
-      SERVER.acre.mwLastWriteTime = acre.request.cookies.mwLastWriteTime;
+      SERVER.mwLastWriteTime = acre.request.cookies.mwLastWriteTime;
     }
     if (acre.request.headers['x-metaweb-tid']) {
-      SERVER.acre.tid = acre.request.headers['x-metaweb-tid'];
+      SERVER.tid = acre.request.headers['x-metaweb-tid'];
     }
   </acre:script>
   <script>

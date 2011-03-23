@@ -140,14 +140,15 @@
 
 
   var valid_numbers = [
-    "1", 1, 1,
-    "0", 0, 0,
-    "-1", -1, -1,
-    "1000", 1000, 1000,
-    "1,000,000.1", 1000000, 1000000.1,
-    "1.003", 1, 1.003,
-    "100.01", 100, 100.01,
-    "-1.234", -1, -1.234
+    1, 1, 1,
+    0, 0, 0,
+    -1, -1, -1,
+    1000, 1000, 1000,
+    1000000.1, 1000000, 1000000.1,
+    1.003, 1, 1.003,
+    100.01, 100, 100.01,
+    1.5, 2, 1.5,
+    -1.234, -1, -1.234
   ];
 
   var invalid_numbers = [
@@ -162,32 +163,25 @@
       equal(typeof $.validate_input["int"], "function");
     });
 
-    test("valid", function() {
-      var n = valid_numbers;
-      expect(n.length / 3);
-      for(var i=0,l=n.length; i<l; i+=3) {
-        try {
-          same($.validate_input["int"](n[i]), {text:(new Number(n[i+1])).toLocaleString(), value:n[i+1]});
-        }
-        catch(ex) {
-          ok(false, ex);
-        };
-      }
-    });
-
-    test("invalid", function() {
-      expect(invalid_numbers.length);
-      $.each(invalid_numbers, function(i,t) {
-        try {
-          var v = $.validate_input["int"](t);
-          ok(false, "Expected invalid: " + t + ", actual: " + JSON.stringify(v));
-        }
-        catch(ex) {
-          ok(true, "Invalid int: " + t);
-        };
-      });
-
-    });
+    var i,l,j,k;
+    for (i=0,l=locales.length; i<l; i++) {
+      (function() {
+         var locale = locales[i];
+         test(locale, function() {
+           for (var j=0,k=valid_numbers.length; j<k; j+=3) {
+             try {
+               var intstr = dojo.number.format(valid_numbers[j], {locale:locale});
+               var parsed = $.validate_input["int"](intstr, {locales:[locale]});
+               var expected_value = valid_numbers[j+1];
+               ok(parsed && parsed.value === expected_value, [intstr, parsed.value, expected_value].join(" => "));
+             }
+             catch(ex) {
+               ok(false, ex);
+             };
+           }
+         });
+       })();
+    }
   };
 
   function test_float() {
@@ -197,32 +191,25 @@
       equal(typeof $.validate_input["float"], "function");
     });
 
-    test("valid", function() {
-      var n = valid_numbers;
-      expect(n.length / 3);
-      for(var i=0,l=n.length; i<l; i+=3) {
-        try {
-          same($.validate_input["float"](n[i]), {text:(new Number(n[i+2])).toLocaleString(), value:n[i+2]});
-        }
-        catch(ex) {
-          ok(false, ex);
-        };
-      }
-    });
-
-    test("invalid", function() {
-      expect(invalid_numbers.length);
-      $.each(invalid_numbers, function(i,t) {
-        try {
-          var v = $.validate_input["float"](t);
-          ok(false, "Expected invalid: " + t + ", actual: " + JSON.stringify(v));
-        }
-        catch(ex) {
-          ok(true, "Invalid int: " + t);
-        };
-      });
-
-    });
+    var i,l,j,k;
+    for (i=0,l=locales.length; i<l; i++) {
+      (function() {
+         var locale = locales[i];
+         test(locale, function() {
+           for (var j=0,k=valid_numbers.length; j<k; j+=3) {
+             try {
+               var intstr = dojo.number.format(valid_numbers[j], {locale:locale});
+               var parsed = $.validate_input["float"](intstr, {locales:[locale]});
+               var expected_value = valid_numbers[j+2];
+               ok(parsed && parsed.value === expected_value, [intstr, parsed.value, expected_value].join(" => "));
+             }
+             catch(ex) {
+               ok(false, ex);
+             };
+           }
+         });
+       })();
+    }
   };
 
   function test_datetime() {
@@ -278,16 +265,15 @@
                  ok(false, "datePattern does not exist: " + dateFormat);
                  return;
                }
-               var parsed;
                try {
                  /**
                   * HACK: some dojo cldr formats use Greek Alphabet, 'L' to denote month
                   */
                  datePattern = datePattern.replace(/L/g, "M");
                  var somedatestr = dojo.date.locale.format(somedate, {datePattern:datePattern, selector:"date", locale:locale});
-                 parsed = $.validate_input.datetime(somedatestr, {locales:[locale]});
+                 var parsed = $.validate_input.datetime(somedatestr, {locales:[locale]});
                  var expected_value = dojo.date.locale.format(somedate, {datePattern:ymd, selector:"date"});
-                 ok(parsed && parsed.value === expected_value, [datePattern, somedatestr, parsed.value].join(" => "));
+                 ok(parsed && parsed.value === expected_value, [datePattern, somedatestr, parsed.value, expected_value].join(" => "));
                }
                catch (ex) {
                  ok(false, [datePattern, ex].join(": "));

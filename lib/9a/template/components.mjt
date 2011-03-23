@@ -1,0 +1,90 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require("helper/helpers.sjs");
+  var i18n = acre.require("i18n/i18n.sjs");
+  var _ = i18n.gettext;
+  var fh = acre.require("filter/helpers.sjs");
+</acre:script>
+
+<!!--
+  display the available nav tabs for a freebase object.
+  @see queries/object.sjs
+!!-->
+<acre:block def="nav_tabs(object, filters)">
+  <acre:script>
+    var types = h.map_array(object.type, "id");
+    var app_path = acre.request.script.app.path;
+    var global_filters = fh.global_filters(filters);
+  </acre:script>
+
+  <!!-- schema !!-->
+  <acre:block if="types['/type/domain'] || types['/type/type'] || types['/type/property']">
+    <li>
+      ${nav_url(h.is_schema_app(app_path), _("Schema"), "/schema" + object.id)}
+    </li>
+    <li>
+      ${nav_url(h.is_inspect_app(app_path), _("Inspect"), "/inspect" + object.id)}
+    </li>
+    <li acre:if="types['/type/domain']">
+       ${nav_url(h.is_group_app(app_path), _("People"), "/group" + object.id)}
+    </li>
+ </acre:block>
+
+  <!!-- user !!-->
+
+  <!!-- topic !!-->
+  <acre:block elif="types['/common/topic']">
+    <li>
+      ${nav_url(h.is_topic_app(app_path), _("Topic"), "/topic" + object.id, global_filters)}
+    </li>
+    <li>
+      ${nav_url(h.is_inspect_app(app_path), _("Inspect"), "/inspect" + object.id, global_filters)}
+    </li>
+  </acre:block>
+                 
+  <!!-- inspect [default] !!-->
+  <acre:block else="">
+    <li>
+     ${nav_url(true, _("Inspect"))}
+    </li>
+    <li acre:if="types['/type/domain']">
+      ${nav_url(h.is_group_app(app_path), _("People"), "/group" + object.id)}
+    </li>
+  </acre:block> 
+
+</acre:block>
+
+<acre:block def="nav_url(current, label, base_url, params)">
+  <a acre:if="current" href="#" onclick="return false;" class="current"><span>${label}</span></a>
+  <a acre:else="" href="${h.fb_url(base_url, params)}"><span>${label}</span></a>
+</acre:block>

@@ -1,0 +1,93 @@
+
+<acre:script>
+  var data_input = acre.require("lib/propbox/propbox.mjt").data_input
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="forms.mf.css" />
+</acre:block>
+
+<acre:block def="content_body()">
+
+  <acre:script>
+
+    var inputs = [
+      "Generic Input", "",
+      "Text Input", "/type/text",
+      "Datetime Input", "/type/datetime",
+      "Int/Float Input", "/type/int",
+      "Uri Input", "/type/uri",
+      "Boolean Input", "/type/boolean",
+      "Topic Input", "/common/topic",
+      "Enumerated Input", "/freebase/type_hints/enumeration"
+    ];
+
+  </acre:script>
+
+  <div class="section">
+    <acre:block for="(var i=0; i<inputs.length; i+=2)">
+      ${data_input_states(inputs[i], inputs[i+1])}
+    </acre:block>
+  </div>
+
+</acre:block>
+
+<acre:block def="data_input_states(label, type)">
+
+  <acre:script>
+    var instances;
+    if (type === "/freebase/type_hints/enumeration") {
+      instances = [{
+        id: "foo",
+        text: "foo"   
+      }, {
+        id: "bar",
+        text: "bar"   
+      }]
+    }
+  </acre:script>
+
+  <h1>${label}</h1>
+  
+  <div class="default">
+    <h2>Default</h2>
+    ${data_input(type, label+"default", "Lorem ipsum", instances)}
+  </div>
+
+  <div class="disabled">
+    <h2>Disabled</h2>
+    ${data_input(type, label+"disabled", "Lorem ipsum", instances)}
+  </div>
+
+  <div class="valid">
+    <h2>Valid</h2>
+    ${data_input(type, label+"valid", "Lorem ipsum", instances)}
+  </div>
+
+  <div class="error">
+    <h2>Error</h2>
+    ${data_input(type, label+"error", "Lorem ipsum", instances)}
+  </div>  
+  
+</acre:block>
+
+
+<acre:block def="footer_script()">
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".disabled .data-input").addClass("disabled").find(".fb-input, .fb-boolean-input, .fb-enumerated-input").attr("disabled", "disabled");
+    $(".valid .data-input").addClass("valid");
+    $(".error .data-input").addClass("error");
+
+    $(".fb-input, .fb-boolean-input").focusin(function(){
+      $(this).parents(".data-input").addClass("focus");  
+    });
+    $(".fb-input, .fb-boolean-input").focusout(function(){
+      $(this).parents(".data-input").removeClass("focus");  
+    });
+    // Note, we need logic to change radio button labels on chage
+    // but Webkit acts weird, here is a potential fix
+    // http://evilstreak.co.uk/blog/fixing-change-events-on-radios
+  });
+</script>
+</acre:block>

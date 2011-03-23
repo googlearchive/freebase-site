@@ -8,7 +8,7 @@
 // Shared base urls
 var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
-var lib = "//7j.lib" + tags_codebase;
+var lib = "//9a.lib" + tags_codebase;
 
 var rules = {
   "host": [
@@ -40,7 +40,7 @@ var rules = {
     {prefix:"/labs/cubed",         app:"//cubed"},
     {prefix:"/labs/parallax",      app:"//parallax"},
     {prefix:"/labs",               app:"//labs"},
-    {prefix:"/topic",              app:"//2b.topic" + tags_codebase},
+    {prefix:"/topic",              app:"//3a.topic" + tags_codebase},
 
     // Urls for exposed ajax libraries and static resources
     // TODO: remove this and use ajax router

@@ -1,4 +1,5 @@
 ;(function($, dojo) {
+
   var i,l,j,k;
 
   function init() {
@@ -19,7 +20,7 @@
         }
       }
     }
-    $("#datetime .ex").text("ex: " + example_dates.join(", "));
+    $("#datetime .ex").html("ex: \"" + example_dates.join("\", \"") + "\"");
     $("#datetime .data-input").data_input({lang:lang});
 
     var example_ints = [
@@ -30,7 +31,7 @@
     for (i=0,l=example_ints.length; i<l; i++) {
       example_ints[i] = dojo.number.format(example_ints[i], {locale:locale});
     }
-    $("#int .ex").text("ex: " + example_ints.join(", "));
+    $("#int .ex").html("ex: \"" + example_ints.join("\", \"") + "\"");
     $("#int .data-input").data_input({lang:lang});
 
     var example_floats = [
@@ -41,11 +42,8 @@
     for (i=0,l=example_floats.length; i<l; i++) {
       example_floats[i] = dojo.number.format(example_floats[i], {locale:locale});
     }
-    $("#float .ex").text("ex: " + example_floats.join(", "));
+    $("#float .ex").html("ex: \"" + example_floats.join("\", \"") + "\"");
     $("#float .data-input").data_input({lang:lang});
-
-
-
 
 
     $(".data-input :text")
@@ -60,7 +58,7 @@ console.log("valid", data);
 
 
   $(function() {
-    setTimeout(init, 500);
+    setTimeout(init, 1000);
   });
 
 })(jQuery, dojo);

@@ -4,6 +4,11 @@
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var h = acre.require("lib/helper/helpers.sjs");
   var lang = acre.request.params.lang || "/lang/en";
+
+  var langs = i18n.LANGS.slice();
+  langs.sort(function(a,b) {
+    return b.name < a.name;
+  });
 </acre:script>
 
 <acre:block def="head()">
@@ -14,11 +19,11 @@
   <div class="section">
     <h1>Language</h1>
     <div class="default">
-      <h2>Select a language</h2>
+      <h2>Select a language</h2>      
       <div class="data-input">
         <form action="${h.fb_url('/sample/forms/locale-inputs.template')}">
           <select name="lang" onchange="return this.form.submit();">
-            <acre:block for="l in i18n.LANGS">
+            <acre:block for="l in langs">
               <option value="${l.id}"
                       acre:attrs="l.id === lang ? {selected:'selected'} : {}" >${l.name}</option>
             </acre:block>
@@ -31,7 +36,7 @@
   <div id="datetime" class="section">
     <h1>Datetime Input</h1>
     <div class="default">
-      <h2 class="ex"></h2>
+      <h2 class="ex">&nbsp;</h2>
       ${data_input("/type/datetime", "datetime", null)}
       <h2 class="v">&nbsp;</h2>
     </div>
@@ -40,7 +45,7 @@
   <div id="int" class="section">
     <h1>Integer Input</h1>
     <div class="default">
-      <h2 class="ex"></h2>
+      <h2 class="ex">&nbsp;</h2>
       ${data_input("/type/int", "int", null)}
       <h2 class="v">&nbsp;</h2>
     </div>
@@ -49,7 +54,7 @@
   <div id="float" class="section">
     <h1>Float Input</h1>
     <div class="default">
-      <h2 class="ex"></h2>
+      <h2 class="ex">&nbsp;</h2>
       ${data_input("/type/float", "float", null)}
       <h2 class="v">&nbsp;</h2>
     </div>

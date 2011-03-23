@@ -83,10 +83,10 @@
           });
       }
       else if (c.is(".int")) {
-        i.validate_input({validator: $.validate_input["int"]});
+        i.validate_input({validator: $.validate_input["int"], lang:this.options.lang});
       }
       else if (c.is(".float")) {
-        i.validate_input({validator: $.validate_input["float"]});
+        i.validate_input({validator: $.validate_input["float"], lang:this.options.lang});
       }
       else if (c.is(".uri")) {
         i.validate_input({validator: $.validate_input.uri});

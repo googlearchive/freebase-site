@@ -41,6 +41,7 @@ var rules = {
     {prefix:"/labs/parallax",      app:"//parallax"},
     {prefix:"/labs",               app:"//labs"},
     {prefix:"/topic",              app:"//3a.topic" + tags_codebase},
+    {prefix:"/sample",             app:"//1a.sample" + tags_codebase},
 
     // Urls for exposed ajax libraries and static resources
     // TODO: remove this and use ajax router

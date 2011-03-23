@@ -253,7 +253,6 @@
          var locale =  dojo.i18n.normalizeLocale(locales[i]);
          test(locale, function() {
            var bundle = dojo.date.locale._getGregorianBundle(locale);
-                console.log(locale, bundle);
            ok(bundle, "Got gregorian bundle for locale: " + locale);
 
            for (var j=0,k=formats.length; j<k; j+=2) {

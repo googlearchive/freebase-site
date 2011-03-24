@@ -409,7 +409,6 @@ class ActionDeployAcre:
     for app in sorted(apps):
       c.log('\t%s' % app)
 
-    pdb.set_trace()
     c.log('Starting deployment of live version, handing off to appcfg...', color=c.BLUE)
     if not acre.deploy(): 
       return c.error('Deployment failed.')

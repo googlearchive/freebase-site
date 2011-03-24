@@ -117,7 +117,7 @@
 
 <acre:block def="propbox(topic, prop_structure, prop_values)">
   <div class="property-section" data-id="${prop_structure.id}">
-    <h3 class="sub-foobar kbs">
+    <div class="sub-foobar kbs">
       <!--view all link is shown for any non-unique property-->
       <a href="#" class="more"><span>${_('View all property values')}</span></a>
       <span class="header-label">
@@ -129,7 +129,7 @@
         !!-->
         ${prop_menu2(topic, prop_structure)}
       </span>
-    </h3>  
+    </div>  
     ${databox(topic, prop_structure, prop_values)}
   </div>
 </acre:block>
@@ -279,21 +279,21 @@
 </acre:block>
 
 <acre:block def="prop_menu2(topic, prop_structure)">
-  <ul class="nicemenu">
-    <li class="nicemenu-item">
-      <span class="headmenu">
-        <a href="#" onclick="return false;">${prop_structure.text}</a><span class="nicemenu-arrow">&#9660;</span>
+  <ul class="inline-menu nicemenu">
+    <li class="inline-menu-item nicemenu-item">
+      <span class="mark headmenu">
+        <a href="#" class="menu-trigger" onclick="return false;">${prop_structure.text}</a>
       </span>
-      <div class="submenu">
-        <acre:block if="prop_structure.unique && prop_structure.values.length">
+      <ul class="submenu">
+        <li acre:if="prop_structure.unique && prop_structure.values.length">
           <a href="#" onclick="return propbox.prop_edit(this);">${_("Edit value")}</a>
-        </acre:block>
-        <acre:block else="">
+        </li>
+        <li acre:else="">
           <a href="#" onclick="return propbox.prop_add(this);">${_("Add new value")}</a>
-        </acre:block>      
-        <a href="${h.fb_url('/inspect', prop_structure.id)}">${_("Inspect property")}</a>
-        <a href="${h.fb_url('/schema', prop_structure.id)}">${_("View schema")}</a>
-      </div>
+        </li>      
+        <li><a href="${h.fb_url('/inspect', prop_structure.id)}">${_("Inspect property")}</a></li>
+        <li><a href="${h.fb_url('/schema', prop_structure.id)}">${_("View schema")}</a></li>
+      </ul>
    </li>
   </ul>
 </acre:block>
@@ -316,7 +316,7 @@
   <ul class="nicemenu">
     <li class="nicemenu-item">
       <span class="headmenu">
-        <a href="#" onclick="return false;" class="default-action">edit</a><span class="nicemenu-arrow">&#9660;</span>
+        <a href="#" onclick="return false;" class="default-action">edit</a>
       </span>
       <div class="submenu">
         <a href="#" onclick="return propbox.value_edit(this);">${ _("Edit")}</a>

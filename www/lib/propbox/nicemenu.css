@@ -34,14 +34,6 @@
 	
 **/
 
-.nicemenu,
-.nicemenu-item {
-  margin: 0;
-  border: 0;
-  list-style: none;
-  padding: 0;
-}
-
 .nicemenu {
   height: 2em;
   display: inline;

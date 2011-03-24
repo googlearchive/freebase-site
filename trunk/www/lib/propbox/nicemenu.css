@@ -1,39 +1,3 @@
-/***
-	body{font-family:Arial, Helvetica, sans-serif; font-size:13px; background:#FFFFFF;}
-
-	ul, li{margin:0; border:0; list-style:none; padding:0;}
-	ul{height:21px;}
-
-	h1 { font-size:18px; }
-	p { line-height:18px; }
-
-	#info { margin:auto; width:600px; color:#333333; padding:10px; background:#f4f4f4; border:1px solid #DDD; }
-
-	#nicemenu { margin:0 auto; width:600px; margin-top:30px; border-bottom:dotted 1px #E5E5E5; }
-	#nicemenu a { color:#0066CC; text-decoration:none; }
-	#nicemenu a:hover { text-decoration:underline; }	
-	#nicemenu li { display:inline; position:relative; }
-	#nicemenu li span { position:relative; z-index:10; padding:4px 4px 4px 6px;  border-bottom:none; line-height:18px; }	
-	#nicemenu li span a { font-weight:bold; padding:0 6px 0px 2px;  }	
-	#nicemenu li span.over { padding:4px 3px 4px 5px;  border-top:solid 1px #E5E5E5; border-left:solid 1px #E5E5E5;  border-right:solid 1px #999999; border-bottom:solid 1px #fff;  }
-	*+html #nicemenu li span.over {  border-top:solid 2px #E5E5E5; padding-bottom:3px; }
-	#nicemenu li span.over a { }
-	#nicemenu li span.over a:hover { text-decoration:none; }
-	#nicemenu li span.active { padding:4px 3px 4px 5px;  border-top:solid 1px #E5E5E5; border-left:solid 1px #E5E5E5;  border-right:solid 1px #999999; border-bottom:solid 1px #fff;  }
-	*+html #nicemenu li span.active {  border-top:solid 2px #E5E5E5; padding-bottom:3px; }
-	#nicemenu li span.active a { }
-	#nicemenu li span.active a:hover { text-decoration:none; }	
-	#nicemenu img.arrow { cursor:pointer; }
-	#nicemenu div.sub_menu { display:none; position:absolute; left:0; top:0px; margin-top:18px; border-top:solid 1px #E5E5E5; border-left:solid 1px #E5E5E5; border-right:solid 1px #999999; border-bottom:solid 1px #999999; padding:4px; top:2px; width:160px; background:#FFFFFF; }
-	* html #nicemenu div.sub_menu { margin-top:23px; }
-	*+html #nicemenu div.sub_menu { margin-top:23px; }
-	#nicemenu div.sub_menu a:link, 
-	#nicemenu div.sub_menu a:visited, 
-	#nicemenu div.sub_menu a:hover{ display:block; font-size:11px; padding:4px;}	
-	#nicemenu a.item_line { border-top:solid 1px #E5E5E5; padding-top:6px !important; margin-top:3px; }
-	
-**/
-
 .nicemenu {
   display: inline;
 }

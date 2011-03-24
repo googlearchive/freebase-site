@@ -317,8 +317,6 @@
     <li class="nicemenu-item">
       <span class="headmenu">
         <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
-      </span>
-      <span class="headmenu">
         <a href="javascript:void(0)" class="more-action">menu</a>
       </span>
       <ul class="submenu">

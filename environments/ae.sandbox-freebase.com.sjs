@@ -5,15 +5,13 @@
  * 2. PrefixRouter - the main prefix-based routing rules
  */
 
-// lib to get routing helpers
-var lib = "//1f.lib.www.tags.svn.freebase-site.googlecode.dev";
-var routing = acre.require(lib + "/routing/router");
-
-// This is the error handler that handles all routing and not found errors
-acre.response.set_error_page(lib + "/error/error.mjt");
+// Shared base urls
+var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
+var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
+var lib = "//9a.lib" + tags_codebase;
 
 var rules = {
-  "HostRouter": [
+  "host": [
     {host:"freebase.com", url:"http://www.freebase.com"},
     {host:"sandbox-freebase.com", url:"http://www.sandbox-freebase.com"},
     {host:"sandbox.freebase.com", url:"http://www.sandbox-freebase.com"},
@@ -25,30 +23,45 @@ var rules = {
     {host:"www.metaweb.com", url:"http://www.freebase.com"}
   ],
 
-  "PrefixRouter": [
+  "prefix": [
     // Urls for user-facing apps
-    {prefix:"/",                   app:"//1r.homepage.www.tags.svn.freebase-site.googlecode.dev", script: "index"},
-    {prefix:"/index",              url:"/", redirect:301},
-    {prefix:"/home",               app:"//1r.homepage.www.tags.svn.freebase-site.googlecode.dev", script: "home"},
-    {prefix:"/homepage",           app:"//1r.homepage.www.tags.svn.freebase-site.googlecode.dev"},
-    {prefix:"/schema",             app:"//schema.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/apps",               app:"//apps.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/appeditor",          app:"//appeditor.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/docs",               app:"//devdocs.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/inspect",            app:"//triples.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/policies",           app:"//policies.www.trunk.svn.freebase-site.googlecode.dev"},
-    {prefix:"/queryeditor",        app:"//queryeditor.www.trunk.svn.freebase-site.googlecode.dev"},
+    {prefix:"/favicon.ico",        app:lib, script: "template/favicon.ico"},
+    {prefix:"/",                   app:"//4d.homepage" + tags_codebase, script: "index"},
+    {prefix:"/index",              url:"/", redirect: 301},
+    {prefix:"/home",               app:"//4d.homepage" + tags_codebase, script: "home"},
+    {prefix:"/homepage",           app:"//4d.homepage" + tags_codebase},
+    {prefix:"/schema",             app:"//5c.schema" + tags_codebase},
+    {prefix:"/apps",               app:"//2a.apps" + tags_codebase},
+    {prefix:"/appeditor",          app:"//appeditor" + codebase},
+    {prefix:"/docs",               app:"//1b.devdocs" + tags_codebase},
+    {prefix:"/inspect",            app:"//1c.triples" + tags_codebase},
+    {prefix:"/policies",           app:"//2j.policies" + tags_codebase},
+    {prefix:"/queryeditor",        app:"//queryeditor" + codebase},
     {prefix:"/labs/cubed",         app:"//cubed"},
     {prefix:"/labs/parallax",      app:"//parallax"},
     {prefix:"/labs",               app:"//labs"},
+    {prefix:"/topic",              app:"//3a.topic" + tags_codebase},
+    {prefix:"/sample",             app:"//1a.sample" + tags_codebase},
 
     // Urls for exposed ajax libraries and static resources
-    {prefix:"/global",             app:lib, script: "global/router.sjs"},
-    {prefix:"/permission",         app:lib + "/permission"},
-    {prefix:"/template",           app:lib + "/template"},
+    // TODO: remove this and use ajax router
+    {prefix:"/static",             app:lib, script:"routing/static.sjs"},
+    {prefix:"/ajax",               app:lib, script:"routing/ajax.sjs"},
+
+    // Test routing rules to test non-user facing apps (core libraries, etc.)
+    {prefix:"/lib/core",           app:lib + "/core"},
+    {prefix:"/lib/routing",        app:lib + "/routing"},
+    {prefix:"/lib/i18n",           app:lib + "/i18n"},
+    {prefix:"/lib/promise",        app:lib + "/promise"},
+    {prefix:"/lib/queries",        app:lib + "/queries"},
+    {prefix:"/lib/test",           app:lib + "/test"},
+    {prefix:"/lib/validator",      app:lib + "/validator"},
+    {prefix:"/lib/handlers",       app:lib + "/handlers"},
+    {prefix:"/lib/template",       app:lib + "/template"},
+    {prefix:"/lib/permission",     app:lib + "/permission"},
 
     // Urls for administrative tools
-    {prefix:"/admin",              app:"//admin.www.trunk.svn.freebase-site.googlecode.dev"},
+    {prefix:"/admin",              app:"//admin" + codebase},
     {prefix:"/app/tmt",            app:"//tmt"},
 
     //
@@ -162,28 +175,4 @@ var rules = {
   ]
 };
 
-// Dump all routing info and rules.
-// This is primarily for our automated buildbot/testrunners
-if (acre.current_script === acre.request.script) {
-  var d = acre.request.server_name.length - acre.host.name.length;
-  if (d >=0 && acre.request.server_name.lastIndexOf(acre.host.name) === d) {
-    acre.write(JSON.stringify(rules, null, 2));
-    acre.exit();
-  }
-}
-
-["HostRouter", "PrefixRouter"].forEach(function(name) {
-  var RouterClass = routing[name];
-  if (!RouterClass) {
-    throw name + " not found in " + lib + "/routing/router";
-  }
-  var router = new RouterClass();
-  var rule = rules[name];
-  if (rule) {
-    router.add(rule);
-  }
-  router.route(acre.request);
-});
-
-// TODO: not found
-
+acre.require(lib + "/routing/router.sjs").route(rules, this);

@@ -284,22 +284,22 @@
       <span class="mark headmenu">
         <a href="#" class="menu-trigger" onclick="return false;">${prop_structure.text}</a>
       </span>
-      <ul class="submenu">
-        <li acre:if="prop_structure.unique && prop_structure.values.length">
+      <ul class="row-menu submenu">
+        <li acre:if="prop_structure.unique && prop_structure.values.length" class="row-menu-item">
           <a href="#" onclick="return propbox.prop_edit(this);">${_("Edit value")}</a>
         </li>
-        <li acre:else="">
+        <li acre:else="" class="row-menu-item">
           <a href="#" onclick="return propbox.prop_add(this);">${_("Add new value")}</a>
         </li>      
-        <li><a href="${h.fb_url('/inspect', prop_structure.id)}">${_("Inspect property")}</a></li>
-        <li><a href="${h.fb_url('/schema', prop_structure.id)}">${_("View schema")}</a></li>
+        <li class="row-menu-item"><a href="${h.fb_url('/inspect', prop_structure.id)}">${_("Inspect property")}</a></li>
+        <li class="row-menu-item"><a href="${h.fb_url('/schema', prop_structure.id)}">${_("View schema")}</a></li>
       </ul>
    </li>
   </ul>
 </acre:block>
 
 <acre:block def="value_menu()">
-  <span class="combo-menu">   
+  <div class="combo-menu">   
     <a href="javascript:void(0)" class="more-action menu-trigger">menu</a>
     <ul class="row-menu tooltip">
       <li class="row-menu-item">
@@ -309,19 +309,22 @@
         <a href="#" onclick="return propbox.value_delete(this);">${ _("Delete")}</a>
       </li>
     </ul>
-  </span>
+  </div>
 </acre:block>
 
 <acre:block def="value_menu2()">
-  <ul class="nicemenu">
+  <ul class="combo-menu nicemenu">
     <li class="nicemenu-item">
       <span class="headmenu">
-        <a href="#" onclick="return false;" class="default-action">edit</a>
+        <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
       </span>
-      <div class="submenu">
-        <a href="#" onclick="return propbox.value_edit(this);">${ _("Edit")}</a>
-        <a href="#" onclick="return propbox.value_delete(this);">${ _("Delete")}</a>
-      </div>
+      <span class="headmenu">
+        <a href="javascript:void(0)" class="more-action">menu</a>
+      </span>
+      <ul class="submenu">
+        <li><a href="#" onclick="return propbox.value_edit(this);">${ _("Edit")}</a></li>
+        <li><a href="#" onclick="return propbox.value_delete(this);">${ _("Delete")}</a></li>
+      </ul>
     </li>
   </ul>
 </acre:block>

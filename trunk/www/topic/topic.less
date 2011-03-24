@@ -47,8 +47,8 @@ h2.kbs.current .mark {
   background-position: 5px -819px;
 }
 
-h3.kbs.current .mark {
-  background-position: 5px -818px;
+div.kbs.current .mark {
+  background-position: 5px -812px;
 }
 
 
@@ -143,7 +143,8 @@ h3.kbs.current .mark {
 }
 
 .foobar:hover .header-label:hover,
-.sub-foobar:hover .header-label:hover {
+.sub-foobar:hover .header-label:hover,
+.kbs.current .header-label {
   cursor: pointer;
   background: rgba(0,0,0,0.1);
 }
@@ -343,6 +344,11 @@ The .data-table object should hold non-simple data (eg. Mediator or CVT)
   height: 17px;
   text-indent: -9999px;
   line-height: 1;
+}
+
+ul.combo-menu li,
+.data-table tbody tr ul.combo-menu li {
+  padding: 0; 
 }
 
 .combo-menu .more-action {

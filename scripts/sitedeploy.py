@@ -873,27 +873,42 @@ def main():
   parser.add_option('-c', '--acre_config', dest='acre_config',
                     help='acre configuration target - e.g. acre-sandbox-freebasesite or devel')
   parser.add_option('-v', '--version', dest='version', default=None,
-                    help='a version of the app - e.g. 12')
+                    help='a version of the app - e.g. 12 - use "latest" to auto-detect the last version branched')
   parser.add_option('-t', '--tag', dest='tag', default=None,
                     help='a tag of the app - e.g. 12b')
   parser.add_option('-a', '--app', dest='app', default=None,
                     help='an app id - e.g. /user/namesbc/mysuperapp or an app key under /freebase/site - e.g. homepage')
   parser.add_option('-l', '--lib', dest='lib', default=None,
-                    help='the version of lib you want to tie this app branch to')
+                    help='the version of lib you want to tie this app branch to - use "latest" to tie to last branched version')
   parser.add_option('-f', '--failover', dest='failover', action='store_true',
                     default=False, help='will deploy acre to the failover version of appengine')
 
   (options, args) = parser.parse_args()
 
-  
+
+  context = Context(options)  
 
   #there was no action specified
   if not len(args) or args[0] not in [a[0] for a in valid_actions]:
     parser.error('You did not provide a valid action')
     exit(-1)
+  
+  if options.app and ((options.version and options.version == 'latest') or (options.lib and options.lib == 'latest')):
+    if options.lib:
+      app = AppFactory(context)('lib')
+    else:
+      app = AppFactory(context)(options.app)
+
+    last_version = app.last_svn_version()
+    if last_version:
+      if options.version:
+        options.version = last_version
+      else:
+        options.lib = last_version
+
+    context.set_app(AppFactory(context)(options.app, options.version))
 
 
-  context = Context(options)
   for action in args:
     for valid_action in valid_actions:
       if action == valid_action[0]:

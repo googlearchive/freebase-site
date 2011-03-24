@@ -35,6 +35,7 @@ var rules = {
     {prefix:"/appeditor",          app:"//appeditor" + codebase},
     {prefix:"/docs",               app:"//1b.devdocs" + tags_codebase},
     {prefix:"/inspect",            app:"//1c.triples" + tags_codebase},
+    {prefix:"/view",               app:"//1c.triples" + tags_codebase},
     {prefix:"/policies",           app:"//2j.policies" + tags_codebase},
     {prefix:"/queryeditor",        app:"//queryeditor" + codebase},
     {prefix:"/labs/cubed",         app:"//cubed"},

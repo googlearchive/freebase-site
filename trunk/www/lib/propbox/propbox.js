@@ -54,7 +54,7 @@
            propbox.kbs.set_next(current, $(this), true);
         })
         .live("edit", function() {
-          var menu_item = $(this).find(".submenu:first a").click();
+          var menu_item = $(this).find(".submenu:first li:first a").click();
         })
         .hover(propbox.row_menu_hoverover, propbox.row_menu_hoverout);
 
@@ -170,7 +170,7 @@
       return false;
     },
 
-    value_edit: function(context) {
+    value_edit: function(context) {console.log("value_edit");
       var prop_row = $(context).parents(".data-row:first");
       var prop_section = prop_row.parents(".property-section");
       if (prop_section.is(".editing")) {

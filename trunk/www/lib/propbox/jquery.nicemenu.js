@@ -32,7 +32,7 @@
   var nicemenu = $.factory("nicemenu", {
     init: function() {
       var height = this.element.height();
-      $(".headmenu .default-action", this.element).click(function(e) {console.log("default-action");
+      $(".headmenu .default-action", this.element).click(function(e) {
         e.stopPropagation();
         hide_menus();
         $(this).parents(".headmenu").next(".submenu").find("a:first").click();

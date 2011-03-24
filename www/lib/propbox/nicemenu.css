@@ -35,8 +35,11 @@
 **/
 
 .nicemenu {
-  height: 2em;
   display: inline;
+}
+
+.nicemenu li {
+  padding: 0;
 }
 
 .nicemenu-item {
@@ -51,11 +54,6 @@
 .submenu {
   position: absolute;
   display: none;
-  border-top:solid 1px #E5E5E5; 
-  border-left:solid 1px #E5E5E5;
-  border-right:solid 1px #999999; 
-  border-bottom:solid 1px #999999;
-  background:#FFFFFF;
   min-width: 10em;
   z-index: 9999;
 }

@@ -63,25 +63,83 @@ var SPEC = {
   },
 
   run: function(id, f) {console.log("filters", f);
-    var promises = [];
-    promises.push(object_query(id));
-    promises.push(filter_queries.prop_counts(id));
-
-    var result = {
+    return {
       id: id,
-      filters: f
+      filters: f,
+      object: object_query(id),
+      prop_counts: filter_queries.prop_counts(id),
+      topic: topic_api.topic(id, f.lang, f.limit, f.as_of_time)
+        .then(function(topic) {
+          if (f.domain) {
+            return filter_by_domain(topic, f.domain);
+          }
+          else if (f.type) {
+            return filter_by_type(topic, f.type);
+          }
+          else if (f.property) {
+            return filter_by_property(topic, f.property);
+          }
+          return topic;
+        })
     };
-
-    return deferred.all(promises)
-      .then(function([object, prop_counts]) {
-        result.object = object;
-        result.prop_counts = prop_counts;
-        return topic_api.topic(object.id, f.lang, f.limit, f.as_of_time)
-          .then(function(topic) {
-            result.topic = topic;
-            return result;
-          });
-      });
   }
+};
 
+function filter_by_domain(topic, domain_id) {
+  // just modify topic.structure.order to only include domain_id
+  if (topic && topic.structure) {
+    if (domain_id) {
+      topic.structure.order = [domain_id];
+    }
+    else {
+      topic.structure.order = [];
+    }
+  }
+  return topic;
+};
+
+function filter_by_type(topic, type_id) {
+  var domain_id;
+  if (type_id && topic && topic.structure && topic.structure.domains) {
+    for (var key in topic.structure.domains) {
+      var domain = topic.structure.domains[key];
+      if (domain && domain.types) {
+        for (var i=0,l=domain.types.length; i<l; i++) {
+          if (domain.types[i] === type_id) {
+            domain_id = key;
+            domain.types = [type_id];
+            break;
+          }
+        }
+        if (domain_id) {
+          break;
+        }
+      }
+    }
+  }
+  filter_by_domain(topic, domain_id);
+  return topic;
+};
+
+function filter_by_property(topic, prop_id) {
+  var type_id;
+  if (prop_id && topic && topic.structure && topic.structure.types) {
+    for (var key in topic.structure.types) {
+      var type = topic.structure.types[key];
+      if (type && type.properties) {
+        for (var i=0,l=type.properties.length; i<l; i++) {
+          if (type.properties[i] === prop_id) {
+            type_id = key;
+            type.properties = [prop_id];
+            break;
+          }
+        }
+        if (type_id) {
+          break;
+        }
+      }
+    }
+  }
+  filter_by_type(topic, type_id);
+  return topic;
 };

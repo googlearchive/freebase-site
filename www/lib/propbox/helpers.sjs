@@ -33,6 +33,14 @@ var h = acre.require("helper/helpers.sjs");
 var i18n = acre.require("i18n/i18n.sjs");
 var validators = acre.require("validator/validators.sjs");
 
+/*
+  Returns a query string for provided property
+*/
+function build_query_url(topic_id, prop_structure, lang) {
+  var q = mqlread_query(topic_id, prop_structure, null, lang);
+  return h.fb_url("/queryeditor", {autorun: true, q: JSON.stringify(q)});
+};
+
 /**
  * Assert truth otherwise throws validators.Invalid
  */
@@ -356,7 +364,7 @@ function literal_validator(type_id) {
 
 
 function mqlread_query(topic_id, prop_structure, prop_value, lang) {
-  if (prop_structure.expected_type.mediator) {
+  if (prop_structure.properties) {
     return mqlread_cvt(topic_id, prop_structure, prop_value, lang);
   }
   else {
@@ -369,13 +377,12 @@ function mqlread_cvt(topic_id, prop_structure, prop_value, lang) {
   var clause = {
     id: topic_id
   };
-  clause[prop_structure.id] = {
+  clause[prop_structure.id] = [{
     id: prop_value
-  };
+  }];
   prop_structure.properties.forEach(function(subprop_structure) {
     var subclause = mqlread_clause(subprop_structure, null, lang);
-    subclause.optional = true;
-     clause[prop_structure.id][subprop_structure.id] = [subclause];
+    clause[prop_structure.id][0][subprop_structure.id] = subclause;
   });
   return clause;
 };
@@ -392,7 +399,7 @@ function mqlread_object(topic_id, prop_structure, prop_value, lang) {
 function mqlread_clause(prop_structure, prop_value, lang) {
   var ect = prop_structure.expected_type;
   var is_literal = h.is_literal_type(ect.id);
-  var clause = {};
+  var clause = {optional:true};
   if (is_literal) {
     clause.value = literal_validator(ect.id)(prop_value, {if_empty:null});
     if (ect.id === "/type/text") {
@@ -403,5 +410,5 @@ function mqlread_clause(prop_structure, prop_value, lang) {
     clause.id = prop_value;
     clause.name = i18n.mql.text_clause(lang);
   }
-  return clause;
+  return [clause];
 };

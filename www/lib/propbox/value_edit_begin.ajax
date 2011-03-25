@@ -28,7 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+var h = acre.require("helper/helpers.sjs");
 var validators = acre.require("validator/validators.sjs");
 var propbox = acre.require("propbox/propbox.mjt");
 var queries = acre.require("propbox/queries.sjs");
@@ -60,8 +60,9 @@ var SPEC = {
         promises.push(queries.get_enumerated_types(prop_structure, lang));
         return deferred.all(promises)
           .then(function([prop_data, enum_types]) {
+            var data = h.first_element(prop_data[p]);
             return {
-              html: acre.markup.stringify(propbox.value_edit_form(s, prop_structure, prop_data[p], lang)),
+              html: acre.markup.stringify(propbox.value_edit_form(s, prop_structure, data, lang)),
               data: prop_data,
               structure: prop_structure
             };

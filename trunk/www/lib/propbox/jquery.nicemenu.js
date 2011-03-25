@@ -31,7 +31,6 @@
 ;(function($) {
   var nicemenu = $.factory("nicemenu", {
     init: function() {
-      var height = this.element.height();
       $(".headmenu .default-action", this.element).click(function(e) {
         e.stopPropagation();
         hide_menus();
@@ -40,7 +39,12 @@
       $(".headmenu", this.element).click(function(e) {
         e.stopPropagation();
         var headmenu = $(this);
-        var submenu = headmenu.next(".submenu").css("top", height);
+        var pos = headmenu.position();
+        var height = headmenu.height();
+        var submenu = headmenu.next(".submenu").css({
+          top: pos.top + height,
+          left: pos.left
+        });
         if (submenu.is(":visible")) {
           hide_menus(submenu);
         }

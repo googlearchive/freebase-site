@@ -38,7 +38,7 @@
   var ph = acre.require("propbox/helpers.sjs");
 </acre:script>
 
-<acre:block def="topicbox(topic)">
+<acre:block def="topicbox(topic, lang)">
   <acre:script>
     var topic_structure = topic.structure 
   </acre:script>
@@ -54,13 +54,13 @@
         <acre:script>
           domain_structure.id = domain_id;
         </acre:script>
-        ${domainbox(topic, domain_structure)}
+        ${domainbox(topic, domain_structure, lang)}
       </acre:block>
     </acre:block>  
   </acre:block>
 </acre:block>
 
-<acre:block def="domainbox(topic, domain_structure)">
+<acre:block def="domainbox(topic, domain_structure, lang)">
   <div class="section domain domain-section" data-id="${domain_structure.id}">
     <div class="header">
       <span class="status">${_('Freebase Commons')}</span>
@@ -78,13 +78,13 @@
         <acre:script>
           type_structure.id = type_id;
         </acre:script>
-        ${typebox(topic, type_structure)}
+        ${typebox(topic, type_structure, lang)}
       </acre:block>   
     </acre:block>
   </div>
 </acre:block>
 
-<acre:block def="typebox(topic, type_structure)">
+<acre:block def="typebox(topic, type_structure, lang)">
   <div class="type-section" data-id="${type_structure.id}">
     <div class="header">
       <h2 class="foobar kbs">
@@ -109,13 +109,13 @@
         <acre:script>
           prop_structure.id = prop_id;
         </acre:script>
-        ${propbox(topic, prop_structure, prop_structure.values)}
+        ${propbox(topic, prop_structure, prop_structure.values, lang)}
       </acre:block>
     </acre:block>
   </div>
 </acre:block>
 
-<acre:block def="propbox(topic, prop_structure, prop_values)">
+<acre:block def="propbox(topic, prop_structure, prop_values, lang)">
   <div class="property-section" data-id="${prop_structure.id}">
     <div class="sub-foobar kbs">
       <!--view all link is shown for any non-unique property-->
@@ -124,22 +124,22 @@
         ${prop_menu(topic, prop_structure)}
       </span>
     </div>  
-    ${databox(topic, prop_structure, prop_values)}
+    ${databox(topic, prop_structure, prop_values, lang)}
   </div>
 </acre:block>
 
-<acre:block def="databox(topic, prop_structure, prop_values)">
+<acre:block def="databox(topic, prop_structure, prop_values, lang)">
   <div class="data-section">
     <acre:block if="prop_structure.properties">      
-      ${datatable(topic, prop_structure, prop_values)}
+      ${datatable(topic, prop_structure, prop_values, lang)}
     </acre:block>
     <acre:block else="">
-      ${datalist(topic, prop_structure, prop_values)}
+      ${datalist(topic, prop_structure, prop_values, lang)}
     </acre:block>
   </div>
 </acre:block>
 
-<acre:block def="datatable(topic, prop_structure, prop_values)">
+<acre:block def="datatable(topic, prop_structure, prop_values, lang)">
   <acre:script>
     var empty = !prop_values || !prop_values.length;
   </acre:script>
@@ -157,14 +157,14 @@
       </acre:block>
       <acre:block else="">
         <acre:block for="prop_value in prop_values">
-          ${datatable_row(topic, prop_structure, prop_value)}
+          ${datatable_row(topic, prop_structure, prop_value, lang)}
         </acre:block>
       </acre:block>
     </tbody>
   </table>
 </acre:block>
 
-<acre:block def="datatable_row(topic, prop_structure, prop_value)">
+<acre:block def="datatable_row(topic, prop_structure, prop_value, lang)">
   <tr class="kbs data-row" 
       acre:attrs="itemprop(prop_structure.id, true)"
       data-id="${prop_value.id}">
@@ -176,16 +176,16 @@
         }
       </acre:script>
       <acre:block if="i === 0">
-        ${datatable_cell(topic, prop_structure, prop_value, subprop_structure, subprop_values, true)}
+        ${datatable_cell(topic, prop_structure, prop_value, subprop_structure, subprop_values, true, lang)}
       </acre:block>
       <acre:block else="">
-        ${datatable_cell(topic, prop_structure, prop_value, subprop_structure, subprop_values)}
+        ${datatable_cell(topic, prop_structure, prop_value, subprop_structure, subprop_values, false, lang)}
       </acre:block>
     </acre:block>
   </tr>
 </acre:block>
 
-<acre:block def="datatable_cell(topic, prop_structure, prop_value, subprop_structure, subprop_values, primary)">
+<acre:block def="datatable_cell(topic, prop_structure, prop_value, subprop_structure, subprop_values, primary, lang)">
   <acre:script>
     var empty = !subprop_values || !subprop_values.length;
   </acre:script>
@@ -198,7 +198,7 @@
         <acre:block for="i, subprop_value in subprop_values">
           <li>
             <span class="wrapper">
-              ${value(value.id, subprop_structure, subprop_value)}
+              ${value(value.id, subprop_structure, subprop_value, lang)}
               <acre:block if="i === 0 && primary">
                 ${value_menu()}
               </acre:block>
@@ -210,7 +210,7 @@
   </td>
 </acre:block>
 
-<acre:block def="datalist(topic, prop_structure, prop_values)">
+<acre:block def="datalist(topic, prop_structure, prop_values, lang)">
   <acre:script>
     var empty = !prop_values || !prop_values.length;
   </acre:script>
@@ -220,26 +220,32 @@
     </acre:block>
     <acre:block else="">
       <acre:block for="prop_value in prop_values">
-        ${datalist_row(topic, prop_structure, prop_value)}
+        ${datalist_row(topic, prop_structure, prop_value, lang)}
       </acre:block>
     </acre:block>
   </ul>
 </acre:block>
 
-<acre:block def="datalist_row(topic, prop_structure, prop_value)">
+<acre:block def="datalist_row(topic, prop_structure, prop_value, lang)">
   <li class="kbs data-row">
     <span class="wrapper">
-      ${value(topic.id, prop_structure, prop_value)}
+      ${value(topic.id, prop_structure, prop_value, lang)}
       ${value_menu()}
     </span>
   </li>  
 </acre:block>
 
-<acre:block def="value(id, prop_structure, prop_value)">
-  <acre:block if="prop_value.url && prop_value.id">
+<acre:block def="value(id, prop_structure, prop_value, lang)">
+  <acre:block if="prop_value.id">    
     <a title="${prop_value.id}" class="property-value"
        acre:attrs="itemprop(prop_structure.id)" href="${h.fb_url(true, prop_value.id)}"
-       data-id="${prop_value.id}">${prop_value.text}</a>
+       data-id="${prop_value.id}">${prop_value.text}</a> 
+    <acre:block if="lang && lang !== prop_value.lang">
+      <acre:script>
+        var locale = (prop_value.lang || "").split("/").pop();
+      </acre:script>
+      <span acre:if="locale" class="locale ${locale}">${locale}</span>
+    </acre:block>
   </acre:block>
   <acre:block elif="prop_structure.expected_type.id === '/type/datetime'">      
     <time class="property-value"
@@ -303,7 +309,7 @@
     <span class="wrapper">
       <span class="property-value empty-property">-</span>
       <acre:block if="menu">
-        ${value_menu2()}
+        ${value_menu()}
       </acre:block>
     </span>
   </li>

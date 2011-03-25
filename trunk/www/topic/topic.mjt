@@ -111,7 +111,7 @@
       </div>
     </div>
 
-    ${propbox.topicbox(c.topic)}
+    ${propbox.topicbox(c.topic, c.filters.lang)}
 
   </div>
 </acre:block>

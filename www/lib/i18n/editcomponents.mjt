@@ -110,7 +110,6 @@
 
 <acre:block def="lang_select()">
   <acre:script>
-    var mql_langs = h.map_array(i18n.mql.langs(), "id");
     var langs = [i18n.lang];
     if (langs[0] !== "/lang/en") {
       langs.push("/lang/en");
@@ -120,7 +119,7 @@
           onchange="return freebase.dispatch(event, freebase.lang_select, [this.value], this);"
           acre:attrs="langs.length === 1 && langs[0] === '/lang/en' ? {style:'display:none;'} : {}">
     <acre:block for="lang in langs">
-      <option value="${lang}">${mql_langs[lang].name}</option>
+      <option value="${lang}">${i18n.LANGS_BY_ID[lang].name}</option>
     </acre:block>
   </select>
 </acre:block>

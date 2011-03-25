@@ -289,7 +289,7 @@
     init: function(form) {
       if (form.mode === "add") {
         var ls = $(">.data-section", form.prop_section);
-        $(".data-table tr.empty-row, .data-list li.empty-row", ls).hide();
+        $("> .data-table > tbody > .empty-row, > .data-list > .empty-row", ls).hide();
         form.prop_section.append(form.form);
       }
       else if (form.mode === "edit") {
@@ -336,8 +336,8 @@
       form.form.hide().remove();
       form.prop_section.removeClass("editing");
       var ls = $(">.data-section", form.prop_section);
-      if (!$(".data-table tr, .data-list li", ls).filter(":not(.empty-row)").length) {
-        $(".data-table tr.empty-row, .data-list li.empty-row", ls).show();
+      if (!$("> .data-table > tbody > tr, > .data-list > li", ls).filter(":not(.empty-row)").length) {
+        $("> .data-table > tbody > .empty-row, > .data-list > .empty-row", ls).show();
       }
     },
 

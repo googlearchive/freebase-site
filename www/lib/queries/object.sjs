@@ -54,11 +54,14 @@ function object(id) {
       optional: true,
       limit: 1
     },
-    "/common/topic/image": {
+    "/common/topic/image": [{
       id: null,
       optional: true,
-      limit: 1
-    },
+      limit: 1,
+      index: null,
+      link: {timestamp: null},
+      sort: ["index", "link.timestamp"]
+    }],
     type: [{
       id: null,
       optional: true
@@ -70,6 +73,7 @@ function object(id) {
   })
   .then(function(topic) {
     topic.name = topic.name || topic.mid;
+    topic.image = topic["/common/topic/image"].length && topic["/common/topic/image"][0] || null;
     if (topic.creator) {
       topic.creator.name = topic.creator.name || topic.creator.id;
     }

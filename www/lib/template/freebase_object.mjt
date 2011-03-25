@@ -171,6 +171,16 @@
                  datetime="${c.object.timestamp}">${i18n.format_timestamp(c.object.timestamp)}</time>
           </span>
         </div>
+        <div id="image" acre:if="c.object.image">
+          <acre:script>
+            var image_options = {
+              mode: "fit",
+              maxwidth: 150,
+              maxheight: 200              
+            };
+          </acre:script>
+          ${image.image_thumb(c.object.image, null, image_options)}
+        </div>
         <acre:script>
           var blurb = c.object.blurb;
           var blob = c.object.blob;

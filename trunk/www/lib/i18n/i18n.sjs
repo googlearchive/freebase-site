@@ -503,7 +503,10 @@ var mql = {
   },
 
   text_clause: function(lang) {
-    var langs = [lang];
+    var langs = [];
+    if (lang) {
+      langs.push(lang);
+    }
     if (lang !== "/lang/en") {
       langs.push("/lang/en");
     }

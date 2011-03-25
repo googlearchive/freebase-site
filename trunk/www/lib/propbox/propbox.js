@@ -186,13 +186,13 @@
     },
 
     value_delete: function(context) {
-      var prop_value = $(context).parents(".combo-menu:first").prev(".property-value");
-      var row = prop_value.parents(".data-row:first");
+      var prop_row = $(context).parents(".data-row:first");
+      var prop_section = prop_row.parents(".property-section");
       if (row.is("tr")) {
-        console.log("value_edit CVT", row.attr("data-id"));
+        console.log("value_delete CVT", row.attr("data-id"));
       }
       else {
-        console.log("value_edit", prop_value.attr("data-id") || prop_value.attr("data-value"));
+        console.log("value_delete", prop_value.attr("data-id") || prop_value.attr("data-value"));
       }
       var prop_section = row.parents(".property-section");
       if (prop_section.is(".editing")) {

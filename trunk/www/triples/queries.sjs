@@ -135,7 +135,7 @@ function outgoing(id, filters) {
     type: "/type/link",
     master_property: null,
     "forbid:master_property": {
-      "id|=": ["/type/object/name", "/common/topic/alias", "/type/object/permission", "/type/namespace/keys"],
+      "id|=": ["/type/object/name", "/common/topic/alias", "/type/namespace/keys"],
       optional: "forbidden",
       limit: 0
     },

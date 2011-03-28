@@ -55,7 +55,8 @@ var SPEC = {
   run: function(id) {
     return {
       object: object_query(id),
-      owners: domain_owners(id)
+      owners: domain_owners(id),
+      watchers: domain_watchers(id)
     };
   }
 };
@@ -69,7 +70,17 @@ function domain_owners(id) {
       optional: true,
       member: [{
         id: null,
-        name: null
+        name: null,
+        timestamp: null,
+         "!/freebase/user_activity/user": {
+           "optional": true,
+           "/freebase/user_activity/primitives_live": null
+         },
+         "/freebase/user_profile/favorite_domains": [{
+           id: null,
+           name: null,
+           optional: true
+         }]
       }]
     }]
   })
@@ -79,5 +90,48 @@ function domain_owners(id) {
       return domain.owners;
     }
     return [];
+  });
+};
+
+function domain_watchers(id) {
+  return freebase.mqlread([{
+    id: null,
+    name: null,
+    "!/freebase/user_activity/user": {
+      "optional": true,
+      "/freebase/user_activity/primitives_live": null
+    },
+    timestamp: null,
+    "/freebase/user_profile/personal_quote": null,
+    "/freebase/user_profile/my_full_name": null,
+    "a:/freebase/user_profile/favorite_domains": [{
+      id: null,
+      name: null
+    }],
+    type: "/type/user",
+    "/freebase/user_profile/favorite_domains": {
+      id: id,
+    }
+  }]).
+  then(function(env){
+    var users = env.result;
+    var watchers = []
+    if(users) {
+      for(i in users) {
+        var watcher = {
+          id: users[i].id,
+          name: users[i].name,
+          full_name: users[i]["/freebase/user_profile/my_full_name"],
+          quote: users[i]["/freebase/user_profile/personal_quote"],
+          joined: users[i].timestamp,
+          watching: users[i]["a:/freebase/user_profile/favorite_domains"]
+        }
+        if(users[i]["!/freebase/user_activity/user"]) {
+          watcher.assertions = users[i]["!/freebase/user_activity/user"]["/freebase/user_activity/primitives_live"]
+        }
+        watchers.push(watcher);
+      }
+    }
+    return watchers; 
   });
 };

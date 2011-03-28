@@ -37,12 +37,77 @@
   var _ = i18n.gettext;
 </acre:script>
 
-
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="group.mf.css" />
+</acre:block>
 
 <acre:block def="page_content()">
-  <ul class="user-list clear" acre:for="group in c.owners">
-    <li acre:for="i,member in group.member" acre:for="i,member in group.member" class="vcard">
-      ${image.user_image_medium(member)}
-    </li>
-  </ul>
+  <h1 class="table-title">Admins</h1>
+  <table class="table user-table" acre:for="group in c.owners">
+    ${user_table_head()}
+    <tbody>
+      <tr acre:for="i,member in group.member" acre:for="i,member in group.member" class="vcard">
+        ${user_row_header(member)}
+        ${user_timestamp_row(member.timestamp)}
+        ${user_assertions_row(member["!/freebase/user_activity/user"]["/freebase/user_activity/primitives_live"])}
+        ${user_domains_row(member["/freebase/user_profile/favorite_domains"])}
+      </tr>
+    </tbody>
+  </table>
+
+  <acre:block if="c.watchers && c.watchers.length">
+  <h1 class="table-title">Watchers</h1>
+  <table cellspacing="0" class="table">
+    ${user_table_head()}
+    <tbody>
+      <tr acre:for="i,watcher in c.watchers" class="vcard">
+        ${user_row_header(watcher)}
+        ${user_timestamp_row(watcher.joined)}
+        ${user_assertions_row(watcher.assertions)}
+        ${user_domains_row(watcher.watching)}
+      </tr>
+    </tbody>
+  </table>
+  </acre:block>
+</acre:block>
+
+<acre:block def="user_timestamp_row(timestamp)">
+<td class="even">
+  <time class="published" 
+  datetime="${timestamp}">${i18n.format_timestamp(timestamp, 'MMMM dd, yyyy')}</time>
+
+</td>
+</acre:block>
+
+<acre:block def="user_domains_row(domains)">
+<td class="even">
+  <acre:block for="i, d in domains" if="i < 5" trim="">
+  <acre:block if="i > 0">,</acre:block>
+  <a  href="${h.fb_url('/view' + d.id)}" title=""Go to domain"">$d.name </a>
+  </acre:block>
+</td>
+</acre:block>
+
+
+<acre:block def="user_assertions_row(writes)">
+<td class="odd">${i18n.format_number(writes)}</td>
+</acre:block>
+
+
+<acre:block def="user_row_header(user)">
+<th scope="row" class="row-header odd">
+  ${image.user_image_small(user)}
+  <a href="${h.fb_url('/view' + user.id)}" title="View user profile">$user.name</a>
+</th>
+</acre:block>
+
+<acre:block def="user_table_head()">
+<thead>
+  <tr>
+    <th class="column-header first" scope="col">User</th>
+    <th class="column-header" scope="col">On Freebase since</th>
+    <th class="column-header" scope="col">Freebase assertions</th>
+    <th scope="col" class="column-header">Also watching</th>
+  </tr>
+</thead>
 </acre:block>

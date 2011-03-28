@@ -244,7 +244,7 @@
       <acre:script>
         var locale = (prop_value.lang || "").split("/").pop();
       </acre:script>
-      <span acre:if="locale" class="locale ${locale}">${locale}</span>
+      <sup acre:if="locale" class="locale ${locale}">${locale}</sup>
     </acre:block>
   </acre:block>
   <acre:block elif="prop_structure.expected_type.id === '/type/datetime'">      

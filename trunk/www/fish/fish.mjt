@@ -100,6 +100,7 @@
           ${ns.id}:
           <acre:block for="key in ns.keys">
             <a href="$key.url">$key.key</a>
+            ${query_link(key.key, ns.id)}
             <acre:block if="key !== ns.keys[ns.keys.length-1]">,</acre:block>
           </acre:block>
         </p>
@@ -116,4 +117,27 @@
     </ul>
   </acre:block>
 
+</acre:block>
+
+<acre:block def="query_link(key, ns)">
+  <acre:script>
+    var query;
+    if (ns === '/m') {
+      query = [{
+        id: null,
+        name: null,
+        mid: '/m/'+key
+      }];
+    } else {
+      query = [{
+        id: null,
+        name: null,
+        key: {
+          value: key,
+          namespace: ns
+        }
+      }];
+    }
+  </acre:script>
+  (<a href="/queryeditor?q=${JSON.stringify(query)}">Q</a>)
 </acre:block>

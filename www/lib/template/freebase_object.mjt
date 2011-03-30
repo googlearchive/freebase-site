@@ -171,21 +171,21 @@
                  datetime="${c.object.timestamp}">${i18n.format_timestamp(c.object.timestamp)}</time>
           </span>
         </div>
-        <div id="image" acre:if="c.object.image">
-          <acre:script>
-            var image_options = {
-              mode: "fit",
-              maxwidth: 150,
-              maxheight: 200              
-            };
-          </acre:script>
-          ${image.image_thumb(c.object.image, null, image_options)}
-        </div>
         <acre:script>
           var blurb = c.object.blurb;
           var blob = c.object.blob;
         </acre:script>
-        <div id="description" acre:if="blurb && blob"> 
+        <div id="description" class="clear" acre:if="blurb && blob"> 
+          <div id="image" acre:if="c.object.image">
+            <acre:script>
+            var image_options = {
+            mode: "fit",
+            maxwidth: 150,
+            maxheight: 200              
+            };
+            </acre:script>
+            ${image.image_thumb(c.object.image, null, image_options)}
+          </div>
           <!-- blurb should be sentence-level truncation at ~50 words -->
           <p class="blurb" itemprop="desc">${blurb}</p>
           <div class="blob" itemprop="desc">${blob}</div>

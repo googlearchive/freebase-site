@@ -33,13 +33,20 @@ var exports = {
   "is_schema_app": is_schema_app,
   "is_inspect_app": is_inspect_app,
   "is_topic_app": is_topic_app,
-  "is_group_app": is_group_app
+  "is_group_app": is_group_app,
+  "is_fish_app": is_fish_app
 };
+
+/*
+  Decide which tab to highlight for a give
+  mode inside an app
+*/
 
 var schema_app = /^\/\/(\w+\.)*schema\.www\./;
 var inspect_app = /^\/\/(\w+\.)*triples\.www\./;
 var topic_app = /^\/\/(\w+\.)*topic\.www\./;
 var group_app = /^\/\/(\w+\.)*group\.www\./;
+var fish_app = /^\/\/(\w+\.)*fish\.www\./;
 
 
 function is_schema_app(app_path) {
@@ -56,6 +63,10 @@ function is_topic_app(app_path) {
 
 function is_group_app(app_path) {
   return group_app.test(app_path);
+};
+
+function is_fish_app(app_path) {
+  return fish_app.test(app_path);
 };
 
 

@@ -74,23 +74,21 @@
     <div style="display:none">
       <span id="qe-options">
         <a id="qe-options-on" class="icon-link" href="javascript:void(0)">
-          <span class="edit-icon">${_("Hide Options")}</span>
+          <span class="remove-icon">${_("Query Options")}</span>
         </a>
         <a id="qe-options-off" class="icon-link" href="javascript:void(0)">
-          <span class="edit-icon">${_("Show Options")}</span>
+          <span class="add-icon">${_("Query Options")}</span>
         </a>
       </span>
-      <div id="links">
-        <a href="javascript:void(0)" onmouseover="computeMqlReadLink(this);" target="_blank">
-          ${_("mqlread link")}
+      <div id="links" class="links-nav">
+        <a href="javascript:void(0)" onmouseover="computeMqlReadLink(this);" target="_blank" class="icon-link">
+					<span class="link-icon">${_("mqlread link")}</span>
         </a>
-        &bull;
-        <a href="javascript:void(0)" onmouseover="computeCompactLink(this);" target="_blank">
-          ${_("permanent link")}
+        <a href="javascript:void(0)" onmouseover="computeCompactLink(this);" target="_blank" class="icon-link">
+          <span class="link-icon">${_("Permanent Link")}</span>
         </a>
-        &bull;
-        <a href="javascript:void(0)" onclick="computeTinyCompactLink();" title="${_('Click to get tiny URL')}">
-          ${_("tinyurl")}
+        <a href="javascript:void(0)" onclick="computeTinyCompactLink();" title="${_('Click to get tiny URL')}" class="icon-link">
+           <span class="link-icon">${_("Tinyurl")}</span>
         </a>
       </div>
       <link id="codemirror-js"  href="lib/codemirror/codemirror-frame.mf.js" />

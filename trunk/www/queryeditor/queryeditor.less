@@ -57,7 +57,9 @@ html, body {
 
 #qe-options {
   float: left;
-  margin: 7px;
+  padding: 7px;
+  .rounded_corners_top();
+  background: #f1f2f3;
 }
 
 #qe-options-on, #qe-options-off {
@@ -102,7 +104,7 @@ html, body {
   height: 30px;
   border-width: 5px;
   margin-bottom: 5px;
-  .rounded_corners();
+  .rounded_corners_top();
   .box_shadow(0,0,2px,#777);
 }
 
@@ -110,3 +112,50 @@ html, body {
   background-color: white;
 }
 
+/* secondary tabs */
+
+#qe-options {
+	.rounded_corners_top();
+	background: #f1f2f3;
+}
+ 
+ul.section-tabset {
+	padding-top: 5px;
+	background: #f1f2f3;
+	
+}
+
+.section-tab a {
+	color: #1170A3;
+}
+
+.section-tab a.current {
+	background: #fff;
+	color: #222;
+	.rounded_corners_top();
+}
+
+.tabbed-content {
+	margin: 1em;
+}
+
+.tabbed-content em {
+	font-weight: bold;
+}
+
+
+.links-nav a {
+	font-size: 1.2em;
+	line-height: 1;
+	padding: 6px 0 6px 0.5em;
+	}
+	
+#qe-options {
+	padding-bottom: 15px;
+}
+	
+#qe-options a {
+		font-size: 1.2em;
+		line-height: 1;
+		padding: 6px 5px;
+		}

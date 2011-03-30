@@ -88,7 +88,7 @@
     <ul>
       <li acre:for="authority in c.keys">
         <strong>
-          <a acre:if="authority.best_url" href="$authority.top_url">
+          <a acre:if="authority.best_url" href="$authority.best_url">
             $authority.name
           </a>
           <span acre:else="">

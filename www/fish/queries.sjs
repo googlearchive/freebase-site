@@ -170,9 +170,9 @@ var _get_authorityless_keys = function(keys, url_map) {
       });
     });
 
-    var authority_url = null;
+    var best_url = null;
     if (namespace_key_entries.length === 1) {
-      authority_url = namespace_key_entries[0].url;
+      best_url = namespace_key_entries[0].url;
     }
     
     fake_authorities.push({
@@ -183,7 +183,7 @@ var _get_authorityless_keys = function(keys, url_map) {
         keys: namespace_key_entries
       }],
       total_keys: namespace_keys.length,
-      authority_url: authority_url
+      best_url: best_url
     });
   }
   
@@ -286,13 +286,13 @@ var keys_by_authority = function(topic_id) {
         total_keys += keys.length;
       });
 
-      var authority_url;
+      var best_url;
       if (namespaces.length === 1) {
         if (namespaces[0].keys.length == 1) {
-          authority_url = namespaces[0].keys[0].url;
+          best_url = namespaces[0].keys[0].url;
         }
       } else if (authority.id === '/en/wikipedia') {
-        authority_url = namespaces[0].keys[0].url;
+        best_url = namespaces[0].keys[0].url;
       }
       
       var authority_entry = {
@@ -300,7 +300,7 @@ var keys_by_authority = function(topic_id) {
         name: authority.name,
         namespaces: namespaces,
         total_keys: total_keys,
-        authority_url: authority_url
+        best_url: best_url
       };
 
       if (authority_entry.id == '/en/metaweb') {

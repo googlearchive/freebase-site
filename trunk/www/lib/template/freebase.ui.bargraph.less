@@ -61,8 +61,7 @@ ul.bar-graph {
   text-align: right;
 }
 
-.bar-graph-values
-.index {
+.bar-graph-values .index {
   -webkit-animation-duration:0.5s;
   -webkit-animation-iteration-count:1;
   -webkit-animation-timing-function:ease-out;
@@ -135,7 +134,7 @@ table.bar-graph {
 }
 
 .bar-graph-label a {
-  .transition(all, 0.2s, linear);
+  .transition(all, 0.2s, linear, 0.4s);
   position: relative;
   z-index: 10;
   display: block;
@@ -162,6 +161,10 @@ table.bar-graph {
 
 .bar-graph-label:hover .index {
   background: #a9e9fb;
+}
+
+.bar-graph-label:hover {
+  cursor: pointer;
 }
 
 #content .bar-graph td.value {

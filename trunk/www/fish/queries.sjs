@@ -30,6 +30,7 @@
  */
 
 var freebase = acre.require("lib/promise/apis").freebase;
+var deferred = acre.require("lib/promise/apis").deferred;
 
 var images = function(id, limit) {
   limit = limit || 10;
@@ -139,4 +140,199 @@ var weblinks = function(id, namespace) {
      //links.sort(key=link_compare_key);
      return links;
    });
+};
+
+
+var _make_key = function(namespace, key) {
+  return namespace + ' ' + key;
+};
+
+var _get_authorityless_keys = function(keys, url_map) {
+  var namespaces = {};
+  keys.forEach(function(key) {
+    var namespace = key.namespace.id;
+    if (namespace.indexOf('/m') !== 0) {
+      if (!namespaces.namespace) {
+        namespaces.namespace = [];
+      }
+      namespaces.namespace.push(key.value);
+    }
+  });
+  
+  var fake_authorities = [];
+  for (var namespace_id in namespaces) {
+    var namespace_keys = namespaces[namespace_id];
+    var namespace_key_entries = [];
+    namespace_keys.forEach(function(key) {
+      namespace_key_entries.push({
+        key: key, 
+        url: url_map[_make_key(namespace_id, key)]
+      });
+    });
+
+    var authority_url = null;
+    if (namespace_key_entries.length === 1) {
+      authority_url = namespace_key_entries[0].url;
+    }
+    
+    fake_authorities.push({
+      id: namespace_id,
+      name: namespace_id,
+      namespaces: [{
+        id: namespace_id,
+        keys: namespace_key_entries
+      }],
+      total_keys: namespace_keys.length,
+      authority_url: authority_url
+    });
+  }
+  
+  return fake_authorities;
+};         
+
+var keys_by_authority = function(topic_id) {
+  // {
+  //   id: '/authority/twitter',
+  //   name: 'Twitter',
+  //   total_keys: 1,
+  //   namespaces: [{
+  //     id: '/authority/twitter/user',
+  //     keys: [{
+  //       key: 'ladygaga',
+  //       url: 'http://twitter.com/ladygaga'
+  //     }]
+  //   }]
+  // }
+
+  var key_query = [{
+    'id': null,
+    'name': null,
+    'type': '/base/sameas/api_provider',
+    '!/base/sameas/web_id/authority': [{
+      'id': null,
+      '/type/namespace/keys': [{
+        'value':null,
+        '/type/key/namespace': topic_id
+      }]
+    }]
+  }];
+
+  var weblink_query = {
+    'id': topic_id,
+    '/common/topic/weblink': [{
+      'key': null,
+      'url': null,
+      'template': {
+        'ns': null,
+        'a:ns': {
+          'id': '/uri',
+          'optional': 'forbidden'
+        }
+      }
+    }],
+    'key': [{
+      'namespace': {
+        'id': null,
+        'type': '/type/namespace',
+        '/base/sameas/web_id/authority': {
+          'id': null,
+          'optional': 'forbidden'
+        }
+      }, 
+      'value': null,
+      'optional': true
+    }]
+  };
+  
+  return deferred.all({
+    topic: freebase.mqlread({id: topic_id, mid: null}),
+    keys: freebase.mqlread(key_query), 
+    weblinks: freebase.mqlread(weblink_query, {extended: 1})})
+  .then(function(results) {
+    var topic = results.topic.result || {};
+    var keys = results.keys.result || {};
+    var weblinks = results.weblinks.result || {};
+    var url_map = {};
+    console.log(weblinks);
+    if (weblinks['/common/topic/weblink']) {
+      weblinks['/common/topic/weblink'].forEach(function(link) {
+        url_map[_make_key(link.template.ns, link.key)] = link.url;
+      });
+    }
+
+    // First result is a null to leave space for Metaweb
+    var result = [null];
+    keys.forEach(function(authority) {
+      var total_keys = 0;
+      var namespaces = [];
+      
+      authority['!/base/sameas/web_id/authority'].forEach(function(namespace) {
+        if (authority.id === '/en/metaweb') {
+          namespace['/type/namespace/keys'].forEach(function(key) {
+            url_map[_make_key(namespace.id, key.value)] = '/view' +
+              namespace['id'] + '/' + key.value;
+          });
+        }
+        
+        var keys = [];
+        namespace['/type/namespace/keys'].forEach(function(key) {
+          keys.push({
+            key: key.value,
+            url: url_map[_make_key(namespace.id, key.value)]
+          });
+        });
+
+        namespaces.push({id: namespace.id, keys: keys});
+        total_keys += keys.length;
+      });
+
+      var authority_url;
+      if (namespaces.length === 1) {
+        if (namespaces[0].keys.length == 1) {
+          authority_url = namespaces[0].keys[0].url;
+        }
+      } else if (authority.id === '/en/wikipedia') {
+        authority_url = namespaces[0].keys[0].url;
+      }
+      
+      var authority_entry = {
+        id: authority.id,
+        name: authority.name,
+        namespaces: namespaces,
+        total_keys: total_keys,
+        authority_url: authority_url
+      };
+
+      if (authority_entry.id == '/en/metaweb') {
+        // Fill in the metaweb result placeholder
+        result[0] = authority_entry;
+        authority_entry.name = 'Freebase';
+        if (topic) {
+          var mid = topic.mid;
+          if (!authority_entry.namespaces) {
+            authority_entry.namespaces = [];
+          }
+          authority_entry.namespaces.push({
+            'id': '/m',
+            'keys': [{
+              key: mid.split('/')[2],
+              url: '/view' + mid
+            }]
+          });
+          total_keys = total_keys + 1;
+          authority_entry.total_keys = total_keys;
+        }
+      } else {
+        result.push(authority_entry);
+      }
+    });
+    
+    result.concat(_get_authorityless_keys(weblinks.key, url_map));
+
+    // Get rid of the metaweb result placeholder
+    if (!result[0]) {
+      result = result.slice(1);
+    }
+    return result;
+  });
 };

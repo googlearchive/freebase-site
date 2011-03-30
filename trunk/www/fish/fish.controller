@@ -59,7 +59,8 @@ var SPEC = {
       object: object_query(id),
       topic: topic_api.topic(id),
       images: queries.images(id, 20),
-      weblinks: queries.weblinks(id)
+      weblinks: queries.weblinks(id, '/uri'),
+      keys: queries.keys_by_authority(id)
     };
   }
 };

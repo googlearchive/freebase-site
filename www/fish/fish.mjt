@@ -1,0 +1,80 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var image = acre.require("lib/template/imagecomponents");  
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var _ = i18n.gettext;
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="fish.mf.css" />
+</acre:block>
+
+<acre:block def="page_content()">
+  <acre:bock if="c.images && c.images.length">
+  <h1 class="table-title">Images</h1>
+  <table cellspacing="0" class="table">
+    <thead>
+      <th scope="col" class="column-header">Image</th>
+      <th scope="col" class="column-header">Name</th>
+      <th scope="col" class="column-header">Added by</th>
+      <th scope="col" class="column-header">Rights holder</th>
+      <th scope="col" class="column-header">License</th>
+    </thead>
+    <tbody>
+      <tr acre:for="img in c.images">
+        <th class="row-header image odd" scope="row">
+          ${image.image_thumb(img.id)}
+        </th>
+        <td class="even">
+          $img.name
+        </td>
+        <td class="odd">
+          <a href="${h.fb_url('/view' + img.creator.id)}" title="View user">
+            $img.creator.name
+          </a>
+        </td>
+        <td class="even">
+          <acre:block if="img.rights_holder">
+            ${JSON.stringify(img.rights_holder)}
+          </acre:block>
+        </td>
+        <td class="odd">
+          $img.license.name
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  </acre:block>
+</acre:block>

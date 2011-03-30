@@ -32,7 +32,7 @@
 <acre:script>
   var c = this.exports.c = {};
   var h = acre.require("lib/helper/helpers.sjs");
-  var image = acre.require("lib/template/imagecomponents");  
+  var image = acre.require("lib/template/imagecomponents");
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var _ = i18n.gettext;
 </acre:script>
@@ -42,7 +42,7 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <acre:bock if="c.images && c.images.length">
+  <acre:block if="c.images && c.images.length">
   <h1 class="table-title">Images</h1>
   <table cellspacing="0" class="table">
     <thead>
@@ -71,7 +71,9 @@
           </acre:block>
         </td>
         <td class="odd">
-          $img.license.name
+          <acre:block if="img.license">
+            $img.license.name
+          </acre:block>
         </td>
       </tr>
     </tbody>

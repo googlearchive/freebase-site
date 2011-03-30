@@ -44,6 +44,7 @@ var rules = {
     {prefix:"/sample",             app:"//sample" + codebase},
     {prefix:"/topic",              app:"//topic" + codebase},
     {prefix:"/group",              app:"//group" + codebase},
+    {prefix:"/fish",               app:"//fish" + codebase},
 //    {prefix:"/topic/view",         url:"/topic",   redirect: 301},
 //    {prefix:"/topic/inspect",      url:"/inspect", redirect: 301},
 

@@ -74,6 +74,9 @@
           <acre:block if="img.license">
             $img.license.name
           </acre:block>
+          <acre:block else="">
+            Public domain
+          </acre:block>
         </td>
       </tr>
     </tbody>

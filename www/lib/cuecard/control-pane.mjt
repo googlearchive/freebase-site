@@ -36,8 +36,7 @@
     var TABS = [
       { name: 'Tools', template: tools, key: "tools"},
       { name: 'Query Envelope', template: envelope, key: "envelope"}, 
-      { name: 'Variables', template: variables, key: "variables"},
-      { name: 'Settings', template: settings, key: "settings"}
+      { name: 'Variables', template: variables, key: "variables"}
     ];
   </acre:script>
 
@@ -87,7 +86,7 @@
         hint: 'Reformat query to a single line'
       },
       {
-        label: 'Generate Acre Template',
+        label: 'Create Template',
         command: '_generateCode',
         hint: 'Create an Acre template that displays the result of this query'
       },
@@ -101,14 +100,33 @@
   
 
   <div class="cuecard-controlPane-section">
-    <em>Transform query</em>, outputting to:
+    <p><em>Transform query</em>, outputting to:
       <input type="radio" name="tools-result" value="replace" checked="true">query pane
-      <input type="radio" name="tools-result" value="output">results pane<br/>
+      <input type="radio" name="tools-result" value="output">results pane</p>
     ${button(BUTTONS.slice(0,3))}
   </div>
-  
+ 	<div class="cuecard-controlPane-section">
+    <p><em>Editor Settings</em></p>
+		<div>
+      <input type="checkbox" acre:attrs="($.localstore('cc_cp_clean') == '1') ? {'checked' : ''} : {}">
+      Always tidy running query
+    </div>
+    <div>
+      <input type="checkbox" acre:attrs="($.localstore('cc_cp_align') == '1') ? {'checked' : ''} : {}">
+      Align JSON values with spaces
+    </div>
+    <div style="display: none;">
+      <input type="checkbox">
+      Try running query as you edit
+    </div>
+    <div>
+      <input type="checkbox" acre:attrs="($.localstore('cc_cp_multi') == '1') ? {'checked' : ''} : {}">
+      Show multi-line errors on multiple lines
+    </div>
+  </div>  
+
   <div class="cuecard-controlPane-section">
-    <em>Acre Templates</em><br/>
+    <p><em>Acre Templates</em></p>
     ${button(BUTTONS.slice(3))}
   </div>
   
@@ -119,13 +137,13 @@
 <acre:block def="variables(controlPane)">
   <table class="cuecard-controlPane-variables">
     <tr>
-      <th width="30%">name</th>
-      <th width="50%">value</th>
+      <th width="20%"><h3 class="module-section-title">Name</h3></th>
+      <th width="40%"><h3 class="module-section-title">Value</h3></th>
       <th></th>
     </tr>
     <tr class="cuecard-controlPane-variables-row" acre:def="add_row()">
-      <td><input /></td>
-      <td><input /></td>
+      <td><input class="text-input" /></td>
+      <td><input class="text-input" /></td>
       <td>
         <input type="submit" class="button" value="Remove" 
                acre:onclick="$(this).closest('.cuecard-controlPane-variables-row').remove()"/>
@@ -158,7 +176,7 @@
   </acre:script>
   
   <div class="cuecard-controlPane-explanation">
-    The query envelope contains directives to the query engine, specifying how to execute the query or how to return the results.
+    <p>The query envelope contains directives to the query engine, specifying how to execute the query or how to return the results.</p>
   </div>
   <table class="cuecard-controlPane-configurations">
     <tr acre:for="e in ENV">
@@ -259,23 +277,6 @@
 </acre:block>
 
 <acre:block def="settings(controlPane)">
-  <div class="cuecard-controlPane-section">
-    <div>
-      <input type="checkbox" acre:attrs="($.localstore('cc_cp_clean') == '1') ? {'checked' : ''} : {}">
-      Always tidy running query
-    </div>
-    <div>
-      <input type="checkbox" acre:attrs="($.localstore('cc_cp_align') == '1') ? {'checked' : ''} : {}">
-      Align JSON values with spaces
-    </div>
-    <div style="display: none;">
-      <input type="checkbox">
-      Try running query as you edit
-    </div>
-    <div>
-      <input type="checkbox" acre:attrs="($.localstore('cc_cp_multi') == '1') ? {'checked' : ''} : {}">
-      Show multi-line errors on multiple lines
-    </div>
-  </div>
+ 
 </acre:block>
 

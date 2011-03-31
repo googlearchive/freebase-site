@@ -125,19 +125,36 @@ ul.section-tabset {
 	
 }
 
-.section-tab a {
-	color: #1170A3;
+.section-tab {
+	margin: 0 0 -1px 0;
+	border-right: 0;
 }
 
-.section-tab a.current {
+.module-section ul .section-tab a {
+	color: #1170A3;
+	padding: 3px 10px;
+}
+
+.module-section ul .section-tab a.current {
 	background: #fff;
 	color: #222;
 	.rounded_corners_top();
 }
 
+.module-section ul .section-tab a:hover {
+	background: #ececec;
+	.rounded_corners_top();
+}
+
+.module-section ul .section-tab a.current:hover {
+	background: #fff;
+	color: #222;
+}
+
+ /* wont work cause of js 
 .tabbed-content {
 	margin: 1em;
-}
+} */
 
 .tabbed-content em {
 	font-weight: bold;
@@ -155,7 +172,43 @@ ul.section-tabset {
 }
 	
 #qe-options a {
-		font-size: 1.2em;
+		font-size: 1.3em;
 		line-height: 1;
 		padding: 6px 5px;
 		}
+		
+
+.cuecard-controlPane-tabBody {
+	clear: both;
+	margin: 12px 15px 0 15px;
+}
+
+.tabbed-content p {
+	font-size: 1.3em;
+	line-height: 1.4em;
+	margin-bottom: 5px;
+}
+.cuecard-controlPane-powerTool {
+	margin: 0 0 3px 20px;
+	clear: both;
+	overflow: auto;
+}
+
+.cuecard-controlPane-powerTool .button {
+	width: 130px;
+	float: left;
+}
+
+.cuecard-controlPane-powerTool-hint {
+	font-size: 1.1em;
+	line-height: 1.2em;
+	width: 210px;
+	float: left;
+	vertical-align: middle;
+	margin: 4px 0 0 13px;
+}
+
+.text-input {
+	font-size: 14px;
+	padding: 6px;
+}

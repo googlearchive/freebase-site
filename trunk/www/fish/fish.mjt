@@ -42,6 +42,62 @@
 </acre:block>
 
 <acre:block def="page_content()">
+
+  <acre:block if="c.keys && c.keys.length">
+    <h1 class="table-title">Web IDs</h1>
+    <table cellspacing="0" class="table">
+      <acre:block acre:for="authority in c.keys">
+        <acre:script>
+          var class_name;
+          var separator = "/";
+          class_name = "authority" + authority.id.replace("/", "-", "g");
+        </acre:script>
+        <thead class="">
+          <tr>
+            <th colspan="2" class="tbody-header expanded">
+              <span class="authority $class_name">
+                <a acre:if="authority.best_url" href="$authority.best_url">
+                  $authority.name
+                </a>
+                <span acre:else="">
+                  $authority.name
+                </span>
+                <span>(${authority.total_keys})</span>
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="col" class="column-header first" style="text-align:right">Namespace</th>
+            <th scope="col" class="column-header">Key</th>
+          </tr>
+          <tr acre:for="ns in authority.namespaces">
+            <th class="odd row-header" style="text-align:right">
+              ${ns.id}
+            </th>
+            <td class="even">
+              <acre:block for="key in ns.keys">
+              <a href="$key.url">$key.key</a>
+              <!--${query_link(key.key, ns.id)}-->
+              <acre:block if="key !== ns.keys[ns.keys.length-1]">,</acre:block>
+              </acre:block>
+            </td>
+          </tr>
+        </tbody>
+      </acre:block>
+    </table>
+  </acre:block>
+
+  <acre:block if="c.weblinks && c.weblinks.length">
+    <h1 class="table-title">Related Websites</h1>
+    <ul>
+      <li acre:for="weblink in c.weblinks">
+        <a href="$weblink.url">${weblink.description || weblink.url}</a>
+      </li>
+    </ul>
+  </acre:block>
+
   <acre:block if="c.images && c.images.length">
   <h1 class="table-title">Images</h1>
   <table cellspacing="0" class="table">
@@ -83,39 +139,6 @@
   </table>
   </acre:block>
 
-  <acre:block if="c.keys && c.keys.length">
-    <h1 class="table-title">Web IDs</h1>
-    <ul>
-      <li acre:for="authority in c.keys">
-        <strong>
-          <a acre:if="authority.best_url" href="$authority.best_url">
-            $authority.name
-          </a>
-          <span acre:else="">
-            $authority.name
-          </span>
-        </strong>
-        <span>(${authority.total_keys})</span>:
-        <p acre:for="ns in authority.namespaces">
-          ${ns.id}:
-          <acre:block for="key in ns.keys">
-            <a href="$key.url">$key.key</a>
-            ${query_link(key.key, ns.id)}
-            <acre:block if="key !== ns.keys[ns.keys.length-1]">,</acre:block>
-          </acre:block>
-        </p>
-      </li>
-    </ul>
-  </acre:block>
-
-  <acre:block if="c.weblinks && c.weblinks.length">
-    <h1 class="table-title">Related Websites</h1>
-    <ul>
-      <li acre:for="weblink in c.weblinks">
-        <a href="$weblink.url">${weblink.description || weblink.url}</a>
-      </li>
-    </ul>
-  </acre:block>
 
 </acre:block>
 

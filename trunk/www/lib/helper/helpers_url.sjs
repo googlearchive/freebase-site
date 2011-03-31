@@ -242,15 +242,11 @@ function resolve_reentrant_path(path) {
  */
 function legacy_fb_url() {
   var args = Array.prototype.slice.call(arguments);
-  return fb_url.apply(null, args);
-  // If it doesn't go to Acre then it breaks
-  /*
   var host = acre.freebase.site_host
     .replace('devel.', 'www.')
     .replace(':'+acre.request.server_port, '');
   args.unshift(host);
   return build_url.apply(null, args);
-  */
 }
 
 /**

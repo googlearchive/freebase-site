@@ -73,6 +73,25 @@ var rules = {
     {prefix:"/app/tmt",            app:"//tmt"},
 
     //
+    // Redirect away from client urls
+    //
+    {prefix:"/view",                url:"/inspect", redirect:301},
+    {prefix:"/edit/topic",          url:"/topic", redirect:301},
+    {prefix:"/site/feedback",       url:"http://bugs.freebase.com", redirect:301},
+    {prefix:"/user/settings",       url:"/", redirect:301},
+    {prefix:"/signin/recoverpassword", url:"/", redirect:301},
+    {prefix:"/signin/changepassword",  url:"/", redirect:301},
+    {prefix:"/signin/activate",        url:"/", redirect:301},
+    {prefix:"/signin/authorize_token", url:"/", redirect:301},
+    {prefix:"/discuss/threads",     url:"/inspect", redirect:301},
+    {prefix:"/user/replies",        url:"/inspect", redirect:301},
+    {prefix:"/history/view",        url:"/inspect", redirect:301},
+    {prefix:"/tools/flags/review",  url:"/inspect", redirect:301},
+    {prefix:"/importer/list",       url:"/inspect", redirect:301},
+    {prefix:"/domain/users",        url:"/schema", redirect:301},
+    {prefix:"/search",              url:"/", redirect:301},
+    
+    //
     // Redirects for legacy urls
     //
     // Signin

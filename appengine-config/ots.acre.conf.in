@@ -1,5 +1,19 @@
 [
   {
+   "host": null,
+   "rules": [
+     {
+       "from" : { 
+         "path":"/acre/keystore_console"
+       },
+       "to" : { 
+         "route_as":"script",
+         "location":"/default/keystore"
+       }
+     }
+   ]
+  },
+  {
     "host": [
       "@ACRE_HOST_BASE@",
       "www.@ACRE_HOST_BASE@"

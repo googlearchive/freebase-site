@@ -70,6 +70,16 @@
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
 
+ <!-- Secure access to the keystore UI - only available to AppEngine app admins -->
+ <security-constraint>
+   <web-resource-collection>
+     <url-pattern>/acre/keystore_console</url-pattern>
+   </web-resource-collection>
+   <auth-constraint>
+     <role-name>admin</role-name>
+   </auth-constraint>
+ </security-constraint>
+
   <!-- filter-mapping>
     <filter-name>GzipFilter</filter-name>
     <url-pattern>*</url-pattern>

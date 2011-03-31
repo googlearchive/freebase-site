@@ -91,11 +91,15 @@
 
   <acre:block if="c.weblinks && c.weblinks.length">
     <h1 class="table-title">Related Websites</h1>
-    <ul>
-      <li acre:for="weblink in c.weblinks">
-        <a href="$weblink.url">${weblink.description || weblink.url}</a>
-      </li>
-    </ul>
+    <table cellspacing="0" class="table">
+      <tbody>
+        <tr acre:for="weblink in c.weblinks">
+          <th class="row-header">
+            <a href="$weblink.url">${weblink.description || weblink.url}</a>
+          </th>
+        </tr>
+      </tbody>
+    </table>
   </acre:block>
 
   <acre:block if="c.images && c.images.length">

@@ -244,7 +244,7 @@ CueCard.ControlPane.prototype.getCustomEnvelope = function(env) {
 };
 
 CueCard.ControlPane.prototype.getSetting = function(name) {
-    var checkboxes = this._getTab("settings").find("input");
+    var checkboxes = this._getTab("tools").find("input");
     switch (name) {
         case "cleanup" :
             var r = checkboxes[0].checked;

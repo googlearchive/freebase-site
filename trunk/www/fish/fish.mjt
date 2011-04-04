@@ -77,10 +77,9 @@
               ${ns.id}
             </th>
             <td class="even">
-              <acre:block for="key in ns.keys">
-              <a href="$key.url">$key.key</a>
-              <!--${query_link(key.key, ns.id)}-->
-              <acre:block if="key !== ns.keys[ns.keys.length-1]">,</acre:block>
+              <acre:block for="i, key in ns.keys" trim="1">
+                <acre:block if="i !== 0">, </acre:block>
+                <a href="$key.url">$key.key</a>
               </acre:block>
             </td>
           </tr>

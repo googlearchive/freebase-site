@@ -44,7 +44,7 @@
 <acre:block def="page_content()">
 
   <acre:block if="c.keys && c.keys.length">
-    <h1 class="table-title">Web IDs</h1>
+    <h1 class="table-title">${_("Web IDs")}</h1>
     <table cellspacing="0" class="table">
       <acre:block acre:for="authority in c.keys">
         <acre:script>
@@ -69,8 +69,8 @@
         </thead>
         <tbody>
           <tr>
-            <th scope="col" class="column-header first" style="text-align:right">Namespace</th>
-            <th scope="col" class="column-header">Key</th>
+            <th scope="col" class="column-header first" style="text-align:right">${_("Namespace")}</th>
+            <th scope="col" class="column-header">${_("Key")}</th>
           </tr>
           <tr acre:for="ns in authority.namespaces">
             <th class="odd row-header" style="text-align:right">
@@ -89,7 +89,7 @@
   </acre:block>
 
   <acre:block if="c.weblinks && c.weblinks.length">
-    <h1 class="table-title">Related Websites</h1>
+    <h1 class="table-title">${_("Related Websites")}</h1>
     <table cellspacing="0" class="table">
       <tbody>
         <tr acre:for="weblink in c.weblinks">
@@ -102,14 +102,14 @@
   </acre:block>
 
   <acre:block if="c.images && c.images.length">
-  <h1 class="table-title">Images</h1>
+  <h1 class="table-title">${_("Images")}</h1>
   <table cellspacing="0" class="table">
     <thead>
-      <th scope="col" class="column-header">Image</th>
-      <th scope="col" class="column-header">Name</th>
-      <th scope="col" class="column-header">Added by</th>
-      <th scope="col" class="column-header">Rights holder</th>
-      <th scope="col" class="column-header">License</th>
+      <th scope="col" class="column-header">${_("Image")}</th>
+      <th scope="col" class="column-header">${_("Name")}</th>
+      <th scope="col" class="column-header">${_("Added by")}</th>
+      <th scope="col" class="column-header">${_("Rights holder")}</th>
+      <th scope="col" class="column-header">${_("License")}</th>
     </thead>
     <tbody>
       <tr acre:for="img in c.images">
@@ -130,10 +130,11 @@
           </acre:block>
         </td>
         <td class="odd">
-          <acre:block if="img.license">
-            $img.license.name
+          <acre:block for="i, license in img.license" trim="1">
+            <acre:block if="i !== 0">, </acre:block>
+            ${license.name}
           </acre:block>
-          <acre:block else="">
+          <acre:block if="!img.license.length">
             Public domain
           </acre:block>
         </td>

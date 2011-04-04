@@ -35,35 +35,39 @@ var deferred = acre.require("lib/promise/apis").deferred;
 var images = function(id, limit) {
   limit = limit || 10;
 
-  var q = [{
-    mid: null,
-    name: null,
-    "/common/image/rights_holder_text_attribution": null,
-    "/type/content/uploaded_by": {
-      id: null,
+  var q = {
+    id: id,
+    "/common/topic/image": [{
+      mid: null,
       name: null,
+      "/common/image/rights_holder_text_attribution": null,
+      "/type/content/uploaded_by": {
+        id: null,
+        name: null,
+        optional: true
+      },
+      "/common/licensed_object/license": [{
+        id: null,
+        name: null,
+        optional: true
+      }],
+      "creator": {
+        id: null,
+        name: null
+      },
+      link: {timestamp:null},
+      index: null,
+      sort: ["index", "link.timestamp"],
+      limit: limit,
       optional: true
-    },
-    "/common/licensed_object/license": {
-      id: null,
-      name: null,
-      optional: true
-    },
-    "creator": {
-      id: null,
-      name: null
-    },
-    "/common/image/appears_in_topic_gallery": {
-      id: id
-    },
-    limit: limit
-  }];
+    }]
+  };
 
   return freebase.mqlread(q)
     .then(function(envelope){
       var images = [];
-
-      envelope.result.forEach(function(img){
+      var result = envelope.result["/common/topic/image"] || [];
+      result.forEach(function(img){
         var image = {
           id: img.mid,
           name: img.name,
@@ -158,14 +162,14 @@ var _get_authorityless_keys = function(keys, url_map) {
       namespaces.namespace.push(key.value);
     }
   });
-  
+
   var fake_authorities = [];
   for (var namespace_id in namespaces) {
     var namespace_keys = namespaces[namespace_id];
     var namespace_key_entries = [];
     namespace_keys.forEach(function(key) {
       namespace_key_entries.push({
-        key: key, 
+        key: key,
         url: url_map[_make_key(namespace_id, key)]
       });
     });
@@ -174,7 +178,7 @@ var _get_authorityless_keys = function(keys, url_map) {
     if (namespace_key_entries.length === 1) {
       best_url = namespace_key_entries[0].url;
     }
-    
+
     fake_authorities.push({
       id: namespace_id,
       name: namespace_id,
@@ -186,9 +190,9 @@ var _get_authorityless_keys = function(keys, url_map) {
       best_url: best_url
     });
   }
-  
+
   return fake_authorities;
-};         
+};
 
 var keys_by_authority = function(topic_id) {
   // {
@@ -238,15 +242,15 @@ var keys_by_authority = function(topic_id) {
           'id': null,
           'optional': 'forbidden'
         }
-      }, 
+      },
       'value': null,
       'optional': true
     }]
   };
-  
+
   return deferred.all({
     topic: freebase.mqlread({id: topic_id, mid: null}),
-    keys: freebase.mqlread(key_query), 
+    keys: freebase.mqlread(key_query),
     weblinks: freebase.mqlread(weblink_query, {extended: 1})})
   .then(function(results) {
     var topic = results.topic.result || {};
@@ -265,7 +269,7 @@ var keys_by_authority = function(topic_id) {
     keys.forEach(function(authority) {
       var total_keys = 0;
       var namespaces = [];
-      
+
       authority['!/base/sameas/web_id/authority'].forEach(function(namespace) {
         if (authority.id === '/en/metaweb') {
           namespace['/type/namespace/keys'].forEach(function(key) {
@@ -273,7 +277,7 @@ var keys_by_authority = function(topic_id) {
               namespace['id'] + '/' + key.value;
           });
         }
-        
+
         var keys = [];
         namespace['/type/namespace/keys'].forEach(function(key) {
           keys.push({
@@ -294,7 +298,7 @@ var keys_by_authority = function(topic_id) {
       } else if (authority.id === '/en/wikipedia') {
         best_url = namespaces[0].keys[0].url;
       }
-      
+
       var authority_entry = {
         id: authority.id,
         name: authority.name,
@@ -326,7 +330,7 @@ var keys_by_authority = function(topic_id) {
         result.push(authority_entry);
       }
     });
-    
+
     result.concat(_get_authorityless_keys(weblinks.key, url_map));
 
     // Get rid of the metaweb result placeholder

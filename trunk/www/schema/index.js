@@ -74,7 +74,7 @@
 
     $domain_input.suggest(domain_suggest_options)
       .bind("fb-select", function(e, data){
-        window.location.href = fb.acre.request.app_url + "/schema" + data.id;
+        window.location.href = fb.h.fb_url("/schema", data.id);
       })
       .focus(function() {
         this.select();
@@ -98,7 +98,7 @@
 
     $type_input.suggest(type_suggest_options)
       .bind("fb-select", function(e, data){
-        window.location.href = fb.acre.request.app_url + "/schema" + data.id;
+        window.location.href = fb.h.fb_url("/schema", data.id);
       })
       .focus(function() {
         this.select();
@@ -122,7 +122,7 @@
 
     $property_input.suggest(property_suggest_options)
       .bind("fb-select", function(e, data){
-        window.location.href = fb.acre.request.app_url + "/schema" + data.id;
+        window.location.href = fb.h.fb_url("/schema", data.id);
       })
       .focus(function() {
         this.select();
@@ -210,7 +210,7 @@
   fb.schema.index = {
     add_domain: function(e) {
       var trigger = $(this);
-      fb.get_script(fb.acre.request.app_url + "/schema/index-edit.mf.js", function() {
+      fb.get_script(fb.h.fb_url("/schema/index-edit.mf.js"), function() {
         fb.schema.index.edit.add_domain_begin(trigger);
       });
       return false;

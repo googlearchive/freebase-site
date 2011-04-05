@@ -93,7 +93,7 @@ else {
 
 function route(script, path) {
   if (script === "/") {
-    script = "/index";
+    script = "/index.controller";
   }
   script = script.substring(1);
   script = acre.resolve(script);

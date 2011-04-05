@@ -65,7 +65,8 @@
         var z_index = image_count - index;
 
         // rotation value to be applied to image
-        var rotate_amount = Math.floor(Math.random() * 1000) % 10;
+        //var rotate_amount = Math.floor(Math.random() * 1000) % 10;
+        var rotate_amount = random_value(2, 10);
 
         // If we're on the first (top) image, set rotation to 0
         var rotation = '-' + rotate_amount + 'deg';
@@ -76,12 +77,19 @@
         $img.css({
           "z-index": z_index, 
           "-webkit-transform": "rotate(" + rotation + ")",
-          "-moz-transform": "rotate(" + rotation + ")"
+          "-moz-transform": "rotate(" + rotation + ")",
+          "transform": "rotate(" + rotation + ")"
         })
 
       }); 
 
     });
+
+    function random_value(minVal,maxVal,floatVal) {
+      var randVal = minVal+(Math.random()*(maxVal-minVal));
+      return typeof floatVal== 0 ? Math.round(randVal):randVal.toFixed(floatVal);
+    }
+    
   }
    
 }) (jQuery);

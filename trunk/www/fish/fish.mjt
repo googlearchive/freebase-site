@@ -110,7 +110,7 @@
     </acre:script>
     <acre:block for="i, img in c.images" if="i < 50">
       <a href="javascript:void(0)" class="img-stack-item">
-        ${image.image_thumb(img.id, 'medium')}
+        ${image.image_thumb(img.id, 110)}
       </a>
     </acre:block>
   </div>

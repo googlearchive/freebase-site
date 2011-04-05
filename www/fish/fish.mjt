@@ -110,7 +110,7 @@
     </acre:script>
     <acre:block for="i, img in c.images" if="i < 50">
       <a href="javascript:void(0)" class="img-stack-item">
-        ${image.image_thumb(img.id, 110)}
+        ${image.image_thumb(img.id, 0)}
       </a>
     </acre:block>
   </div>
@@ -131,9 +131,10 @@
           $img.name
         </td>
         <td class="odd">
-          <a href="${h.fb_url('/view' + img.creator.id)}" title="View user">
-            $img.creator.name
-          </a>
+          <acre:block for="i, creator in img.creator" trim="1">
+            <acre:block if="i !== 0">, </acre:block>
+            <a href="${h.fb_url('/view' + creator.id)}"title="View user"> $creator.name</a>
+          </acre:block>
         </td>
         <td class="even">
           <acre:block if="img.rights_holder">

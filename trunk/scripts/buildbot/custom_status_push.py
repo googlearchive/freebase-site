@@ -140,6 +140,7 @@ class CustomStatusPush(StatusPush):
                 return (False, items)
             
             stuff = json.dumps(payload, separators=(',',':'))
+            log.msg('upload test results: %s' % stuff)
             data = urllib.urlencode({'authkey':self.authkey, 'state':state, 'payload': stuff})
 
             if (not self.maxHttpRequestSize or

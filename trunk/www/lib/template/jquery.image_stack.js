@@ -49,6 +49,7 @@
    * 3. Apply appropriate z-index value for each image
    * 4. Apply random css3 rotation value
    */
+
   $.fn.stack_images = function(options) {
     
     options = $.extend({
@@ -88,9 +89,38 @@
           "-webkit-transform": "rotate(" + rotation + ")",
           "-moz-transform": "rotate(" + rotation + ")",
           "transform": "rotate(" + rotation + ")"
-        })
+        });
+
 
       }); 
+
+      $(this).hover(
+
+        // Animate images out when user hovers
+        function() {
+          var $images = $(this).children(".img-stack-item");
+          var offset = 0;
+          var margin = 10;
+
+          $images.each(function(index){
+            var $container = $(this);
+            var $img = $container.children("img:first");
+            
+            $container.css('left', offset)
+
+            offset = offset + $img.width() + margin;
+          });
+          return false;
+        },
+        
+        // Reset image position on mouseout
+        function() {
+          var $images = $(this).children(".img-stack-item");
+          $images.css('left', '0');
+          offset = 0;
+        }
+      );
+
 
     });
 

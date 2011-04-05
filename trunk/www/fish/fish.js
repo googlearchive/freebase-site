@@ -33,6 +33,7 @@
 
   var topic = fb.topic = {
 
+
     init: function(){
       $(".image-stack").stack_images(2, 20);      
     }

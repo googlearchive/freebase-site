@@ -33,6 +33,7 @@
   var c = this.exports.c = {};
   var h = acre.require("lib/helper/helpers.sjs");
   var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
   var queries = acre.require("queries");
 
@@ -132,7 +133,7 @@
               </th>
               <td class="even">$d.id</td>
               <td class="odd numeric">$d.types</td>
-              <td class="even numeric">${i18n.format_number(d.instance_count)}</td>
+              <td class="even numeric">${i18n_c.number(d.instance_count)}</td>
             </tr>
           </tbody>
         </table>

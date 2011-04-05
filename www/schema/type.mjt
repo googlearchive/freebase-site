@@ -35,6 +35,7 @@
   var tc = acre.require("type_components");
   var sh = acre.require("helpers.sjs");
   var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
 </acre:script>
 
@@ -87,7 +88,7 @@
   </li>
   <li>
     <a href="${h.legacy_fb_url('/view'+c.type.id)}" class="icon-link">
-      <span acre:if="c.type.instance_count" class="browse-icon">${h.bless_sprintf(_("Browse %s Topics"), h.tag("strong", i18n.format_number(c.type.instance_count)))}</span>
+      <span acre:if="c.type.instance_count" class="browse-icon">${h.bless_sprintf(_("Browse %s Topics"), acre.markup.stringify(i18n_c.number(c.type.instance_count)))}</span>
       <span acre:else="" class="add-icon">Add Topics</span>
     </a>
   </li>

@@ -275,28 +275,6 @@ var bundle;
 var bundle_path;
 var undefined;
 
-/**
- * Lang specific datejs and format patterns.
- * This will be intialized when lang is determined.
- */
-var datejs;
-var format = {
-  date: {
-/**
-    shortDate: null,                 // M/d/yyyy
-    longDate: null,                  // dddd, MMMM dd, yyyy
-    shortTime: null,                 // h:mm tt
-    longTime: null,                  // h:mm:ss tt
-    fullDateTime: null,              // dddd, MMMM dd, yyyy h:mm:ss tt
-    sortableDateTime: null,          // yyyy-MM-ddTHH:mm:ss
-    universalSortableDateTime: null, // yyyy-MM-dd HH:mm:ssZ
-    rfc1123: null,                   // ddd, dd MMM yyyy HH:mm:ss GMT
-    monthDay: null,                  // MMMM dd
-    yearMonth: null                  // MMMM, yyyy
-**/
-  }
-};
-
 
 ///////////
 // gettext
@@ -380,56 +358,6 @@ function display_article(obj, keys, article_key) {
     return result[0];
   }
   return result;
-};
-
-
-/**
- * TODO: convert number format to use locale specific formats
- */
-function format_number(val) {
-  return h.commafy(val);
-};
-
-/**
- * @param timestamp:String ISO8601
- * @param pattern:String
- * @see datejs.Date.CultureInfo.formatPatterns
- */
-function format_timestamp(timestamp, pattern) {
-  return format_date(acre.freebase.date_from_iso(timestamp), pattern);
-};
-
-/**
- * @param date:Date
- * @param pattern:String
- * @see datejs.Date.CultureInfo.formatPatterns
- */
-function format_date(date, pattern) {
-  if (!pattern) {
-    pattern = format.date.shortDate;
-  }
-  return date.toString(pattern);
-};
-
-/**
- * Parse a date string into a Date object using current lang specific datejs.
- * If a pattern or an Array of patterns is specified, then uses datejs.Date.parseExact,
- * otherwise, use datejs.Date.parse.
- *
- * @param date_str:String date string
- * @param pattern:String|Array
- * @see datejs.Date.CultureInfo.formatPatterns
- * @see http://code.google.com/p/datejs/wiki/FormatSpecifiers
- */
-function parse_date(date_str, pattern) {
-  var d;
-  if (pattern) {
-    d = datejs.Date.parseExact(date_str, pattern);
-  }
-  else {
-    d = datejs.Date.parse(date_str);
-  }
-  return d;
 };
 
 
@@ -833,7 +761,7 @@ _get_blob.closure = function(article, mode, options, label) {
  */
 var accept_langs = get_accept_langs();
 set_bundle(accept_langs);
-set_lang(acre.request.params.lang || "/lang/en");
+set_lang(acre.request.params.lang || acre.request.body_params.lang || "/lang/en");
 
 function set_lang(lang_id) {
   var l = LANGS_BY_ID[lang_id];
@@ -842,36 +770,6 @@ function set_lang(lang_id) {
   }
   // mql lang id
   lang = l.id;
-
-  // determin lang specific datejs
-  var lib_files = acre.get_metadata().files;
-  var lang_codes = l.code;
-  if (!h.isArray(lang_codes)) {
-    lang_codes = [lang_codes];
-  }
-  var lib_path = acre.get_metadata().path;
-  var js_to_sjs_metadata = {
-    extensions: {
-      js: {
-        handler: "js"
-      }
-    },
-    handlers: {
-      js: lib_path + "/handlers/js_to_sjs_handler.sjs"
-    }
-  };
-  lang_codes.every(function(lang_code) {//console.log("set_lang code", lang_code);
-    var filename = h.sprintf("datejs/date-%s.js", lang_code);
-    if (lib_files[filename]) {
-      datejs = acre.require(filename, js_to_sjs_metadata); // lang specific datejs
-      return false;
-    }
-    return true;
-  });
-  if (!datejs) {
-    datejs = acre.require("datejs/date-en-US.js", js_to_sjs_metadata);
-  }
-  h.extend(format.date, datejs.Date.CultureInfo.formatPatterns);
 };
 
 function set_bundle(lang_codes) {

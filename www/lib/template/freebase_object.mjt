@@ -37,6 +37,7 @@
   var c = this.exports.c = {};
   var h = acre.require("helper/helpers.sjs");
   var i18n = acre.require("i18n/i18n.sjs");
+  var i18n_c = acre.require("i18n/components.mjt");
   var _ = i18n.gettext;
   var image = acre.require("template/imagecomponents.mjt");  
   var components = acre.require("template/components.mjt");
@@ -163,12 +164,15 @@
                  title="${_('View user profile')}">${c.object.creator.name}</a> 
               ${_("on")}
             </span>
-           <span acre:else="">
+            <span acre:else="">
               ${_("Created on")}
-           </span>
-           <time class="published" 
-                 acre:attrs="itemprop('/type/object/timestamp')"
-                 datetime="${c.object.timestamp}">${i18n.format_timestamp(c.object.timestamp)}</time>
+            </span>
+            <acre:script>
+              var attrs = itemprop('/type/object/timestamp');
+              attrs["class"] = "published";
+              attrs["data-format"] = "long";
+            </acre:script>
+            ${i18n_c.datetime(c.object.timestamp, attrs)}
           </span>
         </div>
         <acre:script>

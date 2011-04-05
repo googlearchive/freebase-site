@@ -117,7 +117,6 @@
                     <span style="width:${total}%" class="index"></span>
                   </span>
                 </th>
-                <td class="value">${fh.format_number(data.t)}</td>
               </tr>
             </acre:block>
           </tbody>

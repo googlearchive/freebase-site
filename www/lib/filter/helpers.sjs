@@ -99,27 +99,6 @@ function add_filter(filters, name, value) {
   return f;
 };
 
-function format_number(n) {
-  if (n < 10) {
-    return "<10";
-  }
-  var i;
-  for (i=20; i<100; i+=10) {
-    if (n < i) {
-      return h.sprintf("%s+", (i-10));
-    }
-  }
-  for (i=200; i<1000; i+=100) {
-    if (n < i) {
-      return h.sprintf("%s+", (i-100));
-    }
-  }
-  if (n < 10000) {
-    return h.sprintf("%sk", Math.round(n/100)/10);
-  }
-  return h.sprintf("%sk", i18n.format_number(Math.round(n/1000)));
-};
-
 /**
  * Given the domain|type|property filter option, lookup the count data in prop_counts (bdb json format) and return
  * the data suitable for a chart graph.

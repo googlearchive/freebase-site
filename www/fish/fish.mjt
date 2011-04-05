@@ -78,7 +78,7 @@
             </th>
             <td class="even">
               <acre:block for="i, key in ns.keys" trim="1">
-                <acre:block if="i !== 0">, </acre:block>
+                <acre:block if="i > 0">, </acre:block>
                 <a href="$key.url">$key.key</a>
               </acre:block>
             </td>
@@ -142,7 +142,7 @@
         </td>
         <td class="odd">
           <acre:block for="i, license in img.license" trim="1">
-            <acre:block if="i !== 0">, </acre:block>
+            <acre:block if="i > 0">, </acre:block>
             ${license.name}
           </acre:block>
           <acre:block if="!img.license.length">

@@ -30,7 +30,7 @@
  */
 
 var h = acre.require("helper/helpers.sjs");
-var i18n = acre.require("i18n/i18n.sjs");
+var datejs = acre.require("datejs/date.sjs");
 
 var Class = {
   factory: function(clazz, clazz_args) {
@@ -468,7 +468,7 @@ Validator.factory(scope, "Datejs", {
   "string": function(val, options) {
     var date;
     try {
-      date = i18n.parse_date(val);
+      date = datejs.Date.parse(val);
       if (!date) {
         throw(date);
       }

@@ -49,9 +49,13 @@
    * 3. Apply appropriate z-index value for each image
    * 4. Apply random css3 rotation value
    */
-  $.fn.stack_images = function() {
+  $.fn.stack_images = function(options) {
     
-    console.log(this);
+    options = $.extend({
+      min: 0,
+      max: 10
+    }, options);
+
     return this.each(function(){
 
       // Get the images and total count
@@ -65,8 +69,7 @@
         var z_index = image_count - index;
 
         // rotation value to be applied to image
-        //var rotate_amount = Math.floor(Math.random() * 1000) % 10;
-        var rotate_amount = random_value(2, 10);
+        var rotate_amount = random_value(options.min, options.max);
 
         // If we're on the first (top) image, set rotation to 0
         var rotation = '-' + rotate_amount + 'deg';
@@ -85,9 +88,9 @@
 
     });
 
-    function random_value(minVal,maxVal,floatVal) {
+    function random_value(minVal,maxVal) {
       var randVal = minVal+(Math.random()*(maxVal-minVal));
-      return typeof floatVal== 0 ? Math.round(randVal):randVal.toFixed(floatVal);
+      return typeof floatVal== 0 ? Math.round():randVal.toFixed();
     }
     
   }

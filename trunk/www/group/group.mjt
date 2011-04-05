@@ -80,7 +80,7 @@
 
 <acre:block def="user_domains_row(domains)">
 <td class="even">
-  <acre:block for="i, d in domains" if="i < 6 && d.id !== c.object.id" trim="1">
+  <acre:block for="i, d in domains" if="i < 6" trim="1">
   <acre:block if="i > 0">, </acre:block>
   <a  href="${h.fb_url(d.id)}" title="Go to domain">$d.name</a>
   </acre:block>

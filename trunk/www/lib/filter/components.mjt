@@ -145,12 +145,6 @@
 </acre:block>
 
 
-<acre:block def="lang_filter(base_url, filters)">
-  <h3 class="module-section-title"><label for="">${_("Language")}</label></h3>
-  ${filter_form(base_url, filters, 'lang', lang_input, ['lang', filters.lang])}
-</acre:block>
-
-
 <acre:block def="as_of_time_filter(base_url, filters)">
   <h3 class="module-section-title"><label for="">${_("As of")}</label></h3>
   <acre:block if="filters.as_of_time">
@@ -178,29 +172,15 @@
         <input type="hidden" name="${key}" value="${val}"/>
       </acre:block>
     </acre:block>
+    <acre:block if="i18n.lang !== '/lang/en'">
+      <input type="hidden" name="lang" value="${i18n.lang}"/>
+    </acre:block>
     ${def.apply(null, def_params)}
   </form>
 </acre:block>
 
 <acre:block def="suggest_input(name, placeholder)">
   <input type="text" class="text-input suggest-input" name="${name}" acre:attrs="placeholder ? {placeholder:placeholder}: {}"/>
-</acre:block>
-
-<acre:block def="lang_input(name, value)">
-  <acre:script>
-    var langs = i18n.mql.langs().sort(function(a,b) {
-      return b.name < a.name;
-    });
-    if (!value) {
-      value = "/lang/en";
-    }
-  </acre:script>
-  <select name="${name}"
-          onchange="this.form.submit()">
-    <acre:block for="lang in langs">
-      <option value="${lang.id}" acre:attrs="lang.id == value ? {'selected':value} : {}">${lang.name}</option>
-    </acre:block>
-  </select>
 </acre:block>
 
 <acre:block def="datejs_input(name, placeholder)">

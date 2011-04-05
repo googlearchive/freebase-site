@@ -49,10 +49,6 @@ var PARAMS = {
     validator: validators.MqlId,
     options: {if_invalid:null}
   },
-  "lang": {
-    validator: validators.MqlId,
-    options: {if_invalid:null}
-  },
   "as_of_time": {
     validator: validators.Datejs,
     options: {if_invalid:null}
@@ -68,22 +64,20 @@ var PARAMS = {
  * Optionally, you can specify a params_spec that will be merged into the global params spec.
  *
  * var params = {
- *   domain:"/film",
- *   lang:"/lang/ko"
+ *   domain:"/film"
  * };
- * console.log(validate(params));  ==> {domain:"/film", lang:"/lang/ko"}
+ * console.log(validate(params));  ==> {domain:"/film"}
  *
  *
  * params = {
  *  domain:"/film",
- *  lang:"/lang/ko",
  *  myparam:"bar"
  * };
  * validate(params, {
  *   myparam: {
  *     validator:validators.String
  *   }
- * }); ==> {domain:"/film", lang:"/lang/ko", myparam:"bar"}
+ * }); ==> {domain:"/film", myparam:"bar"}
  *
  */
 function validate(params, params_spec) {

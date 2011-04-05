@@ -426,7 +426,15 @@ var mql = {
    * Get all freebase/mql lang equivalents (/lang/<code>) of the languages in the 40+ language initiative
    * @see https://sites.google.com/a/google.com/40-language-initiative/home/language-details
    */
-  langs: function() {
+  langs: function(sorted) {
+    if (sorted) {
+      if (!mql.langs.sorted) {
+        mql.langs.sorted = LANGS.slice().sort(function(a,b) {
+          return b.name < a.name;
+        });
+      }
+      return mql.langs.sorted;
+    }
     return LANGS;
   },
 
@@ -858,3 +866,14 @@ function get_accept_langs() {
   return lang_codes;
 };
 
+
+function params(o) {
+  o = o || {};
+  if (lang === "/lang/en") {
+    delete o.lang;
+  }
+  else {
+    o.lang = lang;
+  }
+  return o;
+};

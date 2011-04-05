@@ -41,11 +41,11 @@ var images = function(id, limit) {
       mid: null,
       name: null,
       "/common/image/rights_holder_text_attribution": null,
-      "/type/content/uploaded_by": {
+      "/type/content/uploaded_by": [{
         id: null,
         name: null,
         optional: true
-      },
+      }],
       "/common/licensed_object/license": [{
         id: null,
         name: null,

@@ -29,15 +29,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 var h = acre.require("lib/helper/helpers.sjs");
-var i18n = acre.require("lib/i18n/i18n.sjs");
+var datejs = acre.require("lib/datejs/date.sjs");
 
 var TIMESTAMPS = {
- "today": function() {return i18n.datejs.Date.today();},
- "yesterday" : function() {return i18n.datejs.Date.today().addDays(-1);},
- "this week" : function() {return i18n.datejs.Date.today().moveToDayOfWeek(1, -1);},
- "this month" : function() {return i18n.datejs.Date.today().moveToFirstDayOfMonth();},
+ "today": function() {return datejs.Date.today();},
+ "yesterday" : function() {return datejs.Date.today().addDays(-1);},
+ "this week" : function() {return datejs.Date.today().moveToDayOfWeek(1, -1);},
+ "this month" : function() {return datejs.Date.today().moveToFirstDayOfMonth();},
  "this year" : function() {
-   var t = i18n.datejs.Date.today();
+   var t = datejs.Date.today();
    t.set({day:1,month:0,year:t.getFullYear()});
    return t;
  }
@@ -86,27 +86,6 @@ function triple(subject, predicate, object, namespace, value) {
   o.mql[predicate] = h.extend({}, o.o);
   o.mql = JSON.stringify(o.mql);
   return o;
-};
-
-function format_number(n) {
-  if (n < 10) {
-    return "<10";
-  }
-  var i;
-  for (i=20; i<100; i+=10) {
-    if (n < i) {
-      return h.sprintf("%s+", (i-10));
-    }
-  }
-  for (i=200; i<1000; i+=100) {
-    if (n < i) {
-      return h.sprintf("%s+", (i-100));
-    }
-  }
-  if (n < 10000) {
-    return h.sprintf("%sk", Math.round(n/100)/10);
-  }
-  return h.sprintf("%sk", i18n.format_number(Math.round(n/1000)));
 };
 
 function is_valid(link) {

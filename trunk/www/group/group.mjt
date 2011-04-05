@@ -32,8 +32,9 @@
 <acre:script>
   var c = this.exports.c = {};
   var h = acre.require("lib/helper/helpers.sjs");
-  var image = acre.require("lib/template/imagecomponents");  
+ var image = acre.require("lib/template/imagecomponents");  
   var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
 </acre:script>
 
@@ -42,7 +43,7 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <h1 class="table-title">Admins</h1>
+  <h1 class="table-title">${_("Admins")}</h1>
   <table class="table user-table" acre:for="group in c.owners">
     ${user_table_head()}
     <tbody>
@@ -56,7 +57,7 @@
   </table>
 
   <acre:block if="c.watchers && c.watchers.length">
-  <h1 class="table-title">Watchers</h1>
+  <h1 class="table-title">${_("Watchers")}</h1>
   <table cellspacing="0" class="table">
     ${user_table_head()}
     <tbody>
@@ -72,25 +73,23 @@
 </acre:block>
 
 <acre:block def="user_timestamp_row(timestamp)">
-<td class="even">
-  <time class="published" 
-  datetime="${timestamp}">${i18n.format_timestamp(timestamp, 'MMMM dd, yyyy')}</time>
-
-</td>
+  <td class="even">
+    ${i18n_c.datetime(timestamp, [["class","published"],["data-format","long"]])}
+  </td>
 </acre:block>
 
 <acre:block def="user_domains_row(domains)">
 <td class="even">
-  <acre:block for="i, d in domains" if="i < 5" trim="">
-  <acre:block if="i > 0">,</acre:block>
-  <a  href="${h.fb_url('/view' + d.id)}" title="Go to domain">$d.name </a>
+  <acre:block for="i, d in domains" if="i < 6 && d.id !== c.object.id" trim="1">
+  <acre:block if="i > 0">, </acre:block>
+  <a  href="${h.fb_url(d.id)}" title="Go to domain">$d.name</a>
   </acre:block>
 </td>
 </acre:block>
 
 
 <acre:block def="user_assertions_row(writes)">
-<td class="odd">${i18n.format_number(writes)}</td>
+  <td class="odd">${i18n_c.number(writes)}</td>
 </acre:block>
 
 
@@ -104,10 +103,10 @@
 <acre:block def="user_table_head()">
 <thead>
   <tr>
-    <th class="column-header first" scope="col">User</th>
-    <th class="column-header" scope="col">On Freebase since</th>
-    <th class="column-header" scope="col">Freebase assertions</th>
-    <th scope="col" class="column-header">Also watching</th>
+    <th class="column-header first" scope="col">${_("User")}</th>
+    <th class="column-header" scope="col">${_("On Freebase since")}</th>
+    <th class="column-header" scope="col">${_("Freebase assertions")}</th>
+    <th scope="col" class="column-header">${_("Also watching")}</th>
   </tr>
 </thead>
 </acre:block>

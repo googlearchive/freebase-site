@@ -7,5 +7,6 @@
   "jqueryui/jquery.ui.core.mf.js",
   "template/freebase.js",
   "template/helpers.js",
-  "permission/permission.js"
+  "permission/permission.js",
+  "i18n/i18n.js"
 ]

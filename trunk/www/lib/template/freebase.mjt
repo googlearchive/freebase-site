@@ -218,6 +218,22 @@
 <acre:block def="footer_script(exports)">
   <!-- jquery -->
   <script src="${h.lib_base_url('jquery')}/jquery.min.js"></script>
+  <!-- dojo -->
+  <acre:script>
+    var lang_code = i18n.lang.split("/").pop().toLowerCase();
+  </acre:script>
+  <script>
+    var djConfig = {
+      parseOnLoad: true,
+      locale: "${lang_code}"
+    };
+  </script>
+  <acre:block if="lang_code !== 'en'">
+    <script>
+      djConfig.extraLocale = ["en"];
+    </script>
+  </acre:block>
+  <script src="${h.lib_base_url('dojo')}/dojo/dojo.xd.js"></script>
   <!-- suggest -->
   <script src="${h.lib_base_url('suggest')}/suggest.min.js"></script>
   <!-- freebase.mf.js -->

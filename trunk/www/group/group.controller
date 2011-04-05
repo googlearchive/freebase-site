@@ -110,12 +110,12 @@ function domain_watchers(id) {
     }],
     type: "/type/user",
     "/freebase/user_profile/favorite_domains": {
-      id: id,
+      id: id
     }
   }]).
   then(function(env){
     var users = env.result;
-    var watchers = []
+    var watchers = [];
     if(users) {
       for(i in users) {
         var watcher = {
@@ -125,13 +125,13 @@ function domain_watchers(id) {
           quote: users[i]["/freebase/user_profile/personal_quote"],
           joined: users[i].timestamp,
           watching: users[i]["a:/freebase/user_profile/favorite_domains"]
-        }
+        };
         if(users[i]["!/freebase/user_activity/user"]) {
-          watcher.assertions = users[i]["!/freebase/user_activity/user"]["/freebase/user_activity/primitives_live"]
+          watcher.assertions = users[i]["!/freebase/user_activity/user"]["/freebase/user_activity/primitives_live"];
         }
         watchers.push(watcher);
       }
     }
-    return watchers; 
+    return watchers;
   });
 };

@@ -58,38 +58,6 @@ test("i18n.mql.langs", function() {
   equal(langs.length, result.length);
 });
 
-test("i18n.datejs", function() {
-  var langs = i18n.mql.langs();
-  var map = h.map_array(langs, "id");
-
-  // ensure datejs file for each lang
-  var lib_files = acre.get_metadata().files;
-  for (var i=0,l=langs.length; i<l; i++) {
-    var code = langs[i].code;
-    if (!h.isArray(code)) {
-      code = [code];
-    }
-    // ensure in datejs/*.sjs
-    var found = false;
-    code.every(function(c) {
-      var filename = h.sprintf("datejs/date-%s.js", c);
-      if (lib_files[filename]) {
-        found = filename;
-        return false;
-      }
-      return true;
-    });
-    ok(found, found);
-
-    //acre.write(h.sprintf("cp src/date-%s.js date-%s.sjs </br>", code, code));
-  };
-
-  ok(typeof i18n.datejs !== "undefined", "locale datejs initialized");
-  ok(i18n.datejs.Date.CultureInfo, "datejs CultureInfo found");
-  ok(map[i18n.lang].code.indexOf(i18n.datejs.Date.CultureInfo.name) !== -1);
-  same(i18n.format.date, i18n.datejs.Date.CultureInfo.formatPatterns, "CultureInfo.formatPatterns loaded");
-});
-
 test("i18n.mql.query.text", function() {
   var langs = [i18n.lang];
   if (i18n.lang !== "/lang/en") {

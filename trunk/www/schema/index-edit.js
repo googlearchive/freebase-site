@@ -38,6 +38,7 @@
     add_domain_begin: function(trigger) {
       $.ajax({
         url: fb.h.ajax_url("add_domain_begin.ajax"),
+        data: {lang:fb.lang},
         dataType: "json",
         success: function(data, status, xhr) {
           var html = $(data.result.html);

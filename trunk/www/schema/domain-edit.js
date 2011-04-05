@@ -41,7 +41,7 @@
     domain_settings_begin: function(trigger, domain_id) {
       $.ajax({
         url: fb.h.ajax_url("domain_settings_begin.ajax"),
-        data: {id:domain_id},
+        data: {id:domain_id, lang:fb.lang},
         dataType: "json",
         success: function(data, status, xhr) {
           var html = $(data.result.html);
@@ -174,7 +174,7 @@
     add_type_begin: function(trigger, domain_id, mediator) {
       $.ajax({
         url: fb.h.ajax_url("add_type_begin.ajax"),
-        data: {id: domain_id, mediator: mediator},
+        data: {id: domain_id, mediator: mediator, lang: fb.lang},
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
@@ -227,7 +227,7 @@
     edit_type_begin: function(trigger, type_id) {
       $.ajax({
         url: fb.h.ajax_url("edit_type_begin.ajax"),
-        data: {id: type_id},
+        data: {id: type_id, lang: fb.lang},
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
@@ -375,7 +375,7 @@
       var table = row.parents("table:first");
       $.ajax({
         url: fb.h.ajax_url("delete_type_submit.ajax"),
-        data: {id: type_id, user: fb.user.id},
+        data: {id: type_id, user: fb.user.id, lang:fb.lang},
         type: "POST",
         dataType: "json",
         success: function(data, status, xhr) {
@@ -402,7 +402,7 @@
       var table = row.parents("table:first");
       $.ajax({
         url: fb.h.ajax_url("undo_delete_type_submit.ajax"),
-        data: {type_info: JSON.stringify(type_info)},
+        data: {type_info: JSON.stringify(type_info), lang:fb.lang},
         type: "POST",
         dataType: "json",
         success: function(data, status, xhr) {

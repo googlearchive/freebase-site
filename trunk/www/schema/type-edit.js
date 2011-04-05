@@ -41,7 +41,7 @@
     type_settings_begin: function(trigger, type_id) {
       $.ajax({
         url: fb.h.ajax_url("type_settings_begin.ajax"),
-        data: {id:type_id},
+        data: {id:type_id, lang:fb.lang},
         dataType: "json",
         success: function(data, status, xhr) {
           var html = $(data.result.html);
@@ -261,7 +261,7 @@
       form.row.addClass("loading");
       $.ajax({
         url: fb.h.ajax_url("delegate_property_begin.ajax"),
-        data: {id: prop_id},
+        data: {id: prop_id, lang:fb.lang},
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
@@ -300,7 +300,7 @@
       var trigger_row = trigger.parents("tr:first");
       $.ajax({
         url: fb.h.ajax_url("add_property_begin.ajax"),
-        data: {id: type_id},
+        data: {id: type_id, lang:fb.lang},
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
@@ -358,7 +358,7 @@
       var trigger_row = trigger.parents("tr:first");
       $.ajax({
         url: fb.h.ajax_url("edit_property_begin.ajax"),
-        data: {id: prop_id},
+        data: {id: prop_id, lang:fb.lang},
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
@@ -599,7 +599,7 @@
       var table = row.parents("table:first");
       $.ajax({
         url: fb.h.ajax_url("delete_property_submit.ajax"),
-        data: {id: prop_id, user: fb.user.id},
+        data: {id: prop_id, user: fb.user.id, lang:fb.lang},
         type: "POST",
         dataType: "json",
         success: function(data, status, xhr) {
@@ -627,7 +627,7 @@
       var table = row.parents("table:first");
       $.ajax({
         url: fb.h.ajax_url("undo_delete_property_submit.ajax"),
-        data: {prop_info: JSON.stringify(prop_info)},
+        data: {prop_info: JSON.stringify(prop_info), lang:fb.lang},
         type: "POST",
         dataType: "json",
         success: function(data, status, xhr) {
@@ -658,7 +658,7 @@
       var trigger_row = trigger.parents("tr:first");
       $.ajax({
         url: fb.h.ajax_url("add_included_type_begin.ajax"),
-        data: {id: type_id},
+        data: {id: type_id, lang:fb.lang},
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
@@ -790,7 +790,7 @@
       var table = row.parents("table:first");
       $.ajax({
         url: fb.h.ajax_url("delete_included_type_submit.ajax"),
-        data: {id: type_id, included_type: included_type_id},
+        data: {id: type_id, included_type: included_type_id, lang:fb.lang},
         type: "POST",
         dataType: "json",
         success: function(data, status, xhr) {
@@ -815,7 +815,7 @@
       var table = row.parents("table:first");
       $.ajax({
         url: fb.h.ajax_url("undo_delete_included_type_submit.ajax"),
-        data: {id: type_id, included_type: included_type_id},
+        data: {id: type_id, included_type: included_type_id, lang:fb.lang},
         type: "POST",
         dataType: "json",
         success: function(data, status, xhr) {
@@ -846,7 +846,7 @@
       var trigger_row = trigger.parents("tr:first");
       $.ajax({
         url: fb.h.ajax_url("reverse_property_begin.ajax"),
-        data: {id: type_id, master: master_id},
+        data: {id: type_id, master: master_id, lang:fb.lang},
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
@@ -920,7 +920,7 @@
       var trigger_row = trigger.parents("tr:first");
       $.ajax({
         url: fb.h.ajax_url("add_instance_begin.ajax"),
-        data: {id: type_id},
+        data: {id: type_id, lang:fb.lang},
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
@@ -1114,7 +1114,7 @@
     reorder_property_begin: function(trigger, type_id) {
       $.ajax({
         url: fb.h.ajax_url("reorder_property_begin.ajax"),
-        data: {id:type_id},
+        data: {id:type_id, lang:fb.lang},
         dataType: "json",
         success: function(data, status, xhr) {
           var html = $(data.result.html);

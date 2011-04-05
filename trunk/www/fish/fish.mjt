@@ -103,31 +103,13 @@
 
   <acre:block if="c.images && c.images.length">
   <h1 class="table-title">${_("Images")}</h1>
-  <div class="image-container">
+  <div class="image-stack">
  
     <acre:script>
       var img_count = c.images.length
     </acre:script>
     <acre:block for="i, img in c.images" if="i < 50">
-      <acre:script>
-        // A simple prototype for presenting images
-        // related to a topic in a stack.
-        // Basic idea is to increment the z-index for
-        // each image, and apply a slight rotation in
-        // CSS3 capable browsers.
-
-        // TODO: figure non-CSS3 browsers
-        // TODO: provide hover animation revealing images
-
-        var z_index = img_count - i;
-        var rotate_amount = Math.floor(Math.random() * 1000) % 10;
-        var rotation = '-' + rotate_amount + 'deg';
-        if ((i) === 0 ) {
-          rotation = '0deg';
-        }
-      </acre:script>
-      <a style="z-index: $z_index; -webkit-transform: rotate($rotation)"
-         href="javascript:void(0)" class="img-stack-thumb">
+      <a href="javascript:void(0)" class="img-stack-item">
         ${image.image_thumb(img.id, 'medium')}
       </a>
     </acre:block>
@@ -196,4 +178,8 @@
     }
   </acre:script>
   (<a href="/queryeditor?q=${JSON.stringify(query)}">Q</a>)
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="fish.mf.js"></script>
 </acre:block>

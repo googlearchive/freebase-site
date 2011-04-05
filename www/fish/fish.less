@@ -42,16 +42,18 @@
 
 .image-stack {
   position: relative;
-  width: 200px;
   height: 150px;
+  width: 200px;
   text-align: center;
 }
 
 .image-stack .img-stack-item {
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
+  .transition(all, 0.2s, ease-in-out, 0.1s);
+}
+
+.image-stack:hover .img-stack-item {
 }
 
 .img-stack-item img {

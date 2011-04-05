@@ -71,10 +71,16 @@
         // rotation value to be applied to image
         var rotate_amount = random_value(options.min, options.max);
 
+        // Set base rotation amount
+        var rotation = rotate_amount + 'deg';
+
         // If we're on the first (top) image, set rotation to 0
-        var rotation = '-' + rotate_amount + 'deg';
         if ((index) === 0 ) {
           rotation = '0deg';
+        }
+        // If index value is odd, make rotation value negative
+        else if(!is_even(index)) {
+          rotation = "-" + rotation;
         }
         
         $img.css({
@@ -87,6 +93,10 @@
       }); 
 
     });
+
+    function is_even(value) {
+      return (value%2 === 0) ? true : false;
+    }
 
     function random_value(minVal,maxVal) {
       var randVal = minVal+(Math.random()*(maxVal-minVal));

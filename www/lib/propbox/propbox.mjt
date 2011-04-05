@@ -31,6 +31,7 @@
 <acre:script>
   var h = acre.require("helper/helpers.sjs");
   var i18n = acre.require("i18n/i18n.sjs");
+  var i18n_c = acre.require("i18n/components.mjt");
   var _ = i18n.gettext;
   // microdata helpers
   var microdata = acre.require("helper/microdata.sjs");
@@ -247,15 +248,26 @@
       <sup acre:if="locale" class="locale ${locale}">${locale}</sup>
     </acre:block>
   </acre:block>
-  <acre:block elif="prop_structure.expected_type.id === '/type/datetime'">      
-    <time class="property-value"
-          acre:attrs="h.extend(itemprop(prop_structure.id), microdata.value(prop_structure, prop_value))" 
-          data-value="${prop_value.value}">${prop_value.text}</time>
-  </acre:block>
   <acre:block else="">
-    <span class="property-value" 
-          acre:attrs="h.extend(itemprop(prop_structure.id), microdata.value(prop_structure, prop_value))" 
-          data-value="${prop_value.value}">${prop_value.text}</span>
+    <acre:script>
+      var ect = prop_structure.expected_type.id;
+      var attrs = h.extend(itemprop(prop_structure.id), microdata.value(prop_structure, prop_value));
+      attrs["class"] = "property-value";
+    </acre:script>
+    <acre:block if="ect === '/type/datetime'">
+      ${i18n_c.datetime(prop_value.value, attrs)}
+    </acre:block>
+    <acre:block elif="ect === '/type/int' || ect === '/type/float'">
+      ${i18n_c.number(prop_value.value, attrs)}
+      <acre:block if="prop_structure.unit">
+        ${prop_structure.unit.abbreviation || ""}
+      </acre:block>
+    </acre:block>
+    <acre:block else="">
+      <span class="property-value" 
+            acre:attrs="attrs" 
+            data-value="${prop_value.value}">${prop_value.text}</span>
+    </acre:block>
   </acre:block>
 </acre:block>
 

@@ -31,7 +31,25 @@
 
 <acre:script>
   var h = acre.require("helper/helpers.sjs");
+  var i18n = acre.require("i18n/i18n.sjs");
 </acre:script>
+
+<acre:block def="lang_select()">
+  <acre:script>
+    var base_url = acre.request.url.split("?").shift();
+    var params = h.extend({}, acre.request.params);
+    delete params.lang;
+  </acre:script>
+  <form action="${base_url}" method="GET">
+    <input acre:for="k,v in params" type="hidden" name="${k}" value="${v}"/>
+    <select name="lang" onchange="return this.form.submit();">
+      <acre:block for="lang in i18n.mql.langs(true)">
+        <option value="${lang.id}"
+                acre:attrs="lang.id === i18n.lang ? {'selected':'selected'} : {}">${lang.name}</option>
+      </acre:block>
+    </select>
+  </form>
+</acre:block>
 
 <!!--
   A number component that can be i18n'ized by i18n.js
@@ -60,3 +78,5 @@
   </acre:script>
   <time acre:attrs="attrs">${val}</time>
 </acre:block>
+
+

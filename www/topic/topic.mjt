@@ -80,9 +80,9 @@
         </acre:script>
         ${filter_components.prop_counts_filter("/topic" + c.id, c.filters, c.prop_counts, hide_counts)}
       </div>
-      <div class="module-section">
+      <!--<div class="module-section">
         ${filter_components.lang_filter("/topic" + c.id, c.filters)}
-      </div>
+      </div>-->
       <div class="module-section">
         ${filter_components.as_of_time_filter("/topic" + c.id, c.filters)}
       </div>

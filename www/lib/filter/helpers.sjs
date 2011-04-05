@@ -38,13 +38,13 @@ var i18n = acre.require("i18n/i18n.sjs");
 function global_filters(filters) {
   var g = {};
   filters = filters || {};
-  ["domain", "type", "property", "lang", "as_of_time"].forEach(function(k) {
+  ["domain", "type", "property", "as_of_time"].forEach(function(k) {
     var v = filters[k];
     if (v != null) {
       g[k] = v;
     }
   });
-  return g;
+  return i18n.params(g);
 };
 
 /**
@@ -81,7 +81,7 @@ function remove_filter(filters, name, value) {
       delete f[k];
     }
   }
-  return f;
+  return i18n.params(f);
 };
 
 /**
@@ -96,7 +96,7 @@ function add_filter(filters, name, value) {
       delete f[k];
     }
   }
-  return f;
+  return i18n.params(f);
 };
 
 /**

@@ -50,13 +50,13 @@
   <!!-- schema !!-->
   <acre:block if="types['/type/domain'] || types['/type/type'] || types['/type/property']">
     <li>
-      ${nav_url(h.is_schema_app(app_path), _("Schema"), "/schema" + object.id)}
+      ${nav_url(h.is_schema_app(app_path), _("Schema"), "/schema" + object.id, i18n.params())}
     </li>
     <li>
-      ${nav_url(h.is_inspect_app(app_path), _("Inspect"), "/inspect" + object.id)}
+      ${nav_url(h.is_inspect_app(app_path), _("Inspect"), "/inspect" + object.id, i18n.params())}
     </li>
     <li acre:if="types['/type/domain']">
-       ${nav_url(h.is_group_app(app_path), _("Community"), "/group" + object.id)}
+       ${nav_url(h.is_group_app(app_path), _("Community"), "/group" + object.id, i18n.params())}
     </li>
  </acre:block>
 

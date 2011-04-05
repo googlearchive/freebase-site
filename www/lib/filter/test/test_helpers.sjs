@@ -37,11 +37,10 @@ var fh = acre.require("filter/helpers.sjs");
 test("global_filters", function() {
   var filters = {
     domain: "domain",
-    lang: "/lang/ko",
     as_of_time: null,
     foo: "bar"
   };
-  same(fh.global_filters(filters), {domain:"domain", lang:"/lang/ko"});
+  same(fh.global_filters(filters), {domain:"domain"});
   same(fh.global_filters(), {});
   same(fh.global_filters(null), {});
   same(fh.global_filters({}), {});
@@ -49,7 +48,6 @@ test("global_filters", function() {
     domain: null,
     type: null,
     property: null,
-    lang: null,
     as_of_time: null
   }), {});
 });

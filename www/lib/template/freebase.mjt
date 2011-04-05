@@ -142,9 +142,6 @@
       <li class="nav-global-item" id="nav-docs">
         <a href="${h.wiki_url()}" title="Give help and get help adding data to Freebase">Docs</a>
       </li>
-      <li class="nav-global-item" id="nav-lang">
-        ${i18n_c.lang_select()}
-      </li>
     </ul>
     <div id="nav-account">
       <div class="nav-user-controls" id="signedin" style="display:none;">
@@ -160,6 +157,7 @@
   </div>
   <div id="breadcrumb" acre:if="exports.breadcrumb">
     ${exports.breadcrumb()}
+    ${i18n_c.lang_select()}
   </div>
 </acre:block>
 

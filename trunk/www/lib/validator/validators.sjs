@@ -314,15 +314,29 @@ var StringBool = Validator.factory(scope, "StringBoolean", {
 var mqlkey_start = 'A-Za-z0-9';
 var mqlkey_char = 'A-Za-z0-9_-';
 
+var mqlkey_fast = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
+var mqlkey_slow = /^(?:[A-Za-z0-9]|\$[A-F0-9]{4})(?:[A-Za-z0-9_-]|\$[A-F0-9]{4})*$/;
+
+function check_mqlkey(val) {
+  if (mqlkey_fast.test(val)) {
+    return true;
+  }
+  else if (mqlkey_slow.test(val)) {
+    return true;
+  }
+  return false;
+};
+
+
 /**
  * MqlKey
  *
  * TODO: allow mql quoted values (i.e, $XXXX)
  */
-var r_MqlKey = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
+
 Validator.factory(scope, "MqlKey", {
   "string": function(val, options) {
-    if (r_MqlKey.test(val)) {
+    if (check_mqlkey(val)) {
       if (reserved_word(val.toLowerCase())) {
         return this.invalid(this.key, val, "is a reserved word.");
       }
@@ -337,10 +351,19 @@ Validator.factory(scope, "MqlKey", {
  *
  * TODO: allow mql quoted values (i.e, $XXXX)
  */
-var r_MqlId = /^\/(?:[A-Za-z0-9][A-Za-z0-9_-]*(?:\/[A-Za-z0-9][A-Za-z0-9_-]*)*)*$/;
 Validator.factory(scope, "MqlId", {
   "string": function(val, options) {
-    if (r_MqlId.test(val)) {
+    if (val === "/") {
+      return val;
+    }
+    if (h.startsWith(val, "/")) {
+      var mqlkeys = val.split("/");
+      mqlkeys.shift();  // remove beginning "/"
+      for (var i=0,l=mqlkeys.length; i<l; i++) {
+        if (!check_mqlkey(mqlkeys[i])) {
+          return this.invalid(this.key, val, "is not a mql id");
+        }
+      }
       return val;
     }
     return this.invalid(this.key, val, "is not a mql id");

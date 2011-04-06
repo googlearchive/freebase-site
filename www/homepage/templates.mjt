@@ -263,7 +263,7 @@
       <a href="${h.legacy_fb_url('/view'+user.id)}" class="bold-link">${user.name}</a>
     </div>
     <div class="user-stats">
-      ${h.bless_sprintf(_("joined in %s"), acre.markup.stringify(i18n_c.datetime(user.created, [["data-format","yM"]])))}
+      ${h.bless_sprintf(_("joined in %s"), acre.markup.stringify(i18n_c.datetime(user.created, [["data-format","yMMM"]])))}
     </div>
     <div class="user-stats">
       ${h.bless_sprintf(_("%s total assertions"), acre.markup.stringify(i18n_c.number(user.assertions)))}

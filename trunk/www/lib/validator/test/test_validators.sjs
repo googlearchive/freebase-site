@@ -142,41 +142,20 @@ test("validators.StringBool", falsey, function() {
   });
 });
 
-var guid_test = {
-  valid: ["#9202a8c04000641f80000000010c3935"],
-  invalid: ["#", "#9202a8c04000641f80000000010c393g", "#9202a8c04000641f80000000010c39350", "#00000000000000000000000000000000", "/m/01z0366", "/freebase", "foobar"]
-};
-test("validators.Guid", guid_test, function() {
-  guid_test.valid.forEach(function(guid) {
-    strictEqual(validators.Guid(guid), guid);
-  });
-
-  guid_test.invalid.forEach(function(guid) {
-    try {
-      validators.Guid(guid);
-      ok(false, "expected invalid guid " + guid);
-    }
-    catch(e if e instanceof validators.Invalid) {
-      ok(e, e.toString());
-    }
-    catch(e) {
-      ok(false, "unexpected exception " + e);
-    }
-  });
-});
 
 
 var mqlid_test = {
-  valid: ["/", "/freebase", "/type/type", "/film/film/property"],
-  allow: ["!/film/film/property", "#9202a8c04000641f80000000010c3935"],
-  invalid: ["/freebase/", "#9202a8c04000641f80000000010c393g", "#00000000000000000000000000000000", "foobar"]
+  valid: ["/", "/freebase", "/type/type", "/film/film/property", "/0/1/2", "/A/b_-"],
+  invalid: ["/freebase/", "#9202a8c04000641f80000000010c393g",
+            "#00000000000000000000000000000000", "foobar", "", "!/freebase",
+            "/_", "/A/-"]
 };
 test("validators.MqlId", mqlid_test, function() {
-  mqlid_test.valid.concat(mqlid_test.allow).forEach(function(id) {
-    strictEqual(validators.MqlId(id, {guid:true, reverse:true}), id);
+  mqlid_test.valid.forEach(function(id) {
+    strictEqual(validators.MqlId(id), id);
   });
 
-  mqlid_test.invalid.concat(mqlid_test.allow).forEach(function(id) {
+  mqlid_test.invalid.forEach(function(id) {
     try {
       validators.MqlId(id);
       ok(false, "expected invalid mql id " + id);

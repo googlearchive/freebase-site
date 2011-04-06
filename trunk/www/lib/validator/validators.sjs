@@ -311,66 +311,37 @@ var StringBool = Validator.factory(scope, "StringBoolean", {
   }
 });
 
-/**
- * Guid
- */
-function NotAGuid(message) {
-  this.message = message;
-};
-NotAGuid.prototype = new Invalid();
+var mqlkey_start = 'A-Za-z0-9';
+var mqlkey_char = 'A-Za-z0-9_-';
 
-function validate_guid(val) {
-  if (val[0] === "#") {
-    if (val === "#00000000000000000000000000000000") {
-      throw(new NotAGuid(val));
-    }
-    if (/^\#[0-9a-f]{32}$/.test(val)) {
+/**
+ * MqlKey
+ *
+ * TODO: allow mql quoted values (i.e, $XXXX)
+ */
+var r_MqlKey = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
+Validator.factory(scope, "MqlKey", {
+  "string": function(val, options) {
+    if (r_MqlKey.test(val)) {
+      if (reserved_word(val.toLowerCase())) {
+        return this.invalid(this.key, val, "is a reserved word.");
+      }
       return val;
     }
-  }
-  throw(new NotAGuid(val));
-};
-
-Validator.factory(scope, "Guid", {
-  "string": function(val, options) {
-    try {
-      return validate_guid(val);
-    }
-    catch (e if e instanceof NotAGuid) {
-      return this.invalid(this.key, val, "is not a guid");
-    }
+    return this.invalid(this.key, val, "is invalid MQL key");
   }
 });
 
 /**
  * MqlId
+ *
+ * TODO: allow mql quoted values (i.e, $XXXX)
  */
+var r_MqlId = /^\/(?:[A-Za-z0-9][A-Za-z0-9_-]*(?:\/[A-Za-z0-9][A-Za-z0-9_-]*)*)*$/;
 Validator.factory(scope, "MqlId", {
-  "defaults": {
-    "guid": false,   // allow guid #9202a8c04000641f8000000003e00cc6
-    "reverse": false // allow !/film/film/starring
-  },
   "string": function(val, options) {
-    if (options.guid) {
-      try {
-        return validate_guid(val);
-      }
-      catch(e if e instanceof NotAGuid) {
-        // ignore
-      }
-    }
-    if (options.reverse && val.length > 2 && val.indexOf("!/") === 0) {
-        return val;
-    }
-    if (val.indexOf("/") === 0) {
-      if (val.length > 1) {
-        if (val.substring(val.length - 1) !== "/") {
-          return val;
-        }
-      }
-      else {
-        return val;
-      }
+    if (r_MqlId.test(val)) {
+      return val;
     }
     return this.invalid(this.key, val, "is not a mql id");
   }
@@ -379,13 +350,10 @@ Validator.factory(scope, "MqlId", {
 /**
  * LangId
  */
-var regex_lang;
+var r_LangId= /^\/lang\/[A-Za-z0-9][A-Za-z0-9_-]*$/;
 Validator.factory(scope, "LangId", {
   "string": function(val, options) {
-    if (!regex_lang) {
-      regex_lang = /^\/lang\/[A-Za-z0-9][A-Za-z0-9_-]*$/;
-    }
-    if (regex_lang.test(val)) {
+    if (r_LangId.test(val)) {
       return val;
     }
     return this.invalid(this.key, val, "is invalid lang");
@@ -564,6 +532,9 @@ function reserved_word(word) {
   return reserved[word] === 1;
 };
 
+var schema_key_start = 'a-z';
+var schema_key_char = 'a-z0-9_';
+
 var schema_key_proto = {
   defaults: {
     minlen: 1
@@ -702,18 +673,3 @@ Validator.factory(scope, "Uri", {
   }
 });
 
-var regex_mqlkey;
-Validator.factory(scope, "MqlKey", {
-  "string": function(val, options) {
-    if (!regex_mqlkey) {
-      regex_mqlkey = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
-    }
-    if (regex_mqlkey.test(val)) {
-      if (reserved_word(val.toLowerCase())) {
-          return this.invalid(this.key, val, "is a reserved word.");
-      }
-      return val;
-    }
-    return this.invalid(this.key, val, "is invalid MQL key");
-  }
-});

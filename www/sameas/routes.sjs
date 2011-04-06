@@ -29,30 +29,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 var h = acre.require("lib/helper/helpers.sjs");
+var rh = acre.require("lib/routing/helpers.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
-var split_path = acre.require("lib/routing/helpers.sjs").split_path;
 
-var base_path = acre.request.base_path;
-var path_info = acre.request.path_info;
-var query_string = acre.request.query_string;
+var path_info = rh.normalize_path(this);
 
-//console.log("base_path", base_path, "path_info", path_info, "query_string", query_string);
-
-if (h.endsWith(base_path, "/index") || h.endsWith(base_path, "/index/")) {
-  // /index in request path not allowed
-  redirect(base_path.replace(/\/index.*$/, ""));
-}
-
-/**
- * path_info defaults "/" to "/index", so for consistency, convert "/" and "/index.*" to "/"
- * and treat it as the root namespace id ("/")
- */
-if (/^\/index$/.test(path_info)) {
-  path_info = "/";
-}
 
 var result;
-
 // is path_info a valid mql id?
 var id = validators.MqlId(path_info, {if_invalid:null});
 if (id) {
@@ -74,35 +57,8 @@ if (id) {
 
 if (result) {
   // common topic
-  route("/sameas.controller", id);
+  rh.route(this, "sameas.controller", id);
 }
 else {
-  route(path_info);
+  rh.route(this, path_info);
 }
-
-function route(script, path) {
-  console.log("topic/routes", script, path);
-
-  if (script === "/") {
-    script = "/index";
-  }
-  script = script.substring(1);
-  script = acre.resolve(script);
-  if (path) {
-    script += path;
-  }
-  if (query_string) {
-    script += ("?" + query_string);
-  }
-  acre.route(script);
-};
-
-
-function redirect(path) {
-  if (query_string) {
-    path += query_string;
-  }
-  acre.response.status = 301;
-  acre.response.set_header("location", path);
-  acre.exit();
-};

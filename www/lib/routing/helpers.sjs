@@ -69,3 +69,58 @@ function split_extension(path) {
   }
   return [path, "sjs"];
 };
+
+/**
+ * Normalize path of the request scope and redirect if necessary.
+ * A request path is normalized by removing trailing /index/* from the request path and performing a redirect
+ */
+function normalize_path(scope) {
+  var req = scope.acre.request;
+  var parts = req.url.split("?");
+  var base_url = parts.shift();
+  var path_info = req.path_info;
+  if (redirect && (/\/index\/*$/.test(base_url))) {
+    // redirect /index in request path
+    redirect(scope, base_url.replace(/\/index.*$/, ""));
+  }
+  /**
+   * path_info defaults "/" to "/index", so for consistency, convert "/" and "/index" to "/"
+   * and treat it as the root namespace id ("/")
+   */
+  if (/^\/index$/.test(path_info)) {
+    path_info = "/";
+  }
+  return path_info;
+};
+
+/**
+ * Route: script + path + query_string (scope.acre.request.query_string if any), within the request scope.
+ */
+function route(scope, script, path) {
+  if (script === "/") {
+    script = "index";
+  }
+  script = script.replace(/^\/*/, "");
+  script = scope.acre.resolve(script);
+  if (path) {
+    script += path;
+  }
+  var qs = scope.acre.request.query_string;
+  if (qs) {
+    script += ("?" + qs);
+  }
+  scope.acre.route(script);
+};
+
+/**
+ * 301 Redirect: path + query_string (scope.acre.request.query_string if any), within the request scope.
+ */
+function redirect(scope, path) {
+  var qs = scope.acre.request.query_string;
+  if (qs) {
+    path += ("?" + qs);
+  }
+  scope.acre.response.status = 301;
+  scope.acre.response.set_header("location", path);
+  scope.acre.exit();
+};

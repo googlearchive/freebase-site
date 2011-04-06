@@ -29,27 +29,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 var h = acre.require("lib/helper/helpers.sjs");
+var rh = acre.require("lib/routing/helpers.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
-var split_path = acre.require("lib/routing/helpers.sjs").split_path;
 
-var base_path = acre.request.base_path;
-var path_info = acre.request.path_info;
-var query_string = acre.request.query_string;
-
-//console.log("base_path", base_path, "path_info", path_info, "query_string", query_string);
-
-if (h.endsWith(base_path, "/index") || h.endsWith(base_path, "/index/")) {
-  // /index in request path not allowed
-  redirect(base_path.replace(/\/index.*$/, ""));
-}
-
-/**
- * path_info defaults "/" to "/index", so for consistency, convert "/" and "/index.*" to "/"
- * and treat it as the root namespace id ("/")
- */
-if (/^\/index$/.test(path_info)) {
-  path_info = "/";
-}
+var path_info = rh.normalize_path(this);
 
 var result;
 
@@ -78,39 +61,15 @@ if (id) {
 if (result) {
   var type = result.type.id;
   if (type === "/type/domain") {
-    route("/domain.controller", id);
+    rh.route(this, "domain.controller", id);
   }
   else if (type === "/type/type") {
-    route("/type.controller", id);
+    rh.route(this, "/type.controller", id);
   }
   else {
-    route("/property.controller", id);
+    rh.route(this, "/property.controller", id);
   }
 }
 else {
-  route(path_info);
+  rh.route(this, path_info);
 }
-
-function route(script, path) {
-  if (script === "/") {
-    script = "/index.controller";
-  }
-  script = script.substring(1);
-  script = acre.resolve(script);
-  if (path) {
-    script += path;
-  }
-  if (query_string) {
-    script += ("?" + query_string);
-  }
-  acre.route(script);
-};
-
-function redirect(path) {
-  if (query_string) {
-    path += query_string;
-  }
-  acre.response.status = 301;
-  acre.response.set_header("location", path);
-  acre.exit();
-};

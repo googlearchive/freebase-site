@@ -241,12 +241,7 @@
     <a title="${prop_value.id}" class="property-value"
        acre:attrs="itemprop(prop_structure.id)" href="${h.fb_url(true, prop_value.id)}"
        data-id="${prop_value.id}">${prop_value.text}</a> 
-    <acre:block if="lang && lang !== prop_value.lang">
-      <acre:script>
-        var locale = (prop_value.lang || "").split("/").pop();
-      </acre:script>
-      <sup acre:if="locale" class="locale ${locale}">${locale}</sup>
-    </acre:block>
+    ${i18n_c.locale(prop_value.lang, lang)}
   </acre:block>
   <acre:block else="">
     <acre:script>

@@ -80,3 +80,14 @@
 </acre:block>
 
 
+<acre:block def="locale(this_lang, current_lang)" trim="1">
+  <acre:script>
+    current_lang = current_lang || i18n.lang;
+  </acre:script>
+  <acre:block if="this_lang !== current_lang" trim="1">
+    <acre:script>
+      var locale = this_lang.split("/").pop();
+    </acre:script>
+    <sup class="locale ${locale}">${locale}</sup>
+  </acre:block>
+</acre:block>

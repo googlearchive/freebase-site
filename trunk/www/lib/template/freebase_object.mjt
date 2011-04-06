@@ -118,7 +118,13 @@
       !!-->
       <acre:block if="c.object">
         <h1>
-          <span acre:attrs="itemprop('/type/object/name')">${i18n.display_name(c.object)}</span>
+          <acre:script>
+            var name = i18n.display_name_node(c.object);
+          </acre:script>
+          <acre:block if="name">
+            <span acre:attrs="itemprop('/type/object/name')">${name.value}</span>
+            ${i18n_c.locale(name.lang)}
+          </acre:block>
           <acre:block if="that_exports.nav_flags">
             <span class="flags">
               ${that_exports.nav_flags()}

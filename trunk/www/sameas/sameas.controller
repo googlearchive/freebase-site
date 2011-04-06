@@ -44,7 +44,7 @@ var SPEC = {
 
   cache_policy: "public",
 
-  template: "fish.mjt",
+  template: "sameas.mjt",
 
   template_base: "lib/template/freebase_object.mjt",
 

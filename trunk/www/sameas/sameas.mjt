@@ -38,7 +38,7 @@
 </acre:script>
 
 <acre:block def="head()">
-  <link rel="stylesheet" type="text/css" href="fish.mf.css" />
+  <link rel="stylesheet" type="text/css" href="sameas.mf.css" />
 </acre:block>
 
 <acre:block def="page_content()">
@@ -172,5 +172,5 @@
 </acre:block>
 
 <acre:block def="footer_script()">
-  <script src="fish.mf.js"></script>
+  <script src="sameas.mf.js"></script>
 </acre:block>

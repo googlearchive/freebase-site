@@ -44,9 +44,7 @@ var rules = {
     {prefix:"/sample",             app:"//sample" + codebase},
     {prefix:"/topic",              app:"//topic" + codebase},
     {prefix:"/group",              app:"//group" + codebase},
-    {prefix:"/fish",               app:"//fish" + codebase},
-//    {prefix:"/topic/view",         url:"/topic",   redirect: 301},
-//    {prefix:"/topic/inspect",      url:"/inspect", redirect: 301},
+    {prefix:"/sameas",             app:"//sameas" + codebase},
 
     // Urls for exposed ajax libraries and static resources
     // TODO: remove this and use ajax router
@@ -90,7 +88,7 @@ var rules = {
     {prefix:"/importer/list",       url:"/inspect", redirect:301},
     {prefix:"/domain/users",        url:"/schema", redirect:301},
     {prefix:"/search",              url:"/", redirect:301},
-    
+
     //
     // Redirects for legacy urls
     //

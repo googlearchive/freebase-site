@@ -68,10 +68,10 @@
       ${nav_url(h.is_topic_app(app_path), _("Data"), "/topic" + object.id, global_filters)}
     </li>
     <li>
-      ${nav_url(h.is_fish_app(app_path), _("Content"), "/fish" + object.id, global_filters)}
+      ${nav_url(h.is_inspect_app(app_path), _("Inspect"), "/inspect" + object.id, global_filters)}
     </li>
     <li>
-      ${nav_url(h.is_inspect_app(app_path), _("Inspect"), "/inspect" + object.id, global_filters)}
+      ${nav_url(h.is_sameas_app(app_path), _("Same As"), "/sameas" + object.id, global_filters)}
     </li>
   </acre:block>
                  

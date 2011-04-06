@@ -34,7 +34,7 @@ var exports = {
   "is_inspect_app": is_inspect_app,
   "is_topic_app": is_topic_app,
   "is_group_app": is_group_app,
-  "is_fish_app": is_fish_app
+  "is_sameas_app": is_sameas_app
 };
 
 /*
@@ -46,7 +46,7 @@ var schema_app = /^\/\/(\w+\.)*schema\.www\./;
 var inspect_app = /^\/\/(\w+\.)*triples\.www\./;
 var topic_app = /^\/\/(\w+\.)*topic\.www\./;
 var group_app = /^\/\/(\w+\.)*group\.www\./;
-var fish_app = /^\/\/(\w+\.)*fish\.www\./;
+var sameas_app = /^\/\/(\w+\.)*sameas\.www\./;
 
 
 function is_schema_app(app_path) {
@@ -65,8 +65,8 @@ function is_group_app(app_path) {
   return group_app.test(app_path);
 };
 
-function is_fish_app(app_path) {
-  return fish_app.test(app_path);
+function is_sameas_app(app_path) {
+  return sameas_app.test(app_path);
 };
 
 

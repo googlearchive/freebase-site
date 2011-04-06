@@ -74,7 +74,7 @@ if (id) {
 
 if (result) {
   // common topic
-  route("/fish.controller", id);
+  route("/sameas.controller", id);
 }
 else {
   route(path_info);

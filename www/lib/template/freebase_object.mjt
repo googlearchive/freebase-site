@@ -181,8 +181,10 @@
           var [blurb, blob] = i18n.display_article(c.object, ["blurb", "blob"]);
         </acre:script>
         <div id="description" class="clear" acre:if="blurb && blob"> 
-          <div id="image" acre:if="c.object.image">
-            ${image.image_stack(c.object.image)}
+          <div id="image">
+            <acre:block if="c.object.image && c.object.image.length">
+              ${image.image_stack(c.object.image)}
+            </acre:block>
           </div>
           <!-- blurb should be sentence-level truncation at ~50 words -->
           <p class="blurb" itemprop="desc">${blurb}</p>

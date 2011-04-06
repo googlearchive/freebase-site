@@ -327,6 +327,15 @@ function display_text(obj, default_value, key) {
   return null;
 };
 
+function display_name_node(obj, key) {
+  key = key || "name";
+  return display_text_node(obj, key);
+};
+
+function display_text_node(obj, key) {
+  return mql.result.text(obj[key]);
+};
+
 
 /**
  * Usage:

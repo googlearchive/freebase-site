@@ -145,7 +145,7 @@ test("validators.StringBool", falsey, function() {
 
 
 var mqlid_test = {
-  valid: ["/", "/freebase", "/type/type", "/film/film/property", "/0/1/2", "/A/b_-"],
+  valid: ["/", "/freebase", "/type/type", "/film/film/property", "/0/1/2", "/A/b_-", "/wikipedia/ja/$30DE$30C4$30BF$30B1"],
   invalid: ["/freebase/", "#9202a8c04000641f80000000010c393g",
             "#00000000000000000000000000000000", "foobar", "", "!/freebase",
             "/_", "/A/-"]
@@ -477,12 +477,13 @@ test("Uri", function() {
 test("MqlKey", function() {
   var valid = [
     "A", "a", "0", "a-b", "0-A-9_", "0-",
-    "abc", "1023"
+    "abc", "1023", "$30DE$30C4$30BF$30B1", "$30DEa-z$30C4_$30BF4$30B1-"
   ];
   var invalid = [
     "a$001",
     "0.ca",
-    "key"
+    "key",
+    "$30DE$30C4$30BF$30B"  // incomplete hex
   ];
   valid.forEach(function(val) {
     strictEqual(validators.MqlKey(val), val);

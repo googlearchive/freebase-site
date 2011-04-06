@@ -114,3 +114,13 @@
   </acre:script>
   <img acre:attrs="attrs">
 </acre:block>
+
+<acre:block def="image_stack(images)">
+  <div class="image-stack">
+    <acre:block for="i, img in images">
+      <a href="javascript:void(0)" class="img-stack-item">
+        ${image_thumb(img.id, 0)}
+      </a>
+    </acre:block>
+    </div>
+</acre:block>

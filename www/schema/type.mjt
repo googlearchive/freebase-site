@@ -107,15 +107,10 @@
   ${_('Type')}
 </acre:block>
 
-<acre:block def="keys()">
-  <span class="key"><strong>${_("domain")}:</strong> <a href="${h.fb_url('/schema', c.type.domain.id)}">${c.type.domain.id}</a></span>
-  <span class="included-types key" acre:if="c.type.included_types.length > 0">
-    <strong>${_('Includes')}: </strong>
-    <acre:block trim="">
-      <span acre:for="i, t in c.type.included_types" acre:trim="">
-        <acre:block if="i">, </acre:block><a href="${h.fb_url('/schema', t.id )}">${i18n.display_name(t)}</a>
-      </span>
-    </acre:block>
+<acre:block def="nav_keys()">
+  <span class="key">
+    <strong>${_("domain")}:</strong>
+    <a href="${h.fb_url('/schema', c.type.domain.id)}">${c.type.domain.id}</a>
   </span>
 </acre:block>
 

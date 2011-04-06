@@ -94,7 +94,7 @@
           <acre:block if="c.object">
             <li class="breadcrumb-item">
               <span class="breadcrumb-item-inner">
-                <a href="#" onclick="return false">${c.object.name}</a>
+                <a href="#" onclick="return false">${c.object.id}</a>
               </span>
             </li>
           </acre:block>
@@ -118,7 +118,7 @@
       !!-->
       <acre:block if="c.object">
         <h1>
-          <span acre:attrs="itemprop('/type/object/name')">${c.object.name}</span>
+          <span acre:attrs="itemprop('/type/object/name')">${i18n.display_name(c.object)}</span>
           <acre:block if="that_exports.flags">
             <span class="flags">
               ${that_exports.flags()}
@@ -135,10 +135,6 @@
             <strong><abbr title="${_('ID')}">${_("id")}</abbr></strong>: 
             <span acre:attrs="itemprop('/type/object/id')">${c.object.id}</span>
           </span>
-          <span class="key">
-            <strong><abbr title="${_('GUID')}">${_("guid")}</abbr></strong>: 
-            <span acre:attrs="itemprop('/type/object/guid')">${c.object.guid}</span>
-          </span>
           <!-- Show top-ranked notable type -->
           <span acre:if="c.object.notable_type && c.object.notable_type !== '/type/type'" class="key">
             <strong>${_('notable type')}</strong>: 
@@ -150,8 +146,8 @@
             <a acre:attrs="itemprop('/common/topic/notable_for')"
                href="${h.fb_url(true, c.object.notable_for)}">${c.object.notable_for}</a>
           </span>
-          <acre:block if="that_exports.keys">
-            ${that_exports.keys()}
+          <acre:block if="that_exports.nav_keys">
+            ${that_exports.nav_keys()}
           </acre:block>
         </div>    
         <div class="admin-toolbox">
@@ -161,7 +157,7 @@
               ${image.user_image_small(c.object.creator)}
               ${_("Created by")} 
               <a href="${h.legacy_fb_url('/view', c.object.creator.id)}" 
-                 title="${_('View user profile')}">${c.object.creator.name}</a> 
+                 title="${_('View user profile')}">${i18n.display_name(c.object.creator)}</a> 
               ${_("on")}
             </span>
             <span acre:else="">
@@ -176,8 +172,7 @@
           </span>
         </div>
         <acre:script>
-          var blurb = c.object.blurb;
-          var blob = c.object.blob;
+          var [blurb, blob] = i18n.display_article(c.object, ["blurb", "blob"]);
         </acre:script>
         <div id="description" class="clear" acre:if="blurb && blob"> 
           <div id="image" acre:if="c.object.image">

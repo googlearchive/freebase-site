@@ -83,7 +83,7 @@
   </div>
 </acre:block>
 
-<acre:block def="flags()">
+<acre:block def="nav_flags()">
   ${_("Property")}
 </acre:block>
 

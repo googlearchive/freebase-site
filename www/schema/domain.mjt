@@ -76,7 +76,7 @@
   </li>
 </acre:block>
 
-<acre:block def="flags()">
+<acre:block def="nav_flags()">
   <span acre:if="c.domain.id.indexOf('/user') === -1 && c.domain.id.indexOf('/base') === -1">
      ${_("Commons")}
   </span>

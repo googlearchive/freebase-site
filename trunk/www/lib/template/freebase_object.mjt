@@ -119,9 +119,9 @@
       <acre:block if="c.object">
         <h1>
           <span acre:attrs="itemprop('/type/object/name')">${i18n.display_name(c.object)}</span>
-          <acre:block if="that_exports.flags">
+          <acre:block if="that_exports.nav_flags">
             <span class="flags">
-              ${that_exports.flags()}
+              ${that_exports.nav_flags()}
             </span>
           </acre:block>
         </h1>

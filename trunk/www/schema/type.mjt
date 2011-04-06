@@ -97,7 +97,7 @@
   </li>
 </acre:block>
 
-<acre:block def="flags()">
+<acre:block def="nav_flags()">
   <acre:block if="c.type.mediator">
     ${_('Mediator')}
   </acre:block>

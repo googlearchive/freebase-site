@@ -68,9 +68,10 @@
   </div>
 </acre:block>
 
-<acre:block def="keys()">
+<acre:block def="nav_keys()">
   <span class="key">
-    <strong>${_("permission")}</strong>: <a href="${h.fb_url('/inspect', c.object.permission)}">${c.object.permission}</a>
+    <strong>${_("permission")}</strong>: 
+    <a href="${h.fb_url('/inspect', c.object.permission)}">${c.object.permission}</a>
   </span>
 </acre:block>
 

@@ -31,6 +31,7 @@
 var h = acre.require("helper/helpers.sjs");
 var deferred = acre.require("promise/deferred");
 var freebase = acre.require("promise/apis").freebase;
+var i18n = acre.require("i18n/i18n.sjs");
 
 /**
  * Basic freebase object information (in english):
@@ -42,18 +43,14 @@ function object(id) {
     "q:id": id,
     guid: null,
     mid: null,
-    name: null,
+    name: i18n.mql.query.name(),
     creator: {
       optional: true,
       id: null,
-      name: null
+      name: i18n.mql.query.name()
     },
     timestamp: null,
-    "/common/topic/article": {
-      id: null,
-      optional: true,
-      limit: 1
-    },
+    "/common/topic/article": i18n.mql.query.article(),
     "/common/topic/image": [{
       id: null,
       optional: true,
@@ -96,29 +93,8 @@ function object(id) {
           return r;
         })
     );
-    var article = topic["/common/topic/article"];
-    if (article) {
-      promises.push(
-        freebase.get_blob(article.id, "raw")
-          .then(function(blob) {
-            topic.blob = blob.body;
-            return article;
-          }, function(e) {
-            topic.body = null;
-            return article;
-          })
-      );
-      promises.push(
-        freebase.get_blob(article.id, "blurb", {maxlength:500})
-          .then(function(blob) {
-            topic.blurb = blob.body;
-            return article;
-          }, function(e) {
-            topic.blurb = null;
-            return article;
-          })
-      );
-    }
+    promises.push(i18n.get_blurb(topic, {maxlength: 500}));
+    promises.push(i18n.get_blob(topic));
     return deferred.all(promises)
       .then(function() {
         return topic;

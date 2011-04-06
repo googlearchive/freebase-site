@@ -182,14 +182,7 @@
         </acre:script>
         <div id="description" class="clear" acre:if="blurb && blob"> 
           <div id="image" acre:if="c.object.image">
-            <acre:script>
-            var image_options = {
-            mode: "fit",
-            maxwidth: 150,
-            maxheight: 200              
-            };
-            </acre:script>
-            ${image.image_thumb(c.object.image, null, image_options)}
+            ${image.image_stack(c.object.image)}
           </div>
           <!-- blurb should be sentence-level truncation at ~50 words -->
           <p class="blurb" itemprop="desc">${blurb}</p>

@@ -103,17 +103,7 @@
 
   <acre:block if="c.images && c.images.length">
   <h1 class="table-title">${_("Images")}</h1>
-  <div class="image-stack">
- 
-    <acre:script>
-      var img_count = c.images.length
-    </acre:script>
-    <acre:block for="i, img in c.images" if="i < 50">
-      <a href="javascript:void(0)" class="img-stack-item">
-        ${image.image_thumb(img.id, 0)}
-      </a>
-    </acre:block>
-  </div>
+
   <table cellspacing="0" class="table">
     <thead>
       <th scope="col" class="column-header">${_("Image")}</th>

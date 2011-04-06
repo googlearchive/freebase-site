@@ -40,7 +40,7 @@
    *   etc…
    * </div>
    *
-   * $(".image_stack").stack_images();
+   * $(".image_stack").image_stack();
    *
    * Will do the following:
    *
@@ -50,8 +50,8 @@
    * 4. Apply random css3 rotation value
    */
 
-  $.fn.stack_images = function(options) {
-    
+  $.fn.image_stack = function(options) {
+
     options = $.extend({
       min: 0,
       max: 10
@@ -83,36 +83,36 @@
         else if(!is_even(index)) {
           rotation = "-" + rotation;
         }
-        
+
         $img.css({
-          "z-index": z_index, 
+          "z-index": z_index,
           "-webkit-transform": "rotate(" + rotation + ")",
           "-moz-transform": "rotate(" + rotation + ")",
           "transform": "rotate(" + rotation + ")"
         });
 
 
-      }); 
+      });
 
+      var offset = 0;
       $(this).hover(
 
         // Animate images out when user hovers
         function() {
           var $images = $(this).children(".img-stack-item");
-          var offset = 0;
           var margin = 10;
 
           $images.each(function(index){
             var $container = $(this);
             var $img = $container.children("img:first");
-            
-            $container.css('left', offset)
+
+            $container.css('left', offset);
 
             offset = offset + $img.width() + margin;
           });
           return false;
         },
-        
+
         // Reset image position on mouseout
         function() {
           var $images = $(this).children(".img-stack-item");
@@ -132,7 +132,7 @@
       var randVal = minVal+(Math.random()*(maxVal-minVal));
       return typeof floatVal== 0 ? Math.round():randVal.toFixed();
     }
-    
-  }
-   
+
+  };
+
 }) (jQuery);

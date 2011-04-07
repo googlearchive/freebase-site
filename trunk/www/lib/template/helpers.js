@@ -160,7 +160,8 @@
       path = path.replace(".svn.freebase-site.googlecode.dev", "");
       var args = Array.prototype.slice.call(arguments, 2);
       args.unshift(path);
-      return h.fb_url.apply(null, args);
+      args.unshift(null); // relative url
+      return h.build_url.apply(null, args);
     },
 
     resolve_reentrant_path: function(path) {

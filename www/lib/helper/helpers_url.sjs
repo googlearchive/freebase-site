@@ -225,7 +225,8 @@ function reentrant_url(prefix, path) {
   path = path.replace(".svn.freebase-site.googlecode.dev", "");
   var args = Array.prototype.slice.call(arguments, 2);
   args.unshift(path);
-  return fb_url.apply(null, args);
+  args.unshift(null); // relative url
+  return build_url.apply(null, args);
 };
 
 function resolve_reentrant_path(path) {

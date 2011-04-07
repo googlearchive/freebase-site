@@ -64,10 +64,10 @@ if (result) {
     rh.route(this, "domain.controller", id);
   }
   else if (type === "/type/type") {
-    rh.route(this, "/type.controller", id);
+    rh.route(this, "type.controller", id);
   }
   else {
-    rh.route(this, "/property.controller", id);
+    rh.route(this, "property.controller", id);
   }
 }
 else {

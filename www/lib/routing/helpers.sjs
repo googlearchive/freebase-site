@@ -98,7 +98,7 @@ function normalize_path(scope) {
  */
 function route(scope, script, path) {
   if (script === "/") {
-    script = "index";
+    script = "index.controller";  // default to index.controller
   }
   script = script.replace(/^\/*/, "");
   script = scope.acre.resolve(script);

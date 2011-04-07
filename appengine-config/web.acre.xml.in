@@ -71,6 +71,7 @@
   </servlet-mapping>
 
  <!-- Secure access to the keystore UI - only available to AppEngine app admins -->
+
  <security-constraint>
    <web-resource-collection>
      <url-pattern>/acre/keystore_console</url-pattern>

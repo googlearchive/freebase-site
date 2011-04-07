@@ -116,7 +116,7 @@
     }
   </acre:script>
   <select name="lang" class="lang-select" 
-          onchange="return freebase.dispatch(event, freebase.lang_select, [this.value], this);"
+          onchange="return freebase.dispatch(event, freebase.edit_lang_select, [this.value], this);"
           acre:attrs="langs.length === 1 && langs[0] === '/lang/en' ? {style:'display:none;'} : {}">
     <acre:block for="lang in langs">
       <option value="${lang}">${i18n.LANGS_BY_ID[lang].name}</option>

@@ -42,7 +42,8 @@
   </acre:script>
   <form action="${base_url}" method="GET">
     <input acre:for="k,v in params" type="hidden" name="${k}" value="${v}"/>
-    <select name="lang" onchange="return this.form.submit();">
+    <select name="lang" 
+            onchange="return freebase.dispatch(event, freebase.lang_select, [this.value], this);">
       <acre:block for="lang in i18n.mql.langs(true)">
         <option value="${lang.id}"
                 acre:attrs="lang.id === i18n.lang ? {'selected':'selected'} : {}">${lang.name}</option>

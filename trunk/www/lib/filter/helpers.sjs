@@ -44,7 +44,7 @@ function global_filters(filters) {
       g[k] = v;
     }
   });
-  return i18n.params(g);
+  return g;
 };
 
 /**
@@ -81,7 +81,7 @@ function remove_filter(filters, name, value) {
       delete f[k];
     }
   }
-  return i18n.params(f);
+  return f;
 };
 
 /**
@@ -96,7 +96,7 @@ function add_filter(filters, name, value) {
       delete f[k];
     }
   }
-  return i18n.params(f);
+  return f;
 };
 
 /**

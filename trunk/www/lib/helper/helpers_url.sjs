@@ -128,7 +128,9 @@ function build_url(host /**, path1, path2, ..., params **/) {
     var args = Array.prototype.slice.call(arguments);
     args.shift();
     var paths = [];
-    args.forEach(function(arg, i) {
+
+    for(var i=0,l=args.length; i<l; i++) {
+      var arg = args[i];
       var t = h.type(arg);
       if (t === "string") {
         paths.push(arg);
@@ -136,12 +138,12 @@ function build_url(host /**, path1, path2, ..., params **/) {
       else {
         // last argument(s) are the params dictionary or array
         params = {};
-        for (var j=i-1,l=args.length; j<l; j++) {console.log(args[j]);
+        for (var j=i; j<l; j++) {
           params = h.extend(params, parse_params(args[j]));
         }
-        return false;
+        break;
       }
-    });
+    };
     path = paths.join("");
   }
   if (path && path.indexOf("/") !== 0) {

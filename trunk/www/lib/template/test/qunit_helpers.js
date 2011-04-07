@@ -87,6 +87,7 @@ function run_tests($, fb) {
     equal(h.fb_url(null), "/");
     equal(h.fb_url(""), "/");
     equal(h.fb_url("/path1", "/path2", {a:1}), "/path1/path2?a=1");
+    equal(h.fb_url("/path1", {a:1}, {b:2}), "/path1?a=1&b=2");
     equal(h.fb_url("/path1/path2", [["a",1]]), "/path1/path2?a=1");
   });
 

@@ -154,26 +154,6 @@
       }
     });
 
-    // language select
-    var lang_select = $("#language-select").change(function() {
-      var lang = $(this).val();
-      $.cookie("lang", lang, {path: "/"});
-      window.location.reload(true);
-    });
-    var en, selected;
-    $("option", lang_select).each(function() {
-      var $this = $(this);
-      if ($this.val() === "/lang/en") {
-        en = $this;
-      }
-      if ($this.val() === fb.lang) {
-        selected = $this.attr("selected", "selected");
-        return false;
-      };
-    });
-    if (!selected && en) {
-      en.attr("selected", "selected");
-    }
   };
 
   $(init);

@@ -337,8 +337,20 @@
    };
 
    fb.lang_select = function(e, lang) {
+     if (lang === "/lang/en") {
+       // remove lang input from form
+       $(this).removeAttr("name");
+       if (!$(":input[name]", this.form).length) {
+         window.location = $(this.form).attr("action");
+         return;
+       }
+     }
+     this.form.submit();
+   };
+
+   fb.edit_lang_select = function(e, lang) {
      setTimeout(function() {
-       $(window).trigger("fb.lang.select", lang);
+       $(window).trigger("fb.edit.lang.select", lang);
      }, 0);
    };
 

@@ -114,7 +114,7 @@
       form.submit_row.show();
 
       $("[placeholder]", form.row).placeholder();
-      $(window).bind("fb.lang.select", function(e, lang) {
+      $(window).bind("fb.edit.lang.select", function(e, lang) {
         se.toggle_lang(form.row, lang);
       });
     },
@@ -284,7 +284,7 @@
       $("[placeholder]", form.form).placeholder();
       fb.schema.init_modal_help(form.form);
 
-      $(window).bind("fb.lang.select", function(e, lang) {
+      $(window).bind("fb.edit.lang.select", function(e, lang) {
         se.toggle_lang(form.form, lang);
       });
     },

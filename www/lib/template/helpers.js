@@ -98,17 +98,21 @@
         var args = Array.prototype.slice.call(arguments);
         args.shift();
         var paths = [];
-        $.each(args, function(i, arg) {
+        for(var i=0,l=args.length; i<l; i++) {
+          var arg = args[i];
           var t = h.type(arg);
           if (t === "string") {
             paths.push(arg);
           }
           else {
-            // last argument is the params dictionary or array
-            params = h.parse_params(arg);
-            return false;
+            // last argument(s) are the params dictionary or array
+            params = {};
+            for (var j=i; j<l; j++) {
+              params = $.extend(params, h.parse_params(args[j]));
+            }
+            break;
           }
-        });
+        };
         path = paths.join("");
       }
       if (path && path.indexOf("/") !== 0) {
@@ -134,6 +138,9 @@
     fb_url: function() {
       var args = Array.prototype.slice.call(arguments);
       args.unshift(null); // host is null to specify relative url
+      if (fb.lang !== "/lang/en") {
+        args.push({lang:fb.lang});
+      }
       return h.build_url.apply(null, args);
     },
 

@@ -94,6 +94,10 @@ function IdRouter() {
 
 function redirect(path) {
   acre.response.status = 301;
+  var qs = acre.request.query_string;
+  if (qs) {
+    path += ("?" + qs);
+  }
   acre.response.set_header("location", path);
   acre.exit();
 };

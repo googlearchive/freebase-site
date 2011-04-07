@@ -49,7 +49,7 @@
 </acre:block>
 
 <acre:block def="title()">
-  ${_('Topic')} - ${c.object.name}
+  ${_('Topic')} - ${i18n.display_name(c.object)}
 </acre:block>
 
 <acre:block def="nav_utilities()">

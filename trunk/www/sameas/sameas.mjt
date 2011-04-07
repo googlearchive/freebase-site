@@ -41,6 +41,10 @@
   <link rel="stylesheet" type="text/css" href="sameas.mf.css" />
 </acre:block>
 
+<acre:block def="title()">
+  ${_('Same As')} - ${i18n.display_name(c.object)}
+</acre:block>
+
 <acre:block def="page_content()">
 
   <acre:block if="c.keys && c.keys.length">

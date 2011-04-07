@@ -126,6 +126,10 @@
     _dojo_loaded: false,
     _dojo_version: "1.6.0",
     get_dojo: function(lang, callback) {
+/**
+ DOJO is assumed to be already loaded with the correct locale(s)
+ corresponding to propbox.options.lang
+
       if (propbox._dojo_loaded === lang) {
         console.log("propbox._dojo_loaded", propbox._dojo_loaded);
         setTimeout(callback, 0);
@@ -148,6 +152,8 @@
           callback();
         }
       });
+**/
+      callback();
     },
 
     prop_edit: function(context) {

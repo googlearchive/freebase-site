@@ -272,29 +272,21 @@
     // Get rid of devel and port to use the legacy python client in development
 
     search.suggest({
+      status: null,
       service_url: fb.h.legacy_fb_url(),
       soft:true,
       category: "object",
       parent: "#site-search-box",
-      align: "right",
-      advanced: true,
-      // TODO: get static urls for codemirror from CONFIG
-      codemirror: {
-        path: "http://freebaselibs.com/static/freebase_site/codemirror/a9a6a3d5a293b55143be441e4196871f/",
-        codemirrorjs: "codemirror.mf.js",
-        basefiles: [],
-        parserfile: ["codemirror-frame.mf.js"],
-        stylesheet: ["http://freebaselibs.com/static/freebase_site/codemirror/a9a6a3d5a293b55143be441e4196871f/codemirror-frame.mf.css"]
-      }
+      align: "right"
     });
     var search_label = $("#site-search-label"),
     search_suggest = $("#site-search-box .fbs-pane");
 
     search
       .bind("fb-select", function(e, data) {
-         window.location = root + data.id;
+        window.location = fb.h.fb_url(data.id);
         return false;
-      })/**
+      })
       .bind("fb-pane-show", function(e, data) {
         search_label.html("<span>Select an item from the list</span>").removeClass("loading");
       })
@@ -318,7 +310,7 @@
         if (!search_suggest.is(":visible") && search_label.is(":visible")) {
           $('#site-search-label').slideUp("fast");
         }
-      })**/;
+      });
 
       $('.SearchBox-form').submit(function(e) {
         /* Do not allow form to be submitted without content */

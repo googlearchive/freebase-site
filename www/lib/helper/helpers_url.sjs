@@ -28,6 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+var i18n = acre.require("i18n/i18n.sjs");
 
 /**
  * IMPORTANT!!!
@@ -127,14 +128,17 @@ function build_url(host /**, path1, path2, ..., params **/) {
     var args = Array.prototype.slice.call(arguments);
     args.shift();
     var paths = [];
-    args.forEach(function(arg) {
+    args.forEach(function(arg, i) {
       var t = h.type(arg);
       if (t === "string") {
         paths.push(arg);
       }
       else {
-        // last argument is the params dictionary or array
-        params = parse_params(arg);
+        // last argument(s) are the params dictionary or array
+        params = {};
+        for (var j=i-1,l=args.length; j<l; j++) {console.log(args[j]);
+          params = h.extend(params, parse_params(args[j]));
+        }
         return false;
       }
     });
@@ -172,6 +176,9 @@ function fb_url() {
   }
   else {
     args.unshift(null); // host is null to specify relative url
+  }
+  if (i18n.lang !== "/lang/en") {
+    args.push({lang:i18n.lang});
   }
   return build_url.apply(null, args);
 };

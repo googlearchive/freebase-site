@@ -80,13 +80,17 @@ test("build_url", function() {
 });
 
 test("fb_url", function() {
+console.log("TEST fb_url");
+
   equal(h.fb_url(), "/");
   equal(h.fb_url(null), "/");
   equal(h.fb_url(""), "/");
   equal(h.fb_url("/path1", "/path2", {a:1}), "/path1/path2?a=1");
+  equal(h.fb_url("/path1", {a:1}, {b:2}), "/path1?a=1&b=2");
   equal(h.fb_url("/path1/path2", [["a",1]]), "/path1/path2?a=1");
   equal(h.fb_url(true), acre.freebase.site_host);
   equal(h.fb_url(true, "/path1/path2", [["a",1]]), acre.freebase.site_host + "/path1/path2?a=1");
+console.log("END fb_url");
 });
 
 test("resolve_reentrant_path", function() {

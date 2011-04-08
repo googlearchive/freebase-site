@@ -160,7 +160,7 @@
 
 <acre:block def="names_aliases(id, data, filters)" if="data && data.length">
   <div class="section">
-    <h2 class="table-title"><a name="names_aliases">${_("Names & Aliases")} (${data.length})</a></h2>
+    <h2 class="table-title"><a name="names_aliases">${_("Names & Aliases")} ( ${i18n_c.number(data.length)} )</a></h2>
     <table class="table table-sortable">
       <thead>
         <tr>
@@ -193,7 +193,7 @@
 
 <acre:block def="keys(id, data, filters)" if="data && data.length">
   <div class="section">
-    <h2 class="table-title"><a name="keys">${_("Keys")} (${i18n_c.number(data.length)})</a></h2>
+    <h2 class="table-title"><a name="keys">${_("Keys")} ( ${i18n_c.number(data.length)} )</a></h2>
     <table class="table table-sortable">
       <thead>
         <tr>
@@ -246,7 +246,7 @@
 
 <acre:block def="outgoing(id, data, filters)" if="data && data.length">
   <div class="section">
-    <h2 class="table-title"><a name="outgoinglinks">${_("Outgoing Links")} (${i18n_c.number(data.length)})</a></h2>
+    <h2 class="table-title"><a name="outgoinglinks">${_("Outgoing Links")} ( ${i18n_c.number(data.length)} )</a></h2>
     <table class="table table-sortable">
       <thead>
         <tr>
@@ -283,7 +283,7 @@
 
 <acre:block def="incoming(id, data, filters)" if="data && data.length">
   <div class="section">
-    <h2 class="table-title"><a name="incominglinks">${_("Incoming Links")} (${i18n_c.number(data.length)})</a></h2>
+    <h2 class="table-title"><a name="incominglinks">${_("Incoming Links")} ( ${i18n_c.number(data.length)} )</a></h2>
     <table class="table table-sortable">
       <thead>
         <tr>
@@ -322,7 +322,7 @@
 
 <acre:block def="type_links(id, data, filters)" if="data && data.length">
   <div class="section">
-    <h2 class="table-title"><a name="typelinks">${_("Links using this property")} (${i18n_c.number(data.length)})</a></h2>
+    <h2 class="table-title"><a name="typelinks">${_("Links using this property")} ( ${i18n_c.number(data.length)} )</a></h2>
     <table class="table table-sortable">
       <thead>
         <tr>
@@ -365,7 +365,7 @@
 
 <acre:block def="attribution_links(id, data, filters)" if="data && data.length">
   <div class="section">
-    <h2 class="table-title"><a name="attribution_links">${_("Links created by this user/attribution")} (${i18n_c.number(data.length)})</a></h2>
+    <h2 class="table-title"><a name="attribution_links">${_("Links created by this user/attribution")} ( ${i18n_c.number(data.length)} )</a></h2>
     <table class="table table-sortable">
       <thead>
         <tr>

@@ -56,7 +56,7 @@
   A number component that can be i18n'ized by i18n.js
   @param attrs - acre:attrs of <span>. Can be a dictionary, an array of tuples or null.  
 !!-->
-<acre:block def="number(val, attrs)">
+<acre:block def="number(val, attrs)" trim="1">
   <acre:script>
     attrs = h.acre_attrs(attrs) || {};
     attrs["data-value"] = val;
@@ -69,7 +69,7 @@
   A datetime component that can be i18n'ized by i18n.js
   @param attrs - acre:attrs of <time>. Can be a dictionary, an array of tuples or null.
 !!-->
-<acre:block def="datetime(val, attrs)">
+<acre:block def="datetime(val, attrs)" trim="1">
   <acre:script>
     attrs = h.acre_attrs(attrs) || {};
     if (h.type(val) === "date") {

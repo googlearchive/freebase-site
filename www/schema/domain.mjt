@@ -57,7 +57,7 @@
         </li>  
         <li if="c.domain" class="breadcrumb-item last">
           <span class="breadcrumb-item-inner">
-            <a href="#">${c.object.id}</a>
+            <a href="#">${i18n.display_name(c.domain)}</a>
           </span>
         </li>
       </ol>

@@ -88,16 +88,17 @@
 </acre:block>
 
 <!!--
-  Superscript locale if this_lang !== current_lang
+  Superscript language code if this_lang !== current_lang (default to i18n.lang)
 !!-->
-<acre:block def="locale(this_lang, current_lang)" trim="1">
+<acre:block def="lang_code(this_lang, current_lang)" trim="1">
   <acre:script>
-    current_lang = current_lang || i18n.lang;
+    this_lang = ""+this_lang;
+    current_lang = "" + (current_lang || i18n.lang);
   </acre:script>
   <acre:block if="this_lang !== current_lang" trim="1">
     <acre:script>
-      var locale = this_lang.split("/").pop();
+      var code = this_lang.split("/").pop();
     </acre:script>
-    <sup class="locale ${locale}">${locale}</sup>
+    <sup class="lang-code ${code}">${code}</sup>
   </acre:block>
 </acre:block>

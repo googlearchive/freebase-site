@@ -121,7 +121,7 @@
           </acre:script>
           <acre:block if="name">
             <span acre:attrs="itemprop('/type/object/name')">${name.value}</span>
-            ${i18n_c.locale(name.lang)}
+            ${i18n_c.lang_code(name.lang)}
           </acre:block>
           <acre:block else="">
             ${c.object.id}

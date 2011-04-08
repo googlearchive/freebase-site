@@ -46,16 +46,16 @@ CueCard.ExampleTechniques = [
 ];
 
 CueCard.Examples = [
-    {   name: "Vietnamese restaurants in Aspen, Colorado",
+    {   name: "Vietnamese restaurants in Palo Alto, California",
         query: [{
-            "/business/business_location/address" : {
-              "citytown" : "Aspen",
-              "state_province_region" : "Colorado"
-            },
-            "cuisine" : "Vietnamese",
-            "name" : null,
-            "id" : null,
-            "type" : "/dining/restaurant"
+          "id": null,
+          "name": null,
+          "type": "/dining/restaurant",
+          "cuisine": "Vietnamese",
+          "/business/business_location/address": [{
+            "state_province_region": "California",
+            "citytown": "Palo Alto"
+          }]
         }],
         techniques: [ "basic", "geographic location" ]
     },
@@ -113,7 +113,10 @@ CueCard.Examples = [
               "id" : null,
               "limit" : 2,
               "name" : null,
-              "track" : []
+              "releases": {
+                "track": [],
+                "limit": 1
+              }
           }],
           "id" : null,
           "name" : "The Police",
@@ -123,16 +126,20 @@ CueCard.Examples = [
     },
     {   name: "25 Songs with the word 'love' in their titles, with release date, album and artist",
         query: [{
-            "album" : {
-              "artist" : [],
-              "name" : null,
-              "id" : null,
-              "release_date" : null
+          "releases": {
+            "album": {
+              "artist": [],
+              "name": null,
+              "id": null,
+              "limit": 1
             },
-            "limit" : 25,
-            "name" : null,
-            "name~=" : "Love*",
-            "type" : "/music/track"
+            "release_date": null,
+            "limit": 1
+          },
+          "limit": 25,
+          "name": null,
+          "name~=": "Love*",
+          "type": "/music/track"
         }],
         techniques: [ "text search", "limiting number of results", "date query" ]
     },
@@ -195,17 +202,19 @@ CueCard.Examples = [
     },
     {   name: "Music artists with albums containing a track called 'One Tree Hill'",
         query: [{
-            "album" : [{
-                "name" : null,
-                "id" : null,
-                "track" : [{
-                    "length" : null,
-                    "name" : "One Tree Hill"
-                }]
-            }],
+          "album" : [{
             "name" : null,
             "id" : null,
-            "type" : "/music/artist"
+            "releases": [{
+              "track" : [{
+                "length" : null,
+                "name" : "One Tree Hill"
+              }]
+            }]
+          }],
+          "name" : null,
+          "id" : null,
+          "type" : "/music/artist"
         }],
         techniques: [ "compound value type (CVT)", "basic" ]
     },
@@ -251,11 +260,14 @@ CueCard.Examples = [
         query: [{
             "artist" : "The Police",
             "name" : "Synchronicity",
-            "track" : [{
-                "length" : null,
-                "length>" : 300,
-                "name" : null
-            }],
+            "release":{
+              "track" : [{
+                  "length" : null,
+                  "length>" : 300,
+                  "name" : null
+              }],
+              "limit":1
+            },
             "type" : "/music/album"
         }],
         techniques: [ "range constraint" ]

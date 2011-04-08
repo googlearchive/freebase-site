@@ -241,7 +241,7 @@
     <a title="${prop_value.id}" class="property-value"
        acre:attrs="itemprop(prop_structure.id)" href="${h.fb_url(true, prop_value.id)}"
        data-id="${prop_value.id}">${prop_value.text}</a> 
-    ${i18n_c.locale(prop_value.lang, lang)}
+    ${i18n_c.lang_code(prop_value.lang, lang)}
   </acre:block>
   <acre:block else="">
     <acre:script>
@@ -263,7 +263,7 @@
             acre:attrs="attrs" 
             data-value="${prop_value.value}">${prop_value.text}</span>
       <acre:block if="ect === '/type/text'">
-        ${i18n_c.locale(prop_structure.lang, lang)}
+        ${i18n_c.lang_code(prop_structure.lang, lang)}
       </acre:block>
     </acre:block>
   </acre:block>

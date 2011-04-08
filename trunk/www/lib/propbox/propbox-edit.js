@@ -30,7 +30,9 @@
  */
 ;(function($, propbox) {
 
-  // propbox namespace required @see propbox.js
+  // requires:
+  // propbox.js @see lib/propbox/propbox.js
+  // i18n.js @see lib/18n/i18n.js
 
   var base_url = propbox.options.base_url;
   var topic_id = propbox.options.id;
@@ -123,6 +125,10 @@
           else {
             $(".data-list", form.prop_section).append(new_row);
           }
+
+          // i18n'ize dates and numbers
+          i18n.ize(new_row);
+
           form.form.trigger(form.event_prefix + "success");
         },
         error: function(xhr) {
@@ -141,7 +147,7 @@
       }
       else {
         var prop_value = $(".property-value:first", prop_row);
-        value = prop_value.attr("data-id") || prop_value.attr("data-value");
+        value = prop_value.attr("data-id") || prop_value.attr("data-value") || prop_value.attr("datetime");
       }
       var submit_data = {
         s: topic_id,
@@ -222,6 +228,10 @@
             $(".data-table > thead", form.prop_section).show();
           }
           form.prop_row.after(new_row);
+
+          // i18n'ize dates and numbers
+          i18n.ize(new_row);
+
           form.prop_row.remove();
           form.form.trigger(form.event_prefix + "success");
         },

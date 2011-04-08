@@ -897,15 +897,3 @@ CueCard.QueryEditor.prototype._prepareQueryForSuggestions = function(mc, lineNo,
     
     mc.model.qualifyAllProperties(continuation);
 };
-
-
-CueCard.QueryEditor.prototype._showExamples = function(evt) {
-    var self = this;
-    
-    CueCard.showDialog("examples", { 
-        onDone: function(q) { 
-            self.content(q); 
-            self._onRun(false);
-        } 
-    });
-};

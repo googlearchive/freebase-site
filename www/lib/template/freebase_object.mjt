@@ -123,6 +123,9 @@
             <span acre:attrs="itemprop('/type/object/name')">${name.value}</span>
             ${i18n_c.locale(name.lang)}
           </acre:block>
+          <acre:block else="">
+            ${c.object.id}
+          </acre:block>
           <acre:block if="that_exports.nav_flags">
             <span class="flags">
               ${that_exports.nav_flags()}

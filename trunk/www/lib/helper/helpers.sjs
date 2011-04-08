@@ -90,10 +90,3 @@ function output_helpers(scope) {
     }
   }
 }
-
-/**
- * @param attrs - can be a dictionary, array of tuples or null
- */
-function acre_attrs(attrs) {
-  return parse_params(attrs);
-};

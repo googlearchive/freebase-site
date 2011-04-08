@@ -58,7 +58,7 @@
 !!-->
 <acre:block def="number(val, attrs)" trim="1">
   <acre:script>
-    attrs = h.acre_attrs(attrs) || {};
+    attrs = h.parse_params(attrs) || {};
     attrs["data-value"] = val;
     attrs["class"] = (attrs["class"] || "") + " number";
   </acre:script>
@@ -71,7 +71,7 @@
 !!-->
 <acre:block def="datetime(val, attrs)" trim="1">
   <acre:script>
-    attrs = h.acre_attrs(attrs) || {};
+    attrs = h.parse_params(attrs) || {};
     if (h.type(val) === "date") {
       val = acre.freebase.date_to_iso(val);
     }
@@ -80,7 +80,9 @@
   <time acre:attrs="attrs">${val}</time>
 </acre:block>
 
-
+<!!--
+  Superscript locale if this_lang !== current_lang
+!!-->
 <acre:block def="locale(this_lang, current_lang)" trim="1">
   <acre:script>
     current_lang = current_lang || i18n.lang;

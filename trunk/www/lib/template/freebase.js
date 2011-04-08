@@ -264,6 +264,19 @@
   }
 
   /**
+   * init universal language picker
+   */
+
+  $(function() {
+    var $picker = $("#header > #nav-utilities > .language-picker");
+    var $label = $(".current-lang", $picker);
+    var $dropdown = $("select", $picker).bind("change", function(e){
+      var $selected = $(this).find(":selected").text();
+      $label.text($selected);
+    });
+  });
+
+  /**
    * init freebase site header search box (suggest)
    */
   $(function() {

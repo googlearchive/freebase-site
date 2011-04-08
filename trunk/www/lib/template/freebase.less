@@ -316,10 +316,35 @@ Header
 
 #nav-utilities .language-picker {
     float: left;
+    position: relative;
+    overflow: hidden;
     border-left: 1px solid #fa6;
     border-right: 1px solid #d50;
+    cursor: pointer;
+    padding-right: 7px;
+}
+
+#nav-utilities .language-picker:hover {
+    background: rgba(0,0,0,0.05);
+    cursor: pointer;
+    .transition();
+}
+
+.language-picker select {
+    position: absolute;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    left: 0;
+    top: 10px;
+    cursor: pointer;
+    font-size: 16px; /* trying to increase hit area */
+}
+
+.current-lang{
+    display: block;
     padding: 0 2em;
     line-height: 3.1;
+    background: url(template/ui-icons.png) no-repeat right -773px;
 }
 
 #signedout {

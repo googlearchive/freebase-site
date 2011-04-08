@@ -174,9 +174,6 @@ function resizePanes() {
 
 function onResize() {
   resizePanes();
-  //c.queryEditor.layout();
-  c.outputPane.layout();
-  c.controlPane.layout();
 }
 
 function onToggleControlPane() {

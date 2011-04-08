@@ -56,7 +56,7 @@
     <div class="cuecard-outputPane-content tabbed-content">
       <div acre:for="tab in TABS" class="cuecard-outputPane-tabBody" id="${id}-${tab.key}">
         <div class="cuecard-outputPane-$tab.key" >
-          ${templates[tab.key]()}
+          ${templates[tab.key](outputPane)}
         </div>
       </div>
     </div>
@@ -131,14 +131,53 @@
   </div>
 </acre:block>
 
-<acre:block def="help()">
+<acre:block def="help(outputPane)">
   <div class="cuecard-outputPane-helpContent">
     <div>
       <a href="http://www.freebase.com/docs/data" target="_blank">MQL&nbsp;Tutorial</a>&nbsp;•&nbsp;<a href="http://www.freebase.com/docs/mql" target="_blank">MQL&nbsp;Reference</a>
     </div>
-    <button class="button cuecard-queryEditor-examples"
-            acre:onclick="c.queryEditor._showExamples()">
-      Examples...
-    </button>
+
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <span>Examples</span>
+      </h1>
+      Techniques:
+      <select class="cuecard-examples-technique">
+        <option acre:for="technique in CueCard.ExampleTechniques" 
+          acre:attrs="(technique === 'all')?{checked:'checked'}:{}" data-technique="$technique">
+          $technique (${CueCard.ExampleTechniqueMap[technique].length})
+        </option>
+      </select>
+      
+      <acre:block def="list_examples(technique)">
+        <a acre:for="index, example in CueCard.Examples" acre:if="((technique !== 'all') ? (example.techniques.indexOf(technique) !== -1) : true)"
+           href="javascript:selectExample('$index')" class="cuecard-examples-example" id="cuecard-example-$index">
+          $example.name
+        </a>
+      </acre:block>
+      
+      <div class="cuecard-examples-list"></div>
+    </div>
+    <acre:block script="ondomready">
+      selectTechnique = function(technique) {
+        technique = technique || 'all';
+        $(".cuecard-examples-list").acre(list_examples(technique));
+        return false;
+      }
+
+      selectExample = function(index) {
+        $(".cuecard-examples-example").removeClass("cuecard-examples-example-selected");
+        $("#cuecard-example-" + index).addClass("cuecard-examples-example-selected");
+        outputPane._options.queryEditor.content(CueCard.jsonize(CueCard.Examples[index].query, { indentCount: 2 }));
+        return false;
+      }
+
+      selectTechnique();
+      
+      $(".cuecard-examples-technique").change(function(){
+        var technique = $("option:selected", this).attr("data-technique");
+        selectTechnique(technique);
+      });
+    </acre:block>
   </div>
 </acre:block>

@@ -133,9 +133,10 @@
 
 <acre:block def="help(outputPane)">
   <div class="cuecard-outputPane-helpContent">
-    <div>
-      <a href="http://www.freebase.com/docs/data" target="_blank">MQL&nbsp;Tutorial</a>&nbsp;•&nbsp;<a href="http://www.freebase.com/docs/mql" target="_blank">MQL&nbsp;Reference</a>
-    </div>
+    <ul>
+      <li><a href="http://www.freebase.com/docs/data" target="_blank">MQL Tutorial</a></li>
+      <li><a href="http://www.freebase.com/docs/mql" target="_blank">MQL&nbsp;Reference</a></li>
+    </ul>
 
     <div class="modal-inner">
       <h1 class="modal-title">
@@ -150,7 +151,8 @@
       </select>
       
       <acre:block def="list_examples(technique)">
-        <a acre:for="index, example in CueCard.Examples" acre:if="((technique !== 'all') ? (example.techniques.indexOf(technique) !== -1) : true)"
+        <a acre:for="index, example in CueCard.Examples" 
+           acre:if="((technique !== 'all') ? (example.techniques.indexOf(technique) !== -1) : true)"
            href="javascript:selectExample('$index')" class="cuecard-examples-example" id="cuecard-example-$index">
           $example.name
         </a>

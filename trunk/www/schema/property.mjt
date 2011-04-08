@@ -91,6 +91,15 @@
   <span class="key"><strong>${_("schema")}:</strong> <a href="${h.fb_url('/schema', c.property.schema.id)}">${c.property.schema.id}</a></span>
 </acre:block>
 
+<acre:block def="nav_tabs(nav_tab)">
+  <li>
+    ${nav_tab(true, _("Schema"))}
+  </li>
+  <li>
+    ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
+  </li>
+</acre:block>
+
 <acre:block def="page_content()">
 <!--
     <div id="description" acre:if="c.property.tip">

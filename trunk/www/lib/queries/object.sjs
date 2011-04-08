@@ -57,7 +57,7 @@ function object(id) {
       index: null,
       link: {timestamp: null},
       sort: ["index", "link.timestamp"],
-      limit: 10
+      limit: 1
     }],
     type: [{
       id: null,

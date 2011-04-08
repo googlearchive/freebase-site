@@ -83,14 +83,17 @@
       size = null;
     }
     
-    // Get the id of an image whether passed an array, an object or an id
-    image_id = h.first_element(image);
-    if (typeof image_id === "object" && image['/common/topic/image']) {
-      image_id = image_id['/common/topic/image'];
-    }
-    image_id = h.first_element(image_id);
-    if (typeof image_id === "object" && (image_id.id || image_id.mid || image_id.guid)) {
-      image_id = image_id.id || image_id.mid || image_id.guid;
+    var image_id = image;
+    if (typeof image_id === "object") {
+      // Get the id of an image whether passed an array, an object or an id
+      image_id = h.first_element(image);
+      if (typeof image_id === "object" && image['/common/topic/image']) {
+        image_id = image_id['/common/topic/image'];
+      }
+      image_id = h.first_element(image_id);
+      if (typeof image_id === "object" && (image_id.id || image_id.mid || image_id.guid)) {
+        image_id = image_id.id || image_id.mid || image_id.guid;
+      }
     }
     
     var o = {mode:"fit"};
@@ -108,7 +111,7 @@
       attrs.height = o.maxheight;
     }
     if (typeof image === "object" && image.id) {
-      attrs.alt = image.id;
+      attrs.alt = image_id;
     }
     h.extend(attrs, o.attrs);
   </acre:script>

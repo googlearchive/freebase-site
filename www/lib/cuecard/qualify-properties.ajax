@@ -41,9 +41,9 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      validators.MqlId(params, "t", {if_empty: ""}),
-      validators.MqlId(params, "i", {if_empty: ""}),
-      validators.MqlId(params, "g", {if_empty: "", guid: true})
+      validators.String(params, "t", {if_empty: ""}),
+      validators.String(params, "i", {if_empty: ""}),
+      validators.String(params, "g", {if_empty: "", guid: true})
     ];
   },
 

@@ -37,7 +37,8 @@ var freebase = acre.require("promise/apis").freebase;
  */
 function topic(id, lang, limit, as_of_time) {
   var params = {
-    lang: lang || "/lang/en"
+    lang: lang || "/lang/en",
+    domains: "all"
   };
   if (params.lang != "/lang/en") {
     params.lang = [params.lang, "/lang/en"];

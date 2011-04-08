@@ -80,7 +80,7 @@
             o.datePattern = bundle["dateFormatItem-yMMM"];
           }
           else {
-            o.datePattern = bundle["dateFormat-medium"];
+            o.datePattern = bundle["dateFormat-long"];
           }
           if (o.datePattern) {
             o.datePattern = i18n.normalize_pattern(o.datePattern);

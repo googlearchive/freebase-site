@@ -29,11 +29,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-;(function($, dojo, fb) {
+;(function($, dojo) {
 
   dojo.require("dojo.date.stamp");
   dojo.require("dojo.date.locale");
   dojo.require("dojo.number");
+
+  var bundle;
 
   var FORMAT_LENGTHS = {
     "long":1, "short":1, "full":1, "medium":1
@@ -43,65 +45,80 @@
   var r_yM = /^\d{4}\-\d{2}$/;
   var r_L = /L/g;
 
-  var i18n = fb.i18n = {
+  var i18n = window.i18n = {
     /**
      * HACK: some dojo cldr formats use Greek Alphabet, 'L' to denote month
      */
     normalize_pattern: function(pattern) {
       return pattern.replace(r_L, "M");
-    }
+    },
+
+    ize: function(context) {
+      i18n.datetime(context);
+      i18n.number(context);
+    },
+
+    /**
+     * localize datetime value i.e., <time datetime="1853-03-30"> ==> 1853年3月30日 (zh)
+     */
+    datetime: function(context) {
+      $("time", context)
+        .each(function() {
+          var $this = $(this);
+          var datetime = $this.attr("datetime");
+          if (datetime) {
+            var d = dojo.date.stamp.fromISOString(datetime);
+            var o = {
+              selector: "date"
+            };
+            var format = $this.attr("data-format");
+            if (format) {
+              if (FORMAT_LENGTHS[format]) {
+                o.formatLength = format;
+              }
+              else {
+                o.datePattern = bundle["dateFormatItem-" + format];
+              }
+            }
+            else if (r_y.test(datetime)) {
+              o.datePattern = bundle["dateFormatItem-y"];
+            }
+            else if (r_yM.test(datetime)) {
+              o.datePattern = bundle["dateFormatItem-yMMM"];
+            }
+            else {
+              o.datePattern = bundle["dateFormat-long"];
+            }
+            if (o.datePattern) {
+              o.datePattern = i18n.normalize_pattern(o.datePattern);
+            }
+            var str = dojo.date.locale.format(d, o);
+            $this.text(str);
+          }
+        })
+        .css("visibility", "visible");
+    },
+
+    /**
+     * localize number value i.e., <span class="number" data-value="1234"> ==> 1,234 (fr)
+     */
+    number: function(context) {
+      $(".number", context)
+        .each(function() {
+          var $this = $(this);
+          var v = $this.attr("data-value");
+          if (v != null) {
+            var str = dojo.number.format(v);
+            $this.text(str);
+          }
+        })
+        .css("visibility", "visible");
+      }
   };
 
   dojo.ready(function() {
-    var bundle = dojo.date.locale._getGregorianBundle();
-
-    $("time")
-      .each(function() {
-        var $this = $(this);
-        var datetime = $this.attr("datetime");
-        if (datetime) {
-          var d = dojo.date.stamp.fromISOString(datetime);
-          var o = {
-            selector: "date"
-          };
-          var format = $this.attr("data-format");
-          if (format) {
-            if (FORMAT_LENGTHS[format]) {
-              o.formatLength = format;
-            }
-            else {
-              o.datePattern = bundle["dateFormatItem-" + format];
-            }
-          }
-          else if (r_y.test(datetime)) {
-            o.datePattern = bundle["dateFormatItem-y"];
-          }
-          else if (r_yM.test(datetime)) {
-            o.datePattern = bundle["dateFormatItem-yMMM"];
-          }
-          else {
-            o.datePattern = bundle["dateFormat-long"];
-          }
-          if (o.datePattern) {
-            o.datePattern = i18n.normalize_pattern(o.datePattern);
-          }
-          var str = dojo.date.locale.format(d, o);
-          $this.text(str);
-        }
-      })
-      .css("visibility", "visible");
-
-    $(".number")
-      .each(function() {
-        var $this = $(this);
-        var v = $this.attr("data-value");
-        if (v != null) {
-          var str = dojo.number.format(v);
-          $this.text(str);
-        }
-      })
-      .css("visibility", "visible");
-
+    bundle = dojo.date.locale._getGregorianBundle();
+    i18n.ize();
   });
 
 })(jQuery, dojo,  window.freebase);

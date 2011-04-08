@@ -40,7 +40,7 @@
     var params = h.extend({}, acre.request.params);
     delete params.lang;
   </acre:script>
-  <form action="${base_url}" method="GET">
+  <form action="${base_url}" method="GET" id="data-lang" class="language-picker">
     <input acre:for="k,v in params" type="hidden" name="${k}" value="${v}"/>
     <select name="lang" 
             onchange="return freebase.dispatch(event, freebase.lang_select, [this.value], this);">

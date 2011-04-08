@@ -143,7 +143,8 @@
         <a href="${h.wiki_url()}" title="Give help and get help adding data to Freebase">Docs</a>
       </li>
     </ul>
-    <div id="nav-account">
+    <div id="nav-utilities">
+      ${i18n_c.lang_select()}
       <div class="nav-user-controls" id="signedin" style="display:none;">
         <strong id="nav-username">
           <a href="${h.legacy_fb_url('/view')}" title="View your profile"></a></strong>
@@ -157,7 +158,6 @@
   </div>
   <div id="breadcrumb" acre:if="exports.breadcrumb">
     ${exports.breadcrumb()}
-    ${i18n_c.lang_select()}
   </div>
 </acre:block>
 

@@ -40,6 +40,10 @@
   var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
   var th = acre.require("helpers.sjs");
+
+  // microdata helpers
+  var microdata = acre.require("lib/helper/microdata.sjs");
+  var itemprop = microdata.itemprop;
 </acre:script>
 
 <acre:block def="title()" if="c.object">
@@ -71,8 +75,12 @@
 
 <acre:block def="nav_keys()">
   <span class="key">
+    <strong><abbr title="${_('GUID')}">${_("guid")}</abbr></strong>: 
+    <span acre:attrs="itemprop('/type/object/guid')">${c.object.guid}</span>
+  </span>
+  <span class="key">
     <strong>${_("permission")}</strong>: 
-    <a href="${h.fb_url('/inspect', c.object.permission)}">${c.object.permission}</a>
+    <a acre:attrs="itemprop('/type/object/permission')" href="${h.fb_url(true, c.object.permission)}">${c.object.permission}</a>
   </span>
 </acre:block>
 

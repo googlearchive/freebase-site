@@ -42,6 +42,18 @@
   <link rel="stylesheet" type="text/css" href="group.mf.css" />
 </acre:block>
 
+<acre:block def="nav_tabs(nav_tab)">
+  <li>
+    ${nav_tab(false, _("Schema"), h.fb_url("/schema", c.object.id))}
+  </li>
+  <li>
+    ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
+  </li>
+  <li>
+    ${nav_tab(true, _("Community"))}
+  </li>
+</acre:block>
+
 <acre:block def="page_content()">
   <h1 class="table-title">${_("Admins")}</h1>
   <table class="table user-table" acre:for="group in c.owners">

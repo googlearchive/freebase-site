@@ -40,8 +40,6 @@
   var i18n_c = acre.require("i18n/components.mjt");
   var _ = i18n.gettext;
   var image = acre.require("template/imagecomponents.mjt");  
-  var components = acre.require("template/components.mjt");
-
   var base = acre.require("template/freebase.mjt");
   var this_exports = this.exports;
   var that_exports;
@@ -190,13 +188,10 @@
           <a href="javascript:void(0);" class="blurb-trigger">${_('more')}</a>
         </div>
         <div class="nav clear">
-          <ul class="tab-nav">
-            ${components.nav_tabs(c.object, c.filters)}
-            <acre:block if="that_exports.nav_tabs">
-              ${that_exports.nav_tabs(c.object, c.filters)}
-            </acre:block>
+          <ul class="tab-nav" acre:if="that_exports.nav_tabs">
+            ${that_exports.nav_tabs(nav_tab)}
           </ul>
-          <ul acre:if="that_exports.nav_utilities" class="nav-utilities">
+          <ul class="nav-utilities" acre:if="that_exports.nav_utilities">
             ${that_exports.nav_utilities()}
           </ul>
         </div>
@@ -214,4 +209,9 @@
   <acre:block if="that_exports.footer_script">
     ${that_exports.footer_script()}
   </acre:block>
+</acre:block>
+
+<acre:block def="nav_tab(current, label, url)">
+  <a acre:if="current" href="#" onclick="return false;" class="current"><span>${label}</span></a>
+  <a acre:else="" href="${url}"><span>${label}</span></a>
 </acre:block>

@@ -35,6 +35,7 @@
   var components = acre.require("components");
   var image = acre.require("lib/template/imagecomponents");  
   var filter_components = acre.require("lib/filter/components.mjt");
+  var fh = acre.require("lib/filter/helpers.sjs");
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
@@ -75,6 +76,43 @@
   </span>
 </acre:block>
 
+<acre:block def="nav_tabs(nav_tab)">
+  <acre:script>
+    var types = h.map_array(c.object.type, "id");
+    var global_filters = fh.global_filters(c.filters);
+  </acre:script>
+  <!!-- schema !!-->
+  <acre:block if="types['/type/domain'] || types['/type/type'] || types['/type/property']">
+    <li>
+      ${nav_tab(false, _("Schema"), h.fb_url("/schema", c.object.id))}
+    </li>
+    <li>
+      ${nav_tab(true, _("Inspect"))}
+    </li>
+    <li acre:if="types['/type/domain']">
+      ${nav_tab(false, _("Community"), h.fb_url("/group", c.object.id))}
+    </li>
+  </acre:block>
+  <!!-- topic !!-->
+  <acre:block elif="types['/common/topic']">
+    <li>
+      ${nav_tab(false, _("Data"), h.fb_url("/topic", c.object.id, global_filters))}
+    </li>
+    <li>
+      ${nav_tab(true, _("Inspect"))}
+    </li>
+    <li>
+      ${nav_tab(false, _("Same As"), h.fb_url("/sameas", c.object.id))}
+    </li>    
+  </acre:block>
+  <!!-- inspect (default) !!-->
+  <acre:block else="">
+    <li>
+     ${nav_tab(true, _("Inspect"))}
+    </li>
+  </acre:block>
+</acre:block>
+
 <acre:block def="nav_utilities()">
   <li>
     <acre:script>
@@ -105,9 +143,6 @@
         </acre:script>
         ${filter_components.prop_counts_filter("/inspect" + c.id, c.filters, c.prop_counts, hide_counts)}
       </div>
-      <!--<div class="module-section">
-        ${filter_components.lang_filter("/inspect" + c.id, c.filters)}
-      </div>-->
       <div class="module-section">
         ${filter_components.as_of_time_filter("/inspect" + c.id, c.filters)}
       </div>

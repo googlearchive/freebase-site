@@ -31,11 +31,13 @@
  
 <acre:script>
   var templates = this.exports;
+  var outputPane;
 </acre:script>
  
-<acre:block def="tabs(id, outputPane)">
+<acre:block def="tabs(id, oP)">
 
   <acre:script>
+    outputPane = oP;
     var TABS = [
       { name: 'Result', key: "json"}, 
       { name: 'Status', key: "status"},
@@ -56,7 +58,7 @@
     <div class="cuecard-outputPane-content tabbed-content">
       <div acre:for="tab in TABS" class="cuecard-outputPane-tabBody" id="${id}-${tab.key}">
         <div class="cuecard-outputPane-$tab.key" >
-          ${templates[tab.key](outputPane)}
+          ${templates[tab.key]()}
         </div>
       </div>
     </div>
@@ -131,7 +133,7 @@
   </div>
 </acre:block>
 
-<acre:block def="help(outputPane)">
+<acre:block def="help()">
   <div class="cuecard-outputPane-helpContent">
     <ul>
       <li><a href="http://www.freebase.com/docs/data" target="_blank">MQL Tutorial</a></li>

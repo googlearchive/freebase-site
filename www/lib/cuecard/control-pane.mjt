@@ -36,7 +36,8 @@
     var TABS = [
       { name: 'Tools', template: tools, key: "tools"},
       { name: 'Query Envelope', template: envelope, key: "envelope"}, 
-      { name: 'Variables', template: variables, key: "variables"}
+      { name: 'Variables', template: variables, key: "variables"},
+      { name: 'Settings', template: settings, key: "settings"}
     ];
   </acre:script>
 
@@ -105,25 +106,6 @@
       <input type="radio" name="tools-result" value="output">results pane</p>
     ${button(BUTTONS.slice(0,3))}
   </div>
- 	<div class="cuecard-controlPane-section">
-    <p><em>Editor Settings</em></p>
-		<div>
-      <input type="checkbox" acre:attrs="($.localstore('cc_cp_clean') == '1') ? {'checked' : ''} : {}">
-      Always tidy running query
-    </div>
-    <div>
-      <input type="checkbox" acre:attrs="($.localstore('cc_cp_align') == '1') ? {'checked' : ''} : {}">
-      Align JSON values with spaces
-    </div>
-    <div style="display: none;">
-      <input type="checkbox">
-      Try running query as you edit
-    </div>
-    <div>
-      <input type="checkbox" acre:attrs="($.localstore('cc_cp_multi') == '1') ? {'checked' : ''} : {}">
-      Show multi-line errors on multiple lines
-    </div>
-  </div>  
 
   <div class="cuecard-controlPane-section">
     <p><em>Acre Templates</em></p>
@@ -277,6 +259,23 @@
 </acre:block>
 
 <acre:block def="settings(controlPane)">
- 
+  <div class="cuecard-controlPane-section">
+    <div>
+     <input type="checkbox" acre:attrs="($.localstore('cc_cp_clean') == '1') ? {'checked' : ''} : {}">
+     Always tidy running query
+    </div>
+    <div>
+      <input type="checkbox" acre:attrs="($.localstore('cc_cp_align') == '1') ? {'checked' : ''} : {}">
+      Align JSON values with spaces
+    </div>
+    <div style="display: none;">
+      <input type="checkbox">
+      Try running query as you edit
+    </div>
+    <div>
+      <input type="checkbox" acre:attrs="($.localstore('cc_cp_multi') == '1') ? {'checked' : ''} : {}">
+      Show multi-line errors on multiple lines
+    </div>
+  </div>
 </acre:block>
 

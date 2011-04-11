@@ -67,7 +67,7 @@ test("urlfetch_redirects", function() {
       if (error.info.status >= 300 && error.info.status < 400) {
         ok(false, "We should have redirected and not received this error.");
       } else {
-        ok(false, "We shouldn't be erroring out here");
+        ok(false, "We shouldn't be erroring out here: "+error);
       }
     });
 

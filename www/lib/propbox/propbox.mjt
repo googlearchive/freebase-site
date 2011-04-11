@@ -64,7 +64,9 @@
 <acre:block def="domainbox(topic, domain_structure, lang)">
   <div class="section domain domain-section" data-id="${domain_structure.id}">
     <div class="header">
-      <span class="status">${_('Freebase Commons')}</span>
+      <span class="status">
+        ${h.is_commons(domain_structure.id) ? 'Freebase Commons' : 'User Domain'}
+      </span>
       <h1 class="kbs">
         <span class="mark">
           <a href="${h.fb_url(domain_structure.id)}">${domain_structure.text}</a>

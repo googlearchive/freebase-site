@@ -131,7 +131,7 @@
   <div class="property-section" data-id="${prop_structure.id}">
     <div class="sub-foobar kbs">
       <!--view all link is shown for any non-unique property-->
-      <a href="${ph.build_query_url(topic.id, prop_structure, lang)}" class="more"><span>${VIEW_ALL_PROPERTY_VALUES}</span></a>
+      <a href="${ph.build_query_url(topic.id, prop_structure, prop_structure.expected_type.id === '/type/text' ? null : lang)}" class="more"><span>${VIEW_ALL_PROPERTY_VALUES}</span></a>
       <span class="header-label">
         ${prop_menu(topic, prop_structure)}
       </span>

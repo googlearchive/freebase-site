@@ -112,7 +112,7 @@ function get_bar_graph_data(filters, prop_counts) {
   var type = filters.type;
   var property = filters.property;
 
-  var data;
+  var data, k;
   // keep track of the id_prefix since the prop_counts bdb splits the type/property id's to be as minimal as possible
   var id_prefix = "";
   if (domain) {
@@ -145,13 +145,20 @@ function get_bar_graph_data(filters, prop_counts) {
   }
   else {
     data = prop_counts;
+    var all = filters.domains === "all";
+    for (k in data) {
+      if (!all && is_base_id(k)) {
+        delete data[k];
+      }
+    }
   }
   if (data == null) {
     return null;
   }
+
   var list = [];
   for (k in data) {
-    if (k === 'ti' || k == 'to') continue;
+    if (k === 'ti' || k === 'to') continue;
     var counts = data[k];
     if (typeof counts === "number") {
       counts = {t:counts};
@@ -204,4 +211,9 @@ function get_bar_graph_data(filters, prop_counts) {
     chart_data.push(data);
   });
   return chart_data;
+};
+
+var r_is_base_id = /^\/base\/|\/user\//;
+function is_base_id(id) {
+  return r_is_base_id.test(id);
 };

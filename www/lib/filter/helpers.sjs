@@ -38,7 +38,7 @@ var i18n = acre.require("i18n/i18n.sjs");
 function global_filters(filters) {
   var g = {};
   filters = filters || {};
-  ["domain", "type", "property", "as_of_time"].forEach(function(k) {
+  ["domain", "type", "property", "as_of_time", "domains"].forEach(function(k) {
     var v = filters[k];
     if (v != null) {
       g[k] = v;

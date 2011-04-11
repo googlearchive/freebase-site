@@ -74,7 +74,7 @@
   <div class="section domain domain-section" data-id="${domain_structure.id}">
     <div class="header">
       <span class="status">
-        ${h.is_commons(domain_structure.id) ? 'Freebase Commons' : 'User Domain'}
+        ${h.is_commons(domain_structure.id) ? _('Freebase Commons') : _('User Domain')}
       </span>
       <h1 class="kbs">
         <span class="mark">

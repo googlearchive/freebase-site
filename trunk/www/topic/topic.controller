@@ -65,35 +65,107 @@ var SPEC = {
   },
 
   run: function(id, f) {
-    var domains = null;
+    var domains = f.domains;
     if ((f.domain && fh.is_base_id(f.domain)) ||
         (f.type && fh.is_base_id(f.type)) ||
         (f.property && fh.is_base_id(f.property))) {
       domains = "all";
     }
-    else {
-      domains = f.domains;
+    return object_query(id, true)
+      .then(function(object_result) {
+        return {
+          id: id,
+          filters: f,
+          object: object_result,
+          prop_counts: filter_queries.prop_counts(id),
+          topic: topic_api.topic(id, i18n.lang, f.limit, f.as_of_time, domains)
+            .then(function(topic) {
+
+              if (domains !== "all") {
+                object_result.type = object_result.type.filter(function(type) {
+                  return !fh.is_base_id(type.id);
+                });
+              }
+
+              add_type_structure(topic, object_result);
+
+              if (f.domain) {
+                return filter_by_domain(topic, f.domain);
+              }
+              else if (f.type) {
+                return filter_by_type(topic, f.type);
+              }
+              else if (f.property) {
+                return filter_by_property(topic, f.property);
+              }
+              return topic;
+            })
+        };
+    });
+  }
+};
+
+function add_type_structure(topic, object_result) {
+  if (topic && topic.structure) {
+    if (!topic.structure.order) {
+      topic.structure.order = [];
     }
-    return {
-      id: id,
-      filters: f,
-      object: object_query(id),
-      prop_counts: filter_queries.prop_counts(id),
-      topic: topic_api.topic(id, i18n.lang, f.limit, f.as_of_time, domains)
-        .then(function(topic) {
-          if (f.domain) {
-            return filter_by_domain(topic, f.domain);
-          }
-          else if (f.type) {
-            return filter_by_type(topic, f.type);
-          }
-          else if (f.property) {
-            return filter_by_property(topic, f.property);
-          }
-          return topic;
-        })
+    topic.structure.order.unshift("/type");
+    if (!topic.structure.domains) {
+      topic.structure.domains = {};
+    }
+    topic.structure.domains["/type"] = {
+      text: "Metaweb System Types",
+      types: ["/type/object"]
+    };
+    if (!topic.structure.types) {
+      topic.structure.types = {};
+    }
+    topic.structure.types["/type/object"] = {
+      text: "Object",
+      properties: [
+        "/type/object/name",
+        "/type/object/type"
+      ]
+    };
+    if (!topic.properties) {
+      topic.properties = {};
+    }
+    topic.properties["/type/object/name"] = {
+      disambiguator: false,
+      expected_type: {
+        id: "/type/text",
+        text: "Text"
+      },
+      text: "name",
+      unique: false,
+      values: to_topic_api_values(object_result.name)
+    };
+    topic.properties["/type/object/type"] = {
+      disambiguator: false,
+      expected_type: {
+        id: "/type/type",
+        text: "Type"
+      },
+      text: "type",
+      unique: false,
+      values: to_topic_api_values(object_result.type)
     };
   }
+};
+
+function to_topic_api_values(list) {
+  list.forEach(function(item) {
+    if (item.id) {
+      var name = i18n.display_name_node(item);
+      item.text = name.value;
+      item.lang = name.lang;
+    }
+    else {
+      item.text = item.value;
+    }
+  });
+  return list;
 };
 
 function filter_by_domain(topic, domain_id) {

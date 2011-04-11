@@ -37,13 +37,12 @@ var i18n = acre.require("i18n/i18n.sjs");
  * Basic freebase object information (in english):
  * This query is used in template/freebase_object template to display the freebase object mast-head.
  */
-function object(id) {
-  return freebase.mqlread({
+function object(id, all_names) {
+  var q = {
     id: null,
     "q:id": id,
     guid: null,
     mid: null,
-    name: i18n.mql.query.name(),
     creator: {
       optional: true,
       id: null,
@@ -61,43 +60,54 @@ function object(id) {
     }],
     type: [{
       id: null,
-      optional: true
+      name: i18n.mql.query.name(),
+      optional: true,
+      link: {timestamp:null},
+      index: null,
+      sort: ["index", "-link.timestamp"]
     }],
     permission: null
-  })
-  .then(function(env) {
-    return env.result;
-  })
-  .then(function(topic) {
-    topic.name = topic.name || topic.mid;
-    topic.image = topic["/common/topic/image"];
-    if (topic.creator) {
-      topic.creator.name = topic.creator.name || topic.creator.id;
-    }
-    var promises = [];
-    promises.push(
-      freebase.get_static("notable_types_2", topic.guid.substring(1))
-        .then(function(r) {
-          if (r) {
-            var notable_for = h.first_element(r.notable_for);
-            if (notable_for) {
-              if (notable_for.p === "/type/object/type") {
-                topic.notable_type = notable_for.o;
+  };
+  if (all_names) {
+    q.name = [{value:null, lang:null, optional:true}];
+  }
+  else {
+    q.name = i18n.mql.query.name();
+  }
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result;
+    })
+    .then(function(topic) {
+      topic.name = topic.name || topic.mid;
+      topic.image = topic["/common/topic/image"];
+      if (topic.creator) {
+        topic.creator.name = topic.creator.name || topic.creator.id;
+      }
+      var promises = [];
+      promises.push(
+        freebase.get_static("notable_types_2", topic.guid.substring(1))
+          .then(function(r) {
+            if (r) {
+              var notable_for = h.first_element(r.notable_for);
+              if (notable_for) {
+                if (notable_for.p === "/type/object/type") {
+                  topic.notable_type = notable_for.o;
+                }
+                else {
+                  topic.notable_for = notable_for.o;
+                }
               }
-              else {
-                topic.notable_for = notable_for.o;
-              }
+              topic.notable_types = r.types;
             }
-            topic.notable_types = r.types;
-          }
-          return r;
-        })
-    );
-    promises.push(i18n.get_blurb(topic, {maxlength: 500}));
-    promises.push(i18n.get_blob(topic));
-    return deferred.all(promises)
-      .then(function() {
-        return topic;
-      });
-  });
+            return r;
+          })
+      );
+      promises.push(i18n.get_blurb(topic, {maxlength: 500}));
+      promises.push(i18n.get_blob(topic));
+      return deferred.all(promises)
+        .then(function() {
+          return topic;
+        });
+    });
 };

@@ -32,6 +32,7 @@
 <acre:script>
   var c = this.exports.c = {};
   var t = acre.require("templates");
+  var h = acre.require("lib/helper/helpers.sjs");
 </acre:script>
 
 <acre:block def="title()" trim="">
@@ -52,9 +53,9 @@
       <h2>2. General Use and Storage Policies </h2>
       <p>You acknowledge that we may establish general practices and limits concerning access to and/or use of the Site, Content, and Service. You agree that we have no responsibility or liability for the deletion or failure to store or display any content that you contribute to the Content, Site, or Service.</p>
       <h2>3. User Contributed Content</h2>
-      <p>As outlined in the <a href="http://www.freebase.com/signin/licensing">Licensing Policy</a>, Freebase users can upload Data, Schema, Descriptions, Code and Media Files to the Site or Service.  Any contributions to Freebase are subject to the terms set out in the Licensing Policy.</p>
+      <p>As outlined in the <a href="${h.fb_url('/policies/licensing')}">Licensing Policy</a>, Freebase users can upload Data, Schema, Descriptions, Code and Media Files to the Site or Service.  Any contributions to Freebase are subject to the terms set out in the Licensing Policy.</p>
       <h2>4. Republishing </h2>
-      <p>You may copy, modify and redistribute Content in accordance with the guidelines posted on the Site or Service provided that you comply with the licenses that are presented with such Content.  See our <a href="http://www.freebase.com/signin/licensing">Licensing Policy</a> for more information.</p>
+      <p>You may copy, modify and redistribute Content in accordance with the guidelines posted on the Site or Service provided that you comply with the licenses that are presented with such Content.  See our <a href="${h.fb_url('/policies/licensing')}">Licensing Policy</a> for more information.</p>
       <h2>5. API Use and Application Hosting </h2>
       <p>We provide access to portions of the Site and Service through an API thereby enabling people to build applications on top of the Freebase platform. The API and Application Hosting Services are provided free of charge for up to <strong>100,000 (one hundred thousand) calls per day <u>per person or organization</u></strong>, which we believe will meet the needs of the vast majority of developers. You agree not to use multiple IP addresses or any other means to get around this limitation. If you require higher volume API use for your site or service, please contact us at <a href="mailto:partners@metaweb.com">partners@metaweb.com</a> to discuss an alternate arrangement. </p>
       <p>For purposes of this Terms of Service, any use of the API constitutes use of the Site and Service. You agree only to use the API as outlined in the documentation provided by us on the Site.</p>
@@ -68,9 +69,9 @@
       <h2>9. Advertisement </h2>
       <p>We reserve the right to support the Service through the use of advertisements and promotions. In consideration of Metaweb granting you access to and use of the Service, you agree that Metaweb may place such advertising on the Service, including on pages consisting primarily of user-contributed content. </p>
       <h2>10. Privacy Policy </h2>
-      <p>We respect the privacy of others. These Terms of Service incorporate the terms of the Freebase Privacy Policy, which may be found at <a href="http://www.freebase.com/signin/privacy">http://www.freebase.com/signin/privacy</a>.</p>
+      <p>We respect the privacy of others. These Terms of Service incorporate the terms of the Freebase Privacy Policy, which may be found at <a href="${h.fb_url('/policies/privacy')}">${h.fb_url(true, '/policies/privacy')}</a>.</p>
       <h2>11. Copyright Policy </h2>
-      <p>We respect the copyrights of others and expect Freebase users to do the same. Unauthorized copying, modification, distribution, public display or public performance of a copyrighted work is an infringement of the copyright holder's rights. You agree to comply with the terms of the Freebase Copyright Policy, which may be found at <a href="http://www.freebase.com/signin/cc">http://www.freebase.com/signin/cc</a> and acknowledge that we will, in accordance with the Copyright Policy, terminate the account of any user who uses the Site or the Service repeatedly to infringe upon the intellectual property rights of others.</p>
+      <p>We respect the copyrights of others and expect Freebase users to do the same. Unauthorized copying, modification, distribution, public display or public performance of a copyrighted work is an infringement of the copyright holder's rights. You agree to comply with the terms of the Freebase Copyright Policy, which may be found at <a href="${h.fb_url('/policies/copyright')}">${h.fb_url(true, '/policies/copyright')}</a> and acknowledge that we will, in accordance with the Copyright Policy, terminate the account of any user who uses the Site or the Service repeatedly to infringe upon the intellectual property rights of others.</p>
       <h2>12. Appropriate Conduct and Prohibited Uses </h2>
       <p>As a condition to your access and/or use of the Site, Content, or Service, you agree not to (and not to allow a third party to): </p>
       <ol>

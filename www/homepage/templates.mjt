@@ -51,7 +51,7 @@
     <ul>
       <acre:block for="domain in domains">
         <li>
-          <a href="${h.fb_url('/schema'+domain.id)}">${domain.name}</a>
+          <a href="${h.fb_url(domain.id)}">${domain.name}</a>
         </li>
       </acre:block>
     </ul>
@@ -204,7 +204,7 @@
        data-topics="${domain.activity ? domain.activity.total.t : 0}"
        >
     <h3 class="domain-title">
-      <a href="${h.fb_url('/schema'+domain.id)}">${domain.name}</a>
+      <a href="${h.fb_url(domain.id)}">${domain.name}</a>
     </h3>
     <div class="member-count">
       ${domain.member_count > 100 ? '100+' : domain.member_count || 0}
@@ -245,7 +245,7 @@
         <a name="all-domains-${letter}" class="letter">${letter}</a>
         <ul>
           <li acre:for="domain in grouped_domains[letter]">
-            <a href="${h.fb_url('/schema'+domain.id)}">
+            <a href="${h.fb_url(domain.id)}">
               ${domain.name}
             </a>
           </li>
@@ -379,7 +379,7 @@
       <div acre:for="item in blog.items" class="blog-item">
         ${h.bless_sprintf(_("%s by %s on %s"),
                           h.tag("a", item.title, "href", item.link, "class", "item-title"),
-                          h.tag("a", item["dc:creator"], "href", h.legacy_fb_url("/view/user/"+item["dc:creator"])),
+                          h.tag("a", item["dc:creator"], "href", h.fb_url("/user/"+item["dc:creator"])),
                           acre.markup.stringify(i18n_c.datetime(new Date(item.pubDate), [["data-format","MMMd"]])))}
       </div>
     </div>

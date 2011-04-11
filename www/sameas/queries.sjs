@@ -31,6 +31,7 @@
 
 var freebase = acre.require("lib/promise/apis").freebase;
 var deferred = acre.require("lib/promise/apis").deferred;
+var h = acre.require("lib/helper/helpers.sjs");
 
 var images = function(id, limit) {
   limit = limit || 10;
@@ -274,8 +275,7 @@ var keys_by_authority = function(topic_id) {
       authority['!/base/sameas/web_id/authority'].forEach(function(namespace) {
         if (authority.id === '/en/metaweb') {
           namespace['/type/namespace/keys'].forEach(function(key) {
-            url_map[_make_key(namespace.id, key.value)] = '/view' +
-              namespace['id'] + '/' + key.value;
+            url_map[_make_key(namespace.id, key.value)] = namespace['id'] + '/' + key.value;
           });
         }
 
@@ -321,7 +321,7 @@ var keys_by_authority = function(topic_id) {
             'id': '/m',
             'keys': [{
               key: mid.split('/')[2],
-              url: '/view' + mid
+              url: h.fb_url("/inspect", mid)
             }]
           });
           total_keys = total_keys + 1;

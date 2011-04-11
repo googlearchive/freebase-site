@@ -32,6 +32,7 @@
 <acre:script>
   var c = this.exports.c = {};
   var t = acre.require("templates");
+  var h = acre.require("lib/helper/helpers.sjs");
 </acre:script>
 
 <acre:block def="title()" trim="">
@@ -58,9 +59,9 @@
       <p>Freebase allows registered users to send invitations to their friends.
         We use your friends' email addresses to send them these invitations, and we retain their addresses for the purpose of identifying them when they come to our site.
         Unless they register with the site, we do not send them any other emails or use their email address for any other purpose.</p>
-      <p>Finally, we log non-<a href="http://www.freebase.com/view/en/personally_identifiable_information">Personally Identifiable Information</a> including profile information, aggregate user data and browser type from registered users and casual visitors to the site. This data is used to manage the website, track usage, and improve the website services. This non-Personally Identifiable Information may be shared with third parties to provide more relevant services and advertisements to members. User IP addresses are also recorded for security and monitoring purposes. </p>
+      <p>Finally, we log non-<a href="http://www.freebase.com/en/personally_identifiable_information">Personally Identifiable Information</a> including profile information, aggregate user data and browser type from registered users and casual visitors to the site. This data is used to manage the website, track usage, and improve the website services. This non-Personally Identifiable Information may be shared with third parties to provide more relevant services and advertisements to members. User IP addresses are also recorded for security and monitoring purposes. </p>
       <h4>Information in Freebase</h4>
-      <p>Freebase is an open, shared database that contains information about millions of topics, including profiles of a large number of people, called "Person Topics." These <a href="http://www.freebase.com/view/people/person">Person Topics</a> are public and contain detailed assertions about real-life people, including things like gender and date of birth. Users may choose to create Person Topics about themselves, or assert that an existing Person Topic is about them, thus associating their Freebase user profile with that Topic. To be clear, however, Person Topics can be created and edited by anyone, about anyone. </p>
+      <p>Freebase is an open, shared database that contains information about millions of topics, including profiles of a large number of people, called "Person Topics." These <a href="http://www.freebase.com/people/person">Person Topics</a> are public and contain detailed assertions about real-life people, including things like gender and date of birth. Users may choose to create Person Topics about themselves, or assert that an existing Person Topic is about them, thus associating their Freebase user profile with that Topic. To be clear, however, Person Topics can be created and edited by anyone, about anyone. </p>
       <p>Person Topics are useful for looking up information about other people, but because they can be edited by others, the information is not fully verifiable. Instead, we rely on our community of users to maintain the accuracy of our database. </p>
       <p>If you think Person Topics contain information that that violates laws, including laws with respect to privacy and publicity rights, please contact us at <a href="mailto:privacy@metaweb.com">privacy@metaweb.com</a>.</p>
       <h4>Cookies</h4>

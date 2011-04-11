@@ -39,7 +39,7 @@ var result;
 var id = validators.MqlId(path_info, {if_invalid:null});
 if (id) {
   /**
-   * MQL to determine if this topic is viewable by topic/view,
+   * MQL to determine if this id is viewable by this app
    * otherwise, redirect to associated views
    */
   var q = {

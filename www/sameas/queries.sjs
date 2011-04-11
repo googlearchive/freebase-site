@@ -67,6 +67,9 @@ var images = function(id, limit) {
     .then(function(envelope){
       var images = [];
       var result = envelope.result["/common/topic/image"] || [];
+
+            console.log("image result", result);
+
       result.forEach(function(img){
         var image = {
           id: img.mid,
@@ -153,6 +156,9 @@ var _make_key = function(namespace, key) {
 
 var _get_authorityless_keys = function(keys, url_map) {
   var namespaces = {};
+
+console.log("_get_authorityless_keys", keys);
+
   keys.forEach(function(key) {
     var namespace = key.namespace.id;
     if (namespace.indexOf('/m') !== 0) {
@@ -224,6 +230,7 @@ var keys_by_authority = function(topic_id) {
   var weblink_query = {
     'id': topic_id,
     '/common/topic/weblink': [{
+      optional: true,
       'key': null,
       'url': null,
       'template': {

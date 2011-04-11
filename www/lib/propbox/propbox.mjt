@@ -272,9 +272,9 @@
     <acre:block else="">
       <span class="property-value" 
             acre:attrs="attrs" 
-            data-value="${prop_value.value}">${prop_value.text}</span>
+            data-value="${prop_value.value}">${prop_value.value}</span>
       <acre:block if="ect === '/type/text'">
-        ${i18n_c.lang_code(prop_structure.lang, lang)}
+        ${i18n_c.lang_code(prop_value.lang || prop_structure.lang, lang)}
       </acre:block>
     </acre:block>
   </acre:block>

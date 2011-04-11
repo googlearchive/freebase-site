@@ -44,7 +44,8 @@ var exports = {
   "array_map": array_map,
 
   "endsWith": endsWith,
-  "startsWith": startsWith
+  "startsWith": startsWith,
+  "is_commons": is_commons
 };
 
 // Used for trimming whitespace
@@ -215,3 +216,17 @@ function endsWith(str, end) {
 function startsWith(str, start) {
   return str.indexOf(start) === 0;
 };
+
+
+/*
+ * Simple function for determining whether a domain
+ * is part of the Commons or a User Domain
+ * 
+ * Expects a domain id (eg. /film or /base/kconragan/surfing)
+ */
+
+function is_commons(domain) {
+  return domain.indexOf('/user/') == -1 &&
+         domain.indexOf('/guid/') == -1 &&
+         domain.indexOf('/base/') == -1;
+}

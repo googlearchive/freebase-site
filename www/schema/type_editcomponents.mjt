@@ -31,6 +31,7 @@
 
 <acre:script>
   var h = acre.require("lib/helper/helpers.sjs");
+  var schema_h = acre.require("helpers.sjs")
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var i18n_editcomponents = acre.require("lib/i18n/editcomponents");
   var _ = i18n.gettext;
@@ -41,7 +42,7 @@
     <tbody>
       <tr class="edit-row">
         <td colspan="4">
-          <div class="edit-row-loader"></div>  
+          <div class="edit-row-loader"></div>
 
           <div class="nav clear">
             <ul class="nav-mode">
@@ -65,7 +66,7 @@
                 ${_('Key')}
                 <span class="key">${type_id}/</span>
                 <input name="type" type="hidden" value="${type_id}"/>
-              </span>              
+              </span>
               <input name="key" type="text" class="text-input"/>
               <span class="key-status"></span>
             </label>
@@ -103,8 +104,8 @@
                 <input type="checkbox" name="master" disabled="disabled" checked="checked"/>
                <span>${_('Master')}</span>
               </label>
-            </div>          
-          </div>        
+            </div>
+          </div>
         </td>
       </tr>
       <tr class="edit-row-submit">
@@ -129,17 +130,17 @@
           <div class="edit-row-loader"></div>
           <div acre:if="prop.delegated" class="form-msg">
             ${h.bless_sprintf(_("This property is being delegated to %s. You cannot change the %s or %s."), h.tag("a", prop.delegated.id, "href", h.fb_url("/schema"+prop.delegated.id), "target", "_new"), h.tag("strong", _("Expected Type")), h.tag("strong", _("Uniqueness")))}
-          <a href="${h.legacy_fb_url('/view')}${prop.schema.id}/-${prop.id}">${_('View instances')} &raquo;</a>
+          <a href="${schema_h.build_query_url(prop.schema.id, prop.id)}">${_('View instances')} &raquo;</a>
           </div>
-          <div acre:elif="prop.used" class="form-msg" acre:trim="">      
+          <div acre:elif="prop.used" class="form-msg" acre:trim="">
             <acre:block if="prop.unique">
               ${h.bless_sprintf(_("This property is being used. You cannot change the %s."), h.tag("strong", _("Expected Type")))}
             </acre:block>
             <acre:block else="">
               ${h.bless_sprintf(_("This property is being used. You cannot change the %s or %s."), h.tag("strong", _("Expected Type")), h.tag("strong", _("Uniqueness")))}
             </acre:block>
-            <a href="${h.legacy_fb_url('/view')}${prop.schema.id}/-${prop.id}">${_('View instances')} &raquo;</a>
-          </div>            
+            <a href="${schema_h.build_query_url(prop.schema.id, prop.id)}">${_('View instances')} &raquo;</a>
+          </div>
           <div class="form-field fb-property-name">
             <label>
               <span class="form-label">${_('Name')}</span>
@@ -168,9 +169,9 @@
               if (prop.expected_type) {
                 ect_input.value = ect.value = prop.expected_type.id;
                 if (prop.unit) {
-                  unit.value = prop.unit.id; 
+                  unit.value = prop.unit.id;
                   ect_input.value = ect_input.value + " (" + i18n.display_name(prop.unit) + ")";
-                }                
+                }
                 if (prop.used || prop.delegated) {
                   ect_input.disabled = 'disabled';
                 }
@@ -226,7 +227,7 @@
               <label for="hidden" class="boolean-field">
                 <input type="checkbox" name="hidden" acre:attrs="prop.display_none?{checked:'checked'}:{}"/>
                 ${_('Hidden')}
-              </label>              
+              </label>
               <acre:block if="prop.delegated">
                 <label for="delegated" class="boolean-field">
                   <input type="checkbox" name="delegated" disabled="disabled" checked="checked"/>
@@ -490,7 +491,7 @@
         <div acre:if="message" class="form-row">
           <p class="warning">
             ${message}
-            <a href="${h.legacy_fb_url('/view', type.id)}" target="_new">${_("View topics")} &raquo;</a>
+            <a href="${schema_h.build_query_url(type.id)}" target="_new">${_("View topics")} &raquo;</a>
           </p>
         </div>
       </div>

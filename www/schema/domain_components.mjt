@@ -52,22 +52,19 @@
         </li>
         <li class="row-menu-item"><a href="${h.fb_url('/inspect', type.id)}">${_('Inspect Type')}</a></li>
         <li class="row-menu-item">
-          <a href="${h.legacy_fb_url('/view'+type.id)}">${h.bless_sprintf(_('Browse %s instances'), acre.markup.stringify(i18n_c.number(type.instance_count)))}</a>
-        </li>
-        <li class="row-menu-item last">
-          <a href="${sh.build_query_url(type.id)}">${_('Build query')}</a>
+          <a href="${sh.build_query_url(type.id)}">${h.bless_sprintf(_('Browse %s instances'), acre.markup.stringify(i18n_c.number(type.instance_count)))}</a>
         </li>
       </ul>
     </th>
     <td class="even">$type.id</td>
     <td class="odd numeric">$type.properties</td>
-    <td class="even numeric"><a href="${h.legacy_fb_url('/view' + type.id)}">${i18n_c.number(type.instance_count)}</a></td>
+    <td class="even numeric"><a href="${sh.build_query_url(type.id)}">${i18n_c.number(type.instance_count)}</a></td>
     <td class="odd description">
       <acre:script>
         var blurb = i18n.display_article(type, "blurb");
       </acre:script>
       <p acre:if="blurb">${blurb}</p>
-      <span acre:if="type.enumeration && !type.mediator" class="property-meta">${_("enumerated")}</span>    
+      <span acre:if="type.enumeration && !type.mediator" class="property-meta">${_("enumerated")}</span>
     </td>
   </tr>
 </acre:block>

@@ -33,7 +33,7 @@
   var c = this.exports.c = {};
   var h = acre.require("lib/helper/helpers.sjs");
   var dc = acre.require("domain_components");
-  var image = acre.require("lib/template/imagecomponents");  
+  var image = acre.require("lib/template/imagecomponents");
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var _ = i18n.gettext;
 </acre:script>
@@ -54,7 +54,7 @@
           <span class="breadcrumb-item-inner">
             <a href="${h.fb_url('/schema')}">${_("Schema")}</a>
           </span>
-        </li>  
+        </li>
         <li if="c.domain" class="breadcrumb-item last">
           <span class="breadcrumb-item-inner">
             <a href="#">${i18n.display_name(c.domain)}</a>
@@ -82,9 +82,6 @@
     <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.domain_settings, ['${c.domain.id}', true], this);">
       <span class="edit-icon">${_('Domain Settings')}</span>
     </a>
-  </li>
-  <li>
-    <a href="${h.legacy_fb_url('/view'+c.domain.id)}" class="icon-link"><span class="browse-icon">${_('Browse Domain')}</span></a>
   </li>
 </acre:block>
 

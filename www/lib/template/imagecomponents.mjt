@@ -47,14 +47,14 @@
 
 <acre:block def="user_image(user, size)" if="user">
  <acre:script>
-    var url = h.legacy_fb_url("/view" + user.id);
+    var url = h.fb_url("/inspect" + user.id);
     var options = {
       mode: "fillcrop",
       pad: 1,
       errorid: "/freebase/user_profile/empty_user_image"
     };
   </acre:script>
-  
+
   <span class="user-image">
     <a href="${url}" title="${user.id}">
      ${image_thumb(user, size, options)}
@@ -66,7 +66,7 @@
 <acre:block def="user_badges(badges, size)" if="badges && badges.length">
   <acre:block for="group in badges">
     <acre:script>
-      var url = h.legacy_fb_url("/view" + group.id);
+      var url = h.fb_url("/inspect" + group.id);
     </acre:script>
     <a class="user-badge-${size} badge${group.id.replace(/\//g, '-')}"
        title="This user is a ${group.name}"
@@ -76,13 +76,13 @@
 
 <acre:block def="image_thumb(image, size, options)" if="image">
   <acre:script>
-    // The template can be called with image, size and options, 
+    // The template can be called with image, size and options,
     //   of just image and options
     if (typeof size !== "number") {
       options = size || {};
       size = null;
     }
-    
+
     var image_id = image;
     if (typeof image_id === "object") {
       // Get the id of an image whether passed an array, an object or an id
@@ -95,7 +95,7 @@
         image_id = image_id.id || image_id.mid || image_id.guid;
       }
     }
-    
+
     var o = {mode:"fit"};
     if (size) {
       o.maxwidth = o.maxheight = size;

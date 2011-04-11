@@ -57,7 +57,7 @@
     var global_filters = fh.global_filters(c.filters);
   </acre:script>
   <li>
-    ${nav_tab(true, _("Data"))}
+    ${nav_tab(true, _("View"))}
   </li>
   <li>
     ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id, global_filters))}

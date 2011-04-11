@@ -52,6 +52,13 @@ var PARAMS = {
   "as_of_time": {
     validator: validators.Datejs,
     options: {if_invalid:null}
+  },
+  "domains": {
+    validator: validators.OneOf,
+    options: {
+      oneof: ["all"],
+      if_invalid: null
+    }
   }
 };
 

@@ -236,12 +236,14 @@
         id = '/user/' + this.name;
       }
       setTimeout(function() {
-        $(window).trigger("fb.user.signedin", {guid: guid, name: name, id: id});
+        // sign-in/out disabled for milestone
+        // $(window).trigger("fb.user.signedin", {guid: guid, name: name, id: id});
       }, 0);
     }
     else {
       setTimeout(function() {
-        $(window).trigger("fb.user.signedout");
+        // sign-in/out disabled for milestone
+        // $(window).trigger("fb.user.signedout");
       }, 0);
     }
   }

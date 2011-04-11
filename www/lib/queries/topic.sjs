@@ -35,10 +35,9 @@ var freebase = acre.require("promise/apis").freebase;
 /**
  * Get topic data/structure from Topic API
  */
-function topic(id, lang, limit, as_of_time) {
+function topic(id, lang, limit, as_of_time, domains) {
   var params = {
-    lang: lang || "/lang/en",
-    domains: "all"
+    lang: lang || "/lang/en"
   };
   if (params.lang != "/lang/en") {
     params.lang = [params.lang, "/lang/en"];
@@ -48,6 +47,9 @@ function topic(id, lang, limit, as_of_time) {
   }
   if (as_of_time) {
     params.as_of_time = as_of_time;
+  }
+  if (domains) {
+    params.domains = domains;
   }
   var url = h.fb_api_url("/api/experimental/topic/full", id, params);
   return freebase.fetch(url)

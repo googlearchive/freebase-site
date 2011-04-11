@@ -46,7 +46,11 @@
   <div class="filter-group filter-chart">
     <h2 class="module-section-title" acre:if="type">${_("By Type")}:</h2>
     <h2 class="module-section-title" acre:elif="property">${_("By Property")}:</h2>
-    <h2 class="module-section-title" acre:else="">${_("By Domain")}:</h2>
+    <h2 class="module-section-title" acre:elif="domain">${_("By Domain")}:</h2>
+    <h2 class="module-section-title" acre:else="">
+      ${_("By Domain")}:
+      ${domains_filter(base_url, filters)}   
+    </h2>
     <acre:block if="domain">
       <span class="filter-item">
         <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'domain'))}" class="remove-filter">x</a>
@@ -63,9 +67,7 @@
       </acre:script>
       <span class="filter-item">
         <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'type'))}" class="remove-filter">x</a>
-        <a href="${h.fb_url(base_url, fh.add_filter(domain_filters, 'domain', domain_ns))}">
-          ${domain_ns}
-        </a>
+        <a href="${h.fb_url(base_url, fh.add_filter(domain_filters, 'domain', domain_ns))}">${domain_ns}</a>
       </span>
       <span class="filter-sub-item">${type.split("/").pop()}</span>
     </acre:block>
@@ -81,9 +83,7 @@
       </acre:script>
       <span class="filter-item">
         <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'property'))}" class="remove-filter">x</a>
-        <a href="${h.fb_url(base_url, fh.add_filter(type_filters, 'domain', domain_ns))}">
-         ${domain_ns}
-        </a>
+        <a href="${h.fb_url(base_url, fh.add_filter(type_filters, 'domain', domain_ns))}">${domain_ns}</a>
       </span>
       <a class="filter-sub-item" href="${h.fb_url(base_url, fh.add_filter(type_filters, 'type', type_ns))}">
         ${type_ns.split("/").pop()}
@@ -99,7 +99,7 @@
       <acre:block if="bar_graph_data && bar_graph_data.length">
         <table class="bar-graph" cellspacing="0"  role="listbox">
           <tbody tabindex="0">
-            <acre:block for="i, data in bar_graph_data" if="i < 10">
+            <acre:block for="i, data in bar_graph_data" if="i < 100">
               <acre:script>
                 var id = data.id;
                 var total = data.total;
@@ -144,6 +144,11 @@
   </div>
 </acre:block>
 
+<acre:block def="domains_filter(base_url, filters)">
+  <div class="filter-form">
+    ${filter_form(base_url, filters, 'domains', domains_input, ['domains', filters.domains === 'all'])}
+  </div>
+</acre:block>
 
 <acre:block def="as_of_time_filter(base_url, filters)">
   <h3 class="module-section-title"><label for="">${_("As of")}</label></h3>
@@ -191,4 +196,13 @@
 <acre:block def="limit_slider(name, value)">
   <input type="hidden" name="${name}" value="${value}" />
   <div class="limit-slider"></div>
+</acre:block>
+
+<acre:block def="domains_input(name, checked)">
+  <label for="${name}">
+    <input type="checkbox" name="${name}" value="all" 
+           acre:attrs="checked ? {checked:'checked'} : {}"
+           onchange="this.form.submit();"/>
+    ${_('All domains')}
+  </label>
 </acre:block>

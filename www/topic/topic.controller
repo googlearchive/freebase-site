@@ -33,6 +33,7 @@ var i18n = acre.require("lib/i18n/i18n.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var object_query = acre.require("lib/queries/object.sjs").object;
 var filters = acre.require("lib/filter/filters.sjs");
+var fh = acre.require("lib/filter/helpers.sjs");
 var filter_queries = acre.require("lib/filter/queries.sjs");
 var deferred = acre.require("lib/promise/deferred.sjs");
 var topic_api = acre.require("lib/queries/topic.sjs");
@@ -64,12 +65,21 @@ var SPEC = {
   },
 
   run: function(id, f) {
+    var domains = null;
+    if ((f.domain && fh.is_base_id(f.domain)) ||
+        (f.type && fh.is_base_id(f.type)) ||
+        (f.property && fh.is_base_id(f.property))) {
+      domains = "all";
+    }
+    else {
+      domains = f.domains;
+    }
     return {
       id: id,
       filters: f,
       object: object_query(id),
       prop_counts: filter_queries.prop_counts(id),
-      topic: topic_api.topic(id, i18n.lang, f.limit, f.as_of_time)
+      topic: topic_api.topic(id, i18n.lang, f.limit, f.as_of_time, domains)
         .then(function(topic) {
           if (f.domain) {
             return filter_by_domain(topic, f.domain);

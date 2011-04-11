@@ -37,6 +37,15 @@
   var microdata = acre.require("helper/microdata.sjs");
   var itemprop = microdata.itemprop;
   var ph = acre.require("propbox/helpers.sjs");
+
+  // preload gettext values
+  var VIEW_ALL_PROPERTY_VALUES = _("View all property values");
+  var EDIT_VALUE = _("Edit value");
+  var ADD_NEW_VALUE = _("Add new value");
+  var INSPECT_PROPERTY = _("Inspect property");
+  var VIEW_SCHEMA = _("View schema");
+  var EDIT = _("Edit");
+  var DELETE = _("Delete");
 </acre:script>
 
 <acre:block def="topicbox(topic, lang)">
@@ -122,7 +131,7 @@
   <div class="property-section" data-id="${prop_structure.id}">
     <div class="sub-foobar kbs">
       <!--view all link is shown for any non-unique property-->
-      <a href="${ph.build_query_url(topic.id, prop_structure, lang)}" class="more"><span>${_('View all property values')}</span></a>
+      <a href="${ph.build_query_url(topic.id, prop_structure, lang)}" class="more"><span>${VIEW_ALL_PROPERTY_VALUES}</span></a>
       <span class="header-label">
         ${prop_menu(topic, prop_structure)}
       </span>
@@ -279,13 +288,13 @@
       </span>
       <ul class="row-menu submenu">
         <li acre:if="prop_structure.unique && prop_structure.values.length" class="row-menu-item edit">
-          <a href="#" onclick="return propbox.prop_edit(this);">${_("Edit value")}</a>
+          <a href="#" onclick="return propbox.prop_edit(this);">${EDIT_VALUE}</a>
         </li>
         <li acre:else="" class="row-menu-item edit">
-          <a href="#" onclick="return propbox.prop_add(this);">${_("Add new value")}</a>
+          <a href="#" onclick="return propbox.prop_add(this);">${ADD_NEW_VALUE}</a>
         </li>      
-        <li class="row-menu-item"><a href="${h.fb_url('/inspect', prop_structure.id)}">${_("Inspect property")}</a></li>
-        <li class="row-menu-item"><a href="${h.fb_url('/schema', prop_structure.id)}">${_("View schema")}</a></li>
+        <li class="row-menu-item"><a href="${h.fb_url('/inspect', prop_structure.id)}">${INSPECT_PROPERTY}</a></li>
+        <li class="row-menu-item"><a href="${h.fb_url('/schema', prop_structure.id)}">${VIEW_SCHEMA}</a></li>
       </ul>
    </li>
   </ul>
@@ -299,8 +308,8 @@
         <a href="javascript:void(0)" class="more-action">menu</a>
       </span>
       <ul class="submenu">
-        <li><a href="#" onclick="return propbox.value_edit(this);">${ _("Edit")}</a></li>
-        <li><a href="#" onclick="return propbox.value_delete(this);">${ _("Delete")}</a></li>
+        <li><a href="#" onclick="return propbox.value_edit(this);">${EDIT}</a></li>
+        <li><a href="#" onclick="return propbox.value_delete(this);">${DELETE}</a></li>
       </ul>
     </li>
   </ul>

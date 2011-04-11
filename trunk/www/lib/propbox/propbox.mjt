@@ -39,6 +39,8 @@
   var ph = acre.require("propbox/helpers.sjs");
 
   // preload gettext values
+  var FREEBASE_COMMONS = _("Freebase Commons");
+  var USER_DOMAIN = _("User Domain");
   var VIEW_ALL_PROPERTY_VALUES = _("View all property values");
   var EDIT_VALUE = _("Edit value");
   var ADD_NEW_VALUE = _("Add new value");
@@ -74,7 +76,7 @@
   <div class="section domain domain-section" data-id="${domain_structure.id}">
     <div class="header">
       <span class="status">
-        ${h.is_commons(domain_structure.id) ? _('Freebase Commons') : _('User Domain')}
+        ${h.is_commons(domain_structure.id) ? FREEBASE_COMMONS : USER_DOMAIN}
       </span>
       <h1 class="kbs">
         <span class="mark">

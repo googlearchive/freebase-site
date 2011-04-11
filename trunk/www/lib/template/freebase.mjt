@@ -55,7 +55,7 @@
       <!-- freebase suggest -->
       <link rel="stylesheet" type="text/css" href="${h.lib_base_url('suggest')}/suggest.min.css" />
 
-      <!-- 
+      <!--
            Global freebase css you want highly cached across multiple pages.
            For page specific css, define in exports.head
         -->
@@ -147,7 +147,8 @@
       ${i18n_c.lang_select()}
       <div class="nav-user-controls" id="signedin" style="display:none;">
         <strong id="nav-username">
-          <a href="${h.legacy_fb_url('/view')}" title="View your profile"></a></strong>
+          <a href="${h.legacy_fb_url('/user/profile')}" title="View your profile"></a>
+        </strong>
         <a href="${acre.markup.bless(h.account_url('settings'))}" title="View your account info on Freebase" rel="nofollow" id="nav-settings">Settings</a>
         <a href="${acre.markup.bless(h.account_url('signout', h.fb_url()))}" title="Sign out of Freebase" rel="nofollow" id="nav-signout">Sign Out</a>
       </div>
@@ -178,11 +179,6 @@
       <a title="${acre.request.script.path}" href="${acre.response.headers['x-acre-source-url']}" id="sourcelink">View Source</a>
     </div>
     <ul id="nav-footer" class="clear">
-      <li class="nav-footer-item">
-        <a id="site-feedback" href="${h.legacy_fb_url('/site/feedback')}"
-           rel="nofollow"
-           title="Send us your feedback">Feedback</a>
-      </li>
       <li class="nav-footer-item">
         <a href="${h.fb_url('/policies/attribution')}"
            rel="nofollow"

@@ -36,7 +36,7 @@
   var _ = i18n.gettext;
 
   var previous = null;
-  var previous_global = null;  
+  var previous_global = null;
 </acre:script>
 
 <acre:block def="type_property_row(prop, type_id)">
@@ -52,9 +52,6 @@
           <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.delete_property, ['${prop.id}'], this);"><span class="delete-icon">${_('Delete property')}</span></a>
         </li>
         <li class="row-menu-item"><a href="${h.fb_url('/inspect', prop.id)}">${_('Inspect Property')}</a></li>
-        <li class="row-menu-item" acre:if="prop.expected_type && prop.expected_type.id.indexOf('/type') === -1">
-          <a href="${h.legacy_fb_url('/view'+prop.expected_type.id)}">${_('Browse instances')}</a>
-        </li>
         <li class="row-menu-item last">
           <a href="${sh.build_query_url(type_id, prop.id)}">${_('Build query')}</a>
         </li>
@@ -74,7 +71,7 @@
           <span class="return-link-description">
             ${h.bless_sprintf(_("%s has a return link of %s from %s"), h.tag("strong", i18n.display_name(prop)), h.tag("strong", i18n.display_name(other_property)), h.tag("strong", i18n.display_name(other_property.schema)))}
             <span class="return-link-pointer"></span>
-          </span>        
+          </span>
         </acre:block>
         <acre:block if="prop.expected_type.mediator">
           <span class="property-meta ect-role"><abbr title="${_('This is a Mediator')}">${_('mediator')}</abbr></span>
@@ -120,7 +117,7 @@
       <th colspan="5" class="table-empty-column" scope="col">
         <h3 class="table-empty-title">${_("This type doesn't have any properties")}</h3>
       </th>
-    </tr> 
+    </tr>
     <acre:block for="prop in properties" class="hoverable">
       ${type_property_row(prop, type_id)}
     </acre:block>
@@ -131,13 +128,13 @@
 <acre:block def="enumerated_topic_row(topic, type_id)">
   <tr>
     <th class="row-header first odd">
-      <a href="${h.legacy_fb_url('/view'+topic.id)}" title="${topic.id}">${i18n.display_name(topic)}</a>
+      <a href="${h.fb_url('/topic'+topic.id)}" title="${topic.id}">${i18n.display_name(topic)}</a>
       <a href="javascript:void(0);" class="row-menu-trigger">+</a>
       <ul class="row-menu tooltip">
         <li class="row-menu-item edit">
           <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.delete_instance, ['${topic.id}','${type_id}'], this);"><span class="delete-icon">${_('Remove topic')}</span></a>
         </li>
-       <li class="row-menu-item"><a href="${h.legacy_fb_url('/view' + topic.id)}" title="${topic.id}">${_('View topic')}/a></li>
+       <li class="row-menu-item"><a href="${h.fb_url('/topic' + topic.id)}" title="${topic.id}">${_('View topic')}/a></li>
      </ul>
     </th>
     <td class="even">
@@ -146,17 +143,17 @@
       </acre:script>
       <p>${blurb || ""}</p>
     </td>
-  </tr>  
+  </tr>
 </acre:block>
 
 <!-- Included Types markup pattern -->
 <acre:block def="included_type_thead(type_id, included_type, expanded)">
   <thead>
     <tr>
-      <th class="tbody-header ${expanded ? 'expanded' : ''}" colspan="4" 
+      <th class="tbody-header ${expanded ? 'expanded' : ''}" colspan="4"
          data-url="${h.ajax_url('/get_type_properties.ajax', [['id',included_type.id]])}">
         <a href="#" class="edit" onclick="return freebase.dispatch(event, freebase.schema.type.delete_included_type, ['${type_id}', '${included_type.id}'], this);"><span>${_('delete')}</span></a>
-        <span class="tbody-header-title">${i18n.display_name(included_type)}</span> 
+        <span class="tbody-header-title">${i18n.display_name(included_type)}</span>
         <a href="${h.fb_url('/schema', included_type.id)}"><span class="key">$included_type.id</span></a>
       </th>
     </tr>
@@ -178,7 +175,7 @@
 <acre:block def="incoming_props_tbody(props)">
   <tbody>
     <tr>
-      <th class="column-header first" scope="col">${_('Originating Type')}</th>              
+      <th class="column-header first" scope="col">${_('Originating Type')}</th>
       <th class="column-header" scope="col">${_('Property')}</th>
     </tr>
     <tr acre:for="prop in props" class="hoverable">
@@ -195,19 +192,18 @@
               <strong>${i18n.display_name(other_property)}</strong>
               from <strong>${i18n.display_name(other_property.schema)}</strong>
               <span class="return-link-pointer"></span>
-            </span>        
-          </acre:block>  
+            </span>
+          </acre:block>
           <a href="javascript:void(0);" class="row-menu-trigger">+</a>
-          <ul class="row-menu tooltip">          
+          <ul class="row-menu tooltip">
             <li acre:if="!other_property" class="row-menu-item edit">
               <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.reverse_property, ['${prop.expected_type}','${prop.id}'], this);"><span class="create-return-link-icon">${_('Create return link')}</span></a>
             </li>
             <li class="row-menu-item"><a href="${h.fb_url('/schema', prop.schema.id)}">${_('View type schema')}</a></li>
-            <li class="row-menu-item"><a href="${h.legacy_fb_url('/view'+prop.schema.id)}">${_('Browse instances')}</a></li>
             <li class="row-menu-item last"><a href="#">${_('Build query')}</a></li>
-          </ul>          
+          </ul>
         </div>
-        <span class="key">$prop.schema.id</span>     
+        <span class="key">$prop.schema.id</span>
       </td>
       <td class="even">
         <div>
@@ -219,12 +215,12 @@
           <ul class="row-menu tooltip">
             <li class="row-menu-item"><a href="${h.fb_url('/schema', prop.id)}">${_('View property details')}</a></li>
             <li class="row-menu-item last"><a href="#">${_('Build query')}</a></li>
-          </ul>          
+          </ul>
         </div>
-        <span class="key">$prop.id</span>     
+        <span class="key">$prop.id</span>
       </td>
     </tr>
-  </tbody>  
+  </tbody>
 </acre:block>
 
 <!-- Markup pattern for left-hand table of Type Diagram -->

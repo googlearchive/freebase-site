@@ -40,7 +40,7 @@ if (acre.request.params.id) {
 } else {
   // If the user is not logged-in then redirect to the logged-out homepage
   acre.response.status = 302;
-  var logout_url = h.account_url("signout", h.url_for("homepage", "index"));
+  var logout_url = h.account_url("signout", h.fb_url("/"));
   acre.response.set_header("Location", logout_url);
   acre.exit();
 }

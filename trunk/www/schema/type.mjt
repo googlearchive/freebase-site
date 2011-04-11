@@ -32,6 +32,7 @@
 <acre:script>
   var c = this.exports.c = {};
   var h = acre.require("lib/helper/helpers.sjs");
+  var schema_h = acre.require("helpers.sjs");
   var tc = acre.require("type_components");
   var sh = acre.require("helpers.sjs");
   var i18n = acre.require("lib/i18n/i18n.sjs");
@@ -96,7 +97,7 @@
   </a>
   </li>
   <li>
-    <a href="${h.legacy_fb_url('/view'+c.type.id)}" class="icon-link">
+    <a href="${schema_h.build_query_url(c.type.id)}" class="icon-link">
       <span acre:if="c.type.instance_count" class="browse-icon">${h.bless_sprintf(_("Browse %s Topics"), acre.markup.stringify(i18n_c.number(c.type.instance_count)))}</span>
       <span acre:else="" class="add-icon">Add Topics</span>
     </a>

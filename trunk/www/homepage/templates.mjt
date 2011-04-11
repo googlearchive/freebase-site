@@ -46,25 +46,23 @@
 </acre:block>
 
 <acre:block def="grouped_domains_list(groups)">
-  
   <acre:block for="group, domains in groups">
     <h2>${group}</h2>
     <ul>
       <acre:block for="domain in domains">
         <li>
-          <a href="${h.legacy_fb_url('/view'+domain.id)}">${domain.name}</a>
+          <a href="${h.fb_url('/schema'+domain.id)}">${domain.name}</a>
         </li>
       </acre:block>
     </ul>
   </acre:block>
-  
 </acre:block>
 
 <acre:block def="domain_explorer(categories, user, index)">
   <div id="domain-explorer-header">
     <div class="domain-explorer-title">
     </div>
-    
+
     <form class="domain-activity-controls">
       <span class="domain-activity-controls-content">
         Sort by
@@ -107,24 +105,24 @@
       ${_("Top User")}
     </div>
   </div>
-  
+
   <div id="domain-explorer-tabset">
-    
+
     <ul id="domain-explorer-tabs" data-index="${index || 0}">
       <li acre:if="user" class="domain-explorer-tab">
-        <a href="${h.url_for('homepage', 'loadpanel', [['user', user.id]])}"
+        <a href="${h.fb_url('/homepage/loadpanel', [['user', user.id]])}"
 		   class="domain-explorer-tab-link">
          <span>${_("Your Data")}</span>
         </a>
       </li>
       <li class="domain-explorer-tab">
-        <a href="${h.url_for('homepage', 'loadpanel', [['domains', 'featured']])}"
+        <a href="${h.fb_url('/homepage/loadpanel', [['domains', 'featured']])}"
 		   class="domain-explorer-tab-link">
          <span>${_("Featured Data")}</span>
         </a>
       </li>
       <li acre:for="category in categories" class="domain-explorer-tab">
-        <a href="${h.url_for('homepage', 'loadpanel', [['category', category.id]])}"
+        <a href="${h.fb_url('/homepage/loadpanel', [['category', category.id]])}"
 		   class="domain-explorer-tab-link">
          <span>${category.name}</span>
         </a>
@@ -136,7 +134,7 @@
         <ul id="all-domains-nav" style="display: none;">
           <acre:block acre:for="letter in h.lowercase_alphabet()">
             <li class="toc-letter">
-	          <a href="${h.url_for('homepage', 'loadpanel', [['domains', letter]])}">
+	          <a href="${h.fb_url('/homepage/loadpanel', [['domains', letter]])}">
                 ${letter.toUpperCase()}
               </a>
             </li>
@@ -144,7 +142,7 @@
         </ul>
       </li>
     </ul>
-    
+
     <div id="explorer-panes">
       <div acre:if="user" class="domain-explorer-pane" id="pane-your"></div>
       <div class="domain-explorer-pane" id="pane-featured"></div>
@@ -206,16 +204,16 @@
        data-topics="${domain.activity ? domain.activity.total.t : 0}"
        >
     <h3 class="domain-title">
-      <a href="${h.legacy_fb_url('/view'+domain.id)}">${domain.name}</a>
+      <a href="${h.fb_url('/schema'+domain.id)}">${domain.name}</a>
     </h3>
     <div class="member-count">
       ${domain.member_count > 100 ? '100+' : domain.member_count || 0}
       ${domain.member_count === 1 ? 'member' : 'members'}
     </div>
   </div>
-  
+
   ${activity_section(domain)}
-  
+
   <div class="domain-contributor domain-section">
     ${image_components.user_image_small(domain.top_user)}
   </div>
@@ -241,13 +239,13 @@
         <li acre:else="" class="toc-letter">${letter}</li>
       </acre:block>
     </ul>
-    
+
     <acre:block for="letter in h.lowercase_alphabet()">
       <acre:block if="grouped_domains[letter]">
         <a name="all-domains-${letter}" class="letter">${letter}</a>
         <ul>
           <li acre:for="domain in grouped_domains[letter]">
-            <a href="${h.legacy_fb_url('/view'+domain.id)}">
+            <a href="${h.fb_url('/schema'+domain.id)}">
               ${domain.name}
             </a>
           </li>
@@ -260,7 +258,7 @@
 <acre:block def="user_info(user)">
   <div class="content-section user-data">
     <div>
-      <a href="${h.legacy_fb_url('/view'+user.id)}" class="bold-link">${user.name}</a>
+      <a href="${h.fb_url('/inspect'+user.id)}" class="bold-link">${user.name}</a>
     </div>
     <div class="user-stats">
       ${h.bless_sprintf(_("joined in %s"), acre.markup.stringify(i18n_c.datetime(user.created, [["data-format","yMMM"]])))}

@@ -108,7 +108,7 @@
 <acre:block def="user_row_header(user)">
 <th scope="row" class="row-header odd">
   ${image.user_image_small(user)}
-  <a href="${h.fb_url('/view' + user.id)}" class="fn url" title="View user profile">$user.name</a>
+  <a href="${h.fb_url(user.id)}" class="fn url" title="View user profile">$user.name</a>
 </th>
 </acre:block>
 

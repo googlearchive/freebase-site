@@ -139,7 +139,7 @@
         <td class="odd">
           <acre:block for="i, creator in img.creator" trim="1">
             <acre:block if="i !== 0">, </acre:block>
-            <a href="${h.fb_url('/view' + creator.id)}"title="View user"> $creator.name</a>
+            <a href="${h.fb_url(creator.id)}"title="View user"> $creator.name</a>
           </acre:block>
         </td>
         <td class="even">

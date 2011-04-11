@@ -77,7 +77,7 @@ function IdRouter() {
             redirect("/schema" + result.id);
           }
           else if (type === "/type/user") {
-            redirect("/view" + result.id);
+            redirect("/inspect" + result.id);
           }
           else if (type === "/common/topic") {
             redirect("/topic" + result.id);

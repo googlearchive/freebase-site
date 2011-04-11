@@ -104,7 +104,7 @@
   <!!-- topic !!-->
   <acre:block elif="types['/common/topic']">
     <li>
-      ${nav_tab(false, _("Data"), h.fb_url("/topic", c.object.id, global_filters))}
+      ${nav_tab(false, _("View"), h.fb_url("/topic", c.object.id, global_filters))}
     </li>
     <li>
       ${nav_tab(true, _("Inspect"))}

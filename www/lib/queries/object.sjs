@@ -61,6 +61,8 @@ function object(id, all_names) {
     type: [{
       id: null,
       name: i18n.mql.query.name(),
+      type: "/type/type",
+      key: [{namespace: {type:"/type/domain"}}],
       optional: true,
       link: {timestamp:null},
       index: null,

@@ -47,7 +47,7 @@
   <link rel="canonical" href="http://www.freebase.com" />
   
   <script>
-    if (document.cookie.indexOf("metaweb-user-info") > 0) {window.location.href= "/home";}
+    //if (document.cookie.indexOf("metaweb-user-info") > 0) {window.location.href= "/home";}
   </script>
   <link rel="stylesheet" type="text/css" href="homepage.mf.css" />
 </acre:block>
@@ -68,7 +68,8 @@
   </div>
   
   <div id="content-footer">
-    ${templates.join_freebase(c.reg_off)}
+    <!!--${templates.join_freebase(c.reg_off)}!!-->
+    ${templates.for_developers()}                                       
     ${templates.blog_entries(c.blog)}
     ${templates.wiki_entries(c.wiki)}
     ${templates.join_discussion()}

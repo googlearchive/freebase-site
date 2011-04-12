@@ -289,7 +289,7 @@
     search.suggest({
       status: null,
       service_url: fb.h.legacy_fb_url(),
-      soft:true,
+//      soft:true,  // temporarily disable text search (to old python client)
       category: "object",
       parent: "#site-search-box",
       align: "right"

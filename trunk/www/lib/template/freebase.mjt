@@ -115,17 +115,17 @@
              border="0" height="21" width="87" /></a>
     </div>
     <div class="site-search" searchUrl="${h.legacy_fb_url('/search')}" id="SearchBox">
-      <form method="get" action="${h.legacy_fb_url('/search')}" class="SearchBox-form">
+<!!--      <form method="get" action="${h.legacy_fb_url('/search')}" class="SearchBox-form">
         <fieldset class="search-form-header">
           <input type="hidden" value="30" name="limit" />
-          <input type="hidden" value="0" name="start" />
+          <input type="hidden" value="0" name="start" />!!-->
           <input type="text"
                  autocomplete="off"
                  placeholder="Find topics..."
                  name="query" id="global-search-input"
                  class="SearchBox-input AutocompleteInput-input" />
-        </fieldset>
-      </form>
+<!!--        </fieldset>
+      </form>!!-->
       <div id="site-search-box"></div>
       <div id="site-search-label"><span>Start typing to get some suggestions</span></div>
     </div>

@@ -47,7 +47,7 @@
 
 <acre:block def="user_image(user, size)" if="user">
  <acre:script>
-    var url = h.fb_url("/inspect" + user.id);
+    var url = h.fb_url(user.id);
     var options = {
       mode: "fillcrop",
       pad: 1,

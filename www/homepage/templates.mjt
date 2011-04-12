@@ -258,7 +258,7 @@
 <acre:block def="user_info(user)">
   <div class="content-section user-data">
     <div>
-      <a href="${h.fb_url('/inspect'+user.id)}" class="bold-link">${user.name}</a>
+      <a href="${h.fb_url(user.id)}" class="bold-link">${user.name}</a>
     </div>
     <div class="user-stats">
       ${h.bless_sprintf(_("joined in %s"), acre.markup.stringify(i18n_c.datetime(user.created, [["data-format","yMMM"]])))}

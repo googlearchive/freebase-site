@@ -32,6 +32,7 @@
 var queries = acre.require("queries");
 var h = acre.require("helpers");
 
+/**
 var loggedin_user = acre.freebase.get_user_info();
 if (acre.request.params.id) {
   user_id = acre.request.params.id;
@@ -44,6 +45,10 @@ if (acre.request.params.id) {
   acre.response.set_header("Location", logout_url);
   acre.exit();
 }
+**/
+acre.response.status = 302;
+acre.response.set_header("Location", "/");
+acre.exit();
 
 var data = {
   "categories": queries.categories(),

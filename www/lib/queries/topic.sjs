@@ -37,11 +37,12 @@ var freebase = acre.require("promise/apis").freebase;
  */
 function topic(id, lang, limit, as_of_time, domains) {
   var params = {
-    lang: lang || "/lang/en"
+    lang: [lang || "/lang/en"]
   };
   if (params.lang != "/lang/en") {
-    params.lang = [params.lang, "/lang/en"];
+    params.lang.push("/lang/en");
   }
+  params.lang.push("/lang/wp");
   if (limit) {
     params.limit = limit;
   }
@@ -55,5 +56,18 @@ function topic(id, lang, limit, as_of_time, domains) {
   return freebase.fetch(url)
     .then(function(env) {
       return env.result;
+    })
+    .then(function(result) {
+
+      if (result && result.properties) {
+        if (result.image && result.properties["/common/topic/image"]) {
+          result.properties["/common/topic/image"].values = result.image;
+        }
+        if (result.article && result.properties["/common/topic/article"]) {
+          result.properties["/common/topic/article"].values = result.article;
+        }
+      }
+
+      return result;
     });
 };

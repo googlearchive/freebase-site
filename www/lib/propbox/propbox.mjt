@@ -37,6 +37,7 @@
   var microdata = acre.require("helper/microdata.sjs");
   var itemprop = microdata.itemprop;
   var ph = acre.require("propbox/helpers.sjs");
+  var image = acre.require("template/imagecomponents.mjt");
 
   // preload gettext values
   var FREEBASE_COMMONS = _("Freebase Commons");
@@ -250,7 +251,13 @@
 </acre:block>
 
 <acre:block def="value(id, prop_structure, prop_value, lang)">
+  <acre:script>
+    var ect = prop_structure.expected_type.id;
+  </acre:script>
   <acre:block if="prop_value.id">    
+    <acre:block if="ect === '/common/image'">
+      ${image.image_thumb(prop_value.id)}
+    </acre:block>
     <a title="${prop_value.id}" class="property-value"
        acre:attrs="itemprop(prop_structure.id)" href="${h.fb_url(true, prop_value.id)}"
        data-id="${prop_value.id}">${prop_value.text}</a> 
@@ -258,7 +265,6 @@
   </acre:block>
   <acre:block else="">
     <acre:script>
-      var ect = prop_structure.expected_type.id;
       var attrs = h.extend(itemprop(prop_structure.id), microdata.value(prop_structure, prop_value));
       attrs["class"] = "property-value";
     </acre:script>
@@ -270,6 +276,11 @@
       <acre:block if="prop_structure.unit">
         ${prop_structure.unit.abbreviation || ""}
       </acre:block>
+    </acre:block>
+    <acre:block elif="ect === '/common/webpage' || ect === '/type/uri'">
+      <a class="property-value"
+         acre:attrs="itemprop(prop_structure.id)"
+         href="${prop_value.url}">${prop_value.url}</a>
     </acre:block>
     <acre:block else="">
       <span class="property-value" 

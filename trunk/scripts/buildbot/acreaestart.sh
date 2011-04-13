@@ -11,5 +11,4 @@ sleep 10
 A_PID=`ps ax | grep 'acreae/build/webapp' | grep -v grep | awk '{print $1}'`
 ACRE_PID="_data/acre/acre.pid"
 echo ${A_PID} > ${ACRE_PID}
-#./acre -c acreaebot appengine-prepare-tests
 sleep 10

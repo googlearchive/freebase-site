@@ -93,7 +93,9 @@ class CustomStatusPush(StatusPush):
                     state = "finished"
                     payload = i["payload"]["build"]
                     testoutput = {}
-                    outcome = "green"
+                    outcome = "red"
+                    if "build" in payload["text"][0] and "successful" in payload["text"][1]:
+                        outcome = "green"
                     if "failed" in payload["text"][0]:
                         outcome = "red"
                     if "pre-check" in payload["text"][0]:

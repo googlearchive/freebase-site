@@ -121,6 +121,7 @@ var SPEC = {
           lang: null
         }],
         "/common/topic/article": [{
+          optional: true,
           id: null,
           creator: {
             id: null,

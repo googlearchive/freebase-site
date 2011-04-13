@@ -94,7 +94,7 @@
 
       <acre:block if="bar_graph_data && bar_graph_data.length">
         <table class="bar-graph" cellspacing="0"  role="listbox">
-          <tbody tabindex="0">
+          <tbody>
             <acre:block for="i, data in bar_graph_data" if="i < 100 && data.id !== '/common' && data.id !== '/type'">
               <acre:script>
                 var id = data.id;
@@ -103,14 +103,14 @@
                   id = id.split("/").pop();
                 }
               </acre:script>
-              <tr class="bar-graph-row" role="option" tabindex="-1">
+              <tr class="bar-graph-row" role="option">
                 <th>
                   <span class="bar-graph-label">
-                    <a class="clear" tabindex="-1" 
+                    <span style="width:${total}%" class="index"></span>
+                    <a class="clear" 
                        href="${data.params ? h.fb_url(base_url, data.params) : 'javascript:void(0);'}">
                       ${id}
                     </a>
-                    <span style="width:${total}%" class="index"></span>
                   </span>
                 </th>
               </tr>

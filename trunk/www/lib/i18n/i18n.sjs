@@ -881,13 +881,16 @@ function get_accept_langs() {
 };
 
 
-function params(o) {
-  o = o || {};
-  if (lang === "/lang/en") {
-    delete o.lang;
+
+
+
+
+var dojo = {
+  locale: function() {
+    var locale = lang.split("/").pop().toLowerCase();
+    if (locale === "iw") {
+      locale = "he";
+    }
+    return locale;
   }
-  else {
-    o.lang = lang;
-  }
-  return o;
 };

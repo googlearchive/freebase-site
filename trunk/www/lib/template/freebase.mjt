@@ -218,15 +218,15 @@
   <script src="${h.lib_base_url('jquery')}/jquery.min.js"></script>
   <!-- dojo -->
   <acre:script>
-    var lang_code = i18n.lang.split("/").pop().toLowerCase();
+    var locale = i18n.dojo.locale();
   </acre:script>
   <script>
     var djConfig = {
       parseOnLoad: true,
-      locale: "${lang_code}"
+      locale: "${locale}"
     };
   </script>
-  <acre:block if="lang_code !== 'en'">
+  <acre:block if="locale !== 'en'">
     <script>
       djConfig.extraLocale = ["en"];
     </script>

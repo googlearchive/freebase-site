@@ -47,7 +47,7 @@ test("urlfetch_success", function() {
   acre.async.wait_on_results();
 
   // Multiple urlfetches should also work
-  urlfetch("http://www.metaweb.com")
+  urlfetch("http://www.google.com")
     .then(function(result) {
       ok(result.body, "Make sure that we returned a result");
     }, function(error) {
@@ -57,7 +57,7 @@ test("urlfetch_success", function() {
   acre.async.wait_on_results();
 });
 
-test("urlfetch_redirects", function() {
+test("urlfetch_redirects", {"bug":"redirection is hosed. bryan is looking"}, function() {
   // Make sure that we are following redirects on async urlfetchs
 
   urlfetch("http://freebase.com")
@@ -74,7 +74,7 @@ test("urlfetch_redirects", function() {
   acre.async.wait_on_results();
 });
 
-test("urlfetch_failure", function() {
+test("urlfetch_failure", {"bug":"bryan is looking"}, function() {
   // Check that a 404 response calls the errback
 
   var errback_called = false;

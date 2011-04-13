@@ -36,6 +36,7 @@
   dojo.require("dojo.number");
 
   var bundle;
+  var isRTL = false;
 
   var FORMAT_LENGTHS = {
     "long":1, "short":1, "full":1, "medium":1
@@ -62,7 +63,7 @@
      * localize datetime value i.e., <time datetime="1853-03-30"> ==> 1853年3月30日 (zh)
      */
     datetime: function(context) {
-      $("time", context)
+      var times = $("time", context)
         .each(function() {
           var $this = $(this);
           var datetime = $this.attr("datetime");
@@ -95,15 +96,20 @@
             var str = dojo.date.locale.format(d, o);
             $this.text(str);
           }
-        })
-        .css("visibility", "visible");
+        });
+
+      if (isRTL) {
+        times.attr("dir", "rtl");
+      }
+
+      times.css("visibility", "visible");
     },
 
     /**
      * localize number value i.e., <span class="number" data-value="1234"> ==> 1,234 (fr)
      */
     number: function(context) {
-      $(".number", context)
+      var numbers = $(".number", context)
         .each(function() {
           var $this = $(this);
           var v = $this.attr("data-value");
@@ -111,12 +117,21 @@
             var str = dojo.number.format(v);
             $this.text(str);
           }
-        })
-        .css("visibility", "visible");
+        });
+
+      if (isRTL) {
+        numbers.attr("dir", "rtl");
       }
+      numbers.css("visibility", "visible");
+    }
   };
 
   dojo.ready(function() {
+console.log(dojo.locale);
+    if (dojo.locale === "ar" || dojo.locale === "he") {
+      isRTL = true;
+    }
+
     bundle = dojo.date.locale._getGregorianBundle();
     i18n.ize();
   });

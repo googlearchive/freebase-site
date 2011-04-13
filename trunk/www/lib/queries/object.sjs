@@ -37,12 +37,13 @@ var i18n = acre.require("i18n/i18n.sjs");
  * Basic freebase object information (in english):
  * This query is used in template/freebase_object template to display the freebase object mast-head.
  */
-function object(id, all_names) {
+function object(id, options) {
   var q = {
     id: null,
     "q:id": id,
     guid: null,
     mid: null,
+    name: i18n.mql.query.name(),
     creator: {
       optional: true,
       id: null,
@@ -56,7 +57,7 @@ function object(id, all_names) {
       index: null,
       link: {timestamp: null},
       sort: ["index", "link.timestamp"],
-      limit: 1
+      limit: 10
     }],
     type: [{
       id: null,
@@ -70,12 +71,8 @@ function object(id, all_names) {
     }],
     permission: null
   };
-  if (all_names) {
-    q.name = [{value:null, lang:null, optional:true}];
-  }
-  else {
-    q.name = i18n.mql.query.name();
-  }
+  q = h.extend(q, options);
+
   return freebase.mqlread(q)
     .then(function(env) {
       return env.result;
@@ -91,14 +88,13 @@ function object(id, all_names) {
         freebase.get_static("notable_types_2", topic.guid.substring(1))
           .then(function(r) {
             if (r) {
+              var notable_type = h.first_element(r.types);
+              if (notable_type) {
+                topic.notable_type = notable_type.t;
+              }
               var notable_for = h.first_element(r.notable_for);
               if (notable_for) {
-                if (notable_for.p === "/type/object/type") {
-                  topic.notable_type = notable_for.o;
-                }
-                else {
-                  topic.notable_for = notable_for.o;
-                }
+                topic.notable_for = notable_for.o;
               }
               topic.notable_types = r.types;
             }

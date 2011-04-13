@@ -123,6 +123,8 @@
       </div>
     </div>
 
+    ${propbox.objectbox(c.object, i18n.lang)}
+
     ${propbox.topicbox(c.topic, i18n.lang)}
 
   </div>

@@ -99,7 +99,7 @@ var SPEC = {
           index: null,
           link: {timestamp: null},
           sort: ["index", "link.timestamp"],
-          limit: 3,
+          limit: 4,
           "/common/image/rights_holder_text_attribution": i18n.mql.query.text(),
           "/type/content/uploaded_by": [{
             id: null,
@@ -126,19 +126,10 @@ var SPEC = {
 
     return deferred.all(promises)
       .then(function(result) {
-
-        var obj = result.object;
-        if (domains !== "all") {
-          // filter base/user types
-          obj.type = obj.type.filter(function(type) {
-            return !fh.is_base_id(type.id);
-          });
-        }
-        // sort names/aliases by i18n.lang
-        obj.name = obj.name.sort(text_lang_sort).slice(0, 3);
-        obj["/common/topic/alias"] = obj["/common/topic/alias"].sort(text_lang_sort).slice(0, 3);
-
-console.log("articles", obj["/common/topic/article"]);
+        h.extend(result, {
+          id: id,
+          filters: f
+        });
 
         var topic = result.topic;
 
@@ -152,67 +143,28 @@ console.log("articles", obj["/common/topic/article"]);
           filter_by_property(topic, f.property);
         }
 
-        return h.extend(result, {
-          id: id,
-          filters: f
+        var obj = result.object;
+        if (domains !== "all") {
+          // filter base/user types
+          obj.type = obj.type.filter(function(type) {
+            return !fh.is_base_id(type.id);
+          });
+        }
+        // sort names/aliases by i18n.lang
+        obj.name = obj.name.sort(text_lang_sort).slice(0, 4);
+        obj["/common/topic/alias"] = obj["/common/topic/alias"].sort(text_lang_sort).slice(0, 4);
+
+        var blurbs = [];
+        obj["/common/topic/article"].forEach(function(article) {
+          if (!("blurb" in article)) {
+            blurbs.push(i18n._get_blob.closure(article, "blurb", {}, "blurb"));
+          }
         });
-
+        return deferred.all(blurbs)
+          .then(function() {
+            return result;
+          });
       });
-
-    return object_query(id, {
-        name: [{
-          value: null,
-          lang: null,
-          optional: true
-        }],
-        "/common/topic/image": [{
-          id: null,
-          optional: true,
-          index: null,
-          link: {timestamp: null},
-          sort: ["index", "link.timestamp"],
-          limit: 10
-        }]
-      })
-      .then(function(object_result) {
-        return {
-          id: id,
-          filters: f,
-          object: object_result,
-          prop_counts: filter_queries.prop_counts(id),
-          topic: topic_api.topic(id, i18n.lang, f.limit, f.as_of_time, domains)
-            .then(function(topic) {
-
-              if (domains !== "all") {
-                object_result.type = object_result.type.filter(function(type) {
-                  return !fh.is_base_id(type.id);
-                });
-              }
-              object_result.type = object_result.type.slice(0,10);
-              object_result.name = object_result.name.sort(function(a,b) {
-                if (a.lang === i18n.lang) {
-                  return -1;
-                }
-                else if (b.lang === i18n.lang) {
-                  return 1;
-                }
-              }).slice(0, 10);
-
-              add_type_structure(topic, object_result);
-
-              if (f.domain) {
-                return filter_by_domain(topic, f.domain);
-              }
-              else if (f.type) {
-                return filter_by_type(topic, f.type);
-              }
-              else if (f.property) {
-                return filter_by_property(topic, f.property);
-              }
-              return topic;
-            })
-        };
-    });
   }
 };
 

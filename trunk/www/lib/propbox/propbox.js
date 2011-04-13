@@ -47,7 +47,7 @@
 
       propbox.kbs = new kbs(context);
 
-      propbox.kbs.set_next(propbox.kbs.get_current(), $(".kbs:visible:first", context));
+      propbox.kbs.set_next(propbox.kbs.get_current(), $(".kbs:visible:first", context, true));
 
 //      propbox.kbs.next();
       $(".kbs", context)

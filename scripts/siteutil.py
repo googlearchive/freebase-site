@@ -1034,9 +1034,10 @@ class Context():
       return False
 
     
-  def run_cmd(self, cmd, name='cmd', warn=True, interactive=False):
+  def run_cmd(self, cmd, name='cmd', warn=True, interactive=False, silent=False):
 
-    self.log(' '.join(cmd), subaction=name)
+    if not silent:
+        self.log(' '.join(cmd), subaction=name)
     
     #interactive mode - stdout/stderr will go straight to the console
     if interactive:
@@ -1056,6 +1057,8 @@ class Context():
 
   def duration_human(self, date):
     seconds = date.seconds
+    if not seconds:
+        return '1 second'
     seconds = long(round(seconds))
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
@@ -1353,6 +1356,7 @@ class Acre:
           return c.error('The environment variable APPENGINE_HOME must point to your AppEngine SDK directory')
 
       cmd = ['%s/bin/dev_appserver.sh' % os.environ['APPENGINE_HOME'], '--disable_update_check', '--port=%s' % self._standard_port, bundle]
+      c.log(' '.join(cmd), subaction='cmd')
       try:
           self._acre_process = subprocess.Popen(cmd, stdout=self.log, stderr=self.log)
           #wait a bit for acre to start
@@ -1479,13 +1483,13 @@ class Acre:
 
     c = self.context
     cmd = ['ps', 'wax']
-    (r, contents) = c.run_cmd(cmd)
+    (r, contents) = c.run_cmd(cmd, silent=True)
     
     for line in contents.split('\n'):
 
       #poor man's running acre under appengine detection
       if '--port=%s' % self._standard_port in line and 'appengine' in line and 'acre' in line:
-        r = c.run_cmd(['kill', line.split()[0]])
+        r = c.run_cmd(['kill', line.split()[0]], silent=True)
         time.sleep(1)
         return r
       
@@ -1589,7 +1593,7 @@ class Acre:
     if not acre_url:
         return False
 
-    url = "http://%s/acre/status" % acre_url
+    url = "http://%s/_fs_routing" % acre_url
 
     response = c.fetch_url(url, acre=True, silent=True, wait=2)
     
@@ -1659,7 +1663,7 @@ class Acre:
           line = line.rstrip()
           if 'com.google.acre.logging.AcreLogger log' in line:
               continue
-          elif line.startswith('INFO: [****** request *******]') and url in line:
+          elif line.startswith('INFO [****** request *******]') and url in line:
               #reset the request logs so it will only hold the last request of this url
               request_logs = []
               in_request = True

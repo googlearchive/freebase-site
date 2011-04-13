@@ -46,7 +46,10 @@
       propbox.options = options;
 
       propbox.kbs = new kbs(context);
-      propbox.kbs.next();
+
+      propbox.kbs.set_next(propbox.kbs.get_current(), $(".kbs:visible:first", context));
+
+//      propbox.kbs.next();
       $(".kbs", context)
         .live("click", function() {
            // set current on click

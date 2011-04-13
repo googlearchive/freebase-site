@@ -476,8 +476,46 @@ class ActionSetup:
 
     return c.log('Setup has finished successfully.')
 
+
+class ActionSetupSimpleDNS:
+
+
+  def __init__(self, context):
+    self.context = context
+
+  def __call__(self):
+    c = self.context
+
+    domains = set(['environments.svn.freebase-site.googlecode.dev.acre.z', 'devel.sandbox-freebase.com'])
+
+    if pwd.getpwuid(os.getuid())[0] != 'root':
+        return c.error('You must run this script as root.')
+
+    fh = open('/etc/hosts')
+    lines = fh.readlines()
+    fh.close()
+
+    for line in lines:
+      for domain in list(domains):
+        if re.search('\s+%s$' % domain, line) and not line.startswith('#'):
+          domains.remove(domain)
+    
+      if not len(domains):
+        break
+
+    if len(domains):
+      fh = open('/etc/hosts', 'w')
+      fh.write(''.join(lines))
+      for domain in domains:
+        fh.write('127.0.0.1\t%s\n' % domain)
+        
+      fh.close()
+
+    return True
+
+
 #set-up wildcard dns for Mac OS X only
-class ActionSetupDNS:
+class ActionSetupWildcardDNS:
 
   def __init__(self, context):
     self.context = context
@@ -837,7 +875,8 @@ def main():
       ('link', '\tDEPRECATED: connect acre and site so that acre will read site trunk apps from the filesystem', ActionLink),
       ('setup', '\tsetup acre and freebase-site and link them', ActionSetup),
       ('deploy_acre', 'deploy an acre instance to production app-engine', ActionDeployAcre),
-      ('setup_dns', 'setup wildcard dns for your host - Mac OS X only', ActionSetupDNS),
+      ('setup_dns', 'setup freebase site dns for your host', ActionSetupSimpleDNS),
+      ('setup_wildcard_dns', 'setup wildcard dns for your host - Mac OS X only', ActionSetupWildcardDNS),
       ('info', 'provide information on all apps or a specific app', ActionInfo),
       ('create_branch', 'creates a branch of your app', ActionCreateAppBranch),
       ('create_tag', 'creates a tag of your app', ActionCreateAppTag),

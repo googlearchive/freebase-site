@@ -45,11 +45,225 @@
   var VIEW_ALL_PROPERTY_VALUES = _("View all property values");
   var EDIT_VALUE = _("Edit value");
   var ADD_NEW_VALUE = _("Add new value");
-  var INSPECT_PROPERTY = _("Inspect property");
   var VIEW_SCHEMA = _("View schema");
   var EDIT = _("Edit");
   var DELETE = _("Delete");
-</acre:script>
+ </acre:script>
+
+ <acre:block def="objectbox(object, lang)">
+
+   <div class="section domain domain-section">
+     <div class="header">
+       <span class="status">
+         ${_("System")}
+       </span>
+       <h1 class="kbs">
+         <span class="mark">
+           ${_("System")}
+         </span>
+       </h1>
+     </div>
+     <div class="type-section">      
+       <div class="header">
+         <h2 class="foobar kbs">
+           <span class="header-label">
+             <span class="menu-trigger">
+              <span class="mark">${_("System properties")}</span>
+            </span>
+          </span>
+          </a>
+        </h2>
+      </div>      
+      <div class="property-section">
+        <acre:script>
+          var prop_structure = ph.prop_structures.name;
+          var empty = !object.name || !object.name.length;
+        </acre:script>
+        <div class="sub-foobar kbs">
+          <span class="header-label">
+            ${prop_menu(object, prop_structure)}
+          </span>
+        </div> 
+        <div class="data-section">
+          <ul class="data-list">
+            <acre:block if="empty">
+              ${empty_row_li()}
+            </acre:block>
+            <acre:block else="">
+              <li class="kbs data-row data-row-inline">
+                <span class="wrapper">
+                  <acre:block for="i, name in object.name">
+                    <acre:block if="i > 0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</acre:block>
+                    ${value(object.id, prop_structure, name, lang)}
+                  </acre:block>
+                </span>
+              </li>
+            </acre:block>
+          </ul>
+        </div>
+      </div>
+      <div class="property-section">
+        <acre:script>
+          var prop_structure = ph.prop_structures.alias;
+          var empty = !object["/common/topic/alias"] || !object["/common/topic/alias"].length;
+        </acre:script>
+        <div class="sub-foobar kbs">
+          <span class="header-label">
+            ${prop_menu(object, prop_structure)}
+          </span>
+        </div> 
+        <div class="data-section">
+          <ul class="data-list">
+            <acre:block if="empty">
+              ${empty_row_li()}
+            </acre:block>
+            <acre:block else="">
+              <li class="kbs data-row data-row-inline">
+                <span class="wrapper">
+                  <acre:block for="i, alias in object['/common/topic/alias']">
+                    <acre:block if="i > 0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</acre:block>
+                    ${value(object.id, prop_structure, alias, lang)}
+                  </acre:block>
+                </span>
+              </li>
+            </acre:block>
+          </ul>
+        </div>
+      </div>
+      <div class="property-section">
+        <acre:script>
+          var prop_structure = ph.prop_structures.image;
+          var empty = !object["/common/topic/image"] || !object["/common/topic/image"].length;
+        </acre:script>
+        <div class="sub-foobar kbs">
+          <span class="header-label">
+            ${prop_menu(object, prop_structure)}
+          </span>
+        </div> 
+        <div class="data-section">
+          <table class="data-table">
+            <thead acre:attrs="empty ? {style:'display:none;'} : {}">
+              <tr>
+                <th>&nbsp;</th>
+                <th>${_("Name")}</th>
+                <th acre:for="subprop_structure in prop_structure.properties" scope="col">
+                  ${subprop_structure.text}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <acre:block if="empty">
+                ${empty_row_tr(2 + prop_structure.properties.length)}
+              </acre:block>
+              <acre:block else="">
+                <acre:block for="img in object['/common/topic/image']">                  
+                  <tr class="kbs data-row">
+                    <td><!-- image thumb -->
+                      <ul class="data-list">
+                        <li>
+                          <span class="wrapper">
+                            <span class="property-value">
+                              ${image.image_thumb(img.id, 32)}
+                            </span>
+                          </span>
+                        </li>
+                      </ul>
+                    </td><!-- end image thumb -->
+                    <td><!-- image name -->
+                      <acre:script>
+                        var name = i18n.display_name_node(img);
+                      </acre:script>
+                      <ul class="data-list">
+                        <acre:block if="name">
+                          <li>
+                            <span class="wrapper">
+                              <span class="property-value">${name.value}</span>
+                              <!--${i18n_c.lang_code(name.lang, lang)}-->
+                            </span>
+                          </li>   
+                        </acre:block>
+                        <acre:block else="">
+                          ${empty_row_li()}
+                        </acre:block>
+                      </ul>
+                    </td><!-- end image name -->
+                    <td><!-- uploaded by -->
+                      <acre:script>
+                        var uploaded_by = img["/type/content/uploaded_by"];
+                      </acre:script>
+                      <ul class="data-list">
+                        <acre:block if="uploaded_by && uploaded_by.length">
+                          <acre:block for="u in uploaded_by">
+                            <li>
+                              <span class="wrapper">
+                                <acre:script>
+                                  var name = i18n.display_name_node(u);
+                                </acre:script>
+                                <a class="property-value" href="${h.fb_url(u.id)}">${name.value}</a>
+                                <!--${i18n_c.lang_code(name.lang, lang)}-->
+                              </span>
+                            </li>
+                          </acre:block>
+                        </acre:block>
+                        <acre:block else="">
+                          ${empty_row_li()}
+                        </acre:block>
+                      </ul>
+                    </td><!-- end uploaded by -->
+                    <td><!-- rights holder -->
+                      <acre:script>
+                        var attribution = img["/common/image/rights_holder_text_attribution"]
+                      </acre:script>
+                      <ul class="data-list">
+                        <acre:block if="attribution && attribution.length">
+                          <li>
+                            <span class="wrapper">
+                              <acre:script>
+                                var text = i18n.display_text_node(img, "/common/image/rights_holder_text_attribution");
+                              </acre:script>
+                              <span class="property-value">${text.value}</span>
+                              <!--${i18n_c.lang_code(text.lang, lang)}-->
+                            </span>
+                          </li>
+                        </acre:block>
+                        <acre:block else="">
+                          ${empty_row_li()}
+                        </acre:block>
+                      </ul>
+                    </td><!-- end rights holder -->
+                    <td><!-- license -->
+                      <acre:script>
+                        var license = img["/common/licensed_object/license"];
+                      </acre:script>
+                      <ul class="data-list">
+                        <acre:block if="license && license.length">
+                          <acre:block for="l in license">
+                            <li>
+                              <span class="wrapper">
+                                <acre:script>
+                                  var name = i18n.display_name_node(l);
+                                </acre:script>
+                                <a class="property-value" href="${h.fb_url(l.id)}">${name.value}</a>
+                                <!--${i18n_c.lang_code(name.lang, lang)}-->
+                              </span>
+                            </li>
+                          </acre:block>
+                        </acre:block>
+                        <acre:block else="">
+                          ${empty_row_li()}
+                        </acre:block>
+                      </ul>                      
+                    </td><!-- end license -->
+                  </tr>
+                </acre:block>
+              </acre:block>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</acre:block>
 
 <acre:block def="topicbox(topic, lang)">
   <acre:script>
@@ -59,7 +273,7 @@
     <acre:script>
       var domain_order = topic_structure.order;
     </acre:script>
-    <acre:block for="domain_id in domain_order">
+    <acre:block for="domain_id in domain_order" if="domain_id !== '/common'">
       <acre:script>
         var domain_structure = topic_structure.domains[domain_id];
       </acre:script>
@@ -104,14 +318,7 @@
     <div class="header">
       <h2 class="foobar kbs">
         <span class="header-label">
-          <span class="menu-trigger">
-            <a title="${type_structure.id}" 
-              acre:attrs="itemprop('/type/object/type')"
-              href="${h.fb_url(true, type_structure.id)}">
-              <span class="mark">${type_structure.text}</span>
-            </a>
-            <span class="key">${type_structure.id}</span>
-          </span>
+          ${type_menu(topic, type_structure)}
         </span>
         </a>
       </h2>
@@ -287,10 +494,23 @@
             acre:attrs="attrs" 
             data-value="${prop_value.value}">${prop_value.value}</span>
       <acre:block if="ect === '/type/text'">
-        ${i18n_c.lang_code(prop_value.lang || prop_structure.lang, lang)}
+        ${i18n_c.lang_code(prop_value.lang, lang)}
       </acre:block>
     </acre:block>
   </acre:block>
+</acre:block>
+
+<acre:block def="type_menu(topic, type_structure)">
+  <ul class="inline-menu nicemenu">
+    <li class="inline-menu-item nicemenu-item">
+      <span class="mark headmenu">
+        <a href="#" class="menu-trigger" onclick="return false;">${type_structure.text}</a>
+      </span>
+      <ul class="row-menu submenu">  
+        <li class="row-menu-item"><a href="${h.fb_url('/schema', type_structure.id)}">${VIEW_SCHEMA}</a></li>
+      </ul>
+    </li>
+  </ul>  
 </acre:block>
 
 <acre:block def="prop_menu(topic, prop_structure)">
@@ -306,10 +526,9 @@
         <li acre:else="" class="row-menu-item edit">
           <a href="#" onclick="return propbox.prop_add(this);">${ADD_NEW_VALUE}</a>
         </li>      
-        <li class="row-menu-item"><a href="${h.fb_url('/inspect', prop_structure.id)}">${INSPECT_PROPERTY}</a></li>
         <li class="row-menu-item"><a href="${h.fb_url('/schema', prop_structure.id)}">${VIEW_SCHEMA}</a></li>
       </ul>
-   </li>
+    </li>
   </ul>
 </acre:block>
 

@@ -29,26 +29,88 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-(function($, fb) {
 
-  $(function() {
-    $(".blurb-trigger").click(function(){
-      var $trigger = $(this);
-      var $blurb = $trigger.siblings(".blurb");
-      var $blob = $trigger.siblings(".blob");
-      if ($blob.is(":hidden")) {
-        $blob.show();
-        $blurb.hide();
-        $trigger.text('Less');
-      }
-      else {
-        $blob.hide();
-        $blurb.show();
-        $trigger.text('More');
-      }
-    });
 
-    $(".image-stack").image_stack();
-  });
+var prop_structures = {
 
-})(jQuery, window.freebase);
+  /**
+   * A dictionary of static prop_structures using in objectbox
+   */
+
+  name: {
+    id: "/type/object/name",
+    text: "Name",
+    lang: "/lang/en",
+    expected_type: {
+      id: "/type/text",
+      text: "Text",
+      lang: "/lang/en"
+    }
+  },
+
+  alias: {
+    id: "/common/topic/alias",
+    text: "Also known as",
+    lang: "/lang/en",
+    expected_type: {
+      id: "/type/text",
+      text: "Text",
+      lang: "/lang/en"
+    }
+  },
+
+  image: {
+    id: "/common/topic/image",
+    text: "image",
+    lang: "/lang/en",
+    expected_type: {
+      id: "/common/image",
+      text: "Image",
+      lang: "/lang/en"
+    },
+    properties: [{
+      id: "/type/content/uploaded_by",
+      expected_type: {
+        id: "/type/user",
+        text: "User",
+        lang: "/lang/en"
+      },
+      text: "Uploaded By User",
+      lang: "/lang/en"
+    }, {
+      id: "/common/image/rights_holder_text_attribution",
+      expected_type: {
+        id: "/type/text",
+        text: "Text",
+        lang: "/lang/en"
+      },
+      unique: true,
+      text: "Rights holder (text attribution)",
+      lang: "/lang/en"
+    }, {
+      id: "/common/licensed_object/license",
+      expected_type: {
+        id: "/common/license",
+        text: "License",
+        lang: "/lang/en"
+      },
+      text: "License",
+      lang: "/lang/en"
+    }]
+  },
+
+  type: {
+    id: "/type/object/type",
+    text: "Type",
+    lang: "/lang/en",
+    expected_type: {
+      id: "/type/type",
+      text: "Type",
+      lang: "/lang/en"
+    }
+  }
+
+
+
+
+};

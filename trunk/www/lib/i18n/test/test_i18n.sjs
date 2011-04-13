@@ -90,6 +90,11 @@ test("i18n.mql.query.article", function() {
     timestamp:  null,
     type:       "/common/document",
     source_uri: null,
+    updated: null,
+    creator: {
+      id: null,
+      name: i18n.mql.query.name()
+    },
     "nolang:content": {
       optional: true,
       id:       null,

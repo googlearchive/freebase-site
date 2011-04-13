@@ -72,6 +72,7 @@ var SPEC = {
         (f.property && fh.is_base_id(f.property))) {
       domains = "all";
     }
+
     var promises = {
       prop_counts: filter_queries.prop_counts(id),
       topic: topic_api.topic(id, i18n.lang, f.limit, f.as_of_time, domains),
@@ -119,26 +120,6 @@ var SPEC = {
           optional: true,
           value: null,
           lang: null
-        }],
-        "/common/topic/article": [{
-          optional: true,
-          id: null,
-          creator: {
-            id: null,
-            name: i18n.mql.query.name()
-          },
-          updated: null,
-          timestamp: null,
-          source_uri: null,
-          content: {
-            optional: true,
-            language: null,
-            uploaded_by: [{
-              id: null,
-              name: i18n.mql.query.name(),
-              optional: true
-            }]
-          }
         }]
       })
     };

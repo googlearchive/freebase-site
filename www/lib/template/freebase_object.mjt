@@ -126,11 +126,23 @@
                   </a>
                 </span>
                 <ul class="row-menu submenu">  
+                  <acre:script>
+                    var params = h.extend({}, acre.request.params);
+                  </acre:script>
                   <acre:block for="(var i=1,l=c.object.name.length; i<l; i++)">
+                    <acre:script>
+                      var n = c.object.name[i];
+                      if (n.lang === "/lang/en") {
+                        delete params.lang;
+                      }
+                      else {
+                        params.lang = n.lang;
+                      }
+                    </acre:script>
                     <li class="row-menu-item">
-                      <a href="${h.fb_url(c.object.id)}"
-                        ${c.object.name[i].value}
-                        ${i18n_c.lang_code(c.object.name[i].lang, null, true)}
+                      <a href="${h.build_url(null, c.object.id, params)}">
+                        ${n.value}
+                        ${i18n_c.lang_code(n.lang, null, true)}
                       </a>
                     </li>
                   </acre:block>

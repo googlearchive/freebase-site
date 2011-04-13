@@ -49,6 +49,8 @@
     });
 
     $(".image-stack").image_stack();
+
+    $(".nicemenu").nicemenu();
   });
 
 })(jQuery, window.freebase);

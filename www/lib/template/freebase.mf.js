@@ -1,5 +1,6 @@
 [
   "template/json2.js",
+  "template/jquery.factory.js",
   "template/jquery.cookie.js",
   "template/jquery.localstore.js",
   "template/jquery.placeholder.js",

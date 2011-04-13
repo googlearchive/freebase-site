@@ -33,8 +33,6 @@ var h = acre.require("helper/helpers.sjs");
 var i18n = acre.require("i18n/i18n.sjs");
 var validators = acre.require("validator/validators.sjs");
 
-var prop_structures = acre.require("propbox/prop_structures.sjs").prop_structures;
-
 /*
   Returns a query string for provided property
 */

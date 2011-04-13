@@ -119,6 +119,25 @@ var SPEC = {
           optional: true,
           value: null,
           lang: null
+        }],
+        "/common/topic/article": [{
+          id: null,
+          creator: {
+            id: null,
+            name: i18n.mql.query.name()
+          },
+          updated: null,
+          timestamp: null,
+          source_uri: null,
+          content: {
+            optional: true,
+            language: null,
+            uploaded_by: [{
+              id: null,
+              name: i18n.mql.query.name(),
+              optional: true
+            }]
+          }
         }]
       })
     };
@@ -136,6 +155,8 @@ var SPEC = {
         // sort names/aliases by i18n.lang
         obj.name = obj.name.sort(text_lang_sort).slice(0, 3);
         obj["/common/topic/alias"] = obj["/common/topic/alias"].sort(text_lang_sort).slice(0, 3);
+
+console.log("articles", obj["/common/topic/article"]);
 
         var topic = result.topic;
 

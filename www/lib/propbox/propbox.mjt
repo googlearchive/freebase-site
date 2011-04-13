@@ -42,7 +42,7 @@
   // preload gettext values
   var FREEBASE_COMMONS = _("Freebase Commons");
   var USER_DOMAIN = _("User Domain");
-  var VIEW_ALL_PROPERTY_VALUES = _("View all property values");
+  var VIEW_ALL_PROPERTY_VALUES = _("Query all property values");
   var EDIT_VALUE = _("Edit value");
   var ADD_NEW_VALUE = _("Add new value");
   var VIEW_SCHEMA = _("View schema");

@@ -60,8 +60,6 @@
           var menu_item = $(this).find(".submenu:first li:first a").click();
         })
         .hover(propbox.row_menu_hoverover, propbox.row_menu_hoverout);
-
-      $(".nicemenu", context).nicemenu();
     },
 
     // show row menu button on hover

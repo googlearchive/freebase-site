@@ -43,7 +43,11 @@ function object(id, options) {
     "q:id": id,
     guid: null,
     mid: null,
-    name: i18n.mql.query.name(),
+    name: [{
+      optional: true,
+      value: null,
+      lang: null
+    }],
     creator: {
       optional: true,
       id: null,
@@ -57,17 +61,12 @@ function object(id, options) {
       index: null,
       link: {timestamp: null},
       sort: ["index", "link.timestamp"],
-      limit: 10
+      limit: 1
     }],
     type: [{
-      id: null,
-      name: i18n.mql.query.name(),
-      type: "/type/type",
-      key: [{namespace: {type:"/type/domain"}}],
       optional: true,
-      link: {timestamp:null},
-      index: null,
-      sort: ["index", "-link.timestamp"]
+      id: null,
+      name: i18n.mql.query.name()
     }],
     permission: null
   };
@@ -78,7 +77,7 @@ function object(id, options) {
       return env.result;
     })
     .then(function(topic) {
-      topic.name = topic.name || topic.mid;
+      topic.name = topic.name.sort(text_lang_sort);
       topic.image = topic["/common/topic/image"];
       if (topic.creator) {
         topic.creator.name = topic.creator.name || topic.creator.id;
@@ -108,4 +107,21 @@ function object(id, options) {
           return topic;
         });
     });
+};
+
+
+function text_lang_sort(a, b) {
+  if (a.lang === i18n.lang) {
+    return -1;
+  }
+  else if (b.lang === i18n.lang) {
+    return 1;
+  }
+  else if (a.lang === "/lang/en") {
+    return -1;
+  }
+  else if (b.lang === "/lang/en") {
+    return 1;
+  }
+  return b.lang < a.lang;
 };

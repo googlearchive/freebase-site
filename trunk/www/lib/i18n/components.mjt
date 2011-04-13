@@ -90,12 +90,12 @@
 <!!--
   Superscript language code if this_lang !== current_lang (default to i18n.lang)
 !!-->
-<acre:block def="lang_code(this_lang, current_lang)" trim="1">
+<acre:block def="lang_code(this_lang, current_lang, force_display)" trim="1">
   <acre:script>
     this_lang = ""+this_lang;
     current_lang = "" + (current_lang || i18n.lang);
   </acre:script>
-  <acre:block if="this_lang !== current_lang" trim="1">
+  <acre:block if="force_display || this_lang !== current_lang" trim="1">
     <acre:script>
       var code = this_lang.split("/").pop();
     </acre:script>

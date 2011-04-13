@@ -115,23 +115,40 @@
          topic meta information @see queries/topic
       !!-->
       <acre:block if="c.object">
-        <h1>
-          <acre:script>
-            var name = i18n.display_name_node(c.object);
-          </acre:script>
-          <acre:block if="name">
-            <span acre:attrs="itemprop('/type/object/name')">${name.value}</span>
-            ${i18n_c.lang_code(name.lang)}
-          </acre:block>
-          <acre:block else="">
-            ${c.object.id}
-          </acre:block>
-          <acre:block if="that_exports.nav_flags">
-            <span class="flags">
-              ${that_exports.nav_flags()}
-            </span>
-          </acre:block>
-        </h1>
+        <acre:block if="c.object.name.length">
+          <h1>
+            <span acre:attrs="itemprop('/type/object/name')">${c.object.name[0].value}</span>
+            <ul class="inline-menu nicemenu">
+              <li class="inline-menu-item nicemenu-item">
+                <span class="headmenu">
+                  <a href="#" class="menu-trigger" onclick="return false;">
+                    ${i18n_c.lang_code(c.object.name[0].lang, null, true)}
+                  </a>
+                </span>
+                <ul class="row-menu submenu">  
+                  <acre:block for="(var i=1,l=c.object.name.length; i<l; i++)">
+                    <li class="row-menu-item">
+                      <a href="${h.fb_url(c.object.id)}"
+                        ${c.object.name[i].value}
+                        ${i18n_c.lang_code(c.object.name[i].lang, null, true)}
+                      </a>
+                    </li>
+                  </acre:block>
+                </ul>
+              </li>
+            </ul> 
+          </h1>
+        </acre:block>
+        <acre:block else="">
+          <h1>
+            <span acre:attrs="itemprop('/type/object/id')">${c.object.id}</span>
+          </h1>
+        </acre:block>
+        <acre:block if="that_exports.nav_flags">
+          <span class="flags">
+            ${that_exports.nav_flags()}
+          </span>
+        </acre:block>
         <div class="meta">
           <!-- Show topic MID -->
           <span class="key">

@@ -38,8 +38,8 @@ ul.bar-graph {
   margin-bottom: 1px;
   line-height: 1;
   padding: 0;
-  .rounded_corners();
   font-size: 11px;
+  .rounded_corners();
 }
 
 .bar-graph-item-name,
@@ -62,7 +62,7 @@ ul.bar-graph {
 }
 
 .bar-graph-values .index {
-  -webkit-animation-duration:0.5s;
+  -webkit-animation-duration:0.2s;
   -webkit-animation-iteration-count:1;
   -webkit-animation-timing-function:ease-out;
   -webkit-animation-name: bars;
@@ -105,7 +105,7 @@ table.bar-graph {
 }
 
 .bar-graph tr {
-  .transition(all, 0.2s);
+  /*.transition(all, 0.2s);*/
 }
 
 .bar-graph tr:hover {
@@ -118,7 +118,10 @@ table.bar-graph {
   font-size: 11px;
 }
 
-.bar-graph tr:hover {
+.bar-graph tr:hover,
+.bar-graph th:hover,
+.bar-graph-label:hover,
+.bar-graph-label a:hover {
   cursor: pointer;
 }
 
@@ -134,15 +137,16 @@ table.bar-graph {
 }
 
 .bar-graph-label a {
-  .transition(all, 0.2s, linear, 0.4s);
+  display: block;
   position: relative;
   z-index: 10;
-  display: block;
+  .transition(all, 0.2s, ease-in-out, 0.0s);
 }
 
 .bar-graph-row:hover > th > .bar-graph-label > a {
   text-decoration: none;
   .translate(5px, 0);
+  cursor: pointer;
 } 
 
 .bar-graph-label .index {
@@ -152,7 +156,7 @@ table.bar-graph {
   left: 0;
   top: 0;
   background: #ddd;
-  .transition(all, 0.3s, linear);
+  .transition(all, 0.2s, linear);
 }
 
 .module:hover .index {
@@ -163,9 +167,6 @@ table.bar-graph {
   background: #a9e9fb;
 }
 
-.bar-graph-label:hover {
-  cursor: pointer;
-}
 
 #content .bar-graph td.value {
   text-align: right;

@@ -106,9 +106,9 @@
             var $container = $(this);
             var $img = $container.children("img:first");
 
-            $container.css('left', offset);
-
+            $container.css("left", offset);
             offset = offset + $img.width() + margin;
+
           });
           return false;
         },

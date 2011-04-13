@@ -147,7 +147,7 @@
 </acre:block>
 
 <acre:block def="domains_filter(base_url, filters)">
-  <div class="filter-form">
+  <div class="filter-form all-data-toggle">
     ${filter_form(base_url, filters, 'domains', domains_input, ['domains', filters.domains === 'all'])}
   </div>
 </acre:block>

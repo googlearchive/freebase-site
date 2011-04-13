@@ -53,7 +53,7 @@
  <acre:block def="objectbox(object, lang)">
 
    <div class="section domain domain-section">
-     <div class="header">
+     <div class="header" style="display:none">
        <span class="status">
          ${_("System")}
        </span>
@@ -63,8 +63,8 @@
          </span>
        </h1>
      </div>
-     <div class="type-section">      
-       <div class="header">
+     <div class="type-section">
+       <div class="header" style="display:none">
          <h2 class="foobar kbs">
            <span class="header-label">
              <span class="menu-trigger">
@@ -165,7 +165,12 @@
                         <li>
                           <span class="wrapper">
                             <span class="property-value">
-                              ${image.image_thumb(img.id, 32)}
+                              <acre:script>
+                                options = {
+                                  mode: "fillcropmid"
+                                }
+                              </acre:script>
+                              ${image.image_thumb(img.id, 24, options)}
                             </span>
                           </span>
                         </li>

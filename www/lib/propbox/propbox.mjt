@@ -286,7 +286,7 @@
             <thead acre:attrs="empty ? {style:'display:none;'} : {}">
               <tr>
                 <th scope="col">&nbsp;</th>
-                <th scope="col">${_("Added By")}</th>
+                <th scope="col">${_("Created By")}</th>
                 <th scope="col">${_("Updated")}</th>      
                 <th scope="col">${_("Language")}</th>
                 <th scope="col">${_("Source")}</th>
@@ -308,27 +308,20 @@
                         </li>
                       </ul>
                     </td><!-- end article id -->
-                    <td><!-- added by -->
+                    <td><!-- creator -->
                       <acre:script>
-                        var added_by = article.content && article.content.uploaded_by || [article.creator];
+                        var creator = article.creator;
                       </acre:script>
                       <ul class="data-list">
-                        <acre:block if="added_by.length">
-                          <acre:block for="u in added_by">
-                            <li>
-                              <span class="wrapper">
-                                <acre:script>
-                                  var name = i18n.display_name_node(u);
-                                </acre:script>
-                                <a class="property-value" href="${h.fb_url(u.id)}">${name.value}</a>
-                                <!--${i18n_c.lang_code(name.lang, lang)}-->
-                              </span>
-                            </li>
-                          </acre:block>
-                        </acre:block>
-                        <acre:block else="">
-                          ${empty_row_li()}
-                        </acre:block>
+                        <li>
+                          <span class="wrapper">
+                            <acre:script>
+                              var name = i18n.display_name_node(creator);
+                            </acre:script>
+                            <a class="property-value" href="${h.fb_url(u.id)}">${name.value}</a>
+                            <!--${i18n_c.lang_code(name.lang, lang)}-->
+                          </span>
+                        </li>
                       </ul>
                     </td><!-- end added by -->    
                     <td><!-- updated -->
@@ -345,13 +338,13 @@
                     </td><!-- end updated -->
                     <td><!-- language -->
                       <acre:script>
-                        var language = article.content && article.content.language;
+                        var language = article["lang:content"] && article["lang:content"].language;
                       </acre:script>
                       <ul class="data-list">
                         <acre:block if="language">
                           <li>
                             <span class="wrapper">
-                              <a class="property-value" href="${h.fb_url(language)}">${language}</a>
+                              <a class="property-value" href="${h.fb_url(language.id)}">${language.id}</a>
                             </span>
                           </li>
                         </acre:block>

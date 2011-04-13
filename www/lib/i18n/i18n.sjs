@@ -472,6 +472,11 @@ var mql = {
       optional:   true,
       id:         null,
       timestamp:  null,
+      updated: null,
+      creator: {
+        id: null,
+        name: mql.text_clause(lang)
+      },
       type:       "/common/document",
       source_uri: null,   // wikipedia articles
       "nolang:content": { // old (pre-i18n) articles do not have language set

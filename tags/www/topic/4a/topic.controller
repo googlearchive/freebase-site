@@ -1,0 +1,288 @@
+/*
+ * Copyright 2010, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var h = acre.require("lib/helper/helpers.sjs");
+var i18n = acre.require("lib/i18n/i18n.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var object_query = acre.require("lib/queries/object.sjs");
+var filters = acre.require("lib/filter/filters.sjs");
+var fh = acre.require("lib/filter/helpers.sjs");
+var filter_queries = acre.require("lib/filter/queries.sjs");
+var deferred = acre.require("lib/promise/deferred.sjs");
+var topic_api = acre.require("lib/queries/topic.sjs");
+
+var topic_filters = {
+  limit: {
+    validator: validators.Int,
+    options: {if_empty:null}
+  }
+};
+
+var SPEC = {
+
+  method: "GET",
+
+  auth: false,
+
+  cache_policy: "public",
+
+  template: "topic.mjt",
+
+  template_base: "lib/template/freebase_object.mjt",
+
+  validate: function(params) {
+    return [
+      validators.MqlId(acre.request.path_info, {required:true}),
+      filters.validate(params, topic_filters)
+    ];
+  },
+
+  run: function(id, f) {
+    var domains = f.domains;
+    if ((f.domain && fh.is_base_id(f.domain)) ||
+        (f.type && fh.is_base_id(f.type)) ||
+        (f.property && fh.is_base_id(f.property))) {
+      domains = "all";
+    }
+
+    var promises = {
+      prop_counts: filter_queries.prop_counts(id),
+      topic: topic_api.topic(id, i18n.lang, f.limit, f.as_of_time, domains),
+      object: object_query.object(id, {
+        /**
+        type: [{
+          optional: true,
+          id: null,
+          name: i18n.mql.query.name(),
+          type: "/type/type",
+          key: [{namespace: {type:"/type/domain"}}],
+          link: {timestamp:null},
+          index: null,
+          sort: ["index", "-link.timestamp"]
+        }],
+         **/
+        "/common/topic/image": [{
+          optional: true,
+          id: null,
+          name: i18n.mql.query.name(),
+          index: null,
+          link: {timestamp: null},
+          sort: ["index", "link.timestamp"],
+          limit: 3,
+          "/common/image/rights_holder_text_attribution": i18n.mql.query.text(),
+          "/type/content/uploaded_by": [{
+            id: null,
+            name: i18n.mql.query.name(),
+            optional: true
+          }],
+          "/common/licensed_object/license": [{
+            id: null,
+            name: i18n.mql.query.name(),
+            optional: true
+          }],
+          "creator": {
+            id: null,
+            name: i18n.mql.query.name()
+          }
+        }],
+        "/common/topic/alias": [{
+          optional: true,
+          value: null,
+          lang: null
+        }]
+      })
+    };
+
+    return deferred.all(promises)
+      .then(function(result) {
+        h.extend(result, {
+          id: id,
+          filters: f
+        });
+
+        var topic = result.topic;
+
+        if (f.domain) {
+          filter_by_domain(topic, f.domain);
+        }
+        else if (f.type) {
+          filter_by_type(topic, f.type);
+        }
+        else if (f.property) {
+          filter_by_property(topic, f.property);
+        }
+
+        var obj = result.object;
+        if (domains !== "all") {
+          // filter base/user types
+          obj.type = obj.type.filter(function(type) {
+            return !fh.is_base_id(type.id);
+          });
+        }
+        obj.image = obj["/common/topic/image"];
+        // sort names/aliases by i18n.lang
+        obj["/common/topic/alias"] = obj["/common/topic/alias"].sort(object_query.text_lang_sort);
+
+        var blurbs = [];
+        obj["/common/topic/article"].forEach(function(article) {
+          if (!("blurb" in article)) {
+            blurbs.push(i18n._get_blob.closure(article, "blurb", {}, "blurb"));
+          }
+        });
+        return deferred.all(blurbs)
+          .then(function() {
+            return result;
+          });
+      });
+  }
+};
+
+function add_type_structure(topic, object_result) {
+  if (topic && topic.structure) {
+    if (!topic.structure.order) {
+      topic.structure.order = [];
+    }
+    topic.structure.order.unshift("/type");
+    if (!topic.structure.domains) {
+      topic.structure.domains = {};
+    }
+    topic.structure.domains["/type"] = {
+      text: "Metaweb System Types",
+      types: ["/type/object"]
+    };
+    if (!topic.structure.types) {
+      topic.structure.types = {};
+    }
+    topic.structure.types["/type/object"] = {
+      text: "Object",
+      properties: [
+        "/type/object/name",
+        "/type/object/type"
+      ]
+    };
+    if (!topic.properties) {
+      topic.properties = {};
+    }
+    topic.properties["/type/object/name"] = {
+      disambiguator: false,
+      expected_type: {
+        id: "/type/text",
+        text: "Text"
+      },
+      text: "name",
+      unique: false,
+      values: to_topic_api_values(object_result.name)
+    };
+    topic.properties["/type/object/type"] = {
+      disambiguator: false,
+      expected_type: {
+        id: "/type/type",
+        text: "Type"
+      },
+      text: "type",
+      unique: false,
+      values: to_topic_api_values(object_result.type)
+    };
+  }
+};
+
+function to_topic_api_values(list) {
+  list.forEach(function(item) {
+    if (item.id) {
+      var name = i18n.display_name_node(item);
+      item.text = name.value;
+      item.lang = name.lang;
+    }
+    else {
+      item.text = item.value;
+    }
+  });
+  return list;
+};
+
+function filter_by_domain(topic, domain_id) {
+  // just modify topic.structure.order to only include domain_id
+  if (topic && topic.structure) {
+    if (domain_id) {
+      topic.structure.order = [domain_id];
+    }
+    else {
+      topic.structure.order = [];
+    }
+  }
+  return topic;
+};
+
+function filter_by_type(topic, type_id) {
+  var domain_id;
+  if (type_id && topic && topic.structure && topic.structure.domains) {
+    for (var key in topic.structure.domains) {
+      var domain = topic.structure.domains[key];
+      if (domain && domain.types) {
+        for (var i=0,l=domain.types.length; i<l; i++) {
+          if (domain.types[i] === type_id) {
+            domain_id = key;
+            domain.types = [type_id];
+            break;
+          }
+        }
+        if (domain_id) {
+          break;
+        }
+      }
+    }
+  }
+  filter_by_domain(topic, domain_id);
+  return topic;
+};
+
+function filter_by_property(topic, prop_id) {
+  var type_id;
+  if (prop_id && topic && topic.structure && topic.structure.types) {
+    for (var key in topic.structure.types) {
+      var type = topic.structure.types[key];
+      if (type && type.properties) {
+        for (var i=0,l=type.properties.length; i<l; i++) {
+          if (type.properties[i] === prop_id) {
+            type_id = key;
+            type.properties = [prop_id];
+            break;
+          }
+        }
+        if (type_id) {
+          break;
+        }
+      }
+    }
+  }
+  filter_by_type(topic, type_id);
+  return topic;
+};

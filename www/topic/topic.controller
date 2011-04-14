@@ -96,7 +96,7 @@ var SPEC = {
           index: null,
           link: {timestamp: null},
           sort: ["index", "link.timestamp"],
-          limit: 10,
+          limit: 3,
           "/common/image/rights_holder_text_attribution": i18n.mql.query.text(),
           "/type/content/uploaded_by": [{
             id: null,
@@ -147,6 +147,7 @@ var SPEC = {
             return !fh.is_base_id(type.id);
           });
         }
+        obj.image = obj["/common/topic/image"];
         // sort names/aliases by i18n.lang
         obj["/common/topic/alias"] = obj["/common/topic/alias"].sort(object_query.text_lang_sort);
 

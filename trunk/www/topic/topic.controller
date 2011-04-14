@@ -141,12 +141,14 @@ var SPEC = {
         }
 
         var obj = result.object;
+/**
         if (domains !== "all") {
           // filter base/user types
           obj.type = obj.type.filter(function(type) {
             return !fh.is_base_id(type.id);
           });
         }
+**/
         obj.image = obj["/common/topic/image"];
         // sort names/aliases by i18n.lang
         obj["/common/topic/alias"] = obj["/common/topic/alias"].sort(object_query.text_lang_sort);

@@ -291,5 +291,21 @@ test("first_element", function() {
 });
 
 
+test("intersect", function() {
+  equal(h.intersect(null, null), false);
+  equal(h.intersect([], []), false);
+  equal(h.intersect([1,2], []), false);
+  equal(h.intersect([], [1,2]), false);
+
+  equal(h.intersect(1, 1), true);
+  equal(h.intersect(1, [1]), true);
+  equal(h.intersect([1], 1), true);
+  equal(h.intersect([1], [1]), true);
+
+  equal(h.intersect([1,2,3], 4), false);
+  equal(h.intersect([1,2,3], [3,4,5]), true);
+});
+
+
 acre.test.report();
 

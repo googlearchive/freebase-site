@@ -45,7 +45,9 @@ var exports = {
 
   "endsWith": endsWith,
   "startsWith": startsWith,
-  "is_commons": is_commons
+  "is_commons": is_commons,
+
+  "intersect": intersect
 };
 
 // Used for trimming whitespace
@@ -221,7 +223,7 @@ function startsWith(str, start) {
 /*
  * Simple function for determining whether a domain
  * is part of the Commons or a User Domain
- * 
+ *
  * Expects a domain id (eg. /film or /base/kconragan/surfing)
  */
 
@@ -229,4 +231,34 @@ function is_commons(domain) {
   return domain.indexOf('/user/') == -1 &&
          domain.indexOf('/guid/') == -1 &&
          domain.indexOf('/base/') == -1;
+}
+
+
+
+/**
+ * Does setA intersect with setB?
+ * setA intersects with setB if setA.indexOf(setA[n]) !== -1;
+ */
+function intersect(a, b) {
+  if (a == null || b == null) {
+    return false;
+  }
+  if (!isArray(a)) {
+    a = [a];
+  }
+  if (!isArray(b)) {
+    b = [b];
+  }
+  if (a.length === 0 || b.length === 0) {
+    return false;
+  }
+
+  for (var i=0,l=a.length; i<l; i++) {
+    for (var j=0,k=b.length; j<k; j++) {
+      if (a[i] == b[j]) {
+        return true;
+      }
+    }
+  }
+  return false;
 }

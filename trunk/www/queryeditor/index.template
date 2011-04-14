@@ -61,7 +61,7 @@
     <div id="qe-module" class="module">
       <h2 id="qe-title" class="module-title">
         ${_("Query")}
-        <a class="trigger" href="javascript:void(0);">${_("Collapse column")}</a>
+        <!-- a class="trigger" href="javascript:void(0);">${_("Collapse column")}</a -->
       </h2>
       <div id="the-query-editor" class="module-section"></div>
       <div class="module-section">

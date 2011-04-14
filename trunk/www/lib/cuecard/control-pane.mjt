@@ -119,23 +119,24 @@
 <acre:block def="variables(controlPane)">
   <table class="cuecard-controlPane-variables">
     <tr>
-      <th width="20%"><h3 class="module-section-title">Name</h3></th>
-      <th width="40%"><h3 class="module-section-title">Value</h3></th>
+      <th><h3 class="module-section-title">Name</h3></th>
+      <th><h3 class="module-section-title">Value</h3></th>
       <th></th>
     </tr>
-    <tr class="cuecard-controlPane-variables-row" acre:def="add_row()">
-      <td><input class="text-input" /></td>
-      <td><input class="text-input" /></td>
+    <tr class="query-options-row" acre:def="add_row()">
+      <td><input class="text-input variables-input" /></td>
+      <td><input class="text-input variables-input" /></td>
       <td>
-        <input type="submit" class="button" value="-" 
+        <input type="submit" class="button small-button" value="-" 
                acre:onclick="$(this).closest('.cuecard-controlPane-variables-row').remove()"/>
+		<input class="button small-button" type="submit" value="+" 
+			   acre:onclick="controlPane._getTab('variables').find('.cuecard-controlPane-variables').append($.acre(add_row()))"/>
       </td>
     </tr>
     ${add_row()}
   </table>
   <div>
-    <input class="button" type="submit" value="+" 
-            acre:onclick="controlPane._getTab('variables').find('.cuecard-controlPane-variables').append($.acre(add_row()))"/>
+   
   </div>
 </acre:block>
 
@@ -144,8 +145,8 @@
 
   <acre:script>
     var ENV = [
-      {name: 'extended', hint: 'Enable MQL extensions'},
-      {name: 'as_of_time', hint: 'Resolve the query based on data in Freebase as of the given time in ISO8601 format, e.g., 2009-02-28, 2009-03-13T22:16:40'},
+      {name: 'Extended', hint: 'Enable MQL extensions'},
+      {name: 'As_of_time', hint: 'Resolve the query based on data in Freebase as of the given time in ISO8601 format, e.g., 2009-02-28, 2009-03-13T22:16:40'},
       {name: 'use_permission_of', hint: 'Specify the id of an object (typically a user, domain or type) whose permission you want to copy (<a href="http://freebaseapps.com/docs/mql/ch06.html#id2972357" target="_blank">more details</a>).'},
       {name: 'page', hint: 'Page number starting from 1 if there is a "limit" property in the top level query node.'},
       {name: 'cursor', hint: ''},
@@ -160,15 +161,14 @@
   <div class="cuecard-controlPane-explanation">
     <p>The query envelope contains directives to the query engine, specifying how to execute the query or how to return the results.</p>
   </div>
-  <table class="cuecard-controlPane-configurations">
-    <tr acre:for="e in ENV">
-      <td>$e.name</td>
-      <td>
+  <div class="cuecard-controlPane-configurations">
+    <div class="query-options-row" acre:for="e in ENV">
+      <p><em>$e.name</em></p>
         <acre:block choose="e.name">
         
-          <input acre:when="extended" name="extended" type="checkbox" acre:attrs="def.extended ? {'checked':''} : {}" />
+          <input acre:when="Extended" name="extended" class="query-options-input" type="checkbox" acre:attrs="def.extended ? {'checked':''} : {}" />
         
-          <input acre:when="as_of_time" name="as_of_time" value="${def.as_of_time||''}" />
+          <input acre:when="As_of_time" name="as_of_time" class="query-options-textbox text-input" value="${def.as_of_time||''}" />
         
           <input acre:when="use_permission_of" name="use_permission_of" value="${def.use_permission_of||''}" />
         
@@ -216,9 +216,8 @@
 
         </acre:block>
         <div acre:if="e.hint.length > 0" class="cuecard-controlPane-hint">${mjt.bless(e.hint)}</div>
-      </td>
-    </tr>
-  </table>
+    </div>
+  </div>
 
   <acre:script>
     var env = "env" in controlPane._options ? controlPane._options.env : {};

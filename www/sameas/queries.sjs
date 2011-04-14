@@ -33,62 +33,6 @@ var freebase = acre.require("lib/promise/apis").freebase;
 var deferred = acre.require("lib/promise/apis").deferred;
 var h = acre.require("lib/helper/helpers.sjs");
 
-var images = function(id, limit) {
-  limit = limit || 10;
-
-  var q = {
-    id: id,
-    "/common/topic/image": [{
-      mid: null,
-      name: null,
-      "/common/image/rights_holder_text_attribution": null,
-      "/type/content/uploaded_by": [{
-        id: null,
-        name: null,
-        optional: true
-      }],
-      "/common/licensed_object/license": [{
-        id: null,
-        name: null,
-        optional: true
-      }],
-      "creator": {
-        id: null,
-        name: null
-      },
-      link: {timestamp:null},
-      index: null,
-      sort: ["index", "link.timestamp"],
-      limit: limit,
-      optional: true
-    }]
-  };
-
-  return freebase.mqlread(q)
-    .then(function(envelope){
-      var images = [];
-      var result = envelope.result["/common/topic/image"] || [];
-      result.forEach(function(img){
-        var image = {
-          id: img.mid,
-          name: img.name,
-          rights_holder: img["/common/image/rights_holder_text_attribution"],
-          license: img["/common/licensed_object/license"]
-        };
-
-        if (img["/type/content/uploaded_by"]) {
-          image.creator = img["/type/content/uploaded_by"];
-        }
-        else {
-          image.creator = img.creator;
-        }
-        images.push(image);
-      });
-
-      return images;
-    });
-};
-
 var _link_compare_key = function(link) {
  // proper order should be official, template, topic, uri
  if (link.template && link.category) {

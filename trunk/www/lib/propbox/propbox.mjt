@@ -462,7 +462,7 @@
       </span>
       <h1 class="kbs">
         <span class="mark">
-          <a href="${h.fb_url(domain_structure.id)}">${domain_structure.text}</a>
+          <a href="${h.fb_url(domain_structure.id)}" title="${domain_structure.id}">${domain_structure.text}</a>
         </span>
       </h1>
     </div>    
@@ -675,7 +675,7 @@
   <ul class="inline-menu nicemenu">
     <li class="inline-menu-item nicemenu-item">
       <span class="mark headmenu">
-        <a href="#" class="menu-trigger" onclick="return false;">${type_structure.text}</a>
+        <a href="#" class="menu-trigger" onclick="return false;" title="${type_structure.id}">${type_structure.text}</a>
       </span>
       <ul class="row-menu submenu">  
         <li class="row-menu-item"><a href="${h.fb_url('/schema', type_structure.id)}">${VIEW_SCHEMA}</a></li>
@@ -688,7 +688,7 @@
   <ul class="inline-menu nicemenu">
     <li class="inline-menu-item nicemenu-item">
       <span class="mark headmenu">
-        <a href="#" class="menu-trigger" onclick="return false;">${prop_structure.text}</a>
+        <a href="#" class="menu-trigger" onclick="return false;" title="${prop_structure.id}">${prop_structure.text}</a>
       </span>
       <ul class="row-menu submenu">
         <li acre:if="prop_structure.unique && prop_structure.values.length" class="row-menu-item edit">

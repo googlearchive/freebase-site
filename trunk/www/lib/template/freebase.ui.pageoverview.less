@@ -30,23 +30,67 @@
  */
 
 .page-meta {
-    position: relative;
-    background: #fff;
-    border: 5px solid #e4e6e7;
-    padding: 1em;
-    margin-bottom: 30px;
-    .rounded_corners(10px);
-    .box_shadow();
+  position: relative;
+  background: #fff;
+  border: 5px solid #e4e6e7;
+  padding: 1em;
+  margin-bottom: 30px;
+  .rounded_corners(10px);
+  .box_shadow();
 }
 
 .page-meta h1 {
-    font-size: 2.4em;
-    color: #64768f;
-    line-height: 1;
+  font-size: 2.4em;
+  color: #64768f;
+  line-height: 1;
 }
 
-.page-meta h1 .lang-code {
-   font-size: 12px;
+.page-meta h1 .menu-trigger {
+  display: inline-block;
+  position: relative;
+  font-size: 12px;
+  top: -0.5em;
+  padding: 3px;
+  line-height: 1;
+  border: 1px solid transparent;
+}
+
+.page-meta .menu-trigger .lang-code {
+  position: static;
+  font-size: 12px;
+  line-height: 1;
+  padding-right: 10px;
+  background: url(template/ui-icons.png) no-repeat 13px -688px;
+  color: #999;
+}
+
+.page-meta:hover h1 .menu-trigger {
+  border: 1px solid #e4e4e4;
+  .linear_gradient(#fff, #efefef);  
+}
+
+.menu-trigger:hover {
+  text-decoration: none;
+}
+
+.page-meta .row-menu-item .lang-code {
+  font-size: 10px;
+  color: #333;
+}
+
+.page-meta .row-menu-item a:hover .lang-code {
+  color: #fff;
+}
+
+.page-meta:hover h1 .menu-trigger .lang-code {
+  color: #666;
+  background-position: 13px -722px;
+}
+
+.page-meta h1 .menu-trigger:hover .lang-code {
+  text-decoration: none;
+  color: @link-blue;
+  background-position: 13px -755px;
 }
 
 h1 .flags {

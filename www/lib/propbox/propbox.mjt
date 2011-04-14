@@ -636,6 +636,11 @@
        data-id="${prop_value.id}">${prop_value.text}</a> 
     ${i18n_c.lang_code(prop_value.lang, lang)}
   </acre:block>
+
+  <acre:block elif="ect === '/location/mailing_address'">
+    ${prop_value.text}
+  </acre:block>
+
   <acre:block else="">
     <acre:script>
       var attrs = h.extend(itemprop(prop_structure.id), microdata.value(prop_structure, prop_value));

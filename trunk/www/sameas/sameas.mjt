@@ -117,50 +117,6 @@
     </table>
   </acre:block>
 
-  <acre:block if="c.images && c.images.length">
-  <h1 class="table-title">${_("Images")}</h1>
-
-  <table cellspacing="0" class="table">
-    <thead>
-      <th scope="col" class="column-header">${_("Image")}</th>
-      <th scope="col" class="column-header">${_("Name")}</th>
-      <th scope="col" class="column-header">${_("Added by")}</th>
-      <th scope="col" class="column-header">${_("Rights holder")}</th>
-      <th scope="col" class="column-header">${_("License")}</th>
-    </thead>
-    <tbody>
-      <tr acre:for="img in c.images">
-        <th class="row-header image odd" scope="row">
-          ${image.image_thumb(img.id)}
-        </th>
-        <td class="even">
-          $img.name
-        </td>
-        <td class="odd">
-          <acre:block for="i, creator in img.creator" trim="1">
-            <acre:block if="i !== 0">, </acre:block>
-            <a href="${h.fb_url(creator.id)}"title="View user"> $creator.name</a>
-          </acre:block>
-        </td>
-        <td class="even">
-          <acre:block if="img.rights_holder">
-            $img.rights_holder
-          </acre:block>
-        </td>
-        <td class="odd">
-          <acre:block for="i, license in img.license" trim="1">
-            <acre:block if="i > 0">, </acre:block>
-            ${license.name}
-          </acre:block>
-          <acre:block if="!img.license.length">
-            Public domain
-          </acre:block>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  </acre:block>
-
 
 </acre:block>
 

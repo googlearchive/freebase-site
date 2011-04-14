@@ -412,4 +412,3 @@ function mqlread_clause(prop_structure, prop_value, lang) {
   }
   return [clause];
 };
-

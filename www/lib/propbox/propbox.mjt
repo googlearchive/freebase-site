@@ -50,9 +50,49 @@
   var DELETE = _("Delete");
  </acre:script>
 
- <acre:block def="objectbox(object, lang)">
+ <acre:block def="objectbox(object, lang, domain, type, property)">
+   <acre:script>
+     if (domain) {
+       if (domain === "/type") {
+         type = "/type/object";
+         property = "/type/object/name";
+       }
+       else if (domain === "/common") {
+         type = "/common/topic";
+         property = ["/common/topic/alias", "/common/topic/image", "/common/topic/article"];
+       }
+     }
+     else if (type) {
+       if (type === "/type/object") {
+         domain = "/type";
+         property = "/type/object/name";
+       }
+       else if (type === "/common/topic") {
+         domain = "/common";
+         property = ["/common/topic/alias", "/common/topic/image", "/common/topic/article"];
+       }
+     }
+     else if (property) {
+       if (property === "/type/object/name") {
+         domain = "/type";
+         type = "/type/object";
+       }
+       else if (property === "/common/topic/alias" || 
+                property === "/common/topic/image" ||
+                property === "/common/topic/article") {
+         domain = "/common";
+         type = "/common/topic";
+       }
+     }
+     else {
+       domain = ["/type", "/common"];
+       type = ["/type/object", "/common/topic"];
+       property = ["/type/object/name", "/common/topic/alias", "/common/topic/image", "/common/topic/article"];
+     }
+   </acre:script>
 
-   <div class="section domain domain-section">
+   <div acre:if="h.intersect(domain, ['/type', '/common'])"
+      class="section domain domain-section">
      <div class="header" style="display:none">
        <span class="status">
          ${_("System")}
@@ -63,7 +103,8 @@
          </span>
        </h1>
      </div>
-     <div class="type-section">
+     <div acre:if="h.intersect(type, ['/type/object', '/common/topic'])"
+        class="type-section">
        <div class="header" style="display:none">
          <h2 class="foobar kbs">
            <span class="header-label">
@@ -74,7 +115,8 @@
           </a>
         </h2>
       </div>      
-      <div class="property-section">
+      <div acre:if="h.intersect(property, '/type/object/name')"
+         class="property-section">
         <acre:script>
           var prop_structure = {text:"Name", id:"/type/object/name"};
           var empty = !object.name || !object.name.length;
@@ -92,12 +134,12 @@
             <acre:block else="">
               <li class="kbs data-row data-row-inline">
                 <span class="wrapper">
-                  <acre:block for="i, name in object.name" if="i < 3">
+                  <acre:block for="i, name in object.name" if="i < 5">
                     <acre:block if="i > 0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</acre:block>
                     <span class="property-value">${name.value}</span>
                     ${i18n_c.lang_code(name.lang, lang)}
                   </acre:block>
-                  <acre:block if="object.name.length > 3">
+                  <acre:block if="object.name.length > 5">
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" class="more">${_("more")} &raquo;</a>
                   </acre:block>
                 </span>
@@ -106,7 +148,8 @@
           </ul>
         </div>
       </div>
-      <div class="property-section">
+      <div acre:if="h.intersect(property, '/common/topic/alias')"
+         class="property-section">
         <acre:script>
           var prop_structure = {text:"Also known as", id:"/common/topic/alias"};
           var empty = !object["/common/topic/alias"] || !object["/common/topic/alias"].length;
@@ -124,12 +167,12 @@
             <acre:block else="">
               <li class="kbs data-row data-row-inline">
                 <span class="wrapper">
-                  <acre:block for="i, alias in object['/common/topic/alias']" if="i < 3">
+                  <acre:block for="i, alias in object['/common/topic/alias']" if="i < 5">
                     <acre:block if="i > 0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</acre:block>
                     <span class="property-value">${alias.value}</span>
                     ${i18n_c.lang_code(alias.lang, lang)}
                   </acre:block>
-                  <acre:block if="object['/common/topic/alias'].length > 3">
+                  <acre:block if="object['/common/topic/alias'].length > 5">
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" class="more">${_("more")} &raquo;</a>
                   </acre:block>
                 </span>
@@ -138,7 +181,8 @@
           </ul>
         </div>
       </div>
-      <div class="property-section">
+      <div acre:if="h.intersect(property, '/common/topic/image')" 
+           class="property-section">
         <acre:script>
           var prop_structure = {text:"image", id:"/common/topic/image"};
           var empty = !object["/common/topic/image"] || !object["/common/topic/image"].length;
@@ -277,7 +321,8 @@
           </table>
         </div>
       </div>
-      <div class="property-section">
+      <div acre:if="h.intersect(property, '/common/topic/article')"
+         class="property-section">
         <acre:script>
           var prop_structure = {text:"article", id:"/common/topic/article"};
           var empty = !object["/common/topic/article"] || !object["/common/topic/article"].length;

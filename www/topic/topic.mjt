@@ -122,8 +122,8 @@
         <h3>Suggested Types:</h3>
       </div>
     </div>
-
-    ${propbox.objectbox(c.object, i18n.lang)}
+   
+    ${propbox.objectbox(c.object, i18n.lang, c.filters.domain, c.filters.type, c.filters.property)}
 
     ${propbox.topicbox(c.topic, i18n.lang)}
 

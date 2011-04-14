@@ -126,6 +126,11 @@
                   </a>
                 </span>
                 <ul class="row-menu submenu">  
+                  <li class="row-menu-item">
+                    <a href="javascript:void(0)" class="icon-link">
+                      <span class="edit-icon">Edit localized names &hellip;</span>
+                    </a>
+                  </li>
                   <acre:script>
                     var params = h.extend({}, acre.request.params);
                   </acre:script>

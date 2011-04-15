@@ -147,7 +147,7 @@ function get_bar_graph_data(filters, prop_counts) {
     data = prop_counts;
     var all = filters.domains === "all";
     for (k in data) {
-      if (!all && is_base_id(k)) {
+      if (!all && !h.is_commons_id(k)) {
         delete data[k];
       }
     }
@@ -211,9 +211,4 @@ function get_bar_graph_data(filters, prop_counts) {
     chart_data.push(data);
   });
   return chart_data;
-};
-
-var r_is_base_id = /^\/base\/|\/user\//;
-function is_base_id(id) {
-  return r_is_base_id.test(id);
 };

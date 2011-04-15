@@ -126,11 +126,17 @@ function minimal_prop_value(prop_structure, prop_data, lang) {
     }
   }
   else {
-    assert(h.isArray(prop_data.name) && prop_data.name.length, "minimal_prop_value: expected prop_data.name to be an array of lang values");
+    var name = prop_data.name;
+    assert(h.isArray(name), "minimal_prop_value: expected prop_data.name to be an array of lang values");
     value.id = prop_data.id;
-    var name = i18n.mql.get_text(lang, prop_data.name);
-    value.text = name.value;
-    value.lang = name.lang;
+    if (name.length) {
+      name = i18n.mql.get_text(lang, prop_data.name);
+      value.text = name.value;
+      value.lang = name.lang;
+    }
+    else {
+      value.text = prop_data.id;
+    }
   }
   return value;
 };

@@ -106,24 +106,26 @@
       <ul class="">
         <li>
           <a href="#" class="toolbar-trigger icon-link">
-            <span class="add-icon">Add Type</span>
+            <span class="add-icon">${_('Add Type') }</span>
           </a>
         </li>
       </ul>
     </div>
     <div class="add-type toolbar-pane">
       <div class="column">
-        <acre:block for="i, type in c.object.type" trim="1">
-          <acre:block if="i > 0">, </acre:block>
-          <a href="${h.fb_url(type.id)}" title="${type.id}">${i18n.display_name(type)}</a>
-        </acre:block>
-        <h3>${h.sprintf(_("Add a new Type to %s"), i18n.display_name(c.object))}</h3>
+        <h3 class="toolbar-pane-title">
+          ${_('Add a new Type')}
+        </h3>
         <form action="" method="post" name="add-type-form" class="add-type">
           <input type="" class="text-input" value="" placeholder="Start typing for suggestions..." name="" />
         </form>
-      </div>
-      <div class="column">
-        <h3>Suggested Types:</h3>
+        <h3 class="toolbar-pane-title">Current Types:</h3>
+        <ul class="multi-column">
+          <li acre:for="i, type in c.object.type" trim="1">
+            <a href="${h.fb_url(type.id)}" 
+               title="${type.id}">${i18n.display_name(type)}</a>
+          </li>
+        </ul>
       </div>
     </div>
    

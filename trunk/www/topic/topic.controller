@@ -94,6 +94,14 @@ var SPEC = {
               return h.is_commons_id(type.id);
             });
           }
+
+          // sort types alphabetically for display
+          function compare(a, b) {
+            if (a.id < b.id) return -1;
+            if (a.id > b.id) return 1;
+            return 0;
+          }
+          object.type.sort(compare);
         }
 
         var topic = result.topic;

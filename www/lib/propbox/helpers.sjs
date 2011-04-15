@@ -407,10 +407,16 @@ function mqlread_clause(prop_structure, prop_value, lang) {
   var is_literal = h.is_literal_type(ect.id);
   var clause = {optional:true};
   if (is_literal) {
+    if (ect.id == "/type/text") {
+      clause = i18n.mql.text_clause(lang)[0];
+    }
+    clause.value = literal_validator(ect.id)(prop_value, {if_empty:null});
+/**
     clause.value = literal_validator(ect.id)(prop_value, {if_empty:null});
     if (ect.id === "/type/text") {
       clause.lang = lang;
     }
+**/
   }
   else {
     clause.id = prop_value;

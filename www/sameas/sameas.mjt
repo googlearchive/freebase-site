@@ -34,6 +34,7 @@
   var h = acre.require("lib/helper/helpers.sjs");
   var image = acre.require("lib/template/imagecomponents");
   var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
 </acre:script>
 
@@ -67,6 +68,7 @@
       <acre:block else="">
       ${i18n.display_name(category)}
       </acre:block>
+      ( ${i18n_c.number(category.weblinks.length)} )
     </h1>
     <table cellspacing="0" class="table">
       <thead>

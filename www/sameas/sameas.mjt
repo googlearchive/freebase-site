@@ -61,32 +61,44 @@
 
 
   <acre:block for="k,links in c.categories">
-
-    <dl>
-
-      <dt>${i18n.display_name(links.category)}</dt>
-
-      <acre:block for="weblink in links.weblinks">
-
-        <acre:block if="weblink.authority">
-          <dt class="authority a${weblink.authority.id.replace(/\//g, '-')}">
-            <a href="${h.fb_url(weblink.authority.id)}">
-              ${i18n.display_name(weblink.authority)}
-            </a>  
-          </dt>
-        </acre:block>
-
-        <dd>${_("Namespace")}: <a href="${h.fb_url(weblink.ns)}">${weblink.ns}</a></dd>
-        <dd>${_("Key")}: <a href="${weblink.url}">${acre.freebase.mqlkey_unquote(weblink.key)}</a></dd>
-
-
+    <h1 class="table-title">
+      <acre:block if="links.category.id === 'NO_CATEGORY'">
+        Uncategorized
       </acre:block>
-    </dl>
+      <acre:block else="">
+      ${i18n.display_name(links.category)}
+      </acre:block>
+    </h1>
+    <table cellspacing="0" class="table">
+      <thead>
+        <th class="column-header first" scope="column">Authority</th>
+        <th class="column-header" scope="column">Namespace</th>
+        <th class="column-header" scope="column">Key</th>
+        <th class="column-header" scope="column">URL</th>
+      </thead>
+      <tbody>
+        <tr acre:for="weblink in links.weblinks">
+          <th class="row-header odd">
+            <acre:block if="weblink.authority">
+            <span class="authority a${weblink.authority.id.replace(/\//g, '-')}">
+              <a href="${h.fb_url(weblink.authority.id)}">
+                ${i18n.display_name(weblink.authority)}
+              </a>  
+            </span>
+            </acre:block>
+            <acre:block else="">
+              -
+            </acre:block>
+          </th>
+          <td><a href="${h.fb_url(weblink.ns)}">${weblink.ns}</a></td>
+          <td class="odd">$weblink.key</td>
+          <td><a href="${weblink.url}">$weblink.url</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+
   </acre:block>
-
-
-
-
   <acre:block if="c.keys && c.keys.length">
     <h1 class="table-title">${_("Web IDs")}</h1>
     <table cellspacing="0" class="table">

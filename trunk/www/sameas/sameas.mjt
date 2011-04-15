@@ -59,6 +59,34 @@
 
 <acre:block def="page_content()">
 
+
+  <acre:block for="k,links in c.categories">
+
+    <dl>
+
+      <dt>${i18n.display_name(links.category)}</dt>
+
+      <acre:block for="weblink in links.weblinks">
+
+        <acre:block if="weblink.authority">
+          <dt class="authority a${weblink.authority.id.replace(/\//g, '-')}">
+            <a href="${h.fb_url(weblink.authority.id)}">
+              ${i18n.display_name(weblink.authority)}
+            </a>  
+          </dt>
+        </acre:block>
+
+        <dd>${_("Namespace")}: <a href="${h.fb_url(weblink.ns)}">${weblink.ns}</a></dd>
+        <dd>${_("Key")}: <a href="${weblink.url}">${acre.freebase.mqlkey_unquote(weblink.key)}</a></dd>
+
+
+      </acre:block>
+    </dl>
+  </acre:block>
+
+
+
+
   <acre:block if="c.keys && c.keys.length">
     <h1 class="table-title">${_("Web IDs")}</h1>
     <table cellspacing="0" class="table">

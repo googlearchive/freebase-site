@@ -321,16 +321,6 @@
           Review topics for merge and delete
         </a>
       </li>
-      <li>
-        <a href="http://matchmaker.freebaseapps.com">
-          Match imported data to Freebase topics
-        </a>
-      </li>
-      <li>
-        <a href="http://hotdate.freebaseapps.com/">
-          Add dates to important events
-        </a>
-      </li>
     </ul>
     <a href="${h.wiki_url('Data_games')}" class="more-link">Learn More &raquo;</a>
   </div>

@@ -70,12 +70,12 @@
       </acre:block>
       ( ${i18n_c.number(category.weblinks.length)} )
     </h1>
-    <table cellspacing="0" class="table">
+    <table cellspacing="0" class="table table-sortable">
       <thead>
-        <th class="column-header first" scope="column">${_("Authority")}</th>
-        <th class="column-header" scope="column">${_("Namespace")}</th>
-        <th class="column-header" scope="column">${_("Key")}</th>
-        <th class="column-header" scope="column">${_("URL")}</th>
+        <th class="column-header first column-header-asc" scope="column"><span class="sort-icon">${_("Authority")}</span></th>
+        <th class="column-header" scope="column"><span class="sort-icon">${_("Namespace")}</span></th>
+        <th class="column-header" scope="column"><span class="sort-icon">${_("Key")}</span></th>
+        <th class="column-header" scope="column"><span class="sort-icon">${_("URL")}</span></th>
       </thead>
       <tbody>
         <tr acre:for="weblink in category.weblinks">
@@ -103,5 +103,6 @@
 
 
 <acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
   <script src="sameas.mf.js"></script>
 </acre:block>

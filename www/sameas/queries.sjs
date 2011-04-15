@@ -28,6 +28,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+var h = acre.require("lib/helper/helpers.sjs");
+var i18n = acre.require("lib/i18n/i18n.sjs");
+var freebase = acre.require("lib/promise/apis").freebase;
+var deferred = acre.require("lib/promise/apis").deferred;
+
+
 /**
 
 [{
@@ -56,9 +63,93 @@
 }]
 
  */
-var freebase = acre.require("lib/promise/apis").freebase;
-var deferred = acre.require("lib/promise/apis").deferred;
-var h = acre.require("lib/helper/helpers.sjs");
+
+function weblinks2(id) {
+  var q = {
+    id: id,
+    "/common/topic/weblink": [{
+      optional: true,
+      key: null,
+      url: null,
+      template: {
+        id: null,
+        ns: {
+          id: null,
+          "/base/sameas/web_id/authority": {
+            optional: true,
+            id: null,
+            name: i18n.mql.query.name()
+          }
+        },
+        template: null
+      },
+      category: {
+        optional: true,
+        id: null,
+        name: i18n.mql.query.name()
+      },
+      description: null
+    }]
+  };
+  return freebase.mqlread(q, {extended:1})
+    .then(function(env) {
+      return env.result["/common/topic/weblink"];
+    });
+};
+
+
+var NO_CATEGORY = {
+  id: "NO_CATEGORY",
+  name: "NO_CATEGORY"
+};
+
+function weblinks_by_category(id) {
+  return weblinks2(id)
+    .then(function(links) {
+      var categories = {};
+      links.forEach(function(link) {
+        var category = link.category || NO_CATEGORY;
+        var seen = categories[category.id];
+        if (!seen) {
+          seen = categories[category.id] = {category:category, weblinks:[]};
+        }
+
+        var weblink = {
+          key: link.key,
+          url: link.url,
+          description: link.description,
+          template: link.template.template,
+          ns: link.template.ns.id,
+          authority: link.template.ns["/base/sameas/web_id/authority"]
+        };
+        seen.weblinks.push(weblink);
+      });
+      for (var k in categories) {
+        categories[k].weblinks.sort(weblinks_sort);
+      }
+      return categories;
+    });
+};
+
+function weblinks_sort(a, b) {
+  if (a.authority && b.authority) {
+    var aname = i18n.display_name(a.authority);
+    var bname = i18n.display_name(b.authority);
+    return b.name < a.name;
+  }
+  else if (a.authority) {
+    return 1;
+  }
+  else if (b.authority) {
+    return -1;
+  }
+  var adesc = a.description;
+  var bdesc = b.description;
+  return bdesc < a.desc;
+};
+
+
+
 
 var _link_compare_key = function(link) {
  // proper order should be official, template, topic, uri

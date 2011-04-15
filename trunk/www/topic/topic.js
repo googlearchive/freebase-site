@@ -74,6 +74,7 @@
           $toolbar.addClass("active");
           $add_type_pane.slideDown();
         }
+        return false;
       });
     }
   };

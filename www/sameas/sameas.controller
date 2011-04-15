@@ -57,7 +57,6 @@ var SPEC = {
   run: function(id) {
     return {
       object: object_query(id),
-      topic: topic_api.topic(id),
       weblinks: queries.weblinks(id, '/uri'),
       keys: queries.keys_by_authority(id)
     };

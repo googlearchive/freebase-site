@@ -67,58 +67,16 @@ var SPEC = {
 
   run: function(id, f) {
     var domains = f.domains;
-    if ((f.domain && fh.is_base_id(f.domain)) ||
-        (f.type && fh.is_base_id(f.type)) ||
-        (f.property && fh.is_base_id(f.property))) {
+    if ((f.domain && !h.is_commons_id(f.domain)) ||
+        (f.type && !h.is_commons_id(f.type)) ||
+        (f.property && !h.is_commons_id(f.property))) {
       domains = "all";
     }
 
     var promises = {
       prop_counts: filter_queries.prop_counts(id),
       topic: topic_api.topic(id, i18n.lang, f.limit, f.as_of_time, domains),
-      object: object_query.object(id, {
-        /**
-        type: [{
-          optional: true,
-          id: null,
-          name: i18n.mql.query.name(),
-          type: "/type/type",
-          key: [{namespace: {type:"/type/domain"}}],
-          link: {timestamp:null},
-          index: null,
-          sort: ["index", "-link.timestamp"]
-        }],
-         **/
-        "/common/topic/image": [{
-          optional: true,
-          id: null,
-          name: i18n.mql.query.name(),
-          index: null,
-          link: {timestamp: null},
-          sort: ["index", "link.timestamp"],
-          limit: 3,
-          "/common/image/rights_holder_text_attribution": i18n.mql.query.text(),
-          "/type/content/uploaded_by": [{
-            id: null,
-            name: i18n.mql.query.name(),
-            optional: true
-          }],
-          "/common/licensed_object/license": [{
-            id: null,
-            name: i18n.mql.query.name(),
-            optional: true
-          }],
-          "creator": {
-            id: null,
-            name: i18n.mql.query.name()
-          }
-        }],
-        "/common/topic/alias": [{
-          optional: true,
-          value: null,
-          lang: null
-        }]
-      })
+      object: object_query.object(id)
     };
 
     return deferred.all(promises)
@@ -128,124 +86,47 @@ var SPEC = {
           filters: f
         });
 
-        var topic = result.topic;
-
-        if (f.domain) {
-          filter_by_domain(topic, f.domain);
-        }
-        else if (f.type) {
-          filter_by_type(topic, f.type);
-        }
-        else if (f.property) {
-          filter_by_property(topic, f.property);
-        }
-
-        var obj = result.object;
-/**
-        if (domains !== "all") {
-          // filter base/user types
-          obj.type = obj.type.filter(function(type) {
-            return !fh.is_base_id(type.id);
-          });
-        }
-**/
-        obj.image = obj["/common/topic/image"];
-        // sort names/aliases by i18n.lang
-        obj["/common/topic/alias"] = obj["/common/topic/alias"].sort(object_query.text_lang_sort);
-
-        var blurbs = [];
-        obj["/common/topic/article"].forEach(function(article) {
-          if (!("blurb" in article)) {
-            blurbs.push(i18n._get_blob.closure(article, "blurb", {}, "blurb"));
+        var object = result.object;
+        if (object) {
+          if (domains !== "all") {
+            // filter base/user types
+            object.type = object.type.filter(function(type) {
+              return h.is_commons_id(type.id);
+            });
           }
-        });
-        return deferred.all(blurbs)
-          .then(function() {
-            return result;
-          });
+        }
+
+        var topic = result.topic;
+        if (topic && topic.structure) {
+          if (f.domain) {
+            _filter_by_domain(topic, f.domain);
+          }
+          else if (f.type) {
+            _filter_by_type(topic, f.type);
+          }
+          else if (f.property) {
+            _filter_by_property(topic, f.property);
+          }
+        }
+
+        return result;
       });
   }
 };
 
-function add_type_structure(topic, object_result) {
-  if (topic && topic.structure) {
-    if (!topic.structure.order) {
-      topic.structure.order = [];
-    }
-    topic.structure.order.unshift("/type");
-    if (!topic.structure.domains) {
-      topic.structure.domains = {};
-    }
-    topic.structure.domains["/type"] = {
-      text: "Metaweb System Types",
-      types: ["/type/object"]
-    };
-    if (!topic.structure.types) {
-      topic.structure.types = {};
-    }
-    topic.structure.types["/type/object"] = {
-      text: "Object",
-      properties: [
-        "/type/object/name",
-        "/type/object/type"
-      ]
-    };
-    if (!topic.properties) {
-      topic.properties = {};
-    }
-    topic.properties["/type/object/name"] = {
-      disambiguator: false,
-      expected_type: {
-        id: "/type/text",
-        text: "Text"
-      },
-      text: "name",
-      unique: false,
-      values: to_topic_api_values(object_result.name)
-    };
-    topic.properties["/type/object/type"] = {
-      disambiguator: false,
-      expected_type: {
-        id: "/type/type",
-        text: "Type"
-      },
-      text: "type",
-      unique: false,
-      values: to_topic_api_values(object_result.type)
-    };
-  }
-};
-
-function to_topic_api_values(list) {
-  list.forEach(function(item) {
-    if (item.id) {
-      var name = i18n.display_name_node(item);
-      item.text = name.value;
-      item.lang = name.lang;
-    }
-    else {
-      item.text = item.value;
-    }
-  });
-  return list;
-};
-
-function filter_by_domain(topic, domain_id) {
+function _filter_by_domain(topic, domain_id) {
   // just modify topic.structure.order to only include domain_id
-  if (topic && topic.structure) {
-    if (domain_id) {
-      topic.structure.order = [domain_id];
-    }
-    else {
-      topic.structure.order = [];
-    }
+  if (domain_id) {
+    topic.structure.order = [domain_id];
   }
-  return topic;
+  else {
+    topic.structure.order = [];
+  }
 };
 
-function filter_by_type(topic, type_id) {
+function _filter_by_type(topic, type_id) {
   var domain_id;
-  if (type_id && topic && topic.structure && topic.structure.domains) {
+  if (type_id && topic.structure.domains) {
     for (var key in topic.structure.domains) {
       var domain = topic.structure.domains[key];
       if (domain && domain.types) {
@@ -262,13 +143,13 @@ function filter_by_type(topic, type_id) {
       }
     }
   }
-  filter_by_domain(topic, domain_id);
+  _filter_by_domain(topic, domain_id);
   return topic;
 };
 
-function filter_by_property(topic, prop_id) {
+function _filter_by_property(topic, prop_id) {
   var type_id;
-  if (prop_id && topic && topic.structure && topic.structure.types) {
+  if (prop_id && topic.structure.types) {
     for (var key in topic.structure.types) {
       var type = topic.structure.types[key];
       if (type && type.properties) {
@@ -285,6 +166,6 @@ function filter_by_property(topic, prop_id) {
       }
     }
   }
-  filter_by_type(topic, type_id);
+  _filter_by_type(topic, type_id);
   return topic;
 };

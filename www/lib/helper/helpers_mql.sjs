@@ -34,7 +34,8 @@ var exports = {
   "to_literal_value": to_literal_value,
   "get_type_role": get_type_role,
   "is_reciprocal": is_reciprocal,
-  "visible_subprops": visible_subprops
+  "visible_subprops": visible_subprops,
+  "is_commons_id": is_commons_id
 };
 
 var LITERAL_TYPE_IDS = {
@@ -160,3 +161,16 @@ unique_ish.map = (function() {
 })();
 
 
+
+/*
+ * Simple function for determining whether a schema id (domain, type, property)
+ * is part of the "Commons"
+ *
+ * Expects a schema id (domain id, type id or property id)
+ */
+function is_commons_id(id) {
+  if (/^\/base\//.test(id) || /^\/user\//.test(id)) {
+    return false;
+  }
+  return true;
+};

@@ -38,38 +38,7 @@ var i18n = acre.require("i18n/i18n.sjs");
  * This query is used in template/freebase_object template to display the freebase object mast-head.
  */
 function object(id, options) {
-  var q = {
-    id: null,
-    "q:id": id,
-    guid: null,
-    mid: null,
-    name: [{
-      optional: true,
-      value: null,
-      lang: null
-    }],
-    creator: {
-      optional: true,
-      id: null,
-      name: i18n.mql.query.name()
-    },
-    timestamp: null,
-    "/common/topic/article": i18n.mql.query.article(),
-    "/common/topic/image": [{
-      id: null,
-      optional: true,
-      index: null,
-      link: {timestamp: null},
-      sort: ["index", "link.timestamp"],
-      limit: 1
-    }],
-    type: [{
-      optional: true,
-      id: null,
-      name: i18n.mql.query.name()
-    }],
-    permission: null
-  };
+  var q = mql(id);
   q = h.extend(q, options);
 
   return freebase.mqlread(q)
@@ -78,10 +47,10 @@ function object(id, options) {
     })
     .then(function(topic) {
       topic.name = topic.name.sort(text_lang_sort);
+      topic.alias = topic["/common/topic/alias"].sort(text_lang_sort);
       topic.image = topic["/common/topic/image"];
-      if (topic.creator) {
-        topic.creator.name = topic.creator.name || topic.creator.id;
-      }
+      topic.article = topic["/common/topic/article"];
+
       var promises = [];
       promises.push(
         freebase.get_static("notable_types_2", topic.guid.substring(1))
@@ -109,6 +78,56 @@ function object(id, options) {
     });
 };
 
+
+function mql(id) {
+  return {
+    id: null,
+    "q:id": id,
+    guid: null,
+    mid: null,
+    type: [{
+      optional: true,
+      id: null,
+      name: i18n.mql.query.name(),
+      type: "/type/type",
+      "!/freebase/domain_profile/base_type": {
+        id: null,
+        optional: "forbidden"
+      },
+      index: null,
+      link: {timestamp: null},
+      sort: ["index", "link.timestamp"]
+    }],
+    name: [{
+      optional: true,
+      value: null,
+      lang: null
+    }],
+    "/common/topic/alias": [{
+      optional: true,
+      value: null,
+      lang: null
+    }],
+    "/common/topic/image": [{
+      optional: true,
+      id: null,
+      name: i18n.mql.query.name(),
+      type: "/common/image",
+      index: null,
+      link: {timestamp: null},
+      sort: ["index", "link.timestamp"],
+      limit: 3
+    }],
+    "/common/topic/article": i18n.mql.query.article(),
+    creator: {
+      optional: true,
+      id: null,
+      name: i18n.mql.query.name()
+    },
+    permission: null,
+    timestamp: null
+  };
+};
 
 function text_lang_sort(a, b) {
   if (a.lang === i18n.lang) {

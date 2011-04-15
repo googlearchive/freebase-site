@@ -121,7 +121,12 @@
         </form>
         <h3 class="toolbar-pane-title">Current Types:</h3>
         <ul class="multi-column">
-          <li acre:for="i, type in c.object.type" trim="1">
+          <acre:script>
+            var types = c.object.type.slice().sort(function(a,b) {
+              return i18n.display_name(b).toLowerCase() < i18n.display_name(a).toLowerCase();
+            });
+          </acre:script>
+          <li acre:for="i, type in types" trim="1">
             <a href="${h.fb_url(type.id)}" 
                title="${type.id}">${i18n.display_name(type)}</a>
           </li>

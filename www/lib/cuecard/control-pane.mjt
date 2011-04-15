@@ -150,8 +150,8 @@
       {name: 'use_permission_of', hint: 'Specify the id of an object (typically a user, domain or type) whose permission you want to copy (<a href="http://freebaseapps.com/docs/mql/ch06.html#id2972357" target="_blank">more details</a>).'},
       {name: 'page', hint: 'Page number starting from 1 if there is a "limit" property in the top level query node.'},
       {name: 'cursor', hint: ''},
-      {name: 'lang', hint: 'Return text values in the given language (specified with the language\'s Freebase ID)'},
-      {name: 'escape', hint: ''},
+      {name: 'Language', hint: 'Return text values in the given language (specified with the language\'s Freebase ID)'},
+      {name: 'Escape', hint: ''},
       {name: 'uniqueness_failure', hint: ''}
     ];
     
@@ -200,12 +200,12 @@
             </div>
           </acre:block>
         
-          <select acre:when="lang" class="cuecard-controlPane-configurations-languages">
+          <select acre:when="Language" class="cuecard-controlPane-configurations-languages">
             <option value="">--</option>
             <option acre:for="l in CueCard.Languages" value="$l.id">$l.name ($l.id)</option>
           </select>
         
-          <select acre:when="escape">
+          <select acre:when="Escape">
             <option value="">--</option>
             <option value="html">html</option>
             <option value="false">false</option>
@@ -226,19 +226,21 @@
     var has_env = false;
   </acre:script>
 
-  <h3>Custom</h3>
+  <p><em>Custom Envelope</em></p>
   <table class="cuecard-controlPane-customEnvelope">
     <tr>
-      <th width="30%">name</th>
-      <th width="50%">value</th>
+      <th><h3 class="module-section-title">Name</h3></th>
+      <th><h3 class="module-section-title">Value</h3></th>
       <th></th>
     </tr>
     <tr class="cuecard-controlPane-customEnvelope-row" acre:def="add_row(dontFocus, name, value)">
-      <td><input value="${name||''}"/></td>
-      <td><input value="${value||''}"/></td>
+      <td><input class="query-options-textbox text-input variables-input" value="${name||''}"/></td>
+      <td><input class="query-options-textbox text-input variables-input" value="${value||''}"/></td>
       <td>
-        <input type="submit" class="button" value="Remove" 
+        <input type="submit" class="button small-button" value="-" 
                acre:onclick="$(this).closest('.cuecard-controlPane-customEnvelope-row').remove()"/>
+				<input type="submit" class="button small-button" value="+" 
+						   acre:onclick="controlPane._getTab('envelope').find('table.cuecard-controlPane-customEnvelope').append($.acre(add_row()))"/>
       </td>
       <acre:block if="!dontFocus" script="ondomready">
 
@@ -252,11 +254,8 @@
       ${add_row(true)}
     </acre:block>
   </table>
-  
-  <div>
-    <input type="submit" class="button" value="Add" 
-           acre:onclick="controlPane._getTab('envelope').find('table.cuecard-controlPane-customEnvelope').append($.acre(add_row()))"/>
-  </div>
+
+   
 </acre:block>
 
 <acre:block def="settings(controlPane)">

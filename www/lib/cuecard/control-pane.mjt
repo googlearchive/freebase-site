@@ -170,30 +170,32 @@
         
           <input acre:when="As_of_time" name="as_of_time" class="query-options-textbox text-input" value="${def.as_of_time||''}" />
         
-          <input acre:when="use_permission_of" name="use_permission_of" value="${def.use_permission_of||''}" />
+          <input acre:when="use_permission_of" name="use_permission_of" class="query-options-textbox text-input" value="${def.use_permission_of||''}" />
         
           <div acre:when="page" class="cuecard-controlPane-configurations-page">
-            <input name="page" type="text" />
+            <input name="page" type="text" class="query-options-textbox text-input" />
             <input type="submit" class="button" value="Previous" acre:onclick="controlPane._runPage(-1)"/>
             <input type="submit" class="button" value="Next" acre:onclick="controlPane._runPage(1)"/>
           </div>
         
           <acre:block when="cursor">
-            <div>
-              <input type="radio" name="cursor-opt" checked value="">
-              unspecified (return all results, possibly time-out)
+            <div class="query-options-row">
+              <input type="radio" name="cursor-opt" class="control-pane-radio" id="cursor-unspecified" checked value="">
+              <label class="control-pane-label" for="cursor-unspecified">unspecified (return all results, possibly time-out)</label>
             </div>
-            <div>
-              <input type="radio" name="cursor-opt" value="true">
-              true (start pagination with page size equal "limit" option in query)
+            <div class="query-options-row"> 
+              <input type="radio" name="cursor-opt" class="control-pane-radio" id="cursor-true" value="true">
+              <label class="control-pane-label" for="cursor-true">true (start pagination with page size equal "limit" option in query)</label>
             </div>
-            <div>
-              <input type="radio" name="cursor-opt" value="custom">
-              continue from cursor: 
+            <div class="query-options-row">
+              <input type="radio" class="control-pane-radio" name="cursor-opt" id="cursor-continue" value="custom">
+              <label class="control-pane-label" for="cursor-continue">continue from cursor: </label>
               <div class="cuecard-controlPane-configurations-cursor">
-                <input type="text" name="cursor" acre:onchange="controlPane._getTab('envelope').find('input[name=\'cursor\'][value=\'custom\']').attr('checked','checked')"/>
-                <input type="submit" class="button" value="Paste from Last Result" acre:onclick="controlPane._runCursor(false)"/> 
-                <input type="submit" class="button" value="Paste &amp; Run" acre:onclick="controlPane._runCursor(true)"/>
+                <input type="text" name="cursor" class="query-options-textbox text-input" acre:onchange="controlPane._getTab('envelope').find('input[name=\'cursor\'][value=\'custom\']').attr('checked','checked')"/>
+							<div class="query-options-row">
+              	<input type="submit" class="button" value="Paste from Last Result" acre:onclick="controlPane._runCursor(false)"/> 
+              	<input type="submit" class="button" value="Paste &amp; Run" acre:onclick="controlPane._runCursor(true)"/>
+							</div>
               </div>
             </div>
           </acre:block>
@@ -259,6 +261,7 @@
 
 <acre:block def="settings(controlPane)">
   <div class="cuecard-controlPane-section">
+	<p><em>Settings</em></p>
     <div>
      <input type="checkbox" acre:attrs="($.localstore('cc_cp_clean') == '1') ? {'checked' : ''} : {}">
      Always tidy running query

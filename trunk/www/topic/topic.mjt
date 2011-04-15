@@ -113,7 +113,11 @@
     </div>
     <div class="add-type toolbar-pane">
       <div class="column">
-        <h3>Add a new Type to $c.object.name</h3>
+        <acre:block for="i, type in c.object.type" trim="1">
+          <acre:block if="i > 0">, </acre:block>
+          <a href="h.fb_url(type.id)" title="${type.id}">${i18n.display_name(type)}</a>
+        </acre:block>
+        <h3>${h.sprintf(_("Add a new Type to %s"), i18n.display_name(c.object))}</h3>
         <form action="" method="post" name="add-type-form" class="add-type">
           <input type="" class="text-input" value="" placeholder="Start typing for suggestions..." name="" />
         </form>

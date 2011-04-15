@@ -126,7 +126,7 @@
                   </a>
                 </span>
                 <ul class="row-menu submenu">  
-                  <li class="row-menu-item">
+                  <li class="row-menu-item edit">
                     <a href="javascript:void(0)" class="icon-link">
                       <span class="edit-icon">Edit localized names &hellip;</span>
                     </a>

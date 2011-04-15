@@ -32,12 +32,12 @@ var h = acre.require("helper/helpers.sjs");
 
 function itemprop(property_id, itemscope, type_id) {
   var md = {
-    itemprop: h.fb_url(true, property_id)
+    itemprop: h.build_url(acre.freebase.site_host, property_id)
   };
   if (itemscope) {
     md.itemscope = "";
     if (type_id) {
-      md.itemtype = h.fb_url(true, type_id);
+      md.itemtype = h.build_url(acre.freebase.site_host, property_id, type_id);
     }
   }
   return md;

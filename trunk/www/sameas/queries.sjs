@@ -28,7 +28,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+/**
 
+[{
+  "id": "/en/bob_dylan",
+  "/common/topic/weblink": [{
+    "key":         null,
+    "url":         null,
+    "template": {
+      "id":       null,
+      "name":     null,
+      "ns": {
+        "id": null,
+        "/base/sameas/web_id/authority": {
+          "id":       null,
+          "optional": true
+        }
+      },
+      "template": null
+    },
+    "category": {
+      optional: true,
+      id: null
+    },
+    "description": null
+  }]
+}]
+
+ */
 var freebase = acre.require("lib/promise/apis").freebase;
 var deferred = acre.require("lib/promise/apis").deferred;
 var h = acre.require("lib/helper/helpers.sjs");

@@ -30,6 +30,10 @@
  */
 
 ;(function($, fb) {
+  $.tablesorter.defaults.cssAsc = "column-header-asc";
+  $.tablesorter.defaults.cssDesc = "column-header-desc";
+  $.tablesorter.defaults.cssHeader =  "column-header";
 
+  $(".table-sortable").tablesorter();
 
 })(jQuery, window.freebase);

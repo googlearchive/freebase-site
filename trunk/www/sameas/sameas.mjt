@@ -59,25 +59,24 @@
 
 <acre:block def="page_content()">
 
-
-  <acre:block for="k,links in c.categories">
+  <acre:block for="category in c.categories">
     <h1 class="table-title">
-      <acre:block if="links.category.id === 'NO_CATEGORY'">
-        Uncategorized
+      <acre:block if="category.id === '_NO_CATEGORY'">
+        ${_("Uncategorized")}
       </acre:block>
       <acre:block else="">
-      ${i18n.display_name(links.category)}
+      ${i18n.display_name(category)}
       </acre:block>
     </h1>
     <table cellspacing="0" class="table">
       <thead>
-        <th class="column-header first" scope="column">Authority</th>
-        <th class="column-header" scope="column">Namespace</th>
-        <th class="column-header" scope="column">Key</th>
-        <th class="column-header" scope="column">URL</th>
+        <th class="column-header first" scope="column">${_("Authority")}</th>
+        <th class="column-header" scope="column">${_("Namespace")}</th>
+        <th class="column-header" scope="column">${_("Key")}</th>
+        <th class="column-header" scope="column">${_("URL")}</th>
       </thead>
       <tbody>
-        <tr acre:for="weblink in links.weblinks">
+        <tr acre:for="weblink in category.weblinks">
           <th class="row-header odd">
             <acre:block if="weblink.authority">
             <span class="authority a${weblink.authority.id.replace(/\//g, '-')}">
@@ -91,97 +90,15 @@
             </acre:block>
           </th>
           <td><a href="${h.fb_url(weblink.ns)}">${weblink.ns}</a></td>
-          <td class="odd">$weblink.key</td>
+          <td class="odd">${weblink.key}</td>
           <td><a href="${weblink.url}">$weblink.url</a></td>
         </tr>
       </tbody>
     </table>
-
-
   </acre:block>
-  <acre:block if="c.keys && c.keys.length">
-    <h1 class="table-title">${_("Web IDs")}</h1>
-    <table cellspacing="0" class="table">
-      <acre:block acre:for="authority in c.keys">
-        <acre:script>
-          var class_name;
-          var separator = "/";
-          class_name = "a" + authority.id.replace("/", "-", "g");
-        </acre:script>
-        <thead class="">
-          <tr>
-            <th colspan="2" class="tbody-header expanded">
-              <span class="authority $class_name">
-                <a acre:if="authority.best_url" href="$authority.best_url">
-                  $authority.name
-                </a>
-                <span acre:else="">
-                  $authority.name
-                </span>
-                <span>(${authority.total_keys})</span>
-              </span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="col" class="column-header first" style="text-align:right">${_("Namespace")}</th>
-            <th scope="col" class="column-header">${_("Key")}</th>
-          </tr>
-          <tr acre:for="ns in authority.namespaces">
-            <th class="odd row-header" style="text-align:right">
-              ${ns.id}
-            </th>
-            <td class="even">
-              <acre:block for="i, key in ns.keys" trim="1">
-                <acre:block if="i > 0">, </acre:block>
-                <a href="$key.url">$key.key</a>
-              </acre:block>
-            </td>
-          </tr>
-        </tbody>
-      </acre:block>
-    </table>
-  </acre:block>
-
-  <acre:block if="c.weblinks && c.weblinks.length">
-    <h1 class="table-title">${_("Related Websites")}</h1>
-    <table cellspacing="0" class="table">
-      <tbody>
-        <tr acre:for="weblink in c.weblinks">
-          <th class="row-header">
-            <a href="$weblink.url">${weblink.description || weblink.url}</a>
-          </th>
-        </tr>
-      </tbody>
-    </table>
-  </acre:block>
-
-
+ 
 </acre:block>
 
-<acre:block def="query_link(key, ns)">
-  <acre:script>
-    var query;
-    if (ns === '/m') {
-      query = [{
-        id: null,
-        name: null,
-        mid: '/m/'+key
-      }];
-    } else {
-      query = [{
-        id: null,
-        name: null,
-        key: {
-          value: key,
-          namespace: ns
-        }
-      }];
-    }
-  </acre:script>
-  (<a href="/queryeditor?q=${JSON.stringify(query)}">Q</a>)
-</acre:block>
 
 <acre:block def="footer_script()">
   <script src="sameas.mf.js"></script>

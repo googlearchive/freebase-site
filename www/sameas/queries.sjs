@@ -65,7 +65,15 @@ var deferred = acre.require("lib/promise/apis").deferred;
  */
 
 function weblinks(id) {
-  var q = {
+  var q = weblinks_mql(id);
+  return freebase.mqlread(q, {extended:1})
+    .then(function(env) {
+      return env.result["/common/topic/weblink"];
+    });
+};
+
+function weblinks_mql(id) {
+  return {
     id: id,
     "/common/topic/weblink": [{
       optional: true,
@@ -91,10 +99,6 @@ function weblinks(id) {
       description: null
     }]
   };
-  return freebase.mqlread(q, {extended:1})
-    .then(function(env) {
-      return env.result["/common/topic/weblink"];
-    });
 };
 
 

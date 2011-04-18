@@ -64,6 +64,9 @@ function topic(id, lang, limit, as_of_time, domains) {
     .then(function(result) {
       var props = result && result.properties;
       if (props) {
+        /**
+         * load image and article deep properties
+         */
         var image_props = [];
         var article_props = [];
         for (var prop_id in props) {
@@ -81,12 +84,11 @@ function topic(id, lang, limit, as_of_time, domains) {
 
         var promises = [];
 
-
         if (image_props.length) {
-          promises.push(get_image_metadata(id, image_props, lang));
+          promises.push(get_image_deep_props(id, image_props, lang));
         }
         if (article_props.length) {
-          promises.push(get_article_metadata(id, article_props, lang));
+          promises.push(get_article_deep_props(id, article_props, lang));
         }
 
         return deferred.all(promises)
@@ -99,14 +101,14 @@ function topic(id, lang, limit, as_of_time, domains) {
     });
 };
 
-function get_image_metadata(id, image_props, lang) {
-  return image_properties(lang)
+function get_image_deep_props(id, image_props, lang) {
+  return image_deep_props(lang)
     .then(function(subprops) {
-        return get_metadata(id, image_props, subprops, lang);
+        return get_deep_props(id, image_props, subprops, lang);
     });
 };
 
-function image_properties(lang) {
+function image_deep_props(lang) {
   var promises = [
     pq.prop_structure("/type/object/name", lang),
     pq.prop_structure("/type/object/creator", lang),
@@ -118,12 +120,12 @@ function image_properties(lang) {
 };
 
 
-function get_metadata(id, props, subprops, lang) {
+function get_deep_props(id, props, subprops, lang) {
   var promises = [];
   props.forEach(function(prop) {
     prop.properties = subprops;
     prop.values.forEach(function(value) {
-      promises.push(metadata_query(id, prop, value, lang));
+      promises.push(deep_props_query(id, prop, value, lang));
     });
   });
 
@@ -133,7 +135,7 @@ function get_metadata(id, props, subprops, lang) {
     });
 };
 
-function metadata_query(id, prop, value, lang) {
+function deep_props_query(id, prop, value, lang) {
   return pq.prop_data(id, prop, value.id, lang)
     .then(function(result) {
       result[prop.id].forEach(function(data) {
@@ -149,10 +151,10 @@ function metadata_query(id, prop, value, lang) {
     });
 };
 
-function get_article_metadata(id, article_props, lang) {
-  return article_properties(lang)
+function get_article_deep_props(id, article_props, lang) {
+  return article_deep_props(lang)
     .then(function(subprops) {
-      return get_metadata(id, article_props, subprops, lang);
+      return get_deep_props(id, article_props, subprops, lang);
     })
     .then(function(result) {
       // fetch blurbs for each article value
@@ -169,7 +171,7 @@ function get_article_metadata(id, article_props, lang) {
     });
 };
 
-function article_properties(lang) {
+function article_deep_props(lang) {
   var promises = [
     pq.prop_structure("/type/object/creator", lang),
     pq.prop_structure("/type/object/timestamp", lang),

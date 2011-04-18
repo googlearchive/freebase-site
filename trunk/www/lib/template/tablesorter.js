@@ -29,11 +29,57 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-;(function($, fb) {
-  $.tablesorter.defaults.cssAsc = "column-header-asc";
-  $.tablesorter.defaults.cssDesc = "column-header-desc";
-  $.tablesorter.defaults.cssHeader =  "column-header";
+;(function($) {
+  /**
+   * Initialize tablesorter defaults and parsers, if tablesorter.js is included.
+   */
 
-  $(".table-sortable").tablesorter();
+    $(function() {
+      if ($.tablesorter) {
+        var div = $("<div>");
 
-})(jQuery, window.freebase);
+        $.tablesorter.defaults.cssAsc = "column-header-asc";
+        $.tablesorter.defaults.cssDesc = "column-header-desc";
+        $.tablesorter.defaults.cssHeader =  "column-header";
+
+        $.tablesorter.addParser({
+          // set a unique id
+          id: "datetime",
+          is: function(s) { return false; },
+          format: function(s) {
+            div.html(s);
+            return div.find("time:first").attr("datetime");
+          },
+          type: "text"
+        });
+
+        $.tablesorter.addParser({
+          // set a unique id
+          id: "name",
+          is: function(s) { return false; },
+          format: function(s) {
+            div.html(s);
+            return div.text().toLowerCase();
+          },
+          type: "text"
+        });
+
+        $.tablesorter.addParser({
+          // set a unique id
+          id: "number",
+          is: function(s) { return false; },
+          format: function(s) {
+            div.html(s);
+            return div.find(".number:first").attr("data-value");
+          },
+          type: "numeric"
+        });
+
+        $(".table-sortable").each(function() {
+          $(this).tablesorter();
+        });
+      };
+    });
+
+
+})(jQuery);

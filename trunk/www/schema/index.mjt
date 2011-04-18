@@ -119,10 +119,10 @@
         <table cellspacing="0" class="table table-sortable">
           <thead>
             <tr>
-              <th scope="col" class="column-header {sorter: 'schemaName'}"><span class="sort-icon">${_('Domain')}</span></th>
+              <th scope="col" class="column-header"><span class="sort-icon">${_('Domain')}</span></th>
               <th scope="col" class="column-header column-header-desc"><span class="sort-icon">${_('ID')}</span></th>
-              <th scope="col" class="column-header numeric"><span class="sort-icon">${_('# of Types')}</span></th>
-              <th scope="col" class="column-header numeric {sorter: 'commaDigit'}"><span class="sort-icon">${_('# of Instances')}</span></th>
+              <th scope="col" class="column-header {sorter: 'number'}"><span class="sort-icon">${_('# of Types')}</span></th>
+              <th scope="col" class="column-header {sorter: 'number'}"><span class="sort-icon">${_('# of Instances')}</span></th>
             </tr>
           </thead>
           <tbody>
@@ -132,7 +132,7 @@
                 <a href="${h.fb_url('/schema', d.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
               </th>
               <td class="even">$d.id</td>
-              <td class="odd numeric">$d.types</td>
+              <td class="odd numeric">${i18n_c.number(d.types)}</td>
               <td class="even numeric">${i18n_c.number(d.instance_count)}</td>
             </tr>
           </tbody>

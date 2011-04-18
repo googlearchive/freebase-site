@@ -59,22 +59,22 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <h1 class="table-title">${_("Admins")}</h1>
-  <table class="table user-table" acre:for="group in c.owners">
+  <h1 class="table-title">${_("Admins")} ( ${i18n_c.number(c.owners.length)} )</h1>
+  <table class="table table-sortable">
     ${user_table_head()}
     <tbody>
-      <tr acre:for="i,member in group.member" acre:for="i,member in group.member" class="vcard">
+      <tr acre:for="member in c.owners"c lass="vcard">
         ${user_row_header(member)}
         ${user_timestamp_row(member.timestamp)}
-        ${user_assertions_row(member["!/freebase/user_activity/user"]["/freebase/user_activity/primitives_live"])}
-        ${user_domains_row(member["/freebase/user_profile/favorite_domains"])}
+        ${user_assertions_row(member.assertions)}
+        ${user_domains_row(member.watching)}
       </tr>
     </tbody>
   </table>
 
   <acre:block if="c.watchers && c.watchers.length">
-  <h1 class="table-title">${_("Watchers")}</h1>
-  <table cellspacing="0" class="table">
+  <h1 class="table-title">${_("Watchers")} ( ${i18n_c.number(c.watchers.length)} )</h1>
+  <table cellspacing="0" class="table table-sortable">
     ${user_table_head()}
     <tbody>
       <tr acre:for="i,watcher in c.watchers" class="vcard">
@@ -95,12 +95,12 @@
 </acre:block>
 
 <acre:block def="user_domains_row(domains)">
-<td class="even">
-  <acre:block for="i, d in domains" if="i < 6" trim="1">
-  <acre:block if="i > 0">, </acre:block>
-  <a  href="${h.fb_url(d.id)}" title="Go to domain">$d.name</a>
-  </acre:block>
-</td>
+  <td class="even">
+    <acre:block for="i, d in domains" if="i < 6" trim="1">
+      <acre:block if="i > 0">, </acre:block>
+      <a  href="${h.fb_url(d.id)}" title="Go to domain">${i18n.display_name(d)}</a>
+    </acre:block>
+  </td>
 </acre:block>
 
 
@@ -110,19 +110,24 @@
 
 
 <acre:block def="user_row_header(user)">
-<th scope="row" class="row-header odd">
-  ${image.user_image_small(user)}
-  <a href="${h.fb_url(user.id)}" class="fn url" title="View user profile">$user.name</a>
+  <th scope="row" class="row-header odd">
+    ${image.user_image_small(user)}
+    <a href="${h.fb_url(user.id)}" class="fn url" title="View user profile">${i18n.display_name(user)}</a>
 </th>
 </acre:block>
 
 <acre:block def="user_table_head()">
-<thead>
-  <tr>
-    <th class="column-header first" scope="col">${_("User")}</th>
-    <th class="column-header" scope="col">${_("On Freebase since")}</th>
-    <th class="column-header" scope="col">${_("Freebase assertions")}</th>
-    <th scope="col" class="column-header">${_("Also watching")}</th>
-  </tr>
-</thead>
+  <thead>
+    <tr>
+      <th class="column-header first {sorter: 'name'}" scope="col"><span class="sort-icon">${_("User")}</span></th>
+      <th class="column-header {sorter: 'datetime'}" scope="col"><span class="sort-icon">${_("On Freebase since")}</span></th>
+      <th class="column-header {sorter: 'number'}" scope="col"><span class="sort-icon">${_("Freebase assertions")}</span></th>
+      <th class="column-header {sorter: 'name'}" scope="col"><span class="sort-icon">${_("Also watching")}</span></th>
+    </tr>
+  </thead>
+</acre:block>
+
+
+<acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
 </acre:block>

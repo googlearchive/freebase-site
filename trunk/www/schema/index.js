@@ -31,12 +31,14 @@
 
 (function($, fb) {
 
+
   function init() {
     // init table sorter
-    var table = $(".table-sortable").tablesorter();
+    var table = $(".table-sortable");
     $("thead th:nth-child(2)", table)[0].count = 1;
     $("thead th:nth-child(3)", table)[0].count = 1;
     $("thead th:nth-child(4)", table)[0].count = 1;
+
 
     // Setup schema search tabset
     var $schema_explorer_search_tabset = $("#schema-search > .section-tabset").tabs("#schema-search > .search-box", {

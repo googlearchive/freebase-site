@@ -125,7 +125,6 @@
 </acre:block>
 
 <acre:block def="footer_script()">
-  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
   <script src="type.mf.js"></script>
 </acre:block>
 

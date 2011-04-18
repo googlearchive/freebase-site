@@ -41,7 +41,7 @@
       $(".table-sortable").each(function() {
         var table = $(this);
         if ($("> tbody > tr", table).length) {
-          table.tablesorter();
+          //table.tablesorter();
           $("thead th:nth-child(2)", table)[0].count = 1;
           $("thead th:nth-child(3)", table)[0].count = 1;
           $("thead th:nth-child(4)", table)[0].count = 1;

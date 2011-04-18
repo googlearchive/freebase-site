@@ -75,7 +75,10 @@
 <acre:block def="domainbox(topic, domain_structure, lang)">
   <div class="section domain domain-section" data-id="${domain_structure.id}">
     <div class="header">
-      <span class="status">
+      <acre:script>
+        var domain_type = h.is_commons_id(domain_structure.id) ? "commons" : "user";
+      </acre:script>
+      <span class="status $domain_type">
         ${h.is_commons_id(domain_structure.id) ? FREEBASE_COMMONS : USER_DOMAIN}
       </span>
       <h1 class="kbs">

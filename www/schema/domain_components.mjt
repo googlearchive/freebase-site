@@ -57,7 +57,7 @@
       </ul>
     </th>
     <td class="even">$type.id</td>
-    <td class="odd numeric">$type.properties</td>
+    <td class="odd numeric">${i18n_c.number(type.properties)}</td>
     <td class="even numeric"><a href="${sh.build_query_url(type.id)}">${i18n_c.number(type.instance_count)}</a></td>
     <td class="odd description">
       <acre:script>

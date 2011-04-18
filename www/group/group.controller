@@ -29,6 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var i18n = acre.require("lib/i18n/i18n.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var object_query = acre.require("lib/queries/object.sjs").object;
 var deferred = acre.require("lib/promise/deferred");
@@ -70,46 +71,54 @@ function domain_owners(id) {
       optional: true,
       member: [{
         id: null,
-        name: null,
+        name: i18n.mql.query.name(),
         timestamp: null,
+        type: "/type/user",
          "!/freebase/user_activity/user": {
            "optional": true,
            "/freebase/user_activity/primitives_live": null
          },
          "/freebase/user_profile/favorite_domains": [{
            id: null,
-           name: null,
+           name: i18n.mql.query.name(),
            optional: true
          }]
       }]
     }]
   })
   .then(function(env) {
+    var owners = [];
     var domain = env.result;
     if (domain) {
-      return domain.owners;
+      domain.owners.forEach(function(group) {
+        group.member.forEach(function(member) {
+          member.assertions = member["!/freebase/user_activity/user"] && member["!/freebase/user_activity/user"]["/freebase/user_activity/primitives_live"] || 0;
+          member.watching = member["/freebase/user_profile/favorite_domains"].filter(function(d) {
+            return d.id !== id;
+          }).sort(by_name);
+          owners.push(member);
+        });
+      });
     }
-    return [];
+    return owners;
   });
 };
 
 function domain_watchers(id) {
   return freebase.mqlread([{
     id: null,
-    name: null,
+    name: i18n.mql.query.name(),
+    timestamp: null,
+    type: "/type/user",
     "!/freebase/user_activity/user": {
       "optional": true,
       "/freebase/user_activity/primitives_live": null
     },
-    timestamp: null,
-    "/freebase/user_profile/personal_quote": null,
-    "/freebase/user_profile/my_full_name": null,
-    "a:/freebase/user_profile/favorite_domains": [{
+    "/freebase/user_profile/favorite_domains": [{
       id: null,
-      name: null
+      name: i18n.mql.query.name()
     }],
-    type: "/type/user",
-    "/freebase/user_profile/favorite_domains": {
+    "watching:/freebase/user_profile/favorite_domains": {
       id: id
     }
   }]).
@@ -118,20 +127,28 @@ function domain_watchers(id) {
     var watchers = [];
     if(users) {
       for(i in users) {
+        var user = users[i];
         var watcher = {
-          id: users[i].id,
-          name: users[i].name,
-          full_name: users[i]["/freebase/user_profile/my_full_name"],
-          quote: users[i]["/freebase/user_profile/personal_quote"],
-          joined: users[i].timestamp,
-          watching: users[i]["a:/freebase/user_profile/favorite_domains"]
+          id: user.id,
+          name: user.name,
+          full_name: user["/freebase/user_profile/my_full_name"],
+          quote: user["/freebase/user_profile/personal_quote"],
+          joined: user.timestamp,
+          watching: user["/freebase/user_profile/favorite_domains"].filter(function(d) {
+            return d.id !== id;
+          }).sort(by_name)
         };
-        if(users[i]["!/freebase/user_activity/user"]) {
-          watcher.assertions = users[i]["!/freebase/user_activity/user"]["/freebase/user_activity/primitives_live"];
+        if(user["!/freebase/user_activity/user"]) {
+          watcher.assertions = user["!/freebase/user_activity/user"] && user["!/freebase/user_activity/user"]["/freebase/user_activity/primitives_live"] || 0;
         }
         watchers.push(watcher);
       }
     }
-    return watchers;
+    return watchers.sort(by_name);
   });
+};
+
+
+function by_name(a, b) {
+  return i18n.display_name(b).toLowerCase() < i18n.display_name(a).toLowerCase();
 };

@@ -207,12 +207,12 @@
     <table class="table table-sortable">
       <thead>
         <tr>
-          <th class="column-header first"><span class="sort-icon">${_("source")}</span></th>
-          <th class="column-header"><span class="sort-icon">${_("property")}</span></th>
-          <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
-          <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
-          <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
-          <th acre:if="filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
+          <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
+          <th acre:if="filters.history" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
       </thead>
       <tbody>
@@ -240,13 +240,13 @@
     <table class="table table-sortable">
       <thead>
         <tr>
-          <th class="column-header first"><span class="sort-icon">${_("source")}</span></th>
-          <th class="column-header"><span class="sort-icon">${_("property")}</span></th>                  
-          <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
-          <th class="column-header"><span class="sort-icon">${_("value")}</span></th>
-          <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
-          <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
-          <th acre:if="filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
+          <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>                  
+          <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("value")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
+          <th acre:if="filters.history" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
       </thead>
       <tbody>
@@ -293,12 +293,12 @@
     <table class="table table-sortable">
       <thead>
         <tr>
-          <th class="column-header first empty"><span class="sort-icon">${_("source")}</span></th>
-          <th class="column-header"><span class="sort-icon">${_("property")}</span></th>
-          <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
-          <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
-          <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
-          <th acre:if="filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
+          <th class="column-header first empty" scope="col"><span class="sort-icon">${_("source")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
+          <th acre:if="filters.history" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
       </thead>
       <tbody>
@@ -330,12 +330,12 @@
     <table class="table table-sortable">
       <thead>
         <tr>
-          <th class="column-header first"><span class="sort-icon">${_("source")}</span></th>
-          <th class="column-header"><span class="sort-icon">${_("property")}</span></th>
-          <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
-          <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
-          <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
-          <th acre:if="filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
+          <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
+          <th acre:if="filters.history" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
       </thead>
       <tbody>
@@ -369,12 +369,12 @@
     <table class="table table-sortable">
       <thead>
         <tr>
-          <th class="column-header first"><span class="sort-icon">${_("source")}</span></th>
-          <th class="column-header"><span class="sort-icon">${_("property")}</span></th>
-          <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
-          <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
-          <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
-          <th acre:if="filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
+          <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
+          <th acre:if="filters.history" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
       </thead>
       <tbody>
@@ -412,12 +412,12 @@
     <table class="table table-sortable">
       <thead>
         <tr>
-          <th class="column-header first"><span class="sort-icon">${_("source")}</span></th>
-          <th class="column-header"><span class="sort-icon">${_("property")}</span></th>
-          <th class="column-header"><span class="sort-icon">${_("target")}</span></th>
-          <th class="column-header"><span class="sort-icon">${_("creator")}</span></th>
-          <th class="column-header numeric"><span class="sort-icon">${_("timestamp")}</span></th>
-          <th acre:if="filters.history" class="column-header"><span class="sort-icon">${_("operation")}</span></th>
+          <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
+          <th acre:if="filters.history" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
       </thead>
       <tbody>

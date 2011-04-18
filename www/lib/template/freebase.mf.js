@@ -5,6 +5,7 @@
   "template/jquery.localstore.js",
   "template/jquery.placeholder.js",
   "template/jquery.metadata.js",
+  "template/tablesorter.js",
   "jqueryui/jquery.ui.core.mf.js",
   "template/freebase.js",
   "template/helpers.js",

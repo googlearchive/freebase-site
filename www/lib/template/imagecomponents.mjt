@@ -102,7 +102,7 @@
     }
     h.extend(o, options);
     
-    var attrs = {src: h.image_url(image_id, o)};
+    var attrs = {};
     
     if (o.pad && o.maxwidth) {
       attrs.width = o.maxwidth;
@@ -113,9 +113,8 @@
     if (typeof image === "object" && image.id) {
       attrs.alt = image_id;
     }
-    h.extend(attrs, o.attrs);
   </acre:script>
-  <img acre:attrs="attrs">
+  <img src="${h.image_url(image_id, o)}" acre:attrs="attrs">
 </acre:block>
 
 <acre:block def="image_stack(images)">

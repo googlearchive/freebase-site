@@ -454,7 +454,6 @@
 <acre:block def="a(id, name, attrs)" trim="">
   <acre:script>
     attrs = h.extend({
-      href: h.fb_url('/inspect', id),
       title: id
     }, attrs);
     var clazz = "";
@@ -463,7 +462,7 @@
       delete attrs["class"];
     }
   </acre:script>
-  <a acre:attrs="attrs" class="${clazz}">${name || id}</a>
+  <a href="${h.fb_url('/inspect', id)}" acre:attrs="attrs" class="${clazz}">${name || id}</a>
 </acre:block>
 
 <acre:block def="topic(o)" trim="">

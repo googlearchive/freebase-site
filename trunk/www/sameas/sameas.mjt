@@ -44,7 +44,7 @@
 </acre:block>
 
 <acre:block def="title()">
-  ${_('Same As')} - ${i18n.display_name(c.object)}
+  ${_('On the Web')} - ${i18n.display_name(c.object)}
 </acre:block>
 
 <acre:block def="nav_tabs(nav_tab)">
@@ -55,7 +55,7 @@
     ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
   </li>
   <li>
-    ${nav_tab(true, _("Same As"))}
+    ${nav_tab(true, _("On the Web"))}
   </li>    
 </acre:block>
 

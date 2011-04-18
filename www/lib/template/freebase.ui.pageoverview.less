@@ -40,9 +40,19 @@
 }
 
 .page-meta h1 {
+  display: inline-block;
   font-size: 2.4em;
   color: #64768f;
   line-height: 1;
+}
+
+h1 .inline-menu {
+  display: inline-block;
+  margin-left: -2px;
+}
+
+h1 .row-menu {
+  z-index: 2;
 }
 
 .page-meta h1 .menu-trigger {
@@ -57,10 +67,11 @@
 
 .page-meta .menu-trigger .lang-code {
   position: static;
+  display: inline-block;
   font-size: 12px;
   line-height: 1;
-  padding-right: 10px;
-  background: url(template/ui-icons.png) no-repeat 13px -688px;
+  background: url(template/ui-icons.png) no-repeat right -688px;
+  padding-right: 20px;
   color: #999;
 }
 
@@ -84,13 +95,13 @@
 
 .page-meta:hover h1 .menu-trigger .lang-code {
   color: #666;
-  background-position: 13px -722px;
+  background-position: right -722px;
 }
 
 .page-meta h1 .menu-trigger:hover .lang-code {
   text-decoration: none;
   color: @link-blue;
-  background-position: 13px -755px;
+  background-position: right -755px;
 }
 
 h1 .flags {

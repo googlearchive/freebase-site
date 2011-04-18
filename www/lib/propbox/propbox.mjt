@@ -314,9 +314,6 @@
     var ect = prop_structure.expected_type.id;
   </acre:script>
   <acre:block if="prop_value.id">    
-    <acre:block if="ect === '/common/image'">
-      ${image.image_thumb(prop_value.id)}
-    </acre:block>
     <a title="${prop_value.id}" class="property-value"
        acre:attrs="itemprop(prop_structure.id)" href="${h.fb_url(true, prop_value.id)}"
        data-id="${prop_value.id}">${prop_value.text}</a> 

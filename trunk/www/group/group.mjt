@@ -119,10 +119,10 @@
 <acre:block def="user_table_head()">
   <thead>
     <tr>
-      <th class="column-header first {sorter: 'name'}" scope="col"><span class="sort-icon">${_("User")}</span></th>
+      <th class="column-header first" scope="col"><span class="sort-icon">${_("User")}</span></th>
       <th class="column-header {sorter: 'datetime'}" scope="col"><span class="sort-icon">${_("On Freebase since")}</span></th>
       <th class="column-header {sorter: 'number'}" scope="col"><span class="sort-icon">${_("Freebase assertions")}</span></th>
-      <th class="column-header {sorter: 'name'}" scope="col"><span class="sort-icon">${_("Also watching")}</span></th>
+      <th class="column-header" scope="col"><span class="sort-icon">${_("Also watching")}</span></th>
     </tr>
   </thead>
 </acre:block>

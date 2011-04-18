@@ -55,7 +55,7 @@
 
         $.tablesorter.addParser({
           // set a unique id
-          id: "name",
+          id: "ignoreCase",
           is: function(s) { return false; },
           format: function(s) {
             div.html(s);

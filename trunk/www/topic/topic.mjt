@@ -71,7 +71,7 @@
   <acre:block if="c.object">
     <li>
       <a href="${h.wiki_url('discuss', c.object.mid)}" class="icon-link">
-        <span class="browse-icon">${_('Discuss Topic')}</span>
+        <span class="discuss-icon">${_('Discuss Topic')}</span>
       </a>
     </li>
     <li>

@@ -40,8 +40,10 @@ var rules = {
     {prefix:"/labs/cubed",         app:"//cubed"},
     {prefix:"/labs/parallax",      app:"//parallax"},
     {prefix:"/labs",               app:"//labs"},
-    {prefix:"/topic",              app:"//4a.topic" + tags_codebase},
     {prefix:"/sample",             app:"//1a.sample" + tags_codebase},
+    {prefix:"/topic",              app:"//4a.topic" + tags_codebase},
+    {prefix:"/group",              app:"//group" + tags_codebase},
+    {prefix:"/web",                app:"//sameas" + tags_codebase},
 
     // Urls for exposed ajax libraries and static resources
     // TODO: remove this and use ajax router
@@ -49,16 +51,19 @@ var rules = {
     {prefix:"/ajax",               app:lib, script:"routing/ajax.sjs"},
 
     // Test routing rules to test non-user facing apps (core libraries, etc.)
-    {prefix:"/lib/core",           app:lib + "/core"},
-    {prefix:"/lib/routing",        app:lib + "/routing"},
+    {prefix:"/lib/appeditor-services",  app:lib + "/appeditor-services"},
+    {prefix:"/lib/filter",         app:lib + "/filter"},
+    {prefix:"/lib/handlers",       app:lib + "/handlers"},
+    {prefix:"/lib/helper",         app:lib + "/helper"},
     {prefix:"/lib/i18n",           app:lib + "/i18n"},
+    {prefix:"/lib/permission",     app:lib + "/permission"},
     {prefix:"/lib/promise",        app:lib + "/promise"},
+    {prefix:"/lib/propbox",        app:lib + "/propbox"},
     {prefix:"/lib/queries",        app:lib + "/queries"},
+    {prefix:"/lib/routing",        app:lib + "/routing"},
+    {prefix:"/lib/template",       app:lib + "/template"},
     {prefix:"/lib/test",           app:lib + "/test"},
     {prefix:"/lib/validator",      app:lib + "/validator"},
-    {prefix:"/lib/handlers",       app:lib + "/handlers"},
-    {prefix:"/lib/template",       app:lib + "/template"},
-    {prefix:"/lib/permission",     app:lib + "/permission"},
 
     // Urls for administrative tools
     {prefix:"/admin",              app:"//admin" + codebase},

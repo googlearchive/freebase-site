@@ -59,6 +59,7 @@
       // Initialize the property limit slider
       fb.filters.init_limit_slider_filter("#limit-slider", 10, 1, 100, 1);
 
+      // Toggle for Add Types dialog
       $(".toolbar-trigger").click(function(){
         var $add_type_pane = $(".add-type").first();
         var $toolbar = $(this).closest(".toolbar");
@@ -75,6 +76,16 @@
           $add_type_pane.slideDown();
         }
         return false;
+      });
+
+      $(".keyboard-shortcuts > a").overlay({
+          close: ".modal-buttons .button-cancel",
+          closeOnClick: false,
+          mask: {
+            color: '#000',
+	    loadSpeed: 200,
+	    opacity: 0.5
+	  }
       });
     }
   };

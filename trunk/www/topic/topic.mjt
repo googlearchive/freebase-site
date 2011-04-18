@@ -99,6 +99,9 @@
         ${filter_components.as_of_time_filter("/topic" + c.id, c.filters)}
       </div>
     </div>
+    <p class="keyboard-shortcuts">
+      <a href="javascript:void(0);" rel="#overlay">${_("Keyboard shortcuts available")}</a>
+    </p>
   </div>
 
   <div class="column data" id="topic-data">
@@ -138,8 +141,17 @@
     ${propbox.topicbox(c.topic, i18n.lang)}
 
   </div>
+  <div class="modal" style="display:none" id="overlay">
+    <div class="modal-inner">
+      <h1 class="modal-title">${_("Keyboard Shortcuts")}</h1>
+      <div class="modal-content">Shortcuts go here</div>
+    </div>
+  </div>
 </acre:block>
 
 <acre:block def="footer_script()">
   <script src="topic.mf.js"></script>
+</acre:block>
+
+<acre:block def="keyboard_shorcuts()">
 </acre:block>

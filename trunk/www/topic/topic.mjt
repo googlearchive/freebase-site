@@ -144,7 +144,61 @@
   <div class="modal" style="display:none" id="overlay">
     <div class="modal-inner">
       <h1 class="modal-title">${_("Keyboard Shortcuts")}</h1>
-      <div class="modal-content">Shortcuts go here</div>
+      <div class="modal-content clear">
+        <div class="column">
+          <h2 class="modal-sub-title">${_("Navigation")}</h2>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("j")}</dt>
+            <dd class="key-desc">${_("next item")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("k")}</dt>
+            <dd class="key-desc">${_("previous item")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("p")}</dt>
+            <dd class="key-desc">${_("next Property")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("P")}</dt>
+            <dd class="key-desc">${_("previous Property")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("t")}</dt>
+            <dd class="key-desc">${_("next Type")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("T")}</dt>
+            <dd class="key-desc">${_("previous Type")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("d")}</dt>
+            <dd class="key-desc">${_("next Domain")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("D")}</dt>
+            <dd class="key-desc">${_("previous Domain")}</dd>
+          </dl>
+        </div>
+        <div class="column middle">
+          <h2 class="modal-sub-title">Editing</h2>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("a")}</dt>
+            <dd class="key-desc">${_("add new value")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("e")}</dt>
+            <dd class="key-desc">${_("edit value")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("d")}</dt>
+            <dd class="key-desc">${_("delete value")}</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <button class="button button-cancel">Close</button>
     </div>
   </div>
 </acre:block>

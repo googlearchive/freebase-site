@@ -45,6 +45,7 @@
   var VIEW_ALL_PROPERTY_VALUES = _("Query all property values");
   var EDIT_VALUE = _("Edit value");
   var ADD_NEW_VALUE = _("Add new value");
+  var FILTER_PROPERTY = _("Filter property");
   var VIEW_SCHEMA = _("View schema");
   var EDIT = _("Edit");
   var DELETE = _("Delete");
@@ -381,6 +382,7 @@
         <li acre:else="" class="row-menu-item edit">
           <a href="#" onclick="return propbox.prop_add(this);">${ADD_NEW_VALUE}</a>
         </li>      
+        <li class="row-menu-item"><a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}">${FILTER_PROPERTY}</a></li>
         <li class="row-menu-item"><a href="${h.fb_url('/schema', prop_structure.id)}">${VIEW_SCHEMA}</a></li>
       </ul>
     </li>

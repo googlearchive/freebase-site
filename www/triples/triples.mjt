@@ -110,7 +110,7 @@
       ${nav_tab(true, _("Inspect"))}
     </li>
     <li>
-      ${nav_tab(false, _("Same As"), h.fb_url("/sameas", c.object.id))}
+      ${nav_tab(false, _("On the Web"), h.fb_url("/web", c.object.id))}
     </li>    
   </acre:block>
   <!!-- inspect (default) !!-->

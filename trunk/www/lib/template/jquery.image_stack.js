@@ -109,6 +109,24 @@
             $container.css("left", offset);
             offset = offset + $img.width() + margin;
 
+            if (index === 1) {
+              var rotation = "-10deg";
+              $container.css("left", "-30px");
+              $container.css({
+                "-webkit-transform": "rotate(" + rotation + ")",
+                "-moz-transform": "rotate(" + rotation + ")",
+                "transform": "rotate(" + rotation + ")"
+              })
+            }
+            else if (index === 2) {
+              var rotation = "10deg";
+              $container.css("left", "30px");
+              $container.css({
+                "-webkit-transform": "rotate(" + rotation + ")",
+                "-moz-transform": "rotate(" + rotation + ")",
+                "transform": "rotate(" + rotation + ")"
+              })
+            }
           });
           return false;
         },

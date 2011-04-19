@@ -94,4 +94,4 @@
   </div>
 </acre:block>
 
-${acre.require("lib/template/renderer").render_page(null, this.exports)}
+

@@ -67,7 +67,7 @@
     },
     "jquery" : {
       "base_url": "http://ajax.googleapis.com/ajax/libs/jquery/",
-      "version": "1.5.1"
+      "version": "1.5.2"
     },
     "dojo" : {
       "base_url": "https://ajax.googleapis.com/ajax/libs/dojo/",

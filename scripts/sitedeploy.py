@@ -357,6 +357,9 @@ class ActionDeployAcre:
     if not (c.options.site_dir and c.options.acre_dir):
       return c.error("Both --site_dir and --acre_dir must be provided to deploy acre.")
 
+    if not c.options.acre_config:
+      return c.error('You have to specify an acre build target with -c e.g. -c acre')
+
     acre = GetAcre(c)
 
     (r, result) = acre.build(c.options.acre_config, config_dir= "%s/appengine-config" % c.options.site_dir, war=True)
@@ -382,11 +385,12 @@ class ActionDeployAcre:
     c.log('\tConfig: %s' % c.options.acre_config)
     c.log('\tAppEngine URL: http://%s.appspot.com/' % c.options.acre_config)
     c.log('\tAppEngine Dashboard: https://appengine.google.com/dashboard?&app_id=%s' % c.options.acre_config)
+    c.log('\tFreebase Site Keystore: http://environments.svn.freebase-site.googlecode.dev.%s.appspot.com/acre/keystore_console' % c.options.acre_config)
     c.log('')
-    c.log('Acre Status Result from war bundle:')
-    for status_line in status:
-      status_line = status_line.rstrip('\n')
-      c.log('\t%s' % status_line)
+    #c.log('Freebase Site Routing:')
+    #for status_line in status:
+    #  status_line = status_line.rstrip('\n')
+    #  c.log('\t%s' % status_line)
     c.log('')
     c.log('*' * 65)
 
@@ -396,18 +400,19 @@ class ActionDeployAcre:
     if os.path.isdir(acre.site_dir(war=True) + '/googlecode'):
       shutil.rmtree(acre.site_dir(war=True)+ '/googlecode')
 
+    if not c.options.nosite:
 
-    apps = acre.fs_routed_apps()
+      apps = acre.fs_routed_apps()
 
-    for app in apps:
-      result = app.copy_to_acre_dir(war=True)
-      if not result:
-        c.error('Failed to copy %s to app-engine bundle, continuing with other apps...' % app)
+      for app in apps:
+        result = app.copy_to_acre_dir(war=True)
+        if not result:
+          c.error('Failed to copy %s to app-engine bundle, continuing with other apps...' % app)
 
+      c.log('The following apps are bundled with acre:')
+      for app in sorted(apps):
+        c.log('\t%s' % app)
 
-    c.log('The following apps are bundled with acre:')
-    for app in sorted(apps):
-      c.log('\t%s' % app)
 
     c.log('Starting deployment of live version, handing off to appcfg...', color=c.BLUE)
     if not acre.deploy(): 
@@ -918,8 +923,10 @@ def main():
                     help='an app id - e.g. /user/namesbc/mysuperapp or an app key under /freebase/site - e.g. homepage')
   parser.add_option('-l', '--lib', dest='lib', default=None,
                     help='the version of lib you want to tie this app branch to - use "latest" to tie to last branched version')
-  parser.add_option('-f', '--failover', dest='failover', action='store_true',
-                    default=False, help='will deploy acre to the failover version of appengine')
+  parser.add_option('', '--failover', dest='failover', action='store_true',
+                    default=False, help='will also deploy acre to the failover version of appengine')
+  parser.add_option('', '--nosite', dest='nosite', action='store_true',
+                    default=False, help='will not bundle freebase site with acre when deploying to appengine')
 
   (options, args) = parser.parse_args()
 

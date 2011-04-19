@@ -348,7 +348,8 @@ function image_url(id, params) {
     }
   }
 
-  return fb_api_url("/api/trans/image_thumb", params);
+   return acre.freebase.imgurl(id, params.maxwidth, params.maxheight, params.mode, params.errorid);
+  //return fb_api_url("/api/trans/image_thumb", params);
 }
 
 function lib_base_url(key) {

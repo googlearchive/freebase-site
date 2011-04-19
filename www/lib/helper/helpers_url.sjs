@@ -54,10 +54,7 @@ var exports = {
 
   "lib_base_url": lib_base_url,
 
-  "parse_uri": parse_uri,
-
-  //---DEPRECATED---//
-  "url_for": url_for
+  "parse_uri": parse_uri
 };
 
 var h = acre.require("helper/helpers_util.sjs");
@@ -392,28 +389,4 @@ function parse_uri(str) {
   });
 
   return uri;
-}
-
-
-//-----------------DEPRECATED----------------//
-
-// Very simply converts to new fb_url style.
-// ***THIS SHOULD NOT GO TO PRODUCTION***
-function url_for(app, file, params, extra_path) {
-  params = parse_params(params || {});
-  params['***DEPRECATED***'] = 'Move from url_for to fb_url';
-
-  if (app === 'triples') {
-    app = 'inspect';
-  } else if (app === 'homepage' && file === 'index') {
-    app = '';
-    file = null;
-  } else if (app === 'homepage' && file === 'home') {
-    app = 'home';
-    file = null;
-  }
-  var path = '/'+app;
-  if (file) path += '/'+file;
-  if (extra_path) path += extra_path;
-  return fb_url(path, params);
 }

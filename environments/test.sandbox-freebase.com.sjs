@@ -8,7 +8,7 @@
 // Shared base urls
 var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
-var lib = "//10a.lib" + tags_codebase;
+var lib = "//11b.lib" + tags_codebase;
 
 var rules = {
   "host": [
@@ -26,24 +26,24 @@ var rules = {
   "prefix": [
     // Urls for user-facing apps
     {prefix:"/favicon.ico",        app:lib, script: "template/favicon.ico"},
-    {prefix:"/",                   app:"//4d.homepage" + tags_codebase, script: "index"},
+    {prefix:"/",                   app:"//5a.homepage" + tags_codebase, script: "index"},
     {prefix:"/index",              url:"/", redirect: 301},
-    {prefix:"/home",               app:"//4d.homepage" + tags_codebase, script: "home"},
-    {prefix:"/homepage",           app:"//4d.homepage" + tags_codebase},
-    {prefix:"/schema",             app:"//5c.schema" + tags_codebase},
-    {prefix:"/apps",               app:"//2a.apps" + tags_codebase},
+    {prefix:"/home",               app:"//5a.homepage" + tags_codebase, script: "home"},
+    {prefix:"/homepage",           app:"//5a.homepage" + tags_codebase},
+    {prefix:"/schema",             app:"//6a.schema" + tags_codebase},
+    {prefix:"/apps",               app:"//3a.apps" + tags_codebase},
     {prefix:"/appeditor",          app:"//appeditor" + codebase},
-    {prefix:"/docs",               app:"//1b.devdocs" + tags_codebase},
-    {prefix:"/inspect",            app:"//1c.triples" + tags_codebase},
-    {prefix:"/policies",           app:"//2j.policies" + tags_codebase},
+    {prefix:"/docs",               app:"//2a.devdocs" + tags_codebase},
+    {prefix:"/inspect",            app:"//2a.triples" + tags_codebase},
+    {prefix:"/policies",           app:"//3a.policies" + tags_codebase},
     {prefix:"/queryeditor",        app:"//queryeditor" + codebase},
     {prefix:"/labs/cubed",         app:"//cubed"},
     {prefix:"/labs/parallax",      app:"//parallax"},
     {prefix:"/labs",               app:"//labs"},
-    {prefix:"/sample",             app:"//1a.sample" + tags_codebase},
-    {prefix:"/topic",              app:"//4a.topic" + tags_codebase},
-    {prefix:"/group",              app:"//group" + tags_codebase},
-    {prefix:"/web",                app:"//sameas" + tags_codebase},
+    {prefix:"/topic",              app:"//5a.topic" + tags_codebase},
+    {prefix:"/sample",             app:"//2a.sample" + tags_codebase},
+    {prefix:"/group",              app:"//1a.group" + codebase},
+    {prefix:"/sameas",             app:"//1a.sameas" + codebase},
 
     // Urls for exposed ajax libraries and static resources
     // TODO: remove this and use ajax router

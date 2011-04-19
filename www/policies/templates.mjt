@@ -28,6 +28,9 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  !!-->
+<acre:script>
+  var h = acre.require("lib/helper/helpers.sjs");
+</acre:script>
 
 <acre:block def="policy_nav()">
   <acre:script>
@@ -37,12 +40,12 @@
   <h2>Freebase Terms and Policies</h2>
   
   <ul class="toc">
-    <li class="toc-item" acre:attrs="sn=='attribution'?{'class':'toc-item on'}:{}"><a href="/policies/attribution">How to Attribute</a></li>
-    <li class="toc-item" acre:attrs="sn=='licensing'?{'class':'toc-item on'}:{}"><a href="/policies/licensing">Licensing Policy</a></li>
-    <li class="toc-item" acre:attrs="sn=='copyright'?{'class':'toc-item on'}:{}"><a href="/policies/copyright">Copyright Policy</a></li>
-    <li class="toc-item" acre:attrs="sn=='privacy'?{'class':'toc-item on'}:{}"><a href="/policies/privacy">Privacy Policy</a></li>
-    <li class="toc-item" acre:attrs="sn=='tos'?{'class':'toc-item on'}:{}"><a href="/policies/tos">Terms of Service</a></li>
-    <li class="toc-item" acre:attrs="sn=='freebaseid'?{'class':'toc-item on'}:{}"><a href="/policies/freebaseid">Freebase ID</a></li>
+    <li class="toc-item" acre:attrs="sn=='attribution.template'?{'class':'toc-item on'}:{}"><a href="${h.fb_url('/policies/attribution')}">How to Attribute</a></li>
+    <li class="toc-item" acre:attrs="sn=='licensing.template'?{'class':'toc-item on'}:{}"><a href="${h.fb_url('/policies/licensing')}">Licensing Policy</a></li>
+    <li class="toc-item" acre:attrs="sn=='copyright.template'?{'class':'toc-item on'}:{}"><a href="${h.fb_url('/policies/copyright')}">Copyright Policy</a></li>
+    <li class="toc-item" acre:attrs="sn=='privacy.template'?{'class':'toc-item on'}:{}"><a href="${h.fb_url('/policies/privacy')}">Privacy Policy</a></li>
+    <li class="toc-item" acre:attrs="sn=='tos.template'?{'class':'toc-item on'}:{}"><a href="${h.fb_url('/policies/tos')}">Terms of Service</a></li>
+    <li class="toc-item" acre:attrs="sn=='freebaseid.template'?{'class':'toc-item on'}:{}"><a href="${h.fb_url('/policies/freebaseid')}">Freebase ID</a></li>
   </ul>
   
 </acre:block>

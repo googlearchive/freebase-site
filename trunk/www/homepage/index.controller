@@ -32,16 +32,24 @@
 var h = acre.require("lib/helper/helpers.sjs");
 var queries = acre.require("queries");
 
-var data = {
-  "categories": queries.categories(),
-  "blog": queries.blog_entries(),
-  "wiki": queries.wiki_entries(),
-  "reg_off": queries.is_registration_off()
+var SPEC = {
+
+  cache_policy: "public",
+
+  template: "index_template.mjt",
+
+  validate: function(params) {
+    return [];
+  },
+
+  run: function() {
+    return {
+      categories: queries.categories(),
+      blog: queries.blog_entries(),
+      wiki: queries.wiki_entries(),
+      reg_off: queries.is_registration_off()
+    };
+  }
+
 };
 
-acre.require("lib/template/renderer").render_page(
-  data,
-  acre.require("index_template")
-);
-
-h.set_cache_policy("public");

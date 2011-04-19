@@ -1318,6 +1318,14 @@ class Acre:
     if war:
         build_mode = 'appengine-build-war'
 
+    if target and config_dir and os.path.isdir(config_dir):
+        cmd = ['./acre', '-c', target, '-d', config_dir, 'appengine-build-config']
+
+    (r, result) = c.run_cmd(cmd)
+
+    if not r:
+        return c.error('Failed to configure acre.'), result
+
     cmd = ['./acre', build_mode]
     if target and config_dir and os.path.isdir(config_dir):
         cmd = ['./acre', '-c', target, '-d', config_dir, build_mode]

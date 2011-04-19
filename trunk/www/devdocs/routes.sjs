@@ -52,11 +52,11 @@ var data = {
 var renderer = acre.require("lib/template/renderer");
 
 if (!filename || filename === "index") {
-  renderer.render_page(data,acre.require("index"));
+  renderer.render_page(data, acre.require("index"));
 } else if (filename === "iframe") {
-    data.base_path = data.base_path + "/iframe";
-	data.path_info = path_info.replace("/iframe","");
-	renderer.render_page(data, acre.require("doc"), acre.require("iframe"));
+  data.base_path = data.base_path + "/iframe";
+  data.path_info = path_info.replace("/iframe","");
+  renderer.render_page(data, acre.require("doc"), acre.require("iframe"));
 } else {
-  renderer.render_page(data,acre.require("doc"));
+  renderer.render_page(data, acre.require("doc"));
 }

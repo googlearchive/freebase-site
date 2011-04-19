@@ -99,7 +99,7 @@
         ${filter_components.as_of_time_filter("/topic" + c.id, c.filters)}
       </div>
     </div>
-    <p class="keyboard-shortcuts">
+    <p class="keyboard-shortcuts module">
       <a href="javascript:void(0);" rel="#overlay">${_("Keyboard shortcuts available")}</a>
     </p>
   </div>

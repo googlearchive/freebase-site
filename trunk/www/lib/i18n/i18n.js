@@ -106,7 +106,7 @@
     },
 
     /**
-     * localize number value i.e., <span class="number" data-value="1234"> ==> 1,234 (fr)
+     * localize number value i.e., <span class="number" data-value="0.8"> ==> 0,8 (fr)
      */
     number: function(context) {
       var numbers = $(".number", context)
@@ -127,11 +127,9 @@
   };
 
   dojo.ready(function() {
-console.log(dojo.locale);
     if (dojo.locale === "ar" || dojo.locale === "he") {
       isRTL = true;
     }
-
     bundle = dojo.date.locale._getGregorianBundle();
     i18n.ize();
   });

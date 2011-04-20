@@ -90,7 +90,7 @@ function to_prop_values(prop_structure, prop_data, lang) {
   if (prop_structure.expected_type.mediator) {
     prop_data.forEach(function(data, i) {
       var value = {
-        id: data.id || "__NEW_CVT__" + i
+        id: data.id
       };
       prop_structure.properties.forEach(function(subprop_structure, j) {
         var subvalues = value[subprop_structure.id] = {values:[]};

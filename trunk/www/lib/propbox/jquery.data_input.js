@@ -236,7 +236,7 @@
           self.invalid();
         })
         .bind("fb-select.validate_topic", function(e, data) {
-          self.input.val(data.id);
+          self.input.val(data.name != null ? data.name : id);
           self.valid(data);
         });
     },

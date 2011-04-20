@@ -36,6 +36,8 @@ var freebase = apis.freebase;
 var SPEC = {
 
   method: "POST",
+  
+  cache_policy: "private",
 
   auth: function(queryEnvelope, service) {
     if (service) {

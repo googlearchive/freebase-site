@@ -32,18 +32,18 @@ var rules = {
     {prefix:"/homepage",           app:"//5a.homepage" + tags_codebase},
     {prefix:"/schema",             app:"//6a.schema" + tags_codebase},
     {prefix:"/apps",               app:"//3a.apps" + tags_codebase},
-    {prefix:"/appeditor",          app:"//appeditor" + codebase},
+    {prefix:"/appeditor",          app:"//1a.appeditor" + tags_codebase},
     {prefix:"/docs",               app:"//2a.devdocs" + tags_codebase},
     {prefix:"/inspect",            app:"//2a.triples" + tags_codebase},
     {prefix:"/policies",           app:"//3a.policies" + tags_codebase},
-    {prefix:"/queryeditor",        app:"//queryeditor" + codebase},
+    {prefix:"/queryeditor",        app:"//1a.queryeditor" + tags_codebase},
     {prefix:"/labs/cubed",         app:"//cubed"},
     {prefix:"/labs/parallax",      app:"//parallax"},
     {prefix:"/labs",               app:"//labs"},
     {prefix:"/topic",              app:"//5a.topic" + tags_codebase},
     {prefix:"/sample",             app:"//2a.sample" + tags_codebase},
-    {prefix:"/group",              app:"//1a.group" + codebase},
-    {prefix:"/web",                app:"//1a.sameas" + codebase},
+    {prefix:"/group",              app:"//1a.group" + tags_codebase},
+    {prefix:"/web",                app:"//1a.sameas" + tags_codebase},
 
     // Urls for exposed ajax libraries and static resources
     // TODO: remove this and use ajax router

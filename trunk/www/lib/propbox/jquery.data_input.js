@@ -163,69 +163,12 @@
           this.checked = false;
         });
       }
-      this.container.siblings().find("[data-lang]").val("");
     },
 
     fb_textchange: function(data) {
-      this.container.siblings().find("[data-lang]").val("");
     },
 
     fb_select: function(data) {
-      var langs = [];
-      var langputs = this.container.siblings(".lang-input").find(":text[data-lang]");
-      langputs.each(function() {
-        var lang = $(this).attr("data-lang");
-        if (lang) {
-          langs.push(lang);
-        }
-      });
-      if (langs.length) {
-        var q = {
-          id: data.id,
-          name: [{
-            value: null,
-            lang: null,
-            optional: true,
-            "lang|=": langs
-          }]
-        };
-        var self = this;
-        if (this.fb_select.jqXHR) {
-          this.fb_select.jqXHR.abort();
-        }
-        this.fb_select.jqXHR = $.ajax({
-          url: this.options.suggest.mqlread_url,
-          data: {query: JSON.stringify({query: q})},
-          dataType: "jsonp",
-          beforeSend: function(jqXHR, settings) {
-            self.ajax_beforeSend(jqXHR, settings);
-          },
-          success: function(data) {
-            if (data.code == "/api/status/ok" && data.result) {
-              var name_value = self.container.data("name_value");
-              if (name_value && name_value[1] === data.result.id) {
-                var names = data.result.name;
-                if (names && names.length) {
-                  var langs = {};
-                  $.each(names, function(i, name) {
-                    langs[name.lang] = name.value;
-                  });
-                  langputs.each(function() {
-                    var $this = $(this);
-                    var lang = $this.attr("data-lang");
-                    var name = data.result.id + ".name." + lang;
-                    var val =  langs[lang];
-                    $this.val(val || "").attr("name", name);
-                  });
-                }
-              }
-            }
-          },
-          complete: function(jqXHR, textStatus) {
-            self.ajax_complete(jqXHR, textStatus);
-          }
-        });
-      }
     },
 
     ajax_beforeSend: function(jqXHR, settings) {

@@ -103,10 +103,6 @@
           submit_data[name_value[0]] = name_value[1];
         }
       });
-      $(".lang-input :text[data-lang]", form.form).each(function() {
-        var $this = $(this);
-        submit_data[$this.attr("name")] = $this.val();
-      });
       $.ajax({
         url: form.ajax.url,
         type: "POST",
@@ -209,10 +205,6 @@
         if (name_value) {
           submit_data[name_value[0]] = name_value[1];
         }
-      });
-      $(".lang-input :text[data-lang]", form.form).each(function() {
-        var $this = $(this);
-        submit_data[$this.attr("name")] = $this.val();
       });
       $.ajax({
         url: form.ajax.url,

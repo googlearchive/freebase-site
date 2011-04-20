@@ -1,0 +1,298 @@
+/*
+* Copyright 2010, Google Inc.
+* All rights reserved.
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are
+* met:
+*
+*     * Redistributions of source code must retain the above copyright
+* notice, this list of conditions and the following disclaimer.
+*     * Redistributions in binary form must reproduce the above
+* copyright notice, this list of conditions and the following disclaimer
+* in the documentation and/or other materials provided with the
+* distribution.
+*     * Neither the name of Google Inc. nor the names of its
+* contributors may be used to endorse or promote products derived from
+* this software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+* A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+* LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+* DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+* THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+  
+#footer {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+
+#content {
+  padding: 2em;
+}
+
+#qe-module {
+  float: left;
+  width: 450px;
+  margin-right: -460px;
+}
+
+#the-query-editor {
+  overflow: hidden;
+  top: 0px;
+}
+
+#qe-options {
+  float: left; 
+  padding: 7px;
+  padding-bottom: 9px;
+  .rounded_corners_top();
+  background: #f1f2f3;
+}
+
+#qe-options-on, #qe-options-off {
+  display: none;
+}
+
+#the-control-pane {
+  height: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+#links {
+  float: right;
+  margin: 7px;
+	width: 90px;
+}
+
+.cuecard-queryEditor-content {
+  background: white;
+}
+
+.cuecard-popup-container {
+  font-size: 120%;
+}
+
+.cuecard-controlPane.section-tabs {
+  border: none;
+}
+
+.module-section {
+  padding: 0;
+  border: none;
+}
+
+.cuecard-outputPane-tabs, .cuecard-outputPane-content {
+  border: 2px solid #e5e5e7;
+  background: #f8f8f8;
+  margin-left: 480px;
+}
+
+.cuecard-outputPane-tabs {
+  height: 30px;
+  border-width: 5px;
+  margin-bottom: 5px;
+  .rounded_corners_top();
+  .box_shadow(0,0,2px,#777);
+}
+
+.cuecard-outputPane-tabBody {
+  background-color: white;
+}
+
+/* secondary tabs */
+ 
+ul.section-tabset {
+	padding-top: 5px;
+	background: #f1f2f3;
+	
+}
+
+.section-tab {
+	margin: 0 0 -1px 0;
+	border-right: 0;
+}
+
+.module-section ul .section-tab a {
+	color: #1170A3;
+	padding: 3px 10px;
+}
+
+.module-section ul .section-tab a.current {
+	background: #fff;
+	color: #222;
+	.rounded_corners_top();
+}
+
+.module-section ul .section-tab a:hover {
+	background: #ececec;
+	.rounded_corners_top();
+}
+
+.module-section ul .section-tab a.current:hover {
+	background: #fff;
+	color: #222;
+}
+
+.tabbed-content em {
+	font-weight: bold;
+}
+
+
+.links-nav a {
+	font-size: 1.2em;
+	line-height: 1;
+	padding: 6px 0 6px 0.5em;
+	}
+	
+#qe-options a {
+	font-size: 1.3em;
+	line-height: 1;
+	padding: 6px 5px;
+	}
+		
+
+.cuecard-controlPane-tabBody {
+	clear: both;
+	padding: 12px 15px 0 15px;
+}
+
+
+.tabbed-content p {
+	font-size: 1.3em;
+	line-height: 1.4em;
+	margin: 6px 0 3px 0;
+}
+.cuecard-controlPane-powerTool {
+	margin: 0 0 3px 20px;
+	clear: both;
+	overflow: auto;
+}
+
+.cuecard-controlPane-powerTool .button, 
+.query-options-textbox {
+	width: 130px;
+	float: left;
+}
+
+.cuecard-controlPane-powerTool-hint,
+.cuecard-controlPane-hint {
+	font-size: 1.1em;
+	line-height: 1.2em;
+	width: 210px;
+	float: left;
+	vertical-align: middle;
+	margin: 4px 0 0 13px;
+}
+
+.cuecard-controlPane-configurations .cuecard-controlPane-hint {
+	width: auto;
+	margin: 4px 0 0 0;
+}
+
+.text-input {
+	font-size: 14px;
+	padding: 6px;
+}
+
+.query-options-row {
+	clear: both;
+	overflow: auto;
+}
+
+.module-section .variables-input {
+	width: 150px;
+	float: left;
+	padding: 4px 6px;
+}
+
+.query-options-textbox {
+	padding: 4px 6px;
+}
+
+.query-options-input {
+	float: left;
+}
+
+.cuecard-controlPane-customEnvelope td input.small-button,
+.cuecard-controlPane-variables td input.small-button {
+	width: 30px;
+	float: left;
+}
+
+.control-pane-label {
+	font-size: 1.2em;
+	float: left;
+}
+
+.control-pane-radio {
+	float: left;
+	margin-right: 5px;
+}
+
+.cuecard-controlPane-configurations-cursor {
+	margin-left: 10px;
+}
+
+.cuecard-controlPane-configurations-page .query-options-textbox{
+	width: 250px;
+	margin-right: 5px;
+}
+
+.cuecard-controlPane-configurations-cursor input {
+	width: auto;
+	float: left;
+/* where is editor-bundle.mf.css and why does it have a cuecard-controlPane-configurations-cursor input style in it ??? */
+}
+
+.cuecard-outputPane-helpContent ul {
+	margin-bottom: 10px;
+}
+
+.cuecard-outputPane-helpContent li {
+	list-style-type: none;
+	display: inline;
+	padding-right: 10px;
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.cuecard-examples-list {
+	font-size: 1.2em;
+}
+
+.cuecard-controlPane-customEnvelope {
+	padding-bottom: 20px;
+}
+
+.links-menu {
+	list-style: none;
+	background: white;
+	width: 90px;
+	border: 1px solid #C4C6C7;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	-webkit-box-shadow: 0px 0px 3px #AAA;
+	-moz-box-shadow: 0px 0px 3px #AAA;
+	box-shadow: 0px 0px 3px #AAA;
+}
+.more-icon {
+	padding-right: 20px;
+	background: url(lib/template/ui-icons.png) no-repeat 30px -755px;
+	display: inline-block;
+}

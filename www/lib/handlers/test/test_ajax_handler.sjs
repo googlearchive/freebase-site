@@ -57,7 +57,8 @@ test("to_ajax_response", function() {
     ok(resp && typeof resp === "object", "got to_ajax_response");
     ok(resp.body && typeof resp.body === "string", "got to_ajax_response.body");
     ok(resp.headers && typeof resp.headers === "object", "got to_ajax_response.headers");
-    ok(/text\/javascript;\s*charset=utf\-8/.test(resp.headers["content-type"]));
+    ok(/text\/javascript;\s*charset=utf\-8/.test(resp.headers["content-type"]), resp.headers["content-type"]);
+
     var body = resp.body;
     if (jsonp) {
       var rjsonp = new RegExp(["^\\s*", jsonp, "\\s*\\(\\s*"].join(""));
@@ -90,7 +91,7 @@ test("to_ajax_response", function() {
     ok(resp, "got to_ajax_response");
     ok(resp.body && typeof resp.body === "string", "got to_ajax_response.body");
     ok(resp.headers && typeof resp.headers === "object", "got to_ajax_response.headers");
-    ok(/text\/javascript;\s*charset=utf\-8/.test(resp.headers["content-type"]));
+    ok(/text\/javascript;\s*charset=utf\-8/.test(resp.headers["content-type"]), resp.headers["content-type"]);
     var body = resp.body;
     if (jsonp) {
       var rjsonp = new RegExp(["^\\s*", jsonp, "\\s*\\(\\s*"].join(""));
@@ -136,6 +137,7 @@ test("require", function() {
 test("include", function() {
   function check_response(resp, jsonp) {
     ok(/text\/javascript;\s*charset=utf\-8/.test(resp.headers["content-type"]), resp.headers["content-type"]);
+    ok(/public\s*\,\s*max\-age\=\d+/.test(resp.headers["cache-control"]), resp.headers["cache-control"]);
     if (jsonp) {
       ok(resp.status == null, "status should not be set for jsonp");
       var rjsonp = new RegExp(["^\\s*", jsonp, "\\s*\\(\\s*"].join(""));
@@ -173,7 +175,8 @@ test("include", function() {
 
 test("include error", function() {
   function check_response(resp, jsonp) {
-    ok(/text\/javascript;\s*charset=utf\-8/.test(resp.headers["content-type"]));
+    ok(/text\/javascript;\s*charset=utf\-8/.test(resp.headers["content-type"]), resp.headers["content-type"]);
+    ok(/private\s*\,\s*no\-cache\s*\,\s*max\-age\=0/.test(resp.headers["cache-control"]), resp.headers["cache-control"]);
     if (jsonp) {
       ok(resp.status == null, "status should not be set for jsonp");
       var rjsonp = new RegExp(["^\\s*", jsonp, "\\s*\\(\\s*"].join(""));

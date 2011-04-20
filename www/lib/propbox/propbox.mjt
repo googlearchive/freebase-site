@@ -531,7 +531,6 @@ propbox edit forms
         </acre:block>
       </select>
     </span>
-    ${lang_inputs(prop_data, lang)}
   </acre:block>
   <acre:block elif="type === 'boolean'">
     <span class="data-input boolean">
@@ -552,7 +551,6 @@ propbox edit forms
       <input class="fb-input" type="text" name="${name}" acre:attrs="prop_data ? {value:prop_data.id} : {}"
              placeholder="${_('Start typing to get suggestions...')}"/>
     </span>
-    ${lang_inputs(prop_data, lang)}
   </acre:block>
   <acre:block else="">
     <span class="data-input ${type}">

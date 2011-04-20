@@ -127,9 +127,9 @@ function minimal_prop_value(prop_structure, prop_data, lang) {
   }
   else {
     var name = prop_data.name;
-    assert(h.isArray(name), "minimal_prop_value: expected prop_data.name to be an array of lang values");
+//    assert(h.isArray(name), "minimal_prop_value: expected prop_data.name to be an array of lang values");
     value.id = prop_data.id;
-    if (name.length) {
+    if (name && name.length) {
       name = i18n.mql.get_text(lang, prop_data.name);
       value.text = name.value;
       value.lang = name.lang;
@@ -278,65 +278,14 @@ function mqlwrite_clause(prop_structure, params, lang) {
       }];
       (ect.included_types || []).forEach(function(t) {
         clause.type.push({
-          id:t,
-          connect:"insert"
+          id: t,
+          connect: "insert"
         });
       });
-      for (var key in params) {
-        var m = is_name_lang(key, params[key], object_value);
-        if (m) {
-          var name = clause.name;
-          if (!name) {
-            name = clause.name = [];
-          }
-          name.push({
-            value: m.value,
-            lang: m.lang,
-            connect: "update"
-          });
-        }
-      }
     }
     clauses.push(clause);
   });
   return clauses;
-};
-
-function is_name_lang(key, value, topic_id) {
-  if (value) {
-    var parts = key.split(".");
-    if (parts.length === 3 && parts[0] === topic_id && parts[1] === "name") {
-      topic_id = validators.MqlId(topic_id, {required:true});  // assert topic_id
-      var lang = validators.LangId(parts[2], {required:true});
-      return {value:value, lang:lang};
-    }
-  }
-  return null;
-};
-
-function lang_inputs(prop_data, lang) {
-  var langs = {};
-  if (prop_data && prop_data.name) {
-    prop_data.name.forEach(function(n) {
-      langs[n.lang] = n.value;
-    });
-  }
-  if (!langs["/lang/en"]) {
-    langs["/lang/en"] = null;
-  }
-  if (lang !== "/lang/en" && !langs[lang]) {
-    langs[lang] = null;
-  }
-  var names = [];
-  for (var k in langs) {
-    names.push({value:langs[k], lang:k});
-  }
-  names.sort(function(a,b) {
-    if (a.lang === "/lang/en") return 1;
-    else if (b.lang === "/lang/en") return -1;
-    else return b.lang < a.lang;
-  });
-  return names;
 };
 
 /**

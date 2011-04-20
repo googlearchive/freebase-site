@@ -137,7 +137,7 @@ test("require", function() {
 test("include", function() {
   function check_response(resp, jsonp) {
     ok(/text\/javascript;\s*charset=utf\-8/.test(resp.headers["content-type"]), resp.headers["content-type"]);
-    ok(/public\s*\,\s*max\-age\=\d+/.test(resp.headers["cache-control"]), resp.headers["cache-control"]);
+    ok(/private\s*\,\s*no\-cache\s*\,\s*max\-age\=0/.test(resp.headers["cache-control"]), resp.headers["cache-control"]);
     if (jsonp) {
       ok(resp.status == null, "status should not be set for jsonp");
       var rjsonp = new RegExp(["^\\s*", jsonp, "\\s*\\(\\s*"].join(""));

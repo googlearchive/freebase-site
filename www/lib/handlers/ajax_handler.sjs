@@ -47,7 +47,7 @@ function handler() {
         .then(
           function(result) {
             var r = to_ajax_response(result);
-            h.set_cache_policy(module.SPEC.cache_policy || "public", null, r.headers);
+            h.set_cache_policy(module.SPEC.cache_policy || "nocache", null, r.headers);
             return r;
           },
           function(e) {

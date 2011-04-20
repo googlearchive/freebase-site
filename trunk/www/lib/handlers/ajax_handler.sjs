@@ -38,14 +38,6 @@ var validators = acre.require("validator/validators.sjs");
 
 /**
  * A JSON/P web service handler for *.ajax.
- *
- *
- *
- * TODO:
- *   // cache_policy
- * if (h.is_client() && fn.cache_policy) {
- *   acre.response.set_cache_policy(fn.cache_policy);
- * }
  */
 function handler() {
   return h.extend({}, acre.handlers.acre_script, {
@@ -54,11 +46,15 @@ function handler() {
       var d = lib.handle_service(module, script)
         .then(
           function(result) {
-            return to_ajax_response(result);
+            var r = to_ajax_response(result);
+            h.set_cache_policy(module.SPEC.cache_policy || "public", null, r.headers);
+            return r;
           },
           function(e) {
             if (lib.instanceof_service_error(e)) {
-              return to_ajax_response(lib.handle_service_error(e));
+              var r = to_ajax_response(lib.handle_service_error(e));
+              h.set_cache_policy("nocache", null, r.headers);
+              return r;
             }
             return e;
           }
@@ -73,8 +69,8 @@ function handler() {
       catch(ex) {
         // unhandled error - don't want to redirect to error page
         resp = to_ajax_response(new lib.ServiceError(null, null, ex));
+        h.set_cache_policy("nocache", null, resp.headers);
       }
-      h.set_cache_policy(module.SPEC.cache_policy || "public", null, resp.headers);
       return hh.to_http_response_result(resp.body, resp.headers, resp.status);
     }
   });

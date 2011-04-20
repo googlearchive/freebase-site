@@ -45,6 +45,8 @@ function onLoad() {
     extended: 0 // Don't make this sticky: $.localstore("cc_cp_extended") == "1" ? 1 : 0
   };
 
+	$(".nicemenu").nicemenu();
+
   queryEditorOptions = {
     focusOnReady: true,
     onUnauthorizedMqlWrite: function() {

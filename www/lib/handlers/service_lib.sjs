@@ -205,9 +205,9 @@ function handle_service(module, script) {
       code: "/api/status/error/request/method"
     }));
   }
-  if (req.method === "POST" && !acre.request.headers['x-requested-with']) {
+  if (req.method === "POST" && acre.request.headers['x-requested-with'] !== "XMLHttpRequest") {
     return deferred.rejected(new ServiceError("400 Bad Request", null, {
-      message: "Request must include 'X-Requested-With' header",
+      message: "Request must include a valid 'X-Requested-With' header",
       code: "/api/status/error/request/method"
     }));
   }

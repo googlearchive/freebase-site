@@ -34,7 +34,7 @@ var hh = acre.require("handlers/helpers.sjs");
 var lib = acre.require("handlers/service_lib.sjs");
 var deferred = acre.require("promise/deferred.sjs");
 var validators = acre.require("validator/validators.sjs");
-var handle_service = acre.require("handlers/controller_handler.sjs").handle_service;
+
 
 /**
  * A JSON/P web service handler for *.ajax.
@@ -64,7 +64,7 @@ function handler() {
           }
         )
         .then(function(r) {
-         resp = r;
+          resp = r;
         });
       acre.async.wait_on_results();
       try {
@@ -74,6 +74,7 @@ function handler() {
         // unhandled error - don't want to redirect to error page
         resp = to_ajax_response(new lib.ServiceError(null, null, ex));
       }
+      h.set_cache_policy(module.SPEC.cache_policy || "public", null, resp.headers);
       return hh.to_http_response_result(resp.body, resp.headers, resp.status);
     }
   });

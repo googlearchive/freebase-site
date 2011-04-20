@@ -49,7 +49,10 @@ var handler = function() {
 
       d.cleanup();
 
-      return module;
+      console.log("controller module", module);
+      var headers = {};
+      h.set_cache_policy(module.SPEC.cache_policy || "public", null, headers);
+      return hh.to_http_response_result(module.body, headers);
     }
   });
 };

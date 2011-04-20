@@ -86,12 +86,13 @@ function cache_control(policy, options) {
   return [cache_options_list.join(", "), cache_options];
 }
 
-function set_cache_policy(policy, options) {
+function set_cache_policy(policy, options, headers) {
+  headers = headers || acre.response.headers;
   var [cache_control_value, cache_options] = cache_control(policy, options);
-  acre.response.headers["cache-control"] = cache_control_value;
+  headers["cache-control"] = cache_control_value;
 
   if (typeof cache_options["max-age"] === "number") {
     var expires = new Date((new Date()).getTime() + cache_options["max-age"] * 1000);
-    acre.response.headers["expires"] = expires.toUTCString();
+    headers["expires"] = expires.toUTCString();
   }
 }

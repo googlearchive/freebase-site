@@ -237,13 +237,13 @@
       }
       setTimeout(function() {
         // sign-in/out disabled for milestone
-        // $(window).trigger("fb.user.signedin", {guid: guid, name: name, id: id});
+        $(window).trigger("fb.user.signedin", {guid: guid, name: name, id: id});
       }, 0);
     }
     else {
       setTimeout(function() {
         // sign-in/out disabled for milestone
-        // $(window).trigger("fb.user.signedout");
+        $(window).trigger("fb.user.signedout");
       }, 0);
     }
   }

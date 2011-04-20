@@ -39,6 +39,10 @@ var validators = acre.require("validator/validators.sjs");
 acre.require("handlers/test/mock_handler.sjs").playback(this, ajax_handler, {
   to_module: function(result) {
     return JSON.stringify(result.SPEC);
+  },
+  to_http_response: function(result) {
+    delete result.headers["expires"];  // expires datestring is variable from record to playback
+    return result;
   }
 }, "handlers/test/playback_test_ajax_handler.json");
 
@@ -53,7 +57,7 @@ test("to_ajax_response", function() {
     ok(resp && typeof resp === "object", "got to_ajax_response");
     ok(resp.body && typeof resp.body === "string", "got to_ajax_response.body");
     ok(resp.headers && typeof resp.headers === "object", "got to_ajax_response.headers");
-    equal(resp.headers["content-type"], "text/javascript; charset=utf-8");
+    ok(/text\/javascript;\s*charset=utf\-8/.test(resp.headers["content-type"]));
     var body = resp.body;
     if (jsonp) {
       var rjsonp = new RegExp(["^\\s*", jsonp, "\\s*\\(\\s*"].join(""));
@@ -86,7 +90,7 @@ test("to_ajax_response", function() {
     ok(resp, "got to_ajax_response");
     ok(resp.body && typeof resp.body === "string", "got to_ajax_response.body");
     ok(resp.headers && typeof resp.headers === "object", "got to_ajax_response.headers");
-    equal(resp.headers["content-type"], "text/javascript; charset=utf-8");
+    ok(/text\/javascript;\s*charset=utf\-8/.test(resp.headers["content-type"]));
     var body = resp.body;
     if (jsonp) {
       var rjsonp = new RegExp(["^\\s*", jsonp, "\\s*\\(\\s*"].join(""));
@@ -131,8 +135,7 @@ test("require", function() {
 
 test("include", function() {
   function check_response(resp, jsonp) {
-    ok(resp.headers &&
-       resp.headers["content-type"] === "text/javascript; charset=utf-8", "content-type is text/javascript");
+    ok(/text\/javascript;\s*charset=utf\-8/.test(resp.headers["content-type"]), resp.headers["content-type"]);
     if (jsonp) {
       ok(resp.status == null, "status should not be set for jsonp");
       var rjsonp = new RegExp(["^\\s*", jsonp, "\\s*\\(\\s*"].join(""));
@@ -170,8 +173,7 @@ test("include", function() {
 
 test("include error", function() {
   function check_response(resp, jsonp) {
-    ok(resp.headers &&
-       resp.headers["content-type"] === "text/javascript; charset=utf-8", "content-type is text/javascript");
+    ok(/text\/javascript;\s*charset=utf\-8/.test(resp.headers["content-type"]));
     if (jsonp) {
       ok(resp.status == null, "status should not be set for jsonp");
       var rjsonp = new RegExp(["^\\s*", jsonp, "\\s*\\(\\s*"].join(""));

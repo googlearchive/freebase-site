@@ -47,7 +47,7 @@
   <link rel="canonical" href="http://www.freebase.com" />
   
   <script>
-    //if (document.cookie.indexOf("metaweb-user-info") > 0) {window.location.href= "/home";}
+    if (document.cookie.indexOf("metaweb-user-info") > 0) {window.location.href= "/home";}
   </script>
   <link rel="stylesheet" type="text/css" href="homepage.mf.css" />
 </acre:block>

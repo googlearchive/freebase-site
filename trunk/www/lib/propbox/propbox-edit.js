@@ -46,7 +46,7 @@
      *
      * Add a new value to a property (topic, literal, cvt)
      */
-    prop_add_begin: function(prop_section) {
+    prop_add_begin: function(prop_section, unique) {
       var submit_data = {
         s: topic_id,
         p: prop_section.attr("data-id"),
@@ -76,10 +76,15 @@
 
           form.form
             .bind(event_prefix + "success", function() {
-              edit.reset_data_input(form);
-              $(":input:visible:first", form.form).focus();
-              $(".button-submit", form.form).attr("disabled", "disabled").addClass("disabled");
-              $(".button-cancel", form.form).text("Done");
+              if (unique) {
+                form.form.trigger(form.event_prefix + "cancel");
+              }
+              else {
+                edit.reset_data_input(form);
+                $(":input:visible:first", form.form).focus();
+                $(".button-submit", form.form).attr("disabled", "disabled").addClass("disabled");
+                $(".button-cancel", form.form).text("Done");
+              }
             });
 
         },
@@ -133,6 +138,7 @@
           $(".edit", new_row).show();
 
           propbox.init_menus(new_row, true);
+          propbox.kbs.set_next(null, new_row, true);
 
           form.form.trigger(form.event_prefix + "success");
         },

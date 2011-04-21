@@ -129,7 +129,6 @@
 <acre:block def="propbox(topic, prop_structure, prop_values, lang)">
   <div class="property-section" data-id="${prop_structure.id}">
     <div class="sub-foobar kbs">
-      <!--view all link is shown for any non-unique property-->
       <a href="${ph.build_query_url(topic.id, prop_structure, prop_structure.expected_type.id === '/type/text' ? null : lang)}" class="more"><span>${VIEW_ALL_PROPERTY_VALUES}</span></a>
       <span class="header-label">
         ${prop_menu(topic, prop_structure)}
@@ -376,10 +375,10 @@
       </span>
       <ul class="row-menu submenu">
         <li acre:if="prop_structure.unique && prop_structure.values.length" class="row-menu-item edit">
-          <a href="#" onclick="return propbox.prop_edit(this);">${EDIT_VALUE}</a>
+          <a href="#" onclick="return propbox.prop_edit(this, ${prop_structure.unique});">${EDIT_VALUE}</a>
         </li>
         <li acre:else="" class="row-menu-item edit">
-          <a href="#" onclick="return propbox.prop_add(this);">${ADD_NEW_VALUE}</a>
+          <a href="#" onclick="return propbox.prop_add(this, ${prop_structure.unique});">${ADD_NEW_VALUE}</a>
         </li>      
         <li class="row-menu-item"><a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}">${FILTER_PROPERTY}</a></li>
         <li class="row-menu-item"><a href="${h.fb_url('/schema', prop_structure.id)}">${VIEW_SCHEMA}</a></li>

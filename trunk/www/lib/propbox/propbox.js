@@ -77,6 +77,7 @@
       }
       row.hover(propbox.row_menu_hoverover, propbox.row_menu_hoverout);
       $(".nicemenu .headmenu", context)
+        .add($(".nicemenu .default-action", context))
         .click("click", function() {
           var current = propbox.kbs.get_current();
           propbox.kbs.set_next(current, $(this).parents(".kbs:first"), true);
@@ -179,19 +180,19 @@
       callback();
     },
 
-    prop_edit: function(context) {
+    prop_edit: function(context, unique) {
       var prop = $(context).parents(".property-section");
       var value_menu = prop.find(".data-section .data-row:first:visible .nicemenu:first .headmenu:first a");
       if (value_menu.length) {
         value_menu.click();
       }
       else {
-        propbox.prop_add(context);
+        propbox.prop_add(context, unique);
       }
       return false;
     },
 
-    prop_add: function(context) {
+    prop_add: function(context, unique) {
       var prop_section = $(context).parents(".property-section");
       if (prop_section.is(".editing")) {
         return false;
@@ -199,7 +200,7 @@
       prop_section.addClass("editing");
       propbox.get_dojo(propbox.options.lang, function() {
         propbox.get_script("/propbox-edit.mf.js", function() {
-          propbox.edit.prop_add_begin(prop_section);
+          propbox.edit.prop_add_begin(prop_section, unique);
         });
       });
       return false;

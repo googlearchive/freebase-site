@@ -58,8 +58,30 @@
         })
         .live("edit", function() {
           var menu_item = $(this).find(".submenu:first li:first a").click();
-        })
-        .hover(propbox.row_menu_hoverover, propbox.row_menu_hoverout);
+        });
+
+      propbox.init_menus(context);
+    },
+
+    init_menus: function(context, nicemenu) {
+      context = $(context || document);
+      if (nicemenu) {
+        $(".nicemenu", context).nicemenu();
+      }
+      var row;
+      if (context && context.is(".data-row")) {
+        row = context;
+      }
+      else {
+        row = $(".data-row", context);
+      }
+      row.hover(propbox.row_menu_hoverover, propbox.row_menu_hoverout);
+      $(".nicemenu .headmenu", context)
+        .click("click", function() {
+          var current = propbox.kbs.get_current();
+          propbox.kbs.set_next(current, $(this).parents(".kbs:first"), true);
+          return false;
+        });
     },
 
     // show row menu button on hover

@@ -40,7 +40,7 @@
     outputPane = oP;
     var TABS = [
       { name: 'Result', key: "json"}, 
-      { name: 'Status', key: "status"},
+      { name: 'Status', key: "status"}
     ];
     if (!outputPane._options.hideHelp) {
       TABS.push({ name: 'Help', key: "help"});

@@ -159,7 +159,13 @@
 
     prop_edit: function(context) {
       var prop = $(context).parents(".property-section");
-      prop.find(".data-section .data-row:first .nicemenu:first .headmenu:first a").click();
+      var value_menu = prop.find(".data-section .data-row:first:visible .nicemenu:first .headmenu:first a");
+      if (value_menu.length) {
+        value_menu.click();
+      }
+      else {
+        propbox.prop_add(context);
+      }
       return false;
     },
 

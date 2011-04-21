@@ -128,6 +128,11 @@
           // i18n'ize dates and numbers
           i18n.ize(new_row);
 
+          // initialize new row menu
+          $(".edit", new_row).show();
+          $(".nicemenu", new_row).nicemenu();
+          new_row.hover(propbox.row_menu_hoverover, propbox.row_menu_hoverout);
+
           form.form.trigger(form.event_prefix + "success");
         },
         error: function(xhr) {
@@ -239,10 +244,8 @@
       });
     },
 
-
-
     /**
-     * value_delete
+     * value_delete_begin
      *
      * Delete an exiting value (topic, literal, cvt).
      */
@@ -276,7 +279,6 @@
           prop_row.before(new_row);
           prop_row.hide();
           // TODO: update property menu (edit vs add for unique)
-
           prop_section.removeClass("editing");
         },
         error: function(xhr) {
@@ -286,7 +288,11 @@
       });
     },
 
-
+    /**
+     * value_delete_undo
+     *
+     * Undo operations by value_delete_begin
+     */
     value_delete_undo: function(trigger) {
       var msg_row = $(trigger).parents(".row-msg:first");
       var prop_row = msg_row.next(".data-row:hidden");
@@ -318,7 +324,6 @@
           }
           prop_row.show();
           msg_row.remove();
-
           // TODO: update property menu (edit vs add for unique)
         },
         error: function(xhr) {

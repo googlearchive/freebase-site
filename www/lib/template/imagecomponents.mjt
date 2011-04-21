@@ -121,7 +121,7 @@
   <div class="image-stack">
     <acre:block for="i, img in images">
       <a href="javascript:void(0)" class="img-stack-item">
-        ${image_thumb(img.id, 0)}
+        ${image_thumb(img.id, 75)}
       </a>
     </acre:block>
     </div>

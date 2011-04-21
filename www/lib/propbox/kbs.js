@@ -91,6 +91,7 @@
     };
 
     var set_next = this.set_next = function(current, next, dont_scroll) {
+      current = current || get_current();
       if (next.length) {
         current.removeClass("current");
         next.addClass("current");

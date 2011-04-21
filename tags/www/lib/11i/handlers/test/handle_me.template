@@ -1,0 +1,16 @@
+<acre:script>
+  var deferred = acre.require("promise/deferred.sjs");
+  var c = exports.c = {
+    id: deferred.resolved("/en/blade_runner"),
+    id2: "/en/bob_dylan"
+  };
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="handlers/test/handle_me.css"/>
+  <script src="handlers/test/handle_me.mf.js"></script>
+</acre:block>
+
+<acre:block def="content_body()">
+  <p>content_body id:${c.id}, id2:${c.id2}</p>
+</acre:block>

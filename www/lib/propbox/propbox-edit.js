@@ -354,7 +354,8 @@
 
     init_data_input: function(form) {
       $(".data-input", form.form).each(function() {
-        $(this)
+        var $this = $(this);
+        $this
           .data_input({
             lang: lang_id,
             suggest: suggest_options
@@ -377,6 +378,13 @@
           .bind("loading_complete", function() {
             $(this).removeClass("loading");
           });
+
+        if ($this.is(".datetime")) {
+          i18n.ize_datetime_input($(":text", $this));
+        }
+        else if ($this.is(".int") || $this.is(".float")) {
+          i18n.ize_number_input($(":text", $this));
+        }
       });
     },
 

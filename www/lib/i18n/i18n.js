@@ -55,45 +55,21 @@
     },
 
     ize: function(context) {
-      i18n.datetime(context);
-      i18n.number(context);
+      i18n.ize_datetime(context);
+      i18n.ize_number(context);
     },
 
     /**
      * localize datetime value i.e., <time datetime="1853-03-30"> ==> 1853年3月30日 (zh)
      */
-    datetime: function(context) {
+    ize_datetime: function(context) {
       var times = $("time", context)
         .each(function() {
           var $this = $(this);
-          var datetime = $this.attr("datetime");
-          if (datetime) {
-            var d = dojo.date.stamp.fromISOString(datetime);
-            var o = {
-              selector: "date"
-            };
+          var isostr = $this.attr("datetime");
+          if (isostr) {
             var format = $this.attr("data-format");
-            if (format) {
-              if (FORMAT_LENGTHS[format]) {
-                o.formatLength = format;
-              }
-              else {
-                o.datePattern = bundle["dateFormatItem-" + format];
-              }
-            }
-            else if (r_y.test(datetime)) {
-              o.datePattern = bundle["dateFormatItem-y"];
-            }
-            else if (r_yM.test(datetime)) {
-              o.datePattern = bundle["dateFormatItem-yMMM"];
-            }
-            else {
-              o.datePattern = bundle["dateFormat-long"];
-            }
-            if (o.datePattern) {
-              o.datePattern = i18n.normalize_pattern(o.datePattern);
-            }
-            var str = dojo.date.locale.format(d, o);
+            var str = i18n.datetime(isostr, format);
             $this.text(str);
           }
         });
@@ -105,16 +81,56 @@
       times.css("visibility", "visible");
     },
 
+    ize_datetime_input: function(input) {
+      var $input = $(input);
+      var val = $input.val();
+      if (val !== "") {
+        var str = i18n.datetime(val);
+        $input.val(str);
+      }
+      if (isRTL) {
+        $input.attr("dir", "rtl");
+      }
+    },
+
+    datetime: function(isostr, format) {
+      var d = dojo.date.stamp.fromISOString(isostr);
+      var o = {
+        selector: "date"
+      };
+      if (format) {
+        if (FORMAT_LENGTHS[format]) {
+          o.formatLength = format;
+        }
+        else {
+          o.datePattern = bundle["dateFormatItem-" + format];
+        }
+      }
+      else if (r_y.test(isostr)) {
+        o.datePattern = bundle["dateFormatItem-y"];
+      }
+      else if (r_yM.test(isostr)) {
+        o.datePattern = bundle["dateFormatItem-yMMM"];
+      }
+      else {
+        o.datePattern = bundle["dateFormat-long"];
+      }
+      if (o.datePattern) {
+        o.datePattern = i18n.normalize_pattern(o.datePattern);
+      }
+      return dojo.date.locale.format(d, o);
+    },
+
     /**
      * localize number value i.e., <span class="number" data-value="0.8"> ==> 0,8 (fr)
      */
-    number: function(context) {
+    ize_number: function(context) {
       var numbers = $(".number", context)
         .each(function() {
           var $this = $(this);
           var v = $this.attr("data-value");
           if (v != null) {
-            var str = dojo.number.format(v);
+            var str = i18n.number(v);
             $this.text(str);
           }
         });
@@ -123,6 +139,22 @@
         numbers.attr("dir", "rtl");
       }
       numbers.css("visibility", "visible");
+    },
+
+    ize_number_input: function(input) {
+      var $input = $(input);
+      var val = $input.val();
+      if (val !== "") {
+        var str = i18n.number(val);
+        $input.val(str);
+      }
+      if (isRTL) {
+        $input.attr("dir", "rtl");
+      }
+    },
+
+    number: function(n) {
+      return dojo.number.format(n);
     }
   };
 

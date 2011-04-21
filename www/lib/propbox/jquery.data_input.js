@@ -116,10 +116,12 @@
           var value = data.id || data.value;
           self.container.data("name_value", [name, value]);
           self.container.removeClass("error").addClass("valid");
+          self.container.trigger("valid");
         })
         .bind("invalid.data_input", function() {
           self.container.removeData("name_value");
           self.container.removeClass("valid").addClass("error");
+          self.container.trigger("invalid");
         })
         .bind("keypress.data_input", function(e) {
           if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter

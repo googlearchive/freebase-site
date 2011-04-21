@@ -78,6 +78,7 @@
             .bind(event_prefix + "success", function() {
               edit.reset_data_input(form);
               $(":input:visible:first", form.form).focus();
+              $(".button-submit", form.form).attr("disabled", "disabled");
               $(".button-cancel", form.form).text("Done");
             });
 
@@ -352,6 +353,12 @@
             lang: lang_id,
             suggest: suggest_options
           })
+          .bind("valid", function() {console.log("data_input valid");
+            form.form.trigger(form.event_prefix + "valid");
+          })
+          .bind("invalid", function() {console.log("data_input invalid");
+            form.form.trigger(form.event_prefix + "invalid");
+          })
           .bind("submit", function() {
             form.form.trigger(form.event_prefix + "submit");
           })
@@ -379,11 +386,7 @@
         var data_input_instance = data_input.data("$.data_input");
         // force validation
         data_input_instance.validate(true);
-        if (i === 0 && !data_input.is(".valid")) {
-          // first data_input is always required
-          valid = edit.data_input_required(form, data_input);
-        }
-        else if (data_input.is(".error")) {
+        if (data_input.is(".error")) {
           valid = edit.data_input_invalid(form, data_input);
         }
       });
@@ -410,6 +413,12 @@
       var event_prefix = form.event_prefix || "propbox.edit.";
 
       form.form
+        .bind(event_prefix + "valid", function() {console.log(event_prefix + "valid");
+          $(".button-submit", form.form).removeAttr("disabled");
+        })
+        .bind(event_prefix + "invalid", function() {console.log(event_prefix + "invalid");
+          $(".button-submit", form.form).attr("disabled", "disabled");
+        })
         .bind(event_prefix + "submit", function() {
           edit.submit(form);
         })
@@ -425,6 +434,7 @@
           form.form.removeClass("loading");
           form.prop_section.removeClass("editing");
         });
+
 
       // submit handler
       $(".button-submit", form.form).click(function() {
@@ -454,6 +464,11 @@
     submit: function(form) {
       // are we already submitting?
       if (form.form.is(".loading")) {
+        return;
+      }
+
+      // submit button enabled?
+      if ($(".button-submit", form.form).is(":disabled")) {
         return;
       }
 

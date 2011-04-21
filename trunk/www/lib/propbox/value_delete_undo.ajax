@@ -50,55 +50,38 @@ var SPEC = {
     var args = [
       validators.MqlId(params, "s", {required:true}),            // subject id
       validators.MqlId(params, "p", {required:true}),            // property id
-      validators.LangId(params, "lang", {if_empty:"/lang/en"}),  // lang
-      params
+      validators.String(params, "o", {required:true}),           // object id or value
+      validators.LangId(params, "lang", {if_empty:"/lang/en"})   // lang
     ];
 
     return args;
   },
 
-  run: function(s, p, lang, params) {
-    /**
-     * TODO: permission check? (lib/permission/queries.has_permission)
-     */
+  run: function(s, p, o, lang) {
     return queries.prop_structure(p, lang)
       .then(function(prop_structure) {
-        // construct mqlwrite query
-        var q = ph.mqlwrite_query(s, prop_structure, params, lang);
-        // mqlwrite
+        var q = {
+          id: s
+        };
+        var clause = {connect:"insert"};
+        var ect = prop_structure.expected_type.id;
+        if (h.is_literal_type(ect)) {
+          clause.value = o;
+          if (ect === "/type/text") {
+            clause.lang = lang;
+          }
+        }
+        else {
+          clause.id = o;
+        }
+        q[p] = clause;
         return freebase.mqlwrite(q)
           .then(function(env) {
-            // TODO: handle error
-            return env.result;
-          })
-          .then(function(result) {
-            // get the id or value just added
-            var data = h.first_element(result[p]);
-            // query to get the full prop_data to get the names (lang) and subproperties (mediators)
-            return queries.prop_data(s, prop_structure, data.id != null ? data.id : data.value, lang);
-          })
-          .then(function(prop_data) {
-            // convert mql result to topic api structure values
-            var data = ph.to_prop_values(prop_structure, prop_data[p], lang);
-            data = h.first_element(data);
-            var new_row;
-            if (prop_structure.expected_type.mediator) {
-              // output table row (<tr>) if mediator
-              new_row = propbox.datatable_row({id: s}, prop_structure, data, lang);
-            }
-            else {
-              // output list row (<li>) for everything else
-              new_row = propbox.datalist_row({id: s}, prop_structure, data, lang);
-            }
             return {
               // <debug>
-              mqlwrite: q,
-              prop_structure: prop_structure,
-              prop_data: prop_data,
-              prop_value: data,
+              q: q,
+              result: env.result
               // </debug>
-
-              html: acre.markup.stringify(new_row)
             };
           });
       });

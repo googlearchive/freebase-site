@@ -42,6 +42,8 @@
   var edit = propbox.edit = {
 
     /**
+     * prop_add
+     *
      * Add a new value to a property (topic, literal, cvt)
      */
     prop_add_begin: function(prop_section) {
@@ -81,7 +83,8 @@
 
         },
         error: function(xhr) {
-          edit.ajax_error(xhr, form);
+          // TODO: handle error
+          console.error("prop_add_begin", xhr);
         }
       });
     },
@@ -134,6 +137,8 @@
     },
 
     /**
+     * value_edit
+     *
      * Edit an existing value (topic, literal, cvt).
      */
     value_edit_begin: function(prop_section, prop_row) {
@@ -184,7 +189,8 @@
             });
         },
         error: function(xhr) {
-          edit.ajax_error(xhr, form);
+          // TODO: handle error
+          console.error("value_edit_begin", xhr);
         }
       });
     },
@@ -232,6 +238,103 @@
         }
       });
     },
+
+
+
+    /**
+     * value_delete
+     *
+     * Delete an exiting value (topic, literal, cvt).
+     */
+    value_delete_begin: function(prop_section, prop_row) {
+      var value;
+      if (prop_row.is("tr")) {
+        value = prop_row.attr("data-id");
+      }
+      else {
+        var prop_value = $(".property-value:first", prop_row);
+        value = prop_value.attr("data-id") || prop_value.attr("data-value") || prop_value.attr("datetime");
+      }
+      var submit_data = {
+        s: topic_id,
+        p: prop_section.attr("data-id"),
+        o: value,
+        lang: lang_id
+      };
+      $.ajax({
+        url: base_url + "/value_delete_submit.ajax",
+        type: "POST",
+        data: submit_data,
+        dataType: "json",
+        success: function(data, status, xhr) {
+          if (data.code !== "/api/status/ok") {
+            // TODO: handle error
+            console.error("valued_delete_begin", xhr);
+            return;
+          }
+          var new_row = $(data.result.html);
+          prop_row.before(new_row);
+          prop_row.hide();
+          // TODO: update property menu (edit vs add for unique)
+
+          prop_section.removeClass("editing");
+        },
+        error: function(xhr) {
+          // TODO: handle error
+          console.error("valued_delete_begin", xhr);
+        }
+      });
+    },
+
+
+    value_delete_undo: function(trigger) {
+      var msg_row = $(trigger).parents(".row-msg:first");
+      var prop_row = msg_row.next(".data-row:hidden");
+      var prop_section = prop_row.parents(".property-section");
+      var value;
+      if (prop_row.is("tr")) {
+        value = prop_row.attr("data-id");
+      }
+      else {
+        var prop_value = $(".property-value:first", prop_row);
+        value = prop_value.attr("data-id") || prop_value.attr("data-value") || prop_value.attr("datetime");
+      }
+      var submit_data = {
+        s: topic_id,
+        p: prop_section.attr("data-id"),
+        o: value,
+        lang: lang_id
+      };
+      $.ajax({
+        url: base_url + "/value_delete_undo.ajax",
+        type: "POST",
+        data: submit_data,
+        dataType: "json",
+        success: function(data, status, xhr) {
+          if (data.code !== "/api/status/ok") {
+            // TODO: handle error
+            console.error("valued_delete_undo", xhr);
+            return;
+          }
+          prop_row.show();
+          msg_row.remove();
+
+          // TODO: update property menu (edit vs add for unique)
+        },
+        error: function(xhr) {
+          // TODO: handle error
+          console.error("valued_delete_undo", xhr);
+        }
+      });
+
+      return false;
+    },
+
+
+
+
+
+
 
     /**
      * Generic form utiltiies

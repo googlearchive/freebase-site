@@ -649,3 +649,25 @@ propbox edit forms
     </table>
   </li>
 </acre:block>
+
+
+<acre:block def="value_delete_result(topic_id, prop_structure, value, lang)">
+
+  <acre:block if="prop_structure.properties">
+    <tr class="row-msg row-msg-info">
+      <td colspan="${prop_structure.properties.length}">
+        <a class="close-msg" href="#" onclick="return window.propbox.close_message(this);">${_("Close")}</a>
+        ${h.bless_sprintf(_("%s has been deleted."), h.tag("strong", value))}
+        <a href="#" onclick="return window.propbox.edit.value_delete_undo(this);">${_("Undo")}</a>
+      </td>
+    </tr>
+  </acre:block>
+  <acre:block else="">
+    <li class="row-msg row-msg-info">
+      <a class="close-msg" href="#" onclick="return window.propbox.close_message(this);">${_("Close")}</a>
+      ${h.bless_sprintf(_("%s has been deleted."), h.tag("strong", value))}
+      <a href="#" onclick="return window.propbox.edit.value_delete_undo(this);">${_("Undo")}</a>
+    </li>
+  </acre:block>
+
+</acre:block>

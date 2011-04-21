@@ -195,13 +195,23 @@
     value_delete: function(context) {
       var prop_row = $(context).parents(".data-row:first");
       var prop_section = prop_row.parents(".property-section");
-
       if (prop_section.is(".editing")) {
         return false;
       }
+      prop_section.addClass("editing");
+      propbox.get_dojo(propbox.options.lang, function() {
+        propbox.get_script("/propbox-edit.mf.js", function() {
+          propbox.edit.value_delete_begin(prop_section, prop_row);
+        });
+      });
+      return false;
+    },
 
+    close_message: function(trigger) {
+      $(trigger).parents(".row-msg:first").remove();
       return false;
     }
+
   };
 
 })(jQuery, window.kbs);

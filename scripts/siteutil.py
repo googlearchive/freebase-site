@@ -305,7 +305,10 @@ class App:
     subprocess.call(cmd, stdout=fh)
     fh.close()
     fh = open(temppath)
-    file_contents = LICENSE_PREAMBLE + fh.read()
+    compiled_output = fh.read()
+    if not compiled_output:
+        return c.error('Failed to compile js file %s' % js_path)
+    file_contents = LICENSE_PREAMBLE + compiled_output
     fh.close()
     return self.write_file(filename, file_contents)
 
@@ -1100,17 +1103,26 @@ class Context():
             contents.append(l)
         break
       except Exception as ex:
-        if not silent:
-            self.error("%s\n%s" % (url, str(ex)), subaction='fetch url error')
-        if acre:
-            GetAcre(self).display_error_log(url)
-        if tries:
-          tries -= 1
-          time.sleep(wait)
-          if not silent:
-              self.log('Trying again....')
-        else:
-          raise
+          self.log('fetchurl failed: Trying with curl binary...')
+          outlog = NamedTemporaryFile()
+          subprocess.Popen(['curl', '-s', url], stdout=outlog, stderr=outlog).wait()
+          fd = open(outlog.name)
+          contents = fd.readlines()
+          fd.close()
+
+          if not len(contents):
+              if not silent:
+                  self.error("%s\n%s" % (url, str(ex)), subaction='fetch url error')
+              if acre and not 'connection reset by peer' in str(ex):
+                  GetAcre(self).display_error_log(url)
+              if tries:
+                  tries -= 1
+                  time.sleep(wait)
+              if not silent:
+                  self.log('Trying again....')
+          else:
+              break
+
           
     if isjson and contents:
         return json.loads(''.join(contents))

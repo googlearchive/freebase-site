@@ -183,7 +183,7 @@
       return false;
     },
 
-    value_edit: function(context) {console.log("value_edit");
+    value_edit: function(context) {
       var prop_row = $(context).parents(".data-row:first");
       var prop_section = prop_row.parents(".property-section");
       if (prop_section.is(".editing")) {

@@ -186,11 +186,11 @@
           edit.init(form);
           form.form
             .bind(event_prefix + "success", function() {
-              console.log(event_prefix + "success");
+              //console.log(event_prefix + "success");
               form.form.remove();
             })
             .bind(event_prefix + "cancel", function() {
-              console.log(event_prefix + "cancel");
+              //console.log(event_prefix + "cancel");
               form.prop_row.show();
             });
         },
@@ -353,10 +353,10 @@
             lang: lang_id,
             suggest: suggest_options
           })
-          .bind("valid", function() {console.log("data_input valid");
+          .bind("valid", function() {
             form.form.trigger(form.event_prefix + "valid");
           })
-          .bind("invalid", function() {console.log("data_input invalid");
+          .bind("invalid", function() {
             form.form.trigger(form.event_prefix + "invalid");
           })
           .bind("submit", function() {
@@ -379,7 +379,7 @@
       $(".data-input", form.form).each(function(i) {
         var data_input = $(this);
         if (data_input.is(".loading")) {
-          console.log("data_input.is(.loading)");
+          //console.log("data_input.is(.loading)");
           valid = false;
           return false;
         }
@@ -413,10 +413,10 @@
       var event_prefix = form.event_prefix || "propbox.edit.";
 
       form.form
-        .bind(event_prefix + "valid", function() {console.log(event_prefix + "valid");
+        .bind(event_prefix + "valid", function() {
           $(".button-submit", form.form).removeAttr("disabled");
         })
-        .bind(event_prefix + "invalid", function() {console.log(event_prefix + "invalid");
+        .bind(event_prefix + "invalid", function() {
           $(".button-submit", form.form).attr("disabled", "disabled");
         })
         .bind(event_prefix + "submit", function() {

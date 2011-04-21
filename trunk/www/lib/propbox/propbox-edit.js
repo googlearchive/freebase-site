@@ -78,7 +78,7 @@
             .bind(event_prefix + "success", function() {
               edit.reset_data_input(form);
               $(":input:visible:first", form.form).focus();
-              $(".button-submit", form.form).attr("disabled", "disabled");
+              $(".button-submit", form.form).attr("disabled", "disabled").addClass("disabled");
               $(".button-cancel", form.form).text("Done");
             });
 
@@ -414,10 +414,10 @@
 
       form.form
         .bind(event_prefix + "valid", function() {
-          $(".button-submit", form.form).removeAttr("disabled");
+          $(".button-submit", form.form).removeAttr("disabled").removeClass("disabled");
         })
         .bind(event_prefix + "invalid", function() {
-          $(".button-submit", form.form).attr("disabled", "disabled");
+          $(".button-submit", form.form).attr("disabled", "disabled").addClass("disabled");
         })
         .bind(event_prefix + "submit", function() {
           edit.submit(form);

@@ -455,7 +455,7 @@ propbox edit forms
           <input type="hidden" name="s" value="${topic_id}"/>
           <input type="hidden" name="p" value="${prop_structure.id}"/>
           <input type="hidden" name="lang" value="${lang}"/>
-          <button class="button button-primary button-submit" disabled="disabled" type="submit">${_('Save')}</button>
+          <button class="button button-primary button-submit disabled" disabled="disabled" type="submit">${_('Save')}</button>
           <button class="button button-cancel">${_('Cancel')}</button>
        </td>
       </tr>      
@@ -479,7 +479,7 @@ propbox edit forms
           <input type="hidden" name="s" value="${topic_id}"/>
           <input type="hidden" name="p" value="${prop_structure.id}"/>
           <input type="hidden" name="lang" value="${lang}"/>
-          <button class="button button-primary button-submit" disabled="disabled" type="submit">${_('Save')}</button>
+          <button class="button button-primary button-submit disabled" disabled="disabled" type="submit">${_('Save')}</button>
           <button class="button button-cancel">${_('Cancel')}</button>
        </td>
       </tr>      
@@ -613,7 +613,7 @@ propbox edit forms
               <input type="hidden" name="p" value="${prop_structure.id}"/>
               <input type="hidden" name="o" value="${prop_data.id}"/>
               <input type="hidden" name="lang" value="${lang}"/>
-              <button class="button button-primary button-submit" disabled="disabled" type="submit">${_('Save')}</button>
+              <button class="button button-primary button-submit disabled" disabled="disabled" type="submit">${_('Save')}</button>
               <button class="button button-cancel">${_('Cancel')}</button>
               <button class="button button-delete">${_('Delete')}</button>
            </td>
@@ -640,7 +640,7 @@ propbox edit forms
             <input type="hidden" name="p" value="${prop_structure.id}"/>
             <input type="hidden" name="o" value="${prop_data.id || prop_data.value}"/>
             <input type="hidden" name="lang" value="${lang}"/>
-            <button class="button button-primary button-submit" disabled="disabled" type="submit">${_('Save')}</button>
+            <button class="button button-primary button-submit disabled" disabled="disabled" type="submit">${_('Save')}</button>
             <button class="button button-cancel">${_('Cancel')}</button>
             <button class="button button-delete">${_('Delete')}</button>
          </td>

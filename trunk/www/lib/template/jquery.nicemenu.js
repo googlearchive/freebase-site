@@ -32,12 +32,11 @@
   var nicemenu = $.factory("nicemenu", {
     init: function() {
       $(".headmenu .default-action", this.element).click(function(e) {
-        e.stopPropagation();
         hide_menus();
         $(this).parents(".headmenu").next(".submenu").find("a:first").click();
+        return false;
       });
       $(".headmenu", this.element).click(function(e) {
-        e.stopPropagation();
         var headmenu = $(this);
         var pos = headmenu.position();
         var height = headmenu.height();
@@ -54,13 +53,14 @@
             headmenu.addClass("expanded");
           });
         }
+        return false;
       });
       $(".submenu", this.element).click(function(e) {
-        e.stopPropagation();
         hide_menus($(this));
         $(this).fadeOut(function() {
           $(this).prev(".headmenu").removeClass("expanded");
         });
+        return false;
       });
     }
   });

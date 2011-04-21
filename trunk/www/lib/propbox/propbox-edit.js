@@ -131,8 +131,8 @@
 
           // initialize new row menu
           $(".edit", new_row).show();
-          $(".nicemenu", new_row).nicemenu();
-          new_row.hover(propbox.row_menu_hoverover, propbox.row_menu_hoverout);
+
+          propbox.init_menus(new_row, true);
 
           form.form.trigger(form.event_prefix + "success");
         },

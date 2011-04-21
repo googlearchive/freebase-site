@@ -90,7 +90,7 @@
         label: 'Create Template',
         command: '_generateCode',
         hint: 'Create an Acre template that displays the result of this query'
-      },
+      }
     ];
   </acre:script>
   

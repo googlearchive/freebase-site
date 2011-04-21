@@ -16,7 +16,8 @@
     "tagged_binary": "handlers/tagged_binary_handler.sjs", 
     "template": "handlers/template_handler.sjs",
     "controller": "handlers/controller_handler.sjs",
-    "ajax": "handlers/ajax_handler.sjs"
+    "ajax": "handlers/ajax_handler.sjs",
+    "coffee_script": "handlers/coffee_script_handler.sjs"
   },
   "extensions": {
     "ico" : { 
@@ -57,7 +58,10 @@
     },
     "properties": {
       "handler": "acre_script"
-    }             
+    },
+    "cs": {
+      "handler": "coffee_script"
+    }
   },
   "static_base": "",
   "libs" : {

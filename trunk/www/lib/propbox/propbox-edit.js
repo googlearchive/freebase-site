@@ -58,6 +58,7 @@
         dataType: "json",
         success: function(data, status, xhr) {
           var html = $(data.result.html).hide();
+
           var event_prefix = "propbox.edit.prop_add.";
           var form = {
             mode: "add",
@@ -66,27 +67,30 @@
               data: submit_data,
               url: base_url + "/prop_add_submit.ajax"
             },
+
             init: edit.init_prop_add_form,
             validate: edit.validate_prop_add_form,
             submit: edit.submit_prop_add_form,
-            form: html,
-            prop_section: prop_section
+
+            prop_section: prop_section,
+            edit_row: $(".edit-row", html),
+            submit_row: $(".edit-row-submit", html)
           };
+
           edit.init(form);
 
-          form.form
+          form.edit_row
             .bind(event_prefix + "success", function() {
               if (unique) {
-                form.form.trigger(form.event_prefix + "cancel");
+                form.edit_row.trigger(form.event_prefix + "cancel");
               }
               else {
                 edit.reset_data_input(form);
-                $(":input:visible:first", form.form).focus();
-                $(".button-submit", form.form).attr("disabled", "disabled").addClass("disabled");
-                $(".button-cancel", form.form).text("Done");
+                $(":input:visible:first", form.edit_row).focus();
+                $(".button-submit", form.submit_row).attr("disabled", "disabled").addClass("disabled");
+                $(".button-cancel", form.submit_row).text("Done");
               }
             });
-
         },
         error: function(xhr) {
           // TODO: handle error
@@ -97,7 +101,7 @@
 
     init_prop_add_form: function(form) {
       edit.init_data_input(form);
-      $(":input:visible:first", form.form).focus();
+      $(":input:visible:first", form.edit_row).focus();
     },
 
     validate_prop_add_form: function(form) {
@@ -106,7 +110,7 @@
 
     submit_prop_add_form: function(form) {
       var submit_data = $.extend({}, form.ajax.data);  // s, p, lang
-      $(".data-input", form.form).each(function() {
+      $(".data-input", form.edit_row).each(function() {
         var name_value = $(this).data("name_value");
         if (name_value) {
           submit_data[name_value[0]] = name_value[1];
@@ -123,13 +127,8 @@
           }
           var new_row = $(data.result.html);
 
-          if (new_row.is("tr")) {
-            $(".data-table > tbody", form.prop_section).append(new_row);
-            $(".data-table > thead", form.prop_section).show();
-          }
-          else {
-            $(".data-list", form.prop_section).append(new_row);
-          }
+          form.edit_row.before(new_row);
+          $(".data-table > thead", form.prop_section).show();
 
           // i18n'ize dates and numbers
           i18n.ize(new_row);
@@ -140,7 +139,7 @@
           propbox.init_menus(new_row, true);
           propbox.kbs.set_next(null, new_row, true);
 
-          form.form.trigger(form.event_prefix + "success");
+          form.edit_row.trigger(form.event_prefix + "success");
         },
         error: function(xhr) {
           edit.ajax_error(xhr, form);
@@ -182,18 +181,22 @@
               data: submit_data,
               url: base_url + "/value_edit_submit.ajax"
             },
+
             init: edit.init_value_edit_form,
             validate: edit.validate_value_edit_form,
             submit: edit.submit_value_edit_form,
-            form: html,
+
             prop_section: prop_section,
-            prop_row: prop_row
+            prop_row: prop_row,
+            edit_row: $(".edit-row", html),
+            submit_row: $(".edit-row-submit", html)
           };
           edit.init(form);
-          form.form
+          form.edit_row
             .bind(event_prefix + "success", function() {
               //console.log(event_prefix + "success");
-              form.form.remove();
+              form.edit_row.remove();
+              form.submit_row.remove();
             })
             .bind(event_prefix + "cancel", function() {
               //console.log(event_prefix + "cancel");
@@ -209,7 +212,7 @@
 
     init_value_edit_form: function(form) {
       edit.init_data_input(form);
-      $(":input:visible:first", form.form).focus();
+      $(":input:visible:first", form.edit_row).focus();
     },
 
     validate_value_edit_form: function(form) {
@@ -218,7 +221,7 @@
 
     submit_value_edit_form: function(form) {
       var submit_data = $.extend({}, form.ajax.data);  // s, p, o, lang
-      $(".data-input", form.form).each(function() {
+      $(".data-input", form.edit_row).each(function() {
         var name_value = $(this).data("name_value");
         if (name_value) {
           submit_data[name_value[0]] = name_value[1];
@@ -241,9 +244,14 @@
 
           // i18n'ize dates and numbers
           i18n.ize(new_row);
+          // initialize new row menu
+          $(".edit", new_row).show();
+          propbox.init_menus(new_row, true);
+          propbox.kbs.set_next(null, new_row, true);
+
 
           form.prop_row.remove();
-          form.form.trigger(form.event_prefix + "success");
+          form.edit_row.trigger(form.event_prefix + "success");
         },
         error: function(xhr) {
           edit.ajax_error(xhr, form);
@@ -353,7 +361,7 @@
      */
 
     init_data_input: function(form) {
-      $(".data-input", form.form).each(function() {
+      $(".data-input", form.edit_row).each(function() {
         var $this = $(this);
         $this
           .data_input({
@@ -361,16 +369,16 @@
             suggest: suggest_options
           })
           .bind("valid", function() {
-            form.form.trigger(form.event_prefix + "valid");
+            form.edit_row.trigger(form.event_prefix + "valid");
           })
           .bind("invalid", function() {
-            form.form.trigger(form.event_prefix + "invalid");
+            form.edit_row.trigger(form.event_prefix + "invalid");
           })
           .bind("submit", function() {
-            form.form.trigger(form.event_prefix + "submit");
+            form.edit_row.trigger(form.event_prefix + "submit");
           })
           .bind("cancel", function() {
-            form.form.trigger(form.event_prefix + "cancel");
+            form.edit_row.trigger(form.event_prefix + "cancel");
           })
           .bind("loading", function() {
             $(this).addClass("loading");
@@ -390,7 +398,7 @@
 
     validate_data_input: function(form) {
       var valid = true;
-      $(".data-input", form.form).each(function(i) {
+      $(".data-input", form.edit_row).each(function(i) {
         var data_input = $(this);
         if (data_input.is(".loading")) {
           //console.log("data_input.is(.loading)");
@@ -408,7 +416,7 @@
     },
 
     reset_data_input: function(form) {
-      $(".data-input", form.form).each(function() {
+      $(".data-input", form.edit_row).each(function() {
         var inst = $(this).data("$.data_input").reset();
       });
     },
@@ -417,21 +425,22 @@
       if (form.mode === "add") {
         var ls = $(">.data-section", form.prop_section);
         $("> .data-table > tbody > .empty-row, > .data-list > .empty-row", ls).hide();
-        form.prop_section.append(form.form);
+        $("> .data-table > tbody, > .data-list", ls).append(form.edit_row).append(form.submit_row);
       }
       else if (form.mode === "edit") {
         form.prop_row.hide();
-        form.prop_row.after(form.form);
+        form.prop_row.after(form.edit_row);
+        form.edit_row.after(form.submit_row);
       }
 
       var event_prefix = form.event_prefix || "propbox.edit.";
 
-      form.form
+      form.edit_row
         .bind(event_prefix + "valid", function() {
-          $(".button-submit", form.form).removeAttr("disabled").removeClass("disabled");
+          $(".button-submit", form.submit_row).removeAttr("disabled").removeClass("disabled");
         })
         .bind(event_prefix + "invalid", function() {
-          $(".button-submit", form.form).attr("disabled", "disabled").addClass("disabled");
+          $(".button-submit", form.submit_row).attr("disabled", "disabled").addClass("disabled");
         })
         .bind(event_prefix + "submit", function() {
           edit.submit(form);
@@ -441,24 +450,26 @@
         })
         .bind(event_prefix + "error", function(e, msg) {
           edit.error(form, msg);
-          form.form.removeClass("loading");
+          form.edit_row.removeClass("loading");
           form.prop_section.removeClass("editing");
         })
         .bind(event_prefix + "success", function() {
-          form.form.removeClass("loading");
+          form.edit_row.removeClass("loading");
           form.prop_section.removeClass("editing");
         });
 
 
       // submit handler
-      $(".button-submit", form.form).click(function() {
-        form.form.trigger(event_prefix + "submit");
+      $(".button-submit", form.submit_row).click(function() {
+        form.edit_row.trigger(event_prefix + "submit");
       });
-      $(".button-cancel", form.form).click(function() {
-        form.form.trigger(event_prefix + "cancel");
+      $(".button-cancel", form.submit_row).click(function() {
+        form.edit_row.trigger(event_prefix + "cancel");
       });
 
-      form.form.show();
+      form.edit_row.show();
+      form.submit_row.show();
+
       propbox.kbs.scroll_to(form.prop_section);
 
       if (form.init) {
@@ -467,7 +478,8 @@
     },
 
     cancel: function(form) {
-      form.form.hide().remove();
+      form.edit_row.remove();
+      form.submit_row.remove();
       form.prop_section.removeClass("editing");
       var ls = $(">.data-section", form.prop_section);
       if (!$("> .data-table > tbody > tr, > .data-list > li", ls).filter(":not(.empty-row)").length) {
@@ -477,12 +489,12 @@
 
     submit: function(form) {
       // are we already submitting?
-      if (form.form.is(".loading")) {
+      if (form.edit_row.is(".loading")) {
         return;
       }
 
       // submit button enabled?
-      if ($(".button-submit", form.form).is(":disabled")) {
+      if ($(".button-submit", form.submit_row).is(":disabled")) {
         return;
       }
 
@@ -502,7 +514,7 @@
       }
 
       // form submitting/loading
-      form.form.addClass("loading");
+      form.edit_row.addClass("loading");
       // submit form
       if (form.submit) {
         form.submit(form);
@@ -525,30 +537,32 @@
 
     form_message: function(form, msg, type) {
       var close = $('<a class="close-msg" href="#">x</a>').click(function(e) {
-        $(this).parents("tr:first").remove();
+        $(this).parents(".row-msg:first").remove();
         return false;
       });
       var span =  $("<span>").text(msg);
-      var td = $('<td>').append(close).append(span);
-      var row_msg = $('<tr class="row-msg">').append(td);
+
+      var row_msg;
+      if (form.edit_row.is("tr")) {
+        row_msg = $('<li class="row-msg">').append(close).append(span);
+      }
+      else {
+        var td = $('<td>').append(close).append(span);
+        td.attr("colspan", $("> td", form.edit_row).length);
+        row_msg = $('<tr class="row-msg">').append(td);
+      }
       if (type) {
         row_msg.addClass("row-msg-" + type);
       }
 
-      var row = form.prop_row || $(".edit-row", form.form);
-      // prepend row_msg to row
-      row.before(row_msg);
+      // prepend row_msg to form.edit-row
+      form.edit_row.before(row_msg);
 
       return row_msg;
     },
 
     clear_form_message: function(form) {
-      if (form.prop_row) {
-        form.prop_row.prev(".row-msg").remove();
-      }
-      else {
-        $(".row-msg", form.form).remove();
-      }
+      form.edit_row.prevAll(".row-msg").remove();
     },
 
     ajax_error: function(xhr, form) {
@@ -566,7 +580,7 @@
         msg = xhr.responseText;
       }
       edit.form_error(form, msg);
-      form.form.removeClass("loading");
+      form.edit_row.removeClass("loading");
     }
 
   };

@@ -201,6 +201,14 @@
             .bind(event_prefix + "cancel", function() {
               //console.log(event_prefix + "cancel");
               form.prop_row.show();
+            })
+            .bind(event_prefix + "delete", function() {
+              // ensure form is not submitted while we are deleting
+              form.edit_row.addClass("loading");
+              propbox.edit.value_delete_begin(prop_section, prop_row, function() {
+                form.edit_row.remove();
+                form.submit_row.remove();
+              });
             });
         },
         error: function(xhr) {
@@ -264,7 +272,7 @@
      *
      * Delete an exiting value (topic, literal, cvt).
      */
-    value_delete_begin: function(prop_section, prop_row) {
+    value_delete_begin: function(prop_section, prop_row, callback) {
       var value;
       if (prop_row.is("tr")) {
         value = prop_row.attr("data-id");
@@ -295,6 +303,10 @@
           prop_row.hide();
           // TODO: update property menu (edit vs add for unique)
           prop_section.removeClass("editing");
+
+          if (callback) {
+            callback();
+          }
         },
         error: function(xhr) {
           // TODO: handle error
@@ -465,6 +477,9 @@
       });
       $(".button-cancel", form.submit_row).click(function() {
         form.edit_row.trigger(event_prefix + "cancel");
+      });
+      $(".button-delete", form.submit_row).click(function() {
+        form.edit_row.trigger(event_prefix + "delete");
       });
 
       form.edit_row.show();

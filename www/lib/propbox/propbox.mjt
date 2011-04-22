@@ -394,9 +394,9 @@
         <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
         <a href="javascript:void(0)" class="more-action">menu</a>
       </span>
-      <ul class="submenu">
-        <li><a href="#" onclick="return propbox.value_edit(this);">${EDIT}</a></li>
-        <li><a href="#" onclick="return propbox.value_delete(this);">${DELETE}</a></li>
+      <ul class="submenu row-menu">
+        <li class="row-menu-item"><a href="#" onclick="return propbox.value_edit(this);">${EDIT}</a></li>
+        <li class="row-menu-item"><a href="#" onclick="return propbox.value_delete(this);">${DELETE}</a></li>
       </ul>
     </li>
   </ul>

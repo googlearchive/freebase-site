@@ -47,10 +47,15 @@
   var r_L = /L/g;
 
   var i18n = window.i18n = {
-    /**
-     * HACK: some dojo cldr formats use Greek Alphabet, 'L' to denote month
-     */
+
     normalize_pattern: function(pattern) {
+     /**
+      * Dojo currently does not support 'L' to denote month.
+      * Just replace with 'M' as a work around.
+      *
+      * http://bugs.dojotoolkit.org/ticket/12749
+      * @see http://cldr.unicode.org/translation/date-time
+      */
       return pattern.replace(r_L, "M");
     },
 

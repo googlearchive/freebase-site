@@ -264,10 +264,7 @@
             var format = formats[n];
             var datePattern = bundle[format];
             if (datePattern) {
-              /**
-               * HACK: some dojo cldr formats use Greek Alphabet, 'L' to denote month
-               */
-              datePattern = datePattern.replace(/L/g, "M");
+              datePattern = i18n.normalize_pattern(datePattern);
               try {
                 date = dojo.date.locale.parse(val, {datePattern:datePattern, selector:"date", locale:locale});
                 return {text:val, value:dojo.date.locale.format(date, {datePattern:ymd, selector:"date"}), date:date};

@@ -15,7 +15,7 @@
         var dateFormat = dateFormats[k];
         var datePattern = bundle[dateFormat];
         if (datePattern) {
-          datePattern = datePattern.replace(/L/g, "M");
+          datePattern = i18n.normalize_pattern(datePattern);
           example_dates.push(dojo.date.locale.format(somedate, {datePattern:datePattern, selector:"date", locale:locale}));
         }
       }
@@ -57,8 +57,6 @@ console.log("valid", data);
   };
 
 
-  $(function() {
-    setTimeout(init, 1000);
-  });
+  dojo.ready(init);
 
 })(jQuery, dojo);

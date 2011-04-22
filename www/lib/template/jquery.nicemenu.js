@@ -60,7 +60,7 @@
         $(this).fadeOut(function() {
           $(this).prev(".headmenu").removeClass("expanded");
         });
-        return false;
+        //return false;
       });
     }
   });

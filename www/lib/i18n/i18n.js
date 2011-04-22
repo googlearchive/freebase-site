@@ -160,6 +160,28 @@
 
     number: function(n) {
       return dojo.number.format(n);
+    },
+
+
+    /**
+     * Edit name/text from freebase_object masthead
+     */
+    _get_edit_script: function(base_url, callback) {
+      if (i18n._get_edit_script.loaded) {
+        callback();
+      }
+      else {
+        $.getScript(base_url + "/i18n-edit.mf.js", function() {
+          i18n._get_edit_script.loaded = 1;
+          callback();
+        });
+      }
+    },
+
+    text_edit: function(context, base_url, id, prop_id, lang) {
+      i18n._get_edit_script(base_url, function() {
+        i18n.edit.text_edit_begin(base_url, id, prop_id, lang);
+      });
     }
   };
 

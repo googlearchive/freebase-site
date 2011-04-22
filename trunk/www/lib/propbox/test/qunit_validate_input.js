@@ -266,10 +266,7 @@
                  return;
                }
                try {
-                 /**
-                  * HACK: some dojo cldr formats use Greek Alphabet, 'L' to denote month
-                  */
-                 datePattern = datePattern.replace(/L/g, "M");
+                 datePattern = i18n.normalize_pattern(datePattern);
                  var somedatestr = dojo.date.locale.format(somedate, {datePattern:datePattern, selector:"date", locale:locale});
                  var parsed = $.validate_input.datetime(somedatestr, {locales:[locale]});
                  var expected_value = dojo.date.locale.format(somedate, {datePattern:ymd, selector:"date"});

@@ -129,11 +129,15 @@ function mql(id) {
   };
 };
 
-function text_lang_sort(a, b) {
-  if (a.lang === i18n.lang) {
+function text_lang_sort(a, b, lang) {
+  lang = lang || i18n.lang;
+  if (a.lang === lang) {
+    if (a.lang === b.lang) {
+      return b.value < a.value;
+    }
     return -1;
   }
-  else if (b.lang === i18n.lang) {
+  else if (b.lang === lang) {
     return 1;
   }
   else if (a.lang === "/lang/en") {

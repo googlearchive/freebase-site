@@ -441,40 +441,32 @@ propbox edit forms
 </acre:block>
 
 <acre:block def="prop_add_form_simple(topic_id, prop_structure, lang)">
-  <table class="edit-form clear">
-    <tbody>
-      <tr class="edit-row">
-        <td>
-          <div class="edit-row-loader"></div>  
-          ${form_field(prop_structure, null, lang)}
-        </td>
-      </tr>
-      <tr class="edit-row-submit">
-        <td>
-          <input type="hidden" name="s" value="${topic_id}"/>
-          <input type="hidden" name="p" value="${prop_structure.id}"/>
-          <input type="hidden" name="lang" value="${lang}"/>
-          <button class="button button-primary button-submit disabled" disabled="disabled" type="submit">${_('Save')}</button>
-          <button class="button button-cancel">${_('Cancel')}</button>
-       </td>
-      </tr>      
-    </tbody>
-  </table>
+  <ul class="edit-form">
+    <li class="edit-row">
+      ${form_field(prop_structure, null, lang)}
+    </li>
+    <li class="edit-row-submit">
+      <input type="hidden" name="s" value="${topic_id}"/>
+      <input type="hidden" name="p" value="${prop_structure.id}"/>
+      <input type="hidden" name="lang" value="${lang}"/>
+      <button class="button button-primary button-submit disabled" disabled="disabled" type="submit">${_('Save')}</button>
+      <button class="button button-cancel">${_('Cancel')}</button>
+    </li>
+  </ul>
 </acre:block>
 
 <acre:block def="prop_add_form_cvt(topic_id, prop_structure, lang)">
-  <table class="edit-form clear">
+  <table class="edit-form">
     <tbody>
       <tr class="edit-row">
-        <td>
-          <div class="edit-row-loader"></div>  
-          <acre:block for="subprop_structure in prop_structure.properties">
+        <acre:block for="subprop_structure in prop_structure.properties">
+          <td>
             ${form_field(subprop_structure, null, lang)}
-          </acre:block>
-       </td>
+          </td>
+        </acre:block>
       </tr>
       <tr class="edit-row-submit">
-        <td>
+        <td colspan="${prop_structure.properties.length}">
           <input type="hidden" name="s" value="${topic_id}"/>
           <input type="hidden" name="p" value="${prop_structure.id}"/>
           <input type="hidden" name="lang" value="${lang}"/>
@@ -491,11 +483,6 @@ propbox edit forms
     var ect = prop_structure.expected_type;
   </acre:script>
   <div class="form-field">
-    <label>           
-      <span class="form-label">
-        ${prop_structure.text}
-      </span>
-    </label>
     <acre:block if="ect.enumeration">
       ${data_input("/freebase/type_hints/enumeration", prop_structure.id, prop_data, lang, ect.instances || [])}
     </acre:block>
@@ -580,75 +567,60 @@ propbox edit forms
   </acre:block>  
 </acre:block>
 
-
 <acre:block def="value_edit_form_cvt(topic_id, prop_structure, prop_data, lang)">
-  <tr>
-    <td>
-      <table class="edit-form">
-        <tbody>
-          <tr class="edit-row">
-            <td>
-              <div class="edit-row-loader"></div>  
-              <acre:block for="subprop_structure in prop_structure.properties">
-                <acre:script>
-                  var subprop_data = prop_data[subprop_structure.id] || [];
-                  if (!h.isArray(subprop_data)) {
-                    subprop_data = [subprop_data];
-                  }
-                </acre:script>
-                <acre:block acre:if="subprop_data.length">
-                  <acre:block for="subdata in subprop_data">
-                    ${form_field(subprop_structure, subdata, lang)}
-                  </acre:block>
-                </acre:block>
-                <acre:block else="">
-                  ${form_field(subprop_structure, null, lang)}
-                </acre:block>
-            </td>
-          </tr>
-          <tr class="edit-row-submit">
-            <td>
-              <input type="hidden" name="s" value="${topic_id}"/>
-              <input type="hidden" name="p" value="${prop_structure.id}"/>
-              <input type="hidden" name="o" value="${prop_data.id}"/>
-              <input type="hidden" name="lang" value="${lang}"/>
-              <button class="button button-primary button-submit disabled" disabled="disabled" type="submit">${_('Save')}</button>
-              <button class="button button-cancel">${_('Cancel')}</button>
-              <button class="button button-delete">${_('Delete')}</button>
-           </td>
-          </tr>      
-        </tbody>
-      </table>
-    </td>
-  </tr>
+  <table class="edit-form">
+    <tbody>
+      <tr class="edit-row">
+        <acre:block for="subprop_structure in prop_structure.properties">
+          <td>
+            <acre:script>
+              var subprop_data = prop_data[subprop_structure.id] || [];
+              if (!h.isArray(subprop_data)) {
+                subprop_data = [subprop_data];
+              }
+            </acre:script>
+            <acre:block acre:if="subprop_data.length">
+              <acre:block for="subdata in subprop_data">
+                ${form_field(subprop_structure, subdata, lang)}
+              </acre:block>
+            </acre:block>
+            <acre:block else="">
+              ${form_field(subprop_structure, null, lang)}
+            </acre:block>
+          </td>
+        </acre:block>
+      </tr>
+      <tr class="edit-row-submit">
+        <td colspan="${prop_structure.properties.length}">
+          <input type="hidden" name="s" value="${topic_id}"/>
+          <input type="hidden" name="p" value="${prop_structure.id}"/>
+          <input type="hidden" name="o" value="${prop_data.id}"/>
+          <input type="hidden" name="lang" value="${lang}"/>
+          <button class="button button-primary button-submit disabled" disabled="disabled" type="submit">${_('Save')}</button>
+          <button class="button button-cancel">${_('Cancel')}</button>
+          <button class="button button-delete">${_('Delete')}</button>
+        </td>
+      </tr>          
+    </tbody>
+  </table>
 </acre:block>
 
 <acre:block def="value_edit_form_simple(topic_id, prop_structure, prop_data, lang)">
-  <li>
-    <table class="edit-form clear">
-      <tbody>
-        <tr class="edit-row">
-          <td>
-            <div class="edit-row-loader"></div>  
-            ${form_field(prop_structure, prop_data, lang)}
-          </td>
-        </tr>
-        <tr class="edit-row-submit">
-          <td>
-            <input type="hidden" name="s" value="${topic_id}"/>
-            <input type="hidden" name="p" value="${prop_structure.id}"/>
-            <input type="hidden" name="o" value="${prop_data.id || prop_data.value}"/>
-            <input type="hidden" name="lang" value="${lang}"/>
-            <button class="button button-primary button-submit disabled" disabled="disabled" type="submit">${_('Save')}</button>
-            <button class="button button-cancel">${_('Cancel')}</button>
-            <button class="button button-delete">${_('Delete')}</button>
-         </td>
-        </tr>      
-      </tbody>
-    </table>
-  </li>
+  <ul class="edit-form">
+    <li class="edit-row">
+      ${form_field(prop_structure, prop_data, lang)}
+    </li>
+    <li class="edit-row-submit">
+      <input type="hidden" name="s" value="${topic_id}"/>
+      <input type="hidden" name="p" value="${prop_structure.id}"/>
+      <input type="hidden" name="o" value="${prop_data.id || prop_data.value}"/>
+      <input type="hidden" name="lang" value="${lang}"/>
+      <button class="button button-primary button-submit disabled" disabled="disabled" type="submit">${_('Save')}</button>
+      <button class="button button-cancel">${_('Cancel')}</button>
+      <button class="button button-delete">${_('Delete')}</button>
+    </li>
+  </ul>
 </acre:block>
-
 
 <acre:block def="value_delete_result(topic_id, prop_structure, value, lang)">
 

@@ -55,6 +55,7 @@
     };
   </script>
   <script src="${h.lib_base_url('dojo')}/dojo/dojo.xd.js"></script>
+  <script src="i18n/i18n.js"></script>
   <script src="propbox/jquery.validate_input.js"></script>
   <script src="propbox/test/qunit_validate_input.js"></script>
 </acre:block>

@@ -1,3 +1,8 @@
+/** initially hide all edit controls **/
+.edit {
+    display: none;
+}
+
 ::selection {
   background: #ff8123;
   color: #111;
@@ -24,6 +29,13 @@
   padding: 15px;
   .box_shadow(1px, 2px, 3px, #bbb);
 }
+
+/*
+ *
+ * Handle keyboard shortcuts
+ * .mark shows user current
+ * DOM selection
+ */
 
 tr.kbs.current,
 h1.kbs.current {
@@ -68,6 +80,10 @@ div.kbs.current .mark {
   color: #aaa;
   padding-left: 20px;
 }
+
+/*
+ * Styling for Commons vs User Domain
+ */
 
 .status.commons,
 .status.user {
@@ -162,8 +178,11 @@ div.kbs.current .mark {
 .header-label .menu-trigger {
   display: inline-block;
   color: #666;
-  background: url(lib/template/ui-icons.png) no-repeat right -679px;
   padding: 7px 25px 7px 0;
+}
+
+.section:hover .header-label .menu-trigger {
+  background: url(lib/template/ui-icons.png) no-repeat right -679px;
 }
 
 .foobar:hover .menu-trigger,
@@ -175,12 +194,11 @@ div.kbs.current .mark {
   ### Data Handling
 */
 
+
 /*
-The .data-table object should hold non-simple data (eg. Mediator or CVT)
+ * The .data-list class should be used
+ * for simple property data (eg. Date of Birth, Country of Nationality)
 */
-.data-table {
-  width: 100%;
-}
 
 .data-list {
   list-style: none;
@@ -190,6 +208,15 @@ The .data-table object should hold non-simple data (eg. Mediator or CVT)
   font-size: 12px;
   line-height: 1;
   padding: 0 15px;
+}
+
+/*
+ * The .data-table class should be used
+ * for non-simple property data (eg. Mediator or CVT)
+*/
+
+.data-table {
+  width: 100%;
 }
 
 .data-table .data-list li,
@@ -221,6 +248,7 @@ The .data-table object should hold non-simple data (eg. Mediator or CVT)
   border-top: 1px solid #d5d7d8;
   .transition(all, 0.3s);
 }
+
 .data-table tbody tr.empty-row td {
   border: none;
 }
@@ -424,10 +452,10 @@ ul.combo-menu li,
   .rounded_corners(0);
 }
 
-/** initially hide all edit controls **/
-.edit {
-    display: none;
-}
+
+/*
+Keyboard Shortcuts
+*/
 
 .keyboard-shortcuts {
   text-align: center;
@@ -444,10 +472,6 @@ ul.combo-menu li,
   padding-left: 40px;
   background: url(lib/template/keyboard.png) no-repeat left top;
 }
-
-/*
-Keyboard Shortcuts
-*/
 
 .key-map {
   font-size: 12px;
@@ -468,3 +492,79 @@ Keyboard Shortcuts
 .key-desc {
   display: inline;
 }
+
+
+
+
+/*
+ * Inline Topic Edit Controls
+ *
+ * NOTE:
+ *
+ * A lot of this is duplicated in
+ * schema/schema.less
+ * We need to refactor
+ */
+
+.edit-form .form-label {
+  display: block;
+  margin-bottom: 7px;
+}
+
+.edit-form .data-input {
+  margin-bottom: 10px;
+}
+
+.form-label {
+  display: block;
+  font-weight: bold;
+}
+
+
+
+
+
+
+
+
+/*
+ * Styling for multi-language dialog
+ * this should be moved into its own
+ * stylsheet for use in other objects
+ */
+
+.form-group {
+  margin: 20px 0;
+}
+
+.modal .table {
+  border-top: 0;
+}
+
+.modal .table thead th {
+  font-weight: bold;
+  padding: 3px 2px;
+  font-size: 12px;
+  border-bottom: 1px solid #d6d7d8;
+}
+
+.modal tbody th.row-header {
+  padding-left: 0;
+}
+
+#text-edit-form .data-input {
+  background: none;
+  padding-right: 0;
+  margin-right: 5px;
+}
+
+#text-edit-form .lang {
+  line-height: 2.6;
+}
+
+#text-edit-form .modal-title .key {
+  font-size: 12px;
+  font-weight: normal;
+  color: #333;
+}
+

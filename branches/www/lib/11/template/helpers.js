@@ -187,6 +187,23 @@
     },
 
     /**
+     * suggest url is used by the suggest widget
+     * returns an apiary API url or a metaweb legacy URL depending
+     * on acre configuration.
+     * TODO: change this once apiary_url and service_url have been
+     * figured out
+     * tests will be added once everyone is running on apiary by default
+     */
+
+    suggest_url: function() {
+        if (fb.acre.freebase.apiary_url) { 
+            return fb.acre.freebase.apiary_url + '/suggest?key=' + fb.acre.freebase.api_key;
+        }
+        
+        return h.legacy_fb_url();
+    },
+
+    /**
      * legacy freebase url
      * Use for pages that haven't been ported to acre yet
      * (i.e, http://www.freebase.com/path?params)
@@ -194,7 +211,9 @@
     legacy_fb_url: function() {
       var args = Array.prototype.slice.call(arguments);
       var host = fb.acre.freebase.site_host
-        .replace('devel.', 'www.')
+        .replace('devel.', 'www.') //devel sub-domains are used for development
+        .replace('dev.', 'www.') //preview of new freebase site talking to legacy freebase api
+        .replace('test.', 'www.') //preview of new freebase site talking to new freebase api
         .replace(':' + fb.acre.request.server_port, '');
       args.unshift(host);
       return h.build_url.apply(null, args);

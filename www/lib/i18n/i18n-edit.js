@@ -89,6 +89,12 @@
       $(".icon-link.add", form.form).click(function(e) {
         form.form.trigger(event_prefix + "add");
       });
+      form.lang_select
+        .keypress(function(e) {
+          if (e.keyCode === 13) {
+            form.form.trigger(event_prefix + "add");
+          }
+        });
       form.input.bind("submit", function() {
         form.form.trigger(event_prefix + "add");
       });

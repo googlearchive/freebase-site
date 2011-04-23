@@ -182,6 +182,7 @@
       i18n._get_edit_script(base_url, function() {
         i18n.edit.text_edit_begin(base_url, id, prop_id, lang);
       });
+      return false;
     }
   };
 

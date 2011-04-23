@@ -45,7 +45,17 @@
         dataType: "json",
         success: function(data, status, xhr) {
           var html = $(data.result.html);
-          i18n.edit.text_edit_init(html);
+          var form = {
+            form: html,
+            ajax: {
+              base_url: base_url,
+              data: submit_data,
+              url: base_url + "/text_edit_submit.ajax"
+            },
+            input: $(".data-input:first", html).data_input(),
+            lang_select: $(".lang-select", html)
+          };
+          i18n.edit.text_edit_init(form);
         },
         error: function(xhr) {
           // TODO: handle error
@@ -55,10 +65,10 @@
 
     },
 
-    text_edit_init: function(content) {
-      $(document.body).append(content.hide());
+    text_edit_init: function(form) {
+      $(document.body).append(form.form.hide());
       //$(".table-sortable", content).tablesorter();
-      content.overlay({
+      form.form.overlay({
         close: ".modal-buttons .button-cancel",
         closeOnClick: false,
         load: true,
@@ -66,11 +76,77 @@
           color: '#000',
           loadSpeed: 200,
           opacity: 0.5
-        },
-        onLoad: function() {
-
         }
       });
+      var event_prefix = "i18n.edit.text_edit.";
+      $(".button-submit", form.form).click(function() {
+        form.form.trigger(event_prefix + "submit");
+      });
+      $(".icon-link.delete", form.form).click(function(e) {
+        var row = $(this).parents("tr:first");
+        form.form.trigger(event_prefix + "delete", row);
+      });
+      $(".icon-link.add", form.form).click(function(e) {
+        form.form.trigger(event_prefix + "add");
+      });
+      form.input.bind("submit", function() {
+        form.form.trigger(event_prefix + "add");
+      });
+
+      form.form
+        .bind(event_prefix + "add", function() {
+          var name_value = form.input.data("name_value");
+          var lang_id = form.lang_select.val();
+          if (name_value && lang_id && name_value[1] != "") {
+            var option = $("option[value=" + lang_id.replace(/\//g, "\\/") + "]", form.lang_select);
+            var lang_name = option.text();
+            var new_row = i18n.edit.new_text_edit_row(name_value[1], lang_id, lang_name).hide();
+            $("tbody.values").prepend(new_row);
+            new_row.fadeIn(function() {
+              form.input.data("$.data_input").reset();
+              form.lang_select[0].selectedIndex = 0;
+              option.attr("disabled", "disabled");
+              $(":text", form.input).focus();
+            });
+          }
+          else {
+            // TODO: required value and lang
+            console.error("Text value and language required");
+          }
+        })
+        .bind(event_prefix + "submit", function() {
+
+        })
+        .bind(event_prefix + "delete", function(e, row) {
+          row = $(row);
+          var lang = $(".lang", row).attr("data-value");
+          row.fadeOut(function() {
+            // re-enable option[value=lang]
+            $("option[value=" + lang.replace(/\//g, "\\/") + "]", form.lang_select).removeAttr("disabled");
+            $(this).remove();
+          });
+        });
+    },
+
+
+    new_text_edit_row: function(value, lang_id, lang_name) {
+      var row =
+        $('<tr>' +
+          '  <th class="row-header" scope="row">' +
+          '    <span class="data-input text">' +
+          '      <input class="fb-input" type="text">' +
+          '    </span>' +
+          '  </th>' +
+          '<td>' +
+          '<span class="lang"></span>' +
+          '</td>' +
+          '<td>' +
+          '<a class="icon-link delete" href="javascript:void(0);"><span class="delete-icon">delete</span></a>' +
+          '</td>' +
+          '</tr>');
+      $(":text", row).val(value);
+      $(".lang", row).attr("data-value", lang_id).text(lang_name);
+      return row;
     }
 
   };

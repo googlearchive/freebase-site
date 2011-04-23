@@ -237,11 +237,17 @@
 <!-- add any acre variables you wanted passed to client-side -->
 <acre:block def="acre_javascript_vars(exports)">
   <acre:script>
+
+    var api_key = acre.keystore.get('freebase_image_api');
+    api_key = api_key ? api_key[0] : '';
+    
     var SERVER = {
       acre: {
         freebase: {
           service_url: acre.freebase.service_url,
           site_host: acre.freebase.site_host,
+          apiary_url: acre.freebase.apiary_url,
+          api_key: api_key
         },
         request: {
           app_url: acre.request.app_url,

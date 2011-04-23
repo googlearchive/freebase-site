@@ -142,14 +142,14 @@
         <div class="form-group form-row">
           <p class="form-note" acre:if="prop.unique">${_("This property is unique. Only one value allowed per language.")}</p>
           <label class="form-label" for="$prop.id">${_("Add new")}</label>
-          ${pb.data_input("/type/text", prop.id, null, lang)}
+          ${pb.data_input("/type/text", "", null, lang)}
           <select class="lang-select">
-            <option>${_("Language")}</option>
+            <option value="">${_("Language")}</option>
             <acre:block for="l in langs">
-            <option value="l.id" acre:attrs="prop.unique && vlangs[l.id] ? {disabled:'disabled'} : {}">${l.name}</option>
+            <option value="${l.id}" acre:attrs="prop.unique && vlangs[l.id] ? {disabled:'disabled'} : {}">${l.name}</option>
             </acre:block>
           </select>
-          <a class="icon-link icon-link-add" href="javascript:void(0);">${_("Add")}</a>
+          <a class="icon-link add" href="javascript:void(0);">${_("Add")}</a>
         </div>
         <div class="form-group">
           <table class="table table-sortable">
@@ -160,17 +160,17 @@
                 <th class="{sorter:false}" scope="col">&nbsp;</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="values">
               <acre:block for="i,value in values">
                 <tr>
                   <th scope="row" class="row-header">
-                    ${pb.data_input("/type/text", prop.id, value, lang)}
+                    ${pb.data_input("/type/text", "", value, lang)}
                   </th>
                   <td class="">
-                    <span class="lang">${i18n.LANGS_BY_ID[value.lang].name}</span>
+                    <span class="lang" data-value="${value.lang}">${i18n.LANGS_BY_ID[value.lang].name}</span>
                   </td>
                   <td class="">
-                    <a class="icon-link icon-link-delete" href="javascript:void(0);"><span class="delete-icon">${_("delete")}</span></a>
+                    <a class="icon-link delete" href="javascript:void(0);"><span class="delete-icon">${_("delete")}</span></a>
                   </td>
                 </tr>
               </acre:block>

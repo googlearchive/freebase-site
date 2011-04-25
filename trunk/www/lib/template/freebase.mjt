@@ -238,10 +238,7 @@
 <acre:block def="acre_javascript_vars(exports)">
   <acre:script>
 
-    var api_key;
-    try {
-      api_key = acre.keystore.get('freebase_image_api');      
-    } catch(e) {}
+    var api_key = acre.keystore.get('freebase_image_api');      
     api_key = api_key ? api_key[0] : '';
     
     

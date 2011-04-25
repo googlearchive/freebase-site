@@ -111,6 +111,7 @@
             new_row.fadeIn(function() {
               form.input.data("$.data_input").reset();
               form.lang_select[0].selectedIndex = 0;
+              // disable only if unique property
               option.attr("disabled", "disabled");
               $(":text", form.input).focus();
             });
@@ -143,12 +144,12 @@
           '      <input class="fb-input" type="text">' +
           '    </span>' +
           '  </th>' +
-          '<td>' +
-          '<span class="lang"></span>' +
-          '</td>' +
-          '<td>' +
-          '<a class="icon-link delete" href="javascript:void(0);"><span class="delete-icon">delete</span></a>' +
-          '</td>' +
+          '  <td>' +
+          '    <span class="lang"></span>' +
+          '  </td>' +
+          '  <td>' +
+          '    <a class="icon-link delete" href="javascript:void(0);"><span class="delete-icon">delete</span></a>' +
+          '  </td>' +
           '</tr>');
       $(":text", row).val(value);
       $(".lang", row).attr("data-value", lang_id).text(lang_name);

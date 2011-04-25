@@ -50,21 +50,39 @@ div.cuecard-outputPane-help {
   overflow: auto;
 }
 
-div.cuecard-outputPane-json {
-  margin: 0;
-  padding: 0;
-  border: none;
-  font-family: monospace;
-  font-size: 10pt;
+div.cuecard-outputPane-json .panel-content {
   overflow: hidden;
 }
 
 div.cuecard-outputPane-json iframe {
   width: 100%;
   height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: monospace;
+  font-size: 10pt;
+  background-color: white;
 }
 
-.cuecard-outputPane-responseHeaders, .cuecard-outputPane-helpContent {
+div.cuecard-outputPane-json .panel-header {
+  border-top: 1px solid #ddd;
+}
+
+div.cuecard-outputPane-json .drawer-content {
+  overflow: auto;
+}
+
+div.cuecard-outputPane-list {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+.cuecard-outputPane-responseHeaders {
+  padding: 0 2em;
+}
+
+.cuecard-outputPane-helpContent {
   padding: 1em 2em;
 }
 

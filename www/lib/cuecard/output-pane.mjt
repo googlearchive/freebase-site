@@ -38,25 +38,18 @@
 
   <acre:script>
     outputPane = oP;
-    var TABS = [
-      { name: 'Result', key: "json"}, 
-      { name: 'Status', key: "status"}
-    ];
-    if (!outputPane._options.hideHelp) {
-      TABS.push({ name: 'Help', key: "help"});
-    }
   </acre:script>
   
   <div id="$id" class="cuecard-outputPane">
     <div class="cuecard-outputPane-tabs">
       <ul class="tab-nav clear">
-        <li acre:for="index, tab in TABS" class="tab">
+        <li acre:for="index, tab in outputPane._TABS" class="tab">
           <a href="#${id}-${tab.key}"><span>$tab.name</span></a>
         </li>
       </ul>
     </div>
-    <div class="cuecard-outputPane-content tabbed-content">
-      <div acre:for="tab in TABS" class="cuecard-outputPane-tabBody" id="${id}-${tab.key}">
+    <div class="cuecard-outputPane-content tabbed-content module-section">
+      <div acre:for="tab in outputPane._TABS" class="cuecard-outputPane-tabBody" id="${id}-${tab.key}">
         <div class="cuecard-outputPane-$tab.key" >
           ${templates[tab.key]()}
         </div>
@@ -69,15 +62,113 @@
     outputPane._container = el.find(".cuecard-outputPane");
     outputPane._tabsContainer = el.find(".cuecard-outputPane-tabs");
     outputPane._contentContainer = el.find(".cuecard-outputPane-content");
-
-    outputPane.layout = function(){
-      outputPane._contentContainer.height(outputPane._container.innerHeight() - outputPane._tabsContainer.outerHeight());
-    };
-    outputPane.layout();
   </acre:block>
 </acre:block>
 
-<acre:block def="json()"></acre:block>
+
+<acre:block def="list(o, c)">
+  <table class="data-table" acre:if="o">
+    <acre:script>
+      function is_constraint(path, value) {
+        
+        function same_keys(o1, o2) {
+          for (var key in o1) {
+            var val1 = o1[key];
+            var val2 = o2[key];
+            val1 = jQuery.isArray(val1) ? val1[0] : val1;
+            val2 = jQuery.isArray(val2) ? val2[0] : val2;
+            if (val2 === undefined) return false;
+            if (jQuery.isPlainObject(val1) && jQuery.isPlainObject(val2)) {
+              if (!same_keys(val1, val2)) return false;
+            }
+          }
+          return true;
+        }
+        
+        var val = jQuery.extend({}, c, true);
+        value = jQuery.isArray(value) ? value[0] : value;
+        for (var s = 0; s < path.length; s++) {
+          val = val[path[s]];
+          if (val === undefined) return false;
+        }
+        return jQuery.isPlainObject(val) ? same_keys(value, val) : true;
+      }
+    </acre:script>
+    
+    <thead acre:def="thead(r, path)">
+      <tr>
+        <th acre:for="key, val in r" acre:if="!is_constraint(path.concat(key), val)">
+          ${key.split("/").slice(-1).join("")} ${thead_value(val, path.concat(key))}
+        </th>
+      </tr>
+    </thead>
+    
+    <acre:block def="thead_value(v, path)">
+      <acre:script>if (jQuery.isArray(v)) v = v[0];</acre:script>
+      <ul acre:if="jQuery.isPlainObject(v)">
+        <li acre:for="key, val in v" acre:if="!is_constraint(path.concat(key), val)">
+          ${key.split("/").slice(-1).join("")} ${thead_value(val, path.concat(key))}
+        </li>
+      </ul>
+    </acre:block>
+    
+    <acre:block def="row(r, path)">
+      <acre:block if="jQuery.isPlainObject(r)">
+        <td acre:for="key, val in r" acre:if="!is_constraint(path.concat(key), val)">
+          ${value(val, path.concat(key))}
+        </td>
+      </acre:block>
+      <td acre:else="">${value(val, path)}</td>
+    </acre:block>
+    
+    <acre:block def="value(a, path)">
+      <acre:block choose="typeof a">
+        <acre:block when="string">$a</acre:block>
+        <acre:block when="number">$a</acre:block>
+        <acre:block when="boolean">${a ? "true" : "false"}</acre:block>
+        <acre:block when="object">
+          <ul class="data-list" acre:if="jQuery.isArray(a)">
+            <li acre:for="val in a">
+              ${value(val, path)}
+            </li>
+          </ul>
+          <ul class="data-list" acre:elif="jQuery.isPlainObject(a)">
+            <li acre:for="key, val in a" acre:if="!is_constraint(path.concat(key), val)">
+              ${value(val, path.concat(key))}
+            </li>
+          </ul>
+        </acre:block>
+      </acre:block>
+    </acre:block>
+    
+    <acre:block if="jQuery.isArray(o)">
+      ${thead(o[0], [])}
+      <tbody>
+        <tr acre:for="a in o">${row(a, [])}</tr>
+      </tbody>
+    </acre:block>
+    <acre:block else="">
+      <acre:block if="typeof o === 'object'">${thead(o, [])}</acre:block>
+      <tbody>
+        <tr>${row(o, [])}</tr>
+      </tbody>
+    </acre:block>
+    
+  </table>
+</acre:block>
+
+
+<acre:block def="json()">
+  <div class="panel-content"></div>
+  <div class="panel-header">
+    <span class="cuecard-outputPane-headers drawer-toggle">
+      <a class="icon-link" href="javascript:void(0)">
+        <span>Costs &amp; Headers</span>
+      </a>
+    </span>
+  </div>
+  <div class="drawer-content"></div>
+</acre:block>
 
 
 <acre:block def="status(headers)">
@@ -132,6 +223,7 @@
 
   </div>
 </acre:block>
+
 
 <acre:block def="help()">
   <div class="cuecard-outputPane-helpContent">

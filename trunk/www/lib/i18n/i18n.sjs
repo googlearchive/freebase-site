@@ -38,236 +38,204 @@ var freebase = acre.require("promise/apis").freebase;
 
 /**
  * @see https://sites.google.com/a/google.com/40-language-initiative/home/language-details
+ *
+ * These langs have multiple ids (keys)
+ * /lang/pt-br   (/lang/pt)
+ * /lang/zh      (/lang/zh-cn, /lang/zh-hans)
+ * /lang/iw      (/lang/he)
+ * /lang/zh-hant (/lang/zh-tw)
  */
 var LANGS = [
 
   // Tier 0
   {
     "id": "/lang/en",
-    "name": "English",
-    "code": ["en-US", "en"]
+    "name": "English"
   },
 
   // Tier 1
   {
     "id": "/lang/en-gb",
-    "name": "British English",
-    "code": ["en-GB"]
+    "name": "British English"
   },
   {
     "id": "/lang/fr",
-    "name": "French",
-    "code": ["fr-FR", "fr"]
+    "name": "French"
   },
   {
     "id": "/lang/it",
-    "name": "Italian",
-    "code": ["it-IT", "it"]
+    "name": "Italian"
   },
   {
     "id": "/lang/de",
-    "name": "German",
-    "code": ["de-DE", "de"]
+    "name": "German"
   },
   {
     "id": "/lang/es",
-    "name": "Spanish",
-    "code": ["es-ES", "es"]
+    "name": "Spanish"
   },
   {
     "id": "/lang/nl",
-    "name": "Dutch",
-    "code": ["nl-NL", "nl"]
+    "name": "Dutch"
   },
   {
     "id": "/lang/zh",
-    "name": "Chinese",
-    "code": ["zh-Hans-CN", "zh-CN", "zh"]
+    "alias:id": ["/lang/zh-cn", "/lang/zh-hans"],
+    "name": "Chinese"
   },
   {
     "id": "/lang/zh-hant",
-    "name": "Chinese (traditional)",
-    "code": ["zh-Hant-TW", "zh-TW", "zh-hant"]
+    "alias:id": ["/lang/zh-tw"],
+    "name": "Chinese (traditional)"
   },
   {
     "id": "/lang/ja",
-    "name": "Japanese",
-    "code": ["ja-JP", "ja"]
+    "name": "Japanese"
   },
   {
     "id": "/lang/ko",
-    "name": "Korean",
-    "code": ["ko-KR", "ko"]
+    "name": "Korean"
   },
   {
     "id": "/lang/pt-br",
-    "name": "Portuguese",
-    "code": ["pt-BR"]
+    "alias:id": ["/lang/pt"],
+    "name": "Portuguese"
   },
   {
     "id": "/lang/ru",
-    "name": "Russian",
-    "code": ["ru-RU", "ru"]
+    "name": "Russian"
   },
   {
     "id": "/lang/pl",
-    "name": "Polish",
-    "code": ["pl-PL", "pl"]
+    "name": "Polish"
   },
   {
     "id": "/lang/tr",
-    "name": "Turkish",
-    "code": ["tr-TR", "tr"]
+    "name": "Turkish"
   },
   {
     "id": "/lang/th",
-    "name": "Thai",
-    "code": ["th-TH", "th"]
+    "name": "Thai"
   },
   {
     "id": "/lang/ar",
-    "name": "Arabic",
-    "code": ["ar-EG", "ar"]
+    "name": "Arabic"
   },
 
   // Tier 2
   {
     "id": "/lang/sv",
-    "name": "Swedish",
-    "code": ["sv-SE", "sv"]
+    "name": "Swedish"
   },
   {
     "id": "/lang/fi",
-    "name": "Finnish",
-    "code": ["fi-FI", "fi"]
+    "name": "Finnish"
   },
   {
     "id": "/lang/da",
-    "name": "Danish",
-    "code": ["da-DK", "da"]
+    "name": "Danish"
   },
   {
     "id": "/lang/pt-pt",
-    "name": "Iberian Portuguese",
-    "code": ["pt-PT", "pt"]
+    "name": "Iberian Portuguese"
   },
   {
     "id": "/lang/ro",
-    "name": "Romanian",
-    "code": ["ro-RO", "ro"]
+    "name": "Romanian"
   },
   {
     "id": "/lang/hu",
-    "name": "Hungarian",
-    "code": ["hu-HU", "hu"]
+    "name": "Hungarian"
   },
   {
     "id": "/lang/iw",
-    "name": "Hebrew",
-    "code": [ "he-IL", "he", "iw-IL", "iw"]
+    "alias:id": ["/lang/he"],
+    "name": "Hebrew"
   },
   {
     "id": "/lang/id",
-    "name": "Indonesian",
-    "code": ["id-ID", "id"]
+    "name": "Indonesian"
   },
   {
     "id": "/lang/cs",
-    "name": "Czech",
-    "code": ["cs-CZ", "cs"]
+    "name": "Czech"
   },
   {
     "id": "/lang/el",
-    "name": "Greek",
-    "code": ["el-GR", "el"]
+    "name": "Greek"
   },
   {
     "id": "/lang/no",
-    "name": "Norwegian",
-    "code": ["nb-NO", "no"]
+    "name": "Norwegian"
   },
   {
     "id": "/lang/vi",
-    "name": "Vietnamese",
-    "code": ["vi-VN", "vi"]
+    "name": "Vietnamese"
   },
   {
     "id": "/lang/bg",
-    "name": "Bulgarian",
-    "code": ["bg-BG", "bg"]
+    "name": "Bulgarian"
   },
   {
     "id": "/lang/hr",
-    "name": "Croatian",
-    "code": ["hr-HR", "hr"]
+    "name": "Croatian"
   },
   {
     "id": "/lang/lt",
-    "name": "Lithuanian",
-    "code": ["lt-LT", "lt"]
+    "name": "Lithuanian"
   },
   {
     "id": "/lang/sk",
-    "name": "Slovak",
-    "code": ["sk-SK", "sk"]
+    "name": "Slovak"
   },
   {
     "id": "/lang/fil",
-    "name": "Filipino",
-    "code": ["fil-PH", "en-PH", "fil"]
+    "name": "Filipino"
   },
   {
     "id": "/lang/sl",
-    "name": "Slovenian",
-    "code": ["sl-SI", "sl"]
+    "name": "Slovenian"
   },
   {
     "id": "/lang/sr",
-    "name": "Serbian",
-    "code": ["sr-Cyrl-RS", "sr-Cyrl-CS", "sr"]
+    "name": "Serbian"
   },
   {
     "id": "/lang/ca",
-    "name": "Catalan",
-    "code": ["ca-ES", "ca"]
+    "name": "Catalan"
   },
   {
     "id": "/lang/lv",
-    "name": "Latvian",
-    "code": ["lv-LV", "lv"]
+    "name": "Latvian"
   },
   {
     "id": "/lang/uk",
-    "name": "Ukrainian",
-    "code": ["uk-UA", "uk"]
+    "name": "Ukrainian"
   },
   {
     "id": "/lang/hi",
-    "name": "Hindi",
-    "code": ["hi-IN", "hi"]
+    "name": "Hindi"
   },
   {
     "id": "/lang/fa",
-    "name": "Persian",
-    "code": ["fa-IR", "fa"]
+    "name": "Persian"
   },
   {
     "id": "/lang/es-419",
-    "name": "Latin American Spanish",
-    "code": ["es-419", "es-MX"]
+    "name": "Latin American Spanish"
   }
 ];
+var LANGS_BY_ID = {};
 var LANGS_BY_CODE = {};
-var LANGS_BY_ID = h.map_array(LANGS, "id");
 LANGS.forEach(function(l) {
-  // make a copy
-  var code = l.code;
-  code.forEach(function(lc) {
-    if (LANGS_BY_CODE[lc]) {
-      throw "Language code must be unique: " + lc;
-    }
-    LANGS_BY_CODE[lc] = l;
-  });
+  var code = l.id.split("/").pop();
+  LANGS_BY_ID[l.id] = LANGS_BY_CODE[code] = l;
+  if (l["alias:id"]) {
+    l["alias:id"].forEach(function(ol) {
+      code = ol.split("/").pop();
+      LANGS_BY_ID[ol] = LANGS_BY_CODE[code] = l;
+    });
+  }
 });
 
 var lang;

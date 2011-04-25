@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Google Inc.
+ * Copyright 2011, Google Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,41 +43,84 @@
    * </div>
    * <div id="main-column">...<//div>
    *
-   * $(".module").collapse_module("#main-column");
+   * $(".module").collapse_module({column: "#main-column"});
    *
    * Will collapse/expand all ".modules" except the first module.
    * The first module's ".module-section" will be collapsed/expanded.
    * "#main-column"'s margin-left will be toggled with respect to the collapsing/expanding of the modules
    * The ".trigger" should be inside the first ".module".
    */
-  $.fn.collapse_module = function(column) {
-    var $column = $(column);
-    var modules = $(this);
-    var first_module = modules.get(0);
-    var trigger = $(".trigger:first", first_module);
-    var first_section = $(".module-section", first_module);
-    var other_modules = modules.slice(1);
-    var column_offset = $column.css("margin-left");
 
-    trigger.click(function() {
-      var collapsed = trigger.hasClass("collapsed");
-      if (collapsed) {
-        $column.animate({marginLeft: column_offset}, function() {
-          first_section.slideDown(function() {
-            trigger.removeClass("collapsed");
+  $.factory("collapse_module", {
+
+    init: function() {
+      var self = this;
+      var o = this.options;
+
+      this.$column = $(this.options.column);
+      this.modules = $(this.options.modules, this.element);
+      this.first_module = this.modules.get(0);
+      this.trigger = $(".trigger:first", this.first_module);
+      this.first_section = $(".module-section", this.first_module);
+      this.other_modules = this.modules.slice(1);
+      this.column_offset = this.$column.css("margin-left");
+      
+      this.set_collapsed(this.options.collapsed);
+      
+      this.trigger.click(function(e) {
+       return self.toggle(e);
+      });
+    },
+    
+    set_collapsed: function(collapse) {
+      this.toggle_state = collapse;
+      if (collapse) {
+        this.trigger.addClass("collapsed");
+        this.$column.css("margin-left", 0);
+        this.first_section.hide();
+        this.other_modules.hide();
+      } else {
+        this.trigger.removeClass("collapsed");
+        this.$column.css("margin-left", this.column_offset);
+        this.first_section.show();
+        this.other_modules.show();
+      }
+    },
+    
+    toggle: function(e) {
+      var self = this;
+      if (this.toggle_state) {
+        this.trigger.removeClass("collapsed");
+        this.$column.animate({marginLeft: this.column_offset}, function() {
+          self.first_section.slideDown(function() {
+            self.modules.removeClass("collapsed");
           });
-          other_modules.fadeIn();
+          self.other_modules.fadeIn();
+        });
+      } else {
+        this.trigger.addClass("collapsed");
+        this.other_modules.fadeOut();
+        this.first_section.slideUp(function() {
+          self.$column.animate({marginLeft: 0});
+          self.modules.addClass("collapsed");
         });
       }
-      else {
-        other_modules.fadeOut();
-        first_section.slideUp(function() {
-          $column.animate({marginLeft: 0});
-          trigger.addClass("collapsed");
-        });
-      }
+
+      this.toggle_state = !this.toggle_state;
+      if (this.options.toggle_callback) 
+        this.options.toggle_callback.call(this.trigger, this.toggle_state);
+      
       return false;
-    });
-  };
+    }
+    
+  });
+  
+  $.extend(true, $.collapse_module, {
+    defaults: {
+      collapsed: false,
+      modules: ".module",
+      column: "#main-column"
+    }
+  });
 
 })(jQuery);

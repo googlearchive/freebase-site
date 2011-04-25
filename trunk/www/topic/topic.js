@@ -51,7 +51,7 @@
       });
 
       // Initialize filter menu collapse/expand
-      $(".column.nav > .module").collapse_module(".section");
+      $(".column.nav").collapse_module({modules: ".module", column: ".section"});
 
       // Initialize prop counts filter suggest input
       fb.filters.init_domain_type_property_filter(".column.nav");

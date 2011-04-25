@@ -44,6 +44,19 @@ CueCard.ControlPane.prototype._constructUI = function() {
     var idPrefix = this._idPrefix = "t" + Math.floor(1000000 * Math.random());
     this._elmt.acre(fb.acre.current_script.app.path + "/cuecard/control-pane.mjt", "tabs", [idPrefix, this]);
     $('#' + idPrefix + " > .section-tabset").tabs('#' + idPrefix + " > .tabbed-content > .cuecard-controlPane-tabBody", { initialIndex: 0 });
+    
+    if (this._options.paneldrawer) {
+      this._paneldrawer = $(this._options.paneldrawer).paneldrawer({
+        toggle_state: this._options.toggle_state,
+        drawer_height: this._options.height,
+        toggle_callback: this._options.toggle_callback,
+        panel_content: "cuecard-queryEditor-content"
+      }).data("$.paneldrawer");
+    }
+};
+
+CueCard.ControlPane.prototype.layout = function(height, width) {
+  // Assumes fixed size
 };
 
 CueCard.ControlPane.prototype._getDefaults = function() {

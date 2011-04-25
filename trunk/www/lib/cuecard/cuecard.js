@@ -31,6 +31,7 @@
 
 CueCard.createComposition = function(options) {
     var qe = new CueCard.QueryEditor(options.queryEditorElement, options["queryEditorOptions"]);
+    
     var op = null;
     var cp = null;
     if ("outputPaneElement" in options) {

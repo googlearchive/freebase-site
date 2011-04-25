@@ -35,14 +35,20 @@ CueCard.urlPrefix = CueCard.apiProxy.base = fb.h.ajax_url("lib/cuecard/");
 
 var c = {};
 var queryEditorOptions;
-var heights;
+var page_chrome_height;
 
 function onLoad() {
   var params = CueCard.parseURLParameters();
 
-  var outputPaneOptions = {};
+  var outputPaneOptions = {
+    toggle_callback: onToggleHeaders
+  };
   var controlPaneOptions = {
-    extended: 0 // Don't make this sticky: $.localstore("cc_cp_extended") == "1" ? 1 : 0
+    paneldrawer: "#qe-module",
+    height: 250,
+    toggle_state: ($.localstore("cc_cp") == "1"),
+    toggle_callback: onToggleControlPane,
+    extended: 0 // Don't make this sticky: $.localstore("cc_cp_extended") == "1" ? 1 : 0,
   };
 
 	$(".nicemenu").nicemenu();
@@ -123,84 +129,72 @@ function onLoad() {
       }
     }
   }
+  
+  queryEditorOptions.onReady = function() {
+    // patch in our changes to cuecard's default layout
+    $("#links").prependTo("#the-output-pane .cuecard-outputPane-tabs");
+    
+    $("#qe-module").collapse_module({
+      modules: ".sub-module",
+      collapsed: $.localstore("qe_query_mode"),
+      column: "#the-output-pane .cuecard-outputPane-content",
+      toggle_callback: function(collapsed) {
+        $.localstore("qe_query_mode", collapsed, false);
+      }
+    });
+    
+    resizePanes();
+    
+    if ("autorun" in params) {
+      c.queryEditor.run(false);
+    }
+    
+    // fulhack to hide initial laying out
+    setTimeout(function() {
+      $("#the-query-editor").css("height", "initial")
+      $("#the-query-editor, #the-output-pane, #the-control-pane").css("visibility", "visible")
+    }, 1);
+  };
 
   c = CueCard.createComposition({
     queryEditorElement: $('#the-query-editor')[0],
     queryEditorOptions: queryEditorOptions,
     outputPaneElement: $('#the-output-pane')[0],
-    outputPaneOptions: {},
+    outputPaneOptions: outputPaneOptions,
     controlPaneElement: $('#the-control-pane')[0],
     controlPaneOptions: controlPaneOptions
   });
-
-  // patch in our changes to cuecard's default layout
-  $("#links").prependTo("#the-output-pane .cuecard-outputPane-tabs");
-  $("#qe-options").click(onToggleControlPane).prependTo(".cuecard-queryEditor-controls-bottom");
-  $("#the-control-pane").appendTo('#the-query-editor .cuecard-queryEditor');
-
-  $(".module").collapse_module("#the-output-pane .cuecard-outputPane-content");
-
-  heights = {
-    controlPane: 250,
-    header: $("#header").outerHeight(),
-    breadcrumb: $("#breadcrumb").outerHeight(),
-    footer: $("#footer").outerHeight(),
-    qeTitle: $("#qe-title").outerHeight(),
-    qeButtons: $(".cuecard-queryEditor-controls-bottom").outerHeight()
-  };
-
-  resizePanes();
-  toggleControlPane(($.localstore("cc_cp") == "1"));
-
+  
+  page_chrome_height =  $("#header").outerHeight() + 
+                        $("#breadcrumb").outerHeight() + 
+                        $("#footer").outerHeight() + 
+                        30; //padding
+  
   $(window).bind("beforeunload", function(evt) {
     saveQueryInWindow();
   });
-
-  if ("autorun" in params) {
-    queryEditorOptions.onReady = function() {
-      c.queryEditor.run(false);
-    };
-  }
 }
 
 function resizePanes() {
-  var innerHeight = $("body").outerHeight() - heights.header - heights.breadcrumb - heights.footer - 30; //padding
-  $(".cuecard-outputPane").height(innerHeight);
+  var innerHeight = $("body").outerHeight() - page_chrome_height;
 
-  var qeHeight = innerHeight - heights.qeTitle;
-  $(".cuecard-queryEditor").height(qeHeight);
-
-  var qeContentHeight =  qeHeight - heights.qeButtons - $("#the-control-pane").outerHeight();
-  $(".cuecard-queryEditor-content").height(qeContentHeight);
+  if (c.queryEditor) c.queryEditor.layout(innerHeight - 2 /* extra border */);
+  //if (c.controlPane) c.controlPane.layout(250);
+  if (c.outputPane) c.outputPane.layout(innerHeight);
 };
 
 function onResize() {
   resizePanes();
 }
 
-function onToggleControlPane() {
-  var on = ($.localstore("cc_cp") == "1");
-  toggleControlPane(!on);
-  $.localstore("cc_cp", (on ? "0" : "1"), false);
+function onToggleControlPane(state) {
+  $("span", this).addClass(state ? "remove-icon" : "add-icon").removeClass(state ? "add-icon" : "remove-icon");
+  $.localstore("cc_cp", (state ? "1" : "0"), false);
 }
 
-function toggleControlPane(show) {
-  if (show) {
-    $("#the-control-pane").height(heights.controlPane);
-    $(".cuecard-queryEditor-content").animate({height: "-=" + heights.controlPane}, function() {
-      $("#qe-options-on").show();
-      $("#qe-options-off").hide();
-      onResize();
-    });
-  } else {
-    $(".cuecard-queryEditor-content").animate({height: "+=" + heights.controlPane}, function() {
-      $("#the-control-pane").height(0);
-      $("#qe-options-on").hide();
-      $("#qe-options-off").show();
-      onResize();
-    });
-  }
-};
+function onToggleHeaders(state) {
+  $("span", this).addClass(state ? "remove-icon" : "add-icon").removeClass(state ? "add-icon" : "remove-icon");
+}
 
 function computePermanentLink(a) {
   a.href = "?q=" + encodeURIComponent(c.queryEditor.content()) + getUrlFlags();

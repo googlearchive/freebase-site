@@ -1,6 +1,7 @@
 [
   "mjt/mjt.mf.js",
   "jquerytools/overlay.js",
+  "template/jquery.paneldrawer.js",
   "cuecard/cuecard-api.js",
   "cuecard/cuecard.js",
   "cuecard/mql-syntax.js",

@@ -33,8 +33,13 @@
 <acre:block def="query_editor(queryEditor, codeMirrorOptions)">
 
   <div class="cuecard-queryEditor">
-    <div class="cuecard-queryEditor-content"></div>
-    <div class="cuecard-queryEditor-controls-bottom">
+    <div class="cuecard-queryEditor-content panel-content"></div>
+    <div class="cuecard-queryEditor-controls-bottom panel-header">
+      <span class="cuecard-queryEditor-controls-options drawer-toggle">
+        <a class="icon-link" href="javascript:void(0)">
+          <span>Query Options</span>
+        </a>
+      </span>
       <button title="Tab" class="button cuecard-queryEditor-queryAssist"
               acre:onclick="queryEditor.startAssistAtCursor()">
         Query&nbsp;assist
@@ -57,10 +62,6 @@
     queryEditor._controlBottomContainer = el.find(".cuecard-queryEditor-controls-bottom");
 
     queryEditor._addCodemirror(queryEditor._iframeContainer, codeMirrorOptions);
-    queryEditor.layout = function(){
-      queryEditor._iframeContainer.height(queryEditor._container.height() - 
-                                          queryEditor._controlBottomContainer.height());
-    };
     queryEditor.layout();
   </acre:block>
   

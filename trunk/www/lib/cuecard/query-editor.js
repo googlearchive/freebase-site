@@ -91,8 +91,8 @@ CueCard.QueryEditor = function(elmt, options) {
         .css("left", "-500px")
         .css("top", "0px")
         .appendTo(document.body);
-        
-    $(this._container).acre(fb.acre.current_script.app.path + "/cuecard/query-editor.mjt", "query_editor", [this, codeMirrorOptions]);
+    
+    $(this._container).acre(fb.acre.current_script.app.path + "/cuecard/query-editor.mjt", "query_editor", [this, codeMirrorOptions])
 };
 
 CueCard.QueryEditor.nativeTypes = {
@@ -124,6 +124,12 @@ CueCard.QueryEditor.prototype.dispose = function() {
     this._controlTopContainer = null;
     this._controlBottomContainer = null;
     this._iframeContainer = null;
+};
+
+CueCard.QueryEditor.prototype.layout = function(height, width) {
+  if (this._controlPane._paneldrawer) {
+    this._controlPane._paneldrawer.set_height(height);
+  }
 };
 
 CueCard.QueryEditor.prototype._addCodemirror = function(el, options) {
@@ -297,10 +303,37 @@ CueCard.QueryEditor.prototype.getMqlReadURL = function() {
     return serviceUrl + '?query=' + encodeURIComponent(q);
 };
 
+CueCard.QueryEditor.prototype.decantConstraints = function(q) {
+  function decant(val) {
+    if (jQuery.isPlainObject(val)) {
+      var has_keys = false;
+      for (var key in val) {
+        has_keys = true;
+        var tmp = decant(val[key])
+        if (tmp === undefined) {
+          delete val[key];
+        } else {
+          val[key] = tmp;
+        }
+      }
+      return has_keys ? val : undefined;
+    } else if (jQuery.isArray(val)) {
+      //return val.length ? [decant(val[0])] : undefined;
+      return val.length ? decant(val[0]) : undefined;
+    } else {
+      return (val === null) ? undefined : val;
+    }
+  };
+  
+  var query = JSON.parse(q).query;
+  return decant(query);
+};
+
 CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
     if (this._outputPane != null) {
         var options = {};
         var q = this._getResolvedQueryEnvelope(forceCleanUp || (this._controlPane && this._controlPane.getSetting("cleanup")), options);
+        
         
         if (this._confirmWriteQuery(options)) {
             if (window.confirm("Your query will write data into Freebase.\nAre you sure you want to do that?")) {
@@ -331,7 +364,7 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
                     "code" in o.body && o.body.code == "/api/status/error" && "messages" in o.body && o.body.messages != null) {
                     options["encodeJavascriptString"] = function(x) { return x; };
                 }
-                self._outputPane.setJSONContent(o.body, self.getJsonizingSettings(options));
+                self._outputPane.setJSONContent(o.body, self.getJsonizingSettings(options), self.decantConstraints(q));
             }
         };
         var onError = function(msg) {
@@ -342,6 +375,7 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
         if (options.isWriteQuery || q.length > 1024) {
             $.post(url, { "query" : q }, onDone, "json");
         } else {
+            q = this._outputPane.prepareQuery(q);
             CueCard.JsonpQueue.call(url + "query=" + encodeURIComponent(q), onDone, onError);
         }
     }

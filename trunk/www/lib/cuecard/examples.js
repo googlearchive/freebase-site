@@ -61,9 +61,12 @@ CueCard.Examples = [
     },
     {   name: "Properties of /music/artist",
         query: [{
-            "id" : "/music/artist",
-            "properties" : [{}],
-            "type" : "/type/type"
+            "type" : "/type/property",
+            "schema" : {
+              "id" : "/music/artist"
+            },
+            "id" : null,
+            "name" : null
         }],
         techniques: [ "schema inspection" ]
     },
@@ -108,20 +111,20 @@ CueCard.Examples = [
         techniques: [ "text search", "multiple constraints on same property" ]
     },
     {   name: "2 of The Police's albums and their tracks",
-        query: {
-          "album" : [{
-              "id" : null,
-              "limit" : 2,
-              "name" : null,
-              "releases": {
-                "track": [],
-                "limit": 1
-              }
-          }],
-          "id" : null,
-          "name" : "The Police",
-          "type" : "/music/artist"
-        },
+        query: [{
+          "type": "/music/album",
+          "id": null,
+          "limit": 2,
+          "name": null,
+          "releases": {
+            "track": [],
+            "limit": 1
+          },
+          "artist": {
+            "name": "The Police",
+            "type": "/music/artist"
+          }
+        }],
         techniques: [ "basic", "limiting number of results" ]
     },
     {   name: "25 Songs with the word 'love' in their titles, with release date, album and artist",
@@ -130,7 +133,6 @@ CueCard.Examples = [
             "album": {
               "artist": [],
               "name": null,
-              "id": null,
               "limit": 1
             },
             "release_date": null,
@@ -179,24 +181,24 @@ CueCard.Examples = [
     },
     {   name: "Directors who have directed both Parker Posey and any actor named Robert (in possibly different films)",
         query: [{
-            "a:film" : [{
-                "name" : null,
-                "id" : null,
-                "starring" : {
-                  "actor" : "Parker Posey"
-                }
-            }],
-            "b:film" : [{
-                "name" : null,
-                "id" : null,
-                "starring" : {
-                  "actor" : null,
-                  "actor~=" : "Robert*"
-                }
-            }],
-            "name" : null,
-            "id" : null,
-            "type" : "/film/director"
+          "a:film": [{
+            "name": null,
+            "id": null,
+            "starring": [{
+              "actor": "Parker Posey"
+            }]
+          }],
+          "b:film": [{
+            "name": null,
+            "id": null,
+            "starring": [{
+              "actor": null,
+              "actor~=": "Robert*"
+            }]
+          }],
+          "name": null,
+          "id": null,
+          "type": "/film/director"
         }],
         techniques: [ "multiple constraints on same property", "text search", "compound value type (CVT)" ]
     },
@@ -228,21 +230,19 @@ CueCard.Examples = [
     },
     {   name: "Kevin Bacon's films, with cast, producers, music, etc.",
         query: [{
-            "film" : [{
-                "film" : {
-                  "imdb_id" : [],
-                  "music" : [],
-                  "name" : null,
-                  "id" : null,
-                  "produced_by" : [],
-                  "starring" : [{
-                      "actor" : [{}]
-                  }],
-                  "type" : []
-                }
-            }],
-            "name" : "Kevin Bacon",
-            "type" : "/film/actor"
+          "type": "/film/film",
+          "only:starring": {
+            "actor": {
+              "name": "Kevin Bacon"
+            }
+          },
+          "name": null,
+          "imdb_id": [],
+          "music": [],
+          "produced_by": [],
+          "starring": [{
+            "actor": []
+          }]
         }],
         techniques: [ "basic", "compound value type (CVT)" ]
     },
@@ -258,26 +258,28 @@ CueCard.Examples = [
     },
     {   name: "Tracks on Synchronicity longer than 300 seconds",
         query: [{
-            "artist" : "The Police",
-            "name" : "Synchronicity",
-            "release":{
-              "track" : [{
-                  "length" : null,
-                  "length>" : 300,
-                  "name" : null
-              }],
-              "limit":1
-            },
-            "type" : "/music/album"
+          "type": "/music/track",
+          "length": null,
+          "length>": 300,
+          "name": null,
+          "releases": [{
+            "album": {
+              "artist": "The Police",
+              "name": "Synchronicity"
+            }
+          }]
         }],
         techniques: [ "range constraint" ]
     },
     {   name: "Properties of a particular type (/government/politician)",
-        query: {
-          "id" : "/government/politician",
-          "properties" : [],
-          "type" : "/type/type"
-        },
+        query: [{
+          "type": "/type/property",
+          "schema": {
+            "id": "/government/politician"
+          },
+          "id": null,
+          "name": null
+        }],
         techniques: [ "schema inspection" ]
     },
     {   name: "Properties of a particular property (/type/object/name)",
@@ -289,11 +291,13 @@ CueCard.Examples = [
         techniques: [ "schema inspection" ]
     },
     {   name: "Types in a particular domain (/music)",
-        query: {
-          "id" : "/music",
-          "type" : "/type/domain",
-          "types" : []
-        },
+        query: [{
+          "type": "/type/type",
+          "domain": {
+            "id": "/music"
+          },
+          "name": null
+        }],
         techniques: [ "schema inspection" ]
     },
     {   name: "Creating a new topic given a name and a type",

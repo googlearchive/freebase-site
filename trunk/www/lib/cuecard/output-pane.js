@@ -33,14 +33,31 @@ CueCard.OutputPane = function(elmt, options) {
   this._elmt = $(elmt);
   this._options = options || {};
 
+  this._TABS = [
+    { name: 'List', key: "list"},
+    { name: 'API',  key: "json"}
+  ];
+  if (!this._options.hideHelp) {
+    this._TABS.push({ name: 'Help', key: "help"});
+  }
+
   this._jsonResult = null;
-  this._lastJsonOutputMode = $.localstore("cc_op_mode") == "json" ? "json" : "json";
+  this._lastJsonOutputMode = $.localstore("cc_op_mode") || this._TABS[0].key;
 
   this._constructUI();
 };
 
 CueCard.OutputPane.prototype.dispose = function() {
   // TODO
+};
+
+CueCard.OutputPane.prototype.layout = function(height, width) {
+  this._container.height(height);
+  var contentHeight = this._container.innerHeight() - this._tabsContainer.outerHeight();
+  this._contentContainer.height(contentHeight);
+  if (this._statusDrawer) {
+    this._statusDrawer.set_height(contentHeight);
+  }
 };
 
 CueCard.OutputPane.prototype._constructUI = function() {
@@ -51,55 +68,72 @@ CueCard.OutputPane.prototype._constructUI = function() {
 
   var tabs = $('#' + idPrefix + " > .cuecard-outputPane-tabs > .tab-nav");
   tabs.tabs('#' + idPrefix + " > .tabbed-content > .cuecard-outputPane-tabBody", {
-    "initialIndex": this._options.hideHelp ? 1 : 2,
+    "initialIndex": this._options.hideHelp ? self.getTabIndex(self._lastJsonOutputMode) : self.getTabIndex("help"),
     "onBeforeClick": function(event, index) {
-      if (index == 0) { // json
-        self._lastJsonOutputMode = "json";
+      var key = self._TABS[index].key;
+      if (key !== "help") {
+        self._lastJsonOutputMode = key;
+        $.localstore("cc_op_mode", key, false);
       }
-
-      $.localstore("cc_op_mode", self._lastJsonOutputMode, false);
     }
   });
   this._tabs = tabs.data("tabs");
 
-  this._json = this._getTab("json").find("div");
-  this._status = this._getTab("status").find("div");
+  this._list = this._getTab("list").find("div");
+  this._json = this._getTab("json").find("div .panel-content");
+  this._status = this._getTab("json").find("div .drawer-content");
   this._help = this._getTab("help").find("div");
 
   // setup JSON iframe
   this._createIframe();
+  
+  this._statusDrawer = this._elmt.find(".cuecard-outputPane-json").paneldrawer({
+    toggle_state: 0,
+    toggle_callback: this._options.toggle_callback,
+    drawer_height: 250
+  }).data("$.paneldrawer");
 };
 
 CueCard.OutputPane.prototype._getTab = function(name) {
   return $("#" + this._idPrefix + "-" + name);
 };
 
-CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings) {
-  this._jsonResult = o;
-  this._setIFrameText(CueCard.jsonize(o, jsonizingSettings || { indentCount: 2 }));
-
-  var tabToSelect;
-  if (this._lastJsonOutputMode == "json") {
-    tabToSelect = 0;
-  } else {
-    tabToSelect = 0;
+CueCard.OutputPane.prototype.prepareQuery = function(q) {
+  if (this.__lastJsonOutputMode === "list") {
+    // do list extension
   }
-
-  var self = this;
-  var selectTab = function() {
-    self._tabs.click(tabToSelect);
-  };
-
-  // tabs have to be selected asynchronously or Chrome will crash.
-  window.setTimeout(selectTab, 100);
+  return q;
 };
 
+CueCard.OutputPane.prototype.getTabIndex = function(key) {
+  for (var m=0; m < this._TABS.length; m++) {
+    if(this._TABS[m].key === key) {
+      return m;
+    }
+  }
+  return 0;
+};
+
+CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings, constraints) {
+  this._jsonResult = o;
+  
+  this._setIFrameText(CueCard.jsonize(o, jsonizingSettings || { indentCount: 2 }));
+  if (o.result) {
+    this._list.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list", [o.result, constraints]);    
+  } else if (o.messages && o.messages[0] && o.messages[0].message) {
+    this._list.html(o.messages[0].message)
+  }
+  
+  this._tabs.click(this.getTabIndex(this._lastJsonOutputMode));
+}
+
 CueCard.OutputPane.prototype.setStatus = function(html) {
-  this._tabs.click(1);
+  //this._tabs.click(1);
   this._status.html(html);
 
   this._jsonResult = null;
   this._setIFrameText("");
+  this._list.html("");
 };
 
 CueCard.OutputPane.prototype.getJson = function() {

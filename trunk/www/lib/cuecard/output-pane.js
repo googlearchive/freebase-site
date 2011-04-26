@@ -55,7 +55,7 @@ CueCard.OutputPane.prototype.layout = function(height, width) {
   this._container.height(height);
   var contentHeight = this._container.innerHeight() - this._tabsContainer.outerHeight();
   this._contentContainer.height(contentHeight);
-  if (this._statusDrawer) {
+  if (this._statusDrawer && contentHeight) {
     this._statusDrawer.set_height(contentHeight);
   }
 };
@@ -66,9 +66,18 @@ CueCard.OutputPane.prototype._constructUI = function() {
 
   this._elmt.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "tabs", [idPrefix, this]);
 
+  var initial_tab;
+  if (this._options.initial_tab) {
+    initial_tab = self.getTabIndex(this._options.initial_tab);
+  } else if (this._options.hideHelp || this._options.queryLoaded) {
+    initial_tab = self.getTabIndex(self._lastJsonOutputMode);
+  } else {
+    self.getTabIndex("help");
+  }
+                    
   var tabs = $('#' + idPrefix + " > .cuecard-outputPane-tabs > .tab-nav");
   tabs.tabs('#' + idPrefix + " > .tabbed-content > .cuecard-outputPane-tabBody", {
-    "initialIndex": this._options.hideHelp ? self.getTabIndex(self._lastJsonOutputMode) : self.getTabIndex("help"),
+    "initialIndex": initial_tab,
     "onBeforeClick": function(event, index) {
       var key = self._TABS[index].key;
       if (key !== "help") {

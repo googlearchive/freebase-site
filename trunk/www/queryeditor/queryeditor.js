@@ -35,25 +35,30 @@ CueCard.urlPrefix = CueCard.apiProxy.base = fb.h.ajax_url("lib/cuecard/");
 
 var c = {};
 var queryEditorOptions;
-var page_chrome_height;
 
 function onLoad() {
   var params = CueCard.parseURLParameters();
+  
+  var collapsed = $.localstore("qe_query_mode");
+  var autorun = false;
 
   var outputPaneOptions = {
     toggle_callback: onToggleHeaders,
-    stylesheet: $("#cuecard-outputPane-stylesheet").attr("href")
+    stylesheet: $("#cuecard-outputPane-stylesheet").attr("href"),
+    initial_tab: params.tab
   };
   
   var controlPaneOptions = {
-    paneldrawer: "#qe-module",
-    height: 250,
-    toggle_state: ($.localstore("cc_cp") == "1"),
-    toggle_callback: onToggleControlPane,
+    paneldrawer: {
+      element: $("#qe-module"),
+      drawer_height: 250,
+      toggle_state: ($.localstore("cc_cp") == "1"),
+      toggle_callback: onToggleControlPane,
+      panel_content: "cuecard-queryEditor-content",
+      init_height: false
+    },
     extended: 0 // Don't make this sticky: $.localstore("cc_cp_extended") == "1" ? 1 : 0,
   };
-
-	$(".nicemenu").nicemenu();
 
   queryEditorOptions = {
     focusOnReady: true,
@@ -84,10 +89,6 @@ function onLoad() {
       stylesheet: [$("#codemirror-css").attr("href")]
     }
   };
-
-  if ("debug" in params) {
-    queryEditorOptions.debug = params.debug;
-  }
 
   if ("q" in params || "query" in params) {
     var s = "q" in params ? params.q : params.query;
@@ -132,31 +133,50 @@ function onLoad() {
     }
   }
   
+  if ("debug" in params) {
+    queryEditorOptions.debug = params.debug;
+  }
+
+  if ("autorun" in params) {
+    autorun = true;
+  }
+  
+  if ("list" in params) {
+    collapsed = true;
+    autorun = true;
+    outputPaneOptions.initial_tab = "list";
+  }
+  
   queryEditorOptions.onReady = function() {
-    // patch in our changes to cuecard's default layout
+    $(".nicemenu").nicemenu();
+    
     $("#links").prependTo("#the-output-pane .cuecard-outputPane-tabs");
     
     $("#qe-module").collapse_module({
       modules: ".sub-module",
-      collapsed: $.localstore("qe_query_mode"),
+      collapsed: collapsed,
       column: "#the-output-pane .cuecard-outputPane-content",
       toggle_callback: function(collapsed) {
+        if (!collapsed) {
+          resizePanes();
+        }
         $.localstore("qe_query_mode", collapsed, false);
       }
     });
     
     resizePanes();
-    
-    if ("autorun" in params) {
-      c.queryEditor.run(false);
-    }
+    if (autorun) c.queryEditor.run(false);
     
     // fulhack to hide initial laying out
     setTimeout(function() {
-      $("#the-query-editor").css("height", "initial")
-      $("#the-query-editor, #the-output-pane, #the-control-pane").css("visibility", "visible")
+      $("#the-query-editor").css("height", "initial");
+      $("#the-query-editor, #the-output-pane, #the-control-pane").css("visibility", "visible");
     }, 1);
   };
+  
+  if (queryEditorOptions.content) {
+    outputPaneOptions.queryLoaded = true;
+  }
 
   c = CueCard.createComposition({
     queryEditorElement: $('#the-query-editor')[0],
@@ -167,10 +187,10 @@ function onLoad() {
     controlPaneOptions: controlPaneOptions
   });
   
-  page_chrome_height =  $("#header").outerHeight() + 
+  c.page_chrome_height =  $("#header").outerHeight() + 
                         $("#breadcrumb").outerHeight() + 
                         $("#footer").outerHeight() + 
-                        30; //padding
+                        ($("#content").outerHeight() - $("#content").height());
   
   $(window).bind("beforeunload", function(evt) {
     saveQueryInWindow();
@@ -178,11 +198,11 @@ function onLoad() {
 }
 
 function resizePanes() {
-  var innerHeight = $("body").outerHeight() - page_chrome_height;
-
-  if (c.queryEditor) c.queryEditor.layout(innerHeight - 2 /* extra border */);
-  //if (c.controlPane) c.controlPane.layout(250);
-  if (c.outputPane) c.outputPane.layout(innerHeight);
+  var innerHeight = $("body").outerHeight() - c.page_chrome_height;
+  if (innerHeight) {
+    if (c.outputPane) c.outputPane.layout(innerHeight);
+    if (c.queryEditor && !$.localstore("qe_query_mode")) c.queryEditor.layout(innerHeight - 2 /* extra border */);
+  }
 };
 
 function onResize() {

@@ -47,14 +47,15 @@
       
       elt.css("overflow", "hidden");
       this.drawer_height = this.options.drawer_height || this.drawer_content.outerHeight();
-      this.drawer_content.height(this.drawer_height);
       this.headers_height = 0;
       $("." + o.css_panel_header, elt).each(function(i, header) {
         self.headers_height += $(header).outerHeight();
       });
 
       this.toggle_state = this.options.toggle_state;
-      this.set_height($(elt).innerHeight());
+      if (this.options.init_height) {
+        this.set_height($(elt).innerHeight());
+      }
     },
     
     set_height: function(height) {
@@ -67,10 +68,10 @@
       this.toggle_state = state;
       if (state) {
         this.drawer_content.height(this.drawer_height);
-        this.drawer_toggle.removeClass("collapsed");        
+        this.drawer_toggle.removeClass("collapsed");
       } else {
         this.drawer_content.height(0);
-        this.drawer_toggle.addClass("collapsed");        
+        this.drawer_toggle.addClass("collapsed");
       }
       this.element.css("height", "initial");
       if (this.options.toggle_callback) 
@@ -120,6 +121,7 @@
       css_drawer_toggle: "drawer-toggle",
       animate: true,
       toggle_state: true,
+      init_height: true
     }
   });
 

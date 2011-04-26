@@ -67,9 +67,6 @@
 
 
 <acre:block def="list(o, c)">
-
-  <link acre:if="outputPane._options.stylesheet" rel="stylesheet" href="$outputPane._options.stylesheet"/>
-
   <table class="data-table" acre:if="o">
     <acre:script>
       function is_constraint(path, value) {
@@ -97,6 +94,8 @@
         return jQuery.isPlainObject(val) ? same_keys(value, val) : true;
       }
     </acre:script>
+    
+    <link acre:if="outputPane._options.stylesheet" rel="stylesheet" href="$outputPane._options.stylesheet"/>
     
     <thead acre:def="thead(r, path)">
       <tr>
@@ -278,6 +277,7 @@
         $(".cuecard-examples-example").removeClass("cuecard-examples-example-selected");
         $("#cuecard-example-" + index).addClass("cuecard-examples-example-selected");
         outputPane._options.queryEditor.content(CueCard.jsonize(CueCard.Examples[index].query, { indentCount: 2 }));
+        outputPane._options.queryEditor.run(false);
         return false;
       }
 

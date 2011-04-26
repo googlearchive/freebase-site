@@ -127,7 +127,7 @@ CueCard.QueryEditor.prototype.dispose = function() {
 };
 
 CueCard.QueryEditor.prototype.layout = function(height, width) {
-  if (this._controlPane._paneldrawer) {
+  if (this._controlPane._paneldrawer && height) {
     this._controlPane._paneldrawer.set_height(height);
   }
 };

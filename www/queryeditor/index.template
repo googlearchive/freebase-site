@@ -98,9 +98,9 @@
           </li>
         </ul>
       </div>
-      <link id="codemirror-js"  href="lib/codemirror/codemirror-frame.mf.js" />
-      <link id="codemirror-css" href="lib/codemirror/codemirror-frame.mf.css" />
-      <link id="cuecard-outputPane-stylesheet" href="output_pane.mf.css" />
+      <link rel="download" id="codemirror-js"  href="lib/codemirror/codemirror-frame.mf.js" />
+      <link rel="download" id="codemirror-css" href="lib/codemirror/codemirror-frame.mf.css" />
+      <link rel="download" id="cuecard-outputPane-stylesheet" href="output_pane.mf.css" />
     </div>
 </acre:block>
 

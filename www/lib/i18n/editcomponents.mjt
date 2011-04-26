@@ -143,10 +143,21 @@
           <p class="form-note" acre:if="prop.unique">${_("This property is unique. Only one value allowed per language.")}</p>
           <label class="form-label" for="$prop.id">${_("Add new")}</label>
           ${pb.data_input("/type/text", "", null, lang)}
-          <select class="lang-select">
+          <select class="lang-select${prop.unique ? ' unique' : ''}">
             <option value="">${_("Language")}</option>
             <acre:block for="l in langs">
-            <option value="${l.id}" acre:attrs="prop.unique && vlangs[l.id] ? {disabled:'disabled'} : {}">${l.name}</option>
+              <acre:script>
+                var disabled = prop.unique && vlangs[l.id];
+                var selected = !disabled && lang == l.id;
+                var attrs = {};
+                if (disabled) {
+                  attrs.disabled = "disabled";
+                }
+               if (selected) {
+                 attrs.selected = "selected";
+               }               
+              </acre:script>
+              <option value="${l.id}" acre:attrs="attrs">${l.name}</option>
             </acre:block>
           </select>
           <a class="icon-link add" href="javascript:void(0);">${_("Add")}</a>

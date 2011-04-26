@@ -85,7 +85,14 @@ CueCard.OutputPane.prototype._constructUI = function() {
   this._help = this._getTab("help").find("div");
 
   // setup JSON iframe
-  this._createIframe();
+  var json_iframe = document.createElement('iframe');
+  this._json.append(json_iframe);
+  this._json_content = $(this._setupIframe(json_iframe));
+  
+  // setup list iframe
+  var list_iframe = document.createElement('iframe');
+  this._list.append(list_iframe);
+  this._list_content = $(this._setupIframe(list_iframe));
   
   this._statusDrawer = this._elmt.find(".cuecard-outputPane-json").paneldrawer({
     toggle_state: 0,
@@ -118,10 +125,11 @@ CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings, con
   this._jsonResult = o;
   
   this._setIFrameText(CueCard.jsonize(o, jsonizingSettings || { indentCount: 2 }));
+  
   if (o.result) {
-    this._list.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list", [o.result, constraints]);    
+    this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list", [o.result, constraints]);    
   } else if (o.messages && o.messages[0] && o.messages[0].message) {
-    this._list.html(o.messages[0].message)
+    this._list_content.html(o.messages[0].message);
   }
   
   this._tabs.click(this.getTabIndex(this._lastJsonOutputMode));
@@ -133,7 +141,7 @@ CueCard.OutputPane.prototype.setStatus = function(html) {
 
   this._jsonResult = null;
   this._setIFrameText("");
-  this._list.html("");
+  this._list_content.html("");
 };
 
 CueCard.OutputPane.prototype.getJson = function() {
@@ -165,13 +173,11 @@ CueCard.OutputPane.prototype._setIFrameText = function(text) {
   });
 
   text = "<pre style='white-space:pre-wrap;'>" + buf.join("\n") + "</pre>";
-  this._json_iframe.document.body.innerHTML = text;
+  this._json_content.html(text);
 };
 
-CueCard.OutputPane.prototype._createIframe = function() {
-  var iframe = document.createElement('iframe');
-  this._json.append(iframe);
-
+CueCard.OutputPane.prototype._setupIframe = function(iframe) {
+  
   var __cc_tree_mouseOverTopic = function(elmt) {
     var id = elmt.getAttribute("fbid");
     CueCard.JsonpQueue.call(fb.h.legacy_fb_url("/private/flyout", id),
@@ -211,9 +217,10 @@ CueCard.OutputPane.prototype._createIframe = function() {
     }
   };
 
-  var win = this._json_iframe = iframe.contentWindow || iframe.contentDocument;
+  var win = iframe.contentWindow || iframe.contentDocument;
   win.__cc_tree_mouseOverTopic = __cc_tree_mouseOverTopic;
   win.__cc_tree_mouseOutTopic  = __cc_tree_mouseOutTopic;
   win.__cc_tree_createPopup    = __cc_tree_createPopup;
   win.__cc_tree_disposePopup   = __cc_tree_disposePopup;
+  return win.document.body;
 };

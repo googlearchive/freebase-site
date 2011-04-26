@@ -67,6 +67,9 @@
 
 
 <acre:block def="list(o, c)">
+
+  <link acre:if="outputPane._options.stylesheet" rel="stylesheet" href="$outputPane._options.stylesheet"/>
+
   <table class="data-table" acre:if="o">
     <acre:script>
       function is_constraint(path, value) {
@@ -98,7 +101,7 @@
     <thead acre:def="thead(r, path)">
       <tr>
         <th acre:for="key, val in r" acre:if="!is_constraint(path.concat(key), val)">
-          ${key.split("/").slice(-1).join("")} ${thead_value(val, path.concat(key))}
+          ${key.split(":")[0].replace("_", " ")} ${thead_value(val, path.concat(key))}
         </th>
       </tr>
     </thead>
@@ -107,7 +110,7 @@
       <acre:script>if (jQuery.isArray(v)) v = v[0];</acre:script>
       <ul acre:if="jQuery.isPlainObject(v)">
         <li acre:for="key, val in v" acre:if="!is_constraint(path.concat(key), val)">
-          ${key.split("/").slice(-1).join("")} ${thead_value(val, path.concat(key))}
+          ${key.split(":")[0].replace("_", " ")} ${thead_value(val, path.concat(key))}
         </li>
       </ul>
     </acre:block>
@@ -123,7 +126,17 @@
     
     <acre:block def="value(a, path)">
       <acre:block choose="typeof a">
-        <acre:block when="string">$a</acre:block>
+        <acre:block when="string">
+          <a acre:if="/^\//.test(a)"
+            target='_blank' 
+            class='cuecard-outputPane-tree-dataLink' 
+            href="${CueCard.freebaseServiceUrl}view$a" fbid="$a"
+            onmouseover="__cc_tree_mouseOverTopic(this)" 
+            onmouseout="__cc_tree_mouseOutTopic(this)">
+            $a
+          </a>
+          <acre:block else="">$a</acre:block>
+        </acre:block>
         <acre:block when="number">$a</acre:block>
         <acre:block when="boolean">${a ? "true" : "false"}</acre:block>
         <acre:block when="object">

@@ -41,8 +41,10 @@ function onLoad() {
   var params = CueCard.parseURLParameters();
 
   var outputPaneOptions = {
-    toggle_callback: onToggleHeaders
+    toggle_callback: onToggleHeaders,
+    stylesheet: $("#cuecard-outputPane-stylesheet").attr("href")
   };
+  
   var controlPaneOptions = {
     paneldrawer: "#qe-module",
     height: 250,

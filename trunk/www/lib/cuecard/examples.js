@@ -181,14 +181,14 @@ CueCard.Examples = [
     },
     {   name: "Directors who have directed both Parker Posey and any actor named Robert (in possibly different films)",
         query: [{
-          "a:film": [{
+          "parker_film:film": [{
             "name": null,
             "id": null,
             "starring": [{
               "actor": "Parker Posey"
             }]
           }],
-          "b:film": [{
+          "robert_film:film": [{
             "name": null,
             "id": null,
             "starring": [{
@@ -204,19 +204,18 @@ CueCard.Examples = [
     },
     {   name: "Music artists with albums containing a track called 'One Tree Hill'",
         query: [{
-          "album" : [{
-            "name" : null,
-            "id" : null,
+          "album": [{
+            "name": null,
+            "id": null,
             "releases": [{
-              "track" : [{
-                "length" : null,
-                "name" : "One Tree Hill"
+              "track": [{
+                "name": "One Tree Hill"
               }]
             }]
           }],
-          "name" : null,
-          "id" : null,
-          "type" : "/music/artist"
+          "name": null,
+          "id": null,
+          "type": "/music/artist"
         }],
         techniques: [ "compound value type (CVT)", "basic" ]
     },

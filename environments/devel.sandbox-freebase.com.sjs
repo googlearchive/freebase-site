@@ -44,6 +44,7 @@ var rules = {
     {prefix:"/topic",              app:"//topic" + codebase},
     {prefix:"/group",              app:"//group" + codebase},
     {prefix:"/web",                app:"//sameas" + codebase},
+    {prefix:"/account",            app:"//account" + codebase},
 
     // Urls for exposed ajax libraries and static resources
     // TODO: remove this and use ajax router

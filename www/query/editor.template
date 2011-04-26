@@ -40,7 +40,7 @@
 
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="lib/editor-bundle.mf.css" />
-  <link rel="stylesheet" type="text/css" href="queryeditor.mf.css" />
+  <link rel="stylesheet" type="text/css" href="qeditor.mf.css" />
 </acre:block>
 
 <acre:block def="breadcrumb()">
@@ -106,5 +106,5 @@
 
 <acre:block def="footer_script()">
   <script src="lib/editor-bundle.mf.js"></script>
-  <script src="queryeditor.mf.js"></script>
+  <script src="qeditor.mf.js"></script>
 </acre:block>

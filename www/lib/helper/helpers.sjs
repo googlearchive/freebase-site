@@ -43,6 +43,7 @@ include_helpers(this, "helpers_sprintf");
 include_helpers(this, "helpers_markup");
 include_helpers(this, "helpers_mql");
 include_helpers(this, "helpers_cache");
+include_helpers(this, "helpers_account");
 
 //-----Functions for including new helpers-----
 function include_helpers(scope, script) {

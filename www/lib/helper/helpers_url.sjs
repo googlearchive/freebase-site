@@ -293,7 +293,7 @@ function account_url(kind, return_url) {
    case "signin":
     url = legacy_fb_url('/signin/login', {
       mw_cookie_scope: 'domain',
-      onsucceed: return_url
+      onsignin: return_url
     });
     break;
    case "signout":

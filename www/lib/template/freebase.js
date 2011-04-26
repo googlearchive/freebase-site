@@ -191,11 +191,12 @@
    */
    $(window)
      .bind("fb.user.signedin", function(e, user) {
-       console.log("fb.user.signnedin");
+       console.log("fb.user.signedin", user.id);
        fb.user = user;
        // signed in
        var u = $("#nav-username a:first");
        if (u.length) {
+         console.log(fb.user, fb.user.id, fb.user.name);
          u[0].href += fb.user.id;
          u.text(fb.user.name);
        }
@@ -207,64 +208,120 @@
        $("#signedout").show();
      });
 
-  /**
-   *  If metaweb client url? use metaweb-user-info cookie info
-   */
-  if (/\.(freebase|sandbox\-freebase)\.com$/.test(fb.acre.request.server_name)) {
-    /*
-     * Returns a single item 'i' from a Metaweb cookie 'c'
-     * Item codes: u=username, d=display name, g=guid, p=path
-     */
-    function cookieItem(c, i) {
-      var s = c.indexOf('|'+i+'_');
-      if (s != -1){
-        s = s + 2 + i.length;
-        var e = c.indexOf('|',s);
-        if (e != -1) return decodeURIComponent(c.substr(s,e-s));
-      }
-      return null;
+  // get user info from cookie:
+  var account_name = $.cookie("fb-account-name");
+  if (account_name) {
+    var user = {
+      id: '/user/'+account_name,
+      name: account_name
     };
-
-    // get user info from cookie:
-    var cookieInfo = $.cookie("metaweb-user-info");
-    if (cookieInfo) {
-      // 'g' = User GUID, 'u' = user account name, 'p' = path name of user obj
-      var guid = cookieItem(cookieInfo, 'g');
-      var name = cookieItem(cookieInfo, 'u');
-      var id = cookieItem(cookieInfo, 'p');
-      if (!id) {
-        id = '/user/' + this.name;
-      }
-      setTimeout(function() {
-        // sign-in/out disabled for milestone
-        $(window).trigger("fb.user.signedin", {guid: guid, name: name, id: id});
-      }, 0);
-    }
-    else {
-      setTimeout(function() {
-        // sign-in/out disabled for milestone
-        $(window).trigger("fb.user.signedout");
-      }, 0);
-    }
+    setTimeout(function() {
+      $(window).trigger("fb.user.signedin", user);
+    }, 0);
   }
   else {
-    $.ajax({
-      url: "/acre/account/user_info",
-      dataType: "json",
-      success: function(data) {
-        if (data && data.code === "/api/status/ok") {
-          $(window).trigger("fb.user.signedin", {id: data.id, guid: data.guid, name: data.username});
-        }
-        else {
-          $(window).trigger("fb.user.signedout");
-        }
-      },
-      error: function() {
-        $(window).trigger("fb.user.signedout");
-      }
-    });
+    setTimeout(function() {
+      $(window).trigger("fb.user.signedout");
+    }, 0);
   }
 
+  
+  fb.window_position = function() {
+    var position = {};
+    
+    if (typeof(window.innerWidth) == 'number' ) {
+      //Non-IE
+      position['width'] = window.outerWidth;
+      position['height'] = window.outerHeight;
+      position['top'] = window.screenY;
+      position['left'] = window.screenX;
+    } else if (document.documentElement && (document.documentElement.clientWidth || document.documentElement.clientHeight)) {
+      //IE 6+ in 'standards compliant mode'
+      position['width'] = document.body.clientWidth;
+      position['height'] = document.body.clientHeight;
+      position['top'] = window.screenTop;
+      position['left'] = window.screenLeft;
+    }
+    
+    return position;
+  };
+
+  fb.popup = function(url, width, height, windowname) {
+    width = width || 300;
+    height = height || 300;
+    
+    var pos = fb.window_position();
+    var left = Math.floor((pos['width']-width)/2) + pos['left'];
+    var top = Math.floor((pos['height']-height)/2) + pos['top'];
+      
+    // Chrome might fix this bug, but until then add some padding
+    //  to the height of the popup for the urlbar 
+    var is_chrome = /chrome/.test(navigator.userAgent.toLowerCase());
+    if (is_chrome) {
+        height += 50;
+    }
+    
+    var params = {
+      width: width,
+      height: height,
+      top: top,
+      left: left,
+      directories: 'no',
+      location: 'no',
+      menubar: 'no',
+      resizable: 'no',
+      scrollbars: 'yes',
+      status: 'no',
+      toolbar: 'no'
+    };
+    
+    var params_list = [];
+    for (var key in params) {
+      params_list.push(key+"="+params[key]);
+    }
+    return window.open(url, windowname || "", params_list.join());
+  };
+  
+  fb.login_popup = function(success) {
+    var width = 900;
+    var height = 600;
+    
+    if (!success) {
+      success = function(data) {
+        window.location.reload();
+      };
+    }
+    
+    var newwin = fb.popup("/account/signin", width, height, "Freebase");
+    
+    if (newwin.opener == null) newwin.opener = self;
+    window.onauthorization = success;
+    if (window.focus) {
+      newwin.focus();
+    }
+    return false;
+  };
+
+  fb.logout_popup = function(success) {
+    var width = 900;
+    var height = 600;
+    
+    if (!success) {
+      success = function(data) {
+        window.location.href = "/";
+      };
+    }
+    
+    var newwin = fb.popup("/account/signout", width, height, "Freebase");
+    
+    if (newwin.opener == null) newwin.opener = self;
+    window.onauthorization = success;
+    if (window.focus) {
+      newwin.focus();
+    }
+    return false;
+  };
+  
   /**
    * init universal language picker
    */

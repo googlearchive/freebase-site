@@ -38,7 +38,19 @@ var handler = function() {
   return h.extend({}, acre.handlers.acre_script, {
     to_http_response: function(module, script) {
       var d = lib.handle_service(module, script)
+        .then(null, function(service_error) {
+          if (service_error.code === "/api/status/error/auth" &&
+              module.SPEC.auth_redirect) {
+            // If the user is not logged-in then redirect to the specified page
+            h.clear_account_cookie();
+            acre.response.status = 302;
+            acre.response.set_header("Location", module.SPEC.auth_redirect);
+            acre.exit();
+          }
+          return service_error;
+        })
         .then(function(service_result) {
+          acre.response.set_header('content-type', 'text/html');
           return render(service_result.result, module.SPEC, script.scope);
         })
         .then(function(render_result) {
@@ -49,7 +61,6 @@ var handler = function() {
 
       d.cleanup();
 
-      console.log("controller module", module);
       var headers = {};
       h.set_cache_policy(module.SPEC.cache_policy || "public", null, headers);
       return hh.to_http_response_result(module.body, headers);

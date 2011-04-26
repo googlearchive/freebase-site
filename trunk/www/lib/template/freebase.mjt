@@ -149,11 +149,11 @@
         <strong id="nav-username">
           <a href="${h.legacy_fb_url('/user/profile')}" title="View your profile"></a>
         </strong>
-        <a href="${acre.markup.bless(h.account_url('settings'))}" title="View your account info on Freebase" rel="nofollow" id="nav-settings">Settings</a>
-        <a href="${acre.markup.bless(h.account_url('signout', h.fb_url()))}" title="Sign out of Freebase" rel="nofollow" id="nav-signout">Sign Out</a>
+        <a href="${h.account_url('settings')}" title="View your account info on Freebase" rel="nofollow" id="nav-settings">Settings</a>
+        <a href="javascript:void(0)" onclick="window.freebase.logout_popup()" title="Sign out of Freebase" rel="nofollow" id="nav-signout">Sign Out</a>
       </div>
       <div id="anonymous-user-controls" id="signedout" style="display:none;">
-        <a href="${acre.markup.bless(h.account_url('signin', acre.request.url))}" title="Sign in to your Freebase account" rel="nofollow">Sign In or Sign Up</a>
+        <a href="javascript:void(0)" onclick="window.freebase.login_popup()"title="Sign in to your Freebase account" rel="nofollow">Sign In or Sign Up</a>
       </div>
     </div>
   </div>

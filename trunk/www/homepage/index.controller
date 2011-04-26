@@ -33,9 +33,7 @@ var h = acre.require("lib/helper/helpers.sjs");
 var queries = acre.require("queries");
 
 var SPEC = {
-
   cache_policy: "public",
-
   template: "index_template.mjt",
 
   validate: function(params) {

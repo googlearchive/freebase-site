@@ -31,6 +31,7 @@
 
 <acre:script>
   var templates = acre.require("templates");
+  var h = acre.require("lib/helper/helpers.sjs");
   var c = this.exports.c = {};
 </acre:script>
 
@@ -47,7 +48,9 @@
   <link rel="canonical" href="http://www.freebase.com" />
   
   <script>
-    if (document.cookie.indexOf("metaweb-user-info") > 0) {window.location.href= "/home";}
+    if (document.cookie.indexOf("${h.account_cookie_name()}") >= 0) {
+      window.location.href= "/home";
+    }
   </script>
   <link rel="stylesheet" type="text/css" href="homepage.mf.css" />
 </acre:block>
@@ -69,7 +72,7 @@
   
   <div id="content-footer">
     <!!--${templates.join_freebase(c.reg_off)}!!-->
-    ${templates.for_developers()}                                       
+    ${templates.for_developers()}
     ${templates.blog_entries(c.blog)}
     ${templates.wiki_entries(c.wiki)}
     ${templates.join_discussion()}

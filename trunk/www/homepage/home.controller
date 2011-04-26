@@ -32,39 +32,24 @@
 var queries = acre.require("queries");
 var h = acre.require("helpers");
 
-var user_id;
-var loggedin_user = acre.freebase.get_user_info();
-if (acre.request.params.id) {
-  user_id = acre.request.params.id;
-} else if (loggedin_user){
-  user_id = loggedin_user.id;
-} else {
-  // If the user is not logged-in then redirect to the logged-out homepage
-  acre.response.status = 302;
-  var logout_url = h.account_url("signout", h.fb_url("/"));
-  acre.response.set_header("Location", logout_url);
-  acre.exit();
-}
-
 var SPEC = {
-
   template: "home_template.mjt",
-
   cache_policy: "nocache",
-
   auth: true,
+  auth_redirect: "/",
 
   validate: function(params) {
     return [];
   },
 
   run: function() {
+    var user = acre.freebase.get_user_info();
     return {
       categories: queries.categories(),
       blog: queries.blog_entries(),
       wiki: queries.wiki_entries(),
-      user: queries.user_info(user_id),
-      has_membership: queries.has_membership(user_id)
+      user: queries.user_info(user.id),
+      has_membership: queries.has_membership(user.id)
     };
   }
 };

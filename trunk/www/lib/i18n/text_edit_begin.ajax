@@ -57,7 +57,7 @@ var SPEC = {
       .then(function([prop, values]) {
         // TODO: assert prop
         return {
-          html: acre.markup.stringify(editcomponents.text_edit_form(prop, values))
+          html: acre.markup.stringify(editcomponents.text_edit_form(prop, values, lang))
         };
       });
   }

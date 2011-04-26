@@ -45,9 +45,7 @@ var SPEC = {
     //  redirect to the login page
     try {
       if (acre.freebase.apiary_url) {
-        acre.oauth.has_credentials();
-        
-        //acre.oauth.get_authorization();
+        acre.oauth.get_authorization();
       } else if (!acre.request.cookies['metaweb-user']) {
         acre.response.status = 302;
         var redirect_url = h.account_url('signin', acre.request.url);

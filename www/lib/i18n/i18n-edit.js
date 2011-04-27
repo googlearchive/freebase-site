@@ -103,6 +103,9 @@
             // enable submit button
             button_submit.removeAttr("disabled").removeClass("disabled");
           });
+        if ($(".lang", row).attr("data-value") === form.ajax.data.lang) {
+          row.addClass("lang-primary");
+        }
       };
       $(".values > tr", form.form).each(function() {
         value_row_init($(this));

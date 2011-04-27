@@ -138,7 +138,7 @@ function get_deep_props(id, props, subprops, lang) {
 function deep_props_query(id, prop, value, lang) {
   return pq.prop_data(id, prop, value.id, lang)
     .then(function(result) {
-      result[prop.id].forEach(function(data) {
+      result.forEach(function(data) {
         prop.properties.forEach(function(subprop) {
            subprop = h.extend({}, subprop);
            subprop.values = [];

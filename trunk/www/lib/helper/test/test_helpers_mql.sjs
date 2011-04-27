@@ -64,6 +64,18 @@ test("get_type_role", role_tests, function() {
 
 });
 
+test("id_key", function() {
+  same(h.id_key("/"), "");
+  same(h.id_key("/", true), ["/", ""]);
+  same(h.id_key("/a/b/c"), "c");
+  same(h.id_key("/a/b/c", true), ["/a/b", "c"]);
+});
+
+test("lang_code", function() {
+  same(h.lang_code("/lang/en"), "en");
+  same(h.lang_code("/lang/en-gb"), "en-gb");
+});
+
 
 acre.test.report();
 

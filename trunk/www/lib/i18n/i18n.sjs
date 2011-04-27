@@ -80,12 +80,12 @@ var LANGS = [
   },
   {
     "id": "/lang/zh",
-    "alias:id": ["/lang/zh-cn", "/lang/zh-hans"],
+    "o:id": ["/lang/zh-cn", "/lang/zh-hans"],
     "name": "Chinese"
   },
   {
     "id": "/lang/zh-hant",
-    "alias:id": ["/lang/zh-tw"],
+    "o:id": ["/lang/zh-tw"],
     "name": "Chinese (traditional)"
   },
   {
@@ -98,7 +98,7 @@ var LANGS = [
   },
   {
     "id": "/lang/pt-br",
-    "alias:id": ["/lang/pt"],
+    "o:id": ["/lang/pt"],
     "name": "Portuguese"
   },
   {
@@ -149,7 +149,7 @@ var LANGS = [
   },
   {
     "id": "/lang/iw",
-    "alias:id": ["/lang/he"],
+    "o:id": ["/lang/he"],
     "name": "Hebrew"
   },
   {
@@ -228,12 +228,12 @@ var LANGS = [
 var LANGS_BY_ID = {};
 var LANGS_BY_CODE = {};
 LANGS.forEach(function(l) {
-  var code = l.id.split("/").pop();
+  var code = h.lang_code(l.id);
   LANGS_BY_ID[l.id] = LANGS_BY_CODE[code] = l;
-  if (l["alias:id"]) {
-    l["alias:id"].forEach(function(ol) {
-      code = ol.split("/").pop();
-      LANGS_BY_ID[ol] = LANGS_BY_CODE[code] = l;
+  if (l["o:id"]) {
+    l["o:id"].forEach(function(id) {
+      code = h.lang_code(id);
+      LANGS_BY_ID[id] = LANGS_BY_CODE[code] = l;
     });
   }
 });
@@ -556,7 +556,7 @@ var mql = {
     var nolang_article;
     var lang_article;
     var en_article;
-    var lang_code = lang.split("/").pop();
+    var lang_code = h.lang_code(lang);
     var wp_lang_uri = h.sprintf("http://wp/%s/", lang_code);
     result.forEach(function(article) {
       if (article.source_uri) {
@@ -855,7 +855,7 @@ function get_accept_langs() {
 
 var dojo = {
   locale: function() {
-    var locale = lang.split("/").pop().toLowerCase();
+    var locale = h.lang_code(lang);
     if (locale === "iw") {
       locale = "he";
     }

@@ -97,7 +97,7 @@
   </acre:script>
   <acre:block if="force_display || this_lang !== current_lang" trim="1">
     <acre:script>
-      var code = this_lang.split("/").pop();
+      var code = h.lang_code(this_lang);
     </acre:script>
     <sup class="lang-code ${code}">${code}</sup>
   </acre:block>

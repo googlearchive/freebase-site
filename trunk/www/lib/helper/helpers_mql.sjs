@@ -1,4 +1,4 @@
-7/*
+/*
  * Copyright 2010, Google Inc.
  * All rights reserved.
  *
@@ -35,7 +35,9 @@ var exports = {
   "get_type_role": get_type_role,
   "is_reciprocal": is_reciprocal,
   "visible_subprops": visible_subprops,
-  "is_commons_id": is_commons_id
+  "is_commons_id": is_commons_id,
+  "id_key": id_key,
+  "lang_code": lang_code
 };
 
 var LITERAL_TYPE_IDS = {
@@ -173,4 +175,32 @@ function is_commons_id(id) {
     return false;
   }
   return true;
+};
+
+/**
+ * Get the key value of a MQL id. If with_ns is TRUE, return a tuple, [namespace, key]
+ *
+ * id_key("/a/b/c/d") === "d"
+ * id_key("/a/b/c/d", true) === ["/a/b/c", "d"]
+ */
+function id_key(id, with_ns) {
+  var parts = id.split("/");
+  var key = parts.pop();
+  if (with_ns) {
+    var ns = parts.join("/");
+    if (ns === "") {
+      ns = "/";
+    }
+    return [ns, key];
+  }
+  else {
+    return key;
+  }
+};
+
+/**
+ * @see id_key
+ */
+function lang_code(lang_id) {
+  return id_key(lang_id);
 };

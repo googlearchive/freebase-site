@@ -45,6 +45,7 @@
   var VIEW_ALL_PROPERTY_VALUES = _("Query all property values");
   var EDIT_VALUE = _("Edit value");
   var ADD_NEW_VALUE = _("Add new value");
+  var EDIT_LOCALIZED_TEXT = _("Edit localized...");
   var FILTER_TYPE = _("Filter by type");
   var FILTER_PROPERTY = _("Filter by property");
   var VIEW_SCHEMA = _("View schema");
@@ -131,7 +132,7 @@
     <div class="sub-foobar kbs">
       <a href="${ph.build_query_url(topic.id, prop_structure, prop_structure.expected_type.id === '/type/text' ? null : lang)}" class="more"><span>${VIEW_ALL_PROPERTY_VALUES}</span></a>
       <span class="header-label">
-        ${prop_menu(topic, prop_structure)}
+        ${prop_menu(topic, prop_structure, lang)}
       </span>
     </div>  
     ${databox(topic, prop_structure, prop_values, lang)}
@@ -216,7 +217,7 @@
             <a class="property-value" href="${h.fb_url(prop_value.id)}" title="${prop_value.id}">
               ${image.image_thumb(prop_value.id, 24, options)}
             </a>
-            ${value_menu()}
+            ${value_menu(topic, prop_structure, prop_value, lang)}
           </span>
         </li>
       </ul>
@@ -274,7 +275,7 @@
             <span class="wrapper">
               ${value(value.id, subprop_structure, subprop_value, lang)}
               <acre:block if="i === 0 && primary">
-                ${value_menu()}
+                ${value_menu(prop_value, subprop_structure, subprop_value, lang)}
               </acre:block>
             </span>      
           </li>
@@ -304,7 +305,7 @@
   <li class="kbs data-row">
     <span class="wrapper">
       ${value(topic.id, prop_structure, prop_value, lang)}
-      ${value_menu()}
+      ${value_menu(topic, prop_structure, prop_value, lang)}
     </span>
   </li>  
 </acre:block>
@@ -367,7 +368,7 @@
   </ul>  
 </acre:block>
 
-<acre:block def="prop_menu(topic, prop_structure)">
+<acre:block def="prop_menu(topic, prop_structure, lang)">
   <ul class="inline-menu nicemenu">
     <li class="inline-menu-item nicemenu-item">
       <span class="mark headmenu">
@@ -379,7 +380,10 @@
         </li>
         <li acre:else="" class="row-menu-item edit">
           <a href="#" onclick="return propbox.prop_add(this, ${prop_structure.unique});">${ADD_NEW_VALUE}</a>
-        </li>      
+        </li>
+        <li acre:if="prop_structure.expected_type.id === '/type/text'" class="row-menu-item edit">
+          <a href="#" onclick="return i18n.text_edit(this, '${h.ajax_url('lib/i18n')}', '${topic.id}', '${prop_structure.id}', '${lang}')">${EDIT_LOCALIZED_TEXT}</a>
+        </li>
         <li class="row-menu-item"><a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}">${FILTER_PROPERTY}</a></li>
         <li class="row-menu-item"><a href="${h.fb_url('/schema', prop_structure.id)}">${VIEW_SCHEMA}</a></li>
       </ul>
@@ -387,7 +391,7 @@
   </ul>
 </acre:block>
 
-<acre:block def="value_menu()">
+<acre:block def="value_menu(topic, prop_structure, prop_value, lang)">
   <ul class="combo-menu nicemenu">
     <li class="nicemenu-item edit">
       <span class="headmenu">
@@ -397,6 +401,11 @@
       <ul class="submenu row-menu">
         <li class="row-menu-item"><a href="#" onclick="return propbox.value_edit(this);">${EDIT}</a></li>
         <li class="row-menu-item"><a href="#" onclick="return propbox.value_delete(this);">${DELETE}</a></li>
+        <acre:block if="topic && prop_structure && prop_value && lang">
+          <li acre:if="!h.is_literal_type(prop_structure.expected_type.id)" class="row-menu-item">
+            <a href="#" onclick="return i18n.text_edit(this, '${h.ajax_url('lib/i18n')}', '${prop_value.id}', '/type/object/name', '${lang}')">${EDIT_LOCALIZED_TEXT}</a>          
+          </li>
+        </acre:block>
       </ul>
     </li>
   </ul>

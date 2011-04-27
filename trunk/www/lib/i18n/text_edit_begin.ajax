@@ -56,6 +56,9 @@ var SPEC = {
       .then(function(prop_structure) {
         return pq.prop_values(s, prop_structure, null, null)  // lang null to return all values in all languages
           .then(function(prop_values) {
+            prop_values = prop_values.sort(function(a,b) {
+              return text_lang_sort(a, b, lang);
+            });
             return {
               html: acre.markup.stringify(editcomponents.text_edit_form(prop_structure, prop_values, lang))
             };

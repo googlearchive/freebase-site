@@ -174,13 +174,7 @@
             </thead>
             <tbody class="values">
               <acre:block for="i,value in prop_values">
-                <acre:script>
-                  var class_name = "";
-                  if (lang === value.lang) {
-                    class_name += "preferred";
-                  }
-                </acre:script>
-                <tr class="$class_name">
+                <tr>
                   <th scope="row" class="row-header">
                     ${pb.data_input("/type/text", "", value, lang)}
                   </th>

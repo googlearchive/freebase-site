@@ -269,10 +269,10 @@
           '      <input class="fb-input" type="text">' +
           '    </span>' +
           '  </th>' +
-          '  <td>' +
+          '  <td class="lang">' +
           '    <span class="lang"></span>' +
           '  </td>' +
-          '  <td>' +
+          '  <td class="delete-row">' +
           '    <a class="icon-link delete" href="javascript:void(0);"><span class="delete-icon">delete</span></a>' +
           '  </td>' +
           '</tr>');

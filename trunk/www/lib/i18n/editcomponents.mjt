@@ -179,7 +179,7 @@
                     ${pb.data_input("/type/text", "", value, lang)}
                   </th>
                   <td class="lang">
-                    <span class="lang" data-value="${value.lang}">${i18n.LANGS_BY_ID[value.lang] && i18n.LANGS_BY_ID[value.lang].name || value.lang}</span>
+                    <span>${i18n.LANGS_BY_ID[value.lang] && i18n.LANGS_BY_ID[value.lang].name || value.lang}</span>
                   </td>
                   <td class="delete-row">
                     <a class="icon-link delete" href="javascript:void(0);"><span class="delete-icon">${_("delete")}</span></a>

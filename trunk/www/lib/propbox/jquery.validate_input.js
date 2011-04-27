@@ -85,6 +85,14 @@
         })
         .bind($.browser.msie ? "paste.validate_input" : "input.validate_input", function(e) {
           self.textchange(e);
+        })
+        .bind("keypress.validate_input", function(e) {
+          if (e.keyCode === 13) {
+            self.validate(true);
+          }
+        })
+        .bind("blur.validate_input", function(e) {
+          self.validate(true);
         });
     },
     _destroy: function() {

@@ -103,8 +103,8 @@
             // enable submit button
             button_submit.removeAttr("disabled").removeClass("disabled");
           });
-        if ($(".lang", row).attr("data-value") === form.ajax.data.lang) {
-          row.addClass("lang-primary");
+        if ($(".lang[data-value]", row).attr("data-value") === form.ajax.data.lang) {
+          row.addClass("preferred");
         }
       };
       $(".values > tr", form.form).each(function() {
@@ -157,7 +157,7 @@
         })
         .bind(event_prefix + "delete", function(e, row) {
           row = $(row);
-          var lang = $(".lang", row).attr("data-value");
+          var lang = $(".lang[data-value]", row).attr("data-value");
           row.fadeOut(function() {
             // re-enable option[value=lang] if unique property
             if (form.structure.unique) {
@@ -193,7 +193,7 @@
         if (value === "") {
           return;
         }
-        var lang = $(".lang", row).attr("data-value");
+        var lang = $(".lang[data-value]", row).attr("data-value");
         new_values.push({value:value, lang:lang});
       });
       var o = i18n.edit.text_edit_diff(old_values, new_values);
@@ -273,14 +273,14 @@
           '    </span>' +
           '  </th>' +
           '  <td class="lang">' +
-          '    <span class="lang"></span>' +
+          '    <span class="lang" data-value=""></span>' +
           '  </td>' +
           '  <td class="delete-row">' +
           '    <a class="icon-link delete" href="javascript:void(0);"><span class="delete-icon">delete</span></a>' +
           '  </td>' +
           '</tr>');
       $(":text", row).val(value);
-      $(".lang", row).attr("data-value", lang).text(lang_name);
+      $(".lang[data-value]", row).attr("data-value", lang).text(lang_name);
       return row;
     }
 

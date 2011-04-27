@@ -46,14 +46,7 @@ function isGlobal(id) {
     Returns a query string for provided property
 */
 function build_query_url(type_id, prop_id) {
-  var q = {
-    id: null,
-    name: null,
-    type: type_id
-  };
-  q[prop_id || "*"] = [];
-  q = [q];
-  return h.fb_url("/queryeditor", {autorun: true, q: JSON.stringify(q)});
+  return h.fb_url("/query", {type: type_id, property: prop_id});
 };
 
 function sort_by_id(a,b) {

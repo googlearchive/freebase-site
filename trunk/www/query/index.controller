@@ -1,0 +1,171 @@
+/*
+ * Copyright 2010, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var h = acre.require("lib/helper/helpers.sjs");
+var i18n = acre.require("lib/i18n/i18n.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+
+var promise = acre.require("lib/promise/apis.sjs");
+var freebase = promise.freebase;
+var deferred = promise.deferred;
+
+var SPEC = {
+
+  method: "GET",
+
+  auth: false,
+
+  cache_policy: "public",
+  
+  template: "editor.template",
+
+  validate: function(params) {
+    return [{
+      id:       validators.MqlId(acre.request.path_info, {if_empty: null}),
+      type:     validators.MqlId(params, "type", {if_empty: null}),
+      topic:    validators.MqlId(params, "topic", {if_empty: null}),
+      property: validators.MqlId(params, "property", {if_empty: null})
+    }];
+  },
+
+  run: function(args) {
+    if (args.id && args.id !== "/") {
+      return query_for_saved_query(args.id);
+    } else if (args.type) {
+      return query_for_type(args.type);
+    } else if (args.topic && args.property) {
+      return query_for_property(args.topic, args.property);
+    } else {
+      return redirect();
+    }
+  }
+  
+};
+
+function redirect(q) {
+  var params = {};
+  if (q) {
+    params.q = JSON.stringify(q);
+    params.list = 1;
+  }
+  var url = acre.form.build_url("/query/editor", params);
+  acre.response.status = 301;
+  acre.response.set_header("location", url);
+  acre.exit();
+};
+
+function query_for_saved_query(id) {
+  freebase.mqlread({
+    "id": id,
+    "type": "/freebase/freebase_query",
+    "query": null
+  }).then(function(env) {
+    return env.result;
+  }).then(function(result){
+    var q = JSON.parse(result.query);
+    return redirect(q);
+  });
+};
+
+function query_for_type(type) {
+  return freebase.mqlread([{
+    "type": "/type/property",
+    "schema": { 
+      "id": type 
+    },
+    "key": {
+      "value": null,
+      "namespace": type
+    },
+    "expected_type" : {
+      "id": null
+    },
+    "/freebase/property_hints/disambiguator" : true,
+    "unique": null
+  }]).then(function(env) {
+    return env.result;
+  }).then(function(result){
+    var q = {
+      "mid": null,
+      "name": null,
+      "type": type
+    };
+    result.forEach(function(prop) {
+      q[prop.key.value] = prop.unique ? null : [];
+    });
+    return redirect([q]);
+  });
+};
+
+function query_for_property(topic, property) {
+  return freebase.mqlread([{
+    "type": "/type/property",
+    "master_property" : null,
+    "reverse_property" : null,
+    "schema": {
+      "id" : null,
+      "/freebase/type_hints/mediator": null,
+      "!/type/property/expected_type": {
+        "id": property
+      }
+    },
+    "key": {
+      "value": null,
+      "namespace": {
+        "!/type/property/expected_type": {
+          "id": property
+        }
+      }
+    },
+    "unique" : null,
+    "/freebase/property_hints/disambiguator": true,
+  }]).then(function(env) {
+    return env.result;
+  }).then(function(result){
+    if (!result.length) redirect();
+    var type = result[0].schema;
+    var q = {
+      "type": type.id
+    };
+    q["!" + property] = { "id": topic };
+    if (!type["/freebase/type_hints/mediator"]) {
+      q.name = null;
+      q.mid = null;
+    }
+    result.forEach(function(prop) {
+      if (!(prop.master_property === property || prop.reverse_property === property)) {
+        q[prop.key.value] = prop.unique ? null : [];        
+      }
+    });
+    return redirect([q]);
+  });
+};
+

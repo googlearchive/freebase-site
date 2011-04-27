@@ -157,10 +157,10 @@ function onLoad() {
       collapsed: collapsed,
       column: "#the-output-pane .cuecard-outputPane-content",
       toggle_callback: function(collapsed) {
+        $.localstore("qe_query_mode", collapsed, false);
         if (!collapsed) {
           resizePanes();
         }
-        $.localstore("qe_query_mode", collapsed, false);
       }
     });
     

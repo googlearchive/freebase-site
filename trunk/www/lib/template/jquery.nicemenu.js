@@ -28,6 +28,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+/*
+  Assuming the following html:
+
+  <ul class="nicemenu">
+    <li class="nicemenu-item">
+      <a href="" class="headmenu">Trigger submenu</a>
+      <ul class="submenu">
+        <li>Foo</li>
+        <li>Bar</li>
+      </ul>
+    </li>
+  </ul>
+
+  Turn this structure into a menu system
+
+  $(".nicemenu").nicemenu();
+*/
+
 ;(function($) {
   var nicemenu = $.factory("nicemenu", {
     init: function() {

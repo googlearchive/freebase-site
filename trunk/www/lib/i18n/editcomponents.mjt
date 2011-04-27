@@ -163,7 +163,7 @@
           </select>
           <a class="icon-link add" href="javascript:void(0);">${_("Add")}</a>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="language-values">
           <table class="table table-sortable">
             <thead>
               <tr>
@@ -174,14 +174,20 @@
             </thead>
             <tbody class="values">
               <acre:block for="i,value in prop_values">
-                <tr>
+                <acre:script>
+                  var class_name = "";
+                  if (lang === value.lang) {
+                    class_name += "preferred";
+                  }
+                </acre:script>
+                <tr class="$class_name">
                   <th scope="row" class="row-header">
                     ${pb.data_input("/type/text", "", value, lang)}
                   </th>
-                  <td class="">
+                  <td class="lang">
                     <span class="lang" data-value="${value.lang}">${i18n.LANGS_BY_ID[value.lang] && i18n.LANGS_BY_ID[value.lang].name || value.lang}</span>
                   </td>
-                  <td class="">
+                  <td class="delete-row">
                     <a class="icon-link delete" href="javascript:void(0);"><span class="delete-icon">${_("delete")}</span></a>
                   </td>
                 </tr>

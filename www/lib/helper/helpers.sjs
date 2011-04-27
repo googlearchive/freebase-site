@@ -35,15 +35,21 @@ var exports = {};
 var self = this;
 
 //-----All core helper files to use-----
-include_helpers(this, "helpers_util");
-include_helpers(this, "helpers_date");
-include_helpers(this, "helpers_url");
-include_helpers(this, "helpers_format");
+/*
+ * Order matters because of circular dependencies
+ * (i.e., lib/i18n.sjs and lib/helpers.sjs)
+ * As a rule of thumb, include helpers that does not acre.require something else, first.
+ */
+// no acre.require dependencies:
+include_helpers(this, "helpers_util.sjs");
+include_helpers(this, "helpers_mql.sjs");
+include_helpers(this, "helpers_math.sjs");
 include_helpers(this, "helpers_sprintf");
 include_helpers(this, "helpers_markup");
-include_helpers(this, "helpers_mql");
+// acre.require dependencies:
 include_helpers(this, "helpers_cache");
 include_helpers(this, "helpers_account");
+include_helpers(this, "helpers_url");
 
 //-----Functions for including new helpers-----
 function include_helpers(scope, script) {

@@ -108,7 +108,7 @@ test("minimal_prop_structure", function() {
   ].forEach(function(pid) {
     (function() {
       var schema, structure, minimal;
-      queries._prop_schema(pid, "/lang/en")
+      queries.prop_schema(pid, "/lang/en")
         .then(function(s) {
           schema = s;
         });

@@ -357,19 +357,23 @@ function mqlread_clause(prop_structure, prop_value, lang) {
   var clause = {optional:true};
   if (is_literal) {
     if (ect.id == "/type/text") {
-      clause = i18n.mql.text_clause(lang)[0];
+      if (lang) {
+        clause = i18n.mql.text_clause(lang)[0];
+      }
+      else {
+        clause.lang = null;
+      }
     }
     clause.value = literal_validator(ect.id)(prop_value, {if_empty:null});
-/**
-    clause.value = literal_validator(ect.id)(prop_value, {if_empty:null});
-    if (ect.id === "/type/text") {
-      clause.lang = lang;
-    }
-**/
   }
   else {
     clause.id = prop_value;
-    clause.name = i18n.mql.text_clause(lang);
+    if (lang) {
+      clause.name = i18n.mql.text_clause(lang);
+    }
+    else {
+      clause.name = [{value:null, lang:null, optional:true}];
+    }
   }
   return [clause];
 };

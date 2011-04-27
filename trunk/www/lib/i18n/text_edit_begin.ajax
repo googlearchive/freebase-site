@@ -36,6 +36,8 @@ var promise_apis = acre.require("promise/apis.sjs");
 var text_lang_sort = acre.require("queries/object.sjs").text_lang_sort;
 var freebase = promise_apis.freebase;
 var deferred = promise_apis.deferred;
+var pq = acre.require("propbox/queries.sjs");
+
 
 var SPEC = {
 
@@ -50,46 +52,15 @@ var SPEC = {
   },
 
   run: function(s, p, lang) {
-    var promises = [];
-    promises.push(prop_query(p, lang));
-    promises.push(values_query(s, p, lang));
-    return deferred.all(promises)
-      .then(function([prop, values]) {
-        // TODO: assert prop
-        return {
-          html: acre.markup.stringify(editcomponents.text_edit_form(prop, values, lang))
-        };
+    return pq.prop_structure(p, lang)
+      .then(function(prop_structure) {
+        return pq.prop_values(s, prop_structure, null, null)  // lang null to return all values in all languages
+          .then(function(prop_values) {
+            return {
+              html: acre.markup.stringify(editcomponents.text_edit_form(prop_structure, prop_values, lang))
+            };
+          });
       });
   }
-};
 
-function prop_query(p, lang) {
-  return freebase.mqlread({
-    id: p,
-    name: i18n.mql.text_clause(lang),
-    type: "/type/property",
-    unique: null,
-    expected_type: "/type/text"
-  })
-  .then(function(env) {
-    return env.result;
-  });
-}
-
-function values_query(s, p, lang) {
-
-  return freebase.mqlread([{
-    optional: true,
-    type: "/type/link",
-    source: {id: s},
-    master_property: p,
-    target_value: {}
-  }])
-  .then(function(env) {
-    return env.result;
-  })
-  .then(function(result) {
-    var values = result.map(function(link) {return link.target_value;});
-    return values.sort(text_lang_sort);
-  });
 };

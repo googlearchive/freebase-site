@@ -36,7 +36,13 @@ var i18n = acre.require("i18n/i18n.sjs");
 var mql = acre.require("propbox/mql.sjs");
 var ph = acre.require("propbox/helpers.sjs");
 
-function _prop_schema(pid, lang) {
+
+/**
+ * MQL prop schema result
+ *
+ * @se propbox/mql.sjs (prop_schema)
+ */
+function prop_schema(pid, lang) {
   var q = mql.prop_schema({id: pid}, lang);
   return freebase.mqlread(q)
     .then(function(env) {
@@ -44,17 +50,36 @@ function _prop_schema(pid, lang) {
     });
 };
 
+/**
+ * Topic API prop structure (format)
+ *
+ * {
+ *    id: pid,
+ *    properties: [...]
+ * }
+ */
 function prop_structure(pid, lang) {
-  return _prop_schema(pid, lang)
+  return prop_schema(pid, lang)
     .then(function(schema) {
       return ph.minimal_prop_structure(schema, lang);
     });
 };
 
+/**
+ * MQL property data query result
+ *
+ * {
+ *    id: topic_id,
+ *    pid: [{...}]
+ * }
+ *
+ * @param value - if null, get all values
+ * @param lang - the language to constrain all object names and /type/text values
+ */
 function prop_data(topic_id, prop /** pid or prop_structure **/, value, lang) {
   var promise;
   if (typeof prop === "string") {
-    promise = prop_structure(pid, lang);
+    promise = prop_structure(prop, lang);
   }
   else {
     promise = deferred.resolved(prop);
@@ -64,8 +89,37 @@ function prop_data(topic_id, prop /** pid or prop_structure **/, value, lang) {
        var q = ph.mqlread_query(topic_id, prop_structure, value, lang);
        return freebase.mqlread(q)
          .then(function(env) {
-           return env.result;
+           return env.result[prop_structure.id];
          });
+    });
+};
+
+/**
+ * Topic API prop structure + values
+ *
+ * {
+ *    id: topic_id,
+ *    properties: [...],
+ *    values: [...]
+ * }
+ *
+ * @param value - if null, get all values
+ * @param lang - the language to constrain all object names and /type/text values
+ */
+function prop_values(topic_id, prop /** pid or prop_structure **/, value, lang) {
+  var promise;
+  if (typeof prop === "string") {
+    promise = prop_structure(prop, lang);
+  }
+  else {
+    promise = deferred.resolved(prop);
+  }
+  return promise
+    .then(function(prop_structure) {
+      return prop_data(topic_id, prop_structure, value, lang)
+        .then(function(prop_data) {
+          return ph.to_prop_values(prop_structure, prop_data, lang);
+        });
     });
 };
 

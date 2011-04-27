@@ -56,15 +56,17 @@ var SPEC = {
     return queries.prop_structure(p, lang)
       .then(function(prop_structure) {
         var promises = [];
-        promises.push(queries.prop_data(s, prop_structure, o, lang));
+        promises.push(queries.prop_values(s, prop_structure, o, lang));
         promises.push(queries.get_enumerated_types(prop_structure, lang));
         return deferred.all(promises)
-          .then(function([prop_data, enum_types]) {
-            var data = h.first_element(prop_data[p]);
+          .then(function([prop_values, enum_types]) {
+            var prop_value = h.first_element(prop_values);
             return {
-              html: acre.markup.stringify(propbox.value_edit_form(s, prop_structure, data, lang)),
-              data: prop_data,
-              structure: prop_structure
+              // <debug>
+              prop_structure: prop_structure,
+              prop_value: prop_value,
+              // </debug>
+              html: acre.markup.stringify(propbox.value_edit_form(s, prop_structure, prop_value, lang))
             };
           });
       });

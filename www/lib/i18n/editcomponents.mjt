@@ -127,27 +127,28 @@
 </acre:block>
 
 
-<acre:block def="text_edit_form(prop, values, lang)">
+<acre:block def="text_edit_form(prop_structure, prop_values, lang)">
   <acre:script>
     var langs = i18n.mql.langs(true);
-    var vlangs = h.map_array(values, "lang");
+    var vlangs = h.map_array(prop_values, "lang");
+    var structure = h.extend({}, prop_structure, {values:prop_values});
   </acre:script>
-  <div class="modal" id="text-edit-form">
+  <div class="modal ${JSON.stringify(structure)}" id="text-edit-form">
     <div class="modal-inner">
       <h1 class="modal-title">
-        <span>${i18n.mql.get_text(lang, prop.name).value}</span>
-        <span class="key">${prop.id}</span>
+        <span>${prop_structure.text}</span>
+        <span class="key">${prop_structure.id}</span>
       </h1>
       <div class="modal-content">
         <div class="form-group form-row">
-          <p class="form-note" acre:if="prop.unique">${_("This property is unique. Only one value allowed per language.")}</p>
-          <label class="form-label" for="$prop.id">${_("Add new")}</label>
+          <p class="form-note" acre:if="prop_structure.unique">${_("This property is unique. Only one value allowed per language.")}</p>
+          <label class="form-label" for="${prop_structure.id}">${_("Add new")}</label>
           ${pb.data_input("/type/text", "", null, lang)}
-          <select class="lang-select${prop.unique ? ' unique' : ''}">
+          <select class="lang-select">
             <option value="">${_("Language")}</option>
             <acre:block for="l in langs">
               <acre:script>
-                var disabled = prop.unique && vlangs[l.id];
+                var disabled = prop_structure.unique && vlangs[l.id];
                 var selected = !disabled && lang == l.id;
                 var attrs = {};
                 if (disabled) {
@@ -172,7 +173,7 @@
               </tr>
             </thead>
             <tbody class="values">
-              <acre:block for="i,value in values">
+              <acre:block for="i,value in prop_values">
                 <tr>
                   <th scope="row" class="row-header">
                     ${pb.data_input("/type/text", "", value, lang)}
@@ -191,7 +192,7 @@
       </div>
     </div>   
     <div class="modal-buttons">
-      <button class="button button-submit button-primary" type="submit">${_('Save')}</button>
+      <button class="button button-submit button-primary disabled" disabled="disabled" type="submit">${_('Save')}</button>
       <button class="button button-cancel">${_('Cancel')}</button>
     </div>  
   </div>

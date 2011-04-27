@@ -131,6 +131,11 @@ function mql(id) {
 
 function text_lang_sort(a, b, lang) {
   lang = lang || i18n.lang;
+  var a_lang = i18n.LANGS_BY_ID[a.lang];
+  a_lang = a_lang && a_lang.name || a.lang;
+  var b_lang = i18n.LANGS_BY_ID[b.lang];
+  b_lang = b_lang && b_lang.name || b.lang;
+
   if (a.lang === lang) {
     if (a.lang === b.lang) {
       return b.value < a.value;
@@ -146,5 +151,5 @@ function text_lang_sort(a, b, lang) {
   else if (b.lang === "/lang/en") {
     return 1;
   }
-  return b.lang < a.lang;
+  return b_lang < a_lang;
 };

@@ -513,9 +513,17 @@ propbox edit forms
 <acre:block def="data_input(type_id, name, prop_value, lang, instances)">
   <acre:script>
     var type = ph.data_input_type(type_id);
+    var attrs = {
+      "data-ect": type_id
+    };
+    if (prop_value) {
+      if (prop_value.lang) {
+        attrs["data-lang"] = prop_value.lang;
+      }
+    }
   </acre:script>
   <acre:block if="type === 'enumerated'">
-    <span class="data-input enumerated">
+    <span class="data-input enumerated" acre:attrs="attrs">
       <select class="fb-enumerated-input" name="${name}">
         <option>${_("select")}...</option>
         <acre:block for="inst in instances">
@@ -528,7 +536,7 @@ propbox edit forms
     </span>
   </acre:block>
   <acre:block elif="type === 'boolean'">
-    <span class="data-input boolean">
+    <span class="data-input boolean" acre:attrs="attrs">
       <label>
         <input type="radio" name="${name}" class="fb-boolean-input" value="true"
                acre:attrs="value === true ? {selected:'selected'} : {}"/> 
@@ -542,13 +550,13 @@ propbox edit forms
     </span>
   </acre:block>
   <acre:block elif="type === 'topic'">
-    <span class="data-input topic" data-ect="${type_id}">
-      <input class="fb-input" type="text" name="${name}" acre:attrs="prop_value ? {value:prop_value.id} : {}"
+    <span class="data-input topic" acre:attrs="attrs">
+      <input class="fb-input" type="text" name="${name}" acre:attrs="prop_value ? {value:prop_value.text} : {}"
              placeholder="${_('Start typing to get suggestions...')}"/>
     </span>
   </acre:block>
   <acre:block else="">
-    <span class="data-input ${type}">
+    <span class="data-input ${type}" acre:attrs="attrs">
       <input class="fb-input" type="text" name="${name}" acre:attrs="prop_value ? {value:prop_value.value} : {}"/>
     </span>
   </acre:block>

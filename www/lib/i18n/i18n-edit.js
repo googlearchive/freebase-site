@@ -94,7 +94,7 @@
         $(".icon-link.delete", row).click(function(e) {
           form.form.trigger(event_prefix + "delete", row);
         });
-        $(".data-input", row)
+        var data_input = $(".data-input", row)
           .data_input()
           .bind("submit", function() {
             form.form.trigger(event_prefix + "submit");
@@ -103,7 +103,7 @@
             // enable submit button
             button_submit.removeAttr("disabled").removeClass("disabled");
           });
-        if ($(".lang[data-value]", row).attr("data-value") === form.ajax.data.lang) {
+        if (data_input.attr("data-lang") === form.ajax.data.lang) {
           row.addClass("preferred");
         }
       };
@@ -157,7 +157,7 @@
         })
         .bind(event_prefix + "delete", function(e, row) {
           row = $(row);
-          var lang = $(".lang[data-value]", row).attr("data-value");
+          var lang = $(".data-input:first", row).attr("data-lang");
           row.fadeOut(function() {
             // re-enable option[value=lang] if unique property
             if (form.structure.unique) {
@@ -193,12 +193,13 @@
         if (value === "") {
           return;
         }
-        var lang = $(".lang[data-value]", row).attr("data-value");
+        var lang = $(".data-input:first", row).attr("data-lang");
         new_values.push({value:value, lang:lang});
       });
-      var o = i18n.edit.text_edit_diff(old_values, new_values);
 
-      console.log("old_values", old_values, "new_values", new_values, "o", o);
+      var o = i18n.edit.text_edit_diff(form.structure.unique, old_values, new_values);
+
+console.log("o", o);
 
       if (o.length) {
         form.form.addClass("loading");
@@ -212,7 +213,7 @@
               // TODO: handle error
               return console.error("text_edit_submt", xhr);
             }
-            window.location.reload(true);
+           // window.location.reload(true);
           },
           error: function(xhr) {
             // TODO: handle error
@@ -225,21 +226,31 @@
       }
     },
 
-    text_edit_diff: function(old_values, new_values) {
-      var operations = [];
+    text_edit_diff: function(unique, old_values, new_values) {
+      var deletes = [];
+      var inserts = [];
       $.each(old_values, function(i, old_value) {
         // if not old_value in new_values (delete)
         if (i18n.edit.inArray(old_value, new_values, "lang", "value") === -1) {
-          operations.push({value:old_value.value, lang:old_value.lang, connect:"delete"});
+          deletes.push({value:old_value.value, lang:old_value.lang, connect:"delete"});
         }
       });
       $.each(new_values, function(i, new_value) {
         // if not new_value in old_values (insert)
-        if (i18n.edit.inArray(new_value, old_values, "lang", "value") === -1) {
-          operations.push({value:new_value.value, lang:new_value.lang, connect:"insert"});
+        if (i18n.edit.inArray(new_value, old_values, "lang", "value")  === -1) {
+          var connect = "insert";
+          if (unique) {
+             var index = i18n.edit.inArray(new_value, deletes, "lang");
+            if (index !== -1) {
+              deletes.splice(index, 1);
+              // if unique and we're deleting a value in the same lang, connect:update
+              connect = "update";
+            }
+          }
+          inserts.push({value:new_value.value, lang:new_value.lang, connect:connect});
         }
       });
-      return operations;
+      return deletes.concat(inserts);
     },
 
     inArray: function(value, array /**, key1, key2, ..., keyN **/) {
@@ -273,14 +284,19 @@
           '    </span>' +
           '  </th>' +
           '  <td class="lang">' +
-          '    <span class="lang" data-value=""></span>' +
+          '    <span class="lang"></span>' +
           '  </td>' +
           '  <td class="delete-row">' +
           '    <a class="icon-link delete" href="javascript:void(0);"><span class="delete-icon">delete</span></a>' +
           '  </td>' +
           '</tr>');
-      $(":text", row).val(value);
-      $(".lang[data-value]", row).attr("data-value", lang).text(lang_name);
+      var data_input = $(".data-input", row);
+      data_input.attr({
+        "data-ect": "/type/text",
+        "data-lang": lang
+      });
+      $(".fb-input", data_input).val(value);
+      $("span.lang", row).text(lang_name);
       return row;
     }
 

@@ -284,7 +284,7 @@ console.log("o", o);
           '    </span>' +
           '  </th>' +
           '  <td class="lang">' +
-          '    <span class="lang"></span>' +
+          '    <span></span>' +
           '  </td>' +
           '  <td class="delete-row">' +
           '    <a class="icon-link delete" href="javascript:void(0);"><span class="delete-icon">delete</span></a>' +
@@ -296,7 +296,7 @@ console.log("o", o);
         "data-lang": lang
       });
       $(".fb-input", data_input).val(value);
-      $("span.lang", row).text(lang_name);
+      $(".lang > span", row).text(lang_name);
       return row;
     }
 

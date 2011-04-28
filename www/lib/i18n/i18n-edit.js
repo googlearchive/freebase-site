@@ -72,11 +72,16 @@
     text_edit_init: function(form) {
       $(document.body).append(form.form.hide());
       //$(".table-sortable", content).tablesorter();
-      $(".lang-select").focus(function(){
-        $(this).parent(".lang-select-container").addClass("focused");
+
+      var $language_picker = $(".lang-select");
+      var $language_picker_container = $(".lang-select-container");
+
+      $language_picker.focus(function(){
+        $language_picker_container.addClass("focused");
       }).blur(function(){
-        $(this).parent(".lang-select-container").removeClass("focused");
+        $language_picker_container.removeClass("focused");
       });
+
       form.form.overlay({
         close: ".modal-buttons .button-cancel",
         closeOnClick: false,
@@ -115,8 +120,23 @@
       $(".values > tr", form.form).each(function() {
         value_row_init($(this));
       });
-      $(".icon-link.add", form.form).click(function(e) {
+
+      var $add_button = $(".icon-link.add", form.form)
+      .bind('mouseover, focus', function(e) {
+        $(this).parent().addClass("focused");
+      }).
+      bind('mouseout, blur', function() {
+        $(this).parent().removeClass("focused");
+      });
+
+      $add_button.click(function(e) {
         form.form.trigger(event_prefix + "add");
+      });
+      $add_button.focusin(function(){
+        $(this).addClass("focused"); 
+      })
+      .focusout(function(){
+      
       });
       form.add_lang.keypress(function(e) {
         if (e.keyCode === 13) {

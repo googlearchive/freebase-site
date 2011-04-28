@@ -72,6 +72,11 @@
     text_edit_init: function(form) {
       $(document.body).append(form.form.hide());
       //$(".table-sortable", content).tablesorter();
+      $(".lang-select").focus(function(){
+        $(this).parent(".lang-select-container").addClass("focused");
+      }).blur(function(){
+        $(this).parent(".lang-select-container").removeClass("focused");
+      });
       form.form.overlay({
         close: ".modal-buttons .button-cancel",
         closeOnClick: false,
@@ -146,6 +151,14 @@
             });
             // enable submit button
             button_submit.removeAttr("disabled").removeClass("disabled");
+
+            // If the newly added value does not match the user's primary language
+            // we show a msg alerting them as much. We have to use this show method
+            // as jQuery's fadeIn method does not work on visibility:hidden, which
+            // we need to prevent the modal dialog from shifting.
+            if (lang !== form.ajax.data.lang) {
+              $(".lang-warning").css('visibility','visible').hide().fadeIn('slow');
+            }
           }
           else {
             // TODO: required value and lang
@@ -277,7 +290,7 @@ console.log("o", o);
 
     new_text_edit_row: function(value, lang, lang_name) {
       var row =
-        $('<tr>' +
+        $('<tr class="new">' +
           '  <th class="row-header" scope="row">' +
           '    <span class="data-input text">' +
           '      <input class="fb-input" type="text">' +
@@ -297,6 +310,7 @@ console.log("o", o);
       });
       $(".fb-input", data_input).val(value);
       $(".lang > span", row).text(lang_name);
+
       return row;
     }
 

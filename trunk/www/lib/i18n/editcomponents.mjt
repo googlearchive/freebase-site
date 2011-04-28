@@ -70,7 +70,7 @@
         attrs["style"] = "display:none";
       }
     </acre:script>
-    <acre:block if="tag_name === 'textarea'">  
+    <acre:block if="tag_name === 'textarea'">
       <textarea lang="${text.lang}" acre:attrs="attrs">${text.value || ''}</textarea>
     </acre:block>
     <acre:block else="">
@@ -117,13 +117,15 @@
       langs.push("/lang/en");
     }
   </acre:script>
-  <select name="lang" class="lang-select" 
-          onchange="return freebase.dispatch(event, freebase.edit_lang_select, [this.value], this);"
-          acre:attrs="langs.length === 1 && langs[0] === '/lang/en' ? {style:'display:none;'} : {}">
-    <acre:block for="lang in langs">
-      <option value="${lang}">${i18n.LANGS_BY_ID[lang].name}</option>
-    </acre:block>
-  </select>
+  <span class="lang-select-container">
+    <select name="lang" class="lang-select"
+            onchange="return freebase.dispatch(event, freebase.edit_lang_select, [this.value], this);"
+            acre:attrs="langs.length === 1 && langs[0] === '/lang/en' ? {style:'display:none;'} : {}">
+      <acre:block for="lang in langs">
+        <option value="${lang}">${i18n.LANGS_BY_ID[lang].name}</option>
+      </acre:block>
+    </select>
+  </span>
 </acre:block>
 
 
@@ -132,6 +134,7 @@
     var langs = i18n.mql.langs(true);
     var vlangs = h.map_array(prop_values, "lang");
     var structure = h.extend({}, prop_structure, {values:prop_values});
+    var current_language = "English";
   </acre:script>
   <div class="modal ${JSON.stringify(structure)}" id="text-edit-form">
     <div class="modal-inner">
@@ -144,23 +147,28 @@
           <p class="form-note" acre:if="prop_structure.unique">${_("This property is unique. Only one value allowed per language.")}</p>
           <label class="form-label" for="${prop_structure.id}">${_("Add new")}</label>
           ${pb.data_input("/type/text", prop_structure.id, null, lang)}
-          <select class="lang-select">
-            <option value="">${_("Language")}</option>
-            <acre:block for="l in langs">
-              <acre:script>
-                var disabled = prop_structure.unique && vlangs[l.id];
-                var selected = !disabled && lang == l.id;
-                var attrs = {};
-                if (disabled) {
-                  attrs.disabled = "disabled";
-                }
-               if (selected) {
-                 attrs.selected = "selected";
-               }               
-              </acre:script>
-              <option value="${l.id}" acre:attrs="attrs">${l.name}</option>
-            </acre:block>
-          </select>
+          <span class="lang-select-container">
+            <select class="lang-select">
+              <option value="">${_("Language")}</option>
+              <acre:block for="l in langs">
+                <acre:script>
+                  var disabled = prop_structure.unique && vlangs[l.id];
+                  var selected = !disabled && lang == l.id;
+                  var attrs = {};
+                  if (disabled) {
+                    attrs.disabled = "disabled";
+                  }
+                 if (selected) {
+                   attrs.selected = "selected";
+                 }
+                 if (l.id === lang) {
+                   current_language = l.name;
+                 }
+                </acre:script>
+                <option value="${l.id}" acre:attrs="attrs">${l.name}</option>
+              </acre:block>
+            </select>
+          </span>
           <a class="icon-link add" href="javascript:void(0);">${_("Add")}</a>
         </div>
         <div class="form-group" id="language-values">
@@ -188,12 +196,15 @@
               </acre:block>
             </tbody>
           </table>
-        </div>        
+        </div>
+        <p class="message lang-warning">
+          ${h.sprintf(_("You are adding values outside your current language. Only %s values will be displayed after save. To view other values, toggle to the appropriate language."), current_language)}
+        </p>
       </div>
-    </div>   
+    </div>
     <div class="modal-buttons">
       <button class="button button-submit button-primary disabled" disabled="disabled" type="submit">${_('Save')}</button>
       <button class="button button-cancel">${_('Cancel')}</button>
-    </div>  
+    </div>
   </div>
 </acre:block>

@@ -556,6 +556,7 @@ Keyboard Shortcuts
   background: none;
   padding-right: 0;
   margin-right: 5px;
+  border-width: 1px;
 }
 
 #text-edit-form .lang {
@@ -598,9 +599,36 @@ Keyboard Shortcuts
   background: #f1f2f3;
 }
 
+#language-values .new {
+  background: #edf7f3;
+}
+
 .preferred {
-  background: #e7edf7;
+  /*background: #e7edf7;*/
 }
 .preferred .lang {
   font-weight: bold;
+}
+
+#text-edit-form .form-label {
+  padding-left: 5px;
+  margin-bottom: 7px;
+}
+
+#text-edit-form .icon-link {
+  padding-left: 5px;
+  font-size: 11px;
+}
+
+.lang-warning {
+  visibility: hidden;
+}
+
+.lang-select-container {
+  display: inline-block;
+  padding: 2px;
+}
+
+.lang-select-container.focused {
+  .box_shadow(0,0,6px, #61D7F7);
 }

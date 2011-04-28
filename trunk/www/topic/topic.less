@@ -574,17 +574,23 @@ Keyboard Shortcuts
   color: #333;
 }
 
+/*
+ * This is a fixed height, which will likely
+ * cause problems in the future. A more robust
+ * solution would to either:
+ *   1. dynamically size the element according to
+ *      browser dimensions
+ *   2. only add a height if we have more than N values
+ *
+ */
+
 #language-values {
-  height: 400px;
+  height: 405px;
   overflow: auto;
 }
 
-#language-values .row-header .fb-input {
-  width: 300px; 
-}
-
 #language-values td.lang {
-  width: 200px;
+  width: 300px;
 }
 
 #language-values .icon-link {
@@ -597,6 +603,7 @@ Keyboard Shortcuts
 
 #language-values tbody tr:hover {
   background: #f1f2f3;
+  .transition(background, 0.1s,ease-in-out);
 }
 
 #language-values .new {
@@ -624,11 +631,21 @@ Keyboard Shortcuts
   visibility: hidden;
 }
 
+.lang-select-submit,
 .lang-select-container {
   display: inline-block;
-  padding: 2px;
+  padding: 1px 2px;
 }
 
+#text-edit-form .form-group .fb-input {
+  width: 150px;
+}
+
+.lang-select-submit.focused,
 .lang-select-container.focused {
   .box_shadow(0,0,6px, #61D7F7);
+}
+
+#text-edit-form .message {
+  margin: 0;
 }

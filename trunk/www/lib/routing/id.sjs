@@ -83,8 +83,7 @@ function IdRouter() {
             return redirect("/inspect" + result.id);
           }
           else if (types["/freebase/freebase_query"]) {
-            // TODO: redirect to query/collection view
-            return redirect("/inspect" + result.id);
+            return redirect("/query" + result.id);
           }
           else if (types["/common/topic"]) {
             return redirect("/topic" + result.id);

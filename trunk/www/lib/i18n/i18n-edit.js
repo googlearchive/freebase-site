@@ -213,7 +213,7 @@ console.log("o", o);
               // TODO: handle error
               return console.error("text_edit_submt", xhr);
             }
-           // window.location.reload(true);
+            window.location.reload(true);
           },
           error: function(xhr) {
             // TODO: handle error

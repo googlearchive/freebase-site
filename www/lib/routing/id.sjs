@@ -49,16 +49,16 @@ function IdRouter() {
       var q = {
         id: null,
         "given:id": id,
-        type: {
+        type: [{
           id: null,
           "id|=": [
             "/type/domain", "/type/type", "/type/property",  // schema
             "/type/user",                                    // user
+            "/freebase/freebase_query",                      // freebase_query
             "/common/topic"                                  // common topic
           ],
-          limit: 1,
           optional: true
-        },
+        }],
         "/dataworld/gardening_hint/replaced_by": {
           id: null,
           optional: true
@@ -69,24 +69,29 @@ function IdRouter() {
         if (result["/dataworld/gardening_hint/replaced_by"]) {
           redirect(result["/dataworld/gardening_hint/replaced_by"].id);
         }
-        else if (result.type) {
-          var type = result.type.id;
-          if (type === "/type/domain" ||
-              type === "/type/type" ||
-              type === "/type/property") {
-            redirect("/schema" + result.id);
+        else if (result.type.length) {
+          var types = {};
+          result.type.forEach(function(type) {
+            types[type.id] = type;
+          });
+          if (types["/type/domain"] ||
+              types["/type/type"] ||
+              types["/type/property"]) {
+            return redirect("/schema" + result.id);
           }
-          else if (type === "/type/user") {
-            redirect("/inspect" + result.id);
+          else if (types["/type/user"]) {
+            return redirect("/inspect" + result.id);
           }
-          else if (type === "/common/topic") {
-            redirect("/topic" + result.id);
+          else if (types["/freebase/freebase_query"]) {
+            // TODO: redirect to query/collection view
+            return redirect("/inspect" + result.id);
+          }
+          else if (types["/common/topic"]) {
+            return redirect("/topic" + result.id);
           }
         }
-        else {
-          // it's a valid id, default to inspect
-          redirect("/inspect" + result.id);
-        }
+        // it's a valid id, default to inspect
+        redirect("/inspect" + result.id);
       }
     }
   };

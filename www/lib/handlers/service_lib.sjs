@@ -57,8 +57,8 @@ function ServiceError(status, code /**, message1, message2, ... **/) {
 ServiceError.prototype = new Error();
 
 function check_user() {
-  var user = h.get_account_cookie();
-  if (!user || !h.has_account_credentials()) {
+  var user = h.get_active_user();
+  if (!user) {
     throw new ServiceError("401 User Authorization Required", "/api/status/error/auth", {
       message: "User must be logged in to use this service.",
       code : "/api/status/error/auth/required"

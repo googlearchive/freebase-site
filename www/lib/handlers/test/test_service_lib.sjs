@@ -167,7 +167,7 @@ test("handle_service undefined SPEC", function() {
 });
 
 test("handle_service undefined SPEC.validate", function() {
-  expect(3);
+  expect(2);
   var module = {
     SPEC: {
       run: no_op
@@ -180,9 +180,8 @@ test("handle_service undefined SPEC.validate", function() {
     }, function(e) {
       error = e;
     });
-  ok(!result, "expected error");
-  ok(error, "expected error");
-  ok(error instanceof lib.ServiceError, "expected ServiceError:" + error);
+  ok(result, "use default of no params");
+  ok(!error, "shouldn't error");
 });
 
 test("handle_service undefined SPEC.run", function() {

@@ -35,7 +35,8 @@ var exports = {
   "get_account_cookie": get_account_cookie,
   "account_cookie_name": account_cookie_name,
   "account_cookie_options": account_cookie_options,
-  "has_account_credentials": has_account_credentials
+  "has_account_credentials": has_account_credentials,
+  "get_active_user": get_active_user
 };
 
 var extend = acre.require("helper/helpers_util.sjs").extend;
@@ -80,4 +81,17 @@ function get_account_cookie() {
     id: '/user/'+account_name,
     name: account_name
   };
+}
+
+function get_active_user() {
+  var user = get_account_cookie();
+  if (has_account_credentials()) {
+    // Only return the user if we have current authentication credentials
+    return user;
+  } else if (user) {
+    // If we no longer are authenticated then get rid of the account name cookie
+    clear_account_cookie();
+  }
+
+  return null;
 }

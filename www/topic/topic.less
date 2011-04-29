@@ -31,11 +31,8 @@
 }
 
 /*
- *
- * Handle keyboard shortcuts
- * .mark shows user current
- * DOM selection
- */
+  ### Keyboard Shortcuts
+*/
 
 tr.kbs.current,
 h1.kbs.current {
@@ -60,7 +57,6 @@ div.kbs.current .mark {
   background-position: 5px -812px;
 }
 
-
 /*
  ### Domain Box Styling
 */
@@ -71,7 +67,7 @@ div.kbs.current .mark {
   margin-bottom: 15px;
 }
 
- /* Domain status: Commons, Base, Unpublished, etc.*/
+/* Domain status: Commons, Base, Unpublished, etc.*/
 .header .status {
   float: right;
   margin-top: 7px;
@@ -193,7 +189,6 @@ div.kbs.current .mark {
 /*
   ### Data Handling
 */
-
 
 /*
  * The .data-list class should be used
@@ -518,134 +513,4 @@ Keyboard Shortcuts
 .form-label {
   display: block;
   font-weight: bold;
-}
-
-
-
-
-
-
-
-
-/*
- * Styling for multi-language dialog
- * this should be moved into its own
- * stylsheet for use in other objects
- */
-
-.form-group {
-  margin: 20px 0;
-}
-
-.modal .table {
-  border-top: 0;
-}
-
-.modal .table thead th {
-  font-weight: bold;
-  padding: 3px 2px;
-  font-size: 12px;
-  border-bottom: 1px solid #d6d7d8;
-}
-
-.modal tbody th.row-header {
-  padding-left: 0;
-}
-
-#text-edit-form .data-input {
-  background: none;
-  padding-right: 0;
-  margin-right: 5px;
-  border-width: 1px;
-}
-
-#text-edit-form .lang {
-  line-height: 2.6;
-}
-
-#text-edit-form .form-note {
-  font-size: 12px;
-  font-style: italic;
-}
-
-#text-edit-form .modal-title .key {
-  font-size: 12px;
-  font-weight: normal;
-  color: #333;
-}
-
-/*
- * This is a fixed height, which will likely
- * cause problems in the future. A more robust
- * solution would to either:
- *   1. dynamically size the element according to
- *      browser dimensions
- *   2. only add a height if we have more than N values
- *
- */
-
-#language-values {
-  height: 405px;
-  overflow: auto;
-}
-
-#language-values td.lang {
-  width: 300px;
-}
-
-#language-values .icon-link {
-  text-indent: -9999px;
-}
-
-#language-values .delete-row {
-  vertical-align: middle;
-}
-
-#language-values tbody tr:hover {
-  background: #f1f2f3;
-  .transition(background, 0.1s,ease-in-out);
-}
-
-#language-values .new {
-  background: #edf7f3;
-}
-
-.preferred {
-  /*background: #e7edf7;*/
-}
-.preferred .lang {
-  font-weight: bold;
-}
-
-#text-edit-form .form-label {
-  padding-left: 5px;
-  margin-bottom: 7px;
-}
-
-#text-edit-form .icon-link {
-  padding-left: 5px;
-  font-size: 11px;
-}
-
-.lang-warning {
-  visibility: hidden;
-}
-
-.lang-select-submit,
-.lang-select-container {
-  display: inline-block;
-  padding: 1px 2px;
-}
-
-#text-edit-form .form-group .fb-input {
-  width: 150px;
-}
-
-.lang-select-submit.focused,
-.lang-select-container.focused {
-  .box_shadow(0,0,6px, #61D7F7);
-}
-
-#text-edit-form .message {
-  margin: 0;
 }

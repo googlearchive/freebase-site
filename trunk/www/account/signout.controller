@@ -35,10 +35,6 @@ var SPEC = {
   cache_policy: "nocache",
   template: "templates.mjt",
 
-  validate: function(params) {
-    return [];
-  },
-
   run: function() {
     h.clear_account_cookie();
     

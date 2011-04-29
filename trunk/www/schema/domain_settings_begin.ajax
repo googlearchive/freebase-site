@@ -45,11 +45,12 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      validators.MqlId(params, "id", {required:true})    // domain id
+      validators.MqlId(params, "id", {required:true}),    // domain id
+      params.auth_user
     ];
   },
 
-  run: function(id) {
+  run: function(id, user) {
     return queries.minimal_domain(id)
       .then(function(domain) {
         // choose the best key
@@ -66,7 +67,7 @@ var SPEC = {
         // does the user have permission to change the key?
         var q = {
           id: key.namespace,
-          permission: [{permits: [{member: {id: acre.freebase.get_user_info().id}}]}]
+          permission: [{permits: [{member: {id: user.id}}]}]
         };
         return freebase.mqlread(q)
           .then(function(env) {

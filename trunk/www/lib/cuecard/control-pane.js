@@ -173,7 +173,7 @@ CueCard.ControlPane.prototype.getQueryEnvelopeSetting = function(name) {
     return null;
 };
 
-CueCard.ControlPane.prototype.getQueryEnvelope = function(e, ignorePaging) {
+CueCard.ControlPane.prototype.getQueryEnvelope = function(e, ignorePaging, ignoreLanguage) {
     e = e || {};
     
     var extended = this.getSetting("extended");
@@ -194,9 +194,11 @@ CueCard.ControlPane.prototype.getQueryEnvelope = function(e, ignorePaging) {
         return selects[i].options[selects[i].selectedIndex].value;
     };
     
-    var lang = getSelectValue(0);
-    if (lang.length > 0) {
-        e.lang = lang;
+    if (!ignoreLanguage) {
+      var lang = getSelectValue(0);
+      if (lang.length > 0) {
+          e.lang = lang;
+      }      
     }
     
     var escape = getSelectValue(1);

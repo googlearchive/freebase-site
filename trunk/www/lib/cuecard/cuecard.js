@@ -47,7 +47,7 @@ CueCard.createComposition = function(options) {
         if (op != null) {
             cpo.outputPane = op;
         }
-        
+
         cp = new CueCard.ControlPane(options.controlPaneElement, cpo);
         qe.setControlPane(cp);
     }

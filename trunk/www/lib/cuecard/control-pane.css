@@ -38,7 +38,8 @@ div.cuecard-controlPane-tabBody.ui-tabs-panel {
 }
 
 div.cuecard-controlPane-tabBody {
-    overflow: auto;
+  overflow: auto;
+  height: 208px;
 }
 
 div.cuecard-controlPane-tabBody input {

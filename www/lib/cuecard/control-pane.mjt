@@ -192,17 +192,20 @@
               <label class="control-pane-label" for="cursor-continue">continue from cursor: </label>
               <div class="cuecard-controlPane-configurations-cursor">
                 <input type="text" name="cursor" class="query-options-textbox text-input" acre:onchange="controlPane._getTab('envelope').find('input[name=\'cursor\'][value=\'custom\']').attr('checked','checked')"/>
-							<div class="query-options-row">
-              	<input type="submit" class="button" value="Paste from Last Result" acre:onclick="controlPane._runCursor(false)"/> 
-              	<input type="submit" class="button" value="Paste &amp; Run" acre:onclick="controlPane._runCursor(true)"/>
-							</div>
+                <div class="query-options-row">
+                  <input type="submit" class="button" value="Paste from Last Result" acre:onclick="controlPane._runCursor(false)"/> 
+                  <input type="submit" class="button" value="Paste &amp; Run" acre:onclick="controlPane._runCursor(true)"/>
+                </div>
               </div>
             </div>
           </acre:block>
         
           <select acre:when="Language" class="cuecard-controlPane-configurations-languages">
             <option value="">--</option>
-            <option acre:for="l in CueCard.Languages" value="$l.id">$l.name ($l.id)</option>
+            <option acre:for="l in CueCard.Languages" value="$l.id" 
+              acre:attrs="fb.lang === l.id ? {'selected':'selected'} : {}">
+              $l.name ($l.id)
+            </option>
           </select>
         
           <select acre:when="Escape">
@@ -239,8 +242,8 @@
       <td>
         <input type="submit" class="button small-button" value="-" 
                acre:onclick="$(this).closest('.cuecard-controlPane-customEnvelope-row').remove()"/>
-				<input type="submit" class="button small-button" value="+" 
-						   acre:onclick="controlPane._getTab('envelope').find('table.cuecard-controlPane-customEnvelope').append($.acre(add_row()))"/>
+        <input type="submit" class="button small-button" value="+" 
+               acre:onclick="controlPane._getTab('envelope').find('table.cuecard-controlPane-customEnvelope').append($.acre(add_row()))"/>
       </td>
       <acre:block if="!dontFocus" script="ondomready">
 
@@ -260,7 +263,7 @@
 
 <acre:block def="settings(controlPane)">
   <div class="cuecard-controlPane-section">
-	<p><em>Settings</em></p>
+    <p><em>Settings</em></p>
     <div>
      <input type="checkbox" acre:attrs="($.localstore('cc_cp_clean') == '1') ? {'checked' : ''} : {}">
      Always tidy running query

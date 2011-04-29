@@ -64,7 +64,7 @@ function onLoad() {
     focusOnReady: true,
     onUnauthorizedMqlWrite: function() {
       if (window.confirm("Query editor needs to be authorized to write data on your behalf. Proceed to authorization?")) {
-        saveQueryInWindow();
+        saveQuery();
 
         var url = document.location.href;
         var hash = url.indexOf("#");
@@ -99,6 +99,7 @@ function onLoad() {
 
         delete o.query;
         controlPaneOptions["env"] = o;
+        console.log("q", o.lang)
       }
     } catch (e) {
     }
@@ -115,22 +116,19 @@ function onLoad() {
     }
     if ("env" in params) {
       try {
+        console.log("env", params.env)
         controlPaneOptions["env"] = JSON.parse(params["env"]);
       } catch (e) {
       }
     }
   } else {
     try {
-      var o = JSON.parse(window.name);
+      var o = JSON.parse($.localstore("qe_initialQuery"));
       if ($.trim(o.t).length > 0) {
         queryEditorOptions.content = o.t;
       }
       controlPaneOptions.env = o.e;
-    } catch (e) {
-      if ("initialQuery" in window) {
-        queryEditorOptions.content = window.initialQuery;
-      }
-    }
+    } catch (e) {}
   }
   
   if ("debug" in params) {
@@ -193,7 +191,7 @@ function onLoad() {
                         ($("#content").outerHeight() - $("#content").height());
   
   $(window).bind("beforeunload", function(evt) {
-    saveQueryInWindow();
+    saveQuery();
   });
 }
 
@@ -252,16 +250,17 @@ function getUrlFlags() {
   return params.length == 0 ? "" : ("&" + params.join("&"));
 }
 
-function saveQueryInWindow() {
-  window.name = CueCard.jsonize(
+function saveQuery() {
+  var q = CueCard.jsonize(
     {
       t: c.queryEditor.content(),
-      e: c.controlPane.getQueryEnvelope({}, true)
+      e: c.controlPane.getQueryEnvelope({}, true, true)
     },
     {
       breakLines: false
     }
   );
+  $.localstore("qe_initialQuery", q, false);
 }
 
 function computeTinyCompactLink() {

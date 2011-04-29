@@ -67,7 +67,7 @@
 
 
 <acre:block def="list(o, c)">
-  <table class="data-table" acre:if="o">
+  <table class="data-table" acre:if="o && o.result">
     <acre:script>
       function is_constraint(path, value) {
         
@@ -127,7 +127,7 @@
       <acre:block choose="typeof a">
         <acre:block when="string">
           <a acre:if="/^\//.test(a)"
-            target='_blank' href="$a" fbid="$a"
+            href="$a" fbid="$a"
             class='cuecard-outputPane-tree-dataLink' 
             onmouseover="__cc_tree_mouseOverTopic(this)" 
             onmouseout="__cc_tree_mouseOutTopic(this)">
@@ -152,19 +152,26 @@
       </acre:block>
     </acre:block>
     
-    <acre:block if="jQuery.isArray(o)">
-      ${thead(o[0], [])}
+    <acre:block if="jQuery.isArray(o.result)">
+      ${thead(o.result[0], [])}
       <tbody>
-        <tr acre:for="a in o">${row(a, [])}</tr>
+        <tr acre:for="a in o.result">${row(a, [])}</tr>
       </tbody>
+      <tfooter>
+        <tr>
+          <td>
+            <button acre:if="o.cursor" onclick="__cc_runPage(-1)">Previous</button>
+            <button acre:if="o.result.length=100" onclick="__cc_runPage(1)">Next</button>
+          </td>
+        </tr>
+      </tfooter>
     </acre:block>
     <acre:block else="">
-      <acre:block if="typeof o === 'object'">${thead(o, [])}</acre:block>
+      <acre:block if="typeof o.result === 'object'">${thead(o.result, [])}</acre:block>
       <tbody>
-        <tr>${row(o, [])}</tr>
+        <tr>${row(o.result, [])}</tr>
       </tbody>
     </acre:block>
-    
   </table>
 </acre:block>
 

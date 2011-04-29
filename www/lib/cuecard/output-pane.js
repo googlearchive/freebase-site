@@ -136,7 +136,7 @@ CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings, con
   
   if (o.result) {
     this._setIFrameText(CueCard.jsonize(o, jsonizingSettings || { indentCount: 2 }));
-    this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list", [o.result, constraints]);    
+    this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list", [o, constraints]);    
   } else if (o.messages) {
     var message = (typeof o.messages[0] == 'string') ?  o.messages[0] : o.messages[0].message;
     this._setIFrameText(message);
@@ -188,6 +188,7 @@ CueCard.OutputPane.prototype._setIFrameText = function(text) {
 };
 
 CueCard.OutputPane.prototype._setupIframe = function(iframe) {
+  var self = this;
   
   var __cc_tree_mouseOverTopic = function(elmt) {
     var id = elmt.getAttribute("fbid");
@@ -227,11 +228,16 @@ CueCard.OutputPane.prototype._setupIframe = function(iframe) {
       div.parentNode.removeChild(div);
     }
   };
+  
+  var __cc_runPage = function(increment) {
+    self._options.queryEditor._controlPane._runPage(increment);
+  };
 
   var win = iframe.contentWindow || iframe.contentDocument;
   win.__cc_tree_mouseOverTopic = __cc_tree_mouseOverTopic;
   win.__cc_tree_mouseOutTopic  = __cc_tree_mouseOutTopic;
   win.__cc_tree_createPopup    = __cc_tree_createPopup;
   win.__cc_tree_disposePopup   = __cc_tree_disposePopup;
+  win.__cc_runPage             = __cc_runPage;
   return win.document.body;
 };

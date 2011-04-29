@@ -364,7 +364,7 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
                     "code" in o.body && o.body.code == "/api/status/error" && "messages" in o.body && o.body.messages != null) {
                     options["encodeJavascriptString"] = function(x) { return x; };
                 }
-                self._outputPane.setJSONContent(o.body, self.getJsonizingSettings(options), self.decantConstraints(q));
+                self._outputPane.setJSONContent(o.body || o, self.getJsonizingSettings(options), self.decantConstraints(q));
             }
         };
         var onError = function(msg) {

@@ -34,7 +34,8 @@ var exports = {
   "clear_account_cookie": clear_account_cookie,
   "get_account_cookie": get_account_cookie,
   "account_cookie_name": account_cookie_name,
-  "account_cookie_options": account_cookie_options
+  "account_cookie_options": account_cookie_options,
+  "has_account_credentials": has_account_credentials
 };
 
 var extend = acre.require("helper/helpers_util.sjs").extend;
@@ -61,14 +62,22 @@ function clear_account_cookie() {
   acre.response.clear_cookie(account_cookie_name(), account_cookie_options());
 }
 
+function has_account_credentials() {
+  if (acre.freebase.apiary_url) {
+    return acre.oauth.has_credentials();
+  } else {
+    return !!acre.request.cookies['metaweb-user'];
+  }
+}
+
 function get_account_cookie() {
-  var value = acre.request.cookies[account_cookie_name()];
-  if (!value) {
+  var account_name = acre.request.cookies[account_cookie_name()];
+  if (!account_name) {
     return null;
   }
 
   return {
-    id: '/user'+value,
-    name: value
+    id: '/user/'+account_name,
+    name: account_name
   };
 }

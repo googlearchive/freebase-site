@@ -36,10 +36,6 @@ var SPEC = {
   cache_policy: "nocache",
   template: "templates.mjt",
 
-  validate: function(params) {
-    return [];
-  },
-
   run: function() {
     // Verify that a user is logged in, if there are not this will
     //  redirect to the login page

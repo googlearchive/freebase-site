@@ -36,10 +36,6 @@ var SPEC = {
   cache_policy: "public",
   template: "index_template.mjt",
 
-  validate: function(params) {
-    return [];
-  },
-
   run: function() {
     return {
       categories: queries.categories(),

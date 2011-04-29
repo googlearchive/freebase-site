@@ -34,16 +34,15 @@ var h = acre.require("helpers");
 
 var SPEC = {
   template: "home_template.mjt",
-  cache_policy: "nocache",
+  cache_policy: "private",
   auth: true,
   auth_redirect: "/",
 
   validate: function(params) {
-    return [];
+    return [params.auth_user];
   },
 
-  run: function() {
-    var user = acre.freebase.get_user_info();
+  run: function(user) {
     return {
       categories: queries.categories(),
       blog: queries.blog_entries(),

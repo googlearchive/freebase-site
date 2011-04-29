@@ -39,12 +39,7 @@ var SPEC = {
   
   cache_policy: "private",
 
-  auth: function(queryEnvelope, service) {
-    if (service) {
-      acre.freebase.set_service_url("http://" + service);
-    }
-    return true;
-  },
+  auth: true,
 
   validate: function(params) {
     return [

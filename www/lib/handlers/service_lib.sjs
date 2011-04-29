@@ -57,8 +57,8 @@ function ServiceError(status, code /**, message1, message2, ... **/) {
 ServiceError.prototype = new Error();
 
 function check_user() {
-  var user = acre.freebase.get_user_info();
-  if (!user) {
+  var user = h.get_account_cookie();
+  if (!user || !h.has_account_credentials()) {
     throw new ServiceError("401 User Authorization Required", "/api/status/error/auth", {
       message: "User must be logged in to use this service.",
       code : "/api/status/error/auth/required"
@@ -156,7 +156,7 @@ function handle_service_error(e) {
  * - if true, check user authentication
  * - default is false
  *
- * validate:Function (required)
+ * validate:Function (optional)
  * - validate request params
  * - return an array of validated arguments that will be applied to the run method
  *
@@ -172,14 +172,10 @@ function handle_service(module, script) {
   spec = h.extend({}, {
     method: "GET",
     auth: false,
-    validate: null,
-    run: null
+    validate: function () {return [];}
   }, spec);
 
-  // SPEC needs to implement validate and run
-  if (typeof spec.validate !== "function") {
-    return deferred.rejected(new ServiceError(null, null, "SPEC.validate is undefined"));
-  }
+  // SPEC needs to implement run
   if (typeof spec.run !== "function") {
     return deferred.rejected(new ServiceError(null, null, "SPEC.run is undefined"));
   }
@@ -213,10 +209,23 @@ function handle_service(module, script) {
   }
 
   //
-  // 2. validate required arguments
+  // 2. check authentication
+  //
+  var auth_user;
+  if (spec.auth) {
+    try {
+      auth_user = check_user();
+    }
+    catch (e if e instanceof ServiceError) {
+      return deferred.rejected(e);
+    }
+  }
+  
+  //
+  // 3. validate required arguments
   //
   // TODO: handle binary POSTs
-  var req_params = h.extend({}, req.params, req.body_params);
+  var req_params = h.extend({auth_user: auth_user}, req.params, req.body_params);
   var args;
   try {
     args = spec.validate.apply(null, [req_params]);
@@ -227,22 +236,6 @@ function handle_service(module, script) {
       message: e.message,
       code : "/api/status/error/input/validation"
     }));
-  }
-
-  //
-  // 3. check authentication
-  //
-  if (typeof spec.auth == 'function') {
-    spec.auth = spec.auth.apply(null, args);
-  }
-  if (spec.auth) {
-    //console.log("check_user");
-    try {
-      check_user();
-    }
-    catch (e if e instanceof ServiceError) {
-      return deferred.rejected(e);
-    }
   }
 
 

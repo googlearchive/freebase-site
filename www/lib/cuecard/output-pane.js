@@ -133,12 +133,14 @@ CueCard.OutputPane.prototype.getTabIndex = function(key) {
 CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings, constraints) {
   this._jsonResult = o;
   
-  this._setIFrameText(CueCard.jsonize(o, jsonizingSettings || { indentCount: 2 }));
   
   if (o.result) {
+    this._setIFrameText(CueCard.jsonize(o, jsonizingSettings || { indentCount: 2 }));
     this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list", [o.result, constraints]);    
-  } else if (o.messages && o.messages[0] && o.messages[0].message) {
-    this._list_content.html(o.messages[0].message);
+  } else if (o.messages) {
+    var message = (typeof o.messages[0] == 'string') ?  o.messages[0] : o.messages[0].message;
+    this._setIFrameText(message);
+    this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list_error", [message]);
   }
   
   this._tabs.click(this.getTabIndex(this._lastJsonOutputMode));
@@ -163,9 +165,9 @@ CueCard.OutputPane.prototype.renderResponseHeaders = function(headers) {
 
 CueCard.OutputPane.prototype._setIFrameText = function(text) {
   var makeTopicLink = function(id) {
-    return "<a target='_blank' class='cuecard-outputPane-tree-dataLink' href='" + CueCard.freebaseServiceUrl + 
-    "view" + id + "' onmouseover='__cc_tree_mouseOverTopic(this)' onmouseout='__cc_tree_mouseOutTopic(this)' fbid='" + 
-    id + "'>" + id + "</a>";
+    return "<a target='_blank' class='cuecard-outputPane-tree-dataLink' href='" + id +
+     "' onmouseover='__cc_tree_mouseOverTopic(this)' onmouseout='__cc_tree_mouseOutTopic(this)' fbid='" + 
+     id + "'>" + id + "</a>";
   };
 
   text = text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");

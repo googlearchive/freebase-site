@@ -127,9 +127,8 @@
       <acre:block choose="typeof a">
         <acre:block when="string">
           <a acre:if="/^\//.test(a)"
-            target='_blank' 
+            target='_blank' href="$a" fbid="$a"
             class='cuecard-outputPane-tree-dataLink' 
-            href="${CueCard.freebaseServiceUrl}view$a" fbid="$a"
             onmouseover="__cc_tree_mouseOverTopic(this)" 
             onmouseout="__cc_tree_mouseOutTopic(this)">
             $a
@@ -167,6 +166,11 @@
     </acre:block>
     
   </table>
+</acre:block>
+
+<acre:block def="list_error(message)">
+  <link acre:if="outputPane._options.stylesheet" rel="stylesheet" href="$outputPane._options.stylesheet"/>
+  <div class="cuecard-outputPane-list-error">$message</div>
 </acre:block>
 
 

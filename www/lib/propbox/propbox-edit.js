@@ -33,6 +33,7 @@
   // requires:
   // propbox.js @see lib/propbox/propbox.js
   // i18n.js @see lib/18n/i18n.js
+  // jquery.metadata.js
 
   var base_url = propbox.options.base_url;
   var topic_id = propbox.options.id;
@@ -74,9 +75,11 @@
 
             prop_section: prop_section,
             edit_row: $(".edit-row", html),
-            submit_row: $(".edit-row-submit", html)
-          };
+            submit_row: $(".edit-row-submit", html),
 
+            structure: html.metadata()
+          };
+console.log("structure", JSON.stringify(form.structure, null, 2));
           edit.init(form);
 
           form.edit_row
@@ -189,8 +192,13 @@
             prop_section: prop_section,
             prop_row: prop_row,
             edit_row: $(".edit-row", html),
-            submit_row: $(".edit-row-submit", html)
+            submit_row: $(".edit-row-submit", html),
+
+            structure: html.metadata()
           };
+
+console.log("structure", JSON.stringify(form.structure, null, 2));
+
           edit.init(form);
           form.edit_row
             .bind(event_prefix + "success", function() {

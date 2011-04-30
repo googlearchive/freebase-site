@@ -148,10 +148,10 @@
       });
       form.form
         .bind(event_prefix + "add", function() {
-          var name_value = form.add_input.data("name_value");
+          var data = form.add_input.data("data");
           var lang = form.add_lang.val();
-          if (name_value && lang) {
-            var value = $.trim(name_value[1]);
+          if (data && lang) {
+            var value = $.trim(data.value);
             if (value === "") {
               return;
             }

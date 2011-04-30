@@ -68,19 +68,6 @@
       }
     });
 
-    test("validat_input original", function() {
-      expect(1);
-      stop();
-      input
-        .val("original value")
-        .validate_input()
-        .bind("original", function() {
-          ok(true, "original value");
-          start();
-        })
-        .trigger("keyup");
-    });
-
     test("validate_input validator=foo", function() {
       expect(1);
       stop();

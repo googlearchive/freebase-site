@@ -68,7 +68,6 @@
       o.locales[i] = dojo.i18n.normalizeLocale(lang.split("/").pop());
     });
     this.input = $(input);
-    this.original_value = this.input.val(); // original value
     this.init();
     var self = this;
     this.input.bind("remove", function() {
@@ -98,11 +97,6 @@
     _destroy: function() {
       this.input.unbind(".validate_input");
     },
-    original: function(val) {
-      // trigger an original event signifying the value is exactly the same as when
-      // this input was initialized with $.fn.validate_input
-      this.input.trigger("original");
-    },
     valid: function(data) {
       this.input.trigger("valid", data);
     },
@@ -120,12 +114,8 @@
       if (force) {
         clearTimeout(this.textchange_timeout);
       }
-      var val = this.input.val();
-      if (this.original_value === val) {
-        return this.original(val);
-      }
-      val = $.trim(val);
       var o = this.options;
+      var val = $.trim(this.input.val());
       try {
         var data = o.validator(val, o);
         return this.valid(data);

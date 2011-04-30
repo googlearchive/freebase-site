@@ -45,6 +45,8 @@
   $.data_input = function(container, options) {
     this.options = $.extend(true, {}, $.data_input.defaults, options);
     this.container = $(container);
+    // original data
+    this.metadata = this.container.metadata();
     this.input = $(":input", this.container);
     this.init();
     var self = this;
@@ -57,9 +59,10 @@
     init: function() {
       var self = this,
           c = this.container,
-          i = this.input;
+          i = this.input,
+          o = this.options;
       if (c.is(".topic")) {
-        i.validate_topic($.extend(true, {}, this.options.suggest, {type:c.attr("data-ect")}))
+        i.validate_topic($.extend(true, {}, o.suggest, {type:self.metadata.type}))
           .bind("valid.data_input", function(e, data) {
             self.fb_select(data);
           })
@@ -71,7 +74,7 @@
         i.validate_input({validator: $.validate_input.text});
       }
       else if (c.is(".datetime")) {
-        i.validate_input({validator: $.validate_input.datetime, lang:this.options.lang});
+        i.validate_input({validator: $.validate_input.datetime, lang:o.lang});
       }
       else if (c.is(".enumerated")) {  // /freebase/type_hints/enumeration (<select>)
         i.validate_enumerated()
@@ -83,10 +86,10 @@
           });
       }
       else if (c.is(".int")) {
-        i.validate_input({validator: $.validate_input["int"], lang:this.options.lang});
+        i.validate_input({validator: $.validate_input["int"], lang:o.lang});
       }
       else if (c.is(".float")) {
-        i.validate_input({validator: $.validate_input["float"], lang:this.options.lang});
+        i.validate_input({validator: $.validate_input["float"], lang:o.lang});
       }
       else if (c.is(".uri")) {
         i.validate_input({validator: $.validate_input.uri});
@@ -112,14 +115,24 @@
           self.container.removeClass("focus");
         })
         .bind("valid.data_input", function(e, data) {
-          var name = self.input.attr("name");
-          var value = data.id || data.value;
-          self.container.data("name_value", [name, value]);
+          var mydata = {
+            name: self.input.attr("name")
+          };
+          if (data.id) {
+            mydata.id = id;
+          }
+          else {
+            mydata.value = data.value;
+            if (self.metadata.type === "/type/text") {
+              mydata.lang = self.metadata.lang || o.lang;
+            }
+          }
+          self.container.data("data", mydata);
           self.container.removeClass("error").addClass("valid");
           self.container.trigger("valid");
         })
         .bind("invalid.data_input", function() {
-          self.container.removeData("name_value");
+          self.container.removeData("data");
           self.container.removeClass("valid").addClass("error");
           self.container.trigger("invalid");
         })
@@ -153,7 +166,7 @@
     },
 
     reset: function() {
-      this.container.removeData("name_value");
+      this.container.removeData("data");
       if (this.input.is(":text")) {
         this.input.val("");
       }

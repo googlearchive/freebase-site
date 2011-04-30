@@ -450,7 +450,7 @@ propbox edit forms
 </acre:block>
 
 <acre:block def="prop_add_form_simple(topic_id, prop_structure, lang)">
-  <ul class="edit-form">
+  <ul class="edit-form ${JSON.stringify(prop_structure)}">
     <li class="edit-row">
       ${form_field(prop_structure, null, lang)}
     </li>
@@ -465,7 +465,7 @@ propbox edit forms
 </acre:block>
 
 <acre:block def="prop_add_form_cvt(topic_id, prop_structure, lang)">
-  <table class="edit-form">
+  <table class="edit-form ${JSON.stringify(prop_structure)}">
     <tbody>
       <tr class="edit-row">
         <acre:block for="subprop_structure in prop_structure.properties">
@@ -509,21 +509,32 @@ propbox edit forms
   @param type_id - e.g., /type/datetime, /type/text, etc.
     For topics use any type.
     For enumerated types, use /freebase/type_hints/enumeration property id
+
+  @param name - you should almost always use the property id for the name. propbox-edit.js expects name to be a property id.
+  @param prop_value - in topic api format
+  @param lang - the preferred language of the input
+  @param instances - for /freebase/type_hints/enumeration, instances should be set to all the enumeration instances.
 !!-->
 <acre:block def="data_input(type_id, name, prop_value, lang, instances)">
   <acre:script>
     var type = ph.data_input_type(type_id);
-    var attrs = {
-      "data-ect": type_id
+    var data = {
+      type: type_id
     };
     if (prop_value) {
-      if (prop_value.lang) {
-        attrs["data-lang"] = prop_value.lang;
+      if (h.is_literal_type(type_id)) {
+        data.value = prop_value.value;
+        if (type_id === "/type/text") {
+          data.lang = prop_value.lang;
+        }
+      }
+      else {
+        data.id = prop_value.id;
       }
     }
   </acre:script>
   <acre:block if="type === 'enumerated'">
-    <span class="data-input enumerated" acre:attrs="attrs">
+    <span class="data-input enumerated ${JSON.stringify(data)}">
       <select class="fb-enumerated-input" name="${name}">
         <option>${_("select")}...</option>
         <acre:block for="inst in instances">
@@ -536,7 +547,7 @@ propbox edit forms
     </span>
   </acre:block>
   <acre:block elif="type === 'boolean'">
-    <span class="data-input boolean" acre:attrs="attrs">
+    <span class="data-input boolean ${JSON.stringify(data)}">
       <label>
         <input type="radio" name="${name}" class="fb-boolean-input" value="true"
                acre:attrs="value === true ? {selected:'selected'} : {}"/> 
@@ -550,13 +561,13 @@ propbox edit forms
     </span>
   </acre:block>
   <acre:block elif="type === 'topic'">
-    <span class="data-input topic" acre:attrs="attrs">
+    <span class="data-input topic ${JSON.stringify(data)}">
       <input class="fb-input" type="text" name="${name}" acre:attrs="prop_value ? {value:prop_value.text} : {}"
              placeholder="${_('Start typing to get suggestions...')}"/>
     </span>
   </acre:block>
   <acre:block else="">
-    <span class="data-input ${type}" acre:attrs="attrs">
+    <span class="data-input ${type} ${JSON.stringify(data)}">
       <input class="fb-input" type="text" name="${name}" acre:attrs="prop_value ? {value:prop_value.value} : {}"/>
     </span>
   </acre:block>
@@ -572,7 +583,10 @@ propbox edit forms
 </acre:block>
 
 <acre:block def="value_edit_form_cvt(topic_id, prop_structure, prop_value, lang)">
-  <table class="edit-form">
+  <acre:script>
+    var structure = h.extend({}, prop_structure, {values: [prop_value]});
+  </acre:script>
+  <table class="edit-form ${JSON.stringify(structure)}">
     <tbody>
       <tr class="edit-row">
         <acre:block for="subprop_structure in prop_structure.properties">
@@ -607,7 +621,10 @@ propbox edit forms
 </acre:block>
 
 <acre:block def="value_edit_form_simple(topic_id, prop_structure, prop_value, lang)">
-  <ul class="edit-form">
+  <acre:script>
+    var structure = h.extend({}, prop_structure, {values: [prop_value]});
+  </acre:script>
+  <ul class="edit-form ${JSON.stringify(structure)}">
     <li class="edit-row">
       ${form_field(prop_structure, prop_value, lang)}
     </li>

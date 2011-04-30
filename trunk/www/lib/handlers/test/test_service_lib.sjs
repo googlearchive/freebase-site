@@ -71,9 +71,7 @@ test("ServiceError", function() {
 test("check_user", function() {
   try {
     var user = lib.check_user();
-    ok(user && user.id && user.guid && user.username, "check_user returned valid user");
-    equal(user.status, "200 OK");
-    equal(user.code, "/api/status/ok");
+    ok(user && user.id, "check_user returned valid user");
   }
   catch(e if e instanceof lib.ServiceError) {
     equal(e.status, "401 User Authorization Required");

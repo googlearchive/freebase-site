@@ -281,7 +281,6 @@ test("extend", function() {
   deepEqual(h.extend({foo:"bar"}, null), {foo:"bar"});
 });
 
-
 test("first_element", function() {
   expect(3);
 
@@ -289,7 +288,6 @@ test("first_element", function() {
   equal(h.first_element("foo"), "foo", "expected argument to be passed back");
   same(h.first_element([]), null, "expected null");
 });
-
 
 test("intersect", function() {
   equal(h.intersect(null, null), false);
@@ -304,23 +302,6 @@ test("intersect", function() {
 
   equal(h.intersect([1,2,3], 4), false);
   equal(h.intersect([1,2,3], [3,4,5]), true);
-});
-
-test("search_array", function() {
-   expect(2);
-   var test_array = ["/freebase/apps/acre_app", "/type/domain", "/type/type"];
-   equals(true,'/type/domain' in h.search_array(test_array));
-   equals(false,'/common/topic' in h.search_array(test_array));
-});
-
-test("fb_object_label", function() {
-  equal(h.fb_object_type(["/type/property"], "/film/film/directed_by"), "Property");
-  equal(h.fb_object_type(["/type/type"], "/film/film"), "Type");
-  equal(h.fb_object_type(["/type/domain"], "/film"), "Domain");
-  equal(h.fb_object_type(["/type/domain"], "/base/surfing"), "User Domain");
-  equal(h.fb_object_type(["/type/domain"], "/user/kconragan/default_domain"), "User Domain");
-  equal(h.fb_object_type(["/type/domain", "/common/topic", "/freebase/apps/acre_app"], "/user/stefanomazzocchi/matchmaker"), "Acre App");
-  equal(h.fb_object_type(["/type/user"], "/user/kconragan"), "User");
 });
 
 acre.test.report();

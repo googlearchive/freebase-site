@@ -37,7 +37,8 @@ var exports = {
   "visible_subprops": visible_subprops,
   "is_commons_id": is_commons_id,
   "id_key": id_key,
-  "lang_code": lang_code
+  "lang_code": lang_code,
+  "fb_object_type": fb_object_type
 };
 
 var LITERAL_TYPE_IDS = {
@@ -204,3 +205,43 @@ function id_key(id, with_ns) {
 function lang_code(lang_id) {
   return id_key(lang_id);
 };
+
+/**
+ * Assuming a list of types, return appropriate object label 
+ */
+function fb_object_type(types, id) {
+
+    var object_type = "Object";
+
+    // Acre App
+    if (types['/freebase/apps/acre_app']) {
+      object_type = "Acre App";
+    }
+    // Domain: user or commons
+    else if (types['/type/domain']) {
+      if (id.indexOf("/user") === 0 || id.indexOf("/base") === 0) {
+        object_type = "User Domain";
+      }
+      else {
+        object_type = "Commons Domain";
+      }
+    }
+    // Type
+    else if (types['/type/type']) {
+      object_type = "Type";
+    }
+    // Property
+    else if (types['/type/property']) {
+      object_type = "Property";
+    }
+    // Topic
+    else if (types['/common/topic']) {
+      object_type = "Topic";
+    }
+    // User
+    else if (types['/type/user']) {
+      object_type = "User";
+    }
+
+    return object_type;
+}

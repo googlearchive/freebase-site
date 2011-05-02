@@ -78,6 +78,31 @@ test("lang_code", function() {
   same(h.lang_code("/lang/en-gb"), "en-gb");
 });
 
+test("fb_object_type", function() {
+
+  // Test Property label
+  var test_property_object = {"/type/property": {}};
+  equal(h.fb_object_type(test_property_object, "/film/film/directed_by"), "Property");
+  
+  // Test Type label
+  var test_type_object = {"/type/type": {}};
+  equal(h.fb_object_type(test_type_object, "/film/film"), "Type");
+
+  // Test Domain labels for Commons, Bases, and User
+  var test_domain_object = {"/type/domain": {}};
+  equal(h.fb_object_type(test_domain_object, "/film"), "Commons Domain");
+  equal(h.fb_object_type(test_domain_object, "/base/surfing"), "User Domain");
+  equal(h.fb_object_type(test_domain_object, "/user/kconragan/default_domain"), "User Domain");
+
+  // Test Acre app label
+  // It's important his has both /freebase/apps/acre_app and /common/topic
+  // Acre App trumps Topic
+  var test_app_object = {"/type/domain":{}, "/common/topic":{}, "/freebase/apps/acre_app":{}, "/freebase/apps/application":{}};
+  equal(h.fb_object_type(test_app_object, "/user/stefanomazzocchi/matchmaker"), "Acre App");
+
+  var test_user_object = {"/type/user": {}};
+  equal(h.fb_object_type(test_user_object, "/user/kconragan"), "User");
+});
 
 acre.test.report();
 

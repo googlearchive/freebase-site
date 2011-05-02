@@ -78,13 +78,9 @@
 
 <acre:block def="nav_flags()">
   <acre:script>
-    // Make this a clean array of type ids
-    var type_list = [];
-    for (var i=0; i < c.object.type.length; i++) {
-      type_list.push(c.object.type[i]['id']);
-    }
+    var type_list = h.map_array(c.object.type, "id");
   </acre:script>
-  ${h.object_type(type_list, c.object.id)}
+  ${_(h.fb_object_type(type_list, c.object.id))}
 </acre:block>
 
 <acre:block def="nav_keys()">

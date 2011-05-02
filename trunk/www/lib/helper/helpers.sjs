@@ -49,6 +49,7 @@ include_helpers(this, "helpers_markup");
 // acre.require dependencies:
 include_helpers(this, "helpers_cache");
 include_helpers(this, "helpers_account");
+include_helpers(this, "helpers_date");
 include_helpers(this, "helpers_url");
 
 //-----Functions for including new helpers-----

@@ -67,6 +67,10 @@
   </li>    
 </acre:block>
 
+<acre:block def="nav_flags()">
+  ${_("Topic")}
+</acre:block>
+
 <acre:block def="nav_utilities()">
   <acre:block if="c.object">
     <li>

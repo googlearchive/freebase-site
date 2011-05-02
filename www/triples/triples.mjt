@@ -44,6 +44,7 @@
   // microdata helpers
   var microdata = acre.require("lib/helper/microdata.sjs");
   var itemprop = microdata.itemprop;
+
 </acre:script>
 
 <acre:block def="title()" if="c.object">
@@ -64,8 +65,10 @@
           </span>
         </li>  
         <li class="breadcrumb-item last">
-          <span class="breadcrumb-item-inner">
-            <a href="javascript:void(0);">${c.object.id}</a>
+          <span class="breadcrumb-item-inner"> 
+            <a href="javascript:void(0);">
+              ${c.object.id}
+            </a>
           </span>
         </li>
       </ol>
@@ -73,14 +76,25 @@
   </div>
 </acre:block>
 
+<acre:block def="nav_flags()">
+  <acre:script>
+    // Make this a clean array of type ids
+    var type_list = [];
+    for (var i=0; i < c.object.type.length; i++) {
+      type_list.push(c.object.type[i]['id']);
+    }
+  </acre:script>
+  ${h.object_type(type_list, c.object.id)}
+</acre:block>
+
 <acre:block def="nav_keys()">
+  <span class="key">
+    <strong><abbr title="${_('Machine ID')}">${_("mid")}</abbr></strong>: 
+    <span acre:attrs="itemprop('/type/object/mid')">${c.object.mid}</span>
+  </span>
   <span class="key">
     <strong><abbr title="${_('GUID')}">${_("guid")}</abbr></strong>: 
     <span acre:attrs="itemprop('/type/object/guid')">${c.object.guid}</span>
-  </span>
-  <span class="key">
-    <strong>${_("permission")}</strong>: 
-    <a acre:attrs="itemprop('/type/object/permission')" href="${h.fb_url(true, c.object.permission)}">${c.object.permission}</a>
   </span>
 </acre:block>
 

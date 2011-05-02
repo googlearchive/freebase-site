@@ -54,8 +54,9 @@ function IdRouter() {
           "id|=": [
             "/type/domain", "/type/type", "/type/property",  // schema
             "/type/user",                                    // user
-            "/freebase/freebase_query",                      // freebase_query
-            "/common/topic"                                  // common topic
+            "/freebase/freebase_query",                      // saved query
+            "/freebase/apps/application",                    // app
+            "/common/topic"                                  // topic
           ],
           optional: true
         }],
@@ -74,7 +75,10 @@ function IdRouter() {
           result.type.forEach(function(type) {
             types[type.id] = type;
           });
-          if (types["/type/domain"] ||
+          if (types["/freebase/apps/application"]) {
+            return redirect("/apps" + result.id);
+          } 
+          else if (types["/type/domain"] ||
               types["/type/type"] ||
               types["/type/property"]) {
             return redirect("/schema" + result.id);

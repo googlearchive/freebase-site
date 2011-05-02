@@ -42,11 +42,13 @@ var exports = {
   "first_element": first_element,
   "map_array": map_array,
   "array_map": array_map,
+  "search_array": search_array,
 
   "endsWith": endsWith,
   "startsWith": startsWith,
 
-  "intersect": intersect
+  "intersect": intersect,
+  "fb_object_type": fb_object_type
 };
 
 // Used for trimming whitespace
@@ -245,4 +247,57 @@ function intersect(a, b) {
     }
   }
   return false;
+};
+
+/**
+ * Search an Array for a specified string 
+ */
+
+function search_array(a) {
+  var o = {};
+  for(var i=0;i<a.length;i++)
+  {
+    o[a[i]]='';
+  }
+  return o;
+}
+
+/**
+ * Assuming a list of types, return appropriate object label 
+ */
+function fb_object_type(types, id) {
+
+    var object_type = "Object";
+
+    // Acre App
+    if ('/freebase/apps/acre_app' in search_array(types)) {
+      object_type = "Acre App";
+    }
+    // Domain: user or commons
+    else if ('/type/domain' in search_array(types)) {
+      if (startsWith(id, "/user") || startsWith(id, "/base")) {
+        object_type = "User Domain";
+      }
+      else {
+        object_type = "Domain";
+      }
+    }
+    // Type
+    else if ('/type/type' in search_array(types)) {
+      object_type = "Type";
+    }
+    // Property
+    else if ('/type/property' in search_array(types)) {
+      object_type = "Property";
+    }
+    // Topic
+    else if ('/common/topic' in search_array(types)) {
+      object_type = "Topic";
+    }
+    // User
+    else if ('/type/user' in search_array(types)) {
+      object_type = "User";
+    }
+
+    return object_type;
 }

@@ -172,10 +172,6 @@
         <div class="meta">
           <!-- Show topic MID -->
           <span class="key">
-            <strong><abbr title="${_('Machine ID')}">${_("mid")}</abbr></strong>:
-            <span acre:attrs="itemprop('/type/object/mid')">${c.object.mid}</span>
-          </span>
-          <span class="key">
             <strong><abbr title="${_('ID')}">${_("id")}</abbr></strong>:
             <span acre:attrs="itemprop('/type/object/id')">${c.object.id}</span>
           </span>

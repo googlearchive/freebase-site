@@ -37,7 +37,7 @@ var urlfetch = acre.require("promise/apis").urlfetch;
 
 test("urlfetch_success", function() {
   // Basic url fetch should call the callback
-  urlfetch("http://www.freebase.com")
+  urlfetch(acre.request.app_url)
     .then(function(result) {
       ok(result.body, "Make sure that we returned a result");
     }, function(failure) {
@@ -57,10 +57,10 @@ test("urlfetch_success", function() {
   acre.async.wait_on_results();
 });
 
-test("urlfetch_redirects", {"bug":"redirection is hosed. bryan is looking"}, function() {
+test("urlfetch_redirects", function() {
   // Make sure that we are following redirects on async urlfetchs
-
-  urlfetch("http://freebase.com")
+  var redirect_url = acre.request.app_url + "/lib/promise/test/home_redirector";
+  urlfetch(redirect_url)
     .then(function(result) {
       ok(result.body, "Make sure that we returned a result");
     }, function(error) {
@@ -74,15 +74,17 @@ test("urlfetch_redirects", {"bug":"redirection is hosed. bryan is looking"}, fun
   acre.async.wait_on_results();
 });
 
-test("urlfetch_failure", {"bug":"bryan is looking"}, function() {
+test("urlfetch_failure", function() {
   // Check that a 404 response calls the errback
 
+  var not_found_url = "http://www.freebase.com/view/non-existent-id";
   var errback_called = false;
-  urlfetch("http://www.freebase.com/non-existent-page")
+  urlfetch(not_found_url)
     .then(function(result) {
       ok(false, "Callback shouldn't have run on a 404 response.");
     })
     .then(null, function(error) {
+      console.log(error);
       equals(error.info.status, 404);
       errback_called = true;
     });
@@ -108,7 +110,7 @@ test("urlfetch_timeout", function() {
   // Check that a timeout calls the errback with the right error
 
   var errback_called = false;
-  urlfetch("http://www.freebase.com", {timeout: .1})
+  urlfetch(acre.request.app_url, {timeout: .1})
     .then(function(result) {
       ok(false, "Callback shouldn't have run on timeout");
     })

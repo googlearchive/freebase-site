@@ -76,7 +76,8 @@ function IdRouter() {
             types[type.id] = type;
           });
           if (types["/freebase/apps/application"]) {
-            return redirect("/apps" + result.id);
+            acre.request.query_string = "domains=all&type=/freebase/apps/application";
+            return redirect("/topic" + result.id);
           } 
           else if (types["/type/domain"] ||
               types["/type/type"] ||

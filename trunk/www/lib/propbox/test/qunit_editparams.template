@@ -55,7 +55,9 @@
     };
   </script>
   <script src="${h.lib_base_url('dojo')}/dojo/dojo.xd.js"></script>
+  <script src="${h.lib_base_url('suggest')}/suggest.min.js"></script>
   <script src="template/jquery.metadata.js"></script> 
+  <script src="i18n/i18n.js"></script> 
   <script src="propbox/jquery.validate_input.js"></script>  
   <script src="propbox/jquery.data_input.js"></script>
   <script src="propbox/editparams.js"></script>
@@ -149,6 +151,185 @@
       ${pb.data_input("/type/text", "/prop/id", prop_value)}
     </acre:block>
      ${pb.data_input("/type/text", "/prop/id", null)}
+  </div>
+
+  <div id="non-unique-text-insert">
+    <acre:script>
+      var prop_values = [{
+        value: "foo",
+        lang: "/lang/en"
+      }, {
+        value: "bar",
+        lang: "/lang/ko"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/text", "/prop/id", prop_value)}
+    </acre:block>
+    ${pb.data_input("/type/text", "/prop/id", null)}
+  </div>
+
+  <div id="non-unique-text-replace">
+    <acre:script>
+      var prop_values = [{
+        value: "foo",
+        lang: "/lang/en"
+      }, {
+        value: "bar",
+        lang: "/lang/ko"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/text", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="non-unique-text-delete">
+    <acre:script>
+      var prop_values = [{
+        value: "foo",
+        lang: "/lang/en"
+      }, {
+        value: "bar",
+        lang: "/lang/ko"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/text", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="non-unique-text-noop">
+    <acre:script>
+      var prop_values = [{
+        value: "foo",
+        lang: "/lang/en"
+      }, {
+        value: "bar",
+        lang: "/lang/ko"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/text", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="unique-datetime-insert">
+    ${pb.data_input("/type/datetime", "/prop/id", null)}
+  </div>
+
+  <div id="unique-float-replace">
+    <acre:script>
+      var prop_value = {
+        value: 1.23
+      };
+    </acre:script>
+    ${pb.data_input("/type/float", "/prop/id", prop_value)}
+  </div>
+
+  <div id="unique-int-delete">
+    <acre:script>
+      var prop_value = {
+        value: 0
+      };
+    </acre:script>
+    ${pb.data_input("/type/int", "/prop/id", prop_value)}
+  </div>
+
+  <div id="unique-boolean-noop">
+    <acre:script>
+      var prop_value = {
+        value: false
+      };
+    </acre:script>
+    ${pb.data_input("/type/boolean", "/prop/id", prop_value)}
+  </div>
+
+  <div id="non-unique-uri-insert">
+    <acre:script>
+      var prop_values = [{
+        value: "http://www.freebase.com"
+     }, {
+        value: "http://www.metaweb.com"
+     }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/uri", "/prop/id", prop_value)}
+    </acre:block>
+    ${pb.data_input("/type/uri", "/prop/id", null)}
+  </div>
+
+  <div id="non-unique-int-delete">
+    <acre:script>
+      var prop_values = [{
+        value: -1
+     }, {
+        value: 0
+     }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/int", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="non-unique-datetime-replace">
+    <acre:script>
+      var prop_values = [{
+        value: "2009-12"
+     }, {
+        value: "2011-05-02"
+     }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/datetime", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="non-unique-float-noop">
+    <acre:script>
+      var prop_values = [{
+        value: -1.23
+     }, {
+        value: 0.98
+     }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/float", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="unique-topic-insert">
+    ${pb.data_input("/people/person", "/prop/id", null)}
+  </div>
+
+  <div id="unique-topic-delete">
+    <acre:script>
+      var prop_value = {
+        id: "/en/bob_dylan",
+        text: "Bob Dylan"
+      };
+    </acre:script>
+    ${pb.data_input("/people/person", "/prop/id", prop_value)}
+  </div>
+
+  <div id="unique-topic-replace">
+    <acre:script>
+      var prop_value = {
+        id: "/en/bob_dylan",
+        text: "Bob Dylan"
+      };
+    </acre:script>
+    ${pb.data_input("/people/person", "/prop/id", prop_value)}
+  </div>
+
+  <div id="unique-topic-noop">
+    <acre:script>
+      var prop_value = {
+        id: "/en/bob_dylan",
+        text: "Bob Dylan"
+      };
+    </acre:script>
+    ${pb.data_input("/people/person", "/prop/id", prop_value)}
   </div>
 
 </acre:block>

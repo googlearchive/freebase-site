@@ -29,10 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-;(function($, ep) {
+;(function($, dojo, ep) {
 
   function run_tests() {
-
 
     test("isEmpty", function() {
       ok(ep.isEmpty());
@@ -246,12 +245,12 @@
       same(ep.diff(structure,
                    [{id:"foo"}, {id:"bar"}, {id:"baz"}],
                    [{id:"foo"}, {id:"bar"}, {id:"baz"}, {id:"hello"}]),
-           [{id:"hello", connect:"replace"}]);
+           [{id:"hello", connect:"insert"}]);
 
       same(ep.diff(structure,
                    [{id:"foo"}, {id:"bar"}, {id:"baz"}],
                    [{id:"foo"}, {id:"baz"}, {id:"hello"}]),
-           [{id:"bar", connect:"delete"}, {id:"hello", connect:"replace"}]);
+           [{id:"bar", connect:"delete"}, {id:"hello", connect:"insert"}]);
     });
 
 
@@ -265,7 +264,7 @@
                    [{value:1}, {value:2}, {value:3}],
                    [{value:4}, {value:5}, {value:6}]),
            [{value:1, connect:"delete"}, {value:2, connect:"delete"}, {value:3, connect:"delete"},
-            {value:4, connect:"replace"}, {value:5, connect:"replace"}, {value:6, connect:"replace"}]);
+            {value:4, connect:"insert"}, {value:5, connect:"insert"}, {value:6, connect:"insert"}]);
 
       same(ep.diff(structure,
                    [{value:1}, {value:2}, {value:3}],
@@ -288,12 +287,12 @@
       same(ep.diff(structure,
                    [{value:"foo", lang:"/lang/en"}, {value:"bar", lang:"/lang/en"}],
                    [{value:"foo", lang:"/lang/en"}, {value:"bar", lang:"/lang/en"}, {value:"baz", lang:"/lang/en"}]),
-           [{value:"baz", lang:"/lang/en", connect:"replace"}]);
+           [{value:"baz", lang:"/lang/en", connect:"insert"}]);
 
       same(ep.diff(structure,
                    [{value:"foo", lang:"/lang/en"}, {value:"bar", lang:"/lang/en"}],
                    [{value:"bar", lang:"/lang/en"}, {value:"foo", lang:"/lang/ru"}]),
-           [{value:"foo", lang:"/lang/en", connect:"delete"}, {value:"foo", lang:"/lang/ru", connect:"replace"}]);
+           [{value:"foo", lang:"/lang/en", connect:"delete"}, {value:"foo", lang:"/lang/ru", connect:"insert"}]);
 
       same(ep.diff(structure,
                    [{value:"foo", lang:"/lang/en"}, {value:"bar", lang:"/lang/en"}],
@@ -305,6 +304,7 @@
     test("parse unique-text-insert", function() {
       var context = $("#unique-text-insert");
       var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
+      // add new data-input value: bar
       $(".fb-input", data_input).val("bar");
       var structure = {
         id: "/prop/id",
@@ -317,8 +317,9 @@
 
 
     test("parse unique-text-replace", function() {
-      var context = $("#unique-text-noop");
+      var context = $("#unique-text-replace");
       var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
+      // change data-input value: foo => bar
       $(".fb-input", data_input).val("bar");
       var structure = {
         id: "/prop/id",
@@ -331,6 +332,7 @@
 
     test("parse unique-text-delete", function() {
       var context = $("#unique-text-delete");
+      // remove data-input
       $(".data-input", context).data_input({lang:"/lang/en"}).remove();
       var structure = {
         id: "/prop/id",
@@ -344,6 +346,7 @@
     test("parse unique-text-noop", function() {
       var context = $("#unique-text-noop");
       var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
+      // empty data-input should be ignored
       $(".fb-input", data_input).val("");
       var structure = {
         id: "/prop/id",
@@ -356,7 +359,8 @@
 
     test("parse unique-text-langs-insert", function() {
       var context = $("#unique-text-langs-insert");
-      $(".data-input", context).data_input();
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      // add new data-input (value:baz, lang:/lang/zh)
       $(".data-input:last", context).data_input({lang:"/lang/zh"}).find(".fb-input").val("baz");
       var structure = {
         id: "/prop/id",
@@ -369,7 +373,8 @@
 
     test("parse unique-text-langs-replace", function() {
       var context = $("#unique-text-langs-replace");
-      $(".data-input", context).data_input();
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      // replace korean input value: bar => baz
       $(".data-input:last", context).find(".fb-input").val("baz");
       var structure = {
         id: "/prop/id",
@@ -382,6 +387,7 @@
 
     test("parse unique-text-langs-delete", function() {
       var context = $("#unique-text-langs-delete");
+      // remove data-inputs
       $(".data-input", context).remove();
       var structure = {
         id: "/prop/id",
@@ -396,7 +402,8 @@
 
     test("parse unique-text-langs-noop", function() {
       var context = $("#unique-text-langs-noop");
-      $(".data-input", context).data_input().val("");
+      // ignore empty values
+      $(".data-input", context).data_input({lang:"/lang/en"}).find(".fb-input").val("");
       var structure = {
         id: "/prop/id",
         unique: true,
@@ -405,10 +412,210 @@
       };
       same(ep.parse(structure, context), []);
     });
+
+    test("parse non-unique-text-insert", function() {
+      var context = $("#non-unique-text-insert");
+      $(".data-input", context).data_input({lang:"/lang/ja"});
+      $(".data-input:last", context).find(".fb-input").val("baz");
+      var structure = {
+        id: "/prop/id",
+        expected_type: {id: "/type/text"},
+        values: [{value:"foo", lang:"/lang/en"},{value:"bar", lang:"/lang/ko"}]
+      };
+      same(ep.parse(structure, context), [{value:"baz", lang:"/lang/ja", connect:"insert"}]);
+    });
+
+    test("parse non-unique-text-replace", function() {
+      var context = $("#non-unique-text-replace");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      $(".data-input:first", context).find(".fb-input").val("baz");
+      var structure = {
+        id: "/prop/id",
+        expected_type: {id: "/type/text"},
+        values: [{value:"foo", lang:"/lang/en"},{value:"bar", lang:"/lang/ko"}]
+      };
+      same(ep.parse(structure, context), [
+        {value:"foo", lang:"/lang/en", connect:"delete"},
+        {value:"baz", lang:"/lang/en", connect:"insert"}
+      ]);
+    });
+
+    test("parse non-unique-text-delete", function() {
+      var context = $("#non-unique-text-delete");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      $(".data-input:last", context).remove();
+      var structure = {
+        id: "/prop/id",
+        expected_type: {id: "/type/text"},
+        values: [{value:"foo", lang:"/lang/en"},{value:"bar", lang:"/lang/ko"}]
+      };
+      same(ep.parse(structure, context), [
+        {value:"bar", lang:"/lang/ko", connect:"delete"}
+      ]);
+    });
+
+    test("parse non-unique-text-noop", function() {
+      var context = $("#non-unique-text-noop");
+      $(".data-input", context).data_input({lang:"/lang/en"}).find(".fb-input").val("");
+      var structure = {
+        id: "/prop/id",
+        expected_type: {id: "/type/text"},
+        values: [{value:"foo", lang:"/lang/en"},{value:"bar", lang:"/lang/ko"}]
+      };
+      same(ep.parse(structure, context), []);
+    });
+
+    test("parse unique-datetime-insert", function() {
+      var context = $("#unique-datetime-insert");
+      $(".data-input", context).data_input({lang:"/lang/en"}).find(".fb-input").val("Dec 2009");
+      var structure = {
+        id: "/prop/id",
+        unique: true,
+        expected_type: {id:"/type/datetime"},
+        values: []
+      };
+      same(ep.parse(structure, context), [{value:"2009-12", connect:"replace"}]);
+    });
+
+    test("parse unique-float-replace", function() {
+      var context = $("#unique-float-replace");
+      $(".data-input", context).data_input({lang:"/lang/fr"}).find(".fb-input").val("4,56");
+      var structure = {
+        id: "/prop/id",
+        unique: true,
+        expected_type: {id:"/type/float"},
+        values: [{value:1.23}]
+      };
+      same(ep.parse(structure, context), [{value:4.56, connect:"replace"}]);
+    });
+
+    test("parse unique-int-delete", function() {
+      var context = $("#unique-int-delete");
+      $(".data-input", context).remove();
+      var structure = {
+        id: "/prop/id",
+        unique: true,
+        expected_type: {id:"/type/int"},
+        values: [{value:0}]
+      };
+      same(ep.parse(structure, context), [{value:0, connect:"delete"}]);
+    });
+
+    test("parse unique-boolean-noop", function() {
+      var context = $("#unique-boolean-noop");
+      $(".data-input", context).data_input({lang:"/lang/fr"});
+      var structure = {
+        id: "/prop/id",
+        unique: true,
+        expected_type: {id:"/type/boolean"},
+        values: [{value:false}]
+      };
+      same(ep.parse(structure, context), []);
+    });
+
+    test("parse non-unique-uri-insert", function() {
+      var context = $("#non-unique-uri-insert");
+      $(".data-input", context).data_input({lang:"/lang/fr"});
+      $(".data-input:last", context).find(".fb-input").val("http://www.google.com");
+      var structure = {
+        id: "/prop/id",
+        expected_type: {id:"/type/uri"},
+        values: [{value:"http://www.freebase.com"},{value:"http://www.metaweb.com"}]
+      };
+      same(ep.parse(structure, context), [{value:"http://www.google.com", connect:"insert"}]);
+    });
+
+    test("parse non-unique-int-delete", function() {
+      var context = $("#non-unique-int-delete");
+      $(".data-input", context).data_input({lang:"/lang/ko"});
+      $(".data-input:first", context).remove();
+      var structure = {
+        id: "/prop/id",
+        expected_type: {id:"/type/int"},
+        values: [{value:-1},{value:0}]
+      };
+      same(ep.parse(structure, context), [{value:-1, connect:"delete"}]);
+    });
+
+    test("parse non-unique-datetime-replace", function() {
+      var context = $("#non-unique-datetime-replace");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      $(".data-input:first", context).find(".fb-input").val("");
+      $(".data-input:last", context).find(".fb-input").val("2011-05-05");
+      var structure = {
+        id: "/prop/id",
+        expected_type: {id:"/type/datetime"},
+        values: [{value:"2009-12"},{value:"2011-05-02"}]
+      };
+      same(ep.parse(structure, context), [{value:"2011-05-02", connect:"delete"}, {value:"2011-05-05", connect:"insert"}]);
+    });
+
+    test("parse non-unique-float-noop", function() {
+      var context = $("#non-unique-float-noop");
+      $(".data-input", context).data_input({lang:"/lang/en"}).find(".fb-input").val("");
+      var structure = {
+        id: "/prop/id",
+        expected_type: {id:"/type/datetime"},
+        values: [{value:-1.23},{value:.98}]
+      };
+      same(ep.parse(structure, context), []);
+    });
+
+    test("parse unique-topic-insert", function() {
+      var context = $("#unique-topic-insert");
+      $(".data-input", context).data_input({lang:"/lang/en"})
+        .find(".fb-input").data("data.suggest", {id:"/en/bob_dylan"}).trigger("fb-select", {id: "/en/bob_dylan"});
+      var structure = {
+        id: "/prop/id",
+        unique: true,
+        expected_type: {id:"/people/person"},
+        values: []
+      };
+      same(ep.parse(structure, context), [{id:"/en/bob_dylan", connect:"replace"}]);
+    });
+
+    test("parse unique-topic-delete", function() {
+      var context = $("#unique-topic-delete");
+      $(".data-input", context).remove();
+      var structure = {
+        id: "/prop/id",
+        unique: true,
+        expected_type: {id:"/people/person"},
+        values: [{id:"/en/bob_dylan"}]
+      };
+      same(ep.parse(structure, context), [{id:"/en/bob_dylan", connect:"delete"}]);
+    });
+
+    test("parse unique-topic-replace", function() {
+      var context = $("#unique-topic-replace");
+      $(".data-input", context).data_input({lang:"/lang/en"})
+        .find(".fb-input").data("data.suggest", {id:"/en/foo"}).trigger("fb-select", {id:"/en/foo"});
+      var structure = {
+        id: "/prop/id",
+        unique: true,
+        expected_type: {id:"/people/person"},
+        values: [{id:"/en/bob_dylan"}]
+      };
+      same(ep.parse(structure, context), [{id:"/en/foo", connect:"replace"}]);
+    });
+
+    test("parse unique-topic-noop", function() {
+      var context = $("#unique-topic-noop");
+      //$(".data-input", context).data_input({lang:"/lang/en"});
+      var structure = {
+        id: "/prop/id",
+        unique: true,
+        expected_type: {id:"/people/person"},
+        values: [{id:"/en/bob_dylan"}]
+      };
+      //same(ep.parse(structure, context), []);
+    });
   };
 
+  stop();
+  dojo.ready(function() {
+    start();
+    run_tests();
+  });
 
-
-
-  $(run_tests);
-})(jQuery, window.editparams);
+})(jQuery, dojo, window.editparams);

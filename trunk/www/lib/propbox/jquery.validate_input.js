@@ -103,6 +103,9 @@
     invalid: function(val, msg) {
       this.input.trigger("invalid", msg);
     },
+    empty: function() {
+      this.input.trigger("empty");
+    },
     textchange: function(e) {
       clearTimeout(this.textchange_timeout);
       var self = this;
@@ -116,6 +119,9 @@
       }
       var o = this.options;
       var val = $.trim(this.input.val());
+      if (val === "") {
+        return this.empty();
+      }
       try {
         var data = o.validator(val, o);
         return this.valid(data);

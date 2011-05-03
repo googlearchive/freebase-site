@@ -194,4 +194,4 @@
     i18n.ize();
   });
 
-})(jQuery, dojo,  window.freebase);
+})(jQuery, dojo);

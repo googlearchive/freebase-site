@@ -61,53 +61,8 @@
           c = this.container,
           i = this.input,
           o = this.options;
-      if (c.is(".topic")) {
-        i.validate_topic($.extend(true, {}, o.suggest, {type:self.metadata.type}))
-          .bind("valid.data_input", function(e, data) {
-            self.fb_select(data);
-          })
-          .bind("invalid.data_input", function() {
-            self.fb_textchange();
-          });
-      }
-      else if (c.is(".text")) {
-        i.validate_input({validator: $.validate_input.text});
-      }
-      else if (c.is(".datetime")) {
-        i.validate_input({validator: $.validate_input.datetime, lang:o.lang});
-      }
-      else if (c.is(".enumerated")) {  // /freebase/type_hints/enumeration (<select>)
-        i.validate_enumerated()
-          .bind("valid.data_input", function(e, data) {
-            self.fb_select(data);
-          })
-          .bind("invalid.data_input", function() {
-            self.fb_textchange();
-          });
-      }
-      else if (c.is(".int")) {
-        i.validate_input({validator: $.validate_input["int"], lang:o.lang});
-      }
-      else if (c.is(".float")) {
-        i.validate_input({validator: $.validate_input["float"], lang:o.lang});
-      }
-      else if (c.is(".uri")) {
-        i.validate_input({validator: $.validate_input.uri});
-      }
-      else if (c.is(".boolean")) {
-        i.validate_boolean();
-      }
-      else if (c.is(".enumeration")) {  // /type/enumeration
-        i.validate_input({validator: $.validate_input.mqlkey});
-      }
-      else if (c.is(".rawstring")) {
-        i.validate_input({validator: $.validate_input.text});
-      }
-      else {
-        throw new Error("Invalid data-input: " + c.attr("class"));
-      }
 
-      this.input
+      i
         .bind("focusin.data_input", function() {
           self.container.addClass("focus");
         })
@@ -154,6 +109,60 @@
             self.container.trigger("cancel");
           }
         });
+
+      if (c.is(".topic")) {
+        i.validate_topic($.extend(true, {}, o.suggest, {type:self.metadata.type}))
+          .bind("valid.data_input", function(e, data) {
+            self.fb_select(data);
+          })
+          .bind("invalid.data_input", function() {
+            self.fb_textchange();
+          });
+        if (this.metadata && this.metadata.id) {
+          i.data("data.suggest", this.metadata);
+          this.validate();
+        }
+      }
+      else if (c.is(".text")) {
+        i.validate_input({validator: $.validate_input.text});
+      }
+      else if (c.is(".datetime")) {
+        i.validate_input({validator: $.validate_input.datetime, lang:o.lang});
+      }
+      else if (c.is(".enumerated")) {  // /freebase/type_hints/enumeration (<select>)
+        i.validate_enumerated()
+          .bind("valid.data_input", function(e, data) {
+            self.fb_select(data);
+          })
+          .bind("invalid.data_input", function() {
+            self.fb_textchange();
+          });
+        if (this.metadata && this.metadata.id) {
+          i.data("data.suggest", this.metadata);
+          this.validate();
+        }
+      }
+      else if (c.is(".int")) {
+        i.validate_input({validator: $.validate_input["int"], lang:o.lang});
+      }
+      else if (c.is(".float")) {
+        i.validate_input({validator: $.validate_input["float"], lang:o.lang});
+      }
+      else if (c.is(".uri")) {
+        i.validate_input({validator: $.validate_input.uri});
+      }
+      else if (c.is(".boolean")) {
+        i.validate_boolean();
+      }
+      else if (c.is(".enumeration")) {  // /type/enumeration
+        i.validate_input({validator: $.validate_input.mqlkey});
+      }
+      else if (c.is(".rawstring")) {
+        i.validate_input({validator: $.validate_input.text});
+      }
+      else {
+        throw new Error("Invalid data-input: " + c.attr("class"));
+      }
     },
 
     _destroy: function() {

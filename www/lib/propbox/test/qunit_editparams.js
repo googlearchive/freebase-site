@@ -346,14 +346,15 @@
     test("parse unique-text-noop", function() {
       var context = $("#unique-text-noop");
       var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
-      // empty data-input should be ignored
-      $(".fb-input", data_input).val("");
       var structure = {
         id: "/prop/id",
         unique: true,
         expected_type: {id: "/type/text"},
         values: [{value:"foo", lang:"/lang/en"}]
       };
+      same(ep.parse(structure, context), []);
+      // empty data-input should be ignored
+      data_input.find(".fb-input").val("");
       same(ep.parse(structure, context), []);
     });
 
@@ -403,13 +404,16 @@
     test("parse unique-text-langs-noop", function() {
       var context = $("#unique-text-langs-noop");
       // ignore empty values
-      $(".data-input", context).data_input({lang:"/lang/en"}).find(".fb-input").val("");
+      var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
         unique: true,
         expected_type: {id: "/type/text"},
         values: [{value:"foo", lang:"/lang/en"},{value:"bar", lang:"/lang/ko"}]
       };
+      same(ep.parse(structure, context), []);
+      // empty data-input should be ignored
+      data_input.find(".fb-input").val("");
       same(ep.parse(structure, context), []);
     });
 
@@ -456,12 +460,15 @@
 
     test("parse non-unique-text-noop", function() {
       var context = $("#non-unique-text-noop");
-      $(".data-input", context).data_input({lang:"/lang/en"}).find(".fb-input").val("");
+      var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
         expected_type: {id: "/type/text"},
         values: [{value:"foo", lang:"/lang/en"},{value:"bar", lang:"/lang/ko"}]
       };
+      same(ep.parse(structure, context), []);
+      // empty data-input should be ignored
+      data_input.find(".fb-input").val("");
       same(ep.parse(structure, context), []);
     });
 
@@ -503,13 +510,16 @@
 
     test("parse unique-boolean-noop", function() {
       var context = $("#unique-boolean-noop");
-      $(".data-input", context).data_input({lang:"/lang/fr"});
+      var data_input = $(".data-input", context).data_input({lang:"/lang/fr"});
       var structure = {
         id: "/prop/id",
         unique: true,
         expected_type: {id:"/type/boolean"},
         values: [{value:false}]
       };
+      same(ep.parse(structure, context), []);
+      // same value be ignored
+      data_input.find(".fb-input:last").click();
       same(ep.parse(structure, context), []);
     });
 
@@ -552,19 +562,22 @@
 
     test("parse non-unique-float-noop", function() {
       var context = $("#non-unique-float-noop");
-      $(".data-input", context).data_input({lang:"/lang/en"}).find(".fb-input").val("");
+      var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
         expected_type: {id:"/type/datetime"},
         values: [{value:-1.23},{value:.98}]
       };
       same(ep.parse(structure, context), []);
+      // empty values should be ignored
+      data_input.find(".fb-input").val("");
+      same(ep.parse(structure, context), []);
     });
 
     test("parse unique-topic-insert", function() {
       var context = $("#unique-topic-insert");
-      $(".data-input", context).data_input({lang:"/lang/en"})
-        .find(".fb-input").data("data.suggest", {id:"/en/bob_dylan"}).trigger("fb-select", {id: "/en/bob_dylan"});
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      fb_select($(".fb-input", context), "/en/bob_dylan");
       var structure = {
         id: "/prop/id",
         unique: true,
@@ -588,8 +601,8 @@
 
     test("parse unique-topic-replace", function() {
       var context = $("#unique-topic-replace");
-      $(".data-input", context).data_input({lang:"/lang/en"})
-        .find(".fb-input").data("data.suggest", {id:"/en/foo"}).trigger("fb-select", {id:"/en/foo"});
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      fb_select($(".fb-input", context), "/en/foo");
       var structure = {
         id: "/prop/id",
         unique: true,
@@ -601,15 +614,79 @@
 
     test("parse unique-topic-noop", function() {
       var context = $("#unique-topic-noop");
-      //$(".data-input", context).data_input({lang:"/lang/en"});
+      $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
         unique: true,
         expected_type: {id:"/people/person"},
         values: [{id:"/en/bob_dylan"}]
       };
-      //same(ep.parse(structure, context), []);
+      same(ep.parse(structure, context), []);
+      // empty values are ignored
+      $(".data-input", context).find(".fb-input").val("");
+      same(ep.parse(structure, context), []);
     });
+
+    test("parse non-unique-topic-insert", function() {
+      var context = $("#non-unique-topic-insert");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      var structure = {
+        id: "/prop/id",
+        expected_type: {id:"/people/person"},
+        values: [{id:"/en/bob_dylan"},{id:"/en/lady_gaga"}]
+      };
+      fb_select($(".fb-input:last", context), "/en/jack_kerouac");
+      same(ep.parse(structure, context), [{id:"/en/jack_kerouac", connect:"insert"}]);
+    });
+
+    test("parse non-unique-topic-delete", function() {
+      var context = $("#non-unique-topic-delete");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      var structure = {
+        id: "/prop/id",
+        expected_type: {id:"/people/person"},
+        values: [{id:"/en/bob_dylan"},{id:"/en/lady_gaga"}]
+      };
+      $(".data-input:first", context).remove();
+      same(ep.parse(structure, context), [{id:"/en/bob_dylan", connect:"delete"}]);
+    });
+
+    test("parse non-unique-topic-replace", function() {
+      var context = $("#non-unique-topic-replace");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      var structure = {
+        id: "/prop/id",
+        expected_type: {id:"/people/person"},
+        values: [{id:"/en/bob_dylan"},{id:"/en/lady_gaga"}]
+      };
+      fb_select($(".fb-input:last", context), "/en/jack_kerouac");
+      same(ep.parse(structure, context), [{id:"/en/lady_gaga", connect:"delete"}, {id:"/en/jack_kerouac", connect:"insert"}]);
+    });
+
+    test("parse non-unique-topic-noop", function() {
+      var context = $("#non-unique-topic-noop");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      var structure = {
+        id: "/prop/id",
+        expected_type: {id:"/people/person"},
+        values: [{id:"/en/bob_dylan"},{id:"/en/lady_gaga"}]
+      };
+      same(ep.parse(structure, context), []);
+      fb_select($(".fb-input:first", context), "/en/bob_dylan");
+      same(ep.parse(structure, context), []);
+      $(".fb-input", context).val("");
+      same(ep.parse(structure, context), []);
+      fb_select($(".fb-input:last", context), "/en/lady_gaga");
+      same(ep.parse(structure, context), []);
+    });
+  };
+
+  /**
+   * Emulate an fb-select event from the suggest input
+   */
+  function fb_select(input, id) {
+    var data = {id: id};
+    input.data("data.suggest", data).trigger("fb-select", data);
   };
 
   stop();

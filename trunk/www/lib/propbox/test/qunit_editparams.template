@@ -332,4 +332,64 @@
     ${pb.data_input("/people/person", "/prop/id", prop_value)}
   </div>
 
+  <div id="non-unique-topic-insert">
+    <acre:script>
+      var prop_values = [{
+        id: "/en/bob_dylan",
+        text: "Bob Dylan"
+      },{
+        id: "/en/lady_gaga",
+        text: "Lady Gaga"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/people/person", "/prop/id", prop_value)}
+    </acre:block>
+    ${pb.data_input("/people/person", "/prop/id", prop_value)}
+  </div>
+
+  <div id="non-unique-topic-delete">
+    <acre:script>
+      var prop_values = [{
+        id: "/en/bob_dylan",
+        text: "Bob Dylan"
+      },{
+        id: "/en/lady_gaga",
+        text: "Lady Gaga"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/people/person", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="non-unique-topic-replace">
+    <acre:script>
+      var prop_values = [{
+        id: "/en/bob_dylan",
+        text: "Bob Dylan"
+      },{
+        id: "/en/lady_gaga",
+        text: "Lady Gaga"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/people/person", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="non-unique-topic-noop">
+    <acre:script>
+      var prop_values = [{
+        id: "/en/bob_dylan",
+        text: "Bob Dylan"
+      },{
+        id: "/en/lady_gaga",
+        text: "Lady Gaga"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/people/person", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
 </acre:block>

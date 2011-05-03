@@ -96,7 +96,6 @@ div.kbs.current .mark {
 
 .foobar {
   position: relative;
-  z-index: 1;
   font-size: 12px;
   font-weight: bold;
   line-height: 1;
@@ -386,8 +385,8 @@ div.kbs.current .mark {
   .transition(all);
 }
 
-.data-list li .combo-menu li {
-  list-style: none;
+.data-table tr.current li {
+  list-style: none !important;
 }
 
 .kbs.row-hover .combo-menu {
@@ -442,12 +441,18 @@ ul.combo-menu li,
   background-color: #fff;
 }
 
+
 .combo-menu:hover .edit-action {
   background-position: 2px -875px;
 }
 
 .combo-menu:hover .edit-action:hover {
   background-position: 2px -895px;
+}
+
+.combo-menu:hover .default-action.loading,
+.combo-menu:hover .default-action.loading:hover {
+  background: url(lib/template/loader-snake-small-grey.gif) no-repeat;
 }
 
 .row-menu {
@@ -518,3 +523,23 @@ Keyboard Shortcuts
   margin-bottom: 10px;
 }
 
+.data-list .edit-row,
+.data-list .add-row,
+.data-table tbody tr.edit-row th,
+.data-table tbody tr.edit-row td,
+.data-table tbody tr.edit-row-submit th,
+.data-table tbody tr.edit-row-submit td {
+  background: #f1f2f3;
+  border: 0;
+  padding: 5px 0;
+}
+
+.data-table tbody tr.edit-row th,
+.data-table tbody tr.edit-row td {
+  padding-top: 10px;
+}
+
+.data-table tbody tr.edit-row td:first-child,
+.data-table tbody tr.edit-row-submit td:first-child {
+  padding-left: 15px;
+}

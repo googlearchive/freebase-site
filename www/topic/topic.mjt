@@ -194,10 +194,10 @@
             <dt class="key-symbol">${_("e")}</dt>
             <dd class="key-desc">${_("edit value")}</dd>
           </dl>
-          <dl class="key-map">
+          <!--<dl class="key-map">
             <dt class="key-symbol">${_("d")}</dt>
             <dd class="key-desc">${_("delete value")}</dd>
-          </dl>
+          </dl>-->
         </div>
       </div>
     </div>

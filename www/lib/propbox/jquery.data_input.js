@@ -119,7 +119,7 @@
             name: self.input.attr("name")
           };
           if (data.id) {
-            mydata.id = id;
+            mydata.id = data.id;
           }
           else {
             mydata.value = data.value;
@@ -135,6 +135,14 @@
           self.container.removeData("data");
           self.container.removeClass("valid").addClass("error");
           self.container.trigger("invalid");
+        })
+        .bind("empty.data_input", function() {
+          var mydata = {
+            name: self.input.attr("name")
+          };
+          self.container.data("data", mydata);
+          self.container.removeClass("valid").removeClass("error");
+          self.container.trigger("empty");
         })
         .bind("keypress.data_input", function(e) {
           if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
@@ -155,8 +163,10 @@
     validate: function() {
       // force validation
       var input = this.input;
-      $.each(["$.validate_topic", "$.validate_input",
-              "$.validate_enumerated", "$.validate_boolean"], function(i, name) {
+      $.each(["$.validate_topic",
+              "$.validate_input",
+              "$.validate_enumerated",
+              "$.validate_boolean"], function(i, name) {
         var validator = input.data(name);
         if (validator) {
           validator.validate(true);
@@ -251,7 +261,7 @@
           self.invalid();
         })
         .bind("fb-select.validate_topic", function(e, data) {
-          self.input.val(data.name != null ? data.name : id);
+          self.input.val(data.name != null ? data.name : data.id);
           self.valid(data);
         });
     },
@@ -264,11 +274,26 @@
       this.input.trigger("valid", data);
     },
 
+    empty: function() {
+      this.input.trigger("empty");
+    },
+
     _destroy: function() {
       this.input.unbind(".validate_topic");
     },
 
-    validate: function(force) {}
+    validate: function(force) {
+      var data = this.input.data("data.suggest");
+      if (data) {
+        this.valid(data);
+      }
+      else if (this.input.val() === "") {
+        this.empty();
+      }
+      else {
+        this.invalid();
+      }
+    }
   };
 
 
@@ -304,7 +329,7 @@
           });
         }
         else {
-          self.invalid();
+          self.empty();
         }
       });
     },
@@ -318,11 +343,25 @@
       this.input.trigger("fb-select", data);
     },
 
+    empty: function() {
+      this.input.trigger("empty");
+    },
+
     _destroy: function() {
       this.input.unbind(".validate_enumerated");
     },
 
-    validate: function(force) {}
+    validate: function(force) {
+      if (this.input.selectedIndex > 0) {
+        self.valid({
+          text: $(":selected", this.input).text(),
+          id: this.input.value
+        });
+      }
+      else {
+        this.empty();
+      }
+    }
   };
 
   $.fn.validate_boolean = function(options) {
@@ -362,7 +401,26 @@
       this.input.trigger("valid", data);
     },
 
-    validate: function(force) {}
+    empty: function() {
+      this.input.trigger("empty");
+    },
+
+    validate: function(force) {
+      var checked;
+      this.input.each(function() {
+        var $this = $(this);
+        if ($this.is(":checked")) {
+          checked = $this;
+          return false;
+        }
+      });
+      if (checked) {
+        this.input.trigger({text:checked.text(), value:checked.val()});
+      }
+      else {
+        this.empty();
+      }
+    }
   };
 
 })(jQuery);

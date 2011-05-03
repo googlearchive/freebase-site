@@ -34,15 +34,15 @@
   var ep = window.editparams = {
 
     error: function() {
-      var msg = Array.protoype.slice.call(arguments);
+      var msg = Array.prototype.slice.call(arguments);
       msg.splice(0, 0, "editparams:");
-      console.error.apply(null, msg);
+      console.error.apply(console, msg);
       throw msg.join(" ");
     },
 
     assert: function(truth) {
       if (!truth) {
-        var msg = Array.prototye.slice.call(arguments, 1);
+        var msg = Array.prototype.slice.call(arguments, 1);
         ep.error.apply(null, msg);
       }
     },
@@ -139,7 +139,6 @@
         inst.validate(true);
         ep.assert(!$this.is(".error"), "$.data-input is invalid", this);
         var data = $this.data("data");
-
         ep.assert(data, "$.data-input has no data", this);
         if (mediator) {
           if (!new_values.length) {
@@ -179,7 +178,7 @@
       var ops = [];
     },
 
-    parse_simple: function(structure, old_values, new_values) {console.log("parse_simple", old_values, new_values);
+    parse_simple: function(structure, old_values, new_values) {
       return ep.diff(structure, old_values, new_values);
     },
 
@@ -241,7 +240,7 @@
               return [ep.clause(new_value, "replace")];
             }
           }
-          inserts.push(ep.clause(new_value, "replace"));
+          inserts.push(ep.clause(new_value, is_unique ? "replace" : "insert"));
         }
       };
       return deletes.concat(inserts);

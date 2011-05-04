@@ -286,6 +286,11 @@
 </acre:block>
 
 <acre:block def="nav_tabs_for_app()">
+  <acre:script>var opts = {domains:"all", type:"/freebase/apps/application"}</acre:script>
+  ${nav_tab(false, _("View"), h.fb_url("/topic", c.object.id, opts))}
+  ${nav_tab(false, _("Authors"), h.fb_url("/group", c.object.id))}
+  ${nav_tab(false, _("Activity"), h.fb_url("/activity", c.object.id))}
+  ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
 </acre:block>
 
 <acre:block def="nav_tabs_for_user()">

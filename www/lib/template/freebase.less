@@ -299,9 +299,8 @@ Header
     height: 34px;
     min-width: 96em;
     border-bottom: 1px solid #fb3;
+    border-top: 1px solid #fa6;
     background: url(template/vert-sprite.png) 0 -69px repeat-x #db5700;
-    border-bottom: 1px solid #fb3;
-    border-top: 1px solid #ffaa66;
 }
 
 #header img {
@@ -345,7 +344,6 @@ Header
     left: 0;
     top: 10px;
     cursor: pointer;
-    font-size: 16px; /* trying to increase hit area */
 }
 
 .current-lang{
@@ -362,7 +360,13 @@ Header
 
 #signedin,
 #signedout {
-    overflow: auto;
+    float: left;
+}
+
+#signedin,
+#signedout {
+  overflow: auto;
+  white-space: nowrap;
 }
 
 #nav-username,

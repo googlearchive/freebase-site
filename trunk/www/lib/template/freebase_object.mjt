@@ -289,15 +289,28 @@
 </acre:block>
 
 <acre:block def="nav_tabs_for_user()">
+  ${nav_tab(false, _("Domains"), h.fb_url("/data", c.object.id))}
+  ${nav_tab(false, _("Queries"), h.fb_url("/queries", c.object.id))}
+  ${nav_tab(false, _("Apps"), h.fb_url("/apps", c.object.id))}
+  ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
 </acre:block>
 
 <acre:block def="nav_tabs_for_domain()">
+  ${nav_tab(false, _("Data"), h.fb_url("/data", c.object.id))}
+  ${nav_tab(false, _("Schema"), h.fb_url("/schema", c.object.id))}
+  ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
+  ${nav_tab(false, _("Community"), h.fb_url("/group", c.object.id))}
 </acre:block>
 
 <acre:block def="nav_tabs_for_type()">
+  ${nav_tab(false, _("Data"), h.fb_url("/data", c.object.id))}
+  ${nav_tab(false, _("Schema"), h.fb_url("/schema", c.object.id))}
+  ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
 </acre:block>
 
 <acre:block def="nav_tabs_for_property()">
+  ${nav_tab(false, _("Schema"), h.fb_url("/schema", c.object.id))}
+  ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
 </acre:block>
 
 <acre:block def="nav_tabs_for_topic()">
@@ -307,6 +320,7 @@
 </acre:block>
 
 <acre:block def="nav_tabs_for_object()">
+  ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
 </acre:block>
 
 <acre:block def="nav_tab(current, label, url)">

@@ -52,21 +52,6 @@
   ${_('Topic')} - ${i18n.display_name(c.object)}
 </acre:block>
 
-<acre:block def="nav_tabs(nav_tab)">
-  <acre:script>
-    var global_filters = fh.global_filters(c.filters);
-  </acre:script>
-  <li>
-    ${nav_tab(true, _("View"))}
-  </li>
-  <li>
-    ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id, global_filters))}
-  </li>
-  <li>
-    ${nav_tab(false, _("On the Web"), h.fb_url("/web", c.object.id))}
-  </li>    
-</acre:block>
-
 <acre:block def="nav_flags()">
   ${_("Topic")}
 </acre:block>
@@ -194,10 +179,6 @@
             <dt class="key-symbol">${_("e")}</dt>
             <dd class="key-desc">${_("edit value")}</dd>
           </dl>
-          <!--<dl class="key-map">
-            <dt class="key-symbol">${_("d")}</dt>
-            <dd class="key-desc">${_("delete value")}</dd>
-          </dl>-->
         </div>
       </div>
     </div>

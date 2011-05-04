@@ -37,7 +37,7 @@
       var msg = Array.prototype.slice.call(arguments);
       msg.splice(0, 0, "editparams:");
       console.error.apply(console, msg);
-      throw msg.join(" ");
+      throw new Error(msg.join(" "));
     },
 
     assert: function(truth) {

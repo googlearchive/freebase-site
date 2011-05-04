@@ -226,8 +226,8 @@
           <a href="javascript:void(0);" class="blurb-trigger">${_('more')}</a>
         </div>
         <div class="nav clear">
-          <ul class="tab-nav" acre:if="that_exports.nav_tabs">
-            ${that_exports.nav_tabs(nav_tab)}
+          <ul class="tab-nav">
+            ${nav_tabs()}
           </ul>
           <ul class="nav-utilities" acre:if="that_exports.nav_utilities">
             ${that_exports.nav_utilities()}
@@ -249,7 +249,74 @@
   </acre:block>
 </acre:block>
 
+
+<acre:block def="nav_tabs()">
+  <acre:script>
+    var types = h.map_array(c.object.type, "id");
+  </acre:script>
+
+  <acre:block if="types['/freebase/apps/application']">
+    ${nav_tabs_for_app()}
+  </acre:block>
+
+  <acre:block elif="types['/type/user']">
+    ${nav_tabs_for_user()}
+  </acre:block>
+
+  <acre:block elif="types['/type/domain']">
+    ${nav_tabs_for_domain()}
+  </acre:block>
+
+  <acre:block elif="types['/type/type']">
+    ${nav_tabs_for_type()}
+  </acre:block>
+
+  <acre:block elif="types['/type/property']">
+    ${nav_tabs_for_property()}
+  </acre:block>
+
+  <acre:block elif="types['/common/topic']">
+    ${nav_tabs_for_topic()}
+  </acre:block>
+
+  <acre:block else="">
+    ${nav_tabs_for_object()}
+  </acre:block>
+
+</acre:block>
+
+<acre:block def="nav_tabs_for_app()">
+</acre:block>
+
+<acre:block def="nav_tabs_for_user()">
+</acre:block>
+
+<acre:block def="nav_tabs_for_domain()">
+</acre:block>
+
+<acre:block def="nav_tabs_for_type()">
+</acre:block>
+
+<acre:block def="nav_tabs_for_property()">
+</acre:block>
+
+<acre:block def="nav_tabs_for_topic()">
+  <li>
+    ${nav_tab(false, _("View"), h.fb_url("/topic", c.object.id))}
+  </li>
+  <li>
+    ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
+  </li>
+  <li>
+    ${nav_tab(false, _("On the Web"), h.fb_url("/web", c.object.id))}
+  </li>
+</acre:block>
+
+<acre:block def="nav_tabs_for_object()">
+</acre:block>
+
 <acre:block def="nav_tab(current, label, url)">
   <a acre:if="current" href="#" onclick="return false;" class="current"><span>${label}</span></a>
   <a acre:else="" href="${url}"><span>${label}</span></a>
 </acre:block>
+

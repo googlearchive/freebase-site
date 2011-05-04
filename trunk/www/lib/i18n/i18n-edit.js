@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-;(function($, i18n) {
+;(function($, i18n, editparams) {
 
   i18n.edit = {
 
@@ -113,7 +113,7 @@
             // enable submit button
             button_submit.removeAttr("disabled").removeClass("disabled");
           });
-        if (data_input.attr("data-lang") === form.ajax.data.lang) {
+        if (data_input.metadata().lang === form.ajax.data.lang) {
           row.addClass("preferred");
         }
       };
@@ -133,10 +133,10 @@
         form.form.trigger(event_prefix + "add");
       });
       $add_button.focusin(function(){
-        $(this).addClass("focused"); 
+        $(this).addClass("focused");
       })
       .focusout(function(){
-      
+
       });
       form.add_lang.keypress(function(e) {
         if (e.keyCode === 13) {
@@ -190,7 +190,7 @@
         })
         .bind(event_prefix + "delete", function(e, row) {
           row = $(row);
-          var lang = $(".data-input:first", row).attr("data-lang");
+          var lang = $(".data-input:first", row).metadata().lang;
           row.fadeOut(function() {
             // re-enable option[value=lang] if unique property
             if (form.structure.unique) {
@@ -219,20 +219,8 @@
       }
 
       var old_values = form.structure.values;
-      var new_values = [];
-      $(".values > tr", form.form).each(function() {
-        var row = $(this);
-        var value = $.trim($(":text:first", row).val());
-        if (value === "") {
-          return;
-        }
-        var lang = $(".data-input:first", row).attr("data-lang");
-        new_values.push({value:value, lang:lang});
-      });
 
-      var o = i18n.edit.text_edit_diff(form.structure.unique, old_values, new_values);
-
-console.log("o", o);
+      var o = editparams.parse(form.structure, $(".values", form.form));
 
       if (o.length) {
         form.form.addClass("loading");
@@ -259,55 +247,6 @@ console.log("o", o);
       }
     },
 
-    text_edit_diff: function(unique, old_values, new_values) {
-      var deletes = [];
-      var inserts = [];
-      $.each(old_values, function(i, old_value) {
-        // if not old_value in new_values (delete)
-        if (i18n.edit.inArray(old_value, new_values, "lang", "value") === -1) {
-          deletes.push({value:old_value.value, lang:old_value.lang, connect:"delete"});
-        }
-      });
-      $.each(new_values, function(i, new_value) {
-        // if not new_value in old_values (insert)
-        if (i18n.edit.inArray(new_value, old_values, "lang", "value")  === -1) {
-          var connect = "insert";
-          if (unique) {
-             var index = i18n.edit.inArray(new_value, deletes, "lang");
-            if (index !== -1) {
-              deletes.splice(index, 1);
-              // if unique and we're deleting a value in the same lang, connect:update
-              connect = "update";
-            }
-          }
-          inserts.push({value:new_value.value, lang:new_value.lang, connect:connect});
-        }
-      });
-      return deletes.concat(inserts);
-    },
-
-    inArray: function(value, array /**, key1, key2, ..., keyN **/) {
-      var keys = Array.prototype.slice.call(arguments, 2);
-      if (!keys.length) {
-        return $.inArray(value, array);
-      }
-      for (var i=0,l=array.length; i<l; i++) {
-        var item = array[i];
-        var found = true;
-        for (var j=0,k=keys.length; j<k; j++) {
-          var key = keys[j];
-          if (item[key] != value[key]) {
-            found = false;
-            break;
-          }
-        }
-        if (found) {
-          return i;
-        }
-      }
-      return -1;
-    },
-
     new_text_edit_row: function(value, lang, lang_name) {
       var row =
         $('<tr class="new">' +
@@ -324,10 +263,7 @@ console.log("o", o);
           '  </td>' +
           '</tr>');
       var data_input = $(".data-input", row);
-      data_input.attr({
-        "data-ect": "/type/text",
-        "data-lang": lang
-      });
+      data_input.addClass(JSON.stringify({value:value, lang:lang, type:"/type/text"}));  // for $.metadata
       $(".fb-input", data_input).val(value);
       $(".lang > span", row).text(lang_name);
 
@@ -336,5 +272,5 @@ console.log("o", o);
 
   };
 
-})(jQuery, window.i18n);
+})(jQuery, window.i18n, window.editparams);
 

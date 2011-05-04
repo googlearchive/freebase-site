@@ -128,6 +128,19 @@ for (var env in tests) {
   });
 }
 
+// Array length
+test("validators.Array (length)", function() {
+  same(validators.Array([], {length:0}), []);
+  same(validators.Array(["foo"], {length:1}), ["foo"]);
+  try {
+    validators.Array(["foo", "bar"], {length:1});
+    ok(false, "expected error");
+  }
+  catch(ex) {
+    ok(true, "" + ex);
+  }
+});
+
 var truthy = [true, "true", "yes", "1", "-1", [0], [{}], {a:null}];
 test("validators.StringBool", truthy, function() {
   truthy.forEach(function(t) {

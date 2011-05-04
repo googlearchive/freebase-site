@@ -91,13 +91,6 @@
   <span class="key"><strong>${_("schema")}:</strong> <a href="${h.fb_url('/schema', c.property.schema.id)}">${c.property.schema.id}</a></span>
 </acre:block>
 
-<acre:block def="nav_utilities()">
-  <li>
-    <a href="" class="icon-link">
-    </a>
-  </li>
-</acre:block>
-
 <acre:block def="page_content()">
 <!--
     <div id="description" acre:if="c.property.tip">

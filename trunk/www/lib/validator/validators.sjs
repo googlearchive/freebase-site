@@ -272,13 +272,26 @@ Validator.Class.prototype = {
 
 // Validators for each possible typeof's. These simple validators only accept it's own typeof.
 var scope = this;
-["Boolean", "String", "Number", "Undefined", "Function", "Null", "Array", "Dict"].forEach(function(type) {
+["Boolean", "String", "Number", "Undefined", "Function", "Null", "Dict"].forEach(function(type) {
   var proto = {};
   proto[type.toLowerCase()] = function(val, options) {
     return val;
   };
   Validator.factory(scope, type, proto);
 });
+
+Validator.factory(scope, "Array", {
+  "defaults": {
+    length: null  // specify number >= 0 to assert length of array
+  },
+  "array": function(val, options) {
+    if (options.length != null && val.length !== options.length) {
+      return this.invalid(this.key, val, "is not of length: " + options.length);
+    }
+    return val;
+  }
+});
+
 
 /**
  * StringBool, StringBoolean

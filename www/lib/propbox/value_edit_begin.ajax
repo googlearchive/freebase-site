@@ -47,16 +47,16 @@ var SPEC = {
     return [
       validators.MqlId(params, "s", {required:true}),           // subject id
       validators.MqlId(params, "p", {required:true}),           // property id
-      validators.String(params, "o", {required:true}),          // object value/id (being edited)
+      validators.String(params, "replace", {required:true}),    // object value/id (being edited)
       validators.LangId(params, "lang", {if_empty:"/lang/en"})  // lang id
     ];
   },
 
-  run: function(s, p, o, lang) {
+  run: function(s, p, replace, lang) {
     return queries.prop_structure(p, lang)
       .then(function(prop_structure) {
         var promises = [];
-        promises.push(queries.prop_values(s, prop_structure, o, lang));
+        promises.push(queries.prop_values(s, prop_structure, replace, lang));
         promises.push(queries.get_enumerated_types(prop_structure, lang));
         return deferred.all(promises)
           .then(function([prop_values, enum_types]) {

@@ -28,7 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-;(function($, propbox) {
+;(function($, propbox, editparams) {
 
   // requires:
   // propbox.js @see lib/propbox/propbox.js
@@ -66,11 +66,10 @@
             event_prefix: event_prefix,
             ajax: {
               data: submit_data,
-              url: base_url + "/prop_add_submit.ajax"
+              url: base_url + "/prop_edit_submit.ajax"
             },
 
             init: edit.init_prop_add_form,
-            validate: edit.validate_prop_add_form,
             submit: edit.submit_prop_add_form,
 
             prop_section: prop_section,
@@ -79,7 +78,7 @@
 
             structure: html.metadata()
           };
-console.log("structure", JSON.stringify(form.structure, null, 2));
+
           edit.init(form);
 
           form.edit_row
@@ -107,18 +106,16 @@ console.log("structure", JSON.stringify(form.structure, null, 2));
       $(":input:visible:first", form.edit_row).focus();
     },
 
-    validate_prop_add_form: function(form) {
-      return edit.validate_data_input(form);
-    },
-
     submit_prop_add_form: function(form) {
       var submit_data = $.extend({}, form.ajax.data);  // s, p, lang
-      $(".data-input", form.edit_row).each(function() {
-        var name_value = $(this).data("name_value");
-        if (name_value) {
-          submit_data[name_value[0]] = name_value[1];
-        }
-      });
+      try {
+        var o = editparams.parse(form.structure, form.edit_row);
+        submit_data.o = JSON.stringify(o);
+      }
+      catch(ex) {
+        edit.form_error(form, ex);
+        return;
+      }
       $.ajax({
         url: form.ajax.url,
         type: "POST",
@@ -167,7 +164,7 @@ console.log("structure", JSON.stringify(form.structure, null, 2));
       var submit_data = {
         s: topic_id,
         p: prop_section.attr("data-id"),
-        o: value,
+        replace: value,
         lang: lang_id
       };
       $.ajax({
@@ -182,11 +179,10 @@ console.log("structure", JSON.stringify(form.structure, null, 2));
             event_prefix: event_prefix,
             ajax: {
               data: submit_data,
-              url: base_url + "/value_edit_submit.ajax"
+              url: base_url + "/prop_edit_submit.ajax"
             },
 
             init: edit.init_value_edit_form,
-            validate: edit.validate_value_edit_form,
             submit: edit.submit_value_edit_form,
 
             prop_section: prop_section,
@@ -196,8 +192,6 @@ console.log("structure", JSON.stringify(form.structure, null, 2));
 
             structure: html.metadata()
           };
-
-console.log("structure", JSON.stringify(form.structure, null, 2));
 
           edit.init(form);
           form.edit_row
@@ -231,18 +225,16 @@ console.log("structure", JSON.stringify(form.structure, null, 2));
       $(":input:visible:first", form.edit_row).focus();
     },
 
-    validate_value_edit_form: function(form) {
-      return edit.validate_data_input(form);
-    },
-
     submit_value_edit_form: function(form) {
-      var submit_data = $.extend({}, form.ajax.data);  // s, p, o, lang
-      $(".data-input", form.edit_row).each(function() {
-        var name_value = $(this).data("name_value");
-        if (name_value) {
-          submit_data[name_value[0]] = name_value[1];
-        }
-      });
+      var submit_data = $.extend({}, form.ajax.data);  // s, p, lang
+      try {
+        var o = editparams.parse(form.structure, form.edit_row);
+        submit_data.o = JSON.stringify(o);
+      }
+      catch(ex) {
+        edit.form_error(form, ex);
+        return;
+      }
       $.ajax({
         url: form.ajax.url,
         type: "POST",
@@ -529,13 +521,6 @@ console.log("structure", JSON.stringify(form.structure, null, 2));
       // clear messages
       edit.clear_form_message(form);
 
-      // validate form
-      if (form.validate) {
-        if (!form.validate(form)) {
-          return;
-        }
-      }
-
       // form submitting/loading
       form.edit_row.addClass("loading");
       // submit form
@@ -544,17 +529,8 @@ console.log("structure", JSON.stringify(form.structure, null, 2));
       }
     },
 
-    data_input_required: function(form, data_input) {
-      var label = data_input.prev(".form-label").text();
-      edit.form_error(form, "Required: " + label);
-    },
-
-    data_input_invalid: function(form, data_input) {
-      var label = data_input.prev(".form-label").text();
-      edit.form_error(form, "Invalid: " + label);
-    },
-
     form_error: function(form, msg) {
+      $(".button-submit", form.submit_row).attr("disabled", "disabled").addClass("disabled");
       return edit.form_message(form, msg, "error");
     },
 
@@ -609,4 +585,4 @@ console.log("structure", JSON.stringify(form.structure, null, 2));
   };
 
 
-})(jQuery, window.propbox);
+})(jQuery, window.propbox, window.editparams);

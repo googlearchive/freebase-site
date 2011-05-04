@@ -52,7 +52,8 @@ var SPEC = {
 
   run: function(s, p, o, lang) {
     var q = {id:s};
-    q[p] = o;  // TODO: assert o (object operations)
+    // TODO: assert o (object operations)
+    q[p] = o;
     return freebase.mqlwrite(q)
       .then(function(env) {
         return {

@@ -226,11 +226,11 @@
           <a href="javascript:void(0);" class="blurb-trigger">${_('more')}</a>
         </div>
         <div class="nav clear">
-          <ul class="tab-nav">
-            ${nav_tabs()}
-          </ul>
           <ul class="nav-utilities" acre:if="that_exports.nav_utilities">
             ${that_exports.nav_utilities()}
+          </ul>
+          <ul class="tab-nav">
+            ${nav_tabs()}
           </ul>
         </div>
       </acre:block>
@@ -309,7 +309,7 @@
 </acre:block>
 
 <acre:block def="nav_tabs_for_property()">
-  ${nav_tab(false, _("Schema"), h.fb_url("/schema", c.object.id))}
+  ${nav_tab(false, _("Schema"), h.fb_url("/inspect", c.object.id))}
   ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
 </acre:block>
 

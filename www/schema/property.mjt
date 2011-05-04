@@ -91,12 +91,10 @@
   <span class="key"><strong>${_("schema")}:</strong> <a href="${h.fb_url('/schema', c.property.schema.id)}">${c.property.schema.id}</a></span>
 </acre:block>
 
-<acre:block def="nav_tabs(nav_tab)">
+<acre:block def="nav_utilities()">
   <li>
-    ${nav_tab(true, _("Schema"))}
-  </li>
-  <li>
-    ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
+    <a href="" class="icon-link">
+    </a>
   </li>
 </acre:block>
 

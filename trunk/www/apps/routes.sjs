@@ -88,8 +88,7 @@ function do_route(path) {
       break;
     case "user" :
       if (segs.length > 1) {
-        path = "/" + file + path;
-        do_app("view", path, {article:true});
+        do_redirect(acre.request.url.replace(/\/apps\//,"/"));
       } else if (segs.length === 1) {
         do_explore("user", segs[0], acre.request.params);
       } else {
@@ -135,8 +134,7 @@ function do_route(path) {
 
     // if there is a path, but no match, assume path is an appid
     default :
-      path = "/" + file + path;
-      do_app("view", path, {article:true});
+      do_redirect(acre.request.url.replace(/\/apps\//,"/"));
       break;
   }
 }

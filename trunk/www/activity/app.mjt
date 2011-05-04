@@ -1,0 +1,113 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var image = acre.require("lib/template/imagecomponents");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+</acre:script>
+
+<acre:block def="title()">
+  ${_("App")}<acre:block if="c.domain"> - ${i18n.display_name(c.object)}</acre:block>
+</acre:block>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="apps.mf.css" />
+</acre:block>
+
+<acre:block def="breadcrumb()">
+  <div class="page-header clear">
+    <div class="breadcrumb clear">
+      <ol>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.fb_url('/apps')}">${_("Apps")}</a>
+          </span>
+        </li>
+        <li if="c.domain" class="breadcrumb-item last">
+          <span class="breadcrumb-item-inner">
+            <a href="#">${i18n.display_name(c.object)}</a>
+          </span>
+        </li>
+      </ol>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="nav_utilities()">
+  <li class="edit">
+    <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.app.api_keys, ['${c.object.id}', true], this);">
+      <span class="edit-icon">${_('API Keys')}</span>
+    </a>
+  </li>
+</acre:block>
+
+<acre:block def="page_content()">
+  <h1 class="table-title">${_("Users")} ( ${i18n_c.number(c.users.length)} )</h1>
+  <table class="table table-sortable">
+    ${user_table_head()}
+    <tbody>
+      <tr acre:for="user in c.users"c lass="vcard">
+        ${user_row_header(user)}
+        ${user_assertions_row(user.writes)}
+      </tr>
+    </tbody>
+  </table>
+</acre:block>
+
+<acre:block def="user_assertions_row(writes)">
+  <td class="odd">${i18n_c.number(writes)}</td>
+</acre:block>
+
+
+<acre:block def="user_row_header(user)">
+  <th scope="row" class="row-header odd">
+    ${image.user_image_small(user)}
+    <a href="${h.fb_url(user.id)}" class="fn url" title="View user profile">${i18n.display_name(user)}</a>
+</th>
+</acre:block>
+
+<acre:block def="user_table_head()">
+  <thead>
+    <tr>
+      <th class="column-header first" scope="col"><span class="sort-icon">${_("User")}</span></th>
+      <th class="column-header {sorter: 'number'}" scope="col"><span class="sort-icon">${_("Assertions from this app")}</span></th>
+    </tr>
+  </thead>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+  <script src="apps.mf.js"></script>
+</acre:block>

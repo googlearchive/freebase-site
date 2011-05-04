@@ -31,6 +31,7 @@ var rules = {
     {prefix:"/home",               app:"//homepage" + codebase, script: "home"},
     {prefix:"/homepage",           app:"//homepage" + codebase},
     {prefix:"/schema",             app:"//schema" + codebase},
+    {prefix:"/activity",           app:"//activity" + codebase},
     {prefix:"/apps",               app:"//apps" + codebase},
     {prefix:"/appeditor",          app:"//appeditor" + codebase},
     {prefix:"/docs",               app:"//devdocs" + codebase},

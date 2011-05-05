@@ -138,7 +138,6 @@
             self.fb_textchange();
           });
         if (this.metadata && this.metadata.id) {
-          i.data("data.suggest", this.metadata);
           this.validate();
         }
       }
@@ -330,15 +329,15 @@
   $.validate_enumerated.prototype = {
     init: function() {
       var self = this;
-      this.input.bind("change.validate_enumerated", function(e) {
-        if (this.selectedIndex > 0) {
+      this.input.bind("change.validate_enumerated, keypress.validate_enumerated", function(e) {
+        if (this.selectedIndex === 0) {
+          self.empty();
+        }
+        else {
           self.valid({
             text: $(":selected", this).text(),
             id: this.value
           });
-        }
-        else {
-          self.empty();
         }
       });
     },
@@ -361,10 +360,11 @@
     },
 
     validate: function(force) {
-      if (this.input.selectedIndex > 0) {
-        self.valid({
+      var select = this.input[0];
+      if (select.selectedIndex > 0) {
+        this.valid({
           text: $(":selected", this.input).text(),
-          id: this.input.value
+          id: select.value
         });
       }
       else {

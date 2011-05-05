@@ -56,9 +56,6 @@ function data_input_type(type_id) {
   if (h.is_literal_type(type_id)) {
     return type_id.split("/").pop();
   }
-  else if (type_id === "/freebase/type_hints/enumeration") {
-    return "enumerated";
-  }
   return "topic";
 };
 

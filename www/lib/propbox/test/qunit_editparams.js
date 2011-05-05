@@ -679,6 +679,120 @@
       fb_select($(".fb-input:last", context), "/en/lady_gaga");
       same(ep.parse(structure, context), []);
     });
+
+    test("parse unique-enumerated-insert", function() {
+      var context = $("#unique-enumerated-insert");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      enum_select($("select", context), "/en/female");
+      var structure = {
+        id: "/prop/id",
+        unique: true,
+        expected_type: {id:"/people/gender"},
+        values: []
+      };
+      same(ep.parse(structure, context), [{id:"/en/female", connect:"replace"}]);
+    });
+
+    test("parse unique-enumerated-delete", function() {
+      var context = $("#unique-enumerated-delete");
+      var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
+      enum_select($("select", context), "/en/female");
+      data_input.remove();
+      var structure = {
+        id: "/prop/id",
+        unique: true,
+        expected_type: {id:"/people/gender"},
+        values: [{id:"/en/female"}]
+      };
+      same(ep.parse(structure, context), [{id:"/en/female", connect:"delete"}]);
+    });
+
+    test("parse unique-enumerated-replace", function() {
+      var context = $("#unique-enumerated-replace");
+      var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
+      enum_select($("select", context), "/en/male");
+      var structure = {
+        id: "/prop/id",
+        unique: true,
+        expected_type: {id:"/people/gender"},
+        values: [{id:"/en/female"}]
+      };
+      same(ep.parse(structure, context), [{id:"/en/male", connect:"replace"}]);
+    });
+
+    test("parse unique-enumerated-noop", function() {
+      var context = $("#unique-enumerated-noop");
+      var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
+      var structure = {
+        id: "/prop/id",
+        unique: true,
+        expected_type: {id:"/people/gender"},
+        values: [{id:"/en/male"}]
+      };
+      same(ep.parse(structure, context), []);
+      enum_select($("select", context), "/en/male");
+      same(ep.parse(structure, context), []);
+      enum_select($("select", context), "/en/female");
+      enum_select($("select", context), null);  // 0-index is "Select..." option
+      same(ep.parse(structure, context), []);
+    });
+
+    test("parse non-unique-enumerated-insert", function() {
+      var context = $("#non-unique-enumerated-insert");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      var structure = {
+        id: "/prop/id",
+        expected_type: {id:"/people/gender"},
+        values: [{id:"/en/male"}]
+      };
+
+      enum_select($("select:last", context), "/en/female");
+      same(ep.parse(structure, context), [{id:"/en/female", connect:"insert"}]);
+    });
+
+    test("parse non-unique-enumerated-delete", function() {
+      var context = $("#non-unique-enumerated-delete");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      $(".data-input:first", context).remove();
+      var structure = {
+        id: "/prop/id",
+        expected_type: {id:"/people/gender"},
+        values: [{id:"/en/male"},{id:"/en/female"}]
+      };
+      same(ep.parse(structure, context), [{id:"/en/male", connect:"delete"}]);
+      $(".data-input", context).remove();
+      same(ep.parse(structure, context), [{id:"/en/male", connect:"delete"},{id:"/en/female", connect:"delete"}]);
+    });
+
+    test("parse non-unique-enumerated-replace", function() {
+      var context = $("#non-unique-enumerated-replace");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      var structure = {
+        id: "/prop/id",
+        expected_type: {id:"/people/gender"},
+        values: [{id:"/en/female"}]
+      };
+      enum_select($("select", context), "/en/male");
+      same(ep.parse(structure, context), [{id:"/en/female", connect:"delete"},{id:"/en/male", connect:"insert"}]);
+    });
+
+    test("parse non-unique-enumerated-noop", function() {
+      var context = $("#non-unique-enumerated-noop");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      var structure = {
+        id: "/prop/id",
+        expected_type: {id:"/people/gender"},
+        values: [{id:"/en/male"},{id:"/en/female"}]
+      };
+      enum_select($("select:first", context), "/en/male");
+      same(ep.parse(structure, context), []);
+      enum_select($("select:last", context), "/en/female");
+      same(ep.parse(structure, context), []);
+      enum_select($("select:first", context), null);
+      same(ep.parse(structure, context), []);
+      enum_select($("select:last", context), null);
+      same(ep.parse(structure, context), []);
+    });
   };
 
   /**
@@ -687,6 +801,25 @@
   function fb_select(input, id) {
     var data = {id: id};
     input.data("data.suggest", data).trigger("fb-select", data);
+  };
+
+  /**
+   * Emulate a selecting an option whose value === id in an html <select> element
+   */
+  function enum_select(select, id) {
+    if (id == null) {
+      select[0].selectedIndex = 0;
+      select.trigger("change");
+    }
+    else {
+      $("option", select).each(function(i) {
+        if (this.value === id) {
+          select[0].selectedIndex = i;
+          select.trigger("change");
+          return false;
+        }
+      });
+    }
   };
 
   stop();

@@ -43,6 +43,7 @@
   var base = acre.require("template/freebase.mjt");
   var this_exports = this.exports;
   var that_exports;
+  var fh = acre.require("filter/helpers.sjs");
 
   // microdata helpers
   var microdata = acre.require("helper/microdata.sjs");
@@ -286,49 +287,76 @@
 </acre:block>
 
 <acre:block def="nav_tabs_for_app()">
-  <acre:script>var opts = {domains:"all", type:"/freebase/apps/application"}</acre:script>
-  ${nav_tab(false, _("View"), h.fb_url("/topic", c.object.id, opts))}
-  ${nav_tab(false, _("Authors"), h.fb_url("/group", c.object.id))}
-  ${nav_tab(false, _("Activity"), h.fb_url("/activity", c.object.id))}
-  ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
+  <acre:script>
+    var params = c.filters ? fh.global_filters(c.filters) : {};
+    h.extend(params, {
+      domains:"all", 
+      type:"/freebase/apps/application"
+    });
+  </acre:script>
+  ${nav_tab(_("View"), h.fb_url("/topic", c.object.id, params))}
+  ${nav_tab(_("Authors"), h.fb_url("/group", c.object.id))}
+  ${nav_tab(_("Activity"), h.fb_url("/activity", c.object.id, params))}
+  ${nav_tab(_("Inspect"), h.fb_url("/inspect", c.object.id, params))}
 </acre:block>
 
 <acre:block def="nav_tabs_for_user()">
-  ${nav_tab(false, _("Domains"), h.fb_url("/data", c.object.id))}
-  ${nav_tab(false, _("Queries"), h.fb_url("/queries", c.object.id))}
-  ${nav_tab(false, _("Apps"), h.fb_url("/apps", c.object.id))}
-  ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
+  <acre:script>
+    var params = c.filters ? fh.global_filters(c.filters) : {};
+  </acre:script>
+  ${nav_tab(_("Domains"), h.fb_url("/data", c.object.id))}
+  ${nav_tab(_("Queries"), h.fb_url("/queries", c.object.id))}
+  ${nav_tab(_("Apps"), h.fb_url("/apps", c.object.id))}
+  ${nav_tab(_("Inspect"), h.fb_url("/inspect", c.object.id, params))}
 </acre:block>
 
 <acre:block def="nav_tabs_for_domain()">
-  ${nav_tab(false, _("Data"), h.fb_url("/data", c.object.id))}
-  ${nav_tab(false, _("Schema"), h.fb_url("/schema", c.object.id))}
-  ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
-  ${nav_tab(false, _("Community"), h.fb_url("/group", c.object.id))}
+  <acre:script>
+    var params = c.filters ? fh.global_filters(c.filters) : {};
+  </acre:script>
+  ${nav_tab(_("Data"), h.fb_url("/data", c.object.id))}
+  ${nav_tab(_("Schema"), h.fb_url("/schema", c.object.id))}
+  ${nav_tab(_("Inspect"), h.fb_url("/inspect", c.object.id, params))}
+  ${nav_tab(_("Community"), h.fb_url("/group", c.object.id))}
 </acre:block>
 
 <acre:block def="nav_tabs_for_type()">
-  ${nav_tab(false, _("Data"), h.fb_url("/data", c.object.id))}
-  ${nav_tab(false, _("Schema"), h.fb_url("/schema", c.object.id))}
-  ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
+  <acre:script>
+    var params = c.filters ? fh.global_filters(c.filters) : {};
+  </acre:script>
+  ${nav_tab(_("Data"), h.fb_url("/data", c.object.id))}
+  ${nav_tab(_("Schema"), h.fb_url("/schema", c.object.id))}
+  ${nav_tab(_("Inspect"), h.fb_url("/inspect", c.object.id, params))}
 </acre:block>
 
 <acre:block def="nav_tabs_for_property()">
-  ${nav_tab(false, _("Schema"), h.fb_url("/inspect", c.object.id))}
-  ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
+  <acre:script>
+    var params = c.filters ? fh.global_filters(c.filters) : {};
+  </acre:script>
+  ${nav_tab(_("Schema"), h.fb_url("/schema", c.object.id))}
+  ${nav_tab(_("Inspect"), h.fb_url("/inspect", c.object.id, params))}
 </acre:block>
 
 <acre:block def="nav_tabs_for_topic()">
-  ${nav_tab(false, _("View"), h.fb_url("/topic", c.object.id))}
-  ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
-  ${nav_tab(false, _("On the Web"), h.fb_url("/web", c.object.id))}
+  <acre:script>
+    var params = c.filters ? fh.global_filters(c.filters) : {};
+  </acre:script>
+  ${nav_tab(_("View"), h.fb_url("/topic", c.object.id, params))}
+  ${nav_tab(_("Inspect"), h.fb_url("/inspect", c.object.id, params))}
+  ${nav_tab(_("On the Web"), h.fb_url("/web", c.object.id))}
 </acre:block>
 
 <acre:block def="nav_tabs_for_object()">
-  ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
+  <acre:script>
+    var params = c.filters ? fh.global_filters(c.filters) : {};
+  </acre:script>
+  ${nav_tab(_("Inspect"), h.fb_url("/inspect", c.object.id, params))}
 </acre:block>
 
-<acre:block def="nav_tab(current, label, url)">
+<acre:block def="nav_tab(label, url)">
+  <acre:script>
+    var current = acre.request.url.indexOf(url) !== -1;
+  </acre:script>
   <li>
     <a acre:if="current" href="#" onclick="return false;" class="current"><span>${label}</span></a>
     <a acre:else="" href="${url}"><span>${label}</span></a>

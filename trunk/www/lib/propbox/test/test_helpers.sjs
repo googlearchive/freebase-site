@@ -60,7 +60,6 @@ test("data_input_type", function() {
   }
   same(ph.data_input_type(), "");
   same(ph.data_input_type(null), "");
-  same(ph.data_input_type("/freebase/type_hints/enumeration"), "enumerated");
   same(ph.data_input_type("/film/film"), "topic");
 });
 

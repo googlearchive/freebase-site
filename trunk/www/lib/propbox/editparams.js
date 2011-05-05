@@ -176,6 +176,7 @@
 
     parse_mediator: function(structure, old_values, new_values) {
       var ops = [];
+      console.log("parse_mediator", structure, old_values, new_values);
     },
 
     parse_simple: function(structure, old_values, new_values) {
@@ -262,7 +263,7 @@
         }
       }
       else {
-        ep.assert(!ep.isEmpty(data.id), "Invalid: expected non-empty data.value");
+        ep.assert(!ep.isEmpty(data.id), "Invalid: expected non-empty data.id");
       }
       return data;
     },

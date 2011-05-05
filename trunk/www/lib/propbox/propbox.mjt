@@ -493,7 +493,7 @@ propbox edit forms
   </acre:script>
   <div class="form-field">
     <acre:block if="ect.enumeration">
-      ${data_input("/freebase/type_hints/enumeration", prop_structure.id, prop_value, lang, ect.instances || [])}
+      ${data_input(ect.id, prop_structure.id, prop_value, lang, ect.instances || [])}
     </acre:block>
     <acre:block else="">
       ${data_input(ect.id, prop_structure.id, prop_value, lang)}
@@ -508,14 +508,14 @@ propbox edit forms
 <!!--
   @param type_id - e.g., /type/datetime, /type/text, etc.
     For topics use any type.
-    For enumerated types, use /freebase/type_hints/enumeration property id
+    For enumerated types, pass enumerated list
 
   @param name - you should almost always use the property id for the name. propbox-edit.js expects name to be a property id.
   @param prop_value - in topic api format
   @param lang - the preferred language of the input
-  @param instances - for /freebase/type_hints/enumeration, instances should be set to all the enumeration instances.
+  @param enumerated - for enumerated type_id, pass the enumerated instances (Array) of the type.
 !!-->
-<acre:block def="data_input(type_id, name, prop_value, lang, instances)">
+<acre:block def="data_input(type_id, name, prop_value, lang, enumerated)">
   <acre:script>
     var type = ph.data_input_type(type_id);
     var data = {
@@ -533,11 +533,11 @@ propbox edit forms
       }
     }
   </acre:script>
-  <acre:block if="type === 'enumerated'">
+  <acre:block if="enumerated">
     <span class="data-input enumerated ${JSON.stringify(data)}">
       <select class="fb-enumerated-input" name="${name}">
         <option>${_("select")}...</option>
-        <acre:block for="inst in instances">
+        <acre:block for="inst in enumerated">
           <option value="${inst.id}"
                   acre:attrs="prop_value && prop_value.id === inst.id ? {selected:'selected'} : {}">
            ${inst.text}

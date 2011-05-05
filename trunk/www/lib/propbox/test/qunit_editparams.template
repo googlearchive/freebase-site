@@ -345,7 +345,7 @@
     <acre:block for="prop_value in prop_values">
       ${pb.data_input("/people/person", "/prop/id", prop_value)}
     </acre:block>
-    ${pb.data_input("/people/person", "/prop/id", prop_value)}
+    ${pb.data_input("/people/person", "/prop/id", null)}
   </div>
 
   <div id="non-unique-topic-delete">
@@ -390,6 +390,105 @@
     </acre:script>
     <acre:block for="prop_value in prop_values">
       ${pb.data_input("/people/person", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="unique-enumerated-insert">
+    <acre:script>
+      var instances = [{id:"/en/male",text:"Male"},{id:"/en/female",text:"Female"}];
+    </acre:script>
+    ${pb.data_input("/people/gender", "/prop/id", null, null, instances)}
+  </div>
+
+  <div id="unique-enumerated-delete">
+    <acre:script>
+      var instances = [{id:"/en/male",text:"Male"},{id:"/en/female",text:"Female"}];
+      var prop_value = {
+        id: "/en/female",
+        text: "Female"
+      };
+    </acre:script>
+    ${pb.data_input("/people/gender", "/prop/id", prop_value, null, instances)}
+  </div>
+
+  <div id="unique-enumerated-replace">
+    <acre:script>
+      var instances = [{id:"/en/male",text:"Male"},{id:"/en/female",text:"Female"}];
+      var prop_value = {
+        id: "/en/female",
+        text: "Female"
+      };
+    </acre:script>
+    ${pb.data_input("/people/gender", "/prop/id", prop_value, null, instances)}
+  </div>
+
+  <div id="unique-enumerated-noop">
+    <acre:script>
+      var instances = [{id:"/en/male",text:"Male"},{id:"/en/female",text:"Female"}];
+      var prop_value = {
+        id: "/en/male",
+        text: "Male"
+      };
+    </acre:script>
+    ${pb.data_input("/people/gender", "/prop/id", prop_value, null, instances)}
+  </div>
+
+  <div id="non-unique-enumerated-insert">
+    <acre:script>
+      var instances = [{id:"/en/male",text:"Male"},{id:"/en/female",text:"Female"}];
+      var prop_values = [{
+        id: "/en/male",
+        text: "Male"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/people/gender", "/prop/id", prop_value, null, instances)}
+    </acre:block>
+    ${pb.data_input("/people/gender", "/prop/id", null, null, instances)}
+  </div>
+
+  <div id="non-unique-enumerated-delete">
+    <acre:script>
+      var instances = [{id:"/en/male",text:"Male"},{id:"/en/female",text:"Female"}];
+      var prop_values = [{
+        id: "/en/male",
+        text: "Male"
+      },{
+        id: "/en/female",
+        text: "Female"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/people/gender", "/prop/id", prop_value, null, instances)}
+    </acre:block>
+  </div>
+
+  <div id="non-unique-enumerated-replace">
+    <acre:script>
+      var instances = [{id:"/en/male",text:"Male"},{id:"/en/female",text:"Female"}];
+      var prop_values = [{
+        id: "/en/female",
+        text: "Female"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/people/gender", "/prop/id", prop_value, null, instances)}
+    </acre:block>
+  </div>
+
+  <div id="non-unique-enumerated-noop">
+    <acre:script>
+      var instances = [{id:"/en/male",text:"Male"},{id:"/en/female",text:"Female"}];
+      var prop_values = [{
+        id: "/en/male",
+        text: "Male"
+      },{
+        id: "/en/female",
+        text: "Female"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/people/gender", "/prop/id", prop_value, null, instances)}
     </acre:block>
   </div>
 </acre:block>

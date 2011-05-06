@@ -103,15 +103,25 @@
       </tr>
     </table>
     <p acre:else="">None</p>
-    
+
     <h2>Notes</h2>
     <acre:block if="o['/common/topic/article']">
-      ${acre.markup.bless(acre.freebase.get_blob(o['/common/topic/article']['id']).body)}
+      <acre:script>
+        var note = acre.freebase.get_blob(o['/common/topic/article']['id']);
+      </acre:script>
+      <acre:block if="note.content_type === 'text/html'">
+        <!!--This use of bless is considered safe because we assume that
+             Freebase APIs will always return sanatized html-->
+        ${acre.markup.bless(note.body)} <!!--SAFE(culbertson)-->
+      </acre:block>
+      <acre:block else="">
+        ${note.body}
+      </acre:block>
     </acre:block>
-        
+
     <p>
-      For additional information on using the <code>callback</code> parameter to generate a JSONP response, 
-      or using <code>onsucceed</code>  and <code>onfail</code> to redirect to a URI template, see 
+      For additional information on using the <code>callback</code> parameter to generate a JSONP response,
+      or using <code>onsucceed</code>  and <code>onfail</code> to redirect to a URI template, see
       <a href="common">Common API Headers and Parameters</a>.
     </p>
   </body>

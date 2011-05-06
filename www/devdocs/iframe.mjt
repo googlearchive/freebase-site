@@ -57,7 +57,9 @@
       <acre:block elif="o.doc_content">
         <div id="help-section">
           <div id="help-content" class="wide">
-            ${acre.markup.bless(util.get_content(o.doc_content, o.query))}
+            <!!--This use of bless is considered safe because we are only
+                 including content from trusted documentation sources-->
+            ${acre.markup.bless(util.get_content(o.doc_content, o.query))} <!!--SAFE(culbertson)-->
           </div>
         </div>
       </acre:block>

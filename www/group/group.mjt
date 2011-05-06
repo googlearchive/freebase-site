@@ -47,7 +47,11 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <h1 class="table-title">${_("Admins")} ( ${i18n_c.number(c.owners.length)} )</h1>
+  <acre:script>
+    var types = h.map_array(c.object.type, "id");
+  </acre:script>
+  <h1 acre:if="h.fb_object_type(types, c.object.id) !== 'Acre App'"
+      class="table-title">${_("Owners")} ( ${i18n_c.number(c.owners.length)} )</h1>
   <table class="table table-sortable">
     ${user_table_head()}
     <tbody>

@@ -261,10 +261,10 @@
       <a href="${h.fb_url(user.id)}" class="bold-link">${user.name}</a>
     </div>
     <div class="user-stats">
-      ${h.bless_sprintf(_("joined in %s"), acre.markup.stringify(i18n_c.datetime(user.created, [["data-format","yMMM"]])))}
+      ${h.template_sprintf(_("joined in %s"), i18n_c.datetime(user.created, [["data-format","yMMM"]]))}
     </div>
     <div class="user-stats">
-      ${h.bless_sprintf(_("%s total assertions"), acre.markup.stringify(i18n_c.number(user.assertions)))}
+      ${h.template_sprintf(_("%s total assertions"), i18n_c.number(user.assertions))}
     </div>
     <a href="${h.legacy_fb_url('/user/settings/following')}"
        class="stat-box">
@@ -304,9 +304,13 @@
   </div>
 </acre>
 
+<span acre:def="emphasis(value)" class="emphasis">
+  ${value}
+</span>
+
 <acre:block def="what_is_freebase()">
   <div class="content-section">
-    <h3>${h.bless_sprintf(_("What is %s"), h.tag("span", _("Freebase?"), "class", "emphasis"))}</h3>
+    <h3>${h.template_sprintf(_("What is %s"), emphasis(_("Freebase?")))}</h3>
     <p>${_("Learn what an entity graph is, what kind of information it contains, and why you should add your data!")}</p>
     <a href="${h.wiki_url('What_is_Freebase%3F')}" class="more-link">${_("Learn more")} &raquo;</a>
   </div>
@@ -314,7 +318,7 @@
 
 <acre:block def="contribute_to_freebase()">
   <div class="content-section contribute-section">
-    <h3>${h.bless_sprintf(_("Help improve %s"), h.tag("span", _("Freebase"), "class", "emphasis"))}</h3>
+    <h3>${h.template_sprintf(_("Help improve %s"), emphasis(_("Freebase")))}</h3>
     <ul>
       <li>
         <a href="${h.legacy_fb_url('/tools/flags/review')}">
@@ -338,7 +342,7 @@
 
 <acre:block def="for_developers()">
   <div class="content-section">
-    <h3>${h.bless_sprintf(_("%s for Developers"), h.tag("span", _("Freebase"), "class", "emphasis"))}</h3>
+    <h3>${h.template_sprintf(_("%s for Developers"), emphasis(_("Freebase")))}</h3>
     <ul>
       <li>${_("powerful queryable API")}</li>
       <li>${_("JavaScript-based hosting framework")}</li>
@@ -369,18 +373,26 @@
   </div>
 </acre:block>
 
+<acre:block def="item_title(title, href)">
+  <a href="${href}" class="item-title">${title}</a>
+</acre:block>
+
+<acre:block def="item_creator(title, href)">
+  <a href="${href}" class="item-creator">${title}</a>
+</acre:block>
+
 <!-- Note: We trust feedburner to escape HTML entities in the description -->
-<acre:block def="blog_entries(blog)">  
+<acre:block def="blog_entries(blog)">
   <div acre:if="blog" class="content-section">
     <h3 class="sidebar-header"><a href="$blog.url">${_("Blog")}</a></h3>
     <a href="$blog.rss_url" class="rss-icon">${_("RSS")}</a>
     <div class="blog-feature-content">
       ${_("Latest posts:")}
       <div acre:for="item in blog.items" class="blog-item">
-        ${h.bless_sprintf(_("%s by %s on %s"),
-                          h.tag("a", item.title, "href", item.link, "class", "item-title"),
-                          h.tag("a", item["dc:creator"], "href", h.fb_url("/user/"+item["dc:creator"])),
-                          acre.markup.stringify(i18n_c.datetime(new Date(item.pubDate), [["data-format","MMMd"]])))}
+        ${h.template_sprintf(_("%s by %s on %s"),
+        item_title(item.title, item.link),
+        item_creator(item["dc:creator"], h.fb_url("/user/"+item["dc:creator"])),
+        i18n_c.datetime(new Date(item.pubDate), [["data-format","MMMd"]]))}
       </div>
     </div>
   </div>
@@ -393,10 +405,10 @@
     <div class="wiki-feature-content">
       ${_("Recent changes:")}
       <div acre:for="item in wiki.items" class="wiki-item">
-        ${h.bless_sprintf(_("%s by %s on %s"),
-                          h.tag("a", item.title, "href", item.link, "class", "item-title"),
-                          h.tag("a", item["dc:creator"], "href", wiki.user_url + ":" + item["dc:creator"]),
-                          acre.markup.stringify(i18n_c.datetime(new Date(item.pubDate), [["data-format","MMMd"]])))}
+        ${h.template_sprintf(_("%s by %s on %s"),
+        item_title(item.title, item.link),
+        item_creator(item["dc:creator"], wiki.user_url + ":" + item["dc:creator"]),
+        i18n_c.datetime(new Date(item.pubDate), [["data-format","MMMd"]]))}
       </div>
     </div>
   </div>
@@ -407,10 +419,10 @@
     <h3>${_("Discussion List")}</h3>
     <p>${_("Enter your email address to join the discussion:")}</p>
     <form method="POST" action="http://lists.freebase.com/mailman/subscribe/freebase-discuss" >
-      <input name="email" type="email" 
-             placeholder="${_('Your email address...')}" 
+      <input name="email" type="email"
+             placeholder="${_('Your email address...')}"
              class="input-standard"/>
-      
+
       <input type="submit" value="${_('Subscribe')}" class="button button-primary"/>
     </form>
     <a href="http://freebase.markmail.org/" class="bold-link">${_("Read the List Archive")}</a>

@@ -32,11 +32,30 @@
 acre.require('/test/lib').enable(this);
 
 var h = acre.require("helper/helpers_sprintf.sjs");
-
+var template = acre.require("helper/test/sprintf_template.sjs");
 
 test("sprintf", function() {
   equal(h.sprintf("%s%s%s", 1, 2, 3), "123");
 });
+
+test("template_sprintf", function() {
+  equal(h.template_sprintf("%s is a bold choice!",
+                           template.embolden("Italic")).html,
+        "<b>Italic</b> is a bold choice!");
+
+  equal(h.template_sprintf("%s is still safe",
+                           template.embolden("<script>alert(1);</script>")).html,
+        "<b>&lt;script&gt;alert(1);&lt;/script&gt;</b> is still safe");
+
+  equal(h.template_sprintf("Supports passthrough for %s",
+                           "simple strings").html,
+        "Supports passthrough for simple strings");
+
+  equal(h.template_sprintf("But HTML escapes strings %s",
+                           "<script>alert(1);</script>").html,
+        "But HTML escapes strings &lt;script&gt;alert(1);&lt;/script&gt;");
+});
+
 
 acre.test.report();
 

@@ -31,6 +31,7 @@
 
 var exports = {
   "sprintf": sprintf,
+  "template_sprintf": template_sprintf,
   "bless_sprintf": bless_sprintf
 };
 
@@ -98,7 +99,23 @@ function sprintf() {
   return str_format.apply(null, arguments);
 };
 
+function template_sprintf() {
+  if (arguments.length < 2){
+    return "";
+  }
+  
+  // Ensure that all arguments are acre templates
+  // and bless then for inclusion in the format string.\
+  var args = [arguments[0]];
+  for (var i=1; i<arguments.length; i++) {
+    args.push(acre.markup.stringify(arguments[i]));
+  }
+  return acre.markup.bless(sprintf.apply(null, args));
+}
+
 function bless_sprintf() {
+  console.warn("DEPRECATED: bless_sprintf is considered dangerous. "+
+               "Use template_sprintf instead");
   return acre.markup.bless(sprintf.apply(null, arguments));
 };
 

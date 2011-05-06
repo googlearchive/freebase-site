@@ -54,6 +54,10 @@ test("template_sprintf", function() {
   equal(h.template_sprintf("But HTML escapes strings %s",
                            "<script>alert(1);</script>").html,
         "But HTML escapes strings &lt;script&gt;alert(1);&lt;/script&gt;");
+
+  equal(h.template_sprintf("Even <script>%s</script> is escaped!",
+                           "alert(1);").html,
+        "Even &lt;script&gt;alert(1);&lt;/script&gt; is escaped!");
 });
 
 

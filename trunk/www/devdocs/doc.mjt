@@ -76,7 +76,9 @@
     <acre:block elif="o.doc_content">
       <div id="help-section">
         <div id="help-content" class="wide">
-          ${acre.markup.bless(util.get_content(o.doc_content, o.query))}
+          <!!--This use of bless is considered safe because we are only
+                 including content from trusted documentation sources-->
+          ${acre.markup.bless(util.get_content(o.doc_content, o.query))} <!!--SAFE(culbertson)-->
         </div>
       </div>
     </acre:block>
@@ -94,7 +96,9 @@
         <acre:block for="section in o.sections">
           <acre:block if="'inline' in section">
             <li acre:attrs="'className' in section?{'class':section.className}:{}">
-              ${acre.markup.bless(util.get_content(section.inline))}
+              <!!--This use of bless is considered safe because we are only
+                 including content from trusted documentation sources-->
+              ${acre.markup.bless(util.get_content(section.inline))} <!!--SAFE(culbertson)-->
             </li>
           </acre:block>
           <acre:block else="">
@@ -117,7 +121,9 @@
       </ul>
     </div>
     <div id="help-content" acre:if="content_url">
-      ${acre.markup.bless(util.get_content(content_url))}
+      <!!--This use of bless is considered safe because we are only
+                 including content from trusted documentation sources-->
+      ${acre.markup.bless(util.get_content(content_url))} <!!--SAFE(culbertson)-->
     </div>
     <div id="help-content" acre:else="">
       No content

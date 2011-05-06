@@ -104,13 +104,17 @@ function template_sprintf() {
     return "";
   }
   
-  // Ensure that all arguments are acre templates
-  // and bless then for inclusion in the format string.\
-  var args = [arguments[0]];
-  for (var i=1; i<arguments.length; i++) {
+  // All arguments are stringified before sprintf
+  // this converts templates and html encodes strings.
+  var args = [];
+  for (var i=0; i<arguments.length; i++) {
     args.push(acre.markup.stringify(arguments[i]));
   }
-  return acre.markup.bless(sprintf.apply(null, args));
+  // This use of bless is considered safe because all of the input
+  // has been html encoded so the result can never contain
+  // a user supplied script tag. A script tag could only be included
+  // via an acre template.
+  return acre.markup.bless(sprintf.apply(null, args)); //SAFE(culbertson)
 }
 
 function bless_sprintf() {

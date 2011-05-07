@@ -106,12 +106,20 @@ function render(service_result, spec, scope) {
       var template;
       var exports;
       if (o.def) {
-        template = is_module(o.template) ? o.template : scope.acre.require(o.template);
+        try {
+          template = is_module(o.template) ? o.template : scope.acre.require(o.template);
+        } catch (error) {
+          throw new Error("Could not load template. Does '"+o.template+"' exist? "+error);
+        }
         exports = template;
       }
       else {
         if (o.template_base) {
-          template = is_module(o.template_base) ? o.template_base : scope.acre.require(o.template_base);
+          try {
+            template = is_module(o.template_base) ? o.template_base : scope.acre.require(o.template_base);
+          } catch (error) {
+            throw new Error("Could not load base template. Does '"+o.template_base+"' exist? " + error);
+          }
         }
         else {
           // default to template/freebase.mjt
@@ -120,7 +128,11 @@ function render(service_result, spec, scope) {
         if (template.c && typeof template.c === "object") {
           h.extend(template.c, o.c);
         }
-        exports = is_module(o.template) ? o.template : scope.acre.require(o.template);
+        try {
+          exports = is_module(o.template) ? o.template : scope.acre.require(o.template);
+        } catch (error) {
+          throw new Error("Could not load template. Does '"+o.template+"' exist? " + error);
+        }
         o.def = "page";
         o.def_args = [exports];
       }
@@ -130,7 +142,7 @@ function render(service_result, spec, scope) {
 
       return template[o.def].apply(template, o.def_args);
     });
-};
+}; 
 
 /**
  * Is this already a module (as a result of acre.require) or

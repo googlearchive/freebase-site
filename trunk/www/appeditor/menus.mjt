@@ -178,6 +178,8 @@
   </div>
   <div class="section">
     <h3>Validate</h3>
+    <!-- mjt.bless is being used so HTML entities for system control characters 
+        can be printed. These are all declared in ui.shortcut -->
     <button acre:onclick="ui.do_file_check()" title="${mjt.bless(ui.shortcut.get_keys('Check Syntax'))}"
       acre:attrs="ui.get_file_check_options().useful===1?{}:{'disabled':'disabled'}">
       Check Syntax</button>

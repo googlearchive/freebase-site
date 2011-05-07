@@ -220,6 +220,7 @@
           </select>
 
         </acre:block>
+        <!-- bless is OK because hints only come from ENV declared statically above -->
         <div acre:if="e.hint.length > 0" class="cuecard-controlPane-hint">${mjt.bless(e.hint)}</div>
     </div>
   </div>

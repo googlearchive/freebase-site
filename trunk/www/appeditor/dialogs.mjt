@@ -783,6 +783,8 @@
     <div class="dialog-inset">
       <table>
         <tr acre:for="shortcut in ui.shortcut.get_shortcuts()">
+          <!-- mjt.bless is being used so HTML entities for system control characters 
+              can be printed. These are all declared in ui.shortcut -->
           <th>${mjt.bless(ui.shortcut.get_keys(shortcut.op))}</th>
           <td>$shortcut.op</td>
         </tr>

@@ -287,6 +287,7 @@
     <div id="file-buttons">
       <div acre:if="file">
       <div id="file-buttons-right" class="refresh-right">
+        <!-- mjt.bless for system control characters (HTML entities) declared in ui.shortcut -->
         <button id="button-view" acre:onclick="ui.do_run_view(null, false);" title="${mjt.bless(ui.shortcut.get_keys('View'))}"
           acre:attrs="file.get_editor_supported_features('inline_preview')?{'disabled':'disabled'}:{}">
           View</button>
@@ -295,6 +296,7 @@
           View with Console</button>
       </div>
       <span class="buttonset">
+        <!-- mjt.bless for system control characters (HTML entities) declared in ui.shortcut -->
         <button id="button-save" class="button-left button-primary" acre:onclick="ui.do_file_save()"
           acre:attrs="file.is_dirty()?{}:{'disabled':'disabled'}" title="${mjt.bless(ui.shortcut.get_keys('Save File'))}">
           Save
@@ -324,6 +326,7 @@
           <span class="button-menu">Help</span></button>
       </span>
       <span class="buttoncount">
+        <!-- mjt.bless for system control characters (HTML entities) declared in ui.shortcut -->
         <span class=" buttonset linecount" acre:if="file.get_editor_supported_features('linenumbers')">
           Line <input id="linenumber" type="text" class="form-textbox" value="${ui.get_line()||''}" title="${mjt.bless(ui.shortcut.get_keys('Jump to Line'))}" />
         </span>
@@ -344,6 +347,7 @@
   <acre:script>
     var writable = ui.get_app().is_writable();
   </acre:script>
+  <!-- mjt.bless for system control characters (HTML entities) declared in ui.shortcut -->
   <button class="button-primary" acre:onclick="ui.get_file()._current_editor.query_run()" title="${mjt.bless(ui.shortcut.get_keys('View'))}">
     Run</button>
   <button acre:onclick="ui.get_file()._current_editor.query_assist()" title="Tab"

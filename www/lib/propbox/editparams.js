@@ -33,6 +33,24 @@
 
   var ep = window.editparams = {
 
+    Empty: function(structure, data, msg) {
+      this.structure = structure;
+      this.data = data;
+      this.msg = msg;
+      this.toString = function() {
+        return "Empty: " + this.msg;
+      };
+    },
+
+    Invalid: function(structure, data, msg) {
+      this.structure = structure;
+      this.data = data;
+      this.msg = msg;
+      this.toString = function() {
+        return "Invalid: " + this.msg;
+      };
+    },
+
     error: function() {
       var msg = Array.prototype.slice.call(arguments);
       msg.splice(0, 0, "editparams:");
@@ -88,15 +106,18 @@
       // TODO: assert structure is valid (and it's values)
       //
       var old_values = (structure.values || []).slice();
-      var mediator = structure.expected_type.mediator;
       var props = structure.properties || [];
+      var mediator = structure.expected_type.mediator || props.length;
 
       if (mediator) {
-        ep.assert(props.length, "Invalid: mediator must have 1 or more properties");
-        ep.assert(!old_values.length || old_values.length === 1, "Can't update more than one value (row) for a mediator");
+        ep.assert(props.length, "mediator must have 1 or more properties");
+        ep.assert(!old_values.length || old_values.length === 1,
+                  "Can't update more than one value (row) for a mediator");
       }
 
-      function accept_or_reject(data_input, prop, data, prop_values, existing_values) {
+      function accept_or_reject(data_input, prop, data, existing_values, prop_values) {
+//console.log("accept_or_reject", data);
+
         // if accept,
         //   append data to prop_values
         // if reject,
@@ -110,22 +131,32 @@
           prop_values.push(data);
         }
         catch (ex) {
-          // reject
-          var odata = data_input.metadata();
-          var keys_to_compare;
-          var ect = prop.expected_type.id;
-          if (ep.LITERAL_TYPE_IDS[ect]) {
-            keys_to_compare = ["value"];
-            if (ect === "/type/text") {
-              keys_to_compare.push("lang");
-            }
+          if (ex instanceof ep.Empty) {
+            // accept
+            prop_values.push(data);
           }
           else {
-            keys_to_compare = ["id"];
-          }
-          var index = ep.inArray.apply(null, [odata, existing_values].concat(keys_to_compare));
-          if (index !== -1) {
-            existing_values.splice(index, 1);
+            throw ex;
+
+/**
+            // reject
+            var odata = data_input.metadata();
+            var keys_to_compare;
+            var ect = prop.expected_type.id;
+            if (ep.LITERAL_TYPE_IDS[ect]) {
+              keys_to_compare = ["value"];
+              if (ect === "/type/text") {
+                keys_to_compare.push("lang");
+              }
+            }
+            else {
+              keys_to_compare = ["id"];
+            }
+            var index = ep.inArray.apply(null, [odata, existing_values].concat(keys_to_compare));
+            if (index !== -1) {
+              existing_values.splice(index, 1);
+            }
+**/
           }
         }
       };
@@ -134,12 +165,15 @@
       $(".data-input", context).each(function() {
         var $this = $(this);
         var inst = $this.data("$.data_input");
-        ep.assert(inst, "$.data-input not initialized", this);
+        ep.assert(inst, "$.data-input not initialized");
         // force validation
         inst.validate(true);
-        ep.assert(!$this.is(".error"), "$.data-input is invalid", this);
+        ep.assert(!$this.is(".error"), "$.data-input is invalid");
         var data = $this.data("data");
-        ep.assert(data, "$.data-input has no data", this);
+
+console.log("data_input data", data);
+
+        ep.assert(data, "$.data-input has no data");
         if (mediator) {
           if (!new_values.length) {
             // you can only upate one row for a mediator
@@ -156,14 +190,14 @@
               var p = old_values[0][prop.id];
               existing_values = p.values || [];
             }
-            accept_or_reject($this, prop, data, prop.values, existing_values);
+            accept_or_reject($this, prop, data, existing_values, prop.values);
           }
           else {
             console.warn("editparams", "unknown mediator property data", data);
           }
         }
         else {
-          accept_or_reject($this, structure, data, new_values, old_values);
+          accept_or_reject($this, structure, data, old_values, new_values);
         }
       });
       if (mediator) {
@@ -175,11 +209,45 @@
     },
 
     parse_mediator: function(structure, old_values, new_values) {
-      var ops = [];
-      console.log("parse_mediator", structure, old_values, new_values);
+//      console.log("parse_mediator", structure, old_values, new_values);
+      ep.assert(new_values.length === 1,
+                "Can't update more than one value (row) for a mediator");
+      var new_value = new_values[0];
+      var old_value;
+      if (old_values.length) {
+        old_value = old_values[0];
+      }
+      var clause = {};
+      if (old_value) {
+        clause.id = old_value.id;
+      }
+      else {
+        clause.id = null;
+        clause.create = "unconditional";
+        clause.connect = structure.unique ? "replace" : "insert";
+      }
+      var has_diff = false;
+      var sub_props = structure.properties;
+      for (var i=0,l=sub_props.length; i<l; i++) {
+        var sub_prop = sub_props[i];
+        var sub_old_values = old_value && old_value[sub_prop.id] && old_value[sub_prop.id].values || [];
+        var sub_new_values = new_value[sub_prop.id] && new_value[sub_prop.id].values || [];
+        var d = ep.parse_simple(sub_prop, sub_old_values, sub_new_values);
+        if (d.length) {
+          clause[sub_prop.id] = d;
+          has_diff = true;
+        }
+      };
+      if (has_diff) {
+        return [clause];
+      }
+      else {
+        return [];
+      }
     },
 
     parse_simple: function(structure, old_values, new_values) {
+//console.log("parse_simple", old_values, new_values);
       return ep.diff(structure, old_values, new_values);
     },
 
@@ -190,17 +258,26 @@
      * in the context of the property (structure - i.e., unique, /type/text, etc.).
      */
     diff: function(structure, old_values, new_values) {
+//console.log("diff", old_values, new_values);
+      var ect = structure.expected_type.id;
       var is_unique = structure.unique;
-      var is_text = structure.expected_type.id === "/type/text";
+      var is_text = ect === "/type/text";
       if (is_unique) {
-        if (!is_text) {
+        if (is_text) {
+          // TODO: assert one value per lang in old_values and new_values
+        }
+        else {
           // unique non-/type/text values cannot have > 1 value
           // /type/text is special because of "lang"
-          ep.assert(!old_values.length || old_values.length === 1, "Uniqueness error on existing values");
-          ep.assert(!new_values.length || new_values.length === 1, "Uniqueness error on new values");
+          if (old_values.length && old_values.length !== 1) {
+            throw new ep.Invalid("Uniqueness error on old values");
+          }
+          else if (new_values.length && new_values.length !== 1) {
+            throw new ep.Invalid("Uniqueness error on new values");
+          }
         }
       }
-      var is_literal = ep.LITERAL_TYPE_IDS[structure.expected_type.id];
+      var is_literal = ep.LITERAL_TYPE_IDS[ect];
       var keys_to_compare = [];
       if (is_literal) {
         keys_to_compare.push("value");
@@ -218,17 +295,22 @@
       for (i=0,l=old_values.length; i<l; i++) {
         var old_value = old_values[i];
         ep.validate(structure, old_value);
-        // if not old_value in new_values (delete)
         if (ep.inArray.apply(null, [old_value, new_values].concat(keys_to_compare)) === -1) {
+          // if not old_value in new_values (delete)
           deletes.push(ep.clause(old_value, "delete"));
         }
       }
 
       for (i=0,l=new_values.length; i<l; i++) {
         var new_value = new_values[i];
-        ep.validate(structure, new_value);
+        try {
+          ep.validate(structure, new_value);
+        }
+        catch (ex) {
+          continue;
+        }
         // if not new_value in old_values (insert)
-        if (ep.inArray.apply(null, [new_value, old_values].concat(keys_to_compare))  === -1) {
+        if (ep.inArray.apply(null, [new_value, old_values].concat(keys_to_compare)) === -1) {
           if (is_unique) {
             if (is_text) {
               // if deleting a text value in the same lang, remove it from the deletes since we're replacing it
@@ -249,22 +331,35 @@
 
     validate: function(structure, data) {
       var ect = structure.expected_type.id;
-      if (ect === "/type/int" || ect === "/type/float") {
-        ep.assert($.type(data.value) === "number", "Invalid: expected a number");
-      }
-      else if (ect === "/type/boolean") {
-        ep.assert($.type(data.value) === "boolean", "Invalid: expected a boolean");
-      }
-      else if (ep.LITERAL_TYPE_IDS[ect]) {
-        ep.assert($.type(data.value) === "string", "Invalid: expected a string");
-        ep.assert(!ep.isEmpty(data.value), "Invalid: expected non-empty data.value");
-        if (ect === "/type/text") {
-          ep.assert(!ep.isEmpty(data.lang), "Invalid: expected data.lang for /type/text");
+      if (ep.LITERAL_TYPE_IDS[ect]) {
+        if (ep.isEmpty(data.value)) {
+          // empty means delete
+          throw new ep.Empty(structure, data);
+        }
+        else {
+            if (ect === "/type/text" && ep.isEmpty(data.lang)) {
+              throw new ep.Invalid(structure, data, "Expected data.lang for /type/text");
+            }
+          if (ect === "/type/int" || ect === "/type/float") {
+            if ($.type(data.value) !== "number") {
+              throw new ep.Invalid(structure, data, "Expected number data.value for " + ect);
+            }
+          }
+          else if (ect === "/type/boolean") {
+            if ($.type(data.value) !== "boolean") {
+              throw new ep.Invalid(structure, data, "Expected boolean data.value for /type/boolean");
+            }
+          }
+          else if ($.type(data.value) !== "string") {
+            throw new ep.Invalid(structure, data, "Expected string data.value for " + ect);
+          }
         }
       }
-      else {
-        ep.assert(!ep.isEmpty(data.id), "Invalid: expected non-empty data.id");
+      else if (ep.isEmpty(data.id)) {
+        // empty value means delete
+        throw new ep.Empty(structure, data);
       }
+
       return data;
     },
 
@@ -323,6 +418,7 @@
     }
 
   };
+
 
 
 })(jQuery);

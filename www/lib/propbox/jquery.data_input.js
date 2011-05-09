@@ -69,7 +69,7 @@
         .bind("focusout.data_input", function() {
           self.container.removeClass("focus");
         })
-        .bind("valid.data_input", function(e, data) {
+        .bind("valid.data_input", function(e, data) {console.log("valid.data_input", data);
           var mydata = {
             name: self.input.attr("name")
           };
@@ -95,6 +95,9 @@
           var mydata = {
             name: self.input.attr("name")
           };
+          if (self.metadata && self.metadata.lang) {
+            mydata.lang = self.metadata.lang;
+          }
           self.container.data("data", mydata);
           self.container.removeClass("valid").removeClass("error");
           self.container.trigger("empty");
@@ -151,6 +154,8 @@
         i.validate_input({validator: $.validate_input.uri});
       }
       else if (c.is(".boolean")) {
+console.log("boolean i", i);
+
         i.validate_boolean();
       }
       else if (c.is(".enumeration")) {  // /type/enumeration
@@ -266,7 +271,12 @@
       var self = this;
       this.input.suggest(this.options)
         .bind("fb-textchange.validate_topic", function() {
-          self.invalid();
+          if (self.input.val() === "") {
+             self.empty();
+           }
+           else {
+             self.invalid();
+           }
         })
         .bind("fb-select.validate_topic", function(e, data) {
           self.input.val(data.name != null ? data.name : data.id);
@@ -291,15 +301,17 @@
     },
 
     validate: function(force) {
-      var data = this.input.data("data.suggest");
-      if (data) {
-        this.valid(data);
-      }
-      else if (this.input.val() === "") {
+      if (this.input.val() === "") {
         this.empty();
       }
       else {
-        this.invalid();
+        var data = this.input.data("data.suggest");
+        if (data) {
+          this.valid(data);
+        }
+        else {
+          this.invalid();
+        }
       }
     }
   };
@@ -359,7 +371,7 @@
       this.input.unbind(".validate_enumerated");
     },
 
-    validate: function(force) {
+    validate: function(force) {console.log("enumerated.validate", this.input[0].selectedIndex,$(":selected", this.input).text(), this.input[0].value);
       var select = this.input[0];
       if (select.selectedIndex > 0) {
         this.valid({
@@ -374,31 +386,46 @@
   };
 
   $.fn.validate_boolean = function(options) {
-    return this.each(function() {
+    var t,f;
+    this.each(function() {
       var $this = $(this);
       if (!$this.is(":radio")) {
         return;
       }
-      var inst = $this.data("$.validate_boolean");
+      if ($this.val().toLowerCase() === "true") {
+        t = $this;
+      }
+      else if ($this.val().toLowerCase() === "false") {
+        f = $this;
+      }
+    });
+    if (t && f) {
+      var inst = t.data("$.validate_boolean");
       if (inst) {
         inst._destroy();
       }
-      inst =  new $.validate_boolean(this, options);
-      $this.data("$.validate_boolean", inst);
-    });
+      inst = new $.validate_boolean(t, f, options);
+      t.data("$.validate_boolean", inst);
+    }
+    else {
+      // TODO: assert 2 radio buttons
+    }
+    return this;
   };
 
-  $.validate_boolean = function(input, options) {
+  $.validate_boolean = function(true_radio, false_radio, options) {
     this.options = $.extend(true, {}, options);
-    this.input = $(input);
+    this.tradio = true_radio;
+    this.fradio = false_radio;
+    this.input = this.tradio;
     this.init();
   };
 
   $.validate_boolean.prototype = {
     init: function() {
       var self = this;
-      this.input.bind("change.validate_boolean", function() {
-        self.valid({text:$(this).text(), value:this.value});
+      this.tradio.bind("change.validate_boolean", function() {
+        self.validate();
       });
     },
 
@@ -416,15 +443,11 @@
 
     validate: function(force) {
       var checked;
-      this.input.each(function() {
-        var $this = $(this);
-        if ($this.is(":checked")) {
-          checked = $this;
-          return false;
-        }
-      });
-      if (checked) {
-        this.input.trigger({text:checked.text(), value:checked.val()});
+      if (this.tradio.is(":checked")) {
+        this.valid({text:this.tradio.text(), value:true});
+      }
+      else if (this.fradio.is(":checked")) {
+        this.valid({text:this.fradio.text(), value:false});
       }
       else {
         this.empty();

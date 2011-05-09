@@ -1,0 +1,630 @@
+{
+  "domain": [
+    [
+    "freebase.mqlread", 
+    [
+    {
+      "/freebase/domain_profile/featured_views": [
+      {
+        "/common/document/content": {
+          "id": null, 
+          "optional": "required"
+        }, 
+        "creator": {
+          "id": null, 
+          "name": null
+        }, 
+        "guid": null, 
+        "id": null, 
+        "name": null, 
+        "timestamp": null
+      }
+      ], 
+        "guid": null, 
+        "id": "/base/surfing", 
+        "type": "/type/domain", 
+        "types": [
+        {
+          "creator": {
+            "id": null, 
+            "name": null
+          }, 
+          "guid": null, 
+          "id": null, 
+          "name": null, 
+          "timestamp": null
+        }
+      ]
+    }
+  ], 
+    {
+      "code": "/api/status/ok", 
+      "result": {
+        "/freebase/domain_profile/featured_views": [
+        {
+          "/common/document/content": {
+            "id": "/m/04snxkj"
+          }, 
+          "creator": {
+            "id": "/user/kconragan", 
+            "name": "kconragan"
+          }, 
+          "guid": "#9202a8c04000641f80000000098a7219", 
+          "id": "/base/surfing/views/surf_films", 
+          "name": "Surf Films", 
+          "timestamp": "2008-10-31T02:24:04.0000Z"
+        }, 
+        {
+          "/common/document/content": {
+            "id": "/m/04sp8ks"
+          }, 
+          "creator": {
+            "id": "/user/kconragan", 
+            "name": "kconragan"
+          }, 
+          "guid": "#9202a8c04000641f80000000098aa22d", 
+          "id": "/base/surfing/views/surf_films_featuring_kelly_slater", 
+          "name": "Surf films featuring Kelly Slater", 
+          "timestamp": "2008-10-31T02:39:49.0017Z"
+        }, 
+        {
+          "/common/document/content": {
+            "id": "/m/04sp9lx"
+          }, 
+          "creator": {
+            "id": "/user/kconragan", 
+            "name": "kconragan"
+          }, 
+          "guid": "#9202a8c04000641f80000000098aa650", 
+          "id": "/base/surfing/views/jack_johnson_surf_films", 
+          "name": "Jack Johnson surf films", 
+          "timestamp": "2008-10-31T02:41:07.0004Z"
+        }, 
+        {
+          "/common/document/content": {
+            "id": "/m/04s__b_"
+          }, 
+          "creator": {
+            "id": "/user/kconragan", 
+            "name": "kconragan"
+          }, 
+          "guid": "#9202a8c04000641f80000000098ffd54", 
+          "id": "/base/surfing/views/asp_world_tour_surfers", 
+          "name": "ASP World Tour Surfers", 
+          "timestamp": "2008-11-06T00:02:05.0000Z"
+        }, 
+        {
+          "/common/document/content": {
+            "id": "/m/04tyhm0"
+          }, 
+          "creator": {
+            "id": "/user/kconragan", 
+            "name": "kconragan"
+          }, 
+          "guid": "#9202a8c04000641f800000000992929c", 
+          "id": "/base/surfing/views/famous_surf_spots", 
+          "name": "Famous Surf Spots", 
+          "timestamp": "2008-11-06T02:58:41.0000Z"
+        }, 
+        {
+          "/common/document/content": {
+            "id": "/m/07zrcj6"
+          }, 
+          "creator": {
+            "id": "/user/kconragan", 
+            "name": "kconragan"
+          }, 
+          "guid": "#9202a8c04000641f800000000febadfc", 
+          "id": "/base/surfing/views/x2007_asp_world_tour_surfers", 
+          "name": "2007 ASP World Tour Surfers", 
+          "timestamp": "2009-11-07T21:49:08.0000Z"
+        }, 
+        {
+          "/common/document/content": {
+            "id": "/m/07zrcld"
+          }, 
+          "creator": {
+            "id": "/user/kconragan", 
+            "name": "kconragan"
+          }, 
+          "guid": "#9202a8c04000641f800000000febae42", 
+          "id": "/base/surfing/views/x2006_asp_world_tour_surfers", 
+          "name": "2006 ASP World Tour Surfers", 
+          "timestamp": "2009-11-07T21:50:21.0000Z"
+        }, 
+        {
+          "/common/document/content": {
+            "id": "/m/07zrp4b"
+          }, 
+          "creator": {
+            "id": "/user/kconragan", 
+            "name": "kconragan"
+          }, 
+          "guid": "#9202a8c04000641f800000000febd480", 
+          "id": "/base/surfing/views/x2008_asp_world_tour_surfers", 
+          "name": "2008 ASP World Tour Surfers", 
+          "timestamp": "2009-11-07T23:28:16.0000Z"
+        }, 
+        {
+          "/common/document/content": {
+            "id": "/m/07zs9t7"
+          }, 
+          "creator": {
+            "id": "/user/kconragan", 
+            "name": "kconragan"
+          }, 
+          "guid": "#9202a8c04000641f800000000fec271d", 
+          "id": "/base/surfing/views/x2005_asp_world_tour_surfers", 
+          "name": "2005 ASP World Tour Surfers", 
+          "timestamp": "2009-11-08T00:43:28.0000Z"
+        }, 
+        {
+          "/common/document/content": {
+            "id": "/m/07zslll"
+          }, 
+          "creator": {
+            "id": "/user/kconragan", 
+            "name": "kconragan"
+          }, 
+          "guid": "#9202a8c04000641f800000000fec4a48", 
+          "id": "/base/surfing/views/x2004_asp_world_tour_surfers", 
+          "name": "2004 ASP World Tour Surfers", 
+          "timestamp": "2009-11-08T01:15:24.0000Z"
+        }, 
+        {
+          "/common/document/content": {
+            "id": "/m/07ztvvr"
+          }, 
+          "creator": {
+            "id": "/user/kconragan", 
+            "name": "kconragan"
+          }, 
+          "guid": "#9202a8c04000641f800000000feceb4d", 
+          "id": "/base/surfing/views/x2003_asp_world_tour_surfers", 
+          "name": "2003 ASP World Tour Surfers", 
+          "timestamp": "2009-11-08T03:45:22.0000Z"
+        }, 
+        {
+          "/common/document/content": {
+            "id": "/m/07zv4l6"
+          }, 
+          "creator": {
+            "id": "/user/kconragan", 
+            "name": "kconragan"
+          }, 
+          "guid": "#9202a8c04000641f800000000fed122d", 
+          "id": "/base/surfing/views/x2002_asp_world_tour_surfers", 
+          "name": "2002 ASP World Tour Surfers", 
+          "timestamp": "2009-11-08T04:19:10.0000Z"
+        }
+        ], 
+          "guid": "#9202a8c04000641f8000000008e49748", 
+          "id": "/base/surfing", 
+          "type": "/type/domain", 
+          "types": [
+          {
+            "creator": {
+              "id": "/user/cheunger", 
+              "name": "cheunger"
+            }, 
+            "guid": "#9202a8c04000641f8000000008e49750", 
+            "id": "/base/surfing/surfer", 
+            "instance_count": 297, 
+            "name": "Surfer", 
+            "timestamp": "2008-08-13T23:27:36.0000Z"
+          }, 
+          {
+            "creator": {
+              "id": "/user/superalecf", 
+              "name": "superalecf"
+            }, 
+            "guid": "#9202a8c04000641f80000000093a7eeb", 
+            "id": "/base/surfing/topic", 
+            "instance_count": 549, 
+            "name": "Topic", 
+            "timestamp": "2008-10-13T22:22:29.0000Z"
+          }, 
+          {
+            "creator": {
+              "id": "/user/kconragan", 
+              "name": "kconragan"
+            }, 
+            "guid": "#9202a8c04000641f80000000097f6f6b", 
+            "id": "/base/surfing/asp_world_tour", 
+            "instance_count": 17, 
+            "name": "ASP World Tour", 
+            "timestamp": "2008-10-30T08:50:31.0019Z"
+          }, 
+          {
+            "creator": {
+              "id": "/user/kconragan", 
+              "name": "kconragan"
+            }, 
+            "guid": "#9202a8c04000641f80000000097f83d6", 
+            "id": "/base/surfing/asp_world_tour_rating", 
+            "instance_count": 462, 
+            "name": "ASP World Tour Rating", 
+            "timestamp": "2008-10-30T08:56:19.0004Z"
+          }, 
+          {
+            "creator": {
+              "id": "/user/kconragan", 
+              "name": "kconragan"
+            }, 
+            "guid": "#9202a8c04000641f8000000009850443", 
+            "id": "/base/surfing/boardrider_stance", 
+            "instance_count": 2, 
+            "name": "Boardrider Stance", 
+            "timestamp": "2008-10-30T16:59:43.0000Z"
+          }, 
+          {
+            "creator": {
+              "id": "/user/kconragan", 
+              "name": "kconragan"
+            }, 
+            "guid": "#9202a8c04000641f8000000009036cd2", 
+            "id": "/base/surfing/surf_film", 
+            "instance_count": 37, 
+            "name": "Surf Film", 
+            "timestamp": "2008-08-31T17:36:51.0000Z"
+          }, 
+          {
+            "creator": {
+              "id": "/user/kconragan", 
+              "name": "kconragan"
+            }, 
+            "guid": "#9202a8c04000641f800000000989d233", 
+            "id": "/base/surfing/surf_break", 
+            "instance_count": 33, 
+            "name": "Surf Break", 
+            "timestamp": "2008-10-31T01:22:33.0000Z"
+          }, 
+          {
+            "creator": {
+              "id": "/user/kconragan", 
+              "name": "kconragan"
+            }, 
+            "guid": "#9202a8c04000641f800000001cfc1475", 
+            "id": "/base/surfing/region", 
+            "instance_count": 2, 
+            "name": "Surfing Region", 
+            "timestamp": "2011-03-28T23:42:59.0000Z"
+          }, 
+          {
+            "creator": {
+              "id": "/user/kconragan", 
+              "name": "kconragan"
+            }, 
+            "guid": "#9202a8c04000641f800000001cfc14e7", 
+            "id": "/base/surfing/event", 
+            "instance_count": 5, 
+            "name": "ASP World Tour Event", 
+            "timestamp": "2011-03-28T23:49:47.0000Z"
+          }, 
+          {
+            "creator": {
+              "id": "/user/kconragan", 
+              "name": "kconragan"
+            }, 
+            "guid": "#9202a8c04000641f800000001cfc1571", 
+            "id": "/base/surfing/asp_event_result", 
+            "instance_count": 165, 
+            "name": "ASP Event Result", 
+            "timestamp": "2011-03-29T00:12:27.0000Z"
+          }, 
+          {
+            "creator": {
+              "id": "/user/kconragan", 
+              "name": "kconragan"
+            }, 
+            "guid": "#9202a8c04000641f800000001d195de3", 
+            "id": "/base/surfing/fin", 
+            "instance_count": 1, 
+            "name": "Surfboard Fin", 
+            "timestamp": "2011-04-19T00:25:29.0000Z"
+          }, 
+          {
+            "creator": {
+              "id": "/user/kconragan", 
+              "name": "kconragan"
+            }, 
+            "guid": "#9202a8c04000641f800000001d195dfc", 
+            "id": "/base/surfing/surf_brand", 
+            "instance_count": 2, 
+            "name": "Surf Brand", 
+            "timestamp": "2011-04-19T00:28:05.0000Z"
+          }, 
+          {
+            "creator": {
+              "id": "/user/kconragan", 
+              "name": "kconragan"
+            }, 
+            "guid": "#9202a8c04000641f800000001d195e59", 
+            "id": "/base/surfing/surfboard_shaper", 
+            "instance_count": 1, 
+            "name": "Surfboard Shaper", 
+            "timestamp": "2011-04-19T00:34:26.0000Z"
+          }, 
+          {
+            "creator": {
+              "id": "/user/kconragan", 
+              "name": "kconragan"
+            }, 
+            "guid": "#9202a8c04000641f800000001d1d7ec7", 
+            "id": "/base/surfing/heat_round", 
+            "instance_count": 8, 
+            "name": "Surf Heat Round", 
+            "timestamp": "2011-04-20T23:41:38.0000Z"
+          }, 
+          {
+            "creator": {
+              "id": "/user/kconragan", 
+              "name": "kconragan"
+            }, 
+            "guid": "#9202a8c04000641f800000001d1d7ffd", 
+            "id": "/base/surfing/asp_world_tour_division", 
+            "instance_count": 5, 
+            "name": "ASP World Tour Division", 
+            "timestamp": "2011-04-21T00:08:55.0000Z"
+          }, 
+          {
+            "creator": {
+              "id": "/user/kconragan", 
+              "name": "kconragan"
+            }, 
+            "guid": "#9202a8c04000641f800000001d21bf57", 
+            "id": "/base/surfing/fin_setup", 
+            "instance_count": 5, 
+            "name": "Fin Setup", 
+            "timestamp": "2011-04-22T20:39:31.0000Z"
+          }, 
+          {
+            "creator": {
+              "id": "/user/kconragan", 
+              "name": "kconragan"
+            }, 
+            "guid": "#9202a8c04000641f800000001d21c585", 
+            "id": "/base/surfing/fin_dimensions", 
+            "instance_count": 1, 
+            "name": "Fin Dimensions", 
+            "timestamp": "2011-04-22T21:01:55.0000Z"
+          }, 
+          {
+            "creator": {
+              "id": "/user/kconragan", 
+              "name": "kconragan"
+            }, 
+            "guid": "#9202a8c04000641f800000001d21c59b", 
+            "id": "/base/surfing/fin_placement", 
+            "instance_count": 2, 
+            "name": "Fin Placement", 
+            "timestamp": "2011-04-22T21:02:13.0000Z"
+          }
+        ]
+      }, 
+      "status": "200 OK", 
+      "transaction_id": "cache;cache02.sandbox.sjc1:8101;2011-05-09T19:41:33Z;0001"
+    }
+  ], 
+    [
+      "freebase.get_static", 
+    [
+      "activity", 
+    "summary_/guid/9202a8c04000641f8000000008e49748"
+      ], 
+    {
+      "days": [
+      {
+        "d": "2011-04-09", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-04-10", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-04-11", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-04-12", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-04-13", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-04-14", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-04-15", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-04-16", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-04-17", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-04-18", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-04-19", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-04-20", 
+        "e": 13
+      }, 
+      {
+        "d": "2011-04-21", 
+        "e": 5
+      }, 
+      {
+        "d": "2011-04-22", 
+        "e": 21
+      }, 
+      {
+        "d": "2011-04-23", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-04-24", 
+        "e": 225
+      }, 
+      {
+        "d": "2011-04-25", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-04-26", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-04-27", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-04-28", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-04-29", 
+        "e": 607
+      }, 
+      {
+        "d": "2011-04-30", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-05-01", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-05-02", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-05-03", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-05-04", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-05-05", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-05-06", 
+        "e": 0
+      }, 
+      {
+        "d": "2011-05-07", 
+        "e": 17
+      }, 
+      {
+        "d": "2011-05-08", 
+        "e": 0
+      }
+      ], 
+        "total": {
+          "a": 269, 
+          "e": 5526, 
+          "i": 163, 
+          "t": 432
+        }, 
+        "types": {
+          "/base/surfing/asp_event_result": 165, 
+          "/base/surfing/asp_world_tour": 17, 
+          "/base/surfing/asp_world_tour_division": 5, 
+          "/base/surfing/asp_world_tour_rating": 462, 
+          "/base/surfing/boardrider_stance": 2, 
+          "/base/surfing/event": 5, 
+          "/base/surfing/fin": 1, 
+          "/base/surfing/fin_dimensions": 1, 
+          "/base/surfing/fin_placement": 2, 
+          "/base/surfing/fin_setup": 5, 
+          "/base/surfing/heat_round": 8, 
+          "/base/surfing/region": 2, 
+          "/base/surfing/surf_brand": 2, 
+          "/base/surfing/surf_break": 33, 
+          "/base/surfing/surf_film": 37, 
+          "/base/surfing/surfboard_shaper": 1, 
+          "/base/surfing/surfer": 297, 
+          "/base/surfing/topic": 549
+        }, 
+        "users": {
+          "b": {}, 
+          "h": {}, 
+          "s": {
+            "/user/rlyeh": 17
+          }
+        }, 
+        "weeks": [
+        {
+          "c": 9704, 
+          "d": "2011-03-13", 
+          "e": 0, 
+          "f": 1337
+        }, 
+        {
+          "c": 9704, 
+          "d": "2011-03-20", 
+          "e": 0, 
+          "f": 1337
+        }, 
+        {
+          "c": 9704, 
+          "d": "2011-03-27", 
+          "e": 0, 
+          "f": 1337
+        }, 
+        {
+          "c": 9969, 
+          "d": "2011-04-03", 
+          "e": 239, 
+          "f": 1385
+        }, 
+        {
+          "c": 9969, 
+          "d": "2011-04-10", 
+          "e": 1, 
+          "f": 1385
+        }, 
+        {
+          "c": 9969, 
+          "d": "2011-04-17", 
+          "e": 0, 
+          "f": 1385
+        }, 
+        {
+          "c": 10297, 
+          "d": "2011-04-24", 
+          "e": 264, 
+          "f": 1601
+        }, 
+        {
+          "c": 10986, 
+          "d": "2011-05-01", 
+          "e": 607, 
+          "f": 1581
+        }, 
+        {
+          "c": 11077, 
+          "d": "2011-05-08", 
+          "e": 17, 
+          "f": 1594
+        }
+      ]
+    }
+  ]
+    ]
+}

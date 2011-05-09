@@ -491,4 +491,82 @@
       ${pb.data_input("/people/gender", "/prop/id", prop_value, null, instances)}
     </acre:block>
   </div>
+
+  <div id="unique-mediator-insert">
+    ${pb.data_input("/finance/currency", "/measurement_unit/dated_money_value/currency", null)}
+    ${pb.data_input("/type/float", "/measurement_unit/dated_money_value/amount", null)}
+  </div>
+
+  <div id="unique-mediator-delete">
+    <acre:script>
+      var currency = {
+        id: "/en/us",
+        text: "US$"
+      };
+      var amount = {
+        value: "1234567"
+      };
+    </acre:script>
+    ${pb.data_input("/finance/currency", "/measurement_unit/dated_money_value/currency", currency)}
+    ${pb.data_input("/type/float", "/measurement_unit/dated_money_value/amount", amount)}
+  </div>
+
+  <div id="unique-mediator-replace">
+    <acre:script>
+      var currency = {
+        id: "/en/us",
+        text: "US$"
+      };
+      var amount = {
+        value: "1234567"
+      };
+    </acre:script>
+    ${pb.data_input("/finance/currency", "/measurement_unit/dated_money_value/currency", currency)}
+    ${pb.data_input("/type/float", "/measurement_unit/dated_money_value/amount", amount)}
+  </div>
+
+  <div id="unique-mediator-noop">
+    <acre:script>
+      var currency = {
+        id: "/en/us",
+        text: "US$"
+      };
+      var amount = {
+        value: "1234567"
+      };
+    </acre:script>
+    ${pb.data_input("/finance/currency", "/measurement_unit/dated_money_value/currency", currency)}
+    ${pb.data_input("/type/float", "/measurement_unit/dated_money_value/amount", amount)}
+  </div>
+
+  <div id="non-unique-mediator-insert">
+    ${pb.data_input("/tv/tv_actor", "/tv/regular_tv_appearance/actor", null)}
+    ${pb.data_input("/tv/tv_character", "/tv/regular_tv_appearance/character", null)}
+    ${pb.data_input("/tv/tv_series_season", "/tv/regular_tv_appearance/seasons", null)}
+    ${pb.data_input("/tv/tv_series_season", "/tv/regular_tv_appearance/seasons", null)}
+    ${pb.data_input("/tv/tv_series_season", "/tv/regular_tv_appearance/seasons", null)}
+  </div>
+
+  <div id="non-unique-mediator-delete-replace-noop">
+    <acre:script>
+      var actor = {id:"/en/matthew_fox", text:"Matthew Fow"};
+      var character = {id:"/en/jack_shephard", text:"Jack Shepahard"};
+      var seasons = [{
+        id: "/en/lost_season_1",
+        text: "Lost - Season 1"
+      },{
+        id: "/en/lost_season_2",
+        text: "Lost - Season 2"
+      },{
+        id: "/en/lost_season_3",
+        text: "Lost - Season 3"
+      }];
+    </acre:script>
+    ${pb.data_input("/tv/tv_actor", "/tv/regular_tv_appearance/actor", actor)}
+    ${pb.data_input("/tv/tv_character", "/tv/regular_tv_appearance/character", character)}
+    <acre:block for="season in seasons">
+      ${pb.data_input("/tv/tv_series_season", "/tv/regular_tv_appearance/seasons", season)}
+    </acre:block>
+  </div>
+
 </acre:block>

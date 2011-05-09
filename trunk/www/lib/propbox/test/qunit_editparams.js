@@ -31,6 +31,21 @@
 
 ;(function($, dojo, ep) {
 
+  function expect_exception(exception_type, fn) {
+    try {
+      fn();
+      ok(false, "expected exception");
+    }
+    catch(ex) {
+      if (ex instanceof exception_type) {
+        ok(true, "expected exception: " + ex);
+      }
+      else {
+        ok(false, "unxpected exception: " + ex);
+      }
+    }
+  };
+
   function run_tests() {
 
     test("isEmpty", function() {
@@ -62,28 +77,39 @@
       same(ep.validate({expected_type:{id:"/some/type"}}, {id:"foo"}),
            {id:"foo"});
 
-      same(ep.validate({expected_type:{id:"/type/int"}}, {value:0}),
-           {value:0});
+      same(ep.validate({expected_type:{id:"/type/int"}}, {value:0}), {value:0});
 
       same(ep.validate({expected_type:{id:"/type/text"}}, {value:"foo", lang:"/lang/ko"}),
            {value:"foo", lang:"/lang/ko"});
 
-      try {
+      // missing lang
+      expect_exception(ep.Invalid, function() {
         ep.validate({expected_type:{id:"/type/text"}}, {value:"foo"});
-        ok(false, "expected error");
-      }
-      catch(ex) {
-        ok(true, ex);
-      }
+      });
 
       $.each(["/type/int", "/type/float", "/type/boolean"], function(i, type) {
-        try {
+        // invalid value type
+        expect_exception(ep.Invalid, function() {
           ep.validate({expected_type:{id:type}}, {value:"foo"});
-          ok(false, "expected error");
-        }
-        catch(ex) {
-          ok(true, ex);
-        }
+        });
+        // empty values
+        expect_exception(ep.Empty, function() {
+          ep.validate({expected_type:{id:type}}, {value:null});
+        });
+        expect_exception(ep.Empty, function() {
+          ep.validate({expected_type:{id:type}}, {});
+        });
+      });
+
+      // empty values
+      expect_exception(ep.Empty, function() {
+        ep.validate({expected_type:{id:"/type/text"}}, {value:"", lang:"/lang/en"});
+      });
+      expect_exception(ep.Empty, function() {
+        ep.validate({expected_type:{id:"/type/text"}}, {value:null, lang:"/lang/en"});
+      });
+      expect_exception(ep.Empty, function() {
+        ep.validate({expected_type:{id:"/type/text"}}, {lang:"/lang/en"});
       });
     });
 
@@ -96,60 +122,10 @@
     });
 
 
-    test("diff unique non-literal", function() {
-      var structure = {
-        id: "/prop/id",
-        unique: true,
-        expected_type: {id: "/some/type"}
-      };
-
-      same(ep.diff(structure,
-                   [{id:"foo"}],
-                   [{id:"bar"}]),
-           [{id:"bar", connect:"replace"}]);
-
-      // invalid old_values > 1
-      try {
-        ep.diff(structure,
-                [{id:"foo"}, {id:"bar"}],
-                [{id:"bar"}]);
-        ok(false, "expected error");
-      }
-      catch(ex) {
-        ok(true, ex);
-      }
-
-      // invalid new_values > 1
-      try {
-        ep.diff(structure,
-                [{id:"foo"}],
-                [{id:"foo"}, {id:"bar"}]);
-        ok(false, "expected error");
-      }
-      catch(ex) {
-        ok(true, ex);
-      }
-
-      // invalid data
-      try {
-        ep.diff(structure,
-                [{id:"foo"}],
-                [{value:"bar"}]);
-        ok(false, "expected error");
-      }
-      catch(ex) {
-        ok(true, ex);
-      }
-
-      // no-op
-      same(ep.diff(structure,
-                   [{id:"foo"}],
-                   [{id:"foo"}]),
-           []);
-    });
+    module("diff");
 
 
-    test("diff unique literal", function() {
+    test("unique-literal", function() {
       var structure = {
         id: "/prop/id",
         unique: true,
@@ -158,41 +134,28 @@
 
       same(ep.diff(structure,
                    [{value:"2010"}],
-                     [{value:"2011"}]),
+                   [{value:"2011"}]),
            [{value:"2011", connect:"replace"}]);
 
       // invalid old_values > 1
-      try {
+      expect_exception(ep.Invalid, function() {
         ep.diff(structure,
-                [{value:"2010"}, {id:"2009"}],
+                [{value:"2010"}, {value:"2009"}],
                 [{value:"2011"}]);
-        ok(false, "expected error");
-      }
-      catch(ex) {
-        ok(true, ex);
-      }
+      });
 
       // invalid new_values > 1
-      try {
+      expect_exception(ep.Invalid, function() {
         ep.diff(structure,
                 [{value:"2010"}],
-                [{value:"2011"}, {id:"2012"}]);
-        ok(false, "expected error");
-      }
-      catch(ex) {
-        ok(true, ex);
-      }
+                [{value:"2011"}, {value:"2012"}]);
+      });
 
       // invalid data
-      try {
-        ep.diff(structure,
-                [{value:"2010"}],
-                [{id:"2011"}]);
-        ok(false, "expected error");
-      }
-      catch(ex) {
-        ok(true, ex);
-      }
+      same(ep.diff(structure,
+                   [{value:"2010"}],
+                   [{id:"2011"}]),
+           [{value:"2010", connect:"delete"}]);
 
       // no-op
       same(ep.diff(structure,
@@ -202,7 +165,31 @@
     });
 
 
-    test("diff unique text", function() {
+    test("non-unique-literal", function() {
+      var structure = {
+        id: "/prop/id",
+        expected_type: {id: "/type/int"}
+      };
+
+      same(ep.diff(structure,
+                   [{value:1}, {value:2}, {value:3}],
+                   [{value:4}, {value:5}, {value:6}]),
+           [{value:1, connect:"delete"}, {value:2, connect:"delete"}, {value:3, connect:"delete"},
+            {value:4, connect:"insert"}, {value:5, connect:"insert"}, {value:6, connect:"insert"}]);
+
+      same(ep.diff(structure,
+                   [{value:1}, {value:2}, {value:3}],
+                   [{value:2}]),
+           [{value:1, connect:"delete"}, {value:3, connect:"delete"}]);
+
+      same(ep.diff(structure,
+                   [{value:1}, {value:2}, {value:3}],
+                   [{value:1}, {value:2}, {value:3}]),
+           []);
+    });
+
+
+    test("unique-text", function() {
       var structure = {
         id: "/prop/id",
         unique: true,
@@ -224,61 +211,15 @@
                    []),
            [{value:"foo", lang:"/lang/en", connect:"delete"}, {value:"bar", lang:"/lang/ru", connect:"delete"}]);
 
-      try {
+      expect_exception(ep.Invalid, function() {
         ep.diff(structure,
                 [{value:"foo"}],
                 [{value:"bar", lang:"/lang/ru"}]);
-        ok(false, "expected error");
-      }
-      catch(ex) {
-        ok(true, ex);
-      };
+      });
     });
 
 
-    test("diff non-unique non-literal", function() {
-      var structure = {
-        id: "/prop/id",
-        expected_type: {id: "/some/type"}
-      };
-
-      same(ep.diff(structure,
-                   [{id:"foo"}, {id:"bar"}, {id:"baz"}],
-                   [{id:"foo"}, {id:"bar"}, {id:"baz"}, {id:"hello"}]),
-           [{id:"hello", connect:"insert"}]);
-
-      same(ep.diff(structure,
-                   [{id:"foo"}, {id:"bar"}, {id:"baz"}],
-                   [{id:"foo"}, {id:"baz"}, {id:"hello"}]),
-           [{id:"bar", connect:"delete"}, {id:"hello", connect:"insert"}]);
-    });
-
-
-    test("diff non-unique literal", function() {
-      var structure = {
-        id: "/prop/id",
-        expected_type: {id: "/type/int"}
-      };
-
-      same(ep.diff(structure,
-                   [{value:1}, {value:2}, {value:3}],
-                   [{value:4}, {value:5}, {value:6}]),
-           [{value:1, connect:"delete"}, {value:2, connect:"delete"}, {value:3, connect:"delete"},
-            {value:4, connect:"insert"}, {value:5, connect:"insert"}, {value:6, connect:"insert"}]);
-
-      same(ep.diff(structure,
-                   [{value:1}, {value:2}, {value:3}],
-                   []),
-           [{value:1, connect:"delete"}, {value:2, connect:"delete"}, {value:3, connect:"delete"}]);
-
-      same(ep.diff(structure,
-                   [{value:1}, {value:2}, {value:3}],
-                   [{value:1}, {value:2}, {value:3}]),
-           []);
-    });
-
-
-    test("diff non-unique text", function() {
+    test("non-unique-text", function() {
       var structure = {
         id: "/prop/id",
         expected_type: {id: "/type/text"}
@@ -298,54 +239,100 @@
                    [{value:"foo", lang:"/lang/en"}, {value:"bar", lang:"/lang/en"}],
                    [{value:"foo", lang:"/lang/en"}, {value:"bar", lang:"/lang/en"}]),
            []);
-
     });
 
-    test("parse unique-text-insert", function() {
+
+    test("unique-non-literal", function() {
+      var structure = {
+        id: "/prop/id",
+        unique: true,
+        expected_type: {id: "/some/type"}
+      };
+
+      same(ep.diff(structure, [{id:"foo"}], [{id:"bar"}]), [{id:"bar", connect:"replace"}]);
+
+      same(ep.diff(structure, [{id:"foo"}], [{id:null}]), [{id:"foo", connect:"delete"}]);
+
+      same(ep.diff(structure,[{id:"foo"}], [{id:""}]), [{id:"foo", connect:"delete"}]);
+
+      // invalid old_values > 1
+      expect_exception(ep.Invalid, function() {
+        ep.diff(structure, [{id:"foo"}, {id:"bar"}], [{id:"bar"}]);
+      });
+
+      // invalid new_values > 1
+      expect_exception(ep.Invalid, function() {
+        ep.diff(structure, [{id:"foo"}], [{id:"foo"}, {id:"bar"}]);
+      });
+
+      // invalid data
+      same(ep.diff(structure, [{id:"foo"}], [{value:"bar"}]),
+           [{id:"foo", connect:"delete"}]);
+
+      // no-op
+      same(ep.diff(structure, [{id:"foo"}], [{id:"foo"}]), []);
+    });
+
+
+    test("non-unique non-literal", function() {
+      var structure = {
+        id: "/prop/id",
+        expected_type: {id: "/some/type"}
+      };
+
+      same(ep.diff(structure,
+                   [{id:"foo"}, {id:"bar"}, {id:"baz"}],
+                   [{id:"foo"}, {id:"bar"}, {id:"baz"}, {id:"hello"}]),
+           [{id:"hello", connect:"insert"}]);
+
+      same(ep.diff(structure,
+                   [{id:"foo"}, {id:"bar"}, {id:"baz"}],
+                   [{id:"foo"}, {id:"baz"}, {id:"hello"}]),
+           [{id:"bar", connect:"delete"}, {id:"hello", connect:"insert"}]);
+    });
+
+
+    module("parse");
+
+
+    test("unique-text-insert", function() {
       var context = $("#unique-text-insert");
-      var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
-      // add new data-input value: bar
-      $(".fb-input", data_input).val("bar");
+      $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
         unique: true,
         expected_type: {id: "/type/text"},
         values: []
       };
+      same(ep.parse(structure, context), []);
+      // add new data-input value: bar
+      $(".fb-input", context).val("bar");
       same(ep.parse(structure, context), [{value:"bar", lang:"/lang/en", connect:"replace"}]);
     });
 
 
-    test("parse unique-text-replace", function() {
-      var context = $("#unique-text-replace");
-      var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
-      // change data-input value: foo => bar
-      $(".fb-input", data_input).val("bar");
-      var structure = {
-        id: "/prop/id",
-        unique: true,
-        expected_type: {id: "/type/text"},
-        values: [{value:"foo", lang:"/lang/en"}]
-      };
-      same(ep.parse(structure, context), [{value:"bar", lang:"/lang/en", connect:"replace"}]);
-    });
-
-    test("parse unique-text-delete", function() {
+    test("unique-text-delete", function() {console.log(">>>>> unique-text-delete");
       var context = $("#unique-text-delete");
-      // remove data-input
-      $(".data-input", context).data_input({lang:"/lang/en"}).remove();
+      $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
         unique: true,
         expected_type: {id: "/type/text"},
         values: [{value:"foo", lang:"/lang/en"}]
       };
+      same(ep.parse(structure, context), []);
+      // empty value
+      $(".fb-input", context).val("");
+      same(ep.parse(structure, context), [{value:"foo", lang:"/lang/en", connect:"delete"}]);
+      // remove data-input
+      $(".data-input", context).remove();
       same(ep.parse(structure, context), [{value:"foo", lang:"/lang/en", connect:"delete"}]);
     });
 
-    test("parse unique-text-noop", function() {
-      var context = $("#unique-text-noop");
-      var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
+
+    test("unique-text-replace", function() {
+      var context = $("#unique-text-replace");
+      $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
         unique: true,
@@ -353,58 +340,84 @@
         values: [{value:"foo", lang:"/lang/en"}]
       };
       same(ep.parse(structure, context), []);
-      // empty data-input should be ignored
-      data_input.find(".fb-input").val("");
+      // change data-input value: foo => bar
+      $(".fb-input", context).val("bar");
+      same(ep.parse(structure, context), [{value:"bar", lang:"/lang/en", connect:"replace"}]);
+    });
+
+
+    test("unique-text-noop", function() {
+      var context = $("#unique-text-noop");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      var structure = {
+        id: "/prop/id",
+        unique: true,
+        expected_type: {id: "/type/text"},
+        values: [{value:"foo", lang:"/lang/en"}]
+      };
+      same(ep.parse(structure, context), []);
+      $(".fb-input", context).val("foo");
       same(ep.parse(structure, context), []);
     });
 
-    test("parse unique-text-langs-insert", function() {
+
+    test("unique-text-langs-insert", function() {
       var context = $("#unique-text-langs-insert");
-      $(".data-input", context).data_input({lang:"/lang/en"});
-      // add new data-input (value:baz, lang:/lang/zh)
-      $(".data-input:last", context).data_input({lang:"/lang/zh"}).find(".fb-input").val("baz");
+      $(".data-input", context).data_input({lang:"/lang/zh"});
       var structure = {
         id: "/prop/id",
         unique: true,
         expected_type: {id: "/type/text"},
         values: [{value:"foo", lang:"/lang/en"},{value:"bar", lang:"/lang/ko"}]
       };
+      same(ep.parse(structure, context), []);
+      // add new data-input (value:baz, lang:/lang/zh)
+      $(".fb-input:last", context).val("baz");
       same(ep.parse(structure, context), [{value:"baz", lang:"/lang/zh", connect:"replace"}]);
     });
 
-    test("parse unique-text-langs-replace", function() {
-      var context = $("#unique-text-langs-replace");
+
+    test("unique-text-langs-delete", function() {
+      var context = $("#unique-text-langs-delete");
+      // remove data-inputs
       $(".data-input", context).data_input({lang:"/lang/en"});
-      // replace korean input value: bar => baz
-      $(".data-input:last", context).find(".fb-input").val("baz");
       var structure = {
         id: "/prop/id",
         unique: true,
         expected_type: {id: "/type/text"},
         values: [{value:"foo", lang:"/lang/en"},{value:"bar", lang:"/lang/ko"}]
       };
+      same(ep.parse(structure, context), []);
+      $(".fb-input:first", context).val("");
+      same(ep.parse(structure, context), [{value:"foo", lang:"/lang/en", connect:"delete"}]);
+      $(".data-input", context).remove();
+      same(ep.parse(structure, context), [{
+        value:"foo", lang:"/lang/en", connect:"delete"
+      }, {
+        value:"bar", lang:"/lang/ko", connect:"delete"
+      }]);
+    });
+
+
+    test("unique-text-langs-replace", function() {
+      var context = $("#unique-text-langs-replace");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      var structure = {
+        id: "/prop/id",
+        unique: true,
+        expected_type: {id: "/type/text"},
+        values: [{value:"foo", lang:"/lang/en"},{value:"bar", lang:"/lang/ko"}]
+      };
+      same(ep.parse(structure, context), []);
+      $(".fb-input:last", context).val("baz");
       same(ep.parse(structure, context), [{value:"baz", lang:"/lang/ko", connect:"replace"}]);
     });
 
-    test("parse unique-text-langs-delete", function() {
-      var context = $("#unique-text-langs-delete");
-      // remove data-inputs
-      $(".data-input", context).remove();
-      var structure = {
-        id: "/prop/id",
-        unique: true,
-        expected_type: {id: "/type/text"},
-        values: [{value:"foo", lang:"/lang/en"},{value:"bar", lang:"/lang/ko"}]
-      };
-      same(ep.parse(structure, context), [
-        {value:"foo", lang:"/lang/en", connect:"delete"},
-        {value:"bar", lang:"/lang/ko", connect:"delete"}]);
-    });
 
-    test("parse unique-text-langs-noop", function() {
+    test("unique-text-langs-noop", function() {
       var context = $("#unique-text-langs-noop");
       // ignore empty values
-      var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
+      $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
         unique: true,
@@ -412,105 +425,129 @@
         values: [{value:"foo", lang:"/lang/en"},{value:"bar", lang:"/lang/ko"}]
       };
       same(ep.parse(structure, context), []);
-      // empty data-input should be ignored
-      data_input.find(".fb-input").val("");
+      $(".fb-input:first", context).val("foo");
       same(ep.parse(structure, context), []);
     });
 
-    test("parse non-unique-text-insert", function() {
+
+    test("non-unique-text-insert", function() {
       var context = $("#non-unique-text-insert");
       $(".data-input", context).data_input({lang:"/lang/ja"});
-      $(".data-input:last", context).find(".fb-input").val("baz");
       var structure = {
         id: "/prop/id",
         expected_type: {id: "/type/text"},
         values: [{value:"foo", lang:"/lang/en"},{value:"bar", lang:"/lang/ko"}]
       };
+      same(ep.parse(structure, context), []);
+      $(".fb-input:last", context).val("baz");
       same(ep.parse(structure, context), [{value:"baz", lang:"/lang/ja", connect:"insert"}]);
     });
 
-    test("parse non-unique-text-replace", function() {
+    test("non-unique-text-replace", function() {
       var context = $("#non-unique-text-replace");
       $(".data-input", context).data_input({lang:"/lang/en"});
-      $(".data-input:first", context).find(".fb-input").val("baz");
       var structure = {
         id: "/prop/id",
         expected_type: {id: "/type/text"},
         values: [{value:"foo", lang:"/lang/en"},{value:"bar", lang:"/lang/ko"}]
       };
+      same(ep.parse(structure, context), []);
+      $(".fb-input:first", context).val("baz");
       same(ep.parse(structure, context), [
         {value:"foo", lang:"/lang/en", connect:"delete"},
         {value:"baz", lang:"/lang/en", connect:"insert"}
       ]);
     });
 
-    test("parse non-unique-text-delete", function() {
+    test("non-unique-text-delete", function() {
       var context = $("#non-unique-text-delete");
       $(".data-input", context).data_input({lang:"/lang/en"});
-      $(".data-input:last", context).remove();
       var structure = {
         id: "/prop/id",
         expected_type: {id: "/type/text"},
         values: [{value:"foo", lang:"/lang/en"},{value:"bar", lang:"/lang/ko"}]
       };
+      same(ep.parse(structure, context), []);
+      $(".fb-input:last", context).val("");
       same(ep.parse(structure, context), [
+        {value:"bar", lang:"/lang/ko", connect:"delete"}
+      ]);
+      $(".fb-input", context).val("");
+      same(ep.parse(structure, context), [
+        {value:"foo", lang:"/lang/en", connect:"delete"},
+        {value:"bar", lang:"/lang/ko", connect:"delete"}
+      ]);
+      $(".data-input", context).remove();
+      same(ep.parse(structure, context), [
+        {value:"foo", lang:"/lang/en", connect:"delete"},
         {value:"bar", lang:"/lang/ko", connect:"delete"}
       ]);
     });
 
-    test("parse non-unique-text-noop", function() {
+    test("non-unique-text-noop", function() {
       var context = $("#non-unique-text-noop");
-      var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
+      $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
         expected_type: {id: "/type/text"},
         values: [{value:"foo", lang:"/lang/en"},{value:"bar", lang:"/lang/ko"}]
       };
       same(ep.parse(structure, context), []);
-      // empty data-input should be ignored
-      data_input.find(".fb-input").val("");
+      $(".fb-input:first", context).val("foo");
       same(ep.parse(structure, context), []);
     });
 
-    test("parse unique-datetime-insert", function() {
+
+    test("unique-datetime-insert", function() {
       var context = $("#unique-datetime-insert");
-      $(".data-input", context).data_input({lang:"/lang/en"}).find(".fb-input").val("Dec 2009");
+      $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
         unique: true,
         expected_type: {id:"/type/datetime"},
         values: []
       };
+      same(ep.parse(structure, context), []);
+      $(".fb-input", context).val("Dec 2009");
       same(ep.parse(structure, context), [{value:"2009-12", connect:"replace"}]);
     });
 
-    test("parse unique-float-replace", function() {
+
+    test("unique-float-replace", function() {
       var context = $("#unique-float-replace");
-      $(".data-input", context).data_input({lang:"/lang/fr"}).find(".fb-input").val("4,56");
+      $(".data-input", context).data_input({lang:"/lang/fr"});
       var structure = {
         id: "/prop/id",
         unique: true,
         expected_type: {id:"/type/float"},
         values: [{value:1.23}]
       };
+      same(ep.parse(structure, context), []);
+      $(".fb-input", context).val("4,56");
       same(ep.parse(structure, context), [{value:4.56, connect:"replace"}]);
     });
 
-    test("parse unique-int-delete", function() {
+
+    test("unique-int-delete", function() {
       var context = $("#unique-int-delete");
-      $(".data-input", context).remove();
+      $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
         unique: true,
         expected_type: {id:"/type/int"},
         values: [{value:0}]
       };
+      same(ep.parse(structure, context), []);
+      $(".fb-input", context).val("");
+      same(ep.parse(structure, context), [{value:0, connect:"delete"}]);
+      $(".data-input", context).remove();
       same(ep.parse(structure, context), [{value:0, connect:"delete"}]);
     });
 
-    test("parse unique-boolean-noop", function() {
+
+    test("unique-boolean-noop", function() {
       var context = $("#unique-boolean-noop");
-      var data_input = $(".data-input", context).data_input({lang:"/lang/fr"});
+      $(".data-input", context).data_input({lang:"/lang/fr"});
       var structure = {
         id: "/prop/id",
         unique: true,
@@ -519,100 +556,119 @@
       };
       same(ep.parse(structure, context), []);
       // same value be ignored
-      data_input.find(".fb-input:last").click();
+      $(":radio:last", context).click();
       same(ep.parse(structure, context), []);
     });
 
-    test("parse non-unique-uri-insert", function() {
+
+    test("non-unique-uri-insert", function() {
       var context = $("#non-unique-uri-insert");
       $(".data-input", context).data_input({lang:"/lang/fr"});
-      $(".data-input:last", context).find(".fb-input").val("http://www.google.com");
       var structure = {
         id: "/prop/id",
         expected_type: {id:"/type/uri"},
         values: [{value:"http://www.freebase.com"},{value:"http://www.metaweb.com"}]
       };
+      same(ep.parse(structure, context), []);
+      $(".fb-input:last", context).val("http://www.google.com");
       same(ep.parse(structure, context), [{value:"http://www.google.com", connect:"insert"}]);
     });
 
-    test("parse non-unique-int-delete", function() {
+
+    test("non-unique-int-delete", function() {
       var context = $("#non-unique-int-delete");
       $(".data-input", context).data_input({lang:"/lang/ko"});
-      $(".data-input:first", context).remove();
       var structure = {
         id: "/prop/id",
         expected_type: {id:"/type/int"},
         values: [{value:-1},{value:0}]
       };
+      same(ep.parse(structure, context), []);
+      $(".fb-input:first", context).val("");
       same(ep.parse(structure, context), [{value:-1, connect:"delete"}]);
+      $(".data-input:last", context).remove();
+      same(ep.parse(structure, context), [{value:-1, connect:"delete"},{value:0, connect:"delete"}]);
     });
 
-    test("parse non-unique-datetime-replace", function() {
+
+    test("non-unique-datetime-replace", function() {
       var context = $("#non-unique-datetime-replace");
       $(".data-input", context).data_input({lang:"/lang/en"});
-      $(".data-input:first", context).find(".fb-input").val("");
-      $(".data-input:last", context).find(".fb-input").val("2011-05-05");
       var structure = {
         id: "/prop/id",
         expected_type: {id:"/type/datetime"},
         values: [{value:"2009-12"},{value:"2011-05-02"}]
       };
-      same(ep.parse(structure, context), [{value:"2011-05-02", connect:"delete"}, {value:"2011-05-05", connect:"insert"}]);
+      same(ep.parse(structure, context), []);
+      $(".fb-input:first", context).val("");
+      $(".fb-input:last", context).val("2011-05-05");
+      same(ep.parse(structure, context),
+           [{value:"2009-12", connect:"delete"}, {value:"2011-05-02", connect:"delete"}, {value:"2011-05-05", connect:"insert"}]);
     });
 
-    test("parse non-unique-float-noop", function() {
+
+    test("non-unique-float-noop", function() {
       var context = $("#non-unique-float-noop");
-      var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
+      $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
-        expected_type: {id:"/type/datetime"},
+        expected_type: {id:"/type/float"},
         values: [{value:-1.23},{value:.98}]
       };
       same(ep.parse(structure, context), []);
       // empty values should be ignored
-      data_input.find(".fb-input").val("");
+      $(".fb-input:first", context).val("-1.23");
       same(ep.parse(structure, context), []);
     });
 
-    test("parse unique-topic-insert", function() {
+
+    test("unique-topic-insert", function() {
       var context = $("#unique-topic-insert");
       $(".data-input", context).data_input({lang:"/lang/en"});
-      fb_select($(".fb-input", context), "/en/bob_dylan");
       var structure = {
         id: "/prop/id",
         unique: true,
         expected_type: {id:"/people/person"},
         values: []
       };
+      same(ep.parse(structure, context), []);
+      fb_select($(".fb-input", context), "/en/bob_dylan");
       same(ep.parse(structure, context), [{id:"/en/bob_dylan", connect:"replace"}]);
     });
 
-    test("parse unique-topic-delete", function() {
+
+    test("unique-topic-delete", function() {
       var context = $("#unique-topic-delete");
-      $(".data-input", context).remove();
+      $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
         unique: true,
         expected_type: {id:"/people/person"},
         values: [{id:"/en/bob_dylan"}]
       };
+      same(ep.parse(structure, context), []);
+      $(".fb-input", context).val("");
+      same(ep.parse(structure, context), [{id:"/en/bob_dylan", connect:"delete"}]);
+      $(".data-input", context).remove();
       same(ep.parse(structure, context), [{id:"/en/bob_dylan", connect:"delete"}]);
     });
 
-    test("parse unique-topic-replace", function() {
+    test("unique-topic-replace", function() {
       var context = $("#unique-topic-replace");
       $(".data-input", context).data_input({lang:"/lang/en"});
-      fb_select($(".fb-input", context), "/en/foo");
       var structure = {
         id: "/prop/id",
         unique: true,
         expected_type: {id:"/people/person"},
         values: [{id:"/en/bob_dylan"}]
       };
+      same(ep.parse(structure, context), []);
+      fb_select($(".fb-input", context), "/en/foo");
       same(ep.parse(structure, context), [{id:"/en/foo", connect:"replace"}]);
     });
 
-    test("parse unique-topic-noop", function() {
+
+    test("unique-topic-noop", function() {
       var context = $("#unique-topic-noop");
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
@@ -622,12 +678,11 @@
         values: [{id:"/en/bob_dylan"}]
       };
       same(ep.parse(structure, context), []);
-      // empty values are ignored
-      $(".data-input", context).find(".fb-input").val("");
+      fb_select($(".fb-input", context), "/en/bob_dylan");
       same(ep.parse(structure, context), []);
     });
 
-    test("parse non-unique-topic-insert", function() {
+    test("non-unique-topic-insert", function() {
       var context = $("#non-unique-topic-insert");
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
@@ -635,11 +690,12 @@
         expected_type: {id:"/people/person"},
         values: [{id:"/en/bob_dylan"},{id:"/en/lady_gaga"}]
       };
+      same(ep.parse(structure, context), []);
       fb_select($(".fb-input:last", context), "/en/jack_kerouac");
       same(ep.parse(structure, context), [{id:"/en/jack_kerouac", connect:"insert"}]);
     });
 
-    test("parse non-unique-topic-delete", function() {
+    test("non-unique-topic-delete", function() {
       var context = $("#non-unique-topic-delete");
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
@@ -647,11 +703,18 @@
         expected_type: {id:"/people/person"},
         values: [{id:"/en/bob_dylan"},{id:"/en/lady_gaga"}]
       };
-      $(".data-input:first", context).remove();
+      same(ep.parse(structure, context), []);
+      $(".fb-input:last", context).val("");
+      same(ep.parse(structure, context), [{id:"/en/lady_gaga", connect:"delete"}]);
+      $(".fb-input:first", context).val("");
+      same(ep.parse(structure, context), [{id:"/en/bob_dylan", connect:"delete"},{id:"/en/lady_gaga", connect:"delete"}]);
+      fb_select($(".fb-input:last", context), "/en/lady_gaga");
       same(ep.parse(structure, context), [{id:"/en/bob_dylan", connect:"delete"}]);
+      $(".data-input", context).remove();
+      same(ep.parse(structure, context), [{id:"/en/bob_dylan", connect:"delete"},{id:"/en/lady_gaga", connect:"delete"}]);
     });
 
-    test("parse non-unique-topic-replace", function() {
+    test("non-unique-topic-replace", function() {
       var context = $("#non-unique-topic-replace");
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
@@ -659,11 +722,12 @@
         expected_type: {id:"/people/person"},
         values: [{id:"/en/bob_dylan"},{id:"/en/lady_gaga"}]
       };
+      same(ep.parse(structure, context), []);
       fb_select($(".fb-input:last", context), "/en/jack_kerouac");
       same(ep.parse(structure, context), [{id:"/en/lady_gaga", connect:"delete"}, {id:"/en/jack_kerouac", connect:"insert"}]);
     });
 
-    test("parse non-unique-topic-noop", function() {
+    test("non-unique-topic-noop", function() {
       var context = $("#non-unique-topic-noop");
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
@@ -674,53 +738,55 @@
       same(ep.parse(structure, context), []);
       fb_select($(".fb-input:first", context), "/en/bob_dylan");
       same(ep.parse(structure, context), []);
-      $(".fb-input", context).val("");
-      same(ep.parse(structure, context), []);
       fb_select($(".fb-input:last", context), "/en/lady_gaga");
       same(ep.parse(structure, context), []);
     });
 
-    test("parse unique-enumerated-insert", function() {
+    test("unique-enumerated-insert", function() {
       var context = $("#unique-enumerated-insert");
       $(".data-input", context).data_input({lang:"/lang/en"});
-      enum_select($("select", context), "/en/female");
       var structure = {
         id: "/prop/id",
         unique: true,
         expected_type: {id:"/people/gender"},
         values: []
       };
+      same(ep.parse(structure, context), []);
+      enum_select($("select", context), "/en/female");
       same(ep.parse(structure, context), [{id:"/en/female", connect:"replace"}]);
     });
 
-    test("parse unique-enumerated-delete", function() {
+    test("unique-enumerated-delete", function() {
       var context = $("#unique-enumerated-delete");
       var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
-      enum_select($("select", context), "/en/female");
-      data_input.remove();
       var structure = {
         id: "/prop/id",
         unique: true,
         expected_type: {id:"/people/gender"},
         values: [{id:"/en/female"}]
       };
+      same(ep.parse(structure, context), []);
+      enum_select($("select", context), null);
+      same(ep.parse(structure, context), [{id:"/en/female", connect:"delete"}]);
+      data_input.remove();
       same(ep.parse(structure, context), [{id:"/en/female", connect:"delete"}]);
     });
 
-    test("parse unique-enumerated-replace", function() {
+    test("unique-enumerated-replace", function() {
       var context = $("#unique-enumerated-replace");
       var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
-      enum_select($("select", context), "/en/male");
       var structure = {
         id: "/prop/id",
         unique: true,
         expected_type: {id:"/people/gender"},
         values: [{id:"/en/female"}]
       };
+      same(ep.parse(structure, context), []);
+      enum_select($("select", context), "/en/male");
       same(ep.parse(structure, context), [{id:"/en/male", connect:"replace"}]);
     });
 
-    test("parse unique-enumerated-noop", function() {
+    test("unique-enumerated-noop", function() {
       var context = $("#unique-enumerated-noop");
       var data_input = $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
@@ -733,11 +799,11 @@
       enum_select($("select", context), "/en/male");
       same(ep.parse(structure, context), []);
       enum_select($("select", context), "/en/female");
-      enum_select($("select", context), null);  // 0-index is "Select..." option
+      enum_select($("select", context), "/en/male");
       same(ep.parse(structure, context), []);
     });
 
-    test("parse non-unique-enumerated-insert", function() {
+    test("non-unique-enumerated-insert", function() {
       var context = $("#non-unique-enumerated-insert");
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
@@ -745,26 +811,31 @@
         expected_type: {id:"/people/gender"},
         values: [{id:"/en/male"}]
       };
-
+      same(ep.parse(structure, context), []);
       enum_select($("select:last", context), "/en/female");
       same(ep.parse(structure, context), [{id:"/en/female", connect:"insert"}]);
     });
 
-    test("parse non-unique-enumerated-delete", function() {
+    test("non-unique-enumerated-delete", function() {
       var context = $("#non-unique-enumerated-delete");
       $(".data-input", context).data_input({lang:"/lang/en"});
-      $(".data-input:first", context).remove();
       var structure = {
         id: "/prop/id",
         expected_type: {id:"/people/gender"},
         values: [{id:"/en/male"},{id:"/en/female"}]
       };
+      same(ep.parse(structure, context), []);
+      enum_select($("select:first", context), "/en/female");
       same(ep.parse(structure, context), [{id:"/en/male", connect:"delete"}]);
+      enum_select($("select:last", context), "/en/male");
+      same(ep.parse(structure, context), []);
+      enum_select($("select:first", context), "/en/male");
+      same(ep.parse(structure, context), [{id:"/en/female", connect:"delete"}]);
       $(".data-input", context).remove();
       same(ep.parse(structure, context), [{id:"/en/male", connect:"delete"},{id:"/en/female", connect:"delete"}]);
     });
 
-    test("parse non-unique-enumerated-replace", function() {
+    test("non-unique-enumerated-replace", function() {
       var context = $("#non-unique-enumerated-replace");
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
@@ -772,11 +843,12 @@
         expected_type: {id:"/people/gender"},
         values: [{id:"/en/female"}]
       };
+      same(ep.parse(structure, context), []);
       enum_select($("select", context), "/en/male");
       same(ep.parse(structure, context), [{id:"/en/female", connect:"delete"},{id:"/en/male", connect:"insert"}]);
     });
 
-    test("parse non-unique-enumerated-noop", function() {
+    test("non-unique-enumerated-noop", function() {
       var context = $("#non-unique-enumerated-noop");
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
@@ -784,14 +856,350 @@
         expected_type: {id:"/people/gender"},
         values: [{id:"/en/male"},{id:"/en/female"}]
       };
+      same(ep.parse(structure, context), []);
       enum_select($("select:first", context), "/en/male");
       same(ep.parse(structure, context), []);
       enum_select($("select:last", context), "/en/female");
       same(ep.parse(structure, context), []);
-      enum_select($("select:first", context), null);
+      enum_select($("select:first", context), "/en/female");
+      enum_select($("select:last", context), "/en/male");
       same(ep.parse(structure, context), []);
-      enum_select($("select:last", context), null);
+    });
+
+    test("unique-mediator-insert", function() {
+      var context = $("#unique-mediator-insert");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      var structure = {
+        id: "/film/film/gross_revenue",
+        expected_type: {id:"/measurement_unit/dated_money_value"},
+        unique: true,
+        properties: [{
+          id: "/measurement_unit/dated_money_value/currency",
+          expected_type: {id:"/finance/currency"},
+          unique: true
+        },{
+          id: "/measurement_unit/dated_money_value/amount",
+          expected_type: {id:"/type/float"},
+          unique: true
+        }],
+        values: []
+      };
       same(ep.parse(structure, context), []);
+      $(".data-input:last", context).find(".fb-input").val("6,087,542");
+      same(ep.parse(structure, context), [{
+        id: null,
+        create: "unconditional",
+        connect: "replace",
+        "/measurement_unit/dated_money_value/amount": [{
+          value: 6087542,
+          connect: "replace"
+        }]
+      }]);
+      fb_select($(".data-input:first", context).find(".fb-input"), "/en/us");
+      same(ep.parse(structure, context), [{
+        id: null,
+        create: "unconditional",
+        connect: "replace",
+        "/measurement_unit/dated_money_value/amount": [{
+          value: 6087542,
+          connect: "replace"
+        }],
+        "/measurement_unit/dated_money_value/currency": [{
+          id: "/en/us",
+          connect: "replace"
+        }]
+      }]);
+    });
+
+    test("unique-mediator-delete", function() {
+      var context = $("#unique-mediator-delete");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      var structure = {
+        id: "/film/film/gross_revenue",
+        expected_type: {id:"/measurement_unit/dated_money_value"},
+        unique: true,
+        properties: [{
+          id: "/measurement_unit/dated_money_value/currency",
+          expected_type: {id:"/finance/currency"},
+          unique: true
+        },{
+          id: "/measurement_unit/dated_money_value/amount",
+          expected_type: {id:"/type/float"},
+          unique: true
+        }],
+        values: [{
+          id: "/m/123",
+          "/measurement_unit/dated_money_value/currency": {
+            values: [{
+              id: "/en/us"
+            }]
+          },
+          "/measurement_unit/dated_money_value/amount": {
+            values: [{
+              value: 1234567
+            }]
+          }
+        }]
+      };
+      same(ep.parse(structure, context), []);
+      $(".data-input:last", context).remove();
+      same(ep.parse(structure, context), [{
+        id: "/m/123",
+        "/measurement_unit/dated_money_value/amount": [{
+          value: 1234567,
+          connect: "delete"
+        }]
+      }]);
+      $(".fb-input", context).val("");
+      same(ep.parse(structure, context), [{
+        id: "/m/123",
+        "/measurement_unit/dated_money_value/amount": [{
+          value: 1234567,
+          connect: "delete"
+        }],
+        "/measurement_unit/dated_money_value/currency": [{
+          id: "/en/us",
+          connect: "delete"
+        }]
+      }]);
+    });
+
+    test("unique-mediator-replace", function() {
+      var context = $("#unique-mediator-replace");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      var structure = {
+        id: "/film/film/gross_revenue",
+        expected_type: {id:"/measurement_unit/dated_money_value"},
+        unique: true,
+        properties: [{
+          id: "/measurement_unit/dated_money_value/currency",
+          expected_type: {id:"/finance/currency"},
+          unique: true
+        },{
+          id: "/measurement_unit/dated_money_value/amount",
+          expected_type: {id:"/type/float"},
+          unique: true
+        }],
+        values: [{
+          id: "/m/123",
+          "/measurement_unit/dated_money_value/currency": {
+            values: [{
+              id: "/en/us"
+            }]
+          },
+          "/measurement_unit/dated_money_value/amount": {
+            values: [{
+              value: 1234567
+            }]
+          }
+        }]
+      };
+      same(ep.parse(structure, context), []);
+      fb_select($(".fb-input:first", context), "/en/korean_won");
+      same(ep.parse(structure, context), [{
+        id: "/m/123",
+        "/measurement_unit/dated_money_value/currency": [{
+          id: "/en/korean_won",
+          connect: "replace"
+        }]
+      }]);
+      $(".fb-input:last", context).val("1200000");
+      same(ep.parse(structure, context), [{
+        id: "/m/123",
+        "/measurement_unit/dated_money_value/amount": [{
+          value: 1200000,
+          connect: "replace"
+        }],
+        "/measurement_unit/dated_money_value/currency": [{
+          id: "/en/korean_won",
+          connect: "replace"
+        }]
+      }]);
+    });
+
+    test("unique-mediator-noop", function() {
+      var context = $("#unique-mediator-noop");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      var structure = {
+        id: "/film/film/gross_revenue",
+        expected_type: {id:"/measurement_unit/dated_money_value"},
+        unique: true,
+        properties: [{
+          id: "/measurement_unit/dated_money_value/currency",
+          expected_type: {id:"/finance/currency"},
+          unique: true
+        },{
+          id: "/measurement_unit/dated_money_value/amount",
+          expected_type: {id:"/type/float"},
+          unique: true
+        }],
+        values: [{
+          id: "/m/123",
+          "/measurement_unit/dated_money_value/currency": {
+            values: [{
+              id: "/en/us"
+            }]
+          },
+          "/measurement_unit/dated_money_value/amount": {
+            values: [{
+              value: 1234567
+            }]
+          }
+        }]
+      };
+      same(ep.parse(structure, context), []);
+      fb_select($(".fb-input:first", context), "/en/us");
+      same(ep.parse(structure, context), []);
+      fb_select($(".fb-input:last", context), "1,234,567.00");
+      same(ep.parse(structure, context), []);
+    });
+
+
+    test("non-unique-mediator-insert", function() {
+      var context = $("#non-unique-mediator-insert");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      var structure = {
+        id: "/tv/tv_program/regular_cast",
+        expected_type: {id: "/tv/regular_tv_appearance"},
+        properties: [{
+          id: "/tv/regular_tv_appearance/actor",
+          unique: true,
+          expected_type: {id: "/tv/tv_actor"}
+        },{
+          id: "/tv/regular_tv_appearance/character",
+          unique: true,
+          expected_type: {id: "/tv/tv_charcter"}
+        },{
+          id: "/tv/regular_tv_appearance/seasons",
+          expected_type: {id: "/tv/tv_series_season"}
+        }],
+        values: []
+      };
+      same(ep.parse(structure, context), []);
+      fb_select($(".fb-input:first", context), "/en/matthew_fox");
+      same(ep.parse(structure, context), [{
+        id: null,
+        create: "unconditional",
+        connect: "insert",
+        "/tv/regular_tv_appearance/actor": [{
+          id: "/en/matthew_fox",
+          connect: "replace"
+        }]
+      }]);
+      fb_select($(".fb-input:eq(1)", context), "/en/jack_shephard");
+      same(ep.parse(structure, context), [{
+        id: null,
+        create: "unconditional",
+        connect: "insert",
+        "/tv/regular_tv_appearance/actor": [{
+          id: "/en/matthew_fox",
+          connect: "replace"
+        }],
+        "/tv/regular_tv_appearance/character": [{
+          id: "/en/jack_shephard",
+          connect: "replace"
+        }]
+      }]);
+      fb_select($(".fb-input:eq(2)", context), "/en/lost_season_1");
+      fb_select($(".fb-input:eq(3)", context), "/en/lost_season_2");
+      fb_select($(".fb-input:eq(4)", context), "/en/lost_season_3");
+      same(ep.parse(structure, context), [{
+        id: null,
+        create: "unconditional",
+        connect: "insert",
+        "/tv/regular_tv_appearance/actor": [{
+          id: "/en/matthew_fox",
+          connect: "replace"
+        }],
+        "/tv/regular_tv_appearance/character": [{
+          id: "/en/jack_shephard",
+          connect: "replace"
+        }],
+        "/tv/regular_tv_appearance/seasons": [{
+          id: "/en/lost_season_1",
+          connect: "insert"
+        },{
+          id: "/en/lost_season_2",
+          connect: "insert"
+        },{
+          id: "/en/lost_season_3",
+          connect: "insert"
+        }]
+      }]);
+    });
+
+    test("non-unique-mediator-delete-replace-noop", function() {
+      var context = $("#non-unique-mediator-delete-replace-noop");
+      $(".data-input", context).data_input({lang:"/lang/en"});
+      var structure = {
+        id: "/tv/tv_program/regular_cast",
+        expected_type: {id: "/tv/regular_tv_appearance"},
+        properties: [{
+          id: "/tv/regular_tv_appearance/actor",
+          unique: true,
+          expected_type: {id: "/tv/tv_actor"}
+        },{
+          id: "/tv/regular_tv_appearance/character",
+          unique: true,
+          expected_type: {id: "/tv/tv_charcter"}
+        },{
+          id: "/tv/regular_tv_appearance/seasons",
+          expected_type: {id: "/tv/tv_series_season"}
+        }],
+        values: [{
+          id: "/m/mid123",
+          "/tv/regular_tv_appearance/actor": {
+            values: [{
+              id: "/en/matthew_fox"
+            }]
+          },
+          "/tv/regular_tv_appearance/character": {
+            values: [{
+              id: "/en/jack_shephard"
+            }]
+          },
+          "/tv/regular_tv_appearance/seasons": {
+            values: [{
+              id: "/en/lost_season_1"
+            },{
+              id: "/en/lost_season_2"
+            },{
+              id: "/en/lost_season_3"
+            }]
+          }
+        }]
+      };
+      same(ep.parse(structure, context), []);
+      $(".fb-input:first", context).val("");
+      fb_select($(".fb-input:last", context), "/en/lost_season_4");
+      same(ep.parse(structure, context), [{
+        id: "/m/mid123",
+        "/tv/regular_tv_appearance/actor": [{
+          id: "/en/matthew_fox",
+          connect: "delete"
+        }],
+        "/tv/regular_tv_appearance/seasons": [{
+          id: "/en/lost_season_3",
+          connect:"delete"
+        },{
+          id: "/en/lost_season_4",
+          connect:"insert"
+        }]
+      }]);
+      fb_select($(".fb-input:first", context), "/en/matthew_fox");
+      fb_select($(".fb-input:eq(1)", context), "/en/john_locke");
+      fb_select($(".fb-input:last", context), "/en/lost_season_2");
+      same(ep.parse(structure, context), [{
+        id: "/m/mid123",
+        "/tv/regular_tv_appearance/character": [{
+          id: "/en/john_locke",
+          connect: "replace"
+        }],
+        "/tv/regular_tv_appearance/seasons": [{
+          id: "/en/lost_season_3",
+          connect:"delete"
+        }]
+      }]);
     });
   };
 

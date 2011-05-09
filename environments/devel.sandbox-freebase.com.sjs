@@ -45,6 +45,7 @@ var rules = {
     {prefix:"/topic",              app:"//topic" + codebase},
     {prefix:"/group",              app:"//group" + codebase},
     {prefix:"/web",                app:"//sameas" + codebase},
+    {prefix:"/d",                  app:"//data" + codebase},
     {prefix:"/account",            app:"//account" + codebase},
 
     // Urls for exposed ajax libraries and static resources

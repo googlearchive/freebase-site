@@ -28,95 +28,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+var h = acre.require("lib/helper/helpers.sjs");
+var rh = acre.require("lib/routing/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
 
-/*
-Tabset Style
-*/
+var path_info = rh.normalize_path(this);
 
-.section-tabs {
-    border: 5px solid #e4e6e7;
-    .rounded_corners(10px);
-    background: #fff;
+
+var result;
+
+// is path_info a valid mql id?
+var id = validators.MqlId(path_info, {if_invalid:null});
+
+if (id) {
+  /**
+   * MQL to determine if this id is viewable by this app,
+   * otherwise, redirect to associated views
+   */
+  var q = {
+    id: id,
+    type: {
+      id: null,
+      "id|=": ["/type/domain", "/type/type"]
+    }
+
+  };
+  try {
+    result = acre.freebase.mqlread(q).result;
+  }
+  catch (e) {
+    result = null;
+  }
 }
 
-/* section-tabset should always include a 'clear' class */
-.section-tabset {
-    border-bottom: 1px solid #e4e4e4;
-    list-style: none;
-    background: #ededed;
-    .linear_gradient(#fff, #ededed, repeat);
-    .rounded_corners(5px);
+if (result) {
+  if(result.type.id === "/type/domain") {
+    rh.route(this, "domain.controller", id);
+  }
+  else {
+    rh.route(this, "type.controller", id);
+  }
 }
-
-.section-tab {
-    float: left;
-    border-right: 1px solid #e4e4e4;
-}
-
-.section-tab a {
-    display: block;
-    color: #666;
-    padding: 10px 13px;
-    font-size: 1.2em;
-    font-weight: bold;
-}
-
-.current {
-    background: #fff;
-    .linear_gradient(#ededed, #fff, repeat);
-}
-
-/*
-Search Tabset
-*/
-
-.search-box {
-    margin: 2em 0 2em 13px;
-}
-
-.search-box label {
-    font-size: 1.4em;
-    padding-right: 1em;
-}
-
-.search-box form,
-.search-box fieldset {
-    display: inline;
-}
-
-.search-box .text-input {
-    font-size: 14px;
-    padding: 6px;
-}
-
-
-/*
-Inline Tabset
-*/
-
-.inline-tabset li {
-  float: left;
-  list-style: none;
-  margin-right: 5px;
-}
-
-.inline-tabset a {
-  display: inline-block;
-  font-size: 12px;
-  font-weight: bold;
-  line-height: 1;
-  padding: 3px 5px;
-  color: #666;
-  border: 1px solid transparent;
-  .rounded_corners();
-}
-
-.inline-tabset a.current {
-  border: 1px solid #597a91;
-  .linear_gradient(#597a91, #658aa4);
-  color: #fff;
-}
-
-.inline-tabset a:hover {
-  text-decoration: none;
+else {
+  rh.route(this, path_info);
 }

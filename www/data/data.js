@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2010, Google Inc.
  * All rights reserved.
@@ -29,94 +30,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
-Tabset Style
-*/
+(function($, fb) {
 
-.section-tabs {
-    border: 5px solid #e4e6e7;
-    .rounded_corners(10px);
-    background: #fff;
-}
+  var data = fb.data = {
 
-/* section-tabset should always include a 'clear' class */
-.section-tabset {
-    border-bottom: 1px solid #e4e4e4;
-    list-style: none;
-    background: #ededed;
-    .linear_gradient(#fff, #ededed, repeat);
-    .rounded_corners(5px);
-}
+    // initialize tabset for toggling between
+    // synthetic views and user-created views
+    init_data_tabs: function(context) {
+      $("ul.tabs").tabs("div.panes > table", {
+        effect: 'fade'
+      });                
+    },
 
-.section-tab {
-    float: left;
-    border-right: 1px solid #e4e4e4;
-}
+    init_query_topics: function(context) {
+      var $query_table = $("#queries");                 
+      var query_url = 'http://api.freebase.com/api/trans/raw';
+      var mql_url = 'http://api.freebase.com/api/mqlread';
 
-.section-tab a {
-    display: block;
-    color: #666;
-    padding: 10px 13px;
-    font-size: 1.2em;
-    font-weight: bold;
-}
+      $("tr", $query_table).each(function(){
+        var $row = $(this);
+        var query_id = $row.attr('data-query');
+        var url = service_url + query_id;
+        var query = $.getJSON(url, '?callback=?', function(data){
+          console.log(data);
+        });
+      });
+    }
+  };
 
-.current {
-    background: #fff;
-    .linear_gradient(#ededed, #fff, repeat);
-}
+  function init() {
+    data.init_data_tabs();
+    //data.init_query_topics();
+  };
 
-/*
-Search Tabset
-*/
+  $(init);
 
-.search-box {
-    margin: 2em 0 2em 13px;
-}
-
-.search-box label {
-    font-size: 1.4em;
-    padding-right: 1em;
-}
-
-.search-box form,
-.search-box fieldset {
-    display: inline;
-}
-
-.search-box .text-input {
-    font-size: 14px;
-    padding: 6px;
-}
-
-
-/*
-Inline Tabset
-*/
-
-.inline-tabset li {
-  float: left;
-  list-style: none;
-  margin-right: 5px;
-}
-
-.inline-tabset a {
-  display: inline-block;
-  font-size: 12px;
-  font-weight: bold;
-  line-height: 1;
-  padding: 3px 5px;
-  color: #666;
-  border: 1px solid transparent;
-  .rounded_corners();
-}
-
-.inline-tabset a.current {
-  border: 1px solid #597a91;
-  .linear_gradient(#597a91, #658aa4);
-  color: #fff;
-}
-
-.inline-tabset a:hover {
-  text-decoration: none;
-}
+})(jQuery, window.freebase);

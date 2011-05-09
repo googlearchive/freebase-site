@@ -66,18 +66,6 @@
   </div>
 </acre:block>
 
-<acre:block def="nav_tabs(nav_tab)">
-  <li>
-    ${nav_tab(true, _("Schema"))}
-  </li>
-  <li>
-    ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
-  </li>
-  <li>
-    ${nav_tab(false, _("Community"), h.fb_url("/group", c.object.id))}
-  </li>
-</acre:block>
-
 <acre:block def="nav_utilities()">
   <li class="edit">
     <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.domain_settings, ['${c.domain.id}', true], this);">

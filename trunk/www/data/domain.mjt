@@ -64,11 +64,8 @@
 <acre:block def="page_content()">
    <!-- Types -->
    <div class="section">
-     <acre:script>
-       var title = "Explore " + i18n.display_name(c.object) + " topics";
-     </acre:script>
-     <p>Total facts: ${i18n_c.number(c.domain.total_facts)}</p>
-     <p>Total Topics: ${i18n_c.number(c.domain.total_topics)}</p>
+     <span class="metric-primary">${h.format_stat(c.domain.total_facts)}</span>
+     <span class="metric-secondary">${h.format_stat(c.domain.total_topics)}</span>
      <p>Topics with images: $c.domain.topics_with_images%</p>
      <p>Topics with articles: $c.domain.topics_with_articles%</p>
      <p>Facts last week: ${i18n_c.number(c.domain.facts_last_week)}</p>
@@ -81,8 +78,11 @@
        </li>
      </ul>
      <div class="activity-summary" style="width:125px;" data-activity="${JSON.stringify(c.domain.activity_summary)}"></div>
+     <acre:script>
+       var title = "Explore " + i18n.display_name(c.object) + " topics";
+     </acre:script>
      <h2 class="table-title">
-       ${_(title)}
+       ${h.template_sprintf(_("Explore %s topics"), i18n.display_name(c.object))}
      </h2>
      <ul class="tabs inline-tabset">
        <li><a href="#queries">${_("by query")}</a></li>

@@ -129,7 +129,7 @@ function domain(id) {
           var users = [];
           activity.week.users.forEach(function(user) {
             if (user.id.indexOf("_bot") === -1) {
-              user.display_name = user.id.split("/")[2];
+              user.display_name = user.id.split("/").pop();
               user.percentage = Math.round(user.v / domain.facts_last_week * 100);
               users.push(user);
             }

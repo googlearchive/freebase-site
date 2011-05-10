@@ -51,19 +51,6 @@
       };
     },
 
-    error: function() {
-      var msg = Array.prototype.slice.call(arguments);
-      console.error.apply(console, msg);
-      throw new ep.Invalid(msg.join(" "));
-    },
-
-    assert: function(truth) {
-      if (!truth) {
-        var msg = Array.prototype.slice.call(arguments, 1);
-        ep.error.apply(null, msg);
-      }
-    },
-
     /**
      * Responsible for figuring out the "diff" between the original values of a property and
      * the new values from the data-inputs contained within the context element.
@@ -109,9 +96,12 @@
       var mediator = structure.expected_type.mediator || props.length;
 
       if (mediator) {
-        ep.assert(props.length, "mediator must have 1 or more properties");
-        ep.assert(!old_values.length || old_values.length === 1,
-                  "Can't update more than one value (row) for a mediator");
+        if (!props.length) {
+          throw new ep.Invalid(structure, null, "mediator musth have 1 or more properties");
+        }
+        if (old_values.length && old_values.length !== 1) {
+          throw new ep.Invalid(structure, null, "Can't edit more than one value (row) for a mediator");
+        }
       }
 
       function accept_or_reject(data_input, prop, data, existing_values, prop_values) {
@@ -164,12 +154,18 @@
       $(".data-input", context).each(function() {
         var $this = $(this);
         var inst = $this.data("$.data_input");
-        ep.assert(inst, "$.data-input not initialized");
+        if (!inst) {
+          throw new ep.Invalid(structure, null, "$.data-input not initialized for", this);
+        }
         // force validation
         inst.validate(true);
-        ep.assert(!$this.is(".error"), "$.data-input is invalid");
+        if ($this.is(".error")) {
+          throw new ep.Invalid(structure, null, "$.data-input is invalid", this);
+        }
         var data = $this.data("data");
-        ep.assert(data, "$.data-input has no data");
+        if (!data) {
+          throw new ep.Invalid(structure, null, "$.data-input has no data", this);
+        }
         if (mediator) {
           if (!new_values.length) {
             // you can only upate one row for a mediator
@@ -206,8 +202,9 @@
 
     parse_mediator: function(structure, old_values, new_values) {
 //      console.log("parse_mediator", structure, old_values, new_values);
-      ep.assert(new_values.length === 1,
-                "Can't update more than one value (row) for a mediator");
+      if (new_values.length !== 1) {
+        throw new ep.Invalid(structure, new_values, "Must specify one (new or updated) value for a mediator");
+      }
       var new_value = new_values[0];
       var old_value;
       if (old_values.length) {
@@ -266,10 +263,10 @@
           // unique non-/type/text values cannot have > 1 value
           // /type/text is special because of "lang"
           if (old_values.length && old_values.length !== 1) {
-            throw new ep.Invalid("Uniqueness error on old values");
+            throw new ep.Invalid(structure, old_values, "Can't edit more than one value (row) for a unique property.");
           }
           else if (new_values.length && new_values.length !== 1) {
-            throw new ep.Invalid("Uniqueness error on new values");
+            throw new ep.Invalid(structure, new_values, "Can't edit more than one value (row) for a unique property.");
           }
         }
       }

@@ -116,7 +116,7 @@
         submit_data.o = JSON.stringify(o);
       }
       catch(ex) {
-        edit.form_error(form, "" + ex);
+        form.edit_row.trigger(form.event_prefix + "error", ex);
         return;
       }
       $.ajax({
@@ -239,7 +239,7 @@
         submit_data.o = JSON.stringify(o);
       }
       catch(ex) {
-        edit.form_error(form, ex);
+        form.edit_row.trigger(form.event_prefix + "error", ex);
         return;
       }
       $.ajax({
@@ -527,7 +527,7 @@
       }
     },
 
-    form_error: function(form, msg) {
+    error: function(form, msg) {
       $(".button-submit", form.submit_row).attr("disabled", "disabled").addClass("disabled");
       return edit.form_message(form, msg, "error");
     },
@@ -557,7 +557,7 @@
     ajax_error: function(xhr, form, prop_section, prop_row) {
       var msg = xhr.responseText;
       if (form) {
-        edit.form_error(form, msg);
+        form.edit_row.trigger(form.event_prefix + "error", msg);
       }
       else {
         var table = $(".data-table", prop_section);

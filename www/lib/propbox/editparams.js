@@ -53,9 +53,8 @@
 
     error: function() {
       var msg = Array.prototype.slice.call(arguments);
-      msg.splice(0, 0, "editparams:");
       console.error.apply(console, msg);
-      throw new Error(msg.join(" "));
+      throw new ep.Invalid(msg.join(" "));
     },
 
     assert: function(truth) {

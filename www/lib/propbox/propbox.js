@@ -147,39 +147,6 @@
       }
     },
 
-    _dojo_loaded: false,
-    _dojo_version: "1.6.0",
-    get_dojo: function(lang, callback) {
-/**
- DOJO is assumed to be already loaded with the correct locale(s)
- corresponding to propbox.options.lang
-
-      if (propbox._dojo_loaded === lang) {
-        console.log("propbox._dojo_loaded", propbox._dojo_loaded);
-        setTimeout(callback, 0);
-        return;
-      }
-      var lang_code = lang.split("/").pop().toLowerCase();
-      var djConfig = window.djConfig = {
-        afterOnLoad: true,
-        locale: lang_code
-      };
-      if (lang_code !== "en") {
-        djConfig.extraLocale =  ["en"];
-      }
-
-      $.ajax({
-        url: "https://ajax.googleapis.com/ajax/libs/dojo/" + propbox._dojo_version + "/dojo/dojo.xd.js",
-        dataType: 'script',
-        success: function() {
-          propbox._dojo_loaded = lang;
-          callback();
-        }
-      });
-**/
-      callback();
-    },
-
     prop_edit: function(context, unique) {
       var prop = $(context).parents(".property-section");
       var value_menu = prop.find(".data-section .data-row:first:visible .nicemenu:first .headmenu:first a");
@@ -198,10 +165,8 @@
         return false;
       }
       prop_section.addClass("editing");
-      propbox.get_dojo(propbox.options.lang, function() {
-        propbox.get_script("/propbox-edit.mf.js", function() {
-          propbox.edit.prop_add_begin(prop_section, unique);
-        });
+      propbox.get_script("/propbox-edit.mf.js", function() {
+        propbox.edit.prop_add_begin(prop_section, unique);
       });
       return false;
     },
@@ -213,10 +178,8 @@
         return false;
       }
       prop_section.addClass("editing");
-      propbox.get_dojo(propbox.options.lang, function() {
-        propbox.get_script("/propbox-edit.mf.js", function() {
-          propbox.edit.value_edit_begin(prop_section, prop_row);
-        });
+      propbox.get_script("/propbox-edit.mf.js", function() {
+        propbox.edit.value_edit_begin(prop_section, prop_row);
       });
       return false;
     },
@@ -228,10 +191,8 @@
         return false;
       }
       prop_section.addClass("editing");
-      propbox.get_dojo(propbox.options.lang, function() {
-        propbox.get_script("/propbox-edit.mf.js", function() {
-          propbox.edit.value_delete_begin(prop_section, prop_row);
-        });
+      propbox.get_script("/propbox-edit.mf.js", function() {
+        propbox.edit.value_delete_begin(prop_section, prop_row);
       });
       return false;
     },

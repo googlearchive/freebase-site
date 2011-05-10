@@ -30,7 +30,8 @@
  */
 
 var exports = {
-  "round": round
+  "round": round,
+  "format_stat": format_stat
 };
 
 
@@ -46,3 +47,13 @@ function round(i,  rnd) {
   return Math.round(i/rnd)*rnd;
 };
 
+function format_stat(number) {
+  var abbr = ["K", "M", "B", "T"];
+  for (var i=abbr.length; i>0; i--) {
+    var power = Math.pow(10, i*3);
+    if (number >= power) {
+      return Math.round(number / power) + abbr[i-1];
+    }
+  }
+  return ""+number;
+}

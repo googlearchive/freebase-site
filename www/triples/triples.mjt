@@ -434,7 +434,7 @@
       delete attrs["class"];
     }
   </acre:script>
-  <a href="${h.fb_url('/inspect', id)}" acre:attrs="attrs" class="${clazz}">${name || id}</a>
+  <a href="${h.fb_url(id, [['inspect']])}" acre:attrs="attrs" class="${clazz}">${name || id}</a>
 </acre:block>
 
 <acre:block def="topic(o)" trim="">

@@ -253,113 +253,23 @@
 
 <acre:block def="nav_tabs()">
   <acre:script>
-    var types = h.map_array(c.object.type, "id");
-  </acre:script>
-
-  <acre:block if="types['/freebase/apps/application']">
-    ${nav_tabs_for_app()}
-  </acre:block>
-
-  <acre:block elif="types['/type/user']">
-    ${nav_tabs_for_user()}
-  </acre:block>
-
-  <acre:block elif="types['/type/domain']">
-    ${nav_tabs_for_domain()}
-  </acre:block>
-
-  <acre:block elif="types['/type/type']">
-    ${nav_tabs_for_type()}
-  </acre:block>
-
-  <acre:block elif="types['/type/property']">
-    ${nav_tabs_for_property()}
-  </acre:block>
-
-  <acre:block elif="types['/common/topic']">
-    ${nav_tabs_for_topic()}
-  </acre:block>
-
-  <acre:block else="">
-    ${nav_tabs_for_object()}
-  </acre:block>
-
-</acre:block>
-
-<acre:block def="nav_tabs_for_app()">
-  <acre:script>
     var params = c.filters ? fh.global_filters(c.filters) : {};
-    h.extend(params, {
-      domains:"all", 
-      type:"/freebase/apps/application"
-    });
+    var filters = acre.form.encode("", params);
   </acre:script>
-  ${nav_tab(_("View"), h.fb_url("/topic", c.object.id, params))}
-  ${nav_tab(_("Authors"), h.fb_url("/group", c.object.id))}
-  ${nav_tab(_("Activity"), h.fb_url("/activity", c.object.id, params))}
-  ${nav_tab(_("Inspect"), h.fb_url("/inspect", c.object.id, params))}
+  <acre:block for="tab in c.object.tabs">
+    <acre:script>
+      var url = "?" + tab.key + (filters.length ? "&" + filters : "");
+      var current = (tab.key === c.object.sel_tab.key);
+    </acre:script>
+    <li>
+      <a acre:if="current" href="#" onclick="return false;" class="current"><span>${_(tab.name)}</span></a>
+      <a acre:else="" href="${url}"><span>${_(tab.name)}</span></a>
+    </li>
+  </acre:block>
 </acre:block>
 
-<acre:block def="nav_tabs_for_user()">
-  <acre:script>
-    var params = c.filters ? fh.global_filters(c.filters) : {};
-  </acre:script>
-  ${nav_tab(_("Domains"), h.fb_url("/data", c.object.id))}
-  ${nav_tab(_("Queries"), h.fb_url("/queries", c.object.id))}
-  ${nav_tab(_("Apps"), h.fb_url("/apps", c.object.id))}
-  ${nav_tab(_("Inspect"), h.fb_url("/inspect", c.object.id, params))}
-</acre:block>
 
-<acre:block def="nav_tabs_for_domain()">
-  <acre:script>
-    var params = c.filters ? fh.global_filters(c.filters) : {};
-  </acre:script>
-  ${nav_tab(_("Data"), h.fb_url("/data", c.object.id))}
-  ${nav_tab(_("Schema"), h.fb_url("/schema", c.object.id))}
-  ${nav_tab(_("Inspect"), h.fb_url("/inspect", c.object.id, params))}
-  ${nav_tab(_("Community"), h.fb_url("/group", c.object.id))}
-</acre:block>
-
-<acre:block def="nav_tabs_for_type()">
-  <acre:script>
-    var params = c.filters ? fh.global_filters(c.filters) : {};
-  </acre:script>
-  ${nav_tab(_("Data"), h.fb_url("/data", c.object.id))}
-  ${nav_tab(_("Schema"), h.fb_url("/schema", c.object.id))}
-  ${nav_tab(_("Inspect"), h.fb_url("/inspect", c.object.id, params))}
-</acre:block>
-
-<acre:block def="nav_tabs_for_property()">
-  <acre:script>
-    var params = c.filters ? fh.global_filters(c.filters) : {};
-  </acre:script>
-  ${nav_tab(_("Schema"), h.fb_url("/schema", c.object.id))}
-  ${nav_tab(_("Inspect"), h.fb_url("/inspect", c.object.id, params))}
-</acre:block>
-
-<acre:block def="nav_tabs_for_topic()">
-  <acre:script>
-    var params = c.filters ? fh.global_filters(c.filters) : {};
-  </acre:script>
-  ${nav_tab(_("View"), h.fb_url("/topic", c.object.id, params))}
-  ${nav_tab(_("Inspect"), h.fb_url("/inspect", c.object.id, params))}
-  ${nav_tab(_("On the Web"), h.fb_url("/web", c.object.id))}
-</acre:block>
-
-<acre:block def="nav_tabs_for_object()">
-  <acre:script>
-    var params = c.filters ? fh.global_filters(c.filters) : {};
-  </acre:script>
-  ${nav_tab(_("Inspect"), h.fb_url("/inspect", c.object.id, params))}
-</acre:block>
 
 <acre:block def="nav_tab(label, url)">
-  <acre:script>
-    var current = acre.request.url.indexOf(url) !== -1;
-  </acre:script>
-  <li>
-    <a acre:if="current" href="#" onclick="return false;" class="current"><span>${label}</span></a>
-    <a acre:else="" href="${url}"><span>${label}</span></a>
-  </li>
 </acre:block>
 

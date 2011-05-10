@@ -129,7 +129,7 @@
             <tr acre:for="d in c.domains">
               <th class="row-header odd" scope="row">
                 <acre:script>var name = i18n.display_name(d);</acre:script>
-                <a href="${h.fb_url('/schema', d.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
+                <a href="${h.fb_url(d.id, [['schema','']])}" title="${h.sprintf(_('View %s'), name)}">$name</a>
               </th>
               <td class="even">$d.id</td>
               <td class="odd numeric">${i18n_c.number(d.types)}</td>

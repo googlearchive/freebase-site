@@ -63,7 +63,7 @@
         </li>
         <li class="breadcrumb-item" acre:if="c.app.creator">
           <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url('/apps', c.app.creator.id)}">$c.app.creator.name</a>
+            <a href="${h.fb_url(c.app.creator.id, [['apps']])}">$c.app.creator.name</a>
           </span>
         </li>
         <li class="breadcrumb-item last" if="c.app">
@@ -83,7 +83,7 @@
         <div class="admin-toolbox">
           <span class="creation-timestamp" acre:if="c.app.modified_by">
             ${image.user_image_small(c.app.modified_by)}
-            Last modified by <a href="${h.fb_url('/apps', c.app.modified_by.id)}">$c.app.modified_by.name</a> 
+            Last modified by <a href="${h.fb_url(c.app.modified_by.id, [['apps']])}">$c.app.modified_by.name</a> 
             <time class="published" datetime="${c.app.modified}">${h.relative_date(acre.freebase.date_from_iso(c.app.modified))}</time>
           </span>
         </div>
@@ -113,7 +113,7 @@
                   return (author.id === c.user.id);
                 });
               </acre:script>
-              <a class="button" acre:if="is_author" href="${h.fb_url('/apps/admin', c.app.id)}">
+              <a class="button" acre:if="is_author" href="${h.fb_url(c.app.id)}">
                 Edit Settings
               </a>
             </acre:block>

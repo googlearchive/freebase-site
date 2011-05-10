@@ -117,22 +117,23 @@
       </h2>
       <div class="module-section" acre:if="c.prop_counts">
         <acre:script>
+          c.filters.inspect = "";
           var hide_counts = c.filters.as_of_time ||
             (c.filters.timestamp && c.filters.timestamp.length) ||
             (c.filters.creator && c.filters.creator.length);
         </acre:script>
-        ${filter_components.prop_counts_filter("/inspect" + c.id, c.filters, c.prop_counts, hide_counts)}
+        ${filter_components.prop_counts_filter(c.id, c.filters, c.prop_counts, hide_counts)}
       </div>
       <div class="module-section">
-        ${filter_components.as_of_time_filter("/inspect" + c.id, c.filters)}
+        ${filter_components.as_of_time_filter(c.id, c.filters)}
       </div>
     </div>
     <div class="module">
       <div class="module-section alt">
-        ${components.timestamp_filter("/inspect" + c.id, c.filters)}
+        ${components.timestamp_filter(c.id, c.filters)}
       </div>
       <div class="module-section alt">
-        ${components.creator_filter("/inspect" + c.id, c.filters)}
+        ${components.creator_filter(c.id, c.filters)}
       </div>
       <div class="module-section alt" id="limit-slider">
         <acre:script>
@@ -141,10 +142,10 @@
         <h3 class="module-section-title">
           <label for="">Show up to <strong class="current-limit">${limit}</strong> links</label>
         </h3>
-        ${filter_components.filter_form("/inspect" + c.id, c.filters, 'limit', filter_components.limit_slider, ['limit', limit])}     
+        ${filter_components.filter_form(c.id, c.filters, 'limit', filter_components.limit_slider, ['limit', limit])}     
       </div>
       <div class="module-section alt">
-        ${components.history_filter("/inspect" + c.id, c.filters)}
+        ${components.history_filter(c.id, c.filters)}
       </div>
     </div>
   </div>

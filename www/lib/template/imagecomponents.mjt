@@ -66,7 +66,7 @@
 <acre:block def="user_badges(badges, size)" if="badges && badges.length">
   <acre:block for="group in badges">
     <acre:script>
-      var url = h.fb_url("/inspect" + group.id);
+      var url = h.fb_url(group.id, [['inspect']]);
     </acre:script>
     <a class="user-badge-${size} badge${group.id.replace(/\//g, '-')}"
        title="This user is a ${group.name}"

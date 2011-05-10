@@ -42,6 +42,59 @@
       });                
     },
 
+    init_activity_chart: function(context) {
+      $(".activity-summary", context).each(function() {
+
+        // the DOM element we'll be attaching the graph to
+        var $chart = $(this);
+
+        // the activity data is stored as attribute
+        var weeks = JSON.parse($chart.attr("data-activity"));
+
+        var x = [], edits = [];
+        for (var i=1; i < weeks.length; i++) {
+          var edit = parseInt(weeks[i].v, 10);
+          edits.push([i, edit]);
+        }
+
+        var options = {
+          grid: {
+            show: true,
+            color: "#fff",
+            borderWidth: 0,
+            hoverable: true,
+            autoHighlight: true,
+            mouseActiveRadius: 3
+          },
+          legend: {show: false},
+          xaxis: {
+            tickFormatter: function() {return "";},
+            ticks: []
+          },
+          yaxis: {
+            tickFormatter: function() {return "";},
+            ticks: []
+          }
+        };
+
+        var series = {
+          data: edits,
+          lines: {
+            show: true
+          },
+          points: {
+            show: true,
+            radius: 2,
+            fill: true,
+            fillColor: "#f71"
+          },
+          shadowSize: 0,
+          color: "#f71"
+        };
+        $.plot($chart, [series], options);
+      });
+    },
+
     init_query_topics: function(context) {
       var $query_table = $("#queries");                 
       var query_url = 'http://api.freebase.com/api/trans/raw';
@@ -60,7 +113,7 @@
 
   function init() {
     data.init_data_tabs();
-    //data.init_query_topics();
+    data.init_activity_chart();
   };
 
   $(init);

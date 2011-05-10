@@ -48,7 +48,7 @@
       <ol>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url('/schema')}">${_("Schema")}</a>
+            <a href="${h.fb_url('/schema')}">${_("Data")}</a>
           </span>
         </li>
         <li if="c.domain" class="breadcrumb-item last">
@@ -62,87 +62,126 @@
 </acre:block>
 
 <acre:block def="page_content()">
-   <!-- Types -->
-   <div class="section">
-     <span class="metric-primary">${h.format_stat(c.domain.total_facts)}</span>
-     <span class="metric-secondary">${h.format_stat(c.domain.total_topics)}</span>
-     <p>Topics with images: $c.domain.topics_with_images%</p>
-     <p>Topics with articles: $c.domain.topics_with_articles%</p>
-     <p>Facts last week: ${i18n_c.number(c.domain.facts_last_week)}</p>
-     <ul acre:if="c.domain.top_contributors">
-       <li acre:for="i, user in c.domain.top_contributors" acre:if="i < 3">
-         ${image.user_image_small(user)}
-         $user.display_name
-         $user.percentage%
-         $user.v
-       </li>
-     </ul>
-     <div class="activity-summary" style="width:125px;" data-activity="${JSON.stringify(c.domain.activity_summary)}"></div>
-     <acre:script>
-       var title = "Explore " + i18n.display_name(c.object) + " topics";
-     </acre:script>
-     <h2 class="table-title">
-       ${h.template_sprintf(_("Explore %s topics"), i18n.display_name(c.object))}
-     </h2>
-     <ul class="tabs inline-tabset">
-       <li><a href="#queries">${_("by query")}</a></li>
-       <li><a href="#types">${_("by type")}</a></li>
-     </ul>
-     <div class="panes">
-       <table id="queries" cellspacing="0" class="table table-sortable">
-         <thead>
-           <tr>
-             <th class="column-header first">${_("Name")}</th>
-             <th class="column-header">${_("Topics")}</th>
-             <th class="column-header">${_("Created on")}</th>
-             <th class="column-header">${_("by")}</th>
-           </tr>
-         </thead>
-         <tbody>
-           <tr data-query=""
-               acre:for="query in c.domain['/freebase/domain_profile/featured_views']">
-             <th class="row-header">
-               <a href="${h.fb_url(query.id)}">$query.name</a>
-             </th>
-             <td class="even"></td>
-             <td>
-               ${i18n_c.datetime(query.timestamp, [["class","published"],["data-format","medium"]])}
-             </td>
-             <td class="even">
-               ${image.user_image_small(query.creator)}
-               <a href="${h.fb_url(query.creator.id, [['queries']])}">$query.creator.name</a> 
-             </td>
-           </tr>
-         </tbody>
-       </table>
-       <table id="types" cellspacing="0" class="table-sortable table">
-         <thead>
-           <tr>
-             <th class="column-header first">${_("Name")}</th>
-             <th class="column-header">${_("Topics")}</th>
-             <th class="column-header">${_("Created on")}</th>
-             <th class="column-header">${_("by")}</th>
-           </tr>
-         </thead>
-         <tbody>
-           <tr acre:for="type in c.domain.types">
-             <th class="row-header">
-               <a href="${h.fb_url(type.id, [['schema']])}">$type.name</a>
-             </th>
-             <td class="even">${type.instance_count}</td>
-             <td>
-               ${i18n_c.datetime(type.timestamp, [["class","published"],["data-format","medium"]])}
-             </td>
-             <td class="even">
-               ${image.user_image_small(type.creator)}
-               <a href="${h.fb_url(type.creator.id, [['schema']])}">$type.creator.name</a> 
-             </td>
-           </tr>
-         </tbody>
-       </table>
-     </div>
-   </div>
- </acre:block>
+<!-- Types -->
+<div class="section wrapper">
+  <div class="views">
+    <acre:script>
+    var title = "Explore " + i18n.display_name(c.object) + " topics";
+    </acre:script>
+    <div class="table-title-wrapper">
+      <h2 class="table-title">
+        ${h.template_sprintf(_("Explore %s topics"), i18n.display_name(c.object))}
+      </h2>
+      <ul class="tabs inline-tabset clear">
+        <li><a href="#queries">${_("by query")}</a></li>
+        <li><a href="#types">${_("by type")}</a></li>
+      </ul>
+    </div>
+    <div class="panes">
+      <table id="queries" cellspacing="0" class="table table-sortable">
+        <thead>
+          <tr>
+            <th class="column-header first">${_("Name")}</th>
+            <th class="column-header">${_("Created on")}</th>
+            <th class="column-header">${_("by")}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr acre:for="query in c.domain['/freebase/domain_profile/featured_views']">
+            <th class="row-header odd">
+              <a href="${h.fb_url(query.id)}">$query.name</a>
+            </th>
+            <td class="">
+              ${i18n_c.datetime(query.timestamp, [["class","published"],["data-format","medium"]])}
+            </td>
+            <td class="odd">
+              <a href="${h.fb_url(query.creator.id, [['queries']])}">$query.creator.name</a> 
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <table id="types" cellspacing="0" class="table-sortable table">
+        <thead>
+          <tr>
+            <th class="column-header first">${_("Name")}</th>
+            <th class="column-header">${_("Created on")}</th>
+            <th class="column-header">${_("by")}</th>
+            <th class="column-header numeric">${_("Topics")}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr acre:for="type in c.domain.types">
+            <th class="row-header odd">
+              <a href="${h.fb_url(type.id, [['schema']])}">$type.name</a>
+            </th>
+            <td class="">
+              ${i18n_c.datetime(type.timestamp, [["class","published"],["data-format","medium"]])}
+            </td>
+            <td class="odd">
+              <a href="${h.fb_url(type.creator.id, [['schema']])}">$type.creator.name</a> 
+            </td>
+            <td class="numeric">${i18n_c.number(type.instance_count)}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="column object-activity">
+  <h2 class="table-title">${_("Data Summary")}</h2>
+  <table cellspacing="0" class="table">
+    <thead>
+      <tr>
+        <th class="column-header first"><strong class="primary">Total Facts</strong> <span>daily writes</span> </th>
+        <th class="column-header"><strong class="secondary">Total Topics</strong></th>
+      </tr>
+    </thead>
+    <tbody class="data-statistics">
+      <tr>
+        <th class="row-header">
+          <span class="metric primary">${h.format_stat(c.domain.total_facts)}</span>
+          <span class="activity-summary" data-activity="${JSON.stringify(c.domain.activity_summary)}"></span>
+          <span class="metric-byline">
+            <strong class="primary">${h.format_stat(c.domain.facts_last_week)}</strong><br>
+            ${_("last week")}
+          </span>
+        </th>
+        <td>
+          <span class="metric secondary">
+            ${h.format_stat(c.domain.total_topics)}
+          </span>
+          <span class="metric-byline" style="margin-left:10px">
+            <strong class="secondary">${i18n_c.number(c.domain.topics_with_articles)}%</strong> ${_("with articles")}<br>
+            <strong class="secondary">${i18n_c.number(c.domain.topics_with_images)}%</strong> ${_("with images")}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+    <tbody acre:if="c.domain.top_contributors && c.domain.top_contributors.length"
+           class="data-statistics">
+      <tr class="secondary-header">
+        <th class="row-header" colspan="2">
+          <strong>Top Contributors this week</strong> 
+        </th>
+      </tr>
+      <tr>
+        <th class="row-header" colspan="2">
+          <ul acre:if="c.domain.top_contributors"
+            class="user-list">
+            <li acre:for="i, user in c.domain.top_contributors" 
+            acre:if="i < 6">
+            ${image.user_image_medium(user)}
+            <strong><a href="${h.fb_url('/', user.id)}">$user.display_name</a><br></strong>
+            <strong>${i18n_c.number(user.v)} ${_("facts")}</strong><br>
+            ${i18n_c.number(user.percentage)}%
+            </li>
+          </ul>
+        </th>
+      </tr>
+    </tbody>
+  </table>
+</div>
+     </acre:block>
 
 <acre:block def="footer_script()">
   <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>

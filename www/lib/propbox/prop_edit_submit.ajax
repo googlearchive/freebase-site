@@ -73,9 +73,10 @@ var SPEC = {
           .then(function(prop_structure) {
             // the new object value that we just inserted
             // which is the first operation != connect:"delete"
+            var clauses = result[p];
             var object_value;
-            for (var i=0,l=o.length; i<l; i++) {
-              var clause = o[i];
+            for (var i=0,l=clauses.length; i<l; i++) {
+              var clause = clauses[i];
               if (clause.connect !== "delete") {
                 var ect = prop_structure.expected_type.id;
                 if (h.is_literal_type(ect)) {
@@ -104,6 +105,8 @@ var SPEC = {
                return {
                  // <debug>
                  mqlwrite: q,
+                 result: result,
+                 object_value: object_value,
                  prop_structure: prop_structure,
                  prop_values: prop_values,
                  // </debug>

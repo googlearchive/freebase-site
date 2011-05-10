@@ -170,9 +170,6 @@
         inst.validate(true);
         ep.assert(!$this.is(".error"), "$.data-input is invalid");
         var data = $this.data("data");
-
-console.log("data_input data", data);
-
         ep.assert(data, "$.data-input has no data");
         if (mediator) {
           if (!new_values.length) {

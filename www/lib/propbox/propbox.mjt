@@ -471,6 +471,11 @@ propbox edit forms
         <acre:block for="subprop_structure in prop_structure.properties">
           <td>
             ${form_field(subprop_structure, null, lang)}
+            <acre:block if="!subprop_structure.unique">
+              <div class="magicbox-template">
+                ${form_field(subprop_structure, null, lang)}
+              </div>
+            </acre:block>
           </td>
         </acre:block>
       </tr>
@@ -605,9 +610,17 @@ propbox edit forms
               <acre:block for="subvalue in subprop_value">
                 ${form_field(subprop_structure, subvalue, lang)}
               </acre:block>
+              <acre:block if="!subprop_structure.unique">
+                ${form_field(subprop_structure, null, lang)}
+              </acre:block>
             </acre:block>
             <acre:block else="">
               ${form_field(subprop_structure, null, lang)}
+            </acre:block>
+            <acre:block if="!subprop_structure.unique">
+              <div class="magicbox-template">
+                ${form_field(subprop_structure, null, lang)}
+              </div>
             </acre:block>
           </td>
         </acre:block>

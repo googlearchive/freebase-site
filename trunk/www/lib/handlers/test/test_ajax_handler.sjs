@@ -76,6 +76,7 @@ test("to_ajax_response", function() {
   var resp = ajax_handler.to_ajax_response(new lib.ServiceResult({foo:"bar"}));
   check_response(resp);
 
+/**
   // with callback
   try {
     acre.request.params.callback = "foo";
@@ -86,6 +87,7 @@ test("to_ajax_response", function() {
     // remove callback param
     delete acre.request.params.callback;
   }
+**/
 
   function check_error(resp, jsonp) {
     ok(resp, "got to_ajax_response");
@@ -109,6 +111,7 @@ test("to_ajax_response", function() {
   resp = ajax_handler.to_ajax_response(new lib.ServiceError(null, null, "some message"));
   check_error(resp, null);
 
+/**
   // error - with callback
   try {
     acre.request.params.callback = "foo";
@@ -119,6 +122,7 @@ test("to_ajax_response", function() {
     // remove callback param
     delete acre.request.params.callback;
   }
+**/
 });
 
 test("require", function() {
@@ -159,6 +163,7 @@ test("include", function() {
   ok(resp, "got acre.include response");
   check_response(resp);
 
+/**
   try {
     // callback
     acre.request.params.callback = "foo";
@@ -171,6 +176,7 @@ test("include", function() {
     // remove callback param
     delete acre.request.params.callback;
   }
+**/
 });
 
 test("include error", function() {
@@ -197,6 +203,7 @@ test("include error", function() {
   ok(resp, "got acre.include response");
   check_response(resp);
 
+/**
   try {
     // callback
     acre.request.params.callback = "foo";
@@ -209,6 +216,7 @@ test("include error", function() {
     // remove callback param
     delete acre.request.params.callback;
   }
+**/
 });
 
 acre.test.report();

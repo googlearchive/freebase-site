@@ -90,6 +90,10 @@ function to_ajax_response(ret) {
   }
   resp.headers["content-type"] = 'text/javascript; charset=utf-8';
 
+  /**
+   * disable JSON/P support, if needed we can alwyas turn it back on later.
+   */
+  /**
   var callback = acre.request.params.callback;
   if (callback) {
     resp.body = [callback, "(", JSON.stringify(ret, null, 2), ");"].join("");
@@ -101,5 +105,11 @@ function to_ajax_response(ret) {
     }
     resp.body = JSON.stringify(ret, null, 2);
   }
+   */
+  var status_code = (typeof ret.status === "number") ? ret.status : parseInt(ret.status.split(' ')[0], 10);
+  if (status_code) {
+    resp.status = status_code;
+  }
+  resp.body = JSON.stringify(ret, null, 2);
   return resp;
 };

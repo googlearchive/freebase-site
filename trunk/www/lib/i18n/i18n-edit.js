@@ -112,6 +112,10 @@
           .bind("valid", function() {
             // enable submit button
             button_submit.removeAttr("disabled").removeClass("disabled");
+          })
+          .bind("empty", function() {
+            // enable submit button
+            button_submit.removeAttr("disabled").removeClass("disabled");
           });
         if (data_input.metadata().lang === form.ajax.data.lang) {
           row.addClass("preferred");

@@ -69,7 +69,7 @@
         .bind("focusout.data_input", function() {
           self.container.removeClass("focus");
         })
-        .bind("valid.data_input", function(e, data) {console.log("valid.data_input", data);
+        .bind("valid.data_input", function(e, data) {
           var mydata = {
             name: self.input.attr("name")
           };
@@ -154,8 +154,6 @@
         i.validate_input({validator: $.validate_input.uri});
       }
       else if (c.is(".boolean")) {
-console.log("boolean i", i);
-
         i.validate_boolean();
       }
       else if (c.is(".enumeration")) {  // /type/enumeration
@@ -371,7 +369,7 @@ console.log("boolean i", i);
       this.input.unbind(".validate_enumerated");
     },
 
-    validate: function(force) {console.log("enumerated.validate", this.input[0].selectedIndex,$(":selected", this.input).text(), this.input[0].value);
+    validate: function(force) {
       var select = this.input[0];
       if (select.selectedIndex > 0) {
         this.valid({

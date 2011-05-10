@@ -87,7 +87,7 @@
                 form.edit_row.trigger(form.event_prefix + "cancel");
               }
               else {
-                edit.reset_data_input(form);
+                edit.reset_data_inputs(form);
                 $(":input:visible:first", form.edit_row).focus();
                 $(".button-submit", form.submit_row).attr("disabled", "disabled").addClass("disabled");
                 $(".button-cancel", form.submit_row).text("Done");
@@ -102,7 +102,7 @@
     },
 
     init_prop_add_form: function(form) {
-      edit.init_data_input(form);
+      edit.init_data_inputs(form);
       $(":input:visible:first", form.edit_row).focus();
     },
 
@@ -221,7 +221,7 @@
     },
 
     init_value_edit_form: function(form) {
-      edit.init_data_input(form);
+      edit.init_data_inputs(form);
       $(":input:visible:first", form.edit_row).focus();
     },
 
@@ -372,62 +372,57 @@
      * Generic form utiltiies
      */
 
-    init_data_input: function(form) {
+    init_data_inputs: function(form) {
       $(".data-input", form.edit_row).each(function() {
-        var $this = $(this);
-        $this
-          .data_input({
-            lang: lang_id,
-            suggest: suggest_options
-          })
-          .bind("valid", function() {
-            form.edit_row.trigger(form.event_prefix + "valid");
-          })
-          .bind("invalid", function() {
-            form.edit_row.trigger(form.event_prefix + "invalid");
-          })
-          .bind("submit", function() {
-            form.edit_row.trigger(form.event_prefix + "submit");
-          })
-          .bind("cancel", function() {
-            form.edit_row.trigger(form.event_prefix + "cancel");
-          })
-          .bind("loading", function() {
-            $(this).addClass("loading");
-          })
-          .bind("loading_complete", function() {
-            $(this).removeClass("loading");
-          });
-
-        if ($this.is(".datetime")) {
-          i18n.ize_datetime_input($(":text", $this));
-        }
-        else if ($this.is(".int") || $this.is(".float")) {
-          i18n.ize_number_input($(":text", $this));
-        }
+        edit.init_data_input($(this), form);
       });
     },
 
-    validate_data_input: function(form) {
-      var valid = true;
-      $(".data-input", form.edit_row).each(function(i) {
-        var data_input = $(this);
-        if (data_input.is(".loading")) {
-          //console.log("data_input.is(.loading)");
-          valid = false;
-          return false;
-        }
-        var data_input_instance = data_input.data("$.data_input");
-        // force validation
-        data_input_instance.validate(true);
-        if (data_input.is(".error")) {
-          valid = edit.data_input_invalid(form, data_input);
-        }
-      });
-      return valid;
+    init_data_input: function(data_input, form) {
+      data_input
+        .data_input({
+          lang: lang_id,
+          suggest: suggest_options
+        })
+        .bind("valid", function() {
+          form.edit_row.trigger(form.event_prefix + "valid");
+          var form_field = data_input.parent(".form-field");
+          var magicbox_template = form_field.next(".magicbox-template");
+          if (magicbox_template.length) {
+            var div = $("<div>").html(magicbox_template.html());
+            var new_form_field = $(".form-field", div);
+            form_field.after(new_form_field);
+            edit.init_data_input($(".data-input", new_form_field), form);
+          }
+        })
+        .bind("empty", function() {
+          form.edit_row.trigger(form.event_prefix + "valid");
+        })
+        .bind("invalid", function() {
+          form.edit_row.trigger(form.event_prefix + "invalid");
+        })
+        .bind("submit", function() {
+          form.edit_row.trigger(form.event_prefix + "submit");
+        })
+        .bind("cancel", function() {
+          form.edit_row.trigger(form.event_prefix + "cancel");
+        })
+        .bind("loading", function() {
+          $(this).addClass("loading");
+        })
+        .bind("loading_complete", function() {
+          $(this).removeClass("loading");
+        });
+
+      if (data_input.is(".datetime")) {
+        i18n.ize_datetime_input($(":text", data_input));
+      }
+      else if (data_input.is(".int") || data_input.is(".float")) {
+        i18n.ize_number_input($(":text", data_input));
+      }
     },
 
-    reset_data_input: function(form) {
+    reset_data_inputs: function(form) {
       $(".data-input", form.edit_row).each(function() {
         var inst = $(this).data("$.data_input").reset();
       });

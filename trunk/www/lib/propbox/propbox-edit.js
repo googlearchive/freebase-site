@@ -58,8 +58,10 @@
         data: submit_data,
         dataType: "json",
         success: function(data, status, xhr) {
+          if (data.code !== "/api/status/ok") {
+            return edit.ajax_error(xhr, null, prop_section);
+          }
           var html = $(data.result.html).hide();
-
           var event_prefix = "propbox.edit.prop_add.";
           var form = {
             mode: "add",
@@ -73,6 +75,8 @@
             submit: edit.submit_prop_add_form,
 
             prop_section: prop_section,
+
+            msg_row: $(".row-msg", html),
             edit_row: $(".edit-row", html),
             submit_row: $(".edit-row-submit", html),
 
@@ -95,8 +99,7 @@
             });
         },
         error: function(xhr) {
-          // TODO: handle error
-          console.error("prop_add_begin", xhr);
+          edit.ajax_error(xhr, null, prop_section);
         }
       });
     },
@@ -113,7 +116,7 @@
         submit_data.o = JSON.stringify(o);
       }
       catch(ex) {
-        edit.form_error(form, ex);
+        edit.form_error(form, "" + ex);
         return;
       }
       $.ajax({
@@ -172,6 +175,9 @@
         data: submit_data,
         dataType: "json",
         success: function(data, status, xhr) {
+          if (data.code !== "/api/status/ok") {
+            return edit.ajax_error(xhr, null, prop_section, prop_row);
+          }
           var html = $(data.result.html).hide();
           var event_prefix = "propbox.edit.value_edit.";
           var form = {
@@ -187,6 +193,8 @@
 
             prop_section: prop_section,
             prop_row: prop_row,
+
+            msg_row: $(".row-msg", html),
             edit_row: $(".edit-row", html),
             submit_row: $(".edit-row-submit", html),
 
@@ -214,8 +222,7 @@
             });
         },
         error: function(xhr) {
-          // TODO: handle error
-          console.error("value_edit_begin", xhr);
+          edit.ajax_error(xhr, null, prop_section, prop_row);
         }
       });
     },
@@ -294,9 +301,7 @@
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code !== "/api/status/ok") {
-            // TODO: handle error
-            console.error("valued_delete_begin", xhr);
-            return;
+            return edit.ajax_error(xhr, null, prop_section, prop_row);
           }
           var new_row = $(data.result.html);
           prop_row.before(new_row);
@@ -309,8 +314,7 @@
           }
         },
         error: function(xhr) {
-          // TODO: handle error
-          console.error("valued_delete_begin", xhr);
+          edit.ajax_error(xhr, null, prop_section, prop_row);
         }
       });
     },
@@ -345,17 +349,14 @@
         dataType: "json",
         success: function(data, status, xhr) {
           if (data.code !== "/api/status/ok") {
-            // TODO: handle error
-            console.error("valued_delete_undo", xhr);
-            return;
+            return edit.ajax_error(xhr, null, prop_section, prop_row);
           }
           prop_row.show();
           msg_row.remove();
           // TODO: update property menu (edit vs add for unique)
         },
         error: function(xhr) {
-          // TODO: handle error
-          console.error("valued_delete_undo", xhr);
+          edit.ajax_error(xhr, null, prop_section, prop_row);
         }
       });
 
@@ -432,11 +433,12 @@
       if (form.mode === "add") {
         var ls = $(">.data-section", form.prop_section);
         $("> .data-table > tbody > .empty-row, > .data-list > .empty-row", ls).hide();
-        $("> .data-table > tbody, > .data-list", ls).append(form.edit_row).append(form.submit_row);
+        $("> .data-table > tbody, > .data-list", ls).append(form.msg_row).append(form.edit_row).append(form.submit_row);
       }
       else if (form.mode === "edit") {
         form.prop_row.hide();
-        form.prop_row.after(form.edit_row);
+        form.prop_row.after(form.msg_row);
+        form.msg_row.after(form.edit_row);
         form.edit_row.after(form.submit_row);
       }
 
@@ -488,6 +490,7 @@
     },
 
     cancel: function(form) {
+      form.msg_row.remove();
       form.edit_row.remove();
       form.submit_row.remove();
       form.prop_section.removeClass("editing");
@@ -530,51 +533,83 @@
     },
 
     form_message: function(form, msg, type) {
+      form.msg_row.find(".close-msg + span").text(msg);
+      form.msg_row.attr("class", "row-msg");
+      if (type) {
+        form.msg_row.addClass("row-msg-" + type);
+      }
+      form.msg_row.css("visibility", "visible");
+    },
+
+    clear_form_message: function(form) {
+      form.msg_row.css("visibility", "hidden").find(".close-msg + span").html("&nbsp;");
+    },
+
+
+    /**
+     * Usage:
+     *   ajax_error(xhr, form)
+     *
+     *     or
+     *
+     *   ajax_error(xhr, null, prop_section, prop_row)
+     */
+    ajax_error: function(xhr, form, prop_section, prop_row) {
+      var msg = xhr.responseText;
+      if (form) {
+        edit.form_error(form, msg);
+      }
+      else {
+        var table = $(".data-table", prop_section);
+        var row;
+        if (table.length) {
+          row = edit.row_msg(msg, "error", "tr", $(">thead>tr:first>th", table).length);
+        }
+        else {
+          row = edit.row_msg(msg, "error", "li");
+        }
+        if (prop_row) {
+          prop_row.before(row);
+          if (prop_row.is(".edit-row")) {
+            prop_row.removeClass("loading");
+          }
+          else {
+            prop_section.removeClass("editing");
+          }
+        }
+        else {
+          if (table.length) {
+            $(">tbody", table).append(row);
+          }
+          else {
+            $(".data-list", prop_section).append(row);
+          }
+          prop_section.removeClass("editing");
+        }
+      }
+    },
+
+    row_msg: function(msg, msg_type, row_tag, colspan) {
       var close = $('<a class="close-msg" href="#">x</a>').click(function(e) {
         $(this).parents(".row-msg:first").remove();
         return false;
       });
       var span =  $("<span>").text(msg);
-
-      var row_msg;
-      if (form.edit_row.is("tr")) {
-        row_msg = $('<li class="row-msg">').append(close).append(span);
+      var row = $('<' + row_tag + ' class="row-msg">');
+      if (row_tag === "tr") {
+        var td = $('<td>').append(close).append(span);
+        if (colspan) {
+          td.attr("colspan", colspan);
+        }
+        row.append(td);
       }
       else {
-        var td = $('<td>').append(close).append(span);
-        td.attr("colspan", $("> td", form.edit_row).length);
-        row_msg = $('<tr class="row-msg">').append(td);
+        row.append(close).append(span);
       }
-      if (type) {
-        row_msg.addClass("row-msg-" + type);
+      if (msg_type) {
+        row.addClass("row-msg-" + msg_type);
       }
-
-      // prepend row_msg to form.edit-row
-      form.edit_row.before(row_msg);
-
-      return row_msg;
-    },
-
-    clear_form_message: function(form) {
-      form.edit_row.prevAll(".row-msg").remove();
-    },
-
-    ajax_error: function(xhr, form) {
-      var msg;
-      try {
-        msg = JSON.parse(xhr.responseText);
-        if (msg.messages && msg.messages.length) {
-          msg = JSON.stringify(msg.messages[0]); // display the first message
-        }
-      }
-      catch (e) {
-        // ignore
-      }
-      if (!msg) {
-        msg = xhr.responseText;
-      }
-      edit.form_error(form, msg);
-      form.edit_row.removeClass("loading");
+      return row;
     }
 
   };

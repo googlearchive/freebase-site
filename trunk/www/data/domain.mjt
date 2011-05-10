@@ -102,7 +102,7 @@
            <tr data-query=""
                acre:for="query in c.domain['/freebase/domain_profile/featured_views']">
              <th class="row-header">
-               <a href="${h.fb_url('/query', query.id)}">$query.name</a>
+               <a href="${h.fb_url(query.id)}">$query.name</a>
              </th>
              <td class="even"></td>
              <td>
@@ -110,7 +110,7 @@
              </td>
              <td class="even">
                ${image.user_image_small(query.creator)}
-               <a href="${h.fb_url(query.creator.id)}">$query.creator.name</a> 
+               <a href="${h.fb_url(query.creator.id, [['queries']])}">$query.creator.name</a> 
              </td>
            </tr>
          </tbody>
@@ -127,7 +127,7 @@
          <tbody>
            <tr acre:for="type in c.domain.types">
              <th class="row-header">
-               <a href="${h.fb_url('', type.id)}">$type.name</a>
+               <a href="${h.fb_url(type.id, [['schema']])}">$type.name</a>
              </th>
              <td class="even">${type.instance_count}</td>
              <td>
@@ -135,7 +135,7 @@
              </td>
              <td class="even">
                ${image.user_image_small(type.creator)}
-               <a href="${h.fb_url(type.creator.id)}">$type.creator.name</a> 
+               <a href="${h.fb_url(type.creator.id, [['schema']])}">$type.creator.name</a> 
              </td>
            </tr>
          </tbody>

@@ -50,6 +50,7 @@ function object(id, options) {
       topic.alias = topic["/common/topic/alias"].sort(text_lang_sort);
       topic.image = topic["/common/topic/image"];
       topic.article = topic["/common/topic/article"];
+      topic.replaced_by = topic["/dataworld/gardening_hint/replaced_by"];
 
       var promises = [];
       promises.push(
@@ -125,7 +126,12 @@ function mql(id) {
       name: i18n.mql.query.name()
     },
     permission: null,
-    timestamp: null
+    timestamp: null,
+    "/dataworld/gardening_hint/replaced_by": {
+      id: null,
+      mid: null,
+      optional: true
+    }
   };
 };
 

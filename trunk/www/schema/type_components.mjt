@@ -42,7 +42,7 @@
 <acre:block def="type_property_row(prop, type_id)">
   <tr class="hoverable">
     <th scope="row" class="row-header odd">
-      <a href="${h.fb_url('/schema', prop.id)}">${i18n.display_name(prop)}</a>
+      <a href="${h.fb_url(prop.id, [['schema']])}">${i18n.display_name(prop)}</a>
       <a href="javascript:void(0);" class="row-menu-trigger">+</a>
       <ul class="row-menu tooltip">
         <li class="row-menu-item edit">
@@ -51,7 +51,7 @@
         <li class="row-menu-item edit">
           <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.delete_property, ['${prop.id}'], this);"><span class="delete-icon">${_('Delete property')}</span></a>
         </li>
-        <li class="row-menu-item"><a href="${h.fb_url('/inspect', prop.id)}">${_('Inspect Property')}</a></li>
+        <li class="row-menu-item"><a href="${h.fb_url(prop.id, [['inspect']])}">${_('Inspect Property')}</a></li>
         <li class="row-menu-item last">
           <a href="${sh.build_query_url(type_id, prop.id)}">${_('Build query')}</a>
         </li>
@@ -60,7 +60,7 @@
     <td class="even">$prop.id</td>
     <td class="odd">
       <acre:block if="prop.expected_type">
-        <a href="${h.fb_url('/schema', prop.expected_type.id)}">
+        <a href="${h.fb_url(prop.expected_type.id, [['schema']])}">
           $prop.expected_type.id
         </a>
         <acre:script>
@@ -128,13 +128,13 @@
 <acre:block def="enumerated_topic_row(topic, type_id)">
   <tr>
     <th class="row-header first odd">
-      <a href="${h.fb_url('/topic'+topic.id)}" title="${topic.id}">${i18n.display_name(topic)}</a>
+      <a href="${h.fb_url(topic.id)}" title="${topic.id}">${i18n.display_name(topic)}</a>
       <a href="javascript:void(0);" class="row-menu-trigger">+</a>
       <ul class="row-menu tooltip">
         <li class="row-menu-item edit">
           <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.delete_instance, ['${topic.id}','${type_id}'], this);"><span class="delete-icon">${_('Remove topic')}</span></a>
         </li>
-       <li class="row-menu-item"><a href="${h.fb_url('/topic' + topic.id)}" title="${topic.id}">${_('View topic')}/a></li>
+       <li class="row-menu-item"><a href="${h.fb_url(topic.id)}" title="${topic.id}">${_('View topic')}/a></li>
      </ul>
     </th>
     <td class="even">
@@ -154,7 +154,7 @@
          data-url="${h.ajax_url('/get_type_properties.ajax', [['id',included_type.id]])}">
         <a href="#" class="edit" onclick="return freebase.dispatch(event, freebase.schema.type.delete_included_type, ['${type_id}', '${included_type.id}'], this);"><span>${_('delete')}</span></a>
         <span class="tbody-header-title">${i18n.display_name(included_type)}</span>
-        <a href="${h.fb_url('/schema', included_type.id)}"><span class="key">$included_type.id</span></a>
+        <a href="${h.fb_url(included_type.id, [['schema']])}"><span class="key">$included_type.id</span></a>
       </th>
     </tr>
   </thead>
@@ -181,7 +181,7 @@
     <tr acre:for="prop in props" class="hoverable">
       <td class="odd">
         <div>
-          <a href="${h.fb_url('/schema', prop.schema.id)}">${i18n.display_name(prop.schema)}</a>
+          <a href="${h.fb_url(prop.schema.id, [['schema']])}">${i18n.display_name(prop.schema)}</a>
           <acre:script>
             var other_property = prop.master_property || prop.reverse_property;
           </acre:script>
@@ -199,7 +199,7 @@
             <li acre:if="!other_property" class="row-menu-item edit">
               <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.reverse_property, ['${prop.expected_type}','${prop.id}'], this);"><span class="create-return-link-icon">${_('Create return link')}</span></a>
             </li>
-            <li class="row-menu-item"><a href="${h.fb_url('/schema', prop.schema.id)}">${_('View type schema')}</a></li>
+            <li class="row-menu-item"><a href="${h.fb_url(prop.schema.id, [['schema']])}">${_('View type schema')}</a></li>
             <li class="row-menu-item last"><a href="#">${_('Build query')}</a></li>
           </ul>
         </div>
@@ -207,13 +207,13 @@
       </td>
       <td class="even">
         <div>
-          <a href="${h.fb_url('/schema', prop.id)}">${i18n.display_name(prop)}</a>
+          <a href="${h.fb_url(prop.id, [['schema']])}">${i18n.display_name(prop)}</a>
           <acre:script>
             var other_property = prop.master_property || prop.reverse_property;
           </acre:script>
           <a href="javascript:void(0);" class="row-menu-trigger">+</a>
           <ul class="row-menu tooltip">
-            <li class="row-menu-item"><a href="${h.fb_url('/schema', prop.id)}">${_('View property details')}</a></li>
+            <li class="row-menu-item"><a href="${h.fb_url(prop.id, [['schema']])}">${_('View property details')}</a></li>
             <li class="row-menu-item last"><a href="#">${_('Build query')}</a></li>
           </ul>
         </div>
@@ -241,12 +241,12 @@
     <tr class="${global ? 'global' : 'local'} ${prop.inherited ? 'inherited' : ''}">
       <td nowrap="" class="c1 in_type ${prop.schema.mediator ? 'mediator' : 'truetype'}">
         <acre:block if="!same || i == 0">
-          <a href="${h.fb_url('/schema', prop.id)}" title="${prop.schema.id} ${prop.schema.mediator ? '| mediator' : ''}">${i18n.display_name(prop.schema)}</a>
+          <a href="${h.fb_url(prop.id, [['schema']])}" title="${prop.schema.id} ${prop.schema.mediator ? '| mediator' : ''}">${i18n.display_name(prop.schema)}</a>
         </acre:block>
       </td>
       <td class="${same ? '' : 'c2'} spacer"></td>
       <td nowrap="" class="in_prop ${(i == 0) ? 'c2' : same ? 'c4' : 'c5'} ${prop.master_property == null ? 'master' : ''} ${prop.unique ? 'unique' : ''}">
-        <a href="${h.fb_url('/schema', prop.id)}" title="${prop.id} ${prop.master_property == null ? '| master' : ''} ${prop.unique ? '| unique' : ''}">${i18n.display_name(prop)}</a>
+        <a href="${h.fb_url(prop.id, [['schema']])}" title="${prop.id} ${prop.master_property == null ? '| master' : ''} ${prop.unique ? '| unique' : ''}">${i18n.display_name(prop)}</a>
       </td>
     </tr>
   </acre:block>
@@ -275,7 +275,7 @@
     </tr>
     <tr class="${sh.isGlobal(prop.id) ? 'global' : 'local'} ${prop.inherited ? 'inherited' : ''}">
       <td nowrap="" class="out_prop ${(i == 0) ? 'c2' : same ? 'c4' : 'c6' } ${prop.master_property == null ? 'master' : ''} ${prop.unique ? 'unique' : ''}">
-        <a href="${h.fb_url('/schema', prop.id)}">${i18n.display_name(prop)}</a>
+        <a href="${h.fb_url(prop.id, [['schema']])}">${i18n.display_name(prop)}</a>
       </td>
       <td class="${same && i != 0 ? '' : 'c3'} spacer"></td>
       <td acre:if="prop.expected_type" nowrap="" class="c1 out_type ${prop.expected_type.mediator ? 'mediator' : 'truetype'} ${sh.isTypeType(prop.expected_type.id) ? 'typetype' : ''}">
@@ -311,12 +311,12 @@
     </tr>
     <tr class="${sh.isGlobal(prop.id) ? 'global' : 'local'} ${prop.inherited ? 'inherited' : ''}">
       <td nowrap="" class="out_prop ${(i == 0) ? 'c2' : same ? 'c4' : 'c6' } ${prop.master_property == null ? 'master' : ''} ${prop.unique ? 'unique' : ''}">
-        <a href="${h.fb_url('/schema', prop.id)}">${i18n.display_name(prop)}</a>
+        <a href="${h.fb_url(prop.id, [['schema']])}">${i18n.display_name(prop)}</a>
       </td>
       <td class="${same && i != 0 ? '' : 'c3'} spacer"></td>
       <td acre:if="prop.expected_type" nowrap="" class="c1 out_type ${prop.expected_type.mediator ? 'mediator' : 'truetype'} ${sh.isTypeType(prop.expected_type.id) ? 'typetype' : ''}">
         <acre:block if="!same || i == 0">
-          <a href="${h.fb_url('/schema', prop.id)}" title="${prop.expected_type.id} ${prop.expected_type.mediator ? '| mediator' : ''}">${i18n.display_name(prop.expected_type)}</a>
+          <a href="${h.fb_url(prop.id, [['schema']])}" title="${prop.expected_type.id} ${prop.expected_type.mediator ? '| mediator' : ''}">${i18n.display_name(prop.expected_type)}</a>
         </acre:block>
       </td>
       <td acre:else="" class="c1 out_type">&nbsp;</td>

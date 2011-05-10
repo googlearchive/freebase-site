@@ -62,7 +62,7 @@ var SPEC = h.extend({}, edit_type_submit.SPEC, {
     })
     .then(function(updated_id) {
        return {
-        location: h.fb_url("/schema/type", updated_id)
+        location: h.fb_url(updated_id, [['schema']])
       };
     });
   }

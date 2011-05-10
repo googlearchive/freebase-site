@@ -29,9 +29,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var object = this.obj;  // from lib/routing/object.sjs
+
 var i18n = acre.require("lib/i18n/i18n.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
-var object_query = acre.require("lib/queries/object.sjs").object;
 var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
 
@@ -55,7 +56,7 @@ var SPEC = {
 
   run: function(id) {
     return {
-      object: object_query(id),
+      object: object,
       owners: domain_owners(id),
       watchers: domain_watchers(id)
     };

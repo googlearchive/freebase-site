@@ -68,7 +68,7 @@ var SPEC = {
     })
     .then(function(updated_id) {
       return  {
-        location: h.fb_url("/schema", updated_id)
+        location: h.fb_url(updated_id, [['schema']])
       };
     });
   }

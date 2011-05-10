@@ -31,8 +31,9 @@
 
 // TODO: typediagram
 
+var object = this.obj;  // from lib/routing/object.sjs
+
 var validators = acre.require("lib/validator/validators.sjs");
-var object_query = acre.require("lib/queries/object.sjs").object;
 var queries = acre.require("queries");
 
 var SPEC = {
@@ -54,7 +55,7 @@ var SPEC = {
 
   run: function(id) {
     return {
-      object: object_query(id),
+      object: object,
       id: id,
       property: queries.property(id)
     };

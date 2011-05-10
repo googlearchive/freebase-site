@@ -92,7 +92,7 @@ function parse_params(params) {
   if (h.isArray(params)) {
     var dict = {};
     params.forEach(function([name,value]) {
-      dict[name] = value;
+      dict[name] = value || "";
     });
     return dict;
   }

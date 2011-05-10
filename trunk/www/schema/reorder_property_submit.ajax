@@ -60,7 +60,7 @@ var SPEC = {
     return freebase.mqlwrite(q)
       .then(function() {
         return {
-          location: h.fb_url("/schema", id)
+          location: h.fb_url(id, [['schema']])
         };
       });
   }

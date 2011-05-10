@@ -362,7 +362,7 @@
       </span>
       <ul class="row-menu submenu">  
         <li class="row-menu-item"><a href="${h.fb_url(topic.id, [['type',type_structure.id]])}">${FILTER_TYPE}</a></li>
-        <li class="row-menu-item"><a href="${h.fb_url('/schema', type_structure.id)}">${VIEW_SCHEMA}</a></li>
+        <li class="row-menu-item"><a href="${h.fb_url(type_structure.id, [['schema']])}">${VIEW_SCHEMA}</a></li>
       </ul>
     </li>
   </ul>  
@@ -385,7 +385,7 @@
           <a href="#" onclick="return i18n.text_edit(this, '${h.ajax_url('lib/i18n')}', '${topic.id}', '${prop_structure.id}', '${lang}')">${EDIT_LOCALIZED_TEXT}</a>
         </li>
         <li class="row-menu-item"><a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}">${FILTER_PROPERTY}</a></li>
-        <li class="row-menu-item"><a href="${h.fb_url('/schema', prop_structure.id)}">${VIEW_SCHEMA}</a></li>
+        <li class="row-menu-item"><a href="${h.fb_url(prop_structure.id, [['schema']])}">${VIEW_SCHEMA}</a></li>
       </ul>
     </li>
   </ul>

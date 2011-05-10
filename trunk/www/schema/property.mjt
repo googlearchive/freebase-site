@@ -56,12 +56,12 @@
         </li>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url('/schema', c.property.schema.domain.id)}">${i18n.display_name(c.property.schema.domain)}</a>
+            <a href="${h.fb_url(c.property.schema.domain.id, [['schema']])}">${i18n.display_name(c.property.schema.domain)}</a>
           </span>
         </li>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url('/schema', c.property.schema.id)}">${i18n.display_name(c.property.schema)}</a>
+            <a href="${h.fb_url(c.property.schema.id, [['schema']])}">${i18n.display_name(c.property.schema)}</a>
           </span>
         </li>
         <li class="breadcrumb-item last">
@@ -73,7 +73,7 @@
             <strong>${h.sprintf(_("Go to another %s property"), i18n.display_name(c.property.schema))}</strong>
             <ul>
               <li acre:for="s in c.property.schema.properties">
-                <a href="${h.fb_url('/schema', s.id)}" title="${_('Go to type')}">${i18n.display_name(s)}</a>
+                <a href="${h.fb_url(s.id, [['schema']])}" title="${_('Go to type')}">${i18n.display_name(s)}</a>
               </li>
             </ul>
           </div>          
@@ -88,7 +88,7 @@
 </acre:block>
 
 <acre:block def="keys()">
-  <span class="key"><strong>${_("schema")}:</strong> <a href="${h.fb_url('/schema', c.property.schema.id)}">${c.property.schema.id}</a></span>
+  <span class="key"><strong>${_("schema")}:</strong> <a href="${h.fb_url(c.property.schema.id, [['schema']])}">${c.property.schema.id}</a></span>
 </acre:block>
 
 <acre:block def="page_content()">
@@ -102,7 +102,7 @@
     <tbody>
       <tr>
         <td class="subject" rowspan="2">
-          <a href="${h.fb_url('/schema', c.property.schema.id)}">${i18n.display_name(c.property.schema)}</a>
+          <a href="${h.fb_url(c.property.schema.id, [['schema']])}">${i18n.display_name(c.property.schema)}</a>
         </td>
         <td class="predicate">
           <span class="current-prop">
@@ -112,7 +112,7 @@
           </span>
         </td> 
         <td class="object" rowspan="2">
-          <a href="${h.fb_url('/schema', c.property.expected_type.id)}">
+          <a href="${h.fb_url(c.property.expected_type.id, [['schema']])}">
             ${c.property.expected_type.id}
           </a>
           <acre:block if="c.property.expected_type.mediator">
@@ -129,11 +129,11 @@
       </tr>
       <tr>
         <td acre:if="c.property.reverse_property" class="rev_predicate">
-          <a href="${h.fb_url('/schema', c.property.reverse_property.id)}">${i18n.display_name(c.property.reverse_property)}</a>     
+          <a href="${h.fb_url(c.property.reverse_property.id, [['schema']])}">${i18n.display_name(c.property.reverse_property)}</a>     
           <span class="attribute" acre:if="c.property.reverse_property.unique">${_("unique")}</span> 
         </td>
         <td acre:elif="c.property.master_property" class="rev_predicate">
-          <a href="${h.fb_url('/schema', c.property.master_property.id)}">${i18n.display_name(c.property.master_property)}</a>  
+          <a href="${h.fb_url(c.property.master_property.id, [['schema']])}">${i18n.display_name(c.property.master_property)}</a>  
           <span class="attribute">${_("master")}</span>    
           <span class="attribute" acre:if="c.property.master_property.unique">${_("unique")}</span>
         </td>
@@ -151,7 +151,7 @@
     </thead>
     <tbody>
       <td class="numeric odd">
-        <a href="${h.fb_url('/schema', c.property.expected_type.id)}">$c.property.expected_type.id</a>
+        <a href="${h.fb_url(c.property.expected_type.id, [['schema']])}">$c.property.expected_type.id</a>
       </td>
       <td class="numeric even">
         <span acre:if="c.property.disambiguator === true">${_("True")}</span>
@@ -166,7 +166,7 @@
         <span acre:else="">${_("False")}</span>
       </td>
       <td class="numeric odd" acre:if="c.property_reverse">
-        <a href="${h.fb_url('/schema', c.property.reverse_property.id)}">${i18n.display_name(c.property.reverse_property)}</a>
+        <a href="${h.fb_url(c.property.reverse_property.id, [['schema']])}">${i18n.display_name(c.property.reverse_property)}</a>
       </td>          
     </tbody>
   </table>

@@ -29,9 +29,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var object = this.obj;  // from lib/routing/object.sjs
+
 var h = acre.require("lib/helper/helpers.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
-var object_query = acre.require("lib/queries/object.sjs").object;
 var filters = acre.require("lib/filter/filters.sjs");
 var filter_queries = acre.require("lib/filter/queries.sjs");
 var th = acre.require("helpers.sjs");
@@ -96,7 +97,7 @@ var SPEC = {
   run: function(id, f) {console.log("filters", f);
     return {
       id: id,
-      object: object_query(id),
+      object: object,
 
       // filter components
       filters: f,

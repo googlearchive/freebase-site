@@ -39,7 +39,7 @@ function route(rules, scope) {
     }
   }
 
-  ["host", "prefix", "id"].forEach(function(name) {
+  ["host", "prefix", "object"].forEach(function(name) {
     var router_file = acre.require("routing/" + name);
     var router_class;
     if (router_file.router) {

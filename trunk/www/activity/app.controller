@@ -29,10 +29,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var object = this.obj;  // from lib/routing/object.sjs
+
 var h = acre.require("lib/helper/helpers.sjs");
 var i18n = acre.require("lib/i18n/i18n.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
-var object_query = acre.require("lib/queries/object.sjs");
 var apis = acre.require("lib/promise/apis.sjs");
 
 var SPEC = {
@@ -56,7 +57,7 @@ var SPEC = {
   run: function(id) {
     var promises = {
       users: app_writes(id),
-      object: object_query.object(id)
+      object: object
     };
     return apis.deferred.all(promises);
   }

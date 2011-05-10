@@ -61,7 +61,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         </li>
         <li class="breadcrumb-item" acre:if="c.app.creator">
           <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url('/apps', c.app.creator.id)}">$c.app.creator.name</a>
+            <a href="${h.fb_url(c.app.creator.id, [['apps']])}">$c.app.creator.name</a>
           </span>
         </li>
         <li class="breadcrumb-item last" if="c.app">
@@ -127,7 +127,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         <div class="editapp-actions">
           <input class="button button-primary" type="submit" name="title" value="Update this App"/>
-          <a class="button" href="${h.fb_url('/apps/app', c.app.id)}">Cancel</a>
+          <a class="button" href="${h.fb_url(c.app.id)}">Cancel</a>
         </div>
       </form>
 

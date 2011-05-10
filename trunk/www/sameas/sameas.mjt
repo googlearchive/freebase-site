@@ -47,18 +47,6 @@
   ${_('On the Web')} - ${i18n.display_name(c.object)}
 </acre:block>
 
-<acre:block def="nav_tabs(nav_tab)">
-  <li>
-    ${nav_tab(false, _("View"), h.fb_url("/topic", c.object.id))}
-  </li>
-  <li>
-    ${nav_tab(false, _("Inspect"), h.fb_url("/inspect", c.object.id))}
-  </li>
-  <li>
-    ${nav_tab(true, _("On the Web"))}
-  </li>    
-</acre:block>
-
 <acre:block def="nav_utilities()">
   <li>
     <acre:script>

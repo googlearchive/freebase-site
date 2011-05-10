@@ -76,7 +76,7 @@
 
     $domain_input.suggest(domain_suggest_options)
       .bind("fb-select", function(e, data){
-        window.location.href = fb.h.fb_url("/schema", data.id);
+        window.location.href = fb.h.fb_url(data.id, [['schema']]);
       })
       .focus(function() {
         this.select();
@@ -100,7 +100,7 @@
 
     $type_input.suggest(type_suggest_options)
       .bind("fb-select", function(e, data){
-        window.location.href = fb.h.fb_url("/schema", data.id);
+        window.location.href = fb.h.fb_url(data.id, [['schema']]);
       })
       .focus(function() {
         this.select();
@@ -124,7 +124,7 @@
 
     $property_input.suggest(property_suggest_options)
       .bind("fb-select", function(e, data){
-        window.location.href = fb.h.fb_url("/schema", data.id);
+        window.location.href = fb.h.fb_url(data.id, [['schema']]);
       })
       .focus(function() {
         this.select();

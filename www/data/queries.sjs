@@ -84,7 +84,7 @@ function domain(id) {
       var promises = [];
 
       // contruct path for BDB file
-      var activity_id = "summary_/guid/" + domain.guid.slice(1);
+      var activity_id = "/guid/" + domain.guid.slice(1);
 
       // get BDB summary for domain
       promises.push(freebase.get_static("activity", activity_id)
@@ -92,17 +92,75 @@ function domain(id) {
           return activity || {};
         })
 
-        // with domain activity, iterate through types
-        // and get instance count
-        // and reattach to domain object
+        // With domain activity, do the following:
+        // 1. Add metadata activity to domain object
+        //    - total facts
+        //    - total facts last week
+        //    - total topics
+        //    - topics w/ images
+        //    - topics w/ articles
+        //    - weekly activity summary
+        // 2. Iterate through types and attach instance count
+        // 3. Add Top Contributors to domain object
+
         .then(function(activity) {
-          if (activity.types) {
-            domain.types.forEach(function(type) {
-              type.instance_count = activity.types[type.id] || 0;
-            });
+
+          // facts
+          domain.total_facts = activity.total.edits || 0;
+          domain.facts_last_week = activity.week.total_edits || 0;
+
+          //topics
+          domain.total_topics = activity.total['new'] || 0;
+          domain.topics_with_images = Math.round((activity.has_image / domain.total_topics) * 100);
+          domain.topics_with_articles = Math.round((activity.has_article / domain.total_topics) * 100);
+
+          // daily summary for graph output
+          // we only want the last 10 or so values
+          domain.activity_summary = activity.edits;
+          if (domain.activity_summary.length > 10) {
+            domain.activity_summary = domain.activity_summary.slice(-11, -1);
           }
+
+          // Attach top 5 contributors to domain object
+          // For now, we do a simple string filter to
+          // weed out bots. However, this should be 
+          // added to the activity service
+
+          var users = [];
+          activity.week.users.forEach(function(user) {
+            if (user.id.indexOf("_bot") === -1) {
+              user.display_name = user.id.split("/")[2];
+              user.percentage = Math.round(user.v / domain.facts_last_week * 100);
+              users.push(user);
+            }
+          });
+
+          domain.top_contributors = users;
+
           return activity;
       }));
+
+      // Attach instance_count to domain.type[i]
+      // We have to make a separate BDB call because the "full"
+      // file does not include instance counts for mediators.
+      // this should be fixed in BDB updates.
+
+      var summary_id = "summary_/guid/" + domain.guid.slice(1);
+      promises.push(freebase.get_static("activity", summary_id) 
+        .then(function(summary) {
+          return summary || {};
+        })
+
+        .then(function(summary) {
+
+          if (summary.types) {
+            domain.types.forEach(function(type) {
+              type.instance_count = summary.types[type.id] || '-';
+            });
+          }
+
+          return summary;
+        }));
 
       return deferred.all(promises)
         .then(function() {

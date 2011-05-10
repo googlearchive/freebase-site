@@ -39,7 +39,7 @@
 </acre:script>
 
 <acre:block def="head()">
-
+  <link rel="stylesheet" type="text/css" href="data.mf.css" />
 </acre:block>
 
 <acre:block def="breadcrumb()">
@@ -67,6 +67,20 @@
      <acre:script>
        var title = "Explore " + i18n.display_name(c.object) + " topics";
      </acre:script>
+     <p>Total facts: ${i18n_c.number(c.domain.total_facts)}</p>
+     <p>Total Topics: ${i18n_c.number(c.domain.total_topics)}</p>
+     <p>Topics with images: $c.domain.topics_with_images%</p>
+     <p>Topics with articles: $c.domain.topics_with_articles%</p>
+     <p>Facts last week: ${i18n_c.number(c.domain.facts_last_week)}</p>
+     <ul acre:if="c.domain.top_contributors">
+       <li acre:for="i, user in c.domain.top_contributors" acre:if="i < 3">
+         ${image.user_image_small(user)}
+         $user.display_name
+         $user.percentage%
+         $user.v
+       </li>
+     </ul>
+     <div class="activity-summary" style="width:125px;" data-activity="${JSON.stringify(c.domain.activity_summary)}"></div>
      <h2 class="table-title">
        ${_(title)}
      </h2>

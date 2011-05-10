@@ -80,12 +80,13 @@
       </h2>
       <div class="module-section" acre:if="c.prop_counts">
         <acre:script>
+          c.filters.view = "";
           var hide_counts = c.filters.as_of_time;
         </acre:script>
-        ${filter_components.prop_counts_filter("/topic" + c.id, c.filters, c.prop_counts, hide_counts)}
+        ${filter_components.prop_counts_filter(c.id, c.filters, c.prop_counts, hide_counts)}
       </div>
       <div class="module-section">
-        ${filter_components.as_of_time_filter("/topic" + c.id, c.filters)}
+        ${filter_components.as_of_time_filter(c.id, c.filters)}
       </div>
     </div>
     <p class="keyboard-shortcuts module">

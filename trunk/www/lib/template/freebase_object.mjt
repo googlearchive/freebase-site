@@ -254,11 +254,11 @@
 <acre:block def="nav_tabs()">
   <acre:script>
     var params = c.filters ? fh.global_filters(c.filters) : {};
-    var filters = acre.form.encode("", params);
+    var qs = acre.form.encode(params);
   </acre:script>
   <acre:block for="tab in c.object.tabs">
     <acre:script>
-      var url = "?" + tab.key + (filters.length ? "&" + filters : "");
+      var url = "?" + tab.key + (qs.length ? "&" + qs : "");
       var current = (tab.key === c.object.sel_tab.key);
     </acre:script>
     <li>

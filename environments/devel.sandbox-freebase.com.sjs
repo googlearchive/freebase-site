@@ -74,7 +74,7 @@ var rules = {
       ["Apps", apps.apps + "/user.controller"],
       ["Inspect", apps.triples + "/triples.controller"]
     ]},
-    {type: "/freebase/freebase_query", tabs: [
+    {type: "/freebase/query", tabs: [
       ["Data", apps.data + "/query.controller"],
       ["Inspect", apps.triples + "/triples.controller"]
     ]},

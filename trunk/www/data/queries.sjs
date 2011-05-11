@@ -31,6 +31,9 @@
 
 var h = acre.require("lib/helper/helpers.sjs");
 var i18n = acre.require("lib/i18n/i18n.sjs");
+var propbox_mql = acre.require("lib/propbox/mql.sjs");
+var propbox_queries = acre.require("lib/propbox/queries.sjs");
+var ph = acre.require("lib/propbox/helpers.sjs");
 var apis = acre.require("lib/promise/apis");
 var freebase = apis.freebase;
 var urlfetch = apis.urlfetch;
@@ -44,7 +47,7 @@ function types_mql(id) {
     "types": [{
       "id": null,
       "guid": null,
-      "name": null,
+      "name": i18n.mql.query.name(),
       "timestamp": null,
       "creator": {
         "id": null,
@@ -70,7 +73,6 @@ function types_mql(id) {
 
 /**
  * Domain query and for each type in the domain:
- * 1. get type instance counts
  */
 function domain(id) {
   var q = types_mql(id);
@@ -121,7 +123,7 @@ function domain(id) {
             domain.activity_summary = domain.activity_summary.slice(-11, -1);
           }
 
-          // Attach top 5 contributors to domain object
+          // Attach top contributors to domain object
           // For now, we do a simple string filter to
           // weed out bots. However, this should be 
           // added to the activity service
@@ -185,42 +187,56 @@ function saved_query(id) {
   });
 };
 
-function type(type) {
-  return freebase.mqlread([{
-    "type": "/type/property",
-    "schema": { 
-      "id": type 
-    },
-    "key": {
-      "value": null,
-      "namespace": type
-    },
-    "expected_type" : {
-      "id": null
-    },
-    "/freebase/property_hints/disambiguator" : true,
-    "unique": null
-  }])
+function type(type_id) {
+
+  // define our current language
+  var lang = i18n.lang;
+
+  // get the disambiguating properties
+  // of our type
+  var q = {
+    "id": type_id,
+    "type": "/type/type",
+    "/freebase/type_hints/mediator": null,
+    "properties": [
+      propbox_mql.prop_schema({
+        "/freebase/property_hints/disambiguator" : true,
+        "index": null,
+        "optional": true
+        }, lang)
+     ]
+  };
+
+  return freebase.mqlread(q)
   .then(function(env) {
-    return env.result;
-  })
-  .then(function(result){
-    var q = {
-      "mid": null,
-      "name": null,
-      "type": type
-    };
-    result.forEach(function(prop) {
-      q[prop.key.value] = prop.unique ? null : [];
+
+    var is_mediator = env.result['/freebase/type_hints/mediator'] === true;
+    var properties = env.result.properties;
+    var prop_structures = [];
+    properties.forEach(function(prop) {
+      prop_structures.push(ph.minimal_prop_structure(prop, lang));
     });
-    return [q];
-  })
-  .then(function(q) {
+
+    var q = [{
+      id: null,
+      mid: null,
+      limit: 60,
+      name: i18n.mql.query.name(),
+      type: type_id,
+      optional: true
+    }];
+
+    prop_structures.forEach(function(prop_structure) {
+      q[0][prop_structure.id] = ph.mqlread_query(null,
+        prop_structure, null, lang)[prop_structure.id];
+    });
+    
     return freebase.mqlread(q)
       .then(function(env) {
         return {
-          query: q,
-          result: env.result
+          instances: env.result,
+          properties: prop_structures,
+          is_mediator: is_mediator
         };
       });
   })

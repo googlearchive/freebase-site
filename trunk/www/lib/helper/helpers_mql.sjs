@@ -54,6 +54,7 @@ var LITERAL_TYPE_IDS = {
   "/type/value":1,
   "/type/enumeration":1
 };
+
 function is_literal_type(type_id) {
   return  LITERAL_TYPE_IDS[type_id] === 1;
 };

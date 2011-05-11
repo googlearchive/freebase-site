@@ -112,7 +112,7 @@
         <tbody>
           <tr acre:for="type in c.domain.types">
             <th class="row-header odd">
-              <a href="${h.fb_url(type.id, [['schema']])}">$type.name</a>
+              <a href="${h.fb_url(type.id)}">$type.name</a>
             </th>
             <td class="">
               ${i18n_c.datetime(type.timestamp, [["class","published"],["data-format","medium"]])}

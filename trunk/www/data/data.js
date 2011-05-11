@@ -108,12 +108,34 @@
           console.log(data);
         });
       });
+    },
+    
+    init_table_mouseover: function(context) {
+      $(".data-table a")
+        .mouseover(function() {
+          var id = $(this).attr("data-fbid");
+          var pos = $(this).position();
+          var top = pos.top + $(this).height() + 10;
+          var left = pos.left;
+
+          var div = $("<div id='data-table-popup'></div>")
+            .css({top:top, left:left})
+            .appendTo("body")
+            
+          $.get(fb.h.legacy_fb_url("/private/flyout", id), function(r) {
+            div.html(r.html);
+          }, "jsonp");
+        })
+        .mouseout(function() {
+          $("#data-table-popup").remove();
+        });
     }
   };
 
   function init() {
     data.init_data_tabs();
     data.init_activity_chart();
+    data.init_table_mouseover();
   };
 
   $(init);

@@ -55,10 +55,8 @@ var SPEC = {
     return {
       id:      id,
       object:  object,
-      table:   queries.type(id)
+      table:   queries.saved_query(id)
     };
   }
 };
-
-
 

@@ -168,3 +168,115 @@ function domain(id) {
         });
     });
 };
+
+function saved_query(id) {
+  return freebase.get_blob(id)
+    .then(function(env) {
+      return JSON.parse(env.body);
+    }).
+    then(function(q){
+      return freebase.mqlread(q)
+        .then(function(env) {
+          return {
+            query: q,
+            result: env.result
+          };
+      });
+  });
+};
+
+function type(type) {
+  return freebase.mqlread([{
+    "type": "/type/property",
+    "schema": { 
+      "id": type 
+    },
+    "key": {
+      "value": null,
+      "namespace": type
+    },
+    "expected_type" : {
+      "id": null
+    },
+    "/freebase/property_hints/disambiguator" : true,
+    "unique": null
+  }])
+  .then(function(env) {
+    return env.result;
+  })
+  .then(function(result){
+    var q = {
+      "mid": null,
+      "name": null,
+      "type": type
+    };
+    result.forEach(function(prop) {
+      q[prop.key.value] = prop.unique ? null : [];
+    });
+    return [q];
+  })
+  .then(function(q) {
+    return freebase.mqlread(q)
+      .then(function(env) {
+        return {
+          query: q,
+          result: env.result
+        };
+      });
+  })
+};
+
+function property_detail(topic, property) {
+  return freebase.mqlread([{
+    "type": "/type/property",
+    "master_property" : null,
+    "reverse_property" : null,
+    "schema": {
+      "id" : null,
+      "/freebase/type_hints/mediator": null,
+      "!/type/property/expected_type": {
+        "id": property
+      }
+    },
+    "key": {
+      "value": null,
+      "namespace": {
+        "!/type/property/expected_type": {
+          "id": property
+        }
+      }
+    },
+    "unique" : null,
+    "/freebase/property_hints/disambiguator": true,
+  }])
+  .then(function(env) {
+    return env.result;
+  })
+  .then(function(result){
+    if (!result.length) redirect();
+    var type = result[0].schema;
+    var q = {
+      "type": type.id
+    };
+    q["!" + property] = { "id": topic };
+    if (!type["/freebase/type_hints/mediator"]) {
+      q.name = null;
+      q.mid = null;
+    }
+    result.forEach(function(prop) {
+      if (!(prop.master_property === property || prop.reverse_property === property)) {
+        q[prop.key.value] = prop.unique ? null : [];        
+      }
+    });
+    return [q];
+  })
+  .then(function(q) {
+    return freebase.mqlread(q)
+      .then(function(env) {
+        return {
+          query: q,
+          result: env.result
+        };
+      });
+  });
+};

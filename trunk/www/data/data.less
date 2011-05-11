@@ -117,3 +117,84 @@ table .data-statistics td {
   float: left;
   margin-top: 2px;
 }
+
+.data-table {
+  width: 100%;
+}
+
+.data-list {
+  list-style: none;
+}
+
+.data-list li {
+  font-size: 12px;
+  line-height: 1;
+  padding: 0 15px;
+}
+
+.data-table .data-list li,
+.data-table .empty-property {
+  padding: 0;
+}
+
+.data-table th,
+.data-table td {
+  font-size: 12px;
+}
+
+.data-table thead th,
+.data-table thead td {
+  font-size: 11px;
+  font-weight: bold;
+  color: #444;
+  padding-bottom: 5px;
+}
+
+.data-table thead th {
+  border-bottom: 2px solid #d5d7d8;
+}
+
+.data-table tbody th,
+.data-table tbody td {
+  vertical-align: top;
+  padding: 0 3px 0 0;
+  border-top: 1px solid #d5d7d8;
+  .transition(all, 0.3s);
+}
+.data-table tbody tr.empty-row td {
+  border: none;
+}
+
+.data-table tbody tr:hover td,
+.data-list li:hover {
+  background-color: #e6e7e8;
+}
+
+.data-table .data-list li:hover {
+  background: transparent;
+}
+
+.data-table tbody tr th:first-child,
+.data-table tbody tr td:first-child {
+  padding-left: 0;
+}
+
+.data-table thead tr th:first-child {
+  padding-left: 15px;
+}
+
+.data-table tbody tr th:first-child li,
+.data-table tbody tr td:first-child li {
+  padding-left: 15px;
+}
+
+.data-table .alt th,
+.data-table .alt td {
+  background: #ecedef;
+}
+
+#data-table-popup {
+  position: absolute;
+  z-index: 1000;
+  width: 300px;
+}

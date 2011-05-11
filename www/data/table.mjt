@@ -32,6 +32,8 @@
 <acre:script>
   var c = this.exports.c = {};
   var h = acre.require("lib/helper/helpers.sjs");
+  var propbox = acre.require("lib/propbox/propbox.mjt");
+  var ph = acre.require("lib/propbox/helpers.sjs");
   var image = acre.require("lib/template/imagecomponents");
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var i18n_c = acre.require("lib/i18n/components.mjt");
@@ -63,12 +65,7 @@
 
 <acre:block def="nav_utilities()">
   <li>
-    <acre:script>
-      var query = {
-        q: JSON.stringify(c.table.query)
-      };
-    </acre:script>
-    <a href="${h.fb_url('/query/editor', query)}" class="icon-link">
+    <a href="${h.fb_url('/query/editor', '')}" class="icon-link">
      <span class="query-icon">${_('Edit Query')}</span>
     </a>
   </li>
@@ -82,7 +79,7 @@
         function decantConstraints(q) {
           function decant(val) {
             if (h.isPlainObject(val)) {
-              var has_keys = false;
+            var has_keys = false;
               for (var key in val) {
                 has_keys = true;
                 var tmp = decant(val[key])
@@ -129,7 +126,6 @@
         }
         
         var constraints = decantConstraints(query||{});
-        console.log(query, constraints);
       </acre:script>
     
       <thead acre:def="thead(r, path)">
@@ -195,10 +191,47 @@
       </acre:block>
     </table>
   </acre:block>
-  
-  ${list(c.table.result, c.table.query)}
+
+  <!!--
+    ${list(c.table.result, c.table.query)}
+  -->
+  ${list_new(c.table.instances, c.table.properties, c.table.is_mediator)}
   
 </acre:block>
+
+<acre:block def="list_new(instances, properties, is_mediator)">
+  <acre:script>
+    var lang = i18n.lang;
+  </acre:script>
+  <table class="data-table" acre:if="instances">
+    <thead>
+      <acre:block if="!is_mediator">
+        <th>${_("Name")}</th>
+      </acre:block>
+      <th acre:for="prop in properties"> 
+        $prop.text
+      </th>
+    </thead>
+  <tr acre:for="instance in instances">
+    <td acre:if="instance.name && !is_mediator">
+      <a href="${h.fb_url(instance.id)}" title="${_('View topic')}">
+        ${i18n.display_name(instance)}
+      </a>
+    </td>
+    <td acre:for="prop in properties">
+      <acre:script>
+        var values = ph.to_prop_values(prop, instance[prop.id], lang) 
+      </acre:script>
+      <acre:block for="val in values">
+        <acre:script>
+          console.log(val);
+        </acre:script>
+        ${propbox.value(instance.mid, prop, val, i18n.lang)}
+      </acre:block>
+    </td>
+  </tr>
+  </table>
+</acre:block> 
 
 <acre:block def="footer_script()">
   <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>

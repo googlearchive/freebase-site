@@ -451,8 +451,9 @@ propbox edit forms
 
 <acre:block def="prop_add_form_simple(topic_id, prop_structure, lang)">
   <ul class="edit-form ${JSON.stringify(prop_structure)}">
-    <li class="row-msg" style="visibility:hidden;">
-      <a class="close-msg" href="#" onclick="$$(this).parents('.row-msg:first').css('visibility', 'hidden'); return false;">close</a>
+    <li class="row-msg">
+      <a class="close-msg" style="visibility:hidden;" href="#" 
+         onclick="$$(this).css('visibility', 'hidden').next().html('&nbsp'); return false;">close</a>
       <span>&nbsp;</span>
     </li>
     <li class="edit-row">
@@ -471,9 +472,10 @@ propbox edit forms
 <acre:block def="prop_add_form_cvt(topic_id, prop_structure, lang)">
   <table class="edit-form ${JSON.stringify(prop_structure)}">
     <tbody>
-      <tr class="row-msg" style="visibility:hidden;">
+      <tr class="row-msg">
         <td colspan="${prop_structure.properties.length}">
-          <a class="close-msg" href="#" onclick="$$(this).parents('.row-msg:first').css('visibility', 'hidden'); return false;">close</a>
+          <a class="close-msg" style="visibility:hidden;" href="#"
+             onclick="$$(this).css('visibility', 'hidden').next().html('&nbsp'); return false;">close</a>
           <span>&nbsp;</span>
         </td>
       </tr>
@@ -610,9 +612,10 @@ propbox edit forms
   </acre:script>
   <table class="edit-form ${JSON.stringify(structure)}">
     <tbody>
-      <tr class="row-msg" style="visibility:hidden;">
+      <tr class="row-msg">
         <td colspan="${prop_structure.properties.length}">
-          <a class="close-msg" href="#" onclick="$$(this).parents('.row-msg:first').css('visibility', 'hidden'); return false;">close</a>
+          <a class="close-msg" style="visibility:hidden;" href="#"
+             onclick="$$(this).css('visibility', 'hidden').next().html('&nbsp'); return false;">close</a>
           <span>&nbsp;</span>
         </td>
       </tr>
@@ -661,8 +664,9 @@ propbox edit forms
     var structure = h.extend({}, prop_structure, {values: [prop_value]});
   </acre:script>
   <ul class="edit-form ${JSON.stringify(structure)}">
-    <li class="row-msg" style="visibility:hidden;">
-      <a class="close-msg" href="#" onclick="$$(this).parents('.row-msg:first').css('visibility', 'hidden'); return false;">close</a>
+    <li class="row-msg">
+      <a class="close-msg" style="visibility:hidden;" href="#"
+         onclick="$$(this).css('visibility', 'hidden').next().html('&nbsp'); return false;">close</a>
       <span>&nbsp;</span>
     </li>
     <li class="edit-row">

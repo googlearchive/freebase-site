@@ -115,8 +115,15 @@
         var o = editparams.parse(form.structure, form.edit_row);
         submit_data.o = JSON.stringify(o);
       }
-      catch(ex) {
-        form.edit_row.trigger(form.event_prefix + "error", ex);
+      catch (ex) {
+        var errors = $(".data-input.error", form.edit_row);
+        if (errors.length) {
+          form.edit_row.trigger(form.event_prefix + "error", "Please specify a valid value");
+          errors.eq(0).find(":input").focus().select();
+        }
+        else {
+          form.edit_row.trigger(form.event_prefix + "error", ex.toString());
+        }
         return;
       }
       $.ajax({
@@ -205,6 +212,7 @@
           form.edit_row
             .bind(event_prefix + "success", function() {
               //console.log(event_prefix + "success");
+              form.msg_row.remove();
               form.edit_row.remove();
               form.submit_row.remove();
             })
@@ -216,6 +224,7 @@
               // ensure form is not submitted while we are deleting
               form.edit_row.addClass("loading");
               propbox.edit.value_delete_begin(prop_section, prop_row, function() {
+                form.msg_row.remove();
                 form.edit_row.remove();
                 form.submit_row.remove();
               });
@@ -239,7 +248,14 @@
         submit_data.o = JSON.stringify(o);
       }
       catch(ex) {
-        form.edit_row.trigger(form.event_prefix + "error", ex);
+        var errors = $(".data-input.error", form.edit_row);
+        if (errors.length) {
+          form.edit_row.trigger(form.event_prefix + "error", "Please specify a valid value");
+          errors.eq(0).find(":input").focus().select();
+        }
+        else {
+          form.edit_row.trigger(form.event_prefix + "error", ex.toString());
+        }
         return;
       }
       $.ajax({
@@ -533,16 +549,15 @@
     },
 
     form_message: function(form, msg, type) {
-      form.msg_row.find(".close-msg + span").text(msg);
+      form.msg_row.find(".close-msg").css("visibility", "visible").next("span").text(msg);
       form.msg_row.attr("class", "row-msg");
       if (type) {
         form.msg_row.addClass("row-msg-" + type);
       }
-      form.msg_row.css("visibility", "visible");
     },
 
     clear_form_message: function(form) {
-      form.msg_row.css("visibility", "hidden").find(".close-msg + span").html("&nbsp;");
+      form.msg_row.find(".close-msg").css("visibility", "hidden").next("span").html("&nbsp;");
     },
 
 

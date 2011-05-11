@@ -192,8 +192,7 @@ function type(type_id) {
   // define our current language
   var lang = i18n.lang;
 
-  // get the disambiguating properties
-  // of our type
+  // get basic set of properties for type
   var q = {
     "id": type_id,
     "type": "/type/type",
@@ -210,13 +209,27 @@ function type(type_id) {
   return freebase.mqlread(q)
   .then(function(env) {
 
+    // simple flag for use in template
     var is_mediator = env.result['/freebase/type_hints/mediator'] === true;
+
+    // list of properties we want to query for and output
     var properties = env.result.properties;
+
+    /**
+     * Now that we know the disambiguating properties
+     * of the type, we need to construct an instance query,
+     * insuring we pass get values for the
+     * disambiguating properties of the type
+    */ 
+
+
+    // build an array of properties for which to query
     var prop_structures = [];
     properties.forEach(function(prop) {
       prop_structures.push(ph.minimal_prop_structure(prop, lang));
     });
 
+    // our basic query shape
     var q = [{
       id: null,
       mid: null,
@@ -226,11 +239,14 @@ function type(type_id) {
       optional: true
     }];
 
+    // push each of the disambiguating properties onto
+    // our instance query
     prop_structures.forEach(function(prop_structure) {
       q[0][prop_structure.id] = ph.mqlread_query(null,
         prop_structure, null, lang)[prop_structure.id];
     });
-    
+
+    // execute instance query
     return freebase.mqlread(q)
       .then(function(env) {
         return {

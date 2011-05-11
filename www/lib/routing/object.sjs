@@ -103,6 +103,7 @@ function ObjectRouter() {
           }
           
           // Turn tab config arrays into something more useful
+          if (!u.isArray(o.tabs)) throw "Missing tab configuration for this object";
           o.tabs = o.tabs.map(function(tab) {
             return {
               name: tab[0],

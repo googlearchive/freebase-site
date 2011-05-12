@@ -195,6 +195,7 @@
   <!!--
     ${list(c.table.result, c.table.query)}
   -->
+  ${JSON.stringify(c.table.activity)}
   ${list_new(c.table.instances, c.table.properties, c.table.is_mediator)}
   
 </acre:block>

@@ -171,30 +171,21 @@ function domain(id) {
     });
 };
 
-function saved_query(id) {
-  return freebase.get_blob(id)
-    .then(function(env) {
-      return JSON.parse(env.body);
-    }).
-    then(function(q){
-      return freebase.mqlread(q)
-        .then(function(env) {
-          return {
-            query: q,
-            result: env.result
-          };
-      });
-  });
-};
 
+
+/**
+ * Type query
+ * Get a type and a subset of instances
+ */
 function type(type_id) {
 
   // define our current language
   var lang = i18n.lang;
 
-  // get basic set of properties for type
+  // get our type plus basic set of properties
   var q = {
     "id": type_id,
+    "guid": null,
     "type": "/type/type",
     "/freebase/type_hints/mediator": null,
     "properties": [
@@ -208,6 +199,35 @@ function type(type_id) {
 
   return freebase.mqlread(q)
   .then(function(env) {
+
+    // placeholder for all our promise requests
+    var promises = {};
+
+    /**
+     *  Call Activity service to get Type metadata,
+     *  including instance count, etc.
+    */ 
+
+    // contruct path for BDB file
+    var activity_id = "/guid/" + env.result.guid.slice(1);
+
+    // get BDB summary for type
+    promises.activity = freebase.get_static("activity", activity_id)
+      .then(function(activity) {
+
+        if (!activity) {
+          return {};
+        }
+
+        var summary = {};
+
+        summary.topic_count = activity.total['new'];
+        summary.facts = activity.total.edits;
+        summary.has_article = activity.has_article;
+        summary.has_image = activity.has_image;
+
+        return summary;
+    });
 
     // simple flag for use in template
     var is_mediator = env.result['/freebase/type_hints/mediator'] === true;
@@ -247,16 +267,39 @@ function type(type_id) {
     });
 
     // execute instance query
-    return freebase.mqlread(q)
-      .then(function(env) {
+    promises.data = freebase.mqlread(q);
+    console.log(promises);
+    return deferred.all(promises)
+      .then(function(results) {
+        console.log(results);
         return {
-          instances: env.result,
+          instances: results.data.result,
+          activity: results.activity,
           properties: prop_structures,
           is_mediator: is_mediator
         };
       });
   })
 };
+
+
+
+function saved_query(id) {
+  return freebase.get_blob(id)
+    .then(function(env) {
+      return JSON.parse(env.body);
+    }).
+    then(function(q){
+      return freebase.mqlread(q)
+        .then(function(env) {
+          return {
+            query: q,
+            result: env.result
+          };
+      });
+  });
+};
+
 
 function property_detail(topic, property) {
   return freebase.mqlread([{

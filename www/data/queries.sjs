@@ -268,17 +268,18 @@ function type(type_id) {
 
     // execute instance query
     promises.data = freebase.mqlread(q);
-    console.log(promises);
+
+    // wait for all queries to finish
+    // and return to controller
     return deferred.all(promises)
       .then(function(results) {
-        console.log(results);
         return {
           instances: results.data.result,
           activity: results.activity,
           properties: prop_structures,
           is_mediator: is_mediator
         };
-      });
+    });
   })
 };
 

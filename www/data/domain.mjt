@@ -48,12 +48,12 @@
       <ol>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url('/schema')}">${_("Data")}</a>
+            <a href="${h.fb_url(c.object.id)}">${i18n.display_name(c.object)}</a>
           </span>
         </li>
         <li if="c.domain" class="breadcrumb-item last">
           <span class="breadcrumb-item-inner">
-            <a href="#">${i18n.display_name(c.object)}</a>
+            <a href="#">${_("Data")}</a>
           </span>
         </li>
       </ol>
@@ -65,9 +65,6 @@
 <!-- Types -->
 <div class="section wrapper">
   <div class="views">
-    <acre:script>
-    var title = "Explore " + i18n.display_name(c.object) + " topics";
-    </acre:script>
     <div class="table-title-wrapper">
       <h2 class="table-title">
         ${h.template_sprintf(_("Explore %s topics"), i18n.display_name(c.object))}
@@ -112,7 +109,7 @@
         <tbody>
           <tr acre:for="type in c.domain.types">
             <th class="row-header odd">
-              <a href="${h.fb_url(type.id)}">$type.name</a>
+              <a href="${h.fb_url(type.id)}">${i18n.display_name(type)}</a>
             </th>
             <td class="">
               ${i18n_c.datetime(type.timestamp, [["class","published"],["data-format","medium"]])}
@@ -181,7 +178,7 @@
     </tbody>
   </table>
 </div>
-     </acre:block>
+</acre:block>
 
 <acre:block def="footer_script()">
   <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>

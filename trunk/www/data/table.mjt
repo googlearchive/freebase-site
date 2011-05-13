@@ -51,12 +51,12 @@
       <ol>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url('/schema')}">${_("Data")}</a>
+            <a href="${h.fb_url(c.object.id)}">${i18n.display_name(c.object)}</a>
           </span>
         </li>
         <li if="c.domain" class="breadcrumb-item last">
           <span class="breadcrumb-item-inner">
-            <a href="#">${i18n.display_name(c.object)}</a>
+            <a href="#">${_("Data")}</a>
           </span>
         </li>
       </ol>
@@ -73,13 +73,16 @@
 </acre:block>
 
 <acre:block def="page_content()">
+  <acre:script>
+  console.log(c.object);
+  </acre:script>
   <div class="section instances">
 
     <!!-- Object summary -->
-    ${JSON.stringify(c.table.activity)}
 
     <!!-- Type table -->
     <acre:block if="c.table.table_type === 'type'">
+      ${JSON.stringify(c.table.activity)}
       ${type_table(c.table.instances, c.table.properties, c.table.is_mediator)}
     </acre:block>
 
@@ -89,6 +92,20 @@
 
     <!!-- Query table -->
     <acre:block if="c.table.table_type === 'query'">
+      <table acre:if="c.table.result" class="data-table">
+        <thead>
+          <tr>
+            <th>${_('Name')}</th>
+            <th>${_('id')}</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr acre:for="r in c.table.result">
+          <th scope="row"><a href="${h.fb_url(r.id)}">$r.name</a></th>
+          <td><a href="${h.fb_url(r.id)}">$r.id</a></td>
+        </tr>
+        </tbody>
+      </table>
     </acre:block>
   </div>
 
@@ -142,7 +159,7 @@ Iterate through standard properties
     </acre:block>
     <acre:block else="">
       <!!-- TODO: localize output -->
-      <th>$prop.text</th>
+      <th>${i18n.display_name(prop)}</th>
     </acre:block>
   </acre:block>
 </tr>

@@ -190,7 +190,7 @@ function type(type_id) {
     "/freebase/type_hints/mediator": null,
     "properties": [
       propbox_mql.prop_schema({
-        "/freebase/property_hints/disambiguator" : true,
+        "/freebase/property_hints/disambiguator": null,
         "index": null,
         "optional": true
         }, lang)
@@ -232,22 +232,28 @@ function type(type_id) {
     // simple flag for use in template
     var is_mediator = env.result['/freebase/type_hints/mediator'] === true;
 
-    // list of properties we want to query for and output
+    // Generate list properties we want to query for and output
     var properties = env.result.properties;
+    var prop_structures = [];
+
+    // iterate through type properties and
+    // attach any disambiguating properties
+    properties.forEach(function(prop) {
+      if(prop["/freebase/property_hints/disambiguator"]) {
+        prop_structures.push(ph.minimal_prop_structure(prop, lang));
+      }
+    });
+
+    // If no disambiguating properties were found
+    // default to first instead
+    if(prop_structures.length < 1) {
+      prop_structures.push(ph.minimal_prop_structure(properties[0], lang));
+    }
 
     /**
-     * Now that we know the disambiguating properties
-     * of the type, we need to construct an instance query,
-     * insuring we pass get values for the
-     * disambiguating properties of the type
+     * Now that we know the properties of the type
+     * we need to construct an instance query,
     */ 
-
-
-    // build an array of properties for which to query
-    var prop_structures = [];
-    properties.forEach(function(prop) {
-      prop_structures.push(ph.minimal_prop_structure(prop, lang));
-    });
 
     // our basic query shape
     var q = [{
@@ -259,7 +265,7 @@ function type(type_id) {
       optional: true
     }];
 
-    // push each of the disambiguating properties onto
+    // push each of the properties onto
     // our instance query
     prop_structures.forEach(function(prop_structure) {
       q[0][prop_structure.id] = ph.mqlread_query(null,
@@ -277,7 +283,8 @@ function type(type_id) {
           instances: results.data.result,
           activity: results.activity,
           properties: prop_structures,
-          is_mediator: is_mediator
+          is_mediator: is_mediator,
+          table_type: "type"
         };
     });
   })

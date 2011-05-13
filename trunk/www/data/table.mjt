@@ -49,6 +49,11 @@
   <div class="page-header clear">
     <div class="breadcrumb clear">
       <ol>
+        <li acre:if="c.table.table_type === 'type'" class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.fb_url(c.table.domain.id)}">${i18n.display_name(c.table.domain)}</a>
+          </span>
+        </li>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
             <a href="${h.fb_url(c.object.id)}">${i18n.display_name(c.object)}</a>
@@ -195,10 +200,11 @@ Iterate through standard properties
           <acre:block if="val.id">
           <li>
           <span class="wrapper">
-            <a class="property-value" href="${h.fb_url('', val.id)}">$val.text</a>
+            <a class="property-value" href="${h.fb_url('', val.id)}">${val.text}</a>
           </span>
           </li>
           </acre:block>
+          <!!-- TODO: Need to handle string vs integer output -->
           <acre:block else="">
             <li>${val.text}</li>
           </acre:block>

@@ -189,6 +189,10 @@ function type(type_id) {
     "id": type_id,
     "guid": null,
     "type": "/type/type",
+    "/type/type/domain": {
+      "id": null,
+      "name": i18n.mql.query.name()
+    },
     "/freebase/type_hints/mediator": null,
     "properties": [
       propbox_mql.prop_schema({
@@ -212,6 +216,10 @@ function type(type_id) {
 
     // contruct path for BDB file
     var activity_id = "/guid/" + env.result.guid.slice(1);
+    var domain = {
+      "id": env.result["/type/type/domain"].id,
+      "name": env.result["/type/type/domain"].name
+    }
 
     // get BDB summary for type
     promises.activity = freebase.get_static("activity", activity_id)
@@ -297,6 +305,7 @@ function type(type_id) {
           instances: results.data.result,
           activity: results.activity,
           properties: prop_structures,
+          domain: domain,
           is_mediator: is_mediator,
           table_type: "type"
         };

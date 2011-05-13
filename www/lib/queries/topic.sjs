@@ -109,14 +109,12 @@ function get_image_deep_props(id, image_props, lang) {
 };
 
 function image_deep_props(lang) {
-  var promises = [
-    pq.prop_structure("/type/object/name", lang),
-    pq.prop_structure("/type/object/creator", lang),
-    pq.prop_structure("/type/content/uploaded_by", lang),
-    pq.prop_structure("/common/image/rights_holder_text_attribution", lang),
-    pq.prop_structure("/common/licensed_object/license", lang)
-  ];
-  return deferred.all(promises);
+  return pq.prop_structures("/type/object/name",
+                            "/type/object/creator",
+                            "/type/content/uploaded_by",
+                            "/common/image/rights_holder_text_attribution",
+                            "/common/licensed_object/license",
+                            lang);
 };
 
 
@@ -172,11 +170,9 @@ function get_article_deep_props(id, article_props, lang) {
 };
 
 function article_deep_props(lang) {
-  var promises = [
-    pq.prop_structure("/type/object/creator", lang),
-    pq.prop_structure("/type/object/timestamp", lang),
-    pq.prop_structure("/common/document/source_uri", lang),
-    pq.prop_structure("/common/document/content", lang)
-  ];
-  return deferred.all(promises);
+  return pq.prop_structures("/type/object/creator",
+                            "/type/object/timestamp",
+                            "/common/document/source_uri",
+                            "/common/document/content",
+                            lang);
 };

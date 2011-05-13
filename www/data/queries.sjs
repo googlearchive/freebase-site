@@ -179,6 +179,8 @@ function domain(id) {
  */
 function type(type_id) {
 
+  var PROP_COUNT = 3;
+
   // define our current language
   var lang = i18n.lang;
 
@@ -237,21 +239,34 @@ function type(type_id) {
     var prop_structures = [];
 
     // iterate through type properties and
-    // attach any disambiguating properties
+    // attach any disambiguating properties that are non-mediating
     properties.forEach(function(prop) {
       if(prop["/freebase/property_hints/disambiguator"]) {
-        prop_structures.push(ph.minimal_prop_structure(prop, lang));
+        if(prop["expected_type"]["/freebase/type_hints/mediator"] !== true) {
+          console.log("attach disambiguating property");
+          prop_structures.push(ph.minimal_prop_structure(prop, lang));
+        }
       }
     });
 
-    // If no disambiguating properties were found
-    // default to first instead
-    if(prop_structures.length < 1) {
-      prop_structures.push(ph.minimal_prop_structure(properties[0], lang));
+    // If insufficient non-mediating disambiguating properties were found
+    // attach more properties for display 
+    if(prop_structures.length < PROP_COUNT) {
+      properties.forEach(function(prop) {
+        if(prop["/freebase/property_hints/disambiguator"] !== true && prop["expected_type"]["/freebase/type_hints/mediator"] !== true) {
+          prop_structures.push(ph.minimal_prop_structure(prop, lang));
+        }
+      });
+    }
+
+    // Make prop_structures equal PROP_COUNT if the type not a mediator
+    // We don't want to to display too many columns
+    if(prop_structures.length > PROP_COUNT && !is_mediator) {
+      prop_structures = prop_structures.slice(0,PROP_COUNT);
     }
 
     /**
-     * Now that we know the properties of the type
+     * Now that we have properties to display
      * we need to construct an instance query,
     */ 
 

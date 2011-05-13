@@ -50,6 +50,18 @@ function prop_schema(pid, lang) {
     });
 };
 
+function prop_schemas(/** pid_1, pid_2, ... , pid_N, lang **/) {
+  var args = Array.prototype.slice.call(arguments);
+  var len = args.length;
+  var pids = args.slice(0, len - 1);
+  var lang = args[len - 1];
+  var q = [mql.prop_schema({"id|=": pids}, lang)];
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result;
+    });
+};
+
 /**
  * Topic API prop structure (format)
  *
@@ -62,6 +74,19 @@ function prop_structure(pid, lang) {
   return prop_schema(pid, lang)
     .then(function(schema) {
       return ph.minimal_prop_structure(schema, lang);
+    });
+};
+
+
+function prop_structures(/** pid_1, pid_2, ... , pid_N, lang **/) {
+  var lang = arguments[arguments.length - 1];
+  return prop_schemas.apply(null, arguments)
+    .then(function(schemas) {
+      var structures = [];
+      schemas.forEach(function(schema) {
+        structures.push(ph.minimal_prop_structure(schema, lang));
+      });
+      return structures;
     });
 };
 
@@ -123,35 +148,57 @@ function prop_values(topic_id, prop /** pid or prop_structure **/, value, lang) 
     });
 };
 
-function get_enumerated_types(structure, lang) {
-  var ect = structure.expected_type;
-  var promises = [];
-  if (ect.enumeration === true) {
-    var promise = freebase.mqlread([{
-      optional: true,
-      id: null,
-      name: i18n.mql.text_clause(lang),
-      type: {id:ect.id, limit:0},
-      limit: 500
-    }])
-    .then(function(env) {
-      var topics = env.result;
-      topics.forEach(function(t) {
-        t.text = i18n.mql.get_text(lang, t.name).value;
-      });
-      topics.sort(function(a, b) {
-        return b.text < a.text;
-      });
-      ect.instances = topics;
-      return topics;
-    });
-    promises.push(promise);
+function get_enumerated_types(prop, lang) {
+  var d;
+  if (typeof prop === "string") {
+    d = prop_structure(prop, lang);
   }
-  if (structure.properties) {
-    for (var i=0,l=structure.properties.length; i<l; i++) {
-      promises = promises.concat(get_enumerated_types(structure.properties[i], lang));
-    }
+  else {
+    d = deferred.resolved(prop);
   }
-  return deferred.all(promises);
+  return d
+    .then(function(structure) {
+      var ect = structure.expected_type;
+      var promise;
+      if (ect.enumeration === true) {
+        promise = freebase.mqlread([{
+          optional: true,
+          id: null,
+          name: i18n.mql.text_clause(lang),
+          type: {id:ect.id, limit:0},
+          limit: 500
+        }])
+        .then(function(env) {
+          var topics = env.result;
+          topics.forEach(function(t) {
+            t.text = i18n.mql.get_text(lang, t.name).value;
+          });
+          topics.sort(function(a, b) {
+            return b.text < a.text;
+          });
+          ect.instances = topics;
+          return structure;
+        });
+      }
+      else {
+        promise = deferred.resolved(structure);
+      }
+      return promise
+        .then(function(structure) {
+          if (structure.properties && structure.properties.length) {
+            var promises = [];
+            for (var i=0,l=structure.properties.length; i<l; i++) {
+              promises.push(get_enumerated_types(structure.properties[i], lang));
+            }
+            return deferred.all(promises)
+              .then(function() {
+                return structure;
+              });
+          }
+          else {
+            return structure;
+          }
+        });
+  });
 };
 

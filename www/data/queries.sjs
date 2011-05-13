@@ -243,7 +243,6 @@ function type(type_id) {
     properties.forEach(function(prop) {
       if(prop["/freebase/property_hints/disambiguator"]) {
         if(prop["expected_type"]["/freebase/type_hints/mediator"] !== true) {
-          console.log("attach disambiguating property");
           prop_structures.push(ph.minimal_prop_structure(prop, lang));
         }
       }
@@ -317,7 +316,8 @@ function saved_query(id) {
         .then(function(env) {
           return {
             query: q,
-            result: env.result
+            result: env.result,
+            table_type: "query"
           };
       });
   });

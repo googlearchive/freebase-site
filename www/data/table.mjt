@@ -38,6 +38,7 @@
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
+  var lang = i18n.lang;
 </acre:script>
 
 <acre:block def="head()">
@@ -72,129 +73,154 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  ${JSON.stringify(c.table.activity)}
+  <div class="section instances">
 
-  <!!-- Type table -->
-  <acre:block if="c.table.table_type === 'type'">
-    ${list_new(c.table.instances, c.table.properties, c.table.is_mediator)}
-  </acre:block>
+    <!!-- Object summary -->
+    ${JSON.stringify(c.table.activity)}
 
-  <!!-- Prop detail table -->
-  <acre:block if="c.table.table_type === 'prop_detail'">
-    ${list_new(c.table.instances, c.table.properties, c.table.is_mediator)}
-  </acre:block>
+    <!!-- Type table -->
+    <acre:block if="c.table.table_type === 'type'">
+      ${type_table(c.table.instances, c.table.properties, c.table.is_mediator)}
+    </acre:block>
 
-  <!!-- Query table -->
-  <acre:block if="c.table.table_type === 'query'">
-    ${list_new(c.table.instances, c.table.properties, c.table.is_mediator)}
-  </acre:block>
+    <!!-- Prop detail table -->
+    <acre:block if="c.table.table_type === 'prop_detail'">
+    </acre:block>
+
+    <!!-- Query table -->
+    <acre:block if="c.table.table_type === 'query'">
+    </acre:block>
+  </div>
 
 </acre:block>
 
-<acre:block def="list_new(instances, properties, is_mediator)">
-  <acre:script>
-    var lang = i18n.lang;
-  </acre:script>
-  <table class="data-table" acre:if="instances">
+<acre:block def="render_type_table_head(table_head, properties, is_mediator)">
+
+<!!-- 
+If any of the properties are of type mediator, we have to build
+an extra row in <thead>
+-->
+<tr acre:if="table_head && table_head.length > 0">
+  <!!--
+  If the root type is not a mediator, we want to
+  spit out a Name column first in the table
+  -->
+  <acre:block if="!is_mediator">
     <acre:script>
-     var table_head = [];
-     for(i=0; i<properties.length; i++) {
-       var table_column = {};
-       if(properties[i].properties) {
-         console.log('property', properties[i].properties)
-         var colspan = properties[i].properties.length;  
-
-         var column = {
-         "index": i,
-         "colspan": colspan,
-         "name": properties[i].text
-         }
-
-         table_head.push(column);
-       }
-     }
-     console.log(table_head);
+      var rowspan = table_head.length + 1;
     </acre:script>
-    <thead>
+    <th rowspan="$rowspan"> ${_("Name")} </th>
+    <th rowspan="$rowspan">${_("Image")}</th>
+  </acre:block>
 
-      <!-- if any of the properties are of type mediator -->
-      <tr acre:if="table_head && table_head.length > 0">
-        <acre:block if="!is_mediator">
-          <acre:script>
-            var rowspan = table_head.length + 1;
-          </acre:script>
-          <th rowspan="$rowspan" style="vertical-align:bottom">${_("Name")}</th>
-        </acre:block>
-        <th acre:for="column in table_head"
-            acre:if="table_head && table_head.length"
-            colspan="$column.colspan"
-            style="text-align:center">${column.name}</th> 
-      </tr>
+  <!!--
+  Iterate through the super columns (properties which are mediators) 
+  -->
+  <th acre:for="column in table_head"
+      acre:if="table_head && table_head.length"
+      colspan="$column.colspan"
+      style="text-align:center">${column.name}
+  </th> 
+</tr>
 
-      <tr>
-        <th acre:if="!is_mediator && table_head.length ===0">
-          ${_("Name")}
-        </th>
-        <th>${_("Image")}</th>
-      <acre:block for="prop in properties"> 
-        <acre:script>
-          console.log(prop);
-          var colspan = 0;
-          if(prop['properties']) {
-            var colspan = prop.properties.length;
-          }
-          console.log(colspan)
-        </acre:script>
-        <acre:block if="prop['expected_type']['mediator'] === true">
-          <th colspan="1" rowspan="1" acre:for="p in prop['properties']">
-            $p.text
-          </th>
-        </acre:block>
-        <acre:block else="">
-          <th>$prop.text</th>
-        </acre:block>
+<!!--
+Iterate through standard properties
+-->
+<tr>
+  <!!--
+  If the root type is not a mediator, we want to
+  spit out a Name column first in the table
+  -->
+  <acre:block if="!is_mediator && table_head.length===0">
+    <th> ${_("Name")} </th>
+    <th>${_("Image")}</th>
+  </acre:block>
+
+  <acre:block for="prop in properties"> 
+    <acre:script>
+      var colspan = 0;
+      if(prop['properties']) {
+      var colspan = prop.properties.length;
+      }
+    </acre:script>
+    <acre:block if="prop['expected_type']['mediator'] === true">
+      <th colspan="1" rowspan="1" acre:for="p in prop['properties']">
+        $p.text
+      </th>
+    </acre:block>
+    <acre:block else="">
+      <!!-- TODO: localize output -->
+      <th>$prop.text</th>
+    </acre:block>
+  </acre:block>
+</tr>
+</acre:block>
+
+<acre:block def="render_type_table_body(instances, properties, is_mediator)">
+<tr acre:for="instance in instances" class="data-row">
+  <td acre:if="instance.name && !is_mediator" rowspan="">
+    <a href="${h.fb_url(instance.id)}" title="${_('View topic')}">
+      ${i18n.display_name(instance)}
+    </a>
+    <acre:script>var options = {mode: "fillcropmid"};</acre:script>
+  </td>
+  <td acre:if="!is_mediator">${image.image_thumb(instance.id, 50, options)}</td>
+  <acre:block for="prop in properties">
+    <acre:script>
+      var values = ph.to_prop_values(prop, instance[prop.id], lang) 
+    </acre:script>
+    <acre:block if="prop['properties']">
+      <acre:block for="key, val in values">
+        <td>${JSON.stringify(val, i)}</td>
       </acre:block>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr acre:for="instance in instances" class="data-row">
-        <td acre:if="instance.name && !is_mediator" rowspan="">
-          <a href="${h.fb_url(instance.id)}" title="${_('View topic')}">
-            ${i18n.display_name(instance)}
-          </a>
-          <acre:script>var options = {mode: "fillcropmid"};</acre:script>
-        </td>
-        <td>${image.image_thumb(instance.id, 50, options)}</td>
-        <acre:block for="prop in properties">
-          <acre:script>
-            var values = ph.to_prop_values(prop, instance[prop.id], lang) 
-          </acre:script>
-          <acre:block if="prop['properties']">
-            <acre:block for="key, val in values">
-              <td>${JSON.stringify(val, i)}</td>
-            </acre:block>
+    </acre:block>
+    <acre:block else="">
+      <td>
+        <ul class="data-list">
+        <acre:block for="k, val in values">
+          <acre:block if="val.id">
+          <li>
+          <span class="wrapper">
+            <a class="property-value" href="${h.fb_url('', val.id)}">$val.text</a>
+          </span>
+          </li>
           </acre:block>
           <acre:block else="">
-            <td>
-              <ul class="data-list">
-              <acre:block for="k, val in values">
-                <acre:block if="val.id">
-                <li>
-                <span class="wrapper">
-                  <a class="property-value" href="${h.fb_url('', val.id)}">$val.text</a>
-                </span>
-                </li>
-                </acre:block>
-                <acre:block else="">
-                  <li>${val.text}</li>
-                </acre:block>
-              </acre:block>
-              </ul>
-            </td>
+            <li>${val.text}</li>
           </acre:block>
         </acre:block>
-      </tr>
+        </ul>
+      </td>
+    </acre:block>
+  </acre:block>
+</tr>
+</acre:block>
+
+<acre:block def="type_table(instances, properties, is_mediator)">
+  <acre:script>
+   var table_head = [];
+   for(i=0; i<properties.length; i++) {
+     var table_column = {};
+     if(properties[i].properties) {
+       console.log('property', properties[i].properties)
+       var colspan = properties[i].properties.length;  
+
+       var column = {
+       "index": i,
+       "colspan": colspan,
+       "name": properties[i].text
+       }
+
+       table_head.push(column);
+     }
+   }
+  </acre:script>
+  <table class="data-table" acre:if="instances">
+    <thead>
+      ${render_type_table_head(table_head, properties, is_mediator)}
+    </thead>
+    <tbody>
+      ${render_type_table_body(instances, properties, is_mediator)}
     </tbody>
   </table>
 </acre:block> 

@@ -164,7 +164,7 @@ Iterate through standard properties
     </acre:block>
     <acre:block else="">
       <!!-- TODO: localize output -->
-      <th>${i18n.display_name(prop)}</th>
+      <th>${prop.text}</th>
     </acre:block>
   </acre:block>
 </tr>

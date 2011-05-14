@@ -34,8 +34,9 @@ var i18n = acre.require("lib/i18n/i18n.sjs");
 var propbox_mql = acre.require("lib/propbox/mql.sjs");
 var propbox_queries = acre.require("lib/propbox/queries.sjs");
 var ph = acre.require("lib/propbox/helpers.sjs");
-var apis = acre.require("lib/promise/apis");
+var apis = acre.require("lib/promise/apis.sjs");
 var freebase = apis.freebase;
+var freebase_query = acre.require("lib/queries/freebase_query.sjs");
 var urlfetch = apis.urlfetch;
 var deferred = apis.deferred;
 
@@ -50,22 +51,7 @@ function types_mql(id) {
       "name": i18n.mql.query.name(),
       "timestamp": null,
       "creator": {
-        "id": null,
-        "name": null
-      }
-    }],
-    "/freebase/domain_profile/featured_views": [{
-      "id": null,
-      "guid": null,
-      "name": null,
-      "creator": {
-        "id": null,
-        "name": null
-      },
-      "timestamp": null,
-      "/common/document/content": {
-        "id": null,
-        "optional": "required"
+        "id": null
       }
     }]
   };
@@ -75,6 +61,9 @@ function types_mql(id) {
  * Domain query and for each type in the domain:
  */
 function domain(id) {
+
+  // get initial domain query
+  // including related types
   var q = types_mql(id);
   return freebase.mqlread(q)
     .then(function(env) {
@@ -162,6 +151,12 @@ function domain(id) {
           }
 
           return summary;
+        }));
+
+      // attach domain saved views to domain object
+      promises.push(freebase_query.featured_views_by_domain(domain.id)
+          .then(function(views) {
+            domain.featured_views = views;
         }));
 
       return deferred.all(promises)
@@ -315,6 +310,9 @@ function type(type_id) {
 
 
 
+/**
+ * Saved query
+ */
 function saved_query(id) {
   return freebase.get_blob(id)
     .then(function(env) {

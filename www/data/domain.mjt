@@ -84,15 +84,15 @@
           </tr>
         </thead>
         <tbody>
-          <tr acre:for="query in c.domain['/freebase/domain_profile/featured_views']">
+          <tr acre:for="query in c.domain.featured_views">
             <th class="row-header odd">
-              <a href="${h.fb_url(query.id)}">$query.name</a>
+              <a href="${h.fb_url(query.id)}">${i18n.display_name(query)}</a>
             </th>
             <td class="">
               ${i18n_c.datetime(query.timestamp, [["class","published"],["data-format","medium"]])}
             </td>
             <td class="odd">
-              <a href="${h.fb_url(query.creator.id, [['queries']])}">$query.creator.name</a> 
+              <a href="${h.fb_url(query.creator.id, [['queries']])}">${h.id_key(query.creator.id)}</a> 
             </td>
           </tr>
         </tbody>
@@ -115,7 +115,7 @@
               ${i18n_c.datetime(type.timestamp, [["class","published"],["data-format","medium"]])}
             </td>
             <td class="odd">
-              <a href="${h.fb_url(type.creator.id, [['schema']])}">$type.creator.name</a> 
+              <a href="${h.fb_url(type.creator.id, [['schema']])}">${h.id_key(type.creator.id)}</a> 
             </td>
             <td class="numeric">${i18n_c.number(type.instance_count)}</td>
           </tr>

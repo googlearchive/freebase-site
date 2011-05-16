@@ -402,8 +402,9 @@ function user_domains(user) {
         "link": {
           "timestamp": null 
         }
-      }
-    }
+      },
+    },
+    "limit": 1000
   }];
 
   // query to get domains which the
@@ -416,7 +417,8 @@ function user_domains(user) {
       "name": i18n.mql.query.name(),
       "link": {
         "timestamp": null 
-      }
+      },
+      "limit": 1000
     }]
   };
 

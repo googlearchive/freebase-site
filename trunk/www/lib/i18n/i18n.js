@@ -83,9 +83,7 @@
         times.attr("dir", "rtl");
       }
 
-      times.fadeIn({
-        duration: 900
-      });
+      times.css("visibility", "visible");
     },
 
     ize_datetime_input: function(input) {

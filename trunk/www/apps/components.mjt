@@ -35,12 +35,12 @@
 </acre:script>
 
 <acre:block def="render_app_list(apps)">
-<table class="table" cellspacing="0">
+<table class="table table-sortable" cellspacing="0">
   <thead>
     <tr>
-      <th scope="col" class="column-header first">App</th>
-      <th scope="col" class="column-header">Authors</a></th>
-      <th scope="col" class="column-header">Last Edited</th>
+      <th scope="col" class="column-header first"><span class="sort-icon">App</span></th>
+      <th scope="col" class="column-header"><span class="sort-icon">Authors</span></th>
+      <th scope="col" class="column-header"><span class="sort-icons">Last Edited</span></th>
   </tr>
   </thead>
   <tbody>

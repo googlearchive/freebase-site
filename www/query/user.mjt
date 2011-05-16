@@ -47,7 +47,12 @@
       <ol>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url(c.object.id)}">${i18n.display_name(c.object)}</a>
+            <a href="#">${_("User")}</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.fb_url('/')}">${i18n.display_name(c.object)}</a>
           </span>
         </li>
         <li if="c.domain" class="breadcrumb-item last">
@@ -63,44 +68,45 @@
 <acre:block def="page_content()">
 <!-- Types -->
 <div class="section wrapper">
-  <div class="views">
-    <div class="table-title-wrapper">
-      <h2 class="table-title">
-        ${h.template_sprintf(_("Queries curated by %s"), i18n.display_name(c.object))}
-      </h2>
-    </div>
-    <div class="panes">
-      <table id="queries" cellspacing="0" class="table table-sortable">
-        <thead>
-          <tr>
-            <th class="column-header first">${_("Name")}</th>
-            <th class="column-header">${_("Domain")}</th>
-            <th class="column-header">${_("Created on")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <acre:script>console.log(c)</acre:script>
-          <acre:block for="query in c.saved_queries">
-            <tr acre:for="obj in query['/freebase/domain_profile/featured_views']">
-              <th class="row-header odd">
-                <a href="${h.fb_url(obj.id)}">${i18n.display_name(obj)}</a>
-              </th>
-              <td class="">
-                <a href="${h.fb_url(query.id)}" title="${_('View domain')}">${i18n.display_name(query)}</a>
-              </td>
-              <td class="odd">
-                ${i18n_c.datetime(obj.timestamp, [["class","published"],["data-format","medium"]])}
-              </td>
-            </tr>
-          </acre:block>
-        </tbody>
-      </table>
-    </div>
-  </div>
+  <acre:block if="c.saved_queries && c.saved_queries.length">
+    <acre:script>
+      var count = 0;
+      for(q in c.saved_queries) {
+        count += c.saved_queries[q]["/freebase/domain_profile/featured_views"].length
+      }
+    </acre:script>
+    <h2 class="table-title">
+      ${h.template_sprintf(_("%s has curated %s queries"), i18n.display_name(c.object), i18n_c.number(count))}
+    </h2>
+    <table id="queries" cellspacing="0" class="table table-sortable">
+      <thead>
+        <tr>
+          <th class="column-header first {sorter: 'ignoreCase'}"><span class="sort-icon">${_("Name")}</span></th>
+          <th class="column-header {sorter: 'ignoreCase'}"><span class="sort-icon">${_("Domain")}</span></th>
+          <th class="column-header {sorter: 'datetime'}"><span class="sort-icons">${_("Created on")}</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <acre:script>console.log(c)</acre:script>
+        <acre:block for="query in c.saved_queries">
+        <tr acre:for="obj in query['/freebase/domain_profile/featured_views']">
+          <th class="row-header odd" scope="row">
+            <a href="${h.fb_url(obj.id)}">${i18n.display_name(obj)}</a>
+          </th>
+          <td>
+            <a href="${h.fb_url(query.id)}" title="${_('View domain')}">${i18n.display_name(query)}</a>
+          </td>
+          <td class="odd">
+            ${i18n_c.datetime(obj.timestamp, [["class","published"],["data-format","medium"]])}
+          </td>
+        </tr>
+        </acre:block>
+      </tbody>
+    </table>
+  </acre:block>
 </div>
 </acre:block>
 
 <acre:block def="footer_script()">
   <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
-  <script src="data.mf.js"></script>
 </acre:block>

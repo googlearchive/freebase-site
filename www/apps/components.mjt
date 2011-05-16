@@ -38,9 +38,9 @@
 <table class="table table-sortable" cellspacing="0">
   <thead>
     <tr>
-      <th scope="col" class="column-header first"><span class="sort-icon">App</span></th>
-      <th scope="col" class="column-header"><span class="sort-icon">Authors</span></th>
-      <th scope="col" class="column-header"><span class="sort-icons">Last Edited</span></th>
+      <th scope="col" class="column-header first {sorter: 'ignoreCase'}"><span class="sort-icon">App</span></th>
+      <th scope="col" class="column-header {sorter: 'ignoreCase'}"><span class="sort-icon">Authors</span></th>
+      <th scope="col" class="column-header {sorter: 'datetime'}"><span class="sort-icons">Last Edited</span></th>
   </tr>
   </thead>
   <tbody>

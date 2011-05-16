@@ -385,3 +385,51 @@ function property_detail(topic, property) {
       });
   });
 };
+
+// Return list of domains by user
+function user_domains(user) {
+
+  // query to get domains in which user
+  // is an Owner
+  var q1 = [{
+    "id":   null,
+    "name": i18n.mql.query.name(),
+    "type": "/type/domain",
+    "/type/domain/owners": {
+      "member": {
+        "optional": false,
+        "id": user,
+        "link": {
+          "timestamp": null 
+        }
+      }
+    }
+  }];
+
+  // query to get domains which the
+  // user is only watching
+  var q2 = {
+    "id": user,
+    "type": "/type/user",
+    "/freebase/user_profile/favorite_domains": [{
+      "id": null,
+      "name": i18n.mql.query.name(),
+      "link": {
+        "timestamp": null 
+      }
+    }]
+  };
+
+  var promises = {};
+
+  promises.domains_owned = freebase.mqlread(q1);
+  promises.domains_watched = freebase.mqlread(q2);
+
+  return deferred.all(promises)
+    .then(function(results) {
+      return {
+        owned: results.domains_owned.result,
+        watched: results.domains_watched.result
+      };
+  });
+};

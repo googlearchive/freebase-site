@@ -70,7 +70,7 @@ function domain(id) {
       return env.result || [];
     })
     .then(function(domain) {
-      
+
       // initialize promise array
       var promises = [];
 
@@ -114,7 +114,7 @@ function domain(id) {
 
           // Attach top contributors to domain object
           // For now, we do a simple string filter to
-          // weed out bots. However, this should be 
+          // weed out bots. However, this should be
           // added to the activity service
 
           var users = [];
@@ -137,7 +137,7 @@ function domain(id) {
       // this should be fixed in BDB updates.
 
       var summary_id = "summary_/guid/" + domain.guid.slice(1);
-      promises.push(freebase.get_static("activity", summary_id) 
+      promises.push(freebase.get_static("activity", summary_id)
         .then(function(summary) {
           return summary || {};
         })
@@ -166,147 +166,121 @@ function domain(id) {
     });
 };
 
-
-
 /**
  * Type query
  * Get a type and a subset of instances
  */
 function type(type_id) {
-
-  var PROP_COUNT = 3;
-
   // define our current language
   var lang = i18n.lang;
 
-  // get our type plus basic set of properties
   var q = {
-    "id": type_id,
-    "guid": null,
-    "type": "/type/type",
-    "/type/type/domain": {
-      "id": null,
-      "name": i18n.mql.query.name()
+    id: type_id,
+    guid: null,
+    type: "/type/type",
+    domain: {
+      id: null,
+      name: i18n.mql.query.name()
     },
     "/freebase/type_hints/mediator": null,
-    "properties": [
+    properties: [
       propbox_mql.prop_schema({
         "/freebase/property_hints/disambiguator": null,
-        "index": null,
-        "optional": true
-        }, lang)
-     ]
+        optional: true,
+        index: null,
+        sort: "index",
+        "forbid:expected_type": {
+          "/freebase/type_hints/mediator": {
+            value: true,
+            optional: "forbidden"
+          }
+        }
+      }, lang)
+    ]
   };
 
   return freebase.mqlread(q)
-  .then(function(env) {
+    .then(function(env) {
+      var this_type = env.result;
 
-    // placeholder for all our promise requests
-    var promises = {};
+      var promises = [];
+      /**
+       *  Call Activity service to get Type metadata,
+       *  including instance count, etc.
+      */
+      // contruct path for BDB file
+      var activity_id = "/guid/" + this_type.guid.slice(1);
+      promises.push(freebase.get_static("activity", activity_id)
+        .then(function(activity) {
+          if (!activity) {
+            return {};
+          }
+          var summary = {};
+          summary.topic_count = activity.total['new'];
+          summary.facts = activity.total.edits;
+          summary.has_article = activity.has_article;
+          summary.has_image = activity.has_image;
+          return summary;
+        }));
 
-    /**
-     *  Call Activity service to get Type metadata,
-     *  including instance count, etc.
-    */ 
-
-    // contruct path for BDB file
-    var activity_id = "/guid/" + env.result.guid.slice(1);
-    var domain = {
-      "id": env.result["/type/type/domain"].id,
-      "name": env.result["/type/type/domain"].name
-    }
-
-    // get BDB summary for type
-    promises.activity = freebase.get_static("activity", activity_id)
-      .then(function(activity) {
-
-        if (!activity) {
-          return {};
+      var disambiguators = [];
+      var properties = [];
+      this_type.properties.forEach(function(prop) {
+        if (prop["/freebase/property_hints/disambiguator"]) {
+          disambiguators.push(prop);
         }
-
-        var summary = {};
-
-        summary.topic_count = activity.total['new'];
-        summary.facts = activity.total.edits;
-        summary.has_article = activity.has_article;
-        summary.has_image = activity.has_image;
-
-        return summary;
-    });
-
-    // simple flag for use in template
-    var is_mediator = env.result['/freebase/type_hints/mediator'] === true;
-
-    // Generate list properties we want to query for and output
-    var properties = env.result.properties;
-    var prop_structures = [];
-
-    // iterate through type properties and
-    // attach any disambiguating properties that are non-mediating
-    properties.forEach(function(prop) {
-      if(prop["/freebase/property_hints/disambiguator"]) {
-        if(prop["expected_type"]["/freebase/type_hints/mediator"] !== true) {
-          prop_structures.push(ph.minimal_prop_structure(prop, lang));
-        }
-      }
-    });
-
-    // If insufficient non-mediating disambiguating properties were found
-    // attach more properties for display 
-    if(prop_structures.length < PROP_COUNT) {
-      properties.forEach(function(prop) {
-        if(prop["/freebase/property_hints/disambiguator"] !== true && prop["expected_type"]["/freebase/type_hints/mediator"] !== true) {
-          prop_structures.push(ph.minimal_prop_structure(prop, lang));
+        else {
+          properties.push(prop);
         }
       });
-    }
+      properties = disambiguators.concat(properties).slice(0,3);
+      var prop_structures = properties.map(function(prop) {
+        // iterate through type properties and
+        // attach any disambiguating properties that are non-mediating
+        return ph.minimal_prop_structure(prop, lang);
+      });
 
-    // Make prop_structures equal PROP_COUNT if the type not a mediator
-    // We don't want to to display too many columns
-    if(prop_structures.length > PROP_COUNT && !is_mediator) {
-      prop_structures = prop_structures.slice(0,PROP_COUNT);
-    }
+      /**
+       * Now that we have properties to display
+       * we need to construct an instance query,
+      */
 
-    /**
-     * Now that we have properties to display
-     * we need to construct an instance query,
-    */ 
+      // our basic query shape
+      var q = [{
+        id: null,
+        mid: null,
+        limit: 60,
+        name: i18n.mql.query.name(),
+        type: type_id,
+        optional: true
+      }];
 
-    // our basic query shape
-    var q = [{
-      id: null,
-      mid: null,
-      limit: 60,
-      name: i18n.mql.query.name(),
-      type: type_id,
-      optional: true
-    }];
+      // push each of the properties onto
+      // our instance query
+      prop_structures.forEach(function(prop_structure) {
+        q[0][prop_structure.id] = ph.mqlread_query(null, prop_structure, null, lang)[prop_structure.id];
+      });
 
-    // push each of the properties onto
-    // our instance query
-    prop_structures.forEach(function(prop_structure) {
-      q[0][prop_structure.id] = ph.mqlread_query(null,
-        prop_structure, null, lang)[prop_structure.id];
+      // execute instance query
+      promises.push(freebase.mqlread(q)
+        .then(function(env) {
+          return env.result;
+        }));
+
+      return deferred.all(promises)
+        .then(function([activity, instances]) {
+          return {
+            activity: activity,
+            instances: instances,
+            properties: prop_structures,
+            is_mediator: this_type["/freebase/type_hints/mediator"] === true,
+            table_type: "type",
+            domain: this_type.domain
+          };
+        });
     });
-
-    // execute instance query
-    promises.data = freebase.mqlread(q);
-
-    // wait for all queries to finish
-    // and return to controller
-    return deferred.all(promises)
-      .then(function(results) {
-        return {
-          instances: results.data.result,
-          activity: results.activity,
-          properties: prop_structures,
-          domain: domain,
-          is_mediator: is_mediator,
-          table_type: "type"
-        };
-    });
-  })
 };
+
 
 
 
@@ -370,7 +344,7 @@ function property_detail(topic, property) {
     }
     result.forEach(function(prop) {
       if (!(prop.master_property === property || prop.reverse_property === property)) {
-        q[prop.key.value] = prop.unique ? null : [];        
+        q[prop.key.value] = prop.unique ? null : [];
       }
     });
     return [q];
@@ -400,7 +374,7 @@ function user_domains(user) {
         "optional": false,
         "id": user,
         "link": {
-          "timestamp": null 
+          "timestamp": null
         }
       },
     },
@@ -416,7 +390,7 @@ function user_domains(user) {
       "id": null,
       "name": i18n.mql.query.name(),
       "link": {
-        "timestamp": null 
+        "timestamp": null
       },
       "limit": 1000
     }]

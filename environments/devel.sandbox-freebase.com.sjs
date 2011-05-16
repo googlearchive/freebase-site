@@ -56,8 +56,8 @@ var rules = {
     {type: "/type/domain", tabs: [
       ["Data", apps.data + "/domain.controller"],
       ["Schema", apps.schema + "/domain.controller"],
-      ["Inspect", apps.triples + "/triples.controller"],
       ["Community", apps.group + "/group.controller"]
+      ["Inspect", apps.triples + "/triples.controller"],
     ]},
     {type: "/type/type", tabs: [
       ["Data", apps.data + "/type.controller"],

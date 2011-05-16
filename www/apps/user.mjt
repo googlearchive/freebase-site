@@ -49,12 +49,17 @@
       <ol>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url('/')}">${_("Data")}</a>
+            <a href="#">${_("User")}</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.fb_url('/')}">${i18n.display_name(c.object)}</a>
           </span>
         </li>
         <li if="c.domain" class="breadcrumb-item last">
           <span class="breadcrumb-item-inner">
-            <a href="#">${i18n.display_name(c.object)}</a>
+            <a href="#">${_("Apps")}</a>
           </span>
         </li>
       </ol>

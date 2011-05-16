@@ -65,22 +65,22 @@ function featured_views_by_domain(domain) {
 };
 
 function featured_views_by_user(user) {
-  var q = { 
-    "id": domain,
+  var q = [{ 
+    "id": null,
+    "name": i18n.mql.query.name(),
     "/freebase/domain_profile/featured_views": [{
       "id": null,
-      "optional": true,
       "name": i18n.mql.query.name(),
       "creator": {
-        "id": null
+        "id": user
       },
       "timestamp": null
     }]
-  }
+  }];
 
   return freebase.mqlread(q)
     .then(function(env) {
-      return env.result['/freebase/domain_profile/featured_views']
+      return env.result
     })
 
 };

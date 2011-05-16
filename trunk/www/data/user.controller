@@ -32,7 +32,7 @@
 var object = this.obj;  // from lib/routing/object.sjs
 
 var validators = acre.require("lib/validator/validators.sjs");
-var queries = acre.require("queries");
+var queries = acre.require("queries.sjs")
 
 var SPEC = {
 
@@ -40,7 +40,7 @@ var SPEC = {
 
   auth: false,
 
-  template: "domain.mjt",
+  template: "user.mjt",
 
   template_base: "lib/template/freebase_object.mjt",
 
@@ -55,7 +55,7 @@ var SPEC = {
     return {
       id:      id,
       object:  object,
-      domain:   queries.domain(id)
+      domains:   queries.user_domains(id)
     };
   }
 };

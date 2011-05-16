@@ -94,6 +94,7 @@ function make_app(appinfo) {
     };
   }
   
+  console.log(app);
   return app;
 }
 
@@ -235,11 +236,13 @@ var user_apps = function(username, opts) {
     return [];
   }
   
+  var user_id = '/user/' + username.split("/").pop();
+  
   var ext = {
     "sort" : "name",
     "by:/type/domain/owners" : {
       "member" : {
-        "id" : '/user/' + username
+        "id" : user_id
       }
     },
   };

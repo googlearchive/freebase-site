@@ -32,7 +32,7 @@
 var object = this.obj;  // from lib/routing/object.sjs
 
 var validators = acre.require("lib/validator/validators.sjs");
-var queries = acre.require("queries.sjs")
+var queries = acre.require("queries.sjs");
 
 var SPEC = {
 

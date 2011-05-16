@@ -197,17 +197,7 @@ Iterate through standard properties
       <td>
         <ul class="data-list">
         <acre:block for="k, val in values">
-          <acre:block if="val.id">
-          <li>
-          <span class="wrapper">
-            <a class="property-value" href="${h.fb_url('', val.id)}">${val.text}</a>
-          </span>
-          </li>
-          </acre:block>
-          <!!-- TODO: Need to handle string vs integer output -->
-          <acre:block else="">
-            <li>${val.text}</li>
-          </acre:block>
+          ${propbox.value(instance.id, prop, val)}
         </acre:block>
         </ul>
       </td>

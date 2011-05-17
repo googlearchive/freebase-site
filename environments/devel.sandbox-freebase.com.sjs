@@ -45,7 +45,7 @@ var rules = {
     {host:"metaweb.com", url:"http://www.freebase.com"},
     {host:"www.metaweb.com", url:"http://www.freebase.com"}
   ],
-  
+
   "object": [
     {type: "/freebase/apps/application", tabs: [
       ["View", apps.topic + "/topic.controller", {domains: "all", type: "/freebase/apps/application"}],
@@ -56,8 +56,8 @@ var rules = {
     {type: "/type/domain", tabs: [
       ["Data", apps.data + "/domain.controller"],
       ["Schema", apps.schema + "/domain.controller"],
-      ["Community", apps.group + "/group.controller"]
-      ["Inspect", apps.triples + "/triples.controller"],
+      ["Community", apps.group + "/group.controller"],
+      ["Inspect", apps.triples + "/triples.controller"]
     ]},
     {type: "/type/type", tabs: [
       ["Data", apps.data + "/type.controller"],

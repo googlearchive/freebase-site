@@ -245,6 +245,7 @@ var user_apps = function(username, opts) {
         "id" : user_id
       }
     },
+    "limit": 1000
   };
 
   var q = acre.require('app_query').extend(ext).query;

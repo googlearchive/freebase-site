@@ -272,6 +272,7 @@
             </ul>
           </td>
           <td rowspan="$instance_rowspan">
+            ${i18n.display_article(instance, 'blurb')}
           </td>
         </acre:block>
         <!!--

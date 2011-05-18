@@ -74,6 +74,7 @@ var SPEC = {
     
     var options = {
       'method': "POST",
+      'bless': true,
       'content': acre.form.encode(form),
       'headers': {
         'User-Agent' : 'Freebase ACRE',

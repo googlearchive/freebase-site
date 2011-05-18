@@ -28,18 +28,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-function route(rules, scope) {
-  // Dump all routing info and rules.
-  // This is primarily for our automated buildbot/testrunners
-  if (scope.acre.current_script === scope.acre.request.script || acre.request.base_path == "/_fs_routing") {
-    var d = scope.acre.request.server_name.length - scope.acre.host.name.length;
-      if ((d >=0 && scope.acre.request.server_name.lastIndexOf(scope.acre.host.name) === d) || acre.request.base_path == "/_fs_routing") {
-      scope.acre.write(JSON.stringify(rules, null, 2));
-      scope.acre.exit();
-    }
-  }
 
-  ["host", "prefix", "object"].forEach(function(name) {
+var h = acre.require("helper/helpers_util.sjs");
+
+function route(apps, rules, scope) {
+
+  var dump = acre.request.base_path === "/_fs_routing";
+
+  var rules_dump = {};
+
+  var routers = ["host", "prefix", "object"];
+  for (var i=0,l=routers.length; i<l; i++) {
+    var name = routers[i];
     var router_file = acre.require("routing/" + name);
     var router_class;
     if (router_file.router) {
@@ -51,14 +51,27 @@ function route(rules, scope) {
     else {
       throw "A router needs to be defined in " + name;
     }
-    var router = new router_class();
+    var router = new router_class(apps);
     var rule = rules[name];
     if (rule) {
+      // to over-ride or add to existing rules defined in the specific router
       router.add(rule);
     }
-    router.route(scope.acre.request);
-  });
 
-  // TODO: not found
-  acre.route("error/error.mjt");
+    if (dump) {
+      rules_dump[name] = router.dump();
+    }
+    else {
+      router.route(scope.acre.request);
+    }
+  }
+
+  if (dump) {
+    scope.acre.write(JSON.stringify(rules_dump, null, 2));
+    scope.acre.exit();
+  }
+  else {
+    // TODO: not found
+    acre.route("error/error.mjt");
+  }
 };

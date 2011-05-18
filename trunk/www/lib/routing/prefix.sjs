@@ -32,20 +32,181 @@ var exports = {
   router: PrefixRouter
 };
 
-var h = acre.require("routing/helpers");
+var h = acre.require("helper/helpers_util.sjs");
+var rh = acre.require("routing/helpers");
+
+
+
+var rules = [
+  // Urls for user-facing apps
+  {prefix:"/favicon.ico",        app:"lib", script: "template/favicon.ico"},
+  {prefix:"/",                   app:"homepage", script: "index"},
+  {prefix:"/index",              url:"/", redirect: 301},
+  {prefix:"/home",               app:"homepage", script: "home"},
+  {prefix:"/homepage",           app:"homepage"},
+  {prefix:"/schema",             app:"schema"},
+  {prefix:"/apps",               app:"apps"},
+  {prefix:"/appeditor",          app:"appeditor"},
+  {prefix:"/docs",               app:"docs"},
+  {prefix:"/policies",           app:"policies"},
+  {prefix:"/query",              app:"query"},
+  {prefix:"/labs/cubed",         app:"cubed"},
+  {prefix:"/labs/parallax",      app:"parallax"},
+  {prefix:"/labs",               app:"labs"},
+  {prefix:"/sample",             app:"sample"},
+  {prefix:"/account",            app:"account"},
+
+  // Urls for exposed ajax libraries and static resources
+  // TODO: remove this and use ajax router
+  {prefix:"/static",             app:"lib", script:"routing/static.sjs"},
+  {prefix:"/ajax",               app:"lib", script:"routing/ajax.sjs"},
+
+  // Urls for administrative tools
+  {prefix:"/admin",              app:"admin"},
+  {prefix:"/app/tmt",            app:"tmt"},
+
+  //
+  // Redirect away from client urls
+  //
+  {prefix:"/edit/topic",              url:"/topic", redirect:301},
+  {prefix:"/site/feedback",           url:"http://bugs.freebase.com", redirect:301},
+  {prefix:"/user/settings",           url:"/", redirect:301},
+  {prefix:"/signin/recoverpassword",  url:"/", redirect:301},
+  {prefix:"/signin/changepassword",   url:"/", redirect:301},
+  {prefix:"/signin/activate",         url:"/", redirect:301},
+  {prefix:"/signin/authorize_token",  url:"/", redirect:301},
+  {prefix:"/discuss/threads",         url:"/inspect", redirect:301},
+  {prefix:"/user/replies",            url:"/inspect", redirect:301},
+  {prefix:"/history/view",            url:"/inspect", redirect:301},
+  {prefix:"/tools/flags/review",      url:"/inspect", redirect:301},
+  {prefix:"/importer/list",           url:"/inspect", redirect:301},
+  {prefix:"/domain/users",            url:"/schema", redirect:301},
+  {prefix:"/search",                  url:"/", redirect:301},
+
+  //
+  // Redirects for legacy urls
+  //
+  // Signin
+  {prefix:"/signin/recoverPassword",  url:"/signin/recoverpassword", redirect:301},
+  {prefix:"/signin/recoverPassword3", url:"/signin/changepassword", redirect:301},
+  {prefix:"/private/account/activate", url:"/signin/activate", redirect:301},
+  {prefix:"/signin/app",              url:"/signin/authorize_token", redirect:301},
+
+  // Account settings
+  {prefix:"/view/account",            url:"/user/settings/account", redirect:301},
+  {prefix:"/user/account",            url:"/user/settings/account", redirect:301},
+
+  // Wiki
+  {prefix:"/help",                    url:"http://wiki.freebase.com", redirect:301},
+  {prefix:"/help/faq",                url:"http://wiki.freebase.com/wiki/FAQ", redirect:301},
+  {prefix:"/developer",               url:"http://wiki.freebase.com/wiki/Developers", redirect:301},
+  {prefix:"/view/developer",          url:"http://wiki.freebase.com/wiki/Developers", redirect:301},
+  {prefix:"/view/faq",                url:"http://wiki.freebase.com/wiki/FAQ", redirect:301},
+  {prefix:"/view/documentation",      url:"http://wiki.freebase.com", redirect:301},
+  {prefix:"/view/helpsearch",         url:"http://wiki.freebase.com", redirect:301},
+  {prefix:"/view/helpcenter",         url:"http://wiki.freebase.com", redirect:301},
+  {prefix:"/view/tutorial",           url:"http://wiki.freebase.com", redirect:301},
+  {prefix:"/view/discussionhub",      url:"http://wiki.freebase.com", redirect:301},
+  {prefix:"/discuss/hub",             url:"http://wiki.freebase.com", redirect:301},
+  {prefix:"/tools",                   url:"http://wiki.freebase.com", redirect:301},
+  {prefix:"/community",               url:"http://wiki.freebase.com", redirect:301},
+  {prefix:"/build",                   url:"http://wiki.freebase.com", redirect:301},
+
+  // Feedback
+  {prefix:"/view/feedback",           url:"/site/feedback", redirect:301},
+  {prefix:"/view/feedback_thanks",    url:"/site/feedback_thanks", redirect:301},
+
+  // Discuss
+  {prefix:"/view/discuss",            url:"/discuss/threads", redirect:301},
+  {prefix:"/view/mydiscuss",          url:"/user/replies", redirect:301},
+  {prefix:"/user/discuss",            url:"/user/replies", redirect:301},
+
+  // Homepage
+  {prefix:"/view/mydomains",          url:"/home", redirect:301},
+  {prefix:"/user/domains",            url:"/home", redirect:301},
+  {prefix:"/signin",                  url:"/", redirect:301},
+  {prefix:"/signin/signin",           url:"/", redirect:301},
+  {prefix:"/signin/signin.html",      url:"/", redirect:301},
+  {prefix:"/site/data",               url:"/", redirect:301},
+  {prefix:"/view/allDomains",         url:"/", redirect:301},
+  {prefix:"/data",                    url:"/", redirect:301},
+  {prefix:"/explore",                 url:"/", redirect:301},
+
+  // User profile
+  {prefix:"/view/user",               url:"/user/profile", redirect:301},
+
+  // History
+  {prefix:"/view/history",            url:"/history/view", redirect:301},
+  {prefix:"/history/user",            url:"/history/view", redirect:301},
+  {prefix:"/history/topic",           url:"/history/view", redirect:301},
+
+  // Schema
+  {prefix:"/view/schema",             url:"/", redirect:301},
+  {prefix:"/tools/schema",            url:"/", redirect:301},
+  {prefix:"/type/schema",             url:"/", redirect: 301},
+
+  // Queryeditor
+  {prefix:"/queryeditor",             url:"/query/editor", redirect:301},
+  {prefix:"/app/queryeditor",         url:"/query/editor", redirect:301},
+  {prefix:"/tools/queryeditor",       url:"/query/editor", redirect:301},
+  {prefix:"/view/queryeditor",        url:"/query/editor", redirect:301},
+
+  // Inspect
+  {prefix:"/tools/explore",           url:"/inspect", redirect:301},
+  {prefix:"/tools/explore2",          url:"/inspect", redirect:301},
+
+  // Appeditor
+  {prefix:"/tools/appeditor",         url:"/appeditor", redirect:301},
+
+  // Review queue
+  {prefix:"/tools/pipeline/home",     url:"/tools/flags/review", redirect:301},
+  {prefix:"/tools/pipeline/showtask", url:"/tools/flags/review", redirect:301},
+
+  // List Importer
+  {prefix:"/import/list",             url:"/importer/list", redirect:301},
+
+  // Search
+  {prefix:"/view/search",             url:"/search", redirect:301},
+
+  // Policies
+  {prefix:"/signin/tos",              url:"/policies/tos", redirect:301},
+  {prefix:"/signin/cc",               url:"/policies/copyright", redirect:301},
+  {prefix:"/signin/freebaseid",       url:"/policies/freebaseid", redirect:301},
+  {prefix:"/signin/licensing",        url:"/policies/licensing", redirect:301},
+  {prefix:"/signin/privacy",          url:"/policies/privacy", redirect:301},
+
+  // View
+  {prefix:"/view/filter",             url:"/", redirect:301},
+  {prefix:"/view/domain",             url:"/", redirect:301},
+  {prefix:"/view/image",              url:"/", redirect:301},
+  {prefix:"/view/document",           url:"/", redirect:301},
+  {prefix:"/view/usergroup",          url:"/", redirect:301},
+  {prefix:"/view/fb",                 url:"/", redirect:301},
+  {prefix:"/view/query",              url:"/", redirect:301},
+  {prefix:"/view/api/metaweb/view",   url:"/", redirect:301},
+  {prefix:"/view/guid/filter",        url:"/", redirect:301},
+  {prefix:"/view/help",               url:"/", redirect:301},
+  {prefix:"/view",                    url:"/", redirect:301},
+  {prefix:"/helptopic",               url:"/", redirect:301},
+  {prefix:"/iv/fb",                   url:"/", redirect:301},
+
+  // Other
+  {prefix:"/view/userdomains",        url:"/domain/users", redirect:301},
+  {prefix:"/newsfeed",                url:"/private/newsfeed", redirect:301}
+];
+
+
 
 /**
    ----Prefix routing logic for Acre---
    1. Add routes with router.add({prefix:, app:, script:?, redirect:?, url:?})
       there can only be one route per exact prefix
       there can only be one route per app, script combo
-   2. Find the route for app, script combo with router.route_for_app(app, script?)
-   3. Find the route for request path with router.route_for_path(path)
+   2. Find the route for request path with router.route_for_path(path)
  */
-function PrefixRouter() {
+function PrefixRouter(app_labels) {
   var route_list = [];
   var routing_tree = {};
-  var canonical_routes = {};
 
   var key_for_app = function(app, script) {
     var key = app;
@@ -95,37 +256,21 @@ function PrefixRouter() {
           route.redirect < 300 || route.redirect > 399)) {
         throw 'A redirect must be a valid numeric code: '+ route.redirect;
       }
+      if (route.app) {
+        var app = app_labels[route.app];
+        if (!app) {
+          throw 'An app label must exist for: ' + route.app;
+        }
+        // replace route.app with actual app path
+        route.app = app;
+      }
+
 
       // Find the leaf node for this prefix and place the routing rule there
       var subtree = traverse_key_tree(routing_tree, route.prefix.split('/'), true);
-
-      if (subtree.route) {
-        throw 'Prefix already exists: cannot override old route('+JSON.stringify(subtree.route)+') with a new route ('+JSON.stringify(route)+')';
-      }
       subtree.route = route;
-
-      // If this is a canonical route for an app then store it
-      // There can only be one route per app,script combo
-      if (route.app && !route.redirect) {
-        var key = key_for_app(route.app, route.script);
-        if(canonical_routes[key]) {
-          throw 'Canonical route already exists: cannot override old route('+JSON.stringify(canonical_routes[key])+') with a new route ('+JSON.stringify(route)+')';
-        }
-        canonical_routes[key] = route;
-      }
-
-      route_list.push(route);
+      h.splice_with_key(route_list, "prefix", route);
     });
-  };
-
-  var route_for_app = this.route_for_app = function(app, script) {
-    // First try to see if there is a specific route for this script
-    var route = canonical_routes[key_for_app(app, script)];
-    // Then check if there is just routing for this app
-    if (!route) {
-      route = canonical_routes[key_for_app(app)];
-    }
-    return route;
   };
 
   var route_for_path = this.route_for_path = function(path) {
@@ -133,8 +278,8 @@ function PrefixRouter() {
     return subtree.route;
   };
 
-  var all_routes = this.all_routes = function() {
-    return route_list.slice(0);
+  var dump = this.dump = function() {
+    return route_list.slice();
   };
 
   var route = this.route = function(req) {
@@ -167,11 +312,12 @@ function PrefixRouter() {
         var path_info = path.replace(rule.prefix, '');
 
         if (!script) {
-          var [script, path_info, qs] = h.split_path(path_info);
+          var [script, path_info, qs] = rh.split_path(path_info);
         }
         // acre.route and exit
         acre.route([
-            (rule.app ? rule.app + "/" : ""),
+            rule.app,
+            "/",
             script,
             path_info,
             (query_string ? "?" + query_string : "")
@@ -181,4 +327,7 @@ function PrefixRouter() {
     }
     return false;
   };
+
+  // add default routing rules
+  this.add(rules);
 };

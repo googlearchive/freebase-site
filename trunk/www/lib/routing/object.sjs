@@ -33,27 +33,101 @@ var exports = {
   router: ObjectRouter
 };
 
-var h = acre.require("helper/helpers.sjs");
+var h = acre.require("helper/helpers_util.sjs");
 var validators = acre.require("validator/validators.sjs");
 var object_query = acre.require("queries/object.sjs");
 
+var rules = [
+  {
+    type: "/freebase/apps/application",
+    tabs: [
+      ["View", "topic", "topic.controller", {domains: "all", type: "/freebase/apps/application"}],
+      ["Authors", "group", "group.controller"],
+      ["Activity", "activity", "app.controller"],
+      ["Inspect", "triples", "triples.controller"]
+    ]
+  },
+  {
+    type: "/type/domain",
+    tabs: [
+      ["Data", "data", "domain.controller"],
+      ["Schema", "schema", "domain.controller"],
+      ["Community", "group", "group.controller"],
+      ["Inspect", "triples", "triples.controller"]
+    ]
+  },
+  {
+    type: "/type/type",
+    tabs: [
+      ["Data", "data", "type.controller"],
+      ["Schema", "schema", "type.controller"],
+      ["Inspect", "triples", "triples.controller"]
+    ]
+  },
+  {
+    type: "/type/property",
+    tabs: [
+      ["Schema", "schema", "property.controller"],
+      ["Inspect", "triples", "triples.controller"]
+    ]
+  },
+  {
+    type: "/type/user",
+    tabs: [
+      ["Domains", "data", "user.controller"],
+      ["Queries", "query", "user.controller"],
+      ["Apps", "apps", "user.controller"],
+      ["Inspect", "triples", "triples.controller"]
+    ]
+  },
+  {
+    type: "/freebase/query",
+    tabs: [
+      ["Data", "data", "query.controller"],
+      ["Inspect", "triples", "triples.controller"]
+    ]
+  },
+  {
+    type: "/common/topic",
+    tabs: [
+      ["View", "topic", "topic.controller"],
+      ["Inspect", "triples", "triples.controller"],
+      ["On the Web", "sameas", "sameas.controller"]
+    ]
+  },
+  {
+    type: "/type/object",
+    tabs: [
+      ["Inspect", "triples", "triples.controller"]
+    ]
+  }
+];
+
 var self = this;
 
-function ObjectRouter() {
-  var types_list = [];
+function ObjectRouter(app_labels) {
+  var route_list = [];
   var types = {};
 
   this.add = function(routes) {
     if (!(routes instanceof Array)) {
       routes = [routes];
     }
-    
+
     routes.forEach(function(route) {
       if (!route || typeof route !== 'object') {
         throw 'A routing rule must be a dict: '+JSON.stringify(route);
       }
+      route.tabs.forEach(function(tab) {
+        var app = app_labels[tab[1]];
+        if (!app) {
+          throw 'An app label must exist for: ' + tab[1];
+        }
+        tab[1] = app;
+      });
+
       types[route.type] = route;
-      types_list.push(route.type);
+      h.splice_with_key(route_list, "type", route);
     });
   };
 
@@ -64,75 +138,84 @@ function ObjectRouter() {
     var id = validators.MqlId(path_info, {if_invalid:null});
 
     if (id) {
-      
-      var o;      
+
+      var o;
       var d = object_query.object(id)
         .then(function(obj) {
           o = obj;
         });
-      
+
       acre.async.wait_on_results();
-      
+
       d.cleanup();
-      
+
       if (o) {
         // merged topic
         if (o.replaced_by) {
           var id = o.replaced_by.id.indexOf("/en") === 0 ? o.replaced_by.mid : o.replaced_by.id;
           redirect(id);
-        } 
+        }
         // canonicalize /en topics to mids
         else if (path_info.indexOf("/en") === 0) {
           redirect(o.mid);
-        } 
+        }
         // otherwise render object template
         else {
-          
+
           // Build type map for object
-          var obj_types = {};
-          o.type.forEach(function(type) {
-            obj_types[type.id] = type;
-          });
-          
+          var obj_types = h.map_array(o.type, "id");
+
           // Find correct set of tabs for this object
-          for (var t=0; t < types_list.length; t++) {
-            if (types_list[t] in obj_types) {
-              o.tabs = types[types_list[t]].tabs;
+          for (var i=0,l=route_list.length; i<l; i++) {
+            var type = route_list[i].type;
+            if (type in obj_types) {
+              o.tabs = types[type].tabs;
               break;
             }
           }
-          
+
           // Turn tab config arrays into something more useful
           if (!u.isArray(o.tabs)) throw "Missing tab configuration for this object";
+
           o.tabs = o.tabs.map(function(tab) {
+            var app_path = tab[1] + "/" + tab[2];
             return {
               name: tab[0],
               key: tab[0].replace(/\s/g, "_").toLowerCase(),
-              path: tab[1] + path_info,
-              params: h.isPlainObject(tab[2]) ? tab[2] : {}
+              path: app_path + path_info,
+              params: h.isPlainObject(tab[3]) ? tab[3] : {}
             };
           });
 
           // Pick a tab
           o.sel_tab = o.tabs[0];
-          for (var t=0; t < o.tabs.length; t++) {
-            var tab = o.tabs[t];
+          for (var i=0,l=o.tabs.length; i < l; i++) {
+            var tab = o.tabs[i];
             if (tab.key in acre.request.params) {
               o.sel_tab = tab;
               break;
             }
           }
-          
+
           // Render it
           h.extend(acre.request.params, o.params);
+
           self.obj = o;
           var body = acre.include.call(self, o.sel_tab.path);
+
           acre.write(body);
           acre.exit();
         }
       }
     }
   };
+
+  var dump = this.dump = function() {
+    return route_list.slice();
+  };
+
+  // add default rules
+  this.add(rules);
 };
 
 function redirect(path) {

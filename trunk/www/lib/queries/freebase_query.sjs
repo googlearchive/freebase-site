@@ -64,6 +64,7 @@ function featured_views_by_domain(domain) {
     })
 };
 
+// Return a set of saved queries by user
 function featured_views_by_user(user) {
   var q = [{ 
     "id": null,
@@ -82,5 +83,7 @@ function featured_views_by_user(user) {
     .then(function(env) {
       return env.result
     })
+};
 
+function apps_by_user(user) {
 };

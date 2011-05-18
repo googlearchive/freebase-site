@@ -40,7 +40,7 @@ var SPEC = {
 
   auth: false,
 
-  template: "table.mjt",
+  template: "type.mjt",
 
   template_base: "lib/template/freebase_object.mjt",
 

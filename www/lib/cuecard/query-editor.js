@@ -352,7 +352,8 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
             ("service" in this._options && this._options.service != null ? ("service=" + encodeURIComponent(this._options.service) + "&") : "");
         
         var self = this;
-        var onDone = function(o) {
+        var onDone = function(env) {
+            var o = env.result;
             if (o["error"] == "unauthorized") {
                 self._outputPane.setStatus("Query editor is not authorized to write on your behalf.");
                 self._options.onUnauthorizedMqlWrite();
@@ -376,7 +377,11 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
             $.post(url, { "query" : q }, onDone, "json");
         } else {
             q = this._outputPane.prepareQuery(q);
-            CueCard.JsonpQueue.call(url + "query=" + encodeURIComponent(q), onDone, onError);
+            $.ajax(url + "query=" + encodeURIComponent(q), {
+                dataType: "json",
+                success: onDone, 
+                error: onError
+            });
         }
     }
     if ("onRun" in this._options) {

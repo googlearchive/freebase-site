@@ -218,6 +218,9 @@ function type(type_id) {
           return summary;
         }));
 
+      // build two separate arrays
+      // one holds disambiguating properties
+      // the other olds non-disambiguating properties
       var disambiguators = [];
       var properties = [];
       this_type.properties.forEach(function(prop) {
@@ -228,10 +231,40 @@ function type(type_id) {
           properties.push(prop);
         }
       });
-      properties = disambiguators.concat(properties).slice(0,2);
+
+      // join the two arrays together, keeping disambiguators first
+      properties = disambiguators.concat(properties);
+
+      // We need to check whether we have any mediated properties.
+      // If so, we want to limit the number of properties returned
+      // to just 1 so as not to overwhelm the page layout.
+      // Otherwise, return up to 3 properties.
+
+      var mediated_properties = false;
+      var PROP_COUNT = 3;
+
+      if (properties.length < PROP_COUNT) {
+        prop_length = properties.length
+      }
+      else {
+        prop_length = PROP_COUNT;
+      }
+      
+      for (i=0; i < prop_length; i++) {
+        if(properties[i]['expected_type']['/freebase/type_hints/mediator']) {
+          mediated_properties = true;
+          break;
+        } 
+      }
+
+      if(mediated_properties === true) {
+        properties = properties.slice(0,1);
+      }
+      else {
+        properties = properties.slice(0,3);
+      }
+
       var prop_structures = properties.map(function(prop) {
-        // iterate through type properties and
-        // attach any disambiguating properties that are non-mediating
         return ph.minimal_prop_structure(prop, lang);
       });
 
@@ -246,6 +279,7 @@ function type(type_id) {
         mid: null,
         limit: 30,
         name: i18n.mql.query.name(),
+        "/common/topic/article": i18n.mql.query.article(),
         type: type_id,
         optional: true
       }];
@@ -253,17 +287,27 @@ function type(type_id) {
       // push each of the properties onto
       // our instance query
       prop_structures.forEach(function(prop_structure) {
-        q[0][prop_structure.id] = ph.mqlread_query(null, prop_structure, null, lang)[prop_structure.id];
+        var prop_clause = ph.mqlread_query(null, prop_structure, null, lang)[prop_structure.id];
+        prop_clause[0].limit = 5;
+        q[0][prop_structure.id] = prop_clause; 
       });
 
       // execute instance query
       promises.push(freebase.mqlread(q)
         .then(function(env) {
-          return env.result;
+          var blurbs = [];
+          env.result.forEach(function(topic) {
+            blurbs.push(i18n.get_blurb(topic));
+          });
+          return deferred.all(blurbs)
+            .then(function() {
+              return env.result || [];
+            });
         }));
 
       return deferred.all(promises)
         .then(function([activity, instances]) {
+          console.log(instances);
           return {
             activity: activity,
             instances: instances,

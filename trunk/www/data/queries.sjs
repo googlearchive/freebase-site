@@ -188,13 +188,7 @@ function type(type_id) {
         "/freebase/property_hints/disambiguator": null,
         optional: true,
         index: null,
-        sort: "index",
-        "forbid:expected_type": {
-          "/freebase/type_hints/mediator": {
-            value: true,
-            optional: "forbidden"
-          }
-        }
+        sort: "index"
       }, lang)
     ]
   };
@@ -233,7 +227,7 @@ function type(type_id) {
           properties.push(prop);
         }
       });
-      properties = disambiguators.concat(properties).slice(0,3);
+      properties = disambiguators.concat(properties).slice(0,2);
       var prop_structures = properties.map(function(prop) {
         // iterate through type properties and
         // attach any disambiguating properties that are non-mediating
@@ -249,7 +243,7 @@ function type(type_id) {
       var q = [{
         id: null,
         mid: null,
-        limit: 60,
+        limit: 30,
         name: i18n.mql.query.name(),
         type: type_id,
         optional: true
@@ -273,7 +267,7 @@ function type(type_id) {
             activity: activity,
             instances: instances,
             properties: prop_structures,
-            is_mediator: this_type["/freebase/type_hints/mediator"] === true,
+            root_type_is_mediator: this_type["/freebase/type_hints/mediator"] === true,
             table_type: "type",
             domain: this_type.domain
           };

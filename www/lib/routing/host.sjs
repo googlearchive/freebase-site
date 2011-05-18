@@ -33,6 +33,21 @@ var exports = {
   "router": HostRouter
 };
 
+var rules = [
+  {host:"freebase.com", url:"http://www.freebase.com"},
+  {host:"sandbox-freebase.com", url:"http://www.sandbox-freebase.com"},
+  {host:"sandbox.freebase.com", url:"http://www.sandbox-freebase.com"},
+  {host:"acre.freebase.com", url:"http://www.freebase.com/appeditor"},
+  {host:"acre.sandbox-freebase.com", url:"http://www.sandbox-freebase.com/appeditor"},
+  {host:"api.freebase.com", url:"http://wiki.freebase.com/wiki/Freebase_API"},
+  {host:"api.sandbox-freebase.com", url:"http://wiki.freebase.com/wiki/Freebase_API"},
+  {host:"metaweb.com", url:"http://www.freebase.com"},
+  {host:"www.metaweb.com", url:"http://www.freebase.com"}
+];
+
+
+var h = acre.require("helper/helpers_util.sjs");
+
 /**
  * host->url redirector
  */
@@ -48,8 +63,8 @@ function HostRouter() {
       if (!route || !route.host || !route.url) {
         throw 'A routing rule must be a dict with valid host and url: ' + JSON.stringify(route);
       }
-      route_list.push(route);
       route_map[route.host] = route.url;
+      h.splice_with_key(route_list, "host", route);
     });
   };
 
@@ -61,7 +76,17 @@ function HostRouter() {
       acre.response.set_header("location", url + req_path);
       acre.response.set_header("cache-control", "public, max-age: 3600");
       acre.exit();
+      return true;
     }
     return false;
   };
+
+  var dump = this.dump = function() {
+    return route_list.slice();
+  };
+
+  this.add(rules);
 };
+
+
+

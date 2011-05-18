@@ -174,6 +174,7 @@ function type(type_id) {
   // define our current language
   var lang = i18n.lang;
 
+  // get the properties and domain associated with our type
   var q = {
     id: type_id,
     guid: null,
@@ -268,15 +269,11 @@ function type(type_id) {
             instances: instances,
             properties: prop_structures,
             root_type_is_mediator: this_type["/freebase/type_hints/mediator"] === true,
-            table_type: "type",
             domain: this_type.domain
           };
         });
     });
 };
-
-
-
 
 /**
  * Saved query

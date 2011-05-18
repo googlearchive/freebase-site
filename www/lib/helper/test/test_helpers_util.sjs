@@ -304,4 +304,12 @@ test("intersect", function() {
   equal(h.intersect([1,2,3], [3,4,5]), true);
 });
 
+test("splice_with_key", function() {
+
+  same(h.splice_with_key([{a:"a"}, {a:"b"}], "a", {a:"c"}), [{a:"a"}, {a:"b"}, {a:"c"}]);
+  same(h.splice_with_key([{a:"a"}, {a:"b"}, {a:"c"}], "a", {a:"b", foo:"bar"}), [{a:"a"}, {a:"b", foo:"bar"}, {a:"c"}]);
+
+  same(h.splice_with_key([], "a", {a:"b", foo:"bar"}), [{a:"b", foo:"bar"}]);
+});
+
 acre.test.report();

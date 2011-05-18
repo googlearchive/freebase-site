@@ -46,7 +46,9 @@ var exports = {
   "endsWith": endsWith,
   "startsWith": startsWith,
 
-  "intersect": intersect
+  "intersect": intersect,
+
+  "splice_with_key": splice_with_key
 };
 
 // Used for trimming whitespace
@@ -247,3 +249,14 @@ function intersect(a, b) {
   return false;
 };
 
+
+function splice_with_key(list, key, item) {
+  for (var i=0,l=list.length; i<l; i++) {
+    if (list[i][key] === item[key]) {
+      list.splice(i, 1, item);
+      return list;
+    }
+  }
+  list.push(item);
+  return list;
+};

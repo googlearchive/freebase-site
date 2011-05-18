@@ -1,11 +1,9 @@
-
 // Shared base urls
 var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
-var lib = "//lib" + codebase;
 
 var labels = {
-  "lib":        lib,
+  "lib":        "//lib" + codebase,
   "topic":      "//topic" + codebase,
   "schema":     "//schema" + codebase,
   "activity":   "//activity" + codebase,
@@ -49,4 +47,4 @@ var rules = {
 
 };
 
-acre.require(lib + "/routing/router.sjs").route(labels, rules, this);
+acre.require(labels.lib + "/routing/router.sjs").route(labels, rules, this);

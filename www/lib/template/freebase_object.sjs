@@ -60,8 +60,6 @@ function main(tabs, object) {
 
   var script = acre.require(current_tab.app + "/" + current_tab.script);
 
-console.log(script);
-
   var spec = script.SPEC;
   spec.template_base = "lib/template/freebase_object.mjt";
   spec.template_base_args = template_base_args;

@@ -164,8 +164,7 @@ function handle_service_error(e) {
  * - main run method of the web service
  * - return JSON or a promise returning JSON.
  */
-function handle_service(module, script) {
-  var spec = module.SPEC;
+function handle_service(spec, scope) {
   if (!(spec && typeof spec === "object")) {
     return deferred.rejected(new ServiceError(null, null, "SPEC is undefined"));
   }
@@ -180,7 +179,6 @@ function handle_service(module, script) {
     return deferred.rejected(new ServiceError(null, null, "SPEC.run is undefined"));
   }
 
-  var scope = script.scope;
   var req = scope.acre.request;
 
   //
@@ -220,7 +218,7 @@ function handle_service(module, script) {
       return deferred.rejected(e);
     }
   }
-  
+
   //
   // 3. validate required arguments
   //

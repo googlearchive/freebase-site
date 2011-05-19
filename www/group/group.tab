@@ -29,36 +29,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var object = this.obj;  // from lib/routing/object.sjs
-
 var i18n = acre.require("lib/i18n/i18n.sjs");
-var validators = acre.require("lib/validator/validators.sjs");
 var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
 
 var SPEC = {
 
-  method: "GET",
-
-  auth: false,
-
-  cache_policy: "public",
-
   template: "group.mjt",
-
-  template_base: "lib/template/freebase_object.mjt",
 
   validate: function(params) {
     return [
-      validators.MqlId(acre.request.path_info, {required:true})
+      params.object
     ];
   },
 
-  run: function(id) {
+  run: function(object) {
     return {
       object: object,
-      owners: domain_owners(id),
-      watchers: domain_watchers(id)
+      owners: domain_owners(object.id),
+      watchers: domain_watchers(object.id)
     };
   }
 };

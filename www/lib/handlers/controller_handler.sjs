@@ -37,35 +37,39 @@ var deferred = acre.require("promise/deferred.sjs");
 var handler = function() {
   return h.extend({}, acre.handlers.acre_script, {
     to_http_response: function(module, script) {
-      var d = lib.handle_service(module, script)
-        .then(null, function(service_error) {
-          if (service_error.code === "/api/status/error/auth" &&
-              module.SPEC.auth_redirect) {
-            // If the user is not logged-in then redirect to the specified page
-            h.clear_account_cookie();
-            acre.response.status = 302;
-            acre.response.set_header("Location", module.SPEC.auth_redirect);
-            acre.exit();
-          }
-          return service_error;
-        })
-        .then(function(service_result) {
-          acre.response.set_header('content-type', 'text/html');
-          return render(service_result.result, module.SPEC, script.scope);
-        })
-        .then(function(render_result) {
-          module.body = acre.markup.stringify(render_result);
-        });
-
-      acre.async.wait_on_results();
-
-      d.cleanup();
-
-      var headers = {};
+      module.body = run_spec(module.SPEC, script.scope);
+      var headers = {
+        "content-type": "text/html"
+      };
       h.set_cache_policy(module.SPEC.cache_policy || "public", null, headers);
       return hh.to_http_response_result(module.body, headers);
     }
   });
+};
+
+function run_spec(spec, scope) {
+  var result;
+  var d = lib.handle_service(spec, scope)
+    .then(null, function(service_error) {
+      if (service_error.code === "/api/status/error/auth" &&
+          spec.auth_redirect) {
+        // If the user is not logged-in then redirect to the specified page
+        h.clear_account_cookie();
+        acre.response.status = 302;
+        acre.response.set_header("Location", spec.auth_redirect);
+        acre.exit();
+      }
+      return service_error;
+    })
+    .then(function(service_result) {
+      return render(service_result.result, spec, scope);
+    })
+    .then(function(render_result) {
+      result = acre.markup.stringify(render_result);
+    });
+  acre.async.wait_on_results();
+  d.cleanup();
+  return result;
 };
 
 function render(service_result, spec, scope) {
@@ -76,7 +80,7 @@ function render(service_result, spec, scope) {
   var o = {};
 
   // get render options (keywords) and remove from result dictionary
-  ["template", "template_base", "def", "def_args"].forEach(function(reserved_key) {
+  ["template", "template_base", "template_base_args", "def", "def_args"].forEach(function(reserved_key) {
     if (reserved_key in result) {
       o[reserved_key] = result[reserved_key];
       delete result[reserved_key];
@@ -88,6 +92,7 @@ function render(service_result, spec, scope) {
   spec = spec || {};
   o.template = o.template || spec.template;
   o.template_base = o.template_base || spec.template_base;
+  o.template_base_args = o.template_base_args || spec.template_base_args;
 
   // template needs to be defined
   if (!o.template) {
@@ -97,10 +102,19 @@ function render(service_result, spec, scope) {
   return deferred.all(o.c || {}, true)  // resolve all promises in c
     .then(function(c) {
       o.c = c;
-      return deferred.all(o.def_args || [], true); // resolve all promises in def_args
+
+      var all_args = [];
+      all_args.push(deferred.all(o.template_base_args || {}, true)); // resolve all promises in template_base_args
+      all_args.push(deferred.all(o.def_args || [], true)); // resolve all promises in def_args
+
+      return deferred.all(all_args);
     })
-    .then(function(def_args) {
+    .then(function([template_base_args, def_args]) {
+      o.template_base_args = template_base_args;
       o.def_args = def_args;
+
+console.log("all args", arguments);
+
     })
     .then(function() {
       var template;
@@ -126,7 +140,7 @@ function render(service_result, spec, scope) {
           template = acre.require("template/freebase.mjt");
         }
         if (template.c && typeof template.c === "object") {
-          h.extend(template.c, o.c);
+          h.extend(template.c, o.template_base_args, o.c);
         }
         try {
           exports = is_module(o.template) ? o.template : scope.acre.require(o.template);
@@ -142,7 +156,7 @@ function render(service_result, spec, scope) {
 
       return template[o.def].apply(template, o.def_args);
     });
-}; 
+};
 
 /**
  * Is this already a module (as a result of acre.require) or

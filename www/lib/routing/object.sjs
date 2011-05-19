@@ -36,69 +36,189 @@ var exports = {
 var h = acre.require("helper/helpers_util.sjs");
 var validators = acre.require("validator/validators.sjs");
 var object_query = acre.require("queries/object.sjs");
+var freebase_object = acre.require("template/freebase_object.sjs");
 
 var rules = [
   {
     type: "/freebase/apps/application",
     tabs: [
-      ["View", "topic", "topic.controller", {domains: "all", type: "/freebase/apps/application"}],
-      ["Authors", "group", "group.controller"],
-      ["Activity", "activity", "app.controller"],
-      ["Inspect", "triples", "triples.controller"]
+      {
+        name: "View",
+        key: "view",
+        app: "topic",
+        script: "topic.tab",
+        params: {
+          domains: "all",
+          type: "/freebase/apps/application"
+        }
+      },
+      {
+        name: "Authors",
+        key: "authors",
+        app: "group",
+        script: "group.tab"
+      },
+      {
+        name: "Activity",
+        key: "activity",
+        app: "activity",
+        script: "app.tab"
+      },
+      {
+        name: "Inspect",
+        key: "inspect",
+        app: "triples",
+        script: "triples.tab"
+      }
     ]
   },
   {
     type: "/type/domain",
     tabs: [
-      ["Data", "data", "domain.controller"],
-      ["Schema", "schema", "domain.controller"],
-      ["Community", "group", "group.controller"],
-      ["Inspect", "triples", "triples.controller"]
+      {
+        name: "Data",
+        key: "data",
+        app: "data",
+        script: "domain.tab"
+      },
+      {
+        name: "Schema",
+        key: "schema",
+        app: "schema",
+        script: "domain.tab"
+      },
+      {
+        name: "Community",
+        key: "community",
+        app: "group",
+        script: "group.tab"
+      },
+      {
+        name: "Inspect",
+        key: "inspect",
+        app: "triples",
+        script: "triples.tab"
+      }
     ]
   },
   {
     type: "/type/type",
     tabs: [
-      ["Data", "data", "type.controller"],
-      ["Schema", "schema", "type.controller"],
-      ["Inspect", "triples", "triples.controller"]
+      {
+        name: "Data",
+        key: "data",
+        app: "data",
+        script: "type.tab"
+      },
+      {
+        name: "Schema",
+        key: "schema",
+        app: "schema",
+        script: "type.tab"
+      },
+      {
+        name: "Inspect",
+        key: "inspect",
+        app: "triples",
+        script: "triples.tab"
+      }
     ]
   },
   {
     type: "/type/property",
     tabs: [
-      ["Schema", "schema", "property.controller"],
-      ["Inspect", "triples", "triples.controller"]
+      {
+        name: "Schema",
+        key: "schema",
+        app: "schema",
+        script: "property.tab"
+      },
+      {
+        name: "Inspect",
+        key: "inspect",
+        app: "triples",
+        script: "triples.tab"
+      }
     ]
   },
   {
     type: "/type/user",
     tabs: [
-      ["Domains", "data", "user.controller"],
-      ["Queries", "query", "user.controller"],
-      ["Apps", "apps", "user.controller"],
-      ["Inspect", "triples", "triples.controller"]
+      {
+        name: "Domains",
+        key: "domains",
+        app: "data",
+        script: "user.tab"
+      },
+      {
+        name: "Queries",
+        key: "queries",
+        app: "query",
+        script: "user.tab"
+      },
+      {
+        name: "Apps",
+        key: "apps",
+        app: "apps",
+        script: "user.tab"
+      },
+      {
+        name: "Inspect",
+        key: "inspect",
+        app: "triples",
+        script: "triples.tab"
+      }
     ]
   },
   {
     type: "/freebase/query",
     tabs: [
-      ["Data", "data", "query.controller"],
-      ["Inspect", "triples", "triples.controller"]
+      {
+        name: "Data",
+        key: "data",
+        app: "data",
+        script: "query.tab"
+      },
+      {
+        name: "Inspect",
+        key: "inspect",
+        app: "triples",
+        script: "triples.tab"
+      }
     ]
   },
   {
     type: "/common/topic",
     tabs: [
-      ["View", "topic", "topic.controller"],
-      ["Inspect", "triples", "triples.controller"],
-      ["On the Web", "sameas", "sameas.controller"]
+      {
+        name: "View",
+        key: "view",
+        app: "topic",
+        script: "topic.tab"
+      },
+      {
+        name: "Inspect",
+        key: "inspect",
+        app: "triples",
+        script: "triples.tab"
+      },
+      {
+        name: "On the Web",
+        key: "web",
+        app: "sameas",
+        script: "sameas.tab"
+      }
     ]
   },
   {
     type: "/type/object",
     tabs: [
-      ["Inspect", "triples", "triples.controller"]
+      {
+        name: "Inspect",
+        key: "inspect",
+        app: "triples",
+        script: "triples.tab"
+      }
     ]
   }
 ];
@@ -119,11 +239,11 @@ function ObjectRouter(app_labels) {
         throw 'A routing rule must be a dict: '+JSON.stringify(route);
       }
       route.tabs.forEach(function(tab) {
-        var app = app_labels[tab[1]];
+        var app = app_labels[tab.app];
         if (!app) {
-          throw 'An app label must exist for: ' + tab[1];
+          throw 'An app label must exist for: ' + tab.app;
         }
-        tab[1] = app;
+        tab.app = app;
       });
 
       types[route.type] = route;
@@ -152,12 +272,12 @@ function ObjectRouter(app_labels) {
       if (o) {
         // merged topic
         if (o.replaced_by) {
-          var id = o.replaced_by.id.indexOf("/en") === 0 ? o.replaced_by.mid : o.replaced_by.id;
-          redirect(id);
+          id = o.replaced_by.id.indexOf("/en/") === 0 ? o.replaced_by.mid : o.replaced_by.id;
+          return redirect(id);
         }
         // canonicalize /en topics to mids
         else if (path_info.indexOf("/en") === 0) {
-          redirect(o.mid);
+          return redirect(o.mid);
         }
         // otherwise render object template
         else {
@@ -165,45 +285,24 @@ function ObjectRouter(app_labels) {
           // Build type map for object
           var obj_types = h.map_array(o.type, "id");
 
+          var tabs, i, l;
           // Find correct set of tabs for this object
-          for (var i=0,l=route_list.length; i<l; i++) {
-            var type = route_list[i].type;
-            if (type in obj_types) {
-              o.tabs = types[type].tabs;
+          for (i=0,l=route_list.length; i<l; i++) {
+            var route = route_list[i];
+            var type = route.type;
+            if (obj_types[type]) {
+              // clone tabs spec so we don't overwrite it
+              tabs = h.extend(true, {}, route).tabs;
               break;
             }
           }
 
           // Turn tab config arrays into something more useful
-          if (!u.isArray(o.tabs)) throw "Missing tab configuration for this object";
-
-          o.tabs = o.tabs.map(function(tab) {
-            var app_path = tab[1] + "/" + tab[2];
-            return {
-              name: tab[0],
-              key: tab[0].replace(/\s/g, "_").toLowerCase(),
-              path: app_path + path_info,
-              params: h.isPlainObject(tab[3]) ? tab[3] : {}
-            };
-          });
-
-          // Pick a tab
-          o.sel_tab = o.tabs[0];
-          for (var i=0,l=o.tabs.length; i < l; i++) {
-            var tab = o.tabs[i];
-            if (tab.key in acre.request.params) {
-              o.sel_tab = tab;
-              break;
-            }
+          if (!(h.isArray(tabs) && tabs.length)) {
+            throw "Missing tab configuration for this object";
           }
 
-          // Render it
-          h.extend(acre.request.params, o.params);
-
-          self.obj = o;
-          var body = acre.include.call(self, o.sel_tab.path);
-
-          acre.write(body);
+          acre.write(freebase_object.main(tabs, o));
           acre.exit();
         }
       }

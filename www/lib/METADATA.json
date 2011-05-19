@@ -62,7 +62,10 @@
     },
     "cs": {
       "handler": "coffee_script"
-    }
+    },
+    "tab": {
+      "handler": "acre_script"
+    }      
   },
   "static_base": "",
   "libs" : {

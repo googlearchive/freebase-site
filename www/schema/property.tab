@@ -29,37 +29,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var object = this.obj;  // from lib/routing/object.sjs
+// TODO: typediagram
 
-var validators = acre.require("lib/validator/validators.sjs");
-var deferred = acre.require("lib/promise/deferred");
-var freebase = acre.require("lib/promise/apis").freebase;
-var queries = acre.require("queries.sjs");
-var topic_api = acre.require("lib/queries/topic.sjs");
+var queries = acre.require("queries");
 
 var SPEC = {
 
-  method: "GET",
-
-  auth: false,
-
-  cache_policy: "public",
-
-  template: "sameas.mjt",
-
-  template_base: "lib/template/freebase_object.mjt",
+  template: "property.mjt",
 
   validate: function(params) {
     return [
-      validators.MqlId(acre.request.path_info, {required:true})
+      params.object
     ];
   },
 
-  run: function(id) {
+  run: function(object) {
     return {
-      object: object,
-      categories: queries.weblinks_by_category(id)
+      id: object.id,
+      property: queries.property(object.id)
     };
   }
 };
-

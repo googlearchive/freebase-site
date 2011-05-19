@@ -30,7 +30,7 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("lib/test/mock").playback(this, "test/playback_test_queries.json");
+acre.require("lib/test/mock").playback(this, "test/playback_test_domain_queries.json");
 
 var ht = acre.require("test/helpers.sjs");
 var q = acre.require("queries");
@@ -45,8 +45,9 @@ test("domain", function() {
      result = d;
    });
   acre.async.wait_on_results();
+
   ok(result);
-  ht.assert_mql_keys(self, ["id", "guid", "types", "/freebase/domain_profile/featured_views"], result, true);
+  ht.assert_mql_keys(self, ["id", "guid", "types", "featured_views"], result, true);
   //ht.assert_article(self, ["blurb", "blob"], result);
 });
 

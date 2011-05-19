@@ -29,35 +29,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO: typediagram
-
-var object = this.obj;  // from lib/routing/object.sjs
-
-var validators = acre.require("lib/validator/validators.sjs");
 var queries = acre.require("queries");
 
 var SPEC = {
 
-  method: "GET",
-
-  auth: false,
-
-  template: "property.mjt",
-
-  template_base: "lib/template/freebase_object.mjt",
+  template: "domain.mjt",
 
   validate: function(params) {
-    var id = validators.MqlId(acre.request.path_info, {required:true});
     return [
-      id
+      params.object
     ];
   },
 
-  run: function(id) {
+  run: function(object) {
     return {
-      object: object,
-      id: id,
-      property: queries.property(id)
+      id:      object.id,
+      object:  object,
+      domain:   queries.domain(object.id)
     };
   }
 };

@@ -29,8 +29,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var object = this.obj;  // from lib/routing/object.sjs
-
 var h = acre.require("lib/helper/helpers.sjs");
 var i18n = acre.require("lib/i18n/i18n.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
@@ -49,24 +47,17 @@ var topic_filters = {
 
 var SPEC = {
 
-  method: "GET",
-
-  auth: false,
-
-  cache_policy: "public",
-
   template: "topic.mjt",
-
-  template_base: "lib/template/freebase_object.mjt",
 
   validate: function(params) {
     return [
-      validators.MqlId(acre.request.path_info, {required:true}),
+      params.object,
       filters.validate(params, topic_filters)
     ];
   },
 
-  run: function(id, f) {
+  run: function(object, f) {
+    var id = object.id;
     var domains = f.domains;
     if ((f.domain && !h.is_commons_id(f.domain)) ||
         (f.type && !h.is_commons_id(f.type)) ||

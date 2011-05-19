@@ -153,7 +153,7 @@ function no_op() {};
 test("handle_service undefined SPEC", function() {
   expect(3);
   var result, error;
-  lib.handle_service(module, mock_script)
+  lib.handle_service(module.SPEC, mock_script.scope)
     .then(function(r) {
       result = r;
     }, function(e) {
@@ -172,7 +172,7 @@ test("handle_service undefined SPEC.validate", function() {
     }
   };
   var result, error;
-  lib.handle_service(module, mock_script)
+  lib.handle_service(module.SPEC, mock_script.scope)
     .then(function(r) {
       result = r;
     }, function(e) {
@@ -190,7 +190,7 @@ test("handle_service undefined SPEC.run", function() {
     }
   };
   var result, error;
-  lib.handle_service(module, mock_script)
+  lib.handle_service(module.SPEC, mock_script.scope)
     .then(function(r) {
       result = r;
     }, function(e) {
@@ -213,7 +213,7 @@ test("handle_service method", function() {
     }
   };
   var result, error;
-  lib.handle_service(module, mock_script)
+  lib.handle_service(module.SPEC, mock_script.scope)
     .then(function(r) {
       result = r;
     }, function(e) {
@@ -230,7 +230,7 @@ test("handle_service method", function() {
   error = null;
   try {
     acre.request.method = "POST";
-    lib.handle_service(module, mock_script)
+    lib.handle_service(module.SPEC, mock_script.scope)
       .then(function(r) {
         result = r;
       }, function(e) {
@@ -259,7 +259,7 @@ test("handle_service auth", function() {
   if (user) {
     expect(2);
     var result, error;
-    lib.handle_service(module, mock_script)
+    lib.handle_service(module.SPEC, mock_script.scope)
       .then(function(r) {
         result = r;
       }, function(e) {
@@ -271,7 +271,7 @@ test("handle_service auth", function() {
   else {
     expect(4);
     var result, error;
-    lib.handle_service(module, mock_script)
+    lib.handle_service(module.SPEC, mock_script.scope)
       .then(function(r) {
         result = r;
       }, function(e) {
@@ -295,7 +295,7 @@ test("handle_service validate", function() {
     }
   };
   var result, error;
-  lib.handle_service(module, mock_script)
+  lib.handle_service(module.SPEC, mock_script.scope)
     .then(function(r) {
       result = r;
     }, function(e) {
@@ -321,7 +321,7 @@ test("handle_service run", function() {
     }
   };
   var result;
-  lib.handle_service(module, mock_script)
+  lib.handle_service(module.SPEC, mock_script.scope)
     .then(function(r) {
       result = r;
     });
@@ -341,7 +341,7 @@ test("handle_service run error", function() {
     }
   };
   var result, error;
-  lib.handle_service(module, mock_script)
+  lib.handle_service(module.SPEC, mock_script.scope)
     .then(function(r) {
       result = r;
     }, function(e) {
@@ -364,7 +364,7 @@ test("handle_service run promise", function() {
     }
   };
   var result;
-  lib.handle_service(module, mock_script)
+  lib.handle_service(module.SPEC, mock_script.scope)
     .then(function(r) {
       result = r;
     });
@@ -387,7 +387,7 @@ test("handle_service run promise error", function() {
     }
   };
   var result, error;
-  lib.handle_service(module, mock_script)
+  lib.handle_service(module.SPEC, mock_script.scope)
     .then(function(r) {
       result = r;
     }, function(e) {
@@ -414,7 +414,7 @@ test("handle_service run promise dictionary", function() {
     }
   };
   var result;
-  lib.handle_service(module, mock_script)
+  lib.handle_service(module.SPEC, mock_script.scope)
     .then(function(r) {
       result = r;
     });
@@ -440,7 +440,7 @@ test("handle_service run promise dictionary error", function() {
     }
   };
   var result, error;
-  lib.handle_service(module, mock_script)
+  lib.handle_service(module.SPEC, mock_script.scope)
     .then(function(r) {
       result = r;
     }, function(e) {
@@ -464,7 +464,7 @@ test("handle_service run promise array", function() {
     }
   };
   var result;
-  lib.handle_service(module, mock_script)
+  lib.handle_service(module.SPEC, mock_script.scope)
     .then(function(r) {
       result = r;
     });
@@ -486,7 +486,7 @@ test("handle_service run promise array error", function() {
     }
   };
   var result, error;
-  lib.handle_service(module, mock_script)
+  lib.handle_service(module.SPEC, mock_script.scope)
     .then(function(r) {
       result = r;
     }, function(e) {

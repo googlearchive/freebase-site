@@ -43,7 +43,7 @@ function handler() {
   return h.extend({}, acre.handlers.acre_script, {
     to_http_response: function(module, script) {
       var resp;
-      var d = lib.handle_service(module, script)
+      var d = lib.handle_service(module.SPEC, script.scope)
         .then(
           function(result) {
             var r = to_ajax_response(result);

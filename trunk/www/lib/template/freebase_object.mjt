@@ -253,13 +253,13 @@
 
 <acre:block def="nav_tabs()">
   <acre:script>
-    var params = c.filters ? fh.global_filters(c.filters) : {};
+    var params = c.filters;
     var qs = acre.form.encode(params);
   </acre:script>
-  <acre:block for="tab in c.object.tabs">
+  <acre:block for="tab in c.tabs">
     <acre:script>
       var url = "?" + tab.key + (qs.length ? "&" + qs : "");
-      var current = (tab.key === c.object.sel_tab.key);
+      var current = (tab.key === c.current_tab.key);
     </acre:script>
     <li>
       <a acre:if="current" href="#" onclick="return false;" class="current"><span>${_(tab.name)}</span></a>

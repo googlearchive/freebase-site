@@ -29,64 +29,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var object = this.obj;  // from lib/routing/object.sjs
-
-var h = acre.require("lib/helper/helpers.sjs");
-var i18n = acre.require("lib/i18n/i18n.sjs");
-var validators = acre.require("lib/validator/validators.sjs");
-var apis = acre.require("lib/promise/apis.sjs");
+var queries = acre.require("queries.sjs");
 
 var SPEC = {
 
-  method: "GET",
-
-  auth: false,
-
-  cache_policy: "public",
-
-  template: "app.mjt",
-
-  template_base: "lib/template/freebase_object.mjt",
+  template: "user.mjt",
 
   validate: function(params) {
     return [
-      validators.MqlId(acre.request.path_info, {required:true})
+      params.object
     ];
   },
 
-  run: function(id) {
-    var promises = {
-      users: app_writes(id),
-      object: object
+  run: function(object) {
+    return {
+      id:      object.id,
+      object:  object,
+      apps:   queries.user_apps(object.id)
     };
-    return apis.deferred.all(promises);
   }
 };
-
-var app_writes = function(appid) {
-  var q = [{
-    "type": "/type/attribution",
-    "/freebase/written_by/application": {
-      "id": appid
-    },
-    "creator": {
-      "id": null,
-      "name": i18n.mql.query.name(),
-    },
-    "links": {
-      "return": "estimate-count"
-    }
-  }];
-  
-  return apis.freebase.mqlread(q)
-    .then(function(envelope) {
-      var users = [];
-      envelope.result.forEach(function(attribution) {
-        var user = attribution.creator;
-        user.writes = attribution.links;
-        users.push(user);
-      });
-      return users;
-    });
-};
-

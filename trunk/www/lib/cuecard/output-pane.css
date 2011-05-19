@@ -115,33 +115,6 @@ div.cuecard-outputPane-list iframe {
 .cuecard-outputPane-even {
 }
 
-div.cuecard-outputPane-tree-popup {
-  position: absolute;
-  z-index: 1000;
-}
-
-div.cuecard-outputPane-tree-popup-topic {
-  width: 30em;
-}
-
-.cuecard-outputPane-tree-popup-topic .freebase-hotshot-container {
-  height: 13em;
-  overflow: hidden;
-}
-
-.cuecard-outputPane-tree-popup-topic .freebase-hotshot-name {
-  font-size: 1.4em;
-  font-weight: bold;
-}
-
-div.cuecard-outputPane-tree-popup-topic td{
-  vertical-align: top;
-}
-
-.cuecard-outputPane-tree-popup-topic .freebase-hotshot-links {
-  display: none;
-}
-
 .cuecard-outputPane-cost-important td {
   font-weight: bold;
   color: #f33;

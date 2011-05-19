@@ -165,8 +165,7 @@ CueCard.OutputPane.prototype.renderResponseHeaders = function(headers) {
 
 CueCard.OutputPane.prototype._setIFrameText = function(text) {
   var makeTopicLink = function(id) {
-    return "<a target='_blank' class='cuecard-outputPane-tree-dataLink' href='" + id +
-     "' onmouseover='__cc_tree_mouseOverTopic(this)' onmouseout='__cc_tree_mouseOutTopic(this)' fbid='" + 
+    return "<a target='_blank' class='cuecard-outputPane-dataLink' href='" + 
      id + "'>" + id + "</a>";
   };
 
@@ -190,54 +189,39 @@ CueCard.OutputPane.prototype._setIFrameText = function(text) {
 CueCard.OutputPane.prototype._setupIframe = function(iframe) {
   var self = this;
   
-  var __cc_tree_mouseOverTopic = function(elmt) {
-    var id = elmt.getAttribute("fbid");
-    CueCard.JsonpQueue.call(fb.h.legacy_fb_url("/private/flyout", id),
-      function(r) {
-        var div = __cc_tree_createPopup(elmt);
-        $(div).addClass("cuecard-outputPane-tree-popup-topic").html(r.html);
-      });
-  };
-    
-  var __cc_tree_mouseOutTopic = function(elmt) {
-    __cc_tree_disposePopup();
-  };
-
-  var __cc_tree_createPopup = function(elmt) {
-    var div = document.getElementById("cuecard-outputPane-tree-popup");
-    if (div == null) {
-      div = document.createElement("div");
-      div.id = "cuecard-outputPane-tree-popup";
-      div.className = "cuecard-outputPane-tree-popup";
-      div.onmouseover = __cc_tree_disposePopup;
-
-      document.body.appendChild(div);
-    }
-
-    var pos = $(elmt).position();
-    var top = $(iframe).offset().top + pos.top - $(win.document).scrollTop() + $(elmt).height() + 10;
-    var left = $(iframe).offset().left + pos.left - $(win.document).scrollLeft();
-    $(div).css({top:top, left:left});
-
-    return div;
-  };
-  
-  var __cc_tree_disposePopup = function() {
-    var div = document.getElementById("cuecard-outputPane-tree-popup");
-    if (div != null) {
-      div.parentNode.removeChild(div);
-    }
-  };
-  
   var __cc_runPage = function(increment) {
     self._options.queryEditor._controlPane._runPage(increment);
   };
 
   var win = iframe.contentWindow || iframe.contentDocument;
-  win.__cc_tree_mouseOverTopic = __cc_tree_mouseOverTopic;
-  win.__cc_tree_mouseOutTopic  = __cc_tree_mouseOutTopic;
-  win.__cc_tree_createPopup    = __cc_tree_createPopup;
-  win.__cc_tree_disposePopup   = __cc_tree_disposePopup;
   win.__cc_runPage             = __cc_runPage;
-  return win.document.body;
+  var body = win.document.body;
+  
+  $(".cuecard-outputPane-dataLink", body)
+    .live("mouseover", function() {
+      var id = $(this).attr("href");
+      var offset = $(iframe).offset();
+      var pos = $(this).position();
+      var top = offset.top + pos.top + $(this).height();
+      var left = offset.left + pos.left;
+
+      var div = $("<div id='cuecard-outputPane-topic-popup'></div>")
+        .css({
+          'position': "absolute",
+          'z-index': 1000,
+          'width': "30em",
+          'top': top,
+          'left': left
+        })
+        .appendTo("body");
+        
+      $.get(fb.h.legacy_fb_url("/private/flyout", id), function(r) {
+        div.html(r.html);
+      }, "jsonp");
+    })
+    .live("mouseout", function() {
+      $("#cuecard-outputPane-topic-popup").remove();
+    });
+    
+  return body;
 };

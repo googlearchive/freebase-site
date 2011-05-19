@@ -126,13 +126,7 @@
     <acre:block def="value(a, path)">
       <acre:block choose="typeof a">
         <acre:block when="string">
-          <a acre:if="/^\//.test(a)"
-            href="$a" fbid="$a"
-            class='cuecard-outputPane-tree-dataLink' 
-            onmouseover="__cc_tree_mouseOverTopic(this)" 
-            onmouseout="__cc_tree_mouseOutTopic(this)">
-            $a
-          </a>
+          <a acre:if="/^\//.test(a)" href="$a" class='cuecard-outputPane-dataLink'>$a</a>
           <acre:block else="">$a</acre:block>
         </acre:block>
         <acre:block when="number">$a</acre:block>

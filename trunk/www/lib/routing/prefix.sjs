@@ -109,7 +109,6 @@ var rules = [
   {prefix:"/view/discussionhub",      url:"http://wiki.freebase.com", redirect:301},
   {prefix:"/discuss/hub",             url:"http://wiki.freebase.com", redirect:301},
   {prefix:"/tools",                   url:"http://wiki.freebase.com", redirect:301},
-  {prefix:"/community",               url:"http://wiki.freebase.com", redirect:301},
   {prefix:"/build",                   url:"http://wiki.freebase.com", redirect:301},
 
   // Feedback

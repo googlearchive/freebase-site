@@ -53,7 +53,6 @@ var rules = [
   {prefix:"/labs/cubed",         app:"cubed"},
   {prefix:"/labs/parallax",      app:"parallax"},
   {prefix:"/labs",               app:"labs"},
-  {prefix:"/sample",             app:"sample"},
   {prefix:"/account",            app:"account"},
 
   // Urls for exposed ajax libraries and static resources

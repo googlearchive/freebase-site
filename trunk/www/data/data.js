@@ -113,7 +113,7 @@
     init_table_mouseover: function(context) {
       $(".data-table a")
         .mouseover(function() {
-          var id = $(this).attr("data-fbid");
+          var id = $(this).attr("href");
           var pos = $(this).position();
           var top = pos.top + $(this).height() + 10;
           var left = pos.left;

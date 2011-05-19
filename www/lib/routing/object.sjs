@@ -276,11 +276,13 @@ function ObjectRouter(app_labels) {
           return redirect(id);
         }
         // canonicalize /en topics to mids
-        else if (path_info.indexOf("/en") === 0) {
+        else if (path_info.indexOf("/en/") === 0) {
           return redirect(o.mid);
         }
         // otherwise render object template
         else {
+          // we should now have the canonical id
+          o.id = o["q:id"];
 
           // Build type map for object
           var obj_types = h.map_array(o.type, "id");

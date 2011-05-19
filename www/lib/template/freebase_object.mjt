@@ -66,6 +66,9 @@
 </acre:block>
 
 <acre:block def="head()">
+  <!-- canonical url -->
+  <link rel="canonical" href="${h.fb_url(true, c.object.id)}" />
+
   <acre:block if="that_exports.head">
     ${that_exports.head()}
   </acre:block>

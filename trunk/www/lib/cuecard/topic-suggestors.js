@@ -87,11 +87,11 @@ CueCard.TypeBasedTopicSuggestor.prototype.getSuggestions = function(prefix, onDo
         var url = CueCard.helper + "suggest-values-of-types?t=" +
                 encodeURIComponent(this._expectedTypes.join(",")) + "&q=" + encodeURIComponent(prefix);
         
-        CueCard.JsonpQueue.call(
-            url,
-            cont.onDone,
-            cont.onError
-        );
+        $.ajax(url, {
+          dataType: "json",
+          success: cont.onDone,
+          error: cont.onError
+        });
     }
 };
 

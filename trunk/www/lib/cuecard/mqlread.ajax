@@ -30,8 +30,6 @@
  */
  
 var validators = acre.require("validator/validators.sjs");
-var apis = acre.require("promise/apis.sjs");
-var urlfetch = apis.urlfetch;
 
 var SPEC = {
 
@@ -43,60 +41,13 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      validators.Json(params, "query", {required: true, json: false}),
-      validators.String(params, "service", {if_empty: false}),
-      validators.StringBoolean(params, "extended", {if_empty: false}),
-      validators.StringBoolean(params, "emql", {if_empty: false}),
-      validators.StringBoolean(params, "debug", {if_empty: false})
+      validators.Json(params, "query", {required: true})
     ];
   },
 
-  run: function(query, service, extended, emql, debug) {
-    var clientIP = acre.request.headers["x-client-ip"] || "";
-    var url = acre.freebase.service_url + "/api/service/mqlread";
-    var form = {
-      query: query
-    };
-
-    // test emql server is a special case
-    if (emql) {
-      form.indent = 1;
-      if (debug) form.debug = 1;
-      url = acre.form.build_url("http://search.labs.freebase.com/api/service/emql", form);
-      return urlfetch(url).then(format_response);
-    }
-    
-    if (service) {
-      url = (service.indexOf("/") != -1) ? service : "http://" + service + "/api/service/mqlread";
-    }
-
-    if (extended) form.extended = 1;
-    
-    var options = {
-      'method': "POST",
-      'bless': true,
-      'content': acre.form.encode(form),
-      'headers': {
-        'User-Agent' : 'Freebase ACRE',
-        'Content-type' : 'application/x-www-form-urlencoded',
-        'X-Client-IP' : clientIP
-      }
-    };
-
-    return urlfetch(url, options).then(format_response);
-    
-    function format_response(response) {
-      var headers = {};
-      for (var key in response.headers) {
-        headers[key.toLowerCase()] = response.headers[key];
-      }
-      
-      return {
-        "headers": headers,
-        "serviceUrl": url,
-        "clientIP": clientIP,
-        "body": JSON.parse(response.body)
-      };      
-    };
+  run: function(envelope) {
+    var query = envelope.query;
+    delete envelope.query;
+    return acre.freebase.mqlread(query, envelope);
   }
 };

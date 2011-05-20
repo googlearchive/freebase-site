@@ -37,7 +37,7 @@ var SPEC = {
 
   auth: false,
 
-  cache_policy: "fast",
+  cache_policy: "public",
 
   validate: function(params) {
     return [

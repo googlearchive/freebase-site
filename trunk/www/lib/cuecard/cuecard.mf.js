@@ -7,7 +7,6 @@
   "cuecard/mql-syntax.js",
   "cuecard/indent-writer.js",
   "cuecard/jsonize.js",
-  "cuecard/queue.js",
   "cuecard/query-parser.js",
   "cuecard/query-model.js",
   "cuecard/ui.js",

@@ -79,6 +79,10 @@ function featured_views_by_user(user) {
       "creator": {
         "id": user
       },
+      "/common/document/content": {
+        "id": null,
+        "limit": 0
+      },
       "timestamp": null
     }]
   }];

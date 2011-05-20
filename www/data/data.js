@@ -37,9 +37,19 @@
     // initialize tabset for toggling between
     // synthetic views and user-created views
     init_data_tabs: function(context) {
-      $("ul.tabs").tabs("div.panes > table", {
-        effect: 'fade'
-      });                
+      var tabset = $("ul.tabs");
+      var initial_index = 0;
+
+      $("a", tabset).each(function(i) {
+        if($(this).hasClass("current")) {
+          initial_index = i;
+        }
+      });
+
+      tabset.tabs("div.panes > .pane", {
+        effect: 'fade',
+        initialIndex: initial_index
+      });
     },
 
     init_activity_chart: function(context) {

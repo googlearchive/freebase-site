@@ -104,9 +104,8 @@
                <div class="table-empty-text">
                  <p>       
                    <strong>${_("Describe any person, place, or concept.")}</strong>
-                   ${h.bless_sprintf(_("This is the most common type in Freebase and is used to describe an %s relationship between topics (eg. San Francisco %s city)"),
-                   h.tag("strong", h.tag("em", "is a")), 
-                   h.tag("strong", h.tag("em", "is a")))}</p>
+                   ${h.template_sprintf(_("This is the most common type in Freebase and is used to describe an %s relationship between topics (eg. San Francisco %s city)"), tag_strong(tag_em("is a")))}
+                 </p>
                  <p><a href="http://wiki.freebase.com/wiki/Types" rel="external help">${_('Learn more')} &raquo;</a></p> 
                </div>
              </div>
@@ -184,4 +183,13 @@
 <acre:block def="footer_script()">
   <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
   <script src="domain.mf.js"></script>
+</acre:block>
+
+
+<acre:block def="tag_strong(value)">
+  <strong>${value}</strong>
+</acre:block>
+
+<acre:block def="tag_em(value)">
+  <em>${value}</em>
 </acre:block>

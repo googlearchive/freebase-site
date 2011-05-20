@@ -52,7 +52,7 @@
         </li>
         <li class="row-menu-item"><a href="${h.fb_url(type.id, [['inspect']])}">${_('Inspect Type')}</a></li>
         <li class="row-menu-item">
-          <a href="${sh.build_query_url(type.id)}">${h.bless_sprintf(_('Browse %s instances'), acre.markup.stringify(i18n_c.number(type.instance_count)))}</a>
+          <a href="${sh.build_query_url(type.id)}">${h.template_sprintf(_('Browse %s instances'), i18n_c.number(type.instance_count))}</a>
         </li>
       </ul>
     </th>

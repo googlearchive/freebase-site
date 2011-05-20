@@ -28,11 +28,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+var h = acre.require("helper/helpers_util.sjs");
 
 var exports = {
   "sprintf": sprintf,
   "template_sprintf": template_sprintf,
-  "bless_sprintf": bless_sprintf
+  "vsprintf": vsprintf
 };
 
 /**
@@ -100,15 +101,27 @@ function sprintf() {
 };
 
 function template_sprintf() {
-  if (arguments.length < 2){
+  var len = arguments.length;
+  if (len < 2){
     return "";
   }
-  
   // All arguments are stringified before sprintf
   // this converts templates and html encodes strings.
-  var args = [];
-  for (var i=0; i<arguments.length; i++) {
-    args.push(acre.markup.stringify(arguments[i]));
+  var args = [acre.markup.stringify(arguments[0])];
+  var named_args = arguments[1];
+  if (len === 2 && h.isPlainObject(named_args)) {
+    // named args
+    named_args = h.extend({}, named_args);
+    for (var k in named_args) {
+      named_args[k] = acre.markup.stringify(named_args[k]);
+    }
+    args.push(named_args);
+  }
+  else {
+    // regular args
+    for (var i=1; i<len; i++) {
+      args.push(acre.markup.stringify(arguments[i]));
+    }
   }
   // This use of bless is considered safe because all of the input
   // has been html encoded so the result can never contain
@@ -116,13 +129,6 @@ function template_sprintf() {
   // via an acre template.
   return acre.markup.bless(sprintf.apply(null, args)); //SAFE(culbertson)
 }
-
-function bless_sprintf() {
-  console.warn("DEPRECATED: bless_sprintf is considered dangerous. "+
-               "Use template_sprintf instead");
-  return acre.markup.bless(sprintf.apply(null, arguments));
-};
-
 
 function get_type(variable) {
   return Object.prototype.toString.call(variable).slice(8, -1).toLowerCase();

@@ -693,7 +693,7 @@ propbox edit forms
           <li>
             <span class="wrapper">
               <a class="close-msg" href="#" onclick="return window.propbox.close_message(this);">${_("Close")}</a>
-              ${h.bless_sprintf(_("%s has been deleted."), h.tag("strong", value))}
+              ${h.template_sprintf(_("%s has been deleted."), tag_strong(value))}
               <a href="#" onclick="return window.propbox.edit.value_delete_undo(this);">${_("Undo")}</a>
             </span>
           </li>
@@ -705,10 +705,16 @@ propbox edit forms
     <li class="row-msg row-msg-info">
       <span class="wrapper">
         <a class="close-msg" href="#" onclick="return window.propbox.close_message(this);">${_("Close")}</a>
-        ${h.bless_sprintf(_("%s has been deleted."), h.tag("strong", value))}
+        ${h.template_sprintf(_("%s has been deleted."), tag_strong(value))}
         <a href="#" onclick="return window.propbox.edit.value_delete_undo(this);">${_("Undo")}</a>
       </span>
     </li>
   </acre:block>
 
+</acre:block>
+
+
+
+<acre:block def="tag_strong(value)">
+  <strong>${value}</strong>
 </acre:block>

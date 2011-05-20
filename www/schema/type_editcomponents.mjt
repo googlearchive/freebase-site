@@ -129,15 +129,28 @@
         <td colspan="4">
           <div class="edit-row-loader"></div>
           <div acre:if="prop.delegated" class="form-msg">
-            ${h.bless_sprintf(_("This property is being delegated to %s. You cannot change the %s or %s."), h.tag("a", prop.delegated.id, "href", h.fb_url(prop.delegated.id, [['schema']]), "target", "_new"), h.tag("strong", _("Expected Type")), h.tag("strong", _("Uniqueness")))}
+            <acre:script>
+              var sprintf_args = {
+                delegated: tag_a(prop.delegated.id, h.fb_url(prop.delegated.id, [['schema']])),
+                expected_type: tag_strong(_("Expected Type")),
+                uniqueness: tag_strong(_("Uniqueness"))
+              };
+            </acre:script>
+            ${h.template_sprintf(_("This property is being delegated to %(delegated)s. You cannot change the %(expected_type)s or %(uniqueness)s."), sprintf_args)}
           <a href="${schema_h.build_query_url(prop.schema.id, prop.id)}">${_('View instances')} &raquo;</a>
           </div>
           <div acre:elif="prop.used" class="form-msg" acre:trim="">
             <acre:block if="prop.unique">
-              ${h.bless_sprintf(_("This property is being used. You cannot change the %s."), h.tag("strong", _("Expected Type")))}
+              ${h.template_sprintf(_("This property is being used. You cannot change the %s."), tag_strong(_("Expected Type")))}
             </acre:block>
             <acre:block else="">
-              ${h.bless_sprintf(_("This property is being used. You cannot change the %s or %s."), h.tag("strong", _("Expected Type")), h.tag("strong", _("Uniqueness")))}
+              <acre:script>
+                var sprintf_args = {
+                  expected_type: tag_strong(_("Expected Type")),
+                  uniqueness: tag_strong(_("Uniqueness"))
+                };
+              </acre:script>
+              ${h.template_sprintf(_("This property is being used. You cannot change the %(expected_type)s or %(uniqueness)s."), sprintf_args)}
             </acre:block>
             <a href="${schema_h.build_query_url(prop.schema.id, prop.id)}">${_('View instances')} &raquo;</a>
           </div>
@@ -192,10 +205,10 @@
            </label>
 
             <acre:block if="prop.master_property">
-              ${h.bless_sprintf(_("Property links in as %s."), h.tag("a", h.tag("strong", prop.master_property.name), "title", prop.master_property.id, "href", h.fb_url(prop.master_property.id, [['schema']])))}
+              ${h.template_sprintf(_("Property links in as %s."), tag_a(acre.markup.stringify(tag_strong(prop.master_property.name)), h.fb_url(prop.master_property.id, [['schema']])))}
             </acre:block>
             <acre:block elif="prop.reverse_property">
-              ${h.bless_sprintf(_("Property links in as %s."), h.tag("a", h.tag("strong", prop.reverse_property.name), "title", prop.reverse_property.id, "href", h.fb_url(prop.reverse_property.id, [['schema']])))}
+              ${h.template_sprintf(_("Property links in as %s."),  tag_a(acre.markup.stringify(tag_strong(prop.reverse_property.name)), h.fb_url(prop.reverse_property.id, [['schema']])))} 
             </acre:block>
           </div>
           <div class="form-field fb-property-description">
@@ -342,7 +355,7 @@
   <tr class="row-msg row-msg-info">
     <td colspan="4">
       <a class="close-msg" href="#" onclick="return freebase.dispatch(event, freebase.schema.close_message, ['.row-msg:first'], this);">${_("Close")}</a>
-      ${h.bless_sprintf(_("The property %s has been deleted."), h.tag("strong", prop_info.name || prop_info.id))}
+      ${h.template_sprintf(_("The property %s has been deleted."), tag_strong(prop_info.name || prop_info.id))}
       <a href="#" onclick="return freebase.dispatch(event, freebase.schema.type.undo_delete_property, null, this);"
          class="${JSON.stringify(prop_info)}">${_("Undo")}</a>
     </td>
@@ -380,7 +393,7 @@
   <tr class="row-msg row-msg-info">
     <td colspan="4">
       <a class="close-msg" href="#" onclick="return freebase.dispatch(event, freebase.schema.close_message, ['.row-msg:first'], this);">${_("Close")}</a>
-      ${h.bless_sprintf(_("%s has been removed and will no longer be included."), h.tag("strong", included_type_id))}
+      ${h.template_sprintf(_("%s has been removed and will no longer be included."), tag_strong(included_type_id))}
       <a href="#" onclick="return freebase.dispatch(event, freebase.schema.type.undo_delete_included_type, ['${type_id}','${included_type_id}'], this);">${_("Undo")}</a>
     </td>
   </tr>
@@ -509,22 +522,35 @@
   <div class="form-msg" acre:trim="">
     <acre:block if="prop.expected_type">
       <acre:block if="prop.unit">
-        ${h.bless_sprintf(_("This property will be delegated to %s with expected type %s (%s)."), 
-        h.tag("a", prop.id, "href", h.fb_url(prop.id, [['schema']]), "target", "_new"),
-        h.tag("a", prop.expected_type, "href", h.fb_url(prop.expected_type, [['schema']]) , "target", "_new"),
-        i18n.display_name(prop.unit))}
+        <acre:script>
+          var sprintf_args = {
+            prop: tag_a(prop.id, h.fb_url(prop.id, [['schema']])),
+            expected_type: tag_a(prop.expected_type, h.fb_url(prop.expected_type, [['schema']])),
+            unit: i18n.display_name(prop.unit)
+          };
+        </acre:script>
+        ${h.template_sprintf(_("This property will be delegated to %(prop)s with expected type %(expected_type)s (%(unit)s)."), sprintf_args)}
       </acre:block>
       <acre:block else="">
-        ${h.bless_sprintf(_("This property will be delegated to %s with expected type %s."), 
-        h.tag("a", prop.id, "href", h.fb_url(prop.id, [['schema']]), "target", "_new"),
-        h.tag("a", prop.expected_type, "href", h.fb_url(prop.expected_type, [['schema']]) , "target", "_new"))}
+        <acre:script>
+          var sprintf_args = {
+            prop: tag_a(prop.id, h.fb_url(prop.id, [['schema']])),
+            expected_type: tag_a(prop.expected_type, h.fb_url(prop.expected_type, [['schema']]))
+          };
+        </acre:script>
+        ${h.template_sprintf(_("This property will be delegated to %(prop)s with expected type %(expected_type)s."), sprintf_args)}
       </acre:block>
     </acre:block>
     <acre:block else="">
-      ${h.bless_sprintf(_("This property will be delegated to %s."), 
-      h.tag("a", prop.id, "href", h.fb_url(prop.id, [['schema']]), "target", "_new"))}
+      ${h.template_sprintf(_("This property will be delegated to %s."), tag_a(prop.id, h.fb_url(prop.id, [['schema']])))}
     </acre:block>
-    ${h.bless_sprintf(_("You cannot change the %s or %s."), h.tag("strong", _("Expected Type")), h.tag("strong", _("Uniqueness")))}
+    <acre:script>
+      var sprintf_args = {
+        expected_type: tag_strong(_("Expected Type")),
+        uniqueness: tag_strong(_("Uniqueness"))
+      };
+      </acre:script>
+    ${h.template_sprintf(_("You cannot change the %(expected_type)s or %(uniqueness)s."), sprintf_args)}
   </div>
 </acre:block>
 
@@ -560,7 +586,7 @@
   <tr class="row-msg row-msg-info">
     <td colspan="2">
       <a class="close-msg" href="#" onclick="return freebase.dispatch(event, freebase.schema.close_message, ['.row-msg:first'], this);">${_("Close")}</a>
-      ${h.bless_sprintf(_("The topic %s has been removed from this type."), h.tag("strong", i18n.display_name(topic)))}
+      ${h.template_sprintf(_("The topic %s has been removed from this type."), tag_strong(i18n.display_name(topic)))}
       <a href="#" onclick="return freebase.dispatch(event, freebase.schema.type.undo_delete_instance, ['${topic.id}','${type_id}'], this);">${_("Undo")}</a>
     </td>
   </tr>
@@ -591,4 +617,14 @@
     <button class="button button-cancel">${_("Cancel")}</button>
   </div>
 </div>
+</acre:block>
+
+
+
+<acre:block def="tag_strong(value)">
+  <strong>${value}</strong>
+</acre:block>
+
+<acre:block def="tag_a(value, href)">
+  <a href="${href}">${value}</a>
 </acre:block>

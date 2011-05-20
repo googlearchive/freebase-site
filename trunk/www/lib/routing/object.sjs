@@ -286,6 +286,7 @@ function ObjectRouter(app_labels) {
 
           // Build type map for object
           var obj_types = h.map_array(o.type, "id");
+          obj_types["/type/object"] = true; // all valid IDs are /type/object
 
           var tabs, i, l;
           // Find correct set of tabs for this object

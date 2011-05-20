@@ -49,19 +49,25 @@
   <div class="page-header clear">
     <div class="breadcrumb clear">
       <ol>
-        <li acre:if="c.table.table_type === 'type'" class="breadcrumb-item">
+        <acre:script>console.log(c.object)</acre:script>
+        <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url(c.table.domain.id)}">${i18n.display_name(c.table.domain)}</a>
+            <a href="#">${_("User")}</a>
           </span>
         </li>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url(c.object.id)}">${i18n.display_name(c.object)}</a>
+            <a href="${h.fb_url(c.object.creator.id)}">${i18n.display_name(c.object.creator)}</a>
           </span>
         </li>
-        <li if="c.domain" class="breadcrumb-item last">
+        <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="#">${_("Data")}</a>
+            <a href="${h.fb_url(c.object.creator.id)}?queries">${_("Queries")}</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item last">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.fb_url(c.object.id)}">${i18n.display_name(c.object)}</a>
           </span>
         </li>
       </ol>
@@ -72,27 +78,127 @@
 <acre:block def="page_content()">
   <div class="section instances">
 
-    <!!-- Prop detail table -->
-    <acre:block if="c.table.table_type === 'prop_detail'">
+<acre:block def="list(result, query)">
+  <table class="data-table" acre:if="result">
+    <acre:script>
+      function decantConstraints(q) {
+        function decant(val) {
+          if (h.isPlainObject(val)) {
+            var has_keys = false;
+            for (var key in val) {
+              has_keys = true;
+              var tmp = decant(val[key])
+              if (tmp === undefined) {
+                delete val[key];
+              } else {
+                val[key] = tmp;
+              }
+            }
+            return has_keys ? val : undefined;
+          } else if (h.isArray(val)) {
+            return val.length ? decant(val[0]) : undefined;
+          } else {
+            return (val === null) ? undefined : val;
+          }
+        };
+
+        return decant(q);
+      };
+
+      function is_constraint(path, value) {
+
+        function same_keys(o1, o2) {
+          for (var key in o1) {
+            var val1 = o1[key];
+            var val2 = o2[key];
+            val1 = h.isArray(val1) ? val1[0] : val1;
+            val2 = h.isArray(val2) ? val2[0] : val2;
+            if (val2 === undefined) return false;
+            if (h.isPlainObject(val1) && h.isPlainObject(val2)) {
+              if (!same_keys(val1, val2)) return false;
+            }
+          }
+          return true;
+        }
+
+        var val = h.extend(true, {}, constraints);
+        value = h.isArray(value) ? value[0] : value;
+        for (var s = 0; s < path.length; s++) {
+          val = val[path[s]];
+          if (val === undefined) return false;
+        }
+        return h.isPlainObject(val) ? same_keys(value, val) : true;
+      }
+
+      var constraints = decantConstraints(query||{});
+      console.log(query, constraints);
+    </acre:script>
+
+    <thead acre:def="thead(r, path)">
+      <tr>
+        <th acre:for="key, val in r" acre:if="!is_constraint(path.concat(key), val)">
+          ${key.split(":")[0].replace(/_/g, " ")} ${thead_value(val, path.concat(key))}
+        </th>
+      </tr>
+    </thead>
+
+    <acre:block def="thead_value(v, path)">
+      <acre:script>if (h.isArray(v)) v = v[0];</acre:script>
+      <ul acre:if="h.isPlainObject(v)">
+        <li acre:for="key, val in v" acre:if="!is_constraint(path.concat(key), val)">
+          ${key.split(":")[0].replace(/_/g, " ")} ${thead_value(val, path.concat(key))}
+        </li>
+      </ul>
     </acre:block>
 
-    <!!-- Query table -->
-    <acre:block if="c.table.table_type === 'query'">
-      <table acre:if="c.table.result" class="data-table">
-        <thead>
-          <tr>
-            <th>${_('Name')}</th>
-            <th>${_('id')}</th>
-          </tr>
-        </thead>
-        <tbody>
-        <tr acre:for="r in c.table.result">
-          <th scope="row"><a href="${h.fb_url(r.id)}">$r.name</a></th>
-          <td><a href="${h.fb_url(r.id)}">$r.id</a></td>
-        </tr>
-        </tbody>
-      </table>
+    <acre:block def="row(r, path)">
+      <acre:block if="h.isPlainObject(r)">
+        <td acre:for="key, val in r" acre:if="!is_constraint(path.concat(key), val)">
+          ${value(val, path.concat(key))}
+        </td>
+      </acre:block>
+      <td acre:else="">${value(val, path)}</td>
     </acre:block>
+
+    <acre:block def="value(a, path)">
+      <acre:block choose="typeof a">
+        <acre:block when="string">
+          <a acre:if="/^\//.test(a)" href="$a" data-fbid="$a">$a</a>
+          <acre:block else="">$a</acre:block>
+        </acre:block>
+        <acre:block when="number">$a</acre:block>
+        <acre:block when="boolean">${a ? "true" : "false"}</acre:block>
+        <acre:block when="object">
+          <ul class="data-list" acre:if="h.isArray(a)">
+            <li acre:for="val in a">
+              ${value(val, path)}
+            </li>
+          </ul>
+          <ul class="data-list" acre:elif="h.isPlainObject(a)">
+            <li acre:for="key, val in a" acre:if="!is_constraint(path.concat(key), val)">
+              ${value(val, path.concat(key))}
+            </li>
+          </ul>
+        </acre:block>
+      </acre:block>
+    </acre:block>
+
+    <acre:block if="h.isArray(result)">
+      ${thead(result[0], [])}
+      <tbody>
+        <tr acre:for="a in result">${row(a, [])}</tr>
+      </tbody>
+    </acre:block>
+    <acre:block else="">
+      <acre:block if="typeof result === 'object'">${thead(result, [])}</acre:block>
+      <tbody>
+        <tr>${row(result, [])}</tr>
+      </tbody>
+    </acre:block>
+  </table>
+</acre:block>
+
+${list(c.table.result, c.table.query)}
   </div>
 
 </acre:block>

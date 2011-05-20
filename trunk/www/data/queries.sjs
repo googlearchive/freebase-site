@@ -71,6 +71,19 @@ function domain(id) {
     })
     .then(function(domain) {
 
+      // we don't want to return /base/id/topic
+      var base_common_topic_id = domain.id + "/topic";
+      console.log(base_common_topic_id, domain.types);
+
+      var domain_types = [];
+      for(i=0; i<domain.types.length; i++) {
+      
+        if(domain.types[i].id !== base_common_topic_id) {
+         domain_types.push(domain.types[i]);
+        }      
+      }
+      domain.types = domain_types;
+
       // initialize promise array
       var promises = [];
 
@@ -297,7 +310,7 @@ function type(type_id) {
         .then(function(env) {
           var blurbs = [];
           env.result.forEach(function(topic) {
-            blurbs.push(i18n.get_blurb(topic));
+            blurbs.push(i18n.get_blurb(topic, {maxlength:300}));
           });
           return deferred.all(blurbs)
             .then(function() {

@@ -71,56 +71,94 @@
       </h2>
       <ul class="tabs inline-tabset clear">
         <li><a href="#queries">${_("by query")}</a></li>
-        <li><a href="#types">${_("by type")}</a></li>
+        <acre:script>
+          var classname = c.domain.featured_views.length ? '' : 'current';
+          console.log(classname);
+        </acre:script>
+        <li><a href="#types" class="$classname">${_("by type")}</a></li>
       </ul>
     </div>
     <div class="panes">
-      <table id="queries" cellspacing="0" class="table table-sortable">
-        <thead>
-          <tr>
-            <th class="column-header first">${_("Name")}</th>
-            <th class="column-header">${_("Created on")}</th>
-            <th class="column-header">${_("by")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr acre:for="query in c.domain.featured_views">
-            <th class="row-header odd">
-              <a href="${h.fb_url(query.id)}">${i18n.display_name(query)}</a>
-            </th>
-            <td class="">
-              ${i18n_c.datetime(query.timestamp, [["class","published"],["data-format","medium"]])}
-            </td>
-            <td class="odd">
-              <a href="${h.fb_url(query.creator.id, [['queries']])}">${h.id_key(query.creator.id)}</a> 
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <table id="types" cellspacing="0" class="table-sortable table">
-        <thead>
-          <tr>
-            <th class="column-header first">${_("Name")}</th>
-            <th class="column-header">${_("Created on")}</th>
-            <th class="column-header">${_("by")}</th>
-            <th class="column-header numeric">${_("Topics")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr acre:for="type in c.domain.types">
-            <th class="row-header odd">
-              <a href="${h.fb_url(type.id)}">${i18n.display_name(type)}</a>
-            </th>
-            <td class="">
-              ${i18n_c.datetime(type.timestamp, [["class","published"],["data-format","medium"]])}
-            </td>
-            <td class="odd">
-              <a href="${h.fb_url(type.creator.id, [['schema']])}">${h.id_key(type.creator.id)}</a> 
-            </td>
-            <td class="numeric">${i18n_c.number(type.instance_count)}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="pane" id="queries">
+        <table acre:if="c.domain.featured_views && c.domain.featured_views.length"
+               cellspacing="0"
+               class="table table-sortable">
+          <thead>
+            <tr>
+              <th class="column-header first {sorter: 'ignoreCase'}">
+                <span class="sort-icon">${_("Name")}</span>
+              </th>
+              <th class="column-header {sorter: 'datetime'}">
+                <span class="sort-icon">${_("Created on")}</span>
+              </th>
+              <th class="column-header {sorter: 'ignoreCase'}">
+                <span class="sort-icon">${_("by")}</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr acre:for="query in c.domain.featured_views">
+              <th class="row-header odd">
+                <a href="${h.fb_url(query.id)}">${i18n.display_name(query)}</a>
+              </th>
+              <td class="">
+                ${i18n_c.datetime(query.timestamp, [["class","published"],["data-format","medium"]])}
+              </td>
+              <td class="odd">
+                <a href="${h.fb_url(query.creator.id, [['queries']])}">${h.id_key(query.creator.id)}</a> 
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div acre:else="" class="empty-result">
+          <p>${_("No queries have been created in this domain.")}</p>
+          <p acre:if="c.domain.types && c.domain.types.length">
+            <a href="#queries">
+              ${_("Try browsing by Type instead.")}
+            </a>
+          </p>
+        </div>
+      </div>
+      <div id="types" class="pane">
+        <table cellspacing="0" class="table-sortable table" acre:if="c.domain.types.length">
+          <thead>
+            <tr>
+              <th class="column-header first {sorter: 'ignoreCase'}">
+                <span class="sort-icon">${_("Name")}</span>
+              </th>
+              <th class="column-header {sorter: 'datetime'}">
+                <span class="sort-icon">${_("Created on")}</span>
+              </th>
+              <th class="column-header {sorter: 'ignoreCase'}">
+                <span class="sort-icon">${_("by")}</span>
+              </th>
+              <th class="column-header numeric {sorter: 'number'}">
+                <span class="sort-icon">${_("Topics")}</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr acre:for="type in c.domain.types">
+              <th class="row-header odd">
+                <a href="${h.fb_url(type.id)}">${i18n.display_name(type)}</a>
+              </th>
+              <td class="">
+                ${i18n_c.datetime(type.timestamp, [["class","published"],["data-format","medium"]])}
+              </td>
+              <td class="odd">
+                <a href="${h.fb_url(type.creator.id, [['schema']])}">${h.id_key(type.creator.id)}</a> 
+              </td>
+              <td class="numeric">${i18n_c.number(type.instance_count)}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div acre:else="" class="empty-result">
+          <p>${_("No Types have been created in this domain.")}</p>
+          <p acre:if="c.domain.featured_views && c.domain.featured_views.length">
+            <a href="#queries">${_("Try browsing by query instead.")}</a>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </div>

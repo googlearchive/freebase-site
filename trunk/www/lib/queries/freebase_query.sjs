@@ -48,6 +48,10 @@ function featured_views_by_domain(domain) {
   var q = { 
     "id": domain,
     "/freebase/domain_profile/featured_views": [{
+      "/common/document/content": {
+        "id": null,
+        "limit": 0
+      },
       "id": null,
       "optional": true,
       "name": i18n.mql.query.name(),

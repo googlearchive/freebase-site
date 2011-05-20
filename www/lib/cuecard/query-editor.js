@@ -343,22 +343,17 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
             }
         }
         
-        /*
-         *  A small hack to let Andi debug uMql, and for Warren to debug his new mql.
-         */
-        var url = CueCard.apiProxy.base + CueCard.apiProxy[options.isWriteQuery ? 'write' : 'read'] +
-            ("emql" in this._options && this._options.emql ? "emql=1&" : "") +
-            ("debug" in this._options ? ("debug=" + this._options.debug + "&") : "") +
-            ("service" in this._options && this._options.service != null ? ("service=" + encodeURIComponent(this._options.service) + "&") : "");
+        var url = CueCard.apiProxy.base + CueCard.apiProxy[options.isWriteQuery ? 'write' : 'read'];
         
         var self = this;
         var onDone = function(env) {
             var o = env.result;
+            // TODO - re handle error messages
             if (o["error"] == "unauthorized") {
                 self._outputPane.setStatus("Query editor is not authorized to write on your behalf.");
                 self._options.onUnauthorizedMqlWrite();
             } else {
-                self._outputPane.renderResponseHeaders(o.headers);
+                self._outputPane.renderResponseHeaders(o.headers || o.cost);
               
                 var options = {};
                 if (self._controlPane != null && self._controlPane.getSetting("multilineErrorMessages") && 
@@ -642,11 +637,11 @@ CueCard.QueryEditor.prototype._startSuggestProperties = function(lineNo, columnN
             }
             
             var url = CueCard.helper + "suggest-properties.ajax?" + params.join("&");
-            CueCard.JsonpQueue.call(
-                url,
-                cont2.extend(onGotSuggestedProperties).onDone,
-                cont.onError
-            );
+            $.ajax(url,{
+              dataType: "json",
+              success: cont2.extend(onGotSuggestedProperties).onDone,
+              error: cont.onError
+            });
             
             return true; // don't clean up
         };

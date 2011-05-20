@@ -30,8 +30,6 @@
  */
 
 var validators = acre.require("validator/validators.sjs");
-var apis = acre.require("promise/apis.sjs");
-var freebase = apis.freebase;
 
 var SPEC = {
 
@@ -43,22 +41,14 @@ var SPEC = {
 
   validate: function(params) {
     return [
-    validators.Json(params, "query", {required: true}),
-    validators.String(params, "service", {if_empty: false})
+      validators.Json(params, "query", {required: true})
     ];
   },
 
-  run: function(queryEnvelope, service) {
+  run: function(queryEnvelope) {
     var query = queryEnvelope.query;
     delete queryEnvelope.query;
-
-    return freebase.mqlwrite(query, queryEnvelope)
-    .then(function(response) {
-      return {
-        headers: {},
-        body: response
-      };
-    });
+    return acre.freebase.mqlwrite(query, queryEnvelope);
   }
 };
 

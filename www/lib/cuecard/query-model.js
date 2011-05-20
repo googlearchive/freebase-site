@@ -327,11 +327,11 @@ CueCard.QueryNode.prototype._qualifyAllProperties = function(expectedTypes, glob
         }
         var url = CueCard.helper + "qualify-properties.ajax?" + params.join("&");
             
-        CueCard.JsonpQueue.call(
-            url,
-            onGotSchemaData,
-            cont.onError
-        );
+        $.ajax(url, {
+          dataType: "json",
+          success: onGotSchemaData,
+          error: cont.onError
+        });
         
     } else if (this.type == CueCard.QueryNode.TYPE_NONTERMINAL_ARRAY) {
         var i = 0;

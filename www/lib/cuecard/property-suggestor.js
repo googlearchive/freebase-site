@@ -113,11 +113,11 @@ CueCard.PropertySuggestor.prototype.getSuggestions = function(prefix, onDone) {
             
         var url = CueCard.helper + "suggest-arbitrary-properties.ajax?q=" + encodeURIComponent(prefix);
         
-        CueCard.JsonpQueue.call(
-            url,
-            cont.onDone,
-            cont.onError
-        );
+        $.ajax(url, {
+          dataType: "json",
+          success: cont.onDone,
+          error: cont.onError
+        });
     }
 };
 

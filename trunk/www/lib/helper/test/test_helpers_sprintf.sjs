@@ -36,6 +36,9 @@ var template = acre.require("helper/test/sprintf_template.sjs");
 
 test("sprintf", function() {
   equal(h.sprintf("%s%s%s", 1, 2, 3), "123");
+
+  // named arguments
+  equal(h.sprintf("%(a)s%(b)s%(c)s", {a:"a", b:"b", c:"c"}), "abc");
 });
 
 test("template_sprintf", function() {
@@ -58,6 +61,9 @@ test("template_sprintf", function() {
   equal(h.template_sprintf("Even <script>%s</script> is escaped!",
                            "alert(1);").html,
         "Even &lt;script&gt;alert(1);&lt;/script&gt; is escaped!");
+
+  equal(h.template_sprintf("%(em1)s and %(em2)s", {em1: template.embolden("EM 1"), em2: template.embolden("EM 2")}).html,
+        "<b>EM 1</b> and <b>EM 2</b>");
 });
 
 

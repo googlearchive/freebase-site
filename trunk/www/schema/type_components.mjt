@@ -69,7 +69,14 @@
         <acre:block if="other_property">
           <span class="return-link-trigger"></span>
           <span class="return-link-description">
-            ${h.bless_sprintf(_("%s has a return link of %s from %s"), h.tag("strong", i18n.display_name(prop)), h.tag("strong", i18n.display_name(other_property)), h.tag("strong", i18n.display_name(other_property.schema)))}
+            <acre:script>
+              var sprintf_args = {
+                prop: tag_strong(i18n.display_name(prop)),
+                other_prop: tag_strong(i18n.display_name(other_property)),
+                other_prop_schema: tag_strong(i18n.display_name(other_property.schema))
+              };
+            </acre:script>
+            ${h.template_sprintf(_("%(prop)s has a return link of %(other_prop)s from %(other_prop_schema)s"), sprintf_args)}
             <span class="return-link-pointer"></span>
           </span>
         </acre:block>
@@ -88,7 +95,7 @@
     <td class="even description">
       <p acre:if="prop.tip">${i18n.display_name(prop, "", "tip")}</p>
       <span acre:if="prop.delegated" class="property-meta" acre:trim="">
-        <abbr title="${h.sprintf(_('This is a property is delegated to %s'), prop.delegated.id)}">${_('delegated')}</abbr>
+        <abbr title="${h.sprintf(_('This property is delegated to %s'), prop.delegated.id)}">${_('delegated')}</abbr>
       </span><span acre:elif="prop.master_property" class="property-meta" acre:trim="">
         <abbr title="${_('This is a reverse property')}">${_('reverse')}</abbr>
       </span><span acre:else="" class="property-meta" acre:trim="">
@@ -322,4 +329,9 @@
       <td acre:else="" class="c1 out_type">&nbsp;</td>
     </tr>    
   </acre:block>
+</acre:block>
+
+
+<acre:block def="tag_strong(value)">
+  <strong>${value}</strong>
 </acre:block>

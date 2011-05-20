@@ -113,7 +113,7 @@
   <tr class="row-msg row-msg-info">
     <td colspan="5">
       <a class="close-msg" href="#" onclick="return freebase.dispatch(event, freebase.schema.close_message, ['.row-msg:first'], this);">${_('Close')}</a>
-      ${h.bless_sprintf(_("%s has been deleted."), type_info.name || type_info.id)}
+      ${h.sprintf(_("%s has been deleted."), type_info.name || type_info.id)}
       <a href="#" onclick="return freebase.dispatch(event, freebase.schema.domain.undo_delete_type, null, this);"
          class="${JSON.stringify(type_info)}">${_('Undo')}</a>
     </td>
@@ -154,7 +154,7 @@
             <acre:block else="">
               <input class="text-input" type="text" name="key" value="${domain.key.value}" disabled="disabled"/>
               <span class="form-note">
-                ${h.bless_sprintf(_("You do not permission to update this key in %s."), h.tag("span", domain.key.namespace, "class", "key"))}
+                ${h.template_sprintf(_("You do not permission to update this key in %s."), tag_span_key(domain.key.namespace))}
                 ${_("Please contact a freebase administrator.")}
               </span>
             </acre:block>
@@ -176,4 +176,9 @@
       ${i18n_editcomponents.lang_select()}
     </div>
   </div>
+</acre:block>
+
+
+<acre:block def="tag_span_key(value)">
+  <span class="key">${value}</span>
 </acre:block>

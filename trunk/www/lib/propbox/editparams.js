@@ -218,6 +218,14 @@
         clause.id = null;
         clause.create = "unconditional";
         clause.connect = structure.unique ? "replace" : "insert";
+        // assert expected type and included types
+        clause.type = [{id:structure.expected_type.id, connect:"insert"}];
+        var inc_types = structure.expected_type.included_types;
+        if (inc_types) {
+          inc_types.forEach(function(inc_type) {
+            clause.type.push({id:inc_type, connect:"insert"});
+          });
+        }
       }
       var has_diff = false;
       var sub_props = structure.properties;
@@ -252,9 +260,10 @@
      */
     diff: function(structure, old_values, new_values) {
 //console.log("diff", old_values, new_values);
-      var ect = structure.expected_type.id;
+      var ect = structure.expected_type;
+      var ect_id = structure.expected_type.id;
       var is_unique = structure.unique;
-      var is_text = ect === "/type/text";
+      var is_text = ect_id === "/type/text";
       if (is_unique) {
         if (is_text) {
           // TODO: assert one value per lang in old_values and new_values
@@ -270,7 +279,7 @@
           }
         }
       }
-      var is_literal = ep.LITERAL_TYPE_IDS[ect];
+      var is_literal = ep.LITERAL_TYPE_IDS[ect_id];
       var keys_to_compare = [];
       if (is_literal) {
         keys_to_compare.push("value");
@@ -313,10 +322,10 @@
               }
             }
             else {
-              return [ep.clause(new_value, "replace")];
+              return [ep.clause(new_value, "replace", ect)];
             }
           }
-          inserts.push(ep.clause(new_value, is_unique ? "replace" : "insert"));
+          inserts.push(ep.clause(new_value, is_unique ? "replace" : "insert", ect));
         }
       };
       return deletes.concat(inserts);
@@ -356,10 +365,24 @@
       return data;
     },
 
-    clause: function(value, connect) {
+    clause: function(value, connect, expected_type) {
       var clause = {connect:connect};
       if (value.id) {
         clause.id = value.id;
+        /**
+         * if connect=insert|update|replace and expected type is not an "enumeration"
+         * we want to assert the expected type and all its included types.
+         */
+        if (connect !== "delete" && expected_type && !expected_type.enumeration) {
+          var types = [{id:expected_type.id, connect:"insert"}];
+          var inc_types = expected_type.included_types;
+          if (inc_types) {
+            inc_types.forEach(function(inc_type) {
+              types.push({id:inc_type, connect:"insert"});
+            });
+          }
+          clause.type = types;
+        }
       }
       else {
         clause.value = value.value;

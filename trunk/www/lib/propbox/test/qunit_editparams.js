@@ -119,6 +119,20 @@
       same(ep.clause({id:"foo", value:"bar"}, "delete"), {id:"foo", connect:"delete"});
       same(ep.clause({value:"foo"}, "update"), {value:"foo", connect:"update"});
       same(ep.clause({value:"foo", lang:"bar"}, "replace"), {value:"foo", lang:"bar", connect:"replace"});
+      same(ep.clause({value:"foo", lang:"bar"}, "delete"), {value:"foo", lang:"bar", connect:"delete"});
+
+
+      same(ep.clause({id:"foo"}, "insert", {id:"/type/ect"}), {id:"foo", connect:"insert", type:[{id:"/type/ect", connect:"insert"}]});
+
+      same(ep.clause({id:"foo"}, "update", {id:"/type/ect"}), {id:"foo", connect:"update", type:[{id:"/type/ect", connect:"insert"}]});
+      same(ep.clause({id:"foo"}, "replace", {id:"/type/ect"}), {id:"foo", connect:"replace", type:[{id:"/type/ect", connect:"insert"}]});
+      same(ep.clause({id:"foo"}, "delete", {id:"/type/ect"}), {id:"foo", connect:"delete"});
+
+      same(ep.clause({id:"foo"}, "insert", {id:"/type/ect", included_types:["/type/inc_type"]}), {id:"foo", connect:"insert", type:[{id:"/type/ect", connect:"insert"}, {id:"/type/inc_type", connect:"insert"}]});
+
+      same(ep.clause({id:"foo"}, "insert", {id:"/type/ect", included_types:["/type/inc_type", "/type/inc_type2"]}), {id:"foo", connect:"insert", type:[{id:"/type/ect", connect:"insert"}, {id:"/type/inc_type", connect:"insert"}, {id:"/type/inc_type2", connect:"insert"}]});
+
+      same(ep.clause({id:"foo"}, "update", {id:"/type/ect", included_types:["/type/inc_type", "/type/inc_type2"], enumeration:true}), {id:"foo", connect:"update"});
     });
 
 
@@ -249,7 +263,7 @@
         expected_type: {id: "/some/type"}
       };
 
-      same(ep.diff(structure, [{id:"foo"}], [{id:"bar"}]), [{id:"bar", connect:"replace"}]);
+      same(ep.diff(structure, [{id:"foo"}], [{id:"bar"}]), [{id:"bar", connect:"replace", type:[{id:"/some/type", connect:"insert"}]}]);
 
       same(ep.diff(structure, [{id:"foo"}], [{id:null}]), [{id:"foo", connect:"delete"}]);
 
@@ -283,12 +297,12 @@
       same(ep.diff(structure,
                    [{id:"foo"}, {id:"bar"}, {id:"baz"}],
                    [{id:"foo"}, {id:"bar"}, {id:"baz"}, {id:"hello"}]),
-           [{id:"hello", connect:"insert"}]);
+           [{id:"hello", connect:"insert", type:[{id:"/some/type", connect:"insert"}]}]);
 
       same(ep.diff(structure,
                    [{id:"foo"}, {id:"bar"}, {id:"baz"}],
                    [{id:"foo"}, {id:"baz"}, {id:"hello"}]),
-           [{id:"bar", connect:"delete"}, {id:"hello", connect:"insert"}]);
+           [{id:"bar", connect:"delete"}, {id:"hello", connect:"insert", type:[{id:"/some/type", connect:"insert"}]}]);
     });
 
 
@@ -628,12 +642,12 @@
       var structure = {
         id: "/prop/id",
         unique: true,
-        expected_type: {id:"/people/person"},
+        expected_type: {id:"/people/person", included_types:["/common/topic"]},
         values: []
       };
       same(ep.parse(structure, context), []);
       fb_select($(".fb-input", context), "/en/bob_dylan");
-      same(ep.parse(structure, context), [{id:"/en/bob_dylan", connect:"replace"}]);
+      same(ep.parse(structure, context), [{id:"/en/bob_dylan", connect:"replace", type:[{id:"/people/person", connect:"insert"},{id:"/common/topic", connect:"insert"}]}]);
     });
 
 
@@ -643,7 +657,7 @@
       var structure = {
         id: "/prop/id",
         unique: true,
-        expected_type: {id:"/people/person"},
+        expected_type: {id:"/people/person", included_types:["/common/topic"]},
         values: [{id:"/en/bob_dylan"}]
       };
       same(ep.parse(structure, context), []);
@@ -659,12 +673,12 @@
       var structure = {
         id: "/prop/id",
         unique: true,
-        expected_type: {id:"/people/person"},
+        expected_type: {id:"/people/person", included_types:["/common/topic"]},
         values: [{id:"/en/bob_dylan"}]
       };
       same(ep.parse(structure, context), []);
       fb_select($(".fb-input", context), "/en/foo");
-      same(ep.parse(structure, context), [{id:"/en/foo", connect:"replace"}]);
+      same(ep.parse(structure, context), [{id:"/en/foo", connect:"replace", type:[{id:"/people/person", connect:"insert"},{id:"/common/topic", connect:"insert"}]}]);
     });
 
 
@@ -674,7 +688,7 @@
       var structure = {
         id: "/prop/id",
         unique: true,
-        expected_type: {id:"/people/person"},
+        expected_type: {id:"/people/person", included_types:["/common/topic"]},
         values: [{id:"/en/bob_dylan"}]
       };
       same(ep.parse(structure, context), []);
@@ -687,12 +701,12 @@
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
-        expected_type: {id:"/people/person"},
+        expected_type: {id:"/people/person", included_types:["/common/topic"]},
         values: [{id:"/en/bob_dylan"},{id:"/en/lady_gaga"}]
       };
       same(ep.parse(structure, context), []);
       fb_select($(".fb-input:last", context), "/en/jack_kerouac");
-      same(ep.parse(structure, context), [{id:"/en/jack_kerouac", connect:"insert"}]);
+      same(ep.parse(structure, context), [{id:"/en/jack_kerouac", connect:"insert",type:[{id:"/people/person", connect:"insert"},{id:"/common/topic", connect:"insert"}]}]);
     });
 
     test("non-unique-topic-delete", function() {
@@ -700,7 +714,7 @@
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
-        expected_type: {id:"/people/person"},
+        expected_type:{id:"/people/person", included_types:["/common/topic"]},
         values: [{id:"/en/bob_dylan"},{id:"/en/lady_gaga"}]
       };
       same(ep.parse(structure, context), []);
@@ -719,12 +733,12 @@
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
-        expected_type: {id:"/people/person"},
+        expected_type: {id:"/people/person", included_types:["/common/topic"]},
         values: [{id:"/en/bob_dylan"},{id:"/en/lady_gaga"}]
       };
       same(ep.parse(structure, context), []);
       fb_select($(".fb-input:last", context), "/en/jack_kerouac");
-      same(ep.parse(structure, context), [{id:"/en/lady_gaga", connect:"delete"}, {id:"/en/jack_kerouac", connect:"insert"}]);
+      same(ep.parse(structure, context), [{id:"/en/lady_gaga", connect:"delete"}, {id:"/en/jack_kerouac", connect:"insert", type:[{id:"/people/person", connect:"insert"},{id:"/common/topic", connect:"insert"}]}]);
     });
 
     test("non-unique-topic-noop", function() {
@@ -732,7 +746,7 @@
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
-        expected_type: {id:"/people/person"},
+        expected_type: {id:"/people/person", included_types:["/common/topic"]},
         values: [{id:"/en/bob_dylan"},{id:"/en/lady_gaga"}]
       };
       same(ep.parse(structure, context), []);
@@ -748,7 +762,7 @@
       var structure = {
         id: "/prop/id",
         unique: true,
-        expected_type: {id:"/people/gender"},
+        expected_type: {id:"/people/gender", included_types:["/common/topic"], enumeration:true},
         values: []
       };
       same(ep.parse(structure, context), []);
@@ -762,7 +776,7 @@
       var structure = {
         id: "/prop/id",
         unique: true,
-        expected_type: {id:"/people/gender"},
+        expected_type: {id:"/people/gender", included_types:["/common/topic"], enumeration:true},
         values: [{id:"/en/female"}]
       };
       same(ep.parse(structure, context), []);
@@ -778,7 +792,7 @@
       var structure = {
         id: "/prop/id",
         unique: true,
-        expected_type: {id:"/people/gender"},
+        expected_type: {id:"/people/gender", included_types:["/common/topic"], enumeration:true},
         values: [{id:"/en/female"}]
       };
       same(ep.parse(structure, context), []);
@@ -792,7 +806,7 @@
       var structure = {
         id: "/prop/id",
         unique: true,
-        expected_type: {id:"/people/gender"},
+        expected_type: {id:"/people/gender", included_types:["/common/topic"], enumeration:true},
         values: [{id:"/en/male"}]
       };
       same(ep.parse(structure, context), []);
@@ -808,7 +822,7 @@
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
-        expected_type: {id:"/people/gender"},
+        expected_type: {id:"/people/gender", included_types:["/common/topic"], enumeration:true},
         values: [{id:"/en/male"}]
       };
       same(ep.parse(structure, context), []);
@@ -821,7 +835,7 @@
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
-        expected_type: {id:"/people/gender"},
+        expected_type: {id:"/people/gender", included_types:["/common/topic"], enumeration:true},
         values: [{id:"/en/male"},{id:"/en/female"}]
       };
       same(ep.parse(structure, context), []);
@@ -840,7 +854,7 @@
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
-        expected_type: {id:"/people/gender"},
+        expected_type: {id:"/people/gender", included_types:["/common/topic"], enumeration:true},
         values: [{id:"/en/female"}]
       };
       same(ep.parse(structure, context), []);
@@ -853,7 +867,7 @@
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/prop/id",
-        expected_type: {id:"/people/gender"},
+        expected_type: {id:"/people/gender", included_types:["/common/topic"], enumeration:true},
         values: [{id:"/en/male"},{id:"/en/female"}]
       };
       same(ep.parse(structure, context), []);
@@ -875,7 +889,7 @@
         unique: true,
         properties: [{
           id: "/measurement_unit/dated_money_value/currency",
-          expected_type: {id:"/finance/currency"},
+          expected_type: {id:"/finance/currency", included_types:["/common/topic"]},
           unique: true
         },{
           id: "/measurement_unit/dated_money_value/amount",
@@ -890,6 +904,7 @@
         id: null,
         create: "unconditional",
         connect: "replace",
+        type: [{id:"/measurement_unit/dated_money_value", connect:"insert"}],
         "/measurement_unit/dated_money_value/amount": [{
           value: 6087542,
           connect: "replace"
@@ -900,13 +915,15 @@
         id: null,
         create: "unconditional",
         connect: "replace",
+        type: [{id:"/measurement_unit/dated_money_value", connect:"insert"}],
         "/measurement_unit/dated_money_value/amount": [{
           value: 6087542,
           connect: "replace"
         }],
         "/measurement_unit/dated_money_value/currency": [{
           id: "/en/us",
-          connect: "replace"
+          connect: "replace",
+          type: [{id:"/finance/currency", connect:"insert"},{id:"/common/topic", connect:"insert"}]
         }]
       }]);
     });
@@ -920,7 +937,7 @@
         unique: true,
         properties: [{
           id: "/measurement_unit/dated_money_value/currency",
-          expected_type: {id:"/finance/currency"},
+          expected_type: {id:"/finance/currency", included_types:["/common/topic"]},
           unique: true
         },{
           id: "/measurement_unit/dated_money_value/amount",
@@ -973,7 +990,7 @@
         unique: true,
         properties: [{
           id: "/measurement_unit/dated_money_value/currency",
-          expected_type: {id:"/finance/currency"},
+          expected_type: {id:"/finance/currency", included_types:["/common/topic"]},
           unique: true
         },{
           id: "/measurement_unit/dated_money_value/amount",
@@ -1000,7 +1017,8 @@
         id: "/m/123",
         "/measurement_unit/dated_money_value/currency": [{
           id: "/en/korean_won",
-          connect: "replace"
+          connect: "replace",
+          type: [{id:"/finance/currency", connect:"insert"},{id:"/common/topic", connect:"insert"}]
         }]
       }]);
       $(".fb-input:last", context).val("1200000");
@@ -1012,7 +1030,8 @@
         }],
         "/measurement_unit/dated_money_value/currency": [{
           id: "/en/korean_won",
-          connect: "replace"
+          connect: "replace",
+          type: [{id:"/finance/currency", connect:"insert"},{id:"/common/topic", connect:"insert"}]
         }]
       }]);
     });
@@ -1026,7 +1045,7 @@
         unique: true,
         properties: [{
           id: "/measurement_unit/dated_money_value/currency",
-          expected_type: {id:"/finance/currency"},
+          expected_type: {id:"/finance/currency", included_types:["/common/topic"]},
           unique: true
         },{
           id: "/measurement_unit/dated_money_value/amount",
@@ -1064,14 +1083,14 @@
         properties: [{
           id: "/tv/regular_tv_appearance/actor",
           unique: true,
-          expected_type: {id: "/tv/tv_actor"}
+          expected_type: {id: "/tv/tv_actor", included_types:["/people/person", "/common/topic"]}
         },{
           id: "/tv/regular_tv_appearance/character",
           unique: true,
-          expected_type: {id: "/tv/tv_charcter"}
+          expected_type: {id: "/tv/tv_character", included_types:["/common/topic"]}
         },{
           id: "/tv/regular_tv_appearance/seasons",
-          expected_type: {id: "/tv/tv_series_season"}
+          expected_type: {id: "/tv/tv_series_season", included_types:["/common/topic"]}
         }],
         values: []
       };
@@ -1081,9 +1100,11 @@
         id: null,
         create: "unconditional",
         connect: "insert",
+        type: [{id:"/tv/regular_tv_appearance", connect:"insert"}],
         "/tv/regular_tv_appearance/actor": [{
           id: "/en/matthew_fox",
-          connect: "replace"
+          connect: "replace",
+          type: [{id:"/tv/tv_actor", connect:"insert"},{id:"/people/person", connect:"insert"},{id:"/common/topic", connect:"insert"}]
         }]
       }]);
       fb_select($(".fb-input:eq(1)", context), "/en/jack_shephard");
@@ -1091,13 +1112,16 @@
         id: null,
         create: "unconditional",
         connect: "insert",
+        type: [{id:"/tv/regular_tv_appearance", connect:"insert"}],
         "/tv/regular_tv_appearance/actor": [{
           id: "/en/matthew_fox",
-          connect: "replace"
+          connect: "replace",
+          type: [{id:"/tv/tv_actor", connect:"insert"},{id:"/people/person", connect:"insert"},{id:"/common/topic", connect:"insert"}]
         }],
         "/tv/regular_tv_appearance/character": [{
           id: "/en/jack_shephard",
-          connect: "replace"
+          connect: "replace",
+          type: [{id: "/tv/tv_character", connect:"insert"},{id:"/common/topic", connect:"insert"}]
         }]
       }]);
       fb_select($(".fb-input:eq(2)", context), "/en/lost_season_1");
@@ -1107,23 +1131,29 @@
         id: null,
         create: "unconditional",
         connect: "insert",
+        type: [{id:"/tv/regular_tv_appearance", connect:"insert"}],
         "/tv/regular_tv_appearance/actor": [{
           id: "/en/matthew_fox",
-          connect: "replace"
+          connect: "replace",
+          type: [{id: "/tv/tv_actor", connect:"insert"},{id:"/people/person", connect:"insert"},{id:"/common/topic", connect:"insert"}]
         }],
         "/tv/regular_tv_appearance/character": [{
           id: "/en/jack_shephard",
-          connect: "replace"
+          connect: "replace",
+          type: [{id: "/tv/tv_character", connect:"insert"},{id:"/common/topic", connect:"insert"}]
         }],
         "/tv/regular_tv_appearance/seasons": [{
           id: "/en/lost_season_1",
-          connect: "insert"
+          connect: "insert",
+          type: [{id: "/tv/tv_series_season", connect:"insert"},{id:"/common/topic", connect:"insert"}]
         },{
           id: "/en/lost_season_2",
-          connect: "insert"
+          connect: "insert",
+          type: [{id: "/tv/tv_series_season", connect:"insert"},{id:"/common/topic", connect:"insert"}]
         },{
           id: "/en/lost_season_3",
-          connect: "insert"
+          connect: "insert",
+          type: [{id: "/tv/tv_series_season", connect:"insert"},{id:"/common/topic", connect:"insert"}]
         }]
       }]);
     });
@@ -1137,14 +1167,14 @@
         properties: [{
           id: "/tv/regular_tv_appearance/actor",
           unique: true,
-          expected_type: {id: "/tv/tv_actor"}
+          expected_type: {id: "/tv/tv_actor", included_types:["/people/person", "/common/topic"]}
         },{
           id: "/tv/regular_tv_appearance/character",
           unique: true,
-          expected_type: {id: "/tv/tv_charcter"}
+          expected_type: {id: "/tv/tv_character", included_types:["/common/topic"]}
         },{
           id: "/tv/regular_tv_appearance/seasons",
-          expected_type: {id: "/tv/tv_series_season"}
+          expected_type: {id: "/tv/tv_series_season", included_types:["/common/topic"]}
         }],
         values: [{
           id: "/m/mid123",
@@ -1183,7 +1213,8 @@
           connect:"delete"
         },{
           id: "/en/lost_season_4",
-          connect:"insert"
+          connect:"insert",
+          type: [{id: "/tv/tv_series_season", connect:"insert"},{id:"/common/topic", connect:"insert"}]
         }]
       }]);
       fb_select($(".fb-input:first", context), "/en/matthew_fox");
@@ -1193,7 +1224,8 @@
         id: "/m/mid123",
         "/tv/regular_tv_appearance/character": [{
           id: "/en/john_locke",
-          connect: "replace"
+          connect: "replace",
+          type: [{id: "/tv/tv_character", connect:"insert"},{id:"/common/topic", connect:"insert"}]
         }],
         "/tv/regular_tv_appearance/seasons": [{
           id: "/en/lost_season_3",

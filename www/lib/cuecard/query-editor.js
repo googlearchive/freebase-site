@@ -346,21 +346,23 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
         var url = CueCard.apiProxy.base + CueCard.apiProxy[options.isWriteQuery ? 'write' : 'read'];
         
         var self = this;
-        var onDone = function(env) {
-            var o = env.result;
+        var onDone = function(o) {            
             // TODO - re handle error messages
-            if (o["error"] == "unauthorized") {
+            if ((o.status && o.status.indexOf("401") == 0) || (o.code = 401)) {
+                console.log("unauthorized")
                 self._outputPane.setStatus("Query editor is not authorized to write on your behalf.");
                 self._options.onUnauthorizedMqlWrite();
             } else {
-                self._outputPane.renderResponseHeaders(o.headers || o.cost);
+                if (o.cost) {
+                  self._outputPane.renderResponseHeaders(o.cost);                  
+                }
               
                 var options = {};
                 if (self._controlPane != null && self._controlPane.getSetting("multilineErrorMessages") && 
-                    "code" in o.body && o.body.code == "/api/status/error" && "messages" in o.body && o.body.messages != null) {
+                    ("messages" in o || "message" in o)) {
                     options["encodeJavascriptString"] = function(x) { return x; };
                 }
-                self._outputPane.setJSONContent(o.body || o, self.getJsonizingSettings(options), self.decantConstraints(q));
+                self._outputPane.setJSONContent(o, self.getJsonizingSettings(options), self.decantConstraints(q));
             }
         };
         var onError = function(msg) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Google Inc.
+ * Copyright 2011, Google Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,27 +29,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var validators = acre.require("validator/validators.sjs");
+var result;
+try {
+  var qparam = acre.request.body_params.query || acre.request.params.query;
+  var envelope = JSON.parse(qparam);
+  var query = envelope.query;
+  delete envelope.query;
+  result = acre.freebase.mqlread(query, envelope);
+} catch (e) {
+  result = e;
+}
 
-var SPEC = {
-
-  method: "POST",
-  
-  cache_policy: "private",
-
-  auth: true,
-
-  validate: function(params) {
-    return [
-      validators.Json(params, "query", {required: true})
-    ];
-  },
-
-  run: function(queryEnvelope) {
-    var query = queryEnvelope.query;
-    delete queryEnvelope.query;
-    return acre.freebase.mqlwrite(query, queryEnvelope);
-  }
-};
-
-
+acre.write(JSON.stringify(result, null, 2));

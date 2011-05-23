@@ -41,6 +41,8 @@ div.cuecard-outputPane-tabBody {
 }
 
 div.cuecard-outputPane-status {
+  float: right;
+  text-align: right;
   height: 100%;
   overflow: auto;
 }

@@ -42,8 +42,8 @@ if (!("CueCard" in window)) {
             helper: acreAppUrl,
             apiProxy: {
                 base : acreAppUrl,
-                read:  "mqlread.ajax?",
-                write: "mqlwrite.ajax?"
+                read:  "mqlread.sjs?",
+                write: "mqlwrite.sjs?"
             },
             freebaseServiceUrl:     "http://www.freebase.com/",
             params:                 { bundle: true, externals: true }

@@ -28,6 +28,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+var topscope = this.__proto__;
+
 var h = acre.require("helper/helpers.sjs");
 var fh = acre.require("filter/helpers.sjs");
 var service_lib = acre.require("handlers/service_lib.sjs");
@@ -59,6 +62,9 @@ function main(tabs, object) {
   h.extend(acre.request.params, template_base_args);
 
   var script = acre.require(current_tab.app + "/" + current_tab.script);
+  
+  // set the request script to be our tab script since we're not using acre.route
+  topscope.acre.request.script = script.acre.current_script;
 
   var spec = script.SPEC;
   spec.template_base = "lib/template/freebase_object.mjt";

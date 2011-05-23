@@ -176,7 +176,7 @@
         &#169; <script> document.write(new Date().getFullYear());</script>
         <img src="template/google-logo.png" alt="Google" width="62" height="23" />
       </a>
-      <a title="${acre.request.script.path}" href="${acre.response.headers['x-acre-source-url']}" id="sourcelink">View Source</a>
+      <a title="${acre.request.script.path}" href="/appeditor#!path=${acre.request.script.path}" id="sourcelink">View Source</a>
     </div>
     <ul id="nav-footer" class="clear">
       <li class="nav-footer-item">

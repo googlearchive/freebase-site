@@ -217,7 +217,8 @@
             <a class="property-value" href="${h.fb_url(prop_value.id)}" title="${prop_value.id}">
               ${image.image_thumb(prop_value.id, 24, options)}
             </a>
-            ${value_menu(topic, prop_structure, prop_value, lang)}
+            <!!-- disabled edit image !!-->
+            <!!-- ${value_menu(topic, prop_structure, prop_value, lang)} !!-->
           </span>
         </li>
       </ul>
@@ -243,7 +244,8 @@
         <li>
           <span class="wrapper">
             <a class="property-value" href="${h.fb_url(prop_value.id)}" title="${prop_value.id}">${prop_value.text || prop_value.id}</a>
-            ${value_menu()}
+            <!!-- disabled edit article !!-->
+            <!!-- ${value_menu()} !!-->
           </span>
         </li>
       </ul>
@@ -305,7 +307,9 @@
   <li class="kbs data-row">
     <span class="wrapper">
       ${value(topic.id, prop_structure, prop_value, lang)}
-      ${value_menu(topic, prop_structure, prop_value, lang)}
+      <acre:block if="prop_structure.expected_type.id !== '/common/webpage'">
+        ${value_menu(topic, prop_structure, prop_value, lang)}
+      </acre:block>
     </span>
   </li>  
 </acre:block>
@@ -369,19 +373,24 @@
 </acre:block>
 
 <acre:block def="prop_menu(topic, prop_structure, lang)">
+  <acre:script>
+    var ect = prop_structure.expected_type.id;
+  </acre:script>
   <ul class="inline-menu nicemenu">
     <li class="inline-menu-item nicemenu-item">
       <span class="mark headmenu">
         <a href="#" class="menu-trigger" onclick="return false;" title="${prop_structure.id}">${prop_structure.text}</a>
       </span>
       <ul class="row-menu submenu">
-        <li acre:if="prop_structure.unique && prop_structure.values.length" class="row-menu-item edit">
-          <a href="#" onclick="return propbox.prop_edit(this, ${prop_structure.unique});">${EDIT_VALUE}</a>
-        </li>
-        <li acre:else="" class="row-menu-item edit">
-          <a href="#" onclick="return propbox.prop_add(this, ${prop_structure.unique});">${ADD_NEW_VALUE}</a>
-        </li>
-        <li acre:if="prop_structure.expected_type.id === '/type/text'" class="row-menu-item edit">
+        <acre:block if="!(ect === '/common/image' || ect === '/common/document' || ect === '/common/webpage')">
+          <li acre:if="prop_structure.unique && prop_structure.values.length" class="row-menu-item edit">
+            <a href="#" onclick="return propbox.prop_edit(this, ${prop_structure.unique});">${EDIT_VALUE}</a>
+          </li>
+          <li acre:else="" class="row-menu-item edit">
+            <a href="#" onclick="return propbox.prop_add(this, ${prop_structure.unique});">${ADD_NEW_VALUE}</a>
+          </li>
+        </acre:block>
+        <li acre:if="ect === '/type/text'" class="row-menu-item edit">
           <a href="#" onclick="return i18n.text_edit(this, '${h.ajax_url('lib/i18n')}', '${topic.id}', '${prop_structure.id}', '${lang}')">${EDIT_LOCALIZED_TEXT}</a>
         </li>
         <li class="row-menu-item"><a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}">${FILTER_PROPERTY}</a></li>

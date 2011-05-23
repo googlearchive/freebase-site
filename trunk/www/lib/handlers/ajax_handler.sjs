@@ -106,8 +106,8 @@ function to_ajax_response(ret) {
     resp.body = JSON.stringify(ret, null, 2);
   }
    */
-  var status_code = (typeof ret.status === "number") ? ret.status : parseInt(ret.status.split(' ')[0], 10);
-  if (status_code) {
+  if (ret.status) {
+    var status_code = (typeof ret.status === "number") ? ret.status : parseInt(ret.status.split(' ')[0], 10);
     resp.status = status_code;
   }
   resp.body = JSON.stringify(ret, null, 2);

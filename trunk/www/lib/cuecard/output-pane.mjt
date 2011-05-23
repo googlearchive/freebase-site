@@ -178,6 +178,7 @@
 <acre:block def="json()">
   <div class="panel-content"></div>
   <div class="panel-header">
+    <div class="cuecard-outputPane-status"></div>
     <span class="cuecard-outputPane-headers drawer-toggle">
       <a class="icon-link" href="javascript:void(0)">
         <span>Costs &amp; Headers</span>

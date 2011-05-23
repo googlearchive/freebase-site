@@ -90,7 +90,7 @@ CueCard.OutputPane.prototype._constructUI = function() {
 
   this._list = this._getTab("list").find("div");
   this._json = this._getTab("json").find("div .panel-content");
-  this._status = this._getTab("json").find("div .drawer-content");
+  this._status = this._getTab("json").find("div .panel-header .cuecard-outputPane-status");
   this._help = this._getTab("help").find("div");
 
   // setup JSON iframe
@@ -137,7 +137,13 @@ CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings, con
   if (o.result) {
     this._setIFrameText(CueCard.jsonize(o, jsonizingSettings || { indentCount: 2 }));
     this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list", [o, constraints]);    
+  } else if (o.message) {
+    // apiary error
+    delete o.response;
+    this._setIFrameText(CueCard.jsonize(o, jsonizingSettings || { indentCount: 2 }));
+    this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list_error", [o.message]);
   } else if (o.messages) {
+    // metaweb error
     var message = (typeof o.messages[0] == 'string') ?  o.messages[0] : o.messages[0].message;
     this._setIFrameText(message);
     this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list_error", [message]);
@@ -147,7 +153,6 @@ CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings, con
 }
 
 CueCard.OutputPane.prototype.setStatus = function(html) {
-  //this._tabs.click(1);
   this._status.html(html);
 
   this._jsonResult = null;

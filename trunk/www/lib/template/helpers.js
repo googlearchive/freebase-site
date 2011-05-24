@@ -154,6 +154,12 @@
       return h.reentrant_url.apply(null, args);
     },
 
+    static_url: function() {
+      var args = Array.prototype.slice.call(arguments);
+      args.unshift("/static");
+      return h.reentrant_url.apply(null, args);
+    },
+
     reentrant_url: function(prefix, path) {
       path = h.resolve_reentrant_path(path);
       path = path.replace(/^\/\//, prefix + "/");
@@ -196,10 +202,10 @@
      */
 
     suggest_url: function() {
-        if (fb.acre.freebase.apiary_url) { 
+        if (fb.acre.freebase.apiary_url) {
             return fb.acre.freebase.apiary_url + '/suggest?key=' + fb.acre.freebase.api_key;
         }
-        
+
         return h.legacy_fb_url();
     },
 

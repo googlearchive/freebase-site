@@ -112,7 +112,7 @@
 
     type_settings: function(e, type_id) {
       var trigger = $(this);
-      fb.get_script(fb.acre.request.app_url + "/schema/type-edit.mf.js", function() {
+      fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
         t.edit.type_settings_begin(trigger, type_id);
       });
       return false;
@@ -124,7 +124,7 @@
         return false;
       }
       trigger.addClass("editing");
-      fb.get_script(fb.acre.request.app_url + "/schema/type-edit.mf.js", function() {
+      fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
         t.edit.reorder_property_begin(trigger, type_id);
       });
       return false;
@@ -136,7 +136,7 @@
         return false;
       }
       trigger.addClass("editing");
-      fb.get_script(fb.acre.request.app_url + "/schema/type-edit.mf.js", function() {
+      fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
         t.edit.add_property_begin(trigger, type_id);
       });
       return false;
@@ -150,7 +150,7 @@
       trigger.addClass("editing");
       // hide tooltip
       trigger.parents(".tooltip:first").siblings(".row-menu-trigger:first").data("tooltip").hide();
-      fb.get_script(fb.acre.request.app_url + "/schema/type-edit.mf.js", function() {
+      fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
         t.edit.delete_property_begin(trigger, prop_id);
       });
       return false;
@@ -163,7 +163,7 @@
       }
       trigger.addClass("editing");
       var prop_info = trigger.metadata();
-      fb.get_script(fb.acre.request.app_url + "/schema/type-edit.mf.js", function() {
+      fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
         t.edit.undo_delete_property_begin(trigger, prop_info);
       });
       return false;
@@ -177,7 +177,7 @@
       trigger.addClass("editing");
       // hide tooltip
       trigger.parents(".tooltip:first").siblings(".row-menu-trigger:first").data("tooltip").hide();
-      fb.get_script(fb.acre.request.app_url + "/schema/type-edit.mf.js", function() {
+      fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
         t.edit.edit_property_begin(trigger, prop_id);
       });
       return false;
@@ -189,7 +189,7 @@
         return false;
       }
       trigger.addClass("editing");
-      fb.get_script(fb.acre.request.app_url + "/schema/type-edit.mf.js", function() {
+      fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
         t.edit.add_included_type_begin(trigger, type_id);
       });
       return false;
@@ -202,7 +202,7 @@
         return false;
       }
       trigger.addClass("editing");
-      fb.get_script(fb.acre.request.app_url + "/schema/type-edit.mf.js", function() {
+      fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
         t.edit.delete_included_type_begin(trigger, type_id, included_type_id);
       });
       return false;
@@ -214,7 +214,7 @@
         return false;
       }
       trigger.addClass("editing");
-      fb.get_script(fb.acre.request.app_url + "/schema/type-edit.mf.js", function() {
+      fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
         t.edit.undo_delete_included_type_begin(trigger, type_id, included_type_id);
       });
       return false;
@@ -228,7 +228,7 @@
       trigger.addClass("editing");
       // hide tooltip
       trigger.parents(".tooltip:first").siblings(".row-menu-trigger:first").data("tooltip").hide();
-      fb.get_script(fb.acre.request.app_url + "/schema/type-edit.mf.js", function() {
+      fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
         t.edit.reverse_property_begin(trigger, type_id, master_id);
       });
       return false;
@@ -240,7 +240,7 @@
         return false;
       }
       trigger.addClass("editing");
-      fb.get_script(fb.acre.request.app_url + "/schema/type-edit.mf.js", function() {
+      fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
         t.edit.add_instance_begin(trigger, type_id);
       });
       return false;
@@ -254,7 +254,7 @@
       trigger.addClass("editing");
       // hide tooltip
       trigger.parents(".tooltip:first").siblings(".row-menu-trigger:first").data("tooltip").hide();
-      fb.get_script(fb.acre.request.app_url + "/schema/type-edit.mf.js", function() {
+      fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
         t.edit.delete_instance_begin(trigger, topic_id, type_id);
       });
       return false;
@@ -266,7 +266,7 @@
         return false;
       }
       trigger.addClass("editing");
-      fb.get_script(fb.acre.request.app_url + "/schema/type-edit.mf.js", function() {
+      fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
         t.edit.undo_delete_instance_begin(trigger, topic_id, type_id);
       });
       return false;

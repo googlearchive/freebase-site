@@ -88,7 +88,7 @@
 
     domain_settings: function(e, domain_id) {
       var trigger = $(this);
-      fb.get_script(fb.acre.request.app_url + "/schema/domain-edit.mf.js", function() {
+      fb.get_script(fb.h.static_url("domain-edit.mf.js"), function() {
         d.edit.domain_settings_begin(trigger, domain_id);
       });
       return false;
@@ -100,7 +100,7 @@
         return false;
       }
       trigger.addClass("editing");
-      fb.get_script(fb.acre.request.app_url + "/schema/domain-edit.mf.js", function() {
+      fb.get_script(fb.h.static_url("domain-edit.mf.js"), function() {
         d.edit.add_type_begin(trigger, domain_id, mediator);
       });
       return false;
@@ -114,7 +114,7 @@
       trigger.addClass("editing");
       // hide tooltip
       trigger.parents(".tooltip:first").siblings(".row-menu-trigger:first").data("tooltip").hide();
-      fb.get_script(fb.acre.request.app_url + "/schema/domain-edit.mf.js", function() {
+      fb.get_script(fb.h.static_url("domain-edit.mf.js"), function() {
         d.edit.delete_type_begin(trigger, type_id);
       });
       return false;
@@ -127,7 +127,7 @@
       }
       trigger.addClass("editing");
       var type_info = trigger.metadata();
-      fb.get_script(fb.acre.request.app_url + "/schema/domain-edit.mf.js", function() {
+      fb.get_script(fb.h.static_url("domain-edit.mf.js"), function() {
         d.edit.undo_delete_type_begin(trigger, type_info);
       });
       return false;
@@ -141,7 +141,7 @@
       trigger.addClass("editing");
       // hide tooltip
       trigger.parents(".tooltip:first").siblings(".row-menu-trigger:first").data("tooltip").hide();
-      fb.get_script(fb.acre.request.app_url + "/schema/domain-edit.mf.js", function() {
+      fb.get_script(fb.h.static_url("domain-edit.mf.js"), function() {
         d.edit.edit_type_begin(trigger, type_id);
       });
       return false;

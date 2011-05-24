@@ -370,7 +370,7 @@
             mode: "edit",
             event_prefix: "fb.schema.type.edit.property.",
             ajax: {
-              url: fb.h.ajax_url("/edit_property_submit.ajax"),
+              url: fb.h.ajax_url("edit_property_submit.ajax"),
               data: {id: prop_id}
             },
 

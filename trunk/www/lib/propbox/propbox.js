@@ -34,8 +34,11 @@
 
     init: function(context, options) {
       options = $.extend({lang:"/lang/en"}, options);
-      if (!options.base_url) {
-        throw new Error("base_url required in propbox options");
+      if (!options.base_ajax_url) {
+        throw new Error("base_ajax_url required in propbox options");
+      }
+      if (!options.base_static_url) {
+        throw new Error("base_static_url required in propbox options");
       }
       if (!options.id) {
         throw new Error("topic id required in propbox options");
@@ -128,7 +131,7 @@
           callbacks: [callback]
         };
         $.ajax({
-          url: propbox.options.base_url + script_url,
+          url: propbox.options.base_static_url + script_url,
           dataType: 'script',
           beforeSend: function() {
             cached.state = 1;

@@ -35,7 +35,8 @@
   // i18n.js @see lib/18n/i18n.js
   // jquery.metadata.js
 
-  var base_url = propbox.options.base_url;
+  var base_ajax_url = propbox.options.base_ajax_url;
+  var base_static_url = propbox.options.base_static_url;
   var topic_id = propbox.options.id;
   var lang_id = propbox.options.lang;
   var suggest_options = propbox.options.suggest;
@@ -54,7 +55,7 @@
         lang: lang_id
       };
       $.ajax({
-        url: base_url + "/prop_add_begin.ajax",
+        url: base_ajax_url + "/prop_add_begin.ajax",
         data: submit_data,
         dataType: "json",
         success: function(data, status, xhr) {
@@ -68,7 +69,7 @@
             event_prefix: event_prefix,
             ajax: {
               data: submit_data,
-              url: base_url + "/prop_edit_submit.ajax"
+              url: base_ajax_url + "/prop_edit_submit.ajax"
             },
 
             init: edit.init_prop_add_form,
@@ -178,7 +179,7 @@
         lang: lang_id
       };
       $.ajax({
-        url: base_url +  "/value_edit_begin.ajax",
+        url: base_ajax_url +  "/value_edit_begin.ajax",
         data: submit_data,
         dataType: "json",
         success: function(data, status, xhr) {
@@ -192,7 +193,7 @@
             event_prefix: event_prefix,
             ajax: {
               data: submit_data,
-              url: base_url + "/prop_edit_submit.ajax"
+              url: base_ajax_url + "/prop_edit_submit.ajax"
             },
 
             init: edit.init_value_edit_form,
@@ -311,7 +312,7 @@
         lang: lang_id
       };
       $.ajax({
-        url: base_url + "/value_delete_submit.ajax",
+        url: base_ajax_url + "/value_delete_submit.ajax",
         type: "POST",
         data: submit_data,
         dataType: "json",
@@ -359,7 +360,7 @@
         lang: lang_id
       };
       $.ajax({
-        url: base_url + "/value_delete_undo.ajax",
+        url: base_ajax_url + "/value_delete_undo.ajax",
         type: "POST",
         data: submit_data,
         dataType: "json",

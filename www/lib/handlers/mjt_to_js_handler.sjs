@@ -33,11 +33,14 @@ var h = acre.require("helper/helpers.sjs");
 
 var to_process = {
   "src": {
-    "img": true,
-    "script": true
+    "img": "static",
+    "script": "static"
   },
   "href": {
-    "link": true
+    "link": "static"
+  },
+  "action": {
+    "form": "ajax"
   }
 };
 
@@ -93,9 +96,10 @@ var handler = function() {
 
           // Here's the monkey-patch...
           if (to_process[a.name] && to_process[a.name][n.nodeName] && /^[^/:$][^:$]*$/.test(a.value)) {
+            var kind = to_process[a.name][n.nodeName];
             var full_path = script.scope.acre.resolve(a.value);
             if (full_path) {
-              a.value = h.static_url(full_path)
+              a.value = (kind === "ajax") ? h.ajax_url(full_path) : h.static_url(full_path);
             }
           }
 

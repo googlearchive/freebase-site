@@ -101,7 +101,7 @@
         q: JSON.stringify({"id":c.object.id})
       };
     </acre:script>
-    <a href="${h.fb_url('/query/editor', query)}" class="icon-link">
+    <a href="${h.fb_url('/queryeditor', query)}" class="icon-link">
      <span class="query-icon">${_('Build Query')}</span>
     </a>
   </li>

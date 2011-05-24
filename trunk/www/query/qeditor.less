@@ -53,11 +53,10 @@ html, body {
 #the-query-editor {
   overflow: hidden;
   top: 0px;
-  height: 0;
 }
 
 /* hack to hide initial layout jumpiness */
-#the-query-editor, #the-output-pane, #the-control-pane {
+#qe-module, #the-output-pane {
   visibility: hidden;
 }
 
@@ -75,9 +74,9 @@ html, body {
   padding: 6px 5px;
 }
 
-.cuecard-outputPane-json .panel-header {
-  height: 45px;
-  padding: 9px 7px 7px 7px;
+.cuecard-queryEditor-controls-bottom, .cuecard-outputPane-controls-bottom {
+  height: 28px;
+  padding: 7px;
 }
 
 
@@ -110,18 +109,24 @@ html, body {
   border: none;
 }
 
-.cuecard-outputPane-tabs, .cuecard-outputPane-content {
-  border: 2px solid #e5e5e7;
-  background: #f8f8f8;
+.cuecard-outputPane {
+  border: 5px solid #e5e5e7;
   margin-left: 480px;
+  .rounded_corners();
+  .box_shadow(0,0,2px,#777);
+}
+
+.cuecard-outputPane-tabs, .cuecard-outputPane-content {
+
+  background: #f8f8f8;
 }
 
 .cuecard-outputPane-tabs {
   height: 30px;
-  border-width: 5px;
-  margin-bottom: 5px;
-  .rounded_corners_top();
-  .box_shadow(0,0,2px,#777);
+}
+
+.cuecard-outputPane-tabs .current span {
+  z-index: 100; 
 }
 
 /* secondary tabs */

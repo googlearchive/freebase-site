@@ -142,3 +142,12 @@ div.cuecard-controlPane-powerTool-hint {
     width: 100%;
     border: 1px solid #ddd;
 }
+
+.cuecard-controlPane-setting {
+  height: 30px;
+}
+
+.cuecard-controlPane-setting input {
+  float: left;
+  margin-right: 5px;
+}

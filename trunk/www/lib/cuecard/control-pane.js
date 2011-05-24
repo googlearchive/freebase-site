@@ -64,10 +64,12 @@ CueCard.ControlPane.prototype._getDefaults = function() {
     defaults.extended = (defaults.extended === 1) ? true : false;
     defaults.as_of_time = opts.as_of_time || env.as_of_time || null;
     defaults.use_permission_of = opts.use_permission_of || env.use_permission_of || null;
+    defaults.show_costs = opts.costs || false;
     
     delete env["extended"];
     delete env["as_of_time"];
     delete env["use_permission_of"];
+    delete env["show_costs"];
     
     return defaults;
 };
@@ -180,6 +182,12 @@ CueCard.ControlPane.prototype.getQueryEnvelope = function(e, ignorePaging, ignor
     if (extended == 1) {
         e.extended = 1;
     }
+    
+    var showCosts = this.getSetting("costs");
+    if (showCosts) {
+      e.show_costs = true;
+    }
+    
     var asOfTime = this._getTab("envelope").find("input[name='as_of_time']").val();
     if (asOfTime.length > 0) {
         e.as_of_time = asOfTime;
@@ -276,6 +284,10 @@ CueCard.ControlPane.prototype.getSetting = function(name) {
             var extended = this._getTab("envelope").find("input[name='extended']").attr("checked") ? 1 : 0;
             $.localstore('cc_cp_extended', extended, false);
             return extended;
+        case "costs" :
+            var costs = this._getTab("envelope").find("input[name='costs']").attr("checked") ? 1 : 0;
+            $.localstore('cc_cp_costs', costs, false);
+            return costs;
     }
     return false;
 };

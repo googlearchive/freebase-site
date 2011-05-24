@@ -66,11 +66,35 @@
 </acre:block>
 
 
-<acre:block def="list(o, c)">
+<acre:block def="list(o, q)">
   <table class="data-table" acre:if="o && o.result">
     <acre:script>
+      function decantConstraints(q) {
+        function decant(val) {
+          if (jQuery.isPlainObject(val)) {
+            var has_keys = false;
+            for (var key in val) {
+              has_keys = true;
+              var tmp = decant(val[key])
+              if (tmp === undefined) {
+                delete val[key];
+              } else {
+                val[key] = tmp;
+              }
+            }
+            return has_keys ? val : undefined;
+          } else if (jQuery.isArray(val)) {
+            return val.length ? decant(val[0]) : undefined;
+          } else {
+            return (val === null) ? undefined : val;
+          }
+        };
+
+        return decant(q);
+      };
+    
       function is_constraint(path, value) {
-        
+    
         function same_keys(o1, o2) {
           for (var key in o1) {
             var val1 = o1[key];
@@ -84,8 +108,8 @@
           }
           return true;
         }
-        
-        var val = jQuery.extend({}, c, true);
+    
+        var val = jQuery.extend(true, {}, constraints);
         value = jQuery.isArray(value) ? value[0] : value;
         for (var s = 0; s < path.length; s++) {
           val = val[path[s]];
@@ -93,27 +117,27 @@
         }
         return jQuery.isPlainObject(val) ? same_keys(value, val) : true;
       }
+    
+      var constraints = decantConstraints(q.query || {});
     </acre:script>
-    
-    <link acre:if="outputPane._options.stylesheet" rel="stylesheet" href="$outputPane._options.stylesheet"/>
-    
+
     <thead acre:def="thead(r, path)">
       <tr>
         <th acre:for="key, val in r" acre:if="!is_constraint(path.concat(key), val)">
-          ${key.split(":")[0].replace("_", " ")} ${thead_value(val, path.concat(key))}
+          ${key.split(":")[0].replace(/_/g, " ")} ${thead_value(val, path.concat(key))}
         </th>
       </tr>
     </thead>
-    
+
     <acre:block def="thead_value(v, path)">
       <acre:script>if (jQuery.isArray(v)) v = v[0];</acre:script>
       <ul acre:if="jQuery.isPlainObject(v)">
         <li acre:for="key, val in v" acre:if="!is_constraint(path.concat(key), val)">
-          ${key.split(":")[0].replace("_", " ")} ${thead_value(val, path.concat(key))}
+          ${key.split(":")[0].replace(/_/g, " ")} ${thead_value(val, path.concat(key))}
         </li>
       </ul>
     </acre:block>
-    
+
     <acre:block def="row(r, path)">
       <acre:block if="jQuery.isPlainObject(r)">
         <td acre:for="key, val in r" acre:if="!is_constraint(path.concat(key), val)">
@@ -122,11 +146,11 @@
       </acre:block>
       <td acre:else="">${value(val, path)}</td>
     </acre:block>
-    
+
     <acre:block def="value(a, path)">
       <acre:block choose="typeof a">
         <acre:block when="string">
-          <a acre:if="/^\//.test(a)" href="$a" class='cuecard-outputPane-dataLink'>$a</a>
+          <a acre:if="/^\//.test(a)" class="cuecard-outputPane-dataLink" href="$a">$a</a>
           <acre:block else="">$a</acre:block>
         </acre:block>
         <acre:block when="number">$a</acre:block>
@@ -145,7 +169,7 @@
         </acre:block>
       </acre:block>
     </acre:block>
-    
+
     <acre:block if="jQuery.isArray(o.result)">
       ${thead(o.result[0], [])}
       <tbody>
@@ -155,7 +179,7 @@
         <tr>
           <td>
             <button acre:if="o.cursor" onclick="__cc_runPage(-1)">Previous</button>
-            <button acre:if="o.result.length=100" onclick="__cc_runPage(1)">Next</button>
+            <button acre:if="o.result.length==(q.query.limit || 100)" onclick="__cc_runPage(1)">Next</button>
           </td>
         </tr>
       </tfooter>
@@ -169,6 +193,7 @@
   </table>
 </acre:block>
 
+
 <acre:block def="list_error(message)">
   <link acre:if="outputPane._options.stylesheet" rel="stylesheet" href="$outputPane._options.stylesheet"/>
   <div class="cuecard-outputPane-list-error">$message</div>
@@ -176,70 +201,6 @@
 
 
 <acre:block def="json()">
-  <div class="panel-content"></div>
-  <div class="panel-header">
-    <div class="cuecard-outputPane-status"></div>
-    <span class="cuecard-outputPane-headers drawer-toggle">
-      <a class="icon-link" href="javascript:void(0)">
-        <span>Costs &amp; Headers</span>
-      </a>
-    </span>
-  </div>
-  <div class="drawer-content"></div>
-</acre:block>
-
-
-<acre:block def="status(headers)">
-  <div acre:if="headers" class="cuecard-outputPane-responseHeaders">
-
-    <acre:block if="headers['x-metaweb-tid']">
-      <acre:script>var tid = headers["x-metaweb-tid"];</acre:script>
-      <h3>x-metaweb-tid (transaction ID)</h3>
-      <div>
-        <a target="_blank" href="http://stats.metaweb.com/query/transaction?tid=${encodeURIComponent(tid)}">
-          $tid
-        </a>
-      </div>
-    </acre:block>
-
-    <acre:block if="headers['x-metaweb-cost']">
-      <acre:script>
-        var xmc = headers["x-metaweb-cost"].split(",");
-        var odd = true;
-      </acre:script>
-      <h3>x-metaweb-cost header components</h3>
-      <table>
-        <tr><th>code</th><th>value</th><th>meaning</th><th>subsystem</th></tr>
-        <acre:block for="index, entry in xmc">
-          <acre:script>
-            var pair = entry.split("=");
-            pair[0] = pair[0].replace(/^\s+/, '').replace(/\s+$/, '');
-            var cost = CueCard.XMetawebCosts[pair[0]];
-            var rclass = (index % 2 ? "cuecard-outputPane-odd" : "cuecard-outputPane-even") + ((cost !== undefined && "important" in cost && cost.important) ? " cuecard-outputPane-cost-important" : "")
-          </acre:script>
-          <tr class="$rclass">
-            <td>${pair[0]}</td>
-            <td>${pair[1]}</td>
-            <td acre:if="cost !== undefined">$cost.meaning</td><td acre:else="">--</td>
-            <td acre:if="cost !== undefined">$cost.subsystem</td><td acre:else="">--</td>
-          </tr>
-        </acre:block>
-      </table>
-    </acre:block>
-
-    <h3>response headers</h3>
-    <table>
-      <acre:script>var odd = true;</acre:script>
-      <acre:block for="key, value in headers" if="key != 'x-metaweb-cost' && key != 'x-metaweb-tid'">
-        <tr acre:attrs="odd ? {'class': 'cuecard-outputPane-odd'} : {'class': 'cuecard-outputPane-even'}">
-          <td>$key</td>
-          <td>$value</td>
-        </tr>
-        <acre:script>odd = !odd</acre:script>
-      </acre:block>
-    </table>
-
-  </div>
 </acre:block>
 
 

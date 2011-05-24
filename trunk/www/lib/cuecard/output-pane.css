@@ -29,8 +29,13 @@
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-div.cuecard-outputPane {
-  width: 100%;
+.cuecard-outputPane-tabs {
+  position: relative;
+  z-index: 100;
+  border-bottom: solid 1px #E4E6E7;
+}
+
+.cuecard-outputPane-tabs ul.tab-nav {
   height: 100%;
 }
 
@@ -38,6 +43,7 @@ div.cuecard-outputPane-tabBody {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  background: white;
 }
 
 div.cuecard-outputPane-status {

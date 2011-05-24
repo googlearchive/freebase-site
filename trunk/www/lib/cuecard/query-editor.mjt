@@ -35,11 +35,11 @@
   <div class="cuecard-queryEditor">
     <div class="cuecard-queryEditor-content panel-content"></div>
     <div class="cuecard-queryEditor-controls-bottom panel-header">
-      <span class="cuecard-queryEditor-controls-options drawer-toggle">
+      <div class="cuecard-queryEditor-controls-options drawer-toggle">
         <a class="icon-link" href="javascript:void(0)">
           <span>Query Options</span>
         </a>
-      </span>
+      </div>
       <button title="Tab" class="button cuecard-queryEditor-queryAssist"
               acre:onclick="queryEditor.startAssistAtCursor()">
         Query&nbsp;assist

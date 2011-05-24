@@ -147,12 +147,13 @@
     var ENV = [
       {name: 'Extended', hint: 'Enable MQL extensions'},
       {name: 'As_of_time', hint: 'Resolve the query based on data in Freebase as of the given time in ISO8601 format, e.g., 2009-02-28, 2009-03-13T22:16:40'},
-      {name: 'use_permission_of', hint: 'Specify the id of an object (typically a user, domain or type) whose permission you want to copy (<a href="http://freebaseapps.com/docs/mql/ch06.html#id2972357" target="_blank">more details</a>).'},
       {name: 'page', hint: 'Page number starting from 1 if there is a "limit" property in the top level query node.'},
       {name: 'cursor', hint: ''},
       {name: 'Language', hint: 'Return text values in the given language (specified with the language\'s Freebase ID)'},
       {name: 'Escape', hint: ''},
-      {name: 'uniqueness_failure', hint: ''}
+      {name: 'uniqueness_failure', hint: ''},
+      {name: 'use_permission_of', hint: 'Specify the id of an object (typically a user, domain or type) whose permission you want to copy (<a href="http://freebaseapps.com/docs/mql/ch06.html#id2972357" target="_blank">more details</a>).'},
+      {name: 'Show Costs', hint: 'Inlcude backend costs of executing the query.'}
     ];
     
     var def = controlPane._getDefaults();
@@ -166,6 +167,8 @@
       <p><em>$e.name</em></p>
         <acre:block choose="e.name">
         
+          <input acre:when="Show Costs" name="costs" class="query-options-input" type="checkbox" acre:attrs="def.show_costs ? {'checked':''} : {}" />
+          
           <input acre:when="Extended" name="extended" class="query-options-input" type="checkbox" acre:attrs="def.extended ? {'checked':''} : {}" />
         
           <input acre:when="As_of_time" name="as_of_time" class="query-options-textbox text-input" value="${def.as_of_time||''}" />
@@ -264,22 +267,21 @@
 
 <acre:block def="settings(controlPane)">
   <div class="cuecard-controlPane-section">
-    <p><em>Settings</em></p>
-    <div>
+    <div class="cuecard-controlPane-setting">
      <input type="checkbox" acre:attrs="($.localstore('cc_cp_clean') == '1') ? {'checked' : ''} : {}">
-     Always tidy running query
+     <label class="control-pane-label">Always tidy running query</label>
     </div>
-    <div>
+    <div class="cuecard-controlPane-setting">
       <input type="checkbox" acre:attrs="($.localstore('cc_cp_align') == '1') ? {'checked' : ''} : {}">
-      Align JSON values with spaces
+      <label class="control-pane-label">Align JSON values with spaces</label>
     </div>
-    <div style="display: none;">
+    <div class="cuecard-controlPane-setting" style="display: none;">
       <input type="checkbox">
-      Try running query as you edit
+      <label class="control-pane-label">Try running query as you edit</label>
     </div>
-    <div>
+    <div class="cuecard-controlPane-setting">
       <input type="checkbox" acre:attrs="($.localstore('cc_cp_multi') == '1') ? {'checked' : ''} : {}">
-      Show multi-line errors on multiple lines
+      <label class="control-pane-label">Show multi-line errors on multiple lines</label>
     </div>
   </div>
 </acre:block>

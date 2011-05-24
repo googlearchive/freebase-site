@@ -49,7 +49,7 @@ var rules = [
   {prefix:"/appeditor",          app:"appeditor"},
   {prefix:"/docs",               app:"docs"},
   {prefix:"/policies",           app:"policies"},
-  {prefix:"/query",              app:"query"},
+  {prefix:"/queryeditor",        app:"query"},
   {prefix:"/labs/cubed",         app:"cubed"},
   {prefix:"/labs/parallax",      app:"parallax"},
   {prefix:"/labs",               app:"labs"},
@@ -144,10 +144,9 @@ var rules = [
   {prefix:"/type/schema",             url:"/", redirect: 301},
 
   // Queryeditor
-  {prefix:"/queryeditor",             url:"/query/editor", redirect:301},
-  {prefix:"/app/queryeditor",         url:"/query/editor", redirect:301},
-  {prefix:"/tools/queryeditor",       url:"/query/editor", redirect:301},
-  {prefix:"/view/queryeditor",        url:"/query/editor", redirect:301},
+  {prefix:"/app/queryeditor",         url:"/queryeditor", redirect:301},
+  {prefix:"/tools/queryeditor",       url:"/queryeditor", redirect:301},
+  {prefix:"/view/queryeditor",        url:"/queryeditor", redirect:301},
 
   // Inspect
   {prefix:"/tools/explore",           url:"/inspect", redirect:301},

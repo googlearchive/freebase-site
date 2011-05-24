@@ -52,7 +52,8 @@ CueCard.TypeBasedTopicSuggestor.prototype.getSuggestions = function(prefix, onDo
         onDone(entries);
     } else {
         var self = this;
-        var cont = CueCard.UI.createBlockingContinuations(function(cont2, result) {
+        var cont = CueCard.UI.createBlockingContinuations(function(cont2, o) {
+            var result = o.result;
             var entries = [];
             
             for (var i = 0; i < result.length; i++) {              

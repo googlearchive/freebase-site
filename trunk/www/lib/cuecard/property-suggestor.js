@@ -79,7 +79,8 @@ CueCard.PropertySuggestor.prototype.getSuggestions = function(prefix, onDone) {
         onDone(entries);
     } else {
         var self = this;
-        var cont = CueCard.UI.createBlockingContinuations(function(cont2, result) {
+        var cont = CueCard.UI.createBlockingContinuations(function(cont2, o) {
+            var result = o.result;
             for (var i = 0; i < result.length; i++) {
                 var property = result[i];
                 if (!(property.id in propertyMap) && 

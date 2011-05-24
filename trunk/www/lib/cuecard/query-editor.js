@@ -633,7 +633,7 @@ CueCard.QueryEditor.prototype._startSuggestProperties = function(lineNo, columnN
             return true; // don't clean up
         };
         var onGotSuggestedProperties = function(cont2, o) {
-            self._suggestProperties(mc, o, prefix + self._stopBufferInput(), placeResult);
+            self._suggestProperties(mc, o.result, prefix + self._stopBufferInput(), placeResult);
         };
         
         mc.model.locateInnerMostNonTerminal(

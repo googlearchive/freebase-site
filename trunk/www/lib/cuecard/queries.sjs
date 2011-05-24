@@ -343,7 +343,7 @@ function suggest_arbitrary_properties(query) {
   })
     .then(function(o) {
       if (query.charAt(0) == "/") {
-        acre.freebase.extend_query(infoQ, {"id":q});
+        acre.freebase.extend_query(infoQ, {"id":query});
         return freebase.mqlread(infoQ)
           .then(function(o2) {
             if (o2.result.length > 0) {
@@ -351,6 +351,10 @@ function suggest_arbitrary_properties(query) {
             } else {
               return o.result;
             }
+          }, 
+          function(e) {
+            console.log(e);
+            return [];
           });
       } else {
         return o.result;
@@ -372,15 +376,15 @@ function suggest_values_of_types(query, typeId) {
     mql_output: JSON.stringify(infoQ)
   };
 
-  if (t.length > 0) {
+  if (typeId.length > 0) {
     options.type = typeId;
     options.type_strict = 'any';
   }
 
   return freebase.search(query + "*", options)
     .then(function(o) {
-      if (q.charAt(0) == "/") {
-        acre.freebase.extend_query(infoQ, {"id":q});
+      if (query.charAt(0) == "/") {
+        acre.freebase.extend_query(infoQ, {"id":query});
         return freebase.mqlread(infoQ)
           .then(function(o2) {
             if (o2.result.length > 0) {
@@ -388,59 +392,14 @@ function suggest_values_of_types(query, typeId) {
             } else {
               return o.result;
             }
+          }, 
+          function(e) {
+            console.log(e);
+            return [];
           });
       } else {
         return o.result;
       }
     });
 
-}
-
-
-function hotshot(id, settings) {
-  return freebase.mqlread({
-    "/common/topic/article" : i18n.mql.query.article(),
-    "/common/topic/image" : [ { "guid" : null, "name" : null, "id" : null, "optional" : true } ],
-    "id" : id,
-    "name" : [{ "optional" : true, "value" : null, "lang" : "/lang/en" }]
-  }).then(function(env) {
-    return env.result;
-  }).then(function(result) {
-    return i18n.get_blurb(result, {maxlength: 250})
-      .then(function() {
-        return result;
-      });
-  }).then(function(result) {
-    var o = { "id" : id };
-
-    if ("name" in result && result["name"].length > 0) {
-      o["name"] = result["name"][0].value;
-    }
-
-    if ("/common/topic/article" in result && result["/common/topic/article"].length > 0) {
-      o["blurb"] = result["/common/topic/article"][0].blurb;
-    }
-
-    try {
-      if ("/common/topic/image" in result && result["/common/topic/image"].length > 0) {
-        var thumbnails = result["/common/topic/image"];
-        o.thumbnails = [];
-        for (var i = 0; i < thumbnails.length; i++) {
-          var entry = thumbnails[i];
-          o.thumbnails.push({
-            "title" : entry["name"] || "",
-            "id" : entry["id"],
-            "url" : "http://freebase.com/api/trans/image_thumb/%23" + entry["guid"].substr(1) +
-            "?" + [
-            "mode=fillcrop",
-            "maxheight=" + settings.thumbnailMaxHeight,
-            "maxwidth=" + settings.thumbnailMaxWidth
-            ].join("&")
-          });
-        }
-      }
-    } catch (e) {}
-
-    return o;
-  });
 }

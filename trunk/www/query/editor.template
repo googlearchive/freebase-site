@@ -49,7 +49,12 @@
       <ol>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="/queryeditor">${_("Query")}</a>
+            <a href="/query/editor">${_("Query")}</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item last">
+          <span class="breadcrumb-item-inner">
+            <a href="/query/editor">${_("Edit")}</a>
           </span>
         </li>
       </ol>

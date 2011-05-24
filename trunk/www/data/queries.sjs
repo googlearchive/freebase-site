@@ -50,9 +50,7 @@ function types_mql(id) {
       "guid": null,
       "name": i18n.mql.query.name(),
       "timestamp": null,
-      "creator": {
-        "id": null
-      }
+      "creator": null
     }]
   };
 };
@@ -77,10 +75,10 @@ function domain(id) {
 
       var domain_types = [];
       for(i=0; i<domain.types.length; i++) {
-      
+
         if(domain.types[i].id !== base_common_topic_id) {
          domain_types.push(domain.types[i]);
-        }      
+        }
       }
       domain.types = domain_types;
 
@@ -262,12 +260,12 @@ function type(type_id) {
       else {
         prop_length = PROP_COUNT;
       }
-      
+
       for (i=0; i < prop_length; i++) {
         if(properties[i]['expected_type']['/freebase/type_hints/mediator']) {
           mediated_properties = true;
           break;
-        } 
+        }
       }
 
       if(mediated_properties === true) {
@@ -302,7 +300,7 @@ function type(type_id) {
       prop_structures.forEach(function(prop_structure) {
         var prop_clause = ph.mqlread_query(null, prop_structure, null, lang)[prop_structure.id];
         prop_clause[0].limit = 5;
-        q[0][prop_structure.id] = prop_clause; 
+        q[0][prop_structure.id] = prop_clause;
       });
 
       // execute instance query

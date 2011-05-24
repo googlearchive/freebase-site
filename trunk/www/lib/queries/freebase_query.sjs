@@ -55,9 +55,7 @@ function featured_views_by_domain(domain) {
       "id": null,
       "optional": true,
       "name": i18n.mql.query.name(),
-      "creator": {
-        "id": null
-      },
+      "creator": null,
       "timestamp": null
     }]
   };
@@ -69,16 +67,14 @@ function featured_views_by_domain(domain) {
 };
 
 // Return a set of saved queries by user
-function featured_views_by_user(user) {
+function featured_views_by_user(user_id) {
   var q = [{
     "id": null,
     "name": i18n.mql.query.name(),
     "/freebase/domain_profile/featured_views": [{
       "id": null,
       "name": i18n.mql.query.name(),
-      "creator": {
-        "id": user
-      },
+      "creator": user_id,
       "/common/document/content": {
         "id": null,
         "limit": 0

@@ -319,10 +319,18 @@
     var ect = prop_structure.expected_type.id;
   </acre:script>
   <acre:block if="prop_value.id">    
-    <a title="${prop_value.id}" class="property-value"
-       acre:attrs="itemprop(prop_structure.id)" href="${h.fb_url(true, prop_value.id)}"
-       data-id="${prop_value.id}">${prop_value.text}</a> 
-    ${i18n_c.lang_code(prop_value.lang, lang)}
+    <acre:block if="prop_structure.expected_type.id === '/type/user'">
+      <!!-- don't localize user names. just output user id !!-->
+      <a title="${prop_value.id}" class="property-value"
+         acre:attrs="itemprop(prop_structure.id)" href="${h.fb_url(true, prop_value.id)}"
+         data-id="${prop_value.id}">${h.id_key(prop_value.id)}</a> 
+    </acre:block>
+    <acre:block else="">
+      <a title="${prop_value.id}" class="property-value"
+         acre:attrs="itemprop(prop_structure.id)" href="${h.fb_url(true, prop_value.id)}"
+         data-id="${prop_value.id}">${prop_value.text}</a> 
+      ${i18n_c.lang_code(prop_value.lang, lang)}
+    </acre:block>
   </acre:block>
   <acre:block elif="ect === '/common/webpage'">
     <a class="property-value"

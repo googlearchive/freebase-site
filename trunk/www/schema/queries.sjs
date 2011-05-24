@@ -465,7 +465,7 @@ function minimal_topic(id, get_blurb, get_blob) {
 function property(id) {
   var q = mql.property({
     id: id,
-    creator: {id:null, name: i18n.mql.query.name()},
+    creator: null,
     timestamp:null,
     schema: {
       id: null,

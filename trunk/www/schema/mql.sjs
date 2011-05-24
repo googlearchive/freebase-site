@@ -51,7 +51,7 @@ function domain(options) {
     type: "/type/domain",
     timestamp: null,
     key: [{value: null, namespace: null}],
-    creator: {id:null, name: i18n.mql.query.name()},
+    creator: null,
     owners: [{optional:true, member: [{id:null, name: i18n.mql.query.name()}]}],
     "/common/topic/article": i18n.mql.query.article(),
     types: [{
@@ -77,7 +77,7 @@ function type(options) {
     type: "/type/type",
     timestamp: null,
     key: [{value: null, namespace: null}],
-    creator: {id:null, name: i18n.mql.query.name()},
+    creator: null,
     "/common/topic/article": i18n.mql.query.article(),
     domain: {id: null, name: i18n.mql.query.name(), type: "/type/domain"},
     "/freebase/type_hints/mediator": null,

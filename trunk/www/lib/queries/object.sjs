@@ -120,11 +120,7 @@ function mql(id) {
       limit: 3
     }],
     "/common/topic/article": i18n.mql.query.article(),
-    creator: {
-      optional: true,
-      id: null,
-      name: i18n.mql.query.name()
-    },
+    creator: null,
     permission: null,
     timestamp: null,
     "/dataworld/gardening_hint/replaced_by": {

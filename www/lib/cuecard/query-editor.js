@@ -127,8 +127,11 @@ CueCard.QueryEditor.prototype.dispose = function() {
 };
 
 CueCard.QueryEditor.prototype.layout = function(height, width) {
-  if (this._controlPane._paneldrawer && height) {
-    this._controlPane._paneldrawer.set_height(height);
+  if (height) {
+    //this._container.height(height);
+    if (this._controlPane._paneldrawer) {
+      this._controlPane._paneldrawer.set_height(height);
+    }
   }
 };
 
@@ -303,32 +306,6 @@ CueCard.QueryEditor.prototype.getMqlReadURL = function() {
     return serviceUrl + '?query=' + encodeURIComponent(q);
 };
 
-CueCard.QueryEditor.prototype.decantConstraints = function(q) {
-  function decant(val) {
-    if (jQuery.isPlainObject(val)) {
-      var has_keys = false;
-      for (var key in val) {
-        has_keys = true;
-        var tmp = decant(val[key])
-        if (tmp === undefined) {
-          delete val[key];
-        } else {
-          val[key] = tmp;
-        }
-      }
-      return has_keys ? val : undefined;
-    } else if (jQuery.isArray(val)) {
-      //return val.length ? [decant(val[0])] : undefined;
-      return val.length ? decant(val[0]) : undefined;
-    } else {
-      return (val === null) ? undefined : val;
-    }
-  };
-  
-  var query = JSON.parse(q).query;
-  return decant(query);
-};
-
 CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
     if (this._outputPane != null) {
         var options = {};
@@ -353,16 +330,12 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
                 self._outputPane.setStatus("Query editor is not authorized to write on your behalf.");
                 self._options.onUnauthorizedMqlWrite();
             } else {
-                if (o.cost) {
-                  self._outputPane.renderResponseHeaders(o.cost);                  
-                }
-              
                 var options = {};
                 if (self._controlPane != null && self._controlPane.getSetting("multilineErrorMessages") && 
                     ("messages" in o || "message" in o)) {
                     options["encodeJavascriptString"] = function(x) { return x; };
                 }
-                self._outputPane.setJSONContent(o, self.getJsonizingSettings(options), self.decantConstraints(q));
+                self._outputPane.setJSONContent(o, self.getJsonizingSettings(options), q);
             }
         };
         var onError = function(msg) {

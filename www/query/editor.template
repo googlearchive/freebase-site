@@ -43,35 +43,10 @@
   <link rel="stylesheet" type="text/css" href="qeditor.mf.css" />
 </acre:block>
 
-<acre:block def="breadcrumb()">
-  <div class="page-header clear">
-    <div class="breadcrumb clear">
-      <ol>
-        <li class="breadcrumb-item">
-          <span class="breadcrumb-item-inner">
-            <a href="/query/editor">${_("Query")}</a>
-          </span>
-        </li>
-        <li class="breadcrumb-item last">
-          <span class="breadcrumb-item-inner">
-            <a href="/query/editor">${_("Edit")}</a>
-          </span>
-        </li>
-      </ol>
-    </div>
-  </div>
-</acre:block>
-
 <acre:block def="content_body()">
     <div id="qe-module" class="module">
-      <div class="sub-module">
-        <h2 id="qe-title" class="module-title panel-header">
-          ${_("Query")}
-          <a class="trigger" href="javascript:void(0);">${_("Collapse column")}</a>
-        </h2>
-        <div id="the-query-editor" class="module-section"></div>
-        <div id="the-control-pane" class="module-section drawer-content"></div>
-      </div>
+      <div id="the-query-editor" class="module-section"></div>
+      <div id="the-control-pane" class="module-section drawer-content"></div>
     </div>
     <div id="the-output-pane"></div>
 

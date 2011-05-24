@@ -38,8 +38,6 @@ var queryEditorOptions;
 
 function onLoad() {
   var params = CueCard.parseURLParameters();
-  
-  var collapsed = $.localstore("qe_query_mode");
   var autorun = false;
 
   var outputPaneOptions = {
@@ -54,10 +52,10 @@ function onLoad() {
       drawer_height: 250,
       toggle_state: ($.localstore("cc_cp") == "1"),
       toggle_callback: onToggleControlPane,
-      panel_content: "cuecard-queryEditor-content",
-      init_height: false
+      panel_content: "cuecard-queryEditor-content"
     },
-    extended: 0 // Don't make this sticky: $.localstore("cc_cp_extended") == "1" ? 1 : 0,
+    extended: 0, // Don't make this sticky: $.localstore("cc_cp_extended") == "1" ? 1 : 0,
+    costs: $.localstore("cc_cp_costs") == "1" ? true : false
   };
 
   queryEditorOptions = {
@@ -82,8 +80,6 @@ function onLoad() {
         document.location = url2;
       }
     },
-    emql: "emql" in params && params["emql"] == "1",
-    service: "service" in params ? params["service"] : null,
     codeMirror: {
       parserfile: [$("#codemirror-js").attr("href")],
       stylesheet: [$("#codemirror-css").attr("href")]
@@ -99,7 +95,6 @@ function onLoad() {
 
         delete o.query;
         controlPaneOptions["env"] = o;
-        console.log("q", o.lang)
       }
     } catch (e) {
     }
@@ -116,7 +111,6 @@ function onLoad() {
     }
     if ("env" in params) {
       try {
-        console.log("env", params.env)
         controlPaneOptions["env"] = JSON.parse(params["env"]);
       } catch (e) {
       }
@@ -130,19 +124,9 @@ function onLoad() {
       controlPaneOptions.env = o.e;
     } catch (e) {}
   }
-  
-  if ("debug" in params) {
-    queryEditorOptions.debug = params.debug;
-  }
 
   if ("autorun" in params) {
     autorun = true;
-  }
-  
-  if ("list" in params) {
-    collapsed = true;
-    autorun = true;
-    outputPaneOptions.initial_tab = "list";
   }
   
   queryEditorOptions.onReady = function() {
@@ -150,25 +134,12 @@ function onLoad() {
     
     $("#links").prependTo("#the-output-pane .cuecard-outputPane-tabs");
     
-    $("#qe-module").collapse_module({
-      modules: ".sub-module",
-      collapsed: collapsed,
-      column: "#the-output-pane .cuecard-outputPane-content",
-      toggle_callback: function(collapsed) {
-        $.localstore("qe_query_mode", collapsed, false);
-        if (!collapsed) {
-          resizePanes();
-        }
-      }
-    });
-    
     resizePanes();
     if (autorun) c.queryEditor.run(false);
     
     // fulhack to hide initial laying out
     setTimeout(function() {
-      $("#the-query-editor").css("height", "initial");
-      $("#the-query-editor, #the-output-pane, #the-control-pane").css("visibility", "visible");
+      $("#qe-module, #the-output-pane").css("visibility", "visible");
     }, 1);
   };
   
@@ -198,8 +169,9 @@ function onLoad() {
 function resizePanes() {
   var innerHeight = $("body").outerHeight() - c.page_chrome_height;
   if (innerHeight) {
+    $("#qe-module").height(innerHeight);
     if (c.outputPane) c.outputPane.layout(innerHeight);
-    if (c.queryEditor && !$.localstore("qe_query_mode")) c.queryEditor.layout(innerHeight - 2 /* extra border */);
+    if (c.queryEditor) c.queryEditor.layout(innerHeight);
   }
 };
 

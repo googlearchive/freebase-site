@@ -73,7 +73,8 @@
         this.drawer_content.height(0);
         this.drawer_toggle.addClass("collapsed");
       }
-      this.element.css("height", "initial");
+      if (!this.options.init_height)
+        this.element.css("height", "initial");
       if (this.options.toggle_callback) 
         this.options.toggle_callback.call(this.drawer_toggle, this.toggle_state);
     },

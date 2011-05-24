@@ -28,14 +28,5 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-var h = acre.require("lib/helper/helpers.sjs");
-var rh = acre.require("lib/routing/helpers.sjs");
-var validators = acre.require("lib/validator/validators.sjs");
-
-var path_info = rh.normalize_path(this);
-
-if (acre.resolve(path_info.substr(1))) {
-  rh.route(this, path_info);
-} else {
-  rh.route(this, "index.controller", path_info);
-}
+ 
+acre.route("editor.template");

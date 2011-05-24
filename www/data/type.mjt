@@ -72,7 +72,7 @@
 <acre:block def="nav_utilities()">
   <!--
   <li>
-    <a href="${h.fb_url('/query/editor', '')}" class="icon-link">
+    <a href="${h.fb_url('/queryeditor', '')}" class="icon-link">
      <span class="query-icon">${_('Edit Query')}</span>
     </a>
   </li>

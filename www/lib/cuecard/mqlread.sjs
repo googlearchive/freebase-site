@@ -36,8 +36,13 @@ try {
   var query = envelope.query;
   delete envelope.query;
   result = acre.freebase.mqlread(query, envelope);
-} catch (e) {
+} catch (e if (e instanceof acre.freebase.Error)) {
   result = e;
+} catch (e) {
+  result = {
+    code: 500,
+    message: e.message || e
+  };
 }
 
 acre.write(JSON.stringify(result, null, 2));

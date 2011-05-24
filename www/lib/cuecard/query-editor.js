@@ -348,8 +348,8 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
         var self = this;
         var onDone = function(o) {            
             // TODO - re handle error messages
-            if ((o.status && o.status.indexOf("401") == 0) || (o.code = 401)) {
-                console.log("unauthorized")
+            if ((o.code == 401) || (o.status && o.status.indexOf("401") == 0)) {
+                console.log("unauthorized");
                 self._outputPane.setStatus("Query editor is not authorized to write on your behalf.");
                 self._options.onUnauthorizedMqlWrite();
             } else {
@@ -370,14 +370,26 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
         }
         
         this._outputPane.setStatus("Querying...");
-        if (options.isWriteQuery || q.length > 1024) {
-            $.post(url, { "query" : q }, onDone, "json");
+        if (options.isWriteQuery) {
+          // need to get a form with a CSRF token in it;
+          $(".cuecard-queryEditor-write-form").load(CueCard.apiProxy.base + 'mqlwrite_begin.mjt', function() {
+            var token = $("form :input[name='ACRE_CSRF_TOKEN']", this).val();
+            $.ajax(url, {
+                type: "POST",
+                data: { "query" : q, ACRE_CSRF_TOKEN: token},
+                success: onDone,
+                error: onError,
+                dataType: "json"
+            });
+          });
         } else {
             q = this._outputPane.prepareQuery(q);
-            $.ajax(url + "query=" + encodeURIComponent(q), {
-                dataType: "json",
+            $.ajax(url, {
+                type: (q.length > 1024 ? "POST" : "GET"),
+                data: { "query" : q },
                 success: onDone, 
-                error: onError
+                error: onError,
+                dataType: "json"
             });
         }
     }

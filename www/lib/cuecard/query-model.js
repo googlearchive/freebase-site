@@ -268,6 +268,8 @@ CueCard.QueryNode.prototype._qualifyAllProperties = function(expectedTypes, glob
         
         var self = this;
         var onGotSchemaData = function(o) {
+            o = o.result;
+            
             var propertyMap = o.properties;
             var qualificationMap = o.qualifications;
             

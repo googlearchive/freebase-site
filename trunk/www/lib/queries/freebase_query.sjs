@@ -45,7 +45,7 @@ function by_type(type) {
 
 // Return a set of saved queries by domain
 function featured_views_by_domain(domain) {
-  var q = { 
+  var q = {
     "id": domain,
     "/freebase/domain_profile/featured_views": [{
       "/common/document/content": {
@@ -60,17 +60,17 @@ function featured_views_by_domain(domain) {
       },
       "timestamp": null
     }]
-  }
+  };
 
   return freebase.mqlread(q)
     .then(function(env) {
-      return env.result['/freebase/domain_profile/featured_views']
-    })
+      return env.result['/freebase/domain_profile/featured_views'];
+    });
 };
 
 // Return a set of saved queries by user
 function featured_views_by_user(user) {
-  var q = [{ 
+  var q = [{
     "id": null,
     "name": i18n.mql.query.name(),
     "/freebase/domain_profile/featured_views": [{
@@ -89,8 +89,8 @@ function featured_views_by_user(user) {
 
   return freebase.mqlread(q)
     .then(function(env) {
-      return env.result
-    })
+      return env.result;
+    });
 };
 
 function apps_by_user(user) {

@@ -473,7 +473,7 @@ propbox edit forms
          onclick="$$(this).css('visibility', 'hidden').next().html('&nbsp'); return false;">close</a>
       <span>&nbsp;</span>
     </li>
-    <li class="edit-row">
+    <li class="add-row edit-row">
       ${form_field(prop_structure, null, lang)}
     </li>
     <li class="edit-row-submit">
@@ -496,7 +496,7 @@ propbox edit forms
           <span>&nbsp;</span>
         </td>
       </tr>
-      <tr class="edit-row">
+      <tr class="add-cvt-row edit-row">
         <acre:block for="subprop_structure in prop_structure.properties">
           <td>
             ${form_field(subprop_structure, null, lang)}

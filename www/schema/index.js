@@ -212,7 +212,7 @@
   fb.schema.index = {
     add_domain: function(e) {
       var trigger = $(this);
-      fb.get_script(fb.h.fb_url("/schema/index-edit.mf.js"), function() {
+      fb.get_script(fb.h.static_url("index-edit.mf.js"), function() {
         fb.schema.index.edit.add_domain_begin(trigger);
       });
       return false;

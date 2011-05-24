@@ -151,6 +151,28 @@ function run_tests($, fb) {
           PREFIX + lib_path + "/permission/has_permission?id=foo");
   });
 
+  test("static_url", function() {
+    var app_path = fb.acre.request.script.app.path
+      .replace(/^\/\//, "/")
+      .replace(".svn.freebase-site.googlecode.dev", "");
+    var lib_path = fb.acre.current_script.app.path
+      .replace(/^\/\//, "/")
+      .replace(".svn.freebase-site.googlecode.dev", "");
+    var PREFIX = "/static";
+
+    equal(h.static_url(), PREFIX + app_path);
+    equal(h.static_url(null), PREFIX + app_path);
+    equal(h.static_url(""), PREFIX + app_path);
+    equal(h.static_url("foo"), PREFIX + app_path + "/foo");
+    equal(h.static_url("/foo"), PREFIX + app_path + "/foo");
+    equal(h.static_url("lib/foo"), PREFIX + lib_path + "/foo");
+    equal(h.static_url("/lib/foo"), PREFIX + app_path + "/lib/foo");
+    equal(h.static_url("//1b.schema.www.trunk.svn.freebase-site.googlecode.dev/foo"),
+          PREFIX + "/1b.schema.www.trunk/foo");
+    equal(h.static_url("lib/template/freebase.mf.js", {id:"foo"}),
+          PREFIX + lib_path + "/template/freebase.mf.js?id=foo");
+  });
+
   test("legacy_fb_url", function() {
     equal(h.legacy_fb_url(), "http://www.SITE_HOST");
     equal(h.legacy_fb_url(null), "http://www.SITE_HOST");

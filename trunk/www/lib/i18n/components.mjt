@@ -42,7 +42,9 @@
     var current_lang = 'English';
   </acre:script>
   <form action="${base_url}" method="GET" id="data-lang" class="language-picker">
-    <input acre:for="k,v in params" type="hidden" name="${k}" value="${v}"/>
+    <acre:block for="k,v in params" if="typeof v === 'string'">
+      <input type="hidden" name="${k}" value="${v}"/>
+    </acre:block>
     <select name="lang" 
             onchange="return freebase.dispatch(event, freebase.lang_select, [this.value], this);">
       <acre:block for="lang in i18n.mql.langs(true)">

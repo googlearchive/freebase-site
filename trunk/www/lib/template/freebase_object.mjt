@@ -256,8 +256,9 @@
 
 <acre:block def="nav_tabs()">
   <acre:script>
-    var params = c.filters;
-    var qs = acre.form.encode(params);
+    var params = fh.global_filters(c.filters);
+    // use fb_url to get lang param
+    qs = h.fb_url("", params).substring(2);
   </acre:script>
   <acre:block for="tab in c.tabs">
     <acre:script>

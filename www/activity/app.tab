@@ -57,10 +57,7 @@ var app_writes = function(appid) {
     "/freebase/written_by/application": {
       "id": appid
     },
-    "creator": {
-      "id": null,
-      "name": i18n.mql.query.name()
-    },
+    "creator": null,
     "links": {
       "return": "estimate-count"
     }
@@ -70,7 +67,7 @@ var app_writes = function(appid) {
     .then(function(envelope) {
       var users = [];
       envelope.result.forEach(function(attribution) {
-        var user = attribution.creator;
+        var user = {id:attribution.creator};
         user.writes = attribution.links;
         users.push(user);
       });

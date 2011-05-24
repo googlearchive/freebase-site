@@ -200,8 +200,8 @@
                   acre:attrs="itemprop('/type/object/creator', true)">
               ${image.user_image_small(c.object.creator)}
               ${_("Created by")}
-              <a href="${h.fb_url(c.object.creator.id)}"
-                 title="${_('View user profile')}">${i18n.display_name(c.object.creator)}</a>
+              <a href="${h.fb_url(c.object.creator)}"
+                 title="${_('View user profile')}">${h.id_key(c.object.creator)}</a>
               ${_("on")}
             </span>
             <span acre:else="">

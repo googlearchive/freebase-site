@@ -105,7 +105,7 @@
                 ${i18n_c.datetime(query.timestamp, [["class","published"],["data-format","medium"]])}
               </td>
               <td class="odd">
-                <a href="${h.fb_url(query.creator.id, [['queries']])}">${h.id_key(query.creator.id)}</a> 
+                <a href="${h.fb_url(query.creator.id, [['queries']])}">${h.id_key(query.creator)}</a> 
               </td>
             </tr>
           </tbody>
@@ -146,7 +146,7 @@
                 ${i18n_c.datetime(type.timestamp, [["class","published"],["data-format","medium"]])}
               </td>
               <td class="odd">
-                <a href="${h.fb_url(type.creator.id, [['schema']])}">${h.id_key(type.creator.id)}</a> 
+                <a href="${h.fb_url(type.creator.id, [['schema']])}">${h.id_key(type.creator)}</a> 
               </td>
               <td class="numeric">${i18n_c.number(type.instance_count)}</td>
             </tr>

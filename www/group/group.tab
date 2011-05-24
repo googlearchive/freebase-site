@@ -61,7 +61,6 @@ function domain_owners(id) {
       optional: true,
       member: [{
         id: null,
-        name: i18n.mql.query.name(),
         timestamp: null,
         type: "/type/user",
          "!/freebase/user_activity/user": {
@@ -97,7 +96,6 @@ function domain_owners(id) {
 function domain_watchers(id) {
   return freebase.mqlread([{
     id: null,
-    name: i18n.mql.query.name(),
     timestamp: null,
     type: "/type/user",
     "!/freebase/user_activity/user": {

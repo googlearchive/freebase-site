@@ -684,7 +684,7 @@ propbox edit forms
     <li class="row-msg">
       <a class="close-msg" style="visibility:hidden;" href="#"
          onclick="$$(this).css('visibility', 'hidden').next().html('&nbsp'); return false;">close</a>
-      <span>&nbsp;</span>
+       <span>&nbsp;</span>
     </li>
     <li class="edit-row">
       ${form_field(prop_structure, prop_value, lang)}

@@ -566,7 +566,7 @@
     },
 
     form_message: function(form, msg, type) {
-      form.msg_row.find(".close-msg").css("visibility", "visible").next("span").text(msg);
+      form.msg_row.find(".close-msg").css("visibility", "visible").next().find(".msg-default").hide().next().text(msg);
       form.msg_row.attr("class", "row-msg");
       if (type) {
         form.msg_row.addClass("row-msg-" + type);
@@ -574,7 +574,7 @@
     },
 
     clear_form_message: function(form) {
-      form.msg_row.find(".close-msg").css("visibility", "hidden").next("span").html("&nbsp;");
+      form.msg_row.find(".close-msg").css("visibility", "hidden").next().find(".msg-default").show().next().html("&nbsp;");
     },
 
 

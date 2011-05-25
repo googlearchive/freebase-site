@@ -114,7 +114,7 @@ function handle_service_error(e) {
         info = response;
       }
     }
-    var msg = e.request_url ? "Error fetching " + e.request_url : "Error fetching external URL";
+    var msg = "Error fetching external URL";
     return new ServiceError("500 Service Error", null, {
       message: msg,
       code : "/api/status/error/service/external",

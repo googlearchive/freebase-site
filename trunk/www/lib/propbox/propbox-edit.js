@@ -138,7 +138,7 @@
           }
           var new_row = $(data.result.html);
 
-          form.edit_row.before(new_row);
+          form.msg_row.before(new_row);
           $(".data-table > thead", form.prop_section).show();
 
           // i18n'ize dates and numbers

@@ -469,9 +469,10 @@ propbox edit forms
   <ul class="edit-form ${JSON.stringify(prop_structure)}">
     <li class="row-msg">
       <a class="close-msg" style="visibility:hidden;" href="#" 
-         onclick="$$(this).css('visibility', 'hidden').next().html('&nbsp'); return false;">close</a>
+         onclick="$$(this).css('visibility', 'hidden').next().find('.msg-default').show().next().html('&nbsp'); return false;">close</a>
       <span>
-        ${h.template_sprintf(_("Add a new value to %s."), tag_strong(prop_structure.text))}
+        <span class="msg-default">${h.template_sprintf(_("Add a new value to %s."), tag_strong(prop_structure.text))}</span>
+        <span></span>
       </span>
     </li>
     <li class="add-row edit-row">
@@ -493,9 +494,10 @@ propbox edit forms
       <tr class="row-msg">
         <td colspan="${prop_structure.properties.length}">
           <a class="close-msg" style="visibility:hidden;" href="#"
-             onclick="$$(this).css('visibility', 'hidden').next().html('&nbsp'); return false;">close</a>
+             onclick="$$(this).css('visibility', 'hidden').next().find('.msg-default').show().next().html('&nbsp'); return false;">close</a>
            <span>
-             ${h.template_sprintf(_("Add a new value to %s."), tag_strong(prop_structure.text))}
+             <span class="msg-default">${h.template_sprintf(_("Add a new value to %s."), tag_strong(prop_structure.text))}</span>
+             <span></span>
            </span>
         </td>
       </tr>
@@ -635,9 +637,10 @@ propbox edit forms
       <tr class="row-msg">
         <td colspan="${prop_structure.properties.length}">
           <a class="close-msg" style="visibility:hidden;" href="#"
-             onclick="$$(this).css('visibility', 'hidden').next().html('&nbsp'); return false;">close</a>
+             onclick="$$(this).css('visibility', 'hidden').next().find('.msg-default').show().next().html('&nbsp'); return false;">close</a>
            <span>
-             ${h.template_sprintf(_("Edit %s value."), tag_strong(prop_structure.text))}
+             <span class="msg-default">${h.template_sprintf(_("Edit %s value."), tag_strong(prop_structure.text))}</span>
+             <span></span>
            </span>
         </td>
       </tr>
@@ -688,10 +691,11 @@ propbox edit forms
   <ul class="edit-form ${JSON.stringify(structure)}">
     <li class="row-msg">
       <a class="close-msg" style="visibility:hidden;" href="#"
-         onclick="$$(this).css('visibility', 'hidden').next().html('&nbsp'); return false;">close</a>
+         onclick="$$(this).css('visibility', 'hidden').next().find('.msg-default').show().next().html('&nbsp'); return false;">close</a>
       <span>
-        ${h.template_sprintf(_("Edit %s."), tag_strong(prop_value.text))}
-       </span>
+        <span class="msg-default">${h.template_sprintf(_("Edit %s."), tag_strong(prop_value.text))}</span>
+        <span></span>
+      </span>
     </li>
     <li class="edit-row">
       ${form_field(prop_structure, prop_value, lang)}

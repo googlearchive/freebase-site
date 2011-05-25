@@ -41,7 +41,7 @@ var deferred = promise_apis.deferred;
 var CONNECTED = {
   "inserted": 1,
   "updated": 1,
-  "presented": 1
+  "present": 1
 };
 
 /**

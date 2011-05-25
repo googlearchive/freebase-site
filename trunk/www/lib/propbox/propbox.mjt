@@ -467,11 +467,16 @@ propbox edit forms
 </acre:block>
 
 <acre:block def="prop_add_form_simple(topic_id, prop_structure, lang)">
+  <acre:script>
+    var message_plurality = prop_structure.unique
+  </acre:script>
   <ul class="edit-form ${JSON.stringify(prop_structure)}">
     <li class="row-msg">
       <a class="close-msg" style="visibility:hidden;" href="#" 
          onclick="$$(this).css('visibility', 'hidden').next().html('&nbsp'); return false;">close</a>
-      <span>&nbsp;</span>
+      <span>
+        ${h.template_sprintf(_("Add a new value to %s."), tag_strong(prop_structure.text))}
+      </span>
     </li>
     <li class="add-row edit-row">
       ${form_field(prop_structure, null, lang)}
@@ -493,7 +498,9 @@ propbox edit forms
         <td colspan="${prop_structure.properties.length}">
           <a class="close-msg" style="visibility:hidden;" href="#"
              onclick="$$(this).css('visibility', 'hidden').next().html('&nbsp'); return false;">close</a>
-          <span>&nbsp;</span>
+           <span>
+             ${h.template_sprintf(_("Add a new value to %s."), tag_strong(prop_structure.text))}
+           </span>
         </td>
       </tr>
       <tr class="add-cvt-row edit-row">
@@ -633,7 +640,9 @@ propbox edit forms
         <td colspan="${prop_structure.properties.length}">
           <a class="close-msg" style="visibility:hidden;" href="#"
              onclick="$$(this).css('visibility', 'hidden').next().html('&nbsp'); return false;">close</a>
-          <span>&nbsp;</span>
+           <span>
+             ${h.template_sprintf(_("Edit %s value."), tag_strong(prop_structure.text))}
+           </span>
         </td>
       </tr>
       <tr class="edit-row">
@@ -684,7 +693,9 @@ propbox edit forms
     <li class="row-msg">
       <a class="close-msg" style="visibility:hidden;" href="#"
          onclick="$$(this).css('visibility', 'hidden').next().html('&nbsp'); return false;">close</a>
-       <span>&nbsp;</span>
+      <span>
+        ${h.template_sprintf(_("Edit %s."), tag_strong(prop_value.text))}
+       </span>
     </li>
     <li class="edit-row">
       ${form_field(prop_structure, prop_value, lang)}

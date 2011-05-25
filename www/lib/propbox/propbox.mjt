@@ -356,9 +356,7 @@
       </acre:block>
     </acre:block>
     <acre:block else="">
-      <span class="property-value" 
-            acre:attrs="attrs" 
-            data-value="${prop_value.value}">${prop_value.value}</span>
+      <span acre:attrs="attrs" data-value="${prop_value.value}">${prop_value.value}</span>
       <acre:block if="ect === '/type/text'">
         ${i18n_c.lang_code(prop_value.lang, lang)}
       </acre:block>
@@ -448,8 +446,6 @@
     </span>
   </li>
 </acre:block>
-
-
 
 <!!----
 
@@ -719,8 +715,8 @@ propbox edit forms
       <td colspan="${prop_structure.properties.length}">
         <ul class="data-list">
           <li>
+            <a class="close-msg" href="#" onclick="return window.propbox.close_message(this);">${_("Close")}</a>
             <span class="wrapper">
-              <a class="close-msg" href="#" onclick="return window.propbox.close_message(this);">${_("Close")}</a>
               ${h.template_sprintf(_("%s has been deleted."), tag_strong(value))}
               <a href="#" onclick="return window.propbox.edit.value_delete_undo(this);">${_("Undo")}</a>
             </span>
@@ -731,8 +727,8 @@ propbox edit forms
   </acre:block>
   <acre:block else="">
     <li class="row-msg row-msg-info">
+      <a class="close-msg" href="#" onclick="return window.propbox.close_message(this);">${_("Close")}</a>
       <span class="wrapper">
-        <a class="close-msg" href="#" onclick="return window.propbox.close_message(this);">${_("Close")}</a>
         ${h.template_sprintf(_("%s has been deleted."), tag_strong(value))}
         <a href="#" onclick="return window.propbox.edit.value_delete_undo(this);">${_("Undo")}</a>
       </span>

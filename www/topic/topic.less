@@ -447,7 +447,6 @@ Keyboard Shortcuts
 .data-table tbody {
   tr.edit-row th,
   tr.edit-row td,
-  tr.row-msg td,
   tr.edit-row-submit th,
   tr.edit-row-submit td {
     .edit-row-style();
@@ -457,6 +456,12 @@ Keyboard Shortcuts
   }
 }
 
+.data-table tbody tr.row-msg td,
+.data-list .row-msg,
+.data-list .row-msg:hover {
+  background: darken(#f1f2f3, 5%);
+}
+
 .data-table tbody tr.edit-row th,
 .data-table tbody tr.edit-row td {
   padding-top: 10px;
@@ -464,11 +469,14 @@ Keyboard Shortcuts
 
 .data-list .edit-row,
 .data-list .edit-row-submit,
+.data-list .row-msg,
+.data-table tbody tr.row-msg td:first-child,
 .data-table tbody tr.edit-row td:first-child,
 .data-table tbody tr.edit-row-submit td:first-child {
   padding-left: 15px;
 }
 
-.add-row .fb-input {
+.add-row .fb-input,
+.edit-row .fb-input {
   width: 16em;
 }

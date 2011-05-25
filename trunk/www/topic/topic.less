@@ -426,15 +426,35 @@ Keyboard Shortcuts
   margin-bottom: 10px;
 }
 
-.data-list .edit-row,
-.data-list .add-row,
-.data-table tbody tr.edit-row th,
-.data-table tbody tr.edit-row td,
-.data-table tbody tr.edit-row-submit th,
-.data-table tbody tr.edit-row-submit td {
-  background: #f1f2f3;
-  border: 0;
-  padding: 5px 0;
+.edit-row-style() {
+    background: #f1f2f3;
+    border: 0;
+    padding: 5px 0;
+}
+
+.data-list {
+  .edit-row,
+  .add-row,
+  .row-msg,
+  .edit-row-submit {
+    .edit-row-style();
+    &:hover {
+      background: #f1f2f3;
+    }
+  }
+}
+
+.data-table tbody {
+  tr.edit-row th,
+  tr.edit-row td,
+  tr.row-msg td,
+  tr.edit-row-submit th,
+  tr.edit-row-submit td {
+    .edit-row-style();
+    &:hover {
+      background: #f1f2f3;
+    }
+  }
 }
 
 .data-table tbody tr.edit-row th,
@@ -442,7 +462,13 @@ Keyboard Shortcuts
   padding-top: 10px;
 }
 
+.data-list .edit-row,
+.data-list .edit-row-submit,
 .data-table tbody tr.edit-row td:first-child,
 .data-table tbody tr.edit-row-submit td:first-child {
   padding-left: 15px;
+}
+
+.add-row .fb-input {
+  width: 16em;
 }

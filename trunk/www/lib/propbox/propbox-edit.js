@@ -223,7 +223,7 @@
             })
             .bind(event_prefix + "delete", function() {
               // ensure form is not submitted while we are deleting
-              form.edit_row.addClass("loading");
+              edit.loading_begin(form);
               propbox.edit.value_delete_begin(prop_section, prop_row, function() {
                 form.msg_row.remove();
                 form.edit_row.remove();
@@ -389,6 +389,21 @@
     /**
      * Generic form utiltiies
      */
+    loading_begin: function(form) {
+      $.each([form.edit_row, form.msg_row, form.submit_row], function(i, row) {
+        if (row) {
+          row.addClass("loading");
+        }
+      });
+    },
+
+    loading_complete: function(form) {
+      $.each([form.edit_row, form.msg_row, form.submit_row], function(i, row) {
+        if (row) {
+          row.removeClass("loading");
+        }
+      });
+    },
 
     init_data_inputs: function(form) {
       $(".data-input", form.edit_row).each(function() {
@@ -476,11 +491,11 @@
         })
         .bind(event_prefix + "error", function(e, msg) {
           edit.error(form, msg);
-          form.edit_row.removeClass("loading");
+          edit.loading_complete(form);
           form.prop_section.removeClass("editing");
         })
         .bind(event_prefix + "success", function() {
-          form.edit_row.removeClass("loading");
+          edit.loading_complete(form);
           form.prop_section.removeClass("editing");
         });
 
@@ -537,7 +552,8 @@
       edit.clear_form_message(form);
 
       // form submitting/loading
-      form.edit_row.addClass("loading");
+      edit.loading_begin(form);
+
       // submit form
       if (form.submit) {
         form.submit(form);

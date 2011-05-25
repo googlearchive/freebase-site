@@ -37,6 +37,13 @@ var promise_apis = acre.require("promise/apis.sjs");
 var freebase = promise_apis.freebase;
 var deferred = promise_apis.deferred;
 
+/** connected responses corresponding to "insertions" **/
+var CONNECTED = {
+  "inserted": 1,
+  "updated": 1,
+  "presented": 1
+};
+
 /**
  * prop add form
  */
@@ -77,7 +84,7 @@ var SPEC = {
             var object_value;
             for (var i=0,l=clauses.length; i<l; i++) {
               var clause = clauses[i];
-              if (clause.connect !== "delete") {
+              if (CONNECTED[clause.connect]) {
                 var ect = prop_structure.expected_type.id;
                 if (h.is_literal_type(ect)) {
                   object_value = clause.value;

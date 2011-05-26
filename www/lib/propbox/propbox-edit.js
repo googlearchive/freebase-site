@@ -139,7 +139,6 @@
           var new_row = $(data.result.html);
 
           form.msg_row.before(new_row);
-          $(".data-table > thead", form.prop_section).show();
 
           // i18n'ize dates and numbers
           i18n.ize(new_row);
@@ -269,9 +268,6 @@
             return edit.ajax_error(xhr, form);
           }
           var new_row = $(data.result.html);
-          if (new_row.is("tr")) {
-            $(".data-table > thead", form.prop_section).show();
-          }
           form.prop_row.after(new_row);
 
           // i18n'ize dates and numbers
@@ -473,6 +469,9 @@
         form.msg_row.after(form.edit_row);
         form.edit_row.after(form.submit_row);
       }
+
+      // show cvt header (if applicable)
+      $(".data-table > thead", form.prop_section).show();
 
       var event_prefix = form.event_prefix || "propbox.edit.";
 

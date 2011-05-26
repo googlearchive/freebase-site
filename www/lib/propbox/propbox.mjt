@@ -337,10 +337,6 @@
        acre:attrs="itemprop(prop_structure.id)"
        href="${prop_value.url}">${prop_value.url}</a>
   </acre:block>
-  <acre:block elif="ect === '/location/mailing_address'">
-    ${prop_value.text}
-  </acre:block>
-
   <acre:block else="">
     <acre:script>
       var attrs = h.extend(itemprop(prop_structure.id), microdata.value(prop_structure, prop_value));

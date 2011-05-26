@@ -134,7 +134,6 @@ function get_deep_props(id, props, subprops, lang) {
       promises.push(deep_props_query(id, prop, value, lang));
     });
   });
-
   return deferred.all(promises)
     .then(function() {
       return props;
@@ -142,7 +141,7 @@ function get_deep_props(id, props, subprops, lang) {
 };
 
 function deep_props_query(id, prop, value, lang) {
-  return pq.prop_data(id, prop, value.id, lang)
+  return pq.prop_data(id, prop, value.id || null, lang)
     .then(function(result) {
       result.forEach(function(data) {
         prop.properties.forEach(function(subprop) {
@@ -154,6 +153,10 @@ function deep_props_query(id, prop, value, lang) {
            value[subprop.id] = subprop;
         });
       });
+      // HACK until topic api return id for address mediators (dae)
+      if (!value.id && result.length) {
+        value.id = result[0].id;
+      }
     });
 };
 
@@ -192,9 +195,6 @@ function get_address_cvt_props(id, address_props, lang) {
       return get_deep_props(id, address_props, subprops, lang);
     })
     .then(function(result) {
-
-      console.log("get_address_cvt_props", result);
-
       return result;
     });
 };

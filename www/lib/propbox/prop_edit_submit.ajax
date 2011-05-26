@@ -84,7 +84,7 @@ var SPEC = {
             var object_value;
             for (var i=0,l=clauses.length; i<l; i++) {
               var clause = clauses[i];
-              if (CONNECTED[clause.connect]) {
+              if (!clause.connect || CONNECTED[clause.connect]) {
                 var ect = prop_structure.expected_type.id;
                 if (h.is_literal_type(ect)) {
                   object_value = clause.value;

@@ -480,3 +480,43 @@ Keyboard Shortcuts
 .edit-row .fb-input {
   width: 16em;
 }
+
+
+/*
+ * Handle overflow gracefully in webkit browsers
+ */
+
+.data-section {
+  overflow: auto;
+}
+
+.data-section::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+  background: white;
+}  
+.data-section::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+.data-section::-webkit-scrollbar-thumb:vertical {
+  border-left: 6px solid white;
+  border-right: 4px solid white;
+}
+.data-section::-webkit-scrollbar-thumb:horizontal {
+  border-top: 6px solid white;
+  border-bottom: 4px solid white;
+}
+.data-section:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, .1);
+} 
+.data-section::-webkit-scrollbar-thumb:horizontal:hover,
+.data-section::-webkit-scrollbar-thumb:vertical:hover {
+  background: rgba(0, 0, 0, .15);
+}
+.data-section::-webkit-scrollbar-track-piece:vertical:start {
+  margin-top: 4px;
+}
+.data-section::-webkit-scrollbar-track-piece:horizontal:start {
+  margin-left: 4px;
+}
+

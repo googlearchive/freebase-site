@@ -143,7 +143,7 @@ var rules = [
   {prefix:"/view/schema",             url:"", params: {"schema":""}, redirect:301},
   {prefix:"/tools/schema",            url:"", params: {"schema":""}, redirect:301},
   {prefix:"/type/schema",             url:"", params: {"schema":""}, redirect: 301},
-  
+
   // Apps
   {prefix:"/apps/app",                url:"", redirect:301},
   {prefix:"/apps",                    url:"", redirect:301},
@@ -156,6 +156,7 @@ var rules = [
   // Inspect
   {prefix:"/tools/explore",           url:"/inspect", redirect:301},
   {prefix:"/tools/explore2",          url:"/inspect", redirect:301},
+  {prefix:"/inspect",                 url:"", params: {inspect:""}, redirect:301},
 
   // Appeditor
   {prefix:"/tools/appeditor",         url:"/appeditor", redirect:301},

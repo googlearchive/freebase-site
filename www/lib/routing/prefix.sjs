@@ -139,9 +139,14 @@ var rules = [
   {prefix:"/history/topic",           url:"/history/view", redirect:301},
 
   // Schema
+  {prefix:"/schema",                  url:"", params: {"schema":""}, redirect:301},
   {prefix:"/view/schema",             url:"", params: {"schema":""}, redirect:301},
   {prefix:"/tools/schema",            url:"", params: {"schema":""}, redirect:301},
   {prefix:"/type/schema",             url:"", params: {"schema":""}, redirect: 301},
+  
+  // Apps
+  {prefix:"/apps/app",                url:"", redirect:301},
+  {prefix:"/apps",                    url:"", redirect:301},
 
   // Queryeditor
   {prefix:"/app/queryeditor",         url:"/queryeditor", redirect:301},

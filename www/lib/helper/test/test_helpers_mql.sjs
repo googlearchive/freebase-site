@@ -71,6 +71,8 @@ test("id_key", function() {
   same(h.id_key("/a", true), ["/", "a"]);
   same(h.id_key("/a/b/c"), "c");
   same(h.id_key("/a/b/c", true), ["/a/b", "c"]);
+  same(h.id_key("abc"), "abc");
+  same(h.id_key("abc", true), ["/", "abc"]);
 });
 
 test("lang_code", function() {
@@ -83,7 +85,7 @@ test("fb_object_type", function() {
   // Test Property label
   var test_property_object = {"/type/property": {}};
   equal(h.fb_object_type(test_property_object, "/film/film/directed_by"), "Property");
-  
+
   // Test Type label
   var test_type_object = {"/type/type": {}};
   equal(h.fb_object_type(test_type_object, "/film/film"), "Type");

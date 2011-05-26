@@ -112,9 +112,6 @@ function render(service_result, spec, scope) {
     .then(function([template_base_args, def_args]) {
       o.template_base_args = template_base_args;
       o.def_args = def_args;
-
-console.log("all args", arguments);
-
     })
     .then(function() {
       var template;

@@ -139,9 +139,9 @@ var rules = [
   {prefix:"/history/topic",           url:"/history/view", redirect:301},
 
   // Schema
-  {prefix:"/view/schema",             url:"/", redirect:301},
-  {prefix:"/tools/schema",            url:"/", redirect:301},
-  {prefix:"/type/schema",             url:"/", redirect: 301},
+  {prefix:"/view/schema",             url:"", params: {"schema":""}, redirect:301},
+  {prefix:"/tools/schema",            url:"", params: {"schema":""}, redirect:301},
+  {prefix:"/type/schema",             url:"", params: {"schema":""}, redirect: 301},
 
   // Queryeditor
   {prefix:"/app/queryeditor",         url:"/queryeditor", redirect:301},
@@ -173,19 +173,19 @@ var rules = [
   {prefix:"/signin/privacy",          url:"/policies/privacy", redirect:301},
 
   // View
-  {prefix:"/view/filter",             url:"/", redirect:301},
-  {prefix:"/view/domain",             url:"/", redirect:301},
-  {prefix:"/view/image",              url:"/", redirect:301},
-  {prefix:"/view/document",           url:"/", redirect:301},
-  {prefix:"/view/usergroup",          url:"/", redirect:301},
-  {prefix:"/view/fb",                 url:"/", redirect:301},
-  {prefix:"/view/query",              url:"/", redirect:301},
-  {prefix:"/view/api/metaweb/view",   url:"/", redirect:301},
-  {prefix:"/view/guid/filter",        url:"/", redirect:301},
-  {prefix:"/view/help",               url:"/", redirect:301},
-  {prefix:"/view",                    url:"/", redirect:301},
-  {prefix:"/helptopic",               url:"/", redirect:301},
-  {prefix:"/iv/fb",                   url:"/", redirect:301},
+  {prefix:"/view/filter",             url:"", redirect:301},
+  {prefix:"/view/domain",             url:"", redirect:301},
+  {prefix:"/view/image",              url:"", redirect:301},
+  {prefix:"/view/document",           url:"", redirect:301},
+  {prefix:"/view/usergroup",          url:"", redirect:301},
+  {prefix:"/view/fb",                 url:"", redirect:301},
+  {prefix:"/view/query",              url:"", redirect:301},
+  {prefix:"/view/api/metaweb/view",   url:"", redirect:301},
+  {prefix:"/view/guid/filter",        url:"", redirect:301},
+  {prefix:"/view/help",               url:"", redirect:301},
+  {prefix:"/view",                    url:"", redirect:301},
+  {prefix:"/helptopic",               url:"", redirect:301},
+  {prefix:"/iv/fb",                   url:"", redirect:301},
 
   // Other
   {prefix:"/view/userdomains",        url:"/domain/users", redirect:301},
@@ -292,14 +292,14 @@ function PrefixRouter(app_labels) {
 
     var rule = route_for_path(path);
     if (rule) {
-      if (rule.redirect && rule.url) {
+      if (rule.redirect && "url" in rule) {
         // Handle both absolute and relative redirects
         acre.response.status = rule.redirect;
         var redirect_url;
         if (/^https?:\/\//.test(rule.url)) {
           redirect_url = rule.url;
         } else {
-          redirect_url = req.app_url + req_path.replace(rule.prefix, rule.url);
+          redirect_url = acre.form.build_url(req.app_url + req_path.replace(rule.prefix, rule.url), rule.params);
         }
         acre.response.set_header("location", redirect_url);
         acre.exit();

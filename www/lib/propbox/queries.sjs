@@ -55,10 +55,18 @@ function prop_schemas(/** pid_1, pid_2, ... , pid_N, lang **/) {
   var len = args.length;
   var pids = args.slice(0, len - 1);
   var lang = args[len - 1];
+
+  var pids_index = {};
+  pids.forEach(function(pid, i) {
+    pids_index[pid] = i;
+  });
   var q = [mql.prop_schema({"id|=": pids}, lang)];
   return freebase.mqlread(q)
     .then(function(env) {
-      return env.result;
+      // sort the properties in the same order as arguments
+      return env.result.sort(function(a,b) {
+        return pids_index[b.id] < pids_index[a.id];
+      });
     });
 };
 

@@ -69,6 +69,7 @@ function topic(id, lang, limit, as_of_time, domains) {
          */
         var image_props = [];
         var article_props = [];
+        var address_props = [];
         for (var prop_id in props) {
           var prop = props[prop_id];
           var ect = prop.expected_type.id;
@@ -80,6 +81,10 @@ function topic(id, lang, limit, as_of_time, domains) {
             prop.id = prop_id;
             article_props.push(prop);
           }
+          else if (ect === "/location/mailing_address") {
+            prop.id = prop_id;
+            address_props.push(prop);
+          }
         }
 
         var promises = [];
@@ -89,6 +94,9 @@ function topic(id, lang, limit, as_of_time, domains) {
         }
         if (article_props.length) {
           promises.push(get_article_deep_props(id, article_props, lang));
+        }
+        if (address_props.length) {
+          promises.push(get_address_cvt_props(id, address_props, lang));
         }
 
         return deferred.all(promises)
@@ -174,5 +182,29 @@ function article_deep_props(lang) {
                             "/type/object/timestamp",
                             "/common/document/source_uri",
                             "/common/document/content",
+                            lang);
+};
+
+
+function get_address_cvt_props(id, address_props, lang) {
+  return address_cvt_props(lang)
+    .then(function(subprops) {
+      return get_deep_props(id, address_props, subprops, lang);
+    })
+    .then(function(result) {
+
+      console.log("get_address_cvt_props", result);
+
+      return result;
+    });
+};
+
+
+function address_cvt_props(lang) {
+  return pq.prop_structures("/location/mailing_address/street_address",
+                            "/location/mailing_address/citytown",
+                            "/location/mailing_address/state_province_region",
+                            "/location/mailing_address/postal_code",
+                            "/location/mailing_address/country",
                             lang);
 };

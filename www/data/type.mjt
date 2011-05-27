@@ -82,7 +82,11 @@
 <acre:block def="page_content()">
   <div class="section instances">
     <!!-- Type table -->
-    <h1>${i18n_c.number(c.table.activity.topic_count)} ${i18n.display_name(c.object)} ${_("topics")}</h1>
+    <h1 class="table-title">
+      <strong>${i18n_c.number(c.table.activity.topic_count)}</strong>
+      ${i18n.display_name(c.object)}
+      ${_("topics")}
+    </h1>
     <acre:block if="c.table.instances && c.table.instances.length">
       ${type_table(c.table.instances, c.table.properties, c.table.root_type_is_mediator)}
     </acre:block>
@@ -203,9 +207,9 @@
       var rowspan = 1;
     }
   </acre:script>
-  <th rowspan="$rowspan" class="first"> ${_("Name")} </th>
-  <th rowspan="$rowspan">${_("Image")}</th>
-  <th rowspan="$rowspan">${_("Article")}</th>
+  <th rowspan="$rowspan" class="first name"> ${_("Name")} </th>
+  <th rowspan="$rowspan" class="image">${_("Image")}</th>
+  <th rowspan="$rowspan" class="article">${_("Article")}</th>
 </acre:block>
 
 <acre:block def="render_instance_rows(instances, properties, root_type_is_mediator)">
@@ -246,7 +250,7 @@
         basic name, image columns for each instance
         -->
         <acre:block if="instance.name && !root_type_is_mediator">
-          <td rowspan="$instance_rowspan"> 
+          <td rowspan="$instance_rowspan" class="name"> 
             <ul class="data-list">
               <li>
                 <span class="wrapper">
@@ -257,7 +261,7 @@
               </li>
             </ul>
           </td>
-          <td rowspan="$instance_rowspan">
+          <td rowspan="$instance_rowspan" class="image">
             <acre:script>var options = {mode: "fillcropmid"};</acre:script>
             <ul class="data-list">
               <li>
@@ -267,7 +271,7 @@
               </li>
             </ul>
           </td>
-          <td rowspan="$instance_rowspan">
+          <td rowspan="$instance_rowspan" class="article">
             <acre:script>
               var blurb = i18n.display_article(instance, "blurb");
             </acre:script>

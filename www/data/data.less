@@ -132,13 +132,13 @@ table .data-statistics td {
   list-style: none;
 }
 
+.data-table .data-list li,
 .data-list li {
   font-size: 12px;
   line-height: 1;
   padding: 0 15px;
 }
 
-.data-table .data-list li,
 .data-table .empty-property {
   padding: 0;
 }
@@ -173,7 +173,7 @@ table .data-statistics td {
 
 .data-table tbody tr:hover td,
 .data-list li:hover {
-  background-color: #e6e7e8;
+  background: #fff;
 }
 
 .data-table .data-list li:hover {
@@ -193,6 +193,8 @@ table .data-statistics td {
 .data-table tbody tr td:first-child li {
   padding-left: 15px;
 }
+
+.data-table tbody tr.instance
 
 .data-table .alt th,
 .data-table .alt td {
@@ -216,6 +218,10 @@ table .data-statistics td {
   border: 0;
 }
 
+.data-table tbody .article {
+  max-width: 350px;
+}
+
 .data-table thead th {
   vertical-align: bottom;
 }
@@ -227,6 +233,3 @@ table .data-statistics td {
 .empty-result p {
   font-size: 14px;
 }
-
-
-

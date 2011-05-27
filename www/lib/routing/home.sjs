@@ -41,7 +41,6 @@ var exports = {
  *
  */
 function HomeRouter(app_labels) {
-  var home = "home";
   
   var route = this.route = function(req) {
     

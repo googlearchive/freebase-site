@@ -16,7 +16,7 @@ var labels = {
   "appeditor":  "//2a.appeditor" + tags_codebase,
   "docs":       "//3a.devdocs" + tags_codebase,
   "policies":   "//4a.policies" + tags_codebase,
-  "query":      "//1a.query" + tags_codebase,
+  "query":      "//query" + codebase,
   "sample":     "//sample" + tags_codebase,
   "account":    "//1a.account" + tags_codebase,
   "admin":      "//admin" + tags_codebase,

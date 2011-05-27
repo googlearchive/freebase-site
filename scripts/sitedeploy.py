@@ -371,7 +371,7 @@ class ActionDeployAcre:
 
     acre.start(war=True)
 
-    status = acre.is_running()
+    status = acre.is_running(war=True)
 
     if not status:
       return c.error('Could not start new acre war bundle under appengine development server, aborting deployment')
@@ -415,7 +415,7 @@ class ActionDeployAcre:
 
 
     c.log('Starting deployment of live version, handing off to appcfg...', color=c.BLUE)
-    if not acre.deploy(): 
+    if not acre.deploy(target=c.options.acre_config): 
       return c.error('Deployment failed.')
 
     if c.options.failover:
@@ -425,7 +425,7 @@ class ActionDeployAcre:
       if not r:
         return c.error('Failed to prepare failover version of acre, aborting.')
     
-      if not acre.deploy(): 
+      if not acre.deploy(c.options.acre_config): 
         return c.error('Deployment failed.')
       
     return True
@@ -491,7 +491,7 @@ class ActionSetupSimpleDNS:
   def __call__(self):
     c = self.context
 
-    domains = set(['environments.svn.freebase-site.googlecode.dev.acre.z', 'devel.sandbox-freebase.com'])
+    domains = set(['environments.svn.freebase-site.googlecode.dev.acre.z', 'devel.sandbox-freebase.com', 'devel.freebase.com'])
 
     if pwd.getpwuid(os.getuid())[0] != 'root':
         return c.error('You must run this script as root.')
@@ -850,7 +850,7 @@ class ActionInfo:
 
     c = self.context
 
-    success = c.googlecode_login(auto_reuse_username=True)
+    success = c.googlecode_login()
     if not success:
       return c.error('You must provide valid google code credentials to complete this operation.')
 

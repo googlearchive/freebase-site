@@ -67,6 +67,7 @@ function route(apps, rules, scope) {
   }
 
   if (dump) {
+    rules_dump['apps'] = apps;
     scope.acre.write(JSON.stringify(rules_dump, null, 2));
     scope.acre.exit();
   }

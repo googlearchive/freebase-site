@@ -50,7 +50,8 @@ function types_mql(id) {
       "guid": null,
       "name": i18n.mql.query.name(),
       "timestamp": null,
-      "creator": null
+      "creator": null,
+      "optional": true
     }]
   };
 };
@@ -71,7 +72,6 @@ function domain(id) {
 
       // we don't want to return /base/id/topic
       var base_common_topic_id = domain.id + "/topic";
-      console.log(base_common_topic_id, domain.types);
 
       var domain_types = [];
       for(i=0; i<domain.types.length; i++) {
@@ -91,7 +91,11 @@ function domain(id) {
       // get BDB summary for domain
       promises.push(freebase.get_static("activity", activity_id)
         .then(function(activity) {
-          return activity || {};
+          return activity || {
+            edits: [],
+            total: {},
+            week: {}
+          };
         })
 
         // With domain activity, do the following:
@@ -106,15 +110,15 @@ function domain(id) {
         // 3. Add Top Contributors to domain object
 
         .then(function(activity) {
-
+          
           // facts
           domain.total_facts = activity.total.edits || 0;
           domain.facts_last_week = activity.week.total_edits || 0;
 
           //topics
           domain.total_topics = activity.total['new'] || 0;
-          domain.topics_with_images = Math.round((activity.has_image / domain.total_topics) * 100);
-          domain.topics_with_articles = Math.round((activity.has_article / domain.total_topics) * 100);
+          domain.topics_with_images = activity.has_image ? Math.round((activity.has_image / domain.total_topics) * 100) : 0;
+          domain.topics_with_articles = activity.has_image ? Math.round((activity.has_article / domain.total_topics) * 100) : 0;
 
           // daily summary for graph output
           // we only want the last 10 or so values

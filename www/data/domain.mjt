@@ -206,7 +206,7 @@
             <li acre:for="i, user in c.domain.top_contributors" 
             acre:if="i < 6">
             ${image.user_image_medium(user)}
-            <strong><a href="${h.fb_url('/', user.id)}">$user.display_name</a><br></strong>
+            <strong><a href="${h.fb_url(user.id)}">$user.display_name</a><br></strong>
             <strong>${i18n_c.number(user.v)} ${_("facts")}</strong><br>
             ${i18n_c.number(user.percentage)}%
             </li>

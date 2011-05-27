@@ -1,0 +1,353 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var propbox = acre.require("lib/propbox/propbox.mjt");
+  var ph = acre.require("lib/propbox/helpers.sjs");
+  var image = acre.require("lib/template/imagecomponents");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var lang = i18n.lang;
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="data.mf.css" />
+</acre:block>
+
+<acre:block def="breadcrumb()">
+  <div class="page-header clear">
+    <div class="breadcrumb clear">
+      <ol>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.fb_url(c.table.domain.id)}">${i18n.display_name(c.table.domain)}</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.fb_url(c.object.id)}">${i18n.display_name(c.object)}</a>
+          </span>
+        </li>
+        <li if="c.domain" class="breadcrumb-item last">
+          <span class="breadcrumb-item-inner">
+            <a href="#">${_("Data")}</a>
+          </span>
+        </li>
+      </ol>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="nav_utilities()">
+  <!--
+  <li>
+    <a href="${h.fb_url('/queryeditor', '')}" class="icon-link">
+     <span class="query-icon">${_('Edit Query')}</span>
+    </a>
+  </li>
+  -->
+</acre:block>
+
+<acre:block def="page_content()">
+  <div class="section instances">
+    <!!-- Type table -->
+    <h1 class="table-title">
+      <strong>${i18n_c.number(c.table.activity.topic_count)}</strong>
+      ${i18n.display_name(c.object)}
+      ${_("topics")}
+    </h1>
+    <acre:block if="c.table.instances && c.table.instances.length">
+      ${type_table(c.table.instances, c.table.properties, c.table.root_type_is_mediator)}
+    </acre:block>
+  </div>
+</acre:block>
+
+<acre:block def="type_table(instances, properties, root_type_is_mediator)">
+
+  <acre:script>
+
+   var table_head = [];
+   var type_has_mediator = false;
+
+   for(i=0; i<properties.length; i++) {
+     var table_column = {};
+     if(properties[i].properties) {
+
+       // build colspan of each property
+       var colspan = properties[i].properties.length;  
+       var column = {
+         "index": i,
+         "colspan": colspan,
+         "name": properties[i].text
+       }
+
+       table_head.push(column);
+
+       // set flag if any of the properties are of type mediator
+       if (properties[i].expected_type.mediator) {
+         // set flag as true
+         type_has_mediator = true;
+       }
+     }
+   }
+  </acre:script>
+
+  <table class="data-table" acre:if="instances">
+    <thead>
+      ${render_type_table_head(table_head, properties, root_type_is_mediator)}
+    </thead>
+    <tbody>
+      ${render_instance_rows(instances, properties, root_type_is_mediator)}
+<!!--
+      <acre:block if="type_has_mediator">
+        ${render_mediated_type_rows(instances, properties, root_type_is_mediator)}
+      </acre:block>
+      <acre:block else="">
+        ${render_type_rows(instances, properties, root_type_is_mediator)}
+      </acre:block>
+-->
+    </tbody>
+  </table>
+</acre:block> 
+
+<!!-- Render the thead of of a Type object -->
+<acre:block def="render_type_table_head(table_head, properties, root_type_is_mediator)">
+
+  <!!--
+
+  If we have a length on table_head, that means we are
+  dealing with a Type that has mediated properties.
+
+  In this case, we need to build a row and corresponding cells
+  for each mediated property
+  
+  -->
+  <tr acre:if="table_head && table_head.length > 0">
+
+    <!--
+
+    If the root type is not a mediator, we want spit out
+    a Name, Image, and Description column first in the table
+
+    -->
+
+    <acre:block if="!root_type_is_mediator">
+      <acre:script>
+        var rowspan = table_head.length + 1;
+      </acre:script>
+      ${table_head_common_columns(rowspan)}
+    </acre:block>
+
+    <!!--Iterate through mediated properties -->
+    <th acre:for="column in table_head"
+        acre:if="table_head && table_head.length"
+        colspan="$column.colspan"
+        style="text-align:center">${column.name}
+    </th> 
+  </tr>
+
+  <!!--
+  Iterate through standard properties
+  -->
+  <tr>
+    <acre:block if="!root_type_is_mediator && table_head.length===0">
+      ${table_head_common_columns()}
+    </acre:block>
+
+    <acre:block for="prop in properties"> 
+      <!!-- Handle sub-properties within mediatated properties -->
+      <acre:block if="prop['expected_type']['mediator'] === true">
+        <th colspan="1" rowspan="1" acre:for="p in prop['properties']">
+          $p.text
+        </th>
+      </acre:block>
+      <!!-- Non-mediated properties -->
+      <acre:block else="">
+        <th>${prop.text}</th>
+      </acre:block>
+    </acre:block>
+  </tr>
+</acre:block>
+
+<!!-- Output basic column headers (Name, Image, etc.) -->
+<acre:block def="table_head_common_columns(rowspan)">
+  <acre:script>
+    if(!rowspan) {
+      var rowspan = 1;
+    }
+  </acre:script>
+  <th rowspan="$rowspan" class="first name"> ${_("Name")} </th>
+  <th rowspan="$rowspan" class="image">${_("Image")}</th>
+  <th rowspan="$rowspan" class="article">${_("Article")}</th>
+</acre:block>
+
+<acre:block def="render_instance_rows(instances, properties, root_type_is_mediator)">
+
+
+    <acre:block for="instance in instances">
+
+      <!!-- 
+      We need to establish if any of the properties are mediated 
+      If so, we need to build a rowspan that we can attach to the
+      non-mediated properties associated with this instance.
+
+      The first row associated with an instance holds all non-mediated values,
+      and those cells must havea rowspan equal to the greatest length
+      within the mediated prop instance count
+
+      Subsequent rows only spit out cells that are for mediated properties
+      The missing cells are made up for by rowspan attribute for the previous
+      row's non-mediated cells.
+      -->
+      <acre:script>
+        // find each mediated property instance count
+        var instance_rowspan = 1;
+        properties.forEach(function(prop) {
+
+          if(prop.expected_type.mediator)  {
+            if(instance[prop.id].length > instance_rowspan) {
+              instance_rowspan = instance[prop.id].length;
+            } 
+          }
+
+        });
+      </acre:script>
+
+      <tr>
+        <!!--
+        If the root type is not a mediator, than we can spit out
+        basic name, image columns for each instance
+        -->
+        <acre:block if="instance.name && !root_type_is_mediator">
+          <td rowspan="$instance_rowspan" class="name"> 
+            <ul class="data-list">
+              <li>
+                <span class="wrapper">
+                  <a href="${h.fb_url(instance.id)}" title="${_('View topic')}">
+                    ${i18n.display_name(instance)}
+                  </a>
+                </span>
+              </li>
+            </ul>
+          </td>
+          <td rowspan="$instance_rowspan" class="image">
+            <acre:script>var options = {mode: "fillcropmid"};</acre:script>
+            <ul class="data-list">
+              <li>
+                <span class="wrapper">
+                  ${image.image_thumb(instance.id, 50, options)}
+                </span>
+              </li>
+            </ul>
+          </td>
+          <td rowspan="$instance_rowspan" class="article">
+            <acre:script>
+              var blurb = i18n.display_article(instance, "blurb");
+            </acre:script>
+            <p acre:if="blurb">
+              $blurb
+            </p>
+          </td>
+        </acre:block>
+        <!!--
+        If instance_rowspan is greater than 1, we have mediated properties
+        We need to spit out the first value for each
+        -->
+        <acre:block for="prop in properties"> 
+          <acre:block if="prop.properties && prop.properties.length">
+            <td acre:for="sub_prop in prop.properties"> 
+              <acre:script>
+                var values = ph.to_prop_values(prop, instance[prop.id][0], lang) 
+              </acre:script>
+              <ul class="data-list">
+                <acre:block for="k, val in values">
+                  <acre:block if="instance[prop.id][0][sub_prop.id] && instance[prop.id][0][sub_prop.id].length">
+                  <li acre:for="v in val[sub_prop.id]['values']">
+                    <span class="wrapper">${propbox.value(instance.id, sub_prop, v, lang)}</span>
+                  </li>
+                  </acre:block>
+                </acre:block>
+              </ul>
+            </td>
+          </acre:block>
+          <acre:block else="">
+            <acre:script>
+              var values = ph.to_prop_values(prop, instance[prop.id], lang) 
+            </acre:script>
+            <td rowspan="$instance_rowspan">
+              <ul class="data-list">
+                <acre:block for="k, val in values">
+                  <li>
+                    <span class="wrapper">${propbox.value(instance.id, prop, val)}</span>
+                  </li>
+                </acre:block>
+              </ul>
+            </td>
+          </acre:block>
+        </acre:block>
+      </tr>
+      <!!-- 
+      Loop through remaining mediated property values
+      starting at i=1 so not to duplicate the previous row
+      -->
+      <acre:block for="(var i=1; i &lt; instance_rowspan; i++)" if="instance_rowspan > 1">
+        <tr class="instance-sub-row">
+          <acre:block for="prop in properties" if="prop.expected_type.mediator">
+          <td acre:for="sub_prop in prop.properties">
+            <acre:block if="instance[prop.id][i]">
+              <acre:script>
+                var values = ph.to_prop_values(prop, instance[prop.id][i], lang) 
+              </acre:script>
+              <ul class="data-list">
+                <acre:block for="k, val in values">
+                  <acre:block if="instance[prop.id][i][sub_prop.id] && instance[prop.id][i][sub_prop.id].length">
+                  <li acre:for="v in val[sub_prop.id]['values']">
+                    <span class="wrapper">${propbox.value(instance.id, sub_prop, v, lang)}</span>
+                  </li>
+                  </acre:block>
+                </acre:block>
+              </ul>
+            </acre:block>
+          </td>
+          </acre:block>
+        </tr>
+      </acre:block>
+    </acre:block>
+ 
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+  <script src="data.mf.js"></script>
+</acre:block>

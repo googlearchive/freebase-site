@@ -1,0 +1,209 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var propbox = acre.require("lib/propbox/propbox.mjt");
+  var ph = acre.require("lib/propbox/helpers.sjs");
+  var image = acre.require("lib/template/imagecomponents");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var lang = i18n.lang;
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="data.mf.css" />
+</acre:block>
+
+<acre:block def="breadcrumb()">
+  <div class="page-header clear">
+    <div class="breadcrumb clear">
+      <ol>
+        <acre:script>console.log(c.object)</acre:script>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="#">${_("User")}</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.fb_url(c.object.creator)}">${h.id_key(c.object.creator)}</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.fb_url(c.object.creator)}?queries">${_("Queries")}</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item last">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.fb_url(c.object.id)}">${i18n.display_name(c.object)}</a>
+          </span>
+        </li>
+      </ol>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="page_content()">
+  <div class="section instances">
+
+<acre:block def="list(result, query)">
+  <table class="data-table" acre:if="result">
+    <acre:script>
+      function decantConstraints(q) {
+        function decant(val) {
+          if (h.isPlainObject(val)) {
+            var has_keys = false;
+            for (var key in val) {
+              has_keys = true;
+              var tmp = decant(val[key])
+              if (tmp === undefined) {
+                delete val[key];
+              } else {
+                val[key] = tmp;
+              }
+            }
+            return has_keys ? val : undefined;
+          } else if (h.isArray(val)) {
+            return val.length ? decant(val[0]) : undefined;
+          } else {
+            return (val === null) ? undefined : val;
+          }
+        };
+
+        return decant(q);
+      };
+
+      function is_constraint(path, value) {
+
+        function same_keys(o1, o2) {
+          for (var key in o1) {
+            var val1 = o1[key];
+            var val2 = o2[key];
+            val1 = h.isArray(val1) ? val1[0] : val1;
+            val2 = h.isArray(val2) ? val2[0] : val2;
+            if (val2 === undefined) return false;
+            if (h.isPlainObject(val1) && h.isPlainObject(val2)) {
+              if (!same_keys(val1, val2)) return false;
+            }
+          }
+          return true;
+        }
+
+        var val = h.extend(true, {}, constraints);
+        value = h.isArray(value) ? value[0] : value;
+        for (var s = 0; s < path.length; s++) {
+          val = val[path[s]];
+          if (val === undefined) return false;
+        }
+        return h.isPlainObject(val) ? same_keys(value, val) : true;
+      }
+
+      var constraints = decantConstraints(query||{});
+      console.log(query, constraints);
+    </acre:script>
+
+    <thead acre:def="thead(r, path)">
+      <tr>
+        <th acre:for="key, val in r" acre:if="!is_constraint(path.concat(key), val)">
+          ${key.split(":")[0].replace(/_/g, " ")} ${thead_value(val, path.concat(key))}
+        </th>
+      </tr>
+    </thead>
+
+    <acre:block def="thead_value(v, path)">
+      <acre:script>if (h.isArray(v)) v = v[0];</acre:script>
+      <ul acre:if="h.isPlainObject(v)">
+        <li acre:for="key, val in v" acre:if="!is_constraint(path.concat(key), val)">
+          ${key.split(":")[0].replace(/_/g, " ")} ${thead_value(val, path.concat(key))}
+        </li>
+      </ul>
+    </acre:block>
+
+    <acre:block def="row(r, path)">
+      <acre:block if="h.isPlainObject(r)">
+        <td acre:for="key, val in r" acre:if="!is_constraint(path.concat(key), val)">
+          ${value(val, path.concat(key))}
+        </td>
+      </acre:block>
+      <td acre:else="">${value(val, path)}</td>
+    </acre:block>
+
+    <acre:block def="value(a, path)">
+      <acre:block choose="typeof a">
+        <acre:block when="string">
+          <a acre:if="/^\//.test(a)" href="$a" data-fbid="$a">$a</a>
+          <acre:block else="">$a</acre:block>
+        </acre:block>
+        <acre:block when="number">$a</acre:block>
+        <acre:block when="boolean">${a ? "true" : "false"}</acre:block>
+        <acre:block when="object">
+          <ul class="data-list" acre:if="h.isArray(a)">
+            <li acre:for="val in a">
+              ${value(val, path)}
+            </li>
+          </ul>
+          <ul class="data-list" acre:elif="h.isPlainObject(a)">
+            <li acre:for="key, val in a" acre:if="!is_constraint(path.concat(key), val)">
+              ${value(val, path.concat(key))}
+            </li>
+          </ul>
+        </acre:block>
+      </acre:block>
+    </acre:block>
+
+    <acre:block if="h.isArray(result)">
+      ${thead(result[0], [])}
+      <tbody>
+        <tr acre:for="a in result">${row(a, [])}</tr>
+      </tbody>
+    </acre:block>
+    <acre:block else="">
+      <acre:block if="typeof result === 'object'">${thead(result, [])}</acre:block>
+      <tbody>
+        <tr>${row(result, [])}</tr>
+      </tbody>
+    </acre:block>
+  </table>
+</acre:block>
+
+${list(c.table.result, c.table.query)}
+  </div>
+
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+  <script src="data.mf.js"></script>
+</acre:block>

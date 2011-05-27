@@ -1,0 +1,132 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require("lib/helper/helpers.sjs");
+  var th = acre.require("helpers.sjs");
+  var fh = acre.require("lib/filter/helpers.sjs");
+  var fc = acre.require("lib/filter/components.mjt");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var _ = i18n.gettext;
+</acre:script>
+
+<acre:block def="timestamp_filter(base_url, filters)">
+  <h3 class="module-section-title"><label for="">${_("By Time")}:</label></h3>
+  <acre:script>
+    var known_ts, custom_ts;
+    if (filters.timestamp) {
+      var len = filters.timestamp.length;
+      if (len) {
+        if (len === 1 && filters.timestamp[0] in th.TIMESTAMPS) {
+          known_ts = filters.timestamp[0];
+          custom_ts = false;
+        }
+        else {
+          custom_ts = true;
+        }
+      }
+   }
+  </acre:script>
+  <ul>    
+    <acre:block for="key, val in th.TIMESTAMPS">      
+      <li acre:if="key === known_ts" class="filter-item">
+        <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'timestamp'))}" class="remove-filter">x</a>
+        ${_(key)}
+      </li>
+      <li acre:else="">
+        <a href="${h.fb_url(base_url, fh.add_filter(filters, 'timestamp', key))}" title="${h.sprintf(_('Added since %s'), _(key))}">${_(key)}</a>
+      </li>
+    </acre:block>    
+    <li acre:if="custom_ts" class="filter-item">
+      <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'timestamp'))}" class="remove-filter">x</a>
+      ${filters.timestamp[0]} 
+      <acre:block if="filters.timestamp.length === 2">
+        ${_("to")} ${filters.timestamp[1]} 
+      </acre:block>
+    </li>
+    <li>
+      <a class="filter-form-trigger" href="javascript:void(0)">${_("custom")}&hellip;</a>
+      ${fc.filter_form(base_url, filters, 'timestamp', timestamp_input, ['timestamp'], true)}
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="timestamp_input(name)">
+  <input type="text" class="text-input date-input" name="timestamp" placeholder="${_('from')}"/> to
+  <input type="text" class="text-input date-input" name="timestamp" placeholder="${_('to')}"/>
+  <input type="submit" style="display:none;" />
+</acre:block>
+
+<acre:block def="creator_filter(base_url, filters)">
+  <acre:script>
+    var creators = filters.creator || [];
+    var hide = false;
+    var def_params = ['creator'];
+    if (creators.length) {
+      hide = true;
+      def_params = def_params.concat(filters.creator);
+    }
+  </acre:script>
+  <h3 class="module-section-title"><label for="">${_("By User")}:</label></h3>
+  <ul acre:if="creators.length">
+    <li acre:for="user in creators" class="filter-item">
+      <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'creator', user))}" class="remove-filter">x</a>
+      ${user}
+    </li>
+  </ul>
+  <a acre:if="hide" class="filter-form-trigger" href="javascript:void(0);">${_("add another")}&hellip;</a>
+  ${fc.filter_form(base_url, filters, 'creator', creator_input, def_params, hide)}
+</acre:block>
+
+<acre:block def="creator_input(name)">
+  <acre:script>
+    var users = Array.prototype.slice.call(arguments, 1);
+  </acre:script>
+  <input acre:for="user in users" type="hidden" name="${name}" value="${user}"/>
+  ${fc.suggest_input(name, 'Start typing for suggestions')}
+</acre:block>
+
+<acre:block def="history_filter(base_url, filters)">
+  ${fc.filter_form(base_url, filters, 'history', history_input, ['history', filters.history])}
+</acre:block>
+
+<acre:block def="history_input(name, checked)">
+  <h2 style="margin-top:10px;" class="filter-title">
+    <label>
+      <input acre:if="checked === true" class="history-toggle" 
+             name="history" value="0" type="checkbox" checked="checked" onchange="this.form.submit()"/> 
+      <input acre:else="" class="history-toggle" 
+             name="history" value="1" type="checkbox" onchange="this.form.submit()"/> 
+      Show historical writes
+    </label>
+  </h2>
+</acre:block>
+

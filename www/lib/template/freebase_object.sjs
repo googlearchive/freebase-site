@@ -51,6 +51,8 @@ function main(tabs, object) {
       break;
     }
   }
+  
+  var script = acre.require(current_tab.app + "/" + current_tab.script);
 
   var template_base_args = {
     object: object,
@@ -59,11 +61,8 @@ function main(tabs, object) {
     filters: fh.global_filters(acre.request_params)
   };
 
+  // Manually overlay tab context onto acre.request since we're not using acre.route
   h.extend(topscope.acre.request.params, template_base_args, current_tab.params);
-
-  var script = acre.require(current_tab.app + "/" + current_tab.script);
-
-  // set the request script to be our tab script since we're not using acre.route
   topscope.acre.request.script = script.acre.current_script;
 
   var spec = script.SPEC;

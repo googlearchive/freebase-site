@@ -411,10 +411,20 @@ function user_domains(user) {
 
   // query to get domains in which user
   // is an Owner
+  // forbid:type clause is to get rid of apps
+  // key clause is to get rid of improperly deleted apps/domains
   var q1 = [{
     "id":   null,
     "name": i18n.mql.query.name(),
     "type": "/type/domain",
+    "forbid:type": {
+      "id": "/freebase/apps/application",
+      "optional": "forbidden"
+    },
+    "key" : {
+      "value": null,
+      "limit": 0
+    },
     "/type/domain/owners": {
       "member": {
         "optional": false,

@@ -59,7 +59,7 @@ function main(tabs, object) {
     filters: fh.global_filters(acre.request_params)
   };
 
-  h.extend(acre.request.params, template_base_args, current_tab.params);
+  h.extend(topscope.acre.request.params, template_base_args, current_tab.params);
 
   var script = acre.require(current_tab.app + "/" + current_tab.script);
 

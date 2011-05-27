@@ -1,0 +1,197 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var image = acre.require("lib/template/imagecomponents");  
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var _ = i18n.gettext;
+  var filter_components = acre.require("lib/filter/components.mjt");
+  var fh = acre.require("lib/filter/helpers.sjs");
+  // microdata helpers
+  var microdata = acre.require("lib/helper/microdata.sjs");
+  var itemprop = microdata.itemprop;
+
+  var propbox = acre.require("lib/propbox/propbox.mjt");
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="topic.mf.css" />
+</acre:block>
+
+<acre:block def="title()">
+  ${_('Topic')} - ${i18n.display_name(c.object)}
+</acre:block>
+
+<acre:block def="nav_flags()">
+  ${_("Topic")}
+</acre:block>
+
+<acre:block def="nav_utilities()">
+  <acre:block if="c.object">
+    <li>
+      <a href="${h.wiki_url('discuss', c.object.mid)}" class="icon-link">
+        <span class="discuss-icon">${_('Discuss Topic')}</span>
+      </a>
+    </li>
+    <li>
+      <a href="${h.wiki_url('discuss', c.object.mid)}" class="icon-link">
+        <span class="flag-icon">${_('Flag Topic')}</span>
+      </a>
+    </li>
+  </acre:block>
+</acre:block>
+
+<acre:block def="page_content()">
+  <div class="column nav">
+    <div class="module">
+      <h2 class="module-title">
+        <a href="javascript:void(0);" class="trigger">Collapse column</a>
+        <span>Filter this data</span>
+      </h2>
+      <div class="module-section" acre:if="c.prop_counts">
+        <acre:script>
+          c.filters.view = "";
+          var hide_counts = c.filters.as_of_time;
+        </acre:script>
+        ${filter_components.prop_counts_filter(c.id, c.filters, c.prop_counts, hide_counts)}
+      </div>
+      <div class="module-section">
+        ${filter_components.as_of_time_filter(c.id, c.filters)}
+      </div>
+    </div>
+    <p class="keyboard-shortcuts module">
+      <a href="javascript:void(0);" rel="#overlay">${_("Keyboard shortcuts available")}</a>
+    </p>
+  </div>
+
+  <div class="column data" id="topic-data">
+    <div class="toolbar clear">
+      <ul class="">
+        <li>
+          <a href="#" class="toolbar-trigger icon-link">
+            <span class="add-icon">${_("Add Type")}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="add-type toolbar-pane">
+      <div class="column">
+        <h3 class="toolbar-pane-title">${_("Add a new Type")}</h3>
+        <form action="" method="post" name="add-type-form" class="add-type">
+          <input type="" class="text-input" value="" placeholder="${_('Start typing for suggestions...')}" name="" />
+        </form>
+        <h3 class="toolbar-pane-title">${_("Current Types")}:</h3>
+        <ul class="multi-column">
+          <acre:script>
+            var types = c.object.type.slice().sort(function(a,b) {
+              return i18n.display_name(b).toLowerCase() < i18n.display_name(a).toLowerCase();
+            });
+            var filters = c.filters;
+            ["domain", "type", "property"].forEach(function(k) {
+              filters = fh.remove_filter(filters, k);
+            });                                                        
+          </acre:script>
+          <li acre:for="i, type in types" trim="1">
+            <a href="${h.fb_url(c.object.id, fh.add_filter(filters, 'type', type.id))}" title="${type.id}">${i18n.display_name(type)}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+   
+    ${propbox.topicbox(c.topic, i18n.lang)}
+
+  </div>
+  <div class="modal" style="display:none" id="overlay">
+    <div class="modal-inner">
+      <h1 class="modal-title">${_("Keyboard Shortcuts")}</h1>
+      <div class="modal-content clear">
+        <div class="column">
+          <h2 class="modal-sub-title">${_("Navigation")}</h2>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("j")}</dt>
+            <dd class="key-desc">${_("next item")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("k")}</dt>
+            <dd class="key-desc">${_("previous item")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("p")}</dt>
+            <dd class="key-desc">${_("next Property")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("P")}</dt>
+            <dd class="key-desc">${_("previous Property")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("t")}</dt>
+            <dd class="key-desc">${_("next Type")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("T")}</dt>
+            <dd class="key-desc">${_("previous Type")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("d")}</dt>
+            <dd class="key-desc">${_("next Domain")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("D")}</dt>
+            <dd class="key-desc">${_("previous Domain")}</dd>
+          </dl>
+        </div>
+        <div class="column middle">
+          <h2 class="modal-sub-title">Editing</h2>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("a")}</dt>
+            <dd class="key-desc">${_("add new value")}</dd>
+          </dl>
+          <dl class="key-map">
+            <dt class="key-symbol">${_("e")}</dt>
+            <dd class="key-desc">${_("edit value")}</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <button class="button button-cancel">Close</button>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="topic.mf.js"></script>
+</acre:block>
+
+<acre:block def="keyboard_shorcuts()">
+</acre:block>

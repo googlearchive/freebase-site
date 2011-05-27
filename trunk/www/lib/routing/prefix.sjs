@@ -137,50 +137,50 @@ var rules = [
   //
   // Redirects for old object views
   //
-  {prefix:"/view/schema",             url:"", params:{schema:""}, redirect:301},
-  {prefix:"/tools/schema",            url:"", params:{schema:""}, redirect:301},
-  {prefix:"/type/schema",             url:"", params:{schema:""}, redirect: 301},
+  {prefix:"/view/schema/",            url:"/", params:{schema:""}, redirect:301},
+  {prefix:"/tools/schema/",           url:"/", params:{schema:""}, redirect:301},
+  {prefix:"/type/schema/",            url:"/", params:{schema:""}, redirect: 301},
   
-  {prefix:"/tools/explore",           url:"", params:{inspect:""}, redirect:301},
-  {prefix:"/tools/explore2",          url:"", params:{inspect:""}, redirect:301},
-  {prefix:"/inspect",                 url:"", params:{inspect:""}, redirect:301},
+  {prefix:"/tools/explore/",          url:"/", params:{inspect:""}, redirect:301},
+  {prefix:"/tools/explore2/",         url:"/", params:{inspect:""}, redirect:301},
+  {prefix:"/inspect/",                url:"/", params:{inspect:""}, redirect:301},
   
-  {prefix:"/view/history",            url:"", params:{history:""}, redirect:301},
-  {prefix:"/history/user",            url:"", params:{history:""}, redirect:301},
-  {prefix:"/history/topic",           url:"", params:{history:""}, redirect:301},
-  {prefix:"/history/view",            url:"", params:{history:""}, redirect:301},
+  {prefix:"/view/history/",           url:"/", params:{history:""}, redirect:301},
+  {prefix:"/history/user/",           url:"/", params:{history:""}, redirect:301},
+  {prefix:"/history/topic/",          url:"/", params:{history:""}, redirect:301},
+  {prefix:"/history/view/",           url:"/", params:{history:""}, redirect:301},
   
-  {prefix:"/user/domains",            url:"", params:{domains:""}, redirect:301},
-  {prefix:"/view/userdomains",        url:"", params:{domains:""}, redirect:301},
+  {prefix:"/user/domains/",           url:"/", params:{domains:""}, redirect:301},
+  {prefix:"/view/userdomains/",       url:"/", params:{domains:""}, redirect:301},
   
-  {prefix:"/apps/app",                url:"", redirect:301},
-  {prefix:"/apps",                    url:"", redirect:301},
+  {prefix:"/apps/app/",               url:"/", redirect:301},
+  {prefix:"/apps/",                   url:"/", redirect:301},
   
-  {prefix:"/helptopic",               url:"", redirect:301},
+  {prefix:"/helptopic/",              url:"/", redirect:301},
   
-  {prefix:"/discuss/threads",         url:"", redirect:301},
-  {prefix:"/view/discuss",            url:"", redirect:301},
-  {prefix:"/user/replies",            url:"", redirect:301},
-  {prefix:"/view/mydiscuss",          url:"", redirect:301},
-  {prefix:"/user/discuss",            url:"", redirect:301},
+  {prefix:"/discuss/threads/",        url:"/", redirect:301},
+  {prefix:"/view/discuss/",           url:"/", redirect:301},
+  {prefix:"/user/replies/",           url:"/", redirect:301},
+  {prefix:"/view/mydiscuss/",         url:"/", redirect:301},
+  {prefix:"/user/discuss/",           url:"/", redirect:301},
   
-  {prefix:"/import/list",             url:"", redirect:301},
-  {prefix:"/importer/list",           url:"", redirect:301},
+  {prefix:"/import/list/",            url:"/", redirect:301},
+  {prefix:"/importer/list/",          url:"/", redirect:301},
 
-  {prefix:"/edit/topic",              url:"", redirect:301},
+  {prefix:"/edit/topic/",             url:"/", redirect:301},
 
-  {prefix:"/view/filter",             url:"", redirect:301},
-  {prefix:"/view/domain",             url:"", redirect:301},
-  {prefix:"/view/image",              url:"", redirect:301},
-  {prefix:"/view/document",           url:"", redirect:301},
-  {prefix:"/view/usergroup",          url:"", redirect:301},
-  {prefix:"/view/fb",                 url:"", redirect:301},
-  {prefix:"/view/query",              url:"", redirect:301},
-  {prefix:"/view/api/metaweb/view",   url:"", redirect:301},
-  {prefix:"/view/guid/filter",        url:"", redirect:301},
-  {prefix:"/view/help",               url:"", redirect:301},
-  {prefix:"/view",                    url:"", redirect:301},
-  {prefix:"/iv/fb",                   url:"", redirect:301}
+  {prefix:"/view/filter/",            url:"/", redirect:301},
+  {prefix:"/view/domain/",            url:"/", redirect:301},
+  {prefix:"/view/image/",             url:"/", redirect:301},
+  {prefix:"/view/document/",          url:"/", redirect:301},
+  {prefix:"/view/usergroup/",         url:"/", redirect:301},
+  {prefix:"/view/fb/",                url:"/", redirect:301},
+  {prefix:"/view/query/",             url:"/", redirect:301},
+  {prefix:"/view/api/metaweb/view/",  url:"/", redirect:301},
+  {prefix:"/view/guid/filter/",       url:"/", redirect:301},
+  {prefix:"/view/help/",              url:"/", redirect:301},
+  {prefix:"/view/",                   url:"/", redirect:301},
+  {prefix:"/iv/fb/",                  url:"/", redirect:301}
 ];
 
 

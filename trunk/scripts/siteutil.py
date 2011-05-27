@@ -1193,7 +1193,7 @@ class Context():
     return True
 
 
-  def googlecode_login(self, auto_reuse_username = False):
+  def googlecode_login(self):
 
     if self.googlecode_username and self.googlecode_password:
       return True
@@ -1204,9 +1204,11 @@ class Context():
     try:
       #USERNAME
       stored_username = self.retrieve_data(site='googlecode', key='username')
+      if self.options.user:
+          stored_username = self.options.user
       entered_username = None
 
-      if not (stored_username and auto_reuse_username == True):
+      if not stored_username:
           entered_username = raw_input("GoogleCode Username (%s): " % stored_username)
 
       if not entered_username and stored_username:
@@ -1351,11 +1353,15 @@ class Acre:
 
     return r, result
       
-  def deploy(self):
+  def deploy(self, target = None):
       
+      c = self.context
+
       os.chdir(self._acre_dir)
 
-      cmd = ['./acre', 'appengine-deploy']
+      config_dir = os.path.join(c.options.site_dir, 'appengine-config')
+
+      cmd = ['./acre', '-c', target, '-d', config_dir, 'appengine-deploy']
       self.context.run_cmd(cmd, interactive=True)
       return True
 
@@ -1382,6 +1388,7 @@ class Acre:
           #wait a bit for acre to start
           time.sleep(5)
           #and then keep trying to hit it until we get a valid response
+
           while not self.is_running():
               c.log('Still waiting for acre to start...')
           c.log('Acre started succesfully')
@@ -1464,33 +1471,36 @@ class Acre:
 
     
 
-  def read_config(self):
+  def read_config(self, war=False):
     '''
     Reads the acre project.local.conf and returns its property/value pairs as a dictionary
     '''
 
     c = self.context
-    filename = os.path.join(self._acre_dir, 'config', 'project.local.conf')
+    war_path = 'webapp'
+    if war:
+        war_path = '_build/war'
+    filename = os.path.join(self._acre_dir, war_path, 'META-INF', 'acre.properties')
     contents = None
     config = {}
 
     try:
       fh = open(filename, 'r')
+      contents = fh.readlines()
     except:
       return c.error('Cannot open file %s for reading' % filename)
     else:
-      contents = fh.read()
       fh.close()
 
     if not len(contents):
-      return c.error('File %s has no contents' % filename)
+        return self.c.error('Could not read %s' % filename)
 
-    for line in contents.split('\n'):
+    for line in contents:
       if len(line) <= 1 or line.startswith('#'):
         continue
 
+      line = line.strip()
       (key, value) = line.split('=')
-      value = value.strip('"')
       config[key] = value
 
     return config
@@ -1590,9 +1600,10 @@ class Acre:
       return c.error('Failed to parse the routing table')
 
     apps = set()
-    for rule in routing_table.get('prefix'):
-        if rule.get('app') and ACRE_ID_SVN_SUFFIX in rule.get('app'):
-            app = AppFactory(c).from_path(rule['app'])
+
+    for label, app_id in routing_table.get('apps').iteritems():
+        if ACRE_ID_SVN_SUFFIX in app_id:
+            app = AppFactory(c).from_path(app_id)
             apps.add(app)
 
             lib_dependency = app.lib_dependency()
@@ -1602,14 +1613,14 @@ class Acre:
     return apps
 
 
-  def is_running(self):
+  def is_running(self, war=False):
 
     c = self.context
 
     if not self.acre_dir():
       return c.error("You have not specified an acre directory with --acre_dir and a running acre instance could not be found")
 
-    acre_url = self.url()
+    acre_url = self.url(war)
     if not acre_url:
         return False
 
@@ -1624,26 +1635,12 @@ class Acre:
     return response
 
 
-  def url(self):
+  def url(self, war=False):
     if self.host_url:
       return self.host_url
 
-    if self._acre_process:
-      self.host_url = "devel.sandbox-freebase.com:%s" % self._standard_port
-    #read the acre configuration and try to figure out the hostname
-    else:
-      #this is an acre host and port
-      #e.g. myhostname.sfo:8113
-      #this must be a freebaseapps-style url so that individual app versions can be addressed as
-      #http://<version>.<app>.dev.<acre_host>:<acre_port>
-      acre_config = self.read_config()
-      if not acre_config:
-        return False
-
-      ak = acre_config.keys()
-
-      self.host_url = "devel.sandbox-freebase.com:%s" % acre_config['ACRE_FREEBASE_SITE_ADDR_PORT']
-
+    acre_config = self.read_config(war)
+    self.host_url = "devel.%s:%s" % (acre_config.get('ACRE_METAWEB_BASE_ADDR'), self._standard_port)
 
     return self.host_url
 

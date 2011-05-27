@@ -1,0 +1,119 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var image = acre.require("lib/template/imagecomponents");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+</acre:script>
+
+<acre:block def="head()">
+</acre:block>
+
+<acre:block def="breadcrumb()">
+  <div class="page-header clear">
+    <div class="breadcrumb clear">
+      <ol>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="#">${_("User")}</a>
+          </span>
+        </li>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-item-inner">
+            <a href="${h.fb_url('/')}">${i18n.display_name(c.object)}</a>
+          </span>
+        </li>
+        <li if="c.domain" class="breadcrumb-item last">
+          <span class="breadcrumb-item-inner">
+            <a href="#">${_("Domains")}</a>
+          </span>
+        </li>
+      </ol>
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="page_content()">
+  
+  <!!-- Domains user is an admin of -->
+  <acre:block if="c.domains.owned && c.domains.owned.length">
+    <h2 class="table-title">${h.template_sprintf(_("%s owns %s domains"), i18n.display_name(c.object), i18n_c.number(c.domains.owned.length))}</h2>
+    <table cellspacing="0" class="table table-sortable">
+      <thead>
+        <tr>
+          <th class="column-header first {sorter: 'ignoreCase'}" scope="column"><span class="sort-icon">${_("Name")}</span></th>
+          <th class="column-header {sorter: 'datetime'}" scope="column"><span class="sort-icon">${_("Since")}</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr acre:for="domain in c.domains.owned">
+          <th class="row-header odd first">
+            <a href="${h.fb_url(domain.id)}">${i18n.display_name(domain)}</a>
+          </th>
+          <td>
+            ${i18n_c.datetime(domain['/type/domain/owners']['member']['link']['timestamp'], [["class","published"],["data-format","medium"]])}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </acre:block>
+
+  <!!-- Domains user is watching -->
+  <acre:block if="c.domains.watched && c.domains.watched['/freebase/user_profile/favorite_domains'].length">
+    <h2 class="table-title">${h.template_sprintf(_("%s is watching %s domains"), i18n.display_name(c.object), i18n_c.number(c.domains.watched['/freebase/user_profile/favorite_domains'].length))}</h2>
+    <table cellspacing="0" class="table table-sortable">
+      <thead>
+        <tr>
+          <th class="column-header first {sorter: 'ignoreCase'}" scope="column"><span class="sort-icon">${_("Name")}</span></th>
+          <th class="column-header {sorter: 'datetime'}" scope="column"><span class="sort-icon">${_("Since")}</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr  acre:for="domain in c.domains.watched['/freebase/user_profile/favorite_domains']">
+          <th class="row-header odd first">
+            <a href="${h.fb_url(domain.id)}">${i18n.display_name(domain)}</a>
+          </th>
+          <td>
+            ${i18n_c.datetime(domain['link']['timestamp'], [["class","published"],["data-format","medium"]])}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </acre:block>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+</acre:block>

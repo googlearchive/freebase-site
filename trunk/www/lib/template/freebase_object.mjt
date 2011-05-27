@@ -90,7 +90,7 @@
         <ol>
           <li class="breadcrumb-item">
             <span class="breadcrumb-item-inner">
-              <a href="${h.fb_url('/home')}">${_("Home")}</a>
+              <a href="${h.fb_url('/')}">${_("Home")}</a>
             </span>
           </li>  
           <acre:block if="c.object">

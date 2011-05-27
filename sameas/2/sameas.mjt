@@ -1,0 +1,104 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var image = acre.require("lib/template/imagecomponents");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var queries = acre.require("queries.sjs");
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="sameas.mf.css" />
+</acre:block>
+
+<acre:block def="title()">
+  ${_('On the Web')} - ${i18n.display_name(c.object)}
+</acre:block>
+
+<acre:block def="nav_utilities()">
+  <li>
+    <acre:script>
+      var params = {q:JSON.stringify(queries.weblinks_mql(c.object.id)), autorun:true, extended:1};
+    </acre:script>
+    <a href="${h.fb_url('/queryeditor', params)}" class="icon-link"><span class="query-icon">${_('Build Query')}</span></a>
+  </li>
+</acre:block>
+
+<acre:block def="page_content()">
+  <acre:block for="category in c.categories">
+    <h1 class="table-title">
+      <acre:block if="category.id === '_NO_CATEGORY'">
+        ${_("Uncategorized")}
+      </acre:block>
+      <acre:block else="">
+      ${i18n.display_name(category)}
+      </acre:block>
+      ( ${i18n_c.number(category.weblinks.length)} )
+    </h1>
+    <table cellspacing="0" class="table table-sortable">
+      <thead>
+        <th class="column-header first column-header-asc" scope="column"><span class="sort-icon">${_("Authority")}</span></th>
+        <th class="column-header" scope="column"><span class="sort-icon">${_("Namespace")}</span></th>
+        <th class="column-header" scope="column"><span class="sort-icon">${_("Key")}</span></th>
+        <th class="column-header" scope="column"><span class="sort-icon">${_("URL")}</span></th>
+      </thead>
+      <tbody>
+        <tr acre:for="weblink in category.weblinks">
+          <th class="row-header odd">
+            <acre:block if="weblink.authority">
+            <span class="authority a${weblink.authority.id.replace(/\//g, '-')}">
+              <a href="${h.fb_url(weblink.authority.id)}">
+                ${i18n.display_name(weblink.authority)}
+              </a>  
+            </span>
+            </acre:block>
+            <acre:block else="">
+              -
+            </acre:block>
+          </th>
+          <td><a href="${h.fb_url(weblink.ns)}">${weblink.ns}</a></td>
+          <td class="odd">${weblink.key}</td>
+          <td><a href="${weblink.url}">$weblink.url</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </acre:block>
+ 
+</acre:block>
+
+
+<acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+</acre:block>

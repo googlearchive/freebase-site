@@ -59,7 +59,7 @@ test("urlfetch_success", function() {
 
 test("urlfetch_redirects", function() {
   // Make sure that we are following redirects on async urlfetchs
-  var redirect_url = acre.request.app_url + "/lib/promise/test/home_redirector";
+  var redirect_url = acre.request.app_url + "/test_lib_promise/home_redirector";
   urlfetch(redirect_url)
     .then(function(result) {
       ok(result.body, "Make sure that we returned a result");

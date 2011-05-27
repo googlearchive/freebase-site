@@ -58,7 +58,7 @@ function route(apps, rules, scope) {
       router.add(rule);
     }
 
-    if (dump) {
+    if (dump && "dump" in router) {
       rules_dump[name] = router.dump();
     }
     else {

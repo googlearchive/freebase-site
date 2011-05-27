@@ -59,10 +59,10 @@ function main(tabs, object) {
     filters: fh.global_filters(acre.request_params)
   };
 
-  h.extend(acre.request.params, template_base_args);
+  h.extend(acre.request.params, template_base_args, current_tab.params);
 
   var script = acre.require(current_tab.app + "/" + current_tab.script);
-  
+
   // set the request script to be our tab script since we're not using acre.route
   topscope.acre.request.script = script.acre.current_script;
 

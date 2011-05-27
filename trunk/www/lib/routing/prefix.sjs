@@ -35,15 +35,11 @@ var exports = {
 var h = acre.require("helper/helpers_util.sjs");
 var rh = acre.require("routing/helpers");
 
-
-
 var rules = [
   // Urls for user-facing apps
   {prefix:"/favicon.ico",        app:"lib", script: "template/favicon.ico"},
-  {prefix:"/",                   app:"homepage", script: "index"},
   {prefix:"/index",              url:"/", redirect: 301},
-  {prefix:"/home",               app:"homepage", script: "home"},
-  {prefix:"/homepage",           app:"homepage"},
+  {prefix:"/homepage",           app:"homepage", script:"index.controller"},
   {prefix:"/schema",             app:"schema"},
   {prefix:"/apps",               app:"apps"},
   {prefix:"/appeditor",          app:"appeditor"},

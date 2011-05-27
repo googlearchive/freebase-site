@@ -48,8 +48,9 @@
   <link rel="canonical" href="http://www.freebase.com" />
   
   <script>
-    if (document.cookie.indexOf("${h.account_cookie_name()}") >= 0) {
-      window.location.href= "/home";
+    var m = /${h.account_cookie_name()}\=([^;\s]*)/.exec(document.cookie);
+    if (m) {
+      window.location.href= "/user/" + m[1];
     }
   </script>
   <link rel="stylesheet" type="text/css" href="homepage.mf.css" />

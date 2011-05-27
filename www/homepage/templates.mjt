@@ -110,20 +110,20 @@
 
     <ul id="domain-explorer-tabs" data-index="${index || 0}">
       <li acre:if="user" class="domain-explorer-tab">
-        <a href="${h.fb_url('/homepage/loadpanel', [['user', user.id]])}"
-		   class="domain-explorer-tab-link">
+        <a href="${h.ajax_url('loadpanel.controller', [['user', user.id]])}"
+        class="domain-explorer-tab-link">
          <span>${_("Your Data")}</span>
         </a>
       </li>
       <li class="domain-explorer-tab">
-        <a href="${h.fb_url('/homepage/loadpanel', [['domains', 'featured']])}"
-		   class="domain-explorer-tab-link">
+        <a href="${h.ajax_url('loadpanel.controller', [['domains', 'featured']])}"
+        class="domain-explorer-tab-link">
          <span>${_("Featured Data")}</span>
         </a>
       </li>
       <li acre:for="category in categories" class="domain-explorer-tab">
-        <a href="${h.fb_url('/homepage/loadpanel', [['category', category.id]])}"
-		   class="domain-explorer-tab-link">
+        <a href="${h.ajax_url('loadpanel.controller', [['category', category.id]])}"
+        class="domain-explorer-tab-link">
          <span>${category.name}</span>
         </a>
       </li>
@@ -134,7 +134,7 @@
         <ul id="all-domains-nav" style="display: none;">
           <acre:block acre:for="letter in h.lowercase_alphabet()">
             <li class="toc-letter">
-	          <a href="${h.fb_url('/homepage/loadpanel', [['domains', letter]])}">
+              <a href="${h.ajax_url('loadpanel.controller', [['domains', letter]])}">
                 ${letter.toUpperCase()}
               </a>
             </li>

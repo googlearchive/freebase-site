@@ -29,49 +29,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("helper/helpers_util.sjs");
-
-function route(apps, rules, scope) {
-
-  var dump = acre.request.base_path === "/_fs_routing";
-
-  var rules_dump = {};
-
-  var routers = ["host", "home", "prefix", "object"];
-  for (var i=0,l=routers.length; i<l; i++) {
-    var name = routers[i];
-    var router_file = acre.require("routing/" + name);
-    var router_class;
-    if (router_file.router) {
-      router_class = router_file.router;
-    }
-    else if (router_file.exports && typeof router_file.exports === "object" && router_file.exports.router) {
-      router_class = router_file.exports.router;
-    }
-    else {
-      throw "A router needs to be defined in " + name;
-    }
-    var router = new router_class(apps);
-    var rule = rules[name];
-    if (rule) {
-      // to over-ride or add to existing rules defined in the specific router
-      router.add(rule);
-    }
-
-    if (dump) {
-      rules_dump[name] = router.dump();
-    }
-    else {
-      router.route(scope.acre.request);
-    }
-  }
-
-  if (dump) {
-    scope.acre.write(JSON.stringify(rules_dump, null, 2));
-    scope.acre.exit();
-  }
-  else {
-    // TODO: not found
-    acre.route("error/error.mjt");
-  }
+var exports = {
+  "router": HomeRouter
 };
+
+/**
+ * Deal with the special case of routing "/"
+ *
+ *   Note: to debug the homepage, use the /homepage prefix rule
+ *         (e.g., /homepage?acre.console=1)
+ *
+ */
+function HomeRouter(app_labels) {
+  var home = "home";
+  
+  var route = this.route = function(req) {
+    
+    // This only applies to "/"
+    if (req.path_info !== "/") {
+      return false;
+    }
+    
+    // If there's a querystring, let object router handle it (e.g., /?inspect)
+    if (req.query_string.length) {
+      return false;
+    }
+
+    // otherwise run the logged-out homepage, which will redirect to user page if logged-in
+    acre.route(app_labels["homepage"] + "/index.controller");
+    acre.exit();
+    
+  };
+  
+};
+

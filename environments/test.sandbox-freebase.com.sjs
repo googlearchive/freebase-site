@@ -26,6 +26,7 @@ var labels = {
   "tmt":        "//tmt"
 };
 
+// environment-specific overrides to the default routing rules in lib/routing
 var rules = {};
 
 acre.require(labels.lib + "/routing/router.sjs").route(labels, rules, this);

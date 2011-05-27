@@ -26,6 +26,8 @@ var labels = {
   "tmt":        "//tmt"
 };
 
+
+// environment-specific overrides to the default routing rules in lib/routing
 var rules = {
 
   prefix: [

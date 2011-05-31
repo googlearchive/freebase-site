@@ -168,11 +168,12 @@ function domain(id) {
           return summary;
         }));
 
+      // TODO: this query is removed for now. Refactor with projects
       // attach domain saved views to domain object
-      promises.push(freebase_query.featured_views_by_domain(domain.id)
-          .then(function(views) {
-            domain.featured_views = views;
-        }));
+      //promises.push(freebase_query.featured_views_by_domain(domain.id)
+      //    .then(function(views) {
+      //      domain.featured_views = views;
+      //  }));
 
       return deferred.all(promises)
         .then(function() {

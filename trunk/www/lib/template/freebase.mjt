@@ -46,7 +46,7 @@
     acre.response.status = 200;
   </acre:script>
   <!DOCTYPE html>
-  <html lang="en" dir="ltr">
+  <html lang="en" dir="ltr" class="no-js">
     <head>
       <meta charset="utf-8" />
       <title acre:if="exports.title">Freebase - ${exports.title()}</title>
@@ -70,6 +70,7 @@
       <acre:block if="h.is_production()">
         <script>${acre.include("googleanalytics.js")}</script>
       </acre:block>
+      <script src="template/modernizr-1.7.min.js"></script>
 
       <!-- acre variables useful for client-side javascript -->
       ${acre_javascript_vars(exports)}

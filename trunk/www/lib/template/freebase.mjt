@@ -52,12 +52,16 @@
       <title acre:if="exports.title">Freebase - ${exports.title()}</title>
       <title acre:else="">Freebase</title>
 
-      <!-- freebase suggest -->
+      <!!-- freebase suggest -->
       <link rel="stylesheet" type="text/css" href="${h.lib_base_url('suggest')}/suggest.min.css" />
+      <!!--
+          Modernizr must be served from document head. Should be highly cached 
+      -->
+      <script src="template/modernizr-1.7.min.js"></script>
 
-      <!--
-           Global freebase css you want highly cached across multiple pages.
-           For page specific css, define in exports.head
+      <!!--
+         Global freebase css you want highly cached across multiple pages.
+         For page specific css, define in exports.head
         -->
       <acre:block if="exports.freebase_css">
         ${exports.freebase_css()}
@@ -70,7 +74,6 @@
       <acre:block if="h.is_production()">
         <script>${acre.include("googleanalytics.js")}</script>
       </acre:block>
-      <script src="template/modernizr-1.7.min.js"></script>
 
       <!-- acre variables useful for client-side javascript -->
       ${acre_javascript_vars(exports)}

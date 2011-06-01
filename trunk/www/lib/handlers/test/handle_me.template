@@ -8,7 +8,7 @@
 
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="handlers/test/handle_me.css"/>
-  <script src="handlers/test/handle_me.mf.js"></script>
+  <script class="test" src="handlers/test/handle_me.mf.js"></script>
 </acre:block>
 
 <acre:block def="content_body()">

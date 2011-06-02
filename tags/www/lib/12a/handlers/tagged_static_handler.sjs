@@ -56,7 +56,7 @@ var generateLastModifiedDate = function (d) {
     var minutes = padz(d.getUTCMinutes());
     var seconds = padz(d.getUTCSeconds());
 
-    return dayname+', '+day+' '+monthname+' '+year+' '+hour+':'+ minutes +':'+ seconds+' UTC';
+    return dayname+', '+day+' '+monthname+' '+year+' '+hour+':'+ minutes +':'+ seconds+' GMT';
 };
 
 

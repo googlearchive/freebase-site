@@ -3,27 +3,28 @@ var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 
 var labels = {
-  "lib":        "//lib" + codebase,
-  "topic":      "//topic" + codebase,
-  "schema":     "//schema" + codebase,
+  "account":    "//account" + codebase,
   "activity":   "//activity" + codebase,
-  "triples":    "//triples" + codebase,
-  "group":      "//group" + codebase,
-  "sameas":     "//sameas" + codebase,
-  "homepage":   "//homepage" + codebase,
-  "data":       "//data" + codebase,
-  "apps":       "//apps" + codebase,
+  "admin":      "//admin" + codebase,
   "appeditor":  "//appeditor" + codebase,
+  "apps":       "//apps" + codebase,
+  "create":     "//create" + codebase,
+  "cubed":      "//cubed",
+  "data":       "//data" + codebase,
   "docs":       "//devdocs" + codebase,
+  "group":      "//group" + codebase,
+  "homepage":   "//homepage" + codebase,
+  "labs":       "//labs",
+  "lib":        "//lib" + codebase,
+  "parallax":   "//parallax",
   "policies":   "//policies" + codebase,
   "query":      "//query" + codebase,
+  "sameas":     "//sameas" + codebase,
   "sample":     "//sample" + codebase,
-  "account":    "//account" + codebase,
-  "admin":      "//admin" + codebase,
-  "cubed":      "//cubed",
-  "parallax":   "//parallax",
-  "labs":       "//labs",
-  "tmt":        "//tmt"
+  "schema":     "//schema" + codebase,
+  "tmt":        "//tmt",
+  "topic":      "//topic" + codebase,
+  "triples":    "//triples" + codebase
 };
 
 

@@ -179,17 +179,6 @@
             <strong><abbr title="${_('ID')}">${_("id")}</abbr></strong>:
             <span acre:attrs="itemprop('/type/object/id')">${c.object.id}</span>
           </span>
-          <!-- Show top-ranked notable type -->
-          <span acre:if="c.object.notable_type && c.object.notable_type !== '/type/type'" class="key">
-            <strong>${_('notable type')}</strong>:
-            <a acre:attrs="itemprop('/common/topic/notable_types')"
-               href="${h.fb_url(true, c.object.notable_type)}">${c.object.notable_type}</a>
-          </span>
-          <span acre:if="c.object.notable_for && c.object.notable_for !== c.object.notable_type" class="key">
-            <strong>${_('notable for')}</strong>:
-            <a acre:attrs="itemprop('/common/topic/notable_for')"
-               href="${h.fb_url(true, c.object.notable_for)}">${c.object.notable_for}</a>
-          </span>
           <acre:block if="that_exports.nav_keys">
             ${that_exports.nav_keys()}
           </acre:block>
@@ -215,19 +204,17 @@
             ${i18n_c.datetime(c.object.timestamp, attrs)}
           </span>
         </div>
-        <acre:script>
-          var [blurb, blob] = i18n.display_article(c.object, ["blurb", "blob"]);
-        </acre:script>
-        <div id="description" class="clear" acre:if="blurb && blob">
+        <div id="description" class="clear">
           <div id="image">
             <acre:block if="c.object.image && c.object.image.length">
               ${image.image_stack(c.object.image)}
             </acre:block>
           </div>
           <!-- blurb should be sentence-level truncation at ~50 words -->
-          <p class="blurb" itemprop="desc">${blurb}</p>
-          <div class="blob" itemprop="desc">${blob}</div>
-          <a href="javascript:void(0);" class="blurb-trigger">${_('more')}</a>
+          <acre:block if="c.blurb">
+            <p class="blurb" itemprop="desc">${c.blurb}</p>
+            <!!--<a href="javascript:void(0);" class="blurb-trigger">${_('more')}</a>!!-->d
+          </acre:block>
         </div>
         <div class="nav clear">
           <ul class="nav-utilities">

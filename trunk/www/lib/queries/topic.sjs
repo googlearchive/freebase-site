@@ -125,7 +125,6 @@ function image_deep_props(lang) {
                             lang);
 };
 
-
 function get_deep_props(id, props, subprops, lang) {
   var promises = [];
   props.forEach(function(prop) {
@@ -188,7 +187,6 @@ function article_deep_props(lang) {
                             lang);
 };
 
-
 function get_address_cvt_props(id, address_props, lang) {
   return address_cvt_props(lang)
     .then(function(subprops) {
@@ -198,7 +196,6 @@ function get_address_cvt_props(id, address_props, lang) {
       return result;
     });
 };
-
 
 function address_cvt_props(lang) {
   return pq.prop_structures("/location/mailing_address/street_address",

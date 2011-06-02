@@ -68,22 +68,6 @@ function main(rule, object) {
     current_tab = tabs[0];
   }
 
-  if (current_tab) {
-    return main_tab(rule, object, current_tab);
-  }
-  else if (current_nav) {
-    return main_nav(rule, object, current_nav);
-  }
-  else {
-    throw "foo";
-  }
-};
-
-function main_tab(rule, object, current_tab) {
-  var tabs = rule.tabs;
-  var navs = rule.navs;
-  // TODO: assert tabs.length, tabs[i].app, tabs[i].script
-
   var template_base_args = {
     object: object,
     tabs: tabs,
@@ -91,45 +75,38 @@ function main_tab(rule, object, current_tab) {
     navs: navs,
     filters: fh.global_filters(acre.request_params)
   };
+  // extend promises
+  rule.promises && rule.promises.forEach(function(p) {
+    var d = acre.require(p.app + "/" + p.script)[p.promise](object);
+    template_base_args[p.key] = d;
+  });
 
-  var script = acre.require(current_tab.app + "/" + current_tab.script);
+  var script, params;
+  if (current_tab) {
+    template_base_args.current_tab = current_tab;
+    script = acre.require(current_tab.app + "/" + current_tab.script);
+    params = current_tab.params;
+  }
+  else if (current_nav) {
+    template_base_args.current_nav = current_nav;
+    script = acre.require(current_nav.app + "/" + current_nav.script);
+    params = current_nav.params;
+  }
+  else {
+    throw "foo";
+  }
 
   // Manually overlay tab context onto acre.request since we're not using acre.route
-  h.extend(topscope.acre.request.params, template_base_args, current_tab.params);
+  h.extend(topscope.acre.request.params, template_base_args, params);
   topscope.acre.request.script = script.acre.current_script;
 
   var spec = script.SPEC;
-  spec.template_base = "lib/template/freebase_object.mjt";
+  if (current_tab) {
+    spec.template_base = "lib/template/freebase_object.mjt";
+  }
   spec.template_base_args = template_base_args;
 
   // TODO (culbertson): try/catch and render error tab content on failure
   return controller.run_spec(spec, script);
 };
 
-
-function main_nav(rule, object, current_nav) {
-  var tabs = rule.tabs;
-  var navs = rule.navs;
-  // TODO: assert tabs.length, tabs[i].app, tabs[i].script
-
-  var template_base_args = {
-    object: object,
-    tabs: tabs,
-    current_nav: current_nav,
-    navs: navs,
-    filters: fh.global_filters(acre.request_params)
-  };
-
-  var script = acre.require(current_nav.app + "/" + current_nav.script);
-
-  // Manually overlay tab context onto acre.request since we're not using acre.route
-  h.extend(topscope.acre.request.params, template_base_args, current_nav.params);
-  topscope.acre.request.script = script.acre.current_script;
-
-  var spec = script.SPEC;
-  spec.template_base = "lib/template/freebase_object.mjt";
-  spec.template_base_args = template_base_args;
-
-  // TODO (culbertson): try/catch and render error tab content on failure
-  return controller.run_spec(spec, script);
-};

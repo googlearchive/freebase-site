@@ -56,6 +56,24 @@
   ${_("Topic")}
 </acre:block>
 
+<acre:block def="nav_keys()" acre:if="c.notable_types">
+  <acre:script>
+    var notable_type = h.first_element(c.notable_types.types);
+    var notable_for = h.first_element(c.notable_types.notable_for);
+  </acre:script>
+  <!-- Show top-ranked notable type -->
+  <span acre:if="notable_type" class="key">
+    <strong>${_('notable type')}</strong>:
+    <a acre:attrs="itemprop('/common/topic/notable_types')"
+       href="${h.fb_url(true, notable_type.t)}">${notable_type.t}</a>
+  </span>
+  <span acre:if="notable_for" class="key">
+    <strong>${_('notable for')}</strong>:
+    <a acre:attrs="itemprop('/common/topic/notable_for')"
+       href="${h.fb_url(true, notable_for.o)}">${notable_for.o}</a>
+  </span>
+</acre:block>
+
 <acre:block def="page_content()">
   <div class="column nav">
     <div class="module">

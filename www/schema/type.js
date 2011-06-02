@@ -105,11 +105,6 @@
       }
     },
 
-    init_edit: function() {
-      // show all edit controls
-      $(".edit").show();
-    },
-
     type_settings: function(e, type_id) {
       var trigger = $(this);
       fb.get_script(fb.h.static_url("type-edit.mf.js"), function() {
@@ -272,12 +267,6 @@
       return false;
     }
   };
-
-  $(window).bind("fb.permission.has_permission", function(e, has_permission) {
-    if (has_permission) {
-      t.init_edit();
-    }
-  });
 
   $(t.init);
 

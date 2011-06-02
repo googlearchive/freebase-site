@@ -63,4 +63,11 @@
    // only check permission if user is signedin
    $(window).bind("fb.user.signedin", p.init);
 
+   // enable/show edit controls if user has permission
+   $(window).bind("fb.permission.has_permission", function(e, has_permission) {
+     if (has_permission) {
+       $(".edit").show();
+     }
+   });
+
 })(jQuery, window.freebase);

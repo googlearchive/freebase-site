@@ -44,7 +44,6 @@ function main(rule, object) {
 
   // look in tabs
   if (tabs.length) {
-    current_tab = tabs[0];
     for (i=0,l=tabs.length; i<l; i++) {
       var t = tabs[i];
       if (t.key in acre.request.params) {
@@ -58,11 +57,15 @@ function main(rule, object) {
     // look in navs
     for (i=0,l=navs.length; i<l; i++) {
       var n = navs[i];
-      if (n.key in acre.request.params) {
+      if (n.key && n.key in acre.request.params) {
         current_nav = n;
         break;
       }
     }
+  }
+
+  if (!(current_tab || current_nav) && tabs.length) {
+    current_tab = tabs[0];
   }
 
   if (current_tab) {

@@ -69,9 +69,6 @@
     },
 
     init_edit: function() {
-      // show all edit controls
-      $(".edit").show();
-
       // Show the help text for Entity Types if user has admin rights
       var $type_tables = $("table.table");
       $type_tables.first().find(".table-empty-msg").addClass("active").find(".table-empty-text").slideDown();

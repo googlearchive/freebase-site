@@ -45,6 +45,7 @@ var exports = {
   "fb_url": fb_url,
   "ajax_url": ajax_url,
   "static_url": static_url,
+  "reentrant_url": reentrant_url,
   "legacy_fb_url": legacy_fb_url,
   "fb_api_url": fb_api_url,
   "wiki_url": wiki_url,

@@ -94,19 +94,6 @@
   </span>
 </acre:block>
 
-<acre:block def="nav_utilities()">
-  <li>
-    <acre:script>
-      var query = {
-        q: JSON.stringify({"id":c.object.id})
-      };
-    </acre:script>
-    <a href="${h.fb_url('/queryeditor', query)}" class="icon-link">
-     <span class="query-icon">${_('Build Query')}</span>
-    </a>
-  </li>
-</acre:block>
-
 <acre:block def="page_content()">
 
   <div class="column nav">

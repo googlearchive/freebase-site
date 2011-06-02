@@ -53,4 +53,15 @@
     $(".nicemenu").nicemenu();
   });
 
+  /**
+   * This is the onclick handler for all nav "ajax" actions.
+   * Assumes nav.href is a javascript that will be invoked with $.getScript
+   */
+  fb.nav_ajax = function(nav) {
+    $.getScript(nav.href, function() {
+      fb.nav_ajax.begin(nav);
+    });
+    return false;
+  };
+
 })(jQuery, window.freebase);

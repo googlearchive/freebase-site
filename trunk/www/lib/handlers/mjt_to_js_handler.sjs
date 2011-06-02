@@ -30,19 +30,7 @@
  */
 
 var h = acre.require("helper/helpers.sjs");
-
-var to_process = {
-  "src": {
-    "img": "static",
-    "script": "static"
-  },
-  "href": {
-    "link": "static"
-  },
-  "action": {
-    "form": "ajax"
-  }
-};
+var mjt_patch = acre.require("handlers/mjt_patch.js").mjt_patch;
 
 function compile_mjt(source, pkgid) {
   var code = [];
@@ -59,54 +47,7 @@ function compile_mjt(source, pkgid) {
 var handler = function() {
   return {
     'to_js': function(script) {
-
-      mjt.TemplateCompiler.prototype.get_attributes = function(n, attrs, mjtattrs) {
-        // if the tag was namespaced with the mjt namespace, then treat any attributes
-        //  without an explicit namespace as mjt attributes
-        var mjttag = this.mjtns_re.exec(n.nodeName);
-
-        var srcattrs = n.attributes;
-        for (var ai = 0; ai < srcattrs.length; ai++) {
-          var attr = srcattrs[ai];
-          if (!attr.specified) continue;
-
-          var aname = attr.nodeName;
-          var m = this.mjtns_re.exec(aname);
-          if (m) {
-            var mname = m[1];
-            mjtattrs[mname] = attr.nodeValue;
-            continue;
-          }
-
-          // if the tag is in the mjt: namespace, treat plain attributes as mjt namespaced
-          if (mjttag && aname.indexOf(':') == -1) {
-            if (typeof mjtattrs[aname] != 'undefined')
-            throw new Error('template compiler: ambiguous template attribute: both '
-            + aname + ' and ' + attr.nodeName + ' are specified');
-            mjtattrs[aname] = attr.nodeValue;
-            continue;
-          }
-
-          var a = {
-            name: aname
-          };
-
-          if (typeof attr.nodeValue != 'undefined')
-          a.value = attr.nodeValue;
-
-          // Here's the monkey-patch...
-          if (to_process[a.name] && to_process[a.name][n.nodeName] && /^[^/:$][^:$]*$/.test(a.value)) {
-            var kind = to_process[a.name][n.nodeName];
-            var full_path = script.scope.acre.resolve(a.value);
-            if (full_path) {
-              a.value = (kind === "ajax") ? h.ajax_url(full_path) : h.static_url(full_path);
-            }
-          }
-
-          attrs.push(a);
-        }
-      };
-
+      mjt_patch.call(this, script);
       var res = script.get_content();
       var pkgid = "//" + script.app.host + "/" + script.name;
       res.body = compile_mjt(res.body, pkgid);

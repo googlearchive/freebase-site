@@ -30,6 +30,36 @@
 */
 var hh = acre.require("handlers/helpers.sjs");
 
+var generateLastModifiedDate = function (d) {
+    function padz(n) {
+        return n > 10 ? n : '0' + n;
+    }
+
+    var MONTH_NAMES = [
+        "January", "February", "March",
+        "April", "May", "June",
+        "July", "August", "September",
+        "October", "November", "December"
+    ];
+
+    var WEEKDAY_NAMES = [
+        "Sunday", "Monday", "Tuesday",
+        "Wednesday", "Thursday", "Friday",
+        "Saturday"
+    ];
+
+    var dayname = WEEKDAY_NAMES[d.getUTCDay()].slice(0,3);
+    var day = padz(d.getUTCDate());
+    var monthname = MONTH_NAMES[d.getUTCMonth()].slice(0,3);
+    var year = d.getUTCFullYear();
+    var hour = padz(d.getUTCHours());
+    var minutes = padz(d.getUTCMinutes());
+    var seconds = padz(d.getUTCSeconds());
+
+    return dayname+', '+day+' '+monthname+' '+year+' '+hour+':'+ minutes +':'+ seconds+' UTC';
+};
+
+
 var handler = function() {
   return {
     'to_js': function(script) {
@@ -39,12 +69,14 @@ var handler = function() {
       return compiled_js.res;
     },
     'to_http_response': function(module, script) {
+      d = new Date((new Date()).getFullYear(), 0, 1, 0, 0, 0, 0);
       var max_age = 31536000;
       var expires = new Date((new Date()).getTime() + max_age * 1000);
       var headers = {
         expires: expires.toUTCString(),
         "cache-control": "public, max-age: " + max_age,
-        "content-type": script.media_type || "text/plain"
+        "content-type": script.media_type || "text/plain",
+        "last-modified" : generateLastModifiedDate(d)
       };
       return hh.to_http_response_result(module.body, headers);
     }

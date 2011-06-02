@@ -38,9 +38,19 @@ var validators = acre.require("validator/validators.sjs");
 var object_query = acre.require("queries/object.sjs");
 var freebase_object = acre.require("template/freebase_object.sjs");
 
+var DEFAULT_PROMISES = [
+  {
+    "key": "blurb",                 // the promise result will be stored in the object with this key
+    "app": "lib",                   // app containing the promise method
+    "script": "queries/object.sjs", // script containing the promise method
+    "promise": "blurb"              // promise method (passed object query result as arugment)
+  }
+];
+
 var rules = [
   {
     "type": "/freebase/apps/application",
+    "promises": h.extend(true, [], DEFAULT_PROMISES),
     "tabs": [
       {
         "name": "View",
@@ -86,6 +96,7 @@ var rules = [
   },
   {
     "type": "/type/domain",
+    "promises":  h.extend(true, [], DEFAULT_PROMISES),
     "tabs": [
       {
         "name": "Data",
@@ -123,6 +134,7 @@ var rules = [
   },
   {
     "type": "/type/type",
+    "promises":  h.extend(true, [], DEFAULT_PROMISES),
     "tabs": [
       {
         "name": "Data",
@@ -164,6 +176,7 @@ var rules = [
   },
   {
     "type": "/type/property",
+    "promises":  h.extend(true, [], DEFAULT_PROMISES),
     "tabs": [
       {
         "name": "Schema",
@@ -181,6 +194,7 @@ var rules = [
   },
   {
     "type": "/type/user",
+    "promises":  h.extend(true, [], DEFAULT_PROMISES),
     "tabs": [
       {
         "name": "Domains",
@@ -237,23 +251,11 @@ var rules = [
     "type": "/common/topic",
     "promises": [
       {
-        "name": "notable_types",
+        "key": "notable_types",
         "app": "lib",
         "script": "queries/object.sjs",
         "promise": "notable_types"
-      }/**,
-      {
-        "name": "blurb",
-        "app": "lib",
-        "script": "queries/object.sjs",
-        "promise": "blurb"
-      },
-      {
-        "name": "blob",
-        "app": "lib",
-        "script": "queries/object.sjs",
-        "promise": "blob"
-      }**/
+      }
     ],
     "tabs": [
       {
@@ -278,6 +280,7 @@ var rules = [
   },
   {
     "type": "/type/object",
+    "promises":  h.extend(true, [], DEFAULT_PROMISES),
     "tabs": [
       {
         "name": "Inspect",
@@ -303,21 +306,16 @@ function ObjectRouter(app_labels) {
       if (!route || typeof route !== 'object') {
         throw 'A routing rule must be a dict: '+JSON.stringify(route);
       }
-      route.tabs && route.tabs.forEach(function(tab) {
-        var app = app_labels[tab.app];
-        if (!app) {
-          throw 'An app label must exist for: ' + tab.app;
-        }
-        tab.app = app;
-      });
-      route.navs && route.navs.forEach(function(nav) {
-        if (nav.app) {
-          var app = app_labels[nav.app];
-          if (!app) {
-            throw 'An app label must exist for: ' + nav.app;
+      [route.tabs,route.navs, route.promises].forEach(function(list) {
+        list && list.forEach(function(item) {
+          if (item.app) {
+            var app = app_labels[item.app];
+            if (!app) {
+              throw 'An app label must exist for: ' + item.app;
+            }
+            item.app = app;
           }
-          nav.app = app;
-        }
+        });
       });
       types[route.type] = route;
       h.splice_with_key(route_list, "type", route);

@@ -51,34 +51,35 @@ function object(id, options) {
       topic.image = topic["/common/topic/image"];
       topic.article = topic["/common/topic/article"];
       topic.replaced_by = topic["/dataworld/gardening_hint/replaced_by"];
-
-      var promises = [];
-      promises.push(
-        freebase.get_static("notable_types_2", topic.guid.substring(1))
-          .then(function(r) {
-            if (r) {
-              var notable_type = h.first_element(r.types);
-              if (notable_type) {
-                topic.notable_type = notable_type.t;
-              }
-              var notable_for = h.first_element(r.notable_for);
-              if (notable_for) {
-                topic.notable_for = notable_for.o;
-              }
-              topic.notable_types = r.types;
-            }
-            return r;
-          })
-      );
-      promises.push(i18n.get_blurb(topic, {maxlength: 500}));
-      promises.push(i18n.get_blob(topic));
-      return deferred.all(promises)
-        .then(function() {
-          return topic;
-        });
+      return topic;
     });
 };
 
+/**
+ * promise to get the blurb of an object
+ */
+function blurb(o) {
+  var article = i18n.mql.result.article(o.article);
+  if (article) {
+    return i18n._get_blob.closure(article, "blurb", {maxlength: 500}, "blurb")
+      .then(function() {
+        return article.blurb;
+      });
+  }
+  else {
+    return null;
+  }
+};
+
+/**
+ * promise to get the notable_types of an object
+ */
+function notable_types(o) {
+  return freebase.get_static("notable_types_2", o.guid.substring(1))
+    .then(function(r) {
+      return r;
+    });
+};
 
 function mql(id) {
   return {

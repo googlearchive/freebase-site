@@ -52,11 +52,12 @@ var SPEC = {
   validate: function(params) {
     return [
       params.object,
-      filters.validate(params, topic_filters)
+      filters.validate(params, topic_filters),
+      params.notable_types  // promise not yet resolved
     ];
   },
 
-  run: function(object, f) {
+  run: function(object, f, notable_types) {
     var id = object.id;
     var domains = f.domains;
     if ((f.domain && !h.is_commons_id(f.domain)) ||
@@ -68,7 +69,8 @@ var SPEC = {
     var promises = {
       prop_counts: filter_queries.prop_counts(id),
       topic: topic_api.topic(id, i18n.lang, f.limit, f.as_of_time, domains),
-      object: object
+      object: object,
+      notable_types: notable_types
     };
 
     return deferred.all(promises)
@@ -108,6 +110,9 @@ var SPEC = {
             _filter_by_property(topic, f.property);
           }
         }
+
+        result.blurb = topic.description;
+        result.notable_types = result.notable_types;
 
         return result;
       });

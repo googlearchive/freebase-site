@@ -47,6 +47,7 @@
   ${_('On the Web')} - ${i18n.display_name(c.object)}
 </acre:block>
 
+<!!--
 <acre:block def="nav_utilities()">
   <li>
     <acre:script>
@@ -55,6 +56,7 @@
     <a href="${h.fb_url('/queryeditor', params)}" class="icon-link"><span class="query-icon">${_('Build Query')}</span></a>
   </li>
 </acre:block>
+!!-->
 
 <acre:block def="page_content()">
   <acre:block for="category in c.categories">

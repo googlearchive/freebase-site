@@ -84,9 +84,10 @@
 <acre:block def="nav_utilities()">
   <li class="edit">
   <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.type_settings, ['${c.type.id}'], this);">
-    <span class="edit-icon">${_('Type Settings')}</span>
+    <span class="edit-icon">${_('Type settings')}</span>
   </a>
   </li>
+<!!--
   <li>
     <a href="${schema_h.build_query_url(c.type.id)}" class="icon-link">
       <span acre:if="c.type.instance_count" class="browse-icon">${h.template_sprintf(_("Browse %s Topics"), i18n_c.number(c.type.instance_count))}</span>
@@ -96,6 +97,7 @@
   <li>
     <a href="${sh.build_query_url(c.type.id)}" class="icon-link"><span class="query-icon">${_('Build Query')}</span></a>
   </li>
+!!-->
 </acre:block>
 
 <acre:block def="nav_flags()">

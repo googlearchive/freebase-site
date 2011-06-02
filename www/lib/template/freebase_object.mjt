@@ -230,8 +230,11 @@
           <a href="javascript:void(0);" class="blurb-trigger">${_('more')}</a>
         </div>
         <div class="nav clear">
-          <ul class="nav-utilities" acre:if="that_exports.nav_utilities">
-            ${that_exports.nav_utilities()}
+          <ul class="nav-utilities">
+           <acre:block if="that_exports.nav_utilities">
+             ${that_exports.nav_utilities()}
+           </acre:block>
+           ${nav_navs()}
           </ul>
           <ul class="tab-nav">
             ${nav_tabs()}
@@ -253,7 +256,6 @@
   </acre:block>
 </acre:block>
 
-
 <acre:block def="nav_tabs()">
   <acre:script>
     var params = fh.global_filters(c.filters);
@@ -272,8 +274,41 @@
   </acre:block>
 </acre:block>
 
+<acre:block def="nav_navs()">
+  <acre:block for="nav in c.navs">
+    <acre:script>
+      var key = nav.key || nav.name.toLowerCase().replace(/\s+/g, '-');
+      var href, onclick;
+      if (nav.url) {
+        href = nav.url;
+      }
+      else if (nav.key) {
+        href = "?" + nav.key;
+      }
+      else if (nav.app && nav.ajax) {
+        href = h.reentrant_url("/ajax", nav.app, "/", nav.ajax, nav.params);
+        onclick = "return fb.nav_ajax(this);";
+      }
+      else {
+        href = "#";
+      }
 
+      //
+      // substitute ${id} with c.object.id
+      //
+      href = href.replace(/\$\{id\}|\$\%7Bid\%7D/g, c.object.id);
+    </acre:script>
+    <li acre:attrs="nav.auth ? {'class':'edit'} : {}">
+      <a href="${href}" acre:attrs="onclick ? {onclick:onclick} : {}" class="icon-link">
+        <span class="${key}-icon">${nav.name}</span>
+      </a>
+    </li>
+  </acre:block>
+</acre:block>
 
-<acre:block def="nav_tab(label, url)">
+<acre:block def="acre_javascript_vars()">
+  <script>
+    SERVER.c.id = "${c.object.id}";
+  </script>
 </acre:block>
 

@@ -69,16 +69,6 @@
   </div>
 </acre:block>
 
-<acre:block def="nav_utilities()">
-  <!--
-  <li>
-    <a href="${h.fb_url('/queryeditor', '')}" class="icon-link">
-     <span class="query-icon">${_('Edit Query')}</span>
-    </a>
-  </li>
-  -->
-</acre:block>
-
 <acre:block def="page_content()">
   <div class="section instances">
     <!!-- Type table -->

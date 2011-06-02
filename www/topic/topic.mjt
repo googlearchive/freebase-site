@@ -56,21 +56,6 @@
   ${_("Topic")}
 </acre:block>
 
-<acre:block def="nav_utilities()">
-  <acre:block if="c.object">
-    <li>
-      <a href="${h.wiki_url('discuss', c.object.mid)}" class="icon-link">
-        <span class="discuss-icon">${_('Discuss Topic')}</span>
-      </a>
-    </li>
-    <li>
-      <a href="${h.wiki_url('discuss', c.object.mid)}" class="icon-link">
-        <span class="flag-icon">${_('Flag Topic')}</span>
-      </a>
-    </li>
-  </acre:block>
-</acre:block>
-
 <acre:block def="page_content()">
   <div class="column nav">
     <div class="module">

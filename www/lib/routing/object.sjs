@@ -33,59 +33,71 @@ var exports = {
   router: ObjectRouter
 };
 
-var h = acre.require("helper/helpers_util.sjs");
+var h = acre.require("helper/helpers.sjs");
 var validators = acre.require("validator/validators.sjs");
 var object_query = acre.require("queries/object.sjs");
 var freebase_object = acre.require("template/freebase_object.sjs");
 
 var rules = [
   {
-    type: "/freebase/apps/application",
-    tabs: [
+    "type": "/freebase/apps/application",
+    "tabs": [
       {
-        name: "View",
-        key: "view",
-        app: "topic",
-        script: "topic.tab",
-        params: {
-          domains: "all",
-          type: "/freebase/apps/application"
+        "name": "View",
+        "key": "view",
+        "app": "topic",
+        "script": "topic.tab",
+        "params": {
+          "domains": "all",
+          "type": "/freebase/apps/application"
         }
       },
       {
-        name: "Authors",
-        key: "authors",
-        app: "group",
-        script: "group.tab"
+        "name": "Activity",
+        "key": "activity",
+        "app": "activity",
+        "script": "app.tab"
       },
       {
-        name: "Activity",
-        key: "activity",
-        app: "activity",
-        script: "app.tab"
+        "name": "Authors",
+        "key": "authors",
+        "app": "group",
+        "script": "group.tab"
       },
       {
-        name: "Inspect",
-        key: "inspect",
-        app: "triples",
-        script: "triples.tab"
+        "name": "Inspect",
+        "key": "inspect",
+        "app": "triples",
+        "script": "triples.tab"
+      }
+    ],
+    "navs": [
+      {
+        "name": "Settings",
+        "app": "admin",
+        "ajax": "app_settings.mf.js",
+        "auth": true
+      },
+      {
+        "name": "View source",
+        "url": h.fb_url("/appeditor/#app=${id}")
       }
     ]
   },
   {
-    type: "/type/domain",
-    tabs: [
+    "type": "/type/domain",
+    "tabs": [
       {
-        name: "Data",
-        key: "data",
-        app: "data",
-        script: "domain.tab"
+        "name": "Data",
+        "key": "data",
+        "app": "data",
+        "script": "domain.tab"
       },
       {
-        name: "Schema",
-        key: "schema",
-        app: "schema",
-        script: "domain.tab"
+        "name": "Schema",
+        "key": "schema",
+        "app": "schema",
+        "script": "domain.tab"
       },
       {
         name: "Community",
@@ -94,130 +106,184 @@ var rules = [
         script: "group.tab"
       },
       {
-        name: "Inspect",
-        key: "inspect",
-        app: "triples",
-        script: "triples.tab"
+        "name": "Inspect",
+        "key": "inspect",
+        "app": "triples",
+        "script": "triples.tab"
+      }
+    ],
+    "navs": [
+      {
+        "name": "Settings",
+        "app": "admin",
+        "ajax": "domain_settings.mf.js",
+        "auth": true
       }
     ]
   },
   {
-    type: "/type/type",
-    tabs: [
+    "type": "/type/type",
+    "tabs": [
       {
-        name: "Data",
-        key: "data",
-        app: "data",
-        script: "type.tab"
+        "name": "Data",
+        "key": "data",
+        "app": "data",
+        "script": "type.tab"
       },
       {
-        name: "Schema",
-        key: "schema",
-        app: "schema",
-        script: "type.tab"
+        "name": "Schema",
+        "key": "schema",
+        "app": "schema",
+        "script": "type.tab"
       },
       {
-        name: "Inspect",
-        key: "inspect",
-        app: "triples",
-        script: "triples.tab"
+        "name": "Inspect",
+        "key": "inspect",
+        "app": "triples",
+        "script": "triples.tab"
+      }
+    ],
+    "navs": [
+      {
+        "name": "Settings",
+        "app": "admin",
+        "ajax": "type_settings.mf.js",
+        "auth": true
+      },
+      {
+        "name": "Query",
+        "url": h.fb_url("/queryeditor", {q:JSON.stringify([{id:null, name:null, type:"${id}"}])})
+      },
+      {
+        name: "Create",
+        key: "create",
+        app: "create",
+        script: "type.controller"
       }
     ]
   },
   {
-    type: "/type/property",
-    tabs: [
+    "type": "/type/property",
+    "tabs": [
       {
-        name: "Schema",
-        key: "schema",
-        app: "schema",
-        script: "property.tab"
+        "name": "Schema",
+        "key": "schema",
+        "app": "schema",
+        "script": "property.tab"
       },
       {
-        name: "Inspect",
-        key: "inspect",
-        app: "triples",
-        script: "triples.tab"
+        "name": "Inspect",
+        "key": "inspect",
+        "app": "triples",
+        "script": "triples.tab"
       }
     ]
   },
   {
-    type: "/type/user",
-    tabs: [
+    "type": "/type/user",
+    "tabs": [
       {
-        name: "Domains",
-        key: "domains",
-        app: "data",
-        script: "user.tab"
+        "name": "Domains",
+        "key": "domains",
+        "app": "data",
+        "script": "user.tab"
       },
       {
-        name: "Queries",
-        key: "queries",
-        app: "query",
-        script: "user.tab"
+        "name": "Queries",
+        "key": "queries",
+        "app": "query",
+        "script": "user.tab"
       },
       {
-        name: "Apps",
-        key: "apps",
-        app: "apps",
-        script: "user.tab"
+        "name": "Apps",
+        "key": "apps",
+        "app": "apps",
+        "script": "user.tab"
       },
       {
-        name: "Inspect",
-        key: "inspect",
-        app: "triples",
-        script: "triples.tab"
+        "name": "Inspect",
+        "key": "inspect",
+        "app": "triples",
+        "script": "triples.tab"
+      }
+    ],
+    "navs": [
+      {
+        "name": "Settings",
+        "app": "admin",
+        "ajax": "user_settings.mf.js",
+        "auth": true
+      }
+    ]
+  },/**
+  {
+    "type": "/freebase/query",
+    "tabs": [
+      {
+        "name": "Data",
+        "key": "data",
+        "app": "data",
+        "script": "query.tab"
+      },
+      {
+        "name": "Inspect",
+        "key": "inspect",
+        "app": "triples",
+        "script": "triples.tab"
+      }
+    ]
+  },**/
+  {
+    "type": "/common/topic",
+    "promises": [
+      {
+        "name": "notable_types",
+        "app": "lib",
+        "script": "queries/object.sjs",
+        "promise": "notable_types"
+      }/**,
+      {
+        "name": "blurb",
+        "app": "lib",
+        "script": "queries/object.sjs",
+        "promise": "blurb"
+      },
+      {
+        "name": "blob",
+        "app": "lib",
+        "script": "queries/object.sjs",
+        "promise": "blob"
+      }**/
+    ],
+    "tabs": [
+      {
+        "name": "View",
+        "key": "view",
+        "app": "topic",
+        "script": "topic.tab"
+      },
+      {
+        "name": "Inspect",
+        "key": "inspect",
+        "app": "triples",
+        "script": "triples.tab"
+      },
+      {
+        "name": "On the Web",
+        "key": "web",
+        "app": "sameas",
+        "script": "sameas.tab"
       }
     ]
   },
   {
-    type: "/freebase/query",
-    tabs: [
+    "type": "/type/object",
+    "tabs": [
       {
-        name: "Data",
-        key: "data",
-        app: "data",
-        script: "query.tab"
-      },
-      {
-        name: "Inspect",
-        key: "inspect",
-        app: "triples",
-        script: "triples.tab"
-      }
-    ]
-  },
-  {
-    type: "/common/topic",
-    tabs: [
-      {
-        name: "View",
-        key: "view",
-        app: "topic",
-        script: "topic.tab"
-      },
-      {
-        name: "Inspect",
-        key: "inspect",
-        app: "triples",
-        script: "triples.tab"
-      },
-      {
-        name: "On the Web",
-        key: "web",
-        app: "sameas",
-        script: "sameas.tab"
-      }
-    ]
-  },
-  {
-    type: "/type/object",
-    tabs: [
-      {
-        name: "Inspect",
-        key: "inspect",
-        app: "triples",
-        script: "triples.tab"
+        "name": "Inspect",
+        "key": "inspect",
+        "app": "triples",
+        "script": "triples.tab"
       }
     ]
   }
@@ -233,19 +299,26 @@ function ObjectRouter(app_labels) {
     if (!(routes instanceof Array)) {
       routes = [routes];
     }
-
     routes.forEach(function(route) {
       if (!route || typeof route !== 'object') {
         throw 'A routing rule must be a dict: '+JSON.stringify(route);
       }
-      route.tabs.forEach(function(tab) {
+      route.tabs && route.tabs.forEach(function(tab) {
         var app = app_labels[tab.app];
         if (!app) {
           throw 'An app label must exist for: ' + tab.app;
         }
         tab.app = app;
       });
-
+      route.navs && route.navs.forEach(function(nav) {
+        if (nav.app) {
+          var app = app_labels[nav.app];
+          if (!app) {
+            throw 'An app label must exist for: ' + nav.app;
+          }
+          nav.app = app;
+        }
+      });
       types[route.type] = route;
       h.splice_with_key(route_list, "type", route);
     });
@@ -288,24 +361,24 @@ function ObjectRouter(app_labels) {
           var obj_types = h.map_array(o.type, "id");
           obj_types["/type/object"] = true; // all valid IDs are /type/object
 
-          var tabs, i, l;
-          // Find correct set of tabs for this object
+          var rule, i, l;
+          // Find correct rule for this object
           for (i=0,l=route_list.length; i<l; i++) {
             var route = route_list[i];
             var type = route.type;
             if (obj_types[type]) {
               // clone tabs spec so we don't overwrite it
-              tabs = h.extend(true, {}, route).tabs;
+              rule = h.extend(true, {}, route);
               break;
             }
           }
 
           // Turn tab config arrays into something more useful
-          if (!(h.isArray(tabs) && tabs.length)) {
-            throw "Missing tab configuration for this object";
+          if (!rule) {
+            throw "Missing rule configuration for this object";
           }
 
-          acre.write(freebase_object.main(tabs, o));
+          acre.write(freebase_object.main(rule, o));
           acre.exit();
         }
       }

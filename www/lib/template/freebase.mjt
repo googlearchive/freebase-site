@@ -280,9 +280,6 @@
     ["static_base", "libs"].forEach(function(k) {
       SERVER.acre.metadata[k] = md[k];
     });
-    if (exports.c && exports.c.id) {
-      SERVER.c.id = exports.c.id;
-    }
     if (acre.request.cookies && acre.request.cookies.mwLastWriteTime) {
       SERVER.mwLastWriteTime = acre.request.cookies.mwLastWriteTime;
     }
@@ -293,4 +290,7 @@
   <script>
     window.SERVER = ${JSON.stringify(SERVER)};
   </script>
+  <acre:block if="exports.acre_javascript_vars">
+    ${exports.acre_javascript_vars()}
+  </acre:block>
 </acre:block>

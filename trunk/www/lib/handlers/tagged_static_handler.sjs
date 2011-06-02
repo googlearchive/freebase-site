@@ -74,7 +74,7 @@ var handler = function() {
       var expires = new Date((new Date()).getTime() + max_age * 1000);
       var headers = {
         expires: expires.toUTCString(),
-        "cache-control": "public, max-age: " + max_age,
+        "cache-control": "public, max-age=" + max_age,
         "content-type": script.media_type || "text/plain",
         "last-modified" : generateLastModifiedDate(d)
       };

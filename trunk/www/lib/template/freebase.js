@@ -198,7 +198,14 @@
        if (u.length) {
          console.log(fb.user, fb.user.id, fb.user.name);
          u[0].href += fb.user.id;
-         u.text(fb.user.name);
+         u.text("You");
+
+         var MAX_SIZE = 25;
+         var MODE = "fillcropmid";
+
+         var image_api = "http://api.freebase.com/api/trans/image_thumb" + user.id + "?maxwidth=" + MAX_SIZE + "&maxheight=" + MAX_SIZE + "&mode=" + MODE;
+         var user_image = $("<img src=" + image_api + " />");
+         u.prepend(user_image);
        }
        $("#signedin").show();
      })
@@ -339,7 +346,8 @@
    * init freebase site header search box (suggest)
    */
   $(function() {
-    var search = $("#SearchBox .SearchBox-input,#global-search-input");
+    var search = $("#SearchBox .SearchBox-input,#fb-search-input");
+    var search_container = $("#fb-search");
     var root = fb.acre.freebase.site_host;
     // Get rid of devel and port to use the legacy python client in development
 
@@ -382,17 +390,19 @@
       .focus(function(e) {
         if (!search_label.is(":visible")) {
           $('#site-search-label').slideDown("fast");
+          search_container.addClass("active");
         }
       })
       .blur(function(e) {
         if (!search_suggest.is(":visible") && search_label.is(":visible")) {
           $('#site-search-label').slideUp("fast");
+          search_container.removeClass("active");
         }
       });
 
       $('.SearchBox-form').submit(function(e) {
         /* Do not allow form to be submitted without content */
-        if ($.trim($("#global-search-input").val()).length == 0){
+        if ($.trim($("#fb-search-input").val()).length == 0){
           return false;
         }
         else{

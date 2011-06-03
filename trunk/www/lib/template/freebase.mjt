@@ -111,61 +111,53 @@
 </acre:block>
 
 <acre:block def="header(exports)">
-  <div id="header" class="clear" role="banner">
-    <div id="logo">
-      <a href="${h.fb_url()}" title="Return to Freebase homepage">
-        <img alt="Freebase"
-             acre:attrs="h.is_production() ? {src: h.static_url(acre.resolve('template/freebase-logo-production.png'))} : {src: h.static_url(acre.resolve('template/freebase-logo-sandbox.png'))}"
-             border="0" height="21" width="87" /></a>
+<header role="banner" id="header">
+  <div id="nav-utilities" class="clear">
+    <div class="nav-user-controls" id="signedin" style="display:none;">
+      <strong id="nav-username">
+        <a href="${h.legacy_fb_url('/user/profile')}" title="View your profile">
+         
+        </a>
+      </strong>
+      <a href="javascript:void(0)" onclick="window.freebase.logout_popup()" title="Sign out of Freebase" rel="nofollow" id="nav-signout">Sign Out</a>
     </div>
-    <div class="site-search" searchUrl="${h.legacy_fb_url('/search')}" id="SearchBox">
-<!!--      <form method="get" action="${h.legacy_fb_url('/search')}" class="SearchBox-form">
-        <fieldset class="search-form-header">
-          <input type="hidden" value="30" name="limit" />
-          <input type="hidden" value="0" name="start" />!!-->
-          <input type="text"
-                 autocomplete="off"
-                 placeholder="Find topics..."
-                 name="query" id="global-search-input"
-                 class="SearchBox-input AutocompleteInput-input" />
-<!!--        </fieldset>
-      </form>!!-->
-      <div id="site-search-box"></div>
-      <div id="site-search-label"><span>Start typing to get some suggestions</span></div>
+    <div class="nav-user-controls anonymous" id="signedout" style="display:none;">
+      <a href="javascript:void(0)" onclick="window.freebase.login_popup()"title="Sign in to your Freebase account" rel="nofollow">Sign In or Sign Up</a>
     </div>
-    <ul id="nav-global" class="clear">
-      <li class="nav-global-item nav-global-menu" id="nav-projects" data-popup-url="${h.fb_url('/toolbox/service/projects')}">
-        <a href="${h.fb_url()}">Data</a>
-      </li>
-      <li class="nav-global-item nav-global-menu" id="nav-schema" data-popup-url="${h.fb_url('/toolbox/service/schema')}">
-        <a href="${h.fb_url('/schema')}">Schema</a>
-      </li>
-      <li class="nav-global-item nav-global-menu" id="nav-apps" data-popup-url="${h.fb_url('/toolbox/service/apps')}">
-        <a href="${h.fb_url('/apps')}">Apps</a>
-      </li>
-      <li class="nav-global-item" id="nav-docs">
-        <a href="${h.wiki_url()}" title="Give help and get help adding data to Freebase">Docs</a>
-      </li>
-    </ul>
-    <div id="nav-utilities">
-      ${i18n_c.lang_select()}
-      <div class="nav-user-controls" id="signedin" style="display:none;">
-        <strong id="nav-username">
-          <a href="${h.legacy_fb_url('/user/profile')}" title="View your profile"></a>
-        </strong>
-        <a href="${h.account_url('settings')}" title="View your account info on Freebase" rel="nofollow" id="nav-settings">Settings</a>
-        <a href="javascript:void(0)" onclick="window.freebase.logout_popup()" title="Sign out of Freebase" rel="nofollow" id="nav-signout">Sign Out</a>
-      </div>
-      <div class="nav-user-controls anonymous-user-controls" id="signedout" style="display:none;">
-        <a href="javascript:void(0)" onclick="window.freebase.login_popup()"title="Sign in to your Freebase account" rel="nofollow">Sign In or Sign Up</a>
-      </div>
-    </div>
+    ${i18n_c.lang_select()}
   </div>
+  <!!-- Freebase logo -->
+  <a href="${h.fb_url()}">
+    <img alt="${_('Freebase logo')}"
+         id="fb-logo"
+         acre:attrs="h.is_production() ? {src: h.static_url(acre.resolve('template/freebase-logo-production.png'))} : {src: h.static_url(acre.resolve('template/freebase-logo-sandbox.png'))}"
+         border="0" height="21" width="120" />
+  </a>
+  <!!-- Freebase Suggest -->
+  <div id="fb-search">
+    <input type="text"
+           id="fb-search-input"
+           name="query"
+           autocomplete="off"
+           placeholder="Find entities&hellip;" />
+    <div id="site-search-box"></div>
+    <div id="site-search-label"><span>Start typing to get some suggestions</span></div>
+  </div>
+  <!!-- Global Nav Links-->
+  <ul class="clear" id="nav-global">
+    <li><a href="#">Explore data</a></li>
+    <li>
+      <a href="${h.wiki_url()}"
+        title="Give help and get help adding data to Freebase">
+        Documentation
+      </a>
+    </li>
+  </ul>
   <div id="breadcrumb" acre:if="exports.breadcrumb">
     ${exports.breadcrumb()}
   </div>
+</header>
 </acre:block>
-
 
 <acre:block def="content(exports)">
   <div id="content" class="clear">

@@ -45,7 +45,7 @@ function assert_content(content, lessified) {
   else {
     ok(content.indexOf("@") >= 0, "expected mixin variables");
   }
-  ok(content.indexOf("#global-search-input") >= 0, "expected concatenated content");
+  ok(content.indexOf("#fb-search-input") >= 0, "expected concatenated content");
 };
 
 test("require", function() {

@@ -198,12 +198,14 @@
        if (u.length) {
          console.log(fb.user, fb.user.id, fb.user.name);
          u[0].href += fb.user.id;
-         u.text("You");
-
          var MAX_SIZE = 25;
          var MODE = "fillcropmid";
-
-         var image_api = "http://api.freebase.com/api/trans/image_thumb" + user.id + "?maxwidth=" + MAX_SIZE + "&maxheight=" + MAX_SIZE + "&mode=" + MODE;
+         var params = {
+           maxwidth: MAX_SIZE,
+           maxheight: MAX_SIZE,
+           mode: MODE
+         };
+         var image_api = fb.h.image_url(user.id, params);
          var user_image = $("<img src=" + image_api + " />");
          u.prepend(user_image);
        }
@@ -232,10 +234,10 @@
     }, 0);
   }
 
-  
+
   fb.window_position = function() {
     var position = {};
-    
+
     if (typeof(window.innerWidth) == 'number' ) {
       //Non-IE
       position['width'] = window.outerWidth;
@@ -249,25 +251,25 @@
       position['top'] = window.screenTop;
       position['left'] = window.screenLeft;
     }
-    
+
     return position;
   };
 
   fb.popup = function(url, width, height, windowname) {
     width = width || 300;
     height = height || 300;
-    
+
     var pos = fb.window_position();
     var left = Math.floor((pos['width']-width)/2) + pos['left'];
     var top = Math.floor((pos['height']-height)/2) + pos['top'];
-      
+
     // Chrome might fix this bug, but until then add some padding
-    //  to the height of the popup for the urlbar 
+    //  to the height of the popup for the urlbar
     var is_chrome = /chrome/.test(navigator.userAgent.toLowerCase());
     if (is_chrome) {
         height += 50;
     }
-    
+
     var params = {
       width: width,
       height: height,
@@ -281,26 +283,26 @@
       status: 'no',
       toolbar: 'no'
     };
-    
+
     var params_list = [];
     for (var key in params) {
       params_list.push(key+"="+params[key]);
     }
     return window.open(url, windowname || "", params_list.join());
   };
-  
+
   fb.login_popup = function(success) {
     var width = 900;
     var height = 600;
-    
+
     if (!success) {
       success = function(data) {
         window.location.reload();
       };
     }
-    
+
     var newwin = fb.popup("/account/signin", width, height, "Freebase");
-    
+
     if (newwin.opener == null) newwin.opener = self;
     window.onauthorization = success;
     if (window.focus) {
@@ -312,15 +314,15 @@
   fb.logout_popup = function(success) {
     var width = 900;
     var height = 600;
-    
+
     if (!success) {
       success = function(data) {
         window.location.href = "/";
       };
     }
-    
+
     var newwin = fb.popup("/account/signout", width, height, "Freebase");
-    
+
     if (newwin.opener == null) newwin.opener = self;
     window.onauthorization = success;
     if (window.focus) {
@@ -328,7 +330,7 @@
     }
     return false;
   };
-  
+
   /**
    * init universal language picker
    */
@@ -354,7 +356,7 @@
     search.suggest({
       status: null,
       //service_url: fb.h.legacy_fb_url(),
-      //TODO this needs to be cleaned up once we figure the proper configuration 
+      //TODO this needs to be cleaned up once we figure the proper configuration
       //params for freebase.service_url and freebase.apiary_url
       service_url: fb.h.suggest_url(),
       service_path: fb.acre.freebase.apiary_url ? '' : '/private/suggest',

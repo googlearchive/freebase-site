@@ -115,7 +115,7 @@
   <div id="nav-utilities" class="clear">
     <div class="nav-user-controls" id="signedin" style="display:none;">
       <strong id="nav-username">
-        <a href="${h.fb_url()}" title="View your profile"></a>
+        <a href="${h.fb_url()}" title="View your profile">${_("You")}</a>
       </strong>
       <!--<a href="javascript:void(0)" onclick="window.freebase.logout_popup()" title="Sign out of Freebase" rel="nofollow" id="nav-signout">Sign Out</a>-->
     </div>
@@ -279,6 +279,14 @@
   </acre:script>
   <script>
     window.SERVER = ${JSON.stringify(SERVER)};
+    // expose acre.freebase.imgurl for client js
+    window.SERVER.acre.freebase.imgurl = function(id, maxwidth, maxheight, mode, pad, errorid) {
+       var base_url = "${acre.freebase.imgurl('')}".split("?")[0] + id;
+       var params = {maxwidth:maxwidth, maxheight:maxheight, mode:mode};
+       if (pad != null) params.pad = pad;
+       if (errorid != null) params.errorid = errorid;
+       return base_url + "?" + $.param(params);
+     };
   </script>
   <acre:block if="exports.acre_javascript_vars">
     ${exports.acre_javascript_vars()}

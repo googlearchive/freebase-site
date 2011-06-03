@@ -467,7 +467,7 @@ Header
 }
 
 #nav-utilities .language-picker:hover {
-  background: rgba(0,0,0,0.05);
+  background: rgba(0,0,0,0.1);
   cursor: pointer;
   .transition();
 }
@@ -482,15 +482,40 @@ Header
 }
 
 .current-lang{
-  display: block;
-  font-weight: bold;
-  padding: 0 20px;
   background: url(template/ui-icons.png) no-repeat right -773px;
 }
 
 .current-lang,
-#nav-utilities a {
-  line-height: 3.4;
+#signedout a,
+#nav-username a {
+  display: block;
+  font-weight: bold;
+  padding: 0px 20px;
+  height: 40px;
+  line-height: 3.7;
+  overflow: hidden;
+  .transition();
+}
+
+#nav-username img {
+  float: left;
+  margin-top: 4px;
+  margin-right: 7px;
+  border: 1px solid #d1d2d3;
+  padding: 1px;
+  background: #fff;
+}
+
+.current-lang,
+#nav-username a {
+  padding-right: 25px;
+  background: url(template/ui-icons.png) no-repeat right -706px;
+}
+
+#nav-username a:hover,
+.nav-user-controls.anonymous:hover {
+  text-decoration: none;
+  background-color: rgba(0,0,0,0.1);
 }
 
 #nav-username,

@@ -257,6 +257,11 @@
     lib_base_url: function(key) {
       var lib = fb.acre.metadata.libs[key];
       return lib.base_url + lib.version;
+    },
+
+
+    image_url: function(id, params) {
+      return fb.acre.freebase.imgurl(id, params.maxwidth, params.maxheight, params.mode, params.pad, params.errorid);
     }
 
   };

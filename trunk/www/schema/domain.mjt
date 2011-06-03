@@ -51,14 +51,14 @@
   <div class="page-header clear">
     <div class="breadcrumb clear">
       <ol>
-        <li class="breadcrumb-item">
+        <li class="breadcrumb-item label domain">
           <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url('/schema')}">${_("Schema")}</a>
+            <a href="${h.fb_url('/schema')}" class="breadcrumb-link">${_("Domain")}</a>
           </span>
         </li>
         <li if="c.domain" class="breadcrumb-item last">
           <span class="breadcrumb-item-inner">
-            <a href="#">${i18n.display_name(c.domain)}</a>
+            <a href="#" class="breadcrumb-link">${i18n.display_name(c.domain)}</a>
           </span>
         </li>
       </ol>
@@ -72,13 +72,6 @@
       <span class="edit-icon">${_('Domain settings')}</span>
     </a>
   </li>
-</acre:block>
-
-<acre:block def="nav_flags()">
-  <span acre:if="c.domain.id.indexOf('/user') === -1 && c.domain.id.indexOf('/base') === -1">
-     ${_("Commons")}
-  </span>
-   ${_("Domain")}
 </acre:block>
 
 <acre:block def="page_content()">

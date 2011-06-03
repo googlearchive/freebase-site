@@ -45,19 +45,14 @@
   <div class="page-header clear">
     <div class="breadcrumb clear">
       <ol>
-        <li class="breadcrumb-item">
+        <li class="breadcrumb-item label user">
           <span class="breadcrumb-item-inner">
-            <a href="#">${_("User")}</a>
+            <span class="breadcrumb-link">${_("User")}</span>
           </span>
         </li>
         <li class="breadcrumb-item">
-          <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url('/')}">${i18n.display_name(c.object)}</a>
-          </span>
-        </li>
-        <li if="c.domain" class="breadcrumb-item last">
-          <span class="breadcrumb-item-inner">
-            <a href="#">${_("Queries")}</a>
+          <span class="breadcrumb-item-inner last">
+            <a href="${h.fb_url('/')}" class="breadcrumb-link">${i18n.display_name(c.object)}</a>
           </span>
         </li>
       </ol>

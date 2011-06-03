@@ -52,29 +52,20 @@
   <div class="page-header clear">
     <div class="breadcrumb clear">
       <ol class="clear">
-        <li class="breadcrumb-item">
+        <li class="breadcrumb-item type label">
           <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url('/schema')}">${_("Schema")}</a>
+            <a href="${h.fb_url('/schema')}" class="breadcrumb-link">${_("Type")}</a>
           </span>
         </li>
         <li if="c.type.domain" class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url(c.type.domain.id, [['schema']])}">${i18n.display_name(c.type.domain)}</a>
+            <a href="${h.fb_url(c.type.domain.id, [['schema']])}" class="breadcrumb-link">${i18n.display_name(c.type.domain)}</a>
           </span>
         </li>
         <li class="breadcrumb-item last">
           <span class="breadcrumb-item-inner">
-            <a href="javascript:void(0);" acre:if="c.type.domain.types && c.type.domain.types.length" class="breadcrumb-sibling-trigger">${i18n.display_name(c.type)}</a>
-            <a href="javascript:void(0);" acre:else="">${i18n.display_name(c.type)}</a>
+            <span class="breadcrumb-link">${i18n.display_name(c.type)}</span>
           </span>
-          <div class="tooltip" id="breadcrumb-siblings" acre:if="c.type.domain.types && c.type.domain.types.length">
-            <strong>${_('Go to another type')}</strong>
-            <ul>
-              <li acre:for="s in c.type.domain.types">
-                <a href="${h.fb_url(s.id, [['schema']])}" title="${_('Go to type')}">${i18n.display_name(s)}</a>
-              </li>
-            </ul>
-          </div>
         </li>
       </ol>
     </div>

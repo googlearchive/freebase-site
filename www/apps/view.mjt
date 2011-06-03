@@ -56,19 +56,19 @@
   <div class="page-header">
     <div class="breadcrumb clear">
       <ol>
-        <li class="breadcrumb-item">
+        <li class="breadcrumb-item label app">
           <span class="breadcrumb-item-inner">
-            <a href="/apps">Apps</a>
+            <a href="/apps">App</a>
           </span>
         </li>
         <li class="breadcrumb-item" acre:if="c.app.creator">
           <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url(c.app.creator.id, [['apps']])}">$c.app.creator.name</a>
+            <a class="breadcrumb-link" href="${h.fb_url(c.app.creator.id, [['apps']])}">$c.app.creator.name</a>
           </span>
         </li>
         <li class="breadcrumb-item last" if="c.app">
           <span class="breadcrumb-item-inner">
-            <a href="#">$c.app.name</a>
+            <span class="breadcrumb-link">$c.app.name</span>
           </span>
         </li>
       </ol>

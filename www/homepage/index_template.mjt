@@ -33,6 +33,7 @@
   var templates = acre.require("templates");
   var h = acre.require("lib/helper/helpers.sjs");
   var c = this.exports.c = {};
+  console.log(acre.request)
 </acre:script>
 
 <acre:block def="head()">
@@ -47,7 +48,7 @@
   <meta name="robots" content="noodp">
   <link rel="canonical" href="http://www.freebase.com" />
   
-  <script>
+  <script acre:if="acre.request.base_path == '/'">
     var m = /${h.account_cookie_name()}\=([^;\s]*)/.exec(document.cookie);
     if (m) {
       window.location.href= "/user/" + m[1];

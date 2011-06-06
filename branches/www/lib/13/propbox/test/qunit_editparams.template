@@ -1,0 +1,572 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+<acre:script>
+  var h = acre.require("helper/helpers.sjs");
+  var pb = acre.require("propbox/propbox.mjt");
+  var i18n = acre.require("i18n/i18n.sjs");
+  var c = exports.c = {
+    template_base: "test/qunit.mjt"
+  };
+  var locales = [];
+  i18n.LANGS.forEach(function(l, i) {
+    locales[i] = l.id.split("/").pop().toLowerCase();
+  });
+</acre:script>
+
+<acre:block def="title()">
+  editparams.js
+</acre:block>
+
+<acre:block def="head()">
+  <script>
+    var locales = ${JSON.stringify(locales)};
+    var djConfig = {
+      parseOnLoad: true,
+      locale: 'en',
+      extraLocale: locales.slice(1)
+    };
+  </script>
+  <script src="${h.lib_base_url('dojo')}/dojo/dojo.xd.js"></script>
+  <script src="${h.lib_base_url('suggest')}/suggest.min.js"></script>
+  <script src="template/jquery.metadata.js"></script> 
+  <script src="i18n/i18n.js"></script> 
+  <script src="propbox/jquery.validate_input.js"></script>  
+  <script src="propbox/jquery.data_input.js"></script>
+  <script src="propbox/editparams.js"></script>
+  <script src="propbox/test/qunit_editparams.js"></script>
+</acre:block>
+
+<acre:block def="fixture()">
+
+  <div id="unique-text-insert">
+    ${pb.data_input("/type/text", "/prop/id", null)}
+  </div>
+
+  <div id="unique-text-replace">
+    <acre:script>
+      var prop_value = {value:"foo", lang:"/lang/en"};
+    </acre:script>
+    ${pb.data_input("/type/text", "/prop/id", prop_value)}
+  </div>
+
+  <div id="unique-text-delete">
+    <acre:script>
+      var prop_value = {value:"foo", lang:"/lang/en"};
+    </acre:script>
+    ${pb.data_input("/type/text", "/prop/id", prop_value)}
+  </div>
+
+  <div id="unique-text-noop">
+    <acre:script>
+      var prop_value = {value:"foo", lang:"/lang/en"};
+    </acre:script>
+    ${pb.data_input("/type/text", "/prop/id", prop_value)}
+  </div>
+
+  <div id="unique-text-langs-insert">
+    <acre:script>
+      var prop_values = [{
+        value: "foo",
+        lang: "/lang/en"
+      }, {
+        value: "bar",
+        lang: "/lang/ko"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/text", "/prop/id", prop_value)}
+    </acre:block>
+     ${pb.data_input("/type/text", "/prop/id", null)}
+  </div>
+
+  <div id="unique-text-langs-replace">
+    <acre:script>
+      var prop_values = [{
+        value: "foo",
+        lang: "/lang/en"
+      }, {
+        value: "bar",
+        lang: "/lang/ko"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/text", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="unique-text-langs-delete">
+    <acre:script>
+      var prop_values = [{
+        value: "foo",
+        lang: "/lang/en"
+      }, {
+        value: "bar",
+        lang: "/lang/ko"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/text", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="unique-text-langs-noop">
+    <acre:script>
+      var prop_values = [{
+        value: "foo",
+        lang: "/lang/en"
+      }, {
+        value: "bar",
+        lang: "/lang/ko"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/text", "/prop/id", prop_value)}
+    </acre:block>
+     ${pb.data_input("/type/text", "/prop/id", null)}
+  </div>
+
+  <div id="non-unique-text-insert">
+    <acre:script>
+      var prop_values = [{
+        value: "foo",
+        lang: "/lang/en"
+      }, {
+        value: "bar",
+        lang: "/lang/ko"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/text", "/prop/id", prop_value)}
+    </acre:block>
+    ${pb.data_input("/type/text", "/prop/id", null)}
+  </div>
+
+  <div id="non-unique-text-replace">
+    <acre:script>
+      var prop_values = [{
+        value: "foo",
+        lang: "/lang/en"
+      }, {
+        value: "bar",
+        lang: "/lang/ko"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/text", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="non-unique-text-delete">
+    <acre:script>
+      var prop_values = [{
+        value: "foo",
+        lang: "/lang/en"
+      }, {
+        value: "bar",
+        lang: "/lang/ko"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/text", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="non-unique-text-noop">
+    <acre:script>
+      var prop_values = [{
+        value: "foo",
+        lang: "/lang/en"
+      }, {
+        value: "bar",
+        lang: "/lang/ko"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/text", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="unique-datetime-insert">
+    ${pb.data_input("/type/datetime", "/prop/id", null)}
+  </div>
+
+  <div id="unique-float-replace">
+    <acre:script>
+      var prop_value = {
+        value: 1.23
+      };
+    </acre:script>
+    ${pb.data_input("/type/float", "/prop/id", prop_value)}
+  </div>
+
+  <div id="unique-int-delete">
+    <acre:script>
+      var prop_value = {
+        value: 0
+      };
+    </acre:script>
+    ${pb.data_input("/type/int", "/prop/id", prop_value)}
+  </div>
+
+  <div id="unique-boolean-noop">
+    <acre:script>
+      var prop_value = {
+        value: false
+      };
+    </acre:script>
+    ${pb.data_input("/type/boolean", "/prop/id", prop_value)}
+  </div>
+
+  <div id="non-unique-uri-insert">
+    <acre:script>
+      var prop_values = [{
+        value: "http://www.freebase.com"
+     }, {
+        value: "http://www.metaweb.com"
+     }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/uri", "/prop/id", prop_value)}
+    </acre:block>
+    ${pb.data_input("/type/uri", "/prop/id", null)}
+  </div>
+
+  <div id="non-unique-int-delete">
+    <acre:script>
+      var prop_values = [{
+        value: -1
+     }, {
+        value: 0
+     }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/int", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="non-unique-datetime-replace">
+    <acre:script>
+      var prop_values = [{
+        value: "2009-12"
+     }, {
+        value: "2011-05-02"
+     }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/datetime", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="non-unique-float-noop">
+    <acre:script>
+      var prop_values = [{
+        value: -1.23
+     }, {
+        value: 0.98
+     }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/type/float", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="unique-topic-insert">
+    ${pb.data_input("/people/person", "/prop/id", null)}
+  </div>
+
+  <div id="unique-topic-delete">
+    <acre:script>
+      var prop_value = {
+        id: "/en/bob_dylan",
+        text: "Bob Dylan"
+      };
+    </acre:script>
+    ${pb.data_input("/people/person", "/prop/id", prop_value)}
+  </div>
+
+  <div id="unique-topic-replace">
+    <acre:script>
+      var prop_value = {
+        id: "/en/bob_dylan",
+        text: "Bob Dylan"
+      };
+    </acre:script>
+    ${pb.data_input("/people/person", "/prop/id", prop_value)}
+  </div>
+
+  <div id="unique-topic-noop">
+    <acre:script>
+      var prop_value = {
+        id: "/en/bob_dylan",
+        text: "Bob Dylan"
+      };
+    </acre:script>
+    ${pb.data_input("/people/person", "/prop/id", prop_value)}
+  </div>
+
+  <div id="non-unique-topic-insert">
+    <acre:script>
+      var prop_values = [{
+        id: "/en/bob_dylan",
+        text: "Bob Dylan"
+      },{
+        id: "/en/lady_gaga",
+        text: "Lady Gaga"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/people/person", "/prop/id", prop_value)}
+    </acre:block>
+    ${pb.data_input("/people/person", "/prop/id", null)}
+  </div>
+
+  <div id="non-unique-topic-delete">
+    <acre:script>
+      var prop_values = [{
+        id: "/en/bob_dylan",
+        text: "Bob Dylan"
+      },{
+        id: "/en/lady_gaga",
+        text: "Lady Gaga"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/people/person", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="non-unique-topic-replace">
+    <acre:script>
+      var prop_values = [{
+        id: "/en/bob_dylan",
+        text: "Bob Dylan"
+      },{
+        id: "/en/lady_gaga",
+        text: "Lady Gaga"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/people/person", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="non-unique-topic-noop">
+    <acre:script>
+      var prop_values = [{
+        id: "/en/bob_dylan",
+        text: "Bob Dylan"
+      },{
+        id: "/en/lady_gaga",
+        text: "Lady Gaga"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/people/person", "/prop/id", prop_value)}
+    </acre:block>
+  </div>
+
+  <div id="unique-enumerated-insert">
+    <acre:script>
+      var instances = [{id:"/en/male",text:"Male"},{id:"/en/female",text:"Female"}];
+    </acre:script>
+    ${pb.data_input("/people/gender", "/prop/id", null, null, instances)}
+  </div>
+
+  <div id="unique-enumerated-delete">
+    <acre:script>
+      var instances = [{id:"/en/male",text:"Male"},{id:"/en/female",text:"Female"}];
+      var prop_value = {
+        id: "/en/female",
+        text: "Female"
+      };
+    </acre:script>
+    ${pb.data_input("/people/gender", "/prop/id", prop_value, null, instances)}
+  </div>
+
+  <div id="unique-enumerated-replace">
+    <acre:script>
+      var instances = [{id:"/en/male",text:"Male"},{id:"/en/female",text:"Female"}];
+      var prop_value = {
+        id: "/en/female",
+        text: "Female"
+      };
+    </acre:script>
+    ${pb.data_input("/people/gender", "/prop/id", prop_value, null, instances)}
+  </div>
+
+  <div id="unique-enumerated-noop">
+    <acre:script>
+      var instances = [{id:"/en/male",text:"Male"},{id:"/en/female",text:"Female"}];
+      var prop_value = {
+        id: "/en/male",
+        text: "Male"
+      };
+    </acre:script>
+    ${pb.data_input("/people/gender", "/prop/id", prop_value, null, instances)}
+  </div>
+
+  <div id="non-unique-enumerated-insert">
+    <acre:script>
+      var instances = [{id:"/en/male",text:"Male"},{id:"/en/female",text:"Female"}];
+      var prop_values = [{
+        id: "/en/male",
+        text: "Male"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/people/gender", "/prop/id", prop_value, null, instances)}
+    </acre:block>
+    ${pb.data_input("/people/gender", "/prop/id", null, null, instances)}
+  </div>
+
+  <div id="non-unique-enumerated-delete">
+    <acre:script>
+      var instances = [{id:"/en/male",text:"Male"},{id:"/en/female",text:"Female"}];
+      var prop_values = [{
+        id: "/en/male",
+        text: "Male"
+      },{
+        id: "/en/female",
+        text: "Female"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/people/gender", "/prop/id", prop_value, null, instances)}
+    </acre:block>
+  </div>
+
+  <div id="non-unique-enumerated-replace">
+    <acre:script>
+      var instances = [{id:"/en/male",text:"Male"},{id:"/en/female",text:"Female"}];
+      var prop_values = [{
+        id: "/en/female",
+        text: "Female"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/people/gender", "/prop/id", prop_value, null, instances)}
+    </acre:block>
+  </div>
+
+  <div id="non-unique-enumerated-noop">
+    <acre:script>
+      var instances = [{id:"/en/male",text:"Male"},{id:"/en/female",text:"Female"}];
+      var prop_values = [{
+        id: "/en/male",
+        text: "Male"
+      },{
+        id: "/en/female",
+        text: "Female"
+      }];
+    </acre:script>
+    <acre:block for="prop_value in prop_values">
+      ${pb.data_input("/people/gender", "/prop/id", prop_value, null, instances)}
+    </acre:block>
+  </div>
+
+  <div id="unique-mediator-insert">
+    ${pb.data_input("/finance/currency", "/measurement_unit/dated_money_value/currency", null)}
+    ${pb.data_input("/type/float", "/measurement_unit/dated_money_value/amount", null)}
+  </div>
+
+  <div id="unique-mediator-delete">
+    <acre:script>
+      var currency = {
+        id: "/en/us",
+        text: "US$"
+      };
+      var amount = {
+        value: "1234567"
+      };
+    </acre:script>
+    ${pb.data_input("/finance/currency", "/measurement_unit/dated_money_value/currency", currency)}
+    ${pb.data_input("/type/float", "/measurement_unit/dated_money_value/amount", amount)}
+  </div>
+
+  <div id="unique-mediator-replace">
+    <acre:script>
+      var currency = {
+        id: "/en/us",
+        text: "US$"
+      };
+      var amount = {
+        value: "1234567"
+      };
+    </acre:script>
+    ${pb.data_input("/finance/currency", "/measurement_unit/dated_money_value/currency", currency)}
+    ${pb.data_input("/type/float", "/measurement_unit/dated_money_value/amount", amount)}
+  </div>
+
+  <div id="unique-mediator-noop">
+    <acre:script>
+      var currency = {
+        id: "/en/us",
+        text: "US$"
+      };
+      var amount = {
+        value: "1234567"
+      };
+    </acre:script>
+    ${pb.data_input("/finance/currency", "/measurement_unit/dated_money_value/currency", currency)}
+    ${pb.data_input("/type/float", "/measurement_unit/dated_money_value/amount", amount)}
+  </div>
+
+  <div id="non-unique-mediator-insert">
+    ${pb.data_input("/tv/tv_actor", "/tv/regular_tv_appearance/actor", null)}
+    ${pb.data_input("/tv/tv_character", "/tv/regular_tv_appearance/character", null)}
+    ${pb.data_input("/tv/tv_series_season", "/tv/regular_tv_appearance/seasons", null)}
+    ${pb.data_input("/tv/tv_series_season", "/tv/regular_tv_appearance/seasons", null)}
+    ${pb.data_input("/tv/tv_series_season", "/tv/regular_tv_appearance/seasons", null)}
+  </div>
+
+  <div id="non-unique-mediator-delete-replace-noop">
+    <acre:script>
+      var actor = {id:"/en/matthew_fox", text:"Matthew Fow"};
+      var character = {id:"/en/jack_shephard", text:"Jack Shepahard"};
+      var seasons = [{
+        id: "/en/lost_season_1",
+        text: "Lost - Season 1"
+      },{
+        id: "/en/lost_season_2",
+        text: "Lost - Season 2"
+      },{
+        id: "/en/lost_season_3",
+        text: "Lost - Season 3"
+      }];
+    </acre:script>
+    ${pb.data_input("/tv/tv_actor", "/tv/regular_tv_appearance/actor", actor)}
+    ${pb.data_input("/tv/tv_character", "/tv/regular_tv_appearance/character", character)}
+    <acre:block for="season in seasons">
+      ${pb.data_input("/tv/tv_series_season", "/tv/regular_tv_appearance/seasons", season)}
+    </acre:block>
+  </div>
+
+</acre:block>

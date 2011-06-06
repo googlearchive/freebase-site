@@ -40,6 +40,7 @@ var rules = [
   {prefix:"/favicon.ico",        app:"lib", script: "template/favicon.ico"},
   {prefix:"/index",              url:"/", redirect: 301},
   {prefix:"/homepage",           app:"homepage", script:"index.controller"},
+  {prefix:"/explore",            app:"homepage", script:"index.controller"},
   {prefix:"/schema",             app:"schema"},
   {prefix:"/apps",               app:"apps"},
   {prefix:"/appeditor",          app:"appeditor"},
@@ -65,13 +66,12 @@ var rules = [
   // Redirects for legacy urls
   //
 
-  // Homepage
-  {prefix:"/view/mydomains",          url:"/", redirect:301},
-  {prefix:"/site/data",               url:"/", redirect:301},
-  {prefix:"/view/allDomains",         url:"/", redirect:301},
-  {prefix:"/data",                    url:"/", redirect:301},
-  {prefix:"/explore",                 url:"/", redirect:301},
-  {prefix:"/domain/users",            url:"/", redirect:301},
+  // Domain activity browser
+  {prefix:"/view/mydomains",          url:"/explore", redirect:301},
+  {prefix:"/site/data",               url:"/explore", redirect:301},
+  {prefix:"/view/allDomains",         url:"/explore", redirect:301},
+  {prefix:"/data",                    url:"/explore", redirect:301},
+  {prefix:"/domain/users",            url:"/explore", redirect:301},
 
   // Signin & Account - TODO: use google URLs
   {prefix:"/signin/signin",           url:"/", redirect:301},

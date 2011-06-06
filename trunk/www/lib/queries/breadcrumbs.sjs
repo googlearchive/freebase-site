@@ -37,9 +37,9 @@ var freebase = acre.require("promise/apis.sjs").freebase;
  * Breadcrumb queries for different types of objects
  */
 
-function application(o) {
+function app(o) {
   return [
-    {name:_("Application")},
+    {name:_("App")},
     {name:i18n.display_name(o)}
   ];
 };

@@ -44,10 +44,6 @@
   <link rel="stylesheet" type="text/css" href="apps.mf.css" />
 </acre:block>
 
-<acre:block def="breadcrumb()">
-  <h1>Apps</h1>
-</acre:block>
-
 <acre:block def="content_body()">
   <div id="content-wrapper">
     <div id="content-main" role="main">

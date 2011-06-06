@@ -37,6 +37,8 @@ var h = acre.require("helper/helpers.sjs");
 var validators = acre.require("validator/validators.sjs");
 var object_query = acre.require("queries/object.sjs");
 var freebase_object = acre.require("template/freebase_object.sjs");
+var i18n = acre.require("i18n/i18n.sjs");
+var _ = i18n.gettext;
 
 var DEFAULT_PROMISES = [
   {
@@ -50,7 +52,12 @@ var DEFAULT_PROMISES = [
 var rules = [
   {
     "type": "/freebase/apps/application",
-    "promises": h.extend(true, [], DEFAULT_PROMISES),
+    "promises": h.extend(true, [], DEFAULT_PROMISES).concat([{
+      key: "breadcrumbs",
+      app: "lib",
+      script: "queries/breadcrumbs.sjs",
+      promise: "application"
+    }]),
     "tabs": [
       {
         "name": "View",
@@ -96,7 +103,12 @@ var rules = [
   },
   {
     "type": "/type/domain",
-    "promises":  h.extend(true, [], DEFAULT_PROMISES),
+    "promises":  h.extend(true, [], DEFAULT_PROMISES).concat([{
+      key: "breadcrumbs",
+      app: "lib",
+      script: "queries/breadcrumbs.sjs",
+      promise: "domain"
+    }]),
     "tabs": [
       {
         "name": "Data",
@@ -134,7 +146,12 @@ var rules = [
   },
   {
     "type": "/type/type",
-    "promises":  h.extend(true, [], DEFAULT_PROMISES),
+    "promises":  h.extend(true, [], DEFAULT_PROMISES).concat([{
+      key: "breadcrumbs",
+      app: "lib",
+      script: "queries/breadcrumbs.sjs",
+      promise: "type"
+    }]),
     "tabs": [
       {
         "name": "Data",
@@ -176,7 +193,12 @@ var rules = [
   },
   {
     "type": "/type/property",
-    "promises":  h.extend(true, [], DEFAULT_PROMISES),
+    "promises":  h.extend(true, [], DEFAULT_PROMISES).concat([{
+      key: "breadcrumbs",
+      app: "lib",
+      script: "queries/breadcrumbs.sjs",
+      promise: "property"
+    }]),
     "tabs": [
       {
         "name": "Schema",
@@ -194,7 +216,12 @@ var rules = [
   },
   {
     "type": "/type/user",
-    "promises":  h.extend(true, [], DEFAULT_PROMISES),
+    "promises":  h.extend(true, [], DEFAULT_PROMISES).concat([{
+      key: "breadcrumbs",
+      app: "lib",
+      script: "queries/breadcrumbs.sjs",
+      promise: "user"
+    }]),
     "tabs": [
       {
         "name": "Domains",
@@ -255,6 +282,12 @@ var rules = [
         "app": "lib",
         "script": "queries/object.sjs",
         "promise": "notable_types"
+      },
+      {
+        key: "breadcrumbs",
+        app: "lib",
+        script: "queries/breadcrumbs.sjs",
+        promise: "topic"
       }
     ],
     "tabs": [
@@ -280,7 +313,12 @@ var rules = [
   },
   {
     "type": "/type/object",
-    "promises":  h.extend(true, [], DEFAULT_PROMISES),
+    "promises":  h.extend(true, [], DEFAULT_PROMISES).concat([{
+      key: "breadcrumbs",
+      app: "lib",
+      script: "queries/breadcrumbs.sjs",
+      promise: "object"
+    }]),
     "tabs": [
       {
         "name": "Inspect",
@@ -306,7 +344,7 @@ function ObjectRouter(app_labels) {
       if (!route || typeof route !== 'object') {
         throw 'A routing rule must be a dict: '+JSON.stringify(route);
       }
-      [route.tabs,route.navs, route.promises].forEach(function(list) {
+      [route.tabs, route.navs, route.promises].forEach(function(list) {
         list && list.forEach(function(item) {
           if (item.app) {
             var app = app_labels[item.app];

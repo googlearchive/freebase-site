@@ -46,25 +46,6 @@
   <link rel="stylesheet" type="text/css" href="apps.mf.css" />
 </acre:block>
 
-<acre:block def="breadcrumb()">
-  <div class="page-header clear">
-    <div class="breadcrumb clear">
-      <ol>
-        <li class="breadcrumb-item">
-          <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url('/apps')}">${_("Apps")}</a>
-          </span>
-        </li>
-        <li if="c.domain" class="breadcrumb-item last">
-          <span class="breadcrumb-item-inner">
-            <a href="#">${i18n.display_name(c.object)}</a>
-          </span>
-        </li>
-      </ol>
-    </div>
-  </div>
-</acre:block>
-
 <acre:block def="page_content()">
   <h1 class="table-title">${_("Users")} ( ${i18n_c.number(c.users.length)} )</h1>
   <table class="table table-sortable">

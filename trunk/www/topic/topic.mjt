@@ -52,25 +52,6 @@
   ${_('Topic')} - ${i18n.display_name(c.object)}
 </acre:block>
 
-<acre:block def="breadcrumb()">
-  <div class="page-header clear">
-    <div class="breadcrumb clear">
-      <ol>
-        <li class="breadcrumb-item label topic">
-          <span class="breadcrumb-item-inner">
-            <span class="breadcrumb-link">${_("Topic")}</span>
-          </span>
-        </li>
-        <li class="breadcrumb-item last">
-          <span class="breadcrumb-item-inner">
-            <span class="breadcrumb-link">${i18n.display_name(c.object)}</span>
-          </span>
-        </li>
-      </ol>
-    </div>
-  </div>
-</acre:block>
-
 <acre:block def="nav_keys()" acre:if="c.notable_types">
   <acre:script>
     var notable_type = h.first_element(c.notable_types.types);

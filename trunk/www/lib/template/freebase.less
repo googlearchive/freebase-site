@@ -512,7 +512,6 @@ Header
   background: url(template/ui-icons.png) no-repeat right -706px;
 }
 
-#nav-username a:hover,
 .nav-user-controls.anonymous:hover {
   text-decoration: none;
   background-color: rgba(0,0,0,0.1);
@@ -526,7 +525,7 @@ Header
 
 .nav-user-controls {
   float: left;
-  overflow: auto;
+  position: relative;
   white-space: nowrap;
   border-left: 1px solid #ccc;
   font-weight: bold;
@@ -535,6 +534,46 @@ Header
 
 .nav-user-controls a:link {
   padding-right: 5px;
+  .transition();
+}
+
+#header .nav-user-controls a:hover {
+  background-color: #fff;
+}
+
+#user-controls {
+  display: none;
+  position: absolute;
+  top: 40px;
+  background: #dadada;
+  width: 100%;
+  text-align: left;
+  .box_shadow(1px, 2px, 3px, #aaa);
+}
+
+#user-controls ul {
+  background: #fff;
+  list-style: none;
+}
+
+#user-controls ul li a {
+  display: block;
+  font-weight: normal;
+  padding: 5px 0 5px 20px;
+  border-bottom: 1px solid #f1f2f3;
+}
+
+#user-controls a:link {
+  color: @link-blue;
+}
+
+#nav-signout {
+  display: block;
+  padding: 5px 20px;
+}
+
+#header a#nav-signout:hover {
+  background: transparent;
 }
 
 /*

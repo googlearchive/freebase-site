@@ -482,6 +482,10 @@
      },
 
      init: function() {
+       $("#signedin").hover(
+         function() { $("#user-controls").fadeIn(); },
+         function() { $("#user-controls").fadeOut(); }
+       );
        $("#devbar-touch > a").click(fb.devbar.touch);
        if (fb.tid) {
          fb.devbar.txn_ids.push(fb.tid);

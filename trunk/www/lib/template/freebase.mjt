@@ -84,30 +84,42 @@
       </acre:block>
     </head>
 
-    <acre:block if="exports.body">
-      ${exports.body()}
-    </acre:block>
-    <acre:block else="">
-      ${body(exports)}
-    </acre:block>
- </html>
+    <!--[if IE 8 ]><body class="ie8"><![endif]-->
+    <!--[if IE 7 ]><body class="ie7"><![endif]-->
+    <!--[if IE 6 ]><body class="ie6"><![endif]-->
+    <!--[if !IE]>--><body class=""><!--<![endif]-->
+      <!!-- header !!-->
+      <acre:block if="exports.header">
+        ${exports.header(exports)}
+      </acre:block>
+      <acre:block else="">
+        ${header(exports)}
+      </acre:block>        
+
+      <!!-- content !!-->            
+      <acre:block if="exports.content">
+        ${exports.content(exports)}
+      </acre:block>
+      <acre:block else="">
+        ${content(exports)}
+      </acre:block>
+
+      <!!-- footer !!-->
+      <acre:block if="exports.footer">
+        ${exports.footer(exports)}
+      </acre:block>
+      <acre:block else="">
+        ${footer(exports)}
+      </acre:block>
+
+      <!!-- footer_script !!-->
+      ${footer_script(exports)}
+    </body>
+  </html>
 </acre:block>
 
 <acre:block def="body(exports)">
-   <!--[if IE 8 ]><body class="ie8"><![endif]-->
-   <!--[if IE 7 ]><body class="ie7"><![endif]-->
-   <!--[if IE 6 ]><body class="ie6"><![endif]-->
-   <!--[if !IE]>--><body class=""><!--<![endif]-->
-    ${header(exports)}
-    <acre:block if="exports.content" trim="">
-      ${exports.content(exports)}
-    </acre:block>
-    <acre:block else="" trim="">
-      ${content(exports)}
-    </acre:block>
-    ${footer(exports)}
-    ${footer_script(exports)}
-  </body>
+
 </acre:block>
 
 <acre:block def="header(exports)">

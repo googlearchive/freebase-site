@@ -36,8 +36,8 @@ Breadcrumbs
 .breadcrumb ol,
 .breadcrumb ul {
   list-style: none;
+  /* fix this border issue */
   border-top: 1px solid #e1e2e3;
-  overflow: hidden;
 }
 
 .breadcrumb-item {
@@ -48,9 +48,11 @@ Breadcrumbs
     font-weight: bold;
     color: #e4e6e7;
     padding: 5px 9px 5px 7px; 
+    margin-bottom: -1px;
 }
 
 .breadcrumb-item.label {
+  top: -1px;
   text-shadow:1px 1px 1px #fff;
   padding-left: 30px;
   margin-right: 10px;
@@ -92,6 +94,13 @@ Breadcrumbs
 .breadcrumb-item.type:after {
   background-color: #ffa51e;
   .linear_gradient(#ffa51e,#ff9901);
+}
+
+/* Type Label */
+.breadcrumb-item.property,
+.breadcrumb-item.property:after {
+  background-color: #ca9683; 
+  .linear_gradient(#ca9683, #c88d6a);
 }
 
 /* Topic Label */

@@ -115,7 +115,7 @@
   <div id="nav-utilities" class="clear">
     <div class="nav-user-controls" id="signedin" style="display:none;">
       <strong id="nav-username">
-        <a href="${h.fb_url()}" title="View your profile">${_("You")}</a>
+        <a href="${h.fb_url('/')}" title="View your profile">${_("You")}</a>
       </strong>
       <!--<a href="javascript:void(0)" onclick="window.freebase.logout_popup()" title="Sign out of Freebase" rel="nofollow" id="nav-signout">Sign Out</a>-->
     </div>

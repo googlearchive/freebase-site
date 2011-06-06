@@ -92,7 +92,7 @@ var SPEC = {
 
       // filter components
       filters: f,
-      prop_counts: filter_queries.prop_counts(id),
+      prop_counts: filter_queries.prop_counts(object.guid),
 
       // inspect components
       names_aliases: queries.names_aliases(id, f),

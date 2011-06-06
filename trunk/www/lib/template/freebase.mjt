@@ -118,10 +118,6 @@
   </html>
 </acre:block>
 
-<acre:block def="body(exports)">
-
-</acre:block>
-
 <acre:block def="header(exports)">
 <header role="banner" id="header">
   <div id="nav-utilities" class="clear">

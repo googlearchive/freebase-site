@@ -1197,14 +1197,14 @@ class ActionGetIds:
     if not c.options.type:
       return c.error('You have to specify a freebase type to get ids for.')
 
-    query = [{'id' : None, 'type' : c.options.type, 'limit' : c.options.repeat }]
+    query = [{'mid' : None, 'type' : c.options.type, 'limit' : c.options.repeat }]
     result = c.mqlread(query)
 
     if not result.get('result'):
       return c.error('mqlread failed: %s' % json.dumps(query))
 
     for item in result.get('result'):
-      print item['id']
+      print item['mid']
     
       
     return True

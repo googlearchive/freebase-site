@@ -18,10 +18,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import sys, shutil, os, re, pwd, pdb, datetime
+import sys, shutil, os, re, pwd, pdb, datetime, time, urllib2, random, threading
 from optparse import OptionParser
-
+from tempfile import NamedTemporaryFile
 from siteutil import Context, AppFactory, GetAcre, SERVICES
+
+
 
 try:
   import json
@@ -324,7 +326,7 @@ class ActionStatic:
     c.set_acre(GetAcre(c))
 
     acre = GetAcre(c)
-    if acre.build(target='devel', use_freebase_site_config = True):
+    if acre.build(target='devel', config_dir= "%s/appengine-config" % c.options.site_dir):
       if not acre.start():
         return c.error('There was an error starting acre - cannot generate static files without a running acre instance.')
     else:
@@ -859,14 +861,355 @@ class ActionInfo:
     else:
       return self.info_all_apps()
 
-class ActionRelease:
+class SpeedTestRun(threading.Thread):
 
+  ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_4) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.68 Safari/534.24,gzip(gfe),gzip(gfe),gzip(gfe)'
+
+  _stop = False
+
+  def __init__(self, response_logger=None, name='-'):
+
+    super(SpeedTestRun, self).__init__(name=name)
+    self.response_logger = response_logger
+    self.urls = []
+    self.responses = []
+
+  def stop(self):
+    self._stop = True
+    
+  def add_urls(self, urls):
+    self.urls.extend(urls)
+
+  def parse_x_metaweb_cost(self, response):
+
+    r = {}
+
+    d = response.info().getheader('x-metaweb-cost')
+
+    if not len(d):
+      return r
+
+    for pair in [x.lstrip() for x in d.split(',')]:
+      key, value = pair.split('=')
+      r[key] = value
+
+    return r
+
+  def run(self):
+
+    for url in self.urls:
+
+      if self._stop:
+        break
+
+      code = 0
+      length = 0
+      diff = 0
+      xh = {}
+
+      try:
+        start = time.time()
+        req = urllib2.Request(url, headers={'User-Agent' : self.ua})
+        f = urllib2.urlopen(req)
+        code = f.getcode()
+
+        length = len(f.read())
+
+        xh = self.parse_x_metaweb_cost(f)
+
+      except urllib2.HTTPError as err:
+        code = err.code
+        
+      finally:
+        diff = int((time.time() - start) * 1000)
+      
+        d = {
+          'url' : url,
+          'c' : code,
+          'd' : diff,
+          'l' : length,
+          'x' : xh
+          }
+      
+
+      self.responses.append(d)
+      if self.response_logger:
+        self.response_logger(d, self.name)
+
+    return self.responses
+
+class ActionSpeedTest:
+
+  _conf = 'speedtest.json'
+  _ids_prefix = 'ids_'
+
+
+  x_labels = {
+    'at': 'total acre time spent processing the request',
+    'afsc': 'number of unique system files required (multiple requires of same file counts as 1)',
+    'asuc': 'number of sytem urlfetches (e.g. appfetchers etc..)',
+    'asuw': 'cumulative system urlfetch waiting time',
+    'afuc': 'number of unique user files required (multiple requires of same file counts as 1)',
+    'auuc': 'number of user urlfetches (e.g. mqlreads from apps)',
+    'auuw': 'cumulative user urlfetch waiting time',
+    'afmc': 'number of attempts to access the classloader memcache (hits & misses)',
+    'afmw': 'cumulative classloader memcache wait time',
+    'afcc': 'number of files compiled',
+    'afcw': 'cumulative time spent compiling files and putting them in the classloader memcache'
+    }
+
+  
   def __init__(self, context):
     self.context = context
 
-  def __call__(self):
-    pass
+    self.largest_url_length = 0
 
+    try:
+      fd = open(self._conf)
+    except:
+      return context.error('Failed to open %s.' % self._conf)
+
+    try:
+      self.conf = json.loads(fd.read())
+    except:
+      context.error('There was an error while json parsing the file %s.' % self._conf)
+      raise
+
+    fd.close()
+
+
+  def print_csv(self, responses):
+
+    csv_file = NamedTemporaryFile(delete=False)
+    csv_file.write(','.join(['http','time','size','url'] + sorted(self.x_labels.keys())) + '\n')
+
+    for r in responses:
+      u =  r['url'].replace('http://%s'%self.context.options.host, '')
+      csv_file.write(','.join( [str(r['c']), str(r['d']), str(r['l']), u] + [str(r['x'].get(k, 0)) for k in sorted(self.x_labels.keys())])+'\n')
+    csv_file.close()
+    return csv_file.name
+
+  def print_response(self, r, name=0):
+    u =  r['url'].replace('http://%s'%self.context.options.host, '')
+    print '%s\t%s\t%s\t%s\t%s%s\t%s' % (name, r['c'], r['d'], r['l'], u, ' ' * (self.largest_url_length-len(u)), '\t'.join([r['x'].get(k, '0') for k in sorted(self.x_labels.keys())]))
+
+  def generate_urls_for_page(self, page, n):
+    """Generate urls given a page specification and numbers to repeat."""
+    host = self.context.options.host
+
+    #Simple case - non-parmeterized urls.
+    if not page.get('type'):
+      return ['http://{host}{path}'.format(host=host, path=page.get('url')) for x in range(n)]
+
+    #Parameterized urls.
+
+    ids = []
+    try:
+     #/common/topic --> ids_common_topic
+      filename = './ids%s' % '_'.join(page.get('type').split('/')) 
+      fd = open(filename)
+    except:
+      return self.context.error('Could not open file %s where I expected to find %s ids.' % (filename, page.get('type')))
+    finally:
+      ids = [x.replace('\n','') for x in fd.readlines()]
+      fd.close()
+
+    t = len(ids)
+    return ['http://{host}{path}'.format(host=host, path=page.get('url').format(i=ids[x%t])) for x in range(n)]
+  
+  def generate_urls_for_test(self, test):
+    """Generate urls given a test specification."""
+
+    urls = []
+
+    for item in test['pages']:
+      if not self.conf['pages'].get(item['page']):
+        return self.context.error('Invalid page type %s..' % item['page'])
+      urls.extend(self.generate_urls_for_page(self.conf['pages'][item['page']], item.get('repeat') or self.context.options.repeat))
+
+    return urls
+
+  def median(self, l):
+    if not (len(l)):
+      return 0
+
+    l.sort()
+
+    i = int((len(l)-1)/2)
+    return l[i]
+    
+  def print_report(self, responses):
+
+    print "Total Requests: %s" % len(responses)
+    print "Total Successful Requests: %s" % len([x for x in responses if x['c'] == 200])
+    print "Total Concurrent Clients: %s" % self.context.options.concurrent
+    r = [x['d'] for x in responses if x['c'] == 200]
+    print 'Median Response Time: %s ms' % self.median(r)
+
+    print 'Median Values for X-Metaweb-Cost:'
+    for key in sorted(self.x_labels.keys()):
+      r = [x['x'].get(key,0) for x in responses if x['c'] == 200]
+      print '\t%s - %s: \t%s' % (key, self.x_labels[key], self.median(r))
+
+  def list(self):
+
+    c = self.context
+
+    print "\nPages\n"
+
+    table = [['page','url','type']]
+    for key, page in self.conf['pages'].iteritems():
+      table.append([key, page['url'], page.get('type', '-')])
+
+    self.pprint_table(table)
+
+    print "\nTests\n"
+
+    table = [['test', 'page', 'repeat', 'random']]
+    for key, test in self.conf['tests'].iteritems():
+      pages = test['pages']
+      table.append([key, pages[0]['page'], str(pages[0].get('repeat', c.options.repeat)), str(test.get('random'))])
+      if len(pages) > 1:
+        for page in pages[1:]:
+          table.append(['', page.get('page'), str(page.get('repeat', c.options.repeat)), ''])
+          
+    self.pprint_table(table)
+
+    return True
+
+  def pprint_table(self,table):
+    """Prints out a table of data, padded for alignment
+    @param table: The table to print. A list of lists.
+    Each row must have the same number of columns. """
+    col_paddings = []
+
+    def get_max_width(table, index):
+      return max([len(row[index]) for row in table])
+
+    for i in range(len(table[0])):
+        col_paddings.append(get_max_width(table, i))
+
+    for i,row in enumerate(table):
+        # left col
+        print row[0].ljust(col_paddings[0] + 1),
+        # rest of the cols
+        for j in range(1, len(row)):
+            col = row[j].rjust(col_paddings[j] + 2)
+            print col,
+        if not i:
+          print "\n" + "-" * (sum(col_paddings) + sum(len(x) for x in table[0]) - len(table[0])-1)
+        else:
+          print
+
+
+  def __call__(self):
+    """Run the speedtest. 
+
+    Start a thread pool == concurrent users and wait until they are done. 
+    Gather results and print reports.
+
+    """
+    c = self.context 
+
+    if c.options.list:
+      return self.list()
+
+    randomise = False
+
+    # Case 1: Test a single page.
+
+    if c.options.page:
+      urls = self.generate_urls_for_page(self.conf['pages'][c.options.page], c.options.repeat)
+
+    # Case 2: Run a test bundle of multiple pages
+    elif c.options.test:
+      if not self.conf['tests'].get(c.options.test):
+        return c.error('The test you specified does not exist. Available errors are: \n%s' % '\n'.join(self.conf['tests'].keys()))
+
+      urls = self.generate_urls_for_test(self.conf['tests'][c.options.test])
+      randomise = self.conf['tests'][c.options.test].get('random', False)
+
+    # Start a thread pool to simulate concurrent requests.
+    threads = []
+    for x in range(c.options.concurrent):
+      runner = SpeedTestRun(response_logger=self.print_response, name=str(len(threads)))
+      if randomise:
+        random.shuffle(urls)
+      runner.add_urls(urls)
+      threads.append(runner)
+      
+    print "\nStarting %s requests to host %s" % (len(urls) * c.options.concurrent, c.options.host)
+    self.largest_url_length =  max([len(x.replace('http://%s'%self.context.options.host, '')) for x in urls])
+    print "job\thttp\ttime\tsize\turl%s\t%s" % (' ' * self.largest_url_length, '\t'.join(sorted(self.x_labels.keys())))
+
+    interrupted = False
+
+    # Start the threads and wait until they are done. 
+
+    for thread in threads:
+      thread.start()
+      time.sleep(0.2)
+
+    while any([x.is_alive() for x in threads]):
+
+      try:
+        time.sleep(0.5)
+      
+      # Capture keyboard interrupts (^C) and try to exit gracefully. 
+
+      except KeyboardInterrupt as interrupted:
+        for thread in threads:
+          if not thread._stop:
+            thread.stop()
+        c.error('Waiting for threads to exit...')
+
+    # Gather all responses.
+
+    responses = []
+    for thread in threads:
+      responses.extend(thread.responses)
+
+    # Print reports and create CSV and html files. 
+
+    self.print_report(responses)
+
+    csv_filename = self.print_csv(responses)
+    print 'CSV dump: %s' % csv_filename
+
+    # If the run was interruted by the user, re-raise that here. 
+    if interrupted:
+      raise interrupted
+
+    return True
+
+
+class ActionGetIds:
+
+  def __init__(self, context):
+    
+    self.context = context
+
+  def __call__(self):
+    """Get a list of ids from the graph for a given type."""
+
+    c = self.context
+
+    if not c.options.type:
+      return c.error('You have to specify a freebase type to get ids for.')
+
+    query = [{'id' : None, 'type' : c.options.type, 'limit' : 1000 }]
+    result = c.mqlread(query)
+
+    if not result.get('result'):
+      return c.error('mqlread failed: %s' % json.dumps(query))
+
+    for item in result.get('result'):
+      print item['id']
+    
+      
+    return True
+    
+    
 
 def main():
 
@@ -886,6 +1229,8 @@ def main():
       ('create_branch', 'creates a branch of your app', ActionCreateAppBranch),
       ('create_tag', 'creates a tag of your app', ActionCreateAppTag),
       ('create_static', 'creates a static bundle and writes it to the provided tag', ActionStatic),
+      ('speedtest', 'run a speedtest', ActionSpeedTest),
+      ('getids', 'get freebase ids for a given type - useful for speedtests', ActionGetIds),
 
       ('test', '\ttest', ActionTest)
       ]
@@ -928,6 +1273,17 @@ def main():
   parser.add_option('', '--nosite', dest='nosite', action='store_true',
                     default=False, help='will not bundle freebase site with acre when deploying to appengine')
 
+  #speedtest options
+
+  parser.add_option('', '--page', dest='page', default=None, help='speedtest: the page you are testing')
+  parser.add_option('', '--test', dest='test', default=None, help='speedtest: the test you want to run')
+  parser.add_option('', '--repeat', dest='repeat', default=10, help='speedtest: number of times the page will be hit', type='int')
+  parser.add_option('', '--host', dest='host', default='test.sandbox-freebase.com', help='host to hit - just the domain name')
+  parser.add_option('', '--type', dest='type', default='/type/type', help='freebase type id')
+  parser.add_option('', '--concurrent', dest='concurrent', default=1, help='speedtest: number of concurrent clients', type='int')
+  parser.add_option('', '--list', dest='list', action='store_true', default=False, help='speedtest: list pages and tests')
+
+
   (options, args) = parser.parse_args()
 
 
@@ -959,9 +1315,12 @@ def main():
       if action == valid_action[0]:
 
         context.set_action(action)
+        result = False
 
         try:
           result = valid_action[2](context)()
+        except KeyboardInterrupt:
+          context.error('Action aborted by user.')
         finally:
           GetAcre(context).stop()
 

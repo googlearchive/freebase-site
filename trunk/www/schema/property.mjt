@@ -49,34 +49,25 @@
   <div class="page-header clear">
     <div class="breadcrumb clear">
       <ol class="clear">
-        <li class="breadcrumb-item">
+        <li class="breadcrumb-item label property">
           <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url('/schema')}">${_("Schema")}</a>
+            <span class="breadcrumb-link">${_("Property")}</span>
           </span>
         </li>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url(c.property.schema.domain.id, [['schema']])}">${i18n.display_name(c.property.schema.domain)}</a>
+            <a class="breadcrumb-link" href="${h.fb_url(c.property.schema.domain.id, [['schema']])}">${i18n.display_name(c.property.schema.domain)}</a>
           </span>
         </li>
         <li class="breadcrumb-item">
           <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url(c.property.schema.id, [['schema']])}">${i18n.display_name(c.property.schema)}</a>
+            <a class="breadcrumb-link" href="${h.fb_url(c.property.schema.id, [['schema']])}">${i18n.display_name(c.property.schema)}</a>
           </span>
         </li>
         <li class="breadcrumb-item last">
           <span class="breadcrumb-item-inner">
-            <a href="javascript:void(0);" class="breadcrumb-sibling-trigger" acre:if="c.property.schema.properties && c.property.schema.properties.length">${i18n.display_name(c.property)}</a>
-            <a href="javascript:void(0);" acre:else="">${i18n.display_name(c.property)}</a>
+            <span class="breadcrumb-link">${i18n.display_name(c.property)}</span>
           </span>
-          <div class="tooltip" id="breadcrumb-siblings" acre:if="c.property.schema.properties && c.property.schema.properties.length">
-            <strong>${h.sprintf(_("Go to another %s property"), i18n.display_name(c.property.schema))}</strong>
-            <ul>
-              <li acre:for="s in c.property.schema.properties">
-                <a href="${h.fb_url(s.id, [['schema']])}" title="${_('Go to type')}">${i18n.display_name(s)}</a>
-              </li>
-            </ul>
-          </div>          
         </li>
       </ol>
     </div>

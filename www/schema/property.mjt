@@ -45,34 +45,6 @@
   <link rel="stylesheet" type="text/css" href="schema.mf.css" />
 </acre:block>
 
-<acre:block def="breadcrumb()">
-  <div class="page-header clear">
-    <div class="breadcrumb clear">
-      <ol class="clear">
-        <li class="breadcrumb-item label property">
-          <span class="breadcrumb-item-inner">
-            <span class="breadcrumb-link">${_("Property")}</span>
-          </span>
-        </li>
-        <li class="breadcrumb-item">
-          <span class="breadcrumb-item-inner">
-            <a class="breadcrumb-link" href="${h.fb_url(c.property.schema.domain.id, [['schema']])}">${i18n.display_name(c.property.schema.domain)}</a>
-          </span>
-        </li>
-        <li class="breadcrumb-item">
-          <span class="breadcrumb-item-inner">
-            <a class="breadcrumb-link" href="${h.fb_url(c.property.schema.id, [['schema']])}">${i18n.display_name(c.property.schema)}</a>
-          </span>
-        </li>
-        <li class="breadcrumb-item last">
-          <span class="breadcrumb-item-inner">
-            <span class="breadcrumb-link">${i18n.display_name(c.property)}</span>
-          </span>
-        </li>
-      </ol>
-    </div>
-  </div>
-</acre:block>
 
 <acre:block def="nav_flags()">
   ${_("Property")}

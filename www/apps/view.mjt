@@ -52,30 +52,6 @@
   <link rel="stylesheet" type="text/css" href="article.mf.css" />
 </acre:block>
 
-<acre:block def="breadcrumb()">
-  <div class="page-header">
-    <div class="breadcrumb clear">
-      <ol>
-        <li class="breadcrumb-item label app">
-          <span class="breadcrumb-item-inner">
-            <a href="/apps">App</a>
-          </span>
-        </li>
-        <li class="breadcrumb-item" acre:if="c.app.creator">
-          <span class="breadcrumb-item-inner">
-            <a class="breadcrumb-link" href="${h.fb_url(c.app.creator.id, [['apps']])}">$c.app.creator.name</a>
-          </span>
-        </li>
-        <li class="breadcrumb-item last" if="c.app">
-          <span class="breadcrumb-item-inner">
-            <span class="breadcrumb-link">$c.app.name</span>
-          </span>
-        </li>
-      </ol>
-    </div>
-  </div>
-</acre:block>
-
 <acre:block def="content_body()">  
     <div id="content-main" role="main">
       <div class="page-meta" acre:if="c.app">

@@ -47,25 +47,6 @@
   <link rel="stylesheet" type="text/css" href="schema.mf.css" />
 </acre:block>
 
-<acre:block def="breadcrumb()">
-  <div class="page-header clear">
-    <div class="breadcrumb clear">
-      <ol>
-        <li class="breadcrumb-item label domain">
-          <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url('/schema')}" class="breadcrumb-link">${_("Domain")}</a>
-          </span>
-        </li>
-        <li if="c.domain" class="breadcrumb-item last">
-          <span class="breadcrumb-item-inner">
-            <a href="#" class="breadcrumb-link">${i18n.display_name(c.domain)}</a>
-          </span>
-        </li>
-      </ol>
-    </div>
-  </div>
-</acre:block>
-
 <acre:block def="nav_utilities()">
   <li class="edit">
     <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.domain_settings, ['${c.domain.id}', true], this);">

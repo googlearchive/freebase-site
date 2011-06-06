@@ -45,30 +45,6 @@
   <link rel="stylesheet" type="text/css" href="data.mf.css" />
 </acre:block>
 
-<acre:block def="breadcrumb()">
-  <div class="page-header clear">
-    <div class="breadcrumb clear">
-      <ol>
-        <li class="breadcrumb-item  label type">
-          <span class="breadcrumb-item-inner">
-            <span class="breadcrumb-link">${_("Type")}</span>
-          </span>
-        </li>
-        <li class="breadcrumb-item">
-          <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url(c.table.domain.id)}" class="breadcrumb-link">${i18n.display_name(c.table.domain)}</a>
-          </span>
-        </li>
-        <li class="breadcrumb-item last">
-          <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url(c.object.id)}" class="breadcrumb-link">${i18n.display_name(c.object)}</a>
-          </span>
-        </li>
-      </ol>
-    </div>
-  </div>
-</acre:block>
-
 <acre:block def="page_content()">
   <div class="section instances">
     <!!-- Type table -->

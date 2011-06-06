@@ -55,35 +55,6 @@
   <link rel="stylesheet" type="text/css" href="triples.mf.css" />
 </acre:block>
 
-<acre:block def="breadcrumb()">
-  <acre:script>
-    var type_list = h.map_array(c.object.type, "id");
-    var object_label = h.fb_object_type(type_list, c.object.id);
-    var object_class = object_label.replace(" ", "-").toLowerCase();
-
-    if (object_label === "Commons Domain" || object_label === "User Domain") {
-      var schema = true; 
-    }
-  </acre:script>
-  <div class="page-header clear">
-    <div class="breadcrumb clear">
-      <ol>
-        <li class="breadcrumb-item label $object_class">
-          <span class="breadcrumb-item-inner">
-            <span class="breadcrumb-link">${_(object_label)}</a>
-          </span>
-        </li>  
-        <li class="breadcrumb-item last">
-          <span class="breadcrumb-item-inner"> 
-            <span class="breadcrumb-link">
-              ${i18n.display_name(c.object)}
-            </span>
-          </span>
-        </li>
-      </ol>
-    </div>
-  </div>
-</acre:block>
 <acre:block def="nav_keys()">
   <span class="key">
     <strong><abbr title="${_('Machine ID')}">${_("mid")}</abbr></strong>: 

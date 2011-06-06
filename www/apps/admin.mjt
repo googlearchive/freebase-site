@@ -50,30 +50,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <link rel="stylesheet" type="text/css" href="apps.mf.css" />
 </acre:block>
 
-<acre:block def="breadcrumb()">
-  <div class="page-header">
-    <div class="breadcrumb clear">
-      <ol>
-        <li class="breadcrumb-item">
-          <span class="breadcrumb-item-inner">
-            <a href="/apps">Apps</a>
-          </span>
-        </li>
-        <li class="breadcrumb-item" acre:if="c.app.creator">
-          <span class="breadcrumb-item-inner">
-            <a href="${h.fb_url(c.app.creator.id, [['apps']])}">$c.app.creator.name</a>
-          </span>
-        </li>
-        <li class="breadcrumb-item last" if="c.app">
-          <span class="breadcrumb-item-inner">
-            <a href="#">$c.app.name</a>
-          </span>
-        </li>
-      </ol>
-    </div>
-  </div>
-</acre:block>
-
 <acre:block def="content_body()">
   <div id="content-main">
 

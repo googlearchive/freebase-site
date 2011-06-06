@@ -41,25 +41,6 @@
   <link rel="stylesheet" type="text/css" href="" />
 </acre:block>
 
-<acre:block def="breadcrumb()">
-  <div class="page-header clear">
-    <div class="breadcrumb clear">
-      <ol>
-        <li class="breadcrumb-item label user">
-          <span class="breadcrumb-item-inner">
-            <span class="breadcrumb-link">${_("User")}</span>
-          </span>
-        </li>
-        <li class="breadcrumb-item last">
-          <span class="breadcrumb-item-inner last">
-            <a href="${h.fb_url('/')}" class="breadcrumb-link">${i18n.display_name(c.object)}</a>
-          </span>
-        </li>
-      </ol>
-    </div>
-  </div>
-</acre:block>
-
 <acre:block def="page_content()">
 <!-- Types -->
 <div class="section wrapper">

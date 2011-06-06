@@ -1197,7 +1197,7 @@ class ActionGetIds:
     if not c.options.type:
       return c.error('You have to specify a freebase type to get ids for.')
 
-    query = [{'id' : None, 'type' : c.options.type, 'limit' : 1000 }]
+    query = [{'id' : None, 'type' : c.options.type, 'limit' : c.options.repeat }]
     result = c.mqlread(query)
 
     if not result.get('result'):
@@ -1279,9 +1279,9 @@ def main():
   parser.add_option('', '--test', dest='test', default=None, help='speedtest: the test you want to run')
   parser.add_option('', '--repeat', dest='repeat', default=10, help='speedtest: number of times the page will be hit', type='int')
   parser.add_option('', '--host', dest='host', default='test.sandbox-freebase.com', help='host to hit - just the domain name')
-  parser.add_option('', '--type', dest='type', default='/type/type', help='freebase type id')
   parser.add_option('', '--concurrent', dest='concurrent', default=1, help='speedtest: number of concurrent clients', type='int')
   parser.add_option('', '--list', dest='list', action='store_true', default=False, help='speedtest: list pages and tests')
+  parser.add_option('', '--type', dest='type', default='/type/type', help='freebase type id')
 
 
   (options, args) = parser.parse_args()

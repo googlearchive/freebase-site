@@ -143,7 +143,7 @@
   </div>
   <!!-- Global Nav Links-->
   <ul class="clear" id="nav-global">
-    <li><a href="#">Explore data</a></li>
+    <li><a href="/explore">Explore data</a></li>
     <li>
       <a href="${h.wiki_url()}"
         title="Give help and get help adding data to Freebase">

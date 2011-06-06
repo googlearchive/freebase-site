@@ -73,11 +73,11 @@ function topic(id, lang, limit, as_of_time, domains) {
         for (var prop_id in props) {
           var prop = props[prop_id];
           var ect = prop.expected_type.id;
-          if (ect === "/common/image") {
+          if (false && ect === "/common/image") {
             prop.id = prop_id;
             image_props.push(prop);
           }
-          else if (ect === "/common/document") {
+          else if (false && ect === "/common/document") {
             prop.id = prop_id;
             article_props.push(prop);
           }

@@ -1,0 +1,137 @@
+{
+  "pages" : {  
+    "homepage" : { 
+      "url" : "/" 
+     },
+
+    "schema" : {
+      "url" : "/schema"
+    },
+
+    "type" : {
+      "url" :"{i}",
+      "type" :"/type/type"
+    },
+
+    "type_schema" : { 
+      "url" : "{i}?schema", 
+      "type" : "/type/type" 
+    },
+
+    "type_inspect" : {
+      "url" : "{i}?inspect",
+      "type" : "/type/type"
+    },
+
+    "domain" : {
+      "url" : "{i}",
+      "type" :"/type/domain"
+    },
+
+    "domain_schema" : { 
+      "url" : "{i}?schema", 
+      "type" : "/type/domain" 
+    },
+
+    "domain_community" : {
+      "url" : "{i}?community",
+      "type" :"/type/domain"
+    },
+
+    "domain_inspect" : {
+      "url" : "{i}?inspect",
+      "type" : "/type/domain"
+    },
+
+    "apps" : {
+      "url" : "/apps"
+    },
+
+    "app_details" : {
+      "url" : "{i}?apps"
+    },
+
+    "user" : {
+      "url" : "{i}",
+      "type" : "/type/user"
+    },
+
+    "user_queries" : {
+        "url" : "{i}?queries",
+        "type" : "/type/user"
+    },
+
+    "user_apps" : {
+        "url" : "{i}?apps",
+        "type" : "/type/user"
+    },
+
+    "user_inspect" : {
+        "url" : "{i}?inspect",
+        "type" : "/type/user"
+    },
+
+    "topic" : {
+        "url" : "{i}",
+        "type" :"/film/film"
+    },
+      
+    "topic_web" : {
+      "url" : "{i}?web",
+      "type" :"/film/film"
+    },
+
+    "topic_inspect" : {
+      "url" : "{i}?inspect",
+      "type" :"/film/film"
+    }
+      
+  },
+
+  "tests" : {
+    "small" : { 
+      "pages" : [
+        {
+          "page" : "schema_type",
+          "repeat" : 4
+        },
+        {
+          "page" : "schema_domain",
+          "repeat" : 2
+        },
+        {
+          "page" : "homepage",
+          "repeat" : 4
+        },
+        { 
+          "page" : "topic",
+          "repeat" : 20
+        }
+      ],
+      "random" : true
+    },
+
+    "schema" : {
+      "pages" : [
+        {
+          "page" : "schema",
+          "repeat" : 10
+        },
+
+        {
+          "page" : "type_schema",
+          "repeat" : 10
+        },
+
+        {
+          "page" : "domain_schema",
+          "repeat" : 10
+        }
+
+      ],
+      "random" : true
+    }
+  }
+
+
+}

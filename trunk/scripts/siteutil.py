@@ -105,6 +105,7 @@ FIRST_LINE_REQUIRE_CONFIG = 'var config = JSON.parse(acre.require("CONFIG.json")
 
 ACRE_ID_SVN_SUFFIX = ".svn.freebase-site.googlecode.dev"
 ACRE_ID_GRAPH_SUFFIX = ".site.freebase.dev"
+FREEBASE_API_KEY = "AIzaSyBblSNVmsgoamj9y5c5WdXMx9Xy4-O2fes"
 
 class AppFactory:
 
@@ -942,6 +943,16 @@ class Context():
       self.freebase = self.get_freebase_services(SERVICES.get(options.graph, {}))
       self.freebase_logged_in = False
 
+
+    try:
+      from apiclient.discovery import build
+    except ImportError:
+      self.service = False
+    finally:
+      pass
+      #self.service = build("freebase", "v1-dev", developerKey=FREEBASE_API_KEY)
+        
+
     self.current_app = None
     self.app = None
 
@@ -1013,9 +1024,9 @@ class Context():
       start_color, end_color = color, self.ENDC
 
     if nocontext:
-        print '%s %s%s' % (start_color,msg, end_color)
+        print >> sys.stderr, '%s %s%s' % (start_color,msg, end_color)
     else:
-        print '%s[%s:%s%s] %s%s' % (start_color, self.action, self.current_app or '', subaction, msg, end_color)
+        print >> sys.stderr, '%s[%s:%s%s] %s%s' % (start_color, self.action, self.current_app or '', subaction, msg, end_color)
 
     return True
 
@@ -1243,6 +1254,21 @@ class Context():
 
 
 
+  def mqlread(self, query, params=None):
+    #if not self.service:
+    #  return self.error("Sorry, no python apiclient installed: http://code.google.com/p/google-api-python-client/wiki/Installation")
+    #return self.service.mqlread()
+
+    if not params:
+      params = {}
+
+    params['query'] = json.dumps(query)
+    params['key'] = FREEBASE_API_KEY
+    url = "https://www.googleapis.com/freebase/v1/mqlread?%s" % urllib.urlencode(params)
+
+    return self.fetch_url(url, isjson=True)
+
+
   def hash_for_file(self,f, block_size=2**20):
     md5 = hashlib.md5()
     while True:
@@ -1318,14 +1344,11 @@ class Acre:
     self.log = NamedTemporaryFile()
 
 
-  def build(self, target = None, use_freebase_site_config = False, config_dir = None, war=False):
+  def build(self, target = None, config_dir = None, war=False):
 
     c = self.context
     c.log('Building acre under %s' % self._acre_dir)
     os.chdir(self._acre_dir)
-
-    if use_freebase_site_config:
-        config_dir = os.path.join(c.options.site_dir, 'appengine-config')
 
     #by default, build for local appengine
     build_mode = 'appengine-build'

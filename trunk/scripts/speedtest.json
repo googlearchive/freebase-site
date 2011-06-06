@@ -73,17 +73,17 @@
 
     "topic" : {
         "url" : "{i}",
-        "type" :"/common/topic"
+        "type" :"topics"
     },
       
     "topic_web" : {
       "url" : "{i}?web",
-      "type" :"/film/film"
+      "type" :"topics"
     },
 
     "topic_inspect" : {
       "url" : "{i}?inspect",
-      "type" :"/film/film"
+      "type" :"topics"
     }
       
   },

@@ -41,24 +41,25 @@ Breadcrumbs
 }
 
 .breadcrumb-item {
-    float: left;
-    position: relative;
-    line-height: 1;
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #e4e6e7;
-    padding: 5px 9px 5px 7px; 
-    margin-bottom: -1px;
+  float: left;
+  position: relative;
+  line-height: 1;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #e4e6e7;
+  padding: 5px 9px 5px 7px; 
+  margin-bottom: -1px;
+  margin-left: 10px;
 }
 
 .breadcrumb-item.label {
   top: -1px;
   text-shadow:1px 1px 1px #fff;
   padding-left: 30px;
-  margin-right: 10px;
+  margin-left: 0;
 }
 
-.breadcrumb-item.label:after {
+.breadcrumb-item:after {
   content: '';
   position: absolute;
   right:-7px;
@@ -70,7 +71,15 @@ Breadcrumbs
   -moz-transform: rotate(-45deg);
   -o-transform: rotate(-45deg);
   transform: rotate(-45deg);
+  .box_shadow(1px, 1px, 0px, #b6b7b8);
+}
+
+.breadcrumb-item.label:after {
   .box_shadow(1px, 1px, 2px, #999);
+}
+
+.breadcrumb-item.last:after {
+  content: none;
 }
 
 /* User Label */
@@ -161,16 +170,20 @@ Breadcrumbs
     padding: 3px 5px;
 }
 
-.last {
-    background-image: none;
-}
-
 .breadcrumb-item .breadcrumb-link {
     display: block;
     position: relative;
     z-index: 2;
     padding: 4px 7px;
     color: #333;
+}
+
+.last .breadcrumb-link,
+.last a.breadcrumb-link,
+.last a.breadcrumb-link:hover {
+  text-decoration: none;
+  pointer: default;
+  color: #666;
 }
 
 .breadcrumb-item-inner a.breadcrumb-sibling-trigger {

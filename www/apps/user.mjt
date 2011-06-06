@@ -52,7 +52,7 @@
             <span class="breadcrumb-link">${_("User")}</span>
           </span>
         </li>
-        <li class="breadcrumb-item">
+        <li class="breadcrumb-item last">
           <span class="breadcrumb-item-inner last">
             <a href="${h.fb_url('/')}" class="breadcrumb-link">${i18n.display_name(c.object)}</a>
           </span>

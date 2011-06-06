@@ -73,7 +73,7 @@
 
     "topic" : {
         "url" : "{i}",
-        "type" :"/film/film"
+        "type" :"/common/topic"
     },
       
     "topic_web" : {

@@ -56,7 +56,7 @@ var rules = [
       key: "breadcrumbs",
       app: "lib",
       script: "queries/breadcrumbs.sjs",
-      promise: "application"
+      promise: "app"
     }]),
     "tabs": [
       {

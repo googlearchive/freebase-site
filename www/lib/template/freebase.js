@@ -197,7 +197,7 @@
        var u = $("#nav-username a:first");
        if (u.length) {
          console.log(fb.user, fb.user.id, fb.user.name);
-         u[0].href += fb.user.id;
+         u[0].href += fb.user.id.substring(1);
          var MAX_SIZE = 25;
          var MODE = "fillcropmid";
          var params = {

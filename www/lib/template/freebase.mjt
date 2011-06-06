@@ -129,7 +129,24 @@
       <strong id="nav-username">
         <a href="${h.fb_url('/')}" title="View your profile">${_("You")}</a>
       </strong>
-      <!--<a href="javascript:void(0)" onclick="window.freebase.logout_popup()" title="Sign out of Freebase" rel="nofollow" id="nav-signout">Sign Out</a>-->
+      <div id="user-controls">
+        <ul>
+          <li>
+            <a href="#">${_("Domains")}</a>
+          </li>
+          <li>
+            <a href="#">${_("Queries")}</a>
+          </li>
+          <li>
+            <a href="#">${_("Apps")}</a>
+          </li>
+        </ul>
+        <a href="javascript:void(0)" 
+           onclick="window.freebase.logout_popup()" 
+           title="Sign out of Freebase" 
+           rel="nofollow"
+           id="nav-signout">Sign Out</a>
+      </div>
     </div>
     <div class="nav-user-controls anonymous" id="signedout" style="display:none;">
       <a href="javascript:void(0)" onclick="window.freebase.login_popup()"title="Sign in to your Freebase account" rel="nofollow">Sign In or Sign Up</a>

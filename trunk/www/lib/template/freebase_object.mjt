@@ -99,9 +99,10 @@
           <acre:block for="(var i=1; i<len; i++)">
             <acre:script>
               var bc = c.breadcrumbs[i];
+              var last = i === (len - 1);
             </acre:script>
-            <li class="breadcrumb-item">
-              <span class="breadcrumb-item-inner">
+            <li class="breadcrumb-item${last ? ' last' : ''}">
+              <span class="breadcrumb-item-inner${last ? ' last' : ''}">
                 <acre:block if="bc.id">
                   <a class="breadcrumb-link" href="${h.fb_url(bc.id)}">${bc.name}</a>
                 </acre:block>

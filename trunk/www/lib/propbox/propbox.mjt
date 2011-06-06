@@ -290,10 +290,28 @@
 <acre:block def="datalist(topic, prop_structure, prop_values, lang)">
   <acre:script>
     var empty = !prop_values || !prop_values.length;
+    var ect = prop_structure.expected_type.id;
   </acre:script>
   <ul class="data-list">
     <acre:block if="empty">
       ${empty_row_li()}
+    </acre:block>
+    <acre:block elif="ect === '/common/document' || ect === '/common/image'">
+      <acre:script>
+        var text;
+        var len = prop_values.length;
+        if (len > 1) {
+          text = h.sprintf(ect === "/common/document" ? _("%s articles") : _("%s images"), len);
+        }
+        else {
+          text = ect === "/common/document" ? _("1 article") : _("1 image");
+        }
+      </acre:script>
+      <li class="kbs data-row">
+        <span class="wrapper">
+          <a class="property-value" href="${h.fb_url(topic.id, [['inspect'], ['property', prop_structure.id]])}">${text} &raquo;</a>
+        </span>
+      </li>
     </acre:block>
     <acre:block else="">
       <acre:block for="prop_value in prop_values">

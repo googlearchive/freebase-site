@@ -371,12 +371,13 @@ class ActionDeployAcre:
     if not r:
       return c.error("Acre failed to build, aborting.")
 
-    acre.start(war=True)
+    if not c.options.nosite:
+      acre.start(war=True)
 
-    status = acre.is_running(war=True)
+      status = acre.is_running(war=True)
 
-    if not status:
-      return c.error('Could not start new acre war bundle under appengine development server, aborting deployment')
+      if not status:
+        return c.error('Could not start new acre war bundle under appengine development server, aborting deployment')
     
     c.log_color = c.BLUE
 
@@ -921,7 +922,7 @@ class SpeedTestRun(threading.Thread):
         code = err.code
         
       finally:
-        diff = int((time.time() - start) * 1000)
+        diff = time.time() - start
       
         d = {
           'url' : url,
@@ -984,29 +985,33 @@ class ActionSpeedTest:
     csv_file.write(','.join(['http','time','size','url'] + sorted(self.x_labels.keys())) + '\n')
 
     for r in responses:
+      if r['c'] == 500:
+        continue
       u =  r['url'].replace('http://%s'%self.context.options.host, '')
-      csv_file.write(','.join( [str(r['c']), str(r['d']), str(r['l']), u] + [str(r['x'].get(k, 0)) for k in sorted(self.x_labels.keys())])+'\n')
+      csv_file.write(','.join( [str(r['c']), str(r['d'][:4]), str(r['l']), u] + [str(r['x'].get(k, 0)) for k in sorted(self.x_labels.keys())])+'\n')
     csv_file.close()
     return csv_file.name
 
   def print_response(self, r, name=0):
     u =  r['url'].replace('http://%s'%self.context.options.host, '')
-    print '%s\t%s\t%s\t%s\t%s%s\t%s' % (name, r['c'], r['d'], r['l'], u, ' ' * (self.largest_url_length-len(u)), '\t'.join([r['x'].get(k, '0') for k in sorted(self.x_labels.keys())]))
+    print '%s\t%s\t%.2f\t%s\t%s%s\t%s' % (name, r['c'], r['d'], r['l'], u, ' ' * (self.largest_url_length-len(u)), '\t'.join([r['x'].get(k, '0') for k in sorted(self.x_labels.keys())]))
 
   def generate_urls_for_page(self, page, n):
     """Generate urls given a page specification and numbers to repeat."""
     host = self.context.options.host
+    
+    match = re.search('{(.+)}', page.get('url'))
 
     #Simple case - non-parmeterized urls.
-    if not page.get('type'):
+    if not match:
       return ['http://{host}{path}'.format(host=host, path=page.get('url')) for x in range(n)]
 
     #Parameterized urls.
 
     ids = []
+    id_type = match.groups(0)[0]
     try:
-     #/common/topic --> ids_common_topic
-      filename = './ids%s' % '_'.join(page.get('type').split('/')) 
+      filename = './ids_%s' % id_type
       fd = open(filename)
     except:
       return self.context.error('Could not open file %s where I expected to find %s ids.' % (filename, page.get('type')))
@@ -1015,7 +1020,7 @@ class ActionSpeedTest:
       fd.close()
 
     t = len(ids)
-    return ['http://{host}{path}'.format(host=host, path=page.get('url').format(i=ids[x%t])) for x in range(n)]
+    return ['http://{host}{path}'.format(host=host, path=page.get('url').replace("{%s}" % id_type, ids[x%t])) for x in range(n)]
   
   def generate_urls_for_test(self, test):
     """Generate urls given a test specification."""
@@ -1039,12 +1044,15 @@ class ActionSpeedTest:
     return l[i]
     
   def print_report(self, responses):
-
+    
+    o = self.context.options
+    
+    print "Host: %s" % o.host
     print "Total Requests: %s" % len(responses)
     print "Total Successful Requests: %s" % len([x for x in responses if x['c'] == 200])
-    print "Total Concurrent Clients: %s" % self.context.options.concurrent
+    print "Total Concurrent Clients: %s" % o.concurrent
     r = [x['d'] for x in responses if x['c'] == 200]
-    print 'Median Response Time: %s ms' % self.median(r)
+    print 'Median Response Time: %.2f seconds' % self.median(r)
 
     print 'Median Values for X-Metaweb-Cost:'
     for key in sorted(self.x_labels.keys()):

@@ -38,10 +38,6 @@
   var _ = i18n.gettext;
 </acre:script>
 
-<acre:block def="title()">
-  ${_("App")}<acre:block if="c.domain"> - ${i18n.display_name(c.object)}</acre:block>
-</acre:block>
-
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="apps.mf.css" />
 </acre:block>

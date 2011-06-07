@@ -37,10 +37,6 @@
   var _ = i18n.gettext;
 </acre:script>
 
-<acre:block def="title()">
-  ${_("Property")}<acre:block if="c.property"> - ${i18n.display_name(c.property)}</acre:block>
-</acre:block>
-
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="schema.mf.css" />
 </acre:block>

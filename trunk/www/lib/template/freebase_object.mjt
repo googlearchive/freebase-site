@@ -75,9 +75,7 @@
 </acre:block>
 
 <acre:block def="title()">
-  <acre:block if="that_exports.title">
-    ${that_exports.title()}
-  </acre:block>
+  ${i18n.display_name(c.object)}
 </acre:block>
 
 <acre:block def="breadcrumb()" if="c.breadcrumbs">

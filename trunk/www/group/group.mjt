@@ -32,7 +32,7 @@
 <acre:script>
   var c = this.exports.c = {};
   var h = acre.require("lib/helper/helpers.sjs");
-  var image = acre.require("lib/template/imagecomponents");  
+  var image = acre.require("lib/template/imagecomponents");
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
@@ -40,10 +40,6 @@
 
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="group.mf.css" />
-</acre:block>
-
-<acre:block def="title()">
-  ${_("Community")} - ${i18n.display_name(c.object)}
 </acre:block>
 
 <acre:block def="page_content()">

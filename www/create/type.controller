@@ -55,62 +55,95 @@ var SPEC = {
   },
 
   run: function(type, lang) {
-    var promises = {
-      // explicitly get /type/type/instance and /type/object/name prop schemas
-      default_props: propbox_queries.prop_structures("/type/type/instance", "/type/object/name", lang)
-    };
-    // get disabmiguating properties of type
-    var prop_clause = propbox_mql.prop_schema({
-      "/freebase/property_hints/disambiguator": true,
-      "/freebase/property_hints/display_none": {
-        optional: "forbidden",
-        value: true
-      },
-      index: null,
-      sort: "index",
-      optional: true
-    }, lang);
-    prop_clause.expected_type["forbid:/freebase/type_hints/mediator"] = {
-      value: true,
-      optional: "forbidden"
-    };
-    var q = {
-      id: type.id,
-      type: "/type/type",
-      properties: [prop_clause]
-    };
-    promises.disamb_props = freebase.mqlread(q)
-      .then(function(env) {
-        return env.result.properties;
-      })
-      .then(function(prop_schemas) {
-        var prop_structures = [];
-        prop_schemas.forEach(function(prop_schema) {
-          prop_structures.push(propbox_helpers.minimal_prop_structure(prop_schema, lang));
-        });
-        return prop_structures;
-      })
-      .then(function(prop_structures) {
-        var d = [];
-        prop_structures.forEach(function(prop_structure) {
-          d.push(propbox_queries.get_enumerated_types(prop_structure, lang));
-        });
-        return deferred.all(d)
-          .then(function() {
-            return prop_structures;
-          });
-      });
-    return deferred.all(promises)
-      .then(function(result) {
-        var default_props = result.default_props;
-        var instance_prop = default_props[0];
-        var name_prop = default_props[1];
-        var disamb_props = result.disamb_props;
-        instance_prop.properties = [name_prop].concat(disamb_props);
-        return {
-          object: type,
-          prop_structure: instance_prop
+    return included_types(type.id)
+      .then(function(inc_types) {
+        var promises = {
+          // explicitly get /type/type/instance and /type/object/name prop schemas
+          default_props: propbox_queries.prop_structures("/type/type/instance", "/type/object/name", lang)
         };
-      });
+        // get disabmiguating properties of type
+        var prop_clause = propbox_mql.prop_schema({
+          "/freebase/property_hints/disambiguator": true,
+          "/freebase/property_hints/display_none": {
+            optional: "forbidden",
+            value: true
+          },
+          index: null,
+          sort: "index",
+          optional: true
+        }, lang);
+        prop_clause.expected_type["forbid:/freebase/type_hints/mediator"] = {
+          value: true,
+          optional: "forbidden"
+        };
+        var type_ids = [type.id].concat(inc_types);
+
+              console.log("type_ids", type_ids);
+
+        var q = [{
+          id: null,
+          "id|=": type_ids,
+          type: "/type/type",
+          properties: [prop_clause]
+        }];
+        promises.disamb_props = freebase.mqlread(q)
+          .then(function(env) {
+            var properties = [];
+            var types = env.result.sort(function(a, b) {
+              return type_ids.indexOf(b.id) < type_ids.indexOf(a.id);
+            });
+            types.forEach(function(type) {
+              properties = properties.concat(type.properties);
+            });
+            return properties;
+          })
+          .then(function(prop_schemas) {
+            var prop_structures = [];
+            prop_schemas.forEach(function(prop_schema) {
+              prop_structures.push(propbox_helpers.minimal_prop_structure(prop_schema, lang));
+            });
+            return prop_structures;
+          })
+          .then(function(prop_structures) {
+            var d = [];
+            prop_structures.forEach(function(prop_structure) {
+              d.push(propbox_queries.get_enumerated_types(prop_structure, lang));
+            });
+            return deferred.all(d)
+              .then(function() {
+                return prop_structures;
+              });
+          });
+        return deferred.all(promises)
+          .then(function(result) {
+            var default_props = result.default_props;
+            var instance_prop = default_props[0];
+            var name_prop = default_props[1];
+            var disamb_props = result.disamb_props;
+            instance_prop.properties = [name_prop].concat(disamb_props);
+            return {
+              object: type,
+              prop_structure: instance_prop
+            };
+          });
+        });
   }
+};
+
+function included_types(type_id) {
+  var q = {
+    id: type_id,
+    "/freebase/type_hints/included_types": [{
+      id: null,
+      optional: true,
+      index: null,
+      sort: "index"
+    }]
+  };
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result["/freebase/type_hints/included_types"].map(function(inc_type) {
+        return inc_type.id;
+      });
+    });
 };

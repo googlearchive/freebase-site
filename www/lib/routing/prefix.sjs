@@ -207,9 +207,7 @@ function PrefixRouter(app_labels) {
   var traverse_key_tree = function(tree, keys, expand_leaves) {
     // Find the subtree at the end of the list of keys
     var current_tree = tree;
-    if (!expand_leaves) {
-      console.log(tree, keys);
-    }
+
     for (var i in keys) {
       if (keys[i] === "") continue;
       var key = 'key-' + keys[i];
@@ -285,7 +283,6 @@ function PrefixRouter(app_labels) {
     }
 
     var rule = route_for_path(path);
-    console.log("found", path, rule)
     if (rule) {
       if (rule.redirect && "url" in rule) {
         // Handle both absolute and relative redirects

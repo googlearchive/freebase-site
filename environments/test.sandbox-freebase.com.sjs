@@ -3,7 +3,7 @@ var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 
 var labels = {
-  "lib":        "//12a.lib" + tags_codebase,
+  "lib":        "//13a.lib" + tags_codebase,
   "topic":      "//8a.topic" + tags_codebase,
   "schema":     "//8a.schema" + tags_codebase,
   "activity":   "//2a.activity" + tags_codebase,

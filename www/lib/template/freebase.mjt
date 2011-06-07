@@ -128,13 +128,13 @@
       <div id="user-controls">
         <ul>
           <li>
-            <a href="#">${_("Domains")}</a>
+            <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?domains'">${_("Domains")}</a>
           </li>
           <li>
-            <a href="#">${_("Queries")}</a>
+            <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?queries'">${_("Queries")}</a>
           </li>
           <li>
-            <a href="#">${_("Apps")}</a>
+            <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?apps'">${_("Apps")}</a>
           </li>
         </ul>
         <a href="javascript:void(0)" 

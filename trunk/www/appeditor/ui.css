@@ -115,9 +115,9 @@ button:hover { border: 1px solid #61d7f7; }
 
 
 /* Header */
-#header { position: relative; height: 32px; border-bottom: 1px solid #dee; 
+#appeditor-header { position: relative; height: 32px; border-bottom: 1px solid #dee; 
     background: #f2f2f2 url(sprite-1px-bg.png) repeat-x 0 0; }
-#header p { padding: 8px 15px; }
+#appeditor-header p { padding: 8px 15px; }
 #header-appsmenu { position: absolute; height: 32px; top: 0; left: 10px; border-left: 1px solid #e5e5e5; color: #f71; font-size: 1.4em;}
 #header-appsmenu img { float: left; margin: 5px 0 0 15px;}
 #header-appsmenu p { padding-left: 45px; }

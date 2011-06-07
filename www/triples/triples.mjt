@@ -47,10 +47,6 @@
 
 </acre:script>
 
-<acre:block def="title()" if="c.object">
- ${_('Inspect')} - ${c.object.id}
-</acre:block>
-
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="triples.mf.css" />
 </acre:block>

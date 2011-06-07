@@ -48,10 +48,6 @@
   <link rel="stylesheet" type="text/css" href="topic.mf.css" />
 </acre:block>
 
-<acre:block def="title()">
-  ${_('Topic')} - ${i18n.display_name(c.object)}
-</acre:block>
-
 <acre:block def="nav_keys()" acre:if="c.notable_types">
   <acre:script>
     var notable_type = h.first_element(c.notable_types.types);

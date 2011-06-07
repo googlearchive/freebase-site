@@ -483,8 +483,14 @@
 
      init: function() {
        $("#signedin").hover(
-         function() { $("#user-controls").fadeIn(); },
-         function() { $("#user-controls").fadeOut(); }
+         function() { 
+           $("#user-controls").fadeIn();
+           $(this).addClass("active");
+         },
+         function() {
+           $("#user-controls").fadeOut();
+           $(this).removeClass("active");
+         }
        );
        $("#devbar-touch > a").click(fb.devbar.touch);
        if (fb.tid) {

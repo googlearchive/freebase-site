@@ -9,38 +9,31 @@
     },
 
     "type" : {
-      "url" :"{i}",
-      "type" :"/type/type"
+      "url" :"{type}"
     },
 
     "type_schema" : { 
-      "url" : "{i}?schema", 
-      "type" : "/type/type" 
+      "url" : "{type}?schema"
     },
 
     "type_inspect" : {
-      "url" : "{i}?inspect",
-      "type" : "/type/type"
+      "url" : "{type}?inspect"
     },
 
     "domain" : {
-      "url" : "{i}",
-      "type" :"/type/domain"
+      "url" : "{domain}"
     },
 
     "domain_schema" : { 
-      "url" : "{i}?schema", 
-      "type" : "/type/domain" 
+      "url" : "{domain}?schema"
     },
 
     "domain_community" : {
-      "url" : "{i}?community",
-      "type" :"/type/domain"
+      "url" : "{domain}?community"
     },
 
     "domain_inspect" : {
-      "url" : "{i}?inspect",
-      "type" : "/type/domain"
+      "url" : "{domain}?inspect"
     },
 
     "apps" : {
@@ -48,42 +41,35 @@
     },
 
     "app_details" : {
-      "url" : "{i}?apps"
+      "url" : "{app}?apps"
     },
 
     "user" : {
-      "url" : "{i}",
-      "type" : "/type/user"
+      "url" : "{user}"
     },
 
     "user_queries" : {
-        "url" : "{i}?queries",
-        "type" : "/type/user"
+        "url" : "{user}?queries"
     },
 
     "user_apps" : {
-        "url" : "{i}?apps",
-        "type" : "/type/user"
+        "url" : "{user}?apps"
     },
 
     "user_inspect" : {
-        "url" : "{i}?inspect",
-        "type" : "/type/user"
+        "url" : "{user}?inspect"
     },
 
     "topic" : {
-        "url" : "{i}",
-        "type" :"topics"
+        "url" : "{topic}"
     },
       
     "topic_web" : {
-      "url" : "{i}?web",
-      "type" :"topics"
+      "url" : "{topic}?web"
     },
 
     "topic_inspect" : {
-      "url" : "{i}?inspect",
-      "type" :"topics"
+      "url" : "{topic}?inspect"
     }
       
   },

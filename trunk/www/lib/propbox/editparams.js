@@ -219,12 +219,20 @@
         clause.create = "unconditional";
         clause.connect = structure.unique ? "replace" : "insert";
         // assert expected type and included types
-        clause.type = [{id:structure.expected_type.id, connect:"insert"}];
+        var types = [];
+        if (structure.expected_type.id !== "/type/object") {
+          types.push({id:structure.expected_type.id, connect:"insert"});
+        }
         var inc_types = structure.expected_type.included_types;
         if (inc_types) {
           inc_types.forEach(function(inc_type) {
-            clause.type.push({id:inc_type, connect:"insert"});
+            if (inc_type !== "/type/object") {
+              types.push({id:inc_type, connect:"insert"});
+            }
           });
+        }
+        if (types.length) {
+          clause.type = types;
         }
       }
       var has_diff = false;
@@ -374,14 +382,21 @@
          * we want to assert the expected type and all its included types.
          */
         if (connect !== "delete" && expected_type && !expected_type.enumeration) {
-          var types = [{id:expected_type.id, connect:"insert"}];
+          var types = [];
+          if (expected_type.id !== "/type/object") {
+            types.push({id:expected_type.id, connect:"insert"});
+          }
           var inc_types = expected_type.included_types;
           if (inc_types) {
             inc_types.forEach(function(inc_type) {
-              types.push({id:inc_type, connect:"insert"});
+              if (inc_type !== "/type/object") {
+                types.push({id:inc_type, connect:"insert"});
+              }
             });
           }
-          clause.type = types;
+          if (types.length) {
+            clause.type = types;
+          }
         }
       }
       else {

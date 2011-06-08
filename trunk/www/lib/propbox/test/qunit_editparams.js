@@ -133,6 +133,12 @@
       same(ep.clause({id:"foo"}, "insert", {id:"/type/ect", included_types:["/type/inc_type", "/type/inc_type2"]}), {id:"foo", connect:"insert", type:[{id:"/type/ect", connect:"insert"}, {id:"/type/inc_type", connect:"insert"}, {id:"/type/inc_type2", connect:"insert"}]});
 
       same(ep.clause({id:"foo"}, "update", {id:"/type/ect", included_types:["/type/inc_type", "/type/inc_type2"], enumeration:true}), {id:"foo", connect:"update"});
+
+      same(ep.clause({id:"foo"}, "insert", {id:"/type/object"}), {id:"foo", connect:"insert"});
+
+      same(ep.clause({id:"foo"}, "insert", {id:"/type/ect", included_types:["/type/object", "/type/inc_type2"]}), {id:"foo", connect:"insert", type:[{id:"/type/ect", connect:"insert"}, {id:"/type/inc_type2", connect:"insert"}]});
+
+      same(ep.clause({id:"foo"}, "insert", {id:"/type/object", included_types:["/type/inc_type"]}), {id:"foo", connect:"insert", type:[{id:"/type/inc_type", connect:"insert"}]});
     });
 
 

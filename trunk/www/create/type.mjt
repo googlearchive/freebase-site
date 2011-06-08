@@ -67,11 +67,16 @@
           </span>
           <span></span>
         </span>
-      </li>
+      </li class="edit-row">
       <acre:block for="prop in c.prop_structure.properties">
         <li>
           <label>${prop.text}</label>
           ${propbox.form_field(prop, null, i18n.lang)}
+          <acre:block if="!prop.unique">
+            <div class="magicbox-template">
+              ${propbox.form_field(prop, null, i18n.lang)}
+            </div>
+          </acre:block>
         </li>
       </acre:block>
       <li class="edit-row-submit">
@@ -79,7 +84,7 @@
         <input type="hidden" name="p" value="${c.prop_structure.id}"/>
         <input type="hidden" name="lang" value="${i18n.lang}"/>
         <button class="button button-primary button-submit disabled" disabled="disabled" type="submit">${_('Save')}</button>
-        <button class="button button-cancel" onclick="history.back()">${_('Cancel')}</button>
+        <button class="button button-cancel" onclick="javascript:window.location.href='${h.fb_url(c.object.id)}'">${_('Cancel')}</button>
       </li>
     </ul>
 

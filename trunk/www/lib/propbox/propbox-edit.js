@@ -35,12 +35,6 @@
   // i18n.js @see lib/18n/i18n.js
   // jquery.metadata.js
 
-  var base_ajax_url = propbox.options.base_ajax_url;
-  var base_static_url = propbox.options.base_static_url;
-  var topic_id = propbox.options.id;
-  var lang_id = propbox.options.lang;
-  var suggest_options = propbox.options.suggest;
-
   var edit = propbox.edit = {
 
     /**
@@ -50,12 +44,12 @@
      */
     prop_add_begin: function(prop_section, unique) {
       var submit_data = {
-        s: topic_id,
+        s: propbox.options.id,
         p: prop_section.attr("data-id"),
-        lang: lang_id
+        lang: propbox.options.lang
       };
       $.ajax({
-        url: base_ajax_url + "/prop_add_begin.ajax",
+        url: propbox.options.base_ajax_url + "/prop_add_begin.ajax",
         data: submit_data,
         dataType: "json",
         success: function(data, status, xhr) {
@@ -69,7 +63,7 @@
             event_prefix: event_prefix,
             ajax: {
               data: submit_data,
-              url: base_ajax_url + "/prop_edit_submit.ajax"
+              url: propbox.options.base_ajax_url + "/prop_edit_submit.ajax"
             },
 
             init: edit.init_prop_add_form,
@@ -172,13 +166,13 @@
         value = prop_value.attr("data-id") || prop_value.attr("data-value") || prop_value.attr("datetime");
       }
       var submit_data = {
-        s: topic_id,
+        s: propbox.options.id,
         p: prop_section.attr("data-id"),
         replace: value,
-        lang: lang_id
+        lang: propbox.options.lang
       };
       $.ajax({
-        url: base_ajax_url +  "/value_edit_begin.ajax",
+        url: propbox.options.base_ajax_url +  "/value_edit_begin.ajax",
         data: submit_data,
         dataType: "json",
         success: function(data, status, xhr) {
@@ -192,7 +186,7 @@
             event_prefix: event_prefix,
             ajax: {
               data: submit_data,
-              url: base_ajax_url + "/prop_edit_submit.ajax"
+              url: propbox.options.base_ajax_url + "/prop_edit_submit.ajax"
             },
 
             init: edit.init_value_edit_form,
@@ -302,13 +296,13 @@
         value = prop_value.attr("data-id") || prop_value.attr("data-value") || prop_value.attr("datetime");
       }
       var submit_data = {
-        s: topic_id,
+        s: propbox.options.id,
         p: prop_section.attr("data-id"),
         o: value,
-        lang: lang_id
+        lang: propbox.options.lang
       };
       $.ajax({
-        url: base_ajax_url + "/value_delete_submit.ajax",
+        url: propbox.options.base_ajax_url + "/value_delete_submit.ajax",
         type: "POST",
         data: submit_data,
         dataType: "json",
@@ -350,13 +344,13 @@
         value = prop_value.attr("data-id") || prop_value.attr("data-value") || prop_value.attr("datetime");
       }
       var submit_data = {
-        s: topic_id,
+        s: propbox.options.id,
         p: prop_section.attr("data-id"),
         o: value,
-        lang: lang_id
+        lang: propbox.options.lang
       };
       $.ajax({
-        url: base_ajax_url + "/value_delete_undo.ajax",
+        url: propbox.options.base_ajax_url + "/value_delete_undo.ajax",
         type: "POST",
         data: submit_data,
         dataType: "json",
@@ -410,8 +404,8 @@
     init_data_input: function(data_input, form) {
       data_input
         .data_input({
-          lang: lang_id,
-          suggest: suggest_options
+          lang: propbox.options.lang,
+          suggest: propbox.options.suggest
         })
         .bind("valid", function() {
           form.edit_row.trigger(form.event_prefix + "valid");

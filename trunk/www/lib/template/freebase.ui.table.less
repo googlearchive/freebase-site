@@ -37,15 +37,34 @@ Global Table Style
 
 
 /*
-    Generic class for header/title of a table
+    Generic class for header of a table
     Should immediately preceed <table> in markup    
 */
 
+.table-header {
+  margin-top: 1.7em;
+}
+
+.table-header .button-group {
+  float: right;
+  margin-top: -7px;
+}
+
+/*
+    Generic class for header/title of a table
+    Can either be a sibling to <table>, or a
+    child of .table-header
+*/
+
 .table-title {
-    font-size: 1.6em;
-    line-height: 1;
-    margin-top: 1.7em;
-    padding: 0 15px 0.7em;
+  font-size: 1.6em;
+  line-height: 1;
+  margin-top: 1.7em;
+  padding: 0 15px 0.7em;
+}
+
+.table-header .table-title {
+  margin-top: 0;
 }
 
 /* Generic Table */
@@ -80,7 +99,6 @@ Global Table Style
     cursor: pointer;
     .linear_gradient(#f8f8f8, #ddd, repeat);
 }
-
 
 .sort-icon {
     display: inline-block;
@@ -129,7 +147,6 @@ Global Table Style
     min-width: 9em;
     text-align: center;
 }
-
 
 .table .description {
     font-size: 1.1em;

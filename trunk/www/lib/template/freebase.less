@@ -143,7 +143,6 @@ GLOBAL CLASSES
   display: none;
 }
 
-
 .section-title {
     padding-left: 5px;
     font-weight: bold;
@@ -178,62 +177,62 @@ ICON LINKS
 */
 
 .icon-link > span {
-    opacity: 0.8;
-    display: inline-block;
-    padding: 3px 0 2px 22px;
-    background: url(template/ui-icons.png) no-repeat;
-    line-height: 1;
-    font-weight: bold;
+  opacity: 0.8;
+  display: inline-block;
+  padding: 3px 0 2px 22px;
+  background: url(template/ui-icons.png) no-repeat;
+  line-height: 1;
+  font-weight: bold;
 }
 
 .icon-link:hover {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .icon-link:hover > span {
-    opacity: 1;    
+  opacity: 1;    
 }
 
 span.build-query-icon,
 span.query-icon {
-    background-position: 0 -21px;
+  background-position: 0 -21px;
 }
 
 span.edit-icon,
 span.edit-profile-icon,
 span.edit-settings-icon,
 span.settings-icon {
-    background-position: 0 -64px;
+  background-position: 0 -64px;
 }
 
 span.add-icon,
 span.add-topic-icon,
 span.create-icon {
-    background-position: 0 -41px;
+  background-position: 0 -41px;
 }
 
 span.delete-icon {
-    background-position: 0 -316px;
+  background-position: 0 -316px;
 }
 
 span.reorder-icon {
-    background-position: 0 -394px;
+  background-position: 0 -394px;
 }
 
 span.flag-icon {
-    background-position: 0 -470px;
+  background-position: 0 -470px;
 }
 
 span.link-icon {
-    background-position: 0 -1450px;
+  background-position: 0 -1450px;
 }
 
 span.remove-icon {
-    background-position: 0 -1471px;
+  background-position: 0 -1471px;
 }
 
 span.discuss-icon {
-    background-position: 0 -1491px;
+  background-position: 0 -1491px;
 }
 
 /*
@@ -248,31 +247,31 @@ FORM ELEMENTS
 }
 
 .text-input {
-    -webkit-transition-property: border, -webkit-box-shadow;
-    -webkit-transition-duration: 0.3s;
-    font-size: 1.4em;
-    border: 1px solid #e0e0e0;
-    padding: 5px 7px;
-    .rounded_corners(5px);
+  -webkit-transition-property: border, -webkit-box-shadow;
+  -webkit-transition-duration: 0.3s;
+  font-size: 1.4em;
+  border: 1px solid #e0e0e0;
+  padding: 5px 7px;
+  .rounded_corners(5px);
 }
 
 .textarea {
-    -webkit-transition-property: border, -webkit-box-shadow;
-    -webkit-transition-duration: 0.3s;
-    border: 1px solid #e0e0e0;
-    padding: 5px 7px;
-    width: 300px;
-    .rounded_corners(5px);    
+  -webkit-transition-property: border, -webkit-box-shadow;
+  -webkit-transition-duration: 0.3s;
+  border: 1px solid #e0e0e0;
+  padding: 5px 7px;
+  width: 300px;
+  .rounded_corners(5px);    
 }
 
 .text-input:focus,
 .textarea:focus {
-    border-color: #61d7f7;
-    .box_shadow(0px, 0px, 3px, #aaa);
+  border-color: #61d7f7;
+  .box_shadow(0px, 0px, 3px, #aaa);
 }
 
 input[disabled='disabled'] {
-    opacity: 0.6;
+  opacity: 0.6;
 }
 
 /*
@@ -282,10 +281,10 @@ PAGE STRUCTURE
 */
 
 body {
-    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; 
-    background: #f1f2f3;
-    color: #666;
-    min-width: 960px;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; 
+  background: #f1f2f3;
+  color: #666;
+  min-width: 960px;
 }
 
 /* #content is a required element on every template.
@@ -298,8 +297,8 @@ body {
 
 /* Fixed is a class appended to #content when we want a fixed width, centered page */
 .fixed { 
-    margin: 0 auto;
-    width: 96em;
+  margin: 0 auto;
+  width: 96em;
 }
 
 /*
@@ -309,19 +308,19 @@ Header
 */
 
 #header {
-    position: relative;
-    z-index: 10; /* for Freebase Suggest */
-    min-height: 40px;
-    min-width: 96em;
-    .linear_gradient(#fff,#cecfd1);
-    .box_shadow(0,1px,2px,#aaa);
+  position: relative;
+  z-index: 10; /* for Freebase Suggest */
+  min-height: 40px;
+  min-width: 96em;
+  .linear_gradient(#fff,#cecfd1);
+  .box_shadow(0,1px,2px,#aaa);
 }
 
 #fb-logo {
-    position: absolute;
-    top: 9px;
-    left: 28px;
-    z-index:12;
+  position: absolute;
+  top: 9px;
+  left: 28px;
+  z-index:12;
 }
 
 /*
@@ -642,8 +641,8 @@ a.button-primary.disabled,
 .button-primary:hover[disabled=disabled],
 .button-primary.disabled:hover,
 a.button-primary.disabled:hover {
-    opacity: 0.2;
-    cursor: default;
+  opacity: 0.2;
+  cursor: default;
 }
 
 /*
@@ -671,46 +670,46 @@ FOOTER
 */
 
 #footer {
-    clear: both;
-    margin-top: 30px;
-    background: #fff;
-    border-top: 1px solid #cdf;
-    border-bottom: 1px solid #cdf;
-    overflow: hidden;
+  clear: both;
+  margin-top: 30px;
+  background: #fff;
+  border-top: 1px solid #cdf;
+  border-bottom: 1px solid #cdf;
+  overflow: hidden;
 }
 
 #nav-footer {
-    margin: 0 0 15px 15px;
-    padding: 15px 0 0 0;
+  margin: 0 0 15px 15px;
+  padding: 15px 0 0 0;
 }
 
 .nav-footer-item {
-    float: left;
-    display: inline;
-    list-style: none;
-    margin: 0;
-    padding: 0 0 0 15px;
-    font-size: 1.2em;
+  float: left;
+  display: inline;
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 15px;
+  font-size: 1.2em;
 }
 
 #copyright {
-    margin: 4px 30px 0 0;
-    float: right;
-    font-size: 1.1em;
+  margin: 4px 30px 0 0;
+  float: right;
+  font-size: 1.1em;
 }
 
 #copyright a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 #copyright img {
-    position: relative;
-    top: 7px;
-    padding: 0 5px 0 2px;
+  position: relative;
+  top: 7px;
+  padding: 0 5px 0 2px;
 } 
 
 #sourcelink {
-    font-size: .9em;
+  font-size: .9em;
 }
 
 /*
@@ -728,10 +727,10 @@ of all templates.
 }
 
 #breadcrumb h1 {
-    color: #fff;
-    font-size: 2.4em;
-    padding: 10px 5px;
-    text-shadow:2px 2px 3px #5C6C84;
+  color: #fff;
+  font-size: 2.4em;
+  padding: 10px 5px;
+  text-shadow:2px 2px 3px #5C6C84;
 }
 
 /*
@@ -744,57 +743,17 @@ of all templates.
 
 
 .user-image {
-    display: inline-block;
-    line-height: 1;
+  display: inline-block;
+  line-height: 1;
 }
 
 .user-image img {
-    padding: 1px;
-    background: #fff;
-    border: 1px solid #d1d1d1;
+  padding: 1px;
+  background: #fff;
+  border: 1px solid #d1d1d1;
 }
 
 .user-image a { display: block; }
-
-
-
-/*
-----------------------------------
-Freebase developer tools (devbar)
-----------------------------------
-*/
-
-
-#devbar {
-    clear: both;
-    border-top: 1px dotted #c4c4c4;
-    margin: 1em 0;
-    padding: 1em 0 0 30px;
-    color: #333;
-}
-
-#devbar-title {
-  float: left;
-  font-size: 1.1em;
-  font-weight: bold;
-}
-
-#devba-title a  {
-  color: #333;
-}
-
-#devbar li {
-  float: left;
-  font-size: 1.1em;
-  list-style: none;
-  padding: 0 10px;
-  border-right: 1px solid #aaa;
-}
- 
-#devbar li.last  {
-  border: 0;
-}
-
 
 /*
 ----------------------------------

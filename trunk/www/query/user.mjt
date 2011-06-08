@@ -51,9 +51,14 @@
         count += c.saved_queries[q]["/freebase/domain_profile/featured_views"].length
       }
     </acre:script>
-    <h2 class="table-title">
-      ${h.template_sprintf(_("%s has curated %s queries"), i18n.display_name(c.object), i18n_c.number(count))}
-    </h2>
+    <div class="table-header">
+      <div class="button-group">
+        <button class="button button-primary edit">Create new</button>
+      </div>
+      <h2 class="table-title">
+        ${h.template_sprintf(_("%s has curated %s queries"), i18n.display_name(c.object), i18n_c.number(count))}
+      </h2>
+    </div>
     <table id="queries" cellspacing="0" class="table table-sortable">
       <thead>
         <tr>

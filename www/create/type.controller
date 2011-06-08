@@ -55,13 +55,33 @@ var SPEC = {
   },
 
   run: function(type, lang) {
-    return included_types(type.id)
-      .then(function(inc_types) {
+    /**
+     * We want to use propbox components and editparams to create a new instance of type.
+     *
+     * We do this by using type as the subject and /type/type/instance as the predicate:
+     *
+     * <type id> </type/type/instance> <object...>
+     *
+     * To do this, we need to "fake" the property structure of "/type/type/instance",
+     * specifically the expected_type to include the included_types of type since
+     * expected_type of /type/type/instance is just /type/object.
+     *
+     * We also "fake" the expected_type's disamibiguating properties to include the
+     * type's disambiguating properties along with it's included_types disambiguating properties.
+     */
+    return type_hints(type.id)
+      .then(function(hints) {
+        var mediator = hints.mediator;
+        var inc_types = hints.included_types;
         var promises = {
-          // explicitly get /type/type/instance and /type/object/name prop schemas
-          default_props: propbox_queries.prop_structures("/type/type/instance", "/type/object/name", lang)
+          // explicitly get /type/type/instance
+          instance_prop: propbox_queries.prop_structure("/type/type/instance", lang)
         };
-        // get disabmiguating properties of type
+        if (!mediator) {
+          // get /type/object/name prop schemas for non mediator
+          promises.name_prop = propbox_queries.prop_structure("/type/object/name", lang);
+        };
+        // get disabmiguating properties of type + included_types
         var prop_clause = propbox_mql.prop_schema({
           "/freebase/property_hints/disambiguator": true,
           "/freebase/property_hints/display_none": {
@@ -76,10 +96,11 @@ var SPEC = {
           value: true,
           optional: "forbidden"
         };
-        var type_ids = [type.id].concat(inc_types);
-
-              console.log("type_ids", type_ids);
-
+        var type_ids = [type.id];
+        if (!mediator) {
+          // only include disamiguating properties of the included_types if NOT mediator
+          type_ids = type_ids.concat(inc_types);
+        }
         var q = [{
           id: null,
           "id|=": type_ids,
@@ -107,6 +128,7 @@ var SPEC = {
           .then(function(prop_structures) {
             var d = [];
             prop_structures.forEach(function(prop_structure) {
+              // attach all enumerations (/freebase/type_hints/enumeration)
               d.push(propbox_queries.get_enumerated_types(prop_structure, lang));
             });
             return deferred.all(d)
@@ -116,11 +138,15 @@ var SPEC = {
           });
         return deferred.all(promises)
           .then(function(result) {
-            var default_props = result.default_props;
-            var instance_prop = default_props[0];
-            var name_prop = default_props[1];
-            var disamb_props = result.disamb_props;
-            instance_prop.properties = [name_prop].concat(disamb_props);
+            var instance_prop = result.instance_prop;
+            // "fake" /type/object included_types
+            instance_prop.expected_type.included_types = inc_types;
+
+            var properties = [];
+            if (result.name_prop) {
+              properties.push(result.name_prop);
+            }
+            instance_prop.properties = properties.concat(result.disamb_props);
             return {
               object: type,
               prop_structure: instance_prop
@@ -130,9 +156,10 @@ var SPEC = {
   }
 };
 
-function included_types(type_id) {
+function type_hints(type_id) {
   var q = {
     id: type_id,
+    "/freebase/type_hints/mediator": null,
     "/freebase/type_hints/included_types": [{
       id: null,
       optional: true,
@@ -142,8 +169,11 @@ function included_types(type_id) {
   };
   return freebase.mqlread(q)
     .then(function(env) {
-      return env.result["/freebase/type_hints/included_types"].map(function(inc_type) {
-        return inc_type.id;
-      });
+      var result = env.result;
+      var hints = {
+        mediator: result["/freebase/type_hints/mediator"] === true,
+        included_types: result["/freebase/type_hints/included_types"].map(function(t) { return t.id; })
+      };
+      return hints;
     });
 };

@@ -164,16 +164,26 @@
            autocomplete="off"
            placeholder="Find entities&hellip;" />
     <div id="site-search-box"></div>
-    <div id="site-search-label"><span>Start typing to get some suggestions</span></div>
+    <div id="site-search-label"><span>${_("Start typing to get some suggestions")}</span></div>
   </div>
   <!!-- Global Nav Links-->
   <ul class="clear" id="nav-global">
-    <li><a href="/explore">Explore data</a></li>
+    <li><a href="/explore">${_("Explore data")}</a></li>
     <li>
       <a href="${h.wiki_url()}"
         title="Give help and get help adding data to Freebase">
-        Documentation
+        ${_("Documentation")}
       </a>
+    </li>
+    <li>
+      <a href="http://www.google.com/tools/feedback/intl/en/error.html" onclick="
+      try{
+        userfeedback.api.startFeedback({
+          productId: '68931',
+          disableScrolling: false
+        });
+        return false;
+      }catch(e){}">${_("Report an Issue")}</a>
     </li>
   </ul>
   <div id="breadcrumb" acre:if="exports.breadcrumb">
@@ -195,22 +205,22 @@
         &#169; <script> document.write(new Date().getFullYear());</script>
         <img src="template/google-logo.png" alt="Google" width="62" height="23" />
       </a>
-      <a title="${acre.request.script.path}" href="/appeditor#!path=${acre.request.script.path}" id="sourcelink">View Source</a>
+      <a title="${acre.request.script.path}" href="/appeditor#!path=${acre.request.script.path}" id="sourcelink">${_("View Source")}</a>
     </div>
     <ul id="nav-footer" class="clear">
       <li class="nav-footer-item">
         <a href="${h.fb_url('/policies/attribution')}"
            rel="nofollow"
-           title="View the Freebase Licensing Policy">Attribution Policy</a>
+           title="View the Freebase Licensing Policy">${_("Attribution Policy")}</a>
       </li>
       <li class="nav-footer-item">
         <a href="${h.fb_url('/policies/tos')}"
            rel="nofollow"
-           title="View the Freebase Terms of Service">Terms of Service</a>
+           title="View the Freebase Terms of Service">${_("Terms of Service")}</a>
       </li>
       <li class="nav-footer-item">
         <a href="http://blog.freebase.com/"
-           title="Visit our blog to keep up with the latest news from Freebase">Freebase Blog</a>
+           title="Visit our blog to keep up with the latest news from Freebase">${_("Freebase Blog")}</a>
       </li>
     </ul>
   </div>
@@ -244,6 +254,15 @@
     ${exports.freebase_js()}
   </acre:block>
   <script acre:else="" src="template/freebase.mf.js"></script>
+  <script>
+    (function() { // Protect global namespace
+      var prefix = ('https:' == document.location.protocol) ? 'https://ssl' : 'http://www';
+      var script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = prefix + '.gstatic.com/feedback/api.js';
+      document.body.appendChild(script);
+    })();
+  </script>
   <acre:block if="exports.footer_script">${exports.footer_script()}</acre:block>
 </acre:block>
 

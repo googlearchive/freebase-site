@@ -40,7 +40,7 @@ var rules = [
   {prefix:"/favicon.ico",        app:"lib", script: "template/favicon.ico"},
   {prefix:"/index",              url:"/", redirect: 301},
   {prefix:"/homepage",           app:"homepage", script:"index.controller"},
-  {prefix:"/explore",            app:"homepage", script:"index.controller"},
+  {prefix:"/explore",            app:"activity"},
   {prefix:"/schema",             app:"schema"},
   {prefix:"/apps",               app:"apps"},
   {prefix:"/appeditor",          app:"appeditor"},

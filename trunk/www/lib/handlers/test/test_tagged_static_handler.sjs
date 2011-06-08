@@ -58,7 +58,7 @@ test("include", function() {
   assert_content(resp);
   ok(resp.headers, "got headers");
   ok(resp.headers.expires, "got expires header");
-  ok(/public\,\s*max\-age\s*:\s*\d+/.test(resp.headers["cache-control"]), "got cache-control header");
+  ok(/public\,\s*max\-age\s*\=\s*\d+/.test(resp.headers["cache-control"]), "got cache-control header");
   equal(resp.headers["content-type"], "application/x-javascript");
 });
 

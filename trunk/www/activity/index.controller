@@ -52,7 +52,7 @@ var SPEC = {
     
     var data = {
       dates: dates,
-      title: 'Freebase Activity' + (dates.end[0] != dates.start[0] ? ' from ' + dates.start[1] + ' to ' +  dates.end[1] + ' (' + (parseInt(dates.number)+1) + ' days)' : ' for ' + dates.start[1]),
+      title: 'Activity' + (dates.end[0] != dates.start[0] ? ' from ' + dates.start[1] + ' to ' +  dates.end[1] + ' (' + (parseInt(dates.number)+1) + ' days)' : ' for ' + dates.start[1]),
       type_names: { 
         '/type/domain' : 'Domains', 
         '/type/user' : 'Users', 

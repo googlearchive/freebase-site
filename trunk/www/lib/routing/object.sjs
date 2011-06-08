@@ -139,7 +139,6 @@ var rules = [
     "navs": [
       {
         "name": "Edit Settings",
-        "key": "settings",
         "app": "admin",
         "ajax": "domain_settings.mf.js",
         "auth": true
@@ -177,14 +176,12 @@ var rules = [
     "navs": [
       {
         "name": "Edit Settings",
-        "key" : "settings",
         "app": "admin",
         "ajax": "type_settings.mf.js",
         "auth": true
       },
       {
         "name": "Build Query",
-        "key" : "query", 
         "url": h.fb_url("/queryeditor", {q:JSON.stringify([{id:null, name:null, type:"${id}"}])})
       },
       {
@@ -255,7 +252,6 @@ var rules = [
     "navs": [
       {
         "name": "Edit Profile",
-        "key": "settings",
         "app": "admin",
         "ajax": "user_settings.mf.js",
         "auth": true

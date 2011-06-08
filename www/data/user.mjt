@@ -38,34 +38,18 @@
   var _ = i18n.gettext;
 </acre:script>
 
-<acre:block def="head()">
-</acre:block>
-
-<acre:block def="breadcrumb()">
-  <div class="page-header clear">
-    <div class="breadcrumb clear">
-      <ol>
-        <li class="breadcrumb-item label user">
-          <span class="breadcrumb-item-inner">
-            <span class="breadcrumb-link">${_("User")}</span>
-          </span>
-        </li>
-        <li class="breadcrumb-item last">
-          <span class="breadcrumb-item-inner last">
-            <a href="${h.fb_url('/')}" class="breadcrumb-link">${i18n.display_name(c.object)}</a>
-          </span>
-        </li>
-      </ol>
-    </div>
-  </div>
-</acre:block>
+<acre:block def="head()"></acre:block>
 
 <acre:block def="page_content()">
   
   <!!-- Domains user is an admin of -->
   <acre:block if="c.domains.owned && c.domains.owned.length">
-    <button class="button button-primary edit" style="float:right">Create new</button>
-    <h2 class="table-title">${h.template_sprintf(_("%s owns %s domains"), i18n.display_name(c.object), i18n_c.number(c.domains.owned.length))}</h2>
+    <div class="table-header">
+      <div class="button-group">
+        <button class="button button-primary edit">Create new</button>
+      </div>
+      <h2 class="table-title">${h.template_sprintf(_("%s owns %s domains"), i18n.display_name(c.object), i18n_c.number(c.domains.owned.length))}</h2>
+    </div>
     <table cellspacing="0" class="table table-sortable">
       <thead>
         <tr>

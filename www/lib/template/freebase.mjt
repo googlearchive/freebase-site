@@ -213,12 +213,6 @@
            title="Visit our blog to keep up with the latest news from Freebase">Freebase Blog</a>
       </li>
     </ul>
-    <!--<div id="devbar" class="clear">
-      <ul class="clear">
-        <li><a title="${_('Query editor')}" href="${h.fb_url('/queryeditor')}">${_('Query editor')}</a></li>
-        <li id="devbar-touch" class="last"><a title="${_('Refresh cache')}" rel="nofollow" href="#">${_('Refresh cache')}<a/></li>
-      </ul>
-    </div>-->
   </div>
 
 </acre:block>

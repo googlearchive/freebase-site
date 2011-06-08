@@ -40,7 +40,7 @@
 </acre:script>
 
 <acre:block def="title()" trim="">
-  ${_("Activity")}
+  ${_("Explore")}
 </acre:block>
 
 <acre:block def="head()" trim="">
@@ -139,8 +139,9 @@
           <th class="topicstableheader" colspan="2">user</th>
           <th class="topicstableheader" style="width: 80px;">edits</th>
         </tr>
-        <acre:block for="user_id in c.activity.sorted_users">
+        <acre:block for="(i=0; i < 10; i++)">
           <acre:script>
+            var user_id = c.activity.sorted_users[i];
             var user_class = (c.activity.staff[user_id] || c.activity.bots[user_id] || (c.activity.new_user_ids[user_id] && c.activity.data['users']['edits'][user_id]==24)) ? 'staff-bots': 'real-user';
             var user_limited = c.activity.limited_users[user_id] ? 'limited' : '';
           </acre:script>
@@ -155,14 +156,17 @@
         </acre:block>
       </table>
       
-      <a name='topics'>Topics by Domain</a>
+      <h2><a name='topics'>Domains</a></h2>
       <table style="width:100%">
         <tr>
           <th class="topicstableheader" style="">domain/type</th>
           <th class="topicstableheader" style="width: 150px;">new topics</th>
           <th class="topicstableheader" style="width: 80px;">edits</th>
         </tr>
-        <acre:block for="domain_id in c.activity.sorted_domain_ids">
+        <acre:block for="(i=0; i < 10; i++)">
+          <acre:script>
+            var domain_id = c.activity.sorted_domain_ids[i];
+          </acre:script>
           <tr style="background-color: #eeeeee;">
             <td><b><a href="${domain_id}?activity">${domain_id.slice(0,25)}</a></b></td>
             <td>${util.ppn(c.activity.data['domains']['new'][domain_id] || 0)}</td>

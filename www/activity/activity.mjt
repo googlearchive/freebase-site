@@ -53,18 +53,24 @@
     <h1>$c.title</h1>
     <div id="activity-header">
       <!--<div style="float: left; padding: 4px; width: 20%;"><a href="/explore?date_offset=${parseInt(c.dates.offset)-1}">&lt; ${c.dates.previous[1]}</a></div>-->
-      <b><a href="#topics">${util.ppn(c.activity.data['types']['new']['/common/topic'] || 0)}</a></b> new topics 
-      <b><a href="#users">${util.ppn(c.activity.edits)}</a></b> edits
-      <b><a href="#new_user">${util.ppn(c.activity.data['types']['new']['/type/user'] || 0)}</a></b> new users
-      <b><a href="#new_type">${util.ppn(c.activity.totals['/type/type'])}</a></b> new types
-      <b><a href="#new_domain">${util.ppn(c.activity.totals['/type/domain'])}</a></b> new domains
-      <b><a href="#new_query">${util.ppn(c.activity.totals['/freebase/query'])}</a></b> new views
-      <b><a href="#new_acre">${util.ppn(c.activity.data['types']['new']['/freebase/apps/acre_app'] || 0)}</a></b> new acre apps
-      <b><a href="#edits_acre">${util.ppn(c.activity.acre_edits)}</a></b> acre edits
-      <b><a href="#namespaces">${util.ppn(c.activity.totals['/type/key'])}</a></b> keys
-      <div style="float: right; padding: 4px;width: 20%;text-align:right;"><a href="/explore?date_offset=${parseInt(c.dates.offset)+1}">${c.dates.next[1] ? c.dates.next[1] + '&gt;' : ''}</a></div>
+      <p class="recent-activity-summary">
+        <b><a href="#topics">${util.ppn(c.activity.data['types']['new']['/common/topic'] || 0)}</a></b> new topics 
+        <b><a href="#users">${util.ppn(c.activity.edits)}</a></b> edits
+        <b><a href="#new_user">${util.ppn(c.activity.data['types']['new']['/type/user'] || 0)}</a></b> new users
+        <b><a href="#new_type">${util.ppn(c.activity.totals['/type/type'])}</a></b> new types
+        <b><a href="#new_domain">${util.ppn(c.activity.totals['/type/domain'])}</a></b> new domains
+        <b><a href="#new_query">${util.ppn(c.activity.totals['/freebase/query'])}</a></b> new views
+        <b><a href="#new_acre">${util.ppn(c.activity.data['types']['new']['/freebase/apps/acre_app'] || 0)}</a></b> new acre apps
+        <b><a href="#edits_acre">${util.ppn(c.activity.acre_edits)}</a></b> acre edits
+        <b><a href="#namespaces">${util.ppn(c.activity.totals['/type/key'])}</a></b> keys
+      </p>
+      <div style="float: right; padding: 4px;width: 20%;text-align:right;">
+        <a href="/explore?date_offset=${parseInt(c.dates.offset)+1}">${c.dates.next[1] ? c.dates.next[1] + '&gt;' : ''}</a>
+      </div>
     </div>
       
+    <h2>${util.ppn(c.freebase.data['total_primitives'])} ${_("total facts")}</h2>
+    <div id="placeholder-primitives"></div>
     <acre:script>
       var min = 500000;
       var pie_t = [], pie_n = [];
@@ -95,8 +101,6 @@
     </div>
     <div id="placeholder-topics" style="display:none;width: 66%;height:150px;"> </div>
     
-    <h1>Facts (${util.ppn(c.freebase.data['total_primitives'])})</h1>
-    <div id="placeholder-primitives" style="width: 66%;height:150px;"></div>
   </div>
   
 
@@ -238,15 +242,12 @@
               <th class="column-header">
                 <a name="new_acre">new acre apps (${util.ppn(c.activity.data['types']['new']['/freebase/apps/acre_app'] || 0)})</a>
               </th>
-              <th class="column-header">view</th>
+              <th class="column-header"></th>
             </tr>
           </thead>
           <tbody>
             <acre:block for="app_id, app in c.activity.data['apps']['new']">
               <tr>
-                <td>
-                  <img style="align: left;" src="http://www.freebase.com/api/trans/image_thumb${app.user_id}?maxwidth=30&maxheight=30&mode=fillcrop"/>
-                </td>
                 <td style="vertical-align: top;">${app.name} <br/>by <a href="${app.user_id}?apps">${app.user_id}</a>
                 </td>
                 <td>[<a href="${app_id}?activity">view</a> | <a href="/appeditor#!app=${app_id}">source</a>]</td>
@@ -258,21 +259,15 @@
         <table class="table">
           <thead>
             <tr>
-              <th class="topicstableheader" style="" colspan="2"><a name="edits_acre">edited acre apps</a></th>
-              <th class="topicstableheader" style="">files</th>
-              <th class="topicstableheader" style="">view</th>
+              <th class="column-header"><a name="edits_acre">edited acre apps</a></th>
+              <th class="column-header"></th>
             </tr>
           </thead>
           <tbody>
             <acre:block for="app_id in c.activity.sorted_app_ids">
             <acre:script> var app = util.split_id(app_id); </acre:script>
               <tr>
-                <td style="vertical-align: top;">
-                  <img style="align: left;" src="http://www.freebase.com/api/trans/image_thumb${app[0]}?maxwidth=30&maxheight=30&mode=fillcrop"/>
-                </td>
-                <td style="vertical-align: top;">${app[1]} <br/>by <a href="${app.user_id}?apps">${app[0]}</a> 
-                </td>
-                <td style="vertical-align: top;">${c.activity.data['apps']['edits'][app_id]}</td>
+                <td style="vertical-align: top;">${app[1]} <br/>by <a href="${app.user_id}?apps">${app[0]}</a> </td>
                 <td style="vertical-align: top;">
                   [<a href="${app_id}?activity">view</a> | <a href="/appeditor#!app=${app_id}">source</a>]
                 </td>

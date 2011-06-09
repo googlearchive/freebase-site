@@ -1,0 +1,207 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("helper/helpers.sjs");
+  var i18n = acre.require("i18n/i18n.sjs");
+  var _ = i18n.gettext;
+  var fh = acre.require("filter/helpers.sjs");
+</acre:script>
+
+<acre:block def="prop_counts_filter(base_url, filters, prop_counts, hide_counts)">
+  <acre:script>
+    var domain = filters.domain;
+    var type = filters.type;
+    var property = filters.property;
+  </acre:script>
+  <div class="filter-group filter-chart">
+    <h2 class="module-section-title" acre:if="type">${_("By Type")}:</h2>
+    <h2 class="module-section-title" acre:elif="property">${_("By Property")}:</h2>
+    <h2 class="module-section-title" acre:else="">${_("By Domain")}:</h2>
+    <acre:block if="domain">
+      <span class="filter-item">
+        <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'domain'))}" class="remove-filter">x</a>
+        ${domain}
+      </span>
+    </acre:block>
+    <acre:block elif="type">
+      <acre:script>
+        var path = type.split("/");
+        path.pop();
+        var domain_ns = path.join("/");
+        var domain_filters = h.extend(true, {}, filters);
+        delete domain_filters.type;
+      </acre:script>
+      <span class="filter-item">
+        <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'type'))}" class="remove-filter">x</a>
+        <a href="${h.fb_url(base_url, fh.add_filter(domain_filters, 'domain', domain_ns))}">${domain_ns}</a>
+      </span>
+      <span class="filter-sub-item">${type.split("/").pop()}</span>
+    </acre:block>
+    <acre:block elif="property">
+      <acre:script>
+        var path = property.split("/");
+        path.pop();
+        var type_ns = path.join("/");
+        path.pop();
+        var domain_ns = path.join("/");
+        var type_filters = h.extend(true, {}, filters);
+        delete type_filters.property;
+      </acre:script>
+      <span class="filter-item">
+        <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'property'))}" class="remove-filter">x</a>
+        <a href="${h.fb_url(base_url, fh.add_filter(type_filters, 'domain', domain_ns))}">${domain_ns}</a>
+      </span>
+      <a class="filter-sub-item" href="${h.fb_url(base_url, fh.add_filter(type_filters, 'type', type_ns))}">
+        ${type_ns.split("/").pop()}
+      </a>
+      <span class="filter-sub-sub-item">${property.split("/").pop()}</span>
+    </acre:block>
+
+    <acre:block if="prop_counts && !hide_counts">
+      <acre:script>
+        var bar_graph_data = fh.get_bar_graph_data(filters, prop_counts);
+      </acre:script>
+
+      <acre:block if="bar_graph_data && bar_graph_data.length">
+        <table class="bar-graph" cellspacing="0"  role="listbox">
+          <tbody>
+            <acre:block for="i, data in bar_graph_data" if="i < 100 && data.id !== '/type'">
+              <acre:script>
+                var id = data.id;
+                var total = data.total;
+                if (filters.domain || filters.type || filters.property) {
+                  id = id.split("/").pop();
+                }
+              </acre:script>
+              <tr class="bar-graph-row" role="option">
+                <th>
+                  <span class="bar-graph-label">
+                    <span style="width:${total}%" class="index"></span>
+                    <a class="clear" 
+                       href="${data.params ? h.fb_url(base_url, data.params) : 'javascript:void(0);'}">
+                      ${id}
+                    </a>
+                  </span>
+                </th>
+              </tr>
+            </acre:block>
+          </tbody>
+        </table>
+      </acre:block>
+    </acre:block>
+
+    <div class="other-graph-value">
+      <a href="javascript:void(0);" class="filter-form-trigger">
+        ${domain || type || property ? _("change"): _("choose")}&hellip;
+      </a>
+      <div class="filter-form" style="display:none;">
+        <acre:script>
+          var key = "domain";
+          if (type) {
+            key = "type";
+          }
+          else if (property) {
+            key = "property";
+          }
+        </acre:script>
+        ${filter_form(base_url, filters, key, suggest_input, [key, 'Start typing for suggestions'])}
+      </div>
+    </div>
+    <acre:block if="!domain && !type && !property">
+    ${domains_filter(base_url, filters)}   
+    </acre:block>
+  </div>
+</acre:block>
+
+<acre:block def="domains_filter(base_url, filters)">
+  <div class="filter-form all-data-toggle">
+    ${filter_form(base_url, filters, 'domains', domains_input, ['domains', filters.domains === 'all'])}
+  </div>
+</acre:block>
+
+<acre:block def="as_of_time_filter(base_url, filters)">
+  <h3 class="module-section-title"><label for="">${_("As of")}</label></h3>
+  <acre:block if="filters.as_of_time">
+    <span class="filter-item">
+      <a href="${h.fb_url(base_url, fh.remove_filter(filters, 'as_of_time'))}" class="remove-filter">x</a>
+      ${filters.as_of_time}
+    </span>
+    <a href="javascript:void(0);" class="filter-form-trigger">${_("change")}&hellip;</a>
+    <div class="filter-form" style="display:none">
+      ${filter_form(base_url, filters, 'as_of_time', datejs_input, ['as_of_time'])}
+    </div>
+  </acre:block>
+  <acre:block else="">
+    ${filter_form(base_url, filters, 'as_of_time', datejs_input, ['as_of_time'])}
+  </acre:block>
+</acre:block>
+
+<acre:block def="filter_form(base_url, filters, param_name, def, def_params, hide)">
+  <form action="${base_url}" method="GET" class="filter-form" acre:attrs="hide ? {style: 'display:none;'} : {}">
+    <acre:block for="key,val in filters" if="val != null && key != param_name">
+      <acre:block if="h.isArray(val)">
+        <input acre:for="v in val" type="hidden" name="${key}" value="${v}"/>
+      </acre:block>
+      <acre:block else="">
+        <input type="hidden" name="${key}" value="${val}"/>
+      </acre:block>
+    </acre:block>
+    <acre:block if="i18n.lang !== '/lang/en'">
+      <input type="hidden" name="lang" value="${i18n.lang}"/>
+    </acre:block>
+    ${def.apply(null, def_params)}
+  </form>
+</acre:block>
+
+<acre:block def="suggest_input(name, placeholder)">
+  <input type="text" class="text-input suggest-input" name="${name}" acre:attrs="placeholder ? {placeholder:placeholder}: {}"/>
+</acre:block>
+
+<acre:block def="datejs_input(name, placeholder)">
+  <input type="text" class="text-input date-input" 
+         name="${name}" acre:attrs="placeholder ? {placeholder:placeholder}: {}"/>
+</acre:block>
+
+<acre:block def="limit_slider(name, value)">
+  <input type="hidden" name="${name}" value="${value}" />
+  <div class="limit-slider"></div>
+</acre:block>
+
+<acre:block def="domains_input(name, checked)">
+  <label for="${name}">
+    <input type="checkbox" name="${name}" value="all" 
+           acre:attrs="checked ? {checked:'checked'} : {}"
+           onchange="this.form.submit();"/>
+    ${_('Show user domains')}
+  </label>
+</acre:block>

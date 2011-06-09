@@ -1,7 +1,41 @@
 .section {
+  padding: 15px;
+  margin-bottom: 2em;
+}
+
+#overview {
   background: #fff;
   padding: 15px;
   .box_shadow(1px, 2px, 3px, #bbb);
+}
+
+#body .section {
+  padding: 0;
+  background: #fff;
+}
+
+.sub-section {
+  float: left;
+  background: #fff;
+  width: 33.3%;
+  border-right: 1px solid #ddd;
+}
+
+.sub-section .table {
+  margin: 10px;
+  margin-bottom: 2em;
+  width: 90%;
+}
+.sub-section h1 {
+  font-size: 1.6em;
+  font-weight: normal;
+  padding: 4px 10px;
+  text-shadow:1px 1px 1px #fff;
+  .linear_gradient(#f8f8f8, #e1e2e3);
+}
+
+#facts-by-domain-chart {
+  max-width: 100%;
 }
 
 h1 {
@@ -23,12 +57,6 @@ h2 {
   padding: 3px; 
   border-bottom: 1px solid; 
   background-color: #cccccc;
-}
-
-.section {
-  float: left;
-  margin-top: 20px;
-  margin-right: 20px;
 }
 
 #activity-header {

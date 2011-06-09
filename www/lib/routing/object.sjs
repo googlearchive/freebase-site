@@ -371,12 +371,12 @@ function ObjectRouter(app_labels) {
 
     var path_info = req.path_info;
 
-    var id = validators.MqlId(path_info, {if_invalid:null});
+    var req_id = validators.MqlId(path_info, {if_invalid:null});
 
-    if (id) {
+    if (req_id) {
 
       var o;
-      var d = object_query.object(id)
+      var d = object_query.object(req_id)
         .then(function(obj) {
           o = obj;
         });
@@ -386,44 +386,54 @@ function ObjectRouter(app_labels) {
       d.cleanup();
 
       if (o) {
-        // merged topic
+
         if (o.replaced_by) {
-          id = o.replaced_by.id.indexOf("/en/") === 0 ? o.replaced_by.mid : o.replaced_by.id;
-          return redirect(id);
+          return redirect(o.replaced_by.mid);
         }
-        // canonicalize /en topics to mids
-        else if (path_info.indexOf("/en/") === 0) {
+        else if (!(req_id === o.mid || req_id === o.id)) {
+          // request id is NOT a mid and NOT a mql "approved" id
           return redirect(o.mid);
         }
-        // otherwise render object template
         else {
-          // we should now have the canonical id
-          o.id = o["q:id"];
+          var re_en = /^\/en\//;
+          if (re_en.test(req_id)) {
+            // request id is /en/*, redirect to mid
+            return redirect(o.mid);
+          }
+          else if (req_id === o.mid && !(o.id === o.mid || re_en.test(o.id))) {
+            // request id is mid, but object id is NOT /en/*
+            return redirect(o.id);
+          }
+          else {
+            // we should now have the canonical id
+            o.id = o["q:id"];
 
-          // Build type map for object
-          var obj_types = h.map_array(o.type, "id");
-          obj_types["/type/object"] = true; // all valid IDs are /type/object
+            // Build type map for object
+            var obj_types = h.map_array(o.type, "id");
+            obj_types["/type/object"] = true; // all valid IDs are /type/object
 
-          var rule, i, l;
-          // Find correct rule for this object
-          for (i=0,l=route_list.length; i<l; i++) {
-            var route = route_list[i];
-            var type = route.type;
-            if (obj_types[type]) {
-              // clone tabs spec so we don't overwrite it
-              rule = h.extend(true, {}, route);
-              break;
+            var rule, i, l;
+            // Find correct rule for this object
+            for (i=0,l=route_list.length; i<l; i++) {
+              var route = route_list[i];
+              var type = route.type;
+              if (obj_types[type]) {
+                // clone tabs spec so we don't overwrite it
+                rule = h.extend(true, {}, route);
+                break;
+              }
             }
-          }
 
-          // Turn tab config arrays into something more useful
-          if (!rule) {
-            throw "Missing rule configuration for this object";
-          }
+            // Turn tab config arrays into something more useful
+            if (!rule) {
+              throw "Missing rule configuration for this object";
+            }
 
-          acre.write(freebase_object.main(rule, o));
-          acre.exit();
+            acre.write(freebase_object.main(rule, o));
+            acre.exit();
+          }
         }
+
       }
     }
   };

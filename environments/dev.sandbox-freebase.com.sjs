@@ -4,7 +4,7 @@ var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 
 var labels = {
   "lib":        "//13a.lib" + tags_codebase,
-  "topic":      "//8a.topic" + tags_codebase,
+  "topic":      "//8b.topic" + tags_codebase,
   "schema":     "//8a.schema" + tags_codebase,
   "activity":   "//2a.activity" + tags_codebase,
   "triples":    "//4a.triples" + tags_codebase,

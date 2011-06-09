@@ -294,12 +294,19 @@
       // substitute ${id} with c.object.id
       //
       href = href.replace(/\$\{id\}|\$\%7Bid\%7D/g, c.object.id);
+
+      var show = true;
+      if (nav.show) {
+        show = acre.require(nav.app + "/" + nav.script)[nav.show](c.object);
+      }
     </acre:script>
-    <li acre:attrs="nav.auth ? {'class':'edit'} : {}">
-      <a href="${href}" acre:attrs="onclick ? {onclick:onclick} : {}" class="icon-link">
-        <span class="${key}-icon">${nav.name}</span>
-      </a>
-    </li>
+    <acre:block if="show">
+      <li acre:attrs="nav.auth ? {'class':'edit'} : {}">
+        <a href="${href}" acre:attrs="onclick ? {onclick:onclick} : {}" class="icon-link">
+          <span class="${key}-icon">${nav.name}</span>
+        </a>
+      </li>
+    </acre:block>
   </acre:block>
 </acre:block>
 

@@ -106,6 +106,31 @@ test("fb_object_type", function() {
   equal(h.fb_object_type(test_user_object, "/user/kconragan"), "User");
 });
 
+
+test("is_metaweb_system_type", function() {
+  var tests = {
+    "/common/document": true,
+    "/common/image": true,
+    "/common/topic": false,
+    "/film/film": false,
+    "/freebase/domain_profile": true,
+    "/freebase/property_profile": true,
+    "/freebase/type_profile": true,
+    "/freebase/user_profile": true,
+    "/type/domain": true,
+    "/type/namespace": true,
+    "/type/object": true,
+    "/type/permission": true,
+    "/type/property": true,
+    "/type/type": true,
+    "/type/user": true
+  };
+
+  for (var id in tests) {
+    same(h.is_metaweb_system_type(id), tests[id], id);
+  };
+});
+
 acre.test.report();
 
 

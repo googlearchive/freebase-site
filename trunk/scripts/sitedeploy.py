@@ -945,6 +945,14 @@ class ActionSpeedTest:
   _ids_prefix = 'ids_'
 
 
+  x_labels_groups = {
+    'none' : [],
+    'main' : ['at', 'auuc', 'auuw', 'afuc'],
+    'all' : ['at', 'asuc', 'asuw', 'afsc', 'afmc', 'afmw', 'afcc', 'afcw', 'auuc', 'auuw','afuc']
+    }
+
+  x_cost_default = 'main'
+
   x_labels = {
     'at': 'total acre time spent processing the request',
     'afsc': 'number of unique system files required (multiple requires of same file counts as 1)',
@@ -962,7 +970,7 @@ class ActionSpeedTest:
   
   def __init__(self, context):
     self.context = context
-
+    self.urls = []
     self.largest_url_length = 0
 
     try:
@@ -976,25 +984,33 @@ class ActionSpeedTest:
       context.error('There was an error while json parsing the file %s.' % self._conf)
       raise
 
+    if not context.options.cost in self.x_labels_groups.keys():
+      context.error('There is no cost group %s. Available cost groups are:\n %s' % (context.options.cost, '\n'.join(self.x_labels_groups.keys())))
+      context.options.cost = self.x_cost_default
+
+    self._labels = self.x_labels_groups.get(context.options.cost)
     fd.close()
 
 
   def print_csv(self, responses):
 
     csv_file = NamedTemporaryFile(delete=False)
-    csv_file.write(','.join(['http','time','size','url'] + sorted(self.x_labels.keys())) + '\n')
+    csv_file.write(','.join(['http','time','size','url'] + self._labels) + '\n')
 
     for r in responses:
       if r['c'] == 500:
         continue
       u =  r['url'].replace('http://%s'%self.context.options.host, '')
-      csv_file.write(','.join( [str(r['c']), str(r['d'][:4]), str(r['l']), u] + [str(r['x'].get(k, 0)) for k in sorted(self.x_labels.keys())])+'\n')
+      csv_file.write(','.join( [str(r['c']), 
+                                str(r['d'])[:4], 
+                                str(r['l']), u] + 
+                               [str(r['x'].get(k, 0)) for k in self._labels  ])+'\n')
     csv_file.close()
     return csv_file.name
 
   def print_response(self, r, name=0):
     u =  r['url'].replace('http://%s'%self.context.options.host, '')
-    print '%s\t%s\t%.2f\t%s\t%s%s\t%s' % (name, r['c'], r['d'], r['l'], u, ' ' * (self.largest_url_length-len(u)), '\t'.join([r['x'].get(k, '0') for k in sorted(self.x_labels.keys())]))
+    print '%s\t%s\t%.2f\t%s\t%s%s\t%s' % (name, r['c'], r['d'], r['l'], u, ' ' * (self.largest_url_length-len(u)), '\t'.join([r['x'].get(k, '0') for k in self._labels  ]))
 
   def generate_urls_for_page(self, page, n):
     """Generate urls given a page specification and numbers to repeat."""
@@ -1048,6 +1064,8 @@ class ActionSpeedTest:
     o = self.context.options
     
     print "Host: %s" % o.host
+    if len(self.urls):
+      print "Sample URL: %s" % self.urls[0]
     print "Total Requests: %s" % len(responses)
     print "Total Successful Requests: %s" % len([x for x in responses if x['c'] == 200])
     print "Total Concurrent Clients: %s" % o.concurrent
@@ -1055,7 +1073,7 @@ class ActionSpeedTest:
     print 'Median Response Time: %.2f seconds' % self.median(r)
 
     print 'Median Values for X-Metaweb-Cost:'
-    for key in sorted(self.x_labels.keys()):
+    for key in self._labels:
       r = [x['x'].get(key,0) for x in responses if x['c'] == 200]
       print '\t%s - %s: \t%s' % (key, self.x_labels[key], self.median(r))
 
@@ -1066,7 +1084,7 @@ class ActionSpeedTest:
     print "\nPages\n"
 
     table = [['page','url','type']]
-    for key, page in self.conf['pages'].iteritems():
+    for key, page in sorted(self.conf['pages'].iteritems()):
       table.append([key, page['url'], page.get('type', '-')])
 
     self.pprint_table(table)
@@ -1074,7 +1092,7 @@ class ActionSpeedTest:
     print "\nTests\n"
 
     table = [['test', 'page', 'repeat', 'random']]
-    for key, test in self.conf['tests'].iteritems():
+    for key, test in sorted(self.conf['tests'].iteritems()):
       pages = test['pages']
       table.append([key, pages[0]['page'], str(pages[0].get('repeat', c.options.repeat)), str(test.get('random'))])
       if len(pages) > 1:
@@ -1137,6 +1155,8 @@ class ActionSpeedTest:
       urls = self.generate_urls_for_test(self.conf['tests'][c.options.test])
       randomise = self.conf['tests'][c.options.test].get('random', False)
 
+
+    self.urls = urls
     # Start a thread pool to simulate concurrent requests.
     threads = []
     for x in range(c.options.concurrent):
@@ -1148,7 +1168,7 @@ class ActionSpeedTest:
       
     print "\nStarting %s requests to host %s" % (len(urls) * c.options.concurrent, c.options.host)
     self.largest_url_length =  max([len(x.replace('http://%s'%self.context.options.host, '')) for x in urls])
-    print "job\thttp\ttime\tsize\turl%s\t%s" % (' ' * self.largest_url_length, '\t'.join(sorted(self.x_labels.keys())))
+    print "job\thttp\ttime\tsize\turl%s\t%s" % (' ' * self.largest_url_length, '\t'.join(self._labels))
 
     interrupted = False
 
@@ -1290,6 +1310,7 @@ def main():
   parser.add_option('', '--concurrent', dest='concurrent', default=1, help='speedtest: number of concurrent clients', type='int')
   parser.add_option('', '--list', dest='list', action='store_true', default=False, help='speedtest: list pages and tests')
   parser.add_option('', '--type', dest='type', default='/type/type', help='freebase type id')
+  parser.add_option('', '--cost', dest='cost', default=ActionSpeedTest.x_cost_default, help='x-metaweb-cost verbosity: %s' %  '\n'.join(ActionSpeedTest.x_labels_groups.keys()))
 
 
   (options, args) = parser.parse_args()

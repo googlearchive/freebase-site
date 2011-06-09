@@ -70,8 +70,19 @@
 
     "topic_inspect" : {
       "url" : "{topic}?inspect"
+    },
+
+    "topicapi_full_nolang" : {
+      "url" : "/api/experimental/topic/full{topic_slow_2}"
+    },
+
+    "topicapi_full_multilang" : {
+      "url" : "/api/experimental/topic/full{topic_slow_2}?lang=/lang/en&lang=/lang/wp"
+    },
+
+    "topicapi_standard" : {
+      "url" : "/api/experimental/topic/standard{topic_slow_2}"
     }
-      
   },
 
   "tests" : {

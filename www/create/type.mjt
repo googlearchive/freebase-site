@@ -56,38 +56,46 @@
 <acre:block def="create_form()">
 
   <div class="edit-form ${JSON.stringify(c.prop_structure)}">
-
-   <ul>
-      <li class="row-msg">
-        <a class="close-msg" style="visibility:hidden;" href="#" 
-           onclick="$$(this).css('visibility', 'hidden').next().find('.msg-default').show().next().html('&nbsp'); return false;">close</a>
-        <span>
-          <span class="msg-default">
-            ${_(h.sprintf("Create a new %s", i18n.display_name(c.object)))}
-          </span>
-          <span></span>
-        </span>
-      </li class="edit-row">
-      <acre:block for="prop in c.prop_structure.properties">
-        <li>
-          <label>${prop.text}</label>
-          ${propbox.form_field(prop, null, i18n.lang)}
-          <acre:block if="!prop.unique">
-            <div class="magicbox-template">
-              ${propbox.form_field(prop, null, i18n.lang)}
-            </div>
-          </acre:block>
-        </li>
-      </acre:block>
-      <li class="edit-row-submit">
-        <input type="hidden" name="s" value="${c.object.id}"/>
-        <input type="hidden" name="p" value="${c.prop_structure.id}"/>
-        <input type="hidden" name="lang" value="${i18n.lang}"/>
-        <button class="button button-primary button-submit disabled" disabled="disabled" type="submit">${_('Save')}</button>
-        <button class="button button-cancel" onclick="javascript:window.location.href='${h.fb_url(c.object.id)}'">${_('Cancel')}</button>
-      </li>
+    <h1 class="page-title">
+      ${h.template_sprintf(_("Create a new %s topic"), topic_name(c.object))}
+    </h1>
+    <p>${_("Fill in the disambiguating properties below. Only Name is required")}</p>
+    <acre:script>console.log(c)</acre:script>
+    <ul>
+     <li class="row-msg">
+     <a class="close-msg" style="visibility:hidden;" href="#" 
+       onclick="$$(this).css('visibility', 'hidden').next().find('.msg-default').show().next().html('&nbsp'); return false;">close</a>
+     <span>
+       <span></span>
+     </span>
+     </li>
+     <acre:block for="prop in c.prop_structure.properties">
+       <li class="edit-row">
+         <label>${prop.text}</label>
+         ${propbox.form_field(prop, null, i18n.lang)}
+         <acre:block if="!prop.unique">
+           <div class="magicbox-template">
+             ${propbox.form_field(prop, null, i18n.lang)}
+           </div>
+         </acre:block>
+       </li>
+     </acre:block>
+     <li class="edit-row-submit">
+       <input type="hidden" name="s" value="${c.object.id}"/>
+       <input type="hidden" name="p" value="${c.prop_structure.id}"/>
+       <input type="hidden" name="lang" value="${i18n.lang}"/>
+       <button class="button button-primary button-submit disabled" disabled="disabled" type="submit">${_('Create')}</button>
+       <button class="button button-cancel" onclick="javascript:window.location.href='${h.fb_url(c.object.id)}'">${_('Cancel')}</button>
+     </li>
     </ul>
-
   </div>
 
 </acre:block>
+
+<acre:block def="topic_name(topic)">
+  <a href="${h.fb_url(topic.id)}">${i18n.display_name(topic)}</a>
+</acre:block>
+
+
+
+

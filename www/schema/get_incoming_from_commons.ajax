@@ -42,8 +42,6 @@ var SPEC = {
 
   auth: false,
 
-  cache_policy: "fast",
-
   validate: function(params) {
     return [
       validators.MqlId(params, "id", {required:true}),            // type id,

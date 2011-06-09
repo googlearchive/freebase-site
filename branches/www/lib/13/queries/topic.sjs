@@ -46,7 +46,7 @@ function topic(id, lang, limit, as_of_time, domains) {
   if (params.lang != "/lang/en") {
     params.lang.push("/lang/en");
   }
-  params.lang.push("/lang/wp");
+  //params.lang.push("/lang/wp");
   if (limit) {
     params.limit = limit;
   }

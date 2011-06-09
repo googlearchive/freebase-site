@@ -49,236 +49,267 @@
 
 <acre:block def="content_body()">
 
-  <h1>$c.title</h1>
-  <div id="activity-header">
-    <!--<div style="float: left; padding: 4px; width: 20%;"><a href="/explore?date_offset=${parseInt(c.dates.offset)-1}">&lt; ${c.dates.previous[1]}</a></div>-->
-    <b><a href="#topics">${util.ppn(c.activity.data['types']['new']['/common/topic'] || 0)}</a></b> new topics 
-    <b><a href="#users">${util.ppn(c.activity.edits)}</a></b> edits
-    <b><a href="#new_user">${util.ppn(c.activity.data['types']['new']['/type/user'] || 0)}</a></b> new users
-    <b><a href="#new_type">${util.ppn(c.activity.totals['/type/type'])}</a></b> new types
-    <b><a href="#new_domain">${util.ppn(c.activity.totals['/type/domain'])}</a></b> new domains
-    <b><a href="#new_query">${util.ppn(c.activity.totals['/freebase/query'])}</a></b> new views
-    <b><a href="#new_acre">${util.ppn(c.activity.data['types']['new']['/freebase/apps/acre_app'] || 0)}</a></b> new acre apps
-    <b><a href="#edits_acre">${util.ppn(c.activity.acre_edits)}</a></b> acre edits
-    <b><a href="#namespaces">${util.ppn(c.activity.totals['/type/key'])}</a></b> keys
-    <div style="float: right; padding: 4px;width: 20%;text-align:right;"><a href="/explore?date_offset=${parseInt(c.dates.offset)+1}">${c.dates.next[1] ? c.dates.next[1] + '&gt;' : ''}</a></div>
-  </div>
+  <div id="overview" class="section">
+    <h1>$c.title</h1>
+    <div id="activity-header">
+      <!--<div style="float: left; padding: 4px; width: 20%;"><a href="/explore?date_offset=${parseInt(c.dates.offset)-1}">&lt; ${c.dates.previous[1]}</a></div>-->
+      <b><a href="#topics">${util.ppn(c.activity.data['types']['new']['/common/topic'] || 0)}</a></b> new topics 
+      <b><a href="#users">${util.ppn(c.activity.edits)}</a></b> edits
+      <b><a href="#new_user">${util.ppn(c.activity.data['types']['new']['/type/user'] || 0)}</a></b> new users
+      <b><a href="#new_type">${util.ppn(c.activity.totals['/type/type'])}</a></b> new types
+      <b><a href="#new_domain">${util.ppn(c.activity.totals['/type/domain'])}</a></b> new domains
+      <b><a href="#new_query">${util.ppn(c.activity.totals['/freebase/query'])}</a></b> new views
+      <b><a href="#new_acre">${util.ppn(c.activity.data['types']['new']['/freebase/apps/acre_app'] || 0)}</a></b> new acre apps
+      <b><a href="#edits_acre">${util.ppn(c.activity.acre_edits)}</a></b> acre edits
+      <b><a href="#namespaces">${util.ppn(c.activity.totals['/type/key'])}</a></b> keys
+      <div style="float: right; padding: 4px;width: 20%;text-align:right;"><a href="/explore?date_offset=${parseInt(c.dates.offset)+1}">${c.dates.next[1] ? c.dates.next[1] + '&gt;' : ''}</a></div>
+    </div>
+      
+    <acre:script>
+      var min = 500000;
+      var pie_t = [], pie_n = [];
+      var type_primitives = c.freebase.data['domains']['primitives'][0]['v'];
+      var common_primitives = c.freebase.data['domains']['primitives'][1]['v'];
     
-  <acre:script>
-    var min = 500000;
-    var pie_t = [], pie_n = [];
-    var type_primitives = c.freebase.data['domains']['primitives'][0]['v'];
-    var common_primitives = c.freebase.data['domains']['primitives'][1]['v'];
-  
-    var tp_without_big = c.freebase.data['total_primitives'] - type_primitives - common_primitives;
-  
-    var other = tp_without_big;
-    for (var k in c.freebase.data['domains']['primitives']) {
-      var domain_id = c.freebase.data['domains']['primitives'][k]['id'];
-      var v = c.freebase.data['domains']['primitives'][k]['v']
-      if (domain_id == '/type' || domain_id == '/common' || v < min) { 
-        continue;
+      var tp_without_big = c.freebase.data['total_primitives'] - type_primitives - common_primitives;
+    
+      var other = tp_without_big;
+      for (var k in c.freebase.data['domains']['primitives']) {
+        var domain_id = c.freebase.data['domains']['primitives'][k]['id'];
+        var v = c.freebase.data['domains']['primitives'][k]['v']
+        if (domain_id == '/type' || domain_id == '/common' || v < min) { 
+          continue;
+        }
+        pie_t.push(parseInt(v*100/tp_without_big));
+        var vv = v*100/tp_without_big;
+        pie_n.push(domain_id + ' ' + vv.toFixed(1) + '%');
+        other -= v;
       }
-      pie_t.push(parseInt(v*100/tp_without_big));
-      var vv = v*100/tp_without_big;
-      pie_n.push(domain_id + ' ' + vv.toFixed(1) + '%');
-      other -= v;
-    }
-    pie_t.push(parseInt(other*100/tp_without_big));
-    v = other*100/tp_without_big;
-    pie_n.push('other ' + v.toFixed(1) + '%');
-  </acre:script>
-  <div style="float:right; width:33%">
+      pie_t.push(parseInt(other*100/tp_without_big));
+      v = other*100/tp_without_big;
+      pie_n.push('other ' + v.toFixed(1) + '%');
+    </acre:script>
     <h2>Facts by Domain</h2>
-    <img width="100%" src="http://chart.apis.google.com/chart?chs=600x400&chd=t:${pie_t.join(',')}&cht=p&chl=${pie_n.join('|')}"/>
-  </div>
-  <div id="placeholder-topics" style="display:none;width: 66%;height:150px;"> </div>
-  
-  <h1>Facts (${util.ppn(c.freebase.data['total_primitives'])})</h1>
-  <div id="placeholder-primitives" style="width: 66%;height:150px;">
+    <div id="facts-by-domain-chart">
+      <img src="http://chart.apis.google.com/chart?chs=600x400&chd=t:${pie_t.join(',')}&cht=p&chl=${pie_n.join('|')}" />
+    </div>
+    <div id="placeholder-topics" style="display:none;width: 66%;height:150px;"> </div>
+    
+    <h1>Facts (${util.ppn(c.freebase.data['total_primitives'])})</h1>
+    <div id="placeholder-primitives" style="width: 66%;height:150px;"></div>
   </div>
   
 
   <div id="body" class="clear" acre:if="c.activity.have_data">
-    
-    <div class="section"> 
-      <div class="table-header">
-        <h1>Topics (${util.ppn(c.freebase.data['total_topics'])})</h1>
-        <h2 class="table-title">Topics by Domain</h2>
-      </div>
-      <table class="table"> 
-        <thead>
-          <tr>
-            <th class="column-header first">domain</th>
-            <th class="column-header">topics</th>
-          </tr>
-        </thead>
-        <tbody>
-          <acre:block for="domain in c.freebase.data['domains']['topics']" acre:if="domain.v > 100">
-            <tr >          
-              <th class="row-header first" scope="row">
-                <a href="${domain.id}?activity">${domain.id.slice(0,30)}</a>
-              </td>
-              <td class="numeric">${util.ppn(domain.v)}</td>
+    <div class="section clear"> 
+      <!!-- Topic Overview -->
+      <div class="sub-section">
+        <h1>Topics</h1>
+        <div class="table-header">
+          <h2 class="table-title">
+            ${util.ppn(c.freebase.data['total_topics'])}
+          </h2>
+        </div>
+        <table class="table"> 
+          <thead>
+            <tr>
+              <th class="column-header first">Domain</th>
+              <th class="column-header numeric">Topics</th>
             </tr>
-          </acre:block>
-        </tbody>
-      </table>
-    </div>
-    
-    <div class="section">
-      <h1>Edits</h1>
-      <h2 name='users'>Contributors
-        <span class="staff-bots" style="background-color: #eeeeee; font-size: 0.6em; font-weight: normal;">(<a id="hide_staff">
-          hide staff/bot/new</a>)</span>
-        <span style="font-size: 0.6em; font-weight: normal;">
-          ${c.activity.sorted_users.length - c.activity.total_staffbots - c.activity.total_newusers} user contributors
-        </span>
-      </h2>
-      <table class="table">
-        <thead>
-          <tr>
-            <th class="column-header first">user</th>
-            <th class="column-header">edits</th>
-          </tr>
-        </thead>
-        <tbody>
-        <acre:block for="(i=0; i < 10; i++)">
-          <acre:script>
-            var user_id = c.activity.sorted_users[i];
-            var user_class = (c.activity.staff[user_id] || c.activity.bots[user_id] || (c.activity.new_user_ids[user_id] && c.activity.data['users']['edits'][user_id]==24)) ? 'staff-bots': 'real-user';
-            var user_limited = c.activity.limited_users[user_id] ? 'limited' : '';
-          </acre:script>
-          <tr>
-            <th class="row-header first">
-              <img acre:if="c.activity.data['users']['edits'][user_id] && c.activity.data['users']['edits'][user_id] > 100*(c.dates.number+1)" src="http://www.freebase.com/api/trans/image_thumb${user_id}?maxwidth=30&maxheight=30&mode=fillcrop"/></td>
-              <a href="${user_id}?activity">${util.split_id(user_id)[1]}</a>
-            </th>
-            <td>${util.ppn(c.activity.data['users']['edits'][user_id] || 0)}</td>
-          </tr>
-        </acre:block>
-        </tbody>
-      </table>
-      
-      <h2><a name='topics'>Domains</a></h2>
-      <table class="table">
-        <thead>
-          <tr>
-            <th class="column-header">domain/type</th>
-            <th class="column-header">new topics</th>
-            <th class="column-header">edits</th>
-          </tr>
-        </thead>
-        <acre:block for="(i=0; i < 10; i++)">
-          <acre:script>
-            var domain_id = c.activity.sorted_domain_ids[i];
-          </acre:script>
-          <tr style="background-color: #eeeeee;">
-            <td><b><a href="${domain_id}?activity">${domain_id.slice(0,25)}</a></b></td>
-            <td>${util.ppn(c.activity.data['domains']['new'][domain_id] || 0)}</td>
-            <td>${util.ppn(c.activity.data['domains']['edits'][domain_id] || 0)}</td>
-          </tr>
-          <acre:block for="type_id, n in c.activity.type_ids">
-            <acre:block if="type_id.indexOf(domain_id + '/') == 0">
-              <tr>
-                <td style="padding-left: 10px;"><a href="${type_id}?activity">${util.split_id(type_id)[1].slice(0,23)}</a></td>
-                <td>
-                  <a href="${type_id}?activity">${util.ppn(c.activity.data['types']['new'][type_id] || 0)}</a></td>
-                <td>${util.ppn(c.activity.data['types']['edits'][type_id] || 0)}</td>
+          </thead>
+          <tbody>
+            <acre:block for="domain in c.freebase.data['domains']['topics']" acre:if="domain.v > 100">
+              <tr >          
+                <th class="row-header first" scope="row">
+                  <a href="${domain.id}?activity">${domain.id.slice(0,30)}</a>
+                </td>
+                <td class="numeric">${util.ppn(domain.v)}</td>
               </tr>
             </acre:block>
-          </acre:block>
-        </acre:block>
-      </table>
-      
-      <h2><a name='namespaces'>Keys (${util.ppn(c.activity.totals['/type/key'])})</a></h2>
-      <table style="width:100%">
-        <tr>
-          <th class="topicstableheader" style="width: 200px;">namespace</th>
-          <th class="topicstableheader" style="width: 100px;">new keys</th>
-        </tr>
-        <acre:block for="root_ns, dd in c.activity.namespaces">
-          <tr style="background-color: #eeeeee;">
-            <td><b><a href="${root_ns}">${root_ns}</a></b></td>
-            <td>${util.ppn(c.activity.namespaces[root_ns]['total'] || 0)}</td>
-          </tr>
-          <acre:block for="ns in dd['new']">
-            <tr>
-              <td style="padding-left: 10px;">
-                <a href="${ns.id}?activity">${ns.id.slice(ns.id.slice(1).indexOf('/')+1)}</a>
-              </td>
-              <td>${util.ppn(ns.v || 0)}</td>
-            </tr>
-          </acre:block>
-        </acre:block>
-      </table>
-
-      <h2>Acre</h2>
-      <table style="width:100%">
-        <tr>
-          <th class="topicstableheader" colspan="2"><a name="new_acre">new acre apps (${util.ppn(c.activity.data['types']['new']['/freebase/apps/acre_app'] || 0)})</a></th>
-          <th class="topicstableheader" style="width: 100px;">view</th>
-        </tr>
-        <acre:block for="app_id, app in c.activity.data['apps']['new']">
-          <tr>
-            <td>
-              <img style="align: left;" src="http://www.freebase.com/api/trans/image_thumb${app.user_id}?maxwidth=30&maxheight=30&mode=fillcrop"/>
-            </td>
-            <td style="vertical-align: top;">${app.name} <br/>by <a href="${app.user_id}?apps">${app.user_id}</a>
-            </td>
-            <td>[<a href="${app_id}?activity">view</a> | <a href="/appeditor#!app=${app_id}">source</a>]</td>
-          </tr>
-        </acre:block>
-      </table>
-
-      <table style="width:100%">
-        <tr>
-          <th class="topicstableheader" style="" colspan="2"><a name="edits_acre">edited acre apps</a></th>
-          <th class="topicstableheader" style="">files</th>
-          <th class="topicstableheader" style="">view</th>
-        </tr>
-        <acre:block for="app_id in c.activity.sorted_app_ids">
-        <acre:script> var app = util.split_id(app_id); </acre:script>
-          <tr>
-            <td style="vertical-align: top;">
-              <img style="align: left;" src="http://www.freebase.com/api/trans/image_thumb${app[0]}?maxwidth=30&maxheight=30&mode=fillcrop"/>
-            </td>
-            <td style="vertical-align: top;">${app[1]} <br/>by <a href="${app.user_id}?apps">${app[0]}</a> 
-            </td>
-            <td style="vertical-align: top;">${c.activity.data['apps']['edits'][app_id]}</td>
-            <td style="vertical-align: top;">
-              [<a href="${app_id}?activity">view</a> | <a href="/appeditor#!app=${app_id}">source</a>]
-            </td>
-          </tr>
-        </acre:block>
-      </table>
-       
-    </div>
-
-    <div class="section" style="width:20%">
-      
-      <h1>New Stuff</h1>
-      <acre:block for="type_id, records in c.activity.new_stuff">
-        <div style="margin-top: 30px;">
-          <h2><a name="new_${util.split_id(type_id)[1]}">${c.type_names[type_id]} (${util.ppn(c.activity.totals[type_id] || 0)})</a></h2>
-          <table style="width: 98%;">
-            <tr acre:for="id, record in c.activity.new_stuff[type_id]">
-              <td>
-                <img acre:if="type_id == '/freebase/query'" src="http://www.freebase.com/type/chiclet${id}?spacing=1&limit=2&mode=fillcropmid&size=40"/>
-                <img acre:else="" style="align: left;" src="http://www.freebase.com/api/trans/image_thumb${record.user}?maxwidth=30&maxheight=30&mode=fillcrop"/>
-              </td>
-              <td style="vertical-align: top;">
-                <a href="${id}?activity">${record.name}</a> 
-                <acre:block if="type_id != '/type/user'">
-                  <br/>by ${util.split_id(record.user)[1]}
-                </acre:block>
-              </td>
-            </tr>
-          </table>
+          </tbody>
+        </table>
+      </div>
+      <!!-- Edits Overview -->
+      <div class="sub-section">
+        <h1>Edits</h1>
+        <div class="table-header">
+          <h2 class="table-title" name='users'>Contributors
+            <span class="staff-bots" style="background-color: #eeeeee; font-size: 0.6em; font-weight: normal;">(<a id="hide_staff">
+                hide staff/bot/new</a>)</span>
+            <span style="font-size: 0.6em; font-weight: normal;">
+              ${c.activity.sorted_users.length - c.activity.total_staffbots - c.activity.total_newusers} user contributors
+            </span>
+          </h2>
         </div>
-      </acre:block>
-      
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="column-header first">user</th>
+              <th class="column-header">edits</th>
+            </tr>
+          </thead>
+          <tbody>
+          <acre:block for="(i=0; i < 10; i++)">
+            <acre:script>
+              var user_id = c.activity.sorted_users[i];
+              var user_class = (c.activity.staff[user_id] || c.activity.bots[user_id] || (c.activity.new_user_ids[user_id] && c.activity.data['users']['edits'][user_id]==24)) ? 'staff-bots': 'real-user';
+              var user_limited = c.activity.limited_users[user_id] ? 'limited' : '';
+            </acre:script>
+            <tr>
+              <th class="row-header first">
+                <img acre:if="c.activity.data['users']['edits'][user_id] && c.activity.data['users']['edits'][user_id] > 100*(c.dates.number+1)" src="http://www.freebase.com/api/trans/image_thumb${user_id}?maxwidth=30&maxheight=30&mode=fillcrop"/></td>
+                <a href="${user_id}?activity">${util.split_id(user_id)[1]}</a>
+              </th>
+              <td>${util.ppn(c.activity.data['users']['edits'][user_id] || 0)}</td>
+            </tr>
+          </acre:block>
+          </tbody>
+        </table>
+        
+        <div class="table-header">
+          <h2 class="table-title"><a name='topics'>Domains</a></h2>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="column" class="column-header">domain/type</th>
+              <th scope="column" class="column-header">new topics</th>
+              <th scope="column" class="column-header">edits</th>
+            </tr>
+          </thead>
+          <tbody>
+            <acre:block for="(i=0; i < 10; i++)">
+              <acre:script>
+                var domain_id = c.activity.sorted_domain_ids[i];
+              </acre:script>
+              <tr style="background-color:#e1e2e3;">
+                <td><b><a href="${domain_id}?activity">${domain_id.slice(0,25)}</a></b></td>
+                <td>${util.ppn(c.activity.data['domains']['new'][domain_id] || 0)}</td>
+                <td>${util.ppn(c.activity.data['domains']['edits'][domain_id] || 0)}</td>
+              </tr>
+              <acre:block for="type_id, n in c.activity.type_ids">
+                <acre:block if="type_id.indexOf(domain_id + '/') == 0">
+                  <tr>
+                    <td style="padding-left: 10px;"><a href="${type_id}?activity">${util.split_id(type_id)[1].slice(0,23)}</a></td>
+                    <td>
+                      <a href="${type_id}?activity">${util.ppn(c.activity.data['types']['new'][type_id] || 0)}</a></td>
+                    <td>${util.ppn(c.activity.data['types']['edits'][type_id] || 0)}</td>
+                  </tr>
+                </acre:block>
+              </acre:block>
+            </acre:block>
+          </tbody>
+        </table>
+        
+        <div class="table-header">
+          <h2 class="table-title"><a name='namespaces'>Keys (${util.ppn(c.activity.totals['/type/key'])})</a></h2>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="column-header">namespace</th>
+              <th class="column-header">new keys</th>
+            </tr>
+          </thead>
+          <tbody>
+            <acre:block for="root_ns, dd in c.activity.namespaces">
+              <tr style="background-color: #eeeeee;">
+                <td><b><a href="${root_ns}">${root_ns}</a></b></td>
+                <td>${util.ppn(c.activity.namespaces[root_ns]['total'] || 0)}</td>
+              </tr>
+              <acre:block for="ns in dd['new']">
+                <tr>
+                  <td style="padding-left: 10px;">
+                    <a href="${ns.id}?activity">${ns.id.slice(ns.id.slice(1).indexOf('/')+1)}</a>
+                  </td>
+                  <td>${util.ppn(ns.v || 0)}</td>
+                </tr>
+              </acre:block>
+            </acre:block>
+          </tbody>
+        </table>
+
+        <div class="table-header">
+          <h2 class="table-title">Acre</h2>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="column-header">
+                <a name="new_acre">new acre apps (${util.ppn(c.activity.data['types']['new']['/freebase/apps/acre_app'] || 0)})</a>
+              </th>
+              <th class="column-header">view</th>
+            </tr>
+          </thead>
+          <tbody>
+            <acre:block for="app_id, app in c.activity.data['apps']['new']">
+              <tr>
+                <td>
+                  <img style="align: left;" src="http://www.freebase.com/api/trans/image_thumb${app.user_id}?maxwidth=30&maxheight=30&mode=fillcrop"/>
+                </td>
+                <td style="vertical-align: top;">${app.name} <br/>by <a href="${app.user_id}?apps">${app.user_id}</a>
+                </td>
+                <td>[<a href="${app_id}?activity">view</a> | <a href="/appeditor#!app=${app_id}">source</a>]</td>
+              </tr>
+            </acre:block>
+          </tbody>
+        </table>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="topicstableheader" style="" colspan="2"><a name="edits_acre">edited acre apps</a></th>
+              <th class="topicstableheader" style="">files</th>
+              <th class="topicstableheader" style="">view</th>
+            </tr>
+          </thead>
+          <tbody>
+            <acre:block for="app_id in c.activity.sorted_app_ids">
+            <acre:script> var app = util.split_id(app_id); </acre:script>
+              <tr>
+                <td style="vertical-align: top;">
+                  <img style="align: left;" src="http://www.freebase.com/api/trans/image_thumb${app[0]}?maxwidth=30&maxheight=30&mode=fillcrop"/>
+                </td>
+                <td style="vertical-align: top;">${app[1]} <br/>by <a href="${app.user_id}?apps">${app[0]}</a> 
+                </td>
+                <td style="vertical-align: top;">${c.activity.data['apps']['edits'][app_id]}</td>
+                <td style="vertical-align: top;">
+                  [<a href="${app_id}?activity">view</a> | <a href="/appeditor#!app=${app_id}">source</a>]
+                </td>
+              </tr>
+            </acre:block>
+          </tbody>
+        </table>
+      </div>
+
+      <!!-- New Objects Overview -->
+      <div class="sub-section">
+        <h1>New Stuff</h1>
+        <acre:block for="type_id, records in c.activity.new_stuff">
+        <div class="table-header">
+          <h2 class="table-title"><a name="new_${util.split_id(type_id)[1]}">${c.type_names[type_id]} (${util.ppn(c.activity.totals[type_id] || 0)})</a></h2>
+        </div>
+        <table class="table">
+          <tbody>
+          <tr acre:for="id, record in c.activity.new_stuff[type_id]">
+            <td>
+              <img acre:if="type_id == '/freebase/query'" src="http://www.freebase.com/type/chiclet${id}?spacing=1&limit=2&mode=fillcropmid&size=40"/>
+              <img acre:else="" style="align: left;" src="http://www.freebase.com/api/trans/image_thumb${record.user}?maxwidth=30&maxheight=30&mode=fillcrop"/>
+            </td>
+            <td style="vertical-align: top;">
+              <a href="${id}?activity">${record.name}</a> 
+              <acre:block if="type_id != '/type/user'">
+              <br/>by ${util.split_id(record.user)[1]}
+              </acre:block>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        </acre:block>
+      </div>
     </div>
+    
+
   </div>
   
   <div acre:else="">

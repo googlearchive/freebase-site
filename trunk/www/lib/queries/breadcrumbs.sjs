@@ -118,3 +118,10 @@ function object(o) {
     {name:i18n.display_name(o)}
   ];
 };
+
+function freebase_query(o) {
+  return [
+    {name:_("Query")},
+    {name:i18n.display_name(o)}
+  ];
+};

@@ -69,13 +69,16 @@ Breadcrumbs
   height: 30px;
   width: 30px;
   overflow: hidden;
-  background-color: #a1a2a3;
-  .linear_gradient(#b1b2b3,#a1a2a3);
   -webkit-transform: rotate(-45deg);
   -moz-transform: rotate(-45deg);
   -o-transform: rotate(-45deg);
   transform: rotate(-45deg);
   .box_shadow(1px, 1px, 0px, #b6b7b8);
+}
+
+.breadcrumb-item:nth-child(1):after {
+  background-color: #a1a2a3;
+  .linear_gradient(#b1b2b3,#a1a2a3);
 }
 
 .breadcrumb-item.label:after {

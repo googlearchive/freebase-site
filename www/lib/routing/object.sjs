@@ -257,24 +257,30 @@ var rules = [
         "auth": true
       }
     ]
-  },/**
+  },
   {
     "type": "/freebase/query",
+    "promises": h.extend(true, [], DEFAULT_PROMISES).concat([{
+      key: "breadcrumbs",
+      app: "lib",
+      script: "queries/breadcrumbs.sjs",
+      promise: "freebase_query"
+    }]),
     "tabs": [
-      {
-        "name": "Data",
-        "key": "data",
-        "app": "data",
-        "script": "query.tab"
-      },
       {
         "name": "Inspect",
         "key": "inspect",
         "app": "triples",
         "script": "triples.tab"
       }
+    ],
+    "navs": [
+      {
+        "name": "Run Query",
+        "url": h.fb_url("/queryeditor")
+      }
     ]
-  },**/
+  },
   {
     "type": "/common/topic",
     "promises": [

@@ -177,3 +177,12 @@ function type_hints(type_id) {
       return hints;
     });
 };
+
+
+/**
+ * Can you create an instance of this type (object)
+ */
+function can_create(o) {
+  var types = h.map_array(o.type, "id");
+  return types["/type/type"] && !h.is_metaweb_system_type(o.id);
+};

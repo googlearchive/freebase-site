@@ -94,7 +94,7 @@ var rules = [
         "key": "settings",
         "app": "admin",
         "ajax": "app_settings.mf.js",
-        "auth": true
+        "auth": true // add "edit" class
       },
       {
         "name": "View source",
@@ -141,7 +141,7 @@ var rules = [
         "name": "Edit Settings",
         "app": "admin",
         "ajax": "domain_settings.mf.js",
-        "auth": true
+        "auth": true // add "edit" class
       }
     ]
   },
@@ -178,7 +178,7 @@ var rules = [
         "name": "Edit Settings",
         "app": "admin",
         "ajax": "type_settings.mf.js",
-        "auth": true
+        "auth": true // add "edit" class
       },
       {
         "name": "Build Query",
@@ -188,7 +188,8 @@ var rules = [
         "name": "Add Topic",
         "key": "create",
         "app": "create",
-        "script": "type.controller"
+        "script": "type.controller",
+        "show": "can_create" // acre.require(app + "/" + script)[show](object_result) return TRUE to enable/show. FALSE to hide
       }
     ]
   },
@@ -254,7 +255,7 @@ var rules = [
         "name": "Edit Profile",
         "app": "admin",
         "ajax": "user_settings.mf.js",
-        "auth": true
+        "auth": true // add "edit" class
       }
     ]
   },

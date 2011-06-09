@@ -32,6 +32,7 @@
 var exports = {
   "is_literal_type": is_literal_type,
   "to_literal_value": to_literal_value,
+  "is_metaweb_system_type": is_metaweb_system_type,
   "get_type_role": get_type_role,
   "is_reciprocal": is_reciprocal,
   "visible_subprops": visible_subprops,
@@ -77,6 +78,14 @@ function to_literal_value(type_id, value /** string **/) {
     return value;
   }
 };
+
+
+function is_metaweb_system_type(type_id) {
+  return (type_id.indexOf("/type/") === 0 ||
+          (type_id.indexOf("/common/") === 0 && type_id !== "/common/topic") ||
+          (type_id.indexOf("/freebase/") === 0 && type_id.indexOf("_profile") === (type_id.length - 8)));
+};
+
 
 /**
  * Get the type role looking at type hints,
@@ -208,7 +217,7 @@ function lang_code(lang_id) {
 };
 
 /**
- * Assuming a list of types, return appropriate object label 
+ * Assuming a list of types, return appropriate object label
  */
 function fb_object_type(types, id) {
 

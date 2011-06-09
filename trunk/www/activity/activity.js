@@ -9,14 +9,23 @@ $(function () {
    for (i in graph_data) {
      
      var plot = $.plot($("#placeholder-" + i), [{ data: graph_data[i] }],
-                       {
-                         series: {
-                           lines: { show: true }
-                         },
-                         grid: { hoverable: true, clickable: true },
-                         xaxis: { mode: "time" }
-                       }
-                      );
+       {
+         series: {
+           color: '#ff7711',
+           lines: { show: true },
+          shadowSize: 0
+         },
+         grid: {
+           show: true,
+           color: "#666",
+           borderWidth: 0,
+           hoverable: true,
+           autoHighlight: true,
+           mouseActiveRadius: 3
+         },
+         xaxis: { mode: "time" }
+       }
+     );
    }
    
    function showTooltip(x, y, contents) {

@@ -359,10 +359,11 @@
       //TODO this needs to be cleaned up once we figure the proper configuration
       //params for freebase.service_url and freebase.apiary_url
       service_url: fb.h.suggest_url(),
-      service_path: fb.acre.freebase.apiary_url ? '' : '/private/suggest',
+      service_path: fb.acre.freebase.apiary_url ? "" : "/private/suggest",
       flyout_service_url: fb.h.legacy_fb_url(),
 //    soft:true,  // temporarily disable text search (to old python client)
-      category: "object",
+      category: fb.acre.freebase.apiary_url ? "" : "object",
+      filter: fb.acre.freebase.apiary_url ? "(all without:fus)" : "",
       parent: "#site-search-box",
       align: "right"
     });

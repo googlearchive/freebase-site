@@ -183,7 +183,7 @@
           disableScrolling: false
         });
         return false;
-      }catch(e){}">${_("Report an Issue")}</a>
+      }catch(e){}">${_("Feedback")}</a>
     </li>
   </ul>
   <div id="breadcrumb" acre:if="exports.breadcrumb">

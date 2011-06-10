@@ -49,8 +49,8 @@ function HomeRouter(app_labels) {
       return false;
     }
     
-    // If there's a querystring, let object router handle it (e.g., /?inspect)
-    if (req.query_string.length) {
+    // let object router handle ?inspect
+    if ("inspect" in req.params) {
       return false;
     }
 

@@ -1,0 +1,208 @@
+/*
+ * Copyright 2010, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+var h = acre.require("lib/helper/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var propbox_mql = acre.require("lib/propbox/mql.sjs");
+var propbox_helpers = acre.require("lib/propbox/helpers.sjs");
+var propbox_queries = acre.require("lib/propbox/queries.sjs");
+var i18n = acre.require("lib/i18n/i18n.sjs");
+var apis = acre.require("lib/promise/apis.sjs");
+var deferred = apis.deferred;
+var freebase = apis.freebase;
+
+
+/**
+ * Create an instance of a type
+ */
+
+var SPEC = {
+
+  template: "type.mjt",
+
+  validate: function(params) {
+    return [
+      params.object,
+      h.get_active_user()
+    ];
+  },
+
+  run: function(type, user) {
+    /**
+     * Prevent creating instance of metaweb system types
+     */
+    if (h.is_metaweb_system_type(type.id)) {
+      return {
+        template: "type_system.mjt",
+        object: type
+      };
+    }
+    else if (!user) {
+      return {
+        template: "type_signedout.mjt",
+        object: type
+      };
+    }
+
+    var lang = i18n.lang;
+
+    /**
+     * We want to use propbox components and editparams to create a new instance of type.
+     *
+     * We do this by using type as the subject and /type/type/instance as the predicate:
+     *
+     * <type id> </type/type/instance> <object...>
+     *
+     * To do this, we need to "fake" the property structure of "/type/type/instance",
+     * specifically the expected_type to include the included_types of type since
+     * expected_type of /type/type/instance is just /type/object.
+     *
+     * We also "fake" the expected_type's disamibiguating properties to include the
+     * type's disambiguating properties along with it's included_types disambiguating properties.
+     */
+    return type_hints(type.id)
+      .then(function(hints) {
+        var mediator = hints.mediator;
+        var inc_types = hints.included_types;
+        var promises = {
+          // explicitly get /type/type/instance
+          instance_prop: propbox_queries.prop_structure("/type/type/instance", lang)
+        };
+        if (!mediator) {
+          // get /type/object/name prop schemas for non mediator
+          promises.name_prop = propbox_queries.prop_structure("/type/object/name", lang);
+        };
+        // get disabmiguating properties of type + included_types
+        var prop_clause = propbox_mql.prop_schema({
+          "/freebase/property_hints/disambiguator": true,
+          "/freebase/property_hints/display_none": {
+            optional: "forbidden",
+            value: true
+          },
+          index: null,
+          sort: "index",
+          optional: true
+        }, lang);
+        prop_clause.expected_type["forbid:/freebase/type_hints/mediator"] = {
+          value: true,
+          optional: "forbidden"
+        };
+        var type_ids = [type.id];
+        if (!mediator) {
+          // only include disamiguating properties of the included_types if NOT mediator
+          type_ids = type_ids.concat(inc_types);
+        }
+        var q = [{
+          id: null,
+          "id|=": type_ids,
+          type: "/type/type",
+          properties: [prop_clause]
+        }];
+        promises.disamb_props = freebase.mqlread(q)
+          .then(function(env) {
+            var properties = [];
+            var types = env.result.sort(function(a, b) {
+              return type_ids.indexOf(b.id) < type_ids.indexOf(a.id);
+            });
+            types.forEach(function(type) {
+              properties = properties.concat(type.properties);
+            });
+            return properties;
+          })
+          .then(function(prop_schemas) {
+            var prop_structures = [];
+            prop_schemas.forEach(function(prop_schema) {
+              prop_structures.push(propbox_helpers.minimal_prop_structure(prop_schema, lang));
+            });
+            return prop_structures;
+          })
+          .then(function(prop_structures) {
+            var d = [];
+            prop_structures.forEach(function(prop_structure) {
+              // attach all enumerations (/freebase/type_hints/enumeration)
+              d.push(propbox_queries.get_enumerated_types(prop_structure, lang));
+            });
+            return deferred.all(d)
+              .then(function() {
+                return prop_structures;
+              });
+          });
+        return deferred.all(promises)
+          .then(function(result) {
+            var instance_prop = result.instance_prop;
+            // "fake" /type/object included_types
+            instance_prop.expected_type.included_types = inc_types;
+
+            var properties = [];
+            if (result.name_prop) {
+              properties.push(result.name_prop);
+            }
+            instance_prop.properties = properties.concat(result.disamb_props);
+            return {
+              object: type,
+              prop_structure: instance_prop,
+              type_hints: hints,
+              user: user
+            };
+          });
+        });
+  }
+};
+
+function type_hints(type_id) {
+  var q = {
+    id: type_id,
+    "/freebase/type_hints/mediator": null,
+    "/freebase/type_hints/included_types": [{
+      id: null,
+      optional: true,
+      index: null,
+      sort: "index"
+    }]
+  };
+  return freebase.mqlread(q)
+    .then(function(env) {
+      var result = env.result;
+      var hints = {
+        mediator: result["/freebase/type_hints/mediator"] === true,
+        included_types: result["/freebase/type_hints/included_types"].map(function(t) { return t.id; })
+      };
+      return hints;
+    });
+};
+
+
+/**
+ * Can you create an instance of this type (object)
+ */
+function can_create(o) {
+  var types = h.map_array(o.type, "id");
+  return types["/type/type"] && !h.is_metaweb_system_type(o.id);
+};

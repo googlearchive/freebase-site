@@ -16,7 +16,7 @@ $(function () {
           shadowSize: 0
          },
          grid: {
-           show: true,
+           show: false,
            color: "#666",
            borderWidth: 0,
            hoverable: true,

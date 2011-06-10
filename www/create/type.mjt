@@ -93,7 +93,7 @@
 </acre:block>
 
 <acre:block def="topic_name(topic)">
-  <a href="${h.fb_url(topic.id)}">${i18n.display_name(topic)}</a>
+<a href="${h.fb_url(topic.id, [['schema']])}">${i18n.display_name(topic)}</a>
 </acre:block>
 
 

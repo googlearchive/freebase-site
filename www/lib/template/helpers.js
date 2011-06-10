@@ -203,7 +203,7 @@
 
     suggest_url: function() {
         if (fb.acre.freebase.apiary_url) {
-            return fb.acre.freebase.apiary_url + '/suggest?key=' + fb.acre.freebase.api_key;
+            return fb.acre.freebase.apiary_url + '/search?key=' + fb.acre.freebase.api_key;
         }
 
         return h.legacy_fb_url();

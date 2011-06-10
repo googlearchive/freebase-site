@@ -53,7 +53,12 @@
       <title acre:else="">Freebase</title>
 
       <!!-- freebase suggest -->
-      <link rel="stylesheet" type="text/css" href="${h.lib_base_url('suggest')}/suggest.min.css" />
+      <acre:block if="acre.freebase.apiary_url">
+        <link rel="stylesheet" type="text/css" href="suggest/suggest.mf.css" />
+      </acre:block>
+      <acre:block else="">
+        <link rel="stylesheet" type="text/css" href="${h.lib_base_url('suggest')}/suggest.min.css" />
+      </acre:block>
       <!!--
           Modernizr must be served from document head. Should be highly cached 
       -->
@@ -248,7 +253,12 @@
   </acre:block>
   <script src="${h.lib_base_url('dojo')}/dojo/dojo.xd.js"></script>
   <!-- suggest -->
-  <script src="${h.lib_base_url('suggest')}/suggest.min.js"></script>
+  <acre:block if="acre.freebase.apiary_url">
+    <script src="suggest/suggest.mf.js"></script>
+  </acre:block>
+  <acre:block else="">
+    <script src="${h.lib_base_url('suggest')}/suggest.min.js"></script>
+  </acre:block>
   <!-- freebase.mf.js -->
   <acre:block if="exports.freebase_js">
     ${exports.freebase_js()}

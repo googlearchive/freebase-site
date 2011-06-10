@@ -54,23 +54,43 @@
     <div id="activity-header">
       <!--<div style="float: left; padding: 4px; width: 20%;"><a href="/explore?date_offset=${parseInt(c.dates.offset)-1}">&lt; ${c.dates.previous[1]}</a></div>-->
       <p class="recent-activity-summary">
-        <b><a href="#topics">${util.ppn(c.activity.data['types']['new']['/common/topic'] || 0)}</a></b> new topics 
-        <b><a href="#users">${util.ppn(c.activity.edits)}</a></b> edits
-        <b><a href="#new_user">${util.ppn(c.activity.data['types']['new']['/type/user'] || 0)}</a></b> new users
-        <b><a href="#new_type">${util.ppn(c.activity.totals['/type/type'])}</a></b> new types
-        <b><a href="#new_domain">${util.ppn(c.activity.totals['/type/domain'])}</a></b> new domains
-        <b><a href="#new_query">${util.ppn(c.activity.totals['/freebase/query'])}</a></b> new views
-        <b><a href="#new_acre">${util.ppn(c.activity.data['types']['new']['/freebase/apps/acre_app'] || 0)}</a></b> new acre apps
-        <b><a href="#edits_acre">${util.ppn(c.activity.acre_edits)}</a></b> acre edits
-        <b><a href="#namespaces">${util.ppn(c.activity.totals['/type/key'])}</a></b> keys
+        <span class="i">
+          <b><a href="#topics">${util.ppn(c.activity.data['types']['new']['/common/topic'] || 0)}</a></b> new topics 
+        </span>
+        <span class="i">
+          <b><a href="#users">${util.ppn(c.activity.edits)}</a></b> edits
+        </span>
+        <span class="i">
+          <b><a href="#new_user">${util.ppn(c.activity.data['types']['new']['/type/user'] || 0)}</a></b> new users
+        </span>
+        <span class="i">
+          <b><a href="#new_type">${util.ppn(c.activity.totals['/type/type'])}</a></b> new types
+        </span>
+        <span class="i">
+          <b><a href="#new_domain">${util.ppn(c.activity.totals['/type/domain'])}</a></b> new domains
+        </span>
+        <span class="i">
+          <b><a href="#new_query">${util.ppn(c.activity.totals['/freebase/query'])}</a></b> new views
+        </span>
+        <span class="i">
+          <b><a href="#new_acre">${util.ppn(c.activity.data['types']['new']['/freebase/apps/acre_app'] || 0)}</a></b> new acre apps
+        </span>
+        <span class="i">
+          <b><a href="#edits_acre">${util.ppn(c.activity.acre_edits)}</a></b> acre edits
+        </span>
+        <span class="1">
+          <b><a href="#namespaces">${util.ppn(c.activity.totals['/type/key'])}</a></b> keys
+        </span>
       </p>
       <div style="float: right; padding: 4px;width: 20%;text-align:right;">
         <a href="/explore?date_offset=${parseInt(c.dates.offset)+1}">${c.dates.next[1] ? c.dates.next[1] + '&gt;' : ''}</a>
       </div>
     </div>
       
-    <h2>${util.ppn(c.freebase.data['total_primitives'])} ${_("total facts")}</h2>
-    <div id="placeholder-primitives"></div>
+    <h2>
+      ${util.ppn(c.freebase.data['total_primitives'])} ${_("total facts")}
+      <span id="placeholder-primitives"></span>
+    </h2>
     <acre:script>
       var min = 500000;
       var pie_t = [], pie_n = [];
@@ -95,9 +115,8 @@
       v = other*100/tp_without_big;
       pie_n.push('other ' + v.toFixed(1) + '%');
     </acre:script>
-    <h2>Facts by Domain</h2>
     <div id="facts-by-domain-chart">
-      <img src="http://chart.apis.google.com/chart?chs=600x400&chd=t:${pie_t.join(',')}&cht=p&chl=${pie_n.join('|')}" />
+      <img src="http://chart.apis.google.com/chart?chs=700x300&chd=t:${pie_t.join(',')}&cht=p&chl=${pie_n.join('|')}&chf=bg,s,FFFFFF00" />
     </div>
     <div id="placeholder-topics" style="display:none;width: 66%;height:150px;"> </div>
     

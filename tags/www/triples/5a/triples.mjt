@@ -1,0 +1,446 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");  
+  var components = acre.require("components");
+  var image = acre.require("lib/template/imagecomponents");  
+  var filter_components = acre.require("lib/filter/components.mjt");
+  var fh = acre.require("lib/filter/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var th = acre.require("helpers.sjs");
+
+  // microdata helpers
+  var microdata = acre.require("lib/helper/microdata.sjs");
+  var itemprop = microdata.itemprop;
+
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="triples.mf.css" />
+</acre:block>
+
+<acre:block def="nav_keys()">
+  <span class="key">
+    <strong><abbr title="${_('Machine ID')}">${_("mid")}</abbr></strong>: 
+    <span acre:attrs="itemprop('/type/object/mid')">${c.object.mid}</span>
+  </span>
+  <span class="key">
+    <strong><abbr title="${_('GUID')}">${_("guid")}</abbr></strong>: 
+    <span acre:attrs="itemprop('/type/object/guid')">${c.object.guid}</span>
+  </span>
+</acre:block>
+
+<acre:block def="page_content()">
+
+  <div class="column nav">
+    <div class="module">
+      <h2 class="module-title">
+        <a href="javascript:void(0);" class="trigger">Collapse column</a>
+        <span>Filter this data</span>
+      </h2>
+      <div class="module-section" acre:if="c.prop_counts">
+        <acre:script>
+          c.filters.inspect = "";
+          var hide_counts = c.filters.as_of_time ||
+            (c.filters.timestamp && c.filters.timestamp.length) ||
+            (c.filters.creator && c.filters.creator.length);
+        </acre:script>
+        ${filter_components.prop_counts_filter(c.id, c.filters, c.prop_counts, hide_counts)}
+      </div>
+      <div class="module-section">
+        ${filter_components.as_of_time_filter(c.id, c.filters)}
+      </div>
+    </div>
+    <div class="module">
+      <div class="module-section alt">
+        ${components.timestamp_filter(c.id, c.filters)}
+      </div>
+      <div class="module-section alt">
+        ${components.creator_filter(c.id, c.filters)}
+      </div>
+      <div class="module-section alt" id="limit-slider">
+        <acre:script>
+          var limit = c.filters.limit || 100;
+        </acre:script>
+        <h3 class="module-section-title">
+          <label for="">Show up to <strong class="current-limit">${limit}</strong> links</label>
+        </h3>
+        ${filter_components.filter_form(c.id, c.filters, 'limit', filter_components.limit_slider, ['limit', limit])}     
+      </div>
+      <div class="module-section alt">
+        ${components.history_filter(c.id, c.filters)}
+      </div>
+    </div>
+  </div>
+
+  <div class="column" id="triples-data" role="main" acre:attrs="c.filters.history ? {'class':'history'} : {}">
+    
+    ${names_aliases(c.id, c.names_aliases, c.filters)}
+
+    ${keys(c.id, c.keys, c.filters)}
+
+    ${outgoing(c.id, c.outgoing, c.filters)}
+
+    ${incoming(c.id, c.incoming, c.filters)}
+
+    ${type_links(c.id, c.type_links, c.filters)}
+
+    ${attribution_links(c.id, c.attribution_links, c.filters)}
+    
+  </div>
+
+  <ul id="triple-tip" class="row-menu tooltip" acre:trim="">
+    <li class="row-menu-item last">
+      <a id="build-query" href="${h.fb_url('/queryeditor')}">${_("Build query")}</a>
+    </li>
+  </ul>
+
+</acre:block>
+
+<acre:block def="names_aliases(id, data, filters)" if="data && data.length">
+  <div class="section">
+    <h2 class="table-title"><a name="names_aliases">${_("Names & Aliases")} ( ${i18n_c.number(data.length)} )</a></h2>
+    <table class="table table-sortable">
+      <thead>
+        <tr>
+          <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
+          <th acre:if="filters.history" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr acre:for="o in data" 
+          class="hoverable ${JSON.stringify(th.triple(id, o.master_property, o.target_value))} ${th.link_class(o)}">
+          <th class="row-header odd empty" scope="row">
+            <span class="self">-</span>
+            ${tooltip()}
+          </th>
+          <td class="even">${a(o.master_property)}</td>
+          <td class="odd">${literal(id, o.master_property, o.target_value)}</td>
+          <td class="even" acre:if="o.creator">${a(o.creator)}</td>
+          <td class="even" acre:else="">null</td>
+          <td class="odd numeric">${o.timestamp}</td>
+          <td acre:if="filters.history" class="even">${o.operation}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</acre:block>
+
+<acre:block def="keys(id, data, filters)" if="data && data.length">
+  <div class="section">
+    <h2 class="table-title"><a name="keys">${_("Keys")} ( ${i18n_c.number(data.length)} )</a></h2>
+    <table class="table table-sortable">
+      <thead>
+        <tr>
+          <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>                  
+          <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("value")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
+          <th acre:if="filters.history" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
+        </tr>
+      </thead>
+      <tbody>
+       <tr acre:for="k in data" 
+          class="hoverable ${JSON.stringify(th.triple(k.source.id, k.master_property, k.target.id, k.target_value.namespace, k.target_value.value))} ${th.link_class(k)}">
+          <th class="row-header odd empty" scope="row">
+            <acre:block if="k.source.id === id">
+            <span class="self">-</span>
+            </acre:block>
+            <acre:block else="">
+            ${a(k.source.id)}
+            </acre:block>                                         
+            ${tooltip()}
+          </th>
+          <td class="even">${a(k.master_property)}</td>
+          <td class="odd">
+            <acre:block if="k.target.id === id">
+            <span class="self">-</span>
+            </acre:block>
+            <acre:block else="">
+            ${a(k.target.id)}
+            </acre:block>
+          </td>
+          <td class="even">
+            <span class="truncate-wrapper">
+              <span class="truncate">
+                ${k.target_value.value}
+              </span>
+            </span>
+          </td>
+          <td class="odd" acre:if="k.creator">${a(k.creator)}</td>
+          <td class="odd" acre:else="">null</td>
+          <td class="even numeric">${k.timestamp}</td>
+          <td acre:if="filters.history" class="odd">${k.operation}</th>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</acre:block>
+
+<acre:block def="outgoing(id, data, filters)" if="data && data.length">
+  <div class="section">
+    <h2 class="table-title"><a name="outgoinglinks">${_("Outgoing Links")} ( ${i18n_c.number(data.length)} )</a></h2>
+    <table class="table table-sortable">
+      <thead>
+        <tr>
+          <th class="column-header first empty" scope="col"><span class="sort-icon">${_("source")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
+          <th acre:if="filters.history" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <acre:block for="o in data">
+        <tr class="hoverable ${JSON.stringify(th.triple(id, o.master_property, o.target_value || o.target))} ${th.link_class(o)}">
+          <th class="row-header odd empty" scope="row">
+            <span class="self">-</span>
+            ${tooltip()}
+          </th>
+          <td class="even">
+            ${a(o.master_property)}
+          </td>
+          <td class="odd" acre:if="o.target_value">${literal(id, o.master_property, o.target_value)}</td>
+          <td class="odd" acre:else="">${topic(o.target)}</td>
+          <td class="even" acre:if="o.creator">${a(o.creator)}</td>
+          <td class="even" acre:else="">null</td>
+          <td class="odd numeric">${o.timestamp}</td>
+          <td acre:if="filters.history" class="even">${o.operation}</th>
+        </tr>
+        </acre:block>
+      </tbody>
+    </table>
+  </div>
+</acre:block>
+
+<acre:block def="incoming(id, data, filters)" if="data && data.length">
+  <div class="section">
+    <h2 class="table-title"><a name="incominglinks">${_("Incoming Links")} ( ${i18n_c.number(data.length)} )</a></h2>
+    <table class="table table-sortable">
+      <thead>
+        <tr>
+          <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
+          <th acre:if="filters.history" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <acre:block for="o in data">
+        <acre:script>
+        if (o.master_property === "/dataworld/gardening_hint/replaced_by") {
+        o.source.id = "/guid/" + o.source.guid.substring(1);
+        }
+        </acre:script>
+        <tr class="hoverable ${JSON.stringify(th.triple(o.source.id, o.master_property, o.target))} ${th.link_class(o)}">
+          <th class="row-header odd" scope="row">
+            ${topic(o.source)}
+            ${tooltip()}
+          </th>
+          <td class="even">${a(o.master_property)}</td>
+          <td class="odd empty"><span class="self">-</span></td>
+          <td class="even" acre:if="o.creator">${a(o.creator)}</td>
+          <td class="even" acre:else="">null</td>
+          <td class="odd numeric">${o.timestamp}</td>
+          <td acre:if="filters.history" class="even">${o.operation}</th>
+        </tr>
+        </acre:block>
+      </tbody>
+    </table>
+  </div>
+</acre:block>
+
+<acre:block def="type_links(id, data, filters)" if="data && data.length">
+  <div class="section">
+    <h2 class="table-title"><a name="typelinks">${_("Links using this property")} ( ${i18n_c.number(data.length)} )</a></h2>
+    <table class="table table-sortable">
+      <thead>
+        <tr>
+          <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
+          <th acre:if="filters.history" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <acre:script>
+        var replaced_by = (id === "/dataworld/gardening_hint/replaced_by");
+        </acre:script>
+        <acre:block for="o in data">
+        <acre:script>
+        if (replaced_by) {
+        o.source.id = "/guid/" + o.source.guid.substring(1);
+        }
+        </acre:script>
+        <tr class="hoverable ${JSON.stringify(th.triple(o.source.id, id, o.target_value || o.target))} ${th.link_class(o)}">
+          <th class="row-header odd" scope="row">
+            ${topic(o.source)}
+            ${tooltip()}
+          </th>
+          <td class="even"><span class="self">-</span></td>
+          <td class="odd" acre:if="o.target_value">${literal(o.source.id, o.master_property, o.target_value)}</td>
+          <td class="odd" acre:else="">${topic(o.target)}</td>
+          <td class="even" acre:if="o.creator">${a(o.creator)}</td>
+          <td class="even" acre:else="">null</td>
+          <td class="odd numeric">${o.timestamp}</td>
+          <td acre:if="filters.history" class="even">${o.operation}</th>
+        </tr>
+        </acre:block>
+      </tbody>
+    </table>
+  </div>
+</acre:block>
+
+<acre:block def="attribution_links(id, data, filters)" if="data && data.length">
+  <div class="section">
+    <h2 class="table-title"><a name="attribution_links">${_("Links created by this user/attribution")} ( ${i18n_c.number(data.length)} )</a></h2>
+    <table class="table table-sortable">
+      <thead>
+        <tr>
+          <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
+          <th acre:if="filters.history" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <acre:block for="o in data">
+        <acre:script>
+        if (o.master_property === "/dataworld/gardening_hint/replaced_by") {
+        o.source.id = "/guid/" + o.source.guid.substring(1);
+        }
+        </acre:script>
+        <tr class="hoverable ${JSON.stringify(th.triple(o.source.id, id, o.target_value || o.target))} ${th.link_class(o)}">
+          <th class="row-header odd" scope="row">
+            ${topic(o.source)}
+            ${tooltip()}
+          </th>
+          <td class="even"><span class="self">${a(o.master_property)}</span></td>
+          <td class="odd" acre:if="o.target_value">${literal(o.source.id, o.master_property, o.target_value)}</td>
+          <td class="odd" acre:else="">${topic(o.target)}</td>
+          <td class="even" acre:if="o.creator">${a(o.creator)}</td>
+          <td class="even" acre:else="">null</td>
+          <td class="odd numeric">${o.timestamp}</td>
+          <td acre:if="filters.history" class="even">${o.operation}</th>
+        </tr>
+        </acre:block>
+      </tbody>
+    </table>
+  </div>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+  <script src="triples.mf.js"></script>
+</acre:block>
+
+<acre:block def="a(id, name, attrs)" trim="">
+  <acre:script>
+    attrs = h.extend({
+      title: id
+    }, attrs);
+    var clazz = "";
+    if (attrs["class"]) {
+      clazz = attrs["class"];
+      delete attrs["class"];
+    }
+  </acre:script>
+  <a href="${h.fb_url(id, [['inspect']])}" acre:attrs="attrs" class="${clazz}">${name || id}</a>
+</acre:block>
+
+<acre:block def="topic(o)" trim="">
+  <acre:script>
+    var id = o.id;
+    if (id.indexOf("/user/") === 0 ||
+        id.indexOf("/base/") === 0 ||
+        id.indexOf("/uri/") === 0) {
+      id = o.mid;
+    }
+    var name = null;
+    if (id === o.mid) {
+      if (o.name && o.name.length) {
+        name = i18n.display_name(o);
+      }
+    }
+  </acre:script>
+  ${a(id, id)}
+  <acre:block if="name != null">
+    ${name}
+  </acre:block>
+</acre:block>
+
+<acre:block def="literal(id, master_property, target_value)" trim="">
+  <span class="literal-value literal-value-${target_value.type.split('/').pop()}" acre:trim="">
+    <acre:block if="master_property === '/common/document/source_uri' && target_value.value.indexOf('http://wp/') === 0" trim="">
+      <a href="${h.fb_api_url('/api/trans/blurb' + id, [['maxlength', 1600]])}">${target_value.value}</a>
+    </acre:block>
+    <acre:block elif="master_property === '/type/content/blob_id'" trim="">
+      <a href="${h.fb_api_url('/api/trans/raw' + id)}">${target_value.value}</a>
+    </acre:block>    
+    <acre:block elif="target_value.type === '/type/uri'" trim="">
+      <a href="${target_value.value}" target="_new">${target_value.value}</a>
+    </acre:block>
+    <acre:block else="" trim="">
+      ${target_value.value}
+    </acre:block>                
+  </span>
+  <span class="literal-type">${a(target_value.type)}</span>
+  <acre:block if="target_value.type === '/type/text'" trim="">
+    <acre:block if="target_value.lang">
+      ${lang(target_value.lang)}
+    </acre:block>
+  </acre:block>
+</acre:block>
+
+<acre:block def="lang(language)" trim="">
+  <span class="lang">${a(language)}</a></span>
+</acre:block>
+
+<acre:block def="tooltip()">
+  <a href="javascript:void(0);" class="row-menu-trigger">+</a>
+</acre:block>

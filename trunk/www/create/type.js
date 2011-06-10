@@ -90,9 +90,9 @@
 
   function submit_create_type_instance_form(form) {
     var submit_data = $.extend({}, form.ajax.data);  // s, p, lang
+    var o;
     try {
-      var o = editparams.parse(form.structure, form.edit_row);
-      submit_data.o = JSON.stringify(o);
+      o = editparams.parse(form.structure, form.edit_row);
     }
     catch(ex) {
       var errors = $(".data-input.error", form.edit_row);
@@ -105,7 +105,25 @@
       }
       return;
     }
-    console.log("submit_data", JSON.stringify(submit_data, null, 2));
+    if (!(o && o.length)) {
+      form.edit_row.trigger(form.event_prefix + "error", "Please specify a valid value");
+      $("input:first", form.edit_row).focus();
+      return;
+    }
+    submit_data.o = JSON.stringify(o);
+    //console.log("submit_data", submit_data);
+    $.ajax({
+      url: form.ajax.url,
+      type: "POST",
+      dataType: "json",
+      data: submit_data,
+      success: function(data, status, xhr) {
+        // TODO: handle error
+        var new_item = $(data.result.html);
+        var new_id = $(".property-value:first", new_item).attr("data-id");
+        window.location.href = fb.h.fb_url(new_id);
+      }
+    });
   };
 
 

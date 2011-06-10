@@ -1585,7 +1585,7 @@
 
                       // the delay before sending off the ajax request to the
                       // suggest and flyout service
-                      xhr_delay: 200,
+                      xhr_delay: 200
 
                       // return type information for each suggest item returned
                       // TODO: remove

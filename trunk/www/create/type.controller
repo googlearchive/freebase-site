@@ -50,11 +50,29 @@ var SPEC = {
   validate: function(params) {
     return [
       params.object,
-      i18n.lang
+      h.get_active_user()
     ];
   },
 
-  run: function(type, lang) {
+  run: function(type, user) {
+    /**
+     * Prevent creating instance of metaweb system types
+     */
+    if (h.is_metaweb_system_type(type.id)) {
+      return {
+        template: "type_system.mjt",
+        object: type
+      };
+    }
+    else if (!user) {
+      return {
+        template: "type_signedout.mjt",
+        object: type
+      };
+    }
+
+    var lang = i18n.lang;
+
     /**
      * We want to use propbox components and editparams to create a new instance of type.
      *
@@ -149,7 +167,9 @@ var SPEC = {
             instance_prop.properties = properties.concat(result.disamb_props);
             return {
               object: type,
-              prop_structure: instance_prop
+              prop_structure: instance_prop,
+              type_hints: hints,
+              user: user
             };
           });
         });

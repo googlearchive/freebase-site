@@ -1,6 +1,36 @@
-[
-  "lib/template/mixins.less",
-  "lib/template/freebase.ui.stats.less",
-  "lib/template/freebase.ui.propbox.less",
-  "data.less"
-]
+
+/*
+ * Copyright 2010, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Additional Licenses for Third Party components can be found here:
+ * http://wiki.freebase.com/wiki/Freebase_Site_License
+ *
+ */
+.activity-chart-assertions,.activity-summary{float:left;width:113px;margin-right:7px;height:32px;overflow:hidden;background:url("/static/14c.lib.www.tags/template/ui-sprite.png") no-repeat 9px -195px}.activity-stats{background:#fff;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:1px solid #dcdbdc;overflow:auto;margin-right:10px}.ie6 .activity-stats{height:33px;width:275px}.activity-stats-lastweek{margin-top:4px;color:#f71;width:50px;float:left;font-size:1.2em;line-height:1}.activity-stats-lastweek-label{font-size:10px;line-height:1}.domain-contributor{margin-right:10px}.ie7 .domain-contributor{width:38px}.ie6 .domain-contributor{width:35px;margin-right:5px}.activity-stats-block{width:48px;margin:3px 3px 3px 0;float:left;color:#fff;text-align:center}.activity-stats-facts{background:#f71;-webkit-border-bottom-left-radius:5px;-moz-border-radius-bottomleft:5px;border-bottom-left-radius:5px;-webkit-border-top-left-radius:5px;-moz-border-radius-topleft:5px;border-top-left-radius:5px}.activity-stats-topics{background:#78a;-webkit-border-bottom-right-radius:5px;-moz-border-radius-bottomright:5px;border-bottom-right-radius:5px;-webkit-border-top-right-radius:5px;-moz-border-radius-topright:5px;border-top-right-radius:5px}.activity-stats-number{font-size:1.2em;font-weight:bold;line-height:2.1;margin:0 auto;padding:0 2px;height:26px}.metric{display:inline-block;text-align:center;width:3.5em;font-size:14px;font-weight:bold;color:#fff;padding:5px;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px}.metric.primary{background:#f71}.metric.secondary{background:#78a}.activity-summary{display:inline-block}.data-list{list-style:none}.data-list li{font-size:12px;line-height:1;padding:0 15px}.data-table{width:100%}.data-table .data-list li,.data-table .empty-property{padding:0}.data-table th,.data-table td{font-size:12px}.data-table thead th,.data-table thead td{font-size:11px;font-weight:bold;color:#444;padding-bottom:5px}.data-table thead th{border-bottom:2px solid #d5d7d8}.data-table tbody th,.data-table tbody td{vertical-align:top;padding:0 3px 0 0;border-top:1px solid #d5d7d8;-webkit-transition:all .3s linear 0s;-moz-transition:all .3s linear 0s;-o-transition:all .3s linear 0s;transition:all .3s linear 0s}.data-table tbody tr.empty-row td{border:none}.data-table tbody tr:hover td,.data-list li:hover{background-color:#e6e7e8}.data-table .data-list li:hover{background:transparent}.data-table tbody tr th:first-child,.data-table tbody tr td:first-child{padding-left:0}.data-table thead tr th:first-child{padding-left:15px}.data-table tbody tr th:first-child li,.data-table tbody tr td:first-child li{padding-left:15px}.data-table .alt th,.data-table .alt td{background:#ecedef}.empty-property{line-height:1;padding:0 0 5px 15px;color:#ccc}.data-list li .wrapper{position:relative;display:inline-block;padding:5px 45px 6px 0}.data-list .edit-row-submit.data-list .edit-row{padding-left:15px}.magicbox-template{display:none;margin-top:10px}.row-msg td{padding-top:5px;padding-bottom:5px}.row-msg .close-msg{float:right}.data-table .loading,.data-list .loading{opacity:.4}.section.wrapper{float:left;width:100%}.column.object-activity{float:left;width:450px;margin-left:-450px}.section.instances{background:#fff;padding:15px;-webkit-box-shadow:1px 2px 3px #bbb;-moz-box-shadow:1px 2px 3px #bbb;box-shadow:1px 2px 3px #bbb}.views{margin-right:470px}table .data-statistics th,table .data-statistics td{background:#fff;line-height:1;padding:0 7px}.data-statistics .metric,.data-statistics .activity-summary,.data-statistics .metric-byline{float:left}.data-statistics .metric{margin-top:4px}.metric-byline{margin-top:5px;font-size:11px}.metric-byline .primary{color:#f71}.metric-byline .secondary{color:#78a}.object-activity table .column-header{font-weight:normal}.object-activity .column-header span{font-weight:normal;padding-left:10px}.column-header .primary{color:#f71}.column-header .secondary{color:#78a}.table .secondary-header .row-header{padding:7px 7px 7px 16px}.table .user-list li{list-style:none;float:left;font-size:11px;margin:10px 10px 0 0;color:#666;width:12em}.user-list li .user-image{float:left;margin-right:5px}.table-title{float:left;margin-top:2px}.data-table{width:100%}.data-list{list-style:none}.data-table .data-list li,.data-list li{font-size:12px;line-height:1;padding:0 15px}.data-table .empty-property{padding:0}.data-table th,.data-table td{font-size:12px}.data-table thead th,.data-table thead td{font-size:11px;font-weight:bold;color:#444;padding-bottom:5px}.data-table thead th{border-bottom:2px solid #d5d7d8}.data-table tbody th,.data-table tbody td{vertical-align:top;padding:0 3px 0 0;border-top:1px solid #d5d7d8;-webkit-transition:all .3s linear 0s;-moz-transition:all .3s linear 0s;-o-transition:all .3s linear 0s;transition:all .3s linear 0s}.data-table tbody tr.empty-row td{border:none}.data-table tbody tr:hover td,.data-list li:hover{background:#fff}.data-table .data-list li:hover{background:transparent}.data-table tbody tr th:first-child,.data-table tbody tr td:first-child{padding-left:0}.data-table thead tr th:first-child{padding-left:15px}.data-table tbody tr th:first-child li,.data-table tbody tr td:first-child li{padding-left:15px}.data-table tbody tr.instance.data-table .alt th,.data-table .alt td{background:#ecedef}#data-table-popup{position:absolute;z-index:1000;width:300px}.data-list img{margin:0 auto;max-width:100%;border:1px solid #ececec;padding:1px;-webkit-box-shadow:0 0 3px #aaa;-moz-box-shadow:0 0 3px #aaa;box-shadow:0 0 3px #aaa}.image li .wrapper{padding:5px 0 6px}.data-table tbody .instance-sub-row td{border:0}.data-table tbody .article{max-width:350px}.data-table thead th{vertical-align:bottom}.empty-result{margin:1.5em}.empty-result p{font-size:14px}

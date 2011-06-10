@@ -127,7 +127,8 @@
     <div class="section clear"> 
       <!!-- Topic Overview -->
       <div class="sub-section">
-        <h1>Topics</h1>
+        
+        <h1><a name="topics">Topics</a></h1>
         <div class="table-header">
           <h2 class="table-title">
             ${util.ppn(c.freebase.data['total_topics'])}
@@ -156,7 +157,7 @@
       <div class="sub-section">
         <h1>Edits</h1>
         <div class="table-header">
-          <h2 class="table-title" name='users'>Contributors
+          <h2 class="table-title"><a name='users'>Contributors</a>
             <span class="staff-bots" style="background-color: #eeeeee; font-size: 0.6em; font-weight: normal;">(<a id="hide_staff">
                 hide staff/bot/new</a>)</span>
             <span style="font-size: 0.6em; font-weight: normal;">
@@ -311,7 +312,7 @@
               <img acre:else="" style="align: left;" src="http://www.freebase.com/api/trans/image_thumb${record.user}?maxwidth=30&maxheight=30&mode=fillcrop"/>
             </td>
             <td style="vertical-align: top;">
-              <a href="${id}?activity">${record.name}</a> 
+              <a name="$record.name" href="${id}?activity">${record.name}</a> 
               <acre:block if="type_id != '/type/user'">
               <br/>by ${util.split_id(record.user)[1]}
               </acre:block>

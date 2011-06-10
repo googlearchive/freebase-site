@@ -71,11 +71,12 @@
     </p>
     <ul>
      <li class="row-msg">
-     <a class="close-msg" style="visibility:hidden;" href="#" 
-       onclick="$$(this).css('visibility', 'hidden').next().find('.msg-default').show().next().html('&nbsp'); return false;">close</a>
-     <span>
-       <span></span>
-     </span>
+       <a class="close-msg" style="visibility:hidden;" href="#" 
+         onclick="$$(this).css('visibility', 'hidden').next().find('.msg-default').show().next().html('&nbsp'); return false;">close</a>
+       <span>
+         <span class="msg-default"></span>
+         <span></span>
+       </span>
      </li>
      <acre:block for="prop in c.prop_structure.properties">
        <li class="edit-row">

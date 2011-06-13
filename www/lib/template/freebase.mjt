@@ -75,6 +75,13 @@
         <!-- freebase.mf.css -->
         <link rel="stylesheet" type="text/css" href="template/freebase.mf.css" />
       </acre:block>
+      <style type="text/css">       
+        /** initially hide all edit controls **/
+        /** this at the end since some css can override if in freebase.css **/
+        .edit {
+          display: none;
+        }
+      </style>
 
       <acre:block if="h.is_production()">
         <script>${acre.include("googleanalytics.js")}</script>

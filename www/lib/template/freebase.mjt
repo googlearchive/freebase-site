@@ -157,7 +157,7 @@
       </div>
     </div>
     <div class="nav-user-controls anonymous" id="signedout" style="display:none;">
-      <a href="javascript:void(0)" onclick="window.freebase.login_popup()"title="Sign in to your Freebase account" rel="nofollow">Sign In or Sign Up</a>
+      <a href="javascript:void(0)" onclick="window.freebase.login_popup()" title="Sign in to your Freebase account" rel="nofollow">Sign In or Sign Up</a>
     </div>
     ${i18n_c.lang_select()}
   </div>

@@ -117,7 +117,7 @@
 </acre:block>
 
 <acre:block def="content(exports)">
-  <div id="content" class="clear" itemscope="" data-id="c.object.mid">
+  <div id="content" class="clear" itemscope="" data-id="${c.object.id}">
     ${content_body()}
   </div>
 </acre:block>
@@ -139,11 +139,16 @@
                     ${i18n_c.lang_code(c.object.name[0].lang, null, true)}
                   </a>
                 </span>
-                <ul class="row-menu submenu">  
+                <ul class="row-menu submenu">
+                  <acre:script>
+                    var ajax_prefix = h.ajax_url('lib/i18n');
+                  </acre:script>
+                  <li class="row-menu-item signedout">
+                    <a href="javascript:void(0)" class="icon-link" onclick="window.freebase.login_popup()" rel="nofollow">
+                     <span class="edit-icon">${_("Sign in to edit localized names")} &hellip;</span>
+                    </a>                    
+                  </li>
                   <li class="row-menu-item edit">                    
-                    <acre:script>
-                      var ajax_prefix = h.ajax_url('lib/i18n');
-                    </acre:script>
                     <a href="#" onclick="return i18n.text_edit(this, '${ajax_prefix}', '${c.object.id}', '/type/object/name', '${i18n.lang}');" class="icon-link">
                      <span class="edit-icon">${_("Edit localized names")} &hellip;</span>
                     </a>

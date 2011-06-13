@@ -75,9 +75,16 @@
         <!-- freebase.mf.css -->
         <link rel="stylesheet" type="text/css" href="template/freebase.mf.css" />
       </acre:block>
-      <style type="text/css">       
-        /** initially hide all edit controls **/
-        /** this at the end since some css can override if in freebase.css **/
+       <!!--
+       /**
+        * .edit is a global class used for initializing
+        * buttons that require user authorization.
+        * they start out hidden and are shown via javascript
+        * once the user has been authorized.
+        * this at the end since some css can override if in freebase.css 
+        **/
+        !!-->
+      <style type="text/css">     
         .edit {
           display: none;
         }

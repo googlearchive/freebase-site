@@ -1,0 +1,522 @@
+/** initially hide all edit controls **/
+.edit {
+    display: none;
+}
+
+::selection {
+  background: #ff8123;
+  color: #111;
+}
+
+/*
+ ### Page Structure
+*/
+#page-content {
+  position: relative;
+}
+
+.nav.column {
+  position: absolute;
+  width: 230px;
+  margin-right: 20px;
+  margin-top: -7px;
+}
+
+.section.domain {
+  margin: 20px 0;
+  margin-left: 250px;
+  background: #fff;
+  padding: 15px;
+  .box_shadow(1px, 2px, 3px, #bbb);
+}
+
+/*
+  ### Keyboard Shortcuts
+*/
+
+tr.kbs.current,
+h1.kbs.current {
+  background-image: none;
+}
+
+.kbs.current .mark,
+li.kbs.current,
+tr.kbs.current td:first-child li:first-child {
+  background: url(lib/template/ui-icons.png) no-repeat 5px -814px;
+}
+
+h1 .mark,
+h2 .mark,
+div .mark {
+  display: inline-block;
+  padding-left: 15px;
+}
+
+h2.kbs.current .mark,
+div.kbs.current .mark {
+  background-position: 5px -812px;
+}
+
+/*
+ ### Domain Box Styling
+*/
+
+/* The Domain Name */
+.section h1 {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+/* Domain status: Commons, Base, Unpublished, etc.*/
+.header .status {
+  float: right;
+  margin-top: 7px;
+  margin-right: 15px;
+  font-size: 11px;
+  color: #aaa;
+  padding-left: 20px;
+}
+
+/*
+ * Styling for Commons vs User Domain
+ */
+
+.status.commons,
+.status.user {
+  background: url(lib/template/ui-icons.png) no-repeat;
+}
+
+.status.commons {
+  background-position: 0 -1389px;
+}
+
+.status.user {
+  background-position: 0 -1417px;
+}
+
+.foobar {
+  position: relative;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+  .box_shadow(0, 1px, 2px, #aaa);
+  .linear_gradient(#ccc, #c1c2c3);
+}
+
+.foobar .key {
+  font-weight: normal;
+}
+
+.sub-foobar {
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+  padding-right: 15px;
+  /*margin-bottom: 5px;*/
+  border-bottom: 1px solid #d5d7d8;
+  .linear_gradient(#f7f7f7, #eaeaea);
+}
+
+.sub-foobar .more {
+  float: right;
+  position: relative;
+  overflow: hidden;
+  margin: 8px 0 0 0;
+  opacity: 0.6;
+  background: url(lib/template/ui-icons.png) no-repeat right -610px;
+  height: 14px;
+  padding-right: 155px;
+}
+
+.sub-foobar .more span {
+  position: absolute;
+  top: 30px;
+  font-weight: normal;
+  color: #777;
+  .transition(all, 0.3s, ease-in-out);
+}
+
+.sub-foobar:hover .more {
+  opacity: 1;
+}
+
+.sub-foobar .more:hover {
+  text-decoration: none;
+  background-position: right -634px;
+}
+
+.sub-foobar:hover a span {
+  top: 0;
+}
+
+.sub-foobar a:hover span {
+  color: #5a5a5a;
+}
+
+.header-label {
+  display: inline-block;
+  .transition(all);
+}
+
+.foobar:hover .header-label,
+.sub-foobar:hover .header-label {
+  background: rgba(0,0,0,0.05);
+}
+
+.foobar:hover .header-label:hover,
+.sub-foobar:hover .header-label:hover,
+.kbs.current .header-label {
+  cursor: pointer;
+  background: rgba(0,0,0,0.1);
+}
+
+.header-label .menu-trigger {
+  display: inline-block;
+  color: #666;
+  padding: 7px 25px 7px 0;
+}
+
+.section:hover .header-label .menu-trigger {
+  background: url(lib/template/ui-icons.png) no-repeat right -679px;
+}
+
+.foobar:hover .menu-trigger,
+.sub-foobar:hover .menu-trigger {
+  background-position: right -713px;
+}
+
+/*
+  The .toolbar class is meant to contain utility links that act upon
+  the data directly below.
+*/
+
+.toolbar {
+  margin-left: 250px;
+  line-height: 1;
+  padding-left: 15px;
+  .linear_gradient(#e4e6e7, #d5d7d8);
+  .transition(all);
+}
+
+.toolbar.active {
+  position: relative;
+  z-index: 1;
+  .box_shadow(0, 2px, 2px, #c1c2c3);
+}
+
+.toolbar ul {
+  float: left;
+  list-style: none;
+  font-size: 12px;
+  border-right: 1px solid #e3e5e6;
+}
+
+.toolbar li {
+  float: left;
+  border-left: 1px solid #e3e5e6;
+}
+
+.toolbar li a {
+  display: block;
+  padding: 5px 15px;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  .transition(all);
+}
+
+.toolbar li a:hover {
+  background: rgba(100,100,100,0.1);
+}
+
+.toolbar li a.active {
+  opacity: 1;
+  .linear_gradient(#d5d7d8, #e4e6e7);
+}
+
+.toolbar-pane {
+  display: none;
+  margin: 0 0 20px 250px;
+  padding: 15px;
+  background: #fff;
+  border: 1px solid #d6d8d9;
+}
+
+.toolbar-pane-title {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.multi-column {
+  -webkit-column-count: 3;
+  -moz-column-count: 3;
+  column-count: 3;
+  font-size: 11px;
+}
+
+.add-type {
+  margin-top: 5px;
+  margin-bottom: 20px;
+}
+
+.add-type .text-input {
+  width: 200px;
+}
+
+.tooltip {
+  display: none;
+  background: #fff;
+  padding: 10px;
+  .box_shadow();
+}
+
+/* menu styling for property value triggers */
+
+.data-list li .combo-menu {
+  list-style: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: inline-block;
+  visibility: hidden;
+  padding: 2px;
+  border: 1px solid transparent;
+  .transition(all);
+}
+
+.data-table tr.current li {
+  list-style: none !important;
+}
+
+.kbs.row-hover .combo-menu {
+  visibility: visible;
+}
+
+.data-list li:hover .combo-menu:hover {
+  border: 1px solid #d4d6d7;
+  .linear_gradient(#e4e6e7, #d4d6d7);
+  .box_shadow(0 2px 2px, #a1a2a3);
+}
+
+.combo-menu .default-action {
+  display: inline-block;
+  background: #fff;
+  width: 17px;
+  height: 17px;
+  text-indent: -9999px;
+  line-height: 1;
+}
+
+ul.combo-menu li,
+.data-table tbody tr ul.combo-menu li {
+  padding: 0; 
+}
+
+#page-content .combo-menu li,
+#page-content .combo-menu li {
+  background-image: none;
+}
+
+.combo-menu .row-menu {
+  z-index: 2;
+}
+
+.combo-menu .more-action {
+  display: inline-block;
+  width: 11px;
+  height: 17px;
+  text-indent: -9999px;
+  background: url(lib/template/ui-icons.png) no-repeat 2px -686px;
+}
+
+.combo-menu:hover .more-action {
+  background-position: 2px -720px;
+}
+
+.combo-menu:hover .more-action:hover {
+  background-position: 2px -753px;
+}
+
+.default-action.edit-action {
+  background: url(lib/template/ui-icons.png) no-repeat 2px -855px;
+}
+
+.combo-menu:hover .default-action.edit-action {
+  background-color: #fff;
+}
+
+
+.combo-menu:hover .edit-action {
+  background-position: 2px -875px;
+}
+
+.combo-menu:hover .edit-action:hover {
+  background-position: 2px -895px;
+}
+
+.combo-menu:hover .default-action.loading,
+.combo-menu:hover .default-action.loading:hover {
+  background: url(lib/template/loader-snake-small-grey.gif) no-repeat;
+}
+
+.row-menu {
+  z-index: 1;
+  .rounded_corners(0);
+}
+
+
+/*
+Keyboard Shortcuts
+*/
+
+.keyboard-shortcuts {
+  text-align: center;
+  font-size: 12px;
+  background: transparent;
+  border: 0;
+  .box_shadow(0,0,0);
+}
+
+.keyboard-shortcuts a {
+  display: inline-block;
+  padding-bottom: 3px;
+  color: #666;
+  padding-left: 40px;
+  background: url(lib/template/keyboard.png) no-repeat left top;
+}
+
+.key-map {
+  font-size: 12px;
+  margin: 10px 0;
+}
+
+.key-symbol {
+  display: inline-block;
+  line-height: 1;
+  text-align: center;
+  width: 14px;
+  padding: 5px;
+  border: 1px solid #d1d2d3;
+  margin-right: 5px;
+  .linear_gradient;
+}
+
+.key-desc {
+  display: inline;
+}
+
+
+
+
+/*
+ * Inline Topic Edit Controls
+ *
+ * NOTE:
+ *
+ * A lot of this is duplicated in
+ * schema/schema.less
+ * We need to refactor
+ */
+
+.edit-form .form-label {
+  display: block;
+  margin-bottom: 7px;
+}
+
+.edit-form .data-input {
+  margin-bottom: 10px;
+}
+
+.edit-row-style() {
+    background: #f1f2f3;
+    border: 0;
+    padding: 5px 0;
+}
+
+.data-list {
+  .edit-row,
+  .add-row,
+  .row-msg,
+  .edit-row-submit {
+    .edit-row-style();
+    &:hover {
+      background: #f1f2f3;
+    }
+  }
+}
+
+.data-table tbody {
+  tr.edit-row th,
+  tr.edit-row td,
+  tr.edit-row-submit th,
+  tr.edit-row-submit td {
+    .edit-row-style();
+    &:hover {
+      background: #f1f2f3;
+    }
+  }
+}
+
+.data-table tbody tr.row-msg td,
+.data-list .row-msg,
+.data-list .row-msg:hover {
+  background: darken(#f1f2f3, 5%);
+}
+
+.data-table tbody tr.edit-row th,
+.data-table tbody tr.edit-row td {
+  padding-top: 10px;
+}
+
+.data-list .edit-row,
+.data-list .edit-row-submit,
+.data-list .row-msg,
+.data-table tbody tr.row-msg td:first-child,
+.data-table tbody tr.edit-row td:first-child,
+.data-table tbody tr.edit-row-submit td:first-child {
+  padding-left: 15px;
+}
+
+.add-row .fb-input,
+.edit-row .fb-input {
+  width: 16em;
+}
+
+
+/*
+ * Handle overflow gracefully in webkit browsers
+ */
+
+.data-section {
+  overflow: auto;
+}
+
+.data-section::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+  background: white;
+}  
+.data-section::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+.data-section::-webkit-scrollbar-thumb:vertical {
+  border-left: 6px solid white;
+  border-right: 4px solid white;
+}
+.data-section::-webkit-scrollbar-thumb:horizontal {
+  border-top: 6px solid white;
+  border-bottom: 4px solid white;
+}
+.data-section:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, .1);
+} 
+.data-section::-webkit-scrollbar-thumb:horizontal:hover,
+.data-section::-webkit-scrollbar-thumb:vertical:hover {
+  background: rgba(0, 0, 0, .15);
+}
+.data-section::-webkit-scrollbar-track-piece:vertical:start {
+  margin-top: 4px;
+}
+.data-section::-webkit-scrollbar-track-piece:horizontal:start {
+  margin-left: 4px;
+}
+

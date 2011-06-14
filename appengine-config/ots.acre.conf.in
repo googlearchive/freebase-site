@@ -14,24 +14,7 @@
    ]
   },
   {
-    "host": [
-      "@ACRE_HOST_BASE@",
-      "www.@ACRE_HOST_BASE@"
-    ],
-    "rules": [
-      {
-        "from": {
-          "path": "/" 
-        },
-        "to": {
-          "route_as": "app",
-          "location": "//release.apps.site.freebase.dev"
-        } 
-      }
-    ]
-  },
-  {
-    "host": ".@ACRE_METAWEB_BASE_ADDR@",
+    "host": [".@ACRE_METAWEB_BASE_ADDR@", "@ACRE_HOST_BASE@"],
     "rules": [
       {
         "from": {

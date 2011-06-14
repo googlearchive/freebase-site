@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+  <cron>
+    <url>/</url>
+    <description>Cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/schema</url>
+    <description>Cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/film?schema</url>
+    <description>Cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/film/film?schema</url>
+    <description>Cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/film</url>
+    <description>Cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/film/film</url>
+    <description>Cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/film?community</url>
+    <description>Cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/m/045c7b</url>
+    <description>Cache warmup. (topic Google).</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/m/0d6lpy</url>
+    <description>Cache warmup. (topic San Francisco).</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/m/01skz_?inspect</url>
+    <description>Cache warmup. (inspect Neko Case).</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/explore</url>
+    <description>Cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/appeditor</url>
+    <description>Cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/docs</url>
+    <description>Cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/appeditor</url>
+    <description>Cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+  <cron>
+    <url>/queryeditor</url>
+    <description>Cache warmup.</description>
+    <schedule>every 10 minutes</schedule>
+  </cron>
+</cronentries>

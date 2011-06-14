@@ -37,7 +37,11 @@ var validators = acre.require("validator/validators.sjs");
   Returns a query string for provided property
 */
 function build_query_url(topic_id, prop_structure, lang) {
-  return h.fb_url("/query", {topic: topic_id, property: prop_structure.id});
+  var q = {
+    id: topic_id
+  };
+  q[prop_structure.id] = [];
+  return h.fb_url("/queryeditor", {q:JSON.stringify(q), autorun:1});
 };
 
 /**

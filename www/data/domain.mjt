@@ -79,7 +79,7 @@
                 ${i18n_c.datetime(type.timestamp, [["class","published"],["data-format","medium"]])}
               </td>
               <td class="odd">
-                <a href="${h.fb_url(type.creator.id, [['schema']])}">${h.id_key(type.creator)}</a> 
+                <a href="${h.fb_url(type.creator)}">${h.id_key(type.creator)}</a> 
               </td>
               <td class="numeric">${i18n_c.number(type.instance_count)}</td>
             </tr>

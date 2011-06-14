@@ -136,32 +136,44 @@ function extend() {
   for ( ; i < length; i++ ) {
     // Only deal with non-null/undefined values
     if ( (options = arguments[ i ]) != null ) {
-      // Extend the base object
-      for ( name in options ) {
-        src = target[ name ];
-        copy = options[ name ];
 
-        // Prevent never-ending loop
-        if ( target === copy ) {
-          continue;
-        }
+      // slight optimization over original jquery code;
+      // use iteration rather than recursion
+      var node_stack = [];
+      node_stack.push([target, options]);
+      while (node_stack.length > 0) {
+        var node = node_stack.pop(),
+            node_src = node[0],
+            node_copy = node[1];
+            
+        // Extend the base object
+        for (name in node_copy) {
+          src = node_src[name];
+          copy = node_copy[name];
 
-        // Recurse if we're merging plain objects or arrays
-        if ( deep && copy && ( isPlainObject(copy) || (copyIsArray = isArray(copy)) ) ) {
-          if ( copyIsArray ) {
-            copyIsArray = false;
-            clone = src && isArray(src) ? src : [];
-
-          } else {
-            clone = src && isPlainObject(src) ? src : {};
+          // Prevent never-ending loop
+          if ( node_src === copy ) {
+            continue;
           }
 
-          // Never move original objects, clone them
-          target[ name ] = extend( deep, clone, copy );
+          // Recurse if we're merging plain objects or arrays
+          if ( deep && copy && ( isPlainObject(copy) || (copyIsArray = isArray(copy)) ) ) {
+            if ( copyIsArray ) {
+              copyIsArray = false;
+              clone = src && isArray(src) ? src : [];
 
-          // Don't bring in undefined values
-        } else if ( copy !== undefined ) {
-          target[ name ] = copy;
+            } else {
+              clone = src && isPlainObject(src) ? src : {};
+            }
+
+            // Never move original objects, clone them
+            node_src[name] = clone;
+            node_stack.push([clone, copy]);
+
+            // Don't bring in undefined values
+          } else if ( copy !== undefined ) {
+            node_src[name] = copy;
+          }
         }
       }
     }

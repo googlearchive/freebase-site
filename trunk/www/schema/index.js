@@ -197,27 +197,44 @@
 
   };
 
-  // show create new domain button if logged in
-  if (fb.user) {
-    $("#create-new-domain").show();
-  }
-  else {
-    $(window)
-       .bind("fb.user.signedin", function(e, user) {
-          $("#create-new-domain").show();
-       });
-  }
-
-
   fb.schema.index = {
     add_domain: function(e) {
-      var trigger = $(this);
+      fb.schema.index._add_domain($(this));
+    },
+
+    _add_domain: function(trigger) {
       fb.get_script(fb.h.static_url("index-edit.mf.js"), function() {
         fb.schema.index.edit.add_domain_begin(trigger);
       });
       return false;
     }
+
   };
+
+
+  // show create new domain button if logged in
+  var create_new_domain;
+  if (fb.user) {
+    create_new_domain = $("#create-new-domain").show();
+    if (window.location.hash == "#create") {
+      setTimeout(function() {
+        fb.schema.index._add_domain(create_new_domain);
+      }, 0);
+    }
+  }
+  else {
+    $(window)
+       .bind("fb.user.signedin", function(e, user) {
+          create_new_domain = $("#create-new-domain").show();
+          if (window.location.hash == "#create") {
+            setTimeout(function() {
+              fb.schema.index._add_domain(create_new_domain);
+            }, 0);
+          }
+       });
+  }
+
+
 
   $(init);
 

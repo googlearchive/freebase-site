@@ -110,7 +110,7 @@ function domain(id) {
         // 3. Add Top Contributors to domain object
 
         .then(function(activity) {
-          
+
           // facts
           domain.total_facts = activity.total.edits || 0;
           domain.facts_last_week = activity.week.total_edits || 0;
@@ -161,7 +161,7 @@ function domain(id) {
 
           if (summary.types) {
             domain.types.forEach(function(type) {
-              type.instance_count = summary.types[type.id] || '-';
+              type.instance_count = summary.types[type.id] || null;
             });
           }
 
@@ -170,7 +170,7 @@ function domain(id) {
 
       // TODO: this query is removed for now. Refactor with projects
       // attach domain saved views to domain object
- 
+
       //promises.push(freebase_query.featured_views_by_domain(domain.id)
       //    .then(function(views) {
       //      domain.featured_views = views;

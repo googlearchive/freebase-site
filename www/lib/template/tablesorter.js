@@ -70,7 +70,11 @@
           is: function(s) { return false; },
           format: function(s) {
             div.html(s);
-            return div.find(".number:first").attr("data-value");
+            var n = div.find(".number:first").attr("data-value");
+            if (n == null) {
+              return Number.MAX_VALUE;
+            }
+            return n;
           },
           type: "numeric"
         });

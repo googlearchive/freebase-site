@@ -81,7 +81,14 @@
               <td class="odd">
                 <a href="${h.fb_url(type.creator)}">${h.id_key(type.creator)}</a> 
               </td>
-              <td class="numeric">${i18n_c.number(type.instance_count)}</td>
+              <td class="numeric">
+                <acre:block if="type.instance_count == null">
+                  <span>-</span>
+                </acre:block>
+                <acre:block else="">
+                  ${i18n_c.number(type.instance_count)}
+                </acre:block>
+              </td>
             </tr>
           </tbody>
         </table>

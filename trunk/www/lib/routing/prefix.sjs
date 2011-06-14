@@ -205,13 +205,20 @@ function PrefixRouter(app_labels) {
     }
     return key;
   };
+  
+  var split_path = function(prefix) {
+    var parts = prefix.split('/');
+    if (parts[parts.length-1] === "") {
+        parts[parts.length-1] = "/";
+    }
+    return parts;
+  };
 
   var traverse_key_tree = function(tree, keys, expand_leaves) {
     // Find the subtree at the end of the list of keys
     var current_tree = tree;
 
     for (var i in keys) {
-      if (keys[i] === "") continue;
       var key = 'key-' + keys[i];
       if (!current_tree[key]) {
         if (expand_leaves) {
@@ -258,14 +265,14 @@ function PrefixRouter(app_labels) {
 
 
       // Find the leaf node for this prefix and place the routing rule there
-      var subtree = traverse_key_tree(routing_tree, route.prefix.split('/'), true);
+      var subtree = traverse_key_tree(routing_tree, split_path(route.prefix), true);
       subtree.route = route;
       h.splice_with_key(route_list, "prefix", route);
     });
   };
 
   var route_for_path = this.route_for_path = function(path) {
-    var subtree = traverse_key_tree(routing_tree, path.split('/'));
+    var subtree = traverse_key_tree(routing_tree, split_path(path));
     return subtree.route;
   };
 

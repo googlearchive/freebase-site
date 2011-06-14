@@ -217,10 +217,8 @@
     legacy_fb_url: function() {
       var args = Array.prototype.slice.call(arguments);
       var host = fb.acre.freebase.site_host
-        .replace('devel.', 'www.') //devel sub-domains are used for development
-        .replace('dev.', 'www.') //preview of new freebase site talking to legacy freebase api
-        .replace('test.', 'www.') //preview of new freebase site talking to new freebase api
-        .replace(':' + fb.acre.request.server_port, '');
+        .replace(/^(https?\:\/\/)(devel|dev|test)\./, '$1www.')
+        .replace(':'+fb.acre.request.server_port, '');
       args.unshift(host);
       return h.build_url.apply(null, args);
     },

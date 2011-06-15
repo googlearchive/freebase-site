@@ -21,9 +21,7 @@ limitations under the License.
 import sys, shutil, os, re, pwd, pdb, datetime, time, urllib2, random, threading
 from optparse import OptionParser
 from tempfile import NamedTemporaryFile
-from siteutil import Context, AppFactory, GetAcre, SERVICES
-
-
+from siteutil import Context, Acre, AppFactory, SVNLocation
 
 try:
   import json
@@ -31,42 +29,6 @@ except ImportError:
   import simplejson as json
 except ImportError:
   print "ERROR: One of json or simplejson python packages must be installed for this to work."
-
-class SVNLocation:
-
-  def __init__(self, context, svn_url=None, local_dir=None):
-    self.context = context
-
-    self.svn_url = svn_url
-    self.local_dir = local_dir
-
-  def checkout(self, files=False):
-    c = self.context
-
-    cmd = ['svn', 'checkout', self.svn_url, self.local_dir, '--username', c.googlecode_username, '--password', c.googlecode_password]
-    if files:
-      cmd.extend(['--depth', 'files'])
-    (r, result) = c.run_cmd(cmd)
-
-    if not r:
-      if "svn: invalid option" in result:
-        c.error("You might have an older version of svn - please update to the latest version. The option --depth is not supported in your version.")
-      return c.error(result)
-
-    return True
-
-
-  def update(self):
-    '''Returns the last revision or False'''
-    c = self.context
-
-    cmd = ['svn', 'update', self.local_dir, '--username', c.googlecode_username, '--password', c.googlecode_password]
-    (r, result) = c.run_cmd(cmd)
-
-    if not r:
-      return c.error(result)
-
-    return (r, result)
 
 
 #checkout and install acre
@@ -77,30 +39,9 @@ class ActionSetupAcre:
 
   def __call__(self, build=True):
     c = self.context
-
-    if not c.options.acre_dir:
-      return c.error('You must specify a valid directory to install acre in')
-
-    success = c.googlecode_login()
-    if not success:
-      return c.error('You must provide valid google code credentials to complete this operation.')
-
-    try:
-      os.mkdir(c.options.acre_dir)
-    except:
-      return c.error('The directory %s already exists, or unable to create directory.' % c.options.acre_dir)
-
-
-    svn = SVNLocation(c, c.ACRE_SVN_URL + '/trunk', c.options.acre_dir)
-
-    # CHECKOUT #
-    c.log('Starting acre checkout')
-    r = svn.checkout()
-
-    if not r:
+    acre = Acre.Get(c)
+    if not acre:
       return False
-
-    c.log('Acre checkout done')
 
     # CONFIGURATION #
     c.log('Starting local configuration.')
@@ -145,7 +86,7 @@ class ActionSetupAcre:
 
     # BUILD #
     if build:
-      r = GetAcre(c).build()
+      r = acre.build()
       if not r:
         return c.error('Failed to build acre at %s' % c.options.acre_dir)
 
@@ -200,11 +141,16 @@ class ActionSetupSite:
   def __call__(self):
 
     c = self.context
-    if not c.options.site_dir:
-      return c.error('You must specify a valid directory to install the site in')
 
-    if not c.options.acre_dir:
-      return c.error('You must specify an acre directory to install site in for acre on app-engine')
+    site_dir = c.resolve_site_dir()
+
+    if not site_dir:
+      return c.error("Could not figure out location of site. You can specify --site_dir as an option, or run the script from within a site svn checkout directory structure to figure it out automatically.")
+
+    acre = Acre.Get(c)
+
+    if not acre:
+      return c.error("Could not get an acre instance. You can specifiy --acre_dir, or --acre_version with a valid acre branch or trunk")
 
     success = c.googlecode_login()
     if not success:
@@ -232,11 +178,11 @@ class ActionSetupSite:
     if not r:
       return False
 
-    r = c.symlink(self.site_checkout, c.options.site_dir)
+    r = c.symlink(self.site_checkout, site_dir)
 
     c.log('Site checkout done')
 
-    r = GetAcre(c).build(target='devel', config_dir = '%s/appengine-config' % c.options.site_dir)
+    r = Acre.Get(c).build(target='devel', config_dir = '%s/appengine-config' % site_dir)
     if not r:
       return c.error('Failed to build acre under %s' % c.options.acre_dir)
 
@@ -245,7 +191,7 @@ class ActionSetupSite:
     c.log('In order to run the freebase site:', color=c.BLUE)
     c.log('\t1. Run the acre server: \n cd %s; ./acre appengine-run' % c.options.acre_dir)
     c.log('\t2. Visit http://devel.sandbox-freebase.com:%s' % c.options.acre_port)
-    c.log('freebase-site is now installed in %s' % c.options.site_dir)
+    c.log('freebase-site is now installed in %s' % ite_dir)
     c.log('')
     c.log('*' * 65)
 
@@ -310,7 +256,7 @@ class ActionLink:
     if not r:
       return c.error('There was an error linking the acre and site dirs')
 
-    GetAcre(c).build()
+    Acre.Get(c).build()
     return True
 
 
@@ -323,9 +269,9 @@ class ActionStatic:
 
     c = self.context
 
-    c.set_acre(GetAcre(c))
+    c.set_acre(Acre.Get(c))
 
-    acre = GetAcre(c)
+    acre = Acre.Get(c)
     if acre.build(target='devel', config_dir= "%s/appengine-config" % c.options.site_dir):
       if not acre.start():
         return c.error('There was an error starting acre - cannot generate static files without a running acre instance.')
@@ -356,15 +302,22 @@ class ActionDeployAcre:
 
     c = self.context
 
-    if not (c.options.site_dir and c.options.acre_dir):
-      return c.error("Both --site_dir and --acre_dir must be provided to deploy acre.")
+    site_dir = c.resolve_site_dir()
+    config = c.resolve_config()
 
-    if not c.options.acre_config:
+    acre = Acre.Get(c)
+
+    if not site_dir:
+      return c.error("Could not figure out location of site. You can specify --site_dir as an option, or run the script from within a site svn checkout directory structure to figure it out automatically.")
+
+    if not acre:
+      return c.error("Could not get an acre instance. You can specifiy --acre_dir, or --acre_version with a valid acre branch or trunk")
+
+    if not c.options.config:
       return c.error('You have to specify an acre build target with -c e.g. -c acre')
 
-    acre = GetAcre(c)
 
-    (r, result) = acre.build(c.options.acre_config, config_dir= "%s/appengine-config" % c.options.site_dir, war=True)
+    (r, result) = acre.build(c.options.config, config_dir= "%s/appengine-config" % site_dir, war=True)
 
     print result
 
@@ -385,10 +338,10 @@ class ActionDeployAcre:
     c.log('')
     c.log('Acre Deployment Summary')
     c.log('')
-    c.log('\tConfig: %s' % c.options.acre_config)
-    c.log('\tAppEngine URL: http://%s.appspot.com/' % c.options.acre_config)
-    c.log('\tAppEngine Dashboard: https://appengine.google.com/dashboard?&app_id=%s' % c.options.acre_config)
-    c.log('\tFreebase Site Keystore: http://environments.svn.freebase-site.googlecode.dev.%s.appspot.com/acre/keystore_console' % c.options.acre_config)
+    c.log('\tConfig: %s' % c.options.config)
+    c.log('\tAppEngine URL: http://%s.appspot.com/' % c.options.config)
+    c.log('\tAppEngine Dashboard: https://appengine.google.com/dashboard?&app_id=%s' % c.options.config)
+    c.log('\tFreebase Site Keystore: http://environments.svn.freebase-site.googlecode.dev.%s.appspot.com/acre/keystore_console' % c.options.config)
     c.log('')
     #c.log('Freebase Site Routing:')
     #for status_line in status:
@@ -418,7 +371,7 @@ class ActionDeployAcre:
 
 
     c.log('Starting deployment of live version, handing off to appcfg...', color=c.BLUE)
-    if not acre.deploy(target=c.options.acre_config): 
+    if not acre.deploy(target=c.options.config): 
       return c.error('Deployment failed.')
 
     if c.options.failover:
@@ -428,7 +381,7 @@ class ActionDeployAcre:
       if not r:
         return c.error('Failed to prepare failover version of acre, aborting.')
     
-      if not acre.deploy(c.options.acre_config): 
+      if not acre.deploy(c.options.config): 
         return c.error('Deployment failed.')
       
     return True
@@ -632,11 +585,14 @@ class ActionTest:
   def __init__(self, context):
     self.context = context
 
+
   def __call__(self):
     c = self.context
 
-    GetAcre(c).prepare_failover()
+    print c.resolve_config()
 
+
+    return True
   
 
 class ActionCreateAppBranch():
@@ -654,7 +610,6 @@ class ActionCreateAppBranch():
     if c.options.app != 'lib' and not c.options.lib:
       return c.error('You have to specify a lib version to connect to with -l')
 
-
     success = c.googlecode_login()
     if not success:
       return c.error('You must provide valid google code credentials to complete this operation.')
@@ -667,6 +622,9 @@ class ActionCreateAppBranch():
     #create the branch
     from_app = AppFactory(c)(c.options.app, c.options.version)
     branch_app = from_app.branch(c.options.version)
+
+    if not branch_app:
+      return c.error("Failed to create branch app - is %s a valid app key?" % c.options.app_key)
 
     #set the app object that is going to be used for here onwards
     #by any other stage
@@ -733,11 +691,16 @@ class ActionCreateAppTag():
     if not (c.options.app and c.options.version):
       return c.error('You have to specify a valid app and version to create a tag out of.')
 
-    if not c.options.acre_dir:
-      return c.error('You have to specify an acre directory to use.')
+    site_dir = c.resolve_site_dir()
 
-    if not c.options.site_dir:
-      return c.error('You have to specify a freebase-site directory to use.')
+    if not site_dir:
+      return c.error("Could not figure out location of site. You can specify --site_dir as an option, or run the script from within a site svn checkout directory structure to figure it out automatically.")
+
+    acre = Acre.Get(c)
+
+    if not acre:
+      return c.error("Could not get an acre instance. You can specifiy --acre_dir, or --acre_version with a valid acre branch or trunk")
+
 
     success = c.googlecode_login()
     if not success:
@@ -1241,8 +1204,6 @@ class ActionGetIds:
 
 def main():
 
-  t1 = datetime.datetime.now()
-
   # OPTION PARSING
 
   valid_actions = [
@@ -1280,14 +1241,16 @@ def main():
                     default=False, help='checkout branches and tags when setting up a freebase site')
   parser.add_option('', '--acre_dir', dest='acre_dir',
                     default=None, help='the local acre directory')
+  parser.add_option('', '--acre_version', dest='acre_version',
+                    default=None, help='an svn version of acre - either "trunk" or a branch name (34)')
   parser.add_option('', '--acre_host', dest='acre_host',
                     default='z', help='the hostname that you will use to address this acre installation')
   parser.add_option('', '--site_dir', dest='site_dir',
                     default=None, help='the local site directory')
   parser.add_option('', '--acre_port', dest='acre_port',
                     default=8115, help='the port you want to serve acre from')
-  parser.add_option('-c', '--acre_config', dest='acre_config',
-                    help='acre configuration target - e.g. acre-sandbox-freebasesite or devel')
+  parser.add_option('-c', '--config', dest='config',
+                    help='acre configuration target - e.g. sandbox-freebasesite or devel')
   parser.add_option('-v', '--version', dest='version', default=None,
                     help='a version of the app - e.g. 12 - use "latest" to auto-detect the last version branched')
   parser.add_option('-t', '--tag', dest='tag', default=None,
@@ -1313,17 +1276,33 @@ def main():
   parser.add_option('', '--cost', dest='cost', default=ActionSpeedTest.x_cost_default, help='x-metaweb-cost verbosity: %s' %  '\n'.join(ActionSpeedTest.x_labels_groups.keys()))
 
 
+  # Parse the arguments.
   (options, args) = parser.parse_args()
 
 
-  context = Context(options)  
+  # Figure out the action - one action per call.
 
-  #there was no action specified
+  # There was no action specified here.
   if not len(args) or args[0] not in [a[0] for a in valid_actions]:
     parser.error('You did not provide a valid action')
     exit(-1)
+
+  action = args[0]
+  context = Context(options)  
+  context.set_action(action)  
   
-  if options.app and ((options.version and options.version == 'latest') or (options.lib and options.lib == 'latest')):
+  for valid_action in valid_actions:
+    if action == valid_action[0]:
+      action_class = valid_action[2]
+
+  def resolve_app_params(options, context):
+    """Initialize app-related options."""
+
+    # options.version refers to the last version of the app passed with -a
+    # options.lib refers to the lib app
+    if not ((options.version and options.version == 'latest') or (options.lib and options.lib == 'latest')):
+      return
+
     if options.lib:
       app = AppFactory(context)('lib')
     else:
@@ -1336,33 +1315,54 @@ def main():
       else:
         options.lib = last_version
 
-    context.set_app(AppFactory(context)(options.app, options.version))
+  def run(action_class, context):
+    """Run an action given the context."""
 
+    result = False
+    context.start_time = datetime.datetime.now()
 
-  for action in args:
-    for valid_action in valid_actions:
-      if action == valid_action[0]:
+    try:
+      result = action_class(context)()
+    except KeyboardInterrupt:
+      context.error('Action aborted by user.')
+    finally:
+      acre = Acre.Get(context, existing=True)
+      if acre:
+        acre.stop()
 
-        context.set_action(action)
-        result = False
+    # Reset context action and exit.
+    context.set_action(action)
 
-        try:
-          result = valid_action[2](context)()
-        except KeyboardInterrupt:
-          context.error('Action aborted by user.')
-        finally:
-          GetAcre(context).stop()
+    t2 = datetime.datetime.now()
+    if not result:
+      return context.error('FAILED: action %s failed (%s)' % (action, context.duration_human(t2-context.start_time)))
+    else:
+      context.log('SUCCESS: action %s ended succesfully (%s)' % (action, context.duration_human(t2-context.start_time)), color=context.GREEN)
+      return True
 
-        context.set_action(action)
+  results = []
+  # Loop through each app, resolve version/lib from arguments and run the action with that app.
+  if options.app:
 
-        t2 = datetime.datetime.now()
-        if not result:
-          context.error('FAILED: action %s failed (%s)' % (action, context.duration_human(t2-t1)))
-        else:
-          context.log('SUCCESS: action %s ended succesfully (%s)' % (action, context.duration_human(t2-t1)), color=context.GREEN)
+    original_version = options.version
+    original_lib = options.lib
 
-    for reminder in context.reminders:
-        context.log(reminder, 'reminder', color=context.RED)
+    for i, app in enumerate(options.app.split(',')):
+      options.app = app
+      options.version = original_version
+      options.lib = original_lib
+      resolve_app_params(options, context)
+      context.set_app(AppFactory(context)(options.app, options.version))
+      results.append(run(action_class, context))
+  else:
+    results.append(run(action_class, context))
+
+  if False in results:
+    n = len([x for x in results if not x])
+    context.error('%s action%s failed.' % (n,n > 1 and 's' or ''))
+
+  for reminder in context.reminders:
+    context.log(reminder, 'reminder', color=context.RED)
 
 if __name__ == '__main__':
     main()

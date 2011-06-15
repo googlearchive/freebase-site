@@ -3,7 +3,7 @@ import sys
 if sys.version_info < (2, 6):
     raise "Must use python version 2.6 or higher."
 
-import subprocess, shutil, os, hashlib, urllib, urllib2, re, pwd, pdb, time, smtplib, socket, getpass, stat, string, json
+import subprocess, shutil, os, hashlib, urllib, urllib2, re, pwd, pdb, time, smtplib, socket, getpass, stat, string, json, datetime
 from email.mime.text import MIMEText
 from optparse import OptionParser
 from tempfile import mkdtemp, mkstemp, NamedTemporaryFile
@@ -872,7 +872,7 @@ class App:
 
   def copy_to_acre_dir(self, war=False):
 
-    target_dir = GetAcre(self.context).site_dir(war=war) + '/' + self.app_dir()
+    target_dir = Acre.Get(self.context).site_dir(war=war) + '/' + self.app_dir()
     return self.copy(target_dir)
 
   #checks out the app from SVN into the specified directory
@@ -923,6 +923,8 @@ class Context():
 
   ACRE_SVN_URL = 'https://acre.googlecode.com/svn'
   SITE_SVN_URL = 'https://freebase-site.googlecode.com/svn'
+
+  start_time = None
 
   def __init__(self, options):
     self.options = options
@@ -1069,6 +1071,35 @@ class Context():
     return (True, stdout)
 
 
+  def read_config(self, filename):
+    contents = None
+    config = {}
+
+    try:
+      fh = open(filename, 'r')
+      contents = fh.readlines()
+    except:
+      return self.error('Cannot open file %s for reading' % filename)
+    finally:
+      fh.close()
+
+    if not len(contents):
+        return self.error('Could not read %s' % filename)
+
+    for line in contents:
+      if len(line) <= 1 or line.startswith('#'):
+        continue
+
+      line = line.strip()
+      (key, value) = line.split('=')
+
+      value = value.replace("\"", "")
+
+      config[key] = value
+
+    return config
+
+
   def duration_human(self, date):
     seconds = date.seconds
     if not seconds:
@@ -1099,6 +1130,57 @@ class Context():
     return ' '.join(duration)
 
 
+  def resolve_config(self):
+    """Returns the configuration target.
+    
+    If the -c flag looks like a domain (has a dot) then try to figure out the configuration value
+    by reading each config file and looking for the hostname. 
+
+    Otherwise, just return the -c value. 
+
+    """
+
+    site_dir = self.resolve_site_dir()
+
+    if not self.options.config:
+        return self.error("You have to specify a valid configuration or hostname with -c.")
+
+
+    actual_config = None
+
+    # If the config value looks like a host - e.g. -c test.sandbox-freebase.com
+    if len(self.options.config.split(".")) >= 2:
+
+        # Find the appengine-config directory if it exists
+        if os.path.isdir(os.path.join("..", "..", "appengine-config")):
+
+            # Loop through all the files and find the project.*.conf files
+            for f in os.listdir(os.path.join("..", "..", "appengine-config")):
+                parts = f.split(".")
+                if len(parts) > 1 and parts[0] == "project" and parts[-1] == "conf":
+                    config = self.read_config(os.path.join("..", "..", "appengine-config", f))
+
+                    # If this configuration value matches what was passed in, then the get the real config
+                    # value from the filename of the project.<conf>.conf file. 
+                    if config.get("ACRE_FREEBASE_SITE_ADDR", None) == self.options.config:
+                        actual_config = parts[-2]
+                        break
+
+
+    if not actual_config:
+        return self.error("Could not derive the actual configuration value from the host: %s." % self.options.config)
+
+    self.options.config = actual_config
+    return self.options.config
+
+  def resolve_site_dir(self):
+    """Returns the path to a freebase-site checkout directory"""
+
+    if (not self.options.site_dir) and os.path.isdir(os.path.join("..", "..", "appengine-config")):
+      self.options.site_dir = os.path.realpath(os.path.join("..", ".."))        
+
+    return self.options.site_dir
+
 
   def fetch_url(self,url, isjson=False, tries=3, acre=False, silent=False, wait=1):
 
@@ -1125,7 +1207,7 @@ class Context():
               if not silent:
                   self.error("%s\n%s" % (url, str(ex)), subaction='fetch url error')
               if acre and not 'connection reset by peer' in str(ex):
-                  GetAcre(self).display_error_log(url)
+                  Acre.Get(self).display_error_log(url)
               if tries:
                   tries -= 1
                   time.sleep(wait)
@@ -1329,6 +1411,9 @@ class Acre:
 
   _standard_port = "8121"
 
+  #local acre should be a singleton across the session
+  _acre_instance = None
+
   def __init__(self, context):
     self.context = context
     self.host_url = None
@@ -1344,35 +1429,118 @@ class Acre:
     self.log = NamedTemporaryFile()
 
 
+  @classmethod
+  def Checkout(cls, context, acre_version, target_dir=None):
+
+    c = context
+
+    success = c.googlecode_login()
+    if not success:
+      return c.error('You must provide valid google code credentials to complete this operation.')
+
+    try:
+      if target_dir:
+        if os.path.isdir(target_dir):
+          return c.error("The directory %s that you specified already exists. Cannot checkout acre in an existing directory.")
+        else:
+          os.mkdir(target_dir)
+
+      else:
+        dir_suffix = "-acre-%s-%s" % (acre_version, str(datetime.datetime.now())[:19].replace(" ", "-").replace(":", "-"))
+        target_dir = mkdtemp(suffix=dir_suffix)
+
+    except:
+      return c.error("Unable to create directory %s" % target_dir)
+    
+
+    path = "/trunk"
+    if not (acre_version == "trunk"):
+        path = "/dev/%s" % acre_version
+
+    svn = SVNLocation(c, c.ACRE_SVN_URL + path, target_dir)
+ 
+    c.log('Starting acre checkout')
+    try:
+        r = svn.checkout()
+    except:
+        return c.error("Error on acre svn checkout.")
+
+    if not r:
+      return False
+
+    c.log('Acre checkout done')
+
+    return target_dir
+
+  @classmethod
+  def Get(cls, context, existing=False):
+    """Returns an acre object - persistent across request.
+
+    If --acre_version is passed, an svn checkout will be attempted.
+    The destination directory will be a temporary directory, or the --acre_dir if passed. 
+    else if --acre_dir is passed, an acre object will be returned immediately. 
+    
+    Returns:
+      An acre object if succesful. False if not.
+      
+    """
+
+    if cls._acre_instance:
+      return cls._acre_instance
+
+    # If we were asked for an existing Acre object only, don't attempt to fetch acre from SVN. 
+    if existing:
+        return False
+
+    if not (context.options.acre_dir or context.options.acre_version):
+        return context.error("In order to use Acre you have to specify at least one of \n- a valid directory with --acre_dir \n- a valid acre svn version ('trunk' or a branch name) with --acre_version.\nSpecifying both with checkout acre in the directory specified.")
+
+    # If --acre_version was passed in command line, try to fetch acre from SVN
+    # Install in --acre_dir or in a new temporary directory.
+    v = context.options.acre_version
+    
+    if v:
+      acre_dir = Acre.Checkout(context, v, context.options.acre_dir)
+      if acre_dir:
+        context.options.acre_dir = acre_dir
+      else:
+        return False
+
+    # By this point, either --acre_dir was passed in with a valid acre directory
+    # or we did an svn checkout and set acre_dir to the new directory.
+    # If it's not set - we have a problem.
+    if not context.options.acre_dir:
+        return context.error("Unable to create Acre object - no directory specified.")
+            
+    cls._acre_instance = cls(context)
+    return cls._acre_instance
+
   def build(self, target = None, config_dir = None, war=False):
 
     c = self.context
-    c.log('Building acre under %s' % self._acre_dir)
+    c.log("Building acre under %s" % self._acre_dir)
     os.chdir(self._acre_dir)
 
     #by default, build for local appengine
-    build_mode = 'appengine-build'
+    build_mode = "appengine-build"
     if war:
-        build_mode = 'appengine-build-war'
+        build_mode = "appengine-build-war"
 
     if target and config_dir and os.path.isdir(config_dir):
-        cmd = ['./acre', '-c', target, '-d', config_dir, 'appengine-build-config']
+      cmd = ["./acre", "-c", target, "-d", config_dir, "appengine-build-config"]
+      (r, result) = c.run_cmd(cmd)
+
+      if not r:
+        return c.error("Failed to configure acre."), result
+
+    cmd = ["./acre", build_mode]
+    if target and config_dir and os.path.isdir(config_dir):
+        cmd = ["./acre", "-c", target, "-d", config_dir, build_mode]
 
     (r, result) = c.run_cmd(cmd)
 
     if not r:
-        return c.error('Failed to configure acre.'), result
-
-    cmd = ['./acre', build_mode]
-    if target and config_dir and os.path.isdir(config_dir):
-        cmd = ['./acre', '-c', target, '-d', config_dir, build_mode]
-
-    (r, result) = c.run_cmd(cmd)
-
-    if not r:
-        return c.error('Failed to build acre.'), result
-
-    #shutil.rmtree(os.path.join(self.site_dir(war=True), 'googlecode'))
+        return c.error("Failed to build acre."), result
 
     return r, result
       
@@ -1492,7 +1660,6 @@ class Acre:
 
     return True
 
-    
 
   def read_config(self, war=False):
     '''
@@ -1504,29 +1671,8 @@ class Acre:
     if war:
         war_path = '_build/war'
     filename = os.path.join(self._acre_dir, war_path, 'META-INF', 'acre.properties')
-    contents = None
-    config = {}
 
-    try:
-      fh = open(filename, 'r')
-      contents = fh.readlines()
-    except:
-      return c.error('Cannot open file %s for reading' % filename)
-    else:
-      fh.close()
-
-    if not len(contents):
-        return self.c.error('Could not read %s' % filename)
-
-    for line in contents:
-      if len(line) <= 1 or line.startswith('#'):
-        continue
-
-      line = line.strip()
-      (key, value) = line.split('=')
-      config[key] = value
-
-    return config
+    return c.read_config(filename)
 
   def kill_running_acre(self):
     '''
@@ -1583,7 +1729,7 @@ class Acre:
 
       return False
 
-  def acre_dir(self, war=False, root=False):
+  def acre_dir(self, war=False):
       
     if not self._acre_dir:
         self.find_running_acre()
@@ -1727,24 +1873,46 @@ class Acre:
               
 
 
+class SVNLocation:
+
+  def __init__(self, context, svn_url=None, local_dir=None):
+    self.context = context
+
+    self.svn_url = svn_url
+    self.local_dir = local_dir
+
+  def checkout(self, files=False):
+    c = self.context
+
+    cmd = ['svn', 'checkout', self.svn_url, self.local_dir, '--username', c.googlecode_username, '--password', c.googlecode_password]
+    if files:
+      cmd.extend(['--depth', 'files'])
+    (r, result) = c.run_cmd(cmd)
+
+    if not r:
+      if "svn: invalid option" in result:
+        c.error("You might have an older version of svn - please update to the latest version. The option --depth is not supported in your version.")
+      return c.error(result)
+
+    return True
+
+
+  def update(self):
+    '''Returns the last revision or False'''
+    c = self.context
+
+    cmd = ['svn', 'update', self.local_dir, '--username', c.googlecode_username, '--password', c.googlecode_password]
+    (r, result) = c.run_cmd(cmd)
+
+    if not r:
+      return c.error(result)
+
+    return (r, result)
+
+
+
               
               
-
-#local acre should be a singleton across the session
-ACRE_INSTANCE = None
-
-def GetAcre(context):
-
-  global ACRE_INSTANCE
-
-  if ACRE_INSTANCE:
-    return ACRE_INSTANCE
-
-  ACRE_INSTANCE = Acre(context)
-
-  return ACRE_INSTANCE
-
-
 
 
 

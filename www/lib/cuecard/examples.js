@@ -113,7 +113,7 @@ CueCard.Examples = [
     {   name: "2 of The Police's albums and their tracks",
         query: [{
           "type": "/music/album",
-          "id": null,
+          "mid": null,
           "limit": 2,
           "name": null,
           "releases": {

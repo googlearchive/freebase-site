@@ -36,6 +36,7 @@ var exports = {
   "account_cookie_name": account_cookie_name,
   "account_cookie_options": account_cookie_options,
   "has_account_credentials": has_account_credentials,
+  "account_provider": account_provider,
   "get_active_user": get_active_user
 };
 
@@ -65,10 +66,14 @@ function clear_account_cookie() {
 
 function has_account_credentials() {
   if (acre.freebase.apiary_url) {
-    return acre.oauth.has_credentials();
+    return acre.oauth.has_credentials(account_provider());
   } else {
     return !!acre.request.cookies['metaweb-user'];
   }
+}
+
+function account_provider() {
+  return acre.oauth.providers.freebase;
 }
 
 function get_account_cookie() {

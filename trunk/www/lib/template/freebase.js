@@ -304,7 +304,7 @@
     var newwin = fb.popup("/account/signin", width, height, "Freebase");
 
     if (newwin.opener == null) newwin.opener = self;
-    window.onauthorization = success;
+    window.onsignin = success;
     if (window.focus) {
       newwin.focus();
     }
@@ -324,7 +324,7 @@
     var newwin = fb.popup("/account/signout", width, height, "Freebase");
 
     if (newwin.opener == null) newwin.opener = self;
-    window.onauthorization = success;
+    window.onsignout = success;
     if (window.focus) {
       newwin.focus();
     }

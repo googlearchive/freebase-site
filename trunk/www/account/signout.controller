@@ -29,27 +29,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("lib/helper/helpers.sjs");
+var h = acre.require('lib/helper/helpers.sjs');
 
 var SPEC = {
-  cache_policy: "nocache",
-  template: "templates.mjt",
+  cache_policy: 'nocache',
+  template_base: 'lib/template/freebase_popup.mjt',
+  template: 'signout_template.mjt',
 
   run: function() {
     h.clear_account_cookie();
     
     if (acre.freebase.apiary_url) {
-      acre.oauth.remove_credentials();
+      acre.oauth.remove_credentials(h.account_provider());
     } else if (acre.request.cookies['metaweb-user']) {
       acre.response.status = 302;
       var redirect_url = h.account_url('signout', acre.request.url);
-      acre.response.set_header("Location", redirect_url);
+      acre.response.set_header('Location', redirect_url);
       acre.exit();
     }
     
-    return {
-      def: "signedin_popup"
-    };
+    return {};
   }
 };
 

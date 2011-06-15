@@ -910,8 +910,8 @@ class ActionSpeedTest:
 
   x_labels_groups = {
     'none' : [],
-    'main' : ['at', 'auuc', 'auuw', 'afuc'],
-    'all' : ['at', 'asuc', 'asuw', 'afsc', 'afmc', 'afmw', 'afcc', 'afcw', 'auuc', 'auuw','afuc']
+    'main' : ['at', 'auuc', 'auub', 'auuw', 'afuc'],
+    'all' : ['at', 'asuc', 'asuw', 'asub', 'afsc', 'afmc', 'afmw', 'afcc', 'afcw', 'auuc', 'auuw', 'auub', 'afuc']
     }
 
   x_cost_default = 'main'
@@ -921,9 +921,11 @@ class ActionSpeedTest:
     'afsc': 'number of unique system files required (multiple requires of same file counts as 1)',
     'asuc': 'number of sytem urlfetches (e.g. appfetchers etc..)',
     'asuw': 'cumulative system urlfetch waiting time',
+    'asub': 'cumulative time spent blocking on system urlfetches (doing no other work)',
     'afuc': 'number of unique user files required (multiple requires of same file counts as 1)',
     'auuc': 'number of user urlfetches (e.g. mqlreads from apps)',
     'auuw': 'cumulative user urlfetch waiting time',
+    'auub': 'cumulative time spent blocking on user urlfetches (doing no other work)',
     'afmc': 'number of attempts to access the classloader memcache (hits & misses)',
     'afmw': 'cumulative classloader memcache wait time',
     'afcc': 'number of files compiled',

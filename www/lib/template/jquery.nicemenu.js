@@ -45,49 +45,75 @@
   Turn this structure into a menu system
 
   $(".nicemenu").nicemenu();
+
+  Note that ".submenu" will be append to document.body on a .headmenu trigger,
+  so you should NOT depend on it's document hierarchy.
+
+  Do this:
+
+  $(submenu).data("headmenu")
+
+  and NOT this:
+
+  $(submenu).prev(".headmenu")
 */
 
 ;(function($) {
+
+  function default_action_click_handler(e) {
+    hide_menus();
+    $(this).parents(".headmenu").data("submenu").find("a:first").click();
+    return false;
+  };
+
+  function headmenu_click_handler(e) {
+    var headmenu = $(this);
+    var submenu = headmenu.data("submenu");
+    if (!submenu.data("init")) {
+      var pos = headmenu.offset();
+      var height = headmenu.outerHeight();
+      submenu.css({
+        display: "none",
+        position: "absolute",
+        top: pos.top + height,
+        left: pos.left
+      });
+      $(document.body).append(submenu);
+      submenu.data("init", 1);
+    }
+    if (submenu.is(":visible")) {
+      hide_menus(submenu);
+    }
+    else {
+      hide_menus();
+      submenu.fadeIn();
+    }
+    return false;
+  };
+
+
   var nicemenu = $.factory("nicemenu", {
     init: function() {
-      $(".headmenu .default-action", this.element).click(function(e) {
-        hide_menus();
-        $(this).parents(".headmenu").next(".submenu").find("a:first").click();
-        return false;
-      });
-      $(".headmenu", this.element).click(function(e) {
+      $(".headmenu", this.element).each(function() {
         var headmenu = $(this);
-        var pos = headmenu.position();
-        var height = headmenu.height();
-        var submenu = headmenu.next(".submenu").css({
-          top: pos.top + height,
-          left: pos.left
-        });
-        if (submenu.is(":visible")) {
-          hide_menus(submenu);
-        }
-        else {
-          hide_menus();
-          submenu.fadeIn(function() {
-            headmenu.addClass("expanded");
-          });
-        }
-        return false;
+        var submenu = headmenu.next(".submenu");
+        headmenu.data("submenu", submenu);
+        submenu.data("headmenu", headmenu);
+
+        $(".default-action", headmenu).click(default_action_click_handler);
+        headmenu.click(headmenu_click_handler);
       });
+
       $(".submenu", this.element).click(function(e) {
         hide_menus($(this));
-        $(this).fadeOut(function() {
-          $(this).prev(".headmenu").removeClass("expanded");
-        });
+        $(this).fadeOut();
         //return false;
       });
     }
   });
 
   function hide_menus(menus) {
-    (menus || $(".submenu:visible")).fadeOut(function() {
-      $(this).prev(".headmenu").removeClass("expanded");
-    });
+    (menus || $(".submenu:visible")).fadeOut();
   };
 
   $(document).click(function() {

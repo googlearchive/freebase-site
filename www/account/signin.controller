@@ -30,46 +30,36 @@
  */
 
 var h = acre.require("lib/helper/helpers.sjs");
-var freebase = acre.require("lib/promise/apis").freebase;
+var urlfetch = acre.require("lib/promise/apis").urlfetch;
+
+function temporary_redirect(url) {
+  acre.response.status = 302;
+  acre.response.set_header("Location", url);
+  acre.exit();
+}
 
 var SPEC = {
   cache_policy: "nocache",
-  template: "templates.mjt",
 
   run: function() {
-    // Verify that a user is logged in, if there are not this will
-    //  redirect to the login page
-    try {
-      if (acre.freebase.apiary_url) {
-        acre.oauth.get_authorization();
-      } else if (!acre.request.cookies['metaweb-user']) {
-        acre.response.status = 302;
-        var redirect_url = h.account_url('signin', acre.request.url);
-        acre.response.set_header("Location", redirect_url);
-        acre.exit();
+    // Always ask the user to signin if they hit this url.
+    var success_url = acre.request.app_url+'/account/signedin';
+    if (acre.freebase.apiary_url) {
+      var freebase_provider = h.account_provider();
+      // If we are already signed in, then have the user sign-in again.
+      if (acre.oauth.has_credentials(freebase_provider)) {
+        acre.oauth.remove_credentials(freebase_provider);
+        temporary_redirect(acre.request.url);
       }
-    } catch(e) {
-      acre.response.set_header('content-type', 'text/plain');
-      acre.write("Freebase Signin is currently down. Please try again later.");
-      acre.exit();
+      acre.oauth.get_authorization(freebase_provider, success_url);
+      
+    } else {
+      var redirect_url = h.account_url('signin', success_url);
+      if (acre.request.cookies['metaweb-user']) {
+        redirect_url = h.account_url('signout', redirect_url);
+      }
+      temporary_redirect(redirect_url);
     }
-    
-    // Get user information
-    var user_d = freebase.get_user_info()
-      .then(function(user) {
-        if (!user) {
-          acre.response.set_header('content-type', 'text/plain');
-          acre.write("Freebase APIs are currently down. Please try again later.");
-          acre.exit();
-        }
-        h.set_account_cookie(user);
-        return user;
-      });
-   
-    return {
-      user: user_d,
-      def: "signedin_popup"
-    };
   }
 };
 

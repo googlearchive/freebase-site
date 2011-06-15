@@ -60,7 +60,7 @@
         <link rel="stylesheet" type="text/css" href="${h.lib_base_url('suggest')}/suggest.min.css" />
       </acre:block>
       <!!--
-          Modernizr must be served from document head. Should be highly cached 
+          Modernizr must be served from document head. Should be highly cached
       -->
       <script src="template/modernizr-1.7.min.js"></script>
 
@@ -81,10 +81,10 @@
         * buttons that require user authorization.
         * they start out hidden and are shown via javascript
         * once the user has been authorized.
-        * this at the end since some css can override if in freebase.css 
+        * this at the end since some css can override if in freebase.css
         **/
         !!-->
-      <style type="text/css">     
+      <style type="text/css">
         .edit {
           display: none;
         }
@@ -113,9 +113,9 @@
       </acre:block>
       <acre:block else="">
         ${header(exports)}
-      </acre:block>        
+      </acre:block>
 
-      <!!-- content !!-->            
+      <!!-- content !!-->
       <acre:block if="exports.content">
         ${exports.content(exports)}
       </acre:block>
@@ -156,9 +156,9 @@
             <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?apps'">${_("Apps")}</a>
           </li>
         </ul>
-        <a href="javascript:void(0)" 
-           onclick="window.freebase.logout_popup()" 
-           title="Sign out of Freebase" 
+        <a href="javascript:void(0)"
+           onclick="window.freebase.logout_popup()"
+           title="Sign out of Freebase"
            rel="nofollow"
            id="nav-signout">Sign Out</a>
       </div>
@@ -248,9 +248,9 @@
 
 
 <acre:block def="footer_script(exports)">
-  <!-- jquery -->
+  <!!-- jquery -->
   <script src="${h.lib_base_url('jquery')}/jquery.min.js"></script>
-  <!-- dojo -->
+  <!!-- dojo -->
   <acre:script>
     var locale = i18n.dojo.locale();
   </acre:script>
@@ -266,18 +266,20 @@
     </script>
   </acre:block>
   <script src="${h.lib_base_url('dojo')}/dojo/dojo.xd.js"></script>
-  <!-- suggest -->
+  <!!-- suggest -->
+  <!!--TODO(culbertson): compile suggest with freebase.mf.js--!>
   <acre:block if="acre.freebase.apiary_url">
     <script src="suggest/suggest.mf.js"></script>
   </acre:block>
   <acre:block else="">
     <script src="${h.lib_base_url('suggest')}/suggest.min.js"></script>
   </acre:block>
-  <!-- freebase.mf.js -->
+  <!!-- freebase.mf.js -->
   <acre:block if="exports.freebase_js">
     ${exports.freebase_js()}
   </acre:block>
   <script acre:else="" src="template/freebase.mf.js"></script>
+  <!!--TODO(culbertson): compile feedback with freebase.mf.js--!>
   <script>
     (function() { // Protect global namespace
       var prefix = ('https:' == document.location.protocol) ? 'https://ssl' : 'http://www';
@@ -293,11 +295,9 @@
 <!-- add any acre variables you wanted passed to client-side -->
 <acre:block def="acre_javascript_vars(exports)">
   <acre:script>
-
-    var api_key = acre.keystore.get('freebase_image_api');      
+    var api_key = acre.keystore.get('freebase_image_api');
     api_key = api_key ? api_key[0] : '';
-    
-    
+
     var SERVER = {
       acre: {
         freebase: {

@@ -1,5 +1,5 @@
 <!!--
- Copyright 2010, Google Inc.
+ Copyright 2011, Google Inc.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -29,44 +29,27 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  !!-->
 
-<acre:block def="signedin_popup()">
-<html>
-  <head>
-    <title>Signed into Freebase</title>
-  </head>
-
-  <body class="signin">
-    <h1>Congratulations!</h1>
-    <p>You have now signed into freebase.</p>
-    <p><a href="javascript:self.close()">Close this window to continue.</a></p>
-  </body>
-
-  <script type="text/javascript">
-    if (top.opener && top.opener.onauthorization) {
-      top.opener.onauthorization(window);
-    }
-    self.close();
-  </script>
-</html>
+<acre:block def="claiming_account(username)">
+  <h1>Email sent</h1>
+  <p>An email was sent to the owner of <strong>${username}</strong> with a request
+    to connect <strong>${username}</strong> with your Google account.</p>
+  <p>Please click on the connect your account link in this email to continue.</p>
+  <p>You can safely <a href="javascript:self.close()">close this window.</a>
+    while you are waiting.</p>
 </acre:block>
 
-<acre:block def="signedout_popup()">
-<html>
-  <head>
-    <title>Signed out of Freebase</title>
-  </head>
-
-  <body class="signout">
-    <h1>Sucessfully logged out</h1>
-    <p>You have now signed out of Freebase.</p>
-    <p><a href="javascript:self.close()">Close this window to continue.</a></p>
-  </body>
-
+<acre:block def="claimed_account(username)">
   <script type="text/javascript">
-    if (top.opener && top.opener.ondeauthorization) {
-      top.opener.ondeauthorization(window);
-    }
-    self.close();
+    window.location.href = "/account/signedin";
   </script>
-</html>
+  <h1>Accounts connected</h1>
+  <p>Your Google account has been successfully connected to
+    <strong>${username}</strong>.</p>
+  <p>Please <a href="/account/signin">signin</a> to start contributing to Freebase</p>
+</acre:block>
+
+<acre:block def="create_account(username)">
+  <h1>Under construction</h1>
+  <p>You cannot create a new Freebase account at this time.</p>
+  <p>Please <a href="/account/signin">signin</a> with an existing account instead.</p>
 </acre:block>

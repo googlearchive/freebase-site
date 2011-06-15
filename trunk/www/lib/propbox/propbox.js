@@ -60,7 +60,10 @@
            propbox.kbs.set_next(current, $(this), true);
         })
         .live("edit", function() {
-          var menu_item = $(this).find(".submenu:first li:first a").click();
+          var submenu = $(this).find(".headmenu:first").data("submenu");
+          if (submenu) {
+            $("li:first a:first", submenu).click();
+          }
         });
 
       propbox.init_menus(context);
@@ -151,7 +154,7 @@
     },
 
     prop_edit: function(context, unique) {
-      var prop = $(context).parents(".property-section");
+      var prop = $(context).parents(".submenu").data("headmenu").parents(".property-section");
       var value_menu = prop.find(".data-section .data-row:first:visible .nicemenu:first .headmenu:first a");
       if (value_menu.length) {
         value_menu.click();
@@ -163,7 +166,7 @@
     },
 
     prop_add: function(context, unique) {
-      var prop_section = $(context).parents(".property-section");
+      var prop_section = $(context).parents(".submenu").data("headmenu").parents(".property-section");
       if (prop_section.is(".editing")) {
         return false;
       }
@@ -175,7 +178,7 @@
     },
 
     value_edit: function(context) {
-      var prop_row = $(context).parents(".data-row:first");
+      var prop_row = $(context).parents(".submenu").data("headmenu").parents(".data-row:first");
       var prop_section = prop_row.parents(".property-section");
       if (prop_section.is(".editing")) {
         return false;
@@ -188,7 +191,7 @@
     },
 
     value_delete: function(context) {
-      var prop_row = $(context).parents(".data-row:first");
+      var prop_row = $(context).parents(".submenu").data("headmenu").parents(".data-row:first");
       var prop_section = prop_row.parents(".property-section");
       if (prop_section.is(".editing")) {
         return false;

@@ -48,7 +48,7 @@ CueCard.ExampleTechniques = [
 CueCard.Examples = [
     {   name: "Vietnamese restaurants in Palo Alto, California",
         query: [{
-          "id": null,
+          "mid": null,
           "name": null,
           "type": "/dining/restaurant",
           "cuisine": "Vietnamese",
@@ -83,7 +83,7 @@ CueCard.Examples = [
         query: [{
             "clouds" : [],
             "name" : null,
-            "id" : null,
+            "mid" : null,
             "sort" : "name",
             "type" : "/meteorology/cloud_classification"
         }],
@@ -93,19 +93,19 @@ CueCard.Examples = [
         query: [{
             "a:contains" : [{
                 "name" : null,
-                "id" : null,
+                "mid" : null,
                 "name~=" : "^Red",
                 "type" : "/location/citytown"
             }],
             "b:contains" : [{
                 "name" : null,
-                "id" : null,
+                "mid" : null,
                 "name~=" : "^Blue",
                 "type" : "/location/citytown"
             }],
             "b:type" : "/location/us_state",
             "name" : null,
-            "id" : null,
+            "mid" : null,
             "type" : "/location/location"
         }],
         techniques: [ "text search", "multiple constraints on same property" ]
@@ -154,7 +154,7 @@ CueCard.Examples = [
                 "actor" : "Robert de Niro"
             }],
             "name" : null,
-            "id" : null,
+            "mid" : null,
             "starring" : [{
                 "actor" : null
             }],
@@ -169,12 +169,12 @@ CueCard.Examples = [
             "/people/person/date_of_birth>=" : "1960",
             "film" : [{
                 "film" : null,
-                "id" : null,
+                "mid" : null,
                 "limit" : 2
             }],
             "limit" : 35,
             "name" : null,
-            "id" : null,
+            "mid" : null,
             "type" : "/film/actor"
         }],
         techniques: [ "multiple constraints on same property", "date query", "limiting number of results", "range constraint" ]
@@ -183,21 +183,21 @@ CueCard.Examples = [
         query: [{
           "parker_film:film": [{
             "name": null,
-            "id": null,
+            "mid": null,
             "starring": [{
               "actor": "Parker Posey"
             }]
           }],
           "robert_film:film": [{
             "name": null,
-            "id": null,
+            "mid": null,
             "starring": [{
               "actor": null,
               "actor~=": "Robert*"
             }]
           }],
           "name": null,
-          "id": null,
+          "mid": null,
           "type": "/film/director"
         }],
         techniques: [ "multiple constraints on same property", "text search", "compound value type (CVT)" ]
@@ -206,7 +206,7 @@ CueCard.Examples = [
         query: [{
           "album": [{
             "name": null,
-            "id": null,
+            "mid": null,
             "releases": [{
               "track": [{
                 "name": "One Tree Hill"
@@ -305,7 +305,7 @@ CueCard.Examples = [
           "name" : "Test Object 1",
           "type" : "/base/mqlexamples/testobject",
           "id" : null,
-          "guid" : null
+          "mid" : null
         },
         techniques: [ "adding data" ]
     },
@@ -325,11 +325,11 @@ CueCard.Examples = [
         query: {
           "name" : "Test Object 1",
           "type" : "/base/mqlexamples/testobject",
-          "id" : null,
+          "mid" : null,
           "link_to_topic" : {
             "name" : "Test Object 2",
             "type" : "/base/mqlexamples/testobject",
-            "id" : null,
+            "mid" : null,
             "connect" : "insert"
           }
         },
@@ -339,11 +339,11 @@ CueCard.Examples = [
         query: {
           "name" : "Test Object 1",
           "type" : "/base/mqlexamples/testobject",
-          "id" : null,
+          "mid" : null,
           "link_to_topic" : {
             "name" : "Test Object 2",
             "type" : "/base/mqlexamples/testobject",
-            "id" : null,
+            "mid" : null,
             "connect" : "delete"
           }
         },

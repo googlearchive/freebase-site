@@ -44,7 +44,7 @@ var rules = [
   {prefix:"/schema",             app:"schema"},
   {prefix:"/apps",               app:"apps"},
   {prefix:"/appeditor",          app:"appeditor"},
-  {prefix:"/docs",               app:"docs"},
+  {prefix:"/docs",               app:"devdocs"},
   {prefix:"/policies",           app:"policies"},
   {prefix:"/queryeditor",        app:"query"},
   {prefix:"/labs/cubed",         app:"cubed"},

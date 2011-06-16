@@ -90,7 +90,12 @@ var SPEC = {
       acre.oauth.get_authorization(h.account_provider());
       d = apiary_user_info();
     } else {
-      d = freebase.get_user_info();
+      d = freebase.get_user_info().then(function(user) {
+        if (!user) {
+          throw 'User has not logged into Freebase.';
+        }
+        return user;
+      });
     }
 
     return d.then(function(user) {

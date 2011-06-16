@@ -52,6 +52,10 @@ function account_cookie_options(options) {
 
 function set_account_cookie(user_info) {
   // Create a cookie containing user information
+  if (!user_info || !user_info.id) {
+    throw "Could not create account cookie.";
+  }
+
   var long_expire = new Date();
   var account_name = user_info.id.slice(user_info.id.lastIndexOf("/")+1);
   long_expire.setTime(long_expire.getTime() + 30*24*60*60*1000);

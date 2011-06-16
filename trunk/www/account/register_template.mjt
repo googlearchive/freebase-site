@@ -43,7 +43,7 @@
 </acre:block>
 
 <acre:block def="content_body()">
-  <div id="registration">
+  <div id="registration" class="module">
     <div id="register-accordion">
       ${create_account_pane()}
       ${claim_account_pane()}
@@ -60,7 +60,7 @@
       <fieldset>
         <label for="username">Now you just need to pick a username.</label>
         <div class="form-field clear">
-          <input name="username" id="username" type="text" spellcheck="false">
+          <input name="username" class="input-standard" id="username" type="text" spellcheck="false">
           <script type="text/javascript">
             document.getElementById("username").select();
           </script>
@@ -77,7 +77,7 @@
         and to receive email announcements about changes to the Freebase service.
       </p>
 
-      <button class="submit" name="create" type="submit">
+      <button class="submit button button-primary" name="create" type="submit">
         Create my Account
       </button>
     </form>
@@ -95,7 +95,7 @@
           Enter Freebase username to connect to your Google account.
         </label>
         <div class="form-field clear">
-          <input name="username" id="username" type="text" spellcheck="false">
+          <input name="username" id="username" class="input-standard" type="text" spellcheck="false">
           <script type="text/javascript">
             document.getElementById("username").select();
           </script>
@@ -110,7 +110,7 @@
         and to receive email announcements about changes to the Freebase service.
       </p>
 
-      <button class="submit" name="claim" type="submit">
+      <button class="submit button button-primary" name="claim" type="submit">
         Connect my Account
       </button>
     </form>

@@ -62,8 +62,18 @@ body {
 }
 
 p {
-    font-size: 12px;
+    font-size: 1.2em;
     padding: 5px 0px;
+}
+
+.input-standard {
+    border: 1px solid #cccccc;
+    .rounded_corners(4px);
+    padding: 0.6em 0.4em;
+    margin: 0;
+}
+#registration {
+	width: 550px;
 }
 
 /*
@@ -72,37 +82,35 @@ ACCORDION
 ----------------------------
 */
 
-#register-accordion {
-    width: 550px;
-    border: 1px solid #333;	
-}
-
 /* accordion header */
 #register-accordion h2 {
-    background: #ccc;
+    /* background: #ccc;*/
     margin: 0;
     padding: 5px 15px;
     font-size: 14px;
     font-weight: normal;
-    border: 1px solid #fff;
     border-bottom: 1px solid #ddd;
-    cursor: pointer;		
+    cursor: pointer;	
+		color: #1170A3;
 }
 
 /* currently active header */
 #register-accordion h2.current {
     cursor: default;
-    background-color: #fff;
+		color: #666;
+		font-weight: bold;
+		background: #F8F8F8;
 }
 
 /* accordion pane */
 #register-accordion .pane {
-    border: 1px solid #fff;
     border-width: 0 2px;
     height: 180px;
-    padding: 15px;
+    padding: 15px 15px 0 15px;
+		background: #fff;
 }
 
-#register-accordion p {
-    padding: 20px 15px;
+.input-help {
+	font-size: 1.1em;
+	margin-left: 0.5em;
 }

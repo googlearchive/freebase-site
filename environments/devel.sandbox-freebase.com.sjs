@@ -11,7 +11,7 @@ var labels = {
   "create":     "//create" + codebase,
   "cubed":      "//cubed",
   "data":       "//data" + codebase,
-  "docs":       "//devdocs" + codebase,
+  "devdocs":    "//devdocs" + codebase,
   "group":      "//group" + codebase,
   "homepage":   "//homepage" + codebase,
   "labs":       "//labs",

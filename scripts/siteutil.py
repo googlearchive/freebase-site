@@ -74,8 +74,6 @@ SERVICES = {
               }
 }
 
-OUTBOUND = ["outbound01.ops.sjc1.metaweb.com", "outbound02.ops.sjc1.metaweb.com"]
-
 # recognized extensions for static files
 IMG_EXTENSIONS = [".png", ".gif", ".jpg"]
 RES_EXTENSIONS = [".js", ".css", ".less"]
@@ -103,62 +101,11 @@ METADATA_FILE = 'METADATA.sjs'
 METADATA_LIB_FILE = 'METADATA.json'
 FIRST_LINE_REQUIRE_CONFIG = 'var config = JSON.parse(acre.require("CONFIG.json").body);'
 
-ACRE_ID_SVN_SUFFIX = ".svn.freebase-site.googlecode.dev"
-ACRE_ID_GRAPH_SUFFIX = ".site.freebase.dev"
 FREEBASE_API_KEY = "AIzaSyBblSNVmsgoamj9y5c5WdXMx9Xy4-O2fes"
 
-class AppFactory:
-
-  #this is an app:version -> app object mapping
-  #we want to return the same app object for the same app:version combination
-  #in order to keep useful state (e.g. to not re-checkout the app in svn etc..)
-  #i.e. app objects are sigletons
-  apps = { }
-
-  def __init__(self, context):
-    self.c = context
-
-  #create an app object out of a path
-  #e.g. //4.schema.site.freebase.dev
-  def from_path(self, path):
-      
-    #separator = ACRE_ID_GRAPH_SUFFIX
-    #if ACRE_ID_SVN_SUFFIX in path:  
-    #separator = ACRE_ID_SVN_SUFFIX
-
-    parts = path[2:].split(ACRE_ID_SVN_SUFFIX)[0].split('.')
-
-    #if this was of the form <version or tag>.<app_key>.ID_SUFFIX
-    if len(parts) == 4:
-      #if this was an app tag of the form 16b.<app_key>.ID_SUFFIX
-      matches = re.match('(\d+)(\D)$', parts[0])
-      if matches:
-          return self(parts[1], matches.group(1), matches.group(1) + matches.group(2))
-      #this was an app branch of the form 16.<app_key>.ID_SUFFX
-      return self(parts[1], parts[0])
-    else:
-      return self(parts[0], None)
-
-  #return an App object
-  def __call__(self, app_key, version=None, tag=None):
-
-    if tag and not version:
-      matches = re.match('(\d+)(\D)$', tag)
-      if matches:
-        return self(app_key, version = matches.group(1), tag=tag)
-      else:
-        return self.c.error('Could not create an app object out of app_key: %s app_tag: %s without an app version' % (app_key, tag))
-
-    n = "%s:%s:%s" % (app_key, version or 'trunk', tag or 'none')
-    if self.apps.get(n):
-      return self.apps[n]
-
-    app_obj = App(self.c, app_key, version, tag)
-
-    self.apps[n] = app_obj
-    return app_obj
-
 class App:
+
+  _apps = {}
 
   def __init__(self, context, app_key, version=None, tag=None):
     self.app_key = app_key
@@ -185,9 +132,57 @@ class App:
     else:
         return "%s:trunk" % self.app_key
 
+
+  #create an app object out of a path
+  #e.g. //4.schema.site.freebase.dev
+  @classmethod
+  def GetFromPath(cls, context, path):
+
+    site = Site.Get(context)
+
+    parts = path[2:].split(site.conf("acre_id_suffix"))[0].split('.')
+
+    #if this was of the form <version or tag>.<app_key>.ID_SUFFIX
+    if len(parts) == 4:
+      #if this was an app tag of the form 16b.<app_key>.ID_SUFFIX
+      matches = re.match('(\d+)(\D)$', parts[0])
+      if matches:
+          return cls.Get(context, parts[1], matches.group(1), matches.group(1) + matches.group(2))
+      #this was an app branch of the form 16.<app_key>.ID_SUFFX
+      return cls.Get(context, parts[1], parts[0])
+    else:
+      return cls.Get(context, parts[0], None)
+
+  #return an App object
+  @classmethod
+  def Get(cls, context, app_key, version=None, tag=None):
+
+    if tag and not version:
+      matches = re.match('(\d+)(\D)$', tag)
+      if matches:
+        return App.Get(context, app_key, version = matches.group(1), tag=tag)
+      else:
+        return context.error("Could not create an app object out of app_key: %s app_tag: %s without an app version" % (app_key, tag))
+
+    n = "%s:%s:%s" % (app_key, version or "trunk", tag or "none")
+    if cls._apps.get(n):
+      return cls._apps[n]
+
+    app_obj = cls(context, app_key, version, tag)
+
+    cls._apps[n] = app_obj
+    return app_obj
+
+
+
+
   def path(self, short=False):
 
-    suffix = ACRE_ID_SVN_SUFFIX
+    site = Site.Get(self.context)
+    if not site:
+        return self.context.error("Couldn't resolve site.")
+
+    suffix = site.conf("acre_id_suffix")
     if short:
         suffix = ''
 
@@ -201,7 +196,11 @@ class App:
 
   def app_dir(self):
       
-    parts = ACRE_ID_SVN_SUFFIX[1:].split('.')[0:-1]
+    site = Site.Get(self.context)
+    if not site:
+      return self.context.error("Couldn't resolve site.")
+
+    parts = site.conf("acre_id_suffix")[1:].split('.')[0:-1]
     parts.reverse()
 
     if self.tag:
@@ -233,41 +232,6 @@ class App:
 
     scan_directory()
     return files
-
-  def last_resource_revision(self):
-    '''
-    Will go through the revision of all resource files and return the latest one
-    '''
-    revision = 0
-    cmd = ['svn', 'ls', '--verbose', self.svn_url()]
-    (r, result) = self.context.run_cmd(cmd)
-
-    if not r:
-      return revision
-
-    #the result is a series of lines like this:
-    #  99777 kai              4178 Aug 12 16:18 loader-indicator-big.gif
-
-    for v in result.split('\n'):
-      parts = v.split(' ')
-
-      #last part of the returned line is the filname
-      filename = parts[-1]
-      file_parts = filename.split('.')
-
-      #does it have an extension
-      if not len(file_parts) > 1:
-        continue
-
-      #is this a resource file
-      if '.%s' % file_parts[-1] not in EXTENSIONS and file_parts[0] != 'CONFIG':
-        continue
-
-      if self.context.is_int(parts[3]) and int(parts[3]) > revision:
-        revision = sint(parts[3])
-
-    return revision
-
 
   def statify_css(self, filename):
     '''
@@ -516,7 +480,7 @@ class App:
         return None
 
     #return the lib app object by constructing it from the app path
-    return AppFactory(self.context).from_path(metadata['mounts']['lib'])
+    return App.GetFromPath(self.context, metadata['mounts']['lib'])
 
 
   def is_lib(self):
@@ -572,23 +536,31 @@ class App:
     e.g. '15b'
     '''
 
-    (r, result) = self.context.run_cmd(['svn', 'ls', self.svn_url(alltags=True)])
-    if not r:
-        return None
-
+    files = SVNLocation(self.context, self.svn_url(alltags=True)).ls()
     minor_tags = []
 
-    for tag in result.split('/\n'):
+    for tag in files:
         #e.g. 16a, 16b, etc...
         matches = re.match('(\d+)(\D)$', tag)
-        if matches and self.context.is_int(matches.group(1)) and int(matches.group(1)) == int(self.version):
+        if matches and ((self.version and self.context.is_int(matches.group(1)) and int(matches.group(1)) == int(self.version)) or not self.version):
             minor_tags.append(matches.group(0))
 
 
     if not len(minor_tags):
         return None
 
-    minor_tags.sort()
+
+    def tag_compare(tag1, tag2):
+
+      matches1 = re.match('(\d+)(\D)$', tag1)
+      matches2 = re.match('(\d+)(\D)$', tag2)
+    
+      if matches1.group(1) != matches2.group(1):
+        return int(matches1.group(1)) - int(matches2.group(1))
+
+      return matches1.group(2) > matches2.group(2)
+
+    minor_tags.sort(cmp=tag_compare)
     return minor_tags[-1]
 
   def next_tag(self):
@@ -619,7 +591,7 @@ class App:
 
     msg = '[sitedeploy] Creating tag %s' % tag
 
-    target_app = AppFactory(c)(self.app_key, version=self.version, tag=tag)
+    target_app = App.Get(c, self.app_key, version=self.version, tag=tag)
 
     cmd = ['svn', 'copy', self.svn_url(), target_app.svn_url(), '--parents', '-m', msg, '--username', c.googlecode_username, '--password', c.googlecode_password]
     (r, output) = self.context.run_cmd(cmd)
@@ -725,7 +697,7 @@ class App:
       else:
         c.verbose('Next available version for app %s is %s' % (self.app_key, target_version))
 
-    target_app = AppFactory(c)(self.app_key, version=target_version)
+    target_app = App.Get(c, self.app_key, version=target_version)
 
     #if this version does not exist in svn, trying to get the local disk svn path will return false
     #this is forcing a checkout, but it's ok because we are going to need to do that anyway down the road
@@ -798,9 +770,10 @@ class App:
     return int(self.next_svn_version() - 1)
 
   def next_svn_version(self):
-    (r, result) = self.context.run_cmd(['svn', 'ls', self.svn_url(allversions=True)])
 
-    versions = [int(v) for v in result.split('/\n') if self.context.is_int(v)]
+    files = SVNLocation(self.context, self.svn_url(allversions=True)).ls()
+    versions = [int(v) for v in files if self.context.is_int(v)]
+
     if len(versions):
       versions.sort()
       return int(versions[-1]) + 1
@@ -962,7 +935,7 @@ class Context():
     self.googlecode_password = None
 
     if getattr(self.options, 'app', False):
-      self.current_app = self.app = AppFactory(self)(self.options.app, self.options.version, self.options.tag)
+      self.current_app = self.app = App.Get(self, self.options.app, self.options.version, self.options.tag)
 
     self.quiet = False
     self.acre = None
@@ -1457,11 +1430,11 @@ class Acre:
     if not (acre_version == "trunk"):
         path = "/dev/%s" % acre_version
 
-    svn = SVNLocation(c, c.ACRE_SVN_URL + path, target_dir)
+    svn = SVNLocation(c, c.ACRE_SVN_URL + path)
  
     c.log('Starting acre checkout')
     try:
-        r = svn.checkout()
+        r = svn.checkout(target_dir)
     except:
         return c.error("Error on acre svn checkout.")
 
@@ -1638,8 +1611,12 @@ class Acre:
     #Copy the environments directory into the correct place
 
 
+    site = Site.Get(c)
+    if not site:
+        return c.error("Could not resolve site.")
+
     svn_url = c.SITE_SVN_URL + "/environments"
-    parts = ACRE_ID_SVN_SUFFIX[1:].split('.')[0:-1]
+    parts = site.conf("acre_id_suffix")[1:].split('.')[0:-1]
     parts.reverse()
     
     target_dir = os.path.join(self.acre_dir(war=True), "WEB-INF/scripts", *parts)
@@ -1769,10 +1746,13 @@ class Acre:
       return c.error('Failed to parse the routing table')
 
     apps = set()
+    site = Site.Get(c)
+    if not site:
+        return c.error("Could not resolve site.")
 
     for label, app_id in routing_table.get('apps').iteritems():
-        if ACRE_ID_SVN_SUFFIX in app_id:
-            app = AppFactory(c).from_path(app_id)
+        if site.conf("acre_id_suffix") in app_id:
+            app = App.GetFromPath(c, app_id)
             apps.add(app)
 
             lib_dependency = app.lib_dependency()
@@ -1872,19 +1852,119 @@ class Acre:
           c.log(line, color=color, nocontext=True)
               
 
+class Site:
+
+  _sites = {
+
+    "freebase" : { 
+        "notification_email_address" : "freebase-site@google.com",
+        "id" : "freebase-site",
+        "repository" : "googlecode",
+        "external_apps" : { 
+              "cubed": "//cubed",
+              "parallax": "//parallax",
+              "labs": "//labs",
+              "tmt": "//tmt"
+              }
+        
+        },
+
+    "refinery" : {
+        "notification_email_address" : "freebase-refinery@google.com",
+        "id" : "freebase-refinery",
+        "repository" : "googlecode"
+        
+        }
+    
+
+    }
+
+  _site_instance = None
+
+  def __init__(self, context):
+    self.context = context
+
+    s = context.options.site
+
+    if not (s and s in self._sites.keys()):
+      return context.error("The site %s specified is not a valid Acre Site")
+
+    self._conf = self._sites[s]
+
+    self._conf.update({"acre_id_suffix": None, "svn_url" : None})
+
+    if self._conf.get("repository", None) == "googlecode" and self._conf.get("id"):
+      self._conf["acre_id_suffix"] = ".svn.%s.googlecode.dev" % self._conf.get("id")
+      self._conf["acre_id_suffix_trunk"] = ".www.trunk" + self._conf["acre_id_suffix"]
+      self._conf["acre_id_suffix_tags"] = ".www.tags" + self._conf["acre_id_suffix"]
+
+      self._conf["svn_url"] = "https://%s.googlecode.com/svn" % self._conf.get("id")
+
+    self.site_dir = None
+
+    if (not context.options.site_dir) and os.path.isdir(os.path.join("..", "..", "appengine-config")):
+      self.site_dir = context.options.site_dir = os.path.realpath(os.path.join("..", ".."))
+
+
+  def conf(self, key):
+      return self._conf.get(key, None)
+
+  def apps(self):
+    """Returns a list of app keys, e.g. ['lib', 'homepage']"""
+      
+    apps = SVNLocation(self.context, self.conf("svn_url") + "/trunk/www").ls()
+
+    if "lib" in apps:
+        # Put lib at the beginning
+        apps[apps.index("lib")] = apps[0]
+        apps[0] = "lib"
+
+    return apps
+
+  @classmethod
+  def Get(cls, context):
+    if not cls._site_instance:
+      cls._site_instance = cls(context)
+
+    return cls._site_instance
+
 
 class SVNLocation:
 
-  def __init__(self, context, svn_url=None, local_dir=None):
+  def __init__(self, context, svn_url=None):
     self.context = context
 
     self.svn_url = svn_url
-    self.local_dir = local_dir
 
-  def checkout(self, files=False):
+  def ls(self):
+    """List an SVN directory. 
+
+    Returns an array of files or subdirectories in the directory.
+    """
+
+    files = []
+
+    cmd = ["svn", "ls", "--verbose", self.svn_url]
+    (r, result) = self.context.run_cmd(cmd)
+
+    #the result is a series of lines like this:
+    #  99777 kai              4178 Aug 12 16:18 loader-indicator-big.gif
+
+    if r:
+      for v in result.split('\n'):
+        #last part of the returned line is the filname
+        filename = v.split(' ')[-1].replace("/", "")
+        if filename.startswith('.') or not filename:
+            continue
+        files.append(filename)
+
+
+    return files
+
+  def checkout(self, target_dir, files=False):
     c = self.context
 
-    cmd = ['svn', 'checkout', self.svn_url, self.local_dir, '--username', c.googlecode_username, '--password', c.googlecode_password]
+    cmd = ['svn', 'checkout', self.svn_url, target_dir, '--username', c.googlecode_username, '--password', c.googlecode_password]
     if files:
       cmd.extend(['--depth', 'files'])
     (r, result) = c.run_cmd(cmd)
@@ -1897,11 +1977,11 @@ class SVNLocation:
     return True
 
 
-  def update(self):
+  def update(self, target_dir):
     '''Returns the last revision or False'''
     c = self.context
 
-    cmd = ['svn', 'update', self.local_dir, '--username', c.googlecode_username, '--password', c.googlecode_password]
+    cmd = ['svn', 'update', target_dir, '--username', c.googlecode_username, '--password', c.googlecode_password]
     (r, result) = c.run_cmd(cmd)
 
     if not r:

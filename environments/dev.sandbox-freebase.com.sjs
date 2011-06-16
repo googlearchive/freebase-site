@@ -1,26 +1,27 @@
-// Shared base urls
+
 var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 
 var labels = {
-  "lib":        "//14d.lib" + tags_codebase,
-  "topic":      "//9b.topic" + tags_codebase,
-  "schema":     "//9b.schema" + tags_codebase,
-  "activity":   "//3a.activity" + tags_codebase,
-  "triples":    "//5a.triples" + tags_codebase,
-  "group":      "//4b.group" + tags_codebase,
-  "sameas":     "//4a.sameas" + tags_codebase,
-  "homepage":   "//8a.homepage" + tags_codebase,
-  "data":       "//3b.data" + tags_codebase,
-  "apps":       "//6b.apps" + tags_codebase,
-  "appeditor":  "//4a.appeditor" + tags_codebase,
-  "docs":       "//5a.devdocs" + tags_codebase,
-  "policies":   "//6a.policies" + tags_codebase,
-  "query":      "//3b.query" + tags_codebase,
-  "sample":     "//3a.sample" + tags_codebase,
-  "account":    "//3b.account" + tags_codebase,
-  "admin":      "//2a.admin" + tags_codebase,
-  "create":     "//2a.create" + tags_codebase,
+
+  "lib": "//9a.lib" + tags_codebase,
+  "activity": "//4b.activity" + tags_codebase,
+  "admin": "//3a.admin" + tags_codebase,
+  "appeditor": "//5b.appeditor" + tags_codebase,
+  "apps": "//7a.apps" + tags_codebase,
+  "create": "//3a.create" + tags_codebase,
+  "data": "//4a.data" + tags_codebase,
+  "devdocs": "//6a.devdocs" + tags_codebase,
+  "group": "//5a.group" + tags_codebase,
+  "homepage": "//9a.homepage" + tags_codebase,
+  "account": "//4a.account" + tags_codebase,
+  "policies": "//7a.policies" + tags_codebase,
+  "query": "//4a.query" + tags_codebase,
+  "sameas": "//5a.sameas" + tags_codebase,
+  "sample": "//4a.sample" + tags_codebase,
+  "schema": "//9b.schema" + tags_codebase,
+  "topic": "//9b.topic" + tags_codebase,
+  "triples": "//6a.triples" + tags_codebase,
 
   "cubed":      "//cubed",
   "parallax":   "//parallax",
@@ -28,7 +29,9 @@ var labels = {
   "tmt":        "//tmt"
 };
 
-// environment-specific overrides to the default routing rules in lib/routing
+};
+
 var rules = {};
 
 acre.require(labels.lib + "/routing/router.sjs").route(labels, rules, this);
+

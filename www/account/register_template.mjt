@@ -35,7 +35,7 @@
 </acre:script>
 
 <acre:block def="title()">
-  Register for Freebase
+  ${c.title or 'Error'}
 </acre:block>
 
 <acre:block def="head()">
@@ -43,80 +43,5 @@
 </acre:block>
 
 <acre:block def="content_body()">
-  <div id="registration">
-    <div id="register-accordion">
-      ${create_account_pane()}
-      ${claim_account_pane()}
-    </div>
-  </div>
-</acre:block>
-
-<acre:block def="create_account_pane()">
-  <h2 class="current">Create a new Freebase account</h2>
-  <div class="pane">
-    <form name="account-create"
-          method="POST"
-          action="${h.ajax_url('/register_create_submit')}">
-      <fieldset>
-        <label for="username">Now you just need to pick a username.</label>
-        <div class="form-field clear">
-          <input name="username" id="username" type="text" spellcheck="false">
-          <script type="text/javascript">
-            document.getElementById("username").select();
-          </script>
-          <span class="input-help">
-            Pick something unique. No spaces or special characters allowed.
-          </span>
-          <span class="input-error"></span>
-        </div>
-      </fieldset>
-
-      <p>By clicking the "Create my Account" button below, you are agreeing to
-        the <a target="_blank" href="/policies/tos">Freebase Terms of Service</a>,
-        the <a target="_blank" href="/policies/privacy">Freebase Privacy Policy</a>,
-        and to receive email announcements about changes to the Freebase service.
-      </p>
-
-      <button class="submit" name="create" type="submit">
-        Create my Account
-      </button>
-    </form>
-  </div>
-</acre:block>
-
-<acre:block def="claim_account_pane()">
-  <h2>Connect to an existing Freebase account</h2>
-  <div class="pane" style="display: none">
-    <form name="account-claim"
-          method="POST"
-          action="${h.ajax_url('/register_claim_submit')}">
-      <fieldset>
-        <label for="username">
-          Enter Freebase username to connect to your Google account.
-        </label>
-        <div class="form-field clear">
-          <input name="username" id="username" type="text" spellcheck="false">
-          <script type="text/javascript">
-            document.getElementById("username").select();
-          </script>
-          <span class="input-help"></span>
-          <span class="input-error"></span>
-        </div>
-      </fieldset>
-
-      <p>By clicking the "Connext my Account" button below, you are agreeing to
-        the <a target="_blank" href="/policies/tos">Freebase Terms of Service</a>,
-        the <a target="_blank" href="/policies/privacy">Freebase Privacy Policy</a>,
-        and to receive email announcements about changes to the Freebase service.
-      </p>
-
-      <button class="submit" name="claim" type="submit">
-        Connect my Account
-      </button>
-    </form>
-  </div>
-</acre:block>
-
-<acre:block def="footer_script()">
-  <script src="register.mf.js"></script>
+  <p class="error-message">${c.message}</p>
 </acre:block>

@@ -11,7 +11,7 @@ var labels = {
   "apps": "//7a.apps" + tags_codebase,
   "create": "//3a.create" + tags_codebase,
   "data": "//4a.data" + tags_codebase,
-  "devdocs": "//6a.devdocs" + tags_codebase,
+  "docs": "//6a.devdocs" + tags_codebase,
   "group": "//5a.group" + tags_codebase,
   "homepage": "//9a.homepage" + tags_codebase,
   "account": "//4a.account" + tags_codebase,

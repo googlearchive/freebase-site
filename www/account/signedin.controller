@@ -68,12 +68,18 @@ function apiary_user_info() {
         console.error('Freebase API returned a badly formatted response: ', e);
         return e;
       }
-      
-      if (extract_first_error(error).reason === 'unregistered') {
-        throw UnregisteredError();
+
+      var e = extract_first_error(error);
+      if (e.reason === 'unregistered') {
+        throw new UnregisteredError();
+      } else if (e.code === 401) {
+        // The credentials must be incorrect, so remove them.
+        acre.oauth.remove_credentials(h.account_provider());
+        console.warn('Authorization credentials are not correct', e);
+        return failure;
       }
       
-      console.error('Could not process user info response: ', failure);
+      console.warn('Could not process user info response: ', failure);
       return failure;
     });
 }
@@ -106,9 +112,6 @@ var SPEC = {
         return {template: 'register_template.mjt'};
       }
       
-      if (acre.freebase.apiary_url) {
-        acre.oauth.remove_credentials(h.account_provider());
-      }
       return {
         template: 'error_template.mjt',
         message: 'Freebase signin is currently down. Please try again later.'

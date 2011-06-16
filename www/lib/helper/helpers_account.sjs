@@ -41,6 +41,7 @@ var exports = {
 };
 
 var extend = acre.require("helper/helpers_util.sjs").extend;
+var parse_uri = acre.require("helper/helpers_url.sjs").parse_uri;
 
 function account_cookie_name() {
   return "fb-account-name";
@@ -77,7 +78,14 @@ function has_account_credentials() {
 }
 
 function account_provider() {
-  return acre.oauth.providers.freebase;
+  var provider = extend({}, acre.oauth.providers.freebase);
+  // Authorize the host that the apiary url is running under,
+  // really useful when connecting to a local dev apiary.
+  var apiary_host = parse_uri(acre.freebase.apiary_url).host;
+  if (apiary_host) {
+    provider.domain = apiary_host;
+  }
+  return provider;
 }
 
 function get_account_cookie() {

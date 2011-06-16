@@ -353,7 +353,7 @@
   <acre:block elif="ect === '/common/webpage'">
     <a class="property-value"
        acre:attrs="itemprop(prop_structure.id)"
-       href="${prop_value.url}">${prop_value.url}</a>
+       href="${prop_value.url}" rel="nofollow">${prop_value.url}</a>
   </acre:block>
   <acre:block else="">
     <acre:script>

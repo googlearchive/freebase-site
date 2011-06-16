@@ -27,9 +27,7 @@ var labels = {
   "parallax":   "//parallax",
   "labs":       "//labs",
   "tmt":        "//tmt"
-};
-
-};
+};;
 
 var rules = {};
 

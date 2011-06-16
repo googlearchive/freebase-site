@@ -29,8 +29,6 @@ var labels = {
   "tmt":        "//tmt"
 };
 
-};
-
 var rules = {};
 
 acre.require(labels.lib + "/routing/router.sjs").route(labels, rules, this);

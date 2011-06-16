@@ -1,85 +1,97 @@
 {
-  "ttl": 0,
-  "error_page" : "error/error.mjt",
-  "csrf_protection": "strong",
-  "mounts": {
-    "ajax": "routing/ajax.sjs",
-    "static": "routing/static.sjs",
-    "libraries": "//2.libraries.apps.freebase.dev",
-    "service": "//service"
-  },
   "handlers": {
-    "mjt": "handlers/mjt_handler.sjs",
-    "css": "handlers/css_handler.sjs",
-    "css_manifest": "handlers/css_manifest_handler.sjs",
-    "js_manifest": "handlers/js_manifest_handler.sjs",
-    "tagged_static": "handlers/tagged_static_handler.sjs",
+    "js_manifest": "handlers/js_manifest_handler.sjs", 
+    "controller": "handlers/controller_handler.sjs", 
+    "mjt": "handlers/mjt_handler.sjs", 
+    "ajax": "handlers/ajax_handler.sjs", 
+    "css_manifest": "handlers/css_manifest_handler.sjs", 
     "tagged_binary": "handlers/tagged_binary_handler.sjs", 
-    "template": "handlers/template_handler.sjs",
-    "controller": "handlers/controller_handler.sjs",
-    "ajax": "handlers/ajax_handler.sjs",
+    "template": "handlers/template_handler.sjs", 
+    "tagged_static": "handlers/tagged_static_handler.sjs", 
+    "css": "handlers/css_handler.sjs", 
     "coffee_script": "handlers/coffee_script_handler.sjs"
-  },
+  }, 
+  "static_base": "", 
+  "csrf_protection": "strong", 
+  "mounts": {
+    "libraries": "//2.libraries.apps.freebase.dev", 
+    "ajax": "routing/ajax.sjs", 
+    "static": "routing/static.sjs", 
+    "service": "//service"
+  }, 
   "extensions": {
-    "ico" : { 
-      "handler": "tagged_binary",
-      "media_type" : "image/x-icon"
-    },
-    "css": {
-      "handler": "css"
-    },
-    "less": {
-      "handler": "css",
-      "media_type": "text/css"
-    },
-    "mf.css": {
-      "handler": "css_manifest",
-      "media_type": "text/css"
-    },
-    "mf.js": {
-      "handler": "js_manifest",
-      "media_type": "application/x-javascript"
-    },
-    "template": {
-      "handler": "template"
-    },
-    "controller": {
-      "handler": "controller"
-    },
-    "ajax": {
-      "handler": "ajax"
-    },
-    "omf.js": {
-      "media_type": "text/javascript", 
-      "handler": "js_manifest"
+    "ico": {
+      "media_type": "image/x-icon", 
+      "handler": "tagged_binary"
     }, 
     "omf.css": {
       "media_type": "text/css", 
       "handler": "css_manifest"
-    },
-    "properties": {
-      "handler": "acre_script"
-    },
-    "cs": {
-      "handler": "coffee_script"
-    },
+    }, 
+    "less": {
+      "media_type": "text/css", 
+      "handler": "css"
+    }, 
+    "mf.css": {
+      "media_type": "text/css", 
+      "handler": "tagged_static"
+    }, 
+    "gif": {
+      "media_type": "image/gif", 
+      "handler": "tagged_binary"
+    }, 
+    "controller": {
+      "handler": "controller"
+    }, 
+    "jpg": {
+      "media_type": "image/jpg", 
+      "handler": "tagged_binary"
+    }, 
+    "omf.js": {
+      "media_type": "text/javascript", 
+      "handler": "js_manifest"
+    }, 
+    "mf.js": {
+      "media_type": "text/javascript", 
+      "handler": "tagged_static"
+    }, 
+    "ajax": {
+      "handler": "ajax"
+    }, 
+    "png": {
+      "media_type": "image/png", 
+      "handler": "tagged_binary"
+    }, 
     "tab": {
       "handler": "acre_script"
-    }      
-  },
-  "static_base": "",
-  "libs" : {
-    "suggest" : {
-      "base_url": "http://freebaselibs.com/static/suggest/",
-      "version": "1.5"
-    },
-    "jquery" : {
-      "base_url": "http://ajax.googleapis.com/ajax/libs/jquery/",
-      "version": "1.5.2"
-    },
-    "dojo" : {
-      "base_url": "https://ajax.googleapis.com/ajax/libs/dojo/",
-      "version": "1.6.0"
+    }, 
+    "cs": {
+      "handler": "coffee_script"
+    }, 
+    "properties": {
+      "handler": "acre_script"
+    }, 
+    "css": {
+      "handler": "css"
+    }, 
+    "template": {
+      "handler": "template"
     }
-  }
+  }, 
+  "ttl": -1, 
+  "libs": {
+    "jquery": {
+      "version": "1.5.2", 
+      "base_url": "http://ajax.googleapis.com/ajax/libs/jquery/"
+    }, 
+    "suggest": {
+      "version": "1.5", 
+      "base_url": "http://freebaselibs.com/static/suggest/"
+    }, 
+    "dojo": {
+      "version": "1.6.0", 
+      "base_url": "https://ajax.googleapis.com/ajax/libs/dojo/"
+    }
+  }, 
+  "error_page": "error/error.mjt"
 }

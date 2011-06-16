@@ -21,7 +21,7 @@ limitations under the License.
 import sys, shutil, os, re, pwd, pdb, datetime, time, urllib2, random, threading
 from optparse import OptionParser
 from tempfile import NamedTemporaryFile
-from siteutil import Context, Acre, AppFactory, SVNLocation
+from siteutil import Context, Acre, Site, App, SVNLocation
 
 try:
   import json
@@ -129,7 +129,7 @@ class ActionSetupSite:
           continue
 
         done[full_local_path] = True
-        r = SVNLocation(c, full_svn_path, full_local_path).checkout(files = i < len(path_parts)-1)
+        r = SVNLocation(c, full_svn_path).checkout(full_local_path, files = i < len(path_parts)-1)
         if not r:
           return c.error('There was an error checking out %s to %s' % (full_svn_path, full_local_path))
 
@@ -142,9 +142,9 @@ class ActionSetupSite:
 
     c = self.context
 
-    site_dir = c.resolve_site_dir()
+    site = Site.Get(c)
 
-    if not site_dir:
+    if not site:
       return c.error("Could not figure out location of site. You can specify --site_dir as an option, or run the script from within a site svn checkout directory structure to figure it out automatically.")
 
     acre = Acre.Get(c)
@@ -178,11 +178,11 @@ class ActionSetupSite:
     if not r:
       return False
 
-    r = c.symlink(self.site_checkout, site_dir)
+    r = c.symlink(self.site_checkout, site.site_dir)
 
     c.log('Site checkout done')
 
-    r = Acre.Get(c).build(target='devel', config_dir = '%s/appengine-config' % site_dir)
+    r = Acre.Get(c).build(target='devel', config_dir = '%s/appengine-config' % site.site_dir)
     if not r:
       return c.error('Failed to build acre under %s' % c.options.acre_dir)
 
@@ -197,69 +197,6 @@ class ActionSetupSite:
 
     return True
 
-
-#sync the local repository and create symlinks between acre <-> site 
-class ActionLink:
-  '''
-  Connect an acre directory and a freebase-site directory
-  This assumes freebase-site is checked-out OUTSIDE of acre and
-  then creates appropriate symlinks IN acre TO freebase-site. 
-  '''
-
-  def __init__(self, context):
-    self.context = context
-
-  def __call__(self):
-
-    c = self.context
-
-    success = c.googlecode_login()
-    if not success:
-      return c.error('You must provide valid google code credentials to complete this operation.')
-
-
-    if not (c.options.site_dir and c.options.acre_dir):
-      return c.error('You must specify both the directory where you have set-up acre and freebase site for sync to work')
-
-
-    ACRE_DIR = c.options.acre_dir + '/webapp'
-
-    #do freebase.ots symlink
-
-    source_link = c.options.site_dir + '/trunk/config/ots.www.conf.in'
-    target_link = ACRE_DIR + '/META-INF/ots.www.conf.in'
-    c.log('Setting up freebase OTS rules.')
-
-    r = c.symlink(source_link, target_link)
-    if not r:
-      return c.error('Failed to create the freebase site OTS symlink.')
-
-    c.log('Starting acre build.')
-    os.chdir(c.options.acre_dir)
-
-    #do site symlink
-    c.log('Linking acre and site')
-
-    acre_freebase_dir = ACRE_DIR + '/WEB-INF/scripts/googlecode/freebase-site'
-
-    if not os.path.isdir(acre_freebase_dir):
-      try:
-        os.makedirs(acre_freebase_dir)
-      except:
-        return c.error('Unable to create directory %s.' % acre_freebase_dir)
-
-    source_link = c.options.site_dir
-    target_link = acre_freebase_dir + "/svn"
-
-    r = c.symlink(source_link, target_link)
-
-    if not r:
-      return c.error('There was an error linking the acre and site dirs')
-
-    Acre.Get(c).build()
-    return True
-
-
 class ActionStatic:
 
   def __init__(self, context):
@@ -267,12 +204,14 @@ class ActionStatic:
 
   def __call__(self, app=None):
 
+    
     c = self.context
-
+    
+    site = Site.Get(c)
     c.set_acre(Acre.Get(c))
 
     acre = Acre.Get(c)
-    if acre.build(target='devel', config_dir= "%s/appengine-config" % c.options.site_dir):
+    if acre.build(target='devel', config_dir= "%s/appengine-config" % site.site_dir):
       if not acre.start():
         return c.error('There was an error starting acre - cannot generate static files without a running acre instance.')
     else:
@@ -301,13 +240,11 @@ class ActionDeployAcre:
   def __call__(self):
 
     c = self.context
-
-    site_dir = c.resolve_site_dir()
+    site = Site.Get(c)
+    acre = Acre.Get(c)
     config = c.resolve_config()
 
-    acre = Acre.Get(c)
-
-    if not site_dir:
+    if not site:
       return c.error("Could not figure out location of site. You can specify --site_dir as an option, or run the script from within a site svn checkout directory structure to figure it out automatically.")
 
     if not acre:
@@ -317,7 +254,7 @@ class ActionDeployAcre:
       return c.error('You have to specify an acre build target with -c e.g. -c acre')
 
 
-    (r, result) = acre.build(c.options.config, config_dir= "%s/appengine-config" % site_dir, war=True)
+    (r, result) = acre.build(c.options.config, config_dir= "%s/appengine-config" % site.site_dir, war=True)
 
     print result
 
@@ -430,10 +367,6 @@ class ActionSetup:
 
     if not r:
       return c.error('Site setup failed.')
-
-    #r = ActionLink(c)()
-    #if not r:
-    #  return c.error('Link failed.')
 
     return c.log('Setup has finished successfully.')
 
@@ -580,21 +513,6 @@ class ActionSetupWildcardDNS:
     return True
 
 
-class ActionTest:
-
-  def __init__(self, context):
-    self.context = context
-
-
-  def __call__(self):
-    c = self.context
-
-    print c.resolve_config()
-
-
-    return True
-  
-
 class ActionCreateAppBranch():
 
   def __init__(self, context):
@@ -620,7 +538,7 @@ class ActionCreateAppBranch():
     c.log('Starting branching app %s' % c.app.app_key, color=c.BLUE)
 
     #create the branch
-    from_app = AppFactory(c)(c.options.app, c.options.version)
+    from_app = App.Get(c, c.options.app, c.options.version)
     branch_app = from_app.branch(c.options.version)
 
     if not branch_app:
@@ -634,7 +552,7 @@ class ActionCreateAppBranch():
     #then branch the core app and update the version number in our app
     if not branch_app.is_lib():
       #XXX to be implemented
-      updated = branch_app.update_lib_dependency(AppFactory(c)('lib', version=c.options.lib))
+      updated = branch_app.update_lib_dependency(App.Get(c, 'lib', version=c.options.lib))
       if updated:
         (r, contents) = branch_app.svn_commit(msg='updated lib dependency to %s' % c.options.lib)
         c.log('Created branch %s linked to lib:%s' % (branch_app, c.options.lib), color=c.BLUE)
@@ -669,7 +587,7 @@ class ActionCreateAppTag():
       #if there was a lib tag specified in the command line, check that its
       #of the same branch as the lib app that was linked to this app branch
       if c.options.lib:
-        new_lib_app = AppFactory(c)('lib', tag=c.options.lib)
+        new_lib_app = App.Get(c, "lib", tag=c.options.lib)
         if lib_app.version != new_lib_app.version:
           return c.error('You cannot specify a lib tag that is from a different branch than when this app was created.\nOriginal lib branch: %s\nSpecified lib branch: %s' % (lib_app.version, new_lib_app.version))
         else:
@@ -680,7 +598,7 @@ class ActionCreateAppTag():
         if not last_tag:
           return c.error("The app %s is linked to %s which has no available tags." % (app, lib_app))
         else:
-          lib_app = AppFactory(c)('lib', tag=last_tag)
+          lib_app = App.Get(c, "lib", tag=last_tag)
 
     return lib_app
 
@@ -691,9 +609,9 @@ class ActionCreateAppTag():
     if not (c.options.app and c.options.version):
       return c.error('You have to specify a valid app and version to create a tag out of.')
 
-    site_dir = c.resolve_site_dir()
+    site = Site.Get(c)
 
-    if not site_dir:
+    if not site:
       return c.error("Could not figure out location of site. You can specify --site_dir as an option, or run the script from within a site svn checkout directory structure to figure it out automatically.")
 
     acre = Acre.Get(c)
@@ -709,7 +627,7 @@ class ActionCreateAppTag():
     c.log('Creating tag for %s:%s' % (c.app.app_key, c.options.version), color=c.BLUE)
 
     #first create a tag for the app that was specified in the command line
-    from_branch_app = AppFactory(c)(c.options.app, c.options.version)
+    from_branch_app = App.Get(c, c.options.app, c.options.version)
 
     #then check if there is a valid lib tag that we can use - or if there is no
     #lib dependency
@@ -749,7 +667,7 @@ class ActionCreateAppTag():
     #if not no_static:
     r = ActionStatic(c)(app=tag_app)
     if not r:
-      tag_app.remove_from_svn()
+      #tag_app.remove_from_svn()
       return c.error('Failed to create static files for %s - tag removed from SVN.' % tag_app)
 
     c.log('Created %s' % tag_app, color=c.BLUE)
@@ -781,7 +699,7 @@ class ActionInfo:
 
     lib_app = None
     if last_version and not app.is_lib():
-        lib_app = AppFactory(c)(app.app_key, version=last_version).lib_dependency()
+        lib_app = App.Get(c, app.app_key, version=last_version).lib_dependency()
 
     if lib_app:
       last_version_str = "%s (%s)" % (last_version, lib_app)
@@ -790,11 +708,11 @@ class ActionInfo:
 
     print "Last Version:\t\t%s" % last_version_str
 
-    versioned_app = AppFactory(c)(app.app_key, version=last_version)
+    versioned_app = App.Get(c, app.app_key, version=last_version)
     last_tag = versioned_app.last_tag()
 
     if last_tag and not app.is_lib():
-      lib_app = AppFactory(c)(versioned_app.app_key, last_version, last_tag).lib_dependency()
+      lib_app = App.Get(c, versioned_app.app_key, last_version, last_tag).lib_dependency()
 
     if lib_app:
       last_tag_str = "%s (%s)" % (last_tag, lib_app)
@@ -1202,80 +1120,152 @@ class ActionGetIds:
       
     return True
     
-    
+
+class ActionListApps:
+
+  def __init__(self, context):
+    self.context = context
+
+  def __call__(self):
+    print ",".join(Site.Get(self.context).apps())
+    return True
+
+
+class ActionCreateRoutes:
+
+  def __init__(self, context):
+    self.context = context
+
+  def __call__(self):
+
+    site = Site.Get(self.context)
+
+    print """
+var codebase = \"%s\";
+var tags_codebase = \"%s\";
+
+var labels = {
+""" % (site.conf("acre_id_suffix_trunk"), site.conf("acre_id_suffix_tags"))
+
+    if site.conf("external_apps"):
+      for app, app_id in site.conf("external_apps").iteritems():
+        print "  \"%s\": \"%s\"," % (app, app_id)
+
+    apps = site.apps()
+    for i,app_key in enumerate(apps):
+      app = App.Get(self.context, app_key)
+      last_tag = app.last_tag()
+
+      if last_tag:
+        print "  \"%s\": \"//%s.%s\" + tags_codebase%s" % (app_key, last_tag, app_key, i < len(apps)-1 and "," or "")
+      else:
+        print "  \"%s\": \"//%s\" + codebase%s" % (app_key, app_key, i < len(apps)-1 and "," or "")
+        
+
+    print """
+};
+
+var rules = {};
+
+acre.require(labels.lib + "/routing/router.sjs").route(labels, rules, this);
+"""
+
+    return True
+
+
+
+class ActionTest:
+
+  def __init__(self, context):
+    self.context = context
+
+
+  def __call__(self):
+    c = self.context
+
+
+    site = Site.Get(c)
+
+    return True
+  
+
 
 def main():
 
   # OPTION PARSING
 
   valid_actions = [
-      ('setup_acre', 'create a local acre instance', ActionSetupAcre),
-      ('setup_site', 'create a local site instance', ActionSetupSite),
-      ('link', '\tDEPRECATED: connect acre and site so that acre will read site trunk apps from the filesystem', ActionLink),
-      ('setup', '\tsetup acre and freebase-site and link them', ActionSetup),
-      ('deploy_acre', 'deploy an acre instance to production app-engine', ActionDeployAcre),
-      ('setup_dns', 'setup freebase site dns for your host', ActionSetupSimpleDNS),
-      ('setup_wildcard_dns', 'setup wildcard dns for your host - Mac OS X only', ActionSetupWildcardDNS),
-      ('info', 'provide information on all apps or a specific app', ActionInfo),
-      ('create_branch', 'creates a branch of your app', ActionCreateAppBranch),
-      ('create_tag', 'creates a tag of your app', ActionCreateAppTag),
-      ('create_static', 'creates a static bundle and writes it to the provided tag', ActionStatic),
-      ('speedtest', 'run a speedtest', ActionSpeedTest),
-      ('getids', 'get freebase ids for a given type - useful for speedtests', ActionGetIds),
+      ("setup_acre", "create a local acre instance", ActionSetupAcre),
+      ("setup_site", "create a local site instance", ActionSetupSite),
+      ("setup", "\tsetup acre and freebase-site and link them", ActionSetup),
+      ("deploy_acre", "deploy an acre instance to production app-engine", ActionDeployAcre),
+      ("setup_dns", "setup freebase site dns for your host", ActionSetupSimpleDNS),
+      ("setup_wildcard_dns", "setup wildcard dns for your host - Mac OS X only", ActionSetupWildcardDNS),
+      ("info", "provide information on all apps or a specific app", ActionInfo),
+      ("create_branch", "creates a branch of your app", ActionCreateAppBranch),
+      ("create_tag", "creates a tag of your app", ActionCreateAppTag),
+      ("create_static", "creates a static bundle and writes it to the provided tag", ActionStatic),
+      ("speedtest", "run a speedtest", ActionSpeedTest),
+      ("getids", "get freebase mids for a given type - useful for speedtests", ActionGetIds),
+      ("listapps", "get a list of apps for this site", ActionListApps),
+      ("create_routes", "create the routes configuration that will point to the last tag of everything", ActionCreateRoutes),
 
-      ('test', '\ttest', ActionTest)
+      ("test", "\ttest", ActionTest)
       ]
 
 
-  usage = '''%prog action [options]
+  usage = """%prog action [options]
 \nActions:
-'''
-  usage += '\n'.join(['\t%s\t%s' % a[:2] for a in valid_actions])
+"""
+  usage += "\n".join(["\t%s\t%s" % a[:2] for a in valid_actions])
 
   parser = OptionParser(usage=usage)
-  parser.add_option('-u', '--user', dest='user',
-                    help='google code username - e.g. johnsmith@gmail.com')
-  parser.add_option('-p', '--password', dest='password',
-                    help='google code password')
-  parser.add_option('-b', '--verbose', dest='verbose', action='store_true',
-                    default=False, help='verbose mode will print out more debugging output')
-  parser.add_option('', '--everything', dest='everything', action='store_true',
-                    default=False, help='checkout branches and tags when setting up a freebase site')
-  parser.add_option('', '--acre_dir', dest='acre_dir',
-                    default=None, help='the local acre directory')
-  parser.add_option('', '--acre_version', dest='acre_version',
-                    default=None, help='an svn version of acre - either "trunk" or a branch name (34)')
-  parser.add_option('', '--acre_host', dest='acre_host',
-                    default='z', help='the hostname that you will use to address this acre installation')
-  parser.add_option('', '--site_dir', dest='site_dir',
-                    default=None, help='the local site directory')
-  parser.add_option('', '--acre_port', dest='acre_port',
-                    default=8115, help='the port you want to serve acre from')
-  parser.add_option('-c', '--config', dest='config',
-                    help='acre configuration target - e.g. sandbox-freebasesite or devel')
-  parser.add_option('-v', '--version', dest='version', default=None,
-                    help='a version of the app - e.g. 12 - use "latest" to auto-detect the last version branched')
-  parser.add_option('-t', '--tag', dest='tag', default=None,
-                    help='a tag of the app - e.g. 12b')
-  parser.add_option('-a', '--app', dest='app', default=None,
-                    help='an app id - e.g. /user/namesbc/mysuperapp or an app key under /freebase/site - e.g. homepage')
-  parser.add_option('-l', '--lib', dest='lib', default=None,
-                    help='the version of lib you want to tie this app branch to - use "latest" to tie to last branched version')
-  parser.add_option('', '--failover', dest='failover', action='store_true',
-                    default=False, help='will also deploy acre to the failover version of appengine')
-  parser.add_option('', '--nosite', dest='nosite', action='store_true',
-                    default=False, help='will not bundle freebase site with acre when deploying to appengine')
+  parser.add_option("-u", "--user", dest="user",
+                    help="google code username - e.g. johnsmith@gmail.com")
+  parser.add_option("-p", "--password", dest="password",
+                    help="google code password")
+  parser.add_option("-b", "--verbose", dest="verbose", action="store_true",
+                    default=False, help="verbose mode will print out more debugging output")
+  parser.add_option("", "--everything", dest="everything", action="store_true",
+                    default=False, help="checkout branches and tags when setting up a freebase site")
+  parser.add_option("", "--acre_dir", dest="acre_dir",
+                    default=None, help="the local acre directory")
+  parser.add_option("", "--acre_version", dest="acre_version",
+                    default=None, help="an svn version of acre - either 'trunk' or a branch number like '34'")
+  parser.add_option("", "--acre_host", dest="acre_host",
+                    default="z", help="the hostname that you will use to address this acre installation")
+  parser.add_option("", "--site_dir", dest="site_dir",
+                    default=None, help="the local site directory")
+  parser.add_option("", "--acre_port", dest="acre_port",
+                    default=8115, help="the port you want to serve acre from")
+  parser.add_option("-c", "--config", dest="config",
+                    help="acre configuration target - e.g. sandbox-freebasesite or devel")
+  parser.add_option("-v", "--version", dest="version", default=None,
+                    help="a version of the app - e.g. 12 - use 'latest' to auto-detect the last version branched")
+  parser.add_option("-t", "--tag", dest="tag", default=None,
+                    help="a tag of the app - e.g. 12b")
+  parser.add_option("-a", "--app", dest="app", default=None,
+                    help="an app id - e.g. /user/namesbc/mysuperapp or an app key under /freebase/site - e.g. homepage")
+  parser.add_option("-l", "--lib", dest="lib", default=None,
+                    help="the version of lib you want to tie this app branch to - use 'latest' to tie to last branched version")
+  parser.add_option("", "--failover", dest="failover", action="store_true",
+                    default=False, help="will also deploy acre to the failover version of appengine")
+  parser.add_option("", "--nosite", dest="nosite", action="store_true",
+                    default=False, help="will not bundle freebase site with acre when deploying to appengine")
+  parser.add_option("-s", "--site", dest="site", default="freebase",
+                    help="the site you want to work on - one of %s" % ",".join(Site._sites.keys()))
+
 
   #speedtest options
 
-  parser.add_option('', '--page', dest='page', default=None, help='speedtest: the page you are testing')
-  parser.add_option('', '--test', dest='test', default=None, help='speedtest: the test you want to run')
-  parser.add_option('', '--repeat', dest='repeat', default=10, help='speedtest: number of times the page will be hit', type='int')
-  parser.add_option('', '--host', dest='host', default='test.sandbox-freebase.com', help='host to hit - just the domain name')
-  parser.add_option('', '--concurrent', dest='concurrent', default=1, help='speedtest: number of concurrent clients', type='int')
-  parser.add_option('', '--list', dest='list', action='store_true', default=False, help='speedtest: list pages and tests')
-  parser.add_option('', '--type', dest='type', default='/type/type', help='freebase type id')
-  parser.add_option('', '--cost', dest='cost', default=ActionSpeedTest.x_cost_default, help='x-metaweb-cost verbosity: %s' %  '\n'.join(ActionSpeedTest.x_labels_groups.keys()))
+  parser.add_option("", "--page", dest="page", default=None, help="speedtest: the page you are testing")
+  parser.add_option("", "--test", dest="test", default=None, help="speedtest: the test you want to run")
+  parser.add_option("", "--repeat", dest="repeat", default=10, help="speedtest: number of times the page will be hit", type="int")
+  parser.add_option("", "--host", dest="host", default="test.sandbox-freebase.com", help="host to hit - just the domain name")
+  parser.add_option("", "--concurrent", dest="concurrent", default=1, help="speedtest: number of concurrent clients", type="int")
+  parser.add_option("", "--list", dest="list", action="store_true", default=False, help="speedtest: list pages and tests")
+  parser.add_option("", "--type", dest="type", default="/type/type", help="freebase type id")
+  parser.add_option("", "--cost", dest="cost", default=ActionSpeedTest.x_cost_default, help="x-metaweb-cost verbosity: %s" %  "\n".join(ActionSpeedTest.x_labels_groups.keys()))
 
 
   # Parse the arguments.
@@ -1303,12 +1293,15 @@ def main():
     # options.version refers to the last version of the app passed with -a
     # options.lib refers to the lib app
     if not ((options.version and options.version == 'latest') or (options.lib and options.lib == 'latest')):
-      return
+      return True
 
     if options.lib:
-      app = AppFactory(context)('lib')
+      app = App.Get(context, "lib")
     else:
-      app = AppFactory(context)(options.app)
+      app = App.Get(context, options.app)
+
+    if not app:
+      return False
 
     last_version = app.last_svn_version()
     if last_version:
@@ -1317,51 +1310,72 @@ def main():
       else:
         options.lib = last_version
 
+    return True
+
   def run(action_class, context):
     """Run an action given the context."""
-
-    result = False
     context.start_time = datetime.datetime.now()
+    result = None
 
     try:
+      
       result = action_class(context)()
-    except KeyboardInterrupt:
-      context.error('Action aborted by user.')
+
     finally:
-      acre = Acre.Get(context, existing=True)
-      if acre:
-        acre.stop()
+      t2 = datetime.datetime.now()
+    
+      if not result:
+        return context.error('FAILED: action %s failed (%s)' % (action, context.duration_human(t2-context.start_time)))
+      else:
+        context.log('SUCCESS: action %s ended succesfully (%s)' % (action, context.duration_human(t2-context.start_time)), color=context.GREEN)
+        
+      context.set_action(action)
+    return True
 
-    # Reset context action and exit.
-    context.set_action(action)
-
-    t2 = datetime.datetime.now()
-    if not result:
-      return context.error('FAILED: action %s failed (%s)' % (action, context.duration_human(t2-context.start_time)))
-    else:
-      context.log('SUCCESS: action %s ended succesfully (%s)' % (action, context.duration_human(t2-context.start_time)), color=context.GREEN)
-      return True
-
+  result = None
   results = []
+  context.start_time = datetime.datetime.now()
   # Loop through each app, resolve version/lib from arguments and run the action with that app.
-  if options.app:
 
-    original_version = options.version
-    original_lib = options.lib
+  try: 
+    if options.app:
 
-    for i, app in enumerate(options.app.split(',')):
-      options.app = app
-      options.version = original_version
-      options.lib = original_lib
-      resolve_app_params(options, context)
-      context.set_app(AppFactory(context)(options.app, options.version))
-      results.append(run(action_class, context))
-  else:
-    results.append(run(action_class, context))
+      original_version = options.version
+      original_lib = options.lib
+    
+      apps = options.app.split(',')
+      if apps[0] == "all":
+        apps = Site.Get(context).apps()
 
-  if False in results:
+      for i, app in enumerate(apps):
+        options.app = app
+        options.version = original_version
+        options.lib = original_lib
+        result = False
+        result = resolve_app_params(options, context)
+        if result:
+          context.set_app(App.Get(context, options.app, options.version))
+          result = run(action_class, context)
+          
+        results.append(result)
+          
+    else:
+      result = run(action_class, context)
+      results.append(result)
+    
+  except KeyboardInterrupt:
+    context.error("Aborted by user.")
+  finally:
+    t2 = datetime.datetime.now()
+    acre = Acre.Get(context, existing=True)
+    if acre:
+      acre.stop()
+    
+  if not result or False in results:
     n = len([x for x in results if not x])
-    context.error('%s action%s failed.' % (n,n > 1 and 's' or ''))
+    context.error('FAILED: action %s failed (%s)' % (action, context.duration_human(t2-context.start_time)))
+    if n > 1:
+      context.error('%s action%s failed.' % (n,n > 1 and 's' or ''))
 
   for reminder in context.reminders:
     context.log(reminder, 'reminder', color=context.RED)

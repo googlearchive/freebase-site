@@ -14,7 +14,7 @@ var labels = {
   "docs": "//6a.devdocs" + tags_codebase,
   "group": "//5a.group" + tags_codebase,
   "homepage": "//9a.homepage" + tags_codebase,
-  "account": "//4a.account" + tags_codebase,
+  "account": "//6a.account" + tags_codebase,
   "policies": "//7a.policies" + tags_codebase,
   "query": "//4a.query" + tags_codebase,
   "sameas": "//5a.sameas" + tags_codebase,

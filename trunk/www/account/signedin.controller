@@ -31,6 +31,7 @@
 
 var h = acre.require("lib/helper/helpers.sjs");
 var urlfetch = acre.require("lib/promise/apis").urlfetch;
+var freebase = acre.require("lib/promise/apis").freebase;
 
 function extract_first_error(error) {
   var e = {
@@ -43,11 +44,38 @@ function extract_first_error(error) {
   return e;
 }
 
-function simple_error_response() {
-  acre.oauth.remove_credentials(h.account_provider());
-  acre.response.set_header('content-type', 'text/plain');
-  acre.write('Freebase signin is currently down. Please try again later.');
-  acre.exit();
+var UnregisteredError = function(message) {
+  this.message = message;
+};
+UnregisteredError.prototype = new Error();
+
+function apiary_user_info() {
+  // Get user information using urlfetch so we can deal with custom errors.
+  var user_info_url = acre.form.build_url(acre.freebase.apiary_url+'/user/info');
+  return urlfetch(user_info_url, {sign: true})
+    .then(function(response) {
+      return JSON.parse(response.body);
+      
+    }, function(failure) {
+      if (!failure.response) {
+        console.error('Could not call Freebase API: ', failure);
+        return failure;
+      }
+      
+      try {
+        var error = JSON.parse(failure.response.body).error;
+      } catch (e) {
+        console.error('Freebase API returned a badly formatted response: ', e);
+        return e;
+      }
+      
+      if (extract_first_error(error).reason === 'unregistered') {
+        throw UnregisteredError();
+      }
+      
+      console.error('Could not process user info response: ', failure);
+      return failure;
+    });
 }
 
 var SPEC = {
@@ -56,41 +84,31 @@ var SPEC = {
   template: 'signedin_template.mjt',
 
   run: function() {
+    var d;
     if (acre.freebase.apiary_url) {
       // Finalize the authorization request.
       acre.oauth.get_authorization(h.account_provider());
-    } 
-    
-    // Get user information using urlfetch so we can deal with custom errors.
-    var user_info_url = acre.form.build_url(acre.freebase.apiary_url+'/user/info');
-    var d = urlfetch(user_info_url, {sign: true})
-      .then(function(response) {
-        var user = JSON.parse(response.body);
-        h.set_account_cookie(user);
-        return {'user': user};
-        
-      }, function(failure) {
-        if (!failure.response) {
-          console.error('Could not call Freebase API: ', failure);
-          return simple_error_response();
-        }
-        
-        try {
-          var error = JSON.parse(failure.response.body).error;
-        } catch (e) {
-          console.error('Freebase API returned a badly formatted response: ', e);
-          return simple_error_response();
-        }
+      d = apiary_user_info();
+    } else {
+      d = freebase.get_user_info();
+    }
 
-        if (extract_first_error(error).reason === 'unregistered') {
-          return {template: 'register_template.mjt'};
-        }
-
-        console.error('Could not process user info response: ', failure);
-        return simple_error_response();
-      });
-   
-    return d;
+    return d.then(function(user) {
+      h.set_account_cookie(user);
+      return {'user': user};
+    }, function(failure) {
+      if (failure instanceof UnregisteredError) {
+        return {template: 'register_template.mjt'};
+      }
+      
+      if (acre.freebase.apiary_url) {
+        acre.oauth.remove_credentials(h.account_provider());
+      }
+      return {
+        template: 'error_template.mjt',
+        message: 'Freebase signin is currently down. Please try again later.'
+      };
+    });
   }
 };
 

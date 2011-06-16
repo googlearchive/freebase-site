@@ -4,7 +4,7 @@ var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 
 var labels = {
 
-  "lib": "//9a.lib" + tags_codebase,
+  "lib": "//15a.lib" + tags_codebase,
   "activity": "//4b.activity" + tags_codebase,
   "admin": "//3a.admin" + tags_codebase,
   "appeditor": "//5b.appeditor" + tags_codebase,
@@ -19,8 +19,8 @@ var labels = {
   "query": "//4a.query" + tags_codebase,
   "sameas": "//5a.sameas" + tags_codebase,
   "sample": "//4a.sample" + tags_codebase,
-  "schema": "//9b.schema" + tags_codebase,
-  "topic": "//9b.topic" + tags_codebase,
+  "schema": "//10a.schema" + tags_codebase,
+  "topic": "//10a.topic" + tags_codebase,
   "triples": "//6a.triples" + tags_codebase,
 
   "cubed":      "//cubed",

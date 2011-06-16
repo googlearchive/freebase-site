@@ -88,7 +88,7 @@
           </th>
           <td><a href="${h.fb_url(weblink.ns)}">${weblink.ns}</a></td>
           <td class="odd">${weblink.key}</td>
-          <td><a href="${weblink.url}">$weblink.url</a></td>
+          <td><a href="${weblink.url}" rel="nofollow">$weblink.url</a></td>
         </tr>
       </tbody>
     </table>

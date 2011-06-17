@@ -30,7 +30,7 @@
  */
 
 function extend_metadata(md) {
-  var h = acre.require("helper/helpers.sjs");
+  var h = acre.require("helper/helpers_util.sjs");
 
   // get lib METADATA
   var lib_md = JSON.parse(acre.require("METADATA").body);

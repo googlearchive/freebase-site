@@ -1,0 +1,122 @@
+/*
+ * Copyright 2010, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var h = acre.require("lib/helper/helpers.sjs");
+var urlfetch = acre.require("lib/promise/apis").urlfetch;
+var freebase = acre.require("lib/promise/apis").freebase;
+
+function extract_first_error(error) {
+  var e = {
+    code: error.code,
+    message: error.message
+  };
+  if (error.errors && error.errors.length) {
+    return h.extend(e, error.errors[0]);
+  }
+  return e;
+}
+
+var UnregisteredError = function(message) {
+  this.message = message;
+};
+UnregisteredError.prototype = new Error();
+
+function apiary_user_info() {
+  // Get user information using urlfetch so we can deal with custom errors.
+  var user_info_url = acre.form.build_url(acre.freebase.apiary_url+'/user/info');
+  return urlfetch(user_info_url, {sign: true})
+    .then(function(response) {
+      return JSON.parse(response.body);
+      
+    }, function(failure) {
+      if (!failure.response) {
+        console.error('Could not call Freebase API: ', failure);
+        return failure;
+      }
+      
+      try {
+        var error = JSON.parse(failure.response.body).error;
+      } catch (e) {
+        console.error('Freebase API returned a badly formatted response: ', e);
+        return e;
+      }
+
+      var e = extract_first_error(error);
+      if (e.reason === 'unregistered') {
+        throw new UnregisteredError();
+      } else if (e.code === 401) {
+        // The credentials must be incorrect, so remove them.
+        acre.oauth.remove_credentials(h.account_provider());
+        console.warn('Authorization credentials are not correct', e);
+        return failure;
+      }
+      
+      console.warn('Could not process user info response: ', failure);
+      return failure;
+    });
+}
+
+var SPEC = {
+  cache_policy: 'nocache',
+  template_base: 'lib/template/freebase_popup.mjt',
+  template: 'signedin_template.mjt',
+
+  run: function() {
+    var d;
+    if (acre.freebase.apiary_url) {
+      // Finalize the authorization request.
+      acre.oauth.get_authorization(h.account_provider());
+      d = apiary_user_info();
+    } else {
+      d = freebase.get_user_info().then(function(user) {
+        if (!user) {
+          throw 'User has not logged into Freebase.';
+        }
+        return user;
+      });
+    }
+
+    return d.then(function(user) {
+      h.set_account_cookie(user);
+      return {'user': user};
+    }, function(failure) {
+      if (failure instanceof UnregisteredError) {
+        return {template: 'register_template.mjt'};
+      }
+      
+      return {
+        template: 'error_template.mjt',
+        message: 'Freebase signin is currently down. Please try again later.'
+      };
+    });
+  }
+};
+

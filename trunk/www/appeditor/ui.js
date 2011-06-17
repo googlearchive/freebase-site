@@ -1481,9 +1481,9 @@ var ui = {};
             }
             
             if (res) {
-                $('#button-' + button_name).removeAttr('disabled').addClass('button-primary');
+                $('#button-' + button_name).removeAttr('disabled').addClass('button-main');
             } else {
-              $('#button-' + button_name).attr('disabled', 'disabled').removeClass('button-primary');
+              $('#button-' + button_name).attr('disabled', 'disabled').removeClass('button-main');
             }
         }
         

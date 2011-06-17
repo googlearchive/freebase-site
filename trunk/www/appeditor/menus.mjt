@@ -358,7 +358,7 @@
   </div>
   <div class="button-bar">
     <fieldset id="app-clonedelete" acre:if="!ui.get_app().is_remote()">
-      <button id='app-general-listing' class="button-primary" acre:if="ui.get_app().is_author()">
+      <button id='app-general-listing' class="button-main" acre:if="ui.get_app().is_author()">
         Edit Name &amp; Directory Listing</button>
       <button id='app-general-clone' acre:if="ui.get_user()" acre:onclick="ui.do_show_dialog('new_app',[true])">
         Clone this App</button>

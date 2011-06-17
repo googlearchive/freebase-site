@@ -140,14 +140,14 @@
       <h2><em>This app is hosted on ${app.get_acre_host()}</em></h2>
     </div>
     <div acre:elif="is_author">
-      <button id="button-trunk" class="button-primary" acre:onclick="ui.do_choose_app(ui.get_app().get_path())">
+      <button id="button-trunk" class="button-main" acre:onclick="ui.do_choose_app(ui.get_app().get_path())">
         Edit Current</button>
       or
       <button id="button-clone" acre:onclick="ui.do_show_dialog('new_app', [true])">
         Clone this App</button>      
     </div>
     <div acre:else="">
-      <button id="button-clone" class="button-primary" acre:attrs="user?{}:{'disabled':'disabled'}" acre:onclick="ui.do_show_dialog('new_app', [true])" >
+      <button id="button-clone" class="button-main" acre:attrs="user?{}:{'disabled':'disabled'}" acre:onclick="ui.do_show_dialog('new_app', [true])" >
         Clone this App</button> 
         <span acre:if="!user">
           <a href="${$('#nav-signin').attr('href')}" title="Sign in to your Freebase account">Sign in</a>
@@ -291,13 +291,13 @@
         <button id="button-view" acre:onclick="ui.do_run_view(null, false);" title="${mjt.bless(ui.shortcut.get_keys('View'))}"
           acre:attrs="file.get_editor_supported_features('inline_preview')?{'disabled':'disabled'}:{}">
           View</button>
-        <button id="button-preview" class="button-primary" acre:onclick="ui.do_run_view(null, true);"  title="${mjt.bless(ui.shortcut.get_keys('View with Console'))}"
+        <button id="button-preview" class="button-main" acre:onclick="ui.do_run_view(null, true);"  title="${mjt.bless(ui.shortcut.get_keys('View with Console'))}"
           acre:attrs="file.get_editor_supported_features('inline_preview')?{'disabled':'disabled'}:{}">
           View with Console</button>
       </div>
       <span class="buttonset">
         <!-- mjt.bless for system control characters (HTML entities) declared in ui.shortcut -->
-        <button id="button-save" class="button-left button-primary" acre:onclick="ui.do_file_save()"
+        <button id="button-save" class="button-left button-main" acre:onclick="ui.do_file_save()"
           acre:attrs="file.is_dirty()?{}:{'disabled':'disabled'}" title="${mjt.bless(ui.shortcut.get_keys('Save File'))}">
           Save
         </button><button id="button-saveall" class="button-middle" acre:onclick=" ui.do_app_save_all()" 
@@ -348,7 +348,7 @@
     var writable = ui.get_app().is_writable();
   </acre:script>
   <!-- mjt.bless for system control characters (HTML entities) declared in ui.shortcut -->
-  <button class="button-primary" acre:onclick="ui.get_file()._current_editor.query_run()" title="${mjt.bless(ui.shortcut.get_keys('View'))}">
+  <button class="button-main" acre:onclick="ui.get_file()._current_editor.query_run()" title="${mjt.bless(ui.shortcut.get_keys('View'))}">
     Run</button>
   <button acre:onclick="ui.get_file()._current_editor.query_assist()" title="Tab"
     acre:attrs="writable?{}:{'disabled':'disabled'}">Query Assist</button>

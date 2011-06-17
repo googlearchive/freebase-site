@@ -30,26 +30,41 @@
  !!-->
 
 <acre:block def="claiming_account(username)">
-  <h1>Email sent</h1>
-  <p>An email was sent to the owner of <strong>${username}</strong> with a request
-    to connect <strong>${username}</strong> with your Google account.</p>
-  <p>Please click on the connect your account link in this email to continue.</p>
-  <p>You can safely <a href="javascript:self.close()">close this window.</a>
-    while you are waiting.</p>
+  <div class="inner-content">
+    <h1>Thanks! Now check your email</h1>
+    <p>You should receive an email from us in the next few minutes with a link
+      to connect <strong>${username}</strong> with your Google account.</p>
+    <h2>Didn't get the email?</h2>
+    <p>Here are a few common reasons why you might not have received the message:</p>
+    <ul>
+      <li>Sometimes it can take a few minutes for your email to arrive. Try
+        checking back shortly.</li>
+      <li>The message might have been filtered as junk. Try checking your junk email
+        folder.</li>
+      <li>Still having problems? Drop us a note at
+        <a href="mailto:registration@freebase.com">registration@freebase.com</a></li>
+    </ul>
+    <p>You can safely <a href="javascript:self.close()">close this window</a>
+      while you are waiting for your email.</p>
+  </div>
 </acre:block>
 
 <acre:block def="claimed_account(username)">
-  <script type="text/javascript">
-    window.location.href = "/account/signedin";
-  </script>
-  <h1>Accounts connected</h1>
-  <p>Your Google account has been successfully connected to
-    <strong>${username}</strong>.</p>
-  <p>Please <a href="/account/signin">signin</a> to start contributing to Freebase</p>
+  <div class="inner-content">
+    <script type="text/javascript">
+      window.location.href = "/account/signedin";
+    </script>
+    <h1>Accounts connected</h1>
+    <p>Your Google account has been successfully connected to
+      <strong>${username}</strong>.</p>
+    <p>Please <a href="/account/signin">signin</a> to start contributing to Freebase</p>
+  </div>
 </acre:block>
 
 <acre:block def="create_account(username)">
-  <h1>Under construction</h1>
-  <p>You cannot create a new Freebase account at this time.</p>
-  <p>Please <a href="/account/signin">signin</a> with an existing account instead.</p>
+  <div class="inner-content">
+    <h1>Under construction</h1>
+    <p>You cannot create a new Freebase account at this time.</p>
+    <p>Please <a href="/account/signin">signin</a> with an existing account instead.</p>
+  </div>
 </acre:block>

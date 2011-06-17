@@ -102,6 +102,7 @@ function create_app_query(app_guid) {
           length: null,
           optional: true
         },
+        handler_key: null,
         handler: {
           handler_key: null,
           optional: true
@@ -206,7 +207,7 @@ function _format_app_query_results(appinfo, just_files) {
     file.name = FB.mqlkey_unquote(key);
     file.guid = doc.guid;
 
-    file.handler        = doc.handler ? doc.handler.handler_key : 'passthrough';
+    file.handler        = doc.handler_key || (doc.handler ? doc.handler.handler_key : null);
     file.media_type     = doc['/common/document/content'] ? doc['/common/document/content'].media_type.split('/').slice(2).join('/') : null;
     file.content_id     = doc['/common/document/content'] ? doc['/common/document/content'].id : null;
     file.content_hash   = doc['/common/document/content'] ? doc['/common/document/content'].blob_id : null;

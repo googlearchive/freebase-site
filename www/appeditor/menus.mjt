@@ -119,15 +119,15 @@
     <fieldset id="fieldset-metadata">
       <div acre:def="metadata_section()">
         <acre:script>
-          var acre_handlers = ui.get_store().get_acre_handlers();
+          var acre_handlers = ui.get_app().get_acre_handlers();
 
           var sup_acre_handlers = [];
           for (var key in acre_handlers) {
-            if ($.inArray(file.get_mime_type(), ui.get_store().get_supported_mime_types(key)) != -1) {
+            if ($.inArray(file.get_mime_type(), ui.get_app().get_supported_mime_types(key)) != -1) {
               sup_acre_handlers.push(acre_handlers[key]);
             }
           }
-          var sup_mime_types = ui.get_store().get_supported_mime_types(file.get_acre_handler());
+          var sup_mime_types = ui.get_app().get_supported_mime_types(file.get_acre_handler());
         </acre:script>
         <div class="form-row">
           <label for="file-handler">Acre type </label>

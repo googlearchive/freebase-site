@@ -502,7 +502,6 @@ var ui = {};
         }
         
         var app = ui.get_app();
-
         var old_file = ui.get_file();
         
         var file = app.get_file(filename);          // grab the file they asked for or the default file
@@ -523,7 +522,7 @@ var ui = {};
         
         if (old_file) { old_file.hide(); }
         $(file.get_element()).show();
-        
+
         return _show_file(linenum);
     };
     
@@ -1404,7 +1403,7 @@ var ui = {};
         for (var f in files) {
             var file = files[f];
             var name = file.get_name();
-            var handler = file.get_acre_handler(); 
+            var handler = file.get_acre_handler();
             
             var section = ((handler == 'acre_script') && (name.substr(0,5) == "test_")) ? "test" : handler;
             if (typeof ordered_filenames[section] == 'undefined') {
@@ -1685,7 +1684,7 @@ var ui = {};
 
                 var f2_md = $('<h3></h3>');
                 if (md_change(data.file1, data.file2)) { f2_md.addClass("change"); }
-                f2_md.append(ui.get_store().get_acre_handlers()[data.file2.handler].name);
+                f2_md.append(ui.get_app().get_acre_handlers()[data.file2.handler].name);
                 if (data.file2.content_type) { f2_md.append(" (" + data.file2.content_type + ")"); }
                 f2_head.append(f2_name).append(f2_md);
 
@@ -1709,7 +1708,7 @@ var ui = {};
                 if (method == "get_file_diff" && appid(data.file1) !== ui.get_app().get_path()) { f1_name.append(" in " + appid(data.file1)); }
 
                 var f1_md = $('<h3></h3>');
-                f1_md.append(ui.get_store().get_acre_handlers()[data.file1.handler].name);
+                f1_md.append(ui.get_app().get_acre_handlers()[data.file1.handler].name);
                 if (data.file1.content_type) { f1_md.append(" (" + data.file1.content_type + ")"); }
                 f1_head.append(f1_name).append(f1_md);
 

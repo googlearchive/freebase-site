@@ -238,7 +238,7 @@
     }
   </acre:script>
 
-  <div acre:for="handler_key, handler in ui.get_store().get_acre_handlers()" >
+  <div acre:for="handler_key, handler in ui.get_app().get_acre_handlers()" >
     ${filelist_section( handler_key, handler.plural_name, app, ordered_filenames[handler_key])}
   </div>
   <div acre:if="ordered_filenames['test'] &amp;&amp; ordered_filenames['test'].length">

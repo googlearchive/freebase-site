@@ -35,7 +35,6 @@ var service = acre.require('appeditor-services/lib_appeditor_service');
 
 function create_file(appid, name, handler, based_on) {
     appid = service.parse_path(appid).appid;
-    var handler_key = handler || 'mjt';
     var key = FB.mqlkey_quote(name);
 
     var w = {
@@ -56,12 +55,15 @@ function create_file(appid, name, handler, based_on) {
                 id: '/common/document',
                 connect: 'insert'
             }
-        ],
-        '/freebase/apps/acre_doc/handler' : {
-            handler_key: handler_key,
-            connect: 'update'
-        }
+        ]
     };
+    
+    if (handler) {
+        w['/freebase/apps/acre_doc/handler_key'] = {
+            value: handler,
+            connect: 'update'
+        };
+    }
 
     // link to original if based on another document
     if (based_on) { 

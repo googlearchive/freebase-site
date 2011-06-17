@@ -33,8 +33,7 @@
 var AcreDoc;
 
 (function(){
-    
-    var DEFAULT_ACRE_HANDLER_KEY = 'mjt';
+  
     var DEFAULT_MEDIA_TYPE = 'text/plain';
     var CLASSNAME = 'file';
     
@@ -48,7 +47,7 @@ var AcreDoc;
             this._name = this._app.get_untitled_file_name();
         }
         
-        this._acre_handler   = properties.handler        || DEFAULT_ACRE_HANDLER_KEY;
+        this._acre_handler   = properties.handler;
         this._mime_type      = properties.media_type     || DEFAULT_MEDIA_TYPE;
         this._revision       = properties.content_id     || null;
         this._based_on       = properties.based_on       || null;
@@ -165,8 +164,6 @@ var AcreDoc;
     };
 
     AcreDoc.prototype.get_relative_path = function() {
-        //var app = this.get_app();
-        //var path = app.is_library() ? app.get_library_path() + '/' + this.get_name() : this.get_name();
         return this.get_name();
     };
     
@@ -175,11 +172,15 @@ var AcreDoc;
     };
 
     AcreDoc.prototype.get_acre_handler = function() {
-        return this._acre_handler;
+        if (this._acre_handler) return this._acre_handler;
+        
+        var ext_md = this.get_app().get_extension_metadata(this._name);        
+        return ext_md.handler || "acre_script";
     };
     
     AcreDoc.prototype.get_mime_type = function() {
-        return this._mime_type;
+        var ext_md = this.get_app().get_extension_metadata(this._name);
+        return ext_md.media_type || this._mime_type;
     };
     
     AcreDoc.prototype.is_library = function() {
@@ -290,7 +291,8 @@ var AcreDoc;
         }
 
         if (file.is_dirty('metadata') || !file.has_been_saved()) {
-            args.acre_handler = file.get_acre_handler();
+            var handler = file.get_acre_handler();
+            if (handler) args.acre_handler = handler;
         }
         
         if (!force_save && file.get_revision() && !(file.is_dirty("content") && file.is_dirty("revision"))) {

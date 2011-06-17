@@ -267,8 +267,7 @@ function parse_path(path, options /* file : true|false */) {
 
     // extract filename and path_info, if present
     if (parts.length) {
-      resource.filename = parts.pop();
-      resource.path_info = "/" + parts.join("/");
+      resource.filename = parts.join('/');
     }
     // Resolve whether source is x-graph.  If it is:
     // * change the service_url

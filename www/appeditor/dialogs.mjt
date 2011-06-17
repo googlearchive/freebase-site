@@ -238,16 +238,10 @@
   </acre:script>
   <h3 class="dialog-title">Create a New...</h3>
 
-  <acre:block def="show_handler(handler)">
+  <acre:block def="show_mime_types(handler)">
     <acre:script>
-      var sup_mime_types = ui.get_store().get_supported_mime_types(handler);
+      var sup_mime_types = ui.get_app().get_supported_mime_types(handler);
     </acre:script>
-  
-    <div class="form-row">
-      <label for="add-file-name">New file name:</label>
-      <input id="add-file-name" type="text" value="$file"/>
-    </div>
-  
     <div acre:if="sup_mime_types.length > 1 &amp;&amp; handler != 'binary'">
       <div class="form-row">
         <label for="add-file-mimetype">MIME type: </label>
@@ -258,35 +252,25 @@
         </select>
       </div>
     </div>
-
-    <acre:script script="ondomready">
-      $('#add-file-name')
-        .select()
-        .keydown(function(e){
-          if (e.which == 13) { $('#button-add-file').click(); }
-        });
-      
-      ui.watch_inputs(null, {
-        inputs : {
-          'add-file-name' : null
-        },
-        change : function(inputs){
-          file = inputs['add-file-name']
-        }
-      });
-    </acre:script>
   </acre:block>
   
   <div class="dialog-content">
     <div class="dialog-inset">
       <fieldset>
-        <ul>
-          <li acre:for="handler in ui.get_store().get_acre_handlers()" id="handler-$handler.key" class="handler-section">
-            <h4><input type="radio" name="new-file-handler" value="$handler.key" /> $handler.name</h4>
-            <p>$handler.description</p>
-            <div class="handler-new"></div>
-          </li>
-        </ul>
+        <div class="form-row">
+          <label for="add-file-name">New file name:</label>
+          <input id="add-file-name" type="text" value="$file"/>
+        </div>
+        <div class="form-row">
+          <label for="add-file-handler">Handler: </label>
+          <select id="add-file-handler">
+            <option selected value="">(derived from extension)</i></option>
+            <option acre:for="handler in ui.get_app().get_acre_handlers()" id="handler-$handler.key" class="handler-section" value="$handler.key">
+              $handler.key
+            </option>
+          </select>
+        </div>
+        <div class="form-row" id="add-file-mimetype-container"></div>
       </fieldset>
     </div>
   </div>
@@ -296,21 +280,31 @@
   </div>
 
   <acre:script script="ondomready"> 
-    ui.watch_inputs('add-file', {
+    $('#add-file-name')
+      .select()
+      .keydown(function(e){
+        if (e.which == 13) { $('#button-add-file').click(); }
+      });
+      
+   ui.watch_inputs('add-file', {
       inputs : {
-        'new-file-handler' : null
+        'add-file-handler' : null
       },
       change : function(inputs){
-        var handler = inputs['new-file-handler'];
-        $('.handler-new').empty();
-        $('#handler-'+handler + ' .handler-new').acre(show_handler(handler));
-        $('.handler-section-active').removeClass('handler-section-active');
-        $('#handler-'+handler).addClass('handler-section-active');
+        var handler = inputs['add-file-handler'];
+        if (handler) {
+          $('#add-file-mimetype-container').acre(show_mime_types(handler));          
+        } else {
+          $('#add-file-mimetype-container').empty();
+        }
       },
-      submit : function(inputs){
+      submit: function(){
         var filename = $.trim($('#add-file-name').val());
         if (ui.get_store().validate_filename(filename)) {
-          var metadata = { acre_handler: inputs['new-file-handler'] };
+          var metadata = {};
+          if ($('#add-file-handler :selected').val()) { 
+            metadata['acre_handler'] = $('#add-file-handler :selected').val();
+          }
           if ($('#add-file-mimetype :selected').val()) { 
             metadata['content_type'] = $('#add-file-mimetype :selected').val();
           }
@@ -321,10 +315,6 @@
         }
       }
     });
-  
-    $("input[name='new-file-handler'][value='mjt']")
-      .attr('checked','checked')
-      .trigger('click');
   </acre:script>
 </acre:block>
 
@@ -798,7 +788,6 @@
   <iframe id="dialog-aboutappeditor" class="dialog-content" src="/appeditor/license.html"></iframe>
   <div class="button-bar">
     <b>Version: </b>
-    <span>$fb.acre.appeditor.version</span>
     <span>- ${ui.get_store().get_acre_version()}</span>
   </div>
 </acre:block>

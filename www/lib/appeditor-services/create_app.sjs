@@ -136,7 +136,7 @@ function copy_files(from, to_id) {
   var local = (from.repository.url === FB.service_url);
   if (local) {
     q['/freebase/apps/acre_app/based_on'] = {
-      id: from.appid,
+      id: from.id,
       connect: 'insert'
     };
   }
@@ -144,7 +144,7 @@ function copy_files(from, to_id) {
   var keys = [];
   for (var filekey in from.files) {
     var file = from.files[filekey];
-    var old_file_id = from.appid + '/' + filekey;
+    var old_file_id = from.id + '/' + filekey;
 
     var add_file = {
       connect: 'insert',
@@ -155,12 +155,16 @@ function copy_files(from, to_id) {
           value : file.name,
           lang : '/lang/en'  
         },
-        type: ['/freebase/apps/acre_doc','/common/document'],
-        '/freebase/apps/acre_doc/handler': {
-          handler_key: file.acre_handler
-        }
+        type: ['/freebase/apps/acre_doc','/common/document']
       }
     };
+    
+    if (file.handler) {
+        add_file.namespace['/freebase/apps/acre_doc/handler_key'] = {
+          value: file.handler,
+          connect: "insert"
+        };
+    }
 
     if (file.content_id) {
       add_file.namespace['/common/document/content'] = file.content_id;

@@ -38,7 +38,7 @@
     </div>
   </div>
   <div class="button-bar">
-    <button class="button-primary exit">No</button>
+    <button class="button-main exit">No</button>
     <button class="exit" acre:onclick="ui.do_choose_app(new_app)">
       Yes, abandon changes and switch apps</button>
   </div>
@@ -120,7 +120,7 @@
   </div>
 
   <div class="button-bar">
-    <button id="button-new-app" class="button-primary exit">Create</button>
+    <button id="button-new-app" class="button-main exit">Create</button>
     <button class="exit">Cancel</button>
   </div>
   <acre:script script="ondomready">
@@ -164,7 +164,7 @@
     </div>
   </div>
   <div class="button-bar">
-    <button class="button-primary exit" acre:onclick="ui.do_app_delete()">Delete App</button>
+    <button class="button-main exit" acre:onclick="ui.do_app_delete()">Delete App</button>
     <button class="exit">Cancel</button>
   </div>
 </acre:block>  
@@ -202,7 +202,7 @@
       </fieldset>
     </div>
     <div class="button-bar">
-      <button id="button-clone" class="button-primary">Save</button>
+      <button id="button-clone" class="button-main">Save</button>
       <button class="exit">Cancel</button>
     </div>
     <acre:script script="ondomready">
@@ -275,7 +275,7 @@
     </div>
   </div>
   <div class="button-bar">
-    <button id="button-add-file" class="button-primary">Create New File</button>
+    <button id="button-add-file" class="button-main">Create New File</button>
     <button class="exit">Cancel</button>
   </div>
 
@@ -331,7 +331,7 @@
   </div>
   </div>
   <div class="button-bar">
-    <button class="button-primary exit" acre:onclick="ui.do_file_delete(filename)">Delete File</button>
+    <button class="button-main exit" acre:onclick="ui.do_file_delete(filename)">Delete File</button>
     <button class="exit">Cancel</button>
   </div>
 </acre:block>  
@@ -629,7 +629,7 @@
       </acre:block>
     </div>
     <div class="button-bar">
-      <button acre:if="writable" class="button-patch patch-apply button-primary exit" disabled="disabled">Revert to Right</button>        
+      <button acre:if="writable" class="button-patch patch-apply button-main exit" disabled="disabled">Revert to Right</button>        
       <button acre:if="writable" class="button-patch patch-apply-save exit" disabled="disabled">Revert &amp; Save</button>
       <button class="exit">Done</button>
     </div>
@@ -676,7 +676,7 @@
       </div>
     </div>
     <div class="button-bar">
-      <button acre:if="writable" id="button-file-revert" class="button-primary exit" disabled="disabled">Revert to Right</button>
+      <button acre:if="writable" id="button-file-revert" class="button-main exit" disabled="disabled">Revert to Right</button>
       <button acre:if="writable" id="button-file-revert-save" class="exit" disabled="disabled">Revert &amp; Save</button>        <button class="exit">Done</button>
     </div>
   </acre:block>
@@ -689,7 +689,7 @@
       </div>
     </div>
     <div class="button-bar">
-      <button acre:if="writable" class="button-patch patch-apply button-primary exit" disabled="disabled">Apply Selected Changes</button>
+      <button acre:if="writable" class="button-patch patch-apply button-main exit" disabled="disabled">Apply Selected Changes</button>
       <button acre:if="writable" class="button-patch patch-apply-save exit" disabled="disabled">Apply &amp; Save</button>
       <button class="exit">Done</button>
     </div>
@@ -715,7 +715,7 @@
     </div>
     <div class="button-bar">
       <button class="button exit" acre:onclick="ui.do_file_save(true)">Save Anyway</button>
-      <button class="button-primary exit">Cancel</button>
+      <button class="button-main exit">Cancel</button>
     </div>
   </acre:block>
    

@@ -134,13 +134,13 @@ button:hover { border: 1px solid #cdf; }
 /* Editor Structure */
 .refresh, .refresh-right { display: none; }
 #columns { width: 100%; position: relative; }
-#list-column { position: absolute; top: 0; left: 0; width: 200px; padding-top: 6px; }
-#file-margin { position: absolute; top: 0; left: 200px; width: 8px; cursor: col-resize;  margin-top: 4px;
+#list-column { position: absolute; top: 0; left: 0; width: 200px; padding-top: 10px; }
+#file-margin { position: absolute; top: 0; left: 200px; width: 8px; cursor: col-resize;  margin-top: 8px;
     background: #dcdedf url(resize-column.png) no-repeat center left; 
     border-top-left-radius: 5px; -moz-border-radius-topleft: 5px; -webkit-border-top-left-radius: 5px; }
 #file-column { position: absolute; top: 0; left: 208px; width: 400px; }
 #file-area { position:relative; border-left: solid 1px #cdf; border-top: solid 1px #cdf; }
-#button-bar {  width: 100%; min-width: 820px; margin-top: 4px; }
+#button-bar {  width: 100%; min-width: 820px; margin-top: 8px; }
 
 
 /* About Bar */

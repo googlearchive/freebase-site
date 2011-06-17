@@ -30,7 +30,10 @@
  */
 
 var QueryEditor = function(parent, editor_config, task) {
-   var cuecardComposition;
+    var cuecardComposition,
+        margin = 10,
+        spacing = 10;
+        
     parent.innerHTML =
         '<div style="position: relative">' +
             '<div style="position: absolute;"></div>' +
@@ -39,12 +42,14 @@ var QueryEditor = function(parent, editor_config, task) {
         
     var queryEditorDiv = parent.firstChild.childNodes[0];
     var outputPaneDiv = parent.firstChild.childNodes[1];
+    
+    $(queryEditorDiv).css("top", margin + "px");
+    $(queryEditorDiv).css("left", margin + "px");
+    $(outputPaneDiv).css("right", margin + "px").css("top", margin + "px");
+    
     var self = this;
     
     var resize = function() {
-        var margin = 10;
-        var spacing = 10;
-        
         var width = Math.max(100, parent.offsetWidth);
         var halfWidth = Math.round((width - 2 * margin - spacing) / 2) + "px";
         var height = Math.max(100, parent.offsetHeight);
@@ -53,13 +58,8 @@ var QueryEditor = function(parent, editor_config, task) {
         parent.firstChild.style.height = height + "px";
             
         var innerHeight = height - 2 * margin;
-        var queryEditorHeight = innerHeight;
-        $(queryEditorDiv).css("top", margin + "px").css("height", queryEditorHeight + "px");
-        $(queryEditorDiv).css("left", margin + "px").css("width", halfWidth);
-        $(outputPaneDiv).css("right", margin + "px").css("width", halfWidth).css("top", margin + "px").css("height", innerHeight + "px");
-        
-        cuecardComposition.queryEditor.layout();
-        cuecardComposition.outputPane.layout();
+        cuecardComposition.queryEditor.layout(innerHeight, halfWidth);
+        cuecardComposition.outputPane.layout(innerHeight, halfWidth);
     };
 
     editor_config.focusOnReady = true;
@@ -72,7 +72,14 @@ var QueryEditor = function(parent, editor_config, task) {
         queryEditorElement: queryEditorDiv,
         queryEditorOptions: editor_config,
         outputPaneElement: outputPaneDiv,
-        outputPaneOptions: { verticalPadding: 2, horizontalPadding: 2, hideHelp: true }
+        outputPaneOptions: { 
+          verticalPadding: 2, 
+          horizontalPadding: 2, 
+          hideHelp: true,
+          tabs: [
+            { name: 'JSON',  key: "json"}
+          ]
+        }
     });
     this.composition = cuecardComposition;
     
@@ -169,7 +176,7 @@ var QueryEditor = function(parent, editor_config, task) {
         var self = this;
         
         var name = ui.get_app().get_untitled_file_name();
-        var metadata = { acre_handler: 'mjt' };
+        var metadata = { handler: 'mjt' };
         
         var m = cuecardComposition.queryEditor.getQueryModelAndContext();
         var q = m.model.toQueryJson();

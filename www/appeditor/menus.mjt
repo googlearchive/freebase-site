@@ -132,6 +132,7 @@
         <div class="form-row">
           <label for="file-handler">Acre type </label>
           <select id="file-handler" acre:attrs="sup_acre_handlers.length > 1 ? {} : {'disabled':'disabled'}">
+            <option selected value="">(derived from extension)</option>
             <option acre:for="handler in sup_acre_handlers"
                 value="$handler.key"  acre:attrs="(handler.key === file.get_acre_handler())?{'selected':''}:{}" >
                 $handler.name

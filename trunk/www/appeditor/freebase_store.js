@@ -297,11 +297,6 @@
     FreebaseStore.prototype.get_acre_handlers = function(){
         return this._handlers;
     };
-      
-    FreebaseStore.prototype.get_supported_mime_types = function(acre_handler){
-        assert.critical(acre_handler, 'Can\'t list supported mimetype');
-        return this._handlers[acre_handler].supported_mime_types;
-    };
     
     FreebaseStore.prototype.get_acre_host = function() {
         return this._acre_server;
@@ -331,7 +326,7 @@
         // TODO - this check is duplicated in acre.js / AcreDoc
         var RESERVED_KEYS = {'acre':true, 'status':'', 'api':true};
 
-        if (!(/^[A-Za-z][\-_0-9A-Za-z\.]+$/).test(name)) { return false; }
+        if (!(/^[A-Za-z][\-_0-9A-Za-z\.\/]+$/).test(name)) { return false; }
 
         if (name in RESERVED_KEYS) { return false; }
 

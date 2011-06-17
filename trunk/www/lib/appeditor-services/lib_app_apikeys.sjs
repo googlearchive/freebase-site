@@ -33,6 +33,8 @@ var service = acre.require('appeditor-services/lib_appeditor_service');
 var ae_url = acre.request.app_url.replace(/^https/,"http");
 var keystore_path = '/acre/keystore';
 
+var FB = acre.freebase;
+
 function get_app_guid(appid) {
     if (/^#/.test(appid)) {
         // it's already a guid

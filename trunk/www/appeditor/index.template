@@ -40,10 +40,10 @@
 <acre:block def="acre_javascript_vars()">
   <script>
     SERVER.acre.host = ${JSON.stringify(acre.host)};
+    
     SERVER.acre.appeditor = {
       service_path : "${h.ajax_url('lib/appeditor-services/')}",
-      cuecard_api: "${h.ajax_url('lib/cuecard/')}",
-      version: "${acre.request.script.app.version || 'trunk'}"
+      cuecard_api: "${h.ajax_url('lib/cuecard/')}"
     };
     
     SERVER.acre.apps = {

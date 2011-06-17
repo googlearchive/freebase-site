@@ -43,8 +43,8 @@ function save_file_binary(id, form_request, props) {
         if (file.acre_handler !== "binary") {
             FB.mqlwrite({
                 id : fileid,
-                '/freebase/apps/acre_doc/handler' : {
-                    handler_key: "binary",
+                '/freebase/apps/acre_doc/handler_key' : {
+                    value: "binary",
                     connect: 'update'
                 }
             });

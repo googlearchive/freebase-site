@@ -44,8 +44,8 @@ function save_file_text(fileid, props) {
     function _set_handler() {
         FB.mqlwrite({
             id : r.id,
-            '/freebase/apps/acre_doc/handler' : {
-                handler_key: props.acre_handler,
+            '/freebase/apps/acre_doc/handler_key' : {
+                value: props.acre_handler,
                 connect: 'update'
             }
         });

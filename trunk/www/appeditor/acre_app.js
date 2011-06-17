@@ -52,6 +52,8 @@ var AcreApp;
         this._hosts             = [];
         this._versions          = [];
 
+        this._handlers          = $.extend(true, {}, store.get_acre_handlers());
+        this._extensions        = {};
         this._authors           = {};
         this._files             = {};
                 
@@ -73,7 +75,7 @@ var AcreApp;
                 };
                 
                 app._path               = r.path;
-                app._appid				= r.id;
+                app._appid              = r.id;
                 app._version            = r.version;
                 app._name               = r.name || 'Untitled';
 
@@ -89,6 +91,19 @@ var AcreApp;
                 app._last_edit          = null;
                 
                 app._initial_file       = r.current_file;
+                
+                app._extensions         = r.extensions;
+                
+                // Custom handlers
+                for (var handler in r.handlers) {
+                    app._handlers[handler] = app._handlers[handler] || {
+                        key: handler,
+                        name: handler,
+                        plural_name: handler,
+                        description: "",
+                        supported_mime_types: ["text/plain"]
+                    };
+                }
                                 
                 // Create and attach AcreUser objects for authors
                 for (var akey in r.authors) {
@@ -98,8 +113,9 @@ var AcreApp;
 
                 // Create and attach AcreDoc objects for files
                 for (var fkey in r.files) {
-                    r.files[fkey].has_been_saved = true;
-                    new AcreDoc(app, r.files[fkey].name, r.files[fkey]);
+                    var file = r.files[fkey];
+                    file.has_been_saved = true;
+                    new AcreDoc(app, file.name, file);
                 }
                 
                 // Enable OAuth by default
@@ -228,6 +244,31 @@ var AcreApp;
         return this._hosts;
     };
     
+    AcreApp.prototype.get_extension_metadata = function(name) {
+        // match from longest to shortest (i.e., .mf.css before .css)
+        var exts = name.split(".");
+        exts.shift();
+        while (exts.length) {
+          var ext = exts.join(".");
+          var ext_data = {};
+          if (ext && this._extensions && this._extensions[ext]) {
+              ext_data = this._extensions[ext];
+              break;
+          }
+          exts.shift();
+        }
+        
+        return ext_data || {};
+    };
+    
+    AcreApp.prototype.get_acre_handlers = function(){
+        return this._handlers;
+    };
+      
+    AcreApp.prototype.get_supported_mime_types = function(acre_handler){
+        return this._handlers[acre_handler].supported_mime_types;
+    };
+    
     AcreApp.prototype.get_files = function() {
         return this._files;
     };
@@ -235,13 +276,7 @@ var AcreApp;
     AcreApp.prototype.get_file = function(name) {
         
         if (name) { 
-            var segs = name.split('/');
-            if (segs.length > 1) {
-                var lib =  this.get_library(segs[0]);
-                return lib.get_file(segs[1]);
-            } else {
-                return this._files[name];   
-            }
+            return this._files[name];
         }
         
         if (this._initial_file && this._files[this._initial_file]) {

@@ -59,7 +59,11 @@
         var CODEMIRROR_DOCTYPE_MAP = {
             'mqlquery': 'JSParser',
             'acre_script': 'JSParser',
-            'mjt': 'HTMLMixedParser'
+            'mjt': 'HTMLMixedParser',
+            'freebase_template': 'HTMLMixedParser',
+            'coffee_script': 'JSParser',
+            'controller': 'JSParser',
+            'ajax': 'JSParser'
             // 'passthrough' : see CODEMIRROR_MEDIATYPE_MAP
         };
 
@@ -73,6 +77,7 @@
         
         var acre_handler = file.get_acre_handler();
         var mime_type = file.get_mime_type();
+
         if (mime_type !== 'text/plain' ) {
             if (mime_type in CODEMIRROR_MEDIATYPE_MAP) {
                 parser = CODEMIRROR_MEDIATYPE_MAP[mime_type];

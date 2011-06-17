@@ -47,14 +47,14 @@ function delete_app_files(app, files) {
         var q = [];
         for each (var file in files) {
             q.push({
-                id: app.appid + '/' + FB.mqlkey_quote(file),
+                id: app.id + '/' + FB.mqlkey_quote(file),
                 type: {
                   id: '/freebase/apps/acre_doc',
                   connect: 'delete'
                 },
                 key: {
                     connect: 'delete',
-                    namespace: app.appid,
+                    namespace: app.id,
                     value: FB.mqlkey_quote(file)
                 }
             });
@@ -63,7 +63,7 @@ function delete_app_files(app, files) {
     }
 
     return {
-        appid : app.appid,
+        appid : app.id,
         deleted_files : files
     }
 }
@@ -71,7 +71,7 @@ function delete_app_files(app, files) {
 
 function delete_app(appid) {
     var app = acre.require('appeditor-services/get_app').get_app(appid);
-    appid = app.appid;
+    appid = app.id;
     var appid_segs = appid.split('/');
     var app_key = appid_segs.pop();
     var app_root = appid_segs.join('/');
@@ -93,7 +93,7 @@ function delete_app(appid) {
 
     // disconnect the app
     var delete_q = {
-        id : app.appid,
+        id : app.id,
         key : {
           value : app_key,
           namespace : app_root,

@@ -15,7 +15,7 @@
     "js_manifest": "handlers/js_manifest_handler.sjs",
     "tagged_static": "handlers/tagged_static_handler.sjs",
     "tagged_binary": "handlers/tagged_binary_handler.sjs", 
-    "template": "handlers/template_handler.sjs",
+    "freebase_template": "handlers/template_handler.sjs",
     "controller": "handlers/controller_handler.sjs",
     "ajax": "handlers/ajax_handler.sjs",
     "coffee_script": "handlers/coffee_script_handler.sjs"
@@ -26,7 +26,8 @@
       "media_type" : "image/x-icon"
     },
     "css": {
-      "handler": "css"
+      "handler": "css",
+      "media_type": "text/css"
     },
     "less": {
       "handler": "css",
@@ -38,10 +39,10 @@
     },
     "mf.js": {
       "handler": "js_manifest",
-      "media_type": "application/x-javascript"
+      "media_type": "text/javascript"
     },
     "template": {
-      "handler": "template"
+      "handler": "freebase_template"
     },
     "controller": {
       "handler": "controller"
@@ -50,12 +51,12 @@
       "handler": "ajax"
     },
     "omf.js": {
-      "media_type": "text/javascript", 
-      "handler": "js_manifest"
+      "handler": "js_manifest",
+      "media_type": "text/javascript"
     }, 
     "omf.css": {
-      "media_type": "text/css", 
-      "handler": "css_manifest"
+      "handler": "css_manifest",
+      "media_type": "text/css"
     },
     "properties": {
       "handler": "acre_script"

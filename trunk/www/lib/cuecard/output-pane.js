@@ -32,11 +32,12 @@
 CueCard.OutputPane = function(elmt, options) {
   this._elmt = $(elmt);
   this._options = options || {};
-
-  this._TABS = [
+  
+  this._TABS = options.tabs || [
     { name: 'List', key: "list"},
     { name: 'JSON',  key: "json"}
   ];
+  
   if (!this._options.hideHelp) {
     this._TABS.push({ name: 'Help', key: "help"});
   }
@@ -52,10 +53,15 @@ CueCard.OutputPane.prototype.dispose = function() {
 };
 
 CueCard.OutputPane.prototype.layout = function(height, width) {
-  this._container.height(height);
-  var contentHeight = this._container.innerHeight() - this._tabsContainer.outerHeight();
-  this._contentContainer.height(contentHeight);
-  $(".cuecard-outputPane-tabBody", this._contentContainer).height(contentHeight - 2);
+  if (height) {
+    this._container.height(height);
+    var contentHeight = this._container.innerHeight() - this._tabsContainer.outerHeight();
+    this._contentContainer.height(contentHeight);
+    $(".cuecard-outputPane-tabBody", this._contentContainer).height(contentHeight - 2);
+  }
+  if (width) {
+    this._container.width(width);
+  }
 };
 
 CueCard.OutputPane.prototype._constructUI = function() {
@@ -85,25 +91,34 @@ CueCard.OutputPane.prototype._constructUI = function() {
   this._tabs = tabs.data("tabs");
 
   this._list = this._getTab("list").find("div");
+  this._list = this._list.length ? this._list : false;
+  
   this._json = this._getTab("json").find("div");
+  this._json = this._json.length ? this._json : false;
+  
   this._help = this._getTab("help").find("div");
-
+  this._help = this._help.length ? this._help : false;
+  
   // setup JSON iframe
-  var json_iframe = document.createElement('iframe');
-  this._json.append(json_iframe);
-  this._json_content = $(this._setupIframe(json_iframe));
+  if (this._json) {
+    var json_iframe = document.createElement('iframe');
+    this._json.append(json_iframe);
+    this._json_content = $(this._setupIframe(json_iframe));    
+  }
   
   // setup list iframe
-  var list_iframe = document.createElement('iframe');
-  this._list.append(list_iframe);
-  this._list_content = $(this._setupIframe(list_iframe));
-  if (this._options.stylesheet) {
-    this._list_content.append('<link rel="stylesheet" href="' + this._options.stylesheet + '"/>');
+  if (this._list.length) {
+    var list_iframe = document.createElement('iframe');
+    this._list.append(list_iframe);
+    this._list_content = $(this._setupIframe(list_iframe));
+    if (this._options.stylesheet) {
+      this._list_content.append('<link rel="stylesheet" href="' + this._options.stylesheet + '"/>');
+    }
+    this._list_content.append('<div id="list-content"></div>');
+    this._list_content = $("#list-content", this._list_content);    
   }
-  this._list_content.append('<div id="list-content"></div>');
-  this._list_content = $("#list-content", this._list_content);
   
-  this.setStatus("Run a query to see results here...");
+  this.setStatus("Run query to see results here...");
 };
 
 CueCard.OutputPane.prototype._getTab = function(name) {
@@ -132,17 +147,17 @@ CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings, que
   if (o.result) {
     this._setIFrameText(CueCard.jsonize(o, jsonizingSettings || { indentCount: 2 }));
     query = JSON.parse(query);
-    this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list", [o, query]);    
+    if (this._list) this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list", [o, query]);    
   } else if (o.message) {
     // apiary error
     delete o.response;
     this._setIFrameText(CueCard.jsonize(o, jsonizingSettings || { indentCount: 2 }));
-    this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list_error", [o.message]);
+    if (this._list) this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list_error", [o.message]);
   } else if (o.messages) {
     // metaweb error
     var message = (typeof o.messages[0] == 'string') ?  o.messages[0] : o.messages[0].message;
     this._setIFrameText(message);
-    this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list_error", [message]);
+    if (this._list) this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list_error", [message]);
   }
   
   this._tabs.click(this.getTabIndex(this._lastJsonOutputMode));
@@ -151,7 +166,7 @@ CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings, que
 CueCard.OutputPane.prototype.setStatus = function(html) {
   this._jsonResult = null;
   this._setIFrameText(html);
-  this._list_content.html(html);
+  if (this._list) this._list_content.html(html);
 };
 
 CueCard.OutputPane.prototype.getJson = function() {
@@ -178,7 +193,7 @@ CueCard.OutputPane.prototype._setIFrameText = function(text) {
   });
 
   text = "<pre style='white-space:pre-wrap;'>" + buf.join("\n") + "</pre>";
-  this._json_content.html(text);
+  if (this._json) this._json_content.html(text);
 };
 
 CueCard.OutputPane.prototype._setupIframe = function(iframe) {

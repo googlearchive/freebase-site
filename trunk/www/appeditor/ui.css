@@ -216,7 +216,7 @@ div.Editor-view { overflow: auto; }
 .image-attribution img { float: left; padding-right: 10px;}
 .image-attribution p { padding-top: 5px; }
 .CodeMirror-line-numbers { width: 45px; font-family: monospace; font-size: 13px; background: #f8f8f8; color: #bbb; 
-    text-align:right; padding-top: 5px; }
+    text-align:right; padding-top: 5px; line-height: 1.2;}
 .CodeMirror-line-numbers > div { padding: 0px 3px; }
 div.Codemirror-current-line { background: #eee; color: #999; }
 .file div.jslint-error { color:red !important; cursor:pointer; }
@@ -228,7 +228,7 @@ div.Codemirror-current-line { background: #eee; color: #999; }
 #query-editor-buttons .button-main { float: right;}
 .cuecard-controlPane { font-size: 1.2em;}
 .cuecard-outputPane { position: relative; }
-.cuecard-outputPane-tabs { height: 24px; }
+.cuecard-outputPane-tabs { height: 24px; border: none; }
 .cuecard-outputPane .cuecard-permalink { position: absolute; top: 0px; right: 0px; }
 .cuecard-outputPane-tree { top:0 !important; bottom:0 !important; left:0 !important; right:0 !important; }
 .cuecard-outputPane-status { top:0 !important; bottom:0 !important; left:0 !important; right:0 !important; padding: 5px !important;}

@@ -264,7 +264,7 @@
         <div class="form-row">
           <label for="add-file-handler">Handler: </label>
           <select id="add-file-handler">
-            <option selected value="">(derived from extension)</i></option>
+            <option selected value="">(derived from extension)</option>
             <option acre:for="handler in ui.get_app().get_acre_handlers()" id="handler-$handler.key" class="handler-section" value="$handler.key">
               $handler.key
             </option>

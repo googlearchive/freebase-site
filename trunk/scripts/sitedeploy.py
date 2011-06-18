@@ -1115,6 +1115,14 @@ class ActionSpeedTest:
 
 class ActionGetIds:
 
+  _clauses = {
+
+      "/type/domain" : { "key" : { "namespace" : "/" }},
+      "/type/type" : { "/type/type/domain" : { "key" : { "namespace" : "/" }} }
+      }
+
+  _use_ids = ["/type/type", "/type/domain", "/type/user", "/freebase/apps/app"]
+
   def __init__(self, context):
     
     self.context = context
@@ -1127,14 +1135,19 @@ class ActionGetIds:
     if not c.options.type:
       return c.error('You have to specify a freebase type to get ids for.')
 
-    query = [{'mid' : None, 'type' : c.options.type, 'limit' : c.options.repeat }]
+    query = [{'mid' : None, 'id' : None, 'type' : c.options.type, 'limit' : c.options.repeat }]
+
+    if self._clauses.get(c.options.type, None):
+      query[0].update(self._clauses[c.options.type])
+
     result = c.mqlread(query)
 
     if not result.get('result'):
       return c.error('mqlread failed: %s' % json.dumps(query))
 
+    id_key = c.options.type in self._use_ids and "id" or "mid"
     for item in result.get('result'):
-      print item['mid']
+      print item[id_key]
     
       
     return True

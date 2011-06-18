@@ -18,7 +18,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import sys, shutil, os, re, pwd, pdb, datetime, time, urllib2, random, threading
+import sys, shutil, os, re, pwd, pdb, datetime, time, urllib2, random, threading, copy
 from optparse import OptionParser
 from tempfile import NamedTemporaryFile
 from siteutil import Context, Acre, Site, App, SVNLocation
@@ -211,11 +211,9 @@ class ActionStatic:
     c.set_acre(Acre.Get(c))
 
     acre = Acre.Get(c)
-    if acre.build(target='devel', config_dir= "%s/appengine-config" % site.site_dir):
+    if not acre.is_running2() and acre.build(target='devel', config_dir= "%s/appengine-config" % site.site_dir):
       if not acre.start():
         return c.error('There was an error starting acre - cannot generate static files without a running acre instance.')
-    else:
-      return c.error('Failed to build acre - static generation aborted.')
 
     success = c.googlecode_login()
 
@@ -863,8 +861,9 @@ class ActionSpeedTest:
 
     try:
       self.conf = json.loads(fd.read())
-    except:
+    except Exception as err:
       context.error('There was an error while json parsing the file %s.' % self._conf)
+      print err
       raise
 
     if not context.options.cost in self.x_labels_groups.keys():
@@ -925,6 +924,8 @@ class ActionSpeedTest:
     """Generate urls given a test specification."""
 
     urls = []
+    if not test:
+      return urls
 
     for item in test['pages']:
       if not self.conf['pages'].get(item['page']):
@@ -932,6 +933,31 @@ class ActionSpeedTest:
       urls.extend(self.generate_urls_for_page(self.conf['pages'][item['page']], item.get('repeat') or self.context.options.repeat))
 
     return urls
+
+  def get_test(self, test_name):
+    """Give a test name, will return the test data structure.
+    Will resolve parent tests and weights.
+    """
+    
+    test = self.conf["tests"].get(test_name, None)
+
+    if not test:
+      return False
+
+    if test.get("parent"):
+      if not test.get("pages"):
+        test["pages"] = []
+
+      parent = self.get_test(test["parent"])
+      weight = test.get("weight", 1)
+
+      for page in parent["pages"]:
+        new_page = copy.copy(page)
+        new_page["repeat"] *= weight
+        test["pages"].append(new_page)
+
+
+    return test
 
   def median(self, l):
     if not (len(l)):
@@ -970,46 +996,27 @@ class ActionSpeedTest:
     for key, page in sorted(self.conf['pages'].iteritems()):
       table.append([key, page['url'], page.get('type', '-')])
 
-    self.pprint_table(table)
+    c.pprint_table(table)
 
     print "\nTests\n"
 
     table = [['test', 'page', 'repeat', 'random']]
-    for key, test in sorted(self.conf['tests'].iteritems()):
+    for test_name in sorted(self.conf['tests'].keys()):
+      test = self.get_test(test_name)
+      pages_rows = []
       pages = test['pages']
-      table.append([key, pages[0]['page'], str(pages[0].get('repeat', c.options.repeat)), str(test.get('random'))])
+      total_requests = pages[0].get("repeat", c.options.repeat)
       if len(pages) > 1:
         for page in pages[1:]:
-          table.append(['', page.get('page'), str(page.get('repeat', c.options.repeat)), ''])
+          total_requests += page.get("repeat", c.options.repeat)
+          pages_rows.append(['', page.get('page'), str(page.get('repeat', c.options.repeat)), ''])
+
+      table.append(["%s(%s)" % (test_name, total_requests), pages[0]['page'], str(pages[0].get('repeat', c.options.repeat)), str(test.get('random'))])
+      table.extend(pages_rows)
           
-    self.pprint_table(table)
+    c.pprint_table(table)
 
     return True
-
-  def pprint_table(self,table):
-    """Prints out a table of data, padded for alignment
-    @param table: The table to print. A list of lists.
-    Each row must have the same number of columns. """
-    col_paddings = []
-
-    def get_max_width(table, index):
-      return max([len(row[index]) for row in table])
-
-    for i in range(len(table[0])):
-        col_paddings.append(get_max_width(table, i))
-
-    for i,row in enumerate(table):
-        # left col
-        print row[0].ljust(col_paddings[0] + 1),
-        # rest of the cols
-        for j in range(1, len(row)):
-            col = row[j].rjust(col_paddings[j] + 2)
-            print col,
-        if not i:
-          print "\n" + "-" * (sum(col_paddings) + sum(len(x) for x in table[0]) - len(table[0])-1)
-        else:
-          print
-
 
   def __call__(self):
     """Run the speedtest. 
@@ -1035,7 +1042,7 @@ class ActionSpeedTest:
       if not self.conf['tests'].get(c.options.test):
         return c.error('The test you specified does not exist. Available errors are: \n%s' % '\n'.join(self.conf['tests'].keys()))
 
-      urls = self.generate_urls_for_test(self.conf['tests'][c.options.test])
+      urls = self.generate_urls_for_test(self.get_test(c.options.test))
       randomise = self.conf['tests'][c.options.test].get('random', False)
 
 
@@ -1318,8 +1325,11 @@ def main():
     result = None
 
     try:
-      
       result = action_class(context)()
+
+    except not KeyboardInterrupt as err:
+      print err.msg
+      raise
 
     finally:
       t2 = datetime.datetime.now()
@@ -1328,6 +1338,7 @@ def main():
         return context.error('FAILED: action %s failed (%s)' % (action, context.duration_human(t2-context.start_time)))
       else:
         context.log('SUCCESS: action %s ended succesfully (%s)' % (action, context.duration_human(t2-context.start_time)), color=context.GREEN)
+
         
       context.set_action(action)
     return True

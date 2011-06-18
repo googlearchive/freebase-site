@@ -1378,6 +1378,32 @@ class Context():
 
     return True
 
+  def pprint_table(self, table):
+    """Prints out a table of data, padded for alignment
+    @param table: The table to print. A list of lists.
+    Each row must have the same number of columns. """
+    col_paddings = []
+
+    def get_max_width(table, index):
+      return max([len(row[index]) for row in table])
+
+    for i in range(len(table[0])):
+        col_paddings.append(get_max_width(table, i))
+
+    for i,row in enumerate(table):
+        # left col
+        print row[0].ljust(col_paddings[0] + 1),
+        # rest of the cols
+        for j in range(1, len(row)):
+            col = row[j].rjust(col_paddings[j] + 2)
+            print col,
+        if not i:
+          print "\n" + "-" * (sum(col_paddings) + sum(len(x) for x in table[0]) - len(table[0])-1)
+        else:
+          print
+
+
+
 
 class Acre:
   '''Represents a local acre instance'''
@@ -1530,11 +1556,14 @@ class Acre:
       return True
 
 
-  def start(self, war=False):
+  def start(self, war=False, restart=False):
 
       c = self.context
 
-      self.stop()
+      if restart:
+        self.stop()
+      elif self._acre_process:
+        return True
       
       bundle = "%s/webapp" % self._acre_dir
       if war:
@@ -1761,6 +1790,9 @@ class Acre:
 
     return apps
 
+
+  def is_running2(self):
+      return self._acre_process
 
   def is_running(self, war=False):
 

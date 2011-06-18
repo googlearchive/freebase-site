@@ -747,10 +747,11 @@ class SpeedTestRun(threading.Thread):
 
   _stop = False
 
-  def __init__(self, response_logger=None, name='-'):
+  def __init__(self, runid, response_logger=None, name='-'):
 
     super(SpeedTestRun, self).__init__(name=name)
     self.response_logger = response_logger
+    self.runid = runid
     self.urls = []
     self.responses = []
 
@@ -782,6 +783,9 @@ class SpeedTestRun(threading.Thread):
       if self._stop:
         break
 
+      url += "?" in url and "&" or "?"
+      url += "&_r=%s" % self.runid
+
       code = 0
       length = 0
       diff = 0
@@ -799,10 +803,14 @@ class SpeedTestRun(threading.Thread):
 
       except urllib2.HTTPError as err:
         code = err.code
-        
+
+      except urllib2.URLError as err:
+        if self.response_logger:
+          self.response_logger(None, self.name, error="%s - is %s a valid url?" % (err.reason,url))
+
       finally:
         diff = time.time() - start
-      
+
         d = {
           'url' : url,
           'c' : code,
@@ -810,7 +818,7 @@ class SpeedTestRun(threading.Thread):
           'l' : length,
           'x' : xh
           }
-      
+
 
       self.responses.append(d)
       if self.response_logger:
@@ -853,6 +861,7 @@ class ActionSpeedTest:
     self.context = context
     self.urls = []
     self.largest_url_length = 0
+    self.runid = str(datetime.datetime.now()).replace(" ","-").replace(":","-")[0:19]
 
     try:
       fd = open(self._conf)
@@ -890,9 +899,12 @@ class ActionSpeedTest:
     csv_file.close()
     return csv_file.name
 
-  def print_response(self, r, name=0):
-    u =  r['url'].replace('http://%s'%self.context.options.host, '')
-    print '%s\t%s\t%.2f\t%s\t%s%s\t%s' % (name, r['c'], r['d'], r['l'], u, ' ' * (self.largest_url_length-len(u)), '\t'.join([r['x'].get(k, '0') for k in self._labels  ]))
+  def print_response(self, r, name=0, error=None):
+    if error:
+      self.context.error(error)
+    else:
+      u =  r['url'].replace('http://%s'%self.context.options.host, '')
+      print '%s\t%s\t%.2f\t%s\t%s%s\t%s' % (name, r['c'], r['d'], r['l'], u, ' ' * (self.largest_url_length-len(u)), '\t'.join([r['x'].get(k, '0') for k in self._labels  ]))
 
   def generate_urls_for_page(self, page, n):
     """Generate urls given a page specification and numbers to repeat."""
@@ -967,11 +979,11 @@ class ActionSpeedTest:
 
     i = int((len(l)-1)/2)
     return l[i]
-    
+
   def print_report(self, responses):
-    
+
     o = self.context.options
-    
+
     print "Host: %s" % o.host
     if len(self.urls):
       print "Sample URL: %s" % self.urls[0]
@@ -1050,7 +1062,7 @@ class ActionSpeedTest:
     # Start a thread pool to simulate concurrent requests.
     threads = []
     for x in range(c.options.concurrent):
-      runner = SpeedTestRun(response_logger=self.print_response, name=str(len(threads)))
+      runner = SpeedTestRun(runid=self.runid, response_logger=self.print_response, name=str(len(threads)))
       if randomise:
         random.shuffle(urls)
       runner.add_urls(urls)

@@ -101,7 +101,7 @@ METADATA_FILE = 'METADATA.sjs'
 METADATA_LIB_FILE = 'METADATA.json'
 FIRST_LINE_REQUIRE_CONFIG = 'var config = JSON.parse(acre.require("CONFIG.json").body);'
 
-FREEBASE_API_KEY = "AIzaSyBblSNVmsgoamj9y5c5WdXMx9Xy4-O2fes"
+FREEBASE_API_KEY = "AIzaSyDTw7dTx6GifLh9LX7X6BbGICgJbfRI0s0"
 
 class App:
 
@@ -1150,7 +1150,7 @@ class Context():
     """Returns the path to a freebase-site checkout directory"""
 
     if (not self.options.site_dir) and os.path.isdir(os.path.join("..", "..", "appengine-config")):
-      self.options.site_dir = os.path.realpath(os.path.join("..", ".."))        
+      self.options.site_dir = os.path.realpath(os.path.join("..", ".."))
 
     return self.options.site_dir
 
@@ -1316,9 +1316,9 @@ class Context():
 
     if not params:
       params = {}
-
     params['query'] = json.dumps(query)
     params['key'] = FREEBASE_API_KEY
+
     url = "https://www.googleapis.com/freebase/v1/mqlread?%s" % urllib.urlencode(params)
 
     return self.fetch_url(url, isjson=True)
@@ -2025,6 +2025,3 @@ class SVNLocation:
 
               
               
-
-
-

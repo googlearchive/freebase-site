@@ -63,8 +63,7 @@
       </ul>
       <ul acre:else="">  
         <li><em>Create your own Acre app</em><br />
-          <small><a href="${$('#nav-signin').attr('href')}" title="Sign in to your Freebase account">Sign in or Sign Up</a>
-          for Freebase to get started.</small>
+          <small>Sign in or Sign Up for Freebase above to get started.</small>
         </li>
         <li><em>See what you can build!</em><br />
           <small>Check out <a href="${ui.get_store().get_freebase_url()}/apps" target="_new" class="exit">the App Directory</a> or <a href="${ui.get_store().get_freebase_url()}/docs/acre" target="_new" class="exit">the documentation</a>.</small>

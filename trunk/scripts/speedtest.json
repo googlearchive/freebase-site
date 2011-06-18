@@ -72,6 +72,10 @@
       "url" : "{topic}?inspect"
     },
 
+    "explore" : {
+      "url" : "explore"
+    },
+
     "topicapi_full_nolang" : {
       "url" : "/api/experimental/topic/full{topic_slow_2}"
     },
@@ -88,24 +92,36 @@
   "tests" : {
     "small" : { 
       "pages" : [
-        {
-          "page" : "schema_type",
-          "repeat" : 4
-        },
-        {
-          "page" : "schema_domain",
-          "repeat" : 2
-        },
-        {
-          "page" : "homepage",
-          "repeat" : 4
-        },
-        { 
-          "page" : "topic",
-          "repeat" : 20
-        }
+        { "page" : "explore", "repeat" : 10 },
+        { "page" : "topic", "repeat" : 50 },
+        { "page" : "topic_web", "repeat" : 10 },
+        { "page" : "type_inspect", "repeat" : 5 },
+        { "page" : "topic_inspect", "repeat" : 10 },
+        { "page" : "domain_inspect", "repeat" : 5 },
+        { "page" : "schema", "repeat" : 5 },
+        { "page" : "type_schema", "repeat" : 10 },
+        { "page" : "domain_schema", "repeat" : 5 },
+        { "page" : "domain", "repeat" : 5 },
+        { "page" : "type", "repeat" : 10 },
+        { "page" : "user", "repeat" : 5 },
+        { "page" : "domain_community", "repeat" : 5 },
+        { "page" : "apps", "repeat" : 5 },
+        { "page" : "app_details", "repeat" : 5 },
+        { "page" : "homepage","repeat" : 5 }
       ],
       "random" : true
+    },
+
+    "medium" : {
+        "parent" : "small",
+        "weight" : 4,
+        "random" : true
+    },  
+
+    "large" : {
+        "parent" : "small",
+        "weight" : 10,
+        "random" : true
     },
 
     "schema" : {

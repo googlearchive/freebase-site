@@ -29,14 +29,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("lib/helper/helpers.sjs");
+var h = acre.require("helpers.sjs");
 var urlfetch = acre.require("lib/promise/apis").urlfetch;
-
-function temporary_redirect(url) {
-  acre.response.status = 302;
-  acre.response.set_header("Location", url);
-  acre.exit();
-}
 
 var SPEC = {
   cache_policy: "nocache",
@@ -49,7 +43,7 @@ var SPEC = {
       // If we are already signed in, then have the user sign-in again.
       if (acre.oauth.has_credentials(freebase_provider)) {
         acre.oauth.remove_credentials(freebase_provider);
-        temporary_redirect(acre.request.url);
+        h.temporary_redirect(acre.request.url);
       }
       acre.oauth.get_authorization(freebase_provider, success_url);
       
@@ -58,7 +52,7 @@ var SPEC = {
       if (acre.request.cookies['metaweb-user']) {
         redirect_url = h.account_url('signout', redirect_url);
       }
-      temporary_redirect(redirect_url);
+      h.temporary_redirect(redirect_url);
     }
   }
 };

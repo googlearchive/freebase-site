@@ -32,7 +32,7 @@
 var validators = acre.require('lib/validator/validators.sjs');
 var urlfetch = acre.require('lib/promise/apis').urlfetch;
 var templates = acre.require('templates');
-var h = acre.require('lib/helper/helpers.sjs');
+var h = acre.require('helpers.sjs');
 var ServiceError = acre.require('lib/handlers/service_lib.sjs').ServiceError;
 
 function simple_error_response() {
@@ -41,17 +41,6 @@ function simple_error_response() {
 
 function unauthenticated_response() {
   return {html: 'Must be logged in to use this service.'};
-}
-
-function extract_first_error(error) {
-  var e = {
-    code: error.code,
-    message: error.message
-  };
-  if (error.errors && error.errors.length) {
-    return h.extend(e, error.errors[0]);
-  }
-  return e;
 }
 
 /**
@@ -99,7 +88,7 @@ var SPEC = {
           return simple_error_response();
         }
         
-        var error = extract_first_error(result);
+        var error = h.extract_first_error(result);
         if (error.code === 400) {
           throw new ServiceError('400 Bad Request', '/api/status/error/claim', {
             message: 'Pick an existing username that you own.',

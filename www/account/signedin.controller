@@ -29,60 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("lib/helper/helpers.sjs");
+var h = acre.require("helpers.sjs");
 var urlfetch = acre.require("lib/promise/apis").urlfetch;
 var freebase = acre.require("lib/promise/apis").freebase;
-
-function extract_first_error(error) {
-  var e = {
-    code: error.code,
-    message: error.message
-  };
-  if (error.errors && error.errors.length) {
-    return h.extend(e, error.errors[0]);
-  }
-  return e;
-}
-
-var UnregisteredError = function(message) {
-  this.message = message;
-};
-UnregisteredError.prototype = new Error();
-
-function apiary_user_info() {
-  // Get user information using urlfetch so we can deal with custom errors.
-  var user_info_url = acre.form.build_url(acre.freebase.apiary_url+'/user/info');
-  return urlfetch(user_info_url, {sign: true})
-    .then(function(response) {
-      return JSON.parse(response.body);
-      
-    }, function(failure) {
-      if (!failure.response) {
-        console.error('Could not call Freebase API: ', failure);
-        return failure;
-      }
-      
-      try {
-        var error = JSON.parse(failure.response.body).error;
-      } catch (e) {
-        console.error('Freebase API returned a badly formatted response: ', e);
-        return e;
-      }
-
-      var e = extract_first_error(error);
-      if (e.reason === 'unregistered') {
-        throw new UnregisteredError();
-      } else if (e.code === 401) {
-        // The credentials must be incorrect, so remove them.
-        acre.oauth.remove_credentials(h.account_provider());
-        console.warn('Authorization credentials are not correct', e);
-        return failure;
-      }
-      
-      console.warn('Could not process user info response: ', failure);
-      return failure;
-    });
-}
 
 var SPEC = {
   cache_policy: 'nocache',
@@ -94,7 +43,7 @@ var SPEC = {
     if (acre.freebase.apiary_url) {
       // Finalize the authorization request.
       acre.oauth.get_authorization(h.account_provider());
-      d = apiary_user_info();
+      d = h.user_info();
     } else {
       d = freebase.get_user_info().then(function(user) {
         if (!user) {
@@ -108,7 +57,7 @@ var SPEC = {
       h.set_account_cookie(user);
       return {'user': user};
     }, function(failure) {
-      if (failure instanceof UnregisteredError) {
+      if (failure instanceof h.UnregisteredError) {
         return {template: 'register_template.mjt'};
       }
       

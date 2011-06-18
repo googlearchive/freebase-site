@@ -73,7 +73,7 @@
     },
 
     "explore" : {
-      "url" : "explore"
+      "url" : "/explore"
     },
 
     "topicapi_full_nolang" : {

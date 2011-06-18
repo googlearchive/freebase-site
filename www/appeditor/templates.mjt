@@ -209,8 +209,8 @@
   <acre:block def="filelist_section(section_key, section_name, app, filenames, link)">
     <ul section="$section_key">
       <li acre:if="filenames" class="file-list-section-header">
-        <span class="file-list-section-toggle" section="$section_key" acre:if="ui.get_editor_prefs('t_'+section_key)">&#9660;</span>
-        <span class="file-list-section-toggle" section="$section_key" acre:else="">&#9658;</span>
+        <span class="file-list-section-toggle" section="$section_key" acre:if="ui.get_editor_prefs('c_'+section_key)">&#9658;</span>
+        <span class="file-list-section-toggle" section="$section_key" acre:else="">&#9660;</span>
         <a acre:if="link" class="file-list-section-title app-link" 
           apppath="${app.get_path()}" href="${ui.get_appeditor_url(app.get_path())}">$section_name</a>
         <span acre:else="" class="file-list-section-title">$section_name</span>
@@ -233,7 +233,7 @@
       if (file.get_relative_path() == current_filepath) { classes += ' selected-file'; }
       if (file.is_dirty("to_delete"))                   { classes += ' deleted-file'; }
       if (file.is_dirty())                              { classes += ' edited-file'; }
-      if (!ui.get_editor_prefs("t_" + section)) { classes += ' hidden-file'; }
+      if (ui.get_editor_prefs("c_" + section))          { classes += ' hidden-file'; }
       return classes;
     }
   </acre:script>
@@ -250,11 +250,11 @@
       var section = $(this).attr("section");
       if ($(this).text() == "&#9660;") {
         $(this).text("&#9658;");
-        ui.set_editor_prefs("t_"+section, false);
+        ui.set_editor_prefs("c_"+section, true);
         $("ul[section='"+section+"'] .file-list-item").addClass('hidden-file');
       } else {
         $(this).text("&#9660;");
-        ui.set_editor_prefs("t_"+section, true);
+        ui.set_editor_prefs("c_"+section, false);
         $("ul[section='"+section+"'] .file-list-item").removeClass('hidden-file');
       }
     });

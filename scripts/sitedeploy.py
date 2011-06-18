@@ -18,7 +18,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import sys, shutil, os, re, pwd, pdb, datetime, time, urllib2, random, threading, copy
+import sys, shutil, os, re, pwd, pdb, datetime, time, urllib, urllib2, random, threading, copy
 from optparse import OptionParser
 from tempfile import NamedTemporaryFile
 from siteutil import Context, Acre, Site, App, SVNLocation
@@ -783,8 +783,9 @@ class SpeedTestRun(threading.Thread):
       if self._stop:
         break
 
+      original_url = url
       url += "?" in url and "&" or "?"
-      url += "&_r=%s" % self.runid
+      url += "_r=%s" % self.runid
 
       code = 0
       length = 0
@@ -812,7 +813,7 @@ class SpeedTestRun(threading.Thread):
         diff = time.time() - start
 
         d = {
-          'url' : url,
+          'url' : original_url,
           'c' : code,
           'd' : diff,
           'l' : length,
@@ -856,7 +857,17 @@ class ActionSpeedTest:
     'afcw': 'cumulative time spent compiling files and putting them in the classloader memcache'
     }
 
-  
+  _ae_dashboard = "https://appengine.google.com/logs"
+  _ae_logs_params = {
+    "app_id" : None,
+    "severity_level_override" : 1,
+    "severity_level" : 3,
+    "filter" : "_r=%s",
+    "filter_type" : "regex",
+    "limit" : "100",
+    "view" : "Search"
+    }
+
   def __init__(self, context):
     self.context = context
     self.urls = []
@@ -874,14 +885,29 @@ class ActionSpeedTest:
       context.error('There was an error while json parsing the file %s.' % self._conf)
       print err
       raise
+    finally:
+      fd.close()
 
     if not context.options.cost in self.x_labels_groups.keys():
       context.error('There is no cost group %s. Available cost groups are:\n %s' % (context.options.cost, '\n'.join(self.x_labels_groups.keys())))
       context.options.cost = self.x_cost_default
 
     self._labels = self.x_labels_groups.get(context.options.cost)
-    fd.close()
+    self.appengine_logs_url = self.appengine_logs_url()
 
+
+  def appengine_logs_url(self):
+    c = self.context
+
+    appengine_app_id = c.resolve_config(c.options.host)
+
+    if not appengine_app_id:
+      return None
+
+    self._ae_logs_params["app_id"] = appengine_app_id
+    self._ae_logs_params["filter"] = self._ae_logs_params["filter"] % self.runid
+
+    return "%s?%s" % (self._ae_dashboard, urllib.urlencode(self._ae_logs_params))
 
   def print_csv(self, responses):
 
@@ -984,19 +1010,25 @@ class ActionSpeedTest:
 
     o = self.context.options
 
-    print "Host: %s" % o.host
+    print "\nHost: %s" % o.host
     if len(self.urls):
       print "Sample URL: %s" % self.urls[0]
+    if self.appengine_logs_url:
+      print "AppEngine Logs: %s" % self.appengine_logs_url
     print "Total Requests: %s" % len(responses)
     print "Total Successful Requests: %s" % len([x for x in responses if x['c'] == 200])
     print "Total Concurrent Clients: %s" % o.concurrent
     r = [x['d'] for x in responses if x['c'] == 200]
     print 'Median Response Time: %.2f seconds' % self.median(r)
 
-    print 'Median Values for X-Metaweb-Cost:'
+    print '\nMedian Values for X-Metaweb-Cost:'
+    cost_rows = [["key", "median", "description"]]
     for key in self._labels:
       r = [x['x'].get(key,0) for x in responses if x['c'] == 200]
-      print '\t%s - %s: \t%s' % (key, self.x_labels[key], self.median(r))
+      cost_rows.append([key, self.median(r), self.x_labels[key]])
+      #print '\t%s - %s: \t%s' % (key, self.x_labels[key], self.median(r))
+
+    self.context.pprint_table(cost_rows)
 
   def list(self):
 
@@ -1031,13 +1063,13 @@ class ActionSpeedTest:
     return True
 
   def __call__(self):
-    """Run the speedtest. 
+    """Run the speedtest.
 
-    Start a thread pool == concurrent users and wait until they are done. 
+    Start a thread pool == concurrent users and wait until they are done.
     Gather results and print reports.
 
     """
-    c = self.context 
+    c = self.context
 
     if c.options.list:
       return self.list()
@@ -1067,14 +1099,21 @@ class ActionSpeedTest:
         random.shuffle(urls)
       runner.add_urls(urls)
       threads.append(runner)
-      
+
     print "\nStarting %s requests to host %s" % (len(urls) * c.options.concurrent, c.options.host)
-    self.largest_url_length =  max([len(x.replace('http://%s'%self.context.options.host, '')) for x in urls])
-    print "job\thttp\ttime\tsize\turl%s\t%s" % (' ' * self.largest_url_length, '\t'.join(self._labels))
+
+    c.options.config = c.options.host
+    appengine_app_id = c.resolve_config()
+
+    if self.appengine_logs_url:
+      print "AppEngine Logs: %s" % self.appengine_logs_url
+
+    self.largest_url_length =  max([len(x.replace("http://%s" % c.options.host, "")) for x in urls])
+    print "\njob\thttp\ttime\tsize\turl%s\t%s" % (" " * self.largest_url_length, "\t".join(self._labels))
 
     interrupted = False
 
-    # Start the threads and wait until they are done. 
+    # Start the threads and wait until they are done.
 
     for thread in threads:
       thread.start()
@@ -1084,8 +1123,8 @@ class ActionSpeedTest:
 
       try:
         time.sleep(0.5)
-      
-      # Capture keyboard interrupts (^C) and try to exit gracefully. 
+
+      # Capture keyboard interrupts (^C) and try to exit gracefully.
 
       except KeyboardInterrupt as interrupted:
         for thread in threads:
@@ -1352,19 +1391,15 @@ def main():
     try:
       result = action_class(context)()
 
-    except not KeyboardInterrupt as err:
-      print err.msg
-      raise
-
     finally:
       t2 = datetime.datetime.now()
-    
+
       if not result:
         return context.error('FAILED: action %s failed (%s)' % (action, context.duration_human(t2-context.start_time)))
       else:
         context.log('SUCCESS: action %s ended succesfully (%s)' % (action, context.duration_human(t2-context.start_time)), color=context.GREEN)
 
-        
+
       context.set_action(action)
     return True
 

@@ -1117,8 +1117,8 @@ class ActionGetIds:
 
   _clauses = {
 
-      "/type/domain" : { "key" : { "namespace" : "/" }},
-      "/type/type" : { "/type/type/domain" : { "key" : { "namespace" : "/" }} }
+      "/type/domain" : { "key" : { "namespace" : "/", "limit" : 1 }},
+      "/type/type" : { "/type/type/domain" : { "key" : { "namespace" : "/", "limit" : 1 }} }
       }
 
   _use_ids = ["/type/type", "/type/domain", "/type/user", "/freebase/apps/app"]

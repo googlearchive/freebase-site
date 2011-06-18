@@ -1195,19 +1195,13 @@ var ui = {};
     ////////////////////////
     
     var DEFAULT_PREFS    = { 
-        texteditor     : "CodeMirror",
-        syntax          : (navigator.userAgent.indexOf("iPad") === -1) ? true : false,
-        margin          : true,
-        softwrap        : false,
-        dotTrigger      : false,
-        flw             : 200,
-        t_mjt           : true,
-        t_acre_script   : true,
-        t_mqlquery      : true,
-        t_passthrough   : true,
-        t_binary        : true,
-        t_test          : true,
-        emql            : false
+        texteditor    : "CodeMirror",
+        syntax        : (navigator.userAgent.indexOf("iPad") === -1) ? true : false,
+        margin        : true,
+        softwrap      : false,
+        dotTrigger    : false,
+        flw           : 200,
+        emql          : false
     };
 
     ui.get_editor_prefs         = function(key) {

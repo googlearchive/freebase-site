@@ -29,46 +29,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("lib/helper/helpers.sjs");
+var h = acre.require('helpers.sjs');
+var validators = acre.require('lib/validator/validators.sjs');
 
 var SPEC = {
-  template: "claim.mjt",
+  cache_policy: 'nocache',
+  template: 'claim_template.mjt',
 
   validate: function(params) {
-    return [
-      params.username,
-      params.token
-    ];
+    return [validators.String(params, 'code')];
   },
   
-  run: function() {
-    // Verify that a user is logged in, if they are not this will
-    //  redirect to the login page
-    try {
-      if (acre.freebase.apiary_url) {
-        acre.oauth.get_authorization();
-      } else if (!acre.request.cookies['metaweb-user']) {
-        acre.response.status = 302;
-        var redirect_url = h.account_url('signin', acre.request.url);
-        acre.response.set_header("Location", redirect_url);
-        acre.exit();
-      }
-    } catch(e) {
-      acre.response.set_header('content-type', 'text/plain');
-      acre.write("Freebase Signin is currently down. Please try again later.");
-      acre.exit();
+  run: function(token) {
+    if (!acre.freebase.apiary_url) {
+      throw 'Can only claim accounts over Apiary.';
     }
-    
-    // Get user information
-    var d = freebase.get_user_info()
-      .then(function(user) {
-        h.set_account_cookie(user);
-        return {'user': user, def: 'signedin_popup'};
-      }, function(error) {
-        return {def: 'register_popup'};
-      });
-   
-    return d;
+
+    return h.user_info().then(function(user) {
+      return {
+        authorized: true,
+        token: token
+      };
+    }, function(failure) {
+      var authorized = true;
+      if (failure instanceof h.UnauthorizedError) {
+        authorized = false;
+      }
+      return {
+        authorized: authorized,
+        token: token
+      };
+    });
   }
 };
 

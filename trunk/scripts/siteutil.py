@@ -1103,7 +1103,7 @@ class Context():
     return ' '.join(duration)
 
 
-  def resolve_config(self):
+  def resolve_config(self, passed_config=None):
     """Returns the configuration target.
     
     If the -c flag looks like a domain (has a dot) then try to figure out the configuration value
@@ -1115,14 +1115,16 @@ class Context():
 
     site_dir = self.resolve_site_dir()
 
-    if not self.options.config:
+    if not (self.options.config or passed_config):
         return self.error("You have to specify a valid configuration or hostname with -c.")
 
+    if not passed_config:
+      passed_config = self.options.config
 
     actual_config = None
 
     # If the config value looks like a host - e.g. -c test.sandbox-freebase.com
-    if len(self.options.config.split(".")) >= 2:
+    if len(passed_config.split(".")) >= 2:
 
         # Find the appengine-config directory if it exists
         if os.path.isdir(os.path.join("..", "..", "appengine-config")):
@@ -1134,14 +1136,14 @@ class Context():
                     config = self.read_config(os.path.join("..", "..", "appengine-config", f))
 
                     # If this configuration value matches what was passed in, then the get the real config
-                    # value from the filename of the project.<conf>.conf file. 
-                    if config.get("ACRE_FREEBASE_SITE_ADDR", None) == self.options.config:
+                    # value from the filename of the project.<conf>.conf file.
+                    if config.get("ACRE_FREEBASE_SITE_ADDR", None) == passed_config:
                         actual_config = parts[-2]
                         break
 
 
     if not actual_config:
-        return self.error("Could not derive the actual configuration value from the host: %s." % self.options.config)
+        return self.error("Could not derive the actual configuration value from the host: %s." % config)
 
     self.options.config = actual_config
     return self.options.config

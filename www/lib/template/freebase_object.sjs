@@ -75,7 +75,7 @@ function main(rule, object) {
     navs: navs,
     filters: fh.global_filters(acre.request_params)
   };
-  // extend promises
+  // extend object type (global) promises
   rule.promises && rule.promises.forEach(function(p) {
     var d = acre.require(p.app + "/" + p.script)[p.promise](object);
     template_base_args[p.key] = d;
@@ -86,6 +86,12 @@ function main(rule, object) {
     template_base_args.current_tab = current_tab;
     script = acre.require(current_tab.app + "/" + current_tab.script);
     params = current_tab.params;
+
+    // extend tab promises
+    current_tab.promises && current_tab.promises.forEach(function(p) {
+      var d = acre.require(p.app + "/" + p.script)[p.promise](object);
+      template_base_args[p.key] = d;
+    });
   }
   else if (current_nav) {
     template_base_args.current_nav = current_nav;

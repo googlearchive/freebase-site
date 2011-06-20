@@ -309,13 +309,15 @@ var rules = [
         "name": "Inspect",
         "key": "inspect",
         "app": "triples",
-        "script": "triples.tab"
+        "script": "triples.tab",
+        "promises": h.extend(true, [], DEFAULT_PROMISES)
       },
       {
         "name": "On the Web",
         "key": "web",
         "app": "sameas",
-        "script": "sameas.tab"
+        "script": "sameas.tab",
+        "promises": h.extend(true, [], DEFAULT_PROMISES)
       }
     ]
   },
@@ -344,6 +346,17 @@ function ObjectRouter(app_labels) {
   var route_list = [];
   var types = {};
 
+  function set_app(item) {
+    if (item.app) {
+      var app = app_labels[item.app];
+      if (!app) {
+        throw 'An app label must exist for: ' + item.app;
+      }
+      item.app = app;
+    }
+    return item;
+  };
+
   this.add = function(routes) {
     if (!(routes instanceof Array)) {
       routes = [routes];
@@ -354,13 +367,10 @@ function ObjectRouter(app_labels) {
       }
       [route.tabs, route.navs, route.promises].forEach(function(list) {
         list && list.forEach(function(item) {
-          if (item.app) {
-            var app = app_labels[item.app];
-            if (!app) {
-              throw 'An app label must exist for: ' + item.app;
-            }
-            item.app = app;
-          }
+          set_app(item);
+          item.promises && item.promises.forEach(function(p) {
+            set_app(p);
+          });
         });
       });
       types[route.type] = route;

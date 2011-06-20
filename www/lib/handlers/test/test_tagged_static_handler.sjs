@@ -38,6 +38,7 @@ var tagged_static_handler = acre.require("handlers/tagged_static_handler.sjs");
 acre.require("handlers/test/mock_handler.sjs").playback(this, tagged_static_handler, {
   to_http_response: function(result) {
     result.headers.expires = "in the future";
+    result.headers["last-modified"] = "today";
     return result;
   }
 }, "handlers/test/playback_test_tagged_static_handler.json");

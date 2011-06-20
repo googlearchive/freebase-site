@@ -1,4 +1,5 @@
 {
+  "project": "freebase-site.googlecode.dev",
   "ttl": 0,
   "error_page" : "error/error.mjt",
   "csrf_protection": "strong",

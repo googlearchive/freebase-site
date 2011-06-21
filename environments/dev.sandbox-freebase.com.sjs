@@ -25,7 +25,7 @@ var labels = {
   "sample": "//5a.sample" + tags_codebase,
   "schema": "//11a.schema" + tags_codebase,
   "topic": "//11e.topic" + tags_codebase,
-  "triples": "//7a.triples" + tags_codebase
+  "triples": "//7b.triples" + tags_codebase
 
 };
 

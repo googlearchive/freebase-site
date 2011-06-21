@@ -30,6 +30,7 @@
  */
 
 var h = acre.require('helpers.sjs');
+var templates = acre.require('templates.sjs');
 var urlfetch = acre.require('lib/promise/apis').urlfetch;
 var validators = acre.require('lib/validator/validators.sjs');
 var ServiceError = acre.require('lib/handlers/service_lib.sjs').ServiceError;
@@ -42,32 +43,21 @@ var SPEC = {
   },
 
   run: function(token) {
-    if (!h.has_account_credentials()) {
-      throw new ServiceError('401 Unauthorized', '/api/status/error/unauthorized', {
-        message: 'Must be logged in to claim a Freebase user.',
-        code: '/api/status/error/unauthorized'
-      });
-    }
-    
     return h.link_user(token).then(function(user) {
       h.set_account_cookie(user);
+      acre.response.clear_cookie('claim_code');
       return {
         'linked': true,
         'html': 'Successfully linked user.'
       };
       
     }, function(failure) {
-      if (failure instanceof h.UnauthorizedError) {
+      if (failure instanceof h.UnauthorizedError || failure instanceof h.BadToken) {
         acre.oauth.remove_credentials(h.account_provider());
-        throw new ServiceError('401 Unauthorized', '/api/status/error/unauthorized', {
-          message: 'Must be logged in to claim a Freebase user.',
-          code: '/api/status/error/unauthorized'
-        });
-      } else if (failure instanceof h.BadToken) {
-        throw new ServiceError('400 Bad Request', '/api/status/error/claim', {
-          message: 'Change request code is invalid.',
-          code: '/api/status/error/invalid/token'
-        });
+        h.clear_account_cookie();
+        return {
+          html: acre.markup.stringify(templates.claim_account_error(token))
+        };
       }
 
       return {'html': 'Freebase registration is currently down. Please try again later.'};

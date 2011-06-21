@@ -57,7 +57,13 @@ var SPEC = {
       h.set_account_cookie(user);
       return {'user': user};
     }, function(failure) {
-      if (failure instanceof h.UnregisteredError) {
+      if (failure instanceof h.UnauthorizedError) {
+        // The credentials must be incorrect, so remove them.
+        acre.oauth.remove_credentials(h.account_provider());
+        h.clear_account_cookie();
+        console.warn('Authorization credentials are not correct', failure);
+        
+      } else if (failure instanceof h.UnregisteredError) {
         return {template: 'register_template.mjt'};
       }
       

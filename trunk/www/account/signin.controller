@@ -43,6 +43,7 @@ var SPEC = {
       // If we are already signed in, then have the user sign-in again.
       if (acre.oauth.has_credentials(freebase_provider)) {
         acre.oauth.remove_credentials(freebase_provider);
+        h.clear_account_cookie();
         h.temporary_redirect(acre.request.url);
       }
       acre.oauth.get_authorization(freebase_provider, success_url);

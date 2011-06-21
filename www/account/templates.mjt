@@ -29,6 +29,10 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  !!-->
 
+<acre:script>
+  var h = acre.require('helpers.sjs');
+</acre:script>
+
 <acre:block def="claiming_account(username)">
   <div class="inner-content">
     <h1>Thanks! Now check your email</h1>
@@ -57,7 +61,7 @@
     <h1>Accounts connected</h1>
     <p>Your Google account has been successfully connected to
       <strong>${username}</strong>.</p>
-    <p>Please <a href="/account/signin">signin</a> to start contributing to Freebase</p>
+    <p>Please <a href="${h.fb_url('/account/signin')}">signin</a> to start contributing to Freebase</p>
   </div>
 </acre:block>
 
@@ -65,6 +69,17 @@
   <div class="inner-content">
     <h1>Under construction</h1>
     <p>You cannot create a new Freebase account at this time.</p>
-    <p>Please <a href="/account/signin">signin</a> with an existing account instead.</p>
+    <p>Please <a href="${h.fb_url('/account/signin')}">signin</a> with an existing account instead.</p>
+  </div>
+</acre:block>
+
+<acre:block def="claim_account_error(token)">
+  <div class="inner-content">
+    <h1>Could not connect these accounts</h1>
+    <p>Please login with the Google account that you would like to connect to
+      your Freebase account, and input your change request code again.</p>
+    <a href="${h.fb_url('/account/claim', [['code', token]])}" class="button">
+      Try again
+    </a>
   </div>
 </acre:block>

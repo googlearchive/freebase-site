@@ -37,7 +37,8 @@ var SPEC = {
   template: 'claim_template.mjt',
 
   validate: function(params) {
-    return [validators.String(params, 'code')];
+    var cookie_code = acre.request.cookies['claim_code'] || '';
+    return [validators.String(params, 'code', {if_empty: cookie_code})];
   },
   
   run: function(token) {
@@ -45,21 +46,14 @@ var SPEC = {
       throw 'Can only claim accounts over Apiary.';
     }
 
-    return h.user_info().then(function(user) {
-      return {
-        authorized: true,
-        token: token
-      };
-    }, function(failure) {
-      var authorized = true;
-      if (failure instanceof h.UnauthorizedError) {
-        authorized = false;
-      }
-      return {
-        authorized: authorized,
-        token: token
-      };
-    });
+    if (token.length) {
+      acre.response.set_cookie('claim_code', token);
+    }
+    
+    // Must be logged in to Google to claim an account.
+    acre.oauth.get_authorization(h.account_provider());
+
+    return {token: token};
   }
 };
 

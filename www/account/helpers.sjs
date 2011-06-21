@@ -129,9 +129,6 @@ function user_info() {
       if (e.reason === 'unregistered') {
         throw new UnregisteredError();
       } else if (e.code === 401) {
-        // The credentials must be incorrect, so remove them.
-        acre.oauth.remove_credentials(h.account_provider());
-        console.warn('Authorization credentials are not correct', e);
         throw new UnauthorizedError();
       }
       

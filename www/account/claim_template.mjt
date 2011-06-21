@@ -56,7 +56,6 @@
     <form name="claim-account"
           method="post"
           action="${h.ajax_url('/claim_submit')}"
-          data-authorized="${c.authorized}">
       <fieldset>
         <label for="token">Change request code from email:</label>
         <div class="form-field clear">

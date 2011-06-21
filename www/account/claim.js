@@ -31,56 +31,23 @@
 
 (function($, fb) {
   fb.claim = {};
-
-  fb.claim.display_form_errors = function($form, response) {
-    $.each(response.messages, function(i, error) {
-      var match = error.code.match(/^\/api\/status\/error\/invalid\/(.*)(\/.*)?/);
-      if (match) {
-        var fieldname = match[1];
-        console.log($form, $form.find('input'));
-        var $input = $form.find('input[name='+fieldname+']:first');
-        console.log($input);
-        if ($input.length) {
-          $input.addClass('error');
-          $input.siblings('.input-help:first').hide();
-          var $input_error = $input.siblings('.input-error:first');
-          if ($input_error.length) {
-            $input_error.text(error.message);
-            $input_error.show();
-          }
-        }
-      }
-    });
-  };
   
   fb.claim.init = function() {
     //Initialize the form.
     $('form').each(function(i, form) {
       var $form = $(form);
-      if ($form.attr('data-authorized') === 'false') {
-        $form.find('.submit').click(fb.login_popup);
-      } else {
-        $form.ajaxForm({
-          dataType: 'json',
-          success: function(response, status, xhr) {
-            $('#claim-content').html(response.result.html);
-            if (response.result.linked) {
-              window.location.href = '/';
-            }
-          },
-          error: function(xhr, status, error) {
-            var response = JSON.parse(xhr.responseText);
-            fb.claim.display_form_errors($form, response);
+      $form.ajaxForm({
+        dataType: 'json',
+        success: function(response, status, xhr) {
+          $('#claim-content').html(response.result.html);
+          if (response.result.linked) {
+            window.location.href = '/';
           }
-        });
-      }
-    });
-
-    $('form input').change(function(e) {
-      var $input = $(this);
-      $input.removeClass('error');
-      $input.siblings('.input-error:first').hide();
-      $input.siblings('.input-help:first').show();
+        },
+        error: function(xhr, status, error) {
+          var response = JSON.parse(xhr.responseText);
+        }
+      });
     });
   };
   

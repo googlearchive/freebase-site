@@ -60,13 +60,13 @@ function topic(id, lang, limit, as_of_time, domains) {
   return freebase.fetch(url)
     .then(function(env) {
       return env.result;
-    })
-    .then(function(result) {
+    });
+/**    .then(function(result) {
       var props = result && result.properties;
       if (props) {
-        /**
-         * load image and article deep properties
-         */
+        //
+        // load image and article deep properties
+        //
         var image_props = [];
         var article_props = [];
         var address_props = [];
@@ -81,7 +81,7 @@ function topic(id, lang, limit, as_of_time, domains) {
             prop.id = prop_id;
             article_props.push(prop);
           }
-          else if (ect === "/location/mailing_address") {
+          else if (false && ect === "/location/mailing_address") {
             prop.id = prop_id;
             address_props.push(prop);
           }
@@ -107,6 +107,7 @@ function topic(id, lang, limit, as_of_time, domains) {
       }
       return result;
     });
+**/
 };
 
 function get_image_deep_props(id, image_props, lang) {

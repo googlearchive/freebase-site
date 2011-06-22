@@ -52,13 +52,13 @@
         </li>
         <li class="row-menu-item"><a href="${h.fb_url(type.id, [['inspect']])}">${_('Inspect Type')}</a></li>
         <li class="row-menu-item">
-          <a href="${h.fb_url(type.id)}">${h.template_sprintf(_('Browse %s instances'), i18n_c.number(type.instance_count))}</a>
+          <a href="${sh.build_query_url(type.id)}">${h.template_sprintf(_('Browse %s instances'), i18n_c.number(type.instance_count))}</a>
         </li>
       </ul>
     </th>
     <td class="even">$type.id</td>
     <td class="odd numeric">${i18n_c.number(type.properties)}</td>
-    <td class="even numeric"><a href="${h.fb_url(type.id)}">${i18n_c.number(type.instance_count)}</a></td>
+    <td class="even numeric"><a href="${sh.build_query_url(type.id)}">${i18n_c.number(type.instance_count)}</a></td>
     <td class="odd description">
       <acre:script>
         var blurb = i18n.display_article(type, "blurb");

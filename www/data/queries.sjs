@@ -187,7 +187,7 @@ function domain(id) {
  * Type query
  * Get a type and a subset of instances
  */
-function type(type_id) {
+function type(type_id, page) {
   // define our current language
   var lang = i18n.lang;
 
@@ -210,7 +210,7 @@ function type(type_id) {
       }, lang)
     ]
   };
-
+  
   return freebase.mqlread(q)
     .then(function(env) {
       var this_type = env.result;
@@ -310,7 +310,8 @@ function type(type_id) {
       });
 
       // execute instance query
-      promises.push(freebase.mqlread(q)
+      var e = (typeof page === 'number') ? {page: page} : {};
+      promises.push(freebase.mqlread(q, e)
         .then(function(env) {
           var blurbs = [];
           env.result.forEach(function(topic) {
@@ -324,10 +325,10 @@ function type(type_id) {
 
       return deferred.all(promises)
         .then(function([activity, instances]) {
-          console.log(instances);
           return {
             activity: activity,
             instances: instances,
+            page: page || 0,
             properties: prop_structures,
             root_type_is_mediator: this_type["/freebase/type_hints/mediator"] === true,
             domain: this_type.domain

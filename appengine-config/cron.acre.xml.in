@@ -41,8 +41,8 @@
     <schedule>every 10 minutes</schedule>
   </cron>
   <cron>
-    <url>/m/0d6lpy</url>
-    <description>Cache warmup. (topic San Francisco).</description>
+    <url>/m/0l0mk</url>
+    <description>Cache warmup. (topic Santa Cruz).</description>
     <schedule>every 10 minutes</schedule>
   </cron>
   <cron>

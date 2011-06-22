@@ -24,7 +24,8 @@ var labels = {
   "schema":     "//schema" + codebase,
   "tmt":        "//tmt",
   "topic":      "//topic" + codebase,
-  "triples":    "//triples" + codebase
+  "triples":    "//triples" + codebase,
+  "history":    "//history" + codebase
 };
 
 

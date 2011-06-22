@@ -59,8 +59,8 @@
         <strong>${o.creator.name}</strong>
         ${op_verb}
         <strong>${o.target_value || o.target.name || o.target.id}</strong> to
-        <strong>${o.master_property.name || o.master_property.id}</strong>
-        on <strong>${i18n_c.datetime(o.timestamp)}</strong>
+        <strong>${o.master_property.name || o.master_property.id}</strong> on
+        <strong>${i18n_c.datetime(o.timestamp)}</strong>
       </li>
     </acre:block>
   </ol>

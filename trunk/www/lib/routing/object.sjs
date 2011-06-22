@@ -318,13 +318,6 @@ var rules = [
         "app": "sameas",
         "script": "sameas.tab",
         "promises": h.extend(true, [], DEFAULT_PROMISES)
-      },
-      {
-        "name": "History",
-        "key": "history",
-        "app": "history",
-        "script": "history.tab",
-        "promises": h.extend(true, [], DEFAULT_PROMISES)
       }
     ]
   },
@@ -342,13 +335,6 @@ var rules = [
         "key": "inspect",
         "app": "triples",
         "script": "triples.tab"
-      },
-      {
-        "name": "History",
-        "key": "history",
-        "app": "history",
-        "script": "history.tab",
-        "promises": h.extend(true, [], DEFAULT_PROMISES)
       }
     ]
   }

@@ -43,7 +43,27 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <pre>${JSON.stringify(c.object, null, 2)}</pre>
+  <ol>
+    <acre:block for="o in c.history">
+      <acre:script>
+        var op_verb;
+        if (o.operation === 'insert') {
+          op_verb = 'added';
+        } else if (o.operation === 'delete') {
+          op_verb = 'removed';
+        } else if (o.operation === 'update') {
+          op_verb = 'changed';
+        }
+      </acre:script>
+      <li>
+        <strong>${o.creator.name}</strong>
+        ${op_verb}
+        <strong>${o.target_value || o.target.name || o.target.id}</strong> to
+        <strong>${o.master_property.name || o.master_property.id}</strong>
+        on <strong>${i18n_c.datetime(o.timestamp)}</strong>
+      </li>
+    </acre:block>
+  </ol>
 </acre:block>
 
 

@@ -29,24 +29,67 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var i18n = acre.require('lib/i18n/i18n.sjs');
+var h = acre.require('helpers.sjs');
 var deferred = acre.require('lib/promise/deferred.sjs');
 var freebase = acre.require('lib/promise/apis.sjs').freebase;
-var queries = acre.require('queries.sjs');
 
-var SPEC = {
-  template: 'history.mjt',
 
-  validate: function(params) {
-    return [
-      params.object
-    ];
-  },
+var entity_history = function(entity_id) {
+  var q = [{
+    'type': '/type/link',
+    'source': {
+      'id': entity_id
+    },
+    'target': {
+      'id': null,
+      'name': null
+    },
+    'target_value': null,
+    'master_property': {
+      'id': null,
+      'name': null
+    },
+    'timestamp': null,
+    'sort': '-timestamp',
+    'operation': null,
+    'valid': null,
+    'creator': {
+      'id': null,
+      'key': {
+        'value': null,
+        'namespace': '/user',
+        'limit': 1
+      },
+      'type': '/type/user',
+      'optional': true
+    },
+    'attribution': {
+      'attribution': {
+        'id': null,
+        'key': {
+          'value': null,
+          'namespace': '/user',
+          'limit': 1
+        },
+        'type': '/type/user'
+      },
+      'type': '/type/attribution',
+      'optional': true
+    }
+  }];
 
-  run: function(object) {
-    return {
-      object: object,
-      history: queries.entity_history(object.id)
-    };
-  }
+  return freebase.mqlread(q)
+    .then(function(envelope) {
+      return envelope.result.map(function(o) {
+        if (!o.creator && o.attribution) {
+          o.creator = o.attribution.attribution;
+        }
+        if (o.creator) {
+          o.creator.name = o.creator.key.value;
+        }
+        return o;
+      });
+    }, function (error) {
+      return [];
+    });
 };

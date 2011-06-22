@@ -43,6 +43,16 @@ var SPEC = {
     if (acre.freebase.apiary_url) {
       // Finalize the authorization request.
       acre.oauth.get_authorization(h.account_provider());
+
+      // HACK(culbertson): Remove metaweb-user cookies
+      // because they mess up Apiary requests. 
+      if (acre.request.cookies['metaweb-user'] ||
+          acre.request.cookies['metaweb-user-info']) {
+        delete acre.request.cookies['metaweb-user'];
+        delete acre.request.cookies['metaweb-user-info'];
+        acre.response.clear_cookie('metaweb-user');
+        acre.response.clear_cookie('metaweb-user-info');
+      }
       d = h.user_info();
     } else {
       d = freebase.get_user_info().then(function(user) {

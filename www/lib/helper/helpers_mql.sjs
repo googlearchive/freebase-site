@@ -269,11 +269,12 @@ function get_creator(creator) {
   if (typeof creator === "string") {
     return creator;
   }
-  else {
+  else if (creator) {
     var attribution = creator.attribution;
     if (attribution) {
       return get_creator(attribution);
     }
     return creator.id;
   }
+  return null;
 };

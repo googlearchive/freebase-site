@@ -55,7 +55,7 @@ function HomeRouter(app_labels) {
     }
 
     // otherwise run the logged-out homepage, which will redirect to user page if logged-in
-    acre.route(app_labels["homepage"] + "/index.controller");
+    acre.route(acre.form.build_url(app_labels["homepage"] + "/index.controller", req.params));
     acre.exit();
     
   };

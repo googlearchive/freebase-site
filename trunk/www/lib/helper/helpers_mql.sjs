@@ -39,6 +39,7 @@ var exports = {
   "is_commons_id": is_commons_id,
   "id_key": id_key,
   "lang_code": lang_code,
+  "get_creator": get_creator,
   "fb_object_type": fb_object_type
 };
 
@@ -255,3 +256,24 @@ function fb_object_type(types, id) {
 
     return object_type;
 }
+
+
+/**
+ * A utility that handles different types of attributions of an object:
+ *
+ * {creator: "/user/id"}
+ * {creator: {id: "/user/id"}
+ * {creator: {id: "/m/id", "attribution": null}}
+ */
+function get_creator(creator) {
+  if (typeof creator === "string") {
+    return creator;
+  }
+  else {
+    var attribution = creator.attribution;
+    if (attribution) {
+      return get_creator(attribution);
+    }
+    return creator.id;
+  }
+};

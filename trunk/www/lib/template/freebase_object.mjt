@@ -197,10 +197,14 @@
           <span class="creation-timestamp">
             <span acre:if="c.object.creator"
                   acre:attrs="itemprop('/type/object/creator', true)">
-              ${image.user_image_small(c.object.creator)}
+              <acre:script>
+                var creator = h.get_creator(c.object.creator);
+              </acre:script>
+
+              ${image.user_image_small(creator)}
               ${_("Created by")}
-              <a href="${h.fb_url(c.object.creator)}"
-                 title="${_('View user profile')}">${h.id_key(c.object.creator)}</a>
+              <a href="${h.fb_url(creator)}"
+                 title="${_('View user profile')}">${h.id_key(creator)}</a>
               ${_("on")}
             </span>
             <span acre:else="">

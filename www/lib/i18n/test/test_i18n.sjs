@@ -258,4 +258,26 @@ test("display_article", function() {
   equal(blob, "lang_blob");
 });
 
+
+test("nomalize_lang", function() {
+
+  var tests = [
+    "/lang/iw", "/lang/iw",
+    "/lang/he", "/lang/iw",
+    "/lang/pt-br", "/lang/pt-br",
+    "/lang/pt", "/lang/pt-br",
+    "/lang/zh", "/lang/zh",
+    "/lang/zh-cn", "/lang/zh",
+    "/lang/zh-hans", "/lang/zh",
+    "/lang/zh-hant", "/lang/zh-hant",
+    "/lang/zh-tw", "/lang/zh-hant"
+  ];
+
+  for (var i=0,l=tests.length; i<l; i+=2) {
+    equal(i18n.normalize_lang(tests[i]), tests[i+1]);
+  }
+
+});
+
 acre.test.report();
+

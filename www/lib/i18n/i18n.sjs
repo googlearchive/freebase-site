@@ -166,7 +166,7 @@ var LANGS = [
   },
   {
     "id": "/lang/no",
-    "name": "Norwegian"
+    "name": "Nwegian"
   },
   {
     "id": "/lang/vi",
@@ -858,4 +858,13 @@ var dojo = {
     }
     return locale;
   }
+};
+
+
+function normalize_lang(lang_id) {
+  var l = LANGS_BY_ID[lang_id];
+  if (!l) {
+    l = LANGS[0]; // lang/en
+  }
+  return l.id;
 };

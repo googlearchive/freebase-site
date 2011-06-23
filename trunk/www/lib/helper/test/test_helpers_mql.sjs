@@ -131,6 +131,18 @@ test("is_metaweb_system_type", function() {
   };
 });
 
+
+test("get_creator", function() {
+
+  equal(h.get_creator("/user/id"), "/user/id");
+  equal(h.get_creator(), null);
+  equal(h.get_creator({id:null}), null);
+  equal(h.get_creator({id:"/user/id"}), "/user/id");
+  equal(h.get_creator({id:"/user/id", attribution:null}), "/user/id");
+  equal(h.get_creator({id:"/user/id", attribution:"/attr/id"}), "/attr/id");
+  equal(h.get_creator({id:"/user/id", attribution:{id:"/attr/id"}}), "/attr/id");
+});
+
 acre.test.report();
 
 

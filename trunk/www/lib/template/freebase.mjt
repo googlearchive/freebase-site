@@ -60,9 +60,10 @@
         <link rel="stylesheet" type="text/css" href="${h.lib_base_url('suggest')}/suggest.min.css" />
       </acre:block>
       <!!--
-          Modernizr must be served from document head. Should be highly cached
+         Modernizr must be served from document head.
+         
       -->
-      <script src="template/modernizr-1.7.min.js"></script>
+      <script src="template/modernizr.mf.js"></script>
 
       <!!--
          Global freebase css you want highly cached across multiple pages.

@@ -32,21 +32,43 @@
 var i18n = acre.require('lib/i18n/i18n.sjs');
 var deferred = acre.require('lib/promise/deferred.sjs');
 var freebase = acre.require('lib/promise/apis.sjs').freebase;
+var validators = acre.require("lib/validator/validators.sjs");
+var filters = acre.require("lib/filter/filters.sjs");
 var queries = acre.require('queries.sjs');
+var h = acre.require('helpers.sjs');
+
+validators.Validator.factory(scope, "TimestampValidator", {
+  "string": function(val, options) {
+    return validators.Datejs(val, h.extend({}, options, {date:false}));
+  }
+});
+
+var history_filters = {
+  limit: {
+    validator: validators.Int,
+    options: {if_empty:null}
+  },
+  timestamp: {
+    validator: validators.MultiValue,
+    options: {validator: TimestampValidator, if_empty:null}
+  }
+};
 
 var SPEC = {
   template: 'history.mjt',
 
   validate: function(params) {
     return [
-      params.object
+      params.object,
+      filters.validate(params, history_filters)
     ];
   },
 
-  run: function(object) {
+  run: function(object, f) {
     return {
       object: object,
-      history: queries.entity_history(object.id)
+      history: queries.entity_history(object.id, f),
+      filters: f
     };
   }
 };

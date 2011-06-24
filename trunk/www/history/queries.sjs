@@ -33,63 +33,191 @@ var h = acre.require('helpers.sjs');
 var deferred = acre.require('lib/promise/deferred.sjs');
 var freebase = acre.require('lib/promise/apis.sjs').freebase;
 
-
-var entity_history = function(entity_id) {
-  var q = [{
+// Filter on:
+// domain, type, prop, as_of
+// timestamp, user, limit
+function entity_history(entity_id, filters) {
+  var base_q = {
     'type': '/type/link',
+    'timestamp': null,
+    'sort': '-timestamp',
+    'operation': null,
+    'valid': null,
+    'limit': 100
+  };
+  apply_limit(base_q, filters);
+  apply_timestamp(base_q, filters);
+  add_creator_clause(base_q);
+
+  var source_q = h.extend({}, base_q, {
     'source': {
-      'id': entity_id
+      'id': entity_id,
+      'limit': 0
     },
     'target': {
       'id': null,
-      'name': null
+      'mid': null,
+      'name': null,
+      'optional': true
     },
     'target_value': null,
     'master_property': {
       'id': null,
       'name': null
+    }
+  });
+  apply_schema(source_q.master_property, filters);
+  
+  var target_q = h.extend({}, base_q, {
+    'target': {
+      'id': entity_id,
+      'limit': 0
     },
-    'timestamp': null,
-    'sort': '-timestamp',
-    'operation': null,
-    'valid': null,
-    'creator': {
+    'source': {
+      'id': null,
+      'mid': null,
+      'name': null
+    },
+    'master_property': {
+      'reverse_property': {
+        'id': null,
+        'name': null
+      }
+    }
+  });
+  apply_schema(target_q.master_property.reverse_property, filters);
+  console.log(source_q, target_q);
+  return deferred.all({
+    source: freebase.mqlread([source_q]),
+    target: freebase.mqlread([target_q])
+  }).then(function(results) {
+    var history = [];
+    console.log(results.source, results.target);
+    if (results.source && !(results.source instanceof Error)) {
+      results.source.result.forEach(function(o) {
+        var link = {
+          operation: o.operation,
+          timestamp: o.timestamp,
+          property: o.master_property,
+          creator: extract_creator(o)
+        };
+        if (o.target_value != null) {
+          link.value = {'value': o.target_value};
+          if (o.target) {
+            o.lang = o.target.id;
+          }
+        } else {
+          link.value = o.target;
+        }
+        
+        history.push(link);
+      });
+    }
+    
+    if (results.target && !(results.target instanceof Error)) {
+      results.target.result.forEach(function(o) {
+        var link = {
+          operation: o.operation,
+          timestamp: o.timestamp,
+          value: o.source,
+          property: o.master_property.reverse_property,
+          creator: extract_creator(o)
+        };
+        history.push(link);
+      });
+    }
+
+    if (filters.limit) {
+      history = history.slice(0, filters.limit);
+    }
+
+    return history;
+  }, function (error) {
+    return [];
+  });
+};
+
+//---Creator---//
+
+function add_creator_clause(q) {
+  q['creator'] = {
+    'id': null,
+    'key': {
+      'value': null,
+      'namespace': '/user',
+      'limit': 1
+    },
+    'type': '/type/user',
+    'optional': true
+  };
+  q['attribution'] = {
+    'attribution': {
       'id': null,
       'key': {
         'value': null,
         'namespace': '/user',
         'limit': 1
       },
-      'type': '/type/user',
-      'optional': true
+      'type': '/type/user'
     },
-    'attribution': {
-      'attribution': {
-        'id': null,
-        'key': {
-          'value': null,
-          'namespace': '/user',
-          'limit': 1
-        },
-        'type': '/type/user'
-      },
-      'type': '/type/attribution',
-      'optional': true
-    }
-  }];
+    'type': '/type/attribution',
+    'optional': true
+  };
+  return q;
+};
 
-  return freebase.mqlread(q)
-    .then(function(envelope) {
-      return envelope.result.map(function(o) {
-        if (!o.creator && o.attribution) {
-          o.creator = o.attribution.attribution;
-        }
-        if (o.creator) {
-          o.creator.name = o.creator.key.value;
-        }
-        return o;
+function extract_creator(result) {
+  var user;
+  if (result.creator) {
+    user = result.creator;
+  } else if (result.attribution && result.attribution.attribution) {
+    user = result.attribution.attribution;
+  } else {
+    user = null;
+  }
+  if (user) {
+    user.name = user.key.value;
+  }
+  return user;
+};
+
+//---Filters---//
+
+function apply_limit(clause, filters) {
+  if (filters.limit) {
+    clause.limit = filters.limit;
+  }
+  return clause;
+};
+
+function apply_timestamp(clause, filters) {
+  var timestamp = filters.timestamp;
+  if (timestamp) {
+    if (!h.isArray(timestamp)) {
+      timestamp = [timestamp];
+    }
+    var len = timestamp.length;
+    if (len === 1) {
+      clause["filter:timestamp>="] = timestamp[0];
+    }
+    else if (len === 2) {
+      timestamp.sort(function(a,b) {
+        return b < a;
       });
-    }, function (error) {
-      return [];
-    });
+      clause["filter:timestamp>="] = timestamp[0];
+      clause["filter:timestamp<"] = timestamp[1];
+    }
+  }
+  return clause;
+};
+
+function apply_schema(clause, filters) {
+  if (filters.domain) {
+    clause['filter:schema'] = {'domain': {'id': filters.domain}};
+  } else if (filters.type) {
+    clause['filter:schema'] = {'id': filters.type};
+  } else if (filters.property) {
+    clause["filter:id"] = filters.property;
+  }
+  return clause;
 };

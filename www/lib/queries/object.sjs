@@ -135,6 +135,13 @@ function mql(id) {
   };
 };
 
+/**
+ * Compare function to sort an array of text nodes with langs.
+ *
+ * Text node(s) with specified lang or i18n.lang are first,
+ * then text node(s) with /lang/en,
+ * then just compare language names.
+ */
 function text_lang_sort(a, b, lang) {
   if (lang) {
     lang = i18n.normalize_lang(lang);
@@ -144,8 +151,11 @@ function text_lang_sort(a, b, lang) {
   }
   var a_lang = i18n.normalize_lang(a.lang);
   var b_lang = i18n.normalize_lang(b.lang);
-  if (a_lang === b_lang) {
-    return 0;
+  if (a_lang === lang) {
+    if (a_lang === b_lang) {
+      return b.value < a.value;
+    }
+    return -1;
   }
   else if (a_lang === lang) {
     return -1;
@@ -164,6 +174,9 @@ function text_lang_sort(a, b, lang) {
     a_lang = a_lang && a_lang.name || a.lang;
     b_lang = i18n.LANGS_BY_ID[b.lang];
     b_lang = b_lang && b_lang.name || b.lang;
+    if (b_lang === a_lang) {
+      return b.value < a.value;
+    }
     return b_lang < a_lang;
   }
 };

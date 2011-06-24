@@ -1,0 +1,21 @@
+[
+  "lib/jquerytools/tabs.js",
+  "lib/jqueryui/jquery.ui.core.mf.js",
+  "lib/jqueryui/jquery.ui.draggable.js",
+  "jquery.shortcut.js",
+  "util.js",
+  "zencoding.js",
+  "freebase_store.js",
+  "acre_doc.js",
+  "acre_app.js",
+  "acre_user.js",
+  "editors.js",
+  "editor_image.js",
+  "editor_textarea.js",
+  "editor_cuecard.js",
+  "editor_codemirror.js",
+  "ui.js",
+  "templates.mjt",
+  "dialogs.mjt",
+  "menus.mjt"
+]

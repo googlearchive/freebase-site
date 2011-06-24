@@ -49,6 +49,36 @@ test("text_lang_sort", function() {
        [{lang:"/lang/zh"}, {lang:"/lang/en"}, {lang:"/lang/ko"}]);
   same(texts.sort(function(a, b) { return o.text_lang_sort(a, b, "/lang/ko"); }),
        [{lang:"/lang/ko"}, {lang:"/lang/en"}, {lang:"/lang/zh"}]);
+
+  texts = [{
+      lang: "/lang/en",
+      value: "d"
+    },{
+      lang: "/lang/en",
+      value: "b"
+    },{
+      lang: "/lang/zh",
+      value: "a"
+    },{
+      lang: "/lang/ko",
+      value: "c"
+    },{
+      lang: "/lang/ko",
+      value: "z"
+    },{
+      lang: "/lang/ko",
+      value: "y"
+    }];
+
+  same(texts.sort(function(a, b) { return o.text_lang_sort(a, b, "/lang/en"); }),
+       [{lang:"/lang/en", value:"b"}, {lang:"/lang/en", value:"d"},
+        {lang:"/lang/zh", value:"a"},
+        {lang:"/lang/ko", value:"c"}, {lang:"/lang/ko", value:"y"}, {lang:"/lang/ko", value:"z"}]);
+
+  same(texts.sort(function(a, b) { return o.text_lang_sort(a, b, "/lang/ko"); }),
+       [{lang:"/lang/ko", value:"c"}, {lang:"/lang/ko", value:"y"}, {lang:"/lang/ko", value:"z"},
+        {lang:"/lang/en", value:"b"}, {lang:"/lang/en", value:"d"},
+        {lang:"/lang/zh", value:"a"}]);
 });
 
 acre.test.report();

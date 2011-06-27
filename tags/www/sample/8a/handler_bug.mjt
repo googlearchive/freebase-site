@@ -1,0 +1,5 @@
+<acre:block def="content_body()">
+  <acre:script>
+    var hello = c.foo.bar;
+  </acre:script>
+</acre:block>

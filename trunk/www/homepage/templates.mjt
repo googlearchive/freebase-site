@@ -82,14 +82,14 @@
           var two_months_ago = new Date();
           two_months_ago.setDate(two_months_ago.getDate()-7*8)
         </acre:script>
-        ${i18n_c.datetime(two_months_ago, [["data-format", "MMM"]])}
+        ${i18n_c.datetime(two_months_ago, [["data-format", "MMMd"]])}
       </div>
       <div class="activity-chart-date activity-chart-date-second">
         <acre:script>
           var one_month_ago = new Date();
           one_month_ago.setDate(one_month_ago.getDate()-7*4)
         </acre:script>
-        ${i18n_c.datetime(one_month_ago, [["data-format", "MMM"]])}
+        ${i18n_c.datetime(one_month_ago, [["data-format", "MMMd"]])}
       </div>
       <div class="activity-chart-date activity-chart-date-last">
         ${_("last week")}

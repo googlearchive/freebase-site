@@ -195,12 +195,17 @@ var rules = [
   },
   {
     "type": "/type/property",
-    "promises":  h.extend(true, [], DEFAULT_PROMISES).concat([{
+    "promises":  [{
+      "key": "blurb",
+      "app": "lib",
+      "script": "queries/object.sjs",
+      "promise": "documented_object_tip"
+    },{
       key: "breadcrumbs",
       app: "lib",
       script: "queries/breadcrumbs.sjs",
       promise: "property"
-    }]),
+    }],
     "tabs": [
       {
         "name": "Schema",

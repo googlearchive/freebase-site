@@ -41,6 +41,7 @@
   var _ = i18n.gettext;
   var image = acre.require("template/imagecomponents.mjt");
   var base = acre.require("template/freebase.mjt");
+  var self= this;
   var this_exports = this.exports;
   var that_exports;
   var fh = acre.require("filter/helpers.sjs");
@@ -148,21 +149,12 @@
                      <span class="edit-icon">${_("Edit localized names")} &hellip;</span>
                     </a>
                   </li>
-                  <acre:script>
-                    var params = h.extend({}, acre.request.params);
-                  </acre:script>
-                  <acre:block for="(var i=1,l=c.object.name.length; i<l; i++)">
+                 <acre:block for="(var i=1,l=c.object.name.length; i<l; i++)">
                     <acre:script>
                       var n = c.object.name[i];
-                      if (n.lang === "/lang/en") {
-                        delete params.lang;
-                      }
-                      else {
-                        params.lang = n.lang;
-                      }
                     </acre:script>
                     <li class="row-menu-item">
-                      <a href="${h.build_url(null, c.object.id, params)}">
+                      <a href="${h.build_url(null, c.object.id, [['lang', n.lang]])}">
                         ${n.value}
                         ${i18n_c.lang_code(n.lang, null, true)}
                       </a>

@@ -219,7 +219,7 @@
           <!-- blurb should be sentence-level truncation at ~50 words -->
           <acre:block if="c.blurb">
             <p class="blurb" itemprop="desc">${c.blurb}</p>
-            <!!--<a href="javascript:void(0);" class="blurb-trigger">${_('more')}</a>!!-->d
+            <!!--<a href="javascript:void(0);" class="blurb-trigger">${_('more')}</a>!!-->
           </acre:block>
         </div>
         <div class="nav clear">

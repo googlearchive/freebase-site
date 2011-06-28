@@ -128,10 +128,10 @@ CueCard.QueryEditor.prototype.dispose = function() {
 
 CueCard.QueryEditor.prototype.layout = function(height, width) {
   if (height) {
-    this._container.height(height);
     if (this._controlPane && this._controlPane._paneldrawer) {
       this._controlPane._paneldrawer.set_height(height);
     } else {
+      this._container.height(height);
       var control_height = this._controlBottomContainer.height();
       this._iframeContainer.height(height - control_height);
     }

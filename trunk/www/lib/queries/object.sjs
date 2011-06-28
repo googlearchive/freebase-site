@@ -138,17 +138,10 @@ function mql(id) {
 /**
  * Compare function to sort an array of text nodes with langs.
  *
- * Text node(s) with specified lang or i18n.lang are first,
- * then text node(s) with /lang/en,
- * then just compare language names.
+ *
  */
-function text_lang_sort(a, b, lang) {
-  if (lang) {
-    lang = i18n.normalize_lang(lang);
-  }
-  else {
-    lang = i18n.lang;
-  }
+function text_lang_sort(a, b, lang, by_lang_name) {
+  lang = lang ? i18n.normalize_lang(lang) : i18n.lang;
   var a_lang = i18n.normalize_lang(a.lang);
   var b_lang = i18n.normalize_lang(b.lang);
   if (a_lang === lang) {
@@ -157,26 +150,34 @@ function text_lang_sort(a, b, lang) {
     }
     return -1;
   }
-  else if (a_lang === lang) {
-    return -1;
-  }
   else if (b_lang === lang) {
     return 1;
   }
-  else if (a_lang === "/lang/en") { // give pref to en
+  else if (a_lang === "/lang/en") {
+    if (a_lang === b_lang) {
+      return b.value < a.value;
+    }
     return -1;
   }
-  else if (b_lang === "/lang/en") { // give pref to en
+  else if (b_lang === "/lang/en") {
     return 1;
   }
   else {
-    a_lang = i18n.LANGS_BY_ID[a.lang];
-    a_lang = a_lang && a_lang.name || a.lang;
-    b_lang = i18n.LANGS_BY_ID[b.lang];
-    b_lang = b_lang && b_lang.name || b.lang;
-    if (b_lang === a_lang) {
+    if (by_lang_name) {
+      var a_by_id = i18n.LANGS_BY_ID[a.lang];
+      var b_by_id = i18n.LANGS_BY_ID[b.lang];
+      if (a_by_id) {
+        a_lang = a_by_id.name;
+      }
+      if (b_by_id) {
+        b_lang = b_by_id.name;
+      }
+    }
+
+    if (a_lang === b_lang) {
       return b.value < a.value;
     }
     return b_lang < a_lang;
   }
+  return b.lang < a.lang;
 };

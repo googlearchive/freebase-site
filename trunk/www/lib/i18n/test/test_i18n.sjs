@@ -270,7 +270,8 @@ test("nomalize_lang", function() {
     "/lang/zh-cn", "/lang/zh",
     "/lang/zh-hans", "/lang/zh",
     "/lang/zh-hant", "/lang/zh-hant",
-    "/lang/zh-tw", "/lang/zh-hant"
+    "/lang/zh-tw", "/lang/zh-hant",
+    "/lang/et", "/lang/et"
   ];
 
   for (var i=0,l=tests.length; i<l; i+=2) {

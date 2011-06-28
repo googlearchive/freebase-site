@@ -863,8 +863,10 @@ var dojo = {
 
 function normalize_lang(lang_id) {
   var l = LANGS_BY_ID[lang_id];
-  if (!l) {
-    l = LANGS[0]; // lang/en
+  if (l) {
+    return l.id;
   }
-  return l.id;
+  else {
+    return lang_id;
+  }
 };

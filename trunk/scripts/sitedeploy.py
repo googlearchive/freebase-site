@@ -1387,20 +1387,26 @@ def main():
     """Run an action given the context."""
     context.start_time = datetime.datetime.now()
     result = None
+    ex = None
 
     try:
       result = action_class(context)()
+
+    except Exception as ex:
+      pass
 
     finally:
       t2 = datetime.datetime.now()
 
       if not result:
-        return context.error('FAILED: action %s failed (%s)' % (action, context.duration_human(t2-context.start_time)))
+        context.error('FAILED: action %s failed (%s)' % (action, context.duration_human(t2-context.start_time)))
       else:
         context.log('SUCCESS: action %s ended succesfully (%s)' % (action, context.duration_human(t2-context.start_time)), color=context.GREEN)
 
-
       context.set_action(action)
+    if ex:
+      raise ex
+
     return True
 
   result = None
@@ -1408,12 +1414,12 @@ def main():
   context.start_time = datetime.datetime.now()
   # Loop through each app, resolve version/lib from arguments and run the action with that app.
 
-  try: 
+  try:
     if options.app:
 
       original_version = options.version
       original_lib = options.lib
-    
+
       apps = options.app.split(',')
       if apps[0] == "all":
         apps = Site.Get(context).apps()
@@ -1427,13 +1433,13 @@ def main():
         if result:
           context.set_app(App.Get(context, options.app, options.version))
           result = run(action_class, context)
-          
+
         results.append(result)
-          
+
     else:
       result = run(action_class, context)
       results.append(result)
-    
+
   except KeyboardInterrupt:
     context.error("Aborted by user.")
   finally:
@@ -1441,7 +1447,7 @@ def main():
     acre = Acre.Get(context, existing=True)
     if acre:
       acre.stop()
-    
+
   if not result or False in results:
     n = len([x for x in results if not x])
     context.error('FAILED: action %s failed (%s)' % (action, context.duration_human(t2-context.start_time)))

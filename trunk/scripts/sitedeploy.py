@@ -211,9 +211,9 @@ class ActionStatic:
     c.set_acre(Acre.Get(c))
 
     acre = Acre.Get(c)
-    if not acre.is_running2() and acre.build(target='devel', config_dir= "%s/appengine-config" % site.site_dir):
-      if not acre.start():
-        return c.error('There was an error starting acre - cannot generate static files without a running acre instance.')
+    acre.start()
+    if not acre.is_running() and acre.build(target='devel', config_dir= "%s/appengine-config" % site.site_dir):
+      return c.error('There was an error starting acre - cannot generate static files without a running acre instance.')
 
     success = c.googlecode_login()
 

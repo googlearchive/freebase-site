@@ -1538,7 +1538,7 @@ class Acre:
     if target and config_dir and os.path.isdir(config_dir):
         cmd = ["./acre", "-c", target, "-d", config_dir, build_mode]
 
-    (r, result) = c.run_cmd(cmd)
+    (r, result) = c.run_cmd(cmd, warn=True)
 
     if not r:
         return c.error("Failed to build acre."), result

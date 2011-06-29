@@ -46,7 +46,7 @@
 <!-- Types -->
 <div class="section wrapper">
   <div class="views">
-    <div class="table-title-wrapper">
+    <div class="table-title-wrapper clear">
       <h2 class="table-title">
         ${h.template_sprintf(_("Explore %s topics by Type"), i18n.display_name(c.object))}
       </h2>

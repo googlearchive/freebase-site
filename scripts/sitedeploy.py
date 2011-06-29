@@ -1387,13 +1387,9 @@ def main():
     """Run an action given the context."""
     context.start_time = datetime.datetime.now()
     result = None
-    ex = None
 
     try:
       result = action_class(context)()
-
-    except Exception as ex:
-      pass
 
     finally:
       t2 = datetime.datetime.now()
@@ -1404,8 +1400,6 @@ def main():
         context.log('SUCCESS: action %s ended succesfully (%s)' % (action, context.duration_human(t2-context.start_time)), color=context.GREEN)
 
       context.set_action(action)
-    if ex:
-      raise ex
 
     return True
 

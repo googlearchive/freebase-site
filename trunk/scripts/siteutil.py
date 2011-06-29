@@ -1387,7 +1387,7 @@ class Context():
     col_paddings = []
 
     def get_max_width(table, index):
-      return max([len(row[index]) for row in table])
+      return max([len(str(row[index])) for row in table])
 
     for i in range(len(table[0])):
         col_paddings.append(get_max_width(table, i))
@@ -1397,7 +1397,7 @@ class Context():
         print row[0].ljust(col_paddings[0] + 1),
         # rest of the cols
         for j in range(1, len(row)):
-            col = row[j].rjust(col_paddings[j] + 2)
+            col = str(row[j]).rjust(col_paddings[j] + 2)
             print col,
         if not i:
           print "\n" + "-" * (sum(col_paddings) + sum(len(x) for x in table[0]) - len(table[0])-1)

@@ -778,7 +778,7 @@ class SpeedTestRun(threading.Thread):
 
   def run(self):
 
-    for url in self.urls:
+    for i, url in enumerate(self.urls):
 
       if self._stop:
         break
@@ -823,7 +823,7 @@ class SpeedTestRun(threading.Thread):
 
       self.responses.append(d)
       if self.response_logger:
-        self.response_logger(d, self.name)
+        self.response_logger(d, "%s-%s" % (self.name, i))
 
     return self.responses
 

@@ -65,7 +65,6 @@ ul.bar-graph {
   -webkit-animation-duration:0.2s;
   -webkit-animation-iteration-count:1;
   -webkit-animation-timing-function:ease-out;
-  -webkit-animation-name: bars;
 }
 
 .bar-graph-value {
@@ -105,7 +104,7 @@ table.bar-graph {
 }
 
 .bar-graph tr {
-  /*.transition(all, 0.2s);*/
+  .transition(all, 0.2s);
 }
 
 .bar-graph tr:hover {
@@ -134,6 +133,7 @@ table.bar-graph {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  -webkit-transform:translate3d(0,0,0);
 }
 
 .bar-graph-label a {

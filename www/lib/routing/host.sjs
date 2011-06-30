@@ -46,7 +46,7 @@ var rules = [
 ];
 
 
-var h = acre.require("helper/helpers_util.sjs");
+var h = acre.require("helper/helpers.sjs");
 
 /**
  * host->url redirector

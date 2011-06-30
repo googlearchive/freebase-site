@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("helper/helpers_util.sjs");
+var h = acre.require("helper/helpers.sjs");
 
 function route(apps, rules, scope) {
 

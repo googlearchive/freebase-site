@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-var h = acre.require("helper/helpers_sprintf.sjs");
+var h = acre.require("helper/helpers.sjs");
 var template = acre.require("helper/test/sprintf_template.sjs");
 
 test("sprintf", function() {

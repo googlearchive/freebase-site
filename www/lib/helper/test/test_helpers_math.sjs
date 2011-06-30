@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-var h = acre.require("helper/helpers_math.sjs");
+var h = acre.require("helper/helpers.sjs");
 
 
 test("round", function() {

@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-var h = acre.require("helper/helpers_date.sjs");
+var h = acre.require("helper/helpers.sjs");
 
 test("relative_date", function() {
   var d = new Date();

@@ -32,7 +32,7 @@ var exports = {
   router: PrefixRouter
 };
 
-var h = acre.require("helper/helpers_util.sjs");
+var h = acre.require("helper/helpers.sjs");
 var rh = acre.require("routing/helpers");
 
 var rules = [

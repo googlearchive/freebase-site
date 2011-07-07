@@ -115,7 +115,7 @@
     "medium" : {
         "parent" : "small",
         "weight" : 4,
-        "random" : true
+        "random" : false
     },  
 
     "large" : {
@@ -142,7 +142,7 @@
         }
 
       ],
-      "random" : true
+      "random" : false
     }
   }
 

@@ -1103,47 +1103,53 @@ class Context():
     return ' '.join(duration)
 
 
-  def resolve_config(self, passed_config=None):
+  def resolve_config(self, host=None):
     """Returns the configuration target.
-    
-    If the -c flag looks like a domain (has a dot) then try to figure out the configuration value
-    by reading each config file and looking for the hostname. 
 
-    Otherwise, just return the -c value. 
+    Will return the appropriate configuration target (e.g. sandbox-freebasesite) as a string.
+    If host is passed as an argument, it will read through all the project.*.conf files in the
+    given site appengine-config directory (optionally passed with --site_dir) and match the
+    ACRE_FREEBASE_SITE_DIR value with the passed host.
+
+    Otherwise, it will just return whatever was passed with the -c flag (config).
+
+    Arguments
+    host: a string of a hostname (e.g. dev.sandbox-freebase.com).
+
+    Returns
+    The configuration target as a string (e.g. sandbox-freebasesite).
 
     """
 
     site_dir = self.resolve_site_dir()
 
-    if not (self.options.config or passed_config):
-        return self.error("You have to specify a valid configuration or hostname with -c.")
-
-    if not passed_config:
-      passed_config = self.options.config
+    if not (self.options.config or host):
+        return self.error("You have to specify a valid configuration with -c or hostname with --host.")
 
     actual_config = None
 
-    # If the config value looks like a host - e.g. -c test.sandbox-freebase.com
-    if len(passed_config.split(".")) >= 2:
+    if not host:
+      return self.options.config
 
-        # Find the appengine-config directory if it exists
-        if os.path.isdir(os.path.join("..", "..", "appengine-config")):
+    else:
+      # Find the appengine-config directory if it exists
+      if os.path.isdir(os.path.join("..", "..", "appengine-config")):
 
-            # Loop through all the files and find the project.*.conf files
-            for f in os.listdir(os.path.join("..", "..", "appengine-config")):
-                parts = f.split(".")
-                if len(parts) > 1 and parts[0] == "project" and parts[-1] == "conf":
-                    config = self.read_config(os.path.join("..", "..", "appengine-config", f))
+        # Loop through all the files and find the project.*.conf files
+        for f in os.listdir(os.path.join("..", "..", "appengine-config")):
+          parts = f.split(".")
+          if len(parts) > 1 and parts[0] == "project" and parts[-1] == "conf":
+            config = self.read_config(os.path.join("..", "..", "appengine-config", f))
 
-                    # If this configuration value matches what was passed in, then the get the real config
-                    # value from the filename of the project.<conf>.conf file.
-                    if config.get("ACRE_FREEBASE_SITE_ADDR", None) == passed_config:
-                        actual_config = parts[-2]
-                        break
+            # If this configuration value matches what was passed in, then the get the real config
+            # value from the filename of the project.<conf>.conf file.
+            if config.get("ACRE_FREEBASE_SITE_ADDR", None) == passed_config:
+              actual_config = parts[-2]
+              break
 
 
     if not actual_config:
-        return self.error("Could not derive the actual configuration value from the host: %s." % config)
+        return self.error("Could not derive the actual configuration value from the host: %s." % host)
 
     self.options.config = actual_config
     return self.options.config

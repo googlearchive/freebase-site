@@ -336,6 +336,12 @@ var rules = [
     }]),
     "tabs": [
       {
+        "name": "View",
+        "key": "view",
+        "app": "topic",
+        "script": "topic.tab"
+      },
+      {
         "name": "Inspect",
         "key": "inspect",
         "app": "triples",

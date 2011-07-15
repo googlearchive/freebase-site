@@ -139,7 +139,7 @@ var SPEC = {
           .then(function(prop_schemas) {
             var prop_structures = [];
             prop_schemas.forEach(function(prop_schema) {
-              prop_structures.push(propbox_helpers.minimal_prop_structure(prop_schema, lang));
+              prop_structures.push(propbox_helpers.to_prop_structure(prop_schema, lang));
             });
             return prop_structures;
           })

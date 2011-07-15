@@ -180,7 +180,7 @@
             var existing_values = [];
             if (old_values.length) {
               var p = old_values[0][prop.id];
-              existing_values = p.values || [];
+              existing_values = p && p.values || [];
             }
             accept_or_reject($this, prop, data, existing_values, prop.values);
           }

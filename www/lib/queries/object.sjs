@@ -72,6 +72,26 @@ function blurb(o) {
 };
 
 /**
+ * promise to get the /freebase/documented_object/tip (of a property).
+ */
+function documented_object_tip(o) {
+  var q = {
+    id: o.id,
+    "/freebase/documented_object/tip": i18n.mql.query.text()
+  };
+  return freebase.mqlread(q)
+    .then(function(env) {
+      var tip = i18n.mql.result.text(env.result["/freebase/documented_object/tip"]);
+      if (tip) {
+        return tip.value;
+      }
+      else {
+        return null;
+      }
+    });
+};
+
+/**
  * promise to get the notable_types of an object
  */
 function notable_types(o) {

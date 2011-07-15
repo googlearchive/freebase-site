@@ -60,27 +60,6 @@ function topic(id, lang, limit, as_of_time, domains) {
   return freebase.fetch(url)
     .then(function(env) {
       return env.result;
-    })
-    .then(function(result) {
-      var props = result && result.properties || [];
-      var address_props = [];
-      for (var prop_id in props) {
-        var prop = props[prop_id];
-        var ect = prop.expected_type.id;
-        if (ect === "/location/mailing_address") {
-          prop.id = prop_id;
-          address_props.push(prop);
-        }
-      }
-      if (address_props.length) {
-        return get_postal_code_values(address_props, lang)
-          .then(function() {
-            return result;
-          });
-      }
-      else {
-        return result;
-      }
     });
 /**    .then(function(result) {
       var props = result && result.properties;
@@ -130,44 +109,6 @@ function topic(id, lang, limit, as_of_time, domains) {
     });
 **/
 };
-
-function get_postal_code_values(address_props, lang) {
-  // gather all postal code ids in all address values
-  var pc_values = {};
-  var pc_ids = [];
-  address_props.forEach(function(address_prop) {
-    var address_values = address_prop.values;
-    if (address_values) {
-      address_values.forEach(function(address_value) {
-        var pc = address_value["/location/mailing_address/postal_code"];
-        if (pc && pc.values && pc.values.length) {
-          var pc_value = pc.values[0];
-          pc_values[pc_value.id] = pc_value;
-          pc_ids.push(pc_value.id);
-        }
-      });
-    }
-  });
-  if (pc_ids.length) {
-    var q = [{
-      mid: null,
-      "id|=": pc_ids,
-      "/location/postal_code/postal_code": null
-    }];
-    return freebase.mqlread(q)
-      .then(function(env) {
-        var results = env.result;
-        if (results) {
-          results.forEach(function(r) {
-            var pc_value = pc_values[r.mid];
-            pc_value["/location/postal_code/postal_code"] = r["/location/postal_code/postal_code"];
-          });
-        }
-      });
-  }
-  return deferred.resolved(true);
-};
-
 
 function get_image_deep_props(id, image_props, lang) {
   return image_deep_props(lang)

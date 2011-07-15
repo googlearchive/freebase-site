@@ -330,7 +330,7 @@
       tid: null
     };
     var md = acre.get_metadata();
-    ["static_base", "libs"].forEach(function(k) {
+    ["libs"].forEach(function(k) {
       SERVER.acre.metadata[k] = md[k];
     });
     if (acre.request.cookies && acre.request.cookies.mwLastWriteTime) {

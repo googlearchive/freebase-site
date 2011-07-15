@@ -1166,8 +1166,7 @@ function ajax_url(path, params) {
  */
 function static_url(path) {
   var args = Array.prototype.slice.call(arguments);
-  var static_base = acre.get_metadata().static_base || "";
-  args.unshift(static_base + "/static");
+  args.unshift("/static");
   return reentrant_url.apply(null, args);
 };
 

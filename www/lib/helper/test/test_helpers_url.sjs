@@ -157,7 +157,7 @@ test("static_url", function() {
   var lib_path = acre.current_script.app.path
     .replace(/^\/\//, "/")
     .replace(".svn.freebase-site.googlecode.dev", "");
-  var PREFIX = (acre.get_metadata().static_base || "") + "/static";
+  var PREFIX = "/static";
 
   equal(h.static_url(), PREFIX + app_path);
   equal(h.static_url(null), PREFIX + app_path);

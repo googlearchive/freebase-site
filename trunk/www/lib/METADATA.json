@@ -69,7 +69,6 @@
       "handler": "acre_script"
     }      
   },
-  "static_base": "",
   "libs" : {
     "suggest" : {
       "base_url": "http://freebaselibs.com/static/suggest/",

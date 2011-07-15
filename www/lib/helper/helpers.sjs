@@ -217,7 +217,7 @@ function extend() {
         var node = node_stack.pop(),
             node_src = node[0],
             node_copy = node[1];
-            
+
         // Extend the base object
         for (name in node_copy) {
           src = node_src[name];
@@ -451,7 +451,7 @@ function is_reciprocal(prop1, prop2) {
 
 function visible_subprops(prop, subprops) {
   if (!subprops) {
-    subprops = prop.expected_type.properties;
+    subprops = prop.expected_type.properties || [];
   }
   var visible = [];
   subprops.forEach(function(subprop, i) {
@@ -459,7 +459,7 @@ function visible_subprops(prop, subprops) {
       return;
     }
     if (unique_ish(subprop.id)) {
-      subprop.unique = true;
+      //subprop.unique = true;
     }
     visible.push(subprop);
   });
@@ -986,7 +986,7 @@ var i18n = acre.require("i18n/i18n.sjs");
  */
 function relative_date(d) {
   var c = new Date();
-  
+
   var  _ = i18n.gettext;
 
   var delta = c.getTime() - d.getTime();

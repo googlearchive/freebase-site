@@ -210,7 +210,7 @@ function type(type_id, page) {
       }, lang)
     ]
   };
-  
+
   return freebase.mqlread(q)
     .then(function(env) {
       var this_type = env.result;
@@ -282,7 +282,7 @@ function type(type_id, page) {
       }
 
       var prop_structures = properties.map(function(prop) {
-        return ph.minimal_prop_structure(prop, lang);
+        return ph.to_prop_structure(prop, lang);
       });
 
       /**

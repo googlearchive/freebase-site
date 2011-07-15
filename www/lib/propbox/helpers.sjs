@@ -53,6 +53,11 @@ function assert(truth, msg) {
   }
 };
 
+/**
+ * Return an input category name for an expected type id.
+ * This is used by propbox.mjt data input components to specify
+ * what kind of client-side (javascript) validation to perform.
+ */
 function data_input_type(type_id) {
   if (!type_id) {
     return "";
@@ -61,231 +66,6 @@ function data_input_type(type_id) {
     return type_id.split("/").pop();
   }
   return "topic";
-};
-
-/**
- * Transform property schema (mql) to the property structure returned by the topic api.
- * If prop_data is specified, convert prop data query result (mql)
- * into prop_structure.values (topic api).
- */
-function to_prop_structure(prop_schema, prop_data, lang) {
-  var structure = minimal_prop_structure(prop_schema, lang);
-  var is_cvt =  prop_schema.expected_type["/freebase/type_hints/mediator"] === true;
-  var visible_subprops;
-  if (is_cvt) {
-    var properties = structure.properties = [];
-    visible_subprops = h.visible_subprops(prop_schema);
-    visible_subprops.forEach(function(subprop_schema) {
-      properties.push(minimal_prop_structure(subprop_schema, lang));
-    });
-  }
-};
-
-function to_prop_values(prop_structure, prop_data, lang) {
-  prop_data = prop_data || [];
-  if (!h.isArray(prop_data)) {
-    prop_data = [prop_data];
-  };
-  var values = [];
-  if (prop_structure.expected_type.mediator) {
-    prop_data.forEach(function(data, i) {
-      var value = {
-        id: data.id
-      };
-      prop_structure.properties.forEach(function(subprop_structure, j) {
-        var subvalues = value[subprop_structure.id] = {values:[]};
-        var subprop_data = data[subprop_structure.id] || [];
-        if (!h.isArray(subprop_data)) {
-          subprop_data = [subprop_data];
-        }
-        subprop_data.forEach(function(subdata) {
-          var prop_value = minimal_prop_value(subprop_structure, subdata, lang);
-          subvalues.values.push(prop_value);
-        });
-      });
-      values.push(value);
-    });
-  }
-  else {
-    prop_data.forEach(function(data, i) {
-      var prop_value = minimal_prop_value(prop_structure, data, lang);
-      values.push(prop_value);
-    });
-  }
-  return values;
-};
-
-function minimal_prop_value(prop_structure, prop_data, lang) {
-  var value = {};
-  var ect = prop_structure.expected_type;
-  if (h.is_literal_type(ect.id)) {
-    value.value = prop_data.value;
-    value.text = prop_data.value;
-    if (prop_data.lang) {
-      value.lang = prop_data.lang;
-    }
-  }
-  else {
-    var name = prop_data.name;
-//    assert(h.isArray(name), "minimal_prop_value: expected prop_data.name to be an array of lang values");
-    value.id = prop_data.id;
-    if (name && name.length) {
-      name = i18n.mql.get_text(lang, prop_data.name);
-      value.text = name.value;
-      value.lang = name.lang;
-    }
-    else {
-      value.text = prop_data.id;
-    }
-  }
-  return value;
-};
-
-/**
- * Transform mql prop schema (@see propbox/mql.sjs") to prop structure returned by topic api.
- */
-function minimal_prop_structure(prop_schema, lang) {
-  var name = i18n.mql.get_text(lang, prop_schema.name);
-  var ect = prop_schema.expected_type;
-  var ect_name = i18n.mql.get_text(lang, ect.name);
-  var structure = {
-    id: prop_schema.id,
-    text: name.value,
-    lang: name.lang,
-    disambiguator: prop_schema["/freebase/property_hints/disambiguator"] === true,
-    unique: prop_schema.unique === true,
-    expected_type: {
-      id: ect.id,
-      text: ect_name.value,
-      lang: ect_name.lang,
-      mediator: ect["/freebase/type_hints/mediator"] === true,
-      enumeration: ect["/freebase/type_hints/enumeration"] === true,
-      included_types: ect["/freebase/type_hints/included_types"] || []
-    }
-  };
-  if (prop_schema.unit) {
-    var unit_name = i18n.mql.get_text(lang, prop_schema.unit.name);
-    structure.unit = {
-      id: prop_schema.unit.id,
-      text: unit_name.value,
-      lang: unit_name.lang,
-      abbreviation: prop_schema.unit["/freebase/unit_profile/abbreviation"]
-    };
-  }
-  if (ect["/freebase/type_hints/mediator"]) {
-    var properties = structure.properties = [];
-    var visible_subprops = h.visible_subprops(prop_schema);
-    visible_subprops.forEach(function(subprop_schema) {
-      properties.push(minimal_prop_structure(subprop_schema, lang));
-    });
-  }
-  return structure;
-};
-
-/**
- * Generate a mqlwrite query.
- */
-function mqlwrite_query(topic_id, prop_structure, params, lang) {
-  if (prop_structure.expected_type.mediator) {
-    return mqlwrite_cvt(topic_id, prop_structure, params, lang);
-  }
-  else {
-    return mqlwrite_object(topic_id, prop_structure, params, lang);
-  }
-};
-
-/**
- * Generate a mqlwrite query for cvt.
- */
-function mqlwrite_cvt(topic_id, prop_structure, params, lang) {
-  var ect = prop_structure.expected_type;
-  var clause = {
-    id: topic_id
-  };
-  var sub_clause = {
-    id: null,
-    type: [{
-      id: ect.id
-    }],
-    create: "unconditional",
-    connect: prop_structure.unique ? "update": "insert"
-  };
-  ect.included_types.forEach(function(t) {
-    sub_clause.type.push({id:t});
-  });
-  prop_structure.properties.forEach(function(subprop_structure) {
-    var subprop_id = subprop_structure.id;
-    if (params[subprop_id]) {
-      sub_clause[subprop_id] = mqlwrite_clause(subprop_structure, params, lang);
-    }
-  });
-  clause[prop_structure.id] = [sub_clause];
-  return clause;
-};
-
-/**
- * Generate a mqlwrite query for a simple property assertion.
- */
-function mqlwrite_object(topic_id, prop_structure, params, lang) {
-  var clause =  {
-    id: topic_id
-  };
-  clause[prop_structure.id] = mqlwrite_clause(prop_structure, params, lang);
-  return clause;
-};
-
-/**
- * Generate a mqlwrite clause.
- * The write clause will always be an array with >= 1 assertions.
- */
-function mqlwrite_clause(prop_structure, params, lang) {
-  var object_values;
-  var ect = prop_structure.expected_type;
-  var is_literal = h.is_literal_type(ect.id);
-  if (is_literal) {
-    object_values = validators.MultiValue(params, prop_structure.id, {
-      required: true,
-      validator: literal_validator(ect.id)
-    });
-  }
-  else {
-    object_values = validators.MultiValue(params, prop_structure.id, {
-      required: true,
-      validator: validators.MqlId
-    });
-  }
-  assert(object_values.length, "mqlwrite_clause: nothing to write for " + prop_structure.id);
-  if (prop_structure.unique) {
-    assert(object_values.length === 1, "mqlwrite_clause: can't write multiple values for unique property " + prop_structure.id);
-  }
-  var clauses = [];
-  var is_text = ect.id === "/type/text";
-  object_values.forEach(function(object_value) {
-    var clause = {
-      connect: prop_structure.unique ? "update": "insert"
-    };
-    if (is_literal) {
-      clause.value = object_value;
-      if (is_text) {
-        clause.lang = lang;
-      }
-    }
-    else {
-      clause.id = object_value;
-      clause.type = [{
-        id: ect.id,
-        connect: "insert"
-      }];
-      (ect.included_types || []).forEach(function(t) {
-        clause.type.push({
-          id: t,
-          connect: "insert"
-        });
-      });
-    }
-    clauses.push(clause);
-  });
-  return clauses;
 };
 
 /**
@@ -315,41 +95,175 @@ function literal_validator(type_id) {
   }
 };
 
-
-
-
-function mqlread_query(topic_id, prop_structure, prop_value, lang) {
-  if (prop_structure.properties) {
-    return mqlread_cvt(topic_id, prop_structure, prop_value, lang);
+/**
+ * Transform a MQL property data result to a Topic API value.
+ *
+ * i.e. {id:..., text:..., lang:...} or {value:..., text:...}
+ *
+ * This is NOT recursive; it does NOT iterate over sub property values
+ */
+function minimal_prop_value(prop_structure, prop_data, lang) {
+  if (!prop_data) {
+    return null;
+  }
+  var value = {};
+  var ect = prop_structure.expected_type;
+  if (h.is_literal_type(ect.id)) {
+    value.value = prop_data.value;
+    value.text = ""+prop_data.value;
+    if (prop_data.lang) {
+      value.lang = prop_data.lang;
+    }
   }
   else {
-    return mqlread_object(topic_id, prop_structure, prop_value, lang);
+    var name = prop_data.name;
+    value.id = prop_data.id;
+    if (name && name.length) {
+      name = i18n.mql.get_text(lang, prop_data.name);
+      value.text = name.value;
+      value.lang = name.lang;
+    }
+    else {
+      value.text = prop_data.id;
+    }
   }
+  return value;
 };
 
+/**
+ * Transform a MQL prop schema (@see propbox/mql.sjs") to a prop structure returned by Topic API.
+ *
+ * {
+ *    id:
+ *    text:
+ *    lang:
+ *    disambiguator:
+ *    unique:
+ *    unit*:
+ *    expected_type: {
+ *      id:
+ *      text:
+ *      lang:
+ *      mediator*:
+ *      enumeration*:
+ *      included_types*:
+ *    }
+ * }
+ *
+ * (*) In addition, to the standard prop structure,
+ * this adds additional schema hints (unit, mediator, enumeration, included_types).
+ *
+ * This is NOT recursive; it does NOT iterate over sub properties (expected_type.properties).
+ */
+function minimal_prop_structure(prop_schema, lang) {
+  var name = i18n.mql.get_text(lang, prop_schema.name);
+  var ect = prop_schema.expected_type;
+  var ect_name = i18n.mql.get_text(lang, ect.name);
+  var structure = {
+    id: prop_schema.id,
+    text: name.value,
+    lang: name.lang,
+    disambiguator: prop_schema["/freebase/property_hints/disambiguator"] === true,
+    unique: prop_schema.unique === true,
+    expected_type: {
+      id: ect.id,
+      text: ect_name.value,
+      lang: ect_name.lang,
+      mediator: ect["/freebase/type_hints/mediator"] === true,
+      enumeration: ect["/freebase/type_hints/enumeration"] === true,
+      included_types: ect["/freebase/type_hints/included_types"] || []
+    }
+  };
+  var unit = prop_schema.unit;
+  if (unit) {
+    var unit_name = i18n.mql.get_text(lang, unit.name);
+    structure.unit = {
+      id: unit.id,
+      text: unit_name.value,
+      lang: unit_name.lang,
+      abbreviation: unit["/freebase/unit_profile/abbreviation"]
+    };
+  }
+  var master_property = prop_schema.master_property;
+  if (master_property) {
+    structure.master_property = master_property;
+  }
+  var reverse_property = prop_schema.reverse_property;
+  if (reverse_property) {
+    structure.reverse_property = reverse_property;
+  }
+  return structure;
+};
 
-function mqlread_cvt(topic_id, prop_structure, prop_value, lang) {
+/**
+ * minimal_prop_structure + recursive into sub properties
+ */
+function to_prop_structure(prop_schema, lang) {
+  var prop_structure = minimal_prop_structure(prop_schema, lang);
+  var ect = prop_schema.expected_type;
+  var subprops = ect.properties || [];
+  if (subprops.length) {
+    prop_structure.properties = [];
+    var visible_subprops = h.visible_subprops(prop_schema);
+    visible_subprops.forEach(function(subprop) {
+      prop_structure.properties.push(to_prop_structure(subprop, lang));
+    });
+  }
+  return prop_structure;
+};
+
+/**
+ * Convert MQL query results (prop_data) to Topic API values format.
+ *
+ * {
+ *   ...
+ *   "/prop/id": {
+ *     ...
+ *     values: [...]
+ *   }
+ * }
+ */
+function to_prop_values(prop_structure, prop_data, lang) {
+  prop_data = prop_data || [];
+  if (!h.isArray(prop_data)) {
+    prop_data = [prop_data];
+  };
+  var values = [];
+  for (var i=0,l=prop_data.length; i<l; i++) {
+    var data = prop_data[i];
+    var value = minimal_prop_value(prop_structure, data, lang);
+    values.push(value);
+    var subprop_structures = prop_structure.properties || [];
+    for (var j=0,k=subprop_structures.length; j<k; j++) {
+      var subprop_structure = subprop_structures[j];
+      var subprop_data = data[subprop_structure.id];
+      if (subprop_data.length) {
+        value[subprop_structure.id] = {values:to_prop_values(subprop_structure, subprop_data, lang)};
+      }
+    }
+  }
+  return values;
+};
+
+function mqlread_query(topic_id, prop_structure, prop_value, lang) {
   var clause = {
     id: topic_id
   };
-  clause[prop_structure.id] = [{
-    id: prop_value
-  }];
-  prop_structure.properties.forEach(function(subprop_structure) {
-    var subclause = mqlread_clause(subprop_structure, null, lang);
-    clause[prop_structure.id][0][subprop_structure.id] = subclause;
-  });
+  var prop_clause = mqlread_clause(prop_structure, prop_value, lang);
+  var properties = prop_structure.properties;
+  if (properties) {
+    properties.forEach(function(subprop_structure) {
+      h.extend(prop_clause[0], mqlread_query(prop_value, subprop_structure, null, lang));
+      if (topic_id && h.is_reciprocal(prop_structure, subprop_structure)) {
+        // don't get the subject id (topic_id) if subprop_structure is a reciprocal property of prop_structure
+        prop_clause[0][subprop_structure.id][0]["id!="] = topic_id;
+      }
+    });
+  }
+  clause[prop_structure.id] = prop_clause;
   return clause;
 };
 
-
-function mqlread_object(topic_id, prop_structure, prop_value, lang) {
-  var clause = {
-    id: topic_id
-  };
-  clause[prop_structure.id] = mqlread_clause(prop_structure, prop_value, lang);
-  return clause;
-};
 
 function mqlread_clause(prop_structure, prop_value, lang) {
   var ect = prop_structure.expected_type;
@@ -368,11 +282,13 @@ function mqlread_clause(prop_structure, prop_value, lang) {
   }
   else {
     clause.id = prop_value;
-    if (lang) {
-      clause.name = i18n.mql.text_clause(lang);
-    }
-    else {
-      clause.name = [{value:null, lang:null, optional:true}];
+    if (!ect.mediator) {
+      if (lang) {
+        clause.name = i18n.mql.text_clause(lang);
+      }
+      else {
+        clause.name = [{value:null, lang:null, optional:true}];
+      }
     }
   }
   return [clause];

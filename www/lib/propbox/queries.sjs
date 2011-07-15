@@ -47,6 +47,25 @@ function prop_schema(pid, lang) {
   return freebase.mqlread(q)
     .then(function(env) {
       return env.result;
+    })
+    .then(function(result) {
+      var ect = result.expected_type;
+      if (ect.id === "/location/mailing_address") {
+        return prop_schema("/location/mailing_address/postal_code", lang)
+          .then(function(postal_schema) {
+            var ect_props = ect.properties;
+            for (var i=0,l=ect_props.length; i<l; i++) {
+              if (ect_props[i].id === "/location/mailing_address/postal_code") {
+                ect_props[i] = postal_schema;
+                break;
+              }
+            }
+            return result;
+          });
+      }
+      else {
+        return result;
+      }
     });
 };
 
@@ -81,7 +100,7 @@ function prop_schemas(/** pid_1, pid_2, ... , pid_N, lang **/) {
 function prop_structure(pid, lang) {
   return prop_schema(pid, lang)
     .then(function(schema) {
-      return ph.minimal_prop_structure(schema, lang);
+      return ph.to_prop_structure(schema, lang);
     });
 };
 
@@ -92,7 +111,7 @@ function prop_structures(/** pid_1, pid_2, ... , pid_N, lang **/) {
     .then(function(schemas) {
       var structures = [];
       schemas.forEach(function(schema) {
-        structures.push(ph.minimal_prop_structure(schema, lang));
+        structures.push(ph.to_prop_structure(schema, lang));
       });
       return structures;
     });

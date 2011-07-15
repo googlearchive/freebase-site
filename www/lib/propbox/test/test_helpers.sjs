@@ -63,62 +63,6 @@ test("data_input_type", function() {
   same(ph.data_input_type("/film/film"), "topic");
 });
 
-test("minimal_prop_structure", function() {
-  var topic;  // topic data from topic api
-  topic_api.topic("/en/bob_dylan", "/lang/en")
-    .then(function(t) {
-      topic = t;
-    });
-  acre.async.wait_on_results();
-  ok(topic, "Got topic");
-
-  function test_minimal(schema, structure, lang) {
-    var ect = schema.expected_type;
-    structure = h.extend(true, {}, structure, {
-      id: schema.id,
-      expected_type: {
-        mediator: ect["/freebase/type_hints/mediator"] === true,
-        enumeration: ect["/freebase/type_hints/enumeration"] === true,
-        included_types: ect["/freebase/type_hints/included_types"]
-      }
-    });
-    var minimal = ph.minimal_prop_structure(schema, lang);
-    if ("description" in structure) {
-      minimal.description = structure.description;
-    }
-    if ("values" in structure) {
-      minimal.values = structure.values;
-    }
-    //console.log(minimal, structure);
-    same(minimal, structure);
-  };
-
-  [
-    "/people/person/date_of_birth",
-    "/people/person/height_meters",
-    "/people/person/gender",
-    "/people/person/nationality"
-
-    // cvt
-    // these need to be tested when topic api returns empty cvt properties
-    //"/people/person/spouse_s",
-    //"/people/person/sibling_s",
-    //"/people/person/employment_history"
-  ].forEach(function(pid) {
-    (function() {
-      var schema, structure, minimal;
-      queries.prop_schema(pid, "/lang/en")
-        .then(function(s) {
-          schema = s;
-        });
-      acre.async.wait_on_results();
-      ok(schema, "Got " + pid + " schema");
-      structure = topic.properties[pid];
-      test_minimal(schema, structure, "/lang/en");
-    })();
-  });
-});
-
 test("literal_validator", function() {
   var map = {
     "/type/datetime": validators.Timestamp,
@@ -148,204 +92,485 @@ test("literal_validator", function() {
   });
 });
 
-test("mqlwrite_clause /common/topic/alias", function() {
-  var lang = "/lang/en";
-  var alias;
-  get_prop_structure("/common/topic/alias", lang)
-    .then(function(ps) {
-      alias = ps;
-    });
-  acre.async.wait_on_results();
-  ok(alias, "Got /common/topic/alias");
-  try {
-    ph.mqlwrite_clause(alias, {}, lang);
-    ok(false, "expected invalid params");
-  }
-  catch (e if e instanceof validators.Invalid) {
-    ok(true, "got expected invalid: " + e);
-  }
-  catch (e) {
-    ok(false, "got unxpected exception: " + e);
-  }
-  same(ph.mqlwrite_clause(alias, {"/common/topic/alias": "alias"}, lang),
-       [{value:"alias", lang:lang, connect:"insert"}]);
-
-  same(ph.mqlwrite_clause(alias, {"/common/topic/alias": ["alias1", "alias2", "alias3"]}, lang),
-       [{value:"alias1", lang:lang, connect:"insert"},
-        {value:"alias2", lang:lang, connect:"insert"},
-        {value:"alias3", lang:lang, connect:"insert"}]);
-});
-
-test("mqlwrite_clause /people/person/date_of_birth", function() {
-  var lang = "/lang/en";
-  var dob;
-  get_prop_structure("/people/person/date_of_birth", lang)
-    .then(function(ps) {
-      dob = ps;
-    });
-  acre.async.wait_on_results();
-  ok(dob, "Got /people/person/date_of_birth");
-  try {
-    ph.mqlwrite_clause(dob, {"/people/person/date_of_birth": "dob"}, lang);
-    ok(false, "expected invalid datetime");
-  }
-  catch (e if e instanceof validators.Invalid) {
-    ok(true, "got expected invalid: " + e);
-  }
-  catch (e) {
-    ok(false, "got unxpected exception: " + e);
-  }
-
-  same(ph.mqlwrite_clause(dob, {"/people/person/date_of_birth": ["2006"]}, lang),
-       [{value:"2006", connect:"update"}]);
-
-  try {
-    ph.mqlwrite_clause(dob, {"/people/person/date_of_birth": ["2006", "2007"]}, lang);
-    ok(false, "expected invalid params");
-  }
-  catch (e if e instanceof validators.Invalid) {
-    ok(true, "got expected invalid: " + e);
-  }
-  catch (e) {
-    ok(false, "got unxpected exception: " + e);
-  }
-});
-
-test("mqlwrite_clause /people/person/nationality", function() {
-  var lang = "/lang/en";
-  var nationality;
-  get_prop_structure("/people/person/nationality", lang)
-    .then(function(ps) {
-      nationality = ps;
-    });
-  acre.async.wait_on_results();
-  ok(nationality, "Got /people/person/nationality");
-  var expected = [{
-    id: "/en/united_states",
-    connect: "insert"
-  }, {
-    id: "/en/mexico",
-    connect: "insert"
-  }];
-  expected.forEach(function(o) {
-    o.type = [{id:nationality.expected_type.id, connect:"insert"}];
-    nationality.expected_type.included_types.forEach(function(t) {
-      o.type.push({id:t, connect:"insert"});
-    });
-  });
-  same(ph.mqlwrite_clause(nationality, {
-    "/people/person/nationality": ["/en/united_states", "/en/mexico"]
-  }, lang), expected);
-});
-
-test("mqlwrite_object /people/person/height_meters", function() {
-  var lang = "/lang/en";
-  var height;
-  get_prop_structure("/people/person/height_meters", lang)
-    .then(function(ps) {
-      height = ps;
-    });
-  acre.async.wait_on_results();
-  ok(height, "Got /people/person/height_meters");
-  var expected = {
-    id: "/subject/id",
-    "/people/person/height_meters": [{
-      value: 1.7,
-      connect: "update"
-    }]
+test("mqlread_clause", function() {
+  // /type/text
+  var prop_structure = {
+    id: "/prop/id",
+    expected_type: {
+      id: "/type/text"
+    }
   };
-  same(ph.mqlwrite_object("/subject/id", height, {"/people/person/height_meters": "1.7"}, lang),
-       expected);
-});
+  same(ph.mqlread_clause(prop_structure, null, "/lang/ko"), [{
+    value: null,
+    lang: null,
+    "lang|=": ["/lang/ko", "/lang/en"],
+    optional: true
+  }]);
+  same(ph.mqlread_clause(prop_structure, "korean name", "/lang/ko"), [{
+    value: "korean name",
+    lang: null,
+    "lang|=": ["/lang/ko", "/lang/en"],
+    optional: true
+  }]);
 
-test("mqlwrite_object /film/film/directed_by", function() {
-  var lang = "/lang/en";
-  var directed_by;
-  get_prop_structure("/film/film/directed_by", lang)
-    .then(function(ps) {
-      directed_by = ps;
-    });
-  acre.async.wait_on_results();
-  ok(directed_by, "Got /film/film/directed_by");
-  var expected = {
-    id: "/film/id",
-    "/film/film/directed_by": [{
-      id: "/director/1",
-      connect: "insert"
+  // /type/boolean
+  prop_structure = {
+    id: "/prop/id",
+    expected_type: {
+      id: "/type/boolean"
+    },
+    unique: true
+  };
+  same(ph.mqlread_clause(prop_structure, null, "/lang/ko"), [{
+    value: null,
+    optional: true
+  }]);
+  same(ph.mqlread_clause(prop_structure, false, "/lang/ko"), [{
+    value: false,
+    optional: true
+  }]);
+
+  //type/int
+  prop_structure = {
+    id: "/prop/id",
+    expected_type: {
+      id: "/type/int"
+    }
+  };
+  same(ph.mqlread_clause(prop_structure, null, "/lang/ko"), [{
+    value: null,
+    optional: true
+  }]);
+  same(ph.mqlread_clause(prop_structure, 0, "/lang/ko"), [{
+    value: 0,
+    optional: true
+  }]);
+
+  // topic
+  prop_structure = {
+    id: "/prop/id",
+    expected_type: {
+      id: "/some/type"
+    }
+  };
+  same(ph.mqlread_clause(prop_structure, null, "/lang/en"), [{
+    id: null,
+    name: [{
+      value: null,
+      lang: null,
+      "lang|=": ["/lang/en"],
+      optional: true
+    }],
+    optional: true
+  }]);
+
+  // mediator
+  prop_structure = {
+    id: "/prop/id",
+    expected_type: {
+      id: "/some/mediator",
+      mediator: true
+    },
+    properties: [{
+      id: "/subprop/1",
+      expected_type: {
+        id: "/type/text"
+      }
     }, {
-      id: "/director/2",
-      connect: "insert"
+      id: "/subprop/2",
+      expected_type: {
+        id: "/some/type2"
+      }
     }]
   };
-  expected["/film/film/directed_by"].forEach(function(o) {
-    o.type = [{id:directed_by.expected_type.id, connect:"insert"}];
-    directed_by.expected_type.included_types.forEach(function(t) {
-      o.type.push({id:t, connect:"insert"});
-    });
-  });
-  var params = {
-    "/film/film/directed_by": ["/director/1", "/director/2"]
-  };
-  same(ph.mqlwrite_object("/film/id", directed_by, params, lang), expected);
-  same(ph.mqlwrite_query("/film/id", directed_by, params, lang), expected);
+  same(ph.mqlread_clause(prop_structure, null, "/lang/zh"), [{
+    id: null,
+    optional: true
+  }]);
 });
 
-test("mqlwrite_cvt /film/film/starring", function() {
-  var lang = "/lang/en";
-  var starring;
-  get_prop_structure("/film/film/starring", lang)
-    .then(function(ps) {
-      starring = ps;
-    });
-  acre.async.wait_on_results();
-  ok(starring, "Got /film/film/starring");
-
-  var expected = {
-    id: "/film/id",
-    "/film/film/starring": [{
+test("mqlread_query", function() {
+  // /mediator
+  var prop_structure = {
+    id: "/prop/id",
+    expected_type: {
+      id: "/some/mediator",
+      mediator: true
+    },
+    properties: [{
+      id: "/subprop/1",
+      expected_type: {
+        id: "/type/text"
+      }
+    }, {
+      id: "/subprop/2",
+      expected_type: {
+        id: "/some/type2"
+      }
+    }]
+  };
+  same(ph.mqlread_query("/en/foo", prop_structure, null, "/lang/iw"), {
+    id: "/en/foo",
+    "/prop/id": [{
       id: null,
-      type: [{id: starring.expected_type.id}],
-      create: "unconditional",
-      connect: "insert",
-      "/film/performance/actor": [{
-        id: "/actor/id",
-        connect: "update"
+      optional: true,
+      "/subprop/1": [{
+        value: null,
+        lang: null,
+        "lang|=": ["/lang/iw", "/lang/en"],
+        optional: true
       }],
-      "/film/performance/character": [{
-        id: "/character/id",
-        connect: "update"
+      "/subprop/2": [{
+        id: null,
+        name: [{
+          value: null,
+          lang: null,
+          "lang|=": ["/lang/iw", "/lang/en"],
+          optional: true
+        }],
+        optional: true
+      }]
+    }]
+  });
+  same(ph.mqlread_query("/en/foo", prop_structure, "/m/123", "/lang/iw"), {
+    id: "/en/foo",
+    "/prop/id": [{
+      id: "/m/123",
+      optional: true,
+      "/subprop/1": [{
+        value: null,
+        lang: null,
+        "lang|=": ["/lang/iw", "/lang/en"],
+        optional: true
       }],
-      "/film/performance/special_performance_type": [{
-        id: "/performance/1",
-        connect: "insert"
-      },{
-        id: "/performance/2",
-        connect: "insert"
+      "/subprop/2": [{
+        id: null,
+        name: [{
+          value: null,
+          lang: null,
+          "lang|=": ["/lang/iw", "/lang/en"],
+          optional: true
+        }],
+        optional: true
+      }]
+    }]
+  });
+
+
+  // deep property
+  prop_structure = {
+    id: "/prop/id",
+    expected_type: {
+      id: "/some/type"
+    },
+    properties: [{
+      id: "/subprop/1",
+      expected_type: {
+        id: "/type/text"
+      }
+    }, {
+      id: "/subprop/2",
+      expected_type: {
+        id: "/some/type2"
+      },
+      properties: [{
+        id: "/deep/1",
+        expected_type: {
+          id: "/type/float"
+        }
       }]
     }]
   };
-  var clause = expected["/film/film/starring"][0];
-  starring.properties.forEach(function(p) {
-    if (clause[p.id]) {
-      clause[p.id].forEach(function(o) {
-        o.type = [{id:p.expected_type.id, connect:"insert"}];
-        p.expected_type.included_types.forEach(function(t) {
-          o.type.push({id:t, connect:"insert"});
-        });
-      });
-    }
+  same(ph.mqlread_query("/en/foo", prop_structure, null, "/lang/en"), {
+    id: "/en/foo",
+    "/prop/id": [{
+      id: null,
+      name: [{
+        value: null,
+        lang: null,
+        "lang|=": ["/lang/en"],
+        optional: true
+      }],
+      optional: true,
+      "/subprop/1": [{
+        value: null,
+        lang: null,
+        "lang|=": ["/lang/en"],
+        optional: true
+      }],
+      "/subprop/2": [{
+        id: null,
+        name: [{
+          value: null,
+          lang: null,
+          "lang|=": ["/lang/en"],
+          optional: true
+        }],
+        optional: true,
+        "/deep/1": [{
+          value: null,
+          optional: true
+        }]
+      }]
+    }]
   });
-  var params = {
-    "/film/performance/actor": "/actor/id",
-    "/film/performance/character": "/character/id",
-    "/film/performance/special_performance_type": ["/performance/1", "/performance/2"]
-  };
-  same(ph.mqlwrite_cvt("/film/id", starring, params, lang), expected);
-  same(ph.mqlwrite_query("/film/id", starring, params, lang), expected);
 });
 
-function get_prop_structure(pid, lang) {
-  return queries.prop_structure(pid, lang);
+
+test("minimal_prop_value", function() {
+  // topic
+  var prop_structure = {
+    id: "/some/prop/id",
+    expected_type: {
+      id: "/some/type/id"
+    }
+  };
+
+  same(ph.minimal_prop_value(prop_structure, null, "/lang/en"), null);
+
+  var prop_data = {
+    id: "/some/topic/id",
+    name: [{value:"ko name", lang:"/lang/ko"},{value:"en name", lang:"/lang/en"}]
+  };
+  same(ph.minimal_prop_value(prop_structure, prop_data, "/lang/ko"), {
+    id: "/some/topic/id",
+    text: "ko name",
+    lang: "/lang/ko"
+  });
+  same(ph.minimal_prop_value(prop_structure, prop_data, "/lang/en"), {
+    id: "/some/topic/id",
+    text: "en name",
+    lang: "/lang/en"
+  });
+
+  prop_data = {
+    id: "/some/topic/id"
+  };
+  same(ph.minimal_prop_value(prop_structure, prop_data, "/lang/en"), {
+    id: "/some/topic/id",
+    text: "/some/topic/id"
+  });
+
+  prop_structure = {
+    id: "/some/prop/id",
+    expected_type: {
+      id: "/type/text"
+    }
+  };
+  prop_data = {
+    value: "ko value",
+    lang: "/lang/ko"
+  };
+  same(ph.minimal_prop_value(prop_structure, prop_data, "/lang/ko"), {
+    value: "ko value",
+    text: "ko value",
+    lang: "/lang/ko"
+  });
+
+  prop_structure = {
+    id: "/some/prop/id",
+    expected_type: {
+      id: "/type/int"
+    }
+  };
+  prop_data = {
+    value: 0
+  };
+  same(ph.minimal_prop_value(prop_structure, prop_data, "/lang/ko"), {
+    value: 0,
+    text: "0"
+  });
+});
+
+
+function test_minimal_prop_structure(minimal, schema) {
+  var i,l;
+  // check required keys
+  var keys = [
+    "id", "string",
+    "text", "string",
+    "lang", "string",
+    "disambiguator", "boolean",
+    "unique", "boolean",
+    "expected_type", "object"
+  ];
+  for (i=0,l=keys.length; i<l; i+=2) {
+    var key = keys[i];
+    var val = minimal[key];
+    ok(key in minimal, key);
+    ok(val != null, key);
+    same(typeof val, keys[i+1], key);
+  }
+  // check expected_type metadata
+  var ect = schema.expected_type;
+  keys = ["mediator", "enumeration", "included_types"];
+  for (i=0,l=keys.length; i<l; i++) {
+    var key = keys[i];
+    var val1 = minimal.expected_type[key];
+    var val2 = key in ect ? ect[key] : ect["/freebase/type_hints/" + key];
+    if (typeof val1 === "boolean") {
+      // convert null to false
+      val2 = !!val2;
+    }
+    same(val1, val2, key);
+  };
+  // optional keys
+  keys = ["unit", "master_property", "reverse_property"];
+  for (i=0,l=keys.length; i<l; i++) {
+    var key = keys[i];
+    if (key in minimal) {
+      ok(minimal[key] && schema[key]);
+      equal(minimal[key].id, schema[key].id);
+    }
+  }
 };
+
+test("minimal_prop_structure", function() {
+  [
+    "/people/person/date_of_birth",
+    "/people/person/height_meters",
+    "/people/person/gender",
+    "/people/person/nationality",
+
+    // cvt
+    // these need to be tested when topic api returns empty cvt properties
+    "/people/person/spouse_s",
+    "/people/person/sibling_s",
+    "/people/person/employment_history"
+  ].forEach(function(pid) {
+    (function() {
+      var schema, expected;
+      queries.prop_schema(pid, "/lang/en")
+        .then(function(s) {
+          schema = s;
+        });
+      acre.async.wait_on_results();
+      ok(schema, "Got " + pid + " schema");
+      var minimal = ph.minimal_prop_structure(schema, "/lang/en");
+      test_minimal_prop_structure(minimal, schema);
+    })();
+  });
+});
+
+test("to_prop_structure", function() {
+  function test_structure(structure, schema) {
+    test_minimal_prop_structure(structure, schema);
+    var ect = schema.expected_type;
+    var properties = h.visible_subprops(schema);
+    if (properties && properties.length) {
+      ok(structure.properties);
+      console.log(structure.id, structure.properties, properties);
+      equal(structure.properties.length, properties.length);
+      for (var i=0,l=properties.length; i<l; i++) {
+        test_structure(structure.properties[i], properties[i]);
+      }
+    }
+  };
+  [
+    "/people/person/date_of_birth",
+    "/people/person/height_meters",
+    "/people/person/gender",
+    "/people/person/nationality",
+
+    // cvt
+    // these need to be tested when topic api returns empty cvt properties
+    "/people/person/spouse_s",
+    "/people/person/sibling_s",
+    "/people/person/employment_history"
+  ].forEach(function(pid) {
+    (function() {
+      var schema, expected;
+      queries.prop_schema(pid, "/lang/en")
+        .then(function(s) {
+          schema = s;
+        });
+      acre.async.wait_on_results();
+      ok(schema, "Got " + pid + " schema");
+      var structure = ph.to_prop_structure(schema, "/lang/en");
+      test_structure(structure, schema);
+    })();
+  });
+});
+
+
+function decorate_value(value, from_value) {
+  ["text", "url"].forEach(function(k) {
+    if (k in from_value) {
+      value[k] = from_value[k];
+    }
+  });
+  if (value.id && from_value.id &&
+      /^\/m\//.test(from_value.id) &&
+      /^\/en\//.test(value.id)) {
+    // topic api returns mids
+    value.id = from_value.id;
+  }
+};
+
+
+test("to_prop_values", function() {
+  var topic;  // topic data from topic api
+  topic_api.topic("/en/larry_page", "/lang/en")
+    .then(function(t) {
+      topic = t;
+    });
+  acre.async.wait_on_results();
+  ok(topic, "Got topic");
+
+  function test_values(structure, prop_data, expected, lang) {
+    var values = ph.to_prop_values(structure, prop_data, lang);
+    equal(values.length, expected.length);
+    values.forEach(function(value, i) {
+      var expected_value = expected[i];
+      decorate_value(value, expected_value);
+      if (structure.properties) {
+        structure.properties.forEach(function(substructure) {
+          var subprop1 = value[substructure.id];
+          var subprop2 =  expected_value[substructure.id];
+          if (! (subprop1 || subprop2)) {
+            return;
+          }
+          for (var k in subprop2) {
+            if (k !== "values") {
+              subprop1[k] = subprop2[k];
+            }
+          }
+          if (subprop1.values) {
+            equal(subprop1.values.length, subprop2.values.length);
+            subprop1.values.forEach(function(subvalue, k) {
+              decorate_value(subvalue, subprop2.values[k]);
+            });
+          }
+        });
+      }
+    });
+    same(values, expected);
+  };
+
+  [
+    "/people/person/date_of_birth",
+    "/people/person/height_meters",
+    "/people/person/gender",
+    "/people/person/nationality",
+
+    // cvt
+    // these need to be tested when topic api returns empty cvt properties
+    "/people/person/spouse_s",
+    "/people/person/sibling_s",
+    "/people/person/employment_history"
+  ].forEach(function(pid) {
+    (function() {
+      var structure, prop_data, expected;
+      queries.prop_data("/en/larry_page", pid, null, "/lang/en")
+        .then(function(data) {
+           prop_data = data;
+        });
+      acre.async.wait_on_results();
+      structure = topic.properties[pid];
+      expected = topic.properties[pid].values;
+      test_values(structure, prop_data, expected, "/lang/en");
+    })();
+  });
+});
 
 acre.test.report();

@@ -3,7 +3,7 @@ var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 
 // freebase-site trunk lib
-var lib = "23b.lib.www.tags.svn.freebase-site.googlecode.dev";
+var lib = "//23b.lib.www.tags.svn.freebase-site.googlecode.dev";
 
 var environment_rules = { 
 

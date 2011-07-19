@@ -34,6 +34,7 @@ var validators = acre.require("validator/validators.sjs");
 var object_query = acre.require("queries/object.sjs");
 var freebase_object = acre.require("template/freebase_object.sjs");
 
+var self = this;
 /**
  * Extend the default rules for this site with the environment specific rules.
  */
@@ -233,7 +234,7 @@ function PrefixRouter(app_labels) {
 /**
  * Deal with the special case of routing 
  *
- *   Note: to debug the homepage, use the /homepage prefix rule
+ *   Note: to debug the homepage, use the \/homepage prefix rule 
  *         (e.g., /homepage?acre.console=1)
  *
  */
@@ -317,21 +318,20 @@ function ObjectRouter(app_labels) {
       if (o) {
 
         if (o.replaced_by) {
-          return redirect(o.replaced_by.mid);
+          return h.redirect(self, o.replaced_by.mid);
         }
         else if (!(req_id === o.mid || req_id === o.id)) {
           // request id is NOT a mid and NOT a mql "approved" id
-          return redirect(o.mid);
+          return h.redirect(self, o.mid);
         }
         else {
-          var re_en = /^\/en\//;
-          if (re_en.test(req_id)) {
+          if (h.startsWith(req_id, "/en/")) {
             // request id is /en/*, redirect to mid
-            return redirect(o.mid);
+            return h.redirect(self, o.mid);
           }
-          else if (req_id === o.mid && !(o.id === o.mid || re_en.test(o.id))) {
+          else if (req_id === o.mid && !(o.id === o.mid || h.startsWith(o.id, "/en"))) {
             // request id is mid, but object id is NOT /en/*
-            return redirect(o.id);
+            return h.redirect(self, o.id);
           }
           else {
             // we should now have the canonical id

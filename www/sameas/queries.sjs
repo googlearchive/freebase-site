@@ -107,41 +107,55 @@ var _NO_CATEGORY = {
   name: "_NO_CATEGORY"
 };
 
-function weblinks_by_category2(id) {
+var _NO_AUTHORITY = { 
+  id: "_NO_AUTHORITY",
+  name: "_NO_AUTHORITY"
+};
+
+function organized_weblinks(id) {
 
   return weblinks(id)
     .then(function(links) {
     
-      var seen = {};
-      var authorities = [];
+      var known_authorities = {};
       var webpages = [];
+      var authorities = [];
 
       links.forEach(function(link) {
-        console.log(link);
+        // construct the weblink object
         var weblink = {
           key: link.key,
           url: link.url,
           description: link.description,
           template: link.template.template,
           ns: link.template.ns.id,
-          authority: link.template.ns["/base/sameas/web_id/authority"],
           category: link.category
         };
+
+        // attach weblink object to authorities if it's topic equivalent
         if(link.category && link.category.id === '/en/topic_equivalent') {
-          authorities.push(weblink);
+          var authority = link.template.ns["/base/sameas/web_id/authority"] || _NO_AUTHORITY;
+          var existing = known_authorities[authority.id];
+
+          if(!existing) {
+            existing = known_authorities[authority.id] = h.extend({}, authority, {weblinks:[]});
+            authorities.push(existing);
+          }
+
+          existing.weblinks.push(weblink);
         }
+
+        // otherwise, attach to regular webpage object
         else {
           webpages.push(weblink);
         }
       });
 
-      authorities.sort(weblink_sort);
-      webpages.sort(weblink_sort);
-      
       var weblinks = {
         authorities: authorities,
         webpages: webpages
       }
+      console.log('weblinks', weblinks);
       return weblinks; 
     });
 };

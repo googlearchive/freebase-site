@@ -137,11 +137,13 @@ function organized_weblinks(id) {
           var authority = link.template.ns["/base/sameas/web_id/authority"] || _NO_AUTHORITY;
           var existing = known_authorities[authority.id];
 
+          // If we haven't seen this authority yet add to the list
           if(!existing) {
             existing = known_authorities[authority.id] = h.extend({}, authority, {weblinks:[]});
             authorities.push(existing);
           }
 
+          // push the weblink to the appropriate authority
           existing.weblinks.push(weblink);
         }
 
@@ -150,6 +152,19 @@ function organized_weblinks(id) {
           webpages.push(weblink);
         }
       });
+
+      // sort weblinks within each authority alphabetically
+      authorities.forEach(function(authority) {
+        authority.weblinks.sort(weblink_sort);
+      });
+
+      // move unknown authorites to the end of the list for display
+      for(i=0; i < authorities.length; i++) {
+        if(authorities[i].id === '_NO_AUTHORITY') {
+          var to_move = authorities.splice(i, 1);
+          authorities.push(to_move[0]);
+        } 
+      }
 
       var weblinks = {
         authorities: authorities,

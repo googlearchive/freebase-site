@@ -211,8 +211,7 @@ class ActionStatic:
     c.set_acre(Acre.Get(c))
 
     acre = Acre.Get(c)
-    acre.start()
-    if not acre.is_running() and acre.build(target='devel', config_dir= "%s/appengine-config" % site.site_dir):
+    if not (acre.is_running() or (acre.build(target='devel', config_dir= "%s/appengine-config" % site.site_dir) and acre.start())):
       return c.error('There was an error starting acre - cannot generate static files without a running acre instance.')
 
     success = c.googlecode_login()
@@ -240,7 +239,7 @@ class ActionDeployAcre:
     c = self.context
     site = Site.Get(c)
     acre = Acre.Get(c)
-    config = c.resolve_config()
+    config = c.resolve_config(c.options.host)
 
     if not site:
       return c.error("Could not figure out location of site. You can specify --site_dir as an option, or run the script from within a site svn checkout directory structure to figure it out automatically.")
@@ -1211,19 +1210,37 @@ class ActionCreateRoutes:
 
     site = Site.Get(self.context)
 
+    lib = None
+    lib_app = App.Get(self.context, "lib")
+    last_tag = lib_app.last_tag()
+    if last_tag:
+      lib = "//%s.%s.www.tags.svn.freebase-site.googlecode.dev" % (last_tag, "lib")
+    else:
+      lib = "//lib.www.trunk.svn.freebase-site.googlecode.dev"
+
+
     print """
+
+// site repository trunk and tags paths. 
 var codebase = \"%s\";
 var tags_codebase = \"%s\";
 
-var labels = {
-""" % (site.conf("acre_id_suffix_trunk"), site.conf("acre_id_suffix_tags"))
+// freebase-site trunk lib
+var lib = \"%s\";
 
-    if site.conf("external_apps"):
-      for app, app_id in site.conf("external_apps").iteritems():
-        print "  \"%s\": \"%s\"," % (app, app_id)
+var environment_rules = { 
+
+    // Override labels. All labels point to trunk by default.
+    \"labels\" : {
+        \"lib\": lib,
+""" % (site.conf("acre_id_suffix_trunk"), site.conf("acre_id_suffix_tags"), lib)
 
     apps = site.apps()
     for i,app_key in enumerate(apps):
+
+      if app_key == "lib":
+        continue
+
       app = App.Get(self.context, app_key)
       last_tag = app.last_tag()
 
@@ -1234,11 +1251,16 @@ var labels = {
         
 
     print """
+    },
+ 
+    // Override prefix.
+
+    "prefix" : []
 };
 
-var rules = {};
+var default_rules = acre.require(lib + \"/site/freebase-site/default_routes.sjs\").init_default_routes(lib);
 
-acre.require(labels.lib + "/routing/router.sjs").route(labels, rules, this);
+acre.require(lib + \"/routing/router.sjs\").route(default_rules, environment_rules, this);
 """
 
     return True

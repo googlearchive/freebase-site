@@ -1143,7 +1143,7 @@ class Context():
 
             # If this configuration value matches what was passed in, then the get the real config
             # value from the filename of the project.<conf>.conf file.
-            if config.get("ACRE_FREEBASE_SITE_ADDR", None) == passed_config:
+            if config.get("ACRE_FREEBASE_SITE_ADDR", None) == host:
               actual_config = parts[-2]
               break
 
@@ -1799,10 +1799,10 @@ class Acre:
     return apps
 
 
-  def is_running2(self):
-      return self._acre_process
-
   def is_running(self, war=False):
+
+    if not self._acre_process:
+      return False
 
     c = self.context
 
@@ -1900,13 +1900,6 @@ class Site:
         "notification_email_address" : "freebase-site@google.com",
         "id" : "freebase-site",
         "repository" : "googlecode",
-        "external_apps" : { 
-              "cubed": "//cubed",
-              "parallax": "//parallax",
-              "labs": "//labs",
-              "tmt": "//tmt"
-              }
-        
         },
 
     "refinery" : {

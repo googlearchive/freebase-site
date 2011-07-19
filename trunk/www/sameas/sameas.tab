@@ -44,7 +44,8 @@ var SPEC = {
   run: function(object) {
     return {
       object: object,
-      categories: queries.weblinks_by_category(object.id)
+      categories: queries.weblinks_by_category(object.id),
+      weblinks: queries.weblinks_by_category2(object.id)
     };
   }
 };

@@ -37,7 +37,7 @@ var environment_rules = {
     "prefix" : []
 };
 
-var default_rules = acre.require("default_routes.sjs").init_default_routes(lib);
+var default_rules = acre.require(lib + "/site/freebase-site/default_routes.sjs").init_default_routes(lib);
 
 acre.require(lib + "/routing/router.sjs").route(default_rules, environment_rules, this);
 

@@ -107,6 +107,45 @@ var _NO_CATEGORY = {
   name: "_NO_CATEGORY"
 };
 
+function weblinks_by_category2(id) {
+
+  return weblinks(id)
+    .then(function(links) {
+    
+      var seen = {};
+      var authorities = [];
+      var webpages = [];
+
+      links.forEach(function(link) {
+        console.log(link);
+        var weblink = {
+          key: link.key,
+          url: link.url,
+          description: link.description,
+          template: link.template.template,
+          ns: link.template.ns.id,
+          authority: link.template.ns["/base/sameas/web_id/authority"],
+          category: link.category
+        };
+        if(link.category && link.category.id === '/en/topic_equivalent') {
+          authorities.push(weblink);
+        }
+        else {
+          webpages.push(weblink);
+        }
+      });
+
+      authorities.sort(weblink_sort);
+      webpages.sort(weblink_sort);
+      
+      var weblinks = {
+        authorities: authorities,
+        webpages: webpages
+      }
+      return weblinks; 
+    });
+};
+
 function weblinks_by_category(id) {
 
   return weblinks(id)

@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-var h = acre.require("routing/helpers");
+var h = acre.require("helper/helpers.sjs");
 
 test("split_path", function() {
   var s = h.split_path;

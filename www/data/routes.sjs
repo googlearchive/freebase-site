@@ -29,10 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 var h = acre.require("lib/helper/helpers.sjs");
-var rh = acre.require("lib/routing/helpers.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 
-var path_info = rh.normalize_path(this);
+var path_info = h.normalize_path(this);
 
 
 var result;
@@ -63,12 +62,12 @@ if (id) {
 
 if (result) {
   if(result.type.id === "/type/domain") {
-    rh.route(this, "domain.controller", id);
+    h.route(this, "domain.controller", id);
   }
   else {
-    rh.route(this, "type.controller", id);
+    h.route(this, "type.controller", id);
   }
 }
 else {
-  rh.route(this, path_info);
+  h.route(this, path_info);
 }

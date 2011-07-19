@@ -35,7 +35,7 @@
    */
 
     $(function() {
-      if ($.tablesorter) {
+      if ($.tablesorter) {console.log("$.tablesorter");
         var div = $("<div>");
 
         $.tablesorter.defaults.cssAsc = "column-header-asc";
@@ -60,6 +60,17 @@
           format: function(s) {
             div.html(s);
             return div.text().toLowerCase();
+          },
+          type: "text"
+        });
+
+        $.tablesorter.addParser({
+          // set a unique id
+          id: "string",
+          is: function(s) { return false; },
+          format: function(s) {
+            div.html(s);
+            return div.text();
           },
           type: "text"
         });

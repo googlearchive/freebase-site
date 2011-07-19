@@ -29,10 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 var h = acre.require("lib/helper/helpers.sjs");
-var rh = acre.require("lib/routing/helpers.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 
-var path_info = rh.normalize_path(this);
+var path_info = h.normalize_path(this);
 
 var result;
 
@@ -56,8 +55,8 @@ if (id) {
 
 if (result) {
   // common topic
-  rh.route(this, "triples.controller", id);
+  h.route(this, "triples.controller", id);
 }
 else {
-  rh.route(this, path_info);
+  h.route(this, path_info);
 }

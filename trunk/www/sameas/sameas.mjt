@@ -55,6 +55,16 @@
 !!-->
 
 <acre:block def="page_content()">
+ 
+  ${external_topics2()}
+
+  ${external_topics()}
+
+  ${webpages()}
+
+</acre:block>
+
+<acre:block def="external_topics()">
     <h1 class="table-title">${_("External Topic IDs")}</h1>
     <table cellspacing="0" class="table">
       <thead>
@@ -96,34 +106,84 @@
         </tbody>
       </acre:block>
     </table>
+</acre:block>
 
-    <h1 class="table-title">${_("Related Webpages")}</h1>
-    <table cellspacing="0" class="table table-sortable">
-      <thead>
-        <th class="column-header first" scope="column">
-          <span class="sort-icon">${_("URI")}</span>
+<acre:block def="external_topics2()">
+
+  <h1 class="table-title">${_("External Topic IDs (Collapsed)")}</h1>
+
+  <table cellspacing="0" class="table table-sortable">
+    <thead>
+      <tr>
+        <th class="column-header first" scope="column"> 
+          <span class="sort-icon">${_("Authority")}</span>
         </th>
         <th class="column-header" scope="column">
-          <span class="sort-icon">${_("Title")}</span>
+          <span class="sort-icon">${_("Namespace")}</span>
         </th>
         <th class="column-header" scope="column">
-          <span class="sort-icon">${_("Category")}</span>
+          <span class="sort-icon">${_("Key")}</span>
         </th>
-      </thead>
-      <tbody>
-        <tr acre:for="weblink in c.weblinks.webpages">
-          <th class="row-header odd">
-            <a href="${weblink.url}" rel="external" title="${_('Go to webpage')}">$weblink.url</a>
-          </th>
-          <td><a href="${h.fb_url(weblink.ns)}"></a></td>
-          <td class="odd">
-            <acre:block if="weblink.category && weblink.category.name.length">
-              ${i18n.display_name(weblink.category)}
-            </acre:block>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      </tr>
+    </thead>
+    <tbody>
+      <acre:block for="authority in c.weblinks.authorities">
+        <acre:block for="weblink in authority.weblinks">
+          <tr>
+            <th class="row-header odd">
+              <acre:block if="authority.id === '_NO_AUTHORITY'">
+                <strong>-</strong>                 
+              </acre:block>
+              <acre:block else="">
+                <span class="authority a${authority.id.replace(/\//g, '-')}">
+                  <acre:block if="authority.id !== '_NO_AUTHORITY'">
+                    <a href="${h.fb_url(authority.id)}">
+                      <strong>${i18n.display_name(authority)}</strong>
+                    </a>  
+                </span>
+              </acre:block>
+            </th>
+            <td>
+              <a href="${h.fb_url(weblink.ns)}">${weblink.ns}</a>
+            </td>
+            <td class="odd">
+              <a href="${weblink.url}">${weblink.key}</a>
+            </td>
+          </tr>
+        </acre:block>
+      </acre:block>
+    </tbody>
+  </table>
+</acre:block>
+
+<acre:block def="webpages()">
+  <h1 class="table-title">${_("Related Webpages")}</h1>
+  <table cellspacing="0" class="table table-sortable">
+    <thead>
+      <th class="column-header first" scope="column">
+        <span class="sort-icon">${_("URI")}</span>
+      </th>
+      <th class="column-header" scope="column">
+        <span class="sort-icon">${_("Title")}</span>
+      </th>
+      <th class="column-header" scope="column">
+        <span class="sort-icon">${_("Category")}</span>
+      </th>
+    </thead>
+    <tbody>
+      <tr acre:for="weblink in c.weblinks.webpages">
+        <th class="row-header odd">
+          <a href="${weblink.url}" rel="external" title="${_('Go to webpage')}">$weblink.url</a>
+        </th>
+        <td><a href="${h.fb_url(weblink.ns)}"></a></td>
+        <td class="odd">
+          <acre:block if="weblink.category && weblink.category.name.length">
+            ${i18n.display_name(weblink.category)}
+          </acre:block>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </acre:block>
 
 

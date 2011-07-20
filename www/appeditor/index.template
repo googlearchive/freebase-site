@@ -70,59 +70,30 @@
   <link rel="stylesheet" type="text/css" href="appeditor.mf.css" />
 </acre:block>
 
-<acre:block def="content()">
-  <!-- HEADER -->
-  <div id="header">
-    <div id="header-appsmenu">
-      <div id="button-apps">
-        <img id="logo" src="logo-freebase.png" alt="" />
-        <p><span class="button-menu">Apps</span></p>
-      </div>
-    </div>
-    <div id="header-apptitle">
-      <p>
-        <span class="app-name">Initializing...</span>
-      </p>
-    </div>
-    <div id="nav-account">
-      <div id="nav-utilities" class="clear">
-        <div class="nav-user-controls" id="signedin" style="display:none;">
-          <strong id="nav-username">
-            <a href="${h.fb_url('/')}" title="View your profile">${_("You")}</a>
-          </strong>
-          <div id="user-controls">
-            <ul>
-              <li>
-                <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?domains'">${_("Domains")}</a>
-              </li>
-              <li>
-                <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?queries'">${_("Queries")}</a>
-              </li>
-              <li>
-                <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?apps'">${_("Apps")}</a>
-              </li>
-            </ul>
-            <a href="javascript:void(0)"
-               onclick="window.freebase.logout_popup()"
-               title="Sign out of Freebase"
-               rel="nofollow"
-               id="nav-signout">Sign Out</a>
-          </div>
-        </div>
-        <div class="nav-user-controls anonymous" id="signedout" style="display:none;">
-          <a href="javascript:void(0)" onclick="window.freebase.login_popup()"title="Sign in to your Freebase account" rel="nofollow">Sign In or Sign Up</a>
-        </div>
-        ${i18n_c.lang_select()}
-      </div>
+<acre:block def="logo()">
+  <div id="header-appsmenu">
+    <div id="button-apps">
+      <img id="logo" src="logo-freebase.png" alt="" />
+      <p><span class="button-menu">Apps</span></p>
     </div>
   </div>
+</acre:block>
 
+<acre:block def="global_nav()">
+  <div id="header-apptitle">
+    <p>
+      <span class="app-name">Initializing...</span>
+    </p>
+  </div>
+</acre:block>
+
+<acre:block def="content_body()">
   <!-- BODY -->
   <div id="body"></div>
-
-
+  
   <!-- HACK: used to calibrate positioning -->
   <div id="fixer" style="position: fixed; right: 0px; bottom: 0px; visibility: hidden;">&nbsp;</div>
+  
   <!-- HACK: get rid of mjt.warn spews for those not running firebug -->
   <div id="mjt_debug_output" style="display:none"></div>
 </acre:block>
@@ -132,7 +103,7 @@
   <script src="appeditor.mf.js"></script>
 </acre:block>
 
-<!-- We're not using the standard header and footer... block them out -->
-<acre:block def="header()"></acre:block>
-<acre:block def="footer()"></acre:block>
+<acre:block def="footer()">
+  <!-- We don't want the standard footer -->
+</acre:block>
 

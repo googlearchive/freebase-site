@@ -132,6 +132,7 @@ button:hover { border: 1px solid #cdf; }
 
 
 /* Editor Structure */
+#content { padding: 0; }
 .refresh, .refresh-right { display: none; }
 #columns { width: 100%; position: relative; }
 #list-column { position: absolute; top: 0; left: 0; width: 200px; padding-top: 10px; }

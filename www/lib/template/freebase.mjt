@@ -140,72 +140,87 @@
 
 <acre:block def="header(exports)">
 <header role="banner" id="header">
-  <div id="nav-utilities" class="clear">
-    <div class="nav-user-controls" id="signedin" style="display:none;">
-      <strong id="nav-username">
-        <a href="${h.fb_url('/')}" title="View your profile">${_("You")}</a>
-      </strong>
-      <div id="user-controls">
-        <ul>
-          <li>
-            <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?domains'">${_("Domains")}</a>
-          </li>
-          <li>
-            <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?queries'">${_("Queries")}</a>
-          </li>
-          <li>
-            <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?apps'">${_("Apps")}</a>
-          </li>
-        </ul>
-        <a href="javascript:void(0)"
-           onclick="window.freebase.logout_popup()"
-           title="Sign out of Freebase"
-           rel="nofollow"
-           id="nav-signout">Sign Out</a>
+  <acre:block if="exports.nav_utils">
+    ${exports.nav_utils()}
+  </acre:block>
+  <acre:block else="">
+    <div id="nav-utilities" class="clear">
+      <div class="nav-user-controls" id="signedin" style="display:none;">
+        <strong id="nav-username">
+          <a href="${h.fb_url('/')}" title="View your profile">${_("You")}</a>
+        </strong>
+        <div id="user-controls">
+          <ul>
+            <li>
+              <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?domains'">${_("Domains")}</a>
+            </li>
+            <li>
+              <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?queries'">${_("Queries")}</a>
+            </li>
+            <li>
+              <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?apps'">${_("Apps")}</a>
+            </li>
+          </ul>
+          <a href="javascript:void(0)"
+             onclick="window.freebase.logout_popup()"
+             title="Sign out of Freebase"
+             rel="nofollow"
+             id="nav-signout">Sign Out</a>
+        </div>
       </div>
+      <div class="nav-user-controls anonymous" id="signedout" style="display:none;">
+        <a href="javascript:void(0)" onclick="window.freebase.login_popup()" title="Sign in to your Freebase account" rel="nofollow">Sign In or Sign Up</a>
+      </div>
+      ${i18n_c.lang_select()}
     </div>
-    <div class="nav-user-controls anonymous" id="signedout" style="display:none;">
-      <a href="javascript:void(0)" onclick="window.freebase.login_popup()" title="Sign in to your Freebase account" rel="nofollow">Sign In or Sign Up</a>
+  </acre:block>
+  <acre:block if="exports.logo">
+    ${exports.logo()}
+  </acre:block>
+  <acre:block else="">
+    <!!-- Freebase logo -->
+    <a href="${h.fb_url()}">
+      <img alt="${_('Freebase logo')}"
+           id="fb-logo"
+           acre:attrs="h.is_production() ? {src: h.static_url(acre.resolve('template/freebase-logo-production.png'))} : {src: h.static_url(acre.resolve('template/freebase-logo-sandbox.png'))}"
+           border="0" height="21" width="120" />
+    </a>
+  </acre:block>
+  <acre:block if="exports.global_nav">
+    ${exports.global_nav()}
+  </acre:block>
+  <acre:block else="">
+    <!!-- Freebase Suggest -->
+    <div id="fb-search">
+      <input type="text"
+             id="fb-search-input"
+             name="query"
+             autocomplete="off"
+             placeholder="Find entities&hellip;" />
+      <div id="site-search-box"></div>
+      <div id="site-search-label"><span>${_("Start typing to get some suggestions")}</span></div>
     </div>
-    ${i18n_c.lang_select()}
-  </div>
-  <!!-- Freebase logo -->
-  <a href="${h.fb_url()}">
-    <img alt="${_('Freebase logo')}"
-         id="fb-logo"
-         acre:attrs="h.is_production() ? {src: h.static_url(acre.resolve('template/freebase-logo-production.png'))} : {src: h.static_url(acre.resolve('template/freebase-logo-sandbox.png'))}"
-         border="0" height="21" width="120" />
-  </a>
-  <!!-- Freebase Suggest -->
-  <div id="fb-search">
-    <input type="text"
-           id="fb-search-input"
-           name="query"
-           autocomplete="off"
-           placeholder="Find entities&hellip;" />
-    <div id="site-search-box"></div>
-    <div id="site-search-label"><span>${_("Start typing to get some suggestions")}</span></div>
-  </div>
-  <!!-- Global Nav Links-->
-  <ul class="clear" id="nav-global">
-    <li><a href="/explore">${_("Explore data")}</a></li>
-    <li>
-      <a href="${h.wiki_url()}"
-        title="Give help and get help adding data to Freebase">
-        ${_("Documentation")}
-      </a>
-    </li>
-    <li>
-      <a href="http://www.google.com/tools/feedback/intl/en/error.html" onclick="
-      try{
-        userfeedback.api.startFeedback({
-          productId: '68931',
-          disableScrolling: false
-        });
-        return false;
-      }catch(e){}">${_("Feedback")}</a>
-    </li>
-  </ul>
+    <!!-- Global Nav Links-->
+    <ul class="clear" id="nav-global">
+      <li><a href="/explore">${_("Explore data")}</a></li>
+      <li>
+        <a href="${h.wiki_url()}"
+          title="Give help and get help adding data to Freebase">
+          ${_("Documentation")}
+        </a>
+      </li>
+      <li>
+        <a href="http://www.google.com/tools/feedback/intl/en/error.html" onclick="
+        try{
+          userfeedback.api.startFeedback({
+            productId: '68931',
+            disableScrolling: false
+          });
+          return false;
+        }catch(e){}">${_("Feedback")}</a>
+      </li>
+    </ul>
+  </acre:block>
   <div id="breadcrumb" acre:if="exports.breadcrumb">
     ${exports.breadcrumb()}
   </div>

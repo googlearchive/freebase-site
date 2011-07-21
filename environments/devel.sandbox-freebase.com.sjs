@@ -1,11 +1,11 @@
-// site repository trunk and tags paths. 
+// site repository trunk and tags paths.
 var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 
 // freebase-site trunk lib
 var site = "//site.www.trunk.svn.freebase-site.googlecode.dev";
 
-var environment_rules = { 
+var environment_rules = {
 
     // Override labels. All labels point to trunk by default.
     "labels" : {
@@ -25,6 +25,7 @@ var environment_rules = {
         {prefix:"/test_lib_propbox",        app:"lib", script:"propbox/test"},
         {prefix:"/test_lib_queries",        app:"lib", script:"queries/test"},
         {prefix:"/test_lib_routing",        app:"lib", script:"routing/test"},
+        {prefix:"/test_lib_suggest",        app:"lib", script:"suggest/test"},
         {prefix:"/test_lib_template",       app:"lib", script:"template/test"},
         {prefix:"/test_lib_test",           app:"lib", script:"test/test"},
         {prefix:"/test_lib_validator",      app:"lib", script:"validator/test"},
@@ -32,9 +33,9 @@ var environment_rules = {
         {prefix:"/test_schema",             app:"schema", script:"test"},
         {prefix:"/test_topic",              app:"topic", script:"test"},
         {prefix:"/test_data",               app:"data", script:"test"},
-        
+
         // sample app
-        {prefix:"/sample",             app:"sample"},
+        {prefix:"/sample",             app:"sample"}
     ]
 };
 

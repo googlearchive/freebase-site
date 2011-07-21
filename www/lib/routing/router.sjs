@@ -414,7 +414,7 @@ function extend_default_rules(rules, environment_rules) {
 
     // default order if not specified
     if (!rules["routers"]) { 
-        rules["routers"] = ["host", "home", "object", "prefix"];
+        rules["routers"] = ["host", "home", "prefix", "object"];
     }
 
     // override with the environment rules if specified.

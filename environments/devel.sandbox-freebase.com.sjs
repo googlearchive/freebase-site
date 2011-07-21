@@ -3,17 +3,16 @@ var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 
 // freebase-site trunk lib
-var lib = "//lib.www.trunk.svn.freebase-site.googlecode.dev";
+var site = "//site.www.trunk.svn.freebase-site.googlecode.dev";
 
 var environment_rules = { 
 
     // Override labels. All labels point to trunk by default.
     "labels" : {
-        "lib": lib
+        "site": site
     },
 
     // Override prefix.
-
     "prefix" : [
         // Test routing rules to test non-user facing apps (core libraries, etc.)
         {prefix:"/test_lib_appeditor-services",  app:"lib", script:"appeditor-services/test"},
@@ -39,6 +38,4 @@ var environment_rules = {
     ]
 };
 
-var default_rules = acre.require(lib + "/site/freebase-site/default_routes.sjs").init_default_routes(lib);
-
-acre.require(lib + "/routing/router.sjs").route(default_rules, environment_rules, this);
+acre.require(site + "/router.sjs").route(environment_rules, this);

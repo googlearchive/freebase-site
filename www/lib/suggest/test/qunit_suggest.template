@@ -38,7 +38,7 @@
 </acre:script>
 
 <acre:block def="title()">
-  suggest.js
+  suggest.js <acre:block if="jquery">with jquery-${jquery}</acre:block>
 </acre:block>
 
 <acre:block def="head()">

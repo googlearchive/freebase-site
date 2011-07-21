@@ -411,7 +411,7 @@ function extend_default_rules(rules, environment_rules) {
     }
 
     // Routers
-    console.log(rules["routers"]);
+
     // default order if not specified
     if (!rules["routers"]) { 
         rules["routers"] = ["host", "home", "object", "prefix"];

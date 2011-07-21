@@ -29,45 +29,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("helper/helpers.sjs");
-
-function extend_metadata(md, scope) {
-  
-  function fix_up_paths(md, label) {
-    for (var hdlr in md.handlers) {
-      var handler = md.handlers[hdlr];
-      if (handler.indexOf("/") !== 0) {
-        md.handlers[hdlr] = label + "/" + handler;      
-      }
-    }
-
-    for (var mnt in md.mounts) {
-      var mount = md.mounts[mnt];
-      if(mount.indexOf("/") !== 0) {
-        md.mounts[mnt] = label + "/" + mount; 
-      }
-    }
-
-    if (md.error_page && (md.error_page.indexOf("/") !== 0)) {
-        md.error_page = label + "/" + md.error_page;
-    }
-    
-    if (md.template_base && (md.template_base.indexOf("/") !== 0)) {
-        md.template_base = label + "/" + md.template_base;
-    }
-  };
-
-  // get site METADATA
-  var site_md = JSON.parse(scope.acre.require("METADATA").body);
-  fix_up_paths(site_md, "site");
-
-  // get lib METADATA
-  var lib_md = JSON.parse(scope.acre.require("lib/METADATA").body);
-  fix_up_paths(lib_md, "lib");  
-  
-  var final_md = h.extend(true, {}, lib_md, site_md, md);
-  
-  // make sure we update the original object
-  h.extend(true, md, final_md);
-  return md;
+function extend_metadata(md) {
+  acre.require("lib/loader.sjs").extend_metadata(md, this);
 };

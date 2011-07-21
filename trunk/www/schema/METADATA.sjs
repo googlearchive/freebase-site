@@ -1,10 +1,10 @@
 var METADATA = {
   "mounts": {
-    "lib":  "//lib.www.trunk.svn.freebase-site.googlecode.dev"
+    "site":  "//site.www.trunk.svn.freebase-site.googlecode.dev"
   },
   "freebase": {
     "write_user": "appeditoruser"
   }
 };
 
-acre.require(METADATA.mounts.lib + "/loader.sjs").extend_metadata(METADATA);
+acre.require(METADATA.mounts.site + "/loader.sjs").extend_metadata(METADATA);

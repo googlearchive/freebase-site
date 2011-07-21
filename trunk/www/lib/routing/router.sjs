@@ -443,9 +443,8 @@ function extend_default_rules(rules, environment_rules) {
 
 
 
-function route(default_rules, environment_rules, scope) {
+function route(rules, scope) {
 
-  var rules = extend_default_rules(default_rules, environment_rules);
   var dump = acre.request.base_path === "/_fs_routing";
 
   var rules_dump = {};

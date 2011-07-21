@@ -133,8 +133,9 @@ function render(service_result, spec, scope) {
           }
         }
         else {
-          // default to template/freebase.mjt
-          template = acre.require("template/freebase.mjt");
+          // default to template/freebase.mjt, but allow over-riding with 'template_base' in METADATA
+          var template_base = scope.acre.get_metadata().template_base;
+          template = template_base ? scope.acre.require(template_base) : acre.require("template/freebase.mjt");
         }
         if (template.c && typeof template.c === "object") {
           h.extend(template.c, o.template_base_args, o.c);

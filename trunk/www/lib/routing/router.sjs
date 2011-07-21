@@ -35,59 +35,6 @@ var object_query = acre.require("queries/object.sjs");
 var freebase_object = acre.require("template/freebase_object.sjs");
 
 var self = this;
-/**
- * Extend the default rules for this site with the environment specific rules.
- */
-function extend_default_rules(rules, environment_rules) { 
-
-    // Here we handle configuration overrides from specific environments. 
-
-    // Labels environment override.
-
-    if (environment_rules["labels"]) { 
-        h.extend(rules["labels"], environment_rules["labels"])
-        for (var app_label in environment_rules["labels"]) { 
-            rules["labels"][app_label] = environment_rules["labels"][app_label]
-        }
-    }
-
-    // Prefix environment override.
-
-    if (environment_rules["prefix"]) { 
-        
-        // Holds prefix -> index in prefix routing array. 
-        var prefix_index = {}
-        var i = 0;
-        rules["prefix"].forEach(
-            function(route) { 
-                if (!route["prefix"]) { 
-                    throw("You can not define a prefix routing rule without a prefix.");
-                    exit(-1);
-                }
-                prefix_index[route.prefix] = i;
-                i++;
-            });
-        
-        environment_rules["prefix"].forEach(
-            function(route) { 
-                if (!route["prefix"]) { 
-                    throw("You can not define a prefix routing rule without a prefix.");
-                    exit(-1);
-                }
-                // Overwrite the rule if it exists in the base rules.
-                if (prefix_index[route.prefix] != undefined) { 
-                    rules["prefix"][prefix_index[route.prefix]] = route;
-                } else {
-                    rules["prefix"].push(route);
-                }
-            });
-    }
-
-    // TODO: object and host overrides (not necessary now).
-
-    return rules;
-}
-
 
 /**
    ----Prefix routing logic for Acre---
@@ -234,8 +181,8 @@ function PrefixRouter(app_labels) {
 /**
  * Deal with the special case of routing 
  *
- *   Note: to debug the homepage, use the \/homepage prefix rule 
- *         (e.g., /homepage?acre.console=1)
+ *   Note: to debug the homepage, use the /homepage prefix rule 
+ *         (e.g., /homepage?acre.console=1)/
  *
  */
 
@@ -412,8 +359,89 @@ function HostRouter() {
 
 };
 
+var routers_map = {"host" : HostRouter, "home" : HomeRouter, "prefix" : PrefixRouter, "object" : ObjectRouter};
 
-var routers = [["host", HostRouter], ["home", HomeRouter], ["prefix", PrefixRouter], ["object", ObjectRouter]];
+
+/**
+ * Extend the default rules for this site with the environment specific rules.
+ */
+function extend_default_rules(rules, environment_rules) { 
+
+    // Here we handle configuration overrides from specific environments. 
+
+    // Labels environment override.
+
+    if (environment_rules["labels"]) { 
+        h.extend(rules["labels"], environment_rules["labels"])
+        for (var app_label in environment_rules["labels"]) { 
+            rules["labels"][app_label] = environment_rules["labels"][app_label]
+        }
+    }
+
+    // Prefix environment override.
+
+    if (environment_rules["prefix"]) { 
+        
+        // Holds prefix -> index in prefix routing array. 
+        var prefix_index = {}
+        var i = 0;
+        rules["prefix"].forEach(
+            function(route) { 
+                if (!route["prefix"]) { 
+                    throw("You can not define a prefix routing rule without a prefix.");
+                    exit(-1);
+                }
+                prefix_index[route.prefix] = i;
+                i++;
+            });
+        
+        environment_rules["prefix"].forEach(
+            function(route) { 
+                if (!route["prefix"]) { 
+                    throw("You can not define a prefix routing rule without a prefix.");
+                    exit(-1);
+                }
+                // Overwrite the rule if it exists in the base rules.
+                if (prefix_index[route.prefix] != undefined) { 
+                    rules["prefix"][prefix_index[route.prefix]] = route;
+                } else {
+                    rules["prefix"].push(route);
+                }
+            });
+    }
+
+    // Routers
+    console.log(rules["routers"]);
+    // default order if not specified
+    if (!rules["routers"]) { 
+        rules["routers"] = ["host", "home", "object", "prefix"];
+    }
+
+    // override with the environment rules if specified.
+    if (environment_rules["routers"]) { 
+        rules["routers"] = environment_rules["routers"];
+    }
+
+    var tmp_routers = [];
+    for (var i in rules["routers"]) { 
+        var name = rules["routers"][i];
+
+        if (routers_map[name]) { 
+            tmp_routers.push([name, routers_map[name]]);
+        } else {
+            throw "There is no router named " + name + " available.";
+        }
+    }
+
+    rules["routers"] = tmp_routers;
+
+    // TODO: object and host overrides (not necessary now).
+
+    return rules;
+}
+
+
+
 
 function route(default_rules, environment_rules, scope) {
 
@@ -422,7 +450,12 @@ function route(default_rules, environment_rules, scope) {
 
   var rules_dump = {};
 
+  if (rules["routers"]) { 
+    routers = rules["routers"];
+  }
+
   for (var i=0,l=routers.length; i<l; i++) {
+    syslog.info({}, "trying router " + routers[i][0]);
     var name = routers[i][0];
     var router_class = routers[i][1];
     var router = new router_class(rules["labels"]);

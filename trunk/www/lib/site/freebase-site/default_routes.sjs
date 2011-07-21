@@ -526,8 +526,8 @@ function init_default_routes(lib) {
         {host:"metaweb.com", url:"http://www.freebase.com"},
         {host:"www.metaweb.com", url:"http://www.freebase.com"}
     ];
-        
 
+    rules["routers"] = ["host", "home", "object", "prefix"];
+        
     return rules;
-    
 }

@@ -70,6 +70,9 @@
 
 <acre:block def="body(exports)">
   <body>
+    <acre:block if="exports.prepend_body">
+      ${exports.prepend_body()}
+    </acre:block>
     <h1 id="qunit-header">
       <acre:block if="exports.title">
         ${exports.title()}
@@ -87,5 +90,8 @@
       </acre:block>
       test markup, will be hidden
     </div>
+    <acre:block if="exports.append_body">
+      ${exports.append_body()}
+    </acre:block>
   </body>
 </acre:block>

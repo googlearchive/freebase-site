@@ -693,6 +693,22 @@ Validator.factory(scope, "Json", {
 });
 
 
+/**
+ * Acre appid
+ */
+Validator.factory(scope, "AppId", {
+  "string": function(val) {
+    if (h.startsWith(val, "//")) {
+      var host = val.split("/")[2];
+      return /^[0-9a-z][0-9a-z\-\.]+$/.test(host) ? val : this.invalid("Invalid hostname");
+    }
+    else {
+      return MqlId(val);
+    }
+  }
+});
+
+
 /***
  * Uri
  */

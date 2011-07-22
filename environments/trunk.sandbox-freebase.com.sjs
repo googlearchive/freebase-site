@@ -1,19 +1,18 @@
-// site repository trunk and tags paths. 
+// site repository trunk and tags paths.
 var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 
 // freebase-site trunk lib
-var lib = "//lib.www.trunk.svn.freebase-site.googlecode.dev";
+var site = "//site.www.trunk.svn.freebase-site.googlecode.dev";
 
-var environment_rules = { 
+var environment_rules = {
 
     // Override labels. All labels point to trunk by default.
     "labels" : {
-        "lib": lib
+        "site": site
     },
 
     // Override prefix.
-
     "prefix" : [
         // Test routing rules to test non-user facing apps (core libraries, etc.)
         {prefix:"/test_lib_appeditor-services",  app:"lib", script:"appeditor-services/test"},
@@ -26,6 +25,7 @@ var environment_rules = {
         {prefix:"/test_lib_propbox",        app:"lib", script:"propbox/test"},
         {prefix:"/test_lib_queries",        app:"lib", script:"queries/test"},
         {prefix:"/test_lib_routing",        app:"lib", script:"routing/test"},
+        {prefix:"/test_lib_suggest",        app:"lib", script:"suggest/test"},
         {prefix:"/test_lib_template",       app:"lib", script:"template/test"},
         {prefix:"/test_lib_test",           app:"lib", script:"test/test"},
         {prefix:"/test_lib_validator",      app:"lib", script:"validator/test"},
@@ -33,12 +33,10 @@ var environment_rules = {
         {prefix:"/test_schema",             app:"schema", script:"test"},
         {prefix:"/test_topic",              app:"topic", script:"test"},
         {prefix:"/test_data",               app:"data", script:"test"},
-        
+
         // sample app
         {prefix:"/sample",             app:"sample"}
     ]
 };
 
-var default_rules = acre.require("default_routes.sjs").init_default_routes(lib);
-
-acre.require(lib + "/routing/router.sjs").route(default_rules, environment_rules, this);
+acre.require(site + "/router.sjs").route(environment_rules, this);

@@ -158,9 +158,14 @@ def main():
     print "No files in this app."
     exit(0)
 
+  extensions = { "mjt" : "mjt", "acre_script" : "sjs", "mqlquery": "mql" }
+
   for filename, spec in result["result"]["files"].iteritems():
 
     filepath = os.path.join(args[1], spec["name"])
+
+    if spec.get("acre_handler") and extensions.get(spec["acre_handler"], False):
+        filepath += ".%s" % extensions[spec["acre_handler"]]
 
     # Binary
 
@@ -177,7 +182,12 @@ def main():
 
       contents = file_result["text"]
       if options.license:
-          contents = LICENSE + contents
+
+          lic = LICENSE
+          if spec["acre_handler"] == "mjt":
+              lic = "<acre:script>\n" + lic + "</acre:script>\n"
+
+          contents = lic + contents
 
       write_file(filepath, contents)
         

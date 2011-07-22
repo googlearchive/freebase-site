@@ -21,7 +21,7 @@ limitations under the License.
 import sys, shutil, os, re, pwd, pdb, datetime, time, urllib, urllib2, random, threading, copy
 from optparse import OptionParser
 from tempfile import NamedTemporaryFile
-from siteutil import Context, Acre, Site, App, SVNLocation
+from siteutil import Context, Acre, Site, App, SVNLocation, FatalException
 
 try:
   import json
@@ -108,44 +108,13 @@ class ActionSetupSite:
     self.context = context
 
 
-  def checkout(self, paths):
-
-    c = self.context
-    done = {}
-
-    for path in paths:
-
-      path_parts = path.split('/')
-
-      full_svn_path = c.SITE_SVN_URL
-      full_local_path = self.site_checkout
-
-      for i, directory in enumerate(path_parts):
-
-        full_local_path = os.path.join(full_local_path, directory)
-        full_svn_path = os.path.join(full_svn_path, directory)
-
-        if done.get(full_local_path):
-          continue
-
-        done[full_local_path] = True
-        r = SVNLocation(c, full_svn_path).checkout(full_local_path, files = i < len(path_parts)-1)
-        if not r:
-          return c.error('There was an error checking out %s to %s' % (full_svn_path, full_local_path))
-
-        c.log('Checked out: %s' % full_local_path)
-
-    return True
-
-
   def __call__(self):
 
     c = self.context
+    if not c.options.site_dir:
+      raise FatalException("You must specify a directory to install the site in with --site_dir.")
 
     site = Site.Get(c)
-
-    if not site:
-      return c.error("Could not figure out location of site. You can specify --site_dir as an option, or run the script from within a site svn checkout directory structure to figure it out automatically.")
 
     acre = Acre.Get(c)
 
@@ -156,7 +125,7 @@ class ActionSetupSite:
     if not success:
       return c.error('You must provide valid google code credentials to complete this operation.')
 
-    self.site_checkout = c.options.acre_dir + '/webapp/WEB-INF/scripts/googlecode/freebase-site'
+    self.site_checkout = c.options.acre_dir + '/webapp/WEB-INF/scripts/%s/%s' % (site.conf("repository"), site.conf("id"))
 
     try:
       os.makedirs(self.site_checkout)
@@ -164,36 +133,27 @@ class ActionSetupSite:
     except:
       return c.error('The directory %s already exists, or unable to create directory.' % self.site_checkout)
 
-    c.log('Starting site checkout')
-
-    paths = [ '/environments', '/appengine-config', '/trunk/www', '/trunk/config', '/trunk/scripts']
-
-    if c.options.everything:
-      c.log('Note: this will take a while, go make a coffee....')
-      paths.append('/branches/www')
-      paths.append('/tags/www')
-
-    r = self.checkout(paths)
+    r = site.checkout(self.site_checkout, everything=c.options.everything)
 
     if not r:
       return False
 
     r = c.symlink(self.site_checkout, site.site_dir)
 
-    c.log('Site checkout done')
+    config_dir = "%s/appengine-config" % site.site_dir
 
-    r = Acre.Get(c).build(target='devel', config_dir = '%s/appengine-config' % site.site_dir)
+    r = Acre.Get(c).build(target="devel", config_dir=config_dir)
     if not r:
       return c.error('Failed to build acre under %s' % c.options.acre_dir)
 
-    c.log('*' * 65)
-    c.log('')
-    c.log('In order to run the freebase site:', color=c.BLUE)
-    c.log('\t1. Run the acre server: \n cd %s; ./acre appengine-run' % c.options.acre_dir)
-    c.log('\t2. Visit http://devel.sandbox-freebase.com:%s' % c.options.acre_port)
-    c.log('freebase-site is now installed in %s' % ite_dir)
-    c.log('')
-    c.log('*' * 65)
+    c.log("*" * 65)
+    c.log("")
+    c.log("In order to run the site:")
+    c.log("\t1. Run the acre server: \n cd %s; ./acre -c devel -d %s appengine-run" % (c.options.acre_dir, config_dir))
+    c.log("\t2. Visit http://devel.sandbox-freebase.com:%s" % c.options.acre_port)
+    c.log("%s is now installed in %s" % (site.conf("id"), site.site_dir))
+    c.log("")
+    c.log("*" * 65)
 
     return True
 
@@ -332,16 +292,18 @@ class ActionSetup:
 
     c = self.context
 
-    acre_dir = c.options.acre_dir or self.ACRE_DIR_DEFAULT
-    site_dir = c.options.site_dir or self.SITE_DIR_DEFAULT
+    site = Site.Get(self.context)
 
-    name = raw_input("Enter the directory where you want to install acre (%s):" % acre_dir)
+    acre_dir = c.options.acre_dir or "~/acre"
+    site_dir = c.options.site_dir or "~/%s" % site.conf("id")
+
+    name = raw_input("Enter the directory where you want to install acre (default: %s):" % acre_dir)
     if not name:
       name = acre_dir
       
     c.options.acre_dir = os.path.expanduser(name.strip())
 
-    name = raw_input("Enter the directory where you want to install freebase-site (%s):" % site_dir)
+    name = raw_input("Enter the directory where you want to install %s (default: %s):" % (site.conf("id"), site_dir))
     if not name:
       name = site_dir
       
@@ -1458,6 +1420,8 @@ def main():
 
   except KeyboardInterrupt:
     context.error("Aborted by user.")
+  except FatalException as ex:
+    context.error(ex.msg)
   finally:
     t2 = datetime.datetime.now()
     acre = Acre.Get(context, existing=True)

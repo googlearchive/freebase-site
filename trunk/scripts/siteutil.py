@@ -103,6 +103,14 @@ FIRST_LINE_REQUIRE_CONFIG = 'var config = JSON.parse(acre.require("CONFIG.json")
 
 FREEBASE_API_KEY = "AIzaSyDTw7dTx6GifLh9LX7X6BbGICgJbfRI0s0"
 
+class FatalException(Exception):
+
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __str__(self):
+        return self.msg
+
 class App:
 
   _apps = {}
@@ -1448,7 +1456,7 @@ class Acre:
     try:
       if target_dir:
         if os.path.isdir(target_dir):
-          return c.error("The directory %s that you specified already exists. Cannot checkout acre in an existing directory.")
+          raise FatalException("The directory %s that you specified already exists. Cannot checkout acre in an existing directory.")
         else:
           os.mkdir(target_dir)
 
@@ -1457,7 +1465,7 @@ class Acre:
         target_dir = mkdtemp(suffix=dir_suffix)
 
     except:
-      return c.error("Unable to create directory %s" % target_dir)
+      raise FatalException("Unable to create directory %s" % target_dir)
     
 
     path = "/trunk"
@@ -1467,14 +1475,7 @@ class Acre:
     svn = SVNLocation(c, c.ACRE_SVN_URL + path)
  
     c.log('Starting acre checkout')
-    try:
-        r = svn.checkout(target_dir)
-    except:
-        return c.error("Error on acre svn checkout.")
-
-    if not r:
-      return False
-
+    svn.checkout(target_dir)
     c.log('Acre checkout done')
 
     return target_dir
@@ -1896,20 +1897,21 @@ class Site:
 
   _sites = {
 
-    "freebase" : { 
+    "freebase-site" : { 
         "notification_email_address" : "freebase-site@google.com",
         "id" : "freebase-site",
         "repository" : "googlecode",
+        "svn_paths" :  [ '/environments', '/appengine-config', '/trunk/www', '/trunk/config', '/trunk/scripts'],
+        "svn_paths_everything" : ["/branches/www", "/tags/www"] 
         },
 
-    "refinery" : {
+    "freebase-refinery" : {
         "notification_email_address" : "freebase-refinery@google.com",
         "id" : "freebase-refinery",
-        "repository" : "googlecode"
-        
+        "repository" : "googlecode",
+        "svn_paths" :  ["/environments", "/appengine-config", "/trunk"]
         }
     
-
     }
 
   _site_instance = None
@@ -1920,7 +1922,7 @@ class Site:
     s = context.options.site
 
     if not (s and s in self._sites.keys()):
-      return context.error("The site %s specified is not a valid Acre Site")
+      raise FatalException("The site %s specified is not a valid Acre Site.\nValid sites are: %s" % (s, ",".join(self._sites.keys())))
 
     self._conf = self._sites[s]
 
@@ -1933,11 +1935,10 @@ class Site:
 
       self._conf["svn_url"] = "https://%s.googlecode.com/svn" % self._conf.get("id")
 
-    self.site_dir = None
+    self.site_dir = context.options.site_dir
 
     if (not context.options.site_dir) and os.path.isdir(os.path.join("..", "..", "appengine-config")):
       self.site_dir = context.options.site_dir = os.path.realpath(os.path.join("..", ".."))
-
 
   def conf(self, key):
       return self._conf.get(key, None)
@@ -1960,6 +1961,44 @@ class Site:
       cls._site_instance = cls(context)
 
     return cls._site_instance
+
+  def checkout(self, destination, everything=False):
+
+    paths = self.conf("svn_paths")
+    if everything and self.conf("svn_paths_everything"):
+        paths.extend(self.conf("svn_paths_everything"))
+
+    c = self.context
+    c.log('Starting site checkout')
+
+    done = {}
+
+    for path in paths:
+
+      path_parts = path.split('/')
+
+      full_svn_path = self.conf("svn_url")
+      full_local_path = destination
+
+      for i, directory in enumerate(path_parts):
+
+        full_local_path = os.path.join(full_local_path, directory)
+        full_svn_path = os.path.join(full_svn_path, directory)
+
+        if done.get(full_local_path):
+          continue
+
+        done[full_local_path] = True
+        r = SVNLocation(c, full_svn_path).checkout(full_local_path, files = i < len(path_parts)-1)
+        if not r:
+          return c.error('There was an error checking out %s to %s' % (full_svn_path, full_local_path))
+
+        c.log('Checked out: %s' % full_local_path)
+
+    c.log('Site checkout done')
+
+    return True
+
 
 
 class SVNLocation:
@@ -2005,7 +2044,7 @@ class SVNLocation:
     if not r:
       if "svn: invalid option" in result:
         c.error("You might have an older version of svn - please update to the latest version. The option --depth is not supported in your version.")
-      return c.error(result)
+      raise FatalException(result)
 
     return True
 

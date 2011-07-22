@@ -1455,14 +1455,16 @@ class Acre:
 
     try:
       if target_dir:
-        if os.path.isdir(target_dir):
-          raise FatalException("The directory %s that you specified already exists. Cannot checkout acre in an existing directory.")
+        absolute_target_dir = os.path.expanduser(target_dir)
+
+        if os.path.isdir(absolute_target_dir):
+          raise FatalException("The directory %s that you specified already exists. Cannot checkout acre in an existing directory." % target_dir)
         else:
-          os.mkdir(target_dir)
+          os.mkdir(absolute_target_dir)
 
       else:
         dir_suffix = "-acre-%s-%s" % (acre_version, str(datetime.datetime.now())[:19].replace(" ", "-").replace(":", "-"))
-        target_dir = mkdtemp(suffix=dir_suffix)
+        absolute_target_dir = target_dir = mkdtemp(suffix=dir_suffix)
 
     except:
       raise FatalException("Unable to create directory %s" % target_dir)
@@ -1475,8 +1477,47 @@ class Acre:
     svn = SVNLocation(c, c.ACRE_SVN_URL + path)
  
     c.log('Starting acre checkout')
-    svn.checkout(target_dir)
+    svn.checkout(absolute_target_dir)
     c.log('Acre checkout done')
+
+    # CONFIGURATION #
+    c.log('Starting local configuration.')
+
+    try:
+      fh = open(os.path.join(absolute_target_dir, 'config', 'project.local.conf.sample'), 'r')
+    except:
+      raise FatalException('Could not open the file %s for reading.' % os.path.join(target_dir, 'config', 'project.local.conf.sample'))
+    else:
+      lines = fh.readlines()
+      fh.close()
+
+    try:
+      fh = open(os.path.join(absolute_target_dir, 'config', 'project.local.conf') , 'w')
+    except:
+      raise FatalException('Could not open the file %s for writing.' % os.path.join(target_dir, 'config', 'project.local.conf'))
+
+    params = { 
+      'ACRE_HOST_BASE' : 'acre.%s' % c.options.acre_host,
+      'ACRE_PORT' : c.options.acre_port,
+      'ACRE_FREEBASE_SITE_ADDR_PORT' : c.options.acre_port
+      }
+
+    written_params = {}
+
+    for line in lines:
+      parts = line.split('=')
+      if len(parts) and parts[0] in params.keys():
+        fh.write('%s="%s"\n' % (parts[0], params.get(parts[0])))
+        written_params[parts[0]] = True
+      else:
+        fh.write(line)
+
+    for k, v in params.iteritems():
+      if not written_params.get(k):
+        fh.write('%s="%s"\n' % (k,v))
+
+    fh.close()
+    c.log('Done modifying configuration.')
 
     return target_dir
 
@@ -1835,7 +1876,6 @@ class Acre:
     return self.host_url
 
 
-
   def site_dir(self, war=False):
     '''Returns the acre scripts directory under the specified acre instance'''
 
@@ -1937,11 +1977,14 @@ class Site:
 
     self.site_dir = context.options.site_dir
 
-    if (not context.options.site_dir) and os.path.isdir(os.path.join("..", "..", "appengine-config")):
+    if (not self.site_dir) and os.path.isdir(os.path.join("..", "..", "appengine-config")):
       self.site_dir = context.options.site_dir = os.path.realpath(os.path.join("..", ".."))
 
   def conf(self, key):
       return self._conf.get(key, None)
+
+  def set_site_dir(self, site_dir):
+      self.site_dir = site_dir
 
   def apps(self):
     """Returns a list of app keys, e.g. ['lib', 'homepage']"""
@@ -1963,6 +2006,9 @@ class Site:
     return cls._site_instance
 
   def checkout(self, destination, everything=False):
+
+    if destination.startswith("~"):
+      destination = os.path.expanduser(destination)
 
     paths = self.conf("svn_paths")
     if everything and self.conf("svn_paths_everything"):
@@ -1998,7 +2044,6 @@ class Site:
     c.log('Site checkout done')
 
     return True
-
 
 
 class SVNLocation:

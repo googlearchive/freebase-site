@@ -38,51 +38,22 @@ class ActionSetupAcre:
     self.context = context
 
   def __call__(self, build=True):
-    c = self.context
-    acre = Acre.Get(c)
-    if not acre:
-      return False
+    """Setup acre locally. 
+    In this scenario we have:
+    options.acre_version: the acre version we want to checkout.
+    options.acre_dir: the *destination* directory we want to check-out. 
 
-    # CONFIGURATION #
-    c.log('Starting local configuration.')
+    Note that unless we set options.acre_version explicitely, Acre.Get() will not bother checking out
+    but will assume that options.acre_dir is the directory where acre is already installed.
 
-    try:
-      fh = open(os.path.join(c.options.acre_dir, 'config', 'project.local.conf.sample'), 'r')
-    except:
-      fh.close()
-      return c.error('Could not open the file %s for reading.' % os.path.join(c.options.acre_dir, 'config', 'project.local.conf.sample'))
-
-    lines = fh.readlines()
-    fh.close()
-
-    try:
-      fh = open(os.path.join(c.options.acre_dir, 'config', 'project.local.conf') , 'w')
-    except:
-      fh.close()
-      return c.error('Could not open the file %s for writing.' % os.path.join(c.options.acre_dir, 'config', 'project.local.conf'))
+    """
     
-    params = { 
-      'ACRE_HOST_BASE' : 'acre.%s' % c.options.acre_host,
-      'ACRE_PORT' : c.options.acre_port,
-      'ACRE_FREEBASE_SITE_ADDR_PORT' : c.options.acre_port
-      }
+    c = self.context
 
-    written_params = {}
+    if not c.options.acre_version:
+      c.options.acre_version = "trunk"
 
-    for line in lines:
-      parts = line.split('=')
-      if len(parts) and parts[0] in params.keys():
-        fh.write('%s="%s"\n' % (parts[0], params.get(parts[0])))
-        written_params[parts[0]] = True
-      else:
-        fh.write(line)
-
-    for k, v in params.iteritems():
-      if not written_params.get(k):
-        fh.write('%s="%s"\n' % (k,v))
-
-    fh.close()
-    c.log('Done modifying configuration.')
+    acre = Acre.Get(c)
 
     # BUILD #
     if build:
@@ -282,9 +253,6 @@ class ActionDeployAcre:
 
 class ActionSetup:
 
-  ACRE_DIR_DEFAULT = '~/acre'
-  SITE_DIR_DEFAULT = '~/freebase-site'
-
   def __init__(self, context):
     self.context = context
 
@@ -294,8 +262,8 @@ class ActionSetup:
 
     site = Site.Get(self.context)
 
-    acre_dir = c.options.acre_dir or "~/acre"
-    site_dir = c.options.site_dir or "~/%s" % site.conf("id")
+    acre_dir = "~/acre"
+    site_dir = "~/%s" % site.conf("id")
 
     name = raw_input("Enter the directory where you want to install acre (default: %s):" % acre_dir)
     if not name:
@@ -308,6 +276,8 @@ class ActionSetup:
       name = site_dir
       
     c.options.site_dir = os.path.expanduser(name.strip())
+
+    site.set_site_dir(c.options.site_dir)
 
 
   def __call__(self):
@@ -1307,7 +1277,7 @@ def main():
                     default=False, help="will also deploy acre to the failover version of appengine")
   parser.add_option("", "--nosite", dest="nosite", action="store_true",
                     default=False, help="will not bundle freebase site with acre when deploying to appengine")
-  parser.add_option("-s", "--site", dest="site", default="freebase",
+  parser.add_option("-s", "--site", dest="site", default="freebase-site",
                     help="the site you want to work on - one of %s" % ",".join(Site._sites.keys()))
 
 

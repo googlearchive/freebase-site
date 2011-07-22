@@ -396,6 +396,20 @@ Validator.factory(scope, "LangId", {
   }
 });
 
+/**
+ *
+ * Username
+ */
+var username = /^[a-z0-9][a-z0-9_-]*$/;
+Validator.factory(scope, "Username", {
+  "string": function(val, options) {
+    if (username.test(val)) {
+      return val;
+    }
+    return this.invalid(this.key, val, "is an invalid username");
+  }
+});
+
 
 /**
  * OneOf

@@ -47,7 +47,16 @@ function handler() {
         .then(
           function(result) {
             var r = to_ajax_response(result);
-            h.set_cache_policy(module.SPEC.cache_policy || "nocache", null, r.headers);
+            var cache_policy = module.SPEC.cache_policy;
+            if (!cache_policy) {
+              if (!module.SPEC.method || module.SPEC.method === "GET") {
+                cache_policy = "private";
+              }
+              else {
+                cache_policy = "nocache";
+              }
+            }
+            h.set_cache_policy(cache_policy, null, r.headers);
             return r;
           },
           function(e) {

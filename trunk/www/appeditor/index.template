@@ -79,7 +79,7 @@
   </div>
 </acre:block>
 
-<acre:block def="global_nav()">
+<acre:block def="header_nav()">
   <div id="header-apptitle">
     <p>
       <span class="app-name">Initializing...</span>

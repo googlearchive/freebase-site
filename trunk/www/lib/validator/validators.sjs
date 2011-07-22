@@ -693,21 +693,6 @@ Validator.factory(scope, "Json", {
 });
 
 
-/**
- * Acre appid
- */
-Validator.factory(scope, "AppId", {
-  "string": function(val) {
-    if (h.startsWith(val, "//")) {
-      var host = val.split("/")[2];
-      return /^[0-9a-z][0-9a-z\-\.]+$/.test(host) ? val : this.invalid("Invalid hostname");
-    }
-    else {
-      return MqlId(val);
-    }
-  }
-});
-
 
 /***
  * Uri
@@ -722,6 +707,23 @@ Validator.factory(scope, "Uri", {
       return val;
     }
     return this.invalid(this.key, val, "is invalid URI");
+  }
+});
+
+
+
+/**
+ * Acre path
+ */
+Validator.factory(scope, "AcrePath", {
+  "string": function(val) {
+    if (h.startsWith(val, "//")) {
+      var host = val.split("/")[2];
+      return /^[0-9a-z][0-9a-z\-\.]+$/.test(host) ? val : this.invalid("Invalid hostname");
+    }
+    else {
+      return MqlId(val);
+    }
   }
 });
 

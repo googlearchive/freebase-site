@@ -306,9 +306,12 @@ Header
 }
 
 #fb-logo {
-  position: absolute;
-  top: 9px;
-  left: 28px;
+  float: left;
+  margin-left: 30px;
+  margin-right: 8px;
+  margin-top: 9px;
+  margin-bottom: -2px;
+  position: relative;
   z-index:12;
 }
 
@@ -317,10 +320,12 @@ Header
 */
 
 #fb-search {
-  position: absolute;
+  position: relative;
   z-index: 51;
-  left: 165px; top:0;
-  padding: 6px 2px;
+  float: left;
+  margin-left: 10px;
+  margin-top: 6px;
+  margin-right: 10px;
   .transition();
 }
 
@@ -398,7 +403,7 @@ Header
 */
 
 #nav-global {
-  margin-left: 465px;
+  float: left;
   height: 40px;
   list-style: none;
 }
@@ -710,6 +715,7 @@ of all templates.
 */
 
 #breadcrumb {
+  clear: left;
   overflow: hidden;
   border-top: 1px solid #b1b2b3;
   .linear_gradient(#d2d3d3, #dcdcdc);

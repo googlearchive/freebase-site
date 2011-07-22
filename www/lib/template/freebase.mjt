@@ -186,8 +186,8 @@
            border="0" height="21" width="120" />
     </a>
   </acre:block>
-  <acre:block if="exports.global_nav">
-    ${exports.global_nav()}
+  <acre:block if="exports.header_nav">
+    ${exports.header_nav()}
   </acre:block>
   <acre:block else="">
     <!!-- Freebase Suggest -->
@@ -242,24 +242,28 @@
       </a>
       <a title="${acre.request.script.path}" href="/appeditor#!path=${acre.request.script.path}" id="sourcelink">${_("View Source")}</a>
     </div>
-    <ul id="nav-footer" class="clear">
-      <li class="nav-footer-item">
-        <a href="${h.fb_url('/policies/attribution')}"
-           rel="nofollow"
-           title="View the Freebase Licensing Policy">${_("Attribution Policy")}</a>
-      </li>
-      <li class="nav-footer-item">
-        <a href="${h.fb_url('/policies/tos')}"
-           rel="nofollow"
-           title="View the Freebase Terms of Service">${_("Terms of Service")}</a>
-      </li>
-      <li class="nav-footer-item">
-        <a href="http://blog.freebase.com/"
-           title="Visit our blog to keep up with the latest news from Freebase">${_("Freebase Blog")}</a>
-      </li>
-    </ul>
+    <acre:block if="exports.footer_nav">
+      ${exports.footer_nav()}
+    </acre:block>
+    <acre:block else="">
+      <ul id="nav-footer" class="clear">
+        <li class="nav-footer-item">
+          <a href="${h.fb_url('/policies/attribution')}"
+             rel="nofollow"
+             title="View the Freebase Licensing Policy">${_("Attribution Policy")}</a>
+        </li>
+        <li class="nav-footer-item">
+          <a href="${h.fb_url('/policies/tos')}"
+             rel="nofollow"
+             title="View the Freebase Terms of Service">${_("Terms of Service")}</a>
+        </li>
+        <li class="nav-footer-item">
+          <a href="http://blog.freebase.com/"
+             title="Visit our blog to keep up with the latest news from Freebase">${_("Freebase Blog")}</a>
+        </li>
+      </ul>
+    </acre:block>
   </div>
-
 </acre:block>
 
 

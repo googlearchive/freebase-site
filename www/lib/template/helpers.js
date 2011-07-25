@@ -202,11 +202,16 @@
      */
 
     suggest_url: function() {
-        if (fb.acre.freebase.apiary_url) {
-            return fb.acre.freebase.apiary_url + '/search?key=' + fb.acre.freebase.api_key;
-        }
+      if (fb.acre.freebase.apiary_url) {
+        return h.build_url(fb.acre.freebase.apiary_url, "/search");
+      }
+      else {
+        return h.legacy_fb_url("/private/suggest");
+      }
+    },
 
-        return h.legacy_fb_url();
+    flyout_url: function() {
+      return h.legacy_fb_url("/private/flyout");
     },
 
     /**

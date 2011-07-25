@@ -344,6 +344,41 @@
     });
   });
 
+
+  /**
+   * Add all suggest options helpers here
+   */
+  $(function() {
+    fb.suggest_options = {
+
+      service_defaults: {
+        service_url: fb.h.suggest_url(),
+        service_path: "",
+        flyout_service_url: fb.h.flyout_url(),
+        flyout_service_path: "",
+        key: fb.acre.freebase.api_key
+      },
+
+      /**
+       *  suggest option for site search
+       */
+      search: function() {
+        var o = $.extend({}, fb.suggest_options.service_defaults, {
+          status: null,
+          parent: "#site-search-box",
+          align: "right"
+        });
+        if (fb.acre.freebase.apiary_url) {
+          o.filter = "(all without:fus)";
+        }
+        else {
+          o.category = "object";
+        }
+        return o;
+      }
+    };
+  });
+
   /**
    * init freebase site header search box (suggest)
    */
@@ -353,20 +388,7 @@
     var root = fb.acre.freebase.site_host;
     // Get rid of devel and port to use the legacy python client in development
 
-    search.suggest({
-      status: null,
-      //service_url: fb.h.legacy_fb_url(),
-      //TODO this needs to be cleaned up once we figure the proper configuration
-      //params for freebase.service_url and freebase.apiary_url
-      service_url: fb.h.suggest_url(),
-      service_path: fb.acre.freebase.apiary_url ? "" : "/private/suggest",
-      flyout_service_url: fb.h.legacy_fb_url(),
-//    soft:true,  // temporarily disable text search (to old python client)
-      category: fb.acre.freebase.apiary_url ? "" : "object",
-      filter: fb.acre.freebase.apiary_url ? "(all without:fus)" : "",
-      parent: "#site-search-box",
-      align: "right"
-    });
+    search.suggest(fb.suggest_options.search());
 
     var search_label = $("#site-search-label"),
     search_suggest = $("#site-search-box .fbs-pane");
@@ -484,7 +506,7 @@
 
      init: function() {
        $("#signedin").hover(
-         function() { 
+         function() {
            $("#user-controls").fadeIn();
            $(this).addClass("active");
          },

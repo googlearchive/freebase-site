@@ -222,7 +222,7 @@
     legacy_fb_url: function() {
       var args = Array.prototype.slice.call(arguments);
       var host = fb.acre.freebase.site_host
-        .replace(/^(https?\:\/\/)(devel|dev|test)\./, '$1www.')
+        .replace(/^(https?\:\/\/)([^\.]+)\./, '$1www.')
         .replace(':'+fb.acre.request.server_port, '');
       args.unshift(host);
       return h.build_url.apply(null, args);

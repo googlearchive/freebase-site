@@ -116,15 +116,15 @@
       if (c.is(".topic")) {
         var type = self.metadata.type;
         var suggest_options = $.extend(true, {}, o.suggest);
-        suggest_options.type = type;
+        suggest_options.type = type;                          // old suggest
         if (is_metaweb_system_type(type)) {
-          suggest_options.type_strict = "any";
-          suggest_options.filter = "(any type:" + type + ")";
+          suggest_options.type_strict = "any";                // old suggest
+          suggest_options.filter = "(any type:" + type + ")"; // new suggest
         }
         else {
-          suggest_options.type_strict = "should";
-          suggest_options.category = "object";
-          suggest_options.filter = "(any without:fus),(should type:" + type + ")";
+          suggest_options.type_strict = "should";             // old suggest
+          suggest_options.category = "object";                // old suggest
+          suggest_options.filter = "(any without:fus),(should type:" + type + ")";  // new suggest
         }
         i.validate_topic(suggest_options)
           .bind("valid.data_input", function(e, data) {

@@ -366,14 +366,10 @@
         var o = $.extend({}, fb.suggest_options.service_defaults, {
           status: null,
           parent: "#site-search-box",
-          align: "right"
+          align: "right",
+          category: "object",         // old suggest
+          filter: "(all without:fus)" // new suggest
         });
-        if (fb.acre.freebase.apiary_url) {
-          o.filter = "(all without:fus)";
-        }
-        else {
-          o.category = "object";
-        }
         return o;
       }
     };

@@ -1205,7 +1205,7 @@ function resolve_reentrant_path(path) {
 function legacy_fb_url() {
   var args = Array.prototype.slice.call(arguments);
   var host = acre.freebase.site_host
-    .replace(/^(https?\:\/\/)(devel|dev|test)\./, '$1www.')
+    .replace(/^(https?\:\/\/)([^\.]+)\./, '$1www.')
     .replace(':'+acre.request.server_port, '');
   args.unshift(host);
   return build_url.apply(null, args);

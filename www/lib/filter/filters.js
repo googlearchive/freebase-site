@@ -33,17 +33,13 @@
 (function($, fb) {
 
   function domain_type_property_suggest_options() {
-    var o = $.extend({}, fb.suggest_options.service_defaults);
-    if (fb.acre.freebase.apiary_url) {
-      o.filter = "(any type:/type/domain type:/type/type type:/type/property)";
-    }
-    else {
-      o.type = ["/type/domain", "/type/type", "/type/property"];
-      o.type_strict = "any";
-    }
+    var o = $.extend({}, fb.suggest_options.service_defaults, {
+      type: ["/type/domain", "/type/type", "/type/property"],               // old suggest
+      type_strict: "any",                                                   // old suggest
+      filter: "(any type:/type/domain type:/type/type type:/type/property)" // new suggest
+    });
     return o;
   };
-
 
   var filters = fb.filters = {
     init_domain_type_property_filter: function(context) {

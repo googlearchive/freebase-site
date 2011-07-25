@@ -86,14 +86,17 @@
       fb.filters.init_limit_slider_filter("#limit-slider", 100, 1, 1000, 10);
 
       // Initialize user/creator suggest input
-      $(":text[name=creator]").suggest({
-        service_url: fb.h.legacy_fb_url(),
-        type: "/type/user"
-      })
-      .bind("fb-select", function(e, data) {
-        $(this).val(data.id)
-          .parents("form:first").submit();
+      var suggest_options = $.extend({}, fb.suggest_options.service_defaults, {
+        type: "/type/user",                // old suggest
+        type_strict: "any",                // old suggest
+        filter: "(any type:/type/user)"    // new suggest
       });
+      $(":text[name=creator]")
+        .suggest(suggest_options)
+        .bind("fb-select", function(e, data) {
+          $(this).val(data.id)
+            .parents("form:first").submit();
+        });
 
       // Initialize row menu hovers & menus
       triples.init_row_menu();

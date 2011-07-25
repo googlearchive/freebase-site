@@ -52,11 +52,62 @@
         depending on whether the user has toggled Freebase Commons / All Projects
     */
 
+
+
     var MQL_FILTERS = {
       domain : [{ "key": [{"namespace" : "/" }] }],
       type : [{ "/type/type/domain": [{ "key" : [{ "namespace" : "/" }] }], "a:/type/type/domain": { "id": "/freebase", "optional" : "forbidden" } }],
       property : [{ "/type/property/schema": { "type": "/type/type", "domain": [{ "key" : [{ "namespace" : "/" }] }], "a:domain" : { "id" : "/freebase", "optional" : "forbidden" } } }]
     };
+
+    var suggest_options = {
+
+      domain: function() {
+        var o = $.extend({}, fb.suggest_options.service_defaults);
+        var commons = $("#domain-search-toggle-commons").is(":checked");
+        if (fb.acre.freebase.apiary_url) {
+          o.filter = "(any type:/type/domain)";
+        }
+        else {
+          o.type = "/type/domain";
+        }
+        if (commons) {
+          o.mql_filter = [{"key":[{"namespace":"/"}]}];
+        }
+        return o;
+      },
+
+      type: function() {
+        var o = $.extend({}, fb.suggest_options.service_defaults);
+        var commons = $("#type-search-toggle-commons").is(":checked");
+        if (fb.acre.freebase.apiary_url) {
+          o.filter = "(all type:/type/type)";
+        }
+        else {
+          o.type = "/type/type";
+        }
+        if (commons) {
+          o.mql_filter = [{"/type/type/domain":[{"key":[{"namespace":"/"}]}]}];
+        }
+        return o;
+      },
+
+      property: function() {
+        var o = $.extend({}, fb.suggest_options.service_defaults);
+        var commons = $("#property-search-toggle-commons").is(":checked");
+        if (fb.acre.freebase.apiary_url) {
+          o.filter = "(all type:/type/property)";
+        }
+        else {
+          o.type = "/type/property";
+        }
+        if (commons) {
+          o.mql_filter = [{"/type/property/schema":{"/type/type/domain":[{"key":[{"namespace":"/"}]}]}}];
+        }
+        return o;
+      }
+    };
+
 
     /*
         DOMAIN SUGGEST
@@ -68,13 +119,7 @@
       return false;
     });
 
-    var domain_suggest_options = { "type" : "/type/domain" , service_url: fb.h.legacy_fb_url() };
-
-    if ($("#domain-search-toggle-commons").is(":checked")) {
-      domain_suggest_options.mql_filter = MQL_FILTERS.domain;
-    }
-
-    $domain_input.suggest(domain_suggest_options)
+    $domain_input.suggest(suggest_options.domain())
       .bind("fb-select", function(e, data){
         window.location.href = fb.h.fb_url(data.id, [['schema']]);
       })
@@ -92,13 +137,7 @@
       return false;
     });
 
-    var type_suggest_options = { "type" : "/type/type" , service_url: fb.h.legacy_fb_url() };
-
-    if ($("#type-search-toggle-commons").is(":checked")) {
-      type_suggest_options.mql_filter = MQL_FILTERS.type;
-    }
-
-    $type_input.suggest(type_suggest_options)
+    $type_input.suggest(suggest_options.type())
       .bind("fb-select", function(e, data){
         window.location.href = fb.h.fb_url(data.id, [['schema']]);
       })
@@ -116,13 +155,7 @@
       return false;
     });
 
-    var property_suggest_options = { "type" : "/type/property" , service_url: fb.h.legacy_fb_url() };
-
-    if ($("#property-search-toggle-commons").is(":checked")) {
-      property_suggest_options.mql_filter = MQL_FILTERS.property;
-    }
-
-    $property_input.suggest(property_suggest_options)
+    $property_input.suggest(suggest_options.property())
       .bind("fb-select", function(e, data){
         window.location.href = fb.h.fb_url(data.id, [['schema']]);
       })
@@ -158,35 +191,17 @@
 
       // Domain
       if ($parent.attr("id") === $domain_form.attr("id")) {
-        if (el_id[el_id.length-1] === "commons") {
-          domain_suggest_options.mql_filter = MQL_FILTERS.domain;
-        }
-        else {
-          delete domain_suggest_options.mql_filter;
-        }
-        $domain_input.suggest(domain_suggest_options);
+        $domain_input.suggest(suggest_options.domain());
       }
 
       // Type
       else if ($parent.attr("id") === $type_form.attr("id")) {
-        if (el_id[el_id.length-1] === "commons") {
-          type_suggest_options.mql_filter = MQL_FILTERS.type;
-        }
-        else {
-          delete type_suggest_options.mql_filter;
-        }
-        $type_input.suggest(type_suggest_options);
+        $type_input.suggest(suggest_options.type());
       }
 
       // Property
       else if ($parent.attr("id") === $property_form.attr("id")) {
-        if (el_id[el_id.length-1] === "commons") {
-          property_suggest_options.mql_filter = MQL_FILTERS.property;
-        }
-        else {
-          delete property_suggest_options.mql_filter;
-        }
-        $property_input.suggest(property_suggest_options);
+        $property_input.suggest(suggest_options.property());
       }
 
       // focus related input, preserving user input

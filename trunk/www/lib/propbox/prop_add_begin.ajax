@@ -56,7 +56,10 @@ var SPEC = {
         return queries.get_enumerated_types(prop_structure, lang)
           .then(function(enum_types) {
             return {
-              html: acre.markup.stringify(propbox.prop_add_form(s, prop_structure, lang))
+              html: acre.markup.stringify(propbox.prop_add_form(s, prop_structure, lang)),
+              // <debug>
+              prop_structure: prop_structure
+              // </debug>
             };
           });
       });

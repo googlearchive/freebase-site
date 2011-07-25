@@ -114,7 +114,19 @@
         });
 
       if (c.is(".topic")) {
-        i.validate_topic($.extend(true, {}, o.suggest, {type:self.metadata.type}))
+        var type = self.metadata.type;
+        var suggest_options = $.extend(true, {}, o.suggest);
+        suggest_options.type = type;
+        if (is_metaweb_system_type(type)) {
+          suggest_options.type_strict = "any";
+          suggest_options.filter = "(any type:" + type + ")";
+        }
+        else {
+          suggest_options.type_strict = "should";
+          suggest_options.category = "object";
+          suggest_options.filter = "(any without:fus),(should type:" + type + ")";
+        }
+        i.validate_topic(suggest_options)
           .bind("valid.data_input", function(e, data) {
             self.fb_select(data);
           })
@@ -451,6 +463,12 @@
         this.empty();
       }
     }
+  };
+
+  function is_metaweb_system_type(type_id) {
+    return (type_id.indexOf("/type/") === 0 ||
+            (type_id.indexOf("/common/") === 0 && type_id !== "/common/topic") ||
+            (type_id.indexOf("/freebase/") === 0 && type_id.indexOf("_profile") === (type_id.length - 8)));
   };
 
 })(jQuery);

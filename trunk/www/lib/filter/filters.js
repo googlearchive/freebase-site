@@ -32,29 +32,39 @@
 
 (function($, fb) {
 
+  function domain_type_property_suggest_options() {
+    var o = $.extend({}, fb.suggest_options.service_defaults);
+    if (fb.acre.freebase.apiary_url) {
+      o.filter = "(any type:/type/domain type:/type/type type:/type/property)";
+    }
+    else {
+      o.type = ["/type/domain", "/type/type", "/type/property"];
+      o.type_strict = "any";
+    }
+    return o;
+  };
+
+
   var filters = fb.filters = {
     init_domain_type_property_filter: function(context) {
       // *** Initialize domain/type/property suggest input
-      $(":text[name=domain], :text[name=type], :text[name=property]", context).suggest({
-        service_url: fb.h.legacy_fb_url(),
-        type: ["/type/domain", "/type/type", "/type/property"],
-        type_strict: "any"
-      })
-      .bind("fb-select", function(e, data) {
-        var $this = $(this);
-        $this.val(data.id);
-        var type = data["n:type"].id;
-        if (type === "/type/domain") {
-          $this.attr("name", "domain");
-        }
-        else if (type === "/type/type") {
-          $this.attr("name", "type");
-        }
-        else if (type === "/type/property") {
-          $this.attr("name", "property");
-        }
-        this.form.submit();
-      });
+      $(":text[name=domain], :text[name=type], :text[name=property]", context)
+        .suggest(domain_type_property_suggest_options())
+        .bind("fb-select", function(e, data) {
+          var $this = $(this);
+          $this.val(data.id);
+          var type = data["n:type"].id;
+          if (type === "/type/domain") {
+            $this.attr("name", "domain");
+          }
+          else if (type === "/type/type") {
+            $this.attr("name", "type");
+          }
+          else if (type === "/type/property") {
+            $this.attr("name", "property");
+          }
+          this.form.submit();
+        });
     },
 
     init_limit_slider_filter: function(context, default_value, min, max, step) {

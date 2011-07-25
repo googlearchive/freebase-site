@@ -229,7 +229,7 @@
     },
 
     /**
-     * freebase api url
+     * freebase api url (legacy freebase apis)
      * Use for links to freebase apis
      * (i.e., http://api.freebase.com/path?params)
      */
@@ -237,6 +237,20 @@
       var args = Array.prototype.slice.call(arguments);
       args.unshift(fb.acre.freebase.service_url);
       return h.build_url.apply(null, args);
+    },
+
+    /**
+     * freebase apiary url (new googleapis/apiary urls)
+     * Use for links to freebase apis
+     * (i.e., https://www.googleapis.com/freebase/v1/path?params)
+     */
+    fb_apiary_url: function() {
+      if (fb.acre.freebase.apiary_url) {
+        var args = Array.prototype.slice.call(arguments);
+        args.unshift(fb.acre.freebase.apiary_url);
+        return h.build_url.apply(null, args);
+      }
+      throw "fb.acre.freebase.apiary_url is not defined";
     },
 
    /**

@@ -30,6 +30,24 @@
  */
 ;(function($, fb, propbox) {
 
+  function suggest_options() {
+    var o = $.extend({
+      status: ["", "Searching...", "Select an item from the list:"]
+    }, fb.suggest_options.service_defaults);
+    if (fb.acre.freebase.apiary_url) {
+      o.filter = "(any without:fus),(should type:/common/topic)";
+      o.mqlread_url = fb.h.fb_apiary_url("/mqlread");
+    }
+    else {
+      o.type = "/common/topic";
+      o.type_strict = "should";
+      o.category = "object";
+      o.mqlread_url = fb.h.fb_api_url("/api/service/mqlread");
+    }
+    return o;
+  };
+
+
   var topic = fb.topic = {
 
     init: function() {
@@ -39,16 +57,7 @@
         base_ajax_url: fb.h.ajax_url("lib/propbox"),
         base_static_url: fb.h.static_url("lib/propbox"),
         lang: fb.lang || "/lang/en",
-        suggest: {
-          service_url: fb.h.legacy_fb_url(),
-          service_path: "/private/suggest",
-          flyout_service_url: fb.h.legacy_fb_url(),
-          flyout_service_path: "/private/flyout",
-          mqlread_url: fb.h.fb_api_url("/api/service/mqlread"),
-          category: "object",
-          type: "/common/topic",
-          status: ["", "Searching...", "Select an item from the list:"]
-        }
+        suggest: suggest_options()
       });
 
       // Initialize filter menu collapse/expand

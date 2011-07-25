@@ -891,7 +891,7 @@
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/film/film/gross_revenue",
-        expected_type: {id:"/measurement_unit/dated_money_value"},
+        expected_type: {id:"/measurement_unit/dated_money_value", mediator:true},
         unique: true,
         properties: [{
           id: "/measurement_unit/dated_money_value/currency",
@@ -939,7 +939,7 @@
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/film/film/gross_revenue",
-        expected_type: {id:"/measurement_unit/dated_money_value"},
+        expected_type: {id:"/measurement_unit/dated_money_value", mediator:true},
         unique: true,
         properties: [{
           id: "/measurement_unit/dated_money_value/currency",
@@ -992,7 +992,7 @@
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/film/film/gross_revenue",
-        expected_type: {id:"/measurement_unit/dated_money_value"},
+        expected_type: {id:"/measurement_unit/dated_money_value", mediator:true},
         unique: true,
         properties: [{
           id: "/measurement_unit/dated_money_value/currency",
@@ -1047,7 +1047,7 @@
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/film/film/gross_revenue",
-        expected_type: {id:"/measurement_unit/dated_money_value"},
+        expected_type: {id:"/measurement_unit/dated_money_value", mediator:true},
         unique: true,
         properties: [{
           id: "/measurement_unit/dated_money_value/currency",
@@ -1085,7 +1085,7 @@
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/tv/tv_program/regular_cast",
-        expected_type: {id: "/tv/regular_tv_appearance"},
+        expected_type: {id: "/tv/regular_tv_appearance", mediator:true},
         properties: [{
           id: "/tv/regular_tv_appearance/actor",
           unique: true,
@@ -1169,7 +1169,7 @@
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
         id: "/tv/tv_program/regular_cast",
-        expected_type: {id: "/tv/regular_tv_appearance"},
+        expected_type: {id: "/tv/regular_tv_appearance", mediator:true},
         properties: [{
           id: "/tv/regular_tv_appearance/actor",
           unique: true,

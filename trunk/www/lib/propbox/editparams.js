@@ -93,7 +93,7 @@
       //
       var old_values = (structure.values || []).slice();
       var props = structure.properties || [];
-      var mediator = structure.expected_type.mediator || props.length;
+      var mediator = structure.expected_type.mediator;
 
       if (mediator) {
         if (!props.length) {

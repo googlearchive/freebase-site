@@ -400,7 +400,7 @@ Validator.factory(scope, "LangId", {
  *
  * Username
  */
-var username = /^[a-z0-9][a-z0-9_-]*$/;
+var username = /^[a-z][a-z0-9_]*$/;
 Validator.factory(scope, "Username", {
   "string": function(val, options) {
     if (username.test(val)) {
@@ -727,17 +727,248 @@ Validator.factory(scope, "Uri", {
 
 
 /**
- * Acre path
+ * Acre validators
  */
-Validator.factory(scope, "AcrePath", {
+var acre_host = /^[0-9a-z][0-9a-z\-\.]+$/
+
+Validator.factory(scope, "AcreHost", {
   "string": function(val) {
-    if (h.startsWith(val, "//")) {
-      var host = val.split("/")[2];
-      return /^[0-9a-z][0-9a-z\-\.]+$/.test(host) ? val : this.invalid("Invalid hostname");
+    if (acre_host.test(val)) {
+      return val;
     }
-    else {
-      return MqlId(val);
-    }
+    return this.invalid(this.key, val, "is an invalid hostname");
   }
 });
+
+Validator.factory(scope, "AcreVersion", {
+  "string": function(key) {
+    // 'current' is a reserved version name
+    if (key == 'current') {
+      return this.invalid('"current" is a reserved version name.');      
+    }
+
+    // 'release' is a reserved version name
+    if (key == 'release') {
+      return this.invalid('"release" is a reserved version name.');
+    }
+
+    // XXX - check that it's non-null, uses valid characters
+    if (!(/^[\-0-9a-z]{0,20}$/).test(key)) {
+      return this.invalid(val, '- only lowercase alpha, numbers, and - are allowed in version names');
+    }
+
+    return key;
+  }
+});
+
+Validator.factory(scope, "AcreFilename", {
+  "string": function(name) {
+    if (!/^[\-_0-9A-Za-z\.]+$/.test(name)) { 
+      return this.invalid("File names can only contain alphanumeric characters, ., - and _");
+    }
+    
+    if (!/^[A-Za-z]/.test(name)) { 
+      return this.invalid("File names must be begin with a letter");
+    }
+
+    if (!/[0-9A-Za-z]$/.test(name)) { 
+      return this.invalid("File names cannot end with a special character");
+    }
+
+    var RESERVED_KEYS = {'acre':true, 'status':'', 'api':true};
+    if (name in RESERVED_KEYS) { 
+      return this.invalid("'acre', 'api', and 'status' are reserved file names");
+    }
+
+    return name;
+  }
+});
+
+Validator.factory(scope, "AcreResource", {
+  "string": function(path, options) {
+    
+    function escape_re(s) {
+      var specials = /[.*+?|()\[\]{}\\]/g;
+      return s.replace(specials, '\\$&');
+    }
+    
+    var DEFAULT_HOST_NS = "/freebase/apps/hosts";
+
+    var APPEDITOR_SERVICE_PATH = "/appeditor/services/"
+
+    var ACRE_TO_FREEBASE_MAP = {
+      "freebaseapps.com"           : {
+        service_url : "http://api.freebase.com",
+        site_host   : "http://www.freebase.com"
+      },
+      "sandbox-freebaseapps.com"   : {
+        service_url : "http://api.sandbox-freebase.com",
+        site_host   : "http://www.sandbox-freebase.com"
+      },
+      "acre.z:8115"                : {
+        service_url : "http://api.sandbox-freebase.com",
+        site_host   : "http://devel.sandbox-freebase.com:8115"
+      }
+    };
+
+    // setup environment URLs
+    var hosts = [];
+    for (var host in ACRE_TO_FREEBASE_MAP) {
+      hosts.push(escape_re(host));
+    }
+    var acre_host_re = new RegExp("\.(" + hosts.join("|") +")\.$");
+    var acre_host = acre.host.name + ((acre.host.port !== 80) ? ":" + acre.host.port : "");
+
+    options = options || {};
+    var app_ver_id_parts;   // arrary used to manipulate appid/host components
+
+    // structure of object we'll be returning
+    var resource = {
+      path        : null,
+      id          : null,
+      app_path    : null,
+      appid       : null,
+      version     : null,
+      filename    : null,
+      path_info   : "/",
+      querystring : null,
+      service_url : acre.freebase.service_url,
+      site_host   : acre.freebase.site_host,
+      acre_host   : acre_host
+    };
+    resource.appeditor_service_base = resource.site_host + APPEDITOR_SERVICE_PATH;
+
+    if (typeof path === 'undefined') return resource;
+    if (typeof path !== 'string') {
+      throw "Can't parse a path that is not a string."
+    }
+
+    // extract querystring, if present
+    var qparts = path.split("?");
+    if (qparts.length > 1) {
+      resource.querystring = qparts[1];
+    }
+
+    var base_path = qparts[0];
+
+    var bits = base_path.split("//");
+
+    // it's the new URL-style styntax:
+    if (bits.length === 2) {
+      // extract app host portion
+      var parts = bits[1].split('/');
+      var app_host_part = parts.shift();
+
+      // extract filename and path_info, if present
+      if (parts.length) {
+        resource.filename = parts.join('/');
+      }
+      // Resolve whether source is x-graph.  If it is:
+      // * change the service_url
+      // * munge other values accordingly
+      if (/^https?:$/.test(bits[0])) {
+        // For URLs, do a HEAD request to find out from acre where the source really is (post-routing)
+        var req = acre.urlfetch(path, {method : "HEAD"});
+        var source_url = req.headers['x-acre-source-url'];
+        if (!source_url) return resource;
+
+        var ae_host = /^https?:\/\/([^\/]*)/.exec(source_url);
+        if (ae_host) {
+          for (var host in ACRE_TO_FREEBASE_MAP) {
+            var freebase_urls = ACRE_TO_FREEBASE_MAP[host];
+            // known appeditor host, reset URLs
+            if (freebase_urls.site_host = ae_host[0]) {
+              resource.acre_host = host;
+              resource.service_url = freebase_urls.service_url;
+              resource.site_host = freebase_urls.site_host;
+            }
+          }
+        }
+        var app_host_res = /\#\!path=\/\/([^\/]*)/.exec(source_url);
+        if (app_host_res) app_host_part = app_host_res[1];
+      } else {
+        var match = app_host_part.match(acre_host_re);
+        // check whether path given is absolute (ends in .) and is for a known host
+        if(match) {
+          // make the app host relative again
+          app_host_part = app_host_part.replace(acre_host_re,"");
+          // if it's x-graph, reset URLs
+          if (acre_host !== match[1]) {
+            // known appeditor host, reset service URLs
+            var freebase_urls = ACRE_TO_FREEBASE_MAP[match[1]];
+            resource.acre_host = match[1];
+            resource.service_url = freebase_urls.service_url;
+            resource.site_host = freebase_urls.site_host;
+          }
+        } else {
+          // TODO : what if it's absolute but not for a known host?
+        }
+      }
+
+      // break-down app host so we can work with it
+      app_ver_id_parts = app_host_part.split('.');
+
+      // construct fully-qualified versioned appid and app_host
+      switch (app_ver_id_parts[app_ver_id_parts.length-1]) {
+
+        case "dev" :   // ends in '.dev' so it's fully-qualified ID
+          app_ver_id_parts.pop();
+          app_ver_id_parts.reverse().unshift("");
+          break;
+
+        case "" :      // ends in '.' so it's a full-qualified hostname
+          app_ver_id_parts.pop();
+          app_ver_id_parts.reverse().unshift(DEFAULT_HOST_NS);
+          break;
+
+        default :     // otherwise, it's a 'published' hostname
+          app_ver_id_parts = app_ver_id_parts.reverse();
+          var host_base_parts = acre.host.name.split('.');
+          for (var a in host_base_parts) {
+            app_ver_id_parts.unshift(host_base_parts[a]);
+          }
+          app_ver_id_parts.unshift(DEFAULT_HOST_NS);
+          break;
+
+      }
+
+      resource.app_path = "//" + app_host_part;
+      resource.appid = app_ver_id_parts.join('/');
+
+      // it's an old-style graph ID
+    } else if (/^(freebase:)?\//.test(path)) {
+
+      var parts = path.replace(/^freebase:/,"").split('/');
+      if (options.file) {
+        resource.filename = acre.freebase.mqlkey_unquote(parts.pop());
+        // NOTE: this mode does not support path_info (ambiguous)
+      }
+      resource.appid = parts.join('/');
+      resource.app_path = "//" + resource.appid.split("/").reverse().join(".") + "dev";
+
+
+      // it's a relative path
+    } else {
+      resource.appid = acre.current_script.app.id;
+      resource.version = acre.current_script.app.version;
+      resource.app_path = (resource.version ? resource.version + "." : "" ) +
+                          resource.appid.split("/").reverse().join(".") + "dev";
+
+      // extract filename and path_info, if present
+      var parts = base_path.split("/");
+      if (parts.length) {
+        resource.filename = parts.pop();
+        resource.path_info = "/" + parts.join("/");
+      }
+    }
+
+    resource.id = resource.appid + (resource.filename ? "/" + acre.freebase.mqlkey_quote(resource.filename) : "");
+    resource.path = resource.app_path + (resource.filename ? "/" + resource.filename : "");
+    resource.url = acre.host.protocol + ":" + resource.app_path + "." + acre.host.name + 
+                    (acre.host.port !== 80 ? (":" + acre.host.port) : "") +
+                    (resource.filename ? "/" + resource.filename : "");
+
+    return resource;
+  }
+})
 

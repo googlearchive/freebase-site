@@ -36,6 +36,143 @@ var freebase_object = acre.require("template/freebase_object.sjs");
 
 var self = this;
 
+var routers_map = {
+  "host" : HostRouter, 
+  "prefix" : PrefixRouter, 
+  "static" : StaticRouter,
+  "ajax" : AjaxRouter,
+  "object" : ObjectRouter,
+  "home" : HomeRouter
+};
+
+var default_routers = ["host", "static", "ajax", "prefix"];
+
+
+/**
+ * host->url redirector
+ */
+function HostRouter() {
+  var route_list = [];
+  var route_map = {};
+
+  var add = this.add = function(routes) {
+    if (!(routes instanceof Array)) {
+      routes = [routes];
+    }
+    routes.forEach(function(route) {
+      if (!route || !route.host || !route.url) {
+        throw 'A routing rule must be a dict with valid host and url: ' + JSON.stringify(route);
+      }
+      route_map[route.host] = route.url;
+      h.splice_with_key(route_list, "host", route);
+    });
+  };
+
+  var route = this.route = function(req) {
+    var url = route_map[req.server_name];
+    if (url) {
+      var req_path = req.url.replace(req.app_url, "");
+      acre.response.status = 301;
+      acre.response.set_header("location", url + req_path);
+      acre.response.set_header("cache-control", "public, max-age: 3600");
+      acre.exit();
+      return true;
+    }
+    return false;
+  };
+
+  var dump = this.dump = function() {
+    return route_list.slice();
+  };
+
+};
+
+function is_proxyable(app_path, scope) {
+  var site_md = acre.get_metadata(scope.acre.current_script.app.path);
+  
+  // is it in the same project?
+  if ((app_path == "//" + site_md.project) || 
+      h.endsWith(app_path, "." + site_md.project)) {
+    return true;
+  }
+  
+  // is it one of our mounted apps?
+  for (var mount in site_md.mounts) {
+    var path = site_md.mounts[mount];
+    if (path === app_path) {
+      return true;
+    }
+  }
+
+  // no? then bail
+  return false;
+}
+
+
+function StaticRouter() {
+  var add = this.add = function(routes) {};
+
+  var route = this.route = function(req, scope) {
+    var qs = req.query_string;
+    var segs = req.path_info.split("/");
+    segs.shift();
+    
+    // only handle /static URLs
+    if (segs.shift() !== "static") {
+      return false;
+    }
+    
+    // only proxy if it's in a mounted app
+    if (!is_proxyable("//" + segs[0], scope)) {
+      return false;
+    }
+
+    var path = "//" + segs.join("/") + (qs ? "?" + qs : "");
+    // console.log("StaticRouter path", path);
+    var content = acre.include(path);
+    var headers = content.headers;
+    //console.log("static headers", headers);
+    if (headers) {
+      for (var k in headers) {
+        acre.response.set_header(k, headers[k]);
+      }
+    }
+    acre.write(content);
+    acre.exit();
+  };
+};
+
+
+function AjaxRouter() {
+  var add = this.add = function(routes){};
+
+  var route = this.route = function(req, scope) {
+    var qs = req.query_string;
+    var segs = req.path_info.split("/");
+    segs.shift()
+
+    // only handle /ajax URLs
+    if (segs.shift() !== "ajax") {
+      return false;
+    }
+    
+    // only proxy if it's in a mounted app
+    if (!is_proxyable("//" + segs[0], scope)) {
+      return false;
+    }
+
+    if (req.headers['x-requested-with'] !== "XMLHttpRequest") {
+      // assert X-Requested-With header
+      //throw "Request must have a valid 'X-Requested-With header";
+    }
+
+    var path = "//" + segs.join("/") + (qs ? "?" + qs : "");
+    // console.log("AjaxRouter path", path);
+    acre.route(path);
+  };
+};
+
+
 /**
    ----Prefix routing logic for Acre---
    1. Add routes with router.add({prefix:, app:, script:?, redirect:?, url:?})
@@ -208,6 +345,7 @@ function HomeRouter(app_labels) {
   
 };
 
+
 function ObjectRouter(app_labels) {
   var route_list = [];
   var types = {};
@@ -320,47 +458,6 @@ function ObjectRouter(app_labels) {
 
 };
 
-/**
- * host->url redirector
- */
-function HostRouter() {
-  var route_list = [];
-  var route_map = {};
-
-  var add = this.add = function(routes) {
-    if (!(routes instanceof Array)) {
-      routes = [routes];
-    }
-    routes.forEach(function(route) {
-      if (!route || !route.host || !route.url) {
-        throw 'A routing rule must be a dict with valid host and url: ' + JSON.stringify(route);
-      }
-      route_map[route.host] = route.url;
-      h.splice_with_key(route_list, "host", route);
-    });
-  };
-
-  var route = this.route = function(req) {
-    var url = route_map[req.server_name];
-    if (url) {
-      var req_path = req.url.replace(req.app_url, "");
-      acre.response.status = 301;
-      acre.response.set_header("location", url + req_path);
-      acre.response.set_header("cache-control", "public, max-age: 3600");
-      acre.exit();
-      return true;
-    }
-    return false;
-  };
-
-  var dump = this.dump = function() {
-    return route_list.slice();
-  };
-
-};
-
-var routers_map = {"host" : HostRouter, "home" : HomeRouter, "prefix" : PrefixRouter, "object" : ObjectRouter};
-
 
 /**
  * Extend the default rules for this site with the environment specific rules.
@@ -414,7 +511,7 @@ function extend_default_rules(rules, environment_rules) {
 
     // default order if not specified
     if (!rules["routers"]) { 
-        rules["routers"] = ["host", "home", "prefix", "object"];
+        rules["routers"] = default_routers;
     }
 
     // override with the environment rules if specified.
@@ -436,7 +533,6 @@ function extend_default_rules(rules, environment_rules) {
     rules["routers"] = tmp_routers;
 
     // TODO: object and host overrides (not necessary now).
-
     return rules;
 }
 
@@ -468,7 +564,7 @@ function route(rules, scope) {
       rules_dump[name] = router.dump();
     }
     else {
-      router.route(scope.acre.request);
+      router.route(scope.acre.request, scope);
     }
   }
 

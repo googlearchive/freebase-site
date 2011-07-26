@@ -1,0 +1,106 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require("helper/helpers.sjs");
+  var i18n = acre.require("i18n/i18n.sjs");
+</acre:script>
+
+<acre:block def="lang_select()">
+  <acre:script>
+    var base_url = acre.request.url.split("?").shift();
+    var params = h.extend({}, acre.request.params);
+    delete params.lang;
+    var current_lang = 'English';
+  </acre:script>
+  <form action="${base_url}" method="GET" id="data-lang" class="language-picker">
+    <acre:block for="k,v in params" if="typeof v === 'string'">
+      <input type="hidden" name="${k}" value="${v}"/>
+    </acre:block>
+    <select name="lang" 
+            onchange="return freebase.dispatch(event, freebase.lang_select, [this.value], this);">
+      <acre:block for="lang in i18n.mql.langs(true)">
+        <acre:script>
+          if (lang.id === i18n.lang) {
+            current_lang = lang.name
+          } 
+        </acre:script>
+        <option value="${lang.id}"
+                acre:attrs="lang.id === i18n.lang ? {'selected':'selected'} : {}">${lang.name}</option>
+      </acre:block>
+    </select>
+    <label for="lang" class="current-lang">$current_lang</span>
+  </form>
+</acre:block>
+
+<!!--
+  A number component that can be i18n'ized by i18n.js
+  @param attrs - acre:attrs of <span>. Can be a dictionary, an array of tuples or null.  
+!!-->
+<acre:block def="number(val, attrs)" trim="1">
+  <acre:script>
+    attrs = h.parse_params(attrs) || {};
+    attrs["data-value"] = val;
+    attrs["class"] = (attrs["class"] || "") + " number";
+  </acre:script>
+  <span acre:attrs="attrs">${val}</span>
+</acre:block>
+
+<!!--
+  A datetime component that can be i18n'ized by i18n.js
+  @param attrs - acre:attrs of <time>. Can be a dictionary, an array of tuples or null.
+!!-->
+<acre:block def="datetime(val, attrs)" trim="1">
+  <acre:script>
+    attrs = h.parse_params(attrs) || {};
+    if (h.type(val) === "date") {
+      val = acre.freebase.date_to_iso(val);
+    }
+    attrs.datetime = val;
+  </acre:script>
+  <time acre:attrs="attrs">${val}</time>
+</acre:block>
+
+<!!--
+  Superscript language code if this_lang !== current_lang (default to i18n.lang)
+!!-->
+<acre:block def="lang_code(this_lang, current_lang, force_display)" trim="1" if="this_lang">
+  <acre:script>
+    this_lang = ""+this_lang;
+    current_lang = "" + (current_lang || i18n.lang);
+  </acre:script>
+  <acre:block if="force_display || this_lang !== current_lang" trim="1">
+    <acre:script>
+      var code = h.lang_code(this_lang);
+    </acre:script>
+    <sup class="lang-code ${code}">${code}</sup>
+  </acre:block>
+</acre:block>

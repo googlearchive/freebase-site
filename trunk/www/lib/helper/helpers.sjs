@@ -34,7 +34,6 @@
 var exports = {
 
   // UTIL
-
   "type": type,
   "isFunction": isFunction,
   "isArray": isArray,
@@ -51,7 +50,6 @@ var exports = {
   "splice_with_key": splice_with_key,
 
   // MQL
-
   "is_literal_type": is_literal_type,
   "to_literal_value": to_literal_value,
   "is_metaweb_system_type": is_metaweb_system_type,
@@ -77,7 +75,6 @@ var exports = {
   "set_cache_policy": set_cache_policy,
 
   // ACCOUNT
-
   "set_account_cookie": set_account_cookie,
   "clear_account_cookie": clear_account_cookie,
   "get_account_cookie": get_account_cookie,
@@ -108,12 +105,14 @@ var exports = {
   "parse_uri": parse_uri,
 
   // ROUTING
-
   "split_path" : split_path,
   "split_extension" : split_extension,
   "normalize_path" : normalize_path,
   "redirect" : redirect,
-  "route" : route
+  "route" : route,
+  
+  // METADATA
+  "extend_metadata" : extend_metadata
 };
 
 var self = this;
@@ -1489,3 +1488,48 @@ function output_helpers(scope) {
     }
   }
 }
+
+
+// ------------- METADATA ---------------
+
+// helper for backfilling metadata from a mounted app
+function extend_metadata(md, mount) {
+  
+  function fix_up_paths(md, md_path) {
+    for (var hdlr in md.handlers) {
+      var handler = md.handlers[hdlr];
+      if (handler.indexOf("/") !== 0) {
+        md.handlers[hdlr] = md_path + "/" + handler;
+      }
+    }
+
+    for (var mnt in md.mounts) {
+      var mount = md.mounts[mnt];
+      if(mount.indexOf("/") !== 0) {
+        md.mounts[mnt] = md_path + "/" + mount; 
+      }
+    }
+
+    if (md.error_page && (md.error_page.indexOf("/") !== 0)) {
+        md.error_page = md_path + "/" + md.error_page;
+    }
+
+    if (md.template_base && (md.template_base.indexOf("/") !== 0)) {
+        md.template_base = md_path + "/" + md.template_base;
+    }
+  };
+  
+  // get backfill metadata
+  var md_path = md.mounts[mount];
+  var md_file = acre.require(md_path + "/METADATA");
+  var backfill = md_file.METADATA ? md_file.METADATA : JSON.parse(md_file.body);
+  
+  // fix paths
+  fix_up_paths(backfill, md_path);
+
+  // splice together
+  var final_md = extend(true, {}, backfill, md);
+  extend(md, final_md);
+  
+  return md;
+};

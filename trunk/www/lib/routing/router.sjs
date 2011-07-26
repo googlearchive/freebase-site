@@ -462,7 +462,7 @@ function ObjectRouter(app_labels) {
 /**
  * Extend the default rules for this site with the environment specific rules.
  */
-function extend_default_rules(rules, environment_rules) { 
+function extend_rules(rules, environment_rules) { 
 
     // Here we handle configuration overrides from specific environments. 
 

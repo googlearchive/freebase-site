@@ -42,7 +42,7 @@
     SERVER.acre.host = ${JSON.stringify(acre.host)};
     
     SERVER.acre.appeditor = {
-      service_path : "${h.ajax_url('lib/appeditor-services/')}",
+      service_path : "${h.ajax_url('services/')}",
       cuecard_api: "${h.ajax_url('lib/cuecard/')}"
     };
     

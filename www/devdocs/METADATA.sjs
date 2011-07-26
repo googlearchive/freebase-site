@@ -19,4 +19,4 @@ var METADATA = {
   }
 };
 
-acre.require(METADATA.mounts.site + "/loader.sjs").extend_metadata(METADATA);
+acre.require(METADATA.mounts.site + "/lib/helper/helpers.sjs").extend_metadata(METADATA, "site");

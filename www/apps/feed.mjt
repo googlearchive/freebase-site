@@ -32,7 +32,7 @@
 <acre:script>
   acre.response.set_header("content-type", "application/atom+xml");
   var c = this.exports.c = {};
-  var Datejs = acre.require("lib/libraries/date").Date;
+  var Datejs = acre.require("libraries/date").Date;
   var bp = acre.request.base_path;
 </acre:script>
 

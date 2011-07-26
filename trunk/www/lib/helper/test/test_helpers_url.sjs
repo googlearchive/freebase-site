@@ -107,11 +107,9 @@ test("resolve_reentrant_path", function() {
 
 test("reentrant_url", function() {
   var app_path = acre.request.script.app.path
-    .replace(/^\/\//, "/")
-    .replace(".svn.freebase-site.googlecode.dev", "");
+    .replace(/^\/\//, "/");
   var lib_path = acre.current_script.app.path
-    .replace(/^\/\//, "/")
-    .replace(".svn.freebase-site.googlecode.dev", "");
+    .replace(/^\/\//, "/");
 
   equal(h.reentrant_url("/PREFIX"), "/PREFIX" + app_path);
   equal(h.reentrant_url("/PREFIX", null), "/PREFIX" + app_path);
@@ -121,7 +119,7 @@ test("reentrant_url", function() {
   equal(h.reentrant_url("/PREFIX", "lib/foo"), "/PREFIX" + lib_path + "/foo");
   equal(h.reentrant_url("/PREFIX", "/lib/foo"), "/PREFIX" + app_path + "/lib/foo");
   equal(h.reentrant_url("/PREFIX", "//schema.www.trunk.svn.freebase-site.googlecode.dev/foo"),
-        "/PREFIX/schema.www.trunk/foo");
+        "/PREFIX/schema.www.trunk.svn.freebase-site.googlecode.dev/foo");
   equal(h.reentrant_url("/PREFIX", "lib/foo", {a:1}),
         "/PREFIX" + lib_path + "/foo?a=1");
   equal(h.reentrant_url("/PREFIX", "foo/bar", {a:1}),
@@ -130,11 +128,9 @@ test("reentrant_url", function() {
 
 test("ajax_url", function() {
   var app_path = acre.request.script.app.path
-    .replace(/^\/\//, "/")
-    .replace(".svn.freebase-site.googlecode.dev", "");
+    .replace(/^\/\//, "/");
   var lib_path = acre.current_script.app.path
-    .replace(/^\/\//, "/")
-    .replace(".svn.freebase-site.googlecode.dev", "");
+    .replace(/^\/\//, "/");
   var PREFIX = "/ajax";
 
   equal(h.ajax_url(), PREFIX + app_path);
@@ -145,18 +141,16 @@ test("ajax_url", function() {
   equal(h.ajax_url("lib/foo"), PREFIX + lib_path + "/foo");
   equal(h.ajax_url("/lib/foo"), PREFIX + app_path + "/lib/foo");
   equal(h.ajax_url("//1b.schema.www.trunk.svn.freebase-site.googlecode.dev/foo"),
-        PREFIX + "/1b.schema.www.trunk/foo");
+        PREFIX + "/1b.schema.www.trunk.svn.freebase-site.googlecode.dev/foo");
   equal(h.ajax_url("lib/permission/has_permission", {id:"/en/foo"}),
         PREFIX + lib_path + "/permission/has_permission?id=/en/foo");
 });
 
 test("static_url", function() {
   var app_path = acre.request.script.app.path
-    .replace(/^\/\//, "/")
-    .replace(".svn.freebase-site.googlecode.dev", "");
+    .replace(/^\/\//, "/");
   var lib_path = acre.current_script.app.path
-    .replace(/^\/\//, "/")
-    .replace(".svn.freebase-site.googlecode.dev", "");
+    .replace(/^\/\//, "/");
   var PREFIX = "/static";
 
   equal(h.static_url(), PREFIX + app_path);
@@ -167,7 +161,7 @@ test("static_url", function() {
   equal(h.static_url("lib/foo"), PREFIX + lib_path + "/foo");
   equal(h.static_url("/lib/foo"), PREFIX + app_path + "/lib/foo");
   equal(h.static_url("//1b.schema.www.trunk.svn.freebase-site.googlecode.dev/foo"),
-        PREFIX + "/1b.schema.www.trunk/foo");
+        PREFIX + "/1b.schema.www.trunk.svn.freebase-site.googlecode.dev/foo");
 });
 
 test("legacy_fb_url", function() {

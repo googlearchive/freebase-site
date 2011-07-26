@@ -571,7 +571,7 @@ var ui = {};
         var args = {};
         if (ui.get_app()) { args.appid = ui.get_app().get_path(); }
         
-        ui.get_store().XhrGet("store_status_check", args)
+        ui.get_store().XhrGet("get_app_status", args)
             .enqueue()
             .onready(function(r) {
                 ui.get_app().set_last_change(r.change);

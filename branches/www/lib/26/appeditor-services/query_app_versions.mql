@@ -1,0 +1,130 @@
+{
+  "id": "/user/jdouglas/acre",
+  "/freebase/apps/acre_app_version/acre_app" : {
+      "id" : null,
+      "optional" : true
+  },
+  "/freebase/apps/application/listed" : null,
+  "release:/type/namespace/keys": {
+    "value": "release",
+    "namespace": {
+      "key": {
+        "value!=": "release",
+        "value":   null,
+        "namespace": {
+          "type": "/freebase/apps/acre_app"
+        }
+      }
+    },
+    "optional" : true
+  },
+  "release_key:/type/namespace/keys" : {
+    "value" : "release",
+    "namespace" : {
+        "guid" : null
+    },
+    "optional" : true  
+  },
+  "two:key": [{
+    "value":    null,
+    "value!=":  "release",
+    "link": {
+      "timestamp": null
+    },
+    "sort":     "-link.timestamp",
+    "namespace": {
+      "guid": null,
+      "key": {
+        "value": null,
+        "namespace": {
+          "id": "/freebase/apps/hosts"
+        },
+        "limit": 1
+      }
+    },
+    "optional": true
+  }],
+  "three:key": [{
+    "value":    null,
+    "value!=":  "release",
+    "link": {
+      "timestamp": null
+    },
+    "sort":     "-link.timestamp",
+    "namespace": {
+      "guid": null,
+      "key": {
+        "value": null,
+        "namespace": {
+          "key": {
+            "value": null,
+            "namespace": {
+              "id": "/freebase/apps/hosts"
+            },
+            "limit": 1
+          }
+        },
+        "limit": 1
+      }
+    },
+    "optional": true
+  }],
+  "/type/namespace/keys": [{
+    "sort":     "-namespace.as_of_time",
+    "value":    null,
+    "value!=":  "release",
+    "optional": true,
+    "namespace": {
+      "guid":       null,
+      "type":       "/freebase/apps/acre_app_version",
+      "as_of_time": null,
+      "service_url":null,
+      "two:key": [{
+        "value":    null,
+        "link": {
+          "timestamp": null
+        },
+        "sort":     "-link.timestamp",
+        "namespace": {
+          "guid": null,
+          "key": {
+            "value": null,
+            "namespace": {
+              "id": "/freebase/apps/hosts"
+            },
+            "limit": 1
+          }
+        },
+        "optional": true
+      }],
+      "three:key": [{
+        "value":    null,
+        "link": {
+          "timestamp": null
+        },
+        "sort":     "-link.timestamp",
+        "namespace": {
+          "guid": null,
+          "type" : {
+              "id" : "/freebase/apps/acre_app",
+              "optional" : "forbidden"
+          },
+          "key": {
+            "value": null,
+            "namespace": {
+              "key": {
+                "value": null,
+                "namespace": {
+                  "id": "/freebase/apps/hosts"
+                },
+                "limit": 1
+              }
+            },
+            "limit": 1
+          }
+        },
+        "optional": true
+      }]
+    }
+  }]
+}

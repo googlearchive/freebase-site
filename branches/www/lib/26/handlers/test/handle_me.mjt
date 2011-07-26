@@ -1,0 +1,11 @@
+<acre:script>
+  var c = this.exports.c = {};
+</acre:script>
+
+<acre:block def="content_body()">
+  <p>content_body topic:${c.topic}, topic2:${c.topic2}</p>
+</acre:block>
+
+<acre:block def="render_def(topic2)">
+  <b>render_def topic:${c.topic}, topic2:${topic2}</b>
+</acre:block>

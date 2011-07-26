@@ -371,6 +371,146 @@
           filter: "(all without:fus)" // new suggest
         });
         return o;
+      },
+
+      _operator: function(/** any|all|should, type_1, type_2, ..., type_N **/) {
+        var args = Array.prototype.slice.call(arguments);
+        var op = args.shift();
+        var o = $.extend({}, fb.suggest_options.service_defaults, {
+          type: args.length === 1 ? args[0] : args,
+          type_strict: op
+        });
+        var filter = [op];
+        $.each(args, function(i, t) {
+          filter.push("type:" + t);
+        });
+        o.filter = "(" + filter.join(" ") + ")";
+        return o;
+      },
+
+      any: function(/** type_1, type_2, ..., type_N **/) {
+        var args = Array.prototype.slice.call(arguments);
+        args.unshift("any");
+        return fb.suggest_options._operator.apply(null, args);
+      },
+
+      all: function(/** type_1, type_2, ..., type_N **/) {
+        var args = Array.prototype.slice.call(arguments);
+        args.unshift("all");
+        return fb.suggest_options._operator.apply(null, args);
+      },
+
+      should: function(/** type_1, type_2, ..., type_N **/) {
+        var args = Array.prototype.slice.call(arguments);
+        args.unshift("should");
+        return fb.suggest_options._operator.apply(null, args);
+      },
+
+      instance: function(type) {
+        var o = $.extend({}, fb.suggest_options.service_defaults, {
+          category: "instance",
+          type: type,
+          type_strict: fb.h.is_metaweb_system_type(type) ? "any" : "should"
+        });
+        var filter = [
+          "any",
+          "type:" + type,
+          "without:fus",
+          "without:inst"
+        ];
+        $.each(["user", "domain", "type"], function(i, t) {
+          if (type === "/freebase/" + t + "_profile") {
+            filter.push("type:/type/" + t);
+            return false;
+          }
+        });
+        if (type === "/book/book_subject") {
+          filter.push("type:/base/skosbase/skos_concept");
+        }
+        o.filter = "(" + filter.join(" ") + ")";
+        return o;
+      },
+
+      /**
+       * Add a type to (cotype) a topic.
+       */
+      cotype: function() {
+        var o = $.extend({}, fb.suggest_options.service_defaults, {
+          category: "cotype"
+        });
+        var filter = [
+          "all",
+          "type:/type/type",
+          "(not domain:/type)",
+          "(not domain:/freebase)",
+          "(any (not domain:/common) (any type:/common/topic type:/common/uri_template type:/common/uri_property))"
+        ];
+        if (fb.user) {
+          filter.push("(any without:hidden source:" + fb.user.id + ")");
+        }
+        else {
+          filter.push("without:hidden");
+        }
+        o.filter = "(" + filter.join(" ") + ")";
+        if (fb.acre.freebase.apiary_url) {
+          o.mql_filter = [{
+            "/freebase/type_hints/enumeration": {value:true, optional:"forbidden"},
+            "/freebase/type_hints/mediator": {value:true, optional:"forbidden"}
+          }];
+        }
+        return o;
+      },
+
+      /*
+       * Add /freebase/type_hints/included_type to a type.
+       * Same as cotype.
+       */
+      included_type: function() {
+        return fb.suggest_options.cotype();
+      },
+
+      /**
+       * Add /type/property/expected_type to a type
+       */
+      expected_type: function() {
+        var o = $.extend({}, fb.suggest_options.service_defaults, {
+          category: "expected_type"
+        });
+        var filter = [
+          "all",
+          "type:/type/type"
+        ];
+        if (fb.user) {
+          filter.push("(any without:hidden source:" + fb.user.id + ")");
+        }
+        else {
+          filter.push("without:hidden");
+        }
+        o.filter = "(" + filter.join(" ") + ")";
+        return o;
+      },
+
+      /**
+       * Delegate a property
+       */
+      delegate_property: function() {
+        var o = $.extend({}, fb.suggest_options.service_defaults, {
+          type: "/type/property",
+          type_strict: "any"
+        });
+        var filter = [
+          "all",
+          "type:/type/property",
+          "(not domain:/type)"
+        ];
+        if (fb.user) {
+          filter.push("(any without:hidden source:" + fb.user.id + ")");
+        }
+        else {
+          filter.push("without:hidden");
+        }
+        o.filter = "(" + filter.join(" ") + ")";
+        return o;
       }
     };
   });

@@ -176,7 +176,7 @@
         });
       }
       
-      $('input.suggest').suggest().bind('focus', function(){this.select();})
+      $('input.suggest').suggest(fb.suggest_options.service_defaults).bind('focus', function(){this.select();})
         .bind("fb-select", function(e, item){
           topic_id = item.id;
           topic_name = item.name;

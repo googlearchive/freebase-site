@@ -35,13 +35,9 @@
       status: ["", "Searching...", "Select an item from the list:"]
     }, fb.suggest_options.service_defaults);
     if (fb.acre.freebase.apiary_url) {
-      o.filter = "(any without:fus),(should type:/common/topic)";
       o.mqlread_url = fb.h.fb_apiary_url("/mqlread");
     }
     else {
-      o.type = "/common/topic";
-      o.type_strict = "should";
-      o.category = "object";
       o.mqlread_url = fb.h.fb_api_url("/api/service/mqlread");
     }
     return o;

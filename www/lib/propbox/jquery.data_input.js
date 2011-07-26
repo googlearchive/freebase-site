@@ -115,17 +115,7 @@
 
       if (c.is(".topic")) {
         var type = self.metadata.type;
-        var suggest_options = $.extend(true, {}, o.suggest);
-        suggest_options.type = type;                          // old suggest
-        if (is_metaweb_system_type(type)) {
-          suggest_options.type_strict = "any";                // old suggest
-          suggest_options.filter = "(any type:" + type + ")"; // new suggest
-        }
-        else {
-          suggest_options.type_strict = "should";             // old suggest
-          suggest_options.category = "object";                // old suggest
-          suggest_options.filter = "(any without:fus),(should type:" + type + ")";  // new suggest
-        }
+        var suggest_options = $.extend(true, {}, o.suggest, $.data_input.suggest_options(type));
         i.validate_topic(suggest_options)
           .bind("valid.data_input", function(e, data) {
             self.fb_select(data);
@@ -254,7 +244,42 @@
         category: "object",
         type: "/common/topic"
       }
+    },
+
+    is_metaweb_system_type: function(type) {
+      return (type.indexOf("/type/") === 0 ||
+              (type.indexOf("/common/") === 0 && type !== "/common/topic") ||
+              (type.indexOf("/freebase/") === 0 && type.indexOf("_profile") === (type.length - 8)));
+    },
+
+    suggest_options: function(type) {
+      /**
+       * sameas as fb.suggest_options.instance()
+       */
+      var o = {
+        category: "instance",
+        type: type,
+        type_strict: $.data_input.is_metaweb_system_type(type) ? "any" : "should"
+      };
+      var filter = [
+        "any",
+        "type:" + type,
+        "without:fus",
+        "without:inst"
+      ];
+      $.each(["user", "domain", "type"], function(i, t) {
+        if (type === "/freebase/" + t + "_profile") {
+          filter.push("type:/type/" + t);
+          return false;
+        }
+      });
+      if (type === "/book/book_subject") {
+        filter.push("type:/base/skosbase/skos_concept");
+      }
+      o.filter = "(" + filter.join(" ") + ")";
+      return o;
     }
+
   });
 
   $.fn.validate_topic = function(options) {
@@ -463,12 +488,6 @@
         this.empty();
       }
     }
-  };
-
-  function is_metaweb_system_type(type_id) {
-    return (type_id.indexOf("/type/") === 0 ||
-            (type_id.indexOf("/common/") === 0 && type_id !== "/common/topic") ||
-            (type_id.indexOf("/freebase/") === 0 && type_id.indexOf("_profile") === (type_id.length - 8)));
   };
 
 })(jQuery);

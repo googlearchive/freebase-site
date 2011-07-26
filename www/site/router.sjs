@@ -31,10 +31,10 @@
 
 var router =   acre.require("lib/routing/router.sjs");
 
-function route(environment_rules, that) {
+function route(environment_rules) {
   var default_rules = init_default_routes(environment_rules.labels.lib);
   var rules = router.extend_default_rules(default_rules, environment_rules);
-  router.route(rules, that);
+  router.route(rules, this);
 };
 
 // Default codebase for lib (this is the freebase-site SVN repository).
@@ -108,12 +108,7 @@ function init_default_routes(lib) {
         {prefix:"/labs/parallax",      app:"parallax"},
         {prefix:"/labs",               app:"labs"},
         {prefix:"/account",            app:"account"},
-        
-        // Urls for exposed ajax libraries and static resources
-        // TODO: remove this and use ajax router
-        {prefix:"/static",             app:"lib", script:"routing/static.sjs"},
-        {prefix:"/ajax",               app:"lib", script:"routing/ajax.sjs"},
-        
+
         // Urls for administrative tools
         {prefix:"/admin",              app:"admin"},
         {prefix:"/app/tmt",            app:"tmt"},
@@ -566,7 +561,7 @@ function init_default_routes(lib) {
         {host:"www.metaweb.com", url:"http://www.freebase.com"}
     ];
 
-    rules["routers"] = ["host", "home", "prefix", "object"];
+    rules["routers"] = ["host", "home", "static", "ajax", "prefix", "object"];
         
     return rules;
 }

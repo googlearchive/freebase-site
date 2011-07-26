@@ -733,7 +733,10 @@
     </div>
     <acre:script script="ondomready">
       $("#merge-app")
-          .suggest({type: '/freebase/apps/acre_app'})
+          .suggest({
+            type: '/freebase/apps/acre_app',
+            filter: '(any type:/freebase/apps/acre_app)'
+          })
           .bind("fb-select", function(e, data) {
               var path = ui.id_to_path(data.id);
               $(this).val(path);
@@ -767,7 +770,10 @@
         </div>
         <acre:script script="ondomready">
           $("#add-author-input")
-              .suggest({type: '/type/user'})
+              .suggest({
+                type: '/type/user',
+                filter: '(any type:/type/user)'
+              })
               .bind("fb-select", function(e, data) {
                   $(this).val('');
                   ui.do_app_add_author(data.name);

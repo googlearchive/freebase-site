@@ -189,6 +189,13 @@
       });
     },
 
+    suggest_property_options: function() {
+      var o = $.extend({}, fb.suggest_options.service_defaults, {
+        filter: "(all type:/type/property (any without:hidden source:" + fb.user.id + "))"
+      });
+      return o;
+    },
+
     toggle_delegate_property: function(trigger, form) {
       if (trigger.is(".current")) {
         return false;
@@ -221,9 +228,7 @@
           // init suggest
           delegated
             .unbind()
-            .suggest_property({
-              service_url: fb.h.legacy_fb_url()
-            })
+            .suggest_property(te.suggest_property_options())
             .bind("fb-select", function(e, data) {
               $(this).val(data.id);
               setTimeout(function() {
@@ -402,6 +407,15 @@
       });
     },
 
+    suggest_expected_type_options: function(domain) {
+      var o = $.extend({}, fb.suggest_options.service_defaults, {
+        suggest_new: "Create new type",
+        domain: domain,
+        filter: "(all type:/type/type (any without:hidden source:" + fb.user.id + "))"
+      });
+      return o;
+    },
+
     /**
      * init property form
      */
@@ -450,45 +464,42 @@
         var domain = type.val().split("/");
         domain.pop();
         domain = domain.join("/");
-        expected_type_input.suggest_expected_type({
-          service_url: fb.h.legacy_fb_url(),
-          suggest_new: "Create new type",
-          domain: domain
-        })
-        .bind("fb-select", function(e, data) {
-          if (data.unit) {
-            expected_type_input.val(data.id + " (" + data.unit.name + ")");
-            expected_type.val(data.id);
-            expected_type_new.val("");
-            unit.val(data.unit.id);
-          }
-          else if (data.enumeration) { // /type/property/enumeration (namespace)
-            expected_type_input.val(data.id + " (" + data.enumeration + ")");
-            expected_type.val(data.id);
-            expected_type_new.val("");
-            enumeration.val(data.enumeration);
-          }
-          else {
-            expected_type_input.val(data.id);
-            expected_type.val(data.id);
+        expected_type_input
+          .suggest_expected_type(te.suggest_expected_type_options(domain))
+          .bind("fb-select", function(e, data) {
+            if (data.unit) {
+              expected_type_input.val(data.id + " (" + data.unit.name + ")");
+              expected_type.val(data.id);
+              expected_type_new.val("");
+              unit.val(data.unit.id);
+            }
+            else if (data.enumeration) { // /type/property/enumeration (namespace)
+              expected_type_input.val(data.id + " (" + data.enumeration + ")");
+              expected_type.val(data.id);
+              expected_type_new.val("");
+              enumeration.val(data.enumeration);
+            }
+            else {
+              expected_type_input.val(data.id);
+              expected_type.val(data.id);
+              expected_type_new.val("");
+              unit.val("");
+              if (data.id === "/type/boolean") {
+                // auto-check unique on /type/boolean
+                $("input[name=unique]", form.row).attr("checked", "checked");
+              }
+            }
+          })
+          .bind("fb-textchange", function() {
+            expected_type.val("");
             expected_type_new.val("");
             unit.val("");
-            if (data.id === "/type/boolean") {
-              // auto-check unique on /type/boolean
-              $("input[name=unique]", form.row).attr("checked", "checked");
-            }
-          }
-        })
-        .bind("fb-textchange", function() {
-          expected_type.val("");
-          expected_type_new.val("");
-          unit.val("");
-        })
-        .bind("fb-select-new", function(e, val) {
-          expected_type_new.val($.trim(val));
-          expected_type.val("");
-          unit.val("");
-        });
+          })
+          .bind("fb-select-new", function(e, val) {
+            expected_type_new.val($.trim(val));
+            expected_type.val("");
+            unit.val("");
+          });
 
         // enter/escape key handler
         $(":input:not(textarea)", form.row)
@@ -701,28 +712,42 @@
       });
     },
 
+    included_type_suggest_options: function() {
+      var o = $.extend({}, fb.suggest_options.service_defaults, {
+        suggest_new: "Create new type",
+        category: "cotype",
+        filter: "(all type:/type/type " +
+          "(not domain:/type) " +
+          "(any without:hidden source:" + fb.user.id + "))"
+      });
+      if (fb.acre.freebase.apiary_url) {
+        o.mql_filter = [{
+          "/freebase/type_hints/enumeration": {value:true, optional:"forbidden"},
+          "/freebase/type_hints/mediator": {value:true, optional:"forbidden"}
+        }];
+      }
+      return o;
+    },
+
     init_included_type_form: function(form) {
       var included_type_input = $("input[name=included_type_input]", form.row).val("");
       var included_type = $("input[name=included_type]", form.row).val("");
       var included_type_new = $("input[name=included_type_new]", form.row).val("");
 
       if (!form.row.data("initialized")) {
-        included_type_input.suggest({
-          service_url: fb.h.legacy_fb_url(),
-          category: "cotype",
-          suggest_new: "Create new type"
-        })
-        .bind("fb-select", function(e, data) {
-          included_type_input.val(data.id);
-          included_type.val(data.id);
-        })
-        .bind("fb-textchange", function() {
-          included_type.val("");
-        })
-        .bind("fb-select-new", function(e, val) {
-          included_type_new.val($.trim(val));
-          included_type.val("");
-        });
+        included_type_input
+          .suggest(te.included_type_suggest_options())
+          .bind("fb-select", function(e, data) {
+            included_type_input.val(data.id);
+            included_type.val(data.id);
+          })
+          .bind("fb-textchange", function() {
+            included_type.val("");
+          })
+          .bind("fb-select-new", function(e, val) {
+            included_type_new.val($.trim(val));
+            included_type.val("");
+          });
 
         // enter/escape key handler
         $(":input:not(textarea)", form.row)
@@ -968,6 +993,15 @@
       });
     },
 
+    instance_suggest_options: function() {
+      var o = $.extend({}, fb.suggest_options.service_defaults, {
+        suggest_new: "Create new",
+        category: "instance",
+        filter: "(any without:inst)"
+      });
+      return o;
+    },
+
     init_instance_form: function(form) {
       var name = $("input[name=name]", form.row);
       var id =  $("input[name=id]", form.row);
@@ -976,20 +1010,17 @@
 
       var suggest = name.data("suggest");
       if (!suggest) {
-        name.suggest({
-          service_url: fb.h.legacy_fb_url(),
-          suggest_new: "Create new",
-          category: "instance"
-        })
-        .bind("fb-select", function(e, data) {
-          id.val(data.id);
-        })
-        .bind("fb-select-new", function() {
-          id.val("");
-        })
-        .bind("fb-textchange", function() {
-          id.val("");
-        });
+        name
+          .suggest(te.instance_suggest_options())
+          .bind("fb-select", function(e, data) {
+            id.val(data.id);
+          })
+          .bind("fb-select-new", function() {
+            id.val("");
+          })
+          .bind("fb-textchange", function() {
+            id.val("");
+          });
 
         // enter/escape key handler
         name

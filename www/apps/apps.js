@@ -30,7 +30,7 @@
  */
 
 $(function() {
-  
+
   // Setup app search tabset
   var $apps_explorer_search_tabset = $("#apps-search > .section-tabset").tabs("#apps-search > .search-box");
 
@@ -39,10 +39,13 @@ $(function() {
   $user_form.submit(function(){
       return false;
   });
-  
-  
+
+
   $("#user-search-input")
-    .suggest({type: '/type/user'})
+    .suggest({
+      type: '/type/user',
+      filter: '(any type:/type/user)'
+    })
     .bind("fb-select", function(e, data) {
       var url = bp + data.id;
       location.href = url;
@@ -50,14 +53,14 @@ $(function() {
     .focus(function() {
         this.select();
     });
-  
+
   $('#create-link')
     .click(function() {
       $.post(bp + "/post/submit/create_app", null, function(data){
         window.location = bp + '/admin' + data.result;
       }, "json");
       return false;
-    });  
+    });
 
   $('#edit-props')
     .ajaxForm({
@@ -73,7 +76,7 @@ $(function() {
 
   $('#icon_form')
     .ajaxForm({
-      dataType : 'json',        
+      dataType : 'json',
       beforeSubmit : function(data, form, options){
         options.url += '?appid=' + app.id + '&name=' + $('#icon_file').val();
       },
@@ -88,7 +91,7 @@ $(function() {
             console.log(o);
             alert(o.messages[0].message);
           } else {
-            alert("Error uploading");   
+            alert("Error uploading");
           }
         }
       }

@@ -58,6 +58,7 @@
       defaults: $.extend(true, {}, $.suggest.suggest.defaults, {
         type: "/type/property",
         type_strict: "any",
+        filter: "(any type:/type/property)",
         css: {
           status: "fbs-status fbs-ect-status"
         }

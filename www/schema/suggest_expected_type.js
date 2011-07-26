@@ -468,6 +468,7 @@
     $.extend(sect, {
         defaults:  $.extend(true, {}, $.suggest.suggest.defaults, {
           category: "expected_type",
+          filter: "(any type:/type/type)",
           css: {
             status: "fbs-status fbs-ect-status"
           },

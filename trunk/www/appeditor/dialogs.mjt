@@ -130,7 +130,10 @@
     });
   
     $("#new-app-clone-id")
-        .suggest({ type: '/freebase/apps/acre_app' })
+        .suggest({ 
+          type: '/freebase/apps/acre_app',
+          filter: '(any type:/freebase/apps/acre_app)'
+        })
         .bind("fb-select", function(e, data) {
             $(this).val(ui.id_to_path(data.id));
         });

@@ -46,62 +46,36 @@
       api: true
     });
 
-    /*
-        MQL_FILTERS are config parameters passed to respective
-        Freebase Suggest instances for Domain, Type, and Property
-        depending on whether the user has toggled Freebase Commons / All Projects
-    */
-
-
-
-    var MQL_FILTERS = {
-      domain : [{ "key": [{"namespace" : "/" }] }],
-      type : [{ "/type/type/domain": [{ "key" : [{ "namespace" : "/" }] }], "a:/type/type/domain": { "id": "/freebase", "optional" : "forbidden" } }],
-      property : [{ "/type/property/schema": { "type": "/type/type", "domain": [{ "key" : [{ "namespace" : "/" }] }], "a:domain" : { "id" : "/freebase", "optional" : "forbidden" } } }]
-    };
-
     var suggest_options = {
 
       domain: function() {
-        var o = $.extend({}, fb.suggest_options.service_defaults);
-        var commons = $("#domain-search-toggle-commons").is(":checked");
-        if (fb.acre.freebase.apiary_url) {
-          o.filter = "(any type:/type/domain)";
-        }
-        else {
-          o.type = "/type/domain";
-        }
-        if (commons) {
+        var o = $.extend({}, fb.suggest_options.service_defaults, {
+          type: "/type/domain",             // old suggest
+          filter: "(any type:/type/domain)" // new suggest
+        });
+        if ($("#domain-search-toggle-commons").is(":checked")) {
           o.mql_filter = [{"key":[{"namespace":"/"}]}];
         }
         return o;
       },
 
       type: function() {
-        var o = $.extend({}, fb.suggest_options.service_defaults);
-        var commons = $("#type-search-toggle-commons").is(":checked");
-        if (fb.acre.freebase.apiary_url) {
-          o.filter = "(all type:/type/type)";
-        }
-        else {
-          o.type = "/type/type";
-        }
-        if (commons) {
+        var o = $.extend({}, fb.suggest_options.service_defaults, {
+          type: "/type/type",             // old suggest
+          filter: "(all type:/type/type)" // new suggest
+        });
+        if ($("#type-search-toggle-commons").is(":checked")) {
           o.mql_filter = [{"/type/type/domain":[{"key":[{"namespace":"/"}]}]}];
         }
         return o;
       },
 
       property: function() {
-        var o = $.extend({}, fb.suggest_options.service_defaults);
-        var commons = $("#property-search-toggle-commons").is(":checked");
-        if (fb.acre.freebase.apiary_url) {
-          o.filter = "(all type:/type/property)";
-        }
-        else {
-          o.type = "/type/property";
-        }
-        if (commons) {
+        var o = $.extend({}, fb.suggest_options.service_defaults, {
+          type: "/type/property",             // old suggest
+          filter: "(all type:/type/property)" // new suggest
+        });
+        if ($("#property-search-toggle-commons").is(":checked")) {
           o.mql_filter = [{"/type/property/schema":{"/type/type/domain":[{"key":[{"namespace":"/"}]}]}}];
         }
         return o;

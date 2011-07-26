@@ -32,8 +32,8 @@
 var router =   acre.require("lib/routing/router.sjs");
 
 function route(environment_rules) {
-  var default_rules = init_default_routes(environment_rules.labels.lib);
-  var rules = router.extend_default_rules(default_rules, environment_rules);
+  var site_rules = init_site_rules(environment_rules.labels.lib);
+  var rules = router.extend_rules(site_rules, environment_rules);
   router.route(rules, this);
 };
 
@@ -43,12 +43,11 @@ var lib_codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 // Default codebase for this site - should map to trunk of SVN repository.
 var site_codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 
-// Rules will be stored here.
-var rules = {};
 
-
-function init_default_routes(lib) {
-
+function init_site_rules(lib) {
+  
+    var rules = {};
+    
     // Trunk labels for all apps in this site. 
     // If you add a new app, you have to add it here first.
 
@@ -84,9 +83,6 @@ function init_default_routes(lib) {
     if (!lib) { 
         lib = rules["labels"]["lib"];
     }
-
-    var h = acre.require(lib + "/helper/helpers.sjs");
-
 
     // *********** PREFIX *************
     
@@ -239,6 +235,8 @@ function init_default_routes(lib) {
     
 
     // *********** OBJECT *************
+
+    var h = acre.require(lib + "/helper/helpers.sjs");
 
     var DEFAULT_PROMISES = [
         {

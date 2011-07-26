@@ -49,10 +49,7 @@
     var suggest_options = {
 
       domain: function() {
-        var o = $.extend({}, fb.suggest_options.service_defaults, {
-          type: "/type/domain",             // old suggest
-          filter: "(any type:/type/domain)" // new suggest
-        });
+        var o = fb.suggest_options.any("/type/domain");
         if ($("#domain-search-toggle-commons").is(":checked")) {
           o.mql_filter = [{"key":[{"namespace":"/"}]}];
         }
@@ -60,10 +57,7 @@
       },
 
       type: function() {
-        var o = $.extend({}, fb.suggest_options.service_defaults, {
-          type: "/type/type",             // old suggest
-          filter: "(all type:/type/type)" // new suggest
-        });
+        var o = fb.suggest_options.any("/type/type");
         if ($("#type-search-toggle-commons").is(":checked")) {
           o.mql_filter = [{"/type/type/domain":[{"key":[{"namespace":"/"}]}]}];
         }
@@ -71,10 +65,7 @@
       },
 
       property: function() {
-        var o = $.extend({}, fb.suggest_options.service_defaults, {
-          type: "/type/property",             // old suggest
-          filter: "(all type:/type/property)" // new suggest
-        });
+        var o = fb.suggest_options.any("/type/property");
         if ($("#property-search-toggle-commons").is(":checked")) {
           o.mql_filter = [{"/type/property/schema":{"/type/type/domain":[{"key":[{"namespace":"/"}]}]}}];
         }

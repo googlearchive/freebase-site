@@ -131,7 +131,7 @@
   
     $("#new-app-clone-id")
         .suggest({ 
-          type: '/freebase/apps/acre_app',
+          type: '/freebase/apps/acre_app',        
           filter: '(any type:/freebase/apps/acre_app)'
         })
         .bind("fb-select", function(e, data) {

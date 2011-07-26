@@ -32,20 +32,11 @@
 
 (function($, fb) {
 
-  function domain_type_property_suggest_options() {
-    var o = $.extend({}, fb.suggest_options.service_defaults, {
-      type: ["/type/domain", "/type/type", "/type/property"],               // old suggest
-      type_strict: "any",                                                   // old suggest
-      filter: "(any type:/type/domain type:/type/type type:/type/property)" // new suggest
-    });
-    return o;
-  };
-
   var filters = fb.filters = {
     init_domain_type_property_filter: function(context) {
       // *** Initialize domain/type/property suggest input
       $(":text[name=domain], :text[name=type], :text[name=property]", context)
-        .suggest(domain_type_property_suggest_options())
+        .suggest(fb.suggest_options.any("/type/domain", "/type/type", "/type/property"))
         .bind("fb-select", function(e, data) {
           var $this = $(this);
           $this.val(data.id);

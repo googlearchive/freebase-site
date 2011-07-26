@@ -278,6 +278,13 @@
 
     image_url: function(id, params) {
       return fb.acre.freebase.imgurl(id, params.maxwidth, params.maxheight, params.mode, params.pad, params.errorid);
+    },
+
+
+    is_metaweb_system_type: function(type_id) {
+      return (type_id.indexOf("/type/") === 0 ||
+              (type_id.indexOf("/common/") === 0 && type_id !== "/common/topic") ||
+              (type_id.indexOf("/freebase/") === 0 && type_id.indexOf("_profile") === (type_id.length - 8)));
     }
 
   };

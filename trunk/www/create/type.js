@@ -30,6 +30,19 @@
  */
 ;(function($, fb, propbox, editparams) {
 
+  function suggest_options() {
+    var o = $.extend({
+      status: ["", "Searching...", "Select an item from the list:"]
+    }, fb.suggest_options.service_defaults);
+    if (fb.acre.freebase.apiary_url) {
+      o.mqlread_url = fb.h.fb_apiary_url("/mqlread");
+    }
+    else {
+      o.mqlread_url = fb.h.fb_api_url("/api/service/mqlread");
+    }
+    return o;
+  };
+
   function init() {
 
     var html_form = $(".edit-form");
@@ -44,16 +57,7 @@
       base_ajax_url: fb.h.ajax_url("lib/propbox"),
       base_static_url: fb.h.static_url("lib/propbox"),
       lang: lang_id,
-      suggest: {
-        service_url: fb.h.legacy_fb_url(),
-        service_path: "/private/suggest",
-        flyout_service_url: fb.h.legacy_fb_url(),
-        flyout_service_path: "/private/flyout",
-        mqlread_url: fb.h.fb_api_url("/api/service/mqlread"),
-        category: "object",
-        type: "/common/topic",
-        status: ["", "Searching...", "Select an item from the list:"]
-      }
+      suggest: suggest_options()
     });
 
     var form = {

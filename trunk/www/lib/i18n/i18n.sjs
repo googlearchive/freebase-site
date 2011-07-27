@@ -164,7 +164,7 @@ var LANGS = [
   },
   {
     "id": "/lang/no",
-    "name": "Nwegian"
+    "name": "Norwegian"
   },
   {
     "id": "/lang/vi",

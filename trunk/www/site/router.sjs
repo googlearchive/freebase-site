@@ -393,7 +393,7 @@ function init_site_rules(lib) {
   var DEFAULT_PROMISES = [
     {
       "key": "blurb",                 // the promise result will be stored in the object with this key
-      "app": "lib",                   // app containing the promise method
+      "app": "site",                   // app containing the promise method
       "script": "queries/object.sjs", // script containing the promise method
       "promise": "blurb"              // promise method (passed object query result as arugment)
     }
@@ -547,7 +547,7 @@ function init_site_rules(lib) {
       "type": "/type/property",
       "promises":  [{
         "key": "blurb",
-        "app": "lib",
+        "app": "site",
         "script": "queries/object.sjs",
         "promise": "documented_object_tip"
       },{
@@ -642,7 +642,7 @@ function init_site_rules(lib) {
       "promises": [
         {
           "key": "notable_types",
-          "app": "lib",
+          "app": "site",
           "script": "queries/object.sjs",
           "promise": "notable_types"
         },

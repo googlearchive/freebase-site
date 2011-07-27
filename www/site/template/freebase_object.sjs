@@ -31,10 +31,10 @@
 
 var topscope = this.__proto__;
 
-var h = acre.require("helper/helpers.sjs");
-var fh = acre.require("filter/helpers.sjs");
-var service_lib = acre.require("handlers/service_lib.sjs");
-var controller = acre.require("handlers/controller_handler.sjs");
+var h = acre.require("lib/helper/helpers.sjs");
+var fh = acre.require("lib/filter/helpers.sjs");
+var service_lib = acre.require("lib/handlers/service_lib.sjs");
+var controller = acre.require("lib/handlers/controller_handler.sjs");
 
 function main(rule, object) {
 
@@ -108,7 +108,7 @@ function main(rule, object) {
 
   var spec = script.SPEC;
   if (current_tab) {
-    spec.template_base = "lib/template/freebase_object.mjt";
+    spec.template_base = "site/template/freebase_object.mjt";
   }
   spec.template_base_args = template_base_args;
 

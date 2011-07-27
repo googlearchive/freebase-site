@@ -35,19 +35,19 @@
 !!-->
 <acre:script>
   var c = this.exports.c = {};
-  var h = acre.require("helper/helpers.sjs");
-  var i18n = acre.require("i18n/i18n.sjs");
-  var i18n_c = acre.require("i18n/components.mjt");
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
-  var image = acre.require("template/imagecomponents.mjt");
-  var base = acre.require("template/freebase.mjt");
+  var image = acre.require("lib/template/imagecomponents.mjt");
+  var base = acre.require("lib/template/freebase.mjt");
   var self= this;
   var this_exports = this.exports;
   var that_exports;
-  var fh = acre.require("filter/helpers.sjs");
+  var fh = acre.require("lib/filter/helpers.sjs");
 
   // microdata helpers
-  var microdata = acre.require("helper/microdata.sjs");
+  var microdata = acre.require("lib/helper/microdata.sjs");
   var itemprop = microdata.itemprop;
 </acre:script>
 

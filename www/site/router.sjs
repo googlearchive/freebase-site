@@ -72,8 +72,8 @@ function HomeRouter(app_labels) {
 
 
 function ObjectRouter(app_labels) {
-  var object_query = acre.require("lib/queries/object.sjs");
-  var freebase_object = acre.require("lib/template/freebase_object.sjs");
+  var object_query = acre.require("queries/object.sjs");
+  var freebase_object = acre.require("template/freebase_object.sjs");
   
   var route_list = [];
   var types = {};

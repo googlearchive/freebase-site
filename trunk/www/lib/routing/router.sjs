@@ -189,7 +189,7 @@ function PrefixRouter(app_labels) {
   var split_path = function(prefix) {
     var parts = prefix.split('/');
     if (parts[parts.length-1] === "") {
-        parts[parts.length-1] = "/";
+      parts[parts.length-1] = "/";
     }
     return parts;
   };
@@ -311,82 +311,80 @@ function PrefixRouter(app_labels) {
 
 
 /**
- * Extend the default rules for this site with the environment specific rules.
- */
+* Extend the default rules for this site with the environment specific rules.
+*/
 function extend_rules(rules, environment_rules) { 
 
-    // Here we handle configuration overrides from specific environments. 
+  // Here we handle configuration overrides from specific environments. 
 
-    // Labels environment override.
+  // Labels environment override.
 
-    if (environment_rules["labels"]) { 
-        h.extend(rules["labels"], environment_rules["labels"])
-        for (var app_label in environment_rules["labels"]) { 
-            rules["labels"][app_label] = environment_rules["labels"][app_label]
-        }
+  if (environment_rules["labels"]) { 
+    h.extend(rules["labels"], environment_rules["labels"])
+    for (var app_label in environment_rules["labels"]) { 
+      rules["labels"][app_label] = environment_rules["labels"][app_label]
     }
+  }
 
-    // Prefix environment override.
+  // Prefix environment override.
 
-    if (environment_rules["prefix"]) { 
-        
-        // Holds prefix -> index in prefix routing array. 
-        var prefix_index = {}
-        var i = 0;
-        rules["prefix"].forEach(
-            function(route) { 
-                if (!route["prefix"]) { 
-                    throw("You can not define a prefix routing rule without a prefix.");
-                    exit(-1);
-                }
-                prefix_index[route.prefix] = i;
-                i++;
-            });
-        
-        environment_rules["prefix"].forEach(
-            function(route) { 
-                if (!route["prefix"]) { 
-                    throw("You can not define a prefix routing rule without a prefix.");
-                    exit(-1);
-                }
-                // Overwrite the rule if it exists in the base rules.
-                if (prefix_index[route.prefix] != undefined) { 
-                    rules["prefix"][prefix_index[route.prefix]] = route;
-                } else {
-                    rules["prefix"].push(route);
-                }
-            });
+  if (environment_rules["prefix"]) { 
+
+    // Holds prefix -> index in prefix routing array. 
+    var prefix_index = {}
+    var i = 0;
+    rules["prefix"].forEach(function(route) { 
+      if (!route["prefix"]) { 
+        throw("You can not define a prefix routing rule without a prefix.");
+        exit(-1);
+      }
+      prefix_index[route.prefix] = i;
+      i++;
+    });
+
+    environment_rules["prefix"].forEach(function(route) { 
+      if (!route["prefix"]) { 
+        throw("You can not define a prefix routing rule without a prefix.");
+        exit(-1);
+      }
+      // Overwrite the rule if it exists in the base rules.
+      if (prefix_index[route.prefix] != undefined) { 
+        rules["prefix"][prefix_index[route.prefix]] = route;
+      } else {
+        rules["prefix"].push(route);
+      }
+    });
+  }
+
+  // Routers
+
+  // default order if not specified
+  if (!rules["routers"]) { 
+    rules["routers"] = default_routers;
+  }
+
+  // override with the environment rules if specified.
+  if (environment_rules["routers"]) { 
+    rules["routers"] = environment_rules["routers"];
+  }
+
+  var tmp_routers = [];
+  for (var i in rules["routers"]) { 
+    var router = rules["routers"][i];
+
+    if (h.isArray(router)) {
+      tmp_routers.push(router);
+    } else if ((typeof router === 'string') && routers_map[router]) { 
+      tmp_routers.push([router, routers_map[router]]);
+    } else {
+      throw "There is no router named " + router + " available.";
     }
+  }
 
-    // Routers
+  rules["routers"] = tmp_routers;
 
-    // default order if not specified
-    if (!rules["routers"]) { 
-        rules["routers"] = default_routers;
-    }
-
-    // override with the environment rules if specified.
-    if (environment_rules["routers"]) { 
-        rules["routers"] = environment_rules["routers"];
-    }
-
-    var tmp_routers = [];
-    for (var i in rules["routers"]) { 
-        var router = rules["routers"][i];
-
-        if (h.isArray(router)) {
-          tmp_routers.push(router);
-        } else if ((typeof router === 'string') && routers_map[router]) { 
-          tmp_routers.push([router, routers_map[router]]);
-        } else {
-          throw "There is no router named " + router + " available.";
-        }
-    }
-
-    rules["routers"] = tmp_routers;
-
-    // TODO: object and host overrides (not necessary now).
-    return rules;
+  // TODO: object and host overrides (not necessary now).
+  return rules;
 }
 
 
@@ -399,7 +397,6 @@ function route(rules, scope) {
   if (rules["routers"]) { 
     routers = rules["routers"];
   }
-  console.log(routers);
 
   for (var i=0,l=routers.length; i<l; i++) {
     syslog.info({}, "trying router " + routers[i][0]);

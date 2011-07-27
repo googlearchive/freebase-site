@@ -1,7 +1,7 @@
 var METADATA = {
   "mounts": {
     "acreassist": "//release.acreassist.dfhuynh.user.dev", 
-    "lib": "//27.lib.www.branches.svn.freebase-site.googlecode.dev", 
+    "lib": "//27m.lib.www.tags.svn.freebase-site.googlecode.dev", 
     "mql": "//release.mql.jdouglas.user.dev", 
     "libtopic": "//release.libtopic.fbclient.user.dev", 
     "mjt": "//release.templates.jdouglas.user.dev", 
@@ -9,9 +9,8 @@ var METADATA = {
     "datadocs": "//release.datadocs.dfhuynh.user.dev", 
     "jscheatsheet": "//release.jscheatsheet.stefanomazzocchi.user.dev"
   }, 
-  "app_tag": null, 
-  "app_version": 14, 
-  "app_key": "devdocs", 
+  "app_version": "14", 
+  "app_tag": "14a", 
   "urls": {
     "client_libraries": "http://wiki.freebase.com/wiki/Libraries", 
     "acre_wiki": "http://wiki.freebase.com/wiki/Acre", 
@@ -19,7 +18,8 @@ var METADATA = {
     "cheatsheet": "http://download.freebase.com/MQLcheatsheet-081208.pdf", 
     "query_recipes": "http://wiki.freebase.com/wiki/MQL_Recipes", 
     "acre_recipes": "http://wiki.freebase.com/wiki/Acre_Recipes"
-  }
+  }, 
+  "app_key": "devdocs"
 };
 
 acre.require(METADATA.mounts.site + "/lib/helper/helpers.sjs").extend_metadata(METADATA, "site");

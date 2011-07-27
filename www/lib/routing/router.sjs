@@ -31,18 +31,12 @@
 
 var h = acre.require("helper/helpers.sjs");
 var validators = acre.require("validator/validators.sjs");
-var object_query = acre.require("queries/object.sjs");
-var freebase_object = acre.require("template/freebase_object.sjs");
-
-var self = this;
 
 var routers_map = {
   "host" : HostRouter, 
   "prefix" : PrefixRouter, 
   "static" : StaticRouter,
-  "ajax" : AjaxRouter,
-  "object" : ObjectRouter,
-  "home" : HomeRouter
+  "ajax" : AjaxRouter
 };
 
 var default_routers = ["host", "static", "ajax", "prefix"];
@@ -315,149 +309,6 @@ function PrefixRouter(app_labels) {
 };
 
 
-/**
- * Deal with the special case of routing 
- *
- *   Note: to debug the homepage, use the /homepage prefix rule 
- *         (e.g., /homepage?acre.console=1)/
- *
- */
-
-function HomeRouter(app_labels) {
-  
-    var route = this.route = function(req) {
-    
-    // This only applies to "/"
-    if (req.path_info !== "/") {
-      return false;
-    }
-    
-    // let object router handle ?inspect
-    if ("inspect" in req.params) {
-      return false;
-    }
-
-    // otherwise run the logged-out homepage, which will redirect to user page if logged-in
-    acre.route(acre.form.build_url(app_labels["homepage"] + "/index.controller", req.params));
-    acre.exit();
-    
-  };
-  
-};
-
-
-function ObjectRouter(app_labels) {
-  var route_list = [];
-  var types = {};
-
-  function set_app(item) {
-    if (item.app) {
-      var app = app_labels[item.app];
-      if (!app) {
-        throw 'An app label must exist for: ' + item.app;
-      }
-      item.app = app;
-    }
-    return item;
-  };
-
-  this.add = function(routes) {
-    if (!(routes instanceof Array)) {
-      routes = [routes];
-    }
-    routes.forEach(function(route) {
-      if (!route || typeof route !== 'object') {
-        throw 'A routing rule must be a dict: '+JSON.stringify(route);
-      }
-      [route.tabs, route.navs, route.promises].forEach(function(list) {
-        list && list.forEach(function(item) {
-          set_app(item);
-          item.promises && item.promises.forEach(function(p) {
-            set_app(p);
-          });
-        });
-      });
-      types[route.type] = route;
-      h.splice_with_key(route_list, "type", route);
-    });
-  };
-
-  this.route = function(req) {
-
-    var path_info = req.path_info;
-
-    var req_id = validators.MqlId(path_info, {if_invalid:null});
-
-    if (req_id) {
-
-      var o;
-      var d = object_query.object(req_id)
-        .then(function(obj) {
-          o = obj;
-        });
-
-      acre.async.wait_on_results();
-
-      d.cleanup();
-
-      if (o) {
-
-        if (o.replaced_by) {
-          return h.redirect(self, o.replaced_by.mid);
-        }
-        else if (!(req_id === o.mid || req_id === o.id)) {
-          // request id is NOT a mid and NOT a mql "approved" id
-          return h.redirect(self, o.mid);
-        }
-        else {
-          if (h.startsWith(req_id, "/en/")) {
-            // request id is /en/*, redirect to mid
-            return h.redirect(self, o.mid);
-          }
-          else if (req_id === o.mid && !(o.id === o.mid || h.startsWith(o.id, "/en"))) {
-            // request id is mid, but object id is NOT /en/*
-            return h.redirect(self, o.id);
-          }
-          else {
-            // we should now have the canonical id
-            o.id = o["q:id"];
-
-            // Build type map for object
-            var obj_types = h.map_array(o.type, "id");
-            obj_types["/type/object"] = true; // all valid IDs are /type/object
-
-            var rule, i, l;
-            // Find correct rule for this object
-            for (i=0,l=route_list.length; i<l; i++) {
-              var route = route_list[i];
-              var type = route.type;
-              if (obj_types[type]) {
-                // clone tabs spec so we don't overwrite it
-                rule = h.extend(true, {}, route);
-                break;
-              }
-            }
-
-            // Turn tab config arrays into something more useful
-            if (!rule) {
-              throw "Missing rule configuration for this object";
-            }
-
-            acre.write(freebase_object.main(rule, o));
-            acre.exit();
-          }
-        }
-
-      }
-    }
-  };
-
-  var dump = this.dump = function() {
-    return route_list.slice();
-  };
-
-};
-
 
 /**
  * Extend the default rules for this site with the environment specific rules.
@@ -521,12 +372,14 @@ function extend_rules(rules, environment_rules) {
 
     var tmp_routers = [];
     for (var i in rules["routers"]) { 
-        var name = rules["routers"][i];
+        var router = rules["routers"][i];
 
-        if (routers_map[name]) { 
-            tmp_routers.push([name, routers_map[name]]);
+        if (h.isArray(router)) {
+          tmp_routers.push(router);
+        } else if ((typeof router === 'string') && routers_map[router]) { 
+          tmp_routers.push([router, routers_map[router]]);
         } else {
-            throw "There is no router named " + name + " available.";
+          throw "There is no router named " + router + " available.";
         }
     }
 
@@ -535,8 +388,6 @@ function extend_rules(rules, environment_rules) {
     // TODO: object and host overrides (not necessary now).
     return rules;
 }
-
-
 
 
 function route(rules, scope) {
@@ -548,6 +399,7 @@ function route(rules, scope) {
   if (rules["routers"]) { 
     routers = rules["routers"];
   }
+  console.log(routers);
 
   for (var i=0,l=routers.length; i<l; i++) {
     syslog.info({}, "trying router " + routers[i][0]);

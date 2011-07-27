@@ -29,13 +29,164 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var router =   acre.require("lib/routing/router.sjs");
+var h = acre.require("lib/helper/helpers.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var router_lib =   acre.require("lib/routing/router.sjs");
+var self = this;
 
 function route(environment_rules) {
   var site_rules = init_site_rules(environment_rules.labels.lib);
-  var rules = router.extend_rules(site_rules, environment_rules);
-  router.route(rules, this);
+  var rules = router_lib.extend_rules(site_rules, environment_rules);
+  router_lib.route(rules, this);
 };
+
+
+/**
+ * Deal with the special case of routing 
+ *
+ *   Note: to debug the homepage, use the /homepage prefix rule 
+ *         (e.g., /homepage?acre.console=1)/
+ *
+ */
+
+function HomeRouter(app_labels) {
+  
+    var route = this.route = function(req) {
+    
+    // This only applies to "/"
+    if (req.path_info !== "/") {
+      return false;
+    }
+    
+    // let object router handle ?inspect
+    if ("inspect" in req.params) {
+      return false;
+    }
+
+    // otherwise run the logged-out homepage, which will redirect to user page if logged-in
+    acre.route(acre.form.build_url(app_labels["homepage"] + "/index.controller", req.params));
+    acre.exit();
+    
+  };
+  
+};
+
+
+function ObjectRouter(app_labels) {
+  var object_query = acre.require("lib/queries/object.sjs");
+  var freebase_object = acre.require("lib/template/freebase_object.sjs");
+  
+  var route_list = [];
+  var types = {};
+
+  function set_app(item) {
+    if (item.app) {
+      var app = app_labels[item.app];
+      if (!app) {
+        throw 'An app label must exist for: ' + item.app;
+      }
+      item.app = app;
+    }
+    return item;
+  };
+
+  this.add = function(routes) {
+    if (!(routes instanceof Array)) {
+      routes = [routes];
+    }
+    routes.forEach(function(route) {
+      if (!route || typeof route !== 'object') {
+        throw 'A routing rule must be a dict: '+JSON.stringify(route);
+      }
+      [route.tabs, route.navs, route.promises].forEach(function(list) {
+        list && list.forEach(function(item) {
+          set_app(item);
+          item.promises && item.promises.forEach(function(p) {
+            set_app(p);
+          });
+        });
+      });
+      types[route.type] = route;
+      h.splice_with_key(route_list, "type", route);
+    });
+  };
+
+  this.route = function(req) {
+
+    var path_info = req.path_info;
+
+    var req_id = validators.MqlId(path_info, {if_invalid:null});
+
+    if (req_id) {
+
+      var o;
+      var d = object_query.object(req_id)
+        .then(function(obj) {
+          o = obj;
+        });
+
+      acre.async.wait_on_results();
+
+      d.cleanup();
+
+      if (o) {
+
+        if (o.replaced_by) {
+          return h.redirect(self, o.replaced_by.mid);
+        }
+        else if (!(req_id === o.mid || req_id === o.id)) {
+          // request id is NOT a mid and NOT a mql "approved" id
+          return h.redirect(self, o.mid);
+        }
+        else {
+          if (h.startsWith(req_id, "/en/")) {
+            // request id is /en/*, redirect to mid
+            return h.redirect(self, o.mid);
+          }
+          else if (req_id === o.mid && !(o.id === o.mid || h.startsWith(o.id, "/en"))) {
+            // request id is mid, but object id is NOT /en/*
+            return h.redirect(self, o.id);
+          }
+          else {
+            // we should now have the canonical id
+            o.id = o["q:id"];
+
+            // Build type map for object
+            var obj_types = h.map_array(o.type, "id");
+            obj_types["/type/object"] = true; // all valid IDs are /type/object
+
+            var rule, i, l;
+            // Find correct rule for this object
+            for (i=0,l=route_list.length; i<l; i++) {
+              var route = route_list[i];
+              var type = route.type;
+              if (obj_types[type]) {
+                // clone tabs spec so we don't overwrite it
+                rule = h.extend(true, {}, route);
+                break;
+              }
+            }
+
+            // Turn tab config arrays into something more useful
+            if (!rule) {
+              throw "Missing rule configuration for this object";
+            }
+
+            acre.write(freebase_object.main(rule, o));
+            acre.exit();
+          }
+        }
+
+      }
+    }
+  };
+
+  var dump = this.dump = function() {
+    return route_list.slice();
+  };
+
+};
+
 
 // Default codebase for lib (this is the freebase-site SVN repository).
 var lib_codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
@@ -45,9 +196,18 @@ var site_codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 
 
 function init_site_rules(lib) {
-  
+
     var rules = {};
-    
+
+    rules["routers"] = [
+      "host", 
+      ["home", HomeRouter], 
+      "static", 
+      "ajax", 
+      "prefix", 
+      ["object", ObjectRouter]
+    ];
+
     // Trunk labels for all apps in this site. 
     // If you add a new app, you have to add it here first.
 
@@ -558,8 +718,6 @@ function init_site_rules(lib) {
         {host:"metaweb.com", url:"http://www.freebase.com"},
         {host:"www.metaweb.com", url:"http://www.freebase.com"}
     ];
-
-    rules["routers"] = ["host", "home", "static", "ajax", "prefix", "object"];
         
     return rules;
 }

@@ -125,6 +125,15 @@ for (var env in tests) {
         ok(false, "unexpected exception " + e);
       }
     });
+
+    // if_missing
+    var o = {};
+    try {
+      strictEqual(validator(o.foo, {if_missing: "world"}), "world");
+    }
+    catch (e) {
+      ok(false, "option if_missing ignored");
+    }
   });
 }
 

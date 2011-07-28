@@ -70,6 +70,11 @@ function IfEmpty(val) {
 };
 IfEmpty.prototype = new IfException();
 
+function IfMissing(val) {
+  this.val = val;
+};
+IfMissing.prototype = new IfException();
+
 function IfInvalid(val) {
   this.val = val;
 };
@@ -152,6 +157,7 @@ Validator.Class.prototype = {
   defaults: {
     strip: true   // strip beginning/ending whitespaces if string
     // if_empty
+    // if_missing
     // if_invalid
     // required
   },
@@ -191,7 +197,21 @@ Validator.Class.prototype = {
     return this.check_empty(val, options);
   },
   check_empty: function(val, options) {
-    if (this.is_empty(val)) {
+    var is_undefined = this.is_undefined(val);
+    var is_empty = this.is_empty(val);
+
+    if (is_undefined || is_empty) {
+      if (is_undefined && "if_missing" in options) {
+        throw(new IfMissing(options.if_missing));
+      }
+      else if (is_empty && "if_empty" in options) {
+        throw(new IfEmpty(options.if_empty));
+      }
+      if (options.required) {
+        this.invalid(this.key, "is required");
+      }
+    }
+/**    if (this.is_empty(val)) {
       if ("if_empty" in options) {
         throw(new IfEmpty(options.if_empty));
       }
@@ -199,6 +219,7 @@ Validator.Class.prototype = {
         this.invalid(this.key, "is required");
       }
     }
+**/
   },
   invalid: function() {
     if ("if_invalid" in this.options) {
@@ -206,6 +227,11 @@ Validator.Class.prototype = {
     }
     throw(Invalid.factory.apply(null, arguments));
   },
+
+  is_undefined: function(val) {
+    return this.get_typeof(val) === "undefined";
+  },
+
   /**
    * @return TRUE if val is null, undefined, "", [], or {}. False otherwise.
    */
@@ -744,7 +770,7 @@ Validator.factory(scope, "AcreVersion", {
   "string": function(key) {
     // 'current' is a reserved version name
     if (key == 'current') {
-      return this.invalid('"current" is a reserved version name.');      
+      return this.invalid('"current" is a reserved version name.');
     }
 
     // 'release' is a reserved version name
@@ -763,20 +789,20 @@ Validator.factory(scope, "AcreVersion", {
 
 Validator.factory(scope, "AcreFilename", {
   "string": function(name) {
-    if (!/^[\-_0-9A-Za-z\.]+$/.test(name)) { 
+    if (!/^[\-_0-9A-Za-z\.]+$/.test(name)) {
       return this.invalid("File names can only contain alphanumeric characters, ., - and _");
     }
-    
-    if (!/^[A-Za-z]/.test(name)) { 
+
+    if (!/^[A-Za-z]/.test(name)) {
       return this.invalid("File names must be begin with a letter");
     }
 
-    if (!/[0-9A-Za-z]$/.test(name)) { 
+    if (!/[0-9A-Za-z]$/.test(name)) {
       return this.invalid("File names cannot end with a special character");
     }
 
     var RESERVED_KEYS = {'acre':true, 'status':'', 'api':true};
-    if (name in RESERVED_KEYS) { 
+    if (name in RESERVED_KEYS) {
       return this.invalid("'acre', 'api', and 'status' are reserved file names");
     }
 
@@ -786,12 +812,12 @@ Validator.factory(scope, "AcreFilename", {
 
 Validator.factory(scope, "AcreResource", {
   "string": function(path, options) {
-    
+
     function escape_re(s) {
       var specials = /[.*+?|()\[\]{}\\]/g;
       return s.replace(specials, '\\$&');
     }
-    
+
     var DEFAULT_HOST_NS = "/freebase/apps/hosts";
 
     var APPEDITOR_SERVICE_PATH = "/appeditor/services/"
@@ -964,7 +990,7 @@ Validator.factory(scope, "AcreResource", {
 
     resource.id = resource.appid + (resource.filename ? "/" + acre.freebase.mqlkey_quote(resource.filename) : "");
     resource.path = resource.app_path + (resource.filename ? "/" + resource.filename : "");
-    resource.url = acre.host.protocol + ":" + resource.app_path + "." + acre.host.name + 
+    resource.url = acre.host.protocol + ":" + resource.app_path + "." + acre.host.name +
                     (acre.host.port !== 80 ? (":" + acre.host.port) : "") +
                     (resource.filename ? "/" + resource.filename : "");
 

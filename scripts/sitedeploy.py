@@ -143,7 +143,7 @@ class ActionStatic:
 
     acre = Acre.Get(c)
     if not (acre.is_running() or (acre.build(target='devel', config_dir= "%s/appengine-config" % site.site_dir) and acre.start())):
-      return c.error('There was an error starting acre - cannot generate static files without a running acre instance.')
+      return c.error("There was an error starting acre - cannot generate static files without a running acre instance.")
 
     success = c.googlecode_login()
 
@@ -452,23 +452,24 @@ class ActionCreateAppBranch():
     c = self.context
     c.set_action("branch")
 
+    if not c.options.app:
+      return c.error('You have to specify a valid app to branch')
+
+    from_app = App.Get(c, c.options.app, c.options.version)
+
     #you specified an app that is not lib without specifying which 
     #version of lib to connect to
-    if c.options.app != 'lib' and not c.options.lib:
-      return c.error('You have to specify a lib version to connect to with -l')
+    if not from_app.is_lib() and not c.options.dependency:
+      return c.error('You have to specify a dependency version to connect to with -d')
 
     success = c.googlecode_login()
     if not success:
       return c.error('You must provide valid google code credentials to complete this operation.')
 
-    if not c.options.app:
-      return c.error('You have to specify a valid app to branch')
-
-    c.log('Starting branching app %s' % c.app.app_key, color=c.BLUE)
+    c.log('Starting branching app %s' % from_app.app_key, color=c.BLUE)
 
     #create the branch
-    from_app = App.Get(c, c.options.app, c.options.version)
-    branch_app = from_app.branch(c.options.version)
+    branch_app = from_app.create_branch(c.options.dependency)
 
     if not branch_app:
       return c.error("Failed to create branch app - is %s a valid app key?" % c.options.app_key)
@@ -477,20 +478,6 @@ class ActionCreateAppBranch():
     #by any other stage
     c.set_app(branch_app)
 
-    #if this is not the core app, and it depends on core
-    #then branch the core app and update the version number in our app
-    if not branch_app.is_lib():
-      #XXX to be implemented
-      updated = branch_app.update_lib_dependency(App.Get(c, 'lib', version=c.options.lib))
-      if updated:
-        (r, contents) = branch_app.svn_commit(msg='updated lib dependency to %s' % c.options.lib)
-        c.log('Created branch %s linked to lib:%s' % (branch_app, c.options.lib), color=c.BLUE)
-      else:
-        c.error('There was an error updating the lib dependency of %s' % branch_app)
-    else:
-      c.log('Created %s' % branch_app, color=c.BLUE)
-
-
     return True
 
 #TAG
@@ -498,38 +485,6 @@ class ActionCreateAppTag():
 
   def __init__(self, context):
     self.context = context
-
-    self.updated_apps = set()
-
-  def get_lib_tag_dependency(self, app):
-    '''
-    Returns a lib app object that this app tag should be linked to.
-    Returns None if there is no lib dependency
-    Returns False if there was an error
-    '''
-
-    c = self.context
-    #first see if there is a lib dependency
-    lib_app = app.lib_dependency()
-
-    if lib_app:
-      #if there was a lib tag specified in the command line, check that its
-      #of the same branch as the lib app that was linked to this app branch
-      if c.options.lib:
-        new_lib_app = App.Get(c, "lib", tag=c.options.lib)
-        if lib_app.version != new_lib_app.version:
-          return c.error('You cannot specify a lib tag that is from a different branch than when this app was created.\nOriginal lib branch: %s\nSpecified lib branch: %s' % (lib_app.version, new_lib_app.version))
-        else:
-          lib_app = new_lib_app
-    #otherwise, try to figure out the latest tag of the lib app that was used when this app was branched
-      else:
-        last_tag = lib_app.last_tag()
-        if not last_tag:
-          return c.error("The app %s is linked to %s which has no available tags." % (app, lib_app))
-        else:
-          lib_app = App.Get(c, "lib", tag=last_tag)
-
-    return lib_app
 
   def __call__(self):
     c = self.context
@@ -547,51 +502,8 @@ class ActionCreateAppTag():
 
     if not acre:
       return c.error("Could not get an acre instance. You can specifiy --acre_dir, or --acre_version with a valid acre branch or trunk")
-
-
-    success = c.googlecode_login()
-    if not success:
-      return c.error('You must provide valid google code credentials to complete this operation.')
-
-    c.log('Creating tag for %s:%s' % (c.app.app_key, c.options.version), color=c.BLUE)
-
-    #first create a tag for the app that was specified in the command line
     from_branch_app = App.Get(c, c.options.app, c.options.version)
-
-    #then check if there is a valid lib tag that we can use - or if there is no
-    #lib dependency
-    lib_app = self.get_lib_tag_dependency(from_branch_app)
-    if lib_app == False:
-      return c.error('There was an error with the lib dependency')
-
-    #now create the new tag
     tag_app = from_branch_app.create_tag()
-
-    if not tag_app:
-      return c.error("There was an error creating a new tag for %s" % from_branch_app)
-
-    #set the app object that is going to be used for here onwards
-    #by any other stage
-    c.set_app(tag_app)
-
-    #if this is not the core app, and it depends on core
-    #then branch the core app and update the version number in our app
-    if not tag_app.is_lib():
-
-      if lib_app:
-        update = tag_app.update_lib_dependency(lib_app)
-        if update:
-          (r, contents) = tag_app.svn_commit(msg='updated dependencies for %s' % tag_app)
-          if r:
-            c.log('Created tag %s linked to %s' % (tag_app, lib_app))
-          else:
-            self.remove_from_svn()
-            return c.error('Failed to commit to SVN - aborting')
-        else:
-          self.remove_from_svn()
-          return c.error('There was an error updating the lib dependency of %s' % tag_app)
-
-
 
     #if not no_static:
     r = ActionStatic(c)(app=tag_app)
@@ -619,19 +531,19 @@ class ActionInfo:
     #print "_" * 84
     print "App: %s" % app.app_key
 
-    last_version = app.last_svn_version()
+    last_version = app.last_version()
     dep = {}
 
     if not last_version: 
       print "Last Version: no version created"
       return True
 
-    lib_app = None
+    d_app = None
     if last_version and not app.is_lib():
-        lib_app = App.Get(c, app.app_key, version=last_version).lib_dependency()
+        d_app = App.Get(c, app.app_key, version=last_version).dependency()
 
-    if lib_app:
-      last_version_str = "%s (%s)" % (last_version, lib_app)
+    if d_app:
+      last_version_str = "%s (%s)" % (last_version, d_app)
     else:
       last_version_str = "%s" % last_version
 
@@ -641,10 +553,10 @@ class ActionInfo:
     last_tag = versioned_app.last_tag()
 
     if last_tag and not app.is_lib():
-      lib_app = App.Get(c, versioned_app.app_key, last_version, last_tag).lib_dependency()
+      d_app = App.Get(c, versioned_app.app_key, last_version, last_tag).dependency()
 
-    if lib_app:
-      last_tag_str = "%s (%s)" % (last_tag, lib_app)
+    if d_app:
+      last_tag_str = "%s (%s)" % (last_tag, d_app)
     else:
       last_tag_str = "%s" % last_tag
 
@@ -1157,14 +1069,11 @@ class ActionCreateRoutes:
 var codebase = \"%s\";
 var tags_codebase = \"%s\";
 
-// freebase-site trunk lib
-var lib = \"%s\";
-
 var environment_rules = { 
 
     // Override labels. All labels point to trunk by default.
     \"labels\" : {
-        \"lib\": lib,
+        \"lib\": \"%s\",
 """ % (site.conf("acre_id_suffix_trunk"), site.conf("acre_id_suffix_tags"), lib)
 
     apps = site.apps()
@@ -1190,9 +1099,7 @@ var environment_rules = {
     "prefix" : []
 };
 
-var default_rules = acre.require(lib + \"/site/freebase-site/default_routes.sjs\").init_default_routes(lib);
-
-acre.require(lib + \"/routing/router.sjs\").route(default_rules, environment_rules, this);
+acre.require(environment_rules.labels.site + "/router.sjs").route(environment_rules, this);
 """
 
     return True
@@ -1273,6 +1180,8 @@ def main():
                     help="an app id - e.g. /user/namesbc/mysuperapp or an app key under /freebase/site - e.g. homepage")
   parser.add_option("-l", "--lib", dest="lib", default=None,
                     help="the version of lib you want to tie this app branch to - use 'latest' to tie to last branched version")
+  parser.add_option("-d", "--dependency", dest="dependency", default=None,
+                    help="the version of the dependency app you want to tie this app branch to - use 'latest' to tie to last branched version")
   parser.add_option("", "--failover", dest="failover", action="store_true",
                     default=False, help="will also deploy acre to the failover version of appengine")
   parser.add_option("", "--nosite", dest="nosite", action="store_true",
@@ -1312,31 +1221,6 @@ def main():
     if action == valid_action[0]:
       action_class = valid_action[2]
 
-  def resolve_app_params(options, context):
-    """Initialize app-related options."""
-
-    # options.version refers to the last version of the app passed with -a
-    # options.lib refers to the lib app
-    if not ((options.version and options.version == 'latest') or (options.lib and options.lib == 'latest')):
-      return True
-
-    if options.lib:
-      app = App.Get(context, "lib")
-    else:
-      app = App.Get(context, options.app)
-
-    if not app:
-      return False
-
-    last_version = app.last_svn_version()
-    if last_version:
-      if options.version:
-        options.version = last_version
-      else:
-        options.lib = last_version
-
-    return True
-
   def run(action_class, context):
     """Run an action given the context."""
     context.start_time = datetime.datetime.now()
@@ -1364,24 +1248,14 @@ def main():
 
   try:
     if options.app:
-
-      original_version = options.version
-      original_lib = options.lib
-
       apps = options.app.split(',')
       if apps[0] == "all":
         apps = Site.Get(context).apps()
 
       for i, app in enumerate(apps):
         options.app = app
-        options.version = original_version
-        options.lib = original_lib
-        result = False
-        result = resolve_app_params(options, context)
-        if result:
-          context.set_app(App.Get(context, options.app, options.version))
-          result = run(action_class, context)
-
+        context.set_app(App.Get(context, app, options.version))
+        result = run(action_class, context)
         results.append(result)
 
     else:

@@ -38,7 +38,7 @@ var SPEC = {
   run: function() {
     // Always ask the user to signin if they hit this url.
     var success_url = acre.request.app_url+'/account/signedin';
-    if (acre.freebase.apiary_url) {
+    if (acre.freebase.googleapis_url) {
       var freebase_provider = h.account_provider();
       // If we are already signed in, then have the user sign-in again.
       if (acre.oauth.has_credentials(freebase_provider)) {

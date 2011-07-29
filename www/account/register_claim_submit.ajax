@@ -59,7 +59,7 @@ var SPEC = {
     }
     
     // Send claim email to owner of email account to verify ownership.
-    var user_claim_url = acre.freebase.apiary_url+'/user/claim/'+username;
+    var user_claim_url = acre.freebase.googleapis_url+'/user/claim/'+username;
     var claim_params = acre.form.encode({
       claim_url: acre.request.app_url+'/account/claim'
     });

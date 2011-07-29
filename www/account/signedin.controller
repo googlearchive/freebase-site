@@ -40,12 +40,12 @@ var SPEC = {
 
   run: function() {
     var d;
-    if (acre.freebase.apiary_url) {
+    if (acre.freebase.googleapis_url) {
       // Finalize the authorization request.
       acre.oauth.get_authorization(h.account_provider());
 
       // HACK(culbertson): Remove metaweb-user cookies
-      // because they mess up Apiary requests. 
+      // because they mess up googleapis requests. 
       if (acre.request.cookies['metaweb-user'] ||
           acre.request.cookies['metaweb-user-info']) {
         delete acre.request.cookies['metaweb-user'];

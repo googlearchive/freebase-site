@@ -63,7 +63,7 @@ function link_user(token) {
     return deferred.rejected(new UnauthorizedError());
   }
   
-  var user_link_url = acre.freebase.apiary_url+'/user/link';
+  var user_link_url = acre.freebase.googleapis_url+'/user/link';
   var link_params = acre.form.encode({token: token});
 
   return urlfetch(user_link_url,
@@ -107,7 +107,7 @@ function user_info() {
   }
   
   // Get user information using urlfetch so we can deal with custom errors.
-  var user_info_url = acre.freebase.apiary_url+'/user/info';
+  var user_info_url = acre.freebase.googleapis_url+'/user/info';
   return urlfetch(user_info_url, {sign: true})
     .then(function(response) {
       return JSON.parse(response.body);

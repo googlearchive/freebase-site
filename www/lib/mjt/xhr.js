@@ -85,7 +85,7 @@ mjt.Xhr.prototype.request = function () {
 
         if ((''+xhr.status).charAt(0) == '2')
             return task.ready(xhr);
-        return task.error('/apiary/http/status/' + xhr.status, xhr.statusText, xhr.responseText);
+        return task.error('/googleapis/http/status/' + xhr.status, xhr.statusText, xhr.responseText);
     };
     
     xhr.open(this.method, this.url, true);

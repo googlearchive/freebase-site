@@ -929,7 +929,7 @@ function clear_account_cookie() {
 }
 
 function has_account_credentials() {
-  if (acre.freebase.apiary_url) {
+  if (acre.freebase.googleapis_url) {
     return acre.oauth.has_credentials(account_provider());
   } else {
     return !!acre.request.cookies['metaweb-user'];
@@ -938,11 +938,11 @@ function has_account_credentials() {
 
 function account_provider() {
   var provider = extend({}, acre.oauth.providers.freebase);
-  // Authorize the host that the apiary url is running under,
-  // really useful when connecting to a local dev apiary.
-  var apiary_host = parse_uri(acre.freebase.apiary_url).host;
-  if (apiary_host) {
-    provider.domain = apiary_host;
+  // Authorize the host that the googleapis url is running under,
+  // really useful when connecting to a local dev googleapis.
+  var googleapis_host = parse_uri(acre.freebase.googleapis_url).host;
+  if (googleapis_host) {
+    provider.domain = googleapis_host;
   }
   return provider;
 }

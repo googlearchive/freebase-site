@@ -1,0 +1,192 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var image = acre.require("lib/template/imagecomponents");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var queries = acre.require("queries.sjs");
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="sameas.mf.css" />
+</acre:block>
+
+<!!--
+<acre:block def="nav_utilities()">
+  <li>
+    <acre:script>
+      var params = {q:JSON.stringify(queries.weblinks_mql(c.object.id)), autorun:true, extended:1};
+    </acre:script>
+    <a href="${h.fb_url('/queryeditor', params)}" class="icon-link"><span class="query-icon">${_('Build Query')}</span></a>
+  </li>
+</acre:block>
+!!-->
+
+<acre:block def="page_content()">
+ 
+  ${external_topics2()}
+
+  ${external_topics()}
+
+  ${webpages()}
+
+</acre:block>
+
+<acre:block def="external_topics()">
+    <h1 class="table-title">${_("External Topic IDs")}</h1>
+    <table cellspacing="0" class="table">
+      <thead>
+      </thead>
+      <acre:block for="authority in c.weblinks.authorities">
+        <thead>
+          <tr>
+            <th colspan="2" class="tbody-header expanded first">
+              <span class="authority a${authority.id.replace(/\//g, '-')}">
+                <acre:block if="authority.id !== '_NO_AUTHORITY'">
+                <a href="${h.fb_url(authority.id)}">
+                  <strong>${i18n.display_name(authority)}</strong>
+                </a>  
+                </acre:block>
+                <acre:block else="">
+                  <strong>${_("Unknown")}</strong>
+                <acre:block>
+              </span>
+            </th>
+          </tr>
+          <tr>
+            <th class="column-header first" scope="column">
+              <span class="sort-icon">${_("Namespace")}</span>
+            </th>
+            <th class="column-header" scope="column">
+              <span class="sort-icon">${_("Key")}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr acre:for="weblink in authority.weblinks">
+            <th class="row-header odd">
+              <a href="${h.fb_url(weblink.ns)}">${weblink.ns}</a>
+            </th>
+            <td>
+              <a href="${weblink.url}">${weblink.key}</a>
+            </td>
+          </tr>
+        </tbody>
+      </acre:block>
+    </table>
+</acre:block>
+
+<acre:block def="external_topics2()">
+
+  <h1 class="table-title">${_("External Topic IDs (Collapsed)")}</h1>
+
+  <table cellspacing="0" class="table table-sortable">
+    <thead>
+      <tr>
+        <th class="column-header first {sorter:'string'}" scope="column"> 
+          <span class="sort-icon">${_("Authority")}</span>
+        </th>
+        <th class="column-header {sorter:'string'}" scope="column">
+          <span class="sort-icon">${_("Namespace")}</span>
+        </th>
+        <th class="column-header {sorter:'string'}" scope="column">
+          <span class="sort-icon">${_("Key")}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <acre:block for="authority in c.weblinks.authorities">
+        <acre:block for="weblink in authority.weblinks">
+          <tr>
+            <th class="row-header odd">
+              <acre:block if="authority.id === '_NO_AUTHORITY'">
+                <strong>-</strong>                 
+              </acre:block>
+              <acre:block else="">
+                <span class="authority a${authority.id.replace(/\//g, '-')}">
+                  <acre:block if="authority.id !== '_NO_AUTHORITY'">
+                    <a href="${h.fb_url(authority.id)}">
+                      <strong>${i18n.display_name(authority)}</strong>
+                    </a>  
+                </span>
+              </acre:block>
+            </th>
+            <td>
+              <a href="${h.fb_url(weblink.ns)}">${weblink.ns}</a>
+            </td>
+            <td class="odd">
+              <a href="${weblink.url}">${weblink.key}</a>
+            </td>
+          </tr>
+        </acre:block>
+      </acre:block>
+    </tbody>
+  </table>
+</acre:block>
+
+<acre:block def="webpages()">
+  <h1 class="table-title">${_("Related Webpages")}</h1>
+  <table cellspacing="0" class="table table-sortable">
+    <thead>
+      <th class="column-header first" scope="column">
+        <span class="sort-icon">${_("URI")}</span>
+      </th>
+      <th class="column-header" scope="column">
+        <span class="sort-icon">${_("Title")}</span>
+      </th>
+      <th class="column-header" scope="column">
+        <span class="sort-icon">${_("Category")}</span>
+      </th>
+    </thead>
+    <tbody>
+      <tr acre:for="weblink in c.weblinks.webpages">
+        <th class="row-header odd">
+          <a href="${weblink.url}" rel="external" title="${_('Go to webpage')}">$weblink.url</a>
+        </th>
+        <td><a href="${h.fb_url(weblink.ns)}"></a></td>
+        <td class="odd">
+          <acre:block if="weblink.category && weblink.category.name.length">
+            ${i18n.display_name(weblink.category)}
+          </acre:block>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</acre:block>
+
+
+<acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+</acre:block>

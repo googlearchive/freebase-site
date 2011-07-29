@@ -79,15 +79,6 @@ IMG_EXTENSIONS = [".png", ".gif", ".jpg"]
 RES_EXTENSIONS = [".js", ".css", ".less"]
 EXTENSIONS = IMG_EXTENSIONS + RES_EXTENSIONS + [".txt"]
 
-FILE_TYPES = {
-    'png':'image/png',
-    'jpg':'image/jpeg',
-    'gif':'image/gif',
-    'html':'text/html',
-    'css':'text/css',
-    'js':'text/javascript'
-    }
-
 JAVA = os.environ.get("JAVA_EXE", "java")
 COMPILER = os.path.join(os.path.abspath(os.path.dirname(os.path.join(os.getcwd(), __file__))), "compiler.jar")
 JAVA_OPTS = ["-jar", COMPILER, "--warning_level", "QUIET"]
@@ -95,10 +86,7 @@ JAVA_OPTS = ["-jar", COMPILER, "--warning_level", "QUIET"]
 PRIVATE_SVN_URL_ROOT = 'https://svn.metaweb.com/svn/freebase_site'
 
 ROOT_NAMESPACE = '/freebase/site'
-CONFIG_FILE = 'CONFIG.json.json'
-MANIFEST_FILE = 'MANIFEST.sjs'
-METADATA_FILE = 'METADATA.sjs'
-METADATA_LIB_FILE = 'METADATA.json'
+METADATA_FILENAMES = ["METADATA.sjs", "METADATA.json"]
 FIRST_LINE_REQUIRE_CONFIG = 'var config = JSON.parse(acre.require("CONFIG.json").body);'
 
 FREEBASE_API_KEY = "AIzaSyDTw7dTx6GifLh9LX7X6BbGICgJbfRI0s0"
@@ -123,14 +111,12 @@ class App:
     self.app_id = '%s/%s' % (ROOT_NAMESPACE, self.app_key)
 
     self.context = context
-    self.checked_out = False
-    self.local_dir = None
-    self.local_deployed_dir = None
-    self.environment = None
 
-    self.needs_static_generation = True
-    self.pending_static_hash = None
-    self.done_static_generation = False
+    # Whether this app has been succesfully checked out from the repository to local disk.
+    self.checked_out = False
+
+    # The local disk directory where this app is/will be checked out.
+    self.local_dir = None
 
   def __str__(self):
     if self.tag:
@@ -161,28 +147,96 @@ class App:
     else:
       return cls.Get(context, parts[0], None)
 
+  @staticmethod
+  def VersionFromTag(tag=None):
+    """Return the version (branch) for a given tag or None."""
+
+    if not tag:
+      return None
+
+    matches = re.match('(\d+)(\D)$', tag)
+    if matches:
+      return matches.group(1)
+
+    return None
+
   #return an App object
   @classmethod
   def Get(cls, context, app_key, version=None, tag=None):
+    """Create, cache and return an app object. 
 
-    if tag and not version:
-      matches = re.match('(\d+)(\D)$', tag)
-      if matches:
-        return App.Get(context, app_key, version = matches.group(1), tag=tag)
-      else:
-        return context.error("Could not create an app object out of app_key: %s app_tag: %s without an app version" % (app_key, tag))
+    Will create the app object appropriately, cache the resulting object and return 
+    from the cache if the app key, version and tag are the same. 
 
+    Arguments:
+      app_key: string - the app key (e.g. "lib")
+      version: one of real version as string (e.g. "14"), None or "latest" as string
+      tag: one of real tag as string (e.g. "14b"), None or "latest" as string
+
+    Returns:
+      app_obj: an object of the App class representing the app.
+    """
+
+    # actual_tag will hold the actual tag passed to the constructor (e.g. "13b" or None)
+    actual_tag = tag
+    if tag == "latest":
+      actual_tag = None
+
+    # actual_version will hold the actual version passed to the constructor (e.g. "13" or None)
+    actual_version = version
+    if version == "latest":
+      actual_version = None
+
+    if tag and tag != "latest" and not version:
+        actual_version = cls.VersionFromTag(tag)
+        if not actual_version:
+          return context.error("Could not create an app object out of app_key: %s app_tag: %s without an app version" % (app_key, tag))
+    """
     n = "%s:%s:%s" % (app_key, version or "trunk", tag or "none")
     if cls._apps.get(n):
       return cls._apps[n]
 
     app_obj = cls(context, app_key, version, tag)
+    """
+
+    n = "%s:%s:%s" % (app_key, str(version), str(tag))
+    if cls._apps.get(n, None):
+        return cls._apps[n]
+
+    app_obj = cls(context, app_key, actual_version, actual_tag)
+
+    if tag == "latest":
+      actual_tag = app_obj.last_tag()
+      if actual_tag:
+        actual_version = cls.VersionFromTag(actual_tag)
+        app_obj = App.Get(context, app_key, actual_version,actual_tag)
+
+    elif version == "latest":
+      actual_version = app_obj.last_version()
+      app_obj = App.Get(context, app_key, actual_version,actual_tag)
 
     cls._apps[n] = app_obj
     return app_obj
 
 
+  @classmethod
+  def InvalidateLatest(cls,app_key):
+    """Will remove the 'latest' entries fromt the cache for this app.
 
+    This function is useful if you are creating new branches and/or tags of apps.
+    When a new branch is created, any 'latest' references to the app will be out of date,
+    since now the latest has changed. Hence, we need to invalidate any references in the
+    in-memory cache of this app, so the next call to App.Get() will re-evaluate the 'latest' version.
+    
+    Arguments:
+      cls: object representing the class (in this case the App class)
+      app_key: string - an app_key, such as 'lib'
+      
+    """
+
+    for key in cls._apps.keys():
+      if key.startswith("%s:" % app_key) and ":latest" in key:
+        cls._apps[key] = None
 
   def path(self, short=False):
 
@@ -266,6 +320,7 @@ class App:
     c = self.context
     file_url = "%s/%s" % (self.static_url(), filename)
     #write back to the *svn checkout directory - not to the local acre directory*
+
     response = c.fetch_url(file_url, acre=True)
     if not response:
         return c.error("Failed to get valid response from acre for url %s - aborting" % file_url)
@@ -297,16 +352,16 @@ class App:
         return c.error('Cannot create static resources for %s - error opening/parsing the app metadata file' % self)
     self.copy_to_acre_dir()
     
-    lib_app = self.lib_dependency()
-    
-    if lib_app:
-      lib_app.copy_to_acre_dir()
+    d_app = self.dependency()
+    while (d_app):
+      d_app.copy_to_acre_dir()
+      d_app = d_app.dependency()
 
     #app files will be a list of file paths starting at the app route 
     #i.e. app.svn_path()/<file> is the actual path on disk
     app_files = self.get_app_files()
 
-    c.log('Creating static bundles for %s' % self, color=c.BLUE)
+    c.log("Creating static bundles for %s" % self, color=c.BLUE)
 
     static_files = []
     for filename in app_files:
@@ -399,17 +454,17 @@ class App:
 
     return True
 
-  def update_lib_dependency(self, app):
+  def update_dependency(self, dependency_app):
     '''
-    update the dependency to the lib app of this app
+    update the dependency app of this app to the app passed
     '''
     metadata = self.read_metadata()
 
     #fail silently if there is no metadata dependencies to update
-    if not metadata or not ('mounts' in metadata.keys() and 'lib' in metadata['mounts'].keys()):
-        return False
+    if not metadata or not ("mounts" in metadata.keys() and dependency_app.app_key in metadata["mounts"].keys()):
+      return False
 
-    metadata['mounts']['lib'] = app.path()
+    metadata['mounts'][dependency_app.app_key] = dependency_app.path()
 
     #stamp the metadata file with additional useful SVN info
     metadata['app_key'] = self.app_key
@@ -472,55 +527,64 @@ class App:
 
     return self.write_metadata(metadata)
 
-  def lib_dependency(self):
+  def dependency(self):
 
-    #the lib app does not have a dependency on itself
-    if self.app_key == 'lib':
-        return None
+    #the lib app does not have a dependency that we care about
+    if self.is_lib():
+      return None
 
     metadata = self.read_metadata()
 
     if metadata == False:
-        return False
+      return False
 
     #check if there is a lib dependency in the metadata['mounts'] dictionary
-    if not metadata or not ('mounts' in metadata.keys() and 'lib' in metadata['mounts'].keys()):
-        return None
+    if not metadata or not 'mounts' in metadata.keys():
+      return None
 
-    #return the lib app object by constructing it from the app path
-    return App.GetFromPath(self.context, metadata['mounts']['lib'])
-
+    known_dependencies = ["site", "lib"]
+    for dep_key in known_dependencies:
+      if metadata["mounts"].get(dep_key):
+        return App.GetFromPath(self.context, metadata["mounts"][dep_key])
+            
+    return None
 
   def is_lib(self):
       return self.app_key == 'lib'
 
+
+  def get_metadata_filename(self):
+
+    files = self.get_app_files()
+    for candidate in METADATA_FILENAMES:
+      if candidate in files:
+        return candidate
+
+    return None
+      
   def read_metadata(self, full_file_contents = False):
- 
-    filename = METADATA_FILE
-    if self.is_lib():
-        filename = METADATA_LIB_FILE
+
+    filename = self.get_metadata_filename()
         
     (result, file_contents) = self.read_file(filename, isjson=False)
     if not result:
       return False
 
-
     contents = file_contents
     before = ''
     after = ''
 
-    if not self.is_lib():
-        res = re.match('(var METADATA\s?=\s?)([^;]*)(.*)', file_contents, re.DOTALL)
-        if not res:
-            return self.context.error('Cannot parse metadata file for %s' % self)
+    if filename.endswith(".sjs"):
+      res = re.match('(var METADATA\s?=\s?)([^;]*)(.*)', file_contents, re.DOTALL)
+      if not res:
+        return self.context.error('Cannot parse metadata file for %s' % self)
 
-        before, contents, after = res.group(1), res.group(2), res.group(3)
+      before, contents, after = res.group(1), res.group(2), res.group(3)
 
     try: 
       metadata = json.loads(contents)
     except:
       return self.context.error('Cannot convert metadata file of %s to json' % self)
-
 
     if full_file_contents:
         return metadata, before, after
@@ -531,16 +595,15 @@ class App:
 
     _, before, after = self.read_metadata(full_file_contents = True)
 
-    filename = METADATA_FILE
-    if self.is_lib():
-        filename = METADATA_LIB_FILE
+    filename = self.get_metadata_filename()
 
     return self.write_file(filename, ''.join([before, json.dumps(metadata, indent=2), after]))      
 
 
   def last_tag(self):
     '''
-    Returns the last tag as a string or None if there are no tags
+    Returns the last tag as a string or None if there are no tags.
+    Will take into account the app version if defined.
     e.g. '15b'
     '''
 
@@ -586,45 +649,6 @@ class App:
     matches = re.match('\d+(\D)$', last_tag)
     return "%s%s" % (self.version, chr(ord(matches.group(1)) + 1))
       
-  def create_tag(self, tag=None):
-    '''
-    Creates a new tag directory and copies the branched app there
-    Returns an instance of the new app
-    '''
-
-    c = self.context
-
-    if not tag:
-        tag = self.next_tag()
-
-    msg = '[sitedeploy] Creating tag %s' % tag
-
-    target_app = App.Get(c, self.app_key, version=self.version, tag=tag)
-
-    cmd = ['svn', 'copy', self.svn_url(), target_app.svn_url(), '--parents', '-m', msg, '--username', c.googlecode_username, '--password', c.googlecode_password]
-    (r, output) = self.context.run_cmd(cmd)
-
-    if not r:
-        return r
-
-    new_files = []
-    for filename in target_app.get_app_files():
-      if filename.endswith(".mf.css") or filename.endswith('.mf.js'):
-        #manifest css and js files need special handling when creating a tag
-        r = target_app.process_manifest_resource_file(filename)
-          
-        if not r:
-          return r
-        
-        new_files.append(filename)
-
-
-    if len(new_files):
-        target_app.svn_commit(msg = 'Modified manifest resource files: %s' % ' '.join(new_files))
-
-    return target_app
-
-
   def process_manifest_resource_file(self, filename):
     '''
     Given a filename of the form *.mf.{css,js} this function will:
@@ -693,17 +717,15 @@ class App:
     
     return True
 
-  def branch(self, target_version=None):
+  def create_branch(self, dependency=None):
 
     c = self.context
 
-    #figure out the next version if we were not given one
+    target_version = self.next_version()
     if not target_version:
-      target_version = self.next_svn_version()
-      if not target_version:
-        return c.error('Cannot figure out next valid version of %s to branch to' % self.app_key)
-      else:
-        c.verbose('Next available version for app %s is %s' % (self.app_key, target_version))
+      return c.error("Cannot figure out next valid version of %s to branch to" % self.app_key)
+    else:
+      c.verbose("Next available version for app %s is %s" % (self.app_key, target_version))
 
     target_app = App.Get(c, self.app_key, version=target_version)
 
@@ -712,18 +734,107 @@ class App:
     path = target_app.svn_path(warn=False)
 
     if path:
-      c.log('%s already exists in SVN - not branching' % target_app)
+      c.log("%s already exists in SVN - not branching" % target_app)
       return target_app
 
-    msg = '[sitedeploy] Creating branch %s' % target_app
+    msg = "[sitedeploy] Creating branch %s" % target_app
     c.log(msg, color=c.BLUE)
-    cmd = ['svn', 'copy', self.svn_url(), target_app.svn_url(), '--parents', '-m', msg, '--username', c.googlecode_username, '--password', c.googlecode_password]
+    cmd = ["svn", "copy", self.svn_url(), target_app.svn_url(), "--parents", "-m", msg, "--username", c.googlecode_username, "--password", c.googlecode_password]
     (r, output) = c.run_cmd(cmd)
 
     if not r:
       return False
 
+    #if this is not the core app, and it depends on core
+    #then branch the core app and update the version number in our app
+    d_app = target_app.dependency()
+    if d_app:
+      d_app = App.Get(c, d_app.app_key, version=dependency)
+      updated = target_app.update_dependency(d_app)
+      if updated:
+        (r, contents) = target_app.svn_commit(msg="updated %s dependency to %s" % (d_app.app_key, d_app.version))
+        c.log("Created branch %s linked to %s:%s" % (target_app, d_app.app_key, d_app.version), color=c.BLUE)
+      else:
+        c.error("There was an error updating the %s dependency of %s" % (d_app.app_key, target_app))
+    else:
+      c.log("Created %s" % target_app, color=c.BLUE)
+
+    # Always do this when creating a new branch or tag of an app.
+    App.InvalidateLatest(self)
+
     return target_app
+
+  def create_tag(self):
+    """Will create a new tag of the app.
+    
+    Returns:
+      tagged_app: App object - an object representing the tagged app
+    """
+
+    c = self.context
+
+    success = c.googlecode_login()
+    if not success:
+      raise FatalException("You must provide valid google code credentials to complete this operation.")
+
+    c.log("Creating tag for %s" % self, color=c.BLUE)
+
+    d_app = self.dependency()
+    
+    if d_app == False:
+      raise FatalException("There was an error evaluating the dependency app of %s" % self)
+
+    #now create the new tag
+    next_tag = self.next_tag()
+    msg = "[sitedeploy] Creating tag %s" % next_tag
+    tag_app = App.Get(c, self.app_key, tag=next_tag)
+
+    if not tag_app:
+      raise FatalException("There was an error creating a new tag for %s" % self)
+
+    cmd = ['svn', 'copy', self.svn_url(), tag_app.svn_url(), '--parents', '-m', msg, '--username', c.googlecode_username, '--password', c.googlecode_password]
+    (r, output) = self.context.run_cmd(cmd)
+
+    if not r:
+        return r
+
+    new_files = []
+    for filename in tag_app.get_app_files():
+      if filename.endswith(".mf.css") or filename.endswith('.mf.js'):
+        #manifest css and js files need special handling when creating a tag
+        r = tag_app.process_manifest_resource_file(filename)
+          
+        if not r:
+          return r
+        
+        new_files.append(filename)
+
+    if len(new_files):
+        tag_app.svn_commit(msg = 'Modified manifest resource files: %s' % ' '.join(new_files))
+
+    #set the app object that is going to be used for here onwards
+    #by any other stage
+    c.set_app(tag_app)
+
+    # Update this app's metadata to point to the latest version of its dependency apps (site, lib)
+    if d_app:
+      d_app = App.Get(c, d_app.app_key, version=d_app.version, tag="latest")
+      update = tag_app.update_dependency(d_app)
+      if update:
+        (r, contents) = tag_app.svn_commit(msg="updated dependencies for %s" % tag_app)
+        if r:
+          c.log("Created tag %s linked to %s" % (tag_app, d_app))
+        else:
+          self.remove_from_svn()
+          return c.error("Failed to commit to SVN - aborting")
+      else:
+        self.remove_from_svn()
+        return c.error("There was an error updating the lib dependency of %s" % tag_app)
+
+
+    # Always do this when creating a new branch or tag of an app.
+    App.InvalidateLatest(self)
+    return tag_app
 
   def svn_commit(self, path=None, msg=None):
 
@@ -774,10 +885,10 @@ class App:
 
     return graph_app
 
-  def last_svn_version(self):
-    return int(self.next_svn_version() - 1)
+  def last_version(self):
+    return int(self.next_version() - 1)
 
-  def next_svn_version(self):
+  def next_version(self):
 
     files = SVNLocation(self.context, self.svn_url(allversions=True)).ls()
     versions = [int(v) for v in files if self.context.is_int(v)]
@@ -809,7 +920,7 @@ class App:
 
 
   def remove_from_svn(self):
-    return self.context.run_cmd(['svn', 'rm', self.svn_url()])
+    return self.context.run_cmd(['svn', 'rm', '-m', '[sitedeploy] action failed - removing',self.svn_url()])
 
   #will copy the app from its checked out directory to the target directory
   #and then get rid of the .svn directory
@@ -893,7 +1004,7 @@ class App:
     return self.local_dir
 
   def static_url(self):
-    return "http://%s/static/%s" % (self.context.acre.url(), self.path(short=True)[2:])
+    return "http://%s/static/%s" % (self.context.acre.url(), self.path()[2:])
 
 
 class Context():
@@ -942,13 +1053,14 @@ class Context():
     self.googlecode_username = None
     self.googlecode_password = None
 
-    if getattr(self.options, 'app', False):
-      self.current_app = self.app = App.Get(self, self.options.app, self.options.version, self.options.tag)
-
     self.quiet = False
     self.acre = None
 
     self.log_color = None
+
+    #if getattr(self.options, 'app', False):
+    #  self.current_app = self.app = App.Get(self, self.options.app, self.options.version, self.options.tag)
+
 
   def set_acre(self, acre):
     self.acre = acre
@@ -1140,14 +1252,17 @@ class Context():
       return self.options.config
 
     else:
+        
+      config_dir = os.path.join(site_dir, "appengine-config")
+
       # Find the appengine-config directory if it exists
-      if os.path.isdir(os.path.join("..", "..", "appengine-config")):
+      if os.path.isdir(config_dir):
 
         # Loop through all the files and find the project.*.conf files
-        for f in os.listdir(os.path.join("..", "..", "appengine-config")):
+        for f in os.listdir(config_dir):
           parts = f.split(".")
           if len(parts) > 1 and parts[0] == "project" and parts[-1] == "conf":
-            config = self.read_config(os.path.join("..", "..", "appengine-config", f))
+            config = self.read_config(os.path.join(config_dir, f))
 
             # If this configuration value matches what was passed in, then the get the real config
             # value from the filename of the project.<conf>.conf file.
@@ -1629,7 +1744,7 @@ class Acre:
       try:
           self._acre_process = subprocess.Popen(cmd, stdout=self.log, stderr=self.log)
           #wait a bit for acre to start
-          time.sleep(5)
+          time.sleep(10)
           #and then keep trying to hit it until we get a valid response
 
           while not self.is_running():
@@ -1991,10 +2106,10 @@ class Site:
       
     apps = SVNLocation(self.context, self.conf("svn_url") + "/trunk/www").ls()
 
-    if "lib" in apps:
-        # Put lib at the beginning
-        apps[apps.index("lib")] = apps[0]
-        apps[0] = "lib"
+    for priority_app in ["site", "lib"]:
+      if priority_app in apps:
+        apps.remove(priority_app)
+        apps.insert(0, priority_app)
 
     return apps
 

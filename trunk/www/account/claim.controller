@@ -42,8 +42,8 @@ var SPEC = {
   },
   
   run: function(token) {
-    if (!acre.freebase.apiary_url) {
-      throw 'Can only claim accounts over Apiary.';
+    if (!acre.freebase.googleapis_url) {
+      throw 'Can only claim accounts over googleapis.';
     }
 
     if (token.length) {

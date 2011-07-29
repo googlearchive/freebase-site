@@ -452,7 +452,7 @@
           filter.push("without:hidden");
         }
         o.filter = "(" + filter.join(" ") + ")";
-        if (fb.acre.freebase.apiary_url) {
+        if (fb.acre.freebase.googleapis_url) {
           o.mql_filter = [{
             "/freebase/type_hints/enumeration": {value:true, optional:"forbidden"},
             "/freebase/type_hints/mediator": {value:true, optional:"forbidden"}

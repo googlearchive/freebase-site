@@ -149,7 +149,7 @@ CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings, que
     query = JSON.parse(query);
     if (this._list) this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list", [o, query]);    
   } else if (o.message) {
-    // apiary error
+    // googleapis error
     delete o.response;
     this._setIFrameText(CueCard.jsonize(o, jsonizingSettings || { indentCount: 2 }));
     if (this._list) this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list_error", [o.message]);

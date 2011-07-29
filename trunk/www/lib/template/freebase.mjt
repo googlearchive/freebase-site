@@ -53,7 +53,7 @@
       <title acre:else="">Freebase</title>
 
       <!!-- freebase suggest -->
-      <acre:block if="acre.freebase.apiary_url">
+      <acre:block if="acre.freebase.googleapis_url">
         <link rel="stylesheet" type="text/css" href="suggest/suggest.mf.css" />
       </acre:block>
       <acre:block else="">
@@ -288,7 +288,7 @@
   <script src="${h.lib_base_url('dojo')}/dojo/dojo.xd.js"></script>
   <!!-- suggest -->
   <!!--TODO(culbertson): compile suggest with freebase.mf.js--!>
-  <acre:block if="acre.freebase.apiary_url">
+  <acre:block if="acre.freebase.googleapis_url">
     <script src="suggest/suggest.mf.js"></script>
   </acre:block>
   <acre:block else="">
@@ -315,7 +315,7 @@
 <!-- add any acre variables you wanted passed to client-side -->
 <acre:block def="acre_javascript_vars(exports)">
   <acre:script>
-    var api_key = acre.keystore.get('freebase_image_api');
+    var api_key = acre.keystore.get('googleapis_client_side');
     api_key = api_key ? api_key[0] : '';
 
     var SERVER = {
@@ -323,7 +323,7 @@
         freebase: {
           service_url: acre.freebase.service_url,
           site_host: acre.freebase.site_host,
-          apiary_url: acre.freebase.apiary_url,
+          googleapis_url: acre.freebase.googleapis_url,
           api_key: api_key
         },
         request: {

@@ -193,16 +193,16 @@
 
     /**
      * suggest url is used by the suggest widget
-     * returns an apiary API url or a metaweb legacy URL depending
+     * returns a googleapis API url or a metaweb legacy URL depending
      * on acre configuration.
-     * TODO: change this once apiary_url and service_url have been
+     * TODO: change this once googleapis_url and service_url have been
      * figured out
-     * tests will be added once everyone is running on apiary by default
+     * tests will be added once everyone is running on googleapis by default
      */
 
     suggest_url: function() {
-      if (fb.acre.freebase.apiary_url) {
-        return h.build_url(fb.acre.freebase.apiary_url, "/search");
+      if (fb.acre.freebase.googleapis_url) {
+        return h.build_url(fb.acre.freebase.googleapis_url, "/search");
       }
       else {
         return h.legacy_fb_url("/private/suggest");
@@ -239,17 +239,17 @@
     },
 
     /**
-     * freebase apiary url (new googleapis/apiary urls)
+     * freebase googleapis url 
      * Use for links to freebase apis
      * (i.e., https://www.googleapis.com/freebase/v1/path?params)
      */
-    fb_apiary_url: function() {
-      if (fb.acre.freebase.apiary_url) {
+    fb_googleapis_url: function() {
+      if (fb.acre.freebase.googleapis_url) {
         var args = Array.prototype.slice.call(arguments);
-        args.unshift(fb.acre.freebase.apiary_url);
+        args.unshift(fb.acre.freebase.googleapis_url);
         return h.build_url.apply(null, args);
       }
-      throw "fb.acre.freebase.apiary_url is not defined";
+      throw "fb.acre.freebase.googleapis_url is not defined";
     },
 
    /**

@@ -39,7 +39,7 @@ var SPEC = {
   run: function() {
     h.clear_account_cookie();
     
-    if (acre.freebase.apiary_url) {
+    if (acre.freebase.googleapis_url) {
       acre.oauth.remove_credentials(h.account_provider());
     } else if (acre.request.cookies['metaweb-user']) {
       var redirect_url = h.account_url('signout', acre.request.url);

@@ -40,6 +40,9 @@ var validators = acre.require("validator/validators.sjs");
  * A JSON/P web service handler for *.ajax.
  */
 function handler() {
+  // set up custom error handler for outputting unhandled errors as JSON
+  acre.response.set_error_page("handlers/ajax_error.sjs");
+  
   return h.extend({}, acre.handlers.acre_script, {
     to_http_response: function(module, script) {
       var resp;
@@ -72,14 +75,7 @@ function handler() {
           resp = r;
         });
       acre.async.wait_on_results();
-      try {
-        d.cleanup();
-      }
-      catch(ex) {
-        // unhandled error - don't want to redirect to error page
-        resp = to_ajax_response(new lib.ServiceError(null, null, ex));
-        h.set_cache_policy("nocache", null, resp.headers);
-      }
+      d.cleanup();
       return hh.to_http_response_result(resp.body, resp.headers, resp.status);
     }
   });

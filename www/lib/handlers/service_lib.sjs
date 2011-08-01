@@ -242,7 +242,7 @@ function handle_service(spec, scope) {
   //
   return deferred.resolved()
     .then(function() {
-      return spec.run.apply(null, args);
+      return spec.run.apply(scope, args);
     })
     .then(function(r) {
       return deferred.all(r, true);

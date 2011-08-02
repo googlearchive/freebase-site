@@ -168,6 +168,7 @@ var RequestCanceled, RequestTimeout;
     this.cleanup = promise.cleanup = function() {
       if (result instanceof Error) {
         console.log("deferred.cleanup", result);
+        acre.syslog.error(JSON.stringify(result), "deferred.cleanup");
         throw result;
       }
     };

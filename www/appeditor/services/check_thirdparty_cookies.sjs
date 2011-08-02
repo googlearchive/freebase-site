@@ -29,26 +29,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+// NOTE: This is deliberately JSONP because it's to another host
 var args = acre.request.params;
 
 if (!args.cookie) {
   var rand = Math.floor(1000000 * Math.random());
-  acre.response.set_cookie('test', rand);
-
-  var url = acre.request.base_path + "/" + acre.current_script.name + '?cookie=' + rand + '&callback=' + args.callback;
+  args.cookie = rand;
+  var url = acre.form.build_url(acre.request.base_path + "/" + acre.current_script.name, args);
   acre.response.status = 302;
   acre.response.set_header('location', url);
+  acre.response.set_cookie('test_cookie', rand);
 } else {
-  acre.response.clear_cookie('test');
   var resp = {
     status: "200 OK",
     code: "/api/status/ok",
-    result: "fail"
+    result: (parseInt(args.cookie) === parseInt(acre.request.cookies['test_cookie'])) ? "success" : "fail"
   };
-  if (parseInt(args.cookie) === parseInt(acre.request.cookies['test'])) {
-    resp.result = "success";
-  }
-  acre.write(args.callback+"(");
-  acre.write(JSON.stringify(resp, null, 2));
-  acre.write(");");
+  acre.write(args.callback+"(" + JSON.stringify(resp, null, 2) + ");");
+  acre.response.clear_cookie('test_cookie');
 }

@@ -605,7 +605,6 @@ function make_graph_app(md, just_files) {
           
         })
         .then(function(ret) {
-          return ret;
           if (just_files) return ret;
           
           return get_app_versions(validators.AcreResource(ret.id))
@@ -1977,33 +1976,35 @@ function get_file(resource, timestamp) {
     });
 }
 
-function get_file_revision(resource, revision) {  
-  // it's remote... go get it
-  if (resource.service_url !== acre.freebase.service_url) {
-    var args = {
-      fileid : fileid,
-      revision : revision
-    };
-    var url = acre.form.build_url(resource.appeditor_service_base + "get_file_revision", args);
-    return freebase.fetch(url)
-      .then(function(env) {
-        return env.result;
-      });
-  }
-  
+function get_file_revision(resource, revision) {
   var ret = {
     fileid : resource.id,
     revision : revision        
   };
-
-  if (!revision) {
-    var source = acre.get_source(resource.path);
-    if (typeof source === 'string') {
-      ret.text = source;
-    } else {
-      ret.binary = resource.url;
+  
+  if (resource) {
+    // it's remote... go get it
+    if (resource && (resource.service_url !== acre.freebase.service_url)) {
+      var args = {
+        fileid : fileid,
+        revision : revision
+      };
+      var url = acre.form.build_url(resource.appeditor_service_base + "get_file_revision", args);
+      return freebase.fetch(url)
+        .then(function(env) {
+          return env.result;
+        });
     }
-    return ret;
+
+    if (!revision) {
+      var source = acre.get_source(resource.path);
+      if (typeof source === 'string') {
+        ret.text = source;
+      } else {
+        ret.binary = resource.url;
+      }
+      return ret;
+    }
   }
 
   return freebase.get_blob(revision, "unsafe")
@@ -2135,7 +2136,7 @@ function delete_app_file(resource, name) {
           delete app.files[acre.freebase.mqlkey_quote(name)];
 
           return {
-              appid : appid,
+              appid : app.id,
               files : app.files
           }
         });
@@ -2208,7 +2209,7 @@ function save_file_binary(resource, form_request, revision, name, based_on) {
       filepath = file.path;
 
       var promises = [];
-      if (file.acre_handler !== "binary") {
+      if (file.handler !== "binary") {
         promises.push(freebase.mqlwrite({
           id : fileid,
           '/freebase/apps/acre_doc/handler_key' : {
@@ -2238,16 +2239,24 @@ function save_file_binary(resource, form_request, revision, name, based_on) {
       if (revision) { 
         args.content = revision;
       }
-
+      
       var url = acre.form.build_url(acre.freebase.service_url + "/api/service/form_upload_image", args);
       var headers = {
         'content-type' : form_request.headers['content-type']
       };
 
-      return urlfetch(url, "POST", headers, form_request.body, true)
+      var args = {
+        method: "POST",
+        headers: headers,
+        content: form_request.body,
+        sign: true
+      };
+      return urlfetch(url, args)
         .then(function(env) {
+          acre.syslog(JSON.stringify(env), "c");
           return handle_freebase_response(env).result;
         }, function(e) {
+          acre.syslog(JSON.stringify(e), "xxx");
           var error = parse_freebase_error(e);
           if (error && error.messages[0].code === "/api/status/error/file_format/unsupported_mime_type") {
             throw new ServiceError("400 Bad Request", "/api/status/error/file_format/unsupported_mime_type", {
@@ -2256,10 +2265,10 @@ function save_file_binary(resource, form_request, revision, name, based_on) {
               info    : error.messages[0].info.mime_type
             });
           } else {
+            acre.syslog(JSON.stringify(e), "yyy");
             throw e;
           }
         }).then(function(ret) {
-          
           return {
             path         : filepath,
             fileid       : fileid,
@@ -2549,7 +2558,7 @@ function diff_file(file1, file2, timestamp1, timestamp2) {
     });
 };
 
-function find_common_revision(fileid1, fileid2) {
+function find_common_revision(file1, file2) {
   var q = {
     "id": null,
     "type": "/type/content",
@@ -2558,7 +2567,7 @@ function find_common_revision(fileid1, fileid2) {
     "a:/type/reflect/any_reverse": [{
       "link": {
         "source": {
-          "id": fileid1
+          "id": file1.id
         },
         "timestamp": null,
         "valid": null,
@@ -2568,7 +2577,7 @@ function find_common_revision(fileid1, fileid2) {
     "b:/type/reflect/any_reverse": [{
       "link": {
         "source": {
-          "id": fileid2
+          "id": file2.id
         },
         "timestamp": null,
         "valid": null,
@@ -2584,7 +2593,8 @@ function find_common_revision(fileid1, fileid2) {
 }
 
 
-function merge_files(source_resource, target_resource) {
+function merge_files(target_resource, source_resource) {
+  var source, target, ancestor;
   
   function _encode_patch_text(text) {
     // return encodeURI(text).replace(/\x0/g, '%00').replace(/%20/g, ' ');
@@ -2621,12 +2631,12 @@ function merge_files(source_resource, target_resource) {
   }
   
   return deferred.all({
-      file1 : get_file(source_resource),
-      file2 : get_file(target_resource)
+      source: source_resource ? get_file(source_resource) : null,
+      target: target_resource ? get_file(target_resource) : null
     }, true).then(function(ret) {
       var lib_patch = get_lib_patch();
-      var source = ret.file1;
-      var target = ret.file2;
+      source = ret.source;
+      target = ret.target;
       
       /*
       *  Easy cases first:
@@ -2675,7 +2685,7 @@ function merge_files(source_resource, target_resource) {
       }
 
       // check for common ancestor revision between the files
-      return find_common_revision(sourceid, targetid)
+      return find_common_revision(source_resource, target_resource)
         .then(function(ancestor_rev) {
           
           // no new changes, so don't provide diff
@@ -2695,7 +2705,8 @@ function merge_files(source_resource, target_resource) {
           *  OK, time to do a real merge
           */
           return get_file_revision(null, ancestor_rev)
-            .then(function(ancestor) {
+            .then(function(r) {
+              ancestor = r;
               if (!ancestor) {
                 _throw_patch_conflict("Source and target files do not share a common ancestor.");
               }

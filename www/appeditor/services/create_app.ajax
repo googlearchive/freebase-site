@@ -41,9 +41,9 @@ var SPEC = {
   validate: function(params) {
     return [
       validators.AcreResource(params, "appid", {required: true}),
-      validators.String(params, "name", {if_empty: ""}),
-      validators.AcreResource(params, "clone", {if_empty: false}),
-      validators.MqlId(params, "extra_group", {if_empty: ""}),
+      ("name" in params) ? validators.String(params, "name") : undefined,
+      validators.AcreResource(params, "clone", {if_missing: false}),
+      validators.MqlId(params, "extra_group", {if_missing: false}),
       params.auth_user
     ];
   },

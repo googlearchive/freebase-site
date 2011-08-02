@@ -42,8 +42,8 @@ var SPEC = {
     return [
       validators.AcreResource(params, "appid", {required: true}),
       validators.AcreVersion(params, "version", {required: true}),
-      validators.Timestamp(params, "timestamp", {if_empty: ""}),
-      validators.String(params, "service_url", {if_empty: ""})
+      validators.Timestamp(params, "timestamp", {if_missing: false}),
+      validators.String(params, "service_url", {if_missing: false})
     ];
   },
 

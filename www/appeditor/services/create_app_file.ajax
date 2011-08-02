@@ -42,7 +42,7 @@ var SPEC = {
     return [
       validators.AcreResource(params, "appid", {required: true}),
       validators.String(params, "name", {required: true}),
-      validators.String(params, "acre_handler", {if_empty: ""}),
+      ("acre_handler" in params) ? validators.String(params, "acre_handler") : undefined,
       validators.AcreResource(params, "based_on", {if_empty: false})
     ];
   },

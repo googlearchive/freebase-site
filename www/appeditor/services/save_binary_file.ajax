@@ -42,9 +42,9 @@ var SPEC = {
     return [
       validators.AcreResource(params, "fileid", {required: true, file:true}),
       acre.request,
-      validators.String(params, "revision", {if_empty: ""}),
-      validators.AcreFilename(params, "name", {required: true}),
-      validators.AcreResource(params, "based_on", {if_empty: false})
+      validators.String(params, "revision", {if_missing: false}),
+      validators.AcreFilename(params, "name", {if_missing: false}),
+      validators.AcreResource(params, "based_on", {if_missing: false})
     ];
   },
 

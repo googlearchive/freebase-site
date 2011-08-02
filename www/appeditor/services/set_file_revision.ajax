@@ -41,9 +41,9 @@ var SPEC = {
   validate: function(params) {
     return [
       validators.AcreResource(params, "fileid", {required: true, file:true}),
-      validators.String(params, "revision", {if_empty: ""}),
+      validators.String(params, "revision", {if_missing: false}),
       validators.AcreFilename(params, "name", {required: true}),
-      validators.String(params, "acre_handler", {if_empty: ""})
+      validators.String(params, "acre_handler", {if_missing: false})
     ];
   },
 

@@ -330,7 +330,7 @@ var AcreDoc;
                     file._has_been_saved = true;
                     file.set_dirty("all", false);
                 } else {
-                    mjt.warn('Save of', file.get_name(), 'failed: ', code, ' - ', message, info);                    
+                    mjt.warn('Save of', file.get_name(), 'failed: ', code, ' - ', message, info);
                 }
             });
 
@@ -530,7 +530,9 @@ var AcreDoc;
     AcreDoc.prototype.trigger_editor_event = function(event_name, args) {
         if (event_name === 'change') {
             var undos = args[0];
-            if (undos > 0) {
+            if (typeof undos !== "number") {
+                this.set_dirty("content");
+            } else if (undos > 0) {
                 this.set_dirty("content");
                 // we'd flagged to update the revision of the doc in the background...
                 // but now the user has clearly loaded and modified that revision, so don't

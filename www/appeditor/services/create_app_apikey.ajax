@@ -47,5 +47,11 @@ var SPEC = {
     ];
   },
 
-  run: queries.add_key
+  run: function(resource, name, key, secret) {
+    return queries.add_key(resource, name, key, secret)
+      .then(function() {
+        return queries.list_keys(resource);
+      });
+  }
+  
 };

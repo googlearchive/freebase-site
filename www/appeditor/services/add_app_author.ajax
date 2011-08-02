@@ -45,6 +45,11 @@ var SPEC = {
     ];
   },
 
-  run: queries.add_app_author
+  run: function(resource, username) {
+    return queries.add_app_author(resource, username)
+      .then(function() {
+        return queries.get_app(resource, false);
+      })
+  }
 };
 

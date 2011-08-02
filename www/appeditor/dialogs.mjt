@@ -305,7 +305,7 @@
         if (ui.get_store().validate_filename(filename)) {
           var metadata = {};
           if ($('#add-file-handler :selected').val()) { 
-            metadata['acre_handler'] = $('#add-file-handler :selected').val();
+            metadata['handler'] = $('#add-file-handler :selected').val();
           }
           if ($('#add-file-mimetype :selected').val()) { 
             metadata['content_type'] = $('#add-file-mimetype :selected').val();

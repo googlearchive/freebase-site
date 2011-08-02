@@ -47,5 +47,11 @@ var SPEC = {
     ];
   },
 
-  run: queries.set_file_revision
+  run: function(resource, revision, name, acre_handler) {
+    return queries.set_file_revision(resource, revision, name, acre_handler)
+      .then(function() {
+        return queries.get_file_revision(resource, revision);
+      });
+  }
+  
 };

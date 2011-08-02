@@ -47,5 +47,11 @@ var SPEC = {
     ];
   },
 
-  run: queries.create_app_version
+  run: function(resource, version, timestamp, service_url) {
+    return queries.create_app_version(resource, version, timestamp, service_url)
+        .then(function(env) {
+          return queries.get_app_versions(resource);
+        });
+  }
+  
 };

@@ -29,37 +29,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var validators = acre.require("validator/validators.sjs");
+var args = acre.request.params;
 
-var SPEC = {
+if (!args.cookie) {
+  var rand = Math.floor(1000000 * Math.random());
+  acre.response.set_cookie('test', rand);
 
-  method: "GET",
-
-  auth: false,
-
-  validate: function(params) {
-    return [
-      validators.String(params, "cookie", {if_empty: ""}),
-      validators.String(params, "callback", {if_empty: ""})
-    ];
-  },
-
-  run: function(cookie, callback) {
-    if (!cookie) {
-      var rand = Math.floor(1000000 * Math.random());
-      acre.response.set_cookie('test', rand);
-
-      var url = acre.request.base_path + "/" + acre.current_script.name + '?cookie=' + rand + '&callback=' + callback;
-      acre.response.status = 302;
-      acre.response.set_header('location', url);
-    } else {
-      acre.response.clear_cookie('test');
-
-      if (parseInt(cookie) === parseInt(acre.request.cookies['test'])) {
-        return "success";
-      } else {
-        throw "fail";
-      }
-    }
+  var url = acre.request.base_path + "/" + acre.current_script.name + '?cookie=' + rand + '&callback=' + args.callback;
+  acre.response.status = 302;
+  acre.response.set_header('location', url);
+} else {
+  acre.response.clear_cookie('test');
+  var resp = {
+    status: "200 OK",
+    code: "/api/status/ok",
+    result: "fail"
+  };
+  if (parseInt(args.cookie) === parseInt(acre.request.cookies['test'])) {
+    resp.result = "success";
   }
-};
+  acre.write(args.callback+"(");
+  acre.write(JSON.stringify(resp, null, 2));
+  acre.write(");");
+}

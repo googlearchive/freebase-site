@@ -45,6 +45,12 @@ var SPEC = {
     ];
   },
 
-  run: queries.remove_app_author
+  run: function(resource, username) {
+    return queries.remove_app_author(resource, username)
+      .then(function() {
+        return queries.get_app(resource, false);
+      })
+  }
+
 };
 

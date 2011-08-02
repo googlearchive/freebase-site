@@ -482,6 +482,11 @@ Validator.factory(scope, "Timestamp", {
     date: false  // convert to date
   },
   "string": function(val, options) {
+    // Hack for special MQL value
+    if (val === "__now__") {
+      return options.date ? new Date() : val;
+    }
+    
     var date;
     try {
       date = acre.freebase.date_from_iso(val);
@@ -755,14 +760,24 @@ Validator.factory(scope, "Uri", {
 /**
  * Acre validators
  */
-var acre_host = /^[0-9a-z][0-9a-z\-\.]+$/
-
+ 
 Validator.factory(scope, "AcreHost", {
   "string": function(val) {
+    var acre_host = /^[0-9a-z][0-9a-z\-\.]+$/;
     if (acre_host.test(val)) {
       return val;
     }
     return this.invalid(this.key, val, "is an invalid hostname");
+  }
+});
+
+Validator.factory(scope, "AcreAppKey", {
+  "string": function(val) {
+    var app_key = /^[a-z][\-0-9a-z]{0,20}$/;
+    if (app_key.test(val)) {
+      return val;
+    }
+    return this.invalid("Invalid app key (only lowercase alpha, numbers, and - allowed)");
   }
 });
 

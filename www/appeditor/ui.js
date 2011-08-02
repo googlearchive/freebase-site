@@ -894,7 +894,7 @@ var ui = {};
         
         var new_app = (app_path == old_file.get_app().get_path()) ? old_file.get_app() : new AcreApp(ui.get_store(), app_path);
         var new_file_props = {
-            acre_handler   : old_file.get_acre_handler(),
+            handler   : old_file.get_acre_handler(),
             content_type   : old_file.get_mime_type(),
             based_on       : old_file.get_app().get_path() + '/' + mjt.freebase.mqlkey_quote(old_file.get_name())
         };
@@ -970,7 +970,7 @@ var ui = {};
             file.set_dirty("to_delete");
         } else if (!tfile) {
             var metadata          = {
-                acre_handler : sfile.acre_handler,
+                handler : sfile.acre_handler,
                 content_type : sfile.content_type,
                 based_on     : sfile.fileid
             };

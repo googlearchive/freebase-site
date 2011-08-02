@@ -102,8 +102,8 @@ function handle_service_error(e) {
   }
   else if (e instanceof acre.errors.URLError) {
     // it's an unknown urlfetch error so parse it
-    var info;
-    if (e.repsonse && e.response.body) {
+    var info = e;
+    if (e.response && e.response.body) {
       var response = e.response.body;
       try {
         // is it a JSON-formatted error?
@@ -114,7 +114,7 @@ function handle_service_error(e) {
         info = response;
       }
     }
-    var msg = "Error fetching external URL";
+    var msg = e.message || "Error fetching external URL";
     return new ServiceError("500 Service Error", null, {
       message: msg,
       code : "/api/status/error/service/external",

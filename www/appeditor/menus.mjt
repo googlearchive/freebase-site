@@ -801,8 +801,7 @@
           <td class="user-image-cell">
             <div class="user-image">
               <a href="${user.get_view_url()}"  title="View profile for ${user.get_full_name() || user.get_name()}" target="user">
-                <!-- dummy but valid img src -->
-                <img alt="mugshot" src="#" acre:src="${user.get_image_url()}" />
+                <img alt="mugshot" src="${user.get_image_url()}" />
               </a>
             </div>
           </td>

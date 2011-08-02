@@ -339,7 +339,7 @@ FreebaseStore.prototype.get_user_default_app_host = function(user) {
 };  
 
 FreebaseStore.prototype.get_user_view_url = function(user) {
-  return this.get_freebase_url() + '/view/user/' + user.get_name();
+  return this.get_freebase_url() + '/user/' + user.get_name();
 };
 
 FreebaseStore.prototype.get_user_image_url = function(user) {

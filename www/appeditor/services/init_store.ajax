@@ -42,5 +42,12 @@ var SPEC = {
     return [];
   },
 
-  run: queries.get_freebase_store
+  run: function() {
+    return queries.get_freebase_store()
+      .then(function(r) {
+        r.csrf_token = acre.form.generate_csrf_token();
+        return r;
+      });
+  }
+
 };

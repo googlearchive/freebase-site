@@ -796,7 +796,7 @@ function prepare_clone_app(appid) {
         }
       }
 
-      return deferred.all(promises)
+      return deferred.all(promises, true)
         .then(function() {
           return app;
         });
@@ -1061,7 +1061,7 @@ function set_app_properties(resource, name, listed, homepage, description, artic
         }
       }
 
-      return deferred.all(promises)
+      return deferred.all(promises, true)
         .then(function() {
           if ((typeof article !== 'undefined') && (article !== app_article)) {
             if (article == "") {
@@ -1151,7 +1151,7 @@ function delete_app(resource) {
     ]
   };
 
-  return deferred.all(promises)
+  return deferred.all(promises, true)
     .then(function() {
       return freebase.mqlwrite(delete_q);
     });
@@ -1555,7 +1555,7 @@ function set_app_release(resource, version) {
             deletes.push(freebase.mqlwrite(del_release_q));
           }
 
-          return deferred.all(deletes)
+          return deferred.all(deletes, true)
             .then(function() {
               
               var adds = [];
@@ -1581,7 +1581,7 @@ function set_app_release(resource, version) {
                 adds.push(freebase.mqlwrite(add_release_q));
               }
 
-              return deferred.all(adds);
+              return deferred.all(adds, true);
             });
         });
     });
@@ -1599,7 +1599,7 @@ function register_host(resource, hostname, user) {
         app: get_app_versions(resource)
       }
 
-      return deferred.all(promises)
+      return deferred.all(promises, true)
         .then(function(r) {
           
           var app = r.app;
@@ -1632,7 +1632,7 @@ function register_host(resource, hostname, user) {
               // delete all existing hosts on the default domain
               deletes.push(delete_all_hosts(appid, app.hosts));
 
-              return deferred.all(deletes)
+              return deferred.all(deletes, true)
                 .then(function() {
                   
                   var adds = [];
@@ -1668,7 +1668,7 @@ function register_host(resource, hostname, user) {
                     adds.push(freebase.mqlwrite(listing_write));
                   }
                   
-                  return deferred.all(adds);
+                  return deferred.all(adds, true);
                 });
             });
         });
@@ -1797,7 +1797,7 @@ function enable_oauth(resource) {
                 }
               }));
                 
-              return deferred.all(promises)
+              return deferred.all(promises, true)
                 .then(function() {
                   return {
                     appid : appid,
@@ -1834,7 +1834,7 @@ function disable_oauth(resource) {
         }
       }));
 
-      return deferred.all(promises)
+      return deferred.all(promises, true)
         .then(function() {
           return  {
             appid : appid,
@@ -2220,7 +2220,7 @@ function save_file_binary(resource, form_request, revision, name, based_on) {
         promises.push(rename_file(resource, name));
       }
       
-      return deferred.all(promises);
+      return deferred.all(promises, true);
     },function(e) {
       // file doesn't exist, so create it
       fileid = resource.id;
@@ -2313,7 +2313,7 @@ function save_file_text(r, text, content_type, revision, name, acre_handler, bas
       }));
   }
 
-  return deferred.all(promises)
+  return deferred.all(promises, true)
     .then(function() {
       var promises = [];
       
@@ -2334,7 +2334,6 @@ function save_file_text(r, text, content_type, revision, name, acre_handler, bas
             result.content_type = upload['/type/content/media_type'];
             return upload;
           }, function(e) {
-            return e;
             var error = parse_freebase_error(e);
             if (error && error.messages[0].code === "/api/status/error/upload/content_mismatch") {
               var old_file = get_file_revision(r, error.messages[0].info.existing_content);
@@ -2349,7 +2348,6 @@ function save_file_text(r, text, content_type, revision, name, acre_handler, bas
                   diff: diff
                 }
               });
-              
             }
             throw e;
           });
@@ -2357,7 +2355,7 @@ function save_file_text(r, text, content_type, revision, name, acre_handler, bas
           promises.push(p2);
         }
 
-      return deferred.all(promises)
+      return deferred.all(promises, true)
         .then(function() {
           return result;
         });
@@ -2464,7 +2462,7 @@ function diff_apps(resource1, resource2, timestamp1, timestamp2) {
   return deferred.all([
       get_app(resource1, true, timestamp1),
       get_app(resource2, true, timestamp2)
-    ]).then(function([app1, app2]) {
+    ], true).then(function([app1, app2]) {
       var ret = {
         app1 : {
           appid : app1.id,
@@ -2523,7 +2521,7 @@ function diff_file(file1, file2, timestamp1, timestamp2) {
   return deferred.all({
       file1 : file1 ? get_file(file1, timestamp1) : null,
       file2 : file2 ? get_file(file2, timestamp2) : null
-    }).then(function(ret) {
+    }, true).then(function(ret) {
       
       // If no files, don't do a diff
       if (!ret.file1 && !ret.file2) {
@@ -2623,7 +2621,7 @@ function merge_files(source_resource, target_resource) {
   return deferred.all({
       file1 : get_file(source_resource),
       file2 : get_file(target_resource)
-    }).then(function(ret) {
+    }, true).then(function(ret) {
       var lib_patch = get_lib_patch();
       var source = ret.file1;
       var target = ret.file2;

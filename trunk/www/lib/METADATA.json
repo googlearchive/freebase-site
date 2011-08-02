@@ -1,7 +1,7 @@
 {
   "ttl": 0,
   "error_page" : "error/error.mjt",
-  "csrf_protection": "strong",
+  "csrf_protection": "weak",
   "handlers": {
     "mjt": "handlers/mjt_handler.sjs",
     "css": "handlers/css_handler.sjs",

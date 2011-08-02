@@ -45,5 +45,11 @@ var SPEC = {
     ];
   },
 
-  run: queries.set_app_release
+  run: function(resource, version) {
+    return queries.set_app_release(resource, version)
+      .then(function() {
+        return queries.get_app_versions(resource);
+      });
+  }
+  
 };

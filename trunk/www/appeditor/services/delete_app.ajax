@@ -44,5 +44,11 @@ var SPEC = {
     ];
   },
 
-  run: queries.delete_app
+  run: function(resource) {
+    return queries.delete_app(resource)
+      .then(function(env) {
+        return queries.list_user_apps(user);
+      });
+  }
+  
 };

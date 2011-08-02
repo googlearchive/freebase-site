@@ -45,5 +45,11 @@ var SPEC = {
     ];
   },
 
-  run: queries.delete_key
+  run: function(resource, name) {
+    return queries.delete_key(resource, name)
+      .then(function() {
+        return queries.list_keys(resource);
+      });
+  }
+
 };

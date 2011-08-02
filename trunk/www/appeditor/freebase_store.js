@@ -228,7 +228,7 @@
     var TestCookies = mjt.define_task(null, [{name: 'store'}]);
     
     TestCookies.prototype.request = function() {
-        this.url = window.location.protocol + fb.acre.apps.lib + "." + this.store.get_acre_host() + '/appeditor-services/check_thirdparty_cookies';
+        this.url = window.location.protocol + fb.acre.apps.appeditor + "." + this.store.get_acre_host() + '/services/check_thirdparty_cookies';
         
         var task = this;
         this.jsonp = mjt.JsonP();

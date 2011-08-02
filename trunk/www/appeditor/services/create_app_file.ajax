@@ -47,5 +47,17 @@ var SPEC = {
     ];
   },
 
-  run: queries.create_file
+  run: function(resource, name, handler, based_on) {
+    return queries.create_file(resource, name, handler, based_on)
+      .then(function() {
+        return queries.get_app(resource, false)
+          .then(function(app) {
+            return {
+              appid : resource.appid,
+              files : app.files
+            }
+          });
+      });
+  }
+  
 };

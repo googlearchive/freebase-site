@@ -46,5 +46,12 @@ var SPEC = {
     ];
   },
 
-  run: queries.register_host
+  run: function(resource, host, user) {
+    return queries.register_host(resource, host, user)
+      .then(function(r) {
+        return r;
+        return queries.get_app_versions(resource);
+      });
+  }
+  
 };

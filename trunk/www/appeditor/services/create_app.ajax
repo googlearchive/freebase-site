@@ -42,10 +42,17 @@ var SPEC = {
     return [
       validators.AcreResource(params, "appid", {required: true}),
       validators.String(params, "name", {if_empty: ""}),
-      validators.AcrePath(params, "clone", {if_empty: false}),
-      validators.MqlId(params, "extra_group", {if_empty: ""})
+      validators.AcreResource(params, "clone", {if_empty: false}),
+      validators.MqlId(params, "extra_group", {if_empty: ""}),
+      params.auth_user
     ];
   },
 
-  run: queries.create_app
+  run: function(resource, name, clone, extra_group, user) {
+    return queries.create_app(resource, name, clone, extra_group, user)
+      .then(function() {
+        return queries.list_user_apps(user);
+      });
+  }
+  
 };

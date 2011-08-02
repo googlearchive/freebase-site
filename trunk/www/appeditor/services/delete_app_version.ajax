@@ -45,5 +45,10 @@ var SPEC = {
     ];
   },
 
-  run: queries.delete_app_version
+  run: function(resource, version) {
+    return queries.delete_app_version(resource, version)
+      .then(function(env) {
+        return queries.get_app_versions(resource);
+      });
+  }
 };

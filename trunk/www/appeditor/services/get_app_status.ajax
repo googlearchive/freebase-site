@@ -44,5 +44,12 @@ var SPEC = {
     ];
   },
 
-  run: queries.get_app_status
+  run: function(resource) {
+    return queries.get_app_status(resource)
+      .then(function(r) {
+        r.csrf_token = acre.form.generate_csrf_token();
+        return r;
+      });
+  }
+
 };

@@ -210,13 +210,15 @@ function get_freebase_store() {
       return handlers;
     });
 
-
-  return {
-    host          : acre.host,
-    version       : acre.version,
-    acre_handlers : r_handlers,
-    user          : r_user
-  }
+  return deferred.all([r_user, r_handlers], true)
+    .then(function([user, handlers]) {
+      return {
+        host          : acre.host,
+        version       : acre.version,
+        acre_handlers : handlers,
+        user          : user
+      };
+    });
 }
 
 function list_user_apps(user, include_filenames) {

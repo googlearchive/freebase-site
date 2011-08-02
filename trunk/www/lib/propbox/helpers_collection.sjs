@@ -124,13 +124,11 @@ function to_table_structure(prop_structures, values, lang) {
       }
       else {
         var tr = ensure_row(tbody, 0);
-        console.log(0 + ", " + column, prop_structure.id);
         tr[column] = {structure:prop_structure, values:prop_values};
         column += 1;
       }
     });
     tbody.value = value;
-    console.log("tbody", tbody);
     body.push(tbody);
   });
 

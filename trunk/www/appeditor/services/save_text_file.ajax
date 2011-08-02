@@ -42,11 +42,11 @@ var SPEC = {
     return [
       validators.AcreResource(params, "fileid", {required: true, file:true}),
       validators.String(params, "text", {if_empty: ""}),
-      validators.String(params, "content_type", {if_empty: ""}),
-      validators.String(params, "revision", {if_empty: ""}),
-      validators.AcreFilename(params, "name", {if_empty: ""}),
-      validators.String(params, "acre_handler", {if_empty: ""}),
-      validators.AcreResource(params, "based_on", {if_empty: false})
+      validators.String(params, "content_type", {if_empty: "text/plain"}),
+      validators.String(params, "revision", {if_missing: false}),
+      validators.AcreFilename(params, "name", {if_missing: false}),
+      validators.String(params, "acre_handler", {if_missing: false}),
+      validators.AcreResource(params, "based_on", {if_missing: false})
     ];
   },
 

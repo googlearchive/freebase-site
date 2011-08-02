@@ -40,8 +40,8 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      validators.AcreResource(params, "fileid1", {required: true, file: true}),
-      validators.AcreResource(params, "fileid2", {required: true, file: true})
+      ("fileid1" in params) ? validators.AcreResource(params, "fileid1", {file: true}) : undefined,
+      ("fileid2" in params) ? validators.AcreResource(params, "fileid2", {file: true}) : undefined
     ];
   },
 

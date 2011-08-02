@@ -41,11 +41,11 @@ var SPEC = {
   validate: function(params) {
     return [
       validators.AcreResource(params, "appid", {required: true}),
-      validators.String(params, "name", {if_missing: undefined}),
-      validators.StringBool(params, "listed", {if_missing: undefined}),
-      validators.String(params, "homepage", {if_missing: undefined}),
-      validators.String(params, "description", {if_missing: undefined, if_empty: ""}),
-      validators.String(params, "article", {if_missing: undefined, if_empty: ""})
+      ("name" in params) ? validators.String(params, "name") : undefined,
+      ("listed" in params) ? validators.StringBool(params, "listed") : undefined,
+      ("homepage" in params) ? validators.String(params, "homepage") : undefined,
+      ("description" in params) ? validators.String(params, "description") : undefined,
+      ("article" in params) ? validators.String(params, "article") : undefined
     ];
   },
 

@@ -50,7 +50,6 @@ var ImageEditor;
     };
     
     ImageEditor.t_load = function(file, state) {
-        
         var editor_config               = EDITORS.ImageEditor.config;
         editor_config.readOnly          = !file.is_writable();        
         editor_config.onChange          = function(undos, redos) {
@@ -106,10 +105,10 @@ var ImageEditor;
             }
         }
         
-            $(self.ui_element).append('<div class="image-attribution"><img src="' + fb.h.reentrant_url("/static", "freebase-cc-by-61x23.png") + ' alt="Freebase CC-BY" width="61" height="23" /><p>All images included in Acre apps are released under <a href="http://creativecommons.org/licenses/by/3.0/">CC-BY</a>.</p></div>');
-        
-        
-        
+        $(self.ui_element).append('<div class="image-attribution"><img src="' + 
+            fb.h.reentrant_url("/static", "freebase-cc-by-61x23.png") + 
+            ' alt="Freebase CC-BY" width="61" height="23" /><p>All images included in Acre apps are released under ' + 
+            '<a href="http://creativecommons.org/licenses/by/3.0/">CC-BY</a>.</p></div>');
         $(this.ui_element).show();
     };
     

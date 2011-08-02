@@ -199,9 +199,11 @@ function handle_service(spec, scope) {
       code: "/api/status/error/request/method"
     }));
   }
-  if (req.method === "POST" && acre.request.headers['x-requested-with'] !== "XMLHttpRequest") {
+  if (req.method === "POST" && !(
+    (acre.request.params["ACRE_CSRF_TOKEN"] || acre.request.body_params["ACRE_CSRF_TOKEN"]) ||
+    (acre.request.headers['x-requested-with'] === "XMLHttpRequest"))) {
     return deferred.rejected(new ServiceError("400 Bad Request", null, {
-      message: "Request must include a valid 'X-Requested-With' header",
+      message: "Request must include a valid 'X-Requested-With' header or ACRE_CSRF_TOKEN value",
       code: "/api/status/error/request/method"
     }));
   }

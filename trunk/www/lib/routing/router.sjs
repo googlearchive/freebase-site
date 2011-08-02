@@ -155,11 +155,6 @@ function AjaxRouter() {
       return false;
     }
 
-    if (req.headers['x-requested-with'] !== "XMLHttpRequest") {
-      // assert X-Requested-With header
-      //throw "Request must have a valid 'X-Requested-With header";
-    }
-
     var path = "//" + segs.join("/") + (qs ? "?" + qs : "");
     // console.log("AjaxRouter path", path);
     acre.route(path);

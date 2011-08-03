@@ -707,7 +707,7 @@ function get_app_status(resource) {
             change: null
           };
           if (!user) return ret;
-          return get_history(resource.appid, 1, true, user.username)
+          return get_history(resource, 1, true, user.name)
             .then(function(history) {
               ret.change = (history.history && history.history.length) ? history.history[0] : null;
               return ret;
@@ -1107,54 +1107,56 @@ function set_app_properties(resource, name, listed, homepage, description, artic
 }
 
 function delete_app(resource) {
-  var app = get_app(resource);
-  var appid = app.id;
-  var appid_segs = appid.split('/');
-  var app_key = appid_segs.pop();
-  var app_root = appid_segs.join('/');
+  return get_app(resource)
+    .then(function(app) {
+      var appid = app.id;
+      var appid_segs = appid.split('/');
+      var app_key = appid_segs.pop();
+      var app_root = appid_segs.join('/');
 
-  var promises = [];
+      var promises = [];
 
-  // delete published hosts
-  if (app.hosts.length) {
-    var p = delete_all_hosts(resource, app.hosts)
-      .then(function(undeleted_hosts) {
-        if (undeleted_hosts.length) {
-          throw ("/service/delete_app/undeletable_hosts", 
-            "Cannot delete this app as it is released to non-standard hosts.  Please remove them manually first.", 
-            undeleted_hosts,
-            "400 Bad Request");
-        }
-      });
-    promises.push(p);
-  }
-    
-  // disconnect the files
-  promises.push(delete_app_files(app));
+      // delete published hosts
+      if (app.hosts.length) {
+        var p = delete_all_hosts(resource, app.hosts)
+          .then(function(undeleted_hosts) {
+            if (undeleted_hosts.length) {
+              throw ("/service/delete_app/undeletable_hosts", 
+                "Cannot delete this app as it is released to non-standard hosts.  Please remove them manually first.", 
+                undeleted_hosts,
+                "400 Bad Request");
+            }
+          });
+        promises.push(p);
+      }
 
-  // disconnect the app
-  var delete_q = {
-    id : app.id,
-    key : {
-      value : app_key,
-      namespace : app_root,
-      connect : 'delete'
-    },
-    type: [
-      {id: '/common/topic',
-      connect: 'delete'},
-      {id: '/type/domain',
-      connect: 'delete'},
-      {id: '/freebase/apps/acre_app',
-      connect: 'delete'},
-      {id: '/freebase/apps/application',
-      connect: 'delete'}
-    ]
-  };
+      // disconnect the files
+      promises.push(delete_app_files(app));
 
-  return deferred.all(promises, true)
-    .then(function() {
-      return freebase.mqlwrite(delete_q);
+      // disconnect the app
+      var delete_q = {
+        id : app.id,
+        key : {
+          value : app_key,
+          namespace : app_root,
+          connect : 'delete'
+        },
+        type: [
+          {id: '/common/topic',
+          connect: 'delete'},
+          {id: '/type/domain',
+          connect: 'delete'},
+          {id: '/freebase/apps/acre_app',
+          connect: 'delete'},
+          {id: '/freebase/apps/application',
+          connect: 'delete'}
+        ]
+      };
+
+      return deferred.all(promises, true)
+        .then(function() {
+          return freebase.mqlwrite(delete_q);
+        });
     });
 }
 

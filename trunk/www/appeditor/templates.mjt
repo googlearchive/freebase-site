@@ -149,10 +149,7 @@
     <div acre:else="">
       <button id="button-clone" class="button-main" acre:attrs="user?{}:{'disabled':'disabled'}" acre:onclick="ui.do_show_dialog('new_app', [true])" >
         Clone this App</button> 
-        <span acre:if="!user">
-          <a href="${$('#nav-signin').attr('href')}" title="Sign in to your Freebase account">Sign in</a>
-        </span> 
-        to make an app based on this one!
+        Sign in to make an app based on this one!
     </div>
     <div id="about-bar-right" class="refresh-right">
       <span acre:if="versions.length"><b>

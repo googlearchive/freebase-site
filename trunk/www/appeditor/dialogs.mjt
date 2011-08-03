@@ -183,7 +183,7 @@
     <acre:script>
       ui.app_keys = {};
       $.each(applist, function(){
-        ui.app_keys[this.appid] = this.files;
+        ui.app_keys[this.path] = this.files;
       });
     </acre:script>
     <div class="dialog-inset">

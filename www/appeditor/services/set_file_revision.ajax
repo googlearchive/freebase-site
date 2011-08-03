@@ -42,7 +42,7 @@ var SPEC = {
     return [
       validators.AcreResource(params, "fileid", {required: true, file:true}),
       validators.String(params, "revision", {if_missing: false}),
-      validators.AcreFilename(params, "name", {required: true}),
+      ("name" in params) ? validators.AcreFilename(params, "name") : undefined,
       validators.String(params, "acre_handler", {if_missing: false})
     ];
   },

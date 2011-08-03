@@ -40,11 +40,12 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      validators.AcreResource(params, "appid", {required: true})
+      validators.AcreResource(params, "appid", {required: true}),
+      params.auth_user
     ];
   },
 
-  run: function(resource) {
+  run: function(resource, user) {
     return queries.delete_app(resource)
       .then(function(env) {
         return queries.list_user_apps(user);

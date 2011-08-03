@@ -1,6 +1,6 @@
 var METADATA = {
   "mounts": {
-    "lib":          "//lib.www.trunk.svn.freebase-site.googlecode.dev",
+    "site":         "//site.www.trunk.svn.freebase-site.googlecode.dev",
     "datadocs":     "//release.datadocs.dfhuynh.user.dev",
     "acredocs":     "//release.acredocs.stefanomazzocchi.user.dev",
     "mql":          "//release.mql.jdouglas.user.dev",

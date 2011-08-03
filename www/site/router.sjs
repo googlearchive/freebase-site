@@ -624,6 +624,12 @@ function init_site_rules(lib) {
       }]),
       "tabs": [
         {
+          "name": "Data",
+          "key": "data",
+          "app": "query",
+          "script": "query.tab"
+        },
+        {
           "name": "Inspect",
           "key": "inspect",
           "app": "triples",

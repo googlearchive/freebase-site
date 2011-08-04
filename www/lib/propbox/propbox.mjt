@@ -337,25 +337,33 @@
     var ect = prop_structure.expected_type.id;
   </acre:script>
   <acre:block if="prop_value.id">
-    <acre:script>
-      var text;
-      var show_lang = false;
-      if (ect === "/type/user") {
-        text = h.id_key(prop_value.id);
-      }
-      else if (ect === "/location/postal_code" && prop_value["/location/postal_code/postal_code"]) {
-        text = prop_value["/location/postal_code/postal_code"];
-      }
-      else {
-        text = prop_value.text;
-        show_lang = true;
-      }
-    </acre:script>
-    <a title="${prop_value.id}" class="property-value"
-       acre:attrs="itemprop(prop_structure.id)" href="${h.fb_url(true, prop_value.id)}"
-       data-id="${prop_value.id}">${text}</a>
-    <acre:block if="show_lang">
-      ${i18n_c.lang_code(prop_value.lang, lang)}
+    <acre:block if="ect === '/common/image'">
+      <acre:script>
+        var image_options = {maxwidth:32, maxheight:32, mode:"fit"};
+      </acre:script>
+      ${image.image_thumb(prop_value.id, 75)}
+    </acre:block>
+    <acre:block else="">
+      <acre:script>
+        var text;
+        var show_lang = false;
+        if (ect === "/type/user") {
+          text = h.id_key(prop_value.id);
+        }
+        else if (ect === "/location/postal_code" && prop_value["/location/postal_code/postal_code"]) {
+          text = prop_value["/location/postal_code/postal_code"];
+        }
+        else {
+          text = prop_value.text;
+          show_lang = true;
+        }
+      </acre:script>
+      <a title="${prop_value.id}" class="property-value"
+         acre:attrs="itemprop(prop_structure.id)" href="${h.fb_url(true, prop_value.id)}"
+         data-id="${prop_value.id}">${text}</a>
+      <acre:block if="show_lang">
+        ${i18n_c.lang_code(prop_value.lang, lang)}
+      </acre:block>
     </acre:block>
   </acre:block>
   <acre:block elif="ect === '/common/webpage'">

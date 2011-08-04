@@ -143,6 +143,80 @@ test("get_creator", function() {
   equal(h.get_creator({id:"/user/id", attribution:{id:"/attr/id"}}), "/attr/id");
 });
 
+
+test("text_lang_sort", function() {
+
+  var texts = [{
+    lang: "/lang/zh"  // Chinese
+  },{
+    lang: "/lang/en"  // English
+  },{
+    lang: "/lang/ko"  // Korean
+  }];
+
+
+  same(texts.sort(function(a, b) { return h.text_lang_sort(a, b, "/lang/en"); }),
+       [{lang:"/lang/en"}, {lang:"/lang/ko"}, {lang:"/lang/zh"}]);
+  same(texts.sort(function(a, b) { return h.text_lang_sort(a, b, "/lang/zh"); }),
+       [{lang:"/lang/zh"}, {lang:"/lang/en"}, {lang:"/lang/ko"}]);
+  same(texts.sort(function(a, b) { return h.text_lang_sort(a, b, "/lang/ko"); }),
+       [{lang:"/lang/ko"}, {lang:"/lang/en"}, {lang:"/lang/zh"}]);
+
+  same(texts.sort(function(a, b) { return h.text_lang_sort(a, b, "/lang/en", true); }),
+       [{lang:"/lang/en"}, {lang:"/lang/zh"}, {lang:"/lang/ko"}]);
+  same(texts.sort(function(a, b) { return h.text_lang_sort(a, b, "/lang/zh", true); }),
+       [{lang:"/lang/zh"}, {lang:"/lang/en"}, {lang:"/lang/ko"}]);
+  same(texts.sort(function(a, b) { return h.text_lang_sort(a, b, "/lang/ko", true); }),
+       [{lang:"/lang/ko"}, {lang:"/lang/en"}, {lang:"/lang/zh"}]);
+
+  texts = [{
+      lang: "/lang/en",
+      value: "d"
+    },{
+      lang: "/lang/en",
+      value: "b"
+    },{
+      lang: "/lang/zh",
+      value: "a"
+    },{
+      lang: "/lang/ko",
+      value: "c"
+    },{
+      lang: "/lang/ko",
+      value: "z"
+    },{
+      lang: "/lang/ko",
+      value: "y"
+    }, {
+      lang: "/lang/et",
+      value: "w"
+    }];
+
+  same(texts.sort(function(a, b) { return h.text_lang_sort(a, b, "/lang/en"); }),
+       [{lang:"/lang/en", value:"b"}, {lang:"/lang/en", value:"d"},
+        {lang:"/lang/et", value:"w"},
+        {lang:"/lang/ko", value:"c"}, {lang:"/lang/ko", value:"y"}, {lang:"/lang/ko", value:"z"},
+        {lang:"/lang/zh", value:"a"}]);
+
+  same(texts.sort(function(a, b) { return h.text_lang_sort(a, b, "/lang/ko"); }),
+       [{lang:"/lang/ko", value:"c"}, {lang:"/lang/ko", value:"y"}, {lang:"/lang/ko", value:"z"},
+        {lang:"/lang/en", value:"b"}, {lang:"/lang/en", value:"d"},
+        {lang:"/lang/et", value:"w"},
+        {lang:"/lang/zh", value:"a"}]);
+
+  same(texts.sort(function(a, b) { return h.text_lang_sort(a, b, "/lang/en", true); }),
+       [{lang:"/lang/en", value:"b"}, {lang:"/lang/en", value:"d"},
+        {lang:"/lang/et", value:"w"},
+        {lang:"/lang/zh", value:"a"},
+        {lang:"/lang/ko", value:"c"}, {lang:"/lang/ko", value:"y"}, {lang:"/lang/ko", value:"z"}]);
+
+  same(texts.sort(function(a, b) { return h.text_lang_sort(a, b, "/lang/zh", true); }),
+       [{lang:"/lang/zh", value:"a"},
+        {lang:"/lang/en", value:"b"}, {lang:"/lang/en", value:"d"},
+        {lang:"/lang/et", value:"w"},
+        {lang:"/lang/ko", value:"c"}, {lang:"/lang/ko", value:"y"}, {lang:"/lang/ko", value:"z"}]);
+});
+
 acre.test.report();
 
 

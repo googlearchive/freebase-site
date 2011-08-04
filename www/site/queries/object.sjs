@@ -46,8 +46,8 @@ function object(id, options) {
       return env.result;
     })
     .then(function(topic) {
-      topic.name = topic.name.sort(text_lang_sort);
-      topic.alias = topic["/common/topic/alias"].sort(text_lang_sort);
+      topic.name = topic.name.sort(h.text_lang_sort);
+      topic.alias = topic["/common/topic/alias"].sort(h.text_lang_sort);
       topic.image = topic["/common/topic/image"];
       topic.article = topic["/common/topic/article"];
       topic.replaced_by = topic["/dataworld/gardening_hint/replaced_by"];
@@ -155,49 +155,4 @@ function mql(id) {
   };
 };
 
-/**
- * Compare function to sort an array of text nodes with langs.
- *
- *
- */
-function text_lang_sort(a, b, lang, by_lang_name) {
-  lang = lang ? i18n.normalize_lang(lang) : i18n.lang;
-  var a_lang = i18n.normalize_lang(a.lang);
-  var b_lang = i18n.normalize_lang(b.lang);
-  if (a_lang === lang) {
-    if (a_lang === b_lang) {
-      return b.value < a.value;
-    }
-    return -1;
-  }
-  else if (b_lang === lang) {
-    return 1;
-  }
-  else if (a_lang === "/lang/en") {
-    if (a_lang === b_lang) {
-      return b.value < a.value;
-    }
-    return -1;
-  }
-  else if (b_lang === "/lang/en") {
-    return 1;
-  }
-  else {
-    if (by_lang_name) {
-      var a_by_id = i18n.LANGS_BY_ID[a.lang];
-      var b_by_id = i18n.LANGS_BY_ID[b.lang];
-      if (a_by_id) {
-        a_lang = a_by_id.name;
-      }
-      if (b_by_id) {
-        b_lang = b_by_id.name;
-      }
-    }
 
-    if (a_lang === b_lang) {
-      return b.value < a.value;
-    }
-    return b_lang < a_lang;
-  }
-  return b.lang < a.lang;
-};

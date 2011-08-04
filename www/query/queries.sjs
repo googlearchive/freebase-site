@@ -122,6 +122,10 @@ function qualify_query(q) {
 
 function query(q, props) {
   var MID_PROP = "collection:mid";
+  var exclude_props = {
+    "/type/object/id" : true,
+    "/type/object/mid": true
+  };
 
   q = h.isArray(q) ? q : [q];
   q[0][MID_PROP] = null;
@@ -141,7 +145,7 @@ function query(q, props) {
         for (var prop in q[0]) {
           var path = [prop];
           if (!is_constraint(constraints, path, q[0][prop])) {
-            if (prop) props.push(prop);
+            if (prop && !(prop in exclude_props)) props.push(prop);
           }
         }
       }

@@ -46,7 +46,8 @@ var ph = acre.require("propbox/helpers.sjs");
  * To display/render the query result,
  * @see propbox/collection.mjt
  */
-function collection(topic_ids, pids, lang) {
+function collection(topic_ids, pids, lang, limit) {
+  limit = limit || 5;
   if (!h.isArray(topic_ids)) {
     topic_ids = [topic_ids];
   }
@@ -59,7 +60,7 @@ function collection(topic_ids, pids, lang) {
         "id|=": topic_ids
       };
       props.forEach(function(prop) {
-        var prop_query = ph.mqlread_query(null, prop, null, lang);
+        var prop_query = ph.mqlread_query(null, prop, null, lang, {limit:limit});
         h.extend(q, prop_query);
       });
       return freebase.mqlread([q])

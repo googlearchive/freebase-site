@@ -249,11 +249,11 @@ function to_prop_values(prop_structure, prop_data, lang) {
   return values;
 };
 
-function mqlread_query(topic_id, prop_structure, prop_value, lang) {
+function mqlread_query(topic_id, prop_structure, prop_value, lang, options) {
   var clause = {
     id: topic_id
   };
-  var prop_clause = mqlread_clause(prop_structure, prop_value, lang);
+  var prop_clause = mqlread_clause(prop_structure, prop_value, lang, options);
   var properties = prop_structure.properties;
   if (properties) {
     properties.forEach(function(subprop_structure) {
@@ -269,7 +269,7 @@ function mqlread_query(topic_id, prop_structure, prop_value, lang) {
 };
 
 
-function mqlread_clause(prop_structure, prop_value, lang) {
+function mqlread_clause(prop_structure, prop_value, lang, options) {
   var ect = prop_structure.expected_type;
   var is_literal = h.is_literal_type(ect.id);
   var clause = {optional:true};
@@ -295,5 +295,5 @@ function mqlread_clause(prop_structure, prop_value, lang) {
       }
     }
   }
-  return [clause];
+  return [h.extend(clause, options)];
 };

@@ -124,7 +124,8 @@ function query(q, props) {
   var MID_PROP = "collection:mid";
   var exclude_props = {
     "/type/object/id" : true,
-    "/type/object/mid": true
+    "/type/object/mid": true,
+    "/common/topic/article": true
   };
 
   q = h.isArray(q) ? q : [q];

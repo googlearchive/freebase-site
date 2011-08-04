@@ -56,8 +56,7 @@ function collection(topic_ids, pids, lang) {
   return pq.prop_structures.apply(null, pids.concat([lang]))
     .then(function(props) {
       var q = {
-        "id|=": topic_ids,
-        name: i18n.mql.text_clause(lang)
+        "id|=": topic_ids
       };
       props.forEach(function(prop) {
         var prop_query = ph.mqlread_query(null, prop, null, lang);

@@ -401,7 +401,7 @@ function init_site_rules(lib) {
 
   rules["object"] =  [
     {
-      "type": "/freebase/apps/application",
+      "type": "/freebase/apps/acre_app",
       "promises": h.extend(true, [], DEFAULT_PROMISES).concat([{
         "key": "breadcrumbs",
         "app": "lib",
@@ -448,7 +448,55 @@ function init_site_rules(lib) {
         },
         {
           "name": "View source",
-          "url": h.fb_url("/appeditor/#app=${id}")
+          "url": h.fb_url("/appeditor/#!app=${id}")
+        }
+      ]
+    },
+    {
+      "type": "/freebase/apps/application",
+      "promises": h.extend(true, [], DEFAULT_PROMISES).concat([{
+        "key": "breadcrumbs",
+        "app": "lib",
+        "script": "queries/breadcrumbs.sjs",
+        "promise": "app"
+      }]),
+      "tabs": [
+        {
+          "name": "View",
+          "key": "view",
+          "app": "topic",
+          "script": "topic.tab",
+          "params": {
+            "domains": "all",
+            "type": "/freebase/apps/application"
+          }
+        },
+        {
+          "name": "Activity",
+          "key": "activity",
+          "app": "activity",
+          "script": "app.tab"
+        },
+        {
+          "name": "Authors",
+          "key": "authors",
+          "app": "group",
+          "script": "group.tab"
+        },
+        {
+          "name": "Inspect",
+          "key": "inspect",
+          "app": "triples",
+          "script": "triples.tab"
+        }
+      ],
+      "navs": [
+        {
+          "name": "Edit Settings",
+          "key": "settings",
+          "app": "admin",
+          "ajax": "app_settings.mf.js",
+          "auth": true // add "edit" class
         }
       ]
     },

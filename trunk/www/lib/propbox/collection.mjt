@@ -31,6 +31,7 @@
 <acre:script>
   var h = acre.require("helper/helpers.sjs");
   var i18n = acre.require("i18n/i18n.sjs");
+  var i18n_c = acre.require("i18n/components.mjt");
   var _ = i18n.gettext;
   var pb = acre.require("propbox/propbox.mjt");
   var hc = acre.require("propbox/helpers_collection.sjs");
@@ -62,7 +63,21 @@
           <tr>
             <acre:block for="cell in row">
               <acre:block if="cell">
-                <td>${pb.value(tbody, cell.structure, cell.value, lang)}</td>
+                <acre:script>
+                  var structure = cell.structure;
+                  var value = cell.value;
+                </acre:script>
+                <td>
+                  <acre:block if="structure.id === '/type/object/name'">
+                    <a title="${tbody.value.id}" class="property-value"
+                       href="${h.fb_url(true, tbody.value.id)}"
+                       data-id="${tbody.value.id}">${value.text}</a>
+                    ${i18n_c.lang_code(value.lang, lang)}
+                  </acre:block>
+                  <acre:block else="">
+                    ${pb.value(tbody.value, cell.structure, cell.value, lang)}
+                  </acre:block>
+                </td>
               </acre:block>
               <acre:block else="">
                 <td>&nbsp;</td>

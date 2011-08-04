@@ -104,17 +104,26 @@ function to_table_structure(prop_structures, values, lang) {
 
       if (subprop_structures.length) {
         var orig_column = column;
-        prop_values.forEach(function(prop_value, row) {
-          var tr = ensure_row(tbody, row);
+        var current_row = 0;
+        prop_values.forEach(function(prop_value, prop_row) {
+          var max_rows = 1;
+          var tr = ensure_row(tbody, current_row);
           if (!mediator) {
-            tr[column] = {structure:prop_structure, values:[prop_value]};
+            tr[column] = {structure:prop_structure, value:prop_value};
             column += 1;
           }
           subprop_structures.forEach(function(subprop_structure) {
             var subprop_values = prop_value[subprop_structure.id] && prop_value[subprop_structure.id].values || [];
-            tr[column] = {structure:subprop_structure, values:subprop_values};
+            subprop_values.forEach(function(subprop_value, subprop_row) {
+              var tr = ensure_row(tbody, current_row + subprop_row);
+              tr[column] = {structure:subprop_structure, value:subprop_value};
+            });
+            if (subprop_values.length > max_rows) {
+              max_rows = subprop_values.length;
+            }
             column += 1;
           });
+          current_row = current_row + max_rows;
           column = orig_column;
         });
         column += subprop_structures.length;
@@ -123,8 +132,10 @@ function to_table_structure(prop_structures, values, lang) {
         }
       }
       else {
-        var tr = ensure_row(tbody, 0);
-        tr[column] = {structure:prop_structure, values:prop_values};
+        prop_values.forEach(function(prop_value, row) {
+          var tr = ensure_row(tbody, row);
+          tr[column] = {structure:prop_structure, value:prop_value};
+        });
         column += 1;
       }
     });

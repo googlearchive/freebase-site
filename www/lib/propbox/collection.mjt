@@ -62,7 +62,7 @@
           <tr>
             <acre:block for="cell in row">
               <acre:block if="cell">
-                <td>${pb.datalist(tbody, cell.structure, cell.values, lang)}</td>
+                <td>${pb.value(tbody, cell.structure, cell.value, lang)}</td>
               </acre:block>
               <acre:block else="">
                 <td>&nbsp;</td>

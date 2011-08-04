@@ -110,7 +110,7 @@ var exports = {
   "normalize_path" : normalize_path,
   "redirect" : redirect,
   "route" : route,
-  
+
   // METADATA
   "extend_metadata" : extend_metadata
 };
@@ -587,6 +587,53 @@ function get_creator(creator) {
   return null;
 };
 
+
+/**
+ * Compare function to sort an array of text nodes with langs.
+ *
+ *
+ */
+function text_lang_sort(a, b, lang, by_lang_name) {
+  lang = lang ? i18n.normalize_lang(lang) : i18n.lang;
+  var a_lang = i18n.normalize_lang(a.lang);
+  var b_lang = i18n.normalize_lang(b.lang);
+  if (a_lang === lang) {
+    if (a_lang === b_lang) {
+      return b.value < a.value;
+    }
+    return -1;
+  }
+  else if (b_lang === lang) {
+    return 1;
+  }
+  else if (a_lang === "/lang/en") {
+    if (a_lang === b_lang) {
+      return b.value < a.value;
+    }
+    return -1;
+  }
+  else if (b_lang === "/lang/en") {
+    return 1;
+  }
+  else {
+    if (by_lang_name) {
+      var a_by_id = i18n.LANGS_BY_ID[a.lang];
+      var b_by_id = i18n.LANGS_BY_ID[b.lang];
+      if (a_by_id) {
+        a_lang = a_by_id.name;
+      }
+      if (b_by_id) {
+        b_lang = b_by_id.name;
+      }
+    }
+
+    if (a_lang === b_lang) {
+      return b.value < a.value;
+    }
+    return b_lang < a_lang;
+  }
+  return b.lang < a.lang;
+};
 
 // ------------- MATH ---------------
 
@@ -1494,7 +1541,7 @@ function output_helpers(scope) {
 
 // helper for backfilling metadata from a mounted app
 function extend_metadata(md, mount) {
-  
+
   function fix_up_paths(md, md_path) {
     for (var hdlr in md.handlers) {
       var handler = md.handlers[hdlr];
@@ -1506,7 +1553,7 @@ function extend_metadata(md, mount) {
     for (var mnt in md.mounts) {
       var mount = md.mounts[mnt];
       if(mount.indexOf("/") !== 0) {
-        md.mounts[mnt] = md_path + "/" + mount; 
+        md.mounts[mnt] = md_path + "/" + mount;
       }
     }
 
@@ -1518,18 +1565,18 @@ function extend_metadata(md, mount) {
         md.template_base = md_path + "/" + md.template_base;
     }
   };
-  
+
   // get backfill metadata
   var md_path = md.mounts[mount];
   var md_file = acre.require(md_path + "/METADATA");
   var backfill = md_file.METADATA ? md_file.METADATA : JSON.parse(md_file.body);
-  
+
   // fix paths
   fix_up_paths(backfill, md_path);
 
   // splice together
   var final_md = extend(true, {}, backfill, md);
   extend(md, final_md);
-  
+
   return md;
 };

@@ -228,7 +228,7 @@ function to_prop_values(prop_structure, prop_data, lang) {
   if (!h.isArray(prop_data)) {
     prop_data = [prop_data];
   };
-  if (prop_structure.unique && prop_structure.expected_type.id === "/type/text") {
+  if (prop_structure.unique && lang && prop_structure.expected_type.id === "/type/text") {
     var data = i18n.mql.get_text(lang, prop_data);
     return [minimal_prop_value(prop_structure, data, lang)];
   }

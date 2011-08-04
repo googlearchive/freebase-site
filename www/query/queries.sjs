@@ -34,7 +34,7 @@ var i18n = acre.require("lib/i18n/i18n.sjs");
 var apis = acre.require("lib/promise/apis.sjs"),
     deferred = apis.deferred,
     freebase = apis.freebase;
-    
+
 var fq = acre.require("lib/queries/freebase_query.sjs");
 var pq = acre.require("lib/propbox/queries_collection.sjs");
 
@@ -53,7 +53,7 @@ function user_queries(user) {
 
 function qualify_query(q) {
   var temp = h.isArray(q) ? q[0] : q;
-  
+
   function qualify(key, type) {
     var obj_props = {
       id: true,
@@ -68,22 +68,22 @@ function qualify_query(q) {
       search: true,
       mid: true
     };
-    
+
     var mql_directives = {
       limit: true,
       sort: true,
       optional: true,
       count: true
     };
-    
+
     var segs = key.split(":");
     if (segs.length > 2) {
       throw "property key can't have more than one label";
     } else if (segs.length === 2) {
       var label = segs[0];
-      key = segs[1]
+      key = segs[1];
     }
-    
+
     if (key in mql_directives || (key.indexOf("/") ==- 0)) {
       return (label ? label + ":" : "") + key;
     }
@@ -94,14 +94,14 @@ function qualify_query(q) {
       return (label ? label + ":" : "") + (type || "/type/object") + "/" + key;
     }
   };
-  
+
   for (var prop in temp) {
     if (qualify(prop) === "/type/object/type") {
       type = temp[prop];
       break;
     }
   }
-  
+
   for (var prop in temp) {
     var qprop = qualify(prop, type);
     var key = qprop.split(":").pop();
@@ -115,24 +115,24 @@ function qualify_query(q) {
       delete temp[prop];
     }
   }
-  
+
   return q;
 };
 
 
 function query(q, props) {
   var MID_PROP = "collection:mid";
-  
+
   q = h.isArray(q) ? q : [q];
   q[0][MID_PROP] = null;
-  
+
   return freebase.mqlread(q)
     .then(function(env) {
       var mids = [];
       env.result.forEach(function(r) {
         mids.push(r[MID_PROP]);
       });
-      
+
       qualify_query(q[0]);
 
       if (!h.isArray(props) || !props.length) {
@@ -145,7 +145,6 @@ function query(q, props) {
           }
         }
       }
-      
       return pq.collection(mids, props, i18n.lang);
     });
 };
@@ -156,7 +155,7 @@ function decant_constraints(q) {
     if (h.isPlainObject(val)) {
       var has_keys = false;
       for (var key in val) {
-        var tmp = decant(val[key])
+        var tmp = decant(val[key]);
         if (tmp === undefined) {
           delete val[key];
         } else {
@@ -188,12 +187,12 @@ function is_constraint(constraints, path, value) {
     }
     return true;
   }
-  
+
   // hack for saved queries
   if (path[0].indexOf(":") > -1) {
     return true;
   }
-  
+
   var val = h.extend(true, {}, constraints);
   value = h.isArray(value) ? value[0] : value;
   for (var s = 0; s < path.length; s++) {

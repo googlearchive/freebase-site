@@ -44,7 +44,7 @@
   <acre:script>
     var table = hc.to_table_structure(prop_structures, result, lang);
   </acre:script>
-  <table cellpadding="1" cellspacing="1" border="1">
+  <table cellpadding="1" cellspacing="1" border="1" class="data-table">
     <thead>
       <acre:block for="row in table.head">
         <tr>

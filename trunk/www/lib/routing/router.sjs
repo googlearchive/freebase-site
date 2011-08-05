@@ -384,6 +384,7 @@ function extend_rules(rules, environment_rules) {
 
 
 function route(rules, scope) {
+  acre.response.set_error_page("error/error.mjt");
 
   var dump = acre.request.base_path === "/_fs_routing";
 

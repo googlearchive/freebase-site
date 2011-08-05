@@ -76,10 +76,10 @@
                     ${i18n_c.lang_code(value.lang, lang)}
                   </td>
                 </acre:block>
-                <acre:block elif="structure.expected_type.id === '/common/image' && cell.images">
+                <acre:block elif="structure.expected_type.id === '/common/image'">
                   <td rowspan="${cell.rowspan}">
-                    ${image.image_thumb(cell.images[0])}
-                  </td>
+                    ${pb.value(tbody.value, cell.structure,tbody.value, lang)}
+                 </td>
                 </acre:block>
                 <acre:block else="">
                   <td>

@@ -55,8 +55,12 @@ function to_table_structure(prop_structures, values, lang) {
   prop_structures.forEach(function(prop_structure) {
     var subprop_structures = prop_structure.properties || [];
     var mediator = prop_structure.expected_type.mediator === true;
+    var is_image = prop_structure.expected_type.id === "/common/image";
     var colspan = 1;
-    if (subprop_structures.length) {
+    if (is_image) {
+      // just show <img>, no disambiguating props
+    }
+    else if (subprop_structures.length) {
       subprops = true;
       if (mediator) {
         colspan = subprop_structures.length;
@@ -76,7 +80,8 @@ function to_table_structure(prop_structures, values, lang) {
     prop_structures.forEach(function(prop_structure, i) {
       var subprop_structures = prop_structure.properties || [];
       var mediator = prop_structure.expected_type.mediator === true;
-      if (subprop_structures.length) {
+      var is_image = prop_structure.expected_type.id === "/common/image";
+      if (!is_image && subprop_structures.length) {
         if (!mediator) {
           secondary_head.push({structure:{text:_("Name")}});
         }
@@ -94,15 +99,25 @@ function to_table_structure(prop_structures, values, lang) {
   /**
    * body
    */
+  var image_column = -1;
   values.forEach(function(value) {
     var tbody = [];
     var column = 0;
-    prop_structures.forEach(function(prop_structure) {
+    var images = [];
+    prop_structures.forEach(function(prop_structure, primary_column) {
       var subprop_structures = prop_structure.properties || [];
       var mediator = prop_structure.expected_type.mediator === true;
+      var is_image = prop_structure.expected_type.id === "/common/image";
       var prop_values = value[prop_structure.id] && value[prop_structure.id].values || [];
-
-      if (subprop_structures.length) {
+      if (is_image) {
+        var tr = ensure_row(tbody, 0);
+        var image = {structure:prop_structure, images:prop_values};
+        tr[column] = image;
+        images.push(image);
+        image_column = column;
+        column += 1;
+      }
+      else if (subprop_structures.length) {
         var orig_column = column;
         var current_row = 0;
         prop_values.forEach(function(prop_value, prop_row) {
@@ -139,9 +154,21 @@ function to_table_structure(prop_structures, values, lang) {
         column += 1;
       }
     });
+    images.forEach(function(image) {
+      image.rowspan = tbody.length;
+    });
     tbody.value = value;
     body.push(tbody);
   });
+
+  if (image_column !== -1) {
+    body.forEach(function(tbody) {
+      for (var i=1,l=tbody.length; i<l; i++) {
+        var row = tbody[i];
+        row.splice(image_column, 1);
+      };
+    });
+  }
 
   return {
     head: head,

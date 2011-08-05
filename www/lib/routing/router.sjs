@@ -419,6 +419,6 @@ function route(rules, scope) {
   }
   else {
     // TODO: not found
-    acre.route("error/not_found.mjt");
+    acre.route("error/not_found.template");
   }
 };

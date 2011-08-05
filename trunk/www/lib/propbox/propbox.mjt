@@ -339,9 +339,9 @@
   <acre:block if="prop_value.id">
     <acre:block if="ect === '/common/image'">
       <acre:script>
-        var image_options = {maxwidth:32, maxheight:32, mode:"fit"};
+        var image_options = {mode: "fillcropmid"};
       </acre:script>
-      ${image.image_thumb(prop_value.id, 75)}
+      ${image.image_thumb(prop_value.id, 50, image_options)}
     </acre:block>
     <acre:block else="">
       <acre:script>

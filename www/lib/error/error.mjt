@@ -62,7 +62,7 @@
       <acre:block else="">
         <acre:script>
           var einfo = c.einfo;
-          console.log(einfo);
+          console.log(einfo)
 
           function is_user_script(filename) {
               return !!(/^\//).exec(filename);
@@ -156,3 +156,5 @@
     </div>
   </div>
 </acre:block>
+
+${template["page"].apply(template, [this.exports])}

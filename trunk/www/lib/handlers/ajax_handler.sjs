@@ -41,7 +41,7 @@ var validators = acre.require("validator/validators.sjs");
  */
 function handler() {
   // set up custom error handler for outputting unhandled errors as JSON
-  acre.response.set_error_page("handlers/ajax_error.sjs");
+  acre.response.set_error_page("error/ajax_error.sjs");
   
   return h.extend({}, acre.handlers.acre_script, {
     to_http_response: function(module, script) {

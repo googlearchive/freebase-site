@@ -580,7 +580,9 @@ function init_site_rules(lib) {
         },
         {
           "name": "Build Query",
-          "url": h.fb_url("/queryeditor", {q:JSON.stringify([{id:null, name:null, type:"${id}"}])})
+          "key": "query",
+          "app": "query",
+          "script": "index.controller"
         },
         {
           "name": "Add Topic",
@@ -669,6 +671,12 @@ function init_site_rules(lib) {
         "app": "lib",
         "script": "queries/breadcrumbs.sjs",
         "promise": "freebase_query"
+      },
+      {
+        "key": "query",
+        "app": "site",
+        "script": "queries/object.sjs",
+        "promise": "query"
       }]),
       "tabs": [
         {
@@ -687,7 +695,9 @@ function init_site_rules(lib) {
       "navs": [
         {
           "name": "Run Query",
-          "url": h.fb_url("/queryeditor")
+          "key": "query",
+          "app": "query",
+          "script": "index.controller"
         }
       ]
     },

@@ -48,50 +48,27 @@ var SPEC = {
   template: "editor.template",
 
   validate: function(params) {
-    return [{
-      id:       validators.MqlId(acre.request.path_info, {if_empty: null}),
-      type:     validators.MqlId(params, "type", {if_empty: null}),
-      topic:    validators.MqlId(params, "topic", {if_empty: null}),
-      property: validators.MqlId(params, "property", {if_empty: null})
-    }];
+    return [
+      params.object,
+      params.query
+    ];
   },
 
-  run: function(args) {
-    if (args.id && args.id !== "/") {
-      return query_for_saved_query(args.id);
-    } else if (args.type) {
-      return query_for_type(args.type);
-    } else if (args.topic && args.property) {
-      return query_for_property(args.topic, args.property);
-    } else {
-      return redirect();
+  run: function(object, query) {
+    var c = {
+      object: object
+    };
+    
+    var types = h.map_array(object.type, "id");
+    if (query) {
+      c.query = query;
+    } else if ("/type/type" in types) {
+      c.query = query_for_type(object.id);
     }
+    
+    return c;
   }
   
-};
-
-function redirect(q) {
-  var params = {};
-  if (q) {
-    params.q = JSON.stringify(q);
-  }
-  var url = acre.form.build_url("/queryeditor", params);
-  acre.response.status = 301;
-  acre.response.set_header("location", url);
-  acre.exit();
-};
-
-function query_for_saved_query(id) {
-  freebase.mqlread({
-    "id": id,
-    "type": "/freebase/freebase_query",
-    "query": null
-  }).then(function(env) {
-    return env.result;
-  }).then(function(result){
-    var q = JSON.parse(result.query);
-    return redirect(q);
-  });
 };
 
 function query_for_type(type) {
@@ -120,7 +97,7 @@ function query_for_type(type) {
     result.forEach(function(prop) {
       q[prop.key.value] = prop.unique ? null : [];
     });
-    return redirect([q]);
+    return [q];
   });
 };
 
@@ -164,6 +141,6 @@ function query_for_property(topic, property) {
         q[prop.key.value] = prop.unique ? null : [];        
       }
     });
-    return redirect([q]);
+    return [q];
   });
 };

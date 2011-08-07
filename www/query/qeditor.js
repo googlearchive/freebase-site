@@ -85,8 +85,12 @@ function onLoad() {
       stylesheet: [$("#codemirror-css").attr("href")]
     }
   };
-
-  if ("q" in params || "query" in params) {
+  
+  if (fb.c && fb.c.query) {
+    queryEditorOptions.content = fb.c.query;
+    queryEditorOptions.cleanUp = true;
+    autorun = true;
+  } else if ("q" in params || "query" in params) {
     var s = "q" in params ? params.q : params.query;
     try {
       var o = JSON.parse(s);

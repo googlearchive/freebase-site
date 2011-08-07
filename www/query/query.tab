@@ -43,17 +43,21 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      params.object
+      params.object,
+      params.query
     ];
   },
 
-  run: function(o) {
-    return freebase.get_blob(o.id)
-    .then(function(env) {
-      return env.body;
-    }).then(function(query){
-      var q = JSON.parse(query);
-      return queries.query(q);
-    });
+  run: function(object, query) {
+    return query
+      .then(function(q) {
+        return queries.query(q)
+          .then(function(c) {
+            c.object = object;
+            c.query = q;
+            return c;
+          });
+      });
   }
+  
 };

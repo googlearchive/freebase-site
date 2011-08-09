@@ -49,26 +49,47 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      params.object,
-      params.query
+      validators.Json(params, "q", {if_empty: null}),
+      validators.MqlId(params, "id", {if_empty: null}),
+      validators.MqlId(params, "type", {if_empty: null})
     ];
   },
 
-  run: function(object, query) {
-    var c = {
-      object: object
-    };
-    
-    var types = h.map_array(object.type, "id");
-    if (query) {
-      c.query = query;
-    } else if ("/type/type" in types) {
-      c.query = query_for_type(object.id);
+  run: function(q, id, type) {
+    var c = {};
+
+    if (id) {
+      return query_for_saved_query(id)
+        .then(function(q) {
+          redirect(q);
+        });
+    } else if (type) {
+      return query_for_type(type)
+        .then(function(q) {
+          redirect(q);
+        });
     }
     
     return c;
   }
   
+};
+
+function redirect(q) {
+  var params = {};
+  if (q) {
+    params.q = JSON.stringify(q);
+  }
+  var url = acre.form.build_url("/queryeditor", params);
+  acre.response.status = 301;
+  acre.response.set_header("location", url);
+  acre.exit();
+};
+
+function query_for_saved_query(id) {
+  return acre.require("site/queries/object.sjs").query({
+    id: id
+  });
 };
 
 function query_for_type(type) {

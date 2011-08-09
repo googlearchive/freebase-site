@@ -49,10 +49,8 @@
       </ul>
     </div>
     <div class="cuecard-outputPane-content tabbed-content module-section">
-      <div acre:for="tab in outputPane._TABS" class="cuecard-outputPane-tabBody" id="${id}-${tab.key}">
-        <div class="cuecard-outputPane-$tab.key" >
-          ${templates[tab.key]()}
-        </div>
+      <div acre:for="tab in outputPane._TABS" class="cuecard-outputPane-tabBody cuecard-outputPane-$tab.key" id="${id}-${tab.key}">
+        ${templates[tab.key]()}
       </div>
     </div>
   </div>

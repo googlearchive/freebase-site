@@ -90,13 +90,13 @@ CueCard.OutputPane.prototype._constructUI = function() {
   });
   this._tabs = tabs.data("tabs");
 
-  this._list = this._getTab("list").find("div");
+  this._list = this._getTab("list");
   this._list = this._list.length ? this._list : false;
   
-  this._json = this._getTab("json").find("div");
+  this._json = this._getTab("json");
   this._json = this._json.length ? this._json : false;
   
-  this._help = this._getTab("help").find("div");
+  this._help = this._getTab("help");
   this._help = this._help.length ? this._help : false;
   
   // setup JSON iframe

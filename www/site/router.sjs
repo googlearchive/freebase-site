@@ -249,7 +249,7 @@ function init_site_rules(lib) {
     {prefix:"/appeditor",          app:"appeditor"},
     {prefix:"/docs",               app:"devdocs"},
     {prefix:"/policies",           app:"policies"},
-    {prefix:"/queryeditor",        app:"query", script:"editor.template"},
+    {prefix:"/queryeditor",        app:"query"},
     {prefix:"/query",              app:"query"},
     {prefix:"/labs/cubed",         app:"cubed"},
     {prefix:"/labs/parallax",      app:"parallax"},
@@ -580,9 +580,7 @@ function init_site_rules(lib) {
         },
         {
           "name": "Build Query",
-          "key": "query",
-          "app": "query",
-          "script": "index.controller"
+          "url": h.fb_url("/queryeditor?type=${id}")
         },
         {
           "name": "Add Topic",
@@ -683,7 +681,13 @@ function init_site_rules(lib) {
           "name": "Data",
           "key": "data",
           "app": "query",
-          "script": "query.tab"
+          "script": "collection.tab"
+        },
+        {
+          "name": "MQL",
+          "key": "mql",
+          "app": "query",
+          "script": "mql.tab"
         },
         {
           "name": "Inspect",
@@ -694,10 +698,10 @@ function init_site_rules(lib) {
       ],
       "navs": [
         {
-          "name": "Run Query",
-          "key": "query",
-          "app": "query",
-          "script": "index.controller"
+          "name": "Edit Settings",
+          "app": "admin",
+          "ajax": "query_settings.mf.js",
+          "auth": true // add "edit" class
         }
       ]
     },

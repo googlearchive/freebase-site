@@ -30,34 +30,29 @@
  */
 
 var validators = acre.require("lib/validator/validators.sjs");
+var settings = acre.require("settings.mjt");
+var freebase = acre.require("lib/promise/apis.sjs").freebase;
 
-var promise = acre.require("lib/promise/apis.sjs");
-var freebase = promise.freebase;
-var deferred = promise.deferred;
-
-var queries = acre.require("queries.sjs");
-
+/**
+ * domain settings form
+ */
 var SPEC = {
-  
-  template: "collection.mjt",
+
+  method: "GET",
+
+  auth: true,
 
   validate: function(params) {
     return [
-      params.object,
-      params.query
+      validators.MqlId(params, "id", {required:true}),    // domain id
+      params.auth_user
     ];
   },
 
-  run: function(object, query) {
-    return query
-      .then(function(q) {
-        return queries.query(q)
-          .then(function(c) {
-            c.object = object;
-            c.query = q;
-            return c;
-          });
-      });
+  run: function(id, user) {
+    return {
+      html: acre.markup.stringify(settings.query_settings_form(id))
+    };
   }
-  
+
 };

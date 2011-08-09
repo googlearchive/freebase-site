@@ -87,7 +87,7 @@ function onLoad() {
   };
   
   if (fb.c && fb.c.query) {
-    queryEditorOptions.content = fb.c.query;
+    queryEditorOptions.content = JSON.stringify(fb.c.query);
     queryEditorOptions.cleanUp = true;
     autorun = true;
   } else if ("q" in params || "query" in params) {

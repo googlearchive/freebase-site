@@ -310,5 +310,8 @@
   <script>
     SERVER.c.id = "${c.object.id}";
   </script>
+  <acre:block if="that_exports.acre_javascript_vars">
+    ${that_exports.acre_javascript_vars()}
+  </acre:block>
 </acre:block>
 

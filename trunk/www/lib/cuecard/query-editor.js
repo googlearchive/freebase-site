@@ -132,7 +132,7 @@ CueCard.QueryEditor.prototype.layout = function(height, width) {
       this._controlPane._paneldrawer.set_height(height);
     } else {
       this._container.height(height);
-      var control_height = this._controlBottomContainer.height();
+      var control_height = this._controlBottomContainer.outerHeight();
       this._iframeContainer.height(height - control_height);
     }
   }

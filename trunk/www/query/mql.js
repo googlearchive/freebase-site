@@ -31,123 +31,80 @@
 
 (function($, fb) {
   
-  fb.query = {
-    save: function(e, query_id) {
-      window.alert("TODO - save "+ query_id);
-    }
-  };
-  
-  CueCard.helper = fb.h.ajax_url("lib/cuecard/");
-  CueCard.freebaseServiceUrl = fb.acre.freebase.service_url + "/";
-  CueCard.urlPrefix = CueCard.apiProxy.base = fb.h.ajax_url("lib/cuecard/");
+  var qe = fb.queryeditor = {
+    
+    init: function() {
+      
+      CueCard.helper = fb.h.ajax_url("lib/cuecard/");
+      CueCard.freebaseServiceUrl = fb.acre.freebase.service_url + "/";
+      CueCard.urlPrefix = CueCard.apiProxy.base = fb.h.ajax_url("lib/cuecard/");
 
-  function onLoad() {
-    var outputPaneOptions = {
-      toggle_callback: onToggleHeaders,
-      stylesheet: $("#cuecard-outputPane-stylesheet").attr("href"),
-      initial_tab: "json"
-    };
+      var outputPaneOptions = {
+        stylesheet: $("#cuecard-outputPane-stylesheet").attr("href"),
+        initial_tab: "json"
+      };
 
-    var queryEditorOptions = {
-      readOnly: !fb.permission.has_permission,
-      focusOnReady: true,
-      onUnauthorizedMqlWrite: function() {
-        if (window.confirm("Query editor needs to be authorized to write data on your behalf. Proceed to authorization?")) {
-          saveQuery();
-
-          var url = document.location.href;
-          var hash = url.indexOf("#");
-          if (hash > 0) {
-            url = url.substr(0, hash);
-          } else {
-            var question = url.indexOf("?");
-            if (question > 0) {
-              url = url.substr(0, question);
-            }
-          }
-
-          var url2 = "/signin/login?mw_cookie_scope=domain&onsignin=" + encodeURIComponent(url);
-
-          document.location = url2;
+      var queryEditorOptions = {
+        readOnly: !fb.permission.has_permission,
+        focusOnReady: true,
+        codeMirror: {
+          parserfile: [$("#codemirror-js").attr("href")],
+          stylesheet: [$("#codemirror-css").attr("href")]
         }
-      },
-      codeMirror: {
-        parserfile: [$("#codemirror-js").attr("href")],
-        stylesheet: [$("#codemirror-css").attr("href")]
+      };
+
+      if (fb.c && fb.c.query) {
+        queryEditorOptions.content = JSON.stringify(fb.c.query);
+        queryEditorOptions.cleanUp = true;
+        autorun = true;
+        outputPaneOptions.queryLoaded = true;
       }
-    };
 
-    if (fb.c && fb.c.query) {
-      queryEditorOptions.content = JSON.stringify(fb.c.query);
-      queryEditorOptions.cleanUp = true;
-      autorun = true;
+      queryEditorOptions.onReady = function() {
+        qe.resize();
+        $(window).resize(qe.resize);
+        if (autorun) qe.cuecard.queryEditor.run(false);
+
+        // fulhack to hide initial laying out
+        setTimeout(function() {
+          $("#qe-module, #the-output-pane").css("visibility", "visible");
+        }, 1);
+      };
+
+      qe.cuecard = CueCard.createComposition({
+        queryEditorElement: $('#the-query-editor')[0],
+        queryEditorOptions: queryEditorOptions,
+        outputPaneElement: $('#the-output-pane')[0],
+        outputPaneOptions: outputPaneOptions
+      });
+
+      qe.page_chrome_height =  $("#header").outerHeight() +
+                               $("#breadcrumb").outerHeight() +
+                               $("#page-header").outerHeight() +
+                               $("#footer").outerHeight() + 
+                               ($("#content").outerHeight() - $("#content").height());
+
+      $(window).bind("beforeunload", function(evt) {
+        // TODO - check whether query neeeds saving
+      });
+    },
+
+    resize: function() {
+      var innerHeight = $("body").outerHeight() - qe.page_chrome_height;
+      if (innerHeight) {
+        $("#qe-module").height(innerHeight);
+        if (qe.cuecard.outputPane) qe.cuecard.outputPane.layout(innerHeight);
+        if (qe.cuecard.queryEditor) qe.cuecard.queryEditor.layout(innerHeight);
+      }
+    },
+
+    save: function(e, query_id) {
+      window.alert("TODO: save "+ query_id);
     }
-
-    queryEditorOptions.onReady = function() {
-      resizePanes();
-      if (autorun) c.queryEditor.run(false);
-
-      // fulhack to hide initial laying out
-      setTimeout(function() {
-        $("#qe-module, #the-output-pane").css("visibility", "visible");
-      }, 1);
-    };
-
-    if (queryEditorOptions.content) {
-      outputPaneOptions.queryLoaded = true;
-    }
-
-    c = CueCard.createComposition({
-      queryEditorElement: $('#the-query-editor')[0],
-      queryEditorOptions: queryEditorOptions,
-      outputPaneElement: $('#the-output-pane')[0],
-      outputPaneOptions: outputPaneOptions
-    });
-
-    c.page_chrome_height =  $("#header").outerHeight() +
-                          $("#breadcrumb").outerHeight() +
-                          $("#page-header").outerHeight() +
-                          $("#footer").outerHeight() + 
-                          ($("#content").outerHeight() - $("#content").height());
-
-    $(window).bind("beforeunload", function(evt) {
-      saveQuery();
-    });
-  }
-
-  function resizePanes() {
-    var innerHeight = $("body").outerHeight() - c.page_chrome_height;
-    if (innerHeight) {
-      $("#qe-module").height(innerHeight);
-      if (c.outputPane) c.outputPane.layout(innerHeight);
-      if (c.queryEditor) c.queryEditor.layout(innerHeight);
-    }
+    
   };
-
-  function onResize() {
-    resizePanes();
-  }
-
-  function onToggleControlPane(state) {
-    $("span", this).addClass(state ? "remove-icon" : "add-icon").removeClass(state ? "add-icon" : "remove-icon");
-    $.localstore("cc_cp", (state ? "1" : "0"), false);
-  }
-
-  function onToggleHeaders(state) {
-    $("span", this).addClass(state ? "remove-icon" : "add-icon").removeClass(state ? "add-icon" : "remove-icon");
-  }
-
-  function saveQuery() {
-    // pompt
-    //window.alert("TO DO - implement save check");
-  }
-
-  function refreshCache() {
-    $.post(fb.acre.freebase.site_host + "/api/service/touch?mw_cookie_scope=domain", {}, null, function() {});
-  }
   
-  onLoad();
-  $(window).resize(onResize);
+  $(qe.init());
   
 })(jQuery, window.freebase);
 

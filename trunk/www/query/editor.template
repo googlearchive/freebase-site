@@ -39,12 +39,6 @@
   ${_("Query")}
 </acre:block>
 
-<acre:block def="acre_javascript_vars()">
-  <script>
-    SERVER.c = ${JSON.stringify(c)};
-  </script>
-</acre:block>
-
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="lib/editor-bundle.mf.css" />
   <link rel="stylesheet" type="text/css" href="editor.mf.css" />
@@ -67,17 +61,20 @@
           </a>	
           <ul class="links-menu submenu">
             <li class="row-menu-item">
-              <a href="javascript:void(0)" onmouseover="computeMqlReadLink(this);" target="_blank" class="icon-link">
+              <a href="javascript:void(0)" target="_blank" class="icon-link" title="${_('Click to get Mqlread URL')}" 
+                onmouseover="return fb.dispatch(event, fb.queryeditor.computeMqlReadLink, [], this);" >
                 ${_("MQLRead link")}
               </a>
             </li>
             <li class="row-menu-item">
-              <a href="javascript:void(0)" onmouseover="computeCompactLink(this);" target="_blank" class="icon-link">
+              <a href="javascript:void(0)" target="_blank" class="icon-link" title="${_('Click to get query URL')}" 
+                onmouseover="return fb.dispatch(event, fb.queryeditor.computeCompactLink, [], this);" >
                 ${_("Permanent Link")}
               </a>
             </li>
             <li class="row-menu-item">
-              <a href="javascript:void(0)" onclick="computeTinyCompactLink();" title="${_('Click to get tiny URL')}" class="icon-link">
+              <a href="javascript:void(0)" target="_blank" class="icon-link" title="${_('Click to get tiny URL')}" 
+                onclick="return fb.dispatch(event, fb.queryeditor.computeTinyCompactLink, [], this);" >
                 ${_("TinyURL")}
               </a>
             </li>

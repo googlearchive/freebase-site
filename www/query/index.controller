@@ -49,15 +49,12 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      validators.Json(params, "q", {if_empty: null}),
       validators.MqlId(params, "id", {if_empty: null}),
       validators.MqlId(params, "type", {if_empty: null})
     ];
   },
 
-  run: function(q, id, type) {
-    var c = {};
-
+  run: function(id, type) {
     if (id) {
       return query_for_saved_query(id)
         .then(function(q) {
@@ -69,8 +66,6 @@ var SPEC = {
           redirect(q);
         });
     }
-    
-    return c;
   }
   
 };

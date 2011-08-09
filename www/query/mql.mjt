@@ -31,6 +31,7 @@
 
 <acre:script>
   var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var _ = i18n.gettext;
 </acre:script>
@@ -53,7 +54,13 @@
     </a>
   </li>
   <li>
-    <a href="/queryeditor?id=${JSON.stringify(c.query)}" class="icon-link">
+    <acre:script>
+      var qopts = {
+        query: JSON.stringify(c.query),
+        autorun: 1
+      };
+    </acre:script>
+    <a href="${h.fb_url('/queryeditor', qopts)}" class="icon-link">
       <span class="icon-link">${_('Copy to Query Editor')}</span>
     </a>
   </li>
@@ -64,8 +71,6 @@
     <div id="the-query-editor" class="module-section"></div>
   </div>
   <div id="the-output-pane"></div>
-
-  <!-- additions to be moved inline once cuecard is loaded -->
   <div style="display:none">
     <link rel="download" id="codemirror-js"  href="lib/codemirror/codemirror-frame.mf.js" />
     <link rel="download" id="codemirror-css" href="lib/codemirror/codemirror-frame.mf.css" />

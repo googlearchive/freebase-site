@@ -120,7 +120,7 @@ function qualify_query(q) {
 };
 
 
-function query(q, props) {
+function collection(q, props) {
   var MID_PROP = "collection:mid";
   var exclude_props = {
     "/type/object/id" : true,

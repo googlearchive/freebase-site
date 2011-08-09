@@ -212,8 +212,8 @@ CueCard.OutputPane.prototype._setupIframe = function(iframe) {
       var id = $(this).attr("href");
       var offset = $(iframe).offset();
       var pos = $(this).position();
-      var top = offset.top + pos.top + $(this).height();
-      var left = offset.left + pos.left;
+      var top = offset.top + pos.top + $(this).height() - $(body).scrollTop();
+      var left = offset.left + pos.left - $(body).scrollLeft();
 
       var div = $("<div id='cuecard-outputPane-topic-popup'></div>")
         .css({

@@ -34,7 +34,7 @@ CueCard.OutputPane = function(elmt, options) {
   this._options = options || {};
   
   this._TABS = options.tabs || [
-    { name: 'List', key: "list"},
+    /* { name: 'List', key: "list"}, */
     { name: 'JSON',  key: "json"}
   ];
   

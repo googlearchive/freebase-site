@@ -31,6 +31,7 @@ var environment_rules = {
         {prefix:"/test_lib_validator",      app:"lib", script:"validator/test"},
         {prefix:"/test_site_queries",       app:"site", script:"queries/test"},
         {prefix:"/test_inspect",            app:"triples", script:"test"},
+        {prefix:"/test_sameas",             app:"sameas", script:"test"},
         {prefix:"/test_schema",             app:"schema", script:"test"},
         {prefix:"/test_topic",              app:"topic", script:"test"},
         {prefix:"/test_data",               app:"data", script:"test"},

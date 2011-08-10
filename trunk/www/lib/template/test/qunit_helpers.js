@@ -108,11 +108,9 @@ function run_tests($, fb) {
 
   test("reentrant_url", function() {
     var app_path = fb.acre.request.script.app.path
-      .replace(/^\/\//, "/")
-      .replace(".svn.freebase-site.googlecode.dev", "");
+      .replace(/^\/\//, "/");
     var lib_path = fb.acre.current_script.app.path
-      .replace(/^\/\//, "/")
-      .replace(".svn.freebase-site.googlecode.dev", "");
+      .replace(/^\/\//, "/");
 
     equal(h.reentrant_url("/PREFIX"), "/PREFIX" + app_path);
     equal(h.reentrant_url("/PREFIX", null), "/PREFIX" + app_path);
@@ -122,7 +120,7 @@ function run_tests($, fb) {
     equal(h.reentrant_url("/PREFIX", "lib/foo"), "/PREFIX" + lib_path + "/foo");
     equal(h.reentrant_url("/PREFIX", "/lib/foo"), "/PREFIX" + app_path + "/lib/foo");
     equal(h.reentrant_url("/PREFIX", "//schema.www.trunk.svn.freebase-site.googlecode.dev/foo"),
-          "/PREFIX/schema.www.trunk/foo");
+          "/PREFIX/schema.www.trunk.svn.freebase-site.googlecode.dev/foo");
     equal(h.reentrant_url("/PREFIX", "lib/foo", {a:1}),
           "/PREFIX" + lib_path + "/foo?a=1");
     equal(h.reentrant_url("/PREFIX", "foo/bar", {a:1}),
@@ -131,11 +129,9 @@ function run_tests($, fb) {
 
   test("ajax_url", function() {
     var app_path = fb.acre.request.script.app.path
-      .replace(/^\/\//, "/")
-      .replace(".svn.freebase-site.googlecode.dev", "");
+      .replace(/^\/\//, "/");
     var lib_path = fb.acre.current_script.app.path
-      .replace(/^\/\//, "/")
-      .replace(".svn.freebase-site.googlecode.dev", "");
+      .replace(/^\/\//, "/");
     var PREFIX = "/ajax";
 
     equal(h.ajax_url(), PREFIX + app_path);
@@ -146,18 +142,16 @@ function run_tests($, fb) {
     equal(h.ajax_url("lib/foo"), PREFIX + lib_path + "/foo");
     equal(h.ajax_url("/lib/foo"), PREFIX + app_path + "/lib/foo");
     equal(h.ajax_url("//1b.schema.www.trunk.svn.freebase-site.googlecode.dev/foo"),
-          PREFIX + "/1b.schema.www.trunk/foo");
+          PREFIX + "/1b.schema.www.trunk.svn.freebase-site.googlecode.dev/foo");
     equal(h.ajax_url("lib/permission/has_permission", {id:"foo"}),
           PREFIX + lib_path + "/permission/has_permission?id=foo");
   });
 
   test("static_url", function() {
     var app_path = fb.acre.request.script.app.path
-      .replace(/^\/\//, "/")
-      .replace(".svn.freebase-site.googlecode.dev", "");
+      .replace(/^\/\//, "/");
     var lib_path = fb.acre.current_script.app.path
-      .replace(/^\/\//, "/")
-      .replace(".svn.freebase-site.googlecode.dev", "");
+      .replace(/^\/\//, "/");
     var PREFIX = "/static";
 
     equal(h.static_url(), PREFIX + app_path);
@@ -168,7 +162,7 @@ function run_tests($, fb) {
     equal(h.static_url("lib/foo"), PREFIX + lib_path + "/foo");
     equal(h.static_url("/lib/foo"), PREFIX + app_path + "/lib/foo");
     equal(h.static_url("//1b.schema.www.trunk.svn.freebase-site.googlecode.dev/foo"),
-          PREFIX + "/1b.schema.www.trunk/foo");
+          PREFIX + "/1b.schema.www.trunk.svn.freebase-site.googlecode.dev/foo");
     equal(h.static_url("lib/template/freebase.mf.js", {id:"foo"}),
           PREFIX + lib_path + "/template/freebase.mf.js?id=foo");
   });

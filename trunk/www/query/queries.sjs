@@ -125,7 +125,9 @@ function collection(q, props) {
   var exclude_props = {
     "/type/object/id" : true,
     "/type/object/mid": true,
-    "/common/topic/article": true
+    "/type/object/name": true,
+    "/common/topic/article": true,
+    "/common/topic/image": true
   };
 
   q = h.isArray(q) ? q : [q];
@@ -141,7 +143,7 @@ function collection(q, props) {
       qualify_query(q[0]);
 
       if (!h.isArray(props) || !props.length) {
-        props = [];
+        props = ["/type/object/name", "/common/topic/image"];
         var constraints = decant_constraints(u.extend(true, {}, q[0]));
         for (var prop in q[0]) {
           var path = [prop];

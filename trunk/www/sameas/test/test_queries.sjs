@@ -29,24 +29,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var queries = acre.require("queries.sjs");
+acre.require('/test/lib').enable(this);
 
-var SPEC = {
+var h = acre.require("lib/helper/helpers.sjs");
+var q = acre.require("queries.sjs");
 
-  template: "sameas.mjt",
+acre.require("lib/test/mock").playback(this, "test/playback_test_queries.json");
 
-  validate: function(params) {
-    return [
-      params.object
-    ];
-  },
+test("keys", function() {
 
-  run: function(object) {
-    return {
-      object: object,
-//      weblinks: queries.organized_weblinks(object.id),
-      keys: queries.keys(object.id)
-    };
-  }
-};
+  function assert_key(keys, authority_id, ns_id, key, url) {
+    for (var i=0,l=keys.length; i<l; i++) {
+      var k = keys[i];
+      if (k.authority &&
+          k.authority.id === authority_id &&
+          k.ns === ns_id &&
+          k.key === key &&
+          k.url == url) {
+        return true;
+      }
+    }
+    return false;
+  };
 
+  var keys;
+  q.keys("/en/barack_obama")
+    .then(function(r) {
+      keys = r;
+    });
+  acre.async.wait_on_results();
+  ok(h.isArray(keys) && keys.length, "Got keys");
+  ok(assert_key(keys,
+                "/en/wikipedia",
+                "/wikipedia/en_id",
+                "534366",
+                "http://en.wikipedia.org/wiki/index.html?curid=534366"), "found wikipedia key");
+  ok(assert_key(keys,
+                "/en/facebook",
+                "/authority/facebook",
+                "barackobama",
+                "http://www.facebook.com/barackobama"), "found facebook key");
+});
+
+
+acre.test.report();

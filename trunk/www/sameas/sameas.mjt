@@ -55,14 +55,75 @@
 !!-->
 
 <acre:block def="page_content()">
- 
-  ${external_topics2()}
 
-  ${external_topics()}
-
-  ${webpages()}
+  ${topic_keys(c.keys)}
 
 </acre:block>
+
+<acre:block def="topic_keys(keys)">
+  <h1 class="table-title">${_("Topic Keys")} ( ${i18n_c.number(keys.length)} )</h1>
+  <table cellspacing="0" class="table table-sortable">  
+     <thead>
+      <tr>
+        <th class="column-header first {sorter:'string'}" scope="column"> 
+          <span class="sort-icon">${_("Authority")}</span>
+        </th>
+        <th class="column-header {sorter:'string'}" scope="column">
+          <span class="sort-icon">${_("Namespace")}</span>
+        </th>
+        <th class="column-header {sorter:'string'}" scope="column">
+          <span class="sort-icon">${_("Key")}</span>
+        </th>
+        <th class="column-header {sorter:'string'}" scope="column">
+          <span class="sort-icon">${_("Creator")}</span>
+        </th>
+        <th class="column-header {sorter:'datetime'}" scope="column">
+          <span class="sort-icon">${_("Date")}</span>
+        </th>
+      </tr>
+    </thead>
+     <tbody>
+       <acre:block for="key in keys">
+         ${topic_key(key)}
+       </acre:block>
+     </tbody>
+  </table>
+</acre:block>
+
+<acre:block def="topic_key(key)">
+  <tr>
+    <th class="row-header odd">
+      <acre:block if="key.authority">
+        <span class="authority a${key.authority.id.replace(/\//g, '-')}">
+          <a href="${h.fb_url(key.authority.id)}">
+            <strong>${i18n.display_name(key.authority)}</strong>
+          </a>  
+        </span>
+      </acre:block>
+      <acre:block else="">
+        <strong>-</strong>
+      </acre:block>
+    </th>
+    <td>
+      <a href="${h.fb_url(key.ns)}">${key.ns}</a>
+    </td>
+    <td class="odd">
+      <acre:block if="key.url">
+        <a href="${key.url}">${key.key}</a>
+      </acre:block>
+      <acre:block else="">
+        ${key.key}
+      </acre:block>
+    </td>
+    <td>
+      <a href="${h.fb_url(key.creator.id)}">${i18n.display_name(key.creator)}</a>
+    </td>
+    <td>
+      ${i18n_c.datetime(key.timestamp)}
+    </td>
+  </tr>
+</acre:block>
+
 
 <acre:block def="external_topics()">
     <h1 class="table-title">${_("External Topic IDs")}</h1>

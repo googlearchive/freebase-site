@@ -34,6 +34,82 @@ var i18n = acre.require("lib/i18n/i18n.sjs");
 var freebase = acre.require("lib/promise/apis").freebase;
 var deferred = acre.require("lib/promise/apis").deferred;
 
+function keys(id, lang, limit) {
+  lang = lang || i18n.lang;
+  limit = limit || 1000;
+  var q = {
+    id: id,
+    key: [{
+      namespace: {
+        id: null,
+        "/base/sameas/web_id/authority": {
+          optional: true,
+          limit: 1,
+          id: null,
+          name: i18n.mql.text_clause(lang)
+        },
+        "!/common/uri_template/ns": {
+          optional: true,
+          template: null
+        }
+      },
+      value: null,
+      link: {
+        timestamp: null,
+        creator: {
+          id: null,
+          name: i18n.mql.text_clause(lang)
+        }
+      },
+      limit: limit
+    }]
+  };
+  return freebase.mqlread(q)
+    .then(function(env) {
+      var keys = [];
+      env.result.key.forEach(function(k) {
+        var namespace = k.namespace;
+        var key = {
+          authority: namespace["/base/sameas/web_id/authority"],
+          ns: namespace.id,
+          key: k.value,
+          creator: k.link.creator,
+          timestamp: k.link.timestamp
+        };
+        var template = namespace["!/common/uri_template/ns"];
+        template = template && template.template;
+        if (template) {
+          key.template = template;
+          key.url = template.replace(/\{key\}/, k.value);
+        }
+        keys.push(key);
+      });
+      function compare_key(a, b) {
+        if (a.ns === b.ns) {
+          return b.key < a.key;
+        }
+        return b.ns < a.ns;
+      };
+      keys.sort(function(a, b) {
+        if (a.authority && b.authority) {
+          if (a.authority.id === b.authority.id) {
+            return compare_key(a, b);
+          }
+          return i18n.display_name(b.authority) < i18n.display_name(a.authority);
+        }
+        else if (a.authority) {
+          return -1;
+        }
+        else if (b.authority) {
+          return 1;
+        }
+        else {
+          return compare_key(a, b);
+        }
+      });
+    return keys;
+  });
+};
 
 /**
 
@@ -107,7 +183,7 @@ var _NO_CATEGORY = {
   name: "_NO_CATEGORY"
 };
 
-var _NO_AUTHORITY = { 
+var _NO_AUTHORITY = {
   id: "_NO_AUTHORITY",
   name: "_NO_AUTHORITY"
 };
@@ -116,7 +192,7 @@ function organized_weblinks(id) {
 
   return weblinks(id)
     .then(function(links) {
-    
+
       var known_authorities = {};
       var webpages = [];
       var authorities = [];
@@ -163,7 +239,7 @@ function organized_weblinks(id) {
         if(authorities[i].id === '_NO_AUTHORITY') {
           var to_move = authorities.splice(i, 1);
           authorities.push(to_move[0]);
-        } 
+        }
       }
 
       var weblinks = {
@@ -171,7 +247,7 @@ function organized_weblinks(id) {
         webpages: webpages
       }
       console.log('weblinks', weblinks);
-      return weblinks; 
+      return weblinks;
     });
 };
 

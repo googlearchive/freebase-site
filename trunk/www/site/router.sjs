@@ -47,17 +47,17 @@ function route(environment_rules) {
 
 /**
  * Deal with the special case of routing /
- *   Note: to debug the homepage, use the /homepage prefix rule 
+ *   Note: to debug the homepage, use the /homepage prefix rule
  *         (e.g., /homepage?acre.console=1)
  */
 function HomeRouter(app_labels) {
-  
+
   var route = this.route = function(req) {
     // This only applies to "/"
     if (req.path_info !== "/") {
       return false;
     }
-    
+
     // let object router handle ?inspect
     if ("inspect" in req.params) {
       return false;
@@ -67,14 +67,14 @@ function HomeRouter(app_labels) {
     acre.route(acre.form.build_url(app_labels["homepage"] + "/index.controller", req.params));
     acre.exit();
   };
-  
+
 };
 
 
 function ObjectRouter(app_labels) {
   var object_query = acre.require("queries/object.sjs");
   var freebase_object = acre.require("template/freebase_object.sjs");
-  
+
   var route_list = [];
   var types = {};
 
@@ -192,15 +192,15 @@ function init_site_rules(lib) {
   var rules = {};
 
   rules["routers"] = [
-    "host", 
-    ["home", HomeRouter], 
-    "static", 
-    "ajax", 
-    "prefix", 
+    "host",
+    ["home", HomeRouter],
+    "static",
+    "ajax",
+    "prefix",
     ["object", ObjectRouter]
   ];
 
-  // Trunk labels for all apps in this site. 
+  // Trunk labels for all apps in this site.
   // If you add a new app, you have to add it here first.
 
   rules["labels"] = {
@@ -232,14 +232,14 @@ function init_site_rules(lib) {
   };
 
   // Defaults to trunk lib if not specified.
-  if (!lib) { 
+  if (!lib) {
       lib = rules["labels"]["lib"];
   }
 
   // *********** PREFIX *************
 
-  rules["prefix"] = [ 
-        
+  rules["prefix"] = [
+
     {prefix:"/favicon.ico",        app:"lib", script: "template/favicon.ico"},
     {prefix:"/index",              url:"/", redirect: 301},
     {prefix:"/homepage",           app:"homepage", script:"index.controller"},
@@ -259,19 +259,19 @@ function init_site_rules(lib) {
     // Urls for administrative tools
     {prefix:"/admin",              app:"admin"},
     {prefix:"/app/tmt",            app:"tmt"},
-    
-    
+
+
     //
     // Redirects for legacy urls
     //
-    
+
     // Domain activity browser
     {prefix:"/view/mydomains",          url:"/explore", redirect:301},
     {prefix:"/site/data",               url:"/explore", redirect:301},
     {prefix:"/view/allDomains",         url:"/explore", redirect:301},
     {prefix:"/data",                    url:"/explore", redirect:301},
     {prefix:"/domain/users",            url:"/explore", redirect:301},
-    
+
     // Signin & Account - TODO: use google URLs
     {prefix:"/signin/signin",           url:"/", redirect:301},
     {prefix:"/signin/signin.html",      url:"/", redirect:301},
@@ -287,36 +287,36 @@ function init_site_rules(lib) {
     {prefix:"/signin/activate",         url:"/", redirect:301},
     {prefix:"/signin/authorize_token",  url:"/", redirect:301},
     {prefix:"/search",                  url:"/", redirect:301},
-    
+
     // Feedback
     {prefix:"/site/feedback",           url:"http://bugs.freebase.com", redirect:301},
     {prefix:"/view/feedback",           url:"http://bugs.freebase.com", redirect:301},
     {prefix:"/view/feedback_thanks",    url:"http://bugs.freebase.com", redirect:301},
-    
+
     // Queryeditor
     {prefix:"/app/queryeditor",         url:"/queryeditor", redirect:301},
     {prefix:"/tools/queryeditor",       url:"/queryeditor", redirect:301},
     {prefix:"/view/queryeditor",        url:"/queryeditor", redirect:301},
-    
+
     // Appeditor
     {prefix:"/tools/appeditor",         url:"/appeditor", redirect:301},
-    
+
     // Review queue - TODO
     {prefix:"/tools/flags/review",      url:"",                    redirect:301},
     {prefix:"/tools/pipeline/home",     url:"/tools/flags/review", redirect:301},
     {prefix:"/tools/pipeline/showtask", url:"/tools/flags/review", redirect:301},
-    
+
     // Policies
     {prefix:"/signin/tos",              url:"/policies/tos", redirect:301},
     {prefix:"/signin/cc",               url:"/policies/copyright", redirect:301},
     {prefix:"/signin/freebaseid",       url:"/policies/freebaseid", redirect:301},
     {prefix:"/signin/licensing",        url:"/policies/licensing", redirect:301},
     {prefix:"/signin/privacy",          url:"/policies/privacy", redirect:301},
-    
+
     // Misc old client
     {prefix:"/view/search",             url:"/", redirect:301},
     {prefix:"/newsfeed",                url:"/", redirect:301},
-    
+
     // Wiki
     {prefix:"/help",                    url:"http://wiki.freebase.com", redirect:301},
     {prefix:"/help/faq",                url:"http://wiki.freebase.com/wiki/FAQ", redirect:301},
@@ -331,45 +331,45 @@ function init_site_rules(lib) {
     {prefix:"/discuss/hub",             url:"http://wiki.freebase.com", redirect:301},
     {prefix:"/tools",                   url:"http://wiki.freebase.com", redirect:301},
     {prefix:"/build",                   url:"http://wiki.freebase.com", redirect:301},
-    
-    
+
+
     //
     // Redirects for old object views
     //
     {prefix:"/topic/",                  url:"/", redirect:301},
-    
+
     {prefix:"/view/schema/",            url:"/", params:{schema:""}, redirect:301},
     {prefix:"/tools/schema/",           url:"/", params:{schema:""}, redirect:301},
     {prefix:"/type/schema/",            url:"/", params:{schema:""}, redirect: 301},
-    
+
     {prefix:"/tools/explore/",          url:"/", params:{inspect:""}, redirect:301},
     {prefix:"/tools/explore2/",         url:"/", params:{inspect:""}, redirect:301},
     {prefix:"/inspect/",                url:"/", params:{inspect:""}, redirect:301},
-    
+
     {prefix:"/view/history/",           url:"/", params:{history:""}, redirect:301},
     {prefix:"/history/user/",           url:"/", params:{history:""}, redirect:301},
     {prefix:"/history/topic/",          url:"/", params:{history:""}, redirect:301},
     {prefix:"/history/view/",           url:"/", params:{history:""}, redirect:301},
-    
+
     {prefix:"/user/domains/",           url:"/", params:{domains:""}, redirect:301},
     {prefix:"/view/userdomains/",       url:"/", params:{domains:""}, redirect:301},
-    
+
     {prefix:"/apps/app/",               url:"/", redirect:301},
     {prefix:"/apps/",                   url:"/", redirect:301},
-    
+
     {prefix:"/helptopic/",              url:"/", redirect:301},
-    
+
     {prefix:"/discuss/threads/",        url:"/", redirect:301},
     {prefix:"/view/discuss/",           url:"/", redirect:301},
     {prefix:"/user/replies/",           url:"/", redirect:301},
     {prefix:"/view/mydiscuss/",         url:"/", redirect:301},
     {prefix:"/user/discuss/",           url:"/", redirect:301},
-    
+
     {prefix:"/import/list/",            url:"/", redirect:301},
     {prefix:"/importer/list/",          url:"/", redirect:301},
-    
+
     {prefix:"/edit/topic/",             url:"/", redirect:301},
-    
+
     {prefix:"/view/filter/",            url:"/", redirect:301},
     {prefix:"/view/domain/",            url:"/", redirect:301},
     {prefix:"/view/image/",             url:"/", redirect:301},
@@ -736,8 +736,8 @@ function init_site_rules(lib) {
           "promises": h.extend(true, [], DEFAULT_PROMISES)
         },
         {
-          "name": "On the Web",
-          "key": "web",
+          "name": "Keys",
+          "key": "keys",
           "app": "sameas",
           "script": "sameas.tab",
           "promises": h.extend(true, [], DEFAULT_PROMISES)

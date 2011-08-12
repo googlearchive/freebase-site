@@ -34,6 +34,7 @@ var apis = acre.require("lib/promise/apis.sjs");
 var deferred = apis.deferred;
 var freebase = apis.freebase;
 var th = acre.require("helpers.sjs");
+var fh = acre.require("lib/filter/helpers.sjs");
 
 function prop_counts(id) {
   var q = {
@@ -264,14 +265,14 @@ function apply_timestamp(clause, timestamp) {
     }
     var len = timestamp.length;
     if (len === 1) {
-      clause["filter:timestamp>="] = th.timestamp(timestamp[0]);
+      clause["filter:timestamp>="] = fh.timestamp(timestamp[0]);
     }
     else if (len === 2) {
       timestamp.sort(function(a,b) {
         return b < a;
       });
-      clause["filter:timestamp>="] = th.timestamp(timestamp[0]);
-      clause["filter:timestamp<"] = th.timestamp(timestamp[1]);
+      clause["filter:timestamp>="] = fh.timestamp(timestamp[0]);
+      clause["filter:timestamp<"] = fh.timestamp(timestamp[1]);
     }
   }
   return clause;

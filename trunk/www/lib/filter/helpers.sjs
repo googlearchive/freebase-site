@@ -31,6 +31,7 @@
 
 var h = acre.require("helper/helpers.sjs");
 var i18n = acre.require("i18n/i18n.sjs");
+var datejs = acre.require("datejs/date.sjs");
 
 /**
  * extract only the known global filters from filters dict.
@@ -211,4 +212,33 @@ function get_bar_graph_data(filters, prop_counts) {
     chart_data.push(data);
   });
   return chart_data;
+};
+
+
+
+
+/**
+ * Relative timestamp helpers
+ */
+var TIMESTAMPS = {
+ "today": function() {return datejs.Date.today();},
+ "yesterday" : function() {return datejs.Date.today().addDays(-1);},
+ "this week" : function() {return datejs.Date.today().moveToDayOfWeek(1, -1);},
+ "this month" : function() {return datejs.Date.today().moveToFirstDayOfMonth();},
+ "this year" : function() {
+   var t = datejs.Date.today();
+   t.set({day:1,month:0,year:t.getFullYear()});
+   return t;
+ }
+};
+
+/**
+ * if ts is defined in TIMESTAMPS, return the actual timestamp
+ * otherwise just return ts;
+ */
+function timestamp(ts) {
+  if (ts in TIMESTAMPS) {
+    return TIMESTAMPS[ts]();
+  }
+  return ts;
 };

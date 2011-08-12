@@ -36,31 +36,47 @@
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
-  var queries = acre.require("queries.sjs");
+  var filter_components = acre.require("lib/filter/components.mjt");
+  var fh = acre.require("lib/filter/helpers.sjs");
 </acre:script>
 
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="sameas.mf.css" />
 </acre:block>
 
-<!!--
-<acre:block def="nav_utilities()">
-  <li>
-    <acre:script>
-      var params = {q:JSON.stringify(queries.weblinks_mql(c.object.id)), autorun:true, extended:1};
-    </acre:script>
-    <a href="${h.fb_url('/queryeditor', params)}" class="icon-link"><span class="query-icon">${_('Build Query')}</span></a>
-  </li>
-</acre:block>
-!!-->
 
 <acre:block def="page_content()">
 
-  ${topic_keys(c.keys)}
+  <div class="column nav">
+    <div class="module">
+      <h2 class="module-title">
+        <a href="javascript:void(0);" class="trigger">Collapse column</a>
+        <span>Filter this data</span>
+      </h2>
+      <div class="module-section">
+        ${filter_components.as_of_time_filter(c.object.id, c.filters)}
+      </div>
+    </div>
+    <div class="module">
+      <div class="module-section alt">
+        ${filter_components.timestamp_filter(c.id, c.filters)}
+      </div>
+      <div class="module-section alt">
+        ${filter_components.creator_filter(c.id, c.filters)}
+      </div>      
+    </div>
+  </div>    
+
+  <div class="column">
+    ${topic_keys()}
+  </div>
 
 </acre:block>
 
-<acre:block def="topic_keys(keys)">
+<acre:block def="topic_keys()">
+  <acre:script>
+    var keys = c.keys;
+  </acre:script>
   <h1 class="table-title">${_("Topic Keys")} ( ${i18n_c.number(keys.length)} )</h1>
   <table cellspacing="0" class="table table-sortable">  
      <thead>
@@ -250,4 +266,5 @@
 
 <acre:block def="footer_script()">
   <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+  <script src="sameas.mf.js"></script>
 </acre:block>

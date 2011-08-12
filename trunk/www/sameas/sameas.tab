@@ -29,24 +29,53 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var h = acre.require("lib/helper/helpers.sjs");
 var queries = acre.require("queries.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var filters = acre.require("lib/filter/filters.sjs");
+var filter_queries = acre.require("lib/filter/queries.sjs");
+var filter_validators = acre.require("lib/filter/validators.sjs");
+
+var myfilters = {
+  timestamp: {
+    validator: validators.MultiValue,
+    options: {validator: filter_validators.Timestamp, if_empty:null}
+  },
+  creator: {
+    validator: validators.MultiValue,
+    options: {validator: validators.MqlId, if_empty:null}
+  }
+};
 
 var SPEC = {
 
   template: "sameas.mjt",
 
   validate: function(params) {
+
+console.log("params", params);
+
     return [
-      params.object
+      params.object,
+      (function() {
+        var f = filters.validate(params, myfilters);
+        f[params.current_tab.key] = "";
+        return f;
+      })()
     ];
   },
 
-  run: function(object) {
-    return {
-      object: object,
-//      weblinks: queries.organized_weblinks(object.id),
-      keys: queries.keys(object.id)
-    };
+  run: function(object, f) {
+
+    return queries.keys(object.id)
+      .then(function(keys) {
+        return {
+          id: object.id,
+          object: object,
+          filters: f,
+          keys: keys
+        };
+      });
   }
 };
 

@@ -79,12 +79,4 @@ test("link_class", function() {
   equal(h.link_class({valid:true, operation:"update"}), "valid update");
 });
 
-
-test("timestamp", function() {
-  ["today", "yesterday", "this week", "this month", "this year"].forEach(function(ts) {
-    same(h.timestamp(ts), h.TIMESTAMPS[ts]());
-  });
-  same(h.timestamp("2006"), "2006");
-});
-
 acre.test.report();

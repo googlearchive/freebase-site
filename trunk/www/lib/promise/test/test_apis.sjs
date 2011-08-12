@@ -124,9 +124,9 @@ test("urlfetch_timeout", function() {
 
 test("mqlread_success", function() {
   // Basic mqlread should call the callback
-  freebase.mqlread({id: "/en/bob_dylan", name: null})
+  freebase.mqlread({id: "/en/bob_dylan", mid: null})
     .then(function(envelope) {
-      equals(envelope.result.name, "Bob Dylan");
+      equals(envelope.result.mid, "/m/01vrncs");
     }, function(error) {
       ok(false, "Mqlread returned an error: "+error);
     });

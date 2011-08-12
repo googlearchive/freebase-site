@@ -363,13 +363,16 @@ $(function() {
                   });
            });
 
-    test("as_of_time=2008", 1, function() {
-           test_suggest_result({filter:"(any type:/music/artist)", as_of_time:2008},"lady gaga", function(id) {
-                                 return id != lady_gaga_id;
-                               });
-         });
-    test("as_of_time=2010", 1, function() {
-           test_suggest_result({filter:"(any type:/music/artist)", as_of_time:2010},"lady gaga", lady_gaga_id);
-         });
+    if (false) {
+
+      test("as_of_time=2008", 1, function() {
+             test_suggest_result({filter:"(any type:/music/artist)", as_of_time:2008},"lady gaga", function(id) {
+                                   return id != lady_gaga_id;
+                                 });
+           });
+      test("as_of_time=2010", 1, function() {
+             test_suggest_result({filter:"(any type:/music/artist)", as_of_time:2010},"lady gaga", lady_gaga_id);
+           });
+    }
   });
 

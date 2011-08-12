@@ -28,54 +28,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-var h = acre.require("lib/helper/helpers.sjs");
 
-/**
- * return a triples data structure.
- * where s=subject, p=predicate and o=object.
- * In addition, a mql query representing the triple is provided.
- *
- * @param subject:String - mql id
- * @param predicate:String - mql property
- * @param object:Object - the object {id:String} or {value:String, lang:String(optional), namespace:String(optional)}
- */
-function triple(subject, predicate, object, namespace, value) {
-  var o = {
-    s: subject,
-    p: predicate
+(function($, fb) {
+
+  var sameas = fb.sameas = {
+
+    init: function() {
+
+      // Initialize filter menu collapse/expand
+      $(".column.nav").collapse_module({modules: ".module", column: ".section"});
+
+      // Initialize user/creator suggest input
+      $(":text[name=creator]")
+        .suggest(fb.suggest_options.any("/type/user"))
+        .bind("fb-select", function(e, data) {
+          $(this).val(data.id)
+            .parents("form:first").submit();
+        });
+
+      // Initialize filters
+      sameas.init_row_menu();
+    }
   };
-  if (namespace && value) {
-    o.o = {namespace:namespace, value:value};
-  }
-  else if ("id" in object) {
-    o.o = {id: object.id};
-  }
-  else if ("value" in object) {
-    o.o = {value: object.value};
-    ["lang", "namespace"].forEach(function(key) {
-      if (key in object) {
-        o.o[key] = object[key];
-      }
-    });
-  }
-  o.mql = {id: subject};
-  o.mql[predicate] = h.extend({}, o.o);
-  o.mql = JSON.stringify(o.mql);
-  return o;
-};
 
-function is_valid(link) {
-  return (link.valid === false) ? false : true;
-};
+  $(sameas.init);
 
-function valid_class(link) {
-  return is_valid(link) ? "valid": "invalid";
-};
-
-function link_class(link) {
-  var operation = "";
-  if (link.operation != null) {
-    operation = link.operation;
-  }
-  return h.trim(h.sprintf("%s %s", valid_class(link), operation));
-};
+})(jQuery, window.freebase);

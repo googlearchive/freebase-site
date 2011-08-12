@@ -51,7 +51,11 @@ var SPEC = {
   validate: function(params) {
     return [
       params.object,
-      filters.validate(params, topic_filters),
+      (function() {
+        var f = filters.validate(params, topic_filters);
+        f[params.current_tab.key] = "";
+        return f;
+      })(),
       params.notable_types  // promise not yet resolved
     ];
   },

@@ -72,7 +72,6 @@
       </h2>
       <div class="module-section" acre:if="c.prop_counts">
         <acre:script>
-          c.filters.inspect = "";
           var hide_counts = c.filters.as_of_time ||
             (c.filters.timestamp && c.filters.timestamp.length) ||
             (c.filters.creator && c.filters.creator.length);
@@ -85,10 +84,10 @@
     </div>
     <div class="module">
       <div class="module-section alt">
-        ${components.timestamp_filter(c.id, c.filters)}
+        ${filter_components.timestamp_filter(c.id, c.filters)}
       </div>
       <div class="module-section alt">
-        ${components.creator_filter(c.id, c.filters)}
+        ${filter_components.creator_filter(c.id, c.filters)}
       </div>
       <div class="module-section alt" id="limit-slider">
         <acre:script>

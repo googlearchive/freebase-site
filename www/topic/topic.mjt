@@ -75,7 +75,6 @@
       </h2>
       <div class="module-section" acre:if="c.prop_counts">
         <acre:script>
-          c.filters.view = "";
           var hide_counts = c.filters.as_of_time;
         </acre:script>
         ${filter_components.prop_counts_filter(c.id, c.filters, c.prop_counts, hide_counts)}

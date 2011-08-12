@@ -29,68 +29,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-acre.require('/test/lib').enable(this);
-
 var h = acre.require("helper/helpers.sjs");
+var validators = acre.require("validator/validators.sjs");
 var fh = acre.require("filter/helpers.sjs");
 
-test("global_filters", function() {
-  var filters = {
-    domain: "domain",
-    as_of_time: null,
-    foo: "bar"
-  };
-  same(fh.global_filters(filters), {domain:"domain"});
-  same(fh.global_filters(), {});
-  same(fh.global_filters(null), {});
-  same(fh.global_filters({}), {});
-  same(fh.global_filters({
-    domain: null,
-    type: null,
-    property: null,
-    as_of_time: null
-  }), {});
+/**
+ * Like validators.Datejs but handles strings/keys in fh.TIMESTAMPS (e.g, "this week|month|year")
+ */
+validators.Validator.factory(this, "Timestamp", {
+  "string": function(val, options) {
+    if (val in fh.TIMESTAMPS) {
+      return val;
+    }
+    else {
+      return validators.Datejs(val, h.extend({}, options, {date:false}));
+    }
+  }
 });
-
-test("add_filter", function() {
-  var filters = {
-    limit: "500",
-    timestamp: "today",
-    as_of_time: "2010",
-    history: "1",
-    property: "/type/object/name"
-  };
-  var params = fh.add_filter(filters, "timestamp", "yesterday");
-  same(params, h.extend({}, filters, {timestamp: "yesterday"}));
-
-  params = fh.add_filter(filters, "hello", "world");
-  same(params, h.extend({}, filters, {hello: "world"}));
-});
-
-test("remove_filter", function() {
-  var filters = {
-    limit: "500",
-    timestamp: "today",
-    as_of_time: "2010",
-    history: "1",
-    property: "/type/object/name"
-  };
-  var params = fh.remove_filter(filters, "timestamp");
-  delete filters.timestamp;
-  same(params, filters);
-
-  filters = {
-    creator: ["/user/foo", "/user/bar"]
-  };
-  params = fh.remove_filter(filters, "creator", "/user/bar");
-  same(params, {creator: ["/user/foo"]});
-});
-
-test("timestamp", function() {
-  ["today", "yesterday", "this week", "this month", "this year"].forEach(function(ts) {
-    same(fh.timestamp(ts), fh.TIMESTAMPS[ts]());
-  });
-  same(fh.timestamp("2006"), "2006");
-});
-
-acre.test.report();

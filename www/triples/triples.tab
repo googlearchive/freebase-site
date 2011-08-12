@@ -33,25 +33,10 @@ var h = acre.require("lib/helper/helpers.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var filters = acre.require("lib/filter/filters.sjs");
 var filter_queries = acre.require("lib/filter/queries.sjs");
+var filter_validators = acre.require("lib/filter/validators.sjs");
 var th = acre.require("helpers.sjs");
 
 var queries = acre.require("queries");
-
-var scope = this;
-
-/**
- * Like validators.Datejs but handles strings/keys in th.TIMESTAMPS (e.g, "this week|month|year")
- */
-validators.Validator.factory(scope, "TimestampValidator", {
-  "string": function(val, options) {
-    if (val in th.TIMESTAMPS) {
-      return val;
-    }
-    else {
-      return validators.Datejs(val, h.extend({}, options, {date:false}));
-    }
-  }
-});
 
 var inspect_filters = {
   limit: {
@@ -64,7 +49,7 @@ var inspect_filters = {
   },
   timestamp: {
     validator: validators.MultiValue,
-    options: {validator: TimestampValidator, if_empty:null}
+    options: {validator: filter_validators.Timestamp, if_empty:null}
   },
   creator: {
     validator: validators.MultiValue,
@@ -80,11 +65,18 @@ var SPEC = {
   validate: function(params) {
     return [
       params.object,
-      filters.validate(params, inspect_filters)
+      (function() {
+        var f = filters.validate(params, inspect_filters);
+        f[params.current_tab.key] = "";
+        return f;
+      })()
     ];
   },
 
   run: function(object, f) {
+
+console.log("triples filters", f);
+
     var id = object.id;
     return {
       id: id,

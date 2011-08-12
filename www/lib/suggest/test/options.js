@@ -320,12 +320,12 @@ $(function() {
               function() {
                 if ($(">li", inst.list).length) {
                   clearTimeout(t);
-                  var name = $("li:first .fbs-item-name label", inst.list).text();
+                  var id = $("li:first", inst.list).data("data.suggest").id;
                   if (typeof expected === "function") {
-                    ok(expected(name));
+                    ok(expected(id));
                   }
                   else {
-                    equals(name, expected);
+                    equals(id, expected);
                   }
                   start();
                 }
@@ -342,30 +342,34 @@ $(function() {
       "(should type:/people/person)"
     ];
 
+    var steven_spielberg_id = "/m/06pj8";
+    var saving_priv_ryan_id = "/m/07024";
+    var lady_gaga_id = "/m/0478__m";
+
     $.each(filters, function(i, filter) {
       test("filter=" + filter, 1, function() {
-        test_suggest_result({filter: filter}, "bob dylan", "Bob Dylan");
+        test_suggest_result({filter: filter}, "bob dylan", bob_dylan_id);
       });
     });
 
-    $.each([[{"/film/film/directed_by": "Steven Spielberg"}], JSON.stringify([{"/film/film/directed_by": "Steven Spielberg"}])],
+    $.each([[{"/film/film/directed_by": "Steven Spielberg"}], JSON.stringify([{"/film/film/directed_by": {id:steven_spielberg_id}}])],
            function(i,n) {
              var name = n;
              if (typeof n !== "string") {
                n = JSON.stringify(n);
              }
              test("mql_filter=" + n, 1, function() {
-                    test_suggest_result({filter:"(any type:/film/film)", mql_filter:n},"saving", "Saving Private Ryan");
+                    test_suggest_result({filter:"(any type:/film/film)", mql_filter:n},"saving", saving_priv_ryan_id);
                   });
            });
 
     test("as_of_time=2008", 1, function() {
-           test_suggest_result({filter:"(any type:/music/artist)", as_of_time:2008},"lady gaga", function(name) {
-                                 return name != "Lady Gaga";
+           test_suggest_result({filter:"(any type:/music/artist)", as_of_time:2008},"lady gaga", function(id) {
+                                 return id != lady_gaga_id;
                                });
          });
     test("as_of_time=2010", 1, function() {
-           test_suggest_result({filter:"(any type:/music/artist)", as_of_time:2010},"lady gaga", "Lady Gaga");
+           test_suggest_result({filter:"(any type:/music/artist)", as_of_time:2010},"lady gaga", lady_gaga_id);
          });
   });
 

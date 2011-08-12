@@ -41,7 +41,7 @@ $(function() {
              .trigger("textchange");
          });
 
-    test("fb-select", 3, function() {
+    test("fb-select", 2, function() {
            var o = $.extend({}, default_options, {filter:"(any type:/music/artist)"});
            test_input1.suggest(o);
            var inst = get_instance();
@@ -52,7 +52,6 @@ $(function() {
              .bind("fb-select", function(e, data) {
                      clearTimeout(timer);
                      ok(data);
-                     equals(data.name, "Bob Dylan");
                      equals(data.id, bob_dylan_id);
                      start();
                    })

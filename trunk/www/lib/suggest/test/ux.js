@@ -2,7 +2,7 @@ $(function() {
     module("ux", module_options);
 
     function test_select(name, onshow) {
-      test("select: " + name, 3, function() {
+      test("select: " + name, 2, function() {
              var o = $.extend({}, default_options, {filter:"(any type:/music/artist)"});
              test_input1.suggest(o);
              var inst = get_instance();
@@ -13,7 +13,6 @@ $(function() {
                .bind("fb-select", function(e, data) {
                        clearTimeout(t);
                        ok(data);
-                       equals(data.name, "Bob Dylan");
                        equals(data.id, bob_dylan_id);
                        start();
                      })
@@ -69,7 +68,7 @@ $(function() {
                   simulate_keypress(test_input1, $.simulate.VK_ENTER);
                 });
 
-    test("select: flyout", 3, function() {
+    test("select: flyout", 2, function() {
            var o = $.extend({}, default_options, {filter:"(any type:/music/artist)"});
            test_input1.suggest(o);
            var inst = get_instance();
@@ -80,7 +79,6 @@ $(function() {
              .bind("fb-select", function(e, data) {
                      clearTimeout(t);
                      ok(data);
-                     equals(data.name, "Bob Dylan");
                      equals(data.id, bob_dylan_id);
                      start();
                    })

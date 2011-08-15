@@ -1,0 +1,21 @@
+<acre:script>
+  acre.response.status = 404;
+</acre:script>
+
+<acre:block def="title()">
+  Not Found
+</acre:block>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="error/error.mf.css" />
+</acre:block>
+
+<acre:block def="content_body()">
+  <div id="content">
+    <div class="page-meta">
+      
+      NOT FOUND
+
+    </div>
+  </div>
+</acre:block>

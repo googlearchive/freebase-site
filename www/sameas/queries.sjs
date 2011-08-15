@@ -33,8 +33,9 @@ var h = acre.require("lib/helper/helpers.sjs");
 var i18n = acre.require("lib/i18n/i18n.sjs");
 var freebase = acre.require("lib/promise/apis").freebase;
 var deferred = acre.require("lib/promise/apis").deferred;
+var fh = acre.require("lib/filter/helpers.sjs");
 
-function keys(id, lang, limit) {
+function keys(id, lang, limit, filters) {
   lang = lang || i18n.lang;
   limit = limit || 1000;
   var q = {
@@ -64,7 +65,8 @@ function keys(id, lang, limit) {
       limit: limit
     }]
   };
-  return freebase.mqlread(q)
+  apply_filters(q, filters);
+  return freebase.mqlread(q, mqlread_options(filters))
     .then(function(env) {
       var keys = [];
       env.result.key.forEach(function(k) {
@@ -111,191 +113,69 @@ function keys(id, lang, limit) {
   });
 };
 
-/**
-
-[{
-  "id": "/en/bob_dylan",
-  "/common/topic/weblink": [{
-    "key":         null,
-    "url":         null,
-    "template": {
-      "id":       null,
-      "name":     null,
-      "ns": {
-        "id": null,
-        "/base/sameas/web_id/authority": {
-          "id":       null,
-          "optional": true
-        }
-      },
-      "template": null
-    },
-    "category": {
-      optional: true,
-      id: null
-    },
-    "description": null
-  }]
-}]
-
- */
-
-function weblinks(id) {
-  var q = weblinks_mql(id);
-  return freebase.mqlread(q, {extended:1})
-    .then(function(env) {
-      return env.result["/common/topic/weblink"];
-    });
-};
-
-function weblinks_mql(id) {
-  return {
-    id: id,
-    "/common/topic/weblink": [{
-      optional: true,
-      key: null,
-      url: null,
-      template: {
-        id: null,
-        ns: {
-          id: null,
-          "/base/sameas/web_id/authority": {
-            optional: true,
-            id: null,
-            name: i18n.mql.query.name()
-          }
-        },
-        template: null
-      },
-      category: {
-        optional: true,
-        id: null,
-        name: i18n.mql.query.name()
-      },
-      description: null
-    }]
-  };
-};
-
-
-var _NO_CATEGORY = {
-  id: "_NO_CATEGORY",
-  name: "_NO_CATEGORY"
-};
-
-var _NO_AUTHORITY = {
-  id: "_NO_AUTHORITY",
-  name: "_NO_AUTHORITY"
-};
-
-function organized_weblinks(id) {
-
-  return weblinks(id)
-    .then(function(links) {
-
-      var known_authorities = {};
-      var webpages = [];
-      var authorities = [];
-
-      links.forEach(function(link) {
-        // construct the weblink object
-        var weblink = {
-          key: link.key,
-          url: link.url,
-          description: link.description,
-          template: link.template.template,
-          ns: link.template.ns.id,
-          category: link.category
-        };
-
-        // attach weblink object to authorities if it's topic equivalent
-        if(link.category && link.category.id === '/en/topic_equivalent') {
-          var authority = link.template.ns["/base/sameas/web_id/authority"] || _NO_AUTHORITY;
-          var existing = known_authorities[authority.id];
-
-          // If we haven't seen this authority yet add to the list
-          if(!existing) {
-            existing = known_authorities[authority.id] = h.extend({}, authority, {weblinks:[]});
-            authorities.push(existing);
-          }
-
-          // push the weblink to the appropriate authority
-          existing.weblinks.push(weblink);
-        }
-
-        // otherwise, attach to regular webpage object
-        else {
-          webpages.push(weblink);
-        }
-      });
-
-      // sort weblinks within each authority alphabetically
-      authorities.forEach(function(authority) {
-        authority.weblinks.sort(weblink_sort);
-      });
-
-      // move unknown authorites to the end of the list for display
-      for(i=0; i < authorities.length; i++) {
-        if(authorities[i].id === '_NO_AUTHORITY') {
-          var to_move = authorities.splice(i, 1);
-          authorities.push(to_move[0]);
-        }
-      }
-
-      var weblinks = {
-        authorities: authorities,
-        webpages: webpages
-      }
-      console.log('weblinks', weblinks);
-      return weblinks;
-    });
-};
-
-function weblinks_by_category(id) {
-
-  return weblinks(id)
-    .then(function(links) {
-      var seen = {};
-      var categories = [];
-      links.forEach(function(link) {
-        var category = link.category || _NO_CATEGORY;
-        var existing = seen[category.id];
-        if (!existing) {
-          existing = seen[category.id] = h.extend({}, category, {weblinks:[]});
-          categories.push(existing);
-        }
-
-        var weblink = {
-          key: link.key,
-          url: link.url,
-          description: link.description,
-          template: link.template.template,
-          ns: link.template.ns.id,
-          authority: link.template.ns["/base/sameas/web_id/authority"]
-        };
-        existing.weblinks.push(weblink);
-      });
-      categories.forEach(function(category) {
-        category.weblinks.sort(weblink_sort);
-      });
-      return categories.sort(category_sort);
-    });
-};
-
-function weblink_sort(a, b) {
-  if (a.authority && b.authority) {
-    return b.authority.id < a.authority.id;
+function apply_filters(q, filters) {
+  if (!filters) {
+    return q;
   }
-  else if (b.authority) {
-    return 1;
-  }
-  else if (a.authority) {
-    return -1;
-  }
-  return b.ns < a.ns;
+  // We don't want to filter by authority in MQL since we want to get
+  // all authority count.
+  // Authority filter will be applied in template when we render
+  //apply_authority(q, filters.authority);
+  apply_timestamp(q, filters.timestamp);
+  apply_creator(q, filters.creator);
 };
 
-function category_sort(a, b) {
-  return b.id < a.id;
+function apply_authority(q, authority) {
+  if (authority) {
+    if (!h.isArray(authority)) {
+      authority = [authority];
+    }
+    if (authority.length) {
+      q.key[0].namespace["/base/sameas/web_id/authority"]["filter:id|="] = authority;
+    }
+  }
+  return q;
 };
 
+function apply_timestamp(q, timestamp) {
+  if (timestamp) {
+    if (!h.isArray(timestamp)) {
+      timestamp = [timestamp];
+    }
+    var len = timestamp.length;
+    if (len === 1) {
+      q.key[0].link["filter:timestamp>="] = fh.timestamp(timestamp[0]);
+    }
+    else if (len === 2) {
+      timestamp.sort(function(a,b) {
+        return b < a;
+      });
+      q.key[0].link["filter:timestamp>="] = fh.timestamp(timestamp[0]);
+      q.key[0].link["filter:timestamp<"] = fh.timestamp(timestamp[1]);
+    }
+  }
+  return q;
+};
+
+function apply_creator(q, creator) {
+  if (creator) {
+    if (!h.isArray(creator)) {
+      creator = [creator];
+    }
+    if (creator.length) {
+      q.key[0].link.creator["filter:id|="] = creator;
+    }
+  }
+  return q;
+};
+
+function mqlread_options(filters) {
+  var options = {};
+  if (!filters) {
+    return options;
+  }
+  if (filters.as_of_time) {
+    options.as_of_time = filters.as_of_time;
+  }
+  return options;
+};

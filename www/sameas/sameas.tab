@@ -30,6 +30,7 @@
  */
 
 var h = acre.require("lib/helper/helpers.sjs");
+var i18n = acre.require("lib/i18n/i18n.sjs");
 var queries = acre.require("queries.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var filters = acre.require("lib/filter/filters.sjs");
@@ -37,6 +38,10 @@ var filter_queries = acre.require("lib/filter/queries.sjs");
 var filter_validators = acre.require("lib/filter/validators.sjs");
 
 var myfilters = {
+  authority: {
+    validator: validators.MultiValue,
+    options: {validator: validators.MqlId, if_empty:null}
+  },
   timestamp: {
     validator: validators.MultiValue,
     options: {validator: filter_validators.Timestamp, if_empty:null}
@@ -52,9 +57,6 @@ var SPEC = {
   template: "sameas.mjt",
 
   validate: function(params) {
-
-console.log("params", params);
-
     return [
       params.object,
       (function() {
@@ -66,16 +68,59 @@ console.log("params", params);
   },
 
   run: function(object, f) {
-
-    return queries.keys(object.id)
+    return queries.keys(object.id, i18n.lang, null, f)
       .then(function(keys) {
         return {
           id: object.id,
           object: object,
           filters: f,
-          keys: keys
+          keys: filter_authority(keys, f),
+          authority_count: get_count(keys)
         };
       });
   }
 };
 
+// get count by authorities
+function get_count(keys) {
+  var authorities = [];
+  var authorities_count = {};
+  keys.forEach(function(key) {
+    var a = key.authority;
+    if (a) {
+      var c = authorities_count[a.id];
+      if (!c) {
+        c = authorities_count[a.id] = {name:a.name, id:a.id, count:0};
+        authorities.push(c);
+      }
+      c.count += 1;
+    }
+  });
+  return authorities.sort(function(a, b) {
+    if (b.count === a.count) {
+      return i18n.display_name(b) < i18n.display_name(a);
+    }
+    else {
+      return b.count - a.count;
+    }
+  });
+};
+
+
+function filter_authority(keys, f) {
+  if (f.authority && f.authority.length) {
+    var authorities = {};
+    f.authority.forEach(function(a) {
+      authorities[a] = 1;
+    });
+    var filtered = [];
+    keys.forEach(function(key) {
+      var a = key.authority;
+      if (a && authorities[a.id]) {
+        filtered.push(key);
+      }
+    });
+    return filtered;
+  }
+  return keys;
+};

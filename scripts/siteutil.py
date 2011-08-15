@@ -1223,69 +1223,6 @@ class Context():
     return ' '.join(duration)
 
 
-  def resolve_config(self, host=None):
-    """Returns the configuration target.
-
-    Will return the appropriate configuration target (e.g. sandbox-freebasesite) as a string.
-    If host is passed as an argument, it will read through all the project.*.conf files in the
-    given site appengine-config directory (optionally passed with --site_dir) and match the
-    ACRE_FREEBASE_SITE_DIR value with the passed host.
-
-    Otherwise, it will just return whatever was passed with the -c flag (config).
-
-    Arguments
-    host: a string of a hostname (e.g. dev.sandbox-freebase.com).
-
-    Returns
-    The configuration target as a string (e.g. sandbox-freebasesite).
-
-    """
-
-    site_dir = self.resolve_site_dir()
-
-    if not (self.options.config or host):
-        return self.error("You have to specify a valid configuration with -c or hostname with --host.")
-
-    actual_config = None
-
-    if not host:
-      return self.options.config
-
-    else:
-        
-      config_dir = os.path.join(site_dir, "appengine-config")
-
-      # Find the appengine-config directory if it exists
-      if os.path.isdir(config_dir):
-
-        # Loop through all the files and find the project.*.conf files
-        for f in os.listdir(config_dir):
-          parts = f.split(".")
-          if len(parts) > 1 and parts[0] == "project" and parts[-1] == "conf":
-            config = self.read_config(os.path.join(config_dir, f))
-
-            # If this configuration value matches what was passed in, then the get the real config
-            # value from the filename of the project.<conf>.conf file.
-            if config.get("ACRE_FREEBASE_SITE_ADDR", None) == host:
-              actual_config = parts[-2]
-              break
-
-
-    if not actual_config:
-        return self.error("Could not derive the actual configuration value from the host: %s." % host)
-
-    self.options.config = actual_config
-    return self.options.config
-
-  def resolve_site_dir(self):
-    """Returns the path to a freebase-site checkout directory"""
-
-    if (not self.options.site_dir) and os.path.isdir(os.path.join("..", "..", "appengine-config")):
-      self.options.site_dir = os.path.realpath(os.path.join("..", ".."))
-
-    return self.options.site_dir
-
-
   def fetch_url(self,url, isjson=False, tries=3, acre=False, silent=False, wait=1):
 
     #request = urllib2.Request(url, headers = {'Cache-control': 'no-cache' })
@@ -1949,9 +1886,9 @@ class Acre:
             app = App.GetFromPath(c, app_id)
             apps.add(app)
 
-            lib_dependency = app.lib_dependency()
-            if lib_dependency:
-                apps.add(lib_dependency)
+            d_app = app.dependency()
+            if d_app:
+              apps.add(d_app)
 
     return apps
 
@@ -2159,6 +2096,89 @@ class Site:
     c.log('Site checkout done')
 
     return True
+
+  @classmethod
+  def ResolveConfig(cls, context, config, site_dir=None, host=None):
+    """Returns the configuration target.
+
+    Will return the appropriate configuration target (e.g. sandbox-freebasesite) as a string.
+    If host is passed as an argument, it will read through all the project.*.conf files in the
+    given site appengine-config directory (optionally passed with --site_dir) and match the
+    ACRE_FREEBASE_SITE_DIR value with the passed host.
+
+    Otherwise, it will just return whatever was passed with the -c flag (config).
+
+    Arguments
+      config: string - the configuration name (e.g. sandbox-freebasesite)
+      site_dir: string - the local directory of a site installation
+      host: a string of a hostname (e.g. dev.sandbox-freebase.com).
+
+    Returns
+      The configuration target as a string (e.g. sandbox-freebasesite).
+
+    """
+
+    site_dir = cls.ResolveSiteDir(site_dir)
+
+    if not (config or host):
+        return context.error("You have to specify a valid configuration with -c or hostname with --host.")
+
+    actual_config = None
+    app_id = None
+
+    if not host:
+      actual_config = config
+    else:
+      config_dir = os.path.join(site_dir, "appengine-config")
+
+      # Find the appengine-config directory if it exists
+      if os.path.isdir(config_dir):
+
+        # Loop through all the files and find the project.*.conf files
+        for f in os.listdir(config_dir):
+          parts = f.split(".")
+          if len(parts) > 1 and parts[0] == "project" and parts[-1] == "conf":
+            config = context.read_config(os.path.join(config_dir, f))
+
+            # If this configuration value matches what was passed in, then the get the real config
+            # value from the filename of the project.<conf>.conf file.
+            if config.get("ACRE_FREEBASE_SITE_ADDR", None) == host:
+              actual_config = parts[-2]
+              break
+
+
+    if not actual_config:
+        return context.error("Could not find valid config.")
+
+    def appengine_id(config):
+      filename = os.path.join(site_dir, "appengine-config", "appengine-web.%s.xml.in" % config)
+      try:
+        fh = open(filename)
+      except:
+        return context.error("No appengine app defined for this configuration - failed to open %s" % filename)
+        
+      for l in fh.readlines():
+          res = re.search("<application>(.*)</application>", l)
+          if res and res.groups(1):
+              fh.close()
+              return res.groups(1)
+
+    app_id = appengine_id(actual_config)
+    if not app_id:
+      return context.error("Could not figure out appengine app id for config %s" % actual_config)
+
+    return actual_config, app_id
+
+  @classmethod
+  def ResolveSiteDir(cls, site_dir=None):
+    """Returns the path to a freebase-site checkout directory"""
+
+    # If site_dir is not passed, try to detect if ../../appengine-config exists.
+    # This code assumes we are running under freebase-site/trunk/scripts.
+    if (not site_dir) and os.path.isdir(os.path.join("..", "..", "appengine-config")):
+      return os.path.realpath(os.path.join("..", ".."))
+
+    return site_dir
 
 
 class SVNLocation:

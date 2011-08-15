@@ -43,7 +43,7 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <h1 class="table-title">${_("Users")} ( ${i18n_c.number(c.users.length)} )</h1>
+  <h1 class="table-title">${_("Users")} (${i18n_c.number(c.users.length)})</h1>
   <table class="table table-sortable">
     ${user_table_head()}
     <tbody>

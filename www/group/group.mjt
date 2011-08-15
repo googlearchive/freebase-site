@@ -47,7 +47,7 @@
     var types = h.map_array(c.object.type, "id");
   </acre:script>
   <h1 acre:if="h.fb_object_type(types, c.object.id) !== 'Acre App'"
-      class="table-title">${_("Owners")} ( ${i18n_c.number(c.owners.length)} )</h1>
+      class="table-title">${_("Owners")} (${i18n_c.number(c.owners.length)})</h1>
   <table class="table table-sortable">
     ${user_table_head()}
     <tbody>
@@ -61,7 +61,7 @@
   </table>
 
   <acre:block if="c.watchers && c.watchers.length">
-  <h1 class="table-title">${_("Watchers")} ( ${i18n_c.number(c.watchers.length)} )</h1>
+  <h1 class="table-title">${_("Watchers")} (${i18n_c.number(c.watchers.length)})</h1>
   <table cellspacing="0" class="table table-sortable">
     ${user_table_head()}
     <tbody>

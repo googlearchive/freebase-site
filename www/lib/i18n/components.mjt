@@ -65,13 +65,11 @@
   A number component that can be i18n'ized by i18n.js
   @param attrs - acre:attrs of <span>. Can be a dictionary, an array of tuples or null.  
 !!-->
-<acre:block def="number(val, attrs)" trim="1">
-  <acre:script>
+<acre:block def="number(val, attrs)" trim="1"><acre:script>
     attrs = h.parse_params(attrs) || {};
     attrs["data-value"] = val;
     attrs["class"] = (attrs["class"] || "") + " number";
-  </acre:script>
-  <span acre:attrs="attrs">${val}</span>
+</acre:script><span acre:attrs="attrs" acre:trim="1">${val}</span>
 </acre:block>
 
 <!!--

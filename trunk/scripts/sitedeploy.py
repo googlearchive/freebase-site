@@ -170,7 +170,8 @@ class ActionDeployAcre:
     c = self.context
     site = Site.Get(c)
     acre = Acre.Get(c)
-    config = c.resolve_config(c.options.host)
+
+    config, app_id = Site.ResolveConfig(c, c.options.config, c.options.site_dir, c.options.host)
 
     if not site:
       return c.error("Could not figure out location of site. You can specify --site_dir as an option, or run the script from within a site svn checkout directory structure to figure it out automatically.")
@@ -178,11 +179,10 @@ class ActionDeployAcre:
     if not acre:
       return c.error("Could not get an acre instance. You can specifiy --acre_dir, or --acre_version with a valid acre branch or trunk")
 
-    if not c.options.config:
-      return c.error('You have to specify an acre build target with -c e.g. -c acre')
+    if not config:
+      return c.error("You have to specify an acre build target with -c e.g. -c sandbox-freebasesite or a host with --host e.g. --host dev.sandbox-freebase.com")
 
-
-    (r, result) = acre.build(c.options.config, config_dir= "%s/appengine-config" % site.site_dir, war=True)
+    (r, result) = acre.build(config, config_dir= "%s/appengine-config" % site.site_dir, war=True)
 
     print result
 
@@ -197,26 +197,15 @@ class ActionDeployAcre:
       if not status:
         return c.error('Could not start new acre war bundle under appengine development server, aborting deployment')
     
-    c.log_color = c.BLUE
-
-    c.log('*' * 65)
-    c.log('')
-    c.log('Acre Deployment Summary')
-    c.log('')
-    c.log('\tConfig: %s' % c.options.config)
-    c.log('\tAppEngine URL: http://%s.appspot.com/' % c.options.config)
-    c.log('\tAppEngine Dashboard: https://appengine.google.com/dashboard?&app_id=%s' % c.options.config)
-    c.log('\tFreebase Site Keystore: http://environments.svn.freebase-site.googlecode.dev.%s.appspot.com/acre/keystore_console' % c.options.config)
-    c.log('')
-    #c.log('Freebase Site Routing:')
-    #for status_line in status:
-    #  status_line = status_line.rstrip('\n')
-    #  c.log('\t%s' % status_line)
-    c.log('')
-    c.log('*' * 65)
-
-    c.log_color = None
-
+    c.log("*" * 65, color=c.BLUE)
+    c.log("\nAcre Deployment Summary\n", color=c.BLUE)
+    c.log("\tConfig: %s" % config, color=c.BLUE)
+    if c.options.host:
+      c.log("\tSite URL: http://%s" % c.options.host, color=c.BLUE)
+    c.log("\tAppEngine URL: http://%s.appspot.com/" % app_id, color=c.BLUE)
+    c.log("\tAppEngine Dashboard: https://appengine.google.com/dashboard?&app_id=%s" % app_id, color=c.BLUE)
+    c.log("\tFreebase Site Keystore: http://environments.svn.freebase-site.googlecode.dev.%s.appspot.com/acre/keystore_console\n" % app_id, color=c.BLUE)
+    c.log("*" * 65, color=c.BLUE)
 
     if os.path.isdir(acre.site_dir(war=True) + '/googlecode'):
       shutil.rmtree(acre.site_dir(war=True)+ '/googlecode')
@@ -236,7 +225,7 @@ class ActionDeployAcre:
 
 
     c.log('Starting deployment of live version, handing off to appcfg...', color=c.BLUE)
-    if not acre.deploy(target=c.options.config): 
+    if not acre.deploy(target=config): 
       return c.error('Deployment failed.')
 
     if c.options.failover:
@@ -246,7 +235,7 @@ class ActionDeployAcre:
       if not r:
         return c.error('Failed to prepare failover version of acre, aborting.')
     
-      if not acre.deploy(c.options.config): 
+      if not acre.deploy(config): 
         return c.error('Deployment failed.')
       
     return True
@@ -742,7 +731,7 @@ class ActionSpeedTest:
   def appengine_logs_url(self):
     c = self.context
 
-    appengine_app_id = c.resolve_config(c.options.host)
+    appengine_app_id = Site.ResolveConfig(c, c.options.config, c.options.site_dir, c.options.host)
 
     if not appengine_app_id:
       return None
@@ -945,8 +934,7 @@ class ActionSpeedTest:
 
     print "\nStarting %s requests to host %s" % (len(urls) * c.options.concurrent, c.options.host)
 
-    c.options.config = c.options.host
-    appengine_app_id = c.resolve_config()
+    site_config, appengine_app_id = Site.ResolveConfig(c, c.options.config, c.options.site_dir, c.options.host)
 
     if self.appengine_logs_url:
       print "AppEngine Logs: %s" % self.appengine_logs_url
@@ -1003,7 +991,7 @@ class ActionGetIds:
       "/type/type" : { "/type/type/domain" : { "key" : { "namespace" : "/", "limit" : 1 }} }
       }
 
-  _use_ids = ["/type/type", "/type/domain", "/type/user", "/freebase/apps/app"]
+  _use_ids = ["/type/type", "/type/domain", "/type/user", "/freebase/apps/app", "/type/lang"]
 
   def __init__(self, context):
     
@@ -1086,9 +1074,9 @@ var environment_rules = {
       last_tag = app.last_tag()
 
       if last_tag:
-        print "  \"%s\": \"//%s.%s\" + tags_codebase%s" % (app_key, last_tag, app_key, i < len(apps)-1 and "," or "")
+        print "\t\"%s\": \"//%s.%s\" + tags_codebase%s" % (app_key, last_tag, app_key, i < len(apps)-1 and "," or "")
       else:
-        print "  \"%s\": \"//%s\" + codebase%s" % (app_key, app_key, i < len(apps)-1 and "," or "")
+        print "\t\"%s\": \"//%s\" + codebase%s" % (app_key, app_key, i < len(apps)-1 and "," or "")
         
 
     print """

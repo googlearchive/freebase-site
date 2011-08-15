@@ -75,8 +75,6 @@ var SPEC = {
 
   run: function(object, f) {
 
-console.log("triples filters", f);
-
     var id = object.id;
     return {
       id: id,

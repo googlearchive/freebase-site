@@ -51,6 +51,7 @@ function keys(id, lang, limit, filters) {
         },
         "!/common/uri_template/ns": {
           optional: true,
+          limit: 1,
           template: null
         }
       },

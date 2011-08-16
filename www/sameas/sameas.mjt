@@ -104,33 +104,35 @@
   <acre:script>
     var keys = c.keys;
   </acre:script>
-  <h1 class="table-title">${_("Topic Keys")} (${i18n_c.number(keys.length)})</h1>
-  <table cellspacing="0" class="table table-sortable">  
-     <thead>
-      <tr>
-        <th class="column-header first {sorter:'string'}" scope="column"> 
-          <span class="sort-icon">${_("Authority")}</span>
-        </th>
-        <th class="column-header {sorter:'string'}" scope="column">
-          <span class="sort-icon">${_("Namespace")}</span>
-        </th>
-        <th class="column-header {sorter:'string'}" scope="column">
-          <span class="sort-icon">${_("Key")}</span>
-        </th>
-        <th class="column-header {sorter:'string'}" scope="column">
-          <span class="sort-icon">${_("Creator")}</span>
-        </th>
-        <th class="column-header {sorter:'datetime'}" scope="column">
-          <span class="sort-icon">${_("Date")}</span>
-        </th>
-      </tr>
-    </thead>
-     <tbody>
-       <acre:block for="key in keys">
-         ${topic_key(key)}
-       </acre:block>
-     </tbody>
-  </table>
+  <div class="column keys">
+    <h1 class="table-title">${_("Topic Keys")} (${i18n_c.number(keys.length)})</h1>
+    <table cellspacing="0" class="table table-sortable">  
+       <thead>
+        <tr>
+          <th class="column-header first {sorter:'string'}" scope="column"> 
+            <span class="sort-icon">${_("Authority")}</span>
+          </th>
+          <th class="column-header {sorter:'string'}" scope="column">
+            <span class="sort-icon">${_("Namespace")}</span>
+          </th>
+          <th class="column-header {sorter:'string'}" scope="column">
+            <span class="sort-icon">${_("Key")}</span>
+          </th>
+          <th class="column-header {sorter:'string'}" scope="column">
+            <span class="sort-icon">${_("Creator")}</span>
+          </th>
+          <th class="column-header {sorter:'datetime'}" scope="column">
+            <span class="sort-icon">${_("Date")}</span>
+          </th>
+        </tr>
+      </thead>
+       <tbody>
+         <acre:block for="key in keys">
+           ${topic_key(key)}
+         </acre:block>
+       </tbody>
+    </table>
+  </div>
 </acre:block>
 
 <acre:block def="topic_key(key)">

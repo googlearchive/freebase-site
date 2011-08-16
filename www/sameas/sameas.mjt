@@ -38,6 +38,8 @@
   var _ = i18n.gettext;
   var filter_components = acre.require("lib/filter/components.mjt");
   var fh = acre.require("lib/filter/helpers.sjs");
+  var EDIT = _("Edit");
+  var DELETE = _("Delete");
 </acre:script>
 
 <acre:block def="head()">
@@ -132,17 +134,20 @@
 </acre:block>
 
 <acre:block def="topic_key(key)">
-  <tr>
+  <tr class="data-row">
     <th class="row-header odd">
-      <acre:block if="key.authority">
-        <span class="authority a${key.authority.id.replace(/\//g, '-')}">
+      <acre:block if="key.authority">        
+        <span class="authority a${key.authority.id.replace(/\//g, '-')} wrapper">
           <a href="${h.fb_url(key.authority.id)}">
             <strong>${i18n.display_name(key.authority)}</strong>
-          </a>  
+          </a>
+          ${key_menu(key)}
         </span>
       </acre:block>
       <acre:block else="">
-        <strong>-</strong>
+        <span class="wrapper">
+          <strong>-</strong>
+        </span>
       </acre:block>
     </th>
     <td>
@@ -165,6 +170,23 @@
   </tr>
 </acre:block>
 
+<acre:block def="key_menu(key)">
+  <acre:script>
+    var perm_obj = {id:key.ns};
+  </acre:script>
+  <ul class="combo-menu nicemenu edit-perm ${JSON.stringify(perm_obj)}">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
+        <a href="javascript:void(0)" class="more-action">menu</a>
+      </span>
+      <ul class="submenu row-menu">
+        <li class="row-menu-item"><a href="#" onclick="return propbox.value_edit(this);">${EDIT}</a></li>
+        <li class="row-menu-item"><a href="#" onclick="return propbox.value_delete(this);">${DELETE}</a></li>
+      </ul>
+    </li>
+  </ul>
+</acre:block>
 
 <acre:block def="footer_script()">
   <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>

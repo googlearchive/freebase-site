@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-(function($, fb) {
+(function($, fb, propbox) {
 
   var sameas = fb.sameas = {
 
@@ -47,10 +47,10 @@
         });
 
       // Initialize filters
-      sameas.init_row_menu();
+      propbox.init_menus(null, true);
     }
   };
 
   $(sameas.init);
 
-})(jQuery, window.freebase);
+})(jQuery, window.freebase, window.propbox);

@@ -39,24 +39,28 @@
          return;
        }
        var c = fb.c;
-       if (!(c && c.id)) {
-         // c.id is the primary node in question
-         return;
+
+       if (c && c.id) {
+         //console.log("permission.js", c.id, fb.user.id);
+
+         // does fb.user have permission on c.id?
+         $.ajax({
+           url: fb.h.ajax_url("lib/permission/has_permission.ajax"),
+           data: {id:c.id, user_id:fb.user.id},
+           dataType: "json",
+           success: function(data) {
+             p.has_permission = ( data.result && data.result[c.id] === true );
+             console.log("has_permission", p.has_permission);
+             $(window).trigger("fb.permission.has_permission", p.has_permission);
+           }
+         });
        }
 
-       //console.log("permission.js", c.id, fb.user.id);
-
-       // does fb.user have permission on c.id?
-       $.ajax({
-         url: fb.h.ajax_url("lib/permission/has_permission"),
-         data: {id:c.id, user_id:fb.user.id},
-         dataType: "json",
-         success: function(data) {
-           p.has_permission = ( data.result && data.result.has_permission === true );
-           console.log("has_permission", p.has_permission);
-           $(window).trigger("fb.permission.has_permission", p.has_permission);
-         }
-       });
+       /**
+        * Check for specific permissioned objects in the page.
+        * A permissioned object has the class 'edit-perm {id: "/some/id"}'
+        */
+       check_permissioned_objects($(".edit-perm"), fb.user.id);
      }
    };
 
@@ -71,3 +75,41 @@
    });
 
 })(jQuery, window.freebase);
+
+
+function check_permissioned_objects(perm_objs, user_id) {
+  if (! (perm_objs.length && user_id)) {
+    return;
+  }
+  var seen = {};
+  var ids = [];
+  $.each(perm_objs, function() {
+    var id = $(this).metadata().id;
+    if (id && !seen[id]) {
+      ids.push(id);
+      seen[id] = 1;
+    }
+  });
+  if (!ids.length) {
+    return;
+  }
+
+  $.ajax({
+    url: fb.h.ajax_url("lib/permission/has_permission.ajax"),
+    data: {id:ids, user_id:user_id},
+    traditional: true,
+    dataType: "json",
+    success: function(data) {
+      var permissions = data.result || {};
+      $.each(perm_objs, function() {
+        var id = $(this).metadata().id;
+        if (id && permissions[id] === true) {
+          $(this).show();
+        }
+        else {
+          $(this).addClass("edit-perm-lock");
+        }
+      });
+    }
+  });
+};

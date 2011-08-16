@@ -39,16 +39,14 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      validators.MqlId(params, "id", {required:true}),
+      validators.MultiValue(params, "id", {validator:validators.MqlId, required:true}),
       validators.MqlId(params, "user_id", {required:true}),
       validators.StringBool(params, "allow_experts", {if_empty:false})
     ];
   },
 
-  run: function(id, user_id, allow_experts) {
-    return {
-      has_permission: queries.has_permission(id, user_id, allow_experts)
-    };
+  run: function(ids, user_id) {
+    return queries.has_permission(ids, user_id);
   }
 
 };

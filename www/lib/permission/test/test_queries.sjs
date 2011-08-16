@@ -35,44 +35,36 @@ acre.require("test/mock").playback(this, "permission/test/playback_test_queries.
 
 var q = acre.require("permission/queries");
 
-test("has_permission.domain", function() {
+test("has_permission /freebase", function() {
   var result;
   q.has_permission("/freebase", "/user/daepark")
-    .then(function(has_permission) {
-      result = has_permission;
+    .then(function(r) {
+      result = r;
     });
   acre.async.wait_on_results();
-  ok(result, "expected has_permission=true");
+  same(result["/freebase"], true, "expected permission on /freebase");
 });
 
-test("has_permission.domain.dont_allow_experts", function() {
+test("has_permission /film/film", function() {
   var result;
-  q.has_permission("/freebase", "/user/tfmorris")
-    .then(function(has_permission) {
-      result = has_permission;
+  q.has_permission("/film/film", "/user/daepark")
+    .then(function(r) {
+      result = r;
     });
   acre.async.wait_on_results();
-  ok(!result, "expected has_permission=false");
+  same(result["/film/film"], false, "did NOT expect permission on /film/film");
 });
 
-test("has_permission.domain.allow_experts", function() {
+test("has_permission multiple", function() {
   var result;
-  q.has_permission("/freebase", "/user/tfmorris", true)
-    .then(function(has_permission) {
-      result = has_permission;
+  q.has_permission(["/freebase", "/film/film", "/user/kconragan"], "/user/daepark")
+    .then(function(r) {
+      result = r;
     });
   acre.async.wait_on_results();
-  ok(result, "expected has_permission=true");
-});
-
-test("has_permission.type", function() {
-  var result;
-  q.has_permission("/base/slamdunk/player", "/user/daepark")
-    .then(function(has_permission) {
-      result = has_permission;
-    });
-  acre.async.wait_on_results();
-  ok(result, "expected has_permission=true");
+  same(result["/freebase"], true, "expected permission on /freebase");
+  same(result["/film/film"], false, "did NOT expect permission on /film/film");
+  same(result["/user/kconragan"], false, "did NOT expect permission on /user/kconragan");
 });
 
 acre.test.report();

@@ -85,8 +85,12 @@
       $(".nicemenu .headmenu", context)
         .add($(".nicemenu .default-action", context))
         .click("click", function() {
-          var current = propbox.kbs.get_current();
-          propbox.kbs.set_next(current, $(this).parents(".kbs:first"), true);
+          if (propbox.kbs) {
+            var current = propbox.kbs.get_current();
+            if (current) {
+              propbox.kbs.set_next(current, $(this).parents(".kbs:first"), true);
+            }
+          }
           return false;
         });
     },

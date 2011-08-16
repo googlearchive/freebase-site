@@ -176,8 +176,8 @@
   <acre:script>
     var perm_obj = {id:key.ns};
   </acre:script>
-  <ul class="combo-menu nicemenu edit-perm ${JSON.stringify(perm_obj)}">
-    <li class="nicemenu-item">
+  <ul class="combo-menu nicemenu">
+    <li class="nicemenu-item edit-perm ${JSON.stringify(perm_obj)}">
       <span class="headmenu">
         <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
         <a href="javascript:void(0)" class="more-action">menu</a>

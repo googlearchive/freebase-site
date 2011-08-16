@@ -61,3 +61,28 @@
 tr .combo-menu {
   top: -5px;
 }
+
+.edit-perm-lock {
+  display: list-item;
+  background: url(lib/template/ui-icons.png) no-repeat 0 -1588px;
+  width: 16px; height: 16px;
+}
+
+.edit-perm-lock:hover {
+  border: 0;
+}
+
+.edit-perm-lock * {
+  display: none;
+}
+
+.edit-perm-lock:hover .default-action:hover,
+.edit-perm-lock .default-action:hover,
+.edit-perm-lock .default-action {
+  pointer: default;
+  background: none;
+}
+
+.edit-perm-lock .more-action {
+  background-image: none;
+}

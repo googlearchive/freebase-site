@@ -1,0 +1,24 @@
+var freebase = acre.require("lib/promise/apis").freebase;
+
+var SPEC = {
+
+  template: "hello4_template.mjt",
+
+  validate: function() {
+    return [
+      "/en/bob_dylan"
+    ];
+  },
+
+  run: function(id) {
+
+    return {
+      name: freebase.mqlread({id:id, name:null})
+        .then(function(env) {
+          return env.result.name;
+        })
+    };
+
+  }
+
+};

@@ -81,6 +81,18 @@
 
 
 /*
+  ### CSS COLUMNS
+*/
+
+.column_count(@count: 1) {
+  -webkit-column-count: @count;
+  -moz-column-count: @count;
+  -o-column-count: @count;
+  column-count: @count;
+}
+
+
+/*
   ### CSS TRANSFORMS
 
   Note: css transforms are not additive. Therefore, you cannot do something like the following:

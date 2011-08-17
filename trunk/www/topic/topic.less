@@ -243,11 +243,32 @@ div.kbs.current .mark {
   font-weight: bold;
 }
 
-.multi-column {
-  -webkit-column-count: 3;
-  -moz-column-count: 3;
-  column-count: 3;
-  font-size: 11px;
+.multi-column li {
+  display: inline;
+}
+
+.no-js li:after {
+  content: ",";
+}
+
+.csscolumns .multi-column li {
+  display: list-item;
+  font-size: 12px;
+}
+
+
+@media only screen 
+and (min-width: 1024px) {
+  .csscolumns .multi-column {
+    .column_count(3)
+  }
+}
+
+@media only screen 
+and (min-width: 1224px) {
+  .csscolumns .multi-column {
+    .column_count(5)
+  }
 }
 
 .add-type {

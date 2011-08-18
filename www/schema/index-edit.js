@@ -73,7 +73,7 @@
         minlen: 5,
         source: name,
         namespace: "/base",
-        mqlread_url: fb.acre.freebase.service_url + "/api/service/mqlread"
+        mqlread_url: fb.acre.freebase.googleapis_url ? fb.h.fb_googleapis_url("/mqlread") : fb.h.fb_api_url("/api/service/mqlread")
       });
 
       // enter key

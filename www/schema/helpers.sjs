@@ -58,7 +58,7 @@ function sort_by_id(a,b) {
  *
  * lib/validator/validators.sjs
  * schema/helpers.sjs
- * schema/jquery.mqlkey.js
+ * lib/propbox/jquery.mqlkey.js
  */
 
 function generate_key(name) {

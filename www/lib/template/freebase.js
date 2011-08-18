@@ -609,7 +609,7 @@
      touch: function() {
        if (/\.(freebase|sandbox\-freebase)\.com$/.test(fb.acre.request.server_name)) {
          $.ajax({
-           url: fb.acre.freebase.service_url + "/api/service/touch",
+           url:  fb.acre.freebase.googleapis_url ? fb.h.fb_googleapis_url("/touch") : fb.h.fb_api_url("/api/service/touch"),
            dataType: "jsonp"
          });
        }

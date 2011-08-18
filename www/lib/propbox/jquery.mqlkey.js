@@ -35,7 +35,7 @@
     *
     * lib/validator/validators.sjs
     * schema/helpers.sjs
-    * schema/jquery.mqlkey.js
+    * lib/propbox/jquery.mqlkey.js
     */
 
 
@@ -189,7 +189,6 @@
         }
         msg += ", lowercase, begin with a letter and not end with a non-alphanumeric character. Underscores are allowed but not consecutively.";
       }
-
       this.input.trigger("invalid", msg);
     }
   };

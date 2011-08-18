@@ -29,40 +29,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-(function($, fb, propbox) {
+var validators = acre.require("lib/validator/validators.sjs");
+var queries = acre.require("queries.sjs");
+var editcomponents = acre.require("editcomponents.mjt");
 
-  var sameas = fb.sameas = {
+/**
+ * add key form
+ */
+var SPEC = {
 
-    init: function() {
+  method: "GET",
 
-      // Initialize filter menu collapse/expand
-      $(".column.nav").collapse_module({modules: ".module", column: ".section"});
+  auth: true,
 
-      // Initialize user/creator suggest input
-      $(":text[name=creator]")
-        .suggest(fb.suggest_options.any("/type/user"))
-        .bind("fb-select", function(e, data) {
-          $(this).val(data.id)
-            .parents("form:first").submit();
-        });
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {required:true}),
+      params.auth_user.id
+    ];
+  },
 
-      // Initialize filters
-      propbox.init_menus();
-    },
-
-    add_key: function(e) {
-      var trigger = $(this);
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
-      fb.get_script(fb.h.static_url("sameas-edit.mf.js"), function() {
-        sameas.edit.add_key_begin(trigger);
+  run: function(id, user_id) {
+    return queries.user_namespaces(user_id)
+      .then(function(ns) {
+        return {
+          html: acre.markup.stringify(editcomponents.add_key_form(id, ns))
+        };
       });
-      return false;
-    }
-  };
-
-  $(sameas.init);
-
-})(jQuery, window.freebase, window.propbox);
+  }
+};

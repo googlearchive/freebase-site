@@ -131,6 +131,16 @@
            ${topic_key(key)}
          </acre:block>
        </tbody>
+       <tfoot class="table-edit edit">
+         <tr>
+           <td colspan="5">
+             <a href="javascript:void(0);"
+                class="icon-link" onclick="return freebase.dispatch(event, freebase.sameas.add_key, null, this);">
+               <span class="add-icon">${_('Add New')}</span>
+             </a>
+           </td>
+         </tr>           
+       </tfoot>
     </table>
   </div>
 </acre:block>
@@ -166,7 +176,7 @@
     <td>
       <a href="${h.fb_url(key.creator.id)}">${i18n.display_name(key.creator)}</a>
     </td>
-    <td>
+    <td class="odd">
       ${i18n_c.datetime(key.timestamp)}
     </td>
   </tr>

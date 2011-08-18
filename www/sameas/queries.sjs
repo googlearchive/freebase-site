@@ -180,3 +180,32 @@ function mqlread_options(filters) {
   }
   return options;
 };
+
+
+
+function user_namespaces(user_id) {
+  var q = [{
+    id: null,
+    type: "/type/namespace",
+    "/base/sameas/web_id/authority": {
+      limit: 1,
+      id: null
+    },
+    permission: {
+      limit: 0,
+      permits: [{
+        member: [{
+          id: user_id
+        }]
+      }]
+    },
+    limit: 1000
+  }];
+  return freebase.mqlread(q)
+    .then(function(env) {
+      var ns = env.result || [];
+      return ns.sort(function(a, b) {
+        return b.id < a.id;
+      });
+    });
+};

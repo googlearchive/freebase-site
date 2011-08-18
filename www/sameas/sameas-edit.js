@@ -29,40 +29,58 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-(function($, fb, propbox) {
 
-  var sameas = fb.sameas = {
+(function($, fb) {
 
-    init: function() {
+  var edit = fb.sameas.edit = {
 
-      // Initialize filter menu collapse/expand
-      $(".column.nav").collapse_module({modules: ".module", column: ".section"});
 
-      // Initialize user/creator suggest input
-      $(":text[name=creator]")
-        .suggest(fb.suggest_options.any("/type/user"))
-        .bind("fb-select", function(e, data) {
-          $(this).val(data.id)
-            .parents("form:first").submit();
-        });
+    add_key_begin: function(trigger) {
+      console.log("sameas.edit.add_key_begin", trigger);
+      $.ajax({
+        url: fb.h.ajax_url("add_key_begin.ajax"),
+        dataType: "json",
+        data: {id: fb.c.id},
+        success: function(data) {
+          if (!fb.form.check_ajax_success.apply(null, arguments)) {
+            return;
+          }
+          var form = $(data.result.html);
+          var event_prefix = "fb.sameas.add_key.";
+          var options = {
+            event_prefix: event_prefix,
+            init: edit.add_key_init,
+            validate: edit.add_key_validate,
+            submit: edit.add_key_submit,
 
-      // Initialize filters
-      propbox.init_menus();
+            trigger: trigger,
+            table: trigger.parents("table:first"),
+            form: form
+          };
+          form
+            .bind(event_prefix + "cancel", function(e) {console.log("cancel");
+              trigger.removeClass("editing");
+            });
+          fb.form.init_table_add_form(options);
+        },
+        error: function() {
+          // TODO: ajax error handler
+          var msg = fb.form.check_ajax_error.apply(null, arguments);
+        }
+      });
+
     },
 
-    add_key: function(e) {
-      var trigger = $(this);
-      if (trigger.is(".editing")) { // are we already editing?
-        return false;
-      }
-      trigger.addClass("editing");
-      fb.get_script(fb.h.static_url("sameas-edit.mf.js"), function() {
-        sameas.edit.add_key_begin(trigger);
-      });
-      return false;
+    add_key_init: function(options) {
+
+    },
+    add_key_validate: function(options) {
+
+    },
+    add_key_submit: function(opitons) {
+
     }
+
   };
 
-  $(sameas.init);
-
-})(jQuery, window.freebase, window.propbox);
+})(jQuery, window.freebase);

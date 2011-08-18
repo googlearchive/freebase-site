@@ -486,7 +486,7 @@ Validator.factory(scope, "Timestamp", {
     if (val === "__now__") {
       return options.date ? new Date() : val;
     }
-    
+
     var date;
     try {
       date = acre.freebase.date_from_iso(val);
@@ -592,7 +592,7 @@ Validator.factory(scope, "Float", {
  *
  * lib/validator/validators.sjs
  * schema/helpers.sjs
- * schema/jquery.mqlkey.js
+ * lib/propbox/jquery.mqlkey.js
  */
 
 // from python client mw.utils
@@ -760,7 +760,7 @@ Validator.factory(scope, "Uri", {
 /**
  * Acre validators
  */
- 
+
 Validator.factory(scope, "AcreHost", {
   "string": function(val) {
     var acre_host = /^[0-9a-z][0-9a-z\-\.]+$/;

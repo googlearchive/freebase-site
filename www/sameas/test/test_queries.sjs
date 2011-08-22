@@ -72,27 +72,31 @@ test("keys", function() {
 });
 
 
-test("user_namespaces", function() {
+test("user_authority_namespaces", function() {
 
-  function assert_namespace(nss, ns) {
-    for (var i=0,l=nss.length; i<l; i++) {
-      if (nss[i].id === ns) {
-        return true;
+  function assert_authority_namespace(authorities, authority, namespace) {
+    for (var i=0,l=authorities.length; i<l; i++) {
+      var a = authorities[i];
+      if (a.id === authority) {
+        for (var j=0,k=a.ns.length; j<k; j++) {
+          if (a.ns[j].id === namespace) {
+            return true;
+          }
+        }
       }
     }
     return false;
   };
 
-  var nss;
-  q.user_namespaces("/user/daepark")
+  var authorities;
+  q.user_authority_namespaces("/user/daepark")
     .then(function(r) {
-      nss = r;
+      authorities = r;
     });
   acre.async.wait_on_results();
-  ok(h.isArray(nss) && nss.length, "Got namespaces");
-  ok(assert_namespace(nss, "/authority/isbn"));
-  ok(assert_namespace(nss, "/authority/facebook"));
-  ok(!assert_namespace(nss, "/base/slamdunk"));  // does not have an /base/sameas/web_id/authority even if it's mine
+  ok(h.isArray(authorities) && authorities.length, "Got authorities/namespaces");
+  ok(assert_authority_namespace(authorities, "/en/facebook", "/authority/facebook"));
+  ok(assert_authority_namespace(authorities, "/en/international_standard_book_number", "/authority/isbn"));
 });
 
 

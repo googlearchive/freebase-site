@@ -43,16 +43,19 @@ function keys(id, lang, limit, filters) {
     key: [{
       namespace: {
         id: null,
+        type: "/type/namespace",
         "/base/sameas/web_id/authority": {
           optional: true,
           limit: 1,
           id: null,
-          name: i18n.mql.text_clause(lang)
+          name: i18n.mql.text_clause(lang),
+          type: "/base/sameas/api_provider"
         },
         "!/common/uri_template/ns": {
           optional: true,
           limit: 1,
-          template: null
+          template: null,
+          type: "/common/uri_template"
         }
       },
       value: null,
@@ -182,30 +185,46 @@ function mqlread_options(filters) {
 };
 
 
+function sort_by_id(a, b) {
+  return b.id < a.id;
+};
 
-function user_namespaces(user_id) {
+function sort_by_name(a, b) {
+  return i18n.display_name(b) < i18n.display_name(b);
+};
+
+function user_authority_namespaces(user_id, lang, limit) {
+  lang = lang || i18n.lang;
+  limit = limit || 1000;
   var q = [{
     id: null,
-    type: "/type/namespace",
-    "/base/sameas/web_id/authority": {
-      limit: 1,
-      id: null
-    },
-    permission: {
-      limit: 0,
-      permits: [{
-        member: [{
-          id: user_id
+    name: i18n.mql.text_clause(lang),
+    type: "/base/sameas/api_provider",
+    "!/base/sameas/web_id/authority": [{
+      id: null,
+      type: "/type/namespace",
+      permission: {
+        limit: 0,
+        permits: [{
+          member: [{
+            id: user_id
+          }]
         }]
-      }]
-    },
-    limit: 1000
+      }
+    }],
+    limit: limit
   }];
   return freebase.mqlread(q)
     .then(function(env) {
-      var ns = env.result || [];
-      return ns.sort(function(a, b) {
-        return b.id < a.id;
+      var result = env.result || [];
+      var authorities = [];
+      result.forEach(function(a) {
+        authorities.push({
+          id: a.id,
+          name: a.name,
+          ns: a["!/base/sameas/web_id/authority"].sort(sort_by_id)
+        });
       });
+      return authorities.sort(sort_by_name);
     });
 };

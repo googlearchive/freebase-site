@@ -132,7 +132,7 @@
       * jquery.mqkley.js helpers for init and validate
       */
      init_mqlkey: function(input, mqlkey_options) {
-       input
+       return input
          .next(".key-status")
            .removeClass("valid invalid loading")
            .text("")

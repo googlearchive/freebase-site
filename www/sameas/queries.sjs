@@ -45,17 +45,17 @@ function keys(id, lang, limit, filters) {
         id: null,
         type: "/type/namespace",
         "/base/sameas/web_id/authority": {
-          optional: true,
+//          optional: true,
           limit: 1,
           id: null,
-          name: i18n.mql.text_clause(lang),
-          type: "/base/sameas/api_provider"
+          type: "/base/sameas/api_provider",
+          name: i18n.mql.text_clause(lang)
         },
         "!/common/uri_template/ns": {
           optional: true,
           limit: 1,
-          template: null,
-          type: "/common/uri_template"
+          type: "/common/uri_template",
+          template: null
         }
       },
       value: null,
@@ -190,7 +190,7 @@ function sort_by_id(a, b) {
 };
 
 function sort_by_name(a, b) {
-  return i18n.display_name(b) < i18n.display_name(b);
+  return i18n.display_name(b) < i18n.display_name(a);
 };
 
 function user_authority_namespaces(user_id, lang, limit) {

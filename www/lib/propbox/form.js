@@ -55,9 +55,9 @@
      init_table_add_form: function(options) {console.log("fb.form.init_table_add_form", options);
        // TODO: check options
        var trigger_row = options.trigger.parents("tr:first");
-       var head_row = $("tr:first", options.form);
-       var form_row = head_row.next("tr");
-       var submit_row = form_row.next("tr");
+       var head_row = $(".edit-row-head", options.form);
+       var form_row = $(".edit-row", options.form);
+       var submit_row = $(".edit-row-submit", options.form);
        var event_prefix = options.event_prefix || "fb.form.";
        options.form
          .bind(event_prefix + "submit", function() {
@@ -74,9 +74,13 @@
            options.form.removeClass("loading");
          });
        // submit button
-       $(".button-submit", submit_row).click(function() {
-         options.form.trigger(event_prefix + "submit");
-       });
+       $(".button-submit", submit_row)
+         .click(function() {
+           options.form.trigger(event_prefix + "submit");
+         })
+         // disable submit
+         .attr("disabled", "disabled")
+         .addClass("disabled");
        // cancel button
        $(".button-cancel", submit_row).click(function() {
          options.form.trigger(event_prefix + "cancel");
@@ -103,12 +107,87 @@
 
 
 
+     /**
+      * disable/enable submit button
+      */
+     disable: function(elt) {
+       elt.attr("disabled", "disabled").addClass("disabled");
+     },
 
+     enable: function(elt) {
+       elt.removeAttr("disabled", "disabled").removeClass("disabled");
+     },
 
+     disable_submit: function(options) {
+       var submit_row = options.submit_row || $(".edit-row-submit", options.form);
+       form.disable($(".button-submit", submit_row));
+     },
 
+     enable_submit: function(options) {
+       var submit_row = options.submit_row || $(".edit-row-submit", options.form);
+       form.enable($(".button-submit", submit_row));
+     },
 
+     /**
+      * jquery.mqkley.js helpers for init and validate
+      */
+     init_mqlkey: function(input, mqlkey_options) {
+       input
+         .next(".key-status")
+           .removeClass("valid invalid loading")
+           .text("")
+           .removeAttr("title")
+           .end()
+         .mqlkey(mqlkey_options)
+         .bind("valid", function(e, val) {
+           $(this).next(".key-status")
+             .removeClass("invalid")
+             .removeClass("loading")
+             .addClass("valid")
+             .text("valid")
+             .attr("title", "Key is available");
+         })
+         .bind("invalid", function(e, msg) {
+           $(this).next(".key-status")
+             .removeClass("valid")
+             .removeClass("loading")
+             .addClass("invalid")
+             .text("invalid")
+             .attr("title", msg);
+         })
+         .bind("textchange", function(e) {
+           $(this).next(".key-status")
+             .removeClass("invalid")
+             .removeClass("valid")
+             .addClass("loading");
+         });
+     },
 
-
+     validate_mqlkey: function(form, input) {
+       var form_elt = form.form || form.row;
+       var key_status = input.next(".key-status");
+       var keyval = input.val();
+       if (keyval === "") {
+         //console.log("VALIDATE MQLKEY", "EMPTY");
+         form_elt.trigger(form.event_prefix + "error", "Key is required");
+         return false;
+       }
+       if (keyval === input.data("mqlkey").original) {
+         //console.log("VALIDATE MQLKEY", "ORIGINAL");
+         return true;
+       }
+       if (key_status.is(".invalid")) {
+         //console.log("VALIDATE MQLKEY", "INVALID");
+         form_elt.trigger(form.event_prefix + "error", key_status.attr("title"));
+         return false;
+       }
+       else if (key_status.is(".loading")) {
+         //console.log("VALIDATE MQLKEY", "LOADING");
+         return false;
+       }
+       //console.log("VALIDATE MQLKEY", "VALID");
+       return true;
+     },
 
 
 

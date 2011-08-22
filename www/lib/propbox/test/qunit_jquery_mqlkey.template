@@ -30,45 +30,21 @@
  !!-->
 
 <acre:script>
-  var h = acre.require("lib/helper/helpers.sjs");
-  var i18n = acre.require("lib/i18n/i18n.sjs");  
-  var _ = i18n.gettext;
-  var form = acre.require("lib/propbox/form.mjt");
+ var c = exports.c = {
+    template_base: "test/qunit.mjt"
+  };
 </acre:script>
 
-<acre:block def="add_key_form(id, namespaces)">
-  <tbody>
-    <tr class="edit-row-head">
-      <td colspan="5">
-        ${form.row_msg(_("Add key"))}
-      </td>
-    </tr>
-    <tr class="edit-row">
-      <td colspan="5">
-        <div class="form-field">
-          <label>
-            <span class="form-label">${_('Namespace')}</span>
-            <select name="namespace" data-placeholder="${_('Choose')}&hellip;">
-              <option></option>
-              <acre:block for="namespace in namespaces">
-                <option value="${namespace.id}">${namespace.id}</option>
-              </acre:block>
-            </select>
-          </label>
-        </div>
-        <div class="form-field">
-          <label>
-            <span class="form-label">${_('Key')}</span>
-            <input name="key" type="text" class="text-input"/>
-            <span class="key-status"></span>
-          </label>
-        </div>
-      </td>
-    </tr>
-    <tr class="edit-row-submit">
-      <td colspan="5">
-        ${form.submit_buttons()}
-      </td>
-    </tr>
-  </tbody>
+<acre:block def="title()">
+  jquery.mqlkey.js
+</acre:block>
+
+<acre:block def="head()">
+  <script src="propbox/jquery.mqlkey.js"></script>
+  <script src="propbox/test/qunit_jquery_mqlkey.js"></script>
+</acre:block>
+
+<acre:block def="fixture()">
+  <input type="text" id="key"/>
+  <input type="text" id="source"/>
 </acre:block>

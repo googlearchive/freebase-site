@@ -44,6 +44,7 @@
 
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="sameas.mf.css" />
+  <link rel="stylesheet" type="text/css" href="lib/template/chosen.jquery.css" />
 </acre:block>
 
 <acre:block def="page_content()">

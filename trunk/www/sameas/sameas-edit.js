@@ -81,6 +81,13 @@
             mqlread_url: fb.acre.freebase.googleapis_url ? fb.h.fb_googleapis_url("/mqlread") : fb.h.fb_api_url("/api/service/mqlread"),
             namespace: this.value
           });
+          key
+            .bind("valid", function() {
+              fb.form.enable_submit(options);
+            })
+            .bind("invalid", function() {
+              fb.form.disable_submit(options);
+            });
           fb.form.enable(key);
           key.focus();
         }

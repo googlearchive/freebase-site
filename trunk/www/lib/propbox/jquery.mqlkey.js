@@ -60,15 +60,6 @@
     });
   };
 
-  // property and type names have more restrictive rules that match the rules for javascript identifiers.
-  var __high_ident_str = "[a-z](?:_?[a-z0-9])*";
-
-  // this is the validity checker for property and type names
-  var valid_high_idname = new RegExp("^(?:/|/" + __high_ident_str + "(?:/" + __high_ident_str + ")*)$");
-
-  // a high_idname with an optional prefix and optional leading ! for reversal.
-  var valid_mql_key =  new RegExp("^(\\!)?(?:(" + __high_ident_str + ")\\:)?(/|/?" + __high_ident_str + "(?:/" + __high_ident_str + ")*)$");
-
   var mqlkey = $.mqlkey = function(input, options) {
     this.options = $.extend(true, {}, mqlkey.defaults, options);
     this.options.jsonp = mqlkey.use_jsonp(this.options.mqlread_url);
@@ -123,7 +114,7 @@
       else if (mqlkey.reserved_word(val)) {
         return this.invalid(val, val + " is a reserved word.");
       }
-      else if (!valid_mql_key.test(val)) {
+      else if (!mqlkey.test(val, this.options.schema)) {
         return this.invalid(val);
       }
       else if (val.length < this.options.minlen) {
@@ -199,7 +190,8 @@
       check_key: true,  // If TRUE, check if key already exists in namespace. namespace and mqlread_url must be specified. Otherwise, just apply valid_mql_key regular expression
       namespace: "/",
       mqlread_url: "http://api.freebase.com/api/service/mqlread",
-      source: null // jQuery selector to auto generate key from
+      source: null, // jQuery selector to auto generate key from,
+      schema: false // schema keys are more restrictive
     },
     use_jsonp: function(service_url) {
       /*
@@ -248,6 +240,21 @@
         });
       }
       return mqlkey._reserved_word[word] === 1;
+    },
+
+    // fast regex
+    fast: /^[A-Za-z0-9](?:[_-]?[A-Za-z0-9])*$/,
+
+    // slow regex
+    slow: /^(?:[A-Za-z0-9]|\$[A-F0-9]{4})(?:[_-]?[A-Za-z0-9]|[_-]?\$[A-F0-9]{4})*$/,
+
+    schema: /^[a-z](?:_?[a-z0-9])*$/,
+
+    test: function(val, schema) {
+      if (schema) {
+        return mqlkey.schema.test(val);
+      }
+      return mqlkey.fast.test(val) || mqlkey.slow.test(val);
     }
   });
 

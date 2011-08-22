@@ -68,16 +68,34 @@
           var msg = fb.form.check_ajax_error.apply(null, arguments);
         }
       });
-
     },
 
     add_key_init: function(options) {
-
+      var select = $(":input[name=namespace]", options.form).chosen();
+      var key = $(":input[name=key]", options.form);
+      fb.form.disable(key);
+      select.change(function(e) {
+        key.val("");
+        if (this.value) {
+          fb.form.init_mqlkey(key, {
+            mqlread_url: fb.acre.freebase.googleapis_url ? fb.h.fb_googleapis_url("/mqlread") : fb.h.fb_api_url("/api/service/mqlread"),
+            namespace: this.value
+          });
+          fb.form.enable(key);
+          key.focus();
+        }
+        else {
+          fb.form.disable(key);
+        }
+        fb.form.disable_submit(options);
+      });
     },
+
     add_key_validate: function(options) {
 
     },
-    add_key_submit: function(opitons) {
+
+    add_key_submit: function(options) {
 
     }
 

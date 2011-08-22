@@ -36,7 +36,7 @@
   var form = acre.require("lib/propbox/form.mjt");
 </acre:script>
 
-<acre:block def="add_key_form(id, namespaces)">
+<acre:block def="add_key_form(id, authorities)">
   <tbody>
     <tr class="edit-row-head">
       <td colspan="5">
@@ -50,8 +50,12 @@
             <span class="form-label">${_('Namespace')}</span>
             <select name="namespace" data-placeholder="${_('Choose')}&hellip;">
               <option></option>
-              <acre:block for="namespace in namespaces">
-                <option value="${namespace.id}">${namespace.id}</option>
+              <acre:block for="authority in authorities">
+                <optgroup label="${i18n.display_name(authority)}">
+                  <acre:block for="namespace in authority.ns">
+                    <option value="${namespace.id}">${namespace.id}</option>
+                  </acre:block>
+                </optgroup>
               </acre:block>
             </select>
           </label>

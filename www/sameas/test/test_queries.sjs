@@ -36,22 +36,35 @@ var q = acre.require("queries.sjs");
 
 acre.require("lib/test/mock").playback(this, "test/playback_test_queries.json");
 
-test("keys", function() {
-
-  function assert_key(keys, authority_id, ns_id, key, url) {
-    for (var i=0,l=keys.length; i<l; i++) {
-      var k = keys[i];
-      if (k.authority &&
-          k.authority.id === authority_id &&
-          k.ns === ns_id &&
-          k.key === key &&
-          k.url == url) {
-        return true;
+function assert_authority_namespace(authorities, authority, namespace) {
+  for (var i=0,l=authorities.length; i<l; i++) {
+    var a = authorities[i];
+    if (a.id === authority) {
+      for (var j=0,k=a.ns.length; j<k; j++) {
+        if (a.ns[j].id === namespace) {
+          return true;
+        }
       }
     }
-    return false;
-  };
+  }
+  return false;
+};
 
+function assert_key(keys, authority_id, ns_id, key, url) {
+  for (var i=0,l=keys.length; i<l; i++) {
+    var k = keys[i];
+    if (k.authority &&
+        k.authority.id === authority_id &&
+        k.ns === ns_id &&
+        k.key === key &&
+        k.url == url) {
+      return true;
+    }
+  }
+  return false;
+};
+
+test("keys", function() {
   var keys;
   q.keys("/en/barack_obama")
     .then(function(r) {
@@ -72,22 +85,21 @@ test("keys", function() {
 });
 
 
+test("key", function() {
+  var key;
+  q.key("/en/google", "/wikipedia/en_id", "1092923")
+    .then(function(r) {
+      return key = r;
+    });
+  acre.async.wait_on_results();
+  ok(h.isArray(key) && key.length === 1, "Got /wikipedia/en/google");
+  ok(assert_key(key, "/en/wikipedia", "/wikipedia/en_id", "1092923",
+                "http://en.wikipedia.org/wiki/index.html?curid=1092923"),
+     "found /wikipedia/en/google");
+});
+
+
 test("user_authority_namespaces", function() {
-
-  function assert_authority_namespace(authorities, authority, namespace) {
-    for (var i=0,l=authorities.length; i<l; i++) {
-      var a = authorities[i];
-      if (a.id === authority) {
-        for (var j=0,k=a.ns.length; j<k; j++) {
-          if (a.ns[j].id === namespace) {
-            return true;
-          }
-        }
-      }
-    }
-    return false;
-  };
-
   var authorities;
   q.user_authority_namespaces("/user/daepark")
     .then(function(r) {
@@ -98,6 +110,5 @@ test("user_authority_namespaces", function() {
   ok(assert_authority_namespace(authorities, "/en/facebook", "/authority/facebook"));
   ok(assert_authority_namespace(authorities, "/en/international_standard_book_number", "/authority/isbn"));
 });
-
 
 acre.test.report();

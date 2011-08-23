@@ -52,6 +52,11 @@
             init: edit.add_key_init,
             validate: edit.add_key_validate,
             submit: edit.add_key_submit,
+            reset: edit.add_key_reset,
+
+            ajax: {
+              url: fb.h.ajax_url("edit_key_submit.ajax")
+            },
 
             trigger: trigger,
             table: trigger.parents("table:first"),
@@ -66,6 +71,7 @@
         error: function() {
           // TODO: ajax error handler
           var msg = fb.form.check_ajax_error.apply(null, arguments);
+          console.error(msg);
         }
       });
     },
@@ -73,7 +79,7 @@
     add_key_init: function(options) {
       var select = $(":input[name=namespace]", options.form).chosen();
       var key = $(":input[name=key]", options.form);
-      fb.form.disable(key);
+      fb.disable(key);
       select.change(function(e) {
         key.val("");
         if (this.value) {
@@ -88,22 +94,59 @@
             .bind("invalid", function() {
               fb.form.disable_submit(options);
             });
-          fb.form.enable(key);
+          fb.enable(key);
           key.focus();
         }
         else {
-          fb.form.disable(key);
+          fb.disable(key);
         }
         fb.form.disable_submit(options);
       });
     },
 
     add_key_validate: function(options) {
-
+      var select = $(":input[name=namespace]", options.form);
+      var key = $(":input[name=key]", options.form);
+      if (!select.val()) {
+        fb.form.trigger(options.event_prefix + "error", "Please select an authority/namespace");
+        return false;
+      }
+      return fb.form.validate_mqlkey(options, key);
     },
 
-    add_key_submit: function(options) {
+    add_key_submit: function(options, ajax_options) {
+      var namespace = $(":input[name=namespace]", options.form).val();
+      var key = $(":input[name=key]", options.form).val();
+      ajax_options.data.o = JSON.stringify([{
+        namespace: namespace,
+        value: key,
+        connect: "insert"
+      }]);
+      $.ajax($.extend(ajax_options, {
 
+        success: function(data) {
+          if (!fb.form.check_ajax_success.apply(null, arguments)) {
+            return;
+          }
+          var new_row = $(data.result.html);
+          fb.form.success_table_add_form(options, new_row);
+        },
+
+        error: function(xhr) {
+          // TODO: ajax error handler
+          var msg = fb.form.check_ajax_error.apply(null, arguments);
+          options.form.trigger(options.event_prefix + "error", msg);
+        }
+
+      }));
+    },
+
+    add_key_reset: function(options) {
+      var select = $(":input[name=namespace]", options.form);
+      var key = $(":input[name=key]", options.form);
+      key.val("").focus().trigger("textchange")
+        .next(".key-status").text("").removeClass("loading");
+      fb.form.disable_submit(options);
     }
 
   };

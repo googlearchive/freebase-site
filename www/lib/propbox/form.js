@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-(function($, fb) {
+(function($, fb, i18n) {
 
 
    var form = fb.form = {
@@ -60,14 +60,14 @@
        var submit_row = $(".edit-row-submit", options.form);
        var event_prefix = options.event_prefix || "fb.form.";
        options.form
-         .bind(event_prefix + "submit", function() {
+         .bind(event_prefix + "submit", function() {console.log("SUBMIT");
            form.submit_table_add_form(options);
          })
          .bind(event_prefix + "cancel", function() {
            form.cancel_table_add_form(options);
          })
          .bind(event_prefix + "error", function(e, msg) {
-           form.error(head_row, msg);
+           form.error(options, msg);
            options.form.removeClass("loading");
          })
          .bind(event_prefix + "success", function() {
@@ -85,17 +85,59 @@
        $(".button-cancel", submit_row).click(function() {
          options.form.trigger(event_prefix + "cancel");
        });
+       // submit/cancel on ENTER/ESCAPE
+       $(":input", options.form)
+         .keypress(function(e) {
+           if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
+             options.form.trigger(event_prefix + "submit");
+           }
+         })
+         .keyup(function(e) {
+           if (e.keyCode === 27) { // escape
+             options.form.trigger(event_prefix + "cancel");
+           }
+         });
        trigger_row.hide();
        options.table.append(options.form);
        options.init(options);
      },
 
-     validate_table_add_form: function(options) {
+     submit_table_add_form: function(options) {console.log("submit_table_add_form");
+       // are we already submitting?
+       if (options.form.is(".loading")) {console.log("submit_table_add_form.is(.loading)");
+         return;
+       }
 
+       // remove focus from activeElement
+       if (document.activeElement) {
+         $(document.activeElement).blur();
+       }
+
+       // clear messages
+       form.clear_message(options);
+
+       // validate form
+       if (!options.validate(form)) {console.log("submit_table_add_form.validate == false");
+         return;
+       }
+
+       // add a loading class to the form
+       options.form.addClass("loading");
+
+       // submit form
+       var ajax_options = $.extend({data:{}, dataType:"json", type:"POST"}, options.ajax);
+       $("input[type=hidden]", options.form).each(function() {
+         ajax_options.data[this.name] = this.value;
+       });
+       options.submit(options, ajax_options);
      },
 
-     sumbit_table_add_form: function(options) {
-
+     success_table_add_form: function(options, new_row) {
+       $("tbody:first", options.table).append(new_row);
+       // i18n'ize dates and numbers
+       i18n.ize(new_row);
+       options.reset(options);
+       options.form.trigger(options.event_prefix + "success");
      },
 
      cancel_table_add_form: function(options) {
@@ -105,27 +147,17 @@
      },
 
 
-
-
      /**
       * disable/enable submit button
       */
-     disable: function(elt) {
-       elt.attr("disabled", "disabled").addClass("disabled");
-     },
-
-     enable: function(elt) {
-       elt.removeAttr("disabled", "disabled").removeClass("disabled");
-     },
-
      disable_submit: function(options) {
        var submit_row = options.submit_row || $(".edit-row-submit", options.form);
-       form.disable($(".button-submit", submit_row));
+       fb.disable($(".button-submit", submit_row));
      },
 
      enable_submit: function(options) {
        var submit_row = options.submit_row || $(".edit-row-submit", options.form);
-       form.enable($(".button-submit", submit_row));
+       fb.enable($(".button-submit", submit_row));
      },
 
      /**
@@ -141,70 +173,83 @@
          .mqlkey(mqlkey_options)
          .bind("valid", function(e, val) {
            $(this).next(".key-status")
-             .removeClass("invalid")
-             .removeClass("loading")
+             .removeClass("invalid loading")
              .addClass("valid")
              .text("valid")
              .attr("title", "Key is available");
          })
          .bind("invalid", function(e, msg) {
            $(this).next(".key-status")
-             .removeClass("valid")
-             .removeClass("loading")
+             .removeClass("valid loading")
              .addClass("invalid")
              .text("invalid")
              .attr("title", msg);
          })
          .bind("textchange", function(e) {
            $(this).next(".key-status")
-             .removeClass("invalid")
-             .removeClass("valid")
+             .removeClass("valid invalid")
+             .text("loading")
              .addClass("loading");
          });
      },
 
-     validate_mqlkey: function(form, input) {
-       var form_elt = form.form || form.row;
+     validate_mqlkey: function(options, input) {
        var key_status = input.next(".key-status");
        var keyval = input.val();
        if (keyval === "") {
-         //console.log("VALIDATE MQLKEY", "EMPTY");
-         form_elt.trigger(form.event_prefix + "error", "Key is required");
+         console.log("VALIDATE MQLKEY", "EMPTY");
+         input.trigger(options.event_prefix + "error", "Key is required");
          return false;
        }
        if (keyval === input.data("mqlkey").original) {
-         //console.log("VALIDATE MQLKEY", "ORIGINAL");
+         console.log("VALIDATE MQLKEY", "ORIGINAL");
          return true;
        }
        if (key_status.is(".invalid")) {
-         //console.log("VALIDATE MQLKEY", "INVALID");
-         form_elt.trigger(form.event_prefix + "error", key_status.attr("title"));
+         console.log("VALIDATE MQLKEY", "INVALID");
+         input.trigger(options.event_prefix + "error", key_status.attr("title"));
          return false;
        }
        else if (key_status.is(".loading")) {
-         //console.log("VALIDATE MQLKEY", "LOADING");
+         console.log("VALIDATE MQLKEY", "LOADING");
          return false;
        }
-       //console.log("VALIDATE MQLKEY", "VALID");
+       console.log("VALIDATE MQLKEY", "VALID");
        return true;
      },
 
 
-
-     error: function(row, msg) {
-
+     error: function(options, msg) {console.log("form.error", msg);
+       form.disable_submit(options);
+       return form.message(options, msg, "error");
      },
 
+     message: function(options, msg, type) {
+       var msg_row = options.head_row || $(".edit-row-head", options.form);
+       msg_row.find(".close-msg").css("visibility", "visible").next().find(".msg-default").hide().next().text(msg);
+       msg_row.addClass("row-msg");
+       if (type) {
+         msg_row.addClass("row-msg-" + type);
+       }
+     },
+
+     clear_message: function(options) {
+       var msg_row = options.head_row || $(".edit-row-head", options.form);
+       msg_row.find(".close-msg").css("visibility", "hidden").next().find(".msg-default").show().next().html("&nbsp;");
+       msg_row.removeClass("row-msg");
+     },
 
      check_ajax_success: function(data, status, xhr) {console.log("check_ajax_success", arguments);
+       // TODO:
        // handle 401: Not authorized
        // check data.status code
        return true;
      },
 
      check_ajax_error: function(xhr) {console.log("check_ajax_error", arguments);
+       // TODO:
        return xhr.responseText;
      }
    };
 
-})(jQuery, window.freebase);
+})(jQuery, window.freebase, window.i18n);

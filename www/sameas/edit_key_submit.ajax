@@ -28,14 +28,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-var h = acre.require("helper/helpers.sjs");
-var validators = acre.require("validator/validators.sjs");
-var propbox = acre.require("propbox/propbox.mjt");
-var queries = acre.require("propbox/queries.sjs");
-var ph = acre.require("propbox/helpers.sjs");
-var promise_apis = acre.require("promise/apis.sjs");
+var i18n = acre.require("lib/i18n/i18n.sjs");
+var validators = acre.require("lib/validator/validators.sjs");
+var queries = acre.require("queries.sjs");
+var editcomponents = acre.require("editcomponents.mjt");
+var promise_apis = acre.require("lib/promise/apis.sjs");
 var freebase = promise_apis.freebase;
 var deferred = promise_apis.deferred;
+var t = acre.require("sameas.mjt");
 
 /** connected responses corresponding to "insertions" **/
 var CONNECTED = {
@@ -56,11 +56,10 @@ var SPEC = {
   validate: function(params) {
     var args = [
       validators.MqlId(params, "s", {required:true}),            // subject id
-      validators.MqlId(params, "p", {required:true}),            // property id
+      validators.OneOf(params, "p", {required:true, oneof:["/type/object/key"]}), // property id
       validators.Array(validators.Json(params, "o", {required:true})), // object operations
       validators.LangId(params, "lang", {if_empty:"/lang/en"})  // lang
     ];
-
     return args;
   },
 
@@ -74,53 +73,28 @@ var SPEC = {
         return env.result;
       })
       .then(function(result) {
-        // query to get the full prop_data to get the names (lang) and subproperties (mediators)
-        return queries.prop_structure(p, lang)
-          .then(function(prop_structure) {
-            // the new object value that we just inserted
-            // which is the first operation != connect:"delete"
-            var clauses = result[p];
-            var object_value;
-            for (var i=0,l=clauses.length; i<l; i++) {
-              var clause = clauses[i];
-              if (!clause.connect || CONNECTED[clause.connect]) {
-                var ect = prop_structure.expected_type.id;
-                if (h.is_literal_type(ect)) {
-                  object_value = clause.value;
-                  // TODO: assert clause.lang === lang
-                }
-                else {
-                  object_value = clause.id;
-                }
-                break;
-              }
-            }
-            // TODO: assert object_value
-            return queries.prop_values(s, prop_structure, object_value, lang)
-             .then(function(prop_values) {
-               var prop_value = h.first_element(prop_values);
-               var new_row;
-               if (prop_structure.expected_type.mediator) {
-                 // output table row (<tr>) if mediator
-                 new_row = propbox.datatable_row({id: s}, prop_structure, prop_value, lang);
-               }
-               else {
-                 // output list row (<li>) for everything else
-                 new_row = propbox.datalist_row({id: s}, prop_structure, prop_value, lang);
-               }
-               return {
-                 // <debug>
-                 mqlwrite: q,
-                 result: result,
-                 object_value: object_value,
-                 prop_structure: prop_structure,
-                 prop_values: prop_values,
-                 // </debug>
-
-                 html: acre.markup.stringify(new_row)
-               };
-             });
-           });
-         });
+        // the new object value that we just inserted
+        // which is the first operation != connect:"delete"
+        var clauses = result[p];
+        var namespace;
+        var value;
+        for (var i=0,l=clauses.length; i<l; i++) {
+          var clause = clauses[i];
+          if (!clause.connect || CONNECTED[clause.connect]) {
+            namespace = clause.namespace;
+            value = clause.value;
+            break;
+          }
+        }
+        // TODO: assert namespace and value
+        return queries.key(s, namespace, value, lang)
+          .then(function(key) {
+            // TODO: assert key.length === 1
+            key = key[0];
+            return {
+              html: acre.markup.stringify(t.topic_key(key))
+            };
+          });
+      });
   }
 };

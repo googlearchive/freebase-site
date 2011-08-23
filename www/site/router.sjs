@@ -741,6 +741,13 @@ function init_site_rules(lib) {
           "app": "sameas",
           "script": "sameas.tab",
           "promises": h.extend(true, [], DEFAULT_PROMISES)
+        },
+        {
+          "name": "History",
+          "key": "history",
+          "app": "history",
+          "script": "history.tab",
+          "promises": h.extend(true, [], DEFAULT_PROMISES)
         }
       ]
     },

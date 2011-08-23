@@ -32,7 +32,11 @@
 <acre:script>
   var c = this.exports.c = {};
   var h = acre.require('helpers.sjs');
+
   var image = acre.require('lib/template/imagecomponents');
+  var filter_components = acre.require("lib/filter/components.mjt");
+  var fh = acre.require("lib/filter/helpers.sjs");
+
   var i18n = acre.require('lib/i18n/i18n.sjs');
   var i18n_c = acre.require('lib/i18n/components.mjt');
   var _ = i18n.gettext;
@@ -43,30 +47,91 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <ol>
-    <acre:block for="o in c.history">
-      <acre:script>
-        var op_verb;
-        if (o.operation === 'insert') {
-          op_verb = 'added';
-        } else if (o.operation === 'delete') {
-          op_verb = 'removed';
-        } else if (o.operation === 'update') {
-          op_verb = 'changed';
-        }
-      </acre:script>
-      <li>
-        <strong>${o.creator.name}</strong>
-        ${op_verb}
-        <strong>${o.value.value || o.value.name || o.value.id}</strong> to
-        <strong>${o.property.name || o.property.id}</strong> on
-        <strong>${i18n_c.datetime(o.timestamp)}</strong>
-      </li>
-    </acre:block>
-  </ol>
-</acre:block>
 
+  <div class="column nav">
+    <div class="module">
+      <h2 class="module-title">
+        <a href="javascript:void(0);" class="trigger">Collapse column</a>
+        <span>Filter this data</span>
+      </h2>
+      <div class="module-section" acre:if="c.prop_counts">
+        <acre:script>
+          var hide_counts = (c.filters.timestamp && c.filters.timestamp.length) ||
+          (c.filters.creator && c.filters.creator.length);
+        </acre:script>
+        ${filter_components.prop_counts_filter(c.object.id, c.filters, c.prop_counts, hide_counts)}
+      </div>
+    </div>
+    <div class="module">
+      <div class="module-section alt">
+        ${filter_components.timestamp_filter(c.object.id, c.filters)}
+      </div>
+      <div class="module-section alt">
+        ${filter_components.creator_filter(c.object.id, c.filters)}
+      </div>
+      <div class="module-section alt" id="limit-slider">
+        <acre:script>
+          var limit = c.filters.limit || 100;
+        </acre:script>
+        <h3 class="module-section-title">
+          <label for="">Show up to <strong class="current-limit">${limit}</strong> edits</label>
+        </h3>
+        ${filter_components.filter_form(c.object.id, c.filters, 'limit', filter_components.limit_slider, ['limit', limit])}
+      </div>
+    </div>
+  </div>
+
+  <div class="column" id="history-data" role="main">
+    <div class="section">
+      <h2 class="table-title">
+        <a name="edits">${_("Edits")}</a>
+      </h2>
+
+      <table class="table table-sortable">
+        <thead>
+          <tr>
+            <th class="column-header first" scope="col">
+              <span class="sort-icon">${_("creator")}</span>
+            </th>
+            <th class="column-header" scope="col">
+              <span class="sort-icon">${_("operation")}</span>
+            </th>
+            <th class="column-header" scope="col">
+              <span class="sort-icon">${_("object")}</span>
+            </th>
+            <th class="column-header" scope="col">
+              <span class="sort-icon">${_("predicate")}</span>
+            </th>
+            <th class="column-header column-header-asc" scope="col">
+              <span class="sort-icon">${_("timestamp")}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr acre:for="o in c.history" class="hoverable">
+            <td class="odd">
+              ${o.creator.name}
+            </td>
+            <td class="even">
+              ${o.operation}
+            </td>
+            <td class="odd">
+              ${o.value.value || o.value.name || o.value.id}
+            </td>
+            <td class="even">
+              ${o.property.name || o.property.id}
+            </td>
+            <td class="odd">
+              ${o.timestamp}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</acre:block>
 
 <acre:block def="footer_script()">
   <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+  <script src="history.mf.js"></script>
 </acre:block>

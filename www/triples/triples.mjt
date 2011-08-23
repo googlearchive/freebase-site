@@ -31,9 +31,9 @@
 
 <acre:script>
   var c = this.exports.c = {};
-  var h = acre.require("lib/helper/helpers.sjs");  
+  var h = acre.require("lib/helper/helpers.sjs");
   var components = acre.require("components");
-  var image = acre.require("lib/template/imagecomponents");  
+  var image = acre.require("lib/template/imagecomponents");
   var filter_components = acre.require("lib/filter/components.mjt");
   var fh = acre.require("lib/filter/helpers.sjs");
   var i18n = acre.require("lib/i18n/i18n.sjs");
@@ -53,11 +53,11 @@
 
 <acre:block def="nav_keys()">
   <span class="key">
-    <strong><abbr title="${_('Machine ID')}">${_("mid")}</abbr></strong>: 
+    <strong><abbr title="${_('Machine ID')}">${_("mid")}</abbr></strong>:
     <span acre:attrs="itemprop('/type/object/mid')">${c.object.mid}</span>
   </span>
   <span class="key">
-    <strong><abbr title="${_('GUID')}">${_("guid")}</abbr></strong>: 
+    <strong><abbr title="${_('GUID')}">${_("guid")}</abbr></strong>:
     <span acre:attrs="itemprop('/type/object/guid')">${c.object.guid}</span>
   </span>
 </acre:block>
@@ -96,16 +96,16 @@
         <h3 class="module-section-title">
           <label for="">Show up to <strong class="current-limit">${limit}</strong> links</label>
         </h3>
-        ${filter_components.filter_form(c.id, c.filters, 'limit', filter_components.limit_slider, ['limit', limit])}     
+        ${filter_components.filter_form(c.id, c.filters, 'limit', filter_components.limit_slider, ['limit', limit])}
       </div>
       <div class="module-section alt">
-        ${components.history_filter(c.id, c.filters)}
+        ${components.historical_filter(c.id, c.filters)}
       </div>
     </div>
   </div>
 
-  <div class="column" id="triples-data" role="main" acre:attrs="c.filters.history ? {'class':'history'} : {}">
-    
+  <div class="column" id="triples-data" role="main" acre:attrs="c.filters.historical ? {'class':'historical'} : {}">
+
     ${names_aliases(c.id, c.names_aliases, c.filters)}
 
     ${keys(c.id, c.keys, c.filters)}
@@ -117,7 +117,7 @@
     ${type_links(c.id, c.type_links, c.filters)}
 
     ${attribution_links(c.id, c.attribution_links, c.filters)}
-    
+
   </div>
 
   <ul id="triple-tip" class="row-menu tooltip" acre:trim="">
@@ -139,11 +139,11 @@
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
-          <th acre:if="filters.history" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
+          <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
       </thead>
       <tbody>
-        <tr acre:for="o in data" 
+        <tr acre:for="o in data"
           class="hoverable ${JSON.stringify(th.triple(id, o.master_property, o.target_value))} ${th.link_class(o)}">
           <th class="row-header odd empty" scope="row">
             <span class="self">-</span>
@@ -154,7 +154,7 @@
           <td class="even" acre:if="o.creator">${a(o.creator)}</td>
           <td class="even" acre:else="">null</td>
           <td class="odd numeric">${o.timestamp}</td>
-          <td acre:if="filters.history" class="even">${o.operation}</td>
+          <td acre:if="filters.historical" class="even">${o.operation}</td>
         </tr>
       </tbody>
     </table>
@@ -168,16 +168,16 @@
       <thead>
         <tr>
           <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>                  
+          <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("value")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
-          <th acre:if="filters.history" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
+          <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
       </thead>
       <tbody>
-       <tr acre:for="k in data" 
+       <tr acre:for="k in data"
           class="hoverable ${JSON.stringify(th.triple(k.source.id, k.master_property, k.target.id, k.target_value.namespace, k.target_value.value))} ${th.link_class(k)}">
           <th class="row-header odd empty" scope="row">
             <acre:block if="k.source.id === id">
@@ -185,7 +185,7 @@
             </acre:block>
             <acre:block else="">
             ${a(k.source.id)}
-            </acre:block>                                         
+            </acre:block>
             ${tooltip()}
           </th>
           <td class="even">${a(k.master_property)}</td>
@@ -207,7 +207,7 @@
           <td class="odd" acre:if="k.creator">${a(k.creator)}</td>
           <td class="odd" acre:else="">null</td>
           <td class="even numeric">${k.timestamp}</td>
-          <td acre:if="filters.history" class="odd">${k.operation}</th>
+          <td acre:if="filters.historical" class="odd">${k.operation}</th>
         </tr>
       </tbody>
     </table>
@@ -225,7 +225,7 @@
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
-          <th acre:if="filters.history" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
+          <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
       </thead>
       <tbody>
@@ -243,7 +243,7 @@
           <td class="even" acre:if="o.creator">${a(o.creator)}</td>
           <td class="even" acre:else="">null</td>
           <td class="odd numeric">${o.timestamp}</td>
-          <td acre:if="filters.history" class="even">${o.operation}</th>
+          <td acre:if="filters.historical" class="even">${o.operation}</th>
         </tr>
         </acre:block>
       </tbody>
@@ -262,7 +262,7 @@
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
-          <th acre:if="filters.history" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
+          <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
       </thead>
       <tbody>
@@ -282,7 +282,7 @@
           <td class="even" acre:if="o.creator">${a(o.creator)}</td>
           <td class="even" acre:else="">null</td>
           <td class="odd numeric">${o.timestamp}</td>
-          <td acre:if="filters.history" class="even">${o.operation}</th>
+          <td acre:if="filters.historical" class="even">${o.operation}</th>
         </tr>
         </acre:block>
       </tbody>
@@ -301,7 +301,7 @@
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
-          <th acre:if="filters.history" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
+          <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
       </thead>
       <tbody>
@@ -325,7 +325,7 @@
           <td class="even" acre:if="o.creator">${a(o.creator)}</td>
           <td class="even" acre:else="">null</td>
           <td class="odd numeric">${o.timestamp}</td>
-          <td acre:if="filters.history" class="even">${o.operation}</th>
+          <td acre:if="filters.historical" class="even">${o.operation}</th>
         </tr>
         </acre:block>
       </tbody>
@@ -344,7 +344,7 @@
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
-          <th acre:if="filters.history" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
+          <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
       </thead>
       <tbody>
@@ -365,7 +365,7 @@
           <td class="even" acre:if="o.creator">${a(o.creator)}</td>
           <td class="even" acre:else="">null</td>
           <td class="odd numeric">${o.timestamp}</td>
-          <td acre:if="filters.history" class="even">${o.operation}</th>
+          <td acre:if="filters.historical" class="even">${o.operation}</th>
         </tr>
         </acre:block>
       </tbody>
@@ -420,13 +420,13 @@
     </acre:block>
     <acre:block elif="master_property === '/type/content/blob_id'" trim="">
       <a href="${h.fb_api_url('/api/trans/raw' + id)}">${target_value.value}</a>
-    </acre:block>    
+    </acre:block>
     <acre:block elif="target_value.type === '/type/uri'" trim="">
       <a href="${target_value.value}" target="_new">${target_value.value}</a>
     </acre:block>
     <acre:block else="" trim="">
       ${target_value.value}
-    </acre:block>                
+    </acre:block>
   </span>
   <span class="literal-type">${a(target_value.type)}</span>
   <acre:block if="target_value.type === '/type/text'" trim="">

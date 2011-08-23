@@ -29,58 +29,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var i18n = acre.require('lib/i18n/i18n.sjs');
-var validators = acre.require("lib/validator/validators.sjs");
-var filters = acre.require("lib/filter/filters.sjs");
-var filter_queries = acre.require("lib/filter/queries.sjs");
-var queries = acre.require('queries.sjs');
-var h = acre.require('helpers.sjs');
+(function($, fb) {
 
-validators.Validator.factory(scope, "TimestampValidator", {
-  "string": function(val, options) {
-    return validators.Datejs(val, h.extend({}, options, {date:false}));
-  }
-});
+  var history = fb.history = {
 
-var history_filters = {
-  limit: {
-    validator: validators.Int,
-    options: {if_empty:null}
-  },
-  timestamp: {
-    validator: validators.MultiValue,
-    options: {validator: TimestampValidator, if_empty:null}
-  },
-  creator: {
-    validator: validators.MultiValue,
-    options: {validator: validators.MqlId, if_empty:null}
-  }
-};
+    init: function() {
+      // Initialize filter menu collapse/expand
+      $(".column.nav").collapse_module({modules: ".module", column: ".section"});
 
-var SPEC = {
-  template: 'history.mjt',
+      // Initialize prop counts filter suggest input
+      fb.filters.init_domain_type_property_filter(".column.nav");
 
-  validate: function(params) {
-    return [
-      params.object,
-      (function() {
-        var f = filters.validate(params, history_filters);
-        f[params.current_tab.key] = "";
-        return f;
-      })()
-    ];
-  },
+      // Initialize the property limit slider
+      fb.filters.init_limit_slider_filter("#limit-slider", 100, 1, 1000, 10);
 
-  run: function(object, f) {
-    return {
-      object: object,
+      // Initialize user/creator suggest input
+      $(":text[name=creator]")
+        .suggest(fb.suggest_options.any("/type/user"))
+        .bind("fb-select", function(e, data) {
+          $(this).val(data.id)
+            .parents("form:first").submit();
+        });
+    }
+  };
 
-      // filter components
-      filters: f,
-      prop_counts: filter_queries.prop_counts(object.guid),
-
-      // history components
-      history: queries.entity_history(object.id, f)
-    };
-  }
-};
+  $(history.init);
+})(jQuery, window.freebase);

@@ -192,7 +192,7 @@ test("mqlread_options", function() {
 });
 
 test("apply null filters", function() {
-  ["limit", "timestamp", "creator", "history", "domain_type_property"].forEach(function(k) {
+  ["limit", "timestamp", "creator", "historical", "domain_type_property"].forEach(function(k) {
     deepEqual(q["apply_" + k]({}), {});
     deepEqual(q["apply_" + k]({}, null), {});
   });
@@ -224,9 +224,9 @@ test("apply_creator filter", function() {
   });
 });
 
-test("apply_history filter", function() {
-  deepEqual(q.apply_history({}, false), {});
-  deepEqual(q.apply_history({}, true), {valid:null, operation:null});
+test("apply_historical filter", function() {
+  deepEqual(q.apply_historical({}, false), {});
+  deepEqual(q.apply_historical({}, true), {valid:null, operation:null});
 });
 
 test("apply_domain filter", function() {

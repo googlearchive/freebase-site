@@ -57,7 +57,7 @@ test("add_filter", function() {
     limit: "500",
     timestamp: "today",
     as_of_time: "2010",
-    history: "1",
+    historical: "1",
     property: "/type/object/name"
   };
   var params = fh.add_filter(filters, "timestamp", "yesterday");
@@ -72,7 +72,7 @@ test("remove_filter", function() {
     limit: "500",
     timestamp: "today",
     as_of_time: "2010",
-    history: "1",
+    historical: "1",
     property: "/type/object/name"
   };
   var params = fh.remove_filter(filters, "timestamp");

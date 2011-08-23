@@ -43,7 +43,7 @@ var inspect_filters = {
     validator: validators.Int,
     options: {if_empty:null}
   },
-  history: {
+  historical: {
     validator: validators.StringBool,
     options: {if_empty:null}
   },

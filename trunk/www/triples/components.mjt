@@ -38,19 +38,18 @@
   var _ = i18n.gettext;
 </acre:script>
 
-<acre:block def="history_filter(base_url, filters)">
-  ${fc.filter_form(base_url, filters, 'history', history_input, ['history', filters.history])}
+<acre:block def="historical_filter(base_url, filters)">
+  ${fc.filter_form(base_url, filters, 'historical', historical_input, ['historical', filters.historical])}
 </acre:block>
 
-<acre:block def="history_input(name, checked)">
+<acre:block def="historical_input(name, checked)">
   <h2 style="margin-top:10px;" class="filter-title">
     <label>
-      <input acre:if="checked === true" class="history-toggle" 
-             name="history" value="0" type="checkbox" checked="checked" onchange="this.form.submit()"/> 
-      <input acre:else="" class="history-toggle" 
-             name="history" value="1" type="checkbox" onchange="this.form.submit()"/> 
+      <input acre:if="checked === true" class="historical-toggle" 
+             name="historical" value="0" type="checkbox" checked="checked" onchange="this.form.submit()"/> 
+      <input acre:else="" class="historical-toggle" 
+             name="historical" value="1" type="checkbox" onchange="this.form.submit()"/> 
       Show historical writes
     </label>
   </h2>
 </acre:block>
-

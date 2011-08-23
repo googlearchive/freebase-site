@@ -205,7 +205,7 @@ function type_links(id, filters) {
   apply_limit(q[0], filters.limit);
   apply_timestamp(q[0], filters.timestamp);
   apply_creator(q[0], filters.creator);
-  apply_history(q[0], filters.history);
+  apply_historical(q[0], filters.historical);
   return freebase.mqlread(q, mqlread_options(filters))
     .then(function(env) {
       return env.result;
@@ -228,7 +228,7 @@ function attribution_links(id, filters) {
   apply_limit(q[0], filters.limit);
   apply_timestamp(q[0], filters.timestamp);
   apply_creator(q[0], filters.creator);
-  apply_history(q[0], filters.history);
+  apply_historical(q[0], filters.historical);
   return freebase.mqlread(q, mqlread_options(filters))
     .then(function(env) {
       return env.result;
@@ -247,7 +247,7 @@ function apply_filters(clause, filters) {
   apply_limit(clause, filters.limit);
   apply_timestamp(clause, filters.timestamp);
   apply_creator(clause, filters.creator);
-  apply_history(clause, filters.history);
+  apply_historical(clause, filters.historical);
   apply_domain_type_property(clause, filters.domain, filters.type, filters.property);
 };
 
@@ -290,8 +290,8 @@ function apply_creator(clause, creator) {
   return clause;
 };
 
-function apply_history(clause, history) {
-  if (history) {
+function apply_historical(clause, historical) {
+  if (historical) {
     clause.valid = null;
     clause.operation = null;
   }

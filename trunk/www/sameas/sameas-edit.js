@@ -34,6 +34,9 @@
 
   var edit = fb.sameas.edit = {
 
+    /**
+     * ADD KEY
+     */
 
     add_key_begin: function(trigger, body) {
       $.ajax({
@@ -128,7 +131,6 @@
         connect: "insert"
       }]);
       $.ajax($.extend(ajax_options, {
-
         success: function(data) {
           if (!fb.form.check_ajax_success.apply(null, arguments)) {
             return;
@@ -136,13 +138,11 @@
           var new_row = $(data.result.html);
           fb.form.success_inline_add_form(options, new_row);
         },
-
         error: function(xhr) {
           // TODO: ajax error handler
           var msg = fb.form.check_ajax_error.apply(null, arguments);
           options.edit_row.trigger(options.event_prefix + "error", msg);
         }
-
       }));
     },
 
@@ -152,6 +152,114 @@
       key.val("").focus().trigger("textchange")
         .next(".key-status").text("").removeClass("loading");
       fb.form.disable_submit(options);
+    },
+
+
+    /**
+     * EDIT KEY
+     */
+
+    edit_key_begin: function(key_row) {
+      var key = key_row.metadata();
+      $.ajax({
+        url: fb.h.ajax_url("edit_key_begin.ajax"),
+        dataType: "json",
+        data: {id: fb.c.id, namespace:key.namespace, value:key.value},
+        success: function(data) {
+          if (!fb.form.check_ajax_success.apply(null, arguments)) {
+            return;
+          }
+          var html = $(data.result.html);
+          var head_row = $(".edit-row-head", html);
+          var edit_row = $(".edit-row", html);
+          var submit_row = $(".edit-row-submit", html);
+          var event_prefix = "fb.sameas.edit_key.";
+          var options = {
+            event_prefix: event_prefix,
+            // callbacks
+            init: edit.edit_key_init,
+            validate: edit.edit_key_validate,
+            submit: edit.edit_key_submit,
+            // submit ajax options
+            ajax: {
+              url: fb.h.ajax_url("edit_key_submit.ajax")
+            },
+            // jQuery objects
+            row: key_row,
+            head_row: head_row,
+            edit_row: edit_row,
+            submit_row: submit_row
+          };
+          edit_row
+            .bind(event_prefix + "success", function(e) {
+              key_row.removeClass("editing");
+            })
+            .bind(event_prefix + "cancel", function(e) {
+              key_row.removeClass("editing");
+            });
+          fb.form.init_inline_edit_form(options);
+        },
+        error: function() {
+          // TODO: ajax error handler
+          var msg = fb.form.check_ajax_error.apply(null, arguments);
+          console.error(msg);
+        }
+      });
+
+    },
+
+    edit_key_init: function(options) {
+      var namespace = $(":input[name=namespace]", options.edit_row).val();
+      var key = $(":input[name=key]", options.edit_row);
+      fb.form.init_mqlkey(key, {
+            mqlread_url: fb.acre.freebase.googleapis_url ? fb.h.fb_googleapis_url("/mqlread") : fb.h.fb_api_url("/api/service/mqlread"),
+            namespace: namespace
+      });
+      key
+        .bind("valid", function() {
+          fb.form.enable_submit(options);
+        })
+        .bind("invalid", function() {
+          fb.form.disable_submit(options);
+        })
+        .select()
+        .focus();
+    },
+
+    edit_key_validate: function(options) {
+      var key = $(":input[name=key]", options.edit_row);
+      return fb.form.validate_mqlkey(options, key);
+    },
+
+    edit_key_submit: function(options, ajax_options) {
+      var namespace = $(":input[name=namespace]", options.edit_row).val();
+      var key = $(":input[name=key]", options.edit_row);
+      // same key value?
+      var old_value = options.row.metadata().value;
+      var new_value = key.val();
+      if (new_value === old_value) {
+        options.edit_row.trigger(options.event_prefix + "cancel");
+        return;
+      }
+      ajax_options.data.o = JSON.stringify([{
+        namespace: namespace,
+        value: new_value,
+        connect: "update"
+      }]);
+      $.ajax($.extend(ajax_options, {
+        success: function(data) {
+          if (!fb.form.check_ajax_success.apply(null, arguments)) {
+            return;
+          }
+          var new_row = $(data.result.html);
+          fb.form.success_inline_edit_form(options, new_row);
+        },
+        error: function(xhr) {
+          // TODO: ajax error handler
+          var msg = fb.form.check_ajax_error.apply(null, arguments);
+          options.edit_row.trigger(options.event_prefix + "error", msg);
+        }
+      }));
     }
 
   };

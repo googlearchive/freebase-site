@@ -102,9 +102,9 @@
        options.init(options);
      },
 
-     submit_table_add_form: function(options) {console.log("submit_table_add_form");
+     submit_table_add_form: function(options) {
        // are we already submitting?
-       if (options.form.is(".loading")) {console.log("submit_table_add_form.is(.loading)");
+       if (options.form.is(".loading")) {
          return;
        }
 
@@ -117,7 +117,7 @@
        form.clear_message(options);
 
        // validate form
-       if (!options.validate(form)) {console.log("submit_table_add_form.validate == false");
+       if (!options.validate(form)) {
          return;
        }
 
@@ -197,29 +197,29 @@
        var key_status = input.next(".key-status");
        var keyval = input.val();
        if (keyval === "") {
-         console.log("VALIDATE MQLKEY", "EMPTY");
+         //console.log("VALIDATE MQLKEY", "EMPTY");
          input.trigger(options.event_prefix + "error", "Key is required");
          return false;
        }
        if (keyval === input.data("mqlkey").original) {
-         console.log("VALIDATE MQLKEY", "ORIGINAL");
+         //console.log("VALIDATE MQLKEY", "ORIGINAL");
          return true;
        }
        if (key_status.is(".invalid")) {
-         console.log("VALIDATE MQLKEY", "INVALID");
+         //console.log("VALIDATE MQLKEY", "INVALID");
          input.trigger(options.event_prefix + "error", key_status.attr("title"));
          return false;
        }
        else if (key_status.is(".loading")) {
-         console.log("VALIDATE MQLKEY", "LOADING");
+         //console.log("VALIDATE MQLKEY", "LOADING");
          return false;
        }
-       console.log("VALIDATE MQLKEY", "VALID");
+       //console.log("VALIDATE MQLKEY", "VALID");
        return true;
      },
 
 
-     error: function(options, msg) {console.log("form.error", msg);
+     error: function(options, msg) {
        form.disable_submit(options);
        return form.message(options, msg, "error");
      },
@@ -239,14 +239,14 @@
        msg_row.removeClass("row-msg");
      },
 
-     check_ajax_success: function(data, status, xhr) {console.log("check_ajax_success", arguments);
+     check_ajax_success: function(data, status, xhr) {
        // TODO:
        // handle 401: Not authorized
        // check data.status code
        return true;
      },
 
-     check_ajax_error: function(xhr) {console.log("check_ajax_error", arguments);
+     check_ajax_error: function(xhr) {
        // TODO:
        return xhr.responseText;
      }

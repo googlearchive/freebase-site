@@ -72,49 +72,94 @@ function keys(id, lang, limit, filters) {
   apply_filters(q, filters);
   return freebase.mqlread(q, mqlread_options(filters))
     .then(function(env) {
-      var keys = [];
-      env.result.key.forEach(function(k) {
-        var namespace = k.namespace;
-        var key = {
-          authority: namespace["/base/sameas/web_id/authority"],
-          ns: namespace.id,
-          key: k.value,
-          creator: k.link.creator,
-          timestamp: k.link.timestamp
-        };
-        var template = namespace["!/common/uri_template/ns"];
-        template = template && template.template;
-        if (template) {
-          key.template = template;
-          key.url = template.replace(/\{key\}/, k.value);
-        }
-        keys.push(key);
-      });
-      function compare_key(a, b) {
-        if (a.ns === b.ns) {
-          return b.key < a.key;
-        }
-        return b.ns < a.ns;
-      };
-      keys.sort(function(a, b) {
-        if (a.authority && b.authority) {
-          if (a.authority.id === b.authority.id) {
-            return compare_key(a, b);
-          }
-          return i18n.display_name(b.authority) < i18n.display_name(a.authority);
-        }
-        else if (a.authority) {
-          return -1;
-        }
-        else if (b.authority) {
-          return 1;
-        }
-        else {
-          return compare_key(a, b);
-        }
-      });
-    return keys;
+      return keys_result(env.result, lang);
+    });
+};
+
+function keys_result(result, lang) {
+  var keys = [];
+  result.key.forEach(function(k) {
+    var namespace = k.namespace;
+    var key = {
+      authority: namespace["/base/sameas/web_id/authority"],
+      ns: namespace.id,
+      key: k.value,
+      creator: k.link.creator,
+      timestamp: k.link.timestamp
+    };
+    var template = namespace["!/common/uri_template/ns"];
+    template = template && template.template;
+    if (template) {
+      key.template = template;
+      key.url = template.replace(/\{key\}/, k.value);
+    }
+    keys.push(key);
   });
+  function compare_key(a, b) {
+    if (a.ns === b.ns) {
+      return b.key < a.key;
+    }
+    return b.ns < a.ns;
+  };
+  keys.sort(function(a, b) {
+    if (a.authority && b.authority) {
+      if (a.authority.id === b.authority.id) {
+        return compare_key(a, b);
+      }
+      return sort_by_name(a.authority, b.authority, lang);
+    }
+    else if (a.authority) {
+      return -1;
+    }
+    else if (b.authority) {
+      return 1;
+    }
+    else {
+      return compare_key(a, b);
+    }
+  });
+  return keys;
+};
+
+/**
+ * get specific key in authority/namespace
+ */
+function key(id, namespace, key, lang) {
+  lang = lang || i18n.lang;
+  var q = {
+    id: id,
+    key: [{
+      namespace: {
+        id: namespace,
+        type: "/type/namespace",
+        "/base/sameas/web_id/authority": {
+//          optional: true,
+          limit: 1,
+          id: null,
+          type: "/base/sameas/api_provider",
+          name: i18n.mql.text_clause(lang)
+        },
+        "!/common/uri_template/ns": {
+          optional: true,
+          limit: 1,
+          type: "/common/uri_template",
+          template: null
+        }
+      },
+      value: key,
+      link: {
+        timestamp: null,
+        creator: {
+          id: null,
+          name: i18n.mql.text_clause(lang)
+        }
+      }
+    }]
+  };
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return keys_result(env.result, lang);
+    });
 };
 
 function apply_filters(q, filters) {
@@ -189,8 +234,12 @@ function sort_by_id(a, b) {
   return b.id < a.id;
 };
 
-function sort_by_name(a, b) {
-  return i18n.display_name(b) < i18n.display_name(a);
+function sort_by_name(a, b, lang) {
+  var a_name = i18n.mql.get_text(lang, a.name);
+  a_name = a_name && a_name.value || a.id;
+  var b_name = i18n.mql.get_text(lang, b.name);
+  b_name = b_name && b_name.value || b.id;
+  return b_name < a_name;
 };
 
 function user_authority_namespaces(user_id, lang, limit) {
@@ -225,6 +274,8 @@ function user_authority_namespaces(user_id, lang, limit) {
           ns: a["!/base/sameas/web_id/authority"].sort(sort_by_id)
         });
       });
-      return authorities.sort(sort_by_name);
+      return authorities.sort(function(a, b) {
+        return sort_by_name(a, b, lang);
+      });
     });
 };

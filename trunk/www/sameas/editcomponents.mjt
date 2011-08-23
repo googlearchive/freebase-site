@@ -71,6 +71,9 @@
     </tr>
     <tr class="edit-row-submit">
       <td colspan="5">
+        <input type="hidden" name="s" value="${id}"/>
+        <input type="hidden" name="p" value="/type/object/key"/>
+        <input type="hidden" name="lang" value="${i18n.lang}"/>
         ${form.submit_buttons()}
       </td>
     </tr>

@@ -55,8 +55,8 @@ function assert_key(keys, authority_id, ns_id, key, url) {
     var k = keys[i];
     if (k.authority &&
         k.authority.id === authority_id &&
-        k.ns === ns_id &&
-        k.key === key &&
+        k.namespace === ns_id &&
+        k.value === key &&
         k.url == url) {
       return true;
     }

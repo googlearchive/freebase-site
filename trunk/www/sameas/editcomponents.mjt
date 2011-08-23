@@ -98,13 +98,15 @@
         <div class="form-field">
           <label>
             <span class="form-label">${_('Namespace')}</span>
-            <input type="text" name="namespace" value="${key.ns}" class="text-input" disabled="disabled"/>
+            <input type="text" name="namespace"
+                   data-unique="${key.unique === true}"
+                   value="${key.namespace}" class="text-input" disabled="disabled"/>
           </label>
         </div>
         <div class="form-field">
           <label>
             <span class="form-label">${_('Key')}</span>
-            <input type="text" name="key" value="${key.key}" class="text-input"/>
+            <input type="text" name="key" value="${key.value}" class="text-input"/>
             <span class="key-status"></span>
           </label>
         </div>
@@ -119,4 +121,16 @@
       </td>
     </tr>
   </tbody>
+</acre:block>
+
+
+<acre:block def="deleted_key(undo_data, namespace, value)">
+  <tr class="edit-row-head row-msg row-msg-info">
+    <td colspan="5">
+      <acre:script>
+        var msg = h.sprintf(_("%(value)s has been removed from %(namespace)s."), {namespace:namespace, value:value});
+      </acre:script>
+      ${form.row_msg(msg, ".edit-row-head")}
+    </td>
+  </tr>
 </acre:block>

@@ -224,6 +224,31 @@
 
 
      /**
+      * DELETE
+      */
+     success_inline_delete: function(old_row, new_row, undo_callback) {
+       old_row.replaceWith(new_row);
+       if (undo_callback) {
+         var a = $('<a href="#">Undo</a>');
+         $(".msg-default", new_row).next().append(a);
+         a.click(function() {
+           undo_callback();
+           return false;
+         });
+       }
+     },
+
+     /**
+      * UNDO (DELETE)
+      */
+     success_inline_delete_undo: function(old_row, new_row) {
+       old_row.replaceWith(new_row);
+       // i18n'ize dates and numbers
+       i18n.ize(new_row);
+     },
+
+
+     /**
       * form helpers
       */
 
@@ -327,7 +352,6 @@
        //console.log("VALIDATE MQLKEY", "VALID");
        return true;
      },
-
 
      error: function(options, msg) {
        form.disable_submit(options);

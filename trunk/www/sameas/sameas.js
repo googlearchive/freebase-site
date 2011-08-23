@@ -75,7 +75,15 @@
     },
 
     delete_key: function(context) {
-
+      var key_row = $(context).parents(".submenu").data("headmenu").parents(".data-row:first");
+      if (key_row.is(".editing")) {
+        return false;
+      }
+      key_row.addClass("editing");
+      fb.get_script(fb.h.static_url("sameas-edit.mf.js"), function() {
+        sameas.edit.delete_key_begin(key_row);
+      });
+      return false;
     }
 
   };

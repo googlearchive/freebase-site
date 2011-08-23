@@ -35,10 +35,16 @@
   var _ = i18n.gettext;
 </acre:script>
 
-<acre:block def="row_msg(msg_default)">
-  <span class="row-msg">
-    <a class="close-msg" style="visibility:hidden;" href="#"
-       onclick="$$(this).css('visibility', 'hidden').next().find('.msg-default').show().next().html('&nbsp'); return false;">${_("close")}</a>
+<acre:block def="row_msg(msg_default, remove_jquery_selector)">
+  <span>
+    <acre:block if="remove_jquery_selector">
+      <a class="close-msg" href="#"
+         onclick="$$(this).parents('${remove_jquery_selector}').remove(); return false;">${_("close")}</a>
+    </acre:block>
+    <acre:block else="">
+      <a class="close-msg" style="visibility:hidden;" href="#"
+         onclick="$$(this).css('visibility', 'hidden').next().find('.msg-default').show().next().html('&nbsp'); return false;">${_("close")}</a>
+    </acre:block>
     <span>
       <span class="msg-default">${msg_default}</span>
       <span></span>
@@ -55,4 +61,3 @@
   <button class="button button-primary button-submit" type="submit">${save}</button>
   <button class="button button-cancel">${cancel}</button>
 </acre:block>
-

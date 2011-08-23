@@ -36,7 +36,6 @@
 
 
     add_key_begin: function(trigger) {
-      console.log("sameas.edit.add_key_begin", trigger);
       $.ajax({
         url: fb.h.ajax_url("add_key_begin.ajax"),
         dataType: "json",
@@ -63,7 +62,7 @@
             form: form
           };
           form
-            .bind(event_prefix + "cancel", function(e) {console.log("cancel");
+            .bind(event_prefix + "cancel", function(e) {
               trigger.removeClass("editing");
             });
           fb.form.init_table_add_form(options);

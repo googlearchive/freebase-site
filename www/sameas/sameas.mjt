@@ -148,7 +148,7 @@
 
 <acre:block def="topic_key(key)">
   <acre:script>
-    var metadata = {namespace:key.ns, value:key.key};
+    var metadata = {namespace:key.namespace, value:key.value};
   </acre:script>
   <tr class="data-row ${JSON.stringify(metadata)}">
     <th class="row-header odd">
@@ -167,14 +167,14 @@
       </acre:block>
     </th>
     <td>
-      <a href="${h.fb_url(key.ns)}">${key.ns}</a>
+      <a href="${h.fb_url(key.namespace)}">${key.namespace}</a>
     </td>
     <td class="odd">
       <acre:block if="key.url">
-        <a href="${key.url}">${key.key}</a>
+        <a href="${key.url}">${key.value}</a>
       </acre:block>
       <acre:block else="">
-        ${key.key}
+        ${key.value}
       </acre:block>
     </td>
     <td>
@@ -188,7 +188,7 @@
 
 <acre:block def="key_menu(key)">
   <acre:script>
-    var perm_obj = {id:key.ns};
+    var perm_obj = {id:key.namespace};
   </acre:script>
   <ul class="combo-menu nicemenu">
     <li class="nicemenu-item edit-perm ${JSON.stringify(perm_obj)}">

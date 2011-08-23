@@ -44,6 +44,7 @@ function keys(id, lang, limit, filters) {
       namespace: {
         id: null,
         type: "/type/namespace",
+        unique: null,
         "/base/sameas/web_id/authority": {
 //          optional: true,
           limit: 1,
@@ -82,8 +83,9 @@ function keys_result(result, lang) {
     var namespace = k.namespace;
     var key = {
       authority: namespace["/base/sameas/web_id/authority"],
-      ns: namespace.id,
-      key: k.value,
+      namespace: namespace.id,
+      value: k.value,
+      unique: namespace.unique, // is namespace unique?
       creator: k.link.creator,
       timestamp: k.link.timestamp
     };
@@ -96,10 +98,10 @@ function keys_result(result, lang) {
     keys.push(key);
   });
   function compare_key(a, b) {
-    if (a.ns === b.ns) {
-      return b.key < a.key;
+    if (a.namespace === b.namespace) {
+      return b.value < a.value;
     }
-    return b.ns < a.ns;
+    return b.namespace < a.namespace;
   };
   keys.sort(function(a, b) {
     if (a.authority && b.authority) {
@@ -132,6 +134,7 @@ function key(id, namespace, key, lang) {
       namespace: {
         id: namespace,
         type: "/type/namespace",
+        unique: null,
         "/base/sameas/web_id/authority": {
 //          optional: true,
           limit: 1,

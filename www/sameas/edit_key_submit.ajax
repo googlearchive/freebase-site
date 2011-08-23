@@ -76,25 +76,48 @@ var SPEC = {
         // the new object value that we just inserted
         // which is the first operation != connect:"delete"
         var clauses = result[p];
-        var namespace;
-        var value;
-        for (var i=0,l=clauses.length; i<l; i++) {
-          var clause = clauses[i];
-          if (!clause.connect || CONNECTED[clause.connect]) {
-            namespace = clause.namespace;
-            value = clause.value;
-            break;
-          }
+        if (clauses.length === 1 && !CONNECTED[clauses[0].connect]) {
+          // deleted
+          var clause = clauses[0];
+          var namespace = clause.namespace;
+          var value = clause.value;
+          // TODO: assert namespace and value
+          var undo_data = {
+            s: s,
+            p: p,
+            o: [{
+              namespace: namespace,
+              value: value,
+              connect: "update"
+            }],
+            lang: lang
+          };
+          return {
+            html: acre.markup.stringify(editcomponents.deleted_key(undo_data, namespace, value))
+          };
         }
-        // TODO: assert namespace and value
-        return queries.key(s, namespace, value, lang)
-          .then(function(key) {
-            // TODO: assert key.length === 1
-            key = key[0];
-            return {
-              html: acre.markup.stringify(t.topic_key(key))
-            };
-          });
+        else {
+          // inserted/updated
+          var namespace;
+          var value;
+          for (var i=0,l=clauses.length; i<l; i++) {
+            var clause = clauses[i];
+            if (!clause.connect || CONNECTED[clause.connect]) {
+              namespace = clause.namespace;
+              value = clause.value;
+              break;
+            }
+          }
+          // TODO: assert namespace and value
+          return queries.key(s, namespace, value, lang)
+            .then(function(key) {
+              // TODO: assert key.length === 1
+              key = key[0];
+              return {
+                html: acre.markup.stringify(t.topic_key(key))
+              };
+            });
+        }
       });
   }
 };

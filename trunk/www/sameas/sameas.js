@@ -57,7 +57,7 @@
       }
       trigger.addClass("editing");
       fb.get_script(fb.h.static_url("sameas-edit.mf.js"), function() {
-        sameas.edit.add_key_begin(trigger);
+        sameas.edit.add_key_begin(trigger, trigger.parents("table:first").find("tbody:first"));
       });
       return false;
     }

@@ -35,7 +35,7 @@
   var edit = fb.sameas.edit = {
 
 
-    add_key_begin: function(trigger) {
+    add_key_begin: function(trigger, body) {
       $.ajax({
         url: fb.h.ajax_url("add_key_begin.ajax"),
         dataType: "json",
@@ -44,28 +44,34 @@
           if (!fb.form.check_ajax_success.apply(null, arguments)) {
             return;
           }
-          var form = $(data.result.html);
+          var html = $(data.result.html);
+          var head_row = $(".edit-row-head", html);
+          var edit_row = $(".edit-row", html);
+          var submit_row = $(".edit-row-submit", html);
           var event_prefix = "fb.sameas.add_key.";
           var options = {
             event_prefix: event_prefix,
+            // callbacks
             init: edit.add_key_init,
             validate: edit.add_key_validate,
             submit: edit.add_key_submit,
             reset: edit.add_key_reset,
-
+            // submit ajax options
             ajax: {
               url: fb.h.ajax_url("edit_key_submit.ajax")
             },
-
+            // jQuery objects
             trigger: trigger,
-            table: trigger.parents("table:first"),
-            form: form
+            body: body,
+            head_row: head_row,
+            edit_row: edit_row,
+            submit_row: submit_row
           };
-          form
+          edit_row
             .bind(event_prefix + "cancel", function(e) {
               trigger.removeClass("editing");
             });
-          fb.form.init_table_add_form(options);
+          fb.form.init_inline_add_form(options);
         },
         error: function() {
           // TODO: ajax error handler
@@ -76,8 +82,8 @@
     },
 
     add_key_init: function(options) {
-      var select = $(":input[name=namespace]", options.form).chosen();
-      var key = $(":input[name=key]", options.form);
+      var select = $(":input[name=namespace]", options.edit_row).chosen();
+      var key = $(":input[name=key]", options.edit_row);
       fb.disable(key);
       select.change(function(e) {
         key.val("");
@@ -104,18 +110,18 @@
     },
 
     add_key_validate: function(options) {
-      var select = $(":input[name=namespace]", options.form);
-      var key = $(":input[name=key]", options.form);
+      var select = $(":input[name=namespace]", options.edit_row);
+      var key = $(":input[name=key]", options.edit_row);
       if (!select.val()) {
-        fb.form.trigger(options.event_prefix + "error", "Please select an authority/namespace");
+        options.edit_row.trigger(options.event_prefix + "error", "Please select an authority/namespace");
         return false;
       }
       return fb.form.validate_mqlkey(options, key);
     },
 
     add_key_submit: function(options, ajax_options) {
-      var namespace = $(":input[name=namespace]", options.form).val();
-      var key = $(":input[name=key]", options.form).val();
+      var namespace = $(":input[name=namespace]", options.edit_row).val();
+      var key = $(":input[name=key]", options.edit_row).val();
       ajax_options.data.o = JSON.stringify([{
         namespace: namespace,
         value: key,
@@ -128,21 +134,21 @@
             return;
           }
           var new_row = $(data.result.html);
-          fb.form.success_table_add_form(options, new_row);
+          fb.form.success_inline_add_form(options, new_row);
         },
 
         error: function(xhr) {
           // TODO: ajax error handler
           var msg = fb.form.check_ajax_error.apply(null, arguments);
-          options.form.trigger(options.event_prefix + "error", msg);
+          options.edit_row.trigger(options.event_prefix + "error", msg);
         }
 
       }));
     },
 
     add_key_reset: function(options) {
-      var select = $(":input[name=namespace]", options.form);
-      var key = $(":input[name=key]", options.form);
+      var select = $(":input[name=namespace]", options.edit_row);
+      var key = $(":input[name=key]", options.edit_row);
       key.val("").focus().trigger("textchange")
         .next(".key-status").text("").removeClass("loading");
       fb.form.disable_submit(options);

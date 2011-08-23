@@ -36,8 +36,13 @@
 
 
      /**
-      * Initialize a form that is created by clicking an "Add new" button at the <tfoot> of a <table>.
-      * The actual form <tbody> is appending to the <table>.
+      * Initialize a form that is created by clicking an "Add new" button at the table or list.
+      * The form should consist of a ".edit-row-head", ".edit-row", and ".edit-row-submit".
+      * ".edit-row-head" is used for the default title/msg and any messages (errors)
+      * while interacting with the form.
+      * ".edit-row" is the area containing all form inputs.
+      * ".edit-row-submit" is the area containing all submit/cancel buttons
+      * along with hidden inputs that are by default sent on submit.
       *
       * @param options:Object (required): A set of key/value pairs specifying form options:
       * - event_prefix:String (required) - This is the prefix of all events that will be triggered
@@ -46,65 +51,62 @@
       * - validate:Function (required) - The callback to validate the form.
       * - submit:Function (required) - The callback to submit the form.
       * - trigger:jQuery obj (required) - The "Add new" button that triggered the form.
-      * - table:jQuery obj (required) - The <table> that will contain the form.
-      * - form:jQuery obj (required) - The form should be a <tbody> with 3 rows:
-      *   - 1st row: The heading of the form. Also used for status messages.
-      *   - 2nd row: The form content (inputs)
-      *   - 3rd row: The submit buttons (submit and cancel)
+      * - body:jQuery obj (required) - The list or table (<[o|u]l> or <tbody>) that will inline the form contents.
+      * - head_row:jQuery obj (required) - The heading of the form. Also used for status messages (".edit-row-head").
+      * - edit_row:jQuery obj (required) - The form content including all visible inputs (".edit-row").
+      * - submit_row:jQuery obj (required) - The submit buttons (submit and cancel) and hidden inputs (".edit-row-submit").
       */
-     init_table_add_form: function(options) {console.log("fb.form.init_table_add_form", options);
+     init_inline_add_form: function(options) {
        // TODO: check options
-       var trigger_row = options.trigger.parents("tr:first");
-       var head_row = $(".edit-row-head", options.form);
-       var form_row = $(".edit-row", options.form);
-       var submit_row = $(".edit-row-submit", options.form);
+       var trigger_row = options.trigger.parents(".trigger-row:first");
        var event_prefix = options.event_prefix || "fb.form.";
-       options.form
-         .bind(event_prefix + "submit", function() {console.log("SUBMIT");
-           form.submit_table_add_form(options);
+       options.edit_row
+         .bind(event_prefix + "submit", function() {
+           form.submit_inline_add_form(options);
          })
          .bind(event_prefix + "cancel", function() {
-           form.cancel_table_add_form(options);
+           form.cancel_inline_add_form(options);
          })
          .bind(event_prefix + "error", function(e, msg) {
            form.error(options, msg);
-           options.form.removeClass("loading");
+           options.edit_row.removeClass("loading");
          })
          .bind(event_prefix + "success", function() {
-           options.form.removeClass("loading");
+           options.edit_row.removeClass("loading");
          });
        // submit button
-       $(".button-submit", submit_row)
+       var submit_button = $(".button-submit", options.submit_row)
          .click(function() {
-           options.form.trigger(event_prefix + "submit");
-         })
-         // disable submit
-         .attr("disabled", "disabled")
-         .addClass("disabled");
+           options.edit_row.trigger(event_prefix + "submit");
+         });
+       fb.disable(submit_button);
        // cancel button
-       $(".button-cancel", submit_row).click(function() {
-         options.form.trigger(event_prefix + "cancel");
+       $(".button-cancel", options.submit_row).click(function() {
+         options.edit_row.trigger(event_prefix + "cancel");
        });
        // submit/cancel on ENTER/ESCAPE
-       $(":input", options.form)
+       $(":input", options.edit_row)
          .keypress(function(e) {
            if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
-             options.form.trigger(event_prefix + "submit");
+             options.edit_row.trigger(event_prefix + "submit");
            }
          })
          .keyup(function(e) {
            if (e.keyCode === 27) { // escape
-             options.form.trigger(event_prefix + "cancel");
+             options.edit_row.trigger(event_prefix + "cancel");
            }
          });
        trigger_row.hide();
-       options.table.append(options.form);
+       options.body
+         .append(options.head_row)
+         .append(options.edit_row)
+         .append(options.submit_row);
        options.init(options);
      },
 
-     submit_table_add_form: function(options) {
+     submit_inline_add_form: function(options) {
        // are we already submitting?
-       if (options.form.is(".loading")) {
+       if (options.edit_row.is(".loading")) {
          return;
        }
 
@@ -117,32 +119,34 @@
        form.clear_message(options);
 
        // validate form
-       if (!options.validate(form)) {
+       if (!options.validate(options)) {
          return;
        }
 
        // add a loading class to the form
-       options.form.addClass("loading");
+       options.edit_row.addClass("loading");
 
        // submit form
        var ajax_options = $.extend({data:{}, dataType:"json", type:"POST"}, options.ajax);
-       $("input[type=hidden]", options.form).each(function() {
+       $("input[type=hidden]", options.submit_row).each(function() {
          ajax_options.data[this.name] = this.value;
        });
        options.submit(options, ajax_options);
      },
 
-     success_table_add_form: function(options, new_row) {
-       $("tbody:first", options.table).append(new_row);
+     success_inline_add_form: function(options, new_row) {
+       options.head_row.before(new_row);
        // i18n'ize dates and numbers
        i18n.ize(new_row);
        options.reset(options);
-       options.form.trigger(options.event_prefix + "success");
+       options.edit_row.trigger(options.event_prefix + "success");
      },
 
-     cancel_table_add_form: function(options) {
-       var trigger_row = options.trigger.parents("tr:first");
-       options.form.remove();
+     cancel_inline_add_form: function(options) {
+       var trigger_row = options.trigger.parents(".trigger-row:first");
+       options.head_row.remove();
+       options.edit_row.remove();
+       options.submit_row.remove();
        trigger_row.show();
      },
 
@@ -151,13 +155,11 @@
       * disable/enable submit button
       */
      disable_submit: function(options) {
-       var submit_row = options.submit_row || $(".edit-row-submit", options.form);
-       fb.disable($(".button-submit", submit_row));
+       fb.disable($(".button-submit", options.submit_row));
      },
 
      enable_submit: function(options) {
-       var submit_row = options.submit_row || $(".edit-row-submit", options.form);
-       fb.enable($(".button-submit", submit_row));
+       fb.enable($(".button-submit", options.submit_row));
      },
 
      /**
@@ -225,7 +227,7 @@
      },
 
      message: function(options, msg, type) {
-       var msg_row = options.head_row || $(".edit-row-head", options.form);
+       var msg_row = options.head_row;
        msg_row.find(".close-msg").css("visibility", "visible").next().find(".msg-default").hide().next().text(msg);
        msg_row.addClass("row-msg");
        if (type) {
@@ -234,7 +236,7 @@
      },
 
      clear_message: function(options) {
-       var msg_row = options.head_row || $(".edit-row-head", options.form);
+       var msg_row = options.head_row;
        msg_row.find(".close-msg").css("visibility", "hidden").next().find(".msg-default").show().next().html("&nbsp;");
        msg_row.removeClass("row-msg");
      },

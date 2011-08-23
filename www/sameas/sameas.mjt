@@ -133,7 +133,7 @@
          </acre:block>
        </tbody>
        <tfoot class="table-edit edit">
-         <tr>
+         <tr class="trigger-row">
            <td colspan="5">
              <a href="javascript:void(0);"
                 class="icon-link" onclick="return freebase.dispatch(event, freebase.sameas.add_key, null, this);">

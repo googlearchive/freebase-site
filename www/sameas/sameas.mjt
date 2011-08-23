@@ -147,7 +147,10 @@
 </acre:block>
 
 <acre:block def="topic_key(key)">
-  <tr class="data-row">
+  <acre:script>
+    var metadata = {namespace:key.ns, value:key.key};
+  </acre:script>
+  <tr class="data-row ${JSON.stringify(metadata)}">
     <th class="row-header odd">
       <acre:block if="key.authority">        
         <span class="authority a${key.authority.id.replace(/\//g, '-')} wrapper">
@@ -194,8 +197,8 @@
         <a href="javascript:void(0)" class="more-action">menu</a>
       </span>
       <ul class="submenu row-menu">
-        <li class="row-menu-item"><a href="#" onclick="return propbox.value_edit(this);">${EDIT}</a></li>
-        <li class="row-menu-item"><a href="#" onclick="return propbox.value_delete(this);">${DELETE}</a></li>
+        <li class="row-menu-item"><a href="#" onclick="return fb.sameas.edit_key(this);">${EDIT}</a></li>
+        <li class="row-menu-item"><a href="#" onclick="return fb.sameas.delete_key(this);">${DELETE}</a></li>
       </ul>
     </li>
   </ul>

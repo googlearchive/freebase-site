@@ -34,15 +34,14 @@
 
    var form = fb.form = {
 
+     /**
+      * ADD
+      */
 
      /**
-      * Initialize a form that is created by clicking an "Add new" button at the table or list.
-      * The form should consist of a ".edit-row-head", ".edit-row", and ".edit-row-submit".
-      * ".edit-row-head" is used for the default title/msg and any messages (errors)
-      * while interacting with the form.
-      * ".edit-row" is the area containing all form inputs.
-      * ".edit-row-submit" is the area containing all submit/cancel buttons
-      * along with hidden inputs that are by default sent on submit.
+      * Inline add form. The form is made up of three rows: (1) head_row, (2) edit_row, and (3) submit_row.
+      * These rows are appended to the end of options.body, in order.
+      * Ater successful submit, the new row will added to the end of the body right before the form rows.
       *
       * @param options:Object (required): A set of key/value pairs specifying form options:
       * - event_prefix:String (required) - This is the prefix of all events that will be triggered
@@ -50,6 +49,7 @@
       * - init:Function (required) - The callback to initialize the form.
       * - validate:Function (required) - The callback to validate the form.
       * - submit:Function (required) - The callback to submit the form.
+      * - reset:Function (required) - The callback to reset the form after a successful submit to continue add form.
       * - trigger:jQuery obj (required) - The "Add new" button that triggered the form.
       * - body:jQuery obj (required) - The list or table (<[o|u]l> or <tbody>) that will inline the form contents.
       * - head_row:jQuery obj (required) - The heading of the form. Also used for status messages (".edit-row-head").
@@ -59,7 +59,7 @@
      init_inline_add_form: function(options) {
        // TODO: check options
        var trigger_row = options.trigger.parents(".trigger-row:first");
-       var event_prefix = options.event_prefix || "fb.form.";
+       var event_prefix = options.event_prefix || "fb.form.inline_add_form.";
        options.edit_row
          .bind(event_prefix + "submit", function() {
            form.submit_inline_add_form(options);
@@ -74,28 +74,7 @@
          .bind(event_prefix + "success", function() {
            options.edit_row.removeClass("loading");
          });
-       // submit button
-       var submit_button = $(".button-submit", options.submit_row)
-         .click(function() {
-           options.edit_row.trigger(event_prefix + "submit");
-         });
-       fb.disable(submit_button);
-       // cancel button
-       $(".button-cancel", options.submit_row).click(function() {
-         options.edit_row.trigger(event_prefix + "cancel");
-       });
-       // submit/cancel on ENTER/ESCAPE
-       $(":input", options.edit_row)
-         .keypress(function(e) {
-           if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
-             options.edit_row.trigger(event_prefix + "submit");
-           }
-         })
-         .keyup(function(e) {
-           if (e.keyCode === 27) { // escape
-             options.edit_row.trigger(event_prefix + "cancel");
-           }
-         });
+       form.init_submit_cancel(options);
        trigger_row.hide();
        options.body
          .append(options.head_row)
@@ -150,6 +129,135 @@
        trigger_row.show();
      },
 
+
+     /**
+      * EDIT
+      */
+
+     /**
+      * Inline edit form. The form is made up of three rows: (1) head_row, (2) edit_row, and (3) submit_row.
+      * These rows are appended next to options.row and options.row is hidden.
+      * After successful submit, options.row will be replaced by the newly edited row.
+      *
+      * @param options:Object (required): A set of key/value pairs specifying form options:
+      * - event_prefix:String (required) - This is the prefix of all events that will be triggered
+      *   in the course of interacting with the form. (i.e., <event_prefix[submit|cancel|error|success]).
+      * - init:Function (required) - The callback to initialize the form.
+      * - validate:Function (required) - The callback to validate the form.
+      * - submit:Function (required) - The callback to submit the form.
+      *
+      * - row:jQuery obj (required) - The row being edited.
+      * - head_row:jQuery obj (required) - The heading of the form. Also used for status messages (".edit-row-head").
+      * - edit_row:jQuery obj (required) - The form content including all visible inputs (".edit-row").
+      * - submit_row:jQuery obj (required) - The submit buttons (submit and cancel) and hidden inputs (".edit-row-submit").
+      */
+     init_inline_edit_form: function(options) {
+       var event_prefix = options.event_prefix || "fb.form.inline_edit_form.";
+       options.edit_row
+         .bind(event_prefix + "submit", function() {
+           form.submit_inline_edit_form(options);
+         })
+         .bind(event_prefix + "cancel", function() {
+           form.cancel_inline_edit_form(options);
+         })
+         .bind(event_prefix + "error", function(e, msg) {
+           form.error(options, msg);
+           options.edit_row.removeClass("loading");
+         })
+         .bind(event_prefix + "success", function() {
+           options.edit_row.removeClass("loading");
+         });
+       form.init_submit_cancel(options);
+       options.row.hide();
+       options.row
+         .before(options.head_row)
+         .before(options.edit_row)
+         .before(options.submit_row);
+       options.init(options);
+     },
+
+     submit_inline_edit_form: function(options) {
+       // are we already submitting?
+       if (options.edit_row.is(".loading")) {
+         return;
+       }
+
+       // remove focus from activeElement
+       if (document.activeElement) {
+         $(document.activeElement).blur();
+       }
+
+       // clear messages
+       form.clear_message(options);
+
+       // validate form
+       if (!options.validate(options)) {
+         return;
+       }
+
+       // add a loading class to the form
+       options.edit_row.addClass("loading");
+
+       // submit form
+       var ajax_options = $.extend({data:{}, dataType:"json", type:"POST"}, options.ajax);
+       $("input[type=hidden]", options.submit_row).each(function() {
+         ajax_options.data[this.name] = this.value;
+       });
+       options.submit(options, ajax_options);
+     },
+
+     success_inline_edit_form: function(options, new_row) {
+       options.row.replaceWith(new_row);
+       options.row = new_row;
+       // i18n'ize dates and numbers
+       i18n.ize(new_row);
+       options.edit_row.trigger(options.event_prefix + "cancel");
+     },
+
+     cancel_inline_edit_form: function(options) {
+       options.head_row.remove();
+       options.edit_row.remove();
+       options.submit_row.remove();
+       options.row.show();
+     },
+
+
+
+     /**
+      * form helpers
+      */
+
+
+
+     /**
+      * Init submit/cancel buttons. Also handle ENTER/ESCAPE key events in the form inputs.
+      */
+     init_submit_cancel: function(options) {
+       var event_prefix = options.event_prefix;
+       // submit button
+       var submit_button = $(".button-submit", options.submit_row)
+         .click(function() {
+           options.edit_row.trigger(event_prefix + "submit");
+         });
+       fb.disable(submit_button);
+       // cancel button
+       $(".button-cancel", options.submit_row).click(function() {
+         options.edit_row.trigger(event_prefix + "cancel");
+       });
+       // submit/cancel on ENTER/ESCAPE
+       $(":input", options.edit_row)
+         .keypress(function(e) {
+           if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
+             options.edit_row.trigger(event_prefix + "submit");
+           }
+         })
+         .keyup(function(e) {
+           if (e.keyCode === 27) { // escape
+             options.edit_row.trigger(event_prefix + "cancel");
+           }
+         });
+
+     },
 
      /**
       * disable/enable submit button

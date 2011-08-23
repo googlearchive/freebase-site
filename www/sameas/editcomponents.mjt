@@ -47,7 +47,7 @@
       <td colspan="5">
         <div class="form-field">
           <label>
-            <span class="form-label">${_('Namespace')}</span>
+            <span class="form-label">${_('Authority/Namespace')}</span>
             <select name="namespace" data-placeholder="${_('Choose')}&hellip;">
               <option></option>
               <acre:block for="authority in authorities">
@@ -64,6 +64,47 @@
           <label>
             <span class="form-label">${_('Key')}</span>
             <input name="key" type="text" class="text-input"/>
+            <span class="key-status"></span>
+          </label>
+        </div>
+      </td>
+    </tr>
+    <tr class="edit-row-submit">
+      <td colspan="5">
+        <input type="hidden" name="s" value="${id}"/>
+        <input type="hidden" name="p" value="/type/object/key"/>
+        <input type="hidden" name="lang" value="${i18n.lang}"/>
+        ${form.submit_buttons()}
+      </td>
+    </tr>
+  </tbody>
+</acre:block>
+
+<acre:block def="edit_key_form(id, key)">
+  <tbody>
+    <tr class="edit-row-head">
+      <td colspan="5">
+        ${form.row_msg(_("Edit key"))}
+      </td>
+    </tr>
+    <tr class="edit-row">
+      <td colspan="5">
+        <div class="form-field">
+          <label>
+            <span class="form-label">${_('Authority')}</span>
+            <input type="text" name="authority" value="${i18n.display_name(key.authority)}" disabled="disabled"/>
+          </label>
+        </div>
+        <div class="form-field">
+          <label>
+            <span class="form-label">${_('Namespace')}</span>
+            <input type="text" name="namespace" value="${key.ns}" class="text-input" disabled="disabled"/>
+          </label>
+        </div>
+        <div class="form-field">
+          <label>
+            <span class="form-label">${_('Key')}</span>
+            <input type="text" name="key" value="${key.key}" class="text-input"/>
             <span class="key-status"></span>
           </label>
         </div>

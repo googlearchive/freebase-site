@@ -89,12 +89,12 @@
   </acre:script>
   <ul>
     <acre:block for="authority in c.authority_count">
-      <li>
-        <label for="authority">
+      <li class="authority-list-item">
+        <label>
           <input type="checkbox" name="authority" value="${authority.id}" 
                  acre:attrs="authorities[authority.id] ? {checked:'checked'} : {}"
                  onchange="this.form.submit();"/>
-          ${i18n.display_name(authority)} (${i18n_c.number(authority.count)})
+          ${i18n.display_name(authority)} <span class="count">(${i18n_c.number(authority.count)})</span>
         </label>
       </li>
     </acre:block>

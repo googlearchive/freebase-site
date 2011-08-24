@@ -40,7 +40,7 @@
   <tbody>
     <tr class="edit-row-head">
       <td colspan="5">
-        ${form.row_msg(_("Add key"))}
+        ${form.row_msg(_("Add a new key to this Topic"))}
       </td>
     </tr>
     <tr class="edit-row">

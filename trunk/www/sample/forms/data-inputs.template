@@ -12,6 +12,7 @@
   <acre:script>
 
     var inputs = [
+      "Generic Input", "", {value:"Lorem ipsum", lang:"/lang/en"},
       "Text Input", "/type/text", {value:"Lorem ipsum", lang:"/lang/en"},
       "Datetime Input", "/type/datetime", {value:"2006"},
       "Int/Float Input", "/type/int", {value:1234},

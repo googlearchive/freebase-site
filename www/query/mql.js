@@ -45,13 +45,17 @@
       };
 
       var queryEditorOptions = {
-        readOnly: !fb.permission.has_permission,
         focusOnReady: true,
         codeMirror: {
           parserfile: [$("#codemirror-js").attr("href")],
           stylesheet: [$("#codemirror-css").attr("href")]
         }
       };
+
+      if (!fb.permission.has_permission) {
+        queryEditorOptions.readOnly = true;
+        queryEditorOptions.hideControls = true;
+      }
 
       if (fb.c && fb.c.query) {
         queryEditorOptions.content = JSON.stringify(fb.c.query);

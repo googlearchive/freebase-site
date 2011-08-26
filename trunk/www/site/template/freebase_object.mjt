@@ -135,7 +135,7 @@
         Object Name + Creator + Timestamp
       !!-->
 
-      <div class="foo">
+      <div class="page-title">
         <span class="creation-timestamp">
           <span acre:if="c.object.creator"
                 acre:attrs="itemprop('/type/object/creator', true)">
@@ -164,7 +164,9 @@
             var label = c.breadcrumbs[0].name;
           </acre:script>
         </acre:block>
-        <span class="object-label"><a class="object-label-trigger" href="javascript:void(0)">$label</a></span>
+        <span class="object-label ${label.toLowerCase()}">
+          <a class="object-label-trigger" href="javascript:void(0)">$label</a>
+        </span>
         <acre:block if="c.object.name.length">
           <h1>
             <span acre:attrs="itemprop('/type/object/name')">

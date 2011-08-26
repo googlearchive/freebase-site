@@ -87,7 +87,7 @@
     <acre:script>
       var label = c.breadcrumbs[0].name;
     </acre:script>
-    <div class="page-header clear">
+    <!--<div class="page-header clear">
       <div class="breadcrumb clear">
         <ol>
           <li class="breadcrumb-item label ${label.toLowerCase()}">
@@ -113,7 +113,7 @@
           </acre:block>
         </ol>
       </div>
-    </div>
+    </div>-->
   </acre:block>
 </acre:block>
 
@@ -125,14 +125,51 @@
 
 <acre:block def="content_body()">
   <div id="page-header">
-    <div class="page-meta">
+    <!!--
+       topic meta information @see queries/topic
+    !!-->
+
+    <acre:block if="c.object">
+
       <!!--
-         topic meta information @see queries/topic
+        Object Name + Creator + Timestamp
       !!-->
-      <acre:block if="c.object">
+
+      <div class="foo">
+        <span class="creation-timestamp">
+          <span acre:if="c.object.creator"
+                acre:attrs="itemprop('/type/object/creator', true)">
+            <acre:script>
+              var creator = h.get_creator(c.object.creator);
+            </acre:script>
+
+            ${image.user_image_tiny(creator)}
+            ${_("Created by")}
+            <a href="${h.fb_url(creator)}"
+               title="${_('View user profile')}">${h.id_key(creator)}</a>
+            ${_("on")}
+          </span>
+          <span acre:else="">
+            ${_("Created on")}
+          </span>
+          <acre:script>
+            var attrs = itemprop('/type/object/timestamp');
+            attrs["class"] = "published";
+            attrs["data-format"] = "long";
+          </acre:script>
+          ${i18n_c.datetime(c.object.timestamp, attrs)}
+        </span>
+        <acre:block if="c.breadcrumbs && c.breadcrumbs.length">
+          <acre:script>
+            var label = c.breadcrumbs[0].name;
+          </acre:script>
+        </acre:block>
+        <span class="object-label"><a class="object-label-trigger" href="javascript:void(0)">$label</a></span>
         <acre:block if="c.object.name.length">
           <h1>
-            <span acre:attrs="itemprop('/type/object/name')">${c.object.name[0].value}</span>
+            <span acre:attrs="itemprop('/type/object/name')">
+              ${c.object.name[0].value}
+            </span>
             <ul class="inline-menu nicemenu">
               <li class="inline-menu-item nicemenu-item">
                 <span class="headmenu">
@@ -170,71 +207,48 @@
             <span acre:attrs="itemprop('/type/object/id')">${c.object.id}</span>
           </h1>
         </acre:block>
-        <acre:block if="that_exports.nav_flags">
-          <span class="flags">
-            ${that_exports.nav_flags()}
-          </span>
-        </acre:block>
-        <div class="meta">
-          <!-- Show topic MID -->
-          <span class="key">
-            <strong><abbr title="${_('ID')}">${_("id")}</abbr></strong>:
-            <span acre:attrs="itemprop('/type/object/id')">${c.object.id}</span>
-          </span>
-          <acre:block if="that_exports.nav_keys">
-            ${that_exports.nav_keys()}
-          </acre:block>
-        </div>
-        <div class="admin-toolbox">
-          <span class="creation-timestamp">
-            <span acre:if="c.object.creator"
-                  acre:attrs="itemprop('/type/object/creator', true)">
-              <acre:script>
-                var creator = h.get_creator(c.object.creator);
-              </acre:script>
+      </div>
 
-              ${image.user_image_small(creator)}
-              ${_("Created by")}
-              <a href="${h.fb_url(creator)}"
-                 title="${_('View user profile')}">${h.id_key(creator)}</a>
-              ${_("on")}
-            </span>
-            <span acre:else="">
-              ${_("Created on")}
-            </span>
-            <acre:script>
-              var attrs = itemprop('/type/object/timestamp');
-              attrs["class"] = "published";
-              attrs["data-format"] = "long";
-            </acre:script>
-            ${i18n_c.datetime(c.object.timestamp, attrs)}
-          </span>
-        </div>
-        <div id="description" class="clear">
-          <div id="image">
-            <acre:block if="c.object.image && c.object.image.length">
-              ${image.image_stack(c.object.image)}
-            </acre:block>
-          </div>
-          <!-- blurb should be sentence-level truncation at ~50 words -->
-          <acre:block if="c.blurb">
-            <p class="blurb" itemprop="desc">${c.blurb}</p>
-            <!!--<a href="javascript:void(0);" class="blurb-trigger">${_('more')}</a>!!-->
+
+      <acre:block if="that_exports.nav_flags">
+        <span class="flags">
+          ${that_exports.nav_flags()}
+        </span>
+      </acre:block>
+      <div class="meta">
+        <!-- Show topic MID -->
+        <span class="key">
+          <strong><abbr title="${_('ID')}">${_("id")}</abbr></strong>:
+          <span acre:attrs="itemprop('/type/object/id')">${c.object.id}</span>
+        </span>
+        <acre:block if="that_exports.nav_keys">
+          ${that_exports.nav_keys()}
+        </acre:block>
+      </div>
+      <div id="description" class="clear">
+        <div id="image">
+          <acre:block if="c.object.image && c.object.image.length">
+            ${image.image_stack(c.object.image)}
           </acre:block>
         </div>
-        <div class="nav clear">
-          <ul class="nav-utilities">
-           <acre:block if="that_exports.nav_utilities">
-             ${that_exports.nav_utilities()}
-           </acre:block>
-           ${nav_navs()}
-          </ul>
-          <ul class="tab-nav">
-            ${nav_tabs()}
-          </ul>
-        </div>
-      </acre:block>
-    </div>
+        <!-- blurb should be sentence-level truncation at ~50 words -->
+        <acre:block if="c.blurb">
+          <p class="blurb" itemprop="desc">${c.blurb}</p>
+          <!!--<a href="javascript:void(0);" class="blurb-trigger">${_('more')}</a>!!-->
+        </acre:block>
+      </div>
+      <div class="nav clear">
+        <ul class="nav-utilities">
+         <acre:block if="that_exports.nav_utilities">
+           ${that_exports.nav_utilities()}
+         </acre:block>
+         ${nav_navs()}
+        </ul>
+        <ul class="tab-nav">
+          ${nav_tabs()}
+        </ul>
+      </div>
+    </acre:block>
   </div>
   <div id="page-content">
     <acre:block if="that_exports.page_content">

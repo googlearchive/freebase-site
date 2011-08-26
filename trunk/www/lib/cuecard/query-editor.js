@@ -92,7 +92,7 @@ CueCard.QueryEditor = function(elmt, options) {
         .css("top", "0px")
         .appendTo(document.body);
     
-    $(this._container).acre(fb.acre.current_script.app.path + "/cuecard/query-editor.mjt", "query_editor", [this, codeMirrorOptions])
+    $(this._container).acre(fb.acre.current_script.app.path + "/cuecard/query-editor.mjt", "query_editor", [this, codeMirrorOptions]);
 };
 
 CueCard.QueryEditor.nativeTypes = {
@@ -132,7 +132,7 @@ CueCard.QueryEditor.prototype.layout = function(height, width) {
       this._controlPane._paneldrawer.set_height(height);
     } else {
       this._container.height(height);
-      var control_height = this._controlBottomContainer.outerHeight();
+      var control_height = this._options.hideControls ? 0 : this._controlBottomContainer.outerHeight();
       this._iframeContainer.height(height - control_height);
     }
   }

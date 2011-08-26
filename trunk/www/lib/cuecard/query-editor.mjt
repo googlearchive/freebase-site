@@ -34,7 +34,7 @@
 
   <div class="cuecard-queryEditor">
     <div class="cuecard-queryEditor-content panel-content"></div>
-    <div class="cuecard-queryEditor-controls-bottom panel-header">
+    <div class="cuecard-queryEditor-controls-bottom panel-header" acre:if="!queryEditor._options.hideControls">
       <div class="cuecard-queryEditor-controls-options drawer-toggle">
         <a class="icon-link" href="javascript:void(0)">
           <span>Query Options</span>

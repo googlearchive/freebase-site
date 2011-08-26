@@ -29,28 +29,81 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-.page-meta {
+#page-header {
+  background: #eef0f2;
+}
+
+.foo {
+  border-top: 1px solid #4b4f56;
+  background: #4c525a;
+  background-repeat: repeat;
+  background-image: -webkit-repeating-linear-gradient(-45deg, rgba(255, 255, 255, .015), rgba(255, 255, 255, .015) 1px, transparent 1px, transparent 4px),
+                    -webkit-linear-gradient(#69707a, #3d4248);
+}
+
+.creation-timestamp {
+  float: right;
+  margin: 10px 30px 0 0;
+  color: #ccc;
+  line-height: 28px;
+  font-size: 12px;
+}
+
+.creation-timestamp a {
+  color: #ccc;
+  border-bottom: 1px dotted;
+}
+
+.creation-timestamp a:hover {
+  border-bottom: 1px solid;
+  text-decoration: none;
+}
+
+.creation-timestamp .user-image {
+  float: left;
+  margin-right: 10px;
+}
+
+.creation-timestamp .user-image a,
+.creation-timestamp .user-image a:hover {
+  border: 0;
+}
+
+.creation-timestamp .user-image img {
+  display: inline-block;
+  padding: 3px;
+  background: #373b40;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid #464a50;
+}
+
+
+#page-header h1 {
+  color: #f1f2f3;
+  font-size: 21px;
+  line-height: 47px;
+}
+
+.foo .inline-menu {
+  display: inline-block;
   position: relative;
-  background: #fff;
-  border: 5px solid #e4e6e7;
-  padding: 1em;
-  margin-bottom: 30px;
-  .rounded_corners(10px);
-  .box_shadow();
+  top: -12px;
 }
 
-.page-meta h1 {
+.foo .menu-trigger .lang-code {
+  position: static;
   display: inline-block;
-  font-size: 2.4em;
-  color: #64768f;
+  font-size: 11px;
   line-height: 1;
+  background: url(template/ui-icons.png) no-repeat right -688px;
+  padding-right: 20px;
+  color: #f1f2f3;
 }
 
-h1 .inline-menu {
-  display: inline-block;
-  margin-left: -2px;
+.page-meta:hover h1 .menu-trigger {
+  border: 1px solid #e4e4e4;
+  .linear_gradient(#fff, #efefef);  
 }
-
 h1 .row-menu {
   z-index: 2;
 }
@@ -65,20 +118,6 @@ h1 .row-menu {
   border: 1px solid transparent;
 }
 
-.page-meta .menu-trigger .lang-code {
-  position: static;
-  display: inline-block;
-  font-size: 12px;
-  line-height: 1;
-  background: url(template/ui-icons.png) no-repeat right -688px;
-  padding-right: 20px;
-  color: #999;
-}
-
-.page-meta:hover h1 .menu-trigger {
-  border: 1px solid #e4e4e4;
-  .linear_gradient(#fff, #efefef);  
-}
 
 .menu-trigger:hover {
   text-decoration: none;
@@ -114,43 +153,6 @@ h1 .flags {
     color: #666;
 }
 
-.admin-toolbox {
-    position: absolute;
-    top: 0; right: 0;
-}
-
-.creation-timestamp {
-    float: left;
-    background: #e4e6e7;
-    padding: 0 0.7em;
-    font-size: 1.2em;
-    line-height: 3;
-    border: 1px solid #e4e6e7;
-    -webkit-border-bottom-left-radius: 5px;
-    -moz-border-radius-bottomleft: 5px;
-    border-bottom-left-radius: 5px;
-}
-
-.admin-toolbox .edit {
-    float: left;
-    font-size: 11px;
-    line-height: 3.5;
-    padding-right: 1em;
-}
-
-.creation-timestamp .user-image {
-    float: left;
-    margin-right: 3px;
-}
-
-.creation-timestamp .user-image img {
-    border: 3px solid #dcdedf;
-}
-
-.creation-timestamp .published {
-    color: #333;
-}
-
 
 /*
 User thumbnail list
@@ -175,7 +177,7 @@ font-weight: bold;
     background: url(template/ui-icons.png) no-repeat 0 -172px;
     padding-top: 8px;
     padding-left: 25px;
-    margin-left: 7px;
+    margin-left: 30px;
     font-size: 1.2em;
     margin-bottom: 0.5em;
     line-height: 1;
@@ -187,8 +189,10 @@ font-weight: bold;
     padding-right: 7px;
 }
 
-.page-meta #description p {
-    width: 80%;
+#description {
+  margin: 10px 30px;
+  font-size: 12px;
+  color: #333;
 }
 
 #image {
@@ -211,9 +215,10 @@ font-weight: bold;
     font-size: 12px;        
 }
 
-.page-meta .nav {
-    border-top: 1px solid #e4e6e7;
-    margin: 1em -1em -1em;
+#page-header .nav {
+  background: #dee2e5;
+  border-top: 1px solid #d1d2d3;
+  border-bottom: 1px solid #d1d2d3;
 }
 
 .nav-utilities { 
@@ -247,7 +252,6 @@ font-weight: bold;
     padding: 0 1em;
     color: #888;
     background: #efefef;
-    .linear_gradient(#fff, #ececec);
 }
 
 .nav-mode a.current {
@@ -256,7 +260,10 @@ font-weight: bold;
 }
 
 .tab-nav {
-    min-height: 3.0em;
+  float: left;
+  min-height: 3.0em;
+  padding-left: 30px;
+  .linear_gradient(#fff, #ececec);
 }
 
 .tab-nav li {
@@ -275,10 +282,8 @@ font-weight: bold;
 
 .tab-nav a span {
     display: block;
-    border-right: 1px solid #e4e6e7;
+    border-right: 1px solid #d1d2d3;
     padding: 0 30px;
-    background: #efefef;
-    .linear_gradient(#fff, #ececec);
 }
 
 .tab-nav a:hover {

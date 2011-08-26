@@ -33,6 +33,10 @@
   var h = acre.require("helper/helpers.sjs");
 </acre:script>
 
+<acre:block def="user_image_tiny(user)">
+  ${user_image(user, 20)}
+</acre:block>
+
 <acre:block def="user_image_small(user)">
   ${user_image(user, 30)}
 </acre:block>

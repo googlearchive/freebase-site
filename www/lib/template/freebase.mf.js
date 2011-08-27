@@ -10,5 +10,6 @@
   "template/freebase.js",
   "template/helpers.js",
   "permission/permission.js",
-  "i18n/i18n.js"
+  "i18n/i18n.js",
+  "flag/flag.js"
 ]

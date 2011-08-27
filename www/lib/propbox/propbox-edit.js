@@ -35,6 +35,11 @@
   // i18n.js @see lib/18n/i18n.js
   // jquery.metadata.js
 
+
+  /**
+   * TODO: use lib/propbox/form.js for form bindings
+   */
+
   var edit = propbox.edit = {
 
     /**

@@ -225,7 +225,6 @@
           '</div>';
         this.ect_enumeration = $(html).hide();
         $(":text", this.ect_enumeration)
-          .placeholder()
           .focus(function() {
             $(this).prev("label").find(":radio").attr("checked", "checked");
           })

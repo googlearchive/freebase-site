@@ -570,8 +570,6 @@
           return true;
         }
       });
-
-      $('input, textarea').placeholder();
     });
 
   /**

@@ -37,6 +37,10 @@
     }
   });
 
+  /**
+   * TODO: use lib/propbox/form.js for form bindings
+   */
+
   var se = fb.schema.edit = {
 
     /**
@@ -113,7 +117,6 @@
       form.trigger_row.hide();
       form.submit_row.show();
 
-      $("[placeholder]", form.row).placeholder();
       $(window).bind("fb.edit.lang.select", function(e, lang) {
         se.toggle_lang(form.row, lang);
       });
@@ -281,7 +284,6 @@
           }
         });
 
-      $("[placeholder]", form.form).placeholder();
       fb.schema.init_modal_help(form.form);
 
       $(window).bind("fb.edit.lang.select", function(e, lang) {

@@ -240,6 +240,7 @@ div.kbs.current .mark {
 
 .toolbar-pane-title {
   font-size: 12px;
+  color: #333;
   font-weight: bold;
 }
 
@@ -256,28 +257,75 @@ div.kbs.current .mark {
   font-size: 12px;
 }
 
+.manage-types {
+  position: relative;
+  min-height: 150px;
+}
+
+.add-type .fb-input {
+  width: 200px;
+}
+
+.topic-type-list {
+  width: 30%;
+  font-size: 11px;
+}
+
+.topic-type-list ul {
+  list-style: none;
+}
+
+.topic-type-list li {
+  
+}
 
 @media only screen 
 and (min-width: 1024px) {
-  .csscolumns .multi-column {
-    .column_count(3)
+  .topic-type-list {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 30%;
+    padding: 15px 10px;
+    background: #efefef;
+    font-size: 11px;
+    -moz-box-shadow: inset 1px -2px 4px #ccc;
+    -webkit-box-shadow: inset 1px -2px 4px #ccc;
+    box-shadow: inset 1px -2px 4px #ccc;
   }
-}
 
-@media only screen 
-and (min-width: 1224px) {
-  .csscolumns .multi-column {
-    .column_count(5)
+  .topic-type-list::-webkit-scrollbar {
+    width: 14px;
+    height: 16px;
+    background: #efefef;
+  }  
+  .topic-type-list::-webkit-scrollbar-thumb {
+    background: transparent;
   }
-}
-
-.add-type {
-  margin-top: 5px;
-  margin-bottom: 20px;
-}
-
-.add-type .text-input {
-  width: 200px;
+  .topic-type-list::-webkit-scrollbar-thumb:vertical {
+    border-left: 4px solid #efefef;
+    border-right: 4px solid #efefef;
+    background: rgba(0, 0, 0, .1);
+  }
+  .topic-type-list:hover::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, .1);
+  } 
+  .topic-type-list::-webkit-scrollbar-thumb:vertical:hover {
+    background: rgba(0, 0, 0, .2);
+  }
+  .topic-type-list::-webkit-scrollbar-track-piece:vertical:start {
+    margin-top: 4px;
+  }
+  .topic-type-list::-webkit-scrollbar-track-piece:horizontal:start {
+    margin-left: 4px;
+  }
+  .topic-type-list {
+    overflow-y: scroll;
+    width: 50%;
+  }
+  .csscolumns .topic-type-list ul {
+    .column_count(2)
+  }
 }
 
 .tooltip {

@@ -93,33 +93,40 @@
       <ul class="">
         <li>
           <a href="#" class="toolbar-trigger icon-link">
-            <span class="add-icon">${_("Add Type")}</span>
+            <span class="add-icon">${_("Manage Types")}</span>
           </a>
         </li>
       </ul>
     </div>
-    <div class="add-type toolbar-pane">
-      <div class="column">
-        <h3 class="toolbar-pane-title">${_("Add a new Type")}</h3>
-        <form action="" method="post" name="add-type-form" class="add-type">
-          <input type="" class="text-input" value="" placeholder="${_('Start typing for suggestions...')}" name="" />
-        </form>
-        <h3 class="toolbar-pane-title">${_("Current Types")}:</h3>
-        <ul class="multi-column">
+    <div class="manage-types toolbar-pane">
+      <div class="topic-type-list">
+        <h3 class="toolbar-pane-title">${h.sprintf("%s is Typed as:", i18n.display_name(c.object))}</h3>
+        <ul>
           <acre:script>
-            var types = c.object.type.slice().sort(function(a,b) {
-              return i18n.display_name(b).toLowerCase() < i18n.display_name(a).toLowerCase();
-            });
-            var filters = c.filters;
-            ["domain", "type", "property"].forEach(function(k) {
-              filters = fh.remove_filter(filters, k);
-            });                                                        
+          var types = c.object.type.slice().sort(function(a,b) {
+          return i18n.display_name(b).toLowerCase() < i18n.display_name(a).toLowerCase();
+          });
+          var filters = c.filters;
+          ["domain", "type", "property"].forEach(function(k) {
+          filters = fh.remove_filter(filters, k);
+          });                                                        
           </acre:script>
           <li acre:for="i, type in types" trim="1">
-            <a href="${h.fb_url(c.object.id, fh.add_filter(filters, 'type', type.id))}" title="${type.id}">${i18n.display_name(type)}</a>
+          <a href="${h.fb_url(c.object.id, fh.add_filter(filters, 'type', type.id))}" title="${type.id}">${i18n.display_name(type)}</a>
           </li>
         </ul>
       </div>
+      <h3 class="toolbar-pane-title">${_("Add a new Type")}</h3>
+      <form action="" method="post" name="add-type-form" class="add-type">
+        <span class="data-input">
+          <input type="" class="fb-input" value="" placeholder="${_('Start typing for suggestions...')}" name="" />
+        </span>
+      </form>
+      <h3 class="toolbar-pane-title">${_("Suggested Types")}</h3>
+      <ul class="suggested-types">
+        <li>lorem ipsum</li>
+        <li>lorem ipsum</li>
+      </ul>
     </div>
    
     ${propbox.topicbox(c.topic, i18n.lang)}

@@ -67,7 +67,9 @@
 
       // Toggle for Add Types dialog
       $(".toolbar-trigger").click(function(){
-        var $add_type_pane = $(".add-type").first();
+        var $add_type_pane = $(".manage-types").first();
+        var $type_list = $(".topic-type-list", $add_type_pane).first();
+        console.log($type_list);
         var $toolbar = $(this).closest(".toolbar");
         var $trigger = $(this);
 
@@ -80,6 +82,9 @@
           $trigger.addClass("active");
           $toolbar.addClass("active");
           $add_type_pane.slideDown();
+          var target_height = $add_type_pane.height();
+          console.log(target_height);
+          $type_list.height(target_height + "px");
         }
         return false;
       });

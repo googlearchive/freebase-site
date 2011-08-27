@@ -31,8 +31,9 @@
 
 var h = acre.require("lib/helper/helpers.sjs");
 var i18n = acre.require("lib/i18n/i18n.sjs");
-var freebase = acre.require("lib/promise/apis").freebase;
-var deferred = acre.require("lib/promise/apis").deferred;
+var apis = acre.require("lib/promise/apis");
+var freebase = apis.freebase;
+var deferred = apis.deferred;
 var fh = acre.require("lib/filter/helpers.sjs");
 
 function keys(id, lang, limit, filters) {

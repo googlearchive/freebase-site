@@ -297,7 +297,7 @@
       else if (nav.app && nav.ajax) {
         href = h.reentrant_url("/ajax", nav.app, "/", nav.ajax, nav.params);
         onclick = "return fb.nav_ajax(this);";
-      }
+      }      
       else {
         href = "#";
       }
@@ -314,9 +314,27 @@
     </acre:script>
     <acre:block if="show">
       <li acre:attrs="nav.auth ? {'class':'edit'} : {}">
-        <a href="${href}" acre:attrs="onclick ? {onclick:onclick} : {}" class="icon-link">
-          <span class="${key}-icon">${nav.name}</span>
-        </a>
+        <acre:block if="nav.menu">
+          <ul class="inline-menu nicemenu">
+            <span class="mark headmenu">
+              <a href="#" class="menu-trigger icon-link" onclick="return false;">
+                <span class="${key}-icon">${nav.name}</span>
+              </a>
+            </span>
+            <ul class="row-menu submenu">
+              <acre:block for="menu in nav.menu">
+                <li class="row-menu-item">
+                  <a href="${menu.href || '#'}" acre:attrs="menu.onclick ? {onclick:menu.onclick} : {}">${acre.markup.bless(menu.text)}</a>
+                </li>
+              </acre:block>
+            </ul>
+          </ul>
+        </acre:block>
+        <acre:block else="">
+          <a href="${href}" acre:attrs="onclick ? {onclick:onclick} : {}" class="icon-link">
+            <span class="${key}-icon">${nav.name}</span>
+          </a>
+        </acre:block>
       </li>
     </acre:block>
   </acre:block>

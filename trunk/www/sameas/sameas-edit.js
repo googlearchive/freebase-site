@@ -39,14 +39,10 @@
      */
 
     add_key_begin: function(trigger, body) {
-      $.ajax({
+      $.ajax($.extend(fb.form.default_begin_ajax_options(), {
         url: fb.h.ajax_url("add_key_begin.ajax"),
-        dataType: "json",
         data: {id: fb.c.id},
-        success: function(data) {
-          if (!fb.form.check_ajax_success.apply(null, arguments)) {
-            return;
-          }
+        onsuccess: function(data) {
           var html = $(data.result.html);
           var head_row = $(".edit-row-head", html);
           var edit_row = $(".edit-row", html);
@@ -75,13 +71,8 @@
               trigger.removeClass("editing");
             });
           fb.form.init_inline_add_form(options);
-        },
-        error: function() {
-          // TODO: ajax error handler
-          var msg = fb.form.check_ajax_error.apply(null, arguments);
-          console.error(msg);
         }
-      });
+      }));
     },
 
     add_key_init: function(options) {
@@ -131,17 +122,12 @@
         connect: "insert"
       }]);
       $.ajax($.extend(ajax_options, {
-        success: function(data) {
-          if (!fb.form.check_ajax_success.apply(null, arguments)) {
-            return;
-          }
+        onsuccess: function(data) {
           var new_row = $(data.result.html);
           fb.form.success_inline_add_form(options, new_row);
         },
-        error: function(xhr) {
-          // TODO: ajax error handler
-          var msg = fb.form.check_ajax_error.apply(null, arguments);
-          options.edit_row.trigger(options.event_prefix + "error", msg);
+        onerror: function(errmsg) {
+          options.edit_row.trigger(options.event_prefix + "error", errmsg);
         }
       }));
     },
@@ -161,14 +147,10 @@
 
     edit_key_begin: function(key_row) {
       var key = key_row.metadata();
-      $.ajax({
+      $.ajax($.extend(fb.form.default_begin_ajax_options(), {
         url: fb.h.ajax_url("edit_key_begin.ajax"),
-        dataType: "json",
         data: {id: fb.c.id, namespace:key.namespace, value:key.value},
-        success: function(data) {
-          if (!fb.form.check_ajax_success.apply(null, arguments)) {
-            return;
-          }
+        onsuccess: function(data) {
           var html = $(data.result.html);
           var head_row = $(".edit-row-head", html);
           var edit_row = $(".edit-row", html);
@@ -198,14 +180,8 @@
               key_row.removeClass("editing");
             });
           fb.form.init_inline_edit_form(options);
-        },
-        error: function() {
-          // TODO: ajax error handler
-          var msg = fb.form.check_ajax_error.apply(null, arguments);
-          console.error(msg);
         }
-      });
-
+      }));
     },
 
     edit_key_init: function(options) {
@@ -263,17 +239,12 @@
         }]);
       }
       $.ajax($.extend(ajax_options, {
-        success: function(data) {
-          if (!fb.form.check_ajax_success.apply(null, arguments)) {
-            return;
-          }
+        onsuccess: function(data) {
           var new_row = $(data.result.html);
           fb.form.success_inline_edit_form(options, new_row);
         },
-        error: function(xhr) {
-          // TODO: ajax error handler
-          var msg = fb.form.check_ajax_error.apply(null, arguments);
-          options.edit_row.trigger(options.event_prefix + "error", msg);
+        onerror: function(errmsg) {
+          options.edit_row.trigger(options.event_prefix + "error", errmsg);
         }
       }));
     },
@@ -284,10 +255,8 @@
      */
     delete_key_begin: function(key_row) {
      var key = key_row.metadata();
-      $.ajax({
+      $.ajax($.extend(fb.form.default_submit_ajax_options(), {
         url: fb.h.ajax_url("edit_key_submit.ajax"),
-        type: "POST",
-        dataType: "json",
         data: {
           s: fb.c.id,
           p: "/type/object/key",
@@ -298,16 +267,11 @@
           }]),
           lang: fb.lang
         },
-        success: function(data) {
-          if (!fb.form.check_ajax_success.apply(null, arguments)) {
-            return;
-          }
+        onsuccess: function(data) {
           var new_row = $(data.result.html);
           fb.form.success_inline_delete(key_row, new_row, function() {
-            $.ajax({
+            $.ajax($.extend(fb.form.default_submit_ajax_options(),  {
               url: fb.h.ajax_url("edit_key_submit.ajax"),
-              type: "POST",
-              dataType: "json",
               data: {
                 s: fb.c.id,
                 p: "/type/object/key",
@@ -318,29 +282,18 @@
                 }]),
                 lang: fb.lang
               },
-              success: function(data) {
-                if (!fb.form.check_ajax_success.apply(null, arguments)) {
-                  return;
-                }
+              onsuccess: function(data) {
                 var new_row2 = $(data.result.html);
                 fb.form.success_inline_delete_undo(new_row, new_row2);
               },
-              error: function(xhr) {
-                // TODO: ajax error handler
-                var msg = fb.form.check_ajax_error.apply(null, arguments);
-                options.edit_row.trigger(options.event_prefix + "error", msg);
+              onerror: function(errmsg) {
+                options.edit_row.trigger(options.event_prefix + "error", errmsg);
               }
-            });
+            }));
           });
-        },
-        error: function() {
-          // TODO: ajax error handler
-          var msg = fb.form.check_ajax_error.apply(null, arguments);
-          console.error(msg);
         }
-      });
+      }));
     }
-
   };
 
 })(jQuery, window.freebase);

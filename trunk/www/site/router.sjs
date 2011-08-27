@@ -214,6 +214,7 @@ function init_site_rules(lib) {
     "create":     "//create" + site_codebase,
     "data":       "//data" + site_codebase,
     "devdocs":    "//devdocs" + site_codebase,
+    "flag":       "//flag" + site_codebase,
     "group":      "//group" + site_codebase,
     "homepage":   "//homepage" + site_codebase,
     "policies":   "//policies" + site_codebase,
@@ -587,6 +588,7 @@ function init_site_rules(lib) {
           "key": "create",
           "app": "create",
           "script": "type.controller",
+          "auth": true,
           "show": "can_create" // acre.require(app + "/" + script)[show](object_result) return TRUE to enable/show. FALSE to hide
         }
       ]
@@ -748,6 +750,25 @@ function init_site_rules(lib) {
           "app": "history",
           "script": "history.tab",
           "promises": h.extend(true, [], DEFAULT_PROMISES)
+        }
+      ],
+      "navs": [
+        {
+          "name": "Flag Topic",
+          "auth": true, // add "edit" class,
+          "menu": [{
+            text: "<b>Merge</b> with another topic",
+            onclick: "return window.freebase.flag.merge(this);"
+          }, {
+            text: "<b>Split</b> into multiple topics",
+            onclick: "return window.freebase.flag.split(this);"
+          }, {
+            text: "<b>Delete</b> from Freebase",
+            onclick: "return window.freebase.flag['delete'](this);"
+          }, {
+            text: "<b>Flag</b> as objectional",
+            onclick: "return window.freebase.flag.offensive(this);"
+          }]
         }
       ]
     },

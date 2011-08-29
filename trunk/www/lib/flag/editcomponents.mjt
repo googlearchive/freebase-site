@@ -52,13 +52,13 @@
           </div>
           <div class="form-row">
             <label class="form-label">${_("With")}</label>
-            ${pb.data_input("/common/topic", "o")}
+            ${pb.data_input("/common/topic", "with")}
           </div>
         </div>
       </div>
     </div>
     <div class="modal-buttons">
-      <input type="hidden" name="s" value="${topic.mid}"/>
+      <input type="hidden" name="merge" value="${topic.mid}"/>
       ${form.submit_buttons()}
     </div>
   </div>

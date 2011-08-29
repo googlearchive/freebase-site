@@ -29,76 +29,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var i18n = acre.require("i18n/i18n.sjs");
+var validators = acre.require("validator/validators.sjs");
+var editcomponents = acre.require("flag/editcomponents.mjt");
 var apis = acre.require("promise/apis");
 var freebase = apis.freebase;
 var deferred = apis.deferred;
+var queries = acre.require("flag/queries.sjs");
 
-var KINDS = {
-  "merge": "/freebase/flag_kind/merge",
-  "split": "/freebase/flag_kind/split",
-  "delete": "/freebase/flag_kind/delete",
-  "offensive": "/freebase/flag_kind/offensive"
-};
+/**
+ * add key form
+ */
+var SPEC = {
 
-function flag(id) {
-  var q = {
-    id: id,
-    type: "/freebase/review_flag",
-    kind: {id: null},
-    item: [{id: null}]
-  };
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return env.result;
-    });
-};
+  method: "POST",
 
-function create(kind, id1/**, id2, ..., id_N **/) {
-  var ids = Array.prototype.slice.call(arguments, 1);
-  // TODO: assert ids.length > 0
-  var q = {
-    id: null,
-    type: "/freebase/review_flag",
-    kind: {
-      id: KINDS[kind] || kind
-    },
-    item: [],
-    create: "unless_exists"
-  };
-  ids.forEach(function(id) {
-    q.item.push({id:id});
-  });
-  return freebase.mqlwrite(q)
-    .then(function(env) {
-      return env.result;
-    });
-};
+  auth: true,
 
-function undo(flag_id) {
-  return flag(flag_id)
-    .then(function(f) {
-      if (f) {
-        var q = {
-          id: flag_id,
-          type: {
-            id: "/freebase/review_flag",
-            connect: "delete"
-          },
-          "/freebase/review_flag/kind": {
-            id: f.kind.id
-          }
-        };
-        if (f.item) {
-          var item = q["/freebase/review_flag/item"] = [];
-          f.item.forEach(function(i) {
-            item.push({id:i.id, connect:"delete"});
-          });
-        }
-        return freebase.mqlwrite(q)
-          .then(function(env) {
-            return env.result;
-          });
-      }
-      return f;
-    });
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {required:true}),
+      validators.OneOf(params, "kind", {require:true, oneof:["split", "delete", "offensive"]})
+    ];
+  },
+
+  run: function(id, kind) {
+    return queries.create(kind, id);
+  }
 };

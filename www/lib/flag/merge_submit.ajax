@@ -53,6 +53,6 @@ var SPEC = {
   },
 
   run: function(id1, id2) {
-    return queries.merge(id1, id2);
+    return queries.create("merge", id1, id2);
   }
 };

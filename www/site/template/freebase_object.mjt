@@ -140,7 +140,7 @@
             "/freebase/flag_kind/merge": _("This topic has been flagged to be merged with another topic."),
             "/freebase/flag_kind/split": _("This topic has been flagged to be split into multiple topics."),
             "/freebase/flag_kind/delete": _("This topic has been flagged to be deleted from Freebase."),
-            "/freebase/flag_kind/offsensive": _("This topic has been flagged as objectionable.")
+            "/freebase/flag_kind/offensive": _("This topic has been flagged as objectionable.")
           };
         </acre:script>
         <div class="page-flag">

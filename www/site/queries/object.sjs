@@ -52,6 +52,7 @@ function object(id, options) {
       topic.image = topic["/common/topic/image"];
       topic.article = topic["/common/topic/article"];
       topic.replaced_by = topic["/dataworld/gardening_hint/replaced_by"];
+      topic.flag = topic["!/freebase/review_flag/item"];
       return topic;
     });
 };
@@ -162,7 +163,14 @@ function mql(id) {
       id: null,
       mid: null,
       optional: true
-    }
+    },
+    "!/freebase/review_flag/item": [{
+      id: null,
+      kind: {id: null},
+      type: "/freebase/review_flag",
+      creator: null,
+      optional: true
+    }]
   };
 };
 

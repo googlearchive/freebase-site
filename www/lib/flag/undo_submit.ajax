@@ -29,69 +29,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var i18n = acre.require("i18n/i18n.sjs");
+var validators = acre.require("validator/validators.sjs");
+var editcomponents = acre.require("flag/editcomponents.mjt");
 var apis = acre.require("promise/apis");
 var freebase = apis.freebase;
 var deferred = apis.deferred;
+var queries = acre.require("flag/queries.sjs");
+/**
+ * add key form
+ */
+var SPEC = {
 
-function flag(id) {
-  var q = {
-    id: id,
-    type: "/freebase/review_flag",
-    kind: {id: null},
-    item: [{id: null}]
-  };
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return env.result;
-    });
-};
+  method: "POST",
 
-function merge(id1, id2) {
-  var q = {
-    id: null,
-    type: "/freebase/review_flag",
-    item: [{
-      id: id1
-    }, {
-      id: id2
-    }],
-    kind: {
-      id: "/freebase/flag_kind/merge"
-    },
-    create: "unless_exists"
-  };
-  return freebase.mqlwrite(q)
-    .then(function(env) {
-      return env.result;
-    });
-};
+  auth: true,
 
+  validate: function(params) {
+    return [
+      validators.MqlId(params, "id", {required:true})
+    ];
+  },
 
-function undo(flag_id) {
-  return flag(flag_id)
-    .then(function(f) {
-      if (f) {
-        var q = {
-          id: flag_id,
-          type: {
-            id: "/freebase/review_flag",
-            connect: "delete"
-          },
-          "/freebase/review_flag/kind": {
-            id: f.kind.id
-          }
-        };
-        if (f.item) {
-          var item = q["/freebase/review_flag/item"] = [];
-          f.item.forEach(function(i) {
-            item.push({id:i.id, connect:"delete"});
-          });
-        }
-        return freebase.mqlwrite(q)
-          .then(function(env) {
-            return env.result;
-          });
-      }
-      return f;
-    });
+  run: function(id) {
+    return queries.undo(id);
+  }
 };

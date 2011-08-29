@@ -58,7 +58,20 @@
         flag.edit[what](trigger);
       });
       return false;
+    },
+
+    undo: function(trigger, flag_id) {
+      trigger = $(trigger);
+      if (trigger.is(".editing")) { // are we already editing?
+        return false;
+      }
+      trigger.addClass("editing");
+      fb.get_script(fb.h.static_url("lib/flag/flag-edit.mf.js"), function() {
+        flag.edit.undo_begin(trigger, flag_id);
+      });
+      return false;
     }
+
   };
 
 })(jQuery, window.freebase);

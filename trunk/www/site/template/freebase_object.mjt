@@ -132,6 +132,39 @@
     <acre:block if="c.object">
 
       <!!--
+         Flags (merge, delete, split, objectionable
+      !!-->
+      <acre:block if="c.object.flag && c.object.flag.length">
+        <acre:script>
+          var msgs = {
+            "/freebase/flag_kind/merge": _("This topic has been flagged to be merged with another topic."),
+            "/freebase/flag_kind/split": _("This topic has been flagged to be split into multiple topics."),
+            "/freebase/flag_kind/delete": _("This topic has been flagged to be deleted from Freebase."),
+            "/freebase/flag_kind/offsensive": _("This topic has been flagged as objectionable.")
+          };
+        </acre:script>
+        <div class="page-flag">
+          <acre:block for="flag in c.object.flag">
+            <acre:script>
+              var msg = msgs[flag.kind.id];
+            </acre:script>
+            <acre:block if="msg">
+              <acre:script>
+                var perm_obj = {id:flag.creator};
+              </acre:script>
+              <div class="page-flag-kind">
+                <span class="page-flag-msg">${msg}</span>
+                <a href="${h.fb_url(c.object.id)}">${_("Vote on this issue here")}</a>.
+                <span class="edit-perm ${JSON.stringify(perm_obj)}">
+                  <a href="#" onclick="return window.freebase.flag.undo(this, '${flag.id}');">Undo</a>.
+                </span>
+              </div>
+            </acre:block>
+          </acre:block>
+        </div>
+      </acre:block>
+
+      <!!--
         Object Name + Creator + Timestamp
       !!-->
 

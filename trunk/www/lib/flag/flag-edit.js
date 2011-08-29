@@ -115,6 +115,16 @@
       // TODO: ajax error handler
       var msg = fb.form.check_ajax_error.apply(null, arguments);
       console.error(msg);
+    },
+
+    undo_begin: function(trigger, flag_id) {
+      $.ajax($.extend(fb.form.default_submit_ajax_options(), {
+        url: fb.h.ajax_url("lib/flag/undo_submit.ajax"),
+        data: {id:flag_id},
+        onsuccess: function(data) {
+          trigger.parents(".page-flag-kind:first").remove();
+        }
+      }));
     }
 
   };

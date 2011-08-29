@@ -54,13 +54,20 @@ function flag(id) {
 };
 
 function create(kind, id1/**, id2, ..., id_N **/) {
+  kind = KINDS[kind];
+  if (!kind) {
+    throw "Kind must be one of merge|split|delete|offensive";
+  }
   var ids = Array.prototype.slice.call(arguments, 1);
   // TODO: assert ids.length > 0
+  if (!ids.length) {
+    throw "A review flag requires at least one item";
+  }
   var q = {
     id: null,
     type: "/freebase/review_flag",
     kind: {
-      id: KINDS[kind] || kind
+      id: kind
     },
     item: [],
     create: "unless_exists"
@@ -85,7 +92,8 @@ function undo(flag_id) {
             connect: "delete"
           },
           "/freebase/review_flag/kind": {
-            id: f.kind.id
+            id: f.kind.id,
+            connect: "delete"
           }
         };
         if (f.item) {

@@ -104,17 +104,25 @@
     },
 
     split_begin: function(trigger) {
-
+      edit.flag_submit(trigger, "split");
     },
 
     delete_begin: function(trigger) {
-
+      edit.flag_submit(trigger, "delete");
     },
 
     offensive_begin: function(trigger) {
-      // TODO: ajax error handler
-      var msg = fb.form.check_ajax_error.apply(null, arguments);
-      console.error(msg);
+      edit.flag_submit(trigger, "offensive");
+    },
+
+    flag_submit: function(trigger, kind) {
+      $.ajax($.extend(fb.form.default_submit_ajax_options(), {
+        url: fb.h.ajax_url("lib/flag/flag_submit.ajax"),
+        data: {id:fb.c.id, kind:kind},
+        onsuccess: function(data) {
+          //window.location.reload(true);
+        }
+      }));
     },
 
     undo_begin: function(trigger, flag_id) {

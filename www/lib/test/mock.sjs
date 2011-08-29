@@ -77,6 +77,18 @@ if (mock) {
         // The original arguments is what we compare for playback.
         var orig_args = arguments_array.apply(null, arguments);
         var args = deep_copy(orig_args);
+
+        // Acre now has a default security feature where GET requests can not
+        // result into POST requests.
+        // To bypass this feature, we set http_bless for only freebase.mqlwrite
+        if (api_name === "freebase.mqlwrite") {
+          var api_options = args[2];
+          if (typeof api_options === "undefined") {
+            api_options = args[2] = {};
+          }
+          api_options.http_bless = true;
+        }
+
         var p = api.apply(this, args)
           .then(function(response) {
                   test_data.push([api_name, orig_args, response]);

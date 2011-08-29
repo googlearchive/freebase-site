@@ -120,7 +120,7 @@
         url: fb.h.ajax_url("lib/flag/flag_submit.ajax"),
         data: {id:fb.c.id, kind:kind},
         onsuccess: function(data) {
-          //window.location.reload(true);
+          window.location.reload(true);
         }
       }));
     },

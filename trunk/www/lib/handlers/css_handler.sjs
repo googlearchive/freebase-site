@@ -68,7 +68,7 @@ function preprocessor(script) {
 
   var buf = [],
       m,
-      url_regex = /url\s*\(\s*([^\)]+)\s*\)/gi,
+      url_regex = /url\s*\(\s*['"]*([^\)]+)['"]*\s*\)/gi,
       scheme_regex = /^\w+\:\/\//;
 
   str.split(/[\n\r\f]/).forEach(function(l) {

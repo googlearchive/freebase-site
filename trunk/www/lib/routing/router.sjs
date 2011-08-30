@@ -384,7 +384,8 @@ function extend_rules(rules, environment_rules) {
 
 
 function route(rules, scope) {
-  // Explicitly set the error page to the site's error page
+  // Explicitly set the site's error and not_found pages
+  var not_found_path = scope.acre.resolve(scope.acre.get_metadata().not_found_page);
   var error_page_path = scope.acre.resolve(scope.acre.get_metadata().error_page);
   acre.response.set_error_page(error_page_path);
 
@@ -421,7 +422,6 @@ function route(rules, scope) {
     scope.acre.exit();
   }
   else {
-    // TODO: not found
-    acre.route("error/not_found.template");
+    acre.route(not_found_path);
   }
 };

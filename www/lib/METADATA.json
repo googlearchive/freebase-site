@@ -1,6 +1,7 @@
 {
   "ttl": 0,
   "error_page" : "error/error.mjt",
+  "not_found_page" : "error/not_found.template",
   "csrf_protection": "weak",
   "handlers": {
     "mjt": "handlers/mjt_handler.sjs",

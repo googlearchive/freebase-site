@@ -1561,6 +1561,10 @@ function extend_metadata(md, mount) {
         md.error_page = md_path + "/" + md.error_page;
     }
 
+    if (md.not_found_page && (md.not_found_page.indexOf("/") !== 0)) {
+        md.not_found_page = md_path + "/" + md.not_found_page;
+    }
+
     if (md.template_base && (md.template_base.indexOf("/") !== 0)) {
         md.template_base = md_path + "/" + md.template_base;
     }

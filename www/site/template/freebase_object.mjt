@@ -263,7 +263,14 @@
       <div id="description" class="clear">
         <div id="image">
           <acre:block if="c.object.image && c.object.image.length">
-            ${image.image_thumb(c.object.image[0], 50)}
+            <acre:script>
+              var options = {
+                maxheight: 50,
+                maxwidth: 100
+              };
+              console.log(options);
+            </acre:script>
+            ${image.image_thumb(c.object.image[0], 50, options)}
           </acre:block>
         </div>
         <!-- blurb should be sentence-level truncation at ~50 words -->

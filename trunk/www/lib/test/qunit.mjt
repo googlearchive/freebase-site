@@ -93,5 +93,20 @@
     <acre:block if="exports.append_body">
       ${exports.append_body()}
     </acre:block>
+
+    <script>
+      var qunit_done = QUnit.done;
+      QUnit.done = function(failed, passed, total, runtime) {
+        $(window).trigger("QUnit.done", {
+          failed: failed,
+          passed: passed,
+          total: total,
+          runtime: runtime
+        });
+        if (qunit_done) {
+          qunit_done.apply(null, arguments);
+        }
+      };
+    </script>
   </body>
 </acre:block>

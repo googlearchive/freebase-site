@@ -111,7 +111,7 @@
     if (o.pad && o.maxwidth) {
       attrs.width = o.maxwidth;
     }
-    if (o.pad && o.maxwidth) {
+    if (o.pad && o.maxheight) {
       attrs.height = o.maxheight;
     }
     if (typeof image === "object" && image.id) {

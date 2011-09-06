@@ -80,7 +80,12 @@
         else {
           $trigger.addClass("active");
           $toolbar.addClass("active");
-          $add_type_pane.slideDown();
+          $add_type_pane.slideDown(function() {
+            if (!$trigger.data("initialized")) {
+              topic.init_manage_types();
+              $trigger.data("initialized", 1);
+            }
+          });
           var target_height = $add_type_pane.height();
           $type_list.height(target_height + "px");
         }
@@ -96,10 +101,29 @@
 	    opacity: 0.5
 	  }
       });
+
       $(".blurb").truncate({
         max_length: 300,
         more: 'more'
       });
+    },
+
+    init_manage_types: function() {console.log("init_manage_types");
+      $("#add-type-input")
+        .suggest(fb.suggest_options.cotype())
+        .focus();
+    },
+
+    remove_type: function(trigger, type_id) {
+      trigger = $(trigger);
+      if (trigger.is(".editing")) { // are we already editing?
+        return false;
+      }
+      trigger.addClass("editing");
+      fb.get_script(fb.h.static_url("manage-type.mf.js"), function() {
+        topic.manage_type.remove_type_begin(trigger, type_id);
+      });
+      return false;
     }
   };
 

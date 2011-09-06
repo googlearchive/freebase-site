@@ -334,6 +334,25 @@ font-weight: bold;
   padding-left: 0;
 }
 
-#page-header .submenu {
-  width: 180px;
+.submenu {
+  padding: 7px;
+  background: #eceeec;
+}
+
+.submenu:before {
+  content: "";
+  position: absolute;
+  display: block;
+  top: -20px;
+  left: 70px;
+  border-width: 10px;
+  border-color: transparent transparent #eceeec;
+  border-style: solid;
+  height: 0;
+  width: 0;
+}
+
+.submenu li {
+  background: #fff;
+  border: 0;
 }

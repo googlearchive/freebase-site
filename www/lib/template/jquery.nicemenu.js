@@ -72,11 +72,24 @@
     if (!submenu.data("init")) {
       var pos = headmenu.offset();
       var height = headmenu.outerHeight();
+      var top = pos.top + height;
+      var left;
+      if (submenu.is(".center")) {
+        var width = headmenu.outerWidth();
+        left = pos.left + width/2 - submenu.outerWidth()/2;
+      }
+      else if (submenu.is(".right")) {
+        var width = headmenu.outerWidth();
+        left = pos.left + width - submenu.outerWidth();
+      }
+      else {
+        left = pos.left;
+      }
       submenu.css({
         display: "none",
         position: "absolute",
-        top: pos.top + height,
-        left: pos.left
+        top: top,
+        left: left
       });
       $(document.body).append(submenu);
       submenu.data("init", 1);

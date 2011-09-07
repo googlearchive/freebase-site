@@ -108,10 +108,25 @@
       });
     },
 
-    init_manage_types: function() {console.log("init_manage_types");
+    init_manage_types: function() {
       $("#add-type-input")
         .suggest(fb.suggest_options.cotype())
+        .bind("fb-select", function(e, data) {
+          topic.add_type(this, data.id);
+        })
         .focus();
+    },
+
+    add_type: function(trigger, type_id) {
+      trigger = $(trigger);
+      if (trigger.is(".editing")) { // are we already editing?
+        return false;
+      }
+      trigger.addClass("editing");
+      fb.get_script(fb.h.static_url("manage-type.mf.js"), function() {
+        topic.manage_type.add_type_begin(trigger, type_id);
+      });
+      return false;
     },
 
     remove_type: function(trigger, type_id) {

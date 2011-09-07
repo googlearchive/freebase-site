@@ -360,7 +360,7 @@
                 <span class="${key}-icon">${nav.name}</span>
               </a>
             </span>
-            <ul class="row-menu submenu">
+            <ul class="row-menu submenu center">
               <acre:block for="menu in nav.menu">
                 <li class="row-menu-item">
                   <a href="${menu.href || '#'}" acre:attrs="menu.onclick ? {onclick:menu.onclick} : {}">${acre.markup.bless(menu.text)}</a>

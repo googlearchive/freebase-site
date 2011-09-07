@@ -32,6 +32,18 @@
 (function($, fb) {
   var mt = fb.topic.manage_type = {
 
+    add_type_begin: function(trigger, type_id) {
+      $.ajax($.extend(fb.form.default_submit_ajax_options(), {
+        url: fb.h.ajax_url("add_type_submit.ajax"),
+        data: {id:fb.c.id, type:type_id, lang:fb.lang},
+        onsuccess: function(data) {
+          var result = $(data.result.html);
+          $(".domain-section:first").before(result);
+          trigger.removeClass("editing");
+        }
+      }));
+    },
+
     remove_type_begin: function(trigger, type_id) {
       $.ajax($.extend(fb.form.default_submit_ajax_options(), {
         url: fb.h.ajax_url("remove_type_submit.ajax"),

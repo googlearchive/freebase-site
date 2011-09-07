@@ -133,12 +133,12 @@
       </ul>
     </div>
     <h3 class="toolbar-pane-title">${_("Add a new Type")}</h3>
-    <form action="" method="post" name="add-type-form" class="add-type">
+    <div name="add-type-form" class="add-type">
       <span class="data-input">
         <input type="" id="add-type-input" class="fb-input" 
                value="" placeholder="${_('Start typing for suggestions...')}" name="" />
       </span>
-    </form>
+    </div>
     <!!--
     <h3 class="toolbar-pane-title">${_("Suggested Types")}</h3>
     <ul class="suggested-types">

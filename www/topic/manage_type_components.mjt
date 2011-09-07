@@ -36,6 +36,15 @@
   var form = acre.require("lib/propbox/form.mjt");
 </acre:script>
 
+<acre:block def="add_type_result(id, types, lang)">
+  <acre:script>
+    var msg = h.template_sprintf(_("Type %s added successfully!%s Please refresh to see the newly added Type(s)."), type_link(types[0].id), included_types_msg(types.slice(1)));
+  </acre:script>
+  <div class="section domain add-type-result">
+    ${form.row_msg(msg, ".add-type-result")}
+  </div>
+</acre:block>
+
 <acre:block def="remove_type_result(id, type, lang)">
   <acre:script>
     var msg = h.template_sprintf(_("The type %s has been removed. %s"), type, remove_type_undo(type));
@@ -45,7 +54,25 @@
   </div>
 </acre:block>
 
+<!!-- template_sprintf helpers !!-->
+
+<acre:block def="type_link(type_id)">
+  <a href="${h.fb_url(type_id)}">${type_id}</a>
+</acre:block>
+
+<acre:block def="type_links(types)">
+  <acre:block for="(var i=0,l=types.length; i<l; i++)" trim="1">
+    <acre:block if="i > 0" trim="1">, </acre:block>
+    <acre:block trim="1">${type_link(types[i].id)}</acre:block>
+  </acre:block>
+</acre:block>
+
+<acre:block def="included_types_msg(types)">
+  ${h.template_sprintf("Along with included type(s): %s.", type_links(types))}
+</acre:block>
+
 <acre:block def="remove_type_undo(type)">
   <a href="javascript:void(0);" 
      onclick="return window.freebase.topic.manage_type.undo_remove_type(this, '${type}')">${_("Undo")}</a>
 </acre:block>
+

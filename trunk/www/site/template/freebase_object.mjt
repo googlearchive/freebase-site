@@ -285,10 +285,25 @@
       </div>
       <div class="nav clear">
         <ul class="nav-utilities">
-         <acre:block if="that_exports.nav_utilities">
+          <li class="object-actions-toggle">
+            <a href="#">
+            <span class="outer-cog">
+              <span class="inner-cog"></span>
+              <span class="cog one"></span>
+              <span class="cog two"></span>
+              <span class="cog three"></span>
+              <span class="cog four"></span>
+              <span class="cog five"></span>
+              <span class="cog six"></span>
+              <span class="cog seven"></span>
+              <span class="cog eight"></span>
+            </span>
+            </a>
+          </li>
+         <!--<acre:block if="that_exports.nav_utilities">
            ${that_exports.nav_utilities()}
          </acre:block>
-         ${nav_navs()}
+         ${nav_navs()}-->
         </ul>
         <ul class="tab-nav">
           ${nav_tabs()}

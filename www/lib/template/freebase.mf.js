@@ -10,6 +10,7 @@
   "template/freebase.js",
   "template/helpers.js",
   "permission/permission.js",
+  "incompatible_types/incompatible-types.js",
   "i18n/i18n.js",
   "flag/flag.js"
 ]

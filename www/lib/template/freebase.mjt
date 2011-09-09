@@ -264,6 +264,7 @@
       </ul>
     </acre:block>
   </div>
+  ${acre.require("incompatible_types/components.mjt").confirm_dialog()}
 </acre:block>
 
 

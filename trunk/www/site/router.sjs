@@ -103,6 +103,9 @@ function ObjectRouter(app_labels) {
           item.promises && item.promises.forEach(function(p) {
             set_app(p);
           });
+          item.subnavs && item.subnavs.forEach(function(p) {
+            set_app(p);
+          });
         });
       });
       types[route.type] = route;
@@ -442,7 +445,6 @@ function init_site_rules(lib) {
       "navs": [
         {
           "name": "Edit Settings",
-          "key": "settings",
           "app": "admin",
           "ajax": "app_settings.mf.js",
           "auth": true // add "edit" class
@@ -494,7 +496,6 @@ function init_site_rules(lib) {
       "navs": [
         {
           "name": "Edit Settings",
-          "key": "settings",
           "app": "admin",
           "ajax": "app_settings.mf.js",
           "auth": true // add "edit" class
@@ -588,7 +589,6 @@ function init_site_rules(lib) {
           "key": "create",
           "app": "create",
           "script": "type.controller",
-          "auth": true,
           "show": "can_create" // acre.require(app + "/" + script)[show](object_result) return TRUE to enable/show. FALSE to hide
         }
       ]
@@ -756,18 +756,18 @@ function init_site_rules(lib) {
         {
           "name": "Flag Topic",
           "auth": true, // add "edit" class,
-          "menu": [{
-            text: "<b>Merge</b> with another topic",
-            onclick: "return window.freebase.flag.merge(this);"
+          "subnavs": [{
+            "name": "<b>Merge</b> with another topic",
+            "onclick": "return window.freebase.flag.merge(this);"
           }, {
-            text: "<b>Split</b> into multiple topics",
-            onclick: "return window.freebase.flag.split(this);"
+            "name": "<b>Split</b> into multiple topics",
+            "onclick": "return window.freebase.flag.split(this);"
           }, {
-            text: "<b>Delete</b> from Freebase",
-            onclick: "return window.freebase.flag['delete'](this);"
+            "name": "<b>Delete</b> from Freebase",
+            "onclick": "return window.freebase.flag['delete'](this);"
           }, {
-            text: "<b>Flag</b> as objectional",
-            onclick: "return window.freebase.flag.offensive(this);"
+            "name": "<b>Flag</b> as objectional",
+            "onclick": "return window.freebase.flag.offensive(this);"
           }]
         }
       ]

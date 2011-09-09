@@ -754,18 +754,18 @@ function init_site_rules(lib) {
       ],
       "navs": [
         {
-          "name": "Flag Topic",
+          "name": "<b>This topic should be:</b>",
           "subnavs": [{
-            "name": "<b>Merge</b> with another topic",
+            "name": "<b>Merged</b> with another topic",
             "onclick": "return window.freebase.flag.merge(this);"
           }, {
             "name": "<b>Split</b> into multiple topics",
             "onclick": "return window.freebase.flag.split(this);"
           }, {
-            "name": "<b>Delete</b> from Freebase",
+            "name": "<b>Deleted</b> from Freebase",
             "onclick": "return window.freebase.flag['delete'](this);"
           }, {
-            "name": "<b>Flag</b> as objectional",
+            "name": "<b>Flagged</b> as objectional",
             "onclick": "return window.freebase.flag.offensive(this);"
           }]
         }

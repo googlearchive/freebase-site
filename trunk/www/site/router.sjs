@@ -755,7 +755,6 @@ function init_site_rules(lib) {
       "navs": [
         {
           "name": "Flag Topic",
-          "auth": true, // add "edit" class,
           "subnavs": [{
             "name": "<b>Merge</b> with another topic",
             "onclick": "return window.freebase.flag.merge(this);"

@@ -125,14 +125,13 @@
 
 <acre:block def="content_body()">
   <div id="page-header">
+
     <!!--
-       topic meta information @see queries/topic
+       object meta information @see queries/topic
     !!-->
-
     <acre:block if="c.object">
-
       <!!--
-         Flags (merge, delete, split, objectionable
+         Flags (merge, delete, split, objectionable)
       !!-->
       <acre:block if="c.object.flag && c.object.flag.length">
         <acre:script>
@@ -163,11 +162,9 @@
           </acre:block>
         </div>
       </acre:block>
-
       <!!--
         Object Name + Creator + Timestamp
       !!-->
-
       <div class="page-title">
         <span class="creation-timestamp">
           <span acre:if="c.object.creator"
@@ -191,14 +188,6 @@
             attrs["data-format"] = "long";
           </acre:script>
           ${i18n_c.datetime(c.object.timestamp, attrs)}
-        </span>
-        <acre:block if="c.breadcrumbs && c.breadcrumbs.length">
-          <acre:script>
-            var label = c.breadcrumbs[0].name;
-          </acre:script>
-        </acre:block>
-        <span class="object-label ${label.toLowerCase()}">
-          <a class="object-label-trigger" href="javascript:void(0)">$label</a>
         </span>
         <acre:block if="c.object.name.length">
           <h1>
@@ -237,13 +226,41 @@
             </ul> 
           </h1>
         </acre:block>
+
+        <!!--
+          Show object ID if no name exists
+        -->
         <acre:block else="">
           <h1>
             <span acre:attrs="itemprop('/type/object/id')">${c.object.id}</span>
           </h1>
         </acre:block>
-      </div>
+        </div>
 
+        <!!--
+          Object label + thumbnail
+        !!-->
+        <acre:script>
+          var label = c.breadcrumbs[0].name || 'object';
+        </acre:script>
+        <div id="object-identity">
+          <div id="image">
+            <acre:block if="c.object.image && c.object.image.length">
+            <acre:script>
+            var options = {
+              maxheight: 36,
+              maxwidth: 53,
+              mode: 'fillcropmid',
+              pad: 2
+            };
+            </acre:script>
+              ${image.image_thumb(c.object.image[0], 50, options)}
+            </acre:block>
+          </div>
+          <div class="object-label ${label.toLowerCase()}">
+            <a class="object-label-trigger" href="javascript:void(0)">$label</a>
+          </div>
+        </div>
 
       <acre:block if="that_exports.nav_flags">
         <span class="flags">
@@ -261,18 +278,6 @@
         </acre:block>
       </div>
       <div id="description" class="clear">
-        <div id="image">
-          <acre:block if="c.object.image && c.object.image.length">
-            <acre:script>
-              var options = {
-                maxheight: 50,
-                maxwidth: 100
-              };
-              console.log(options);
-            </acre:script>
-            ${image.image_thumb(c.object.image[0], 50, options)}
-          </acre:block>
-        </div>
         <!-- blurb should be sentence-level truncation at ~50 words -->
         <acre:block if="c.blurb">
           <p class="blurb" itemprop="desc">${c.blurb}</p>
@@ -290,7 +295,8 @@
         </ul>
       </div>
     </acre:block>
-  </div>
+  </div><!!-- /page-header-->
+
   <div id="page-content">
     <acre:block if="that_exports.page_content">
       ${that_exports.page_content()}

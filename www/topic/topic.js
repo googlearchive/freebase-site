@@ -118,14 +118,21 @@
     },
 
     add_type: function(trigger, type_id) {
-      trigger = $(trigger);
+      trigger = $(trigger); // suggest input
       if (trigger.is(".editing")) { // are we already editing?
         return false;
       }
       trigger.addClass("editing");
-      fb.get_script(fb.h.static_url("manage-type.mf.js"), function() {
-        topic.manage_type.add_type_begin(trigger, type_id);
-      });
+
+      // incompatible type check
+      function compatible_callback() {
+        fb.get_script(fb.h.static_url("manage-type.mf.js"), function() {
+          topic.manage_type.add_type_begin(trigger, type_id);
+        });
+      };
+      fb.incompatible_types.check(fb.c.id, type_id,
+        compatible_callback,
+        fb.incompatible_types.suggest_incompatible_callback(trigger, compatible_callback));
       return false;
     },
 

@@ -248,7 +248,7 @@
             <acre:block if="c.object.image && c.object.image.length">
             <acre:script>
             var options = {
-              maxheight: 36,
+              maxheight: 53,
               maxwidth: 53,
               mode: 'fillcropmid',
               pad: 2

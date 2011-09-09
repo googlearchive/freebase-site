@@ -107,7 +107,7 @@ a.object-label-trigger {
 
 #image {
   width: 53px;
-  height: 36px;
+  height: 53px;
 }
 
 #image img {
@@ -163,7 +163,7 @@ a.object-label-trigger {
 #page-header h1 {
   color: #f1f2f3;
   font-size: 21px;
-  padding-top: 5px;
+  padding-top: 10px;
 }
 
 .page-title .inline-menu {
@@ -349,7 +349,13 @@ spec has been implemented, including complete vcards, tooltips, etc.
 .tab-nav a.current span {
   border: 0;
   font-weight: bold;
-  background: #919da8;
+  background: #58575f;
+  background: -moz-linear-gradient(top, #58575f 0%, #58575f 50%, #4d4d53 50%, #4d4d53 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#58575f), color-stop(50%,#58575f), color-stop(50%,#4d4d53), color-stop(100%,#4d4d53));
+  background: -webkit-linear-gradient(top, #58575f 0%,#58575f 50%,#4d4d53 50%,#4d4d53 100%);
+  background: -o-linear-gradient(top, #58575f 0%,#58575f 50%,#4d4d53 50%,#4d4d53 100%);
+  background: -ms-linear-gradient(top, #58575f 0%,#58575f 50%,#4d4d53 50%,#4d4d53 100%);
+  background: linear-gradient(top, #58575f 0%,#58575f 50%,#4d4d53 50%,#4d4d53 100%);
   position: relative;
   text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
   .box_shadow(0,0,2px,#000);
@@ -363,7 +369,7 @@ spec has been implemented, including complete vcards, tooltips, etc.
   margin: 0 auto;
   bottom: -18px;
   border-width: 10px;
-  border-color: #919da8 transparent transparent;
+  border-color: #4d4d53 transparent transparent;
   border-style: solid;
   height: 0;
   width: 0;

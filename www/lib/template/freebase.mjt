@@ -201,7 +201,7 @@
       <div id="site-search-label"><span>${_("Start typing to get some suggestions")}</span></div>
     </div>
     <!!-- Global Nav Links-->
-    <ul class="clear" id="nav-global">
+    <ul class="clear search" id="nav-global">
       <li><a href="/explore">${_("Explore data")}</a></li>
       <li>
         <a href="${h.wiki_url()}"

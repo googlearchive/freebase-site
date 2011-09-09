@@ -379,10 +379,6 @@ spec has been implemented, including complete vcards, tooltips, etc.
 }
 
 
-.nav-utilities {
-  display: none;
-}
-
 .nav-mode a.current {
   position: relative;
   margin-bottom: -20px;
@@ -431,4 +427,87 @@ spec has been implemented, including complete vcards, tooltips, etc.
 .submenu li {
   background: #fff;
   border: 0;
+}
+
+.object-actions-toggle {
+  position: relative;
+  height: 35px;
+  padding: 0 50px;
+}
+
+.outer-cog {
+  display: block;
+  position: absolute;
+  margin: 0 auto;
+  left: 0; right: 0;
+  top: 5px;
+  width: 24px;
+  height: 24px;
+  background: #cedce7;
+  .rounded_corners(12px);
+  .linear_gradient(#fff, #aeaeae);
+}
+
+.inner-cog {
+  display: block;
+  background: #404040;
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  width: 8px;
+  height: 8px;
+  box-shadow: inset 1px 1px 1px #000;
+  -webkit-border-radius: 4px;
+}
+
+.cog {
+  display: block;
+  height: 0;
+  margin: 0 auto;
+  position: absolute;
+  width: 3px;
+  border-top: 3px solid #404040;
+  border-left: 2px solid transparent;
+  border-right: 2px solid transparent;
+}
+
+.cog.one {
+  left: 0; right: 0;
+  top: -1px;
+}
+
+.cog.two {
+  -webkit-transform: rotate(180deg);
+  bottom: -1px;
+  left: 0; right: 0;
+}
+
+.cog.three {
+  -webkit-transform: rotate(-90deg);
+  left: -3px; top: 10px;
+}
+
+.cog.four {
+  -webkit-transform: rotate(90deg);
+  right: -3px; top: 10px;
+}
+
+.cog.five {
+  -webkit-transform: rotate(45deg);
+  right: 0; top: 3px;
+}
+
+.cog.six {
+  -webkit-transform: rotate(-45deg);
+  left: 0; top: 3px;
+}
+
+.cog.seven {
+  -webkit-transform: rotate(-140deg);
+  left: 0; bottom: 3px;
+}
+
+.cog.eight {
+  -webkit-transform: rotate(140deg);
+  right: 0; bottom: 3px;
 }

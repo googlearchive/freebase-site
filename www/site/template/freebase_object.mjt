@@ -284,30 +284,8 @@
         </acre:block>
       </div>
       <div class="nav clear">
-        <ul class="nav-utilities">
-          <li>
-            <a href="#" class="object-actions-toggle">
-            <span class="outer-cog">
-              <span class="inner-cog"></span>
-              <span class="cog one"></span>
-              <span class="cog two"></span>
-              <span class="cog three"></span>
-              <span class="cog four"></span>
-              <span class="cog five"></span>
-              <span class="cog six"></span>
-              <span class="cog seven"></span>
-              <span class="cog eight"></span>
-            </span>
-            </a>
-          </li>
-         <!--<acre:block if="that_exports.nav_utilities">
-           ${that_exports.nav_utilities()}
-         </acre:block>
-         ${nav_navs()}-->
-        </ul>
-        <ul class="tab-nav">
-          ${nav_tabs()}
-        </ul>
+        ${nav_navs()}
+        ${nav_tabs()}
       </div>
     </acre:block>
   </div><!!-- /page-header-->
@@ -331,72 +309,95 @@
     // use fb_url to get lang param
     qs = h.fb_url("", params).substring(2);
   </acre:script>
-  <acre:block for="tab in c.tabs">
-    <acre:script>
-      var url = "?" + tab.key + (qs.length ? "&" + qs : "");
-      var current = (tab.key === c.current_tab.key);
-    </acre:script>
-    <li>
-      <a acre:if="current" href="#" onclick="return false;" class="current"><span>${_(tab.name)}</span></a>
-      <a acre:else="" href="${url}"><span>${_(tab.name)}</span></a>
-    </li>
-  </acre:block>
-</acre:block>
-
-<acre:block def="nav_navs()">
-  <acre:block for="nav in c.navs">
-    <acre:script>
-      var key = nav.key || nav.name.toLowerCase().replace(/\s+/g, '-');
-      var href, onclick;
-      if (nav.url) {
-        href = nav.url;
-      }
-      else if (nav.key) {
-        href = "?" + nav.key;
-      }
-      else if (nav.app && nav.ajax) {
-        href = h.reentrant_url("/ajax", nav.app, "/", nav.ajax, nav.params);
-        onclick = "return fb.nav_ajax(this);";
-      }      
-      else {
-        href = "#";
-      }
-
-      //
-      // substitute ${id} with c.object.id
-      //
-      href = href.replace(/\$\{id\}|\$\%7Bid\%7D/g, c.object.id);
-
-      var show = true;
-      if (nav.show) {
-        show = acre.require(nav.app + "/" + nav.script)[nav.show](c.object);
-      }
-    </acre:script>
-    <acre:block if="show">
-      <li acre:attrs="nav.auth ? {'class':'edit'} : {}">
-        <acre:block if="nav.menu">
-          <ul class="inline-menu nicemenu">
-            <span class="mark headmenu">
-              <a href="#" class="menu-trigger icon-link" onclick="return false;">
-                <span class="${key}-icon">${nav.name}</span>
-              </a>
-            </span>
-            <ul class="row-menu submenu center">
-              <acre:block for="menu in nav.menu">
-                <li class="row-menu-item">
-                  <a href="${menu.href || '#'}" acre:attrs="menu.onclick ? {onclick:menu.onclick} : {}">${acre.markup.bless(menu.text)}</a>
-                </li>
-              </acre:block>
-            </ul>
-          </ul>
-        </acre:block>
-        <acre:block else="">
-          <a href="${href}" acre:attrs="onclick ? {onclick:onclick} : {}" class="icon-link">
-            <span class="${key}-icon">${nav.name}</span>
-          </a>
-        </acre:block>
+  <ul class="tab-nav">
+    <acre:block for="tab in c.tabs">
+      <acre:script>
+        var url = "?" + tab.key + (qs.length ? "&" + qs : "");
+        var current = (tab.key === c.current_tab.key);
+      </acre:script>
+      <li>
+        <a acre:if="current" href="#" onclick="return false;" class="current"><span>${_(tab.name)}</span></a>
+        <a acre:else="" href="${url}"><span>${_(tab.name)}</span></a>
       </li>
     </acre:block>
+  </ul>
+</acre:block>
+
+<acre:block def="nav_navs()" if="c.navs">
+  <ul class="nav-utilities inline-menu nicemenu">
+    <li class="inline-menu-item nicemenu-item">
+      <span class="mark headmenu">
+        <a href="#" class="object-actions-toggle">
+          <span class="outer-cog">
+            <span class="inner-cog"></span>
+            <span class="cog one"></span>
+            <span class="cog two"></span>
+            <span class="cog three"></span>
+            <span class="cog four"></span>
+            <span class="cog five"></span>
+            <span class="cog six"></span>
+            <span class="cog seven"></span>
+            <span class="cog eight"></span>
+          </span>
+        </a>
+      </span>
+      <ul class="row-menu submenu">
+        <acre:block for="nav in c.navs">
+          ${nav_item(nav)}
+        </acre:block>
+      </ul>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="nav_item(nav)">
+  <acre:script>
+    var key = nav.key || nav.name.toLowerCase().replace(/\s+/g, '-');
+    var href, onclick;
+    if (nav.url) {
+      href = nav.url;
+    }
+    else if (nav.key) {
+      href = "?" + nav.key;
+    }
+    else if (nav.app && nav.ajax) {
+      href = h.reentrant_url("/ajax", nav.app, "/", nav.ajax, nav.params);
+      onclick = "return fb.nav_ajax(this);";
+    }
+    else if (nav.onclick) {
+      href = "#";
+      onclick = nav.onclick;
+    }
+    //
+    // substitute ${id} with c.object.id
+    //
+    if (href) {
+      href = href.replace(/\$\{id\}|\$\%7Bid\%7D/g, c.object.id);
+    }
+
+    var show = true;
+    if (nav.show) {
+      show = acre.require(nav.app + "/" + nav.script)[nav.show](c.object);
+    }
+  </acre:script>
+  <acre:block if="show">
+    <li acre:attrs="nav.auth ? {'class':'edit'} : {}">               
+      <acre:block if="href">
+        <a href="${href}" acre:attrs="onclick ? {onclick:onclick} : {}">
+          <span>${acre.markup.bless(nav.name)}</span>
+        </a>
+      </acre:block>
+      <acre:block else="">
+        <label>${acre.markup.bless(nav.name)}</label>
+      </acre:block>
+      <acre:block if="nav.subnavs">
+        <ul class="subnavs">
+          <acre:block for="subnav in nav.subnavs">
+            ${nav_item(subnav)}
+          </acre:block>
+        </ul>
+      </acre:block>
+    </li>
   </acre:block>
 </acre:block>
 

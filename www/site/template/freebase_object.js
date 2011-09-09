@@ -51,6 +51,16 @@
     $(".image-stack").image_stack();
 
     $(".nicemenu").nicemenu();
+
+    /**
+     * The layout requires that we set an explicity margin on the object title
+     * that is equal to the width of the object timestamp.
+     * Because this value changes, we have to set it via javascript
+     */
+
+    var offset = $("#page-header .creation-timestamp").width();
+    $("#page-header h1").css("margin-right", offset)
+
   });
 
   /**

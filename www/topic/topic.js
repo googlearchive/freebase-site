@@ -103,7 +103,7 @@
       });
 
       $(".blurb").truncate({
-        max_length: 300,
+        max_length: 150,
         more: 'more'
       });
     },

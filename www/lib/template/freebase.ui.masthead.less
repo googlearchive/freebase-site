@@ -30,17 +30,93 @@
  */
 
 #page-header {
-  background: #eef0f2;
+  position: relative;
+  font-size: 12px;
+  background: #404141;
+  color: #e7ebed;
+  background-repeat: repeat;
+  background-image: -webkit-repeating-linear-gradient(-45deg, rgba(255, 255, 255, .015), rgba(255, 255, 255, .015) 2px, transparent 2px, transparent 4px);
   .box_shadow();
 }
 
-.page-title {
-  border-top: 1px solid #4b4f56;
-  background: #4c525a;
-  background-repeat: repeat;
-  background-image: -webkit-repeating-linear-gradient(-45deg, rgba(255, 255, 255, .015), rgba(255, 255, 255, .015) 1px, transparent 1px, transparent 4px),
-                    -webkit-linear-gradient(#69707a, #3d4248);
+#description a,
+.meta a {
+  color: #e7ebed;
+  text-decoration: none;
+  border-bottom: 1px dotted;
+  .transition;
 }
+
+#description a:hover,
+.meta a:hover {
+  border-bottom: 1px solid;
+  text-decoration: none;
+}
+
+#object-identity {
+  position: absolute;
+  left: 30px;
+  top: 11px;
+  border: 3px solid #000;
+  border: 3px solid rgba(0,0,0,0.5);
+  .box_shadow(0,0,2px, #000);
+  .rounded_corners;
+}
+
+.page-title,
+.meta,
+#description {
+  margin-left: 105px;
+}
+
+/*
+  Object Labels
+*/
+.object-label {
+  line-height: 1;
+  border-top: 2px solid #000;
+  border-top: 2px solid rgba(0,0,0,0.8);
+  .transition(all, 0.1s, ease-in-out);
+}
+
+.object-label:hover {
+  -webkit-transform: scale(1.05);
+}
+
+a.object-label-trigger {
+  display: block;
+  font-weight: bold;
+  font-size: 10px;
+  color: #454545;
+  text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+  padding: 3px 13px 4px;
+  background-color: #a1a2a3;
+  .linear_gradient(#b1b2b3,#a1a2a3);
+}
+
+.object-label-trigger:hover {
+  text-decoration: none;
+}
+
+/*
+  Object Image
+
+  This is the primary image used to represent the object in
+  the masthead.
+*/
+
+#image {
+  width: 53px;
+  height: 36px;
+}
+
+#image img {
+  max-width: 100%;
+}
+
+/*
+  Object Creator + Timestamp
+*/
 
 .creation-timestamp {
   float: right;
@@ -75,14 +151,19 @@
   padding: 3px;
   background: #373b40;
   background: rgba(0,0,0,0.2);
-  border: 1px solid #464a50;
+  border: 1px solid #323232;
+  border: 1px solid rgba(0,0,0,0.1);
 }
 
+
+/*
+  Object Title 
+*/
 
 #page-header h1 {
   color: #f1f2f3;
   font-size: 21px;
-  line-height: 47px;
+  padding-top: 5px;
 }
 
 .page-title .inline-menu {
@@ -101,10 +182,11 @@
   color: #f1f2f3;
 }
 
-#pagee-overview:hover h1 .menu-trigger {
+#page-overview:hover h1 .menu-trigger {
   border: 1px solid #e4e4e4;
   .linear_gradient(#fff, #efefef);  
 }
+
 h1 .row-menu {
   z-index: 2;
 }
@@ -118,7 +200,6 @@ h1 .row-menu {
   line-height: 1;
   border: 1px solid transparent;
 }
-
 
 .menu-trigger:hover {
   text-decoration: none;
@@ -144,17 +225,6 @@ h1 .row-menu {
   background-position: right -755px;
 }
 
-h1 .flags {
-    font-size: 11px;
-    color: #555;
-}
-
-.page-meta h1 .key {
-    font-size: 12px;
-    color: #666;
-}
-
-
 /*
 User thumbnail list
 TODO: These should be moved once the full user thumbnail
@@ -163,8 +233,8 @@ spec has been implemented, including complete vcards, tooltips, etc.
 
 .user-list-title {
   margin: 0.8em 0;
-   font-size: 1.2em;
-font-weight: bold;
+  font-size: 1.2em;
+  font-weight: bold;
 }
 
 .user-list .vcard {
@@ -173,157 +243,163 @@ font-weight: bold;
     margin-right: 7px;
 }
 
-
-.meta {
-    background: url(template/ui-icons.png) no-repeat 0 -172px;
-    padding-top: 8px;
-    padding-left: 25px;
-    margin-left: 30px;
-    font-size: 1.2em;
-    margin-bottom: 0.5em;
-    line-height: 1;
-}
-
 .meta .key,
 .meta .included-types,
 .meta .display-type {
     padding-right: 7px;
 }
 
-#description {
-  margin: 10px 30px;
-  font-size: 12px;
-  color: #333;
-}
-
-#image {
-  float: left;
-  margin: 0 10px 10px 0;
-}
-
-#image img {
-  max-width: 100%;
-  padding: 5px;
-  background: #fff;
-  border: 2px solid #d1d2d3;
-}
-
 .page-meta .blurb {
     display: inline;
-    font-size: 12px;
 }
 
 .page-meta .blob {
-    display: none;
-    font-size: 12px;        
+  display: none;
+  font-size: 12px;        
 }
 
 #page-header .nav {
-  background: #dee2e5;
-  border-top: 1px solid #d1d2d3;
-  border-bottom: 1px solid #d1d2d3;
+  clear: both;
+  margin-top: 10px;
+  background: #393939;
+  background: -moz-linear-gradient(top, #393939 0%, #414141 50%, #3c3c3c 51%, #303030 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#393939), color-stop(50%,#414141), color-stop(51%,#3c3c3c), color-stop(100%,#303030));
+  background: -webkit-linear-gradient(top, #393939 0%,#414141 50%,#3c3c3c 51%,#303030 100%);
+  background: -o-linear-gradient(top, #393939 0%,#414141 50%,#3c3c3c 51%,#303030 100%);
+  background: -ms-linear-gradient(top, #393939 0%,#414141 50%,#3c3c3c 51%,#303030 100%);
+  background: linear-gradient(top, #393939 0%,#414141 50%,#3c3c3c 51%,#303030 100%);
+  .box_shadow(-2px,0,2px,rgba(0,0,0,0.8));
 }
 
 .nav-utilities { 
-    float: right;
-    margin-right: 30px;
-    border-right: 1px solid #d1d2d3;
+  float: right;
+  margin-right: 30px;
+  border-right: 1px solid;
 }
 
 .nav-mode li,
 .nav-utilities li {
-    float: left;
-    list-style: none;
-    line-height: 1;
+  float: left;
+  list-style: none;
+  line-height: 1;
 }
 
 .nav-mode li {
-    border-right: 1px solid #d1d2d3;
+  border-right: 1px solid
 }
 
 .nav-utilities li {
-    border-left: 1px solid #d1d2d3;
+  border-left: 1px solid;
 }
 
 .nav-mode a,
 .nav-utilities a {
-    display: block;
+  display: block;
 }
 
 .nav-mode a {
-    font-size: 1.4em;
-    line-height: 2.5;
-    font-weight: bold;
-    padding: 0 1em;
-    color: #888;
-    background: #efefef;
+  font-size: 14px;
+  line-height: 25px;
+  font-weight: bold;
+  padding: 0 1em;
 }
 
 .nav-mode a.current {
-    background: #fff;
-    .linear_gradient(#ececec, #fff);
+  background: #fff;
+  .linear_gradient(#ececec, #fff);
 }
 
 .tab-nav {
   float: left;
-  min-height: 3.5em;
-  padding-left: 30px;
-  .linear_gradient(#fff, #ececec);
+  min-height: 35px;
+  margin-left: 30px;
+  border-left: 1px solid;
 }
 
 .tab-nav li {
-    float: left;
-    list-style: none;
-    line-height: 1;
-    margin-bottom: -20px;
+  float: left;
+  list-style: none;
+  line-height: 1;
+  margin-bottom: -20px;
 }
 
 .tab-nav a {
-    font-size: 14px;
-    line-height: 2.5;
-    color: #888;
+  font-size: 14px;
+  line-height: 2.5;
+  color: #e7ebed;
 }
 
 .tab-nav a span {
-    display: block;
-    border-right: 1px solid #d1d2d3;
-    padding: 0 35px;
-    .transition();
+  display: block;
+  border-right: 1px solid;
+  padding: 0 35px;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.7);
+  .transition();
 }
 
 .tab-nav a:hover {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .tab-nav a:hover span {
-    .linear_gradient(#fff, #ddd);
-    color: #3e7896;
+  background: #222;
+  background: rgba(0,0,0,0.2);
 }
 
 .tab-nav a.current span {
-    border: 0;
-    height: 50px;
-    color: #fff;
-    background: url(template/tab-bg.png) no-repeat top center;
+  border: 0;
+  font-weight: bold;
+  background: #919da8;
+  position: relative;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+  .box_shadow(0,0,2px,#000);
 }
 
-.nav-mode a.current2 {
-    position: relative;
-    margin-bottom: -20px;
-    color: #fff;
+.tab-nav a.current span:after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0; right: 0;
+  margin: 0 auto;
+  bottom: -18px;
+  border-width: 10px;
+  border-color: #919da8 transparent transparent;
+  border-style: solid;
+  height: 0;
+  width: 0;
+}
+
+.tab-nav,
+.nav-utilities li,
+.nav-mode li,
+.nav-utilities,
+.tab-nav a span {
+  border-color: #333;
+  border-color: rgba(0,0,0,0.8);
+}
+
+
+.nav-utilities {
+  display: none;
+}
+
+.nav-mode a.current {
+  position: relative;
+  margin-bottom: -20px;
+  color: #fff;
 }
 
 .nav-mode a span {
-    display: block;
-    background: purple;
-    height: 55px;
+  display: block;
+  background: purple;
+  height: 55px;
 }
 
 .nav-utilities li a {
-    font-size: 1.2em;
-    line-height: 1;
-    padding: 9px 15px 10px;
-    color: #63686D;
+  font-size: 1.2em;
+  line-height: 1;
+  padding: 9px 15px 10px;
+  color: #63686D;
 }
 
 .nav-utilities li .menu-trigger:hover {

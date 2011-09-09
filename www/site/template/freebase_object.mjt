@@ -285,8 +285,8 @@
       </div>
       <div class="nav clear">
         <ul class="nav-utilities">
-          <li class="object-actions-toggle">
-            <a href="#">
+          <li>
+            <a href="#" class="object-actions-toggle">
             <span class="outer-cog">
               <span class="inner-cog"></span>
               <span class="cog one"></span>

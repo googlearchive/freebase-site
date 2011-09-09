@@ -320,12 +320,16 @@ Header
   margin-left: 10px;
   margin-top: 6px;
   margin-right: 10px;
+  padding: 0 5px;
   .transition();
 }
 
 #fb-search.active {
   background: #f1f2f3;
-  .box_shadow(0,1px,2px,#999);
+  padding-bottom: 5px;
+  .rounded_corners;
+  .linear_gradient(#fff, #f1f2f3);
+  .box_shadow(0,3px,2px,#111);
 }
 
 #fb-search-input {
@@ -400,6 +404,11 @@ Header
   float: left;
   height: 40px;
   list-style: none;
+}
+
+#nav-global.search {
+  float: none;
+  margin-left: 460px;
 }
 
 #nav-global li {

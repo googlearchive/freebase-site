@@ -59,7 +59,7 @@
      */
 
     var offset = $("#page-header .creation-timestamp").width();
-    $("#page-header h1").css("margin-right", offset)
+    $("#page-header h1").css("margin-right", offset);
 
   });
 

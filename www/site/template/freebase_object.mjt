@@ -168,9 +168,11 @@
       !!-->
       <acre:script>
         var label = c.breadcrumbs[0].name || 'object';
+        var classname = 'object-label ';
+        classname += label === 'Topic' ? 'img' : 'no-img';
       </acre:script>
-      <div id="object-label">
-        <div id="image">
+      <div class="$classname">
+        <div id="image" acre:if="label === 'Topic'">
           <acre:block if="c.object.image && c.object.image.length">
           <acre:script>
           var options = {
@@ -183,9 +185,7 @@
             ${image.image_thumb(c.object.image[0], 50, options)}
           </acre:block>
         </div>
-        <div class="label ${label.toLowerCase()}">
-          <a class=label-trigger" href="javascript:void(0)">$label</a>
-        </div>
+        ${object_label(label)}
       </div>
 
       <!!--
@@ -404,6 +404,13 @@
       </acre:block>
     </li>
   </acre:block>
+</acre:block>
+
+
+<acre:block def="object_label(label)">
+  <div class="label">
+    <a class="label-trigger ${label.toLowerCase()}" href="javascript:void(0)">$label</a>
+  </div>
 </acre:block>
 
 <acre:block def="acre_javascript_vars()">

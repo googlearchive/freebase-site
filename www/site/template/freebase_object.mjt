@@ -124,44 +124,70 @@
 </acre:block>
 
 <acre:block def="content_body()">
+  <!!--
+    Flags (merge, delete, split, objectionable)
+  !!-->
+  <!!--
+     object meta information @see queries/topic
+  !!-->
   <div id="page-header">
 
-    <!!--
-       object meta information @see queries/topic
-    !!-->
+    <acre:block if="c.object.flag && c.object.flag.length">
+      <acre:script>
+        var msgs = {
+          "/freebase/flag_kind/merge": _("This topic has been flagged to be merged with another topic."),
+          "/freebase/flag_kind/split": _("This topic has been flagged to be split into multiple topics."),
+          "/freebase/flag_kind/delete": _("This topic has been flagged to be deleted from Freebase."),
+          "/freebase/flag_kind/offensive": _("This topic has been flagged as objectionable.")
+        };
+      </acre:script>
+      <div class="page-flag">
+        <acre:block for="flag in c.object.flag">
+          <acre:script>
+            var msg = msgs[flag.kind.id];
+          </acre:script>
+          <acre:block if="msg">
+            <acre:script>
+              var perm_obj = {id:flag.creator};
+            </acre:script>
+            <div class="page-flag-kind">
+              <span class="page-flag-msg">${msg}</span>
+              <a href="${h.fb_url(c.object.id)}">${_("Vote on this issue here")}</a>.
+              <span class="edit-perm ${JSON.stringify(perm_obj)}">
+                <a href="#" onclick="return window.freebase.flag.undo(this, '${flag.id}');">Undo</a>.
+              </span>
+            </div>
+          </acre:block>
+        </acre:block>
+      </div>
+    </acre:block>
+
     <acre:block if="c.object">
       <!!--
-         Flags (merge, delete, split, objectionable)
+        Object label + thumbnail
       !!-->
-      <acre:block if="c.object.flag && c.object.flag.length">
-        <acre:script>
-          var msgs = {
-            "/freebase/flag_kind/merge": _("This topic has been flagged to be merged with another topic."),
-            "/freebase/flag_kind/split": _("This topic has been flagged to be split into multiple topics."),
-            "/freebase/flag_kind/delete": _("This topic has been flagged to be deleted from Freebase."),
-            "/freebase/flag_kind/offensive": _("This topic has been flagged as objectionable.")
+      <acre:script>
+        var label = c.breadcrumbs[0].name || 'object';
+      </acre:script>
+      <div id="object-label">
+        <div id="image">
+          <acre:block if="c.object.image && c.object.image.length">
+          <acre:script>
+          var options = {
+            maxheight: 53,
+            maxwidth: 53,
+            mode: 'fillcropmid',
+            pad: 2
           };
-        </acre:script>
-        <div class="page-flag">
-          <acre:block for="flag in c.object.flag">
-            <acre:script>
-              var msg = msgs[flag.kind.id];
-            </acre:script>
-            <acre:block if="msg">
-              <acre:script>
-                var perm_obj = {id:flag.creator};
-              </acre:script>
-              <div class="page-flag-kind">
-                <span class="page-flag-msg">${msg}</span>
-                <a href="${h.fb_url(c.object.id)}">${_("Vote on this issue here")}</a>.
-                <span class="edit-perm ${JSON.stringify(perm_obj)}">
-                  <a href="#" onclick="return window.freebase.flag.undo(this, '${flag.id}');">Undo</a>.
-                </span>
-              </div>
-            </acre:block>
+          </acre:script>
+            ${image.image_thumb(c.object.image[0], 50, options)}
           </acre:block>
         </div>
-      </acre:block>
+        <div class="label ${label.toLowerCase()}">
+          <a class=label-trigger" href="javascript:void(0)">$label</a>
+        </div>
+      </div>
+
       <!!--
         Object Name + Creator + Timestamp
       !!-->
@@ -189,6 +215,7 @@
           </acre:script>
           ${i18n_c.datetime(c.object.timestamp, attrs)}
         </span>
+
         <acre:block if="c.object.name.length">
           <h1>
             <span acre:attrs="itemprop('/type/object/name')">
@@ -225,63 +252,41 @@
               </li>
             </ul> 
           </h1>
-        </acre:block>
+          </acre:block>
+          <!!--
+            Show object ID if no name exists
+          -->
+          <acre:block else="">
+            <h1>
+              <span acre:attrs="itemprop('/type/object/id')">${c.object.id}</span>
+            </h1>
+          </acre:block>
 
-        <!!--
-          Show object ID if no name exists
-        -->
-        <acre:block else="">
-          <h1>
-            <span acre:attrs="itemprop('/type/object/id')">${c.object.id}</span>
-          </h1>
-        </acre:block>
-        </div>
+          <acre:block if="that_exports.nav_flags">
+            <span class="flags">
+              ${that_exports.nav_flags()}
+            </span>
+          </acre:block>
 
-        <!!--
-          Object label + thumbnail
-        !!-->
-        <acre:script>
-          var label = c.breadcrumbs[0].name || 'object';
-        </acre:script>
-        <div id="object-identity">
-          <div id="image">
-            <acre:block if="c.object.image && c.object.image.length">
-            <acre:script>
-            var options = {
-              maxheight: 53,
-              maxwidth: 53,
-              mode: 'fillcropmid',
-              pad: 2
-            };
-            </acre:script>
-              ${image.image_thumb(c.object.image[0], 50, options)}
+          <!!-- Show topic MID -->
+          <div class="meta">
+            <span class="key">
+              <strong><abbr title="${_('ID')}">${_("id")}</abbr></strong>:
+              <span acre:attrs="itemprop('/type/object/id')">${c.object.id}</span>
+            </span>
+            <acre:block if="that_exports.nav_keys">
+              ${that_exports.nav_keys()}
             </acre:block>
           </div>
-          <div class="object-label ${label.toLowerCase()}">
-            <a class="object-label-trigger" href="javascript:void(0)">$label</a>
+
+          <!!-- blurb should be sentence-level truncation at ~50 words -->
+          <div id="description" class="clear">
+            <acre:block if="c.blurb">
+              <p class="blurb" itemprop="desc">${c.blurb}</p>
+            </acre:block>
           </div>
         </div>
 
-      <acre:block if="that_exports.nav_flags">
-        <span class="flags">
-          ${that_exports.nav_flags()}
-        </span>
-      </acre:block>
-      <div class="meta">
-        <!-- Show topic MID -->
-        <span class="key">
-          <strong><abbr title="${_('ID')}">${_("id")}</abbr></strong>:
-          <span acre:attrs="itemprop('/type/object/id')">${c.object.id}</span>
-        </span>
-        <acre:block if="that_exports.nav_keys">
-          ${that_exports.nav_keys()}
-        </acre:block>
-      </div>
-      <div id="description" class="clear">
-        <!-- blurb should be sentence-level truncation at ~50 words -->
-        <acre:block if="c.blurb">
-          <p class="blurb" itemprop="desc">${c.blurb}</p>
-        </acre:block>
       </div>
       <div class="nav clear">
         ${nav_navs()}

@@ -147,7 +147,7 @@
     <div id="nav-utilities" class="clear">
       <div class="nav-user-controls" id="signedin" style="display:none;">
         <strong id="nav-username">
-          <a href="${h.fb_url('/')}" title="View your profile">${_("You")}</a>
+          <a href="${h.fb_url('/')}" class="trigger" title="View your profile">${_("You")}</a>
         </strong>
         <div id="user-controls">
           <ul>

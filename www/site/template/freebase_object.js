@@ -60,6 +60,12 @@
     var offset = $("#page-header .creation-timestamp").width();
     $("#page-header h1").css("margin-right", offset);
 
+    /*
+     * Initialize page scroll behavior for fixed positioning on scroll
+     */
+
+    fb.init_page_scroll();
+
   });
 
   /**
@@ -71,6 +77,52 @@
       fb.nav_ajax.begin(nav);
     });
     return false;
+  };
+
+
+  fb.init_page_scroll = function() {
+
+    // Get a reference to the window object
+    var $view = $(window);
+
+    // page-header is the element which we toggle
+    // from being static/fixed depending on scroll position
+    var $masthead = $("#page-header");
+    var $header = $("#header");
+    var $content = $("#content");
+    var header_height = $header.outerHeight();
+    var masthead_height = $masthead.outerHeight();
+
+
+    // Bind to the window scroll and resize events.
+    // Remember, resizing can also change the scroll
+    // of the page.
+    $view.bind(
+      "scroll resize",
+      function(){
+
+        // Get the current scroll of the window.
+        var scroll_offset = $view.scrollTop();
+
+        // if the scroll_offset is >= to header_height
+        // then we know that the site header is offscreen
+        // and we should set the masthead to fixed positioning
+        if (scroll_offset >= header_height) {
+          $masthead.addClass("sticky");
+          $content.css({
+            'padding-top': masthead_height + 'px'
+          })
+        }
+        // reset positioning otherwise
+        else {
+          $masthead.removeClass("sticky");
+          $content.css({
+            'padding-top': '0' 
+          })
+        }
+      }
+    );
+                    
   };
 
 })(jQuery, window.freebase);

@@ -101,11 +101,6 @@
 	    opacity: 0.5
 	  }
       });
-
-      $(".blurb").truncate({
-        max_length: 150,
-        more: 'more'
-      });
     },
 
     init_manage_types: function() {

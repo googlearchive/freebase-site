@@ -346,7 +346,7 @@
           </span>
         </a>
       </span>
-      <ul class="row-menu submenu right">
+      <ul class="row-menu submenu right object-settings">
         <acre:block for="nav in c.navs">
           ${nav_item(nav)}
         </acre:block>

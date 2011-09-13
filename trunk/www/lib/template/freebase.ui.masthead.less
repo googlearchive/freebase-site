@@ -399,66 +399,68 @@ spec has been implemented, including complete vcards, tooltips, etc.
   min-height: 35px;
   margin-left: 30px;
   border-left: 1px solid;
+
+  li {
+    float: left;
+    list-style: none;
+    line-height: 1;
+    margin-bottom: -20px;
+  }
+
+  a {
+    font-size: 14px;
+    line-height: 2.5;
+    color: #e7ebed;
+  }
+
+  a:hover {
+    text-decoration: none;
+  }
+
+  span {
+    display: block;
+    border-right: 1px solid;
+    padding: 0 35px;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.7);
+    .transition();
+  }
+
+  a:hover span {
+    background: #222;
+    background: rgba(0,0,0,0.2);
+  }
+
+  a.current span {
+    border: 0;
+    font-weight: bold;
+    background: #58575f;
+    background: -moz-linear-gradient(top, #58575f 0%, #58575f 50%, #4d4d53 50%, #4d4d53 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#58575f), color-stop(50%,#58575f), color-stop(50%,#4d4d53), color-stop(100%,#4d4d53));
+    background: -webkit-linear-gradient(top, #58575f 0%,#58575f 50%,#4d4d53 50%,#4d4d53 100%);
+    background: -o-linear-gradient(top, #58575f 0%,#58575f 50%,#4d4d53 50%,#4d4d53 100%);
+    background: -ms-linear-gradient(top, #58575f 0%,#58575f 50%,#4d4d53 50%,#4d4d53 100%);
+    background: linear-gradient(top, #58575f 0%,#58575f 50%,#4d4d53 50%,#4d4d53 100%);
+    position: relative;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+    height: 36px;
+    .box_shadow(0,1px,3px,#000);
+  }
+
+  a.current span:after {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0; right: 0;
+    margin: 0 auto;
+    bottom: -18px;
+    border-width: 10px;
+    border-color: #4d4d53 transparent transparent;
+    border-style: solid;
+    height: 0;
+    width: 0;
+  }
 }
 
-.tab-nav li {
-  float: left;
-  list-style: none;
-  line-height: 1;
-  margin-bottom: -20px;
-}
-
-.tab-nav a {
-  font-size: 14px;
-  line-height: 2.5;
-  color: #e7ebed;
-}
-
-.tab-nav a span {
-  display: block;
-  border-right: 1px solid;
-  padding: 0 35px;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.7);
-  .transition();
-}
-
-.tab-nav a:hover {
-  text-decoration: none;
-}
-
-.tab-nav a:hover span {
-  background: #222;
-  background: rgba(0,0,0,0.2);
-}
-
-.tab-nav a.current span {
-  border: 0;
-  font-weight: bold;
-  background: #58575f;
-  background: -moz-linear-gradient(top, #58575f 0%, #58575f 50%, #4d4d53 50%, #4d4d53 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#58575f), color-stop(50%,#58575f), color-stop(50%,#4d4d53), color-stop(100%,#4d4d53));
-  background: -webkit-linear-gradient(top, #58575f 0%,#58575f 50%,#4d4d53 50%,#4d4d53 100%);
-  background: -o-linear-gradient(top, #58575f 0%,#58575f 50%,#4d4d53 50%,#4d4d53 100%);
-  background: -ms-linear-gradient(top, #58575f 0%,#58575f 50%,#4d4d53 50%,#4d4d53 100%);
-  background: linear-gradient(top, #58575f 0%,#58575f 50%,#4d4d53 50%,#4d4d53 100%);
-  position: relative;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
-  .box_shadow(0,0,2px,#000);
-}
-
-.tab-nav a.current span:after {
-  content: "";
-  display: block;
-  position: absolute;
-  left: 0; right: 0;
-  margin: 0 auto;
-  bottom: -18px;
-  border-width: 10px;
-  border-color: #4d4d53 transparent transparent;
-  border-style: solid;
-  height: 0;
-  width: 0;
-}
 
 .tab-nav,
 .nav-utilities li,
@@ -497,29 +499,6 @@ spec has been implemented, including complete vcards, tooltips, etc.
   padding-left: 0;
 }
 
-.submenu {
-  padding: 7px;
-  background: #eceeec;
-}
-
-.submenu:before {
-  content: "";
-  position: absolute;
-  display: block;
-  top: -20px;
-  left: 70px;
-  border-width: 10px;
-  border-color: transparent transparent #eceeec;
-  border-style: solid;
-  height: 0;
-  width: 0;
-}
-
-.submenu li {
-  background: #fff;
-  border: 0;
-}
-
 .nav-utilities a.object-actions-toggle {
   display: block;
   position: relative;
@@ -527,6 +506,39 @@ spec has been implemented, including complete vcards, tooltips, etc.
   width: 140px;
   padding: 0;
   .transition();
+}
+
+
+.submenu.object-settings {
+  width: 200px;
+  border: 0;
+  background: #343434;
+  font-size: 11px;
+  color: #e8ebee;
+  padding: 5px;
+  .box_shadow(0,2px,2px,rgba(0,0,0,0.5));
+}
+
+.object-settings {
+
+  a {
+    display: block;
+    color: #e8ebee;
+  }
+
+  a:hover {
+    background: rgba(0,0,0,0.1);
+  }
+
+  li {
+    list-style: none;
+    padding-left: 10px;
+    line-height: 2;
+  }
+  
+  ul li a {
+    padding-left: 15px;
+  }
 }
 
 .object-actions-toggle:hover {

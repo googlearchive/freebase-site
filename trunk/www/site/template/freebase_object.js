@@ -111,18 +111,18 @@
           $masthead.addClass("sticky");
           $content.css({
             'padding-top': masthead_height + 'px'
-          })
+          });
         }
         // reset positioning otherwise
         else {
           $masthead.removeClass("sticky");
           $content.css({
-            'padding-top': '0' 
-          })
+            'padding-top': '0'
+          });
         }
       }
     );
-                    
+
   };
 
 })(jQuery, window.freebase);

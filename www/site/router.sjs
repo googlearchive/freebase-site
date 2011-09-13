@@ -765,7 +765,7 @@ function init_site_rules(lib) {
             "name": "<b>Delete</b> from Freebase",
             "onclick": "return window.freebase.flag['delete'](this);"
           }, {
-            "name": "<b>Flag</b> as objectional",
+            "name": "<b>Flag</b> as objectionable",
             "onclick": "return window.freebase.flag.offensive(this);"
           }]
         }

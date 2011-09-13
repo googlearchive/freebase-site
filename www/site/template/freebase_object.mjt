@@ -228,11 +228,11 @@
                     ${i18n_c.lang_code(c.object.name[0].lang, null, true)}
                   </a>
                 </span>
-                <ul class="row-menu submenu">
+                <ul class="submenu localization">
                   <acre:script>
                     var ajax_prefix = h.ajax_url('lib/i18n');
                   </acre:script>
-                  <li class="row-menu-item edit">                    
+                  <li class="edit">                    
                     <a href="#" onclick="return i18n.text_edit(this, '${ajax_prefix}', '${c.object.id}', '/type/object/name', '${i18n.lang}');" class="icon-link">
                      <span class="edit-icon">${_("Edit localized names")} &hellip;</span>
                     </a>
@@ -241,7 +241,7 @@
                     <acre:script>
                       var n = c.object.name[i];
                     </acre:script>
-                    <li class="row-menu-item">
+                    <li class="">
                       <a href="${h.build_url(null, c.object.id, [['lang', n.lang]])}">
                         ${n.value}
                         ${i18n_c.lang_code(n.lang, null, true)}

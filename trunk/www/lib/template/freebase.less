@@ -488,8 +488,8 @@ Header
 }
 
 .current-lang,
-#signedout a,
-#nav-username a {
+#header .trigger,
+#signedout a {
   display: block;
   font-weight: bold;
   padding: 0px 20px;
@@ -499,10 +499,13 @@ Header
   .transition();
 }
 
-#nav-username img {
+#header .trigger {
+  padding-left: 0;
+}
+
+#header .user-thumb {
   float: left;
-  margin-top: 4px;
-  margin-right: 7px;
+  margin: 4px 7px 0 20px;
   border: 1px solid #d1d2d3;
   padding: 1px;
   background: #fff;
@@ -514,9 +517,13 @@ Header
   background: url(template/ui-icons.png) no-repeat right -706px;
 }
 
-.nav-user-controls.anonymous:hover {
+#header .nav-user-controls:hover {
   text-decoration: none;
   background-color: rgba(0,0,0,0.1);
+}
+
+#header .nav-user-controls.active {
+  background: #fff;
 }
 
 #nav-username,
@@ -540,11 +547,7 @@ Header
   .transition();
 }
 
-#header .nav-user-controls.active,
-#header .nav-user-controls a:hover {
-  background-color: #fff;
-}
-
+/* Drop-down menu for user */
 #user-controls {
   display: none;
   position: absolute;
@@ -552,7 +555,7 @@ Header
   background: #dadada;
   width: 100%;
   text-align: left;
-  .box_shadow(1px, 2px, 3px, #aaa);
+  .box_shadow(1px, 2px, 3px, rgba(0,0,0,0.3));
 }
 
 #user-controls ul {

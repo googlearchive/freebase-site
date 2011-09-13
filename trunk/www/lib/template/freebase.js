@@ -194,7 +194,7 @@
        console.log("fb.user.signedin", user.id);
        fb.user = user;
        // signed in
-       var u = $("#nav-username a:first");
+       var u = $("#nav-username");
        if (u.length) {
          console.log(fb.user, fb.user.id, fb.user.name);
          u[0].href += fb.user.id.substring(1);
@@ -206,7 +206,7 @@
            mode: MODE
          };
          var image_api = fb.h.image_url(user.id, params);
-         var user_image = $("<img src=" + image_api + " />");
+         var user_image = $('<a class="user-thumb" href="' + user.id + '"><img src="' + image_api + '" /></a>');
          u.prepend(user_image);
        }
        $("#signedin").show();
@@ -639,16 +639,31 @@
      },
 
      init: function() {
-       $("#signedin").hover(
+       $nav_user_controls = $(".nav-user-controls");
+       $user_controls = $("#user-controls");
+       $("#signedin .trigger").click(
          function() {
-           $("#user-controls").fadeIn();
-           $(this).addClass("active");
-         },
-         function() {
-           $("#user-controls").fadeOut();
-           $(this).removeClass("active");
+           if($user_controls.is(":hidden")) {
+             $user_controls.fadeIn();
+             $nav_user_controls.addClass("active");
+             return false;
+           }
+           else {
+             $user_controls.fadeOut();
+             $nav_user_controls.removeClass("active");
+             return false;
+           }
          }
        );
+       $('html').click(function() {
+         if($user_controls.is(":visible")) {
+           $user_controls.fadeOut();
+           $nav_user_controls.removeClass("active");
+         }
+       });
+       $user_controls.click(function(e) {
+         e.stopPropagation();
+       });
        $("#devbar-touch > a").click(fb.devbar.touch);
        if (fb.tid) {
          fb.devbar.txn_ids.push(fb.tid);

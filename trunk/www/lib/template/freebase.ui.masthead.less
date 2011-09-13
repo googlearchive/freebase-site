@@ -40,7 +40,6 @@
  *   - object timestamp
  */
 #page-header {
-  position: relative;
   padding-top: 10px;
   font-size: 12px;
   background: #404141;
@@ -48,6 +47,14 @@
   background-repeat: repeat;
   background-image: -webkit-repeating-linear-gradient(-45deg, rgba(255, 255, 255, .015), rgba(255, 255, 255, .015) 2px, transparent 2px, transparent 4px);
   .box_shadow();
+}
+
+#page-header.sticky {
+  position: fixed;
+  top: 0;
+  left: 0; right: 0;
+  z-index: 1;
+  margin: 0 auto;
 }
 
 #page-header {

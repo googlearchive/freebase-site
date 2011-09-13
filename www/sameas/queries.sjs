@@ -35,6 +35,7 @@ var apis = acre.require("lib/promise/apis");
 var freebase = apis.freebase;
 var deferred = apis.deferred;
 var fh = acre.require("lib/filter/helpers.sjs");
+var creator = acre.require("lib/queries/creator.sjs");
 
 function keys(id, lang, limit, filters) {
   lang = lang || i18n.lang;
@@ -61,13 +62,9 @@ function keys(id, lang, limit, filters) {
         }
       },
       value: null,
-      link: {
-        timestamp: null,
-        creator: {
-          id: null,
-          name: i18n.mql.text_clause(lang)
-        }
-      },
+      link: creator.extend({
+        timestamp: null
+      }),
       limit: limit
     }]
   };
@@ -87,7 +84,7 @@ function keys_result(result, lang) {
       namespace: namespace.id,
       value: k.value,
       unique: namespace.unique, // is namespace unique?
-      creator: k.link.creator,
+      creator: h.get_creator(k.link),
       timestamp: k.link.timestamp
     };
     var template = namespace["!/common/uri_template/ns"];
@@ -151,13 +148,9 @@ function key(id, namespace, key, lang) {
         }
       },
       value: key,
-      link: {
-        timestamp: null,
-        creator: {
-          id: null,
-          name: i18n.mql.text_clause(lang)
-        }
-      }
+      link: creator.extend({
+        timestamp: null
+      })
     }]
   };
   return freebase.mqlread(q)
@@ -216,7 +209,9 @@ function apply_creator(q, creator) {
       creator = [creator];
     }
     if (creator.length) {
-      q.key[0].link.creator["filter:id|="] = creator;
+      q.key[0].link["filter:creator"] = {
+        "id|=": creator
+      };
     }
   }
   return q;

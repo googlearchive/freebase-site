@@ -32,6 +32,7 @@ var h = acre.require("lib/helper/helpers.sjs");
 var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
 var i18n = acre.require("lib/i18n/i18n.sjs");
+var creator = acre.require("lib/queries/creator.sjs");
 
 /**
  * Basic freebase object information (in english):
@@ -114,7 +115,7 @@ function notable_types(o) {
 };
 
 function mql(id) {
-  return {
+  return creator.extend({
     id: null,
     "q:id": id,
     guid: null,
@@ -153,10 +154,6 @@ function mql(id) {
       limit: 3
     }],
     "/common/topic/article": i18n.mql.query.article(),
-    creator: {
-      id: null,
-      attribution: null
-    },
     permission: null,
     timestamp: null,
     "/dataworld/gardening_hint/replaced_by": {
@@ -164,14 +161,13 @@ function mql(id) {
       mid: null,
       optional: true
     },
-    "!/freebase/review_flag/item": [{
+    "!/freebase/review_flag/item": creator.extend([{
       id: null,
       kind: {id: null},
       type: "/freebase/review_flag",
-      creator: null,
       optional: true
-    }]
-  };
+    }])
+  });
 };
 
 

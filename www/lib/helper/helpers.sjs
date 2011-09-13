@@ -568,23 +568,32 @@ function fb_object_type(types, id) {
 
 /**
  * A utility that handles different types of attributions of an object:
+ * Should be used with conjuction to lib/queries/creator.sjs['extend'].
+ *
+ * @see lib/queries/creator.sjs
  *
  * {creator: "/user/id"}
- * {creator: {id: "/user/id"}
- * {creator: {id: "/m/id", "attribution": null}}
+ * {attriution: {attribution: {id: "/user/id"}}}
+ * {creator: {id: "/m/id"}}
  */
-function get_creator(creator) {
-  if (typeof creator === "string") {
-    return creator;
-  }
-  else if (creator) {
-    var attribution = creator.attribution;
-    if (attribution) {
-      return get_creator(attribution);
+function get_creator(obj) {
+  var user;
+    if (obj) {
+      user = obj.creator;
+    if (!user) {
+      var attr = obj.attribution;
+      if (attr) {
+        user = attr.attribution;
+      }
+      if (!user) {
+        user = obj["the:creator"];  // from lib/queries/creator.sjs
+      }
     }
-    return creator.id;
+    if (user) {
+      user = user.id || user;
+    }
   }
-  return null;
+  return user;
 };
 
 

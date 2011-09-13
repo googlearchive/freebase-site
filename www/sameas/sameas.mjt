@@ -32,7 +32,7 @@
 <acre:script>
   var c = this.exports.c = {};
   var h = acre.require("lib/helper/helpers.sjs");
-  var image = acre.require("lib/template/imagecomponents");
+  var components = acre.require("lib/template/components.mjt");
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
@@ -178,7 +178,7 @@
       </acre:block>
     </td>
     <td>
-      <a href="${h.fb_url(key.creator.id)}">${i18n.display_name(key.creator)}</a>
+      ${components.creator(key.creator)}
     </td>
     <td class="odd">
       ${i18n_c.datetime(key.timestamp)}

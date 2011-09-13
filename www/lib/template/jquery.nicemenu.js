@@ -69,7 +69,7 @@
   function headmenu_click_handler(e) {
     var headmenu = $(this);
     var submenu = headmenu.data("submenu");
-    if (!submenu.data("init")) {
+    if (true || !submenu.data("init")) {
       var pos = headmenu.offset();
       var height = headmenu.outerHeight();
       var top = pos.top + height;

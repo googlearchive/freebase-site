@@ -1,7 +1,12 @@
 [
   "lib/template/freebase.mf.css",
-  "lib/template/freebase.ui.mf.css",
+  "lib/template/freebase.ui.masthead.less",
+  "lib/template/freebase.ui.tabs.less",
+  "lib/template/freebase.ui.table.less",
+  "lib/template/freebase.ui.modal.less",
   "lib/template/freebase.ui.module.less",
-  "lib/template/jquery.image_stack.css",
+  "lib/template/freebase.ui.datainput.less",
+  "lib/template/freebase.ui.i18n.less",
+  "lib/template/freebase.ui.propbox.less",
   "lib/template/jquery.nicemenu.css"
 ]

@@ -754,7 +754,7 @@ function init_site_rules(lib) {
       ],
       "navs": [
         {
-          "name": "<b>Flag Topic</b>",
+          "name": "<span class=\"submenu-title\">Flag Topic</span>",
           "subnavs": [{
             "name": "<b>Merge</b> with another topic",
             "onclick": "return window.freebase.flag.merge(this);"

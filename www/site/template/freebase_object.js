@@ -32,25 +32,24 @@
 (function($, fb) {
 
   $(function() {
-    $(".blurb-trigger").click(function(){
-      var $trigger = $(this);
-      var $blurb = $trigger.siblings(".blurb");
-      var $blob = $trigger.siblings(".blob");
-      if ($blob.is(":hidden")) {
-        $blob.show();
-        $blurb.hide();
-        $trigger.text('Less');
-      }
-      else {
-        $blob.hide();
-        $blurb.show();
-        $trigger.text('More');
-      }
-    });
-
-    $(".image-stack").image_stack();
 
     $(".nicemenu").nicemenu();
+
+    $("#description > .blurb").cmtextconstrain({
+      restrict: {
+        type: 'words',
+        limit: 25
+      },
+      showControl: {
+        string: '[ + ]',
+        title: 'Show more'
+      },
+      hideControl: {
+        string: '[ - ]',
+        title: 'Show less'
+      },
+      trailingString: '...'
+    });
 
     /**
      * The layout requires that we set an explicity margin on the object title

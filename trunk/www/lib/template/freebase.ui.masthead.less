@@ -57,12 +57,60 @@
   margin: 0 auto;
 }
 
-#page-header {
+.page-title {
+  margin-left: 100px;
 
-  .page-title {
-    margin-left: 100px;
+  /*
+    Object Title 
+  */
+
+  h1 {
+    color: #f1f2f3;
+    font-size: 21px;
   }
 
+  .inline-menu {
+    display: inline-block;
+    position: relative;
+    top: -12px;
+  }
+
+  .menu-trigger .lang-code {
+    position: static;
+    display: inline-block;
+    font-size: 11px;
+    line-height: 1;
+    background: url(template/ui-icons.png) no-repeat right -683px;
+    padding: 5px 20px 5px 5px;
+    margin-left: -3px;
+    color: #f1f2f3;
+    .transition;
+    .rounded_corners;
+  }
+
+  h1 .row-menu {
+    z-index: 2;
+  }
+
+  h1:hover .lang-code {
+    color: #fff;
+    background-color: rgba(0,0,0,0.2);
+  }
+
+  h1:hover .lang-code:hover {
+    background-color: rgba(0,0,0,0.4);
+  }
+
+  h1 .menu-trigger {
+    display: inline-block;
+    position: relative;
+    font-size: 12px;
+    line-height: 1;
+  }
+
+  .menu-trigger:hover {
+    text-decoration: none;
+  }
 }
 
 #description,
@@ -248,74 +296,6 @@ a.label-trigger {
   border: 1px solid rgba(0,0,0,0.1);
 }
 
-
-/*
-  Object Title 
-*/
-
-#page-header h1 {
-  color: #f1f2f3;
-  font-size: 21px;
-}
-
-.page-title .inline-menu {
-  display: inline-block;
-  position: relative;
-  top: -12px;
-}
-
-.page-title .menu-trigger .lang-code {
-  position: static;
-  display: inline-block;
-  font-size: 11px;
-  line-height: 1;
-  background: url(template/ui-icons.png) no-repeat right -688px;
-  padding-right: 20px;
-  color: #f1f2f3;
-}
-
-#page-overview:hover h1 .menu-trigger {
-  border: 1px solid #e4e4e4;
-  .linear_gradient(#fff, #efefef);  
-}
-
-h1 .row-menu {
-  z-index: 2;
-}
-
-.page-meta h1 .menu-trigger {
-  display: inline-block;
-  position: relative;
-  font-size: 12px;
-  top: -0.5em;
-  padding: 3px;
-  line-height: 1;
-  border: 1px solid transparent;
-}
-
-.menu-trigger:hover {
-  text-decoration: none;
-}
-
-.page-meta .row-menu-item .lang-code {
-  font-size: 10px;
-  color: #333;
-}
-
-.page-meta .row-menu-item a:hover .lang-code {
-  color: #fff;
-}
-
-.page-meta:hover h1 .menu-trigger .lang-code {
-  color: #666;
-  background-position: right -722px;
-}
-
-.page-meta h1 .menu-trigger:hover .lang-code {
-  text-decoration: none;
-  color: @link-blue;
-  background-position: right -755px;
-}
 
 /*
 User thumbnail list
@@ -660,14 +640,63 @@ spec has been implemented, including complete vcards, tooltips, etc.
   background-color: #fcce17;
   background-image: -webkit-repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 2px, rgba(255,255,255,0) 2px, rgba(255,255,255,0) 4px);
   background-repeat: repeat;
+
+  a {
+    color: #333;
+    border-bottom: 1px dotted;
+  }
+
+  a:hover {
+    text-decoration: none;
+    border-bottom: 1px solid;
+  }
+
 }
 
-.page-flag a {
-  color: #333;
-  border-bottom: 1px dotted;
+/*
+ * Localization Menu
+ */
+
+.submenu.localization {
+  background: #343434;
+  font-size: 12px;
+  color: #e8ebee;
+  .box_shadow(0,2px,2px,rgba(0,0,0,0.5));
+
+  li {
+    list-style: none;
+  }
+
+  .edit {
+    background: #222;
+    border-bottom: 1px solid #111;
+
+    span.edit-icon {
+      background-position: 0 -915px;
+      padding-left: 19px;
+    }
+
+  }
+
+  li a {
+    display: block;
+    padding: 0 15px;
+    line-height: 2;
+    color: #fff;
+  }
+
+  li.edit a {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  a:hover {
+    text-decoration: none;
+    background: rgba(0,0,0,0.3);
+  }
+
+  sup.lang-code {
+    color: #fff;
+  }
 }
 
-.page-flag a:hover {
-  text-decoration: none;
-  border-bottom: 1px solid;
-}

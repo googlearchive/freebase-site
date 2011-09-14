@@ -152,7 +152,7 @@
             </acre:script>
             <div class="page-flag-kind">
               <span class="page-flag-msg">${msg}</span>
-              <a href="${h.fb_url(c.object.id)}">${_("Vote on this issue here")}</a>.
+              <a href="${h.legacy_fb_url('/discuss/threads' + c.object.id)}">${_("Vote on this issue here")}</a>.
               <span class="edit-perm ${JSON.stringify(perm_obj)}">
                 <a href="#" onclick="return window.freebase.flag.undo(this, '${flag.id}');">Undo</a>.
               </span>

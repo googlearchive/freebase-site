@@ -68,7 +68,7 @@
               </td>
               <td>
                 <p><strong>${_("Enter the name or id of a Topic")}</strong></p>
-                ${pb.data_input("/common/topic", "")}
+                ${pb.data_input("/common/topic", "with")}
               </td>
             </tr>
           </tbody>

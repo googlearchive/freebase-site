@@ -43,6 +43,11 @@ var ph = acre.require("propbox/helpers.sjs");
  * The query respects mediators and deep properties
  * (i.e., disambiguating properties of the expected types).
  *
+ * A pid MUST be a qualified property id (i.e., /type/object/name)
+ * or a fully qualified property path separated by "." (i.e., /film/film/starring./film/performance/actor).
+ * Currently only 2 levels (<pid1>.<pid2>) are supported.
+ * Also, pid2 must be a valid disambiguating property on the expected type of pid1.
+ *
  * To display/render the query result,
  * @see propbox/collection.mjt
  */
@@ -54,12 +59,41 @@ function collection(topic_ids, pids, lang, limit) {
   if (!h.isArray(pids)) {
     pids = [pids];
   }
-  return pq.prop_structures.apply(null, pids.concat([lang]))
+
+  var pid_map = {};
+  var pid_order = [];
+  pids.forEach(function(pid_path) {
+    var paths = pid_path.split(".", 2);
+    if (paths.length) {
+      var pid = paths[0];
+      var subpids = pid_map[pid];
+      if (!subpids) {
+        subpids = pid_map[pid] = [];
+        pid_order.push(pid);
+      }
+      if (paths.length === 2 && paths[1]) {
+        subpids.push(paths[1]);
+      }
+    }
+  });
+
+  return pq.prop_structures.apply(null, pid_order.concat([lang]))
     .then(function(props) {
       var q = {
         "id|=": topic_ids
       };
       props.forEach(function(prop) {
+        // filter out sub-properties not specified in pid_path
+        var subprops = prop.properties || [];
+        if (subprops.length) {
+          var subpids = pid_map[prop.id];
+          if (subpids && subpids.length) {
+            var filtered_subprops = subprops.filter(function(subprop) {
+              return subpids.indexOf(subprop.id) !== -1;
+            });
+            prop.properties = filtered_subprops;
+          }
+        }
         var prop_query = ph.mqlread_query(null, prop, null, lang, {limit:limit});
         h.extend(q, prop_query);
       });

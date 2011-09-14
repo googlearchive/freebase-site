@@ -638,14 +638,12 @@ propbox edit forms
   </acre:block>
   <acre:block elif="type === 'topic'">
     <span class="data-input topic ${JSON.stringify(data)}">
-      <input class="fb-input" type="text" name="${name}" acre:attrs="prop_value ? {value:prop_value.text} : {}"
-             placeholder="${h.id_key(name)}"/>
+      <input class="fb-input" type="text" name="${name}" acre:attrs="prop_value ? {value:prop_value.text} : {}"/>
     </span>
   </acre:block>
   <acre:block else="">
     <span class="data-input ${type} ${JSON.stringify(data)}">
-      <input class="fb-input" type="text" name="${name}" acre:attrs="prop_value ? {value:prop_value.value} : {}"
-             placeholder="${h.id_key(name)}"/>
+      <input class="fb-input" type="text" name="${name}" acre:attrs="prop_value ? {value:prop_value.value} : {}"/>
     </span>
   </acre:block>
 </acre:block>

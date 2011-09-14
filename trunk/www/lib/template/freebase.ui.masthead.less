@@ -143,8 +143,7 @@
 
 .object-label {
   float: left;
-  margin-left: 30px;
-  margin-right: 10px;
+  margin: 0 10px 0 30px;
   padding: 3px;
   background: #000;
   background: rgba(0,0,0,0.3);
@@ -267,6 +266,10 @@ a.label-trigger {
   font-size: 12px;
 }
 
+.js.opacity .creation-timestamp {
+  opacity: 0;
+}
+
 .creation-timestamp a {
   color: #ccc;
   border-bottom: 1px dotted;
@@ -321,13 +324,14 @@ spec has been implemented, including complete vcards, tooltips, etc.
     padding-right: 7px;
 }
 
-.page-meta .blurb {
-    display: inline;
-}
+/*
+ * hide object description when javasscript is enabled
+ * we'll show it with javascript after truncating
+ */
 
-.page-meta .blob {
-  display: none;
-  font-size: 12px;        
+#description {
+  opacity: 0;
+  height: 40px;
 }
 
 #page-header .nav {

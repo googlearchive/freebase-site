@@ -42,19 +42,37 @@
   <div class="modal">
     <div class="modal-inner">
       <h1 class="modal-title"><span>${_('Merge Topic')}</span></h1>
-      <div class="modal-content">
-        <div class="form-group clear">
-          <div class="form-row">
-            <label class="form-label">${_("Merge")}</label>
-            ${image.image_thumb(topic.id)}
-            <a href="${h.fb_url(topic.mid)}">${i18n.display_name(topic)}</a>
-            <span>${topic.mid}</span>
-          </div>
-          <div class="form-row">
-            <label class="form-label">${_("With")}</label>
-            ${pb.data_input("/common/topic", "with")}
-          </div>
-        </div>
+      <div class="modal-content flag">
+        <table cellspacing="0" class="merge-topic">
+          <tbody>
+            <tr>
+              <td class="label">
+                <label class="form-label flag-label">${_("Merge")}</label>
+              </td>
+              <td>
+                <acre:script>
+                  var options = {
+                    maxwidth: 50,
+                    maxheight: 50,
+                    mode: 'fillcropmid'
+                  }
+                </acre:script>
+                ${image.image_thumb(topic.id, 50, options)}
+                <h2 class="topic-title"><a href="${h.fb_url(topic.mid)}">${i18n.display_name(topic)}</a></h2>
+                <span>${topic.mid}</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="label">
+                <label class="form-label flag-label">${_("With")}</label>
+              </td>
+              <td>
+                <p><strong>${_("Enter the name or id of a Topic")}</strong></p>
+                ${pb.data_input("/common/topic", "")}
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
     <div class="modal-buttons">

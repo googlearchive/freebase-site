@@ -100,7 +100,7 @@
 
       <!-- any additional head content (i.e., css, js, etc.)-->
       <acre:block if="exports.head">
-        ${exports.head()}
+        ${exports.head(exports)}
       </acre:block>
     </head>
 

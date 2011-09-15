@@ -93,6 +93,7 @@
      */
 
     fb.init_page_scroll();
+    fb.search_focus();
 
   });
 
@@ -152,5 +153,20 @@
     );
 
   };
+
+  fb.search_focus = function() {
+   $(document).keydown(function(e) {
+     if ( this !== event.target && (/textarea|select/i.test( event.target.nodeName ) ||
+         event.target.type === "text") ) {
+       return;
+     }
+     else {
+       if(e.keyCode === 191) {
+         $("#header > #fb-search > #fb-search-input").focus();
+         return false;
+       }
+     }
+   })  
+  }
 
 })(jQuery, window.freebase);

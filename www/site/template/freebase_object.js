@@ -154,16 +154,34 @@
 
   };
 
+  // Global shortcut for focusing/blurring freebase suggest module in header
   fb.search_focus = function() {
+   
+   var FOCUS_KEY = 191; // '/'
+   var BLUR_KEY = 27    // 'esc' 
+
    $(document).keydown(function(e) {
-     if ( this !== event.target && (/textarea|select/i.test( event.target.nodeName ) ||
-         event.target.type === "text") ) {
-       return;
+     $fb_suggest = $("#header #fb-search-input");
+
+     // if module already has focus, look for 'esc' key and blur
+     if ($fb_suggest.is(":focus")) {
+       if(e.keyCode === BLUR_KEY) {
+         $fb_suggest.blur();
+       }
      }
+
      else {
-       if(e.keyCode === 191) {
-         $("#header > #fb-search > #fb-search-input").focus();
-         return false;
+       // make sure we're not currently in an input box
+       if ( this !== event.target && (/textarea|select/i.test( event.target.nodeName ) ||
+           event.target.type === "text") ) {
+         return;
+       }
+       //focus module
+       else {
+         if(e.keyCode === FOCUS_KEY) {
+           $fb_suggest.focus();
+           return false;
+         }
        }
      }
    })  

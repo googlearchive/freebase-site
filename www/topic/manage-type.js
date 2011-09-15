@@ -49,14 +49,10 @@
         url: fb.h.ajax_url("remove_type_submit.ajax"),
         data: {id:fb.c.id, type:type_id, lang:fb.lang},
         onsuccess: function(data) {
-          var type_section = ".type-section[data-id=" + type_id.replace(/\//g, "\\/") + "]";
-          type_section = $(type_section);
+          var type_section = $(".type-section[data-id=" + type_id.replace(/\//g, "\\/") + "]").fadeOut();
+          var trigger_row = trigger.parent("li");
           var result = $(data.result.html);
-          type_section.before(result);
-          type_section.hide();
-          result.append(type_section); // keep around for undo
-          result[0].scrollIntoView();
-          trigger.parent("li").remove();
+          trigger_row.hide().before(result);
         }
       }));
     },
@@ -67,11 +63,9 @@
         data: {id:fb.c.id, type:type_id},
         onsuccess: function(data) {
           // just show the .type-section we hid in remove_type_submit
-          var p = $(trigger).parents(".remove-type-result");
-          var type_section = $(".type-section", p);
-          p.before(type_section);
-          type_section.show();
-          p.remove();
+          var type_section = $(".type-section[data-id=" + type_id.replace(/\//g, "\\/") + "]").fadeIn();
+          var undo_row = $(trigger).parents("li.remove-type-result");
+          undo_row.hide().next("li:hidden").show();
         }
       }));
       return false;

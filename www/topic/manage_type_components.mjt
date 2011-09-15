@@ -47,11 +47,11 @@
 
 <acre:block def="remove_type_result(id, type, lang)">
   <acre:script>
-    var msg = h.template_sprintf(_("The type %s has been removed. %s"), type, remove_type_undo(type));
+    var msg = h.template_sprintf(_("%s. %s."), remove_type_msg(type), remove_type_undo(type));
   </acre:script>
-  <div class="remove-type-result">
+  <li class="remove-type-result">
     ${form.row_msg(msg, ".remove-type-result")}
-  </div>
+  </li>
 </acre:block>
 
 <!!-- template_sprintf helpers !!-->
@@ -69,6 +69,10 @@
 
 <acre:block def="included_types_msg(types)">
   ${h.template_sprintf("Along with included type(s): %s.", type_links(types))}
+</acre:block>
+
+<acre:block def="remove_type_msg(type)">
+  <span title="${type}">${_("Type removed")}</span>
 </acre:block>
 
 <acre:block def="remove_type_undo(type)">

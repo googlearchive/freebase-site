@@ -1,8 +1,6 @@
 /** initially hide all edit controls **/
 
 ::selection {
-  background: #ff8123;
-  color: #111;
 }
 
 /*
@@ -230,7 +228,7 @@ div.kbs.current .mark {
 
 .toolbar li a.active {
   opacity: 1;
-  .linear_gradient(#d5d7d8, #e4e6e7);
+  background-color: rgba(0,0,0,0.15);
 }
 
 .toolbar-pane {
@@ -266,8 +264,7 @@ div.kbs.current .mark {
 
 .manage-types {
   position: relative;
-  padding-bottom: 5px;
-  min-height: 100px;
+  min-height: 150px;
 }
 
 .topic-type-list {
@@ -275,21 +272,30 @@ div.kbs.current .mark {
   list-style: none;
 
   li {
-
-  }
-
-  li .edit {
-    float: right;
+    padding: 2px 5px 2px 0;
   }
 
   li .close-msg {
-     visibility: hidden;
+    float: right;
+    visibility: hidden;
   }
 
-   li:hover .close-msg,
-   li.remove-type-result .close-msg{
-     visibility: visible; 
-   }
+  li:hover {
+    background: rgba(0,0,0,0.1);
+  }
+
+  li:hover .close-msg,
+  li.remove-type-result .close-msg{
+    visibility: visible; 
+  }
+
+  .remove-type-result {
+    background: rgba(0,0,0,0.2);
+  }
+
+  .remove-type-result .close-msg {
+    display: none;
+  }
 }
 
 
@@ -583,4 +589,35 @@ Keyboard Shortcuts
 .merge-topic p strong {
   display: block;
   margin-bottom: 5px;
+}
+
+
+/*
+ * Add Type Results 
+ */
+
+.add-type-result-msg,
+.add-type-result-msg-note {
+  margin: -15px;
+  margin-bottom: 15px;
+  font-size: 12px;
+  padding: 5px 30px;
+}
+
+.add-type-result-msg .close-msg,
+.add-type-result-msg-note .close-msg {
+  display: none;
+}
+
+.add-type-result-msg {
+  font-weight: bold;
+  color: #252525;
+  background-color: #a4ce9a;
+  background-image: -webkit-repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 2px, rgba(255,255,255,0) 2px, rgba(255,255,255,0) 4px);
+  background-image: -moz-repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 2px, rgba(255,255,255,0) 2px, rgba(255,255,255,0) 4px);
+}
+
+.add-type-result-msg-note {
+  background: #e8f0db; 
+  padding: 10px 30px;
 }

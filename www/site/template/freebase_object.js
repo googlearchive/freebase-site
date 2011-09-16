@@ -156,7 +156,7 @@
 
   // Global shortcut for focusing/blurring freebase suggest module in header
   fb.search_focus = function() {
-   
+
    var FOCUS_KEY = 191; // '/'
    var BLUR_KEY = 27    // 'esc' 
 
@@ -173,7 +173,7 @@
      else {
        // make sure we're not currently in an input box
        if ( this !== event.target && (/textarea|select/i.test( event.target.nodeName ) ||
-           event.target.type === "text") ) {
+            event.target.type === "text") ) {
          return;
        }
        //focus module
@@ -184,7 +184,7 @@
          }
        }
      }
-   })  
+   }) 
   }
 
 })(jQuery, window.freebase);

@@ -64,13 +64,13 @@
 </acre:block>
 
 <acre:block def="nav_flags()">
-  <acre:block if="c.type.mediator">
+  <!--<acre:block if="c.type.mediator">
     ${_('Mediator')}
   </acre:block>
   <acre:block if="c.type.enumeration">
     ${_('Enumerated')}
   </acre:block>
-  ${_('Type')}
+  ${_('Type')}-->
 </acre:block>
 
 <acre:block def="nav_keys()">

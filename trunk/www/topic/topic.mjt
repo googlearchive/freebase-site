@@ -107,30 +107,32 @@
     <ul class="">
       <li>
         <a href="#" class="toolbar-trigger icon-link">
-          <span class="add-icon">${_("Manage Types")}</span>
+          <span class="manage-type-icon">${_("Manage Types")}</span>
         </a>
       </li>
     </ul>
   </div>
-  <div class="manage-types toolbar-pane">
-    <div class="topic-type-list">
+  <div class="manage-types toolbar-pane clear">
+    <div class="topic-types">
       <h3 class="toolbar-pane-title">${h.sprintf("%s is typed as:", i18n.display_name(c.object))}</h3>
-      <ul>
-        <acre:script>
-        var types = c.object.type.slice().sort(function(a,b) {
-          return i18n.display_name(b).toLowerCase() < i18n.display_name(a).toLowerCase();
-        });
-        var filters = c.filters;
-        ["domain", "type", "property"].forEach(function(k) {
-          filters = fh.remove_filter(filters, k);
-        });                                                        
-        </acre:script>
-        <li acre:for="i, type in types" trim="1">
-          <a class="edit close-msg" href="javascript:void(0);"
-             onclick="return window.freebase.topic.remove_type(this, '${type.id}');">${_("remove")}</a>
-          <a href="${h.fb_url(c.object.id, fh.add_filter(filters, 'type', type.id))}" title="${type.id}">${i18n.display_name(type)}</a>
-        </li>
-      </ul>
+      <div class="topic-type-list">
+        <ul>
+          <acre:script>
+          var types = c.object.type.slice().sort(function(a,b) {
+            return i18n.display_name(b).toLowerCase() < i18n.display_name(a).toLowerCase();
+          });
+          var filters = c.filters;
+          ["domain", "type", "property"].forEach(function(k) {
+            filters = fh.remove_filter(filters, k);
+          });                                                        
+          </acre:script>
+          <li acre:for="i, type in types" acre:trim="1">
+            <a class="edit close-msg" href="javascript:void(0);"
+               onclick="return window.freebase.topic.remove_type(this, '${type.id}');">${_("x")}</a>
+            <a href="${h.fb_url(c.object.id, fh.add_filter(filters, 'type', type.id))}" title="${type.id}">${i18n.display_name(type)}</a>
+          </li>
+        </ul>
+      </div>
     </div>
     <h3 class="toolbar-pane-title">${_("Add a new Type")}</h3>
     <div name="add-type-form" class="add-type">

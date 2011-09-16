@@ -191,8 +191,7 @@ div.kbs.current .mark {
   margin-left: 250px;
   line-height: 1;
   padding-left: 15px;
-  .linear_gradient(#e4e6e7, #d5d7d8);
-  .transition(all);
+  background: #c0c8cf;
 }
 
 .toolbar.active {
@@ -210,14 +209,18 @@ div.kbs.current .mark {
 
 .toolbar li {
   float: left;
-  border-left: 1px solid #e3e5e6;
+  border-left: 1px solid #999ea3;
+}
+
+.toolbar li:last-child {
+  border-right: 1px solid #999ea3;
 }
 
 .toolbar li a {
   display: block;
+  color: #3f3f3f;
   padding: 5px 15px;
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
+  border-left: 1px solid #d3d9dd;
   .transition(all);
 }
 
@@ -257,41 +260,58 @@ div.kbs.current .mark {
   font-size: 12px;
 }
 
-.manage-types {
-  position: relative;
-  min-height: 150px;
-}
-
 .add-type .fb-input {
   width: 200px;
 }
 
+.manage-types {
+  position: relative;
+  padding-bottom: 5px;
+  min-height: 100px;
+}
+
 .topic-type-list {
-  width: 30%;
   font-size: 11px;
-}
-
-.topic-type-list ul {
   list-style: none;
+
+  li {
+
+  }
+
+  li .edit {
+    float: right;
+  }
+
+  li .close-msg {
+     visibility: hidden;
+  }
+
+   li:hover .close-msg,
+   li.remove-type-result .close-msg{
+     visibility: visible; 
+   }
 }
 
-.topic-type-list li {
-  
-}
 
 @media only screen 
 and (min-width: 1024px) {
-  .topic-type-list {
+
+  .topic-types {
     position: absolute;
     right: 0;
     top: 0;
-    width: 30%;
+    width: 40%;
+    overflow: hidden;
     padding: 15px 10px;
     background: #efefef;
     font-size: 11px;
     -moz-box-shadow: inset 1px -2px 4px #ccc;
     -webkit-box-shadow: inset 1px -2px 4px #ccc;
     box-shadow: inset 1px -2px 4px #ccc;
+  }
+
+  .js .topic-types {
+    opacity: 0;
   }
 
   .topic-type-list::-webkit-scrollbar {
@@ -307,6 +327,7 @@ and (min-width: 1024px) {
     border-right: 4px solid #efefef;
     background: rgba(0, 0, 0, .1);
   }
+
   .topic-type-list:hover::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, .1);
   } 
@@ -319,12 +340,12 @@ and (min-width: 1024px) {
   .topic-type-list::-webkit-scrollbar-track-piece:horizontal:start {
     margin-left: 4px;
   }
-  .topic-type-list {
+  .csscolumns .topic-type-list {
     overflow-y: scroll;
-    width: 50%;
   }
-  .csscolumns .topic-type-list ul {
-    .column_count(2)
+  .csscolumns .topic-type-list.multicolumn ul {
+    .column_count(2);
+    margin: 5px 0;
   }
 }
 

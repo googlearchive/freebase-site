@@ -67,11 +67,20 @@
 
       // Toggle for Add Types dialog
       $(".toolbar-trigger").click(function(){
-        var $add_type_pane = $(".manage-types").first();
-        var $type_list = $(".topic-type-list", $add_type_pane).first();
-        var $toolbar = $(this).closest(".toolbar");
-        var $trigger = $(this);
 
+        // the toolbar in which the trigger originated
+        var $trigger = $(this);
+        var $toolbar = $(this).closest(".toolbar");
+
+        // outermost container of Type list
+        var $add_type_pane = $(".manage-types").first().css('overflow', 'hidden');
+        var PANEL_HEIGHT = $add_type_pane.outerHeight();
+
+        // inner container of type list
+        var $type_list_container = $(".topic-types", $add_type_pane).first();
+
+
+        // basic show/hide of Manage Type pane
         if($add_type_pane.is(":visible")) {
           $toolbar.removeClass("active");
           $trigger.removeClass("active");
@@ -86,8 +95,32 @@
               $trigger.data("initialized", 1);
             }
           });
-          var target_height = $add_type_pane.height();
-          $type_list.height(target_height + "px");
+
+          // if the browser supports csscolumns, we do some extra
+          // ui kung-fu, namely:
+          //
+          //  1. Determine whether there are enough current types
+          //     to justify a multi-column layout
+          //  2. If so, set accordingly
+ 
+          if(Modernizr.csscolumns) {
+            var $type_list = $(".topic-type-list", $add_type_pane).first();
+            var list_length = $('ul', $type_list).children('li').length;
+
+            if(list_length > 7) {
+              $type_list.addClass('multicolumn');
+            }
+
+            // set the type list to setup scrolling behavior
+            var offset = $type_list.position().top;
+            var list_height = PANEL_HEIGHT - offset + 'px';
+            $type_list.height(list_height);
+
+            // the CSS sets type_list_container to opacity:0 by default
+            // when javascript is enabled so we have to re-show it 
+            $type_list_container.animate({opacity: 1});
+          }
+
         }
         return false;
       });

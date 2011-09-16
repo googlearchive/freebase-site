@@ -158,7 +158,7 @@
   fb.search_focus = function() {
 
    var FOCUS_KEY = 191; // '/'
-   var BLUR_KEY = 27    // 'esc' 
+   var BLUR_KEY = 27    // 'esc'
 
    $(document).keydown(function(e) {
      $fb_suggest = $("#header #fb-search-input");
@@ -184,7 +184,7 @@
          }
        }
      }
-   }) 
-  }
+   });
+  };
 
 })(jQuery, window.freebase);

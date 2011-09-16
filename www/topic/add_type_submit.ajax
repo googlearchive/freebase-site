@@ -34,6 +34,7 @@ var apis = acre.require("lib/promise/apis");
 var freebase = apis.freebase;
 var deferred = apis.deferred;
 var components = acre.require("manage_type_components.mjt");
+var topic_api = acre.require("lib/queries/topic.sjs");
 
 /**
  * remove type form
@@ -73,10 +74,32 @@ var SPEC = {
         };
         return freebase.mqlwrite(q)
           .then(function(env) {
-            return {
-              html: acre.markup.stringify(components.add_type_result(id, env.result.type, lang))
-            };
+            var types = env.result.type.filter(function(t) {
+              return t.connect === "inserted";
+            });
+            if (types.length) {
+              return topic_api.topic(id, lang)
+                .then(function(topic) {
+                  return {
+                    topic: topic,
+                    types: types
+                  };
+                });
+            }
+            else {
+              return {
+                topic: null,
+                types: null
+              };
+            }
           });
+      })
+      .then(function(topic_types) {
+        return {
+          html: acre.markup.stringify(components.add_type_result(id, topic_types, lang)),
+          list: acre.markup.stringify(components.add_type_result_list(id, topic_types.types))
+        };
       });
   }
 };
+

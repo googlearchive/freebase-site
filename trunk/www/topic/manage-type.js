@@ -64,6 +64,7 @@
           var trigger_row = trigger.parent("li");
           var result = $(data.result.html);
           trigger_row.hide().before(result);
+          trigger.removeClass("editing").focus().select();
         }
       }));
     },
@@ -76,7 +77,7 @@
           // just show the .type-section we hid in remove_type_submit
           var type_section = $(".type-section[data-id=" + type_id.replace(/\//g, "\\/") + "]").fadeIn();
           var undo_row = $(trigger).parents("li.remove-type-result");
-          undo_row.hide().next("li:hidden").show();
+          undo_row.hide().next("li:hidden").show().end().remove();
         }
       }));
       return false;

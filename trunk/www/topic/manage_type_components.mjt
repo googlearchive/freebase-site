@@ -34,15 +34,56 @@
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var _ = i18n.gettext;
   var form = acre.require("lib/propbox/form.mjt");
+  var propbox = acre.require("lib/propbox/propbox.mjt");
 </acre:script>
 
-<acre:block def="add_type_result(id, types, lang)">
+<acre:block def="type_li(type)">
+  <li>
+    <a class="edit close-msg" href="javascript:void(0);"
+       onclick="return window.freebase.topic.remove_type(this, '${type.id}');">${_("x")}</a>
+    <a href="${h.fb_url(type.id)}" title="${type.id}">${i18n.display_name(type)}</a>
+  </li>
+</acre:block>
+
+<acre:block def="add_type_result(id, topic_types, lang)">
   <acre:script>
-    var msg = h.template_sprintf(_("Type %s added successfully!%s Please refresh to see the newly added Type(s)."), type_link(types[0].id), included_types_msg(types.slice(1)));
+    var topic = topic_types.topic;
+    var types = topic_types.types;   
   </acre:script>
   <div class="section domain add-type-result">
-    ${form.row_msg(msg, ".add-type-result")}
+    <acre:block if="types && types.length && topic">
+      <div class="add-type-result-msg">
+        ${form.row_msg(_("Type added successfully!"), ".add-type-result-msg")}
+      </div>
+      <div class="add-type-result-msg-note">
+        ${form.row_msg(_("Note: You must update your filters to see the newly added Type on page refresh."), ".add-type-result-msg-note")}
+      </div>
+      <acre:block for="type in types">
+        <acre:script>
+          var type_structure = topic.structure.types[type.id];
+        </acre:script>
+        <acre:block if="type_structure">
+          <acre:script>
+            type_structure.id = type.id;
+          </acre:script>
+          ${propbox.typebox(topic, type_structure, lang)}
+        </acre:block>  
+      </acre:block>
+    </acre:block>
+    <acre:block else="">
+      <div class="add-type-result">
+        ${form.row_msg(_("Type already present."), ".add-type-result")}
+      </div>
+    </acre:block>
   </div>
+</acre:block>
+
+<acre:block def="add_type_result_list(id, types)" if="types">
+  <ul>
+    <acre:block for="type in types">
+      ${type_li(type)}
+    </acre:block>
+  </ul>
 </acre:block>
 
 <acre:block def="remove_type_result(id, type, lang)">

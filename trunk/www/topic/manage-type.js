@@ -37,9 +37,20 @@
         url: fb.h.ajax_url("add_type_submit.ajax"),
         data: {id:fb.c.id, type:type_id, lang:fb.lang},
         onsuccess: function(data) {
-          var result = $(data.result.html);
-          $(".domain-section:first").before(result);
-          trigger.removeClass("editing");
+          var result = $(data.result.html).hide();
+          $(".manage-types").after(result);
+          result.fadeIn();
+
+          // insert new added type + included types to the manage type list
+          var list = data.result.list;
+          if (list) {
+            list = $(list);
+            var new_items = $("li", list).hide();
+            $(".topic-type-list ul").prepend(new_items);
+            new_items.fadeIn();
+          }
+
+          trigger.removeClass("editing").focus().select();
         }
       }));
     },

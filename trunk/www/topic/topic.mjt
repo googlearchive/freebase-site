@@ -40,8 +40,8 @@
   // microdata helpers
   var microdata = acre.require("lib/helper/microdata.sjs");
   var itemprop = microdata.itemprop;
-
   var propbox = acre.require("lib/propbox/propbox.mjt");
+  var mt = acre.require("manage_type_components.mjt");
 </acre:script>
 
 <acre:block def="head()">
@@ -126,11 +126,9 @@
             filters = fh.remove_filter(filters, k);
           });                                                        
           </acre:script>
-          <li acre:for="i, type in types" acre:trim="1">
-            <a class="edit close-msg" href="javascript:void(0);"
-               onclick="return window.freebase.topic.remove_type(this, '${type.id}');">${_("x")}</a>
-            <a href="${h.fb_url(c.object.id, fh.add_filter(filters, 'type', type.id))}" title="${type.id}">${i18n.display_name(type)}</a>
-          </li>
+          <acre:block for="type in types">
+            ${mt.type_li(type)}
+          </acre:block>
         </ul>
       </div>
     </div>

@@ -49,11 +49,11 @@
           incompatible: incompatible()
           };
         </acre:script>
-        <p>${h.template_sprintf(_("Because %(topic)s is already Typed as %(existing)s, it's unlikely it should also be Typed as %(incompatible)s."), args)}</p>
+        <p>${h.template_sprintf(_("Because %(topic)s is already typed as %(existing)s, it's unlikely it should also be typed as %(incompatible)s."), args)}</p>
         <p>${_("Are you sure you want to continue?")}</p>
       </div>
     </div>
-    <div class="modal-buttons">
+    <div class="modal-buttons right">
       ${form.submit_buttons(_("Yes, add Type"), _("Cancel"))}
     </div>
   </div>

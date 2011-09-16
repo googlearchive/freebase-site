@@ -78,6 +78,8 @@
 
         // inner container of type list
         var $type_list_container = $(".topic-types", $add_type_pane).first();
+        var $type_list = $(".topic-type-list", $add_type_pane).first();
+        var list_length = $('ul', $type_list).children('li').length;
 
 
         // basic show/hide of Manage Type pane
@@ -103,13 +105,9 @@
           //     to justify a multi-column layout
           //  2. If so, set accordingly
  
-          if(Modernizr.csscolumns) {
-            var $type_list = $(".topic-type-list", $add_type_pane).first();
-            var list_length = $('ul', $type_list).children('li').length;
+          if(Modernizr.csscolumns && list_length > 7) {
 
-            if(list_length > 7) {
-              $type_list.addClass('multicolumn');
-            }
+            $type_list.addClass('multicolumn');
 
             // set the type list to setup scrolling behavior
             var offset = $type_list.position().top;

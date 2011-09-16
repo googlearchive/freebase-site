@@ -316,8 +316,15 @@
 <!-- add any acre variables you wanted passed to client-side -->
 <acre:block def="acre_javascript_vars(exports)">
   <acre:script>
-    var api_key = acre.keystore.get('googleapis_client_side');
-    api_key = api_key ? api_key[0] : '';
+    // Fetch the client-side googleapis.com api key if we are using those APIs. 
+    // This is needed for Suggest to make requests. 
+    var api_key = '';
+    if (acre.freebase.googleapis_url) { 
+      api_key = acre.keystore.get('googleapis_client_side');
+      if (api_key && api_key.length > 1) { 
+            api_key = api_key[0];
+       }
+     }
 
     var SERVER = {
       acre: {

@@ -810,6 +810,12 @@ function init_site_rules(lib) {
       }]),
       "tabs": [
         {
+          "name": "View",
+          "key": "view",
+          "app": "topic",
+          "script": "topic.tab"
+        },
+        {
           "name": "Inspect",
           "key": "inspect",
           "app": "triples",

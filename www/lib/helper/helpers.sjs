@@ -59,7 +59,7 @@ var exports = {
   "is_commons_id": is_commons_id,
   "id_key": id_key,
   "lang_code": lang_code,
-  "get_creator": get_creator,
+  "get_attribution": get_attribution,
   "fb_object_type": fb_object_type,
 
   // MATH
@@ -576,14 +576,23 @@ function fb_object_type(types, id) {
  * {attriution: {attribution: {id: "/user/id"}}}
  * {creator: {id: "/m/id"}}
  */
-function get_creator(obj) {
-  var user;
-    if (obj) {
-      user = obj.creator;
+function get_attribution(obj) {
+  var user = null,
+      source = null;
+  if (obj) {
+    user = obj.creator;
     if (!user) {
       var attr = obj.attribution;
       if (attr) {
-        user = attr.attribution;
+        user = attr.creator;
+        var app = attr["/freebase/written_by/application"];
+        var mdo = attr["/dataworld/provenance/data_operation"];
+        if (mdo) {
+          user = mdo.operator;
+          source = mdo;
+        } else if (app) {
+          source = app;
+        }        
       }
       if (!user) {
         user = obj["the:creator"];  // from lib/queries/creator.sjs
@@ -593,7 +602,10 @@ function get_creator(obj) {
       user = user.id || user;
     }
   }
-  return user;
+  return {
+    creator: user,
+    source: source
+  };
 };
 
 

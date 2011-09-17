@@ -132,15 +132,24 @@ test("is_metaweb_system_type", function() {
 });
 
 
-test("get_creator", function() {
-
-  equal(h.get_creator({creator:"/user/id"}), "/user/id");
-  equal(h.get_creator(), null);
-  equal(h.get_creator({creator:null}), null);
-  equal(h.get_creator({creator:{id:"/user/id"}}), "/user/id");
-  equal(h.get_creator({creator: {id:"/user/id"}, attribution:null}), "/user/id");
-  equal(h.get_creator({attribution: {attribution:"/attr/id"}}), "/attr/id");
-  equal(h.get_creator({attribution:{attribution:{id:"/attr/id"}}}), "/attr/id");
+test("get_attribution", function() {
+  // simple creator
+  equal(h.get_attribution({creator:"/user/id"}).creator, "/user/id");
+  equal(h.get_attribution().creator, null);
+  equal(h.get_attribution({creator:null}).creator, null);
+  equal(h.get_attribution({creator:{id:"/user/id"}}).creator, "/user/id");
+  equal(h.get_attribution({creator: {id:"/user/id"}, attribution:null}).creator, "/user/id");
+  
+  // attribution
+  equal(h.get_attribution({attribution: {creator:"/attr/id"}}).creator, "/attr/id");
+  equal(h.get_attribution({attribution:{creator:{id:"/attr/id"}}}).creator, "/attr/id");
+  
+  // mdo
+  equal(h.get_attribution({attribution:{"/dataworld/provenance/data_operation":{operator:{id:"/operator/id"}}}}).creator, "/operator/id");
+  equal(h.get_attribution({attribution:{"/dataworld/provenance/data_operation":{id:"/source/id"}}}).source.id, "/source/id");
+  
+  // oauth app
+  equal(h.get_attribution({attribution:{"/freebase/written_by/application":{id:"/app/id"}}}).source.id, "/app/id");
 });
 
 

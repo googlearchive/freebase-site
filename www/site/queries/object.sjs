@@ -48,6 +48,7 @@ function object(id, options) {
     })
     .then(function(topic) {
       if (!topic) return null;
+      topic.attribution = h.get_attribution(topic);
       topic.name = topic.name.sort(h.text_lang_sort);
       topic.alias = topic["/common/topic/alias"].sort(h.text_lang_sort);
       topic.image = topic["/common/topic/image"];

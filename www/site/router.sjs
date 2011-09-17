@@ -708,6 +708,35 @@ function init_site_rules(lib) {
       ]
     },
     {
+      "type": "/dataworld/mass_data_operation",
+      "promises":  h.extend(true, [], DEFAULT_PROMISES).concat([{
+        "key": "breadcrumbs",
+        "app": "lib",
+        "script": "queries/breadcrumbs.sjs",
+        "promise": "mdo"
+      }]),
+      "tabs": [
+        {
+          "name": "Activity",
+          "key": "activity",
+          "app": "activity",
+          "script": "mdo.tab"
+        },
+        {
+          "name": "View",
+          "key": "view",
+          "app": "topic",
+          "script": "topic.tab"
+        },
+        {
+          "name": "Inspect",
+          "key": "inspect",
+          "app": "triples",
+          "script": "triples.tab"
+        }
+      ]
+    },
+    {
       "type": "/common/topic",
       "promises": [
         {

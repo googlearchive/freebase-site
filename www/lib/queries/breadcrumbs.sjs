@@ -125,3 +125,10 @@ function freebase_query(o) {
     {name:i18n.display_name(o)}
   ];
 };
+
+function mdo(o) {
+  return [
+    {name:_("Data Load")},
+    {name:i18n.display_name(o)}
+  ];
+};

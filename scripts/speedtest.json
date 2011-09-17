@@ -84,9 +84,29 @@
       "url" : "/api/experimental/topic/full{topic_slow_2}?lang=/lang/en&lang=/lang/wp"
     },
 
+    "topicapi_full" : {
+      "url" : "/api/experimental/topic/full{topic_slow_2}?lang=/lang/en"
+    },
+
     "topicapi_standard" : {
       "url" : "/api/experimental/topic/standard{topic_slow_2}"
-    }
+    },
+    "helloworldfreebase" : { 
+      "url" : "/sample/hello"
+    },
+    "helloworldsite" : {
+      "url" : "/sample/helloworld"
+    },  
+    "tos" : { 
+      "url" : "/policies/tos"
+    },
+    "helloworldtopicapi" : { 
+      "url" : "/sample/topicapi?id={topic_slow_2}"
+    },
+    "helloworldacre" : {
+      "url" : "/_helloworld"
+    } 
+    
   },
 
   "tests" : {

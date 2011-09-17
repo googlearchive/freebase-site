@@ -148,7 +148,7 @@
           </acre:script>
           <acre:block if="msg">
             <acre:script>
-              var perm_obj = {id:h.get_creator(flag)};
+              var perm_obj = {id:h.get_attribution(flag).creator};
             </acre:script>
             <div class="page-flag-kind">
               <span class="page-flag-msg">${msg}</span>
@@ -193,14 +193,17 @@
       !!-->
       <div class="page-title">
         <span class="creation-timestamp">
-          <span acre:if="c.object.creator"
+          <span acre:if="c.object.attribution"
                 acre:attrs="itemprop('/type/object/creator', true)">
-            <acre:script>
-              var creator = h.get_creator(c.object);
-            </acre:script>
-            ${image.user_image_tiny(creator)}
+            ${image.user_image_tiny(c.object.attribution.creator)}
             ${_("Created by")}
-            ${components.creator(creator)}
+            ${components.creator(c.object.attribution.creator)}
+            <span acre:if="c.object.attribution.source">
+              ${_("via")}
+              <a href="$c.object.attribution.source.id">
+                $c.object.attribution.source.name
+              </a>
+            </span>
             ${_("on")}
           </span>
           <span acre:else="">

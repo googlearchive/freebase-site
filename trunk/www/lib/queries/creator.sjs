@@ -48,7 +48,7 @@ function extend(q) {
     optional: true
   };
   clause["attribution"] = {
-    attribution: {
+    creator: {
       id: null,
       key: {
         value: null,
@@ -56,6 +56,36 @@ function extend(q) {
         limit: 1
       },
       type: "/type/user"
+    },
+    "/freebase/written_by/application": {
+      id: null,
+      name: null,
+      optional: true
+    },
+    "/dataworld/provenance/source": {
+      id: null,
+      name: null,
+      optional: true
+    },
+    "/dataworld/provenance/tool": {
+      id: null,
+      name: null,
+      optional: true
+    },
+    "/dataworld/provenance/data_operation": {
+      id: null,
+      name: null,
+      operator: {
+        id: null,
+        key: {
+          value: null,
+          namespace: "/user",
+          limit: 1
+        },
+        type: "/type/user",
+        limit: 1,
+      },
+      optional: true
     },
     type: "/type/attribution",
     optional: true

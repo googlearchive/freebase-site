@@ -911,6 +911,8 @@ class ActionSpeedTest:
     # Case 1: Test a single page.
 
     if c.options.page:
+      if not self.conf['pages'].get(c.options.page):
+        raise FatalException("There is no page configuration called %s in speedtest.conf" % c.options.page)
       urls = self.generate_urls_for_page(self.conf['pages'][c.options.page], c.options.repeat)
 
     # Case 2: Run a test bundle of multiple pages
@@ -933,7 +935,6 @@ class ActionSpeedTest:
       threads.append(runner)
 
     print "\nStarting %s requests to host %s" % (len(urls) * c.options.concurrent, c.options.host)
-
     site_config, appengine_app_id = Site.ResolveConfig(c, c.options.config, c.options.site_dir, c.options.host)
 
     if self.appengine_logs_url:
@@ -1104,8 +1105,6 @@ class ActionTest:
     c = self.context
 
 
-    site = Site.Get(c)
-
     return True
   
 
@@ -1224,6 +1223,7 @@ def main():
         context.error('FAILED: action %s failed (%s)' % (action, context.duration_human(t2-context.start_time)))
       else:
         context.log('SUCCESS: action %s ended succesfully (%s)' % (action, context.duration_human(t2-context.start_time)), color=context.GREEN)
+
 
       context.set_action(action)
 

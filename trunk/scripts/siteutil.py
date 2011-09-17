@@ -265,7 +265,9 @@ class App:
     parts = site.conf("acre_id_suffix")[1:].split('.')[0:-1]
     parts.reverse()
 
-    if self.tag:
+    if self.app_key == "environments":
+        parts.extend(["environments"])
+    elif self.tag:
       parts.extend(['tags', 'www', self.app_key, self.tag])
     elif self.version:
       parts.extend(['branches', 'www', self.app_key, self.version])
@@ -356,6 +358,12 @@ class App:
     while (d_app):
       d_app.copy_to_acre_dir()
       d_app = d_app.dependency()
+
+    #routing still happens with the trunk version of lib and site
+    #since we are using the devel environment to run acre locally
+    App.Get(c, "lib", version=None).copy_to_acre_dir()
+    App.Get(c, "site", version=None).copy_to_acre_dir()
+    App.Get(c, "environments", version=None, tag=None).copy_to_acre_dir()
 
     #app files will be a list of file paths starting at the app route 
     #i.e. app.svn_path()/<file> is the actual path on disk
@@ -904,13 +912,18 @@ class App:
     return '{svn_url_root}/deployed/{app}/{deployed_hash}'.format(svn_url_root=PRIVATE_SVN_URL_ROOT, app=self.app_key, deployed_hash=deployed_hash)
 
   def svn_url(self, allversions=False, alltags=False):
-
+    """
+    TODO: this has to start using Site.Get().conf("acre_id_suffix")
+    """
     c = self.context
 
     if allversions:
         return '{svn_url_root}/branches/www/{app}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key)
     elif alltags:
         return '{svn_url_root}/tags/www/{app}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key)
+    #special path for environments
+    elif self.app_key == "environments":
+        return '{svn_url_root}/environments'.format(svn_url_root=c.SITE_SVN_URL)
     elif not self.version:
         return '{svn_url_root}/trunk/www/{app}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key)
     elif not self.tag:
@@ -948,10 +961,14 @@ class App:
     shutil.copytree(self.svn_path(), target_dir)
     
     def remove_unwanted_directories(directory = ''):
-      
+      """
+      Removes any directories under the app directory tree that start with a .
+      For example, lib/.svn, lib/routing/.svn etc...
+      This will prevent all these unwanted files from being bundled with appengine
+      during a deployment with local files. 
+      """
       for f in os.listdir(os.path.join(target_dir, directory)):
         if f.startswith('.'):
-          #print "will delete %s" % os.path.join(target_dir, directory, f)
           shutil.rmtree(os.path.join(target_dir, directory, f))
           continue
 
@@ -1112,7 +1129,7 @@ class Context():
       return True
 
     if subaction:
-      subaction = ":%s" % subaction
+      subaction = "%s:" % subaction
 
     start_color, end_color = '', ''
     if color:
@@ -1121,7 +1138,7 @@ class Context():
     if nocontext:
         print >> sys.stderr, '%s %s%s' % (start_color,msg, end_color)
     else:
-        print >> sys.stderr, '%s[%s:%s%s] %s%s' % (start_color, self.action, self.current_app or '', subaction, msg, end_color)
+        print >> sys.stderr, '%s%s %s%s' % (start_color, subaction, msg, end_color)
 
     return True
 
@@ -1573,6 +1590,17 @@ class Acre:
 
     return target_dir
 
+  @staticmethod
+  def ValidateVersion(v):
+
+    if v == "trunk":
+      return True
+
+    try:
+      int(v)
+    except:
+      raise FatalException("acre_version must be either 'trunk' or a branch (integer)")
+
   @classmethod
   def Get(cls, context, existing=False):
     """Returns an acre object - persistent across request.
@@ -1599,8 +1627,9 @@ class Acre:
     # If --acre_version was passed in command line, try to fetch acre from SVN
     # Install in --acre_dir or in a new temporary directory.
     v = context.options.acre_version
-    
+
     if v:
+      Acre.ValidateVersion(v)
       acre_dir = Acre.Checkout(context, v, context.options.acre_dir)
       if acre_dir:
         context.options.acre_dir = acre_dir
@@ -1994,7 +2023,8 @@ class Site:
         "id" : "freebase-site",
         "repository" : "googlecode",
         "svn_paths" :  [ '/environments', '/appengine-config', '/trunk/www', '/trunk/config', '/trunk/scripts'],
-        "svn_paths_everything" : ["/branches/www", "/tags/www"] 
+        "svn_paths_everything" : ["/branches/www", "/tags/www"],
+        "default_appengine_id" : "sandbox-freebasesite"
         },
 
     "freebase-refinery" : {
@@ -2134,28 +2164,29 @@ class Site:
       # Find the appengine-config directory if it exists
       if os.path.isdir(config_dir):
 
+        domain = host.split(":")[0]
         # Loop through all the files and find the project.*.conf files
         for f in os.listdir(config_dir):
           parts = f.split(".")
           if len(parts) > 1 and parts[0] == "project" and parts[-1] == "conf":
-            config = context.read_config(os.path.join(config_dir, f))
+            env_config = context.read_config(os.path.join(config_dir, f))
 
             # If this configuration value matches what was passed in, then the get the real config
             # value from the filename of the project.<conf>.conf file.
-            if config.get("ACRE_FREEBASE_SITE_ADDR", None) == host:
+            if env_config.get("ACRE_FREEBASE_SITE_ADDR", None) == domain:
               actual_config = parts[-2]
               break
 
 
     if not actual_config:
-        return context.error("Could not find valid config.")
+        raise FatalException("Could not find valid configuration - config: %s host: %s." % (config,host))
 
     def appengine_id(config):
       filename = os.path.join(site_dir, "appengine-config", "appengine-web.%s.xml.in" % config)
       try:
         fh = open(filename)
       except:
-        return context.error("No appengine app defined for this configuration - failed to open %s" % filename)
+        return "local"
         
       for l in fh.readlines():
           res = re.search("<application>(.*)</application>", l)
@@ -2163,10 +2194,10 @@ class Site:
               fh.close()
               return res.groups(1)
 
-    app_id = appengine_id(actual_config)
-    if not app_id:
-      return context.error("Could not figure out appengine app id for config %s" % actual_config)
+      return "local"
 
+
+    app_id = appengine_id(actual_config)
     return actual_config, app_id
 
   @classmethod

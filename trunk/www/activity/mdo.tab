@@ -60,7 +60,12 @@ var mdo_writes = function(mdoid) {
     },
     "id": null,
     "links": {
-      "return": "count"
+      "return": "count",
+      "optional": true
+    },
+    "attributed": {
+      "return": "count",
+      "optional": true
     }
   }];
 
@@ -70,7 +75,8 @@ var mdo_writes = function(mdoid) {
       envelope.result.forEach(function(attr) {
         var attribution = {
           id:attr.id,
-          writes: attr.links
+          links: attr.links,
+          topics: attr.attributed
         };
         attributions.push(attribution);
       });

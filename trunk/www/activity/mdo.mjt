@@ -49,14 +49,15 @@
     <tbody>
       <tr acre:for="attr in c.attributions">
         ${attr_row_header(attr)}
-        ${attr_assertions_row(attr.writes)}
+        ${attr_assertions_row(attr.topics, attr.links)}
       </tr>
     </tbody>
   </table>
 </acre:block>
 
-<acre:block def="attr_assertions_row(writes)">
-  <td class="odd">${i18n_c.number(writes)}</td>
+<acre:block def="attr_assertions_row(topics, links)">
+  <td class="odd">${i18n_c.number(topics)}</td>
+  <td class="odd">${i18n_c.number(links)}</td>
 </acre:block>
 
 
@@ -70,7 +71,8 @@
   <thead>
     <tr>
       <th class="column-header first" scope="col"><span class="sort-icon">${_("Attribution")}</span></th>
-      <th class="column-header {sorter: 'number'}" scope="col"><span class="sort-icon">${_("Assertions")}</span></th>
+      <th class="column-header {sorter: 'number'}" scope="col">${_("Objects Created")}</span></th>
+      <th class="column-header {sorter: 'number'}" scope="col">${_("Links Created")}</span></th>
     </tr>
   </thead>
 </acre:block>

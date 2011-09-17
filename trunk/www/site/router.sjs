@@ -717,22 +717,29 @@ function init_site_rules(lib) {
       }]),
       "tabs": [
         {
-          "name": "Activity",
+          "name": "Writes",
           "key": "activity",
           "app": "activity",
           "script": "mdo.tab"
         },
         {
-          "name": "View",
+          "name": "Properties",
           "key": "view",
           "app": "topic",
           "script": "topic.tab"
         },
         {
-          "name": "Inspect",
+          "name": "Links",
           "key": "inspect",
           "app": "triples",
           "script": "triples.tab"
+        },
+        {
+          "name": "Changes",
+          "key": "changes",
+          "app": "history",
+          "script": "history.tab",
+          "promises": h.extend(true, [], DEFAULT_PROMISES)
         }
       ]
     },

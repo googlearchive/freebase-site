@@ -121,6 +121,22 @@
   transform: translate(@x, @y);
 }
 
+.rotate(@degree: 0deg) {
+  -webkit-transform: rotate(@degree);
+  -moz-transform: rotate(@degree);
+  -o-transform: rotate(@degree);
+  -ms-transform: rotate(@degree);
+  transform: rotate(@degree);
+}
+
+.scale(@x: 1, @y: 1) {
+  -webkit-transform: rotate(@x,@y);
+  -moz-transform: rotate(@x,@y);
+  -o-transform: rotate(@x,@y);
+  -ms-transform: rotate(@x,@y);
+  transform: rotate(@x,@y);
+}
+
 /*-----------------------------------------------------------
 Global Color Palette
 ------------------------------------------------------------*/

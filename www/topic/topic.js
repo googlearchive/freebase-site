@@ -109,15 +109,16 @@
 
             $type_list.addClass('multicolumn');
 
-            // set the type list to setup scrolling behavior
-            var offset = $type_list.position().top;
-            var list_height = PANEL_HEIGHT - offset + 'px';
-            $type_list.height(list_height);
 
-            // the CSS sets type_list_container to opacity:0 by default
-            // when javascript is enabled so we have to re-show it 
-            $type_list_container.animate({opacity: 1});
           }
+          // set the type list to setup scrolling behavior
+          var offset = $type_list.position().top;
+          var list_height = PANEL_HEIGHT - offset + 'px';
+          $type_list.height(list_height);
+
+          // the CSS sets type_list_container to opacity:0 by default
+          // when javascript is enabled so we have to re-show it 
+          $type_list_container.animate({opacity: 1});
 
         }
         return false;

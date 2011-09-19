@@ -10,7 +10,7 @@ var environment_rules = {
     "labels" : {
         "lib": "//31a.lib.www.tags.svn.freebase-site.googlecode.dev",
 
-	"site": "//13a.site" + tags_codebase,
+	"site": "//13b.site" + tags_codebase,
 	"account": "//16b.account" + tags_codebase,
 	"activity": "//14b.activity" + tags_codebase,
 	"admin": "//13b.admin" + tags_codebase,
@@ -25,7 +25,7 @@ var environment_rules = {
 	"policies": "//17b.policies" + tags_codebase,
 	"query": "//14b.query" + tags_codebase,
 	"sameas": "//15b.sameas" + tags_codebase,
-	"sample": "//16a.sample" + tags_codebase,
+	"sample": "//16b.sample" + tags_codebase,
 	"schema": "//20b.schema" + tags_codebase,
 	"topic": "//20b.topic" + tags_codebase,
 	"triples": "//16b.triples" + tags_codebase

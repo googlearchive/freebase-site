@@ -259,6 +259,7 @@ function init_site_rules(lib) {
     {prefix:"/labs/parallax",      app:"parallax"},
     {prefix:"/labs",               app:"labs"},
     {prefix:"/account",            app:"account"},
+    {prefix:"/sample",             app:"sample"},
 
     // Urls for administrative tools
     {prefix:"/admin",              app:"admin"},

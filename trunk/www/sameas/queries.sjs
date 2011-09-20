@@ -84,7 +84,7 @@ function keys_result(result, lang) {
       namespace: namespace.id,
       value: k.value,
       unique: namespace.unique, // is namespace unique?
-      creator: h.get_creator(k.link),
+      creator: h.get_attribution(k.link).creator,
       timestamp: k.link.timestamp
     };
     var template = namespace["!/common/uri_template/ns"];

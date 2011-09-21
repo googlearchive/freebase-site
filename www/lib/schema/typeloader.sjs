@@ -35,6 +35,15 @@ var freebase = acre.require("promise/apis").freebase;
 var SCHEMA_KEY_PREFIX = "lib/schema/typeloader.sjs:";
 
 /**
+ * Type (schema) loader, uses acre.cache or mqlread to
+ * return the canonical schema representation of each type id passed in as argument.
+ *
+ * A canonical schema of a type includes:
+ * type -> properties -> expected_type -> properties -> expected_type
+ *
+ * Behind the scenes, typeloader uses acre.cache to cache already loaded type schemas.
+ * So using typeloader should be much faster, then always doing a mqlread.
+ *
  * Usage:
  *
  * load(type1, type2, type3)

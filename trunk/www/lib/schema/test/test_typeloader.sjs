@@ -64,14 +64,21 @@ function assert_prop_schema(prop_schema) {
   });
 };
 
+function assert_key(obj, key, expected, msg) {
+  ok(obj && key in obj &&
+     (typeof expected === "boolean" ? !!obj[key] === expected : obj[key] === expected), msg);
+};
+
 test("_load", function() {
   // remove from cache
   var type_ids = ["/common/topic", "/type/text", "/common/document", "/common/image"];
   type_ids.forEach(function(type_id) {
     acre.cache.remove(typeloader.cache_key(type_id));
   });
+
+  // uncached
   var result;
-  typeloader.load.apply(null, type_ids)
+  typeloader._load.apply(null, type_ids)
     .then(function(types) {
       result = types;
     });
@@ -82,33 +89,81 @@ test("_load", function() {
     ok(!typeloader.was_cached(type_schema), type_id + " should NOT have been cached");
     //assert_type_schema(type_schema, type_id);
   });
-});
 
-/**
-test("typeloader cacheing", function() {
-
-  // reset cache
-  ["/common/topic", "/type/text", "/common/document", "/common/image"].forEach(function(id) {
-    var key = typeloader.cache_key(id);
-    acre.cache.remove(key);
-  });
-
-  var result;
-  typeloader.load("/common/topic")
+  // cached
+  typeloader._load.apply(null, type_ids)
     .then(function(types) {
-      result = types["/common/topic"];
+      result = types;
     });
   acre.async.wait_on_results();
-
-  ok(result && result.id === "/common/topic", "Got /common/topic schema");
-  ok(!typeloader.was_cached(result), "/common/topic should NOT have been cached");
-
-  // make sure we got all properties
-  var prop_map = h.map_array(result.properties, "id");
-  ["/common/topic/alias", "/common/topic/article", "/common/topic/image"].forEach(function(id) {
-    assert_prop_metadata(prop_map[id], id);
+  ok(result, "Got _load result");
+  type_ids.forEach(function(type_id) {
+    var type_schema = result[type_id];
+    ok(typeloader.was_cached(type_schema), type_id + " should have been cached");
+    //assert_type_schema(type_schema, type_id);
   });
 });
-**/
+
+test("load", function() {
+  // test /film/performance./film/performance/film./film/film./film/film/initial_release_date./type/datetime
+
+  acre.cache.remove(typeloader.cache_key("/film/performance"));
+
+  var result, i, l;
+  typeloader.load("/film/performance")
+    .then(function(types) {
+      result = types;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got load result");
+  var schema = result["/film/performance"];
+  ok(!typeloader.was_cached(schema), "/film/performance should NOT have been cached");
+  assert_key(schema, "/freebase/type_hints/mediator", true, "/film/performance is a mediator");
+
+  var props = schema.properties;
+  // assert /film/performance/film schema.properties[]
+  var prop;
+  for (i=0,l=props.length; i<l; i++) {
+    if (props[i].id === "/film/performance/film") {
+      prop = props[i];
+      break;
+    }
+  }
+  ok(prop, "Got /film/performance/film property");
+  assert_key(prop, "unique", true, "/film/performance/film is unique");
+
+  // assert /film/performance/film expected type
+  var ect = prop.expected_type;
+  assert_key(ect, "id", "/film/film");
+
+  var subprops = ect.properties;
+  ok(h.isArray(subprops), "Got subproperties");
+
+  var subprop;
+  for (i=0,l=subprops.length; i<l; i++) {
+    if (subprops[i].id === "/film/film/initial_release_date") {
+      subprop = subprops[i];
+      break;
+    }
+  }
+  ok(subprop, "Got /film/film/initial_release_date");
+  assert_key(subprop, "unique", true, "/film/film/initial_release_date is unique");
+  assert_key(subprop, "/freebase/property_hints/disambiguator", true, "/film/film/initial_release_date is disambiguator");
+
+  ect = subprop.expected_type;
+  assert_key(ect, "id", "/type/datetime");
+  assert_key(ect, "/freebase/type_hints/mediator", false, "/type/datetime is NOT a mediator");
+
+  // reload should get cached schema
+  typeloader.load("/film/performance")
+    .then(function(types) {
+      result = types;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got load result");
+  schema = result["/film/performance"];
+  ok(typeloader.was_cached(schema), "/film/performance should have been cached");
+});
+
 
 acre.test.report();

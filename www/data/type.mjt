@@ -175,7 +175,6 @@
   </acre:script>
   <th rowspan="$rowspan" class="first name"> ${_("Name")} </th>
   <th rowspan="$rowspan" class="image">${_("Image")}</th>
-  <th rowspan="$rowspan" class="article">${_("Article")}</th>
 </acre:block>
 
 <acre:block def="render_instance_rows(instances, properties, root_type_is_mediator)">
@@ -236,14 +235,6 @@
                 </span>
               </li>
             </ul>
-          </td>
-          <td rowspan="$instance_rowspan" class="article">
-            <acre:script>
-              var blurb = i18n.display_article(instance, "blurb");
-            </acre:script>
-            <p acre:if="blurb">
-              $blurb
-            </p>
           </td>
         </acre:block>
         <!!--

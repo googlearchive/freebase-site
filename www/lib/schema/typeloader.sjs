@@ -31,7 +31,6 @@
 var h = acre.require("helper/helpers.sjs");
 var deferred = acre.require("promise/deferred");
 var freebase = acre.require("promise/apis").freebase;
-var proploader = acre.require("schema/proploader.sjs");
 
 var SCHEMA_KEY_PREFIX = "lib/schema/typeloader.sjs:";
 

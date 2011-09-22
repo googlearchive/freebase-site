@@ -109,7 +109,47 @@ test("load", function() {
 
   acre.cache.remove(typeloader.cache_key("/film/performance"));
 
-  var result, i, l;
+  function assert_film_performance_schema(schema) {
+    var i,l;
+
+    assert_key(schema, "/freebase/type_hints/mediator", true, "/film/performance is a mediator");
+
+    var props = schema.properties;
+    // assert /film/performance/film schema.properties[]
+    var prop;
+    for (i=0,l=props.length; i<l; i++) {
+      if (props[i].id === "/film/performance/film") {
+        prop = props[i];
+        break;
+      }
+    }
+    ok(prop, "Got /film/performance/film property");
+    assert_key(prop, "unique", true, "/film/performance/film is unique");
+
+    // assert /film/performance/film expected type
+    var ect = prop.expected_type;
+    assert_key(ect, "id", "/film/film");
+
+    var subprops = ect.properties;
+    ok(h.isArray(subprops), "Got subproperties");
+
+    var subprop;
+    for (i=0,l=subprops.length; i<l; i++) {
+      if (subprops[i].id === "/film/film/initial_release_date") {
+        subprop = subprops[i];
+        break;
+      }
+    }
+    ok(subprop, "Got /film/film/initial_release_date");
+    assert_key(subprop, "unique", true, "/film/film/initial_release_date is unique");
+    assert_key(subprop, "/freebase/property_hints/disambiguator", true, "/film/film/initial_release_date is disambiguator");
+
+    ect = subprop.expected_type;
+    assert_key(ect, "id", "/type/datetime");
+    assert_key(ect, "/freebase/type_hints/mediator", false, "/type/datetime is NOT a mediator");
+  };
+
+  var result;
   typeloader.load("/film/performance")
     .then(function(types) {
       result = types;
@@ -118,41 +158,7 @@ test("load", function() {
   ok(result, "Got load result");
   var schema = result["/film/performance"];
   ok(!typeloader.was_cached(schema), "/film/performance should NOT have been cached");
-  assert_key(schema, "/freebase/type_hints/mediator", true, "/film/performance is a mediator");
-
-  var props = schema.properties;
-  // assert /film/performance/film schema.properties[]
-  var prop;
-  for (i=0,l=props.length; i<l; i++) {
-    if (props[i].id === "/film/performance/film") {
-      prop = props[i];
-      break;
-    }
-  }
-  ok(prop, "Got /film/performance/film property");
-  assert_key(prop, "unique", true, "/film/performance/film is unique");
-
-  // assert /film/performance/film expected type
-  var ect = prop.expected_type;
-  assert_key(ect, "id", "/film/film");
-
-  var subprops = ect.properties;
-  ok(h.isArray(subprops), "Got subproperties");
-
-  var subprop;
-  for (i=0,l=subprops.length; i<l; i++) {
-    if (subprops[i].id === "/film/film/initial_release_date") {
-      subprop = subprops[i];
-      break;
-    }
-  }
-  ok(subprop, "Got /film/film/initial_release_date");
-  assert_key(subprop, "unique", true, "/film/film/initial_release_date is unique");
-  assert_key(subprop, "/freebase/property_hints/disambiguator", true, "/film/film/initial_release_date is disambiguator");
-
-  ect = subprop.expected_type;
-  assert_key(ect, "id", "/type/datetime");
-  assert_key(ect, "/freebase/type_hints/mediator", false, "/type/datetime is NOT a mediator");
+  assert_film_performance_schema(schema);
 
   // reload should get cached schema
   typeloader.load("/film/performance")
@@ -163,6 +169,7 @@ test("load", function() {
   ok(result, "Got load result");
   schema = result["/film/performance"];
   ok(typeloader.was_cached(schema), "/film/performance should have been cached");
+  assert_film_performance_schema(schema);
 });
 
 

@@ -65,7 +65,8 @@ function keys(id, lang, limit, filters) {
       link: creator.extend({
         timestamp: null
       }),
-      limit: limit
+      limit: limit,
+      optional: true
     }]
   };
   apply_filters(q, filters);

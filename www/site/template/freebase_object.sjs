@@ -37,15 +37,16 @@ var service_lib = acre.require("lib/handlers/service_lib.sjs");
 var controller = acre.require("lib/handlers/controller_handler.sjs");
 
 function main(rule, object) {
-
   var tabs = rule.tabs = rule.tabs || [];
+  var more_tabs = rule.more_tabs = rule.more_tabs || [];
   var navs = rule.navs = rule.navs || [];
-  var current_tab, current_nav, i, l;
 
-  // look in tabs
-  if (tabs.length) {
-    for (i=0,l=tabs.length; i<l; i++) {
-      var t = tabs[i];
+  // look in tabs and more_tabs to find a routing match
+  var all_tabs = [].concat(tabs, more_tabs);
+  var current_tab, current_nav, i, l;
+  if (all_tabs.length) {
+    for (i=0,l=all_tabs.length; i<l; i++) {
+      var t = all_tabs[i];
       if (t.key in acre.request.params) {
         current_tab = t;
         break;
@@ -71,6 +72,7 @@ function main(rule, object) {
   var template_base_args = {
     object: object,
     tabs: tabs,
+    more_tabs: more_tabs,
     current_tab: current_tab,
     navs: navs,
     filters: fh.global_filters(acre.request_params)

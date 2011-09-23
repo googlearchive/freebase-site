@@ -97,7 +97,7 @@ function ObjectRouter(app_labels) {
       if (!route || typeof route !== 'object') {
         throw 'A routing rule must be a dict: '+JSON.stringify(route);
       }
-      [route.tabs, route.navs, route.promises].forEach(function(list) {
+      [route.tabs, route.more_tabs, route.navs, route.promises].forEach(function(list) {
         list && list.forEach(function(item) {
           set_app(item);
           item.promises && item.promises.forEach(function(p) {
@@ -227,12 +227,7 @@ function init_site_rules(lib) {
     "schema":     "//schema" + site_codebase,
     "topic":      "//topic" + site_codebase,
     "triples":    "//triples" + site_codebase,
-    "history":    "//history" + site_codebase,
-
-    "labs":       "//labs",
-    "parallax":   "//parallax",
-    "tmt":        "//tmt",
-    "cubed":      "//cubed"
+    "history":    "//history" + site_codebase
   };
 
   // Defaults to trunk lib if not specified.
@@ -244,21 +239,14 @@ function init_site_rules(lib) {
 
   rules["prefix"] = [
 
-    {prefix:"/favicon.ico",        app:"lib", script: "template/favicon.ico"},
-    {prefix:"/index",              url:"/", redirect: 301},
-    {prefix:"/homepage",           app:"homepage", script:"index.controller"},
-    {prefix:"/explore",            app:"activity"},
-    {prefix:"/schema",             app:"schema"},
-    {prefix:"/apps",               app:"apps"},
-    {prefix:"/appeditor",          app:"appeditor"},
-    {prefix:"/docs",               app:"devdocs"},
-    {prefix:"/policies",           app:"policies"},
-    {prefix:"/queryeditor",        app:"query"},
+    {prefix:"/browse",             app:"schema"},
     {prefix:"/query",              app:"query"},
-    {prefix:"/labs/cubed",         app:"cubed"},
-    {prefix:"/labs/parallax",      app:"parallax"},
-    {prefix:"/labs",               app:"labs"},
+    {prefix:"/new",                app:"activity"},
+    {prefix:"/docs",               app:"devdocs"},
+    {prefix:"/appeditor",          app:"appeditor"},
+    {prefix:"/policies",           app:"policies"},
     {prefix:"/account",            app:"account"},
+    {prefix:"/favicon.ico",        app:"lib", script:"template/favicon.ico"},
     {prefix:"/sample",             app:"sample"},
 
     // Urls for administrative tools
@@ -269,13 +257,18 @@ function init_site_rules(lib) {
     //
     // Redirects for legacy urls
     //
+    
+    // Homepage
+    {prefix:"/index",                   url:"/", redirect: 301},
+    {prefix:"/homepage",                url:"/browse", redirect: 301},
 
     // Domain activity browser
-    {prefix:"/view/mydomains",          url:"/explore", redirect:301},
-    {prefix:"/site/data",               url:"/explore", redirect:301},
-    {prefix:"/view/allDomains",         url:"/explore", redirect:301},
-    {prefix:"/data",                    url:"/explore", redirect:301},
-    {prefix:"/domain/users",            url:"/explore", redirect:301},
+    {prefix:"/explore",                 url:"/browse", redirect:301},
+    {prefix:"/view/mydomains",          url:"/browse", redirect:301},
+    {prefix:"/site/data",               url:"/browse", redirect:301},
+    {prefix:"/view/allDomains",         url:"/browse", redirect:301},
+    {prefix:"/data",                    url:"/browse", redirect:301},
+    {prefix:"/domain/users",            url:"/browse", redirect:301},
 
     // Signin & Account - TODO: use google URLs
     {prefix:"/signin/signin",           url:"/", redirect:301},
@@ -299,9 +292,10 @@ function init_site_rules(lib) {
     {prefix:"/view/feedback_thanks",    url:"http://bugs.freebase.com", redirect:301},
 
     // Queryeditor
-    {prefix:"/app/queryeditor",         url:"/queryeditor", redirect:301},
-    {prefix:"/tools/queryeditor",       url:"/queryeditor", redirect:301},
-    {prefix:"/view/queryeditor",        url:"/queryeditor", redirect:301},
+    {prefix:"/queryeditor",             url:"/query", redirect:301},
+    {prefix:"/app/queryeditor",         url:"/query", redirect:301},
+    {prefix:"/tools/queryeditor",       url:"/query", redirect:301},
+    {prefix:"/view/queryeditor",        url:"/query", redirect:301},
 
     // Appeditor
     {prefix:"/tools/appeditor",         url:"/appeditor", redirect:301},
@@ -359,6 +353,7 @@ function init_site_rules(lib) {
     {prefix:"/user/domains/",           url:"/", params:{domains:""}, redirect:301},
     {prefix:"/view/userdomains/",       url:"/", params:{domains:""}, redirect:301},
 
+    {prefix:"/apps",                    url:"/new", params:{apps:""}},
     {prefix:"/apps/app/",               url:"/", redirect:301},
     {prefix:"/apps/",                   url:"/", redirect:301},
 
@@ -415,32 +410,42 @@ function init_site_rules(lib) {
       }]),
       "tabs": [
         {
-          "name": "View",
-          "key": "view",
-          "app": "topic",
-          "script": "topic.tab",
-          "params": {
-            "domains": "all",
-            "type": "/freebase/apps/application"
-          }
+          "name": "Versions",
+          "key": "versions",
+          "app": "sample",
+          "script": "empty.tab"
         },
         {
-          "name": "Activity",
-          "key": "activity",
-          "app": "activity",
-          "script": "app.tab"
-        },
-        {
-          "name": "Authors",
-          "key": "authors",
+          "name": "Editors",
+          "key": "editors",
           "app": "group",
           "script": "group.tab"
         },
         {
-          "name": "Inspect",
-          "key": "inspect",
+          "name": "Writes",
+          "key": "writes",
+          "app": "activity",
+          "script": "app.tab"
+        }
+      ],
+      "more_tabs": [
+        {
+          "name": "Properties",
+          "key": "props",
+          "app": "topic",
+          "script": "topic.tab"
+        },
+        {
+          "name": "Links",
+          "key": "links",
           "app": "triples",
           "script": "triples.tab"
+        },
+        {
+          "name": "Identifiers",
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab"
         }
       ],
       "navs": [
@@ -453,53 +458,6 @@ function init_site_rules(lib) {
         {
           "name": "View source",
           "url": h.fb_url("/appeditor/#!app=${id}")
-        }
-      ]
-    },
-    {
-      "type": "/freebase/apps/application",
-      "promises": h.extend(true, [], DEFAULT_PROMISES).concat([{
-        "key": "breadcrumbs",
-        "app": "lib",
-        "script": "queries/breadcrumbs.sjs",
-        "promise": "app"
-      }]),
-      "tabs": [
-        {
-          "name": "View",
-          "key": "view",
-          "app": "topic",
-          "script": "topic.tab",
-          "params": {
-            "domains": "all",
-            "type": "/freebase/apps/application"
-          }
-        },
-        {
-          "name": "Activity",
-          "key": "activity",
-          "app": "activity",
-          "script": "app.tab"
-        },
-        {
-          "name": "Authors",
-          "key": "authors",
-          "app": "group",
-          "script": "group.tab"
-        },
-        {
-          "name": "Inspect",
-          "key": "inspect",
-          "app": "triples",
-          "script": "triples.tab"
-        }
-      ],
-      "navs": [
-        {
-          "name": "Edit Settings",
-          "app": "admin",
-          "ajax": "app_settings.mf.js",
-          "auth": true // add "edit" class
         }
       ]
     },
@@ -525,16 +483,30 @@ function init_site_rules(lib) {
           "script": "domain.tab"
         },
         {
-          "name": "Community",
-          "key": "community",
+          "name": "Editors",
+          "key": "editors",
           "app": "group",
           "script": "group.tab"
+        }
+      ],
+      "more_tabs": [
+        {
+          "name": "Properties",
+          "key": "props",
+          "app": "topic",
+          "script": "topic.tab"
         },
         {
-          "name": "Inspect",
-          "key": "inspect",
+          "name": "Links",
+          "key": "links",
           "app": "triples",
           "script": "triples.tab"
+        },
+        {
+          "name": "Identifiers",
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab"
         }
       ],
       "navs": [
@@ -556,8 +528,8 @@ function init_site_rules(lib) {
       }]),
       "tabs": [
         {
-          "name": "Data",
-          "key": "data",
+          "name": "Topics",
+          "key": "topics",
           "app": "data",
           "script": "type.tab"
         },
@@ -566,12 +538,26 @@ function init_site_rules(lib) {
           "key": "schema",
           "app": "schema",
           "script": "type.tab"
+        }
+      ],
+      "more_tabs": [
+        {
+          "name": "Properties",
+          "key": "props",
+          "app": "topic",
+          "script": "topic.tab"
         },
         {
-          "name": "Inspect",
-          "key": "inspect",
+          "name": "Links",
+          "key": "links",
           "app": "triples",
           "script": "triples.tab"
+        },
+        {
+          "name": "Identifiers",
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab"
         }
       ],
       "navs": [
@@ -613,12 +599,26 @@ function init_site_rules(lib) {
           "key": "schema",
           "app": "schema",
           "script": "property.tab"
+        }
+      ],
+      "more_tabs": [
+        {
+          "name": "Properties",
+          "key": "props",
+          "app": "topic",
+          "script": "topic.tab"
         },
         {
-          "name": "Inspect",
-          "key": "inspect",
+          "name": "Links",
+          "key": "links",
           "app": "triples",
           "script": "triples.tab"
+        },
+        {
+          "name": "Identifiers",
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab"
         }
       ]
     },
@@ -650,10 +650,30 @@ function init_site_rules(lib) {
           "script": "user.tab"
         },
         {
-          "name": "Inspect",
-          "key": "inspect",
+          "name": "Writes",
+          "key": "writes",
+          "app": "sample",
+          "script": "empty.tab"
+        }
+      ],
+      "more_tabs": [
+        {
+          "name": "Properties",
+          "key": "props",
+          "app": "topic",
+          "script": "topic.tab"
+        },
+        {
+          "name": "Links",
+          "key": "links",
           "app": "triples",
           "script": "triples.tab"
+        },
+        {
+          "name": "Identifiers",
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab"
         }
       ],
       "navs": [
@@ -681,8 +701,8 @@ function init_site_rules(lib) {
       }]),
       "tabs": [
         {
-          "name": "Data",
-          "key": "data",
+          "name": "Topics",
+          "key": "topics",
           "app": "query",
           "script": "collection.tab"
         },
@@ -691,12 +711,26 @@ function init_site_rules(lib) {
           "key": "mql",
           "app": "query",
           "script": "mql.tab"
+        }
+      ],
+      "more_tabs": [
+        {
+          "name": "Properties",
+          "key": "props",
+          "app": "topic",
+          "script": "topic.tab"
         },
         {
-          "name": "Inspect",
-          "key": "inspect",
+          "name": "Links",
+          "key": "links",
           "app": "triples",
           "script": "triples.tab"
+        },
+        {
+          "name": "Identifiers",
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab"
         }
       ],
       "navs": [
@@ -725,24 +759,25 @@ function init_site_rules(lib) {
         },
         {
           "name": "Properties",
-          "key": "view",
+          "key": "properties",
           "app": "topic",
           "script": "topic.tab"
-        },
+        }
+      ],
+      "more_tabs": [
         {
           "name": "Links",
-          "key": "inspect",
+          "key": "links",
           "app": "triples",
           "script": "triples.tab"
         },
         {
-          "name": "Changes",
-          "key": "changes",
-          "app": "history",
-          "script": "history.tab",
-          "promises": h.extend(true, [], DEFAULT_PROMISES)
+          "name": "Identifiers",
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab"
         }
-      ]
+      ],
     },
     {
       "type": "/common/topic",
@@ -762,31 +797,22 @@ function init_site_rules(lib) {
       ],
       "tabs": [
         {
-          "name": "View",
-          "key": "view",
+          "name": "Properties",
+          "key": "props",
           "app": "topic",
           "script": "topic.tab"
         },
         {
-          "name": "Inspect",
-          "key": "inspect",
+          "name": "Links",
+          "key": "links",
           "app": "triples",
-          "script": "triples.tab",
-          "promises": h.extend(true, [], DEFAULT_PROMISES)
+          "script": "triples.tab"
         },
         {
-          "name": "Keys",
-          "key": "keys",
+          "name": "Identifiers",
+          "key": "ids",
           "app": "sameas",
-          "script": "sameas.tab",
-          "promises": h.extend(true, [], DEFAULT_PROMISES)
-        },
-        {
-          "name": "History",
-          "key": "history",
-          "app": "history",
-          "script": "history.tab",
-          "promises": h.extend(true, [], DEFAULT_PROMISES)
+          "script": "sameas.tab"
         }
       ],
       "navs": [
@@ -818,16 +844,22 @@ function init_site_rules(lib) {
       }]),
       "tabs": [
         {
-          "name": "View",
-          "key": "view",
+          "name": "Properties",
+          "key": "props",
           "app": "topic",
           "script": "topic.tab"
         },
         {
-          "name": "Inspect",
-          "key": "inspect",
+          "name": "Links",
+          "key": "links",
           "app": "triples",
           "script": "triples.tab"
+        },
+        {
+          "name": "Identifiers",
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab"
         }
       ]
     }

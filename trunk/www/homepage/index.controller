@@ -38,10 +38,7 @@ var SPEC = {
 
   run: function() {
     return {
-      categories: queries.categories(),
-      blog: queries.blog_entries(),
-      wiki: queries.wiki_entries(),
-      reg_off: queries.is_registration_off()
+      domains: queries.common_domains()
     };
   }
 

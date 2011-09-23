@@ -255,7 +255,7 @@ function init_site_rules(lib) {
 
   rules["prefix"] = [
 
-    {prefix:"/browse",             app:"schema"},
+    {prefix:"/browse",             app:"homepage"},
     {prefix:"/query",              app:"query"},
     {prefix:"/new",                app:"activity"},
     {prefix:"/docs",               app:"devdocs"},

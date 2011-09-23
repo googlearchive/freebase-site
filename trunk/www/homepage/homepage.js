@@ -164,13 +164,37 @@
   };
 
   fb.homepage.init = function() {
-    var $tabs = $("#domain-explorer-tabs");
-    $tabs.tabs("#explorer-panes > div", {
-      initialIndex: parseInt($tabs.attr("data-index") || 0, 10),
-      effect: "load_pane"
+    $(".domain-activity-controls select").change(fb.homepage.sort_domains);
+
+    /*
+        DOMAIN SUGGEST
+    */
+    var $domain_input = $("#domain-search-input");
+    var $domain_form = $domain_input.closest("form");
+
+    $domain_form.submit(function(){
+      return false;
+    });
+    
+    var suggest_opts = function() {
+      var o = fb.suggest_options.any("/type/domain");
+      if ($("#domain-search-toggle-commons").is(":checked")) {
+        o.mql_filter = [{"key":[{"namespace":"/"}]}];
+      }
+      return o;
+    };
+
+    $(".search-toggle").click(function() {
+      $domain_input.suggest(suggest_opts());
     });
 
-    $(".domain-activity-controls select").change(fb.homepage.sort_domains);
+    $domain_input.suggest(suggest_opts())
+      .bind("fb-select", function(e, data){
+        window.location.href = fb.h.fb_url(data.id, [['schema']]);
+      })
+      .focus(function() {
+        this.select();
+      });
   };
 
   setTimeout(fb.homepage.init, 0);

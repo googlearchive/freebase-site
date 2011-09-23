@@ -430,8 +430,8 @@ function init_site_rules(lib) {
          "script": "empty_new.tab"
        },
        {
-         "name": "Domains",
-         "key": "domains",
+         "name": "Schema",
+         "key": "schema",
          "app": "sample",
          "script": "empty_new.tab"
        },
@@ -689,8 +689,8 @@ function init_site_rules(lib) {
       }]),
       "tabs": [
         {
-          "name": "Domains",
-          "key": "domains",
+          "name": "Schema",
+          "key": "schema",
           "app": "data",
           "script": "user.tab"
         },

@@ -208,7 +208,7 @@
       <li>
         <a href="${h.wiki_url()}"
           title="Give help and get help adding data to Freebase">
-          ${_("Documentation")}
+          ${_("Help")}
         </a>
       </li>
     </ul>

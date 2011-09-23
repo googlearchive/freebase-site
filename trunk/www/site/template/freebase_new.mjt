@@ -84,7 +84,7 @@
 
 <acre:block def="content_body()">
   <div id="page-header">
-    <div class="page-title">
+    <div class="page-title" style="margin-left:40px">
       <h1>${_("What's New")}</h1>
     </div>
     <div class="nav clear">

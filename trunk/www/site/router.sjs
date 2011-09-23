@@ -83,7 +83,7 @@ function CustomRouter(app_labels) {
     
     // only applies to "/new"
     if (req.path_info === "/new"){
-      var tabs = config["tabs"];
+      var tabs = config["new_tabs"];
       
       tabs.forEach(function(item) {
         set_app(item, app_labels);
@@ -416,7 +416,7 @@ function init_site_rules(lib) {
   ];
   
   rules["custom"] = {
-    tabs: [
+    new_tabs: [
        {
          "name": "Loads",
          "key": "loads",

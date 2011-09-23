@@ -93,11 +93,16 @@ function make_app(appinfo) {
       source : acre.freebase.site_host + '/appeditor/#app=' + appinfo.id
     };
   }
-  
-  console.log(app);
   return app;
 }
 
+var mini_app = function(o) {
+  var appq = acre.require('app_query').extend({id: o.id}).query;
+  return freebase.mqlread(appq)
+    .then(function(envelope){
+      return make_app(envelope.result);
+    });
+};
 
 var app = function(id, options) {
   if (!id) return null;

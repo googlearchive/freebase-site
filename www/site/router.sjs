@@ -444,8 +444,8 @@ function init_site_rules(lib) {
        {
          "name": "Apps",
          "key": "apps",
-         "app": "sample",
-         "script": "empty_new.tab"
+         "app": "apps",
+         "script": "new.tab"
        },
        {
          "name": "Users",

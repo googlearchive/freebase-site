@@ -33,37 +33,6 @@ acre.require('/test/lib').enable(this);
 var h = acre.require("helper/helpers.sjs");
 var typeloader = acre.require("schema/typeloader.sjs");
 
-function assert_type_schema(type_schema, type_id) {
-  ok(type_schema, "Got type schema: " + type_id);
-  [
-    "id", "name",
-    "/freebase/type_hints/enumeration",
-    "/freebase/type_hints/mediator",
-    "/freebase/type_hints/included_types",
-    "properties"
-  ].forEach(function(key) {
-    ok(key in type_schema, "Expected type_schema " + key);
-  });
-  ok(h.isArray(type_schema.properties), "Expected type_schema properties");
-  type_schema.properties.forEach(function(prop_schema) {
-    //assert_prop_schema(prop_schema);
-  });
-};
-
-function assert_prop_schema(prop_schema) {
-  ok(prop_schema, "Expected property schema");
-  [
-    "id", "name", "unique", "unit",
-    "/freebase/property_hints/disambiguator",
-    "/freebase/property_hints/display_none",
-    "master_property",
-    "reverse_property",
-    "expected_type"
-  ].forEach(function(key) {
-    ok(key in prop_schema, "Expected property schema " + key);
-  });
-};
-
 function assert_key(obj, key, expected, msg) {
   ok(obj && key in obj &&
      (typeof expected === "boolean" ? !!obj[key] === expected : obj[key] === expected), msg);
@@ -87,7 +56,6 @@ test("_load", function() {
   type_ids.forEach(function(type_id) {
     var type_schema = result[type_id];
     ok(!typeloader.was_cached(type_schema), type_id + " should NOT have been cached");
-    //assert_type_schema(type_schema, type_id);
   });
 
   // cached
@@ -100,7 +68,6 @@ test("_load", function() {
   type_ids.forEach(function(type_id) {
     var type_schema = result[type_id];
     ok(typeloader.was_cached(type_schema), type_id + " should have been cached");
-    //assert_type_schema(type_schema, type_id);
   });
 });
 
@@ -115,6 +82,7 @@ test("load", function() {
   acre.async.wait_on_results();
   ok(result, "Got load result");
   var schema = result["/film/performance"];
+  ok(schema, "Got /film/performance type schema");
   ok(!typeloader.was_cached(schema), "/film/performance should NOT have been cached");
   assert_film_performance_schema(schema, false);
 
@@ -126,6 +94,7 @@ test("load", function() {
   acre.async.wait_on_results();
   ok(result, "Got load result");
   schema = result["/film/performance"];
+  ok(schema, "Got /film/performance type schema");
   ok(typeloader.was_cached(schema), "/film/performance should have been cached");
   assert_film_performance_schema(schema, false);
 });
@@ -141,6 +110,7 @@ test("load deep", function() {
   acre.async.wait_on_results();
   ok(result, "Got load result");
   var schema = result["/film/performance"];
+  ok(schema, "Got /film/performance type schema");
   ok(!typeloader.was_cached(schema), "/film/performance should NOT have been cached");
   assert_film_performance_schema(schema, true);
 
@@ -152,6 +122,7 @@ test("load deep", function() {
   acre.async.wait_on_results();
   ok(result, "Got load result");
   schema = result["/film/performance"];
+  ok(schema, "Got /film/performance type schema");
   ok(typeloader.was_cached(schema), "/film/performance should have been cached");
   assert_film_performance_schema(schema, true);
 });

@@ -42,14 +42,9 @@
   <link rel="stylesheet" type="text/css" href="policies.mf.css" />
 </acre:block>
 
-<acre:block def="content()">
+<acre:block def="breadcrumb()">
   <div id="page-header">
-    <div class="page-title" style="margin-left:40px">
-      <h1>${title()}</h1>
-    </div>
-  </div>
-  <div id="page-content">
-    ${content_body()}
+    <h1>${title()}</h1>
   </div>
 </acre:block>
 

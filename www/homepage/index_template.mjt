@@ -30,10 +30,16 @@
  !!-->
 
 <acre:script>
-  var templates = acre.require("templates");
-  var h = acre.require("lib/helper/helpers.sjs");
   var c = this.exports.c = {};
-  console.log(acre.request)
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  
+  var templates = acre.require("templates");
+  var queries = acre.require("queries");
+
+  var user_id = acre.request.params.user_id;
 </acre:script>
 
 <acre:block def="head()">
@@ -58,24 +64,52 @@
 </acre:block>
 
 <acre:block def="breadcrumb()">
-  ${templates.homepage_header()}
+  <div id="page-header">
+    <h1>${_('Freebase: A community-curated database of well-known people, places and things')}</h1>
+  </div>
 </acre:block>
 
 <acre:block def="content_body()">
-  <div id="content-main">
-    ${templates.domain_explorer(c.categories)}
+  <div id="content-main" role="main">
+    <div class="section">
+      <form id="domain-search-form" method="get">
+        <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-commons" checked="checked" />${_('Freebase Commons')}</label>
+        <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" />${_('All Domains')}</label>
+        <fieldset>
+          <input type="text" name="id" class="text-input" id="domain-search-input" id="domain-search-input" placeholder="${_('Start typing for suggested domains...')}" />
+        </fieldset>
+      </form>
+    </div>
+    <table cellspacing="0" class="table table-sortable">
+      <thead>
+        <tr>
+          <th scope="col" class="column-header"><span class="sort-icon">${_('Domain')}</span></th>
+          <th scope="col" class="column-header column-header-desc"><span class="sort-icon">${_('ID')}</span></th>
+          <th scope="col" class="column-header">${_('Activity')}</th>
+          <!--
+          <th scope="col" class="column-header {sorter: 'number'}"><span class="sort-icon">${_('# of Types')}</span></th>
+          <th scope="col" class="column-header {sorter: 'number'}"><span class="sort-icon">${_('# of Instances')}</span></th>
+          -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr acre:for="d in c.domains">
+          <th class="row-header odd" scope="row">
+            <acre:script>var name = i18n.display_name(d);</acre:script>
+            <a href="${h.fb_url(d.id, [['schema','']])}" title="${h.sprintf(_('View %s'), name)}">$name</a>
+          </th>
+          <td class="even">$d.id</td>
+          <td class="odd">${templates.activity_section(d)}</td>
+          <!--<td class="odd numeric">${i18n_c.number(d.types)}</td>
+          <td class="even numeric">${i18n_c.number(d.instance_count)}</td>-->
+        </tr>
+      </tbody>
+    </table>
   </div>
-  
+
   <div id="content-side">
-    ${templates.googlerefine()}
     ${templates.what_is_freebase()}
     ${templates.for_developers()}
-  </div>
-  
-  <div id="content-footer">
-    <!!--${templates.join_freebase(c.reg_off)}!!-->
-    ${templates.for_developers()}
-    ${templates.blog_entries(c.blog)}
     ${templates.wiki_entries(c.wiki)}
     ${templates.join_discussion()}
   </div>

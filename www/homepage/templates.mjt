@@ -172,6 +172,7 @@
 </acre:block>
 
 <acre:block def="activity_section(domain)">
+  <acre:script>console.log(domain)</acre:script>
   <div class="domain-activity domain-section">
     <div acre:if="domain.activity"
          class="activity-stats">

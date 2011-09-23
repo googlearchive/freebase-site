@@ -247,7 +247,7 @@
         <li class="nav-footer-item">
           <a href="${h.fb_url('/policies/attribution')}"
              rel="nofollow"
-             title="View the Freebase Licensing Policy">${_("How to Attribute")}</a>
+             title="View the Freebase Licensing Policy">${_("How to Attribute Freebase")}</a>
         </li>
         <li class="nav-footer-item">
           <a href="http://www.google.com/tools/feedback/intl/en/error.html" onclick="

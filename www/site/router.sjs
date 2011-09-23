@@ -62,9 +62,13 @@ function set_app(item, app_labels) {
  *         (e.g., /homepage?acre.console=1)
  */
 function CustomRouter(app_labels) {
+  var config;
+  
+  this.add = function(rules) {
+    config = rules;
+  };
 
-  var route = this.route = function(req) {
-    
+  this.route = function(req) {
     // This only applies to "/"
     if (req.path_info === "/") {
       // let object router handle ?inspect
@@ -79,65 +83,19 @@ function CustomRouter(app_labels) {
     
     // only applies to "/new"
     if (req.path_info === "/new"){
+      var tabs = config["tabs"];
       
-      var o = {
-        name: [{
-         value: "What's New",
-         lang: "/lang/en"
-        }]
-      };
-      
-      var rule = {};
-      rule.tabs = [
-        {
-          "name": "Loads",
-          "key": "loads",
-          "app": "sample",
-          "script": "empty_new.tab"
-        },
-        {
-          "name": "Review Tasks",
-          "key": "tasks",
-          "app": "sample",
-          "script": "empty_new.tab"
-        },
-        {
-          "name": "Domains",
-          "key": "domains",
-          "app": "sample",
-          "script": "empty_new.tab"
-        },
-        {
-          "name": "Queries",
-          "key": "queries",
-          "app": "sample",
-          "script": "empty_new.tab"
-        },
-        {
-          "name": "Apps",
-          "key": "apps",
-          "app": "sample",
-          "script": "empty_new.tab"
-        },
-        {
-          "name": "Users",
-          "key": "users",
-          "app": "sample",
-          "script": "empty_new.tab"
-        }
-      ];
-      
-      rule.tabs.forEach(function(item) {
+      tabs.forEach(function(item) {
         set_app(item, app_labels);
       });
       
-      acre.write(acre.require("template/freebase_object.sjs").main(rule, o));
+      acre.write(acre.require("template/freebase_object.sjs").main({tabs:tabs}, o));
       acre.exit();
     }
 
     return false;
   };
-  
+
 };
 
 function ObjectRouter(app_labels) {
@@ -456,6 +414,47 @@ function init_site_rules(lib) {
       "promise": "blurb"              // promise method (passed object query result as arugment)
     }
   ];
+  
+  rules["custom"] = {
+    tabs: [
+       {
+         "name": "Loads",
+         "key": "loads",
+         "app": "sample",
+         "script": "empty_new.tab"
+       },
+       {
+         "name": "Review Tasks",
+         "key": "tasks",
+         "app": "sample",
+         "script": "empty_new.tab"
+       },
+       {
+         "name": "Domains",
+         "key": "domains",
+         "app": "sample",
+         "script": "empty_new.tab"
+       },
+       {
+         "name": "Queries",
+         "key": "queries",
+         "app": "sample",
+         "script": "empty_new.tab"
+       },
+       {
+         "name": "Apps",
+         "key": "apps",
+         "app": "sample",
+         "script": "empty_new.tab"
+       },
+       {
+         "name": "Users",
+         "key": "users",
+         "app": "sample",
+         "script": "empty_new.tab"
+       }
+     ]
+  };
 
   rules["object"] =  [
     {

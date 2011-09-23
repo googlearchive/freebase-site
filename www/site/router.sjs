@@ -44,32 +44,101 @@ function route(environment_rules) {
   router_lib.route(rules, this);
 };
 
+function set_app(item, app_labels) {
+  if (item.app) {
+    var app = app_labels[item.app];
+    if (!app) {
+      throw 'An app label must exist for: ' + item.app;
+    }
+    item.app = app;
+  }
+  return item;
+};
+
 
 /**
  * Deal with the special case of routing /
  *   Note: to debug the homepage, use the /homepage prefix rule
  *         (e.g., /homepage?acre.console=1)
  */
-function HomeRouter(app_labels) {
+function CustomRouter(app_labels) {
 
   var route = this.route = function(req) {
+    
     // This only applies to "/"
-    if (req.path_info !== "/") {
-      return false;
+    if (req.path_info === "/") {
+      // let object router handle ?inspect
+      if ("inspect" in req.params) {
+        return false;
+      }
+
+      // otherwise run the logged-out homepage, which will redirect to user page if logged-in
+      acre.route(acre.form.build_url(app_labels["homepage"] + "/index.controller", req.params));
+      acre.exit();
+    } else
+    
+    // only applies to "/new"
+    if (req.path_info === "/new"){
+      
+      var o = {
+        name: [{
+         value: "What's New",
+         lang: "/lang/en"
+        }]
+      };
+      
+      var rule = {};
+      rule.tabs = [
+        {
+          "name": "Loads",
+          "key": "loads",
+          "app": "sample",
+          "script": "empty_new.tab"
+        },
+        {
+          "name": "Review Tasks",
+          "key": "tasks",
+          "app": "sample",
+          "script": "empty_new.tab"
+        },
+        {
+          "name": "Domains",
+          "key": "domains",
+          "app": "sample",
+          "script": "empty_new.tab"
+        },
+        {
+          "name": "Queries",
+          "key": "queries",
+          "app": "sample",
+          "script": "empty_new.tab"
+        },
+        {
+          "name": "Apps",
+          "key": "apps",
+          "app": "sample",
+          "script": "empty_new.tab"
+        },
+        {
+          "name": "Users",
+          "key": "users",
+          "app": "sample",
+          "script": "empty_new.tab"
+        }
+      ];
+      
+      rule.tabs.forEach(function(item) {
+        set_app(item, app_labels);
+      });
+      
+      acre.write(acre.require("template/freebase_object.sjs").main(rule, o));
+      acre.exit();
     }
 
-    // let object router handle ?inspect
-    if ("inspect" in req.params) {
-      return false;
-    }
-
-    // otherwise run the logged-out homepage, which will redirect to user page if logged-in
-    acre.route(acre.form.build_url(app_labels["homepage"] + "/index.controller", req.params));
-    acre.exit();
+    return false;
   };
-
+  
 };
-
 
 function ObjectRouter(app_labels) {
   var object_query = acre.require("queries/object.sjs");
@@ -77,17 +146,6 @@ function ObjectRouter(app_labels) {
 
   var route_list = [];
   var types = {};
-
-  function set_app(item) {
-    if (item.app) {
-      var app = app_labels[item.app];
-      if (!app) {
-        throw 'An app label must exist for: ' + item.app;
-      }
-      item.app = app;
-    }
-    return item;
-  };
 
   this.add = function(routes) {
     if (!(routes instanceof Array)) {
@@ -99,12 +157,12 @@ function ObjectRouter(app_labels) {
       }
       [route.tabs, route.more_tabs, route.navs, route.promises].forEach(function(list) {
         list && list.forEach(function(item) {
-          set_app(item);
+          set_app(item, app_labels);
           item.promises && item.promises.forEach(function(p) {
-            set_app(p);
+            set_app(p, app_labels);
           });
           item.subnavs && item.subnavs.forEach(function(p) {
-            set_app(p);
+            set_app(p, app_labels);
           });
         });
       });
@@ -196,7 +254,7 @@ function init_site_rules(lib) {
 
   rules["routers"] = [
     "host",
-    ["home", HomeRouter],
+    ["custom", CustomRouter],
     "static",
     "ajax",
     "prefix",

@@ -31,7 +31,6 @@
 
 <acre:script>
   var c = this.exports.c = {};
-  var t = acre.require("templates");
   var h = acre.require("lib/helper/helpers.sjs");
 </acre:script>
 
@@ -41,6 +40,17 @@
 
 <acre:block def="head()" trim="">
   <link rel="stylesheet" type="text/css" href="policies.mf.css" />
+</acre:block>
+
+<acre:block def="content()">
+  <div id="page-header">
+    <div class="page-title" style="margin-left:40px">
+      <h1>${title()}</h1>
+    </div>
+  </div>
+  <div id="page-content">
+    ${content_body()}
+  </div>
 </acre:block>
 
 <acre:block def="content_body()">
@@ -121,10 +131,6 @@
       <h2>24. Entire Agreement</h2>
       <p>These Terms of Service and the policies referenced herein are the entire and exclusive agreement between Metaweb and you regarding the Site, Content, and Service.</p>
     </div>
-  </div>
-  
-  <div id="body-right" class="policies-right">
-    ${t.policy_nav()}
   </div>
 </acre:block>
 

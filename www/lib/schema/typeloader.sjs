@@ -61,10 +61,12 @@ var SCHEMA_KEY_PREFIX = "lib/schema/typeloader.sjs:";
  **/
 function load() {
   var type_ids = Array.prototype.slice.call(arguments);
+  assert(type_ids.length, "You need to specify at least one type id");
   var deep = false;
   if (typeof type_ids[0] === "boolean") {
     deep = type_ids.shift();
   }
+  assert(type_ids.length, "You need to specify at least one type id");
   return _load.apply(null, type_ids)
     .then(function(types) {
       var ect_ids = [];
@@ -176,6 +178,13 @@ function cache_key(type_id) {
 
 function was_cached(type) {
   return type.__CACHED__ === true;
+};
+
+function assert(truthy, msg) {
+  if (!truthy) {
+    var msg_args = Array.prototype.slice(arguments, 1);
+    throw msg_args.join(" ");
+  }
 };
 
 function do_mql(/**, type_id1, type_id2, ..., type_idN **/) {

@@ -105,33 +105,83 @@ test("_load", function() {
 });
 
 test("load", function() {
-  // test /film/performance./film/performance/film./film/film./film/film/initial_release_date./type/datetime
-
   acre.cache.remove(typeloader.cache_key("/film/performance"));
 
-  function assert_film_performance_schema(schema) {
-    var i,l;
+  var result;
+  typeloader.load("/film/performance")
+    .then(function(types) {
+      result = types;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got load result");
+  var schema = result["/film/performance"];
+  ok(!typeloader.was_cached(schema), "/film/performance should NOT have been cached");
+  assert_film_performance_schema(schema, false);
 
-    assert_key(schema, "/freebase/type_hints/mediator", true, "/film/performance is a mediator");
+  // reload should get cached schema
+  typeloader.load("/film/performance")
+    .then(function(types) {
+      result = types;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got load result");
+  schema = result["/film/performance"];
+  ok(typeloader.was_cached(schema), "/film/performance should have been cached");
+  assert_film_performance_schema(schema, false);
+});
 
-    var props = schema.properties;
-    // assert /film/performance/film schema.properties[]
-    var prop;
-    for (i=0,l=props.length; i<l; i++) {
-      if (props[i].id === "/film/performance/film") {
-        prop = props[i];
-        break;
-      }
+test("load deep", function() {
+  acre.cache.remove(typeloader.cache_key("/film/performance"));
+
+  var result;
+  typeloader.load(true, "/film/performance")
+    .then(function(types) {
+      result = types;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got load result");
+  var schema = result["/film/performance"];
+  ok(!typeloader.was_cached(schema), "/film/performance should NOT have been cached");
+  assert_film_performance_schema(schema, true);
+
+  // reload should get cached schema
+  typeloader.load(true, "/film/performance")
+    .then(function(types) {
+      result = types;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got load result");
+  schema = result["/film/performance"];
+  ok(typeloader.was_cached(schema), "/film/performance should have been cached");
+  assert_film_performance_schema(schema, true);
+});
+
+
+function assert_film_performance_schema(schema, deep) {
+  var i,l;
+
+  assert_key(schema, "/freebase/type_hints/mediator", true, "/film/performance is a mediator");
+
+  var props = schema.properties;
+  // assert /film/performance/film schema.properties[]
+  var prop;
+  for (i=0,l=props.length; i<l; i++) {
+    if (props[i].id === "/film/performance/film") {
+      prop = props[i];
+      break;
     }
-    ok(prop, "Got /film/performance/film property");
-    assert_key(prop, "unique", true, "/film/performance/film is unique");
+  }
+  ok(prop, "Got /film/performance/film property");
+  assert_key(prop, "unique", true, "/film/performance/film is unique");
 
-    // assert /film/performance/film expected type
-    var ect = prop.expected_type;
-    assert_key(ect, "id", "/film/film");
+  // assert /film/performance/film expected type
+  var ect = prop.expected_type;
+  assert_key(ect, "id", "/film/film");
+  assert_key(ect, "/freebase/type_hints/mediator", false, "/film/film is NOT a mediator");
 
+  if (deep) {
     var subprops = ect.properties;
-    ok(h.isArray(subprops), "Got subproperties");
+    ok(h.isArray(subprops), "Got deep properties");
 
     var subprop;
     for (i=0,l=subprops.length; i<l; i++) {
@@ -147,30 +197,10 @@ test("load", function() {
     ect = subprop.expected_type;
     assert_key(ect, "id", "/type/datetime");
     assert_key(ect, "/freebase/type_hints/mediator", false, "/type/datetime is NOT a mediator");
-  };
-
-  var result;
-  typeloader.load("/film/performance")
-    .then(function(types) {
-      result = types;
-    });
-  acre.async.wait_on_results();
-  ok(result, "Got load result");
-  var schema = result["/film/performance"];
-  ok(!typeloader.was_cached(schema), "/film/performance should NOT have been cached");
-  assert_film_performance_schema(schema);
-
-  // reload should get cached schema
-  typeloader.load("/film/performance")
-    .then(function(types) {
-      result = types;
-    });
-  acre.async.wait_on_results();
-  ok(result, "Got load result");
-  schema = result["/film/performance"];
-  ok(typeloader.was_cached(schema), "/film/performance should have been cached");
-  assert_film_performance_schema(schema);
-});
-
+  }
+  else {
+    ok(typeof ect.properties === "undefined", "Should not contain deep properties");
+  }
+};
 
 acre.test.report();

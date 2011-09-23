@@ -39,22 +39,33 @@ var SCHEMA_KEY_PREFIX = "lib/schema/typeloader.sjs:";
  * return the canonical schema representation of each type id passed in as argument.
  *
  * A canonical schema of a type includes:
- * type -> properties -> expected_type -> properties -> expected_type
+ * type -> properties -> expected_type [-> properties -> expected_type]
  *
  * Behind the scenes, typeloader uses acre.cache to cache already loaded type schemas.
  * So using typeloader should be much faster, then always doing a mqlread.
  *
  * Usage:
  *
- * load(type1, type2, type3)
+ * load(type1, type2, ..., typeN)
  *   .then(function(schemas) {
  *     var type1_schema = schemas[type1];
  *     ...
  *   });
  *
+ * load(true, type1, type2, ..., typeN)
+ *   .then(function(schemas) {
+ *     var type1_schema = schemas[type1];
+ *     var deep_property =  type1_schema.properties[0].expected_type.properties[0];
+ *   });
+ *
  **/
 function load() {
-  return _load.apply(null, arguments)
+  var type_ids = Array.prototype.slice.call(arguments);
+  var deep = false;
+  if (typeof type_ids[0] === "boolean") {
+    deep = type_ids.shift();
+  }
+  return _load.apply(null, type_ids)
     .then(function(types) {
       var ect_ids = [];
       var ect_map = {};
@@ -74,48 +85,52 @@ function load() {
       if (ect_ids.length) {
         return _load.apply(null, ect_ids)
           .then(function(expected_types) {
-            for (var type_id in expected_types) {
-              var type = expected_types[type_id];
-              var ects = ect_map[type_id];
+            for (var ect_id in expected_types) {
+              var type = expected_types[ect_id];
+              var ects = ect_map[ect_id];
               ects.forEach(function(ect) {
                 h.extend(ect, type);
               });
             }
             return types;
-          })
-          .then(function(types) {
-            // expand type.properties[].expected_type.properties[].expected_type
-            var ect_ids = [];
-            var ect_map = {};
-            for (var type_id in types) {
-              types[type_id].properties.forEach(function(prop) {
-                prop.expected_type.properties.forEach(function(subprop) {
-                  var ect = subprop.expected_type;
-                  var ects = ect_map[ect.id];
-                  if (!ects) {
-                    ects = ect_map[ect.id] = [];
-                    ect_ids.push(ect.id);
-                  }
-                  ects.push(ect);
-                });
-              });
-            }
-            if (ect_ids.length) {
-              return _load.apply(null, ect_ids)
-                .then(function(expected_types) {
-                   for (var type_id in expected_types) {
-                     var type = expected_types[type_id];
-                     // don't include sub-level expected_type properties
-                     delete type.properties;
-                     var ects = ect_map[type_id];
-                     ects.forEach(function(ect) {
-                       h.extend(ect, type);
-                     });
-                   }
-                   return types;
-                });
-            }
-            return types;
+          });
+      }
+      return types;
+    })
+    .then(function(types) {
+      var ect_ids = [];
+      var ect_map = {};
+      for (var type_id in types) {
+        types[type_id].properties.forEach(function(prop) {
+          if (deep) {
+            prop.expected_type.properties.forEach(function(subprop) {
+              var ect = subprop.expected_type;
+              var ects = ect_map[ect.id];
+              if (!ects) {
+                ects = ect_map[ect.id] = [];
+                ect_ids.push(ect.id);
+              }
+              ects.push(ect);
+            });
+          }
+          else {
+            delete prop.expected_type.properties;
+          }
+        });
+      }
+      if (deep && ect_ids.length) {
+        return _load.apply(null, ect_ids)
+          .then(function(expected_types) {
+             for (var type_id in expected_types) {
+               var type = expected_types[type_id];
+               // don't include sub-level expected_type properties
+               delete type.properties;
+               var ects = ect_map[type_id];
+               ects.forEach(function(ect) {
+                 h.extend(ect, type);
+               });
+             }
+             return types;
           });
       }
       return types;

@@ -50,7 +50,8 @@
         <th scope="col" class="column-header">${_('Last Active')}</th>
         <th scope="col" class="column-header">${_('Objects created')}</th>
         <th scope="col" class="column-header">${_('Links created')}</th>
-        <th scope="col" class="column-header">${_('Loader')}</th>
+        <th scope="col" class="column-header">${_('Creator')}</th>
+        <th scope="col" class="column-header">${_('Operator')}</th>
       </tr>
     </thead>
     <tbody>
@@ -65,11 +66,13 @@
         <td class="odd">
           ${image.user_image_tiny(l.creator)}
           ${components.creator(l.creator)}
+        </td>
+        <td class="even">
           <acre:block if="l.creator !== l.operator">
-            ${_('by')}
             ${image.user_image_tiny(l.operator)}
             ${components.creator(l.operator)}
           </acre:block>
+          <acre:block else="">-</acre:block>
         </td>
       </tr>
     </tbody>

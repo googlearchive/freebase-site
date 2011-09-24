@@ -72,10 +72,6 @@
   </acre:block>
 </acre:block>
 
-<acre:block def="title()">
-  ${_("What's New")}
-</acre:block>
-
 <acre:block def="content(exports)">
   <div id="content" class="clear" itemscope="" data-id="${c.object.id}">
     ${content_body()}
@@ -85,7 +81,7 @@
 <acre:block def="content_body()">
   <div id="page-header">
     <div class="page-title" style="margin-left:40px">
-      <h1>${_("What's New")}</h1>
+      <h1>${_("Freebase: A community-curated database of well-known people, places and things")}</h1>
     </div>
     <div class="nav clear">
       ${nav_tabs()}

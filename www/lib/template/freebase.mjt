@@ -204,7 +204,6 @@
     <ul class="clear search" id="nav-global">
       <li><a href="/browse">${_("Browse")}</a></li>
       <li><a href="/query">${_("Query")}</a></li>
-      <li><a href="/new">${_("New")}</a></li>
       <li>
         <a href="${h.wiki_url()}"
           title="Give help and get help adding data to Freebase">

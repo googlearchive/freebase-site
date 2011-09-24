@@ -117,6 +117,27 @@
         <a acre:else="" href="${url}"><span>${_(tab.name)}</span></a>
       </li>
     </acre:block>
+    <li acre:if="c.more_tabs && c.more_tabs.length">
+      <ul class="inline-menu nicemenu">
+        <li class="inline-menu-item nicemenu-item">
+          <a  href="#" class="headmenu">
+            <span>More...</span>
+          </a>
+          <ul class="row-menu submenu right object-settings">
+            <acre:block for="tab in c.more_tabs">
+              <acre:script>
+                var url = "?" + tab.key + (qs.length ? "&" + qs : "");
+                var current = (tab.key === c.current_tab.key);
+              </acre:script>
+              <li>
+                <a acre:if="current" href="#" onclick="return false;" class="current"><span>${_(tab.name)}</span></a>
+                <a acre:else="" href="${url}"><span>${_(tab.name)}</span></a>
+              </li>
+            </acre:block>
+          </ul>
+        </li>
+      </ul>
+    </li>
   </ul>
 </acre:block>
 

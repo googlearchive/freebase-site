@@ -1,0 +1,108 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  
+  var templates = acre.require("templates");
+  var queries = acre.require("queries");
+
+  var user_id = acre.request.params.user_id;
+</acre:script>
+
+<acre:block def="head()">
+  <meta name="description" 
+        content="A social database about things you know and love, spanning millions of topics in 
+                 thousands of categories. Explore Freebase, add to it, or build applications with it.">
+  <meta name="keywords" 
+        content="database, open database, shared database, facts, fact sheet, information, community,
+                 discussion, semantic web, metaweb, arts &amp; entertainment, society, sports, 
+                 products &amp; services, time &amp; space, money, science &amp; technology, 
+                 special interests, system" >
+  <meta name="robots" content="noodp">
+  <link rel="canonical" href="http://www.freebase.com" />
+  
+  <script acre:if="acre.request.base_path == '/'">
+    var m = /${h.account_cookie_name()}\=([^;\s]*)/.exec(document.cookie);
+    if (m) {
+      window.location.href= "/user/" + m[1];
+    }
+  </script>
+  <link rel="stylesheet" type="text/css" href="browse.mf.css" />
+</acre:block>
+
+<acre:block def="page_content()">
+  <div id="content-main" role="main">
+    <div class="section">
+      <form id="domain-search-form" method="get">
+        <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-commons" checked="checked" />${_('Freebase Commons')}</label>
+        <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" />${_('All Domains')}</label>
+        <fieldset>
+          <input type="text" name="id" class="text-input" id="domain-search-input" id="domain-search-input" placeholder="${_('Start typing for suggested domains...')}" />
+        </fieldset>
+      </form>
+    </div>
+    <table cellspacing="0" class="table table-sortable">
+      <thead>
+        <tr>
+          <th scope="col" class="column-header"><span class="sort-icon">${_('Domain')}</span></th>
+          <th scope="col" class="column-header column-header-desc"><span class="sort-icon">${_('ID')}</span></th>
+          <th scope="col" class="column-header">${_('Activity')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr acre:for="d in c.domains">
+          <th class="row-header odd" scope="row">
+            <acre:script>var name = i18n.display_name(d);</acre:script>
+            <a href="${h.fb_url(d.id, [['schema','']])}" title="${h.sprintf(_('View %s'), name)}">$name</a>
+          </th>
+          <td class="even">$d.id</td>
+          <td class="odd">${templates.activity_section(d)}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="content-side">
+    ${templates.what_is_freebase()}
+    ${templates.for_developers()}
+    ${templates.wiki_entries(c.wiki)}
+    ${templates.join_discussion()}
+  </div>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="homepage.mf.js"></script>
+</acre:block>

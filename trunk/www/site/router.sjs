@@ -70,7 +70,7 @@ function CustomRouter(app_labels) {
 
   this.route = function(req) {
     // This only applies to "/"
-    if (req.path_info === "/") {
+    if (false && req.path_info === "/") {
       // let object router handle ?inspect
       if ("inspect" in req.params) {
         return false;
@@ -82,7 +82,7 @@ function CustomRouter(app_labels) {
     } else
     
     // only applies to "/new"
-    if (req.path_info === "/new"){
+    if (req.path_info === "/" || req.path_info === "/browse"){
       var tabs = config["new_tabs"];
       
       tabs.forEach(function(item) {
@@ -418,37 +418,43 @@ function init_site_rules(lib) {
   rules["custom"] = {
     new_tabs: [
       {
-        "name": "Data Loads",
+        "name": "Data",
+        "key": "data",
+        "app": "homepage",
+        "script": "browse.tab"
+      },
+      {
+        "name": "New Loads",
         "key": "loads",
         "app": "activity",
         "script": "new.tab"
       },
       {
-        "name": "Schema",
+        "name": "New Schema",
         "key": "schema",
         "app": "schema",
         "script": "new.tab"
       },
      {
-       "name": "Apps",
+       "name": "New Apps",
        "key": "apps",
        "app": "apps",
        "script": "new.tab"
      },
      {
-       "name": "Queries",
+       "name": "New Queries",
        "key": "queries",
        "app": "sample",
        "script": "empty_new.tab"
      },
      {
-       "name": "Users",
+       "name": "New Users",
        "key": "users",
        "app": "sample",
        "script": "empty_new.tab"
      },
      {
-       "name": "Review Tasks",
+       "name": "Review Queue",
        "key": "tasks",
        "app": "sample",
        "script": "empty_new.tab"

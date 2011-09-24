@@ -47,9 +47,9 @@
   <table cellspacing="0" class="table table-sortable">
     <thead>
       <tr>
-        <th scope="col" class="column-header"><span class="sort-icon">${_('Domain')}</span></th>
-        <th scope="col" class="column-header column-header-desc"><span class="sort-icon">${_('ID')}</span></th>
-        <th scope="col" class="column-header column-header-desc"><span class="sort-icon">${_('Recent Changes')}</span></th>
+        <th scope="col" class="column-header">${_('Domain')}</th>
+        <th scope="col" class="column-header">${_('ID')}</th>
+        <th scope="col" class="column-header">${_('Recent Changes')}</th>
       </tr>
     </thead>
     <tbody>
@@ -70,9 +70,9 @@
               ${components.creator(change.creator.id)}
               ${_('added')}
               <a href="${h.fb_url(change.property.id, [['schema','']])}" title="${h.sprintf(_('View %s'), pname)}">$pname</a>
-              ${_('property to')}
+              ${_('to')}
               <a href="${h.fb_url(change.type.id, [['schema','']])}" title="${h.sprintf(_('View %s'), tname)}">$tname</a>
-              ${h.relative_date(acre.freebase.date_from_iso(change.timestamp))}
+              ${h.relative_date(change.timestamp)}
             </li>
         </td>
       </tr>

@@ -34,6 +34,7 @@ var freebase = apis.freebase;
 var deferred = apis.deferred;
 var typeloader = acre.require("schema/typeloader.sjs");
 var assert = typeloader.assert;
+var validators = acre.require("validator/validators.sjs");
 
 /**
  * Property (schema) loader.
@@ -69,9 +70,7 @@ function load() {
   var seen = {};
   prop_ids.forEach(function(prop_id) {
     result[prop_id] = null;
-    var parts = prop_id.split("/");
-    parts.pop();
-    var type_id = parts.join("/");
+    var type_id = get_type_id(prop_id);
     if (!seen[type_id]) {
       type_ids.push(type_id);
       seen[type_id] = 1;
@@ -101,4 +100,100 @@ function load() {
     });
 };
 
+/**
+ * Get the prefix ns of a fully qualified prop_id, which is the type id.
+ *
+ * get_type_id("/a/b/c") ==> "/a/b"
+ */
+function get_type_id(prop_id) {
+  assert(is_prop_id(prop_id), "Expected a fully qualified property id");
+  var parts = prop_id.split("/");
+  parts.pop();
+  var type_id = parts.join("/");
+  return type_id;
+};
 
+/**
+ * Is prop_id a fully qualified property path/id?
+ */
+function is_prop_id(prop_id) {
+  var r = validators.MqlId(prop_id, {if_empty:null, if_invalid:null});
+  if (r) {
+    // property paths should be at least 3 levels
+    // /domain/type/path
+    var parts = prop_id.split("/");
+    return parts.length > 3;
+  }
+  else {
+    return false;
+  }
+};
+
+/**
+ * Usage:
+ *
+ * load_paths("/film/film/directed_by./people/person/date_of_birth")
+ */
+function load_paths() {
+  var paths =  Array.prototype.slice.call(arguments);
+  var path_map = {};
+  var prop_ids = [];
+  var seen = {};
+  paths.forEach(function(path) {
+    var parts = path.split(".", 2);
+    if (parts.length) {
+      var first = parts[0];
+      assert(is_prop_id(first), "First property path must be fully qualified");
+      if (!seen[first]) {
+        prop_ids.push(first);
+        seen[first] = 1;
+      }
+      var p = path_map[path] = [first];
+      var second = null;
+      if (parts.length === 2 && first) {
+        second = parts[1];
+        assert(is_prop_id(second), "First property path must be fully qualified");
+        // TODO: support relative second property id
+        if (!seen[second]) {
+          prop_ids.push(second);
+          seen[second] = 1;
+        }
+        p.push(second);
+      }
+    }
+  });
+  return load.apply(null, prop_ids)
+    .then(function(props) {
+      var result = {};
+      paths.forEach(function(path) {
+        var parts = path_map[path];
+        var first = parts[0];
+        var prop1 = props[first];
+        assert(prop1, "Property did not load", first);
+        prop1 = h.extend(true, {}, prop1);
+        var existing = result[first];
+        if (!existing) {
+          existing = result[first] = prop1;
+          existing._subprops = [];
+        }
+        if (parts.length === 2) {
+          var second = parts[1];
+          var prop2 = props[second];
+          assert(prop2, "Property did not load", second);
+          prop2 = h.extend(true, {}, prop2);
+          existing._subprops.push(prop2);
+          delete prop2.expected_type.properties;
+        }
+      });
+      for (var key in result) {
+        var prop = result[key];
+        var subprops = prop._subprops;
+        if (subprops && subprops.length) {
+          prop.expected_type.properties = subprops;
+        }
+        // delete temp attr
+        delete prop._subprops;
+      }
+      return result;
+    });
+};

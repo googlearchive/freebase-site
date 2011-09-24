@@ -92,7 +92,11 @@ function modified_domains(opts) {
           },
           value: null,
           link: {
-            timestamp: null
+            timestamp: null,
+            creator: {
+              id: null,
+              name: i18n.mql.query.name()
+            }
           },
           limit: 1
         }

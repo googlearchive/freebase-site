@@ -452,26 +452,26 @@ function init_site_rules(lib) {
         "app": "schema",
         "script": "new.tab"
       },
-     {
-       "name": "New Apps",
-       "key": "apps",
-       "app": "apps",
-       "script": "new.tab"
-     },
-     {
-       "name": "Review Queue",
-       "key": "tasks",
-       "app": "sample",
-       "script": "empty_new.tab"
-     }
+      {
+        "name": "New Queries",
+        "key": "queries",
+        "app": "query",
+        "script": "browse.tab"
+      },
+      {
+        "name": "New Apps",
+        "key": "apps",
+        "app": "apps",
+        "script": "new.tab"
+      },
+      {
+        "name": "Review Queue",
+        "key": "tasks",
+        "app": "sample",
+        "script": "empty_new.tab"
+      }
     ],
     more_tabs: [
-     {
-       "name": "New Queries",
-       "key": "queries",
-       "app": "sample",
-       "script": "empty_new.tab"
-     },
      {
        "name": "New Users",
        "key": "users",
@@ -665,7 +665,7 @@ function init_site_rules(lib) {
       "more_tabs": h.extend(true, [], DEFAULT_TABS),
       "navs": [
         {
-          "name": "<b>Message</b> User",
+          "name": "<b>Discuss</b> with this user",
           "url": h.legacy_fb_url("/discuss/threads${id}")
         },
         {

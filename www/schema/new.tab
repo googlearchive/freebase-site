@@ -29,6 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var validators = acre.require("lib/validator/validators.sjs");
 var queries = acre.require("queries.sjs");
 
 var SPEC = {
@@ -37,11 +38,17 @@ var SPEC = {
   
   template_base: "site/template/freebase_new.mjt",
 
-  validate: function() { return []; },
-
-  run: function() {
+  validate: function(params) { 
+    return [
+      validators.Int(params, "days", {if_missing: 90}),
+      validators.Int(params, "changes", {if_missing: 5})
+    ]; 
+  },
+  
+  run: function(days, changes, domains) {
     return {
-      domains: queries.modified_domains()
+      days: days,
+      domains: queries.modified_domains(days, changes, domains)
     };
   }
   

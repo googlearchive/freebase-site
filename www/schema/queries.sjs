@@ -95,11 +95,8 @@ function domains(q) {
     });
 };
 
-function modified_domains(opts) {
-  opts = opts || {};
-  var max_age = opts.max_age || 7776000;  //three months
-  var max_changes = opts.max_changes || 5;
-  var q = mql.modified_domains(opts);
+function modified_domains(days, changes) {
+  var q = mql.modified_domains(days);
   return freebase.mqlread(q)
     .then(function(env) {
       return env.result || [];
@@ -114,25 +111,23 @@ function modified_domains(opts) {
         d.types.forEach(function(t) {
           t.properties.forEach(function(p) {
             var timestamp = acre.freebase.date_from_iso(p.key.link.timestamp);
-            if (Date.now() - timestamp < max_age * 1000) {
-              domain.changes.push({
-                property: {
-                  id: p.id,
-                  name: p.name
-                },
-                type: {
-                  id: t.id,
-                  name: t.name
-                },
-                timestamp: timestamp,
-                creator: p.key.link.creator
-              });              
-            }
+            domain.changes.push({
+              property: {
+                id: p.id,
+                name: p.name
+              },
+              type: {
+                id: t.id,
+                name: t.name
+              },
+              timestamp: timestamp,
+              creator: p.key.link.creator
+            });
           });
         });
         domain.changes = domain.changes.sort(function(a, b) {
           return b.timestamp - a.timestamp;
-        }).slice(0, max_changes);
+        }).slice(0, changes);
         return domain;
       });
     })

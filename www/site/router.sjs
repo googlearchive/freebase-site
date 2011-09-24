@@ -517,10 +517,6 @@ function init_site_rules(lib) {
           "app": "admin",
           "ajax": "app_settings.mf.js",
           "auth": true // add "edit" class
-        },
-        {
-          "name": "View source",
-          "url": h.fb_url("/appeditor/#!app=${id}")
         }
       ]
     },
@@ -554,6 +550,10 @@ function init_site_rules(lib) {
       ],
       "more_tabs": h.extend(true, [], DEFAULT_TABS),
       "navs": [
+        {
+          "name": "<b>Discuss</b> Domain",
+          "url": h.legacy_fb_url("/discuss/threads${id}")
+        },
         {
           "name": "Edit Settings",
           "app": "admin",
@@ -665,6 +665,10 @@ function init_site_rules(lib) {
       "more_tabs": h.extend(true, [], DEFAULT_TABS),
       "navs": [
         {
+          "name": "<b>Message</b> User",
+          "url": h.legacy_fb_url("/discuss/threads${id}")
+        },
+        {
           "name": "Edit Profile",
           "app": "admin",
           "ajax": "user_settings.mf.js",
@@ -765,6 +769,14 @@ function init_site_rules(lib) {
       ],
       "tabs": h.extend(true, [], DEFAULT_TABS),
       "navs": [
+        {
+          "name": "<b>Discuss</b> Topic",
+          "url": h.legacy_fb_url("/discuss/threads${id}")
+        },
+        {
+          "name": "<b>Edit</b> on old site",
+          "url": h.legacy_fb_url("/edit/topic${id}")
+        },
         {
           "name": "<span class=\"submenu-title\">Flag Topic</span>",
           "subnavs": [{

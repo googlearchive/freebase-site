@@ -39,11 +39,10 @@
   var image = acre.require("lib/template/imagecomponents.mjt");
 </acre:script>
 
-<acre:block def="head()">
-  <link rel="stylesheet" type="text/css" href="new.mf.css" />
-</acre:block>
-
 <acre:block def="page_content()">
+  <h2 class="table-title">
+    ${_('Domains changed in past')} $c.days ${_('days')}
+  </h2>
   <table cellspacing="0" class="table table-sortable">
     <thead>
       <tr>

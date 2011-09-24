@@ -31,6 +31,7 @@
 
 var h = acre.require("lib/helper/helpers.sjs");
 var i18n = acre.require("lib/i18n/i18n.sjs");
+var datejs = acre.require("lib/helper/helpers.sjs");
 
 function domains(options) {
   return [h.extend({
@@ -69,9 +70,8 @@ function domain(options) {
   }, options);
 };
 
-function modified_domains(opts) {
-  opts = opts || {};
-  var limit = opts.limit || 25;
+function modified_domains(days) {
+  var timestamp = acre.freebase.date_to_iso(datejs.Date.today().addDays(-days));
   var q = [{
     id: null,
     name: i18n.mql.query.name(),
@@ -93,6 +93,7 @@ function modified_domains(opts) {
           value: null,
           link: {
             timestamp: null,
+            "timestamp>": timestamp,
             creator: {
               id: null,
               name: i18n.mql.query.name()
@@ -110,7 +111,7 @@ function modified_domains(opts) {
       optional: "forbidden"
     },
     sort: "-types.properties.key.link.timestamp",
-    limit: limit
+    limit: 1000
   }];
     
   return q;

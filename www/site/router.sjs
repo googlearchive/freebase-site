@@ -68,28 +68,24 @@ function CustomRouter(app_labels) {
     config = rules;
   };
 
-  this.route = function(req) {
-    // This only applies to "/"
-    if (false && req.path_info === "/") {
-      // let object router handle ?inspect
-      if ("inspect" in req.params) {
-        return false;
-      }
-
-      // otherwise run the logged-out homepage, which will redirect to user page if logged-in
-      acre.route(acre.form.build_url(app_labels["homepage"] + "/index.controller", req.params));
-      acre.exit();
-    } else
-    
-    // only applies to "/new"
-    if (req.path_info === "/" || req.path_info === "/browse"){
-      var tabs = config["new_tabs"];
+  this.route = function(req) {    
+    // only applies to homepage and "/browse"
+    if ((req.path_info === "/browse") || 
+        (req.path_info === "/" && !(
+          ("props" in req.params) || ("links" in req.params) || ("ids" in req.params)
+        ))) {
+      var rule = {
+        tabs: config["tabs"],
+        more_tabs: config["more_tabs"]
+      };
       
-      tabs.forEach(function(item) {
-        set_app(item, app_labels);
+      [rule.tabs, rule.more_tabs].forEach(function(tabs) {
+        tabs.forEach(function(item) {
+          set_app(item, app_labels);
+        });
       });
       
-      acre.write(acre.require("template/freebase_object.sjs").main({tabs:tabs}, o));
+      acre.write(acre.require("template/freebase_object.sjs").main(rule, o));
       acre.exit();
     }
 
@@ -415,8 +411,29 @@ function init_site_rules(lib) {
     }
   ];
   
+  var DEFAULT_TABS = [
+    {
+      "name": "Properties",
+      "key": "props",
+      "app": "topic",
+      "script": "topic.tab"
+    },
+    {
+      "name": "Identifiers",
+      "key": "ids",
+      "app": "sameas",
+      "script": "sameas.tab"
+    },
+    {
+      "name": "Links",
+      "key": "links",
+      "app": "triples",
+      "script": "triples.tab"
+    }
+  ];
+  
   rules["custom"] = {
-    new_tabs: [
+    tabs: [
       {
         "name": "Data",
         "key": "data",
@@ -442,6 +459,14 @@ function init_site_rules(lib) {
        "script": "new.tab"
      },
      {
+       "name": "Review Queue",
+       "key": "tasks",
+       "app": "sample",
+       "script": "empty_new.tab"
+     }
+    ],
+    more_tabs: [
+     {
        "name": "New Queries",
        "key": "queries",
        "app": "sample",
@@ -450,12 +475,6 @@ function init_site_rules(lib) {
      {
        "name": "New Users",
        "key": "users",
-       "app": "sample",
-       "script": "empty_new.tab"
-     },
-     {
-       "name": "Review Queue",
-       "key": "tasks",
        "app": "sample",
        "script": "empty_new.tab"
      }
@@ -491,26 +510,7 @@ function init_site_rules(lib) {
           "script": "app.tab"
         }
       ],
-      "more_tabs": [
-        {
-          "name": "Properties",
-          "key": "props",
-          "app": "topic",
-          "script": "topic.tab"
-        },
-        {
-          "name": "Links",
-          "key": "links",
-          "app": "triples",
-          "script": "triples.tab"
-        },
-        {
-          "name": "Identifiers",
-          "key": "ids",
-          "app": "sameas",
-          "script": "sameas.tab"
-        }
-      ],
+      "more_tabs": h.extend(true, [], DEFAULT_TABS),
       "navs": [
         {
           "name": "Edit Settings",
@@ -552,26 +552,7 @@ function init_site_rules(lib) {
           "script": "group.tab"
         }
       ],
-      "more_tabs": [
-        {
-          "name": "Properties",
-          "key": "props",
-          "app": "topic",
-          "script": "topic.tab"
-        },
-        {
-          "name": "Links",
-          "key": "links",
-          "app": "triples",
-          "script": "triples.tab"
-        },
-        {
-          "name": "Identifiers",
-          "key": "ids",
-          "app": "sameas",
-          "script": "sameas.tab"
-        }
-      ],
+      "more_tabs": h.extend(true, [], DEFAULT_TABS),
       "navs": [
         {
           "name": "Edit Settings",
@@ -603,26 +584,7 @@ function init_site_rules(lib) {
           "script": "type.tab"
         }
       ],
-      "more_tabs": [
-        {
-          "name": "Properties",
-          "key": "props",
-          "app": "topic",
-          "script": "topic.tab"
-        },
-        {
-          "name": "Links",
-          "key": "links",
-          "app": "triples",
-          "script": "triples.tab"
-        },
-        {
-          "name": "Identifiers",
-          "key": "ids",
-          "app": "sameas",
-          "script": "sameas.tab"
-        }
-      ],
+      "more_tabs": h.extend(true, [], DEFAULT_TABS),
       "navs": [
         {
           "name": "Edit Settings",
@@ -664,26 +626,7 @@ function init_site_rules(lib) {
           "script": "property.tab"
         }
       ],
-      "more_tabs": [
-        {
-          "name": "Properties",
-          "key": "props",
-          "app": "topic",
-          "script": "topic.tab"
-        },
-        {
-          "name": "Links",
-          "key": "links",
-          "app": "triples",
-          "script": "triples.tab"
-        },
-        {
-          "name": "Identifiers",
-          "key": "ids",
-          "app": "sameas",
-          "script": "sameas.tab"
-        }
-      ]
+      "more_tabs": h.extend(true, [], DEFAULT_TABS),
     },
     {
       "type": "/type/user",
@@ -719,26 +662,7 @@ function init_site_rules(lib) {
           "script": "empty.tab"
         }
       ],
-      "more_tabs": [
-        {
-          "name": "Properties",
-          "key": "props",
-          "app": "topic",
-          "script": "topic.tab"
-        },
-        {
-          "name": "Links",
-          "key": "links",
-          "app": "triples",
-          "script": "triples.tab"
-        },
-        {
-          "name": "Identifiers",
-          "key": "ids",
-          "app": "sameas",
-          "script": "sameas.tab"
-        }
-      ],
+      "more_tabs": h.extend(true, [], DEFAULT_TABS),
       "navs": [
         {
           "name": "Edit Profile",
@@ -776,26 +700,7 @@ function init_site_rules(lib) {
           "script": "mql.tab"
         }
       ],
-      "more_tabs": [
-        {
-          "name": "Properties",
-          "key": "props",
-          "app": "topic",
-          "script": "topic.tab"
-        },
-        {
-          "name": "Links",
-          "key": "links",
-          "app": "triples",
-          "script": "triples.tab"
-        },
-        {
-          "name": "Identifiers",
-          "key": "ids",
-          "app": "sameas",
-          "script": "sameas.tab"
-        }
-      ],
+      "more_tabs": h.extend(true, [], DEFAULT_TABS),
       "navs": [
         {
           "name": "Edit Settings",
@@ -829,16 +734,16 @@ function init_site_rules(lib) {
       ],
       "more_tabs": [
         {
-          "name": "Links",
-          "key": "links",
-          "app": "triples",
-          "script": "triples.tab"
-        },
-        {
           "name": "Identifiers",
           "key": "ids",
           "app": "sameas",
           "script": "sameas.tab"
+        },
+        {
+          "name": "Links",
+          "key": "links",
+          "app": "triples",
+          "script": "triples.tab"
         }
       ],
     },
@@ -858,26 +763,7 @@ function init_site_rules(lib) {
           "promise": "topic"
         }
       ],
-      "tabs": [
-        {
-          "name": "Properties",
-          "key": "props",
-          "app": "topic",
-          "script": "topic.tab"
-        },
-        {
-          "name": "Links",
-          "key": "links",
-          "app": "triples",
-          "script": "triples.tab"
-        },
-        {
-          "name": "Identifiers",
-          "key": "ids",
-          "app": "sameas",
-          "script": "sameas.tab"
-        }
-      ],
+      "tabs": h.extend(true, [], DEFAULT_TABS),
       "navs": [
         {
           "name": "<span class=\"submenu-title\">Flag Topic</span>",
@@ -905,26 +791,7 @@ function init_site_rules(lib) {
         "script": "queries/breadcrumbs.sjs",
         "promise": "object"
       }]),
-      "tabs": [
-        {
-          "name": "Properties",
-          "key": "props",
-          "app": "topic",
-          "script": "topic.tab"
-        },
-        {
-          "name": "Links",
-          "key": "links",
-          "app": "triples",
-          "script": "triples.tab"
-        },
-        {
-          "name": "Identifiers",
-          "key": "ids",
-          "app": "sameas",
-          "script": "sameas.tab"
-        }
-      ]
+      "tabs": h.extend(true, [], DEFAULT_TABS)
     }
   ];
 

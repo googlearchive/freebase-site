@@ -95,6 +95,50 @@ function domains(q) {
     });
 };
 
+function modified_domains(opts) {
+  opts = opts || {};
+  var max_age = opts.max_age || 7776000;  //three months
+  var max_changes = opts.max_changes || 5;
+  var q = mql.modified_domains(opts);
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result || [];
+    })
+    .then(function(domains) {
+      return domains.map(function(d) {
+        var domain = {
+          id: d.id,
+          name: d.name,
+          changes: []
+        };
+        d.types.forEach(function(t) {
+          t.properties.forEach(function(p) {
+            var timestamp = p.key.link.timestamp;
+            var age = Date.now() - acre.freebase.date_from_iso(timestamp);
+            if (age < max_age * 1000) {
+              domain.changes.push({
+                property: {
+                  id: p.id,
+                  name: p.name
+                },
+                type: {
+                  id: t.id,
+                  name: t.name
+                },
+                timestamp: timestamp
+              });              
+            }
+          });
+        });
+        domain.changes = domain.changes.sort(function(a, b) {
+          return b-a;
+        }).slice(0, max_changes);
+        console.log(domain);
+        return domain;
+      });
+    })
+};
+
 /**
  * minimal domain query to get the name, key(s), and article
  */

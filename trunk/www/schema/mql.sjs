@@ -69,6 +69,50 @@ function domain(options) {
   }, options);
 };
 
+function modified_domains(opts) {
+  opts = opts || {};
+  var limit = opts.limit || 25;
+  var q = [{
+    id: null,
+    name: i18n.mql.query.name(),
+    type: "/type/domain",
+    types: [{
+      id: null,
+      name: i18n.mql.query.name(),
+      properties: [{
+        id: null,
+        name: i18n.mql.query.name(),
+        key: {
+          namespace: {
+            type: "/type/type",
+            key: {
+              value: "topic",
+              optional: "forbidden"
+            }
+          },
+          value: null,
+          link: {
+            timestamp: null
+          },
+          limit: 1
+        }
+      }]
+    }],
+    key: {
+      value: "default_domain",
+      namespace: {
+        type: "/type/user"
+      },
+      optional: "forbidden"
+    },
+    sort: "-types.properties.key.link.timestamp",
+    limit: limit
+  }];
+    
+  return q;
+}
+
+
 function type(options) {
   return h.extend({
     id: null,

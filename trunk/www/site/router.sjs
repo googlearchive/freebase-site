@@ -417,27 +417,15 @@ function init_site_rules(lib) {
   
   rules["custom"] = {
     new_tabs: [
+        {
+          "name": "Schema",
+          "key": "schema",
+          "app": "schema",
+          "script": "new.tab"
+        },
        {
-         "name": "Loads",
+         "name": "Data Loads",
          "key": "loads",
-         "app": "sample",
-         "script": "empty_new.tab"
-       },
-       {
-         "name": "Review Tasks",
-         "key": "tasks",
-         "app": "sample",
-         "script": "empty_new.tab"
-       },
-       {
-         "name": "Schema",
-         "key": "schema",
-         "app": "sample",
-         "script": "empty_new.tab"
-       },
-       {
-         "name": "Queries",
-         "key": "queries",
          "app": "sample",
          "script": "empty_new.tab"
        },
@@ -448,8 +436,20 @@ function init_site_rules(lib) {
          "script": "new.tab"
        },
        {
+         "name": "Queries",
+         "key": "queries",
+         "app": "sample",
+         "script": "empty_new.tab"
+       },
+       {
          "name": "Users",
          "key": "users",
+         "app": "sample",
+         "script": "empty_new.tab"
+       },
+       {
+         "name": "Review Tasks",
+         "key": "tasks",
          "app": "sample",
          "script": "empty_new.tab"
        }

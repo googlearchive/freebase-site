@@ -113,9 +113,8 @@ function modified_domains(opts) {
         };
         d.types.forEach(function(t) {
           t.properties.forEach(function(p) {
-            var timestamp = p.key.link.timestamp;
-            var age = Date.now() - acre.freebase.date_from_iso(timestamp);
-            if (age < max_age * 1000) {
+            var timestamp = acre.freebase.date_from_iso(p.key.link.timestamp);
+            if (Date.now() - timestamp < max_age * 1000) {
               domain.changes.push({
                 property: {
                   id: p.id,
@@ -132,9 +131,8 @@ function modified_domains(opts) {
           });
         });
         domain.changes = domain.changes.sort(function(a, b) {
-          return b-a;
+          return b.timestamp - a.timestamp;
         }).slice(0, max_changes);
-        console.log(domain);
         return domain;
       });
     })

@@ -182,7 +182,7 @@ function was_cached(type) {
 
 function assert(truthy, msg) {
   if (!truthy) {
-    var msg_args = Array.prototype.slice(arguments, 1);
+    var msg_args = Array.prototype.slice.call(arguments, 1);
     throw msg_args.join(" ");
   }
 };

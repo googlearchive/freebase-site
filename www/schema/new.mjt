@@ -35,6 +35,8 @@
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
+  var components = acre.require("lib/template/components.mjt");
+  var image = acre.require("lib/template/imagecomponents.mjt");
 </acre:script>
 
 <acre:block def="head()">
@@ -64,10 +66,13 @@
                 var pname = i18n.display_name(change.property);
                 var tname = i18n.display_name(change.type);
               </acre:script>
+              ${image.user_image_tiny(change.creator)}
+              ${components.creator(change.creator.id)}
+              ${_('added')}
               <a href="${h.fb_url(change.property.id, [['schema','']])}" title="${h.sprintf(_('View %s'), pname)}">$pname</a>
-              ${_('added to')}
+              ${_('property to')}
               <a href="${h.fb_url(change.type.id, [['schema','']])}" title="${h.sprintf(_('View %s'), tname)}">$tname</a>
-              $change.timestamp
+              ${h.relative_date(acre.freebase.date_from_iso(change.timestamp))}
             </li>
         </td>
       </tr>

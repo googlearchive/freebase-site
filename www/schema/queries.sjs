@@ -125,7 +125,8 @@ function modified_domains(opts) {
                   id: t.id,
                   name: t.name
                 },
-                timestamp: timestamp
+                timestamp: timestamp,
+                creator: p.key.link.creator
               });              
             }
           });

@@ -45,7 +45,7 @@ var SPEC = {
 
   validate: function(params) { 
     return [
-      validators.Int(params, "days", {if_missing: 30})
+      validators.Int(params, "days", {if_missing: 7})
     ]; 
   },
 
@@ -92,7 +92,7 @@ function recent_users_mql(days) {
       "optional": true
     }],
     "/type/attribution/links": {
-      "return": "count"
+      "return": "count",
     },
     "/type/attribution/attributed": {
       "return": "count"

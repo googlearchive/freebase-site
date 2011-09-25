@@ -41,17 +41,17 @@
 
 <acre:block def="page_content()">
   <h2 class="table-title">
-    ${_('New users registering over past')} $c.days ${_('days')}
+    ${_('Recently created user accounts')}
   </h2>
   <table cellspacing="0" class="table table-sortable">
     <thead>
       <tr>
         <th scope="col" class="column-header">${_('User')}</th>
         <th scope="col" class="column-header">${_('Full Name')}</th>
-        <th scope="col" class="column-header">${_('Registered')}</th>
+        <th scope="col" class="column-header">${_('Created')}</th>
         <th scope="col" class="column-header">${_('Location')}</th>
-        <th scope="col" class="column-header">${_('Objects Created')}</th>
-        <th scope="col" class="column-header">${_('Links Created')}</th>
+        <th scope="col" class="column-header">${_('Objects created in past')}  $c.days ${_('days')}</th>
+        <th scope="col" class="column-header">${_('Links created in past')} $c.days ${_('days')}</th>
       </tr>
     </thead>
     <tbody>

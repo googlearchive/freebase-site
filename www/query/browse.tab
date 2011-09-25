@@ -85,7 +85,7 @@ function recent_queries_mql(days) {
     "name": i18n.mql.query.name(),
     "creator": null,
     "type": "/freebase/query",
-    "timestamp>": timestamp,
+    /*"timestamp>": timestamp,*/
     "timestamp": null,
     "sort": "-timestamp",
     "/common/document/content": {
@@ -113,7 +113,7 @@ function recent_queries_mql(days) {
       "value": "topic",
       "optional": "forbidden"
     },
-    "limit": 1000
+    "limit": 100
   }];
   return q;
 };

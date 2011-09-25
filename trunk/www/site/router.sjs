@@ -494,8 +494,8 @@ function init_site_rules(lib) {
         {
           "name": "Versions",
           "key": "versions",
-          "app": "sample",
-          "script": "empty.tab"
+          "app": "apps",
+          "script": "versions.tab"
         },
         {
           "name": "Editors",

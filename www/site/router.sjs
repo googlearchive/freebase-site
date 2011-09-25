@@ -463,18 +463,18 @@ function init_site_rules(lib) {
         "key": "apps",
         "app": "apps",
         "script": "new.tab"
-      },
-      {
-        "name": "Review Queue",
-        "key": "tasks",
-        "app": "sample",
-        "script": "empty_new.tab"
       }
     ],
     more_tabs: [
+      {
+        "name": "New Users",
+        "key": "users",
+        "app": "group",
+        "script": "browse.tab"
+      },
      {
-       "name": "New Users",
-       "key": "users",
+       "name": "Review Queue",
+       "key": "tasks",
        "app": "sample",
        "script": "empty_new.tab"
      }

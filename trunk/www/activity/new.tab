@@ -45,17 +45,35 @@ var SPEC = {
 
   validate: function(params) { 
     return [
-      validators.Int(params, "days", {if_missing: 90})
+      validators.Int(params, "days", {if_missing: 7})
     ]; 
   },
 
   run: function(days) {
     return {
       days: days,
+      users: recent_users(days),
       loads: recent_loads(days)
     }; 
   }
   
+};
+
+function recent_users(days) {
+  return freebase.mqlread(recent_users_mql(days))
+    .then(function(env) {
+      return env.result || [];
+    })
+    .then(function(users) {
+      return users.map(function(u) {
+        return {
+          id: u.id,
+          timestamp: acre.freebase.date_from_iso(u["s:/type/attribution/links"].timestamp),
+          objects: u["/type/attribution/attributed"],
+          links: u["/type/attribution/links"],
+        };
+      });
+    });
 };
 
 function recent_loads(days) {
@@ -79,8 +97,36 @@ function recent_loads(days) {
     });
 };
 
+function recent_users_mql(days) {
+  var timestamp = acre.freebase.date_to_iso(datejs.Date.today().addDays(-days));
+  var q = [{
+    "id": null,
+    "type": "/type/user",
+    "!bots:/type/usergroup/member": {
+      "id": "/freebase/bots",
+      "optional": "forbidden"
+    },
+    "s:/type/attribution/links": {
+      "timestamp": null,
+      "limit": 1
+    },
+    "/type/attribution/links": {
+      "timestamp>": timestamp,
+      "return": "count"
+    },
+    "/type/attribution/attributed": {
+      "timestamp>": timestamp,
+      "return": "count",
+      "optional": true
+    },
+    "sort": "-s:/type/attribution/links.timestamp",
+    "limit": 50
+  }];
+  return q;
+};
+
 function recent_loads_mql(days) {
-  var timestamp = acre.freebase.date_to_iso(datejs.Date.today().addDays(-(days || 30)));
+  var timestamp = acre.freebase.date_to_iso(datejs.Date.today().addDays(-days));
   var q = [{
     "id": null,
     "name": i18n.mql.query.name(),
@@ -97,13 +143,18 @@ function recent_loads_mql(days) {
       },
       "attributed": {
         "timestamp>": timestamp,
-        "return": "count"
+        "return": "count",
+        "optional": true
       }
     }],
     "operator": null,
     "creator": null,
+    "f:creator": {
+      "id": "/user/gardening_bot",
+      "optional": "forbidden"
+    },
     "sort": "-authority.s:links.timestamp",
-    "limit": 1000
+    "limit": 50
   }];
   return q;
 };

@@ -41,14 +41,14 @@
 
 <acre:block def="page_content()">
   <h2 class="table-title">
-    ${_('Domains changed in past')} $c.days ${_('days')}
+    ${_('Recently modified domains')}
   </h2>
   <table cellspacing="0" class="table table-sortable">
     <thead>
       <tr>
         <th scope="col" class="column-header">${_('Domain')}</th>
         <th scope="col" class="column-header">${_('ID')}</th>
-        <th scope="col" class="column-header">${_('Recent Changes')}</th>
+        <th scope="col" class="column-header">${_('Most Recent Changes')}</th>
       </tr>
     </thead>
     <tbody>

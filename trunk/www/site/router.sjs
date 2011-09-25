@@ -435,14 +435,14 @@ function init_site_rules(lib) {
   rules["custom"] = {
     tabs: [
       {
-        "name": "Data",
+        "name": "Overview",
         "key": "data",
         "app": "homepage",
         "script": "browse.tab"
       },
       {
-        "name": "New Loads",
-        "key": "loads",
+        "name": "New Data",
+        "key": "writes",
         "app": "activity",
         "script": "new.tab"
       },

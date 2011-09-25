@@ -41,7 +41,7 @@
 
 <acre:block def="page_content()">
   <h2 class="table-title">
-    ${_('Queries created over past')} $c.days ${_('days')}
+    ${_('Recently created queries')}
   </h2>
   <table cellspacing="0" class="table table-sortable">
     <thead>

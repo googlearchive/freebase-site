@@ -31,9 +31,12 @@
 
 <acre:script>
   var c = this.exports.c = {};
-  var h = acre.require("lib/helper/helpers.sjs");
+  var h = acre.require("lib/helper/helpers.sjs");  
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var _ = i18n.gettext;
+  var components = acre.require("lib/template/components.mjt");
+  var image = acre.require("lib/template/imagecomponents.mjt");
   var ac =acre.require("components.mjt");
-  var image = acre.require("lib/template/imagecomponents");
 </acre:script>
 
 <acre:block def="title()" trim="">
@@ -46,49 +49,17 @@
 
 <acre:block def="page_content()">
   <div id="content-wrapper">
-    <div id="content-main" role="main">
-      
+    
+    <div id="content-main" role="main">      
       <div class="section">
-        <h1 class="section-title">Search</h1>
-        <div id="apps-search" class="section-tabs">
-          <ul class="section-tabset clear">
-            <li class="section-tab"><a href="#app-search">Apps</a></li>
-            <li class="section-tab"><a href="#user-search">By User</a></li>
-          </ul>
-          <div class="search-box" id="app-search">
-            <form id="app-search-form" method="get" action="/apps/search">
-              <fieldset>
-                <input type="text" name="q" class="text-input" id="app-search-input" placeholder="Search apps..." />
-                <input type="submit" class="button button-primary" value="Search"/>
-                <!--
-                <label><input type="checkbox" name="unlisted" class="search-toggle" value="$c.query||''" id="app-search-toggle-listed"
-                  acre:attrs="acre.request.params.unlisted?{'checked':'checked'}:{}"/>Include Unpublished Apps</label>
-                -->
-              </fieldset>
-            </form>
-          </div>
-          <div class="search-box" id="user-search">
-            <form id="user-search-form" method="get" action="type">
-              <fieldset>
-                <input type="text" name="id" class="text-input" id="user-search-input" placeholder="Start typing for suggested users..." />
-                <!--
-                <label><input type="checkbox" name="unlisted" class="search-toggle" value="$c.query||''" id="app-search-toggle-listed"
-                  acre:attrs="acre.request.params.unlisted?{'checked':'checked'}:{}"/>Include Unpublished Apps</label>
-                -->
-              </fieldset>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
+        <!--
         <span id="app-buttons-right">
           <a href="/apps/create" class="button button-primary">New App</a>
         </span>
-        <h1 class="section-title">
-          $c.title <acre:block if="c.query">$c.query</acre:block>
-          <a acre:if="c.category === 'released'" href="/apps/feed/${c.category + (c.query ? '/' + c.query : '')}" class="rss-icon">RSS</a>
-        </h1>
+        -->
+        <h2 class="table-title">
+          ${_('Recently released apps')}
+        </h2>
         <acre:block if="c.apps.length">
           ${ac.render_app_list(c.apps)}
         </acre:block>

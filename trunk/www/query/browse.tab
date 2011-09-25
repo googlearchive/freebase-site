@@ -68,6 +68,7 @@ function recent_queries(days) {
         return {
           id: q.id,
           name: q.name,
+          creator: q.creator,
           domain: q["/freebase/query_hints/related_domain"],
           type: q["/freebase/query_hints/related_type"],
           topic: q["/freebase/query_hints/related_topic"],
@@ -82,6 +83,7 @@ function recent_queries_mql(days) {
   var q = [{
     "id": null,
     "name": i18n.mql.query.name(),
+    "creator": null,
     "type": "/freebase/query",
     "timestamp>": timestamp,
     "timestamp": null,

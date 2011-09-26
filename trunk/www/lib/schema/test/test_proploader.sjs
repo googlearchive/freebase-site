@@ -164,4 +164,35 @@ test("load_paths multi", function() {
 });
 
 
+test("load_paths relative", function() {
+  var result;
+  var path = "/film/film/directed_by.film";
+  proploader.load_paths(path)
+    .then(function(props) {
+      result = props;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got load result");
+  assert_prop_path_schema(result, "/film/film/directed_by", "/film/director/film");
+});
+
+test("load_paths relative multi", function() {
+  var result;
+  var paths = [
+    "/film/film/directed_by.film",
+    "/people/person/parents.place_of_birth",
+    "/people/person/parents.date_of_birth",
+    "/film/film/starring"
+  ];
+  proploader.load_paths.apply(null, paths)
+    .then(function(props) {
+      result = props;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got load result");
+  assert_prop_path_schema(result, "/film/film/directed_by", "/film/director/film");
+  assert_prop_path_schema(result, "/people/person/parents", ["/people/person/place_of_birth", "/people/person/date_of_birth"]);
+  assert_prop_path_schema(result, "/film/film/starring", ["/film/performance/film", "/film/performance/actor", "/film/performance/character", "/film/performance/special_performance_type", "/film/performance/character_note"]);
+});
+
 acre.test.report();

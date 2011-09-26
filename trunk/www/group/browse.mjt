@@ -50,8 +50,8 @@
         <th scope="col" class="column-header">${_('Full Name')}</th>
         <th scope="col" class="column-header">${_('Created')}</th>
         <th scope="col" class="column-header">${_('Location')}</th>
-        <th scope="col" class="column-header">${_('Objects created in past')}  $c.days ${_('days')}</th>
-        <th scope="col" class="column-header">${_('Links created in past')} $c.days ${_('days')}</th>
+        <th scope="col" class="column-header">${_('Objects created')}<br/>${_('(past')} $c.days ${_('days)')}</th>
+        <th scope="col" class="column-header">${_('Links created')}<br/>${_('(past')} $c.days ${_('days)')}</th>
       </tr>
     </thead>
     <tbody>

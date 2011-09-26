@@ -177,6 +177,8 @@ function ObjectRouter(app_labels) {
               if (obj_types[type]) {
                 // clone tabs spec so we don't overwrite it
                 rule = h.extend(true, {}, route);
+                // stow away the matched type in case we need it later
+                o.routed_type = type;
                 break;
               }
             }
@@ -504,10 +506,10 @@ function init_site_rules(lib) {
           "script": "group.tab"
         },
         {
-          "name": "Writes",
-          "key": "writes",
+          "name": "Attributions",
+          "key": "attributions",
           "app": "activity",
-          "script": "app.tab"
+          "script": "attributions.tab"
         }
       ],
       "more_tabs": h.extend(true, [], DEFAULT_TABS),
@@ -656,10 +658,10 @@ function init_site_rules(lib) {
           "script": "user.tab"
         },
         {
-          "name": "Writes",
-          "key": "writes",
-          "app": "sample",
-          "script": "empty.tab"
+          "name": "Attributions",
+          "key": "attributions",
+          "app": "activity",
+          "script": "attributions.tab"
         }
       ],
       "more_tabs": h.extend(true, [], DEFAULT_TABS),
@@ -724,10 +726,10 @@ function init_site_rules(lib) {
       }]),
       "tabs": [
         {
-          "name": "Writes",
-          "key": "activity",
+          "name": "Attributions",
+          "key": "attributions",
           "app": "activity",
-          "script": "mdo.tab"
+          "script": "attributions.tab"
         },
         {
           "name": "Properties",
@@ -750,6 +752,29 @@ function init_site_rules(lib) {
           "script": "triples.tab"
         }
       ],
+    },
+    {
+      "type": "/type/attribution",
+      "promises":  h.extend(true, [], DEFAULT_PROMISES).concat([{
+        "key": "breadcrumbs",
+        "app": "lib",
+        "script": "queries/breadcrumbs.sjs",
+        "promise": "attribution"
+      }]),
+      "tabs": [
+        {
+          "name": "Links",
+          "key": "links",
+          "app": "triples",
+          "script": "triples.tab"
+        },
+        {
+          "name": "Identifiers",
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab"
+        }
+      ]
     },
     {
       "type": "/common/topic",

@@ -135,6 +135,7 @@ function is_prop_id(prop_id) {
  * load_paths("/film/film/directed_by./people/person/date_of_birth")
  */
 function load_paths() {
+  var i,l;
   var paths =  Array.prototype.slice.call(arguments);
   var path_map = {};
   var prop_ids = [];
@@ -150,26 +151,27 @@ function load_paths() {
       }
       var p = path_map[path] = [first];
       var second = null;
-      if (parts.length === 2 && first) {
+      if (parts.length === 2) {
         second = parts[1];
-        assert(is_prop_id(second), "First property path must be fully qualified");
-        // TODO: support relative second property id
-        if (!seen[second]) {
-          prop_ids.push(second);
-          seen[second] = 1;
+        if (is_prop_id(second)) {
+          if (!seen[second]) {
+            prop_ids.push(second);
+            seen[second] = 1;
+          }
         }
+        // else is relative (which we should get for free from first expected_type properties)
         p.push(second);
       }
     }
   });
-  return load.apply(null, prop_ids)
+  return load.apply(null, [true].concat(prop_ids))
     .then(function(props) {
       var result = {};
       paths.forEach(function(path) {
         var parts = path_map[path];
         var first = parts[0];
         var prop1 = props[first];
-        assert(prop1, "Property did not load", first);
+        assert(prop1, "First property did not load", first);
         prop1 = h.extend(true, {}, prop1);
         var existing = result[first];
         if (!existing) {
@@ -178,8 +180,22 @@ function load_paths() {
         }
         if (parts.length === 2) {
           var second = parts[1];
-          var prop2 = props[second];
-          assert(prop2, "Property did not load", second);
+          var prop2;
+          if (is_prop_id(second)) {
+            prop2 = props[second];
+          }
+          else {
+            var full_second = prop1.expected_type.id + "/" + second;
+            // TODO: compare property key(s) instead
+            prop1.expected_type.properties.every(function(p) {
+              if (full_second === p.id) {
+                prop2 = p;
+                return false;
+              }
+              return true;
+            });
+          }
+          assert(prop2, "Second property did not load", second);
           prop2 = h.extend(true, {}, prop2);
           existing._subprops.push(prop2);
           delete prop2.expected_type.properties;
@@ -190,6 +206,11 @@ function load_paths() {
         var subprops = prop._subprops;
         if (subprops && subprops.length) {
           prop.expected_type.properties = subprops;
+        }
+        else {
+          prop.expected_type.properties =  prop.expected_type.properties.filter(function(p) {
+            return p["/freebase/property_hints/disambiguator"] === true;
+          });
         }
         // delete temp attr
         delete prop._subprops;

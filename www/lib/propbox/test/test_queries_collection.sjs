@@ -31,7 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mock").playback(this, "propbox/test/playback_test_queries_collection.json");
+acre.require("test/mock").record(this, "propbox/test/playback_test_queries_collection.json");
 
 var h = acre.require("helper/helpers.sjs");
 var qc = acre.require("propbox/queries_collection.sjs");
@@ -60,8 +60,8 @@ test("collection property paths", function() {
   var topic_ids = ["/en/milla_jovovich", "/en/angus_macfadyen"];
   var pids = [
     "/type/object/name",
-    "/film/actor/film./film/performance/film",
-    "/film/actor/film./film/performance/character"
+    "/film/actor/film.film",
+    "/film/actor/film./people/person/date_of_birth"
   ];
   var result;
   qc.collection(topic_ids, pids)
@@ -77,7 +77,7 @@ test("collection property paths", function() {
   same(structures[1].id, "/film/actor/film");
   ok(structures[1].properties && structures[1].properties.length === 2, "Got subproperties");
   same(structures[1].properties[0].id, "/film/performance/film");
-  same(structures[1].properties[1].id, "/film/performance/character");
+  same(structures[1].properties[1].id, "/people/person/date_of_birth");
   ok(values && values.length === 2, "Got collection values");
   same(values[0].id, "/en/milla_jovovich");
   same(values[1].id, "/en/angus_macfadyen");

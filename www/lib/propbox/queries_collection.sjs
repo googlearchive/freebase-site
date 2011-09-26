@@ -35,6 +35,7 @@ var freebase = acre.require("promise/apis").freebase;
 var i18n = acre.require("i18n/i18n.sjs");
 var pq = acre.require("propbox/queries.sjs");
 var ph = acre.require("propbox/helpers.sjs");
+var proploader = acre.require("schema/proploader.sjs");
 
 /**
  * Collection query.
@@ -43,10 +44,11 @@ var ph = acre.require("propbox/helpers.sjs");
  * The query respects mediators and deep properties
  * (i.e., disambiguating properties of the expected types).
  *
- * A pid MUST be a qualified property id (i.e., /type/object/name)
- * or a fully qualified property path separated by "." (i.e., /film/film/starring./film/performance/actor).
+ * A pid MUST be a fully qualified property id (i.e., /type/object/name)
+ * or a fully qualified property path separated by "."
+ * (i.e., /film/film/starring.actor or /film/film/starring./people/person/date_of_birth).
  * Currently only 2 levels (<pid1>.<pid2>) are supported.
- * Also, pid2 must be a valid disambiguating property on the expected type of pid1.
+ * Also, pid2 must be either a fully qualified id or a relative property id with respect to pid1's expected_type.
  *
  * To display/render the query result,
  * @see propbox/collection.mjt
@@ -59,41 +61,31 @@ function collection(topic_ids, pids, lang, limit) {
   if (!h.isArray(pids)) {
     pids = [pids];
   }
-
-  var pid_map = {};
-  var pid_order = [];
-  pids.forEach(function(pid_path) {
-    var paths = pid_path.split(".", 2);
-    if (paths.length) {
-      var pid = paths[0];
-      var subpids = pid_map[pid];
-      if (!subpids) {
-        subpids = pid_map[pid] = [];
-        pid_order.push(pid);
-      }
-      if (paths.length === 2 && paths[1]) {
-        subpids.push(paths[1]);
-      }
+  var seen = {};
+  var pid1_order = [];
+  pids.forEach(function(pid) {
+    var pid1 = pid.split(".", 2)[0];
+    if (!seen[pid1]) {
+      pid1_order.push(pid1);
+      seen[pid1] = 1;
     }
   });
-
-  return pq.prop_structures.apply(null, pid_order.concat([lang]))
+  return proploader.load_paths.apply(null, pids)
+    .then(function(props) {
+      var prop_structures = [];
+      for (var pid1 in props) {
+        var prop = props[pid1];
+        prop_structures.push(ph.to_prop_structure(prop, lang));
+      };
+      return prop_structures.sort(function(a, b) {
+        return pid1_order.indexOf(a.id) - pid1_order.indexOf(b.id);
+      });
+    })
     .then(function(props) {
       var q = {
         "id|=": topic_ids
       };
       props.forEach(function(prop) {
-        // filter out sub-properties not specified in pid_path
-        var subprops = prop.properties || [];
-        if (subprops.length) {
-          var subpids = pid_map[prop.id];
-          if (subpids && subpids.length) {
-            var filtered_subprops = subprops.filter(function(subprop) {
-              return subpids.indexOf(subprop.id) !== -1;
-            });
-            prop.properties = filtered_subprops;
-          }
-        }
         var prop_query = ph.mqlread_query(null, prop, null, lang, {limit:limit});
         h.extend(q, prop_query);
       });

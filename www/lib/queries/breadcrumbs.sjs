@@ -132,3 +132,10 @@ function mdo(o) {
     {name:i18n.display_name(o)}
   ];
 };
+
+function attribution(o) {
+  return [
+    {name:_("Attribution")},
+    {name:i18n.display_name(o)}
+  ];
+};

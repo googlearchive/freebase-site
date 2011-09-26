@@ -49,8 +49,8 @@
       <tr>
         <th scope="col" class="column-header">${_('Data Load')}</th>
         <th scope="col" class="column-header">${_('Last Active')}</th>
-        <th scope="col" class="column-header">${_('Objects created past')} $c.days ${_('days')}</th>
-        <th scope="col" class="column-header">${_('Links created past')} $c.days ${_('days')}</th>
+        <th scope="col" class="column-header">${_('Objects created')}<br/>${_('(past')} $c.days ${_('days)')}</th>
+        <th scope="col" class="column-header">${_('Links created')}<br/>${_('(past')} $c.days ${_('days)')}</th>
         <th scope="col" class="column-header">${_('Creator')}</th>
         <th scope="col" class="column-header">${_('Operator')}</th>
       </tr>

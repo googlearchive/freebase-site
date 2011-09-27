@@ -77,7 +77,7 @@
     <table cellspacing="0" class="table table-sortable">
       <thead>
         <tr>
-          <th scope="col" class="column-header"><span class="sort-icon">${_('Domain')}</span></th>
+          <th scope="col" class="column-header first"><span class="sort-icon">${_('Domain')}</span></th>
           <th scope="col" class="column-header column-header-desc"><span class="sort-icon">${_('ID')}</span></th>
           <th scope="col" class="column-header">${_('Activity')}</th>
         </tr>

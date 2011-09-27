@@ -37,17 +37,6 @@ var h = acre.require("lib/helper/helpers.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var q = acre.require("queries.sjs");
 
-test("prop_counts", function() {
-  var result;
-  q.prop_counts("/en/united_states")
-    .then(function(counts) {
-      result = counts;
-    });
-  acre.async.wait_on_results();
-  ok(result);
-  ok(result.ti > 0, h.sprintf("incoming %s", result.ti));
-  ok(result.to > 0, h.sprintf("outgoing %s", result.to));
-});
 
 test("names_aliases", function() {
   var result;

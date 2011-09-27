@@ -90,7 +90,9 @@ var SPEC = {
       outgoing: queries.outgoing(id, f),
       incoming: queries.incoming(id, f),
       type_links: queries.type_links(id, f),
-      attribution_links: queries.attribution_links(id, f)
+      attribution_links: queries.attribution_links(id, f),
+
+      links: queries.links(id, f)
 
     };
   }

@@ -35,6 +35,7 @@
   var components = acre.require("components");
   var image = acre.require("lib/template/imagecomponents");
   var filter_components = acre.require("lib/filter/components.mjt");
+  var freebase_components = acre.require("lib/template/components.mjt");
   var fh = acre.require("lib/filter/helpers.sjs");
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var i18n_c = acre.require("lib/i18n/components.mjt");
@@ -137,7 +138,7 @@
           <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("attribution/creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
           <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
@@ -151,8 +152,7 @@
           </th>
           <td class="even">${a(o.master_property)}</td>
           <td class="odd">${literal(id, o.master_property, o.target_value)}</td>
-          <td class="even" acre:if="o.creator">${a(o.creator)}</td>
-          <td class="even" acre:else="">null</td>
+          <td class="even">${attribution_creator(o)}</td>
           <td class="odd numeric">${o.timestamp}</td>
           <td acre:if="filters.historical" class="even">${o.operation}</td>
         </tr>
@@ -171,7 +171,7 @@
           <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("value")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("attribution/creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
           <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
@@ -204,8 +204,7 @@
               </span>
             </span>
           </td>
-          <td class="odd" acre:if="k.creator">${a(k.creator)}</td>
-          <td class="odd" acre:else="">null</td>
+          <td class="odd">${attribution_creator(k)}</td>
           <td class="even numeric">${k.timestamp}</td>
           <td acre:if="filters.historical" class="odd">${k.operation}</th>
         </tr>
@@ -223,7 +222,7 @@
           <th class="column-header first empty" scope="col"><span class="sort-icon">${_("source")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("attribution/creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
           <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
@@ -240,8 +239,7 @@
           </td>
           <td class="odd" acre:if="o.target_value">${literal(id, o.master_property, o.target_value)}</td>
           <td class="odd" acre:else="">${topic(o.target)}</td>
-          <td class="even" acre:if="o.creator">${a(o.creator)}</td>
-          <td class="even" acre:else="">null</td>
+          <td class="even">${attribution_creator(o)}</td>
           <td class="odd numeric">${o.timestamp}</td>
           <td acre:if="filters.historical" class="even">${o.operation}</th>
         </tr>
@@ -260,7 +258,7 @@
           <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("attribution/creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
           <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
@@ -279,8 +277,7 @@
           </th>
           <td class="even">${a(o.master_property)}</td>
           <td class="odd empty"><span class="self">-</span></td>
-          <td class="even" acre:if="o.creator">${a(o.creator)}</td>
-          <td class="even" acre:else="">null</td>
+          <td class="even">${attribution_creator(o)}</td>
           <td class="odd numeric">${o.timestamp}</td>
           <td acre:if="filters.historical" class="even">${o.operation}</th>
         </tr>
@@ -299,7 +296,7 @@
           <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("attribution/creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
           <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
@@ -322,8 +319,7 @@
           <td class="even"><span class="self">-</span></td>
           <td class="odd" acre:if="o.target_value">${literal(o.source.id, o.master_property, o.target_value)}</td>
           <td class="odd" acre:else="">${topic(o.target)}</td>
-          <td class="even" acre:if="o.creator">${a(o.creator)}</td>
-          <td class="even" acre:else="">null</td>
+          <td class="even">${attribution_creator(o)}</td>
           <td class="odd numeric">${o.timestamp}</td>
           <td acre:if="filters.historical" class="even">${o.operation}</th>
         </tr>
@@ -342,7 +338,7 @@
           <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("attribution/creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
           <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
@@ -362,8 +358,7 @@
           <td class="even"><span class="self">${a(o.master_property)}</span></td>
           <td class="odd" acre:if="o.target_value">${literal(o.source.id, o.master_property, o.target_value)}</td>
           <td class="odd" acre:else="">${topic(o.target)}</td>
-          <td class="even" acre:if="o.creator">${a(o.creator)}</td>
-          <td class="even" acre:else="">null</td>
+          <td class="even">${attribution_creator(o)}</td>
           <td class="odd numeric">${o.timestamp}</td>
           <td acre:if="filters.historical" class="even">${o.operation}</th>
         </tr>
@@ -395,16 +390,12 @@
 <acre:block def="topic(o)" trim="">
   <acre:script>
     var id = o.id;
-    if (id.indexOf("/user/") === 0 ||
-        id.indexOf("/base/") === 0 ||
-        id.indexOf("/uri/") === 0) {
+    if (/^\/en\//.test(id)) {
       id = o.mid;
     }
     var name = null;
-    if (id === o.mid) {
-      if (o.name && o.name.length) {
-        name = i18n.display_name(o);
-      }
+    if (id === o.mid && o.name && o.name.length) {
+      name = i18n.display_name(o);
     }
   </acre:script>
   ${a(id, id)}
@@ -428,7 +419,7 @@
       ${target_value.value}
     </acre:block>
   </span>
-  <span class="literal-type">${a(target_value.type)}</span>
+  <!--<span class="literal-type">${a(target_value.type)}</span>!-->
   <acre:block if="target_value.type === '/type/text'" trim="">
     <acre:block if="target_value.lang">
       ${lang(target_value.lang)}
@@ -438,6 +429,10 @@
 
 <acre:block def="lang(language)" trim="">
   <span class="lang">${a(language)}</a></span>
+</acre:block>
+
+<acre:block def="attribution_creator(o)">
+  ${freebase_components.attribution(h.get_attribution(o))}
 </acre:block>
 
 <acre:block def="tooltip()">

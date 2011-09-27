@@ -795,14 +795,6 @@ function init_site_rules(lib) {
       "tabs": h.extend(true, [], DEFAULT_TABS),
       "navs": [
         {
-          "name": "<b>Discuss</b> Topic",
-          "url": h.legacy_fb_url("/discuss/threads${id}")
-        },
-        {
-          "name": "<b>Edit</b> on old site",
-          "url": h.legacy_fb_url("/edit/topic${id}")
-        },
-        {
           "name": "<span class=\"submenu-title\">Flag Topic</span>",
           "subnavs": [{
             "name": "<b>Merge</b> with another topic",
@@ -817,6 +809,14 @@ function init_site_rules(lib) {
             "name": "<b>Flag</b> as objectionable",
             "onclick": "return window.freebase.flag.offensive(this);"
           }]
+        },
+        {
+          "name": "<b>Discuss</b> Topic",
+          "url": h.legacy_fb_url("/discuss/threads${id}")
+        },
+        {
+          "name": "<b>Edit</b> on old site",
+          "url": h.legacy_fb_url("/edit/topic${id}")
         }
       ]
     },

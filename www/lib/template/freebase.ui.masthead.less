@@ -403,6 +403,34 @@ spec has been implemented, including complete vcards, tooltips, etc.
     margin-bottom: -20px;
   }
 
+  li.more {
+    a {
+      font-size: 12px;
+      line-height: 3;
+    }
+
+    a:hover span {
+      background: transparent;
+    }
+
+    a span {
+      border: 0;
+      padding: 0 12px 0 15px;
+    }
+
+    span:after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 16px;
+      border-width: 3px;
+      border-color: #fff transparent transparent;
+      border-style: solid;
+      height: 0;
+      width: 0;
+    }
+  }
+
   a {
     font-size: 14px;
     line-height: 2.5;
@@ -542,7 +570,18 @@ spec has been implemented, including complete vcards, tooltips, etc.
   ul li a {
     padding-left: 15px;
   }
-  
+
+  .current {
+    background: rgba(0,0,0,0.3);
+
+    span {
+      display: inline-block;
+      padding-right: 23px;
+      background: url(template/ui-icons.png) no-repeat right -1549px;
+    }
+
+  }
+
   .section {
     padding-bottom: 10px;
     margin-bottom: 10px;

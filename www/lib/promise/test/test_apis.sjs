@@ -136,9 +136,13 @@ test("mqlread_success", function() {
 
 test("get_static", function() {
   // We should get back results from this bdb call
+  var known = {
+    "/music/artist": 1,
+    "/music/composer": 1
+  };
   freebase.get_static("notable_types_2", "/en/bob_dylan")
     .then(function(envelope) {
-      equals(envelope.types[0].t, "/music/artist", "Should return the expected notable type");
+      ok(known[envelope.types[0].t], "Should return the expected notable type");
     }, function(error) {
       ok(false, "get_static shouldn't return an error: "+error);
     });

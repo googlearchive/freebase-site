@@ -469,7 +469,7 @@ function init_site_rules(lib) {
     ],
     more_tabs: [
       {
-        "name": "New Users",
+        "name": "Users",
         "key": "users",
         "app": "group",
         "script": "browse.tab"

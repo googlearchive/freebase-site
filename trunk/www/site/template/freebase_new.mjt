@@ -123,7 +123,7 @@
           <a  href="#" class="headmenu">
             <span>More</span>
           </a>
-          <ul class="row-menu submenu right object-settings">
+          <ul class="row-menu submenu left object-settings">
             <acre:block for="tab in c.more_tabs">
               <acre:script>
                 var url = "?" + tab.key + (qs.length ? "&" + qs : "");

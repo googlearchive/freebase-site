@@ -443,34 +443,28 @@ function init_site_rules(lib) {
         "script": "browse.tab"
       },
       {
-        "name": "New Data",
+        "name": "Data",
         "key": "writes",
         "app": "activity",
         "script": "new.tab"
       },
       {
-        "name": "New Schema",
+        "name": "Schema",
         "key": "schema",
         "app": "schema",
         "script": "new.tab"
       },
       {
-        "name": "New Queries",
+        "name": "Queries",
         "key": "queries",
         "app": "query",
         "script": "browse.tab"
       },
       {
-        "name": "New Apps",
+        "name": "Apps",
         "key": "apps",
         "app": "apps",
         "script": "new.tab"
-      },
-      {
-        "name": "Tasks",
-        "key": "tasks",
-        "app": "activity",
-        "script": "review.tab"
       }
     ],
     more_tabs: [
@@ -479,6 +473,12 @@ function init_site_rules(lib) {
         "key": "users",
         "app": "group",
         "script": "browse.tab"
+      },
+      {
+        "name": "Tasks",
+        "key": "tasks",
+        "app": "activity",
+        "script": "review.tab"
       }
     ]
   };

@@ -46,7 +46,7 @@
   <table cellspacing="0" class="table table-sortable">
     <thead>
       <tr>
-        <th scope="col" class="column-header">${_('User')}</th>
+        <th scope="col" class="column-header first">${_('User')}</th>
         <th scope="col" class="column-header">${_('Full Name')}</th>
         <th scope="col" class="column-header">${_('Created')}</th>
         <th scope="col" class="column-header">${_('Location')}</th>

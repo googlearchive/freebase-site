@@ -67,9 +67,9 @@ function review_queue_tasks() {
         "mid":   null,
         "limit": 0
       },
-      "judgments": {
-        "id" : null,
-        "optional":"forbidden"
+      "status": {
+        "id": null,
+        "optional": "forbidden"
       },
       "return" : "count"
     }

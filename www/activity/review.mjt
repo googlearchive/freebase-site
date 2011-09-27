@@ -47,7 +47,7 @@
     <thead>
       <tr>
         <th scope="col" class="column-header">${_('Flag Kind')}</th>
-        <th scope="col" class="column-header">${_('Count (0 votes)')}</th>
+        <th scope="col" class="column-header">${_('Count')}</th>
       </tr>
     </thead>
     <tbody>
@@ -56,7 +56,7 @@
           <acre:script>var name = i18n.display_name(k);</acre:script>
           $name
         </th>
-        <td class="even">$k.flags</td>
+        <td class="even">${i18n_c.number(k.flags)}</td>
       </tr>
     </tbody>
   </table>

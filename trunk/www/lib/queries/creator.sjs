@@ -65,6 +65,7 @@ function extend(q) {
     "/dataworld/provenance/data_operation": {
       id: null,
       name: null,
+      limit: 1,
       operator: {
         id: null,
         type: "/type/user",

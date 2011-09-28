@@ -214,6 +214,11 @@ function do_mql(/**, type_id1, type_id2, ..., type_idN **/) {
       unit: {
         optional: true,
         id: null,
+        name: [{
+          optional: true,
+          value: null,
+          lang: null
+        }],
         type: "/type/unit",
         "/freebase/unit_profile/abbreviation": null
       },

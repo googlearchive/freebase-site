@@ -39,91 +39,107 @@ var fq = acre.require("lib/queries/freebase_query.sjs");
 var pq = acre.require("lib/propbox/queries_collection.sjs");
 
 
-function qualify_query(q) {
+function qualify_clause(q) {
   var type;
-  var temp = h.isArray(q) ? q[0] : q;
 
   function qualify(key, type) {
-    var obj_props = {
-      id: true,
-      guid: true,
-      type: true,
-      name: true,
-      key: true,
-      timestamp: true,
-      permission: true,
-      creator: true,
-      attribution: true,
-      search: true,
-      mid: true
+    var system_props = {
+      id: "/type/object",
+      guid: "/type/object",
+      type: "/type/object",
+      name: "/type/object",
+      key: "/type/object",
+      timestamp: "/type/object",
+      permission: "/type/object",
+      creator: "/type/object",
+      attribution: "/type/object",
+      search: "/type/object",
+      mid: "/type/object",
+      value: "/type/value"
     };
 
     var mql_directives = {
-      index: true,
-      limit: true,
-      sort: true,
-      optional: true,
-      count: true
+      "index": true,
+      "limit": true,
+      "sort": true,
+      "optional": true,
+      'count': true,
+      'index': true,
+      "!index": true,
+      "return": true,
+      'count': true,
+      "link": true
     };
+
+    var prop = {
+      label: null,
+      id: key,
+      key: key
+    }
 
     var segs = key.split(":");
     if (segs.length > 2) {
       throw "property key can't have more than one label";
     } else if (segs.length === 2) {
-      var label = segs[0];
-      key = segs[1];
+      prop.label = segs[0];
+      prop.id = segs[1];
     }
 
-    if (key in mql_directives || (key.indexOf("/") === 0)) {
-      return (label ? label + ":" : "") + key;
+    if (!(prop.id in mql_directives || (prop.id.indexOf("/") === 0))) {
+      var stype = system_props[prop.id];
+      if (stype) {
+        prop.id = stype + "/" + key;
+      } else {
+        prop.id = type ? type + "/" + prop.id : prop.id;
+      }
     }
-
-    if (obj_props[key]) {
-      return (label ? label + ":" : "") + "/type/object/" + key;
-    } else {
-      return (label ? label + ":" : "") + (type ? type + "/" : "") + key;
-    }
+    prop.key = prop.label ? prop.label + ":" + prop.id : prop.id;
+    return prop;
   };
 
-  for (var prop in temp) {
-    if (qualify(prop) === "/type/object/type") {
-      type = temp[prop];
+  // find type clause if there is one
+  for (var key in q) {
+    if (qualify(key).id === "/type/object/type") {
+      type = q[key];
       break;
     }
   }
 
-  for (var prop in temp) {
-    var qprop = qualify(prop, type);
-    var key = qprop.split(":").pop();
-    if (qprop !== prop || key === "sort") {
-      var value = temp[prop];
-      if (key === "sort") {
+  // qualify the properties
+  for (var key in q) {
+    var qprop = qualify(key, type);
+    if (qprop.id !== key || qprop.id === "sort") {
+      var value = q[key];
+      if (qprop.id === "sort") {
         var first_key = value.split(".")[0].replace("-","");
-        value = value.replace(first_key, qualify(first_key, type));
+        value = value.replace(first_key, qualify(first_key, type).key);
       }
-      temp[qprop] = value;
-      delete temp[prop];
+      q[qprop.key] = value;
+      delete q[key];
     }
   }
 
   return q;
 };
 
-function clean_query(q) {
+function clean_clause(q) {
   var exclude_props = {
     "/type/object/id" : true,
     "/type/object/mid": true,
     "/type/object/name": true,
     "/common/topic/article": true,
     "/common/topic/image": true,
+    "/type/value/value": true,
+    "/type/text/lang": true,
     
     /* TODO:  SITE-818 */
     "index": true,
+    "!index": true,
     "return": true,
     "count": true,
     "link": true
   };
-  for (var key in (h.isArray(q) ? q[0] : q)) {
+  for (var key in q) {
     if ((key in exclude_props) ||
         (key.indexOf(":") > -1)) {
       delete q[key];
@@ -136,7 +152,7 @@ function get_paths(q, depth) {
   function decant(val, path) {
     if (h.isPlainObject(val)) {
       if (path) paths.push(path);
-      clean_query(qualify_query(val));
+      clean_clause(qualify_clause(val));
       for (var key in val) {
         var new_path = path.length ? path + "." + key : key;
         decant(val[key], new_path);
@@ -177,11 +193,11 @@ function collection(q, props) {
         mids.push(r[MID_PROP]);
       });
 
-      qualify_query(q);
       var props = [
         "/type/object/name", 
         "/common/topic/image"
-      ].concat(get_paths(clean_query(q), 2));
+      ].concat(get_paths(q, 2));
+      
       return pq.collection(mids, props, i18n.lang);
     });
 };

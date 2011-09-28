@@ -69,17 +69,24 @@
                   var value = cell.value;
                 </acre:script>
                 <acre:block if="structure.id === '/type/object/name'">
-                  <td>
+                  <th>
                     <a title="${tbody.value.id}" class="property-value"
                        href="${h.fb_url(true, tbody.value.id)}"
                        data-id="${tbody.value.id}">${value.text}</a>
                     ${i18n_c.lang_code(value.lang, lang)}
-                  </td>
+                  </th>
                 </acre:block>
                 <acre:block elif="structure.expected_type.id === '/common/image'">
                   <td rowspan="${cell.rowspan}">
                     ${pb.value(tbody.value, cell.structure,tbody.value, lang)}
                  </td>
+                </acre:block>
+                <acre:block elif="structure.id === '/type/object/id'">
+                  <th>
+                    <a title="${tbody.value.id}" class="property-value"
+                       href="${h.fb_url(true, tbody.value.id)}"
+                       data-id="${tbody.value.id}">${tbody.value.id}</a>
+                  </th>
                 </acre:block>
                 <acre:block else="">
                   <td>

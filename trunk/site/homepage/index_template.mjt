@@ -55,6 +55,9 @@
 
 <acre:block def="content_header()">
   ${templates.homepage_header()}
+  <div class="page-msg">
+    <p>Notice: the Freebase Privacy Policy has been updated to the <a href="http://www.google.com/intl/en/privacy/">Google Privacy Policy</a>.</p>
+  </div>
 </acre:block>
 
 <acre:block def="content_body()">

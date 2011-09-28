@@ -40,12 +40,17 @@
      title="${_('View user profile')}">${h.id_key(creator_id)}</a>
 </acre:block>
 
-<acre:block def="attribution(attr)">
-  <span class="attribution">
+<acre:block def="attribution(attr, use_attribution_icon)">
+  <span class="attribution" acre:trim="1">
     ${creator(attr.creator)}
-    <span acre:if="attr.source">
-      ${_("via")}
-      <a href="${attr.source.id}">${attr.source.name}</a>
+    <span acre:if="attr.source" acre:trim="1">
+      <acre:block if="use_attribution_icon" trim="1">
+        <span style="cursor:pointer;" class="attribution-icon" title="${attr.source.name} - ${attr.source.id}">*</span>
+      </acre:block>
+      <acre:block else="">
+        ${_("via")}
+        <a href="${attr.source.id}">${attr.source.name}</a>
+      </acre:block>
     </span>
   </span>
 </acre:block>

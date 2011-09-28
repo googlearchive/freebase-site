@@ -138,7 +138,7 @@
           <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("attribution/creator")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
           <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
@@ -171,7 +171,7 @@
           <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("value")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("attribution/creator")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
           <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
@@ -222,7 +222,7 @@
           <th class="column-header first empty" scope="col"><span class="sort-icon">${_("source")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("attribution/creator")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
           <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
@@ -258,7 +258,7 @@
           <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("attribution/creator")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
           <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
@@ -296,7 +296,7 @@
           <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("attribution/creator")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
           <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
@@ -338,7 +338,7 @@
           <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("attribution/creator")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
           <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
@@ -432,7 +432,7 @@
 </acre:block>
 
 <acre:block def="attribution_creator(o)">
-  ${freebase_components.attribution(h.get_attribution(o))}
+  ${freebase_components.attribution(h.get_attribution(o), true)}
 </acre:block>
 
 <acre:block def="tooltip()">

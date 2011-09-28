@@ -42,14 +42,27 @@
   var qc = acre.require("lib/propbox/queries_collection.sjs");
 
   var topics = [
-    "/en/milla_jovovich",
-    "/en/angus_macfadyen"
+    "/m/083gwkc",
+    "/m/083gwkn",
+    "/m/083gwk6",
+    "/m/09sd771",
+    "/m/0cg5lcv",
+    "/m/0cf_lfy",
+    "/m/0f_6z63",
+    "/m/0f_6z67",
+    "/m/0f_6z6c",
+    "/m/0f_6z6k",
+    "/m/0f_6z6s",
+    "/m/0f_6z6y",
+    "/m/0f_6z74",
+    "/m/0f_6z7f",
+    "/m/0gdkyfx"
   ];
   var pids = [
-    "/type/object/name",
-    "/people/person/date_of_birth",
-    "/film/actor/film.film",
-    "/film/actor/film./film/performance/character"
+    "/film/performance/actor",
+    "/film/performance/character",
+    "/film/performance/character_note",
+    "/film/performance/special_performance_type"
   ];
 
 

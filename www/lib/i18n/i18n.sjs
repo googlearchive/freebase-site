@@ -256,7 +256,8 @@ function gettext(msgid) {
     if (typeof bundle[msgid] === "string") {
       return bundle[msgid];
     }
-    console.warn("[i18n]", bundle_path, msgid, undefined);
+    // TODO: disable until we're ready to localize
+    //console.warn("[i18n]", bundle_path, msgid, undefined);
   }
   return msgid;
 };

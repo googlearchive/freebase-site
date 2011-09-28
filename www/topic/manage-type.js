@@ -29,11 +29,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-(function($, fb) {
+(function($, fb, formlib) {
   var mt = fb.topic.manage_type = {
 
     add_type_begin: function(trigger, type_id) {
-      $.ajax($.extend(fb.form.default_submit_ajax_options(), {
+      $.ajax($.extend(formlib.default_submit_ajax_options(), {
         url: fb.h.ajax_url("add_type_submit.ajax"),
         data: {id:fb.c.id, type:type_id, lang:fb.lang},
         onsuccess: function(data) {
@@ -56,7 +56,7 @@
     },
 
     remove_type_begin: function(trigger, type_id) {
-      $.ajax($.extend(fb.form.default_submit_ajax_options(), {
+      $.ajax($.extend(formlib.default_submit_ajax_options(), {
         url: fb.h.ajax_url("remove_type_submit.ajax"),
         data: {id:fb.c.id, type:type_id, lang:fb.lang},
         onsuccess: function(data) {
@@ -70,7 +70,7 @@
     },
 
     undo_remove_type: function(trigger, type_id) {
-      $.ajax($.extend(fb.form.default_submit_ajax_options(), {
+      $.ajax($.extend(formlib.default_submit_ajax_options(), {
         url: fb.h.ajax_url("undo_remove_type.ajax"),
         data: {id:fb.c.id, type:type_id},
         onsuccess: function(data) {
@@ -84,4 +84,4 @@
     }
   };
 
-})(jQuery, window.freebase);
+})(jQuery, window.freebase, window.formlib);

@@ -29,11 +29,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-(function($, fb) {
+(function($, fb, formlib) {
   var edit = fb.flag.edit = {
 
     merge_begin: function(trigger) {
-      $.ajax($.extend(fb.form.default_begin_ajax_options(), {
+      $.ajax($.extend(formlib.default_begin_ajax_options(), {
         url: fb.h.ajax_url("lib/flag/merge_begin.ajax"),
         data: {id: fb.c.id},
         onsuccess: function(data) {
@@ -59,7 +59,7 @@
             .bind(event_prefix + "submit", function(e) {
               trigger.removeClass("editing");
             });
-          fb.form.init_modal_form(options);
+          formlib.init_modal_form(options);
         }
       }));
     },
@@ -72,13 +72,13 @@
           suggest: fb.suggest_options.instance("/common/topic")
         })
         .bind("valid", function() {
-          fb.form.enable_submit(options);
+          formlib.enable_submit(options);
         })
         .bind("invalid", function() {
-          fb.form.disable_submit(options);
+          formlib.disable_submit(options);
         })
         .bind("empty", function() {
-          fb.form.disable_submit(options);
+          formlib.disable_submit(options);
         })
         .focus();
     },
@@ -116,7 +116,7 @@
     },
 
     flag_submit: function(trigger, kind) {
-      $.ajax($.extend(fb.form.default_submit_ajax_options(), {
+      $.ajax($.extend(formlib.default_submit_ajax_options(), {
         url: fb.h.ajax_url("lib/flag/flag_submit.ajax"),
         data: {id:fb.c.id, kind:kind},
         onsuccess: function(data) {
@@ -126,7 +126,7 @@
     },
 
     undo_begin: function(trigger, flag_id) {
-      $.ajax($.extend(fb.form.default_submit_ajax_options(), {
+      $.ajax($.extend(formlib.default_submit_ajax_options(), {
         url: fb.h.ajax_url("lib/flag/undo_submit.ajax"),
         data: {id:flag_id},
         onsuccess: function(data) {
@@ -137,4 +137,4 @@
 
   };
 
-})(jQuery, window.freebase);
+})(jQuery, window.freebase, window.formlib);

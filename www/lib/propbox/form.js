@@ -29,10 +29,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-(function($, fb, i18n) {
+(function($, i18n) {
 
+   // requires:
+   // i18n.js @see lib/i18n/i18n.js
 
-   var form = fb.form = {
+   var formlib = window.formlib = {
 
      /**
       * ADD
@@ -58,24 +60,32 @@
       */
      init_inline_add_form: function(options) {
        // TODO: check options
-       var trigger_row = options.trigger.parents(".trigger-row:first");
-       var event_prefix = options.event_prefix || "fb.form.inline_add_form.";
+
+       var event_prefix = options.event_prefix || "form.inline_add_form.";
        options.edit_row
          .bind(event_prefix + "submit", function() {
-           form.submit_inline_add_form(options);
+           formlib.submit_inline_add_form(options);
          })
          .bind(event_prefix + "cancel", function() {
-           form.cancel_inline_add_form(options);
+           formlib.cancel_inline_add_form(options);
          })
          .bind(event_prefix + "error", function(e, msg) {
-           form.error(options, msg);
+           formlib.error(options, msg);
            options.edit_row.removeClass("loading");
          })
          .bind(event_prefix + "success", function() {
            options.edit_row.removeClass("loading");
+         })
+         .bind(event_prefix + "valid", function() {
+           formlib.enable_submit(options);
+         })
+         .bind(event_prefix + "invalid", function() {
+           formlib.disable_submit(options);
          });
-       form.init_submit_cancel(options);
-       trigger_row.hide();
+       formlib.init_submit_cancel(options);
+       if (options.trigger) {
+         options.trigger.parents(".trigger-row:first").hide();
+       }
        options.body
          .append(options.head_row)
          .append(options.edit_row)
@@ -90,7 +100,7 @@
        }
 
        // is submit button disabled?
-       if (!form.is_submit_enabled(options)) {
+       if (!formlib.is_submit_enabled(options)) {
          return;
        }
 
@@ -100,7 +110,7 @@
        }
 
        // clear messages
-       form.clear_message(options);
+       formlib.clear_message(options);
 
        // validate form
        if (!options.validate(options)) {
@@ -111,7 +121,7 @@
        options.edit_row.addClass("loading");
 
        // submit form
-       options.submit(options, form.default_submit_ajax_options(options));
+       options.submit(options, formlib.default_submit_ajax_options(options));
      },
 
      success_inline_add_form: function(options, new_row) {
@@ -123,11 +133,12 @@
      },
 
      cancel_inline_add_form: function(options) {
-       var trigger_row = options.trigger.parents(".trigger-row:first");
        options.head_row.remove();
        options.edit_row.remove();
        options.submit_row.remove();
-       trigger_row.show();
+       if (options.trigger) {
+         options.trigger.parents(".trigger-row:first").show();
+       }
      },
 
 
@@ -153,22 +164,22 @@
       * - submit_row:jQuery obj (required) - The submit buttons (submit and cancel) and hidden inputs (".edit-row-submit").
       */
      init_inline_edit_form: function(options) {
-       var event_prefix = options.event_prefix || "fb.form.inline_edit_form.";
+       var event_prefix = options.event_prefix || "form.inline_edit_form.";
        options.edit_row
          .bind(event_prefix + "submit", function() {
-           form.submit_inline_edit_form(options);
+           formlib.submit_inline_edit_form(options);
          })
          .bind(event_prefix + "cancel", function() {
-           form.cancel_inline_edit_form(options);
+           formlib.cancel_inline_edit_form(options);
          })
          .bind(event_prefix + "error", function(e, msg) {
-           form.error(options, msg);
+           formlib.error(options, msg);
            options.edit_row.removeClass("loading");
          })
          .bind(event_prefix + "success", function() {
            options.edit_row.removeClass("loading");
          });
-       form.init_submit_cancel(options);
+       formlib.init_submit_cancel(options);
        options.row.hide();
        options.row
          .before(options.head_row)
@@ -184,7 +195,7 @@
        }
 
        // is submit button disabled?
-       if (!form.is_submit_enabled(options)) {
+       if (!formlib.is_submit_enabled(options)) {
          return;
        }
 
@@ -194,7 +205,7 @@
        }
 
        // clear messages
-       form.clear_message(options);
+       formlib.clear_message(options);
 
        // validate form
        if (!options.validate(options)) {
@@ -205,7 +216,7 @@
        options.edit_row.addClass("loading");
 
        // submit form
-       options.submit(options, form.default_submit_ajax_options(options));
+       options.submit(options, formlib.default_submit_ajax_options(options));
      },
 
      success_inline_edit_form: function(options, new_row) {
@@ -256,22 +267,22 @@
 
      init_modal_form: function(options) {
        $(document.body).append(options.form.hide());
-       var event_prefix = options.event_prefix || "fb.form.modal_form.";
+       var event_prefix = options.event_prefix || "form.modal_form.";
        options.form
          .bind(event_prefix + "submit", function() {
-           form.submit_modal_form(options);
+           formlib.submit_modal_form(options);
          })
          .bind(event_prefix + "cancel", function() {
-           form.cancel_modal_form(options);
+           formlib.cancel_modal_form(options);
          })
          .bind(event_prefix + "error", function(e, msg) {
-           form.error(options, msg);
+           formlib.error(options, msg);
            options.form.removeClass("loading");
          })
          .bind(event_prefix + "success", function() {
            options.form.removeClass("loading");
          });
-       form.init_submit_cancel(options);
+       formlib.init_submit_cancel(options);
        options.form.overlay({
          close: ".modal-buttons .button-cancel",
          closeOnClick: false,
@@ -295,7 +306,7 @@
        }
 
        // is submit button disabled?
-       if (!form.is_submit_enabled(options)) {
+       if (!formlib.is_submit_enabled(options)) {
          return;
        }
 
@@ -305,7 +316,7 @@
        }
 
        // clear messages
-       form.clear_message(options);
+       formlib.clear_message(options);
 
        // validate form
        if (!options.validate(options)) {
@@ -316,7 +327,7 @@
        options.form.addClass("loading");
 
        // submit form
-       options.submit(options, form.default_submit_ajax_options(options));
+       options.submit(options, formlib.default_submit_ajax_options(options));
      },
 
      cancel_modal_form: function(options) {
@@ -343,7 +354,7 @@
          .click(function() {
            form_content.trigger(event_prefix + "submit");
          });
-       fb.disable(submit_button);
+       formlib.disable(submit_button);
        // cancel button
        $(".button-cancel", submit_content).click(function() {
          form_content.trigger(event_prefix + "cancel");
@@ -365,14 +376,23 @@
      /**
       * disable/enable submit button
       */
+
+     disable: function(elt) {
+       $(elt).attr("disabled", "disabled").addClass("disabled");
+     },
+
+     enable: function(elt) {
+       $(elt).removeAttr("disabled").removeClass("disabled");
+     },
+
      disable_submit: function(options) {
        var submit_content = options.form || options.submit_row;
-       fb.disable($(".button-submit", submit_content));
+       formlib.disable($(".button-submit", submit_content));
      },
 
      enable_submit: function(options) {
        var submit_content = options.form || options.submit_row;
-       fb.enable($(".button-submit",  submit_content));
+       formlib.enable($(".button-submit",  submit_content));
      },
 
      is_submit_enabled: function(options) {
@@ -439,8 +459,8 @@
      },
 
      error: function(options, msg) {
-       form.disable_submit(options);
-       return form.message(options, msg, "error");
+       formlib.disable_submit(options);
+       return formlib.message(options, msg, "error");
      },
 
      message: function(options, msg, type) {
@@ -467,11 +487,11 @@
       */
 
      default_begin_ajax_options: function() {
-       return form._default_ajax_options("GET");
+       return formlib._default_ajax_options("GET");
      },
 
      default_submit_ajax_options: function(options) {
-       var ajax_options = form._default_ajax_options("POST");
+       var ajax_options = formlib._default_ajax_options("POST");
        if (options) {
          $.extend(ajax_options, options.ajax);
          var submit_content = options.submit_row || options.form;
@@ -488,7 +508,7 @@
          dataType: "json",
          type: method || "GET",
          success: function() {
-           if (!form.check_ajax_success.apply(null, arguments)) {
+           if (!formlib.check_ajax_success.apply(null, arguments)) {
              return;
            }
            // onsuccess is our own success handler that's called after
@@ -498,7 +518,7 @@
            }
          },
          error: function() {
-           var errmsg = form.check_ajax_error.apply(null, arguments);
+           var errmsg = formlib.check_ajax_error.apply(null, arguments);
            // onerror is our own success handler that's called after
            // the boiler plate check_ajax_error
            if (this.onerror) {
@@ -522,4 +542,4 @@
      }
    };
 
-})(jQuery, window.freebase, window.i18n);
+})(jQuery, window.i18n);

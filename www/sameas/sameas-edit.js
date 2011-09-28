@@ -30,7 +30,7 @@
  */
 
 
-(function($, fb) {
+(function($, fb, formlib) {
 
   var edit = fb.sameas.edit = {
 
@@ -39,7 +39,7 @@
      */
 
     add_key_begin: function(trigger, body) {
-      $.ajax($.extend(fb.form.default_begin_ajax_options(), {
+      $.ajax($.extend(formlib.default_begin_ajax_options(), {
         url: fb.h.ajax_url("add_key_begin.ajax"),
         data: {id: fb.c.id},
         onsuccess: function(data) {
@@ -70,7 +70,7 @@
             .bind(event_prefix + "cancel", function(e) {
               trigger.removeClass("editing");
             });
-          fb.form.init_inline_add_form(options);
+          formlib.init_inline_add_form(options);
         }
       }));
     },
@@ -82,16 +82,16 @@
       select.change(function(e) {
         key.val("");
         if (this.value) {
-          fb.form.init_mqlkey(key, {
+          formlib.init_mqlkey(key, {
             mqlread_url: fb.acre.freebase.googleapis_url ? fb.h.fb_googleapis_url("/mqlread") : fb.h.fb_api_url("/api/service/mqlread"),
             namespace: this.value
           });
           key
             .bind("valid", function() {
-              fb.form.enable_submit(options);
+              formlib.enable_submit(options);
             })
             .bind("invalid", function() {
-              fb.form.disable_submit(options);
+              formlib.disable_submit(options);
             });
           fb.enable(key);
           key.focus();
@@ -99,7 +99,7 @@
         else {
           fb.disable(key);
         }
-        fb.form.disable_submit(options);
+        formlib.disable_submit(options);
       });
     },
 
@@ -110,7 +110,7 @@
         options.edit_row.trigger(options.event_prefix + "error", "Please select an authority/namespace");
         return false;
       }
-      return fb.form.validate_mqlkey(options, key);
+      return formlib.validate_mqlkey(options, key);
     },
 
     add_key_submit: function(options, ajax_options) {
@@ -124,7 +124,7 @@
       $.ajax($.extend(ajax_options, {
         onsuccess: function(data) {
           var new_row = $(data.result.html);
-          fb.form.success_inline_add_form(options, new_row);
+          formlib.success_inline_add_form(options, new_row);
         },
         onerror: function(errmsg) {
           options.edit_row.trigger(options.event_prefix + "error", errmsg);
@@ -137,7 +137,7 @@
       var key = $(":input[name=key]", options.edit_row);
       key.val("").focus().trigger("textchange")
         .next(".key-status").text("").removeClass("loading");
-      fb.form.disable_submit(options);
+      formlib.disable_submit(options);
     },
 
 
@@ -147,7 +147,7 @@
 
     edit_key_begin: function(key_row) {
       var key = key_row.metadata();
-      $.ajax($.extend(fb.form.default_begin_ajax_options(), {
+      $.ajax($.extend(formlib.default_begin_ajax_options(), {
         url: fb.h.ajax_url("edit_key_begin.ajax"),
         data: {id: fb.c.id, namespace:key.namespace, value:key.value},
         onsuccess: function(data) {
@@ -179,7 +179,7 @@
             .bind(event_prefix + "cancel", function(e) {
               key_row.removeClass("editing");
             });
-          fb.form.init_inline_edit_form(options);
+          formlib.init_inline_edit_form(options);
         }
       }));
     },
@@ -187,16 +187,16 @@
     edit_key_init: function(options) {
       var namespace = $(":input[name=namespace]", options.edit_row).val();
       var key = $(":input[name=key]", options.edit_row);
-      fb.form.init_mqlkey(key, {
+      formlib.init_mqlkey(key, {
             mqlread_url: fb.acre.freebase.googleapis_url ? fb.h.fb_googleapis_url("/mqlread") : fb.h.fb_api_url("/api/service/mqlread"),
             namespace: namespace
       });
       key
         .bind("valid", function() {
-          fb.form.enable_submit(options);
+          formlib.enable_submit(options);
         })
         .bind("invalid", function() {
-          fb.form.disable_submit(options);
+          formlib.disable_submit(options);
         })
         .select()
         .focus();
@@ -204,7 +204,7 @@
 
     edit_key_validate: function(options) {
       var key = $(":input[name=key]", options.edit_row);
-      return fb.form.validate_mqlkey(options, key);
+      return formlib.validate_mqlkey(options, key);
     },
 
     edit_key_submit: function(options, ajax_options) {
@@ -241,7 +241,7 @@
       $.ajax($.extend(ajax_options, {
         onsuccess: function(data) {
           var new_row = $(data.result.html);
-          fb.form.success_inline_edit_form(options, new_row);
+          formlib.success_inline_edit_form(options, new_row);
         },
         onerror: function(errmsg) {
           options.edit_row.trigger(options.event_prefix + "error", errmsg);
@@ -255,7 +255,7 @@
      */
     delete_key_begin: function(key_row) {
      var key = key_row.metadata();
-      $.ajax($.extend(fb.form.default_submit_ajax_options(), {
+      $.ajax($.extend(formlib.default_submit_ajax_options(), {
         url: fb.h.ajax_url("edit_key_submit.ajax"),
         data: {
           s: fb.c.id,
@@ -269,8 +269,8 @@
         },
         onsuccess: function(data) {
           var new_row = $(data.result.html);
-          fb.form.success_inline_delete(key_row, new_row, function() {
-            $.ajax($.extend(fb.form.default_submit_ajax_options(),  {
+          formlib.success_inline_delete(key_row, new_row, function() {
+            $.ajax($.extend(formlib.default_submit_ajax_options(),  {
               url: fb.h.ajax_url("edit_key_submit.ajax"),
               data: {
                 s: fb.c.id,
@@ -284,7 +284,7 @@
               },
               onsuccess: function(data) {
                 var new_row2 = $(data.result.html);
-                fb.form.success_inline_delete_undo(new_row, new_row2);
+                formlib.success_inline_delete_undo(new_row, new_row2);
               },
               onerror: function(errmsg) {
                 options.edit_row.trigger(options.event_prefix + "error", errmsg);
@@ -296,4 +296,4 @@
     }
   };
 
-})(jQuery, window.freebase);
+})(jQuery, window.freebase, window.formlib);

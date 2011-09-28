@@ -51,13 +51,11 @@ var SPEC = {
   run: function(object, query) {
     return query
       .then(function(q) {
-        return queries.collection(q)
-          .then(function(c) {
-            c.object = object;
-            c.query = q;
-            return c;
-          });
+        return {
+        object: object,
+        query: q,
+        collection: queries.collection(q)
+      };
       });
-  }
-  
+  }  
 };

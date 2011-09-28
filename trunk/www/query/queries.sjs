@@ -39,19 +39,8 @@ var fq = acre.require("lib/queries/freebase_query.sjs");
 var pq = acre.require("lib/propbox/queries_collection.sjs");
 
 
-function user_queries(user) {
-  var promises = {};
-
-  promises.queries = fq.featured_views_by_user(user);
-
-  return deferred.all(promises)
-    .then(function(results) {
-      return results.queries;
-  });
-};
-
-
 function qualify_query(q) {
+  var type;
   var temp = h.isArray(q) ? q[0] : q;
 
   function qualify(key, type) {
@@ -70,6 +59,7 @@ function qualify_query(q) {
     };
 
     var mql_directives = {
+      index: true,
       limit: true,
       sort: true,
       optional: true,
@@ -84,14 +74,14 @@ function qualify_query(q) {
       key = segs[1];
     }
 
-    if (key in mql_directives || (key.indexOf("/") ==- 0)) {
+    if (key in mql_directives || (key.indexOf("/") === 0)) {
       return (label ? label + ":" : "") + key;
     }
 
     if (obj_props[key]) {
       return (label ? label + ":" : "") + "/type/object/" + key;
     } else {
-      return (label ? label + ":" : "") + (type || "/type/object") + "/" + key;
+      return (label ? label + ":" : "") + (type ? type + "/" : "") + key;
     }
   };
 
@@ -119,92 +109,74 @@ function qualify_query(q) {
   return q;
 };
 
-
-function collection(q, props) {
-  var MID_PROP = "collection:mid";
+function clean_query(q) {
   var exclude_props = {
     "/type/object/id" : true,
     "/type/object/mid": true,
     "/type/object/name": true,
     "/common/topic/article": true,
-    "/common/topic/image": true
+    "/common/topic/image": true,
+    "index": true
   };
+  for (var key in (h.isArray(q) ? q[0] : q)) {
+    if ((key in exclude_props) ||
+        (key.indexOf(":") > -1)) {
+      delete q[key];
+    }
+  }
+  return q;
+};
+
+function get_paths(q, depth) {
+  function decant(val, path) {
+    if (h.isPlainObject(val)) {
+      if (path) paths.push(path);
+      clean_query(qualify_query(val));
+      for (var key in val) {
+        var new_path = path.length ? path + "." + key : key;
+        decant(val[key], new_path);
+      }
+    } else if (h.isArray(val)) {
+      if (val.length == 0) {
+        paths.push(path);
+      } else {
+        decant(val[0], path);
+      }
+    } else {
+      if (val === null) {
+        paths.push(path);
+      }
+    }
+  };
+  var paths = [];
+  decant(q, "");
+  if (depth) {
+    paths = paths.map(function(p) {
+      return p.split(".").slice(0, depth).join(".");
+    });    
+  }
+  return paths;
+};
+
+function collection(q, props) {
+  var MID_PROP = "collection:mid";
 
   q = h.isArray(q) ? q : [q];
   q[0][MID_PROP] = null;
 
   return freebase.mqlread(q)
     .then(function(env) {
+
       var mids = [];
       env.result.forEach(function(r) {
         mids.push(r[MID_PROP]);
       });
 
-      qualify_query(q[0]);
-
-      if (!h.isArray(props) || !props.length) {
-        props = ["/type/object/name", "/common/topic/image"];
-        var constraints = decant_constraints(u.extend(true, {}, q[0]));
-        for (var prop in q[0]) {
-          var path = [prop];
-          if (!is_constraint(constraints, path, q[0][prop])) {
-            if (prop && !(prop in exclude_props)) props.push(prop);
-          }
-        }
-      }
+      qualify_query(q);
+      var props = [
+        "/type/object/name", 
+        "/common/topic/image"
+      ].concat(get_paths(clean_query(q), 2));
       return pq.collection(mids, props, i18n.lang);
     });
 };
-
-
-function decant_constraints(q) {
-  function decant(val) {
-    if (h.isPlainObject(val)) {
-      var has_keys = false;
-      for (var key in val) {
-        var tmp = decant(val[key]);
-        if (tmp === undefined) {
-          delete val[key];
-        } else {
-          has_keys = true;
-          val[key] = tmp;
-        }
-      }
-      return has_keys ? val : undefined;
-    } else if (h.isArray(val)) {
-      return val.length ? decant(val[0]) : undefined;
-    } else {
-      return (val === null) ? undefined : val;
-    }
-  };
-  return decant(q);
-};
-
-function is_constraint(constraints, path, value) {
-  function same_keys(o1, o2) {
-    for (var key in o1) {
-      var val1 = o1[key];
-      var val2 = o2[key];
-      val1 = h.isArray(val1) ? val1[0] : val1;
-      val2 = h.isArray(val2) ? val2[0] : val2;
-      if (val2 === undefined) return false;
-      if (h.isPlainObject(val1) && h.isPlainObject(val2)) {
-        if (!same_keys(val1, val2)) return false;
-      }
-    }
-    return true;
-  }
-
-  // hack for saved queries
-  if (path[0].indexOf(":") > -1) {
-    return true;
-  }
-
-  var val = h.extend(true, {}, constraints);
-  value = h.isArray(value) ? value[0] : value;
-  for (var s = 0; s < path.length; s++) {
-    val = val[path[s]];
-    if (val === undefined) return false;
-  }
-  return h.isPlainObject(val) ? same_keys(value, val) : true;
-}

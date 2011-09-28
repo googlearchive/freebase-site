@@ -116,7 +116,12 @@ function clean_query(q) {
     "/type/object/name": true,
     "/common/topic/article": true,
     "/common/topic/image": true,
-    "index": true
+    
+    /* TODO:  SITE-818 */
+    "index": true,
+    "return": true,
+    "count": true,
+    "link": true
   };
   for (var key in (h.isArray(q) ? q[0] : q)) {
     if ((key in exclude_props) ||

@@ -35,90 +35,93 @@ var apis = acre.require("lib/promise/apis.sjs"),
     deferred = apis.deferred,
     freebase = apis.freebase;
 
+var schema = acre.require("lib/schema/typeloader.sjs");
 var fq = acre.require("lib/queries/freebase_query.sjs");
 var pq = acre.require("lib/propbox/queries_collection.sjs");
 
 
-function qualify_clause(q) {
-  var type;
 
-  function qualify(key, type) {
-    var system_props = {
-      id: "/type/object",
-      guid: "/type/object",
-      type: "/type/object",
-      name: "/type/object",
-      key: "/type/object",
-      timestamp: "/type/object",
-      permission: "/type/object",
-      creator: "/type/object",
-      attribution: "/type/object",
-      search: "/type/object",
-      mid: "/type/object",
-      value: "/type/value"
-    };
-
-    var mql_directives = {
-      "index": true,
-      "limit": true,
-      "sort": true,
-      "optional": true,
-      'count': true,
-      'index': true,
-      "!index": true,
-      "return": true,
-      'count': true,
-      "link": true
-    };
-
-    var prop = {
-      label: null,
-      id: key,
-      key: key
-    }
-
-    var segs = key.split(":");
-    if (segs.length > 2) {
-      throw "property key can't have more than one label";
-    } else if (segs.length === 2) {
-      prop.label = segs[0];
-      prop.id = segs[1];
-    }
-
-    if (!(prop.id in mql_directives || (prop.id.indexOf("/") === 0))) {
-      var stype = system_props[prop.id];
-      if (stype) {
-        prop.id = stype + "/" + key;
-      } else {
-        prop.id = type ? type + "/" + prop.id : prop.id;
-      }
-    }
-    prop.key = prop.label ? prop.label + ":" + prop.id : prop.id;
-    return prop;
+function qualify_prop(key, type) {
+  var system_props = {
+    id: "/type/object",
+    guid: "/type/object",
+    type: "/type/object",
+    name: "/type/object",
+    key: "/type/object",
+    timestamp: "/type/object",
+    permission: "/type/object",
+    creator: "/type/object",
+    attribution: "/type/object",
+    search: "/type/object",
+    mid: "/type/object",
+    value: "/type/value"
   };
 
-  // find type clause if there is one
+  var mql_directives = {
+    "index": true,
+    "limit": true,
+    "sort": true,
+    "optional": true,
+    'count': true,
+    'index': true,
+    "!index": true,
+    "return": true,
+    'count': true,
+    "link": true
+  };
+
+  var prop = {
+    label: null,
+    id: key,
+    key: key
+  }
+
+  var segs = key.split(":");
+  if (segs.length > 2) {
+    throw "property key can't have more than one label";
+  } else if (segs.length === 2) {
+    prop.label = segs[0];
+    prop.id = segs[1];
+  }
+
+  if (!(prop.id in mql_directives || (prop.id.indexOf("/") === 0))) {
+    var stype = system_props[prop.id];
+    if (stype) {
+      prop.id = stype + "/" + key;
+    } else {
+      prop.id = type ? type + "/" + prop.id : prop.id;
+    }
+  }
+  prop.key = prop.label ? prop.label + ":" + prop.id : prop.id;
+  return prop;
+};
+
+function get_clause_type(q) {
+  var type;
   for (var key in q) {
-    if (qualify(key).id === "/type/object/type") {
+    if (qualify_prop(key).id === "/type/object/type") {
       type = q[key];
       break;
     }
   }
+  return type || "/type/object";
+};
 
-  // qualify the properties
+
+
+function qualify_clause(q, type) {
   for (var key in q) {
-    var qprop = qualify(key, type);
+    var qprop = qualify_prop(key, type);
     if (qprop.id !== key || qprop.id === "sort") {
       var value = q[key];
       if (qprop.id === "sort") {
         var first_key = value.split(".")[0].replace("-","");
-        value = value.replace(first_key, qualify(first_key, type).key);
+        value = value.replace(first_key, qualify_prop(first_key, type).key);
       }
       q[qprop.key] = value;
       delete q[key];
     }
   }
-
   return q;
 };
 
@@ -148,11 +151,11 @@ function clean_clause(q) {
   return q;
 };
 
-function get_paths(q, depth) {
-  function decant(val, path) {
+function get_paths(q, depth, top_type) {
+  function decant(val, path, type) {
     if (h.isPlainObject(val)) {
       if (path) paths.push(path);
-      clean_clause(qualify_clause(val));
+      clean_clause(qualify_clause(val, type));
       for (var key in val) {
         var new_path = path.length ? path + "." + key : key;
         decant(val[key], new_path);
@@ -170,7 +173,7 @@ function get_paths(q, depth) {
     }
   };
   var paths = [];
-  decant(q, "");
+  decant(q, "", top_type);
   if (depth) {
     paths = paths.map(function(p) {
       return p.split(".").slice(0, depth).join(".");
@@ -182,22 +185,24 @@ function get_paths(q, depth) {
 function collection(q, props) {
   var MID_PROP = "collection:mid";
 
-  q = h.isArray(q) ? q : [q];
-  q[0][MID_PROP] = null;
-
-  return freebase.mqlread(q)
+  q = h.isArray(q) ? q[0] : q;
+  q[MID_PROP] = null;
+  
+  return freebase.mqlread([q])
     .then(function(env) {
 
       var mids = [];
       env.result.forEach(function(r) {
         mids.push(r[MID_PROP]);
       });
-
-      var props = [
-        "/type/object/name", 
-        "/common/topic/image"
-      ].concat(get_paths(q, 2));
       
-      return pq.collection(mids, props, i18n.lang);
+      var typeid = get_clause_type(q);
+      return schema.load(typeid)
+        .then(function(r) {
+          var is_mediator = r[typeid]["/freebase/type_hints/mediator"];
+          var default_paths = is_mediator ? ["/type/object/id"] : ["/type/object/name", "/common/topic/image"];
+          var props = default_paths.concat(get_paths(q, 2, typeid));
+          return pq.collection(mids, props, i18n.lang);
+        });
     });
 };

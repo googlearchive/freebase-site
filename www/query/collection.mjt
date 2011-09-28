@@ -44,8 +44,8 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <div id="collection-data" acre:if="c.structures && c.values">
-    ${t.collection(c.structures, c.values, i18n.lang)}
+  <div id="collection-data" acre:if="c.collection">
+    ${t.collection(c.collection.structures, c.collection.values, i18n.lang)}
   </div>
 </acre:block>
 

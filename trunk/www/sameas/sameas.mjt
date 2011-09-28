@@ -178,7 +178,7 @@
       </acre:block>
     </td>
     <td>
-      ${components.creator(key.creator)}
+      ${components.attribution(key.attribution, true)}
     </td>
     <td class="odd">
       ${i18n_c.datetime(key.timestamp)}

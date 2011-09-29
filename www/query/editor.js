@@ -158,10 +158,10 @@
         controlPaneOptions: controlPaneOptions
       });
 
-      qe.page_chrome_height =  $("#header").outerHeight() +
-                               $("#breadcrumb").outerHeight() + 
-                               $("#footer").outerHeight() + 
-                               ($("#page-content").outerHeight() - $("#page-content").height());
+      qe.page_chrome_height =  $("#header").outerHeight(true) +
+                               $("#footer").outerHeight(true) + 
+                               ($("#page-content").outerHeight(true) - $("#page-content").height()) +
+                               $("#page-title").outerHeight(true);
 
       $(window).bind("beforeunload", function(evt) {
         qe.store();

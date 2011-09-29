@@ -35,7 +35,7 @@
   border-bottom: solid 1px #E4E6E7;
 }
 
-.cuecard-outputPane-tabs ul.tab-nav {
+.cuecard-outputPane-tabs ul.section-tabset {
   height: 100%;
 }
 
@@ -131,6 +131,12 @@ div.cuecard-outputPane-list iframe {
 /*
  *  Examples
  */
+ 
+h1.title {
+   color: #f1f2f3;
+   font-size: 21px;
+}
+ 
 a.cuecard-examples-example {
     display: block;
     text-decoration: none;

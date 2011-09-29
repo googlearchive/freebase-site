@@ -83,10 +83,10 @@
       });
 
       qe.page_chrome_height =  $("#header").outerHeight() +
-                               $("#breadcrumb").outerHeight() +
                                $("#page-header").outerHeight() +
                                $("#footer").outerHeight() + 
-                               ($("#page-content").outerHeight() - $("#page-content").height());
+                               ($("#page-content").outerHeight(true) - $("#page-content").height()) +
+                               $("#page-title").outerHeight(true);
 
       $(window).bind("beforeunload", function(evt) {
         // TODO - check whether query neeeds saving

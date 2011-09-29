@@ -46,11 +46,15 @@
 
 <acre:block def="content_body()">
   <div id="page-content">
-  <div id="qe-module" class="module">
-    <div id="the-query-editor" class="module-section"></div>
-    <div id="the-control-pane" class="module-section drawer-content"></div>
-  </div>
-  <div id="the-output-pane"></div>
+    <div id="page-title">
+      <button id="save-query" class="button button-primary">Save</button>
+      <h1 class="page-title">Query Editor</h1>
+    </div>
+    <div id="qe-module" class="module">
+      <div id="the-query-editor" class="module-section"></div>
+      <div id="the-control-pane" class="module-section drawer-content"></div>
+    </div>
+    <div id="the-output-pane"></div>
   </div>
 
   <!-- additions to be moved inline once cuecard is loaded -->

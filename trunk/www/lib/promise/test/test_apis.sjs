@@ -109,7 +109,7 @@ test("urlfetch_timeout", function() {
   // Check that a timeout calls the errback with the right error
 
   var errback_called = false;
-  urlfetch(acre.request.app_url, {timeout: .1})
+  urlfetch(acre.request.app_url, {timeout: 1})
     .then(function(result) {
       ok(false, "Callback shouldn't have run on timeout");
     })

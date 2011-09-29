@@ -35,7 +35,7 @@ CueCard.OutputPane = function(elmt, options) {
   
   this._TABS = options.tabs || [
     /* { name: 'List', key: "list"}, */
-    { name: 'JSON',  key: "json"}
+    { name: 'Results',  key: "json"}
   ];
   
   if (!this._options.hideHelp) {
@@ -77,7 +77,7 @@ CueCard.OutputPane.prototype._constructUI = function() {
     initial_tab = self.getTabIndex("help");
   }
                     
-  var tabs = $('#' + idPrefix + " > .cuecard-outputPane-tabs > .tab-nav");
+  var tabs = $('#' + idPrefix + " > .cuecard-outputPane-tabs > .section-tabset");
   tabs.tabs('#' + idPrefix + " > .tabbed-content > .cuecard-outputPane-tabBody", {
     "initialIndex": initial_tab,
     "onBeforeClick": function(event, index) {

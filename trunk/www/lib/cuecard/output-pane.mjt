@@ -41,9 +41,9 @@
   </acre:script>
   
   <div id="$id" class="cuecard-outputPane">
-    <div class="cuecard-outputPane-tabs">
-      <ul class="tab-nav clear">
-        <li acre:for="index, tab in outputPane._TABS" class="tab">
+    <div class="cuecard-outputPane-tabs section-tabs">
+      <ul class="section-tabset clear">
+        <li acre:for="index, tab in outputPane._TABS" class="section-tab">
           <a href="#${id}-${tab.key}"><span>$tab.name</span></a>
         </li>
       </ul>
@@ -204,6 +204,8 @@
 
 <acre:block def="help()">
   <div class="cuecard-outputPane-helpContent">
+    <h1 class="title">The Query Editor enables you to run 
+      MQL queries in the browser and retrieve Freebase data</h1>
     <ul>
       <li><a href="http://www.freebase.com/docs/data" target="_blank">MQL Tutorial</a></li>
       <li><a href="http://www.freebase.com/docs/mql" target="_blank">MQL&nbsp;Reference</a></li>

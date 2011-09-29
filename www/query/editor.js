@@ -161,7 +161,7 @@
       qe.page_chrome_height =  $("#header").outerHeight() +
                                $("#breadcrumb").outerHeight() + 
                                $("#footer").outerHeight() + 
-                               ($("#content").outerHeight() - $("#content").height());
+                               ($("#page-content").outerHeight() - $("#page-content").height());
 
       $(window).bind("beforeunload", function(evt) {
         qe.store();
@@ -169,7 +169,7 @@
     },
 
     resize: function() {
-      var innerHeight = $("body").outerHeight() - qe.page_chrome_height;
+      var innerHeight = $(window).height() - qe.page_chrome_height;
       if (innerHeight) {
         $("#qe-module").height(innerHeight);
         if (qe.cuecard.outputPane) qe.cuecard.outputPane.layout(innerHeight);

@@ -86,7 +86,7 @@
                                $("#breadcrumb").outerHeight() +
                                $("#page-header").outerHeight() +
                                $("#footer").outerHeight() + 
-                               ($("#content").outerHeight() - $("#content").height());
+                               ($("#page-content").outerHeight() - $("#page-content").height());
 
       $(window).bind("beforeunload", function(evt) {
         // TODO - check whether query neeeds saving

@@ -3,7 +3,6 @@
   "template/jquery.factory.js",
   "template/jquery.cookie.js",
   "template/jquery.localstore.js",
-  "template/jquery.placeholder.js",
   "template/jquery.metadata.js",
   "template/tablesorter.js",
   "jqueryui/jquery.ui.core.mf.js",

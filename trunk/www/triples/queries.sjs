@@ -40,62 +40,93 @@ var creator = acre.require("lib/queries/creator.sjs");
 function links(id, filters) {
   filters = h.extend({}, filters);
   return creator.by(filters.creator, "/type/user")
-  .then(function(links_clause) {
-    var q = {
-      id: id,
-      "/type/reflect/any_master": [{
-        optional: true,
-        id: null,
-        mid: null,
-        name: i18n.mql.query.name(),
-        link: h.extend({
-          master_property: null,
-          timestamp: null
-        }, links_clause)
-      }],
-      "/type/reflect/any_reverse": [{
-        optional: true,
-        id: null,
-        mid: null,
-        name: i18n.mql.query.name(),
-        link: h.extend({
-          master_property: null,
-          timestamp: null
-        }, links_clause)
-      }],
-      "/type/reflect/any_value": [{
-        optional: true,
-        link: h.extend({
-          master_property: null,
-          timestamp: null,
-          target_value: {}
-        }, links_clause)
-      }]
-    };
-    return freebase.mqlread(q, mqlread_options(filters))
-      .then(function(env) {
-        return env.result;
-      })
-      .then(function(result) {
-        result.any_master = result["/type/reflect/any_master"];
-        result.any_reverse = result["/type/reflect/any_reverse"];
-        result.any_value = result["/type/reflect/any_value"];
-        result.any_master.forEach(function(l) {
-          l.any_master = 1;
+    .then(function(links_clause) {
+      var q = {
+        id: id,
+        "/type/reflect/any_master": [{
+          optional: true,
+          id: null,
+          mid: null,
+          name: i18n.mql.query.name(),
+          link: h.extend({
+            master_property: null,
+            timestamp: null
+          }, links_clause)
+        }],
+        "/type/reflect/any_reverse": [{
+          optional: true,
+          id: null,
+          mid: null,
+          name: i18n.mql.query.name(),
+          link: h.extend({
+            master_property: null,
+            timestamp: null
+          }, links_clause)
+        }],
+        "/type/reflect/any_value": [{
+          optional: true,
+          link: h.extend({
+            master_property: null,
+            timestamp: null,
+            target_value: {}
+          }, links_clause)
+        }]
+      };
+      return freebase.mqlread(q, mqlread_options(filters))
+        .then(function(env) {
+          return env.result;
+        })
+        .then(function(result) {
+          result.any_master = result["/type/reflect/any_master"];
+          result.any_reverse = result["/type/reflect/any_reverse"];
+          result.any_value = result["/type/reflect/any_value"];
+          result.any_master.forEach(function(l) {
+            l.any_master = 1;
+          });
+          result.any_reverse.forEach(function(l) {
+            l.any_reverse = 1;
+          });
+          result.any_value.forEach(function(l) {
+            l.any_value = 1;
+          });
+          result.all = result.any_master.concat(result.any_reverse).concat(result.any_value);
+          result.all.sort(function(a, b) {
+            return b.link.timestamp < a.link.timestamp;
+          });
+          return result;
         });
-        result.any_reverse.forEach(function(l) {
-          l.any_reverse = 1;
-        });
-        result.any_value.forEach(function(l) {
-          l.any_value = 1;
-        });
-        result.all = result.any_master.concat(result.any_reverse).concat(result.any_value);
-        result.all.sort(function(a, b) {
-          return b.link.timestamp < a.link.timestamp;
-        });
-        return result;
-      });
   });
+};
+
+function writes(id, filters) {
+  filters = h.extend({}, filters);
+  return creator.by(id, filters.type)
+    .then(function(links_clause) {
+      var q = h.extend(links_clause, {
+        type: "/type/link",
+        source: {
+          optional: true,
+          id: null,
+          mid: null,
+          name: i18n.mql.query.name()
+        },
+        target: {
+          optional: true,
+          id: null,
+          mid: null,
+          name: i18n.mql.query.name()
+        },
+        master_property: null,
+        target_value: {},
+        timestamp: null,
+        sort: "-timestamp"
+      });
+      apply_filters(q, filters);
+      return freebase.mqlread([q], mqlread_options(filters))
+        .then(function(env) {
+          return env.result;
+        });
+    });
 };
 
 

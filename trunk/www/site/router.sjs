@@ -506,10 +506,10 @@ function init_site_rules(lib) {
           "script": "group.tab"
         },
         {
-          "name": "Attributions",
-          "key": "attributions",
-          "app": "activity",
-          "script": "attributions.tab"
+          "name": "Writes",
+          "key": "writes",
+          "app": "triples",
+          "script": "writes.tab"
         }
       ],
       "more_tabs": h.extend(true, [], DEFAULT_TABS),
@@ -658,10 +658,10 @@ function init_site_rules(lib) {
           "script": "user.tab"
         },
         {
-          "name": "Attributions",
-          "key": "attributions",
-          "app": "activity",
-          "script": "attributions.tab"
+          "name": "Writes",
+          "key": "writes",
+          "app": "triples",
+          "script": "writes.tab"
         }
       ],
       "more_tabs": h.extend(true, [], DEFAULT_TABS),
@@ -726,10 +726,10 @@ function init_site_rules(lib) {
       }]),
       "tabs": [
         {
-          "name": "Attributions",
-          "key": "attributions",
-          "app": "activity",
-          "script": "attributions.tab"
+          "name": "Writes",
+          "key": "writes",
+          "app": "triples",
+          "script": "writes.tab"
         },
         {
           "name": "Properties",

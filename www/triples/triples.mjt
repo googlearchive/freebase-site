@@ -138,6 +138,7 @@
       <thead>
         <tr>
           <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">&harr;</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("source/target")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
@@ -156,6 +157,8 @@
             <acre:block else="">
               <span class="arrow arrow-right">&#8680;</span>
             </acre:block>
+          </td>
+          <td class="odd">
             <acre:block if="o.any_value">
               ${literal(id, o.link.master_property, o.link.target_value)}
             </acre:block>
@@ -163,9 +166,9 @@
               ${topic(o)}
             </acre:block>
           </td>           
-          <td class="odd">${attribution_creator(o.link)}</td>
-          <td class="even numeric">${o.link.timestamp}</td>
-          <td acre:if="filters.historical" class="odd">${o.link.operation}</td>
+          <td class="even">${attribution_creator(o.link)}</td>
+          <td class="odd numeric">${o.link.timestamp}</td>
+          <td acre:if="filters.historical" class="even">${o.link.operation}</td>
         </tr>
       </tbody>
     </table>

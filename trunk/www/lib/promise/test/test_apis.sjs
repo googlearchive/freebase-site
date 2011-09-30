@@ -37,7 +37,7 @@ var urlfetch = acre.require("promise/apis").urlfetch;
 
 test("urlfetch_success", function() {
   // Basic url fetch should call the callback
-  urlfetch(acre.request.app_url)
+  urlfetch("http://www.google.com")
     .then(function(result) {
       ok(result.body, "Make sure that we returned a result");
     }, function(failure) {
@@ -105,7 +105,7 @@ test("urlfetch_failure", function() {
 
 });
 
-test("urlfetch_timeout", function() {
+test("urlfetch_timeout", {bug: "Timeout units are inconsistent between stand-alone and AoAE"}, function() {
   // Check that a timeout calls the errback with the right error
 
   var errback_called = false;

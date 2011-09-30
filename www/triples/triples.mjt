@@ -107,6 +107,8 @@
 
   <div class="column" id="triples-data" role="main" acre:attrs="c.filters.historical ? {'class':'historical'} : {}">
 
+    ${links(c.id, c.links.all, c.filters)}
+
     ${names_aliases(c.id, c.names_aliases, c.filters)}
 
     ${keys(c.id, c.keys, c.filters)}
@@ -127,6 +129,53 @@
     </li>
   </ul>
 
+</acre:block>
+
+<acre:block def="links(id, data, filters)" if="data && data.length">
+  <div class="section">
+    <h2 class="table-title"><a name="links">${_("Links")} (${i18n_c.number(data.length)})</a></h2>
+    <table class="table table-sortable">
+      <thead>
+        <tr>
+          <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("master_property")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
+          <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
+          <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr acre:for="o in data">
+          <th class="row-header odd empty" scope="row">
+            <acre:block if="o.any_reverse">
+              ${topic(o)}
+            </acre:block>
+            <acre:block else="">
+              <span class="self">-</span>
+            </acre:block>
+          </th>
+
+          <td class="even">${a(o.link.master_property)}</td>
+
+          <td class="odd">
+            <acre:block if="o.any_master">
+              ${topic(o)}
+            </acre:block>
+            <acre:block elif="o.any_value">
+              ${literal(id, o.link.master_property, o.link.target_value)}
+            </acre:block>
+            <acre:block elif="o.any_reverse">
+              <span class="self">-</span>
+            </acre:block>
+          </td>           
+          <td class="even">${attribution_creator(o.link)}</td>
+          <td class="odd numeric">${o.link.timestamp}</td>
+          <td acre:if="filters.historical" class="even">${o.operation}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </acre:block>
 
 <acre:block def="names_aliases(id, data, filters)" if="data && data.length">

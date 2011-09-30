@@ -86,7 +86,7 @@
         **/
         !!-->
       <style type="text/css">
-        .edit, .edit-perm {
+        .edit, .edit-perm, .no-edit {
           display: none;
         }
       </style>

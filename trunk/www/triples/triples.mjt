@@ -137,9 +137,8 @@
     <table class="table table-sortable">
       <thead>
         <tr>
-          <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("master_property")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
+          <th class="column-header" scope="col"><span class="sort-icon">${_("source/target")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
           <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
           <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
@@ -148,30 +147,25 @@
       <tbody>
         <tr acre:for="o in data">
           <th class="row-header odd empty" scope="row">
+            ${a(o.link.master_property)}
+          </th>
+          <td class="even">
             <acre:block if="o.any_reverse">
-              ${topic(o)}
+              <span class="arrow arrow-left">&#8678;</span>
             </acre:block>
             <acre:block else="">
-              <span class="self">-</span>
+              <span class="arrow arrow-right">&#8680;</span>
             </acre:block>
-          </th>
-
-          <td class="even">${a(o.link.master_property)}</td>
-
-          <td class="odd">
-            <acre:block if="o.any_master">
-              ${topic(o)}
-            </acre:block>
-            <acre:block elif="o.any_value">
+            <acre:block if="o.any_value">
               ${literal(id, o.link.master_property, o.link.target_value)}
             </acre:block>
-            <acre:block elif="o.any_reverse">
-              <span class="self">-</span>
+            <acre:block else="o.any_master">
+              ${topic(o)}
             </acre:block>
           </td>           
-          <td class="even">${attribution_creator(o.link)}</td>
-          <td class="odd numeric">${o.link.timestamp}</td>
-          <td acre:if="filters.historical" class="even">${o.operation}</td>
+          <td class="odd">${attribution_creator(o.link)}</td>
+          <td class="even numeric">${o.link.timestamp}</td>
+          <td acre:if="filters.historical" class="odd">${o.link.operation}</td>
         </tr>
       </tbody>
     </table>

@@ -95,7 +95,7 @@
       <tr acre:for="u in c.users">
         <th class="row-header odd" scope="row">
           ${image.user_image_tiny(u.id)}
-          ${components.creator(u.id)}
+          ${components.creator(u.id, h.fb_url(u.id, [['writes']]))}
         </th>
         <td class="odd">${h.relative_date(u.timestamp)}</td>
         <td class="odd">${i18n_c.number(u.objects)}</td>

@@ -31,8 +31,11 @@
 
 var h = acre.require("helper/helpers.sjs");
 var i18n = acre.require("i18n/i18n.sjs");
+var apis = acre.require("promise/apis.sjs");
+var deferred = apis.deferred;
+var freebase = apis.freebase;
 
-function extend(q) {
+function extend(q, filter_ids) {
   var clause = q;
   if (h.isArray(q) && q.length === 1) {
     clause = q[0];
@@ -79,5 +82,85 @@ function extend(q) {
   clause["the:creator"] = {
     id: null
   };
+  if (filter_ids) {
+    clause["filter:creator"] = {
+      "id|=": filter_ids
+    };
+  }
   return q;
+};
+
+function by(ids, type) {
+  // if no ids specified, just return standard creator clause
+  if (!ids || !ids.length) {
+    return deferred.resolved(extend({}));
+  }
+  
+  if (typeof ids == 'string') {
+    ids = [ids];
+  }
+
+  // start with the objects themselves
+  var attrs = ids.slice();
+  
+  var promises = [];
+  
+  if (!type || type == "/type/user") {
+    // add attributions created by user
+    promises.push(freebase.mqlread([{
+      "id": null,
+      "type": "/type/attribution",
+      "creator": {
+        "id|=" : ids
+      },
+      "limit": 1000
+    }]));
+    
+    // add mdo's user is operator of 
+    promises.push(freebase.mqlread([{
+      "id": null,
+      "type": "/type/attribution",
+      "/dataworld/provenance/data_operation": {
+          "operator" : {
+            "id|=" : ids
+          },
+          "limit": 1
+        },
+      "limit": 1000
+    }]));
+  }
+  
+  if (!type || type == "/dataworld/mass_data_operation") {
+    // add mdo attributions 
+    promises.push(freebase.mqlread([{
+      "id": null,
+      "type": "/type/attribution",
+      "/dataworld/provenance/data_operation": {
+          "id|=" : ids
+        },
+      "limit": 1000
+    }]));
+  }
+  
+  if (!type || type == "/freebase/apps/acre_app") {
+    // add acre app attributions 
+    promises.push(freebase.mqlread([{
+      "id": null,
+      "type": "/type/attribution",
+      "/freebase/written_by/application": {
+          "id|=" : ids
+        },
+      "limit": 1000
+    }]));
+  }
+
+  return deferred.all(promises)
+    .then(function(res) {
+      res.forEach(function(env) {
+        env.result.forEach(function(attr) {
+          attrs.push(attr.id);
+        })
+      });
+      return extend({}, attrs)
+    });
 };

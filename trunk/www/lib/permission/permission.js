@@ -71,6 +71,8 @@
    $(window).bind("fb.permission.has_permission", function(e, has_permission) {
      if (has_permission) {
        $(".edit").show();
+     } else {
+       $(".no-edit").show();
      }
    });
 

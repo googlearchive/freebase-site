@@ -35,8 +35,8 @@
   var _ = i18n.gettext;
 </acre:script>
 
-<acre:block def="creator(creator_id)">
-  <a class="creator" href="${h.fb_url(creator_id)}"
+<acre:block def="creator(creator_id, url)">
+  <a class="creator" href="${url || h.fb_url(creator_id)}"
      title="${_('View user profile')}">${h.id_key(creator_id)}</a>
 </acre:block>
 

@@ -50,7 +50,7 @@
         <li class="row-menu-item edit">
           <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.delete_type, ['${type.id}'], this);"><span class="delete-icon">${_('Delete type')}</span></a>
         </li>
-        <li class="row-menu-item"><a href="${h.fb_url(type.id, [['inspect']])}">${_('Inspect Type')}</a></li>
+        <li class="row-menu-item"><a href="${h.fb_url(type.id, [['links']])}">${_('Inspect Type')}</a></li>
         <li class="row-menu-item">
           <a href="${sh.build_query_url(type.id)}">${h.template_sprintf(_('Browse %s instances'), i18n_c.number(type.instance_count))}</a>
         </li>

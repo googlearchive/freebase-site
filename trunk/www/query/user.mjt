@@ -42,21 +42,13 @@
 </acre:block>
 
 <acre:block def="page_content()">
-<!-- Types -->
-<div class="section wrapper">
-  <acre:block if="c.saved_queries && c.saved_queries.length">
-    <acre:script>
-      var count = 0;
-      for(q in c.saved_queries) {
-        count += c.saved_queries[q]["/freebase/domain_profile/featured_views"].length
-      }
-    </acre:script>
+  <div class="section wrapper">
     <div class="table-header">
       <div class="button-group">
         <button class="button button-primary edit" onclick="javascript:alert('Coming soon...')">Create new</button>
       </div>
       <h2 class="table-title">
-        ${h.template_sprintf(_("%s has curated %s queries"), i18n.display_name(c.object), i18n_c.number(count))}
+        ${h.template_sprintf(_("%s has curated %s queries"), i18n.display_name(c.object), i18n_c.number(c.queries ? c.queries.length : 0))}
       </h2>
     </div>
     <table id="queries" cellspacing="0" class="table table-sortable">
@@ -68,24 +60,21 @@
         </tr>
       </thead>
       <tbody>
-        <acre:script>console.log(c)</acre:script>
-        <acre:block for="query in c.saved_queries">
-        <tr acre:for="obj in query['/freebase/domain_profile/featured_views']">
+        <tr acre:for="q in c.queries">
           <th class="row-header odd" scope="row">
-            <a href="${h.fb_url(obj.id)}">${i18n.display_name(obj)}</a>
+            <a href="${h.fb_url(q.id)}">${i18n.display_name(q)}</a>
           </th>
           <td>
-            <a href="${h.fb_url(query.id)}" title="${_('View domain')}">${i18n.display_name(query)}</a>
+            <a href="${h.fb_url(q.domain.id, [['queries']])}">${i18n.display_name(q.domain)}</a>
           </td>
           <td class="odd">
-            ${i18n_c.datetime(obj.timestamp, [["class","published"],["data-format","medium"]])}
+            ${h.relative_date(q.timestamp)}
+            <!--${i18n_c.datetime(obj.timestamp, [["class","published"],["data-format","medium"]])}-->
           </td>
         </tr>
-        </acre:block>
       </tbody>
     </table>
-  </acre:block>
-</div>
+  </div>
 </acre:block>
 
 <acre:block def="footer_script()">

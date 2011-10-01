@@ -31,9 +31,10 @@
 
 var queries = acre.require("lib/queries/freebase_query.sjs");
 
+
 var SPEC = {
 
-  template: "user.mjt",
+  template: "domain.mjt",
 
   validate: function(params) {
     return [
@@ -42,10 +43,10 @@ var SPEC = {
   },
 
   run: function(object) {
-    return {
-      id:      object.id,
-      object:  object,
-      queries:   queries.queries_by_user(object.id)
-    };
+    return queries.queries_by_domain(object.id)
+      .then(function(c) {
+        c.object = object;
+        return c;
+      });
   }
 };

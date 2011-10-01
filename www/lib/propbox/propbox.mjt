@@ -309,7 +309,7 @@
       </acre:script>
       <li class="kbs data-row">
         <span class="wrapper">
-          <a class="property-value" href="${h.fb_url(topic.id, [['inspect'], ['property', prop_structure.id]])}">${text} &raquo;</a>
+          <a class="property-value" href="${h.fb_url(topic.id, [['links'], ['property', prop_structure.id]])}">${text} &raquo;</a>
         </span>
       </li>
     </acre:block>

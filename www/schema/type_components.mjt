@@ -51,7 +51,7 @@
         <li class="row-menu-item edit">
           <a href="#" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.type.delete_property, ['${prop.id}'], this);"><span class="delete-icon">${_('Delete property')}</span></a>
         </li>
-        <li class="row-menu-item"><a href="${h.fb_url(prop.id, [['inspect']])}">${_('Inspect Property')}</a></li>
+        <li class="row-menu-item"><a href="${h.fb_url(prop.id, [['links']])}">${_('Inspect Property')}</a></li>
         <li class="row-menu-item last">
           <a href="${sh.build_query_url(type_id, prop.id)}">${_('Build query')}</a>
         </li>

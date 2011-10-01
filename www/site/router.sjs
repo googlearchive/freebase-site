@@ -544,6 +544,12 @@ function init_site_rules(lib) {
           "script": "domain.tab"
         },
         {
+          "name": "Queries",
+          "key": "queries",
+          "app": "query",
+          "script": "domain.tab"
+        },
+        {
           "name": "Editors",
           "key": "editors",
           "app": "group",

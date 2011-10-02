@@ -74,8 +74,13 @@
     </p>
   </div>
   <div class="column data" id="topic-data">
-    ${manage_types()}  
-    ${propbox.topicbox(c.topic, i18n.lang)}
+    <acre:block if="c.topic">
+      ${manage_types()}  
+      ${propbox.topicbox(c.topic, i18n.lang)}
+    </acre:block>
+    <acre:block else="">
+      Error retrieving topic data
+    </acre:block>
   </div>
   ${keyboard_shortcuts()}
 </acre:block>

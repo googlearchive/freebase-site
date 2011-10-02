@@ -413,7 +413,7 @@ function init_site_rules(lib) {
     }
   ];
   
-  var DEFAULT_TABS = [
+  var DEFAULT_MORE_TABS = [
     {
       "name": "Properties",
       "key": "props",
@@ -512,7 +512,7 @@ function init_site_rules(lib) {
           "script": "writes.tab"
         }
       ],
-      "more_tabs": h.extend(true, [], DEFAULT_TABS),
+      "more_tabs": h.extend(true, [], DEFAULT_MORE_TABS),
       "navs": [
         {
           "name": "Edit Settings",
@@ -556,7 +556,7 @@ function init_site_rules(lib) {
           "script": "group.tab"
         }
       ],
-      "more_tabs": h.extend(true, [], DEFAULT_TABS),
+      "more_tabs": h.extend(true, [], DEFAULT_MORE_TABS),
       "navs": [
         {
           "name": "<b>Discuss</b> Domain",
@@ -592,7 +592,7 @@ function init_site_rules(lib) {
           "script": "type.tab"
         }
       ],
-      "more_tabs": h.extend(true, [], DEFAULT_TABS),
+      "more_tabs": h.extend(true, [], DEFAULT_MORE_TABS),
       "navs": [
         {
           "name": "Edit Settings",
@@ -634,7 +634,7 @@ function init_site_rules(lib) {
           "script": "property.tab"
         }
       ],
-      "more_tabs": h.extend(true, [], DEFAULT_TABS),
+      "more_tabs": h.extend(true, [], DEFAULT_MORE_TABS),
     },
     {
       "type": "/type/user",
@@ -670,7 +670,7 @@ function init_site_rules(lib) {
           "script": "writes.tab"
         }
       ],
-      "more_tabs": h.extend(true, [], DEFAULT_TABS),
+      "more_tabs": h.extend(true, [], DEFAULT_MORE_TABS),
       "navs": [
         {
           "name": "<b>Discuss</b> with this user",
@@ -712,7 +712,7 @@ function init_site_rules(lib) {
           "script": "mql.tab"
         }
       ],
-      "more_tabs": h.extend(true, [], DEFAULT_TABS),
+      "more_tabs": h.extend(true, [], DEFAULT_MORE_TABS),
       "navs": [
         {
           "name": "Edit Settings",
@@ -769,18 +769,13 @@ function init_site_rules(lib) {
       }]),
       "tabs": [
         {
-          "name": "Links",
-          "key": "links",
+          "name": "Writes",
+          "key": "writes",
           "app": "triples",
-          "script": "triples.tab"
-        },
-        {
-          "name": "Identifiers",
-          "key": "ids",
-          "app": "sameas",
-          "script": "sameas.tab"
+          "script": "writes.tab"
         }
-      ]
+      ],
+      "more_tabs": h.extend(true, [], DEFAULT_MORE_TABS)
     },
     {
       "type": "/common/topic",
@@ -798,7 +793,28 @@ function init_site_rules(lib) {
           "promise": "topic"
         }
       ],
-      "tabs": h.extend(true, [], DEFAULT_TABS),
+      "tabs": [
+        {
+          "name": "Properties",
+          "key": "props",
+          "app": "topic",
+          "script": "topic.tab"
+        },
+        {
+          "name": "Identifiers",
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab"
+        }
+      ],
+      "more_tabs": [
+        {
+          "name": "Links",
+          "key": "links",
+          "app": "triples",
+          "script": "triples.tab"
+        }
+      ],
       "navs": [
         {
           "name": "<span class=\"submenu-title\">Flag Topic</span>",
@@ -834,7 +850,28 @@ function init_site_rules(lib) {
         "script": "queries/breadcrumbs.sjs",
         "promise": "object"
       }]),
-      "tabs": h.extend(true, [], DEFAULT_TABS)
+      "tabs": [
+        {
+          "name": "Properties",
+          "key": "props",
+          "app": "topic",
+          "script": "topic.tab"
+        },
+        {
+          "name": "Identifiers",
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab"
+        }
+      ],
+      "more_tabs": [
+        {
+          "name": "Links",
+          "key": "links",
+          "app": "triples",
+          "script": "triples.tab"
+        }
+      ]
     }
   ];
 

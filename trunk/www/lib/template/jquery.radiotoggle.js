@@ -69,7 +69,7 @@
         offLabel:     'Off' 
       };
 
-      var options = $.extend({}, defaults, options)
+      options = $.extend({}, defaults, options)
 
       //Iterate over the current set of matched elements
       return this.each(function() {
@@ -110,6 +110,7 @@
               $markup.removeClass("on");
             });
             is_checked = false;
+            $input.removeAttr("checked");
           }
           // check box and animate on
           else {
@@ -120,7 +121,10 @@
               $markup.addClass("on");
             });
             is_checked = true;
+            $input.attr("checked", "checked");
           }
+          
+          $input.click();
         });
       });
 

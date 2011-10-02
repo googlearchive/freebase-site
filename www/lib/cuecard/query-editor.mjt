@@ -35,14 +35,14 @@
   <div class="cuecard-queryEditor">
     <div class="cuecard-queryEditor-content panel-content"></div>
     <div class="cuecard-queryEditor-controls-bottom panel-header" acre:if="!queryEditor._options.hideControls">
-      <div class="cuecard-queryEditor-controls-options drawer-toggle">
-        <a class="icon-link" href="javascript:void(0)">
-          <span>Query Options</span>
-        </a>
-      </div>
-      <button title="Tab" class="button cuecard-queryEditor-queryAssist"
-              acre:onclick="queryEditor.startAssistAtCursor()">
+      <div class="cuecard-queryEditor-controls-options">
         Query&nbsp;assist
+        <input type="checkbox" class="button cuecard-queryEditor-queryAssist"
+              acre:attrs="($.localstore('cc_assist') == '1') ? {'checked' : ''} : {}"
+              acre:onclick="queryEditor._toggleAssist()"/>
+      </div>
+      <button class="button cuecard-queryEditor-options drawer-toggle">
+        Options<span></span>
       </button>
       <button class="button cuecard-queryEditor-cleanUp"
               acre:onclick="queryEditor._onCleanUp()">

@@ -131,6 +131,8 @@
       }
 
       queryEditorOptions.onReady = function() {
+        $(".cuecard-queryEditor-queryAssist").radiotoggle();
+        
         $(".nicemenu").nicemenu();
 
         $("#links").prependTo("#the-output-pane .cuecard-outputPane-tabs");
@@ -178,7 +180,7 @@
     },
     
     toggleControlPane: function(state) {
-      $("span", this).addClass(state ? "remove-icon" : "add-icon").removeClass(state ? "add-icon" : "remove-icon");
+      //$("span", this).addClass(state ? "remove-icon" : "add-icon").removeClass(state ? "add-icon" : "remove-icon");
       $.localstore("cc_cp", (state ? "1" : "0"), false);
     },
 

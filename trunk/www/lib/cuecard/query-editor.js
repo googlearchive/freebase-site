@@ -61,6 +61,7 @@ CueCard.QueryEditor = function(elmt, options) {
         content:            content,
         passDelay           : 100,     // gap between highlighting runs (each run lasts 50ms - see passTime in codemirror.js)
         undoDelay           : 250,     // min time between onChange notifications (and undo history commit)
+        tabMode             : "shift",
         initCallback: function(codeMirror) {
             self._editor.setParser("JSParser");
             self._onReady();
@@ -388,7 +389,7 @@ CueCard.QueryEditor.prototype.getQueryModelAndContext = function() {
 CueCard.QueryEditor.prototype._onReady = function() {
     var self = this;
     try {
-        $(this._editor.win.document).keyup(function(evt) {
+        $(this._editor.win.document.body).keyup(function(evt) {
             return self._onEditorKeyUp(evt);
         }).keydown(function(evt) {
             return self._onEditorKeyDown(evt);
@@ -421,9 +422,9 @@ CueCard.QueryEditor.prototype._onEditorMouseDown = function(evt) {
 };
 
 CueCard.QueryEditor.prototype._onEditorKeyDown = function(evt) {
-    if (evt.keyCode == 9 || // tab
-        (evt.keyCode == 32 && (evt.ctrlKey || evt.metaKey || evt.altKey)) // space with modifier
-        ) {
+    if ((evt.keyCode == 9 || // tab
+        (evt.keyCode == 32 && (evt.ctrlKey || evt.metaKey || evt.altKey))) // space with modifier
+        && $.localstore("cc_assist")) {
         this._assistKeyComboDetected = true;
         evt.preventDefault();
         return false;
@@ -440,10 +441,14 @@ CueCard.QueryEditor.prototype._onEditorKeyUp = function(evt) {
     if (this._assistKeyComboDetected) {
         this._assistKeyComboDetected = false;
         this.startAssistAtCursor();
-        
         evt.preventDefault();
         return false;
     }
+};
+
+CueCard.QueryEditor.prototype._toggleAssist = function(evt) {
+  var is_checked = !!$(".cuecard-queryEditor-queryAssist", this._controlBottomContainer).attr("checked");
+  $.localstore("cc_assist", is_checked ? 1 : 0, false);
 };
 
 CueCard.QueryEditor.prototype.startAssistAtCursor = function() {

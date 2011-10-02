@@ -68,8 +68,9 @@
 
 <acre:block def="page_content()">
   <div id="page-title">
-    <button id="save-query" class="button button-primary">Save</button>
-    <h2 class="page-title"><i>Modify your query below</i></h2>
+    <button id="save-query" class="edit button button-primary">Save</button>
+    <button id="clone-query" class="no-edit button button-primary">Copy to Query Editor</button>
+    <h2 class="edit page-title"><i>Modify your query below</i></h2>
   </div>
   <div id="qe-module" class="module">
     <div id="the-query-editor" class="module-section"></div>

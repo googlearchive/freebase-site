@@ -190,9 +190,9 @@ class ActionDeployAcre:
       return c.error("Acre failed to build, aborting.")
 
     if not c.options.nosite:
-      acre.start(war=True)
+      status = acre.start(war=True)
 
-      status = acre.is_running(war=True)
+      #status = acre.is_running(war=True)
 
       if not status:
         return c.error('Could not start new acre war bundle under appengine development server, aborting deployment')
@@ -210,14 +210,22 @@ class ActionDeployAcre:
     if os.path.isdir(acre.site_dir(war=True) + '/googlecode'):
       shutil.rmtree(acre.site_dir(war=True)+ '/googlecode')
 
+    
     if not c.options.nosite:
 
       apps = acre.fs_routed_apps()
+
+      if not len(apps):
+        raise FatalException("Something went wrong, there are no apps to bundle with Acre, aborting!")
+        
 
       for app in apps:
         result = app.copy_to_acre_dir(war=True)
         if not result:
           c.error('Failed to copy %s to app-engine bundle, continuing with other apps...' % app)
+
+      if c.options.everything:
+        acre.bundle_environments()
 
       c.log('The following apps are bundled with acre:')
       for app in sorted(apps):
@@ -234,7 +242,9 @@ class ActionDeployAcre:
       
       if not r:
         return c.error('Failed to prepare failover version of acre, aborting.')
-    
+
+      acre.bundle_environments()
+
       if not acre.deploy(config): 
         return c.error('Deployment failed.')
       
@@ -599,7 +609,7 @@ class SpeedTestRun(threading.Thread):
 
     d = response.info().getheader('x-metaweb-cost')
 
-    if not len(d):
+    if not (d and len(d)):
       return r
 
     for pair in [x.lstrip() for x in d.split(',')]:
@@ -627,10 +637,13 @@ class SpeedTestRun(threading.Thread):
       try:
         start = time.time()
         req = urllib2.Request(url, headers={'User-Agent' : self.ua})
-        f = urllib2.urlopen(req)
+        f = urllib2.urlopen(req, timeout=30.0)
         code = f.getcode()
 
-        length = len(f.read())
+        try:
+          length = len(f.read())
+        except:
+          length = 0
 
         xh = self.parse_x_metaweb_cost(f)
 
@@ -667,8 +680,8 @@ class ActionSpeedTest:
 
   x_labels_groups = {
     'none' : [],
-    'main' : ['at', 'auuc', 'auub', 'auuw', 'afuc'],
-    'all' : ['at', 'asuc', 'asuw', 'asub', 'afsc', 'afmc', 'afmw', 'afcc', 'afcw', 'auuc', 'auuw', 'auub', 'afuc']
+    'main' : ['at', 'auuc', 'auuw', 'auub', 'afuc', 'amrc', 'amrw'],
+    'all' : ['at', 'asuc', 'asuw', 'asub', 'afsc', 'afmc', 'afmw', 'afcc', 'afcw', 'auuc', 'auuw', 'auub', 'afuc', 'aidc', 'aidw', 'aifc', 'aifw', 'amrc', 'amrw', 'amwc', 'amww']
     }
 
   x_cost_default = 'main'
@@ -686,7 +699,16 @@ class ActionSpeedTest:
     'afmc': 'number of attempts to access the classloader memcache (hits & misses)',
     'afmw': 'cumulative classloader memcache wait time',
     'afcc': 'number of files compiled',
-    'afcw': 'cumulative time spent compiling files and putting them in the classloader memcache'
+    'afcw': 'cumulative time spent compiling files and putting them in the classloader memcache',
+    'afxw': 'cumulative time spent executing js files',
+    'aidc': 'number of filesystem directory reads',
+    'aidw': 'wait time on filesystem directory reads',
+    'aifc': 'number of filesystem file content reads',
+    'aifw': 'wait time on file content reads',
+    'amrc': 'number of memcache get() (reads)',
+    'amrw': 'wait time on memcache gets',
+    'amwc': 'number of memecach put() (writes)',
+    'amww': 'wait time on memcache put()'
     }
 
   _ae_dashboard = "https://appengine.google.com/logs"
@@ -933,6 +955,7 @@ class ActionSpeedTest:
         random.shuffle(urls)
       runner.add_urls(urls)
       threads.append(runner)
+    
 
     print "\nStarting %s requests to host %s" % (len(urls) * c.options.concurrent, c.options.host)
     site_config, appengine_app_id = Site.ResolveConfig(c, c.options.config, c.options.site_dir, c.options.host)
@@ -1146,7 +1169,7 @@ def main():
   parser.add_option("-b", "--verbose", dest="verbose", action="store_true",
                     default=False, help="verbose mode will print out more debugging output")
   parser.add_option("", "--everything", dest="everything", action="store_true",
-                    default=False, help="checkout branches and tags when setting up a freebase site")
+                    default=False, help="Setup: checkout branches and tags. Deploy: push environments on-disk to appengine.")
   parser.add_option("", "--acre_dir", dest="acre_dir",
                     default=None, help="the local acre directory")
   parser.add_option("", "--acre_version", dest="acre_version",
@@ -1165,8 +1188,6 @@ def main():
                     help="a tag of the app - e.g. 12b")
   parser.add_option("-a", "--app", dest="app", default=None,
                     help="an app id - e.g. /user/namesbc/mysuperapp or an app key under /freebase/site - e.g. homepage")
-  parser.add_option("-l", "--lib", dest="lib", default=None,
-                    help="the version of lib you want to tie this app branch to - use 'latest' to tie to last branched version")
   parser.add_option("-d", "--dependency", dest="dependency", default=None,
                     help="the version of the dependency app you want to tie this app branch to - use 'latest' to tie to last branched version")
   parser.add_option("", "--failover", dest="failover", action="store_true",

@@ -105,7 +105,13 @@
     },
     "helloworldacre" : {
       "url" : "/_helloworld"
-    } 
+    },
+    "sorter" : { 
+      "url" : "/sorter"
+    },
+    "glatency" : { 
+      "url" : "/helloappengine"
+    }
     
   },
 

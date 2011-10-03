@@ -1713,7 +1713,7 @@ class Acre:
           time.sleep(10)
           #and then keep trying to hit it until we get a valid response
 
-          while not self.is_running():
+          while not self.is_running(war):
               c.log('Still waiting for acre to start...')
           c.log('Acre started succesfully')
       except:
@@ -1768,8 +1768,10 @@ class Acre:
     c.log('Changed version to failover in %s' % filename)
 
 
+  def bundle_environments(self):
     #Copy the environments directory into the correct place
 
+    c = self.context
 
     site = Site.Get(c)
     if not site:
@@ -1900,24 +1902,29 @@ class Acre:
     if not response:
         return c.error("There is no acre running: %s" % url)
 
+    apps = set()
+
     try:
       routing_table = json.loads(''.join(response))
     except:
-      return c.error('Failed to parse the routing table')
+      c.error('Failed to parse the routing table')
+      return apps
 
-    apps = set()
     site = Site.Get(c)
     if not site:
         return c.error("Could not resolve site.")
 
     for label, app_id in routing_table.get('apps').iteritems():
-        if site.conf("acre_id_suffix") in app_id:
-            app = App.GetFromPath(c, app_id)
-            apps.add(app)
+      if site.conf("acre_id_suffix") in app_id:
+        app = App.GetFromPath(c, app_id)
+        if not app.svn_path(): 
+          c.log("There is no app with id %s -- skipping." % app_id)
+          continue  
+        apps.add(app)
 
-            d_app = app.dependency()
-            if d_app:
-              apps.add(d_app)
+        d_app = app.dependency()
+        if d_app:
+          apps.add(d_app)
 
     return apps
 
@@ -1936,9 +1943,10 @@ class Acre:
     if not acre_url:
         return False
 
-    url = "http://%s/_fs_routing" % acre_url
+    #url = "http://%s/_fs_routing" % acre_url
+    url = "http://%s/acre/status" % acre_url
 
-    response = c.fetch_url(url, acre=True, silent=True, wait=2)
+    response = c.fetch_url(url, acre=True, silent=True, wait=5)
     
     if not response:
         c.log("There is no acre running: %s" % url)
@@ -2156,7 +2164,8 @@ class Site:
     actual_config = None
     app_id = None
 
-    if not host:
+
+    if config or not host:
       actual_config = config
     else:
       config_dir = os.path.join(site_dir, "appengine-config")

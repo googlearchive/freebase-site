@@ -1,0 +1,80 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var components = acre.require("lib/template/components.mjt");
+  var image = acre.require("lib/template/imagecomponents.mjt");
+</acre:script>
+
+<acre:block def="page_content()">
+  <h2 class="table-title">
+    ${_('Recently modified domains')}
+  </h2>
+  <table cellspacing="0" class="table table-sortable">
+    <thead>
+      <tr>
+        <th scope="col" class="column-header">${_('Domain')}</th>
+        <th scope="col" class="column-header">${_('ID')}</th>
+        <th scope="col" class="column-header">${_('Most Recent Changes')}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr acre:for="d in c.domains">
+        <th class="row-header odd" scope="row">
+          <acre:script>var name = i18n.display_name(d);</acre:script>
+          <a href="${h.fb_url(d.id, [['schema','']])}" title="${h.sprintf(_('View %s'), name)}">$name</a>
+        </th>
+        <td class="even">$d.id</td>
+        <td class="odd">
+          <ul>
+            <li acre:for="change in d.changes">
+              <acre:script>
+                var pname = i18n.display_name(change.property);
+                var tname = i18n.display_name(change.type);
+              </acre:script>
+              ${image.user_image_tiny(change.creator)}
+              ${components.creator(change.creator.id)}
+              ${_('added')}
+              <a href="${h.fb_url(change.property.id, [['schema','']])}" title="${h.sprintf(_('View %s'), pname)}">$pname</a>
+              ${_('to')}
+              <a href="${h.fb_url(change.type.id, [['schema','']])}" title="${h.sprintf(_('View %s'), tname)}">$tname</a>
+              ${h.relative_date(change.timestamp)}
+            </li>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</acre:block>

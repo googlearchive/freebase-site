@@ -124,7 +124,7 @@
           <th class="column-header" scope="col"><span class="sort-icon">&harr;</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("source/target")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
-          <th class="column-header {sorter: 'string'}" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
+          <th class="column-header column-header-asc {sorter: 'string'}" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
           <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
       </thead>

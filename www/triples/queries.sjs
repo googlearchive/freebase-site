@@ -37,65 +37,87 @@ var th = acre.require("helpers.sjs");
 var fh = acre.require("lib/filter/helpers.sjs");
 var creator = acre.require("lib/queries/creator.sjs");
 
-function links(id, filters) {
+function links(id, filters, next) {
   filters = h.extend({}, filters);
   return creator.by(filters.creator, "/type/user")
-    .then(function(links_clause) {
-      var q = {
-        id: id,
-        "/type/reflect/any_master": [{
-          optional: true,
-          id: null,
-          mid: null,
-          name: i18n.mql.query.name(),
-          link: h.extend({
-            master_property: null,
-            timestamp: null
-          }, links_clause)
-        }],
-        "/type/reflect/any_reverse": [{
-          optional: true,
-          id: null,
-          mid: null,
-          name: i18n.mql.query.name(),
-          link: h.extend({
-            master_property: null,
-            timestamp: null
-          }, links_clause)
-        }],
-        "/type/reflect/any_value": [{
-          optional: true,
-          link: h.extend({
-            master_property: null,
-            timestamp: null,
-            target_value: {}
-          }, links_clause)
-        }]
+    .then(function(creator_clause) {
+      var promises = {
+        incoming: links_incoming(id, filters, next, creator_clause),
+        outgoing: links_outgoing(id, filters, next, creator_clause)
       };
-      return freebase.mqlread(q, mqlread_options(filters))
-        .then(function(env) {
-          return env.result;
-        })
+      return deferred.all(promises)
         .then(function(result) {
-          result.any_master = result["/type/reflect/any_master"];
-          result.any_reverse = result["/type/reflect/any_reverse"];
-          result.any_value = result["/type/reflect/any_value"];
-          result.any_master.forEach(function(l) {
-            l.any_master = 1;
-          });
-          result.any_reverse.forEach(function(l) {
-            l.any_reverse = 1;
-          });
-          result.any_value.forEach(function(l) {
-            l.any_value = 1;
-          });
-          result.all = result.any_master.concat(result.any_reverse).concat(result.any_value);
-          result.all.sort(function(a, b) {
-            return b.link.timestamp < a.link.timestamp;
-          });
-          return result;
+          return links_sort(result.incoming, result.outgoing, filters);
         });
+    });
+};
+
+function links_sort(a, b, filters) {
+  if (a.length && b.length) {
+    var a_ts = a[a.length - 1].timestamp;  // last timestamp of incoming
+    var b_ts = b[b.length - 1].timestamp;  // last timestamp of outgoing
+    if (a_ts < b_ts) {
+      b = b.filter(function(l) {
+        return l.timestamp < a_ts;
+      });
+    }
+    else {
+      a = a.filter(function(l) {
+        return l.timestamp < b_ts;
+      });
+    }
+  }
+  return a.concat(b).sort(function(a, b) {
+    return b.timestamp < a.timestamp;
   });
+};
+
+function links_incoming(id, filters, next, creator_clause) {
+  var q = [h.extend({
+    type: "/type/link",
+    master_property: null,
+    source: {
+      id: null,
+      mid: null,
+      guid: null,
+      name: i18n.mql.query.name()
+    },
+    "me:target": {
+      id: id,
+      guid: null
+    },
+    target_value: {},
+    timestamp: null,
+    optional: true
+  }, creator_clause)];
+  if (next) {
+    q[0]["next:timestamp>"] = next;
+  }
+  apply_filters(q[0], filters);
+  return freebase.mqlread(q, mqlread_options(filters))
+    .then(function(env) {
+      return env.result;
+    });
+};
+
+function links_outgoing(id, filters, next, creator_clause) {
+  var q = [h.extend({
+    type: "/type/link",
+    master_property: null,
+    "me:source": {id: id},
+    target: {id:null, mid:null, name:i18n.mql.query.name(), optional:true},
+    target_value: {},
+    timestamp: null,
+    optional: true
+  }, creator_clause)];
+  if (next) {
+    q[0]["next:timestamp>"] = next;
+  }
+  apply_filters(q[0], filters);
+  return freebase.mqlread(q, mqlread_options(filters))
+    .then(function(env) {
+      return env.result;
+    });
 };
 
 function writes(id, filters) {
@@ -129,178 +151,6 @@ function writes(id, filters) {
     });
 };
 
-
-function names_aliases(id, filters) {
-  filters = h.extend({}, filters);
-  var q = creator.extend([{
-    type: "/type/link",
-    "a:master_property": {
-      "id|=": ["/type/object/name", "/common/topic/alias"],
-      limit: 0
-    },
-    master_property: null,
-    source: {
-      id: id
-    },
-    target_value: {},
-    timestamp: null,
-    optional: true,
-    sort: "-timestamp"
-  }]);
-  apply_filters(q[0], filters);
-  return freebase.mqlread(q, mqlread_options(filters))
-    .then(function(env) {
-      return env.result;
-    });
-};
-
-function keys(id, filters) {
-  filters = h.extend({}, filters);
-  var source_keys = creator.extend([{
-    type: "/type/link",
-    master_property: "/type/namespace/keys",
-    source: {id: null},
-    target: {id: id},
-    target_value: {},
-    timestamp: null,
-    optional: true,
-    sort: "-timestamp"
-  }]);
-  var target_keys = creator.extend([{
-    type: "/type/link",
-    master_property: "/type/namespace/keys",
-    source: {id: id},
-    target: {id: null},
-    target_value: {},
-    timestamp: null,
-    optional: true,
-    sort: "-timestamp"
-  }]);
-  apply_filters(source_keys[0], filters);
-  apply_filters(target_keys[0], filters);
-  var promises = [];
-  var options = mqlread_options(filters);
-  [source_keys, target_keys].forEach(function(q) {
-    promises.push(freebase.mqlread(q, options)
-      .then(function(env) {
-        return env.result;
-      })
-    );
-  });
-  return deferred.all(promises)
-    .then(function([keys1, keys2]) {
-      var result = keys1.concat(keys2);
-      var limit = filters.limit || 100;
-      if (result.length > limit) {
-        result = result.slice(0, limit);
-      }
-      return result;
-    });
-};
-
-function outgoing(id, filters) {
-  filters = h.extend({}, filters);
-  var q = creator.extend([{
-    type: "/type/link",
-    master_property: null,
-    "forbid:master_property": {
-      "id|=": ["/type/object/name", "/common/topic/alias", "/type/namespace/keys"],
-      optional: "forbidden",
-      limit: 0
-    },
-    source: {id: id},
-    target: {id:null, mid:null, name:i18n.mql.query.name(), optional:true},
-    target_value: {},
-    timestamp: null,
-    optional: true,
-    sort: "-timestamp"
-  }]);
-  apply_filters(q[0], filters);
-  return freebase.mqlread(q, mqlread_options(filters))
-    .then(function(env) {
-      return env.result;
-    });
-};
-
-function incoming(id, filters) {
-  filters = h.extend({}, filters);
-  var q = creator.extend([{
-    type: "/type/link",
-    "forbid:master_property": {
-      "id|=": ["/type/namespace/keys"],
-      optional: "forbidden",
-      limit: 0
-    },
-    master_property: null,
-    source: {
-      id: null,
-      mid: null,
-      guid: null,
-      name: i18n.mql.query.name()
-    },
-    target: {
-      id: id,
-      guid: null
-    },
-    timestamp: null,
-    optional: true,
-    sort: "-timestamp"
-  }]);
-  apply_filters(q[0], filters);
-  return freebase.mqlread(q, mqlread_options(filters))
-    .then(function(env) {
-      return env.result;
-    });
-};
-
-function type_links(id, filters) {
-  filters = h.extend({}, filters);
-  var q = creator.extend([{
-    type: "/type/link",
-    master_property: {
-      id: id
-    },
-    source: {id:null, mid:null, guid:null, name:i18n.mql.query.name()},
-    target: {id:null, mid:null, name:i18n.mql.query.name(), optional:true},
-    target_value: {},
-    timestamp: null,
-    optional: true,
-    sort: "-timestamp"
-  }]);
-  apply_limit(q[0], filters.limit);
-  apply_timestamp(q[0], filters.timestamp);
-  apply_creator(q[0], filters.creator);
-  apply_historical(q[0], filters.historical);
-  return freebase.mqlread(q, mqlread_options(filters))
-    .then(function(env) {
-      return env.result;
-    });
-};
-
-function attribution_links(id, filters) {
-  filters = h.extend({}, filters);
-  var q = [{
-    type: "/type/link",
-    master_property: null,
-    source: {id:null, mid:null, guid:null, name:i18n.mql.query.name()},
-    target: {id:null, mid:null, name:i18n.mql.query.name(), optional:true},
-    target_value: {},
-    creator: id,
-    timestamp: null,
-    optional: true,
-    sort: "-timestamp"
-  }];
-  apply_limit(q[0], filters.limit);
-  apply_timestamp(q[0], filters.timestamp);
-  apply_creator(q[0], filters.creator);
-  apply_historical(q[0], filters.historical);
-  return freebase.mqlread(q, mqlread_options(filters))
-    .then(function(env) {
-      return env.result;
-    });
-};
-
-
 /**
  * Apply filter constraint helpers
  */
@@ -309,9 +159,9 @@ function apply_filters(clause, filters) {
   if (!filters) {
     return clause;
   }
+  // creator is already applied in links query
   apply_limit(clause, filters.limit);
   apply_timestamp(clause, filters.timestamp);
-  apply_creator(clause, filters.creator);
   apply_historical(clause, filters.historical);
   apply_domain_type_property(clause, filters.domain, filters.type, filters.property);
 };
@@ -338,18 +188,6 @@ function apply_timestamp(clause, timestamp) {
       });
       clause["filter:timestamp>="] = fh.timestamp(timestamp[0]);
       clause["filter:timestamp<"] = fh.timestamp(timestamp[1]);
-    }
-  }
-  return clause;
-};
-
-function apply_creator(clause, creator) {
-  if (creator) {
-    if (!h.isArray(creator)) {
-      creator = [creator];
-    }
-    if (creator.length) {
-      clause["filter:creator"] = {"id|=": creator};
     }
   }
   return clause;

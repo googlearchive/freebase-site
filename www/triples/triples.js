@@ -28,50 +28,43 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 (function($, fb) {
 
   var triples = fb.triples = {
-    tip: null,
-    build_query: null,
-    build_query_url: null,
 
-    // trigger for row menus
-    init_row_menu: function(context) {
-      triples.tip = $("#triple-tip");
-      triples.build_query = $("#build-query");
-      triples.build_query_url = triples.build_query.attr("href");
-
-      $(".row-menu-trigger", context).each(function(){
-        var trigger = $(this);
-        trigger.tooltip({
-          events: {def: "click,mouseout"},
-          position: "bottom right",
-          offset: [-10, -10],
-          effect: "fade",
-          delay: 300,
-          tip: "#triple-tip",
-          onBeforeShow: function() {
-            var triple = this.getTrigger().parents("tr:first").metadata();
-            triples.build_query.attr("href", triples.build_query_url + "?q=" + triple.mql);
-          }
-        });
-        trigger.parents("tr:first").hover(triples.row_menu_hoverover, triples.row_menu_hoverout);
+    init_infinitescroll: function() {
+      var tbody = $("#infinitescroll > tbody");
+      var next = tbody.attr("data-next");
+      if (!next) {
+        // nothing to scroll
+        return;
+      }
+      var a_next = $("#infinitescroll-next");
+      tbody.infinitescroll({
+        //debug: true,
+        nextSelector: "#infinitescroll-next",
+        navSelector: "#infinitescroll-next",
+        dataType: "json",
+        pathParse: function() {
+          return [
+            a_next[0].href + "&" + $.param({next:tbody.attr("data-next")}) + "&page=",
+            ""
+          ];
+        },
+        appendCallback: false
+      }, function(data) {
+        data = JSON.parse(data);
+        var html = $(data.result.html);
+        var next = html.attr("data-next");
+        if (next) {
+          tbody.append($(">tr", html));
+          tbody.attr("data-next", next);
+        }
+        else {
+          //console.log("STOP INFINITE SCROLL!!!");
+          $(window).unbind('.infscr');
+        }
       });
-    },
-
-    // show row menu button on hover
-    row_menu_hoverover: function(e) {
-      var row = $(this);
-      row.addClass("row-hover");
-      $(".row-menu-trigger", row).css('visibility','visible');
-    },
-
-    // hide row menu button on mouseout
-    row_menu_hoverout: function(e) {
-      var row = $(this);
-      $(".row-menu-trigger", row).css('visibility','hidden');
-      row.removeClass("row-hover");
     },
 
     init: function() {
@@ -93,9 +86,7 @@
             .parents("form:first").submit();
         });
 
-      // Initialize row menu hovers & menus
-      triples.init_row_menu();
-
+      triples.init_infinitescroll();
     }
   };
 

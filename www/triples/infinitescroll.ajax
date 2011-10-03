@@ -29,66 +29,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require("lib/helper/helpers.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
+var triples = acre.require("triples.mjt");
+var queries = acre.require("queries.sjs");
+var tab = acre.require("triples.tab");
 var filters = acre.require("lib/filter/filters.sjs");
-var filter_queries = acre.require("lib/filter/queries.sjs");
-var filter_validators = acre.require("lib/filter/validators.sjs");
-var th = acre.require("helpers.sjs");
-
-var queries = acre.require("queries");
-
-var inspect_filters = {
-  limit: {
-    validator: validators.Int,
-    options: {if_empty:null}
-  },
-  historical: {
-    validator: validators.StringBool,
-    options: {if_empty:null}
-  },
-  timestamp: {
-    validator: validators.MultiValue,
-    options: {validator: filter_validators.Timestamp, if_empty:null}
-  },
-  creator: {
-    validator: validators.MultiValue,
-    options: {validator: validators.MqlId, if_empty:null}
-  }
-};
-
 
 var SPEC = {
 
-  template: "triples.mjt",
-
   validate: function(params) {
     return [
-      params.object,
-      (function() {
-        var f = filters.validate(params, inspect_filters);
-        f[params.current_tab.key] = "";
-        return f;
-      })()
+      validators.MqlId(params, "id", {required:true}),
+      filters.validate(params, tab.inspect_filters),
+      validators.Timestamp(params, "next", {required:true}),
+      validators.LangId(params, "lang", {if_empty:"/lang/en"})
     ];
   },
 
-  run: function(object, f) {
-
-    var id = object.id;
-    return {
-      id: id,
-      object: object,
-
-      // filter components
-      filters: f,
-      prop_counts: filter_queries.prop_counts(object.guid),
-
-      // incoming/outgoing links
-      links: queries.links(id, f)
-
-    };
+  run: function(id, f, next, lang) {
+    return queries.links(id, f, next)
+      .then(function(result) {
+        return {
+          html: acre.markup.stringify(triples.links_body(id, result, f))
+        };
+      });
   }
-
-
 };
+

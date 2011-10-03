@@ -38,62 +38,31 @@ var validators = acre.require("lib/validator/validators.sjs");
 var q = acre.require("queries.sjs");
 
 
-test("names_aliases", function() {
-  var result;
-  q.names_aliases("/en/united_states")
-    .then(function(names) {
-      result = names;
-    });
-  acre.async.wait_on_results();
-  ok(result && result.length);
+test("links_sort", function() {
+  var a = [{timestamp:0},{timestamp:2}];
+  var b = [{timestamp:1},{timestamp:3}];
+  same(q.links_sort(a, b),
+       [{timestamp:0},{timestamp:1},{timestamp:2}]);
+
+  a = [{timestamp:1},{timestamp:0}];
+  b = [{timestamp:2},{timestamp:3}];
+  same(q.links_sort(a, b),
+       [{timestamp:0},{timestamp:1}]);
+
+  a = [{timestamp:4},{timestamp:6}];
+  b = [{timestamp:2},{timestamp:5}];
+  same(q.links_sort(a, b),
+       [{timestamp:2},{timestamp:4},{timestamp:5}]);
+
+  a = [{timestamp:4},{timestamp:7}];
+  b = [{timestamp:5},{timestamp:6}];
+  same(q.links_sort(a, b),
+       [{timestamp:4},{timestamp:5},{timestamp:6}]);
 });
 
-test("names_aliases with filter", function() {
+test("links_outgoing", function() {
   var result;
-  q.names_aliases("/en/united_states", {type:"/type/object"})
-    .then(function(names) {
-      result = names;
-    });
-  acre.async.wait_on_results();
-  ok(result && result.length);
-  result.forEach(function(name) {
-    equal(name.master_property, "/type/object/name");
-  });
-});
-
-test("keys", function() {
-  var result;
-  q.keys("/freebase")
-    .then(function(keys) {
-      result = keys;
-    });
-  acre.async.wait_on_results();
-  ok(result && result.length);
-});
-
-test("keys with type filter", function() {
-  var result;
-  q.keys("/freebase", {type:"/type/namespace", limit:5})
-    .then(function(keys) {
-      result = keys;
-    });
-  acre.async.wait_on_results();
-  equal(result.length, 5);
-});
-
-test("keys with property filter", function() {
-  var result;
-  q.keys("/freebase", {property:"/type/object/key"})
-    .then(function(keys) {
-      result = keys;
-    });
-  acre.async.wait_on_results();
-  ok(!result.length);
-});
-
-test("outgoing", function() {
-  var result;
-  q.outgoing("/")
+  q.links_outgoing("/")
     .then(function(outgoing) {
       result = outgoing;
     });
@@ -101,9 +70,9 @@ test("outgoing", function() {
   ok(result && result.length);
 });
 
-test("outgoing with filter", function() {
+test("links_outgoing with filter", function() {
   var result;
-  q.outgoing("/", {domain:"/type", limit:1})
+  q.links_outgoing("/", {domain:"/type", limit:1})
     .then(function(outgoing) {
       result = outgoing;
     });
@@ -112,9 +81,9 @@ test("outgoing with filter", function() {
   equal(result[0].master_property.indexOf("/type/"), 0, result[0].master_property);
 });
 
-test("incoming", function() {
+test("links_incoming", function() {
   var result;
-  q.incoming("/en/united_states")
+  q.links_incoming("/en/united_states")
     .then(function(incoming) {
       result = incoming;
     });
@@ -122,9 +91,9 @@ test("incoming", function() {
   ok(result && result.length);
 });
 
-test("incoming with filter", function() {
+test("links_incoming with filter", function() {
   var result;
-  q.incoming("/en/united_states", {property:"/people/person/nationality", limit:1})
+  q.links_incoming("/en/united_states", {property:"/people/person/nationality", limit:1})
     .then(function(incoming) {
       result = incoming;
     });
@@ -133,45 +102,6 @@ test("incoming with filter", function() {
   equal(result[0].master_property, "/people/person/nationality");
 });
 
-test("type_links", function() {
-  var result;
-  q.type_links("/people/person/nationality")
-    .then(function(typelinks) {
-      result = typelinks;
-    });
-  acre.async.wait_on_results();
-  ok(result && result.length);
-});
-
-test("type_links with filter", function() {
-  var result;
-  q.type_links("/people/person/nationality", {limit:1})
-    .then(function(typelinks) {
-      result = typelinks;
-    });
-  acre.async.wait_on_results();
-  equal(result.length, 1);
-});
-
-test("attribution_links", function() {
-  var result;
-  q.attribution_links("/user/daepark")
-    .then(function(attribution_links) {
-      result = attribution_links;
-    });
-  acre.async.wait_on_results();
-  ok(result && result.length);
-});
-
-test("attribution_links with filter", function() {
-  var result;
-  q.attribution_links("/user/daepark", {limit:1})
-    .then(function(attribution_links) {
-      result = attribution_links;
-    });
-  acre.async.wait_on_results();
-  equal(result.length, 1);
-});
 
 test("mqlread_options", function() {
   deepEqual(q.mqlread_options(), {});
@@ -181,7 +111,7 @@ test("mqlread_options", function() {
 });
 
 test("apply null filters", function() {
-  ["limit", "timestamp", "creator", "historical", "domain_type_property"].forEach(function(k) {
+  ["limit", "timestamp", "historical", "domain_type_property"].forEach(function(k) {
     deepEqual(q["apply_" + k]({}), {});
     deepEqual(q["apply_" + k]({}, null), {});
   });
@@ -201,15 +131,6 @@ test("apply_timestamp filter", function() {
   deepEqual(q.apply_timestamp({}, [yesterday, today]), {
     "filter:timestamp>=": yesterday,
     "filter:timestamp<": today
-  });
-});
-
-test("apply_creator filter", function() {
-  deepEqual(q.apply_creator({}, "/user/foo"), {"filter:creator": {"id|=": ["/user/foo"]}});
-  deepEqual(q.apply_creator({}, ["/user/foo", "/user/bar", "/user/baz"]), {
-    "filter:creator": {
-      "id|=": ["/user/foo", "/user/bar", "/user/baz"]
-    }
   });
 });
 

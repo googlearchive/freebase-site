@@ -1,0 +1,206 @@
+/*
+ * Copyright 2010, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+var h = acre.require("lib/helper/helpers.sjs");
+var i18n = acre.require("lib/i18n/i18n.sjs");
+var fh = acre.require("lib/filter/helpers.sjs");
+var apis = acre.require("lib/promise/apis.sjs"),
+    deferred = apis.deferred,
+    freebase = apis.freebase;
+
+var SPEC = {
+
+  template: "attributions.mjt",
+
+  validate: function(params) {
+    return [
+      params.object
+    ];
+  },
+
+  run: function(object) {
+    var c = {
+      object: object
+    };
+    switch (object.routed_type) {
+      case "/type/user":
+        c.apps = user_app_attributions(object.id);
+        c.loads = user_mdo_attributions(object.id);
+        break;
+      case "/dataworld/mass_data_operation":
+        c.attrs = mdo_attributions(object.id);
+        break;
+      case "/freebase/apps/acre_app":
+        c.users = app_user_attributions(object.id);
+        break;
+    }
+    return c;
+  }
+
+};
+
+function user_app_attributions(userid) {
+  var q = acre.freebase.extend_query(app_q(), {"creator.id": userid});
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result || []
+    })
+    .then(function(attrs) {
+      return attrs.map(function(attr) {
+        return {
+          id: attr.id,
+          timestamp: acre.freebase.date_from_iso(attr["s:links"].timestamp),
+          app: attr["/freebase/written_by/application"],
+          objects: attr.attributed,
+          links: attr.links
+        };
+      });
+    });
+};
+
+function user_mdo_attributions(userid) {
+  var q = acre.freebase.extend_query(mdo_q(), {"operator.id": userid});
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result || [];
+    })
+    .then(function(mdos) {
+      var attrs = [];
+      mdos.forEach(function(mdo) {
+        var load = {
+          id: mdo.id,
+          name: mdo.name
+        };
+        mdo.authority.forEach(function(attr) {
+          attrs.push({
+            load: load,
+            id: attr.id,
+            timestamp: acre.freebase.date_from_iso(attr["s:links"].timestamp),
+            objects: attr.attributed,
+            links: attr.links
+          });
+        });
+      });
+      return attrs;
+    });
+};
+
+function app_user_attributions(appid) {
+  var q = acre.freebase.extend_query(app_q(), {"/freebase/written_by/application.id": appid});
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result || []
+    })
+    .then(function(attrs) {
+      return attrs.map(function(attr) {
+        return {
+          id: attr.id,
+          timestamp: acre.freebase.date_from_iso(attr["s:links"].timestamp),
+          user: attr.creator,
+          objects: attr.attributed,
+          links: attr.links
+        };
+      });
+    });
+};
+
+function mdo_attributions(mdoid) {
+  var q = acre.freebase.extend_query(mdo_q()[0], {"id": mdoid});
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result || []
+    })
+    .then(function(res) {
+      var attrs = [];
+      res.authority.forEach(function(attr) {
+        attrs.push({
+          id: attr.id,
+          timestamp: acre.freebase.date_from_iso(attr["s:links"].timestamp),
+          objects: attr.attributed,
+          links: attr.links
+        });
+      });
+      return attrs;
+    });
+};
+
+var app_q = function() {
+  return [{
+    "id": null,
+    "type": "/type/attribution",
+    "timestamp": null,
+    "/freebase/written_by/application": {
+      "id": null,
+      "name": i18n.mql.query.name()
+    },
+    "creator": null,
+    "s:links": {
+      "timestamp": null,
+      "limit": 1
+    },
+    "links": {
+      "return": "count",
+      "optional": true
+    },
+    "attributed": {
+      "return": "count",
+      "optional": true
+    },
+    "sort": "-s:links.timestamp"
+  }];
+};
+
+var mdo_q = function() {
+  return [{
+    "id": null,
+    "name": i18n.mql.query.name(),
+    "type": "/dataworld/mass_data_operation",
+    "timestamp": null,
+    "operator": null,
+    "authority": [{
+      "id": null,
+      "type": "/type/attribution",
+      "timestamp": null,
+      "s:links": {
+        "timestamp": null,
+        "limit": 1
+      },
+      "links": {
+        "return": "estimate-count"
+      },
+      "attributed": {
+        "return": "count",
+        "optional": true
+      }
+    }],
+    "sort": "-authority.s:links.timestamp"
+  }];
+};

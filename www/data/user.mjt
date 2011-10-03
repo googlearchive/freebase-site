@@ -43,12 +43,12 @@
 <acre:block def="page_content()">
   
   <!!-- Domains user is an admin of -->
-  <acre:block if="c.domains.owned && c.domains.owned.length">
+  <acre:block if="c.owned_domains && c.owned_domains.length">
     <div class="table-header">
       <div class="button-group">
         <a href="${h.fb_url('/schema#create')}" class="button button-primary edit">${_("Create new")}</a>
       </div>
-      <h2 class="table-title">${h.template_sprintf(_("%s owns %s domains"), i18n.display_name(c.object), i18n_c.number(c.domains.owned.length))}</h2>
+      <h2 class="table-title">${h.template_sprintf(_("%s owns %s domains"), i18n.display_name(c.object), i18n_c.number(c.owned_domains.length))}</h2>
     </div>
     <table cellspacing="0" class="table table-sortable">
       <thead>
@@ -58,7 +58,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr acre:for="domain in c.domains.owned">
+        <tr acre:for="domain in c.owned_domains">
           <th class="row-header odd first">
             <a href="${h.fb_url(domain.id)}">${i18n.display_name(domain)}</a>
           </th>
@@ -71,8 +71,8 @@
   </acre:block>
 
   <!!-- Domains user is watching -->
-  <acre:block if="c.domains.watched && c.domains.watched['/freebase/user_profile/favorite_domains'].length">
-    <h2 class="table-title">${h.template_sprintf(_("%s is watching %s domains"), i18n.display_name(c.object), i18n_c.number(c.domains.watched['/freebase/user_profile/favorite_domains'].length))}</h2>
+  <acre:block if="c.watched_domains && c.watched_domains.length">
+    <h2 class="table-title">${h.template_sprintf(_("%s is watching %s domains"), i18n.display_name(c.object), i18n_c.number(c.watched_domains.length))}</h2>
     <table cellspacing="0" class="table table-sortable">
       <thead>
         <tr>
@@ -81,12 +81,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr  acre:for="domain in c.domains.watched['/freebase/user_profile/favorite_domains']">
+        <tr  acre:for="domain in c.watched_domains">
           <th class="row-header odd first">
             <a href="${h.fb_url(domain.id)}">${i18n.display_name(domain)}</a>
           </th>
           <td>
-            ${i18n_c.datetime(domain['link']['timestamp'], [["class","published"],["data-format","medium"]])}
+            ${i18n_c.datetime(domain['!/freebase/user_profile/favorite_domains']['link']['timestamp'], [["class","published"],["data-format","medium"]])}
           </td>
         </tr>
       </tbody>

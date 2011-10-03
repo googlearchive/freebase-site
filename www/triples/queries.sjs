@@ -54,21 +54,23 @@ function links(id, filters, next) {
 
 function links_sort(a, b, filters) {
   if (a.length && b.length) {
+    // TODO: assert a, b are sorted -timestamp
+    var i;
     var a_ts = a[a.length - 1].timestamp;  // last timestamp of incoming
     var b_ts = b[b.length - 1].timestamp;  // last timestamp of outgoing
     if (a_ts < b_ts) {
-      b = b.filter(function(l) {
-        return l.timestamp < a_ts;
+      a = a.filter(function(l) {
+        return l.timestamp > b_ts;
       });
     }
     else {
-      a = a.filter(function(l) {
-        return l.timestamp < b_ts;
+      b = b.filter(function(l) {
+        return l.timestamp > a_ts;
       });
     }
   }
   return a.concat(b).sort(function(a, b) {
-    return b.timestamp < a.timestamp;
+    return b.timestamp > a.timestamp;
   });
 };
 
@@ -76,22 +78,15 @@ function links_incoming(id, filters, next, creator_clause) {
   var q = [h.extend({
     type: "/type/link",
     master_property: null,
-    source: {
-      id: null,
-      mid: null,
-      guid: null,
-      name: i18n.mql.query.name()
-    },
-    "me:target": {
-      id: id,
-      guid: null
-    },
+    source: {id:null, mid:null, guid:null, name:i18n.mql.query.name()},
+    "me:target": {id:id, guid:null},
     target_value: {},
     timestamp: null,
+    sort: "-timestamp",
     optional: true
   }, creator_clause)];
   if (next) {
-    q[0]["next:timestamp>"] = next;
+    q[0]["next:timestamp<"] = next;
   }
   apply_filters(q[0], filters);
   return freebase.mqlread(q, mqlread_options(filters))
@@ -108,10 +103,11 @@ function links_outgoing(id, filters, next, creator_clause) {
     target: {id:null, mid:null, name:i18n.mql.query.name(), optional:true},
     target_value: {},
     timestamp: null,
+    sort: "-timestamp",
     optional: true
   }, creator_clause)];
   if (next) {
-    q[0]["next:timestamp>"] = next;
+    q[0]["next:timestamp<"] = next;
   }
   apply_filters(q[0], filters);
   return freebase.mqlread(q, mqlread_options(filters))

@@ -39,25 +39,25 @@ var q = acre.require("queries.sjs");
 
 
 test("links_sort", function() {
-  var a = [{timestamp:0},{timestamp:2}];
-  var b = [{timestamp:1},{timestamp:3}];
+  var a = [{timestamp:2},{timestamp:0}];
+  var b = [{timestamp:3},{timestamp:1}];
   same(q.links_sort(a, b),
-       [{timestamp:0},{timestamp:1},{timestamp:2}]);
+       [{timestamp:3},{timestamp:2},{timestamp:1}]);
 
   a = [{timestamp:1},{timestamp:0}];
-  b = [{timestamp:2},{timestamp:3}];
+  b = [{timestamp:3},{timestamp:2}];
   same(q.links_sort(a, b),
-       [{timestamp:0},{timestamp:1}]);
+       [{timestamp:3},{timestamp:2}]);
 
-  a = [{timestamp:4},{timestamp:6}];
-  b = [{timestamp:2},{timestamp:5}];
+  a = [{timestamp:6},{timestamp:4}];
+  b = [{timestamp:5},{timestamp:2}];
   same(q.links_sort(a, b),
-       [{timestamp:2},{timestamp:4},{timestamp:5}]);
+       [{timestamp:6},{timestamp:5},{timestamp:4}]);
 
-  a = [{timestamp:4},{timestamp:7}];
-  b = [{timestamp:5},{timestamp:6}];
+  a = [{timestamp:7},{timestamp:6}];
+  b = [{timestamp:5},{timestamp:4}];
   same(q.links_sort(a, b),
-       [{timestamp:4},{timestamp:5},{timestamp:6}]);
+       [{timestamp:7},{timestamp:6}]);
 });
 
 test("links_outgoing", function() {

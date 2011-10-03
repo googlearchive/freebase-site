@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var queries = acre.require("queries.sjs");
+var queries = acre.require("lib/queries/user.sjs");
 
 var SPEC = {
 
@@ -45,7 +45,8 @@ var SPEC = {
     return {
       id:      object.id,
       object:  object,
-      domains:   queries.user_domains(object.id)
+      owned_domains: queries.owned_domains(object.id),
+      watched_domains:   queries.watched_domains(object.id)
     };
   }
 };

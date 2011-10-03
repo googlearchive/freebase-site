@@ -59,6 +59,13 @@
         if (next) {
           tbody.append($(">tr", html));
           tbody.attr("data-next", next);
+          // update links count
+          var len = $(">tr", tbody).length;
+          var context = $("#triples-data [name=links]");
+          $(".number", context).attr("data-value", len);
+          i18n.ize_number(context);
+          // re-init tablesorter
+          tbody.parent("table").trigger("update");
         }
         else {
           //console.log("STOP INFINITE SCROLL!!!");

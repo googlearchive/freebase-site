@@ -43,7 +43,7 @@ var SPEC = {
   validate: function(params) {
     var args = [
       params.auth_user.id,
-      validators.Json(params, "query", {required:true, json:false}),
+      validators.Json(params, "query", {required:true}),
       validators.String(params, "name", {required:true}),
       validators.MqlKey(params, "key", {required:true}),
       validators.MqlId(params, "domain", {required:true}),

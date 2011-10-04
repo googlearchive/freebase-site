@@ -40,7 +40,6 @@ var fq = acre.require("lib/queries/freebase_query.sjs");
 var pq = acre.require("lib/propbox/queries_collection.sjs");
 
 
-
 function qualify_prop(key, type) {
   var system_props = {
     id: "/type/object",
@@ -106,8 +105,6 @@ function get_clause_type(q) {
   }
   return type || "/type/object";
 };
-
-
 
 function qualify_clause(q, type) {
   for (var key in q) {
@@ -195,7 +192,7 @@ function collection(q, props) {
       env.result.forEach(function(r) {
         mids.push(r[MID_PROP]);
       });
-      
+
       var typeid = get_clause_type(q);
       return schema.load(typeid)
         .then(function(r) {
@@ -208,9 +205,9 @@ function collection(q, props) {
 };
 
 function create_query(user_id, query, name, key, domain, description, lang) {
-  var clause = h.isArray(query) ? query : query[0];
+  var clause = h.isArray(query) ? query[0] : query;
   var type = get_clause_type(clause);
-  
+
   return freebase.mqlwrite({
       "create": "unless_exists",
       "id": null,
@@ -254,7 +251,7 @@ function create_query(user_id, query, name, key, domain, description, lang) {
         .then(function(doc) {
           var promises = [];
           
-          promises.push(freebase.upload(query, "text/plain", {
+          promises.push(freebase.upload(JSON.stringify(query, null, 2), "text/plain", {
             "document": doc.mid
           }));
           

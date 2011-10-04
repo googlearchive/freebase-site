@@ -72,6 +72,7 @@
           $(window).unbind('.infscr');
         }
       });
+      $(window).trigger("scroll");
     },
 
     init: function() {

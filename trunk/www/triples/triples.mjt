@@ -133,7 +133,7 @@
 
       <tfoot>
         <tr>
-          <td colspan="">
+          <td acre:attrs="filters.historical ? {colspan:'6'} : {colspan:'5'}">
             <acre:script>
               var params = {id:id};
               for (var k in filters) {

@@ -28,11 +28,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-;(function($, propbox, editparams) {
+;(function($, propbox, formlib, editparams, i18n) {
 
   // requires:
   // propbox.js @see lib/propbox/propbox.js
-  // i18n.js @see lib/18n/i18n.js
+  // form.js @see lib/propbox/form.js
+  // editparams.js @see lib/propbox/editparams.js
+  // i18n.js @see lib/i18n/i18n.js
   // jquery.metadata.js
 
 
@@ -53,107 +55,106 @@
         p: prop_section.attr("data-id"),
         lang: propbox.options.lang
       };
-      $.ajax({
+      var ls = $(">.data-section", prop_section);
+      //$("> .data-table > tbody > .empty-row, > .data-list > .empty-row", ls).hide();
+      var body = $("> .data-table > tbody, > .data-list", ls);
+
+      $.ajax($.extend(formlib.default_begin_ajax_options(), {
         url: propbox.options.base_ajax_url + "/prop_add_begin.ajax",
         data: submit_data,
-        dataType: "json",
-        success: function(data, status, xhr) {
-          if (data.code !== "/api/status/ok") {
-            return edit.ajax_error(xhr, null, prop_section);
-          }
-          var html = $(data.result.html).hide();
+        onsuccess: function(data) {
+          var html = $(data.result.html);
+          var head_row = $(".edit-row-head", html);
+          var edit_row = $(".edit-row", html);
+          var submit_row = $(".edit-row-submit", html);
           var event_prefix = "propbox.edit.prop_add.";
-          var form = {
-            mode: "add",
+          var options = {
             event_prefix: event_prefix,
-            ajax: {
-              data: submit_data,
-              url: propbox.options.base_ajax_url + "/prop_edit_submit.ajax"
-            },
-
+            // callbacks
             init: edit.init_prop_add_form,
-            submit: edit.submit_prop_add_form,
-
-            prop_section: prop_section,
-
-            msg_row: $(".row-msg", html),
-            edit_row: $(".edit-row", html),
-            submit_row: $(".edit-row-submit", html),
+            validate: edit.validate_prop_add_form,
+            submit:  edit.submit_prop_add_form,
+            reset: edit.reset_prop_add_form,
+            // submit ajax options
+            ajax: {
+              url: propbox.options.base_ajax_url + "/prop_edit_submit.ajax",
+              data: submit_data
+            },
+            // jQuery objects
+            body: body,
+            head_row: head_row,
+            edit_row: edit_row,
+            submit_row: submit_row,
 
             structure: html.metadata()
           };
-
-          edit.init(form);
-
-          form.edit_row
+          edit_row
+            .bind(event_prefix + "cancel", function(e) {
+              prop_section.removeClass("editing");
+            })
             .bind(event_prefix + "success", function() {
               if (unique) {
-                form.edit_row.trigger(form.event_prefix + "cancel");
-              }
-              else {
-                edit.reset_data_inputs(form);
-                $(":input:visible:first", form.edit_row).focus();
-                $(".button-submit", form.submit_row).attr("disabled", "disabled").addClass("disabled");
-                $(".button-cancel", form.submit_row).text("Done");
+                edit_row.trigger(form.event_prefix + "cancel");
               }
             });
-        },
-        error: function(xhr) {
-          edit.ajax_error(xhr, null, prop_section);
+          formlib.init_inline_add_form(options);
         }
-      });
+      }));
     },
 
-    init_prop_add_form: function(form) {
-      edit.init_data_inputs(form);
-      $(":input:visible:first", form.edit_row).focus();
+
+    init_prop_add_form: function(options) {
+      edit.init_data_inputs(options);
+      $(":input:visible:first", options.edit_row).focus();
     },
 
-    submit_prop_add_form: function(form) {
-      var submit_data = $.extend({}, form.ajax.data);  // s, p, lang
+    validate_prop_add_form: function(options) {
+      // data_inputs do our validation
+      // editparams.parse will do our validation on submit
+      return true;
+    },
+
+    reset_prop_add_form: function(options) {
+      /**
+       * 1. reset data_inputs
+       * 2. disable submit button
+       * 3. change "Cancel" button to "Done"
+       * 4. focus to the first input
+       */
+      edit.reset_data_inputs(options);
+      formlib.disable_submit(options);
+      $(".button-cancel", options.submit_row).text("Done");
+      $(":input:visible:first", options.edit_row).focus();
+    },
+
+    submit_prop_add_form: function(options, ajax_options) {
       try {
-        var o = editparams.parse(form.structure, form.edit_row);
-        submit_data.o = JSON.stringify(o);
+        var o = editparams.parse(options.structure, options.edit_row);
+        ajax_options.data.o = JSON.stringify(o);
       }
       catch (ex) {
-        var errors = $(".data-input.error", form.edit_row);
+        var errors = $(".data-input.error", options.edit_row);
         if (errors.length) {
-          form.edit_row.trigger(form.event_prefix + "error", "Please specify a valid value");
+          options.edit_row.trigger(options.event_prefix + "error", "Please specify a valid value");
           errors.eq(0).find(":input").focus().select();
         }
         else {
-          form.edit_row.trigger(form.event_prefix + "error", ex.toString());
+          options.edit_row.trigger(options.event_prefix + "error", ex.toString());
         }
         return;
       }
-      $.ajax({
-        url: form.ajax.url,
-        type: "POST",
-        dataType: "json",
-        data: submit_data,
-        success: function(data, status, xhr) {
-          if (data.code !== "/api/status/ok") {
-            return edit.ajax_error(xhr, form);
-          }
+      $.ajax($.extend(ajax_options, {
+        onsuccess: function(data) {
           var new_row = $(data.result.html);
-
-          form.msg_row.before(new_row);
-
-          // i18n'ize dates and numbers
-          i18n.ize(new_row);
-
-          // initialize new row menu
-          $(".edit", new_row).show();
-
+          formlib.success_inline_add_form(options, new_row);
           propbox.init_menus(new_row, true);
+          $(".nicemenu-item.edit").show();
           propbox.kbs.set_next(null, new_row, true);
-
-          form.edit_row.trigger(form.event_prefix + "success");
         },
-        error: function(xhr) {
-          edit.ajax_error(xhr, form);
+        onerror: function(errmsg) {
+          options.edit_row.trigger(options.event_prefix + "error", errmsg);
         }
-      });
+      }));
     },
 
     /**
@@ -176,114 +177,93 @@
         replace: value,
         lang: propbox.options.lang
       };
-      $.ajax({
+
+      $.ajax($.extend(formlib.default_begin_ajax_options(), {
         url: propbox.options.base_ajax_url +  "/value_edit_begin.ajax",
         data: submit_data,
-        dataType: "json",
-        success: function(data, status, xhr) {
-          if (data.code !== "/api/status/ok") {
-            return edit.ajax_error(xhr, null, prop_section, prop_row);
-          }
-          var html = $(data.result.html).hide();
+        onsuccess: function(data) {
+          var html = $(data.result.html);
+          var head_row = $(".edit-row-head", html);
+          var edit_row = $(".edit-row", html);
+          var submit_row = $(".edit-row-submit", html);
           var event_prefix = "propbox.edit.value_edit.";
-          var form = {
-            mode: "edit",
+          var options = {
             event_prefix: event_prefix,
-            ajax: {
-              data: submit_data,
-              url: propbox.options.base_ajax_url + "/prop_edit_submit.ajax"
-            },
-
+            // callbacks
             init: edit.init_value_edit_form,
+            validate: edit.validate_value_edit_form,
             submit: edit.submit_value_edit_form,
-
-            prop_section: prop_section,
-            prop_row: prop_row,
-
-            msg_row: $(".row-msg", html),
-            edit_row: $(".edit-row", html),
-            submit_row: $(".edit-row-submit", html),
+            // submit ajax_options
+            ajax: {
+              url:  propbox.options.base_ajax_url + "/prop_edit_submit.ajax",
+              data: submit_data
+            },
+            // jQuery objects
+            row: prop_row,
+            head_row: head_row,
+            edit_row: edit_row,
+            submit_row: submit_row,
 
             structure: html.metadata()
           };
-
-          edit.init(form);
-          form.edit_row
-            .bind(event_prefix + "success", function() {
-              //console.log(event_prefix + "success");
-              form.msg_row.remove();
-              form.edit_row.remove();
-              form.submit_row.remove();
+          edit_row
+            .bind(event_prefix + "success", function(e) {
+              prop_section.removeClass("editing");
             })
-            .bind(event_prefix + "cancel", function() {
-              //console.log(event_prefix + "cancel");
-              form.prop_row.show();
+            .bind(event_prefix + "cancel", function(e) {
+              prop_section.removeClass("editing");
             })
             .bind(event_prefix + "delete", function() {
-              // ensure form is not submitted while we are deleting
-              edit.loading_begin(form);
-              propbox.edit.value_delete_begin(prop_section, prop_row, function() {
-                form.msg_row.remove();
-                form.edit_row.remove();
-                form.submit_row.remove();
-              });
+              edit_row.trigger(event_prefix + "cancel");
+              propbox.edit.value_delete_begin(prop_section, prop_row);
             });
-        },
-        error: function(xhr) {
-          edit.ajax_error(xhr, null, prop_section, prop_row);
+          formlib.init_inline_edit_form(options);
         }
+      }));
+    },
+
+    init_value_edit_form: function(options) {
+      edit.init_data_inputs(options);
+      $(".button-delete", options.submit_row).click(function() {
+        options.edit_row.trigger(options.event_prefix + "delete");
       });
+      $(":input:visible:first", options.edit_row).focus();
     },
 
-    init_value_edit_form: function(form) {
-      edit.init_data_inputs(form);
-      $(":input:visible:first", form.edit_row).focus();
+    validate_value_edit_form: function(options) {
+      // data_inputs do our validation
+      // editparams.parse will do our validation on submit
+      return true;
     },
 
-    submit_value_edit_form: function(form) {
-      var submit_data = $.extend({}, form.ajax.data);  // s, p, lang
+    submit_value_edit_form: function(options, ajax_options) {
       try {
-        var o = editparams.parse(form.structure, form.edit_row);
-        submit_data.o = JSON.stringify(o);
+        var o = editparams.parse(options.structure, options.edit_row);
+        ajax_options.data.o = JSON.stringify(o);
       }
       catch(ex) {
-        var errors = $(".data-input.error", form.edit_row);
+        var errors = $(".data-input.error", options.edit_row);
         if (errors.length) {
-          form.edit_row.trigger(form.event_prefix + "error", "Please specify a valid value");
+          options.edit_row.trigger(options.event_prefix + "error", "Please specify a valid value");
           errors.eq(0).find(":input").focus().select();
         }
         else {
-          form.edit_row.trigger(form.event_prefix + "error", ex.toString());
+          options.edit_row.trigger(options.event_prefix + "error", ex.toString());
         }
         return;
       }
-      $.ajax({
-        url: form.ajax.url,
-        type: "POST",
-        dataType: "json",
-        data: submit_data,
-        success: function(data, status, xhr) {
-          if (data.code !== "/api/status/ok") {
-            return edit.ajax_error(xhr, form);
-          }
+      $.ajax($.extend(ajax_options, {
+        onsuccess: function(data) {
           var new_row = $(data.result.html);
-          form.prop_row.after(new_row);
-
-          // i18n'ize dates and numbers
-          i18n.ize(new_row);
-          // initialize new row menu
-          $(".edit", new_row).show();
+          formlib.success_inline_edit_form(options, new_row);
           propbox.init_menus(new_row, true);
+          $(".nicemenu-item.edit").show();
           propbox.kbs.set_next(null, new_row, true);
-
-
-          form.prop_row.remove();
-          form.edit_row.trigger(form.event_prefix + "success");
         },
-        error: function(xhr) {
-          edit.ajax_error(xhr, form);
+        onerror: function(errmsg) {
+          options.edit_row.trigger(options.event_prefix + "error", errmsg);
         }
-      });
+      }));
     },
 
     /**
@@ -291,7 +271,7 @@
      *
      * Delete an exiting value (topic, literal, cvt).
      */
-    value_delete_begin: function(prop_section, prop_row, callback) {
+    value_delete_begin: function(prop_section, prop_row) {
       var value;
       if (prop_row.is("tr")) {
         value = prop_row.attr("data-id");
@@ -306,134 +286,67 @@
         o: value,
         lang: propbox.options.lang
       };
-      $.ajax({
+
+      $.ajax($.extend(formlib.default_submit_ajax_options(), {
         url: propbox.options.base_ajax_url + "/value_delete_submit.ajax",
-        type: "POST",
         data: submit_data,
-        dataType: "json",
-        success: function(data, status, xhr) {
-          if (data.code !== "/api/status/ok") {
-            return edit.ajax_error(xhr, null, prop_section, prop_row);
-          }
-          var new_row = $(data.result.html);
-          prop_row.before(new_row);
-          prop_row.hide();
-          // TODO: update property menu (edit vs add for unique)
+        onsuccess: function(data) {
+          var msg_row = $(data.result.html);
+          formlib.success_inline_delete(prop_row, msg_row, function() {
+            $.ajax($.extend(formlib.default_submit_ajax_options(),  {
+              url: propbox.options.base_ajax_url + "/value_delete_undo.ajax",
+              data: submit_data,
+              onsuccess: function(data) {
+                formlib.success_inline_delete_undo(msg_row);
+              }
+            }));
+          });
           prop_section.removeClass("editing");
-
-          if (callback) {
-            callback();
-          }
-        },
-        error: function(xhr) {
-          edit.ajax_error(xhr, null, prop_section, prop_row);
         }
-      });
+      }));
     },
-
-    /**
-     * value_delete_undo
-     *
-     * Undo operations by value_delete_begin
-     */
-    value_delete_undo: function(trigger) {
-      var msg_row = $(trigger).parents(".row-msg:first");
-      var prop_row = msg_row.next(".data-row:hidden");
-      var prop_section = prop_row.parents(".property-section");
-      var value;
-      if (prop_row.is("tr")) {
-        value = prop_row.attr("data-id");
-      }
-      else {
-        var prop_value = $(".property-value:first", prop_row);
-        value = prop_value.attr("data-id") || prop_value.attr("data-value") || prop_value.attr("datetime");
-      }
-      var submit_data = {
-        s: propbox.options.id,
-        p: prop_section.attr("data-id"),
-        o: value,
-        lang: propbox.options.lang
-      };
-      $.ajax({
-        url: propbox.options.base_ajax_url + "/value_delete_undo.ajax",
-        type: "POST",
-        data: submit_data,
-        dataType: "json",
-        success: function(data, status, xhr) {
-          if (data.code !== "/api/status/ok") {
-            return edit.ajax_error(xhr, null, prop_section, prop_row);
-          }
-          prop_row.show();
-          msg_row.remove();
-          // TODO: update property menu (edit vs add for unique)
-        },
-        error: function(xhr) {
-          edit.ajax_error(xhr, null, prop_section, prop_row);
-        }
-      });
-
-      return false;
-    },
-
-
-
 
 
 
 
     /**
-     * Generic form utiltiies
+     * Generic propbox utiltiies
      */
-    loading_begin: function(form) {
-      $.each([form.edit_row, form.msg_row, form.submit_row], function(i, row) {
-        if (row) {
-          row.addClass("loading");
-        }
+
+    init_data_inputs: function(options) {
+      $(".data-input", options.edit_row).each(function() {
+        edit.init_data_input($(this), options);
       });
     },
 
-    loading_complete: function(form) {
-      $.each([form.edit_row, form.msg_row, form.submit_row], function(i, row) {
-        if (row) {
-          row.removeClass("loading");
-        }
-      });
-    },
-
-    init_data_inputs: function(form) {
-      $(".data-input", form.edit_row).each(function() {
-        edit.init_data_input($(this), form);
-      });
-    },
-
-    init_data_input: function(data_input, form) {
+    init_data_input: function(data_input, options) {
       data_input
         .data_input({
           lang: propbox.options.lang,
           suggest: propbox.options.suggest
         })
         .bind("valid", function() {
-          form.edit_row.trigger(form.event_prefix + "valid");
+          options.edit_row.trigger(options.event_prefix + "valid");
           var form_field = data_input.parent(".form-field");
           var magicbox_template = form_field.next(".magicbox-template");
           if (magicbox_template.length) {
             var div = $("<div>").html(magicbox_template.html());
             var new_form_field = $(".form-field", div);
             form_field.after(new_form_field);
-            edit.init_data_input($(".data-input", new_form_field), form);
+            edit.init_data_input($(".data-input", new_form_field), options);
           }
         })
         .bind("empty", function() {
-          form.edit_row.trigger(form.event_prefix + "valid");
+          options.edit_row.trigger(options.event_prefix + "valid");
         })
         .bind("invalid", function() {
-          form.edit_row.trigger(form.event_prefix + "invalid");
+          options.edit_row.trigger(options.event_prefix + "invalid");
         })
         .bind("submit", function() {
-          form.edit_row.trigger(form.event_prefix + "submit");
+          options.edit_row.trigger(options.event_prefix + "submit");
         })
         .bind("cancel", function() {
-          form.edit_row.trigger(form.event_prefix + "cancel");
+          options.edit_row.trigger(options.event_prefix + "cancel");
         })
         .bind("loading", function() {
           $(this).addClass("loading");
@@ -454,195 +367,9 @@
       $(".data-input", form.edit_row).each(function() {
         var inst = $(this).data("$.data_input").reset();
       });
-    },
-
-    init: function(form) {
-      if (form.mode === "add") {
-        var ls = $(">.data-section", form.prop_section);
-        $("> .data-table > tbody > .empty-row, > .data-list > .empty-row", ls).hide();
-        $("> .data-table > tbody, > .data-list", ls).append(form.msg_row).append(form.edit_row).append(form.submit_row);
-      }
-      else if (form.mode === "edit") {
-        form.prop_row.hide();
-        form.prop_row.after(form.msg_row);
-        form.msg_row.after(form.edit_row);
-        form.edit_row.after(form.submit_row);
-      }
-
-      // show cvt header (if applicable)
-      $(".data-table > thead", form.prop_section).show();
-
-      var event_prefix = form.event_prefix || "propbox.edit.";
-
-      form.edit_row
-        .bind(event_prefix + "valid", function() {
-          $(".button-submit", form.submit_row).removeAttr("disabled").removeClass("disabled");
-        })
-        .bind(event_prefix + "invalid", function() {
-          $(".button-submit", form.submit_row).attr("disabled", "disabled").addClass("disabled");
-        })
-        .bind(event_prefix + "submit", function() {
-          edit.submit(form);
-        })
-        .bind(event_prefix + "cancel", function() {
-          edit.cancel(form);
-        })
-        .bind(event_prefix + "error", function(e, msg) {
-          edit.error(form, msg);
-          edit.loading_complete(form);
-          form.prop_section.removeClass("editing");
-        })
-        .bind(event_prefix + "success", function() {
-          edit.loading_complete(form);
-          form.prop_section.removeClass("editing");
-        });
-
-
-      // submit handler
-      $(".button-submit", form.submit_row).click(function() {
-        form.edit_row.trigger(event_prefix + "submit");
-      });
-      $(".button-cancel", form.submit_row).click(function() {
-        form.edit_row.trigger(event_prefix + "cancel");
-      });
-      $(".button-delete", form.submit_row).click(function() {
-        form.edit_row.trigger(event_prefix + "delete");
-      });
-
-      form.edit_row.show();
-      form.submit_row.show();
-
-      propbox.kbs.scroll_to(form.prop_section);
-
-      if (form.init) {
-        form.init(form);
-      }
-    },
-
-    cancel: function(form) {
-      form.msg_row.remove();
-      form.edit_row.remove();
-      form.submit_row.remove();
-      form.prop_section.removeClass("editing");
-      var ls = $(">.data-section", form.prop_section);
-      if (!$("> .data-table > tbody > tr, > .data-list > li", ls).filter(":not(.empty-row)").length) {
-        $("> .data-table > tbody > .empty-row, > .data-list > .empty-row", ls).show();
-      }
-    },
-
-    submit: function(form) {
-      // are we already submitting?
-      if (form.edit_row.is(".loading")) {
-        return;
-      }
-
-      // submit button enabled?
-      if ($(".button-submit", form.submit_row).is(":disabled")) {
-        return;
-      }
-
-      // remove focus from activeElement
-      if (document.activeElement) {
-        $(document.activeElement).blur();
-      }
-
-      // clear messages
-      edit.clear_form_message(form);
-
-      // form submitting/loading
-      edit.loading_begin(form);
-
-      // submit form
-      if (form.submit) {
-        form.submit(form);
-      }
-    },
-
-    error: function(form, msg) {
-      $(".button-submit", form.submit_row).attr("disabled", "disabled").addClass("disabled");
-      return edit.form_message(form, msg, "error");
-    },
-
-    form_message: function(form, msg, type) {
-      form.msg_row.find(".close-msg").css("visibility", "visible").next().find(".msg-default").hide().next().text(msg);
-      form.msg_row.attr("class", "row-msg");
-      if (type) {
-        form.msg_row.addClass("row-msg-" + type);
-      }
-    },
-
-    clear_form_message: function(form) {
-      form.msg_row.find(".close-msg").css("visibility", "hidden").next().find(".msg-default").show().next().html("&nbsp;");
-    },
-
-
-    /**
-     * Usage:
-     *   ajax_error(xhr, form)
-     *
-     *     or
-     *
-     *   ajax_error(xhr, null, prop_section, prop_row)
-     */
-    ajax_error: function(xhr, form, prop_section, prop_row) {
-      var msg = xhr.responseText;
-      if (form) {
-        form.edit_row.trigger(form.event_prefix + "error", msg);
-      }
-      else {
-        var table = $(".data-table", prop_section);
-        var row;
-        if (table.length) {
-          row = edit.row_msg(msg, "error", "tr", $(">thead>tr:first>th", table).length);
-        }
-        else {
-          row = edit.row_msg(msg, "error", "li");
-        }
-        if (prop_row) {
-          prop_row.before(row);
-          if (prop_row.is(".edit-row")) {
-            prop_row.removeClass("loading");
-          }
-          else {
-            prop_section.removeClass("editing");
-          }
-        }
-        else {
-          if (table.length) {
-            $(">tbody", table).append(row);
-          }
-          else {
-            $(".data-list", prop_section).append(row);
-          }
-          prop_section.removeClass("editing");
-        }
-      }
-    },
-
-    row_msg: function(msg, msg_type, row_tag, colspan) {
-      var close = $('<a class="close-msg" href="#">x</a>').click(function(e) {
-        $(this).parents(".row-msg:first").remove();
-        return false;
-      });
-      var span =  $("<span>").text(msg);
-      var row = $('<' + row_tag + ' class="row-msg">');
-      if (row_tag === "tr") {
-        var td = $('<td>').append(close).append(span);
-        if (colspan) {
-          td.attr("colspan", colspan);
-        }
-        row.append(td);
-      }
-      else {
-        row.append(close).append(span);
-      }
-      if (msg_type) {
-        row.addClass("row-msg-" + msg_type);
-      }
-      return row;
     }
 
   };
 
 
-})(jQuery, window.propbox, window.editparams);
+})(jQuery, window.propbox, window.formlib, window.editparams, window.i18n);

@@ -1,6 +1,5 @@
 [
-  "propbox/jquery.validate_input.js",
-  "propbox/jquery.data_input.js",
+  "propbox/form.mf.js",
   "propbox/editparams.js",
   "propbox/propbox-edit.js"
 ]

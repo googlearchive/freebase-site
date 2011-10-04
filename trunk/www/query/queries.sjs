@@ -179,15 +179,17 @@ function get_paths(q, depth, top_type) {
   return paths;
 };
 
-function collection(q, props) {
+function collection(query, opts) {
   var MID_PROP = "collection:mid";
 
-  q = h.isArray(q) ? q[0] : q;
+  var q = h.isArray(query) ? query[0] : query;
+  q = h.extend(true, {}, q);
   q[MID_PROP] = null;
-  
-  return freebase.mqlread([q])
-    .then(function(env) {
 
+  return freebase.mqlread([q], opts)
+    .then(function(env) {
+      var cursor = env.cursor;
+      
       var mids = [];
       env.result.forEach(function(r) {
         mids.push(r[MID_PROP]);
@@ -199,7 +201,11 @@ function collection(q, props) {
           var is_mediator = r[typeid]["/freebase/type_hints/mediator"];
           var default_paths = is_mediator ? ["/type/object/id"] : ["/type/object/name", "/common/topic/image"];
           var props = default_paths.concat(get_paths(q, 2, typeid));
-          return pq.collection(mids, props, i18n.lang);
+          return deferred.all({
+            query: query,
+            cursor: cursor,
+            collection: pq.collection(mids, props, i18n.lang)
+          });
         });
     });
 };

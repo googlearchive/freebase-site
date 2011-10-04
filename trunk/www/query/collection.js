@@ -31,26 +31,43 @@
 ;(function($, fb, propbox) {
 
   var collection = fb.collection = {
-
-    init: function() {
-
-      propbox.init("#collection-data", {
-        id: fb.c.id,
-        base_ajax_url: fb.h.ajax_url("lib/propbox"),
-        base_static_url: fb.h.static_url("lib/propbox"),
-        lang: fb.lang || "/lang/en",
-        suggest: {
-          service_url: fb.h.legacy_fb_url(),
-          service_path: "/private/suggest",
-          flyout_service_url: fb.h.legacy_fb_url(),
-          flyout_service_path: "/private/flyout",
-          mqlread_url: fb.h.fb_api_url("/api/service/mqlread"),
-          category: "object",
-          type: "/common/topic",
-          status: ["", "Searching...", "Select an item from the list:"]
+    
+    init_infinitescroll: function() {
+      var table = $("#infinitescroll");
+      var next = table.attr("data-next");
+      if (!next) {
+        // nothing to scroll
+        return;
+      }
+      var a_next = $("#infinitescroll-next");
+      table.infinitescroll({
+        nextSelector: "#infinitescroll-next",
+        navSelector: "#infinitescroll-next",
+        dataType: "json",
+        pathParse: function() {
+          return [
+            a_next[0].href + "&" + $.param({cursor:table.attr("data-next")}) + "&page=",
+            ""
+          ];
+        },
+        appendCallback: false
+      }, function(data) {
+        data = JSON.parse(data);
+        var next = data.result.cursor;
+        var html = $(data.result.html);
+        i18n.ize(html);
+        table.append(html);
+        if (next) {
+          table.attr("data-next", next);
+        }
+        else {
+          $(window).unbind('.infscr');
         }
       });
+    },
 
+    init: function() {
+      collection.init_infinitescroll();
     }
   };
 

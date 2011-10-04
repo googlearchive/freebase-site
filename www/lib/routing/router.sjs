@@ -398,7 +398,7 @@ function route(rules, scope) {
   }
 
   for (var i=0,l=routers.length; i<l; i++) {
-    syslog.info({}, "trying router " + routers[i][0]);
+    syslog.debug({}, "trying router " + routers[i][0]);
     var name = routers[i][0];
     var router_class = routers[i][1];
     var router = new router_class(rules["labels"]);

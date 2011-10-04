@@ -101,9 +101,15 @@ function collection(topic_ids, pids, lang, limit) {
             });
             values.push(value);
           });
+          var topic_order = {};
+          topic_ids.forEach(function(topic_id, i) {
+            topic_order[topic_id] = i;
+          });
           return {
             structures: props,
-            values: values
+            values: values.sort(function(a, b) {
+              return topic_order[a.id] - topic_order[b.id];
+            })
           };
         });
     });

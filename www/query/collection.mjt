@@ -35,8 +35,9 @@
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
-  var image = acre.require("lib/template/imagecomponents.mjt");      
-  var t = acre.require("lib/propbox/collection.mjt");
+  var image = acre.require("lib/template/imagecomponents.mjt");
+  var pb = acre.require("lib/propbox/propbox.mjt");
+  var hc = acre.require("lib/propbox/helpers_collection.sjs");
 </acre:script>
 
 <acre:block def="head()">
@@ -45,8 +46,83 @@
 
 <acre:block def="page_content()">
   <div id="collection-data" class="section instances" acre:if="c.collection">
-    ${t.collection(c.collection.structures, c.collection.values, i18n.lang)}
+    ${collection_table(c.collection.structures, c.collection.values, c.query, c.cursor)}
   </div>
+</acre:block>
+
+<acre:block def="collection_table(structures, data, query, cursor)">
+      <acre:script>
+        var table = hc.to_table_structure(structures, data, i18n.lang);
+      </acre:script>
+      <table cellpadding="1" cellspacing="1" border="1" class="data-table" id="infinitescroll" data-next="${cursor}">
+        <thead>
+          <acre:block for="row in table.head">
+            <tr>
+              <acre:block for="cell in row">
+                <th acre:attrs="cell.attrs">
+                  ${cell.structure.text}
+                </th>
+              </acre:block>
+            </tr>
+          </acre:block>
+        </thead>
+          ${collection_body(table.body)}
+        <tfoot>
+          <tr>
+            <td colspan="">
+              <a id="infinitescroll-next" href="${h.ajax_url('/infinitescroll.ajax', [['query', JSON.stringify(query)]])}">next</a>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+  </div>
+</acre:block>
+
+<acre:block def="collection_body(body)">
+  <acre:block for="tbody in body">
+    <tbody>
+      <acre:block for="row in tbody">
+        <tr>
+          <acre:block for="cell in row">
+            <acre:block if="cell">
+              <acre:script>
+                var structure = cell.structure;
+                var value = cell.value;
+              </acre:script>
+              <acre:block if="structure.id === '/type/object/name'">
+                <th>
+                  <a title="${tbody.value.id}" class="property-value"
+                     href="${h.fb_url(true, tbody.value.id)}"
+                     data-id="${tbody.value.id}">${value.text}</a>
+                  ${i18n_c.lang_code(value.lang, i18n.lang)}
+                </th>
+              </acre:block>
+              <acre:block elif="structure.expected_type.id === '/common/image'">
+                <td rowspan="${cell.rowspan}">
+                  ${pb.value(tbody.value, cell.structure,tbody.value, i18n.lang)}
+               </td>
+              </acre:block>
+              <acre:block elif="structure.id === '/type/object/id'">
+                <th>
+                  <a title="${tbody.value.id}" class="property-value"
+                     href="${h.fb_url(true, tbody.value.id)}"
+                     data-id="${tbody.value.id}">${tbody.value.id}</a>
+                </th>
+              </acre:block>
+              <acre:block else="">
+                <td>
+                  ${pb.value(tbody.value, cell.structure, cell.value, i18n.lang)}
+                </td>
+              </acre:block>
+            </acre:block>
+            <acre:block else="">
+              <td>&nbsp;</td>
+            </acre:block>
+          </acre:block>
+        </tr>
+      </acre:block>
+    </tbody>
+  </acre:block>
 </acre:block>
 
 <acre:block def="footer_script()">

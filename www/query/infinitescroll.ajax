@@ -29,33 +29,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var i18n = acre.require("lib/i18n/i18n.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
-
-var promise = acre.require("lib/promise/apis.sjs");
-var freebase = promise.freebase;
-var deferred = promise.deferred;
-
+var hc = acre.require("lib/propbox/helpers_collection.sjs");
 var queries = acre.require("queries.sjs");
+var t = acre.require("collection.mjt");
 
 var SPEC = {
-  
-  template: "collection.mjt",
 
   validate: function(params) {
     return [
-      params.object,
-      params.query,
+      validators.Json(params, "query", {required: true}),
+      validators.String(params, "cursor", {if_missing: true}),
     ];
   },
 
-  run: function(object, query) {
-    return query
-      .then(function(q) {
-        return queries.collection(q, {cursor: true})
-          .then(function(c) {
-            c.object = object;
-            return c;
-          });
+  run: function(query, cursor) {
+    return queries.collection(query, {cursor: cursor})
+      .then(function(c) {
+        var table = hc.to_table_structure(c.collection.structures, c.collection.values, i18n.lang);
+        return {
+          html: acre.markup.stringify(t.collection_body(table.body)),
+          cursor: c.cursor
+        };
       });
-  }  
+  }
 };
+

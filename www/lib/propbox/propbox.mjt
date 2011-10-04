@@ -38,6 +38,7 @@
   var itemprop = microdata.itemprop;
   var ph = acre.require("propbox/helpers.sjs");
   var image = acre.require("template/imagecomponents.mjt");
+  var form = acre.require("propbox/form.mjt");
 
   // preload gettext values
   var FREEBASE_COMMONS = _("Freebase Commons");
@@ -289,6 +290,7 @@
 
 <acre:block def="datalist(topic, prop_structure, prop_values, lang)">
   <acre:script>
+console.log("propbox.mjt.datalist", topic, prop_structure, prop_values);
     var empty = !prop_values || !prop_values.length;
     var ect = prop_structure.expected_type.id;
   </acre:script>
@@ -493,17 +495,9 @@ propbox edit forms
 </acre:block>
 
 <acre:block def="prop_add_form_simple(topic_id, prop_structure, lang)">
-  <acre:script>
-    var message_plurality = prop_structure.unique
-  </acre:script>
   <ul class="edit-form ${JSON.stringify(prop_structure)}">
-    <li class="row-msg">
-      <a class="close-msg" style="visibility:hidden;" href="#" 
-         onclick="$$(this).css('visibility', 'hidden').next().find('.msg-default').show().next().html('&nbsp'); return false;">close</a>
-      <span>
-        <span class="msg-default">${h.template_sprintf(_("Add a new value to %s."), tag_strong(prop_structure.text))}</span>
-        <span></span>
-      </span>
+    <li class="edit-row-head">
+      ${form.row_msg(h.template_sprintf(_("Add a new value to %s."), tag_strong(prop_structure.text)))}
     </li>
     <li class="add-row edit-row">
       ${form_field(prop_structure, null, lang)}
@@ -512,8 +506,7 @@ propbox edit forms
       <input type="hidden" name="s" value="${topic_id}"/>
       <input type="hidden" name="p" value="${prop_structure.id}"/>
       <input type="hidden" name="lang" value="${lang}"/>
-      <button class="button button-primary button-submit disabled" disabled="disabled" type="submit">${_('Save')}</button>
-      <button class="button button-cancel">${_('Cancel')}</button>
+      ${form.submit_buttons()}
     </li>
   </ul>
 </acre:block>
@@ -521,14 +514,9 @@ propbox edit forms
 <acre:block def="prop_add_form_cvt(topic_id, prop_structure, lang)">
   <table class="edit-form ${JSON.stringify(prop_structure)}">
     <tbody>
-      <tr class="row-msg">
+      <tr class="edit-row-head">
         <td colspan="${prop_structure.properties.length}">
-          <a class="close-msg" style="visibility:hidden;" href="#"
-             onclick="$$(this).css('visibility', 'hidden').next().find('.msg-default').show().next().html('&nbsp'); return false;">close</a>
-           <span>
-             <span class="msg-default">${h.template_sprintf(_("Add a new value to %s."), tag_strong(prop_structure.text))}</span>
-             <span></span>
-           </span>
+          ${form.row_msg(h.template_sprintf(_("Add a new value to %s."), tag_strong(prop_structure.text)))}
         </td>
       </tr>
       <tr class="add-cvt-row edit-row">
@@ -548,8 +536,7 @@ propbox edit forms
           <input type="hidden" name="s" value="${topic_id}"/>
           <input type="hidden" name="p" value="${prop_structure.id}"/>
           <input type="hidden" name="lang" value="${lang}"/>
-          <button class="button button-primary button-submit disabled" disabled="disabled" type="submit">${_('Save')}</button>
-          <button class="button button-cancel">${_('Cancel')}</button>
+          ${form.submit_buttons()}
        </td>
       </tr>      
     </tbody>
@@ -663,14 +650,9 @@ propbox edit forms
   </acre:script>
   <table class="edit-form ${JSON.stringify(structure)}">
     <tbody>
-      <tr class="row-msg">
+      <tr class="edit-row-head">
         <td colspan="${prop_structure.properties.length}">
-          <a class="close-msg" style="visibility:hidden;" href="#"
-             onclick="$$(this).css('visibility', 'hidden').next().find('.msg-default').show().next().html('&nbsp'); return false;">close</a>
-           <span>
-             <span class="msg-default">${h.template_sprintf(_("Edit %s value."), tag_strong(prop_structure.text))}</span>
-             <span></span>
-           </span>
+          ${form.row_msg(h.template_sprintf(_("Edit %s value."), tag_strong(prop_structure.text)))}
         </td>
       </tr>
       <tr class="edit-row">
@@ -704,8 +686,7 @@ propbox edit forms
           <input type="hidden" name="p" value="${prop_structure.id}"/>
           <input type="hidden" name="o" value="${prop_value.id}"/>
           <input type="hidden" name="lang" value="${lang}"/>
-          <button class="button button-primary button-submit disabled" disabled="disabled" type="submit">${_('Save')}</button>
-          <button class="button button-cancel">${_('Cancel')}</button>
+          ${form.submit_buttons()}
           <button class="button button-delete">${_('Delete')}</button>
         </td>
       </tr>          
@@ -718,13 +699,8 @@ propbox edit forms
     var structure = h.extend({}, prop_structure, {values: [prop_value]});
   </acre:script>
   <ul class="edit-form ${JSON.stringify(structure)}">
-    <li class="row-msg">
-      <a class="close-msg" style="visibility:hidden;" href="#"
-         onclick="$$(this).css('visibility', 'hidden').next().find('.msg-default').show().next().html('&nbsp'); return false;">close</a>
-      <span>
-        <span class="msg-default">${h.template_sprintf(_("Edit %s."), tag_strong(prop_value.text))}</span>
-        <span></span>
-      </span>
+    <li class="edit-row-head">
+      ${form.row_msg(h.template_sprintf(_("Edit %s."), tag_strong(prop_value.text)))}
     </li>
     <li class="edit-row">
       ${form_field(prop_structure, prop_value, lang)}
@@ -734,40 +710,32 @@ propbox edit forms
       <input type="hidden" name="p" value="${prop_structure.id}"/>
       <input type="hidden" name="o" value="${prop_value.id || prop_value.value}"/>
       <input type="hidden" name="lang" value="${lang}"/>
-      <button class="button button-primary button-submit disabled" disabled="disabled" type="submit">${_('Save')}</button>
-      <button class="button button-cancel">${_('Cancel')}</button>
+      ${form.submit_buttons()}
       <button class="button button-delete">${_('Delete')}</button>
     </li>
   </ul>
 </acre:block>
 
 <acre:block def="value_delete_result(topic_id, prop_structure, value, lang)">
-
+  <acre:script>
+    var msg = h.template_sprintf(_("%s has been deleted."), tag_strong(value));
+  </acre:script>
   <acre:block if="prop_structure.properties">
-    <tr class="row-msg row-msg-info">
+    <tr class="edit-row-head row-msg row-msg-info">
       <td colspan="${prop_structure.properties.length}">
         <ul class="data-list">
           <li>
-            <a class="close-msg" href="#" onclick="return window.propbox.close_message(this);">${_("Close")}</a>
-            <span class="wrapper">
-              ${h.template_sprintf(_("%s has been deleted."), tag_strong(value))}
-              <a href="#" onclick="return window.propbox.edit.value_delete_undo(this);">${_("Undo")}</a>
-            </span>
+            ${form.row_msg(msg, ".edit-row-head")}
           </li>
         </ul>
       </td>
     </tr>
   </acre:block>
   <acre:block else="">
-    <li class="row-msg row-msg-info">
-      <a class="close-msg" href="#" onclick="return window.propbox.close_message(this);">${_("Close")}</a>
-      <span class="wrapper">
-        ${h.template_sprintf(_("%s has been deleted."), tag_strong(value))}
-        <a href="#" onclick="return window.propbox.edit.value_delete_undo(this);">${_("Undo")}</a>
-      </span>
+    <li class="edit-row-head row-msg row-msg-info">
+      ${form.row_msg(msg, ".edit-row-head")}
     </li>
   </acre:block>
-
 </acre:block>
 
 

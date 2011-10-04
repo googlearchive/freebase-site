@@ -268,8 +268,8 @@
           lang: fb.lang
         },
         onsuccess: function(data) {
-          var new_row = $(data.result.html);
-          formlib.success_inline_delete(key_row, new_row, function() {
+          var msg_row = $(data.result.html);
+          formlib.success_inline_delete(key_row, msg_row, function() {
             $.ajax($.extend(formlib.default_submit_ajax_options(),  {
               url: fb.h.ajax_url("edit_key_submit.ajax"),
               data: {
@@ -283,14 +283,11 @@
                 lang: fb.lang
               },
               onsuccess: function(data) {
-                var new_row2 = $(data.result.html);
-                formlib.success_inline_delete_undo(new_row, new_row2);
-              },
-              onerror: function(errmsg) {
-                options.edit_row.trigger(options.event_prefix + "error", errmsg);
+                formlib.success_inline_delete_undo(msg_row);
               }
             }));
           });
+          key_row.removeClass("editing");
         }
       }));
     }

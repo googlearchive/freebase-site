@@ -127,7 +127,7 @@
           query: fb.queryeditor.cuecard.queryEditor._editor.getCode()
         },
         onsuccess: function(data) {
-          console.log("saved")
+          window.location = data.result.url;
         },
         onerror: function(errmsg) {
           console.log("error")

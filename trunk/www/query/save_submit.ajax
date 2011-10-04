@@ -55,7 +55,9 @@ var SPEC = {
         "document": topic
       })
       .then(function(env) {
-        return env.result;
+        var ret = env.result;
+        ret.url = h.fb_url(topic, {"topics":null});
+        return ret;
       });
   }
   

@@ -109,7 +109,8 @@ function user_queries_mql(user) {
     "creator": user,
     "/freebase/query_hints/related_type": {
       "id": null,
-      "name": null
+      "name": i18n.mql.query.name(),
+      "optional": true,
     },
     "key": {
       "value": null,

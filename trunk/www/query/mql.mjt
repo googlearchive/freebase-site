@@ -47,29 +47,16 @@
   <link rel="stylesheet" type="text/css" href="mql.mf.css" />
 </acre:block>
 
-<acre:block def="nav_utilities()">
-  <li class="edit">
-    <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.query.save, ['${c.id}'], this);">
-      <span class="edit-icon">${_('Update Saved Query')}</span>
-    </a>
-  </li>
-  <li>
-    <acre:script>
-      var qopts = {
-        query: JSON.stringify(c.query),
-        autorun: 1
-      };
-    </acre:script>
-    <a href="${h.fb_url('/queryeditor', qopts)}" class="icon-link">
-      <span class="icon-link">${_('Copy to Query Editor')}</span>
-    </a>
-  </li>
-</acre:block>
-
 <acre:block def="page_content()">
   <div id="page-title">
-    <button id="save-query" class="edit button button-primary">Save</button>
-    <button id="clone-query" class="no-edit button button-primary">Copy to Query Editor</button>
+    <button id="save-query" class="button button-primary edit" 
+            onclick="return window.freebase.queryeditor.save(this)">
+            ${_('Save Query')}
+    </button>
+    <button id="clone-query" class="button button-primary no-edit"
+          onclick="return window.freebase.queryeditor.clone(this)">
+          ${_('Copy to Query Editor')}
+    </button>
     <h2 class="edit page-title"><i>Modify your query below</i></h2>
   </div>
   <div id="qe-module" class="module">

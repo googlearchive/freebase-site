@@ -206,3 +206,71 @@ function collection(q, props) {
         });
     });
 };
+
+function create_query(user_id, query, name, key, domain, description, lang) {
+  var clause = h.isArray(query) ? query : query[0];
+  var type = get_clause_type(clause);
+  
+  return freebase.mqlwrite({
+      "create": "unless_exists",
+      "id": null,
+      "type": {
+        "id": "/type/namespace", 
+        "connect": "insert"
+      },
+      "key": {
+        "value": "views", 
+        "namespace": domain
+      }
+    }, { "use_permission_of": domain })
+    .then(function(env) {
+      return env.result;
+    })
+    .then(function(ns) {
+      return freebase.mqlwrite({
+          "create": "unless_exists",
+          "name": {
+            "value": name,
+            "lang": lang
+          },
+          "id": null,
+          "mid": null,
+          "type": [{
+            "id": "/freebase/query"
+          },{
+            "id": "/common/document"
+          }],
+          "/freebase/query_hints/related_type": {
+            "id" : type
+          },
+          "key": {
+            "value": key,
+            "namespace": ns.id
+          }
+        }, { "use_permission_of": user_id })
+        .then(function(env) {
+          return env.result;
+        })
+        .then(function(doc) {
+          var promises = [];
+          
+          promises.push(freebase.upload(query, "text/plain", {
+            "document": doc.mid
+          }));
+          
+          if (description) {
+            var qa =  acre.require("lib/queries/create_article.sjs");
+            promises.push(qa.create_article(description, 'text/plain', {
+              "topic": doc.mid,
+              "use_permission_of": user_id,
+              "lang": lang
+            }));
+          }
+          
+          return deferred.all(promises, true)
+            .then(function() {
+              return doc;
+            });
+        });
+    });
+};

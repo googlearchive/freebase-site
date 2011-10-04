@@ -42,13 +42,17 @@
 <acre:block def="head()">
   <link rel="stylesheet" type="text/css" href="lib/editor-bundle.mf.css" />
   <link rel="stylesheet" type="text/css" href="editor.mf.css" />
+  <link rel="stylesheet" type="text/css" href="lib/template/chosen.jquery.css" />
 </acre:block>
 
 <acre:block def="content_body()">
   <div id="page-content">
     <div id="page-title">
-      <button id="save-query" class="button button-primary">Save</button>
-      <h1 class="page-title">Query Editor</h1>
+      <button id="save-query" class="button button-primary" 
+              onclick="return window.freebase.queryeditor.save(this)">
+              ${_('Save Query')}
+      </button>
+      <h1 class="page-title">${_('Query Editor')}</h1>
     </div>
     <div id="qe-module" class="module">
       <div id="the-query-editor" class="module-section"></div>
@@ -63,7 +67,7 @@
       <ul class="nicemenu">
         <li class="nicemenu-item">
           <a href="javascript:void(0);" class="icon-link headmenu">
-            <span class="link-icon"><span class="more-icon">Link</span></span>
+            <span class="link-icon"><span class="more-icon">${_('Link')}</span></span>
           </a>	
           <ul class="links-menu submenu">
             <li class="row-menu-item">

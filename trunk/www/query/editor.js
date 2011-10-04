@@ -140,6 +140,9 @@
         qe.resize();
         $(window).resize(qe.resize);
         if (autorun) qe.cuecard.queryEditor.run(false);
+        
+        // user is logged-in, so we can enable the save button
+        (fb.user ? fb.enable : fb.disable).call(null, $("#save-query"));
 
         // fulhack to hide initial laying out
         setTimeout(function() {
@@ -180,7 +183,6 @@
     },
     
     toggleControlPane: function(state) {
-      //$("span", this).addClass(state ? "remove-icon" : "add-icon").removeClass(state ? "add-icon" : "remove-icon");
       $.localstore("cc_cp", (state ? "1" : "0"), false);
     },
 
@@ -246,12 +248,20 @@
       $.localstore("qe_initialQuery", q, false);
     },
 
-    create: function(e) {
-      window.alert("TODO: create new saved query");
+    save: function(e) {
+      var trigger = $(this);
+      if (trigger.is(".editing")) { // are we already editing?
+        return false;
+      }
+      trigger.addClass("editing");
+      fb.get_script(fb.h.static_url("query-edit.mf.js"), function() {
+        qe.edit.create_begin(this);
+      });
+      return false;
     }
     
   };
   
   $(qe.init());
-  
+    
 })(jQuery, window.freebase);

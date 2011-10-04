@@ -178,6 +178,12 @@
          })
          .bind(event_prefix + "success", function() {
            options.edit_row.removeClass("loading");
+         })
+         .bind(event_prefix + "valid", function() {
+           formlib.enable_submit(options);
+         })
+         .bind(event_prefix + "invalid", function() {
+           formlib.disable_submit(options);
          });
        formlib.init_submit_cancel(options);
        options.row.hide();
@@ -239,11 +245,13 @@
      /**
       * DELETE (row)
       */
-     success_inline_delete: function(old_row, new_row, undo_callback) {
-       old_row.replaceWith(new_row);
+     success_inline_delete: function(old_row, msg_row, undo_callback) {
+       old_row.hide().addClass("old-row");
+       old_row.after(msg_row);
+       msg_row.append(old_row);
        if (undo_callback) {
          var a = $('<a href="#">Undo</a>');
-         $(".msg-default", new_row).next().append(a);
+         $(".msg-default", msg_row).next().append(a);
          a.click(function() {
            undo_callback();
            return false;
@@ -254,10 +262,11 @@
      /**
       * UNDO (DELETE)
       */
-     success_inline_delete_undo: function(old_row, new_row) {
-       old_row.replaceWith(new_row);
-       // i18n'ize dates and numbers
-       i18n.ize(new_row);
+     success_inline_delete_undo: function(msg_row) {
+       var old_row = $(".old-row", msg_row);
+       msg_row.before(old_row);
+       old_row.show().removeClass("old-row");
+       msg_row.remove();
      },
 
 

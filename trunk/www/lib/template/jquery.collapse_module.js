@@ -90,6 +90,7 @@
     toggle: function(e) {
       var self = this;
       if (this.toggle_state) {
+        $.localstore("filters_collapsed", 0, false);
         this.trigger.removeClass("collapsed");
         this.$column.animate({marginLeft: this.column_offset}, function() {
           self.first_section.slideDown(function() {
@@ -98,6 +99,7 @@
           self.other_modules.fadeIn();
         });
       } else {
+        $.localstore("filters_collapsed", 1, false);
         this.trigger.addClass("collapsed");
         this.other_modules.fadeOut();
         this.first_section.slideUp(function() {
@@ -117,7 +119,7 @@
   
   $.extend(true, $.collapse_module, {
     defaults: {
-      collapsed: false,
+      collapsed: !!$.localstore("filters_collapsed"),
       modules: ".module",
       column: "#main-column"
     }

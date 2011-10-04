@@ -422,6 +422,8 @@ function route(rules, scope) {
     scope.acre.exit();
   }
   else {
-    acre.route(not_found_path);
+    acre.response.status = 404;
+    acre.write(acre.include(not_found_path));
+    acre.exit();
   }
 };

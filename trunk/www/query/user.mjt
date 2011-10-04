@@ -55,6 +55,7 @@
       <thead>
         <tr>
           <th class="column-header first {sorter: 'ignoreCase'}"><span class="sort-icon">${_("Name")}</span></th>
+          <th class="column-header {sorter: 'ignoreCase'}"><span class="sort-icon">${_("Type")}</span></th>
           <th class="column-header {sorter: 'ignoreCase'}"><span class="sort-icon">${_("Domain")}</span></th>
           <th class="column-header {sorter: 'datetime'}"><span class="sort-icons">${_("Created on")}</span></th>
         </tr>
@@ -64,10 +65,13 @@
           <th class="row-header odd" scope="row">
             <a href="${h.fb_url(q.id)}">${i18n.display_name(q)}</a>
           </th>
-          <td>
-            <a href="${h.fb_url(q.domain.id, [['queries']])}">${i18n.display_name(q.domain)}</a>
+          <td class="even">
+            <a href="${h.fb_url(q.type.id)}">${i18n.display_name(q.type)}</a>
           </td>
           <td class="odd">
+            <a href="${h.fb_url(q.domain.id, [['queries']])}">${i18n.display_name(q.domain)}</a>
+          </td>
+          <td class="even">
             ${h.relative_date(q.timestamp)}
             <!--${i18n_c.datetime(obj.timestamp, [["class","published"],["data-format","medium"]])}-->
           </td>

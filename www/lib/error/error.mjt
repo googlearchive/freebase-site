@@ -51,9 +51,8 @@
                       ((acre.host.port === "80") ? "" : ":" + acre.host.port);
   </acre:script>
 
-  <div id="content">
-    <div class="page-meta">
-
+  <div id="page-content">
+    <div class="module">
       <acre:block if="!c.einfo">
         <h3>This page is only intended to render an error caused by processing another script</h3>
         <p><b>error info is UNDEFINED</b></p>
@@ -95,57 +94,57 @@
           </acre:block>
         </acre:block>
 
-        <h1>$einfo.message</h1>
+        <h1 class="module-title">$einfo.message</h1>
 
-        <div class="meta">
-        <p class="line" acre:if="user_script">
-          at ${sourcelink(einfo.filename, einfo.line, user_script)}
-        </p>
+        <div class="module-section">
+          <p class="line" acre:if="user_script">
+            at ${sourcelink(einfo.filename, einfo.line, user_script)}
+          </p>
 
-        <ul>
-          <acre:block for="frame in einfo.stack">
-            <acre:script>
-              var filename = frame.filename;
-              var line = frame.line;
-              var user_script = is_user_script(filename);
-            </acre:script>
-            <li acre:attrs="user_script?{}:{'class':'internal'}">
-              ${sourcelink(filename, line, user_script)}
-            </li>
+          <ul>
+            <acre:block for="frame in einfo.stack">
+              <acre:script>
+                var filename = frame.filename;
+                var line = frame.line;
+                var user_script = is_user_script(filename);
+              </acre:script>
+              <li acre:attrs="user_script?{}:{'class':'internal'}">
+                ${sourcelink(filename, line, user_script)}
+              </li>
+            </acre:block>
+          </ul>
+
+          <acre:block if="einfo.info">
+
+            <acre:block if="einfo.info.messages && einfo.info.messages[0].query">
+              <h4>Query</h4>
+              <pre class="query">
+                ${highlight(JSON.stringify(einfo.info.messages[0].query, null, 2))}
+              </pre>
+            </acre:block>
+
+            <acre:block elif="einfo.info.body">
+              <acre:script>
+                var body = einfo.info.body;
+                delete einfo.info.body;
+              </acre:script>
+              <h4>Headers</h4>
+              <pre class="result">
+                ${JSON.stringify(einfo.info, null, 2)}
+              </pre>
+              <h4>Response Body</h4>
+              <pre class="body">
+                ${body.replace('\\n','\n')}
+              </pre>
+            </acre:block>
+
+            <acre:block else="">
+              <pre class="query">
+                ${JSON.stringify(einfo.info, null, 2)}
+              </pre>
+            </acre:block>
+
           </acre:block>
-        </ul>
-
-        <acre:block if="einfo.info">
-
-          <acre:block if="einfo.info.messages && einfo.info.messages[0].query">
-            <h4>Query</h4>
-            <pre class="query">
-              ${highlight(JSON.stringify(einfo.info.messages[0].query, null, 2))}
-            </pre>
-          </acre:block>
-
-          <acre:block elif="einfo.info.body">
-            <acre:script>
-              var body = einfo.info.body;
-              delete einfo.info.body;
-            </acre:script>
-            <h4>Headers</h4>
-            <pre class="result">
-              ${JSON.stringify(einfo.info, null, 2)}
-            </pre>
-            <h4>Response Body</h4>
-            <pre class="body">
-              ${body.replace('\\n','\n')}
-            </pre>
-          </acre:block>
-
-          <acre:block else="">
-            <pre class="query">
-              ${JSON.stringify(einfo.info, null, 2)}
-            </pre>
-          </acre:block>
-
-        </acre:block>
         </div>
 
         <div acre:if="'x-metaweb-tid' in acre.request.headers" class='tid'>

@@ -31,13 +31,23 @@
 
 var h = acre.require("helpers.sjs");
 var urlfetch = acre.require("lib/promise/apis").urlfetch;
+var validators = acre.require("lib/validator/validators.sjs");
 
 var SPEC = {
   cache_policy: "nocache",
 
-  run: function() {
+  validate: function(params) {
+    return [
+      validators.Uri(params, "onsignin", {required:false, if_empty:null})
+    ];
+  },
+
+  run: function(onsignin) {
     // Always ask the user to signin if they hit this url.
     var success_url = acre.request.app_url+'/account/signedin';
+    if (onsignin) {
+      success_url = h.build_url(success_url, {onsignin: onsignin});
+    }
     if (acre.freebase.googleapis_url) {
       var freebase_provider = h.account_provider();
       // If we are already signed in, then have the user sign-in again.
@@ -47,7 +57,7 @@ var SPEC = {
         h.temporary_redirect(acre.request.url);
       }
       acre.oauth.get_authorization(freebase_provider, success_url);
-      
+
     } else {
       var redirect_url = h.account_url('signin', success_url);
       if (acre.request.cookies['metaweb-user']) {

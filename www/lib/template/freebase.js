@@ -219,7 +219,7 @@
      .bind("fb.user.unauthorized", function() {
        // TODO: invoke fb.login_popup() without the popup blocker
        // for now, go directly to signin page
-       window.location.href = fb.h.fb_url("/account/signin");
+       window.location.href = fb.h.fb_url("/account/signin", {onsignin:window.location.href});
      });
 
   // get user info from cookie:

@@ -215,6 +215,11 @@
        console.log("fb.user.signedout");
        // signed out
        $("#signedout").show();
+     })
+     .bind("fb.user.unauthorized", function() {
+       // TODO: invoke fb.login_popup() without the popup blocker
+       // for now, go directly to signin page
+       window.location.href = fb.h.legacy_fb_url("/signin/login", {mw_cookie_scope:"domain", onsignin: window.location.href});
      });
 
   // get user info from cookie:

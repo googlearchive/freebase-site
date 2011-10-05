@@ -109,12 +109,11 @@
   <ul class="tab-nav">
     <acre:block for="tab in c.tabs">
       <acre:script>
-        var url = "?" + tab.key + (qs.length ? "&" + qs : "");
-        var current = (tab.key === c.current_tab.key);
+        var current = (tab.path === c.current_tab.path);
       </acre:script>
       <li>
         <a acre:if="current" href="#" onclick="return false;" class="current"><span>${_(tab.name)}</span></a>
-        <a acre:else="" href="${url}"><span>${_(tab.name)}</span></a>
+        <a acre:else="" href="${h.fb_url(tab.path)}"><span>${_(tab.name)}</span></a>
       </li>
     </acre:block>
     <li class="more" acre:if="c.more_tabs && c.more_tabs.length">
@@ -126,12 +125,11 @@
           <ul class="row-menu submenu left object-settings">
             <acre:block for="tab in c.more_tabs">
               <acre:script>
-                var url = "?" + tab.key + (qs.length ? "&" + qs : "");
-                var current = (tab.key === c.current_tab.key);
+                var current = (tab.path === c.current_tab.path);
               </acre:script>
               <li>
                 <a acre:if="current" href="#" onclick="return false;" class="current"><span>${_(tab.name)}</span></a>
-                <a acre:else="" href="${url}"><span>${_(tab.name)}</span></a>
+                <a acre:else="" href="${h.fb_url(tab.path)}"><span>${_(tab.name)}</span></a>
               </li>
             </acre:block>
           </ul>

@@ -48,7 +48,7 @@ function main(rule, object) {
   var more_tabs = [];
   var current_tab, hidden;
   rule.tabs.forEach(function(t) {
-    if (t.key in acre.request.params) {
+    if (t.key in acre.request.params || t.path === acre.request.path_info) {
       current_tab = t;
       hidden = t.hidden;
     }

@@ -32,20 +32,27 @@
 var h = acre.require("helpers.sjs");
 var urlfetch = acre.require("lib/promise/apis").urlfetch;
 var freebase = acre.require("lib/promise/apis").freebase;
+var validators = acre.require("lib/validator/validators.sjs");
 
 var SPEC = {
   cache_policy: 'nocache',
   template_base: 'lib/template/freebase_popup.mjt',
   template: 'signedin_template.mjt',
 
-  run: function() {
+  validate: function(params) {
+    return [
+      validators.Uri(params, "onsignin", {required:false, if_empty:null})
+    ];
+  },
+
+  run: function(onsignin) {
     var d;
     if (acre.freebase.googleapis_url) {
       // Finalize the authorization request.
       acre.oauth.get_authorization(h.account_provider());
 
       // HACK(culbertson): Remove metaweb-user cookies
-      // because they mess up googleapis requests. 
+      // because they mess up googleapis requests.
       if (acre.request.cookies['metaweb-user'] ||
           acre.request.cookies['metaweb-user-info']) {
         delete acre.request.cookies['metaweb-user'];
@@ -65,18 +72,23 @@ var SPEC = {
 
     return d.then(function(user) {
       h.set_account_cookie(user);
-      return {'user': user};
+      if (onsignin) {
+        h.temporary_redirect(onsignin);
+      }
+      else {
+        return {'user': user};
+      }
     }, function(failure) {
       if (failure instanceof h.UnauthorizedError) {
         // The credentials must be incorrect, so remove them.
         acre.oauth.remove_credentials(h.account_provider());
         h.clear_account_cookie();
         console.warn('Authorization credentials are not correct', failure);
-        
+
       } else if (failure instanceof h.UnregisteredError) {
         return {template: 'register_template.mjt'};
       }
-      
+
       return {
         template: 'error_template.mjt',
         message: 'Freebase signin is currently down. Please try again later.'

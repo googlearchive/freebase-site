@@ -96,7 +96,7 @@
              },
              onLoad: function() {
                $(".button-cancel", it.dialog).focus();
-               $(".button-submit").click(function() {
+               $(".button-submit", it.dialog).click(function() {
                  confirm_callback(topic_id, incompatible_type_id);
                });
              }

@@ -113,44 +113,44 @@ function init_site_rules(lib) {
     tabs: [
       {
         "name": _("Overview"),
-        "key": "data",
+        "path": "/browse",
         "app": "homepage",
         "script": "browse.tab"
       },
       {
         "name": _("Data"),
-        "key": "writes",
+        "path": "/data",
         "app": "activity",
         "script": "new.tab"
       },
       {
         "name": _("Schema"),
-        "key": "schema",
+        "path": "/schema",
         "app": "schema",
         "script": "new.tab"
       },
       {
         "name": _("Queries"),
-        "key": "queries",
+        "path": "/queries",
         "app": "query",
         "script": "browse.tab"
       },
       {
         "name": _("Apps"),
-        "key": "apps",
+        "path": "/apps",
         "app": "apps",
         "script": "new.tab"
       },
       {
         "name": _("Users"),
-        "key": "users",
+        "path": "/users",
         "app": "group",
         "script": "browse.tab",
         "more": true
       },
       {
         "name": _("Tasks"),
-        "key": "tasks",
+        "path": "/tasks",
         "app": "activity",
         "script": "review.tab",
         "more": true
@@ -570,7 +570,6 @@ function init_site_rules(lib) {
 
   rules["prefix"] = [
 
-    {prefix:"/browse",             app:"homepage"},
     {prefix:"/query",              app:"query"},
     {prefix:"/new",                app:"activity"},
     {prefix:"/docs",               app:"devdocs"},
@@ -668,23 +667,23 @@ function init_site_rules(lib) {
     //
     {prefix:"/topic/",                  url:"/", redirect:301},
 
-    {prefix:"/view/schema/",            url:"/", params:{schema:""}, redirect:301},
-    {prefix:"/tools/schema/",           url:"/", params:{schema:""}, redirect:301},
-    {prefix:"/type/schema/",            url:"/", params:{schema:""}, redirect: 301},
+    {prefix:"/view/schema/",            url:"/", params:{schema:""},  redirect:301},
+    {prefix:"/tools/schema/",           url:"/", params:{schema:""},  redirect:301},
+    {prefix:"/type/schema/",            url:"/", params:{schema:""},  redirect: 301},
 
-    {prefix:"/tools/explore/",          url:"/", params:{inspect:""}, redirect:301},
-    {prefix:"/tools/explore2/",         url:"/", params:{inspect:""}, redirect:301},
-    {prefix:"/inspect/",                url:"/", params:{inspect:""}, redirect:301},
+    {prefix:"/tools/explore/",          url:"/", params:{links:""},   redirect:301},
+    {prefix:"/tools/explore2/",         url:"/", params:{links:""},   redirect:301},
+    {prefix:"/inspect/",                url:"/", params:{links:""},   redirect:301},
 
-    {prefix:"/view/history/",           url:"/", params:{history:""}, redirect:301},
-    {prefix:"/history/user/",           url:"/", params:{history:""}, redirect:301},
-    {prefix:"/history/topic/",          url:"/", params:{history:""}, redirect:301},
-    {prefix:"/history/view/",           url:"/", params:{history:""}, redirect:301},
+    {prefix:"/view/history/",           url:"/", params:{links:""},   redirect:301},
+    {prefix:"/history/user/",           url:"/", params:{writes:""},  redirect:301},
+    {prefix:"/history/topic/",          url:"/", params:{links:""},   redirect:301},
+    {prefix:"/history/view/",           url:"/", params:{links:""},   redirect:301},
 
     {prefix:"/user/domains/",           url:"/", params:{domains:""}, redirect:301},
     {prefix:"/view/userdomains/",       url:"/", params:{domains:""}, redirect:301},
 
-    {prefix:"/apps",                    url:"/new", params:{apps:""}},
+    {prefix:"/apps",                    url:"/apps"},
     {prefix:"/apps/app/",               url:"/", redirect:301},
     {prefix:"/apps/",                   url:"/", redirect:301},
 
@@ -738,27 +737,28 @@ function set_app(item, app_labels) {
  *         (e.g., /homepage?acre.console=1)
  */
 function CustomRouter(app_labels) {
-  var config;
+  var tabs, tab_map;
   
   this.add = function(rules) {
-    config = rules;
+    tabs = rules["tabs"];
+    route_map = h.map_array(tabs, "path");
   };
 
-  this.route = function(req) {    
+  this.route = function(req) {
     // only applies to homepage and "/browse"
-    if ((req.path_info === "/browse") || 
+    if ((req.path_info in route_map) || 
         (req.path_info === "/" && !(
           ("props" in req.params) || ("links" in req.params) || ("ids" in req.params)
         ))) {
-      var rule = {
-        tabs: config["tabs"],
-        more_tabs: config["more_tabs"]
-      };
       
-      rule.tabs.forEach(function(item) {
+      tabs.forEach(function(item) {
         set_app(item, app_labels);
       });
       
+      var rule = {
+        tabs: tabs
+      };
+
       acre.write(acre.require("template/freebase_object.sjs").main(rule, o));
       acre.exit();
     }

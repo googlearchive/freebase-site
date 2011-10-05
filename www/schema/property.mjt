@@ -42,21 +42,7 @@
 </acre:block>
 
 
-<acre:block def="nav_flags()">
-  ${_("Property")}
-</acre:block>
-
-<acre:block def="keys()">
-  <span class="key"><strong>${_("schema")}:</strong> <a href="${h.fb_url(c.property.schema.id, [['schema']])}">${c.property.schema.id}</a></span>
-</acre:block>
-
 <acre:block def="page_content()">
-<!--
-    <div id="description" acre:if="c.property.tip">
-      <p class="blurb">${i18n.display_name(c.property, "", "tip")}</p>
-    </div>
-!!-->
-
   <table class="skeleton">
     <tbody>
       <tr>

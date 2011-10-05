@@ -42,15 +42,16 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      params.object
+      params.object,
+      params.object_type.id
     ];
   },
 
-  run: function(object) {
+  run: function(object, type_id) {
     var c = {
       object: object
     };
-    switch (object.routed_type) {
+    switch (type_id) {
       case "/type/user":
         c.apps = user_app_attributions(object.id);
         c.loads = user_mdo_attributions(object.id);

@@ -142,9 +142,6 @@
 </acre:block>
 
 <acre:block def="acre_javascript_vars()">
-  <script>
-    SERVER.c.id = "${c.object.id}";
-  </script>
   <acre:block if="that_exports.acre_javascript_vars">
     ${that_exports.acre_javascript_vars()}
   </acre:block>

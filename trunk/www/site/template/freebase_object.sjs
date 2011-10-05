@@ -52,10 +52,12 @@ function main(rule, object) {
       current_tab = t;
       hidden = t.hidden;
     }
-    if (t.more) {
-      more_tabs.push(t);
-    } else if (!t.hidden) {
-      tabs.push(t)
+    if (!t.hidden) {
+      if (t.more) {
+        more_tabs.push(t);
+      } else {
+        tabs.push(t)
+      }
     }
   });
 

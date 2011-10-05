@@ -53,7 +53,7 @@
   var exec = function (o, scope) {
     for (var key in o) {
       var val = o[key];
-      o[key] = h.isFunction(val) ? val.apply(scope) : val;
+      if (h.isFunction(val)) o[key] = val.apply(scope);
     }
   };
 </acre:script>

@@ -46,161 +46,6 @@ function route(environment_rules) {
   router_lib.route(rules, this);
 };
 
-function set_app(item, app_labels) {
-  if (item.app) {
-    var app = app_labels[item.app];
-    if (!app) {
-      throw 'An app label must exist for: ' + item.app;
-    }
-    item.app = app;
-  }
-  return item;
-};
-
-
-/**
- * Deal with the special case of routing /
- *   Note: to debug the homepage, use the /homepage prefix rule
- *         (e.g., /homepage?acre.console=1)
- */
-function CustomRouter(app_labels) {
-  var config;
-  
-  this.add = function(rules) {
-    config = rules;
-  };
-
-  this.route = function(req) {    
-    // only applies to homepage and "/browse"
-    if ((req.path_info === "/browse") || 
-        (req.path_info === "/" && !(
-          ("props" in req.params) || ("links" in req.params) || ("ids" in req.params)
-        ))) {
-      var rule = {
-        tabs: config["tabs"],
-        more_tabs: config["more_tabs"]
-      };
-      
-      rule.tabs.forEach(function(item) {
-        set_app(item, app_labels);
-      });
-      
-      acre.write(acre.require("template/freebase_object.sjs").main(rule, o));
-      acre.exit();
-    }
-
-    return false;
-  };
-
-};
-
-function ObjectRouter(app_labels) {
-  var object_query = acre.require("queries/object.sjs");
-  var freebase_object = acre.require("template/freebase_object.sjs");
-
-  var route_list = [];
-  var types = {};
-
-  this.add = function(routes) {
-    if (!(routes instanceof Array)) {
-      routes = [routes];
-    }
-    routes.forEach(function(route) {
-      if (!route || typeof route !== 'object') {
-        throw 'A routing rule must be a dict: '+JSON.stringify(route);
-      }
-      [route.tabs, route.navs, route.promises].forEach(function(list) {
-        list && list.forEach(function(item) {
-          set_app(item, app_labels);
-          item.promises && item.promises.forEach(function(p) {
-            set_app(p, app_labels);
-          });
-          item.subnavs && item.subnavs.forEach(function(p) {
-            set_app(p, app_labels);
-          });
-        });
-      });
-      types[route.type] = route;
-      h.splice_with_key(route_list, "type", route);
-    });
-  };
-
-  this.route = function(req) {
-
-    var path_info = req.path_info;
-
-    var req_id = validators.MqlId(path_info, {if_invalid:null});
-
-    if (req_id) {
-
-      var o;
-      var d = object_query.object(req_id)
-        .then(function(obj) {
-          o = obj;
-        });
-
-      acre.async.wait_on_results();
-
-      d.cleanup();
-
-      if (o) {
-
-        if (o.replaced_by) {
-          return h.redirect(self, o.replaced_by.mid);
-        }
-        else if (!(req_id === o.mid || req_id === o.id)) {
-          // request id is NOT a mid and NOT a mql "approved" id
-          return h.redirect(self, o.mid);
-        }
-        else {
-          if (h.startsWith(req_id, "/en/")) {
-            // request id is /en/*, redirect to mid
-            return h.redirect(self, o.mid);
-          }
-          else if (req_id === o.mid && !(o.id === o.mid || h.startsWith(o.id, "/en"))) {
-            // request id is mid, but object id is NOT /en/*
-            return h.redirect(self, o.id);
-          }
-          else {
-            // we should now have the canonical id
-            o.id = o["q:id"];
-
-            // Build type map for object
-            var obj_types = h.map_array(o.type, "id");
-            obj_types["/type/object"] = true; // all valid IDs are /type/object
-
-            var rule, i, l;
-            // Find correct rule for this object
-            for (i=0,l=route_list.length; i<l; i++) {
-              var route = route_list[i];
-              var type = route.type;
-              if (obj_types[type]) {
-                // clone tabs spec so we don't overwrite it
-                rule = h.extend(true, {}, route);
-                break;
-              }
-            }
-
-            // Turn tab config arrays into something more useful
-            if (!rule) {
-              throw "Missing rule configuration for this object";
-            }
-
-            acre.write(freebase_object.main(rule, o));
-            acre.exit();
-          }
-        }
-
-      }
-    }
-  };
-
-  var dump = this.dump = function() {
-    return route_list.slice();
-  };
-
-};
-
 
 function init_site_rules(lib) {
 
@@ -247,194 +92,23 @@ function init_site_rules(lib) {
       lib = rules["labels"]["lib"];
   }
 
-  // *********** PREFIX *************
 
-  rules["prefix"] = [
+  // *********** HOST *************
 
-    {prefix:"/browse",             app:"homepage"},
-    {prefix:"/query",              app:"query"},
-    {prefix:"/new",                app:"activity"},
-    {prefix:"/docs",               app:"devdocs"},
-    {prefix:"/appeditor",          app:"appeditor"},
-    {prefix:"/policies",           app:"policies"},
-    {prefix:"/account",            app:"account"},
-    {prefix:"/favicon.ico",        app:"lib", script:"template/favicon.ico"},
-    {prefix:"/sample",             app:"sample"},
-
-    // Urls for administrative tools
-    {prefix:"/admin",              app:"admin"},
-    {prefix:"/app/tmt",            app:"tmt"},
-
-
-    //
-    // Redirects for legacy urls
-    //
-    
-    // Homepage
-    {prefix:"/index",                   url:"/", redirect: 301},
-    {prefix:"/homepage",                url:"/browse", redirect: 301},
-
-    // Domain activity browser
-    {prefix:"/explore",                 url:"/browse", redirect:301},
-    {prefix:"/view/mydomains",          url:"/browse", redirect:301},
-    {prefix:"/site/data",               url:"/browse", redirect:301},
-    {prefix:"/view/allDomains",         url:"/browse", redirect:301},
-    {prefix:"/data",                    url:"/browse", redirect:301},
-    {prefix:"/domain/users",            url:"/browse", redirect:301},
-
-    // Signin & Account - TODO: use google URLs
-    {prefix:"/signin/signin",           url:"/", redirect:301},
-    {prefix:"/signin/signin.html",      url:"/", redirect:301},
-    {prefix:"/signin/recoverPassword",  url:"/", redirect:301},
-    {prefix:"/signin/recoverPassword3", url:"/", redirect:301},
-    {prefix:"/private/account/activate",url:"/", redirect:301},
-    {prefix:"/signin/app",              url:"/", redirect:301},
-    {prefix:"/signin",                  url:"/", redirect:301},
-    {prefix:"/view/account",            url:"/", redirect:301},
-    {prefix:"/user/settings",           url:"/", redirect:301},
-    {prefix:"/signin/recoverpassword",  url:"/", redirect:301},
-    {prefix:"/signin/changepassword",   url:"/", redirect:301},
-    {prefix:"/signin/activate",         url:"/", redirect:301},
-    {prefix:"/signin/authorize_token",  url:"/", redirect:301},
-    {prefix:"/search",                  url:"/", redirect:301},
-
-    // Feedback
-    {prefix:"/site/feedback",           url:"http://bugs.freebase.com", redirect:301},
-    {prefix:"/view/feedback",           url:"http://bugs.freebase.com", redirect:301},
-    {prefix:"/view/feedback_thanks",    url:"http://bugs.freebase.com", redirect:301},
-
-    // Queryeditor
-    {prefix:"/queryeditor",             url:"/query", redirect:301},
-    {prefix:"/app/queryeditor",         url:"/query", redirect:301},
-    {prefix:"/tools/queryeditor",       url:"/query", redirect:301},
-    {prefix:"/view/queryeditor",        url:"/query", redirect:301},
-
-    // Appeditor
-    {prefix:"/tools/appeditor",         url:"/appeditor", redirect:301},
-
-    // Review queue - TODO
-    {prefix:"/tools/flags/review",      url:"",                    redirect:301},
-    {prefix:"/tools/pipeline/home",     url:"/tools/flags/review", redirect:301},
-    {prefix:"/tools/pipeline/showtask", url:"/tools/flags/review", redirect:301},
-
-    // Policies
-    {prefix:"/signin/tos",              url:"/policies/tos", redirect:301},
-    {prefix:"/signin/cc",               url:"/policies/copyright", redirect:301},
-    {prefix:"/signin/freebaseid",       url:"/policies/freebaseid", redirect:301},
-    {prefix:"/signin/licensing",        url:"/policies/licensing", redirect:301},
-    {prefix:"/signin/privacy",          url:"/policies/privacy", redirect:301},
-
-    // Misc old client
-    {prefix:"/view/search",             url:"/", redirect:301},
-    {prefix:"/newsfeed",                url:"/", redirect:301},
-
-    // Wiki
-    {prefix:"/help",                    url:"http://wiki.freebase.com", redirect:301},
-    {prefix:"/help/faq",                url:"http://wiki.freebase.com/wiki/FAQ", redirect:301},
-    {prefix:"/developer",               url:"http://wiki.freebase.com/wiki/Developers", redirect:301},
-    {prefix:"/view/developer",          url:"http://wiki.freebase.com/wiki/Developers", redirect:301},
-    {prefix:"/view/faq",                url:"http://wiki.freebase.com/wiki/FAQ", redirect:301},
-    {prefix:"/view/documentation",      url:"http://wiki.freebase.com", redirect:301},
-    {prefix:"/view/helpsearch",         url:"http://wiki.freebase.com", redirect:301},
-    {prefix:"/view/helpcenter",         url:"http://wiki.freebase.com", redirect:301},
-    {prefix:"/view/tutorial",           url:"http://wiki.freebase.com", redirect:301},
-    {prefix:"/view/discussionhub",      url:"http://wiki.freebase.com", redirect:301},
-    {prefix:"/discuss/hub",             url:"http://wiki.freebase.com", redirect:301},
-    {prefix:"/tools",                   url:"http://wiki.freebase.com", redirect:301},
-    {prefix:"/build",                   url:"http://wiki.freebase.com", redirect:301},
-
-
-    //
-    // Redirects for old object views
-    //
-    {prefix:"/topic/",                  url:"/", redirect:301},
-
-    {prefix:"/view/schema/",            url:"/", params:{schema:""}, redirect:301},
-    {prefix:"/tools/schema/",           url:"/", params:{schema:""}, redirect:301},
-    {prefix:"/type/schema/",            url:"/", params:{schema:""}, redirect: 301},
-
-    {prefix:"/tools/explore/",          url:"/", params:{inspect:""}, redirect:301},
-    {prefix:"/tools/explore2/",         url:"/", params:{inspect:""}, redirect:301},
-    {prefix:"/inspect/",                url:"/", params:{inspect:""}, redirect:301},
-
-    {prefix:"/view/history/",           url:"/", params:{history:""}, redirect:301},
-    {prefix:"/history/user/",           url:"/", params:{history:""}, redirect:301},
-    {prefix:"/history/topic/",          url:"/", params:{history:""}, redirect:301},
-    {prefix:"/history/view/",           url:"/", params:{history:""}, redirect:301},
-
-    {prefix:"/user/domains/",           url:"/", params:{domains:""}, redirect:301},
-    {prefix:"/view/userdomains/",       url:"/", params:{domains:""}, redirect:301},
-
-    {prefix:"/apps",                    url:"/new", params:{apps:""}},
-    {prefix:"/apps/app/",               url:"/", redirect:301},
-    {prefix:"/apps/",                   url:"/", redirect:301},
-
-    {prefix:"/helptopic/",              url:"/", redirect:301},
-
-    {prefix:"/discuss/threads/",        url:"/", redirect:301},
-    {prefix:"/view/discuss/",           url:"/", redirect:301},
-    {prefix:"/user/replies/",           url:"/", redirect:301},
-    {prefix:"/view/mydiscuss/",         url:"/", redirect:301},
-    {prefix:"/user/discuss/",           url:"/", redirect:301},
-
-    {prefix:"/import/list/",            url:"/", redirect:301},
-    {prefix:"/importer/list/",          url:"/", redirect:301},
-
-    {prefix:"/edit/topic/",             url:"/", redirect:301},
-
-    {prefix:"/view/filter/",            url:"/", redirect:301},
-    {prefix:"/view/domain/",            url:"/", redirect:301},
-    {prefix:"/view/image/",             url:"/", redirect:301},
-    {prefix:"/view/document/",          url:"/", redirect:301},
-    {prefix:"/view/usergroup/",         url:"/", redirect:301},
-    {prefix:"/view/fb/",                url:"/", redirect:301},
-    {prefix:"/view/query/",             url:"/", redirect:301},
-    {prefix:"/view/api/metaweb/view/",  url:"/", redirect:301},
-    {prefix:"/view/guid/filter/",       url:"/", redirect:301},
-    {prefix:"/view/help/",              url:"/", redirect:301},
-    {prefix:"/view/",                   url:"/", redirect:301},
-    {prefix:"/iv/fb/",                  url:"/", redirect:301}
-
+  rules["host"] = [
+    {host:"freebase.com", url:"http://www.freebase.com"},
+    {host:"sandbox-freebase.com", url:"http://www.sandbox-freebase.com"},
+    {host:"sandbox.freebase.com", url:"http://www.sandbox-freebase.com"},
+    {host:"acre.freebase.com", url:"http://www.freebase.com/appeditor"},
+    {host:"acre.sandbox-freebase.com", url:"http://www.sandbox-freebase.com/appeditor"},
+    {host:"api.freebase.com", url:"http://wiki.freebase.com/wiki/Freebase_API"},
+    {host:"api.sandbox-freebase.com", url:"http://wiki.freebase.com/wiki/Freebase_API"},
+    {host:"metaweb.com", url:"http://www.freebase.com"},
+    {host:"www.metaweb.com", url:"http://www.freebase.com"}
   ];
 
 
-  // *********** OBJECT *************
-
-  var h = acre.require(lib + "/helper/helpers.sjs");
-
-  var DEFAULT_PROMISES = [
-    {
-      "key": "blurb",                 // the promise result will be stored in the object with this key
-      "app": "site",                   // app containing the promise method
-      "script": "queries/object.sjs", // script containing the promise method
-      "promise": "blurb"              // promise method (passed object query result as arugment)
-    }
-  ];
-  
-  var DEFAULT_MORE_TABS = [
-    {
-      "name": _("Properties"),
-      "key": "props",
-      "app": "topic",
-      "script": "topic.tab",
-      "more": true
-    },
-    {
-      "name": _("Identifiers"),
-      "key": "ids",
-      "app": "sameas",
-      "script": "sameas.tab",
-      "more": true
-    },
-    {
-      "name": _("Links"),
-      "key": "links",
-      "app": "triples",
-      "script": "triples.tab",
-      "more": true
-    }
-  ];
-  
+  // ********* CUSTOM (browse) *********
   rules["custom"] = {
     tabs: [
       {
@@ -483,6 +157,41 @@ function init_site_rules(lib) {
       }
     ]
   };
+
+
+  // *********** OBJECT *************
+  var DEFAULT_PROMISES = [
+    {
+      "key": "blurb",                 // the promise result will be stored in the object with this key
+      "app": "site",                   // app containing the promise method
+      "script": "queries/object.sjs", // script containing the promise method
+      "promise": "blurb"              // promise method (passed object query result as arugment)
+    }
+  ];
+  
+  var DEFAULT_MORE_TABS = [
+    {
+      "name": _("Properties"),
+      "key": "props",
+      "app": "topic",
+      "script": "topic.tab",
+      "more": true
+    },
+    {
+      "name": _("Identifiers"),
+      "key": "ids",
+      "app": "sameas",
+      "script": "sameas.tab",
+      "more": true
+    },
+    {
+      "name": _("Links"),
+      "key": "links",
+      "app": "triples",
+      "script": "triples.tab",
+      "more": true
+    }
+  ];
 
   rules["object"] =  [
     {
@@ -551,7 +260,7 @@ function init_site_rules(lib) {
       "gear": [
         {
           "name": _("<b>Discuss</b> Domain"),
-          "url": (function(c) { return h.legacy_fb_url("/discuss/threads", object.id); })
+          "url": (function() { return h.legacy_fb_url("/discuss/threads", this.object.id); })
         },
         {
           "name": _("Edit Settings"),
@@ -857,19 +566,311 @@ function init_site_rules(lib) {
   ];
 
 
-  // *********** HOST *************
+  // *********** PREFIX *************
 
-  rules["host"] = [
-    {host:"freebase.com", url:"http://www.freebase.com"},
-    {host:"sandbox-freebase.com", url:"http://www.sandbox-freebase.com"},
-    {host:"sandbox.freebase.com", url:"http://www.sandbox-freebase.com"},
-    {host:"acre.freebase.com", url:"http://www.freebase.com/appeditor"},
-    {host:"acre.sandbox-freebase.com", url:"http://www.sandbox-freebase.com/appeditor"},
-    {host:"api.freebase.com", url:"http://wiki.freebase.com/wiki/Freebase_API"},
-    {host:"api.sandbox-freebase.com", url:"http://wiki.freebase.com/wiki/Freebase_API"},
-    {host:"metaweb.com", url:"http://www.freebase.com"},
-    {host:"www.metaweb.com", url:"http://www.freebase.com"}
+  rules["prefix"] = [
+
+    {prefix:"/browse",             app:"homepage"},
+    {prefix:"/query",              app:"query"},
+    {prefix:"/new",                app:"activity"},
+    {prefix:"/docs",               app:"devdocs"},
+    {prefix:"/appeditor",          app:"appeditor"},
+    {prefix:"/policies",           app:"policies"},
+    {prefix:"/account",            app:"account"},
+    {prefix:"/favicon.ico",        app:"lib", script:"template/favicon.ico"},
+    {prefix:"/sample",             app:"sample"},
+
+    // Urls for administrative tools
+    {prefix:"/admin",              app:"admin"},
+    {prefix:"/app/tmt",            app:"tmt"},
+
+
+    //
+    // Redirects for legacy urls
+    //
+    
+    // Homepage
+    {prefix:"/index",                   url:"/", redirect: 301},
+    {prefix:"/homepage",                url:"/browse", redirect: 301},
+
+    // Domain activity browser
+    {prefix:"/explore",                 url:"/browse", redirect:301},
+    {prefix:"/view/mydomains",          url:"/browse", redirect:301},
+    {prefix:"/site/data",               url:"/browse", redirect:301},
+    {prefix:"/view/allDomains",         url:"/browse", redirect:301},
+    {prefix:"/data",                    url:"/browse", redirect:301},
+    {prefix:"/domain/users",            url:"/browse", redirect:301},
+
+    // Signin & Account - TODO: use google URLs
+    {prefix:"/signin/signin",           url:"/", redirect:301},
+    {prefix:"/signin/signin.html",      url:"/", redirect:301},
+    {prefix:"/signin/recoverPassword",  url:"/", redirect:301},
+    {prefix:"/signin/recoverPassword3", url:"/", redirect:301},
+    {prefix:"/private/account/activate",url:"/", redirect:301},
+    {prefix:"/signin/app",              url:"/", redirect:301},
+    {prefix:"/signin",                  url:"/", redirect:301},
+    {prefix:"/view/account",            url:"/", redirect:301},
+    {prefix:"/user/settings",           url:"/", redirect:301},
+    {prefix:"/signin/recoverpassword",  url:"/", redirect:301},
+    {prefix:"/signin/changepassword",   url:"/", redirect:301},
+    {prefix:"/signin/activate",         url:"/", redirect:301},
+    {prefix:"/signin/authorize_token",  url:"/", redirect:301},
+    {prefix:"/search",                  url:"/", redirect:301},
+
+    // Feedback
+    {prefix:"/site/feedback",           url:"http://bugs.freebase.com", redirect:301},
+    {prefix:"/view/feedback",           url:"http://bugs.freebase.com", redirect:301},
+    {prefix:"/view/feedback_thanks",    url:"http://bugs.freebase.com", redirect:301},
+
+    // Queryeditor
+    {prefix:"/queryeditor",             url:"/query", redirect:301},
+    {prefix:"/app/queryeditor",         url:"/query", redirect:301},
+    {prefix:"/tools/queryeditor",       url:"/query", redirect:301},
+    {prefix:"/view/queryeditor",        url:"/query", redirect:301},
+
+    // Appeditor
+    {prefix:"/tools/appeditor",         url:"/appeditor", redirect:301},
+
+    // Review queue - TODO
+    {prefix:"/tools/flags/review",      url:"",                    redirect:301},
+    {prefix:"/tools/pipeline/home",     url:"/tools/flags/review", redirect:301},
+    {prefix:"/tools/pipeline/showtask", url:"/tools/flags/review", redirect:301},
+
+    // Policies
+    {prefix:"/signin/tos",              url:"/policies/tos", redirect:301},
+    {prefix:"/signin/cc",               url:"/policies/copyright", redirect:301},
+    {prefix:"/signin/freebaseid",       url:"/policies/freebaseid", redirect:301},
+    {prefix:"/signin/licensing",        url:"/policies/licensing", redirect:301},
+    {prefix:"/signin/privacy",          url:"/policies/privacy", redirect:301},
+
+    // Misc old client
+    {prefix:"/view/search",             url:"/", redirect:301},
+    {prefix:"/newsfeed",                url:"/", redirect:301},
+
+    // Wiki
+    {prefix:"/help",                    url:"http://wiki.freebase.com", redirect:301},
+    {prefix:"/help/faq",                url:"http://wiki.freebase.com/wiki/FAQ", redirect:301},
+    {prefix:"/developer",               url:"http://wiki.freebase.com/wiki/Developers", redirect:301},
+    {prefix:"/view/developer",          url:"http://wiki.freebase.com/wiki/Developers", redirect:301},
+    {prefix:"/view/faq",                url:"http://wiki.freebase.com/wiki/FAQ", redirect:301},
+    {prefix:"/view/documentation",      url:"http://wiki.freebase.com", redirect:301},
+    {prefix:"/view/helpsearch",         url:"http://wiki.freebase.com", redirect:301},
+    {prefix:"/view/helpcenter",         url:"http://wiki.freebase.com", redirect:301},
+    {prefix:"/view/tutorial",           url:"http://wiki.freebase.com", redirect:301},
+    {prefix:"/view/discussionhub",      url:"http://wiki.freebase.com", redirect:301},
+    {prefix:"/discuss/hub",             url:"http://wiki.freebase.com", redirect:301},
+    {prefix:"/tools",                   url:"http://wiki.freebase.com", redirect:301},
+    {prefix:"/build",                   url:"http://wiki.freebase.com", redirect:301},
+
+
+    //
+    // Redirects for old object views
+    //
+    {prefix:"/topic/",                  url:"/", redirect:301},
+
+    {prefix:"/view/schema/",            url:"/", params:{schema:""}, redirect:301},
+    {prefix:"/tools/schema/",           url:"/", params:{schema:""}, redirect:301},
+    {prefix:"/type/schema/",            url:"/", params:{schema:""}, redirect: 301},
+
+    {prefix:"/tools/explore/",          url:"/", params:{inspect:""}, redirect:301},
+    {prefix:"/tools/explore2/",         url:"/", params:{inspect:""}, redirect:301},
+    {prefix:"/inspect/",                url:"/", params:{inspect:""}, redirect:301},
+
+    {prefix:"/view/history/",           url:"/", params:{history:""}, redirect:301},
+    {prefix:"/history/user/",           url:"/", params:{history:""}, redirect:301},
+    {prefix:"/history/topic/",          url:"/", params:{history:""}, redirect:301},
+    {prefix:"/history/view/",           url:"/", params:{history:""}, redirect:301},
+
+    {prefix:"/user/domains/",           url:"/", params:{domains:""}, redirect:301},
+    {prefix:"/view/userdomains/",       url:"/", params:{domains:""}, redirect:301},
+
+    {prefix:"/apps",                    url:"/new", params:{apps:""}},
+    {prefix:"/apps/app/",               url:"/", redirect:301},
+    {prefix:"/apps/",                   url:"/", redirect:301},
+
+    {prefix:"/helptopic/",              url:"/", redirect:301},
+
+    {prefix:"/discuss/threads/",        url:"/", redirect:301},
+    {prefix:"/view/discuss/",           url:"/", redirect:301},
+    {prefix:"/user/replies/",           url:"/", redirect:301},
+    {prefix:"/view/mydiscuss/",         url:"/", redirect:301},
+    {prefix:"/user/discuss/",           url:"/", redirect:301},
+
+    {prefix:"/import/list/",            url:"/", redirect:301},
+    {prefix:"/importer/list/",          url:"/", redirect:301},
+
+    {prefix:"/edit/topic/",             url:"/", redirect:301},
+
+    {prefix:"/view/filter/",            url:"/", redirect:301},
+    {prefix:"/view/domain/",            url:"/", redirect:301},
+    {prefix:"/view/image/",             url:"/", redirect:301},
+    {prefix:"/view/document/",          url:"/", redirect:301},
+    {prefix:"/view/usergroup/",         url:"/", redirect:301},
+    {prefix:"/view/fb/",                url:"/", redirect:301},
+    {prefix:"/view/query/",             url:"/", redirect:301},
+    {prefix:"/view/api/metaweb/view/",  url:"/", redirect:301},
+    {prefix:"/view/guid/filter/",       url:"/", redirect:301},
+    {prefix:"/view/help/",              url:"/", redirect:301},
+    {prefix:"/view/",                   url:"/", redirect:301},
+    {prefix:"/iv/fb/",                  url:"/", redirect:301}
+
   ];
 
   return rules;
 }
+
+
+function set_app(item, app_labels) {
+  if (item.app) {
+    var app = app_labels[item.app];
+    if (!app) {
+      throw 'An app label must exist for: ' + item.app;
+    }
+    item.app = app;
+  }
+  return item;
+};
+
+
+/**
+ * Deal with the special case of routing /
+ *   Note: to debug the homepage, use the /homepage prefix rule
+ *         (e.g., /homepage?acre.console=1)
+ */
+function CustomRouter(app_labels) {
+  var config;
+  
+  this.add = function(rules) {
+    config = rules;
+  };
+
+  this.route = function(req) {    
+    // only applies to homepage and "/browse"
+    if ((req.path_info === "/browse") || 
+        (req.path_info === "/" && !(
+          ("props" in req.params) || ("links" in req.params) || ("ids" in req.params)
+        ))) {
+      var rule = {
+        tabs: config["tabs"],
+        more_tabs: config["more_tabs"]
+      };
+      
+      rule.tabs.forEach(function(item) {
+        set_app(item, app_labels);
+      });
+      
+      acre.write(acre.require("template/freebase_object.sjs").main(rule, o));
+      acre.exit();
+    }
+
+    return false;
+  };
+
+};
+
+function ObjectRouter(app_labels) {
+  var object_query = acre.require("queries/object.sjs");
+  var freebase_object = acre.require("template/freebase_object.sjs");
+
+  var route_list = [];
+  var types = {};
+
+  this.add = function(routes) {
+    if (!(routes instanceof Array)) {
+      routes = [routes];
+    }
+    routes.forEach(function(route) {
+      if (!route || typeof route !== 'object') {
+        throw 'A routing rule must be a dict: '+JSON.stringify(route);
+      }
+      [route.tabs, route.navs, route.promises].forEach(function(list) {
+        list && list.forEach(function(item) {
+          set_app(item, app_labels);
+          item.promises && item.promises.forEach(function(p) {
+            set_app(p, app_labels);
+          });
+          item.subnavs && item.subnavs.forEach(function(p) {
+            set_app(p, app_labels);
+          });
+        });
+      });
+      types[route.type] = route;
+      h.splice_with_key(route_list, "type", route);
+    });
+  };
+
+  this.route = function(req) {
+
+    var path_info = req.path_info;
+
+    var req_id = validators.MqlId(path_info, {if_invalid:null});
+
+    if (req_id) {
+
+      var o;
+      var d = object_query.object(req_id)
+        .then(function(obj) {
+          o = obj;
+        });
+
+      acre.async.wait_on_results();
+
+      d.cleanup();
+
+      if (o) {
+
+        if (o.replaced_by) {
+          return h.redirect(self, o.replaced_by.mid);
+        }
+        else if (!(req_id === o.mid || req_id === o.id)) {
+          // request id is NOT a mid and NOT a mql "approved" id
+          return h.redirect(self, o.mid);
+        }
+        else {
+          if (h.startsWith(req_id, "/en/")) {
+            // request id is /en/*, redirect to mid
+            return h.redirect(self, o.mid);
+          }
+          else if (req_id === o.mid && !(o.id === o.mid || h.startsWith(o.id, "/en"))) {
+            // request id is mid, but object id is NOT /en/*
+            return h.redirect(self, o.id);
+          }
+          else {
+            // we should now have the canonical id
+            o.id = o["q:id"];
+
+            // Build type map for object
+            var obj_types = h.map_array(o.type, "id");
+            obj_types["/type/object"] = true; // all valid IDs are /type/object
+
+            var rule, i, l;
+            // Find correct rule for this object
+            for (i=0,l=route_list.length; i<l; i++) {
+              var route = route_list[i];
+              var type = route.type;
+              if (obj_types[type]) {
+                // clone tabs spec so we don't overwrite it
+                rule = h.extend(true, {}, route);
+                break;
+              }
+            }
+
+            // Turn tab config arrays into something more useful
+            if (!rule) {
+              throw "Missing rule configuration for this object";
+            }
+
+            acre.write(freebase_object.main(rule, o));
+            acre.exit();
+          }
+        }
+
+      }
+    }
+  };
+
+  var dump = this.dump = function() {
+    return route_list.slice();
+  };
+
+};

@@ -546,13 +546,15 @@
      },
 
      check_ajax_success: function(data, status, xhr) {
-       // TODO:
-       // handle 401: Not authorized
-       // check data.status code
+       // TODO: do we need to handle any freebase api specific codes here?
        return true;
      },
 
      check_ajax_error: function(xhr) {
+       // handle 401: Not authorized
+       if (xhr.status === 401) { // unauthorized
+         $(window).trigger("fb.user.unauthorized");
+       }
        // TODO:
        return xhr.responseText;
      }

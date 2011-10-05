@@ -1,11 +1,9 @@
-.meta {
-  background: none;
-  font-size: 1.4em;
+.module-section, .module-section ul {
+  font-size: 16px;
 }
 
-.meta .line {
-  font-size: 1.2em;
-  margin-bottom: 10px;
+.module-section ul a {
+  display: inline;
 }
 
 pre {

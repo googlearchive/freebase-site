@@ -11,11 +11,12 @@
 </acre:block>
 
 <acre:block def="content_body()">
-  <div id="content">
-    <div class="page-meta">
-      
-      NOT FOUND
-
+  <div id="page-content">
+    <div class="module">
+      <h1 class="module-title">Page Not Found</h1>
+      <div class="module-section">
+        ${acre.request.script.path}
+      </div>
     </div>
   </div>
 </acre:block>

@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-;(function($, i18n, editparams) {
+;(function($, i18n, formlib, editparams) {
 
   i18n.edit = {
 
@@ -39,6 +39,36 @@
         p: prop_id,
         lang: lang
       };
+      $.ajax($.extend(formlib.default_begin_ajax_options(), {
+        url: base_url + "/text_edit_begin.ajax",
+        data: submit_data,
+        onsuccess: function(data) {
+          var form = $(data.result.html);
+          var event_prefix = "i18n.edit.text_edit.";
+          var options = {
+            event_prefix: event_prefix,
+            // callbacks
+            init: i18n.edit.text_edit_init,
+            validate: i18n.edit.text_edit_validate,
+            submit: i18n.edit.text_edit_submit,
+            // submit ajax options
+            ajax: {
+              url: base_url + "/text_edit_submit.ajax",
+              data: submit_data
+            },
+            // jQuery objects
+            form: form,
+            // add new input elements
+            add_input: $(".data-input:first", form).data_input(),
+            add_lang: $(".lang-select", form),
+
+            structure: form.metadata(),
+            base_url: base_url
+          };
+          formlib.init_modal_form(options);
+        }
+      }));
+/**
       $.ajax({
         url: base_url + "/text_edit_begin.ajax",
         data: submit_data,
@@ -66,121 +96,110 @@
           console.error("text_edit_begin", xhr);
         }
       });
-
+*/
     },
 
-    text_edit_init: function(form) {
-      $(document.body).append(form.form.hide());
-      //$(".table-sortable", content).tablesorter();
-
-      var $language_picker = $(".lang-select");
-      var $language_picker_container = $(".lang-select-container");
-
-      $language_picker.focus(function(){
-        $language_picker_container.addClass("focused");
-      }).blur(function(){
-        $language_picker_container.removeClass("focused");
-      });
-
-      form.form.overlay({
-        close: ".modal-buttons .button-cancel",
-        closeOnClick: false,
-        load: true,
-        mask: {
-          color: '#000',
-          loadSpeed: 200,
-          opacity: 0.5
-        },
-        onLoad: function() {
-          $(":text:first", form.form).focus();
-        }
-      });
+    text_edit_init: function(options) {
       // event handlers (add, delete, submit)
-      var event_prefix = "i18n.edit.text_edit.";
-      var button_submit = $(".button-submit", form.form).click(function() {
-        form.form.trigger(event_prefix + "submit");
-      });
+      var event_prefix = options.event_prefix;
       function value_row_init(row) {
         $(".icon-link.delete", row).click(function(e) {
-          form.form.trigger(event_prefix + "delete", row);
+          options.form.trigger(event_prefix + "delete", row);
         });
         var data_input = $(".data-input", row)
           .data_input()
-          .bind("submit", function() {
-            form.form.trigger(event_prefix + "submit");
-          })
           .bind("valid", function() {
-            // enable submit button
-            button_submit.removeAttr("disabled").removeClass("disabled");
+            options.form.trigger(event_prefix + "valid");
           })
           .bind("empty", function() {
-            // enable submit button
-            button_submit.removeAttr("disabled").removeClass("disabled");
+            options.form.trigger(event_prefix + "valid");
+          })
+          .bind("invalid", function() {
+            options.form.trigger(event_prefix + "invalid");
+          })
+          .bind("submit", function() {
+            options.form.trigger(event_prefix + "submit");
+          })
+          .bind("cancel", function() {
+            options.form.trigger(event_prefix + "cancel");
           });
-        if (data_input.metadata().lang === form.ajax.data.lang) {
+        if (data_input.metadata().lang === options.ajax.data.lang) {
           row.addClass("preferred");
         }
       };
-      $(".values > tr", form.form).each(function() {
+      $(".values > tr", options.form).each(function() {
         value_row_init($(this));
       });
 
-      var $add_button = $(".icon-link.add", form.form)
-      .bind('mouseover, focus', function(e) {
-        $(this).parent().addClass("focused");
-      }).
-      bind('mouseout, blur', function() {
-        $(this).parent().removeClass("focused");
-      });
+      // add row
+      var $add_button = $(".icon-link.add", options.form)
+        .unbind()  // unbind default init_modal_form submit/cancel
+        .bind('mouseover, focus', function(e) {
+          $(this).parent().addClass("focused");
+        }).
+        bind('mouseout, blur', function() {
+          $(this).parent().removeClass("focused");
+        })
+        .click(function(e) {
+          options.form.trigger(event_prefix + "add");
+        })
+        .focusin(function(){
+          $(this).addClass("focused");
+        })
+        .focusout(function(){
+          $(this).removeClass("focused");
+        });
+      options.add_lang
+        .unbind() // unbind default init_modal_form submit/cancel
+        .focus(function(){
+          $(this).parent().addClass("focused");
+        })
+        .blur(function(){
+          $(this).parent().removeClass("focused");
+        })
+        .keypress(function(e) {
+          if (e.keyCode === 13) {
+            options.form.trigger(event_prefix + "add");
+          }
+        });
+      options.add_input
+        .unbind() // unbind default init_modal_form submit/cancel
+        .bind("submit", function() {
+          options.form.trigger(event_prefix + "add");
+        });
 
-      $add_button.click(function(e) {
-        form.form.trigger(event_prefix + "add");
-      });
-      $add_button.focusin(function(){
-        $(this).addClass("focused");
-      })
-      .focusout(function(){
 
-      });
-      form.add_lang.keypress(function(e) {
-        if (e.keyCode === 13) {
-          form.form.trigger(event_prefix + "add");
-        }
-      });
-      form.add_input.bind("submit", function() {
-        form.form.trigger(event_prefix + "add");
-      });
-      form.form
+      options.form
         .bind(event_prefix + "add", function() {
-          var data = form.add_input.data("data");
-          var lang = form.add_lang.val();
+          var data = options.add_input.data("data");
+          var lang = options.add_lang.val();
           if (data && lang) {
             var value = $.trim(data.value);
             if (value === "") {
               return;
             }
-            var option = $("option[value=" + lang.replace(/\//g, "\\/") + "]", form.add_lang);
+            var option = $("option[value=" + lang.replace(/\//g, "\\/") + "]", options.add_lang);
             var lang_name = option.text();
             var new_row = i18n.edit.new_text_edit_row(value, lang, lang_name).hide();
-            $("tbody.values").prepend(new_row);
+            $("tbody.values", options.form).prepend(new_row);
             value_row_init(new_row);
             new_row.fadeIn(function() {
-              form.add_input.data("$.data_input").reset();
-              form.add_lang[0].selectedIndex = 0;
+              options.add_input.data("$.data_input").reset();
+              options.add_lang[0].selectedIndex = 0;
               // disable lang option if unique property
-              if (form.structure.unique) {
+              if (options.structure.unique) {
                 option.attr("disabled", "disabled");
               }
-              $(":text", form.add_input).focus();
+              $(":text", options.add_input).focus();
             });
             // enable submit button
-            button_submit.removeAttr("disabled").removeClass("disabled");
+            options.form.trigger(event_prefix + "valid");
 
             // If the newly added value does not match the user's primary language
             // we show a msg alerting them as much. We have to use this show method
             // as jQuery's fadeIn method does not work on visibility:hidden, which
             // we need to prevent the modal dialog from shifting.
-            if (lang !== form.ajax.data.lang) {
+            if (lang !== options.ajax.data.lang) {
               $(".lang-warning").css('visibility','visible').hide().fadeIn('slow');
             }
           }
@@ -189,65 +208,53 @@
             console.error("Text value and language required");
           }
         })
-        .bind(event_prefix + "submit", function() {
-          i18n.edit.text_edit_submit(form);
-        })
         .bind(event_prefix + "delete", function(e, row) {
           row = $(row);
           var lang = $(".data-input:first", row).metadata().lang;
           row.fadeOut(function() {
             // re-enable option[value=lang] if unique property
-            if (form.structure.unique) {
-              $("option[value=" + lang.replace(/\//g, "\\/") + "]", form.add_lang).removeAttr("disabled");
+            if (options.structure.unique) {
+              $("option[value=" + lang.replace(/\//g, "\\/") + "]", options.add_lang).removeAttr("disabled");
             }
             $(this).remove();
             // enable submit button
-            button_submit.removeAttr("disabled").removeClass("disabled");
+             options.form.trigger(event_prefix + "valid");
           });
         });
     },
 
-    text_edit_submit: function(form) {
-      // are we already submitting?
-      if (form.form.is(".loading")) {
+    text_edit_validate: function(options) {
+      return true;
+    },
+
+    text_edit_submit: function(options, ajax_options) {
+      try {
+        var o = editparams.parse(options.structure, $(".values", options.form));
+      }
+      catch (ex) {
+        var errors = $(".data-input.error", options.form);
+        if (errors.length) {
+          options.form.trigger(options.event_prefix + "error", "Please specify a valid value");
+          errors.eq(0).find(":input").focus().select();
+        }
+        else {
+          options.form.trigger(options.event_prefix + "error", ex.toString());
+        }
         return;
       }
-      // submit button enabled?
-      var button_submit = $(".button-submit", form.form);
-      if (button_submit.is(":disabled")) {
-        return;
-      }
-      // remove focus from activeElement
-      if (document.activeElement) {
-        $(document.activeElement).blur();
-      }
-
-      var old_values = form.structure.values;
-
-      var o = editparams.parse(form.structure, $(".values", form.form));
-
+      ajax_options.data.o = JSON.stringify(o);
       if (o.length) {
-        form.form.addClass("loading");
-        $.ajax({
-          url: form.ajax.url,
-          type: "POST",
-          dataType: "json",
-          data: $.extend(form.ajax.data, {o:JSON.stringify(o)}),
-          success: function(data, status, xhr) {
-            if (data.code !== "/api/status/ok") {
-              // TODO: handle error
-              return console.error("text_edit_submt", xhr);
-            }
+        $.ajax($.extend(ajax_options, {
+          onsuccess: function(data) {
             window.location.reload(true);
           },
-          error: function(xhr) {
-            // TODO: handle error
-            console.error("text_edit_submt", xhr);
+          onerror: function(errmsg) {
+            options.form.trigger(options.event_prefix + "error", errmsg);
           }
-        });
+        }));
       }
       else {
-        button_submit.attr("disabled", "disabled").addClass("disabled");
+        options.form.trigger(options.event_prefix + "cancel");
       }
     },
 
@@ -276,5 +283,5 @@
 
   };
 
-})(jQuery, window.i18n, window.editparams);
+})(jQuery, window.i18n, window.formlib, window.editparams);
 

@@ -290,6 +290,12 @@
          })
          .bind(event_prefix + "success", function() {
            options.form.removeClass("loading");
+         })
+         .bind(event_prefix + "valid", function() {
+           formlib.enable_submit(options);
+         })
+         .bind(event_prefix + "invalid", function() {
+           formlib.disable_submit(options);
          });
        formlib.init_submit_cancel(options);
        options.form.overlay({

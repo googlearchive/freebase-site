@@ -30,6 +30,8 @@
  */
 
 var h = acre.require("lib/helper/helpers.sjs");
+var i18n = acre.require("lib/i18n/i18n.sjs");
+var _ = i18n.gettext;
 var validators = acre.require("lib/validator/validators.sjs");
 var router_lib =   acre.require("lib/routing/router.sjs");
 
@@ -79,10 +81,8 @@ function CustomRouter(app_labels) {
         more_tabs: config["more_tabs"]
       };
       
-      [rule.tabs, rule.more_tabs].forEach(function(tabs) {
-        tabs.forEach(function(item) {
-          set_app(item, app_labels);
-        });
+      rule.tabs.forEach(function(item) {
+        set_app(item, app_labels);
       });
       
       acre.write(acre.require("template/freebase_object.sjs").main(rule, o));
@@ -109,7 +109,7 @@ function ObjectRouter(app_labels) {
       if (!route || typeof route !== 'object') {
         throw 'A routing rule must be a dict: '+JSON.stringify(route);
       }
-      [route.tabs, route.more_tabs, route.navs, route.promises].forEach(function(list) {
+      [route.tabs, route.navs, route.promises].forEach(function(list) {
         list && list.forEach(function(item) {
           set_app(item, app_labels);
           item.promises && item.promises.forEach(function(p) {
@@ -177,8 +177,6 @@ function ObjectRouter(app_labels) {
               if (obj_types[type]) {
                 // clone tabs spec so we don't overwrite it
                 rule = h.extend(true, {}, route);
-                // stow away the matched type in case we need it later
-                o.routed_type = type;
                 break;
               }
             }
@@ -415,205 +413,210 @@ function init_site_rules(lib) {
   
   var DEFAULT_MORE_TABS = [
     {
-      "name": "Properties",
+      "name": _("Properties"),
       "key": "props",
       "app": "topic",
-      "script": "topic.tab"
+      "script": "topic.tab",
+      "more": true
     },
     {
-      "name": "Identifiers",
+      "name": _("Identifiers"),
       "key": "ids",
       "app": "sameas",
-      "script": "sameas.tab"
+      "script": "sameas.tab",
+      "more": true
     },
     {
-      "name": "Links",
+      "name": _("Links"),
       "key": "links",
       "app": "triples",
-      "script": "triples.tab"
+      "script": "triples.tab",
+      "more": true
     }
   ];
   
   rules["custom"] = {
     tabs: [
       {
-        "name": "Overview",
+        "name": _("Overview"),
         "key": "data",
         "app": "homepage",
         "script": "browse.tab"
       },
       {
-        "name": "Data",
+        "name": _("Data"),
         "key": "writes",
         "app": "activity",
         "script": "new.tab"
       },
       {
-        "name": "Schema",
+        "name": _("Schema"),
         "key": "schema",
         "app": "schema",
         "script": "new.tab"
       },
       {
-        "name": "Queries",
+        "name": _("Queries"),
         "key": "queries",
         "app": "query",
         "script": "browse.tab"
       },
       {
-        "name": "Apps",
+        "name": _("Apps"),
         "key": "apps",
         "app": "apps",
         "script": "new.tab"
-      }
-    ],
-    more_tabs: [
-      {
-        "name": "Users",
-        "key": "users",
-        "app": "group",
-        "script": "browse.tab"
       },
       {
-        "name": "Tasks",
+        "name": _("Users"),
+        "key": "users",
+        "app": "group",
+        "script": "browse.tab",
+        "more": true
+      },
+      {
+        "name": _("Tasks"),
         "key": "tasks",
         "app": "activity",
-        "script": "review.tab"
+        "script": "review.tab",
+        "more": true
       }
     ]
   };
 
   rules["object"] =  [
     {
+      "name": _("App"),
       "type": "/freebase/apps/acre_app",
-      "promises": h.extend(true, [], DEFAULT_PROMISES).concat([{
-        "key": "breadcrumbs",
-        "app": "lib",
-        "script": "queries/breadcrumbs.sjs",
-        "promise": "app"
-      }]),
+      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
-          "name": "Versions",
+          "name": _("Versions"),
           "key": "versions",
           "app": "apps",
           "script": "versions.tab"
         },
         {
-          "name": "Editors",
+          "name": _("Editors"),
           "key": "editors",
           "app": "group",
           "script": "group.tab"
         },
         {
-          "name": "Writes",
+          "name": _("Writes"),
           "key": "writes",
           "app": "triples",
           "script": "writes.tab"
         }
-      ],
-      "more_tabs": h.extend(true, [], DEFAULT_MORE_TABS),
-      "navs": [
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      "gear": [
         {
-          "name": "Edit Settings",
+          "name": _("Edit Settings"),
           "app": "admin",
           "ajax": "app_settings.mf.js",
           "auth": true // add "edit" class
         }
-      ]
+      ] 
     },
     {
+      "name": _("Domain"),
       "type": "/type/domain",
-      "promises":  h.extend(true, [], DEFAULT_PROMISES).concat([{
-        "key": "breadcrumbs",
-        "app": "lib",
-        "script": "queries/breadcrumbs.sjs",
-        "promise": "domain"
-      }]),
+      "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
-          "name": "Data",
+          "name": _("Data"),
           "key": "data",
           "app": "data",
           "script": "domain.tab"
         },
         {
-          "name": "Schema",
+          "name": _("Schema"),
           "key": "schema",
           "app": "schema",
           "script": "domain.tab"
         },
         {
-          "name": "Queries",
+          "name": _("Queries"),
           "key": "queries",
           "app": "query",
           "script": "domain.tab"
         },
         {
-          "name": "Editors",
+          "name": _("Editors"),
           "key": "editors",
           "app": "group",
           "script": "group.tab"
         }
-      ],
-      "more_tabs": h.extend(true, [], DEFAULT_MORE_TABS),
-      "navs": [
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      "gear": [
         {
-          "name": "<b>Discuss</b> Domain",
-          "url": h.legacy_fb_url("/discuss/threads${id}")
+          "name": _("<b>Discuss</b> Domain"),
+          "url": (function(c) { return h.legacy_fb_url("/discuss/threads", object.id); })
         },
         {
-          "name": "Edit Settings",
+          "name": _("Edit Settings"),
           "app": "admin",
           "ajax": "domain_settings.mf.js",
           "auth": true // add "edit" class
         }
-      ]
+      ] 
     },
     {
+      "name": _("Type"),
       "type": "/type/type",
       "promises":  h.extend(true, [], DEFAULT_PROMISES).concat([{
-        "key": "breadcrumbs",
-        "app": "lib",
-        "script": "queries/breadcrumbs.sjs",
+        "key": "domain",
+        "app": "site",
+        "script": "queries/nav_keys.sjs",
         "promise": "type"
       }]),
       "tabs": [
         {
-          "name": "Topics",
+          "name": _("Topics"),
           "key": "topics",
           "app": "data",
-          "script": "type.tab"
+          "script": "type.tab",
         },
         {
-          "name": "Schema",
+          "name": _("Schema"),
           "key": "schema",
           "app": "schema",
           "script": "type.tab"
+        },
+        {
+          "name": _("Add Topic"),
+          "key": "create",
+          "app": "create",
+          "script": "type.controller",
+          "hidden": true
+        }
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      "nav_keys": [
+        {
+          "label": _("domain"),
+          "key": (function() { return this.domain.id; }),
+          "url": (function() { return h.fb_url(this.domain.id, [['schema']]); })
         }
       ],
-      "more_tabs": h.extend(true, [], DEFAULT_MORE_TABS),
-      "navs": [
+      "gear": [
         {
-          "name": "Edit Settings",
+          "name": _("Edit Settings"),
           "app": "admin",
           "ajax": "type_settings.mf.js",
           "auth": true // add "edit" class
         },
         {
-          "name": "Build Query",
-          "url": h.fb_url("/queryeditor?type=${id}")
+          "name": _("Build Query"),
+          "url": (function() { return h.fb_url("/queryeditor", {type: this.object.id}); })
         },
         {
-          "name": "Add Topic",
-          "key": "create",
-          "app": "create",
-          "script": "type.controller",
-          "show": "can_create" // acre.require(app + "/" + script)[show](object_result) return TRUE to enable/show. FALSE to hide
+          "name": _("Add Topic"),
+          "url": (function() { return h.fb_url(this.object.id, [['create']]); })
         }
       ]
     },
     {
+      "name": _("Property"),
       "type": "/type/property",
       "promises":  [{
         "key": "blurb",
@@ -621,63 +624,69 @@ function init_site_rules(lib) {
         "script": "queries/object.sjs",
         "promise": "documented_object_tip"
       },{
-        "key": "breadcrumbs",
-        "app": "lib",
-        "script": "queries/breadcrumbs.sjs",
+        "key": "schema",
+        "app": "site",
+        "script": "queries/nav_keys.sjs",
         "promise": "property"
       }],
       "tabs": [
         {
-          "name": "Schema",
+          "name": _("Schema"),
           "key": "schema",
           "app": "schema",
           "script": "property.tab"
         }
-      ],
-      "more_tabs": h.extend(true, [], DEFAULT_MORE_TABS),
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      "nav_keys": [
+        {
+          "label": _("type"),
+          "key": (function() { return this.schema.type.id; }),
+          "url": (function() { return h.fb_url(this.schema.type.id, [['schema']]); })
+        },
+        {
+          "label": _("domain"),
+          "key": (function() { return this.schema.domain.id; }),
+          "url": (function() { return h.fb_url(this.schema.domain.id, [['schema']]); })
+        }
+      ]
     },
     {
+      "name": _("User"),
       "type": "/type/user",
-      "promises":  h.extend(true, [], DEFAULT_PROMISES).concat([{
-        "key": "breadcrumbs",
-        "app": "lib",
-        "script": "queries/breadcrumbs.sjs",
-        "promise": "user"
-      }]),
+      "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
-          "name": "Schema",
+          "name": _("Schema"),
           "key": "schema",
           "app": "data",
           "script": "user.tab"
         },
         {
-          "name": "Queries",
+          "name": _("Queries"),
           "key": "queries",
           "app": "query",
           "script": "user.tab"
         },
         {
-          "name": "Apps",
+          "name": _("Apps"),
           "key": "apps",
           "app": "apps",
           "script": "user.tab"
         },
         {
-          "name": "Writes",
+          "name": _("Writes"),
           "key": "writes",
           "app": "triples",
           "script": "writes.tab"
         }
-      ],
-      "more_tabs": h.extend(true, [], DEFAULT_MORE_TABS),
-      "navs": [
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      "gear": [
         {
-          "name": "<b>Discuss</b> with this user",
-          "url": h.legacy_fb_url("/discuss/threads${id}")
+          "name": _("<b>Discuss</b> with this user"),
+          "url": (function() { return h.legacy_fb_url("/discuss/threads", this.object.id); })
         },
         {
-          "name": "Edit Profile",
+          "name": _("Edit Profile"),
           "app": "admin",
           "ajax": "user_settings.mf.js",
           "auth": true // add "edit" class
@@ -685,14 +694,9 @@ function init_site_rules(lib) {
       ]
     },
     {
+      "name": _("Query"),
       "type": "/freebase/query",
       "promises": h.extend(true, [], DEFAULT_PROMISES).concat([{
-        "key": "breadcrumbs",
-        "app": "lib",
-        "script": "queries/breadcrumbs.sjs",
-        "promise": "freebase_query"
-      },
-      {
         "key": "query",
         "app": "site",
         "script": "queries/object.sjs",
@@ -700,22 +704,21 @@ function init_site_rules(lib) {
       }]),
       "tabs": [
         {
-          "name": "Topics",
+          "name": -("Topics"),
           "key": "topics",
           "app": "query",
           "script": "collection.tab"
         },
         {
-          "name": "MQL",
+          "name": _("MQL"),
           "key": "mql",
           "app": "query",
           "script": "mql.tab"
         }
-      ],
-      "more_tabs": h.extend(true, [], DEFAULT_MORE_TABS),
-      "navs": [
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      "gear": [
         {
-          "name": "Edit Settings",
+          "name": _("Edit Settings"),
           "app": "admin",
           "ajax": "query_settings.mf.js",
           "auth": true // add "edit" class
@@ -723,153 +726,131 @@ function init_site_rules(lib) {
       ]
     },
     {
+      "name": _("Data Load"),
       "type": "/dataworld/mass_data_operation",
-      "promises":  h.extend(true, [], DEFAULT_PROMISES).concat([{
-        "key": "breadcrumbs",
-        "app": "lib",
-        "script": "queries/breadcrumbs.sjs",
-        "promise": "mdo"
-      }]),
+      "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
-          "name": "Writes",
+          "name": _("Writes"),
           "key": "writes",
           "app": "triples",
           "script": "writes.tab"
         },
         {
-          "name": "Properties",
+          "name": _("Properties"),
           "key": "properties",
           "app": "topic",
           "script": "topic.tab"
-        }
-      ],
-      "more_tabs": [
-        {
-          "name": "Identifiers",
-          "key": "ids",
-          "app": "sameas",
-          "script": "sameas.tab"
         },
         {
-          "name": "Links",
+          "name": _("Identifiers"),
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab",
+          "more": true
+        },
+        {
+          "name": _("Links"),
           "key": "links",
           "app": "triples",
-          "script": "triples.tab"
+          "script": "triples.tab",
+          "more": true
         }
       ],
     },
     {
+      "name": _("Attribution"),
       "type": "/type/attribution",
-      "promises":  h.extend(true, [], DEFAULT_PROMISES).concat([{
-        "key": "breadcrumbs",
-        "app": "lib",
-        "script": "queries/breadcrumbs.sjs",
-        "promise": "attribution"
-      }]),
+      "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
-          "name": "Writes",
+          "name": _("Writes"),
           "key": "writes",
           "app": "triples",
           "script": "writes.tab"
         }
-      ],
-      "more_tabs": h.extend(true, [], DEFAULT_MORE_TABS)
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS))
     },
     {
+      "name": _("Topic"),
       "type": "/common/topic",
-      "promises": [
-        {
-          "key": "notable_types",
-          "app": "site",
-          "script": "queries/object.sjs",
-          "promise": "notable_types"
-        },
-        {
-          "key": "breadcrumbs",
-          "app": "lib",
-          "script": "queries/breadcrumbs.sjs",
-          "promise": "topic"
-        }
-      ],
+      "promises": [{
+        "key": "notable_types",
+        "app": "site",
+        "script": "queries/object.sjs",
+        "promise": "notable_types"
+      }],
       "tabs": [
         {
-          "name": "Properties",
+          "name": _("Properties"),
           "key": "props",
           "app": "topic",
           "script": "topic.tab"
         },
         {
-          "name": "Identifiers",
+          "name": _("Identifiers"),
           "key": "ids",
           "app": "sameas",
           "script": "sameas.tab"
-        }
-      ],
-      "more_tabs": [
+        },
         {
-          "name": "Links",
+          "name": _("Links"),
           "key": "links",
           "app": "triples",
-          "script": "triples.tab"
+          "script": "triples.tab",
+          "more": true
         }
       ],
-      "navs": [
+      "gear": [
         {
-          "name": "<span class=\"submenu-title\">Flag Topic</span>",
+          "name": _("<span class=\"submenu-title\">Flag Topic</span>"),
           "subnavs": [{
-            "name": "<b>Merge</b> with another topic",
+            "name": _("<b>Merge</b> with another topic"),
             "onclick": "return window.freebase.flag.merge(this);"
           }, {
-            "name": "<b>Split</b> into multiple topics",
+            "name": _("<b>Split</b> into multiple topics"),
             "onclick": "return window.freebase.flag.split(this);"
           }, {
-            "name": "<b>Delete</b> from Freebase",
+            "name": _("<b>Delete</b> from Freebase"),
             "onclick": "return window.freebase.flag['delete'](this);"
           }, {
-            "name": "<b>Flag</b> as objectionable",
+            "name": _("<b>Flag</b> as objectionable"),
             "onclick": "return window.freebase.flag.offensive(this);"
           }]
         },
         {
-          "name": "<b>Discuss</b> Topic",
-          "url": h.legacy_fb_url("/discuss/threads${id}")
+          "name": _("<b>Discuss</b> Topic"),
+          "url": (function() { return h.legacy_fb_url("/discuss/threads", this.object.id); })
         },
         {
-          "name": "<b>Edit</b> on old site",
-          "url": h.legacy_fb_url("/edit/topic${id}")
+          "name": _("<b>Edit</b> on old site"),
+          "url": (function() { return h.legacy_fb_url("/edit/topic", this.object.id); })
         }
       ]
     },
     {
+      "name": _("Object"),
       "type": "/type/object",
-      "promises":  h.extend(true, [], DEFAULT_PROMISES).concat([{
-        "key": "breadcrumbs",
-        "app": "lib",
-        "script": "queries/breadcrumbs.sjs",
-        "promise": "object"
-      }]),
+      "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
-          "name": "Properties",
+          "name": _("Properties"),
           "key": "props",
           "app": "topic",
           "script": "topic.tab"
         },
         {
-          "name": "Identifiers",
+          "name": _("Identifiers"),
           "key": "ids",
           "app": "sameas",
           "script": "sameas.tab"
-        }
-      ],
-      "more_tabs": [
+        },
         {
-          "name": "Links",
+          "name": _("Links"),
           "key": "links",
           "app": "triples",
-          "script": "triples.tab"
+          "script": "triples.tab",
+          "more": true
         }
       ]
     }

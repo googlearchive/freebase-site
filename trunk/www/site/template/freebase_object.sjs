@@ -37,46 +37,42 @@ var service_lib = acre.require("lib/handlers/service_lib.sjs");
 var controller = acre.require("lib/handlers/controller_handler.sjs");
 
 function main(rule, object) {
-  var tabs = rule.tabs = rule.tabs || [];
-  var more_tabs = rule.more_tabs = rule.more_tabs || [];
-  var navs = rule.navs = rule.navs || [];
+  rule.tabs = rule.tabs || [];
+  var object_type = {
+    id: rule.type,
+    name: rule.name
+  };
 
   // look in tabs and more_tabs to find a routing match
-  var all_tabs = [].concat(tabs, more_tabs);
-  var current_tab, current_nav, i, l;
-  if (all_tabs.length) {
-    for (i=0,l=all_tabs.length; i<l; i++) {
-      var t = all_tabs[i];
-      if (t.key in acre.request.params) {
-        current_tab = t;
-        break;
-      }
+  var tabs = [];
+  var more_tabs = [];
+  var current_tab, hidden;
+  rule.tabs.forEach(function(t) {
+    if (t.key in acre.request.params) {
+      current_tab = t;
+      hidden = t.hidden;
     }
-  }
-
-  if (!current_tab) {
-    // look in navs
-    for (i=0,l=navs.length; i<l; i++) {
-      var n = navs[i];
-      if (n.key && n.key in acre.request.params) {
-        current_nav = n;
-        break;
-      }
+    if (t.more) {
+      more_tabs.push(t);
+    } else if (!t.hidden) {
+      tabs.push(t)
     }
-  }
+  });
 
-  if (!(current_tab || current_nav) && tabs.length) {
+  if (!current_tab && tabs.length) {
     current_tab = tabs[0];
   }
 
   var template_base_args = {
     object: object,
+    object_type: object_type,
     tabs: tabs,
     more_tabs: more_tabs,
-    current_tab: current_tab,
-    navs: navs,
+    nav_keys: rule.nav_keys || [],
+    gear: rule.gear || [],
     filters: fh.global_filters(acre.request_params)
   };
+  
   // extend object type (global) promises
   rule.promises && rule.promises.forEach(function(p) {
     var d = acre.require(p.app + "/" + p.script)[p.promise](object);
@@ -88,20 +84,6 @@ function main(rule, object) {
     template_base_args.current_tab = current_tab;
     script = acre.require(current_tab.app + "/" + current_tab.script);
     params = current_tab.params;
-
-    // extend tab promises
-    current_tab.promises && current_tab.promises.forEach(function(p) {
-      var d = acre.require(p.app + "/" + p.script)[p.promise](object);
-      template_base_args[p.key] = d;
-    });
-  }
-  else if (current_nav) {
-    template_base_args.current_nav = current_nav;
-    script = acre.require(current_nav.app + "/" + current_nav.script);
-    params = current_nav.params;
-  }
-  else {
-    throw "foo";
   }
 
   // Manually overlay tab context onto acre.request since we're not using acre.route
@@ -109,7 +91,7 @@ function main(rule, object) {
   topscope.acre.request.script = script.acre.current_script;
 
   var spec = script.SPEC;
-  if (current_tab) {
+  if (current_tab && !hidden) {
     spec.template_base = spec.template_base || "site/template/freebase_object.mjt";
   }
   spec.template_base_args = template_base_args;

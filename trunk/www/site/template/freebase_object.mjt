@@ -48,7 +48,14 @@
   var fh = acre.require("lib/filter/helpers.sjs");
   // microdata helpers
   var microdata = acre.require("lib/helper/microdata.sjs");
-  var itemprop = microdata.itemprop;
+  var itemprop = microdata.itemprop
+
+  var exec = function (o, scope) {
+    for (var key in o) {
+      var val = o[key];
+      o[key] = h.isFunction(val) ? val.apply(scope) : val;
+    }
+  };
 </acre:script>
 
 <acre:block def="page(exports)">
@@ -77,44 +84,6 @@
 
 <acre:block def="title()">
   ${i18n.display_name(c.object)}
-</acre:block>
-
-<acre:block def="breadcrumb()" if="c.breadcrumbs">
-  <acre:script>
-    var len = c.breadcrumbs.length;
-  </acre:script>
-  <acre:block if="len">
-    <acre:script>
-      var label = c.breadcrumbs[0].name;
-    </acre:script>
-    <!--<div class="page-header clear">
-      <div class="breadcrumb clear">
-        <ol>
-          <li class="breadcrumb-item label ${label.toLowerCase()}">
-            <span class="breacrumb-item-inner">
-              <span class="breadcrumb-link">${label}</span>
-            </span>
-          </li>
-          <acre:block for="(var i=1; i<len; i++)">
-            <acre:script>
-              var bc = c.breadcrumbs[i];
-              var last = i === (len - 1);
-            </acre:script>
-            <li class="breadcrumb-item${last ? ' last' : ''}">
-              <span class="breadcrumb-item-inner${last ? ' last' : ''}">
-                <acre:block if="bc.id">
-                  <a class="breadcrumb-link" href="${h.fb_url(bc.id)}">${bc.name}</a>
-                </acre:block>
-                <acre:block else="">
-                  <span class="breadcrumb-link">${bc.name}</span>
-                </acre:block>
-              </span>
-            </li>
-          </acre:block>
-        </ol>
-      </div>
-    </div>-->
-  </acre:block>
 </acre:block>
 
 <acre:block def="content(exports)">
@@ -167,7 +136,7 @@
         Object label + thumbnail
       !!-->
       <acre:script>
-        var label = c.breadcrumbs[0].name || 'object';
+        var label = c.object_type.name;
         var classname = 'object-label ';
         classname += label === 'Topic' ? 'img' : 'no-img';
       </acre:script>
@@ -175,12 +144,12 @@
         <div id="image" acre:if="label === 'Topic'">
           <acre:block if="c.object.image && c.object.image.length">
           <acre:script>
-          var options = {
-            maxheight: 53,
-            maxwidth: 53,
-            mode: 'fillcropmid',
-            pad: 2
-          };
+            var options = {
+              maxheight: 53,
+              maxwidth: 53,
+              mode: 'fillcropmid',
+              pad: 2
+            };
           </acre:script>
             ${image.image_thumb(c.object.image[0], 50, options)}
           </acre:block>
@@ -272,6 +241,12 @@
               <strong><abbr title="${_('ID')}">${_("id")}</abbr></strong>:
               <span acre:attrs="itemprop('/type/object/id')">${c.object.id}</span>
             </span>
+            <span acre:for="nk in c.nav_keys" class="key">
+              <acre:script>exec(nk, c);</acre:script>
+              <strong>${nk.label}:</strong> 
+              <a acre:if="nk.url" href="$nk.url">${nk.key}</a>
+              <acre:block else="">${nk.key}</acre:block>
+            </span>
             <acre:block if="that_exports.nav_keys">
               ${that_exports.nav_keys()}
             </acre:block>
@@ -347,7 +322,7 @@
   </ul>
 </acre:block>
 
-<acre:block def="nav_navs()" if="c.navs">
+<acre:block def="nav_navs()" if="c.gear">
   <ul class="nav-utilities inline-menu nicemenu">
     <li class="inline-menu-item nicemenu-item">
       <span class="mark headmenu">
@@ -366,7 +341,7 @@
         </a>
       </span>
       <ul class="row-menu submenu right object-settings">
-        <acre:block for="nav in c.navs">
+        <acre:block for="nav in c.gear">
           ${nav_item(nav)}
         </acre:block>
       </ul>
@@ -376,6 +351,7 @@
 
 <acre:block def="nav_item(nav)">
   <acre:script>
+    exec(nav, c);
     var key = nav.key || nav.name.toLowerCase().replace(/\s+/g, '-');
     var href, onclick;
     if (nav.url) {
@@ -391,12 +367,6 @@
     else if (nav.onclick) {
       href = "#";
       onclick = nav.onclick;
-    }
-    //
-    // substitute ${id} with c.object.id
-    //
-    if (href) {
-      href = href.replace(/\$\{id\}|\$\%7Bid\%7D/g, c.object.id);
     }
 
     var show = true;

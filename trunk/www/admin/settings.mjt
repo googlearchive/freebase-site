@@ -46,8 +46,8 @@
     </div>
     <div class="modal-buttons">
       <a href="javascript:void(0);" class="button button-delete">${_("Delete this domain")}&hellip;</a>
-      <button class="button button-submit button-primary" type="submit">Save</button>
-      <button class="button button-cancel">Cancel</button>
+      <button class="button save" type="submit">Save</button>
+      <button class="button cancel">Cancel</button>
     </div>
   </div>
 </acre:block>
@@ -62,8 +62,8 @@
     </div>
     <div class="modal-buttons">
       <a href="javascript:void(0);" class="button button-delete">${_("Delete this type")}&hellip;</a>
-      <button class="button button-submit button-primary" type="submit">${_('Save')}</button>
-      <button class="button button-cancel">${_('Cancel')}</button>
+      <button class="button save" type="submit">${_('Save')}</button>
+      <button class="button cancel">${_('Cancel')}</button>
     </div>
   </div>
 </acre:block>
@@ -77,8 +77,8 @@
       </div>
     </div>
     <div class="modal-buttons">
-      <button class="button button-submit button-primary" type="submit">${_('Save')}</button>
-      <button class="button button-cancel">${_('Cancel')}</button>
+      <button class="button save" type="submit">${_('Save')}</button>
+      <button class="button cancel">${_('Cancel')}</button>
     </div>
   </div>
 </acre:block>
@@ -93,8 +93,8 @@
     </div>
     <div class="modal-buttons">
       <a href="javascript:void(0);" class="button button-delete">${_("Delete this app")}&hellip;</a>
-      <button class="button button-submit button-primary" type="submit">${_('Save')}</button>
-      <button class="button button-cancel">${_('Cancel')}</button>
+      <button class="button save" type="submit">${_('Save')}</button>
+      <button class="button cancel">${_('Cancel')}</button>
     </div>
   </div>
 </acre:block>
@@ -109,8 +109,8 @@
     </div>
     <div class="modal-buttons">
       <a href="javascript:void(0);" class="button button-delete">${_("Delete this query")}&hellip;</a>
-      <button class="button button-submit button-primary" type="submit">${_('Save')}</button>
-      <button class="button button-cancel">${_('Cancel')}</button>
+      <button class="button save" type="submit">${_('Save')}</button>
+      <button class="button cancel">${_('Cancel')}</button>
     </div>
   </div>
 </acre:block>

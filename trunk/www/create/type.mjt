@@ -93,8 +93,8 @@
        <input type="hidden" name="s" value="${c.object.id}"/>
        <input type="hidden" name="p" value="${c.prop_structure.id}"/>
        <input type="hidden" name="lang" value="${i18n.lang}"/>
-       <button class="button button-primary button-submit disabled" disabled="disabled" type="submit">${_('Create')}</button>
-       <button class="button button-cancel" onclick="javascript:window.location.href='${h.fb_url(c.object.id)}'">${_('Cancel')}</button>
+       <button class="button save" disabled="disabled" type="submit">${_('Create')}</button>
+       <button class="button" onclick="javascript:window.location.href='${h.fb_url(c.object.id)}'">${_('Cancel')}</button>
      </li>
     </ul>
   </div>

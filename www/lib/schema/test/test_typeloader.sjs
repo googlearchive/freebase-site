@@ -127,6 +127,41 @@ test("load deep", function() {
   assert_film_performance_schema(schema, true);
 });
 
+test("unload", function() {
+  // remove from cache
+  var type_ids = ["/common/topic", "/type/text", "/common/document", "/common/image"];
+
+  // warm up the cache
+  var result;
+  typeloader.load.apply(null, type_ids)
+    .then(function(r) {
+      result = r;
+    });
+  acre.async.wait_on_results();
+  typeloader.load.apply(null, type_ids)
+    .then(function(r) {
+      result = r;
+    });
+  acre.async.wait_on_results();
+  type_ids.forEach(function(type_id) {
+    var type_schema = result[type_id];
+    ok(typeloader.was_cached(type_schema), type_id + " should have been cached");
+  });
+
+  // invalidate
+  typeloader.unload.apply(null, type_ids);
+
+  // type_ids should NOT be cahced
+  typeloader.load.apply(null, type_ids)
+    .then(function(r) {
+      result = r;
+    });
+  acre.async.wait_on_results();
+  type_ids.forEach(function(type_id) {
+    var type_schema = result[type_id];
+    ok(!typeloader.was_cached(type_schema), type_id + " should NOT have been cached");
+  });
+});
 
 function assert_film_performance_schema(schema, deep) {
   var i,l;

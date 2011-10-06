@@ -35,6 +35,17 @@ var freebase = acre.require("promise/apis").freebase;
 var SCHEMA_KEY_PREFIX = "lib/schema/typeloader.sjs:";
 
 /**
+ * Invalidate specified type id(s) from acre.cache.
+ * This should be called whenever a type changes (including keys, properties, etc.)
+ */
+function unload(/** type_id1, type_id2, ..., type_idN **/) {
+  var type_ids = Array.prototype.slice.call(arguments);
+  type_ids.forEach(function(type_id) {
+    acre.cache.remove(cache_key(type_id));
+  });
+};
+
+/**
  * Type (schema) loader, uses acre.cache or mqlread to
  * return the canonical schema representation of each type id passed in as argument.
  *

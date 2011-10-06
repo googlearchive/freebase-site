@@ -54,7 +54,7 @@
       <div class="section">
         <!--
         <span id="app-buttons-right">
-          <a href="/apps/create" class="button button-primary">New App</a>
+          <a href="/apps/create" class="button primary">New App</a>
         </span>
         -->
         <h2 class="table-title">

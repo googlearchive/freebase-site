@@ -54,7 +54,7 @@
     init: function(form) {
       $(document.body).append(form.hide());
       form.overlay({
-        close: ".modal-buttons .button-cancel",
+        close: ".modal-buttons .button.cancel",
         closeOnClick: false,
         load: true,
         mask: {

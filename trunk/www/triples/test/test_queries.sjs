@@ -78,7 +78,7 @@ test("links_outgoing with filter", function() {
     });
   acre.async.wait_on_results();
   equal(result.length, 1);
-  equal(result[0].master_property.indexOf("/type/"), 0, result[0].master_property);
+  equal(result[0].master_property.id.indexOf("/type/"), 0, result[0].master_property.id);
 });
 
 test("links_incoming", function() {
@@ -99,7 +99,7 @@ test("links_incoming with filter", function() {
     });
   acre.async.wait_on_results();
   equal(result.length, 1);
-  equal(result[0].master_property, "/people/person/nationality");
+  equal(result[0].master_property.id, "/people/person/nationality");
 });
 
 

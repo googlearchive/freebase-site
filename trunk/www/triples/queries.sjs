@@ -77,7 +77,15 @@ function links_sort(a, b, filters) {
 function links_incoming(id, filters, next, creator_clause) {
   var q = [h.extend({
     type: "/type/link",
-    master_property: null,
+    master_property: {
+      id: null,
+      unit: {
+        optional: true,
+        id: null,
+        type: "/type/unit",
+        "/freebase/unit_profile/abbreviation": null
+      }
+    },
     source: {id:null, mid:null, guid:null, name:i18n.mql.query.name()},
     "me:target": {id:id, guid:null},
     target_value: {},
@@ -98,7 +106,15 @@ function links_incoming(id, filters, next, creator_clause) {
 function links_outgoing(id, filters, next, creator_clause) {
   var q = [h.extend({
     type: "/type/link",
-    master_property: null,
+    master_property: {
+      id: null,
+      unit: {
+        optional: true,
+        id: null,
+        type: "/type/unit",
+        "/freebase/unit_profile/abbreviation": null
+      }
+    },
     "me:source": {id: id},
     target: {id:null, mid:null, name:i18n.mql.query.name(), optional:true},
     target_value: {},

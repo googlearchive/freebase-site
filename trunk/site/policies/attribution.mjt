@@ -130,8 +130,6 @@
       <h4 class="right"><a href="${ccby}">Read the entire license &raquo;</a></h4>
     </div>
     
-    ${t.policy_nav()}
-    
     <h2>What about images?</h2>
     <p>Freebase's CC-BY attribution often covers thumbnail images. Full-size 
       images are also available under a variety of usage terms:</p>

@@ -45,7 +45,7 @@
   <div class="section wrapper">
     <div class="table-header">
       <div class="button-group">
-        <button class="button button-primary edit" onclick="javascript:alert('Coming soon...')">Create new</button>
+        <button class="button primary edit" onclick="javascript:alert('Coming soon...')">Create new</button>
       </div>
       <h2 class="table-title">
         ${h.template_sprintf(_("%s has curated %s queries"), i18n.display_name(c.object), i18n_c.number(c.queries ? c.queries.length : 0))}

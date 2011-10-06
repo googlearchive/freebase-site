@@ -46,7 +46,7 @@
   <acre:block if="c.owned_domains && c.owned_domains.length">
     <div class="table-header">
       <div class="button-group">
-        <a href="${h.fb_url('/schema#create')}" class="button button-primary edit">${_("Create new")}</a>
+        <a href="${h.fb_url('/schema#create')}" class="button primary edit">${_("Create new")}</a>
       </div>
       <h2 class="table-title">${h.template_sprintf(_("%s owns %s domains"), i18n.display_name(c.object), i18n_c.number(c.owned_domains.length))}</h2>
     </div>

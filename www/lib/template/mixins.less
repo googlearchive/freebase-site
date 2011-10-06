@@ -57,6 +57,13 @@
     box-shadow: @h @v @blur @color;
 }
 
+
+.inset_box_shadow (@h: 0px, @v: 0px, @blur: 3px, @color: #aaa) {
+    -webkit-box-shadow: inset @h @v @blur @color;
+    -moz-box-shadow: inset @h @v @blur @color;
+    box-shadow: inset @h @v @blur @color;
+}
+
 /*
   ### GRADIENTS
 */

@@ -59,7 +59,7 @@
             <form id="app-search-form" method="get" action="/apps/search">
               <fieldset>
                 <input type="text" name="q" class="text-input" id="app-search-input" placeholder="Search apps..." />
-                <input type="submit" class="button button-primary" value="Search"/>
+                <button class="button primary">Search</button>
                 <!--
                 <label><input type="checkbox" name="unlisted" class="search-toggle" value="$c.query||''" id="app-search-toggle-listed"
                   acre:attrs="acre.request.params.unlisted?{'checked':'checked'}:{}"/>Include Unpublished Apps</label>
@@ -83,7 +83,7 @@
 
       <div class="section">
         <span id="app-buttons-right">
-          <a href="/apps/create" class="button button-primary">New App</a>
+          <a href="/apps/create" class="button primary">New App</a>
         </span>
         <h1 class="section-title">
           $c.title <acre:block if="c.query">$c.query</acre:block>

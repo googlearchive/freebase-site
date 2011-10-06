@@ -606,48 +606,189 @@ BUTTONS
 --------------------------------------
 */
 
+/*
+ * Standard Button styling
+ * can apply to:
+ *   <button class="button">
+ *   <a href="#" class="button">
+ *
+ * All other buttons styles extend this one
+ */
+
 .button,
 a.button,
 .fbs-suggestnew-button {
-  .linear_gradient(#f5f5f5, #e6e6e6, repeat);
-  color: #555;
-  text-shadow:1px 1px 3px #bbb;
-  border: 1px solid #ccc;
-  .rounded_corners();
   display: inline-block;
-  overflow: visible;
-  margin: 2px;
-  padding: 3px 6px;
-  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; 
-  font-size: 13px;
+  position: relative;
+  min-width: 54px;
+  padding: 0 8px;
+  cursor: default;
+  border: 1px solid rgba(0,0,0,0.1);
+  text-align: center;
+  color: #666;
+  font-size: 11px;
   font-weight: bold;
-  line-height: 1.5;    
-  cursor: pointer;
-}
-
-.button-primary, a.button-primary {
-  background: url(template/vert-sprite.png) 0 0 repeat-x #ff7c02;
-  color: #fff;
-  text-shadow:1px 1px 3px #b50;
-  border: 1px solid #dc5800;
+  line-height: 2.5; /* = 27px */
+  background: #f5f5f5; /* non-CSS3 browsers */
+  .linear_gradient(#f5f5f5, #f1f1f1);
+  .rounded_corners(3px);
+  .transition(all, 0.2s);
 }
 
 .button:hover,
-.button:focus,
 a.button:hover,
 .fbs-suggestnew-button:hover {
-  border: 1px solid #61d7f7;
   text-decoration: none;
+  border-color: rgba(0,0,0,0.3);
+  background: #f8f8f8; /* non-CSS3 browsers */
+  .linear_gradient(#f8f8f8, #f5f5f5);
+  .box_shadow(0, 1px, 1px, rgba(0,0,0,0.1));
 }
 
-.button-primary.disabled,
-a.button-primary.disabled,
-.button-primary[disabled=disabled],
+.button:active,
+a.button:active,
+.fbs-suggestnew-button:active {
+  text-decoration: none;
+  border-color: rgba(0,0,0,0.2);
+  background: #f8f8f8; /* non-CSS3 browsers */
+  .linear_gradient(#f8f8f8, #f5f5f5);
+  .inset_box_shadow(0, 1px, 1px, rgba(0,0,0,0.1));
+}
+
+.button:focus,
+.button.focused,
+.fbs-suggestnew-button:focus {
+  border: 1px solid #4d90fe;
+}
+
+.button.disabled,
+.button.disabled:hover,
+.button[disabled=disabled],
+.button[disabled=disabled]:hover,
+.button[disabled=disabled]:focus,
+a.button.disabled,
+a.button.disabled:hover,
+.button-primary.disabled:hover,
+a.button-primary.disabled:hover,
+.button-primary:focus[disabled=disabled],
 .button-primary:hover[disabled=disabled],
 .button-primary.disabled:hover,
 a.button-primary.disabled:hover {
-  opacity: 0.2;
+  color: #aaa;
+  background: none;
+  border: 1px solid rgba(0,0,0,0.05);
+  pointer-events: none;
   cursor: default;
+}
+
+/* shared attributes between primary/save buttons */
+a.button.primary,
+a.button.save,
+.button.primary,
+.button.save {
+  color: #fff;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+}
+
+/* shared attributes between primary/save buttons */
+a.button.primary:hover,
+a.button.save:hover,
+.button.primary:hover,
+.button.save:hover {
+  .box_shadow(0, 1px, 1px, rgba(0,0,0,0.3));
+}
+
+a.button.primary:active,
+a.button.save:active,
+.button.primary:active,
+.button.save:active{
+  .inset_box_shadow(0, 1px, 1px, rgba(0,0,0,0.3));
+}
+
+
+.button.save.focused,
+.button.save:focus,
+.button.primary.focused,
+.button.primary:focus {
+  border-color: rgba(0,0,0,0.1);
+  -webkit-box-shadow: inset 0 0 0 1px #fff;
+  -moz-box-shadow: inset 0 0 0 1px #fff;
+  box-shadow: inset 0 0 0 1px #fff;
+}
+
+
+/*
+ * Primary buttons are used when submitting an action
+ * that DOES NOT write to the database.
+ */
+.button.primary {
+  background: #00aef1;
+  .linear_gradient(#00aef1, #00a2f0);
+}
+
+.button.primary:hover {
+  background: blue;
+  .linear_gradient(#00aef1, #0094cd);
+}
+
+.button.primary.disabled,
+.button.primary[disabled=disabled],
+a.button.primary.disabled {
+  background: #00aef1;
+  opacity: 0.2;
+}
+
+/*
+ * Save buttons are only used when the user action
+ * will write to the database
+ */
+
+.button.save {
+  background: darken(#f60, 5%);
+  .linear_gradient(#f71, #f60);
+}
+
+.button.save:hover {
+  background: darken(#ff6600, 1%);
+  .linear_gradient(#f71, #e65c00);
+}
+
+
+.button.save.disabled,
+.button.save[disabled=disabled],
+a.button.save.disabled {
+  background: #f71;
+  opacity: 0.2;
+}
+
+.button.toggle.up,
+.button.toggle.down,
+.button.drop-down {
+  padding-right: 16px;
+}
+
+.button.drop-down:after,
+.button.toggle.down:after,
+.button.toggle.up:after {
+  content: "";
+  width: 0;
+  height: 0;
+  position: absolute;
+  right: 8px;
+  top: 12px;
+}
+
+.button.toggle.up:after {
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-bottom: 3px solid #666;
+}
+
+.button.toggle.down:after,
+.button.drop-down:after {
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 3px solid #666;
 }
 
 /*

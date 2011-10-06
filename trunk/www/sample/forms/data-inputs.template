@@ -24,6 +24,47 @@
   </acre:script>
 
   <div class="section">
+    <h1>Buttons</h1>
+    <h2>Basic Button</h2>
+    <p>
+      This is the basic button style. All other buttons extend this.
+      In general, this should be marked up with a button element. However,
+      the CSS will properly style an a element when necessary.
+    </p>
+    <button class="button">Button</button>
+    <button class="button disabled">Disabled</button>
+    <button class="button focused">Focused</button>
+
+
+    <h2>Primary Button</h2>
+    <p>
+      The primary button class extends the basic button, and is used when you want
+      to signify a primary call to action in the UI that does not involve making writes to the database.
+    </p>
+    <button class="button primary">Run</button>
+    <button class="button primary disabled">Disabled</button>
+    <button class="button primary focused">Focused</button>
+
+    <h2>Save Button</h2>
+    <p>
+      The save button class extends the basic button, and is used when the call
+      to action <strong>does</strong> make a write to the database.
+    </p>
+    <button class="button save">Save</button>
+    <button class="button save disabled">Disabled</button>
+    <button class="button save focused">Focused</button>
+
+    <h2>Drop-down Button</h2>
+    <p>You can use the <code>.drop-down</code> class to get a drop-down arrow.</p>
+    <button class="button drop-down">Menu</button>
+
+    <h2>Toggle button</h2>
+    <p>You can use .toggle.up and .toggle.down, respectively, to get up/down toggle buttons.</p>
+    <button class="button toggle down">Toggle</button>
+    <button class="button toggle up">Toggle</button>
+
+  </div>
+  <div class="section">
     <acre:block for="(var i=0; i<inputs.length; i+=3)">
       ${data_input_states(inputs[i+1], inputs[i], inputs[i+2])}
     </acre:block>
@@ -36,22 +77,22 @@
   <h1>${name}</h1>
   
   <div class="default">
-    <h2>Default</h2>
+    <h3>Default</h3>
     ${data_input(type, name+"default", value, lang, instances)}
   </div>
 
   <div class="disabled">
-    <h2>Disabled</h2>
+    <h3>Disabled</h3>
     ${data_input(type, name+"disabled", value, lang, instances)}
   </div>
 
   <div class="valid">
-    <h2>Valid</h2>
+    <h3>Valid</h3>
     ${data_input(type, name+"valid", value, lang, instances)}
   </div>
 
   <div class="error">
-    <h2>Error</h2>
+    <h3>Error</h3>
     ${data_input(type, name+"error", value, lang, instances)}
   </div>  
   

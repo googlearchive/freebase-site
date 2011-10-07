@@ -166,8 +166,10 @@
       var outgoing = o["me:source"]
     </acre:script>
     <th class="row-header odd" scope="row">
-      ${property(o)}
-      ${link_menu(o)}
+      <span class="wrapper">
+        ${property(o)}
+        ${link_menu(o)}
+      </span>
     </th>
     <td class="even">
       <acre:block if="outgoing">
@@ -279,10 +281,10 @@
 </acre:block>
 
 <acre:block def="link_menu(o)">
-  <ul class="inline-menu nicemenu">
-    <li class="inline-menu-item nicemenu-item">
-      <span class="mark headmenu">
-        <a href="javascript:void(0);">menu</a>
+  <ul class="combo-menu nicemenu">
+    <li class="nicemenu-item">
+      <span class="headmenu">
+        <a href="javascript:void(0);" class="more-action">menu</a>
       </span>
       <ul class="submenu row-menu">
         <li class="row-menu-item"><a href="${h.fb_url('/query', [['q',JSON.stringify(th.query(o))],['autorun',1]])}">${QUERY}</a></li>

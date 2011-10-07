@@ -376,7 +376,7 @@
          form_content.trigger(event_prefix + "cancel");
        });
        // submit/cancel on ENTER/ESCAPE
-       $(":input", options.edit_row)
+       $(":input", form_content)
          .keypress(function(e) {
            if (e.keyCode === 13 && !e.isDefaultPrevented()) { // enter
              form_content.trigger(event_prefix + "submit");

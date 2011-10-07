@@ -218,14 +218,6 @@ function init_site_rules(lib) {
           "script": "writes.tab"
         }
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
-      "gear": [
-        {
-          "name": _("Edit Settings"),
-          "app": "admin",
-          "ajax": "app_settings.mf.js",
-          "auth": true // add "edit" class
-        }
-      ] 
     },
     {
       "name": _("Domain"),
@@ -261,12 +253,6 @@ function init_site_rules(lib) {
         {
           "name": _("<b>Discuss</b> Domain"),
           "url": (function() { return h.legacy_fb_url("/discuss/threads", this.object.id); })
-        },
-        {
-          "name": _("Edit Settings"),
-          "app": "admin",
-          "ajax": "domain_settings.mf.js",
-          "auth": true // add "edit" class
         }
       ] 
     },
@@ -308,12 +294,6 @@ function init_site_rules(lib) {
         }
       ],
       "gear": [
-        {
-          "name": _("Edit Settings"),
-          "app": "admin",
-          "ajax": "type_settings.mf.js",
-          "auth": true // add "edit" class
-        },
         {
           "name": _("Build Query"),
           "url": (function() { return h.fb_url("/queryeditor", {type: this.object.id}); })

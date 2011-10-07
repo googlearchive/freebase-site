@@ -32,6 +32,7 @@
 var queries = acre.require("queries");
 var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
+var typeloader = acre.require("lib/schema/typeloader.sjs");
 
 /**
  * Delete a property. If the property is being "used", throws an exception unless force=true.
@@ -104,6 +105,8 @@ function delete_property(prop_id, user_id, dry_run, force) {
 
       return freebase.mqlwrite(q)
         .then(function(env) {
+          // invalidate type containing this property
+          typeloader.unload(info.schema.id);
           return env.result;
         })
         .then(function(result) {
@@ -149,6 +152,8 @@ function undo(prop_info) {
   }
   return freebase.mqlwrite(q)
     .then(function(env) {
+      // invalidate type containing this property
+      typeloader.unload(prop_info.schema.id);
       return env.result;
     })
     .then(function(result) {

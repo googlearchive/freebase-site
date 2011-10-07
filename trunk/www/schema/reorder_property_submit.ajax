@@ -31,6 +31,7 @@
 var h = acre.require("lib/helper/helpers.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var freebase = acre.require("lib/promise/apis").freebase;
+var typeloader = acre.require("lib/schema/typeloader.sjs");
 
 /**
  * reorder property
@@ -59,6 +60,8 @@ var SPEC = {
     });
     return freebase.mqlwrite(q)
       .then(function() {
+        // invalidate type
+        typeloader.unload(id);
         return {
           location: h.fb_url(id, [['schema']])
         };

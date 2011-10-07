@@ -31,6 +31,7 @@
 var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
 var validators = acre.require("lib/validator/validators");
+var typeloader = acre.require("lib/schema/typeloader.sjs");
 
 /**
  * Create a new property using the permission of the specified type.
@@ -173,6 +174,11 @@ function create_property(options) {
 
       return freebase.mqlwrite(q, {use_permission_of: o.type})
         .then(function(env) {
+          // invalidate type schema
+          typeloader.unload(o.type);
+          if (o.master_property) {
+            // TODO: we need to invalidate master_property.schema (type)...
+          }
           return env.result;
         })
         .then(function(created) {

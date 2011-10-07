@@ -31,6 +31,7 @@
 
 var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
+var typeloader = acre.require("lib/schema/typeloader.sjs");
 
 /**
  * Delete a type. If the type is being "used", throws an exception unless force=true.
@@ -81,6 +82,8 @@ function delete_type(type_id, user_id, dry_run, force) {
       }
       return freebase.mqlwrite(q)
         .then(function(env) {
+          // invalidate type
+          typeloader.unload(type_id);
           return env.result;
         })
         .then(function(result) {

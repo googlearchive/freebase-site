@@ -43,21 +43,21 @@
   <link rel="stylesheet" type="text/css" href="schema.mf.css" />
 </acre:block>
 
-<acre:block def="nav_utilities()">
-  <li class="edit">
-    <a href="javascript:void(0)" class="icon-link" onclick="return freebase.dispatch(event, freebase.schema.domain.domain_settings, ['${c.domain.id}', true], this);">
-      <span class="edit-icon">${_('Domain settings')}</span>
-    </a>
-  </li>
-</acre:block>
-
 <acre:block def="page_content()">
-   <!-- Types -->
    <div class="section">
-     <h2 class="table-title">
-       <a href="http://wiki.freebase.com/wiki/Types" rel="help external" title="${_('Read help article')}" class="help-link">${_('What are Types?')}</a>
-       ${_('Types')}
-     </h2>
+     <div class="button-group">
+       <a href="javascript:void(0)" class="button primary edit" onclick="return freebase.dispatch(event, freebase.schema.domain.domain_settings, ['${c.domain.id}', true], this);">
+         ${_("Domain Settings")}
+       </a>
+     </div>
+
+     <!-- Types -->
+     <div class="table-header">
+       <h2 class="table-title">
+         <a href="http://wiki.freebase.com/wiki/Types" rel="help external" title="${_('Read help article')}" class="help-link">${_('What are Types?')}</a>
+         ${_('Types')}
+      </h2>
+     </div>
      <table class="table table-sortable" cellspacing="0">
        <thead>
          <tr acre:attrs="c.domain.types.length ? {}:{style:'display:none;'}">

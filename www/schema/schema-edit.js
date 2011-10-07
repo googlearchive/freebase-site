@@ -100,11 +100,11 @@
         });
 
       // submit handler
-      $(".button-submit", form.submit_row).click(function() {
+      $("button.save", form.submit_row).click(function() {
         form.row.trigger(event_prefix + "submit");
       });
       // cancel handler
-      $(".button-cancel", form.submit_row).click(function() {
+      $(".button.cancel", form.submit_row).click(function() {
         form.row.trigger(event_prefix + "cancel");
       });
 
@@ -263,12 +263,12 @@
         });
 
      // submit handler
-      $(".modal-buttons .button-submit", form.form).click(function() {
+      $(".modal-buttons .button.save", form.form).click(function() {
         form.form.trigger(event_prefix + "submit");
       });
 
       form.form.overlay({
-          close: ".modal-buttons .button-cancel",
+          close: ".modal-buttons .button.cancel",
           closeOnClick: false,
           load: true,
           mask: {

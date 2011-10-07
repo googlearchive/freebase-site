@@ -91,15 +91,15 @@
         });
 
       //Confirm dialog for deleting a domain
-      $(".button-delete", form.form).click(function() {
+      $(".button.delete", form.form).click(function() {
         var container = $(this).parent().siblings().find(".modal-content");
         var button_row = $(".modal-buttons", form.form).animate({opacity:0}, 500);
         var confirm_dialog = $(".modal-help", container).height(container.height()).slideDown();
-        var cancel_button = $(".button-cancel", container).click(function(e) {
+        var cancel_button = $(".button.cancel", container).click(function(e) {
           button_row.animate({opacity:1}, 500);
           confirm_dialog.slideUp();
         });
-        var delete_button = $(".button-submit", container).click(function(e) {
+        var delete_button = $(".button.save", container).click(function(e) {
           if (form.form.is(".loading")) {
             return;
           }
@@ -212,7 +212,7 @@
             if (empty_msg.length) {
               empty_msg.parents("tr:first").hide().prev("tr").show();
             }
-            $(".button-cancel", form.submit_row).text("Done");
+            $(".button.cancel", form.submit_row).text("Done");
             de.init_type_form(form);
           });
         },

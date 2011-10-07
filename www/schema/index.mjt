@@ -110,7 +110,7 @@
       </div>
       </div>
       <div class="section">
-        <button id="create-new-domain" class="edit button button-primary" 
+        <button id="create-new-domain" class="edit button primary" 
                 title="${_('Create a new domain')}"
                 onclick="return freebase.dispatch(event, freebase.schema.index.add_domain, null, this);">
           ${_("Create New")}

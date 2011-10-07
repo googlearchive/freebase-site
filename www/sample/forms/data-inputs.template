@@ -63,6 +63,11 @@
     <button class="button toggle down">Toggle</button>
     <button class="button toggle up">Toggle</button>
 
+    <h2>Small button</h2>
+    <p>If you need a smaller button, you can append the small class</p>
+    <button class="button small">+</button>
+    <button class="button small">-</button>
+
   </div>
   <div class="section">
     <acre:block for="(var i=0; i<inputs.length; i+=3)">

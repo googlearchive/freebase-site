@@ -34,30 +34,28 @@ acre.require('/test/lib').enable(this);
 var h = acre.require("helpers");
 
 var tests = [
-  ["foo", "/bar/baz", {id:"hello"}],
-  {s:"foo", p:"/bar/baz", o:{id:"hello"}, mql:{id:"foo", "/bar/baz":{id:"hello"}}},
+  {source:{id:"s"}, master_property:{id:"p"}, target:{id:"o"}},
+  {id:"s", p:{id:"o"}},
 
-  ["foo", "/bar/baz", {value:"hello"}],
-  {s:"foo", p:"/bar/baz", o:{value:"hello"}, mql:{id:"foo", "/bar/baz":{value:"hello"}}},
+  {"me:source":{id:"s"}, master_property:{id:"p"}, target:{id:"o"}},
+  {id:"s", p:{id:"o"}},
 
-  ["foo", "/bar/baz", {value:"hello", lang:"/lang/ko"}],
-  {s:"foo", p:"/bar/baz", o:{value:"hello", lang:"/lang/ko"}, mql:{id:"foo", "/bar/baz":{value:"hello", lang:"/lang/ko"}}},
+  {source:{id:"s"}, master_property:{id:"p"}, "me:target":{id:"o"}},
+  {id:"s", p:{id:"o"}},
 
-  ["foo", "/bar/baz", {value:"hello", namespace:"/"}],
-  {s:"foo", p:"/bar/baz", o:{value:"hello", namespace:"/"}, mql:{id:"foo", "/bar/baz":{value:"hello", namespace:"/"}}},
+  {source:{id:"s"}, master_property:{id:"p"}, target:null, target_value:{value:"o"}},
+  {id:"s", p:{value:"o"}},
 
-  ["foo", "/bar/baz", null, "/", "hello"],
-  {s:"foo", p:"/bar/baz", o:{value:"hello", namespace:"/"}, mql:{id:"foo", "/bar/baz":{value:"hello", namespace:"/"}}},
+  {source:{id:"s"}, master_property:{id:"p"}, target:{id:"lang"}, target_value:{value:"o", lang:"lang"}},
+  {id:"s", p:{value:"o", lang:"lang"}},
 
-  ["foo", "/bar/baz", {value:"hello", lang:"/lang/ko"}],
-  {s:"foo", p:"/bar/baz", o:{value:"hello", lang:"/lang/ko"}, mql:{id:"foo", "/bar/baz":{value:"hello", lang:"/lang/ko"}}}
+  {source:{id:"s"}, master_property:{id:"p"}, target:{id:"ns"}, target_value:{value:"o", namespace:"ns"}},
+  {id:"s", p:{value:"o", namespace:"ns"}}
 ];
 
-test("triple", tests, function() {
+test("query", tests, function() {
   for(var i=0,l=tests.length; i<l; i+=2) {
-    var triple = h.triple.apply(null, tests[i]);
-    triple.mql = JSON.parse(triple.mql);
-    deepEqual(triple, tests[i+1]);
+    deepEqual(h.query(tests[i]), tests[i+1]);
   }
 });
 

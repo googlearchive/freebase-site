@@ -31,37 +31,33 @@
 var h = acre.require("lib/helper/helpers.sjs");
 
 /**
- * return a triples data structure.
- * where s=subject, p=predicate and o=object.
- * In addition, a mql query representing the triple is provided.
- *
- * @param subject:String - mql id
- * @param predicate:String - mql property
- * @param object:Object - the object {id:String} or {value:String, lang:String(optional), namespace:String(optional)}
+ * return mqlread query for link
  */
-function triple(subject, predicate, object, namespace, value) {
-  var o = {
-    s: subject,
-    p: predicate
+function query(link) {
+  var source = link.source || link["me:source"];
+  var target = link.target || link["me:target"];
+  var property = link.master_property.id;
+  if (link.target_value) {
+    target = link.target_value;
+  }
+  if (target.id) {
+    target = {id:target.id};
+  }
+  else {
+    var c = {value:target.value};
+    if (target.lang) {
+      c.lang = target.lang;
+    }
+    else if (target.namespace) {
+      c.namespace = target.namespace;
+    }
+    target = c;
+  }
+  var q = {
+    id: source.id
   };
-  if (namespace && value) {
-    o.o = {namespace:namespace, value:value};
-  }
-  else if ("id" in object) {
-    o.o = {id: object.id};
-  }
-  else if ("value" in object) {
-    o.o = {value: object.value};
-    ["lang", "namespace"].forEach(function(key) {
-      if (key in object) {
-        o.o[key] = object[key];
-      }
-    });
-  }
-  o.mql = {id: subject};
-  o.mql[predicate] = h.extend({}, o.o);
-  o.mql = JSON.stringify(o.mql);
-  return o;
+  q[property] = target;
+  return q;
 };
 
 function is_valid(link) {

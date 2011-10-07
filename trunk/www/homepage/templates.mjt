@@ -75,37 +75,9 @@
         </select>
       </span>
     </form>
-
-    <div class="activity-chart-header">
-      <div class="activity-chart-date">
-        <acre:script>
-          var two_months_ago = new Date();
-          two_months_ago.setDate(two_months_ago.getDate()-7*8)
-        </acre:script>
-        ${i18n_c.datetime(two_months_ago, [["data-format", "MMMd"]])}
-      </div>
-      <div class="activity-chart-date activity-chart-date-second">
-        <acre:script>
-          var one_month_ago = new Date();
-          one_month_ago.setDate(one_month_ago.getDate()-7*4)
-        </acre:script>
-        ${i18n_c.datetime(one_month_ago, [["data-format", "MMMd"]])}
-      </div>
-      <div class="activity-chart-date activity-chart-date-last">
-        ${_("last week")}
-      </div>
-    </div>
-    <div class="activity-stats-header-facts">
-      ${_("Facts")}
-    </div>
-    <div class="activity-stats-header-topics">
-      ${_("Topics")}
-    </div>
-    <div class="activity-stats-header-user">
-      ${_("Top User")}
-    </div>
+    ${activity_header()}
   </div>
-
+  
   <div id="domain-explorer-tabset">
 
     <ul id="domain-explorer-tabs" data-index="${index || 0}">
@@ -155,6 +127,34 @@
       </acre:block>
     </div>
     <span id="pointer"><span id="pointer-text"></span><span class="indicator"></span></span>
+  </div>
+</acre:block>
+
+<acre:block def="activity_header()">
+  <div class="activity-chart-header">
+    <div class="activity-chart-date">
+      <acre:script>
+        var two_months_ago = new Date();
+        two_months_ago.setDate(two_months_ago.getDate()-7*8)
+      </acre:script>
+      ${i18n_c.datetime(two_months_ago, [["data-format", "MMMd"]])}
+    </div>
+    <div class="activity-chart-date activity-chart-date-second">
+      <acre:script>
+        var one_month_ago = new Date();
+        one_month_ago.setDate(one_month_ago.getDate()-7*4)
+      </acre:script>
+      ${i18n_c.datetime(one_month_ago, [["data-format", "MMMd"]])}
+    </div>
+    <div class="activity-chart-date activity-chart-date-last">
+      ${_("last week")}
+    </div>
+  </div>
+  <div class="activity-stats-header-facts">
+    ${_("Facts")}
+  </div>
+  <div class="activity-stats-header-topics">
+    ${_("Topics")}
   </div>
 </acre:block>
 

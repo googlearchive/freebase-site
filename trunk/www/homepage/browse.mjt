@@ -35,6 +35,7 @@
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
+  var image_components = acre.require("lib/template/imagecomponents");
   
   var templates = acre.require("templates");
   var queries = acre.require("queries");
@@ -104,7 +105,7 @@
           <tr>
             <th scope="col" class="column-header first"><span class="sort-icon">${_('Domain')}</span></th>
             <th scope="col" class="column-header column-header-desc"><span class="sort-icon">${_('ID')}</span></th>
-            <th scope="col" class="column-header">${_('Activity')}</th>
+            <th scope="col" class="column-header">${templates.activity_header()}</th>
           </tr>
         </thead>
         <tbody>
@@ -114,7 +115,9 @@
               <a href="${h.fb_url(d.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
             </th>
             <td class="even">$d.id</td>
-            <td class="odd">${templates.activity_section(d)}</td>
+            <td class="odd">
+              ${templates.activity_section(d)}
+            </td>
           </tr>
         </tbody>
       </table>

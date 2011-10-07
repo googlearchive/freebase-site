@@ -359,7 +359,7 @@
       <p>${_("Enter your email address and we'll let you know when you can sign up:")}</p>
       <form action="http://www.register.freebase.com/regemails/add" method="GET">
         <input name="email" type="email" class="standard-input" placeholder="${_('Your email address...')}" class="input-standard"/>
-        <input type="submit" value="Submit" class="button button-primary"/>
+        <input type="submit" value="Submit" class="button primary"/>
       </form>
       <a href="${h.account_url('signin', acre.request.url)}" class="plain-link">${_("Existing members, please sign in")} &raquo;</a>
     </acre:block>
@@ -423,7 +423,7 @@
              placeholder="${_('Your email address...')}"
              class="input-standard"/>
 
-      <input type="submit" value="${_('Subscribe')}" class="button button-primary"/>
+      <input type="submit" value="${_('Subscribe')}" class="button primary"/>
     </form>
     <a href="http://freebase.markmail.org/" class="bold-link">${_("Read the List Archive")}</a>
   </div>

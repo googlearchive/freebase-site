@@ -367,7 +367,7 @@
       <p${_("Help the Freebase community create an entity graph of people, places and things, or put it to work for you!")}</p>
       <form action="${h.account_url('signin', acre.request.url)}" method="GET">
         <input type="submit" value="${_('Sign In or Sign Up')}"
-               class="button button-primary" style="margin-top: 1em;"/>
+               class="button primary" style="margin-top: 1em;"/>
       </form>
     </acre:block>
   </div>

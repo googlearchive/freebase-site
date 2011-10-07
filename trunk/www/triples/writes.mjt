@@ -129,7 +129,7 @@
         o.source.id = "/guid/" + o.source.guid.substring(1);
         }
         </acre:script>
-        <tr class="hoverable ${JSON.stringify(th.triple(o.source.id, id, o.target_value || o.target))} ${th.link_class(o)}">
+        <tr class="hoverable ${th.link_class(o)}">
           <th class="row-header odd" scope="row">
             ${topic(o.source)}
             ${tooltip()}

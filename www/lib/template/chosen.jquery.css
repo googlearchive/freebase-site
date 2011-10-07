@@ -229,8 +229,7 @@
   cursor: pointer;
 }
 .chzn-container .chzn-results .highlighted {
-  background: #3875d7;
-  color: #fff;
+  background: #dfe7ef;
 }
 .chzn-container .chzn-results li em {
   background: #feffde;
@@ -261,7 +260,7 @@
   -moz-box-shadow   : 0 0 5px rgba(0,0,0,.3);
   -o-box-shadow     : 0 0 5px rgba(0,0,0,.3);
   box-shadow        : 0 0 5px rgba(0,0,0,.3);
-  border: 1px solid #5897fb;
+  border: 1px solid #4d90fe;;
 }
 .chzn-container-active .chzn-single-with-drop {
   border: 1px solid #aaa;
@@ -296,7 +295,7 @@
   -moz-box-shadow   : 0 0 5px rgba(0,0,0,.3);
   -o-box-shadow     : 0 0 5px rgba(0,0,0,.3);
   box-shadow        : 0 0 5px rgba(0,0,0,.3);
-  border: 1px solid #5897fb;
+  border: 1px solid #4d90fe;;
 }
 .chzn-container-active .chzn-choices .search-field input {
   color: #111 !important;

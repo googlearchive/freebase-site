@@ -702,7 +702,7 @@ propbox edit forms
     <li class="edit-row-head">
       ${form.row_msg(h.template_sprintf(_("Edit %s."), tag_strong(prop_value.text)))}
     </li>
-    <li class="edit-row">
+    <li class="edit-row clear">
       ${form_field(prop_structure, prop_value, lang)}
     </li>
     <li class="edit-row-submit">

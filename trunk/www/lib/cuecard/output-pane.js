@@ -57,7 +57,7 @@ CueCard.OutputPane.prototype.layout = function(height, width) {
     this._container.height(height);
     var contentHeight = this._container.innerHeight() - this._tabsContainer.outerHeight();
     this._contentContainer.height(contentHeight);
-    $(".cuecard-outputPane-tabBody", this._contentContainer).height(contentHeight - 2);
+    $(".cuecard-outputPane-tabBody", this._contentContainer).height(contentHeight - 10);
   }
   if (width) {
     this._container.width(width);

@@ -126,11 +126,11 @@
     <tr class="query-options-row" acre:def="add_row()">
       <td><input class="text-input variables-input" /></td>
       <td><input class="text-input variables-input" /></td>
-      <td>
-        <input type="submit" class="button small-button" value="-" 
-               acre:onclick="$(this).closest('.cuecard-controlPane-variables-row').remove()"/>
-		<input class="button small-button" type="submit" value="+" 
-			   acre:onclick="controlPane._getTab('variables').find('.cuecard-controlPane-variables').append($.acre(add_row()))"/>
+      <td style="vertical-align:top">
+        <button class="button small"
+                acre:onclick="controlPane._getTab('variables').find('.cuecard-controlPane-variables').append($.acre(add_row()))">+</button>
+        <button class="button small"
+                acre:onclick="$(this).closest('.cuecard-controlPane-variables-row').remove()">+</button>
       </td>
     </tr>
     ${add_row()}
@@ -243,11 +243,11 @@
     <tr class="cuecard-controlPane-customEnvelope-row" acre:def="add_row(dontFocus, name, value)">
       <td><input class="query-options-textbox text-input variables-input" value="${name||''}"/></td>
       <td><input class="query-options-textbox text-input variables-input" value="${value||''}"/></td>
-      <td>
-        <input type="submit" class="button small-button" value="-" 
-               acre:onclick="$(this).closest('.cuecard-controlPane-customEnvelope-row').remove()"/>
-        <input type="submit" class="button small-button" value="+" 
-               acre:onclick="controlPane._getTab('envelope').find('table.cuecard-controlPane-customEnvelope').append($.acre(add_row()))"/>
+      <td style="vertical-align: top">
+        <button class="button small"
+                acre:onclick="controlPane._getTab('envelope').find('table.cuecard-controlPane-customEnvelope').append($.acre(add_row()))">+</button>
+        <button class="button small"
+                acre:onclick="$(this).closest('.cuecard-controlPane-customEnvelope-row').remove()">-</button>
       </td>
       <acre:block if="!dontFocus" script="ondomready">
 

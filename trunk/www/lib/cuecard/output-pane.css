@@ -46,36 +46,6 @@ div.cuecard-outputPane-tabBody {
   overflow: auto;
 }
 
-.cuecard-outputPane-tabBody::-webkit-scrollbar {
-  width: 20px;
-  height: 20px;
-  background: white;
-}  
-.cuecard-outputPane-tabBody::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.1);
-}
-.cuecard-outputPane-tabBody::-webkit-scrollbar-thumb:vertical {
-  border-left: 6px solid white;
-  border-right: 8px solid white;
-}
-.cuecard-outputPane-tabBody::-webkit-scrollbar-thumb:horizontal {
-  border-top: 6px solid white;
-  border-bottom: 8px solid white;
-}
-:hover.cuecard-outputPane-tabBody::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, .1);
-} 
-.cuecard-outputPane-tabBody::-webkit-scrollbar-thumb:horizontal:hover,
-.cuecard-outputPane-tabBody::-webkit-scrollbar-thumb:vertical:hover {
-  background: rgba(0, 0, 0, .15);
-}
-.cuecard-outputPane-tabBody::-webkit-scrollbar-track-piece:vertical:start {
-  margin-top: 8px;
-}
-.cuecard-outputPane-tabBody::-webkit-scrollbar-track-piece:horizontal:start {
-  margin-left: 8px;
-}
-
 .cuecard-outputPane-tabBody pre {
   font-family: monospace;
   font-size: 13px;

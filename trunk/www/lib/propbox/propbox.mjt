@@ -497,7 +497,7 @@ propbox edit forms
 <acre:block def="prop_add_form_simple(topic_id, prop_structure, lang)">
   <ul class="edit-form ${JSON.stringify(prop_structure)}">
     <li class="edit-row-head">
-      ${form.row_msg(h.template_sprintf(_("Add a new value to %s."), tag_strong(prop_structure.text)))}
+      ${form.row_msg("&nbsp;")}
     </li>
     <li class="add-row edit-row">
       ${form_field(prop_structure, null, lang)}
@@ -516,7 +516,7 @@ propbox edit forms
     <tbody>
       <tr class="edit-row-head">
         <td colspan="${prop_structure.properties.length}">
-          ${form.row_msg(h.template_sprintf(_("Add a new value to %s."), tag_strong(prop_structure.text)))}
+          ${form.row_msg("&nbsp;")}
         </td>
       </tr>
       <tr class="add-cvt-row edit-row">
@@ -652,7 +652,7 @@ propbox edit forms
     <tbody>
       <tr class="edit-row-head">
         <td colspan="${prop_structure.properties.length}">
-          ${form.row_msg(h.template_sprintf(_("Edit %s value."), tag_strong(prop_structure.text)))}
+          ${form.row_msg("&nbsp;")}
         </td>
       </tr>
       <tr class="edit-row">
@@ -700,7 +700,7 @@ propbox edit forms
   </acre:script>
   <ul class="edit-form ${JSON.stringify(structure)}">
     <li class="edit-row-head">
-      ${form.row_msg(h.template_sprintf(_("Edit %s."), tag_strong(prop_value.text)))}
+      ${form.row_msg("&nbsp;")}
     </li>
     <li class="edit-row clear">
       ${form_field(prop_structure, prop_value, lang)}
@@ -725,7 +725,9 @@ propbox edit forms
       <td colspan="${prop_structure.properties.length}">
         <ul class="data-list">
           <li>
-            ${form.row_msg(msg, ".edit-row-head")}
+            <span class="wrapper">
+              ${form.row_msg(msg, ".edit-row-head")}
+            </span>
           </li>
         </ul>
       </td>
@@ -733,7 +735,9 @@ propbox edit forms
   </acre:block>
   <acre:block else="">
     <li class="edit-row-head row-msg row-msg-info">
-      ${form.row_msg(msg, ".edit-row-head")}
+      <span class="wrapper">
+        ${form.row_msg(msg, ".edit-row-head")}
+      </span>
     </li>
   </acre:block>
 </acre:block>

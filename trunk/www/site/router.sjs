@@ -413,7 +413,7 @@ function init_site_rules(lib) {
       }]),
       "tabs": [
         {
-          "name": -("Topics"),
+          "name": _("Topics"),
           "key": "topics",
           "app": "query",
           "script": "collection.tab"

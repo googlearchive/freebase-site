@@ -35,12 +35,19 @@ GENERAL
 ----------------------------
 */
 
+#page-content {
+  margin: 3.5em auto 2em auto;
+  width: 98em; /* was 960*/
+  padding: 0;
+}
+
 #content-main {
-    border: 5px solid #e4e6e7;
     width: 74em;
     float: left;
-    background: #fff;
-    .rounded_corners();
+}
+
+#domain-search-input {
+  width: 300px;
 }
 
 .input-standard {
@@ -48,6 +55,7 @@ GENERAL
     .rounded_corners(4px);
     padding: 0.6em 0.4em;
     margin: 0;
+    width: 175px;
 }
 
 .rss-icon {
@@ -56,6 +64,40 @@ GENERAL
     text-indent: -3000px;
     width: 14px;
     height: 14px;
+}
+
+/*
+Landing Page
+*/
+
+#schema-search {
+    margin-bottom: 2em;
+}
+
+#domain-search,
+#property-search {
+    display: none;
+}
+
+.aside-box h4 {
+    font-size: 1.3em;
+}
+
+.aside-box table {
+    width: 100%;
+    margin-left: 17%;
+    font-size: 1.1em;
+}
+
+.is-a,
+.has-a {
+    color: #444;
+    padding-right: 5px;
+}
+
+.kind {
+    color: #888;
+    padding-right: 5px;
 }
 
 /*

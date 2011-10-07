@@ -44,13 +44,10 @@
 
 <acre:block def="head()">
   <meta name="description" 
-        content="A social database about things you know and love, spanning millions of topics in 
-                 thousands of categories. Explore Freebase, add to it, or build applications with it.">
+        content="Freebase is a community-curated database of well-known people, places and things.">
   <meta name="keywords" 
         content="database, open database, shared database, facts, fact sheet, information, community,
-                 discussion, semantic web, metaweb, arts &amp; entertainment, society, sports, 
-                 products &amp; services, time &amp; space, money, science &amp; technology, 
-                 special interests, system" >
+                 discussion, semantic web, google, metaweb" >
   <meta name="robots" content="noodp">
   <link rel="canonical" href="http://www.freebase.com" />
   
@@ -64,45 +61,74 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <div id="content-main" role="main">
-    <div class="section">
-      <form id="domain-search-form" method="get">
-        <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-commons" checked="checked" />${_('Freebase Commons')}</label>
-        <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" />${_('All Domains')}</label>
-        <fieldset>
-          <input type="text" name="id" class="text-input" id="domain-search-input" id="domain-search-input" placeholder="${_('Start typing for suggested domains...')}" />
-        </fieldset>
-      </form>
-    </div>
-    <table cellspacing="0" class="table table-sortable">
-      <thead>
-        <tr>
-          <th scope="col" class="column-header first"><span class="sort-icon">${_('Domain')}</span></th>
-          <th scope="col" class="column-header column-header-desc"><span class="sort-icon">${_('ID')}</span></th>
-          <th scope="col" class="column-header">${_('Activity')}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr acre:for="d in c.domains">
-          <th class="row-header odd" scope="row">
-            <acre:script>var name = i18n.display_name(d);</acre:script>
-            <a href="${h.fb_url(d.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
-          </th>
-          <td class="even">$d.id</td>
-          <td class="odd">${templates.activity_section(d)}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <div id="page-content">
+    <div id="content-main" class="clear" role="main">
 
-  <div id="content-side">
-    ${templates.what_is_freebase()}
-    ${templates.for_developers()}
-    ${templates.wiki_entries(c.wiki)}
-    ${templates.join_discussion()}
+      <div id="schema-search" class="section-tabs">
+        <ul class="section-tabset clear" style="display:none">
+          <li class="section-tab"><a href="#domain-search">${_("Domains")}</a></li>
+          <li class="section-tab"><a href="#type-search">${_("Types")}</a></li>
+          <li class="section-tab"><a href="#property-search">${_("Properties")}</a></li>
+        </ul>
+        <div class="search-box" id="domain-search">
+          <form id="domain-search-form" method="get">
+            <fieldset>
+              <input type="text" name="id" class="text-input" id="domain-search-input" id="domain-search-input" placeholder="${_('Start typing for suggested domains...')}" />
+            </fieldset>
+          </form>
+          <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-commons" checked="checked" />${_('Freebase Commons')}</label>
+          <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" />${_('All Domains')}</label>
+        </div>
+        <div class="search-box" id="type-search">
+          <form id="type-search-form" method="get">
+            <fieldset>
+              <input type="text" name="id" class="text-input" id="type-search-input" placeholder="${_('Start typing for suggested types...')}" />
+            </fieldset>
+          </form>
+          <label><input type="radio" name="type-search-toggle" class="search-toggle" id="type-search-toggle-commons" checked="checked" />${_('Freebase Commons')}</label>
+          <label><input type="radio" name="type-search-toggle" class="search-toggle" id="type-search-toggle-all" />${_('All Domains')}</label>
+        </div>
+        <div class="search-box" id="property-search">
+          <form id="property-search-form" method="get">
+            <fieldset>
+              <input type="text" name="id" class="text-input" id="property-search-input" placeholder="${_('Start typing for suggested properties...')}" />
+            </fieldset>
+          </form>
+          <label><input type="radio" name="property-search-toggle" class="search-toggle" id="property-search-toggle-commons" checked="checked" />${_('Freebase Commons')}</label>
+          <label><input type="radio" name="property-search-toggle" class="search-toggle" id="property-search-toggle-all" />${_('All Domains')}</label>
+        </div>
+      </div>
+          
+      <table cellspacing="0" class="table table-sortable">
+        <thead>
+          <tr>
+            <th scope="col" class="column-header first"><span class="sort-icon">${_('Domain')}</span></th>
+            <th scope="col" class="column-header column-header-desc"><span class="sort-icon">${_('ID')}</span></th>
+            <th scope="col" class="column-header">${_('Activity')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr acre:for="d in c.domains">
+            <th class="row-header odd" scope="row">
+              <acre:script>var name = i18n.display_name(d);</acre:script>
+              <a href="${h.fb_url(d.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
+            </th>
+            <td class="even">$d.id</td>
+            <td class="odd">${templates.activity_section(d)}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="content-side">
+      ${templates.what_is_freebase()}
+      ${templates.for_developers()}
+      ${templates.wiki_entries(c.wiki)}
+      ${templates.join_discussion()}
+    </div>
   </div>
 </acre:block>
 
 <acre:block def="footer_script()">
-  <script src="homepage.mf.js"></script>
+  <script src="browse.mf.js"></script>
 </acre:block>

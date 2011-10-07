@@ -42,10 +42,9 @@
 div.cuecard-outputPane-tabBody {
   width: 100%;
   height: 100%;
-  overflow: hidden;
   background: white;
+  overflow: auto;
 }
-
 
 .cuecard-outputPane-tabBody::-webkit-scrollbar {
   width: 20px;
@@ -75,6 +74,12 @@ div.cuecard-outputPane-tabBody {
 }
 .cuecard-outputPane-tabBody::-webkit-scrollbar-track-piece:horizontal:start {
   margin-left: 8px;
+}
+
+.cuecard-outputPane-tabBody pre {
+  font-family: monospace;
+  font-size: 13px;
+  color: black;
 }
 
 div.cuecard-outputPane-status {

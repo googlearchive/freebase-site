@@ -40,7 +40,6 @@
       CueCard.urlPrefix = CueCard.apiProxy.base = fb.h.ajax_url("lib/cuecard/");
 
       var outputPaneOptions = {
-        stylesheet: $("#cuecard-outputPane-stylesheet").attr("href"),
         initial_tab: "json"
       };
 

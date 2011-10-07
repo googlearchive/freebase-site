@@ -45,11 +45,13 @@
 
 <acre:block def="page_content()">
    <div class="section">
+     <!--
      <div class="button-group">
        <a href="javascript:void(0)" class="button primary edit" onclick="return freebase.dispatch(event, freebase.schema.domain.domain_settings, ['${c.domain.id}', true], this);">
          ${_("Domain Settings")}
        </a>
      </div>
+     -->
 
      <!-- Types -->
      <div class="table-header">

@@ -29,9 +29,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var deferred = acre.require("lib/promise/deferred");
-var freebase = acre.require("lib/promise/apis").freebase;
-var validators = acre.require("lib/validator/validators");
+var apis = acre.require("lib/promise/apis.sjs");
+var deferred = apis.deferred;
+var freebase = apis.freebase;
+var validators = acre.require("lib/validator/validators.sjs");
+var typeloader = acre.require("lib/schema/typeloader.sjs");
 
 /**
  * Update an existing property values (name, key, expected_type, etc.)
@@ -220,11 +222,15 @@ function update_property(options) {
         if (keys[i] in update) {
           d = freebase.mqlwrite(update)
             .then(function(env) {
+              // invalidate type
+              typeloader.unload(o.type);
               return old.id;
             });
           break;
         }
       }
+      // invalidate type
+      typeloader.unload(o.type);
       return d;
     });
 };

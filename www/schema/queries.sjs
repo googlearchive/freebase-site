@@ -38,6 +38,7 @@ var apis = acre.require("lib/promise/apis");
 var freebase = apis.freebase;
 var urlfetch = apis.urlfetch;
 var deferred = apis.deferred;
+var typeloader = acre.require("lib/schema/typeloader.sjs");
 
 /**
  * Get all "commons" domains. Domains with a key in "/".
@@ -778,6 +779,8 @@ function add_included_types(id, included_types) {
   });
   return freebase.mqlwrite(q)
     .then(function(env) {
+      // invalidate type schema
+      typeloader.unload(id);
       return env.result["/freebase/type_hints/included_types"];
     });
 };
@@ -795,6 +798,8 @@ function delete_included_type(id, included_type) {
   };
   return freebase.mqlwrite(q)
     .then(function(env) {
+      // invalidate type schema
+      typeloader.unload(id);
       return env.result["/freebase/type_hints/included_types"];
     });
 };

@@ -35,6 +35,7 @@ var deferred = apis.deferred;
 var update_article = acre.require("lib/queries/update_article.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var i18n = acre.require("lib/i18n/i18n.sjs");
+var typeloader = acre.require("lib/schema/typeloader.sjs");
 
 /**
  * Update an existing type values (name, key, description, enumeration, etc.)
@@ -166,11 +167,15 @@ function update_type(options) {
         if (keys[i] in update) {
           d = freebase.mqlwrite(update)
             .then(function(env) {
+              // invalidate type
+              typeloader.unload(o.id);
               return old;
             });
           break;
         }
       }
+      // invalidate type
+      typeloader.unload(o.id);
       return d;
     })
     .then(function(old) {

@@ -123,7 +123,7 @@
        */
       edit.reset_data_inputs(options);
       formlib.disable_submit(options);
-      $(".button-cancel", options.submit_row).text("Done");
+      $(".cancel", options.submit_row).text("Done");
       $(":input:visible:first", options.edit_row).focus();
     },
 
@@ -224,7 +224,7 @@
 
     init_value_edit_form: function(options) {
       edit.init_data_inputs(options);
-      $(".button-delete", options.submit_row).click(function() {
+      $(".delete", options.submit_row).click(function() {
         options.edit_row.trigger(options.event_prefix + "delete");
       });
       $(":input:visible:first", options.edit_row).focus();

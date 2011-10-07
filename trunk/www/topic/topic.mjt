@@ -212,7 +212,7 @@
       </div>
     </div>
     <div class="modal-buttons">
-      <button class="button button-cancel">Close</button>
+      <button class="button cancel">Close</button>
     </div>
   </div>
 </acre:block>

@@ -161,7 +161,7 @@
 </acre:block>
 
 <acre:block def="link_row(id, o, filters)">
-  <tr>
+  <tr class="${th.link_class(o)}">
     <acre:script>
       var outgoing = o["me:source"]
     </acre:script>

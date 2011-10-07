@@ -50,7 +50,14 @@ var tests = [
   {id:"s", p:{value:"o", lang:"lang"}},
 
   {source:{id:"s"}, master_property:{id:"p"}, target:{id:"ns"}, target_value:{value:"o", namespace:"ns"}},
-  {id:"s", p:{value:"o", namespace:"ns"}}
+  {id:"s", p:{value:"o", namespace:"ns"}},
+
+  {source:{id:"s"}, master_property:{id:"p"}, target:{id:"o"}, valid:true},
+  {id:"s", p:{id:"o"}},
+
+  {source:{id:"s"}, master_property:{id:"p"}, target:{id:"o"}, valid:false, operation:"delete"},
+  {id:"s", p:{id:"o", link:{valid:false, timestamp:null, operation:"delete"}}}
+
 ];
 
 test("query", tests, function() {

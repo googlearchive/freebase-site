@@ -196,6 +196,6 @@ CueCard.OutputPane.prototype._setJsonText = function(text) {
     }));
   });
 
-  text = "<pre style='white-space:pre-wrap;'>" + buf.join("\n") + "</pre>";
+  text = "<pre>" + buf.join("\n") + "</pre>";
   this._json.html(text);
 };

@@ -1,10 +1,10 @@
 [
-
+  "lib/template/freebase.ui.mf.css",
+  "lib/template/freebase.ui.module.less",
   "lib/template/freebase.ui.radiotoggle.less",
   "lib/template/freebase.ui.tabs.less",
-  "lib/template/freebase.ui.mf.css",
   "lib/template/jquery.nicemenu.css",
-  "lib/template/freebase.ui.module.less",
   "editor_common.less",
-  "editor.less"
+  "editor.less",
+  "lib/template/chosen.jquery.css"
 ]

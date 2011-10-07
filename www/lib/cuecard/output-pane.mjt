@@ -204,25 +204,26 @@
 
 <acre:block def="help()">
   <div class="cuecard-outputPane-helpContent">
-    <!--
     <h1 class="title">The Query Editor enables you to run 
-      MQL queries in the browser and retrieve Freebase data</h1>-->
-    <ul>
+      <a href="http://wiki.freebase.com/wiki/Mql" rel="external help">MQL</a> queries in the browser and retrieve Freebase data</h1>
+    <h2>Enter your query and hit "Run" to get started.</h2>
+    <ul id="help-links" class="clear">
       <li><a href="http://www.freebase.com/docs/data" target="_blank">MQL Tutorial</a></li>
       <li><a href="http://www.freebase.com/docs/mql" target="_blank">MQL&nbsp;Reference</a></li>
     </ul>
 
-    <div class="modal-inner">
-      <h1 class="modal-title">
-        <span>Examples</span>
-      </h1>
-      Techniques:
-      <select class="cuecard-examples-technique">
-        <option acre:for="technique in CueCard.ExampleTechniques" 
-          acre:attrs="(technique === 'all')?{checked:'checked'}:{}" data-technique="$technique">
-          $technique (${CueCard.ExampleTechniqueMap[technique].length})
-        </option>
-      </select>
+    <div class="modal-inner" id="examples">
+      <div class="header">
+        <select class="cuecard-examples-technique">
+          <option acre:for="technique in CueCard.ExampleTechniques" 
+            acre:attrs="(technique === 'all')?{checked:'checked'}:{}" data-technique="$technique">
+            $technique (${CueCard.ExampleTechniqueMap[technique].length})
+          </option>
+        </select>
+        <h1 class="modal-title">
+          <span>Sample Queries</span>
+        </h1>
+      </div>
       
       <acre:block def="list_examples(technique)">
         <a acre:for="index, example in CueCard.Examples" 

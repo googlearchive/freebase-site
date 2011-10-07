@@ -171,6 +171,8 @@
       $(window).bind("beforeunload", function(evt) {
         qe.store();
       });
+
+      $(".cuecard-examples-technique").chosen();
     },
 
     resize: function() {

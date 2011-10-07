@@ -57,6 +57,13 @@ function query(link) {
     id: source.id
   };
   q[property] = target;
+  if (!is_valid(link) && link.operation) {
+    target.link = {
+      valid: false,
+      timestamp: null,
+      operation: link.operation
+    };
+  }
   return q;
 };
 
@@ -71,7 +78,7 @@ function valid_class(link) {
 function link_class(link) {
   var operation = "";
   if (link.operation != null) {
-    operation = link.operation;
+    operation = " " + link.operation;
   }
-  return h.trim(h.sprintf("%s %s", valid_class(link), operation));
+  return h.trim(h.sprintf("%s%s", valid_class(link), operation));
 };

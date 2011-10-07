@@ -59,7 +59,7 @@
         </th>
         <td class="even">$d.id</td>
         <td class="odd">
-          <ul>
+          <ul style="list-style: none">
             <li acre:for="change in d.changes">
               <acre:script>
                 var pname = i18n.display_name(change.property);

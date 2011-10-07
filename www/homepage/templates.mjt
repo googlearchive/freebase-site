@@ -311,7 +311,7 @@
 <acre:block def="what_is_freebase()">
   <div class="content-section">
     <h3>${h.template_sprintf(_("What is %s"), emphasis(_("Freebase?")))}</h3>
-    <p>${_("Learn what an entity graph is, what kind of information it contains, and why you should add your data!")}</p>
+    <p>${_("Learn what what kind of information Freebase contains and how you can join in its curation!")}</p>
     <a href="${h.wiki_url('What_is_Freebase%3F')}" class="more-link">${_("Learn more")} &raquo;</a>
   </div>
 </acre:block>
@@ -343,9 +343,10 @@
 <acre:block def="for_developers()">
   <div class="content-section">
     <h3>${h.template_sprintf(_("%s for Developers"), emphasis(_("Freebase")))}</h3>
+    <p>${_("You can use Freebase data in your applications:")}</p>
     <ul>
-      <li>${_("powerful queryable API")}</li>
-      <li>${_("JavaScript-based hosting framework")}</li>
+      <li>${_("powerful Google API")}</li>
+      <li>${_("hosted JavaScript apps")}</li>
       <li>${_("libraries for other languages")}</li>
     </ul>
     <a href="${h.wiki_url('Developers')}" class="more-link">${_("Learn More")} &raquo;</a>

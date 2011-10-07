@@ -204,8 +204,9 @@
 
 <acre:block def="help()">
   <div class="cuecard-outputPane-helpContent">
+    <!--
     <h1 class="title">The Query Editor enables you to run 
-      MQL queries in the browser and retrieve Freebase data</h1>
+      MQL queries in the browser and retrieve Freebase data</h1>-->
     <ul>
       <li><a href="http://www.freebase.com/docs/data" target="_blank">MQL Tutorial</a></li>
       <li><a href="http://www.freebase.com/docs/mql" target="_blank">MQL&nbsp;Reference</a></li>

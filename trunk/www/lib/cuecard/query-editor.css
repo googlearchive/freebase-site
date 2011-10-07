@@ -29,25 +29,66 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#the-output-pane h1 {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.4;
+}
+
+#the-output-pane h2 {
+  font-style: italic;
+  font-size: 14px;
+  margin: 20px auto;
+}
+
+#help-links li {
+  float: left;
+  font-size: 12px;
+  font-weight: bold;
+  margin-right: 20px;
+}
+
+#help-links a {
+  padding-left: 0;
+}
+
+#examples {
+  margin: 0 -15px;
+  border: 0;
+}
+
+#examples h1 {
+  font-weight: normal;
+  padding-left: 15px;
+  border-top: 1px solid #e1e2e3;
+  border-bottom: 1px solid #e1e2e3;
+}
+
+.header .cuecard-examples-technique,
+.header .chzn-container {
+  float: right;
+  margin-top: 5px;
+  margin-right: 15px;
+}
+
+/* this is a hack. the original styling should be changed */
+#the-output-pane .cuecard-outputPane-helpContent {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
 div.cuecard-queryEditor {
   position: relative;
+  background: #e5e5e7;
   height: 100%;
   width: 100%;
 }
 
-div.cuecard-queryEditor-content {
+div.iframe {
   border: 1px solid #ddd;
 }
 
 .cuecard-queryEditor-controls-bottom {
   text-align: right;
   padding: 7px;
-}
-
-.cuecard-queryEditor-controls-bottom button {
-  line-height: 16px;
-}
-
-button.cuecard-queryEditor-run {
-  width: 8em;
 }

@@ -4,5 +4,6 @@
   "lib/jqueryui/jquery.ui.dialog.js",
   "lib/template/jquery.nicemenu.js",
   "lib/template/jquery.radiotoggle.js",
+  "lib/template/chosen.jquery.js",
   "editor.js"
 ]

@@ -46,6 +46,37 @@ div.cuecard-outputPane-tabBody {
   background: white;
 }
 
+
+.cuecard-outputPane-tabBody::-webkit-scrollbar {
+  width: 20px;
+  height: 20px;
+  background: white;
+}  
+.cuecard-outputPane-tabBody::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.1);
+}
+.cuecard-outputPane-tabBody::-webkit-scrollbar-thumb:vertical {
+  border-left: 6px solid white;
+  border-right: 8px solid white;
+}
+.cuecard-outputPane-tabBody::-webkit-scrollbar-thumb:horizontal {
+  border-top: 6px solid white;
+  border-bottom: 8px solid white;
+}
+:hover.cuecard-outputPane-tabBody::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, .1);
+} 
+.cuecard-outputPane-tabBody::-webkit-scrollbar-thumb:horizontal:hover,
+.cuecard-outputPane-tabBody::-webkit-scrollbar-thumb:vertical:hover {
+  background: rgba(0, 0, 0, .15);
+}
+.cuecard-outputPane-tabBody::-webkit-scrollbar-track-piece:vertical:start {
+  margin-top: 8px;
+}
+.cuecard-outputPane-tabBody::-webkit-scrollbar-track-piece:horizontal:start {
+  margin-left: 8px;
+}
+
 div.cuecard-outputPane-status {
   float: right;
   text-align: right;
@@ -140,8 +171,10 @@ h1.title {
 a.cuecard-examples-example {
     display: block;
     text-decoration: none;
-    padding: 0.25em 0.5em;
-    border-bottom: 1px solid #ddd;
+    padding: 0.25em 15px;
+    -webkit-transition: all 0.2s;
+    -moz-transition: all 0.2s;
+    transition: all 0.2s;
 }
 
 a.cuecard-examples-example:hover {

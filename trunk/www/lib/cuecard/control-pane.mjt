@@ -130,7 +130,7 @@
         <button class="button small"
                 acre:onclick="controlPane._getTab('variables').find('.cuecard-controlPane-variables').append($.acre(add_row()))">+</button>
         <button class="button small"
-                acre:onclick="$(this).closest('.cuecard-controlPane-variables-row').remove()">+</button>
+                acre:onclick="$(this).closest('.query-options-row').remove()">-</button>
       </td>
     </tr>
     ${add_row()}

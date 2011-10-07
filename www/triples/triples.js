@@ -32,8 +32,29 @@
 
   var triples = fb.triples = {
 
+    row_hoverover: function(e) {
+      var row = $(this);
+      triples.row_hoverover.timeout = setTimeout(function() {
+        row.addClass("row-hover");
+      }, 300);
+    },
+
+    row_hoverout: function(e) {
+      clearTimeout(triples.row_hoverover.timeout);
+      var row = $(this);
+      row.removeClass("row-hover");
+    },
+
+    init_menus: function(context, nicemenu) {
+      if (nicemenu) {
+        $(".nicemenu", context).nicemenu();
+      }
+      $(">tr", context).hover(triples.row_hoverover, triples.row_hoverout);
+    },
+
     init_infinitescroll: function() {
       var tbody = $("#infinitescroll > tbody");
+      triples.init_menus(tbody);
       var next = tbody.attr("data-next");
       if (!next) {
         // nothing to scroll
@@ -55,6 +76,7 @@
       }, function(data) {
         data = JSON.parse(data);
         var html = $(data.result.html);
+        triples.init_menus(html, true);
         var next = html.attr("data-next");
         if (next) {
           tbody.append($(">tr", html));
@@ -76,6 +98,7 @@
     },
 
     init: function() {
+      triples.init_menus();
 
       // Initialize filter menu collapse/expand
       $(".column.nav").collapse_module({modules: ".module", column: ".section"});

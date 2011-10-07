@@ -90,35 +90,38 @@ CueCard.OutputPane.prototype._constructUI = function() {
   });
   this._tabs = tabs.data("tabs");
 
-  this._list = this._getTab("list");
-  this._list = this._list.length ? this._list : false;
-  
   this._json = this._getTab("json");
   this._json = this._json.length ? this._json : false;
-  
+
   this._help = this._getTab("help");
   this._help = this._help.length ? this._help : false;
-  
-  // setup JSON iframe
-  if (this._json) {
-    var json_iframe = document.createElement('iframe');
-    this._json.append(json_iframe);
-    this._json_content = $(this._setupIframe(json_iframe));    
-  }
-  
-  // setup list iframe
-  if (this._list.length) {
-    var list_iframe = document.createElement('iframe');
-    this._list.append(list_iframe);
-    this._list_content = $(this._setupIframe(list_iframe));
-    if (this._options.stylesheet) {
-      this._list_content.append('<link rel="stylesheet" href="' + this._options.stylesheet + '"/>');
-    }
-    this._list_content.append('<div id="list-content"></div>');
-    this._list_content = $("#list-content", this._list_content);    
-  }
-  
+
   this.setStatus("Run query to see results here...");
+  
+  $(".cuecard-outputPane-dataLink", this._elmt)
+    .live("mouseover", function() {
+      var id = $(this).attr("href");
+      var pos = $(this).position();
+      var top = pos.top + $(this).height();
+      var left = pos.left;
+
+      var div = $("<div id='cuecard-outputPane-topic-popup'></div>")
+        .css({
+          'position': "absolute",
+          'z-index': 1000,
+          'width': "30em",
+          'top': top,
+          'left': left
+        })
+        .appendTo("body");
+        
+      $.get(fb.h.legacy_fb_url("/private/flyout", id), function(r) {
+        div.html(r.html);
+      }, "jsonp");
+    })
+    .live("mouseout", function() {
+      $("#cuecard-outputPane-topic-popup").remove();
+    });
 };
 
 CueCard.OutputPane.prototype._getTab = function(name) {
@@ -145,18 +148,18 @@ CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings, que
   this._jsonResult = o;
     
   if (o.result) {
-    this._setIFrameText(CueCard.jsonize(o, jsonizingSettings || { indentCount: 2 }));
+    this._setJsonText(CueCard.jsonize(o, jsonizingSettings || { indentCount: 2 }));
     query = JSON.parse(query);
     if (this._list) this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list", [o, query]);    
   } else if (o.message) {
     // googleapis error
     delete o.response;
-    this._setIFrameText(CueCard.jsonize(o, jsonizingSettings || { indentCount: 2 }));
+    this._setJsonText(CueCard.jsonize(o, jsonizingSettings || { indentCount: 2 }));
     if (this._list) this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list_error", [o.message]);
   } else if (o.messages) {
     // metaweb error
     var message = (typeof o.messages[0] == 'string') ?  o.messages[0] : o.messages[0].message;
-    this._setIFrameText(message);
+    this._setJsonText(message);
     if (this._list) this._list_content.acre(fb.acre.current_script.app.path + "/cuecard/output-pane.mjt", "list_error", [message]);
   }
   
@@ -165,15 +168,16 @@ CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings, que
 
 CueCard.OutputPane.prototype.setStatus = function(html) {
   this._jsonResult = null;
-  this._setIFrameText(html);
-  if (this._list) this._list_content.html(html);
+  this._setJsonText(html);
+  //this._setIFrameText(html);
+  //if (this._list) this._list_content.html(html);
 };
 
 CueCard.OutputPane.prototype.getJson = function() {
   return this._jsonResult;
 };
 
-CueCard.OutputPane.prototype._setIFrameText = function(text) {
+CueCard.OutputPane.prototype._setJsonText = function(text) {
   var makeTopicLink = function(id) {
     return "<a target='_blank' class='cuecard-outputPane-dataLink' href='" + 
      id + "'>" + id + "</a>";
@@ -193,45 +197,5 @@ CueCard.OutputPane.prototype._setIFrameText = function(text) {
   });
 
   text = "<pre style='white-space:pre-wrap;'>" + buf.join("\n") + "</pre>";
-  if (this._json) this._json_content.html(text);
-};
-
-CueCard.OutputPane.prototype._setupIframe = function(iframe) {
-  var self = this;
-  
-  var __cc_runPage = function(increment) {
-    self._options.queryEditor._controlPane._runPage(increment);
-  };
-
-  var win = iframe.contentWindow || iframe.contentDocument;
-  win.__cc_runPage             = __cc_runPage;
-  var body = win.document.body;
-  
-  $(".cuecard-outputPane-dataLink", body)
-    .live("mouseover", function() {
-      var id = $(this).attr("href");
-      var offset = $(iframe).offset();
-      var pos = $(this).position();
-      var top = offset.top + pos.top + $(this).height() - $(body).scrollTop();
-      var left = offset.left + pos.left - $(body).scrollLeft();
-
-      var div = $("<div id='cuecard-outputPane-topic-popup'></div>")
-        .css({
-          'position': "absolute",
-          'z-index': 1000,
-          'width': "30em",
-          'top': top,
-          'left': left
-        })
-        .appendTo("body");
-        
-      $.get(fb.h.legacy_fb_url("/private/flyout", id), function(r) {
-        div.html(r.html);
-      }, "jsonp");
-    })
-    .live("mouseout", function() {
-      $("#cuecard-outputPane-topic-popup").remove();
-    });
-    
-  return body;
+  this._json.html(text);
 };

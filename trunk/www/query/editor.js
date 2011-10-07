@@ -43,7 +43,6 @@
 
       var outputPaneOptions = {
         toggle_callback: qe.toggleHeaders,
-        stylesheet: $("#cuecard-outputPane-stylesheet").attr("href"),
         initial_tab: params.tab
       };
 

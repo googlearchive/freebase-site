@@ -425,14 +425,6 @@ function init_site_rules(lib) {
           "script": "mql.tab"
         }
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
-      "gear": [
-        {
-          "name": _("Edit Settings"),
-          "app": "admin",
-          "ajax": "query_settings.mf.js",
-          "auth": true // add "edit" class
-        }
-      ]
     },
     {
       "name": _("Data Load"),
@@ -783,7 +775,7 @@ function ObjectRouter(app_labels) {
       if (!route || typeof route !== 'object') {
         throw 'A routing rule must be a dict: '+JSON.stringify(route);
       }
-      [route.tabs, route.navs, route.promises].forEach(function(list) {
+      [route.tabs, route.gear, route.promises].forEach(function(list) {
         list && list.forEach(function(item) {
           set_app(item, app_labels);
           item.promises && item.promises.forEach(function(p) {

@@ -125,7 +125,7 @@
       });
 
       $(".keyboard-shortcuts > a").overlay({
-          close: ".modal-buttons .button-cancel",
+          close: ".modal-buttons .button.cancel",
           closeOnClick: false,
           mask: {
             color: '#000',

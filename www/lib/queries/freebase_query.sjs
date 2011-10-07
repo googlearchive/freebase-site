@@ -30,6 +30,7 @@
  */
 
 var i18n = acre.require("i18n/i18n.sjs");
+var datejs = acre.require("helper/helpers.sjs");
 var apis = acre.require("promise/apis.sjs");
 var deferred = apis.deferred;
 var freebase = apis.freebase;
@@ -67,6 +68,25 @@ function queries_by_user(user) {
     .then(function(queries) {
       queries.forEach(clean_query);
       return queries;
+    });
+};
+
+function recent_queries(days) {
+  return freebase.mqlread(recent_queries_mql(days))
+    .then(function(env) {
+      return env.result || [];
+    })
+    .then(function(queries) {
+      return queries.map(function(q) {
+        return {
+          id: q.id,
+          name: q.name,
+          creator: q.creator,
+          domain: (q.key ? q.key.namespace.key.namespace : null),
+          type: q["/freebase/query_hints/related_type"],
+          timestamp: acre.freebase.date_from_iso(q.timestamp)
+        }
+      });
     });
 };
 
@@ -133,4 +153,45 @@ function user_queries_mql(user) {
     "sort": "-timestamp",
     "limit": 1000
   }];
+};
+
+function recent_queries_mql(days) {
+  var timestamp = acre.freebase.date_to_iso(datejs.Date.today().addDays(-days));
+  var q = [{
+    "id": null,
+    "name": i18n.mql.query.name(),
+    "creator": null,
+    "type": "/freebase/query",
+    /*"timestamp>": timestamp,*/
+    "timestamp": null,
+    "sort": "-timestamp",
+    "/common/document/content": {
+      "id": null
+    },
+    "/freebase/query_hints/related_type": {
+      "id": null,
+      "name": i18n.mql.query.name(),
+      "limit": 1,
+      "optional": true
+    },
+    "key": {
+      "namespace": {
+        "key": {
+          "value": "views",
+          "namespace": {
+            "id": null,
+            "name": i18n.mql.query.name(),
+            "limit": 1
+          }
+        }
+      },
+      "optional": true
+    },
+    "forbid:key": {
+      "value": "topic",
+      "optional": "forbidden"
+    },
+    "limit": 100
+  }];
+  return q;
 };

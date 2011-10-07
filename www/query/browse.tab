@@ -30,12 +30,7 @@
  */
 
 var validators = acre.require("lib/validator/validators.sjs");
-var i18n = acre.require("lib/i18n/i18n.sjs");
-var datejs = acre.require("lib/helper/helpers.sjs");
-var apis = acre.require("lib/promise/apis.sjs"),
-    deferred = apis.deferred,
-    freebase = apis.freebase,
-    urlfetch = apis.urlfetch;
+var queries = acre.require("lib/queries/freebase_query.sjs");
     
 var SPEC = {
 
@@ -52,69 +47,8 @@ var SPEC = {
   run: function(days) {
     return {
       days: days,
-      queries: recent_queries(days)
+      queries: queries.recent_queries(days)
     }; 
   }
   
 };
-
-function recent_queries(days) {
-  return freebase.mqlread(recent_queries_mql(days))
-    .then(function(env) {
-      return env.result || [];
-    })
-    .then(function(queries) {
-      return queries.map(function(q) {
-        return {
-          id: q.id,
-          name: q.name,
-          creator: q.creator,
-          domain: q["/freebase/query_hints/related_domain"],
-          type: q["/freebase/query_hints/related_type"],
-          topic: q["/freebase/query_hints/related_topic"],
-          timestamp: acre.freebase.date_from_iso(q.timestamp)
-        }
-      });
-    });
-};
-
-function recent_queries_mql(days) {
-  var timestamp = acre.freebase.date_to_iso(datejs.Date.today().addDays(-days));
-  var q = [{
-    "id": null,
-    "name": i18n.mql.query.name(),
-    "creator": null,
-    "type": "/freebase/query",
-    /*"timestamp>": timestamp,*/
-    "timestamp": null,
-    "sort": "-timestamp",
-    "/common/document/content": {
-      "id": null
-    },
-    "/freebase/query_hints/related_domain": {
-      "id": null,
-      "name": i18n.mql.query.name(),
-      "limit": 1,
-      "optional": true
-    },
-    "/freebase/query_hints/related_type": {
-      "id": null,
-      "name": i18n.mql.query.name(),
-      "limit": 1,
-      "optional": true
-    },
-    "/freebase/query_hints/related_topic": {
-      "id": null,
-      "name": i18n.mql.query.name(),
-      "limit": 1,
-      "optional": true
-    },
-    "forbid:key": {
-      "value": "topic",
-      "optional": "forbidden"
-    },
-    "limit": 100
-  }];
-  return q;
-};
-

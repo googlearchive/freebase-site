@@ -68,10 +68,12 @@
       this.toggle_state = state;
       if (state) {
         this.drawer_content.height(this.drawer_height);
-        this.drawer_toggle.removeClass("collapsed");
+        this.drawer_toggle.removeClass("up");
+        this.drawer_toggle.addClass("down");
       } else {
         this.drawer_content.height(0);
-        this.drawer_toggle.addClass("collapsed");
+        this.drawer_toggle.removeClass("down");
+        this.drawer_toggle.addClass("up");
       }
       if (!this.options.init_height)
         this.element.css("height", "initial");

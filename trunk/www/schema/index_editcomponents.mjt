@@ -77,8 +77,8 @@
       </div>
     </div>
     <div class="modal-buttons">
-      <button class="button button-submit button-primary" type="submit">Save</button>
-      <button class="button button-cancel">Cancel</button>
+      <button class="button save" type="submit">Save</button>
+      <button class="button cancel">Cancel</button>
       ${i18n_editcomponents.lang_select()}
     </div>
   </div>

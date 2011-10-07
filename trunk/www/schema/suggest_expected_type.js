@@ -138,8 +138,8 @@
               '<select name="dimension-unit"></select>' +
             '</div>' +
             '<div class="ect-unit-submit">' +
-              '<button class="button button-primary button-submit">OK</button>' +
-              '<button class="button button-cancel">Cancel</button>' +
+              '<button class="button primary">OK</button>' +
+              '<button class="button cancel">Cancel</button>' +
             '</div>' +
           '</div>';
         this.ect_unit = $(html).hide();
@@ -166,14 +166,14 @@
               }
             });
           });
-        $(".button-cancel", this.ect_unit).click(function(e) {
+        $(".button.cancel", this.ect_unit).click(function(e) {
           self.ect_menu.show();
           self.ect_unit.hide();
           self.status.show();
           self.input.focus().removeData("dont_hide");
           e.stopPropagation();
         });
-        $(".button-submit", this.ect_unit).click(function(e) {
+        $(".button.primary", this.ect_unit).click(function(e) {
           var selected_unit = $("[selected]", self.ect_dimension_units);
           var data = {
             name: "Measurment",
@@ -218,8 +218,8 @@
               '</div>' +
               '<a href="javascript:void(0);" class="namespace-toggle">or choose existing&hellip;</a>' +
               '<div class="ect-enumeration-submit">' +
-                '<button class="button button-primary button-submit">OK</button>' +
-                '<button class="button button-cancel">Cancel</button>' +
+                '<button class="button primary">OK</button>' +
+                '<button class="button cancel">Cancel</button>' +
               '</div>' +
             '</div>' +
           '</div>';
@@ -257,14 +257,14 @@
             $toggle.html("or choose existing...");
           }
         });
-        $(".button-cancel", this.ect_enumeration).click(function(e) {
+        $(".button.cancel", this.ect_enumeration).click(function(e) {
           self.ect_menu.show();
           self.ect_enumeration.hide();
           self.status.show();
           self.input.focus().removeData("dont_hide");
           e.stopPropagation();
         });
-        $(".button-submit", this.ect_enumeration).click(function(e) {
+        $(".button.primary", this.ect_enumeration).click(function(e) {
           fb.schema.edit.clear_form_message(self.ect_enumeration);
           var data = {
             name: "Enumeration",

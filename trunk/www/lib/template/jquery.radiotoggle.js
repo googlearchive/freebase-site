@@ -76,7 +76,7 @@
 
         // setup our objects
         var $input = $(this);
-        var $markup = $('<div class="switch"><span class="on">' + options.onLabel + '</span><span class="off">' + options.offLabel + '</span><span class="slide"></span></div>');
+        var $markup = $('<div class="switch"><span class="on">' + options.onLabel + '</span><span class="off">' + options.offLabel + '</span><span class="slide"><span class="inner"></span></span></div>');
         var $slide = $(".slide", $markup);
         var $on = $(".on", $markup);
         var $off = $(".off", $markup);

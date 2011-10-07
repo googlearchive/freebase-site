@@ -79,8 +79,8 @@
         })
         .bind("empty", function() {
           formlib.disable_submit(options);
-        })
-        .focus();
+        });
+      $(":input", input).focus();
     },
 
     merge_validate: function(options) {

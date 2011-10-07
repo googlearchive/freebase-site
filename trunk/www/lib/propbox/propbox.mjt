@@ -687,7 +687,7 @@ propbox edit forms
           <input type="hidden" name="o" value="${prop_value.id}"/>
           <input type="hidden" name="lang" value="${lang}"/>
           ${form.submit_buttons()}
-          <button class="button button-delete">${_('Delete')}</button>
+          <button class="button delete">${_('Delete')}</button>
         </td>
       </tr>          
     </tbody>
@@ -711,7 +711,7 @@ propbox edit forms
       <input type="hidden" name="o" value="${prop_value.id || prop_value.value}"/>
       <input type="hidden" name="lang" value="${lang}"/>
       ${form.submit_buttons()}
-      <button class="button button-delete">${_('Delete')}</button>
+      <button class="button delete">${_('Delete')}</button>
     </li>
   </ul>
 </acre:block>

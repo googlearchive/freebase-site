@@ -299,7 +299,7 @@
          });
        formlib.init_submit_cancel(options);
        options.form.overlay({
-         close: ".modal-buttons .button-cancel",
+         close: ".modal-buttons .cancel",
          closeOnClick: false,
          load: true,
          fixed: false,
@@ -366,13 +366,13 @@
 
        var event_prefix = options.event_prefix;
        // submit button
-       var submit_button = $(".button-submit", submit_content)
+       var submit_button = $(".save", submit_content)
          .click(function() {
            form_content.trigger(event_prefix + "submit");
          });
        formlib.disable(submit_button);
        // cancel button
-       $(".button-cancel", submit_content).click(function() {
+       $(".cancel", submit_content).click(function() {
          form_content.trigger(event_prefix + "cancel");
        });
        // submit/cancel on ENTER/ESCAPE
@@ -403,17 +403,17 @@
 
      disable_submit: function(options) {
        var submit_content = options.form || options.submit_row;
-       formlib.disable($(".button-submit", submit_content));
+       formlib.disable($(".save", submit_content));
      },
 
      enable_submit: function(options) {
        var submit_content = options.form || options.submit_row;
-       formlib.enable($(".button-submit",  submit_content));
+       formlib.enable($(".save",  submit_content));
      },
 
      is_submit_enabled: function(options) {
        var submit_content = options.form || options.submit_row;
-       return !$(".button-submit", submit_content).is(":disabled");
+       return !$(".save", submit_content).is(":disabled");
      },
 
      /**

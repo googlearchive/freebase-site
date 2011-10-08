@@ -65,39 +65,17 @@
   <div id="page-content">
     <div id="content-main" class="clear" role="main">
 
-      <div id="schema-search" class="section-tabs">
-        <ul class="section-tabset clear" style="display:none">
-          <li class="section-tab"><a href="#domain-search">${_("Domains")}</a></li>
-          <li class="section-tab"><a href="#type-search">${_("Types")}</a></li>
-          <li class="section-tab"><a href="#property-search">${_("Properties")}</a></li>
-        </ul>
+      <div id="schema-search" class="clear section-tabs">
         <div class="search-box" id="domain-search">
           <form id="domain-search-form" method="get">
             <fieldset>
-              <input type="text" name="id" class="text-input" id="domain-search-input" id="domain-search-input" placeholder="${_('Start typing for suggested domains...')}" />
+              <input type="text" name="id" class="text-input" id="domain-search-input" id="domain-search-input" placeholder="${_('Find a domain...')}" />
+              <button class="button">Go</button>
             </fieldset>
           </form>
-          <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-commons" checked="checked" />${_('Freebase Commons')}</label>
-          <label><input type="radio" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" />${_('All Domains')}</label>
+          <label><input type="hidden" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" /></label>
         </div>
-        <div class="search-box" id="type-search">
-          <form id="type-search-form" method="get">
-            <fieldset>
-              <input type="text" name="id" class="text-input" id="type-search-input" placeholder="${_('Start typing for suggested types...')}" />
-            </fieldset>
-          </form>
-          <label><input type="radio" name="type-search-toggle" class="search-toggle" id="type-search-toggle-commons" checked="checked" />${_('Freebase Commons')}</label>
-          <label><input type="radio" name="type-search-toggle" class="search-toggle" id="type-search-toggle-all" />${_('All Domains')}</label>
-        </div>
-        <div class="search-box" id="property-search">
-          <form id="property-search-form" method="get">
-            <fieldset>
-              <input type="text" name="id" class="text-input" id="property-search-input" placeholder="${_('Start typing for suggested properties...')}" />
-            </fieldset>
-          </form>
-          <label><input type="radio" name="property-search-toggle" class="search-toggle" id="property-search-toggle-commons" checked="checked" />${_('Freebase Commons')}</label>
-          <label><input type="radio" name="property-search-toggle" class="search-toggle" id="property-search-toggle-all" />${_('All Domains')}</label>
-        </div>
+        <h1>Explore Freebase Data</h1>
       </div>
           
       <table cellspacing="0" class="table table-sortable">

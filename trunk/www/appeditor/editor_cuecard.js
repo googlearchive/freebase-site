@@ -75,10 +75,7 @@ var QueryEditor = function(parent, editor_config, task) {
         outputPaneOptions: { 
           verticalPadding: 2, 
           horizontalPadding: 2, 
-          hideHelp: true,
-          tabs: [
-            { name: 'JSON',  key: "json"}
-          ]
+          hideHelp: true
         }
     });
     this.composition = cuecardComposition;
@@ -305,15 +302,7 @@ var QueryEditor = function(parent, editor_config, task) {
                 if (editor_config.readOnly) { 
                     $(file.get_element()).addClass('readonly');
                     $('.cuecard-queryEditor', file.get_element()).append("<div class='readonly-warning'>READ ONLY</div>");
-                }
-                $('<a class="cuecard-permalink" href="javascript:{}">Open in Query Editor</a>')
-                    .click(function(evt) {
-                        var url = "http://www.freebase.com/app/queryeditor?q=" + 
-                            encodeURIComponent(editor.composition.queryEditor.getUnresolvedQuery());
-                        window.open(url, "_blank");
-                    })
-                    .appendTo($(top_element).find('.cuecard-outputPane')[0]);
-                
+                }                
                 file.trigger_editor_event('newframe', [editor.composition.queryEditor._editor.frame]);
             });
 

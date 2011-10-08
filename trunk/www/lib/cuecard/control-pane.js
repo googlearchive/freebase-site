@@ -47,6 +47,7 @@ CueCard.ControlPane.prototype._constructUI = function() {
 
     if (this._options.paneldrawer) {
       this._paneldrawer = this._options.paneldrawer.element.paneldrawer(this._options.paneldrawer).data("$.paneldrawer");
+      this._paneldrawer.drawer_toggle.show();
     }
 };
 

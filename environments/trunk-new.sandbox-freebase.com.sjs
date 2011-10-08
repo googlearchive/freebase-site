@@ -43,4 +43,4 @@ var METADATA = {
   }
 };
 
-acre.require(site + "/router.sjs").route(environment_rules, this);
+acre.require(environment_rules.labels.site + "/router.sjs").route(environment_rules, this);

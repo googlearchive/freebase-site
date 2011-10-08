@@ -224,12 +224,14 @@ div.Codemirror-current-line { background: #eee; color: #999; }
 
 
 /* Query Edit Area  */
+div.cuecard-queryEditor { background-color: white; }
+.cuecard-queryEditor-content { border: solid 1px #ccc; }
 .cuecard-queryEditor-controls-bottom { height: 40px; }
-#query-editor-buttons { margin: 5px 0; text-align: left;}
+#query-editor-buttons { margin: 5px 0; text-align: left; }
 #query-editor-buttons .button-main { float: right;}
 .cuecard-controlPane { font-size: 1.2em;}
 .cuecard-outputPane { position: relative; }
-.cuecard-outputPane-tabs { height: 24px; border: none; }
+.cuecard-outputPane-tabs { height: 0; display: none; }
 .cuecard-outputPane .cuecard-permalink { position: absolute; top: 0px; right: 0px; }
 .cuecard-outputPane-tree { top:0 !important; bottom:0 !important; left:0 !important; right:0 !important; }
 .cuecard-outputPane-status { top:0 !important; bottom:0 !important; left:0 !important; right:0 !important; padding: 5px !important;}

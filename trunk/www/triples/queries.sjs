@@ -132,7 +132,7 @@ function links_outgoing(id, filters, next, creator_clause) {
     });
 };
 
-function writes(id, filters) {
+function writes(id, filters, next) {
   filters = h.extend({}, filters);
   return creator.by(id, filters.type)
     .then(function(links_clause) {
@@ -150,11 +150,23 @@ function writes(id, filters) {
           mid: null,
           name: i18n.mql.query.name()
         },
-        master_property: null,
+        master_property: {
+          id: null,
+          unit: {
+            optional: true,
+            id: null,
+            type: "/type/unit",
+            "/freebase/unit_profile/abbreviation": null
+          }
+        },
         target_value: {},
         timestamp: null,
-        sort: "-timestamp"
+        sort: "-timestamp",
+        optional: true
       });
+      if (next) {
+        q["next:timestamp<"] = next;
+      }
       apply_filters(q, filters);
       return freebase.mqlread([q], mqlread_options(filters))
         .then(function(env) {

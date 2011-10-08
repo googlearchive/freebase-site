@@ -1551,7 +1551,7 @@ function output_helpers(scope) {
 // ------------- METADATA ---------------
 
 // helper for backfilling metadata from a mounted app
-function extend_metadata(md, mount) {
+function extend_metadata(md, mount, env_md) {
 
   function fix_up_paths(md, md_path) {
     for (var hdlr in md.handlers) {
@@ -1582,7 +1582,7 @@ function extend_metadata(md, mount) {
   };
 
   // get backfill metadata
-  var md_path = md.mounts[mount];
+  var md_path = md.mounts[mount] || env_md.mounts[mount];
   var md_file = acre.require(md_path + "/METADATA");
   var backfill = md_file.METADATA ? md_file.METADATA : JSON.parse(md_file.body);
 
@@ -1590,7 +1590,7 @@ function extend_metadata(md, mount) {
   fix_up_paths(backfill, md_path);
 
   // splice together
-  var final_md = extend(true, {}, backfill, md);
+  var final_md = extend(true, {}, backfill, md, env_md);
   extend(md, final_md);
 
   return md;

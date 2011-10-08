@@ -47,7 +47,7 @@ GENERAL
 }
 
 #domain-search-input {
-  width: 300px;
+  width: 240px;
 }
 
 .input-standard {
@@ -66,15 +66,43 @@ GENERAL
     height: 14px;
 }
 
+.search-box label {
+  display: none;
+  padding-right: 1em;
+}
+
+.search-box form,
+.search-box fieldset {
+    display: inline;
+}
+
+.search-box .text-input {
+    font-size: 14px;
+    padding: 6px;
+}
 /*
 Landing Page
 */
 
-#schema-search {
-    margin-bottom: 2em;
+#schema-search h1 {
+  font-size: 16px;
+  line-height: 48px;
+  padding-left: 15px;
 }
 
-#domain-search,
+#schema-search {
+  background: #fff;
+}
+
+#schema-search .search-box {
+  float: right;
+  margin: 7px 10px;
+}
+
+.search-box fieldset {
+  display: block;
+}
+
 #property-search {
     display: none;
 }

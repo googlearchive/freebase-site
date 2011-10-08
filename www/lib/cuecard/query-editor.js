@@ -352,7 +352,7 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
             alert(msg);
         }
         
-        this._outputPane.setStatus("Querying...");
+        this._outputPane.setStatus("Querying...", true);
         if (options.isWriteQuery) {
           // need to get a form with a CSRF token in it;
           $(".cuecard-queryEditor-write-form").load(CueCard.apiProxy.base + 'mqlwrite_begin.mjt', function() {

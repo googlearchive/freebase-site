@@ -80,7 +80,7 @@
       <div class="module-section alt">
         ${filter_components.timestamp_filter(c.id, c.filters)}
       </div>
-      <div class="module-section alt" id="limit-slider">
+      <!--<div class="module-section alt" id="limit-slider">
         <acre:script>
           var limit = c.filters.limit || 100;
         </acre:script>
@@ -88,7 +88,7 @@
           <label for="">Show up to <strong class="current-limit">${limit}</strong> links</label>
         </h3>
         ${filter_components.filter_form(c.id, c.filters, 'limit', filter_components.limit_slider, ['limit', limit])}
-      </div>
+      </div>-->
       <div class="module-section alt">
         ${components.historical_filter(c.id, c.filters)}
       </div>
@@ -111,7 +111,7 @@
 
 <acre:block def="writes(id, data, filters)" if="data && data.length">
   <div class="section">
-    <h2 class="table-title"><a name="attribution_links">${_("Links created by or via this object")} (${i18n_c.number(data.length)})</a></h2>
+    <h2 class="table-title"><a name="infinitescroll-count">${_("Links created by or via this object")} (${i18n_c.number(data.length)})</a></h2>
     <table class="table table-sortable" id="infinitescroll">
       <thead>
         <tr>

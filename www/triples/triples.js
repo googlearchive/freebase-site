@@ -83,7 +83,7 @@
           tbody.attr("data-next", next);
           // update links count
           var len = $(">tr", tbody).length;
-          var context = $("#triples-data [name=links]");
+          var context = $("[name=infinitescroll-count]");
           $(".number", context).attr("data-value", len);
           i18n.ize_number(context);
           // re-init tablesorter

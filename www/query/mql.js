@@ -62,10 +62,23 @@
         autorun = true;
         outputPaneOptions.queryLoaded = true;
       }
+      
+      queryEditorOptions.onChange = function() {
+        qe.is_dirty = true;
+        $("#save-query").addClass("disabled");
+      };
+      
+      queryEditorOptions.onRun = function(o) {
+        if (o.code === "/api/status/ok" && qe.is_dirty) {
+          $("#save-query").removeClass("disabled");
+        }
+      };
 
       queryEditorOptions.onReady = function() {
         qe.resize();
         $(window).resize(qe.resize);
+        
+        qe.is_dirty = false;
         if (autorun) qe.cuecard.queryEditor.run(false);
 
         // fulhack to hide initial laying out

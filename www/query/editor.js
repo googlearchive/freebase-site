@@ -128,21 +128,31 @@
       if ("autorun" in params) {
         autorun = true;
       }
+      
+      queryEditorOptions.onChange = function() {
+        qe.is_dirty = true;
+        $("#save-query").addClass("disabled");
+      };
+      
+      queryEditorOptions.onRun = function(o) {
+        if (o.code === "/api/status/ok" && qe.is_dirty) {
+          $("#save-query").removeClass("disabled");
+        }
+      };
 
       queryEditorOptions.onReady = function() {
         $(".cuecard-queryEditor-queryAssist").radiotoggle();
-        
+
         $(".nicemenu").nicemenu();
 
         $("#links").prependTo("#the-output-pane .cuecard-outputPane-tabs");
 
         qe.resize();
         $(window).resize(qe.resize);
+
+        qe.is_dirty = false;
         if (autorun) qe.cuecard.queryEditor.run(false);
         
-        // user is logged-in, so we can enable the save button
-        (fb.user ? fb.enable : fb.disable).call(null, $("#save-query"));
-
         // fulhack to hide initial laying out
         setTimeout(function() {
           $("#qe-module, #the-output-pane").css("visibility", "visible");

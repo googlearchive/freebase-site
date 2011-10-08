@@ -49,7 +49,7 @@
 
 <acre:block def="page_content()">
   <div id="page-title">
-    <button id="save-query" class="button save edit" 
+    <button id="save-query" class="button save disabled" 
             onclick="return window.freebase.queryeditor.save(this)">
             ${_('Save Query')}
     </button>

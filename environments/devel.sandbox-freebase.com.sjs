@@ -38,6 +38,7 @@ var environment_rules = {
         {prefix:"/test_schema",             app:"schema", script:"test"},
         {prefix:"/test_topic",              app:"topic", script:"test"},
         {prefix:"/test_data",               app:"data", script:"test"},
+        {prefix:"/test_query",              app:"query", script:"test"},
 
         // sample app
         {prefix:"/sample",             app:"sample"}

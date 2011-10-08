@@ -277,7 +277,7 @@
 </acre:block>
 
 <acre:block def="attribution_creator(o)">
-  ${freebase_components.attribution(h.get_attribution(o), true)}
+  ${freebase_components.attribution(h.get_attribution(o), true, [["writes"]])}
 </acre:block>
 
 <acre:block def="link_menu(o)">

@@ -35,21 +35,21 @@
   var _ = i18n.gettext;
 </acre:script>
 
-<acre:block def="creator(creator_id, url)">
-  <a class="creator" href="${url || h.fb_url(creator_id)}"
-     title="${_('View user profile')}">${h.id_key(creator_id)}</a>
+<acre:block def="creator(creator_id, url, params)">
+  <a class="creator" href="${url || h.fb_url(creator_id, params)}"
+     title="${creator_id}">${h.id_key(creator_id)}</a>
 </acre:block>
 
-<acre:block def="attribution(attr, use_attribution_icon)">
+<acre:block def="attribution(attr, use_attribution_icon, params)">
   <span class="attribution" acre:trim="1">
-    ${creator(attr.creator)}
+    ${creator(attr.creator, null, params)}
     <span acre:if="attr.source" acre:trim="1">
       <acre:block if="use_attribution_icon" trim="1">
         <span style="cursor:pointer;" class="attribution-icon" title="${attr.source.name} - ${attr.source.id}">*</span>
       </acre:block>
       <acre:block else="">
         ${_("via")}
-        <a href="${attr.source.id}">${attr.source.name}</a>
+        <a href="${h.fb_url(attr.source.id, params)}">${attr.source.name}</a>
       </acre:block>
     </span>
   </span>

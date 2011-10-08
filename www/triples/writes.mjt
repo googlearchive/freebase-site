@@ -41,6 +41,7 @@
   var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
   var th = acre.require("helpers.sjs");
+  var triples = acre.require("triples.mjt");
 
   // microdata helpers
   var microdata = acre.require("lib/helper/microdata.sjs");
@@ -111,109 +112,69 @@
 <acre:block def="writes(id, data, filters)" if="data && data.length">
   <div class="section">
     <h2 class="table-title"><a name="attribution_links">${_("Links created by or via this object")} (${i18n_c.number(data.length)})</a></h2>
-    <table class="table table-sortable">
+    <table class="table table-sortable" id="infinitescroll">
       <thead>
         <tr>
           <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
-          <th class="column-header column-header-asc" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
+          <th class="column-header column-header-asc {sorter: 'string'}" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
           <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
         </tr>
       </thead>
-      <tbody>
-        <acre:block for="o in data">
-        <acre:script>
-        if (o.master_property === "/dataworld/gardening_hint/replaced_by") {
-        o.source.id = "/guid/" + o.source.guid.substring(1);
-        }
-        </acre:script>
-        <tr class="hoverable ${th.link_class(o)}">
-          <th class="row-header odd" scope="row">
-            ${topic(o.source)}
-            ${tooltip()}
-          </th>
-          <td class="even"><span class="self">${a(o.master_property)}</span></td>
-          <td class="odd" acre:if="o.target_value">${literal(o.source.id, o.master_property, o.target_value)}</td>
-          <td class="odd" acre:else="">${topic(o.target)}</td>
-          <td class="even">${attribution_creator(o)}</td>
-          <td class="odd numeric">${o.timestamp}</td>
-          <td acre:if="filters.historical" class="even">${o.operation}</th>
+
+      ${writes_body(id, data, filters)}
+
+      <tfoot>
+        <tr>
+          <td acre:attrs="filters.historical ? {colspan:'6'} : {colspan:'5'}">
+            <acre:script>
+              var params = {id:id};
+              for (var k in filters) {
+                if (filters[k] != null) {
+                  params[k] = filters[k];
+                }
+              }              
+            </acre:script>
+            <a id="infinitescroll-next" href="${h.ajax_url('/infinitescroll_writes.ajax', params)}">next</a>
+          </td>
         </tr>
-        </acre:block>
-      </tbody>
+      </tfoot>
+
     </table>
   </div>
+</acre:block>
+
+<acre:block def="writes_body(id, data, filters)">
+  <tbody acre:attrs="data.length ? {'data-next':data[data.length-1].timestamp} : {}">
+    <acre:block for="o in data">
+      ${writes_row(id, o, filters)}
+    </acre:block>
+  </tbody>
+</acre:block>
+
+<acre:block def="writes_row(id, o, filters)">  
+  <tr class="${th.link_class(o)}">
+    <th class="row-header odd" scope="row">
+      <span class="wrapper">
+        ${triples.source(o)}
+        ${triples.link_menu(o)}
+      </span>
+    </th>
+    <td class="even">
+      ${triples.property(o)}
+    </td>
+    <td class="odd">
+      ${o.target_value ? triples.target_value(o) : triples.target(o)}
+    </td>
+    <td class="even">${triples.attribution_creator(o)}</td>
+    <td class="odd">${o.timestamp}</td>
+    <td acre:if="filters.historical" class="even">${o.operation}</td>
+  </tr>
 </acre:block>
 
 <acre:block def="footer_script()">
   <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
   <script src="triples.mf.js"></script>
-</acre:block>
-
-<acre:block def="a(id, name, attrs)" trim="">
-  <acre:script>
-    attrs = h.extend({
-      title: id
-    }, attrs);
-    var clazz = "";
-    if (attrs["class"]) {
-      clazz = attrs["class"];
-      delete attrs["class"];
-    }
-  </acre:script>
-  <a href="${h.fb_url(id, [['links']])}" acre:attrs="attrs" class="${clazz}">${name || id}</a>
-</acre:block>
-
-<acre:block def="topic(o)" trim="">
-  <acre:script>
-    var id = o.id;
-    if (/^\/en\//.test(id)) {
-      id = o.mid;
-    }
-    var name = null;
-    if (id === o.mid && o.name && o.name.length) {
-      name = i18n.display_name(o);
-    }
-  </acre:script>
-  ${a(id, id)}
-  <acre:block if="name != null">
-    ${name}
-  </acre:block>
-</acre:block>
-
-<acre:block def="literal(id, master_property, target_value)" trim="">
-  <span class="literal-value literal-value-${target_value.type.split('/').pop()}" acre:trim="">
-    <acre:block if="master_property === '/common/document/source_uri' && target_value.value.indexOf('http://wp/') === 0" trim="">
-      <a href="${h.fb_api_url('/api/trans/blurb' + id, [['maxlength', 1600]])}">${target_value.value}</a>
-    </acre:block>
-    <acre:block elif="master_property === '/type/content/blob_id'" trim="">
-      <a href="${h.fb_api_url('/api/trans/raw' + id)}">${target_value.value}</a>
-    </acre:block>
-    <acre:block elif="target_value.type === '/type/uri'" trim="">
-      <a href="${target_value.value}" target="_new">${target_value.value}</a>
-    </acre:block>
-    <acre:block else="" trim="">
-      ${target_value.value}
-    </acre:block>
-  </span>
-  <!--<span class="literal-type">${a(target_value.type)}</span>!-->
-  <acre:block if="target_value.type === '/type/text'" trim="">
-    <acre:block if="target_value.lang">
-      ${lang(target_value.lang)}
-    </acre:block>
-  </acre:block>
-</acre:block>
-
-<acre:block def="lang(language)" trim="">
-  <span class="lang">${a(language)}</a></span>
-</acre:block>
-
-<acre:block def="attribution_creator(o)">
-  ${freebase_components.attribution(h.get_attribution(o), true)}
-</acre:block>
-
-<acre:block def="tooltip()">
-  <a href="javascript:void(0);" class="row-menu-trigger">+</a>
 </acre:block>

@@ -343,6 +343,9 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
                     options["encodeJavascriptString"] = function(x) { return x; };
                 }
                 self._outputPane.setJSONContent(o, self.getJsonizingSettings(options), q);
+                if ("onRun" in self._options) {
+                    self._options["onRun"](o);
+                }
             }
         };
         var onError = function(msg) {
@@ -372,9 +375,6 @@ CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
                 dataType: "json"
             });
         }
-    }
-    if ("onRun" in this._options) {
-        this._options["onRun"]();
     }
 };
 

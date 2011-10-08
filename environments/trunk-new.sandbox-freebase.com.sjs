@@ -2,14 +2,12 @@
 var codebase = ".www.trunk.svn.freebase-site.googlecode.dev";
 var tags_codebase = ".www.tags.svn.freebase-site.googlecode.dev";
 
-// freebase-site trunk lib
-var site = "//site.www.trunk.svn.freebase-site.googlecode.dev";
-
 var environment_rules = {
 
     // Override labels. All labels point to trunk by default.
     "labels" : {
-        "site": site
+        "site": "//site" + codebase,
+        "lib": "//lib" + codebase
     },
 
     // Override prefix.
@@ -37,6 +35,12 @@ var environment_rules = {
         // sample app
         {prefix:"/sample",             app:"sample"}
     ]
+};
+
+var METADATA = {
+  "mounts": {
+    "lib": environment_rules.labels.lib
+  }
 };
 
 acre.require(site + "/router.sjs").route(environment_rules, this);

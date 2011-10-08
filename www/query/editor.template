@@ -48,7 +48,7 @@
 <acre:block def="content_body()">
   <div id="page-content">
     <div id="page-title">
-      <button id="save-query" class="button primary" 
+      <button id="save-query" class="button save" 
               onclick="return window.freebase.queryeditor.save(this)">
               ${_('Save Query')}
       </button>
@@ -69,7 +69,7 @@
           <a href="javascript:void(0);" class="icon-link headmenu">
             <span class="link-icon"><span class="more-icon">${_('Link')}</span></span>
           </a>	
-          <ul class="links-menu submenu">
+          <ul class="links-menu submenu right">
             <li class="row-menu-item">
               <a href="javascript:void(0)" target="_blank" class="icon-link" title="${_('Click to get Mqlread URL')}" 
                 onmouseover="return fb.dispatch(event, fb.queryeditor.computeMqlReadLink, [], this);" >

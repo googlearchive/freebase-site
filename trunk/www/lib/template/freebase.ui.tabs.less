@@ -33,90 +33,73 @@
 Tabset Style
 */
 
-.section-tabs {
-    border: 5px solid #e4e6e7;
-    .rounded_corners(10px);
-    background: #fff;
-}
-
 /* section-tabset should always include a 'clear' class */
 .section-tabset {
-    border-bottom: 1px solid #e4e4e4;
-    list-style: none;
-    background: #ededed;
-    .linear_gradient(#fff, #ededed, repeat);
-    .rounded_corners(5px);
-}
-
-.section-tab {
-    float: left;
-    border-right: 1px solid #e4e4e4;
-}
-
-.section-tab a {
-    display: block;
-    color: #666;
-    padding: 10px 13px;
-    font-size: 1.2em;
-    font-weight: bold;
-}
-
-.current {
-    background: #fff;
-    .linear_gradient(#ededed, #fff, repeat);
-}
-
-/*
-Search Tabset
-*/
-
-.search-box {
-    margin: 2em 0 2em 13px;
-}
-
-.search-box label {
-    font-size: 1.4em;
-    padding-right: 1em;
-}
-
-.search-box form,
-.search-box fieldset {
-    display: inline;
-}
-
-.search-box .text-input {
-    font-size: 14px;
-    padding: 6px;
-}
-
-
-/*
-Inline Tabset
-*/
-
-.inline-tabset li {
-  float: left;
+  display: block;
+  min-height: 29px;
+  background: #f1f2f3;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
   list-style: none;
-  margin-right: 5px;
-}
+  background: #ededed;
+  .linear_gradient(#fff, #ededed, repeat);
 
-.inline-tabset a {
-  display: inline-block;
-  font-size: 12px;
-  font-weight: bold;
-  line-height: 1;
-  padding: 3px 5px;
-  color: #666;
-  border: 1px solid transparent;
-  .rounded_corners();
-}
 
-.inline-tabset a.current {
-  border: 1px solid #597a91;
-  .linear_gradient(#597a91, #658aa4);
-  color: #fff;
-}
+  li {
+    float: left;
+    list-style: none;
+    line-height: 1;
+  }
 
-.inline-tabset a:hover {
-  text-decoration: none;
+  a {
+    font-size: 12px;
+    line-height: 2.5;
+    color: #666;
+  }
+
+  a:hover {
+    text-decoration: none;
+  }
+
+  span {
+    display: block;
+    border-right: 1px solid rgba(0,0,0,0.1);
+    padding: 0 15px;
+  }
+
+  a:hover span {
+    background: #eee;
+    background: rgba(0,0,0,0.04);
+    .transition();
+  }
+
+  a.current span {
+    border: 0;
+    font-weight: bold;
+    color: #f1f2f3;
+    background: #58575f;
+    background: -moz-linear-gradient(top, #58575f 0%, #58575f 50%, #4d4d53 50%, #4d4d53 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#58575f), color-stop(50%,#58575f), color-stop(50%,#4d4d53), color-stop(100%,#4d4d53));
+    background: -webkit-linear-gradient(top, #58575f 0%,#58575f 50%,#4d4d53 50%,#4d4d53 100%);
+    background: -o-linear-gradient(top, #58575f 0%,#58575f 50%,#4d4d53 50%,#4d4d53 100%);
+    background: -ms-linear-gradient(top, #58575f 0%,#58575f 50%,#4d4d53 50%,#4d4d53 100%);
+    background: linear-gradient(top, #58575f 0%,#58575f 50%,#4d4d53 50%,#4d4d53 100%);
+    position: relative;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+    height: 30px;
+  }
+
+  a.current span:after {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0; right: 0;
+    margin: 0 auto;
+    bottom: -13px;
+    border-width: 9px;
+    border-color: #4d4d53 transparent transparent;
+    border-style: solid;
+    height: 0;
+    width: 0;
+  }
 }

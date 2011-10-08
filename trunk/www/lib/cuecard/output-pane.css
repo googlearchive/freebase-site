@@ -50,6 +50,7 @@ div.cuecard-outputPane-tabBody {
   white-space: pre-wrap;
   font-family: monospace;
   font-size: 13px;
+  line-height: auto;
   color: black;
   padding: 10px;
 }

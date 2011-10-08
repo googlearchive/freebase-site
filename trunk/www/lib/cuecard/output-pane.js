@@ -166,11 +166,12 @@ CueCard.OutputPane.prototype.setJSONContent = function(o, jsonizingSettings, que
   this._tabs.click(this.getTabIndex(this._lastJsonOutputMode));
 }
 
-CueCard.OutputPane.prototype.setStatus = function(html) {
+CueCard.OutputPane.prototype.setStatus = function(html, switch_tabs) {
   this._jsonResult = null;
   this._setJsonText(html);
-  //this._setIFrameText(html);
-  //if (this._list) this._list_content.html(html);
+  if (switch_tabs) {
+    this._tabs.click(this.getTabIndex(this._lastJsonOutputMode));
+  }
 };
 
 CueCard.OutputPane.prototype.getJson = function() {

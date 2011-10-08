@@ -315,6 +315,7 @@ function extend_rules(rules, environment_rules) {
   // Labels environment override.
 
   if (environment_rules["labels"]) { 
+    if (!("labels" in rules)) rules["labels"] = {};
     h.extend(rules["labels"], environment_rules["labels"])
     for (var app_label in environment_rules["labels"]) { 
       rules["labels"][app_label] = environment_rules["labels"][app_label]

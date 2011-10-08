@@ -121,7 +121,7 @@
       css_panel_content: "panel-content",
       css_drawer_header: "drawer-header",
       css_drawer_content: "drawer-content",
-      css_drawer_toggle: "drawer-toggle",
+      css_drawer_toggle: "toggle",
       animate: true,
       toggle_state: true,
       init_height: true

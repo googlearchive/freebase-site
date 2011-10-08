@@ -41,7 +41,7 @@
               acre:attrs="($.localstore('cc_assist') == '1') ? {'checked' : ''} : {}"
               acre:onclick="queryEditor._toggleAssist()"/>
       </div>
-      <button class="button toggle up cuecard-queryEditor-options drawer-toggle">
+      <button class="button toggle up cuecard-queryEditor-options-toggle" style="display:none">
         Options
       </button>
       <button class="button cuecard-queryEditor-cleanUp"

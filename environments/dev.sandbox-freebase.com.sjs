@@ -37,11 +37,5 @@ var environment_rules = {
     "prefix" : []
 };
 
-var METADATA = {
-  "mounts": {
-    "lib": environment_rules.labels.lib
-  }
-};
-
 acre.require(environment_rules.labels.site + "/router.sjs").route(environment_rules, this);
 

@@ -54,7 +54,7 @@
       <acre:script>
         var table = hc.to_table_structure(structures, data, i18n.lang);
       </acre:script>
-      <table cellpadding="1" cellspacing="1" border="1" class="data-table" id="infinitescroll" data-next="${cursor}">
+      <table cellspacing="0" class="data-table" id="infinitescroll" data-next="${cursor}">
         <thead>
           <acre:block for="row in table.head">
             <tr>
@@ -90,16 +90,26 @@
                 var value = cell.value;
               </acre:script>
               <acre:block if="structure.id === '/type/object/name'">
-                <th>
-                  <a title="${tbody.value.id}" class="property-value"
-                     href="${h.fb_url(true, tbody.value.id)}"
-                     data-id="${tbody.value.id}">${value.text}</a>
-                  ${i18n_c.lang_code(value.lang, i18n.lang)}
+                <th class="name">
+                  <ul class="data-list">
+                    <li>
+                      <span class="wrapper">
+                        <a title="${tbody.value.id}" class="property-value"
+                           href="${h.fb_url(true, tbody.value.id)}"
+                           data-id="${tbody.value.id}">${value.text}</a>
+                        ${i18n_c.lang_code(value.lang, i18n.lang)}
+                      </span>
+                    </li>
+                  </ul>
                 </th>
               </acre:block>
               <acre:block elif="structure.expected_type.id === '/common/image'">
-                <td rowspan="${cell.rowspan}">
-                  ${pb.value(tbody.value, cell.structure,tbody.value, i18n.lang)}
+                <td class="image" rowspan="${cell.rowspan}">
+                  <ul class="data-list">
+                    <li>
+                      ${pb.value(tbody.value, cell.structure,tbody.value, i18n.lang)}
+                    </li>
+                  </ul>
                </td>
               </acre:block>
               <acre:block elif="structure.id === '/type/object/id'">
@@ -111,7 +121,13 @@
               </acre:block>
               <acre:block else="">
                 <td>
-                  ${pb.value(tbody.value, cell.structure, cell.value, i18n.lang)}
+                  <ul class="data-list">
+                    <li>
+                    <span class="wrapper">
+                      ${pb.value(tbody.value, cell.structure, cell.value, i18n.lang)}
+                    </span>
+                    </li>
+                  </ul>
                 </td>
               </acre:block>
             </acre:block>

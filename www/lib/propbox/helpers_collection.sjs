@@ -57,19 +57,23 @@ function to_table_structure(prop_structures, values, lang) {
     var mediator = prop_structure.expected_type.mediator === true;
     var is_image = prop_structure.expected_type.id === "/common/image";
     var colspan = 1;
+    var css_class = "";
     if (is_image) {
       // just show <img>, no disambiguating props
+      css_class = "image";
     }
     else if (subprop_structures.length) {
       subprops = true;
       if (mediator) {
         colspan = subprop_structures.length;
+        css_class = "mediator-header";
       }
       else {
         colspan = subprop_structures.length + 1;
+        css_class = "mediator-sub-prop";
       }
     }
-    var attrs = {colspan:colspan};
+    var attrs = {colspan:colspan, "class": css_class};
     primary_head.push({structure:prop_structure, attrs:attrs});
   });
   head.push(primary_head);

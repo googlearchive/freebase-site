@@ -231,15 +231,15 @@ function init_site_rules(lib) {
           "script": "domain.tab"
         },
         {
-          "name": _("Schema"),
-          "key": "schema",
-          "app": "schema",
-          "script": "domain.tab"
-        },
-        {
           "name": _("Queries"),
           "key": "queries",
           "app": "query",
+          "script": "domain.tab"
+        },
+        {
+          "name": _("Schema"),
+          "key": "schema",
+          "app": "schema",
           "script": "domain.tab"
         },
         {
@@ -267,16 +267,16 @@ function init_site_rules(lib) {
       }]),
       "tabs": [
         {
-          "name": _("Topics"),
-          "key": "topics",
-          "app": "data",
-          "script": "type.tab",
-        },
-        {
           "name": _("Schema"),
           "key": "schema",
           "app": "schema",
           "script": "type.tab"
+        },
+        {
+          "name": _("Instances"),
+          "key": "instances",
+          "app": "data",
+          "script": "type.tab",
         },
         {
           "name": _("Add Topic"),
@@ -393,7 +393,7 @@ function init_site_rules(lib) {
       }]),
       "tabs": [
         {
-          "name": _("Topics"),
+          "name": _("Data"),
           "key": "topics",
           "app": "query",
           "script": "collection.tab"

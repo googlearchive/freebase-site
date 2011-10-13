@@ -51,7 +51,7 @@
     <h1 class="table-title">
       <strong>${i18n_c.number(c.table.activity.topic_count)}</strong>
       ${i18n.display_name(c.object)}
-      ${_("topics")}
+      ${c.table.root_type_is_mediator ? _("mediators") : _("topics")}
     </h1>
     <acre:block if="c.table.instances && c.table.instances.length">
       ${type_table(c.table.instances, c.table.properties, c.table.root_type_is_mediator)}

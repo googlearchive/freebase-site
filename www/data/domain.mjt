@@ -48,7 +48,7 @@
   <div class="views">
     <div class="table-title-wrapper clear">
       <h2 class="table-title">
-        ${h.template_sprintf(_("Explore %s topics by Type"), i18n.display_name(c.object))}
+        ${h.template_sprintf(_("Explore %s by Type"), i18n.display_name(c.object))}
       </h2>
     </div>
     <div class="panes">
@@ -66,14 +66,14 @@
                 <span class="sort-icon">${_("by")}</span>
               </th>
               <th class="column-header numeric {sorter: 'number'}">
-                <span class="sort-icon">${_("Topics")}</span>
+                <span class="sort-icon">${_("Instances")}</span>
               </th>
             </tr>
           </thead>
           <tbody>
             <tr acre:for="type in c.domain.types">
               <th class="row-header odd">
-                <a href="${h.fb_url(type.id)}">${i18n.display_name(type)}</a>
+                <a href="${h.fb_url(type.id, [['instances']])}">${i18n.display_name(type)}</a>
               </th>
               <td class="">
                 ${i18n_c.datetime(type.timestamp, [["class","published"],["data-format","medium"]])}

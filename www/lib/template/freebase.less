@@ -281,7 +281,10 @@ body {
    for the visual design.
 */
 
-#page-content { padding: 3em 30px 0; }
+#page-content { 
+  padding: 3em 30px 0;
+  margin-bottom: 60px;
+}
 
 /* Fixed is a class appended to #content when we want a fixed width, centered page */
 .fixed { 
@@ -822,8 +825,10 @@ FOOTER
 */
 
 #footer {
-  clear: both;
-  margin-top: 30px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background: #fff;
   border-top: 1px solid #cdf;
   border-bottom: 1px solid #cdf;

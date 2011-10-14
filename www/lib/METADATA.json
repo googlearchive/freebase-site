@@ -61,7 +61,19 @@
     },
     "tab": {
       "handler": "acre_script"
-    }      
+    },
+    "gif": {
+      "media_type": "image/gif", 
+      "handler": "tagged_binary"
+    }, 
+    "jpg": {
+      "media_type": "image/jpg", 
+      "handler": "tagged_binary"
+    }, 
+    "png": {
+      "media_type": "image/png", 
+      "handler": "tagged_binary"
+    }
   },
   "libs" : {
     "suggest" : {

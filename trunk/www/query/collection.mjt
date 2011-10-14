@@ -70,7 +70,7 @@
           </acre:block>
         </thead>
           ${collection_body(table.body)}
-        <tfoot>
+        <tfoot acre:if="cursor">
           <tr>
             <td colspan="">
               <a id="infinitescroll-next" href="${h.ajax_url('/infinitescroll.ajax', [['query', JSON.stringify(query)]])}">next</a>

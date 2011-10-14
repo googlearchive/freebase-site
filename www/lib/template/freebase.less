@@ -397,6 +397,47 @@ Header
   margin-left: 3px;
 }
 
+/*
+ * #page-state is the element to use for transient
+ * messages at the page-level (ie. 'Query saved').
+ * It should be extended with a class to provide coloring
+ * specific to the kind of message:
+ *
+ *   - .notice -> something has happened based on an action (yellow)
+ *
+ * TODO: add states for .info, .error
+ */
+
+#page-state {
+  display: inline-block;
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 40px;
+  margin: 0 25%;
+  padding: 3px 30px;
+  color: #333;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  .rounded_corners_bottom;
+  .box_shadow(1px,1px,3px,rgba(0,0,0,0.7);
+}
+
+
+#page-state a,
+#page-state a:hover {
+  color: #333;
+  text-decoration: underline;
+}
+
+#page-state.notice {
+  background-color: #fcce17;
+  background-image: -webkit-repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 2px, rgba(255,255,255,0) 2px, rgba(255,255,255,0) 4px);
+  background-image: -moz-repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 2px, rgba(255,255,255,0) 2px, rgba(255,255,255,0) 4px);
+}
+
 .fbs-flyout-pane {
   border: 1px solid #e1e2e3;
   .box_shadow(0,1px,2px,#999);

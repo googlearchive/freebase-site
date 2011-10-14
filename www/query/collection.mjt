@@ -48,6 +48,9 @@
   <div id="collection-data" class="section instances" acre:if="c.collection">
     ${collection_table(c.collection.structures, c.collection.values, c.query, c.cursor)}
   </div>
+  <div acre:else="" class="table-header">
+    <h2 class="table-title">${_('This query did not return any results')}</h2>
+  </div>
 </acre:block>
 
 <acre:block def="collection_table(structures, data, query, cursor)">

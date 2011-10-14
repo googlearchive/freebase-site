@@ -188,7 +188,14 @@ function collection(query, opts) {
 
   return freebase.mqlread([q], opts)
     .then(function(env) {
-      var cursor = env.cursor;
+      var result = {
+        query: query,
+        cursor: env.cursor,
+        collection: null
+      };
+      
+      // if no topics in result, bail
+      if (!env.result.length) return result;
       
       var mids = [];
       env.result.forEach(function(r) {
@@ -201,11 +208,8 @@ function collection(query, opts) {
           var is_mediator = r[typeid]["/freebase/type_hints/mediator"];
           var default_paths = is_mediator ? ["/type/object/id"] : ["/type/object/name", "/common/topic/image"];
           var props = default_paths.concat(get_paths(q, 2, typeid));
-          return deferred.all({
-            query: query,
-            cursor: cursor,
-            collection: pq.collection(mids, props, i18n.lang)
-          });
+          result.collection = pq.collection(mids, props, i18n.lang);
+          return deferred.all(result);
         });
     });
 };

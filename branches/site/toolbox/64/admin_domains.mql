@@ -1,0 +1,19 @@
+{
+  "id": "/user/daepark",
+  "!/type/usergroup/member": [{
+    "id" : null,
+    "name" : null,
+    "limit": 500,
+    "!/type/domain/owners" : [{
+      "id": null,
+      "name": null,
+      "type": "/type/domain",
+      "limit": 500,
+      "forbid:type": {
+        "id": "/freebase/apps/acre_app",
+        "optional": "forbidden",
+        "limit": 0
+      }
+    }]
+  }]
+}

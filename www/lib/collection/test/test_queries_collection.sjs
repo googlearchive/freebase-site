@@ -31,10 +31,10 @@
 
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mock").record(this, "propbox/test/playback_test_queries_collection.json");
+acre.require("test/mock").playback(this, "collection/test/playback_test_queries_collection.json");
 
 var h = acre.require("helper/helpers.sjs");
-var qc = acre.require("propbox/queries_collection.sjs");
+var qc = acre.require("collection/queries.sjs");
 
 test("collection", function() {
   var topic_ids = ["/en/milla_jovovich", "/en/angus_macfadyen"];

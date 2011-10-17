@@ -14,6 +14,7 @@ var environment_rules = {
     "prefix" : [
         // Test routing rules to test non-user facing apps (core libraries, etc.)
         {prefix:"/test_lib_appeditor-services",  app:"lib", script:"appeditor-services/test"},
+        {prefix:"/test_lib_collection",     app:"lib", script:"collection/test"},
         {prefix:"/test_lib_filter",         app:"lib", script:"filter/test"},
         {prefix:"/test_lib_flag",           app:"lib", script:"flag/test"},
         {prefix:"/test_lib_handlers",       app:"lib", script:"handlers/test"},

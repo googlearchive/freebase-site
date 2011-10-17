@@ -58,18 +58,8 @@
         var table = hc.to_table_structure(structures, data, i18n.lang);
       </acre:script>
       <table cellspacing="0" class="data-table" id="infinitescroll" data-next="${cursor}">
-        <thead>
-          <acre:block for="row in table.head">
-            <tr>
-              <acre:block for="cell in row">
-                <th acre:attrs="cell.attrs">
-                  ${cell.structure.text}
-                </th>
-              </acre:block>
-            </tr>
-          </acre:block>
-        </thead>
-          ${collection_body(table.body)}
+        ${collection_head(table.head)}
+        ${collection_body(table.body)}
         <tfoot acre:if="cursor">
           <tr>
             <td colspan="">
@@ -79,6 +69,20 @@
         </tfoot>
       </table>
   </div>
+</acre:block>
+
+<acre:block def="collection_head(head)">
+  <thead>
+    <acre:block for="row in head">
+      <tr>
+        <acre:block for="cell in row">
+          <th acre:attrs="cell.attrs">
+            ${cell.structure.text}
+          </th>
+        </acre:block>
+      </tr>
+    </acre:block>
+  </thead>
 </acre:block>
 
 <acre:block def="collection_body(body)">
@@ -92,8 +96,8 @@
                 var structure = cell.structure;
                 var value = cell.value;
               </acre:script>
-              <acre:block if="structure.id === '/type/object/name'">
-                <th class="name">
+              <acre:block if="structure && structure.id === '/type/object/name'">
+                <th class="name" rowspan="${cell.rowspan||1}">
                   <ul class="data-list">
                     <li>
                       <span class="wrapper">
@@ -106,8 +110,8 @@
                   </ul>
                 </th>
               </acre:block>
-              <acre:block elif="structure.expected_type.id === '/common/image'">
-                <td class="image" rowspan="${cell.rowspan}">
+              <acre:block elif="structure && structure.expected_type.id === '/common/image'">
+                <td class="image" rowspan="${cell.rowspan||1}">
                   <ul class="data-list">
                     <li>
                       ${pb.value(tbody.value, cell.structure,tbody.value, i18n.lang)}
@@ -115,16 +119,16 @@
                   </ul>
                </td>
               </acre:block>
-              <acre:block elif="structure.id === '/type/object/id'">
-                <th>
+              <acre:block elif="structure && structure.id === '/type/object/id'">
+                <th rowspan="${cell.rowspan||1}">
                   <a title="${tbody.value.id}" class="property-value"
                      href="${h.fb_url(true, tbody.value.id)}"
                      data-id="${tbody.value.id}">${tbody.value.id}</a>
                 </th>
               </acre:block>
               <acre:block else="">
-                <td>
-                  <ul class="data-list">
+                <td rowspan="${cell.rowspan||1}">
+                  <ul class="data-list" acre:if="cell.value">
                     <li>
                     <span class="wrapper">
                       ${pb.value(tbody.value, cell.structure, cell.value, i18n.lang)}

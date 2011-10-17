@@ -38,16 +38,16 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      params.object,
-      validators.Int(params, "page", {if_empty: null})
+      params.object
     ];
   },
 
   run: function(object, page) {
-    return {
-      id:      object.id,
-      object:  object,
-      table:   queries.type(object.id, page)
-    };
+    return queries.type(object.id)
+      .then(function(c) {
+        c.id = object.id;
+        c.object = object;
+        return c;
+      });
   }
 };

@@ -179,7 +179,12 @@ function get_paths(q, depth, top_type) {
 };
 
 function query(query, opts) {
+  opts = opts || {};
   var MID_PROP = "collection:mid";
+  
+  if (!("cursor" in opts)) {
+    opts.cursor = true;
+  }
 
   var q = h.isArray(query) ? query[0] : query;
   q = h.extend(true, {}, q);

@@ -146,6 +146,7 @@
     data.init_data_tabs();
     data.init_activity_chart();
     data.init_table_mouseover();
+    if (fb.collection) fb.collection.init();
   };
 
   $(init);

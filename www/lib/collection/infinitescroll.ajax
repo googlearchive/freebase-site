@@ -28,8 +28,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-;(function($, fb) {
 
-  fb.collection.init();
+var i18n = acre.require("i18n/i18n.sjs");
+var validators = acre.require("validator/validators.sjs");
+var hc = acre.require("collection/helpers.sjs");
+var queries = acre.require("collection/queries.sjs");
+var t = acre.require("collection/collection.mjt");
 
-})(jQuery, window.freebase);
+var SPEC = {
+
+  validate: function(params) {
+    return [
+      validators.Json(params, "query", {required: true}),
+      validators.String(params, "cursor", {if_missing: true}),
+    ];
+  },
+
+  run: function(query, cursor) {
+    return queries.query(query, {cursor: cursor})
+      .then(function(c) {
+        var table = hc.to_table_structure(c.collection.structures, c.collection.values, i18n.lang);
+        return {
+          html: acre.markup.stringify(t.collection_body(table.body)),
+          cursor: c.cursor
+        };
+      });
+  }
+};
+

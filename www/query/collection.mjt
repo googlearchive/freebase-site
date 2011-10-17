@@ -35,9 +35,7 @@
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
-  var image = acre.require("lib/template/imagecomponents.mjt");
-  var pb = acre.require("lib/propbox/propbox.mjt");
-  var hc = acre.require("lib/propbox/helpers_collection.sjs");
+  var t = acre.require("lib/collection/collection.mjt");
 </acre:script>
 
 <acre:block def="head()">
@@ -46,106 +44,11 @@
 
 <acre:block def="page_content()">
   <div id="collection-data" class="section instances" acre:if="c.collection">
-    ${collection_table(c.collection.structures, c.collection.values, c.query, c.cursor)}
+    ${t.collection(c.collection.structures, c.collection.values, c.query, c.cursor)}
   </div>
   <div acre:else="" class="table-header">
     <h2 class="table-title">${_('This query did not return any results')}</h2>
   </div>
-</acre:block>
-
-<acre:block def="collection_table(structures, data, query, cursor)">
-      <acre:script>
-        var table = hc.to_table_structure(structures, data, i18n.lang);
-      </acre:script>
-      <table cellspacing="0" class="data-table" id="infinitescroll" data-next="${cursor}">
-        ${collection_head(table.head)}
-        ${collection_body(table.body)}
-        <tfoot acre:if="cursor">
-          <tr>
-            <td colspan="">
-              <a id="infinitescroll-next" href="${h.ajax_url('/infinitescroll.ajax', [['query', JSON.stringify(query)]])}">next</a>
-            </td>
-          </tr>
-        </tfoot>
-      </table>
-  </div>
-</acre:block>
-
-<acre:block def="collection_head(head)">
-  <thead>
-    <acre:block for="row in head">
-      <tr>
-        <acre:block for="cell in row">
-          <th acre:attrs="cell.attrs">
-            ${cell.structure.text}
-          </th>
-        </acre:block>
-      </tr>
-    </acre:block>
-  </thead>
-</acre:block>
-
-<acre:block def="collection_body(body)">
-  <acre:block for="tbody in body">
-    <tbody>
-      <acre:block for="row in tbody">
-        <tr>
-          <acre:block for="cell in row">
-            <acre:block if="cell">
-              <acre:script>
-                var structure = cell.structure;
-                var value = cell.value;
-              </acre:script>
-              <acre:block if="structure && structure.id === '/type/object/name'">
-                <th class="name" rowspan="${cell.rowspan||1}">
-                  <ul class="data-list">
-                    <li>
-                      <span class="wrapper">
-                        <a title="${tbody.value.id}" class="property-value"
-                           href="${h.fb_url(true, tbody.value.id)}"
-                           data-id="${tbody.value.id}">${value.text}</a>
-                        ${i18n_c.lang_code(value.lang, i18n.lang)}
-                      </span>
-                    </li>
-                  </ul>
-                </th>
-              </acre:block>
-              <acre:block elif="structure && structure.expected_type.id === '/common/image'">
-                <td class="image" rowspan="${cell.rowspan||1}">
-                  <ul class="data-list">
-                    <li>
-                      ${pb.value(tbody.value, cell.structure,tbody.value, i18n.lang)}
-                    </li>
-                  </ul>
-               </td>
-              </acre:block>
-              <acre:block elif="structure && structure.id === '/type/object/id'">
-                <th rowspan="${cell.rowspan||1}">
-                  <a title="${tbody.value.id}" class="property-value"
-                     href="${h.fb_url(true, tbody.value.id)}"
-                     data-id="${tbody.value.id}">${tbody.value.id}</a>
-                </th>
-              </acre:block>
-              <acre:block else="">
-                <td rowspan="${cell.rowspan||1}">
-                  <ul class="data-list" acre:if="cell.value">
-                    <li>
-                    <span class="wrapper">
-                      ${pb.value(tbody.value, cell.structure, cell.value, i18n.lang)}
-                    </span>
-                    </li>
-                  </ul>
-                </td>
-              </acre:block>
-            </acre:block>
-            <acre:block else="">
-              <td>&nbsp;</td>
-            </acre:block>
-          </acre:block>
-        </tr>
-      </acre:block>
-    </tbody>
-  </acre:block>
 </acre:block>
 
 <acre:block def="footer_script()">

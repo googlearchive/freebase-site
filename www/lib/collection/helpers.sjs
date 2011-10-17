@@ -53,14 +53,69 @@ function to_table_structure(prop_structures, values, lang) {
   };
 };
 
+function prop_structures_to_head(prop_structures) {
+  var head = [],
+      subprops = false,
+      primary_head = [];
+
+  prop_structures.forEach(function(prop_structure) {
+    var subprop_structures = prop_structure.properties || [],
+        mediator = prop_structure.expected_type.mediator === true,
+        is_image = prop_structure.expected_type.id === "/common/image",
+        colspan = 1,
+        css_class = "";
+
+    if (is_image) {
+      // just show <img>, no disambiguating props
+      css_class = "image";
+    }
+    else if (subprop_structures.length) {
+      subprops = true;
+      if (mediator) {
+        colspan = subprop_structures.length;
+        css_class = "mediator-header";
+      }
+      else {
+        colspan = subprop_structures.length + 1;
+        css_class = "mediator-sub-prop";
+      }
+    }
+    var attrs = {colspan:colspan, "class": css_class};
+    primary_head.push({structure:prop_structure, attrs:attrs});
+  });
+  head.push(primary_head);
+
+  // secondary head row for disambiguating prooperties (mediators and deep properties)
+  if (subprops) {
+    var secondary_head = [];
+    prop_structures.forEach(function(prop_structure, i) {
+      var subprop_structures = prop_structure.properties || [],
+      mediator = prop_structure.expected_type.mediator === true,
+      is_image = prop_structure.expected_type.id === "/common/image";
+
+      if (!is_image && subprop_structures.length) {
+        if (!mediator) {
+          secondary_head.push({structure:{text:_("Name")}});
+        }
+        subprop_structures.forEach(function(subprop_structure) {
+          secondary_head.push({structure:subprop_structure});
+        });
+      }
+      else {
+        primary_head[i].attrs.rowspan = 2;
+      }
+    });
+    head.push(secondary_head);
+  }
+  return head;
+};
 
 function value_to_rows(prop_structures, value) {
   var rows = [],
       column = 0,
       last_vals = [];
-      
+
   prop_structures.forEach(function(prop_structure) {
-    
     var prop_values = value[prop_structure.id] && value[prop_structure.id].values || [],
         subprop_structures = prop_structure.properties || [],
         expected_type = prop_structure.expected_type || {},
@@ -68,18 +123,18 @@ function value_to_rows(prop_structures, value) {
         mediator = expected_type.mediator === true,
         row = ensure_row(rows, 0),
         cell = {row:0};
-        
+
     if (is_image) {
       cell = {structure:prop_structure, images:prop_values, row:0};
       last_vals[column] = cell;
       row.push(cell);
       column += 1;
     }
-    
     else if (subprop_structures.length) {
       var orig_column = column,
           current_row = 0,
           structures = mediator ? subprop_structures : [{id:"/type/object/name"}].concat(subprop_structures);
+
       if (!prop_values.length) {
         structures.forEach(function() {
           cell = {row:0};
@@ -108,7 +163,6 @@ function value_to_rows(prop_structures, value) {
         });
       }
     }
-    
     else {
       if (!prop_values.length) {
         last_vals[column] = cell;
@@ -125,75 +179,16 @@ function value_to_rows(prop_structures, value) {
       column += 1;
     }
   });
-  
+
   // pad rowspan of last value in each column
   last_vals.forEach(function(last_val) {
     last_val.rowspan = rows.length - last_val.row;
   });
-  
+
   rows.last_vals = last_vals;
   rows.value = value;
   return rows;
 };
-
-
-function prop_structures_to_head(prop_structures) {
-  var head = [],
-      subprops = false,
-      primary_head = [];
-      
-  prop_structures.forEach(function(prop_structure) {
-    var subprop_structures = prop_structure.properties || [],
-        mediator = prop_structure.expected_type.mediator === true,
-        is_image = prop_structure.expected_type.id === "/common/image",
-        colspan = 1,
-        css_class = "";
-        
-    if (is_image) {
-      // just show <img>, no disambiguating props
-      css_class = "image";
-    }
-    else if (subprop_structures.length) {
-      subprops = true;
-      if (mediator) {
-        colspan = subprop_structures.length;
-        css_class = "mediator-header";
-      }
-      else {
-        colspan = subprop_structures.length + 1;
-        css_class = "mediator-sub-prop";
-      }
-    }
-    var attrs = {colspan:colspan, "class": css_class};
-    primary_head.push({structure:prop_structure, attrs:attrs});
-  });
-  head.push(primary_head);
-
-  // secondary head row for disambiguating prooperties (mediators and deep properties)
-  if (subprops) {
-    var secondary_head = [];
-    prop_structures.forEach(function(prop_structure, i) {
-      var subprop_structures = prop_structure.properties || [],
-      mediator = prop_structure.expected_type.mediator === true,
-      is_image = prop_structure.expected_type.id === "/common/image";
-      
-      if (!is_image && subprop_structures.length) {
-        if (!mediator) {
-          secondary_head.push({structure:{text:_("Name")}});
-        }
-        subprop_structures.forEach(function(subprop_structure) {
-          secondary_head.push({structure:subprop_structure});
-        });
-      }
-      else {
-        primary_head[i].attrs.rowspan = 2;
-      }
-    });
-    head.push(secondary_head);
-  }
-  return head;
-};
-
 
 function ensure_row(table, row) {
   var tr = table[row];

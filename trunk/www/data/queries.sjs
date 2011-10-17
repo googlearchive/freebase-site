@@ -35,10 +35,13 @@ var propbox_mql = acre.require("lib/propbox/mql.sjs");
 var propbox_queries = acre.require("lib/propbox/queries.sjs");
 var ph = acre.require("lib/propbox/helpers.sjs");
 var apis = acre.require("lib/promise/apis.sjs");
+var schema = acre.require("lib/schema/typeloader.sjs");
+var collection = acre.require("lib/collection/queries.sjs");
+
 var freebase = apis.freebase;
-var freebase_query = acre.require("lib/queries/freebase_query.sjs");
 var urlfetch = apis.urlfetch;
 var deferred = apis.deferred;
+
 
 function types_mql(id) {
   return {
@@ -183,6 +186,7 @@ function domain(id) {
     });
 };
 
+
 /**
  * Type query
  * Get a type and a subset of instances
@@ -191,38 +195,16 @@ function type(type_id, page) {
   // define our current language
   var lang = i18n.lang;
 
-  // get the properties and domain associated with our type
-  var q = {
-    id: type_id,
-    guid: null,
-    type: "/type/type",
-    domain: {
-      id: null,
-      name: i18n.mql.query.name()
-    },
-    "/freebase/type_hints/mediator": null,
-    properties: [
-      propbox_mql.prop_schema({
-        "/freebase/property_hints/disambiguator": null,
-        optional: true,
-        index: null,
-        sort: "index"
-      }, lang)
-    ]
-  };
-
-  return freebase.mqlread(q)
-    .then(function(env) {
-      var this_type = env.result;
-
+  return schema.load(type_id)
+    .then(function(r) {
+      var this_type = r[type_id];
       var promises = [];
+      
       /**
        *  Call Activity service to get Type metadata,
        *  including instance count, etc.
       */
-      // contruct path for BDB file
-      var activity_id = "/guid/" + this_type.guid.slice(1);
-      promises.push(freebase.get_static("activity", activity_id)
+      promises.push(freebase.get_static("activity", this_type.id)
         .then(function(activity) {
           if (!activity) {
             return {};
@@ -281,10 +263,6 @@ function type(type_id, page) {
         properties = properties.slice(0,3);
       }
 
-      var prop_structures = properties.map(function(prop) {
-        return ph.to_prop_structure(prop, lang);
-      });
-
       /**
        * Now that we have properties to display
        * we need to construct an instance query,
@@ -296,40 +274,25 @@ function type(type_id, page) {
         mid: null,
         limit: 30,
         name: i18n.mql.query.name(),
-        "/common/topic/article": i18n.mql.query.article(),
         type: type_id,
         optional: true
       }];
 
       // push each of the properties onto
       // our instance query
-      prop_structures.forEach(function(prop_structure) {
+      properties.forEach(function(prop_structure) {
         var prop_clause = ph.mqlread_query(null, prop_structure, null, lang)[prop_structure.id];
         prop_clause[0].limit = 5;
         q[0][prop_structure.id] = prop_clause;
       });
-
-      // execute instance query
-      var e = (typeof page === 'number') ? {page: page} : {};
-      promises.push(freebase.mqlread(q, e)
-        .then(function(env) {
-          var blurbs = [];
-          env.result.forEach(function(topic) {
-            blurbs.push(i18n.get_blurb(topic, {maxlength:300}));
-          });
-          return deferred.all(blurbs)
-            .then(function() {
-              return env.result || [];
-            });
-        }));
+      
+      promises.push(collection.query(q));
 
       return deferred.all(promises)
-        .then(function([activity, instances]) {
+        .then(function([activity, collection]) {
           return {
             activity: activity,
-            instances: instances,
-            page: page || 0,
-            properties: prop_structures,
+            table: collection,
             root_type_is_mediator: this_type["/freebase/type_hints/mediator"] === true,
             domain: this_type.domain
           };

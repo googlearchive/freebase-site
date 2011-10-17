@@ -35,7 +35,7 @@ var promise = acre.require("lib/promise/apis.sjs");
 var freebase = promise.freebase;
 var deferred = promise.deferred;
 
-var queries = acre.require("queries.sjs");
+var queries = acre.require("lib/collection/queries.sjs");
 
 var SPEC = {
   
@@ -51,7 +51,7 @@ var SPEC = {
   run: function(object, query) {
     return query
       .then(function(q) {
-        return queries.collection(q, {cursor: true})
+        return queries.query(q, {cursor: true})
           .then(function(c) {
             c.object = object;
             return c;

@@ -259,6 +259,49 @@
 
     return position;
   };
+  
+  fb.status = (function(){
+      var SECONDS = 1000;
+
+      var timer;
+      var hide_func;
+      var last_level;
+      
+      function _show(log_type,str,duration) {
+          var el = '#page-state';
+          if (last_level && last_level === 'error') {
+              // If we already displaying an error then don't display any more messages
+              // (The previous error should have terminated all tasks, so we shouldn't get here)
+              console.error('MessagePanel: Already displaying error. Ignoring: '+log_type+': '+str);
+          } else {
+              // TODO - figure out how to get the tid
+              var tid = null;
+              $(el).hide().addClass(log_type).text(str);
+              last_level = log_type;
+              window.clearTimeout(timer);
+              hide_func = function(){
+                  $(el).slideUp(300).empty().removeClass(log_type);
+                  hide_func = null;
+                  last_level = null;
+              };
+              timer = window.setTimeout(hide_func, duration);
+              $(el).slideDown(300);
+          }
+      }
+
+      function _clear() {
+          window.clearTimeout(timer);
+          if (hide_func) { hide_func(); }
+      }
+
+      // doing() is for tasks that take time - the message MUST be cancelled with info() or error()
+      return {
+          doing : function(str, tid) {  _show('notice',str, 2000 * SECONDS, tid); return ''; },
+          info  : function(str, tid) {  _show('info', str,    4 * SECONDS, tid); return ''; },
+          error : function(str, tid) {  _show('error',str,    6 * SECONDS, tid); return ''; },
+          clear : _clear
+      };
+  })();
 
   fb.popup = function(url, width, height, windowname) {
     width = width || 300;

@@ -127,10 +127,13 @@
           query: fb.queryeditor.cuecard.queryEditor._editor.getCode()
         },
         onsuccess: function(data) {
-          window.location = data.result.url;
+          fb.status.info("Saved");
+          fb.queryeditor.is_dirty = false;
+          $("#save-query").addClass("disabled");
         },
         onerror: function(errmsg) {
-          console.log("error")
+          fb.status.error(errmsg);
+          console.log("error");
         }
       }));
     }

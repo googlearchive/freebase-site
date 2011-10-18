@@ -31,7 +31,6 @@
 
 var h = acre.require("lib/helper/helpers.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
-var queries = acre.require("queries.sjs");
 
 var SPEC = {
   

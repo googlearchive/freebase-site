@@ -394,7 +394,7 @@ function init_site_rules(lib) {
       "tabs": [
         {
           "name": _("Data"),
-          "key": "topics",
+          "key": "data",
           "app": "query",
           "script": "collection.tab"
         },

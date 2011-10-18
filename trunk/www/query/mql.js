@@ -97,7 +97,7 @@
       qe.page_chrome_height =  $("#header").outerHeight() +
                                $("#page-header").outerHeight() +
                                $("#footer").outerHeight() + 
-                               ($("#page-content").outerHeight(true) - $("#page-content").height()) +
+                               ($("#page-content").outerHeight() - $("#page-content").height()) +
                                $("#page-title").outerHeight(true);
 
       $(window).bind("beforeunload", function(evt) {
@@ -115,6 +115,7 @@
     },
 
     save: function(e) {
+      fb.status.doing("Saving...");
       var trigger = $(this);
       if (trigger.is(".editing")) { // are we already editing?
         return false;

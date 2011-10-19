@@ -84,7 +84,7 @@
                 var value = cell.value;
               </acre:script>
               <acre:block if="structure && structure.id === '/type/object/name'">
-                <th class="name" rowspan="${cell.rowspan||1}">
+                <acre:block def="name_cell()">
                   <ul class="data-list">
                     <li>
                       <span class="wrapper">
@@ -95,10 +95,16 @@
                       </span>
                     </li>
                   </ul>
+                </acre:block>
+                <th acre:if="cell.column === 0" class="name" acre:attrs="cell.attrs">
+                  ${name_cell()}
                 </th>
+                <td acre:else="" class="name" acre:attrs="cell.attrs">
+                  ${name_cell()}
+                </td>
               </acre:block>
               <acre:block elif="structure && structure.expected_type.id === '/common/image'">
-                <td class="image" rowspan="${cell.rowspan||1}">
+                <td class="image" acre:attrs="cell.attrs">
                   <ul class="data-list">
                     <li>
                       ${pb.value(tbody.value, cell.structure,tbody.value, i18n.lang)}
@@ -107,14 +113,14 @@
                </td>
               </acre:block>
               <acre:block elif="structure && structure.id === '/type/object/id'">
-                <th rowspan="${cell.rowspan||1}">
+                <th acre:attrs="cell.attrs">
                   <a title="${tbody.value.id}" class="property-value"
                      href="${h.fb_url(true, tbody.value.id)}"
                      data-id="${tbody.value.id}">${tbody.value.id}</a>
                 </th>
               </acre:block>
               <acre:block else="">
-                <td rowspan="${cell.rowspan||1}">
+                <td acre:attrs="cell.attrs">
                   <ul class="data-list" acre:if="cell.value">
                     <li>
                     <span class="wrapper">

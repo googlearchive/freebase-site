@@ -91,7 +91,7 @@ var SPEC = {
 
       return {
         template: 'error_template.mjt',
-        message: 'Freebase signin is currently down. Please try again later.'
+        message: 'There is an issue with Freebase signin. Please try again later.'
       };
     });
   }

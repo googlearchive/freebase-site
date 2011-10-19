@@ -110,9 +110,9 @@ function prop_structures_to_head(prop_structures) {
   return head;
 };
 
-function value_to_rows(prop_structures, value) {
+function value_to_rows(prop_structures, value, start_column) {
   var rows = [],
-      column = 0,
+      column = start_column || 0,
       last_vals = [];
 
   prop_structures.forEach(function(prop_structure) {
@@ -125,7 +125,7 @@ function value_to_rows(prop_structures, value) {
         cell = {row:0};
 
     if (is_image) {
-      cell = {structure:prop_structure, images:prop_values, row:0};
+      cell = {structure:prop_structure, images:prop_values, row:0, column: column};
       last_vals[column] = cell;
       row.push(cell);
       column += 1;
@@ -137,7 +137,7 @@ function value_to_rows(prop_structures, value) {
 
       if (!prop_values.length) {
         structures.forEach(function() {
-          cell = {row:0};
+          cell = {row:0, column: column};
           last_vals[column] = cell;
           row.push(cell);
           column += 1;
@@ -149,7 +149,7 @@ function value_to_rows(prop_structures, value) {
           if (!mediator) {
             prop_value["/type/object/name"] = {values:[prop_value]};
           }
-          var sub_rows = value_to_rows(structures, prop_value);
+          var sub_rows = value_to_rows(structures, prop_value, column);
           sub_rows.last_vals.forEach(function(last_val) {
             last_val.row = last_val.row + current_row;
             last_vals[column] = last_val;
@@ -171,7 +171,7 @@ function value_to_rows(prop_structures, value) {
       else {
         prop_values.forEach(function(prop_value, prop_index) {
           var row = ensure_row(rows, prop_index);
-          cell = {structure:prop_structure, value:prop_value, row:prop_index};
+          cell = {structure:prop_structure, value:prop_value, row:prop_index, column: column};
           last_vals[column] = cell;
           row.push(cell);
         });
@@ -182,7 +182,8 @@ function value_to_rows(prop_structures, value) {
 
   // pad rowspan of last value in each column
   last_vals.forEach(function(last_val) {
-    last_val.rowspan = rows.length - last_val.row;
+    last_val.attrs = {};
+    last_val.attrs.rowspan = rows.length - last_val.row;
   });
 
   rows.last_vals = last_vals;

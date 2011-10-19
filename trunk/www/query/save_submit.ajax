@@ -51,14 +51,18 @@ var SPEC = {
   },
 
   run: function(topic, query) {
-    return freebase.upload(query, "text/plain", {
-        "document": topic
-      })
-      .then(function(env) {
-        var ret = env.result;
-        ret.url = h.fb_url(topic, {"topics":null});
-        return ret;
-      });
+      return freebase.upload(query, "text/plain", {
+          "document": topic
+        })
+        .then(function(env) {
+          var ret = env.result;
+          ret.url = h.fb_url(topic, {"topics":null});
+          // Workaround for SITE-851
+          return freebase.touch()
+            .then(function() {
+              return ret;
+            });
+        });
   }
   
 };

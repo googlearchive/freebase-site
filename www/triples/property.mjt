@@ -46,7 +46,6 @@
   // microdata helpers
   var microdata = acre.require("lib/helper/microdata.sjs");
   var itemprop = microdata.itemprop;
-
 </acre:script>
 
 <acre:block def="head()">
@@ -65,7 +64,6 @@
 </acre:block>
 
 <acre:block def="page_content()">
-
   <div class="column nav">
     <div class="module">
       <h2 class="module-title">
@@ -81,6 +79,9 @@
         ${filter_components.timestamp_filter(c.id, c.filters)}
       </div>
       <div class="module-section alt">
+        ${filter_components.creator_filter(c.id, c.filters)}
+      </div>
+      <div class="module-section alt">
         ${components.historical_filter(c.id, c.filters)}
       </div>
     </div>
@@ -88,7 +89,7 @@
 
   <div class="column" id="triples-data" role="main" acre:attrs="c.filters.historical ? {'class':'historical'} : {}">
 
-    ${writes(c.id, c.writes, c.filters)}
+    ${property(c.id, c.property_links, c.filters)}
 
   </div>
 
@@ -100,14 +101,13 @@
 
 </acre:block>
 
-<acre:block def="writes(id, data, filters)" if="data && data.length">
+<acre:block def="property(id, data, filters)" if="data && data.length">
   <div class="section">
-    <h2 class="table-title"><a name="infinitescroll-count">${_("Links created by or via this object")} (${i18n_c.number(data.length)})</a></h2>
+    <h2 class="table-title"><a name="infinitescroll-count">${_("Instances of this property")} (${i18n_c.number(data.length)})</a></h2>
     <table class="table table-sortable" id="infinitescroll">
       <thead>
         <tr>
           <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
           <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
           <th class="column-header column-header-asc {sorter: 'string'}" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
@@ -115,7 +115,7 @@
         </tr>
       </thead>
 
-      ${writes_body(id, data, filters)}
+      ${property_body(id, data, filters)}
 
       <tfoot>
         <tr>
@@ -128,7 +128,7 @@
                 }
               }              
             </acre:script>
-            <a id="infinitescroll-next" href="${h.ajax_url('/infinitescroll_writes.ajax', params)}">next</a>
+            <a id="infinitescroll-next" href="${h.ajax_url('/infinitescroll_property.ajax', params)}">next</a>
           </td>
         </tr>
       </tfoot>
@@ -137,15 +137,15 @@
   </div>
 </acre:block>
 
-<acre:block def="writes_body(id, data, filters)">
+<acre:block def="property_body(id, data, filters)">
   <tbody acre:attrs="data.length ? {'data-next':data[data.length-1].timestamp} : {}">
     <acre:block for="o in data">
-      ${writes_row(id, o, filters)}
+      ${property_row(id, o, filters)}
     </acre:block>
   </tbody>
 </acre:block>
 
-<acre:block def="writes_row(id, o, filters)">  
+<acre:block def="property_row(id, o, filters)">
   <tr class="${th.link_class(o)}">
     <th class="row-header odd" scope="row">
       <span class="wrapper">
@@ -153,9 +153,6 @@
         ${triples.link_menu(o)}
       </span>
     </th>
-    <td class="even">
-      ${triples.property(o)}
-    </td>
     <td class="odd">
       ${o.target_value ? triples.target_value(o) : triples.target(o)}
     </td>

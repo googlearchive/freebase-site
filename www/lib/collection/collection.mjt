@@ -51,7 +51,9 @@
     <tfoot acre:if="cursor">
       <tr>
         <td colspan="">
-          <a id="infinitescroll-next" href="${h.ajax_url(acre.resolve('collection/infinitescroll.ajax'), [['query', JSON.stringify(query)]])}">next</a>
+          <a id="infinitescroll-next"
+             href="${h.ajax_url(acre.resolve('collection/infinitescroll.ajax'), [['query', JSON.stringify(query)]])}">
+             next</a>
         </td>
       </tr>
     </tfoot>

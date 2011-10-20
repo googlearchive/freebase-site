@@ -39,7 +39,7 @@ var apis = acre.require("lib/promise/apis.sjs"),
     
 var SPEC = {
 
-  template: "new.mjt",
+  template: "users.mjt",
   
   template_base: "site/template/freebase_new.mjt",
 
@@ -52,15 +52,15 @@ var SPEC = {
   run: function(days) {
     return {
       days: days,
-      users: recent_users(days),
-      loads: recent_loads(days)
+      active: active_users(days),
+      recent: recent_users(days)
     }; 
   }
   
 };
 
-function recent_users(days) {
-  return freebase.mqlread(recent_users_mql(days))
+function active_users(days) {
+  return freebase.mqlread(active_users_mql(days))
     .then(function(env) {
       return env.result || [];
     })
@@ -76,28 +76,26 @@ function recent_users(days) {
     });
 };
 
-function recent_loads(days) {
-  return freebase.mqlread(recent_loads_mql(days))
+function recent_users(days) {
+  return freebase.mqlread(recent_users_mql(days))
     .then(function(env) {
       return env.result || [];
     })
-    .then(function(loads) {
-      loads.forEach(function(l) {
-        l.timestamp = null;
-        l.objects = 0;
-        l.links = 0;
-        l.authority.forEach(function(a) {
-          var timestamp = acre.freebase.date_from_iso(a["s:links"].timestamp);
-          l.timestamp = (!l.timestamp || (timestamp > l.timestamp)) ? timestamp : l.timestamp;
-          l.objects += a.attributed;
-          l.links += a.links;
-        });
+    .then(function(users) {
+      return users.map(function(u) {
+        return {
+          id: u.id,
+          timestamp: acre.freebase.date_from_iso(u.timestamp),
+          full_name: u["/freebase/user_profile/my_full_name"],
+          location: u["/freebase/user_profile/location"],
+          links: u["/type/attribution/links"] - 20,          // account creation
+          objects: u["/type/attribution/attributed"] - 4     // account creation
+        }
       });
-      return loads;
     });
 };
 
-function recent_users_mql(days) {
+function active_users_mql(days) {
   var timestamp = acre.freebase.date_to_iso(datejs.Date.today().addDays(-days));
   var q = [{
     "id": null,
@@ -125,36 +123,28 @@ function recent_users_mql(days) {
   return q;
 };
 
-function recent_loads_mql(days) {
+function recent_users_mql(days) {
   var timestamp = acre.freebase.date_to_iso(datejs.Date.today().addDays(-days));
   var q = [{
     "id": null,
-    "name": i18n.mql.query.name(),
-    "type": "/dataworld/mass_data_operation",
-    "authority": [{
-      "type": "/type/attribution",
-      "s:links": {
-        "timestamp": null,
-        "limit": 1
-      },
-      "links": {
-        "timestamp>": timestamp,
-        "return": "count"
-      },
-      "attributed": {
-        "timestamp>": timestamp,
-        "return": "count",
-        "optional": true
-      }
+    "type": "/type/user",
+    "timestamp>": timestamp,
+    "timestamp": null,
+    "sort": "-timestamp",
+    "/freebase/user_profile/my_full_name" : null,
+    "/freebase/user_profile/location": [{
+      "id": null,
+      "name": i18n.mql.query.name(),
+      "optional": true
     }],
-    "operator": null,
-    "creator": null,
-    "f:creator": {
-      "id": "/user/gardening_bot",
-      "optional": "forbidden"
+    "/type/attribution/links": {
+      "return": "count",
     },
-    "sort": "-authority.s:links.timestamp",
-    "limit": 50
+    "/type/attribution/attributed": {
+      "return": "count"
+    },
+    "limit": 1000
   }];
   return q;
 };
+

@@ -199,6 +199,9 @@ function PrefixRouter(app_labels) {
         if (expand_leaves) {
           current_tree[key] = {};
         } else {
+          if (current_tree['key-/']) {
+            current_tree = current_tree['key-/'];
+          }
           break;
         }
       }

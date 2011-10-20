@@ -112,16 +112,10 @@ function init_site_rules(lib) {
   rules["custom"] = {
     tabs: [
       {
-        "name": _("Overview"),
+        "name": _("Data"),
         "path": "/browse",
         "app": "homepage",
         "script": "browse.tab"
-      },
-      {
-        "name": _("Data"),
-        "path": "/data",
-        "app": "activity",
-        "script": "new.tab"
       },
       {
         "name": _("Schema"),
@@ -144,16 +138,20 @@ function init_site_rules(lib) {
       {
         "name": _("Users"),
         "path": "/users",
-        "app": "group",
-        "script": "browse.tab",
-        "more": true
+        "app": "activity",
+        "script": "users.tab",
+      },
+      {
+        "name": _("MDOs"),
+        "path": "/mdos",
+        "app": "activity",
+        "script": "mdos.tab"
       },
       {
         "name": _("Tasks"),
         "path": "/tasks",
         "app": "activity",
         "script": "review.tab",
-        "more": true
       }
     ]
   };
@@ -413,7 +411,7 @@ function init_site_rules(lib) {
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
     },
     {
-      "name": _("Data Load"),
+      "name": _("MDO"),
       "type": "/dataworld/mass_data_operation",
       "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [

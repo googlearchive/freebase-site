@@ -40,46 +40,43 @@
 </acre:script>
 
 <acre:block def="page_content()">
+
   <h2 class="table-title">
-    ${_('Recently created user accounts')}
+    ${_('Recently active data loads')}
   </h2>
   <table cellspacing="0" class="table table-sortable">
     <thead>
       <tr>
-        <th scope="col" class="column-header first">${_('User')}</th>
-        <th scope="col" class="column-header">${_('Full Name')}</th>
-        <th scope="col" class="column-header">${_('Created')}</th>
-        <th scope="col" class="column-header">${_('Location')}</th>
+        <th scope="col" class="column-header">${_('Data Load')}</th>
+        <th scope="col" class="column-header">${_('Last Active')}</th>
         <th scope="col" class="column-header">${_('Objects created')}<br/>${_('(past')} $c.days ${_('days)')}</th>
         <th scope="col" class="column-header">${_('Links created')}<br/>${_('(past')} $c.days ${_('days)')}</th>
+        <th scope="col" class="column-header">${_('Creator')}</th>
+        <th scope="col" class="column-header">${_('Operator')}</th>
       </tr>
     </thead>
     <tbody>
-      <tr acre:for="u in c.users">
+      <tr acre:for="l in c.loads">
         <th class="row-header odd" scope="row">
-          ${image.user_image_tiny(u.id)}
-          ${components.creator(u.id)}
+          <acre:script>var name = i18n.display_name(l);</acre:script>
+          <a href="${h.fb_url(l.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
         </th>
-        <th class="row-header odd" scope="row">
-          <acre:block if="u.full_name">
-            <a href="${h.fb_url(u.id)}" title="${h.sprintf(_('View %s'), u.full_name)}">$u.full_name</a>
+        <td class="odd">${h.relative_date(l.timestamp)}</td>
+        <td class="odd">${i18n_c.number(l.objects)}</td>
+        <td class="even">${i18n_c.number(l.links)}</td>
+        <td class="odd">
+          ${image.user_image_tiny(l.creator)}
+          ${components.creator(l.creator)}
+        </td>
+        <td class="even">
+          <acre:block if="l.creator !== l.operator">
+            ${image.user_image_tiny(l.operator)}
+            ${components.creator(l.operator)}
           </acre:block>
           <acre:block else="">-</acre:block>
-        </th>
-        <td class="even">${h.relative_date(u.timestamp)}</td>
-        <th class="row-header odd" scope="row">
-          <acre:block if="u.location && u.location.length">
-            <acre:block for="i, l in u.location" trim="">
-              <acre:block if="i">, </acre:block>
-              <acre:script>var name = i18n.display_name(l);</acre:script>
-              <a href="${h.fb_url(l.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
-            </acre:block>
-          </acre:block>
-          <acre:block else="">-</acre:block>
-        </th>
-        <td class="odd">${i18n_c.number(u.objects)}</td>
-        <td class="even">${i18n_c.number(u.links)}</td>
+        </td>
       </tr>
     </tbody>
   </table>
+
 </acre:block>

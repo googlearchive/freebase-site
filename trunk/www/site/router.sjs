@@ -324,6 +324,12 @@ function init_site_rules(lib) {
           "key": "schema",
           "app": "schema",
           "script": "property.tab"
+        },
+        {
+          "name": _("Instances"),
+          "key": "instances",
+          "app": "triples",
+          "script": "property.tab"
         }
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
       "nav_keys": [

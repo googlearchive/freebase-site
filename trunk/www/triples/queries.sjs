@@ -36,6 +36,7 @@ var freebase = apis.freebase;
 var th = acre.require("helpers.sjs");
 var fh = acre.require("lib/filter/helpers.sjs");
 var creator = acre.require("lib/queries/creator.sjs");
+var proploader = acre.require("lib/schema/proploader.sjs");
 
 function links(id, filters, next) {
   filters = h.extend({}, filters);
@@ -174,6 +175,46 @@ function writes(id, filters, next) {
         });
     });
 };
+
+function property_links(id, filters, next) {
+  return proploader.load(id)
+    .then(function(props) {
+      var master_prop = id;
+      if (props[id].master_property) {
+        master_prop = props[id].master_property.id;
+      }
+      filters = h.extend({}, filters);
+      return creator.by(filters.creator)
+        .then(function(links_clause) {
+          var q = h.extend(links_clause, {
+            type: "/type/link",
+            master_property: {
+              id: master_prop,
+              unit: {
+                optional: true,
+                id: null,
+                type: "/type/unit",
+                "/freebase/unit_profile/abbreviation": null
+              }
+            },
+            source: {id:null, mid:null, name:i18n.mql.query.name(), optional:true},
+            target: {id:null, mid:null, name:i18n.mql.query.name(), optional:true},
+            target_value: {},
+            timestamp: null,
+            sort: "-timestamp"
+          });
+          if (next) {
+            q["next:timestamp<"] = next;
+          }
+          apply_filters(q, filters);
+          return freebase.mqlread([q], mqlread_options(filters))
+            .then(function(env) {
+              return env.result;
+            });
+        });
+    });
+};
+
 
 /**
  * Apply filter constraint helpers

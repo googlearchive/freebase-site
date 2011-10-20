@@ -79,6 +79,13 @@
     <tr acre:for="row in tbody">
       <td acre:for="cell in row" acre:attrs="cell.attrs">
         <acre:block if="!cell.value">&nbsp;</acre:block>
+        <acre:block elif="cell.structure.id === '/type/object/id'">
+          <span class="wrapper">
+            <a title="${tbody.value.id}" class="property-value"
+               href="${h.fb_url(true, tbody.value.id)}"
+               data-id="${tbody.value.id}">${tbody.value.id}</a>
+          </span>
+        </acre:block>
         <acre:block elif="cell.structure.id === '/type/object/name'">
           <ul class="data-list" acre:if="cell.value">
             <li>
@@ -98,17 +105,12 @@
             </li>
           </ul>
         </acre:block>
-        <acre:block elif="cell.structure.id === '/type/object/id'">
-          <a title="${tbody.value.id}" class="property-value"
-             href="${h.fb_url(true, tbody.value.id)}"
-             data-id="${tbody.value.id}">${tbody.value.id}</a>
-        </acre:block>
         <acre:block else="">
           <ul class="data-list" acre:if="cell.value">
             <li>
-            <span class="wrapper">
-              ${pb.value(tbody.value, cell.structure, cell.value, i18n.lang)}
-            </span>
+              <span class="wrapper">
+                ${pb.value(tbody.value, cell.structure, cell.value, i18n.lang)}
+              </span>
             </li>
           </ul>
         </acre:block>

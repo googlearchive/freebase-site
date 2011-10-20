@@ -71,13 +71,12 @@ function prop_structures_to_head(prop_structures) {
     }
     else if (subprop_structures.length) {
       subprops = true;
+      css_class = "mediator-header";
       if (mediator) {
         colspan = subprop_structures.length;
-        css_class = "mediator-header";
       }
       else {
         colspan = subprop_structures.length + 1;
-        css_class = "mediator-sub-prop";
       }
     }
     var attrs = {colspan:colspan, "class": css_class};
@@ -110,10 +109,37 @@ function prop_structures_to_head(prop_structures) {
   return head;
 };
 
+
+
 function value_to_rows(prop_structures, value, start_column) {
   var rows = [],
       column = start_column || 0,
       last_vals = [];
+  
+  function new_cell(structure, opts) {
+    opts = opts || {};
+
+    var css_class = ""
+    if (structure.id == "/type/object/name") {
+      css_class += "name ";
+    }
+    if (structure.expected_type && structure.expected_type.id === "/common/image") {
+      css_class += "image ";
+    }
+    if (start_column && ((column - start_column) === 0)) {
+      css_class += "first-column ";
+    }
+
+    return h.extend(true, {}, {
+      structure: structure,
+      value: null,
+      row: 0,
+      column: 0,
+      attrs: {
+        "class": css_class
+      }
+    }, opts);
+  }
 
   prop_structures.forEach(function(prop_structure) {
     var prop_values = value[prop_structure.id] && value[prop_structure.id].values || [],
@@ -122,10 +148,10 @@ function value_to_rows(prop_structures, value, start_column) {
         is_image = expected_type.id === "/common/image",
         mediator = expected_type.mediator === true,
         row = ensure_row(rows, 0),
-        cell = {row:0};
+        cell = new_cell(prop_structure, {column: column});
 
     if (is_image) {
-      cell = {structure:prop_structure, images:prop_values, row:0, column: column};
+      cell.images = prop_values;
       last_vals[column] = cell;
       row.push(cell);
       column += 1;
@@ -136,8 +162,8 @@ function value_to_rows(prop_structures, value, start_column) {
           structures = mediator ? subprop_structures : [{id:"/type/object/name"}].concat(subprop_structures);
 
       if (!prop_values.length) {
-        structures.forEach(function() {
-          cell = {row:0, column: column};
+        structures.forEach(function(structure) {
+          var cell = new_cell(structure, {column: column});
           last_vals[column] = cell;
           row.push(cell);
           column += 1;
@@ -147,7 +173,11 @@ function value_to_rows(prop_structures, value, start_column) {
         prop_values.forEach(function(prop_value) {
           column = orig_column;
           if (!mediator) {
-            prop_value["/type/object/name"] = {values:[prop_value]};
+            var value = {
+              text: prop_value.text,
+              lang: prop_value.lang
+            };
+            prop_value["/type/object/name"] = {values:[value]};
           }
           var sub_rows = value_to_rows(structures, prop_value, column);
           sub_rows.last_vals.forEach(function(last_val) {
@@ -171,7 +201,11 @@ function value_to_rows(prop_structures, value, start_column) {
       else {
         prop_values.forEach(function(prop_value, prop_index) {
           var row = ensure_row(rows, prop_index);
-          cell = {structure:prop_structure, value:prop_value, row:prop_index, column: column};
+          var cell = new_cell(prop_structure, {
+            value:prop_value,
+            row:prop_index,
+            column: column
+          });
           last_vals[column] = cell;
           row.push(cell);
         });
@@ -182,7 +216,6 @@ function value_to_rows(prop_structures, value, start_column) {
 
   // pad rowspan of last value in each column
   last_vals.forEach(function(last_val) {
-    last_val.attrs = {};
     last_val.attrs.rowspan = rows.length - last_val.row;
   });
 

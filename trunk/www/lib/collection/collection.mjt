@@ -75,52 +75,44 @@
 </acre:block>
 
 <acre:block def="collection_body(body)">
-  <acre:block for="tbody in body">
-    <tbody>
-      <acre:block for="row in tbody">
-        <tr>
-          <acre:block for="cell in row">
-            <acre:block if="cell">
-              <td acre:attrs="cell.attrs">
-                <acre:block if="!cell.value">&nbsp;</acre:block>
-                <acre:block elif="cell.structure.id === '/type/object/name'">
-                  <ul class="data-list" acre:if="cell.value">
-                    <li>
-                      <span class="wrapper">
-                        <a title="${tbody.value.id}" class="property-value"
-                           href="${h.fb_url(true, tbody.value.id)}"
-                           data-id="${tbody.value.id}">${cell.value.text}</a>
-                        ${i18n_c.lang_code(cell.value.lang, i18n.lang)}
-                      </span>
-                    </li>
-                  </ul>
-                </acre:block>
-                <acre:block elif="cell.structure.expected_type.id === '/common/image'">
-                  <ul class="data-list">
-                    <li>
-                      ${pb.value(tbody.value, cell.structure,tbody.value, i18n.lang)}
-                    </li>
-                  </ul>
-                </acre:block>
-                <acre:block elif="cell.structure.id === '/type/object/id'">
-                  <a title="${tbody.value.id}" class="property-value"
-                     href="${h.fb_url(true, tbody.value.id)}"
-                     data-id="${tbody.value.id}">${tbody.value.id}</a>
-                </acre:block>
-                <acre:block else="">
-                  <ul class="data-list" acre:if="cell.value">
-                    <li>
-                    <span class="wrapper">
-                      ${pb.value(tbody.value, cell.structure, cell.value, i18n.lang)}
-                    </span>
-                    </li>
-                  </ul>
-                </acre:block>
-              </td>
-            </acre:block>
-          </acre:block>
-        </tr>
-      </acre:block>
-    </tbody>
-  </acre:block>
+  <tbody acre:for="tbody in body">
+    <tr acre:for="row in tbody">
+      <td acre:for="cell in row" acre:attrs="cell.attrs">
+        <acre:block if="!cell.value">&nbsp;</acre:block>
+        <acre:block elif="cell.structure.id === '/type/object/name'">
+          <ul class="data-list" acre:if="cell.value">
+            <li>
+              <span class="wrapper">
+                <a title="${tbody.value.id}" class="property-value"
+                   href="${h.fb_url(true, tbody.value.id)}"
+                   data-id="${tbody.value.id}">${cell.value.text}</a>
+                ${i18n_c.lang_code(cell.value.lang, i18n.lang)}
+              </span>
+            </li>
+          </ul>
+        </acre:block>
+        <acre:block elif="cell.structure.expected_type.id === '/common/image'">
+          <ul class="data-list">
+            <li>
+              ${pb.value(tbody.value, cell.structure,tbody.value, i18n.lang)}
+            </li>
+          </ul>
+        </acre:block>
+        <acre:block elif="cell.structure.id === '/type/object/id'">
+          <a title="${tbody.value.id}" class="property-value"
+             href="${h.fb_url(true, tbody.value.id)}"
+             data-id="${tbody.value.id}">${tbody.value.id}</a>
+        </acre:block>
+        <acre:block else="">
+          <ul class="data-list" acre:if="cell.value">
+            <li>
+            <span class="wrapper">
+              ${pb.value(tbody.value, cell.structure, cell.value, i18n.lang)}
+            </span>
+            </li>
+          </ul>
+        </acre:block>
+      </td>
+    </tr>
+  </tbody>
 </acre:block>

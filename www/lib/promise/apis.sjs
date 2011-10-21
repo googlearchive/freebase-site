@@ -103,7 +103,13 @@ var freebase = {};
         response = JSON.parse(response.body);
         var results = {};
         retrieve_ids.forEach(function (id) {
-          results[id] = response[id].result;
+          //prop_count hack because the bdb encodes keys incorrectly
+          //TODO(masouras): prop_counts should be keyed by mid
+          lookup_id = id;
+          if (url.indexOf("prop_count") >= 0) { 
+            lookup_id = parseInt(id, 10);
+          }
+          results[id] = response[lookup_id].result;
         });
         return results;
       })

@@ -76,6 +76,16 @@ function blurb(o) {
 };
 
 /**
+ * promise to get the full article of an object
+ */
+function article(o) {
+  return freebase.get_blob(o.id, "raw")
+    .then(function(env) {
+      return env.body;
+    });
+};
+
+/**
  * promise to get saved queries
  */
 function query(o) {

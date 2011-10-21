@@ -514,6 +514,115 @@ function init_site_rules(lib) {
       ]
     },
     {
+      "name": _("Content"),
+      "type": "/common/image",
+      "promises":  h.extend(true, [], DEFAULT_PROMISES),
+      "tabs": [
+        {
+          "name": _("Content"),
+          "key": "content",
+          "app": "topic",
+          "script": "content.tab"
+        },
+        {
+          "name": _("Properties"),
+          "key": "props",
+          "app": "topic",
+          "script": "topic.tab"
+        },
+        {
+          "name": _("Identifiers"),
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab",
+          "more": true
+        },
+        {
+          "name": _("Links"),
+          "key": "links",
+          "app": "triples",
+          "script": "triples.tab",
+          "more": true
+        }
+      ]
+    },
+    {
+      "name": _("Content"),
+      "type": "/common/document",
+      "promises": h.extend(true, [], DEFAULT_PROMISES).concat([{
+        "key": "article",
+        "app": "site",
+        "script": "queries/object.sjs",
+        "promise": "article"
+      }]),
+      "tabs": [
+        {
+          "name": _("Content"),
+          "key": "content",
+          "app": "topic",
+          "script": "content.tab"
+        },
+        {
+          "name": _("Properties"),
+          "key": "props",
+          "app": "topic",
+          "script": "topic.tab",
+        },
+        {
+          "name": _("Identifiers"),
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab",
+          "more": true
+        },
+        {
+          "name": _("Links"),
+          "key": "links",
+          "app": "triples",
+          "script": "triples.tab",
+          "more": true
+        }
+      ]
+    },
+    {
+      "name": _("Content"),
+      "type": "/type/content",
+      "promises": h.extend(true, [], DEFAULT_PROMISES).concat([{
+        "key": "article",
+        "app": "site",
+        "script": "queries/object.sjs",
+        "promise": "article"
+      }]),
+      "tabs": [
+        {
+          "name": _("Content"),
+          "key": "content",
+          "app": "topic",
+          "script": "content.tab"
+        },
+        {
+          "name": _("Properties"),
+          "key": "props",
+          "app": "topic",
+          "script": "topic.tab",
+        },
+        {
+          "name": _("Identifiers"),
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab",
+          "more": true
+        },
+        {
+          "name": _("Links"),
+          "key": "links",
+          "app": "triples",
+          "script": "triples.tab",
+          "more": true
+        }
+      ]
+    },
+    {
       "name": _("Object"),
       "type": "/type/object",
       "promises":  h.extend(true, [], DEFAULT_PROMISES),

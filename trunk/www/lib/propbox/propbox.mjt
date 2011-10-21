@@ -290,7 +290,6 @@
 
 <acre:block def="datalist(topic, prop_structure, prop_values, lang)">
   <acre:script>
-console.log("propbox.mjt.datalist", topic, prop_structure, prop_values);
     var empty = !prop_values || !prop_values.length;
     var ect = prop_structure.expected_type.id;
   </acre:script>

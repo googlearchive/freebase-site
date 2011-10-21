@@ -34,7 +34,7 @@ var queries = acre.require("lib/queries/freebase_query.sjs");
     
 var SPEC = {
 
-  template: "browse.mjt",
+  template: "queries.mjt",
   
   template_base: "site/template/freebase_new.mjt",
 

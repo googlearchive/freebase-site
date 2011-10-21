@@ -126,8 +126,8 @@ function init_site_rules(lib) {
       {
         "name": _("Queries"),
         "path": "/queries",
-        "app": "query",
-        "script": "browse.tab"
+        "app": "activity",
+        "script": "queries.tab"
       },
       {
         "name": _("Apps"),

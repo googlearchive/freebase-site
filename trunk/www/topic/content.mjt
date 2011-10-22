@@ -47,7 +47,7 @@
       <pre style="white-space:pre-wrap">${c.article}</pre>
     </div>
     <div acre:else="" class="image-box">
-      <img src="${h.legacy_fb_url('/api/trans/raw', c.object.id)}"/>
+      <img src="${acre.freebase.imgurl(c.object.id, 960)}"/>
     </div>
   </div>
 </acre:block>

@@ -36,11 +36,6 @@
     <schedule>every 10 minutes</schedule>
   </cron>
   <cron>
-    <url>/m/045c7b</url>
-    <description>Cache warmup. (topic Google).</description>
-    <schedule>every 10 minutes</schedule>
-  </cron>
-  <cron>
     <url>/m/0l0mk</url>
     <description>Cache warmup. (topic Santa Cruz).</description>
     <schedule>every 10 minutes</schedule>
@@ -48,11 +43,6 @@
   <cron>
     <url>/m/01skz_?inspect</url>
     <description>Cache warmup. (inspect Neko Case).</description>
-    <schedule>every 10 minutes</schedule>
-  </cron>
-  <cron>
-    <url>/explore</url>
-    <description>Cache warmup.</description>
     <schedule>every 10 minutes</schedule>
   </cron>
   <cron>
@@ -71,7 +61,7 @@
     <schedule>every 10 minutes</schedule>
   </cron>
   <cron>
-    <url>/queryeditor</url>
+    <url>/query</url>
     <description>Cache warmup.</description>
     <schedule>every 10 minutes</schedule>
   </cron>

@@ -1,0 +1,125 @@
+
+<acre:script>
+  var data_input = acre.require("lib/propbox/propbox.mjt").data_input
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="forms.mf.css" />
+</acre:block>
+
+<acre:block def="content_body()">
+
+  <acre:script>
+
+    var inputs = [
+      "Generic Input", "", {value:"Lorem ipsum", lang:"/lang/en"},
+      "Text Input", "/type/text", {value:"Lorem ipsum", lang:"/lang/en"},
+      "Datetime Input", "/type/datetime", {value:"2006"},
+      "Int/Float Input", "/type/int", {value:1234},
+      "Uri Input", "/type/uri", {value: "http://www.google.com"},
+      "Boolean Input", "/type/boolean", {value: false},
+      "Topic Input", "/common/topic", {id:"/en/lorem_ipsum", text:"Lorem Ipsum"}
+    ];
+
+  </acre:script>
+
+  <div class="section">
+    <h1>Buttons</h1>
+    <h2>Basic Button</h2>
+    <p>
+      This is the basic button style. All other buttons extend this.
+      In general, this should be marked up with a button element. However,
+      the CSS will properly style an a element when necessary.
+    </p>
+    <button class="button">Button</button>
+    <button class="button disabled">Disabled</button>
+    <button class="button focused">Focused</button>
+
+
+    <h2>Primary Button</h2>
+    <p>
+      The primary button class extends the basic button, and is used when you want
+      to signify a primary call to action in the UI that does not involve making writes to the database.
+    </p>
+    <button class="button primary">Run</button>
+    <button class="button primary disabled">Disabled</button>
+    <button class="button primary focused">Focused</button>
+
+    <h2>Save Button</h2>
+    <p>
+      The save button class extends the basic button, and is used when the call
+      to action <strong>does</strong> make a write to the database.
+    </p>
+    <button class="button save">Save</button>
+    <button class="button save disabled">Disabled</button>
+    <button class="button save focused">Focused</button>
+
+    <h2>Drop-down Button</h2>
+    <p>You can use the <code>.drop-down</code> class to get a drop-down arrow.</p>
+    <button class="button drop-down">Menu</button>
+
+    <h2>Toggle button</h2>
+    <p>You can use .toggle.up and .toggle.down, respectively, to get up/down toggle buttons.</p>
+    <button class="button toggle down">Toggle</button>
+    <button class="button toggle up">Toggle</button>
+
+    <h2>Small button</h2>
+    <p>If you need a smaller button, you can append the small class</p>
+    <button class="button small">+</button>
+    <button class="button small">-</button>
+
+  </div>
+  <div class="section">
+    <acre:block for="(var i=0; i<inputs.length; i+=3)">
+      ${data_input_states(inputs[i+1], inputs[i], inputs[i+2])}
+    </acre:block>
+  </div>
+
+</acre:block>
+
+<acre:block def="data_input_states(type, name, value, lang, instances)">
+
+  <h1>${name}</h1>
+  
+  <div class="default">
+    <h3>Default</h3>
+    ${data_input(type, name+"default", value, lang, instances)}
+  </div>
+
+  <div class="disabled">
+    <h3>Disabled</h3>
+    ${data_input(type, name+"disabled", value, lang, instances)}
+  </div>
+
+  <div class="valid">
+    <h3>Valid</h3>
+    ${data_input(type, name+"valid", value, lang, instances)}
+  </div>
+
+  <div class="error">
+    <h3>Error</h3>
+    ${data_input(type, name+"error", value, lang, instances)}
+  </div>  
+  
+</acre:block>
+
+
+<acre:block def="footer_script()">
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".disabled .data-input").addClass("disabled").find(".fb-input, .fb-boolean-input, .fb-enumerated-input").attr("disabled", "disabled");
+    $(".valid .data-input").addClass("valid");
+    $(".error .data-input").addClass("error");
+
+    $(".fb-input, .fb-boolean-input").focusin(function(){
+      $(this).parents(".data-input").addClass("focus");  
+    });
+    $(".fb-input, .fb-boolean-input").focusout(function(){
+      $(this).parents(".data-input").removeClass("focus");  
+    });
+    // Note, we need logic to change radio button labels on chage
+    // but Webkit acts weird, here is a potential fix
+    // http://evilstreak.co.uk/blog/fixing-change-events-on-radios
+  });
+</script>
+</acre:block>

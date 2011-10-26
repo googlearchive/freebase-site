@@ -96,9 +96,7 @@ function init_site_rules(lib) {
   // *********** HOST *************
 
   rules["host"] = [
-    {host:"freebase.com", url:"http://www.freebase.com"},
-    {host:"sandbox-freebase.com", url:"http://www.sandbox-freebase.com"},
-    {host:"sandbox.freebase.com", url:"http://www.sandbox-freebase.com"},
+    {host:"sandbox.freebase.com", url:"http://sandbox-freebase.com"},
     {host:"acre.freebase.com", url:"http://www.freebase.com/appeditor"},
     {host:"acre.sandbox-freebase.com", url:"http://www.sandbox-freebase.com/appeditor"},
     {host:"api.freebase.com", url:"http://wiki.freebase.com/wiki/Freebase_API"},

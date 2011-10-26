@@ -39,7 +39,7 @@ var SPEC = {
 
   run: function() {
     return {
-      domains: queries.common_domains()
+      domains: queries.domains_topics_facts()
     };
   }
 

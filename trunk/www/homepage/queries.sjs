@@ -55,6 +55,94 @@ function common_domains() {
 };
 
 /**
+ * Get all "commons" domains, an corresponding
+ * topic fact counts
+ */
+function domains_topics_facts() {
+  var q = [{
+    id: null,
+    guid: null,
+    name: i18n.mql.query.name(),
+    type: "/type/domain",
+    key: [{namespace: "/", limit: 0}],
+    types: {"id": null, type: "/type/type", "return": "count"}
+  }];
+
+  return freebase.mqlread(q) 
+    .then(function(envelope) {
+      return envelope.result || [];
+    })
+    .then(function(domains) {
+      // attach topic/fact counts to domains
+      return _domain_topics_facts(domains);    
+    })
+    .then(function(domains) {
+      // calculate percentage values for bar graph display
+      return _convert_totals_percentages(domains);
+    })
+    .then(function(domains) {
+      // sort by topic count
+      return domains.sort(sort_by_topic_count);
+    });;
+};
+
+function sort_by_topic_count(a,b) {
+  return b.topics.value > a.topics.value;
+};
+
+function _domain_topics_facts(domains) {
+  var promises = [];
+  // Get activity for each domain
+  domains.forEach(function(domain) {
+
+    promises.push(freebase.get_static("activity", "summary_"+domain.guid.replace("#", "/guid/"))
+      .then(function(activity) {
+        if (!activity) {return activity;}
+
+        domain.topics = {
+          value: activity.total.t,
+          percent: null
+        }
+        domain.facts = {
+          value: activity.total.e,
+          percent: null
+        }
+
+        return activity;
+      }));
+  });
+  return deferred.all(promises).then(function() {return domains;});
+};
+
+function _convert_totals_percentages(domains) {
+
+  // figure out the largest value for each object
+  // I can't figure out how to do this without iterating
+  // through the domain object twice: once to find higest
+  // value for topics/facts, and the second to derive percent
+  // of all other values
+  var topics = [];
+  var facts = [];
+
+  domains.forEach(function(d) {
+    topics.push(d.topics.value);
+    facts.push(d.facts.value);
+  });
+
+  // get higest count of each group
+  var max_topic_count = Math.max.apply(Math, topics); 
+  var max_fact_count = Math.max.apply(Math, facts); 
+
+  // divide to get perentage and re-attach
+  // to the domain object
+  domains.forEach(function(d) {
+    d.topics.percent = Math.round((d.topics.value / max_topic_count) * 100) + "%";
+    d.facts.percent = Math.round((d.facts.value / max_fact_count) * 100) + "%";
+  })
+  return domains;
+};
+
+/**
  * Do domains query and for each domain, get instance counts (activity bdb).
  */
 function domains(q) {

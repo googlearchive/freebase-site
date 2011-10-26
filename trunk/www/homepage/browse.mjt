@@ -62,9 +62,8 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <div id="page-content">
+  <div id="content-wrapper">
     <div id="content-main" class="clear" role="main">
-
       <div id="schema-search" class="clear section-tabs">
         <div class="search-box" id="domain-search">
           <form id="domain-search-form" method="get">
@@ -82,8 +81,9 @@
         <thead>
           <tr>
             <th scope="col" class="column-header first"><span class="sort-icon">${_('Domain')}</span></th>
-            <th scope="col" class="column-header column-header-desc"><span class="sort-icon">${_('ID')}</span></th>
-            <th scope="col" class="column-header">${templates.activity_header()}</th>
+            <th scope="col" class="column-header column-header-desc">${_('ID')}</th>
+            <th scope="col" class="column-header">${_("Topics")}</th>
+            <th scope="col" class="column-header">${_("Facts")}</th>
           </tr>
         </thead>
         <tbody>
@@ -93,20 +93,25 @@
               <a href="${h.fb_url(d.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
             </th>
             <td class="even">$d.id</td>
-            <td class="odd">
-              ${templates.activity_section(d)}
+            <td class="" style="width:30%;text-align:right">
+              <span style="width:$d.topics.percent;background:green;display:block;">
+              ${h.format_stat(d.topics.value)}
+            </td>
+            <td class="" style="width:30%">
+              <span style="width:$d.facts.percent;background:green;display:block;">
+              ${h.format_stat(d.facts.value)}
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <div id="content-side">
+    <aside class="secondary">
       ${templates.what_is_freebase()}
       ${templates.for_developers()}
       ${templates.wiki_entries(c.wiki)}
       ${templates.join_discussion()}
-    </div>
+    </aside>
   </div>
 </acre:block>
 

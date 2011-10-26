@@ -1,0 +1,29 @@
+{
+  "type":          "/freebase/metaweb_api_service",
+  "id":            "/en/api_status",
+  "name":          null,
+  "/common/topic/article": {
+    "id":       null,
+    "limit":    1,
+    "optional": true
+  },
+  "accessible_via": null,
+  "permits_http_get": null,
+  "permits_http_post": null,
+  "login_required": null,
+  "extra_arguments_ignored": null,
+  "response_type": {
+    "name":     null,
+    "optional": true
+  },
+  "special_headers": [],
+  "/freebase/metaweb_api_service/arguments": [{
+    "argument":      null,
+    "argument_type": null,
+    "default_value": null,
+    "format":        null,
+    "optional":      true,
+    "index":         null,
+    "sort":          "index"
+  }]
+}

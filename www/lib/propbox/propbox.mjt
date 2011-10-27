@@ -609,7 +609,7 @@ propbox edit forms
         </option>
         <acre:block for="inst in enumerated">
           <option value="${inst.id}"
-                  acre:attrs="prop_value && prop_value.id === inst.id ? {selected:'selected'} : {}">
+                  acre:attrs="prop_value && (prop_value.id === inst.id || prop_value.id === inst.mid) ? {selected:'selected'} : {}">
            ${inst.text}
          </option>
         </acre:block>

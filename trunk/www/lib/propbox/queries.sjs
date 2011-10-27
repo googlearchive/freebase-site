@@ -191,6 +191,7 @@ function get_enumerated_types(prop, lang) {
         promise = freebase.mqlread([{
           optional: true,
           id: null,
+          mid: null,
           name: i18n.mql.text_clause(lang),
           type: {id:ect.id, limit:0},
           limit: 500

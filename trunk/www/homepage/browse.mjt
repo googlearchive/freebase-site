@@ -61,6 +61,12 @@
   <link rel="stylesheet" type="text/css" href="browse.mf.css" />
 </acre:block>
 
+<acre:block def="page_title()">
+  <div class="page-title" style="margin-left:40px">
+    <h1>hello!</h1>
+  </div>
+</acre:block>
+
 <acre:block def="page_content()">
   <div id="content-wrapper">
     <div id="content-main" class="clear" role="main">
@@ -95,13 +101,13 @@
             <td class="key">$d.id</td>
             <td class="topics" style="width:30%;text-align:right">
               <div class="wrapper">
-                <span style="width:$d.topics.percent" class="bar"></span>
+                <span style="width:${d.topics.log}%" class="bar"></span>
                 <span class="value">${h.format_stat(d.topics.value)}</span>
               </div>
             </td>
             <td class="facts" style="width:30%">
               <div class="wrapper">
-                <span style="width:$d.facts.percent" class="bar"></span>
+                <span style="width:${d.facts.log}%" class="bar"></span>
                 <span class="value">${h.format_stat(d.facts.value)}</span>
               </div>
             </td>

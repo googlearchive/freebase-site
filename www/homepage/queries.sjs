@@ -83,7 +83,7 @@ function domains_topics_facts() {
     .then(function(domains) {
       // sort by topic count
       return domains.sort(sort_by_topic_count);
-    });;
+    });
 };
 
 function sort_by_topic_count(a,b) {
@@ -100,18 +100,20 @@ function _domain_topics_facts(domains) {
         if (!activity) {return activity;}
 
         domain.topics = {
-          value: activity.total.t,
-          percent: null
+          value: activity.total.t
         }
         domain.facts = {
-          value: activity.total.e,
-          percent: null
+          value: activity.total.e
         }
 
         return activity;
       }));
   });
   return deferred.all(promises).then(function() {return domains;});
+};
+
+function logx(val, base) {
+  return Math.log(val) / Math.log(base);
 };
 
 function _convert_totals_percentages(domains) {
@@ -130,14 +132,21 @@ function _convert_totals_percentages(domains) {
   });
 
   // get higest count of each group
-  var max_topic_count = Math.max.apply(Math, topics); 
-  var max_fact_count = Math.max.apply(Math, facts); 
+  //var max_topic_count = Math.max.apply(Math, topics); 
+  //var max_fact_count = Math.max.apply(Math, facts); 
+
+  // get higest count of each group
+  var max_topic_count = logx(Math.max.apply(Math, topics), 1.1);
+  var max_fact_count = logx(Math.max.apply(Math, facts), 1.1);
 
   // divide to get perentage and re-attach
   // to the domain object
   domains.forEach(function(d) {
-    d.topics.percent = Math.round((d.topics.value / max_topic_count) * 100) + "%";
-    d.facts.percent = Math.round((d.facts.value / max_fact_count) * 100) + "%";
+    //d.topics.percent = Math.round((d.topics.value / max_topic_count) * 100) + "%";
+    //d.facts.percent = Math.round((d.facts.value / max_fact_count) * 100) + "%";
+
+    d.topics.percent = Math.round((logx(d.topics.value, 1.1) / max_topic_count) * 100) + "%";
+    d.facts.percent = Math.round((logx(d.facts.value, 1.1) / max_fact_count) * 100) + "%";
   })
   return domains;
 };

@@ -77,12 +77,12 @@
         <h1>Explore Freebase Data</h1>
       </div>
           
-      <table cellspacing="0" class="table table-sortable">
+      <table id="browse" cellspacing="0" class="table table-sortable">
         <thead>
           <tr>
             <th scope="col" class="column-header first"><span class="sort-icon">${_('Domain')}</span></th>
             <th scope="col" class="column-header column-header-desc">${_('ID')}</th>
-            <th scope="col" class="column-header">${_("Topics")}</th>
+            <th scope="col" class="column-header" style="text-align:right">${_("Topics")}</th>
             <th scope="col" class="column-header">${_("Facts")}</th>
           </tr>
         </thead>
@@ -92,14 +92,18 @@
               <acre:script>var name = i18n.display_name(d);</acre:script>
               <a href="${h.fb_url(d.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
             </th>
-            <td class="even">$d.id</td>
-            <td class="" style="width:30%;text-align:right">
-              <span style="width:$d.topics.percent;background:green;display:block;">
-              ${h.format_stat(d.topics.value)}
+            <td class="key">$d.id</td>
+            <td class="topics" style="width:30%;text-align:right">
+              <div class="wrapper">
+                <span style="width:$d.topics.percent" class="bar"></span>
+                <span class="value">${h.format_stat(d.topics.value)}</span>
+              </div>
             </td>
-            <td class="" style="width:30%">
-              <span style="width:$d.facts.percent;background:green;display:block;">
-              ${h.format_stat(d.facts.value)}
+            <td class="facts" style="width:30%">
+              <div class="wrapper">
+                <span style="width:$d.facts.percent" class="bar"></span>
+                <span class="value">${h.format_stat(d.facts.value)}</span>
+              </div>
             </td>
           </tr>
         </tbody>

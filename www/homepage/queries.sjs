@@ -68,13 +68,13 @@ function domains_topics_facts() {
     types: {"id": null, type: "/type/type", "return": "count"}
   }];
 
-  return freebase.mqlread(q) 
+  return freebase.mqlread(q)
     .then(function(envelope) {
       return envelope.result || [];
     })
     .then(function(domains) {
       // attach topic/fact counts to domains
-      return _domain_topics_facts(domains);    
+      return _domain_topics_facts(domains);
     })
     .then(function(domains) {
       // calculate percentage values for bar graph display
@@ -132,8 +132,8 @@ function _convert_totals_percentages(domains) {
   });
 
   // get higest count of each group
-  //var max_topic_count = Math.max.apply(Math, topics); 
-  //var max_fact_count = Math.max.apply(Math, facts); 
+  //var max_topic_count = Math.max.apply(Math, topics);
+  //var max_fact_count = Math.max.apply(Math, facts);
 
   // get higest count of each group
   var max_topic_count = logx(Math.max.apply(Math, topics), 1.1);
@@ -141,13 +141,57 @@ function _convert_totals_percentages(domains) {
 
   // divide to get perentage and re-attach
   // to the domain object
+
+  var max_topics = 0,
+      max_facts = 0;
+
   domains.forEach(function(d) {
     //d.topics.percent = Math.round((d.topics.value / max_topic_count) * 100) + "%";
     //d.facts.percent = Math.round((d.facts.value / max_fact_count) * 100) + "%";
 
-    d.topics.percent = Math.round((logx(d.topics.value, 1.1) / max_topic_count) * 100) + "%";
-    d.facts.percent = Math.round((logx(d.facts.value, 1.1) / max_fact_count) * 100) + "%";
-  })
+    //d.topics.percent = Math.round((logx(d.topics.value, 1.1) / max_topic_count) * 100) + "%";
+    //d.facts.percent = Math.round((logx(d.facts.value, 1.1) / max_fact_count) * 100) + "%";
+
+    if (d.topics.value > max_topics) {
+      max_topics = d.topics.value;
+    }
+    if (d.facts.value > max_facts) {
+      max_facts = d.facts.value;
+    }
+  });
+
+  domains.forEach(function(d) {
+    d.topics.percent = (d.topics.value / max_topics) * 100;
+    d.facts.percent = (d.facts.value / max_facts) * 100;
+  });
+
+  max_topics = 0,
+  max_facts = 0;
+
+  domains.forEach(function(d) {
+    d.topics.log = Math.log(d.topics.percent + 1);
+    if (d.topics.log > max_topics) {
+      max_topics = d.topics.log;
+    }
+    d.facts.log = Math.log(d.facts.percent + 1);
+    if (d.facts.log > max_facts) {
+      max_facts = d.facts.log;
+    }
+  });
+
+
+
+  domains.forEach(function(d) {
+    d.topics.log = Math.max(Math.round(d.topics.log * 100/ max_topics), 1);
+    d.facts.log = Math.max(Math.round(d.facts.log * 100 / max_facts), 1);
+
+
+
+
+  });
+
+
+
   return domains;
 };
 
@@ -180,7 +224,7 @@ function groupBy(array, key) {
 
 var categories = function () {
   var q_categories = acre.require("categories").query;
-  
+
   return freebase.mqlread(q_categories)
     .then(function(envelope) {
       return envelope.result.map(function(category) {

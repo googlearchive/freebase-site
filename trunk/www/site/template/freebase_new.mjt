@@ -80,9 +80,14 @@
 
 <acre:block def="content_body()">
   <div id="page-header">
-    <div class="page-title" style="margin-left:40px">
-      <h1>${_("A community-curated database of well-known people, places and things")}</h1>
-    </div>
+    <acre:block if="that_exports.page_title">
+      ${that_exports.page_title()}
+    </acre:block>
+    <acre:block else="">
+      <div class="page-title" style="margin-left:40px">
+        <h1>${_("A community-curated database of well-known people, places and things")}</h1>
+      </div>
+    </acre:block>
     <div class="nav clear">
       ${nav_tabs()}
     </div>

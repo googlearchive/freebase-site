@@ -28,3 +28,69 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+#browse tbody th,
+#browse tbody td {
+  font-size: 14px;
+  border-color: #e9ebee;
+}
+
+#browse tbody th {
+  background-color: #dee1e4;
+}
+
+#browse tbody th a {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#browse td.key {
+  color: #777;
+}
+
+#browse td.facts,
+#browse td.topics {
+  padding: 0;
+  font-size: 12px;
+  font-weight: bold;
+  text-shadow: 0 1px 1px #fff;
+  line-height: 1.8;
+}
+
+.wrapper {
+  padding: 5px 10px;
+  position: relative;
+}
+
+.wrapper .value {
+  position: relative;
+  z-index: 1;
+}
+
+.wrapper .bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  .transition;
+} 
+
+.topics .bar {
+  right: 0;
+  background-color: #c5dbe9;
+}
+
+.facts .bar {
+  left: 0;
+  background-color: #d6b7ad;
+}
+
+tr:hover .topics .bar {
+  background-color: #aed1e5;
+}
+
+
+tr:hover .facts .bar {
+  background-color: #ca9582;
+}

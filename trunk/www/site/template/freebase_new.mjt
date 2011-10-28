@@ -82,7 +82,7 @@
   <div id="page-header">
     <div class="page-title" style="margin-left:40px">
       <span class="number topics-count">
-        <span class="value"><strong>${i18n_c.number(c.domains.total_topics)}</strong></span>
+        <span class="value"><strong>${i18n_c.number(c.total_topics)}</strong></span>
         <span class="extra">
         Topics <br>
         <small>(and counting)</small>

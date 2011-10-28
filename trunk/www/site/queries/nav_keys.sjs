@@ -77,3 +77,16 @@ function property(o) {
     });
 };
 
+function topic_count() {
+  var q = {
+    "id": "/common/topic",
+    "/freebase/type_profile/instance_count": null
+  };
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result;
+    })
+    .then(function(r) {
+      return r["/freebase/type_profile/instance_count"];
+    });
+};

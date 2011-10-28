@@ -59,13 +59,10 @@
   <script src="template/freebase_object.mf.js"></script>
 </acre:block>
 
-<acre:block def="freebase_css()">
-  <link rel="stylesheet" type="text/css" href="template/freebase_object.mf.css" />
-</acre:block>
-
 <acre:block def="head()">
   <!-- canonical url -->
   <link rel="canonical" href="${h.fb_url(true, c.object.id)}" />
+  <link rel="stylesheet" type="text/css" href="browse.mf.css" />
 
   <acre:block if="that_exports.head">
     ${that_exports.head()}

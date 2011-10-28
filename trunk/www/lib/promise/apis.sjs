@@ -32,6 +32,7 @@
 var deferred = acre.require("promise/deferred");
 var urlfetch;
 var freebase = {};
+var hasCharacter = /\D/;
 
 (function() {
 
@@ -103,13 +104,7 @@ var freebase = {};
         response = JSON.parse(response.body);
         var results = {};
         retrieve_ids.forEach(function (id) {
-          //prop_count hack because the bdb encodes keys incorrectly
-          //TODO(masouras): prop_counts should be keyed by mid
-          var lookup_id = id;
-          if (url.indexOf("prop_count") >= 0) { 
-            lookup_id = parseInt(id, 10);
-          }
-          results[id] = response[lookup_id].result;
+          results[id] = response[id].result;
         });
         return results;
       })

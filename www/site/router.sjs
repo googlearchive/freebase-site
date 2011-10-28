@@ -108,6 +108,12 @@ function init_site_rules(lib) {
 
   // ********* CUSTOM (browse) *********
   rules["custom"] = {
+    promises: [{
+      "key": "total_topics",
+      "app": "site",
+      "script": "queries/nav_keys.sjs",
+      "promise": "topic_count"
+    }],
     tabs: [
       {
         "name": _("Data"),
@@ -820,11 +826,11 @@ function set_app(item, app_labels) {
  *         (e.g., /homepage?acre.console=1)
  */
 function CustomRouter(app_labels) {
-  var tabs, tab_map;
+  var rule, route_map;
   
   this.add = function(rules) {
-    tabs = rules["tabs"];
-    route_map = h.map_array(tabs, "path");
+    rule = rules;
+    route_map = h.map_array(rule.tabs, "path");
   };
 
   this.route = function(req) {
@@ -834,14 +840,14 @@ function CustomRouter(app_labels) {
           ("props" in req.params) || ("links" in req.params) || ("ids" in req.params)
         ))) {
       
-      tabs.forEach(function(item) {
+      rule.tabs.forEach(function(item) {
         set_app(item, app_labels);
       });
       
-      var rule = {
-        tabs: tabs
-      };
-
+      rule.promises.forEach(function(item) {
+        set_app(item, app_labels);
+      });
+      
       acre.write(acre.require("template/freebase_object.sjs").main(rule, o));
       acre.exit();
     }

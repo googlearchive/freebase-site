@@ -58,18 +58,37 @@
       window.location.href= "/user/" + m[1];
     }
   </script>
+  <link href='http://fonts.googleapis.com/css?family=Allerta' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="browse.mf.css" />
+  <style type="text/css">
+    @-webkit-keyframes grow {
+      0% {
+        -webkit-transform: scale3d(0,1,0);
+      }
+      100% {
+        -webkit-transform: scale3d(1,1,0);
+      }
+    }
+  </style>
 </acre:block>
 
 <acre:block def="page_title()">
-  <div class="page-title" style="margin-left:40px">
-    <h1>hello!</h1>
+  <div class="page-title">
+    <span class="number topics-count">
+      <span class="value"><strong>${i18n_c.number(c.domains.total_topics)}</strong></span>
+      <span class="extra">
+      Topics <br>
+      <small>(and counting)</small>
+      </span>
+    </span>
+    <h1>${_("A community-currated database of well-known people, places, and things")}</h1>
   </div>
 </acre:block>
 
 <acre:block def="page_content()">
   <div id="content-wrapper">
-    <div id="content-main" class="clear" role="main">
+    <section id="content-main" class="clear" role="main">
+      <h1>Explore Freebase Data</h1>
       <div id="schema-search" class="clear section-tabs">
         <div class="search-box" id="domain-search">
           <form id="domain-search-form" method="get">
@@ -80,7 +99,6 @@
           </form>
           <label><input type="hidden" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" /></label>
         </div>
-        <h1>Explore Freebase Data</h1>
       </div>
           
       <table id="browse" cellspacing="0" class="table table-sortable">
@@ -114,7 +132,7 @@
           </tr>
         </tbody>
       </table>
-    </div>
+    </section>
 
     <aside class="secondary">
       ${templates.what_is_freebase()}

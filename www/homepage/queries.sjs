@@ -129,6 +129,10 @@ function _convert_totals_percentages(domains) {
   domains.forEach(function(d) {
     topics.push(d.topics.value);
     facts.push(d.facts.value);
+
+    if(d.id === "/common") {
+      domains.total_topics = d.topics.value;
+    }
   });
 
   // get higest count of each group

@@ -62,7 +62,7 @@
 <acre:block def="head()">
   <!-- canonical url -->
   <link rel="canonical" href="${h.fb_url(true, c.object.id)}" />
-  <link rel="stylesheet" type="text/css" href="browse.mf.css" />
+  <link rel="stylesheet" type="text/css" href="template/browse.mf.css" />
 
   <acre:block if="that_exports.head">
     ${that_exports.head()}
@@ -77,7 +77,7 @@
 
 <acre:block def="content_body()">
   <div id="page-header">
-    <div class="page-title" style="margin-left:40px">
+    <div class="page-title">
       <span class="number topics-count">
         <span class="value"><strong>${i18n_c.number(c.total_topics)}</strong></span>
         <span class="extra">
@@ -85,7 +85,7 @@
         <small>(and counting)</small>
         </span>
       </span>
-      <h1>${_("A community-currated database of well-known people, places, and things")}</h1>
+      <h1>${_("A community-curated database of well-known people, places, and things")}</h1>
     </div>
     <div class="nav clear">
       ${nav_tabs()}

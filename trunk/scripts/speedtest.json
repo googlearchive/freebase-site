@@ -111,8 +111,13 @@
     },
     "glatency" : { 
       "url" : "/helloappengine"
-    }
-    
+    },
+    "apitextsandbox" : { 
+      "url" : "/freebase/v1-sandbox/text{topic_slow_2}?key=AIzaSyB9YS2QquH0IU5MvgiVvjkS5uW7DM84bz4"
+      },
+    "apimqlreadsandbox" : { 
+      "url" : "/freebase/v1-sandbox/mqlread?query=[{\"name\":null,\"id\": \"{topic_slow_2}\"}]&key=AIzaSyB9YS2QquH0IU5MvgiVvjkS5uW7DM84bz4"
+      }
   },
 
   "tests" : {

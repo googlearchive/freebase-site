@@ -1439,9 +1439,9 @@ class ActionPush():
 
     #if this was a push to a specific app version, then re-push trunk
     #so that the current version is the same as trunk in SVN
-    if app.version:
-      c.log('restoring trunk')
-      return self.push(AppFactory(c)(app.app_key))
+    #if app.version:
+    #  c.log('restoring trunk')
+    #  return self.push(AppFactory(c)(app.app_key))
 
     return True
 

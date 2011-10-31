@@ -794,7 +794,7 @@ class ActionSpeedTest:
 
     #Simple case - non-parmeterized urls.
     if not match:
-      return ['http://{host}{path}'.format(host=host, path=page.get('url')) for x in range(n)]
+      return ['{host}{path}'.format(host=host, path=page.get('url')) for x in range(n)]
 
     #Parameterized urls.
 
@@ -810,7 +810,7 @@ class ActionSpeedTest:
       fd.close()
 
     t = len(ids)
-    return ['http://{host}{path}'.format(host=host, path=page.get('url').replace("{%s}" % id_type, ids[x%t])) for x in range(n)]
+    return ['{host}{path}'.format(host=host, path=page.get('url').replace("{%s}" % id_type, ids[x%t])) for x in range(n)]
   
   def generate_urls_for_test(self, test):
     """Generate urls given a test specification."""

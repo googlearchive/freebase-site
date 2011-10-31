@@ -1,0 +1,163 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var components = acre.require("lib/template/components.mjt");
+  var image = acre.require("lib/template/imagecomponents.mjt");
+</acre:script>
+
+<acre:block def="page_content()">
+
+  <acre:block if="c.loads">
+    <h2 class="table-title">
+      ${_('Data load attributions operated by this user')}
+    </h2>
+    <table cellspacing="0" class="table table-sortable">
+      <thead>
+        <tr>
+          <th scope="col" class="column-header">${_('Attribution')}</th>
+          <th scope="col" class="column-header">${_('Data Load')}</th>
+          <th scope="col" class="column-header">${_('Last Active')}</th>
+          <th scope="col" class="column-header">${_('Objects created')}</th>
+          <th scope="col" class="column-header">${_('Links created')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr acre:for="a in c.loads">
+          <th class="row-header odd" scope="row">
+            <a href="${h.fb_url(a.id,[['links']])}">$a.id</a>
+          </th>
+          <td class="even">
+            <acre:script>var name = i18n.display_name(a.load);</acre:script>
+            <a href="${h.fb_url(a.load.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
+          </td>
+          <td class="odd">${h.relative_date(a.timestamp)}</td>
+          <td class="even">${i18n_c.number(a.objects)}</td>
+          <td class="odd">${i18n_c.number(a.links)}</td>
+        </tr>
+      </tbody>
+    </table>
+  </acre:block>
+  
+  <acre:block if="c.apps">
+    <h2 class="table-title">
+      ${_('App attributions created for this user')}
+    </h2>
+    <table cellspacing="0" class="table table-sortable">
+      <thead>
+        <tr>
+          <th scope="col" class="column-header">${_('Attribution')}</th>
+          <th scope="col" class="column-header">${_('App')}</th>
+          <th scope="col" class="column-header">${_('Last Active')}</th>
+          <th scope="col" class="column-header">${_('Objects created')}</th>
+          <th scope="col" class="column-header">${_('Links created')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr acre:for="a in c.apps">
+          <th class="row-header odd" scope="row">
+            <a href="${h.fb_url(a.id,[['links']])}">$a.id</a>
+          </th>
+          <td class="even">
+            <acre:script>var name = i18n.display_name(a.app);</acre:script>
+            <a href="${h.fb_url(a.app.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
+          </td>
+          <td class="odd">${h.relative_date(a.timestamp)}</td>
+          <td class="even">${i18n_c.number(a.objects)}</td>
+          <td class="odd">${i18n_c.number(a.links)}</td>
+        </tr>
+      </tbody>
+    </table>
+  </acre:block>
+  
+  <acre:block if="c.attrs">
+    <h2 class="table-title">
+      ${_('Attributions used by this data load')}
+    </h2>
+    <table cellspacing="0" class="table table-sortable">
+      <thead>
+        <tr>
+          <th scope="col" class="column-header">${_('Attribution')}</th>
+          <th scope="col" class="column-header">${_('Last Active')}</th>
+          <th scope="col" class="column-header">${_('Objects created')}</th>
+          <th scope="col" class="column-header">${_('Links created')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr acre:for="a in c.attrs">
+          <th class="row-header odd" scope="row">
+            <a href="${h.fb_url(a.id,[['links']])}">$a.id</a>
+          </th>
+          <td class="even">${h.relative_date(a.timestamp)}</td>
+          <td class="odd">${i18n_c.number(a.objects)}</td>
+          <td class="even">${i18n_c.number(a.links)}</td>
+        </tr>
+      </tbody>
+    </table>
+  </acre:block>
+  
+  <acre:block if="c.users">
+    <h2 class="table-title">
+      ${_('User attributions created for this app')}
+    </h2>
+    <table cellspacing="0" class="table table-sortable">
+      <thead>
+        <tr>
+          <th scope="col" class="column-header">${_('Attribution')}</th>
+          <th scope="col" class="column-header">${_('User')}</th>
+          <th scope="col" class="column-header">${_('Last Active')}</th>
+          <th scope="col" class="column-header">${_('Objects created')}</th>
+          <th scope="col" class="column-header">${_('Links created')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr acre:for="a in c.users">
+          <th class="row-header odd" scope="row">
+            <a href="${h.fb_url(a.id,[['links']])}">$a.id</a>
+          </th>
+          <td class="even">
+            ${image.user_image_tiny(a.user)}
+            ${components.creator(a.user)}
+          </td>
+          <td class="odd">${h.relative_date(a.timestamp)}</td>
+          <td class="even">${i18n_c.number(a.objects)}</td>
+          <td class="odd">${i18n_c.number(a.links)}</td>
+        </tr>
+      </tbody>
+    </table>
+  </acre:block>
+
+</acre:block>

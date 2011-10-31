@@ -74,7 +74,6 @@ function init_site_rules(lib) {
     "create":     "//create" + site_codebase,
     "data":       "//data" + site_codebase,
     "devdocs":    "//devdocs" + site_codebase,
-    "flag":       "//flag" + site_codebase,
     "group":      "//group" + site_codebase,
     "homepage":   "//homepage" + site_codebase,
     "policies":   "//policies" + site_codebase,

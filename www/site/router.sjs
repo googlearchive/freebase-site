@@ -143,7 +143,7 @@ function init_site_rules(lib) {
         "name": _("Users"),
         "path": "/users",
         "app": "activity",
-        "script": "users.tab",
+        "script": "users.tab"
       },
       {
         "name": _("MDOs"),
@@ -155,7 +155,7 @@ function init_site_rules(lib) {
         "name": _("Tasks"),
         "path": "/tasks",
         "app": "activity",
-        "script": "review.tab",
+        "script": "review.tab"
       }
     ]
   };
@@ -170,7 +170,7 @@ function init_site_rules(lib) {
       "promise": "blurb"              // promise method (passed object query result as arugment)
     }
   ];
-  
+
   var DEFAULT_MORE_TABS = [
     {
       "name": _("Properties"),
@@ -219,7 +219,7 @@ function init_site_rules(lib) {
           "app": "triples",
           "script": "writes.tab"
         }
-      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS))
     },
     {
       "name": _("Domain"),
@@ -256,7 +256,7 @@ function init_site_rules(lib) {
           "name": _("<b>Discuss</b> Domain"),
           "url": (function() { return h.legacy_fb_url("/discuss/threads", this.object.id); })
         }
-      ] 
+      ]
     },
     {
       "name": _("Type"),
@@ -278,7 +278,7 @@ function init_site_rules(lib) {
           "name": _("Instances"),
           "key": "instances",
           "app": "data",
-          "script": "type.tab",
+          "script": "type.tab"
         },
         {
           "name": _("Add Topic"),
@@ -412,7 +412,7 @@ function init_site_rules(lib) {
           "app": "query",
           "script": "mql.tab"
         }
-      ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS))
     },
     {
       "name": _("MDO"),
@@ -608,7 +608,7 @@ function init_site_rules(lib) {
           "name": _("Properties"),
           "key": "props",
           "app": "topic",
-          "script": "topic.tab",
+          "script": "topic.tab"
         },
         {
           "name": _("Identifiers"),
@@ -676,7 +676,7 @@ function init_site_rules(lib) {
     //
     // Redirects for legacy urls
     //
-    
+
     // Homepage
     {prefix:"/index",                   url:"/", redirect: 301},
     {prefix:"/homepage",                url:"/browse", redirect: 301},
@@ -827,7 +827,7 @@ function set_app(item, app_labels) {
  */
 function CustomRouter(app_labels) {
   var rule, route_map;
-  
+
   this.add = function(rules) {
     rule = rules;
     route_map = h.map_array(rule.tabs, "path");
@@ -835,19 +835,19 @@ function CustomRouter(app_labels) {
 
   this.route = function(req) {
     // only applies to homepage and "/browse"
-    if ((req.path_info in route_map) || 
+    if ((req.path_info in route_map) ||
         (req.path_info === "/" && !(
           ("props" in req.params) || ("links" in req.params) || ("ids" in req.params)
         ))) {
-      
+
       rule.tabs.forEach(function(item) {
         set_app(item, app_labels);
       });
-      
+
       rule.promises.forEach(function(item) {
         set_app(item, app_labels);
       });
-      
+
       acre.write(acre.require("template/freebase_object.sjs").main(rule, o));
       acre.exit();
     }

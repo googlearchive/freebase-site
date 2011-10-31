@@ -38,13 +38,13 @@ var deferred = promise.deferred;
 var queries = acre.require("lib/collection/queries.sjs");
 
 var SPEC = {
-  
+
   template: "collection.mjt",
 
   validate: function(params) {
     return [
       params.object,
-      params.query,
+      params.query
     ];
   },
 
@@ -57,5 +57,5 @@ var SPEC = {
             return c;
           });
       });
-  }  
+  }
 };

@@ -72,7 +72,7 @@ function qualify_prop(key, type) {
     label: null,
     id: key,
     key: key
-  }
+  };
 
   var segs = key.split(":");
   if (segs.length > 2) {
@@ -130,7 +130,7 @@ function clean_clause(q) {
     "/common/topic/image": true,
     "/type/value/value": true,
     "/type/text/lang": true,
-    
+
     /* TODO:  SITE-818 */
     "index": true,
     "!index": true,
@@ -174,7 +174,7 @@ function get_paths(q, depth, top_type) {
   if (depth) {
     paths = paths.map(function(p) {
       return p.split(".").slice(0, depth).join(".");
-    });    
+    });
   }
   return paths;
 };
@@ -182,7 +182,7 @@ function get_paths(q, depth, top_type) {
 function query(query, opts) {
   opts = opts || {};
   var MID_PROP = "collection:mid";
-  
+
   if (!("cursor" in opts)) {
     opts.cursor = true;
   }
@@ -198,10 +198,10 @@ function query(query, opts) {
         cursor: env.cursor,
         collection: null
       };
-      
+
       // if no topics in result, bail
       if (!env.result.length) return result;
-      
+
       var mids = [];
       env.result.forEach(function(r) {
         mids.push(r[MID_PROP]);

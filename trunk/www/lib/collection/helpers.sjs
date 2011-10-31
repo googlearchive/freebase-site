@@ -115,11 +115,11 @@ function value_to_rows(prop_structures, value, start_column) {
   var rows = [],
       column = start_column || 0,
       last_vals = [];
-  
+
   function new_cell(structure, opts) {
     opts = opts || {};
 
-    var css_class = ""
+    var css_class = "";
     if (structure.id == "/type/object/name") {
       css_class += "name ";
     }

@@ -1,0 +1,210 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+  var components = acre.require("lib/template/components.mjt");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var filter_components = acre.require("lib/filter/components.mjt");
+  var fh = acre.require("lib/filter/helpers.sjs");
+  var EDIT = _("Edit");
+  var DELETE = _("Delete");
+</acre:script>
+
+<acre:block def="head()">
+  <link rel="stylesheet" type="text/css" href="sameas.mf.css" />
+  <link rel="stylesheet" type="text/css" href="lib/template/chosen.jquery.css" />
+</acre:block>
+
+<acre:block def="page_content()">
+  <div class="column nav">
+    <div class="module">
+      <h2 class="module-title">
+        <a href="javascript:void(0);" class="trigger">Collapse column</a>
+        <span>Filter this data</span>
+      </h2>
+      <div class="module-section">
+        ${filter_components.as_of_time_filter(c.object.id, c.filters)}
+      </div>
+    </div>
+    <div class="module">
+      <div class="module-section alt">
+        ${authority_filter()}
+      </div>
+      <div class="module-section alt">
+        ${filter_components.timestamp_filter(c.object.id, c.filters)}
+      </div>
+      <div class="module-section alt">
+        ${filter_components.creator_filter(c.object.id, c.filters)}
+      </div>      
+    </div>
+  </div>    
+  <div class="column">
+    ${topic_keys()}
+  </div>
+</acre:block>
+
+<acre:block def="authority_filter()" if="c.authority_count.length">
+  <h3 class="module-section-title"><label for="">${_("By Authorities")}:</label></h3>
+  ${filter_components.filter_form(c.object.id, c.filters, "authority", authority_list)}
+</acre:block>
+
+<acre:block def="authority_list()">
+  <acre:script>
+    var authorities = {};
+    (c.filters.authority || []).forEach(function(a) {
+      authorities[a] = 1;
+    });
+  </acre:script>
+  <ul>
+    <acre:block for="authority in c.authority_count">
+      <li class="authority-list-item">
+        <label>
+          <input type="checkbox" name="authority" value="${authority.id}" 
+                 acre:attrs="authorities[authority.id] ? {checked:'checked'} : {}"
+                 onchange="this.form.submit();"/>
+          ${i18n.display_name(authority)} <span class="count">(${i18n_c.number(authority.count)})</span>
+        </label>
+      </li>
+    </acre:block>
+  </ul>
+</acre:block>
+
+<acre:block def="topic_keys()">
+  <acre:script>
+    var keys = c.keys;
+  </acre:script>
+  <div class="column keys">
+    <h1 class="table-title">${_("Topic Keys")} (${i18n_c.number(keys.length)})</h1>
+    <table cellspacing="0" class="table table-sortable">  
+       <thead>
+        <tr>
+          <th class="column-header first {sorter:'string'}" scope="column"> 
+            <span class="sort-icon">${_("Authority")}</span>
+          </th>
+          <th class="column-header {sorter:'string'}" scope="column">
+            <span class="sort-icon">${_("Namespace")}</span>
+          </th>
+          <th class="column-header {sorter:'string'}" scope="column">
+            <span class="sort-icon">${_("Key")}</span>
+          </th>
+          <th class="column-header {sorter:'string'}" scope="column">
+            <span class="sort-icon">${_("Creator")}</span>
+          </th>
+          <th class="column-header {sorter:'datetime'}" scope="column">
+            <span class="sort-icon">${_("Date")}</span>
+          </th>
+        </tr>
+      </thead>
+       <tbody>
+         <acre:block for="key in keys">
+           ${topic_key(key)}
+         </acre:block>
+       </tbody>
+       <tfoot class="table-edit edit">
+         <tr class="trigger-row">
+           <td colspan="5">
+             <a href="javascript:void(0);"
+                class="icon-link" onclick="return freebase.dispatch(event, freebase.sameas.add_key, null, this);">
+               <span class="add-icon">${_('Add New')}</span>
+             </a>
+           </td>
+         </tr>           
+       </tfoot>
+    </table>
+  </div>
+</acre:block>
+
+<acre:block def="topic_key(key)">
+  <acre:script>
+    var metadata = {namespace:key.namespace, value:key.value};
+  </acre:script>
+  <tr class="data-row ${JSON.stringify(metadata)}">
+    <th class="row-header odd">
+      <acre:block if="key.authority">        
+        <span class="authority a${key.authority.id.replace(/\//g, '-')} wrapper">
+          <a href="${h.fb_url(key.authority.id)}">
+            <strong>${i18n.display_name(key.authority)}</strong>
+          </a>
+          ${key_menu(key)}
+        </span>
+      </acre:block>
+      <acre:block else="">
+        <span class="wrapper">
+          <strong>-</strong>
+        </span>
+      </acre:block>
+    </th>
+    <td>
+      <a href="${h.fb_url(key.namespace)}">${key.namespace}</a>
+    </td>
+    <td class="odd">
+      <acre:block if="key.url">
+        <a href="${key.url}">${key.value}</a>
+      </acre:block>
+      <acre:block else="">
+        ${key.value}
+      </acre:block>
+    </td>
+    <td>
+      ${components.attribution(key.attribution, true)}
+    </td>
+    <td class="odd">
+      ${i18n_c.datetime(key.timestamp)}
+    </td>
+  </tr>
+</acre:block>
+
+<acre:block def="key_menu(key)">
+  <acre:script>
+    var perm_obj = {id:key.namespace};
+  </acre:script>
+  <ul class="combo-menu nicemenu">
+    <li class="nicemenu-item edit-perm ${JSON.stringify(perm_obj)}">
+      <span class="headmenu">
+        <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
+        <a href="javascript:void(0)" class="more-action">menu</a>
+      </span>
+      <ul class="submenu row-menu">
+        <li class="row-menu-item"><a href="#" onclick="return fb.sameas.edit_key(this);">${EDIT}</a></li>
+        <li class="row-menu-item"><a href="#" onclick="return fb.sameas.delete_key(this);">${DELETE}</a></li>
+      </ul>
+    </li>
+  </ul>
+</acre:block>
+
+<acre:block def="footer_script()">
+  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+  <script src="sameas.mf.js"></script>
+</acre:block>

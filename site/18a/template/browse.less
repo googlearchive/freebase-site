@@ -1,0 +1,135 @@
+/*
+ * Copyright 2010, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+#page-header {
+  text-align: center;
+  background-color: #3b4045;
+  position: relative;
+}
+
+#page-header .page-title {
+  margin: 0;
+}
+
+#page-header h1 {
+  color: #86bfdf;
+  font-size: 22px;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.8);
+  margin: 15px 0;
+  line-height: 1;
+}
+
+.topics-count {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 5px;
+  background: #3a3a3a;
+  background-image: -webkit-linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    -webkit-linear-gradient(0, rgba(255,255,255,0.03) 1px, transparent 2px);
+  background-size: 2px 3px, 3px 3px, 2px 2px, 2px 2px;
+  background-position:-2px -2px, -2px -2px, -1px -1px, -1px -1px;
+  color: #868686;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+  line-height: 1;
+  font-family: 'Allerta', Helvetica, sans-serif;
+  .box_shadow(0, 1px, 2px, rgba(0,0,0,0.55);
+}
+
+.topics-count:before {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  width: 16%;
+  left: 16%;
+  top: 30%;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.topics-count:after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  width: 16%;
+  right: 16%;
+  top: 30%;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.topics-count .extra {
+  display: inline-block;
+  padding: 0 10px;
+  line-height: 1.4;
+  font-size: 12px;
+}
+
+.extra small {
+  font-size: 11px;
+}
+
+.topics-count .value {
+  display: inline-block;
+  position: relative;
+  padding: 8px 13px;
+  background-color: #333;
+  background-image: -o-linear-gradient(bottom, rgb(51,51,51) 33%, rgb(69,69,69) 50%, rgb(51,51,51) 84%);
+  background-image: -moz-linear-gradient(bottom, rgb(51,51,51) 33%, rgb(69,69,69) 50%, rgb(51,51,51) 84%);
+  background-image: -ms-linear-gradient(bottom, rgb(51,51,51) 33%, rgb(69,69,69) 50%, rgb(51,51,51) 84%);
+  background-image: -webkit-linear-gradient(bottom, rgb(51,51,51) 33%, rgb(69,69,69) 50%, rgb(51,51,51) 84%);
+  background-image: linear-gradient(bottom, rgb(51,51,51) 33%, rgb(69,69,69) 50%, rgb(51,51,51) 84%);
+  -webkit-box-shadow: inset 1px 1px 1px #000;
+  -moz-box-shadow: inset 1px 1px 1px #000;
+  -o-box-shadow: inset 1px 1px 1px #000;
+  -ms-box-shadow: inset 1px 1px 1px #000;
+  box-shadow: inset 0 0 5px #111;
+  .rounded_corners();
+}
+
+.topics-count .value strong {
+  position: relative;
+  z-index: 1;
+  font-size: 29px;
+  font-weight: normal;
+  color: #fff;
+  text-shadow: 0 1px 2px #000;
+}
+
+.topics-count .value:after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 1px;
+  right: 1px;
+  top: 50%;
+  border-top: 1px solid #3c3c3c;
+  border-bottom: 1px solid #545454;
+}

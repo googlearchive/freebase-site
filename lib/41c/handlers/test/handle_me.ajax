@@ -1,0 +1,20 @@
+var deferred = acre.require("promise/deferred");
+
+var SPEC = {
+
+  method: "GET",
+
+  auth: false,
+
+  validate: function(params) {
+    return ["/en/blade_runner", "/en/bob_dylan"];
+  },
+
+  run: function(topic1, topic2) {
+    return deferred.resolved({
+      topic1: topic1,
+      topic2: topic2
+    });
+  }
+
+};

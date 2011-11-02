@@ -35,6 +35,14 @@ var queries = acre.require("propbox/queries.sjs");
 var deferred = acre.require("promise/deferred.sjs");
 var collection = acre.require("collection/collection.mjt");
 
+
+var IGNORE_PROPS = {
+  "/type/object/name": 1,
+  "/common/topic/image": 1,
+  "/common/topic/article": 1
+};
+
+
 /**
  * prop add form
  */
@@ -48,11 +56,16 @@ var SPEC = {
     return [
       validators.MqlId(params, "s", {required:true}),           // the row/topic id
       validators.MultiValue(params, "p", {validator:validators.MqlId, required:true}), // prop ids (columns)
-      validators.LangId(params, "lang", {if_empty:"/lang/en"})  // lang id
+      validators.LangId(params, "lang", {if_empty:"/lang/en"}),  // lang id
+      validators.StringBool(params, "nav", {if_empty:false})  // only output modal-inner contents
     ];
   },
 
-  run: function(s, p, lang) {
+  run: function(s, p, lang, nav) {
+    p = p.filter(function(pid) {
+      return !IGNORE_PROPS[pid];
+    });
+
     return queries.prop_structures.apply(null, p.concat(lang))
       .then(function(prop_structures) {
         var promises = [];
@@ -75,7 +88,7 @@ var SPEC = {
               prop_structures: prop_structures,
               prop_values: prop_values,
               // </debug>
-              html: acre.markup.stringify(collection.row_edit_form(s, prop_structures, prop_values, lang))
+              html: acre.markup.stringify(collection.row_edit_form(s, prop_structures, prop_values, lang, nav))
             };
           });
       });

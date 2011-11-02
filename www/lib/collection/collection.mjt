@@ -151,21 +151,37 @@
 </acre:block>
 
 
-<acre:block def="row_edit_form(s, prop_structures, prop_values, lang)">
-  <div class="modal">
-    <div class="modal-inner">
-      <h1 class="modal-title"><span></span></h1>
-      <div class="modal-content">
-        <acre:block for="i,prop_structure in prop_structures">
-          <acre:script>
-            var topic = {id:s};
-          </acre:script>
-          ${pb.propbox(topic, prop_structure, prop_values[i], lang)}
-        </acre:block>
+<acre:block def="row_edit_form(s, prop_structures, prop_values, lang, nav)">
+  <acre:block if="nav">
+    ${row_edit_form_content(s, prop_structures, prop_values, lang)}
+  </acre:block>
+  <acre:block else="">
+    <div class="modal">
+      ${row_edit_form_content(s, prop_structures, prop_values, lang)}
+      <div class="modal-buttons">
+        ${form.submit_buttons(null, _("Close"))}
       </div>
     </div>
-    <div class="modal-buttons">
-      ${form.submit_buttons()}
+  </acre:block>
+</acre:block>
+
+<acre:block def="row_edit_form_content(s, prop_structures, prop_values, lang)">
+  <div class="modal-inner">
+    <h1 class="modal-title">
+      <a href="javascript:void(0);" style="visibility:hidden" class="modal-nav modal-nav-prev">&laquo;${_("prev")}</a>
+      <span class="modal-nav-title">
+        ${image.image_thumb(s)}
+        <span>${s}</span>
+      </span>
+      <a href="javascript:void(0);" style="visibility:hidden" class="modal-nav modal-nav-next">${_("next")}&raquo;</a>
+    </h1>
+    <div class="modal-content">
+      <acre:block for="i,prop_structure in prop_structures">
+        <acre:script>
+          var topic = {id:s};
+        </acre:script>
+        ${pb.propbox(topic, prop_structure, prop_values[i], lang)}
+      </acre:block>
     </div>
   </div>
 </acre:block>

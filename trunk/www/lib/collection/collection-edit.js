@@ -58,47 +58,10 @@
   var edit = fb.collection.edit = {
 
     row_edit_begin: function(prop_row) {
-      var row_id = prop_row.attr("data-id");
-      var props = prop_row.parent("table").metadata().prop_structures;
-      props = props.map(function(prop) {
-        return prop.id;
-      });
-      var submit_data = {
-        s: row_id,
-        p: props,
-        lang: fb.lang || "/lang/en"
-      };
-      $.ajax($.extend(formlib.default_begin_ajax_options(), {
-        url: fb.h.ajax_url("lib/collection/row_edit_begin.ajax"),
-        data: submit_data,
-        traditional: true,
-        onsuccess: function(data) {
-          var form = $(data.result.html);
-          var event_prefix = "collection.edit.row_edit.";
-          var options = {
-            event_prefix: event_prefix,
-            // callbacks
-            init: edit.row_edit_init,
-            validate: edit.row_edit_validate,
-            submit: edit.row_edit_submit,
-            // submit_ajax_options
-            ajax: {},
-            // jQuery objects,
-            form: form,
-            row: prop_row
-          };
-          $("button[type=submit]", form).hide();
-          form
-            .bind(event_prefix + "cancel", function() {
-              window.location.reload(true);
-            });
-
-          formlib.init_modal_form(options);
-        }
-      }));
+      edit._row_edit_begin(prop_row);
     },
 
-    row_edit_init: function(options) {console.log("row_edit_init", options);
+    row_edit_init: function(options) {
       i18n.ize(options.form);
       propbox.init(options.form, {
         id: options.row.attr("data-id"),
@@ -111,10 +74,98 @@
       $(".nicemenu", options.form).nicemenu({
         overlay: options.overlay.getOverlay()
       });
+
+      // update navs
+      var prev = $(".modal-nav-prev", options.form).unbind();
+      var next = $(".modal-nav-next", options.form).unbind();
+      var prev_row = options.row.prev(".data-row");
+      var next_row = options.row.next(".data-row");
+      if (prev_row.length) {
+        prev
+          .click(function() {
+            edit.row_edit_prev(prev_row, options);
+            return false;
+          })
+          .css("visibility", "visible");
+      }
+      else {
+        prev.css("visibility", "hidden");
+      }
+      if (next_row.length) {
+        next
+          .click(function() {
+            edit.row_edit_next(next_row, options);
+            return false;
+          })
+          .css("visibility", "visible");
+      }
+      else {
+        next.css("visibility", "hidden");
+      }
     },
-    row_edit_validate: function(options) {
+
+    row_edit_prev: function(prop_row, options) {
+      edit._row_edit_begin(prop_row, options);
     },
-    row_edit_submit: function(options) {
+
+    row_edit_next: function(prop_row, options) {
+      edit._row_edit_begin(prop_row, options);
+    },
+
+    /**
+     * If options is specified, the modal is already on screen and
+     * we're only getting new modal contents/form for the next/previous prop_row.
+     */
+    _row_edit_begin: function(prop_row, options) {
+      // are we navigating to the next/previous row? (i.e. via nex/prev buttons)
+      var nav = options != null;
+      var row_id = prop_row.attr("data-id");
+      var props = prop_row.parent("table").metadata().prop_structures;
+      props = props.map(function(prop) {
+        return prop.id;
+      });
+      var submit_data = {
+        s: row_id,
+        p: props,
+        lang: fb.lang || "/lang/en",
+        nav: nav
+      };
+      $.ajax($.extend(formlib.default_begin_ajax_options(), {
+        url: fb.h.ajax_url("lib/collection/row_edit_begin.ajax"),
+        data: submit_data,
+        traditional: true,
+        onsuccess: function(data) {
+          var form = $(data.result.html);
+          if (nav) {
+            $(".modal-inner", options.form).replaceWith(form);
+            options.row = prop_row;
+            edit.row_edit_init(options);
+          }
+          else {
+            var event_prefix = "collection.edit.row_edit.";
+            options = {
+              event_prefix: event_prefix,
+              // callbacks
+              init: edit.row_edit_init,
+              validate: function() {return true;},
+              submit: function() {},
+              // submit_ajax_options
+              ajax: {},
+              // jQuery objects,
+              form: form,
+              row: prop_row
+            };
+            // There is no submit button for this form
+            $("button[type=submit]", form).hide();
+            // reload query result page after form goes away
+            form
+              .bind(event_prefix + "cancel", function() {
+                window.location.reload(true);
+              });
+            formlib.init_modal_form(options);
+          }
+        }
+      }));
     }
 
   };

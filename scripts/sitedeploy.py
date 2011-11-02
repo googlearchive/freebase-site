@@ -21,7 +21,7 @@ limitations under the License.
 import sys, shutil, os, re, pwd, pdb, datetime, time, urllib, urllib2, random, threading, copy
 from optparse import OptionParser
 from tempfile import NamedTemporaryFile
-from siteutil import Context, Acre, Site, App, SVNLocation, FatalException
+from siteutil import Context, Acre, Site, App, FatalException
 
 try:
   import json
@@ -104,7 +104,7 @@ class ActionSetupSite:
     except:
       return c.error('The directory %s already exists, or unable to create directory.' % self.site_checkout)
 
-    r = site.checkout(self.site_checkout, everything=c.options.everything)
+    r = site.checkout(self.site_checkout)
 
     if not r:
       return False
@@ -224,7 +224,7 @@ class ActionDeployAcre:
         if not result:
           c.error('Failed to copy %s to app-engine bundle, continuing with other apps...' % app)
 
-      if c.options.everything:
+      if not c.options.failover:
         acre.bundle_environments()
 
       c.log('The following apps are bundled with acre:')
@@ -450,16 +450,10 @@ class ActionCreateAppBranch():
   def __call__(self):
     c = self.context
     c.set_action("branch")
-
     if not c.options.app:
       return c.error('You have to specify a valid app to branch')
 
     from_app = App.Get(c, c.options.app, c.options.version)
-
-    #you specified an app that is not lib without specifying which 
-    #version of lib to connect to
-    if not from_app.is_lib() and not c.options.dependency:
-      return c.error('You have to specify a dependency version to connect to with -d')
 
     success = c.googlecode_login()
     if not success:
@@ -1150,8 +1144,7 @@ def main():
       ("speedtest", "run a speedtest", ActionSpeedTest),
       ("getids", "get freebase mids for a given type - useful for speedtests", ActionGetIds),
       ("listapps", "get a list of apps for this site", ActionListApps),
-      ("create_routes", "create the routes configuration that will point to the last tag of everything", ActionCreateRoutes),
-
+      ("create_routes", "create the routes configuration that will point to the last tag of every app", ActionCreateRoutes),
       ("test", "\ttest", ActionTest)
       ]
 
@@ -1168,8 +1161,6 @@ def main():
                     help="google code password")
   parser.add_option("-b", "--verbose", dest="verbose", action="store_true",
                     default=False, help="verbose mode will print out more debugging output")
-  parser.add_option("", "--everything", dest="everything", action="store_true",
-                    default=False, help="Setup: checkout branches and tags. Deploy: push environments on-disk to appengine.")
   parser.add_option("", "--acre_dir", dest="acre_dir",
                     default=None, help="the local acre directory")
   parser.add_option("", "--acre_version", dest="acre_version",
@@ -1188,7 +1179,7 @@ def main():
                     help="a tag of the app - e.g. 12b")
   parser.add_option("-a", "--app", dest="app", default=None,
                     help="an app id - e.g. /user/namesbc/mysuperapp or an app key under /freebase/site - e.g. homepage")
-  parser.add_option("-d", "--dependency", dest="dependency", default=None,
+  parser.add_option("-d", "--dependency", dest="dependency", default="latest",
                     help="the version of the dependency app you want to tie this app branch to - use 'latest' to tie to last branched version")
   parser.add_option("", "--failover", dest="failover", action="store_true",
                     default=False, help="will also deploy acre to the failover version of appengine")

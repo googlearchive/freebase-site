@@ -40,68 +40,6 @@
   }
 })(jQuery);
 
-// as early as possible, redirect if PAGE_LASTWRITEIME < mwLastWriteTime
-;(function($,fb) {
-
-  // mwLWTReloaded is reset after a page load, to avoid a refresh
-  // loop. More or less: only reload any given page once, but allow
-  // future reloads. See the mwLWTReload reference later
-
-  if ($.cookie("mwLWTReloaded")) {
-    // clear the cookie, so that we can autorefresh again
-    $.cookie("mwLWTReloaded", null, {path: "/"});
-    return;
-  }
-
-  // the logic here is tricky. We want to refresh when:
-  // - both values exist, and PAGE_LASTWRITEIME < mwLastWriteTime
-  //   (means user has done a write since the page was generated, and
-  //    needs to see a fresher version)
-
-  // first look up string values - empty/undefined means there's no
-  // such value
-  var cookieName = "mwLastWriteTime";
-  var cookie_lwt = 0;
-  var page_lwt = 0;
-  // in acre, PAGE_LASTWRITEIME is acre.request.cookies.mwLastWriteTime
-  if (fb[cookieName]) {
-    page_lwt = fb[cookieName] || 0;
-  }
-  if (document.cookie && document.cookie != '') {
-    var cookies = document.cookie.split(';');
-    var cookieNameEqual = cookieName + "=";
-    var cookieNameEqualLength = cookieNameEqual.length;
-    for (var i = 0,l=cookies.length; i < l; i++) {
-      var cookie = $.trim(cookies[i]);
-      if (cookie.indexOf(cookieNameEqual) === 0) {
-        var cookieValue = decodeURIComponent(cookie.substring(cookieNameEqualLength));
-        var cookie_parts = cookieValue.split('|');
-        if (cookie_parts.length) {
-          cookie_lwt = cookie_parts[0];
-        }
-      }
-    }
-  }
-  // now parse to integers - note that empty/undefined parses to NaN,
-  // which behaves really strangely. For our own sanity, we'll convert
-  // that to -1, since that always means "as old as possible"
-  var cookie_lwt_v = cookie_lwt ? parseInt(cookie_lwt, 10) : -1;
-  var page_lwt_v   = page_lwt   ? parseInt(page_lwt,   10) : -1;
-
-  //console.log("cookie_lwt", cookie_lwt_v, "page_lwt", page_lwt_v);
-
-  // the logic here may seem redundant, but getting this wrong means
-  // the user gets stuck in an endless reload loop. Yikes.
-  if (cookie_lwt && page_lwt && (page_lwt_v < cookie_lwt_v)) {
-    // be sure to set the cookie so that the reloaded page knows it
-    // came in as the result of a reload
-    $.cookie("mwLWTReloaded", "true", { path: "/" });
-    fb.mwLWTReloading = true;
-    window.location.reload(true);
-  }
-})(jQuery, window.freebase);
-
-
 (function($, fb) {
 
   if (fb.mwLWTReloading) {

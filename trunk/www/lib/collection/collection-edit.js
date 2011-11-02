@@ -75,6 +75,10 @@
         overlay: options.overlay.getOverlay()
       });
 
+      // update display name
+      var name = $(".property-value:first", options.row).text();
+      $(".modal-nav-title").text(name).css("visibility", "visible");
+
       // update navs
       var prev = $(".modal-nav-prev", options.form).unbind();
       var next = $(".modal-nav-next", options.form).unbind();

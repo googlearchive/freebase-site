@@ -47,32 +47,11 @@ LICENSE_PREAMBLE = '''
 '''
 
 ## EMAIL SETTINGS ##
-
+# Obviously this is only going to work for internal employees.
 USER_EMAIL_ADDRESS = "%s@google.com" % getpass.getuser()
 DESTINATION_EMAIL_ADDRESS = "freebase-site@google.com"
 
 ## GLOBAL CONFIGURATION ##
-
-SERVICES = {
-
-
-  'otg' : { 'acre' : 'http://www.freebase.com',
-            'www' : 'http://www.freebase.com',
-            'freebaseapps' : 'freebaseapps.com'
-            },
-  'sandbox' : { 'acre' : 'http://www.sandbox-freebase.com',
-                'www' : 'http://www.sandbox-freebase.com',
-                'freebaseapps' : 'sandbox-freebaseapps.com'
-                },
-  'qa' : { 'acre' : 'http://acre.branch.qa.metaweb.com',
-           'www' : 'http://branch.qa.metaweb.com',
-           'freebaseapps' : 'branch.qa-freebaseapps.com'
-           },
-  'local' : { 'acre' : 'http://devel.sandbox-freebase.com:8115',
-              'www' : 'http://www.sandbox-freebase.com',
-              'freebaseapps' : 'acre.z.:8115'
-              }
-}
 
 # recognized extensions for static files
 IMG_EXTENSIONS = [".png", ".gif", ".jpg"]
@@ -83,11 +62,7 @@ JAVA = os.environ.get("JAVA_EXE", "java")
 COMPILER = os.path.join(os.path.abspath(os.path.dirname(os.path.join(os.getcwd(), __file__))), "compiler.jar")
 JAVA_OPTS = ["-jar", COMPILER, "--warning_level", "QUIET"]
 
-PRIVATE_SVN_URL_ROOT = 'https://svn.metaweb.com/svn/freebase_site'
-
-ROOT_NAMESPACE = '/freebase/site'
 METADATA_FILENAMES = ["METADATA.sjs", "METADATA.json"]
-FIRST_LINE_REQUIRE_CONFIG = 'var config = JSON.parse(acre.require("CONFIG.json").body);'
 
 FREEBASE_API_KEY = "AIzaSyDTw7dTx6GifLh9LX7X6BbGICgJbfRI0s0"
 
@@ -107,8 +82,6 @@ class App:
     self.app_key = app_key
     self.version = version
     self.tag = tag
-
-    self.app_id = '%s/%s' % (ROOT_NAMESPACE, self.app_key)
 
     self.context = context
 
@@ -240,11 +213,12 @@ class App:
 
   def path(self, short=False):
 
-    site = Site.Get(self.context)
+    site = Site.Get(self.context, site_id=self.app_site())
     if not site:
         return self.context.error("Couldn't resolve site.")
 
     suffix = site.conf("acre_id_suffix")
+
     if short:
         suffix = ''
 
@@ -560,6 +534,11 @@ class App:
   def is_lib(self):
       return self.app_key == 'lib'
 
+  def app_site(self):
+    if self.is_lib():
+      return "freebase-site"
+    else:
+      return self.context.options.site
 
   def get_metadata_filename(self):
 
@@ -728,7 +707,6 @@ class App:
   def create_branch(self, dependency=None):
 
     c = self.context
-
     target_version = self.next_version()
     if not target_version:
       return c.error("Cannot figure out next valid version of %s to branch to" % self.app_key)
@@ -908,28 +886,27 @@ class App:
     return 1
 
 
-  def svn_deployed_url(self, deployed_hash):
-    return '{svn_url_root}/deployed/{app}/{deployed_hash}'.format(svn_url_root=PRIVATE_SVN_URL_ROOT, app=self.app_key, deployed_hash=deployed_hash)
-
   def svn_url(self, allversions=False, alltags=False):
     """
-    TODO: this has to start using Site.Get().conf("acre_id_suffix")
+    Returns the SVN url of the current app. 
     """
     c = self.context
 
+    svn_url_root = Site.Get(c, site_id=self.app_site()).conf("svn_url")
+
     if allversions:
-        return '{svn_url_root}/branches/www/{app}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key)
+        return '{svn_url_root}/branches/www/{app}'.format(svn_url_root=svn_url_root, app=self.app_key)
     elif alltags:
-        return '{svn_url_root}/tags/www/{app}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key)
+        return '{svn_url_root}/tags/www/{app}'.format(svn_url_root=svn_url_root, app=self.app_key)
     #special path for environments
     elif self.app_key == "environments":
-        return '{svn_url_root}/environments'.format(svn_url_root=c.SITE_SVN_URL)
+        return '{svn_url_root}/environments'.format(svn_url_root=svn_url_root)
     elif not self.version:
-        return '{svn_url_root}/trunk/www/{app}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key)
+        return '{svn_url_root}/trunk/www/{app}'.format(svn_url_root=svn_url_root, app=self.app_key)
     elif not self.tag:
-        return '{svn_url_root}/branches/www/{app}/{version}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key, version=self.version)
+        return '{svn_url_root}/branches/www/{app}/{version}'.format(svn_url_root=svn_url_root, app=self.app_key, version=self.version)
     else:
-        return '{svn_url_root}/tags/www/{app}/{tag}'.format(svn_url_root=c.SITE_SVN_URL, app=self.app_key, tag=self.tag)        
+        return '{svn_url_root}/tags/www/{app}/{tag}'.format(svn_url_root=svn_url_root, app=self.app_key, tag=self.tag)
 
 
   def remove_from_svn(self):
@@ -1040,8 +1017,6 @@ class Context():
     self.action = ''
 
     self.reminders = []
-    #each dictionary entry is a HTTPMetawebSession object to a freebase graph
-    #self.freebase = {}
 
     if getattr(options, 'graph', False):
 
@@ -1050,18 +1025,12 @@ class Context():
       except ImportError:
         return self.error("You need to install freebase-python for this operation. http://code.google.com/p/freebase-python/source/checkout")
 
-      self.services = SERVICES[options.graph]
-      self.freebase = self.get_freebase_services(SERVICES.get(options.graph, {}))
-      self.freebase_logged_in = False
-
-
     try:
       from apiclient.discovery import build
     except ImportError:
       self.service = False
     finally:
       pass
-      #self.service = build("freebase", "v1-dev", developerKey=FREEBASE_API_KEY)
         
 
     self.current_app = None
@@ -1312,36 +1281,6 @@ class Context():
          pass
 
      return data
-
-
-  def freebase_login(self):
-
-    if self.freebase_logged_in:
-      return True
-
-    try:
-      if not self.options.user:
-        username = self.retrieve_data(site='freebase', key='username')
-        user = raw_input("Freebase Username (%s): " % username)
-
-        if not user and username:
-          user = username
-        elif user:
-          self.remember_data(user, site='freebase', key='username')
-      else:
-        user = self.options.user
-
-      pw = getpass.getpass()
-    except KeyboardInterrupt:
-      return self.error('Could not log in to freebase with these credentials.')
-
-    try:
-        self.freebase.login(user, pw)
-    except:
-        return self.error('Could not log in to freebase with these credentials.')
-
-    self.freebase_logged_in = True
-    return True
 
 
   def googlecode_login(self):
@@ -2031,7 +1970,6 @@ class Site:
         "id" : "freebase-site",
         "repository" : "googlecode",
         "svn_paths" :  [ '/environments', '/appengine-config', '/trunk/www', '/trunk/config', '/trunk/scripts'],
-        "svn_paths_everything" : ["/branches/www", "/tags/www"],
         "default_appengine_id" : "sandbox-freebasesite"
         },
 
@@ -2044,12 +1982,14 @@ class Site:
     
     }
 
-  _site_instance = None
+  _site_instance = {}
 
-  def __init__(self, context):
+  def __init__(self, context, site_id=None):
     self.context = context
 
     s = context.options.site
+    if site_id:
+        s = site_id
 
     if not (s and s in self._sites.keys()):
       raise FatalException("The site %s specified is not a valid Acre Site.\nValid sites are: %s" % (s, ",".join(self._sites.keys())))
@@ -2063,7 +2003,8 @@ class Site:
       self._conf["acre_id_suffix_trunk"] = ".www.trunk" + self._conf["acre_id_suffix"]
       self._conf["acre_id_suffix_tags"] = ".www.tags" + self._conf["acre_id_suffix"]
 
-      self._conf["svn_url"] = "https://%s.googlecode.com/svn" % self._conf.get("id")
+      if not self._conf.get("svn_url"):
+          self._conf["svn_url"] = "https://%s.googlecode.com/svn" % self._conf.get("id")
 
     self.site_dir = context.options.site_dir
 
@@ -2078,7 +2019,7 @@ class Site:
 
   def apps(self):
     """Returns a list of app keys, e.g. ['lib', 'homepage']"""
-      
+
     apps = SVNLocation(self.context, self.conf("svn_url") + "/trunk/www").ls()
 
     for priority_app in ["site", "lib"]:
@@ -2086,24 +2027,29 @@ class Site:
         apps.remove(priority_app)
         apps.insert(0, priority_app)
 
+    if not apps[0] == "lib":
+        apps.insert(0, "lib")
+
     return apps
 
   @classmethod
-  def Get(cls, context):
-    if not cls._site_instance:
-      cls._site_instance = cls(context)
+  def Get(cls, context, site_id=None):
 
-    return cls._site_instance
+    s = context.options.site
+    if site_id:
+        s = site_id
 
-  def checkout(self, destination, everything=False):
+    if not cls._site_instance.get(s):
+      cls._site_instance[s] = cls(context, site_id)
+
+    return cls._site_instance[s]
+
+  def checkout(self, destination):
 
     if destination.startswith("~"):
       destination = os.path.expanduser(destination)
 
     paths = self.conf("svn_paths")
-    if everything and self.conf("svn_paths_everything"):
-        paths.extend(self.conf("svn_paths_everything"))
-
     c = self.context
     c.log('Starting site checkout')
 

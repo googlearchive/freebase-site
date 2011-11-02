@@ -66,7 +66,7 @@
     return false;
   };
 
-  function headmenu_click_handler(e) {
+  function headmenu_click_handler(e, options) {
     var headmenu = $(this);
     var submenu = headmenu.data("submenu");
     if (!submenu.is(".submenu-valid")) {
@@ -85,12 +85,17 @@
       else {
         left = pos.left;
       }
-      submenu.css({
+      var css = {
         display: "none",
         position: "absolute",
         top: top,
         left: left
-      });
+      };
+      if (options.overlay) {
+        css["zIndex"] = options.overlay.css("zIndex");
+      }
+      submenu.css(css);
+
       $(document.body).append(submenu);
       submenu.addClass(".submenu-valid");
     }
@@ -107,14 +112,16 @@
 
   var nicemenu = $.factory("nicemenu", {
     init: function() {
+      var options = this.options;
       $(".headmenu", this.element).each(function() {
         var headmenu = $(this);
         var submenu = headmenu.next(".submenu");
         headmenu.data("submenu", submenu);
         submenu.data("headmenu", headmenu);
-
         $(".default-action", headmenu).click(default_action_click_handler);
-        headmenu.click(headmenu_click_handler);
+        headmenu.click(function(e) {
+          return headmenu_click_handler.apply(this, [e, options]);
+        });
       });
 
       $(".submenu", this.element).click(function(e) {

@@ -1,92 +1,92 @@
 {
-  "ttl": 0,
-  "error_page" : "error/error.mjt",
-  "not_found_page" : "error/not_found.template",
-  "csrf_protection": "weak",
   "handlers": {
-    "mjt": "handlers/mjt_handler.sjs",
-    "css": "handlers/css_handler.sjs",
-    "css_manifest": "handlers/css_manifest_handler.sjs",
-    "js_manifest": "handlers/js_manifest_handler.sjs",
-    "tagged_static": "handlers/tagged_static_handler.sjs",
+    "js_manifest": "handlers/js_manifest_handler.sjs", 
+    "freebase_template": "handlers/template_handler.sjs", 
+    "controller": "handlers/controller_handler.sjs", 
+    "mjt": "handlers/mjt_handler.sjs", 
+    "ajax": "handlers/ajax_handler.sjs", 
+    "css_manifest": "handlers/css_manifest_handler.sjs", 
     "tagged_binary": "handlers/tagged_binary_handler.sjs", 
-    "freebase_template": "handlers/template_handler.sjs",
-    "controller": "handlers/controller_handler.sjs",
-    "ajax": "handlers/ajax_handler.sjs",
+    "tagged_static": "handlers/tagged_static_handler.sjs", 
+    "css": "handlers/css_handler.sjs", 
     "coffee_script": "handlers/coffee_script_handler.sjs"
-  },
+  }, 
+  "csrf_protection": "weak", 
   "extensions": {
-    "ico" : { 
-      "handler": "tagged_binary",
-      "media_type" : "image/x-icon"
-    },
-    "css": {
-      "handler": "css",
-      "media_type": "text/css"
-    },
-    "less": {
-      "handler": "css",
-      "media_type": "text/css"
-    },
-    "mf.css": {
-      "handler": "css_manifest",
-      "media_type": "text/css"
-    },
-    "mf.js": {
-      "handler": "js_manifest",
-      "media_type": "text/javascript"
-    },
-    "template": {
-      "handler": "freebase_template"
-    },
-    "controller": {
-      "handler": "controller"
-    },
-    "ajax": {
-      "handler": "ajax"
-    },
-    "omf.js": {
-      "handler": "js_manifest",
-      "media_type": "text/javascript"
+    "ico": {
+      "media_type": "image/x-icon", 
+      "handler": "tagged_binary"
     }, 
     "omf.css": {
-      "handler": "css_manifest",
-      "media_type": "text/css"
-    },
-    "properties": {
-      "handler": "acre_script"
-    },
-    "cs": {
-      "handler": "coffee_script"
-    },
-    "tab": {
-      "handler": "acre_script"
-    },
-    "gif": {
-      "media_type": "image/gif", 
-      "handler": "tagged_binary"
+      "media_type": "text/css", 
+      "handler": "css_manifest"
+    }, 
+    "less": {
+      "media_type": "text/css", 
+      "handler": "css"
+    }, 
+    "mf.css": {
+      "media_type": "text/css", 
+      "handler": "tagged_static"
+    }, 
+    "controller": {
+      "handler": "controller"
     }, 
     "jpg": {
       "media_type": "image/jpg", 
       "handler": "tagged_binary"
     }, 
+    "omf.js": {
+      "media_type": "text/javascript", 
+      "handler": "js_manifest"
+    }, 
+    "cs": {
+      "handler": "coffee_script"
+    }, 
+    "gif": {
+      "media_type": "image/gif", 
+      "handler": "tagged_binary"
+    }, 
+    "ajax": {
+      "handler": "ajax"
+    }, 
+    "css": {
+      "media_type": "text/css", 
+      "handler": "css"
+    }, 
+    "tab": {
+      "handler": "acre_script"
+    }, 
+    "mf.js": {
+      "media_type": "text/javascript", 
+      "handler": "tagged_static"
+    }, 
+    "properties": {
+      "handler": "acre_script"
+    }, 
     "png": {
       "media_type": "image/png", 
       "handler": "tagged_binary"
+    }, 
+    "template": {
+      "handler": "freebase_template"
     }
-  },
-  "libs" : {
-    "suggest" : {
-      "base_url": "http://freebaselibs.com/static/suggest/",
-      "version": "1.5"
-    },
-    "jquery" : {
-      "base_url": "http://ajax.googleapis.com/ajax/libs/jquery/",
-      "version": "1.5.2"
-    },
-    "dojo" : {
-      "base_url": "https://ajax.googleapis.com/ajax/libs/dojo/",
-      "version": "1.6.0"
+  }, 
+  "ttl": -1, 
+  "libs": {
+    "jquery": {
+      "version": "1.5.2", 
+      "base_url": "http://ajax.googleapis.com/ajax/libs/jquery/"
+    }, 
+    "suggest": {
+      "version": "1.5", 
+      "base_url": "http://freebaselibs.com/static/suggest/"
+    }, 
+    "dojo": {
+      "version": "1.6.0", 
+      "base_url": "https://ajax.googleapis.com/ajax/libs/dojo/"
     }
-  }
+  }, 
+  "error_page": "error/error.mjt", 
+  "not_found_page": "error/not_found.template"
 }

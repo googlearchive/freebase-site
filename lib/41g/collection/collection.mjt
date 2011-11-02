@@ -1,0 +1,120 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+<acre:script>
+  var h = acre.require("helper/helpers.sjs");
+  var i18n = acre.require("i18n/i18n.sjs");
+  var i18n_c = acre.require("i18n/components.mjt");
+  var _ = i18n.gettext;
+  var image = acre.require("template/imagecomponents.mjt");
+  var pb = acre.require("propbox/propbox.mjt");
+  var hc = acre.require("collection/helpers.sjs");
+</acre:script>
+
+<!--
+  Collection template
+!-->
+<acre:block def="collection(prop_structures, data, query, cursor)">
+  <acre:script>
+    var table = hc.to_table_structure(prop_structures, data, i18n.lang);
+  </acre:script>
+  <table cellspacing="0" class="data-table" id="infinitescroll" data-next="${cursor}">
+    ${collection_head(table.head)}
+    ${collection_body(table.body)}
+    <tfoot acre:if="cursor">
+      <tr>
+        <td>
+          <a id="infinitescroll-next"
+             href="${h.ajax_url(acre.resolve('collection/infinitescroll.ajax'), [['query', JSON.stringify(query)]])}">
+             next</a>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</acre:block>
+
+<acre:block def="collection_head(head)">
+  <thead>
+    <acre:block for="row in head">
+      <tr>
+        <acre:block for="cell in row">
+          <th acre:attrs="cell.attrs">
+            ${cell.structure.text}
+          </th>
+        </acre:block>
+      </tr>
+    </acre:block>
+  </thead>
+</acre:block>
+
+<acre:block def="collection_body(body)">
+  <tbody acre:for="tbody in body">
+    <tr acre:for="row in tbody">
+      <td acre:for="cell in row" acre:attrs="cell.attrs">
+        <acre:block if="!cell.value">&nbsp;</acre:block>
+        <acre:block elif="cell.structure.id === '/type/object/id'">
+          <span class="wrapper">
+            <a title="${tbody.value.id}" class="property-value"
+               href="${h.fb_url(true, tbody.value.id)}"
+               data-id="${tbody.value.id}">${tbody.value.id}</a>
+          </span>
+        </acre:block>
+        <acre:block elif="cell.structure.id === '/type/object/name'">
+          <ul class="data-list" acre:if="cell.value">
+            <li>
+              <span class="wrapper">
+                <a title="${tbody.value.id}" class="property-value"
+                   href="${h.fb_url(true, tbody.value.id)}"
+                   data-id="${tbody.value.id}">${cell.value.text}</a>
+                ${i18n_c.lang_code(cell.value.lang, i18n.lang)}
+              </span>
+            </li>
+          </ul>
+        </acre:block>
+        <acre:block elif="cell.structure.expected_type.id === '/common/image'">
+          <ul class="data-list">
+            <li>
+              ${pb.value(tbody.value, cell.structure,tbody.value, i18n.lang)}
+            </li>
+          </ul>
+        </acre:block>
+        <acre:block else="">
+          <ul class="data-list" acre:if="cell.value">
+            <li>
+              <span class="wrapper">
+                ${pb.value(tbody.value, cell.structure, cell.value, i18n.lang)}
+              </span>
+            </li>
+          </ul>
+        </acre:block>
+      </td>
+    </tr>
+  </tbody>
+</acre:block>

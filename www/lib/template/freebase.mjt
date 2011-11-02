@@ -52,6 +52,9 @@
       <title acre:if="exports.title">Freebase - ${exports.title()}</title>
       <title acre:else="">Freebase</title>
 
+      <!-- acre variables useful for client-side javascript -->
+      ${acre_javascript_vars(exports)}
+
       <!!-- freebase suggest -->
       <acre:block if="acre.freebase.googleapis_url">
         <link rel="stylesheet" type="text/css" href="suggest/suggest.mf.css" />
@@ -94,9 +97,6 @@
       <acre:block if="h.is_production()">
         <script>${acre.include("googleanalytics.js")}</script>
       </acre:block>
-
-      <!-- acre variables useful for client-side javascript -->
-      ${acre_javascript_vars(exports)}
 
       <!-- any additional head content (i.e., css, js, etc.)-->
       <acre:block if="exports.head">
@@ -378,6 +378,9 @@
        if (errorid != null) params.errorid = errorid;
        return base_url + "?" + $.param(params);
      };
+     
+     // inline JS that needs to run before page-render
+     ${acre.include("template/freebase-inline.mf.js")}
   </script>
   <acre:block if="exports.acre_javascript_vars">
     ${exports.acre_javascript_vars()}

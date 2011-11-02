@@ -87,6 +87,12 @@
             form: form,
             row: prop_row
           };
+          $("button[type=submit]", form).hide();
+          form
+            .bind(event_prefix + "cancel", function() {
+              window.location.reload(true);
+            });
+
           formlib.init_modal_form(options);
         }
       }));

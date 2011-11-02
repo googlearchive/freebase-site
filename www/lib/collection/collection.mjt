@@ -36,6 +36,8 @@
   var image = acre.require("template/imagecomponents.mjt");
   var pb = acre.require("propbox/propbox.mjt");
   var hc = acre.require("collection/helpers.sjs");
+  var EDIT = _("Edit");
+  var form = acre.require("propbox/form.mjt");
 </acre:script>
 
 <!--
@@ -44,8 +46,9 @@
 <acre:block def="collection(prop_structures, data, query, cursor)">
   <acre:script>
     var table = hc.to_table_structure(prop_structures, data, i18n.lang);
+    var metadata = {prop_structures:prop_structures};
   </acre:script>
-  <table cellspacing="0" class="data-table" id="infinitescroll" data-next="${cursor}">
+  <table cellspacing="0" class="data-table ${JSON.stringify(metadata)}" id="infinitescroll" data-next="${cursor}">
     ${collection_head(table.head)}
     ${collection_body(table.body)}
     <tfoot acre:if="cursor">
@@ -75,16 +78,26 @@
 </acre:block>
 
 <acre:block def="collection_body(body)">
-  <tbody acre:for="tbody in body">
-    <tr acre:for="row in tbody">
-      <td acre:for="cell in row" acre:attrs="cell.attrs">
-        <acre:block if="!cell.value">&nbsp;</acre:block>
+  <tbody acre:for="tbody in body" class="data-row" data-id="${tbody.value.id}">
+    <tr acre:for="x,row in tbody">
+      <td acre:for="y,cell in row" acre:attrs="cell.attrs">
+        <acre:block if="!cell.value">
+          <ul class="data-list">
+            <li>
+              <span class="wrapper">
+                <span class="property-value">&nbsp;</span>
+                <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
+              </span>
+            </li>
+          </ul>
+        </acre:block>
         <acre:block elif="cell.structure.id === '/type/object/id'">
           <span class="wrapper">
             <a title="${tbody.value.id}" class="property-value"
                href="${h.fb_url(true, tbody.value.id)}"
                data-id="${tbody.value.id}">${tbody.value.id}</a>
-          </span>
+            <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
+         </span>
         </acre:block>
         <acre:block elif="cell.structure.id === '/type/object/name'">
           <ul class="data-list" acre:if="cell.value">
@@ -94,6 +107,7 @@
                    href="${h.fb_url(true, tbody.value.id)}"
                    data-id="${tbody.value.id}">${cell.value.text}</a>
                 ${i18n_c.lang_code(cell.value.lang, i18n.lang)}
+                <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
               </span>
             </li>
           </ul>
@@ -102,14 +116,16 @@
           <ul class="data-list">
             <li>
               ${pb.value(tbody.value, cell.structure,tbody.value, i18n.lang)}
+              <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
             </li>
           </ul>
         </acre:block>
-        <acre:block else="">
-          <ul class="data-list" acre:if="cell.value">
+        <acre:block elif="cell.value">
+          <ul class="data-list">
             <li>
               <span class="wrapper">
                 ${pb.value(tbody.value, cell.structure, cell.value, i18n.lang)}
+                <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
               </span>
             </li>
           </ul>
@@ -117,4 +133,39 @@
       </td>
     </tr>
   </tbody>
+</acre:block>
+
+
+<acre:block def="row_menu()">
+  <ul class="combo-menu nicemenu">
+    <li class="nicemenu-item edit">
+      <span class="headmenu">
+        <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
+        <a href="javascript:void(0)" class="more-action">menu</a>
+      </span>
+      <ul class="submenu row-menu">
+        <li class="row-menu-item"><a href="#" onclick="return fb.collection.row_edit(this);">${EDIT}</a></li>
+      </ul>
+    </li>
+  </ul>
+</acre:block>
+
+
+<acre:block def="row_edit_form(s, prop_structures, prop_values, lang)">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title"><span></span></h1>
+      <div class="modal-content">
+        <acre:block for="i,prop_structure in prop_structures">
+          <acre:script>
+            var topic = {id:s};
+          </acre:script>
+          ${pb.propbox(topic, prop_structure, prop_values[i], lang)}
+        </acre:block>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      ${form.submit_buttons()}
+    </div>
+  </div>
 </acre:block>

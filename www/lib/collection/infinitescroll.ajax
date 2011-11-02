@@ -40,7 +40,7 @@ var SPEC = {
   validate: function(params) {
     return [
       validators.Json(params, "query", {required: true}),
-      validators.String(params, "cursor", {if_missing: true}),
+      validators.String(params, "cursor", {if_missing: true})
     ];
   },
 

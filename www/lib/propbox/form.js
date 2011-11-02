@@ -310,6 +310,7 @@
 	 },
          onLoad: function() {
            // init form
+           options.overlay = this;
            options.init(options);
          }
        });

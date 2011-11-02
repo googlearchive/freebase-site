@@ -50,32 +50,30 @@ var handler = function() {
     'to_module' : function(compiled_js, script) {
       var res = compiled_js.res;
 
-      if (!res.final_css) {
-        try {
-          var mf = JSON.parse(res.body);
-        } catch(e) {
-          throw new Error(".mf files must be valid JSON.  " + e);
-        }
-
-        if (!(mf instanceof Array)) {
-          throw new Error("Manifest file must be an array.");
-        }
-
-        // acquire all the files
-        var buf = [];
-        for (var i=0; i < mf.length; i++) {
-          var path = mf[i];
-          buf.push("\n/** " + path + "**/\n");
-          var req = script.scope.acre.require(path);
-          buf.push(req.body);
-        }
-        res.final_css = buf.join("");
+      try {
+        var mf = JSON.parse(res.body);
+      } catch(e) {
+        throw new Error(".mf files must be valid JSON.  " + e);
       }
+
+      if (!(mf instanceof Array)) {
+        throw new Error("Manifest file must be an array.");
+      }
+
+      // acquire all the files
+      var buf = [];
+      for (var i=0; i < mf.length; i++) {
+        var path = mf[i];
+        buf.push("\n/** " + path + "**/\n");
+        var req = script.scope.acre.require(path);
+        buf.push(req.body);
+      }
+      res.body = buf.join("");
 
       return res;
     },
     'to_http_response': function(module, script) {
-      var body = less(module.final_css);
+      var body = less(module.body);
       return hh.to_http_response_result(body, {"content-type": "text/css"});
     }
   };

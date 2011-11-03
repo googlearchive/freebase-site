@@ -137,7 +137,7 @@ function clean_clause(q) {
     "return": true,
     "count": true,
     "link": true,
-    "lang": true,
+    "lang": true
   };
   for (var key in q) {
     if ((key in exclude_props) ||

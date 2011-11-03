@@ -76,16 +76,14 @@
   <div id="content-wrapper" class="clear">
     <section id="content-main" class="clear" role="main">
       <h1>Explore Freebase Data</h1>
-      <div id="schema-search" class="clear section-tabs">
-        <div class="search-box" id="domain-search">
-          <form id="domain-search-form" method="get">
-            <fieldset>
-              <input type="text" name="id" class="text-input" id="domain-search-input" id="domain-search-input" placeholder="${_('Find a domain...')}" />
-              <button class="button">Go</button>
-            </fieldset>
-          </form>
-          <label><input type="hidden" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" /></label>
-        </div>
+      <p class="intro">${_("Freebase is organized by Domains, which provide a common namespace for annotating Topics. Facts are asserted through Schema (Types &amp; Properties)")}</p>
+      <div class="search-box" id="domain-search">
+        <form id="domain-search-form" method="get">
+          <fieldset>
+            <input type="text" name="id" class="text-input" id="domain-search-input" id="domain-search-input" placeholder="${_('Find a domain (eg. &quot;Film&quot; or &quot;Business&quot;)')}" />
+          </fieldset>
+        </form>
+        <label><input type="hidden" class="search-toggle" name="domain-search-toggle" id="domain-search-toggle-all" /></label>
       </div>
           
       <table id="browse" cellspacing="0" class="table table-sortable">
@@ -150,6 +148,20 @@
         <a href="#" class="more">Learn more</a>
       </div>
       </section>
+      <div class="newsletter">
+        <div class="wrapper">
+          <h4>${_("Subscribe to our discussion list")}</h4>
+          <p>${_("Your best source for the latest about new data projects, schema development, community discussion, and more")}</p>
+          <form method="POST" action="http://lists.freebase.com/mailman/subscribe/freebase-discuss" >
+            <input name="email" type="email"
+                   placeholder="${_('Your email address...')}"
+                   class="text-input"/>
+
+            <button class="button primary">Subscribe</button>
+          </form>
+          <a href="http://freebase.markmail.org/" class="more">${_("Read the List Archive")}</a>
+        </div>
+      </div>
     </aside>
   </div>
 </acre:block>

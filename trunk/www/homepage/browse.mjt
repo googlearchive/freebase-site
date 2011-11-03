@@ -44,6 +44,14 @@
 </acre:script>
 
 <acre:block def="head()">
+  <!!-- Redirect to user page if signed-in -->
+  <script acre:if="acre.request.base_path == '/'">
+    var user = SERVER.cookie("${h.account_cookie_name()}");
+    if (user) {
+      window.location.href= "/user/" + user;
+    }
+  </script>
+
   <meta name="description" 
         content="Freebase is a community-curated database of well-known people, places and things.">
   <meta name="keywords" 
@@ -51,13 +59,6 @@
                  discussion, semantic web, google, metaweb" >
   <meta name="robots" content="noodp">
   <link rel="canonical" href="http://www.freebase.com" />
-  
-  <script acre:if="acre.request.base_path == '/'">
-    var m = /${h.account_cookie_name()}\=([^;\s]*)/.exec(document.cookie);
-    if (m) {
-      window.location.href= "/user/" + m[1];
-    }
-  </script>
   <link href='http://fonts.googleapis.com/css?family=Allerta' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="browse.less" />
   <style type="text/css">

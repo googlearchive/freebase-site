@@ -86,6 +86,7 @@
         </span>
       </span>
       <h1>${_("A community-curated database of well-known people, places, and things")}</h1>
+      <p id="sign-in-callout"><a href="#" title="">Sign-in</a> with your Google account to join the community</p>
     </div>
     <div class="nav clear">
       ${nav_tabs()}

@@ -140,7 +140,7 @@
 
 <acre:block def="row_menu()">
   <ul class="combo-menu nicemenu">
-    <li class="nicemenu-item edit">
+    <li class="nicemenu-item">
       <span class="headmenu">
         <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
         <a href="javascript:void(0)" class="more-action">menu</a>

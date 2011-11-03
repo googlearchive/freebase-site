@@ -38,7 +38,7 @@ var apis = acre.require("lib/promise/apis.sjs");
 var deferred = apis.deferred;
 var freebase = apis.freebase;
 
-
+var scope = this;
 /**
  * Create an instance of a type
  */
@@ -65,10 +65,13 @@ var SPEC = {
       };
     }
     else if (!user) {
+      /**
       return {
         template: "type_signedout.mjt",
         object: type
       };
+       **/
+      h.redirect(scope, h.fb_url("/account/signin", {onsignin:scope.acre.request.url}));
     }
 
     var lang = i18n.lang;

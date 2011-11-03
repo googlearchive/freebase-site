@@ -66,6 +66,12 @@ var SPEC = {
       return !IGNORE_PROPS[pid];
     });
 
+    if (!p.length) {
+      return {
+        html: acre.markup.stringify(collection.row_edit_form(s, [], [], lang, nav))
+      };
+    }
+
     return queries.prop_structures.apply(null, p.concat(lang))
       .then(function(prop_structures) {
         var promises = [];

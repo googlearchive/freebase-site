@@ -131,19 +131,19 @@
         <h4>${_("Use Freebase data")}</h4>
         <p>${_("Freebase data is free to use under a Creative Commons License. You can:")}</p>
         <ul>
-          <li>${_("Query Freebase using MQL, our JSON-based query language")}</li>
-          <li>${_("Download our weekly data dumps")}</li>
-          <li>${_("Use our powerful Google API, including libraries for Python, Ruby, and more")}</li>
-          <li>${_("Develop server-side Javascript apps with Acre, our hosted development environment")}</li>
+          <li>${h.template_sprintf(_("Query Freebase using %s, our JSON-based query language"), query_help_text())}</li>
+          <li>${h.template_sprintf(_("%s our weekly data dumps"), download_help_text())}</li>
+          <li>${h.template_sprintf(_("Use our powerful %s, including libraries for Python, Ruby, and more"), api_help_text())}</li>
+          <li>${h.template_sprintf(_("Develop server-side Javascript apps with %s, our hosted development environment"), acre_help_text())}</li>
         </ul>
       </div>
       <div class="sub-section">
         <h4>${_("Join the community")}</h4>
         <p>${_("Freebase has grown through the participation of people who care about open data. You can help us by:")}</p>
         <ul>
-          <li>${_("Contributing new data")}</li>
-          <li>${_("Voting on tasks")}</li>
-          <li>${_("Developing new schema")}</li>
+          <li><a href="http://wiki.freebase.com/wiki/Contributing" rel="external help">${_("Contributing new data")}</a></li>
+          <li><a href="${h.fb_url('/tasks')}">${_("Voting on tasks")}</a></li>
+          <li><a href="${h.fb_url('/schema')}">${_("Developing new schema")}</a></li>
         </ul>
         <a href="#" class="more">Learn more</a>
       </div>
@@ -164,6 +164,22 @@
       </div>
     </aside>
   </div>
+</acre:block>
+
+<acre:block def="query_help_text()">
+  <a href="http://wiki.freebase.com/wiki/MQL_Manual/Introduction">${_("MQL")}</a>
+</acre:block>
+
+<acre:block def="download_help_text()">
+  <a href="http://download.freebase.com/datadumps/">${_("Download")}</a>
+</acre:block>
+
+<acre:block def="api_help_text()">
+  <a href="http://wiki.freebase.com/wiki/API" rel="external help">${_("Google API")}</a>
+</acre:block>
+
+<acre:block def="acre_help_text()">
+  <a href="http://acre.freebase.com">${_("Acre")}</a>
 </acre:block>
 
 <acre:block def="footer_script()">

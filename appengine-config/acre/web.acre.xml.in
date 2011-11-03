@@ -101,7 +101,7 @@
   appstats configuration below, see: 
   code.google.com/appengine/docs/java/tools/appstats.html
   -->
-  <!--
+  <!--  
    <filter>
     <filter-name>appstats</filter-name>
     <filter-class>com.google.appengine.tools.appstats.AppstatsFilter</filter-class>

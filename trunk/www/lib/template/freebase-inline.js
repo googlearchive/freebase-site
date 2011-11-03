@@ -1,7 +1,9 @@
 // as early as possible, redirect if PAGE_LASTWRITEIME < mwLastWriteTime
-;(function() {
-  
-  var cookie = function(name, value, options) {
+;(function($) {
+
+  // Since we need to parse cookies in the HEAD, we need to load this before jQuery
+  // freebase.js copies this over to jQuery later
+  $.cookie = function(name, value, options) {
       if (typeof value != 'undefined') { // name and value given, set cookie
           options = options || {};
           if (value === null) {
@@ -43,13 +45,13 @@
   // mwLWTReloaded is reset after a page load, to avoid a refresh
   // loop. More or less: only reload any given page once, but allow
   // future reloads. See the mwLWTReload reference later
-  if (cookie("mwLWTReloaded")) {
+  if ($.cookie("mwLWTReloaded")) {
     // clear the cookie, so that we can autorefresh again
-    cookie("mwLWTReloaded", null, {path: "/"});
+    $.cookie("mwLWTReloaded", null, {path: "/"});
     return;
   }
 
-  var cookie_lwt = cookie("mwLastWriteTime");
+  var cookie_lwt = $.cookie("mwLastWriteTime");
   var page_lwt = SERVER["mwLastWriteTime"]; // written into the page server-side (acre.request.cookies.mwLastWriteTime)
 
   // now parse to integers - note that empty/undefined parses to NaN,
@@ -63,8 +65,8 @@
   if (page_lwt_v < cookie_lwt_v) {
     // be sure to set the cookie so that the reloaded page knows it
     // came in as the result of a reload
-    cookie("mwLWTReloaded", "true", { path: "/" });
+    $.cookie("mwLWTReloaded", "true", { path: "/" });
     SERVER.mwLWTReloading = true;
     window.location.reload(true);
   }
-})();
+})(SERVER);

@@ -420,14 +420,14 @@
       </span>
       <ul class="row-menu submenu">
         <acre:block if="!(ect === '/common/image' || ect === '/common/document' || ect === '/common/webpage')">
-          <li acre:if="prop_structure.unique && prop_structure.values.length" class="row-menu-item edit">
+          <li acre:if="prop_structure.unique && prop_structure.values.length" class="row-menu-item">
             <a href="#" onclick="return propbox.prop_edit(this, ${prop_structure.unique});">${EDIT_VALUE}</a>
           </li>
-          <li acre:else="" class="row-menu-item edit">
+          <li acre:else="" class="row-menu-item">
             <a href="#" onclick="return propbox.prop_add(this, ${prop_structure.unique});">${ADD_NEW_VALUE}</a>
           </li>
         </acre:block>
-        <li acre:if="ect === '/type/text'" class="row-menu-item edit">
+        <li acre:if="ect === '/type/text'" class="row-menu-item">
           <a href="#" onclick="return i18n.text_edit(this, '${h.ajax_url('lib/i18n')}', '${topic.id}', '${prop_structure.id}', '${lang}')">${EDIT_LOCALIZED_TEXT}</a>
         </li>
         <li class="row-menu-item"><a href="${h.fb_url(topic.id, [['property', prop_structure.id]])}">${FILTER_PROPERTY}</a></li>
@@ -439,7 +439,7 @@
 
 <acre:block def="value_menu(topic, prop_structure, prop_value, lang)">
   <ul class="combo-menu nicemenu">
-    <li class="nicemenu-item edit">
+    <li class="nicemenu-item">
       <span class="headmenu">
         <a href="#" onclick="return false;" class="default-action edit-action">edit</a>
         <a href="javascript:void(0)" class="more-action">menu</a>

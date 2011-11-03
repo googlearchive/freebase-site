@@ -39,7 +39,7 @@
 
 <acre:block def="type_li(type)">
   <li>
-    <a class="edit close-msg" href="javascript:void(0);"
+    <a class="close-msg" href="javascript:void(0);"
        onclick="return window.freebase.topic.remove_type(this, '${type.id}');">${_("x")}</a>
     <a href="${h.fb_url(type.id)}" title="${type.id}">${i18n.display_name(type)}</a>
   </li>

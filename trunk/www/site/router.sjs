@@ -301,7 +301,10 @@ function init_site_rules(lib) {
         },
         {
           "name": _("Add Topic"),
-          "url": (function() { return h.fb_url(this.object.id, [['create']]); })
+          "url": (function() { return h.fb_url(this.object.id, [['create']]); }),
+          "app": "create",
+          "script": "type.controller",
+          "show": "can_create"
         }
       ]
     },

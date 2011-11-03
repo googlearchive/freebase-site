@@ -89,7 +89,16 @@ function is_proxyable(app_path, scope) {
       h.endsWith(app_path, "." + site_md.project)) {
     return true;
   }
-  
+
+  // is it a proxy-able project?  
+  if (site_md.proxy) {
+    for (var proxy_site in site_md.proxy) { 
+      if (h.endsWith(app_path, "." + site_md.proxy[proxy_site])) { 
+        return true;
+      }
+    }
+  }
+
   // is it one of our mounted apps?
   for (var mount in site_md.mounts) {
     var path = site_md.mounts[mount];

@@ -56,7 +56,7 @@ function main(rule, object) {
       if (t.more) {
         more_tabs.push(t);
       } else {
-        tabs.push(t)
+        tabs.push(t);
       }
     }
   });
@@ -74,7 +74,7 @@ function main(rule, object) {
     gear: rule.gear || [],
     filters: fh.global_filters(acre.request_params)
   };
-  
+
   // extend object type (global) promises
   rule.promises && rule.promises.forEach(function(p) {
     var d = acre.require(p.app + "/" + p.script)[p.promise](object);

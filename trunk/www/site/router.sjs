@@ -569,7 +569,7 @@ function init_site_rules(lib) {
           "name": _("Properties"),
           "key": "props",
           "app": "topic",
-          "script": "topic.tab",
+          "script": "topic.tab"
         },
         {
           "name": _("Identifiers"),

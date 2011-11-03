@@ -159,7 +159,7 @@ function value_to_rows(prop_structures, value, start_column) {
     else if (subprop_structures.length) {
       var orig_column = column,
           current_row = 0,
-          structures = mediator ? subprop_structures : [{id:"/type/object/name"}].concat(subprop_structures);
+          structures = mediator ? subprop_structures : [{id:"/type/object/name", expected_type: {id:"/type/text"}}].concat(subprop_structures);
 
       if (!prop_values.length) {
         structures.forEach(function(structure) {

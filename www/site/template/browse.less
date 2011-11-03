@@ -29,6 +29,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* slightly different grid than our standard 2-col layout */
+
+#content-wrapper {
+  padding-right: 290px;
+}
+
+.secondary {
+  width: 290px;
+  margin-right: -290px;
+}
+
 #page-header {
   text-align: center;
   background-color: #3b4045;
@@ -132,4 +143,65 @@
   top: 50%;
   border-top: 1px solid #3c3c3c;
   border-bottom: 1px solid #545454;
+}
+
+#sign-in-callout {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+#sign-in-callout a {
+  color: #f90;
+}
+
+.secondary {
+}
+
+.secondary .wrapper {
+  background: #fff;
+  color: #333;
+  margin: 0 0 0 40px;
+  padding-top: 10px;
+}
+
+.secondary h3 {
+  position: relative;
+  font-size: 13px;
+  line-height: 1;
+  text-shadow: 1px 2px 0 rgba(255,255,255,0.8);
+  margin: 0 10% 10px -1px;
+  border: 1px solid #ffcd04;
+  .linear_gradient(#ffdf67, #ffcd04);
+  .box_shadow(-1px, 2px, 3px, rgba(0,0,0,0.2));
+}
+
+.secondary h3 span {
+  display: block;
+  padding: 7px 15px;
+  border-top: 1px solid rgba(255,255,255,0.6);
+}
+
+.secondary h3:after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  top: -1px;
+  width: 0;
+  height: 0;
+  border-top: 14px solid transparent;
+  border-bottom: 14px solid transparent;
+  border-right: 10px solid #fff;
+}
+
+.sub-section {
+  padding: 10px 15px;
+  border-bottom: 1px solid #e5e6e7;
+}
+
+.secondary h4 {
+  color: #333;
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 1;
+  margin-bottom: 12px;
 }

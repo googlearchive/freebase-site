@@ -59,7 +59,7 @@
     }
   </script>
   <link href='http://fonts.googleapis.com/css?family=Allerta' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" type="text/css" href="browse.mf.css" />
+  <link rel="stylesheet" type="text/css" href="browse.less" />
   <style type="text/css">
     @-webkit-keyframes grow {
       0% {
@@ -72,21 +72,8 @@
   </style>
 </acre:block>
 
-<acre:block def="page_title()">
-  <div class="page-title">
-    <span class="number topics-count">
-      <span class="value"><strong>${i18n_c.number(c.domains.total_topics)}</strong></span>
-      <span class="extra">
-      Topics <br>
-      <small>(and counting)</small>
-      </span>
-    </span>
-    <h1>${_("A community-currated database of well-known people, places, and things")}</h1>
-  </div>
-</acre:block>
-
 <acre:block def="page_content()">
-  <div id="content-wrapper">
+  <div id="content-wrapper" class="clear">
     <section id="content-main" class="clear" role="main">
       <h1>Explore Freebase Data</h1>
       <div id="schema-search" class="clear section-tabs">
@@ -135,10 +122,34 @@
     </section>
 
     <aside class="secondary">
-      ${templates.what_is_freebase()}
-      ${templates.for_developers()}
-      ${templates.wiki_entries(c.wiki)}
-      ${templates.join_discussion()}
+      <section class="wrapper">
+      <h3 class="primary"><span>${_("How can you get started?")}</span></h3>
+      <div class="sub-section">
+        <h4>${_("Learn how it works")}</h4>
+        <p>${_("Discover what kind of information Freebase contains, how it's organized, and how Freebase allows you to uniquely identify identities anywhere on the web")}</p>
+        <a href="#" class="more">Learn more</a>
+      </div>
+      <div class="sub-section">
+        <h4>${_("Use Freebase data")}</h4>
+        <p>${_("Freebase data is free to use under a Creative Commons License. You can:")}</p>
+        <ul>
+          <li>${_("Query Freebase using MQL, our JSON-based query language")}</li>
+          <li>${_("Download our weekly data dumps")}</li>
+          <li>${_("Use our powerful Google API, including libraries for Python, Ruby, and more")}</li>
+          <li>${_("Develop server-side Javascript apps with Acre, our hosted development environment")}</li>
+        </ul>
+      </div>
+      <div class="sub-section">
+        <h4>${_("Join the community")}</h4>
+        <p>${_("Freebase has grown through the participation of people who care about open data. You can help us by:")}</p>
+        <ul>
+          <li>${_("Contributing new data")}</li>
+          <li>${_("Voting on tasks")}</li>
+          <li>${_("Developing new schema")}</li>
+        </ul>
+        <a href="#" class="more">Learn more</a>
+      </div>
+      </section>
     </aside>
   </div>
 </acre:block>

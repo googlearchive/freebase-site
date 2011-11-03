@@ -86,7 +86,7 @@
         </span>
       </span>
       <h1>${_("A community-curated database of well-known people, places, and things")}</h1>
-      <p id="sign-in-callout"><a href="#" title="">Sign-in</a> with your Google account to join the community</p>
+      <p id="sign-in-callout">${h.template_sprintf(_("%s with your Google account to join the community"), signin_help_text())}</p>
     </div>
     <div class="nav clear">
       ${nav_tabs()}
@@ -142,6 +142,10 @@
       </ul>
     </li>
   </ul>
+</acre:block>
+
+<acre:block def="signin_help_text()">
+<a href="javascript:void(0)" onclick="window.freebase.login_popup()" title="Sign in to your Freebase account" rel="nofollow">Sign in</a>
 </acre:block>
 
 <acre:block def="acre_javascript_vars()">

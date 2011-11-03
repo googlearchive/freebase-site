@@ -126,7 +126,7 @@
       <div class="sub-section">
         <h4>${_("Learn how it works")}</h4>
         <p>${_("Discover what kind of information Freebase contains, how it's organized, and how Freebase allows you to uniquely identify identities anywhere on the web")}</p>
-        <a href="#" class="more">Learn more</a>
+        <a href="http://wiki.freebase.com" rel="external help" class="more">${_("Keep reading &raquo;")}</a>
       </div>
       <div class="sub-section">
         <h4>${_("Use Freebase data")}</h4>
@@ -146,7 +146,6 @@
           <li><a href="${h.fb_url('/tasks')}">${_("Voting on tasks")}</a></li>
           <li><a href="${h.fb_url('/schema')}">${_("Developing new schema")}</a></li>
         </ul>
-        <a href="#" class="more">Learn more</a>
       </div>
       </section>
       <div class="newsletter">

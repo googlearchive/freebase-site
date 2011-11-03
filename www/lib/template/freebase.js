@@ -38,6 +38,9 @@
   if (window.SERVER && typeof window.SERVER === "object") {
     $.extend(window.freebase, window.SERVER);
   }
+  
+  // copy over our inlined cookie function
+  $.cookie = window.freebase.cookie;
 })(jQuery);
 
 (function($, fb) {

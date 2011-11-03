@@ -135,9 +135,8 @@ class ActionStatic:
 
   def __call__(self, app=None):
 
-    
     c = self.context
-    
+
     site = Site.Get(c)
     c.set_acre(Acre.Get(c))
 
@@ -210,7 +209,6 @@ class ActionDeployAcre:
     if os.path.isdir(acre.site_dir(war=True) + '/googlecode'):
       shutil.rmtree(acre.site_dir(war=True)+ '/googlecode')
 
-    
     if not c.options.nosite:
 
       apps = acre.fs_routed_apps()
@@ -1121,7 +1119,9 @@ class ActionTest:
   def __call__(self):
     c = self.context
 
+    config, app_id = Site.ResolveConfig(c, c.options.config, site_dir=c.options.site_dir, host=c.options.host)
 
+    print config
     return True
   
 

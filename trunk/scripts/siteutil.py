@@ -105,7 +105,7 @@ class App:
   @classmethod
   def GetFromPath(cls, context, path):
 
-    site = Site.Get(context)
+    site = Site.GetSiteForAppId(context, path)
 
     parts = path[2:].split(site.conf("acre_id_suffix"))[0].split('.')
 
@@ -213,7 +213,7 @@ class App:
 
   def path(self, short=False):
 
-    site = Site.Get(self.context, site_id=self.app_site())
+    site = self.app_site()
     if not site:
         return self.context.error("Couldn't resolve site.")
 
@@ -231,8 +231,9 @@ class App:
 
 
   def app_dir(self):
-      
-    site = Site.Get(self.context)
+    """Returns the path that acre would look under to find this app in the file system."""
+  
+    site = self.app_site()
     if not site:
       return self.context.error("Couldn't resolve site.")
 
@@ -327,7 +328,7 @@ class App:
     if not result:
         return c.error('Cannot create static resources for %s - error opening/parsing the app metadata file' % self)
     self.copy_to_acre_dir()
-    
+
     d_app = self.dependency()
     while (d_app):
       d_app.copy_to_acre_dir()
@@ -535,10 +536,13 @@ class App:
       return self.app_key == 'lib'
 
   def app_site(self):
+    """Returns a Site object for this app."""
+
+    site_id = self.context.options.site
     if self.is_lib():
-      return "freebase-site"
-    else:
-      return self.context.options.site
+      site_id = "freebase-site"
+
+    return Site.Get(self.context, site_id=site_id)
 
   def get_metadata_filename(self):
 
@@ -811,7 +815,6 @@ class App:
         if r:
           c.log("Created tag %s linked to %s" % (tag_app, d_app))
         else:
-          self.remove_from_svn()
           return c.error("Failed to commit to SVN - aborting")
       else:
         self.remove_from_svn()
@@ -892,7 +895,7 @@ class App:
     """
     c = self.context
 
-    svn_url_root = Site.Get(c, site_id=self.app_site()).conf("svn_url")
+    svn_url_root = self.app_site().conf("svn_url")
 
     if allversions:
         return '{svn_url_root}/branches/www/{app}'.format(svn_url_root=svn_url_root, app=self.app_key)
@@ -2033,6 +2036,16 @@ class Site:
     return apps
 
   @classmethod
+  def GetSiteForAppId(cls, context, app_id):
+    parts = app_id.split(".")
+
+    # If this app_id is of the format a.b.c.d.e.site-name.googlecode.dev
+    if len(parts) > 2 and parts[-1] == "dev" and parts[-2] == "googlecode":
+      return Site.Get(context, site_id=parts[-3])
+
+    return Site.Get(context)
+
+  @classmethod
   def Get(cls, context, site_id=None):
 
     s = context.options.site
@@ -2083,7 +2096,7 @@ class Site:
 
   @classmethod
   def ResolveConfig(cls, context, config, site_dir=None, host=None):
-    """Returns the configuration target.
+    """Returns the configuration target and the appengine-id if there is one.
 
     Will return the appropriate configuration target (e.g. sandbox-freebasesite) as a string.
     If host is passed as an argument, it will read through all the project.*.conf files in the
@@ -2102,7 +2115,13 @@ class Site:
 
     """
 
+    if config:
+      return config
+
     site_dir = cls.ResolveSiteDir(site_dir)
+
+    if not site_dir:
+        raise FatalException("You must specify --site_dir in order to figure out the correct configuration out of a host")
 
     if not (config or host):
         return context.error("You have to specify a valid configuration with -c or hostname with --host.")
@@ -2114,22 +2133,24 @@ class Site:
     if config or not host:
       actual_config = config
     else:
-      config_dir = os.path.join(site_dir, "appengine-config")
+      appengine_config_dir = os.path.join(site_dir, "appengine-config")
 
       # Find the appengine-config directory if it exists
-      if os.path.isdir(config_dir):
-
+      if os.path.isdir(appengine_config_dir):
         domain = host.split(":")[0]
-        # Loop through all the files and find the project.*.conf files
-        for f in os.listdir(config_dir):
-          parts = f.split(".")
-          if len(parts) > 1 and parts[0] == "project" and parts[-1] == "conf":
-            env_config = context.read_config(os.path.join(config_dir, f))
+        # Loop through all the files and find the project.*.conf files in the directories
+        for f in os.listdir(appengine_config_dir):
 
-            # If this configuration value matches what was passed in, then the get the real config
-            # value from the filename of the project.<conf>.conf file.
+          if f.startswith(".") or not os.path.isdir(os.path.join(appengine_config_dir, f)):
+            continue
+
+          if os.path.exists(os.path.join(appengine_config_dir, f, "project.conf")):
+            env_config = context.read_config(os.path.join(appengine_config_dir, f, "project.conf"))
+
+            # If the project.conf file has this host as ACRE_FREEBASE_SITE_ADDR then the directory name
+            # is the name of the configuration target.
             if env_config.get("ACRE_FREEBASE_SITE_ADDR", None) == domain:
-              actual_config = parts[-2]
+              actual_config = f
               break
 
 
@@ -2137,7 +2158,7 @@ class Site:
         raise FatalException("Could not find valid configuration - config: %s host: %s." % (config,host))
 
     def appengine_id(config):
-      filename = os.path.join(site_dir, "appengine-config", "appengine-web.%s.xml.in" % config)
+      filename = os.path.join(appengine_config_dir, config, "appengine-web.xml.in")
       try:
         fh = open(filename)
       except:

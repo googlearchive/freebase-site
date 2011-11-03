@@ -111,10 +111,6 @@
 </acre:block>
 
 <acre:block def="footer_script()">
-  <script type="text/javascript">
-    var bp = "/apps";
-    var category = "${c.category}";
-  </script>
   <script type="text/javascript" src="apps.mf.js"></script>
 </acre:block>
 

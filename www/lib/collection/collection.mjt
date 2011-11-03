@@ -118,8 +118,10 @@
           <acre:block elif="cell.structure.expected_type.id === '/common/image'">
             <ul class="data-list">
               <li>
-                ${pb.value(tbody.value, cell.structure, tbody.value, i18n.lang)}
-                <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
+                <span class="wrapper">
+                  ${pb.value(tbody.value, cell.structure, tbody.value, i18n.lang)}
+                  <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
+                </span>
               </li>
             </ul>
           </acre:block>

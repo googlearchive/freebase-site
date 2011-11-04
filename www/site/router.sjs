@@ -136,7 +136,7 @@ function init_site_rules(lib) {
         "name": _("Apps"),
         "path": "/apps",
         "app": "apps",
-        "script": "new.tab"
+        "script": "browse.tab"
       },
       {
         "name": _("Users"),

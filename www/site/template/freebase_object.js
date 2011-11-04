@@ -39,7 +39,10 @@
     // Truncate object blurb
     var $obj_desc = $("#description");
     var $obj_blurb = $(".blurb", $obj_blurb);
+    var $obj_timestamp = $("#page-header .creation-timestamp");
 
+    $obj_desc.css('height', 'auto');
+    
     /**
      * TODO: this truncator does not handle internationalization
      * the 'string' and 'title' both need this
@@ -61,37 +64,22 @@
     });
 
     /**
-     * When the browser supports both javascript and css opacity
-     * we fade the object description in to prevent the page from
-     * shifting before the truncation function has run
-     */
-    $obj_desc.animate({opacity: 1}).css('height', 'auto');
-
-
-    /**
      * The layout requires that we set an explicity margin on the object title
      * that is equal to the width of the object timestamp to prevent the two
      * from bumping into each other. Because this value changes, we have to
      * set it via javascript.
-     *
-     * Additionally, for localization, we format the object creation
-     * timestamp on the client-side, this causes the original timestamp
-     * value to jump after it's been formatted. Thus, we do some basic
-     * animation to smooth that transition out.
      */
-
-    var $obj_timestamp = $("#page-header .creation-timestamp");
-    var $published = $(".published", $obj_timestamp).css({opacity:0});
     var offset = $obj_timestamp.width();
-    $published.animate({opacity: 1}, function() {
-      $obj_timestamp.animate({opacity: 1});
-    });
     $("#page-header h1").css("margin-right", offset);
+
+    // Fade in the page contents
+    setTimeout(function() {
+      $("#page-content").animate({"opacity": 1});
+    }, 0);
 
     /*
      * Initialize page scroll behavior for fixed positioning on scroll
      */
-
     fb.init_page_scroll();
     fb.search_focus();
 

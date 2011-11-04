@@ -39,10 +39,6 @@
   var image = acre.require("lib/template/imagecomponents.mjt");
 </acre:script>
 
-<acre:block def="head()">
-  <link rel="stylesheet" type="text/css" href="browse.mf.css" />
-</acre:block>
-
 <acre:block def="page_content()">
   <div id="content-wrapper">
     <section id="content-main" role="main">

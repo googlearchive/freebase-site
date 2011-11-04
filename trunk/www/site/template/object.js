@@ -36,32 +36,8 @@
     // Initialize all nicemenus
     $(".nicemenu").nicemenu();
 
-    // Truncate object blurb
-    var $obj_desc = $("#description");
-    var $obj_blurb = $(".blurb", $obj_blurb);
-    var $obj_timestamp = $("#page-header .creation-timestamp");
-
-    $obj_desc.css('height', 'auto');
-    
-    /**
-     * TODO: this truncator does not handle internationalization
-     * the 'string' and 'title' both need this
-     */
-    $obj_blurb.cmtextconstrain({
-      restrict: {
-        type: 'words',
-        limit: 30
-      },
-      showControl: {
-        string: '[ + ]',
-        title: 'Show more'
-      },
-      hideControl: {
-        string: '[ - ]',
-        title: 'Show less'
-      },
-      trailingString: '...'
-    });
+    // DAE: Can we do this in CSS?
+    $("#description").css('height', 'auto');
 
     /**
      * The layout requires that we set an explicity margin on the object title
@@ -69,6 +45,7 @@
      * from bumping into each other. Because this value changes, we have to
      * set it via javascript.
      */
+    var $obj_timestamp = $("#page-header .creation-timestamp");
     var offset = $obj_timestamp.width();
     $("#page-header h1").css("margin-right", offset);
 

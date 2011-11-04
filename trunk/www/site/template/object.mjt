@@ -252,10 +252,20 @@
             </acre:block>
           </div>
 
-          <!!-- blurb should be sentence-level truncation at ~50 words -->
+          <!!-- blurb should be sentence-level truncation at ~30 words -->
           <div id="description" class="clear">
             <acre:block if="c.blurb">
-              <p class="blurb" itemprop="desc">${c.blurb}</p>
+              <acre:script>
+                var words = c.blurb.split(/\s+/);
+                var word_length = 30;
+              </acre:script>
+              <acre:block if="words.length < word_length">
+                <p class="blurb" itemprop="desc">${c.blurb}</p>
+              </acre:block>
+              <acre:block else="">
+                <p class="blurb" itemprop="desc">${words.slice(0, word_length).join(" ")}&hellip;<a href="#" title="${_('Show more')}" onclick="$$(this).parent('p').hide().next('p').show();return false;">[ + ]</a></p>
+                <p style="display:none;">${c.blurb}<a href="#" title="${_('Show less')}" onclick="$$(this).parent('p').hide().prev('p').show();return false;">[ - ]</a></p>
+              </acre:block>
             </acre:block>
           </div>
         </div>

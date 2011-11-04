@@ -38,11 +38,12 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      validators.Uri(params, "onsignin", {required:false, if_empty:null})
+      validators.Uri(params, "onsignin", {required:false, if_empty:null}),
+      validators.StringBool(params, "google", {if_empty: false})
     ];
   },
 
-  run: function(onsignin) {
+  run: function(onsignin, google) {
     // Always ask the user to signin if they hit this url.
     var success_url = acre.request.app_url+'/account/signedin';
     if (onsignin) {
@@ -60,6 +61,14 @@ var SPEC = {
 
     } else {
       var redirect_url = h.account_url('signin', success_url);
+      if (google) {
+        redirect_url = h.legacy_fb_url("/api/account/openid_begin", {
+          onsucceed: success_url,
+          onfail: h.account_url('signin'),
+          onregister: h.account_url('register', success_url),
+          provider: "https://www.google.com/accounts/o8/id"
+        })
+      }
       if (acre.request.cookies['metaweb-user']) {
         redirect_url = h.account_url('signout', redirect_url);
       }

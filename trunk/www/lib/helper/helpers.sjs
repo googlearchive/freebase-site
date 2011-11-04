@@ -1315,7 +1315,7 @@ function account_url(kind, return_url) {
     break;
    case "register":
     url = legacy_fb_url('/signin/register', {
-      onsucceed: return_url
+      done: return_url
     });
     break;
    case "settings":

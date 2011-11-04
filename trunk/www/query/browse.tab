@@ -29,20 +29,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var queries = acre.require("queries.sjs");
-
+var validators = acre.require("lib/validator/validators.sjs");
+var queries = acre.require("lib/queries/freebase_query.sjs");
+    
 var SPEC = {
 
   template: "browse.mjt",
   
   template_base: "site/template/browse.mjt",
 
-  validate: function() { return []; },
+  validate: function(params) { 
+    return [
+      validators.Int(params, "days", {if_missing: 30})
+    ]; 
+  },
 
-  run: function() { 
+  run: function(days) {
     return {
-      title: "Recently Released",
-      apps: queries.released_apps()
+      days: days,
+      queries: queries.recent_queries(days)
     }; 
   }
   

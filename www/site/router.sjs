@@ -124,7 +124,7 @@ function init_site_rules(lib) {
         "name": _("Schema"),
         "path": "/schema",
         "app": "schema",
-        "script": "new.tab"
+        "script": "browse.tab"
       },
       {
         "name": _("Queries"),

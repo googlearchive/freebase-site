@@ -34,7 +34,7 @@ var queries = acre.require("queries.sjs");
 
 var SPEC = {
 
-  template: "new.mjt",
+  template: "browse.mjt",
   
   template_base: "site/template/browse.mjt",
 

@@ -119,16 +119,19 @@ function value_to_rows(prop_structures, value, start_column) {
   function new_cell(structure, opts) {
     opts = opts || {};
 
-    var css_class = "";
+    var css_class = [];
     if (structure.id == "/type/object/name") {
-      css_class += "name ";
+      css_class.push("name");
     }
     if (structure.expected_type && structure.expected_type.id === "/common/image") {
-      css_class += "image ";
+      css_class.push("image");
     }
+    // TODO: what is this for? This seems to not work as intended
+    /**
     if (start_column && ((column - start_column) === 0)) {
-      css_class += "first-column ";
+      css_class.push("first-column");
     }
+     **/
 
     return h.extend(true, {}, {
       structure: structure,
@@ -136,7 +139,7 @@ function value_to_rows(prop_structures, value, start_column) {
       row: 0,
       column: 0,
       attrs: {
-        "class": css_class
+        "class": css_class.join(" ")
       }
     }, opts);
   }
@@ -147,6 +150,7 @@ function value_to_rows(prop_structures, value, start_column) {
         expected_type = prop_structure.expected_type || {},
         is_image = expected_type.id === "/common/image",
         mediator = expected_type.mediator === true,
+        is_literal = h.is_literal_type(expected_type.id),
         row = ensure_row(rows, 0),
         cell = new_cell(prop_structure, {column: column});
 
@@ -175,7 +179,8 @@ function value_to_rows(prop_structures, value, start_column) {
           if (!mediator) {
             var value = {
               text: prop_value.text,
-              lang: prop_value.lang
+              lang: prop_value.lang,
+              id: prop_value.id
             };
             prop_value["/type/object/name"] = {values:[value]};
           }
@@ -206,6 +211,9 @@ function value_to_rows(prop_structures, value, start_column) {
             row:prop_index,
             column: column
           });
+          if (prop_structure.id === "/type/object/name") {
+            cell.value.id = value.id;
+          }
           last_vals[column] = cell;
           row.push(cell);
         });

@@ -79,6 +79,10 @@
 
 <acre:block def="collection_body(body)">
   <acre:block for="tbody in body">
+<acre:script>
+  console.log("tbody", tbody, "tbody.value", tbody.value);
+</acre:script>
+
     <tbody class="data-row" data-id="${tbody.value.id}">    
       <tr acre:for="x,row in tbody">
         <td acre:for="y,cell in row" acre:attrs="cell.attrs">
@@ -95,9 +99,9 @@
               <ul class="data-list">
                 <li>
                   <span class="wrapper">
-                    <a title="${tbody.value.id}" class="property-value"
-                       href="${h.fb_url(true, tbody.value.id)}"
-                       data-id="${tbody.value.id}">${cell.value.text}</a>
+                    <a title="${cell.value.id}" class="property-value"
+                       href="${h.fb_url(true, cell.value.id)}"
+                       data-id="${cell.value.id}">${cell.value.text}</a>
                     ${i18n_c.lang_code(cell.value.lang, i18n.lang)}
                     <acre:block if="x === 0 && y === 0">${row_menu()}</acre:block>
                   </span>

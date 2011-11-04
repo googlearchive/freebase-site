@@ -29,7 +29,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var queries = acre.require("queries.sjs");
+var h = acre.require("lib/helper/helpers.sjs");
+var i18n = acre.require("lib/i18n/i18n.sjs");
+var fh = acre.require("lib/filter/helpers.sjs");
+var apis = acre.require("lib/promise/apis.sjs"),
+    deferred = apis.deferred,
+    freebase = apis.freebase;
 
 var SPEC = {
 
@@ -37,13 +42,46 @@ var SPEC = {
   
   template_base: "site/template/browse.mjt",
 
-  validate: function() { return []; },
+  validate: function(params) {
+    return [
+      params.object
+    ];
+  },
 
-  run: function() { 
+  run: function(object) {
     return {
-      title: "Recently Released",
-      apps: queries.released_apps()
-    }; 
+      object: object,
+      kinds: review_queue_tasks()
+    };
   }
+
+};
+
+function review_queue_tasks() {
+  var q = [{
+    "name": i18n.mql.query.name(),
+    "type": "/freebase/flag_kind",
+    "flags": {
+      "type": "/freebase/review_flag",
+      "item": {
+        "mid":   null,
+        "limit": 0
+      },
+      "status": {
+        "id": null,
+        "optional": "forbidden"
+      },
+      "return" : "count"
+    }
+  }];
   
+  return freebase.mqlread(q)
+    .then(function(env) {
+      return env.result || [];
+    })
+    .then(function(kinds) {
+      return kinds.sort(function(a, b) {
+        return b.flags - a.flags;
+      });
+    });
 };

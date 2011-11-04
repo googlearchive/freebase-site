@@ -29,21 +29,49 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var queries = acre.require("queries.sjs");
+(function($, fb) {
 
-var SPEC = {
+  $.extend(fb.nav_ajax, {
+    begin: function(nav) {
+      var url = nav.href.split("/");
+      url.pop();
+      url.push("settings_begin.ajax");
+      $.ajax({
+        url: url.join("/"),
+        data: {id: fb.c.id},
+        dataType: "json",
+        success: function(data, status, xhr) {
+          var form = $(data.result.html);
+          fb.nav_ajax.init(form);
+        },
+        error: function(xhr) {
+          // TODO: handle ajax error
+          console.error(xhr);
+        }
+      });
+    },
 
-  template: "browse.mjt",
-  
-  template_base: "site/template/browse.mjt",
+    init: function(form) {
+      $(document.body).append(form.hide());
+      form.overlay({
+        close: ".modal-buttons .button.cancel",
+        closeOnClick: false,
+        load: true,
+        mask: {
+          color: '#000',
+          loadSpeed: 200,
+          opacity: 0.5
+        },
+        onLoad: function() {
+          fb.nav_ajax.init_form(form);
+        }
+      });
+    },
 
-  validate: function() { return []; },
+    init_form: function(form) {
 
-  run: function() { 
-    return {
-      title: "Recently Released",
-      apps: queries.released_apps()
-    }; 
-  }
-  
-};
+    }
+  });
+
+
+})(jQuery, window.freebase);

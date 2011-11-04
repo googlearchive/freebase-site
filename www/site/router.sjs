@@ -67,23 +67,20 @@ function init_site_rules(lib) {
     "lib":        "//lib" + site_codebase,
 
     "account":    "//account" + site_codebase,
-    "activity":   "//activity" + site_codebase,
-    "admin":      "//admin" + site_codebase,
     "appeditor":  "//appeditor" + site_codebase,
     "apps":       "//apps" + site_codebase,
     "create":     "//create" + site_codebase,
     "data":       "//data" + site_codebase,
-    "devdocs":    "//devdocs" + site_codebase,
-    "group":      "//group" + site_codebase,
-    "homepage":   "//homepage" + site_codebase,
+    "mdo":        "//mdo" + site_codebase,
     "policies":   "//policies" + site_codebase,
     "query":      "//query" + site_codebase,
+    "review":     "//review" + site_codebase,
     "sameas":     "//sameas" + site_codebase,
     "sample":     "//sample" + site_codebase,
     "schema":     "//schema" + site_codebase,
     "topic":      "//topic" + site_codebase,
     "triples":    "//triples" + site_codebase,
-    "history":    "//history" + site_codebase
+    "users":      "//users" + site_codebase,
   };
 
   // Defaults to trunk lib if not specified.
@@ -117,7 +114,7 @@ function init_site_rules(lib) {
       {
         "name": _("Data"),
         "path": "/browse",
-        "app": "homepage",
+        "app": "data",
         "script": "browse.tab"
       },
       {
@@ -129,8 +126,8 @@ function init_site_rules(lib) {
       {
         "name": _("Queries"),
         "path": "/queries",
-        "app": "activity",
-        "script": "queries.tab"
+        "app": "query",
+        "script": "browse.tab"
       },
       {
         "name": _("Apps"),
@@ -141,20 +138,20 @@ function init_site_rules(lib) {
       {
         "name": _("Users"),
         "path": "/users",
-        "app": "activity",
-        "script": "users.tab"
+        "app": "users",
+        "script": "browse.tab"
       },
       {
         "name": _("MDOs"),
         "path": "/mdos",
-        "app": "activity",
-        "script": "mdos.tab"
+        "app": "mdo",
+        "script": "browse.tab"
       },
       {
         "name": _("Tasks"),
         "path": "/tasks",
-        "app": "activity",
-        "script": "review.tab"
+        "app": "review",
+        "script": "browse.tab"
       }
     ]
   };
@@ -209,7 +206,7 @@ function init_site_rules(lib) {
         {
           "name": _("Editors"),
           "key": "editors",
-          "app": "group",
+          "app": "users",
           "script": "group.tab"
         },
         {
@@ -246,7 +243,7 @@ function init_site_rules(lib) {
         {
           "name": _("Editors"),
           "key": "editors",
-          "app": "group",
+          "app": "users",
           "script": "group.tab"
         }
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
@@ -386,8 +383,8 @@ function init_site_rules(lib) {
         },
         {
           "name": _("Edit Profile"),
-          "app": "admin",
-          "ajax": "user_settings.mf.js",
+          "app": "users",
+          "ajax": "settings.mf.js",
           "auth": true // add "edit" class
         }
       ]
@@ -662,8 +659,6 @@ function init_site_rules(lib) {
   rules["prefix"] = [
 
     {prefix:"/query",              app:"query", script:"editor.template"},
-    {prefix:"/new",                app:"activity"},
-    {prefix:"/docs",               app:"devdocs"},
     {prefix:"/appeditor",          app:"appeditor"},
     {prefix:"/policies",           app:"policies"},
     {prefix:"/account",            app:"account"},
@@ -738,6 +733,7 @@ function init_site_rules(lib) {
     {prefix:"/newsfeed",                url:"/", redirect:301},
 
     // Wiki
+    {prefix:"/docs",                    url:"http://wiki.freebase.com", redirect:301},
     {prefix:"/help",                    url:"http://wiki.freebase.com", redirect:301},
     {prefix:"/help/faq",                url:"http://wiki.freebase.com/wiki/FAQ", redirect:301},
     {prefix:"/developer",               url:"http://wiki.freebase.com/wiki/Developers", redirect:301},

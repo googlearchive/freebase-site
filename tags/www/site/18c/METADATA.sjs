@@ -1,10 +1,10 @@
 var METADATA = {
   "project": "freebase-site.googlecode.dev", 
   "mounts": {
-    "lib": "//45.lib.www.branches.svn.freebase-site.googlecode.dev"
+    "lib": "//45a.lib.www.tags.svn.freebase-site.googlecode.dev"
   }, 
-  "app_tag": null, 
-  "app_version": 18, 
+  "app_tag": "18c", 
+  "app_version": "18", 
   "app_key": "site"
 };
 

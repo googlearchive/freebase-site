@@ -211,7 +211,7 @@ function query(query, opts) {
       return schema.load(typeid)
         .then(function(r) {
           var is_mediator = r[typeid]["/freebase/type_hints/mediator"];
-          var default_paths = is_mediator ? ["/type/object/id"] : ["/common/topic/image", "/type/object/name"];
+          var default_paths = is_mediator ? ["/type/object/id"] : ["/type/object/name", "/common/topic/image"];
           var props = default_paths.concat(get_paths(q, 2, typeid));
           result.collection = collection(mids, props, i18n.lang);
           return deferred.all(result);

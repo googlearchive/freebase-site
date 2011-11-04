@@ -36,7 +36,7 @@ var creator = acre.require("lib/queries/creator.sjs");
 
 /**
  * Basic freebase object information (in english):
- * This query is used in template/freebase_object template to display the freebase object mast-head.
+ * This query is used in template/object.mjt to display the freebase object mast-head.
  */
 function object(id, options) {
   var q = mql(id);

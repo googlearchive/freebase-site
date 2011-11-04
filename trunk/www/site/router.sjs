@@ -665,10 +665,6 @@ function init_site_rules(lib) {
     {prefix:"/favicon.ico",        app:"lib", script:"template/favicon.ico"},
     {prefix:"/sample",             app:"sample"},
 
-    // Urls for administrative tools
-    {prefix:"/admin",              app:"admin"},
-    {prefix:"/app/tmt",            app:"tmt"},
-
 
     //
     // Redirects for legacy urls
@@ -846,7 +842,7 @@ function CustomRouter(app_labels) {
         set_app(item, app_labels);
       });
 
-      acre.write(acre.require("template/freebase_object.sjs").main(rule, o));
+      acre.write(acre.require("template/object.sjs").main(rule, o));
       acre.exit();
     }
 
@@ -857,7 +853,7 @@ function CustomRouter(app_labels) {
 
 function ObjectRouter(app_labels) {
   var object_query = acre.require("queries/object.sjs");
-  var freebase_object = acre.require("template/freebase_object.sjs");
+  var freebase_object = acre.require("template/object.sjs");
 
   var route_list = [];
   var types = {};

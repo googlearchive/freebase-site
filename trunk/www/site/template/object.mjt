@@ -66,11 +66,11 @@
 </acre:block>
 
 <acre:block def="freebase_js()">
-  <script src="template/freebase_object.mf.js"></script>
+  <script src="template/object.mf.js"></script>
 </acre:block>
 
 <acre:block def="freebase_css()">
-  <link rel="stylesheet" type="text/css" href="template/freebase_object.mf.css" />
+  <link rel="stylesheet" type="text/css" href="template/object.mf.css" />
 </acre:block>
 
 <acre:block def="head()">

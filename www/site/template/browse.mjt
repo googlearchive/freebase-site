@@ -86,7 +86,7 @@
         </span>
       </span>
       <h1>${_("A community-curated database of well-known people, places, and things")}</h1>
-      <p id="sign-in-callout">${h.template_sprintf(_("%s with your Google account to join the community"), signin_help_text())}</p>
+      <p id="sign-in-callout" class="no-edit">${h.template_sprintf(_("%s with your Google account to join the community"), signin_help_text())}</p>
     </div>
     <div class="nav clear">
       ${nav_tabs()}

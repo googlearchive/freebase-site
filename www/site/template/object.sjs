@@ -95,7 +95,7 @@ function main(rule, object) {
 
   var spec = script.SPEC;
   if (current_tab && !hidden) {
-    spec.template_base = spec.template_base || "site/template/freebase_object.mjt";
+    spec.template_base = spec.template_base || "site/template/object.mjt";
   }
   spec.template_base_args = template_base_args;
 

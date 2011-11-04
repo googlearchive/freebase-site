@@ -8,27 +8,24 @@ var environment_rules = {
 
     // Override labels. All labels point to trunk by default.
     "labels" : {
-        "lib": "//37a.lib.www.tags.svn.freebase-site.googlecode.dev",
+        "lib": "//45a.lib.www.tags.svn.freebase-site.googlecode.dev",
 
-	"site": "//18a.site" + tags_codebase,
-	"account": "//21a.account" + tags_codebase,
-	"activity": "//19a.activity" + tags_codebase,
-	"admin": "//18a.admin" + tags_codebase,
-	"appeditor": "//22a.appeditor" + tags_codebase,
-	"apps": "//22a.apps" + tags_codebase,
-	"create": "//18a.create" + tags_codebase,
-	"data": "//19a.data" + tags_codebase,
-	"devdocs": "//21a.devdocs" + tags_codebase,
-	"group": "//20a.group" + tags_codebase,
-	"history": "//13a.history" + tags_codebase,
-	"homepage": "//24a.homepage" + tags_codebase,
-	"policies": "//22a.policies" + tags_codebase,
-	"query": "//19a.query" + tags_codebase,
-	"sameas": "//20a.sameas" + tags_codebase,
-	"sample": "//21a.sample" + tags_codebase,
-	"schema": "//25a.schema" + tags_codebase,
-	"topic": "//25a.topic" + tags_codebase,
-	"triples": "//21a.triples" + tags_codebase
+	"site": "//18c.site" + tags_codebase,
+	"account": "//22a.account" + tags_codebase,
+	"appeditor": "//23a.appeditor" + tags_codebase,
+	"apps": "//23a.apps" + tags_codebase,
+	"create": "//19a.create" + tags_codebase,
+	"data": "//20a.data" + tags_codebase,
+	"mdo": "//1a.mdo" + tags_codebase,
+	"policies": "//23a.policies" + tags_codebase,
+	"query": "//20a.query" + tags_codebase,
+	"review": "//1a.review" + tags_codebase,
+	"sameas": "//21a.sameas" + tags_codebase,
+	"sample": "//22a.sample" + tags_codebase,
+	"schema": "//26a.schema" + tags_codebase,
+	"topic": "//26a.topic" + tags_codebase,
+	"triples": "//22a.triples" + tags_codebase,
+	"users": "//1a.users" + tags_codebase
 
     },
  

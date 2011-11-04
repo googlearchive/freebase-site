@@ -41,7 +41,7 @@ var SPEC = {
 
   template: "mdos.mjt",
   
-  template_base: "site/template/freebase_new.mjt",
+  template_base: "site/template/browse.mjt",
 
   validate: function(params) { 
     return [

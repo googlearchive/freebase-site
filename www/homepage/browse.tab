@@ -35,7 +35,7 @@ var queries = acre.require("queries");
 var SPEC = {
   cache_policy: "public",
   template: "browse.mjt",
-  template_base: "site/template/freebase_new.mjt",
+  template_base: "site/template/browse.mjt",
 
   run: function() {
     return {

@@ -45,14 +45,14 @@
 
 <acre:block def="page_content()">
   <div id="content-wrapper">
-    <div class="main">
-      <h2 class="table-title">
-        ${_('Recently modified domains')}
-      </h2>
+    <section id="content-main" role="main">
+      <h1>
+        ${_('Recent schema changes')}
+      </h1>
       <table cellspacing="0" class="table table-sortable">
         <thead>
           <tr>
-            <th scope="col" class="column-header">${_('Domain')}</th>
+            <th scope="col" class="column-header first">${_('Domain')}</th>
             <th scope="col" class="column-header">${_('ID')}</th>
             <th scope="col" class="column-header">${_('Most Recent Changes')}</th>
           </tr>
@@ -65,7 +65,7 @@
             </th>
             <td class="even">$d.id</td>
             <td class="odd">
-              <ul style="list-style: none">
+              <ul>
                 <li acre:for="change in d.changes">
                   <acre:script>
                     var pname = i18n.display_name(change.property);
@@ -83,45 +83,49 @@
           </tr>
         </tbody>
       </table>
-    </div>
+    </section>
     <aside class="secondary">
-      <h2 class="aside-title">${_('What is Schema?')}</h2>
-      <p>${_('Schema describes how data in Freebase is structured.')}</p>
-      <p><strong>${_('Schema is made by creating:')}</strong></p>
-      <h3>
-        <a href="http://wiki.freebase.com/wiki/Domain">${_('domains')}</a>
-      </h3>
-      <p>${_('which define a common namespace for you to create')}</p>
-      <h3><a href="http://wiki.freebase.com/wiki/Type" title="${_('Learn more about')}">${_('types')}</a></h3>
-      <p>${_('which define a particular kind of person, place or thing and contain')}</p>
-      <h3><a href="http://wiki.freebase.com/wiki/Property" title="${_('Learn more about')}">${_('properties')}</a></h3>
-      <p>${_('which define the unique qualities of a type.')}</p>
-      <p>${_('One simple way to understand the difference between types and properties is that types express &ldquo;is a&rdquo;, while properties express &ldquo;has a&rdquo;.')}</p>
-      <p><strong>${_('Here\'s an example:')}</strong></p>
-      <div class="aside-box">
-        <h4><a href="${h.fb_url('/topic/en/william_shakespeare')}" title="${_('View on Freebase')}">${_('William Shakespeare')}</a></h4>
-        <table cellspacing="0">
-          <tbody>
-            <tr>
-              <td class="is-a">${_('is a')}</td>
-              <td class="kind">${_('type')}</td>
-              <td><a href="${h.fb_url('/schema/people/person')}">${_('Person')}</a></td>
-            </tr>
-            <tr>
-              <td class="has-a">${_('has a')}</td>
-              <td>${_('property')}</td>
-              <td><a href="${h.fb_url('/schema/people/person/date_of_birth')}">${_('Date of Birth')}</a></td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="wrapper">
+        <h3><span>${_('What is Schema?')}</span></h3>
+        <div class="sub-section">
+        <p>${_('Schema describes how data in Freebase is structured. and is what we use to assert facts on Topics (eg. "Blade Runner is directed by Ridley Scott.')}</p>
+        <p><strong>${_('Schema is made by creating:')}</strong></p>
+        <h4>
+          <a href="http://wiki.freebase.com/wiki/Domain">${_('domains')}</a>
+        </h4>
+        <p>${_('which define a common namespace for you to create')}</p>
+        <h4><a href="http://wiki.freebase.com/wiki/Type" title="${_('Learn more about')}">${_('types')}</a></h4>
+        <p>${_('which define a particular kind of person, place or thing and contain')}</p>
+        <h4><a href="http://wiki.freebase.com/wiki/Property" title="${_('Learn more about')}">${_('properties')}</a></h4>
+        <p>${_('which define the unique qualities of a type.')}</p>
+        <p>${_('One simple way to understand the difference between types and properties is that types express &ldquo;is a&rdquo;, while properties express &ldquo;has a&rdquo;.')}</p>
+        <p><strong>${_('Here\'s an example:')}</strong></p>
+        <div class="aside-box">
+          <h4><a href="${h.fb_url('/topic/en/william_shakespeare')}" title="${_('View on Freebase')}">${_('William Shakespeare')}</a></h4>
+          <table cellspacing="0">
+            <tbody>
+              <tr>
+                <td class="is-a">${_('is a')}</td>
+                <td class="kind">${_('type')}</td>
+                <td><a href="${h.fb_url('/schema/people/person')}">${_('Person')}</a></td>
+              </tr>
+              <tr>
+                <td class="has-a">${_('has a')}</td>
+                <td>${_('property')}</td>
+                <td><a href="${h.fb_url('/schema/people/person/date_of_birth')}">${_('Date of Birth')}</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <h2 class="aside-title">${_('Learn more:')}</h2>
+        <ul>
+          <li><a title="View help page" href="${h.wiki_url('Schema')}">${_('Wiki: Schema')}</a></li>
+          <li><a title="View help page" href="${h.wiki_url('Types')}">${_('Wiki: Type')}</a></li>
+          <li><a title="View help page" href="${h.wiki_url('Properties')}">${_('Wiki: Property')}</a></li>
+          <li><a title="View help page" href="${h.wiki_url('Domains')}">${_('Wiki: Domain')}</a></li>
+        </ul>
+        </div>
       </div>
-      <h2 class="aside-title">${_('Learn more:')}</h2>
-      <ul>
-        <li><a title="View help page" href="${h.wiki_url('Schema')}">${_('Wiki: Schema')}</a></li>
-        <li><a title="View help page" href="${h.wiki_url('Types')}">${_('Wiki: Type')}</a></li>
-        <li><a title="View help page" href="${h.wiki_url('Properties')}">${_('Wiki: Property')}</a></li>
-        <li><a title="View help page" href="${h.wiki_url('Domains')}">${_('Wiki: Domain')}</a></li>
-      </ul>
     </aside>
   </div>
 </acre:block>

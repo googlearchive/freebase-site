@@ -49,11 +49,11 @@
 
 <acre:block def="page_content()">
   <div id="page-title">
-    <button id="save-query" class="button save disabled" 
+    <button id="save-query" class="button save edit disabled" 
             onclick="return window.freebase.queryeditor.save(this)">
             ${_('Save Query')}
     </button>
-    <button id="clone-query" class="button primary no-edit"
+    <button id="clone-query" class="button primary"
           onclick="return window.freebase.queryeditor.clone(this)">
           ${_('Copy to Query Editor')}
     </button>

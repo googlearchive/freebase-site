@@ -173,7 +173,6 @@
       });
 
       qe.page_chrome_height =  $("#header").outerHeight(true) +
-                               $("#footer").outerHeight(true) + 
                                ($("#page-content").outerHeight(true) - $("#page-content").height()) +
                                $("#page-title").outerHeight(true);
 

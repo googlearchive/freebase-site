@@ -151,11 +151,13 @@
          u.prepend(user_image);
        }
        $("#signedin").show();
+       $(".signedin").show();
      })
      .bind("fb.user.signedout", function(e) {
        console.log("fb.user.signedout");
        // signed out
        $("#signedout").show();
+       $(".signedout").show();
      })
      .bind("fb.user.unauthorized", function() {
        // TODO: invoke fb.login_popup() without the popup blocker

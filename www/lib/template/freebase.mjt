@@ -89,7 +89,7 @@
         **/
         !!-->
       <style type="text/css">
-        .edit, .edit-perm, .no-edit {
+        .signedin, .signedout, .edit, .no-edit, .edit-perm {
           display: none;
         }
       </style>

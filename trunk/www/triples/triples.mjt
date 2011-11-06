@@ -107,7 +107,7 @@
     </div>
   </div>
 
-  <div class="column" id="triples-data" role="main" acre:attrs="c.filters.historical ? {'class':'historical'} : {}">
+  <div class="column links" id="triples-data" role="main" acre:attrs="c.filters.historical ? {'class':'historical'} : {}">
 
     ${links(c.id, c.links, c.filters)}
 

@@ -70,7 +70,7 @@
       </div>      
     </div>
   </div>    
-  <div class="column">
+  <div class="column data">
     ${topic_keys()}
   </div>
 </acre:block>
@@ -106,43 +106,45 @@
     var keys = c.keys;
   </acre:script>
   <div class="column keys">
-    <h1 class="table-title">${_("Topic Keys")} (${i18n_c.number(keys.length)})</h1>
-    <table cellspacing="0" class="table table-sortable">  
-       <thead>
-        <tr>
-          <th class="column-header first {sorter:'string'}" scope="column"> 
-            <span class="sort-icon">${_("Authority")}</span>
-          </th>
-          <th class="column-header {sorter:'string'}" scope="column">
-            <span class="sort-icon">${_("Namespace")}</span>
-          </th>
-          <th class="column-header {sorter:'string'}" scope="column">
-            <span class="sort-icon">${_("Key")}</span>
-          </th>
-          <th class="column-header {sorter:'string'}" scope="column">
-            <span class="sort-icon">${_("Creator")}</span>
-          </th>
-          <th class="column-header {sorter:'datetime'}" scope="column">
-            <span class="sort-icon">${_("Date")}</span>
-          </th>
-        </tr>
-      </thead>
-       <tbody>
-         <acre:block for="key in keys">
-           ${topic_key(key)}
-         </acre:block>
-       </tbody>
-       <tfoot class="table-edit">
-         <tr class="trigger-row">
-           <td colspan="5">
-             <a href="javascript:void(0);"
-                class="icon-link" onclick="return freebase.dispatch(event, freebase.sameas.add_key, null, this);">
-               <span class="add-icon">${_('Add New')}</span>
-             </a>
-           </td>
-         </tr>           
-       </tfoot>
-    </table>
+    <div class="section">
+      <h1 class="table-title">${_("Topic Keys")} (${i18n_c.number(keys.length)})</h1>
+      <table cellspacing="0" class="table table-sortable">  
+         <thead>
+          <tr>
+            <th class="column-header first {sorter:'string'}" scope="column"> 
+              <span class="sort-icon">${_("Authority")}</span>
+            </th>
+            <th class="column-header {sorter:'string'}" scope="column">
+              <span class="sort-icon">${_("Namespace")}</span>
+            </th>
+            <th class="column-header {sorter:'string'}" scope="column">
+              <span class="sort-icon">${_("Key")}</span>
+            </th>
+            <th class="column-header {sorter:'string'}" scope="column">
+              <span class="sort-icon">${_("Creator")}</span>
+            </th>
+            <th class="column-header {sorter:'datetime'}" scope="column">
+              <span class="sort-icon">${_("Date")}</span>
+            </th>
+          </tr>
+        </thead>
+         <tbody>
+           <acre:block for="key in keys">
+             ${topic_key(key)}
+           </acre:block>
+         </tbody>
+         <tfoot class="table-edit">
+           <tr class="trigger-row">
+             <td colspan="5">
+               <a href="javascript:void(0);"
+                  class="icon-link" onclick="return freebase.dispatch(event, freebase.sameas.add_key, null, this);">
+                 <span class="add-icon">${_('Add New')}</span>
+               </a>
+             </td>
+           </tr>
+         </tfoot>
+      </table>
+    </div>
   </div>
 </acre:block>
 

@@ -117,9 +117,10 @@
     
   });
   
+  var collapsed = $.localstore("filters_collapsed");
   $.extend(true, $.collapse_module, {
     defaults: {
-      collapsed: !!$.localstore("filters_collapsed"),
+      collapsed: (collapsed === null) ? true : !!collapsed,
       modules: ".module",
       column: "#main-column"
     }

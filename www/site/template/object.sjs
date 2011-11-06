@@ -85,7 +85,6 @@ function main(rule, object) {
   if (current_tab) {
     template_base_args.current_tab = current_tab;
     script = acre.require(current_tab.app + "/" + current_tab.script);
-    console.log(current_tab)
     params = current_tab.params;
   }
 

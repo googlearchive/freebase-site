@@ -45,10 +45,9 @@ function keys(id, lang, limit, filters) {
     key: [{
       namespace: {
         id: null,
-        type: "/type/namespace",
         unique: null,
         "/base/sameas/web_id/authority": {
-//          optional: true,
+          optional: true,
           limit: 1,
           id: null,
           type: "/base/sameas/api_provider",
@@ -132,10 +131,9 @@ function key(id, namespace, key, lang) {
     key: [{
       namespace: {
         id: namespace,
-        type: "/type/namespace",
         unique: null,
         "/base/sameas/web_id/authority": {
-//          optional: true,
+          optional: true,
           limit: 1,
           id: null,
           type: "/base/sameas/api_provider",

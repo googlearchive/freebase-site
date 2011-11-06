@@ -107,7 +107,7 @@
   </acre:script>
   <div class="column keys">
     <div class="section">
-      <h1 class="table-title">${_("Topic Keys")} (${i18n_c.number(keys.length)})</h1>
+      <h1 class="table-title">${_("IDs")} (${i18n_c.number(keys.length)})</h1>
       <table cellspacing="0" class="table table-sortable">  
          <thead>
           <tr>

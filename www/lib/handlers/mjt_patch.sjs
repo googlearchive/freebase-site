@@ -42,11 +42,14 @@ var mjt_patch = function (script) {
   
   var to_process = {
     "src": {
-      "img": true,
-      "script": true
+      "img": "static",
+      "script": "static"
     },
     "href": {
-      "link": true
+      "link": "static"
+    },
+    "action": {
+      "form": "ajax"
     }
   };
   
@@ -89,10 +92,17 @@ var mjt_patch = function (script) {
 
           // Here's the monkey-patch...
           if (to_process[a.name] && to_process[a.name][nname] && /^[^/:$][^:$]*$/.test(a.value)) {
-            var kind = to_process[a.name][nname];
             var full_path = script.scope.acre.resolve(a.value);
             if (full_path) {
-              a.value = (kind === "ajax") ? h.ajax_url(full_path) : h.static_url(full_path);
+              var kind = to_process[a.name][nname];
+              switch (kind) {
+                case "ajax":
+                  a.value = h.ajax_url(full_path);
+                  break;
+                case "static":
+                default:
+                  a.value = h.static_url(full_path);
+              }
             }
           }
 

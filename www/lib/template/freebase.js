@@ -38,7 +38,7 @@
   if (window.SERVER && typeof window.SERVER === "object") {
     $.extend(window.freebase, window.SERVER);
   }
-  
+
   // copy over our inlined cookie function
   $.cookie = window.freebase.cookie;
 })(jQuery);
@@ -163,6 +163,17 @@
        // TODO: invoke fb.login_popup() without the popup blocker
        // for now, go directly to signin page
        window.location.href = fb.h.fb_url("/account/signin", {onsignin:window.location.href});
+     })
+     .bind("fb.user.feedback", function(e, data) {
+        try{
+          userfeedback.api.startFeedback({
+              productId: '68931',
+              disableScrolling: false
+          }, data);
+          return false;
+        }
+        catch(e){
+        }
      });
 
   // get user info from cookie:
@@ -202,14 +213,14 @@
 
     return position;
   };
-  
+
   fb.status = (function(){
       var SECONDS = 1000;
 
       var timer;
       var hide_func;
       var last_level;
-      
+
       function _show(log_type,str,duration) {
           var el = '#page-state';
           if (last_level && last_level === 'error') {

@@ -541,6 +541,11 @@
            return this._error.apply(this, arguments);
          },
          _error: function(xhr) {
+           // handle 401: Not authorized
+           if (xhr.status === 401) { // unauthorized
+             $(window).trigger("fb.user.unauthorized");
+             return;
+           }
            if (this.onerror) {
              var args = [xhr.responseText].concat(Array.prototype.slice.call(arguments));
              this.onerror.apply(this, args);
@@ -586,11 +591,6 @@
       * "this" is $.ajax scope
       */
      check_api_response: function(data, textStatus, xhr) {
-       // handle 401: Not authorized
-       if (xhr.status === 401) { // unauthorized
-         $(window).trigger("fb.user.unauthorized");
-         return false;
-       }
        if (typeof data === "object") {
          // JSON
          if (data.code !== "/api/status/ok") {

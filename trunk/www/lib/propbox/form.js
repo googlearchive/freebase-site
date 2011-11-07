@@ -524,9 +524,9 @@
          data: {},
          dataType: "json",
          type: method || "GET",
-         success: function() {
-           if (!formlib.check_ajax_success.apply(null, arguments)) {
-             return;
+         success: function(data, textStatus, xhr) {
+           if (!formlib.check_ajax_success.apply(this, arguments)) {
+             this._error.apply(this, [xhr]);
            }
            // onsuccess is our own success handler that's called after
            // the boiler plate check_ajax_success
@@ -534,30 +534,73 @@
              this.onsuccess.apply(this, arguments);
            }
          },
-         error: function() {
-           var errmsg = formlib.check_ajax_error.apply(null, arguments);
+         error: function(xhr) {
+           formlib.check_ajax_error.apply(this, arguments);
            // onerror is our own success handler that's called after
            // the boiler plate check_ajax_error
+           return this._error.apply(this, arguments);
+         },
+         _error: function(xhr) {
            if (this.onerror) {
-             var args = [errmsg].concat(Array.prototype.slice.call(arguments));
+             var args = [xhr.responseText].concat(Array.prototype.slice.call(arguments));
              this.onerror.apply(this, args);
+           }
+           else {
+             if (confirm("Uh, oh! Something went wrong. Please report this using our feedback tool.")) {
+               $(window).trigger("fb.user.feedback", {
+                 url: this.url,
+                 data: this.data,
+                 dataType: this.dataType,
+                 type: this.type,
+                 responseText: xhr.responseText
+               });
+             }
            }
          }
        };
      },
 
-     check_ajax_success: function(data, status, xhr) {
+     /**
+      * "this" is $.ajax scope
+      */
+     check_ajax_success: function(data, textStatus, xhr) {
        // TODO: do we need to handle any freebase api specific codes here?
-       return true;
+       return formlib.check_api_response.apply(this, arguments);
      },
 
+     /**
+      * "this" is $.ajax scope
+      */
      check_ajax_error: function(xhr) {
+       var data = xhr.responseText;
+       try {
+         data = JSON.stringify(data);
+       }
+       catch(ex) {
+         // not JSON
+       }
+       return formlib.check_api_response.apply(this, [data, xhr.statusText, xhr]);
+     },
+
+     /**
+      * "this" is $.ajax scope
+      */
+     check_api_response: function(data, textStatus, xhr) {
        // handle 401: Not authorized
        if (xhr.status === 401) { // unauthorized
          $(window).trigger("fb.user.unauthorized");
+         return false;
        }
-       // TODO:
-       return xhr.responseText;
+       if (typeof data === "object") {
+         // JSON
+         if (data.code !== "/api/status/ok") {
+           return false;
+         }
+       }
+       else if (xhr.status !== 200) {
+         return false;
+       }
+       return true;
      }
    };
 

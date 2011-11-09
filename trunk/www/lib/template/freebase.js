@@ -165,15 +165,17 @@
        window.location.href = fb.h.fb_url("/account/signin", {onsignin:window.location.href});
      })
      .bind("fb.user.feedback", function(e, data) {
-        try{
-          userfeedback.api.startFeedback({
-              productId: '68931',
-              disableScrolling: false
-          }, data);
-          return false;
-        }
-        catch(e){
-        }
+       if (confirm("Uh oh! Something went wrong. Please report this using our feedback tool.")) {
+         try {
+           userfeedback.api.startFeedback({
+             productId: '68931',
+             disableScrolling: false
+           }, data);
+           return false;
+         }
+         catch(e) {
+         }
+       }
      });
 
   // get user info from cookie:
@@ -671,7 +673,23 @@
          fb.devbar.txn_ids.push(fb.tid);
        }
        $("#devbar-txn > a").click(fb.devbar.txn);
-       $.ajaxSetup({complete:fb.devbar.ajaxComplete});
+       $.ajaxSetup({
+         complete: function() {
+           fb.devbar.ajaxComplete.apply(null, arguments);
+         },
+         error: function(xhr) {  console.log("$.ajaxSetup.error");
+           var ajax_options = this;
+           var data = {};
+           $.each(["url", "data", "dataType", "type"], function(i,k) {
+             data[k] = ajax_options[k];
+           });
+           $.each(["status", "statusText", "responseText"], function(i,k) {
+             data[k] = xhr[k];
+           });
+           data.responseHeaders = xhr.getAllResponseHeaders();
+           $(window).trigger("fb.user.feedback", data);
+         }
+       });
      }
    };
    fb.devbar.init();

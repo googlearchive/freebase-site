@@ -550,7 +550,7 @@
              var args = [xhr.responseText].concat(Array.prototype.slice.call(arguments));
              this.onerror.apply(this, args);
            }
-           else {console.log("formlib.ajax.error");
+           else {
              var data = {};
              var ajax_options = this;
              $.each(["url", "data", "dataType", "type"], function(i,k) {

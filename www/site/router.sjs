@@ -158,13 +158,14 @@ function init_site_rules(lib) {
 
 
   // *********** OBJECT *************
+  var DEFAULT_BLURB_PROMISE = {
+    "key": "blurb",                 // the promise result will be stored in the object with this key
+    "app": "site",                   // app containing the promise method
+    "script": "queries/object.sjs", // script containing the promise method
+    "promise": "blurb"              // promise method (passed object query result as arugment)
+  };
   var DEFAULT_PROMISES = [
-    {
-      "key": "blurb",                 // the promise result will be stored in the object with this key
-      "app": "site",                   // app containing the promise method
-      "script": "queries/object.sjs", // script containing the promise method
-      "promise": "blurb"              // promise method (passed object query result as arugment)
-    }
+    DEFAULT_BLURB_PROMISE
   ];
 
   var DEFAULT_MORE_TABS = [
@@ -479,14 +480,16 @@ function init_site_rules(lib) {
           "name": _("Identifiers"),
           "key": "ids",
           "app": "sameas",
-          "script": "sameas.tab"
+          "script": "sameas.tab",
+          "promises": h.extend(true, [], [DEFAULT_BLURB_PROMISE])
         },
         {
           "name": _("Links"),
           "key": "links",
           "app": "triples",
           "script": "triples.tab",
-          "more": true
+          "more": true,
+          "promises": h.extend(true, [], [DEFAULT_BLURB_PROMISE])
         }
       ],
       "nav_keys": [
@@ -850,6 +853,9 @@ function CustomRouter(app_labels) {
 
       rule.tabs.forEach(function(item) {
         set_app(item, app_labels);
+        item.promises && item.promises.forEach(function(p) {
+          set_app(p, app_labels);
+        });
       });
 
       rule.promises.forEach(function(item) {

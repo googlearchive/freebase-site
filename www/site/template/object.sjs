@@ -86,6 +86,10 @@ function main(rule, object) {
     template_base_args.current_tab = current_tab;
     script = acre.require(current_tab.app + "/" + current_tab.script);
     params = current_tab.params;
+    current_tab.promises && current_tab.promises.forEach(function(p) {
+      var d = acre.require(p.app + "/" + p.script)[p.promise](object);
+      template_base_args[p.key] = d;
+    });
   }
 
   // Manually overlay tab context onto acre.request since we're not using acre.route

@@ -677,7 +677,7 @@
          complete: function() {
            fb.devbar.ajaxComplete.apply(null, arguments);
          },
-         error: function(xhr) {  console.log("$.ajaxSetup.error");
+         error: function(xhr) {
            var ajax_options = this;
            var data = {};
            $.each(["url", "data", "dataType", "type"], function(i,k) {

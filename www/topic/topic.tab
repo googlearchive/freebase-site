@@ -55,12 +55,11 @@ var SPEC = {
         var f = filters.validate(params, topic_filters);
         f[params.current_tab.key] = "";
         return f;
-      })(),
-      params.notable_types  // promise not yet resolved
+      })()
     ];
   },
 
-  run: function(object, f, notable_types) {
+  run: function(object, f) {
     var id = object.id;
     var domains = f.domains;
     if ((f.domain && !h.is_commons_id(f.domain)) ||
@@ -72,8 +71,7 @@ var SPEC = {
     var promises = {
       prop_counts: filter_queries.prop_counts_by_guid(object.guid),
       topic: topic_api.topic(id, i18n.lang, f.limit, f.as_of_time, domains),
-      object: object,
-      notable_types: notable_types
+      object: object
     };
 
     return deferred.all(promises)
@@ -115,7 +113,6 @@ var SPEC = {
         }
 
         result.blurb = topic.description;
-        result.notable_types = result.notable_types;
 
         return result;
       });

@@ -489,6 +489,20 @@ function init_site_rules(lib) {
           "more": true
         }
       ],
+      "nav_keys": [
+        {
+          "if": function() { return this.notable_types && h.first_element(this.notable_types.types); },
+          "label": _("notable type"),
+          "key": function() { return h.first_element(this.notable_types.types).t; },
+          "url": function() { return h.fb_url(h.first_element(this.notable_types.types).t, [['schema']]); }
+        },
+        {
+          "if": function() { return this.notable_types && h.first_element(this.notable_types.notable_for); },
+          "label": _("notable for"),
+          "key": function() { return h.first_element(this.notable_types.notable_for).o; },
+          "url": function() { return h.fb_url(h.first_element(this.notable_types.notable_for).o, [['schema']]); }
+        }
+      ],
       "gear": [
         {
           "name": _("<span class=\"submenu-title\">Flag Topic</span>"),

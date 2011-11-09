@@ -42,8 +42,7 @@ function type(o) {
     id: o.id,
     type: "/type/type",
     domain: {
-      id: null,
-      name: i18n.mql.query.name()
+      id: null
     }
   };
   return freebase.mqlread(q)
@@ -58,10 +57,8 @@ function property(o) {
     type: "/type/property",
     schema: {
       id: null,
-      name: i18n.mql.query.name(),
       domain: {
-        id: null,
-        name: i18n.mql.query.name()
+        id: null
       }
     }
   };

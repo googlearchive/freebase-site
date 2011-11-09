@@ -2126,11 +2126,11 @@ class Site:
     actual_config = None
     app_id = None
 
+    appengine_config_dir = os.path.join(site_dir, "appengine-config")
+
     if config or not host:
       actual_config = config
     else:
-      appengine_config_dir = os.path.join(site_dir, "appengine-config")
-
       # Find the appengine-config directory if it exists
       if os.path.isdir(appengine_config_dir):
         domain = host.split(":")[0]

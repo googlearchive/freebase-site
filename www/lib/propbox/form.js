@@ -526,7 +526,7 @@
          type: method || "GET",
          success: function(data, textStatus, xhr) {
            if (!formlib.check_ajax_success.apply(this, arguments)) {
-             this._error.apply(this, [xhr]);
+             return this._error.apply(this, [xhr]);
            }
            // onsuccess is our own success handler that's called after
            // the boiler plate check_ajax_success
@@ -550,16 +550,17 @@
              var args = [xhr.responseText].concat(Array.prototype.slice.call(arguments));
              this.onerror.apply(this, args);
            }
-           else {
-             if (confirm("Uh, oh! Something went wrong. Please report this using our feedback tool.")) {
-               $(window).trigger("fb.user.feedback", {
-                 url: this.url,
-                 data: this.data,
-                 dataType: this.dataType,
-                 type: this.type,
-                 responseText: xhr.responseText
-               });
-             }
+           else {console.log("formlib.ajax.error");
+             var data = {};
+             var ajax_options = this;
+             $.each(["url", "data", "dataType", "type"], function(i,k) {
+               data[k] = ajax_options[k];
+             });
+             $.each(["status", "statusText", "responseText"], function(i,k) {
+               data[k] = xhr[k];
+             });
+             data.responseHeaders = xhr.getAllResponseHeaders();
+             $(window).trigger("fb.user.feedback", data);
            }
          }
        };

@@ -2115,9 +2115,6 @@ class Site:
 
     """
 
-    if config:
-      return config
-
     site_dir = cls.ResolveSiteDir(site_dir)
 
     if not site_dir:
@@ -2128,7 +2125,6 @@ class Site:
 
     actual_config = None
     app_id = None
-
 
     if config or not host:
       actual_config = config

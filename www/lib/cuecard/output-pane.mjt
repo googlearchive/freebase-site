@@ -228,7 +228,7 @@
       <acre:block def="list_examples(technique)">
         <a acre:for="index, example in CueCard.Examples" 
            acre:if="((technique !== 'all') ? (example.techniques.indexOf(technique) !== -1) : true)"
-           href="javascript:selectExample('$index')" class="cuecard-examples-example" id="cuecard-example-$index">
+           href="javascript:void(0);" onclick="return selectExample('$index');" class="cuecard-examples-example" id="cuecard-example-$index">
           $example.name
         </a>
       </acre:block>

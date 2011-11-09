@@ -51,10 +51,25 @@
   var itemprop = microdata.itemprop
 
   var exec = function (o, scope) {
-    for (var key in o) {
-      var val = o[key];
-      if (h.isFunction(val)) o[key] = val.apply(scope);
+    var ifexec = true;
+    if ("if" in o) {
+      ifexec = o["if"];
     }
+    if (h.isFunction(ifexec)) {
+      ifexec = o["if"] = ifexec.apply(scope);
+    }
+    if (ifexec) {
+      for (var key in o) {
+        if (key === "if") continue;
+        var val = o[key];
+        if (h.isFunction(val)) o[key] = val.apply(scope);
+      }
+      return true;
+    }
+    else {
+      return false;
+    }
+
   };
 </acre:script>
 
@@ -242,14 +257,12 @@
               <span acre:attrs="itemprop('/type/object/id')">${c.object.id}</span>
             </span>
             <span acre:for="nk in c.nav_keys" class="key">
-              <acre:script>exec(nk, c);</acre:script>
-              <strong>${nk.label}:</strong> 
-              <a acre:if="nk.url" href="$nk.url">${nk.key}</a>
-              <acre:block else="">${nk.key}</acre:block>
+              <acre:block if="exec(nk, c)">
+                <strong>${nk.label}:</strong> 
+                <a acre:if="nk.url" href="$nk.url">${nk.key}</a>
+                <acre:block else="">${nk.key}</acre:block>
+              </acre:block>
             </span>
-            <acre:block if="that_exports.nav_keys">
-              ${that_exports.nav_keys()}
-            </acre:block>
           </div>
 
           <!!-- blurb should be sentence-level truncation at ~30 words -->

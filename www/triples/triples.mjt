@@ -52,19 +52,6 @@
   <link rel="stylesheet" type="text/css" href="triples.mf.css" />
 </acre:block>
 
-<!--
-<acre:block def="nav_keys()">
-  <span class="key">
-    <strong><abbr title="${_('Machine ID')}">${_("mid")}</abbr></strong>:
-    <span acre:attrs="itemprop('/type/object/mid')">${c.object.mid}</span>
-  </span>
-  <span class="key">
-    <strong><abbr title="${_('GUID')}">${_("guid")}</abbr></strong>:
-    <span acre:attrs="itemprop('/type/object/guid')">${c.object.guid}</span>
-  </span>
-</acre:block>
--->
-
 <acre:block def="page_content()">
 
   <div class="column nav">

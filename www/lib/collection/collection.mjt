@@ -79,9 +79,6 @@
 
 <acre:block def="collection_body(body)">
   <acre:block for="tbody in body">
-<acre:script>
-  console.log("tbody", tbody, "tbody.value", tbody.value);
-</acre:script>
     <tbody class="data-row" data-id="${tbody.value.id}">    
       <acre:block for="x,row in tbody">
         <tr>

@@ -173,7 +173,7 @@
     ${row_edit_form_content(s, prop_structures, prop_values, lang)}
   </acre:block>
   <acre:block else="">
-    <div class="modal">
+    <div class="modal" id="propbox-edit-dialog">
       ${row_edit_form_content(s, prop_structures, prop_values, lang)}
       <div class="modal-buttons">
         ${form.submit_buttons(null, _("Close"))}
@@ -184,13 +184,13 @@
 
 <acre:block def="row_edit_form_content(s, prop_structures, prop_values, lang)">
   <div class="modal-inner">
+    <a href="javascript:void(0);" style="visibility:hidden;" class="modal-nav modal-nav-prev">&laquo;${_("prev")}</a>
+    <a href="javascript:void(0);" style="visibility:hidden;" class="modal-nav modal-nav-next">${_("next")}&raquo;</a>
     <h1 class="modal-title">
-      <a href="javascript:void(0);" style="visibility:hidden;" class="modal-nav modal-nav-prev">&laquo;${_("prev")}</a>
       <span class="modal-nav-center">
-        ${image.image_thumb(s)}
+        ${image.image_thumb(s, 30)}
         <span class="modal-nav-title" style="visibility:hidden;">${s}</span>
       </span>
-      <a href="javascript:void(0);" style="visibility:hidden;" class="modal-nav modal-nav-next">${_("next")}&raquo;</a>
     </h1>
     <div class="modal-content">
       <acre:block for="i,prop_structure in prop_structures">

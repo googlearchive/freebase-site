@@ -1,83 +1,159 @@
 /*
+---------------------------
   ### Data Handling
+----------------------------
 */
 
 /*
- * The .data-list class should be used
- * for simple property data (eg. Date of Birth, Country of Nationality)
+ * ### Data Lists 
+ *
+ * The .data-list class is used anytime we output propbox data
+ * This includes unique values, images, etc.
 */
 
 .data-list {
   list-style: none;
+
+  li {
+    font-size: 12px;
+    line-height: 1;
+    padding: 0 15px;
+
+    .wrapper {
+      position: relative;
+      display: inline-block;
+      padding: 5px 45px 6px 0;
+    }
+  }
+
+  .edit-row-submit,
+  .edit-row {
+    clear: left;
+    padding-left: 15px;
+  }
+
+  .edit-row,
+  .add-row,
+  .row-msg,
+  .edit-row-submit {
+    .edit-row-style();
+    &:hover {
+      background: #f1f2f3;
+    }
+  }
 }
 
-.data-list li {
-  font-size: 12px;
-  line-height: 1;
-  padding: 0 15px;
+.data-table tbody tr.row-msg td,
+.data-list .row-msg,
+.data-list .row-msg:hover {
+  background: darken(#f1f2f3, 5%);
 }
+
+.data-table tbody tr.edit-row th,
+.data-table tbody tr.edit-row td {
+  padding-top: 10px;
+  padding-right: 15px;
+}
+
+.data-list .edit-row-submit,
+.data-list .row-msg,
+.edit-row td:first-child,
+.data-table tbody tr.row-msg td:first-child,
+.data-table tbody tr.edit-row-submit td:first-child {
+  padding-left: 15px;
+}
+
 
 /*
+ * ### Data Tables 
+ *
  * The .data-table class should be used
  * for non-simple property data (eg. Mediator or CVT)
+ *
+ * NOTE: .data-list is output *inside* .data-table.
+ * They are always used together.
 */
 
 .data-table {
   width: 100%;
+
+  th,
+  td {
+    font-size: 12px;
+  }
+
+  thead {
+    th,
+    td {
+      font-size: 11px;
+      font-weight: bold;
+      color: #444;
+      padding-bottom: 5px;
+    }
+
+    th {
+      border-bottom: 2px solid #d5d7d8;
+    }
+
+    tr th:first-child {
+      padding-left: 15px;
+    }
+  }
+
+
+  tbody {
+    tr.edit-row th,
+    tr.edit-row td,
+    tr.edit-row-submit th,
+    tr.edit-row-submit td {
+      .edit-row-style();
+      &:hover {
+        background: #f1f2f3;
+      }
+    }
+
+    th,
+    td {
+      vertical-align: top;
+      padding: 0 3px 0 0;
+      border-top: 1px solid #d5d7d8;
+      .transition(background-color, 0.3s);
+    }
+
+    tr.empty-row td {
+      border: none;
+    }
+
+    tr {
+      td.first,
+      tr th.first {
+        padding-left: 15px;
+      }
+    }
+
+    tbody tr th:first-child li {
+      padding-left: 15px;
+    }
+  }
+
+  .alt th,
+  .alt td {
+    background: #ecedef;
+  }
+
+  /*
+   * Special styling for .data-list inside .data-table
+   */
+  .data-list li:hover {
+    background: transparent;
+  }
+
+  .data-list li,
+  .empty-property {
+    padding: 0;
+  }
 }
 
-.data-table .data-list li,
-.data-table .empty-property {
-  padding: 0;
-}
-
-.data-table th,
-.data-table td {
-  font-size: 12px;
-}
-
-.data-table thead th,
-.data-table thead td {
-  font-size: 11px;
-  font-weight: bold;
-  color: #444;
-  padding-bottom: 5px;
-}
-
-.data-table thead th {
-  border-bottom: 2px solid #d5d7d8;
-}
-
-.data-table tbody th,
-.data-table tbody td {
-  vertical-align: top;
-  padding: 0 3px 0 0;
-  border-top: 1px solid #d5d7d8;
-  .transition(all, 0.3s);
-}
-
-.data-table tbody tr.empty-row td {
-  border: none;
-}
-
-.data-table .data-list li:hover {
-  background: transparent;
-}
-
-.data-table tbody tr td.first,
-.data-table tbody tr th.first,
-.data-table thead tr th:first-child {
-  padding-left: 15px;
-}
-
-.data-table tbody tr th:first-child li {
-  padding-left: 15px;
-}
-
-.data-table .alt th,
-.data-table .alt td {
-  background: #ecedef;
-}
 
 .empty-property {
   line-height: 1;
@@ -85,24 +161,9 @@
   color: #ccc;
 }
 
-.data-list li .wrapper {
-  position: relative;
-  display: inline-block;
-  padding: 5px 45px 6px 0;
-}
-
-.data-list .edit-row-submit,
-.data-list .edit-row {
-  clear: left;
-  padding-left: 15px;
-}
-
 .magicbox-template {
   display: none;
   margin-top: 10px;
-}
-
-.data-table .edit-row .form-field {
 }
 
 .row-msg td {
@@ -119,11 +180,27 @@
   opacity: 0.4;
 }
 
-/* handle images in columns */
-.image li .wrapper {
-  padding-right: 0;
+/*
+ * Image styling within propbox 
+ *
+ * NOTE: size of the image should be handled by
+ * our default image components. These styles should
+ * only provide the visual aesthetics of images within
+ * propbox, not the dimensions. However, a max-width is
+ * applied to the images to enable flexible scaling when
+ * needed
+ */
+.data-list img {
+  margin: 0 auto;
+  max-width: 100%;
+  border: 1px solid #ececec;
+  padding: 1px;
+  .box_shadow();
 }
 
+.image li .wrapper {
+  padding: 5px 0 6px;
+}
 
 
 .foobar {
@@ -238,59 +315,13 @@
   margin-bottom: 10px;
 }
 
-.edit-row-style() {
-    background: #f1f2f3;
-    border: 0;
-    padding: 5px 0;
-}
-
-.data-list {
-  .edit-row,
-  .add-row,
-  .row-msg,
-  .edit-row-submit {
-    .edit-row-style();
-    &:hover {
-      background: #f1f2f3;
-    }
-  }
-}
-
-.data-table tbody {
-  tr.edit-row th,
-  tr.edit-row td,
-  tr.edit-row-submit th,
-  tr.edit-row-submit td {
-    .edit-row-style();
-    &:hover {
-      background: #f1f2f3;
-    }
-  }
-}
-
-.data-table tbody tr.row-msg td,
-.data-list .row-msg,
-.data-list .row-msg:hover {
-  background: darken(#f1f2f3, 5%);
-}
-
-.data-table tbody tr.edit-row th,
-.data-table tbody tr.edit-row td {
-  padding-top: 10px;
-}
-
-.data-list .edit-row,
-.data-list .edit-row-submit,
-.data-list .row-msg,
-.data-table tbody tr.row-msg td:first-child,
-.data-table tbody tr.edit-row td:first-child,
-.data-table tbody tr.edit-row-submit td:first-child {
-  padding-left: 15px;
-}
-
 .add-row .fb-input,
 .edit-row .fb-input {
   width: 16em;
+}
+
+.edit-row .form-field {
+  margin-left: 0;
 }
 
 /*
@@ -331,4 +362,76 @@
   margin-left: 4px;
 }
 
+
+/*
+  ### Keyboard Shortcuts
+*/
+
+tr.kbs.current,
+h1.kbs.current {
+  background-image: none;
+}
+
+.kbs.current .mark,
+li.kbs.current,
+tr.kbs.current td:first-child {
+  background: url(lib/template/ui-icons.png) no-repeat 5px -814px;
+}
+
+h1 .mark,
+h2 .mark,
+div .mark {
+  display: inline-block;
+  padding-left: 15px;
+}
+
+h2.kbs.current .mark,
+div.kbs.current .mark {
+  background-position: 5px -812px;
+}
+
+
+/*
+ * LessCSS mixins
+ */
+
+.edit-row-style() {
+  background: #f1f2f3;
+  border: 0;
+  padding: 5px 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.data-table tbody .instance-sub-row td {
+  border: 0;
+}
+
+.data-table tbody .article {
+  max-width: 350px;
+}
+
+.data-table thead th {
+  vertical-align: bottom;
+}
+
+.empty-result {
+  margin: 1.5em;
+}
+
+.empty-result p {
+  font-size: 14px;
+}
 

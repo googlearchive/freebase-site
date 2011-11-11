@@ -75,27 +75,6 @@
   }
 }
 
-.data-table tbody tr.row-msg td,
-.data-list .row-msg,
-.data-list .row-msg:hover {
-  background: darken(#f1f2f3, 5%);
-}
-
-.data-table tbody tr.edit-row th,
-.data-table tbody tr.edit-row td {
-  padding-top: 10px;
-  padding-right: 15px;
-}
-
-.data-list .edit-row-submit,
-.data-list .row-msg,
-.edit-row td:first-child,
-.data-table tbody tr.row-msg td:first-child,
-.data-table tbody tr.edit-row-submit td:first-child {
-  padding-left: 15px;
-}
-
-
 /*
  * ### Data Tables 
  *
@@ -120,6 +99,11 @@
     font-size: 12px;
   }
 
+  th.first,
+  td.first {
+    padding-left: 15px;
+  }
+
   thead {
     th,
     td {
@@ -134,9 +118,6 @@
       border-bottom: 2px solid #d5d7d8;
     }
 
-    tr th:first-child {
-      padding-left: 15px;
-    }
   }
 
   tbody {
@@ -173,6 +154,19 @@
       }
     }
 
+    tr.edit-row {
+      th,
+      td {
+        padding-top: 10px;
+        padding-right: 15px;
+      }
+
+      th:first-child .data-input,
+      td:first-child .data-input {
+        margin-left: 15px;
+      }
+    }
+
   }
 
   .alt th,
@@ -192,6 +186,22 @@
     padding: 0;
   }
 }
+
+.data-table tbody tr.row-msg td,
+.data-list .row-msg,
+.data-list .row-msg:hover {
+  background: darken(#f1f2f3, 5%);
+}
+
+.data-list .edit-row-submit,
+.data-list .row-msg,
+.edit-row td:first-child,
+.data-table tbody tr.row-msg td:first-child,
+.data-table tbody tr.edit-row-submit td:first-child {
+  padding-left: 15px;
+}
+
+
 
 .empty-property {
   line-height: 1;
@@ -232,6 +242,13 @@
  * applied to the images to enable flexible scaling when
  * needed
  */
+
+.data-table th.image,
+.data-table td.image {
+  padding: 0 20px;
+  text-align: center;
+}
+
 .data-list img {
   margin: 0 auto;
   max-width: 100%;

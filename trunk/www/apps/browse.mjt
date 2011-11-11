@@ -50,8 +50,7 @@
 <acre:block def="page_content()">
   <div id="content-wrapper">
     
-    <div id="content-main" role="main">      
-      <div class="section">
+    <section id="content-main" role="main">      
         <!--
         <span id="app-buttons-right">
           <a href="/apps/create" class="button primary">New App</a>
@@ -74,8 +73,7 @@
             Error retrieving app list
           </p>
         </div>
-      </div>
-    </div>
+    </section>
   
     <div class="aside" role="complimentary" id="content-sub">
       <div class="content-wrapper">

@@ -65,10 +65,17 @@
 
 <acre:block def="collection_head(head)">
   <thead>
-    <acre:block for="row in head">
+    <acre:block for="x, row in head">
       <tr>
-        <acre:block for="cell in row">
-          <th acre:attrs="cell.attrs">
+        <acre:block for="y, cell in row">
+          <acre:script>
+            var attrs = cell.attrs || {};
+            if (x === 0 && y === 0) {
+              if (attrs["class"]) attrs["class"] += " first";
+              else attrs["class"] = "first";
+            }
+          </acre:script>
+          <th acre:attrs="attrs">
             ${cell.structure.text}
           </th>
         </acre:block>

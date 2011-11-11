@@ -160,11 +160,16 @@
     <thead acre:attrs="empty ? {style:'display:none;'} : {}">
       <tr>
         <acre:block if="ect === '/common/image' || ect === '/common/document'">
-          <th scope="col">&nbsp;</th>        
+          <th scope="col" class="first">&nbsp;</th>        
+          <th acre:for="subprop_structure in prop_structure.properties" scope="col">
+            ${subprop_structure.text}
+          </th>
         </acre:block>
-        <th acre:for="subprop_structure in prop_structure.properties" scope="col">
-          ${subprop_structure.text}
-        </th>
+        <acre:block else="">
+          <th acre:for="i,subprop_structure in prop_structure.properties" scope="col" acre:attrs="i === 0 ? {'class':'first'} : {}">
+            ${subprop_structure.text}
+          </th>
+        </acre:block>
       </tr>
     </thead>
     <tbody>

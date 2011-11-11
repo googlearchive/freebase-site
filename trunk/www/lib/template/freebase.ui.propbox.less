@@ -1,4 +1,36 @@
 /*
+ * Copyright 2011, Google Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+/*
+ 
+
 ---------------------------
   ### Data Handling
 ----------------------------
@@ -74,8 +106,14 @@
  * They are always used together.
 */
 
+.data-table .loading,
+.data-list .loading {
+  opacity: 0.4;
+}
+
 .data-table {
   width: 100%;
+
 
   th,
   td {
@@ -89,6 +127,7 @@
       font-weight: bold;
       color: #444;
       padding-bottom: 5px;
+      vertical-align: bottom;
     }
 
     th {
@@ -99,7 +138,6 @@
       padding-left: 15px;
     }
   }
-
 
   tbody {
     tr.edit-row th,
@@ -129,11 +167,12 @@
       tr th.first {
         padding-left: 15px;
       }
+
+      th:first-child li {
+        padding-left: 15px;
+      }
     }
 
-    tbody tr th:first-child li {
-      padding-left: 15px;
-    }
   }
 
   .alt th,
@@ -154,11 +193,18 @@
   }
 }
 
-
 .empty-property {
   line-height: 1;
   padding: 0 0 5px 15px;
   color: #ccc;
+}
+
+.empty-result {
+  margin: 1.5em;
+}
+
+.empty-result p {
+  font-size: 14px;
 }
 
 .magicbox-template {
@@ -175,10 +221,6 @@
   float: right;
 }
 
-.data-table .loading,
-.data-list .loading {
-  opacity: 0.4;
-}
 
 /*
  * Image styling within propbox 
@@ -203,6 +245,29 @@
 }
 
 
+/*
+ * Article styling within propbox 
+ *
+ * This is really rudimentary right.
+ * TODO: revisit when we can show articles
+ * natively in propbox without having to do
+ * a special call ont he topic page.
+ */
+.data-table tbody .article {
+  max-width: 350px;
+}
+
+
+/*
+ * This is the styling for hierarchical probbox data.
+ * We currently only use this when outputting Domain/Type
+ * information along with property data.
+ *
+ * Some of these styles are a little sticky as much of them
+ * pertain topic page styling verses true generic output
+ * of propbox.
+ *
+ */
 .foobar {
   position: relative;
   font-size: 12px;
@@ -297,7 +362,7 @@
 
 
 /*
- * Inline Topic Edit Controls
+ * Inline Propbox Edit Controls
  *
  * NOTE:
  *
@@ -400,38 +465,3 @@ div.kbs.current .mark {
   border: 0;
   padding: 5px 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.data-table tbody .instance-sub-row td {
-  border: 0;
-}
-
-.data-table tbody .article {
-  max-width: 350px;
-}
-
-.data-table thead th {
-  vertical-align: bottom;
-}
-
-.empty-result {
-  margin: 1.5em;
-}
-
-.empty-result p {
-  font-size: 14px;
-}
-

@@ -84,7 +84,7 @@
       <div class="wrapper">
         <h3><span>${_('What is Schema?')}</span></h3>
         <div class="sub-section">
-        <p>${_('Schema describes how data in Freebase is structured. and is what we use to assert facts on Topics (eg. "Blade Runner is directed by Ridley Scott.')}</p>
+        <p>${_('Schema describes how data in Freebase is structured. and is what we use to assert facts on Topics (eg. "Blade Runner is directed by Ridley Scott.")')}</p>
         <p><strong>${_('Schema is made by creating:')}</strong></p>
         <h4>
           <a href="http://wiki.freebase.com/wiki/Domain">${_('domains')}</a>

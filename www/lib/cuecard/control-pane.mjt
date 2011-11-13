@@ -167,7 +167,7 @@
       <p><em>$e.name</em></p>
         <acre:block choose="e.name">
         
-          <input acre:when="Show Costs" name="costs" class="query-options-input" type="checkbox" acre:attrs="def.show_costs ? {'checked':''} : {}" />
+          <input acre:when="Show Costs" name="costs" class="query-options-input" type="checkbox" acre:attrs="def.costs ? {'checked':''} : {}" />
           
           <input acre:when="Extended" name="extended" class="query-options-input" type="checkbox" acre:attrs="def.extended ? {'checked':''} : {}" />
         

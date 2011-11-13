@@ -35,7 +35,7 @@
 </acre:script>
 
 <acre:block def="render_app_list(apps)">
-<table class="table table-sortable" cellspacing="0">
+<table class="table applist table-sortable" cellspacing="0">
   <thead>
     <tr>
       <th scope="col" class="column-header first {sorter: 'ignoreCase'}"><span class="sort-icon">App</span></th>

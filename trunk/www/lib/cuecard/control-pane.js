@@ -65,12 +65,12 @@ CueCard.ControlPane.prototype._getDefaults = function() {
     defaults.extended = (defaults.extended === 1) ? true : false;
     defaults.as_of_time = opts.as_of_time || env.as_of_time || null;
     defaults.use_permission_of = opts.use_permission_of || env.use_permission_of || null;
-    defaults.show_costs = opts.costs || false;
+    defaults.costs = opts.costs || false;
     
     delete env["extended"];
     delete env["as_of_time"];
     delete env["use_permission_of"];
-    delete env["show_costs"];
+    delete env["costs"];
     
     return defaults;
 };
@@ -186,7 +186,7 @@ CueCard.ControlPane.prototype.getQueryEnvelope = function(e, ignorePaging, ignor
     
     var showCosts = this.getSetting("costs");
     if (showCosts) {
-      e.show_costs = true;
+      e.cost = true;
     }
     
     var asOfTime = this._getTab("envelope").find("input[name='as_of_time']").val();

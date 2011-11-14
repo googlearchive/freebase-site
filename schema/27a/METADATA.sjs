@@ -1,12 +1,12 @@
 var METADATA = {
   "mounts": {
-    "site": "//19.site.www.branches.svn.freebase-site.googlecode.dev"
+    "site": "//19a.site.www.tags.svn.freebase-site.googlecode.dev"
   }, 
   "freebase": {
     "write_user": "appeditoruser"
   }, 
-  "app_tag": null, 
-  "app_version": 27, 
+  "app_tag": "27a", 
+  "app_version": "27", 
   "app_key": "schema"
 };
 

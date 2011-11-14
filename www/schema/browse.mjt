@@ -62,18 +62,22 @@
             <td class="even">$d.id</td>
             <td class="odd">
               <ul>
-                <li acre:for="change in d.changes">
-                  <acre:script>
-                    var pname = i18n.display_name(change.property);
-                    var tname = i18n.display_name(change.type);
-                  </acre:script>
-                  ${image.user_image_tiny(change.creator)}
-                  ${components.creator(change.creator.id)}
-                  ${_('added')}
-                  <a href="${h.fb_url(change.property.id, [['schema','']])}" title="${h.sprintf(_('View %s'), pname)}">$pname</a>
-                  ${_('to')}
-                  <a href="${h.fb_url(change.type.id, [['schema','']])}" title="${h.sprintf(_('View %s'), tname)}">$tname</a>
-                  ${h.relative_date(change.timestamp)}
+                <li acre:for="user in d.users">
+                  ${image.user_image_tiny(user)}
+                  ${components.creator(user.id)}
+                  ${_("added:")}
+                  <ul>
+                    <li acre:for="change in user.changes">
+                      <acre:script>
+                        var pname = i18n.display_name(change.property);
+                        var tname = i18n.display_name(change.type);
+                      </acre:script>
+                      <a href="${h.fb_url(change.property.id, [['schema','']])}" title="${h.sprintf(_('View %s'), pname)}">$pname</a>
+                      ${_('to')}
+                      <a href="${h.fb_url(change.type.id, [['schema','']])}" title="${h.sprintf(_('View %s'), tname)}">$tname</a>
+                      ${h.relative_date(change.timestamp)}
+                    </li>
+                  </ul>
                 </li>
             </td>
           </tr>

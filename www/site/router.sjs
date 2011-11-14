@@ -136,21 +136,21 @@ function init_site_rules(lib) {
         "script": "browse.tab"
       },
       {
-        "name": _("Users"),
-        "path": "/users",
-        "app": "users",
-        "script": "browse.tab"
-      },
-      {
-        "name": _("MDOs"),
-        "path": "/mdos",
+        "name": _("Loads"),
+        "path": "/loads",
         "app": "mdo",
         "script": "browse.tab"
       },
       {
-        "name": _("Tasks"),
+        "name": _("Review Tasks"),
         "path": "/tasks",
         "app": "review",
+        "script": "browse.tab"
+      },
+      {
+        "name": _("Users"),
+        "path": "/users",
+        "app": "users",
         "script": "browse.tab"
       }
     ]
@@ -415,7 +415,7 @@ function init_site_rules(lib) {
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS))
     },
     {
-      "name": _("MDO"),
+      "name": _("Load"),
       "type": "/dataworld/mass_data_operation",
       "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [

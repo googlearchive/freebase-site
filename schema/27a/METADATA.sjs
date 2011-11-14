@@ -1,13 +1,44 @@
 var METADATA = {
-  "mounts": {
-    "site": "//19a.site.www.tags.svn.freebase-site.googlecode.dev"
-  }, 
+  "app_version": "27", 
   "freebase": {
     "write_user": "appeditoruser"
   }, 
-  "app_tag": "27a", 
-  "app_version": "27", 
-  "app_key": "schema"
+  "app_key": "schema", 
+  "extensions": {
+    "gif": {
+      "media_type": "image/gif", 
+      "handler": "tagged_binary"
+    }, 
+    "mf.css": {
+      "media_type": "text/css", 
+      "handler": "tagged_static"
+    }, 
+    "jpg": {
+      "media_type": "image/jpg", 
+      "handler": "tagged_binary"
+    }, 
+    "omf.js": {
+      "media_type": "text/javascript", 
+      "handler": "js_manifest"
+    }, 
+    "mf.js": {
+      "media_type": "text/javascript", 
+      "handler": "tagged_static"
+    }, 
+    "omf.css": {
+      "media_type": "text/css", 
+      "handler": "css_manifest"
+    }, 
+    "png": {
+      "media_type": "image/png", 
+      "handler": "tagged_binary"
+    }
+  }, 
+  "ttl": -1, 
+  "mounts": {
+    "site": "//19a.site.www.tags.svn.freebase-site.googlecode.dev"
+  }, 
+  "app_tag": "27a"
 };
 
 acre.require(METADATA.mounts.site + "/lib/helper/helpers.sjs").extend_metadata(METADATA, "site");

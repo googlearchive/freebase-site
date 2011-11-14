@@ -154,8 +154,9 @@
   </acre:script>
   <tr class="data-row ${JSON.stringify(metadata)}">
     <th class="row-header odd">
-      <acre:block if="key.authority">        
-        <span class="authority a${key.authority.id.replace(/\//g, '-')} wrapper">
+      <acre:block if="key.authority">
+        <span class="authority wrapper"
+              style="background-image:url(http://getfavicon.appspot.com/${encodeURIComponent(key.url)})">
           <a href="${h.fb_url(key.authority.id)}">
             <strong>${i18n.display_name(key.authority)}</strong>
           </a>

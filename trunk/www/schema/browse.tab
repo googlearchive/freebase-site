@@ -40,7 +40,7 @@ var SPEC = {
 
   validate: function(params) { 
     return [
-      validators.Int(params, "days", {if_missing: 90}),
+      validators.Int(params, "days", {if_missing: 30}),
       validators.Int(params, "changes", {if_missing: 5})
     ]; 
   },

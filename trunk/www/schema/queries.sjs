@@ -107,12 +107,20 @@ function modified_domains(days, changes) {
         var domain = {
           id: d.id,
           name: d.name,
-          changes: []
+          users: []
         };
+        var user_map = {};
         d.types.forEach(function(t) {
           t.properties.forEach(function(p) {
             var timestamp = acre.freebase.date_from_iso(p.key.link.timestamp);
-            domain.changes.push({
+            var user = p.key.link.creator;
+            if (user_map[user.id]) {
+              user = user_map[user.id];
+            } else {
+              user_map[user.id] = user;
+              user.changes = [];
+            }
+            user.changes.push({
               property: {
                 id: p.id,
                 name: p.name
@@ -121,14 +129,21 @@ function modified_domains(days, changes) {
                 id: t.id,
                 name: t.name
               },
-              timestamp: timestamp,
-              creator: p.key.link.creator
+              timestamp: timestamp
             });
           });
         });
-        domain.changes = domain.changes.sort(function(a, b) {
-          return b.timestamp - a.timestamp;
-        }).slice(0, changes);
+        for (var user_id in user_map) {
+          domain.users.push(user_map[user_id]);
+        }
+        domain.users.forEach(function(user) {
+          user.changes = user.changes.sort(function(a, b) {
+            return b.timestamp - a.timestamp;
+          }).slice(0, changes);
+        });
+        domain.users = domain.users.sort(function(a, b) {
+          return b.changes[0].timestamp - a.changes[0].timestamp;
+        })
         return domain;
       });
     })

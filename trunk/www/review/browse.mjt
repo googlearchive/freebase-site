@@ -40,24 +40,38 @@
 </acre:script>
 
 <acre:block def="page_content()">
-  <h2 class="table-title">
-    <a href="${h.legacy_fb_url('/tools/flags/review')}">${_('Review Queue')}</a>
-  </h2>
-  <table cellspacing="0" class="table table-sortable">
-    <thead>
-      <tr>
-        <th scope="col" class="column-header">${_('Flag Kind')}</th>
-        <th scope="col" class="column-header">${_('Count')}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr acre:for="k in c.kinds">
-        <th class="row-header odd" scope="row">
-          <acre:script>var name = i18n.display_name(k);</acre:script>
-          $name
-        </th>
-        <td class="even">${i18n_c.number(k.flags)}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div id="content-wrapper">
+    <section role="main" id="content-main">
+      <div class="table-header">
+        <h1>
+          <a href="${h.legacy_fb_url('/tools/flags/review')}">${_('Review Queue')}</a>
+        </h1>
+      </div>
+      <table cellspacing="0" class="table table-sortable">
+        <thead>
+          <tr>
+            <th scope="col" class="column-header">${_('Flag Kind')}</th>
+            <th scope="col" class="column-header">${_('Count')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr acre:for="k in c.kinds">
+            <th class="row-header odd" scope="row">
+              <acre:script>var name = i18n.display_name(k);</acre:script>
+              $name
+            </th>
+            <td class="even">${i18n_c.number(k.flags)}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <aside class="secondary">
+      <div class="wrapper">
+        <h3><span>${_('What are review tasks?')}</span></h3>
+        <div class="sub-section">
+          <p>${_("lorem ipsum")}</p>
+        </div>
+      </div>
+    </aside>
+  </div>
 </acre:block>

@@ -103,53 +103,12 @@
         };
         $.plot($chart, [series], options);
       });
-    },
-
-    init_query_topics: function(context) {
-      var $query_table = $("#queries");                 
-      var query_url = 'http://api.freebase.com/api/trans/raw';
-      var mql_url = 'http://api.freebase.com/api/mqlread';
-
-      $("tr", $query_table).each(function(){
-        var $row = $(this);
-        var query_id = $row.attr('data-query');
-        var url = service_url + query_id;
-        var query = $.getJSON(url, '?callback=?', function(data){
-          console.log(data);
-        });
-      });
-    },
-    
-    init_table_mouseover: function(context) {
-      $(".data-table a")
-        .mouseover(function(e) {
-          var id = $(this).attr("data-id");
-          if (!id) return;
-          
-          var offset = $(this).offset();
-          var pos = $(this).position();
-          var top = offset.top + pos.top + $(this).height() + 10;
-          var left = offset.left + pos.left;
-
-          var div = $("<div id='data-table-popup'></div>")
-            .css({top:top, left:left})
-            .appendTo("body");
-
-          $.get(fb.h.legacy_fb_url("/private/flyout" + id), function(r) {
-            div.html(r.html);
-          }, "jsonp");
-        })
-        .mouseout(function() {
-          $("#data-table-popup").remove();
-        });
     }
   };
 
   function init() {
     data.init_data_tabs();
     data.init_activity_chart();
-    data.init_table_mouseover();
-    if (fb.collection) fb.collection.init();
   };
 
   $(init);

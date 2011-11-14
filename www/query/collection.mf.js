@@ -4,6 +4,5 @@
   "lib/filter/filters.mf.js",
   "lib/propbox/propbox.mf.js",
   "lib/template/jquery.infinitescroll.js",
-  "lib/collection/collection.js",
-  "collection.js"
+  "lib/collection/collection.js"
 ]

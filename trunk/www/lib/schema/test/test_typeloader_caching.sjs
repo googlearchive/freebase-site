@@ -37,6 +37,7 @@ var typeloader = acre.require("schema/typeloader.sjs");
 
 test("_load", function() {
   // remove from cache
+  // These are "terminal" types that don't have any properties, thus no expected_types
   var type_ids = ["/people/gender", "/type/rawstring"];
   type_ids.forEach(function(type_id) {
     acre.cache.remove(typeloader.cache_key(type_id));
@@ -71,6 +72,7 @@ test("_load", function() {
 
 test("load", function() {
   // remove from cache
+  // /measurement_unit/integer_range has 2 properties that both have expected_type, /type/int
   var type_ids = ["/measurement_unit/integer_range", "/type/int"];
   type_ids.forEach(function(type_id) {
     acre.cache.remove(typeloader.cache_key(type_id));
@@ -103,6 +105,7 @@ test("load", function() {
 
 test("unload", function() {
   // remove from cache
+  // /measurement_unit/integer_range has 2 properties that both have expected_type, /type/int
   var type_ids = ["/measurement_unit/integer_range", "/type/int"];
   type_ids.forEach(function(type_id) {
     acre.cache.remove(typeloader.cache_key(type_id));

@@ -28,13 +28,14 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+var proto = this.__proto__;
 
 var exports = {
-  record: function(scope) {
-    console.log("mock.record", scope.acre.request.script.id, "OFF");
+  record: function(scope, playback_file, enable_acre_cache) {
+    console.log("mock.record", scope.acre.request.script.id, playback_file, "OFF", "acre.cache", !!enable_acre_cache);
   },
-  playback: function(scope, playback_file) {
-    console.log("mock.playback", scope.acre.request.script.id, playback_file, "OFF");
+  playback: function(scope, playback_file, enable_acre_cache) {
+    console.log("mock.playback", scope.acre.request.script.id, playback_file, "OFF", "acre.cache", !!enable_acre_cache);
   }
 };
 
@@ -65,8 +66,12 @@ if (mock) {
    * 3. Output the playback data as JSON at the end of acre.test.report().
    * 4. You can then just copy and paste the JSON for the mock playback phase.
    */
-  exports.record = function(scope) {
-    console.log("mock.record", scope.acre.request.script.id, "ON");
+  exports.record = function(scope, playback_file, enable_acre_cache) {
+    enable_acre_cache = !!enable_acre_cache;
+    console.log("mock.record", scope.acre.request.script.id, playback_file, "OFF", "acre.cache", enable_acre_cache);
+
+    acre_cache(enable_acre_cache);
+
     var test_data = [];
     var playback_data = {};
 
@@ -150,8 +155,11 @@ if (mock) {
    * 3. Mock the response and return it without making an actual (live http) request.
    * 4. Your tests should no longer be dependent on "live" api calls.
    */
-  exports.playback = function(scope, playback_file) {
-    console.log("mock.playback", scope.acre.request.script.id, playback_file, "ON");
+  exports.playback = function(scope, playback_file, enable_acre_cache) {
+    enable_acre_cache = !!enable_acre_cache;
+    console.log("mock.playback", scope.acre.request.script.id, playback_file, "OFF", "acre.cache", enable_acre_cache);
+    acre_cache(enable_acre_cache);
+
     var playback_data = JSON.parse(scope.acre.require(playback_file).body);
 
     var test_info;
@@ -244,6 +252,30 @@ function deep_copy(obj) {
     }
     return obj;
 }
+
+var MOCK_ACRE_CACHE = {
+  get: function() {return null;},
+  put: function() {},
+  remove: function() {},
+  increment: function() {},
+  original: null
+};
+
+function acre_cache(enable) {
+  if (enable) {
+    if (proto.acre.cache === MOCK_ACRE_CACHE) {
+      // if mocked, reset to the original acre.cache
+      proto.acre.cache = MOCK_ACRE_CACHE.original;
+    }
+  }
+  else {
+    if (proto.acre.cache !== MOCK_ACRE_CACHE) {
+      // if not already mocked, set it to MOCK_ACRE_CACHE and track of original acre.cache
+      MOCK_ACRE_CACHE.original = proto.acre.cache;
+      proto.acre.cache = MOCK_ACRE_CACHE;
+    }
+  }
+};
 
 self.record = exports.record;
 self.playback = exports.playback;

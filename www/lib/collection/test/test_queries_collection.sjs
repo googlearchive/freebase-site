@@ -36,7 +36,7 @@ acre.require("test/mock").playback(this, "collection/test/playback_test_queries_
 var h = acre.require("helper/helpers.sjs");
 var qc = acre.require("collection/queries.sjs");
 
-test("collection", {"bug": "possible issue with mocking"}, function() {
+test("collection", function() {
   var topic_ids = ["/en/milla_jovovich", "/en/angus_macfadyen"];
   var pids = ["/type/object/name", "/film/film/starring"];
   var result;
@@ -56,7 +56,7 @@ test("collection", {"bug": "possible issue with mocking"}, function() {
   same(values[1].id, "/en/angus_macfadyen");
 });
 
-test("collection property paths", {"bug": "possible issue with mocking"}, function() {
+test("collection property paths", function() {
   var topic_ids = ["/en/milla_jovovich", "/en/angus_macfadyen"];
   var pids = [
     "/type/object/name",

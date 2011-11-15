@@ -30,6 +30,8 @@
  */
 acre.require('/test/lib').enable(this);
 
+acre.require("test/mock").playback(this, "schema/test/playback_test_proploader.json");
+
 var h = acre.require("helper/helpers.sjs");
 var proploader = acre.require("schema/proploader.sjs");
 

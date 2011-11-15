@@ -77,7 +77,7 @@
       <a href="javascript:void(0);" class="trigger">Collapse column</a>
       <span>Filter this data</span>
     </h2>
-    <div class="module-section" acre:if="c.prop_counts">
+    <div class="module-section">
       <acre:script>
         var hide_counts = c.filters.as_of_time;
       </acre:script>

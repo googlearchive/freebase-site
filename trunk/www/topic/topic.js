@@ -104,7 +104,7 @@
           //  1. Determine whether there are enough current types
           //     to justify a multi-column layout
           //  2. If so, set accordingly
- 
+
           if(Modernizr.csscolumns && list_length > 7) {
 
             $type_list.addClass('multicolumn');
@@ -117,7 +117,7 @@
           $type_list.height(list_height);
 
           // the CSS sets type_list_container to opacity:0 by default
-          // when javascript is enabled so we have to re-show it 
+          // when javascript is enabled so we have to re-show it
           $type_list_container.animate({opacity: 1});
 
         }
@@ -127,6 +127,7 @@
       $(".keyboard-shortcuts > a").overlay({
           close: ".modal-buttons .button.cancel",
           closeOnClick: false,
+          fixed: false,
           mask: {
             color: '#000',
 	    loadSpeed: 200,

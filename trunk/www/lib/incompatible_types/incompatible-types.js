@@ -85,6 +85,7 @@
              close: "button",
              closeOnClick: false,
              load: true,
+             fixed: false,
              mask: {
                color: '#000',
                loadSpeed: 200,

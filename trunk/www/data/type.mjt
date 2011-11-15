@@ -45,7 +45,7 @@
 <acre:block def="page_content()">
   <div class="section instances">
     <h1 class="table-title">
-      <strong>${i18n_c.number(c.activity.topic_count)}</strong>
+      <strong acre:if="c.activity && c.activity.topic_count">${i18n_c.number(c.activity.topic_count)}</strong>
       ${i18n.display_name(c.object)}
       ${c.root_type_is_mediator ? _("mediators") : _("topics")}
     </h1>

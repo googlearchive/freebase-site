@@ -353,7 +353,7 @@ var StringBool = Validator.factory(scope, "StringBoolean", {
 var mqlkey_start = 'A-Za-z0-9';
 var mqlkey_char = 'A-Za-z0-9_-';
 
-var mqlkey_fast = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
+var mqlkey_fast = /^[_A-Za-z0-9][A-Za-z0-9_-]*$/;
 var mqlkey_slow = /^(?:[A-Za-z0-9]|\$[A-F0-9]{4})(?:[A-Za-z0-9_-]|\$[A-F0-9]{4})*$/;
 
 function check_mqlkey(val) {

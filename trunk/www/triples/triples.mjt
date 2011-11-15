@@ -148,6 +148,9 @@
 </acre:block>
 
 <acre:block def="link_row(id, o, filters)">
+<acre:script>
+console.log("link_row", id, o);
+</acre:script>
   <tr class="${th.link_class(o)}">
     <acre:script>
       var outgoing = o["me:source"]
@@ -187,10 +190,10 @@
   </acre:block>
   <span class="literal-value literal-value-${o.target_value.type.split('/').pop()}">
     <acre:block if="o.master_property.id === '/common/document/source_uri' && o.target_value.value.indexOf('http://wp/') === 0">
-      <a href="${h.fb_api_url('/api/trans/blurb' + id, [['maxlength', 1600]])}">${o.target_value.value}</a>
+      <a href="${h.fb_api_url('/api/trans/blurb' + o['me:source'].id, [['maxlength', 1600]])}">${o.target_value.value}</a>
     </acre:block>
     <acre:block elif="o.master_property.id === '/type/content/blob_id'">
-      <a href="${h.fb_api_url('/api/trans/raw' + id)}">${o.target_value.value}</a>
+      <a href="${h.fb_api_url('/api/trans/raw' + o['me:source'].id)}">${o.target_value.value}</a>
     </acre:block>
     <acre:block elif="o.target_value.type === '/type/uri'">
       <a href="${o.target_value.value}" target="_new" rel="nofollow">${o.target_value.value}</a>

@@ -30,139 +30,17 @@
  */
 acre.require('/test/lib').enable(this);
 
+// we want acre.cache to be on since we're testing the load/unload from the cache
+acre.require("test/mock").playback(this, "schema/test/playback_test_typeloader.json", true);
+
 var h = acre.require("helper/helpers.sjs");
 var typeloader = acre.require("schema/typeloader.sjs");
 
 function assert_key(obj, key, expected, msg) {
   ok(obj && key in obj &&
      (typeof expected === "boolean" ? !!obj[key] === expected : obj[key] === expected), msg);
+
 };
-
-test("_load", function() {
-  // remove from cache
-  var type_ids = ["/common/topic", "/type/text", "/common/document", "/common/image"];
-  type_ids.forEach(function(type_id) {
-    acre.cache.remove(typeloader.cache_key(type_id));
-  });
-
-  // uncached
-  var result;
-  typeloader._load.apply(null, type_ids)
-    .then(function(types) {
-      result = types;
-    });
-  acre.async.wait_on_results();
-  ok(result, "Got _load result");
-  type_ids.forEach(function(type_id) {
-    var type_schema = result[type_id];
-    ok(!typeloader.was_cached(type_schema), type_id + " should NOT have been cached");
-  });
-
-  // cached
-  typeloader._load.apply(null, type_ids)
-    .then(function(types) {
-      result = types;
-    });
-  acre.async.wait_on_results();
-  ok(result, "Got _load result");
-  type_ids.forEach(function(type_id) {
-    var type_schema = result[type_id];
-    ok(typeloader.was_cached(type_schema), type_id + " should have been cached");
-  });
-});
-
-test("load", function() {
-  acre.cache.remove(typeloader.cache_key("/film/performance"));
-
-  var result;
-  typeloader.load("/film/performance")
-    .then(function(types) {
-      result = types;
-    });
-  acre.async.wait_on_results();
-  ok(result, "Got load result");
-  var schema = result["/film/performance"];
-  ok(schema, "Got /film/performance type schema");
-  ok(!typeloader.was_cached(schema), "/film/performance should NOT have been cached");
-  assert_film_performance_schema(schema, false);
-
-  // reload should get cached schema
-  typeloader.load("/film/performance")
-    .then(function(types) {
-      result = types;
-    });
-  acre.async.wait_on_results();
-  ok(result, "Got load result");
-  schema = result["/film/performance"];
-  ok(schema, "Got /film/performance type schema");
-  ok(typeloader.was_cached(schema), "/film/performance should have been cached");
-  assert_film_performance_schema(schema, false);
-});
-
-test("load deep", function() {
-  acre.cache.remove(typeloader.cache_key("/film/performance"));
-
-  var result;
-  typeloader.load(true, "/film/performance")
-    .then(function(types) {
-      result = types;
-    });
-  acre.async.wait_on_results();
-  ok(result, "Got load result");
-  var schema = result["/film/performance"];
-  ok(schema, "Got /film/performance type schema");
-  ok(!typeloader.was_cached(schema), "/film/performance should NOT have been cached");
-  assert_film_performance_schema(schema, true);
-
-  // reload should get cached schema
-  typeloader.load(true, "/film/performance")
-    .then(function(types) {
-      result = types;
-    });
-  acre.async.wait_on_results();
-  ok(result, "Got load result");
-  schema = result["/film/performance"];
-  ok(schema, "Got /film/performance type schema");
-  ok(typeloader.was_cached(schema), "/film/performance should have been cached");
-  assert_film_performance_schema(schema, true);
-});
-
-test("unload", function() {
-  // remove from cache
-  var type_ids = ["/common/topic", "/type/text", "/common/document", "/common/image"];
-
-  // warm up the cache
-  var result;
-  typeloader.load.apply(null, type_ids)
-    .then(function(r) {
-      result = r;
-    });
-  acre.async.wait_on_results();
-  typeloader.load.apply(null, type_ids)
-    .then(function(r) {
-      result = r;
-    });
-  acre.async.wait_on_results();
-  type_ids.forEach(function(type_id) {
-    var type_schema = result[type_id];
-    ok(typeloader.was_cached(type_schema), type_id + " should have been cached");
-  });
-
-  // invalidate
-  typeloader.unload.apply(null, type_ids);
-
-  // type_ids should NOT be cahced
-  typeloader.load.apply(null, type_ids)
-    .then(function(r) {
-      result = r;
-    });
-  acre.async.wait_on_results();
-  type_ids.forEach(function(type_id) {
-    var type_schema = result[type_id];
-    ok(!typeloader.was_cached(type_schema), type_id + " should NOT have been cached");
-  });
-});
-
 function assert_film_performance_schema(schema, deep) {
   var i,l;
 
@@ -208,5 +86,139 @@ function assert_film_performance_schema(schema, deep) {
     ok(typeof ect.properties === "undefined", "Should not contain deep properties");
   }
 };
+
+test("_load", function() {
+  // remove from cache
+  var type_ids = ["/common/topic", "/type/text", "/common/document", "/common/image"];
+  type_ids.forEach(function(type_id) {
+    acre.cache.remove(typeloader.cache_key(type_id));
+  });
+
+  // uncached
+  var result;
+  typeloader._load.apply(null, type_ids)
+    .then(function(types) {
+      result = types;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got _load result");
+  type_ids.forEach(function(type_id) {
+    var type_schema = result[type_id];
+    ok(!typeloader.was_cached(type_schema), type_id + " should NOT have been cached");
+  });
+
+  // cached
+  typeloader._load.apply(null, type_ids)
+    .then(function(types) {
+      result = types;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got _load result");
+  type_ids.forEach(function(type_id) {
+    var type_schema = result[type_id];
+    ok(typeloader.was_cached(type_schema), type_id + " should have been cached");
+  });
+});
+
+test("load", function() {
+  // remove from cache
+  acre.cache.remove(typeloader.cache_key("/film/performance"));
+
+  var result;
+  typeloader.load("/film/performance")
+    .then(function(types) {
+      result = types;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got load result");
+  var schema = result["/film/performance"];
+  ok(schema, "Got /film/performance type schema");
+  ok(!typeloader.was_cached(schema), "/film/performance should NOT have been cached");
+  assert_film_performance_schema(schema, false);
+
+  // reload should get cached schema
+  typeloader.load("/film/performance")
+    .then(function(types) {
+      result = types;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got load result");
+  schema = result["/film/performance"];
+  ok(schema, "Got /film/performance type schema");
+  ok(typeloader.was_cached(schema), "/film/performance should have been cached");
+  assert_film_performance_schema(schema, false);
+});
+
+test("load deep", function() {
+  // remove type and disambiguating properties (expected types) from cache
+  var type_ids = ["/film/performance", "/film/film", "/film/actor", "/film/film_character",
+                  "/film/special_film_performance_type", "/type/text"];
+  type_ids.forEach(function(type_id) {
+    acre.cache.remove(typeloader.cache_key(type_id));
+  });
+
+  var result;
+  typeloader.load(true, "/film/performance")
+    .then(function(types) {
+      result = types;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got load result");
+  var schema = result["/film/performance"];
+  ok(schema, "Got /film/performance type schema");
+  ok(!typeloader.was_cached(schema), "/film/performance should NOT have been cached");
+  assert_film_performance_schema(schema, true);
+
+  // reload should get cached schema
+  typeloader.load(true, "/film/performance")
+    .then(function(types) {
+      result = types;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got load result");
+  schema = result["/film/performance"];
+  ok(schema, "Got /film/performance type schema");
+  ok(typeloader.was_cached(schema), "/film/performance should have been cached");
+  assert_film_performance_schema(schema, true);
+});
+
+test("unload", function() {
+  // remove from cache
+  var type_ids = ["/common/topic", "/type/text", "/common/document", "/common/image"];
+  type_ids.forEach(function(type_id) {
+    acre.cache.remove(typeloader.cache_key(type_id));
+  });
+
+  // warm up the cache
+  var result;
+  typeloader.load.apply(null, type_ids)
+    .then(function(r) {
+      result = r;
+    });
+  acre.async.wait_on_results();
+  typeloader.load.apply(null, type_ids)
+    .then(function(r) {
+      result = r;
+    });
+  acre.async.wait_on_results();
+  type_ids.forEach(function(type_id) {
+    var type_schema = result[type_id];
+    ok(typeloader.was_cached(type_schema), type_id + " should have been cached");
+  });
+
+  // invalidate
+  typeloader.unload.apply(null, type_ids);
+
+  // type_ids should NOT be cahced
+  typeloader.load.apply(null, type_ids)
+    .then(function(r) {
+      result = r;
+    });
+  acre.async.wait_on_results();
+  type_ids.forEach(function(type_id) {
+    var type_schema = result[type_id];
+    ok(!typeloader.was_cached(type_schema), type_id + " should NOT have been cached");
+  });
+});
 
 acre.test.report();

@@ -694,4 +694,30 @@
    };
    fb.devbar.init();
 
+
+   fb.mqlread = function(query, success, error) {
+     var url;
+     var data;
+     if (fb.acre.freebase.googleapis_url) {
+       url = fb.h.fb_googleapis_url("/mqlread");
+       // new googleapis mqlread does not need the outer "query" envelope
+       data = {query:JSON.stringify(query)};
+     }
+     else {
+       url = fb.h.fb_api_url("/api/service/mqlread");
+       data = {query:JSON.stringify({query:query})};
+     }
+     var mqlread_options = {
+       url: url,
+       data: data,
+       dataType: "jsonp",
+       success: function(data) {
+         return success(data.result);
+       },
+       error: error
+     };
+     return $.ajax(mqlread_options);
+   };
+
+
 })(jQuery, window.freebase);

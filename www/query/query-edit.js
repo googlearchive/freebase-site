@@ -63,7 +63,7 @@
           formlib.init_mqlkey(key, {
             source: name,
             namespace: this.value + "/views",
-            mqlread_url: fb.acre.freebase.googleapis_url ? fb.h.fb_googleapis_url("/mqlread") : fb.h.fb_api_url("/api/service/mqlread")
+            mqlread: fb.mqlread
           });
           fb.enable(key);
         }
@@ -102,12 +102,12 @@
       ajax_options.data.name = $("input[name=name]:visible", options.form).val();
       ajax_options.data.domain = $(":input[name=domain]", options.form).val();
       ajax_options.data.key = $(":input[name=key]", options.form).val();
-      
+
       var description = $("textarea[name=description]", options.form).val();
       if (description) {
         ajax_options.data.description = description;
       }
-      
+
       $.ajax($.extend(ajax_options, {
         onsuccess: function(data) {
           window.location = data.result.url;
@@ -117,7 +117,7 @@
         }
       }));
     },
-    
+
     save_submit: function() {
       var options = formlib.default_submit_ajax_options();
       $.ajax($.extend(options, {

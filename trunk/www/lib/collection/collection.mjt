@@ -69,13 +69,12 @@
       <tr>
         <acre:block for="y, cell in row">
           <acre:script>
-            var attrs = cell.attrs || {};
-            if (x === 0 && y === 0) {
-              if (attrs["class"]) attrs["class"] += " first";
-              else attrs["class"] = "first";
+            if (cell.column === 0) {
+              cell.attrs["class"].push("first");
             }
+            cell.attrs["class"] = cell.attrs["class"].join(" ");
           </acre:script>
-          <th acre:attrs="attrs">
+          <th acre:attrs="cell.attrs">
             ${cell.structure.text}
           </th>
         </acre:block>
@@ -91,13 +90,12 @@
         <tr>
           <acre:block for="y, cell in row">
             <acre:script>
-              var attrs = cell.attrs || {};
               if (cell.column === 0) {
-                if (attrs["class"]) attrs["class"] += " first";
-                else attrs["class"] = "first";
+                cell.attrs["class"].push("first");
               }
+              cell.attrs["class"] = cell.attrs["class"].join(" ");
             </acre:script>
-            <td acre:attrs="attrs">
+            <td acre:attrs="cell.attrs">
               <acre:block if="cell.structure.id === '/type/object/id'">
                 <span class="wrapper">
                   <a title="${tbody.value.id}" class="property-value"

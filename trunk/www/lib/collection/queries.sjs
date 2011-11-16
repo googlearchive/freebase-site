@@ -211,7 +211,7 @@ function query(query, opts) {
       return schema.load(typeid)
         .then(function(r) {
           var is_mediator = r[typeid]["/freebase/type_hints/mediator"];
-          var default_paths = is_mediator ? ["/type/object/id"] : ["/type/object/name", "/common/topic/image"];
+          var default_paths = is_mediator ? [] : ["/type/object/name", "/common/topic/image"];
           var props = default_paths.concat(get_paths(q, 2, typeid));
           result.collection = collection(mids, props, i18n.lang);
           return deferred.all(result);
@@ -290,11 +290,11 @@ function create_query(user_id, query, name, key, domain, description, lang) {
       "create": "unless_exists",
       "id": null,
       "type": {
-        "id": "/type/namespace", 
+        "id": "/type/namespace",
         "connect": "insert"
       },
       "key": {
-        "value": "views", 
+        "value": "views",
         "namespace": domain
       }
     }, { "use_permission_of": domain })
@@ -328,11 +328,11 @@ function create_query(user_id, query, name, key, domain, description, lang) {
         })
         .then(function(doc) {
           var promises = [];
-          
+
           promises.push(freebase.upload(JSON.stringify(query, null, 2), "text/plain", {
             "document": doc.mid
           }));
-          
+
           if (description) {
             var qa =  acre.require("lib/queries/create_article.sjs");
             promises.push(qa.create_article(description, 'text/plain', {
@@ -341,7 +341,7 @@ function create_query(user_id, query, name, key, domain, description, lang) {
               "lang": lang
             }));
           }
-          
+
           return deferred.all(promises, true)
             .then(function() {
               return doc;

@@ -53,55 +53,75 @@ function to_table_structure(prop_structures, values, lang) {
   };
 };
 
+function new_cell(structure, opts) {
+  opts = opts || {};
+
+  var css_class = [];
+  if (structure.id == "/type/object/name") {
+    css_class.push("name");
+  }
+  if (structure.expected_type && structure.expected_type.id === "/common/image") {
+    css_class.push("image");
+  }
+  // TODO: what is this for? This seems to not work as intended
+  /**
+  if (start_column && ((column - start_column) === 0)) {
+    css_class.push("first-column");
+  }
+   **/
+
+  return h.extend(true, {}, {
+    structure: structure,
+    value: null,
+    row: 0,
+    column: 0,
+    attrs: {
+      "class": css_class
+    }
+  }, opts);
+};
+
 function prop_structures_to_head(prop_structures) {
   var head = [],
       subprops = false,
-      primary_head = [];
+      primary_head = [],
+      secondary_head = [],
+      column = 0;
 
   prop_structures.forEach(function(prop_structure) {
     var subprop_structures = prop_structure.properties || [],
         mediator = prop_structure.expected_type.mediator === true,
         is_image = prop_structure.expected_type.id === "/common/image",
         colspan = 1,
-        css_class = "";
+        primary_cell = new_cell(prop_structure, {column: column});
 
     if (is_image) {
       // just show <img>, no disambiguating props
-      css_class = "image";
+      column += 1;
     }
     else if (subprop_structures.length) {
-      subprops = true;
-      css_class = "mediator-header";
-      if (mediator) {
-        colspan = subprop_structures.length;
-      }
-      else {
-        colspan = subprop_structures.length + 1;
-      }
+      primary_cell.attrs["class"].push("mediator-header");
+      subprop_structures = mediator ? subprop_structures : [{id:"/type/object/name", text:_("Name"), expected_type: {id:"/type/text"}}].concat(subprop_structures);
+      primary_cell.attrs.colspan = subprop_structures.length;
+      subprop_structures.forEach(function(subprop_structure, i) {
+        var secondary_cell = new_cell(subprop_structure, {column: column + i});
+        secondary_head.push(secondary_cell);
+      });
+      column = column + subprop_structures.length;
     }
-    var attrs = {colspan:colspan, "class": css_class};
-    primary_head.push({structure:prop_structure, attrs:attrs});
+    else {
+      column += 1;
+    }
+    primary_head.push(primary_cell);
   });
+
   head.push(primary_head);
-
-  // secondary head row for disambiguating prooperties (mediators and deep properties)
-  if (subprops) {
-    var secondary_head = [];
-    prop_structures.forEach(function(prop_structure, i) {
-      var subprop_structures = prop_structure.properties || [],
-      mediator = prop_structure.expected_type.mediator === true,
-      is_image = prop_structure.expected_type.id === "/common/image";
-
-      if (!is_image && subprop_structures.length) {
-        if (!mediator) {
-          secondary_head.push({structure:{text:_("Name")}});
-        }
-        subprop_structures.forEach(function(subprop_structure) {
-          secondary_head.push({structure:subprop_structure});
-        });
-      }
-      else {
-        primary_head[i].attrs.rowspan = 2;
+  if (secondary_head.length) {
+    primary_head.forEach(function(cell) {
+      var is_image = cell.structure.expected_type.id === "/common/image";
+      var subprops = cell.structure.properties && cell.structure.properties.length;
+      if (is_image || !subprops) {
+        cell.attrs.rowspan = 2;
       }
     });
     head.push(secondary_head);
@@ -109,40 +129,10 @@ function prop_structures_to_head(prop_structures) {
   return head;
 };
 
-
-
 function value_to_rows(prop_structures, value, start_column) {
   var rows = [],
       column = start_column || 0,
       last_vals = [];
-
-  function new_cell(structure, opts) {
-    opts = opts || {};
-
-    var css_class = [];
-    if (structure.id == "/type/object/name") {
-      css_class.push("name");
-    }
-    if (structure.expected_type && structure.expected_type.id === "/common/image") {
-      css_class.push("image");
-    }
-    // TODO: what is this for? This seems to not work as intended
-    /**
-    if (start_column && ((column - start_column) === 0)) {
-      css_class.push("first-column");
-    }
-     **/
-
-    return h.extend(true, {}, {
-      structure: structure,
-      value: null,
-      row: 0,
-      column: 0,
-      attrs: {
-        "class": css_class.join(" ")
-      }
-    }, opts);
-  }
 
   prop_structures.forEach(function(prop_structure) {
     var prop_values = value[prop_structure.id] && value[prop_structure.id].values || [],

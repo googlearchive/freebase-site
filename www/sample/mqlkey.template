@@ -76,7 +76,7 @@
       function initform() {
         formlib.init_mqlkey(key, {
           source: name,
-          mqlread: fb.acre.freebase.googleapis_url ? fb.h.fb_googleapis_url("/mqlread") : fb.h.fb_api_url("/api/service/mqlread"),
+          mqlread: fb.mqlread,
           namespace: ns.val()
         });
       };

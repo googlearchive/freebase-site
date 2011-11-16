@@ -199,7 +199,7 @@ function type(type_id, page) {
     .then(function(r) {
       var this_type = r[type_id];
       var promises = [];
-      
+
       /**
        *  Call Activity service to get Type metadata,
        *  including instance count, etc.
@@ -243,7 +243,7 @@ function type(type_id, page) {
       var PROP_COUNT = 3;
 
       if (properties.length < PROP_COUNT) {
-        prop_length = properties.length
+        prop_length = properties.length;
       }
       else {
         prop_length = PROP_COUNT;
@@ -285,7 +285,7 @@ function type(type_id, page) {
         prop_clause[0].limit = 5;
         q[0][prop_structure.id] = prop_clause;
       });
-      
+
       promises.push(collection.query(q));
 
       return deferred.all(promises)
@@ -342,7 +342,7 @@ function property_detail(topic, property) {
       }
     },
     "unique" : null,
-    "/freebase/property_hints/disambiguator": true,
+    "/freebase/property_hints/disambiguator": true
   }])
   .then(function(env) {
     return env.result;

@@ -34,6 +34,9 @@
           $(window).unbind('.infscr');
         }
       });
+      setTimeout(function() {
+        $(window).trigger("scroll");
+      });
     },
 
     init_menus: function(context, nicemenu) {
@@ -58,7 +61,7 @@
         .mouseover(function(e) {
           var id = $(this).attr("data-id");
           if (!id) return;
-          
+
           var offset = $(this).offset();
           var pos = $(this).position();
           var top = offset.top + pos.top + $(this).height() + 10;
@@ -112,7 +115,7 @@
     }
 
   };
-  
+
   collection.init();
 
 })(jQuery, window.freebase);

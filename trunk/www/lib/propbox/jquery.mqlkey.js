@@ -43,7 +43,7 @@
    * Validate key input on text change. If options.check_key is TRUE (default),
    * the key value will be checked against options.namespace ("/" default) of whether
    * or not the key already exists using the mqlread service specified by
-   * options.mqlread_url (http://www.freebase.com/api/service/mqlread default).
+   * options.mqlread (http://www.freebase.com/api/service/mqlread default).
    */
   $.fn.mqlkey = function (options) {
     return this.each(function() {
@@ -62,7 +62,6 @@
 
   var mqlkey = $.mqlkey = function(input, options) {
     this.options = $.extend(true, {}, mqlkey.defaults, options);
-    this.options.jsonp = mqlkey.use_jsonp(this.options.mqlread_url);
     this.input = $(input);
     this.original = this.input.val();
     this.init();
@@ -135,34 +134,35 @@
         this.xhr = null;
       }
       var q = {
-        query: '{"query": {"id": null, "key": {"namespace": "'+ this.options.namespace + '", "value": "' + val + '"}}}'
+        id: null,
+        key: {
+          namespace: this.options.namespace,
+          value: val
+        }
       };
       // delayed query
       clearTimeout(this.check_key.timeout);
 
-      var ajax_options = {
-        url: this.options.mqlread_url,
-        data: q,
-        success: function(data) {
-          if (data.code === "/api/status/ok") {
-            if (data.result) {
+      this.check_key.timeout = setTimeout(function() {
+        self.xhr = self.options.mqlread(
+          q,
+          function(result) {
+            if (result) {
               return self.invalid(val, "Key already exists");
             }
             else {
               return self.valid(val);
             }
+          },
+          function(xhr) {
+            if (xhr) {
+              return self.invalid(xhr.responseText());
+            }
+            else {
+              return self.invalid("mqlread error!");
+            }
           }
-        },
-        error: function(xhr) {
-          if (xhr) {
-            return self.invalid(xhr.responseText());
-          }
-        },
-        dataType: self.options.jsonp ? "jsonp" : "json"
-      };
-
-      this.check_key.timeout = setTimeout(function() {
-        self.ac_xhr = $.ajax(ajax_options);
+        );
       }, 200);
     },
 
@@ -187,30 +187,27 @@
   $.extend(mqlkey, {
     defaults: {
       minlen: 1,
-      check_key: true,  // If TRUE, check if key already exists in namespace. namespace and mqlread_url must be specified. Otherwise, just apply valid_mql_key regular expression
+      check_key: true,  // If TRUE, check if key already exists in namespace. namespace and mqlread must be specified. Otherwise, just apply valid_mql_key regular expression
       namespace: "/",
-      mqlread_url: "http://api.freebase.com/api/service/mqlread",
+      mqlread: function(query, success, error) {
+        return mqlkey.mqlread(null, query, success, error);
+      },
       source: null, // jQuery selector to auto generate key from,
       schema: false // schema keys are more restrictive
     },
-    use_jsonp: function(service_url) {
-      /*
-       * if we're on the same host,
-       * then we don't need to use jsonp.
-       * This greatly increases our cachability
-       */
-      if (!service_url) {
-        return false; // no host == same host == no jsonp
-      }
-      var pathname_len = window.location.pathname.length;
-      var hostname = window.location.href;
-      hostname = hostname.substr(0, hostname.length -
-                                 pathname_len);
-      //console.log("Hostname = ", hostname);
-      if (hostname === service_url) {
-        return false;
-      }
-      return true;
+    mqlread: function(url, query, success, error) {
+      var ajax_options = {
+        url: url || "http://api.freebase.com/api/service/mqlread",
+        data: {
+          query: JSON.stringify({query:query})
+        },
+        dataType: "jsonp",
+        success: function(data) {
+          return success(data.result);
+        },
+        error: error
+      };
+      return $.ajax(ajax_options);
     },
     from: function(val) {
       var key = val.toLowerCase();

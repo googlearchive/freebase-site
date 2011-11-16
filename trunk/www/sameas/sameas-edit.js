@@ -83,7 +83,7 @@
         key.val("");
         if (this.value) {
           formlib.init_mqlkey(key, {
-            mqlread_url: fb.acre.freebase.googleapis_url ? fb.h.fb_googleapis_url("/mqlread") : fb.h.fb_api_url("/api/service/mqlread"),
+            mqlread: fb.mqlread,
             namespace: this.value
           });
           key
@@ -188,8 +188,8 @@
       var namespace = $(":input[name=namespace]", options.edit_row).val();
       var key = $(":input[name=key]", options.edit_row);
       formlib.init_mqlkey(key, {
-            mqlread_url: fb.acre.freebase.googleapis_url ? fb.h.fb_googleapis_url("/mqlread") : fb.h.fb_api_url("/api/service/mqlread"),
-            namespace: namespace
+        mqlread: fb.mqlread,
+        namespace: namespace
       });
       key
         .bind("valid", function() {

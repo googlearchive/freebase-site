@@ -34,12 +34,6 @@
     var o = $.extend({
       status: ["", "Searching...", "Select an item from the list:"]
     }, fb.suggest_options.service_defaults);
-    if (fb.acre.freebase.googleapis_url) {
-      o.mqlread_url = fb.h.fb_googleapis_url("/mqlread");
-    }
-    else {
-      o.mqlread_url = fb.h.fb_api_url("/api/service/mqlread");
-    }
     return o;
   };
 

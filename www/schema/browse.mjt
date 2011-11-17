@@ -50,7 +50,7 @@
           <tr>
             <th scope="col" class="column-header first">${_('Domain')}</th>
             <th scope="col" class="column-header">${_('ID')}</th>
-            <th scope="col" class="column-header">${_('Most Recent Changes')}</th>
+            <th scope="col" class="column-header">${_('Changes')}</th>
           </tr>
         </thead>
         <tbody>
@@ -75,7 +75,7 @@
                       <a href="${h.fb_url(change.property.id, [['schema','']])}" title="${h.sprintf(_('View %s'), pname)}">$pname</a>
                       ${_('to')}
                       <a href="${h.fb_url(change.type.id, [['schema','']])}" title="${h.sprintf(_('View %s'), tname)}">$tname</a>
-                      ${h.relative_date(change.timestamp)}
+                      <time datetime="$change.timestamp">${h.relative_date(change.timestamp)}</time>
                     </li>
                   </ul>
                 </li>

@@ -40,7 +40,7 @@
 </acre:script>
 
 <acre:block def="page_content()">
-  <div id="content-wrapper">
+  <div id="content-wrapper" class="clear">
     <section id="content-main" role="main">
       <h1>
         ${_('Recent schema changes')}

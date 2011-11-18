@@ -350,6 +350,7 @@ function init_site_rules(lib) {
     {
       "name": _("User"),
       "type": "/type/user",
+      "show_image": true,
       "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
@@ -463,6 +464,7 @@ function init_site_rules(lib) {
     {
       "name": _("Topic"),
       "type": "/common/topic",
+      "show_image": true,
       "promises": [{
         "key": "notable_types",
         "app": "site",

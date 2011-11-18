@@ -72,6 +72,7 @@ function main(rule, object) {
     more_tabs: more_tabs,
     nav_keys: rule.nav_keys || [],
     gear: rule.gear || [],
+    show_image: rule.show_image,
     filters: fh.global_filters(acre.request_params)
   };
 

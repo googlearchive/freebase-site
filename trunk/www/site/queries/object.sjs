@@ -52,9 +52,10 @@ function object(id, options) {
       topic.name = topic.name.sort(h.text_lang_sort);
       topic.alias = topic["/common/topic/alias"].sort(h.text_lang_sort);
       topic.image = topic["/common/topic/image"];
-      topic.article = topic["/common/topic/article"];
       topic.replaced_by = topic["/dataworld/gardening_hint/replaced_by"];
       topic.flag = topic["!/freebase/review_flag/item"];
+      topic.article = i18n.mql.result.article(topic["/common/topic/article"]);
+      h.resolve_article_uri(topic.article);    // resolve wikipedia links
       return topic;
     });
 };
@@ -63,7 +64,7 @@ function object(id, options) {
  * promise to get the blurb of an object
  */
 function blurb(o) {
-  var article = i18n.mql.result.article(o.article);
+  var article = o.article;
   if (article) {
     return i18n._get_blob.closure(article, "blurb", {maxlength: 500}, "blurb")
       .then(function() {

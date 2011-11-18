@@ -103,6 +103,7 @@ var exports = {
   "image_url": image_url,
   "lib_base_url": lib_base_url,
   "parse_uri": parse_uri,
+  "resolve_article_uri": resolve_article_uri,
 
   // ROUTING
   "split_path" : split_path,
@@ -1401,6 +1402,16 @@ function parse_uri(str) {
 
   return uri;
 }
+
+function resolve_article_uri(article) {
+  article.source = null;
+  var m = article.source_uri.match(/^http:\/\/wp\/([^\/]*)\/([^\/]*)/);
+  if (m) {
+    article.source = "wikipedia";
+    article.source_uri = "http://" + m[1] + ".wikipedia.org/w/index.php?curid=" + m[2];
+  }
+  return article;
+};
 
 // -----Functions for routing -----
 

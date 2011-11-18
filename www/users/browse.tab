@@ -36,17 +36,17 @@ var apis = acre.require("lib/promise/apis.sjs"),
     deferred = apis.deferred,
     freebase = apis.freebase,
     urlfetch = apis.urlfetch;
-    
+
 var SPEC = {
 
   template: "browse.mjt",
-  
+
   template_base: "site/template/browse.mjt",
 
-  validate: function(params) { 
+  validate: function(params) {
     return [
       validators.Int(params, "days", {if_missing: 7})
-    ]; 
+    ];
   },
 
   run: function(days) {
@@ -54,9 +54,9 @@ var SPEC = {
       days: days,
       active: active_users(days),
       recent: recent_users(days)
-    }; 
+    };
   }
-  
+
 };
 
 function active_users(days) {
@@ -68,9 +68,9 @@ function active_users(days) {
       return users.map(function(u) {
         return {
           id: u.id,
-          timestamp: acre.freebase.date_from_iso(u["s:/type/attribution/links"].timestamp),
+          timestamp: u["s:/type/attribution/links"].timestamp,
           objects: u["/type/attribution/attributed"],
-          links: u["/type/attribution/links"],
+          links: u["/type/attribution/links"]
         };
       });
     });
@@ -85,12 +85,12 @@ function recent_users(days) {
       return users.map(function(u) {
         return {
           id: u.id,
-          timestamp: acre.freebase.date_from_iso(u.timestamp),
+          timestamp: u.timestamp,
           full_name: u["/freebase/user_profile/my_full_name"],
           location: u["/freebase/user_profile/location"],
           links: u["/type/attribution/links"] - 20,          // account creation
           objects: u["/type/attribution/attributed"] - 4     // account creation
-        }
+        };
       });
     });
 };
@@ -138,7 +138,7 @@ function recent_users_mql(days) {
       "optional": true
     }],
     "/type/attribution/links": {
-      "return": "count",
+      "return": "count"
     },
     "/type/attribution/attributed": {
       "return": "count"

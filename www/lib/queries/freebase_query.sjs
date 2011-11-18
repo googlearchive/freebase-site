@@ -57,7 +57,7 @@ function queries_by_domain(domain) {
         editor_queries: res[0].result,
         user_queries: res[1].result
       };
-    })
+    });
 };
 
 function queries_by_user(user) {
@@ -84,8 +84,8 @@ function recent_queries(days) {
           creator: q.creator,
           domain: (q.key ? q.key.namespace.key.namespace : null),
           type: q["/freebase/query_hints/related_type"],
-          timestamp: acre.freebase.date_from_iso(q.timestamp)
-        }
+          timestamp: q.timestamp
+        };
       });
     });
 };
@@ -98,7 +98,7 @@ function domain_queries_mql(domain, editors) {
     "/freebase/query_hints/related_type": {
       "domain": (editors ? null : domain),
       "id": null,
-      "name": i18n.mql.query.name(),
+      "name": i18n.mql.query.name()
     },
     "key": {
       "value": null,
@@ -130,7 +130,7 @@ function user_queries_mql(user) {
     "/freebase/query_hints/related_type": {
       "id": null,
       "name": i18n.mql.query.name(),
-      "optional": true,
+      "optional": true
     },
     "key": {
       "value": null,
@@ -139,7 +139,7 @@ function user_queries_mql(user) {
           "value": "views",
           "namespace": {
             "id": null,
-            "name": i18n.mql.query.name(),
+            "name": i18n.mql.query.name()
           }
         }
       },

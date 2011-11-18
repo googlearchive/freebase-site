@@ -71,6 +71,9 @@
       var times = $("time", context)
         .each(function() {
           var $this = $(this);
+          if ($this.attr("data-i18n") === "off") {
+            return;
+          }
           var isostr = $this.attr("datetime");
           if (isostr) {
             var format = $this.attr("data-format");
@@ -133,6 +136,9 @@
       var numbers = $(".number", context)
         .each(function() {
           var $this = $(this);
+          if ($this.attr("data-i18n") === "off") {
+            return;
+          }
           var v = $this.attr("data-value");
           if (v != null) {
             var str = i18n.number(v);

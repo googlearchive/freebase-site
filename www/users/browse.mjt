@@ -59,7 +59,7 @@
           ${image.user_image_tiny(u.id)}
           ${components.creator(u.id, h.fb_url(u.id, [['writes']]))}
         </th>
-        <td class="even">${h.relative_date(u.timestamp)}</td>
+        <td class="even">${i18n_c.relative_date(u.timestamp)}</td>
         <td class="odd">${i18n_c.number(u.objects)}</td>
         <td class="even">${i18n_c.number(u.links)}</td>
       </tr>
@@ -92,7 +92,7 @@
           </acre:block>
           <acre:block else="">-</acre:block>
         </th>
-        <td class="even">${h.relative_date(u.timestamp)}</td>
+        <td class="even">${i18n_c.relative_date(u.timestamp)}</td>
         <th class="row-header odd" scope="row">
           <acre:block if="u.location && u.location.length">
             <acre:block for="i, l in u.location" trim="">

@@ -40,33 +40,35 @@
 </acre:script>
 
 <acre:block def="page_content()">
-  <div id="content-wrapper">
+  <div id="content-wrapper" class="clear">
     <section role="main" id="content-main">
       <div class="table-header">
         <h1>
           ${_('Recently active data loads')}
         </h1>
       </div>
-      <table cellspacing="0" class="table table-sortable">
+      <table cellspacing="0" class="table">
         <thead>
           <tr>
-            <th scope="col" class="column-header">${_('Data&nbsp;Load')}</th>
-            <th scope="col" class="column-header">${_('Last&nbsp;Active')}</th>
-            <th scope="col" class="column-header">${_('Objects&nbsp;created')}<br/>${_('(past')} $c.days ${_('days)')}</th>
-            <th scope="col" class="column-header">${_('Links&nbsp;created')}<br/>${_('(past')} $c.days ${_('days)')}</th>
+            <th scope="col" class="column-header first">${_('Data&nbsp;Load')}</th>
+            <th scope="col" class="column-header">${_('7-day Activity')}</th>
             <th scope="col" class="column-header">${_('Creator')}</th>
             <th scope="col" class="column-header">${_('Operator')}</th>
           </tr>
         </thead>
         <tbody>
           <tr acre:for="l in c.loads">
-            <th class="row-header odd" scope="row">
+            <th class="row-header odd" scope="row" style="width:50%">
               <acre:script>var name = i18n.display_name(l);</acre:script>
               <a href="${h.fb_url(l.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
+              <p><time>Last Active ${h.relative_date(l.timestamp)}</time></p>
             </th>
-            <td class="odd">${h.relative_date(l.timestamp)}</td>
-            <td class="odd">${i18n_c.number(l.objects)}</td>
-            <td class="even">${i18n_c.number(l.links)}</td>
+            <td class="odd">
+              <ul>
+                <li><strong>${_("Objects")}</strong> ${i18n_c.number(l.objects)} </li>
+                <li><strong>${_("Links")}</strong> ${i18n_c.number(l.links)}</li>
+              </ul>
+            </td>
             <td class="odd">
               ${image.user_image_tiny(l.creator)}
               ${components.creator(l.creator)}

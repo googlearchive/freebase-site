@@ -61,7 +61,9 @@
             <th class="row-header odd" scope="row" style="width:50%">
               <acre:script>var name = i18n.display_name(l);</acre:script>
               <a href="${h.fb_url(l.id)}" title="${h.sprintf(_('View %s'), name)}">$name</a>
-              <p><time>Last Active ${h.relative_date(l.timestamp)}</time></p>
+              <acre:block if="l.timestamp">
+                ${i18n_c.relative_date(l.timestamp)}
+              </acre:block>
             </th>
             <td class="odd">
               <ul>

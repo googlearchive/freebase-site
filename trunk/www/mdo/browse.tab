@@ -36,26 +36,26 @@ var apis = acre.require("lib/promise/apis.sjs"),
     deferred = apis.deferred,
     freebase = apis.freebase,
     urlfetch = apis.urlfetch;
-    
+
 var SPEC = {
 
   template: "browse.mjt",
-  
+
   template_base: "site/template/browse.mjt",
 
-  validate: function(params) { 
+  validate: function(params) {
     return [
       validators.Int(params, "days", {if_missing: 7})
-    ]; 
+    ];
   },
 
   run: function(days) {
     return {
       days: days,
       loads: recent_loads(days)
-    }; 
+    };
   }
-  
+
 };
 
 function recent_loads(days) {
@@ -69,7 +69,8 @@ function recent_loads(days) {
         l.objects = 0;
         l.links = 0;
         l.authority.forEach(function(a) {
-          var timestamp = acre.freebase.date_from_iso(a["s:links"].timestamp);
+          //var timestamp = acre.freebase.date_from_iso(a["s:links"].timestamp);
+          var timestamp = a["s:links"].timestamp;
           l.timestamp = (!l.timestamp || (timestamp > l.timestamp)) ? timestamp : l.timestamp;
           l.objects += a.attributed;
           l.links += a.links;

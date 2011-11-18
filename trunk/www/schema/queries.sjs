@@ -112,7 +112,8 @@ function modified_domains(days, changes) {
         var user_map = {};
         d.types.forEach(function(t) {
           t.properties.forEach(function(p) {
-            var timestamp = acre.freebase.date_from_iso(p.key.link.timestamp);
+            //var timestamp = acre.freebase.date_from_iso(p.key.link.timestamp);
+            var timestamp = p.key.link.timestamp;
             var user = p.key.link.creator;
             if (user_map[user.id]) {
               user = user_map[user.id];
@@ -138,15 +139,15 @@ function modified_domains(days, changes) {
         }
         domain.users.forEach(function(user) {
           user.changes = user.changes.sort(function(a, b) {
-            return b.timestamp - a.timestamp;
+            return b.timestamp < a.timestamp;
           }).slice(0, changes);
         });
         domain.users = domain.users.sort(function(a, b) {
-          return b.changes[0].timestamp - a.changes[0].timestamp;
-        })
+          return b.changes[0].timestamp < a.changes[0].timestamp;
+        });
         return domain;
       });
-    })
+    });
 };
 
 /**

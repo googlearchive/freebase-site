@@ -79,7 +79,7 @@
             <td class="even">
               ${image.user_image_tiny(q.creator)}
               ${components.creator(q.creator)}
-              <time>${h.relative_date(q.timestamp)}</time>
+              ${i18n_c.relative_date(q.timestamp)}
             </td>
           </tr>
         </tbody>

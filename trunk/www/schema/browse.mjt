@@ -75,7 +75,7 @@
                       <a href="${h.fb_url(change.property.id, [['schema','']])}" title="${h.sprintf(_('View %s'), pname)}">$pname</a>
                       ${_('to')}
                       <a href="${h.fb_url(change.type.id, [['schema','']])}" title="${h.sprintf(_('View %s'), tname)}">$tname</a>
-                      <time datetime="$change.timestamp">${h.relative_date(change.timestamp)}</time>
+                      ${i18n_c.relative_date(change.timestamp)}
                     </li>
                   </ul>
                 </li>

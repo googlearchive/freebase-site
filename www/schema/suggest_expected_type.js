@@ -146,9 +146,11 @@
         this.ect_dimension = $('select:first', this.ect_unit);
         this.ect_dimension_units = $('select:eq(1)', this.ect_unit);
 
+console.log("this.ect_dimension", this.ect_dimension, "this.ect_dimension_units", this.ect_dimension_units);
+
         this.ect_dimension
           .change(function(e) {
-            var option = $("[selected]", this);
+            var option = $(":selected", this);
             var units = option.data("units");
             if (self.ect_dimension_units.data("units") === units) {
               return;
@@ -174,7 +176,7 @@
           e.stopPropagation();
         });
         $(".button.primary", this.ect_unit).click(function(e) {
-          var selected_unit = $("[selected]", self.ect_dimension_units);
+          var selected_unit = $(":selected", self.ect_dimension_units);
           var data = {
             name: "Measurment",
             id: "/type/float",
@@ -522,6 +524,7 @@
             }]
           }];
           // do as_of_time since units don't change often and better cacheability
+/**
           var today = (new Date());
           function pad(n){ return n<10 ? '0'+n : n;};
           var as_of_time = [today.getFullYear(), pad(today.getMonth()+1), pad(today.getDate())].join("-");
@@ -529,8 +532,12 @@
             url: "http://api.freebase.com/api/service/mqlread",
             data: {query: JSON.stringify({query: q, as_of_time: as_of_time})},
             dataType: "jsonp",
-            jsonpCallback: "jQuery.suggest.suggest_expected_type.load_dimensions_callback"
+            success: function(data) {
+              return sect.load_dimensions_callback(data);
+            }
           });
+**/
+          fb.mqlread(q, sect.set_dimensions);
         },
         load_dimensions_callback: function(data) {
           //console.log("ajax.success", data);
@@ -543,8 +550,8 @@
           }
         },
 
-        sort_by_name: function(a,b) {
-          return b.name < a.name;
+        sort_by_name: function(a, b) {
+          return b.name - a.name;
         }
     });
 

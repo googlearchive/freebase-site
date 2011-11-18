@@ -36,7 +36,7 @@ var urlfetch = acre.require("lib/promise/apis").urlfetch;
 
 function make_app(appinfo) {
   if (!appinfo) return null;
-  
+
   var app = {
     id : appinfo.id,
     guid : appinfo.guid,
@@ -46,19 +46,19 @@ function make_app(appinfo) {
     description : appinfo.description,
     modified : appinfo.timestamp,
     article : appinfo['/common/topic/article'],
-    creator : (appinfo['/type/domain/owners'] ? appinfo['/type/domain/owners'].creator : null), 
+    creator : (appinfo['/type/domain/owners'] ? appinfo['/type/domain/owners'].creator : null),
     authors : (appinfo['/type/domain/owners'] ? appinfo['/type/domain/owners'].member : []),
     icon : appinfo.icon,
     oauth_enabled : appinfo.oauth_enabled,
     acre : null
   };
-  
+
   if (app.icon) {
     app.icon.src = acre.freebase.imgurl(app.icon.id, 170, 65, "fillcropmid");
   }
-  
+
   // extra properties for Acre apps
-  if (appinfo['acre:type']) {    
+  if (appinfo['acre:type']) {
 
     // figure out whether the app or one of it's versions has been published
     var pubkey = false;
@@ -71,14 +71,14 @@ function make_app(appinfo) {
     }
 
     // set the homepage... but don't override a manually set one
-    if (!app.homepage) {      
+    if (!app.homepage) {
       if (pubkey) {
         app.homepage = 'http://' + pubkey + '.freebaseapps.com/';
       } else {
         app.homepage = 'http://' + app.id.split('/').reverse().join('.') + 'dev.freebaseapps.com/';
       }
     }
-    
+
     // look at file modification time for Acre apps too
     if (appinfo['modified:/type/namespace/keys']) {
       var modified = appinfo['modified:/type/namespace/keys'].namespace["/common/document/content"].link.timestamp;
@@ -87,7 +87,7 @@ function make_app(appinfo) {
         app.modified_by = appinfo['modified:/type/namespace/keys'].namespace["/common/document/content"].link.creator;
       }
     }
-    
+
     app.acre = {
       version : version,
       source : acre.freebase.site_host + '/appeditor/#app=' + appinfo.id
@@ -106,10 +106,10 @@ var mini_app = function(o) {
 
 var app = function(id, options) {
   if (!id) return null;
-  
+
   options = options || {};
   var appq = acre.require('app_query').extend({id: id}).query;
-  
+
   return freebase.mqlread(appq)
     .then(function(envelope){
       return make_app(envelope.result);
@@ -119,7 +119,7 @@ var app = function(id, options) {
     .then(function(app) {
       if (!app) return null;
       var d = {};
-      
+
       if (options.article && app.article) {
         d.article = freebase.get_blob(app.article.content)
           .then(function(response) {
@@ -130,10 +130,10 @@ var app = function(id, options) {
               return app;
             });
       }
-      
+
       if (options.api_keys) {
         var url = acre.freebase.service_url.replace(/http:\/\//, 'https://') + '/api/oauth/enable';
-        var args = { 
+        var args = {
           id: app.guid,
           reset_secret : (app.oauth_enabled ? false : true)
         };
@@ -153,7 +153,7 @@ var app = function(id, options) {
           console.warn("Couldn't fetch API keys", e);
         }
       }
-      
+
       return deferred.all(d)
         .then(function(results) {
           return app;
@@ -166,11 +166,11 @@ var list_apps = function(query, opts){
   var mf = JSON.parse(acre.require("apps.json").body);
   var list = mf[opts.list];
   var q = acre.require('app_query').extend({
-    "id" : null, 
+    "id" : null,
     "id|=": list,
     "limit" : 25
   }).query;
-  
+
   return freebase.mqlread([q])
     .then(function(envelope){
       return envelope.result.map(function(appinfo){
@@ -189,14 +189,14 @@ var list_apps = function(query, opts){
 
 var released_apps = function(opts) {
   var rq = acre.require("released").query;
-  
+
   return freebase.mqlread(rq)
     .then(function(envelope) {
       return envelope.result.map(function(link) {
         if (link.target.type.id === "/freebase/apps/acre_app") {
           return link.target.id;
         } else {
-          return link.target["/freebase/apps/acre_app_version/acre_app"].id
+          return link.target["/freebase/apps/acre_app_version/acre_app"].id;
         }
       });
     }, function(error) {
@@ -223,7 +223,7 @@ var recent_apps = function(opts) {
     "listed" : true,
     "limit" : 25
   }).query;
-  
+
   return freebase.mqlread([q])
     .then(function(envelope){
       return envelope.result.map(function(appinfo){
@@ -240,9 +240,9 @@ var user_apps = function(username, opts) {
     console.log("no username in user_apps");
     return [];
   }
-  
+
   var user_id = '/user/' + username.split("/").pop();
-  
+
   var ext = {
     "sort" : "name",
     "by:/type/domain/owners" : {
@@ -269,16 +269,16 @@ var user_apps = function(username, opts) {
 var search_apps = function(search, opts) {
   q = acre.require('app_query').query;
   var args = {
-    type:'/freebase/apps/application', 
+    type:'/freebase/apps/application',
     mql_output:[q]
   };
-  
+
   /*
   if (opts && !opts.unlisted) {
     args.mql_filter = [{ "/freebase/apps/application/listed" : true }];
   }
   */
-  
+
   return freebase.search(search, args)
     .then(function(envelope){
       return envelope.result.map(function(appinfo){

@@ -31,6 +31,7 @@
 
 <acre:script>
   var h = acre.require("lib/helper/helpers.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
   var image = acre.require("lib/template/imagecomponents");
 </acre:script>
 
@@ -70,7 +71,7 @@
         <acre:block if="app.modified">
         <acre:block if="app.modified_by">${image.user_image_small(app.modified_by)} 
         by <a href="${h.fb_url(app.modified_by.id, [['apps']])}">$app.modified_by.name</a></acre:block>
-        <div class="applist-details">${h.relative_date(acre.freebase.date_from_iso(app.modified))}</div>
+        <div class="applist-details">${i18n_c.relative_date(app.modified)}</div>
         </acre:block>
         <acre:block else="">
         N/A

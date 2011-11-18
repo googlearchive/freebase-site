@@ -40,7 +40,7 @@
 </acre:script>
 
 <acre:block def="page_content()">
-  <div id="content-wrapper">
+  <div id="content-wrapper" class="clear">
     <section role="main" id="content-main">
       <div class="table-header">
         <div class="button-group">
@@ -91,7 +91,7 @@
         <h3><span>${_('Understanding queries')}</span></h3>
         <div class="sub-section">
           <h4>${_("What are queries?")}</h4>
-          <p>${_("Queries allow you to retrieve structed information about topics or collections of topics from Freebase via MQL, our JSON-based query language.")}</p>
+          <p>${h.template_sprintf(_("Queries allow you to retrieve structed information about topics or collections of topics from Freebase via %s, our JSON-based query language."), mql_help_text())}</p>
         </div>
         <!--<div class="sub-section">-->
           <!--<h4>${_("How do I write queries?")}</h4>-->
@@ -105,10 +105,18 @@
             <li> <a href="#">${_("The capitals of U.S States")}</a> </li>
             <li> <a href="#">${_("Celebrities on Twitter")}</a> </li>
           </ul>
-          <p>${_("There are lots more examples you can play with in our Query Editor, a web-based tool for writing MQL queries.")}</p>
+          <p>${h.template_sprintf(_("There are lots more examples you can play with in our %s, a web-based tool for writing MQL queries."), queryeditor_help_text())}</p>
         </div>
       </div>
     </aside>
   </div>
     
+</acre:block>
+
+<acre:block def="mql_help_text()">
+<a href="http://wiki.freebase.com/wiki/Mql"><abbr title="${_('Metaweb Query Language')}">${_("MQL")}</abbr></a>
+</acre:block>
+
+<acre:block def="queryeditor_help_text()">
+<a href="${h.fb_url('/query')}">${_("Query Editor")}</a>
 </acre:block>

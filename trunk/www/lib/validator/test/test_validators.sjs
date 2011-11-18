@@ -167,10 +167,9 @@ test("validators.StringBool", falsey, function() {
 
 
 var mqlid_test = {
-  valid: ["/", "/freebase", "/type/type", "/film/film/property", "/0/1/2", "/A/b_-", "/wikipedia/ja/$30DE$30C4$30BF$30B1"],
+    valid: ["/", "/freebase", "/type/type", "/film/film/property", "/0/1/2", "/A/b_-", "/wikipedia/ja/$30DE$30C4$30BF$30B1","/_"],
   invalid: ["/freebase/", "#9202a8c04000641f80000000010c393g",
-            "#00000000000000000000000000000000", "foobar", "", "!/freebase",
-            "/_", "/A/-"]
+            "#00000000000000000000000000000000", "foobar", "", "!/freebase", "/A/-"]
 };
 test("validators.MqlId", mqlid_test, function() {
   mqlid_test.valid.forEach(function(id) {

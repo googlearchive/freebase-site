@@ -45,7 +45,7 @@
       <h1>
         ${_('Recent schema changes')}
       </h1>
-      <table cellspacing="0" class="table table-sortable">
+      <table cellspacing="0" class="table">
         <thead>
           <tr>
             <th scope="col" class="column-header first">${_('Domain')}</th>
@@ -88,44 +88,59 @@
       <div class="wrapper">
         <h3><span>${_('What is Schema?')}</span></h3>
         <div class="sub-section">
-        <p>${_('Schema describes how data in Freebase is structured. and is what we use to assert facts on Topics (eg. "Blade Runner is directed by Ridley Scott.")')}</p>
-        <p><strong>${_('Schema is made by creating:')}</strong></p>
-        <h4>
-          <a href="http://wiki.freebase.com/wiki/Domain">${_('domains')}</a>
-        </h4>
-        <p>${_('which define a common namespace for you to create')}</p>
-        <h4><a href="http://wiki.freebase.com/wiki/Type" title="${_('Learn more about')}">${_('types')}</a></h4>
-        <p>${_('which define a particular kind of person, place or thing and contain')}</p>
-        <h4><a href="http://wiki.freebase.com/wiki/Property" title="${_('Learn more about')}">${_('properties')}</a></h4>
-        <p>${_('which define the unique qualities of a type.')}</p>
-        <p>${_('One simple way to understand the difference between types and properties is that types express &ldquo;is a&rdquo;, while properties express &ldquo;has a&rdquo;.')}</p>
-        <p><strong>${_('Here\'s an example:')}</strong></p>
-        <div class="aside-box">
-          <h4><a href="${h.fb_url('/topic/en/william_shakespeare')}" title="${_('View on Freebase')}">${_('William Shakespeare')}</a></h4>
-          <table cellspacing="0">
-            <tbody>
-              <tr>
-                <td class="is-a">${_('is a')}</td>
-                <td class="kind">${_('type')}</td>
-                <td><a href="${h.fb_url('/schema/people/person')}">${_('Person')}</a></td>
-              </tr>
-              <tr>
-                <td class="has-a">${_('has a')}</td>
-                <td>${_('property')}</td>
-                <td><a href="${h.fb_url('/schema/people/person/date_of_birth')}">${_('Date of Birth')}</a></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <h2 class="aside-title">${_('Learn more:')}</h2>
-        <ul>
-          <li><a title="View help page" href="${h.wiki_url('Schema')}">${_('Wiki: Schema')}</a></li>
-          <li><a title="View help page" href="${h.wiki_url('Types')}">${_('Wiki: Type')}</a></li>
-          <li><a title="View help page" href="${h.wiki_url('Properties')}">${_('Wiki: Property')}</a></li>
-          <li><a title="View help page" href="${h.wiki_url('Domains')}">${_('Wiki: Domain')}</a></li>
-        </ul>
+          <p>${_('Schema describes how data is stuctured in Freebase, expressed through Domains, Types and Properties.')}</p>
+          <h4>
+            <a href="http://wiki.freebase.com/wiki/Domain">${_('Domains')}</a>
+          </h4>
+          <p>${_("Set a common namespace (eg. 'Media'). Within Domains, you create&hellip;")}</p>
+          <h4>
+            <a href="http://wiki.freebase.com/wiki/Type">${_('Types')}</a>
+          </h4>
+          <p>${_("which define a particular kind of person, place, or thing (eg. 'Author'). Types contain&hellip;")}</p>
+          <h4>
+            <a href="http://wiki.freebase.com/wiki/Property">${_('Properties')}</a>
+          </h4>
+          <p>${_("which define the unique qualities of that Type (eg. 'Works Written').")}</p>
+          <h4><strong>${_("Here's an example:")}</strong></h4>
+          <p>${h.template_sprintf(_("We know that %s wrote the play %s. We describe this in Freebase as such:"), shakespeare_help_text(), hamlet_help_text())}</p>
+          <div class="aside-box">
+            <h4>
+              ${_('William Shakespeare')}
+            </h4>
+            <table cellspacing="0" class="schema-example">
+              <tbody>
+                <tr>
+                  <td class="is-a">${_('is a')}</td>
+                  <td class="kind">${_('type')}</td>
+                  <td><a href="${h.fb_url('/book/author')}">${_('Author')}</a></td>
+                </tr>
+                <tr class="middle">
+                  <td class="has-a">${_('has a')}</td>
+                  <td class="kind">${_('property')}</td>
+                  <td><a href="${h.fb_url('/schema/people/person/date_of_birth')}">${_('Works Written')}</a></td>
+                </tr>
+                <tr>
+                  <td class="has-a">${_('with a')}</td>
+                  <td class="kind">${_('value')}</td>
+                  <td><a href="${h.fb_url('/m/03j9w')}">${_('Hamlet')}</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>${h.template_sprintf(_("To learn more about how our schema works, visit our %s."), schema_help_link())}</p>
         </div>
       </div>
     </aside>
   </div>
+</acre:block>
+
+<acre:block def="shakespeare_help_text()">
+<a href="${h.fb_url('/en/shakespeare')}">${_("William Shakespeare")}</a>
+</acre:block>
+<acre:block def="hamlet_help_text()">
+<a href="${h.fb_url('/m/03j9w')}">${_("Hamlet")}</a>
+</acre:block>
+
+<acre:block def="schema_help_link()">
+<a href="http://wiki.freebase.com/Schema">${_("help center")}</a>
 </acre:block>

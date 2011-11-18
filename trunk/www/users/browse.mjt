@@ -47,7 +47,7 @@
   <table cellspacing="0" class="table table-sortable">
     <thead>
       <tr>
-        <th scope="col" class="column-header">${_('User')}</th>
+        <th scope="col" class="column-header first">${_('User')}</th>
         <th scope="col" class="column-header">${_('Last Active')}</th>
         <th scope="col" class="column-header">${_('Objects created past')} $c.days ${_('days')}</th>
         <th scope="col" class="column-header">${_('Links created past')} $c.days ${_('days')}</th>
@@ -59,7 +59,7 @@
           ${image.user_image_tiny(u.id)}
           ${components.creator(u.id, h.fb_url(u.id, [['writes']]))}
         </th>
-        <td class="odd">${h.relative_date(u.timestamp)}</td>
+        <td class="even">${h.relative_date(u.timestamp)}</td>
         <td class="odd">${i18n_c.number(u.objects)}</td>
         <td class="even">${i18n_c.number(u.links)}</td>
       </tr>

@@ -269,6 +269,7 @@
           <div id="description" class="clear">
             <acre:block if="c.blurb">
               <acre:script>
+                var article = c.topic.article[0];
                 var words = c.blurb.split(/\s+/);
                 var word_length = 30;
               </acre:script>
@@ -277,7 +278,10 @@
               </acre:block>
               <acre:block else="">
                 <p class="blurb" itemprop="desc">${words.slice(0, word_length).join(" ")}&hellip;<a href="#" title="${_('Show more')}" onclick="$$(this).parent('p').hide().next('p').show();return false;">[ + ]</a></p>
-                <p style="display:none;">${c.blurb}<a href="#" title="${_('Show less')}" onclick="$$(this).parent('p').hide().prev('p').show();return false;">[ - ]</a></p>
+                <p style="display:none;">${c.blurb}
+                  <a acre:if="article.source == 'wikipedia'" href="$article.url">${_('Read entire article on Wikipedia')}</a>
+                  <a href="#" title="${_('Show less')}" onclick="$$(this).parent('p').hide().prev('p').show();return false;">[ - ]</a>
+                </p>
               </acre:block>
             </acre:block>
           </div>

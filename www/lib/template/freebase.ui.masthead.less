@@ -45,7 +45,12 @@
   background: #404141;
   color: #e7ebed;
   background-repeat: repeat;
-  background-image: -webkit-repeating-linear-gradient(-45deg, rgba(255, 255, 255, .015), rgba(255, 255, 255, .015) 2px, transparent 2px, transparent 4px);
+  background-size: 6px 6px;
+  background-image: -webkit-linear-gradient(-45deg, rgba(255, 255, 255, .015) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .015) 50%, rgba(255, 255, 255, .015) 75%, transparent 75%, transparent);
+  background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+  background-image: -ms-linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+  background-image: linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
   .box_shadow();
 }
 
@@ -704,9 +709,14 @@ spec has been implemented, including complete vcards, tooltips, etc.
   font-size: 12px;
   font-weight: bold;
   color: #333;
+
   background-color: #fcce17;
-  background-image: -webkit-repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 2px, rgba(255,255,255,0) 2px, rgba(255,255,255,0) 4px);
-  background-image: -moz-repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 2px, rgba(255,255,255,0) 2px, rgba(255,255,255,0) 4px);
+  background-size: 4px 4px;
+  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .3) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .3) 50%, rgba(255, 255, 255, .3) 75%, transparent 75%, transparent);
+  background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+  background-image: -ms-linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
+  background-image: linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
   background-repeat: repeat;
 
   a {
@@ -718,7 +728,18 @@ spec has been implemented, including complete vcards, tooltips, etc.
     text-decoration: none;
     border-bottom: 1px solid;
   }
+}
 
+.page-flag.success {
+  background-color: #c0e0a6;
+}
+
+.page-flag.notice {
+  background-color: #9acce0;
+}
+
+.page-flag.error {
+  background-color: #e9bfaf;
 }
 
 /*

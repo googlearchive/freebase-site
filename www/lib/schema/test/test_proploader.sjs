@@ -35,11 +35,6 @@ acre.require("test/mock").playback(this, "schema/test/playback_test_proploader.j
 var h = acre.require("helper/helpers.sjs");
 var proploader = acre.require("schema/proploader.sjs");
 
-function assert_key(obj, key, expected, msg) {
-  ok(obj && key in obj &&
-     (typeof expected === "boolean" ? !!obj[key] === expected : obj[key] === expected), msg);
-};
-
 test("is_prop_id", function() {
   var valid = ["/a/b/c", "/a/b/c/d", "/a/b/c/d/e"];
   valid.forEach(function(id) {
@@ -115,86 +110,6 @@ test("load multi", function() {
   pids.forEach(function(pid) {
     ok(result[pid], "Got property schema: " + pid);
   });
-});
-
-
-function assert_prop_path_schema(result, prop, subprops) {
-  var schema = result[prop];
-  ok(schema, "Got property schema: " + prop);
-  if (!h.isArray(subprops)) {
-    subprops = [subprops];
-  }
-  same(schema.id, prop);
-  same(schema.expected_type.properties.length, subprops.length);
-  schema.expected_type.properties.forEach(function(subprop, i) {
-    same(subprops.indexOf(subprop.id), i, "Found subproperty: " + subprop.id);
-    ok(!subprop.expected_type.properties ||
-       subprop.expected_type.properties.length === 0, "Arbitrary depth not yet supported");
-  });
-};
-
-
-test("load_paths", function() {
-  var result;
-  var path = "/film/film/directed_by./people/person/date_of_birth";
-  proploader.load_paths(path)
-    .then(function(props) {
-      result = props;
-    });
-  acre.async.wait_on_results();
-  ok(result, "Got load result");
-  assert_prop_path_schema(result, "/film/film/directed_by", "/people/person/date_of_birth");
-});
-
-test("load_paths multi", function() {
-  var result;
-  var paths = [
-    "/film/film/directed_by./people/person/date_of_birth",
-    "/people/person/parents./people/person/place_of_birth",
-    "/people/person/parents./people/person/date_of_birth",
-    "/film/film/starring"
-  ];
-  proploader.load_paths.apply(null, paths)
-    .then(function(props) {
-      result = props;
-    });
-  acre.async.wait_on_results();
-  ok(result, "Got load result");
-  assert_prop_path_schema(result, "/film/film/directed_by", ["/people/person/date_of_birth"]);
-  assert_prop_path_schema(result, "/people/person/parents", ["/people/person/place_of_birth", "/people/person/date_of_birth"]);
-  assert_prop_path_schema(result, "/film/film/starring", ["/film/performance/film", "/film/performance/actor", "/film/performance/character", "/film/performance/special_performance_type", "/film/performance/character_note"]);
-});
-
-
-test("load_paths relative", function() {
-  var result;
-  var path = "/film/film/directed_by.film";
-  proploader.load_paths(path)
-    .then(function(props) {
-      result = props;
-    });
-  acre.async.wait_on_results();
-  ok(result, "Got load result");
-  assert_prop_path_schema(result, "/film/film/directed_by", "/film/director/film");
-});
-
-test("load_paths relative multi", function() {
-  var result;
-  var paths = [
-    "/film/film/directed_by.film",
-    "/people/person/parents.place_of_birth",
-    "/people/person/parents.date_of_birth",
-    "/film/film/starring"
-  ];
-  proploader.load_paths.apply(null, paths)
-    .then(function(props) {
-      result = props;
-    });
-  acre.async.wait_on_results();
-  ok(result, "Got load result");
-  assert_prop_path_schema(result, "/film/film/directed_by", "/film/director/film");
-  assert_prop_path_schema(result, "/people/person/parents", ["/people/person/place_of_birth", "/people/person/date_of_birth"]);
-  assert_prop_path_schema(result, "/film/film/starring", ["/film/performance/film", "/film/performance/actor", "/film/performance/character", "/film/performance/special_performance_type", "/film/performance/character_note"]);
 });
 
 acre.test.report();

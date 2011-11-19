@@ -279,7 +279,7 @@
               <acre:block else="">
                 <p class="blurb" itemprop="desc">${words.slice(0, word_length).join(" ")}&hellip;<a href="#" title="${_('Show more')}" onclick="$$(this).parent('p').hide().next('p').show();return false;">[ + ]</a></p>
                 <p style="display:none;">${c.blurb}
-                  <a acre:if="article.source == 'wikipedia'" href="$article.source_uri">${_('Read entire article on Wikipedia')}</a>
+                  <a acre:if="article && article.source == 'wikipedia'" href="$article.source_uri">${_('Read entire article on Wikipedia')}</a>
                   <a href="#" title="${_('Show less')}" onclick="$$(this).parent('p').hide().prev('p').show();return false;">[ - ]</a>
                 </p>
               </acre:block>

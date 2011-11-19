@@ -1405,10 +1405,12 @@ function parse_uri(str) {
 
 function resolve_article_uri(article) {
   article.source = null;
-  var m = article.source_uri.match(/^http:\/\/wp\/([^\/]*)\/([^\/]*)/);
-  if (m) {
-    article.source = "wikipedia";
-    article.source_uri = "http://" + m[1] + ".wikipedia.org/w/index.php?curid=" + m[2];
+  if (article.source_uri) {
+      var m = article.source_uri.match(/^http:\/\/wp\/([^\/]*)\/([^\/]*)/);
+      if (m) {
+        article.source = "wikipedia";
+        article.source_uri = "http://" + m[1] + ".wikipedia.org/w/index.php?curid=" + m[2];
+      }
   }
   return article;
 };

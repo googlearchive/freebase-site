@@ -1,0 +1,79 @@
+<!!--
+ Copyright 2010, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require("lib/helper/helpers.sjs");
+  var propbox = acre.require("lib/propbox/propbox.mjt");
+  var ph = acre.require("lib/propbox/helpers.sjs");
+  var image = acre.require("lib/template/imagecomponents");
+  var i18n = acre.require("lib/i18n/i18n.sjs");
+  var i18n_c = acre.require("lib/i18n/components.mjt");
+  var _ = i18n.gettext;
+  var lang = i18n.lang;
+  var collection = acre.require("lib/propbox/collection.mjs");
+  var qc = acre.require("lib/propbox/queries_collection.sjs");
+
+  var topics = [
+    "/m/083gwkc",
+    "/m/083gwkn",
+    "/m/083gwk6",
+    "/m/09sd771",
+    "/m/0cg5lcv",
+    "/m/0cf_lfy",
+    "/m/0f_6z63",
+    "/m/0f_6z67",
+    "/m/0f_6z6c",
+    "/m/0f_6z6k",
+    "/m/0f_6z6s",
+    "/m/0f_6z6y",
+    "/m/0f_6z74",
+    "/m/0f_6z7f",
+    "/m/0gdkyfx"
+  ];
+  var pids = [
+    "/film/performance/actor",
+    "/film/performance/character",
+    "/film/performance/character_note",
+    "/film/performance/special_performance_type"
+  ];
+
+
+  var c = this.exports.c = {
+    collection: qc.collection(topics, pids, lang)
+  };
+
+</acre:script>
+
+
+<acre:block def="content_body()">
+  ${collection.collection(c.collection.structures, c.collection.values, lang)}
+</acre:block>
+

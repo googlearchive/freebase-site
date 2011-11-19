@@ -30,40 +30,15 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mock").playback(this, "schema/test/playback_test_proploader.json");
+acre.require("test/mock").playback(this, "schema/test/playback_test_proploader_load_all.json");
 
 var h = acre.require("helper/helpers.sjs");
 var proploader = acre.require("schema/proploader.sjs");
 
-test("is_prop_id", function() {
-  var valid = ["/a/b/c", "/a/b/c/d", "/a/b/c/d/e"];
-  valid.forEach(function(id) {
-    ok(proploader.is_prop_id(id), "valid:" + id);
-  });
-  var invalid = ["/a/b", "/a", "/", ""];
-  invalid.forEach(function(id) {
-    ok(!proploader.is_prop_id(id), "invalid: " + id);
-  });
-});
-
-test("get_type_id", function() {
-  same(proploader.get_type_id("/a/b/c"), "/a/b");
-  var invalid = ["/a/b", "/a", "/", ""];
-  invalid.forEach(function(id) {
-    try {
-      proploader.get_type_id(id);
-      ok(false, "Expected invalid property id: " + id);
-    }
-    catch (ex) {
-      ok(true, ""+ex);
-    }
-  });
-});
-
-test("load", function() {
+test("load all", function() {
   var result;
   var pid = "/film/performance/film";
-  proploader.load(pid)
+  proploader.load(true, pid)
     .then(function(props) {
       result = props;
     });
@@ -72,10 +47,13 @@ test("load", function() {
   var schema = result[pid];
   ok(schema, "Got property schema");
   ok(schema.expected_type && schema.expected_type.properties && schema.expected_type.properties.length,
-     "Got disambiguating properties");
-  schema.expected_type.properties.forEach(function(prop) {
-    ok(prop["/freebase/property_hints/disambiguator"] == true, "Expected only disambiguators");
+     "Got deep properties");
+  // just look for some none disambiguating properties
+  var props = schema.expected_type.properties.filter(function(prop) {
+    return prop["/freebase/property_hints/disambiguator"] != true;
   });
+  ok(props.length, "Got all deep properties");
 });
+
 
 acre.test.report();

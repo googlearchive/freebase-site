@@ -64,7 +64,7 @@ class ActionSetupAcre:
     c.log('*' * 65)
     c.log('')
     c.log('To run acre, type: cd %s; ./acre appengine-run' % c.options.acre_dir)
-    c.log('And then on your browser: http://acre.%s:%s/acre/status' % (c.options.acre_host, c.options.acre_port))
+    c.log('And then on your browser: http://%s:%s/acre/status' % (c.options.acre_host, c.options.acre_port))
     c.log('')
     c.log('*' * 65)
 
@@ -170,8 +170,8 @@ class ActionDeployAcre:
     site = Site.Get(c)
     acre = Acre.Get(c)
 
-    config, app_id = Site.ResolveConfig(c, c.options.config, c.options.site_dir, c.options.host)
-
+    config, app_id, app_version = Site.ResolveConfig(c, c.options.config, c.options.site_dir, c.options.host)
+    
     if not site:
       return c.error("Could not figure out location of site. You can specify --site_dir as an option, or run the script from within a site svn checkout directory structure to figure it out automatically.")
 
@@ -191,20 +191,18 @@ class ActionDeployAcre:
     if not c.options.nosite:
       status = acre.start(war=True)
 
-      #status = acre.is_running(war=True)
-
       if not status:
         return c.error('Could not start new acre war bundle under appengine development server, aborting deployment')
     
-    c.log("*" * 65, color=c.BLUE)
-    c.log("\nAcre Deployment Summary\n", color=c.BLUE)
-    c.log("\tConfig: %s" % config, color=c.BLUE)
-    if c.options.host:
-      c.log("\tSite URL: http://%s" % c.options.host, color=c.BLUE)
-    c.log("\tAppEngine URL: http://%s.appspot.com/" % app_id, color=c.BLUE)
-    c.log("\tAppEngine Dashboard: https://appengine.google.com/dashboard?&app_id=%s" % app_id, color=c.BLUE)
-    c.log("\tFreebase Site Keystore: http://environments.svn.freebase-site.googlecode.dev.%s.appspot.com/acre/keystore_console\n" % app_id, color=c.BLUE)
-    c.log("*" * 65, color=c.BLUE)
+    c.log("\nDeployment Summary " + "*" * 45 + "\n", color=c.BLUE)
+    c.log("  Config: %s" % config, color=c.BLUE)
+    c.log("  Deployed URL: http:/%s/" % acre.url(True), color=c.BLUE)
+    if app_version is None:
+      c.log("  AppEngine URL: http://%s.appspot.com/" % app_id, color=c.BLUE)
+    else:
+      c.log("  AppEngine URL: http://%s.%s.appspot.com/" % (app_version, app_id), color=c.BLUE)
+    c.log("  AppEngine Dashboard: https://appengine.google.com/dashboard?&app_id=%s\n" % app_id, color=c.BLUE)
+    c.log("*" * 65 + "\n", color=c.BLUE)
 
     if os.path.isdir(acre.site_dir(war=True) + '/googlecode'):
       shutil.rmtree(acre.site_dir(war=True)+ '/googlecode')
@@ -215,7 +213,6 @@ class ActionDeployAcre:
 
       if not len(apps):
         raise FatalException("Something went wrong, there are no apps to bundle with Acre, aborting!")
-        
 
       for app in apps:
         result = app.copy_to_acre_dir(war=True)
@@ -225,17 +222,17 @@ class ActionDeployAcre:
       if not c.options.failover:
         acre.bundle_environments()
 
-      c.log('The following apps are bundled with acre:')
+      c.log('The following apps were bundled:\n')
       for app in sorted(apps):
         c.log('\t%s' % app)
 
 
-    c.log('Starting deployment of live version, handing off to appcfg...', color=c.BLUE)
+    c.log('\nStarting deployment...', color=c.BLUE)
     if not acre.deploy(target=config): 
       return c.error('Deployment failed.')
 
     if c.options.failover:
-      c.log('Starting deployment of failover version.', color=c.BLUE)
+      c.log('\nStarting deployment of failover version...', color=c.BLUE)
       r = acre.prepare_failover()
       
       if not r:
@@ -244,7 +241,7 @@ class ActionDeployAcre:
       acre.bundle_environments()
 
       if not acre.deploy(config): 
-        return c.error('Deployment failed.')
+        return c.error('Failover deployment failed.')
       
     return True
 
@@ -745,7 +742,7 @@ class ActionSpeedTest:
   def appengine_logs_url(self):
     c = self.context
 
-    appengine_app_id = Site.ResolveConfig(c, c.options.config, c.options.site_dir, c.options.host)
+    site_config, appengine_app_id, appengine_app_version = Site.ResolveConfig(c, c.options.config, c.options.site_dir, c.options.host)
 
     if not appengine_app_id:
       return None
@@ -950,7 +947,7 @@ class ActionSpeedTest:
     
 
     print "\nStarting %s requests to host %s" % (len(urls) * c.options.concurrent, c.options.host)
-    site_config, appengine_app_id = Site.ResolveConfig(c, c.options.config, c.options.site_dir, c.options.host)
+    site_config, appengine_app_id, appengine_app_version = Site.ResolveConfig(c, c.options.config, c.options.site_dir, c.options.host)
 
     if self.appengine_logs_url:
       print "AppEngine Logs: %s" % self.appengine_logs_url
@@ -1119,7 +1116,7 @@ class ActionTest:
   def __call__(self):
     c = self.context
 
-    config, app_id = Site.ResolveConfig(c, c.options.config, site_dir=c.options.site_dir, host=c.options.host)
+    config, app_id, app_version = Site.ResolveConfig(c, c.options.config, site_dir=c.options.site_dir, host=c.options.host)
 
     print config
     return True
@@ -1251,7 +1248,7 @@ def main():
       apps = options.app.split(',')
       if apps[0] == "all":
         apps = Site.Get(context).apps()
-
+        
       for i, app in enumerate(apps):
         options.app = app
         context.set_app(App.Get(context, app, options.version))

@@ -10,47 +10,16 @@
          "route_as":"script",
          "location":"/default/keystore"
        }
+     },
+     {
+       "from": {
+         "path": "/" 
+       },
+       "to": {
+         "route_as": "script",
+         "location": "//environments.svn.freebase-site.googlecode.dev/@ACRE_FREEBASE_SITE_ADDR@"
+       } 
      }
    ]
-  },
-  {
-    "host": [
-      "@ACRE_HOST_BASE@",
-      "www.@ACRE_HOST_BASE@"
-    ],
-    "rules": [
-      {
-        "from": {
-          "path": "/" 
-        },
-        "to": {
-          "route_as": "app",
-          "location": "//release.apps.site.freebase.dev"
-        } 
-      }
-    ]
-  },
-  {
-    "host": ".@ACRE_METAWEB_BASE_ADDR@",
-    "rules": [
-      {
-        "from": { 
-          "path": "/_helloworld" 
-        },
-        "to": {
-         "route_as": "script",
-          "location": "//environments.svn.freebase-site.googlecode.dev/helloworld.sjs"
-        }
-      }, 
-      {
-        "from": {
-          "path": "/" 
-        },
-        "to": {
-          "route_as": "script",
-          "location": "//environments.svn.freebase-site.googlecode.dev/@ACRE_FREEBASE_SITE_ADDR@"
-        } 
-      }
-    ]
   }
 ]

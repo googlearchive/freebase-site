@@ -111,6 +111,12 @@
       expect_exception(ep.Empty, function() {
         ep.validate({expected_type:{id:"/type/text"}}, {lang:"/lang/en"});
       });
+
+      // create_new values
+      ep.validate({expected_type:{id:"/some/type"}}, {create_new:"create_new", lang:"/lang/en"}, {create_new:"create_new", lang:"/lang/en"});
+      expect_exception(ep.Invalid, function() {
+        ep.validate({expected_type:{id:"/some/type"}}, {create_new:"create_new"});
+      });
     });
 
 
@@ -139,6 +145,9 @@
       same(ep.clause({id:"foo"}, "insert", {id:"/type/ect", included_types:["/type/object", "/type/inc_type2"]}), {id:"foo", connect:"insert", type:[{id:"/type/ect", connect:"insert"}, {id:"/type/inc_type2", connect:"insert"}]});
 
       same(ep.clause({id:"foo"}, "insert", {id:"/type/object", included_types:["/type/inc_type"]}), {id:"foo", connect:"insert", type:[{id:"/type/inc_type", connect:"insert"}]});
+
+      same(ep.clause({create_new:"foo", lang:"bar"}, "insert"), {id:null, name:{value:"foo", lang:"bar"}, create:"unconditional", connect:"insert"});
+      same(ep.clause({create_new:"foo", lang:"bar"}, "update"), {id:null, name:{value:"foo", lang:"bar"}, create:"unconditional", connect:"update"});
     });
 
 
@@ -291,6 +300,11 @@
 
       // no-op
       same(ep.diff(structure, [{id:"foo"}], [{id:"foo"}]), []);
+
+      // create new
+      same(ep.diff(structure, [{id:"foo"}], [{create_new:"bar",lang:"/lang/fr"}]),
+           [{id:null, connect:"replace", create:"unconditional",
+             name:{value:"bar", lang:"/lang/fr"}, type:[{id:"/some/type", connect:"insert"}]}]);
     });
 
 
@@ -309,6 +323,13 @@
                    [{id:"foo"}, {id:"bar"}, {id:"baz"}],
                    [{id:"foo"}, {id:"baz"}, {id:"hello"}]),
            [{id:"bar", connect:"delete"}, {id:"hello", connect:"insert", type:[{id:"/some/type", connect:"insert"}]}]);
+
+      same(ep.diff(structure,
+                   [{id:"foo"}, {id:"bar"}, {id:"baz"}],
+                   [{id:"foo"}, {create_new:"hello", lang:"/lang/en"}, {id:"baz"}]),
+           [{id:"bar", connect:"delete"}, {id:null, connect:"insert", create:"unconditional",
+                                           name:{value:"hello", lang:"/lang/en"},
+                                           type:[{id:"/some/type", connect:"insert"}]}]);
     });
 
 
@@ -331,7 +352,7 @@
     });
 
 
-    test("unique-text-delete", function() {console.log(">>>>> unique-text-delete");
+    test("unique-text-delete", function() {
       var context = $("#unique-text-delete");
       $(".data-input", context).data_input({lang:"/lang/en"});
       var structure = {
@@ -644,7 +665,7 @@
 
     test("unique-topic-insert", function() {
       var context = $("#unique-topic-insert");
-      $(".data-input", context).data_input({lang:"/lang/en"});
+      $(".data-input", context).data_input({lang:"/lang/fr"});
       var structure = {
         id: "/prop/id",
         unique: true,
@@ -654,6 +675,12 @@
       same(ep.parse(structure, context), []);
       fb_select($(".fb-input", context), "/en/bob_dylan");
       same(ep.parse(structure, context), [{id:"/en/bob_dylan", connect:"replace", type:[{id:"/people/person", connect:"insert"},{id:"/common/topic", connect:"insert"}]}]);
+
+      // create_new
+      fb_select_new($(".fb-input", context), "bobby rullo");
+      same(ep.parse(structure, context), [{id:null, connect:"replace", create:"unconditional",
+                                           name:{value:"bobby rullo", lang:"/lang/fr"},
+                                           type:[{id:"/people/person", connect:"insert"},{id:"/common/topic", connect:"insert"}]}]);
     });
 
 
@@ -685,6 +712,13 @@
       same(ep.parse(structure, context), []);
       fb_select($(".fb-input", context), "/en/foo");
       same(ep.parse(structure, context), [{id:"/en/foo", connect:"replace", type:[{id:"/people/person", connect:"insert"},{id:"/common/topic", connect:"insert"}]}]);
+
+
+      // create_new
+      fb_select_new($(".fb-input", context), "bobby rullo");
+      same(ep.parse(structure, context), [{id:null, connect:"replace", create:"unconditional",
+                                           name:{value:"bobby rullo", lang:"/lang/en"},
+                                           type:[{id:"/people/person", connect:"insert"},{id:"/common/topic", connect:"insert"}]}]);
     });
 
 
@@ -713,6 +747,13 @@
       same(ep.parse(structure, context), []);
       fb_select($(".fb-input:last", context), "/en/jack_kerouac");
       same(ep.parse(structure, context), [{id:"/en/jack_kerouac", connect:"insert",type:[{id:"/people/person", connect:"insert"},{id:"/common/topic", connect:"insert"}]}]);
+
+
+      // create_new
+      fb_select_new($(".fb-input:last", context), "bobby rullo");
+      same(ep.parse(structure, context), [{id:null, connect:"insert", create:"unconditional",
+                                           name:{value:"bobby rullo", lang:"/lang/en"},
+                                           type:[{id:"/people/person", connect:"insert"},{id:"/common/topic", connect:"insert"}]}]);
     });
 
     test("non-unique-topic-delete", function() {
@@ -745,6 +786,13 @@
       same(ep.parse(structure, context), []);
       fb_select($(".fb-input:last", context), "/en/jack_kerouac");
       same(ep.parse(structure, context), [{id:"/en/lady_gaga", connect:"delete"}, {id:"/en/jack_kerouac", connect:"insert", type:[{id:"/people/person", connect:"insert"},{id:"/common/topic", connect:"insert"}]}]);
+
+      // create_new
+      fb_select_new($(".fb-input:last", context), "bobby rullo");
+      same(ep.parse(structure, context), [{id:"/en/lady_gaga", connect:"delete"},
+                                          {id:null, connect:"insert", create:"unconditional",
+                                           name:{value:"bobby rullo", lang:"/lang/en"},
+                                           type:[{id:"/people/person", connect:"insert"},{id:"/common/topic", connect:"insert"}]}]);
     });
 
     test("non-unique-topic-noop", function() {
@@ -932,6 +980,29 @@
           type: [{id:"/finance/currency", connect:"insert"},{id:"/common/topic", connect:"insert"}]
         }]
       }]);
+
+      // create_new
+      fb_select_new($(".data-input:first", context).find(".fb-input"), "new currency");
+      same(ep.parse(structure, context), [{
+        id: null,
+        create: "unconditional",
+        connect: "replace",
+        type: [{id:"/measurement_unit/dated_money_value", connect:"insert"}],
+        "/measurement_unit/dated_money_value/amount": [{
+          value: 6087542,
+          connect: "replace"
+        }],
+        "/measurement_unit/dated_money_value/currency": [{
+          id: null,
+          connect: "replace",
+          create: "unconditional",
+          name: {
+            value: "new currency",
+            lang: "/lang/en"
+          },
+          type: [{id:"/finance/currency", connect:"insert"},{id:"/common/topic", connect:"insert"}]
+        }]
+      }]);
     });
 
     test("unique-mediator-delete", function() {
@@ -1037,6 +1108,26 @@
         "/measurement_unit/dated_money_value/currency": [{
           id: "/en/korean_won",
           connect: "replace",
+          type: [{id:"/finance/currency", connect:"insert"},{id:"/common/topic", connect:"insert"}]
+        }]
+      }]);
+
+      // create_new
+      fb_select_new($(".data-input:first", context).find(".fb-input"), "new currency");
+      same(ep.parse(structure, context), [{
+        id: "/m/123",
+        "/measurement_unit/dated_money_value/amount": [{
+          value: 1200000,
+          connect: "replace"
+        }],
+        "/measurement_unit/dated_money_value/currency": [{
+          id: null,
+          connect: "replace",
+          create: "unconditional",
+          name: {
+            value: "new currency",
+            lang: "/lang/en"
+          },
           type: [{id:"/finance/currency", connect:"insert"},{id:"/common/topic", connect:"insert"}]
         }]
       }]);
@@ -1162,6 +1253,50 @@
           type: [{id: "/tv/tv_series_season", connect:"insert"},{id:"/common/topic", connect:"insert"}]
         }]
       }]);
+
+      // create_new
+      fb_select_new($(".fb-input:first", context), "Matthew Wolf");
+      fb_select_new($(".fb-input:eq(4)", context), "New Lost Season");
+      same(ep.parse(structure, context), [{
+        id: null,
+        create: "unconditional",
+        connect: "insert",
+        type: [{id:"/tv/regular_tv_appearance", connect:"insert"}],
+        "/tv/regular_tv_appearance/actor": [{
+          id: null,
+          name: {
+            value: "Matthew Wolf",
+            lang: "/lang/en"
+          },
+          connect: "replace",
+          create: "unconditional",
+          type: [{id: "/tv/tv_actor", connect:"insert"},{id:"/people/person", connect:"insert"},{id:"/common/topic", connect:"insert"}]
+        }],
+        "/tv/regular_tv_appearance/character": [{
+          id: "/en/jack_shephard",
+          connect: "replace",
+          type: [{id: "/tv/tv_character", connect:"insert"},{id:"/common/topic", connect:"insert"}]
+        }],
+        "/tv/regular_tv_appearance/seasons": [{
+          id: "/en/lost_season_1",
+          connect: "insert",
+          type: [{id: "/tv/tv_series_season", connect:"insert"},{id:"/common/topic", connect:"insert"}]
+        },{
+          id: "/en/lost_season_2",
+          connect: "insert",
+          type: [{id: "/tv/tv_series_season", connect:"insert"},{id:"/common/topic", connect:"insert"}]
+        },{
+          id: null,
+          name: {
+            value: "New Lost Season",
+            lang: "/lang/en"
+          },
+          connect: "insert",
+          create: "unconditional",
+          type: [{id: "/tv/tv_series_season", connect:"insert"},{id:"/common/topic", connect:"insert"}]
+        }]
+      }]);
+
     });
 
     test("non-unique-mediator-delete-replace-noop", function() {
@@ -1238,6 +1373,44 @@
           connect:"delete"
         }]
       }]);
+
+      // create_new
+      fb_select_new($(".fb-input:first", context), "Matthew Wolf");
+      fb_select_new($(".fb-input:eq(2)", context), "Pilot Season");
+      same(ep.parse(structure, context), [{
+        id: "/m/mid123",
+        "/tv/regular_tv_appearance/actor": [{
+          id: null,
+          name: {
+            value: "Matthew Wolf",
+            lang: "/lang/en"
+          },
+          connect: "replace",
+          create: "unconditional",
+          type: [{id: "/tv/tv_actor", connect:"insert"},{id:"/people/person", connect:"insert"},{id:"/common/topic", connect:"insert"}]
+        }],
+        "/tv/regular_tv_appearance/character": [{
+          id: "/en/john_locke",
+          connect: "replace",
+          type: [{id: "/tv/tv_character", connect:"insert"},{id:"/common/topic", connect:"insert"}]
+        }],
+        "/tv/regular_tv_appearance/seasons": [{
+          id: "/en/lost_season_1",
+          connect: "delete"
+        },{
+          id: "/en/lost_season_3",
+          connect: "delete"
+        },{
+          id: null,
+          name: {
+            value: "Pilot Season",
+            lang: "/lang/en"
+          },
+          connect: "insert",
+          create: "unconditional",
+          type: [{id: "/tv/tv_series_season", connect:"insert"},{id:"/common/topic", connect:"insert"}]
+        }]
+      }]);
     });
   };
 
@@ -1247,6 +1420,13 @@
   function fb_select(input, id) {
     var data = {id: id};
     input.data("data.suggest", data).trigger("fb-select", data);
+  };
+
+  /**
+   * Emulate an fb-select event from the suggest input
+   */
+  function fb_select_new(input, name) {
+    input.data("data.suggest", name).trigger("fb-select-new", name);
   };
 
   /**

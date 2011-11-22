@@ -76,6 +76,10 @@
           if (data.id) {
             mydata.id = data.id;
           }
+          else if (data.create_new) {
+            mydata.create_new = data.create_new;
+            mydata.lang = self.metadata.lang || o.lang;
+          }
           else {
             mydata.value = data.value;
             if (self.metadata.type === "/type/text") {
@@ -255,10 +259,12 @@
       /**
        * sameas as fb.suggest_options.instance()
        */
+      var is_system_type = $.data_input.is_metaweb_system_type(type);
       var o = {
         category: "instance",
         type: type,
-        type_strict: $.data_input.is_metaweb_system_type(type) ? "any" : "should"
+        type_strict: is_system_type ? "any" : "should",
+        suggest_new: is_system_type ? false : "Create new"
       };
       var filter = [
         "any",
@@ -315,6 +321,9 @@
         .bind("fb-select.validate_topic", function(e, data) {
           self.input.val(data.name != null ? data.name : data.id);
           self.valid(data);
+        })
+        .bind("fb-select-new.validate_topic", function(e, data) {
+          self.valid(data);
         });
     },
 
@@ -323,6 +332,9 @@
     },
 
     valid: function(data) {
+      if (typeof data === "string") {
+        data = {create_new:data};
+      }
       this.input.trigger("valid", data);
     },
 

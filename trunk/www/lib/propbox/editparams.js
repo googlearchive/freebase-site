@@ -310,7 +310,6 @@
           deletes.push(ep.clause(old_value, "delete"));
         }
       }
-
       for (i=0,l=new_values.length; i<l; i++) {
         var new_value = new_values[i];
         try {
@@ -365,12 +364,39 @@
           }
         }
       }
+      else if (!ep.isEmpty(data.create_new)) {
+        if (ep.isEmpty(data.lang)) {
+          throw new ep.Invalid(structure, data, "Expected lang for creating a new topic");
+        }
+      }
       else if (ep.isEmpty(data.id)) {
         // empty value means delete
         throw new ep.Empty(structure, data);
       }
 
       return data;
+    },
+
+    type_clause: function(expected_type) {
+      var clause = [];
+      if (expected_type) {
+        if (expected_type.enumeration) {
+          // don't want to add new types to expected_types that are enumerations (i.e., /people/gender)
+          return clause;
+        }
+        if (expected_type.id !== "/type/object") {
+          clause.push({id:expected_type.id, connect:"insert"});
+        }
+        var inc_types = expected_type.included_types;
+        if (inc_types) {
+          inc_types.forEach(function(inc_type) {
+            if (inc_type !== "/type/object") {
+              clause.push({id:inc_type, connect:"insert"});
+            }
+          });
+        }
+      }
+      return clause;
     },
 
     clause: function(value, connect, expected_type) {
@@ -382,21 +408,22 @@
          * we want to assert the expected type and all its included types.
          */
         if (connect !== "delete" && expected_type && !expected_type.enumeration) {
-          var types = [];
-          if (expected_type.id !== "/type/object") {
-            types.push({id:expected_type.id, connect:"insert"});
-          }
-          var inc_types = expected_type.included_types;
-          if (inc_types) {
-            inc_types.forEach(function(inc_type) {
-              if (inc_type !== "/type/object") {
-                types.push({id:inc_type, connect:"insert"});
-              }
-            });
-          }
+          var types = ep.type_clause(expected_type);
           if (types.length) {
             clause.type = types;
           }
+        }
+      }
+      else if (value.create_new && value.lang) {
+        clause.name = {
+          value: value.create_new,
+          lang: value.lang
+        };
+        clause.id = null;
+        clause.create = "unconditional";
+        var types = ep.type_clause(expected_type);
+        if (types.length) {
+          clause.type = types;
         }
       }
       else {

@@ -47,7 +47,14 @@
         base_ajax_url: fb.h.ajax_url("lib/propbox"),
         base_static_url: fb.h.static_url("lib/propbox"),
         lang: fb.lang || "/lang/en",
-        suggest: suggest_options()
+        suggest: suggest_options(),
+
+        /**
+         * The incompatible_types interface.
+         * Must implement "check" and "suggest_incompatible_callback"
+         * @see lib/incompatible_types/incompatible-types.js
+         */
+        incompatible_types: fb.incompatible_types
       });
 
       // Initialize filter menu collapse/expand

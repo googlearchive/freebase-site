@@ -86,9 +86,20 @@
               mydata.lang = self.metadata.lang || o.lang;
             }
           }
-          self.container.data("data", mydata);
-          self.container.removeClass("error").addClass("valid");
-          self.container.trigger("valid");
+          function compatible_callback() {
+            self.container.data("data", mydata);
+            self.container.removeClass("error").addClass("valid");
+            self.container.trigger("valid");
+          }
+          if (data.id && self.metadata.type && self.options.incompatible_types) {
+            // perform incompatible type check
+            self.options.incompatible_types.check(data.id, self.metadata.type,
+                                                  compatible_callback,
+                                                  self.options.incompatible_types.suggest_incompatible_callback(self.input, compatible_callback));
+          }
+          else {
+            compatible_callback();
+          }
         })
         .bind("invalid.data_input", function() {
           self.container.removeData("data");

@@ -323,7 +323,8 @@
       data_input
         .data_input({
           lang: propbox.options.lang,
-          suggest: propbox.options.suggest
+          suggest: propbox.options.suggest,
+          incompatible_types: propbox.options.incompatible_types
         })
         .bind("valid", function() {
           options.edit_row.trigger(options.event_prefix + "valid");

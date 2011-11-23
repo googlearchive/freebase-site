@@ -37,20 +37,26 @@
   var form = acre.require("propbox/form.mjt");
 </acre:script>
 
-<acre:block def="confirm_dialog()">
-  <div class="modal incompatible-dialog" style="display:none;">
+<acre:block def="overlay_dialog()">
+  <div class="modal incompatible-overlay-dialog" style="display:none;">
     <div class="modal-inner">
       <h1 class="modal-title">${_("Wait!")}</h1>
       <div class="modal-content">
-        <acre:script>
-          var args = {
-          topic: topic(),
-          existing: existing(),
-          incompatible: incompatible()
-          };
-        </acre:script>
-        <p>${h.template_sprintf(_("Because %(topic)s is already typed as %(existing)s, it's unlikely it should also be typed as %(incompatible)s."), args)}</p>
-        <p>${_("Are you sure you want to continue?")}</p>
+        ${description()}
+      </div>
+    </div>
+    <div class="modal-buttons right">
+      ${form.submit_buttons(_("Yes, add Type"), _("Cancel"), false, true)}
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="inline_dialog()">
+  <div class="incompatible-inline-dialog" style="display:none;position:absolute">
+    <div class="modal-inner">
+      <h1 class="modal-title">${_("Wait!")}</h1>
+      <div class="modal-content">
+        ${description()}
       </div>
     </div>
     <div class="modal-buttons right">
@@ -61,6 +67,20 @@
 
 
 <!!-- template_sprintf helpers !!-->
+
+<acre:block def="description()">
+  <acre:script>
+    var args = {
+    topic: topic(),
+    existing: existing(),
+    incompatible: incompatible()
+    };
+  </acre:script>
+  <div class="incompatible-description">
+    <p>${h.template_sprintf(_("Because %(topic)s is already typed as %(existing)s, it's unlikely it should also be typed as %(incompatible)s."), args)}</p>
+    <p>${_("Are you sure you want to continue?")}</p>
+  </div>
+</acre:block>
 
 <acre:block def="topic()">
   <span class="incompatible-topic">&lt;topic_name&gt;</span>

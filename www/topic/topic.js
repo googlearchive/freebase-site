@@ -51,7 +51,7 @@
 
         /**
          * The incompatible_types interface.
-         * Must implement "check" and "suggest_incompatible_callback"
+         * Must implement "check" and "inline_suggest_incompatible_callback"
          * @see lib/incompatible_types/incompatible-types.js
          */
         incompatible_types: fb.incompatible_types
@@ -161,7 +161,7 @@
       };
       fb.incompatible_types.check(fb.c.id, type_id,
         compatible_callback,
-        fb.incompatible_types.suggest_incompatible_callback(trigger, compatible_callback));
+        fb.incompatible_types.overlay_suggest_incompatible_callback(trigger, compatible_callback));
       return false;
     },
 

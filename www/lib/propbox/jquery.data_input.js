@@ -95,7 +95,7 @@
             // perform incompatible type check
             self.options.incompatible_types.check(data.id, self.metadata.type,
                                                   compatible_callback,
-                                                  self.options.incompatible_types.suggest_incompatible_callback(self.input, compatible_callback));
+                                                  self.options.incompatible_types.inline_suggest_incompatible_callback(self.input, compatible_callback));
           }
           else {
             compatible_callback();

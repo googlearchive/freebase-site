@@ -41,12 +41,12 @@ function incompatible_types(topic_id, type_id) {
   var q = [{
     id: null,
     type: "/dataworld/incompatible_types",
-    "existing:types": {
+    "existing:types": [{
       id: null,
       "/type/type/instance": {
         id: topic_id
       }
-    },
+    }],
     "incompatible:types": {
       id: type_id
     },
@@ -58,10 +58,12 @@ function incompatible_types(topic_id, type_id) {
       var incompatibles = [];
       for (var i=0,l=result.length; i<l; i++) {
         var data = result[i];
-        var existing = data["existing:types"].id;
-        if (existing !== type_id) {
-          incompatibles.push(existing);
-        }
+        var existing_types = data["existing:types"];
+        existing_types.forEach(function(existing) {
+          if (existing.id !== type_id) {
+            incompatibles.push(existing.id);
+          }
+        });
       }
       return incompatibles;
     });

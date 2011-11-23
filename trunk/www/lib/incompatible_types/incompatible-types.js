@@ -34,7 +34,8 @@
 
    var it = fb.incompatible_types = {
 
-     dialog: null,
+     overlay_dialog: null,
+     inline_dialog: null,
 
      /**
       * Check the compatibility of the types of topic_id to
@@ -71,17 +72,17 @@
       * The specific incompatible callback within the context of suggest input.
       * This callback will overlay a confirm dialog that the
       */
-     suggest_incompatible_callback: function(suggest_input, confirm_callback) {
+     overlay_suggest_incompatible_callback: function(suggest_input, confirm_callback) {
        return function(topic_id, existing_type_id, incompatible_type_id) {
-         if (!it.dialog) {
-           it.dialog = $(".incompatible-dialog");
+         if (!it.overlay_dialog) {
+           it.overlay_dialog = $(".incompatible-overlay-dialog");
          }
-         if (it.dialog.length) {
-           $(".incompatible-topic", it.dialog).text(topic_id);
-           $(".incompatible-existing", it.dialog).text(existing_type_id);
-           $(".incompatible-type", it.dialog).text(incompatible_type_id);
+         if (it.overlay_dialog.length) {
+           $(".incompatible-topic", it.overlay_dialog).text(topic_id);
+           $(".incompatible-existing", it.overlay_dialog).text(existing_type_id);
+           $(".incompatible-type", it.overlay_dialog).text(incompatible_type_id);
            var inst = suggest_input.data("suggest");
-           it.dialog.overlay({
+           it.overlay_dialog.overlay({
              close: "button",
              closeOnClick: false,
              load: true,
@@ -93,23 +94,67 @@
              },
              onClose: function() {
                suggest_input.focus().select();
-               $("button", it.dialog).unbind();
+               $("button", it.overlay_dialog).unbind();
              },
              onLoad: function() {
-               $(".cancel", it.dialog).focus();
-               $(".save", it.dialog).click(function() {
+               $(".cancel", it.overlay_dialog).focus();
+               $(".save", it.overlay_dialog).click(function() {
                  confirm_callback(topic_id, incompatible_type_id);
                });
              }
            });
          }
          else {
-           if (confirm("Because " + topic_id + " is already Typed as " + existing_type_id + ", it's unlikely it should also be Typed as " + incompatible_type_id + ". Are you shure you want to continue")) {
+           if (confirm(it.description(topic_id, existing_type_id, incompatible_type_id))) {
              confirm_callback(topic_id, incompatible_type_id);
            }
            suggest_input.focus().select();
          }
        };
+     },
+
+
+     inline_suggest_incompatible_callback: function(suggest_input, confirm_callback) {
+       return function(topic_id, existing_type_id, incompatible_type_id) {
+         if (!it.inline_dialog) {
+           it.inline_dialog = $(".incompatible-inline-dialog");
+         }
+         if (it.inline_dialog.length) {
+           $(".incompatible-topic", it.inline_dialog).text(topic_id);
+           $(".incompatible-existing", it.inline_dialog).text(existing_type_id);
+           $(".incompatible-type", it.inline_dialog).text(incompatible_type_id);
+
+           $(".save", it.inline_dialog).click(function() {
+             $("button", it.inline_dialog).unbind();
+             it.inline_dialog.hide();
+             suggest_input.focus().select();
+             confirm_callback(topic_id, incompatible_type_id);
+           });
+           $(".cancel", it.inline_dialog).click(function() {
+             $("button", it.inline_dialog).unbind();
+             it.inline_dialog.hide();
+             suggest_input.focus().select();
+           });
+
+           var inst = suggest_input.data("suggest");
+           var offset_parent = suggest_input.offsetParent();
+           var offset = suggest_input.position();
+
+           offset_parent.append(it.inline_dialog);
+           it.inline_dialog.css({top:offset.top+suggest_input.outerHeight(), left:offset.left});
+           it.inline_dialog.show();
+         }
+         else {
+           if (confirm(it.description(topic_id, existing_type_id, incompatible_type_id))) {
+             confirm_callback(topic_id, incompatible_type_id);
+           }
+           suggest_input.focus().select();
+         }
+       };
+     },
+
+     description: function(topic_id, existing_type_id, incompatible_type_id) {
+       return "Because " + topic_id + " is already Typed as " + existing_type_id + ", it's unlikely it should also be Typed as " + incompatible_type_id + ". Are you shure you want to continue";
      }
 
    };

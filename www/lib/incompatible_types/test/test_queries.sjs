@@ -68,5 +68,16 @@ test("incompatible_types /en/avatar_2009 and /tv/tv_program", function() {
   ok(result && !result.length, "/en/avatar_2009 and /tv/tv_program are compatible");
 });
 
+
+test("incompatible_types /en/google and /location/location", function() {
+  var result;
+  q.incompatible_types("/en/google", "/location/location")
+    .then(function(r) {
+      result = r;
+    });
+  acre.async.wait_on_results();
+  ok(result && result.length, "/en/google and /location/location are incompatible");
+});
+
 acre.test.report();
 

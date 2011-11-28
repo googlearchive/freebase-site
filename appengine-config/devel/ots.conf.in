@@ -1,6 +1,6 @@
 [
   {
-    "host": ".@ACRE_METAWEB_BASE_ADDR@",
+    "host": null,
     "rules": [
       {
         "from" : { 
@@ -10,7 +10,12 @@
           "route_as":"script",
           "location":"/default/keystore"
         }
-      },
+      }
+    ]
+  },
+  {
+    "host": ".@ACRE_METAWEB_BASE_ADDR@",
+    "rules": [
       {
         "from": {
           "path": "/" 

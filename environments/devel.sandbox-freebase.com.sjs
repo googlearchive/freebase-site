@@ -11,6 +11,7 @@ var environment_rules = {
     },
 
     // Override prefix.
+    // For test urls
     "prefix" : [
         // Test routing rules to test non-user facing apps (core libraries, etc.)
         {prefix:"/test_lib_appeditor-services",  app:"lib", script:"appeditor-services/test"},

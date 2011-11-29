@@ -321,7 +321,7 @@
 
     if (!success) {
       success = function(data) {
-        window.location.href = "/";
+        window.location.reload();
       };
     }
 

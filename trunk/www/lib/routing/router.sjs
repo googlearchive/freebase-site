@@ -337,7 +337,6 @@ function extend_rules(rules, environment_rules) {
   // Prefix environment override.
 
   if (environment_rules["prefix"]) { 
-    if (!("prefix" in rules)) rules["prefix"] = [];
 
     // Holds prefix -> index in prefix routing array. 
     var prefix_index = {}
@@ -412,6 +411,7 @@ function route(rules, scope) {
   }
 
   for (var i=0,l=routers.length; i<l; i++) {
+    syslog.debug({}, "trying router " + routers[i][0]);
     var name = routers[i][0];
     var router_class = routers[i][1];
     var router = new router_class(rules["labels"]);

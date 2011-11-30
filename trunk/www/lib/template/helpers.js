@@ -74,19 +74,19 @@
       return params;
     },
 
-  /**
-   * All url helpers take variable number of arguments (varargs),
-   * where you can pass it a list of paths followed by
-   * a querystring dicionary or tuple array (@see parse_params).
-   *
-   * xxx_url(path1, path2, path3, ..., params) => path1 + path2 + path3 + ? + $.params(params)
-   */
+    /**
+     * All url helpers take variable number of arguments (varargs),
+     * where you can pass it a list of paths followed by
+     * a querystring dicionary or tuple array (@see parse_params).
+     *
+     * xxx_url(path1, path2, path3, ..., params) => path1 + path2 + path3 + ? + $.params(params)
+     */
 
-   /**
-    * build url
-    * Use to construct urls to any host
-    * (i.e, host/path?params)
-    */
+    /**
+     * build url
+     * Use to construct urls to any host
+     * (i.e, host/path?params)
+     */
     build_url: function(host /**, path1, path2, ..., params **/) {
       if (host && host.indexOf('://') === -1) {
         throw "Host must contain scheme: " + host;
@@ -130,11 +130,11 @@
       return url;
     },
 
-   /**
-    * freebase url
-    * Use to link to pages on freebase.com
-    * (i.e, http://www.freebase.com/path?params)
-    */
+    /**
+     * freebase url
+     * Use to link to pages on freebase.com
+     * (i.e, http://www.freebase.com/path?params)
+     */
     fb_url: function() {
       var args = Array.prototype.slice.call(arguments);
       args.unshift(null); // host is null to specify relative url
@@ -239,7 +239,7 @@
     },
 
     /**
-     * freebase googleapis url 
+     * freebase googleapis url
      * Use for links to freebase apis
      * (i.e., https://www.googleapis.com/freebase/v1/path?params)
      */
@@ -252,17 +252,17 @@
       throw "fb.acre.freebase.googleapis_url is not defined";
     },
 
-   /**
-    * freebase wiki url
-    * Use for links to the freebase wiki
-    * (i.e., http://wiki.freebase.com/wiki//<page>)
-    *
-    * Note that this is a little bit different from other forms of url helpers
-    * in that the path, "/wiki/" is automatically prepended to the page parameter
-    * so that you only need to pass the name of the wiki page
-    *
-    * wiki_url("Enumerated_type") => http://wiki.freebase.com/wiki/Enumerated_type
-    */
+    /**
+     * freebase wiki url
+     * Use for links to the freebase wiki
+     * (i.e., http://wiki.freebase.com/wiki//<page>)
+     *
+     * Note that this is a little bit different from other forms of url helpers
+     * in that the path, "/wiki/" is automatically prepended to the page parameter
+     * so that you only need to pass the name of the wiki page
+     *
+     * wiki_url("Enumerated_type") => http://wiki.freebase.com/wiki/Enumerated_type
+     */
     wiki_url: function(page) {
       var args = Array.prototype.slice.call(arguments);
       args.unshift("http://wiki.freebase.com", "/wiki/");
@@ -285,6 +285,47 @@
       return (type_id.indexOf("/type/") === 0 ||
               (type_id.indexOf("/common/") === 0 && type_id !== "/common/topic") ||
               (type_id.indexOf("/freebase/") === 0 && type_id.indexOf("_profile") === (type_id.length - 8)));
+    },
+
+    /**
+     * Get the key value of a MQL id. If with_ns is TRUE, return a tuple, [namespace, key]
+     *
+     * id_key("/a/b/c/d") === "d"
+     * id_key("/a/b/c/d", true) === ["/a/b/c", "d"]
+     */
+    id_key: function(id, with_ns) {
+      var parts = id.split("/");
+      var key = parts.pop();
+      if (with_ns) {
+        var ns = parts.join("/");
+        if (ns === "") {
+          ns = "/";
+        }
+        return [ns, key];
+      }
+      else {
+        return key;
+      }
+    },
+
+    /**
+     * Get the language code given a freebase lang id
+     * lang_code("/lang/<code>") == "<code>"
+     *
+     * @see lang_id
+     */
+    lang_code: function(id) {
+      return h.id_key(id);
+    },
+
+    /**
+     * Get the freebase lang id given a language code
+     * lang_id("<code>") === "/lang/<code>"
+     *
+     * @see lang_code
+     */
+    lang_id: function(code) {
+      return "/lang/" + h.lang_code(code);
     }
 
   };

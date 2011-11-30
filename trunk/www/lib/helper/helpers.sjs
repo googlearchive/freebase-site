@@ -59,7 +59,6 @@ var exports = {
   "is_commons_id": is_commons_id,
   "id_key": id_key,
   "lang_code": lang_code,
-  "lang_id": lang_id,
   "get_attribution": get_attribution,
   "fb_object_type": fb_object_type,
 
@@ -521,23 +520,10 @@ function id_key(id, with_ns) {
 };
 
 /**
- * Get the language code given a freebase lang id
- * lang_code("/lang/<code>") == "<code>"
- *
- * @see lang_id
+ * @see id_key
  */
-function lang_code(id) {
-  return id_key(id);
-};
-
-/**
- * Get the freebase lang id given a language code
- * lang_id("<code>") === "/lang/<code>"
- *
- * @see lang_code
- */
-function lang_id(code) {
-  return "/lang/" + lang_code(code);
+function lang_code(lang_id) {
+  return id_key(lang_id);
 };
 
 /**
@@ -607,7 +593,7 @@ function get_attribution(obj) {
           source = mdo;
         } else if (app) {
           source = app;
-        }
+        }        
       }
       if (!user) {
         user = obj["the:creator"];  // from lib/queries/creator.sjs
@@ -834,7 +820,7 @@ str_format.format = function(parse_tree, argv) {
       if (/[^s]/.test(match[8]) && (get_type(arg) != 'number')) {
         throw(sprintf('[sprintf] expecting number but found %s', get_type(arg)));
       }
-
+      
       switch (match[8]) {
         case 'b': arg = arg.toString(2); break;
         case 'c': arg = String.fromCharCode(arg); break;

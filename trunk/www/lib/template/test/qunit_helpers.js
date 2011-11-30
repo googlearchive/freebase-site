@@ -193,32 +193,6 @@ function run_tests($, fb) {
   test("lib_base_url", function() {
     equal(h.lib_base_url("foo"), fb.acre.metadata.libs.foo.base_url + fb.acre.metadata.libs.foo.version);
   });
-
-  test("id_key", function() {
-    same(h.id_key("/"), "");
-    same(h.id_key("/", true), ["/", ""]);
-    same(h.id_key("/a"), "a");
-    same(h.id_key("/a", true), ["/", "a"]);
-    same(h.id_key("/a/b/c"), "c");
-    same(h.id_key("/a/b/c", true), ["/a/b", "c"]);
-    same(h.id_key("abc"), "abc");
-    same(h.id_key("abc", true), ["/", "abc"]);
-  });
-
-  test("lang_code", function() {
-    same(h.lang_code("/lang/en"), "en");
-    same(h.lang_code("/lang/en-gb"), "en-gb");
-    same(h.lang_code("he"), "he");
-    same(h.lang_code("/lang/foo"), "foo");
-    same(h.lang_code("bar"), "bar");
-  });
-
-  test("lang_id", function() {
-    same(h.lang_id("en"), "/lang/en");
-    same(h.lang_id("/lang/en"), "/lang/en");
-    same(h.lang_id("foo"), "/lang/foo");
-    same(h.lang_id("/lang/bar"), "/lang/bar");
-  });
 };
 
 

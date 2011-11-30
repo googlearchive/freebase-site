@@ -78,16 +78,6 @@ test("id_key", function() {
 test("lang_code", function() {
   same(h.lang_code("/lang/en"), "en");
   same(h.lang_code("/lang/en-gb"), "en-gb");
-  same(h.lang_code("he"), "he");
-  same(h.lang_code("/lang/foo"), "foo");
-  same(h.lang_code("bar"), "bar");
-});
-
-test("lang_id", function() {
-  same(h.lang_id("en"), "/lang/en");
-  same(h.lang_id("/lang/en"), "/lang/en");
-  same(h.lang_id("foo"), "/lang/foo");
-  same(h.lang_id("/lang/bar"), "/lang/bar");
 });
 
 test("fb_object_type", function() {
@@ -149,15 +139,15 @@ test("get_attribution", function() {
   equal(h.get_attribution({creator:null}).creator, null);
   equal(h.get_attribution({creator:{id:"/user/id"}}).creator, "/user/id");
   equal(h.get_attribution({creator: {id:"/user/id"}, attribution:null}).creator, "/user/id");
-
+  
   // attribution
   equal(h.get_attribution({attribution: {creator:"/attr/id"}}).creator, "/attr/id");
   equal(h.get_attribution({attribution:{creator:{id:"/attr/id"}}}).creator, "/attr/id");
-
+  
   // mdo
   equal(h.get_attribution({attribution:{"/dataworld/provenance/data_operation":{operator:{id:"/operator/id"}}}}).creator, "/operator/id");
   equal(h.get_attribution({attribution:{"/dataworld/provenance/data_operation":{id:"/source/id"}}}).source.id, "/source/id");
-
+  
   // oauth app
   equal(h.get_attribution({attribution:{"/freebase/written_by/application":{id:"/app/id"}}}).source.id, "/app/id");
 });

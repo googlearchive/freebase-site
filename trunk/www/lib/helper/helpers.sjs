@@ -1205,7 +1205,7 @@ function fb_url() {
     args.unshift(null); // host is null to specify relative url
   }
   if (i18n.lang !== "/lang/en") {
-    args.push({lang:i18n.lang});
+    args.push({lang:lang_code(i18n.lang)});
   }
   return build_url.apply(null, args);
 };

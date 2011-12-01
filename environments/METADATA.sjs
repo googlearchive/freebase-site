@@ -8,10 +8,10 @@ var METADATA = {
   "project": "freebase-site.googlecode.dev",
   "oauth_providers": {
     "freebase" : {
-      "redirect_URL": "https://" + acre.request.server_name + "/account/redirect"
+      "redirect_URL": "https://" + acre.request.server_name + "/account/signedin"
     },
     "freebase_writeuser" : {
-      "redirect_URL": "https://" + acre.request.server_name + "/account/redirect"
+      "redirect_URL": "https://" + acre.request.server_name + "/account/signedin"
     }
   }
 };

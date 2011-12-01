@@ -177,7 +177,7 @@
       </acre:block>
     </acre:block>
     <acre:block if="i18n.lang !== '/lang/en'">
-      <input type="hidden" name="lang" value="${i18n.lang}"/>
+      <input type="hidden" name="lang" value="${h.lang_code(i18n.lang)}"/>
     </acre:block>
     ${def.apply(null, def_params)}
   </form>

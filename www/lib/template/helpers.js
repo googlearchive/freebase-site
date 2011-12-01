@@ -138,8 +138,8 @@
     fb_url: function() {
       var args = Array.prototype.slice.call(arguments);
       args.unshift(null); // host is null to specify relative url
-      if (fb.lang !== "/lang/en") {
-        args.push({lang:fb.lang});
+      if (fb.lang && fb.lang !== "/lang/en") {
+        args.push({lang:h.lang_code(fb.lang)});
       }
       return h.build_url.apply(null, args);
     },

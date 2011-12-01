@@ -411,12 +411,24 @@ Validator.factory(scope, "MqlId", {
 
 /**
  * LangId
+ *
+ * Accepts full lang ids ("/lang/ko") or lang codes ("ko")
+ * This always return the full lang id.
+ *
+ * LangId("/lang/ko") == "/lang/ko"
+ * LangId("ko") === "/lang/ko"
  */
 var r_LangId= /^\/lang\/[A-Za-z0-9][A-Za-z0-9_-]*$/;
 Validator.factory(scope, "LangId", {
   "string": function(val, options) {
     if (r_LangId.test(val)) {
       return val;
+    }
+    else if (check_mqlkey(val)) {
+      /**
+       * Allow simple lang code parameters like lang=ko instead of (lang=%2Flang%2Fko).
+       */
+      return h.lang_id(val);
     }
     return this.invalid(this.key, val, "is invalid lang");
   }

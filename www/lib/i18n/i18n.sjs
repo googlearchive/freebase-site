@@ -749,7 +749,11 @@ var accept_langs = get_accept_langs();
 set_bundle(accept_langs);
 set_lang(acre.request.params.lang || acre.request.body_params.lang || "/lang/en");
 
-function set_lang(lang_id) {
+function set_lang(lang_id_or_code) {
+  /**
+   * Allow simple lang code parameters like lang=ko instead of (lang=%2Flang%2Fko).
+   */
+  var lang_id = h.lang_id(lang_id_or_code);
   var l = LANGS_BY_ID[lang_id];
   if (!l) {
     l = LANGS[0]; // lang/en

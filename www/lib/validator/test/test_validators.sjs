@@ -31,6 +31,7 @@
 
 acre.require('/test/lib').enable(this);
 
+var h = acre.require("helper/helpers.sjs");
 var validators = acre.require("validator/validators");
 var i18n = acre.require("i18n/i18n.sjs");
 
@@ -528,6 +529,14 @@ test("LangId", function() {
   i18n.LANGS.forEach(function(lang) {
     equal(validators.LangId(lang.id), lang.id);
   });
+  i18n.LANGS.forEach(function(lang) {
+    var lang_code = h.lang_code(lang.id);
+    equal(validators.LangId(lang_code), lang.id);
+  });
+
+  // any valid mql key works
+  equal(validators.LangId("foo"), "/lang/foo");
+
   var invalid = [
     "/lang/en@",
     "/LANG/bad",
@@ -536,7 +545,10 @@ test("LangId", function() {
     "/m/1234_",
     "/guid/en",
     "/en/lang",
-    "#9813313419073481097001090000134a"
+    "#9813313419073481097001090000134a",
+    "/lang",
+    "/lang/",
+    "@lang@"
   ];
   invalid.forEach(function(val) {
     try {

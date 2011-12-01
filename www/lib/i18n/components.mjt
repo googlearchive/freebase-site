@@ -53,7 +53,7 @@
             current_lang = lang.name
           } 
         </acre:script>
-        <option value="${lang.id}"
+        <option value="${h.lang_code(lang.id)}"
                 acre:attrs="lang.id === i18n.lang ? {'selected':'selected'} : {}">${lang.name}</option>
       </acre:block>
     </select>

@@ -44,7 +44,7 @@
     var submit_row = $(".edit-row-submit", html_form);
 
     var topic_id = $("input[name=s]", submit_row).val();
-    var lang_id = $("input[name=lang]", submit_row).val();
+    var lang_id = fb.h.lang_id($("input[name=lang]", submit_row).val());
 
     propbox.init(html_form, {
       id: topic_id,
@@ -67,7 +67,7 @@
         data: {
           s: $("input[name=s]", submit_row).val(),
           p: $("input[name=p]", submit_row).val(),
-          lang: $("input[name=lang]", submit_row).val()
+          lang: fb.h.lang_id($("input[name=lang]", submit_row).val())
         },
         url: fb.h.ajax_url("lib/propbox/prop_edit_submit.ajax")
       },

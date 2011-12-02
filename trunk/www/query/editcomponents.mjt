@@ -82,7 +82,7 @@
       </div>
     </div>
     <div class="modal-buttons">
-      <input type="hidden" name="lang" value="${i18n.lang}"/>
+      <input type="hidden" name="lang" value="${h.lang_code(i18n.lang)}"/>
       <input type="hidden" name="query" value="${q}"/>
       ${form.submit_buttons()}
     </div>

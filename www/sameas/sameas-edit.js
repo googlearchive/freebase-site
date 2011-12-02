@@ -265,7 +265,7 @@
             value: key.value,
             connect: "delete"
           }]),
-          lang: fb.lang
+          lang: fb.h.lang_code(fb.lang)
         },
         onsuccess: function(data) {
           var msg_row = $(data.result.html);
@@ -280,7 +280,7 @@
                   value: key.value,
                   connect: "insert"
                 }]),
-                lang: fb.lang
+                lang: fb.h.lang_code(fb.lang)
               },
               onsuccess: function(data) {
                 formlib.success_inline_delete_undo(msg_row);

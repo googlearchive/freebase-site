@@ -132,7 +132,7 @@
       var submit_data = {
         s: row_id,
         p: props,
-        lang: fb.lang || "/lang/en",
+        lang: fb.h.lang_code(fb.lang || "/lang/en"),
         nav: nav
       };
       $.ajax($.extend(formlib.default_begin_ajax_options(), {

@@ -35,7 +35,7 @@
     add_type_begin: function(trigger, type_id) {
       $.ajax($.extend(formlib.default_submit_ajax_options(), {
         url: fb.h.ajax_url("add_type_submit.ajax"),
-        data: {id:fb.c.id, type:type_id, lang:fb.lang},
+        data: {id:fb.c.id, type:type_id, lang:fb.h.lang_code(fb.lang)},
         onsuccess: function(data) {
           var result = $(data.result.html).hide();
           $(".manage-types").after(result);
@@ -58,7 +58,7 @@
     remove_type_begin: function(trigger, type_id) {
       $.ajax($.extend(formlib.default_submit_ajax_options(), {
         url: fb.h.ajax_url("remove_type_submit.ajax"),
-        data: {id:fb.c.id, type:type_id, lang:fb.lang},
+        data: {id:fb.c.id, type:type_id, lang:fb.h.lang_code(fb.lang)},
         onsuccess: function(data) {
           var type_section = $(".type-section[data-id=" + type_id.replace(/\//g, "\\/") + "]").fadeOut();
           var trigger_row = trigger.parent("li");

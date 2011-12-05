@@ -141,6 +141,9 @@ class ActionStatic:
     c.set_acre(Acre.Get(c))
 
     acre = Acre.Get(c)
+    if not acre:
+      return c.error("Can't continue without an acre instance.")
+      
     if not (acre.is_running() or (acre.build(target='devel', config_dir= "%s/appengine-config" % site.site_dir) and acre.start())):
       return c.error("There was an error starting acre - cannot generate static files without a running acre instance.")
 
@@ -182,8 +185,6 @@ class ActionDeployAcre:
       return c.error("You have to specify an acre build target with -c e.g. -c sandbox-freebasesite or a host with --host e.g. --host dev.sandbox-freebase.com")
 
     (r, result) = acre.build(config, config_dir= "%s/appengine-config" % site.site_dir, war=True)
-
-    print result
 
     if not r:
       return c.error("Acre failed to build, aborting.")
@@ -454,13 +455,13 @@ class ActionCreateAppBranch():
     if not success:
       return c.error('You must provide valid google code credentials to complete this operation.')
 
-    c.log('Starting branching app %s' % from_app.app_key, color=c.BLUE)
+    c.log('Starting branching app: "%s"' % from_app.app_key, color=c.BLUE)
 
     #create the branch
     branch_app = from_app.create_branch(c.options.dependency)
 
     if not branch_app:
-      return c.error("Failed to create branch app - is %s a valid app key?" % c.options.app_key)
+      return c.error('Failed to create branch app - is "%s" a valid app key?' % c.options.app_key)
 
     #set the app object that is going to be used for here onwards
     #by any other stage
@@ -497,9 +498,9 @@ class ActionCreateAppTag():
     r = ActionStatic(c)(app=tag_app)
     if not r:
       #tag_app.remove_from_svn()
-      return c.error('Failed to create static files for %s - tag removed from SVN.' % tag_app)
+      return c.error('Failed to create static files for "%s" - tag removed from SVN.' % tag_app)
 
-    c.log('Created %s' % tag_app, color=c.BLUE)
+    c.log('Created "%s"' % tag_app, color=c.BLUE)
 
     return True
 
@@ -1064,18 +1065,15 @@ class ActionCreateRoutes:
       lib = "//lib.www.trunk.svn.freebase-site.googlecode.dev"
 
 
-    print """
-
-// site repository trunk and tags paths. 
-var codebase = \"%s\";
-var tags_codebase = \"%s\";
+    print '''
+var codebase = "%s";
+var tags_codebase = "%s";
 
 var environment_rules = { 
 
-    // Override labels. All labels point to trunk by default.
-    \"labels\" : {
-        \"lib\": \"%s\",
-""" % (site.conf("acre_id_suffix_trunk"), site.conf("acre_id_suffix_tags"), lib)
+    "labels" : {
+        "lib": "%s",
+''' % (site.conf("acre_id_suffix_trunk"), site.conf("acre_id_suffix_tags"), lib)
 
     apps = site.apps()
     for i,app_key in enumerate(apps):
@@ -1087,21 +1085,17 @@ var environment_rules = {
       last_tag = app.last_tag()
 
       if last_tag:
-        print "\t\"%s\": \"//%s.%s\" + tags_codebase%s" % (app_key, last_tag, app_key, i < len(apps)-1 and "," or "")
+        print '        "%s": "//%s.%s" + tags_codebase%s' % (app_key, last_tag, app_key, i < len(apps)-1 and "," or "")
       else:
-        print "\t\"%s\": \"//%s\" + codebase%s" % (app_key, app_key, i < len(apps)-1 and "," or "")
-        
+        print '        "%s": "//%s" + codebase%s' % (app_key, app_key, i < len(apps)-1 and "," or "")
 
-    print """
-    },
+    print '''
+    }
  
-    // Override prefix.
-
-    "prefix" : []
 };
 
-acre.require(environment_rules.labels.site + "/router.sjs").route(environment_rules, this);
-"""
+acre.require(environment_rules.labels.site + "/router.sjs").route(environment_rules);
+'''
 
     return True
 
@@ -1251,7 +1245,7 @@ def main():
         
       for i, app in enumerate(apps):
         options.app = app
-        context.set_app(App.Get(context, app, options.version))
+        context.set_app(App.Get(context, app, options.version, options.tag))
         result = run(action_class, context)
         results.append(result)
 

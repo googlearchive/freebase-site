@@ -9,6 +9,9 @@ from optparse import OptionParser
 from tempfile import mkdtemp, mkstemp, NamedTemporaryFile
 from cssmin import cssmin
 
+# global socket timeout, seems to help connection reset issues 
+socket.setdefaulttimeout(60)
+
 LICENSE_PREAMBLE = '''
 /*
  * Copyright 2010, Google Inc.
@@ -100,10 +103,12 @@ class App:
         return "%s:trunk" % self.app_key
 
 
-  #create an app object out of a path
-  #e.g. //4.schema.site.freebase.dev
   @classmethod
   def GetFromPath(cls, context, path):
+    """
+    create an app object out of a path
+    e.g. //4.schema.site.freebase.dev
+    """
 
     site = Site.GetSiteForAppId(context, path)
 
@@ -133,7 +138,6 @@ class App:
 
     return None
 
-  #return an App object
   @classmethod
   def Get(cls, context, app_key, version=None, tag=None):
     """Create, cache and return an app object. 
@@ -727,9 +731,10 @@ class App:
       c.log("%s already exists in SVN - not branching" % target_app)
       return target_app
 
-    msg = "[sitedeploy] Creating branch %s" % target_app
+    msg = '[sitedeploy] Creating branch %s' % target_app
     c.log(msg, color=c.BLUE)
-    cmd = ["svn", "copy", self.svn_url(), target_app.svn_url(), "--parents", "-m", msg, "--username", c.googlecode_username, "--password", c.googlecode_password]
+    
+    cmd = c.add_svn_credentials(["svn", "copy", self.svn_url(), target_app.svn_url(), "--parents", "-m", c.quote(msg)])
     (r, output) = c.run_cmd(cmd)
 
     if not r:
@@ -755,7 +760,8 @@ class App:
     return target_app
 
   def create_tag(self):
-    """Will create a new tag of the app.
+    """
+    Will create a new tag of the app.
     
     Returns:
       tagged_app: App object - an object representing the tagged app
@@ -776,13 +782,13 @@ class App:
 
     #now create the new tag
     next_tag = self.next_tag()
-    msg = "[sitedeploy] Creating tag %s" % next_tag
+    msg = '[sitedeploy] Creating tag %s' % next_tag
     tag_app = App.Get(c, self.app_key, tag=next_tag)
 
     if not tag_app:
       raise FatalException("There was an error creating a new tag for %s" % self)
 
-    cmd = ['svn', 'copy', self.svn_url(), tag_app.svn_url(), '--parents', '-m', msg, '--username', c.googlecode_username, '--password', c.googlecode_password]
+    cmd = c.add_svn_credentials(['svn', 'copy', self.svn_url(), tag_app.svn_url(), '--parents', '-m', c.quote(msg)])
     (r, output) = self.context.run_cmd(cmd)
 
     if not r:
@@ -833,11 +839,11 @@ class App:
       path = self.svn_path()
 
     if not msg:
-      msg = '[sitedeploy] committing ' % self
+      msg = '[sitedeploy] committing %s' % self
     else:
       msg = '[sitedeploy] %s' % msg
 
-    cmd = ['svn', 'commit', '-m', msg, path, '--username', c.googlecode_username, '--password', c.googlecode_password]
+    cmd = c.add_svn_credentials(['svn', 'commit', '-m', c.quote(msg), path])
     return c.run_cmd(cmd, name='commit app')
 
 
@@ -913,12 +919,17 @@ class App:
 
 
   def remove_from_svn(self):
-    return self.context.run_cmd(['svn', 'rm', '-m', '[sitedeploy] action failed - removing',self.svn_url()])
+    c = self.context
+    cmd = c.add_svn_credentials(['svn', 'rm', '-m', c.quote('[sitedeploy] action failed - removing'), self.svn_url()])
+    return self.context.run_cmd(cmd)
 
-  #will copy the app from its checked out directory to the target directory
-  #and then get rid of the .svn directory
-  #it will REMOVE the target directory before copying the app over first
+
   def copy(self, target_dir):
+    """
+    will copy the app from its checked out directory to the target directory
+    and then get rid of the .svn directory
+    it will REMOVE the target directory before copying the app over first
+    """
 
     c = self.context
 
@@ -964,27 +975,12 @@ class App:
     target_dir = Acre.Get(self.context).site_dir(war=war) + '/' + self.app_dir()
     return self.copy(target_dir)
 
-  #checks out the app from SVN into the specified directory
-  def svn_checkout(self, target_dir, warn=True):
-
-    c = self.context
-
-    cmd = c.add_svn_credentials(['svn', 'checkout', self.svn_url(), target_dir])
-
-    (r, output) = c.run_cmd(cmd, warn=warn)
-
-    if not r:
-      if warn:
-          return c.error(output)
-      else:
-          return False
-
-    return True
-
-  #creates a directory and checks out the path
-  #returns the directory where the app is checked out
-  #the local path is remembered for future use
   def svn_path(self, warn=True):
+    """
+    creates a directory and checks out the path
+    returns the directory where the app is checked out
+    the local path is remembered for future use
+    """
 
     if self.checked_out:
       return self.local_dir
@@ -992,7 +988,7 @@ class App:
     if not self.local_dir:
       self.local_dir = mkdtemp()
 
-    r = self.svn_checkout(self.local_dir, warn=warn)
+    r = SVNLocation(self.context, self.svn_url()).checkout(self.local_dir, warn=warn)
 
     if not r:
       return False
@@ -1001,13 +997,15 @@ class App:
     return self.local_dir
 
   def static_url(self):
-    return "http://%s/static/%s" % (self.context.acre.url(), self.path()[2:])
+    return "http://127.0.0.1:%s/static/%s" % (self.context.acre.port(), self.path()[2:])
 
 
 class Context():
   BLUE = '\033[94m'
   GREEN = '\033[92m'
   RED = '\033[91m'
+  GRAY = '\033[90m'
+  YELLOW = '\033[93m'
   ENDC = '\033[0m'
 
   ACRE_SVN_URL = 'https://acre.googlecode.com/svn'
@@ -1063,11 +1061,14 @@ class Context():
     return False
 
   def add_svn_credentials(self, cmd):
-      if self.googlecode_username and self.googlecode_password:
-          cmd.extend(['--username', self.googlecode_username, '--password', self.googlecode_password])
+      if self.googlecode_username:
+          cmd.extend(['--username', self.googlecode_username])
           
       return cmd
 
+  def quote(self, msg):
+    return '"%s"' % msg
+    
   def set_current_app(self, app):
     self.current_app = app
 
@@ -1131,7 +1132,7 @@ class Context():
   def run_cmd(self, cmd, name='cmd', warn=False, interactive=False, silent=False):
 
     if not silent:
-        self.log(' '.join(cmd), color=self.GREEN)
+        self.log(' '.join(cmd), color=self.GRAY)
     
     #interactive mode - stdout/stderr will go straight to the console
     if interactive:
@@ -1141,6 +1142,9 @@ class Context():
     #non-interactive mode, invocation will finish before output can be used
     stdout, stderr = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
 
+    #print " output: %s" % stdout
+    #print " error: %s" % stderr
+    
     if stderr:
         if warn:
             self.log(stderr, 'stderr')
@@ -1209,41 +1213,41 @@ class Context():
     return ' '.join(duration)
 
 
-  def fetch_url(self,url, isjson=False, tries=3, acre=False, silent=False, wait=1):
+  def fetch_url(self, url, isjson=False, tries=3, acre=False, silent=False, wait=1):
 
     #request = urllib2.Request(url, headers = {'Cache-control': 'no-cache' })
     request = urllib2.Request(url)
     contents = None
     while tries > 0:
       try:
-        self.log(url, 'fetchurl', color=c.GREEN)
-        fd = urllib2.urlopen(request, timeout=30.0)
+        self.log("Fetching URL: %s" % url)
+        fd = urllib2.urlopen(request, timeout=60.0)
         contents = []
         for l in fd:
             contents.append(l)
         break
       except Exception as ex:
-          #self.log('fetchurl failed: Trying with curl binary...')
-          outlog = NamedTemporaryFile()
-          subprocess.Popen(['curl', '-s', url], stdout=outlog, stderr=outlog).wait()
-          fd = open(outlog.name)
-          contents = fd.readlines()
-          fd.close()
+        if not silent:
+          self.log(' %s: fetchurl failed, trying with curl binary...' % str(ex), color=self.YELLOW)
+        outlog = NamedTemporaryFile()
+        subprocess.Popen(['curl', '-s', url], stdout=outlog, stderr=outlog).wait()
+        fd = open(outlog.name)
+        contents = fd.readlines()
+        fd.close()
 
-          if not len(contents):
-              if not silent:
-                  self.error("%s\n%s" % (url, str(ex)), subaction='fetch url error')
-              if acre and not 'connection reset by peer' in str(ex):
-                  Acre.Get(self).display_error_log(url)
-              if tries:
-                  tries -= 1
-                  time.sleep(wait)
-              if not silent:
-                  self.log('Trying again....')
-          else:
-              break
+        if not len(contents):
+           if not silent:
+               self.error("%s\n%s" % (url, str(ex)), subaction='fetch url error')
+           if acre and not 'connection reset by peer' in str(ex):
+               Acre.Get(self).display_error_log(url)
+           if tries:
+               tries -= 1
+               time.sleep(wait)
+           if not silent:
+               self.log('Trying again....')
+        else:
+           break
 
-          
     if isjson and contents:
         return json.loads(''.join(contents))
 
@@ -1432,9 +1436,9 @@ class Context():
 class Acre:
   '''Represents a local acre instance'''
 
-  _standard_port = "8121"
+  _standard_port = "9999"
 
-  #local acre should be a singleton across the session
+  # local acre should be a singleton across the session
   _acre_instance = None
 
   def __init__(self, context):
@@ -1445,8 +1449,10 @@ class Acre:
     if context.options.acre_dir:
         self._acre_dir = context.options.acre_dir
 
-    #will hold instances of Popen objects
-    #these are handlers to the current running acre process
+    self._acre_port = self._standard_port
+
+    # will hold instances of Popen objects
+    # these are handlers to the current running acre process
     self._acre_process = None
 
     self.log = NamedTemporaryFile()
@@ -1506,7 +1512,7 @@ class Acre:
 
     params = { 
       'ACRE_HOST_BASE' : c.options.acre_host,
-      'ACRE_PORT' : c.options.acre_port,
+      'ACRE_PORT' : c.options._acre_port,
     }
 
     written_params = {}
@@ -1638,13 +1644,13 @@ class Acre:
       if war:
           webapp = "%s/_build/war" % self._acre_dir
 
-      c.log('Starting Acre port[%s] dir[%s] log[%s]' % (self._standard_port, webapp, self.log.name), color=c.BLUE)
+      c.log('Starting Acre port[%s] dir[%s] log[%s]' % (self._acre_port, webapp, self.log.name), color=c.BLUE)
 
       if not os.environ['APPENGINE_HOME']:
           return c.error('The environment variable APPENGINE_HOME must point to your AppEngine SDK directory')
 
-      cmd = ['%s/bin/dev_appserver.sh' % os.environ['APPENGINE_HOME'], '--disable_update_check', '--port=%s' % self._standard_port, webapp]
-      c.log(' '.join(cmd), color=c.GREEN)
+      cmd = ['%s/bin/dev_appserver.sh' % os.environ['APPENGINE_HOME'], '--disable_update_check', '--port=%s' % self._acre_port, webapp]
+      c.log(' '.join(cmd), color=c.GRAY)
       try:
           self._acre_process = subprocess.Popen(cmd, stdout=self.log, stderr=self.log)
           # wait a bit for acre to start
@@ -1729,11 +1735,10 @@ class Acre:
 
     environments_url = site.conf("svn_url") + "/environments"
 
-    cmd = ['svn', 'checkout', environments_url, target_dir]
-    r = c.run_cmd(cmd)
+    r = SVNLocation(c, environments_url).checkout(target_dir)
 
     if not r:
-        return c.error('Failed to svn checkout %s into %s' % (svn_url, target_dir))
+        return c.error('Failed to svn checkout %s into %s' % (environments_url, target_dir))
 
     shutil.rmtree(target_dir + '/.svn')
 
@@ -1768,7 +1773,7 @@ class Acre:
     for line in contents.split('\n'):
 
       #poor man's running acre under appengine detection
-      if '--port=%s' % self._standard_port in line and 'appengine' in line and 'acre' in line:
+      if '--port=%s' % self._acre_port in line and 'appengine' in line and 'acre' in line:
         r = c.run_cmd(['kill', line.split()[0]], silent=True)
         time.sleep(1)
         return r
@@ -1833,7 +1838,7 @@ class Acre:
     if not self.acre_dir():
       return c.error("You have not specified an acre directory with --acre_dir and a running acre instance could not be found")
 
-    url = "http://127.0.0.1:%s/_fs_routing" % self._standard_port
+    url = "http://127.0.0.1:%s/_fs_routing" % self._acre_port
       
     response = c.fetch_url(url, acre=True)
     
@@ -1877,7 +1882,7 @@ class Acre:
     if not self.acre_dir():
       return c.error("You have not specified an acre directory with --acre_dir and a running acre instance could not be found")
 
-    url = "http://127.0.0.1:%s/acre/status" % self._standard_port
+    url = "http://127.0.0.1:%s/acre/status" % self._acre_port
 
     response = c.fetch_url(url, acre=True, silent=True, wait=5)
     
@@ -1886,7 +1891,6 @@ class Acre:
         return False
 
     return response
-
 
   def url(self, war=False):
     if self.host_url:
@@ -1897,6 +1901,8 @@ class Acre:
 
     return self.host_url
 
+  def port(self):
+    return self._acre_port
 
   def site_dir(self, war=False):
     '''Returns the acre scripts directory under the specified acre instance'''
@@ -2188,14 +2194,16 @@ class SVNLocation:
     self.svn_url = svn_url
 
   def ls(self):
-    """List an SVN directory. 
+    """
+    List an SVN directory. 
 
     Returns an array of files or subdirectories in the directory.
     """
+    c = self.context
 
     files = []
 
-    cmd = ["svn", "ls", "--verbose", self.svn_url]
+    cmd = c.add_svn_credentials(["svn", "ls", "--verbose", self.svn_url])
     (r, result) = self.context.run_cmd(cmd)
 
     #the result is a series of lines like this:
@@ -2212,10 +2220,10 @@ class SVNLocation:
 
     return files
 
-  def checkout(self, target_dir, files=False):
+  def checkout(self, target_dir, files=False, warn=True):
     c = self.context
 
-    cmd = ['svn', 'checkout', self.svn_url, target_dir, '--username', c.googlecode_username, '--password', c.googlecode_password]
+    cmd = c.add_svn_credentials(['svn', 'checkout', self.svn_url, target_dir])
     if files:
       cmd.extend(['--depth', 'files'])
     (r, result) = c.run_cmd(cmd)
@@ -2223,24 +2231,23 @@ class SVNLocation:
     if not r:
       if "svn: invalid option" in result:
         c.error("You might have an older version of svn - please update to the latest version. The option --depth is not supported in your version.")
-      raise FatalException(result)
+      else:
+        if warn:
+          raise FatalException(result)
+        else:
+          return False
 
     return True
-
 
   def update(self, target_dir):
     '''Returns the last revision or False'''
     c = self.context
 
-    cmd = ['svn', 'update', target_dir, '--username', c.googlecode_username, '--password', c.googlecode_password]
+    cmd = c.add_svn_credentials(['svn', 'update', target_dir])
+
     (r, result) = c.run_cmd(cmd)
 
     if not r:
       return c.error(result)
 
     return (r, result)
-
-
-
-              
-              

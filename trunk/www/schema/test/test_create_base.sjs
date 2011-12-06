@@ -44,6 +44,7 @@ acre.require('/test/lib').enable(this);
 
 acre.require("lib/test/mock").playback(this, "test/playback_test_create_base.json");
 
+var h = acre.require("lib/helper/helpers.sjs");
 var schema_helpers = acre.require("helpers");
 var test_helpers = acre.require("lib/test/helpers");
 var create_base = acre.require("create_base").create_base;
@@ -69,6 +70,8 @@ function get_name() {
 };
 
 function delete_base(key) {
+  h.enable_writeuser();
+
   return freebase.mqlread({
     id: null,
     mid: null,
@@ -91,7 +94,7 @@ function delete_base(key) {
           value: key,
           connect: "delete"
         }
-      }, null, {http_sign: false})
+      }, null, {http_sign: "keystore"})
       .then(function() {
         var q = {
           id: existing.mid,
@@ -184,7 +187,7 @@ test("create_base", function() {
   acre.async.wait_on_results();
   ok(permits_schema_group, base.id + " permits /boot/schema_group");
 });
-
+/*
 test("create base with existing key", function() {
   var base, error;
   try {
@@ -255,5 +258,5 @@ test("create base with description", function() {
   acre.async.wait_on_results();
   equal(blurb, name);
 });
-
+*/
 acre.test.report();

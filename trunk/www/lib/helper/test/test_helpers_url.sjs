@@ -190,6 +190,37 @@ test("wiki_url", function() {
   equal(h.wiki_url("Enumerated_types"), "http://wiki.freebase.com/wiki/Enumerated_types");
 });
 
+test("account_url", function() {
+  var host = acre.freebase.site_host;
+  var ssl_host = acre.freebase.site_host.replace(/^http:/,"https:");
+  var url_arg = acre.request.url.replace(/^http:/,"https:").replace(/\?/g,"%3F").replace(/\=/g,"%3D").replace(/\&/g,"%26");
+  equal(h.account_url("signin", {onsignin: host}), ssl_host + "/account/signin?onsignin=" + ssl_host);
+  equal(h.account_url("signin"), ssl_host + "/account/signin?onsignin=" + url_arg);
+  equal(h.account_url("signout", {onsignout: ssl_host}), ssl_host + "/account/signout?onsignout=" + host);
+  try {
+    h.account_url("foo");
+    ok(false, "must be a known kind of account url")
+  } catch(e) {
+    ok(true, e);
+  }
+});
+
+test("ensure_protocol", function() {
+  var protocol = acre.request.protocol;
+  var other_protocol = (protocol == "http") ? "https" : "http";
+  h.ensure_protocol(protocol);
+  ok(true, "Protocol didn't change");
+  try {
+    h.ensure_protocol(other_protocol);
+    ok(false, "should've triggered a redirect");
+  } catch(e) {
+    equal(acre.response.headers.location, acre.request.url.replace(/^[^:]*/, other_protocol));
+    equal(e.message, "acre.exit");
+    // prevent redirect loop
+    acre.response.status = 200;
+    delete acre.response.headers.location;
+  }
+});
 
 acre.test.report();
 

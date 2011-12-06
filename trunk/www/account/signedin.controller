@@ -35,65 +35,54 @@ var freebase = acre.require("lib/promise/apis").freebase;
 var validators = acre.require("lib/validator/validators.sjs");
 
 var SPEC = {
-  cache_policy: 'nocache',
-  template_base: 'lib/template/freebase_popup.mjt',
-  template: 'signedin_template.mjt',
+  
+  cache_policy: "nocache",
 
   validate: function(params) {
+    params = h.extend(acre.form.decode(params.state), params);
     return [
-      validators.Uri(params, "onsignin", {required:false, if_empty:null})
+      validators.String(params, "provider", {required:false, if_empty:"freebase"}),
+      validators.Uri(params, "onsucceed", {required:false, if_empty:h.fb_url(true, "/")}),
+      validators.Uri(params, "onfail", {required:false, if_empty:h.fb_url(true, "/")})
     ];
   },
 
-  run: function(onsignin) {
-    var d;
-    if (acre.freebase.googleapis_url) {
-      // Finalize the authorization request.
-      acre.oauth.get_authorization(h.account_provider());
-
-      // HACK(culbertson): Remove metaweb-user cookies
-      // because they mess up googleapis requests.
-      if (acre.request.cookies['metaweb-user'] ||
-          acre.request.cookies['metaweb-user-info']) {
-        delete acre.request.cookies['metaweb-user'];
-        delete acre.request.cookies['metaweb-user-info'];
-        acre.response.clear_cookie('metaweb-user');
-        acre.response.clear_cookie('metaweb-user-info');
-      }
-      d = h.user_info();
-    } else {
-      d = freebase.get_user_info().then(function(user) {
-        if (!user) {
-          throw 'User has not logged into Freebase.';
-        }
-        return user;
-      });
+  run: function(provider, onsucceed, onfail) {
+    var freebase_provider = h.account_provider(provider);
+    
+    var success = acre.oauth.get_authorization(freebase_provider);
+    if (!success) {
+      h.clear_account_cookie();
+      acre.oauth.remove_credentials(freebase_provider);
+      h.temporary_redirect(onfail);
     }
 
-    return d.then(function(user) {
-      h.set_account_cookie(user);
-      if (onsignin) {
-        h.temporary_redirect(onsignin);
-      }
-      else {
-        return {'user': user};
-      }
-    }, function(failure) {
-      if (failure instanceof h.UnauthorizedError) {
-        // The credentials must be incorrect, so remove them.
-        acre.oauth.remove_credentials(h.account_provider());
-        h.clear_account_cookie();
-        console.warn('Authorization credentials are not correct', failure);
+    // Remove metaweb-user cookies
+    // because they mess up googleapis requests.
+    if (acre.request.cookies['metaweb-user'] ||
+        acre.request.cookies['metaweb-user-info']) {
+      acre.response.clear_cookie('metaweb-user');
+      acre.response.clear_cookie('metaweb-user-info');
+    }
 
-      } else if (failure instanceof h.UnregisteredError) {
-        return {template: 'register_template.mjt'};
-      }
-
-      return {
-        template: 'error_template.mjt',
-        message: 'There is an issue with Freebase signin. Please try again later.'
-      };
-    });
+    // Custom user_info function in account helpers
+    // is necessary to handle specific error conditions
+    // (i.e., account not linked) that the acre.freebase
+    // version would just return as null
+    return h.user_info()
+      .then(function(user) {
+        h.set_account_cookie(user);
+        h.temporary_redirect(onsucceed);
+      }, function(failure) {
+        if (failure instanceof h.UnauthorizedError) {
+          // The credentials must be incorrect, so remove them.
+          acre.oauth.remove_credentials(freebase_provider);
+          h.clear_account_cookie();
+          console.warn('Authorization credentials are not correct', failure);
+        } else if (failure instanceof h.UnregisteredError) {
+          return {template: 'register_template.mjt'};
+        }
+        h.temporary_redirect(onfail);
+      });
   }
 };
-

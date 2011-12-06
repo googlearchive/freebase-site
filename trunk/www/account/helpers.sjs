@@ -59,7 +59,7 @@ var UnregisteredError = function() {
 UnregisteredError.prototype = new Error();
 
 function link_user(token) {
-  if (!h.has_account_credentials()) {
+  if (!acre.oauth.has_credentials(h.account_provider())) {
     return deferred.rejected(new UnauthorizedError());
   }
   
@@ -102,7 +102,7 @@ function link_user(token) {
 }
 
 function user_info() {
-  if (!h.has_account_credentials()) {
+  if (!acre.oauth.has_credentials(h.account_provider())) {
     return deferred.rejected(new UnauthorizedError());
   }
   
@@ -149,6 +149,21 @@ function extract_first_error(error) {
 }
 
 function temporary_redirect(url) {
+  // Don't let account redirect to other sites
+  var host_domain = acre.request.server_name.split(".").slice(-2).join(".");
+  var rd_parts = parse_uri(url);
+  var rd_domain = rd_parts.host.split(".").slice(-2).join(".");
+
+  if (host_domain != rd_domain) {
+    console.warn("Didn't redirect because url was on a different domain.");
+    acre.exit();
+  }
+  
+  if (!/^https?$/.test(rd_parts.protocol)) {
+    console.warn("Didn't redirect because url was not using http(s).");
+    acre.exit();
+  }
+  
   acre.response.status = 302;
   acre.response.set_header("Location", url);
   acre.exit();

@@ -43,5 +43,12 @@
 </acre:block>
 
 <acre:block def="content_body()">
-  <p class="error-message">${c.message}</p>
+  <div id="page-content">
+    <div class="module">
+      <h1 class="module-title">Error</h1>
+      <div class="module-section">
+        <p class="error-message">${c.message}</p>
+      </div>
+    </div>
+  </div>
 </acre:block>

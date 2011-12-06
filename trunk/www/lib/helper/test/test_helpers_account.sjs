@@ -29,26 +29,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var h = acre.require('helpers.sjs');
-var validators = acre.require("lib/validator/validators.sjs");
+acre.require('/test/lib').enable(this);
 
-var SPEC = {
+var h = acre.require("helper/helpers.sjs");
+var scope = this;
 
-  cache_policy: 'nocache',
+test("set_account_cookie",function() {
+  var user_info = {
+    id: "/user/goober",
+    mid: "/m/02kw8rn",
+    username: "goober",
+    name: "Goober McDweeb"
+  };
+  h.set_account_cookie(user_info);
+  var cookie = acre.response.cookies["fb-account-name"];
+  equal(cookie.value, "goober");
+  equal(cookie.path, "/");
+  equal(cookie.domain.indexOf("."), 0);
+});
 
-  
-  validate: function(params) {
-    return [
-      validators.String(params, "provider", {required:false, if_empty:"freebase"}),
-      validators.Uri(params, "onsignout", {required:false, if_empty:h.fb_url(true, "/")})
-    ];
-  },
+test("get_account_cookie",function() {
+  acre.request.cookies["fb-account-name"] = "goober";
+  var cookie = h.get_account_cookie();
+  same(cookie, {id:"/user/goober", name:"goober"});
+});
 
-  run: function(provider, onsignout) {
-    var freebase_provider = h.account_provider(provider);
-    h.clear_account_cookie();
-    acre.oauth.remove_credentials(freebase_provider);
-    h.temporary_redirect(onsignout);
-  }
-};
+test("clear_account_cookie",function() {
+  h.clear_account_cookie();
+  var cookie = acre.response.cookies["fb-account-name"];
+  equal(cookie.value, "");
+  equal(cookie.path, "/");
+  equal(cookie.domain.indexOf("."), 0);
+  equal(cookie.max_age, 0);
+});
+
+test("account_provider",function() {
+  var provider = h.account_provider();
+  same(provider.cookie, h.account_cookie_options());
+  var writeuser_provider = h.account_provider("freebase_writeuser");
+  notEqual(provider, writeuser_provider);
+});
+
+
+acre.test.report();
 

@@ -165,15 +165,11 @@
               <a href="javascript:void(0);" onclick="window.location = fb.user.id + '?apps'">${_("Apps")}</a>
             </li>
           </ul>
-          <a href="javascript:void(0)"
-             onclick="window.freebase.logout_popup()"
-             title="Sign out of Freebase"
-             rel="nofollow"
-             id="nav-signout">Sign Out</a>
+          <a href="${h.account_url('signout')}" title="Sign out of Freebase" rel="nofollow" id="nav-signout">Sign Out</a>
         </div>
       </div>
       <div class="nav-user-controls anonymous" id="signedout" style="display:none;">
-        <a href="javascript:void(0)" onclick="window.freebase.login_popup()" title="Sign in to your Freebase account" rel="nofollow">Sign In or Sign Up</a>
+        <a href="${h.account_url('signin')}" title="Sign in to your Freebase account" rel="nofollow">Sign In or Sign Up</a>
       </div>
       ${i18n_c.lang_select()}
     </div>

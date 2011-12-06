@@ -50,7 +50,7 @@ var SPEC = {
   validate: function(params) {
     return [
       params.object,
-      h.get_active_user()
+      h.get_account_cookie()
     ];
   },
 

@@ -53,7 +53,7 @@ var SPEC = {
   },
 
   run: function(username) {
-    if (!h.has_account_credentials()) {
+    if (!acre.oauth.has_credentials(h.account_provider())) {
       return unauthenticated_response();
     }
     

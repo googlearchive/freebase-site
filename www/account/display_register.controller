@@ -35,7 +35,7 @@
 
 var SPEC = {
   cache_policy: 'nocache',
-  template_base: 'lib/template/freebase_popup.mjt',
+
   template: 'register_template.mjt',
 
   run: function() {

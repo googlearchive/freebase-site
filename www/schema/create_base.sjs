@@ -28,6 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+var h = acre.require("lib/helper/helpers.sjs");
 var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
 var create_article = acre.require("lib/queries/create_article");
@@ -41,6 +42,8 @@ var validators = acre.require("lib/validator/validators");
  * @param o:Object (required) - options specifying the new type.
  */
 function create_base(options) {
+  h.enable_writeuser();
+  
   var o;
   try {
     o = {
@@ -109,7 +112,7 @@ function create_base(options) {
        * Now add the key to /base using /freebas/site/schema app's permitted user,
        * /user/appeditoruser
        *
-       * mqlwrite(q, null, {http_sign: false}
+       * mqlwrite(q, null, {http_sign: "keystore"}
        */
       q = {
         guid: created.guid,
@@ -120,10 +123,11 @@ function create_base(options) {
           connect: "insert"
         }
       };
-      var options = {
-        http_sign: false
-      };
 
+      var options = {
+        http_sign: "keystore"
+      };
+      
       return freebase.mqlwrite(q, null, options)
         .then(function(env) {
           var result = env.result;

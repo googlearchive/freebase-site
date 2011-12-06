@@ -53,5 +53,5 @@ var SPEC = {
 };
 
 function can_update(o) {
-  return (o.creator.id === h.get_active_user());
+  return (o.creator.id === h.get_account_cookie());
 };

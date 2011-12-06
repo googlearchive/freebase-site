@@ -48,6 +48,28 @@ var handler = function() {
 };
 
 function run_spec(spec, scope) {
+  /*
+   * Keep user logged in
+   *
+   * If not already in the process of signing in or out,
+   * make sure we're in the correct state:
+   *  - request protocol matches signed-in state
+   *  - don't have an orphaned fb-account-cookie
+   *  - access_token hasn't expired
+   *
+   * This seems to be the best place to do this check because:
+   *  - runs on every top-level page render
+   *  - but not on any ajax or resource calls
+   *  - before executing promises (faster)
+   */
+  if (scope.acre.request.base_path.indexOf("/account/") !== 0) {
+    if (h.get_account_cookie()) {
+      acre.oauth.get_authorization(h.account_provider());
+    } else {
+      h.ensure_protocol("http");
+    }
+  }
+
   var result;
   var d = lib.handle_service(spec, scope)
     .then(null, function(service_error) {

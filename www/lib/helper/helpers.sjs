@@ -76,14 +76,13 @@ var exports = {
   "set_cache_policy": set_cache_policy,
 
   // ACCOUNT
+  "get_account_cookie": get_account_cookie,
   "set_account_cookie": set_account_cookie,
   "clear_account_cookie": clear_account_cookie,
-  "get_account_cookie": get_account_cookie,
   "account_cookie_name": account_cookie_name,
   "account_cookie_options": account_cookie_options,
-  "has_account_credentials": has_account_credentials,
   "account_provider": account_provider,
-  "get_active_user": get_active_user,
+  "enable_writeuser": enable_writeuser,
 
   // DATE
   "relative_date": relative_date,
@@ -103,6 +102,7 @@ var exports = {
   "account_url": account_url,
   "image_url": image_url,
   "lib_base_url": lib_base_url,
+  "ensure_protocol": ensure_protocol,
   "parse_uri": parse_uri,
   "resolve_article_uri": resolve_article_uri,
 
@@ -980,7 +980,22 @@ function account_cookie_name() {
 }
 
 function account_cookie_options(options) {
-  return extend({}, {path: "/"}, options);
+  return extend({}, {
+      path: "/",
+      domain: acre.freebase.site_host.split(".").slice(-2).join(".")
+  }, options);
+}
+
+function get_account_cookie() {
+  var account_name = acre.request.cookies[account_cookie_name()];
+  if (!account_name) {
+    return null;
+  }
+
+  return {
+    id: '/user/'+account_name,
+    name: account_name
+  };
 }
 
 function set_account_cookie(user_info) {
@@ -998,57 +1013,31 @@ function set_account_cookie(user_info) {
 }
 
 function clear_account_cookie() {
-  acre.response.clear_cookie(account_cookie_name(), account_cookie_options());
+  var cookiename = account_cookie_name()
+  delete acre.request.cookies[cookiename];
+  acre.response.clear_cookie(cookiename, account_cookie_options());
 }
 
-function has_account_credentials() {
-  if (acre.freebase.googleapis_url) {
-    return acre.oauth.has_credentials(account_provider());
-  } else {
-    return !!acre.request.cookies['metaweb-user'];
+function account_provider(name, opts) {
+  opts = opts || {};
+  var provider = extend(true, {}, acre.oauth.providers[name || "freebase"]);
+  if (opts.prompt) {
+    provider.authorization_params = provider.authorization_params || {};
+    provider.authorization_params.approval_prompt = "force";
   }
-}
-
-function account_provider() {
-  var provider = extend({}, acre.oauth.providers.freebase);
-  // Authorize the host that the googleapis url is running under,
-  // really useful when connecting to a local dev googleapis.
-  var googleapis_host = parse_uri(acre.freebase.googleapis_url).host;
-  if (googleapis_host) {
-    provider.domain = googleapis_host;
-  }
+  provider.cookie = account_cookie_options();
   return provider;
 }
 
-function get_account_cookie() {
-  var account_name = acre.request.cookies[account_cookie_name()];
-  if (!account_name) {
-    return null;
+function enable_writeuser() {
+  if (!acre.oauth.has_credentials("freebase_writeuser")) {
+    throw "Can't proceed without freebase_writeuser credentials.";
   }
-
-  return {
-    id: '/user/'+account_name,
-    name: account_name
-  };
-}
-
-function get_active_user() {
-  var user = get_account_cookie();
-  if (has_account_credentials()) {
-    // Only return the user if we have current authentication credentials
-    return user;
-  } else if (user) {
-    // If we no longer are authenticated then get rid of the account name cookie
-    clear_account_cookie();
-  }
-
-  return null;
-}
-
+  acre.oauth.get_authorization("freebase_writeuser");
+};
 
 
 // ------------- DATE ---------------
-
 
 
 // TODO: do not move this acre.require until the circular dependency is figured out
@@ -1312,37 +1301,30 @@ function wiki_url(page) {
 
 /**
  * Get the signin/signout urls depending on environment.
+ *
+ *  params:
+ *  - onsignin, signout = where to redirect on success; must be absolute and on the same domain
+ *  - onfail =  where to redirect on failure; must be absolute and on the same domain
+ *  - provider: the provider name to use for authorization calls (defaults to "freebase")
  */
-function account_url(kind, return_url) {
-  var url;
+function account_url(kind, params) {
+  params = params || {};
   switch (kind) {
-   case "signin":
-    url = legacy_fb_url('/signin/login', {
-      mw_cookie_scope: 'domain',
-      onsignin: return_url
-    });
-    break;
-   case "signout":
-    url = fb_api_url('/api/account/logout', {
-      mw_cookie_scope: 'domain',
-      onsucceed: return_url
-    });
-    break;
-   case "register":
-    url = legacy_fb_url('/signin/register', {
-      done: return_url
-    });
-    break;
-   case "settings":
-    url = legacy_fb_url('/user/account', {
-      done: return_url
-    });
-    break;
-  default :
-    throw "Must pass 'kind' to account_url";
+    case "signin":
+      var onsignin = params.onsignin || acre.request.url;
+      params.onsignin = onsignin.replace(/^[^:]*/,"https");
+      break;
+    case "signout":
+      var onsignout = params.onsignout || acre.request.url;
+      params.onsignout = onsignout.replace(/^[^:]*/,"http");
+      break;
+    case "claim":
+      break;
+    default :
+      throw "Must pass 'kind' to account_url";
   }
 
-  return url.replace(/^http/, "https");
+  return fb_url(true, '/account/' + kind, params).replace(/^[^:]*/,"https");
 }
 
 /**
@@ -1380,6 +1362,19 @@ function lib_base_url(key) {
   var lib = md.libs[key];
   return lib.base_url + lib.version;
 }
+
+/*
+ * Check whether current request is using the desired protocol
+ * and automatically redirect if it's not
+ */
+function ensure_protocol(protocol) {
+  if (acre.request.protocol !== protocol) {
+    var url = acre.request.url.replace(/^[^:]*/, protocol);
+    acre.response.status = 303;
+    acre.response.set_header("location", url);
+    acre.exit();
+  }
+};
 
 /**
  * parse uri
@@ -1580,7 +1575,7 @@ function output_helpers(scope) {
 // ------------- METADATA ---------------
 
 // helper for backfilling metadata from a mounted app
-function extend_metadata(md, mount, env_md) {
+function extend_metadata(md, mount) {
 
   function fix_up_paths(md, md_path) {
     for (var hdlr in md.handlers) {
@@ -1611,7 +1606,7 @@ function extend_metadata(md, mount, env_md) {
   };
 
   // get backfill metadata
-  var md_path = md.mounts[mount] || env_md.mounts[mount];
+  var md_path = md.mounts[mount];
   var md_file = acre.require(md_path + "/METADATA");
   var backfill = md_file.METADATA ? md_file.METADATA : JSON.parse(md_file.body);
 
@@ -1619,7 +1614,7 @@ function extend_metadata(md, mount, env_md) {
   fix_up_paths(backfill, md_path);
 
   // splice together
-  var final_md = extend(true, {}, backfill, md, env_md);
+  var final_md = extend(true, {}, backfill, md);
   extend(md, final_md);
 
   return md;

@@ -35,6 +35,8 @@ var delete_type = acre.require("delete_type").delete_type;
 var h = acre.require("lib/helper/helpers.sjs");
 
 function delete_domain(domain_id, user_id, dry_run) {
+  h.enable_writeuser();
+  
   return domain_info(domain_id, user_id)
     .then(function(info) {
       if (!info.has_permission) {
@@ -56,11 +58,11 @@ function delete_domain(domain_id, user_id, dry_run) {
       if (base_key.length) {
         // We need special permission to remove base keys.
         // We need to write as /freebase/site/schema app's permitted user: /user/appeditoruser
-        // by setting http_sign=false.
+        // by setting http_sign=keystore.
         return freebase.mqlwrite({
           guid: info.guid,
           key: [{value:k.value, namespace:"/base", connect:"delete"} for each (k in base_key)]
-        }, null, {http_sign: false})
+        }, null, {http_sign: "keystore"})
         .then(function(env) {
           return [info, env.result];
         });

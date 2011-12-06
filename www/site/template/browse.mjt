@@ -145,7 +145,7 @@
 </acre:block>
 
 <acre:block def="signin_help_text()">
-  <a href="${h.fb_url('/account/signin',[['google', true], ['onsignin',h.fb_url(true, '/')]])}" title="Sign in to your Freebase account" rel="nofollow">Sign in</a>
+  <a href="${h.account_url('signin')}" title="Sign in to your Freebase account" rel="nofollow">Sign in</a>
 </acre:block>
 
 <acre:block def="acre_javascript_vars()">

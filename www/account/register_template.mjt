@@ -43,10 +43,12 @@
 </acre:block>
 
 <acre:block def="content_body()">
-  <div id="registration" class="module">
-    <div id="register-accordion">
-      ${create_account_pane()}
-      ${claim_account_pane()}
+  <div id="page-content">
+    <div id="registration" class="module">
+      <div id="register-accordion">
+        ${create_account_pane()}
+        ${claim_account_pane()}
+      </div>
     </div>
   </div>
 </acre:block>

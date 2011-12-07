@@ -58,7 +58,7 @@ ServiceError.prototype = new Error();
 
 function check_user() {
   /**
-   * If user account cookie, update credentials (refreshing oauth tokens)
+   * If user account cookie, make sure oauth tokens have not expired
    */
   var user = h.get_account_cookie();
   if (user) {

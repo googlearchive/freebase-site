@@ -113,21 +113,26 @@ function is_proxyable(app_path, scope) {
 
 
 /**
- * Do acre.include(path) and if the included content have headers and/or status,
- * set them respectively on acre.response (acre.response.set_headers, acre.response.status).
+ * If context is TRUE, do an acre.include instead of acre.route,
+ * so that we do not lose the context of the original request include oauth credentials.
  */
-function acre_include_path(path) {
-  var content = acre.include(path);
-  var headers = content.headers;
-  if (headers) {
-    for (var k in headers) {
-      acre.response.set_header(k, headers[k]);
+function route_path(path, context) {
+  if (context) {
+    var content = acre.include(path);
+    var headers = content.headers;
+    if (headers) {
+      for (var k in headers) {
+        acre.response.set_header(k, headers[k]);
+      }
     }
+    if (content.status) {
+      acre.response.status = content.status;
+    }
+    acre.write(content);
   }
-  if (content.status) {
-    acre.response.status = content.status;
+  else {
+    acre.route(path);
   }
-  acre.write(content);
   acre.exit();
 };
 
@@ -152,7 +157,7 @@ function StaticRouter() {
 
     var path = "//" + segs.join("/") + (qs ? "?" + qs : "");
     // console.log("StaticRouter path", path);
-    acre_include_path(path);
+    route_path(path, true);
   };
 };
 
@@ -177,7 +182,7 @@ function AjaxRouter() {
 
     var path = "//" + segs.join("/") + (qs ? "?" + qs : "");
     // console.log("AjaxRouter path", path);
-    acre_include_path(path);
+    route_path(path, true);
   };
 };
 
@@ -311,14 +316,13 @@ function PrefixRouter(app_labels) {
           var [script, path_info, qs] = h.split_path(path_info);
         }
         // acre.route and exit
-        acre.route([
+        route_path([
             rule.app,
             "/",
             script,
             path_info,
             (query_string ? "?" + query_string : "")
         ].join(""));
-        acre.exit();
       }
     }
     return false;
@@ -339,9 +343,9 @@ function extend_rules(rules, environment_rules) {
 
   if (environment_rules["labels"]) {
     if (!("labels" in rules)) rules["labels"] = {};
-    h.extend(rules["labels"], environment_rules["labels"])
+    h.extend(rules["labels"], environment_rules["labels"]);
     for (var app_label in environment_rules["labels"]) {
-      rules["labels"][app_label] = environment_rules["labels"][app_label]
+      rules["labels"][app_label] = environment_rules["labels"][app_label];
     }
   }
 

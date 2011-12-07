@@ -43,11 +43,12 @@
 <acre:block def="append_body()">
   <acre:script>
     var jquery_versions = [
-      "1.3.2",
-      "1.4.2",
+      "1.7.1",
+      "1.6.4",
       "1.5.2",
-      "1.6.2"
-    ];
+      "1.4.4",
+      "1.3.2"
+   ];
   </acre:script>
   <ul>
     <acre:block for="v in jquery_versions">

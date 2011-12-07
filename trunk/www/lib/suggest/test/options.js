@@ -320,12 +320,13 @@ $(function() {
               function() {
                 if ($(">li", inst.list).length) {
                   clearTimeout(t);
-                  var id = $("li:first", inst.list).data("data.suggest").id;
+                  var data = $("li:first", inst.list).data("data.suggest");
+
                   if (typeof expected === "function") {
-                    ok(expected(id));
+                    ok(expected(data));
                   }
                   else {
-                    equals(id, expected);
+                    equals(data.id, expected);
                   }
                   start();
                 }
@@ -364,15 +365,72 @@ $(function() {
            });
 
     if (false) {
-
+      // as_of_time not supported in new googleapis
       test("as_of_time=2008", 1, function() {
-             test_suggest_result({filter:"(any type:/music/artist)", as_of_time:2008},"lady gaga", function(id) {
-                                   return id != lady_gaga_id;
+             test_suggest_result({filter:"(any type:/music/artist)", as_of_time:2008},"lady gaga", function(first) {
+                                   return first.id != lady_gaga_id;
                                  });
            });
       test("as_of_time=2010", 1, function() {
              test_suggest_result({filter:"(any type:/music/artist)", as_of_time:2010},"lady gaga", lady_gaga_id);
            });
     }
+
+    test("lang [default]", function() {
+      test_suggest_result(null, "/en/seoul", function(first) {
+        return first.name === "Seoul";
+      });
+    });
+
+    test("lang=en", function() {
+      test_suggest_result({lang:"en"}, "/en/seoul", function(first) {
+        return first.name === "Seoul";
+      });
+    });
+
+    test("lang=ko", function() {
+      test_suggest_result({lang:"ko"}, "/en/seoul", function(first) {
+        return first.name.indexOf("서울") !== -1;
+      });
+    });
+
+    test("lang=es,ko", function() {
+      test_suggest_result({lang:"es,ko"}, "/en/cheong_wa_dae", function(first) {
+        return first.name === "청와대";
+      });
+    });
+
+
+    // spell/correction
+    test("spell=aggressive", function() {
+      var o = $.extend({}, default_options, {spell:"aggressive"});
+      test_input1.suggest(o);
+      var inst = get_instance();
+
+
+      var on_spell_link = false;
+
+      stop();
+      var t = test_timeout();
+      test_input1
+        .bind("fb-pane-show",
+              function() {
+                if (on_spell_link && $(">li", inst.list).length) {
+                  clearTimeout(t);
+                  var data = $("li:first", inst.list).data("data.suggest");
+                  equals(data.id, bob_dylan_id);
+                  start();
+                }
+                else if ($(".fbs-spell-link", inst.pane).length) {
+                  clearTimeout(t);
+                  ok(true, "Found spell/correction");
+                  stop();
+                  $(".fbs-spell-link", inst.pane).click();
+                  on_spell_link = true;
+                  t = test_timeout();
+                }
+              })
+        .val("Bob Dylon").trigger("textchange");
+    });
   });
 

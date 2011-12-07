@@ -308,7 +308,7 @@ $(function() {
          });
 
 
-    function test_suggest_result(options, prefix, expected) {
+    function test_suggest_result(options, prefix, expected, on_empty) {
       var o = $.extend({}, default_options, options);
       test_input1.suggest(o);
       var inst = get_instance();
@@ -328,6 +328,10 @@ $(function() {
                   else {
                     equals(data.id, expected);
                   }
+                  start();
+                }
+                else if (typeof on_empty === "function") {
+                  ok(on_empty());
                   start();
                 }
               })
@@ -431,6 +435,26 @@ $(function() {
                 }
               })
         .val("Bob Dylon").trigger("textchange");
+    });
+
+    // exact
+    test("exact [default]", function() {
+      test_suggest_result(null, "Bob Dylon", bob_dylan_id);
+    });
+
+    test("exact=false", function() {
+      test_suggest_result(null, "Bob Dylon", bob_dylan_id);
+    });
+
+    test("exact=true", function() {
+      test_suggest_result(null, "Bob Dylon",
+        function() {
+          // should not get any results
+          return false;
+        },
+        function() {
+          return true;
+        });
     });
   });
 

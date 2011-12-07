@@ -121,7 +121,7 @@
 
       // suggest parameters
       o.ac_param = {};
-      $.each(["key", "filter", "mql_filter", "as_of_time"], function(i,n) {
+      $.each(["key", "filter", "spell", "lang", "mql_filter", "as_of_time"], function(i,n) {
         var v = o[n];
         if (v === null || v === "") {
           return;
@@ -1197,7 +1197,7 @@
 
       var name = $("<div>").addClass(css.item_name)
         .append($("<label>")
-        .append($.suggest.strongify(data.name || data.guid, response_data.prefix)));
+        .append($.suggest.strongify(data.name || data.id, response_data.prefix)));
       var types = data.type;
       li.append(name);
 
@@ -1251,8 +1251,24 @@
           l = this.list,
           result = response_data.result,
           more = $(".fbs-more", p),
-          suggestnew = $(".fbs-suggestnew", p);
+          suggestnew = $(".fbs-suggestnew", p),
+          status = $(".fbs-status", p);
 
+      // spell/correction
+      var correction = response_data.correction;
+      if (correction && correction.length) {
+        var spell_link = $('<a class="fbs-spell-link" href="#">').append(correction[0])
+          .bind("click.suggest", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            self.input.val(correction[0]).trigger("textchange");
+          });
+        self.status
+          .empty()
+          .append("Search instead for ")
+          .append(spell_link)
+          .show();
+      }
 
       // more
       if (result && result.length && "cursor" in response_data) {
@@ -1508,6 +1524,15 @@
 
       // search filters
       filter: null,
+
+      // spelling corrections
+      // aggressive|no_results|no_spelling
+      // @see search docs
+      spell: "aggressive",
+
+      // language to search (default to en)
+      // @see search docs
+      lang: null, // defaults to "en",
 
       // API key: required for googleapis
       key: null,

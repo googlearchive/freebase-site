@@ -121,7 +121,7 @@
 
       // suggest parameters
       o.ac_param = {};
-      $.each(["key", "filter", "spell", "lang", "mql_filter", "as_of_time"], function(i,n) {
+      $.each(["key", "filter", "spell", "exact", "lang", "mql_filter", "as_of_time"], function(i,n) {
         var v = o[n];
         if (v === null || v === "") {
           return;
@@ -1518,21 +1518,32 @@
   $.extend($.suggest.suggest, {
 
     defaults: {
+      // @deprecated
       mql_filter: null,
 
+      // @deprecated
       as_of_time: null,
+
+      /**
+       * filter, spell, lang, exact, lang, key
+       *
+       * are the new parameters used by the new freebase search on googleapis.
+       * Please refer the the API documentation as these parameters
+       * will be passed through to the search service.
+       *
+       * @see http://wiki.freebase.com/wiki/ApiSearch
+       */
 
       // search filters
       filter: null,
 
       // spelling corrections
-      // aggressive|no_results|no_spelling
-      // @see search docs
       spell: "aggressive",
 
+      exact: false,
+
       // language to search (default to en)
-      // @see search docs
-      lang: null, // defaults to "en",
+      lang: null, // NULL defaults to "en",
 
       // API key: required for googleapis
       key: null,

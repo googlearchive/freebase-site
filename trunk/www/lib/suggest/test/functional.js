@@ -30,7 +30,6 @@ $(function() {
                 start();
               })
         .bind("fb-request-flyout", function(e, ajax_options) {
-          console.log("fb-request-flyout", ajax_options);
           clearTimeout(inst.flyout_request.timeout);
           var id = ajax_options.data.id;
           $.suggest.flyout.cache[id] = {id:id};

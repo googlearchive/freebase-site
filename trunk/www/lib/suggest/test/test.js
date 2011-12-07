@@ -32,7 +32,7 @@ var module_options = {
 
 var default_options = {
   service_path: "/freebase/v1/search",
-  key: "AIzaSyBk_TTTJQ_QaBKP1SmwzOb5-YwXQwmBOOA"
+  key: "AIzaSyBij3tRJN2VdWiLQN48-BmPFjNWpHe7MQE"
 };
 var test_value = "bob dyla";
 var bob_dylan_id = "/m/01vrncs";

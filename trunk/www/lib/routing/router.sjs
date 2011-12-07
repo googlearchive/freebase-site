@@ -33,8 +33,8 @@ var h = acre.require("helper/helpers.sjs");
 var validators = acre.require("validator/validators.sjs");
 
 var routers_map = {
-  "host" : HostRouter, 
-  "prefix" : PrefixRouter, 
+  "host" : HostRouter,
+  "prefix" : PrefixRouter,
   "static" : StaticRouter,
   "ajax" : AjaxRouter
 };
@@ -83,17 +83,17 @@ function HostRouter() {
 
 function is_proxyable(app_path, scope) {
   var site_md = acre.get_metadata(scope.acre.current_script.app.path);
-  
+
   // is it in the same project?
-  if ((app_path == "//" + site_md.project) || 
+  if ((app_path == "//" + site_md.project) ||
       h.endsWith(app_path, "." + site_md.project)) {
     return true;
   }
 
-  // is it a proxy-able project?  
+  // is it a proxy-able project?
   if (site_md.proxy) {
-    for (var proxy_site in site_md.proxy) { 
-      if (h.endsWith(app_path, "." + site_md.proxy[proxy_site])) { 
+    for (var proxy_site in site_md.proxy) {
+      if (h.endsWith(app_path, "." + site_md.proxy[proxy_site])) {
         return true;
       }
     }
@@ -112,6 +112,26 @@ function is_proxyable(app_path, scope) {
 }
 
 
+/**
+ * Do acre.include(path) and if the included content have headers and/or status,
+ * set them respectively on acre.response (acre.response.set_headers, acre.response.status).
+ */
+function acre_include_path(path) {
+  var content = acre.include(path);
+  var headers = content.headers;
+  if (headers) {
+    for (var k in headers) {
+      acre.response.set_header(k, headers[k]);
+    }
+  }
+  if (content.status) {
+    acre.response.status = content.status;
+  }
+  acre.write(content);
+  acre.exit();
+};
+
+
 function StaticRouter() {
   var add = this.add = function(routes) {};
 
@@ -119,12 +139,12 @@ function StaticRouter() {
     var qs = req.query_string;
     var segs = req.path_info.split("/");
     segs.shift();
-    
+
     // only handle /static URLs
     if (segs.shift() !== "static") {
       return false;
     }
-    
+
     // only proxy if it's in a mounted app
     if (!is_proxyable("//" + segs[0], scope)) {
       return false;
@@ -132,16 +152,7 @@ function StaticRouter() {
 
     var path = "//" + segs.join("/") + (qs ? "?" + qs : "");
     // console.log("StaticRouter path", path);
-    var content = acre.include(path);
-    var headers = content.headers;
-    //console.log("static headers", headers);
-    if (headers) {
-      for (var k in headers) {
-        acre.response.set_header(k, headers[k]);
-      }
-    }
-    acre.write(content);
-    acre.exit();
+    acre_include_path(path);
   };
 };
 
@@ -152,13 +163,13 @@ function AjaxRouter() {
   var route = this.route = function(req, scope) {
     var qs = req.query_string;
     var segs = req.path_info.split("/");
-    segs.shift()
+    segs.shift();
 
     // only handle /ajax URLs
     if (segs.shift() !== "ajax") {
       return false;
     }
-    
+
     // only proxy if it's in a mounted app
     if (!is_proxyable("//" + segs[0], scope)) {
       return false;
@@ -166,7 +177,7 @@ function AjaxRouter() {
 
     var path = "//" + segs.join("/") + (qs ? "?" + qs : "");
     // console.log("AjaxRouter path", path);
-    acre.route(path);
+    acre_include_path(path);
   };
 };
 
@@ -189,7 +200,7 @@ function PrefixRouter(app_labels) {
     }
     return key;
   };
-  
+
   var split_path = function(prefix) {
     var parts = prefix.split('/');
     if (parts[parts.length-1] === "") {
@@ -320,30 +331,30 @@ function PrefixRouter(app_labels) {
 /**
 * Extend the default rules for this site with the environment specific rules.
 */
-function extend_rules(rules, environment_rules) { 
+function extend_rules(rules, environment_rules) {
 
-  // Here we handle configuration overrides from specific environments. 
+  // Here we handle configuration overrides from specific environments.
 
   // Labels environment override.
 
-  if (environment_rules["labels"]) { 
+  if (environment_rules["labels"]) {
     if (!("labels" in rules)) rules["labels"] = {};
     h.extend(rules["labels"], environment_rules["labels"])
-    for (var app_label in environment_rules["labels"]) { 
+    for (var app_label in environment_rules["labels"]) {
       rules["labels"][app_label] = environment_rules["labels"][app_label]
     }
   }
 
   // Prefix environment override.
 
-  if (environment_rules["prefix"]) { 
+  if (environment_rules["prefix"]) {
     if (!("prefix" in rules)) rules["prefix"] = [];
 
-    // Holds prefix -> index in prefix routing array. 
-    var prefix_index = {}
+    // Holds prefix -> index in prefix routing array.
+    var prefix_index = {};
     var i = 0;
-    rules["prefix"].forEach(function(route) { 
-      if (!route["prefix"]) { 
+    rules["prefix"].forEach(function(route) {
+      if (!route["prefix"]) {
         throw("You can not define a prefix routing rule without a prefix.");
         exit(-1);
       }
@@ -351,13 +362,13 @@ function extend_rules(rules, environment_rules) {
       i++;
     });
 
-    environment_rules["prefix"].forEach(function(route) { 
-      if (!route["prefix"]) { 
+    environment_rules["prefix"].forEach(function(route) {
+      if (!route["prefix"]) {
         throw("You can not define a prefix routing rule without a prefix.");
         exit(-1);
       }
       // Overwrite the rule if it exists in the base rules.
-      if (prefix_index[route.prefix] != undefined) { 
+      if (prefix_index[route.prefix] != undefined) {
         rules["prefix"][prefix_index[route.prefix]] = route;
       } else {
         rules["prefix"].push(route);
@@ -368,22 +379,22 @@ function extend_rules(rules, environment_rules) {
   // Routers
 
   // default order if not specified
-  if (!rules["routers"]) { 
+  if (!rules["routers"]) {
     rules["routers"] = default_routers;
   }
 
   // override with the environment rules if specified.
-  if (environment_rules["routers"]) { 
+  if (environment_rules["routers"]) {
     rules["routers"] = environment_rules["routers"];
   }
 
   var tmp_routers = [];
-  for (var i in rules["routers"]) { 
+  for (var i in rules["routers"]) {
     var router = rules["routers"][i];
 
     if (h.isArray(router)) {
       tmp_routers.push(router);
-    } else if ((typeof router === 'string') && routers_map[router]) { 
+    } else if ((typeof router === 'string') && routers_map[router]) {
       tmp_routers.push([router, routers_map[router]]);
     } else {
       throw "There is no router named " + router + " available.";
@@ -407,7 +418,7 @@ function route(rules, scope) {
 
   var rules_dump = {};
 
-  if (rules["routers"]) { 
+  if (rules["routers"]) {
     routers = rules["routers"];
   }
 

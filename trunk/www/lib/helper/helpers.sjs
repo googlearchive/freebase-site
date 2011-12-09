@@ -982,7 +982,7 @@ function account_cookie_name() {
 function account_cookie_options(options) {
   return extend({}, {
       path: "/",
-      domain: acre.freebase.site_host.split(".").slice(-2).join(".")
+      domain: "." + acre.freebase.site_host.split(".").slice(-2).join(".")
   }, options);
 }
 

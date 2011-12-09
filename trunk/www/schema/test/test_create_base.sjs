@@ -118,7 +118,7 @@ function delete_base(key) {
   });
 };
 
-test("create_base", function() {
+test("create_base", {bug: "Skip create/delete domain test until create_group API on googleapis"}, function() {
   var name = get_name();
   var key = schema_helpers.generate_domain_key(name);
   var base;
@@ -187,8 +187,8 @@ test("create_base", function() {
   acre.async.wait_on_results();
   ok(permits_schema_group, base.id + " permits /boot/schema_group");
 });
-/*
-test("create base with existing key", function() {
+
+test("create base with existing key", {bug: "Skip create/delete domain test until create_group API on googleapis"}, function() {
   var base, error;
   try {
     var name = get_name();
@@ -212,7 +212,7 @@ test("create base with existing key", function() {
   }
 });
 
-test("create base with description", function() {
+test("create base with description", {bug: "Skip create/delete domain test until create_group API on googleapis"}, function() {
   var name = get_name();
   var key = schema_helpers.generate_domain_key(name);
   var base;
@@ -258,5 +258,5 @@ test("create base with description", function() {
   acre.async.wait_on_results();
   equal(blurb, name);
 });
-*/
+
 acre.test.report();

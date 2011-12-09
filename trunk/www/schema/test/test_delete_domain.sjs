@@ -64,7 +64,7 @@ if (!user) {
 
 var user_domain = user.id + "/default_domain";
 
-test("delete_domain no permission", function() {
+test("delete_domain no permission", {bug: "Skip create/delete domain test until ccreate_group API on googleapis"}, function() {
   var result, error;
   delete_domain("/base/slamdunk", "/user/tfmorris", true)
     .then(function(info) {
@@ -77,7 +77,7 @@ test("delete_domain no permission", function() {
   ok(error, "expected error: " + error);
 });
 
-test("delete_domain user default_domain", function() {
+test("delete_domain user default_domain", {bug: "Skip create/delete domain test until create_group API on googleapis"}, function() {
   var result, error;
   delete_domain(user_domain, user.id, true)
     .then(function(info) {
@@ -90,7 +90,7 @@ test("delete_domain user default_domain", function() {
   ok(error, "expected error: " + error);
 });
 
-test("delete_domain commons domain", function() {
+test("delete_domain commons domain", {bug: "Skip create/delete domain test until create_group API on googleapis"}, function() {
   var result, error;
   delete_domain("/freebase", user.id, true)
     .then(function(info) {
@@ -132,7 +132,7 @@ function assert_deleted_result(result, domain) {
   return result;
 };
 
-test("delete_domain user domain", function() {
+test("delete_domain user domain", {bug: "Skip create/delete domain test until create_group API on googleapis"}, function() {
   var domain;
   test_helpers.create_domain2(user.id)
     .then(function(created) {
@@ -154,7 +154,7 @@ test("delete_domain user domain", function() {
   ok(!deleted_base_key.length);
 });
 
-test("delete domain base domain", function() {
+test("delete domain base domain", {bug: "Skip create/delete domain test until create_group API on googleapis"}, function() {
   var name = test_helpers.gen_test_name("test_base_");
   var key = name.toLowerCase();
   // create test base

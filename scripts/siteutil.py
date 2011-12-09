@@ -1974,8 +1974,15 @@ class Site:
         },
 
     "freebase-refinery" : {
-        "notification_email_address" : "freebase-refinery@google.com",
+        "notification_email_address" : "ensemble-team@google.com",
         "id" : "freebase-refinery",
+        "repository" : "googlecode",
+        "svn_paths" :  ["/environments", "/appengine-config", "/trunk/www"]
+        },
+
+    "freebase-delphi" : {
+        "notification_email_address" : "ensemble-team@google.com",
+        "id" : "freebase-delphi",
         "repository" : "googlecode",
         "svn_paths" :  ["/environments", "/appengine-config", "/trunk/www"]
         }

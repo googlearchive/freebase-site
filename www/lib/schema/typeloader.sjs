@@ -209,6 +209,15 @@ function do_mql(/**, type_id1, type_id2, ..., type_idN **/) {
       lang: null
     }],
     type: "/type/type",
+    domain: {
+      id: null,
+      name: [{
+        optional: true,
+        value: null,
+        lang: null
+      }],
+      type: "/type/domain"
+    },
     "/freebase/type_hints/enumeration": null,
     "/freebase/type_hints/mediator": null,
     "/freebase/type_hints/included_types": [],

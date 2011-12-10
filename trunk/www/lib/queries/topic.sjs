@@ -31,7 +31,7 @@
 
 var h = acre.require("helper/helpers.sjs");
 var i18n = acre.require("i18n/i18n.sjs");
-var apis =  acre.require("promise/apis.sjs");
+var apis = acre.require("promise/apis.sjs");
 var freebase = apis.freebase;
 var deferred = apis.deferred;
 var pq = acre.require("propbox/queries.sjs");
@@ -75,19 +75,16 @@ function topic(id, lang, limit, as_of_time, domains) {
  *
  * @param id:String - The topic id
  * @param lang:String - The primary language for all text values in the result.
- * By default, "en" is the default language as well as the "fallback" language.
+ *   By default, "en" is the default language.
  * TODO: @see url to topic api
  */
 function topic_structure(id, lang) {
   var options = {alldata:true};
   options.lang = h.lang_code(lang || "/lang/en");
-  if (options.lang !== "en") {
-    options.lang += ",en"; // fallback to "en"
-  };
   return freebase.get_topic(id, options)
     .then(function(topic_result) {
-      var types;
-      var notable_types;
+      var types = null; // list of types this topic is an instance of
+      var notable_types = null; // list of types sorted by their notability
       var property = topic_result && topic_result.property;
       if (property) {
         types = property["/type/object/type"];
@@ -98,6 +95,7 @@ function topic_structure(id, lang) {
       var d;
       if (types && types.length) {
         var type_ids = types.map(function(t) { return t.id; });
+        // typeloader.load takes var args: [true, type_id1, type_id2, ..., type_idN]
         d = typeloader.load.apply(null, [true].concat(type_ids))
           .then(function(typeloader_result) {
              return {
@@ -153,6 +151,8 @@ function get_structure(types, notable_types, lang) {
     domains_list.push(domains[domain_id]);
   }
   if (notable_types && notable_types.length) {
+    // notable_types are currently returned in reverse order.
+    notable_types.reverse();
     var notable_types_index = {};
     notable_types.forEach(function(t, i) {
       notable_types_index[t.id] = i;
@@ -194,7 +194,7 @@ function get_structure(types, notable_types, lang) {
     });
   }
   else {
-    // TODO: default sorting without notable_types
+    // without notable_types, the domains_list sort order is undefined
   }
   return to_structure(domains_list, lang);
 };

@@ -457,13 +457,12 @@ function visible_subprops(prop, subprops) {
   }
   var visible = [];
   subprops.forEach(function(subprop, i) {
-    if (subprop.unique && is_reciprocal(prop, subprop)) {
-      return;
+    if (subprop.disambiguator || subprop["/freebase/property_hints/disambiguator"]) {
+      if (subprop.unique && is_reciprocal(prop, subprop)) {
+        return;
+      }
+      visible.push(subprop);
     }
-    if (unique_ish(subprop.id)) {
-      //subprop.unique = true;
-    }
-    visible.push(subprop);
   });
   return visible;
 };

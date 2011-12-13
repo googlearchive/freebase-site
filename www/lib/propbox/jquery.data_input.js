@@ -130,7 +130,8 @@
 
       if (c.is(".topic")) {
         var type = self.metadata.type;
-        var suggest_options = $.extend(true, {}, o.suggest, $.data_input.suggest_options(type));
+        var suggest_options = $.extend(true, {}, o.suggest,
+                                       $.data_input.suggest_options(type, self.metadata.lang || o.lang));
         i.validate_topic(suggest_options)
           .bind("valid.data_input", function(e, data) {
             self.fb_select(data);
@@ -266,7 +267,7 @@
               (type.indexOf("/freebase/") === 0 && type.indexOf("_profile") === (type.length - 8)));
     },
 
-    suggest_options: function(type) {
+    suggest_options: function(type, lang) {
       /**
        * sameas as fb.suggest_options.instance()
        */
@@ -275,7 +276,16 @@
         category: "instance",
         type: type,
         type_strict: is_system_type ? "any" : "should",
-        suggest_new: is_system_type ? false : "Create new"
+        suggest_new: is_system_type ? false : "Create new",
+        lang: (function(langs) {
+          // @param langs - languages supported by new freebase search (googleapis)
+          var l = (lang || "/lang/en").split("/").pop(); // get lang code of lang
+          if (l !== "en" && langs[l]) {
+            // en is the fallback
+            return l += ",en";
+          }
+          return null;
+        })({en:1,es:1,fr:1,de:1,it:1,pt:1,zh:1,ja:1,ko:1})
       };
       var filter = [
         "any",

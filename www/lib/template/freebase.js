@@ -360,7 +360,16 @@
         service_path: "",
         flyout_service_url: fb.h.flyout_url(),
         flyout_service_path: "",
-        key: fb.acre.freebase.api_key
+        key: fb.acre.freebase.api_key,
+        lang: (function(langs) {
+          // @param langs - languages supported by new freebase search (googleapis)
+          var l = fb.h.lang_code(fb.lang || "/lang/en");
+          if (l !== "en" && langs[l]) {
+            // en is the fallback
+            return l += ",en";
+          }
+          return null;
+        })({en:1,es:1,fr:1,de:1,it:1,pt:1,zh:1,ja:1,ko:1})
       },
 
       /**

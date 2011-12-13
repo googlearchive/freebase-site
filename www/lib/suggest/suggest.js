@@ -1529,7 +1529,7 @@
       filter: null,
 
       // spelling corrections
-      spell: "aggressive",
+      spell: "always",
 
       exact: false,
 

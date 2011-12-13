@@ -22,7 +22,7 @@ $(function() {
                        }
                      })
                .focus()
-               .val("bob dylan")
+               .val(bob_dylan_id)
                .trigger("textchange");
            });
     };
@@ -91,7 +91,7 @@ $(function() {
                      }
                    })
              .focus()
-             .val("bob dylan")
+             .val(bob_dylan_id)
              .trigger("textchange");
          });
 

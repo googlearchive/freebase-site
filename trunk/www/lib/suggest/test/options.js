@@ -318,19 +318,32 @@ $(function() {
       test_input1
         .bind("fb-pane-show",
               function() {
-                if ($(">li", inst.list).length) {
+                var found = false;
+                var compare_expected;
+                if (typeof expected === "function") {
+                  compare_expected = function(data) {
+                    return expected(data);
+                  };
+                }
+                else {
+                  compare_expected = function(data) {
+                    return data.id === expected;
+                  };
+                }
+                var list = $(">li", inst.list);
+                if (list.length) {
                   clearTimeout(t);
-                  var data = $("li:first", inst.list).data("data.suggest");
-
-                  if (typeof expected === "function") {
-                    ok(expected(data));
-                  }
-                  else {
-                    equals(data.id, expected);
-                  }
+                  list.each(function() {
+                      var data = $(this).data("data.suggest");
+                      found = compare_expected(data);
+                      if (found) {
+                        return false;
+                      }
+                  });
+                  ok(found);
                   start();
                 }
-                else if (typeof on_empty === "function") {
+                else if (on_empty) {
                   ok(on_empty());
                   start();
                 }
@@ -383,23 +396,19 @@ $(function() {
 
 
     // spell/correction
-    test("spell=aggressive", function() {
-      var o = $.extend({}, default_options, {spell:"aggressive"});
+    test("spell=always", function() {
+      var o = $.extend({}, default_options, {spell:"always"});
       test_input1.suggest(o);
       var inst = get_instance();
-
-
       var on_spell_link = false;
-
       stop();
       var t = test_timeout();
       test_input1
         .bind("fb-pane-show",
               function() {
-                if (on_spell_link && $(">li", inst.list).length) {
-                  clearTimeout(t);
-                  var data = $("li:first", inst.list).data("data.suggest");
-                  equals(data.id, bob_dylan_id);
+                var list = $(">li", inst.list);
+                if (on_spell_link && list.length) {
+                  ok(true, "Got spell correction results");
                   start();
                 }
                 else if ($(".fbs-spell-link", inst.pane).length) {

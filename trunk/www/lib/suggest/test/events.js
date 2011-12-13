@@ -33,6 +33,8 @@ $(function() {
                    })
              .bind("fb-pane-show", function() {
                      if ($(">li", inst.list).length) {
+                       clearTimeout(timer);
+                       timer = test_timeout();
                        var first = $("li:first", inst.list).simulate("mouseover");
                      }
                    })
@@ -62,7 +64,7 @@ $(function() {
                      }
                    })
              .focus()
-             .val("bob dylan")
+             .val(bob_dylan_id)
              .trigger("textchange");
          });
 

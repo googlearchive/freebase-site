@@ -224,7 +224,7 @@
                       var n = c.object.name[i];
                     </acre:script>
                     <li class="">
-                      <a href="${h.build_url(null, c.object.id, [['lang', n.lang]])}">
+                      <a href="${h.build_url(null, c.object.id, [['lang', h.lang_code(n.lang)]])}">
                         ${n.value}
                         ${i18n_c.lang_code(n.lang, null, true)}
                       </a>

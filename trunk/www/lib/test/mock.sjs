@@ -100,7 +100,8 @@ if (mock) {
                   return response;
                 },
                 function (error) {
-                  test_data.push([api_name, orig_args, error]);
+                  // flag as an error in the recorded response
+                  test_data.push([api_name, orig_args, error, true]);
                   return error;
                 });
         acre.async.wait_on_results();
@@ -187,6 +188,7 @@ if (mock) {
         var recorded_api_name = current[0];
         var recorded_args = current[1];
         var recorded_response = current[2];
+        var recorded_error = current[3];
 
         // Assert current api callstack is the same as api_name
         if (recorded_api_name !== api_name) {
@@ -198,7 +200,13 @@ if (mock) {
           throw(h.sprintf("Playback data arguments: %s, expected: %s", JSON.stringify(api_args), JSON.stringify(recorded_args)));
         }
 
-        return deferred.resolved(recorded_response);
+        if (recorded_error) {
+          // if error, we need go through the errback code path
+          return deferred.rejected(recorded_response);
+        }
+        else {
+          return deferred.resolved(recorded_response);
+        }
       };
     };
 

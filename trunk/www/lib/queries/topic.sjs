@@ -79,7 +79,11 @@ function topic(id, lang, limit, as_of_time, domains) {
  * TODO: @see url to topic api
  */
 function topic_structure(id, lang) {
-  var options = {alldata:true};
+  var options = {
+    // This needs to be TRUE to return topic names. Not quite sure why this is not the default.
+    // @see masouras
+    alldata: true
+  };
   options.lang = h.lang_code(lang || "/lang/en");
   return freebase.get_topic(id, options)
     .then(function(topic_result) {
@@ -114,25 +118,78 @@ function topic_structure(id, lang) {
     });
 };
 
+function compare_notable_types_index(notable_types_index, a, b) {
+  var a_index = notable_types_index[a.id];
+  var b_index = notable_types_index[b.id];
+  if (!(a_index == null || b_index == null)) {
+    return a_index - b_index;
+  }
+  else if (a_index == null && b_index === null) {
+    return 0;
+  }
+  else if (a_index == null) {
+    return 1;
+  }
+  else if (b_index == null) {
+    return -1;
+  }
+};
+
 /**
- * Group a dictionary of types (key'ed by type id) into their respective domains.
- *
- * @param types:Object - a dictionary of types returned by typeloader.load().
- * @return a dictionary of domains key'ed by domain ids where each domain has {id:"...", name:[...], types:[...]}
+ * Sort types by the notable_types sort order.
+ * Next, group the types by their domains.
+ * Then, sort the domains by comparing their first type in the notabable_types sort order.
+ * If notable_types is empty, the sorting of domains and their types is undefined.
  */
-function group_by_domains(types) {
-  var domains = {};
-  for (var type_id in types) {
-    var type = types[type_id];
+function sort_domains_and_types(types_by_id, notable_types) {
+  // turn types_by_id into an array and sort by notable_types index order
+  var types_list = [];
+  for (var type_id in types_by_id) {
+    types_list.push(types_by_id[type_id]);
+  }
+  var notable_types_index = null;
+  if (notable_types && notable_types.length) {
+    // notable_types are currently returned in reverse order.
+    notable_types.reverse();
+    notable_types_index = {};
+    notable_types.forEach(function(t, i) {
+      notable_types_index[t.id] = i;
+    });
+    types_list.sort(function(a, b) {
+      return compare_notable_types_index(notable_types_index, a, b);
+    });
+  }
+  var domains_list = [];
+  var domains_by_id = {};
+  types_list.forEach(function(type) {
     var domain_id = type.domain.id;
-    var domain = domains[domain_id];
+    var domain = domains_by_id[domain_id];
     if (!domain) {
-      domain = domains[domain_id] = h.extend(true, {types:[]}, type.domain);
+      domain = domains_by_id[domain_id] = h.extend(true, {types:[]}, type.domain);
+      domains_list.push(domain);
     }
     domain.types.push(type);
+  });
+  if (notable_types_index) {
+    // now sort the domains using the notable_types_index of the first type
+    domains_list.sort(function(a, b) {
+      var a_type = a.types.length ? a.types[0] : null;
+      var b_type = b.types.length ? b.types[0] : null;
+      if (a_type && b_type) {
+        return compare_notable_types_index(notable_types_index, a_type, b_type);
+      }
+      else if (a_type) {
+        return -1;
+      }
+      else if (b_type) {
+        return 1;
+      }
+      return 0;
+    });
   }
-  return domains;
+  return domains_list;
 };
+
 
 /**
  * Sort domains and their types by the notable_types sort order.
@@ -145,57 +202,7 @@ function group_by_domains(types) {
  * @return a list of domains and their types sorted by the notable_types sort order.
  */
 function get_structure(types, notable_types, lang) {
-  var domains = group_by_domains(types);
-  var domains_list = [];
-  for (var domain_id in domains) {
-    domains_list.push(domains[domain_id]);
-  }
-  if (notable_types && notable_types.length) {
-    // notable_types are currently returned in reverse order.
-    notable_types.reverse();
-    var notable_types_index = {};
-    notable_types.forEach(function(t, i) {
-      notable_types_index[t.id] = i;
-    });
-    function compare_notable_types_index(a, b) {
-      var a_index = notable_types_index[a.id];
-      var b_index = notable_types_index[b.id];
-      if (!(a_index == null || b_index == null)) {
-        return a_index - b_index;
-      }
-      else if (a_index == null && b_index === null) {
-        return 0;
-      }
-      else if (a_index == null) {
-        return 1;
-      }
-      else if (b_index == null) {
-        return -1;
-      }
-    };
-    // sort all the types within each domain by notable_types index
-    domains_list.forEach(function(domain) {
-      domain.types.sort(compare_notable_types_index);
-    });
-    // now sort the domains using the notable_types index of the first type
-    domains_list.sort(function(a, b) {
-      var a_type = a.types.length ? a.types[0] : null;
-      var b_type = b.types.length ? b.types[0] : null;
-      if (a_type && b_type) {
-        return compare_notable_types_index(a_type, b_type);
-      }
-      else if (a_type) {
-        return -1;
-      }
-      else if (b_type) {
-        return 1;
-      }
-      return 0;
-    });
-  }
-  else {
-    // without notable_types, the domains_list sort order is undefined
-  }
+  var domains_list = sort_domains_and_types(types, notable_types);
   return to_structure(domains_list, lang);
 };
 

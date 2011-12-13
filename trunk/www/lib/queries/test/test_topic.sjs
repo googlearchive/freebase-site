@@ -65,4 +65,16 @@ test("topic_structure", function() {
      "Expected /people/person/date_of_birth in structure.properties");
 });
 
+test("topic_structure error", function() {
+  var result, error;
+  queries.topic_structure("/fu/bar", "en")
+    .then(function(topic) {
+      result = topic;
+    }, function(e) {
+      error = e;
+    });
+  acre.async.wait_on_results();
+  ok(error, "Error expected for bad topic id");
+});
+
 acre.test.report();

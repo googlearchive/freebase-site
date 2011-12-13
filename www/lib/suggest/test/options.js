@@ -357,29 +357,6 @@ $(function() {
       });
     });
 
-    $.each([[{"/film/film/directed_by": "Steven Spielberg"}], JSON.stringify([{"/film/film/directed_by": {id:steven_spielberg_id}}])],
-           function(i,n) {
-             var name = n;
-             if (typeof n !== "string") {
-               n = JSON.stringify(n);
-             }
-             test("mql_filter=" + n, 1, function() {
-                    test_suggest_result({filter:"(any type:/film/film)", mql_filter:n},"saving", saving_priv_ryan_id);
-                  });
-           });
-
-    if (false) {
-      // as_of_time not supported in new googleapis
-      test("as_of_time=2008", 1, function() {
-             test_suggest_result({filter:"(any type:/music/artist)", as_of_time:2008},"lady gaga", function(first) {
-                                   return first.id != lady_gaga_id;
-                                 });
-           });
-      test("as_of_time=2010", 1, function() {
-             test_suggest_result({filter:"(any type:/music/artist)", as_of_time:2010},"lady gaga", lady_gaga_id);
-           });
-    }
-
     test("lang [default]", function() {
       test_suggest_result(null, "/en/seoul", function(first) {
         return first.name === "Seoul";

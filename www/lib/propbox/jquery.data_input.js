@@ -43,7 +43,7 @@
   };
 
   $.data_input = function(container, options) {
-    this.options = $.extend(true, {}, $.data_input.defaults, options);
+    this.options = $.extend(true, {}, options);
     this.container = $(container);
     // original data
     this.metadata = this.container.metadata();
@@ -130,9 +130,7 @@
 
       if (c.is(".topic")) {
         var type = self.metadata.type;
-        var suggest_options = $.extend(true, {}, o.suggest,
-                                       $.data_input.suggest_options(type, self.metadata.lang || o.lang));
-        i.validate_topic(suggest_options)
+        i.validate_topic(o.suggest_impl.instance(type, true, self.metadata && self.metadata.lang || o.lang))
           .bind("valid.data_input", function(e, data) {
             self.fb_select(data);
           })
@@ -248,65 +246,6 @@
       }
     }
   };
-
-  $.extend($.data_input, {
-    defaults: {
-      suggest: {
-        service_url: "http://www.freebase.com",
-        service_path: "/private/suggest",
-        flyout_service_url: "http://www.freebase.com",
-        flyout_service_path: "/private/flyout",
-        category: "object",
-        type: "/common/topic"
-      }
-    },
-
-    is_metaweb_system_type: function(type) {
-      return (type.indexOf("/type/") === 0 ||
-              (type.indexOf("/common/") === 0 && type !== "/common/topic") ||
-              (type.indexOf("/freebase/") === 0 && type.indexOf("_profile") === (type.length - 8)));
-    },
-
-    suggest_options: function(type, lang) {
-      /**
-       * sameas as fb.suggest_options.instance()
-       */
-      var is_system_type = $.data_input.is_metaweb_system_type(type);
-      var o = {
-        category: "instance",
-        type: type,
-        type_strict: is_system_type ? "any" : "should",
-        suggest_new: is_system_type ? false : "Create new",
-        lang: (function(langs) {
-          // @param langs - languages supported by new freebase search (googleapis)
-          var l = (lang || "/lang/en").split("/").pop(); // get lang code of lang
-          if (l !== "en" && langs[l]) {
-            // en is the fallback
-            return l += ",en";
-          }
-          return null;
-        })({en:1,es:1,fr:1,de:1,it:1,pt:1,zh:1,ja:1,ko:1})
-      };
-      var filter = [
-        "any",
-        "type:" + type,
-        "without:fus",
-        "without:inst"
-      ];
-      $.each(["user", "domain", "type"], function(i, t) {
-        if (type === "/freebase/" + t + "_profile") {
-          filter.push("type:/type/" + t);
-          return false;
-        }
-      });
-      if (type === "/book/book_subject") {
-        filter.push("type:/base/skosbase/skos_concept");
-      }
-      o.filter = "(" + filter.join(" ") + ")";
-      return o;
-    }
-
-  });
 
   $.fn.validate_topic = function(options) {
     return this.each(function() {

@@ -353,23 +353,103 @@
    * Add all suggest options helpers here
    */
   $(function() {
+    /**
+     * fb.suggest_options now serve as an interface (as well as actual implementation)
+     * for various components (i.e., propbox - jquery.data_input.js).
+     */
+
+    // current langs supported by search
+    fb.suggest_lang = {
+      SUPPORTED: {
+        en:1, es:1, fr:1, de:1, it:1, pt:1, zh:1, ja:1, ko:1
+      },
+
+      lang: function(lang) {
+        lang = fb.h.lang_code(lang || fb.lang || "/lang/en");
+        if (fb.suggest_lang.SUPPORTED[lang]) {
+          if (lang !== "en") {
+            // en is the fallback language
+            return lang += ",en";
+          }
+        }
+        return "en";
+      }
+    };
+
     fb.suggest_options = {
 
       service_defaults: {
+        status: ["", "Searching...", "Select an item from the list:"],
         service_url: fb.h.suggest_url(),
         service_path: "",
         flyout_service_url: fb.h.flyout_url(),
         flyout_service_path: "",
         key: fb.acre.freebase.api_key,
-        lang: (function(langs) {
-          // @param langs - languages supported by new freebase search (googleapis)
-          var l = fb.h.lang_code(fb.lang || "/lang/en");
-          if (l !== "en" && langs[l]) {
-            // en is the fallback
-            return l += ",en";
+        lang: fb.suggest_lang.lang()
+      },
+
+      /**
+       * suggest filter operators: operator, any, all, should
+       *
+       * These filter operators return a valid filter value for search
+       */
+      filter: {
+
+        operator: function(/** any|all|should, filter_1, filter_2, ..., filter_N **/) {
+          var args = Array.prototype.slice.call(arguments);
+          var op = args.shift();
+          // assert op is any|all|should
+          if (! (op === "any" || op === "all" || op === "should")) {
+            throw "Invalid search operator: " + op;
           }
-          return null;
-        })({en:1,es:1,fr:1,de:1,it:1,pt:1,zh:1,ja:1,ko:1})
+          var filters = [op];
+          if (op === "should" && args.length > 1) {
+            // "should" only takes one argument. Wrap all filters inside "any"
+            var should_args = ["any"].concat(args);
+            filters.push(fb.suggest_options.filter.operator.apply(null, should_args));
+          }
+          else {
+            filters = filters.concat(args);
+          }
+          return "(" + filters.join(" ") + ")";
+        },
+
+        any: function(/** filter_1, filter_2, ..., filter_N **/) {
+          var args = Array.prototype.slice.call(arguments);
+          args.unshift("any");
+          return fb.suggest_options.filter.operator.apply(null, args);
+        },
+
+        all: function(/** filter_1, filter_2, ..., filter_N **/) {
+          var args = Array.prototype.slice.call(arguments);
+          args.unshift("all");
+          return fb.suggest_options.filter.operator.apply(null, args);
+        },
+
+        should: function(/** filter_1, filter_2, ..., filter_N **/) {
+          var args = Array.prototype.slice.call(arguments);
+          args.unshift("should");
+          return fb.suggest_options.filter.operator.apply(null, args);
+        }
+      },
+
+      /**
+       * These convenience methods (any, all, should), return full suggest options
+       */
+      any: function(/** filter_1, filter_2, ..., filter_N **/) {
+        var o = $.extend({}, fb.suggest_options.service_defaults);
+        o.filter = fb.suggest_options.filter.any.apply(null, arguments);
+        return o;
+      },
+      all: function(/** filter_1, filter_2, ..., filter_N **/) {
+        var o = $.extend({}, fb.suggest_options.service_defaults);
+        o.filter = fb.suggest_options.filter.all.apply(null, arguments);
+        return o;
+      },
+      should: function(/** filter_1, filter_2, ..., filter_N **/) {
+        var o = $.extend({}, fb.suggest_options.service_defaults);
+        o.filter = fb.suggest_options.filter.should.apply(null, arguments);
+        return o;
       },
 
       /**
@@ -380,67 +460,54 @@
           status: null,
           parent: "#site-search-box",
           align: "right",
-          category: "object",         // old suggest
           filter: "(all without:fus)" // new suggest
         });
         return o;
       },
 
-      _operator: function(/** any|all|should, type_1, type_2, ..., type_N **/) {
-        var args = Array.prototype.slice.call(arguments);
-        var op = args.shift();
-        var o = $.extend({}, fb.suggest_options.service_defaults, {
-          type: args.length === 1 ? args[0] : args,
-          type_strict: op
-        });
-        var filter = [op];
-        $.each(args, function(i, t) {
-          filter.push("type:" + t);
-        });
-        o.filter = "(" + filter.join(" ") + ")";
-        return o;
-      },
-
-      any: function(/** type_1, type_2, ..., type_N **/) {
-        var args = Array.prototype.slice.call(arguments);
-        args.unshift("any");
-        return fb.suggest_options._operator.apply(null, args);
-      },
-
-      all: function(/** type_1, type_2, ..., type_N **/) {
-        var args = Array.prototype.slice.call(arguments);
-        args.unshift("all");
-        return fb.suggest_options._operator.apply(null, args);
-      },
-
-      should: function(/** type_1, type_2, ..., type_N **/) {
-        var args = Array.prototype.slice.call(arguments);
-        args.unshift("should");
-        return fb.suggest_options._operator.apply(null, args);
-      },
-
-      instance: function(type) {
-        var o = $.extend({}, fb.suggest_options.service_defaults, {
-          category: "instance",
-          type: type,
-          type_strict: fb.h.is_metaweb_system_type(type) ? "any" : "should"
-        });
-        var filter = [
-          "any",
+      /**
+       * Used when linking to an existing topic
+       */
+      instance: function(type, create_new, lang) {
+        var filters = [
           "type:" + type,
           "without:fus",
           "without:inst"
         ];
+        // If freebase profile type (i.e. /freebase/[user|domain|type]_profile),
+        // also look for their corresponding cotypes (i.e., /type/[user|domain|type]
         $.each(["user", "domain", "type"], function(i, t) {
           if (type === "/freebase/" + t + "_profile") {
-            filter.push("type:/type/" + t);
+            filters.push("type:/type/" + t);
             return false;
           }
         });
         if (type === "/book/book_subject") {
-          filter.push("type:/base/skosbase/skos_concept");
+          // If looking for /book/book_subject, also look for /base/skosbase/skos_concept
+          filters.push("type:/base/skosbase/skos_concept");
         }
-        o.filter = "(" + filter.join(" ") + ")";
+
+        // is this metaweb system type?
+        var is_system_type = fb.h.is_metaweb_system_type(type);
+
+        var o = null;
+        if (is_system_type) {
+          // use "any" for metaweb system types
+          o = fb.suggest_options.any.apply(null, filters);
+        }
+        else {
+          // use "should" for anything else
+          o = fb.suggest_options.should.apply(null, filters);
+          if (create_new) {
+            // only "Create new" for non metaweb system types
+            o.suggest_new = "Create new";
+          }
+        }
+
+        // different lang than the default?
+        if (lang) {
+          o.lang = fb.suggest_lang.lang(lang);
+        }
         return o;
       },
 
@@ -448,30 +515,26 @@
        * Add a type to (cotype) a topic.
        */
       cotype: function() {
-        var o = $.extend({}, fb.suggest_options.service_defaults, {
-          category: "cotype"
-        });
-        var filter = [
-          "all",
+        var filters = [
+          // everything should be of /type/type
           "type:/type/type",
-          "(not domain:/type)",
-          "(not domain:/freebase)",
-          "(any (not domain:/common) (any type:/common/topic type:/common/uri_template type:/common/uri_property))"
+
+          // can't cotype things in /type and /freebase
+          "(not namespace:/type)",
+          "(not namespace:/freebase)",
+
+          // you can only cotype /common/topic, /common/uri_template, /common/uri_property in /common
+          "(any (not namespace:/common) (any mid:/m/01c5 mid:/m/02_1_m4 mid:/m/03hc3d_))"
+
+          // TODO: without cvt and enum. not yet supported by search
         ];
         if (fb.user) {
-          filter.push("(any without:hidden source:" + fb.user.id + ")");
+          filters.push("(any without:hidden source:" + fb.user.id + ")");
         }
         else {
-          filter.push("without:hidden");
+          filters.push("without:hidden");
         }
-        o.filter = "(" + filter.join(" ") + ")";
-        if (fb.acre.freebase.googleapis_url) {
-          o.mql_filter = [{
-            "/freebase/type_hints/enumeration": {value:true, optional:"forbidden"},
-            "/freebase/type_hints/mediator": {value:true, optional:"forbidden"}
-          }];
-        }
-        return o;
+        return fb.suggest_options.all.apply(null, filters);
       },
 
       /*
@@ -483,47 +546,40 @@
       },
 
       /**
-       * Add /type/property/expected_type to a type
+       * Add /type/property/expected_type to a property
        */
       expected_type: function() {
-        var o = $.extend({}, fb.suggest_options.service_defaults, {
-          category: "expected_type"
-        });
-        var filter = [
-          "all",
+        var filters = [
           "type:/type/type"
         ];
         if (fb.user) {
-          filter.push("(any without:hidden source:" + fb.user.id + ")");
+          // A user can use types in their hidden domain
+          filters.push("(any without:hidden source:" + fb.user.id + ")");
         }
         else {
-          filter.push("without:hidden");
+          filters.push("without:hidden");
         }
-        o.filter = "(" + filter.join(" ") + ")";
-        return o;
+        return fb.suggest_options.all.apply(null, filters);
       },
 
       /**
        * Delegate a property
        */
       delegate_property: function() {
-        var o = $.extend({}, fb.suggest_options.service_defaults, {
-          type: "/type/property",
-          type_strict: "any"
-        });
-        var filter = [
-          "all",
+        var filters = [
           "type:/type/property",
-          "(not domain:/type)"
+
+          // can't delegate to properties in /type/object
+          "(not namespace:/type/object)"
         ];
         if (fb.user) {
-          filter.push("(any without:hidden source:" + fb.user.id + ")");
+          // A user can delegate to properties within their hidden domain
+          filters.push("(any without:hidden source:" + fb.user.id + ")");
         }
         else {
-          filter.push("without:hidden");
+          filters.push("without:hidden");
         }
-        o.filter = "(" + filter.join(" ") + ")";
-        return o;
+        return fb.suggest_options.all.apply(null, filters);
       }
     };
   });

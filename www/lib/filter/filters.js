@@ -36,7 +36,7 @@
     init_domain_type_property_filter: function(context) {
       // *** Initialize domain/type/property suggest input
       $(":text[name=domain], :text[name=type], :text[name=property]", context)
-        .suggest(fb.suggest_options.any("/type/domain", "/type/type", "/type/property"))
+        .suggest(fb.suggest_options.any("type:/type/domain", "type:/type/type", "type:/type/property"))
         .bind("fb-select", function(e, data) {
           var $this = $(this);
           $this.val(data.id);

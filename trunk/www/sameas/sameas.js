@@ -40,7 +40,7 @@
 
       // Initialize user/creator suggest input
       $(":text[name=creator]")
-        .suggest(fb.suggest_options.any("/type/user"))
+        .suggest(fb.suggest_options.any("type:/type/user"))
         .bind("fb-select", function(e, data) {
           $(this).val(data.id)
             .parents("form:first").submit();

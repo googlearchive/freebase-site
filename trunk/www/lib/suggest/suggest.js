@@ -121,7 +121,7 @@
 
       // suggest parameters
       o.ac_param = {};
-      $.each(["key", "filter", "spell", "exact", "lang", "mql_filter", "as_of_time"], function(i,n) {
+      $.each(["key", "filter", "spell", "exact", "lang"], function(i,n) {
         var v = o[n];
         if (v === null || v === "") {
           return;
@@ -1379,9 +1379,6 @@
       var submit_data = {
         id: data.id
       };
-      if (o.as_of_time) {
-        submit_data.as_of_time = o.as_of_time;
-      }
 
       var ajax_options = {
         url: o.flyout_service_url + o.flyout_service_path,
@@ -1518,12 +1515,6 @@
   $.extend($.suggest.suggest, {
 
     defaults: {
-      // @deprecated
-      mql_filter: null,
-
-      // @deprecated
-      as_of_time: null,
-
       /**
        * filter, spell, lang, exact, lang, key
        *

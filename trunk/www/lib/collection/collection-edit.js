@@ -30,13 +30,6 @@
  */
 ;(function($, fb, propbox, formlib, editparams, i18n) {
 
-  function suggest_options() {
-    var o = $.extend({
-      status: ["", "Searching...", "Select an item from the list:"]
-    }, fb.suggest_options.service_defaults);
-    return o;
-  };
-
   // requires:
   // propbox.js @see lib/propbox/propbox.js
   // form.js @see lib/propbox/form.js
@@ -62,7 +55,7 @@
         base_ajax_url: fb.h.ajax_url("lib/propbox"),
         base_static_url: fb.h.static_url("lib/propbox"),
         lang: fb.lang || "/lang/en",
-        suggest: suggest_options(),
+        suggest_impl: fb.suggest_options,
 
         /**
          * The incompatible_types interface.

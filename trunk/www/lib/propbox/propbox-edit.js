@@ -323,7 +323,7 @@
       data_input
         .data_input({
           lang: propbox.options.lang,
-          suggest: propbox.options.suggest,
+          suggest_impl: propbox.options.suggest_impl,
           incompatible_types: propbox.options.incompatible_types
         })
         .bind("valid", function() {

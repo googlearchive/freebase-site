@@ -32,12 +32,12 @@
 (function($, fb) {
 
   var browse = fb.browse = {
-    
+
     init: function() {
       browse.init_activity_charts($(".domain-activity"));
       browse.init_suggest();
     },
-    
+
     init_suggest: function() {
           // Setup schema search tabset
           var $schema_explorer_search_tabset = $("#schema-search > .section-tabset").tabs("#schema-search > .search-box", {
@@ -47,28 +47,24 @@
 
           var suggest_options = {
 
-            domain: function() {
-              var o = fb.suggest_options.any("/type/domain");
+            get_options: function(type) {
+              var filters = ["type:" + type];
               if ($("#domain-search-toggle-commons").is(":checked")) {
-                o.mql_filter = [{"key":[{"namespace":"/"}]}];
+                filters.push("with:commons");
               }
-              return o;
+              return fb.suggest_options.all.apply(null, filters);
+            },
+
+            domain: function() {
+              return suggest_options.get_options("/type/domain");
             },
 
             type: function() {
-              var o = fb.suggest_options.any("/type/type");
-              if ($("#type-search-toggle-commons").is(":checked")) {
-                o.mql_filter = [{"/type/type/domain":[{"key":[{"namespace":"/"}]}]}];
-              }
-              return o;
+              return suggest_options.get_options("/type/type");
             },
 
             property: function() {
-              var o = fb.suggest_options.any("/type/property");
-              if ($("#property-search-toggle-commons").is(":checked")) {
-                o.mql_filter = [{"/type/property/schema":{"/type/type/domain":[{"key":[{"namespace":"/"}]}]}}];
-              }
-              return o;
+              return suggest_options.get_options("/type/property");
             }
           };
 

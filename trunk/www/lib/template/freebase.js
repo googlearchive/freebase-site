@@ -470,9 +470,7 @@
        */
       instance: function(type, create_new, lang) {
         var filters = [
-          "type:" + type,
-          "without:fus",
-          "without:inst"
+          "type:" + type
         ];
         // If freebase profile type (i.e. /freebase/[user|domain|type]_profile),
         // also look for their corresponding cotypes (i.e., /type/[user|domain|type]
@@ -496,8 +494,10 @@
           o = fb.suggest_options.any.apply(null, filters);
         }
         else {
-          // use "should" for anything else
-          o = fb.suggest_options.should.apply(null, filters);
+          // filter=(should type:ect)&filter=(all without:fus without:inst)
+          var should_ect = fb.suggest_options.filter.should.apply(null, filters);
+          o = fb.suggest_options.all.apply(null, ["without:fus", "without:inst"]);
+          o.filter = [should_ect, o.filter];
           if (create_new) {
             // only "Create new" for non metaweb system types
             o.suggest_new = "Create new";

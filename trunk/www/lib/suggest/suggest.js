@@ -126,18 +126,8 @@
         if (v === null || v === "") {
           return;
         }
-        if (typeof v === "object") {
-          v = JSON.stringify(v);
-        }
         o.ac_param[n] = v;
       });
-      /**  what's happening here? [dae]
-      if (o.ac_param.type) {
-        this.options._type = $.map(o.ac_param.type.split(/[, ]/), function(n, i) {
-          return n.replace(/[\"\[\]]/g, "");
-        });
-      }
-       **/
 
       // status texts
       this._status = {
@@ -1153,6 +1143,7 @@
       var ajax_options = {
         url: o.service_url + o.service_path,
         data: data,
+        traditional: true,
         beforeSend: function(xhr) {
           var calls = self.input.data("request.count.suggest") || 0;
           if (!calls) {
@@ -1383,6 +1374,7 @@
       var ajax_options = {
         url: o.flyout_service_url + o.flyout_service_path,
         data: submit_data,
+        traditional: true,
         beforeSend: function(xhr) {
           var calls = self.input.data("flyout.request.count.suggest") || 0;
           calls += 1;

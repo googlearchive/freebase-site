@@ -170,6 +170,8 @@ $(function() {
                      else {
                        count = $(">li", inst.list).length;
                        if (count) {
+                         clearTimeout(t);
+                         t = test_timeout();
                          simulate_keypress(test_input1, {keyCode: 77, ctrlKey: true});
                          more = true;
                        }

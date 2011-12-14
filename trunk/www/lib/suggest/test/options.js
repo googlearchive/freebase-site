@@ -408,16 +408,16 @@ $(function() {
               function() {
                 var list = $(">li", inst.list);
                 if (on_spell_link && list.length) {
+                  clearTimeout(t);
                   ok(true, "Got spell correction results");
                   start();
                 }
                 else if ($(".fbs-spell-link", inst.pane).length) {
                   clearTimeout(t);
+                  t = test_timeout();
                   ok(true, "Found spell/correction");
-                  stop();
                   $(".fbs-spell-link", inst.pane).click();
                   on_spell_link = true;
-                  t = test_timeout();
                 }
               })
         .val("Bob Dylon").trigger("textchange");

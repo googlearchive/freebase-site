@@ -216,7 +216,11 @@ function do_mql(/**, type_id1, type_id2, ..., type_idN **/) {
         value: null,
         lang: null
       }],
-      type: "/type/domain"
+      type: "/type/domain",
+      "/freebase/domain_profile/category": [{
+        optional: true,
+        id: null
+      }]
     },
     "/freebase/type_hints/enumeration": null,
     "/freebase/type_hints/mediator": null,

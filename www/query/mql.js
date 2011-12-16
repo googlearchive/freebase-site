@@ -69,7 +69,7 @@
       };
       
       queryEditorOptions.onRun = function(o) {
-        if (o.code === "/api/status/ok" && qe.is_dirty) {
+        if (o.result && qe.is_dirty) {
           $("#save-query").removeClass("disabled");
         }
       };

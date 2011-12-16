@@ -645,6 +645,39 @@ function init_site_rules(lib) {
       ]
     },
     {
+      "name": _("Usergroup"),
+      "type": "/type/usergroup",
+      "promises":  h.extend(true, [], DEFAULT_PROMISES),
+      "tabs": [
+        {
+          "name": _("Editors"),
+          "key": "editors",
+          "app": "users",
+          "script": "group.tab"
+        },
+        {
+          "name": _("Links"),
+          "key": "links",
+          "app": "triples",
+          "script": "triples.tab",
+        },
+        {
+          "name": _("Properties"),
+          "key": "props",
+          "app": "topic",
+          "script": "topic.tab",
+          "more": true
+        },
+        {
+          "name": _("Identifiers"),
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab",
+          "more": true
+        }
+      ]
+    },
+    {
       "name": _("Object"),
       "type": "/type/object",
       "promises":  h.extend(true, [], DEFAULT_PROMISES),
@@ -665,8 +698,7 @@ function init_site_rules(lib) {
           "name": _("Links"),
           "key": "links",
           "app": "triples",
-          "script": "triples.tab",
-          "more": true
+          "script": "triples.tab"
         }
       ]
     }

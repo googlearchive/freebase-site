@@ -27,34 +27,14 @@
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+**/
 
-var i18n = acre.require("lib/i18n/i18n.sjs");
-var queries = acre.require("queries");
+.data-row .wrapper {
+  position: relative;
+  display: inline-block;
+  padding: 0 45px 6px 0;
+}
 
-var SPEC = {
-
-  template: "group.mjt",
-
-  validate: function(params) {
-    var object_type = params.object_type.id;
-
-    // remap domains, since other types are
-    // often co-typed with /type/domain
-    if (object_type == "/type/domain") {
-      object_type = "/freebase/domain_profile";
-    }
-
-    return [
-      params.object,
-      object_type
-    ];
-  },
-
-  run: function(object, type) {
-    return { 
-      object: object,
-      usergroups: queries.object_usergroups(object.id, type)
-    };
-  }
-};
+tr .combo-menu {
+  top: -5px;
+}

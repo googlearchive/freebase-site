@@ -1,5 +1,5 @@
 <!!--
- Copyright 2010, Google Inc.
+ Copyright 2011, Google Inc.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -43,37 +43,69 @@
 </acre:block>
 
 <acre:block def="page_content()">
-  <acre:script>
-    var types = h.map_array(c.object.type, "id");
-  </acre:script>
-  <h1 acre:if="h.fb_object_type(types, c.object.id) !== 'Acre App'"
-      class="table-title">${_("Owners")} (${i18n_c.number(c.owners.length)})</h1>
-  <table class="table table-sortable">
-    ${user_table_head()}
-    <tbody>
-      <tr acre:for="member in c.owners"c lass="vcard">
-        ${user_row_header(member)}
-        ${user_timestamp_row(member.timestamp)}
-        ${user_assertions_row(member.assertions)}
-        ${user_domains_row(member.watching)}
-      </tr>
-    </tbody>
-  </table>
-
-  <acre:block if="c.watchers && c.watchers.length">
-  <h1 class="table-title">${_("Watchers")} (${i18n_c.number(c.watchers.length)})</h1>
-  <table cellspacing="0" class="table table-sortable">
-    ${user_table_head()}
-    <tbody>
-      <tr acre:for="i,watcher in c.watchers" class="vcard">
-        ${user_row_header(watcher)}
-        ${user_timestamp_row(watcher.joined)}
-        ${user_assertions_row(watcher.assertions)}
-        ${user_domains_row(watcher.watching)}
-      </tr>
-    </tbody>
-  </table>
+  <acre:block for="group in c.usergroups">
+    <h1 class="table-title">${i18n.display_name(group)}</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="column-header first" scope="col">${_("User")}</span></th>
+          <th class="column-header" scope="col">${_("On Freebase since")}</span></th>
+          <th class="column-header" scope="col">${_("Freebase assertions")}</span></th>
+          <th class="column-header" scope="col">${_("Also edits")}</span></th>
+        </tr>
+      </thead>
+      <tbody class="${JSON.stringify(group.metadata)}">
+        <acre:block for="user in group.users">
+          ${user_table_row(user)}
+        </acre:block>
+      </tbody>
+      <tfoot class="table-edit edit">
+        <tr class="trigger-row">
+          <td colspan="5">
+            <a href="javascript:void(0);"
+               class="icon-link" onclick="return freebase.dispatch(event, freebase.group.add_user, null, this);">
+              <span class="add-icon">${_('Add New')}</span>
+            </a>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
   </acre:block>
+</acre:block>
+
+<acre:block def="user_table_row(user)">
+  <tr acre: class="data-row vcard ${JSON.stringify(user.metadata)}">
+    ${user_row_header(user)}
+    ${user_timestamp_row(user.timestamp)}
+    ${user_assertions_row(user.assertions)}
+    ${user_domains_row(user.groups, 3)}
+  </tr>
+</acre:block>
+
+<acre:block def="user_row_header(user)">
+  <th class="row-header odd">
+    <span class="wrapper">
+    ${image.user_image_small(user)}
+    <a href="${h.fb_url(user.id)}" class="fn url" title="${_('View user profile')}">${h.id_key(user.id)}</a>
+    ${user_menu(user)}
+    </span>
+  </th>
+</acre:block>
+
+<acre:block def="user_menu(user)">
+  <span class="edit">
+    <ul class="combo-menu nicemenu">
+      <li class="nicemenu-item">
+        <span class="headmenu">
+          <a href="#" onclick="return false;" class="default-action edit-action">remove</a>
+          <a href="javascript:void(0)" class="more-action">menu</a>
+        </span>
+        <ul class="submenu row-menu">
+          <li class="row-menu-item"><a href="#" onclick="return fb.group.remove_user(this);">${_("remove")}</a></li>
+        </ul>
+      </li>
+    </ul>
+  </span>
 </acre:block>
 
 <acre:block def="user_timestamp_row(timestamp)">
@@ -82,40 +114,21 @@
   </td>
 </acre:block>
 
-<acre:block def="user_domains_row(domains)">
-  <td class="even">
-    <acre:block for="i, d in domains" if="i < 6" trim="1">
-      <acre:block if="i > 0">, </acre:block>
-      <a  href="${h.fb_url(d.id)}" title="Go to domain">${i18n.display_name(d)}</a>
-    </acre:block>
-  </td>
-</acre:block>
-
-
 <acre:block def="user_assertions_row(writes)">
   <td class="odd">${i18n_c.number(writes)}</td>
 </acre:block>
 
-
-<acre:block def="user_row_header(user)">
-  <th scope="row" class="row-header odd">
-    ${image.user_image_small(user)}
-    <a href="${h.fb_url(user.id)}" class="fn url" title="View user profile">${h.id_key(user.id)}</a>
-</th>
+<acre:block def="user_domains_row(domains, num)">
+  <td class="even">
+    <acre:block for="i, d in domains" trim="1">
+      <acre:script>var name = i18n.display_name(d);</acre:script>
+      <acre:block if="i > 0">, </acre:block>
+        <a href="${h.fb_url(d.id)}" title="${_('Go to ') + name}">${name}</a>
+      <acre:block if="i==num-1">, ...</acre:block>
+    </acre:block>
+  </td>
 </acre:block>
-
-<acre:block def="user_table_head()">
-  <thead>
-    <tr>
-      <th class="column-header first" scope="col"><span class="sort-icon">${_("User")}</span></th>
-      <th class="column-header {sorter: 'datetime'}" scope="col"><span class="sort-icon">${_("On Freebase since")}</span></th>
-      <th class="column-header {sorter: 'number'}" scope="col"><span class="sort-icon">${_("Freebase assertions")}</span></th>
-      <th class="column-header" scope="col"><span class="sort-icon">${_("Also watching")}</span></th>
-    </tr>
-  </thead>
-</acre:block>
-
 
 <acre:block def="footer_script()">
-  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+  <script src="group.mf.js"></script>
 </acre:block>

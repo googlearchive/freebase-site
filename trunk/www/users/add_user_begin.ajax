@@ -30,31 +30,25 @@
  */
 
 var i18n = acre.require("lib/i18n/i18n.sjs");
-var queries = acre.require("queries");
+var validators = acre.require("lib/validator/validators.sjs");
+var editcomponents = acre.require("editcomponents.mjt");
 
+/**
+ * add key form
+ */
 var SPEC = {
 
-  template: "group.mjt",
+  auth: true,
 
   validate: function(params) {
-    var object_type = params.object_type.id;
-
-    // remap domains, since other types are
-    // often co-typed with /type/domain
-    if (object_type == "/type/domain") {
-      object_type = "/freebase/domain_profile";
-    }
-
     return [
-      params.object,
-      object_type
+      validators.MqlId(params, "id", {required:true})
     ];
   },
 
-  run: function(object, type) {
-    return { 
-      object: object,
-      usergroups: queries.object_usergroups(object.id, type)
-    };
+  run: function(id) {
+      return {
+        html: acre.markup.stringify(editcomponents.add_user_form(id))
+      };
   }
 };

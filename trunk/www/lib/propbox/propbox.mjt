@@ -505,7 +505,7 @@ propbox edit forms
         ${form.row_msg("&nbsp;")}
       </span>
     </li>
-    <li class="add-row edit-row">
+    <li class="add-row edit-row clear">
       ${form_field(prop_structure, null, lang)}
     </li>
     <li class="edit-row-submit">

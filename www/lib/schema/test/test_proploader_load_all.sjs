@@ -30,14 +30,12 @@
  */
 acre.require('/test/lib').enable(this);
 
-//acre.require("test/mock").playback(this, "schema/test/playback_test_proploader_load_all.json");
-test("skip", function() {
-  ok("Skip tests because of PermGen");
-});
+acre.require("test/mock").playback(this, "schema/test/playback_test_proploader_load_all.json");
+
 var h = acre.require("helper/helpers.sjs");
 var proploader = acre.require("schema/proploader.sjs");
 
-test("load all", {bug:"PermGen"}, function() {
+test("load all", function() {
   var result;
   var pid = "/film/performance/film";
   proploader.load(true, pid)

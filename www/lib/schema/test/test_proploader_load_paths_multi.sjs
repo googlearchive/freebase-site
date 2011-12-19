@@ -30,17 +30,15 @@
  */
 acre.require('/test/lib').enable(this);
 
-//acre.require("test/mock").playback(this, "schema/test/playback_test_proploader_load_paths_multi.json");
-test("skip", function() {
-  ok("Skip tests because of PermGen");
-});
+acre.require("test/mock").playback(this, "schema/test/playback_test_proploader_load_paths_multi.json");
+
 var h = acre.require("helper/helpers.sjs");
 var proploader = acre.require("schema/proploader.sjs");
 
 var assert_prop_path_schema = acre.require("schema/test/helpers.sjs").assert_prop_path_schema;
 var scope = this;
 
-test("load_paths multi", {bug:"PermGen"}, function() {
+test("load_paths multi", function() {
   var result;
   var paths = [
     "/film/film/directed_by./people/person/date_of_birth",

@@ -28,6 +28,10 @@
       "handler": "css",
       "media_type": "text/css"
     },
+    "json": {
+      "handler": "binary",
+      "media_type": "text/plain"
+    },
     "mf.css": {
       "handler": "css_manifest",
       "media_type": "text/css"

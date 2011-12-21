@@ -1512,7 +1512,7 @@ class Acre:
 
     params = { 
       'ACRE_HOST_BASE' : c.options.acre_host,
-      'ACRE_PORT' : c.options._acre_port,
+      'ACRE_PORT' : c.options.acre_port,
     }
 
     written_params = {}

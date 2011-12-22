@@ -31,7 +31,7 @@
 
 var validators = acre.require("lib/validator/validators.sjs");
 var triples = acre.require("triples.mjt");
-var queries = acre.require("queries.sjs");
+var queries = acre.require("lib/queries/links.sjs");
 var tab = acre.require("triples.tab");
 var filters = acre.require("lib/filter/filters.sjs");
 

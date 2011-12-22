@@ -34,9 +34,7 @@ var validators = acre.require("lib/validator/validators.sjs");
 var filters = acre.require("lib/filter/filters.sjs");
 var filter_queries = acre.require("lib/filter/queries.sjs");
 var filter_validators = acre.require("lib/filter/validators.sjs");
-var th = acre.require("helpers.sjs");
-
-var queries = acre.require("queries");
+var queries = acre.require("lib/queries/links.sjs");
 
 var inspect_filters = {
   limit: {
@@ -65,21 +63,22 @@ var SPEC = {
   validate: function(params) {
     return [
       params.object,
+      params.object_type,
       (function() {
         var f = filters.validate(params, inspect_filters);
         f[params.current_tab.key] = "";
-        f.type = o.routed_type;
         return f;
       })()
     ];
   },
 
-  run: function(object, f) {
+  run: function(object, object_type, f) {
 
     var id = object.id;
     return {
       id: id,
       object: object,
+      object_type: object_type,
 
       // filter components
       filters: f,

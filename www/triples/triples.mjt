@@ -109,12 +109,27 @@
     <table class="table table-sortable" id="infinitescroll">
       <thead>
         <tr>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">&harr;</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("source/target")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
-          <th class="column-header column-header-asc {sorter: 'string'}" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
-          <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
+          <th class="column-header first" scope="col">
+            <span class="sort-icon">${_("property")}</span>
+          </th>
+          <th class="column-header" scope="col">
+            <span class="sort-icon">&harr;</span>
+          </th>
+          <th class="column-header" scope="col">
+            <span class="sort-icon">${_("source/target")}</span>
+          </th>
+          <th class="column-header" scope="col">
+            <span class="sort-icon">${_("user")}</span>
+          </th>
+          <th class="column-header" scope="col">
+            <span class="sort-icon">${_("app/load")}</span>
+          </th>
+          <th class="column-header column-header-asc {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("timestamp")}</span>
+          </th>
+          <th acre:if="filters.historical" class="column-header" scope="col">
+            <span class="sort-icon">${_("operation")}</span>
+          </th>
         </tr>
       </thead>
 
@@ -148,12 +163,10 @@
 </acre:block>
 
 <acre:block def="link_row(id, o, filters)">
-<acre:script>
-console.log("link_row", id, o);
-</acre:script>
   <tr class="${th.link_class(o)}">
     <acre:script>
-      var outgoing = o["me:source"]
+      var outgoing = o["me:source"];
+      var attr = h.get_attribution(o);
     </acre:script>
     <th class="row-header odd" scope="row">
       <span class="wrapper">
@@ -163,18 +176,19 @@ console.log("link_row", id, o);
     </th>
     <td class="even">
       <acre:block if="outgoing">
-        <span class="arrow arrow-right">&#8680;</span> 
+        <span class="arrow arrow-right">&#8680;</span>
       </acre:block>
       <acre:block else="">
-        <span class="arrow arrow-left">&#8678;</span>                 
+        <span class="arrow arrow-left">&#8678;</span>
       </acre:block>
     </td>
     <td class="odd">
       ${o.target_value ? target_value(o) : (outgoing ? target(o) : source(o))}
     </td>
-    <td class="even">${attribution_creator(o)}</td>
-    <td class="odd">${o.timestamp}</td>
-    <td acre:if="filters.historical" class="even">${o.operation}</td>
+    <td class="even">${user(attr)}</td>
+    <td class="odd">${app(attr)}</td>
+    <td class="even">${o.timestamp}</td>
+    <td acre:if="filters.historical" class="odd">${o.operation}</td>
   </tr>
 </acre:block>
 
@@ -266,8 +280,12 @@ console.log("link_row", id, o);
   ${a(u.id, u["/freebase/unit_profile/abbreviation"], "unit")}
 </acre:block>
 
-<acre:block def="attribution_creator(o)">
-  ${freebase_components.attribution(h.get_attribution(o), true, [["writes"]])}
+<acre:block def="user(attr)">
+  ${freebase_components.creator(attr.creator, null, [["writes"]])}
+</acre:block>
+
+<acre:block def="app(attr)">
+  ${freebase_components.source(attr.source, [["writes"]])}
 </acre:block>
 
 <acre:block def="link_menu(o)">

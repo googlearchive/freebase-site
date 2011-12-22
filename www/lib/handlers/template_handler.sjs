@@ -37,6 +37,8 @@
 */
 
 var h = acre.require("helper/helpers.sjs");
+var hh = acre.require("handlers/helpers.sjs");
+
 var mjt_patch = acre.require("handlers/mjt_patch.js").mjt_patch;
 
 var controller = acre.require("handlers/controller_handler.sjs");
@@ -55,14 +57,18 @@ function handler() {
   handler.to_module = acre.handlers.mjt.to_module;
 
   handler.to_http_response = function(module, script) {
-    var result = h.extend({template:module}, module.c);
-    var d = controller.render(result, null, script.scope)
-      .then(function(render_result) {
-        module.body = acre.markup.stringify(render_result);
-      });
-    acre.async.wait_on_results();
-    d.cleanup();
-    return module;
+    var spec = {
+      template: module,
+      run: function() {
+        return module.c;
+      }
+    };
+    module.body = controller.run_spec(spec, script.scope);
+    var headers = {
+      "content-type": "text/html"
+    };
+    h.set_cache_policy(spec.cache_policy || "public", null, headers);
+    return hh.to_http_response_result(module.body, headers);
   };
 
   return handler;

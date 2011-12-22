@@ -40,6 +40,11 @@
      title="${creator_id}">${h.id_key(creator_id)}</a>
 </acre:block>
 
+<acre:block def="source(source, params)">
+  <a acre:if="source" href="${h.fb_url(source.id, params)}">${source.name}</a>
+  <span acre:else="">-</span>
+</acre:block>
+
 <acre:block def="attribution(attr, use_attribution_icon, params)">
   <span class="attribution" acre:trim="1">
     ${creator(attr.creator, null, params)}
@@ -49,7 +54,7 @@
       </acre:block>
       <acre:block else="">
         ${_("via")}
-        <a href="${h.fb_url(attr.source.id, params)}">${attr.source.name}</a>
+        ${source(attr.source, params)}
       </acre:block>
     </span>
   </span>

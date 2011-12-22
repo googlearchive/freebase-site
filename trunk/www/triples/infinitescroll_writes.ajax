@@ -30,8 +30,8 @@
  */
 
 var validators = acre.require("lib/validator/validators.sjs");
+var queries = acre.require("lib/queries/links.sjs");
 var writes = acre.require("writes.mjt");
-var queries = acre.require("queries.sjs");
 var tab = acre.require("writes.tab");
 var filters = acre.require("lib/filter/filters.sjs");
 
@@ -42,15 +42,16 @@ var SPEC = {
       validators.MqlId(params, "id", {required:true}),
       filters.validate(params, tab.inspect_filters),
       validators.Timestamp(params, "next", {required:true}),
-      validators.LangId(params, "lang", {if_empty:"/lang/en"})
+      validators.LangId(params, "lang", {if_empty:"/lang/en"}),
+      validators.MqlId(params, "object_type", {required:false})   // object type
     ];
   },
 
-  run: function(id, f, next, lang) {
+  run: function(id, f, next, lang, object_type) {
     return queries.writes(id, f, next)
       .then(function(result) {
         return {
-          html: acre.markup.stringify(writes.writes_body(id, result, f))
+          html: acre.markup.stringify(writes.writes_body(id, result, f, object_type))
         };
       });
   }

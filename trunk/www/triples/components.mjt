@@ -31,7 +31,6 @@
 
 <acre:script>
   var h = acre.require("lib/helper/helpers.sjs");
-  var th = acre.require("helpers.sjs");
   var fh = acre.require("lib/filter/helpers.sjs");
   var fc = acre.require("lib/filter/components.mjt");
   var i18n = acre.require("lib/i18n/i18n.sjs");

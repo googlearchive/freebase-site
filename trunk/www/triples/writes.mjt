@@ -77,7 +77,7 @@
 
   <div class="column links" id="triples-data" role="main" acre:attrs="c.filters.historical ? {'class':'historical'} : {}">
 
-    ${writes(c.id, c.writes, c.filters)}
+    ${writes(c.id, c.writes, c.filters, c.object_type)}
 
   </div>
 
@@ -89,33 +89,52 @@
 
 </acre:block>
 
-<acre:block def="writes(id, data, filters)" if="data && data.length">
+<acre:block def="writes(id, data, filters, object_type)" if="data && data.length">
+
   <div class="section">
     <h2 class="table-title"><a name="infinitescroll-count">${_("Links created by or via this object")} (${i18n_c.number(data.length)})</a></h2>
     <table class="table table-sortable" id="infinitescroll">
       <thead>
         <tr>
-          <th class="column-header first" scope="col"><span class="sort-icon">${_("source")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("property")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("target")}</span></th>
-          <th class="column-header" scope="col"><span class="sort-icon">${_("creator")}</span></th>
-          <th class="column-header column-header-asc {sorter: 'string'}" scope="col"><span class="sort-icon">${_("timestamp")}</span></th>
-          <th acre:if="filters.historical" class="column-header" scope="col"><span class="sort-icon">${_("operation")}</span></th>
+          <th class="column-header first" scope="col">
+            <span class="sort-icon">${_("source")}</span>
+          </th>
+          <th class="column-header" scope="col">
+            <span class="sort-icon">${_("property")}</span>
+          </th>
+          <th class="column-header" scope="col">
+            <span class="sort-icon">${_("target")}</span>
+          </th>
+          <th acre:if="object_type.id !== '/type/user'" class="column-header" scope="col">
+            <span class="sort-icon">${_("user")}</span>
+          </th>
+          <th acre:else="" class="column-header" scope="col">
+            <span class="sort-icon">${_("app/load")}</span>
+          </th>
+          <th class="column-header column-header-asc {sorter: 'string'}" scope="col">
+            <span class="sort-icon">${_("timestamp")}</span>
+          </th>
+          <th acre:if="filters.historical" class="column-header" scope="col">
+            <span class="sort-icon">${_("operation")}</span>
+          </th>
         </tr>
       </thead>
 
-      ${writes_body(id, data, filters)}
+      ${writes_body(id, data, filters, object_type.id)}
 
       <tfoot>
         <tr>
           <td acre:attrs="filters.historical ? {colspan:'6'} : {colspan:'5'}">
             <acre:script>
-              var params = {id:id};
+              var params = {
+                id:id,
+                object_type: object_type.id
+              };
               for (var k in filters) {
                 if (filters[k] != null) {
                   params[k] = filters[k];
                 }
-              }              
+              }
             </acre:script>
             <a id="infinitescroll-next" href="${h.ajax_url('/infinitescroll_writes.ajax', params)}">next</a>
           </td>
@@ -126,16 +145,19 @@
   </div>
 </acre:block>
 
-<acre:block def="writes_body(id, data, filters)">
+<acre:block def="writes_body(id, data, filters, object_type)">
   <tbody acre:attrs="data.length ? {'data-next':data[data.length-1].timestamp} : {}">
     <acre:block for="o in data">
-      ${writes_row(id, o, filters)}
+      ${writes_row(id, o, filters, object_type)}
     </acre:block>
   </tbody>
 </acre:block>
 
-<acre:block def="writes_row(id, o, filters)">  
+<acre:block def="writes_row(id, o, filters, object_type)">
   <tr class="${th.link_class(o)}">
+    <acre:script>
+      var attr = h.get_attribution(o);
+    </acre:script>
     <th class="row-header odd" scope="row">
       <span class="wrapper">
         ${triples.source(o)}
@@ -148,7 +170,8 @@
     <td class="odd">
       ${o.target_value ? triples.target_value(o) : triples.target(o)}
     </td>
-    <td class="even">${triples.attribution_creator(o)}</td>
+    <td class="even" acre:if="object_type !== '/type/user'">${triples.user(attr)}</td>
+    <td class="even" acre:else="">${triples.app(attr)}</td>
     <td class="odd">${o.timestamp}</td>
     <td acre:if="filters.historical" class="even">${o.operation}</td>
   </tr>

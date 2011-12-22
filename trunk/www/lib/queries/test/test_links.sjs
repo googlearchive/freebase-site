@@ -31,11 +31,11 @@
 
 acre.require('/test/lib').enable(this);
 
-acre.require("lib/test/mock.sjs").playback(this, "test/playback_test_queries.json");
+acre.require("test/mock.sjs").playback(this, "queries/playback_test_links.json");
 
-var h = acre.require("lib/helper/helpers.sjs");
-var validators = acre.require("lib/validator/validators.sjs");
-var q = acre.require("queries.sjs");
+var h = acre.require("helper/helpers.sjs");
+var validators = acre.require("validator/validators.sjs");
+var q = acre.require("queries/links.sjs");
 
 
 test("links_sort", function() {

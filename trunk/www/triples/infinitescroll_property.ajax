@@ -30,8 +30,8 @@
  */
 
 var validators = acre.require("lib/validator/validators.sjs");
+var queries = acre.require("lib/queries/links.sjs");
 var property = acre.require("property.mjt");
-var queries = acre.require("queries.sjs");
 var tab = acre.require("writes.tab");
 var filters = acre.require("lib/filter/filters.sjs");
 

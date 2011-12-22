@@ -34,9 +34,7 @@ var validators = acre.require("lib/validator/validators.sjs");
 var filters = acre.require("lib/filter/filters.sjs");
 var filter_queries = acre.require("lib/filter/queries.sjs");
 var filter_validators = acre.require("lib/filter/validators.sjs");
-var th = acre.require("helpers.sjs");
-
-var queries = acre.require("queries");
+var queries = acre.require("lib/queries/links.sjs");
 
 var inspect_filters = {
   limit: {

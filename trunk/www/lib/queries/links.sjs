@@ -28,15 +28,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-var i18n = acre.require("lib/i18n/i18n.sjs");
-var h = acre.require("lib/helper/helpers.sjs");
-var apis = acre.require("lib/promise/apis.sjs");
+var i18n = acre.require("i18n/i18n.sjs");
+var h = acre.require("helper/helpers.sjs");
+var apis = acre.require("promise/apis.sjs");
 var deferred = apis.deferred;
 var freebase = apis.freebase;
-var th = acre.require("helpers.sjs");
-var fh = acre.require("lib/filter/helpers.sjs");
-var creator = acre.require("lib/queries/creator.sjs");
-var proploader = acre.require("lib/schema/proploader.sjs");
+var fh = acre.require("filter/helpers.sjs");
+var proploader = acre.require("schema/proploader.sjs");
+var creator = acre.require("queries/creator.sjs");
 
 function links(id, filters, next) {
   filters = h.extend({}, filters);

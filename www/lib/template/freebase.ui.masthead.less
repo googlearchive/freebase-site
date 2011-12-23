@@ -745,6 +745,7 @@ spec has been implemented, including complete vcards, tooltips, etc.
  */
 
 .submenu.localization {
+  z-index: 10; /* this needs to be greater than the masthead when position:fixed */
   background: #343434;
   font-size: 12px;
   color: #e8ebee;
@@ -752,17 +753,7 @@ spec has been implemented, including complete vcards, tooltips, etc.
 
   li {
     list-style: none;
-  }
-
-  .edit {
-    background: #222;
-    border-bottom: 1px solid #111;
-
-    span.edit-icon {
-      background-position: 0 -915px;
-      padding-left: 19px;
-    }
-
+    border-bottom: 1px solid rgba(255,255,255,0.1);
   }
 
   li a {
@@ -770,11 +761,22 @@ spec has been implemented, including complete vcards, tooltips, etc.
     padding: 0 15px;
     line-height: 2;
     color: #fff;
+    .transition();
   }
 
-  li.edit a {
+  li a.icon-link {
     padding-top: 5px;
     padding-bottom: 5px;
+    background: rgba(0,0,0,0.2);
+
+    span.edit-icon {
+      background-position: 0 -233px;
+      padding-left: 19px;
+    }
+
+    &:hover {
+      background: rgba(0,0,0,0.5);
+    }
   }
 
   a:hover {

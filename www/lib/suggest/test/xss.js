@@ -37,9 +37,9 @@ $(function() {
               start();
             })
       .bind("fb-pane-show", function() {
+              clearTimeout(t);
+              t = test_timeout();
               if ($(">li", inst.list).length) {
-                clearTimeout(t);
-                t = test_timeout();
                 var first = $("li:first", inst.list).simulate("mouseover");
                 simulate_keypress(test_input1, $.simulate.VK_ENTER);
               }
@@ -73,6 +73,8 @@ $(function() {
               start();
             })
       .bind("fb-pane-show", function() {
+              clearTimeout(t);
+              t = test_timeout();
               if ($(">li", inst.list).length) {
                 var first = $("li:first", inst.list).simulate("mouseover");
                 simulate_keypress(test_input1, $.simulate.VK_ENTER);
@@ -108,9 +110,9 @@ $(function() {
               start();
             })
       .bind("fb-pane-show", function() {
+              clearTimeout(t);
+              t = test_timeout();
               if ($(">li", inst.list).length) {
-                clearTimeout(t);
-                t = test_timeout();
                 var first = $("li:first", inst.list).simulate("mouseover");
                 simulate_keypress(test_input1, $.simulate.VK_ENTER);
               }
@@ -144,6 +146,8 @@ $(function() {
               start();
             })
       .bind("fb-pane-show", function() {
+              clearTimeout(t);
+              t = test_timeout();
               if ($(">li", inst.list).length) {
                 var first = $("li:first", inst.list).simulate("mouseover");
                 simulate_keypress(test_input1, $.simulate.VK_ENTER);

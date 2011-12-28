@@ -38,6 +38,8 @@ $(function() {
             .trigger("textchange");
         })
         .bind("fb-pane-show", function() {
+                clearTimeout(timer);
+                timer = test_timeout();
                 if ($(">li", inst.list).length) {
                   var first = $("li:first", inst.list).simulate("mouseover");
                 }

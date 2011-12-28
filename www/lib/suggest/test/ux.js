@@ -17,6 +17,8 @@ $(function() {
                        start();
                      })
                .bind("fb-pane-show", function() {
+                       clearTimeout(t);
+                       t = test_timeout();
                        if ($(">li", inst.list).length) {
                          onshow();
                        }
@@ -83,9 +85,13 @@ $(function() {
                      start();
                    })
              .bind("fb-flyoutpane-show", function() {
+                     clearTimeout(t);
+                     t = test_timeout();
                      simulate_mouseclick(inst.flyoutpane);
                    })
              .bind("fb-pane-show", function() {
+                     clearTimeout(t);
+                     t = test_timeout();
                      if ($(">li", inst.list).length) {
                        simulate_keypress(test_input1, $.simulate.VK_DOWN);
                      }
@@ -110,6 +116,8 @@ $(function() {
                      start();
                    })
              .bind("fb-pane-show", function() {
+                     clearTimeout(t);
+                     t = test_timeout();
                      if ($(">li", inst.list).length) {
                        simulate_keypress(test_input1, {keyCode: $.simulate.VK_ENTER, shiftKey: true});
                      }
@@ -138,6 +146,8 @@ $(function() {
                        start();
                      }
                      else {
+                       clearTimeout(t);
+                       t = test_timeout();
                        count = $(">li", inst.list).length;
                        if (count) {
                          $(".fbs-more-link", inst.pane).click();
@@ -168,6 +178,8 @@ $(function() {
                        start();
                      }
                      else {
+                       clearTimeout(t);
+                       t = test_timeout();
                        count = $(">li", inst.list).length;
                        if (count) {
                          clearTimeout(t);

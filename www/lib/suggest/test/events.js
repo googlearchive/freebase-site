@@ -32,9 +32,9 @@ $(function() {
                      start();
                    })
              .bind("fb-pane-show", function() {
+                     clearTimeout(timer);
+                     timer = test_timeout();
                      if ($(">li", inst.list).length) {
-                       clearTimeout(timer);
-                       timer = test_timeout();
                        var first = $("li:first", inst.list).simulate("mouseover");
                      }
                    })
@@ -58,6 +58,8 @@ $(function() {
                      start();
                    })
              .bind("fb-pane-show", function() {
+                     clearTimeout(timer);
+                     timer = test_timeout();
                      if ($(">li", inst.list).length) {
                        var first = $("li:first", inst.list).simulate("mouseover");
                        simulate_keypress(test_input1, $.simulate.VK_ENTER);
@@ -82,6 +84,8 @@ $(function() {
                      start();
                    })
              .bind("fb-pane-show", function() {
+                     clearTimeout(timer);
+                     timer = test_timeout();
                      if ($(">li", inst.list).length) {
                        $(".fbs-suggestnew", inst.pane).click();
                      }

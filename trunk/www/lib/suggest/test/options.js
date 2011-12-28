@@ -88,12 +88,12 @@ $(function() {
            stop();
            var t = test_timeout();
            test_input1
-             .bind("fb-pane-show",
-                   function() {
+             .bind("fb-pane-show", function() {
+                     clearTimeout(t);
+                     t = test_timeout();
                      $("li:first", inst.list).trigger("mouseover");
                    })
-             .bind("fb-flyoutpane-show",
-                   function() {
+             .bind("fb-flyoutpane-show", function() {
                      clearTimeout(t);
                      equals(inst.flyoutpane.parent()[0], parent[0]);
                      start();

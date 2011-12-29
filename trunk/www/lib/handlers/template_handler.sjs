@@ -67,7 +67,7 @@ function handler() {
     var headers = {
       "content-type": "text/html"
     };
-    h.set_cache_policy(spec.cache_policy || "public", null, headers);
+    h.set_cache_policy(spec.cache_policy || "nocache", null, headers);
     return hh.to_http_response_result(module.body, headers);
   };
 

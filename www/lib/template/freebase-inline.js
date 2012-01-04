@@ -1,9 +1,9 @@
 // as early as possible, redirect if PAGE_LASTWRITEIME < mwLastWriteTime
-;(function($) {
+;(function(SERVER) {
 
   // Since we need to parse cookies in the HEAD, we need to load this before jQuery
   // freebase.js copies this over to jQuery later
-  $.cookie = function(name, value, options) {
+  SERVER.cookie = function(name, value, options) {
       if (typeof value != 'undefined') { // name and value given, set cookie
           options = options || {};
           if (value === null) {
@@ -41,32 +41,26 @@
           return cookieValue;
       }
   };
-  
-  // mwLWTReloaded is reset after a page load, to avoid a refresh
+
+  // fb-dateline-reload is reset after a page load, to avoid a refresh
   // loop. More or less: only reload any given page once, but allow
-  // future reloads. See the mwLWTReload reference later
-  if ($.cookie("mwLWTReloaded")) {
+  // future reloads. See the fb-dateline-reload reference later
+  if (SERVER.cookie("fb-dateline-reload")) {
     // clear the cookie, so that we can autorefresh again
-    $.cookie("mwLWTReloaded", null, {path: "/"});
+    SERVER.cookie("fb-dateline-reload", null, {path: "/"});
     return;
   }
 
-  var cookie_lwt = $.cookie("mwLastWriteTime");
-  var page_lwt = SERVER["mwLastWriteTime"]; // written into the page server-side (acre.request.cookies.mwLastWriteTime)
-
-  // now parse to integers - note that empty/undefined parses to NaN,
-  // which behaves really strangely. For our own sanity, we'll convert
-  // that to -1, since that always means "as old as possible"
-  var cookie_lwt_v = cookie_lwt ? parseInt(cookie_lwt, 10) : -1;
-  var page_lwt_v   = page_lwt   ? parseInt(page_lwt,   10) : -1;
-
-  //console.log("cookie_lwt", cookie_lwt_v, "page_lwt", page_lwt_v);
-
-  if (page_lwt_v < cookie_lwt_v) {
+  // TODO - for now, just do a naive comparison.
+  // This could be improved in a couple of ways:
+  //  - Only if dateline is greater (once sequential again)
+  //  - Compare by specific backend
+  if (SERVER.cookie("fb-dateline") !== SERVER["dateline"]) {
     // be sure to set the cookie so that the reloaded page knows it
     // came in as the result of a reload
-    $.cookie("mwLWTReloaded", "true", { path: "/" });
-    SERVER.mwLWTReloading = true;
+    SERVER.cookie("fb-dateline-reload", "true", { path: "/" });
+    SERVER.datelineReloading = true;
     window.location.reload(true);
   }
-})(SERVER);
+
+})(window.SERVER);

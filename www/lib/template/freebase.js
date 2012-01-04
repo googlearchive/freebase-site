@@ -45,9 +45,9 @@
 
 (function($, fb) {
 
-  if (fb.mwLWTReloading) {
-    // we're in the process of reloading because of mwLastWriteTime
-    // don't perform any inits
+  if (fb.datelineReloading) {
+    // we're in the process of reloading because of a
+    // dateline change don't perform any inits
     return;
   }
 

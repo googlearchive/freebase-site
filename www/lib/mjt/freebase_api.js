@@ -75,14 +75,14 @@ mjt.freebase.set_service_url(mjt.freebase.default_service_url);
  *  the same origin as the current page.
  */
 function FreebaseCacheController() {
-    // save the mwLastWriteTime cookie, to compare freshness if re-used
-    var _mwLastWriteTime = mjt.freebase.readCookie('mwLastWriteTime');
+    // save the fb-dateline cookie, to compare freshness if re-used
+    var _dateline = mjt.freebase.readCookie('fb-dateline');
     this.is_fresh = function(task) {
         
-        var mwLastWriteTime = mjt.freebase.readCookie('mwLastWriteTime'); // latest cookie
+        var dateline = mjt.freebase.readCookie('fb-dateline'); // latest cookie
         
         // if tokens are not identical then a write (or login) has happened
-        return (_mwLastWriteTime == mwLastWriteTime);
+        return (_dateline == dateline);
     };
 }
 

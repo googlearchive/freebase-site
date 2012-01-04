@@ -922,7 +922,7 @@ var CACHE_POLICIES = {
   "private": {
     "private": true,
     "max-age": 0,
-    "maxage-vary-cookie": "3600|mwLastWriteTime"
+    "maxage-vary-cookie": "3600|fb-dateline"
   },
   "public": {
     "public": true,

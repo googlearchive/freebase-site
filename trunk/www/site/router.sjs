@@ -41,6 +41,9 @@ var self = this;
 
 
 function route(environment_rules) {
+  // Make sure dateline cookie gets set with same options as account cookie
+  acre.freebase.set_cookie_options(h.account_cookie_options());
+
   var site_rules = init_site_rules(environment_rules.labels.lib);
   var rules = router_lib.extend_rules(site_rules, environment_rules);
   router_lib.route(rules, this);

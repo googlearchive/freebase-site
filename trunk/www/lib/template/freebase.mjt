@@ -352,15 +352,15 @@
       },
       lang: i18n.lang,
       c: {},
-      mwLastWriteTime: null,
+      dateline: null,
       tid: null
     };
     var md = acre.get_metadata();
     ["libs"].forEach(function(k) {
       SERVER.acre.metadata[k] = md[k];
     });
-    if (acre.request.cookies && acre.request.cookies.mwLastWriteTime) {
-      SERVER.mwLastWriteTime = acre.request.cookies.mwLastWriteTime;
+    if (acre.request.cookies && acre.request.cookies["fb-dateline"]) {
+      SERVER.dateline = acre.request.cookies["fb-dateline"];
     }
     if (acre.request.headers['x-metaweb-tid']) {
       SERVER.tid = acre.request.headers['x-metaweb-tid'];

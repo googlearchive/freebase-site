@@ -52,7 +52,17 @@ function update_article(content, content_type, options) {
   options = options || {};
 
   if (options.article) {
-    return create_article.upload(content, content_type, {document:options.article})
+    var upload_options = {
+      document: options.article
+    };
+    if (options.lang) {
+      // freebase.upload expects lang codes NOT lang ids
+      upload_options.lang = h.lang_code(options.lang);
+    }
+    return freebase.upload(content, content_type, upload_options)
+      .then(function(env) {
+        return env.result;
+      })
       .then(function(uploaded) {
         return options.article;
       });

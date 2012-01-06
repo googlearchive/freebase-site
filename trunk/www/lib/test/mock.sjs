@@ -85,8 +85,11 @@ if (mock) {
 
         // Acre now has a default security feature where GET requests can not
         // result into POST requests.
-        // To bypass this feature, we set http_bless for only freebase.mqlwrite
-        if (api_name === "freebase.mqlwrite") {
+        // To bypass this feature, we set http_bless for 
+        // 1. freebase.mqlwrite
+        // 2. freebase.upload
+        if (api_name === "freebase.mqlwrite" ||
+            api_name === "freebase.upload") {
           var api_options = args[2];
           if (typeof api_options === "undefined") {
             api_options = args[2] = {};

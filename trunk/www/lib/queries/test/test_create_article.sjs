@@ -62,62 +62,7 @@ function check_blurb(document_id, expected_blurb) {
     });
   acre.async.wait_on_results();
   equal(blurb, expected_blurb);
-};
-
-test("upload", function() {
-  var result;
-  var content = "test_upload";
-  upload(content, "text/html")
-    .then(function(uploaded) {
-      result = uploaded;
-    });
-  acre.async.wait_on_results();
-  ok(result, "got upload result");
-
-  check_blurb(result.id, content);
-});
-
-test("upload with document", function() {
-
-  var article;
-  freebase.mqlwrite({id:null, type:"/common/document", create:"unconditional"})
-    .then(function(env) {
-      article = env.result;
-    });
-  acre.async.wait_on_results();
-  ok(article, "created article");
-
-  var result;
-  var content = "test_upload with document";
-  upload(content, "text/html", {document: article.id})
-    .then(function(uploaded) {
-      result = uploaded;
-    });
-  acre.async.wait_on_results();
-  ok(result, "got upload result");
-
-  check_blurb(article.id, content);
-});
-
-test("upload with lang", function() {
-  var result;
-  var content = "test_upload with lang";
-  upload(content, "text/html", {lang: "/lang/ko"})
-    .then(function(uploaded) {
-      result = uploaded;
-    });
-  acre.async.wait_on_results();
-  ok(result, "got upload result");
-
-  // check lang
-  var lang;
-  freebase.mqlread({id:result.id, "/type/content/language": null})
-    .then(function(env) {
-      lang = env.result && env.result["/type/content/language"] || null;
-    });
-  acre.async.wait_on_results();
-  equal(lang, "/lang/ko");
-});
+}
 
 test("create_article", function() {
   var result;

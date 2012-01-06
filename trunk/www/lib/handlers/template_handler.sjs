@@ -57,10 +57,7 @@ function handler() {
   handler.to_module = acre.handlers.mjt.to_module;
 
   handler.to_http_response = function(module, script) {
-    // TODO - templates should not be nocache or allow POST...
-    // these are temporary work-arounds for refinery
     var spec = {
-      method: ["GET", "POST"],
       template: module,
       run: function() {
         return module.c;
@@ -70,7 +67,7 @@ function handler() {
     var headers = {
       "content-type": "text/html"
     };
-    h.set_cache_policy(spec.cache_policy || "nocache", null, headers);
+    h.set_cache_policy(spec.cache_policy || "public", null, headers);
     return hh.to_http_response_result(module.body, headers);
   };
 

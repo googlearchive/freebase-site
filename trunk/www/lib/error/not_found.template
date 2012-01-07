@@ -13,9 +13,9 @@
 <acre:block def="content_body()">
   <div id="page-content">
     <div class="module">
-      <h1 class="module-title">Page Not Found</h1>
+      <h1 class="module-title">Not Found</h1>
       <div class="module-section">
-        ${acre.request.script.path}
+        No object with ID <b>${acre.request.path_info}</b> exists in Freebase
       </div>
     </div>
   </div>

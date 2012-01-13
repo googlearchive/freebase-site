@@ -7,12 +7,15 @@ var environment_rules = {
     // Override labels. All labels point to trunk by default.
     "labels" : {
         "site": "//site" + codebase,
-        "lib": "//lib" + codebase
+        "lib": "//lib" + codebase,
+        "default":  "//default.dev"
     },
 
     // Override prefix.
     // For test urls
     "prefix" : [
+        // provides a backdoor for creating new keys with curl
+        {prefix:"/keystore",                app:"default",  script: "keystore.sjs"},
         // Test routing rules to test non-user facing apps (core libraries, etc.)
         {prefix:"/test_lib_appeditor-services",  app:"lib", script:"appeditor-services/test"},
         {prefix:"/test_lib_collection",     app:"lib", script:"collection/test"},

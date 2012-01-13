@@ -304,7 +304,7 @@ class ActionSetupSimpleDNS:
   def __call__(self):
     c = self.context
 
-    domains = set(['environments.svn.freebase-site.googlecode.dev.acre.z', 'devel.sandbox-freebase.com', 'devel.freebase.com'])
+    domains = set(['devel.sandbox-freebase.com', 'devel.freebase.com'])
 
     if pwd.getpwuid(os.getuid())[0] != 'root':
         return c.error('You must run this script as root.')

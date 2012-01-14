@@ -392,7 +392,6 @@ spec has been implemented, including complete vcards, tooltips, etc.
     float: left;
     list-style: none;
     line-height: 1;
-    margin-bottom: -20px;
   }
 
   li.more {
@@ -410,6 +409,7 @@ spec has been implemented, including complete vcards, tooltips, etc.
       padding: 0 12px 0 15px;
     }
 
+    /* Create down-facing triangle */
     span:after {
       content: "";
       position: absolute;
@@ -424,26 +424,29 @@ spec has been implemented, including complete vcards, tooltips, etc.
   }
 
   a {
+    display: block;
     font-size: 14px;
-    line-height: 2.5;
     color: #e7ebed;
-  }
 
-  a:hover {
-    text-decoration: none;
+    &:hover {
+      text-decoration: none;
+
+      span {
+        background: #222;
+        background: rgba(0,0,0,0.2);
+      }
+    }
+
   }
 
   span {
     display: block;
+    height: 35px;
+    line-height: 35px;
     border-right: 1px solid;
     padding: 0 35px;
     text-shadow: 1px 1px 1px rgba(0,0,0,0.7);
     .transition();
-  }
-
-  a:hover span {
-    background: #222;
-    background: rgba(0,0,0,0.2);
   }
 
   a.current span {
@@ -462,6 +465,7 @@ spec has been implemented, including complete vcards, tooltips, etc.
     .box_shadow(0,1px,3px,#000);
   }
 
+  /* Create caret for active state */
   a.current span:after {
     content: "";
     display: block;

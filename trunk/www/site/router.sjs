@@ -74,6 +74,7 @@ function init_site_rules(lib) {
     "apps":       "//apps" + site_codebase,
     "create":     "//create" + site_codebase,
     "data":       "//data" + site_codebase,
+    "flyout":     "//flyout" + site_codebase,
     "mdo":        "//mdo" + site_codebase,
     "policies":   "//policies" + site_codebase,
     "query":      "//query" + site_codebase,
@@ -83,7 +84,7 @@ function init_site_rules(lib) {
     "schema":     "//schema" + site_codebase,
     "topic":      "//topic" + site_codebase,
     "triples":    "//triples" + site_codebase,
-    "users":      "//users" + site_codebase,
+    "users":      "//users" + site_codebase
   };
 
   // Defaults to trunk lib if not specified.
@@ -171,6 +172,14 @@ function init_site_rules(lib) {
     DEFAULT_BLURB_PROMISE
   ];
 
+  var FLYOUT = {
+      key: "flyout",
+      app: "flyout",
+      script: "flyout.controller",
+      hidden: true,
+      more: true
+  };
+
   var DEFAULT_MORE_TABS = [
     {
       "name": _("Properties"),
@@ -192,7 +201,8 @@ function init_site_rules(lib) {
       "app": "triples",
       "script": "triples.tab",
       "more": true
-    }
+    }, 
+    FLYOUT
   ];
 
   rules["object"] =  [
@@ -249,7 +259,7 @@ function init_site_rules(lib) {
           "key": "editors",
           "app": "users",
           "script": "group.tab"
-        }
+        },
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS)),
       "gear": [
         {
@@ -448,8 +458,9 @@ function init_site_rules(lib) {
           "app": "triples",
           "script": "triples.tab",
           "more": true
-        }
-      ],
+        },
+        h.extend(true, {}, FLYOUT)
+      ]
     },
     {
       "name": _("Attribution"),
@@ -495,7 +506,8 @@ function init_site_rules(lib) {
           "script": "triples.tab",
           "more": true,
           "promises": h.extend(true, [], [DEFAULT_BLURB_PROMISE])
-        }
+        }, 
+        h.extend(true, {}, FLYOUT)
       ],
       "nav_keys": [
         {
@@ -568,7 +580,8 @@ function init_site_rules(lib) {
           "app": "triples",
           "script": "triples.tab",
           "more": true
-        }
+        },
+        h.extend(true, {}, FLYOUT)
       ]
     },
     {
@@ -606,7 +619,8 @@ function init_site_rules(lib) {
           "app": "triples",
           "script": "triples.tab",
           "more": true
-        }
+        },
+        h.extend(true, {}, FLYOUT)
       ]
     },
     {
@@ -644,7 +658,8 @@ function init_site_rules(lib) {
           "app": "triples",
           "script": "triples.tab",
           "more": true
-        }
+        },
+        h.extend(true, {}, FLYOUT)
       ]
     },
     {
@@ -662,7 +677,7 @@ function init_site_rules(lib) {
           "name": _("Links"),
           "key": "links",
           "app": "triples",
-          "script": "triples.tab",
+          "script": "triples.tab"
         },
         {
           "name": _("Properties"),
@@ -677,7 +692,8 @@ function init_site_rules(lib) {
           "app": "sameas",
           "script": "sameas.tab",
           "more": true
-        }
+        },
+        h.extend(true, {}, FLYOUT)
       ]
     },
     {
@@ -702,7 +718,8 @@ function init_site_rules(lib) {
           "key": "links",
           "app": "triples",
           "script": "triples.tab"
-        }
+        },
+        h.extend(true, {}, FLYOUT)
       ]
     }
   ];
@@ -718,7 +735,6 @@ function init_site_rules(lib) {
     {prefix:"/account",            app:"account"},
     {prefix:"/favicon.ico",        app:"lib", script:"template/favicon.ico"},
     {prefix:"/sample",             app:"sample"},
-
 
     //
     // Redirects for legacy urls

@@ -564,5 +564,37 @@ test("LangId", function() {
   });
 });
 
+
+test("Jsonp", function() {
+    var valid = [
+        "_",
+        "123",
+        "foo",
+        "fn",
+        "Function"
+    ];
+    valid.forEach(function(val) {
+        strictEqual(validators.Jsonp(val), val);
+    });
+    var invalid = [
+        "(function(){})()",
+        "alert",
+        "typeof",
+        "_1234%"
+    ];
+    invalid.forEach(function(val) {
+      try {
+        validators.Jsonp(val);
+        ok(false, "not valid jsonp " + val);
+      }
+      catch(e if e instanceof validators.Invalid) {
+        ok(e, e.toString());
+      }
+      catch(e) {
+        ok(false, "unexpected exception " + e);
+      }
+    });
+});
+
 acre.test.report();
 

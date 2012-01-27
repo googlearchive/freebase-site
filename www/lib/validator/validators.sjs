@@ -767,7 +767,36 @@ Validator.factory(scope, "Uri", {
   }
 });
 
+/**
+ * JSONP callback parameter name validator
+ */
+var js_reserved = null;
+var js_reservedwords = "alert break case catch continue debugger default delete do else finally for function if in instanceof new return switch this throw try typeof var void while with class enum export extends import super implements interface let package private protected public static yield null true false";
+function js_reserved_word(word) {
+    if (!js_reserved) {
+        js_reserved = {};
+        js_reservedwords.split(" ").forEach(function(word) {
+            js_reserved[word] = 1;
+        });
+    }
+    return js_reserved[word] === 1;
+};
 
+var regex_jsonp;
+Validator.factory(scope, "Jsonp", {
+    string: function(val, options) {
+        if (!regex_jsonp) {
+            regex_jsonp = /^[\w]+$/;
+        }
+        if (regex_jsonp.test(val)) {
+            if (js_reserved_word(val)) {
+                return this.invalid(this.key, val, "is a javascript reserved word");
+            }
+            return val;
+        }
+        return this.invalid(this.key, val, "is invalid JSONP parameter name");
+    }
+});
 
 /**
  * Acre validators

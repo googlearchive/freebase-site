@@ -41,24 +41,26 @@ var creator = acre.require("lib/queries/creator.sjs");
 function object(id, options) {
   var q = mql(id);
   q = h.extend(q, options);
-
   return freebase.mqlread(q)
     .then(function(env) {
-      return env.result;
-    })
-    .then(function(topic) {
-      if (!topic) return null;
-      topic.attribution = h.get_attribution(topic);
-      topic.name = topic.name.sort(h.text_lang_sort);
-      topic.alias = topic["/common/topic/alias"].sort(h.text_lang_sort);
-      topic.image = topic["/common/topic/image"];
-      topic.replaced_by = topic["/dataworld/gardening_hint/replaced_by"];
-      topic.flag = topic["!/freebase/review_flag/item"];
-      topic.article = i18n.mql.result.article(topic["/common/topic/article"]);
-      h.resolve_article_uri(topic.article);    // resolve wikipedia links
-      return topic;
+        return callback(env.result);
     });
 };
+
+function callback(result) {
+    var topic = result;
+    if (!topic) return null;
+    topic.attribution = h.get_attribution(topic);
+    topic.name = topic.name.sort(h.text_lang_sort);
+    topic.alias = topic["/common/topic/alias"].sort(h.text_lang_sort);
+    topic.image = topic["/common/topic/image"];
+    topic.replaced_by = topic["/dataworld/gardening_hint/replaced_by"];
+    topic.flag = topic["!/freebase/review_flag/item"];
+    topic.article = i18n.mql.result.article(topic["/common/topic/article"]);
+    h.resolve_article_uri(topic.article);    // resolve wikipedia links
+    return topic;
+};
+
 
 /**
  * promise to get the blurb of an object

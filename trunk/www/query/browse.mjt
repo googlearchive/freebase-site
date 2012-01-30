@@ -37,6 +37,38 @@
   var _ = i18n.gettext;
   var components = acre.require("lib/template/components.mjt");
   var image = acre.require("lib/template/imagecomponents.mjt");
+
+  var SAMPLE_QUERIES = [
+    {
+      name: _("Books written by Stephen King"),
+      query: [{
+        "name": null,
+        "type": "/book/written_work",
+        "author": {
+          "id": "/en/stephen_king"
+        }
+      }]
+    },
+    {
+      name: _("The capitals of U.S States"),
+      query: [{
+        "type": "/location/us_state",
+        "name": null,
+        "capital": null
+      }]
+    },
+    {
+      name: _("Celebrities on Twitter"),
+      query: [{
+        "name": null,
+        "type": "/celebrities/celebrity",
+        "key": [{
+          "namespace": "/authority/twitter",
+          "value": null
+        }]
+      }]
+    }
+  ];
 </acre:script>
 
 <acre:block def="page_content()">
@@ -92,17 +124,13 @@
           <h4>${_("What are queries?")}</h4>
           <p>${h.template_sprintf(_("Queries allow you to retrieve structed information about topics or collections of topics from Freebase via %s, our JSON-based query language."), mql_help_text())}</p>
         </div>
-        <!--<div class="sub-section">-->
-          <!--<h4>${_("How do I write queries?")}</h4>-->
-          <!--<p>${_("MQL passes JSON objects as queries via standard HTTP requests and responses, allowing you to query live for Freebase data within your own web apps.")}</p>-->
-        <!--</div>-->
         <div class="sub-section">
           <h4>${_("Some examples")}</h4>
           <p>${_("The best way to learn to write queries is by example. Here are a few to get you started:")}</p>
           <ul>
-            <li> <a href="#">${_("Books written by Stephen King")}</a> </li>
-            <li> <a href="#">${_("The capitals of U.S States")}</a> </li>
-            <li> <a href="#">${_("Celebrities on Twitter")}</a> </li>
+            <li acre:for="q in SAMPLE_QUERIES">
+              <a href="${h.fb_url('/query', [['q', JSON.stringify(q.query)], ['autorun', 1]])}">${q.name}</a>
+            </li>
           </ul>
           <p>${h.template_sprintf(_("There are lots more examples you can play with in our %s, a web-based tool for writing MQL queries."), queryeditor_help_text())}</p>
         </div>

@@ -62,7 +62,9 @@ function domains_topics_facts() {
     guid: null,
     name: i18n.mql.query.name(),
     type: "/type/domain",
-    key: [{namespace: "/", limit: 0}],
+    "/freebase/domain_profile/category": {
+      id: "/category/commons"
+    },
     types: {"id": null, type: "/type/type", "return": "count"}
   }];
 

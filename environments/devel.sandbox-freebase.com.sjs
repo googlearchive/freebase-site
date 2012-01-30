@@ -30,7 +30,7 @@ var environment_rules = {
         {prefix:"/test_lib_propbox",        app:"lib", script:"propbox/test"},
         {prefix:"/test_lib_queries",        app:"lib", script:"queries/test"},
         {prefix:"/test_lib_routing",        app:"lib", script:"routing/test"},
-        {prefix:"/test_lib_schema",        app:"lib", script:"schema/test"},
+        {prefix:"/test_lib_schema",         app:"lib", script:"schema/test"},
         {prefix:"/test_lib_suggest",        app:"lib", script:"suggest/test"},
         {prefix:"/test_lib_template",       app:"lib", script:"template/test"},
         {prefix:"/test_lib_test",           app:"lib", script:"test/test"},
@@ -42,6 +42,7 @@ var environment_rules = {
         {prefix:"/test_topic",              app:"topic", script:"test"},
         {prefix:"/test_data",               app:"data", script:"test"},
         {prefix:"/test_query",              app:"query", script:"test"},
+        {prefix:"/test_flyout",             app:"flyout", script:"test"},
 
         // sample app
         {prefix:"/sample",             app:"sample"}

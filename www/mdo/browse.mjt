@@ -88,9 +88,28 @@
     </section>
     <aside class="secondary">
       <div class="wrapper">
-        <h3><span>${_('What are data loads?')}</span></h3>
+        <h3><span>${_('Understanding data loads')}</span></h3>
         <div class="sub-section">
-          <p>${_("lorem ipsum")}</p>
+          <p>${_("If you have a compatibly-licensed large spreadsheet or dataset to contribute, then we'd love to see that data in Freebase!")}</p>
+        </div>
+        <div class="sub-section">
+          <h4>${_("Steps for loading data")}</h4>
+          <p>${_("The Freebase community and staff work hard to exceed a 99% quality threshold for all data, but that does require a few extra steps:")}</p>
+          <ol>
+            <li><b>${_("Data cleaning")}</b> &mdash; ${_("A dataset should already be internally consistent")}</li>
+            <li><b>${_("Schema mapping")}</b> &mdash; ${_("Data can only be loaded against existing schema")}</li>
+            <li><b>${_("Reconciliation")}</b> &mdash; ${_("All entities in a dataset for which an equivalent in Freebase exists must be matched")}</li>
+            <li><b>${_("Uploading")}</b> &mdash; ${_("There are APIs for both incremental and batch loading")}</li>
+            <li><b>${_("Human review")}</b> &mdash; ${_("For both verifying data quality and resolving ambiguous reconciliations")}</li>
+          </ol>
+        </div>
+        <div class="sub-section">
+          <h4>${_("Data loading tools")}</h4>
+          <ul>
+            <li><a href="http://code.google.com/p/google-refine/">${_("Google Refine")}</a></li>
+            <li><a href="http://refinery.freebaseapps.com/">${_("Freebase Refinery")}</a></li>
+            <li><a href="http://wiki.freebase.com/wiki/Freebase_Loader">${_("Spreadsheet Loader")}</a></li>
+          </ul>
         </div>
       </div>
     </aside>

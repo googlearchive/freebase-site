@@ -67,9 +67,14 @@
     </section>
     <aside class="secondary">
       <div class="wrapper">
-        <h3><span>${_('What are review tasks?')}</span></h3>
+        <h3><span>${_('Understanding review tasks')}</span></h3>
         <div class="sub-section">
-          <p>${_("lorem ipsum")}</p>
+          <h4>${_("What are review tasks?")}</h4>
+          <p>${_("Whenver a topic is flagged for delete or merge, it is reviewed by other members of the community. This review process helps prevent accidental or malicious deletion of topics, but it relies on members of the community to help out and vote on topics.")}</p>
+        </div>
+        <div class="sub-section">
+          <h4>${_("How you can help")}</h4>
+          <p>${_("Click on the Review Queue link at the top of this page.")}</p>
         </div>
       </div>
     </aside>

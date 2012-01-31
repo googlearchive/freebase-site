@@ -116,13 +116,17 @@
     </div>
     <acre:block for="prop_id in type_structure.properties">
       <acre:script>
-        var prop_structure = topic.properties[prop_id];
+        var prop_structure = topic.structure.properties[prop_id];
       </acre:script>
       <acre:block if="prop_structure">
         <acre:script>
           prop_structure.id = prop_id;
+          var values = [];
+          if (topic.property && topic.property[prop_id]) {
+            values = topic.property[prop_id].values || [];
+          }
         </acre:script>
-        ${propbox(topic, prop_structure, prop_structure.values, lang)}
+        ${propbox(topic, prop_structure, values, lang)}
       </acre:block>
     </acre:block>
   </div>
@@ -133,7 +137,7 @@
     <div class="sub-foobar kbs">
       <a href="${ph.build_query_url(topic.id, prop_structure, prop_structure.expected_type.id === '/type/text' ? null : lang)}" class="more"><span>${VIEW_ALL_PROPERTY_VALUES}</span></a>
       <span class="header-label">
-        ${prop_menu(topic, prop_structure, lang)}
+        ${prop_menu(topic, prop_structure, prop_values, lang)}
       </span>
     </div>  
     ${databox(topic, prop_structure, prop_values, lang)}
@@ -142,7 +146,7 @@
 
 <acre:block def="databox(topic, prop_structure, prop_values, lang)">
   <div class="data-section">
-    <acre:block if="prop_structure.properties">      
+    <acre:block if="prop_structure.expected_type.mediator && prop_structure.properties">      
       ${datatable(topic, prop_structure, prop_values, lang)}
     </acre:block>
     <acre:block else="">
@@ -159,32 +163,14 @@
   <table class="data-table">
     <thead acre:attrs="empty ? {style:'display:none;'} : {}">
       <tr>
-        <acre:block if="ect === '/common/image' || ect === '/common/document'">
-          <th scope="col" class="first">&nbsp;</th>        
-          <th acre:for="subprop_structure in prop_structure.properties" scope="col">
-            ${subprop_structure.text}
-          </th>
-        </acre:block>
-        <acre:block else="">
-          <th acre:for="i,subprop_structure in prop_structure.properties" scope="col" acre:attrs="i === 0 ? {'class':'first'} : {}">
-            ${subprop_structure.text}
-          </th>
-        </acre:block>
+        <th acre:for="i,subprop_structure in prop_structure.properties" scope="col" acre:attrs="i === 0 ? {'class':'first'} : {}">
+          ${subprop_structure.text}
+        </th>
       </tr>
     </thead>
     <tbody>
       <acre:block if="empty">
         ${empty_row_tr(prop_structure.properties.length)}
-      </acre:block>
-      <acre:block elif="ect === '/common/image'">
-        <acre:block for="prop_value in prop_values">
-          ${image_row(topic, prop_structure, prop_value, lang)}
-        </acre:block>
-      </acre:block>
-      <acre:block elif="ect === '/common/document'">
-        <acre:block for="prop_value in prop_values">
-          ${article_row(topic, prop_structure, prop_value, lang)}
-        </acre:block>
       </acre:block>
       <acre:block else="">
         <acre:block for="prop_value in prop_values">
@@ -202,8 +188,8 @@
     <acre:block for="i, subprop_structure in prop_structure.properties">
       <acre:script>
         var subprop_values;
-        if (prop_value && prop_value[subprop_structure.id]) {
-          subprop_values = prop_value[subprop_structure.id].values;
+        if (prop_value && prop_value.property && prop_value.property[subprop_structure.id]) {
+          subprop_values = prop_value.property[subprop_structure.id].values;
         }
       </acre:script>
       ${datatable_cell(topic, prop_structure, prop_value, subprop_structure, subprop_values, i === 0, lang)}
@@ -281,7 +267,7 @@
         <acre:block for="i, subprop_value in subprop_values">
           <li>
             <span class="wrapper">
-              ${value(value.id, subprop_structure, subprop_value, lang)}
+              ${value(prop_value.id, subprop_structure, subprop_value, lang)}
               <acre:block if="i === 0 && primary">
                 ${value_menu(prop_value, subprop_structure, subprop_value, lang)}
               </acre:block>
@@ -302,23 +288,6 @@
     <acre:block if="empty">
       ${empty_row_li()}
     </acre:block>
-    <acre:block elif="ect === '/common/document' || ect === '/common/image'">
-      <acre:script>
-        var text;
-        var len = prop_values.length;
-        if (len > 1) {
-          text = h.sprintf(ect === "/common/document" ? _("%s articles") : _("%s images"), len);
-        }
-        else {
-          text = ect === "/common/document" ? _("1 article") : _("1 image");
-        }
-      </acre:script>
-      <li class="kbs data-row">
-        <span class="wrapper">
-          <a class="property-value" href="${h.fb_url(topic.id, [['links'], ['property', prop_structure.id]])}">${text} &raquo;</a>
-        </span>
-      </li>
-    </acre:block>
     <acre:block else="">
       <acre:block for="prop_value in prop_values">
         ${datalist_row(topic, prop_structure, prop_value, lang)}
@@ -331,7 +300,14 @@
   <li class="kbs data-row">
     <span class="wrapper">
       ${value(topic.id, prop_structure, prop_value, lang)}
-      <acre:block if="prop_structure.expected_type.id !== '/common/webpage'">
+      <acre:script>
+        var show_menu = true;
+        if (prop_value && prop_structure.expected_type.id === "/type/text" && 
+            h.lang_id(prop_value.lang) !== lang) {
+          show_menu = false;
+        }
+      </acre:script>
+      <acre:block if="show_menu">
         ${value_menu(topic, prop_structure, prop_value, lang)}
       </acre:block>
     </span>
@@ -356,9 +332,6 @@
         if (ect === "/type/user") {
           text = h.id_key(prop_value.id);
         }
-        else if (ect === "/location/postal_code" && prop_value["/location/postal_code/postal_code"]) {
-          text = prop_value["/location/postal_code/postal_code"];
-        }
         else {
           text = prop_value.text;
           show_lang = true;
@@ -372,13 +345,11 @@
       </acre:block>
     </acre:block>
   </acre:block>
-  <acre:block elif="ect === '/common/webpage'">
-    <a class="property-value"
-       acre:attrs="itemprop(prop_structure.id)"
-       href="${prop_value.url}" rel="nofollow">${prop_value.url}</a>
-  </acre:block>
   <acre:block else="">
     <acre:script>
+      if (!("value" in prop_value)) {
+        prop_value.value = prop_value.text;
+      }
       var attrs = h.extend(itemprop(prop_structure.id), microdata.value(prop_structure, prop_value));
       attrs["class"] = "property-value";
     </acre:script>
@@ -414,7 +385,7 @@
   </ul>  
 </acre:block>
 
-<acre:block def="prop_menu(topic, prop_structure, lang)">
+<acre:block def="prop_menu(topic, prop_structure, prop_values, lang)">
   <acre:script>
     var ect = prop_structure.expected_type.id;
   </acre:script>
@@ -424,14 +395,12 @@
         <a href="#" class="menu-trigger" onclick="return false;" title="${prop_structure.id}">${prop_structure.text}</a>
       </span>
       <ul class="row-menu submenu">
-        <acre:block if="!(ect === '/common/image' || ect === '/common/document' || ect === '/common/webpage')">
-          <li acre:if="prop_structure.unique && prop_structure.values.length" class="row-menu-item">
-            <a href="#" onclick="return propbox.prop_edit(this, ${prop_structure.unique});">${EDIT_VALUE}</a>
-          </li>
-          <li acre:else="" class="row-menu-item">
-            <a href="#" onclick="return propbox.prop_add(this, ${prop_structure.unique});">${ADD_NEW_VALUE}</a>
-          </li>
-        </acre:block>
+        <li acre:if="prop_structure.unique && prop_values.length" class="row-menu-item">
+          <a href="#" onclick="return propbox.prop_edit(this, ${prop_structure.unique});">${EDIT_VALUE}</a>
+        </li>
+        <li acre:else="" class="row-menu-item">
+          <a href="#" onclick="return propbox.prop_add(this, ${prop_structure.unique});">${ADD_NEW_VALUE}</a>
+        </li>
         <li acre:if="ect === '/type/text'" class="row-menu-item">
           <a href="#" onclick="return i18n.text_edit(this, '${h.ajax_url('lib/i18n')}', '${topic.id}', '${prop_structure.id}', '${lang}')">${EDIT_LOCALIZED_TEXT}</a>
         </li>
@@ -677,7 +646,7 @@ propbox edit forms
         <acre:block for="subprop_structure in prop_structure.properties">
           <td>
             <acre:script>
-              var subprop_value = prop_value[subprop_structure.id] && prop_value[subprop_structure.id].values || [];
+              var subprop_value = prop_value.property && prop_value.property[subprop_structure.id] && prop_value.property[subprop_structure.id].values || [];
             </acre:script>
             <acre:block acre:if="subprop_value.length">
               <acre:block for="subvalue in subprop_value">

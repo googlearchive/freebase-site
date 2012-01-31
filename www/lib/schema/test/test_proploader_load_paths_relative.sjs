@@ -30,7 +30,8 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mock").playback(this, "schema/test/playback_test_proploader_load_paths_relative.json");
+acre.require("test/mock")
+    .playback(this, "schema/test/playback_test_proploader_load_paths_relative.json");
 
 var h = acre.require("helper/helpers.sjs");
 var proploader = acre.require("schema/proploader.sjs");
@@ -40,14 +41,16 @@ var scope = this;
 
 test("load_paths relative", function() {
   var result;
-  var path = "/film/film/directed_by.film";
+  var path = "/sports/pro_sports_played/athlete.career_end";
   proploader.load_paths(path)
     .then(function(props) {
       result = props;
     });
   acre.async.wait_on_results();
   ok(result, "Got load result");
-  assert_prop_path_schema(scope, result, "/film/film/directed_by", "/film/director/film");
+  assert_prop_path_schema(scope, result,
+                          "/sports/pro_sports_played/athlete",
+                          "/sports/pro_athlete/career_end");
 });
 
 

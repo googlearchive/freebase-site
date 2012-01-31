@@ -30,14 +30,18 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mock").playback(this, "schema/test/playback_test_proploader_load_multi.json");
+acre.require("test/mock")
+    .playback(this, "schema/test/playback_test_proploader_load_multi.json");
 
 var h = acre.require("helper/helpers.sjs");
 var proploader = acre.require("schema/proploader.sjs");
 
 test("load multi", function() {
   var result;
-  var pids = ["/film/film/initial_release_date", "/film/film/directed_by"];
+  var pids = [
+      "/basketball/basketball_player/position_s",
+      "/basketball/basketball_player/team"
+  ];
   proploader.load.apply(null, pids)
     .then(function(props) {
       result = props;

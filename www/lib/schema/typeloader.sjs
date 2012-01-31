@@ -36,7 +36,8 @@ var SCHEMA_KEY_PREFIX = "lib/schema/typeloader.sjs:";
 
 /**
  * Invalidate specified type id(s) from acre.cache.
- * This should be called whenever a type changes (including keys, properties, etc.)
+ * This should be called whenever a type changes
+ * (including keys, properties, etc.)
  */
 function unload(/** type_id1, type_id2, ..., type_idN **/) {
   var type_ids = Array.prototype.slice.call(arguments);
@@ -127,17 +128,16 @@ function load() {
             });
           }
           else {
+            // If not deep, don't include sub-level expected_type properties
             delete prop.expected_type.properties;
           }
         });
       }
       if (deep && ect_ids.length) {
-        return _load.apply(null, ect_ids)
+        return load.apply(null, ect_ids)
           .then(function(expected_types) {
              for (var type_id in expected_types) {
                var type = expected_types[type_id];
-               // don't include sub-level expected_type properties
-               delete type.properties;
                var ects = ect_map[type_id];
                ects.forEach(function(ect) {
                  h.extend(ect, type);
@@ -217,10 +217,11 @@ function do_mql(/**, type_id1, type_id2, ..., type_idN **/) {
         lang: null
       }],
       type: "/type/domain",
-      "/freebase/domain_profile/category": [{
+      "/freebase/domain_profile/category": {
+        // is this "Commons" domain?
         optional: true,
-        id: null
-      }]
+        id: "/category/commons"
+      }
     },
     "/freebase/type_hints/enumeration": null,
     "/freebase/type_hints/mediator": null,
@@ -248,12 +249,18 @@ function do_mql(/**, type_id1, type_id2, ..., type_idN **/) {
       },
       "/freebase/property_hints/disambiguator": null,
       "/freebase/property_hints/display_none": null,
+      "/freebase/property_hints/deprecated": null,
       master_property: {
         optional: true,
         id: null,
         type: "/type/property"
       },
       reverse_property: {
+        optional: true,
+        id: null,
+        type: "/type/property"
+      },
+      delegated: {
         optional: true,
         id: null,
         type: "/type/property"

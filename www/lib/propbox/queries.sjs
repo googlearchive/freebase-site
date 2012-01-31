@@ -33,59 +33,30 @@ var h = acre.require("helper/helpers.sjs");
 var deferred = acre.require("promise/deferred");
 var freebase = acre.require("promise/apis").freebase;
 var i18n = acre.require("i18n/i18n.sjs");
-var mql = acre.require("propbox/mql.sjs");
 var ph = acre.require("propbox/helpers.sjs");
-
+var proploader = acre.require("schema/proploader.sjs");
 
 /**
  * MQL prop schema result
- *
- * @se propbox/mql.sjs (prop_schema)
  */
-function prop_schema(pid, lang) {
-  var q = mql.prop_schema({id: pid}, lang);
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return env.result;
-    })
+function prop_schema(pid) {
+  return proploader.load(pid)
     .then(function(result) {
-      var ect = result.expected_type;
-      if (ect.id === "/location/mailing_address") {
-        return prop_schema("/location/mailing_address/postal_code", lang)
-          .then(function(postal_schema) {
-            var ect_props = ect.properties;
-            for (var i=0,l=ect_props.length; i<l; i++) {
-              if (ect_props[i].id === "/location/mailing_address/postal_code") {
-                ect_props[i] = postal_schema;
-                break;
-              }
-            }
-            return result;
-          });
-      }
-      else {
-        return result;
-      }
+      return result[pid];
     });
 };
 
-function prop_schemas(/** pid_1, pid_2, ... , pid_N, lang **/) {
-  var args = Array.prototype.slice.call(arguments);
-  var len = args.length;
-  var pids = args.slice(0, len - 1);
-  var lang = args[len - 1];
-
-  var pids_index = {};
-  pids.forEach(function(pid, i) {
-    pids_index[pid] = i;
-  });
-  var q = [mql.prop_schema({"id|=": pids}, lang)];
-  return freebase.mqlread(q)
-    .then(function(env) {
-      // sort the properties in the same order as arguments
-      return env.result.sort(function(a,b) {
-        return pids_index[b.id] < pids_index[a.id];
+function prop_schemas(/** pid_1, pid_2, ... , pid_N **/) {
+  var pids = Array.prototype.slice.call(arguments);
+  return proploader.load.apply(null, pids)
+    .then(function(result) {
+      var schemas = [];
+      pids.forEach(function(pid, i) {
+        var schema = result[pid];
+        // TODO: assert schema for each pid
+        schemas.push(schema);
       });
+      return schemas;
     });
 };
 
@@ -98,7 +69,7 @@ function prop_schemas(/** pid_1, pid_2, ... , pid_N, lang **/) {
  * }
  */
 function prop_structure(pid, lang) {
-  return prop_schema(pid, lang)
+  return prop_schema(pid)
     .then(function(schema) {
       return ph.to_prop_structure(schema, lang);
     });
@@ -106,8 +77,11 @@ function prop_structure(pid, lang) {
 
 
 function prop_structures(/** pid_1, pid_2, ... , pid_N, lang **/) {
-  var lang = arguments[arguments.length - 1];
-  return prop_schemas.apply(null, arguments)
+  var args = Array.prototype.slice.call(arguments);
+  var len = args.length;
+  var pids = args.slice(0, len - 1);
+  var lang = args[len - 1];
+  return prop_schemas.apply(null, pids)
     .then(function(schemas) {
       var structures = [];
       schemas.forEach(function(schema) {

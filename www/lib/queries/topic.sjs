@@ -82,7 +82,8 @@ function topic_structure(id, lang) {
   var options = {
     // This needs to be TRUE to return topic names. Not quite sure why this is not the default.
     // @see masouras
-    alldata: true
+    alldata: true,
+    filter: ["all"]
   };
   options.lang = h.lang_code(lang || "/lang/en");
   return freebase.get_topic(id, options)
@@ -93,7 +94,7 @@ function topic_structure(id, lang) {
       if (property) {
         types = property["/type/object/type"];
         types = types && types.values;
-        notable_types = property["/common/topic/notable_types"];
+        notable_types = property["/synthetic/notability/notable_types"];
         notable_types = notable_types && notable_types.values;
       }
       var d;
@@ -102,17 +103,15 @@ function topic_structure(id, lang) {
         // typeloader.load takes var args: [true, type_id1, type_id2, ..., type_idN]
         d = typeloader.load.apply(null, [true].concat(type_ids))
           .then(function(typeloader_result) {
-             return {
-               topic: topic_result,
-               structure: get_structure(typeloader_result, notable_types, lang)
-             };
+             var structure = get_structure(typeloader_result, notable_types, lang);
+             topic_result.structure = structure;
+             return topic_result;
           });
       }
       else {
-        d = deferred.resolved({
-          topic: topic_result,
-          structure: to_structure([], lang) // empty structure
-        });
+        // empty structure
+        topic_result.structure = to_structure([], lang);
+        d = deferred.resolved(topic_result);
       }
       return d;
     });
@@ -150,7 +149,7 @@ function sort_domains_and_types(types_by_id, notable_types) {
   var notable_types_index = null;
   if (notable_types && notable_types.length) {
     // notable_types are currently returned in reverse order.
-    notable_types.reverse();
+//    notable_types.reverse();
     notable_types_index = {};
     notable_types.forEach(function(t, i) {
       notable_types_index[t.id] = i;
@@ -247,3 +246,78 @@ function to_structure(domains_list, lang) {
   });
   return structure;
 };
+
+
+/**
+ * Use freebase.get_topic to get 
+ * /synthetic/notability/notable_types and /synthetic/notability/notable_for
+ */
+function notability(o) {
+    var options = {
+        filter: [
+            "/synthetic/notability/notable_types", 
+            "/synthetic/notability/notable_for"
+        ]
+    };
+    return freebase.get_topic(o.id, options)
+        .then(function(topic) {
+            return get_notability(topic);
+        });
+};
+
+/**
+ * Given freebase.get_topic result (with /synthetic/notability/*),
+ * return the first notable_types and first notable_for values.
+ * If freebase.get_topic result does not have /synthetic/notability/notable_types
+ * nor /synthetic/notability/notable_for, return null.
+ */
+function get_notability(topic) {
+    var p = topic && topic.property;
+    var notable_type;
+    var notable_for;
+    if (p) {
+        notable_type = p["/synthetic/notability/notable_types"];
+        notable_type = notable_type && h.first_element(notable_type.values);
+        notable_for = p["/synthetic/notability/notable_for"];
+        notable_for = notable_for && h.first_element(notable_for.values);
+        // for the time being, notable_for id is nested 
+        // inside /synthetic/notable_for/object property values
+        if (notable_for) {
+            notable_for = 
+                h.first_element(notable_for.property["/synthetic/notable_for/object"].values);
+        }
+    }
+    if (notable_type || notable_for) {
+        return {
+            notable_type: notable_type || null,
+            notable_for: notable_for || null
+        };
+    }
+    return null;
+};
+
+/**
+ * Use freebase.get_topic to get /synthetic/stats/linkcount
+ */
+function linkcount(o) {
+    var options = {
+        filter: ["/synthetic/stats/linkcount"]
+    };
+    return freebase.get_topic(o.id, options)
+        .then(function(topic) {
+            return get_linkcount(topic);
+        });
+};
+
+/**
+ * Given freebase.get_topic result (with /synthetic/stats/linkcount),
+ * return the linkcount structure. If /synthetic/stats/linkcount does
+ * not exist, return null.
+ */
+function get_linkcount(topic) {
+    var p = topic && topic["/synthetic/stats/linkcount"];
+    if (p) {
+        return p.values || null;
+    }
+    return null;
+}

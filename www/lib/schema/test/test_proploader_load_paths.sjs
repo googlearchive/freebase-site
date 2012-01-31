@@ -30,22 +30,26 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mock").playback(this, "schema/test/playback_test_proploader_load_paths.json");
+acre.require("test/mock")
+    .playback(this, "schema/test/playback_test_proploader_load_paths.json");
 
 var proploader = acre.require("schema/proploader.sjs");
-var assert_prop_path_schema = acre.require("schema/test/helpers.sjs").assert_prop_path_schema;
+var assert_prop_path_schema = 
+    acre.require("schema/test/helpers.sjs").assert_prop_path_schema;
 var scope = this;
 
 test("load_paths", function() {
   var result;
-  var path = "/film/film/directed_by./people/person/date_of_birth";
+  var path = "/basketball/basketball_player/team./basketball/basketball_roster_position/number";
   proploader.load_paths(path)
     .then(function(props) {
       result = props;
     });
   acre.async.wait_on_results();
   ok(result, "Got load result");
-  assert_prop_path_schema(scope, result, "/film/film/directed_by", "/people/person/date_of_birth");
+  assert_prop_path_schema(scope, result, 
+                          "/basketball/basketball_player/team", 
+                          "/basketball/basketball_roster_position/number");
 });
 
 acre.test.report();

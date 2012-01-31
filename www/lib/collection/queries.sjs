@@ -242,7 +242,7 @@ function collection(topic_ids, pids, lang, limit) {
       var prop_structures = [];
       for (var pid1 in props) {
         var prop = props[pid1];
-        prop_structures.push(ph.to_prop_structure(prop, lang));
+        prop_structures.push(ph.to_prop_structure(prop, lang, true));
       };
       return prop_structures.sort(function(a, b) {
         return pid1_order.indexOf(a.id) - pid1_order.indexOf(b.id);

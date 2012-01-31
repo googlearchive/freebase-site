@@ -109,6 +109,10 @@ var SPEC = {
             optional: "forbidden",
             value: true
           },
+          "/freebase/property_hints/deprecated": {
+            optional: "forbidden",
+            value: true
+          },
           index: null,
           sort: "index",
           optional: true

@@ -2,7 +2,7 @@
  * Copyright 2010, Google Inc.
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
+ * Redistribution and use in source and binar]y forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
  *
@@ -198,7 +198,14 @@ function load_paths() {
           assert(prop2, "Second property did not load", second);
           prop2 = h.extend(true, {}, prop2);
           existing._subprops.push(prop2);
+          // Arbitrary depth not yet supported
           delete prop2.expected_type.properties;
+        }
+        else if (prop1.expected_type.properties) {
+          prop1.expected_type.properties.forEach(function(subprop) {
+              // Arbitrary depth not yet supported
+              delete subprop.expected_type.properties;
+          });
         }
       });
       for (var key in result) {
@@ -208,7 +215,7 @@ function load_paths() {
           prop.expected_type.properties = subprops;
         }
         else {
-          prop.expected_type.properties =  prop.expected_type.properties.filter(function(p) {
+          prop.expected_type.properties = prop.expected_type.properties.filter(function(p) {
             return p["/freebase/property_hints/disambiguator"] === true;
           });
         }

@@ -30,14 +30,15 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mock").playback(this, "schema/test/playback_test_proploader_load_all.json");
+acre.require("test/mock")
+    .playback(this, "schema/test/playback_test_proploader_load_all.json");
 
 var h = acre.require("helper/helpers.sjs");
 var proploader = acre.require("schema/proploader.sjs");
 
 test("load all", function() {
   var result;
-  var pid = "/film/performance/film";
+  var pid = "/basketball/basketball_player/position_s";
   proploader.load(true, pid)
     .then(function(props) {
       result = props;
@@ -46,7 +47,8 @@ test("load all", function() {
   ok(result, "Got load result");
   var schema = result[pid];
   ok(schema, "Got property schema");
-  ok(schema.expected_type && schema.expected_type.properties && schema.expected_type.properties.length,
+  ok(schema.expected_type && 
+     schema.expected_type.properties && schema.expected_type.properties.length,
      "Got deep properties");
   // just look for some none disambiguating properties
   var props = schema.expected_type.properties.filter(function(prop) {

@@ -1023,15 +1023,17 @@
         }],
         values: [{
           id: "/m/123",
-          "/measurement_unit/dated_money_value/currency": {
-            values: [{
-              id: "/en/us"
-            }]
-          },
-          "/measurement_unit/dated_money_value/amount": {
-            values: [{
-              value: 1234567
-            }]
+          property: {
+            "/measurement_unit/dated_money_value/currency": {
+              values: [{
+                id: "/en/us"
+              }]
+            },
+            "/measurement_unit/dated_money_value/amount": {
+              values: [{
+                value: 1234567
+              }]
+            }
           }
         }]
       };
@@ -1076,15 +1078,17 @@
         }],
         values: [{
           id: "/m/123",
-          "/measurement_unit/dated_money_value/currency": {
-            values: [{
-              id: "/en/us"
-            }]
-          },
-          "/measurement_unit/dated_money_value/amount": {
-            values: [{
-              value: 1234567
-            }]
+          property: {
+            "/measurement_unit/dated_money_value/currency": {
+              values: [{
+                id: "/en/us"
+              }]
+            },
+            "/measurement_unit/dated_money_value/amount": {
+              values: [{
+                value: 1234567
+              }]
+            }
           }
         }]
       };
@@ -1151,15 +1155,17 @@
         }],
         values: [{
           id: "/m/123",
-          "/measurement_unit/dated_money_value/currency": {
-            values: [{
-              id: "/en/us"
-            }]
-          },
-          "/measurement_unit/dated_money_value/amount": {
-            values: [{
-              value: 1234567
-            }]
+          property: {
+            "/measurement_unit/dated_money_value/currency": {
+              values: [{
+                id: "/en/us"
+              }]
+            },
+            "/measurement_unit/dated_money_value/amount": {
+              values: [{
+                value: 1234567
+              }]
+            }
           }
         }]
       };
@@ -1319,24 +1325,26 @@
         }],
         values: [{
           id: "/m/mid123",
-          "/tv/regular_tv_appearance/actor": {
-            values: [{
-              id: "/en/matthew_fox"
-            }]
-          },
-          "/tv/regular_tv_appearance/character": {
-            values: [{
-              id: "/en/jack_shephard"
-            }]
-          },
-          "/tv/regular_tv_appearance/seasons": {
-            values: [{
-              id: "/en/lost_season_1"
-            },{
-              id: "/en/lost_season_2"
-            },{
-              id: "/en/lost_season_3"
-            }]
+          property: {
+            "/tv/regular_tv_appearance/actor": {
+              values: [{
+                id: "/en/matthew_fox"
+              }]
+            },
+            "/tv/regular_tv_appearance/character": {
+              values: [{
+                id: "/en/jack_shephard"
+              }]
+            },
+            "/tv/regular_tv_appearance/seasons": {
+              values: [{
+                id: "/en/lost_season_1"
+              },{
+                id: "/en/lost_season_2"
+              },{
+                id: "/en/lost_season_3"
+              }]
+            }
           }
         }]
       };

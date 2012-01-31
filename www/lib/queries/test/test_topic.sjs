@@ -31,7 +31,8 @@
 
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mock").playback(this, "queries/test/playback_test_topic.json");
+acre.require("test/mock")
+    .playback(this, "queries/test/playback_test_topic.json");
 
 var h = acre.require("helper/helpers.sjs");
 var queries = acre.require("queries/topic.sjs");
@@ -39,30 +40,36 @@ var queries = acre.require("queries/topic.sjs");
 
 test("topic_structure", function() {
   var result;
-  queries.topic_structure("/en/daesun_park", "en")
+  queries.topic_structure("/en/sakuragi_hanamichi", "en")
     .then(function(topic) {
       result = topic;
     });
   acre.async.wait_on_results();
   ok(result, "Got topic_structure result");
-  ok(result.topic, "Got topic");
+  ok(result.property, "Got topic property");
   ok(result.structure, "Got structure");
-  ok(result.structure.order && h.isArray(result.structure.order), "Expected structure.order to be an Array");
-  // /people should be in the structure
-  ok(result.structure.order.indexOf("/people") !== -1, "Expected /people domain in structure.order");
-  ok(result.structure.domains && result.structure.domains["/people"], "Expected /people domain in structure.domains");
-  var people_domain = result.structure.domains["/people"];
-  // /people/person should be in the structure
-  ok(people_domain.types && people_domain.types.indexOf("/people/person") !== -1,
-     "Expected /people/person type in structure.domains['/people'].types");
-  ok(result.structure.types && result.structure.types["/people/person"],
-     "Expected /people/person type in structure.types");
-  var person_type = result.structure.types["/people/person"];
-  // /people/person/date_of_birth should be in the structure since it's a disambiguating property
-  ok(person_type.properties && person_type.properties.indexOf("/people/person/date_of_birth") !== -1,
-     "Expected /people/person/date_of_birth in structure.types['/people/person'].properties");
-  ok(result.structure.properties && result.structure.properties["/people/person/date_of_birth"],
-     "Expected /people/person/date_of_birth in structure.properties");
+  ok(result.structure.order && h.isArray(result.structure.order), 
+     "Expected structure.order to be an Array");
+  // /base/slamdunk should be in the structure
+  ok(result.structure.order.indexOf("/base/slamdunk") !== -1, 
+     "Expected /base/slamdunk domain in structure.order");
+  ok(result.structure.domains && result.structure.domains["/base/slamdunk"], 
+     "Expected /base/slamdunk domain in structure.domains");
+  var slamdunk_domain = result.structure.domains["/base/slamdunk"];
+  // /base/slamdunk/player should be in the structure
+  ok(slamdunk_domain.types && slamdunk_domain.types.indexOf("/base/slamdunk/player") !== -1,
+     "Expected /base/slamdunk/player type in structure.domains['/base/slamdunk'].types");
+  ok(result.structure.types && result.structure.types["/base/slamdunk/player"],
+     "Expected /base/slamdunk/player type in structure.types");
+  var person_type = result.structure.types["/base/slamdunk/player"];
+  // /base/slamdunk/player/number should be in the structure
+  // since it's a disambiguating property
+  ok(person_type.properties && 
+     person_type.properties.indexOf("/base/slamdunk/player/number") !== -1,
+     "Expected /base/slamdunk/player/number in structure.types['/base/slamdunk/player'].properties");
+  ok(result.structure.properties && 
+     result.structure.properties["/base/slamdunk/player/number"],
+     "Expected /base/slamdunk/player/number in structure.properties");
 });
 
 test("topic_structure error", function() {

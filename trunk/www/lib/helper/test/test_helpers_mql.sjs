@@ -236,6 +236,78 @@ test("text_lang_sort", function() {
         {lang:"/lang/ko", value:"c"}, {lang:"/lang/ko", value:"y"}, {lang:"/lang/ko", value:"z"}]);
 });
 
+
+
+test("is_reciprocal", function() {
+  var master_id = "/i/am/master";
+  var reverse_id = "/i/am/reverse";
+  var reverse = {
+    id: reverse_id,
+    master_property: master_id
+  };
+  var master = {
+    id: master_id,
+    reverse_property: {
+      id: reverse_id
+    }
+  };
+  ok(h.is_reciprocal(master, reverse));
+  ok(h.is_reciprocal(reverse, master));
+
+  // delegated
+  reverse = {
+    id: reverse_id,
+    master_property: {
+      id: "/master/delegated"
+    }
+  };
+  master = {
+    id: master_id,
+    delegated: {
+      id: "/master/delegated"
+    }
+  };
+  ok(h.is_reciprocal(master, reverse));
+  ok(h.is_reciprocal(reverse, master));
+});
+
+
+test("get_disambiguators", function() {
+  var prop = {
+    id: "/prop/1",
+    expected_type: {
+      properties: [{
+        id: "/prop/2",
+        "/freebase/property_hints/disambiguator": true,
+        master_property: "/prop/1",
+        unique: true
+      },{
+        id: "/prop/3",
+        "/freebase/property_hints/disambiguator": true
+      },{
+        id: "/prop/4",
+        "/freebase/property_hints/disambiguator": true,
+        "/freebase/property_hints/display_none": true
+      },{
+        id: "/prop/5",
+        "/freebase/property_hints/disambiguator": true,
+        master_property: "/prop/1"
+      },{
+        id: "/prop/6"
+      },{
+        id: "/prop/7",
+        "/freebase/property_hints/disambiguator": true,
+        "/freebase/property_hints/deprecated": true          
+      }]
+    }
+  };
+
+  var disambiguators = h.get_disambiguators(prop);
+  equal(disambiguators.length, 2);
+  equal(disambiguators[0].id, "/prop/3");
+  equal(disambiguators[1].id, "/prop/5");
+});
+
 acre.test.report();
 
 

@@ -82,7 +82,7 @@ function blurb(o) {
  * promise to get the full article of an object
  */
 function article(o) {
-  return freebase.get_blob(o.id, "raw")
+  return freebase.get_blob(o.id, "html")
     .then(function(env) {
       return env.body;
     });
@@ -118,15 +118,6 @@ function documented_object_tip(o) {
     });
 };
 
-/**
- * promise to get the notable_types of an object
- */
-function notable_types(o) {
-  return freebase.get_static("notable_types_2", o.guid.substring(1))
-    .then(function(r) {
-      return r;
-    });
-};
 
 function mql(id) {
   return creator.extend({

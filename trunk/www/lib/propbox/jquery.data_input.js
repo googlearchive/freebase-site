@@ -130,7 +130,12 @@
 
       if (c.is(".topic")) {
         var type = self.metadata.type;
-        i.validate_topic(o.suggest_impl.instance(type, true, self.metadata && self.metadata.lang || o.lang))
+        var suggest_options = null;
+        if (o.suggest_impl) {
+          suggest_options =
+            o.suggest_impl.instance(type, true, self.metadata && self.metadata.lang || o.lang);
+        }
+        i.validate_topic(suggest_options)
           .bind("valid.data_input", function(e, data) {
             self.fb_select(data);
           })

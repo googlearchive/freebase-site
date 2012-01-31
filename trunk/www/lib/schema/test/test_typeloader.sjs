@@ -30,90 +30,90 @@
  */
 acre.require('/test/lib').enable(this);
 
-// we want acre.cache to be on since we're testing the load/unload from the cache
-acre.require("test/mock").playback(this, "schema/test/playback_test_typeloader.json");
+acre.require("test/mock")
+    .playback(this, "schema/test/playback_test_typeloader.json");
 
 var h = acre.require("helper/helpers.sjs");
 var typeloader = acre.require("schema/typeloader.sjs");
 
 function assert_key(obj, key, expected, msg) {
-  ok(obj && key in obj &&
-     (typeof expected === "boolean" ? !!obj[key] === expected : obj[key] === expected), msg);
-
+    if (obj && key in obj) {
+        if (typeof expected === "boolean") {
+            same(!!obj[key], expected, msg || expected);
+        }
+        else {
+            same(obj[key], expected, msg || expected);
+        }
+    }
+    else {
+        ok(false, expected);
+    }
 };
-function assert_film_performance_schema(schema, deep) {
+
+function assert_dated_integer_schema(schema, deep) {
   var i,l;
-
-  assert_key(schema, "/freebase/type_hints/mediator", true, "/film/performance is a mediator");
-
-  var props = schema.properties;
-  // assert /film/performance/film schema.properties[]
-  var prop;
-  for (i=0,l=props.length; i<l; i++) {
-    if (props[i].id === "/film/performance/film") {
-      prop = props[i];
-      break;
-    }
-  }
-  ok(prop, "Got /film/performance/film property");
-  assert_key(prop, "unique", true, "/film/performance/film is unique");
-
-  // assert /film/performance/film expected type
-  var ect = prop.expected_type;
-  assert_key(ect, "id", "/film/film");
-  assert_key(ect, "/freebase/type_hints/mediator", false, "/film/film is NOT a mediator");
-
+  assert_key(schema, "/freebase/type_hints/mediator", true,
+             "/measurement_unit/dated_integer is a mediator");  
+  // assert /measurement_unit/dated_integer/year in schema.properties[]
+  var props = h.map_array(schema.properties, "id");    
+  var year = props["/measurement_unit/dated_integer/year"];
+  ok(year, "Got /measurement_unit/dated_integer/year");
+  assert_key(year, "unique", true, 
+             "/measurement_unit/dated_integer/year is unique");
+  // assert /measurement_unit/dated_integer/year expected type
+  var ect = year.expected_type;
+  assert_key(ect, "id", "/type/datetime");
+  assert_key(ect, "/freebase/type_hints/mediator", false, 
+             "/type/datetime is NOT a mediator");
   if (deep) {
-    var subprops = ect.properties;
-    ok(h.isArray(subprops), "Got deep properties");
+    // assert /measurement_unit/dated_integer/source
+    var source = props["/measurement_unit/dated_integer/source"];
+    ok(source, "Got /measurement_unit/dated_integer/source");
+    ect = source.expected_type;
+    assert_key(ect, "id", "/dataworld/information_source");      
+    var subprops = h.map_array(ect.properties, "id");
+    var authority = subprops["/dataworld/information_source/authority"];
+    ok(authority, "Got /dataworld/information_source/authority");
+    assert_key(authority, "unique", false,
+               "/dataworld/information_source/authority is NOT unique");
+    assert_key(authority, "/freebase/property_hints/disambiguator", false, 
+               "/dataworld/information_source/authority is NOT disambiguator");
 
-    var subprop;
-    for (i=0,l=subprops.length; i<l; i++) {
-      if (subprops[i].id === "/film/film/initial_release_date") {
-        subprop = subprops[i];
-        break;
-      }
-    }
-    ok(subprop, "Got /film/film/initial_release_date");
-    assert_key(subprop, "unique", true, "/film/film/initial_release_date is unique");
-    assert_key(subprop, "/freebase/property_hints/disambiguator", true, "/film/film/initial_release_date is disambiguator");
-
-    ect = subprop.expected_type;
-    assert_key(ect, "id", "/type/datetime");
-    assert_key(ect, "/freebase/type_hints/mediator", false, "/type/datetime is NOT a mediator");
+    ect = authority.expected_type;
+    assert_key(ect, "id", "/dataworld/provenance");
+    assert_key(ect, "/freebase/type_hints/mediator", false, 
+               "/dataworld/provenance is NOT a mediator");
   }
   else {
-    ok(typeof ect.properties === "undefined", "Should not contain deep properties");
+    ok(typeof ect.properties === "undefined", 
+       "Should not contain deep properties");
   }
 };
 
 test("load", function() {
   var result;
-  typeloader.load("/film/performance")
+  typeloader.load("/measurement_unit/dated_integer")
     .then(function(types) {
       result = types;
     });
   acre.async.wait_on_results();
   ok(result, "Got load result");
-  var schema = result["/film/performance"];
-  ok(schema, "Got /film/performance type schema");
-  assert_film_performance_schema(schema, false);
+  var schema = result["/measurement_unit/dated_integer"];
+  ok(schema, "Got /measurement_unit/dated_integer");
+  assert_dated_integer_schema(schema, false);
 });
 
 test("load deep", function() {
   var result;
-  typeloader.load(true, "/film/performance")
+  typeloader.load(true, "/measurement_unit/dated_integer")
     .then(function(types) {
       result = types;
     });
   acre.async.wait_on_results();
   ok(result, "Got load result");
-  var schema = result["/film/performance"];
-  ok(schema, "Got /film/performance type schema");
-  ok(!typeloader.was_cached(schema), "/film/performance should NOT have been cached");
-  assert_film_performance_schema(schema, true);
+  var schema = result["/measurement_unit/dated_integer"];
+  ok(schema, "Got /measurement_unit/dated_integer");
+  assert_dated_integer_schema(schema, true);
 });
-
-
 
 acre.test.report();

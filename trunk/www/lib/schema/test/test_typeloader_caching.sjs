@@ -31,13 +31,15 @@
 acre.require('/test/lib').enable(this);
 
 // we want acre.cache to be on since we're testing the load/unload from the cache
-acre.require("test/mock").playback(this, "schema/test/playback_test_typeloader_caching.json", true);
+acre.require("test/mock")
+    .playback(this, "schema/test/playback_test_typeloader_caching.json", true);
 
 var typeloader = acre.require("schema/typeloader.sjs");
 
 test("_load", function() {
   // remove from cache
-  // These are "terminal" types that don't have any properties, thus no expected_types
+  // These are "terminal" types that don't have any properties, 
+  // thus no expected_types
   var type_ids = ["/people/gender", "/type/rawstring"];
   type_ids.forEach(function(type_id) {
     acre.cache.remove(typeloader.cache_key(type_id));
@@ -53,7 +55,8 @@ test("_load", function() {
   ok(result, "Got _load result");
   type_ids.forEach(function(type_id) {
     var type_schema = result[type_id];
-    ok(!typeloader.was_cached(type_schema), type_id + " should NOT have been cached");
+    ok(!typeloader.was_cached(type_schema), 
+       type_id + " should NOT have been cached");
   });
 
   // cached
@@ -65,14 +68,16 @@ test("_load", function() {
   ok(result, "Got _load result");
   type_ids.forEach(function(type_id) {
     var type_schema = result[type_id];
-    ok(typeloader.was_cached(type_schema), type_id + " should have been cached");
+    ok(typeloader.was_cached(type_schema), 
+       type_id + " should have been cached");
   });
 });
 
 
 test("load", function() {
   // remove from cache
-  // /measurement_unit/integer_range has 2 properties that both have expected_type, /type/int
+  // /measurement_unit/integer_range has 2 properties 
+  // that both have expected_type, /type/int
   var type_ids = ["/measurement_unit/integer_range", "/type/int"];
   type_ids.forEach(function(type_id) {
     acre.cache.remove(typeloader.cache_key(type_id));
@@ -86,7 +91,8 @@ test("load", function() {
   ok(result, "Got load result");
   var schema = result["/measurement_unit/integer_range"];
   ok(schema, "Got /measurement_unit/integer_range type schema");
-  ok(!typeloader.was_cached(schema), "/measurement_unit/integer_range should NOT have been cached");
+  ok(!typeloader.was_cached(schema), 
+     "/measurement_unit/integer_range should NOT have been cached");
 
   result = null;
   typeloader.load("/measurement_unit/integer_range")
@@ -96,16 +102,19 @@ test("load", function() {
   ok(result, "Got load result");
   schema = result["/measurement_unit/integer_range"];
   ok(schema, "Got /measurement_unit/integer_range type schema");
-  ok(typeloader.was_cached(schema), "/measurement_unit/integer_range should have been cached");
+  ok(typeloader.was_cached(schema), 
+     "/measurement_unit/integer_range should have been cached");
   schema.properties.forEach(function(p) {
-    ok(typeloader.was_cached(p.expected_type), p.id + " expected_type " + p.expected_type.id + " should have been cached");
+    ok(typeloader.was_cached(p.expected_type), 
+       p.id + " expected_type " + p.expected_type.id + " should have been cached");
   });
 });
 
 
 test("unload", function() {
   // remove from cache
-  // /measurement_unit/integer_range has 2 properties that both have expected_type, /type/int
+  // /measurement_unit/integer_range has 2 properties 
+  // that both have expected_type, /type/int
   var type_ids = ["/measurement_unit/integer_range", "/type/int"];
   type_ids.forEach(function(type_id) {
     acre.cache.remove(typeloader.cache_key(type_id));
@@ -122,7 +131,8 @@ test("unload", function() {
   // invalidate
   typeloader.unload("/measurement_unit/integer_range");
 
-  // /measurement_unit/integer_range should NOT be cached, but it's properties' expected_type /type/int should be cached
+  // /measurement_unit/integer_range should NOT be cached, but it's properties' 
+  // expected_type /type/int should be cached
   typeloader.load("/measurement_unit/integer_range")
     .then(function(r) {
       result = r;
@@ -131,9 +141,11 @@ test("unload", function() {
   ok(result, "Got load result");
   var schema = result["/measurement_unit/integer_range"];
   ok(schema, "Got /measurement_unit/integer_range type schema");
-  ok(!typeloader.was_cached(schema), "/measurement_unit/integer_range should have been cached");
+  ok(!typeloader.was_cached(schema), 
+     "/measurement_unit/integer_range should have been cached");
   schema.properties.forEach(function(p) {
-    ok(typeloader.was_cached(p.expected_type), p.id + " expected_type " + p.expected_type.id + " should have been cached");
+    ok(typeloader.was_cached(p.expected_type),
+       p.id + " expected_type " + p.expected_type.id + " should have been cached");
   });
 
 });

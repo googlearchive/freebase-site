@@ -31,14 +31,15 @@
 
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mock").playback(this, "collection/test/playback_test_queries_collection.json");
+acre.require("test/mock")
+    .playback(this, "collection/test/playback_test_queries_collection.json");
 
 var h = acre.require("helper/helpers.sjs");
 var qc = acre.require("collection/queries.sjs");
 
 test("collection", function() {
-  var topic_ids = ["/en/milla_jovovich", "/en/angus_macfadyen"];
-  var pids = ["/type/object/name", "/film/film/starring"];
+  var topic_ids = ["/en/sakuragi_hanamichi", "/en/kaede_rukawa"];
+  var pids = ["/type/object/name", "/base/slamdunk/player/number"];
   var result;
   qc.collection(topic_ids, pids)
     .then(function(r) {
@@ -50,18 +51,18 @@ test("collection", function() {
   var values = result.values;
   ok(structures && structures.length === 2, "Got collection prop structures");
   same(structures[0].id, "/type/object/name");
-  same(structures[1].id, "/film/film/starring");
+  same(structures[1].id, "/base/slamdunk/player/number");
   ok(values && values.length === 2, "Got collection values");
-  same(values[0].id, "/en/milla_jovovich");
-  same(values[1].id, "/en/angus_macfadyen");
+  same(values[0].id, "/en/sakuragi_hanamichi");
+  same(values[1].id, "/en/kaede_rukawa");
 });
 
 test("collection property paths", function() {
-  var topic_ids = ["/en/milla_jovovich", "/en/angus_macfadyen"];
+  var topic_ids = ["/en/sakuragi_hanamichi", "/en/kaede_rukawa"];
   var pids = [
     "/type/object/name",
-    "/film/actor/film.film",
-    "/film/actor/film./people/person/date_of_birth"
+    "/base/slamdunk/player/school.members",
+    "/base/slamdunk/player/school./common/topic/official_website"
   ];
   var result;
   qc.collection(topic_ids, pids)
@@ -74,13 +75,16 @@ test("collection property paths", function() {
   var values = result.values;
   ok(structures && structures.length === 2, "Got collection prop structures");
   same(structures[0].id, "/type/object/name");
-  same(structures[1].id, "/film/actor/film");
-  ok(structures[1].properties && structures[1].properties.length === 2, "Got subproperties");
-  same(structures[1].properties[0].id, "/film/performance/film");
-  same(structures[1].properties[1].id, "/people/person/date_of_birth");
+  same(structures[1].id, "/base/slamdunk/player/school");
+  ok(structures[1].properties && structures[1].properties.length === 2, 
+     "Got subproperties");
+  same(structures[1].properties[0].id, 
+      "/fictional_universe/fictional_organization/members");
+  same(structures[1].properties[1].id, 
+      "/common/topic/official_website");
   ok(values && values.length === 2, "Got collection values");
-  same(values[0].id, "/en/milla_jovovich");
-  same(values[1].id, "/en/angus_macfadyen");
+  same(values[0].id, "/en/sakuragi_hanamichi");
+  same(values[1].id, "/en/kaede_rukawa");
 });
 
 

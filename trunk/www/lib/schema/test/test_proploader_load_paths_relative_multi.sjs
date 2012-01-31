@@ -30,7 +30,8 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mock").playback(this, "schema/test/playback_test_proploader_load_paths_relative_multi.json");
+acre.require("test/mock")
+    .playback(this, "schema/test/playback_test_proploader_load_paths_relative_multi.json");
 
 var h = acre.require("helper/helpers.sjs");
 var proploader = acre.require("schema/proploader.sjs");
@@ -41,10 +42,10 @@ var scope = this;
 test("load_paths relative multi", function() {
   var result;
   var paths = [
-    "/film/film/directed_by.film",
-    "/people/person/parents.place_of_birth",
-    "/people/person/parents.date_of_birth",
-    "/film/film/starring"
+    "/basketball/basketball_player/position_s.player_roster_position",
+    "/basketball/basketball_player/player_statistics.fg_percentage",
+    "/basketball/basketball_player/player_statistics.ft_percentage",
+    "/sports/pro_athlete/sports_played_professionally"
   ];
   proploader.load_paths.apply(null, paths)
     .then(function(props) {
@@ -52,9 +53,21 @@ test("load_paths relative multi", function() {
     });
   acre.async.wait_on_results();
   ok(result, "Got load result");
-  assert_prop_path_schema(scope, result, "/film/film/directed_by", "/film/director/film");
-  assert_prop_path_schema(scope, result, "/people/person/parents", ["/people/person/place_of_birth", "/people/person/date_of_birth"]);
-  assert_prop_path_schema(scope, result, "/film/film/starring", ["/film/performance/film", "/film/performance/actor", "/film/performance/character", "/film/performance/special_performance_type", "/film/performance/character_note"]);
+  assert_prop_path_schema(scope, result, 
+                          "/basketball/basketball_player/position_s", 
+                          "/basketball/basketball_position/player_roster_position");
+  assert_prop_path_schema(scope, result, 
+                          "/basketball/basketball_player/player_statistics", [
+                              "/basketball/basketball_player_stats/fg_percentage", 
+                              "/basketball/basketball_player_stats/ft_percentage"
+                          ]);
+  assert_prop_path_schema(scope, result, 
+                          "/sports/pro_athlete/sports_played_professionally", [
+                              "/sports/pro_sports_played/athlete",
+                              "/sports/pro_sports_played/sport",
+                              "/sports/pro_sports_played/career_start",
+                              "/sports/pro_sports_played/career_end"
+                          ]);
 });
 
 

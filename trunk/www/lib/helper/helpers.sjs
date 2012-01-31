@@ -55,7 +55,8 @@ var exports = {
   "is_metaweb_system_type": is_metaweb_system_type,
   "get_type_role": get_type_role,
   "is_reciprocal": is_reciprocal,
-  "visible_subprops": visible_subprops,
+  "get_visible_subprops": get_visible_subprops,
+  "get_disambiguators": get_disambiguators,
   "is_commons_id": is_commons_id,
   "id_key": id_key,
   "lang_code": lang_code,
@@ -418,53 +419,105 @@ function get_type_role(type, set) {
   return role;
 };
 
-
+/**
+ * Determine if two properties are reciprocal to one another.
+ * Two properties are reciprocal if the master_property or reverse_propery point to each other.
+ * If only one argument is given, return prop1["reverse_property"] || prop1["master_property"].
+ */
 function is_reciprocal(prop1, prop2) {
-  if (!prop2) {
-    return prop1["reverse_property"] || prop1["master_property"];
-  }
-
-  //console.log("is_reciprocal", prop1, prop2);
-
-  var otherprop = is_reciprocal(prop1);
-  if (otherprop) {
-    if (otherprop.id == prop2.id) {
+  var otherprop = _get_reciprocal_property(prop1);
+  if (otherprop && _is_reciprocal_equivalent(otherprop, prop2)) {
       return true;
-    }
-    else if (prop2.delegated) {
-      if (otherprop.id == prop2.delegated.id) {
-        return true;
-      }
-    }
   }
-  otherprop = is_reciprocal(prop2);
-  if (otherprop) {
-    if (otherprop.id == prop1.id) {
+  otherprop = _get_reciprocal_property(prop2);
+  if (otherprop && _is_reciprocal_equivalent(otherprop, prop1)) {
       return true;
-    }
-    else if (prop1.delegated) {
-      if (otherprop.id == prop1.delegated.id) {
-        return true;
-      }
-    }
   }
   return false;
 };
 
-function visible_subprops(prop, subprops) {
-  if (!subprops) {
-    subprops = prop.expected_type.properties || [];
-  }
-  var visible = [];
-  subprops.forEach(function(subprop, i) {
-    if (subprop.disambiguator || subprop["/freebase/property_hints/disambiguator"]) {
-      if (subprop.unique && is_reciprocal(prop, subprop)) {
-        return;
-      }
-      visible.push(subprop);
+/**
+ * Two properties are "equivalent" if the two property ids are identical OR
+ * prop2 is delegating to prop1.
+ */
+function _is_reciprocal_equivalent(prop1, prop2) {
+    var prop1_id = prop1.id || prop1;
+    var prop2_id = prop2.id || prop2;
+    if (prop1_id === prop2_id) {
+        return true;
     }
-  });
+    else if (prop2.delegated) {
+        var delegated_id = prop2.delegated.id || prop2.delegated;
+        if (prop1_id === delegated_id) {
+            return true;
+        }
+    }
+    return false;
+};
+
+/**
+ * Return the prop's reverse_property OR master_property. 
+ * If none exists, return NULL.
+ */
+function _get_reciprocal_property(prop) {
+    return prop["reverse_property"] || prop["master_property"] || null;
+};
+
+/**
+ * Get all the "visible" sub properties of the specified property's 
+ * expected_type.
+ * 
+ * Visible sub properties have:
+ * 1. /freebase/property_hints/display_none != true
+ * 2. /freebase/property_hints/deprecated != true
+ * 3. Not a unique reciprocal property of prop
+ * 
+ * By default only disambiguators are returned but you can override this 
+ * by passing all=true.
+ * 
+ * @param prop:Object - The prop schema returned by 
+ *   lib/schema/proploader.sjs:load() or load_path()
+ * @param all:Boolean - If TRUE return all the sub property's of the property's
+ *   expected_type regardless of whether or not it's a disambiguator
+ * @return Array - A list of disambiguating properties of prop's expected_type.
+ */
+function get_visible_subprops(prop, all) {
+  var subprops = prop.expected_type.properties || [];
+  var visible = [];
+  for (var i=0,l=subprops.length; i<l; i++) {
+      var subprop = subprops[i];
+      var disambiguator =  subprop.disambiguator || 
+          subprop["/freebase/property_hints/disambiguator"];
+      var display_none = subprop.display_none ||
+          subprop["/freebase/property_hints/display_none"];
+      var deprecated = subprop.deprecated ||
+          subprop["/freebase/property_hints/deprecated"];
+
+      if ((all || disambiguator) &&
+          !(display_none || deprecated) &&
+          !(subprop.unique && is_reciprocal(prop, subprop))) {
+          visible.push(subprop);
+      }
+  };
   return visible;
+};
+
+
+/**
+ * Get all the disambiguating properties of the specified property's 
+ * expected type. Disambiguator properties have:
+ *
+ * 1. /freebase/property_hints/disambiguator == true
+ * 2. /freebase/property_hints/display_none != true
+ * 3. /freebase/property_hints/deprecated != true
+ * 4. Not a unique reciprocal property of prop
+ *
+ * @param prop:Object - The prop schema returned by 
+ *   lib/schema/proploader.sjs:load() or load_path()
+ * @return Array - A list of disambiguating properties of prop's expected_type.
+ */
+function get_disambiguators(prop) {
+  return get_visible_subprops(prop);
 };
 
 function unique_ish(prop_id) {

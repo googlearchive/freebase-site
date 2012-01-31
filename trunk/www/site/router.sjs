@@ -479,12 +479,7 @@ function init_site_rules(lib) {
       "name": _("Topic"),
       "type": "/common/topic",
       "show_image": true,
-      "promises": [{
-        "key": "notable_types",
-        "app": "site",
-        "script": "queries/object.sjs",
-        "promise": "notable_types"
-      }],
+      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Properties"),
@@ -497,7 +492,12 @@ function init_site_rules(lib) {
           "key": "ids",
           "app": "sameas",
           "script": "sameas.tab",
-          "promises": h.extend(true, [], [DEFAULT_BLURB_PROMISE])
+          "promises": [{
+              "key": "notability",
+              "app": "lib",
+              "script": "queries/topic.sjs",
+              "promise": "notability"
+          }]
         },
         {
           "name": _("Links"),
@@ -505,22 +505,39 @@ function init_site_rules(lib) {
           "app": "triples",
           "script": "triples.tab",
           "more": true,
-          "promises": h.extend(true, [], [DEFAULT_BLURB_PROMISE])
+          "promises": [{
+              "key": "notability",
+              "app": "lib",
+              "script": "queries/topic.sjs",
+              "promise": "notability"
+          }]
         }, 
         h.extend(true, {}, FLYOUT)
       ],
       "nav_keys": [
         {
-          "if": function() { return this.notable_types && h.first_element(this.notable_types.types); },
+          "if": function() { 
+              return this.notability && this.notability.notable_type;
+          },
           "label": _("notable type"),
-          "key": function() { return h.first_element(this.notable_types.types).t; },
-          "url": function() { return h.fb_url(h.first_element(this.notable_types.types).t, [['schema']]); }
+          "key": function() { 
+              return this.notability.notable_type.id; 
+          },
+          "url": function() {
+              return h.fb_url(this.notability.notable_type.id, [['schema']]); 
+          }
         },
         {
-          "if": function() { return this.notable_types && h.first_element(this.notable_types.notable_for); },
+          "if": function() { 
+              return this.notability && this.notability.notable_for; 
+          },
           "label": _("notable for"),
-          "key": function() { return h.first_element(this.notable_types.notable_for).o; },
-          "url": function() { return h.fb_url(h.first_element(this.notable_types.notable_for).o, [['schema']]); }
+          "key": function() { 
+              return this.notability.notable_for.id;
+          },
+          "url": function() { 
+              return h.fb_url(this.notability.notable_for.id, [['schema']]); 
+          }
         }
       ],
       "gear": [

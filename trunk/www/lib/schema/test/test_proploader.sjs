@@ -30,7 +30,8 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mock").playback(this, "schema/test/playback_test_proploader.json");
+acre.require("test/mock")
+    .playback(this, "schema/test/playback_test_proploader.json");
 
 var h = acre.require("helper/helpers.sjs");
 var proploader = acre.require("schema/proploader.sjs");
@@ -71,10 +72,12 @@ test("load", function() {
   ok(result, "Got load result");
   var schema = result[pid];
   ok(schema, "Got property schema");
-  ok(schema.expected_type && schema.expected_type.properties && schema.expected_type.properties.length,
+  ok(schema.expected_type && 
+     schema.expected_type.properties && schema.expected_type.properties.length,
      "Got disambiguating properties");
   schema.expected_type.properties.forEach(function(prop) {
-    ok(prop["/freebase/property_hints/disambiguator"] == true, "Expected only disambiguators");
+    ok(prop["/freebase/property_hints/disambiguator"] == true, 
+       "Expected only disambiguators");
   });
 });
 

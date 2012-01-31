@@ -105,8 +105,6 @@
       }
 
       function accept_or_reject(data_input, prop, data, existing_values, prop_values) {
-//console.log("accept_or_reject", data);
-
         // if accept,
         //   append data to prop_values
         // if reject,
@@ -126,26 +124,6 @@
           }
           else {
             throw ex;
-
-/**
-            // reject
-            var odata = data_input.metadata();
-            var keys_to_compare;
-            var ect = prop.expected_type.id;
-            if (ep.LITERAL_TYPE_IDS[ect]) {
-              keys_to_compare = ["value"];
-              if (ect === "/type/text") {
-                keys_to_compare.push("lang");
-              }
-            }
-            else {
-              keys_to_compare = ["id"];
-            }
-            var index = ep.inArray.apply(null, [odata, existing_values].concat(keys_to_compare));
-            if (index !== -1) {
-              existing_values.splice(index, 1);
-            }
-**/
           }
         }
       };
@@ -169,17 +147,19 @@
         if (mediator) {
           if (!new_values.length) {
             // you can only upate one row for a mediator
-            new_values.push({});
+            new_values.push({
+              property: {}
+            });
             $.each(props, function(i,prop) {
-              new_values[0][prop.id] = $.extend({}, prop, {values:[]});
+              new_values[0].property[prop.id] = $.extend({}, prop, {values:[]});
             });
           }
           // data.name is expected to be the sub-property id
-          var prop = new_values[0][data.name];
+          var prop = new_values[0].property[data.name];
           if (prop) {
             var existing_values = [];
             if (old_values.length) {
-              var p = old_values[0][prop.id];
+              var p = old_values[0].property[prop.id];
               existing_values = p && p.values || [];
             }
             accept_or_reject($this, prop, data, existing_values, prop.values);
@@ -239,8 +219,10 @@
       var sub_props = structure.properties;
       for (var i=0,l=sub_props.length; i<l; i++) {
         var sub_prop = sub_props[i];
-        var sub_old_values = old_value && old_value[sub_prop.id] && old_value[sub_prop.id].values || [];
-        var sub_new_values = new_value[sub_prop.id] && new_value[sub_prop.id].values || [];
+        var sub_old_prop = old_value && old_value.property &&  old_value.property[sub_prop.id];
+        var sub_new_prop = new_value.property && new_value.property[sub_prop.id];
+        var sub_old_values = sub_old_prop && sub_old_prop.values || [];
+        var sub_new_values = sub_new_prop && sub_new_prop.values || [];
         var d = ep.parse_simple(sub_prop, sub_old_values, sub_new_values);
         if (d.length) {
           clause[sub_prop.id] = d;

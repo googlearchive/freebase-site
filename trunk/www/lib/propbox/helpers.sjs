@@ -131,7 +131,7 @@ function minimal_prop_value(prop_structure, prop_data, lang) {
 };
 
 /**
- * Transform a MQL prop schema (@see propbox/mql.sjs") to a prop structure returned by Topic API.
+ * Transform a MQL prop schema to a prop structure optimized for rendering
  *
  * {
  *    id:
@@ -151,9 +151,13 @@ function minimal_prop_value(prop_structure, prop_data, lang) {
  * }
  *
  * (*) In addition, to the standard prop structure,
- * this adds additional schema hints (unit, mediator, enumeration, included_types).
+ * this adds additional schema hints 
+ * (unit, mediator, enumeration, included_types).
  *
- * This is NOT recursive; it does NOT iterate over sub properties (expected_type.properties).
+ * This is NOT recursive; it does NOT iterate over sub properties 
+ * (expected_type.properties).
+ * 
+ * @see schema/typeloader.sjs
  */
 function minimal_prop_structure(prop_schema, lang) {
   var name = i18n.mql.get_text(lang, prop_schema.name);
@@ -163,8 +167,13 @@ function minimal_prop_structure(prop_schema, lang) {
     id: prop_schema.id,
     text: name.value,
     lang: name.lang,
-    disambiguator: prop_schema["/freebase/property_hints/disambiguator"] === true,
     unique: prop_schema.unique === true,
+    disambiguator: 
+      prop_schema["/freebase/property_hints/disambiguator"] === true,
+    display_none: 
+      prop_schema["/freebase/property_hints/display_none"] === true,
+    deprecated:
+      prop_schema["/freebase/property_hints/deprecated"] === true,
     expected_type: {
       id: ect.id,
       text: ect_name.value,
@@ -192,19 +201,23 @@ function minimal_prop_structure(prop_schema, lang) {
   if (reverse_property) {
     structure.reverse_property = reverse_property;
   }
+  var delegated = prop_schema.delegated_property;
+  if (delegated) {
+    structure.delegated = delegated;
+  }
   return structure;
 };
 
 /**
  * minimal_prop_structure + recursive into sub properties
  */
-function to_prop_structure(prop_schema, lang) {
+function to_prop_structure(prop_schema, lang, all) {
   var prop_structure = minimal_prop_structure(prop_schema, lang);
   var ect = prop_schema.expected_type;
   var subprops = ect.properties || [];
   if (subprops.length) {
     prop_structure.properties = [];
-    var visible_subprops = h.visible_subprops(prop_schema);
+    var visible_subprops = h.get_visible_subprops(prop_schema, all);
     visible_subprops.forEach(function(subprop) {
       prop_structure.properties.push(to_prop_structure(subprop, lang));
     });
@@ -228,7 +241,8 @@ function to_prop_values(prop_structure, prop_data, lang) {
   if (!h.isArray(prop_data)) {
     prop_data = [prop_data];
   };
-  if (prop_structure.unique && lang && prop_structure.expected_type.id === "/type/text") {
+  if (prop_structure.unique && 
+      lang && prop_structure.expected_type.id === "/type/text") {
     var data = i18n.mql.get_text(lang, prop_data);
     if (data == null) {
       return [];
@@ -245,7 +259,11 @@ function to_prop_values(prop_structure, prop_data, lang) {
       var subprop_structure = subprop_structures[j];
       var subprop_data = data[subprop_structure.id];
       if (subprop_data.length) {
-        value[subprop_structure.id] = {values:to_prop_values(subprop_structure, subprop_data, lang)};
+        if (!value.property) {
+          value.property = {};
+        }
+        value.property[subprop_structure.id] = 
+              {values:to_prop_values(subprop_structure, subprop_data, lang)};
       }
     }
   }
@@ -260,9 +278,11 @@ function mqlread_query(topic_id, prop_structure, prop_value, lang, options) {
   var properties = prop_structure.properties;
   if (properties) {
     properties.forEach(function(subprop_structure) {
-      h.extend(prop_clause[0], mqlread_query(prop_value, subprop_structure, null, lang));
+      h.extend(prop_clause[0], 
+               mqlread_query(prop_value, subprop_structure, null, lang));
       if (topic_id && h.is_reciprocal(prop_structure, subprop_structure)) {
-        // don't get the subject id (topic_id) if subprop_structure is a reciprocal property of prop_structure
+        // don't get the subject id (topic_id) if subprop_structure 
+        // is a reciprocal property of prop_structure
         prop_clause[0][subprop_structure.id][0]["id!="] = topic_id;
       }
     });

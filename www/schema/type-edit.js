@@ -452,6 +452,11 @@
         domain = domain.join("/");
         expected_type_input
           .suggest_expected_type($.extend(fb.suggest_options.expected_type(), {
+            status: [
+                "Start typing to get suggestions...", 
+                "Searching...", 
+                "Select an item from the list:"
+            ],
             domain: domain,
             suggest_new: "Create new type"
           }))
@@ -1161,6 +1166,7 @@
         type: "POST",
         dataType: "json",
         data: $.extend(data, form.ajax.data),
+        traditional: true,
         success: function(data, status, xhr) {
           if (data.code === "/api/status/error") {
             return se.ajax_error_handler(xhr, null, form.form);

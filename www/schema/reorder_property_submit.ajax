@@ -45,7 +45,7 @@ var SPEC = {
   validate: function(params) {
     return [
       validators.MqlId(params, "id", {required:true}),           // type id
-      validators.Array(params, "properties[]", {required:true})  // array of property ids sorted in order
+      validators.Array(params, "properties", {required:true})    // array of property ids sorted in order
     ];
   },
 

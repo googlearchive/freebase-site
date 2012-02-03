@@ -40,7 +40,7 @@ var queries = acre.require("queries/topic.sjs");
 
 test("topic_structure", function() {
   var result;
-  queries.topic_structure("/en/sakuragi_hanamichi", "en")
+  queries.topic_structure("/en/sakuragi_hanamichi", "en", true)
     .then(function(topic) {
       result = topic;
     });

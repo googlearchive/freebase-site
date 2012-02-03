@@ -66,10 +66,7 @@
             (c.filters.timestamp && c.filters.timestamp.length) ||
             (c.filters.creator && c.filters.creator.length);
         </acre:script>
-        ${filter_components.prop_counts_filter(c.id, c.filters, c.prop_counts, hide_counts)}
-      </div>
-      <div class="module-section">
-        ${filter_components.as_of_time_filter(c.id, c.filters)}
+        ${filter_components.linkcount_filter(c.id, c.filters, c.linkcount, hide_counts)}
       </div>
     </div>
     <div class="module">
@@ -77,17 +74,11 @@
         ${filter_components.timestamp_filter(c.id, c.filters)}
       </div>
       <div class="module-section alt">
+        ${filter_components.as_of_time_filter(c.id, c.filters)}
+      </div>
+      <div class="module-section alt">
         ${filter_components.creator_filter(c.id, c.filters)}
       </div>
-      <!--<div class="module-section alt" id="limit-slider">
-        <acre:script>
-          var limit = c.filters.limit || 100;
-        </acre:script>
-        <h3 class="module-section-title">
-          <label for="">Show up to <strong class="current-limit">${limit}</strong> links</label>
-        </h3>
-        ${filter_components.filter_form(c.id, c.filters, 'limit', filter_components.limit_slider, ['limit', limit])}
-      </div>-->
       <div class="module-section alt">
         ${components.historical_filter(c.id, c.filters)}
       </div>

@@ -57,7 +57,7 @@ var exports = {
   "is_reciprocal": is_reciprocal,
   "get_visible_subprops": get_visible_subprops,
   "get_disambiguators": get_disambiguators,
-  "is_commons_id": is_commons_id,
+  "is_commons_domain": is_commons_domain,
   "id_key": id_key,
   "lang_code": lang_code,
   "lang_id": lang_id,
@@ -538,18 +538,51 @@ unique_ish.map = (function() {
 
 
 
-/*
- * Simple function for determining whether a schema id (domain, type, property)
- * is part of the "Commons"
- *
- * Expects a schema id (domain id, type id or property id)
+/**
+ * Determine if a domain is in "Commons".
+ * A domain is in "Commons" if it has /freebase/domain_profile/category 
+ * with /category/commons.
+ * Otherwise, rely on it's id prefix (that it does not start with /user/* or /base*)
+ * 
+ * @param domain:String or Object - If String, does simple domain id regex.
+ *     If Object, inspect domain["/freebase/domain_profile/category"];
  */
-function is_commons_id(id) {
-  if (/^\/base\//.test(id) || /^\/user\//.test(id)) {
-    return false;
-  }
-  return true;
+function is_commons_domain(domain) {
+    function is_commons_id(id) {
+      if (/^\/base\//.test(id) || /^\/user\//.test(id)) {
+        return false;
+      }
+      return true;
+    };
+    if (type(domain) === "string") {
+        return is_commons_id(domain);
+    }
+    // else we have an object/dictionary
+    else if (domain.id === "/common") {
+        return true;
+    }
+    else {
+        var category = domain["/freebase/domain_profile/category"];
+        if (category) {
+            if (isArray(category)) {
+                for (var i=0,l=category.length; i<l; i++) {
+                    if (category[i].id === "/category/commons") {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            else {
+                return category.id === "/category/commons";
+            }
+        }
+        else {
+            // fall back to looking at the id
+            return is_commons_id(domain.id);
+        }
+    }
 };
+
 
 /**
  * Get the key value of a MQL id. If with_ns is TRUE, return a tuple, [namespace, key]

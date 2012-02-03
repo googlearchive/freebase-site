@@ -39,7 +39,7 @@ var datejs = acre.require("datejs/date.sjs");
 function global_filters(filters) {
   var g = {};
   filters = filters || {};
-  ["domain", "type", "property", "as_of_time", "domains"].forEach(function(k) {
+  ["domain", "type", "property", "domains"].forEach(function(k) {
     var v = filters[k];
     if (v != null) {
       g[k] = v;
@@ -100,118 +100,115 @@ function add_filter(filters, name, value) {
   return f;
 };
 
+
+function get_linkcount_by_domain(linkcount, domain_id) {
+    var domains = linkcount;
+    if (domains) {
+        for (var i=0,l=domains.length; i<l; i++) {
+            var d = domains[i];
+            if (d.id === domain_id) {
+                return d && d.values || null;
+            }
+        }
+    }
+    return null;
+};
+function get_linkcount_by_type(linkcount, type_id) {
+    var path = type_id.split("/");
+    path.pop();
+    var domain_id = path.join("/");
+    var types = get_linkcount_by_domain(linkcount, domain_id);
+    if (types) {
+        for (var i=0,l=types.length; i<l; i++) {
+            var t = types[i];
+            if (t.id === type_id) {
+                return t && t.values || null;
+            }
+        }
+    };
+    return null;
+};
+function get_linkcount_by_prop(linkcount, prop_id) {
+    var path = prop_id.split("/");
+    path.pop();
+    var type_id = path.join("/");
+    var props = get_linkcount_by_type(linkcount, type_id);
+    if (props) {
+        for (var i=0,l=props.length; i<l; i++) {
+            var p = props[i];
+            if (p.id === prop_id) {
+                return p && p.values || null;
+            }
+        }
+    };
+    return null;
+};
+
 /**
- * Given the domain|type|property filter option, lookup the count data in prop_counts (bdb json format) and return
- * the data suitable for a chart graph.
- *
- * If domain, the data is prop_counts[domain],
- * If type, the data is prop_counts[domain][type],
- * If property, the data is prop_counts[domain][type][property]
+ * If all=TRUE, get all domains. Otherwise only return "Commons" domains 
  */
-function get_bar_graph_data(filters, prop_counts) {
+function get_linkcount_all(linkcount, all) {
+    var domains = linkcount;
+    if (domains) {
+        return domains.filter(function(d) {
+            return all || h.is_commons_domain(d);
+        });
+    }
+    return null;
+};
+
+/**
+ * Given the domain|type|property filter option and 
+ * linkcount (from topic api /synthetic/stats/linkcount),
+ * get the data suitable for a chart graph.
+ *
+ * If domain, the data is linkcount[domain],
+ * If type, the data is linkcount[domain][type],
+ * If property, the data is linkcount[domain][type][property]
+ */
+function get_bar_graph_data(filters, linkcount) {
   var domain = filters.domain;
   var type = filters.type;
   var property = filters.property;
 
-  var data, k;
-  // keep track of the id_prefix since the prop_counts bdb splits the type/property id's to be as minimal as possible
-  var id_prefix = "";
+  var data;
+  var next_filter;
   if (domain) {
-    data = prop_counts[domain];
-    id_prefix = domain;
+      data = get_linkcount_by_domain(linkcount, domain);
+      next_filter = "type";
   }
   else if (type) {
-    domain = acre.freebase.mqlread({id:type, type:"/type/type", domain:null}).result.domain;
-    data = prop_counts[domain];
-    if (data) {
-      data = data["/"+type.split("/").pop()];
-      id_prefix = type;
-    }
+      data = get_linkcount_by_type(linkcount, type);
+      next_filter = "property";
   }
   else if (property) {
-    type = acre.freebase.mqlread({id:property, type:"/type/property", schema: {id:null, domain:null}}).result.schema;
-    domain = type.domain;
-    type = type.id;
-    data = prop_counts[domain];
-    if (data) {
-      data =  data["/"+type.split("/").pop()];
-      if (data) {
-        data = data["/"+property.split("/").pop()];
-        if (data != null) {
-          return [{id:"total", total:100, t:data}];
-        }
-      }
-    }
-    return null;
+      return null;
   }
   else {
-    data = prop_counts;
-    var all = filters.domains === "all";
-    for (k in data) {
-      if (!all && !h.is_commons_id(k)) {
-        delete data[k];
+      data = get_linkcount_all(linkcount, filters.domains === "all");
+      next_filter = "domain";
+  }
+  if (data) {
+      if (data && data.length) {
+          var max = data[0].count;
+          var new_filters = h.extend(true, {}, filters);
+          delete new_filters.domain;
+          delete new_filters.type;
+          delete new_filters.property;
+          var chart_data = [];
+          data.forEach(function(v) {
+              var item = {
+                  id: v.id,
+                  count: v.count,
+                  width: Math.round(v.count*100/max),
+                  params: add_filter(new_filters, next_filter, v.id)
+              };
+              chart_data.push(item);
+          });
+          return chart_data;
       }
-    }
   }
-  if (data == null) {
-    return null;
-  }
-
-  var list = [];
-  for (k in data) {
-    if (k === 'ti' || k === 'to') continue;
-    var counts = data[k];
-    if (typeof counts === "number") {
-      counts = {t:counts};
-    }
-    else {
-      counts.t = counts.ti + counts.to;
-    }
-    list.push([k, counts]);
-  }
-  if (!list.length) {
-    return null;
-  }
-  list.sort(function(a,b) {
-    return b[1].t - a[1].t;
-  });
-  var first = list[0];
-  var first_total = first[1].t;
-  if (first_total < 1) {
-    return null;
-  }
-  var new_filters = h.extend(true, {}, filters);
-  delete new_filters.domain;
-  delete new_filters.type;
-  delete new_filters.property;
-  var filter_key;
-  if (filters.domain) {
-    filter_key = "type";
-  }
-  else if (filters.type) {
-    filter_key = "property";
-  }
-  else {
-    filter_key = "domain";
-  }
-  var chart_data = [];
-  list.forEach(function(item) {
-    var count = item[1];
-    data = {
-      id: id_prefix + item[0],
-      t: count.t,
-      total: Math.round((100*count.t)/first_total)
-    };
-    if ("ti" in count && "to" in count) {
-      data.ti = count.ti;
-      data.to = count.to;
-      data.incoming =  Math.round((100*count.ti)/first_total);
-      data.outgoing = Math.round((100*count.to)/first_total);
-    }
-    data.params = add_filter(new_filters, filter_key, data.id);
-    chart_data.push(data);
-  });
-  return chart_data;
+  return null;
 };
 
 

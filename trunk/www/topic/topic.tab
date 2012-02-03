@@ -33,7 +33,6 @@ var i18n = acre.require("lib/i18n/i18n.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var filters = acre.require("lib/filter/filters.sjs");
 var fh = acre.require("lib/filter/helpers.sjs");
-var filter_queries = acre.require("lib/filter/queries.sjs");
 var deferred = acre.require("lib/promise/deferred.sjs");
 var topic_api = acre.require("lib/queries/topic.sjs");
 
@@ -62,12 +61,19 @@ var SPEC = {
   run: function(object, f) {
     var id = object.id;
 
+    var domains = f.domains;
+    if ((f.domain && !h.is_commons_domain(f.domain)) ||
+        (f.type && !h.is_commons_domain(f.type)) ||
+        (f.property && !h.is_commons_domain(f.property))) {
+      domains = "all";
+    }
+
     var promises = {
       id: id,
       filters: f,
       object: object,
-      prop_counts: filter_queries.prop_counts_by_guid(object.guid),
-      topic: topic_api.topic_structure(id, i18n.lang)
+      topic: topic_api.topic_structure(id, i18n.lang, domains === "all", 
+          f.domain, f.type, f.property)
     };
 
     return deferred.all(promises)
@@ -75,6 +81,7 @@ var SPEC = {
           var topic = result.topic;
           if (topic) {
               result.notability = topic_api.get_notability(topic);
+              result.linkcount = topic_api.get_linkcount(topic);
           }
           return result;
       });

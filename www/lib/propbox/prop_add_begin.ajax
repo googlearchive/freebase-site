@@ -53,15 +53,31 @@ var SPEC = {
   run: function(s, p, lang) {
     return queries.prop_structure(p, lang)
       .then(function(prop_structure) {
-        return queries.get_enumerated_types(prop_structure, lang)
-          .then(function(enum_types) {
-            return {
-              html: acre.markup.stringify(propbox.prop_add_form(s, prop_structure, lang)),
-              // <debug>
-              prop_structure: prop_structure
-              // </debug>
-            };
-          });
+        var ect = prop_structure.expected_type.id;
+        if (ect === "/common/document") {
+          // modal document add form
+          return {
+            html: acre.markup.stringify(propbox.prop_add_document_form(s, 
+              prop_structure, lang))
+          };
+        }
+        else if (ect === "/common/image") {
+          // modal image add form
+          return {
+            html: acre.markup.stringify(propbox.prop_add_image_form(s, 
+              prop_structure, lang))
+          };
+        }
+        else {
+          // default inline form
+          return queries.get_enumerated_types(prop_structure, lang)
+            .then(function(enum_types) {
+              return {
+                html: acre.markup.stringify(propbox.prop_add_form(s, 
+                  prop_structure, lang))
+              };
+            });
+        }
       });
   }
 };

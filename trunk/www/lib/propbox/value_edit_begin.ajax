@@ -32,7 +32,9 @@ var h = acre.require("helper/helpers.sjs");
 var validators = acre.require("validator/validators.sjs");
 var propbox = acre.require("propbox/propbox.mjt");
 var queries = acre.require("propbox/queries.sjs");
-var deferred = acre.require("promise/deferred.sjs");
+var apis = acre.require("promise/apis.sjs");
+var freebase = apis.freebase;
+var deferred = apis.deferred;
 
 /**
  * prop add form
@@ -55,20 +57,90 @@ var SPEC = {
   run: function(s, p, replace, lang) {
     return queries.prop_structure(p, lang)
       .then(function(prop_structure) {
-        var promises = [];
-        promises.push(queries.prop_values(s, prop_structure, replace, lang));
-        promises.push(queries.get_enumerated_types(prop_structure, lang));
-        return deferred.all(promises)
-          .then(function([prop_values, enum_types]) {
-            var prop_value = h.first_element(prop_values);
-            return {
-              // <debug>
-              prop_structure: prop_structure,
-              prop_value: prop_value,
-              // </debug>
-              html: acre.markup.stringify(propbox.value_edit_form(s, prop_structure, prop_value, lang))
-            };
-          });
+        var ect = prop_structure.expected_type.id;
+        if (ect === "/common/document") {
+          return SPEC.run_document(s, prop_structure, replace, lang);
+        }
+        else if (ect === "/common/image") {
+          return SPEC.run_image(s, prop_structure, replace, lang);
+        }
+        else {
+          return SPEC.run_default(s, prop_structure, replace, lang);
+        }
+      }); 
+  },
+
+  run_document: function(s, prop_structure, replace, lang) {
+    // modal document edit form
+    var promises = [];
+    promises.push(
+        freebase.mqlread({
+            id: replace,
+            type: "/common/document",
+            source_uri: null,
+            content: {
+                optional: true,
+                type: "/type/content",
+                language: null
+            }
+        })
+        .then(function(env) {
+            return env.result;
+        })
+    );
+    promises.push(
+        freebase.get_blob(replace, "escaped")
+            .then(function(blob) {
+                return blob.body;
+            })
+    );
+    return deferred.all(promises)
+        .then(function([document, blob]) {
+            if (document.source_uri) {
+                // can't edit document with source_uri
+                return {
+                    html: acre.markup.stringify(
+                        propbox.cant_edit_document_form(s,
+                            prop_structure, document))
+                };
+            }
+            else {
+                document.body = blob;
+                if (!document.content.language) {
+                    document.content.language = "/lang/en";
+                }
+                return {
+                    html: acre.markup.stringify(
+                        propbox.prop_add_document_form(s, prop_structure, lang, document))
+                };
+            }
+        });
+  },
+
+  run_image: function(s, prop_structure, replace, lang) {
+    // modal image edit form
+    return {
+      html: acre.markup.stringify(propbox.prop_add_image_form(s, 
+        prop_structure, lang, replace))
+    };
+  },
+
+  run_default: function(s, prop_structure, replace, lang) {
+    // default inline form
+    var promises = [];
+    promises.push(queries.prop_values(s, prop_structure, replace, lang));
+    promises.push(queries.get_enumerated_types(prop_structure, lang));
+    return deferred.all(promises)
+      .then(function([prop_values, enum_types]) {
+        var prop_value = h.first_element(prop_values);
+        return {
+          // <debug>
+          prop_structure: prop_structure,
+          prop_value: prop_value,
+          // </debug>
+          html: acre.markup.stringify(propbox.value_edit_form(s, 
+              prop_structure, prop_value, lang))
+        };
       });
   }
 };

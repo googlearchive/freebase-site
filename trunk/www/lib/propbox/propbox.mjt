@@ -261,7 +261,7 @@
   <td acre:attrs="primary ? {'class':'first'}:null">
     <ul class="data-list">
       <acre:block if="empty">
-        ${empty_row_li(primary)}
+        ${empty_row_li(primary, prop_value, subprop_structure, null, lang)}
       </acre:block>
       <acre:block else="">
         <acre:block for="i, subprop_value in subprop_values">
@@ -302,8 +302,8 @@
       ${value(topic.id, prop_structure, prop_value, lang)}
       <acre:script>
         var show_menu = true;
-        if (prop_value && prop_structure.expected_type.id === "/type/text" && 
-            h.lang_id(prop_value.lang) !== lang) {
+        if (prop_value != null && prop_structure.expected_type.id === "/type/text" && 
+          h.lang_id(prop_value.lang) !== lang) {
           show_menu = false;
         }
       </acre:script>
@@ -334,6 +334,9 @@
         }
         else {
           text = prop_value.text;
+          if (text == null || text === "") {
+            text = prop_value.id;
+          }
           show_lang = true;
         }
       </acre:script>
@@ -412,6 +415,13 @@
 </acre:block>
 
 <acre:block def="value_menu(topic, prop_structure, prop_value, lang)">
+  <acre:script>
+    var ect = prop_structure.expected_type.id;
+    var is_blob = false;
+    if (ect === "/common/document" || ect === "/common/image") {
+      is_blob = true;
+    }
+  </acre:script>
   <ul class="combo-menu nicemenu">
     <li class="nicemenu-item">
       <span class="headmenu">
@@ -421,7 +431,7 @@
       <ul class="submenu row-menu">
         <li class="row-menu-item"><a href="#" onclick="return propbox.value_edit(this);">${EDIT}</a></li>
         <li class="row-menu-item"><a href="#" onclick="return propbox.value_delete(this);">${DELETE}</a></li>
-        <acre:block if="topic && prop_structure && prop_value && lang">
+        <acre:block if="!is_blob && topic && prop_structure && prop_value && lang">
           <li acre:if="!h.is_literal_type(prop_structure.expected_type.id)" class="row-menu-item">
             <a href="#" onclick="return i18n.text_edit(this, '${h.ajax_url('lib/i18n')}', '${prop_value.id}', '/type/object/name', '${lang}')">${EDIT_LOCALIZED_TEXT}</a>          
           </li>
@@ -441,12 +451,12 @@
   </tr>
 </acre:block>
 
-<acre:block def="empty_row_li(menu)">
+<acre:block def="empty_row_li(menu, topic, prop_structure, prop_value, lang)">
   <li class="empty-row">
     <span class="wrapper">
       <span class="property-value empty-property">-</span>
       <acre:block if="menu">
-        ${value_menu()}
+        ${value_menu(topic, prop_structure, prop_value, lang)}
       </acre:block>
     </span>
   </li>
@@ -732,6 +742,102 @@ propbox edit forms
 </acre:block>
 
 
+<acre:block def="prop_add_document_form(topic_id, prop_structure, lang, replace_document)">
+  <div class="modal ${JSON.stringify(prop_structure)}">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <acre:block if="replace_document">
+          <span>${h.sprintf(_("Edit article for %s"), topic_id)}</span>
+        </acre:block>
+        <acre:block else="">            
+          <span>${h.sprintf(_("Add new article to %s"), topic_id)}</span>
+        </acre:block>
+      </h1>
+      <div class="modal-content">
+        <acre:script>
+          if (replace_document) {
+            lang = replace_document.content.language;
+          }
+        </acre:script>
+        <div class="form-group form-row">
+          <label class="form-label" for="lang">${_("Language")}
+            <select name="lang">
+              <acre:block for="l in i18n.mql.langs(true)">
+                <option value="${l.id}"
+                        acre:attrs="l.id === lang ? {'selected':'selected'} : {}">${l.name}</option>
+              </acre:block>
+            </select>
+          </label>
+        </div>
+        <div class="form-group form-row">
+          <textarea name="content" 
+                    maxlength="4096" 
+                    placeholder="${_('Enter article')}&hellip;">${replace_document ? replace_document.body : ""}</textarea>
+        </div>
+        <div class="form-group form-row lang-notice" style="display:none;">
+          <p>${h.template_sprintf(_("You are submitting an article in a different language than your current one. The article will be saved, however, you will not see it until you switch to %s."), tag_strong(''))}</p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="topic" value="${topic_id}"/>
+      <input type="hidden" name="property" value="${prop_structure.id}"/>
+      <acre:block if="replace_document">
+        <input type="hidden" name="document" value="${replace_document.id}"/>
+      </acre:block>
+      ${form.submit_buttons()}
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="cant_edit_document_form(topic_id, prop_structure, document)">
+  <div class="modal cant-edit-document-form ${JSON.stringify(prop_structure)}">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <span>${h.sprintf(_("Edit article for %s"), topic_id)}</span>
+      </h1>
+      <div class="modal-content">
+        <div class="form-group form-row">
+          <p>${h.sprintf(_("This article for %s was automatically generated from %s and cannot be modified."), topic_id, document.source_uri)}</p>
+        </div>
+        <div class="form-group form-row">
+          <p><strong>${_("Would you like to write a new one specifically for Freebase?")}</strong></p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      ${form.submit_buttons(_("Create New"))}
+    </div>
+  </div>
+</acre:block>
+
+<acre:block def="prop_add_image_form(topic_id, prop_structure, lang, replace_image)">
+  <div class="modal ${JSON.stringify(prop_structure)}">
+    <div class="modal-inner">
+      <h1 class="modal-title">
+        <acre:block if="replace_image">
+          <span>${h.sprintf(_("Edit image for %s"), topic_id)}</span>
+        </acre:block>
+        <acre:block else="">            
+          <span>${h.sprintf(_("Add new image to %s"), topic_id)}</span>
+        </acre:block>
+      </h1>
+      <div class="modal-content">
+        <div class="form-group form-row">
+          Something goes here
+        </div>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="s" value="${topic_id}"/>
+      <input type="hidden" name="p" value="${prop_structure.id}"/>
+      <acre:block if="replace_image">
+        <input type="hidden" name="replace" value="${replace_image}"/>
+      </acre:block>
+      ${form.submit_buttons()}
+    </div>
+  </div>
+</acre:block>
 
 <acre:block def="tag_strong(value)">
   <strong>${value}</strong>

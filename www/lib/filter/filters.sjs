@@ -49,10 +49,6 @@ var PARAMS = {
     validator: validators.MqlId,
     options: {if_invalid:null}
   },
-  "as_of_time": {
-    validator: validators.Datejs,
-    options: {if_invalid:null}
-  },
   "domains": {
     validator: validators.OneOf,
     options: {

@@ -80,10 +80,10 @@
   <div class="section domain domain-section" data-id="${domain_structure.id}">
     <div class="header">
       <acre:script>
-        var domain_type = h.is_commons_id(domain_structure.id) ? "commons" : "user";
+        var domain_type = h.is_commons_domain(domain_structure) ? "commons" : "user";
       </acre:script>
       <span class="status $domain_type">
-        ${h.is_commons_id(domain_structure.id) ? FREEBASE_COMMONS : USER_DOMAIN}
+        ${h.is_commons_domain(domain_structure) ? FREEBASE_COMMONS : USER_DOMAIN}
       </span>
       <h1 class="kbs">
         <span class="mark">

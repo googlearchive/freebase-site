@@ -54,16 +54,14 @@
         <a href="javascript:void(0);" class="trigger">Collapse column</a>
         <span>Filter this data</span>
       </h2>
-      <div class="module-section">
-        ${filter_components.as_of_time_filter(c.object.id, c.filters)}
-      </div>
-    </div>
-    <div class="module">
       <div class="module-section alt">
         ${authority_filter()}
       </div>
       <div class="module-section alt">
         ${filter_components.timestamp_filter(c.object.id, c.filters)}
+      </div>
+      <div class="module-section alt">
+        ${filter_components.as_of_time_filter(c.object.id, c.filters)}
       </div>
       <div class="module-section alt">
         ${filter_components.creator_filter(c.object.id, c.filters)}

@@ -75,17 +75,32 @@ function topic(id, lang, limit, as_of_time, domains) {
  *
  * @param id:String - The topic id
  * @param lang:String - The primary language for all text values in the result.
+ * @param all:Boolean - Get all domains including /user and /base domains. Default
+ *  is only get "Commons" domains
+ * 
  *   By default, "en" is the default language.
  * TODO: @see url to topic api
  */
-function topic_structure(id, lang) {
+function topic_structure(id, lang, all, domain, type, prop) {
   var options = {
-    // This needs to be TRUE to return topic names. Not quite sure why this is not the default.
-    // @see masouras
+    // This needs to be TRUE to return topic names. @see masouras
     alldata: true,
-    filter: ["all"]
+    lang: h.lang_code(lang || "/lang/en")
   };
-  options.lang = h.lang_code(lang || "/lang/en");
+  if (domain) {
+    options.filter = [domain, "/type/object/type", "/synthetic"];
+  }
+  else if (type) {
+    options.filter = [type, "/type/object/type", "/synthetic"];
+    options.limit = 20;
+  }
+  else if (prop) {
+    options.filter = [prop, "/type/object/type", "/synthetic"];
+    options.limit = 100;
+  }
+  else if (!all) {
+    options.filter = ["commons", "/synthetic"];
+  }
   return freebase.get_topic(id, options)
     .then(function(topic_result) {
       var types = null; // list of types this topic is an instance of
@@ -100,10 +115,36 @@ function topic_structure(id, lang) {
       var d;
       if (types && types.length) {
         var type_ids = types.map(function(t) { return t.id; });
+        // If domain, type, or prop filter, only get the type schema
+        // corresponding to the filter
+        if (domain) {
+          // filter by domain
+          type_ids = type_ids.filter(function(t) {
+            return t.indexOf(domain) === 0;
+          });
+        }
+        else if (type) {
+          // filter by type
+          type_ids = type_ids.filter(function(t) {
+            return t === type;
+          });
+        }
+        else if (prop) {
+          type_ids = type_ids.filter(function(t) {
+            return prop.indexOf(t) === 0;
+          });
+        }
         // typeloader.load takes var args: [true, type_id1, type_id2, ..., type_idN]
         d = typeloader.load.apply(null, [true].concat(type_ids))
           .then(function(typeloader_result) {
-             var structure = get_structure(typeloader_result, notable_types, lang);
+             var structure = get_structure(typeloader_result, notable_types, lang, all);
+             if (prop) {
+                 var show_prop = structure.properties[prop];
+                 if (show_prop) {
+                     structure.properties = {};
+                     structure.properties[prop] = show_prop;
+                 }
+             }
              topic_result.structure = structure;
              return topic_result;
           });
@@ -140,7 +181,7 @@ function compare_notable_types_index(notable_types_index, a, b) {
  * Then, sort the domains by comparing their first type in the notabable_types sort order.
  * If notable_types is empty, the sorting of domains and their types is undefined.
  */
-function sort_domains_and_types(types_by_id, notable_types) {
+function sort_domains_and_types(types_by_id, notable_types, all) {
   // turn types_by_id into an array and sort by notable_types index order
   var types_list = [];
   for (var type_id in types_by_id) {
@@ -186,6 +227,9 @@ function sort_domains_and_types(types_by_id, notable_types) {
       return 0;
     });
   }
+  if (!all) {
+      domains_list = domains_list.filter(h.is_commons_domain);
+  }
   return domains_list;
 };
 
@@ -198,10 +242,14 @@ function sort_domains_and_types(types_by_id, notable_types) {
  *
  * @param types:Object - a dictionary of types returned by typeloader.load()
  * @param notable_types:Array - a list of types sorted by their notablility.
+ * @param lang
+ * @param all:Boolean - Get all domains including /user and /base domains. Default
+ *  is only get "Commons" domains
  * @return a list of domains and their types sorted by the notable_types sort order.
+ * 
  */
-function get_structure(types, notable_types, lang) {
-  var domains_list = sort_domains_and_types(types, notable_types);
+function get_structure(types, notable_types, lang, all) {
+  var domains_list = sort_domains_and_types(types, notable_types, all);
   return to_structure(domains_list, lang);
 };
 
@@ -315,9 +363,12 @@ function linkcount(o) {
  * not exist, return null.
  */
 function get_linkcount(topic) {
-    var p = topic && topic["/synthetic/stats/linkcount"];
+    var p = topic && topic.property;
+    p = p["/synthetic/stats/linkcount"];
     if (p) {
         return p.values || null;
     }
     return null;
 }
+
+

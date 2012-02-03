@@ -61,13 +61,11 @@
         <a href="javascript:void(0);" class="trigger">Collapse column</a>
         <span>Filter this data</span>
       </h2>
-      <div class="module-section">
-        ${filter_components.as_of_time_filter(c.id, c.filters)}
-      </div>
-    </div>
-    <div class="module">
       <div class="module-section alt">
         ${filter_components.timestamp_filter(c.id, c.filters)}
+      </div>
+      <div class="module-section alt">
+        ${filter_components.as_of_time_filter(c.id, c.filters)}
       </div>
       <div class="module-section alt">
         ${components.historical_filter(c.id, c.filters)}

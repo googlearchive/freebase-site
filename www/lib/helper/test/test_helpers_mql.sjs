@@ -308,6 +308,52 @@ test("get_disambiguators", function() {
   equal(disambiguators[1].id, "/prop/5");
 });
 
+
+test("is_commons_domain", function() {
+  var commons = [{
+      id: "/common"
+  }, {
+      id: "/foo",
+      "/freebase/domain_profile/category": {
+          id: "/category/commons"
+      }
+  }, {
+      id: "/bar",
+      "/freebase/domain_profile/category": [{
+          id: "/category/foobar"
+      },{
+          id: "/category/commons"
+      }]
+  }, {
+      id: "/hello/world"   // commons since it's not /user or /base
+  }, 
+  "/common", "/foo", "/bar", "/hello/world"];
+  commons.forEach(function(domain) {
+      ok(h.is_commons_domain(domain));
+  });
+
+  var not_commons = [{
+      id: "/user/daepark"
+  }, {
+      id: "/base/slamdunk"
+  }, {
+      id: "/foo",
+      "/freebase/domain_profile/category": {
+          id: "/category/foo"
+      }
+  }, {
+      id: "/bar",
+      "/freebase/domain_profile/category": [{
+          id: "/category/foo"
+      },{
+          id: "/category/bar"
+      }]
+  }, "/user/daepark", "/base/slamdunk"];
+  not_commons.forEach(function(domain) {
+      ok(!h.is_commons_domain(domain));
+  });
+});
+
 acre.test.report();
 
 

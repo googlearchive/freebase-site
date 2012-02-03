@@ -54,7 +54,7 @@ function decorate_value(value, from_value) {
 
 test("to_prop_values", function() {
   var topic;  // topic data from topic api
-  topic_api.topic_structure("/en/sakuragi_hanamichi", "/lang/en")
+  topic_api.topic_structure("/en/sakuragi_hanamichi", "/lang/en", true)
     .then(function(t) {
       topic = t;
     });

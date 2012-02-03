@@ -71,7 +71,6 @@ test("check_param_spec no validator", function() {
 test("validate", function() {
   var params = {
     domain: "/some/domain",
-    as_of_time: "invalid timestamp",
     foo: "true",
     bar: "false",
     baz: "1"
@@ -90,7 +89,6 @@ test("validate", function() {
 
   ok(filters, "got validate result");
   same(filters.domain, "/some/domain");
-  same(filters.as_of_time, null);
   same(filters.foo, true);
   same(filters.bar, false);
   same(filters.baz, 1);

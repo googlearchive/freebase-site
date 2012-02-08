@@ -8,13 +8,11 @@ $(function() {
       ok(inst.list.hasClass(css.list), "css.list");
       ok(inst.flyoutpane.hasClass(css.flyoutpane), "css.flyoutpane");
 
-      stop();
-      var t = test_timeout();
+      stop(TIMEOUT_DELAY);
       test_input1
         .bind("fb-pane-show",
               function() {
                 if ($(">li", inst.list).length) {
-                  clearTimeout(t);
                   $(">li", inst.list)
                     .each(function() {
                             $(this).hasClass(css.item);
@@ -64,13 +62,11 @@ $(function() {
            test_input1.suggest(o);
            var inst = get_instance();
 
-           stop();
-           var t = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-pane-show",
                    function() {
                      if ($(">li", inst.list).length) {
-                       clearTimeout(t);
                        equals(inst.pane.parent()[0], parent[0]);
                        start();
                      }
@@ -85,16 +81,12 @@ $(function() {
            test_input1.suggest(o);
            var inst = get_instance();
 
-           stop();
-           var t = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-pane-show", function() {
-                     clearTimeout(t);
-                     t = test_timeout();
                      $("li:first", inst.list).trigger("mouseover");
                    })
              .bind("fb-flyoutpane-show", function() {
-                     clearTimeout(t);
                      equals(inst.flyoutpane.parent()[0], parent[0]);
                      start();
                    })
@@ -124,12 +116,10 @@ $(function() {
            test_input1.suggest(o);
            var inst = get_instance();
 
-           stop();
-           var t = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-pane-show", function() {
                      if ($(">li", inst.list).length) {
-                       clearTimeout(t);
                        equals(inst.status.text(), "2");
                        start();
                      }
@@ -151,11 +141,9 @@ $(function() {
            test_input1.suggest(o);
            var inst = get_instance();
 
-           stop();
-           var t = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-required", function() {
-                     clearTimeout(t);
                      ok(true);
                      start();
                    })
@@ -168,11 +156,9 @@ $(function() {
            test_input1.suggest(o);
            var inst = get_instance();
 
-           stop();
-           var t = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-required", function() {
-                     clearTimeout(t);
                      ok(true);
                      start();
                    })
@@ -185,11 +171,9 @@ $(function() {
            test_input1.suggest(o);
            var inst = get_instance();
 
-           stop();
-           var t = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-pane-show", function() {
-                     clearTimeout(t);
                      equals(inst.pane.css("z-index"), 1000);
                      start();
                    })
@@ -201,23 +185,20 @@ $(function() {
            test_input1.suggest(o);
            var inst = get_instance();
 
-           stop();
-           var t = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-pane-show",
                    function() {
                      if ($(">li", inst.list).length) {
-                       clearTimeout(t);
                        $("li:first", inst.list).trigger("mouseover");
-                       t = setTimeout(function() {
-                                        ok(true, "flyout not shown");
-                                        start();
-                                      }, 5000);
+                       if (!inst.flyoutpane) {
+                           ok("flyout not shown");
+                           start();
+                       }
                      }
                    })
              .bind("fb-flyoutpane-show",
                    function() {
-                     clearTimeout(t);
                      fail("flyout shown when flyout=false");
                      start();
                    })
@@ -229,8 +210,7 @@ $(function() {
            test_input1.suggest(o);
            var inst = get_instance();
 
-           stop();
-           var t = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-pane-show",
                    function() {
@@ -238,7 +218,6 @@ $(function() {
                    })
              .bind("fb-flyoutpane-show",
                    function() {
-                     clearTimeout(t);
                      var pane = inst.pane.offset();
                      var flyout = inst.flyoutpane.offset();
                      ok(Math.abs(flyout.top - (pane.top + inst.pane.height())) < position_threshold);
@@ -252,13 +231,11 @@ $(function() {
            test_input1.suggest(o);
            var inst = get_instance();
 
-           stop();
-           var t = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-pane-show",
                    function() {
                      if ($(">li", inst.list).length) {
-                       clearTimeout(t);
                        ok(Math.abs(inst.pane.offset().left - test_input1.offset().left) < position_threshold);
                        start();
                      }
@@ -271,13 +248,11 @@ $(function() {
            test_input3.suggest(o);
            var inst = get_instance(test_input3);
 
-           stop();
-           var t = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input3
              .bind("fb-pane-show",
                    function() {
                      if ($(">li", inst.list).length) {
-                       clearTimeout(t);
                        var pane_right = inst.pane.offset().left + inst.pane.width();
                        var input_right = test_input3.offset().left + test_input3.width();
                        ok(Math.abs(pane_right - input_right) < position_threshold);
@@ -293,13 +268,11 @@ $(function() {
            test_input1.suggest(o);
            var inst = get_instance();
 
-           stop();
-           var t = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-pane-show",
                    function() {
                      if ($(">li", inst.list).length) {
-                       clearTimeout(t);
                        equals($("button:first", inst.pane).text(), "suggest_new");
                        start();
                      }
@@ -313,8 +286,7 @@ $(function() {
       test_input1.suggest(o);
       var inst = get_instance();
 
-      stop();
-      var t = test_timeout();
+      stop(TIMEOUT_DELAY);
       test_input1
         .bind("fb-pane-show",
               function() {
@@ -332,7 +304,6 @@ $(function() {
                 }
                 var list = $(">li", inst.list);
                 if (list.length) {
-                  clearTimeout(t);
                   list.each(function() {
                       var data = $(this).data("data.suggest");
                       found = compare_expected(data);
@@ -401,20 +372,16 @@ $(function() {
       test_input1.suggest(o);
       var inst = get_instance();
       var on_spell_link = false;
-      stop();
-      var t = test_timeout();
+      stop(TIMEOUT_DELAY);
       test_input1
         .bind("fb-pane-show",
               function() {
                 var list = $(">li", inst.list);
                 if (on_spell_link && list.length) {
-                  clearTimeout(t);
                   ok(true, "Got spell correction results");
                   start();
                 }
                 else if ($(".fbs-spell-link", inst.pane).length) {
-                  clearTimeout(t);
-                  t = test_timeout();
                   ok(true, "Found spell/correction");
                   $(".fbs-spell-link", inst.pane).click();
                   on_spell_link = true;

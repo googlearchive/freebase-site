@@ -3,6 +3,9 @@ var test_input2;
 var test_input3;
 var test_input4;
 
+// The timeout delay (in ms) for a suggest test to finish.
+var TIMEOUT_DELAY = 5000;
+
 $(function() {
     test_input1 = $("#test1");
     test_input2 = $("#test2");
@@ -32,7 +35,9 @@ var module_options = {
 
 var default_options = {
   service_path: "/freebase/v1/search",
-  key: "AIzaSyBij3tRJN2VdWiLQN48-BmPFjNWpHe7MQE"
+  key: "AIzaSyBij3tRJN2VdWiLQN48-BmPFjNWpHe7MQE",
+  flyout_service_url: "",
+  flyout_service_path: "${id}"
 };
 var test_value = "bob dyla";
 var bob_dylan_id = "/m/01vrncs";
@@ -42,13 +47,6 @@ var position_threshold = 10;
 function get_instance(input) {
   input = input || test_input1;
   return input.data("suggest");
-};
-
-function test_timeout(delay) {
-  return setTimeout(function() {
-                      ok(false, "test_timeout");
-                      start();
-                    }, 10000);
 };
 
 

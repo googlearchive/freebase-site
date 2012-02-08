@@ -4,12 +4,10 @@ $(function() {
     test("fb-pane-show", 1, function() {
            test_input1.suggest(default_options);
            var inst = get_instance();
-           stop();
-           var timer = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-pane-show", function() {
                      if ($(">li", inst.list).length) {
-                       clearTimeout(timer);
                        ok(true, "got fb-pane-show");
                        start();
                      }
@@ -23,17 +21,13 @@ $(function() {
            test_input1.suggest(default_options);
            var inst = get_instance();
 
-           stop();
-           var timer = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-flyoutpane-show", function() {
-                     clearTimeout(timer);
                      ok(true, "got fb-flyoutpane-show");
                      start();
                    })
              .bind("fb-pane-show", function() {
-                     clearTimeout(timer);
-                     timer = test_timeout();
                      if ($(">li", inst.list).length) {
                        var first = $("li:first", inst.list).simulate("mouseover");
                      }
@@ -48,18 +42,14 @@ $(function() {
            test_input1.suggest(o);
            var inst = get_instance();
 
-           stop();
-           var timer = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-select", function(e, data) {
-                     clearTimeout(timer);
                      ok(data);
                      equals(data.id, bob_dylan_id);
                      start();
                    })
              .bind("fb-pane-show", function() {
-                     clearTimeout(timer);
-                     timer = test_timeout();
                      if ($(">li", inst.list).length) {
                        var first = $("li:first", inst.list).simulate("mouseover");
                        simulate_keypress(test_input1, $.simulate.VK_ENTER);
@@ -75,17 +65,13 @@ $(function() {
            test_input1.suggest(o);
            var inst = get_instance();
 
-           stop();
-           var timer = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-select-new", function(e, value) {
-                     clearTimeout(timer);
                      equals(value, "bob dylan");
                      start();
                    })
              .bind("fb-pane-show", function() {
-                     clearTimeout(timer);
-                     timer = test_timeout();
                      if ($(">li", inst.list).length) {
                        $(".fbs-suggestnew", inst.pane).click();
                      }
@@ -103,11 +89,9 @@ $(function() {
     test("fb-textchange", 1, function() {
            test_input1.suggest(default_options);
 
-           stop();
-           var timer = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-textchange", function() {
-                     clearTimeout(timer);
                      ok(true, "got fb-textchange");
                      start();
                    })

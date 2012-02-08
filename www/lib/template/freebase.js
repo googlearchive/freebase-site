@@ -382,8 +382,8 @@
         status: ["", "Searching...", "Select an item from the list:"],
         service_url: fb.h.suggest_url(),
         service_path: "",
-        flyout_service_url: fb.h.flyout_url(),
-        flyout_service_path: "",
+        flyout_service_url: "",
+        flyout_service_path: "${id}",
         key: fb.acre.freebase.api_key,
         lang: fb.suggest_lang.lang()
       },

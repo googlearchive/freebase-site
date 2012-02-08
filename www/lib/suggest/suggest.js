@@ -1041,10 +1041,25 @@
     _init: function() {
       var self = this,
           o = this.options;
-      if (!o.flyout_service_url) {
+      if (o.flyout_service_url == null) {
         o.flyout_service_url = o.service_url;
       }
-      this.jsonp = true || $.suggest.use_jsonp(o.service_url);
+      this.flyout_url = o.flyout_service_url;
+      if (o.flyout_service_path) {
+          /**
+           * if options.flyout_service_path == "${id}",
+           * we are using "object" url: /id?flyout
+           */
+          if (/^\$\{id\}$/.test(o.flyout_service_path)) {
+              this.flyout_object_url = true;
+          }
+          else {
+              this.flyout_url += o.flyout_service_path;
+          }
+      }
+
+      this.jsonp = true;
+      this.jsonp_flyout = $.suggest.use_jsonp(o.flyout_url);
 
       if (!$.suggest.cache) {
         $.suggest.cache = {};
@@ -1366,13 +1381,29 @@
       }
 
       //this.flyoutpane.hide();
-
-      var submit_data = {
-        id: data.id
-      };
+      var url = this.flyout_url;
+      var flyout_id = data.id;
+      var submit_data = null;
+      /**
+       * If we are using an object url, we compose the flyout url as:
+       * 
+       * /id?flyout
+       * 
+       * Otherwise, we compose the flyout url conventionally:
+       * 
+       * ?id=/id
+       */
+      if (this.flyout_object_url) {
+          url += (flyout_id + "?flyout");
+      }
+      else {
+          submit_data = {
+              id: flyout_id
+          };
+      }
 
       var ajax_options = {
-        url: o.flyout_service_url + o.flyout_service_path,
+        url: url,
         data: submit_data,
         traditional: true,
         beforeSend: function(xhr) {
@@ -1382,8 +1413,8 @@
           self.input.data("flyout.request.count.suggest", calls);
         },
         success: function(data) {
-          data = self.jsonp ? data : {
-            id: submit_data.id,
+          data = self.jsonp_flyout ? data : {
+            id: flyout_id,
             html: data
           };
           $.suggest.flyout.cache[data.id] = data;
@@ -1401,7 +1432,7 @@
             xhr.getResponseHeader("X-Metaweb-TID"));
           }
         },
-        dataType: self.jsonp ? "jsonp" : "html",
+        dataType: self.jsonp_flyout ? "jsonp" : "html",
         cache: true
       };
 

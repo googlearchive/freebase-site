@@ -31,7 +31,8 @@
 
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mock").playback(this, "queries/test/playback_test_create_topic.json");
+acre.require("test/mock")
+    .playback(this, "queries/test/playback_test_create_topic.json");
 
 var test_helpers = acre.require("test/helpers");
 var create_topic = acre.require("queries/create_topic").create_topic;
@@ -61,7 +62,7 @@ function get_name() {
 function check_blurb(document_id, expected_blurb) {
   // check blob
   var blurb;
-  freebase.get_blob(document_id, "blurb")
+  freebase.get_blob(document_id, "plain")
     .then(function(blob) {
       blurb = blob.body;
     });

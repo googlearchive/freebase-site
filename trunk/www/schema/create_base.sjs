@@ -31,7 +31,7 @@
 var h = acre.require("lib/helper/helpers.sjs");
 var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
-var create_article = acre.require("lib/queries/create_article");
+var create_article = acre.require("lib/queries/create_article").create_article;
 var validators = acre.require("lib/validator/validators");
 
 /**
@@ -140,15 +140,13 @@ function create_base(options) {
     })
     .then(function(created) {
       if (o.description !== "") {
-        return create_article.create_article(o.description, "text/html",
-                                             {
-                                               use_permission_of: created.mid,
-                                               topic: created.mid,
-                                               lang: o.lang
-                                             })
-          .then(function(article) {
+        return create_article(created.mid, o.description, "text/plain", {
+            use_permission_of: created.mid,
+            lang: o.lang
+        })
+        .then(function(article) {
             return created;
-          });
+        });
       }
       else {
         return created;

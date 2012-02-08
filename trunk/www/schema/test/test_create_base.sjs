@@ -42,7 +42,8 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("lib/test/mock").playback(this, "test/playback_test_create_base.json");
+acre.require("lib/test/mock")
+    .playback(this, "test/playback_test_create_base.json");
 
 var h = acre.require("lib/helper/helpers.sjs");
 var schema_helpers = acre.require("helpers");
@@ -251,7 +252,7 @@ test("create base with description", {bug: "Skip create/delete domain test until
   ok(check_result["/common/topic/article"], "got check result article: " + check_result["/common/topic/article"].id);
 
   var blurb;
-  freebase.get_blob(check_result["/common/topic/article"].id, "blurb")
+  freebase.get_blob(check_result["/common/topic/article"].id, "plain")
     .then(function(blob) {
       blurb = blob.body;
     });

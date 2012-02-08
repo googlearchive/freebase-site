@@ -32,7 +32,8 @@
 var apis = acre.require("lib/promise/apis.sjs");
 var freebase = apis.freebase;
 var deferred = apis.deferred;
-var update_article = acre.require("lib/queries/update_article.sjs");
+var create_article = acre.require("lib/queries/create_article.sjs").create_article;
+var update_article = acre.require("lib/queries/update_article.sjs").update_article;
 var validators = acre.require("lib/validator/validators.sjs");
 var i18n = acre.require("lib/i18n/i18n.sjs");
 var typeloader = acre.require("lib/schema/typeloader.sjs");
@@ -190,15 +191,22 @@ function update_type(options) {
           });
       }
       else if (o.description != null) {
-        var update_article_options = {
-          topic: old.mid,
-          article: article ? article.id : null,
-          lang: o.lang,
-          use_permission_of: old.mid
-        };
-        return update_article.update_article(o.description, "text/html", update_article_options)
+        var promise;
+        if (article) {
+            promise = update_article(article.id, o.description, "text/plain", {
+                lang: o.lang,
+                use_permission_of: old.mid
+            });
+        }
+        else {
+            promise = create_article(old.mid, o.description, "text/plain", {
+                lang: o.lang,
+                use_permission_of: old.mid
+            });                                      
+        }
+        return promise
           .then(function() {
-            return old.id;
+              return old.id;
           });
       }
       else {

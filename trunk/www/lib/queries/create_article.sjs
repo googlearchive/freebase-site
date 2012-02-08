@@ -34,84 +34,30 @@ var h = acre.require("helper/helpers.sjs");
 
 /**
  * Create a /common/document and optionally attach to a topic by the /common/topic/article property.
- *
- * @param content (string, required) - The content to upload.
- * @param content_type (string, required) - The MIME type of the content.
- * @param options (obj, optional) - Custom key/value options for the upload service
- *   - use_permission_of (string, optional) - ID for the object whose permission the
- *                                            /common/document object should have.
- *   - topic (string, optional) - ID for the object to which the /common/document object
- *                                should be linked by "/common/topic/article"
- *   - lang (string, optional) - lang ID (i.e., /lang/en)
- *   - prop (object, optional) - The property to use to attach the
- *        the newly created article to the topic. This should be a full property
- *        schema as returned by lib/schema/proploader.sjs.
+ * 
+ * @param entity:String (required) - ID for the object to which the newly 
+ *   created /common/document node should be linked by "/common/topic/article". 
+ *   You can override using the default /common/topic/article property by
+ *   specifying options.property.
+ * @param content:String (required) - The content to upload.
+ * @param content_type:String (required) - The MIME type of the content.
+ * @param options:Object (optional) - Custom key/value options for the upload service
+ *   - lang:String (optional) - lang ID. Defaults to /lang/en.
+ *   - property:String (optional) - The property to use to attach the
+ *        the newly created article to the entity. Defaults to /common/topic/article
  */
-function create_article(content, content_type, options) {
+function create_article(entity, content, content_type, options) {
   options = options || {};
-  // assert options.prop expected type is /common/document
-  if (options.prop && options.prop.expected_type && 
-      options.prop.expected_type.id !== "/common/document") {
-    return deferred.rejected("create_article expects a property whose expected_type is /common/document");
-  }
-  var q = {
-    id: null,
-    type: "/common/document",
-    create: "unconditional"
+  var upload_options = {
+      entity: entity,
+      lang: h.lang_code(options.lang || "/lang/en")
   };
-  // freebase.mqlwrite specific options
-  var mqlwrite_options = {};
-  ["use_permission_of"].forEach(function(option) {
-    if (option in options) {
-      mqlwrite_options[option] = options[option];
-    }
-  });
-  return freebase.mqlwrite(q, mqlwrite_options)
-    .then(function(env) {
-      return env.result;
-    })
-    .then(function(doc) {
-      var upload_options = {
-        document: doc.id
-      };
-      if (options.lang) {
-        // freebase.upload expects lang codes NOT lang ids
-        upload_options.lang = h.lang_code(options.lang);
-      }
-      return freebase.upload(content, content_type, upload_options)
+  if (options.property) {
+      upload_options.property = options.property;
+      // otherwise, text upload defaults to /common/topic/article
+  }
+  return freebase.upload(content, content_type, upload_options)
         .then(function(env) {
-          return env.result;
-        })
-        .then(function(uploaded) {
-          // upload does not return language buganizer# 5828169
-          uploaded["/type/content/language"] = 
-            uploaded["language"] = h.lang_id(options.lang || "/lang/en");
-          h.extend(doc, {"/common/document/content": uploaded});
-          return doc;           
+            return env.result;
         });
-    })
-    .then(function(doc) {
-      if (options.topic) {
-        q = {
-          id: options.topic
-        };
-        if (options.prop) {
-          q[options.prop.id] = {
-            id: doc.id,
-            connect: options.prop.unique ? "replace" : "insert"
-          };
-        }
-        else {
-          q["/common/topic/article"] = {
-            id: doc.id,
-            connect: "insert"
-          };
-        };
-        return freebase.mqlwrite(q)
-          .then(function() {
-            return doc;
-          });
-      }
-      return doc;
-    });
 };

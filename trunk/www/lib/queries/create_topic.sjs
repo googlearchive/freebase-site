@@ -31,7 +31,8 @@
 
 var h = acre.require("helper/helpers.sjs");
 var i18n = acre.require("i18n/i18n.sjs");
-var update_article = acre.require("queries/update_article.sjs");
+var update_article = acre.require("queries/update_article.sjs").update_article;
+var create_article = acre.require("queries/create_article.sjs").create_article;
 var deferred = acre.require("promise/deferred.sjs");
 var freebase = acre.require("promise/apis.sjs").freebase;
 var validators = acre.require("validator/validators.sjs");
@@ -122,13 +123,21 @@ function create_topic(options) {
         if (article && article.source_uri) {
           article = null;  // can't update/delete wp articles
         }
-        var update_article_options = {
-          topic: created.id,
-          article: article ? article.id : null,
-          lang: o.lang,
-          use_permission_of: created.id
-        };
-        return update_article.update_article(o.description, "text/html", update_article_options)
+
+        var promise;
+        if (article) {
+            promise = update_article(article.id, o.description, "text/plain", {
+                lang: o.lang,
+                use_permission_of: created.id
+            });
+        }
+        else {
+            promise = create_article(created.id, o.description, "text/plain", {
+                lang: o.lang,
+                use_permission_of: created.id
+            });      
+        }
+        return promise
           .then(function() {
               return created;
           });

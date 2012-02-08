@@ -20,28 +20,28 @@ $(function() {
       test_input1.suggest(default_options);
       var inst = get_instance();
 
-      stop();
-      var timer = test_timeout();
+      stop(TIMEOUT_DELAY);
+      var first;
       test_input1
         .bind("fb-flyoutpane-show", function() {
-                clearTimeout(timer);
                 ok(true, "got fb-flyoutpane-show");
                 ok(inst.flyoutpane.html(), "got non-empty flyout pane");
                 start();
               })
         .bind("fb-request-flyout", function(e, ajax_options) {
           clearTimeout(inst.flyout_request.timeout);
-          var id = ajax_options.data.id;
+          var id = first.data("data.suggest").id;
+          //var id = ajax_options.data.id;
           $.suggest.flyout.cache[id] = {id:id};
+
           test_input1
             .unbind("fb-request-flyout")
             .trigger("textchange");
         })
         .bind("fb-pane-show", function() {
-                clearTimeout(timer);
-                timer = test_timeout();
                 if ($(">li", inst.list).length) {
-                  var first = $("li:first", inst.list).simulate("mouseover");
+                  first = $("li:first", inst.list);
+                  first.simulate("mouseover");
                 }
               })
         .focus()

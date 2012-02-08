@@ -209,10 +209,6 @@
       }
     },
 
-    flyout_url: function() {
-      return h.legacy_fb_url("/private/flyout");
-    },
-
     /**
      * legacy freebase url
      * Use for pages that haven't been ported to acre yet

@@ -25,11 +25,9 @@ $(function() {
       }
       return base.response.apply(this, arguments);
     };
-    stop();
-    var t = test_timeout();
+    stop(TIMEOUT_DELAY);
     test_input1
       .bind("fb-select", function(e, data) {
-              clearTimeout(t);
               ok(data);
               equals(data.name, xss);
               var injected = $("#xss");
@@ -37,8 +35,6 @@ $(function() {
               start();
             })
       .bind("fb-pane-show", function() {
-              clearTimeout(t);
-              t = test_timeout();
               if ($(">li", inst.list).length) {
                 var first = $("li:first", inst.list).simulate("mouseover");
                 simulate_keypress(test_input1, $.simulate.VK_ENTER);
@@ -61,11 +57,9 @@ $(function() {
       }
       return base.response.apply(this, arguments);
     };
-    stop();
-    var t = test_timeout();
+    stop(TIMEOUT_DELAY);
     test_input1
       .bind("fb-select", function(e, data) {
-              clearTimeout(t);
               ok(data);
               equals(data.name, xss);
               var injected = $("#xss");
@@ -73,8 +67,6 @@ $(function() {
               start();
             })
       .bind("fb-pane-show", function() {
-              clearTimeout(t);
-              t = test_timeout();
               if ($(">li", inst.list).length) {
                 var first = $("li:first", inst.list).simulate("mouseover");
                 simulate_keypress(test_input1, $.simulate.VK_ENTER);
@@ -97,11 +89,9 @@ $(function() {
       }
       return base.response.apply(this, arguments);
     };
-    stop();
-    var t = test_timeout();
+    stop(TIMEOUT_DELAY);
     test_input1
       .bind("fb-select", function(e, data) {
-              clearTimeout(t);
               ok(data);
               equals(data.name, xss);
               var first = $("li:first", inst.list);
@@ -110,8 +100,6 @@ $(function() {
               start();
             })
       .bind("fb-pane-show", function() {
-              clearTimeout(t);
-              t = test_timeout();
               if ($(">li", inst.list).length) {
                 var first = $("li:first", inst.list).simulate("mouseover");
                 simulate_keypress(test_input1, $.simulate.VK_ENTER);
@@ -133,11 +121,9 @@ $(function() {
       }
       return base.response.apply(this, arguments);
     };
-    stop();
-    var t = test_timeout();
+    stop(TIMEOUT_DELAY);
     test_input1
       .bind("fb-select", function(e, data) {
-              clearTimeout(t);
               ok(data);
               equals(data.name, xss);
               var first = $("li:first", inst.list);
@@ -146,8 +132,6 @@ $(function() {
               start();
             })
       .bind("fb-pane-show", function() {
-              clearTimeout(t);
-              t = test_timeout();
               if ($(">li", inst.list).length) {
                 var first = $("li:first", inst.list).simulate("mouseover");
                 simulate_keypress(test_input1, $.simulate.VK_ENTER);

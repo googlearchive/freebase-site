@@ -77,14 +77,14 @@
         ${flyout.article.substring(0, 250)}&hellip;
       </p>
     </acre:block>
-    
-    <div class="fbs-attribution">
-      <acre:block if="flyout.notability">
-        <span class="fbs-flyout-types">
-          ${flyout.notability}
-        </span>
-      </acre:block>
-    </div>
-   
+      
+  </div>
+
+  <div class="fbs-attribution">
+    <acre:block if="flyout.notability">
+      <span class="fbs-flyout-types">
+        ${flyout.notability}
+      </span>
+    </acre:block>
   </div>
 </acre:block>

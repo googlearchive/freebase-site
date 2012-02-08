@@ -7,18 +7,14 @@ $(function() {
              test_input1.suggest(o);
              var inst = get_instance();
 
-             stop();
-             var t = test_timeout();
+             stop(TIMEOUT_DELAY);
              test_input1
                .bind("fb-select", function(e, data) {
-                       clearTimeout(t);
                        ok(data);
                        equals(data.id, bob_dylan_id);
                        start();
                      })
                .bind("fb-pane-show", function() {
-                       clearTimeout(t);
-                       t = test_timeout();
                        if ($(">li", inst.list).length) {
                          onshow();
                        }
@@ -75,23 +71,17 @@ $(function() {
            test_input1.suggest(o);
            var inst = get_instance();
 
-           stop();
-           var t = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-select", function(e, data) {
-                     clearTimeout(t);
                      ok(data);
                      equals(data.id, bob_dylan_id);
                      start();
                    })
              .bind("fb-flyoutpane-show", function() {
-                     clearTimeout(t);
-                     t = test_timeout();
                      simulate_mouseclick(inst.flyoutpane);
                    })
              .bind("fb-pane-show", function() {
-                     clearTimeout(t);
-                     t = test_timeout();
                      if ($(">li", inst.list).length) {
                        simulate_keypress(test_input1, $.simulate.VK_DOWN);
                      }
@@ -107,17 +97,13 @@ $(function() {
            test_input1.suggest(o);
            var inst = get_instance();
 
-           stop();
-           var t = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-select-new", function(e, val) {
-                     clearTimeout(t);
                      equals(val, "bob dylan");
                      start();
                    })
              .bind("fb-pane-show", function() {
-                     clearTimeout(t);
-                     t = test_timeout();
                      if ($(">li", inst.list).length) {
                        simulate_keypress(test_input1, {keyCode: $.simulate.VK_ENTER, shiftKey: true});
                      }
@@ -136,18 +122,14 @@ $(function() {
            var more = false,
            count = 0;
 
-           stop();
-           var t = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-pane-show", function() {
                      if (more) {
-                       clearTimeout(t);
                        ok($(">li", inst.list).length > count, "got more");
                        start();
                      }
                      else {
-                       clearTimeout(t);
-                       t = test_timeout();
                        count = $(">li", inst.list).length;
                        if (count) {
                          $(".fbs-more-link", inst.pane).click();
@@ -168,22 +150,16 @@ $(function() {
            var more = false,
            count = 0;
 
-           stop();
-           var t = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-pane-show", function() {
                      if (more) {
-                       clearTimeout(t);
                        ok($(">li", inst.list).length > count, "got more");
                        start();
                      }
                      else {
-                       clearTimeout(t);
-                       t = test_timeout();
                        count = $(">li", inst.list).length;
                        if (count) {
-                         clearTimeout(t);
-                         t = test_timeout();
                          simulate_keypress(test_input1, {keyCode: 77, ctrlKey: true});
                          more = true;
                        }
@@ -200,12 +176,10 @@ $(function() {
            test_input1.suggest(o);
            var inst = get_instance();
 
-           stop();
-           var t = test_timeout();
+           stop(TIMEOUT_DELAY);
            test_input1
              .bind("fb-pane-show", function() {
                      if ($(">li", inst.list).length) {
-                       clearTimeout(t);
                        ok(inst.pane.is(":visible"), "pane visible");
                        simulate_keypress(test_input1, $.simulate.VK_ESC);
                        ok(!inst.pane.is(":visible"), "pane NOT visible");

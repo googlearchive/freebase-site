@@ -32,10 +32,10 @@
 acre.require('/test/lib').enable(this);
 
 acre.require("test/mock")
-    .playback(this, "queries/test/playback_test_create_article.json");
+    .playback(this, "queries/test/playback_test_update_article.json");
 
-var lib = acre.require("queries/create_article");
-var create_article = lib.create_article;
+var create_article = acre.require("queries/create_article.sjs").create_article;
+var update_article = acre.require("queries/update_article.sjs").update_article;
 var freebase = acre.require("promise/apis").freebase;
 
 // this test requires user to be logged in
@@ -64,9 +64,10 @@ function check_blurb(document_id, expected_blurb) {
   equal(blurb, expected_blurb);
 }
 
-test("create_article", function() {
+test("update_article", function() {
   var topic;
-  var content = "test_create_article";
+  var content = "test_update_article";
+  var content_update = "text_update_article_updated";
   freebase.mqlwrite({
     id: null,
     create: "unconditional"
@@ -87,19 +88,19 @@ test("create_article", function() {
 
   check_blurb(document, content);
 
-  var check_result;
-  freebase.mqlread({
-    id: topic.id,
-    "/common/topic/article": {
-      id: document
-    }
-  })
-  .then(function(env) {
-    check_result = env.result;
-  });
+  var result;
+  update_article(document, content_update, "text/plain")
+      .then(function(r) {
+          result = r;
+      });
   acre.async.wait_on_results();
-  ok(check_result, "got check result");
-  same(check_result["/common/topic/article"].id, document);
+  
+  // Can't check updated blurb because http://b/issue?id=5857599
+  // 
+  // check_blurb(document, content_update);
+  // 
+  // for now just check the content length
+  same(result.length, content_update.length);
 });
 
 acre.test.report();

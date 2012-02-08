@@ -30,7 +30,8 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("lib/test/mock").playback(this, "test/playback_test_update_type.json");
+acre.require("lib/test/mock")
+    .playback(this, "test/playback_test_update_type.json");
 
 var schema_helpers = acre.require("helpers");
 var test_helpers = acre.require("lib/test/helpers");
@@ -276,7 +277,7 @@ test("update_type description", function() {
   ok(check_result["/common/topic/article"], "got check result article: " + check_result["/common/topic/article"].id);
 
   var blurb;
-  freebase.get_blob(check_result["/common/topic/article"].id, "blurb")
+  freebase.get_blob(check_result["/common/topic/article"].id, "plain")
     .then(function(blob) {
       blurb = blob.body;
     });

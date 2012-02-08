@@ -37,7 +37,8 @@ var apis = acre.require("promise/apis.sjs"),
 
 var schema = acre.require("schema/typeloader.sjs");
 var proploader = acre.require("schema/proploader.sjs");
-var ph= acre.require("propbox/helpers.sjs");
+var ph = acre.require("propbox/helpers.sjs");
+var create_article = acre.require("queries/create_article.sjs").create_article;
 
 function qualify_prop(key, type) {
   var system_props = {
@@ -334,9 +335,7 @@ function create_query(user_id, query, name, key, domain, description, lang) {
           }));
 
           if (description) {
-            var qa =  acre.require("lib/queries/create_article.sjs");
-            promises.push(qa.create_article(description, 'text/plain', {
-              "topic": doc.mid,
+            promises.push(create_article(doc.mid, description, 'text/plain', {
               "use_permission_of": user_id,
               "lang": lang
             }));

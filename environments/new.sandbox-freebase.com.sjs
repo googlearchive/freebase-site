@@ -9,6 +9,7 @@ var environment_rules = {
 
     "labels" : {
         "lib": "//51c.lib.www.tags.svn.freebase-site.googlecode.dev",
+        "default":  "//default.dev",
 
         "site": "//22b.site" + tags_codebase,
         "account": "//25a.account" + tags_codebase,

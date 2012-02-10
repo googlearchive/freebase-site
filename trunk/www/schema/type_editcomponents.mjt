@@ -45,11 +45,20 @@
           <div class="edit-row-loader"></div>
 
           <div class="nav clear">
-            <ul class="nav-mode">
-              <li><a class="nav-toggle current" href="#">${_('Add New Property')}</a></li>
-              <li><a class="nav-toggle nav-delegate" href="#">${_('Delegate A Property')}</a></li>
+            <ul class="section-tabset">
+              <li class="section-tab tab">
+                <a class="nav-toggle current" href="#">
+                  <span>${_('Add a new Property')}</span>
+                  </span>
+                </a>
+              </li>
+              <li class="section-tab tab">
+                <a class="nav-toggle nav-delegate" href="#">
+                  <span>${_('Delegate a Property')}</span>
+                </a>
+              </li>
             </ul>
-            <div class="nav-delegate-msg" style="display:none;">
+            <div class="inline-msg notice nav-delegate-msg" style="display:none;">
               ${_('You are adding a property from another type.')} <a href="http://wiki.freebase.com/wiki/Property_delegation" rel="external help">${_('Learn more')} &raquo;</a>
             </div>
           </div>

@@ -771,10 +771,12 @@ propbox edit forms
         </div>
         <div class="form-group form-row">
           <textarea name="content" 
+                    class="textarea"
                     maxlength="4096" 
+                    rows="10"
                     placeholder="${_('Enter article')}&hellip;">${replace_document ? replace_document.body : ""}</textarea>
         </div>
-        <div class="form-group form-row lang-notice" style="display:none;">
+        <div class="form-group form-row inline-msg warning lang-notice" style="display:none;">
           <p>${h.template_sprintf(_("You are submitting an article in a different language than your current one. The article will be saved, however, you will not see it until you switch to %s."), tag_strong(''))}</p>
         </div>
       </div>

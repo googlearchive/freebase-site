@@ -711,7 +711,7 @@ spec has been implemented, including complete vcards, tooltips, etc.
   font-weight: bold;
   color: #333;
 
-  background-color: #fcce17;
+  background-color: desaturate(darken(@msg_yellow, 30%), 5%);
   background-size: 4px 4px;
   background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .3) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .3) 50%, rgba(255, 255, 255, .3) 75%, transparent 75%, transparent);
   background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
@@ -731,15 +731,15 @@ spec has been implemented, including complete vcards, tooltips, etc.
   }
 
   &.success {
-    background-color: #c0e0a6;
+    background-color: @msg_green;
   }
 
   &.notice {
-    background-color: #9acce0;
+    background-color: @msg_blue;
   }
 
   &.error {
-    background-color: #e9bfaf;
+    background-color: msg_red;
   }
 }
 

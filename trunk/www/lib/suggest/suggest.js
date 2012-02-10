@@ -1059,7 +1059,7 @@
       }
 
       this.jsonp = true;
-      this.jsonp_flyout = $.suggest.use_jsonp(o.flyout_url);
+      this.jsonp_flyout = $.suggest.use_jsonp(this.flyout_url);
 
       if (!$.suggest.cache) {
         $.suggest.cache = {};

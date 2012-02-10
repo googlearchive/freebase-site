@@ -622,7 +622,7 @@ Header
 }
 
 #user-controls a:link {
-  color: @link-blue;
+  color: @link_blue;
 }
 
 #nav-signout {
@@ -645,6 +645,47 @@ NAV
 Freebase Suggest Header
 -----------------------------------------
 */
+
+
+/*
+--------------------------------------
+MESSAGES
+--------------------------------------
+*/
+
+/* Less mixin for creating border color
+ * by darkening base color and desaturating
+ */
+.message_border_color (@color) {
+  border-color: desaturate(darken(@color, 30%), 3%);
+}
+
+.inline-msg {
+  padding: 10px;
+  border: 1px solid;
+  .rounded_corners;
+
+  &.warning {
+    background-color: @msg_yellow;
+    .message_border_color(@msg_yellow);
+  }
+  &.success {
+    background-color: @msg_green;
+    .message_border_color(@msg_green);
+  }
+  &.error {
+    background-color: @msg_red;
+    .message_border_color(@msg_red);
+  }
+  &.notice {
+    background-color: @msg_blue;
+    .message_border_color(@msg_blue);
+  }
+
+  p:first-child {
+    margin-top: 0;
+  }
+}
 
 
 /*

@@ -530,12 +530,14 @@
      */
 
     init_data_inputs: function(options) {
-      $(".data-input", options.edit_row).each(function() {
+      var context = options.edit_row || options.form;
+      $(".data-input", context).each(function() {
         edit.init_data_input($(this), options);
       });
     },
 
     init_data_input: function(data_input, options) {
+      var context = options.edit_row || options.form;
       data_input
         .data_input({
           lang: propbox.options.lang,
@@ -543,7 +545,7 @@
           incompatible_types: propbox.options.incompatible_types
         })
         .bind("valid", function() {
-          options.edit_row.trigger(options.event_prefix + "valid");
+          context.trigger(options.event_prefix + "valid");
           var form_field = data_input.parent(".form-field");
           var magicbox_template = form_field.next(".magicbox-template");
           if (magicbox_template.length) {
@@ -554,16 +556,16 @@
           }
         })
         .bind("empty", function() {
-          options.edit_row.trigger(options.event_prefix + "valid");
+          context.trigger(options.event_prefix + "valid");
         })
         .bind("invalid", function() {
-          options.edit_row.trigger(options.event_prefix + "invalid");
+          context.trigger(options.event_prefix + "invalid");
         })
         .bind("submit", function() {
-          options.edit_row.trigger(options.event_prefix + "submit");
+          context.trigger(options.event_prefix + "submit");
         })
         .bind("cancel", function() {
-          options.edit_row.trigger(options.event_prefix + "cancel");
+          context.trigger(options.event_prefix + "cancel");
         })
         .bind("loading", function() {
           $(this).addClass("loading");

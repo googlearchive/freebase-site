@@ -205,7 +205,7 @@
         }
         var inc_types = structure.expected_type.included_types;
         if (inc_types) {
-          inc_types.forEach(function(inc_type) {
+          $.each(inc_types, function(i, inc_type) {
             if (inc_type !== "/type/object") {
               types.push({id:inc_type, connect:"insert"});
             }
@@ -371,7 +371,7 @@
         }
         var inc_types = expected_type.included_types;
         if (inc_types) {
-          inc_types.forEach(function(inc_type) {
+          $.each(inc_types, function(i, inc_type) {
             if (inc_type !== "/type/object") {
               clause.push({id:inc_type, connect:"insert"});
             }

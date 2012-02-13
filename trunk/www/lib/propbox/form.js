@@ -37,6 +37,72 @@
    var formlib = window.formlib = {
 
      /**
+      * generic form
+      */
+     init: function(options) {
+         var event_prefix = options.event_prefix || "form.";
+         options.form
+             .bind(event_prefix + "submit", function() {
+                 formlib.submit(options);
+             })
+             .bind(event_prefix + "cancel", function() {
+                 formlib.cancel(options);
+             })
+             .bind(event_prefix + "error", function(e, msg) {
+                 formlib.error(options, msg);
+                 options.form.removeClass("loading");
+             })
+             .bind(event_prefix + "success", function() {
+                 options.form.removeClass("loading");
+             })
+             .bind(event_prefix + "valid", function() {
+                 formlib.enable_submit(options);
+             })
+             .bind(event_prefix + "invalid", function() {
+                 formlib.disable_submit(options);
+             });
+         formlib.init_submit_cancel(options);
+         options.init(options);
+     },
+
+     submit: function(options) {
+       // are we already submitting?
+       if (options.form.is(".loading")) {
+         return;
+       }
+
+       // is submit button disabled?
+       if (!formlib.is_submit_enabled(options)) {
+         return;
+       }
+
+       // remove focus from activeElement
+       if (document.activeElement) {
+         $(document.activeElement).blur();
+       }
+
+       // clear messages
+       formlib.clear_message(options);
+
+       // validate form
+       if (!options.validate(options)) {
+         return;
+       }
+
+       // add a loading class to the form
+       options.form.addClass("loading");
+
+       // submit form
+       options.submit(options, formlib.default_submit_ajax_options(options));
+     },
+
+     cancel: function(options) {
+         // Do nothing
+         // options.form.bind(event_prefix + "cancel", ...) to handle cancel
+     },
+
+
+     /**
       * ADD
       */
 
@@ -482,10 +548,15 @@
 
      message: function(options, msg, type) {
        var msg_row = options.head_row;
-       msg_row.find(".close-msg").css("visibility", "visible").next().find(".msg-default").hide().next().text(msg);
-       msg_row.addClass("row-msg");
-       if (type) {
-         msg_row.addClass("row-msg-" + type);
+       if (!msg_row && options.form) {
+           msg_row = $(".row-msg", options.form);
+       }
+       if (msg_row && msg_row.length) {
+           msg_row.find(".close-msg").css("visibility", "visible").next().find(".msg-default").hide().next().text(msg);
+           msg_row.addClass("row-msg");
+           if (type) {
+               msg_row.addClass("row-msg-" + type);
+           }
        }
      },
 

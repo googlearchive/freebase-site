@@ -28,21 +28,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-;(function($, fb, propbox, editparams) {
-
-  function suggest_options() {
-    var o = $.extend({
-      status: ["", "Searching...", "Select an item from the list:"]
-    }, fb.suggest_options.service_defaults);
-    return o;
-  };
+;(function($, fb, formlib, propbox, editparams) {
 
   function init() {
 
     var html_form = $(".edit-form");
+    var structure = html_form.metadata();
     var event_prefix = "create.type.instance.";
-    var submit_row = $(".edit-row-submit", html_form);
 
+    var submit_row = $(".edit-row-submit", html_form);
     var topic_id = $("input[name=s]", submit_row).val();
     var lang_id = fb.h.lang_id($("input[name=lang]", submit_row).val());
 
@@ -51,7 +45,7 @@
       base_ajax_url: fb.h.ajax_url("lib/propbox"),
       base_static_url: fb.h.static_url("lib/propbox"),
       lang: lang_id,
-      suggest: suggest_options(),
+      suggest_impl: fb.suggest_options,
       /**
        * The incompatible_types interface.
        * Must implement "check" and "inline_suggest_incompatible_callback"
@@ -60,77 +54,85 @@
       incompatible_types: fb.incompatible_types
     });
 
-    var form = {
-      mode: event_prefix,
-      event_prefix: event_prefix,
-      ajax: {
-        data: {
-          s: $("input[name=s]", submit_row).val(),
-          p: $("input[name=p]", submit_row).val(),
-          lang: fb.h.lang_id($("input[name=lang]", submit_row).val())
+    var options = {
+        event_prefix: event_prefix,
+        // callbacks
+        init: init_create_type_instance_form,
+        validate: validate_create_type_instance_form,
+        submit: submit_create_type_instance_form,
+        // submit ajax options
+        ajax: {
+            url: fb.h.ajax_url("lib/propbox/prop_edit_submit.ajax")
         },
-        url: fb.h.ajax_url("lib/propbox/prop_edit_submit.ajax")
-      },
-
-      init: init_create_type_instance_form,
-      submit: submit_create_type_instance_form,
-
-      prop_section: html_form,
-
-      msg_row: $(".row-msg", html_form),
-      edit_row: html_form,
-      submit_row: submit_row,
-
-      structure: html_form.metadata()
+        form: html_form,
+        structure: structure
     };
-
-    propbox.edit.init(form);
+    formlib.init(options);
   };
 
-  function init_create_type_instance_form(form) {
-    propbox.edit.init_data_inputs(form);
-    $(":input:visible:first", form.edit_row).focus();
+  function init_create_type_instance_form(options) {
+    propbox.edit.init_data_inputs(options);
+    // is name required?
+    if (!options.structure.expected_type.mediator) {
+        var name_input = $(".fb-input:first", options.form);
+        if (name_input.attr("name") === "/type/object/name") {
+            options.name_input = name_input.parent(".data-input");
+        }
+        else {
+            console.error("Expected /type/object/name as the first input");
+        } 
+    }
+    $(":input:visible:first", options.form).focus();
   };
 
-  function submit_create_type_instance_form(form) {
-    var submit_data = $.extend({}, form.ajax.data);  // s, p, lang
-    var o;
+  function validate_create_type_instance_form(options) {
+      // if not mediator, /type/object/name is required
+      if (options.name_input) {
+          var data = options.name_input.data("data");
+          if (!data.value) {
+              options.form.trigger(options.event_prefix + "error", "Name is required");
+              return false;
+          }
+      }
+      // data_inputs do our validation
+      // editparams.parse will do our validation on submit
+      return true;
+  };
+
+  function submit_create_type_instance_form(options, ajax_options) {
     try {
-      o = editparams.parse(form.structure, form.edit_row);
+      // This is a work around for editparams to handle "deep" properties.
+      // Creating a new instance is like unconditionally creating an instance
+      // of a type: 
+      //   type -> /type/type/intance -> {id:null, create:unconditional, ...}
+      options.structure.expected_type.mediator = true;
+
+      var o = editparams.parse(options.structure, options.form);
+      ajax_options.data.o = JSON.stringify(o);
     }
     catch(ex) {
-      var errors = $(".data-input.error", form.edit_row);
+      var errors = $(".data-input.error", options.form);
       if (errors.length) {
-        form.edit_row.trigger(form.event_prefix + "error", "Please specify a valid value");
+        options.form.trigger(options.event_prefix + "error", "Please specify a valid value");
         errors.eq(0).find(":input").focus().select();
       }
       else {
-        form.edit_row.trigger(form.event_prefix + "error", ex.toString());
+        options.form.trigger(options.event_prefix + "error", ex.toString());
       }
       return;
     }
-    if (!(o && o.length)) {
-      form.edit_row.trigger(form.event_prefix + "error", "Please specify a valid value");
-      $("input:first", form.edit_row).focus();
-      return;
-    }
-    submit_data.o = JSON.stringify(o);
-    //console.log("submit_data", submit_data);
-    $.ajax({
-      url: form.ajax.url,
-      type: "POST",
-      dataType: "json",
-      data: submit_data,
-      success: function(data, status, xhr) {
-        // TODO: handle error
-        var new_item = $(data.result.html);
-        var new_id = $(".property-value:first", new_item).attr("data-id");
-        window.location.href = fb.h.fb_url(new_id);
-      }
-    });
+
+    $.ajax($.extend(ajax_options, {
+        onsuccess: function(data) {
+            var new_item = $(data.result.html);
+            var new_id = $(".property-value:first", new_item).attr("data-id");
+            window.location.href = fb.h.fb_url(new_id);            
+        }
+    }));
+
   };
 
 
   $(init);
 
-})(jQuery, window.freebase, window.propbox, window.editparams);
+})(jQuery, window.freebase, window.formlib, window.propbox, window.editparams);

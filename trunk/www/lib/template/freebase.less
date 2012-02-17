@@ -408,7 +408,6 @@ Header
  *
  *   - .notice -> something has happened based on an action (yellow)
  *
- * TODO: add states for .info, .error
  */
 
 #page-state {
@@ -419,27 +418,40 @@ Header
   right: 0;
   top: 40px;
   margin: 0 25%;
-  padding: 3px 30px;
-  color: #333;
+  padding: 7px 30px;
+  color: #494949;
   font-size: 12px;
   font-weight: bold;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.8);
   text-align: center;
   .rounded_corners_bottom;
   .box_shadow(1px,1px,3px,rgba(0,0,0,0.7);
+  .diagonal_stripes_left(12px);
+
+  &.notice {
+    background-color: desaturate(darken(@msg_blue, 10%), 5%);
+  }
+
+  &.error {
+    background-color: desaturate(darken(@msg_red, 5%), 5%);
+  }
+
+  &.success {
+    background-color: desaturate(darken(@msg_green, 5%), 5%);
+  }
+
+  &.warning {
+    background-color: desaturate(darken(@msg_yellow, 30%), 5%);
+  }
+
+  a,
+  a:hover {
+    color: #333;
+    text-decoration: underline;
+  }
 }
 
 
-#page-state a,
-#page-state a:hover {
-  color: #333;
-  text-decoration: underline;
-}
-
-#page-state.notice {
-  background-color: #fcce17;
-  background-image: -webkit-repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 2px, rgba(255,255,255,0) 2px, rgba(255,255,255,0) 4px);
-  background-image: -moz-repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 2px, rgba(255,255,255,0) 2px, rgba(255,255,255,0) 4px);
-}
 
 .fbs-flyout-pane {
   border: 1px solid #e1e2e3;

@@ -63,6 +63,10 @@
       var a_next = $("#infinitescroll-next");
       tbody.infinitescroll({
         //debug: true,
+        loading: {
+          msgText: "Fetching more links",
+          img: fb.h.static_url("lib/template/horizontal-loader.gif")
+        },
         nextSelector: "#infinitescroll-next",
         navSelector: "#infinitescroll-next",
         dataType: "json",

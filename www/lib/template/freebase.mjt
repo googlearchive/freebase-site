@@ -141,9 +141,7 @@
 
 <acre:block def="header(exports)">
 <header role="banner" id="header">
-  <span class="notice" id="page-state">
-    Lorem ipsum dolor si amet… <a href="#">Dismiss</a>
-  </span>
+  <span class="notice" id="page-state"></span>
   <acre:block if="exports.nav_utils">
     ${exports.nav_utils()}
   </acre:block>
@@ -215,7 +213,6 @@
   <div id="breadcrumb" acre:if="exports.breadcrumb">
     ${exports.breadcrumb()}
   </div>
-  <div id="page-state"></div>
 </header>
 </acre:block>
 

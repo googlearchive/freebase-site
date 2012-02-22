@@ -534,7 +534,7 @@
         else {
           filters.push("without:hidden");
         }
-        return fb.suggest_options.all.apply(null, filters);
+        return $.extend({scoring:"schema"}, fb.suggest_options.all.apply(null, filters));
       },
 
       /*
@@ -559,7 +559,7 @@
         else {
           filters.push("without:hidden");
         }
-        return fb.suggest_options.all.apply(null, filters);
+        return $.extend({scoring:"schema"}, fb.suggest_options.all.apply(null, filters));
       },
 
       /**
@@ -579,7 +579,7 @@
         else {
           filters.push("without:hidden");
         }
-        return fb.suggest_options.all.apply(null, filters);
+        return $.extend({scoring:"schema"}, fb.suggest_options.all.apply(null, filters));
       }
     };
   });

@@ -136,36 +136,6 @@ $(function() {
            equals(inst.status.text(), "3");
          });
 
-    test("required=true", 1, function() {
-           var o = $.extend({}, default_options, {required:true});
-           test_input1.suggest(o);
-           var inst = get_instance();
-
-           stop(TIMEOUT_DELAY);
-           test_input1
-             .bind("fb-required", function() {
-                     ok(true);
-                     start();
-                   })
-             .val("sakuragi hana").trigger("textchange");
-           inst.blur();
-         });
-
-    test("required=always", 1, function() {
-           var o = $.extend({}, default_options, {required:"always"});
-           test_input1.suggest(o);
-           var inst = get_instance();
-
-           stop(TIMEOUT_DELAY);
-           test_input1
-             .bind("fb-required", function() {
-                     ok(true);
-                     start();
-                   })
-             .val("").trigger("textchange");
-           inst.blur();
-         });
-
     test("zIndex", 1, function() {
            var o = $.extend({}, default_options, {zIndex:1000});
            test_input1.suggest(o);
@@ -280,7 +250,6 @@ $(function() {
              .val("aplusk").trigger("textchange");
          });
 
-
     function test_suggest_result(options, prefix, expected, on_empty) {
       var o = $.extend({}, default_options, options);
       test_input1.suggest(o);
@@ -331,13 +300,12 @@ $(function() {
       "(should type:/people/person)"
     ];
 
-    var steven_spielberg_id = "/m/06pj8";
-    var saving_priv_ryan_id = "/m/07024";
-    var lady_gaga_id = "/m/0478__m";
 
     $.each(filters, function(i, filter) {
       test("filter=" + filter, 1, function() {
-        test_suggest_result({filter: filter}, "bob dylan", bob_dylan_id);
+        test_suggest_result({
+            filter: filter
+        }, bob_dylan_id, bob_dylan_id);
       });
     });
 

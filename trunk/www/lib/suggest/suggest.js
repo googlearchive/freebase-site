@@ -121,7 +121,7 @@
 
       // suggest parameters
       o.ac_param = {};
-      $.each(["key", "filter", "spell", "exact", "lang"], function(i,n) {
+      $.each(["key", "filter", "spell", "exact", "lang", "scoring"], function(i,n) {
         var v = o[n];
         if (v === null || v === "") {
           return;
@@ -406,9 +406,6 @@
         return;
       }
       var data = this.input.data("data.suggest");
-      if (!data) {
-        this.check_required(e);
-      }
       this.hide_all();
     },
 
@@ -450,19 +447,9 @@
           }
           else {
             var data = this.input.data("data.suggest");
-            if (o.soft) {
-              if (!data) {
-                this.check_required(e);
-              }
-            }
-            else {
-              if ($("."+this.options.css.item + ":visible", this.list).length) {
-                this.updown(false);
-                e.preventDefault();
-              }
-              else if (!data) {
-                this.check_required(e);
-              }
+            if ($("."+this.options.css.item + ":visible", this.list).length) {
+              this.updown(false);
+              e.preventDefault();
             }
           }
         }
@@ -619,14 +606,15 @@
           o = this.options;
 
       $.each(result, function(i,n) {
-        if (!n.id && n.mid) {
-          n.id = n.mid;
-        }
         var li = self.create_item(n, data)
           .bind("mouseover.suggest", function(e) {
             self.mouseover_item(e);
-          })
-          .data("data.suggest", n);
+          });
+          if (!n.id && n.mid) {
+              // For compatitibility reasons, store the mid as id
+              n.id = n.mid;
+          }
+          li.data("data.suggest", n);
           self.list.append(li);
           if (i === 0) {
             first = li;
@@ -847,14 +835,6 @@
         this.trackEvent(this.name, "fb-select", "index",
         $selected.prevAll().length);
       }
-      /*
-       else {
-       //this.check_required();
-       }
-       if (focus) {
-       //          this.input.focus();
-       }
-       */
     },
 
     trackEvent: function(category, action, label, value) {
@@ -865,22 +845,6 @@
         value: value
       });
       //console.log("trackEvent", category, action, label, value);
-    },
-
-    check_required: function(e) {
-      var required = this.options.required;
-      if (required === true) {
-        var v = this.input.val();
-        if (v !== "") {
-          this.input.trigger("fb-required", {domEvent:e});
-          return false;
-        }
-      }
-      else if (required === "always") {
-        this.input.trigger("fb-required", {domEvent:e});
-        return false;
-      }
-      return true;
     },
 
     hide_all: function(e) {
@@ -901,8 +865,6 @@
         'Select an item from the list:',
         'Sorry, something went wrong. Please try again later'
       ],
-
-      required: false,
 
       soft: false,
 
@@ -1025,6 +987,77 @@
         }
         return !(('' + e.keyCode) in not_char);
       }
+    },
+
+    /**
+     * Parse input string into actual query string and structured name:value list
+     * 
+     * "bob dylan type:artist" -> ["bob dylan", ["type:artist"]]
+     * "Dear... type:film name{full}:Dear..." -> ["Dear...", ["type:film", "name{full}:Dear..."]]
+     */
+    parse_input: function(str) {
+        var filters = [];
+        str = $.trim(str);
+        if (str === "") {
+            return ["", filters];
+        }        
+        // only name:value without any spaces before/after ':' are considered
+        var i = str.search(/[\S]+\:[\S]/);
+        if (i === -1) {
+            return [str, filters];
+        }
+        var qstr = $.trim(str.substring(0, i));
+        var fstr = str.substring(i);
+        // only pick out valid name:value pairs
+        // a name:value is valid 
+        // 1. if there are no spaces before/after ":"
+        // 2. name does not have any spaces
+        // 3. value does not have any spaces OR value is double quoted
+        var regex = /(\S+\:"[^\"]+\"|\S+\:\S+)/g;
+        var m = regex.exec(fstr);
+        while (m) {
+            filters.push(m[0]);
+            // continue with match from the last match index
+            m = regex.exec(fstr);
+        }
+        return [qstr, filters];
+    },
+    
+    /**
+     * Convenient methods and regexs to determine valid mql ids.
+     */
+    mqlkey_fast: /^[_A-Za-z0-9][A-Za-z0-9_-]*$/,
+    mqlkey_slow: /^(?:[A-Za-z0-9]|\$[A-F0-9]{4})(?:[A-Za-z0-9_-]|\$[A-F0-9]{4})*$/,
+    check_mql_key: function(val) {
+        if ($.suggest.mqlkey_fast.test(val)) {
+            return true;
+        }
+        else if ($.suggest.mqlkey_slow.test(val)) {
+            return true;
+        }
+        return false;
+    },
+    check_mql_id: function(val) {
+        if (val.indexOf("/") === 0) {
+            var keys = val.split("/");
+            // remove beginning '/'
+            keys.shift();
+            if (keys.length == 1 && keys[0] === "") {
+                // "/" is a valid id
+                return true;
+            }
+            else {
+                for (var i=0,l=keys.length; i<l; i++) {
+                    if (!$.suggest.check_mql_key(keys[i])) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        else {
+            return false;
+        }
     }
   });
 
@@ -1113,9 +1146,6 @@
         this.suggest_new();
         this.hide_all();
       }
-      else {
-        this.check_required(e);
-      }
     },
 
     hide_all: function(e) {
@@ -1135,19 +1165,44 @@
         this.ac_xhr.abort();
         this.ac_xhr = null;
       }
+
+      var query = val;
+
+      var filter = o.ac_param.filter || [];
+      if ($.type(filter) === "string") {
+          // the original filter may be a single filter param (string)
+          filter = [filter];
+      }
+      if (o.advanced) {
+          // parse out additional filters in input value
+          var structured = $.suggest.parse_input(query);
+          query = structured[0];
+          if (structured[1].length) {
+              // all advance filters are ANDs
+              filter.push("(all " + structured[1].join(" ") + ")");
+          }
+          if ($.suggest.check_mql_id(query)) {
+              // handle anything that looks like a valid mql id
+              filter.push("(all mid:\"" + query + "\")");
+              query = "";
+          }
+      }
+
       var data = {
-        query: val,
+        query: query,
         prefixed: true,
         format: 'ac'
       };
       if (cursor) {
         data.cursor = cursor;
       }
-
       $.extend(data, o.ac_param);
+      if (filter.length) {
+          data.filter = filter;
+      }      
 
-      var url = o.service_url + o.service_path + "?" + $.param(data),
-          cached = $.suggest.cache[url];
+      var url = o.service_url + o.service_path + "?" + $.param(data, true);
+      var cached = $.suggest.cache[url];
       if (cached) {
         this.response(cached, cursor ? cursor : -1, true);
         return;
@@ -1211,6 +1266,10 @@
       var type = $("<div>").addClass(css.item_type);
       if (nt && nt.name) {
         type.text(nt.name);
+      }
+      else if (data.id && !/^\/\w\//.test(data.id)) {
+          // display human readable id if no notable type
+          type.text(data.id);
       }
       name.prepend(type);
 
@@ -1539,7 +1598,7 @@
 
     defaults: {
       /**
-       * filter, spell, lang, exact, lang, key
+       * filter, spell, lang, exact, scoring, lang, key
        *
        * are the new parameters used by the new freebase search on googleapis.
        * Please refer the the API documentation as these parameters
@@ -1556,11 +1615,24 @@
 
       exact: false,
 
+      scoring: null,
+
       // language to search (default to en)
       lang: null, // NULL defaults to "en",
 
       // API key: required for googleapis
       key: null,
+
+      // Enable structured input name:value pairs that get appended to the search filters
+      // For example:
+      // 
+      //   "bob dylan type:artist"
+      // 
+      // Would get translated to the following request:
+      // 
+      //    /freebase/v1/search?query=bob+dylan&filter=<original filter>&filter=(all type:artist)
+      //
+      advanced: true,
 
       // base url for autocomplete service
       service_url: "https://www.googleapis.com",

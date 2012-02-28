@@ -753,6 +753,7 @@ function init_site_rules(lib) {
     {prefix:"/favicon.ico",        app:"lib", script:"template/favicon.ico"},
     {prefix:"/sample",             app:"sample"},
     {prefix:"/suggest",            app:"lib", script:"suggest"},
+    {prefix:"/robots.txt",         app:"site", script:"robots.sjs"},
 
     //
     // Redirects for legacy urls

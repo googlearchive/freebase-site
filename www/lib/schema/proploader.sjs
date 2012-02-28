@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Google Inc.
+ * Copyright 2012, Google Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binar]y forms, with or without

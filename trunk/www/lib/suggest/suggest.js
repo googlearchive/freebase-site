@@ -890,13 +890,6 @@
       zIndex: null
     },
 
-    $$: function(cls, ctx) {
-      /**
-       * helper for class selector
-       */
-      return $("." + cls, ctx);
-    },
-
     use_jsonp: function(service_url) {
       /*
        * if we're on the same host,
@@ -1079,16 +1072,7 @@
       }
       this.flyout_url = o.flyout_service_url;
       if (o.flyout_service_path) {
-          /**
-           * if options.flyout_service_path == "${id}",
-           * we are using "object" url: /id?flyout
-           */
-          if (/^\$\{id\}$/.test(o.flyout_service_path)) {
-              this.flyout_object_url = true;
-          }
-          else {
-              this.flyout_url += o.flyout_service_path;
-          }
+          this.flyout_url += o.flyout_service_path;
       }
 
       this.jsonp = true;
@@ -1440,30 +1424,10 @@
       }
 
       //this.flyoutpane.hide();
-      var url = this.flyout_url;
-      var flyout_id = data.id;
-      var submit_data = null;
-      /**
-       * If we are using an object url, we compose the flyout url as:
-       * 
-       * /id?flyout
-       * 
-       * Otherwise, we compose the flyout url conventionally:
-       * 
-       * ?id=/id
-       */
-      if (this.flyout_object_url) {
-          url += (flyout_id + "?flyout");
-      }
-      else {
-          submit_data = {
-              id: flyout_id
-          };
-      }
+      var url = this.flyout_url.replace(/\$\{id\}/g, data.id);
 
       var ajax_options = {
         url: url,
-        data: submit_data,
         traditional: true,
         beforeSend: function(xhr) {
           var calls = self.input.data("flyout.request.count.suggest") || 0;
@@ -1648,11 +1612,11 @@
       flyout: true,
 
       // default is service_url if NULL
-      flyout_service_url: "http://www.freebase.com",
+      flyout_service_url: "http://dev.freebase.com",
 
       // flyout_service_url + flyout_service_path =
       // url to flyout service
-      flyout_service_path: "/private/flyout",
+      flyout_service_path: "${id}?flyout",
 
       // jQuery selector to specify where the flyout
       // will be appended to (defaults to document.body).

@@ -176,15 +176,14 @@
             String
           </td>
           <td>
-            <b>Default: </b><code class="prettyprint">"${id}"</code>
+            <b>Default: </b><code class="prettyprint">"${id}?flyout"</code>
           </td>
         </tr>
         <tr>
           <td colspan="3">
             flyout_service_url + flyout_service_path = url to flyout service.
-            If the path is "${id}" then the id or mid of 
-            the mouseover item will be appended flyout_service_url with a "?flyout" query parameter 
-            (e.g., "http://www.freebase.com/m/045c7b?flyout")
+            "${id}" will always be replaced with the id of the current mouseover item.
+            (e.g., "http://dev.freebase.com/m/045c7b?flyout")
           </td>
         </tr>
 

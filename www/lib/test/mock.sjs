@@ -266,9 +266,20 @@ function deep_copy(obj) {
 
 var MOCK_ACRE_CACHE = {
   get: function() {return null;},
+  getAll: function() {return {};},
   put: function() {},
-  remove: function() {},
+  putAll: function() {},
   increment: function() {},
+  remove: function() {},
+  removeAll: function() {},
+  request: {
+    get: function() {return null;},
+    getAll: function() {return {};},
+    put: function() {},
+    putAll: function() {},
+    remove: function() {},
+    removeAll: function() {}
+  },
   original: null
 };
 

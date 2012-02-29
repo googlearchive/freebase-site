@@ -14,7 +14,7 @@ socket.setdefaulttimeout(60)
 
 LICENSE_PREAMBLE = '''
 /*
- * Copyright 2010, Google Inc.
+ * Copyright 2012, Google Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -715,6 +715,11 @@ class App:
   def create_branch(self, dependency=None):
 
     c = self.context
+
+    success = c.googlecode_login()
+    if not success:
+      raise FatalException("You must provide valid google code credentials in order to branch an app.")
+
     target_version = self.next_version()
     if not target_version:
       return c.error("Cannot figure out next valid version of %s to branch to" % self.app_key)
@@ -769,11 +774,11 @@ class App:
 
     c = self.context
 
+    c.log("Creating tag for %s" % self, color=c.BLUE)
+
     success = c.googlecode_login()
     if not success:
-      raise FatalException("You must provide valid google code credentials to complete this operation.")
-
-    c.log("Creating tag for %s" % self, color=c.BLUE)
+      raise FatalException("You must provide valid google code credentials to create an app tag.")
 
     d_app = self.dependency()
     
@@ -1061,10 +1066,13 @@ class Context():
     return False
 
   def add_svn_credentials(self, cmd):
-      if self.googlecode_username:
-          cmd.extend(['--username', self.googlecode_username])
-          
-      return cmd
+    if self.googlecode_username:
+      cmd.extend(['--username', self.googlecode_username])
+
+    if self.googlecode_password:
+        cmd.extend(['--password', self.googlecode_password])
+
+    return cmd
 
   def quote(self, msg):
     return '"%s"' % msg
@@ -1463,10 +1471,6 @@ class Acre:
 
     c = context
 
-    success = c.googlecode_login()
-    if not success:
-      return c.error('You must provide valid google code credentials to complete this operation.')
-
     try:
       if target_dir:
         absolute_target_dir = os.path.expanduser(target_dir)
@@ -1493,44 +1497,6 @@ class Acre:
     c.log('Starting acre checkout')
     svn.checkout(absolute_target_dir)
     c.log('Acre checkout done')
-
-    # CONFIGURATION #
-    c.log('Starting local configuration.')
-
-    try:
-      fh = open(os.path.join(absolute_target_dir, 'config', 'project.local.conf.sample'), 'r')
-    except:
-      raise FatalException('Could not open the file %s for reading.' % os.path.join(target_dir, 'config', 'project.local.conf.sample'))
-    else:
-      lines = fh.readlines()
-      fh.close()
-
-    try:
-      fh = open(os.path.join(absolute_target_dir, 'config', 'project.local.conf') , 'w')
-    except:
-      raise FatalException('Could not open the file %s for writing.' % os.path.join(target_dir, 'config', 'project.local.conf'))
-
-    params = { 
-      'ACRE_HOST_BASE' : c.options.acre_host,
-      'ACRE_PORT' : c.options.acre_port,
-    }
-
-    written_params = {}
-
-    for line in lines:
-      parts = line.split('=')
-      if len(parts) and parts[0] in params.keys():
-        fh.write('%s="%s"\n' % (parts[0], params.get(parts[0])))
-        written_params[parts[0]] = True
-      else:
-        fh.write(line)
-
-    for k, v in params.iteritems():
-      if not written_params.get(k):
-        fh.write('%s="%s"\n' % (k,v))
-
-    fh.close()
-    c.log('Done modifying configuration.')
 
     return target_dir
 
@@ -2118,7 +2084,6 @@ class Site:
       The configuration target as a string (e.g. sandbox-freebasesite).
 
     """
-
     site_dir = cls.ResolveSiteDir(site_dir)
 
     if not site_dir:

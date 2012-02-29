@@ -220,6 +220,7 @@ class ActionDeployAcre:
         if not result:
           c.error('Failed to copy %s to app-engine bundle, continuing with other apps...' % app)
 
+      # By default, push the environments app too unless --failover was specified.
       if not c.options.failover:
         acre.bundle_environments()
 
@@ -451,10 +452,6 @@ class ActionCreateAppBranch():
 
     from_app = App.Get(c, c.options.app, c.options.version)
 
-    success = c.googlecode_login()
-    if not success:
-      return c.error('You must provide valid google code credentials to complete this operation.')
-
     c.log('Starting branching app: "%s"' % from_app.app_key, color=c.BLUE)
 
     #create the branch
@@ -473,6 +470,15 @@ class ActionCreateAppBranch():
 class ActionCreateAppTag():
 
   def __init__(self, context):
+    # Setting some defaults.
+    # By default, create a tag of the latest version of the app.
+    if not context.options.version:
+      context.options.version = "latest"
+
+    # By default, checkout acre trunk if no specific version (branch) or a local directory is specified.
+    if not (context.options.acre_version or context.options.acre_dir):
+      context.options.acre_version = "trunk"
+
     self.context = context
 
   def __call__(self):
@@ -491,6 +497,7 @@ class ActionCreateAppTag():
 
     if not acre:
       return c.error("Could not get an acre instance. You can specifiy --acre_dir, or --acre_version with a valid acre branch or trunk")
+
     from_branch_app = App.Get(c, c.options.app, c.options.version)
     tag_app = from_branch_app.create_tag()
 
@@ -563,10 +570,6 @@ class ActionInfo:
   def __call__(self):
 
     c = self.context
-
-    success = c.googlecode_login()
-    if not success:
-      return c.error('You must provide valid google code credentials to complete this operation.')
 
     if c.options.app:
       return self.info_app()
@@ -670,8 +673,7 @@ class ActionSpeedTest:
 
   x_labels_groups = {
     'none' : [],
-    'main' : ['at', 'auuc', 'auuw', 'auub', 'afuc', 'amrc', 'amrw'],
-    'all' : ['at', 'asuc', 'asuw', 'asub', 'afsc', 'afmc', 'afmw', 'afcc', 'afcw', 'auuc', 'auuw', 'auub', 'afuc', 'aidc', 'aidw', 'aifc', 'aifw', 'amrc', 'amrw', 'amwc', 'amww']
+    'main' : ['at', 'auuc', 'auuw', 'auub', 'afuc', 'amrc', 'amrw']
     }
 
   x_cost_default = 'main'
@@ -686,6 +688,7 @@ class ActionSpeedTest:
     'auuc': 'number of user urlfetches (e.g. mqlreads from apps)',
     'auuw': 'cumulative user urlfetch waiting time',
     'auub': 'cumulative time spent blocking on user urlfetches (doing no other work)',
+
     'afmc': 'number of attempts to access the classloader memcache (hits & misses)',
     'afmw': 'cumulative classloader memcache wait time',
     'afcc': 'number of files compiled',
@@ -695,10 +698,18 @@ class ActionSpeedTest:
     'aidw': 'wait time on filesystem directory reads',
     'aifc': 'number of filesystem file content reads',
     'aifw': 'wait time on file content reads',
-    'amrc': 'number of memcache get() (reads)',
-    'amrw': 'wait time on memcache gets',
-    'amwc': 'number of memecach put() (writes)',
-    'amww': 'wait time on memcache put()'
+
+    'amrc': 'number of memcache read calls (get or getAll)',
+    'amrn': 'number of keys (entries) read from memcache. If all the reads where get() amrc = amrn',
+    'amrw': 'wait time on memcache reads',
+    'amwc': 'number of memecach write calls (put or putAll)',
+    'amwn': 'number of keys (entries) written into memcache. If all writes are put() amwc = amwn',
+    'amww': 'wait time on memcache writes',
+
+    'jsonsc': 'number of json.stringify() calls',
+    'jsonsw': 'time spent json stringifying',
+    'jsonpc': 'number of json.parse() calls',
+    'jsonpw': 'time spent json parsing'
     }
 
   _ae_dashboard = "https://appengine.google.com/logs"
@@ -717,6 +728,8 @@ class ActionSpeedTest:
     self.urls = []
     self.largest_url_length = 0
     self.runid = str(datetime.datetime.now()).replace(" ","-").replace(":","-")[0:19]
+
+    self.x_labels_groups['all'] = self.x_labels.keys()
 
     try:
       fd = open(self._conf)
@@ -743,7 +756,16 @@ class ActionSpeedTest:
   def appengine_logs_url(self):
     c = self.context
 
-    site_config, appengine_app_id, appengine_app_version = Site.ResolveConfig(c, c.options.config, c.options.site_dir, c.options.host)
+    if not c.options.host:
+      return ""
+
+    site_config, appengine_app_id, appengine_app_version = None, None, None
+
+    try:
+      site_config, appengine_app_id, appengine_app_version = Site.ResolveConfig(c, c.options.config, c.options.site_dir, c.options.host)
+    except:
+      #We really don't care if we found a config, speedtests can be run on arbitrary hosts.
+      pass
 
     if not appengine_app_id:
       return None
@@ -779,6 +801,9 @@ class ActionSpeedTest:
   def generate_urls_for_page(self, page, n):
     """Generate urls given a page specification and numbers to repeat."""
     host = self.context.options.host
+
+    if not host.startswith("http"):
+      host = "http://%s" % host
     
     match = re.search('{(.+)}', page.get('url'))
 
@@ -925,6 +950,7 @@ class ActionSpeedTest:
     if c.options.page:
       if not self.conf['pages'].get(c.options.page):
         raise FatalException("There is no page configuration called %s in speedtest.conf" % c.options.page)
+
       urls = self.generate_urls_for_page(self.conf['pages'][c.options.page], c.options.repeat)
 
     # Case 2: Run a test bundle of multiple pages
@@ -945,10 +971,8 @@ class ActionSpeedTest:
         random.shuffle(urls)
       runner.add_urls(urls)
       threads.append(runner)
-    
 
     print "\nStarting %s requests to host %s" % (len(urls) * c.options.concurrent, c.options.host)
-    site_config, appengine_app_id, appengine_app_version = Site.ResolveConfig(c, c.options.config, c.options.site_dir, c.options.host)
 
     if self.appengine_logs_url:
       print "AppEngine Logs: %s" % self.appengine_logs_url
@@ -1066,6 +1090,9 @@ class ActionCreateRoutes:
 
 
     print '''
+// WARNING: This is an auto-generated file by //trunk/scripts/sitedeploy.py.
+// If you make changes to this file, please adjust ActionCreateRoutes.__call__ in there too.
+
 var codebase = "%s";
 var tags_codebase = "%s";
 
@@ -1073,6 +1100,7 @@ var environment_rules = {
 
     "labels" : {
         "lib": "%s",
+        "default" : "//default.dev",
 ''' % (site.conf("acre_id_suffix_trunk"), site.conf("acre_id_suffix_tags"), lib)
 
     apps = site.apps()
@@ -1090,7 +1118,12 @@ var environment_rules = {
         print '        "%s": "//%s" + codebase%s' % (app_key, app_key, i < len(apps)-1 and "," or "")
 
     print '''
-    }
+    },
+
+    "prefix" : [
+      { prefix:"/keystore", app:"default",  script: "keystore.sjs"},
+
+    ]
  
 };
 
@@ -1185,7 +1218,7 @@ def main():
   parser.add_option("", "--page", dest="page", default=None, help="speedtest: the page you are testing")
   parser.add_option("", "--test", dest="test", default=None, help="speedtest: the test you want to run")
   parser.add_option("", "--repeat", dest="repeat", default=10, help="speedtest: number of times the page will be hit", type="int")
-  parser.add_option("", "--host", dest="host", default="test.sandbox-freebase.com", help="host to hit - just the domain name")
+  parser.add_option("", "--host", dest="host", default=None, help="host to hit - just the domain name")
   parser.add_option("", "--concurrent", dest="concurrent", default=1, help="speedtest: number of concurrent clients", type="int")
   parser.add_option("", "--list", dest="list", action="store_true", default=False, help="speedtest: list pages and tests")
   parser.add_option("", "--type", dest="type", default="/type/type", help="freebase type id")

@@ -3,27 +3,36 @@
     "host": null,
     "rules": [
       {
-        "from" : { 
+        "from" : {
           "path":"/acre/keystore_console"
         },
-        "to" : { 
+        "to" : {
           "route_as":"script",
           "location":"/default/keystore"
         }
-      }
-    ]
-  },
-  {
-    "host": ".@ACRE_METAWEB_BASE_ADDR@",
-    "rules": [
+      },
       {
         "from": {
-          "path": "/" 
+          "path": "/"
         },
         "to": {
           "route_as": "script",
-          "location": "//environments.svn.freebase-site.googlecode.dev/@ACRE_FREEBASE_SITE_ADDR@"
-        } 
+          "location": "//environments.svn.freebase-site.googlecode.dev/@ACRE_HOST_BASE@"
+        }
+      }  
+    ]
+  },
+  {
+    "host": [".@ACRE_METAWEB_BASE_ADDR@", "@ACRE_HOST_BASE@"],
+    "rules": [
+      {
+        "from": {
+          "path": "/"
+        },
+        "to": {
+          "route_as": "script",
+          "location": "//environments.svn.freebase-site.googlecode.dev/@ACRE_HOST_BASE@"
+        }
       }
     ]
   }

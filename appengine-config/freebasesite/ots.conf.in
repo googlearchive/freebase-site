@@ -10,6 +10,15 @@
          "route_as":"script",
          "location":"/default/keystore"
        }
+     }, 
+     {
+        "from": {
+        "path": "/" 
+      },
+       "to": {
+         "route_as": "script",
+         "location": "//environments.svn.freebase-site.googlecode.dev/@ACRE_HOST_BASE@"
+       } 
      }
    ]
   },
@@ -22,7 +31,7 @@
         },
         "to": {
           "route_as": "script",
-          "location": "//environments.svn.freebase-site.googlecode.dev/@ACRE_FREEBASE_SITE_ADDR@"
+          "location": "//environments.svn.freebase-site.googlecode.dev/@ACRE_HOST_BASE@"
         } 
       }
     ]

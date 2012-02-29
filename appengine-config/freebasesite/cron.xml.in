@@ -46,21 +46,6 @@
     <schedule>every 10 minutes</schedule>
   </cron>
   <cron>
-    <url>/appeditor</url>
-    <description>Cache warmup.</description>
-    <schedule>every 10 minutes</schedule>
-  </cron>
-  <cron>
-    <url>/docs</url>
-    <description>Cache warmup.</description>
-    <schedule>every 10 minutes</schedule>
-  </cron>
-  <cron>
-    <url>/appeditor</url>
-    <description>Cache warmup.</description>
-    <schedule>every 10 minutes</schedule>
-  </cron>
-  <cron>
     <url>/query</url>
     <description>Cache warmup.</description>
     <schedule>every 10 minutes</schedule>

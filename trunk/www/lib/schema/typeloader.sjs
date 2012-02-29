@@ -34,6 +34,8 @@ var freebase = acre.require("promise/apis").freebase;
 
 var SCHEMA_KEY_PREFIX = "lib/schema/typeloader.sjs:";
 
+var cache_impl = acre.cache.request;
+
 /**
  * Invalidate specified type id(s) from acre.cache.
  * This should be called whenever a type changes
@@ -41,19 +43,17 @@ var SCHEMA_KEY_PREFIX = "lib/schema/typeloader.sjs:";
  */
 function unload(/** type_id1, type_id2, ..., type_idN **/) {
   var type_ids = Array.prototype.slice.call(arguments);
-  type_ids.forEach(function(type_id) {
-    acre.cache.remove(cache_key(type_id));
-  });
+  cache_impl.removeAll(cache_keys(type_ids));
 };
 
 /**
- * Type (schema) loader, uses acre.cache or mqlread to
+ * Type (schema) loader, uses acre.cache.request or mqlread to
  * return the canonical schema representation of each type id passed in as argument.
  *
  * A canonical schema of a type includes:
  * type -> properties -> expected_type [-> properties -> expected_type]
  *
- * Behind the scenes, typeloader uses acre.cache to cache already loaded type schemas.
+ * Behind the scenes, typeloader uses acre.cache.request to cache already loaded type schemas.
  * So using typeloader should be much faster, then always doing a mqlread.
  *
  * Usage:
@@ -153,32 +153,44 @@ function load() {
 function _load() {
   var type_ids = Array.prototype.slice.call(arguments);
   // TODO: assert type_ids.length
-  var cached = {};
+  var result = {};
   var not_cached = [];
-  type_ids.forEach(function(type_id) {
-    var type = acre.cache.get(cache_key(type_id));
-    if (type) {
-      cached[type_id] = type;
-      type.__CACHED__ = true; // flag to indicate type was cached
-    }
-    else {
-      not_cached.push(type_id);
-    }
-  });
+  // keys[i] is the cache key of type_ids[i]
+  var keys = cache_keys(type_ids);
+  var cached = cache_impl.getAll(keys);
+  /** DEBUG
+  var cached_keys = [];
+  for (var k in cached) {
+      cached_keys.push(k);
+  }
+  acre.syslog.debug({cached: cached_keys.length}, "CACHED");
+  acre.syslog.debug({not_cached: keys.length - cached_keys.length}, "NOT CACHED");
+  **/
+  keys.forEach(function(key, i) {
+      var type_id = type_ids[i];
+      if (key in cached) {
+          result[type_id] = cached[key];
+      }
+      else {
+          not_cached.push(type_id);
+      }
+  });  
   var d;
   if (not_cached.length) {
-    d = do_mql.apply(null, not_cached)
-      .then(function(types) {
-        types.forEach(function(type) {
-         acre.cache.put(cache_key(type.id), type);
-          cached[type.id] = type;
-          type.__CACHED__ = false;  // flag to indicate type was NOT cached
-        });
-        return cached;
-      });
+      d = do_mql.apply(null, not_cached)
+          .then(function(types) {
+              var to_put = {};
+              types.forEach(function(type) {
+                  result[type.id] = type;
+                  to_put[cache_key(type.id)] = type;
+              });
+              cache_impl.putAll(to_put);
+              return result;
+          });
+
   }
   else {
-    d = deferred.resolved(cached);
+    d = deferred.resolved(result);
   }
   return d;
 };
@@ -187,8 +199,10 @@ function cache_key(type_id) {
   return SCHEMA_KEY_PREFIX + type_id;
 };
 
-function was_cached(type) {
-  return type.__CACHED__ === true;
+function cache_keys(type_ids) {
+    return type_ids.map(function(type_id) {
+        return cache_key(type_id);
+    });
 };
 
 function assert(truthy, msg) {

@@ -892,7 +892,7 @@ class ActionSpeedTest:
 
     print '\nMedian Values for X-Metaweb-Cost:'
     cost_rows = [["key", "median", "description"]]
-    for key in self._labels:
+    for key in sorted(self._labels):
       r = [x['x'].get(key,0) for x in responses if x['c'] == 200]
       cost_rows.append([key, self.median(r), self.x_labels[key]])
       #print '\t%s - %s: \t%s' % (key, self.x_labels[key], self.median(r))
@@ -948,10 +948,17 @@ class ActionSpeedTest:
     # Case 1: Test a single page.
 
     if c.options.page:
-      if not self.conf['pages'].get(c.options.page):
+
+      # If --page starts with a /, then construct a pseudo-page entry
+      if c.options.page.startswith("/"):
+        path = {"url" : c.options.page }
+      # Otherwise read it from the configuration file
+      elif self.conf['pages'].get(c.options.page):
+        path = self.conf['pages'][c.options.page]
+      else:
         raise FatalException("There is no page configuration called %s in speedtest.conf" % c.options.page)
 
-      urls = self.generate_urls_for_page(self.conf['pages'][c.options.page], c.options.repeat)
+      urls = self.generate_urls_for_page(path, c.options.repeat)
 
     # Case 2: Run a test bundle of multiple pages
     elif c.options.test:

@@ -37,9 +37,6 @@
   var _ = i18n.gettext;
   var filter_components = acre.require("lib/filter/components.mjt");
   var fh = acre.require("lib/filter/helpers.sjs");
-  // microdata helpers
-  var microdata = acre.require("lib/helper/microdata.sjs");
-  var itemprop = microdata.itemprop;
   var propbox = acre.require("lib/propbox/propbox.mjt");
   var mt = acre.require("manage_type_components.mjt");
 </acre:script>

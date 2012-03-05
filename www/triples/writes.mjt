@@ -42,11 +42,6 @@
   var _ = i18n.gettext;
   var th = acre.require("helpers.sjs");
   var triples = acre.require("triples.mjt");
-
-  // microdata helpers
-  var microdata = acre.require("lib/helper/microdata.sjs");
-  var itemprop = microdata.itemprop;
-
 </acre:script>
 
 <acre:block def="head()">

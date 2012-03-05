@@ -46,9 +46,6 @@
   var this_exports = this.exports;
   var that_exports;
   var fh = acre.require("lib/filter/helpers.sjs");
-  // microdata helpers
-  var microdata = acre.require("lib/helper/microdata.sjs");
-  var itemprop = microdata.itemprop
 
   var exec = function (o, scope) {
     var ifexec = true;
@@ -102,7 +99,7 @@
 </acre:block>
 
 <acre:block def="content(exports)">
-  <div id="content" class="clear" itemscope="" data-id="${c.object.id}">
+  <div id="content" class="clear" data-id="${c.object.id}">
     ${content_body()}
   </div>
 </acre:block>
@@ -177,8 +174,7 @@
       !!-->
       <div class="page-title">
         <span class="creation-timestamp">
-          <span acre:if="c.object.attribution"
-                acre:attrs="itemprop('/type/object/creator', true)">
+          <span acre:if="c.object.attribution">
             ${image.user_image_tiny(c.object.attribution.creator)}
             ${_("Created by")}
 
@@ -191,16 +187,17 @@
             ${_("Created on")}
           </span>
           <acre:script>
-            var attrs = itemprop('/type/object/timestamp');
-            attrs["class"] = "published";
-            attrs["data-format"] = "long";
+            var attrs = {
+              "class": "published",
+              "data-format": "long"
+            };
           </acre:script>
           ${i18n_c.datetime(c.object.timestamp, attrs)}
         </span>
 
         <acre:block if="c.object.name.length">
           <h1>
-            <span acre:attrs="itemprop('/type/object/name')">
+            <span>
               ${c.object.name[0].value}
             </span>
             <ul class="inline-menu nicemenu">
@@ -240,7 +237,7 @@
           -->
           <acre:block else="">
             <h1>
-              <span acre:attrs="itemprop('/type/object/id')">${c.object.id}</span>
+              <span>${c.object.id}</span>
             </h1>
           </acre:block>
 
@@ -254,7 +251,7 @@
           <div class="meta">
             <span class="key">
               <strong><abbr title="${_('ID')}">${_("id")}</abbr></strong>:
-              <span acre:attrs="itemprop('/type/object/id')">${c.object.id}</span>
+              <span>${c.object.id}</span>
             </span>
             <span acre:for="nk in c.nav_keys" class="key">
               <acre:block if="exec(nk, c)">
@@ -274,10 +271,10 @@
                 var word_length = 30;
               </acre:script>
               <acre:block if="words.length < word_length">
-                <p class="blurb" itemprop="desc">${c.blurb}</p>
+                <p class="blurb">${c.blurb}</p>
               </acre:block>
               <acre:block else="">
-                <p class="blurb" itemprop="desc">${words.slice(0, word_length).join(" ")}&hellip;<a href="#" title="${_('Show more')}" onclick="$$(this).parent('p').hide().next('p').show();return false;">[ + ]</a></p>
+                <p class="blurb">${words.slice(0, word_length).join(" ")}&hellip;<a href="#" title="${_('Show more')}" onclick="$$(this).parent('p').hide().next('p').show();return false;">[ + ]</a></p>
                 <p style="display:none;">${c.blurb}
                   <a acre:if="article && article.source == 'wikipedia'" href="$article.source_uri">${_('Read entire article on Wikipedia')}</a>
                   <a href="#" title="${_('Show less')}" onclick="$$(this).parent('p').hide().prev('p').show();return false;">[ - ]</a>

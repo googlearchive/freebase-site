@@ -70,7 +70,7 @@
 </acre:block>
 
 <acre:block def="content(exports)">
-  <div id="content" class="clear" itemscope="" data-id="${c.object.id}">
+  <div id="content" class="clear" data-id="${c.object.id}">
     ${content_body()}
   </div>
 </acre:block>

@@ -35,7 +35,6 @@
   var _ = i18n.gettext;
   // microdata helpers
   var microdata = acre.require("helper/microdata.sjs");
-  var itemprop = microdata.itemprop;
   var ph = acre.require("propbox/helpers.sjs");
   var image = acre.require("template/imagecomponents.mjt");
   var form = acre.require("propbox/form.mjt");
@@ -184,7 +183,6 @@
 
 <acre:block def="datatable_row(topic, prop_structure, prop_value, lang)">
   <tr class="kbs data-row" 
-      acre:attrs="itemprop(prop_structure.id, true)"
       data-id="${prop_value.id}">
     <acre:block for="i, subprop_structure in prop_structure.properties">
       <acre:script>
@@ -200,7 +198,6 @@
 
 <acre:block def="image_row(topic, prop_structure, prop_value, lang)">
   <tr class="kbs data-row" 
-      acre:attrs="itemprop(prop_structure.id, true)"
       data-id="${prop_value.id}">
     <td class="first">
       <ul class="data-list">
@@ -230,7 +227,6 @@
 
 <acre:block def="article_row(topic, prop_structure, prop_value, lang)">
   <tr class="kbs data-row" 
-      acre:attrs="itemprop(prop_structure.id, true)"
       data-id="${prop_value.id}">
     <td class="first">
       <ul class="data-list">
@@ -342,7 +338,7 @@
         }
       </acre:script>
       <a title="${prop_value.id}" class="property-value"
-         acre:attrs="itemprop(prop_structure.id)" href="${h.fb_url(true, prop_value.id)}"
+         href="${h.fb_url(true, prop_value.id)}"
          data-id="${prop_value.id}">${text}</a>
       <acre:block if="show_lang">
         ${i18n_c.lang_code(prop_value.lang, lang)}
@@ -354,7 +350,7 @@
       if (!("value" in prop_value)) {
         prop_value.value = prop_value.text;
       }
-      var attrs = h.extend(itemprop(prop_structure.id), microdata.value(prop_structure, prop_value));
+      var attrs = h.extend({}, microdata.value(prop_structure, prop_value));
       attrs["class"] = "property-value";
     </acre:script>
     <acre:block if="ect === '/type/datetime'">

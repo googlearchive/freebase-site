@@ -41,10 +41,6 @@
   var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
   var th = acre.require("helpers.sjs");
-
-  // microdata helpers
-  var microdata = acre.require("lib/helper/microdata.sjs");
-  var itemprop = microdata.itemprop;
   var QUERY = _("query");
 </acre:script>
 

@@ -796,7 +796,7 @@ function add_included_types(id, included_types) {
   return freebase.mqlwrite(q)
     .then(function(env) {
       // invalidate type schema
-      typeloader.unload(id);
+      typeloader.invalidate(id);
       return env.result["/freebase/type_hints/included_types"];
     });
 };
@@ -815,7 +815,7 @@ function delete_included_type(id, included_type) {
   return freebase.mqlwrite(q)
     .then(function(env) {
       // invalidate type schema
-      typeloader.unload(id);
+      typeloader.invalidate(id);
       return env.result["/freebase/type_hints/included_types"];
     });
 };

@@ -106,7 +106,7 @@ function delete_property(prop_id, user_id, dry_run, force) {
       return freebase.mqlwrite(q)
         .then(function(env) {
           // invalidate type containing this property
-          typeloader.unload(info.schema.id);
+          typeloader.invalidate(info.schema.id);
           return env.result;
         })
         .then(function(result) {
@@ -153,7 +153,7 @@ function undo(prop_info) {
   return freebase.mqlwrite(q)
     .then(function(env) {
       // invalidate type containing this property
-      typeloader.unload(prop_info.schema.id);
+      typeloader.invalidate(prop_info.schema.id);
       return env.result;
     })
     .then(function(result) {

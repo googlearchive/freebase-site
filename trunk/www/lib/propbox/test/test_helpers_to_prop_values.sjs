@@ -93,9 +93,9 @@ test("to_prop_values", function() {
   };
 
   [
-    "/base/slamdunk/player/number"
+    "/base/slamdunk/player/number",
     // cvt
-    //"/fictional_universe/fictional_character/romantically_involved_with"
+    "/fictional_universe/fictional_character/romantically_involved_with"
   ].forEach(function(pid) {
     (function() {
       var structure, prop_data, expected;

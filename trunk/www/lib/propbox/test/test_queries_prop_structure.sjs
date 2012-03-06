@@ -69,7 +69,7 @@ test("prop_structures", function() {
     "/measurement_unit/dated_integer/year"
   ];
   var structures;
-  queries.prop_structures.apply(null, pids.concat(["/lang/en"]))
+  queries.prop_structures(pids, "/lang/en")
     .then(function(s) {
       structures = s;
     });

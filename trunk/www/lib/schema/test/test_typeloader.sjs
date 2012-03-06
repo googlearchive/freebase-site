@@ -50,70 +50,59 @@ function assert_key(obj, key, expected, msg) {
     }
 };
 
-function assert_dated_integer_schema(schema, deep) {
-  var i,l;
-  assert_key(schema, "/freebase/type_hints/mediator", true,
-             "/measurement_unit/dated_integer is a mediator");  
-  // assert /measurement_unit/dated_integer/year in schema.properties[]
-  var props = h.map_array(schema.properties, "id");    
-  var year = props["/measurement_unit/dated_integer/year"];
-  ok(year, "Got /measurement_unit/dated_integer/year");
-  assert_key(year, "unique", true, 
-             "/measurement_unit/dated_integer/year is unique");
-  // assert /measurement_unit/dated_integer/year expected type
-  var ect = year.expected_type;
-  assert_key(ect, "id", "/type/datetime");
-  assert_key(ect, "/freebase/type_hints/mediator", false, 
-             "/type/datetime is NOT a mediator");
-  if (deep) {
-    // assert /measurement_unit/dated_integer/source
-    var source = props["/measurement_unit/dated_integer/source"];
-    ok(source, "Got /measurement_unit/dated_integer/source");
-    ect = source.expected_type;
-    assert_key(ect, "id", "/dataworld/information_source");      
-    var subprops = h.map_array(ect.properties, "id");
-    var authority = subprops["/dataworld/information_source/authority"];
-    ok(authority, "Got /dataworld/information_source/authority");
-    assert_key(authority, "unique", false,
-               "/dataworld/information_source/authority is NOT unique");
-    assert_key(authority, "/freebase/property_hints/disambiguator", false, 
-               "/dataworld/information_source/authority is NOT disambiguator");
-
-    ect = authority.expected_type;
-    assert_key(ect, "id", "/dataworld/provenance");
-    assert_key(ect, "/freebase/type_hints/mediator", false, 
-               "/dataworld/provenance is NOT a mediator");
-  }
-  else {
-    ok(typeof ect.properties === "undefined", 
-       "Should not contain deep properties");
-  }
-};
-
 test("load", function() {
-  var result;
-  typeloader.load("/measurement_unit/dated_integer")
-    .then(function(types) {
-      result = types;
-    });
-  acre.async.wait_on_results();
-  ok(result, "Got load result");
-  var schema = result["/measurement_unit/dated_integer"];
-  ok(schema, "Got /measurement_unit/dated_integer");
-  assert_dated_integer_schema(schema, false);
+    var schema;
+    typeloader.load("/measurement_unit/dated_integer")
+        .then(function(r) {
+                  schema = r;
+              });
+    acre.async.wait_on_results();
+    ok(schema, "Got load result");
+    var i,l;
+    assert_key(schema, "/freebase/type_hints/mediator", true,
+               "/measurement_unit/dated_integer is a mediator");  
+    // assert /measurement_unit/dated_integer/year in schema.properties[]
+    var props = h.map_array(schema.properties, "id");    
+    var year = props["/measurement_unit/dated_integer/year"];
+    ok(year, "Got /measurement_unit/dated_integer/year");
+    assert_key(year, "unique", true, 
+               "/measurement_unit/dated_integer/year is unique");
+    // assert /measurement_unit/dated_integer/year expected type
+    var ect = year.expected_type;
+    assert_key(ect, "id", "/type/datetime");
+    assert_key(ect, "/freebase/type_hints/mediator", false, 
+               "/type/datetime is NOT a mediator");
+    ok(typeof ect.properties === "undefined",  "Should not contain deep properties");
 });
 
-test("load deep", function() {
-  var result;
-  typeloader.load(true, "/measurement_unit/dated_integer")
-    .then(function(types) {
-      result = types;
+test("loads", function() {
+    var schema;
+    typeloader.loads(["/film/film"])
+        .then(function(r) {
+            schema = r["/film/film"];
+        });
+    acre.async.wait_on_results();
+    ok(schema, "Got loads result");
+    ok(schema.properties && schema.properties.length, "Got /film/film properties");
+    var directed_by;
+    var starring;
+    schema.properties.forEach(function(prop) {
+        if (prop.id === "/film/film/directed_by") {
+            directed_by = prop;
+        }
+        else if (prop.id === "/film/film/starring") {
+            starring = prop;
+        }
     });
-  acre.async.wait_on_results();
-  ok(result, "Got load result");
-  var schema = result["/measurement_unit/dated_integer"];
-  ok(schema, "Got /measurement_unit/dated_integer");
-  assert_dated_integer_schema(schema, true);
+    ok(directed_by, "Got /film/film/directed_by property");
+    ok(directed_by.expected_type && !directed_by.expected_type.properties,
+       "Should not get non-mediator expected type properties");
+    ok(starring, "Got /film/film/starring property");
+    ok(starring.expected_type && starring.expected_type.properties && starring.expected_type.properties.length,
+       "Got mediator expected type properties");
+    starring.expected_type.properties.forEach(function(p) {
+        ok(p["/freebase/property_hints/disambiguator"] === true, "Got disambiguating property: " + p.id);
+    });
 });
 
 acre.test.report();

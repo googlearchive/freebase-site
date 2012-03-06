@@ -135,7 +135,7 @@ function topic_structure(id, lang, all, domain, type, prop) {
           });
         }
         // typeloader.load takes var args: [true, type_id1, type_id2, ..., type_idN]
-        d = typeloader.load.apply(null, [true].concat(type_ids))
+        d = typeloader.loads(type_ids, h.lang_id(lang))
           .then(function(typeloader_result) {
              var structure = get_structure(typeloader_result, notable_types, lang, all);
              if (prop) {

@@ -175,7 +175,7 @@ function create_property(options) {
       return freebase.mqlwrite(q, {use_permission_of: o.type})
         .then(function(env) {
           // invalidate type schema
-          typeloader.unload(o.type);
+          typeloader.invalidate(o.type);
           if (o.master_property) {
             // TODO: we need to invalidate master_property.schema (type)...
           }

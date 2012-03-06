@@ -61,7 +61,7 @@ var SPEC = {
     return freebase.mqlwrite(q)
       .then(function() {
         // invalidate type
-        typeloader.unload(id);
+        typeloader.invalidate(id);
         return {
           location: h.fb_url(id, [['schema']])
         };

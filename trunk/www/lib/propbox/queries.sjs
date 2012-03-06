@@ -39,21 +39,16 @@ var proploader = acre.require("schema/proploader.sjs");
 /**
  * MQL prop schema result
  */
-function prop_schema(pid) {
-  return proploader.load(pid)
-    .then(function(result) {
-      return result[pid];
-    });
+function prop_schema(pid, lang) {
+  return proploader.load(pid, lang);
 };
 
-function prop_schemas(/** pid_1, pid_2, ... , pid_N **/) {
-  var pids = Array.prototype.slice.call(arguments);
-  return proploader.load.apply(null, pids)
+function prop_schemas(pids, lang) {
+  return proploader.loads(pids, lang)
     .then(function(result) {
       var schemas = [];
       pids.forEach(function(pid, i) {
         var schema = result[pid];
-        // TODO: assert schema for each pid
         schemas.push(schema);
       });
       return schemas;
@@ -69,19 +64,15 @@ function prop_schemas(/** pid_1, pid_2, ... , pid_N **/) {
  * }
  */
 function prop_structure(pid, lang) {
-  return prop_schema(pid)
+  return prop_schema(pid, lang)
     .then(function(schema) {
       return ph.to_prop_structure(schema, lang);
     });
 };
 
 
-function prop_structures(/** pid_1, pid_2, ... , pid_N, lang **/) {
-  var args = Array.prototype.slice.call(arguments);
-  var len = args.length;
-  var pids = args.slice(0, len - 1);
-  var lang = args[len - 1];
-  return prop_schemas.apply(null, pids)
+function prop_structures(pids, lang) {
+  return prop_schemas(pids, lang)
     .then(function(schemas) {
       var structures = [];
       schemas.forEach(function(schema) {

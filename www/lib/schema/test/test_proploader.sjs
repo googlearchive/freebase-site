@@ -37,48 +37,53 @@ var h = acre.require("helper/helpers.sjs");
 var proploader = acre.require("schema/proploader.sjs");
 
 test("is_prop_id", function() {
-  var valid = ["/a/b/c", "/a/b/c/d", "/a/b/c/d/e"];
-  valid.forEach(function(id) {
-    ok(proploader.is_prop_id(id), "valid:" + id);
-  });
-  var invalid = ["/a/b", "/a", "/", ""];
-  invalid.forEach(function(id) {
-    ok(!proploader.is_prop_id(id), "invalid: " + id);
-  });
+    var valid = ["/a/b/c", "/a/b/c/d", "/a/b/c/d/e"];
+    valid.forEach(function(id) {
+        ok(proploader.is_prop_id(id), "valid:" + id);
+    });
+    var invalid = ["/a/b", "/a", "/", ""];
+    invalid.forEach(function(id) {
+        ok(!proploader.is_prop_id(id), "invalid: " + id);
+    });
 });
 
 test("get_type_id", function() {
-  same(proploader.get_type_id("/a/b/c"), "/a/b");
-  var invalid = ["/a/b", "/a", "/", ""];
-  invalid.forEach(function(id) {
-    try {
-      proploader.get_type_id(id);
-      ok(false, "Expected invalid property id: " + id);
-    }
-    catch (ex) {
-      ok(true, ""+ex);
-    }
-  });
+    same(proploader.get_type_id("/a/b/c"), "/a/b");
+    var invalid = ["/a/b", "/a", "/", ""];
+    invalid.forEach(function(id) {
+        try {
+            proploader.get_type_id(id);
+            ok(false, "Expected invalid property id: " + id);
+        }
+        catch (ex) {
+            ok(true, ""+ex);
+        }
+    });
 });
 
 test("load", function() {
-  var result;
-  var pid = "/film/performance/film";
-  proploader.load(pid)
-    .then(function(props) {
-      result = props;
+    var schema;
+    var pid = "/film/performance/film";
+    proploader.load(pid)
+        .then(function(r) {
+            schema = r;
+        });
+    ok(schema, "Got property schema");
+});
+
+test("loads", function() {
+    var schema;
+    var pid = "/film/film/starring";
+    proploader.loads([pid])
+        .then(function(r) {
+            schema = r[pid];
+        });
+    ok(schema, "Got property schema");
+    ok(schema.expected_type && schema.expected_type.properties && schema.expected_type.properties.length,
+      "Got disambiguating properties of mediator expected type");
+    schema.expected_type.properties.forEach(function(prop) {
+        ok(prop["/freebase/property_hints/disambiguator"] === true);
     });
-  acre.async.wait_on_results();
-  ok(result, "Got load result");
-  var schema = result[pid];
-  ok(schema, "Got property schema");
-  ok(schema.expected_type && 
-     schema.expected_type.properties && schema.expected_type.properties.length,
-     "Got disambiguating properties");
-  schema.expected_type.properties.forEach(function(prop) {
-    ok(prop["/freebase/property_hints/disambiguator"] == true, 
-       "Expected only disambiguators");
-  });
 });
 
 acre.test.report();

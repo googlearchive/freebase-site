@@ -223,14 +223,14 @@ function update_property(options) {
           d = freebase.mqlwrite(update)
             .then(function(env) {
               // invalidate type
-              typeloader.unload(o.type);
+              typeloader.invalidate(o.type);
               return old.id;
             });
           break;
         }
       }
       // invalidate type
-      typeloader.unload(o.type);
+      typeloader.invalidate(o.type);
       return d;
     });
 };

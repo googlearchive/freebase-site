@@ -188,8 +188,6 @@ function minimal_prop_structure(prop_schema, lang) {
     var unit_name = i18n.mql.get_text(lang, unit.name);
     structure.unit = {
       id: unit.id,
-      text: unit_name.value,
-      lang: unit_name.lang,
       abbreviation: unit["/freebase/unit_profile/abbreviation"]
     };
   }

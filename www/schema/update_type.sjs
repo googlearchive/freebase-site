@@ -169,14 +169,14 @@ function update_type(options) {
           d = freebase.mqlwrite(update)
             .then(function(env) {
               // invalidate type
-              typeloader.unload(o.id);
+              typeloader.invalidate(o.id);
               return old;
             });
           break;
         }
       }
       // invalidate type
-      typeloader.unload(o.id);
+      typeloader.invalidate(o.id);
       return d;
     })
     .then(function(old) {

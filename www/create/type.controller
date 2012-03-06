@@ -37,8 +37,6 @@ var apis = acre.require("lib/promise/apis.sjs");
 var deferred = apis.deferred;
 var freebase = apis.freebase;
 var typeloader = acre.require("lib/schema/typeloader.sjs");
-var proploader = acre.require("lib/schema/proploader.sjs");
-
 
 var scope = this;
 /**
@@ -89,9 +87,9 @@ var SPEC = {
      * type's disambiguating properties along with it's included_types disambiguating properties.
      */
 
-    return typeloader.load(type.id)
+    return typeloader.load(type.id, lang)
       .then(function(result) {
-          var type_schema = result[type.id];
+          var type_schema = result;
           var mediator = type_schema["/freebase/type_hints/mediator"];
           var inc_types = type_schema["/freebase/type_hints/included_types"];
           var promises = {
@@ -103,7 +101,7 @@ var SPEC = {
             promises.name_prop = propbox_queries.prop_structure("/type/object/name", lang);
           };
           if (inc_types && inc_types.length) {              
-              promises.included_types = typeloader.load.apply(null, inc_types);
+              promises.included_types = typeloader.loads(inc_types, lang);
           }
           return deferred.all(promises)
               .then(function(result) {

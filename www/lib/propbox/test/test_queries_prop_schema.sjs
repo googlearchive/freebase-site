@@ -69,7 +69,7 @@ test("prop_schemas", function() {
     "/measurement_unit/dated_integer/year"
   ];
   var schemas;
-  queries.prop_schemas.apply(null, pids)
+  queries.prop_schemas(pids, "/lang/en")
     .then(function(s) {
       schemas = s;
     });

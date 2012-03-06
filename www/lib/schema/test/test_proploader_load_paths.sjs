@@ -41,7 +41,7 @@ var scope = this;
 test("load_paths", function() {
   var result;
   var path = "/basketball/basketball_player/team./basketball/basketball_roster_position/number";
-  proploader.load_paths(path)
+  proploader.load_paths([path])
     .then(function(props) {
       result = props;
     });
@@ -51,5 +51,103 @@ test("load_paths", function() {
                           "/basketball/basketball_player/team", 
                           "/basketball/basketball_roster_position/number");
 });
+
+test("load_paths error", function() {
+    // second proprty cannot be a mediator
+    var paths = [
+        "/basketball/basketball_roster_position/player.former_teams",
+        "/basketball/basketball_player/position_s./basketball/basketball_position/player_roster_position"
+    ];
+    paths.forEach(function(path) {
+        (function() {
+             var result;
+             proploader.load_paths([path])
+                 .then(function(props) {
+                     ok(false, "Expected an error");
+                 }, function(err) {
+                     ok(true, err);
+                 });
+             acre.async.wait_on_results();
+         })();
+    });
+        
+});
+
+test("load_paths multi", function() {
+  var result;
+  var paths = [
+    "/basketball/basketball_player/team./basketball/basketball_roster_position/number",
+    "/basketball/basketball_roster_position/player./sports/pro_athlete/career_start",
+    "/sports/pro_athlete/sports_played_professionally"
+  ];
+  proploader.load_paths(paths)
+    .then(function(props) {
+      result = props;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got load result");
+  assert_prop_path_schema(scope, result,
+                          "/basketball/basketball_player/team", [
+                              "/basketball/basketball_roster_position/number"
+                          ]);
+  assert_prop_path_schema(scope, result, 
+                          "/basketball/basketball_roster_position/player", [
+                              "/sports/pro_athlete/career_start"
+                          ]);
+  assert_prop_path_schema(scope, result, 
+                          "/sports/pro_athlete/sports_played_professionally", [
+                              "/sports/pro_sports_played/athlete",
+                              "/sports/pro_sports_played/sport",
+                              "/sports/pro_sports_played/career_start",
+                              "/sports/pro_sports_played/career_end"
+                          ]);
+});
+
+
+test("load_paths relative", function() {
+  var result;
+  var path = "/sports/pro_sports_played/athlete.career_end";
+  proploader.load_paths([path])
+    .then(function(props) {
+      result = props;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got load result");
+  assert_prop_path_schema(scope, result,
+                          "/sports/pro_sports_played/athlete",
+                          "/sports/pro_athlete/career_end");
+});
+
+test("load_paths relative multi", function() {
+  var result;
+  var paths = [
+    "/basketball/basketball_player/position_s.players",
+    "/basketball/basketball_player/player_statistics.fg_percentage",
+    "/basketball/basketball_player/player_statistics.ft_percentage",
+    "/sports/pro_athlete/sports_played_professionally"
+  ];
+  proploader.load_paths(paths)
+    .then(function(props) {
+      result = props;
+    });
+  acre.async.wait_on_results();
+  ok(result, "Got load result");
+  assert_prop_path_schema(scope, result, 
+                          "/basketball/basketball_player/position_s", 
+                          "/basketball/basketball_position/players");
+
+  assert_prop_path_schema(scope, result, 
+                          "/basketball/basketball_player/player_statistics", [
+                              "/basketball/basketball_player_stats/fg_percentage", 
+                              "/basketball/basketball_player_stats/ft_percentage"
+                          ]);
+  assert_prop_path_schema(scope, result, 
+                          "/sports/pro_athlete/sports_played_professionally", [
+                              "/sports/pro_sports_played/athlete",
+                              "/sports/pro_sports_played/sport",
+                              "/sports/pro_sports_played/career_start",
+                              "/sports/pro_sports_played/career_end"
+                          ]);
+  });
 
 acre.test.report();

@@ -45,13 +45,13 @@ test("to_prop_structure", function() {
   function test_structure(structure, schema) {
     th.test_minimal_prop_structure(scope, structure, schema);
     var ect = schema.expected_type;
-    var properties = h.get_disambiguators(schema);
-    if (properties && properties.length) {
-      ok(structure.properties);
-      equal(structure.properties.length, properties.length);
-      for (var i=0,l=properties.length; i<l; i++) {
-        test_structure(structure.properties[i], properties[i]);
-      }
+    if (ect["/freebase/type_hints/mediator"]) {
+        var properties = h.get_disambiguators(schema);
+        ok(properties && properties.length);
+        equal(structure.properties.length, properties.length);
+        for (var i=0,l=properties.length; i<l; i++) {
+            test_structure(structure.properties[i], properties[i]);
+        }        
     }
   };
   [

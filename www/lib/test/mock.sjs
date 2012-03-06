@@ -272,13 +272,15 @@ var MOCK_ACRE_CACHE = {
   increment: function() {},
   remove: function() {},
   removeAll: function() {},
+  mocked: true,
   request: {
     get: function() {return null;},
     getAll: function() {return {};},
     put: function() {},
     putAll: function() {},
     remove: function() {},
-    removeAll: function() {}
+    removeAll: function() {},
+    mocked: true
   },
   original: null
 };

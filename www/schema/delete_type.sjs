@@ -83,7 +83,7 @@ function delete_type(type_id, user_id, dry_run, force) {
       return freebase.mqlwrite(q)
         .then(function(env) {
           // invalidate type
-          typeloader.unload(type_id);
+          typeloader.invalidate(type_id);
           return env.result;
         })
         .then(function(result) {

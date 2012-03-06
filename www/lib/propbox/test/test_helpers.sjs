@@ -31,12 +31,8 @@
 
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mock")
-    .playback(this, "propbox/test/playback_test_helpers.json");
-
 var h = acre.require("helper/helpers.sjs");
 var ph = acre.require("propbox/helpers.sjs");
-var queries = acre.require("propbox/queries.sjs");
 var validators = acre.require("validator/validators.sjs");
 
 test("data_input_type", function() {

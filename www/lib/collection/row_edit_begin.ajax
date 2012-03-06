@@ -72,7 +72,7 @@ var SPEC = {
       };
     }
 
-    return queries.prop_structures.apply(null, p.concat(lang))
+    return queries.prop_structures(p, lang)
       .then(function(prop_structures) {
         var promises = [];
         prop_structures.forEach(function(prop_structure) {

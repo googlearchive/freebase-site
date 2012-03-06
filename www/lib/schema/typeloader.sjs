@@ -29,266 +29,261 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 var h = acre.require("helper/helpers.sjs");
-var deferred = acre.require("promise/deferred");
-var freebase = acre.require("promise/apis").freebase;
+var i18n = acre.require("i18n/i18n.sjs");
+var apis = acre.require("promise/apis.sjs");
+var deferred = apis.deferred;
+var freebase = apis.freebase;
 
-var SCHEMA_KEY_PREFIX = "lib/schema/typeloader.sjs:";
+var SCHEMA_KEY_PREFIX = "schema:";
 
 var cache_impl = acre.cache.request;
 
 /**
- * Invalidate specified type id(s) from acre.cache.
- * This should be called whenever a type changes
- * (including keys, properties, etc.)
+ * Invalidate a single type and 
+ * all of its lang enumerations from the schema cache.
+ *
+ * @param type_ids:String or Array - A single type id or a list of type ids.
  */
-function unload(/** type_id1, type_id2, ..., type_idN **/) {
-  var type_ids = Array.prototype.slice.call(arguments);
-  cache_impl.removeAll(cache_keys(type_ids));
+function invalidate(type_ids) {
+    if (h.type(type_ids) !== "array") {
+        type_ids = [type_ids];
+    }
+    // need to get all (lang)x(type_ids) combination
+    var keys = [];
+    for (var i=0,l=i18n.LANGS.length; i<l; i++) {
+        keys = keys.concat(cache_keys(type_ids, i18n.LANGS[i].id));
+    }
+    cache_impl.removeAll(keys);    
+};
+
+
+/**
+ * Load a single type schema in the specified lang.
+ * A type schema is consisted of all of it's metadata and 
+ * all of it's properties and its metadata.
+ * Typeloader will decend into the types' properties' expected_type properties
+ * (deep) only if the expected_type is a "mediator".
+ * All expected_types at the leaf nodes will contain all of it's metadata
+ * (i.e., /freebase/type_hints/*, name, domain, etc.) 
+ * but never the properties list.
+ * 
+ * type -> properties -> expected_type[mediator=false]
+ * type -> properties -> expected_type[mediator=true] -> properties[disambiguator=true] -> expected_type
+ * 
+ * @param type_id:String - A mql id
+ * @param lang:String - A mql lang id. Defaults to /lang/en.
+ * @return a Promise that resolves to a type schema object in the specified lang.
+ */
+function load(type_id, lang) {
+    return loads([type_id], lang)
+        .then(function(types) {
+            return types[type_id];
+        });
 };
 
 /**
- * Type (schema) loader, uses acre.cache.request or mqlread to
- * return the canonical schema representation of each type id passed in as argument.
- *
- * A canonical schema of a type includes:
- * type -> properties -> expected_type [-> properties -> expected_type]
- *
- * Behind the scenes, typeloader uses acre.cache.request to cache already loaded type schemas.
- * So using typeloader should be much faster, then always doing a mqlread.
- *
- * Usage:
- *
- * load(type1, type2, ..., typeN)
- *   .then(function(schemas) {
- *     var type1_schema = schemas[type1];
- *     ...
- *   });
- *
- * load(true, type1, type2, ..., typeN)
- *   .then(function(schemas) {
- *     var type1_schema = schemas[type1];
- *     var deep_property =  type1_schema.properties[0].expected_type.properties[0];
- *   });
- *
- **/
-function load() {
-  var type_ids = Array.prototype.slice.call(arguments);
-  assert(type_ids.length, "You need to specify at least one type id");
-  var deep = false;
-  if (typeof type_ids[0] === "boolean") {
-    deep = type_ids.shift();
-  }
-  assert(type_ids.length, "You need to specify at least one type id");
-  return _load.apply(null, type_ids)
-    .then(function(types) {
-      var ect_ids = [];
-      var ect_map = {};
-      // expand type.properties[].expected_type
-      for (var type_id in types) {
-        var type = types[type_id];
-        type.properties.forEach(function(prop) {
-          var ect = prop.expected_type;
-          var ects = ect_map[ect.id];
-          if (!ects) {
-            ects = ect_map[ect.id] = [];
-            ect_ids.push(ect.id);
-          }
-          ects.push(ect);
-        });
-      }
-      if (ect_ids.length) {
-        return _load.apply(null, ect_ids)
-          .then(function(expected_types) {
-            for (var ect_id in expected_types) {
-              var type = expected_types[ect_id];
-              var ects = ect_map[ect_id];
-              ects.forEach(function(ect) {
-                h.extend(ect, type);
-              });
+ * @see load() but loads multiple types.
+ * 
+ * @param type_ids:Array - A list of mql ids.
+ * @param lang:String - A mql lang id. Defaults to /lang/en
+ * @return a Promise the resolves to a map of type schema objects
+ *         keyed by the type id.
+ */
+function loads(type_ids, lang) {
+    return _loads(type_ids, lang)
+        .then(function(types) {
+            var ect_props = {}; // ect_id => list of properties with ect_id
+            var ect_ids = [];
+            // Now gather up all properties' expected types to load
+            for (var type_id in types) {
+                var type = types[type_id];
+                type.properties.forEach(function(prop) {
+                    var ect = prop.expected_type;
+                    if (!ect_props[ect.id]) {
+                        ect_props[ect.id] = [];
+                        ect_ids.push(ect.id);
+                    }
+                    ect_props[ect.id].push(prop);
+                });
+            }
+            if (ect_ids.length) {
+                return _loads(ect_ids, lang)
+                    .then(function(expected_types) {
+                        var deep_ect_props = {};
+                        var deep_ect_ids = [];
+                        for (var ect_id in expected_types) {
+                            var ect = expected_types[ect_id];
+                            // mediator?
+                            if (ect["/freebase/type_hints/mediator"] === true &&
+                                ect.properties) {
+                                // only get disambiguating properties
+                                ect.properties = ect.properties.filter(function(p) {
+                                    return p["/freebase/property_hints/disambiguator"] === true;
+                                });
+                                ect.properties.forEach(function(prop) {
+                                    var deep_ect = prop.expected_type;
+                                    var deep_props = deep_ect_props[deep_ect.id];
+                                    if (!deep_props) {
+                                        deep_props = deep_ect_props[deep_ect.id] = [];
+                                        deep_ect_ids.push(deep_ect.id);
+                                    }
+                                    deep_props.push(prop);
+                                });
+                            }
+                            else {
+                                // don't return subproperties
+                                delete ect.properties;
+                            }
+                            var props = ect_props[ect_id];
+                            if (props) {
+                                props.forEach(function(prop) {
+                                    prop.expected_type = ect;
+                                });
+                            }
+                        }
+                        if (deep_ect_ids.length) {
+                            return _loads(deep_ect_ids, lang)
+                                .then(function(deep_expected_types) {
+                                    for (var deep_ect_id in deep_expected_types) {
+                                        var deep_ect = deep_expected_types[deep_ect_id];
+                                        // Don't recurse into deep-deep properties. 
+                                        // It ends here.
+                                        delete deep_ect.properties;
+                                        var deep_props = deep_ect_props[deep_ect_id];
+                                        if (deep_props) {
+                                            deep_props.forEach(function(prop) {
+                                                prop.expected_type = deep_ect;
+                                            });
+                                        }
+                                    }
+                                    return types;
+                                });
+                        }
+                        return types;
+                    });
             }
             return types;
-          });
-      }
-      return types;
-    })
-    .then(function(types) {
-      var ect_ids = [];
-      var ect_map = {};
-      for (var type_id in types) {
-        types[type_id].properties.forEach(function(prop) {
-          if (deep) {
-            prop.expected_type.properties.forEach(function(subprop) {
-              var ect = subprop.expected_type;
-              var ects = ect_map[ect.id];
-              if (!ects) {
-                ects = ect_map[ect.id] = [];
-                ect_ids.push(ect.id);
-              }
-              ects.push(ect);
-            });
-          }
-          else {
-            // If not deep, don't include sub-level expected_type properties
-            delete prop.expected_type.properties;
-          }
         });
-      }
-      if (deep && ect_ids.length) {
-        return load.apply(null, ect_ids)
-          .then(function(expected_types) {
-             for (var type_id in expected_types) {
-               var type = expected_types[type_id];
-               var ects = ect_map[type_id];
-               ects.forEach(function(ect) {
-                 h.extend(ect, type);
-               });
-             }
-             return types;
-          });
-      }
-      return types;
+};
+
+function _loads(type_ids, lang) {
+    var result = {};
+    var not_cached = [];
+    // keys[i] is the cache key of type_ids[i]
+    var keys = cache_keys(type_ids, lang);
+    var cached = cache_impl.getAll(keys);
+    keys.forEach(function(key, i) {
+        var type_id = type_ids[i];
+        if (key in cached) {
+            result[type_id] = cached[key];
+        }
+        else {
+            not_cached.push(type_id);
+        }
     });
+    var d;
+    if (not_cached.length) {
+        d = do_mql(not_cached, lang)
+            .then(function(types) {
+                var to_put = {};
+                types.forEach(function(type) {
+                    result[type.id] = type;
+                    to_put[cache_key(type.id)] = type;
+                });
+                cache_impl.putAll(to_put);
+                return result;
+            });
+    }
+    else {
+        d = deferred.resolved(result);
+    }
+    return d;
 };
 
-function _load() {
-  var type_ids = Array.prototype.slice.call(arguments);
-  // TODO: assert type_ids.length
-  var result = {};
-  var not_cached = [];
-  // keys[i] is the cache key of type_ids[i]
-  var keys = cache_keys(type_ids);
-  var cached = cache_impl.getAll(keys);
-  /** DEBUG
-  var cached_keys = [];
-  for (var k in cached) {
-      cached_keys.push(k);
-  }
-  acre.syslog.debug({cached: cached_keys.length}, "CACHED");
-  acre.syslog.debug({not_cached: keys.length - cached_keys.length}, "NOT CACHED");
-  **/
-  keys.forEach(function(key, i) {
-      var type_id = type_ids[i];
-      if (key in cached) {
-          result[type_id] = cached[key];
-      }
-      else {
-          not_cached.push(type_id);
-      }
-  });  
-  var d;
-  if (not_cached.length) {
-      d = do_mql.apply(null, not_cached)
-          .then(function(types) {
-              var to_put = {};
-              types.forEach(function(type) {
-                  result[type.id] = type;
-                  to_put[cache_key(type.id)] = type;
-              });
-              cache_impl.putAll(to_put);
-              return result;
-          });
-
-  }
-  else {
-    d = deferred.resolved(result);
-  }
-  return d;
+function cache_key(type_id, lang) {
+    lang = lang || "/lang/en";
+    return SCHEMA_KEY_PREFIX + type_id + ":" + h.lang_code(lang);
 };
 
-function cache_key(type_id) {
-  return SCHEMA_KEY_PREFIX + type_id;
-};
-
-function cache_keys(type_ids) {
+function cache_keys(type_ids, lang) {
     return type_ids.map(function(type_id) {
-        return cache_key(type_id);
+        return cache_key(type_id, lang);
     });
 };
 
 function assert(truthy, msg) {
-  if (!truthy) {
-    var msg_args = Array.prototype.slice.call(arguments, 1);
-    throw msg_args.join(" ");
-  }
+    if (!truthy) {
+        var msg_args = Array.prototype.slice.call(arguments, 1);
+        throw msg_args.join(" ");
+    }
 };
 
-function do_mql(/**, type_id1, type_id2, ..., type_idN **/) {
-  var type_ids = Array.prototype.slice.call(arguments);
-  var q = [{
-    id: null,
-    "id|=": type_ids,
-    name: [{
-      optional: true,
-      value: null,
-      lang: null
-    }],
-    type: "/type/type",
-    domain: {
-      id: null,
-      name: [{
-        optional: true,
-        value: null,
-        lang: null
-      }],
-      type: "/type/domain",
-      "/freebase/domain_profile/category": {
-        // is this "Commons" domain?
-        optional: true,
-        id: "/category/commons"
-      }
-    },
-    "/freebase/type_hints/enumeration": null,
-    "/freebase/type_hints/mediator": null,
-    "/freebase/type_hints/included_types": [],
-    properties: [{
-      optional: true,
-      id: null,
-      name: [{
-        optional: true,
-        value: null,
-        lang: null
-      }],
-      type: "/type/property",
-      unique: null,
-      unit: {
-        optional: true,
+/**
+ * This is the canonical schema query and is what get's stored in the cache 
+ * per type/lang pair.
+ */
+function do_mql(type_ids, lang) {
+    lang = lang || "/lang/en";
+    var q = [{
         id: null,
-        name: [{
-          optional: true,
-          value: null,
-          lang: null
-        }],
-        type: "/type/unit",
-        "/freebase/unit_profile/abbreviation": null
-      },
-      "/freebase/property_hints/disambiguator": null,
-      "/freebase/property_hints/display_none": null,
-      "/freebase/property_hints/deprecated": null,
-      master_property: {
-        optional: true,
-        id: null,
-        type: "/type/property"
-      },
-      reverse_property: {
-        optional: true,
-        id: null,
-        type: "/type/property"
-      },
-      delegated: {
-        optional: true,
-        id: null,
-        type: "/type/property"
-      },
-      expected_type: {
-        id: null,
-        type: "/type/type"
-      },
-      index: null,
-      sort: "index"
-    }]
-  }];
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return env.result;
-    });
+        "id|=": type_ids,
+        name: i18n.mql.text_clause(lang),
+        type: "/type/type",
+        domain: {
+            id: null,
+            name: i18n.mql.text_clause(lang),
+            type: "/type/domain",
+            "/freebase/domain_profile/category": {
+                // is this "Commons" domain?
+                optional: true,
+                id: "/category/commons"
+            }
+        },
+        "/freebase/type_hints/mediator": null,
+        "/freebase/type_hints/included_types": [],
+        "/freebase/type_hints/enumeration": null,
+        "/freebase/type_hints/never_assert": null,
+        "/freebase/type_hints/deprecated": null,
+        properties: [{
+            optional: true,
+            id: null,
+            name: i18n.mql.text_clause(lang),
+            type: "/type/property",
+            unique: null,
+            unit: {
+                optional: true,
+                id: null,
+                type: "/type/unit",
+                "/freebase/unit_profile/abbreviation": null
+            },
+            "/freebase/property_hints/disambiguator": null,
+            "/freebase/property_hints/display_none": null,
+            "/freebase/property_hints/deprecated": null,
+            master_property: {
+                optional: true,
+                id: null,
+                type: "/type/property"
+            },
+            reverse_property: {
+                optional: true,
+                id: null,
+                type: "/type/property"
+            },
+            delegated: {
+                optional: true,
+                id: null,
+                type: "/type/property"
+            },
+            expected_type: {
+                id: null,
+                type: "/type/type"
+            },
+            index: null,
+            sort: "index"
+        }]
+    }];
+    return freebase.mqlread(q)
+        .then(function(env) {
+            return env.result;
+        });
 };

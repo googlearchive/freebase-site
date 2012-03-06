@@ -209,9 +209,9 @@ function query(query, opts) {
       });
 
       var typeid = get_clause_type(q);
-      return schema.load(typeid)
+      return schema.load(typeid, i18n.lang)
         .then(function(r) {
-          var is_mediator = r[typeid]["/freebase/type_hints/mediator"];
+          var is_mediator = r["/freebase/type_hints/mediator"];
           var default_paths = is_mediator ? [] : ["/type/object/name", "/common/topic/image"];
           var props = default_paths.concat(get_paths(q, 2, typeid));
           result.collection = collection(mids, props, i18n.lang);
@@ -238,7 +238,7 @@ function collection(topic_ids, pids, lang, limit) {
       seen[pid1] = 1;
     }
   });
-  return proploader.load_paths.apply(null, pids)
+  return proploader.load_paths(pids, lang)
     .then(function(props) {
       var prop_structures = [];
       for (var pid1 in props) {

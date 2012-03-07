@@ -54,7 +54,7 @@ function decorate_value(value, from_value) {
 
 test("to_prop_values", function() {
   var topic;  // topic data from topic api
-  topic_api.topic_structure("/en/sakuragi_hanamichi", "/lang/en", true)
+  topic_api.topic_structure("/en/kaede_rukawa", {domain:"all"})
     .then(function(t) {
       topic = t;
     });
@@ -99,12 +99,14 @@ test("to_prop_values", function() {
   ].forEach(function(pid) {
     (function() {
       var structure, prop_data, expected;
-      queries.prop_data("/en/sakuragi_hanamichi", pid, null, "/lang/en")
+      queries.prop_data("/en/kaede_rukawa", pid, null, "/lang/en")
         .then(function(data) {
            prop_data = data;
         });
       acre.async.wait_on_results();
+
       structure = topic.structure.properties[pid];
+
       expected = topic.property[pid];
       if (expected) {
           expected = expected.values;

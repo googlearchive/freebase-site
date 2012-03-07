@@ -37,224 +37,238 @@ var deferred = apis.deferred;
 var pq = acre.require("propbox/queries.sjs");
 var ph = acre.require("propbox/helpers.sjs");
 var typeloader = acre.require("schema/typeloader.sjs");
-
-/**
- * Get topic data/structure from Topic API
- *
- * @deprecated This is using the OLD topic api. Please use topic_structure
- */
-function topic(id, lang, limit, as_of_time, domains) {
-  var params = {
-    lang: [lang || "/lang/en"]
-  };
-  if (params.lang != "/lang/en") {
-    params.lang.push("/lang/en");
-  }
-  //params.lang.push("/lang/wp");
-  if (limit) {
-    params.limit = limit;
-  }
-  if (as_of_time) {
-    params.as_of_time = as_of_time;
-  }
-  if (domains) {
-    params.domains = domains;
-  }
-  var url = h.fb_api_url("/api/experimental/topic/full", id, params);
-  return freebase.fetch(url)
-    .then(function(env) {
-      return env.result;
-    });
-};
-
-
+var proploader = acre.require("schema/proploader.sjs");
+var validators = acre.require("validator/validators.sjs");
 
 /**
  * Use the new topic api (googleapis) and lib/typeloader.sjs to retrieve
  * topic and schema information that can be used to display a topic page.
  *
- * @param id:String - The topic id
- * @param lang:String - The primary language for all text values in the result.
- * @param all:Boolean - Get all domains including /user and /base domains. Default
- *  is only get "Commons" domains
+ * @param id:String (required) - The topic id
+ * @param options:Object (optional) - Api/filter options for topic api.
+ *     - lang:String (optional) - The primary language to topic data. 
+ *           Default is "en".
+ *     - domain:String (optional) - If "all" retrieve all user/base domain data.
+ *           You can also specify a domain id to only retrieve properties 
+ *           within that domain. Default is to only retrieve data 
+ *           from "Commons".
+ *     - type:String (optional) - Only retrieve properties within this type id.
+ *     - property:String (optional) - Only retrieve the property data for 
+ *           this property id.
+ * The domain, type and property exclusive options where you can only specify
+ * one of them. If multiple options are specified then, the domain option takes
+ * precedence, then then the type and then the property.
  * 
- *   By default, "en" is the default language.
- * TODO: @see url to topic api
+ * The topic structure will be a union of all topic "bare properties" and 
+ * their sibling properties along with all the topic's types's properties
+ * that meet the constraint of the options parameter filters.
  */
-function topic_structure(id, lang, all, domain, type, prop) {
-  var options = {
-    // This needs to be TRUE to return topic names. @see masouras
-    alldata: true,
-    lang: h.lang_code(lang || "/lang/en")
-  };
-  if (domain) {
-    options.filter = [domain, "/type/object/type", "/synthetic"];
-  }
-  else if (type) {
-    options.filter = [type, "/type/object/type", "/synthetic"];
-    options.limit = 20;
-  }
-  else if (prop) {
-    options.filter = [prop, "/type/object/type", "/synthetic"];
-    options.limit = 100;
-  }
-  else if (!all) {
-    options.filter = ["commons", "/synthetic"];
-  }
-  return freebase.get_topic(id, options)
-    .then(function(topic_result) {
-      var types = null; // list of types this topic is an instance of
-      var notable_types = null; // list of types sorted by their notability
-      var property = topic_result && topic_result.property;
-      if (property) {
-        types = property["/type/object/type"];
-        types = types && types.values;
-        notable_types = property["/synthetic/notability/notable_types"];
-        notable_types = notable_types && notable_types.values;
-      }
-      var d;
-      if (types && types.length) {
-        var type_ids = types.map(function(t) { return t.id; });
-        // If domain, type, or prop filter, only get the type schema
-        // corresponding to the filter
-        if (domain) {
-          // filter by domain
-          type_ids = type_ids.filter(function(t) {
-            return t.indexOf(domain) === 0;
-          });
+function topic_structure(id, options) {
+    options = options || {};
+    var lang = options.lang || "/lang/en";
+    var domain_filter, type_filter, prop_filter;
+    var api_options = {
+        alldata: true,
+        lang: h.lang_code(lang)
+    };
+    if (options.domain === "all") {
+        // the default is to get "everything" including user/base domains        
+    }
+    else if (is_mql_id(options.domain)) {
+        domain_filter = options.domain;
+        api_options.filter = [options.domain, "/type/object/type", "/synthetic"];
+        api_options.limit = 20;
+    }
+    else if (is_mql_id(options.type)) {
+        type_filter = options.type;
+        api_options.filter = [options.type, "/type/object/type", "/synthetic"];
+        api_options.limit = 100;
+    }
+    else if (is_mql_id(options.property)) {
+        prop_filter = options.property;
+        api_options.filter = [options.property, "/type/object/type", "/synthetic"];
+        api_options.limit = 200;
+    }
+    else {
+        api_options.filter = ["commons", "/synthetic"];
+    }
+    return freebase.get_topic(id, api_options)
+        .then(function(topic_result) {
+            var notability = get_notability(topic_result);
+            var domain_count = get_linkcount(topic_result);
+            var topic_props = topic_result && topic_result.property;
+            if (topic_props) {
+                // Get all instanceof types and asserted props (bareprops)
+                // to determine what types to display
+
+                // These are actual instanceof types
+                var instanceof_types = topic_props && topic_props["/type/object/type"];
+                instanceof_types = instanceof_types && instanceof_types.values;
+
+                // Gather up all asserted properties' types, 
+                // ignoring /synthetic/* and /type/object/*
+                var types = [];
+                var types_seen = {};
+                for (var pid in topic_props) {
+                    // skip /synthetic/* and /type/object/*
+                    if (!(pid.indexOf("/synthetic/") === 0 || pid.indexOf("/type/object/") === 0)) {
+                        var t = proploader.get_type_id(pid);
+                        if (!types_seen[t]) {
+                            types.push(t);
+                            types_seen[t] = true;
+                        }
+                    }
+                }
+
+                // Now merge instanceof types and asserted properties' types
+                if (instanceof_types) {
+                    instanceof_types.forEach(function(t) {
+                        var id = t.id;
+                        if (!types_seen[id]) {
+                            types.push(id);
+                            types_seen[id] = true;
+                        }
+                    });
+                }
+
+                if (types.length) {
+                    // If domain, type, or prop filter, only get the type(s)
+                    // corresponding to the filter
+                    if (domain_filter) {
+                        // filter by domain
+                        var prefix = domain_filter + "/";
+                        types = types.filter(function(t) {
+                            return t.indexOf(prefix) === 0;
+                        });
+                    }
+                    else if (type_filter) {
+                        // filter by type
+                        types = types.filter(function(t) {
+                            return t === type_filter;
+                        });
+                    }
+                    else if (prop_filter) {
+                        var prefix = proploader.get_type_id(prop_filter);
+                        types = types.filter(function(t) {
+                           return prefix === t;
+                        });
+                    }
+                    else if (options.domain !== "all") {
+                        types = types.filter(function(t) {
+                            return h.is_commons_domain(t);
+                        });
+                    }
+                }
+                if (types.length) {
+                    return typeloader.loads(types, lang)
+                        .then(function(typeloader_result) {
+                            var structure = get_structure(typeloader_result, domain_count, lang);
+                            if (prop_filter) {
+                                var show_prop = structure.properties[prop_filter];
+                                if (show_prop) {
+                                    structure.properties = {};
+                                    structure.properties[prop_filter] = show_prop;
+                                }
+                            }
+                            topic_result.structure = structure;
+                            return topic_result;
+                        });
+                }
+            }
+            topic_result.structure = to_structure([], lang);
+            return topic_result;
+        });
+};
+
+function is_mql_id(id) {
+    var mqlid = validators.MqlId(id, {if_invalid:null, if_empty:null});
+    return mqlid != null;
+};
+
+/**
+ * Get a structure that is easy to iterate from 
+ * a list of domains -> types -> properties.
+ * The domains and types will be sorted by
+ * a topic's linkcount.
+ *
+ * @param types:Object - a dictionary of types returned by typeloader.load()
+ * @param linkcount:Array - a list of types sorted by their notablility.
+ * @param lang
+ * @return a list of domains and their types sorted by linkcount
+ */
+function get_structure(types_by_id, domain_count, lang) {
+  var domains_list = sort_domains_and_types_by_linkcount(types_by_id, domain_count);
+  return to_structure(domains_list, lang);
+};
+
+
+/**
+ * Convert a map of types by their ids to a sorted list of domains 
+ * and their types where the domains and types will be sorted by
+ * their respective linkcounts.
+ */
+function sort_domains_and_types_by_linkcount(types_by_id, domain_count) {
+    var linkcount_by_domain = {};
+    var linkcount_by_type = {};
+    var linkcount_by_prop = {};
+    if (domain_count) {
+        domain_count.forEach(function(domain) {
+            linkcount_by_domain[domain.id] = domain.count;
+            var types = domain.values || [];
+            types.forEach(function(type) {
+                linkcount_by_type[type.id] = type.count;
+                var props = type.values || [];
+                props.forEach(function(prop) {
+                    linkcount_by_prop[prop.id] = prop.count;
+                });
+            });
+        });
+    }
+    // bucket all types into their respective domains
+    var domains_list = [];
+    var domains_by_id = {};
+    for (var type_id in types_by_id) {
+        var type = types_by_id[type_id];
+        var domain_id = type.domain.id;
+        var domain = domains_by_id[domain_id];
+        if (!domain) {
+            domain = domains_by_id[domain_id] = h.extend(true, {types:[]}, type.domain);
+            domains_list.push(domain);
         }
-        else if (type) {
-          // filter by type
-          type_ids = type_ids.filter(function(t) {
-            return t === type;
-          });
-        }
-        else if (prop) {
-          type_ids = type_ids.filter(function(t) {
-            return prop.indexOf(t) === 0;
-          });
-        }
-        // typeloader.load takes var args: [true, type_id1, type_id2, ..., type_idN]
-        d = typeloader.loads(type_ids, h.lang_id(lang))
-          .then(function(typeloader_result) {
-             var structure = get_structure(typeloader_result, notable_types, lang, all);
-             if (prop) {
-                 var show_prop = structure.properties[prop];
-                 if (show_prop) {
-                     structure.properties = {};
-                     structure.properties[prop] = show_prop;
-                 }
-             }
-             topic_result.structure = structure;
-             return topic_result;
-          });
-      }
-      else {
-        // empty structure
-        topic_result.structure = to_structure([], lang);
-        d = deferred.resolved(topic_result);
-      }
-      return d;
+        domain.types.push(type);
+    }
+    // now sort all types by type linkcount
+    domains_list.forEach(function(domain) {
+        domain.types.sort(function(a, b) {
+            return compare_linkcount(linkcount_by_type, a, b);
+        });
+    });
+    // now sort all domains by domain linkcount
+    return domains_list.sort(function(a, b) {
+        return compare_linkcount(linkcount_by_domain, a, b);
     });
 };
 
-function compare_notable_types_index(notable_types_index, a, b) {
-  var a_index = notable_types_index[a.id];
-  var b_index = notable_types_index[b.id];
-  if (!(a_index == null || b_index == null)) {
-    return a_index - b_index;
+function compare_linkcount(linkcount_by_id, a, b) {
+  var a_count = linkcount_by_id[a.id];
+  var b_count = linkcount_by_id[b.id];
+  if (!(a_count == null || b_count == null)) {
+    return b_count - a_count;
   }
-  else if (a_index == null && b_index === null) {
+  else if (a_count == null && b_count === null) {
     return 0;
   }
-  else if (a_index == null) {
+  else if (a_count == null) {
     return 1;
   }
-  else if (b_index == null) {
+  else if (b_count == null) {
     return -1;
   }
 };
 
-/**
- * Sort types by the notable_types sort order.
- * Next, group the types by their domains.
- * Then, sort the domains by comparing their first type in the notabable_types sort order.
- * If notable_types is empty, the sorting of domains and their types is undefined.
- */
-function sort_domains_and_types(types_by_id, notable_types, all) {
-  // turn types_by_id into an array and sort by notable_types index order
-  var types_list = [];
-  for (var type_id in types_by_id) {
-    types_list.push(types_by_id[type_id]);
-  }
-  var notable_types_index = null;
-  if (notable_types && notable_types.length) {
-    // notable_types are currently returned in reverse order.
-//    notable_types.reverse();
-    notable_types_index = {};
-    notable_types.forEach(function(t, i) {
-      notable_types_index[t.id] = i;
-    });
-    types_list.sort(function(a, b) {
-      return compare_notable_types_index(notable_types_index, a, b);
-    });
-  }
-  var domains_list = [];
-  var domains_by_id = {};
-  types_list.forEach(function(type) {
-    var domain_id = type.domain.id;
-    var domain = domains_by_id[domain_id];
-    if (!domain) {
-      domain = domains_by_id[domain_id] = h.extend(true, {types:[]}, type.domain);
-      domains_list.push(domain);
-    }
-    domain.types.push(type);
-  });
-  if (notable_types_index) {
-    // now sort the domains using the notable_types_index of the first type
-    domains_list.sort(function(a, b) {
-      var a_type = a.types.length ? a.types[0] : null;
-      var b_type = b.types.length ? b.types[0] : null;
-      if (a_type && b_type) {
-        return compare_notable_types_index(notable_types_index, a_type, b_type);
-      }
-      else if (a_type) {
-        return -1;
-      }
-      else if (b_type) {
-        return 1;
-      }
-      return 0;
-    });
-  }
-  if (!all) {
-      domains_list = domains_list.filter(h.is_commons_domain);
-  }
-  return domains_list;
-};
-
 
 /**
- * Sort domains and their types by the notable_types sort order.
- * First, types within domains are sorted by the notable_types sort order.
- * Then, the domains are sorted by comparing the first type in the notable_types sort order.
- * If notable_types is empty, the sorting of domains and their types is undefined.
- *
- * @param types:Object - a dictionary of types returned by typeloader.load()
- * @param notable_types:Array - a list of types sorted by their notablility.
- * @param lang
- * @param all:Boolean - Get all domains including /user and /base domains. Default
- *  is only get "Commons" domains
- * @return a list of domains and their types sorted by the notable_types sort order.
- * 
- */
-function get_structure(types, notable_types, lang, all) {
-  var domains_list = sort_domains_and_types(types, notable_types, all);
-  return to_structure(domains_list, lang);
-};
-
-/**
- * Transform a domains list to a usable structure.
+ * Transform a domains list to a usable structure
  * Note that the result will be compatible to the old topic api:
  * http://api.freebase.com/api/experimental/topic/full?id=/en/google
  *
@@ -364,7 +378,7 @@ function linkcount(o) {
  */
 function get_linkcount(topic) {
     var p = topic && topic.property;
-    p = p["/synthetic/stats/linkcount"];
+    p = p && p["/synthetic/stats/linkcount"];
     if (p) {
         return p.values || null;
     }

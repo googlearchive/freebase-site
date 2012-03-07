@@ -40,10 +40,12 @@ var queries = acre.require("queries/topic.sjs");
 
 test("topic_structure", function() {
   var result;
-  queries.topic_structure("/en/sakuragi_hanamichi", "en", true)
-    .then(function(topic) {
+  queries.topic_structure("/en/kaede_rukawa", {
+      domain: "/base/slamdunk"
+  })
+  .then(function(topic) {
       result = topic;
-    });
+  });
   acre.async.wait_on_results();
   ok(result, "Got topic_structure result");
   ok(result.property, "Got topic property");
@@ -74,7 +76,7 @@ test("topic_structure", function() {
 
 test("topic_structure error", function() {
   var result, error;
-  queries.topic_structure("/fu/bar", "en")
+  queries.topic_structure("/fu/bar")
     .then(function(topic) {
       result = topic;
     }, function(e) {

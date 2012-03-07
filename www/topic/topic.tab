@@ -61,19 +61,22 @@ var SPEC = {
   run: function(object, f) {
     var id = object.id;
 
-    var domains = f.domains;
-    if ((f.domain && !h.is_commons_domain(f.domain)) ||
-        (f.type && !h.is_commons_domain(f.type)) ||
-        (f.property && !h.is_commons_domain(f.property))) {
-      domains = "all";
+    var topic_options = {
+        lang: i18n.lang,
+        domain: f.domain,
+        type: f.type,
+        property: f.property
+    };
+
+    if (f.domains === "all" && !(f.domain || f.type || f.property)) {
+        topic_options.domain = "all";
     }
 
     var promises = {
       id: id,
       filters: f,
       object: object,
-      topic: topic_api.topic_structure(id, i18n.lang, domains === "all", 
-          f.domain, f.type, f.property)
+      topic: topic_api.topic_structure(id, topic_options)
     };
 
     return deferred.all(promises)

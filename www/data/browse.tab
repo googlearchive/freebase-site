@@ -91,25 +91,36 @@ function sort_by_topic_count(a,b) {
 };
 
 function _domain_topics_facts(domains) {
-  var promises = [];
-  // Get activity for each domain
-  domains.forEach(function(domain) {
-
-    promises.push(freebase.get_static("activity", "summary_"+domain.guid.replace("#", "/guid/"))
-      .then(function(activity) {
-        if (!activity) {return activity;}
-
-        domain.topics = {
-          value: activity.total.t
-        }
-        domain.facts = {
-          value: activity.total.e
-        }
-
-        return activity;
-      }));
-  });
-  return deferred.all(promises).then(function() {return domains;});
+    var keys = domains.map(function(domain) {
+        return "summary_"+domain.guid.replace("#", "/guid/");
+    });
+    var promises = [];
+    // we request allotments of 30 summary guids since the url may be too long
+    for (var i=0,l=keys.length; i<l; i+=30) {
+        var slice = keys.slice(i, i+30);
+        promises.push(freebase.get_static("activity", slice));
+    }
+    return deferred.all(promises)
+        .then(function(results) {
+            var activities = {};
+            // flatten out the allotment of results into one activities map
+            // the activity key (domain id)
+            results.forEach(function(r) {
+                h.extend(activities, r);
+            });
+            domains.forEach(function(domain) {
+                var key = "summary_"+domain.guid.replace("#", "/guid/");
+                if (activities[key]) {
+                    domain.topics = {
+                        value: activities[key].total.t
+                    };
+                    domain.facts = {
+                        value: activities[key].total.e
+                    };
+                }
+            });
+            return domains;            
+        });
 };
 
 function logx(val, base) {

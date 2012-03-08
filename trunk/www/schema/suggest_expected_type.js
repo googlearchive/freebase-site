@@ -520,23 +520,11 @@ console.log("this.ect_dimension", this.ect_dimension, "this.ect_dimension_units"
               id: null,
               name: null,
               type: "/type/unit",
-              "/freebase/unit_profile/abbreviation": null
-            }]
+              "/freebase/unit_profile/abbreviation": null,
+              sort: "name"
+            }],
+            sort: "name"
           }];
-          // do as_of_time since units don't change often and better cacheability
-/**
-          var today = (new Date());
-          function pad(n){ return n<10 ? '0'+n : n;};
-          var as_of_time = [today.getFullYear(), pad(today.getMonth()+1), pad(today.getDate())].join("-");
-          $.ajax({
-            url: "http://api.freebase.com/api/service/mqlread",
-            data: {query: JSON.stringify({query: q, as_of_time: as_of_time})},
-            dataType: "jsonp",
-            success: function(data) {
-              return sect.load_dimensions_callback(data);
-            }
-          });
-**/
           fb.mqlread(q, sect.set_dimensions);
         },
         load_dimensions_callback: function(data) {

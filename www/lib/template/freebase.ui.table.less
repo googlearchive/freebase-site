@@ -41,6 +41,10 @@ for all *non-propbox* tables
 */
 
 
+.table {
+  table-layout:fixed; width:100%;
+}
+
 /*
     Generic class for header of a table
     Should immediately preceed <table> in markup    
@@ -127,11 +131,11 @@ for all *non-propbox* tables
   border-bottom: 1px solid #d5d7d8;
   font-size: 1.2em;
   vertical-align: top;
+  word-wrap: break-word; /* stop long strings from breaking table layout */
 }
 
 /* .odd is a column-based style, NOT row */
 .odd { background: #e5e6e7; }
-
 
 /*
     .row-header should be a <th> in the tbody with

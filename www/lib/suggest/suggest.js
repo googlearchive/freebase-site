@@ -121,7 +121,8 @@
 
       // suggest parameters
       o.ac_param = {};
-      $.each(["key", "filter", "spell", "exact", "lang", "scoring"], function(i,n) {
+      $.each(["key", "filter", "spell", "exact", 
+              "lang", "scoring", "prefixed", "stemmed", "format"], function(i,n) {
         var v = o[n];
         if (v === null || v === "") {
           return;
@@ -1172,11 +1173,9 @@
           }
       }
 
-      var data = {
-        query: query,
-        prefixed: true,
-        format: 'ac'
-      };
+      var data = {};
+      data[o.query_param_name] = query;
+
       if (cursor) {
         data.cursor = cursor;
       }
@@ -1562,11 +1561,11 @@
 
     defaults: {
       /**
-       * filter, spell, lang, exact, scoring, lang, key
+       * filter, spell, lang, exact, scoring, key, prefixed, stemmed, format
        *
        * are the new parameters used by the new freebase search on googleapis.
        * Please refer the the API documentation as these parameters
-       * will be passed through to the search service.
+       * will be transparently passed through to the search service.
        *
        * @see http://wiki.freebase.com/wiki/ApiSearch
        */
@@ -1587,6 +1586,12 @@
       // API key: required for googleapis
       key: null,
 
+      prefixed: true,
+
+      stemmed: null,
+
+      format: "ac",
+
       // Enable structured input name:value pairs that get appended to the search filters
       // For example:
       // 
@@ -1597,6 +1602,10 @@
       //    /freebase/v1/search?query=bob+dylan&filter=<original filter>&filter=(all type:artist)
       //
       advanced: true,
+
+      // query param name for the search service. 
+      // If query name was "foo": search?foo=...
+      query_param_name: "query",
 
       // base url for autocomplete service
       service_url: "https://www.googleapis.com",

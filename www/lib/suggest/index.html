@@ -316,6 +316,56 @@
 
         <tr>
           <td>
+            <code>prefixed</code>
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            <b>Default: </b><code class="prettyprint">true</code>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            This value is transparently passed to the search service. During indexing, textual data is normalized in a language-specific way. For example, in english, text is lowercased and accents are removed. At query time, the same language-specific normalization is performed on the query text. Several parameters control how a textual constraint is matched: prefixed set to true triggers a prefix match on name and aliases only (and a regular match on other textual data). For example: query: "bob dy" prefixed: true.
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <code>stemmed</code>
+          </td>
+          <td>
+            Boolean
+          </td>
+          <td>
+            <b>Default: </b><code class="prettyprint">null</code>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            This value is transparently passed to the search service. During indexing, textual data is normalized in a language-specific way. For example, in english, text is lowercased and accents are removed. At query time, the same language-specific normalization is performed on the query text. Several parameters control how a textual constraint is matched: stemmed set to true triggers a stemmed match on name and aliases only (and a regular match on other textual data). Stemmed matches may be used to paste over language-specific suffix differences introduced by plurals or other grammatical forms. For example: query: "potatos" stemmed: true.</td>
+        </tr>
+
+        <tr>
+          <td>
+            <code>format</code>
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            <b>Default: </b><code class="prettyprint">"ac"</code>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            Controls the JSON response format of the search service result. Suggest expects the results to be in the default "ac" format. Other availble formats are: "ac", "classic", "entity", "guids", "ids", "mids". This value is transparently passed to the search service.
+          </td>
+        </tr>
+
+        <tr>
+          <td>
             <code>advanced</code>
           </td>
           <td>
@@ -328,6 +378,23 @@
         <tr>
           <td colspan="3">
             If TRUE, suggest will parse and handle inline name:value pairs in the input as additional filter constraints. For example, for 'bob type:artist contributed_to:"Love and Theft"', an additional filter constraint, '(all type:artist contributed_to:"Love and Theft")' will passed to search. Additionally when advanced is TRUE, suggest will recognize freebase ids/mids so that one can directly search for an entity by it's id or mid.
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <code>query_param_name</code>
+          </td>
+          <td>
+            String
+          </td>
+          <td>
+            <b>Default: </b><code class="prettyprint">"query"</code>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            This is the query parameter name to use for the actual search query string. For example, if the query name was "foo", /search?foo=... Default name is "query".
           </td>
         </tr>
 

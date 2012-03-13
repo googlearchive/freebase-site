@@ -299,8 +299,8 @@
       ${value(topic.id, prop_structure, prop_value, lang)}
       <acre:script>
         var show_menu = true;
-        if (prop_value != null && prop_structure.expected_type.id === "/type/text" && 
-          h.lang_id(prop_value.lang) !== lang) {
+        if (prop_value != null && prop_structure.expected_type.id === "/type/text" &&
+            !(prop_value.lang && h.lang_id(prop_value.lang) === lang)) {
           show_menu = false;
         }
       </acre:script>
@@ -364,7 +364,7 @@
     </acre:block>
     <acre:block else="">
       <span acre:attrs="attrs" data-value="${prop_value.value}">${prop_value.value}</span>
-      <acre:block if="ect === '/type/text'">
+      <acre:block if="ect === '/type/text' && prop_value.lang">
         ${i18n_c.lang_code(prop_value.lang, lang)}
       </acre:block>
     </acre:block>

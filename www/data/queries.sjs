@@ -196,7 +196,7 @@ function type(type_id, page) {
 
   return schema.load(type_id)
     .then(function(r) {
-      var this_type = r[type_id];
+      var this_type = r;
       var promises = [];
 
       /**

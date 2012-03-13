@@ -42,6 +42,11 @@ function keys(id, lang, limit, filters) {
   limit = limit || 1000;
   var q = {
     id: id,
+    name: { // need this for {name} substitution
+      lang: "/lang/en", 
+      value: null, 
+      optional: true
+    },
     key: [{
       namespace: {
         id: null,
@@ -76,7 +81,12 @@ function keys(id, lang, limit, filters) {
 };
 
 function keys_result(result, lang) {
-  var keys = [];
+  var keys = []; 
+  var encoded_name = null;
+  if (result.name) { 
+    // for {name} substitution
+    encoded_name = acre.form.encode({name: result.name.value}).substring(5);
+  }
   result.key.forEach(function(k) {
     var namespace = k.namespace;
     var key = {
@@ -91,7 +101,10 @@ function keys_result(result, lang) {
     template = template && template.template;
     if (template) {
       key.template = template;
-      key.url = template.replace(/\{key\}/, k.value);
+      key.url = template.replace(/\{key\}/g, k.value);
+      if (encoded_name) {
+          key.url = key.url.replace(/\{name\}/g, encoded_name);
+      }
     }
     keys.push(key);
   });
@@ -128,6 +141,11 @@ function key(id, namespace, key, lang) {
   lang = lang || i18n.lang;
   var q = {
     id: id,
+    name: { // need this for {name} substitution
+      lang: "/lang/en", 
+      value: null, 
+      optional: true
+    },
     key: [{
       namespace: {
         id: namespace,

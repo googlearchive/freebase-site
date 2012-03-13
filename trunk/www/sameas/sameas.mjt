@@ -109,14 +109,14 @@
       <table cellspacing="0" class="table table-sortable">  
          <thead>
           <tr>
-            <th class="column-header first {sorter:'string'}" scope="column"> 
-              <span class="sort-icon">${_("Authority")}</span>
+            <th class="column-header {sorter:'string'}" scope="column">
+              <span class="sort-icon">${_("Key")}</span>
             </th>
             <th class="column-header {sorter:'string'}" scope="column">
               <span class="sort-icon">${_("Namespace")}</span>
             </th>
-            <th class="column-header {sorter:'string'}" scope="column">
-              <span class="sort-icon">${_("Key")}</span>
+            <th class="column-header first {sorter:'string'}" scope="column"> 
+              <span class="sort-icon">${_("Authority")}</span>
             </th>
             <th class="column-header {sorter:'string'}" scope="column">
               <span class="sort-icon">${_("Creator")}</span>
@@ -152,30 +152,32 @@
   </acre:script>
   <tr class="data-row ${JSON.stringify(metadata)}">
     <th class="row-header odd">
+      <span class="wrapper">
+         <acre:block if="key.url">
+           <a href="${key.url}">${key.value}</a>
+         </acre:block>
+         <acre:block else="">
+           ${key.value}
+         </acre:block>
+         ${key_menu(key)}
+      </span>
+    </th>
+    <td>
+      <a href="${h.fb_url(key.namespace)}">${key.namespace}</a>
+    </td>
+    <td class="odd">
       <acre:block if="key.authority">
         <span class="authority wrapper"
               style="background-image:url(http://www.google.com/s2/u/0/favicons?domain=${h.parse_uri(key.url).host})">
           <a href="${h.fb_url(key.authority.id)}">
             <strong>${i18n.display_name(key.authority)}</strong>
           </a>
-          ${key_menu(key)}
         </span>
       </acre:block>
       <acre:block else="">
         <span class="wrapper">
           <strong>-</strong>
         </span>
-      </acre:block>
-    </th>
-    <td>
-      <a href="${h.fb_url(key.namespace)}">${key.namespace}</a>
-    </td>
-    <td class="odd">
-      <acre:block if="key.url">
-        <a href="${key.url}">${key.value}</a>
-      </acre:block>
-      <acre:block else="">
-        ${key.value}
       </acre:block>
     </td>
     <td>

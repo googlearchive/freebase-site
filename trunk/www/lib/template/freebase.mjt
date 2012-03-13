@@ -297,6 +297,7 @@
 
 <!-- add any acre variables you wanted passed to client-side -->
 <acre:block def="acre_javascript_vars(exports)">
+
   <acre:script>
     // Fetch the client-side googleapis.com api key if we are using those APIs. 
     // This is needed for Suggest to make requests. 

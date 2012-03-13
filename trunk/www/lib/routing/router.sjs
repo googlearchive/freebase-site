@@ -29,6 +29,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+// fix acre.freebase.site_host to reflect the current acre.reqest.protocol
+if (acre.request.protocol === "https" &&
+    acre.freebase.site_host.indexOf("http://") === 0) {
+    acre.freebase.site_host = acre.freebase.site_host.replace("http://", "https://");
+};
+
+
 var h = acre.require("helper/helpers.sjs");
 var validators = acre.require("validator/validators.sjs");
 

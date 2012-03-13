@@ -5,6 +5,7 @@
   "template/jquery.metadata.js",
   "template/tablesorter.js",
   "jqueryui/jquery.ui.core.mf.js",
+  "suggest/suggest.mf.js",
   "template/freebase.js",
   "template/helpers.js",
   "permission/permission.js",

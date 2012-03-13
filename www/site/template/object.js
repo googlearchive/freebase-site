@@ -51,7 +51,7 @@
 
     // Fade in the page contents
     setTimeout(function() {
-      $("#page-content").animate({"opacity": 1});
+      $("#page-content").css({"opacity": 1});
     }, 0);
 
     /*

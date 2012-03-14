@@ -58,8 +58,7 @@
      * Initialize page scroll behavior for fixed positioning on scroll
      */
     fb.init_page_scroll();
-    fb.search_focus();
-
+    fb.init_search();
   });
 
   /**
@@ -119,37 +118,36 @@
 
   };
 
-  // Global shortcut for focusing/blurring freebase suggest module in header
-  fb.search_focus = function() {
 
-   var FOCUS_KEY = 191; // '/'
-   var BLUR_KEY = 27    // 'esc'
+  fb.init_search = function() {
+      // Global shortcut for focusing/blurring freebase suggest module in header
+      var FOCUS_KEY = 191; // '/'
+      var BLUR_KEY = 27;    // 'esc'
+      var $fb_suggest = $("#header #fb-search-input");
 
-   $(document).keydown(function(e) {
-     $fb_suggest = $("#header #fb-search-input");
+      $(document).keydown(function(e) {
 
-     // if module already has focus, look for 'esc' key and blur
-     if ($fb_suggest.is(":focus")) {
-       if(e.keyCode === BLUR_KEY) {
-         $fb_suggest.blur();
-       }
-     }
-
-     else {
-       // make sure we're not currently in an input box
-       if ( this !== event.target && (/textarea|select/i.test( event.target.nodeName ) ||
-            event.target.type === "text") ) {
-         return;
-       }
-       //focus module
-       else {
-         if(e.keyCode === FOCUS_KEY) {
-           $fb_suggest.focus();
-           return false;
-         }
-       }
-     }
-   });
+          // if module already has focus, look for 'esc' key and blur
+          if ($fb_suggest.is(":focus")) {
+              if(e.keyCode === BLUR_KEY) {
+                  $fb_suggest.blur();
+              }
+          }
+          else {
+              // make sure we're not currently in an input box
+              if ( this !== event.target && (/textarea|select/i.test( event.target.nodeName ) ||
+                  event.target.type === "text") ) {
+                      return;
+                  }
+                  //focus module
+              else {
+                  if(e.keyCode === FOCUS_KEY) {
+                      $fb_suggest.focus();
+                      return false;
+                  }
+              }
+          }
+      });
   };
 
 })(jQuery, window.freebase);

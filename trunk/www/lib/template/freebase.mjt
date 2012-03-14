@@ -189,6 +189,7 @@
              name="query"
              autocomplete="off"
              placeholder="Find&hellip;" />
+      ${fb_search_input_params(exports)}
       <div id="site-search-box"></div>
       <div id="site-search-label"><span>${_("Start typing to get some suggestions")}</span></div>
     </div>
@@ -366,5 +367,17 @@
   </script>
   <acre:block if="exports.acre_javascript_vars">
     ${exports.acre_javascript_vars()}
+  </acre:block>
+</acre:block>
+
+<!--
+  You can add additional <input type="hidden"> elements that will be
+  appended as query parameters when navigating to a selected topic
+  from the main freebase suggest input box
+-->
+<acre:block def="fb_search_input_params(exports)">
+  <input acre:if="i18n.lang !== '/lang/en'" type="hidden" name="lang" value="${i18n.lang}"/>
+  <acre:block if="exports.fb_search_input_params">
+    ${exports.fb_search_input_params()}
   </acre:block>
 </acre:block>

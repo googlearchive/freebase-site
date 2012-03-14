@@ -600,7 +600,12 @@
 
     search
       .bind("fb-select", function(e, data) {
-        window.location = fb.h.fb_url(data.id);
+        // gather all input=hidden parameters
+        var params = {};
+        $(this).siblings("input[type=hidden]").each(function() {
+            params[this.name] = this.value;
+        });
+        window.location = fb.h.fb_url(data.id, params);
         return false;
       })
       .bind("fb-pane-show", function(e, data) {

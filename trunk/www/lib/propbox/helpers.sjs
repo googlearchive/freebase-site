@@ -180,6 +180,8 @@ function minimal_prop_structure(prop_schema, lang) {
       lang: ect_name.lang,
       mediator: ect["/freebase/type_hints/mediator"] === true,
       enumeration: ect["/freebase/type_hints/enumeration"] === true,
+      never_assert: ect["/freebase/type_hints/never_assert"] === true,
+      deprecated: ect["/freebase/type_hints/deprecated"] === true,
       included_types: ect["/freebase/type_hints/included_types"] || []
     }
   };

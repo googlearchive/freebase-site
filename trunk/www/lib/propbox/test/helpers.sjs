@@ -41,6 +41,8 @@ function test_minimal_prop_structure(test, minimal, schema) {
     "text", "string",
     "lang", "string",
     "disambiguator", "boolean",
+    "display_none", "boolean",
+    "deprecated", "boolean",
     "unique", "boolean",
     "expected_type", "object"
   ];
@@ -53,7 +55,10 @@ function test_minimal_prop_structure(test, minimal, schema) {
   }
   // check expected_type metadata
   var ect = schema.expected_type;
-  keys = ["mediator", "enumeration", "included_types"];
+  keys = [
+      "mediator", "enumeration", "included_types", 
+      "never_assert", "deprecated"
+  ];
   for (i=0,l=keys.length; i<l; i++) {
     var key = keys[i];
     var val1 = minimal.expected_type[key];

@@ -667,32 +667,37 @@ function fb_object_type(types, id) {
 
 
 /**
- * A utility that handles different types of attributions of an object:
+ * A utility that normalizes different types of attributions of an object:
  * Should be used with conjuction to lib/queries/creator.sjs['extend'].
  *
  * @see lib/queries/creator.sjs
- *
+ * 
+ * creator normalized from:
  * {creator: "/user/id"}
- * {attriution: {attribution: {id: "/user/id"}}}
+ * {attribution: {creator: {id: "/user/id"}}}
  * {creator: {id: "/m/id"}}
+ * 
+ * app normalized from:
+ * {attribution: {"/freebase/apps/written_by": {id: "/app/id"}}}
+ * {attribution: {"/dataworld/provenance/tool": {id: "/app/id"}}}
+ * 
+ * dataset from:
+ * {attribution: {"/dataworld/provenance/source": {id: "/dataset/id"}}}
  */
 function get_attribution(obj) {
-  var user = null,
-      source = null;
+  var user = null;
+  var app = null;
+  var dataset = null;
   if (obj) {
     user = obj.creator;
     if (!user) {
       var attr = obj.attribution;
       if (attr) {
         user = attr.creator;
-        var app = attr["/freebase/written_by/application"];
-        var mdo = attr["/dataworld/provenance/data_operation"];
-        if (mdo) {
-          user = mdo.operator;
-          source = mdo;
-        } else if (app) {
-          source = app;
-        }
+        var acre_app = attr["/freebase/written_by/application"];
+        var tool = attr["/dataworld/provenance/tool"];
+        app = acre_app || tool || null;
+        dataset = attr["/dataworld/provenance/source"] || null;
       }
       if (!user) {
         user = obj["the:creator"];  // from lib/queries/creator.sjs
@@ -704,7 +709,8 @@ function get_attribution(obj) {
   }
   return {
     creator: user,
-    source: source
+    app: app,
+    dataset: dataset
   };
 };
 

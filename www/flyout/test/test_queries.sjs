@@ -62,7 +62,6 @@ test("acre_app", function() {
 test("domain", function() {
     var domains = [
         "/film",
-        "/base/slamdunk",
         "/user/daepark/default_domain"
     ];
     domains.forEach(function(domain) {
@@ -74,8 +73,7 @@ test("domain", function() {
 
 test("type", function() {
     var types = [
-        "/film/film",
-        "/base/slamdunk/player"
+        "/film/film"
     ];
     types.forEach(function(type) {
         (function() {
@@ -86,8 +84,7 @@ test("type", function() {
 
 test("property", function() {
     var props = [
-        "/film/film/initial_release_date",
-        "/base/slamdunk/player/height"
+        "/film/film/initial_release_date"
     ];
     props.forEach(function(prop) {
         (function() {

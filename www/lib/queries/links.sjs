@@ -116,7 +116,7 @@ function links_outgoing(id, filters, next, creator_clause) {
       }
     },
     "me:source": {id: id},
-    target: {id:null, mid:null, name:i18n.mql.query.name(), optional:true},
+    target: {id:null, mid:null, guid:null, name:i18n.mql.query.name(), optional:true},
     target_value: {},
     timestamp: null,
     sort: "-timestamp",
@@ -132,9 +132,9 @@ function links_outgoing(id, filters, next, creator_clause) {
     });
 };
 
-function writes(id, filters, next) {
+function writes(id, object_type, filters, next) {
   filters = h.extend({}, filters);
-  return creator.by(id, filters.type)
+  return creator.by(id, object_type)
     .then(function(links_clause) {
       var q = h.extend(links_clause, {
         type: "/type/link",
@@ -142,6 +142,7 @@ function writes(id, filters, next) {
           optional: true,
           id: null,
           mid: null,
+          guid: null,
           name: i18n.mql.query.name()
         },
         target: {
@@ -177,13 +178,13 @@ function writes(id, filters, next) {
 
 function property_links(id, filters, next) {
   return proploader.load(id)
-    .then(function(props) {
+    .then(function(prop) {
       var master_prop = id;
-      if (props[id].master_property) {
-        master_prop = props[id].master_property.id;
+      if (prop.master_property) {
+        master_prop = prop.master_property.id;
       }
       filters = h.extend({}, filters);
-      return creator.by(filters.creator)
+      return creator.by(filters.creator, "/type/user")
         .then(function(links_clause) {
           var q = h.extend(links_clause, {
             type: "/type/link",
@@ -196,7 +197,7 @@ function property_links(id, filters, next) {
                 "/freebase/unit_profile/abbreviation": null
               }
             },
-            source: {id:null, mid:null, name:i18n.mql.query.name(), optional:true},
+            source: {id:null, mid:null, guid:null, name:i18n.mql.query.name(), optional:true},
             target: {id:null, mid:null, name:i18n.mql.query.name(), optional:true},
             target_value: {},
             timestamp: null,

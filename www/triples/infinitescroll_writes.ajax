@@ -48,7 +48,7 @@ var SPEC = {
   },
 
   run: function(id, f, next, lang, object_type) {
-    return queries.writes(id, f, next)
+    return queries.writes(id, object_type, f, next)
       .then(function(result) {
         return {
           html: acre.markup.stringify(writes.writes_body(id, result, f, object_type))

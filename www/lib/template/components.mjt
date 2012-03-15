@@ -35,27 +35,52 @@
   var _ = i18n.gettext;
 </acre:script>
 
-<acre:block def="creator(creator_id, url, params)">
+<acre:block def="creator_link(creator_id, url, params)">
   <a class="creator" href="${url || h.fb_url(creator_id, params)}"
      title="${creator_id}">${h.id_key(creator_id)}</a>
 </acre:block>
 
-<acre:block def="source(source, params)">
-  <a acre:if="source" href="${h.fb_url(source.id, params)}">${source.name}</a>
+<acre:block def="app_link(app, params)">
+  <a acre:if="app" href="${h.fb_url(app.id, params)}">
+    ${i18n.display_name(app)}
+  </a>
   <span acre:else="">-</span>
 </acre:block>
 
-<acre:block def="attribution(attr, use_attribution_icon, params)">
-  <span class="attribution" acre:trim="1">
-    ${creator(attr.creator, null, params)}
-    <span acre:if="attr.source" acre:trim="1">
-      <acre:block if="use_attribution_icon" trim="1">
-        <span style="cursor:pointer;" class="attribution-icon" title="${attr.source.name} - ${attr.source.id}">*</span>
-      </acre:block>
-      <acre:block else="">
+<acre:block def="dataset_link(dataset, params)">
+  <a acre:if="dataset" href="${h.fb_url(dataset.id, params)}">
+    ${i18n.display_name(dataset)}
+  </a>
+  <span acre:else="">-</span>
+</acre:block>
+
+<acre:block def="attribution(attr, use_hover, params)">
+  <acre:block if="use_hover">
+    <acre:script>
+      var hover_text = attr.user;
+      if (attr.dataset && attr.app) {
+        hover_text = h.template_sprintf(_("from %s via %s"), i18n.display_name(attr.dataset), i18n.display_name(attr.app));
+      } else if (attr.dataset) {
+        hover_text = h.template_sprintf(_("from %s"), i18n.display_name(attr.dataset));
+      } else if (attr.app) {
+        hover_text = h.template_sprintf(_("via %s"), i18n.display_name(attr.app));
+      }
+    </acre:script>
+    <a class="creator" href="${h.fb_url(attr.creator, params)}"
+     title="${hover_text ? hover_text : attr.creator}">${h.id_key(attr.creator)}</a>
+    <span acre:if="hover_text">*</span>
+  </acre:block>
+  <acre:block else="">
+    <span class="attribution" acre:trim="1">
+      ${creator_link(attr.creator, null, params)}
+      <span acre:if="attr.project" acre:trim="1">
+        ${_("from")}
+        ${dataset_link(attr.dataset, params)}
+      </span>
+      <span acre:if="attr.source" acre:trim="1">
         ${_("via")}
-        ${source(attr.source, params)}
-      </acre:block>
+        ${dataset_link(attr.app, params)}
+      </span>
     </span>
-  </span>
+  </acre:block>
 </acre:block>

@@ -109,7 +109,10 @@
             <span class="sort-icon">${_("user")}</span>
           </th>
           <th class="column-header" scope="col">
-            <span class="sort-icon">${_("app/load")}</span>
+            <span class="sort-icon">${_("app")}</span>
+          </th>
+          <th class="column-header" scope="col">
+            <span class="sort-icon">${_("dataset")}</span>
           </th>
           <th class="column-header column-header-asc {sorter: 'string'}" scope="col">
             <span class="sort-icon">${_("timestamp")}</span>
@@ -174,8 +177,9 @@
     </td>
     <td class="even">${user(attr)}</td>
     <td class="odd">${app(attr)}</td>
-    <td class="even">${o.timestamp}</td>
-    <td acre:if="filters.historical" class="odd">${o.operation}</td>
+    <td class="even">${dataset(attr)}</td>
+    <td class="odd">${o.timestamp}</td>
+    <td acre:if="filters.historical" class="even">${o.operation}</td>
   </tr>
 </acre:block>
 
@@ -190,13 +194,7 @@
     ${outgoing ? namespace(o.target.id) : namespace(o.source.id)}
   </acre:block>
   <span class="literal-value literal-value-${o.target_value.type.split('/').pop()}">
-    <acre:block if="o.master_property.id === '/common/document/source_uri' && o.target_value.value.indexOf('http://wp/') === 0">
-      <a href="${h.fb_api_url('/api/trans/blurb' + o['me:source'].id, [['maxlength', 1600]])}">${o.target_value.value}</a>
-    </acre:block>
-    <acre:block elif="o.master_property.id === '/type/content/blob_id'">
-      <a href="${h.fb_api_url('/api/trans/raw' + o['me:source'].id)}">${o.target_value.value}</a>
-    </acre:block>
-    <acre:block elif="o.target_value.type === '/type/uri'">
+    <acre:block if="o.target_value.type === '/type/uri'">
       <a href="${o.target_value.value}" target="_new" rel="nofollow">${o.target_value.value}</a>
     </acre:block>
     <acre:block else="">
@@ -268,11 +266,15 @@
 </acre:block>
 
 <acre:block def="user(attr)">
-  ${freebase_components.creator(attr.creator, null, [["writes"]])}
+  ${freebase_components.creator_link(attr.creator, null, [["writes"]])}
 </acre:block>
 
 <acre:block def="app(attr)">
-  ${freebase_components.source(attr.source, [["writes"]])}
+  ${freebase_components.app_link(attr.app, [["writes"]])}
+</acre:block>
+
+<acre:block def="dataset(attr)">
+  ${freebase_components.dataset_link(attr.dataset, [["writes"]])}
 </acre:block>
 
 <acre:block def="link_menu(o)">

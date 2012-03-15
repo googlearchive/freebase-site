@@ -232,6 +232,40 @@ function init_site_rules(lib) {
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS))
     },
     {
+      "name": _("App"),
+      "type": "/dataworld/software_tool",
+      "promises":  h.extend(true, [], DEFAULT_PROMISES),
+      "tabs": [
+        {
+          "name": _("Writes"),
+          "key": "writes",
+          "app": "triples",
+          "script": "writes.tab"
+        },
+        {
+          "name": _("Properties"),
+          "key": "properties",
+          "app": "topic",
+          "script": "topic.tab"
+        },
+        {
+          "name": _("Identifiers"),
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab",
+          "more": true
+        },
+        {
+          "name": _("Links"),
+          "key": "links",
+          "app": "triples",
+          "script": "triples.tab",
+          "more": true
+        },
+        h.extend(true, {}, FLYOUT)
+      ]
+    },
+    {
       "name": _("Domain"),
       "type": "/type/domain",
       "promises":  h.extend(true, [], DEFAULT_PROMISES),
@@ -427,6 +461,40 @@ function init_site_rules(lib) {
           "script": "mql.tab"
         }
       ].concat(h.extend(true, [], DEFAULT_MORE_TABS))
+    },
+    {
+      "name": _("Dataset"),
+      "type": "/dataworld/information_source",
+      "promises":  h.extend(true, [], DEFAULT_PROMISES),
+      "tabs": [
+        {
+          "name": _("Writes"),
+          "key": "writes",
+          "app": "triples",
+          "script": "writes.tab"
+        },
+        {
+          "name": _("Properties"),
+          "key": "properties",
+          "app": "topic",
+          "script": "topic.tab"
+        },
+        {
+          "name": _("Identifiers"),
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab",
+          "more": true
+        },
+        {
+          "name": _("Links"),
+          "key": "links",
+          "app": "triples",
+          "script": "triples.tab",
+          "more": true
+        },
+        h.extend(true, {}, FLYOUT)
+      ]
     },
     {
       "name": _("Load"),

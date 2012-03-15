@@ -9,7 +9,7 @@ from optparse import OptionParser
 from tempfile import mkdtemp, mkstemp, NamedTemporaryFile
 from cssmin import cssmin
 
-# global socket timeout, seems to help connection reset issues 
+# global socket timeout, seems to help connection reset issues
 socket.setdefaulttimeout(60)
 
 LICENSE_PREAMBLE = '''
@@ -140,10 +140,10 @@ class App:
 
   @classmethod
   def Get(cls, context, app_key, version=None, tag=None):
-    """Create, cache and return an app object. 
+    """Create, cache and return an app object.
 
-    Will create the app object appropriately, cache the resulting object and return 
-    from the cache if the app key, version and tag are the same. 
+    Will create the app object appropriately, cache the resulting object and return
+    from the cache if the app key, version and tag are the same.
 
     Arguments:
       app_key: string - the app key (e.g. "lib")
@@ -204,11 +204,11 @@ class App:
     When a new branch is created, any 'latest' references to the app will be out of date,
     since now the latest has changed. Hence, we need to invalidate any references in the
     in-memory cache of this app, so the next call to App.Get() will re-evaluate the 'latest' version.
-    
+
     Arguments:
       cls: object representing the class (in this case the App class)
       app_key: string - an app_key, such as 'lib'
-      
+
     """
 
     for key in cls._apps.keys():
@@ -236,7 +236,7 @@ class App:
 
   def app_dir(self):
     """Returns the path that acre would look under to find this app in the file system."""
-  
+
     site = self.app_site()
     if not site:
       return self.context.error("Couldn't resolve site.")
@@ -262,7 +262,7 @@ class App:
     '''
     files = []
     def scan_directory(directory = ''):
-      
+
       for f in os.listdir(os.path.join(self.svn_path(), directory)):
         if f.startswith('.'):
           continue
@@ -271,7 +271,7 @@ class App:
           scan_directory(os.path.join(directory, f))
 
         files.append(os.path.join(directory, f))
-      
+
 
     scan_directory()
     return files
@@ -279,8 +279,8 @@ class App:
   def statify_css(self, filename):
     '''
     For a given filename, it will call the local acre instance
-    to generate the concatanated css file, minify the result, 
-    and then replace the file with the new contents in-place in the file system. 
+    to generate the concatanated css file, minify the result,
+    and then replace the file with the new contents in-place in the file system.
     '''
     c = self.context
     file_url = "%s/%s" % (self.static_url(), filename)
@@ -296,7 +296,7 @@ class App:
     '''
     For a given filename, it will call the local acre instance
     to generate the concatanated js file, run the result through the closure compiler
-    and then replace the contents of the file in-place in the file system. 
+    and then replace the contents of the file in-place in the file system.
     '''
     c = self.context
     file_url = "%s/%s" % (self.static_url(), filename)
@@ -340,11 +340,12 @@ class App:
 
     #routing still happens with the trunk version of lib and site
     #since we are using the devel environment to run acre locally
+
     App.Get(c, "lib", version=None).copy_to_acre_dir()
     App.Get(c, "site", version=None).copy_to_acre_dir()
     App.Get(c, "environments", version=None, tag=None).copy_to_acre_dir()
 
-    #app files will be a list of file paths starting at the app route 
+    #app files will be a list of file paths starting at the app route
     #i.e. app.svn_path()/<file> is the actual path on disk
     app_files = self.get_app_files()
 
@@ -364,11 +365,11 @@ class App:
         done = self.statify_js(filename)
         if not done:
           return c.error('Failed to generate static files, aborting.')
-        
+
       if done:
         static_files.append(filename)
-    
-    self.update_handlers(static = True, cache_forever = True)
+
+    #self.update_handlers(static = True, cache_forever = True)
 
 
     if not len(static_files):
@@ -410,7 +411,7 @@ class App:
           self.context.error('Cannot JSON parse the config file %s' % filename)
         fd.close()
         return (False, contents)
-      
+
     fd.close()
 
     return (True, contents)
@@ -507,8 +508,8 @@ class App:
         else:
           metadata['extensions'][file_extension] = { 'handler' : 'tagged_binary', 'media_type' : 'image/%s' % file_extension }
     else:
-      metadata['extensions'].update(handlers)  
-            
+      metadata['extensions'].update(handlers)
+
     if cache_forever:
         metadata['ttl'] = -1
 
@@ -533,7 +534,7 @@ class App:
     for dep_key in known_dependencies:
       if metadata["mounts"].get(dep_key):
         return App.GetFromPath(self.context, metadata["mounts"][dep_key])
-            
+
     return None
 
   def is_lib(self):
@@ -556,11 +557,11 @@ class App:
         return candidate
 
     return None
-      
+
   def read_metadata(self, full_file_contents = False):
 
     filename = self.get_metadata_filename()
-        
+
     (result, file_contents) = self.read_file(filename, isjson=False)
     if not result:
       return False
@@ -576,7 +577,7 @@ class App:
 
       before, contents, after = res.group(1), res.group(2), res.group(3)
 
-    try: 
+    try:
       metadata = json.loads(contents)
     except:
       return self.context.error('Cannot convert metadata file of %s to json' % self)
@@ -592,7 +593,7 @@ class App:
 
     filename = self.get_metadata_filename()
 
-    return self.write_file(filename, ''.join([before, json.dumps(metadata, indent=2), after]))      
+    return self.write_file(filename, ''.join([before, json.dumps(metadata, indent=2), after]))
 
 
   def last_tag(self):
@@ -620,7 +621,7 @@ class App:
 
       matches1 = re.match('(\d+)(\D)$', tag1)
       matches2 = re.match('(\d+)(\D)$', tag2)
-    
+
       if matches1.group(1) != matches2.group(1):
         return int(matches1.group(1)) - int(matches2.group(1))
 
@@ -643,7 +644,7 @@ class App:
 
     matches = re.match('\d+(\D)$', last_tag)
     return "%s%s" % (self.version, chr(ord(matches.group(1)) + 1))
-      
+
   def process_manifest_resource_file(self, filename):
     '''
     Given a filename of the form *.mf.{css,js} this function will:
@@ -668,7 +669,7 @@ class App:
     def get_modified_filename(f):
       path_parts = f.split('.mf.')
       return '.omf.'.join(path_parts)
-        
+
     #first copy the file to the modified path
     target_filename = get_modified_filename(filename)
     (r, contents) = self.read_file(filename)
@@ -677,7 +678,7 @@ class App:
         return r
 
     new_mf_files = []
-    rewrite = False    
+    rewrite = False
 
     #now modify the manifest file in place to point to the converted files
     try:
@@ -695,7 +696,7 @@ class App:
           new_file_path = file_path
 
         new_mf_files.append(new_file_path)
-                  
+
       if rewrite:
           contents = json.dumps(new_mf_files)
 
@@ -709,7 +710,7 @@ class App:
     #if necessary, also overwrite the original file's contents
     if rewrite:
         return self.write_file(filename, contents = contents)
-    
+
     return True
 
   def create_branch(self, dependency=None):
@@ -738,7 +739,7 @@ class App:
 
     msg = '[sitedeploy] Creating branch %s' % target_app
     c.log(msg, color=c.BLUE)
-    
+
     cmd = c.add_svn_credentials(["svn", "copy", self.svn_url(), target_app.svn_url(), "--parents", "-m", c.quote(msg)])
     (r, output) = c.run_cmd(cmd)
 
@@ -767,7 +768,7 @@ class App:
   def create_tag(self):
     """
     Will create a new tag of the app.
-    
+
     Returns:
       tagged_app: App object - an object representing the tagged app
     """
@@ -781,7 +782,7 @@ class App:
       raise FatalException("You must provide valid google code credentials to create an app tag.")
 
     d_app = self.dependency()
-    
+
     if d_app == False:
       raise FatalException("There was an error evaluating the dependency app of %s" % self)
 
@@ -804,10 +805,10 @@ class App:
       if filename.endswith(".mf.css") or filename.endswith('.mf.js'):
         #manifest css and js files need special handling when creating a tag
         r = tag_app.process_manifest_resource_file(filename)
-          
+
         if not r:
           return r
-        
+
         new_files.append(filename)
 
     if len(new_files):
@@ -902,7 +903,7 @@ class App:
 
   def svn_url(self, allversions=False, alltags=False):
     """
-    Returns the SVN url of the current app. 
+    Returns the SVN url of the current app.
     """
     c = self.context
 
@@ -955,13 +956,13 @@ class App:
         return c.error('Cannot copy %s to %s - svn checkout failed' % (self, target_dir))
 
     shutil.copytree(self.svn_path(), target_dir)
-    
+
     def remove_unwanted_directories(directory = ''):
       """
       Removes any directories under the app directory tree that start with a .
       For example, lib/.svn, lib/routing/.svn etc...
       This will prevent all these unwanted files from being bundled with appengine
-      during a deployment with local files. 
+      during a deployment with local files.
       """
       for f in os.listdir(os.path.join(target_dir, directory)):
         if f.startswith('.'):
@@ -976,7 +977,6 @@ class App:
     return True
 
   def copy_to_acre_dir(self, war=False):
-
     target_dir = Acre.Get(self.context).site_dir(war=war) + '/' + self.app_dir()
     return self.copy(target_dir)
 
@@ -1036,7 +1036,7 @@ class Context():
       self.service = False
     finally:
       pass
-        
+
 
     self.current_app = None
     self.app = None
@@ -1076,7 +1076,7 @@ class Context():
 
   def quote(self, msg):
     return '"%s"' % msg
-    
+
   def set_current_app(self, app):
     self.current_app = app
 
@@ -1136,23 +1136,23 @@ class Context():
     except ValueError, e:
       return False
 
-    
+
   def run_cmd(self, cmd, name='cmd', warn=False, interactive=False, silent=False):
 
     if not silent:
         self.log(' '.join(cmd), color=self.GRAY)
-    
+
     #interactive mode - stdout/stderr will go straight to the console
     if interactive:
         subprocess.Popen(cmd).communicate()
         return (True, '')
-    
+
     #non-interactive mode, invocation will finish before output can be used
     stdout, stderr = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
 
     #print " output: %s" % stdout
     #print " error: %s" % stderr
-    
+
     if stderr:
         if warn:
             self.log(stderr, 'stderr')
@@ -1200,12 +1200,12 @@ class Context():
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
     years, days = divmod(days, 365.242199)
- 
+
     minutes = long(minutes)
     hours = long(hours)
     days = long(days)
     years = long(years)
- 
+
     duration = []
     if years > 0:
         duration.append('%d year' % years + 's'*(years != 1))
@@ -1486,14 +1486,14 @@ class Acre:
 
     except:
       raise FatalException("Unable to create directory %s" % target_dir)
-    
+
 
     path = "/trunk"
     if not (acre_version == "trunk"):
         path = "/dev/%s" % acre_version
 
     svn = SVNLocation(c, c.ACRE_SVN_URL + path)
- 
+
     c.log('Starting acre checkout')
     svn.checkout(absolute_target_dir)
     c.log('Acre checkout done')
@@ -1516,18 +1516,18 @@ class Acre:
     """Returns an acre object - persistent across request.
 
     If --acre_version is passed, an svn checkout will be attempted.
-    The destination directory will be a temporary directory, or the --acre_dir if passed. 
-    else if --acre_dir is passed, an acre object will be returned immediately. 
-    
+    The destination directory will be a temporary directory, or the --acre_dir if passed.
+    else if --acre_dir is passed, an acre object will be returned immediately.
+
     Returns:
       An acre object if succesful. False if not.
-      
+
     """
 
     if cls._acre_instance:
       return cls._acre_instance
 
-    # If we were asked for an existing Acre object only, don't attempt to fetch acre from SVN. 
+    # If we were asked for an existing Acre object only, don't attempt to fetch acre from SVN.
     if existing:
         return False
 
@@ -1551,7 +1551,7 @@ class Acre:
     # If it's not set - we have a problem.
     if not context.options.acre_dir:
         return context.error("Unable to create Acre object - no directory specified.")
-            
+
     cls._acre_instance = cls(context)
     return cls._acre_instance
 
@@ -1583,9 +1583,9 @@ class Acre:
         return c.error("Failed to build acre."), result
 
     return r, result
-      
+
   def deploy(self, target = None):
-      
+
       c = self.context
 
       os.chdir(self._acre_dir)
@@ -1605,7 +1605,7 @@ class Acre:
         self.stop()
       elif self._acre_process:
         return True
-      
+
       webapp = "%s/webapp" % self._acre_dir
       if war:
           webapp = "%s/_build/war" % self._acre_dir
@@ -1653,7 +1653,7 @@ class Acre:
   def prepare_failover(self):
     '''
     We have to do 2 things:
-    1. Substitute the version in _build/war/WEB-INF/web.xml to 'failover' 
+    1. Substitute the version in _build/war/WEB-INF/web.xml to 'failover'
     2. Bundle the environments directory in the _build/war
     '''
     c = self.context
@@ -1673,11 +1673,11 @@ class Acre:
             fd.write("\t<version>failover</version>\n")
         else:
             fd.write(line)
-              
+
       fd.close()
     except Exception as ex:
         return c.error("Failed to overwrite file %s:\n%s" % (filename, str(ex)))
-    
+
     c.log('Changed version to failover in %s' % filename)
 
 
@@ -1692,7 +1692,7 @@ class Acre:
 
     parts = site.conf("acre_id_suffix")[1:].split('.')[0:-1]
     parts.reverse()
-    
+
     target_dir = os.path.join(self.acre_dir(war=True), "WEB-INF/scripts", *parts)
     target_dir = os.path.join(target_dir, 'environments')
 
@@ -1735,7 +1735,7 @@ class Acre:
     c = self.context
     cmd = ['ps', 'wax']
     (r, contents) = c.run_cmd(cmd, silent=True)
-    
+
     for line in contents.split('\n'):
 
       #poor man's running acre under appengine detection
@@ -1743,16 +1743,16 @@ class Acre:
         r = c.run_cmd(['kill', line.split()[0]], silent=True)
         time.sleep(1)
         return r
-      
+
 
   def find_running_acre(self):
     c = self.context
     cmd = ['ps', 'wax']
     (r, contents) = c.run_cmd(cmd)
-    
+
     if not r:
         return self._acre_dir
-    
+
     for line in contents.split('\n'):
 
       parts = line.split()
@@ -1764,7 +1764,7 @@ class Acre:
           break
 
       if parts[-1] == 'com.google.acre.Main':
-        try: 
+        try:
           for i, v in enumerate(parts):
             if v == '-cp':
               dir_parts = parts[i+1].split('/')
@@ -1776,13 +1776,13 @@ class Acre:
           continue
 
 
-      if self._acre_dir: 
+      if self._acre_dir:
           return True
 
       return False
 
   def acre_dir(self, war=False):
-      
+
     if not self._acre_dir:
         self.find_running_acre()
 
@@ -1805,9 +1805,9 @@ class Acre:
       return c.error("You have not specified an acre directory with --acre_dir and a running acre instance could not be found")
 
     url = "http://127.0.0.1:%s/_fs_routing" % self._acre_port
-      
+
     response = c.fetch_url(url, acre=True)
-    
+
     if not response:
         return c.error("There is no acre running: %s" % url)
 
@@ -1826,9 +1826,9 @@ class Acre:
     for label, app_id in routing_table.get('apps').iteritems():
       if site.conf("acre_id_suffix") in app_id:
         app = App.GetFromPath(c, app_id)
-        if not app.svn_path(): 
+        if not app.svn_path():
           c.log("There is no app with id %s -- skipping." % app_id)
-          continue  
+          continue
         apps.add(app)
 
         d_app = app.dependency()
@@ -1851,7 +1851,7 @@ class Acre:
     url = "http://127.0.0.1:%s/acre/status" % self._acre_port
 
     response = c.fetch_url(url, acre=True, silent=True, wait=5)
-    
+
     if not response:
         c.log("There is no acre running at: %s" % url)
         return False
@@ -1892,7 +1892,7 @@ class Acre:
       fd = open(self.log.name)
 
       in_request = False
-      
+
       if url.startswith('http://'):
           url = url[7:]
 
@@ -1921,17 +1921,17 @@ class Acre:
 
           request_logs.append((line, color))
 
-      fd.close()      
+      fd.close()
 
       for line, color in request_logs:
           c.log(line, color=color, nocontext=True)
-              
+
 
 class Site:
 
   _sites = {
 
-    "freebase-site" : { 
+    "freebase-site" : {
         "notification_email_address" : "freebase-site@google.com",
         "id" : "freebase-site",
         "repository" : "googlecode",
@@ -1952,7 +1952,7 @@ class Site:
         "repository" : "googlecode",
         "svn_paths" :  ["/environments", "/appengine-config", "/trunk/www"]
         }
-    
+
     }
 
   _site_instance = {}
@@ -2167,7 +2167,7 @@ class SVNLocation:
 
   def ls(self):
     """
-    List an SVN directory. 
+    List an SVN directory.
 
     Returns an array of files or subdirectories in the directory.
     """

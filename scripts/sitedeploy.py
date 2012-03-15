@@ -38,16 +38,16 @@ class ActionSetupAcre:
     self.context = context
 
   def __call__(self, build=True):
-    """Setup acre locally. 
+    """Setup acre locally.
     In this scenario we have:
     options.acre_version: the acre version we want to checkout.
-    options.acre_dir: the *destination* directory we want to check-out. 
+    options.acre_dir: the *destination* directory we want to check-out.
 
     Note that unless we set options.acre_version explicitely, Acre.Get() will not bother checking out
     but will assume that options.acre_dir is the directory where acre is already installed.
 
     """
-    
+
     c = self.context
 
     if not c.options.acre_version:
@@ -143,7 +143,7 @@ class ActionStatic:
     acre = Acre.Get(c)
     if not acre:
       return c.error("Can't continue without an acre instance.")
-      
+
     if not (acre.is_running() or (acre.build(target='devel', config_dir= "%s/appengine-config" % site.site_dir) and acre.start())):
       return c.error("There was an error starting acre - cannot generate static files without a running acre instance.")
 
@@ -174,7 +174,7 @@ class ActionDeployAcre:
     acre = Acre.Get(c)
 
     config, app_id, app_version = Site.ResolveConfig(c, c.options.config, c.options.site_dir, c.options.host)
-    
+
     if not site:
       return c.error("Could not figure out location of site. You can specify --site_dir as an option, or run the script from within a site svn checkout directory structure to figure it out automatically.")
 
@@ -194,7 +194,7 @@ class ActionDeployAcre:
 
       if not status:
         return c.error('Could not start new acre war bundle under appengine development server, aborting deployment')
-    
+
     c.log("\nDeployment Summary " + "*" * 45 + "\n", color=c.BLUE)
     c.log("  Config: %s" % config, color=c.BLUE)
     c.log("  Deployed URL: http:/%s/" % acre.url(True), color=c.BLUE)
@@ -230,21 +230,21 @@ class ActionDeployAcre:
 
 
     c.log('\nStarting deployment...', color=c.BLUE)
-    if not acre.deploy(target=config): 
+    if not acre.deploy(target=config):
       return c.error('Deployment failed.')
 
     if c.options.failover:
       c.log('\nStarting deployment of failover version...', color=c.BLUE)
       r = acre.prepare_failover()
-      
+
       if not r:
         return c.error('Failed to prepare failover version of acre, aborting.')
 
       acre.bundle_environments()
 
-      if not acre.deploy(config): 
+      if not acre.deploy(config):
         return c.error('Failover deployment failed.')
-      
+
     return True
 
 class ActionSetup:
@@ -264,13 +264,13 @@ class ActionSetup:
     name = raw_input("Enter the directory where you want to install acre (default: %s):" % acre_dir)
     if not name:
       name = acre_dir
-      
+
     c.options.acre_dir = os.path.expanduser(name.strip())
 
     name = raw_input("Enter the directory where you want to install %s (default: %s):" % (site.conf("id"), site_dir))
     if not name:
       name = site_dir
-      
+
     c.options.site_dir = os.path.expanduser(name.strip())
 
     site.set_site_dir(c.options.site_dir)
@@ -318,7 +318,7 @@ class ActionSetupSimpleDNS:
       for domain in list(domains):
         if re.search('\s+%s$' % domain, line) and not line.startswith('#'):
           domains.remove(domain)
-    
+
       if not len(domains):
         break
 
@@ -327,7 +327,7 @@ class ActionSetupSimpleDNS:
       fh.write(''.join(lines))
       for domain in domains:
         fh.write('127.0.0.1\t%s\n' % domain)
-        
+
       fh.close()
 
     return True
@@ -502,10 +502,10 @@ class ActionCreateAppTag():
     tag_app = from_branch_app.create_tag()
 
     #if not no_static:
-    r = ActionStatic(c)(app=tag_app)
-    if not r:
+    #r = ActionStatic(c)(app=tag_app)
+    #if not r:
       #tag_app.remove_from_svn()
-      return c.error('Failed to create static files for "%s" - tag removed from SVN.' % tag_app)
+      #return c.error('Failed to create static files for "%s" - tag removed from SVN.' % tag_app)
 
     c.log('Created "%s"' % tag_app, color=c.BLUE)
 
@@ -530,7 +530,7 @@ class ActionInfo:
     last_version = app.last_version()
     dep = {}
 
-    if not last_version: 
+    if not last_version:
       print "Last Version: no version created"
       return True
 
@@ -592,7 +592,7 @@ class SpeedTestRun(threading.Thread):
 
   def stop(self):
     self._stop = True
-    
+
   def add_urls(self, urls):
     self.urls.extend(urls)
 
@@ -784,9 +784,9 @@ class ActionSpeedTest:
       if r['c'] == 500:
         continue
       u =  r['url'].replace('http://%s'%self.context.options.host, '')
-      csv_file.write(','.join( [str(r['c']), 
-                                str(r['d'])[:4], 
-                                str(r['l']), u] + 
+      csv_file.write(','.join( [str(r['c']),
+                                str(r['d'])[:4],
+                                str(r['l']), u] +
                                [str(r['x'].get(k, 0)) for k in self._labels  ])+'\n')
     csv_file.close()
     return csv_file.name
@@ -804,7 +804,7 @@ class ActionSpeedTest:
 
     if not host.startswith("http"):
       host = "http://%s" % host
-    
+
     match = re.search('{(.+)}', page.get('url'))
 
     #Simple case - non-parmeterized urls.
@@ -826,7 +826,7 @@ class ActionSpeedTest:
 
     t = len(ids)
     return ['{host}{path}'.format(host=host, path=page.get('url').replace("{%s}" % id_type, ids[x%t])) for x in range(n)]
-  
+
   def generate_urls_for_test(self, test):
     """Generate urls given a test specification."""
 
@@ -845,7 +845,7 @@ class ActionSpeedTest:
     """Give a test name, will return the test data structure.
     Will resolve parent tests and weights.
     """
-    
+
     test = self.conf["tests"].get(test_name, None)
 
     if not test:
@@ -926,7 +926,7 @@ class ActionSpeedTest:
 
       table.append(["%s(%s)" % (test_name, total_requests), pages[0]['page'], str(pages[0].get('repeat', c.options.repeat)), str(test.get('random'))])
       table.extend(pages_rows)
-          
+
     c.pprint_table(table)
 
     return True
@@ -1014,14 +1014,14 @@ class ActionSpeedTest:
     for thread in threads:
       responses.extend(thread.responses)
 
-    # Print reports and create CSV and html files. 
+    # Print reports and create CSV and html files.
 
     self.print_report(responses)
 
     csv_filename = self.print_csv(responses)
     print 'CSV dump: %s' % csv_filename
 
-    # If the run was interruted by the user, re-raise that here. 
+    # If the run was interruted by the user, re-raise that here.
     if interrupted:
       raise interrupted
 
@@ -1039,7 +1039,7 @@ class ActionGetIds:
   _use_ids = ["/type/type", "/type/domain", "/type/user", "/freebase/apps/app", "/type/lang"]
 
   def __init__(self, context):
-    
+
     self.context = context
 
   def __call__(self):
@@ -1063,10 +1063,10 @@ class ActionGetIds:
     id_key = c.options.type in self._use_ids and "id" or "mid"
     for item in result.get('result'):
       print item[id_key]
-    
-      
+
+
     return True
-    
+
 
 class ActionListApps:
 
@@ -1103,7 +1103,7 @@ class ActionCreateRoutes:
 var codebase = "%s";
 var tags_codebase = "%s";
 
-var environment_rules = { 
+var environment_rules = {
 
     "labels" : {
         "lib": "%s",
@@ -1131,7 +1131,7 @@ var environment_rules = {
       { prefix:"/keystore", app:"default",  script: "keystore.sjs"},
 
     ]
- 
+
 };
 
 acre.require(environment_rules.labels.site + "/router.sjs").route(environment_rules);
@@ -1154,7 +1154,7 @@ class ActionTest:
 
     print config
     return True
-  
+
 
 
 def main():
@@ -1244,9 +1244,9 @@ def main():
     exit(-1)
 
   action = args[0]
-  context = Context(options)  
-  context.set_action(action)  
-  
+  context = Context(options)
+  context.set_action(action)
+
   for valid_action in valid_actions:
     if action == valid_action[0]:
       action_class = valid_action[2]
@@ -1282,7 +1282,7 @@ def main():
       apps = options.app.split(',')
       if apps[0] == "all":
         apps = Site.Get(context).apps()
-        
+
       for i, app in enumerate(apps):
         options.app = app
         context.set_app(App.Get(context, app, options.version, options.tag))

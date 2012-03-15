@@ -100,7 +100,10 @@
             <span class="sort-icon">${_("user")}</span>
           </th>
           <th class="column-header" scope="col">
-            <span class="sort-icon">${_("app/load")}</span>
+            <span class="sort-icon">${_("app")}</span>
+          </th>
+          <th class="column-header" scope="col">
+            <span class="sort-icon">${_("dataset")}</span>
           </th>
           <th class="column-header column-header-asc {sorter: 'string'}" scope="col">
             <span class="sort-icon">${_("timestamp")}</span>
@@ -157,8 +160,9 @@
     </td>
     <td class="even">${triples.user(attr)}</td>
     <td class="odd">${triples.app(attr)}</td>
-    <td class="even">${o.timestamp}</td>
-    <td acre:if="filters.historical" class="odd">${o.operation}</td>
+    <td class="even">${triples.dataset(attr)}</td>
+    <td class="odd">${o.timestamp}</td>
+    <td acre:if="filters.historical" class="even">${o.operation}</td>
   </tr>
 </acre:block>
 

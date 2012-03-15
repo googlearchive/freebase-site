@@ -35,11 +35,24 @@ var apis = acre.require("promise/apis.sjs");
 var deferred = apis.deferred;
 var freebase = apis.freebase;
 
+
+/**
+ * Extends a MQL query to get attribution and provenance data.
+ * Use in conjunction with get_attribution() in /lib/helper/helpers.sjs
+ *
+ * @param q:object (required)
+ * @param filter_ids:array creator IDs to include
+ *
+ * @return augmented query object
+ */
 function extend(q, filter_ids) {
   var clause = q;
   if (h.isArray(q) && q.length === 1) {
     clause = q[0];
   }
+
+  var name_clause = i18n.mql.query.name();
+
   clause["creator"] = {
     id: null,
     key: {
@@ -50,6 +63,7 @@ function extend(q, filter_ids) {
     type: "/type/user",
     optional: true
   };
+
   clause["attribution"] = {
     creator: {
       id: null,
@@ -62,105 +76,241 @@ function extend(q, filter_ids) {
     },
     "/freebase/written_by/application": {
       id: null,
-      name: null,
+      name: name_clause,
       optional: true
     },
-    "/dataworld/provenance/data_operation": {
+    "/dataworld/provenance/tool": {
+      type: "/dataworld/software_tool",
       id: null,
-      name: null,
+      name: name_clause,
+      optional: true
+    },
+    "/dataworld/provenance/source": {
+      type: "/dataworld/information_source",
+      id: null,
+      name: name_clause,
       limit: 1,
-      operator: {
-        id: null,
-        type: "/type/user",
-        limit: 1
-      },
       optional: true
     },
     type: "/type/attribution",
     optional: true
   };
+
   clause["the:creator"] = {
     id: null
   };
+
   if (filter_ids) {
     clause["filter:creator"] = {
       "id|=": filter_ids
     };
   }
+
   return q;
 };
 
+
+/**
+ * Returns a clause for constraining a query to only links
+ * created by the IDs specified
+ *
+ * @param ids:array (required) - IDs to constrain to
+ * @param type:String - hint as to what kind of object ids are
+ *
+ * @return a promise that returns a query clause to be used with 
+ *         link: or to extend a type: "/type/link" query
+ */
 function by(ids, type) {
   // if no ids specified, just return standard creator clause
   if (!ids || !ids.length) {
     return deferred.resolved(extend({}));
   }
   
-  if (typeof ids == 'string') {
+  if (h.type(ids) === 'string') {
     ids = [ids];
   }
 
-  // start with the objects themselves
-  var attrs = ids.slice();
-  
+  var creators = [];
   var promises = [];
   
   if (!type || type == "/type/user") {
-    // add attributions created by user
-    promises.push(freebase.mqlread([{
-      "id": null,
-      "type": "/type/attribution",
-      "creator": {
-        "id|=" : ids
-      },
-      "limit": 1000
-    }]));
-    
-    // add mdo's user is operator of 
-    promises.push(freebase.mqlread([{
-      "id": null,
-      "type": "/type/attribution",
-      "/dataworld/provenance/data_operation": {
-          "operator" : {
-            "id|=" : ids
-          },
-          "limit": 1
-        },
-      "limit": 1000
-    }]));
+    promises.push(creators_by_user(ids));
+  }
+
+  if (!type || type == "/dataworld/information_source") {
+    promises.push(creators_by_dataset(ids));
+  }
+
+  if (!type || type == "/dataworld/software_tool") {
+    promises.push(creators_by_tool(ids));
   }
   
   if (!type || type == "/dataworld/mass_data_operation") {
-    // add mdo attributions 
-    promises.push(freebase.mqlread([{
-      "id": null,
-      "type": "/type/attribution",
-      "/dataworld/provenance/data_operation": {
-          "id|=" : ids
-        },
-      "limit": 1000
-    }]));
+    promises.push(creators_by_mdo(ids));
   }
   
   if (!type || type == "/freebase/apps/acre_app") {
-    // add acre app attributions 
-    promises.push(freebase.mqlread([{
-      "id": null,
-      "type": "/type/attribution",
-      "/freebase/written_by/application": {
+    promises.push(creators_by_acre_app(ids));
+  }
+
+  return deferred.all(promises)
+    .then(function(res) {
+      res.forEach(function(c) {
+        creators = creators.concat(c);
+      });
+      return extend({}, creators);
+    });
+};
+
+
+function creators_by_user(ids) {
+  var promises = [];
+
+  // start with the users themselves (no creator)
+  var creators = ids.slice();
+  
+  // add attributions created by user
+  promises.push(freebase.mqlread([{
+    "id": null,
+    "type": "/type/attribution",
+    "creator": {
+      "id|=" : ids
+    },
+    "links": {
+      "timestamp": null,
+      "sort": "-timestamp",
+      "limit": 1
+    },
+    "sort": "-links.timestamp",
+    "limit": 100
+  }]));
+  
+  // add mdo's user is operator of 
+  promises.push(freebase.mqlread([{
+    "id": null,
+    "type": "/type/attribution",
+    "/dataworld/provenance/data_operation": {
+        "operator" : {
           "id|=" : ids
         },
-      "limit": 1000
-    }]));
-  }
+        "limit": 1
+    },
+    "links": {
+      "timestamp": null,
+      "sort": "-timestamp",
+      "limit": 1
+    },
+    "sort": "-links.timestamp",
+    "limit": 100
+  }]));
 
   return deferred.all(promises)
     .then(function(res) {
       res.forEach(function(env) {
         env.result.forEach(function(attr) {
-          attrs.push(attr.id);
+          creators.push(attr.id);
         })
       });
-      return extend({}, attrs)
+      return creators;
+    });
+};
+
+function creators_by_dataset(ids) {
+  var creators = [];
+
+  return freebase.mqlread([{
+      "id": null,
+      "type": "/type/attribution",
+      "/dataworld/provenance/source": {
+        "id|=" : ids
+      },
+      "links": {
+        "timestamp": null,
+        "sort": "-timestamp",
+        "limit": 1
+      },
+      "sort": "-links.timestamp",
+      "limit": 100
+    }])
+    .then(function(env) {
+      env.result.forEach(function(attr) {
+        creators.push(attr.id);
+      })
+      return creators;
+    });
+};
+
+function creators_by_tool(ids) {
+  var creators = [];
+
+  return freebase.mqlread([{
+      "id": null,
+      "type": "/type/attribution",
+      "/dataworld/provenance/tool": {
+        "id|=" : ids
+      },
+      "links": {
+        "timestamp": null,
+        "sort": "-timestamp",
+        "limit": 1
+      },
+      "sort": "-links.timestamp",
+      "limit": 100
+    }])
+    .then(function(env) {
+      env.result.forEach(function(attr) {
+        creators.push(attr.id);
+      })
+      return creators;
+    });
+};
+
+function creators_by_mdo(ids) {
+  var creators = [];
+
+  return freebase.mqlread([{
+      "id": null,
+      "type": "/type/attribution",
+      "/dataworld/provenance/data_operation": {
+          "id|=" : ids
+      },
+      "links": {
+        "timestamp": null,
+        "sort": "-timestamp",
+        "limit": 1
+      },
+      "sort": "-links.timestamp",
+      "limit": 100
+    }])
+    .then(function(env) {
+      env.result.forEach(function(attr) {
+        creators.push(attr.id);
+      })
+      return creators;
+    });
+};
+
+function creators_by_acre_app(ids) {
+  var creators = [];
+
+  return freebase.mqlread([{
+      "id": null,
+      "type": "/type/attribution",
+      "/freebase/written_by/application": {
+          "id|=" : ids
+      },
+      "links": {
+        "timestamp": null,
+        "sort": "-timestamp",
+        "limit": 1
+      },
+      "sort": "-links.timestamp",
+      "limit": 100
+    }])
+    .then(function(env) {
+      env.result.forEach(function(attr) {
+        creators.push(attr.id);
+      })
+      return creators;
     });
 };

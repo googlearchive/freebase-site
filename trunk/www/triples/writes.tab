@@ -72,7 +72,6 @@ var SPEC = {
   },
 
   run: function(object, object_type, f) {
-
     var id = object.id;
     return {
       id: id,
@@ -82,7 +81,7 @@ var SPEC = {
       // filter components
       filters: f,
 
-      writes: queries.writes(id, f)
+      writes: queries.writes(id, object_type.id, f)
     };
   }
 

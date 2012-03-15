@@ -155,11 +155,11 @@ test("get_attribution", function() {
   equal(h.get_attribution({attribution:{creator:{id:"/attr/id"}}}).creator, "/attr/id");
 
   // mdo
-  equal(h.get_attribution({attribution:{"/dataworld/provenance/data_operation":{operator:{id:"/operator/id"}}}}).creator, "/operator/id");
-  equal(h.get_attribution({attribution:{"/dataworld/provenance/data_operation":{id:"/source/id"}}}).source.id, "/source/id");
+  equal(h.get_attribution({attribution:{"/dataworld/provenance/tool":{id:"/app/id"}}}).app.id, "/app/id");
+  equal(h.get_attribution({attribution:{"/dataworld/provenance/source":{id:"/dataset/id"}}}).dataset.id, "/dataset/id");
 
   // oauth app
-  equal(h.get_attribution({attribution:{"/freebase/written_by/application":{id:"/app/id"}}}).source.id, "/app/id");
+  equal(h.get_attribution({attribution:{"/freebase/written_by/application":{id:"/app/id"}}}).app.id, "/app/id");
 });
 
 

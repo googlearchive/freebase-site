@@ -70,7 +70,7 @@
 
   <div class="column links" id="triples-data" role="main" acre:attrs="c.filters.historical ? {'class':'historical'} : {}">
 
-    ${writes(c.id, c.writes, c.filters, c.object_type)}
+    ${writes(c.id, c.writes, c.filters, c.object_type.id)}
 
   </div>
 
@@ -82,11 +82,16 @@
 
 </acre:block>
 
-<acre:block def="writes(id, data, filters, object_type)" if="data && data.length">
+<acre:block def="writes(id, data, filters, object_type)">
 
   <div class="section">
-    <h2 class="table-title"><a name="infinitescroll-count">${_("Links created by or via this object")} (${i18n_c.number(data.length)})</a></h2>
-    <table class="table table-sortable" id="infinitescroll">
+    <h2  class="table-title">
+      <a acre:if="data && data.length"name="infinitescroll-count">
+        ${_("Links created by or via this object")} (${i18n_c.number(data.length)})
+      </a>
+      <acre:block else="">${_("No links created by or via this object")}</acre:block>
+    </h2>
+    <table acre:if="data && data.length" class="table table-sortable" id="infinitescroll">
       <thead>
         <tr>
           <th class="column-header first" scope="col">
@@ -98,11 +103,28 @@
           <th class="column-header" scope="col">
             <span class="sort-icon">${_("target")}</span>
           </th>
-          <th acre:if="object_type.id !== '/type/user'" class="column-header" scope="col">
-            <span class="sort-icon">${_("user")}</span>
+          <th class="column-header" scope="col">
+            <span class="sort-icon">
+              <acre:block if="object_type !== '/type/user'">
+                ${_("user")}
+              </acre:block>
+              <acre:block acre:elif="object_type !== '/freebase/apps/application' && object_type !== '/dataworld/software_tool'">
+                ${_("app")}
+              </acre:block>
+              <acre:block acre:elif="object_type !== '/dataworld/information_source'">
+                ${_("dataset")}
+              </acre:block>
+            </span>
           </th>
-          <th acre:else="" class="column-header" scope="col">
-            <span class="sort-icon">${_("app/load")}</span>
+           <th class="column-header" scope="col">
+            <span class="sort-icon">
+              <acre:block if="object_type !== '/dataworld/information_source'">
+                ${_("dataset")}
+              </acre:block>
+              <acre:block acre:elif="object_type !== '/freebase/apps/application' && object_type !== '/dataworld/software_tool'">
+                ${_("app")}
+              </acre:block>
+            </span>
           </th>
           <th class="column-header column-header-asc {sorter: 'string'}" scope="col">
             <span class="sort-icon">${_("timestamp")}</span>
@@ -113,7 +135,7 @@
         </tr>
       </thead>
 
-      ${writes_body(id, data, filters, object_type.id)}
+      ${writes_body(id, data, filters, object_type)}
 
       <tfoot>
         <tr>
@@ -121,7 +143,7 @@
             <acre:script>
               var params = {
                 id:id,
-                object_type: object_type.id
+                object_type: object_type
               };
               for (var k in filters) {
                 if (filters[k] != null) {
@@ -163,10 +185,27 @@
     <td class="odd">
       ${o.target_value ? triples.target_value(o) : triples.target(o)}
     </td>
-    <td class="even" acre:if="object_type !== '/type/user'">${triples.user(attr)}</td>
-    <td class="even" acre:else="">${triples.app(attr)}</td>
-    <td class="odd">${o.timestamp}</td>
-    <td acre:if="filters.historical" class="even">${o.operation}</td>
+    <td class="even">
+      <acre:block if="object_type !== '/type/user'">
+        ${triples.user(attr)}
+      </acre:block>
+      <acre:block acre:elif="object_type !== '/freebase/apps/application' && object_type !== '/dataworld/software_tool'">
+        ${triples.app(attr)}
+      </acre:block>
+      <acre:block acre:elif="object_type !== '/dataworld/information_source'">
+        ${triples.dataset(attr)}
+      </acre:block>
+    </td>
+    <td class="odd">
+      <acre:block if="object_type !== '/dataworld/information_source'">
+        ${triples.dataset(attr)}
+      </acre:block>
+      <acre:block acre:elif="object_type !== '/freebase/apps/application' && object_type !== '/dataworld/software_tool'">
+        ${triples.app(attr)}
+      </acre:block>
+    </td>
+    <td class="even">${o.timestamp}</td>
+    <td acre:if="filters.historical" class="odd">${o.operation}</td>
   </tr>
 </acre:block>
 

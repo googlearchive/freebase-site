@@ -150,5 +150,20 @@ test("get_static", function() {
   acre.async.wait_on_results();
 });
 
+test("get_topic_multi", function() {
+    var result;
+    var ids = ["/en/bob_dylan", "/en/blade_runner"];
+    freebase.get_topic_multi(ids, {filter:"/common/topic/article", alldata: true})
+        .then(function(r) {
+            result = r;
+        }, function(error) {
+            ok(false, "get_topic_multi returned an error: "+error);
+        });
+    acre.async.wait_on_results();
+    ok(result, "Got multiple topic result");
+    equal(result.length, 2);
+    equal(result[0].id, "/en/bob_dylan");
+    equal(result[1].id, "/en/blade_runner");
+});
 
 acre.test.report();

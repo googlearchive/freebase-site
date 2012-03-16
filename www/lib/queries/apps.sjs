@@ -2350,7 +2350,6 @@ function save_file_text(r, text, content_type, revision, name, acre_handler, bas
             var error = parse_freebase_error(e);
             if (error && error.messages[0].code === "/api/status/error/upload/content_mismatch") {
               var old_file = get_file_revision(r, error.messages[0].info.existing_content);
-
               var lib_patch   = get_lib_patch();
               var diff = lib_patch.diff_lines(old_file.text, text);
 

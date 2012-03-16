@@ -248,10 +248,9 @@ CueCard.QueryEditor.prototype._getResolvedQueryEnvelope = function(cleanUp, opti
     options.isWriteQuery = this._isWriteQuery(q);
     
     var envelope = this._getQueryEnvelope();
-    var variables = this._getVariables();
     
     if (cleanUp) {
-        this.content(CueCard.jsonize(q, this.getJsonizingSettings({ variables: variables, resolveVariables: false })));
+        this.content(CueCard.jsonize(q, this.getJsonizingSettings({ variables: this._getVariables(), resolveVariables: false })));
         
         try {
             // Parse it again and try to put the cursor where it logically was
@@ -265,7 +264,7 @@ CueCard.QueryEditor.prototype._getResolvedQueryEnvelope = function(cleanUp, opti
     
     envelope.query = q;
     
-    return CueCard.jsonize(envelope, this.getJsonizingSettings({ breakLines: false, variables: variables, resolveVariables: true }));
+    return envelope;
 };
 
 CueCard.QueryEditor.prototype._isWriteQuery = function(q) {
@@ -305,19 +304,20 @@ CueCard.QueryEditor.prototype.getMqlReadURL = function() {
     var options = {};
     var q = this.getResolvedQueryEnvelope(options);
     
-    var serviceUrl = CueCard.freebaseServiceUrl + 'api/service/' + (options.isWriteQuery ? 'mqlwrite' : 'mqlread');
+    var serviceUrl = CueCard.freebaseServiceUrl + (options.isWriteQuery ? 'mqlwrite' : 'mqlread');
     if ("service" in this._options && this._options.service != null) {
         serviceUrl = this._options.service;
     }
     
-    return serviceUrl + '?query=' + encodeURIComponent(q);
+    q.query = CueCard.jsonize(q.query, this.getJsonizingSettings({ breakLines: false, variables: this._getVariables(), resolveVariables: true }));
+    return fb.h.build_url(serviceUrl, "/", q);
 };
 
 CueCard.QueryEditor.prototype.run = function(forceCleanUp) {
     if (this._outputPane != null) {
         var options = {};
-        var q = this._getResolvedQueryEnvelope(forceCleanUp || (this._controlPane && this._controlPane.getSetting("cleanup")), options);
-        
+        var envelope = this._getResolvedQueryEnvelope(forceCleanUp || (this._controlPane && this._controlPane.getSetting("cleanup")), options);
+        var q = CueCard.jsonize(envelope, this.getJsonizingSettings({ breakLines: false, variables: this._getVariables(), resolveVariables: true }));
         
         if (this._confirmWriteQuery(options)) {
             if (window.confirm("Your query will write data into Freebase.\nAre you sure you want to do that?")) {

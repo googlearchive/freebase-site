@@ -39,6 +39,7 @@ var schema = acre.require("schema/typeloader.sjs");
 var proploader = acre.require("schema/proploader.sjs");
 var ph = acre.require("propbox/helpers.sjs");
 var create_article = acre.require("queries/create_article.sjs").create_article;
+var update_article = acre.require("queries/update_article.sjs").update_article;
 
 function qualify_prop(key, type) {
   var system_props = {
@@ -128,7 +129,6 @@ function clean_clause(q) {
     "/type/object/mid": true,
     "/type/object/name": true,
     "/common/topic/article": true,
-    "/common/topic/image": true,
     "/type/value/value": true,
     "/type/text/lang": true,
 
@@ -212,7 +212,7 @@ function query(query, opts) {
       return schema.load(typeid, i18n.lang)
         .then(function(r) {
           var is_mediator = r["/freebase/type_hints/mediator"];
-          var default_paths = is_mediator ? [] : ["/type/object/name", "/common/topic/image"];
+          var default_paths = is_mediator ? [] : ["/type/object/name"];
           var props = default_paths.concat(get_paths(q, 2, typeid));
           result.collection = collection(mids, props, i18n.lang);
           return deferred.all(result);
@@ -330,9 +330,9 @@ function create_query(user_id, query, name, key, domain, description, lang) {
         .then(function(doc) {
           var promises = [];
 
-          promises.push(freebase.upload(JSON.stringify(query, null, 2), "text/plain", {
-            "document": doc.mid
-          }));
+          // TODO - this fails with a '503 Backend Error'
+          // even though everything seems to be working
+          promises.push(update_article(doc.mid, JSON.stringify(query, null, 2), 'text/plain'));
 
           if (description) {
             promises.push(create_article(doc.mid, description, 'text/plain', {
@@ -341,8 +341,8 @@ function create_query(user_id, query, name, key, domain, description, lang) {
             }));
           }
 
-          return deferred.all(promises, true)
-            .then(function() {
+          return deferred.all(promises)
+            .then(function(results) {
               return doc;
             });
         });

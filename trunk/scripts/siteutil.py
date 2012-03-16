@@ -940,10 +940,13 @@ class App:
     c = self.context
 
     if os.path.isdir(target_dir):
-      try:
-        shutil.rmtree(target_dir)
-      except:
-        return c.error('Cannot copy app to existing directory %s (cannot delete directory first)' % self)
+      if c.options.prevent_overwrite:
+        return
+      else:
+        try:
+          shutil.rmtree(target_dir)
+        except:
+          return c.error('Cannot copy app to existing directory %s (cannot delete directory first)' % self)
 
     #try:
     #  os.makedirs(target_dir)

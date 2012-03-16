@@ -35,7 +35,7 @@
     
     init: function() {
       CueCard.helper = fb.h.ajax_url("lib/cuecard/");
-      CueCard.freebaseServiceUrl = fb.acre.freebase.service_url + "/";
+      CueCard.freebaseServiceUrl = fb.acre.freebase.googleapis_url + "/";
       CueCard.urlPrefix = CueCard.apiProxy.base = fb.h.ajax_url("lib/cuecard/");
       
       var params = CueCard.parseURLParameters();

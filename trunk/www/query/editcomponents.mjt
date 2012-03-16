@@ -54,14 +54,9 @@
           <label>
             <span class="form-label">${_('Save Query to')}</span>
             <select name="domain" data-placeholder="${_('Choose')}&hellip;">
-              <option></option>
-              <acre:block for="domain in domains">
-                <acre:block if="domain.id == user_id + '/default_domain'">
-                  <option value="${domain.id}" selected="selected">${_('My Default Domain')}</option>
-                </acre:block>
-                <acre:block else="">
-                  <option value="${domain.id}">${i18n.display_name(domain)}</option>
-                </acre:block>
+              <option value="${user_id}" selected="selected">${_('My user profile')}</option>
+              <acre:block for="domain in domains" if="domain.id !== user_id">
+                <option value="${domain.id}">${i18n.display_name(domain)}</option>
               </acre:block>
             </select>
           </label>

@@ -138,7 +138,6 @@ class ActionStatic:
     c = self.context
 
     site = Site.Get(c)
-    c.set_acre(Acre.Get(c))
 
     acre = Acre.Get(c)
     if not acre:
@@ -146,6 +145,8 @@ class ActionStatic:
 
     if not (acre.is_running() or (acre.build(target='devel', config_dir= "%s/appengine-config" % site.site_dir) and acre.start())):
       return c.error("There was an error starting acre - cannot generate static files without a running acre instance.")
+
+    c.set_acre(acre)
 
     success = c.googlecode_login()
 
@@ -1218,6 +1219,8 @@ def main():
                     default=False, help="will not bundle freebase site with acre when deploying to appengine")
   parser.add_option("-s", "--site", dest="site", default="freebase-site",
                     help="the site you want to work on - one of %s" % ",".join(Site._sites.keys()))
+  parser.add_option("", "--prevent_overwrite", dest="prevent_overwrite", action="store_true",
+                    default=False, help="avoid copying svn checkouts if the directory already exists")
 
 
   #speedtest options

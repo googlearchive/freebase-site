@@ -30,60 +30,61 @@
  !!-->
 
 <acre:script>
-  var h = acre.require("lib/helper/helpers.sjs");
+  var h = acre.require("helper/helpers.sjs");
 </acre:script>
 
-<acre:block def="render_flyout(id, lang, flyout)">
+<acre:block def="render_flyout(id, lang, summary)">
   <acre:script>
-    var image_class = flyout.image ? "fbs-flyout-image-true" : "";
+    var image_class = summary.image ? "fbs-flyout-image-true" : "";
   </acre:script>
   <div class="fbs-flyout-content">
-    <acre:block if="flyout.image">
+    <acre:block if="summary.image">
       <acre:script>
         var image_params = {maxwidth:75};
       </acre:script>
       <img id="fbs-topic-image" class="${image_class}"
-               src="${h.image_url(flyout.image, image_params)}"/>
+               src="${h.image_url(id, image_params)}"/>
     </acre:block>
     <h1 id="fbs-flyout-title"
         class="${image_class}">
-      ${flyout.name}
-      <acre:block if="flyout.label">
-        <span class="fbs-flyout-template-label">${flyout.label}</span>
+      ${summary.name}
+      <acre:block if="summary.label">
+        <span class="fbs-flyout-template-label">${summary.label}</span>
       </acre:block>
     </h1>
 
-    <acre:block for="prop in flyout.summary">
+    <acre:block for="prop in summary.notable_props.slice(0, 3)">
       <acre:block if="prop.length === 1">
         <h3 class="fbs-topic-properties ${image_class}">
-          <strong>${prop[0]}</strong>
+          <strong>${h.id_key(prop[0])}</strong>
         </h3>
       </acre:block>
       <acre:block elif="prop.length === 2">
         <h3 class="fbs-topic-properties ${image_class}">
-          <strong>${prop[0]}:</strong>
-          <acre:block if="h.isArray(prop[1])">
-            ${prop[1].join(", ")}
-          </acre:block>
-          <acre:block else="">
-            ${prop[1]}
-          </acre:block>
+          <strong>${h.id_key(prop[0])}:</strong> ${prop[1]}
         </h3>
       </acre:block>
     </acre:block>
 
-    <acre:block if="flyout.article">
+    <acre:block if="summary.article">
+      <acre:script>
+        var a = summary.article.substring(0, 250);
+        var i = a.lastIndexOf(" ");
+        if (i > 0) {
+          a = a.substring(0, i);
+        }
+      </acre:script>
       <p class="fbs-topic-article ${image_class}">
-        ${flyout.article.substring(0, 250)}&hellip;
+        ${a}&hellip;
       </p>
     </acre:block>
       
   </div>
 
   <div class="fbs-attribution">
-    <acre:block if="flyout.notability">
+    <acre:block if="summary.notable_types">
       <span class="fbs-flyout-types">
-        ${flyout.notability}
+        ${summary.notable_types.join(", ")}
       </span>
     </acre:block>
   </div>

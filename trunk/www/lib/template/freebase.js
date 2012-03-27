@@ -383,7 +383,7 @@
         service_url: fb.h.suggest_url(),
         service_path: "",
         flyout_service_url: "",
-        flyout_service_path: "${id}?flyout",
+        flyout_service_path: "/flyout?id=${id}",
         key: fb.acre.freebase.api_key,
         lang: fb.suggest_lang.lang()
       },

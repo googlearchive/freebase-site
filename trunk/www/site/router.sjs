@@ -172,10 +172,11 @@ function init_site_rules(lib) {
     DEFAULT_BLURB_PROMISE
   ];
 
+  // legacy object routing flyout url (i.e., /m/xxx?flyout)  
   var FLYOUT = {
       key: "flyout",
-      app: "flyout",
-      script: "flyout.controller",
+      app: "lib",
+      script: "flyout/flyout.controller",
       hidden: true,
       more: true
   };
@@ -823,6 +824,7 @@ function init_site_rules(lib) {
     {prefix:"/suggest",            app:"lib", script:"suggest"},
     {prefix:"/robots.txt",         app:"site", script:"robots.sjs"},
 
+    {prefix:"/flyout",             app:"lib", script:"flyout/flyout.controller"},
     //
     // Redirects for legacy urls
     //

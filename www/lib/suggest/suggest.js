@@ -1077,7 +1077,7 @@
       }
 
       this.jsonp = true;
-      this.jsonp_flyout = $.suggest.use_jsonp(this.flyout_url);
+      this.jsonp_flyout = $.suggest.use_jsonp(o.flyout_service_url);
 
       if (!$.suggest.cache) {
         $.suggest.cache = {};
@@ -1423,6 +1423,7 @@
       }
 
       //this.flyoutpane.hide();
+      var flyout_id = data.id;
       var url = this.flyout_url.replace(/\$\{id\}/g, data.id);
 
       var ajax_options = {
@@ -1625,7 +1626,7 @@
 
       // flyout_service_url + flyout_service_path =
       // url to flyout service
-      flyout_service_path: "${id}?flyout",
+      flyout_service_path: "/flyout?id=${id}",
 
       // jQuery selector to specify where the flyout
       // will be appended to (defaults to document.body).

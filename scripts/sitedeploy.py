@@ -503,10 +503,10 @@ class ActionCreateAppTag():
     tag_app = from_branch_app.create_tag()
 
     #if not no_static:
-    #r = ActionStatic(c)(app=tag_app)
-    #if not r:
-      #tag_app.remove_from_svn()
-      #return c.error('Failed to create static files for "%s" - tag removed from SVN.' % tag_app)
+    r = ActionStatic(c)(app=tag_app)
+    if not r:
+      tag_app.remove_from_svn()
+      return c.error('Failed to create static files for "%s" - tag removed from SVN.' % tag_app)
 
     c.log('Created "%s"' % tag_app, color=c.BLUE)
 

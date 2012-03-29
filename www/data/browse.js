@@ -52,7 +52,7 @@
               if ($("#domain-search-toggle-commons").is(":checked")) {
                 filters.push("with:commons");
               }
-              return fb.suggest_options.all.apply(null, filters);
+              return $.extend(fb.suggest_options.all.apply(null, filters), {scoring:"schema"});
             },
 
             domain: function() {

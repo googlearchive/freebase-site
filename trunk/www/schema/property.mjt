@@ -41,13 +41,22 @@
   <link rel="stylesheet" type="text/css" href="schema.mf.css" />
 </acre:block>
 
+<acre:block def="page_flag()">
+  <acre:block if="c.property['/freebase/property_hints/deprecated']">   
+    <div class="page-flag">
+      <div class="page-flag-kind">
+        <span class="page-flag-msg">${_('This property is deprecated.')}</span>
+      </div>        
+    </div>
+  </acre:block>
+</acre:block>
 
 <acre:block def="page_content()">
   <table class="skeleton">
     <tbody>
       <tr>
         <td class="subject" rowspan="2">
-          <a href="${h.fb_url(c.property.schema.id, [['schema']])}">${i18n.display_name(c.property.schema)}</a>
+          <a href="${h.fb_url(c.property.key.namespace, [['schema']])}">${c.property.key.namespace}</a>
         </td>
         <td class="predicate">
           <span class="current-prop">
@@ -60,27 +69,25 @@
           <a href="${h.fb_url(c.property.expected_type.id, [['schema']])}">
             ${c.property.expected_type.id}
           </a>
-          <acre:block if="c.property.expected_type.mediator">
+          <acre:block if="c.property.expected_type['/freebase/type_hints/mediator']">
             <span class="attribute">${_("mediator")}</span>
           </acre:block>
-          <acre:block if="c.property.expected_type.enumeration">
+          <acre:block if="c.property.expected_type['/freebase/type_hints/enumeration']">
             <span class="attribute">${_("enumerated")}</span>
           </acre:block>            
           <acre:block if="c.property.expected_type.id  === '/type/enumeration' && c.property.enumeration">
             <span class="attribute">${c.property.enumeration.id}</span>
           </acre:block>    
-          <span class="attribute" acre:if="c.property.unit">${i18n.display_name(c.property.unit)}</a>
+          <span class="attribute" acre:if="c.property.unit">${c.property.unit['/freebase/unit_profile/abbreviation']}</a>
         </td>
       </tr>
       <tr>
         <td acre:if="c.property.reverse_property" class="rev_predicate">
-          <a href="${h.fb_url(c.property.reverse_property.id, [['schema']])}">${i18n.display_name(c.property.reverse_property)}</a>     
-          <span class="attribute" acre:if="c.property.reverse_property.unique">${_("unique")}</span> 
+          <a href="${h.fb_url(c.property.reverse_property.id, [['schema']])}">${c.property.reverse_property.id}</a>     
         </td>
         <td acre:elif="c.property.master_property" class="rev_predicate">
-          <a href="${h.fb_url(c.property.master_property.id, [['schema']])}">${i18n.display_name(c.property.master_property)}</a>  
-          <span class="attribute">${_("master")}</span>    
-          <span class="attribute" acre:if="c.property.master_property.unique">${_("unique")}</span>
+          <a href="${h.fb_url(c.property.master_property.id, [['schema']])}">${c.property.master_property.id}</a>  
+          <span class="attribute">${_("master")}</span>
         </td>
        <td acre:else="">&nbsp;</td>
       </tr>
@@ -99,7 +106,7 @@
         <a href="${h.fb_url(c.property.expected_type.id, [['schema']])}">$c.property.expected_type.id</a>
       </td>
       <td class="numeric even">
-        <span acre:if="c.property.disambiguator === true">${_("True")}</span>
+        <span acre:if="c.property['/freebase/type_hints/disambiguator'] === true">${_("True")}</span>
         <span acre:else="">${_("False")}</span>
       </td>
       <td class="numeric odd">
@@ -107,11 +114,11 @@
         <span acre:else="">${_("False")}</span>
       </td>
       <td class="numeric even">
-        <span acre:if="c.property.hidden === true">${_("True")}</span>
+        <span acre:if="c.property['/freebase/type_hints/display_none'] === true">${_("True")}</span>
         <span acre:else="">${_("False")}</span>
       </td>
       <td class="numeric odd" acre:if="c.property_reverse">
-        <a href="${h.fb_url(c.property.reverse_property.id, [['schema']])}">${i18n.display_name(c.property.reverse_property)}</a>
+        <a href="${h.fb_url(c.property.reverse_property.id, [['schema']])}">${c.property.reverse_property.id}</a>
       </td>          
     </tbody>
   </table>

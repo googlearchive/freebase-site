@@ -327,7 +327,9 @@
         description: $.trim($("textarea[name=description]:visible", form.row).val()),
         mediator: $("input[name=mediator]", form.row).is(":checked") ? 1 : 0,
         enumeration: $("input[name=enumeration]", form.row).is(":checked") ? 1 : 0,
-        lang: $("select[name=lang]", form.submit_row).val()
+        deprecated: $("input[name=deprecated]", form.row).is(":checked") ? 1 : 0,
+        never_assert: $("input[name=never_assert]", form.row).is(":checked") ? 1 : 0,
+        lang: fb.lang
       };
 
       $.ajax({

@@ -68,7 +68,6 @@ function topic_structure(id, options) {
     var lang = options.lang || "/lang/en";
     var domain_filter, type_filter, prop_filter;
     var api_options = {
-        alldata: true,
         lang: h.lang_code(lang)
     };
     if (options.domain === "all") {

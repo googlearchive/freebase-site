@@ -31,7 +31,6 @@
 
 var h = acre.require("helper/helpers.sjs");
 var i18n = acre.require("i18n/i18n.sjs");
-var update_article = acre.require("queries/update_article.sjs").update_article;
 var create_article = acre.require("queries/create_article.sjs").create_article;
 var deferred = acre.require("promise/deferred.sjs");
 var freebase = acre.require("promise/apis.sjs").freebase;
@@ -105,39 +104,10 @@ function create_topic(options) {
     })
     .then(function(created) {
       if (o.description) {
-        if (created.create === "existed") {
-          // look up if there's an existing /common/topic/article
-          return freebase.mqlread({id:created.id, "/common/topic/article": i18n.mql.article_clause(o.lang)})
-            .then(function(env) {
-              var result = env.result;
-              created["/common/topic/article"] = result["/common/topic/article"];
-              return created;
-            });
-        }
-      }
-      return created;
-    })
-    .then(function(created) {
-      if (o.description) {
-        var article = i18n.mql.get_article(o.lang, created["/common/topic/article"] || [], true);
-        if (article && article.source_uri) {
-          article = null;  // can't update/delete wp articles
-        }
-
-        var promise;
-        if (article) {
-            promise = update_article(article.id, o.description, "text/plain", {
-                lang: o.lang,
-                use_permission_of: created.id
-            });
-        }
-        else {
-            promise = create_article(created.id, o.description, "text/plain", {
-                lang: o.lang,
-                use_permission_of: created.id
-            });      
-        }
-        return promise
+        return create_article(created.id, o.description, "text/plain", {
+              lang: o.lang,
+              use_permission_of: created.id
+          })
           .then(function() {
               return created;
           });

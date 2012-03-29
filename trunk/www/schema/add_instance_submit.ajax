@@ -78,7 +78,7 @@ var SPEC = {
         return queries.add_instance(id, type);
       })
       .then(function() {
-        return queries.minimal_topic(id, true);
+        return queries.minimal_topic(id, lang);
       })
       .then(function(topic) {
         return {

@@ -33,12 +33,12 @@ var h = acre.require("lib/helper/helpers.sjs");
 var i18n = acre.require("lib/i18n/i18n.sjs");
 var schema_helpers = acre.require("helpers.sjs");
 var mql = acre.require("mql.sjs");
-
+var article = acre.require("lib/queries/article.sjs");
 var apis = acre.require("lib/promise/apis");
 var freebase = apis.freebase;
-var urlfetch = apis.urlfetch;
 var deferred = apis.deferred;
 var typeloader = acre.require("lib/schema/typeloader.sjs");
+var proploader = acre.require("lib/schema/proploader.sjs");
 
 /**
  * Get all "commons" domains. Domains with a key in "/".
@@ -151,416 +151,233 @@ function modified_domains(days, changes) {
 };
 
 /**
- * minimal domain query to get the name, key(s), and article
+ * domain query and optionally get article, types and their
+ * activity and articles.
  */
-function minimal_domain(id) {
-  var q = {
-    id: id,
-    name: i18n.mql.query.name(),
-    type: "/type/domain",
-    key: [{value: null, namespace: null}],
-    "/common/topic/article": i18n.mql.query.article()
-  };
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return env.result || {};
-    })
-    .then(function(domain) {
-      return i18n.get_blob(domain);
-    });
-};
-
-
-/**
- * Domain query and for each type in the domain:
- * 1. get type descriptions
- * 2. get type instance counts
- */
-function domain(id) {
-  var q = mql.domain({id:id});
-  return freebase.mqlread(q)
-    .then(function(envelope) {
-      return envelope.result || {};
-    })
-    .then(function(domain) {
-      var promises = [];
-
-      // description
-      promises.push(i18n.get_blurb(domain, {maxlength: 250}));
-      promises.push(i18n.get_blob(domain));
-
-      // categorize types by their roles (mediator, etc.)
-      var types = [];
-      var mediators = [];
-      domain.types.forEach(function(type) {
-        promises.push(i18n.get_blurb(type));
-        type.instance_count = 0;
-        var role = h.get_type_role(type, true);
-        if (role.mediator) {
-          mediators.push(type);
-        }
-        else {
-          types.push(type);
-        }
-      });
-      types.sort(schema_helpers.sort_by_id);
-      mediators.sort(schema_helpers.sort_by_id);
-
-      domain.types = types;
-      domain["mediator:types"] = mediators;
-
-      // domain activity, instance counts per type
-      var activity_id = "summary_/guid/" + domain.guid.slice(1);
-      promises.push(freebase.get_static("activity", activity_id)
-        .then(function(activity) {
-          return activity || {};
-        })
-        .then(function(activity) {
-          if (activity.types) {
-            types.forEach(function(type) {
-              type.instance_count = activity.types[type.id] || 0;
-            });
-          }
-          return activity;
-        }));
-      return deferred.all(promises)
-        .then(function() {
-          return domain;
-        });
-    });
-};
-
-/**
- * Get minimal type info (blurb, mediator, enumeration, #properties, instance_count).
- * If you want full type info, use base_type or type queries.
- */
-function minimal_type(type_id, options) {
-  var q = h.extend({
-    id: type_id,
-    guid: null,
-    name: i18n.mql.query.name(),
-    type: "/type/type",
-    key: [{namespace: null, value: null}],
-    domain: {id: null, name: i18n.mql.query.name(), type: "/type/domain"},
-    "/common/topic/article": i18n.mql.query.article(),
-    "/freebase/type_hints/mediator": null,
-    "/freebase/type_hints/enumeration": null,
-    properties: {optional: true, id: null, type: "/type/property", "return": "count"}
-  }, options);
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return env.result || {};
-    })
-    .then(function(type) {
-      h.get_type_role(type, true);
-      var promises = [];
-      // description
-      promises.push(i18n.get_blurb(type));
-      promises.push(i18n.get_blob(type));
-      // domain activity, instance counts per type
-      type.instance_count = 0;
-      var activity_id = "summary_/guid/" + type.guid.slice(1);
-      promises.push(freebase.get_static("activity", activity_id)
-        .then(function(activity) {
-          return activity || {};
-        })
-        .then(function(activity) {
-          if (activity.properties) {
-            // /type/object/type is the total instances of this type
-            type.instance_count = activity.properties["/type/object/type"] || 0;
-          }
-          return activity;
-        }));
-      return deferred.all(promises)
-        .then(function() {
-          return type;
-        });
-    });
-};
-
-function type_role(type_id) {
-  var q = {
-    id: type_id,
-    type: "/type/type",
-    "/freebase/type_hints/mediator": null,
-    "/freebase/type_hints/enumeration": null
-  };
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return h.get_type_role(env.result || {});
-    });
-};
-
-
-function normalize_prop(prop) {
-  prop.tip = prop["/freebase/documented_object/tip"] || "";
-  prop.disambiguator = prop["/freebase/property_hints/disambiguator"] === true;
-  prop.display_none = prop["/freebase/property_hints/display_none"] === true;
-  if (prop.expected_type && typeof prop.expected_type === "object") {
-    h.get_type_role(prop.expected_type, true);
-  }
-  return prop;
-};
-function normalize_props(props) {
-  props.forEach(function(p) {
-    normalize_prop(p);
-  });
-  return props;
-};
-/**
- * Base type query:
- * 1. description (blurb and blob)
- * 2. get type instance count
- * 3. get "sibiling" types (types that are in the same domain)
- */
-function base_type(id) {
-  var q = mql.type({id:id});
-  return freebase.mqlread(q)
-    .then(function(envelope) {
-      return envelope.result || {};
-    })
-    .then(function(result) {
-      return i18n.get_blurb(result, {maxlength: 250 });
-    })
-    .then(function(result) {
-      return i18n.get_blob(result);
-    })
-    .then(function(result) {
-      // type role
-      h.get_type_role(result, true);
-      // included_types
-      result.included_types = result["/freebase/type_hints/included_types"] || [];
-      // properties
-      normalize_props(result.properties);
-
-      var promises = [];
-
-      // instance_count
-      var activity_id = "summary_/guid/" + result.guid.slice(1);
-      result.instance_count = 0;
-      promises.push(freebase.get_static("activity", activity_id)
-        .then(function(activity) {
-          return activity || {};
-        })
-        .then(function(activity) {
-          if (activity.properties) {
-            // /type/object/type is the total instances of this type
-            result.instance_count = activity.properties["/type/object/type"] || 0;
-          }
-          return activity;
-        }));
-
-      // sibling types (in the same domain excluding this type)
-      var siblings_q = [{
-        optional: true,
-        id: null,
-        "id!=": id,
-        name: i18n.mql.query.name(),
-        type: "/type/type",
-        domain: result.domain.id,
-        "!/freebase/domain_profile/base_type": {optional: "forbidden", id: null, limit: 0}
-      }];
-      promises.push(freebase.mqlread(siblings_q)
+function load_domain(id, lang, options) {
+    options = options || {};
+    var promises = {};
+    var q = {
+        id: id,
+        guid: null, // activity bdb uses guids
+        name: i18n.mql.text_clause(lang),
+        type: "/type/domain"
+    };
+    if (options.types) {
+        // get all types
+        q.types = [{          
+            optional: true,
+            id: null,
+            type: "/type/type"
+        }];
+    }
+    promises.domain = freebase.mqlread(q)
         .then(function(env) {
-          return env.result || [];
-        })
-        .then(function(siblings) {
-          result.domain.types = siblings;
-          return siblings.sort(schema_helpers.sort_by_id);
-        }));
-
-      return deferred.all(promises)
-        .then(function() {
-          return result;
+            return env.result;
         });
-    });
-};
-
-function type(id) {
-  return base_type(id)
-    .then(function(result) {
-      result.incoming = {
-        domain: [],
-        commons: 0,
-        bases: 0
-      };
-      var promises = [];
-      promises.push(incoming_from_domain(id, result.domain.id)
-        .then(function(props) {
-          result.incoming.domain = props || [];
-        }));
-      promises.push(incoming_from_commons(id, result.domain.id, true)
-        .then(function(props) {
-          result.incoming.commons = props || 0;
-        }));
-      promises.push(incoming_from_bases(id, result.domain.id, true)
-        .then(function(props) {
-          result.incoming.bases = props || 0;
-        }));
-
-      if (result.enumeration && !result.mediator) {
-        promises.push(freebase.mqlread([{
-          id: null,
-          name: i18n.mql.query.name(),
-          type: id,
-          "/common/topic/article": i18n.mql.query.article(),
-          optional: true,
-          limit: 11
-        }])
-        .then(function(env) {
-          result.instance = env.result.sort(schema_helpers.sort_by_id);
-          var blurbs = [];
-          result.instance.forEach(function(topic) {
-            blurbs.push(i18n.get_blurb(topic));
-          });
-          return deferred.all(blurbs)
-            .then(function() {
-              return result.instance;
+    if (options.article) {
+        // get domain article
+        promises.article = article.get_article(id, null, null, lang)
+            .then(function(r) {
+                return r[id];
             });
-        }));
-      }
-      return deferred.all(promises)
-        .then(function() {
-          return result;
+    }
+    return deferred.all(promises)
+        .then(function(r) {
+            var domain = r.domain;
+            // domain key/namespace generated from the domain id
+            var ns_key = h.id_key(id, true);
+            domain.key = {
+                namespace: ns_key[0],
+                value: ns_key[1]
+            };
+            if (options.article) {
+                domain["/common/topic/article"] = r.article;
+            }
+            if (options.types) {
+                var type_ids = domain.types.map(function(t) {
+                    return t.id;
+                });
+                if (type_ids.length) {
+                    promises = {
+                        types: typeloader.loads(type_ids, lang)
+                    };
+                    if (options.types_instance_count) {
+                        // load activity for each type
+                        promises.types_instance_count = 
+                            freebase
+                                .get_static("activity", "summary_/guid/" + domain.guid.slice(1))
+                                .then(function(activity) {
+                                    if (activity && activity.types) {
+                                        domain.types.forEach(function(t) {
+                                            t.instance_count = activity.types[t.id] || 0;
+                                        });
+                                    }
+                                });
+                    }
+                    if (options.types_article) {
+                        promises.types_article = article.get_article(type_ids, null, null, lang);
+                    }
+                    return deferred.all(promises)
+                        .then(function(r) {
+                            domain.types.forEach(function(t) {
+                                t = h.extend(t, r.types[t.id]);
+                                if (r.types_article) {
+                                    t["/common/topic/article"] = r.types_article[t.id] || [];
+                                }
+                            });
+                            return domain;
+                        });
+                }
+            }
+            return domain;
         });
-    });
-};
-
-function typediagram(id) {
-  return base_type(id)
-    .then(function(result) {
-      result.incoming = {
-        domain: [],
-        commons: [],
-        bases: []
-      };
-      var promises = [];
-      promises.push(incoming_from_domain(id, result.domain.id)
-        .then(function(props) {
-          result.incoming.domain = props || [];
-        }));
-      promises.push(incoming_from_commons(id, result.domain.id)
-        .then(function(props) {
-          result.incoming.commons = props || [];
-        }));
-      promises.push(incoming_from_bases(id, result.domain.id)
-        .then(function(props) {
-          result.incoming.bases = props || [];
-        }));
-
-      result.included_types.forEach(function(inc_type) {
-        promises.push(type_properties(inc_type.id)
-          .then(function(type) {
-            inc_type.properties = type.properties;
-          }));
-      });
-
-      return deferred.all(promises)
-        .then(function() {
-          return result;
-        });
-    });
 };
 
 /**
- * Get all properties of a type
+ * Use typeloader to load the type and optionally
+ * it's article, instance_count, properties' articles.
  */
-function type_properties(id) {
-  var q = {
-    id: id,
-    name: i18n.mql.query.name(),
-    type: "/type/type",
-    properties: [mql.property({optional: true, index: null, sort: "index"})]
-  };
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return env.result || {};
-    })
-    .then(function(type) {
-      normalize_props(type.properties);
-      return type;
-    });
+function load_type(type_id, lang, options) {
+    options = options || {};
+    var promises = {
+        type: typeloader.load(type_id, lang)
+    };
+    if (options.article) {
+        promises.article = article.get_article(type_id, null, null, lang)
+            .then(function(r) {
+                return r[type_id];
+            });
+    }
+    return deferred.all(promises)
+        .then(function(r) {
+            var type = r.type;
+            // type key/namespace generated from the type id
+            var ns_key = h.id_key(type_id, true);
+            type.key = {
+                namespace: ns_key[0],
+                value: ns_key[1]
+            };
+            if (options.article) {
+                type["/common/topic/article"] = r.article;
+            }
+            var promises = {};                  
+            if (options.instance_count) {
+                promises.instance_count = 
+                    freebase
+                        .get_static("activity", "summary_/guid/" + type.guid.slice(1))
+                        .then(function(activity) {
+                            if (activity) {
+                                type.instance_count = activity.properties["/type/object/type"] || 0;
+                            }
+                            else {
+                                type.instance_count = 0;
+                            }
+                        });           
+            }
+            if (options.properties_article) {
+                var pids = type.properties.map(function(p) {
+                    return p.id;
+                });
+                if (pids.length) {
+                    promises.properties_article = freebase.mqlread([{
+                        id: null,
+                        "id|=": pids,
+                        "/freebase/documented_object/tip": i18n.mql.text_clause(lang)
+                    }])
+                    .then(function(env) {
+                        var tips = {};
+                        env.result.forEach(function(p) {
+                            tips[p.id] = p["/freebase/documented_object/tip"];
+                        });
+                        type.properties.forEach(function(p) {
+                            p["/freebase/documented_object/tip"] = tips[p.id];
+                        });
+                    });
+                }
+            }
+            return deferred.all(promises) 
+                .then(function() {
+                    return type;
+                });
+        });
 };
 
+
+function load_property(prop_id, lang, options) {
+    options = options || {};
+    var promises = {
+        prop: proploader.load(prop_id, lang)
+    };
+    if (options.article) {
+        var q = {id: prop_id,
+            "/freebase/documented_object/tip": i18n.mql.text_clause(lang)
+        };
+        promises.article = freebase.mqlread(q)
+        .then(function(env) {
+            return env.result["/freebase/documented_object/tip"];
+        });
+    }
+    return deferred.all(promises) 
+        .then(function(r) {
+            var prop = r.prop;
+            // property key/namespace generated from the prop id
+            var ns_key = h.id_key(prop_id, true);
+            prop.key = {
+                namespace: ns_key[0],
+                value: ns_key[1]
+            };
+            if (options.article) {
+                prop["/freebase/documented_object/tip"] = r.article;
+            }
+            return prop;
+        });
+};
 
 
 /**
  * Minimal topic query to get name and description
  */
-function minimal_topic(id, get_blurb, get_blob) {
-  var q = {
-    id: id,
-    name: i18n.mql.query.name()
-  };
-  if (get_blurb || get_blob) {
-    q["/common/topic/article"] = i18n.mql.query.article();
-  };
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return env.result;
-    })
-    .then(function(topic) {
-      if (get_blurb) {
-        return i18n.get_blurb(topic);
-      }
-      return topic;
-    })
-    .then(function(topic) {
-      if (get_blob) {
-        return i18n.get_blob(topic);
-      }
-      return topic;
-    });
+function minimal_topic(id, lang) {
+    return minimal_topic_multi([id], lang)
+        .then(function(r) {
+            return r[id];
+        });
 };
 
-
-/**
- * Full fledged property query
- */
-function property(id) {
-  var q = mql.property({
-    id: id,
-    creator: null,
-    timestamp:null,
-    schema: {
-      id: null,
-      guid: null,
-      name: i18n.mql.query.name(),
-      type: "/type/type",
-      domain: {id: null, name: i18n.mql.query.name(), type: "/type/domain"}
-    }
-  });
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return env.result || {};
+function minimal_topic_multi(ids, lang) {
+    // TODO: assert ids is an Array.length > 0
+    return freebase.get_topic_multi(ids, {
+        lang: h.lang_code(lang || "/lang/en"),
+        filter: ["/type/object/name", "/common/topic/article"]
     })
-    .then(function(result) {
-      normalize_prop(result);
-
-      var promises = [];
-      // sibling props (in the same schema excluding this prop)
-      var siblings_q = [{
-        optional: true,
-        id: null,
-        "id!=": id,
-        name: i18n.mql.query.name(),
-        type: "/type/property",
-        schema: result.schema.id
-      }];
-
-      promises.push(freebase.mqlread(siblings_q)
-        .then(function(env) {
-          return env.result || [];
-        })
-        .then(function(props) {
-          result.schema.properties = props;
-          return props;
-        }));
-
-      return deferred.all(promises)
-        .then(function() {
-          return result;
-        });
+    .then(function(r) {
+        var topics = {};
+        if (r) {
+            r.forEach(function(env) {
+                var topic = {
+                    id: env.id
+                };
+                if (env.result && env.result.property) {
+                    if (env.result.property["/type/object/name"]) {
+                        topic.name = env.result.property["/type/object/name"].values.map(function(v) {
+                            return {
+                                value: v.value,
+                                lang: h.lang_id(v.lang)
+                            };
+                        });
+                    }
+                    if (env.result.property["/common/topic/article"]) {
+                        topic["/common/topic/article"] = 
+                            env.result.property["/common/topic/article"].values.map(function(v) {
+                                return article.article_value(v);
+                            });
+                    }
+                }
+                topics[env.id] = topic;
+            });
+        };
+        return topics;
     });
 };
 
@@ -711,12 +528,6 @@ function incoming(q) {
   return freebase.mqlread(q)
     .then(function(env) {
       return env.result;
-    })
-    .then(function(result) {
-      result.forEach(function(prop) {
-        h.get_type_role(prop.schema, true);
-      });
-      return result;
     });
 };
 incoming.query = function(options) {
@@ -753,26 +564,20 @@ incoming.query = function(options) {
 /**
  * Get all included types of a type
  */
-function included_types(id) {
-  return freebase.mqlread({
-    id: id,
-    "/freebase/type_hints/included_types": [{
-      optional: true,
-      id: null,
-      name: i18n.mql.query.name(),
-      type: "/type/type",
-      index: null,
-      sort: "index",
-      "!/freebase/domain_profile/base_type": {optional: "forbidden", id: null, limit: 0}
-    }]
-  })
-  .then(function(env) {
-    return env.result;
-  })
-  .then(function(result) {
-    var types = result["/freebase/type_hints/included_types"];
-    return [{id: t.id, name: t.name} for each (t in types)];
-  });
+function included_types(id, lang) {
+    return typeloader.load(id, lang)
+        .then(function(type) {
+            var inc_types = type["/freebase/type_hints/included_types"];
+            if (inc_types.length) {
+                return typeloader.loads(inc_types, lang)
+                    .then(function(r) {
+                        return inc_types.map(function(t) {
+                            return r[t];
+                        });                        
+                    });
+            }
+            return [];
+        });
 };
 
 

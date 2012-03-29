@@ -32,7 +32,6 @@ var validators = acre.require("lib/validator/validators.sjs");
 var queries = acre.require("queries.sjs");
 var components = acre.require("type_components");
 
-
 /**
  * get properties of a type
  */
@@ -44,12 +43,13 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      validators.MqlId(params, "id", {required:true})           // type id
+      validators.MqlId(params, "id", {required:true}),           // type id
+      validators.LangId(params, "lang", {if_empty:"/lang/en"})
     ];
   },
 
-  run: function(id) {
-    return queries.type_properties(id)
+  run: function(id, lang) {
+    return queries.load_type(id, lang, {properties_article:true})
       .then(function(type) {
         return {
           html: acre.markup.stringify(components.native_properties(type.properties, id))

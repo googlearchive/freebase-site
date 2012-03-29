@@ -91,7 +91,7 @@ test("urlfetch_failure", function() {
   ok(errback_called, "Errback must be called on failed requests");
 
   // Check that bad urls call the errback
-  var errback_called = false;
+  errback_called = false;
   urlfetch("bad_url")
     .then(function(result) {
       ok(false, "Callback shouldn't have run on a bad url.");
@@ -153,7 +153,7 @@ test("get_static", function() {
 test("get_topic_multi", function() {
     var result;
     var ids = ["/en/bob_dylan", "/en/blade_runner"];
-    freebase.get_topic_multi(ids, {filter:"/common/topic/article", alldata: true})
+    freebase.get_topic_multi(ids, {filter:"/common/topic/article"})
         .then(function(r) {
             result = r;
         }, function(error) {

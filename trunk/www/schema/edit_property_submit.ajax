@@ -66,6 +66,7 @@ var SPEC = {
       validators.StringBool(params, "disambiguator", {if_empty:false}), // disambiguator?
       validators.StringBool(params, "unique", {if_empty:false}),        // unique?
       validators.StringBool(params, "hidden", {if_empty:false}),        // hidden?
+      validators.StringBool(params, "deprecated", {if_empty:false}),    // deprecated?
       validators.LangId(params, "lang", {if_empty:"/lang/en"}),    // name,description lang
       ect_new,                                                     // new ect name
       enumeration
@@ -73,7 +74,7 @@ var SPEC = {
   },
 
   run: function(id, type, name, key, expected_type, description,
-                unit, disambiguator, unique, hidden, lang,
+                unit, disambiguator, unique, hidden, deprecated, lang,
                 expected_type_new, enumeration) {
 
     var promise;
@@ -117,11 +118,12 @@ var SPEC = {
           disambiguator: disambiguator,
           unique: unique,
           hidden: hidden,
+          deprecated: deprecated,
           lang: lang,
           enumeration: enumeration
         })
         .then(function(updated_id) {
-          return queries.property(updated_id);
+          return queries.load_property(updated_id, lang, {article:true});
         })
         .then(function(prop) {
           return {

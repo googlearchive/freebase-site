@@ -32,6 +32,7 @@
 <acre:script>
   var h = acre.require("lib/helper/helpers.sjs");
   var sh = acre.require("helpers");
+  var article = acre.require("lib/queries/article.sjs");
   var i18n = acre.require("lib/i18n/i18n.sjs");
   var i18n_c = acre.require("lib/i18n/components.mjt");
   var _ = i18n.gettext;
@@ -57,14 +58,34 @@
       </ul>
     </th>
     <td class="even">$type.id</td>
-    <td class="odd numeric">${i18n_c.number(type.properties)}</td>
+    <td class="odd numeric">${i18n_c.number(type.properties && type.properties.length || 0)}</td>
     <td class="even numeric"><a href="${sh.build_query_url(type.id)}">${i18n_c.number(type.instance_count)}</a></td>
     <td class="odd description">
       <acre:script>
-        var blurb = i18n.display_article(type, "blurb");
+        var blurb = article.get_text(type);
       </acre:script>
-      <p acre:if="blurb">${blurb}</p>
-      <span acre:if="type.enumeration && !type.mediator" class="property-meta">${_("enumerated")}</span>
+      <p acre:if="blurb" title="${blurb}" style="white-space: nowrap; overflow:hidden">${blurb}</p>
+      <acre:script>
+        var meta = [];
+        if (type['/freebase/type_hints/enumeration']) {
+          meta.push(acre.markup.stringify(type_meta(_('This ia an enumerated type where the list of instances is specified by an administrator of the type.'), _('enumerated'))));
+        }
+        if (type['/freebase/type_hints/deprecated']) {
+          meta.push(acre.markup.stringify(type_meta(_('This type is deprecated'), _('deprecated'))));
+        }
+        if (type['/freebase/type_hints/never_assert']) {
+          meta.push(acre.markup.stringify(type_meta(_('This type should never be asserted on a topic'), _('never assert'))));
+        }
+      </acre:script>
+      <acre:block if="meta.length">
+        ${acre.markup.bless(meta.join(", "))}
+      </acre:block>
     </td>
   </tr>
+</acre:block>
+
+<acre:block def="type_meta(title, label)" trim="">
+  <span class="property-meta ect-role" acre:trim="">
+    <abbr title="${title}">${label}</abbr>
+  </span>
 </acre:block>

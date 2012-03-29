@@ -57,6 +57,7 @@ function update_property(options) {
       disambiguator: validators.StringBool(options, "disambiguator", {if_empty:null}),
       unique: validators.StringBool(options, "unique", {if_empty:null}),
       hidden: validators.StringBool(options, "hidden", {if_empty:null}),
+      deprecated: validators.StringBool(options, "deprecated", {if_empty:null}),
 
       // default lang for text is /lang/en
       lang: validators.LangId(options, "lang", {if_empty:"/lang/en"}),
@@ -207,6 +208,13 @@ function update_property(options) {
         update["/freebase/property_hints/display_none"] = {value:o.hidden, connect:"update"};
       }
 
+      if (remove.deprecated &&  old["/freebase/property_hints/deprecated"] != null) {
+        update["/freebase/property_hints/deprecated"] = {value:old["/freebase/property_hints/deprecated"], connect:"delete"};
+      }
+      else if (o.deprecated != null) {
+        update["/freebase/property_hints/deprecated"] = {value:o.deprecated, connect:"update"};
+      }
+
       if (remove.enumeration && old.enumeration != null) {
         update.enumeration = {id:old.enumeration, connect:"delete"};
       }
@@ -216,8 +224,10 @@ function update_property(options) {
 
       var d = old.id;
       var keys = ["name", "expected_type", "unit", "unique",
-                  "/freebase/documented_object/tip", "/freebase/property_hints/disambiguator",
-                 "/freebase/property_hints/display_none"];
+                  "/freebase/documented_object/tip", 
+                  "/freebase/property_hints/disambiguator",
+                  "/freebase/property_hints/display_none",
+                  "/freebase/property_hints/deprecated"];
       for (var i=0,l=keys.length; i<l; i++) {
         if (keys[i] in update) {
           d = freebase.mqlwrite(update)

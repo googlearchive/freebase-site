@@ -33,18 +33,30 @@ var deferred = acre.require("lib/promise/deferred");
 var freebase = acre.require("lib/promise/apis").freebase;
 var i18n = acre.require("lib/i18n/i18n.sjs");
 var creator = acre.require("lib/queries/creator.sjs");
+var article = acre.require("lib/queries/article.sjs");
 
 /**
  * Basic freebase object information (in english):
  * This query is used in template/object.mjt to display the freebase object mast-head.
  */
 function object(id, options) {
-  var q = mql(id);
-  q = h.extend(q, options);
-  return freebase.mqlread(q)
-    .then(function(env) {
-        return callback(env.result);
-    });
+    var q = mql(id);
+    q = h.extend(q, options);
+    var promises = {
+        object: freebase.mqlread(q)
+            .then(function(env) {
+                return env.result;
+            }),
+        article: article.get_article(id, null, null, i18n.lang)
+            .then(function(r) {
+                return r[id];
+            })
+    };
+    return deferred.all(promises)
+        .then(function(r) {
+            r.object["/common/topic/article"] = r.article;
+            return callback(r.object);
+        });
 };
 
 function callback(result) {
@@ -52,12 +64,10 @@ function callback(result) {
     if (!topic) return null;
     topic.attribution = h.get_attribution(topic);
     topic.name = topic.name.sort(h.text_lang_sort);
-    topic.alias = topic["/common/topic/alias"].sort(h.text_lang_sort);
     topic.image = topic["/common/topic/image"];
     topic.replaced_by = topic["/dataworld/gardening_hint/replaced_by"];
     topic.flag = topic["!/freebase/review_flag/item"];
-    topic.article = i18n.mql.result.article(topic["/common/topic/article"]);
-    h.resolve_article_uri(topic.article);    // resolve wikipedia links
+    //h.resolve_article_uri(topic.article);    // resolve wikipedia links
     return topic;
 };
 
@@ -66,16 +76,7 @@ function callback(result) {
  * promise to get the blurb of an object
  */
 function blurb(o) {
-  var article = o.article;
-  if (article) {
-    return i18n._get_blob.closure(article, "blurb", {maxlength: 500}, "blurb")
-      .then(function() {
-        return article.blurb;
-      });
-  }
-  else {
-    return null;
-  }
+    return article.get_text(o);
 };
 
 /**
@@ -118,7 +119,6 @@ function documented_object_tip(o) {
     });
 };
 
-
 function mql(id) {
   return creator.extend({
     id: null,
@@ -143,22 +143,11 @@ function mql(id) {
       value: null,
       lang: null
     }],
-    "/common/topic/alias": [{
-      optional: true,
-      value: null,
-      lang: null
-    }],
     "/common/topic/image": [{
       optional: true,
       id: null,
-      name: i18n.mql.query.name(),
-      type: "/common/image",
-      index: null,
-      link: {timestamp: null},
-      sort: ["index", "link.timestamp"],
-      limit: 3
+      limit: 1
     }],
-    "/common/topic/article": i18n.mql.query.article(),
     permission: null,
     timestamp: null,
     "/dataworld/gardening_hint/replaced_by": {

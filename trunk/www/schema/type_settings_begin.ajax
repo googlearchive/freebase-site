@@ -29,6 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var h = acre.require("lib/helper/helpers.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var queries = acre.require("queries.sjs");
 var editcomponents = acre.require("type_editcomponents.mjt");
@@ -39,41 +40,29 @@ var deferred = acre.require("lib/promise/deferred.sjs");
  */
 var SPEC = {
 
-  method: "GET",
+    method: "GET",
 
-  auth: true,
+    auth: true,
 
-  validate: function(params) {
-    return [
-      validators.MqlId(params, "id", {required:true})    // type id
-    ];
-  },
+    validate: function(params) {
+        return [
+            validators.MqlId(params, "id", {required:true}),    // type id
+            validators.LangId(params, "lang", {if_empty:"/lang/en"})    
+        ];
+    },
 
-  run: function(id) {
-    var promises = [];
-    promises.push(queries.minimal_type(id));
-    promises.push(queries.type_used(id));
-    return deferred.all(promises)
-      .then(function(result) {
-        var type = result[0];
-        type.used = result[1];
-        return type;
-      })
-      .then(function(type) {
-        // choose the best key
-        var key = type.key[0];
-        for (var i=0,l=type.key.length; i<l; i++) {
-          var k = type.key[i];
-          if (k.namespace === type.domain.id) {
-            key = k;
-            break;
-          }
-        }
-        type.key = key;
-        return {
-          html: acre.markup.stringify(editcomponents.type_settings_form(type))
-        };
-      });
-  }
+    run: function(id) {
+        var promises = [];
+        promises.push(queries.load_type(id, lang));
+        promises.push(queries.type_used(id));
+        return deferred.all(promises)
+            .then(function(result) {
+                var type = result[0];
+                type.used = result[1];
+                return {
+                    html: acre.markup.stringify(editcomponents.type_settings_form(type))
+                };
+            });
+    }
 
 };

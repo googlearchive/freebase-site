@@ -270,20 +270,20 @@ function gettext(msgid) {
 /**
  * Get the display name of a topic. If null, return default_value or topic id.
  */
-function display_name(obj, default_value, key) {
+function display_name(obj, default_value, key, in_lang) {
   if (!key) {
     key = "name";
   }
   if (default_value == null) {
     default_value = obj.id;
   }
-  return display_text(obj, default_value, key);
+  return display_text(obj, default_value, key, in_lang);
 };
 
 /**
  * Get the display text of obj[key]. If null, return default_value.
  */
-function display_text(obj, default_value, key) {
+function display_text(obj, default_value, key, in_lang) {
   var text = mql.result.text(obj[key]);
   if (text) {
     return text.value;
@@ -294,68 +294,13 @@ function display_text(obj, default_value, key) {
   return null;
 };
 
-function display_name_node(obj, key) {
+function display_name_node(obj, key, in_lang) {
   key = key || "name";
-  return display_text_node(obj, key);
+  return display_text_node(obj, key, in_lang);
 };
 
-function display_text_node(obj, key) {
+function display_text_node(obj, key, in_lang) {
   return mql.result.text(obj[key]);
-};
-
-
-/**
- * Usage:
- * var blob = display_article(obj, "blob");
- * var [blob] = display_article(obj, ["blob"]);
- * var [blob, blurb] = display_article(obj, ["blob", "blurb"]);
- *
- * @param keys:String or Array
- */
-function display_article(obj, keys, article_key) {
-  if (!article_key) {
-    article_key = "/common/topic/article";
-  }
-  var is_string = false;
-  var mykeys = keys;
-  if (typeof mykeys === "string") {
-    mykeys = [mykeys];
-    is_string = true;
-  }
-  else if (!h.isArray(mykeys) || mykeys.length === 0) {
-    return null;
-  }
-  var result = [];
-  var article = mql.result.article(obj[article_key]);
-  for (var i=0,l=mykeys.length; i<l; i++) {
-    result.push(article && article[mykeys[i]] || null);
-  }
-  if (is_string) {
-    return result[0];
-  }
-  return result;
-};
-
-
-/////////////////
-// edit helpers
-/////////////////
-
-function get_edit_names(obj) {
-  return get_edit_texts(obj, "name");
-};
-
-function get_edit_texts(obj, key) {
-  var texts = obj[key] || [];
-  return mql.get_texts(lang, texts);
-};
-
-function get_edit_articles(obj, key) {
-  if (!key) {
-    key = "/common/topic/article";
-  }
-  var articles = obj[key] || [];
-  return mql.get_articles(lang, articles);
 };
 
 
@@ -374,9 +319,6 @@ var mql = {
     },
     name: function() {
       return mql.query.text();
-    },
-    article: function() {
-      return mql.article_clause(lang);
     }
   },
 
@@ -389,12 +331,6 @@ var mql = {
     },
     name: function(result) {
       return mql.result.text(result);
-    },
-    article: function(result) {
-      return mql.get_article(lang, result);
-    },
-    articles: function(result) {
-      return mql.get_articles(lang, result);
     }
   },
 
@@ -427,40 +363,6 @@ var mql = {
       "lang|=": langs,
       value: null,
       optional: true
-    }];
-  },
-
-  article_clause: function(lang) {
-    var langs = [lang];
-    if (lang !== "/lang/en") {
-      langs.push("/lang/en");
-    }
-    return [{
-      optional:   true,
-      id:         null,
-      timestamp:  null,
-      updated: null,
-      creator: null,
-      type:       "/common/document",
-      source_uri: null,   // wikipedia articles
-      "nolang:content": { // old (pre-i18n) articles do not have language set
-        optional: true,
-        id:       null,
-        type:     "/type/content",
-        language: {
-          id: null,
-          optional: "forbidden"
-        }
-      },
-      "lang:content": {   // new (post-i18n) articles have language set
-        optional: true,
-        id:       null,
-        type:     "/type/content",
-        language: {
-          id: null,
-          "id|=": langs
-        }
-      }
     }];
   },
 
@@ -525,215 +427,7 @@ var mql = {
       }
     }
     return null;
-  },
-
-  /**
-   * Similar to get_texts, but padded array of articles where the padded article will have id = null.
-   *
-   * So if lang == "/lang/ko" and there is no "/lang/ko" article, the result might look like:
-   *
-   * [{id:null, lang:"/lang/ko"}, {id:"foo", lang:"/lang/en"}]
-   *
-   * And similarly, if there is a "/lang/ko" but not a "/lang/en" article, the result would look like:
-   *
-   * [{id:"bar", lang:"/lang/ko"}, {id:null, lang:"/lang/en"}]
-   *
-   * And if there are neither values:
-   *
-   * [{id:null, lang:"/lang/ko"}, {id:null, lang:"/lang/en"}]
-   *
-   * And if lang == "/lang/en", the result would be length == 1:
-   *
-   * [{id:"foo", lang:"/lang/en"}]
-   */
-  get_articles: function(lang, result) {
-    var wp_lang_article;
-    var wp_en_article;
-    var nolang_article;
-    var lang_article;
-    var en_article;
-    var lang_code = h.lang_code(lang);
-    var wp_lang_uri = h.sprintf("http://wp/%s/", lang_code);
-    result.forEach(function(article) {
-      if (article.source_uri) {
-        if (lang !== "/lang/en" && article.source_uri.indexOf(wp_lang_uri) === 0) {
-          if (wp_lang_article) {
-            if (article.timestamp > wp_lang_article.timestamp) {
-              wp_lang_article = article;
-            }
-          }
-          else {
-            wp_lang_article = article;
-          }
-          wp_lang_article.lang = lang;
-        }
-        else if (article.source_uri.indexOf("http://wp/en/") === 0) {
-          if (wp_en_article) {
-            if (article.timestamp > wp_en_article.timestamp) {
-              wp_en_article = article;
-            }
-          }
-          else {
-            wp_en_article = article;
-          }
-          wp_en_article.lang = "/lang/en";
-        }
-      }
-      else if (article["nolang:content"]) {
-        if (nolang_article) {
-            if (article.timestamp > nolang_article.timestamp) {
-              nolang_article = article;
-            }
-        }
-        else {
-          nolang_article = article;
-        }
-        nolang_article.lang = "/lang/en";
-      }
-      else if (article["lang:content"]) {
-        var language = article["lang:content"].language.id;
-        if (lang !== "/lang/en" && lang === language) {
-          if (lang_article) {
-            if (article.timestamp > lang_article.timestamp) {
-              lang_article = article;
-            }
-          }
-          else {
-            lang_article = article;
-          }
-          lang_article.lang = lang;
-        }
-        else if (language === "/lang/en") {
-          if (en_article) {
-            if (article.timestamp > en_article.timestamp) {
-              en_article = article;
-            }
-          }
-          else {
-            en_article = article;
-          }
-          en_article.lang = "/lang/en";
-        }
-      }
-    });
-
-    var articles = [];
-    var article;
-    if (lang !== "/lang/en") {
-      article = lang_article || wp_lang_article;
-      if (article) {
-        article.lang = lang;
-        articles.push(article);
-      }
-      else {
-        articles.push({id:null, lang:lang});
-      }
-    }
-    article = en_article || nolang_article || wp_en_article;
-    if (article) {
-      articles.push(article);
-    }
-    else {
-      articles.push({id:null, lang:"/lang/en"});
-    }
-    return articles;
-    //return lang_article || en_article || nolang_article || wp_lang_article || wp_en_article || null;
-  },
-
-  /**
-   * Get the first non-null article id
-   * @see get_articles
-   */
-  get_article: function(lang, result, lang_match) {
-    var articles = mql.get_articles(lang, result);
-    for (var i=0,l=articles.length; i<l; i++) {
-      if (articles[i].id !== null) {
-        if (lang_match) {
-          if (articles[i].lang === lang) {
-            return articles[i];
-          }
-        }
-        else {
-          return articles[i];
-        }
-      }
-    }
-    return null;
   }
-};
-
-
-//////////////////
-// get_blurb
-// get_blob
-///////////////////
-
-/**
- * get and attach blurb to a mql result that has a "/common/topic/article" key
- *
- * @param topic:Object (required) - A mql result that has a "/common/topic/article" key
- * @param options:Object (optional) - Params to pass to acre.freebase.get_blob
- * @param label:String (optional) - The key to use to attach the blurb/blob content to o. Default is "blurb"
- * @param key:String (optional) - The key of the article attached to topic. Default is "/common/topic/article".
- */
-function get_blurb(topic, options, label, key) {
-  return _get_blob(topic, options, label, key, "blurb");
-};
-
-/**
- * get and attach blob to a mql result that has a "/common/topic/article" key
- *
- * @param topic:Object (required) - A mql result that has a "/common/topic/article" key
- * @param options:Object (optional) - Params to pass to acre.freebase.get_blob
- * @param label:String (optional) - The key to use to attach the blurb/blob content to o. Default is "blob"
- * @param key:String (optional) - The key of the article attached to topic. Default is "/common/topic/article".
- */
-function get_blob(topic, options, label, key) {
-  return _get_blob(topic, options, label, key, "blob");
-};
-
-function _get_blob(topic, options, label, key, mode) {
-  key = key || "/common/topic/article";
-  var articles = mql.result.articles(topic[key]);
-  if (!articles.length) {
-    return topic;
-  }
-  options = options || {};
-  mode = mode || "blurb";
-  label = label || mode;
-  if (mode === "blurb") {
-    if (! ("maxlength" in options)) {
-      options.maxlength = 100;
-    }
-  }
-  var promises = [];
-  var blob = (mode === "blob");
-  for (var i=0,l=articles.length; i<l; i++) {
-    var article = articles[i];
-    if (article.id) {
-      if (blob) {
-        promises.push(_get_blob.closure(article, "raw", options, label));
-      }
-      else {
-        promises.push(_get_blob.closure(article, "blurb", options, label));
-      }
-    }
-  }
-  return deferred.all(promises)
-    .then(function() {
-      return topic;
-    });
-};
-_get_blob.closure = function(article, mode, options, label) {
-  return freebase.get_blob(article.id, mode, options)
-    .then(function(blob) {
-      article[label] = blob.body;
-      return article;
-    }, function(error) {
-      console.error("[i18n]", "freebase.get_blob", "error", ""+error);
-      article[label] = null;
-      return article;
-    });
 };
 
 ///////////////////////////////

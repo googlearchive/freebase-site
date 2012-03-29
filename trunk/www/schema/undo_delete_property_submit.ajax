@@ -28,6 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+var i18n = acre.require("lib/i18n/i18n.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var delete_property_undo = acre.require("delete_property.sjs").undo;
 var components = acre.require("type_components.mjt");
@@ -52,7 +53,7 @@ var SPEC = {
     prop_info = JSON.parse(prop_info);
     return delete_property_undo(prop_info)
       .then(function([info, result]) {
-         return queries.property(prop_info.id);
+         return queries.load_property(prop_info.id, i18n.lang, {article:true});
       })
       .then(function(prop) {
         return {

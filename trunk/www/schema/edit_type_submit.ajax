@@ -32,6 +32,7 @@ var validators = acre.require("lib/validator/validators.sjs");
 var components = acre.require("domain_components.mjt");
 var queries = acre.require("queries.sjs");
 var update_type = acre.require("update_type.sjs").update_type;
+
 /**
  * edit type
  */
@@ -50,11 +51,14 @@ var SPEC = {
       validators.String(params, "description", {if_empty:null}),      // type description
       validators.StringBool(params, "enumeration", {if_empty:null}),  // enumeration?
       validators.StringBool(params, "mediator", {if_empty:null}),     // mediator?
+      validators.StringBool(params, "deprecated", {if_empty:null}),  // enumeration?
+      validators.StringBool(params, "never_assert", {if_empty:null}),     // mediator?
       validators.LangId(params, "lang", {if_empty:"/lang/en"})        // name,description lang
     ];
   },
 
-  run: function(id, domain, name, key, description, enumeration, mediator, lang) {
+  run: function(id, domain, name, key, description,
+                enumeration, mediator, deprecated, never_assert, lang) {
     // if description is empty, delete from type
     var remove = [];
     if (!description) {
@@ -68,11 +72,16 @@ var SPEC = {
       description: description,
       enumeration: enumeration,
       mediator: mediator,
+      deprecated: deprecated,
+      never_assert: never_assert,
       lang: lang,
       remove: remove
     })
     .then(function(updated_id) {
-      return queries.minimal_type(updated_id);
+        return queries.load_type(updated_id, lang, {
+            article: true,
+            instance_count: true
+        });
     })
     .then(function(type) {
       return {

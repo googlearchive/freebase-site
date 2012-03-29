@@ -30,7 +30,7 @@
  */
 acre.require('/test/lib').enable(this);
 
-acre.require("lib/test/mock").playback(this, "test/playback_test_queries_domain.json");
+acre.require("lib/test/mock").record(this, "test/playback_test_queries.json");
 
 var ht = acre.require("test/helpers.sjs");
 var q = acre.require("queries");
@@ -83,41 +83,15 @@ test("user_domains", function() {
   ok(slamdunk_base, "expected to find /base/slamdunk domain by /user/daepark");
 });
 
+test("load_domain minimal", function() {
 
-test("domain", function() {
-  function assert_type(type, mediator) {
-    ht.assert_mql_keys(self, ["name", "id", "properties"], type, true);
-    ht.assert_bdb_keys(self, ["instance_count"], type, true, "activity");
-    ht.assert_article(self, ["blurb"], type);
-    if (mediator) {
-      ok(type.mediator, "expected mediator type: " + type.id);
-    }
-  };
-
-  var result;
-  q.domain("/base/slamdunk")
-    .then(function(d) {
-      result = d;
-    });
-  acre.async.wait_on_results();
-  ok(result);
-  ht.assert_mql_keys(self, ["id", "name", "creator",  "owners", "timestamp",
-                      "types", "mediator:types"], result, true);
-  ht.assert_article(self, ["blurb", "blob"], result);
-
-  // regular types
-  ok(result.types && result.types.length);
-  result.types.forEach(function(type) {
-    assert_type(type);
-  });
-  // mediators
-  var mediators = result["mediator:types"];
-  if (mediators && mediators.length) {
-    mediators.forEach(function(mediator) {
-      assert_type(mediator, true);
-    });
-  }
+    var result;
+    q.load_domain("/film", "/lang/en")
+        .then(function(r) {
+            result = r;
+        });
+    acre.async.wait_on_results();
+    ok(result && result.id === "/film", "Got domain");
 });
-
 
 acre.test.report();

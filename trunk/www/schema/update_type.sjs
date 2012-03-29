@@ -29,14 +29,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var h = acre.require("lib/helper/helpers.sjs");
 var apis = acre.require("lib/promise/apis.sjs");
 var freebase = apis.freebase;
 var deferred = apis.deferred;
+var article = acre.require("lib/queries/article.sjs");
 var create_article = acre.require("lib/queries/create_article.sjs").create_article;
 var update_article = acre.require("lib/queries/update_article.sjs").update_article;
 var validators = acre.require("lib/validator/validators.sjs");
 var i18n = acre.require("lib/i18n/i18n.sjs");
 var typeloader = acre.require("lib/schema/typeloader.sjs");
+
 
 /**
  * Update an existing type values (name, key, description, enumeration, etc.)
@@ -58,6 +61,8 @@ function update_type(options) {
 
       enumeration: validators.StringBool(options, "enumeration", {if_empty:null}),
       mediator: validators.StringBool(options, "mediator", {if_empty:null}),
+      deprecated: validators.StringBool(options, "deprecated", {if_empty:null}),
+      never_assert: validators.StringBool(options, "never_assert", {if_empty:null}),
 
       // default to /lang/en
       lang: validators.LangId(options, "lang", {if_empty:"/lang/en"}),
@@ -80,26 +85,40 @@ function update_type(options) {
     return deferred.rejected("Type can't be both Enumerated and Mediator.");
   }
 
-  var q = {
-    id: o.id,
-    guid: null,
-    mid: null,
-    key: {namespace:o.domain, value:null, optional:true},
-    name: {value:null, lang:o.lang, optional:true},
-    "/freebase/type_hints/mediator": null,
-    "/freebase/type_hints/enumeration": null,
-    "/common/topic/article": i18n.mql.article_clause(o.lang)
+  var promises = {
+      type: freebase.mqlread({              
+              id: o.id,
+              guid: null,
+              mid: null,
+              key: {namespace:o.domain, value:null, optional:true},
+              name: {value:null, lang:o.lang, optional:true},
+              "/freebase/type_hints/mediator": null,
+              "/freebase/type_hints/enumeration": null,
+              "/freebase/type_hints/mediator": null,
+              "/freebase/type_hints/enumeration": null
+          })
+          .then(function(env) {
+              return env.result;
+          }),
+      article: article.get_article(o.id, null, null, o.lang)
+          .then(function(r) {
+              return r[o.id];
+          })
   };
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return env.result || {};
-    })
-    .then(function(old) {
+
+  return deferred.all(promises)
+    .then(function(r) {
+      var old = r.type;
+      old["/common/topic/article"] = r.article;
+
       if (remove.key && old.key) {
         return freebase.mqlwrite({guid:old.guid, id:null, key:{namespace:o.domain, value:old.key.value, connect:"delete"}})
           .then(function(env) {
             // old id may no longer be valid since we deleted the key
-            old.id = env.result.id;
+            if (old.id != env.result.id) {
+                typeloader.invalidate(old.id);
+                old.id = env.result.id;
+            }
             return old;
           });
       }
@@ -111,7 +130,10 @@ function update_type(options) {
             return freebase.mqlwrite({guid:old.guid, id:null, key:{namespace:o.domain, value:o.key, connect:"insert"}})
               .then(function(env) {
                 // id may have changed
-                old.id = env.result.id;
+                if (old.id != env.result.id) {
+                    typeloader.invalidate(old.id);
+                    old.id = env.result.id;
+                }
                 return old;
               });
           });
@@ -129,71 +151,78 @@ function update_type(options) {
         update.name = {value:o.name, lang:o.lang, connect:"update"};
       }
 
-      if (remove.enumeration) {
-        var old_enumeration = old["/freebase/type_hints/enumeration"];
-        if (old_enumeration !== null) {
-          update["/freebase/type_hints/enumeration"] = {value: old_enumeration, connect: "delete"};
-        }
-      }
+      ["enumeration", "mediator", "deprecated", "never_assert"].forEach(function(k) {
+          if (remove[k]) {
+              var old_value = old["/freebase/type_hints/" + k];
+              if (old_value != null) {
+                  update["/freebase/type_hints/" + k] = {value:old_value, connect:"delete"};
+              }
+          }
+      });
       if (remove.mediator) {
-        var old_mediator = old["/freebase/type_hints/mediator"];
-        if (old_mediator !== null) {
-          update["/freebase/type_hints/mediator"] = {value: old_mediator, connect: "delete"};
-        }
-        // re-add /common/topic as included
-        update["/freebase/type_hints/included_types"] = {id: "/common/topic", connect: "insert"};
+          // re-add /common/topic as an included_type
+          update["/freebase/type_hints/included_types"] = {id: "/common/topic", connect: "insert"};
       }
-
-      // if (o.enumeration && o.mediator) NOT allowed
-      if (o.enumeration && !o.mediator) {
+      
+      // o.enumeration && o.mediator NOT allowed
+      if (o.enumeration) {
         update["/freebase/type_hints/enumeration"] = {value:true, connect:"update"};
         update["/freebase/type_hints/mediator"] = {value:false, connect:"update"};
         update["/freebase/type_hints/included_types"] = {id: "/common/topic", connect: "insert"};
       }
-      else if (!o.enumeration && o.mediator) {
+      else if (o.mediator) {
         update["/freebase/type_hints/enumeration"] = {value:false, connect:"update"};
         update["/freebase/type_hints/mediator"] = {value:true, connect:"update"};
         update["/freebase/type_hints/included_types"] = {id: "/common/topic", connect: "delete"};
       }
-      else if (!o.enumeration && !o.mediator) {
+      else {
         update["/freebase/type_hints/enumeration"] = {value:false, connect:"update"};
         update["/freebase/type_hints/mediator"] = {value:false, connect:"update"};
         update["/freebase/type_hints/included_types"] = {id: "/common/topic", connect: "insert"};
       }
 
+      ["deprecated", "never_assert"].forEach(function(k) {
+          if (h.type(o[k]) === "boolean") {
+              update["/freebase/type_hints/" + k] = {value:o[k], connect:"update"};
+          }
+      });
+      
       var d = old;
-      var keys = ["name", "/freebase/type_hints/enumeration",
-                  "/freebase/type_hints/mediator", "/freebase/type_hints/included_types"];
+      var keys = [
+          "name", 
+          "/freebase/type_hints/enumeration",
+          "/freebase/type_hints/mediator", 
+          "/freebase/type_hints/deprecated",
+          "/freebase/type_hints/never_assert",
+          "/freebase/type_hints/included_types"
+      ];
       for (var i=0,l=keys.length; i<l; i++) {
         if (keys[i] in update) {
           d = freebase.mqlwrite(update)
             .then(function(env) {
               // invalidate type
-              typeloader.invalidate(o.id);
+              typeloader.invalidate(old.id);
               return old;
             });
           break;
         }
       }
       // invalidate type
-      typeloader.invalidate(o.id);
+      typeloader.invalidate(old.id);
       return d;
     })
     .then(function(old) {
-      var article = i18n.mql.get_article(o.lang, old["/common/topic/article"], true);
-      if (article && article.source_uri) {
-        article = null;  // can't update/delete wp articles
-      }
-      if (remove.description && article) {
-        return freebase.mqlwrite({id:old.mid, "/common/topic/article":{id:article.id, connect:"delete"}})
+        var document = article.get_document_node(old, null, o.lang);
+        if (remove.description && document) {
+        return freebase.mqlwrite({id:old.mid, "/common/topic/article":{id:document.id, connect:"delete"}})
           .then(function() {
             return old.id;
           });
       }
       else if (o.description != null) {
         var promise;
-        if (article) {
-            promise = update_article(article.id, o.description, "text/plain", {
+        if (document) {
+            promise = update_article(document.id, o.description, "text/plain", {
                 lang: o.lang,
                 use_permission_of: old.mid
             });

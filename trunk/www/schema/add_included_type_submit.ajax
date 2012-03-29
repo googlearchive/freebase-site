@@ -74,7 +74,7 @@ var SPEC = {
     return promise
       .then(function(args) {
         var promises = [];
-        promises.push(queries.included_types(included_type));
+        promises.push(queries.included_types(included_type, lang));
         promises.push(freebase.mqlread({id:included_type, name:null})
           .then(function(env) {
             return env.result;
@@ -96,7 +96,7 @@ var SPEC = {
                   });
                   var html = [];
                   inserted.forEach(function(type) {
-                    html.push(acre.markup.stringify(components.included_type_thead(id, types_by_id[type])));
+                    html.push(acre.markup.stringify(components.included_type_thead(id, types_by_id[type].id)));
                   });
                   return {
                     html: html.join("")

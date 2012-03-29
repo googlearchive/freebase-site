@@ -48,10 +48,46 @@
   <script src="type.mf.js"></script>
 </acre:block>
 
+<acre:block def="page_flag()">
+  <acre:block if="c.type['/freebase/type_hints/deprecated'] || c.type['/freebase/type_hints/mediator'] || c.type['/freebase/type_hints/enumeration'] || c.type['/freebase/type_hints/never_assert']">   
+    <div class="page-flag">
+      <acre:script>
+        var flags = [];
+        var sprintf_args = {};
+        if (c.type['/freebase/type_hints/deprecated']) {
+          sprintf_args.deprecated = a_tag(_('Deprecated'), 'http://wiki.freebase.com/');
+          flags.push(_('This type is %(deprecated)s.'));
+        }
+        if (c.type['/freebase/type_hints/mediator']) {
+          sprintf_args.mediator = a_tag(_('Mediator'), 'http://wiki.freebase.com/wiki/Compound_Value_Type');
+          flags.push(_('This is a %(mediator)s.'));
+        }
+        if (c.type['/freebase/type_hints/enumeration']) {
+          sprintf_args.enumerated = a_tag(_('Enumerated Type'), 'http://wiki.freebase.com/wiki/Enumerated_type');
+          flags.push(_('This is an %(enumerated)s.'));
+        }
+        if (c.type['/freebase/type_hints/never_assert']) {
+          sprintf_args.never_assert = a_tag(_('never asserted'), 'http://wiki.freebase.com/');
+          flags.push(_('This type is %(never_assert)s on a topic.'));
+        }
+      </acre:script>
+      <acre:block for="flag in flags">
+        <div class="page-flag-kind">
+          <span class="page-flag-msg">${h.template_sprintf(flag, sprintf_args)}</span>
+        </div>        
+      </acre:block>
+    </div>
+  </acre:block>
+</acre:block>
+
+<acre:block def="a_tag(text, url)">
+  <a href="${url}">${text}</a>
+</acre:block>
+
 <acre:block def="page_content()">  
   <!-- Table View -->
   <div class="mode">
-    <div acre:if="c.type.enumeration && !c.type.mediator" class="section" id="topics-table">
+    <div acre:if="c.type['/freebase/type_hints/enumeration']" class="section" id="topics-table">
       <h2 class="table-title">
         <a class="help-link" href="http://wiki.freebase.com/wiki/Enumerated_type" rel="help external" title="${_('Read help article')}">${_('What Are Enumerated Types?')}</a>
         ${_('Topics')}
@@ -117,10 +153,10 @@
         ${_('Included Types')}
       </h2>
       <table class="table" cellspacing="0" id="included-types-table">
-        <acre:block for="type in c.type.included_types">
+        <acre:block for="type in c.type['/freebase/type_hints/included_types']">
           ${tc.included_type_thead(c.type.id, type)}
         </acre:block>
-        <thead acre:attrs="c.type.included_types.length ? {style:'display:none;'}:{}">
+        <thead acre:attrs="c.type['/freebase/type_hints/included_types'].length ? {style:'display:none;'}:{}">
           <tr>
             <th colspan="4" class="table-empty-column" scope="col">
               <h3 class="table-empty-title">${_("This type doesn't have any included types.")}</h3>
@@ -156,73 +192,4 @@
    </div>   
   </div>     
 
-</acre:block>
-
-<acre:block def="diagram_view()">
-  <!-- Diagram View -->
-  <div class="mode" id="type-diagram">
-    <table id="skeleton">
-      <tr>
-        <td class="left structure">
-          <table>
-            <thead>
-              <tr>
-                <th class="type-diagram-col-header" colspan="3">${_('Incoming Properties')}</th>
-              </tr>              
-            </thead>
-            <tbody class="domain" acre:if="c.type.incoming.domain.length">   
-              <tr>
-                <th colspan="3">${i18n.display_name(c.type.domain)}</th>
-              </tr>
-              ${tc.type_diagram_incoming_props(c.type.incoming.domain)}
-            </tbody>
-            <tbody class="commons" acre:if="c.type.incoming.commons.length">
-              <tr>
-                <th colspan="3">${_('Commons')}</th>
-              </tr>
-              ${tc.type_diagram_incoming_props(c.type.incoming.commons)}
-            </tbody>
-            <tbody class="bases" acre:if="c.type.incoming.bases.length">
-              <tr>
-                <th colspan="3">${_('Bases')}</th>
-              </tr>
-              ${tc.type_diagram_incoming_props(c.type.incoming.bases)}
-            </tbody>
-          </table>
-        </td>
-        <td class="center structure">
-          <div class="type-container">
-            <div class="type">
-              ${i18n.display_name(c.type)}
-            </div>
-          </div>
-        </td>
-        <td class="right structure">
-          <table>
-            <thead>
-              <tr>
-                <th colspan="4" class="type-diagram-col-header">${h.sprintf(_("%s Properties"), i18n.display_name(c.type))}</th>
-              </tr>             
-            </thead>
-            <tbody>
-              ${tc.type_diagram_native_props(c.type.properties)}
-            </tbody>
-            <thead>
-              <tr>
-                <th colspan="4" class="type-diagram-col-header">${_('Inherited Properties')}</th>
-              </tr>             
-            </thead>
-            <acre:block for="type in c.type.included_types"> 
-              <tbody>
-                <tr>
-                  <th colspan="4" class="type-diagram-col-header">${i18n.display_name(type)}</th>
-                </tr> 
-                ${tc.type_diagram_inherited_props(type.properties)}
-              </tbody>
-            </acre:block>
-          </table>
-        </td>
-      </tr>
-    </table>  
-  </div>
 </acre:block>

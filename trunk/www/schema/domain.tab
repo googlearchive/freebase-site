@@ -30,6 +30,7 @@
  */
 
 var queries = acre.require("queries");
+var i18n = acre.require("lib/i18n/i18n.sjs");
 
 var SPEC = {
 
@@ -45,7 +46,11 @@ var SPEC = {
     return {
       object: object,
       id: object.id,
-      domain: queries.domain(object.id)
+      domain: queries.load_domain(object.id, i18n.lang, {
+          types:true, 
+          types_article:true,
+          types_instance_count:true
+      })
     };
   }
 };

@@ -32,6 +32,7 @@
 var apis = acre.require("lib/promise/apis.sjs");
 var freebase = apis.freebase;
 var deferred = apis.deferred;
+var article = are.require("lib/queries/article.sjs");
 var create_article = acre.require("lib/queries/create_article.sjs").create_article;
 var update_article = acre.require("lib/queries/update_article.sjs").update_article;
 var validators = acre.require("lib/validator/validators.sjs");
@@ -70,19 +71,28 @@ function update_domain(options) {
     o[k] = null;
   });
 
-  var q = {
-    id: o.id,
-    guid: null,
-    mid: null,
-    key: [{namespace:null,value:null,optional:true}],
-    name: {value:null, lang:o.lang, optional:true},
-    "/common/topic/article": i18n.mql.article_clause(o.lang)
+
+  var promises = {
+      domain: freebase.mqlread({
+              id: o.id,
+              guid: null,
+              mid: null,
+              key: [{namespace:null,value:null,optional:true}],
+              name: {value:null, lang:o.lang, optional:true}
+          })
+          .then(function(env) {
+              return env.result;
+          }),
+      article: article.get_article(o.id, null, null, o.lang)
+          .then(function(r) {
+              return r[o.id];
+          })
   };
-  return freebase.mqlread(q)
-    .then(function(env) {
-      return env.result;
-    })
-    .then(function(old) {
+  return deferred.all(promises)
+    .then(function(r) {
+      var old = r.domain;
+      old["/common/topic/article"] = r.article;
+
       if (remove.key && o.namespace) {
         // delete key from o.namespace (required)
         for (var i=0,l=old.key.length; i<l; i++) {
@@ -140,10 +150,7 @@ function update_domain(options) {
       return d;
     })
     .then(function(old) {
-      var article = i18n.mql.get_article(o.lang, old["/common/topic/article"], true);
-      if (article && article.source_uri) {
-        article = null;  // can't update/delete wp articles
-      }
+      var article = article.get_document_node(old, null, o.lang);
       if (remove.description && article) {
         return freebase.mqlwrite({id:old.mid, "/common/topic/article":{id:article.id, connect:"delete"}})
           .then(function() {

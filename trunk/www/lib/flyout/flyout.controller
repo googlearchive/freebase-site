@@ -43,16 +43,21 @@ var SPEC = {
             // came from object routing (@see site/router.sjs)
             params.id = params.object.id;
         }
+        if (params.lang) {
+            params.lang = params.lang.split(",");
+        }
         return [
             validators.MqlId(params, "id", {required:true}),
-            validators.LangId(params, "lang", {if_empty:"/lang/en"}),
+            validators.MultiValue(params, "lang", {validator:validators.LangId, if_empty:["/lang/en"]}),
             validators.Jsonp(params, "callback", {if_empty:null})            
         ];
     },
 
-    run: function(id, lang, callback) {
+    run: function(id, langs, callback) {
         return freebase.get_topic(id, {
-            lang: h.lang_code(lang),
+            lang: langs.map(function(lang) {
+                return h.lang_code(lang);
+            }),
             filter: ["suggest", "/common/topic/image"]
         })
         .then(function(r) {
@@ -60,7 +65,7 @@ var SPEC = {
             var article = "";
             var image = false;
             var notable_props = [];
-            var notable_types = [id];
+            var notability = [id];
 
             if (r.property) {
                 // name
@@ -81,28 +86,31 @@ var SPEC = {
                 // notable (disambiguating) properties
                 var props = r.property["/synthetic/notability/notable_properties"];
                 if (props && props.values) {
-                    // notability properties is in reverse order
-                    props.values.reverse();                    
                     props.values.forEach(function(prop) {
-                        // skip CVTs
-                        if (prop.property["/synthetic/notable_for/property"].type !== "compound") {
+                        // only use it if we have a property name
+                        // and the values of that property is returned in the topic result.
+                        if (prop.text) {
                             var prop_id = prop.property["/synthetic/notable_for/property"].values[0].id;
                             if (r.property[prop_id]) {
                                 // The Topic API sometimes returns mids as property ids
                                 // (internal bug filed).
                                 var prop_value = r.property[prop_id].values[0].text;
-                                notable_props.push([prop_id, prop_value]);
+                                notable_props.push([prop.text, prop_value]);
                             }
                         }
                     });
                 }
 
-                // notable types
-                var types = r.property["/synthetic/notability/notable_types"];
-                if (types && types.values) {
-                    notable_types = types.values.map(function(t) {
-                        return t.text;
-                    }).slice(0, 3); // just get the first 3 notable types
+                // notability (notable_for and notable_types)
+                var notable_for = r.property["/synthetic/notability/notable_for"];
+                var notable_types = r.property["/synthetic/notability/notable_types"];
+                if (notable_for || notable_types) {
+                    notability = [];
+                    [notable_for, notable_types].forEach(function(notable) {
+                        notable.values.forEach(function(n) {
+                            notability.push(n.text);
+                        });
+                    });                    
                 }
             }
 
@@ -112,7 +120,7 @@ var SPEC = {
                 article: article,
                 image: image,
                 notable_props: notable_props,
-                notable_types: notable_types
+                notability: notability
             };            
         })
         .then(function(summary) {
@@ -120,7 +128,7 @@ var SPEC = {
                 acre.response.set_header('content-type', 'text/javascript; charset=utf-8');
                 var json = {
                     id: id,
-                    html: acre.markup.stringify(t.render_flyout(id, lang, summary))
+                    html: acre.markup.stringify(t.render_flyout(id, langs[0], summary))
                 };
                 var str = [
                     "/** this is jsonp **/ ",
@@ -137,7 +145,7 @@ var SPEC = {
                 return {
                     template: "flyout/flyout.mjt",
                     def: "render_flyout",
-                    def_args: [id, lang, summary]
+                    def_args: [id, langs[0], summary]
                 };
             }
         });

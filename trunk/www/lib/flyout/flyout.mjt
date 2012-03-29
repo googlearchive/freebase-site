@@ -82,9 +82,9 @@
   </div>
 
   <div class="fbs-attribution">
-    <acre:block if="summary.notable_types">
+    <acre:block if="summary.notability">
       <span class="fbs-flyout-types">
-        ${summary.notable_types.join(", ")}
+        ${summary.notability.slice(0,3).join(", ")}
       </span>
     </acre:block>
   </div>

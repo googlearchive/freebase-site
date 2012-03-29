@@ -361,7 +361,8 @@
     // current langs supported by search
     fb.suggest_lang = {
       SUPPORTED: {
-        en:1, es:1, fr:1, de:1, it:1, pt:1, zh:1, ja:1, ko:1
+        en:1, es:1, fr:1, de:1, it:1, pt:1, zh:1, ja:1, ko:1,
+        ru:1, sv:1, fi:1, da:1, nl:1, el:1, ro:1, tr:1, hu:1
       },
 
       lang: function(lang) {

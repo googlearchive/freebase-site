@@ -607,14 +607,14 @@
           o = this.options;
 
       $.each(result, function(i,n) {
+        if (!n.id && n.mid) {
+            // For compatitibility reasons, store the mid as id
+            n.id = n.mid;
+        }
         var li = self.create_item(n, data)
           .bind("mouseover.suggest", function(e) {
             self.mouseover_item(e);
           });
-          if (!n.id && n.mid) {
-              // For compatitibility reasons, store the mid as id
-              n.id = n.mid;
-          }
           li.data("data.suggest", n);
           self.list.append(li);
           if (i === 0) {
@@ -1429,6 +1429,7 @@
       var ajax_options = {
         url: url,
         traditional: true,
+        data: {},
         beforeSend: function(xhr) {
           var calls = self.input.data("flyout.request.count.suggest") || 0;
           calls += 1;
@@ -1458,6 +1459,9 @@
         dataType: self.jsonp_flyout ? "jsonp" : "html",
         cache: true
       };
+      if (o.ac_param.lang) {
+          ajax_options.data.lang = o.ac_param.lang;
+      }
 
       //var self = this;
       clearTimeout(this.flyout_request.timeout);

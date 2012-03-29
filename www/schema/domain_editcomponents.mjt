@@ -32,8 +32,8 @@
 <acre:script>
   var h = acre.require("lib/helper/helpers.sjs");
   var i18n = acre.require("lib/i18n/i18n.sjs");
-  var i18n_editcomponents = acre.require("lib/i18n/editcomponents");
   var _ = i18n.gettext;
+  var article = acre.require("lib/queries/article.sjs");
 </acre:script>
 
 <acre:block def="add_type_form(domain_id, mediator, type)">
@@ -47,11 +47,11 @@
               <span class="form-label">${_('Name')}</span>
               <acre:script>
                 var attrs = {name:"name", type:"text", "class":"text-input"};
+                if (type) {
+                   attrs.value = i18n.display_name(type, "", null, i18n.lang);
+                }
               </acre:script>
-              <acre:block if="type">
-                ${i18n_editcomponents.name(type, attrs)}
-              </acre:block>
-              <input acre:else="" acre:attrs="attrs"/>
+              <input acre:attrs="attrs"/>
             </label>
           </div>
           <div class="form-field fb-type-key">
@@ -60,7 +60,7 @@
                 ${_('Key')}
                 <span class="key">${domain_id}/</span>
               </span>
-              <input acre:if="type" name="key" type="text" class="text-input" value="${type.key[0].value}"/>
+              <input acre:if="type" name="key" type="text" class="text-input" value="${type.key.value}"/>
               <input acre:else=""   name="key" type="text" class="text-input"/>
               <span class="key-status"></span>
             </label>
@@ -69,12 +69,13 @@
             <label>
               <span class="form-label">${_('Description')}</span>
               <acre:script>
+                var desc = "";
                 var attrs = {"name":"description", "class":"textarea", rows:3};
+                if (type) {
+                   desc = article.get_text(type, null, i18n.lang);
+                }
               </acre:script>
-              <acre:block if="type">
-                ${i18n_editcomponents.article(type, attrs)}
-              </acre:block>
-              <textarea acre:else="" acre:attrs="attrs"></textarea>
+              <textarea acre:attrs="attrs">${desc}</textarea>
             </label>
             <div class="fb-type-display">
               <acre:block if="mediator">
@@ -83,11 +84,23 @@
               <acre:block else="">
                 <label for="enumeration" class="boolean-field">
                   <input type="checkbox" name="enumeration" value="1"
-                         acre:attrs="(type && type.enumeration) ? {checked:'checked'} : {}"/>
+                         acre:attrs="(type && type['/freebase/type_hints/enumeration']) ? {checked:'checked'} : {}"/>
                   ${_("Enumerated")}
                 </label>
                 <a class="help" href="http://wiki.freebase.com/wiki/Enumerated_type">${_("What's this?")}</a>
               </acre:block>
+                <label for="deprecated" class="boolean-field">
+                  <input type="checkbox" name="deprecated" value="1"
+                         acre:attrs="(type && type['/freebase/type_hints/deprecated']) ? {checked:'checked'} : {}"/>
+                  ${_("Deprecated")}
+                </label>
+                <a class="help" href="http://wiki.freebase.com/wiki/Deprecated_type">${_("What's this?")}</a>            
+                <label for="never_assert" class="boolean-field">
+                  <input type="checkbox" name="never_assert" value="1"
+                         acre:attrs="(type && type['/freebase/type_hints/never_assert']) ? {checked:'checked'} : {}"/>
+                  ${_("Never assert")}
+                </label>
+                <a class="help" href="http://wiki.freebase.com/wiki/Never_assert_type">${_("What's this?")}</a>        
             </div>
           </div>
           <input name="domain" type="hidden" value="${domain_id}"/>
@@ -98,7 +111,6 @@
         <td colspan="5">
           <button class="button save" type="submit">${_('Save')}</button>
           <button class="button cancel">${_('Cancel')}</button>
-          ${i18n_editcomponents.lang_select()}
         </td>
       </tr>
     <tbody>
@@ -120,6 +132,8 @@
   </tr>
 </acre:block>
 
+
+<!!-- TODO: legacy needs update -->
 <acre:block def="domain_settings_form(domain)">
   <div class="modal">
     <div class="modal-inner">
@@ -137,7 +151,7 @@
             <acre:script>
               var attrs = {name:"name", type:"text", "class":"text-input"};
             </acre:script>
-            ${i18n_editcomponents.name(domain, attrs)}
+            <input acre:attrs="attrs"/>
             <span class="form-note">${_('You can change this at any time')}</span>
           </div>
           <div class="form-row form-row-inline">
@@ -165,7 +179,7 @@
           <acre:script>
             var attrs = {name:"description", "class":"textarea", rows:4};
           </acre:script>
-          ${i18n_editcomponents.article(domain, attrs)}
+          <textarea acre:attrs="attrs"></textarea>
         </div>
       </div>
     </div>
@@ -173,7 +187,6 @@
       <a href="javascript:void(0);" class="button delete">${_("Delete this domain")}&hellip;</a>
       <button class="button save" type="submit">Save</button>
       <button class="button cancel">Cancel</button>
-      ${i18n_editcomponents.lang_select()}
     </div>
   </div>
 </acre:block>

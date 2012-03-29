@@ -43,12 +43,13 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      validators.MqlId(params, "id", {required:true})           // type id
+      validators.MqlId(params, "id", {required:true}),           // type id
+      validators.LangId(params, "lang", {if_empty:"/lang/en"})
     ];
   },
 
   run: function(id) {
-    return queries.type_properties(id)
+    return queries.load_type(id)
       .then(function(type) {
         return {
           html: acre.markup.stringify(editcomponents.reorder_property_form(type))

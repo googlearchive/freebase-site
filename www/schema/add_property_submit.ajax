@@ -77,7 +77,8 @@ var SPEC = {
   },
 
   run: function(type, name, key, expected_type, description,
-                unit, disambiguator, unique, hidden, master_property, delegated, lang,
+                unit, disambiguator, unique, hidden,
+                master_property, delegated, lang,
                 expected_type_new, enumeration) {
     var promise;
     if (!expected_type && expected_type_new) {
@@ -121,7 +122,7 @@ var SPEC = {
           enumeration: enumeration
         })
         .then(function(created) {
-          return queries.property(created.id);
+          return queries.load_property(created.id, lang, {article:true});
         })
         .then(function(prop) {
           return {

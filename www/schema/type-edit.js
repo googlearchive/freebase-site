@@ -150,7 +150,7 @@
         key: key.val(),
         domain: $("input[name=namespace]", form.form).val(),
         description: $.trim($("textarea[name=description]:visible", form.form).val()),
-        lang: $("select[name=lang]", form.form).val()
+        lang: fb.lang
       };
 
       var kind = $("input[name=kind]:checked", form.form).val();
@@ -536,7 +536,8 @@
         disambiguator: $(":input[name=disambiguator]", form.row).is(":checked") ? 1 : 0,
         unique: $(":input[name=unique]", form.row).is(":checked") ? 1 : 0,
         hidden: $(":input[name=hidden]", form.row).is(":checked") ? 1 : 0,
-        lang: $("select[name=lang]", form.submit_row).val()
+        deprecated: $(":input[name=deprecated]", form.row).is(":checked") ? 1 : 0,
+        lang: fb.lang
       };
 
       // special delgate property logic

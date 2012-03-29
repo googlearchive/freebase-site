@@ -48,6 +48,8 @@ function create_type(options) {
       description: validators.String(options, "description", {if_empty:""}),
       mediator: validators.StringBool(options, "mediator", {if_empty:false}),
       enumeration: validators.StringBool(options, "enumeration", {if_empty:false}),
+      deprecated: validators.StringBool(options, "deprecated", {if_empty:false}),
+      never_assert: validators.StringBool(options, "never_assert", {if_empty:false}),
       lang: validators.LangId(options, "lang", {if_empty:"/lang/en"})
     };
   }
@@ -113,6 +115,16 @@ function create_type(options) {
         q["/freebase/type_hints/included_types"] = {
           id: "/common/topic"
         };
+      }      
+      if (o.deprecated) {
+          q["/freebase/type_hints/deprecated"] = {
+              value: true
+          };
+      }
+      if (o.never_assert) {
+          q["/freebase/type_hints/never_assert"] = {
+              value: true
+          };
       }
 
       return freebase.mqlwrite(q, {use_permission_of: o.domain})
@@ -123,7 +135,6 @@ function create_type(options) {
     .then(function(created) {
       // cleanup result
       created.domain = created["/type/type/domain"];
-
       if (o.description !== "") {
         return create_article(created.mid, o.description, "text/plain", {
             use_permission_of: created.mid,

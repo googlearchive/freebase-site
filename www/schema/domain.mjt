@@ -32,6 +32,7 @@
 <acre:script>
   var c = this.exports.c = {};
   var h = acre.require("lib/helper/helpers.sjs");
+  var sh = acre.require("helpers.sjs");
   var dc = acre.require("domain_components");
   var image = acre.require("lib/template/imagecomponents");
   var i18n = acre.require("lib/i18n/i18n.sjs");
@@ -53,6 +54,20 @@
      </div>
      -->
 
+     <acre:script>
+       var all_types = c.domain.types.slice().sort(sh.sort_by_id);
+       var regular_types = [];
+       var mediator_types = [];
+       all_types.forEach(function(t) {
+         if (t["/freebase/type_hints/mediator"]) {
+           mediator_types.push(t);
+         }
+         else {
+           regular_types.push(t);
+         }
+       });
+     </acre:script>
+
      <!-- Types -->
      <div class="table-header">
        <h2 class="table-title">
@@ -62,14 +77,14 @@
      </div>
      <table class="table table-sortable" cellspacing="0">
        <thead>
-         <tr acre:attrs="c.domain.types.length ? {}:{style:'display:none;'}">
+         <tr acre:attrs="regular_types.length ? {}:{style:'display:none;'}">
            <th scope="col" class="column-header first"><span class="sort-icon">${_('Type')}</span></th>
            <th scope="col" class="column-header column-header-desc"><span class="sort-icon">${_('ID')}</span></th>
            <th scope="col" class="column-header {sorter: 'number'}"><span class="sort-icon">${_('# of Properties')}</span></th>
            <th scope="col" class="column-header numeric {sorter: 'number'}"><span class="sort-icon">${_('# of Instances')}</span></th>
            <th class="column-header description" scope="col"><span class="sort-icon">${_('Description')}</span></th>
          </tr>
-         <tr acre:attrs="c.domain.types.length ? {style:'display:none;'}:{}">
+         <tr acre:attrs="regular_types.length ? {style:'display:none;'}:{}">
            <th colspan="5" class="table-empty-column" scope="col">
              <div class="edit table-empty-msg">
                <a href="javascript:void(0)" class="table-empty-trigger">${_('Use Types to')}&hellip;</a>
@@ -86,7 +101,7 @@
          </tr>
        </thead>
        <tbody>
-         <acre:block for="i,type in c.domain.types">
+         <acre:block for="i,type in regular_types">
            ${dc.domain_type_row(type)}
          </acre:block>
        </tbody>
@@ -109,15 +124,15 @@
       ${_('Mediators')}
     </h2>
     <table class="table table-sortable">
-      <thead class="${JSON.stringify(c.domain['mediator:types'])}">
-        <tr acre:attrs="c.domain['mediator:types'].length ? {}:{style:'display:none;'}">
+      <thead class="${JSON.stringify(mediator_types)}">
+        <tr acre:attrs="mediator_types.length ? {}:{style:'display:none;'}">
           <th scope="col" class="column-header first"><span class="sort-icon">${_('Type')}</span></th>
           <th scope="col" class="column-header column-header-desc"><span class="sort-icon">${_('ID')}</span></th>
           <th scope="col" class="column-header {sorter: 'number'}"><span class="sort-icon">${_('# of Properties')}</span></th>
           <th scope="col" class="column-header {sorter: 'number'}"><span class="sort-icon">${_('# of Instances')}</span></th>
           <th scope="col" class="column-header description"><span class="sort-icon">${_('Description')}</span></th>
         </tr>
-        <tr acre:attrs="c.domain['mediator:types'].length ? {style:'display:none;'}:{}">
+        <tr acre:attrs="mediator_types.length ? {style:'display:none;'}:{}">
           <th colspan="5" class="table-empty-column" scope="col">
              <div class="edit table-empty-msg">
                <a href="javascript:void(0)" class="table-empty-trigger">${_('Use Mediators to')}&hellip;</a>
@@ -135,8 +150,8 @@
         </tr>
       </thead>
       <tbody>
-        <acre:block for="i,type in c.domain['mediator:types']">
-        ${dc.domain_type_row(type)}
+        <acre:block for="i,type in mediator_types">
+          ${dc.domain_type_row(type)}
         </acre:block>
       </tbody>
       <tfoot class="table-edit edit">

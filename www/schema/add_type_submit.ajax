@@ -32,6 +32,7 @@ var validators = acre.require("lib/validator/validators.sjs");
 var create_type = acre.require("create_type.sjs").create_type;
 var components = acre.require("domain_components.mjt");
 var queries = acre.require("queries.sjs");
+var typeloader = acre.require("lib/schema/typeloader.sjs");
 
 /**
  * add type form from a domain
@@ -50,11 +51,14 @@ var SPEC = {
       validators.String(params, "description", {if_empty:null}),      // type description
       validators.StringBool(params, "mediator", {if_empty:false}),    // mediator?
       validators.StringBool(params, "enumeration", {if_empty:false}), // enumeration?
+      validators.StringBool(params, "deprecated", {if_empty:false}),  // deprecated?
+      validators.StringBool(params, "never_assert", {if_empty:false}),// never_assert?
       validators.LangId(params, "lang", {if_empty:"/lang/en"})        // name,description lang
     ];
   },
 
-  run: function(domain, name, key, description, mediator, enumeration, lang) {
+  run: function(domain, name, key, description, 
+                mediator, enumeration, deprecated, never_assert, lang) {
     return create_type({
       domain: domain,
       name: name,
@@ -62,10 +66,15 @@ var SPEC = {
       description: description,
       mediator: mediator,
       enumeration: enumeration,
+      deprecated: deprecated,
+      never_assert: never_assert,
       lang: lang
     })
     .then(function(result) {
-      return queries.minimal_type(result.id);
+        return queries.load_type(result.id, lang, {
+            article: true,
+            instance_count: true
+        });
     })
     .then(function(type) {
       return {

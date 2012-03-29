@@ -229,6 +229,8 @@ function do_mql(type_ids, lang) {
         "id|=": type_ids,
         name: i18n.mql.text_clause(lang),
         type: "/type/type",
+        guid: null,
+        mid: null,
         domain: {
             id: null,
             name: i18n.mql.text_clause(lang),
@@ -268,6 +270,11 @@ function do_mql(type_ids, lang) {
                 optional: true,
                 id: null,
                 type: "/type/property"
+            },
+            enumeration: {
+                optional: true,
+                id: null,
+                type: "/type/namespace"
             },
             delegated: {
                 optional: true,

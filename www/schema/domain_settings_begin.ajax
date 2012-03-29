@@ -29,6 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var h = acre.require("lib/helper/helpers.sjs");
 var validators = acre.require("lib/validator/validators.sjs");
 var queries = acre.require("queries.sjs");
 var editcomponents = acre.require("domain_editcomponents.mjt");
@@ -46,42 +47,17 @@ var SPEC = {
   validate: function(params) {
     return [
       validators.MqlId(params, "id", {required:true}),    // domain id
-      params.auth_user
+      validators.LangId(params, "lang", {if_empty:"/lang/en"})    
     ];
   },
 
-  run: function(id, user) {
-    return queries.minimal_domain(id)
-      .then(function(domain) {
-        // choose the best key
-        var key = domain.key[0];
-        for (var i=0,l=domain.key.length; i<l; i++) {
-          var k = domain.key[i];
-          if ((k.namespace + "/" + k.value) ===  id) {
-            key = k;
-            break;
-          }
-        }
-        domain.key = key;
-
-        // does the user have permission to change the key?
-        var q = {
-          id: key.namespace,
-          permission: [{permits: [{member: {id: user.id}}]}]
-        };
-        return freebase.mqlread(q)
-          .then(function(env) {
-              if (env.result) {
-                domain.key.permitted = true;
-              }
-              return domain;
-            });
-      })
-      .then(function(domain) {
-        return {
-          html: acre.markup.stringify(editcomponents.domain_settings_form(domain))
-        };
-      });
+  run: function(id, lang) {
+      return queries.load_domain(id, lang)
+          .then(function(domain) {
+              return {
+                  html: acre.markup.stringify(editcomponents.domain_settings_form(domain))
+              };
+          });
   }
 
 };

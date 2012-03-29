@@ -68,134 +68,32 @@ function get_article(topic_id, prop_id, article_id, lang) {
         lang = "/lang/en";
     }
     var options = {
-        alldata: true,
         filter: prop_id,
         lang: h.lang_code(lang)
     };
     var promises = {};
-    topic_id.forEach(function(id) {
-        promises[id] = freebase.get_topic(id, options);
-    });
-    return deferred.all(promises)
-        .then(function(result) {
+
+    return freebase.get_topic_multi(topic_id, options)
+        .then(function(r) {
             var articles = {};
-            topic_id.forEach(function(id) {
-                var topic = result[id];
-                var values = [];
-                if (topic && topic.property && topic.property[prop_id]) {
-                    topic.property[prop_id].values.forEach(function(v) {
-                        if (!article_id || v.id === article_id) {
-                            values.push(article_value(v));
-                        }
-                    });
-                }
-                articles[id] = values;
-            });
+            if (r) {
+                r.forEach(function(env) {
+                    var topic_id = env.id; // requested topic id
+                    var topic = env.result;
+                    var values = [];
+                    if (topic && topic.property && topic.property[prop_id]) {
+                        topic.property[prop_id].values.forEach(function(v) {
+                            if (!article_id || v.id === article_id) {
+                                values.push(article_value(v));
+                            }
+                        });
+                    }
+                    articles[topic_id] = values;                    
+                });
+            }
             return articles;
         });
 };
-
-
-/**
- * A convenient method for doing a mqlread and article query(ies) in parallel.
- * If an id or mid is specified in the query, 
- * this will do a parallel article query for that id or mid.
- * Also, if an "id|=" or "mid|=" is specified in the query,
- * this will also attempt to do multiple queries for each id or mid.
- * Otherwise, it will wait for the query result(s) and
- * invoke an article query(ies) for each result that contains an id or mid.
- * 
- * @param query:Object - A mqlread query. If an id is specified in the query, 
- * we can invoke an article query in parallel, otherwise we would have to wait
- * for the query result (for the id), then get the article(s) for each of the id(s)
- * returned in the query result.
- * @param prop_id:String (optional) - The property id linking 
- *   the topic_id to the article(s). Defaults to "/common/topic/article".
- * @param article_id:String (optional) - The id of the article (/common/document)
- *   node if you want to get a specific article.
- * @param lang:String (optional) - The language id of the article(s).
- *   Defaults to "/lang/en".
- * @param set_key:String (optional) - By default, the article will be set
- *   to each query result with prop_id key. If set_key is specified, then the article
- *   will use this instead.
- * @return the freebase.mqlread result of the query with each result item containing
- *   the article.
- */
-function get_article_for(query, prop_id, article_id, lang, set_key) {
-    // The query can be an array,
-    // in which case we only want to see the first element (clause)
-    var q = query;
-    if (h.type(q) === "array") {
-        q = q[0];
-    }
-    // default to "/common/topic/article"
-    prop_id = prop_id || "/common/topic/article";
-    set_key = set_key || prop_id;
-
-    // Are there any ids or mids specified as the constraint?
-    // If so, ask for their articles in parallel.
-    // Otherwise, we need to wait for the query result to know which
-    // ids or mids we want the article(s) of.
-    var ids = q.id || q.mid || null;
-    if (ids) {
-        ids = [ids];
-    }
-    else {
-        ids = q["id|="] || q["mid|="] || [];
-    }
-    var promises = {};
-    if (ids.length) {
-        promises.get_article = get_article(ids, prop_id, article_id, lang);
-    }
-    promises.mqlread = freebase.mqlread(query)
-        .then(function(env) {
-            return env.result;
-        });
-    return deferred.all(promises)
-        .then(function(result) {
-            var mqlread_result = result.mqlread;
-            if (!mqlread_result) {
-                return mqlread_result;
-            }            
-            if (h.type(mqlread_result) !== "array") {
-                mqlread_result = [mqlread_result];
-            }
-            var promise;
-            if (!result.get_article) {
-                var ids = [];
-                mqlread_result.forEach(function(r) {
-                    var id = r.id || r.mid;
-                    if (id) {
-                        ids.push(id);
-                    }
-                });
-                if (ids.length) {
-                    return get_article(ids, prop_id, article_id, lang)
-                        .then(function(r) {
-                            result.get_article = r;
-                            return result;
-                        });
-                }
-            }
-            return result;
-        })
-        .then(function(result) {
-            if (result.get_article) {
-                var mqlread_result = result.mqlread;
-                if (h.type(mqlread_result) !== "array") {
-                    mqlread_result = [mqlread_result];
-                }
-                mqlread_result.forEach(function(r) {
-                    var id = r.id || r.mid;
-                    if (result.get_article[id]) {
-                        r[set_key] = result.get_article[id];
-                    }
-                });
-            }
-            return result.mqlread;
-        });
-};
-
 
 
 /**
@@ -237,3 +135,72 @@ function article_value(value) {
     return a;
 };
 
+/**
+ * Get the article text from the given topic object.
+ * The article attached to the topic is assumed to be the result
+ * of using get_article().
+ * 
+ * @param topic - The topic object.
+ * @param pid - The property id or key of the topic object 
+ *              containing the article (i.e., topic[pid]). 
+ * @param in_lang - If a lang is specified, this will try to get the 
+ *                  text of the first article node matching the lang otherwise
+ *                  returns the default_value or "".
+ * @param max_length - If specified, return the substring of the full article
+ *                     from the beginning to the last index of a 
+ *                     whitespace character before the max_length.
+ * @param default_value - If an article is not found or is empty ("", null),
+ *                        return the default_value if specified otherwise an
+ *                        empty string ("").
+ */
+function get_text(topic, pid, in_lang, max_length, default_value) {
+    var a = get_document_node(topic, pid, in_lang);
+    if (a) {
+        a = a.text || "";
+        if (max_length) {
+            a = a.substring(0, max_length);
+            var i = a.lastIndexOf(" ");
+            if (i > 0) {
+                a = a.substring(0, i);
+            }
+            a += "...";            
+        }
+    }
+    else {
+       a = default_value || ""; 
+    }
+    return a;
+};
+
+/**
+ * Get the article document node from the give topic object.
+ * The article attached to the topic is assumed to be the result
+ * of using get_article().
+ * 
+ * @param topic - The topic object.
+ * @param pid - The property id or key of the topic object 
+ *              containing the article (i.e., topic[pid]). 
+ * @param in_lang - If a lang is specified, this will try to get the 
+ *                  text of the first article node matching the lang otherwise
+ *                  returns the default_value or "".
+ */
+function get_document_node(topic, pid, in_lang) {
+    pid = pid || "/common/topic/article";
+    var a = null;
+    if (topic[pid] && topic[pid].length) {
+        if (in_lang) {
+            in_lang = h.lang_code(in_lang);
+            topic[pid].every(function(n) {
+                if (n.lang === in_lang) {
+                    a = n;
+                    return false;
+                }
+                return true;
+            });
+        }
+        else {
+            a = topic[pid][0];
+        }
+    }
+    return a;
+};

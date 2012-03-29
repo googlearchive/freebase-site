@@ -48,7 +48,6 @@ test("domain", function() {
 
   ok(result);
   ht.assert_mql_keys(self, ["id", "guid", "types", "featured_views"], result, true);
-  //ht.assert_article(self, ["blurb", "blob"], result);
 });
 
 acre.test.report();

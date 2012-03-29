@@ -44,13 +44,14 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      validators.MqlId(params, "id", {required:true})             // property id being edited
+      validators.MqlId(params, "id", {required:true}),      // property id being edited
+      validators.LangId(params, "lang", {if_empty:"/lang/en"})
     ];
   },
 
-  run: function(id) {
+  run: function(id, lang) {
     var promises = [];
-    promises.push(queries.property(id));
+    promises.push(queries.load_property(id, lang, {article:true}));
     promises.push(queries.property_used(id));
     return deferred.all(promises)
       .then(function(results) {

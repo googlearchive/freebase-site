@@ -112,8 +112,10 @@
      object meta information @see queries/topic
   !!-->
   <div id="page-header">
-
-    <acre:block if="c.object.flag && c.object.flag.length">
+    <acre:block if="that_exports.page_flag">
+      ${that_exports.page_flag()}
+    </acre:block>
+    <acre:block elif="c.object.flag && c.object.flag.length">
       <acre:script>
         var msgs = {
           "/freebase/flag_kind/merge": _("This topic has been flagged to be merged with another topic."),
@@ -123,21 +125,23 @@
         };
       </acre:script>
       <div class="page-flag">
-        <acre:block for="flag in c.object.flag">
-          <acre:script>
-            var msg = msgs[flag.kind.id];
-          </acre:script>
-          <acre:block if="msg">
+        <acre:block if="c.object.flag">
+          <acre:block for="flag in c.object.flag">
             <acre:script>
-              var perm_obj = {id:h.get_attribution(flag).creator};
+              var msg = msgs[flag.kind.id];
             </acre:script>
-            <div class="page-flag-kind">
-              <span class="page-flag-msg">${msg}</span>
-              <a href="${h.legacy_fb_url('/discuss/threads' + flag.id)}">${_("Vote on this issue here")}</a>.
-              <span class="edit-perm ${JSON.stringify(perm_obj)}">
-                <a href="#" onclick="return window.freebase.flag.undo(this, '${flag.id}');">Undo</a>.
-              </span>
-            </div>
+            <acre:block if="msg">
+              <acre:script>
+                var perm_obj = {id:h.get_attribution(flag).creator};
+              </acre:script>
+              <div class="page-flag-kind">
+                <span class="page-flag-msg">${msg}</span>
+                <a href="${h.legacy_fb_url('/discuss/threads' + flag.id)}">${_("Vote on this issue here")}</a>.
+                <span class="edit-perm ${JSON.stringify(perm_obj)}">
+                  <a href="#" onclick="return window.freebase.flag.undo(this, '${flag.id}');">Undo</a>.
+                </span>
+              </div>
+            </acre:block>
           </acre:block>
         </acre:block>
       </div>
@@ -163,7 +167,7 @@
               pad: 2
             };
           </acre:script>
-            ${image.image_thumb(c.object.image[0], 50, options)}
+            ${image.image_thumb(c.object.id, 50, options)}
           </acre:block>
         </div>
         ${object_label(label)}

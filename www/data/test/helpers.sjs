@@ -61,16 +61,6 @@ function assert_cdb_keys(scope, keys, o, null_check) {
   assert_keys(scope, keys, o, null_check, "cdb");
 };
 
-function assert_article(scope, keys, o, null_check) {
-  var article = i18n.mql.result.article(o["/common/topic/article"]);
-  if (article) {
-    assert_cdb_keys(scope, keys, article, null_check);
-  }
-  else if (null_check) {
-    scope.ok(false, "article is null");
-  }
-};
-
 function assert_domain_keys(scope, domain) {
   assert_mql_keys(scope, ["id", "name", "types"], domain, true);
   assert_bdb_keys(scope, ["instance_count"], domain, true, "activity");
@@ -93,7 +83,6 @@ function assert_type(scope, type) {
                    "creator", "timestamp",
                    "properties"], type);
   assert_bdb_keys(scope, ["instance_count"], type, true, "activity");
-  assert_article(scope, ["blurb", "blob"], type);
   if (type.properties && type.properties.length) {
     type.properties.forEach(function(p) {
       assert_prop(scope, p);

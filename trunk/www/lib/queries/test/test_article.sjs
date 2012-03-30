@@ -100,17 +100,18 @@ test("get_article with article_id", function() {
         id: "/en/jack_kerouac",
         "/common/topic/article": {
             id: null,
+            mid: null,
             limit: 1
         }
     })
     .then(function(env) {
-        article_id = env.result["/common/topic/article"].id;
+        article_id = env.result["/common/topic/article"].mid;
     });
     acre.async.wait_on_results();
     ok(article_id, "testing /en/jack_kerouac article: " + article_id);
 
     var result = null;
-    testing.get_article(["/en/jack_kerouac", "/en/david_bowie"], null, article_id)
+    testing.get_article("/en/jack_kerouac", null, article_id)
         .then(function(r) {
             result = r;
         });
@@ -119,8 +120,7 @@ test("get_article with article_id", function() {
     ok(h.type(result["/en/jack_kerouac"]) === "array" &&
        result["/en/jack_kerouac"].length == 1, "Got /en/jack_kerouac article");
     same(result["/en/jack_kerouac"][0].id, article_id);
-    ok(h.type(result["/en/david_bowie"]) === "array" &&
-       result["/en/david_bowie"].length == 0);
 });
+
 
 acre.test.report();

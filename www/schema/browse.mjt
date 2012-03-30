@@ -64,7 +64,7 @@
               <ul>
                 <li acre:for="user in d.users">
                   ${image.user_image_tiny(user)}
-                  ${components.creator(user.id)}
+                  ${components.creator_link(user.id)}
                   ${_("added:")}
                   <ul>
                     <li acre:for="change in user.changes">

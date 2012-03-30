@@ -57,7 +57,7 @@
       <tr acre:for="u in c.active">
         <th class="row-header odd" scope="row">
           ${image.user_image_tiny(u.id)}
-          ${components.creator(u.id, h.fb_url(u.id, [['writes']]))}
+          ${components.creator_link(u.id, h.fb_url(u.id, [['writes']]))}
         </th>
         <td class="even">${i18n_c.relative_date(u.timestamp)}</td>
         <td class="odd">${i18n_c.number(u.objects)}</td>
@@ -84,7 +84,7 @@
       <tr acre:for="u in c.recent">
         <th class="row-header odd" scope="row">
           ${image.user_image_tiny(u.id)}
-          ${components.creator(u.id)}
+          ${components.creator_link(u.id)}
         </th>
         <th class="row-header odd" scope="row">
           <acre:block if="u.full_name">

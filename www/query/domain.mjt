@@ -68,7 +68,7 @@
         </th>
         <td class="even">
           ${image.user_image_tiny(q.creator)}
-          ${components.creator(q.creator)}
+          ${components.creator_link(q.creator)}
         </td>
         <td class="odd">${h.relative_date(q.timestamp)}</td>
         <th class="row-header even" scope="row">

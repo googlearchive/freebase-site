@@ -707,6 +707,14 @@ class ActionSpeedTest:
     'amwn': 'number of keys (entries) written into memcache. If all writes are put() amwc = amwn',
     'amww': 'wait time on memcache writes',
 
+    'akrc': 'number of times we read a key from the keystore',
+    'akrw': 'wait time on keystore key read',
+    'akwc': 'number of times we wrote a key to the keystore',
+    'akww': 'wait time on keystore key write',
+    'akrkc': 'number of times we fetched all the key names from the keystore',
+    'akrkw': 'wait time while reading all the key names from the keystore',
+
+
     'jsonsc': 'number of json.stringify() calls',
     'jsonsw': 'time spent json stringifying',
     'jsonpc': 'number of json.parse() calls',

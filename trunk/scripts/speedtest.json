@@ -63,6 +63,10 @@
     "topic" : {
         "url" : "{topic}"
     },
+
+    "flyout": { 
+      "url" : "{topic}?flyout"
+    },
       
     "topic_web" : {
       "url" : "{topic}?web"

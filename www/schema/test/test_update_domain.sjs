@@ -64,7 +64,7 @@ if (!user) {
   acre.exit();
 }
 
-test("update_domain name", function() {
+test("update_domain name", {bug:"to be fixed"},  function() {
   var domain;
   test_helpers.create_domain2(user.id)
     .then(function(r) {
@@ -97,7 +97,7 @@ test("update_domain name", function() {
   equal(check_result.name, domain.name + "updated");
 });
 
-test("update_domain key", function() {
+test("update_domain key", {bug:"to be fixed"},  function() {
   var domain;
   test_helpers.create_domain2(user.id)
     .then(function(created) {
@@ -138,7 +138,7 @@ test("update_domain key", function() {
   equal(check_result.key.value, domain.key.value + "updated");
 });
 
-test("update_domain description", function() {
+test("update_domain description", {bug:"to be fixed"},  function() {
   var domain;
   test_helpers.create_domain2(user.id)
     .then(function(created) {

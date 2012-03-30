@@ -60,30 +60,6 @@
         .add($(".nicemenu .default-action", context));
     },
 
-    init_table_mouseover: function(context) {
-      $(".data-table a")
-        .mouseover(function(e) {
-          var id = $(this).attr("data-id");
-          if (!id) return;
-
-          var offset = $(this).offset();
-          var pos = $(this).position();
-          var top = offset.top + pos.top + $(this).height() + 10;
-          var left = offset.left + pos.left;
-
-          var div = $("<div id='data-table-popup'></div>")
-            .css({top:top, left:left})
-            .appendTo("body");
-
-          $.get(fb.h.legacy_fb_url("/private/flyout" + id), function(r) {
-            div.html(r.html);
-          }, "jsonp");
-        })
-        .mouseout(function() {
-          $("#data-table-popup").remove();
-        });
-    },
-
     // show row menu button on hover
     row_menu_hoverover: function(e) {
       var row = $(this);
@@ -114,7 +90,6 @@
     init: function() {
       collection.init_infinitescroll();
       collection.init_menus();
-      collection.init_table_mouseover();
       return collection;
     }
 

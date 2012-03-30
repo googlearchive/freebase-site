@@ -73,12 +73,12 @@
             </td>
             <td class="odd">
               ${image.user_image_tiny(l.creator)}
-              ${components.creator(l.creator)}
+              ${components.creator_link(l.creator)}
             </td>
             <td class="even">
               <acre:block if="l.creator !== l.operator">
                 ${image.user_image_tiny(l.operator)}
-                ${components.creator(l.operator)}
+                ${components.creator_link(l.operator)}
               </acre:block>
               <acre:block else="">-</acre:block>
             </td>

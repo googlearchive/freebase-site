@@ -74,7 +74,6 @@ function init_site_rules(lib) {
     "apps":       "//apps" + site_codebase,
     "create":     "//create" + site_codebase,
     "data":       "//data" + site_codebase,
-    "flyout":     "//flyout" + site_codebase,
     "mdo":        "//mdo" + site_codebase,
     "policies":   "//policies" + site_codebase,
     "query":      "//query" + site_codebase,

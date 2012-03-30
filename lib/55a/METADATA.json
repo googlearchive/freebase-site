@@ -1,92 +1,92 @@
 {
-  "error_page" : "error/error.mjt",
-  "not_found_page" : "error/not_found.template",
-  "csrf_protection": "weak",
-  "ttl": 0,
   "handlers": {
-    "mjt": "handlers/mjt_handler.sjs",
-    "css": "handlers/css_handler.sjs",
-    "css_manifest": "handlers/css_manifest_handler.sjs",
-    "js_manifest": "handlers/js_manifest_handler.sjs",
-    "tagged_static": "handlers/tagged_static_handler.sjs",
+    "js_manifest": "handlers/js_manifest_handler.sjs", 
+    "freebase_template": "handlers/template_handler.sjs", 
+    "ajax": "handlers/ajax_handler.sjs", 
+    "mjt": "handlers/mjt_handler.sjs", 
+    "controller": "handlers/controller_handler.sjs", 
+    "css_manifest": "handlers/css_manifest_handler.sjs", 
     "tagged_binary": "handlers/tagged_binary_handler.sjs", 
-    "freebase_template": "handlers/template_handler.sjs",
-    "controller": "handlers/controller_handler.sjs",
-    "ajax": "handlers/ajax_handler.sjs",
+    "tagged_static": "handlers/tagged_static_handler.sjs", 
+    "css": "handlers/css_handler.sjs", 
     "coffee_script": "handlers/coffee_script_handler.sjs"
-  },
+  }, 
+  "csrf_protection": "weak", 
   "extensions": {
-    "ico" : { 
-      "handler": "tagged_binary",
-      "media_type" : "image/x-icon"
-    },
-    "css": {
-      "handler": "css",
-      "media_type": "text/css"
-    },
-    "less": {
-      "handler": "css",
-      "media_type": "text/css"
-    },
-    "json": {
-      "handler": "binary",
-      "media_type": "text/plain"
-    },
-    "mf.css": {
-      "handler": "css_manifest",
-      "media_type": "text/css"
-    },
-    "mf.js": {
-      "handler": "js_manifest",
-      "media_type": "text/javascript"
-    },
-    "template": {
-      "handler": "freebase_template"
-    },
-    "controller": {
-      "handler": "controller"
-    },
-    "ajax": {
-      "handler": "ajax"
-    },
-    "omf.js": {
-      "handler": "js_manifest",
-      "media_type": "text/javascript"
+    "ico": {
+      "media_type": "image/x-icon", 
+      "handler": "tagged_binary"
     }, 
     "omf.css": {
-      "handler": "css_manifest",
-      "media_type": "text/css"
-    },
-    "properties": {
-      "handler": "acre_script"
-    },
-    "cs": {
-      "handler": "coffee_script"
-    },
+      "media_type": "text/css", 
+      "handler": "css_manifest"
+    }, 
     "tab": {
       "handler": "acre_script"
-    },
+    }, 
+    "less": {
+      "media_type": "text/css", 
+      "handler": "css"
+    }, 
+    "mf.css": {
+      "media_type": "text/css", 
+      "handler": "css_manifest"
+    }, 
     "gif": {
       "media_type": "image/gif", 
       "handler": "tagged_binary"
+    }, 
+    "controller": {
+      "handler": "controller"
     }, 
     "jpg": {
       "media_type": "image/jpg", 
       "handler": "tagged_binary"
     }, 
+    "omf.js": {
+      "media_type": "text/javascript", 
+      "handler": "js_manifest"
+    }, 
+    "cs": {
+      "handler": "coffee_script"
+    }, 
+    "mf.js": {
+      "media_type": "text/javascript", 
+      "handler": "js_manifest"
+    }, 
+    "json": {
+      "media_type": "text/plain", 
+      "handler": "binary"
+    }, 
     "png": {
       "media_type": "image/png", 
       "handler": "tagged_binary"
+    }, 
+    "template": {
+      "handler": "freebase_template"
+    }, 
+    "ajax": {
+      "handler": "ajax"
+    }, 
+    "properties": {
+      "handler": "acre_script"
+    }, 
+    "css": {
+      "media_type": "text/css", 
+      "handler": "css"
     }
-  },
-  "libs" : {
-    "jquery" : {
-      "base_url": "//ajax.googleapis.com/ajax/libs/jquery/",
-      "version": "1.7.1"
-    },
-    "dojo" : {
-      "base_url": "//ajax.googleapis.com/ajax/libs/dojo/",
-      "version": "1.7.2"
+  }, 
+  "ttl": 0, 
+  "libs": {
+    "jquery": {
+      "version": "1.7.1", 
+      "base_url": "//ajax.googleapis.com/ajax/libs/jquery/"
+    }, 
+    "dojo": {
+      "version": "1.7.2", 
+      "base_url": "//ajax.googleapis.com/ajax/libs/dojo/"
     }
-  }
+  }, 
+  "error_page": "error/error.mjt", 
+  "not_found_page": "error/not_found.template"
 }

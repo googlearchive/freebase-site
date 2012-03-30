@@ -799,56 +799,61 @@
 
       pane: "#fb-topic-hover-pane",
 
-      topic: null,
+      current_topic: null,
 
       cache: {},
 
-      get_topic: function(id, cb) {
-        if (fb.hover.cache[id]) return cb();
-
-        $.get(fb.h.fb_url("/flyout", {id:id, lang:fb.lang}), function(r) {
-          fb.hover.cache[id] = r;
-          cb();
-        });
-      },
-
-      show: function(topic_link, id) {
-        // remove default hover
-        $(topic_link).removeAttr("title");
-
-        var offset = $(topic_link).offsetParent().offset();
-        var pos = $(topic_link).position();
-        var top = offset.top + pos.top + $(topic_link).height();
-        var left = offset.left + pos.left;
-
-        $(fb.hover.pane)
-          .html(fb.hover.cache[id])
-          .css({top:top, left:left})
-          .show();
-      },
-
-      hide: function(topic_link) {
-        fb.hover.topic = null;
-        $(fb.hover.pane).hide();
-      },
-
-      mouseover: function(e) {
+      show: function() {
         var topic_link = this;
         var id = $(topic_link).attr("data-id");
         if (!id) return;
 
-        fb.hover.topic = topic_link;
-        fb.hover.get_topic(id, function() {
-          if (topic_link === fb.hover.topic) {
-            fb.hover.show(topic_link, id);
+        fb.hover.current_topic = topic_link;
+
+        // remove default hover
+        $(topic_link).removeAttr("title");
+
+        if (fb.hover.cache[id]) {
+          _show();
+        }
+        else {
+          $.get(fb.h.fb_url("/flyout", {id:id, lang:fb.lang}), function(r) {
+            fb.hover.cache[id] = r;
+            _show();
+          });
+        }
+
+        function _show() {
+          if (topic_link !== fb.hover.current_topic) return;
+
+          $(fb.hover.pane).html(fb.hover.cache[id]);
+
+          var offset = $(topic_link).offset();
+          var top = offset.top;
+          var left = offset.left;
+          var hover_height = $(fb.hover.pane).height();
+          var link_height = $(topic_link).height();
+
+          // position above or below depending on where link is in viewport
+          if ((top - $(document).scrollTop() + hover_height) < $(window).height()) {
+            top = top + link_height;
+          } else {
+            top = top - hover_height - link_height;
           }
-        });
+
+          $(fb.hover.pane).css({top:top, left:left}).show();
+        }
+      },
+
+      hide: function() {
+        fb.hover.current_topic = null;
+        $(fb.hover.pane).hide();
       }
 
     };
 
     $("#page-content")
-      .on("mouseover", "a.property-value", fb.hover.mouseover)
+      .on("mouseover", "a.property-value", fb.hover.show)
       .on("mouseout", "a.property-value", fb.hover.hide);
 
   });

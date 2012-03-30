@@ -669,12 +669,6 @@
      this.form.submit();
    };
 
-   fb.edit_lang_select = function(e, lang) {
-     setTimeout(function() {
-       $(window).trigger("fb.edit.lang.select", lang);
-     }, 0);
-   };
-
    fb.devbar = {
      div: $("#devbar"),
 

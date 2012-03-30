@@ -62,11 +62,8 @@ var SPEC = {
   },
 
   run: function(topic, property, content, document, lang) {
-    return proploader.load(property)
-      .then(function(result) {
-        return result[property];
-      })
-      .then(function(prop) {
+    return queries.prop_structure(property, lang)
+      .then(function(prop_structure) {
         var promise;
         if (document) {
             promise = update_article(document, content, "text/plain", {
@@ -88,7 +85,7 @@ var SPEC = {
                   .then(function(body) {
                       return {
                           html: acre.markup.stringify(propbox.datalist_row({id:topic}, 
-                              prop, {text:body, id:uploaded.document}, lang))
+                              prop_structure, {text:body, id:uploaded.document}, lang))
                       };
                   });
           });

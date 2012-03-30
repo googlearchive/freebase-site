@@ -73,7 +73,7 @@ function main(rule, object) {
     nav_keys: rule.nav_keys || [],
     gear: rule.gear || [],
     show_image: rule.show_image,
-    filters: fh.global_filters(acre.request_params)
+    filters: fh.global_filters(acre.request.params)
   };
 
   // extend object type (global) promises

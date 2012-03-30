@@ -369,7 +369,7 @@ class App:
       if done:
         static_files.append(filename)
 
-    #self.update_handlers(static = True, cache_forever = True)
+    self.update_handlers(static = True, cache_forever = True)
 
 
     if not len(static_files):

@@ -71,7 +71,69 @@ function get_article(topic_id, prop_id, article_id, lang) {
         filter: prop_id,
         lang: h.lang_code(lang)
     };
-    var promises = {};
+
+
+    /**
+     * Doing get_topic_multi for articles is SLOW especially for schemas.
+     * For now, use Topic API (get_topic) for a single topic and 
+     * use Text API (get_blob) for multiple topics.
+     * However, the Text API assumes "/common/topic/article" when retrieving
+     * the article(s) for a topic.
+     */
+
+    var articles = {};
+    if (topic_id.length === 1) {
+        return freebase.get_topic(topic_id[0], options)
+            .then(function(topic) {
+                var values = [];
+                if (topic && topic.property && topic.property[prop_id]) {
+                    topic.property[prop_id].values.forEach(function(v) {
+                        if (!article_id || v.id === article_id) {
+                            values.push(article_value(v));
+                        }
+                    });
+                }
+                articles[topic_id[0]] = values;
+                return articles;
+            });
+    }
+    else if (topic_id.length > 1) {
+        if (prop_id !== "/common/topic/article") {
+            return deferred.rejected("Only '/common/topic/article' is supported when using the Text API (freebase.get_blob)");
+        }
+        if (article_id) {
+            return deferred.rejected("You cannot specify a specfic article_id when using the Text API");
+        }
+        topic_id.forEach(function(id) {
+            articles[id] = freebase.get_blob(id, "plain", {lang:h.lang_code(lang)})
+                .then(function(r) {
+                    return [{
+                        /**
+                         * This is the deficiency of using the Text API.
+                         * You do not get the article id nor the lang.
+                         */
+                        text: r.body,
+                        lang: lang  // for now just echo back the lang
+                    }];
+                }, function(e) {
+                    if (e.response.body.code === 404) {
+                        return [];
+                    }
+                    return deferred.rejected(e);
+                });
+        });
+        return deferred.all(articles)
+            .then(function(articles) {
+                return articles;
+            });
+    }
+    else {
+        return deferred.resolved(articles);
+    }
+
+/**
+    // uncomment once get_topic_multi performance is better for multiple topics,
+    // especially schema articles.
 
     return freebase.get_topic_multi(topic_id, options)
         .then(function(r) {
@@ -93,6 +155,7 @@ function get_article(topic_id, prop_id, article_id, lang) {
             }
             return articles;
         });
+**/
 };
 
 
@@ -127,6 +190,11 @@ function article_value(value) {
     if (value.property) {
         if (value.property["/common/document/content"]) {
             a["/common/document/content"] = value.property["/common/document/content"].id;
+            // lang is not being propagated to the value.
+            // get it from /common/document/content.values[0].lang
+            if (!a.lang) {
+                a.lang = value.property["/common/document/content"].values[0].lang;
+            }
         }
         if (value.property["/common/document/updated"]) {
             a["/common/document/updated"] = value.property["/common/document/updated"].value;

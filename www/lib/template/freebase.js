@@ -751,7 +751,7 @@
              data[k] = xhr[k];
            });
            data.responseHeaders = xhr.getAllResponseHeaders();
-           $(window).trigger("fb.user.feedback", data);
+           //$(window).trigger("fb.user.feedback", data);
          }
        });
      }

@@ -117,9 +117,6 @@
       form.trigger_row.hide();
       form.submit_row.show();
 
-      $(window).bind("fb.edit.lang.select", function(e, lang) {
-        se.toggle_lang(form.row, lang);
-      });
     },
 
     cancel_edit_form: function(form) {
@@ -287,9 +284,6 @@
 
       fb.schema.init_modal_help(form.form);
 
-      $(window).bind("fb.edit.lang.select", function(e, lang) {
-        se.toggle_lang(form.form, lang);
-      });
     },
 
     submit_modal_form: function(form) {
@@ -367,19 +361,6 @@
         return msg_data && msg_data[type] && msg_data[type].length;
       }
       return msg_data != null;
-    },
-
-    toggle_lang: function(context, lang) {
-      var elts = $("[lang]", context).each(function() {
-        var elt = $(this);
-        var elt_lang = $(this).attr("lang");
-        if (elt_lang === lang) {
-          elt.show().focus().blur();
-        }
-        else {
-          elt.hide();
-        }
-      });
     },
 
     init_mqlkey: function(input, mqlkey_options) {

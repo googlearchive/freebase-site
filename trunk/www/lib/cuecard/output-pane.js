@@ -97,31 +97,6 @@ CueCard.OutputPane.prototype._constructUI = function() {
   this._help = this._help.length ? this._help : false;
 
   this.setStatus("Run query to see results here...");
-  
-  $(".cuecard-outputPane-dataLink", this._elmt)
-    .live("mouseover", function() {
-      var id = $(this).attr("href");
-      var pos = $(this).position();
-      var top = pos.top + $(this).height();
-      var left = pos.left;
-
-      var div = $("<div id='cuecard-outputPane-topic-popup'></div>")
-        .css({
-          'position': "absolute",
-          'z-index': 1000,
-          'width': "30em",
-          'top': top,
-          'left': left
-        })
-        .appendTo("body");
-        
-      $.get(fb.h.legacy_fb_url("/private/flyout", id), function(r) {
-        div.html(r.html);
-      }, "jsonp");
-    })
-    .live("mouseout", function() {
-      $("#cuecard-outputPane-topic-popup").remove();
-    });
 };
 
 CueCard.OutputPane.prototype._getTab = function(name) {
@@ -180,7 +155,7 @@ CueCard.OutputPane.prototype.getJson = function() {
 
 CueCard.OutputPane.prototype._setJsonText = function(text) {
   var makeTopicLink = function(id) {
-    return "<a target='_blank' class='cuecard-outputPane-dataLink' href='" + 
+    return "<a target='_blank' class='property-value' data-id='" + id + "' href='" + 
      id + "'>" + id + "</a>";
   };
 

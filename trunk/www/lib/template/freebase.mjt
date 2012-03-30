@@ -254,6 +254,7 @@
       </ul>
     </acre:block>
   </div>
+  <div id="fb-topic-hover-pane" class="fbs-reset fbs-flyout-pane"></div>
   ${incompatible_components.overlay_dialog()}  
   ${incompatible_components.inline_dialog()}
 </acre:block>

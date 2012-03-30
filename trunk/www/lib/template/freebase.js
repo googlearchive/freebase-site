@@ -348,7 +348,6 @@
     });
   });
 
-
   /**
    * Add all suggest options helpers here
    */
@@ -790,5 +789,68 @@
      return $.ajax(mqlread_options);
    };
 
+
+  /**
+   * init topic link hover
+   */
+  $(function() {
+
+    fb.hover = {
+
+      pane: "#fb-topic-hover-pane",
+
+      topic: null,
+
+      cache: {},
+
+      get_topic: function(id, cb) {
+        if (fb.hover.cache[id]) return cb();
+
+        $.get(fb.h.fb_url("/flyout", {id:id, lang:fb.lang}), function(r) {
+          fb.hover.cache[id] = r;
+          cb();
+        });
+      },
+
+      show: function(topic_link, id) {
+        // remove default hover
+        $(topic_link).removeAttr("title");
+
+        var offset = $(topic_link).offsetParent().offset();
+        var pos = $(topic_link).position();
+        var top = offset.top + pos.top + $(topic_link).height();
+        var left = offset.left + pos.left;
+
+        $(fb.hover.pane)
+          .html(fb.hover.cache[id])
+          .css({top:top, left:left})
+          .show();
+      },
+
+      hide: function(topic_link) {
+        fb.hover.topic = null;
+        $(fb.hover.pane).hide();
+      },
+
+      mouseover: function(e) {
+        var topic_link = this;
+        var id = $(topic_link).attr("data-id");
+        if (!id) return;
+
+        fb.hover.topic = topic_link;
+        fb.hover.get_topic(id, function() {
+          if (topic_link === fb.hover.topic) {
+            fb.hover.show(topic_link, id);
+          }
+        });
+      }
+
+    };
+
+    $("#page-content")
+      .on("mouseover", "a.property-value", fb.hover.mouseover)
+      .on("mouseout", "a.property-value", fb.hover.hide);
+
+  });
 
 })(jQuery, window.freebase);

@@ -1,0 +1,1 @@
+acre.write("User-agent: *\nDisallow: /");

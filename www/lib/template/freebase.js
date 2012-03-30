@@ -799,7 +799,7 @@
 
       pane: "#fb-topic-hover-pane",
 
-      current_topic: null,
+      current_target: null,
 
       cache: {},
 
@@ -808,7 +808,7 @@
         var id = $(topic_link).attr("data-id");
         if (!id) return;
 
-        fb.hover.current_topic = topic_link;
+        fb.hover.current_target = topic_link;
 
         // remove default hover
         $(topic_link).removeAttr("title");
@@ -824,17 +824,17 @@
         }
 
         function _show() {
-          if (topic_link !== fb.hover.current_topic) return;
+          // if target changed while fetching, bail
+          if (topic_link !== fb.hover.current_target) return;
 
           $(fb.hover.pane).html(fb.hover.cache[id]);
-
-          var offset = $(topic_link).offset();
-          var top = offset.top;
-          var left = offset.left;
           var hover_height = $(fb.hover.pane).height();
           var link_height = $(topic_link).height();
 
           // position above or below depending on where link is in viewport
+          var offset = $(topic_link).offset();
+          var left = offset.left;
+          var top = offset.top;
           if ((top - $(document).scrollTop() + hover_height) < $(window).height()) {
             top = top + link_height;
           } else {
@@ -846,7 +846,7 @@
       },
 
       hide: function() {
-        fb.hover.current_topic = null;
+        fb.hover.current_target = null;
         $(fb.hover.pane).hide();
       }
 

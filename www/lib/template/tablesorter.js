@@ -35,7 +35,7 @@
    */
 
     $(function() {
-      if ($.tablesorter) {console.log("$.tablesorter");
+      if ($.tablesorter) {
         var div = $("<div>");
 
         $.tablesorter.defaults.cssAsc = "column-header-asc";

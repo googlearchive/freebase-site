@@ -210,6 +210,6 @@
 </acre:block>
 
 <acre:block def="footer_script()">
-  <script src="http://freebaselibs.com/static/freebase_site/static/jquery.tablesorter.js"></script>
+  <script src="lib/template/jquery.tablesorter.js"></script>
   <script src="triples.mf.js"></script>
 </acre:block>

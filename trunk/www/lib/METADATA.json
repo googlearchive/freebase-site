@@ -28,6 +28,9 @@
       "handler": "css",
       "media_type": "text/css"
     },
+    "js": {
+      "handler": "tagged_static"
+    },
     "json": {
       "handler": "binary",
       "media_type": "text/plain"

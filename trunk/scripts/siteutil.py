@@ -1807,7 +1807,12 @@ class Acre:
     if not self.acre_dir():
       return c.error("You have not specified an acre directory with --acre_dir and a running acre instance could not be found")
 
-    url = "http://127.0.0.1:%s/_fs_routing" % self._acre_port
+    acre_host = self.site_host()
+    if not acre_host:
+        acre_host = "127.0.0.1"
+        c.warn("Warning: could not resolve site host, using 127.0.0.1 for /_fs_routing request.")
+
+    url = "http://%s:%s/_fs_routing" % (acre_host, self._acre_port)
 
     response = c.fetch_url(url, acre=True)
 
@@ -1861,12 +1866,12 @@ class Acre:
 
     return response
 
-  def url(self, war=False):
+  def site_host(self, war=False):
     if self.host_url:
       return self.host_url
 
     acre_config = self.read_config(war)
-    self.host_url = acre_config.get('ACRE_HOST_BASE')
+    self.host_url = acre_config.get('ACRE_SITE_HOST')
 
     return self.host_url
 
@@ -2115,9 +2120,9 @@ class Site:
           if os.path.exists(os.path.join(appengine_config_dir, f, "project.conf")):
             env_config = context.read_config(os.path.join(appengine_config_dir, f, "project.conf"))
 
-            # If the project.conf file has this host as ACRE_HOST_BASE then the directory name
+            # If the project.conf file has this host as ACRE_SITE_HOST then the directory name
             # is the name of the configuration target.
-            if env_config.get("ACRE_HOST_BASE", None) == domain:
+            if env_config.get("ACRE_SITE_HOST", None) == domain:
               actual_config = f
               break
 

@@ -198,7 +198,7 @@ class ActionDeployAcre:
 
     c.log("\nDeployment Summary " + "*" * 45 + "\n", color=c.BLUE)
     c.log("  Config: %s" % config, color=c.BLUE)
-    c.log("  Deployed URL: http:/%s/" % acre.url(True), color=c.BLUE)
+    c.log("  Deployed URL: http:/%s/" % acre.site_host(True), color=c.BLUE)
     if app_version is None:
       c.log("  AppEngine URL: http://%s.appspot.com/" % app_id, color=c.BLUE)
     else:

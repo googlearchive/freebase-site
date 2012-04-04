@@ -72,7 +72,7 @@ if (acre.request.params["callback"]) {
 	
 	acre.response.set_header("Content-type", "text/javascript");
 	var result = { "id" : id, "html" : output};	
-	acre.write("/** this is jsonp **/ foo(" + JSON.stringify(result) + ");");
+	acre.write("/** this is jsonp **/ " + acre.request.params["callback"] + "(" + JSON.stringify(result) + ");");
 
 } else {
 	acre.response.set_header("Content-type", "text/html");

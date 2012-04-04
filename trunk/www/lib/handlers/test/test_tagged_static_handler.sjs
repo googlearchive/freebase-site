@@ -60,7 +60,7 @@ test("include", function() {
   ok(resp.headers, "got headers");
   ok(resp.headers.expires, "got expires header");
   ok(/public\,\s*max\-age\s*\=\s*\d+/.test(resp.headers["cache-control"]), "got cache-control header");
-  equal(resp.headers["content-type"], "application/x-javascript");
+  equal(resp.headers["content-type"], "text/javascript");
 });
 
 acre.test.report();

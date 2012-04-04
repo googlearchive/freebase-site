@@ -1,0 +1,79 @@
+<acre:script>
+
+	var MAX_NOTABLE = 3;
+	var id = acre.request.params["id"];
+	var lang = acre.request.params["lang"];
+	if (!lang) { lang = "en"}
+
+	try {
+	var topic = acre.freebase.get_topic(id, {"filter": "suggest", "lang": lang});
+	} catch(e) {
+		acre.write("Sorry, there was an error fetching data for " + id + " - is this a valid id?");
+		acre.exit(-1);
+
+	}	
+	var props = {};
+	for (var prop_id in topic.property) {
+
+		if (topic.property[prop_id]["values"]) {
+			props[prop_id] = topic.property[prop_id]["values"][0]["text"];
+		}
+	}
+
+	var suggest_prop_ids = {};
+	var count = 0;
+
+	if (topic.property["/synthetic/notability/notable_properties"]) {
+
+		for (var i in topic.property["/synthetic/notability/notable_properties"]["values"]) { 
+
+			var p = topic.property["/synthetic/notability/notable_properties"]["values"][i]["property"]["/synthetic/notable_for/property"]["values"][0];
+			if (props[p["id"]]) { 
+				suggest_prop_ids[p["id"]] = p["text"];
+				count++;
+			}	
+			if (count >= MAX_NOTABLE) { break; }
+
+		}
+	}
+
+	var notable_for = [];
+
+	if (topic.property["/synthetic/notability/notable_for"]) { 
+		notable_for.push(topic.property["/synthetic/notability/notable_for"]["values"][0]["text"])
+	}
+
+	if (topic.property["/synthetic/notability/notable_types"]) {
+
+		for (var i in topic.property["/synthetic/notability/notable_types"]["values"].slice(0, MAX_NOTABLE - notable_for.length)) {
+
+			notable_for.push(topic.property["/synthetic/notability/notable_types"]["values"][i]["text"])
+		}
+	}
+
+
+
+</acre:script>
+
+<div class="fbs-flyout-content">
+
+<img class="fbs-flyout-image-true" id="fbs-topic-image" src="${acre.freebase.imgurl(topic['id'], 75, null, 'fit', '/freebase/no_image_png')}"/>
+
+<h1 class="fbs-flyout-image-true" id="fbs-flyout-title">${props["/type/object/name"]}</h1>
+
+<acre:block for="prop_id,name in suggest_prop_ids">
+	<h3 class="fbs-topic-properties fbs-flyout-image-true"><strong>${name}</strong>: ${props[prop_id]}</h3>
+</acre:block>
+
+<acre:block if="props['/common/topic/article']">
+<p class="fbs-topic-article fbs-flyout-image-true">${props["/common/topic/article"].substr(0, 250)}...</p>
+</acre:block>
+
+<acre:block for="i,notable in notable_for">
+${notable}
+	<acre:block if="i != notable_for.length-1">
+,
+	</acre:block>
+</acre:block>
+
+</div>

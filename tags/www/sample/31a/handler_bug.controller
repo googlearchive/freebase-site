@@ -1,0 +1,11 @@
+var SPEC = {
+
+  template: "handler_bug.mjt",
+
+  validate: function(params) {
+  },
+
+  run: function() {
+    return {};
+  }
+};

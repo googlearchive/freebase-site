@@ -1060,6 +1060,13 @@ function set_cache_policy(policy, options, headers) {
     var expires = new Date((new Date()).getTime() + cache_options["max-age"] * 1000);
     headers["expires"] = expires.toUTCString();
   }
+
+  if (cache_options["public"]) {
+    // Set Last-modified headers to be one day before so that browsers like Chrome
+    // won't try to bust the cache with Cache-control: max-age=0 request headers. 
+    var last_modified = new Date((new Date()).getTime() - 86400000 * 90);
+    headers["Last-Modified"] = last_modified.toUTCString();
+  }
 }
 
 

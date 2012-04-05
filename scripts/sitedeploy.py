@@ -198,7 +198,7 @@ class ActionDeployAcre:
 
     c.log("\nDeployment Summary " + "*" * 45 + "\n", color=c.BLUE)
     c.log("  Config: %s" % config, color=c.BLUE)
-    c.log("  Deployed URL: http:/%s/" % acre.site_host(True), color=c.BLUE)
+    c.log("  Deployed URL: http://%s" % acre.site_host(True), color=c.BLUE)
     if app_version is None:
       c.log("  AppEngine URL: http://%s.appspot.com/" % app_id, color=c.BLUE)
     else:
@@ -210,7 +210,6 @@ class ActionDeployAcre:
       shutil.rmtree(acre.site_dir(war=True)+ '/googlecode')
 
     if not c.options.nosite:
-
       apps = acre.fs_routed_apps()
 
       if not len(apps):
@@ -1136,10 +1135,7 @@ var environment_rules = {
     print '''
     },
 
-    "prefix" : [
-      { prefix:"/keystore", app:"default",  script: "keystore.sjs"},
-
-    ]
+    "prefix" : []
 
 };
 

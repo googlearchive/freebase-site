@@ -1807,12 +1807,9 @@ class Acre:
     if not self.acre_dir():
       return c.error("You have not specified an acre directory with --acre_dir and a running acre instance could not be found")
 
-    acre_host = self.site_host()
-    if not acre_host:
-        acre_host = "127.0.0.1"
-        c.warn("Warning: could not resolve site host, using 127.0.0.1 for /_fs_routing request.")
-
-    url = "http://%s:%s/_fs_routing" % (acre_host, self._acre_port)
+    # We need a common domain to access any environment that we might be requesting, otherwise we'd have
+    # to set-up local dns to match the environment's url (e.g. have dev.sandbox-freebase.com go to localhost)
+    url = "http://127.0.0.1:%s/_fs_routing" % self._acre_port
 
     response = c.fetch_url(url, acre=True)
 

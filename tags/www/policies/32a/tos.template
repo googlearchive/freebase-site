@@ -1,0 +1,110 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var c = this.exports.c = {};
+  var h = acre.require("lib/helper/helpers.sjs");
+</acre:script>
+
+<acre:block def="title()" trim="">
+  Freebase Terms of Service
+</acre:block>
+
+<acre:block def="head()" trim="">
+  <link rel="stylesheet" type="text/css" href="policies.mf.css" />
+</acre:block>
+
+<acre:block def="content_body()">
+  <div id="page-header">
+    <div class="page-title">
+      <h1>${title()}</h1>
+    </div>
+  </div>
+  <div id="page-content">
+    <div id="body-left">
+      <div class="content-box">
+        <p>
+          By using Freebase and any data or information accessed in Freebase, you agree to be bound 
+          by our <a href="http://www.google.com/accounts/TOS">Google Terms of Service</a>, Google's general 
+          <a href="http://www.google.com/intl/en/privacy/">Privacy Policy</a>, as well as these additional 
+          terms and conditions:
+        </p>
+        <ol>
+          <li>
+            You must only provide content or code that is compatible with the following licenses:
+            <ol>
+              <li>
+                For all content categories made available on Freebase (Data, Schema, Descriptions, or Media Files); 
+                compatible with the Creative Commons Attribution Only (CC-BY) license, or in the case of Media Files 
+                only, compatible with one of the license terms specified in the upload interface of Freebase.  
+              </li>
+              <li>
+                For code: compatible with the BSD License.
+              </li>
+            </ol>
+          </li>
+          <li>
+            By providing Data, Schema or Descriptions to Freebase, you are granting permission to Google and others 
+            to access and use them under the terms and conditions of the CC-BY license, including attributions 
+            requirements that may apply.
+          </li>
+          <li>
+            When you provide Media Files to Freebase, you must specify the license terms which apply to such Media File. 
+            By doing so, you are representing and warranting that you have the rights to provide the Media File to 
+            Freebase and to grant permission to Google and others to access and use the Media Files under the license 
+            terms which you had specified, including attribution requirements that may apply.
+          </li>
+          <li>
+            Whenever you use any form of content from Freebase, you must comply with attribution requirements associated 
+            with that content, including:
+            <ol>
+              <li>
+                <a href="/policies/attribution">Attribution to Freebase</a>
+              </li>
+              <li>
+                For Descriptions in Freebase that come from Wikipedia, in accordance with 
+                <a href="http://en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License">
+                  instructions made available on Wikipedia
+                </a>
+              </li>
+            </ol>
+          </li>
+          <li>
+            You agree to be in full compliance with applicable license terms and attribution requirements whenever you 
+            reuse any of the content on Freebase.
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</acre:block>
+
+

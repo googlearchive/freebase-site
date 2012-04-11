@@ -20,13 +20,6 @@
   </servlet>
 
   <servlet>
-    <description>Provides write access to the Freebase KeyStore</description>
-    <display-name>KeyStoreServlet</display-name>
-    <servlet-name>KeyStoreServlet</servlet-name>
-    <servlet-class>com.google.acre.servlet.KeyStoreServlet</servlet-class>
-  </servlet>
-
-  <servlet>
     <description>One Servlet to rule them all, One Servlet to find them, 
       One Servlet to bring them all, and in the darkness bind them
     </description>
@@ -69,16 +62,6 @@
     <servlet-name>OneTrueServlet</servlet-name>
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
-
- <!-- Secure access to the keystore UI - only available to AppEngine app admins -->
- <security-constraint>
-   <web-resource-collection>
-     <url-pattern>/acre/keystore_console</url-pattern>
-   </web-resource-collection>
-   <auth-constraint>
-     <role-name>admin</role-name>
-   </auth-constraint>
- </security-constraint>
 
   <!-- filter-mapping>
     <filter-name>GzipFilter</filter-name>

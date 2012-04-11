@@ -6,6 +6,11 @@
 
 var METADATA = {
   "project": "freebase-site.googlecode.dev",
+  "owners": [
+    "jasondouglas@google.com",
+    "masouras@google.com",
+    "daepark@google.com"
+  ],
   "oauth_providers": {
     "freebase" : {
       "redirect_URL": "https://" + acre.request.server_name + "/account/signedin"

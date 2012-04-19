@@ -187,6 +187,22 @@
     };
     setTimeout(function() {
       $(window).trigger("fb.user.signedin", user);
+
+      // Automatically refresh oauth2 credentials when on the same page for a long time;
+      // Because of redirects, etc., this only works with an iframe rather than ajax
+      var rc_url = fb.h.ajax_url("lib/template/refresh_credentials");
+      var rc_iframe = $("<iframe name='rc'></iframe>")
+        .attr("src", rc_url).hide().appendTo("body")
+        .load(function() {
+          var expires = parseInt($("body", window.rc.document).text(), 10);
+          var timeout = expires - new Date().getTime();
+          if (timeout && timeout > 0) {
+            setTimeout(function() {
+              $(rc_iframe).attr("src", rc_url);
+            }, timeout);
+          }
+        });
+
     }, 0);
   }
   else {

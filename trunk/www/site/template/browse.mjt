@@ -56,7 +56,7 @@
 </acre:block>
 
 <acre:block def="freebase_js()">
-  <script src="template/object.mf.js"></script>
+  <script src="template/browse.mf.js"></script>
 </acre:block>
 
 <acre:block def="head()">

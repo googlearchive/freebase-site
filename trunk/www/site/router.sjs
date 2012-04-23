@@ -167,18 +167,10 @@ function init_site_rules(lib) {
     "script": "queries/object.sjs", // script containing the promise method
     "promise": "blurb"              // promise method (passed object query result as arugment)
   };
+
   var DEFAULT_PROMISES = [
     DEFAULT_BLURB_PROMISE
   ];
-
-  // legacy object routing flyout url (i.e., /m/xxx?flyout)  
-  var FLYOUT = {
-      key: "flyout",
-      app: "lib",
-      script: "flyout/flyout.controller",
-      hidden: true,
-      more: true
-  };
 
   var DEFAULT_MORE_TABS = [
     {
@@ -189,20 +181,19 @@ function init_site_rules(lib) {
       "more": true
     },
     {
-      "name": _("Identifiers"),
-      "key": "ids",
-      "app": "sameas",
-      "script": "sameas.tab",
-      "more": true
-    },
-    {
       "name": _("Links"),
       "key": "links",
       "app": "triples",
       "script": "triples.tab",
       "more": true
     }, 
-    FLYOUT
+    {
+      "name": _("Identifiers"),
+      "key": "ids",
+      "app": "sameas",
+      "script": "sameas.tab",
+      "more": true
+    }
   ];
 
   rules["object"] =  [
@@ -241,29 +232,8 @@ function init_site_rules(lib) {
           "key": "writes",
           "app": "triples",
           "script": "writes.tab"
-        },
-        {
-          "name": _("Properties"),
-          "key": "properties",
-          "app": "topic",
-          "script": "topic.tab"
-        },
-        {
-          "name": _("Identifiers"),
-          "key": "ids",
-          "app": "sameas",
-          "script": "sameas.tab",
-          "more": true
-        },
-        {
-          "name": _("Links"),
-          "key": "links",
-          "app": "triples",
-          "script": "triples.tab",
-          "more": true
-        },
-        h.extend(true, {}, FLYOUT)
-      ]
+        }
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS))
     },
     {
       "name": _("Domain"),
@@ -439,6 +409,19 @@ function init_site_rules(lib) {
       ]
     },
     {
+      "name": _("Usergroup"),
+      "type": "/type/usergroup",
+      "promises":  h.extend(true, [], DEFAULT_PROMISES),
+      "tabs": [
+        {
+          "name": _("Editors"),
+          "key": "editors",
+          "app": "users",
+          "script": "group.tab"
+        }
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS))
+    },
+    {
       "name": _("Query"),
       "type": "/freebase/query",
       "promises": h.extend(true, [], DEFAULT_PROMISES).concat([{
@@ -472,29 +455,8 @@ function init_site_rules(lib) {
           "key": "writes",
           "app": "triples",
           "script": "writes.tab"
-        },
-        {
-          "name": _("Properties"),
-          "key": "properties",
-          "app": "topic",
-          "script": "topic.tab"
-        },
-        {
-          "name": _("Identifiers"),
-          "key": "ids",
-          "app": "sameas",
-          "script": "sameas.tab",
-          "more": true
-        },
-        {
-          "name": _("Links"),
-          "key": "links",
-          "app": "triples",
-          "script": "triples.tab",
-          "more": true
-        },
-        h.extend(true, {}, FLYOUT)
-      ]
+        }
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS))
     },
     {
       "name": _("Load"),
@@ -506,29 +468,8 @@ function init_site_rules(lib) {
           "key": "writes",
           "app": "triples",
           "script": "writes.tab"
-        },
-        {
-          "name": _("Properties"),
-          "key": "properties",
-          "app": "topic",
-          "script": "topic.tab"
-        },
-        {
-          "name": _("Identifiers"),
-          "key": "ids",
-          "app": "sameas",
-          "script": "sameas.tab",
-          "more": true
-        },
-        {
-          "name": _("Links"),
-          "key": "links",
-          "app": "triples",
-          "script": "triples.tab",
-          "more": true
-        },
-        h.extend(true, {}, FLYOUT)
-      ]
+        }
+      ].concat(h.extend(true, [], DEFAULT_MORE_TABS))
     },
     {
       "name": _("Attribution"),
@@ -556,6 +497,18 @@ function init_site_rules(lib) {
           "script": "topic.tab"
         },
         {
+          "name": _("Links"),
+          "key": "links",
+          "app": "triples",
+          "script": "triples.tab",
+          "promises": [{
+              "key": "notability",
+              "app": "lib",
+              "script": "queries/topic.sjs",
+              "promise": "notability"
+          }]
+        },
+        {
           "name": _("Identifiers"),
           "key": "ids",
           "app": "sameas",
@@ -566,21 +519,7 @@ function init_site_rules(lib) {
               "script": "queries/topic.sjs",
               "promise": "notability"
           }]
-        },
-        {
-          "name": _("Links"),
-          "key": "links",
-          "app": "triples",
-          "script": "triples.tab",
-          "more": true,
-          "promises": [{
-              "key": "notability",
-              "app": "lib",
-              "script": "queries/topic.sjs",
-              "promise": "notability"
-          }]
-        }, 
-        h.extend(true, {}, FLYOUT)
+        }
       ],
       "nav_keys": [
         {
@@ -636,7 +575,7 @@ function init_site_rules(lib) {
       ]
     },
     {
-      "name": _("Content"),
+      "name": _("Image"),
       "type": "/common/image",
       "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
@@ -653,24 +592,21 @@ function init_site_rules(lib) {
           "script": "topic.tab"
         },
         {
-          "name": _("Identifiers"),
-          "key": "ids",
-          "app": "sameas",
-          "script": "sameas.tab",
-          "more": true
-        },
-        {
           "name": _("Links"),
           "key": "links",
           "app": "triples",
-          "script": "triples.tab",
-          "more": true
+          "script": "triples.tab"
         },
-        h.extend(true, {}, FLYOUT)
+        {
+          "name": _("Identifiers"),
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab"
+        }
       ]
     },
     {
-      "name": _("Content"),
+      "name": _("Article"),
       "type": "/common/document",
       "promises": h.extend(true, [], DEFAULT_PROMISES).concat([{
         "key": "article",
@@ -692,20 +628,17 @@ function init_site_rules(lib) {
           "script": "topic.tab"
         },
         {
-          "name": _("Identifiers"),
-          "key": "ids",
-          "app": "sameas",
-          "script": "sameas.tab",
-          "more": true
-        },
-        {
           "name": _("Links"),
           "key": "links",
           "app": "triples",
-          "script": "triples.tab",
-          "more": true
+          "script": "triples.tab"
         },
-        h.extend(true, {}, FLYOUT)
+        {
+          "name": _("Identifiers"),
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab"
+        }
       ]
     },
     {
@@ -731,54 +664,17 @@ function init_site_rules(lib) {
           "script": "topic.tab"
         },
         {
-          "name": _("Identifiers"),
-          "key": "ids",
-          "app": "sameas",
-          "script": "sameas.tab",
-          "more": true
-        },
-        {
-          "name": _("Links"),
-          "key": "links",
-          "app": "triples",
-          "script": "triples.tab",
-          "more": true
-        },
-        h.extend(true, {}, FLYOUT)
-      ]
-    },
-    {
-      "name": _("Usergroup"),
-      "type": "/type/usergroup",
-      "promises":  h.extend(true, [], DEFAULT_PROMISES),
-      "tabs": [
-        {
-          "name": _("Editors"),
-          "key": "editors",
-          "app": "users",
-          "script": "group.tab"
-        },
-        {
           "name": _("Links"),
           "key": "links",
           "app": "triples",
           "script": "triples.tab"
         },
         {
-          "name": _("Properties"),
-          "key": "props",
-          "app": "topic",
-          "script": "topic.tab",
-          "more": true
-        },
-        {
           "name": _("Identifiers"),
           "key": "ids",
           "app": "sameas",
-          "script": "sameas.tab",
-          "more": true
-        },
-        h.extend(true, {}, FLYOUT)
+          "script": "sameas.tab"
+        }
       ]
     },
     {
@@ -793,18 +689,17 @@ function init_site_rules(lib) {
           "script": "topic.tab"
         },
         {
-          "name": _("Identifiers"),
-          "key": "ids",
-          "app": "sameas",
-          "script": "sameas.tab"
-        },
-        {
           "name": _("Links"),
           "key": "links",
           "app": "triples",
           "script": "triples.tab"
         },
-        h.extend(true, {}, FLYOUT)
+        {
+          "name": _("Identifiers"),
+          "key": "ids",
+          "app": "sameas",
+          "script": "sameas.tab"
+        }
       ]
     }
   ];

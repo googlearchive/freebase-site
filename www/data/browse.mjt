@@ -47,15 +47,12 @@
       window.location.href= "/user/" + user;
     }
   </script>
-
   <meta name="description" 
         content="Freebase is a community-curated database of well-known people, places and things.">
   <meta name="keywords" 
         content="database, open database, shared database, facts, fact sheet, information, community,
                  discussion, semantic web, google, metaweb" >
   <meta name="robots" content="noodp">
-  <link rel="canonical" href="http://www.freebase.com" />
-  <link href='http://fonts.googleapis.com/css?family=Allerta' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="browse.mf.css" />
   <style type="text/css">
     @-webkit-keyframes grow {

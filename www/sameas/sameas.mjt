@@ -168,7 +168,7 @@
     <td class="odd">
       <acre:block if="key.authority">
         <span class="authority wrapper"
-              style="background-image:url(http://www.google.com/s2/u/0/favicons?domain=${h.parse_uri(key.url).host})">
+              style="background-image:url(//www.google.com/s2/u/0/favicons?domain=${h.parse_uri(key.url).host})">
           <a href="${h.fb_url(key.authority.id)}">
             <strong>${i18n.display_name(key.authority)}</strong>
           </a>

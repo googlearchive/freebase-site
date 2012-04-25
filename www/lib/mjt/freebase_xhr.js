@@ -145,10 +145,11 @@ fb.FreebaseXhrTask.prototype.xhr_ready = function (xhr) {
 
     this.envelope = o;
 
-    if (o.code !== '/api/status/ok')
-        return this.error(o.code,
-                          o.messages[0].message,
-                          o.messages[0]);
+    if (o.error || o.code !== '/api/status/ok') {
+      var code = o.error ? "/api/status/error" : o.code;
+      var info = o.error ? o.error.errors[0] : o.messages[0]
+      return this.error(code, info.message, info);
+    }
 
     return this.ready(o.result);
 };
@@ -158,8 +159,9 @@ fb.FreebaseXhrTask.prototype.xhr_error = function (xhr, code, msg, info) {
     var errjson = null;
     try {
         errjson = JSON.parse(info);
-        var errmsg = errjson.messages[0];
-        return this.error(errmsg.code, errmsg.message, errmsg);
+        var code = errjson.error ? "/api/status/error" : errjson.code;
+        var info = errjson.error ? errjson.error.errors[0] : errjson.messages[0]
+        return this.error(code, info.message, info);
     } catch (e) {
         return this.error(code, msg, info);
     }

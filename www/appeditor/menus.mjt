@@ -347,7 +347,7 @@
         <li class="tab"                   ><a class="settings-tab-link" href="#app_general"      >Versions</a></li>
         <li class="tab"                   ><a class="settings-tab-link" href="#app_changes"      >Changes</a></li>
         <li class="tab"                   ><a class="settings-tab-link" href="#app_authors"      >Authors</a></li>
-        <li class="tab" acre:if="writable" ><a class="settings-tab-link" href="#app_services"     >Web Services</a></li>
+        <li class="tab" acre:if="writable" ><a class="settings-tab-link" href="#app_services"     >Keys</a></li>
       </ul>
       <div id="settings-tab-content" class="tabbed-content">
         <div id="app_general"></div>
@@ -827,33 +827,53 @@
     <acre:script>
       var write_user = ui.get_app().get_write_user();
       var is_write_user = write_user &amp;&amp; write_user.get_name() == ui.get_user().get_name() ? true : false;
-      var oauth_enabled = ui.get_app().is_oauth_enabled();
 
       var writeuser_attr = {};
-      var oauth_attr = {};
       if (write_user) {
         writeuser_attr.checked = 'checked';
         if (!is_write_user) { 
           writeuser_attr.disabled = 'disabled';
         };
       }
-      if (oauth_enabled) {
-        oauth_attr.checked = 'checked';
-      }
     </acre:script>
     <div class="tab-section">
-      <fieldset id="permissions-settings">
-        <h3>Writing to Freebase</h3>
-        <div class="radiogroup">
-          <h5>
-            <input id="permission-oauth" type="checkbox" acre:attrs="oauth_attr"/>
-            Allow your users to write as themselves
-          </h5>
-          <p>
-            <small>Writes will be attributed to the user making them. Users will be asked to allow your app 
-            to use their Freebase account. <strong>This is usually is the best choice</strong>.</small>
-          </p>
+      <div class="sidebar">
+        <p>
+          <em>API keys</em> authorize information exchange with other web applications or services. 
+        </p>
+        <p>
+          To use the Freebase APIs specifically, follow the <a href="http://wiki.freebase.com/wiki/How_to_obtain_an_API_key" target="blank">instructions on the wiki</a>.
+        </p>
+      </div>
+      <h3>API Keys</h3>
+      <div acre:task="apikeys">
+        ui.get_app().t_get_apikeys()
+      </div>
+      <div id="app-apikeys-add">
+      <div acre:choose="apikeys.state">
+        <div acre:when="ready">
+          <acre:script>
+            var keys = apikeys.result.keys;
+          </acre:script>
+          ${app_apikeys_list(keys)}
         </div>
+        <p acre:when="wait"><span id="version-loader" class="loader-square hidden"></span></p>
+        <p acre:when="error">Error loading API keys.</p>
+      </div>
+      </div>
+    </div>
+    <div class="tab-section last">
+      <div class="sidebar">
+        <p>
+          To make a Freebase API call as this writeuser, use the <em>http_sign: "keystore"</em> option.
+        </p>
+        <p>
+          Be careful with this option, as you may exceed 
+          Freebase's daily single-user write limit.
+        </p>
+      </div>
+      <fieldset id="permissions-settings">
+        <h3>Freebase writeuser</h3>
         <div class="radiogroup">
           <h5>
             <input id="permission-writeuser" type="checkbox" acre:attrs="writeuser_attr" />
@@ -861,49 +881,19 @@
           </h5>
           <p>
             <small>
-              Writes will all be attributed to this user. Be careful, however, as you may quickly exceed 
-              Freebase's daily single-user write limit if you have a lot of users!<br/>
-              <strong>
-                NOTE: If you've also enabled your users to write, you will need to set the <em>http_sign</em>
-                option to <em>false</em> for any Freebase call you want written by this user
-              </strong>
+              <em>Note:</em> You also need to do a special
+              <a href="${fb.h.build_url(ui.get_app().get_base_url(), 
+                                      '/acre/account/signin', [
+                                        ['provider', 'freebase_writeuser'], 
+                                        ['onsucceed', window.location.href]
+                                      ])}">
+              login</a> to your app to set the <strong>freebase_writeuser_access</strong> API key.
             </small>
           </p>
         </div>
       </fieldset>
     </div>
-    <div class="tab-section last">
-      <div class="sidebar">
-        <p>
-          <em>API keys</em> authorize information exchange with other web applications or services. Register your app with the <strong>service domain</strong> you want to use.  Each service handles this differently, so follow their instructions.  Once registered, enter the <strong>API key</strong> and <strong>secret</strong> (if required) provided by the service here.
-        </p>
-      </div>
-      <h3>Add an API Key</h3>
-      <div acre:if="window.location.protocol == 'https:'">
-        <div acre:task="apikeys">
-          ui.get_app().t_get_apikeys()
-        </div>
-        <div acre:choose="apikeys.state">
-          <div acre:when="ready">
-            <acre:script>
-              var keys = apikeys.result.keys;
-            </acre:script>
-            <div id="app-apikeys-add">${app_apikeys_list(keys)}</div>
-          </div>
-          <p acre:when="wait"><span id="version-loader" class="loader-square hidden"></span></p>
-          <p acre:when="error">Error loading API keys.</p>
-        </div>
-      </div>
-      <div acre:else="">
-        <p>
-          For your security, please <a href="https://${window.location.host + window.location.pathname + window.location.hash}">switch to App Editor over SSL</a> to add or edit your API keys.
-        </p>
-      </div>
-    </div>
     <acre:script script="ondomready">
-      $('#permission-oauth').change(function(){
-        ui.do_app_set_oauth(!!$(this).attr('checked'));
-      });
       $('#permission-writeuser').change(function(){
         ui.do_app_set_writeuser(!!$(this).attr('checked'));
       });
@@ -913,7 +903,7 @@
     <acre:block def="app_apikeys_list(keys)">
       <fieldset>
         <div class="form-row">
-          <label for="apikey-name">Service domain:</label>
+          <label for="apikey-name">Name / Domain:</label>
           <input id='apikey-name' type='text' />
         </div>
         <div class="form-row">          
@@ -929,11 +919,10 @@
         </div>
       </fieldset>
       <div id="api-key-list" acre:if="keys.length">
-      <h3>API Keys</h3>
         <table class="edit-list">
           <thead>
             <tr class="key-listitem">
-              <th>Service Domain</th>
+              <th>Name / Domain</th>
               <th>Key</th>
               <th>Secret</th>
               <th></th>

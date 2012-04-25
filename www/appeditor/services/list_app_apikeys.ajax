@@ -40,7 +40,7 @@ var SPEC = {
 
   validate: function(params) {
     return [
-      validators.AcreResource(params, "appid", {required: true})
+		validators.AcreResource(params, "appid", {required: true})
     ];
   },
 

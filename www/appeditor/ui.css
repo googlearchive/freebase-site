@@ -414,9 +414,10 @@ div.cuecard-queryEditor { background-color: white; }
 #permissions-settings .radiogroup { width: 45%; float:left; padding: 6px 0 12px 20px; }
 #permissions-settings h5 { font-size: 1.2em; margin: 0 0 5px 0; }
 #permissions-settings p { margin: 0 0 0 20px; }
-#api-key-list { margin: 30px 10px 0 10px; }
+#app-apikeys-add { height:280px; }
+#api-key-list { margin: 30px 10px 0 10px; height:140px; overflow:scroll; }
 #api-key-list .edit-list { width: 250px; }
-.key-listitem th, .key-listitem td { white-space: nowrap; text-align: left; padding: 3px 12px 3px 0;}
+.key-listitem th, .key-listitem td { text-align: left; padding: 3px 12px 3px 0;}
 
 
 /* Save Conflict Dialog */

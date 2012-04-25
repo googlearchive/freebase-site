@@ -343,7 +343,11 @@ FreebaseStore.prototype.get_user_view_url = function(user) {
 };
 
 FreebaseStore.prototype.get_user_image_url = function(user) {
-  return this.get_url() + '/api/trans/image_thumb/user/' + user.get_name() + "?maxwidth=30&maxheight=30&mode=fillcrop";
+  return fb.h.image_url("/user/" + user.get_name(), {
+    maxwidth: 30,
+    maxheight: 30,
+    mode: "fillcrop"
+  });
 };
 
 FreebaseStore.prototype.validate_filename = function(name) {

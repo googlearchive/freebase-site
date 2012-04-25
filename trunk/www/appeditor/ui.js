@@ -244,7 +244,7 @@ var ui = {};
     var _current_line;
     var _current_file_is_dirty = false;         // cache the value so we know to refresh the UI when it changes
     var _changing_state = false;                // don't check the url hash while in the process of switching apps or files
-    var _last_status_check = + new Date();
+    var _last_status_check;
     
     var NUM_RECENTS_TO_STORE = 16;
     
@@ -568,6 +568,12 @@ var ui = {};
     };
 
     ui.do_status_check         = function() {
+        var now = + new Date();
+        if (_last_status_check && (now - _last_status_check < 60000)) {
+            return; 
+        }
+        _last_status_check = now;
+
         var args = {};
         if (ui.get_app()) { args.appid = ui.get_app().get_path(); }
         
@@ -729,20 +735,7 @@ var ui = {};
                 $('#app-authors-list').acre(fb.acre.apps.appeditor + "/menus.mjt", "app_authors_list", [authors]);
             });
     };
-    
-    ui.do_app_set_oauth         = function (state) {
-        var app = ui.get_app();
         
-        ui.MessagePanel.doing('Setting OAuth state...');
-        app.t_set_oauth(state)
-            .onready(function(r) {
-                ui.MessagePanel.info('OAuth ' + (state ? "enabled" : "disabled"));
-            })
-            .onerror(function(code,msg,full,task) {
-                ui.MessagePanel.error('Failed to update OAuth state: ' + msg);
-            });
-    };
-    
     ui.do_app_set_writeuser     = function (state) {
         var app = ui.get_app();
         
@@ -909,13 +902,6 @@ var ui = {};
                     new_app.destroy();
                 }
                 ui.MessagePanel.info('File created: '+ new_name);
-            })
-            .onerror(function(code, message, info) {
-                if (info && info.code == "/api/status/error/auth") {
-                    ui.MessagePanel.error('You are not currently signed in.  To not lose your changes, sign in in a new tab or window and then try again.');
-                } else {
-                    ui.MessagePanel.error(message || 'Error creating: '+ new_name);               
-                }
             });
     };
 
@@ -1284,10 +1270,7 @@ var ui = {};
     ui.editor_change_handler        = function(undos, redos) {
         // this check is here because it seems like the best and
         // simplest approximation of being "active" in appeditor
-        if (+ new Date() - _last_status_check > 60000) {
-            _last_status_check = + new Date();
-            ui.do_status_check();
-        }
+        ui.do_status_check();
         
         if ((_current_file_is_dirty != ui.get_file().is_dirty()) || (undos === 0)) {        
             ui.refresh_file_templates();

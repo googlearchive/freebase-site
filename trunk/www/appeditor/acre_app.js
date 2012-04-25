@@ -44,7 +44,6 @@ var AcreApp;
         this._version           = null;
         this._name              = "Untitled";
 
-        this._oauth_enabled     = null;
         this._write_user        = null;
 
         this._listed            = null;
@@ -79,7 +78,6 @@ var AcreApp;
                 app._version            = r.version;
                 app._name               = r.name || 'Untitled';
 
-                app._oauth_enabled      = r.oauth_enabled;
                 app._write_user         = r.write_user;
                 app._parent             = r.parent;
                 app._children           = r.children;
@@ -116,11 +114,6 @@ var AcreApp;
                     var file = r.files[fkey];
                     file.has_been_saved = true;
                     new AcreDoc(app, file.name, file);
-                }
-                
-                // Enable OAuth by default
-                if (app.is_writable()) {
-                    if (!app._write_user && app._oauth_enabled === null) { app.t_set_oauth(true); }
                 }
             });
 
@@ -527,10 +520,6 @@ var AcreApp;
         return this.get_store().get_user() ? (this.get_store().get_user().get_name() in this.get_authors()) : false; 
     };
     
-    AcreApp.prototype.is_oauth_enabled = function() {
-        return !!this._oauth_enabled;
-    };
-    
     AcreApp.prototype.get_authors = function() {
         return this._authors;
     };
@@ -620,28 +609,6 @@ var AcreApp;
             });
             
         return removekeytask.enqueue();
-    };
-    
-    AcreApp.prototype.t_set_oauth = function(enabled) {
-        var app = this;
-        
-        if (app.is_oauth_enabled() == enabled) { return mjt.Succeed().enqueue(); }
-        if (!(enabled === true || enabled === false)) { return mjt.Fail(500, 'Must set oauth_enabled to true or false').enqueue(); }
-        
-        var args = {
-            appid: app.get_path(),
-            enable: enabled
-        };
-        
-        var oauthtask = app.get_store().XhrPost('set_app_oauth_enabled', args)
-            .onready(function() {
-                app._oauth_enabled = enabled;
-            })
-            .onerror(function (code, message, info) {
-                mjt.warn('Setting OAuth enabled for ', app.get_name(), 'failed: ', code, ' - ', message, info);
-            });
-            
-        return oauthtask.enqueue();
     };
     
     AcreApp.prototype.t_set_writeuser = function(enabled) {

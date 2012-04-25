@@ -922,7 +922,7 @@ Validator.factory(scope, "AcreResource", {
 
     if (typeof path === 'undefined') return resource;
     if (typeof path !== 'string') {
-      throw "Can't parse a path that is not a string."
+      return this.invalid("Can't parse a path that is not a string.")
     }
 
     // extract querystring, if present

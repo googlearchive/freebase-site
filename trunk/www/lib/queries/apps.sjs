@@ -84,7 +84,7 @@ function parse_freebase_error(error) {
 function handle_freebase_response(req) {
   var result = JSON.parse(req.body);
 
-  if (result.status != "200 OK" || result.code != "/api/status/ok") {
+  if (!result.error) {
 
     var message;
     if (result.status != "200 OK") {
@@ -407,7 +407,6 @@ function create_app_query(app_guid) {
     timestamp: null,
     name: null,
     '/freebase/apps/acre_app/write_user' : {},
-    '/freebase/apps/application/oauth_enabled' : null,
     '/freebase/apps/acre_app/based_on': {
       id: null,
       type: '/freebase/apps/acre_app',
@@ -517,7 +516,6 @@ function _format_app_query_results(appinfo, just_files) {
 
   // permissions
   r.write_user     = appinfo['/freebase/apps/acre_app/write_user'] ? appinfo['/freebase/apps/acre_app/write_user'].name : null;
-  r.oauth_enabled  = appinfo['/freebase/apps/application/oauth_enabled'];
 
   // related apps
   r.parent         = appinfo['/freebase/apps/acre_app/based_on'] ? mini_app(appinfo['/freebase/apps/acre_app/based_on']) : null;
@@ -632,7 +630,6 @@ function make_disk_app(appinfo) {
 
   appinfo.name           = appinfo.id.split("/").pop();
   appinfo.creation_time  = null;
-  appinfo.oauth_enabled  = null;
   appinfo.parent         = null;
   appinfo.children       = [];
 
@@ -1764,89 +1761,6 @@ function remove_app_author(resource, username) {
 //                //
 ////////////////////
 
-function enable_oauth(resource) {
-  var appid = resource.appid;
-
-  return get_app_guid(appid)
-    .then(function(appguid) {
-      
-      // 1. make sure app is an application
-      return freebase.mqlwrite({
-          guid : appguid,
-          type : { 
-            id      : '/freebase/apps/application',
-            connect : 'insert',
-          }
-        }).then(function() {
-        
-          // 2. Enable oauth and get key and secret
-          var url = acre.freebase.service_url.replace(/^http:\/\//, 'https://') + '/api/oauth/enable';
-          var form = { id: appguid, reset_secret: true};
-          return freebase.fetch(url, { method  : "POST", 
-              content : acre.form.encode(form), 
-              sign    : true 
-            }).then(function(o) {
-              var promises = [];
-              
-              // 3. Add key and secret to keystore
-              promises.push(add_key(appguid, keyname, o.key, o.secret));
-                  
-              // 4. Mark app as enabled in the graph
-              promises.push(freebase.mqlwrite({
-                guid : appguid,
-                '/freebase/apps/application/oauth_enabled': {
-                  connect : 'update', 
-                  value   : true
-                }
-              }));
-                
-              return deferred.all(promises, true)
-                .then(function() {
-                  return {
-                    appid : appid,
-                    oauth_enabled : true
-                  };
-                });
-            });
-        });
-    });
-}
-
-function disable_oauth(resource) {
-  var appid = resource.appid;
-  var appguid = lib_apikeys.get_app_guid(appid);
-
-  // 1. Disable oauth and get key and secret
-  var url = acre.freebase.service_url.replace(/http:\/\//, 'https://') + '/api/oauth/disable';
-  var form = { id: appguid, reset_secret: true};
-  return freebase.fetch(url, { method  : "POST", 
-      content : acre.form.encode(form), 
-      sign    : true 
-    }).then(function(o) {
-      var promises = [];
-      
-      // 2.Remove key and secret from keystore
-      promises.push(delete_key(appguid, keyname));
-
-      // 3. Mark app as disabled in the graph
-      promises.push(freebase.mqlwrite({
-        guid : appguid,
-        '/freebase/apps/application/oauth_enabled': {
-          connect : 'update', 
-          value   : false
-        }
-      }));
-
-      return deferred.all(promises, true)
-        .then(function() {
-          return  {
-            appid : appid,
-            oauth_enabled : false
-          };
-        });
-    });
-}
-
 function set_app_writeuser(resource, enable, user) {
   var appid = resource.appid;
   var mql_action = enable ? 'insert' : 'delete';
@@ -1865,63 +1779,41 @@ function set_app_writeuser(resource, enable, user) {
     });
 }
 
-function get_app_guid(resource) {
-  if (/^#/.test(resource.appid)) {
-    // it's already a guid
-    return deferred.resolved(resource.appid);
-  }
-  return freebase.mqlread({id: resource.appid, guid: null})
-    .then(function(env) {
-      return env.result.guid;
-    });
-}
-
-function list_keys(resource) {
-  var form = {
-    method :    "LIST",
-    appid:      get_app_guid(resource)
-  };
-
-  return freebase.fetch(ae_url + keystore_path, { 
-      method  : "POST", 
-      content : acre.form.encode(form), 
-      sign    : true 
+function keystore_fetch(resource, form) {
+  var url = 'https:' + resource.app_path + "." + resource.acre_host + '/acre/keystore';
+  form.format = "json";
+  form.fb_token = acre.oauth.has_credentials("freebase").access_token;
+  return freebase.fetch(url, {
+      method  : "POST",
+      content : acre.form.encode(form)
     }).then(function(env) {
       return { 
         appid : resource.appid,
-        keys : env.result.keys 
+        keys : env.result
       }
     });
+};
+
+function list_keys(resource) {
+  return keystore_fetch(resource, {
+    action:  "list"
+  });
 }
 
 function add_key(resource, name, key, secret) {
-  var form = {
-    method :    "POST",
-    appid:      get_app_guid(resource),
-    name:       name,
-    token:      key, 
-    secret:     secret
-  };
-
-  return freebase.fetch(ae_url + keystore_path, { 
-      method  : "POST", 
-      content : acre.form.encode(form), 
-      sign    : true 
-    });
+  return keystore_fetch(resource, {
+    action:  "add",
+    name:    name,
+    token:   key, 
+    secret:  secret
+  });
 }
 
 function delete_key(resource, name) {
-  var form = {
-    method:     "DELETE",
-    appid:      get_app_guid(resource),
-    name:       name
-  };
-
-  return freebase.fetch(ae_url + keystore_path, { 
-      method  : "POST", 
-      content : acre.form.encode(form), 
-      sign    : true 
-    });
+  return keystore_fetch(resource, {
+    action:  "remove",
+    name:    name
+  });
 }
 
 
@@ -2011,7 +1903,6 @@ function get_file_revision(resource, revision) {
 
   return freebase.get_blob(revision, "unsafe")
     .then(function(req) {
-      ret.content_type = req.headers['Content-Type'].split(';')[0];
       ret.text = req.body;
       return ret;
     }, function(e) {
@@ -2347,19 +2238,21 @@ function save_file_text(r, text, content_type, revision, name, acre_handler, bas
             result.content_type = upload['/type/content/media_type'];
             return upload;
           }, function(e) {
-            var error = parse_freebase_error(e);
-            if (error && error.messages[0].code === "/api/status/error/upload/content_mismatch") {
-              var old_file = get_file_revision(r, error.messages[0].info.existing_content);
-              var lib_patch   = get_lib_patch();
-              var diff = lib_patch.diff_lines(old_file.text, text);
+            if (e.code == 409) {
+              return get_file_revision(r, e.errors[0].location)
+                .then(function(old_file) {
+                  var lib_patch   = get_lib_patch();
+                  acre.syslog("old_file: "+ old_file.text, "ZZZ");
+                  var diff = lib_patch.diff_lines(old_file.text, text);
 
-              throw new ServiceError("400 Bad Request", "/api/status/error/upload/content_mismatch", {
-                message : "Saved version of this file has changed since it was loaded.", 
-                code    : "/api/status/error/upload/content_mismatch",
-                info    : {
-                  diff: diff
-                }
-              });
+                  throw new ServiceError("400 Bad Request", "/api/status/error/upload/content_mismatch", {
+                    message : "Saved version of this file has changed since it was loaded.", 
+                    code    : "/api/status/error/upload/content_mismatch",
+                    info    : {
+                      diff: diff
+                    }
+                  });
+                });
             }
             throw e;
           });

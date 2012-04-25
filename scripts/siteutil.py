@@ -1005,7 +1005,8 @@ class App:
     return self.local_dir
 
   def static_url(self):
-    return "http://127.0.0.1:%s/static/%s" % (self.context.acre.port(), self.path()[2:])
+    acre = Acre.Get(self.context, existing=True)
+    return "http://%s:%s/static/%s" % (acre.site_host(), acre.port(), self.path()[2:])
 
 
 class Context():
@@ -1521,6 +1522,8 @@ class Acre:
     If --acre_version is passed, an svn checkout will be attempted.
     The destination directory will be a temporary directory, or the --acre_dir if passed.
     else if --acre_dir is passed, an acre object will be returned immediately.
+
+    existing: bool - if True, only return a pre-generated acre object and do not attempt to fetch from SVN
 
     Returns:
       An acre object if succesful. False if not.

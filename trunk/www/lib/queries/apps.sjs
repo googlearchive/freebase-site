@@ -2165,8 +2165,8 @@ function save_file_binary(resource, form_request, revision, name, based_on) {
           return {
             path         : filepath,
             fileid       : fileid,
-            content_id   : ret.id,
-            content_type : ret['/type/content/media_type']
+            content_id   : ret.content,
+            content_type : ret.media_type.replace("/media_type/","")
           };
         });
     });
@@ -2234,8 +2234,8 @@ function save_file_text(r, text, content_type, revision, name, acre_handler, bas
         var p2 = freebase.upload(text, content_type, args)
           .then(function(env) {
             var upload = env.result;
-            result.content_id = upload.id;
-            result.content_type = upload['/type/content/media_type'];
+            result.content_id = upload.content;
+            result.content_type = upload.media_type.replace("/media_type/","");
             return upload;
           }, function(e) {
             if (e.code == 409) {

@@ -151,9 +151,23 @@
           topic.manage_type.add_type_begin(trigger, type_id);
         });
       };
-      fb.incompatible_types.check(fb.c.id, type_id,
-        compatible_callback,
-        fb.incompatible_types.overlay_suggest_incompatible_callback(trigger, compatible_callback));
+      function cancel_callback() {
+        // try again        
+        trigger.removeClass("editing").focus();
+      }
+      function onload_callback() {
+        // update .incompatible-topic with the current page topic name
+        $(".incompatible-overlay-dialog .incompatible-topic").text($(".page-title > h1 > span").text());
+      }
+      fb.incompatible_types.check(fb.c.id, type_id, {
+        compatible: compatible_callback,
+        incompatible: fb.incompatible_types.overlay_suggest_incompatible_callback(trigger, {
+            onLoad: onload_callback,
+            onCancel: cancel_callback,
+            onConfirm: compatible_callback
+        })
+      });
+
       return false;
     },
 

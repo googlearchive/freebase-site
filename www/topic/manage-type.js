@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-(function($, fb, formlib) {
+(function($, fb, formlib, propbox) {
   var mt = fb.topic.manage_type = {
 
     add_type_begin: function(trigger, type_id) {
@@ -39,14 +39,18 @@
         onsuccess: function(data) {
           var result = $(data.result.html).hide();
           $(".manage-types").after(result);
-          result.fadeIn();
+
+          result.fadeIn(function() {
+              propbox.init_menus(result, true);
+              i18n.ize(result);
+          });
 
           // insert new added type + included types to the manage type list
           var list = data.result.list;
           if (list) {
             list = $(list);
             var new_items = $("li", list).hide();
-            $(".topic-type-list ul").prepend(new_items);
+            var new_list = $(".topic-type-list ul").prepend(new_items);
             new_items.fadeIn();
           }
 
@@ -60,7 +64,7 @@
         url: fb.h.ajax_url("remove_type_submit.ajax"),
         data: {id:fb.c.id, type:type_id, lang:fb.h.lang_code(fb.lang)},
         onsuccess: function(data) {
-          var type_section = $(".type-section[data-id=" + type_id.replace(/\//g, "\\/") + "]").fadeOut();
+          var type_section = $(".type-section[data-id=" + type_id.replace(/\//g, "\\\/") + "]").fadeOut();
           var trigger_row = trigger.parent("li");
           var result = $(data.result.html);
           trigger_row.hide().before(result);
@@ -75,7 +79,7 @@
         data: {id:fb.c.id, type:type_id},
         onsuccess: function(data) {
           // just show the .type-section we hid in remove_type_submit
-          var type_section = $(".type-section[data-id=" + type_id.replace(/\//g, "\\/") + "]").fadeIn();
+          var type_section = $(".type-section[data-id=" + type_id.replace(/\//g, "\\\/") + "]").fadeIn();
           var undo_row = $(trigger).parents("li.remove-type-result");
           undo_row.hide().next("li:hidden").show().end().remove();
         }
@@ -84,4 +88,4 @@
     }
   };
 
-})(jQuery, window.freebase, window.formlib);
+})(jQuery, window.freebase, window.formlib, window.propbox, window.i18n);

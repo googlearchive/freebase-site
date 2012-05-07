@@ -93,9 +93,12 @@
           }
           if (data.id && self.metadata.type && self.options.incompatible_types) {
             // perform incompatible type check
-            self.options.incompatible_types.check(data.id, self.metadata.type,
-                                                  compatible_callback,
-                                                  self.options.incompatible_types.inline_suggest_incompatible_callback(self.input, compatible_callback));
+            self.options.incompatible_types.check(data.id, self.metadata.type, {
+                compatible: compatible_callback,
+                incompatible: self.options.incompatible_types.inline_suggest_incompatible_callback(self.input, {
+                    onConfirm: compatible_callback
+                })
+            });
           }
           else {
             compatible_callback();

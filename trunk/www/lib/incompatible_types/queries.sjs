@@ -34,37 +34,75 @@ var freebase = acre.require("promise/apis").freebase;
 /**
  * Check if the topic (topic_id) types are incompatible with a type (type_id).
  * Currently this checks the /dataworld/incompatible_types instances in the graph.
- * Returns a list of the topic type ids that are incompatible with type_id.
- * If EMPTY, it can be safely assumed to type topic_id with type_id.
+ * Return a map of incompatible types keyed by an existing type of topic_id
+ * or null if the topic_id and type_id are "compatible".
  */
 function incompatible_types(topic_id, type_id) {
-  var q = [{
-    id: null,
-    type: "/dataworld/incompatible_types",
-    "existing:types": [{
-      id: null,
-      "/type/type/instance": {
-        id: topic_id
-      }
-    }],
-    "incompatible:types": {
-      id: type_id
-    },
-    optional: true
-  }];
-  return freebase.mqlread(q)
+    // first get inclucded types of type_id
+    return freebase.mqlread({
+        id: type_id,
+        "/freebase/type_hints/included_types": []
+    })
     .then(function(env) {
-      var result = env.result;
-      var incompatibles = [];
-      for (var i=0,l=result.length; i<l; i++) {
-        var data = result[i];
-        var existing_types = data["existing:types"];
-        existing_types.forEach(function(existing) {
-          if (existing.id !== type_id) {
-            incompatibles.push(existing.id);
-          }
-        });
-      }
-      return incompatibles;
+        var types = [type_id].concat(env.result["/freebase/type_hints/included_types"]);
+        /**
+         * Now look up if there are any /dataworld/incompatible_types mutexes
+         * including any types of topic_id and the type_id (and it's included types).
+         */
+        var q = [{
+             id: null,
+             type: "/dataworld/incompatible_types",
+             "existing:types": [{
+                 id: null,
+                 "/type/type/instance": {
+                     id: topic_id
+                 }
+             }],
+             "incompatible:types": [{
+                 id: null,
+                 "id|=": types
+             }],
+             optional: true
+        }];
+        return freebase.mqlread(q)
+            .then(function(env) {
+                if (env.result.length) {
+                    var incompatibles = {};
+                    env.result.forEach(function(mutex) {
+                        mutex["existing:types"].forEach(function(existing_type) {
+                            var existing = incompatibles[existing_type.id];
+                            if (!existing) {
+                                existing = incompatibles[existing_type.id] = [];
+                            }
+                            mutex["incompatible:types"].forEach(function(t) {
+                                if (existing_type.id !== t.id &&
+                                    existing.indexOf(t.id) === -1) {
+                                    existing.push(t.id);
+                                }
+                            });
+                            if (!existing.length) {
+                                /**
+                                 * Remove empty lists from the result
+                                 */
+                                delete incompatibles[existing_type.id];
+                            }
+                        });
+                    });
+                    if (h.isEmptyObject(incompatibles)) {
+                        return null;
+                    }
+                    else {
+                        return incompatibles;
+                    }
+                }
+                else {
+                    /**
+                     * topic_id and type_id are "compatible" meaning
+                     * that it's safe to assume to type topic_id with type_id
+                     * and all of type_id's included types.
+                     */
+                    return null;
+                }
+            });
     });
 };

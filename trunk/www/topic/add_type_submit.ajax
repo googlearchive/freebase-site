@@ -78,7 +78,7 @@ var SPEC = {
               return t.connect === "inserted";
             });
             if (types.length) {
-              return topic_api.topic(id, lang)
+              return topic_api.topic_structure(id, {lang:lang, domain:"all"})
                 .then(function(topic) {
                   return {
                     topic: topic,

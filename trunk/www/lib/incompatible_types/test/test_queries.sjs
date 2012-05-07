@@ -31,11 +31,10 @@
 
 acre.require('/test/lib').enable(this);
 
-acre.require("test/mock").playback(this, "incompatible_types/test/playback_test_queries.json");
+acre.require("test/mock")
+    .playback(this, "incompatible_types/test/playback_test_queries.json");
 
 var q = acre.require("incompatible_types/queries");
-
-
 
 test("incompatible_types /en/san_francisco and /people/person", function() {
   var result;
@@ -44,8 +43,10 @@ test("incompatible_types /en/san_francisco and /people/person", function() {
       result = r;
     });
   acre.async.wait_on_results();
-  ok(result && result.length, "/en/san_francisco and /people/person are incompatible");
-  ok(result.indexOf("/location/location") !== -1, "expected /location/location to be incompatible with /people/person");
+  ok(result, "/en/san_francisco and /people/person are incompatible");
+  ok(result["/location/location"] &&
+     result["/location/location"].indexOf("/people/person") !== -1, 
+     "expected /location/location to be incompatible with /people/person");
 });
 
 test("incompatible_types /en/bob_dylan and /people/person", function() {
@@ -55,7 +56,7 @@ test("incompatible_types /en/bob_dylan and /people/person", function() {
       result = r;
     });
   acre.async.wait_on_results();
-  ok(result && !result.length, "/en/bob_dylan and /people/person are compatible");
+  ok(result === null, "/en/bob_dylan and /people/person are compatible");
 });
 
 test("incompatible_types /en/avatar_2009 and /tv/tv_program", function() {
@@ -65,18 +66,25 @@ test("incompatible_types /en/avatar_2009 and /tv/tv_program", function() {
       result = r;
     });
   acre.async.wait_on_results();
-  ok(result && !result.length, "/en/avatar_2009 and /tv/tv_program are compatible");
+  ok(result === null, "/en/avatar_2009 and /tv/tv_program are compatible");
 });
 
-
-test("incompatible_types /en/google and /location/location", function() {
+test("incompatible_types /en/google and /location/country (/location/location)", function() {
+  /**
+   * /en/google is typed as /organization/organization.
+   * /location/country has an included type of /location/location
+   * /organization/organization and /location/location are "incompatible"
+   */
   var result;
-  q.incompatible_types("/en/google", "/location/location")
+  q.incompatible_types("/en/google", "/location/country")
     .then(function(r) {
       result = r;
     });
   acre.async.wait_on_results();
-  ok(result && result.length, "/en/google and /location/location are incompatible");
+  ok(result, "/en/google and /location/country are incompatible");
+  ok(result["/organization/organization"] &&
+     result["/organization/organization"].indexOf("/location/location") !== -1, 
+     "expected /location/location to be incompatible with /organization/organization");
 });
 
 acre.test.report();

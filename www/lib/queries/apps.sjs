@@ -917,12 +917,12 @@ function create_app(resource, name, clone, extra_group, user) {
                   connect: 'insert'}
                 ],
                 "/type/domain/owners" : {
-                  id : group.id,
+                  id : group.mid,
                   connect : "update"
                 }
               };
               
-              return freebase.mqlwrite(create_q, {use_permission_of : group.id})
+              return freebase.mqlwrite(create_q, {use_permission_of : group.mid})
                 .then(function(env) {
                   return copy_files(clone_app, appid);
                 });

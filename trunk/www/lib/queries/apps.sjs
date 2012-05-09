@@ -1538,7 +1538,7 @@ function set_app_release(resource, version) {
           if (delete_write.length) {
             // Don't sign so that the write user (appeditoruser)
             // credentials are used instead of the user's
-            deletes.push(freebase.mqlwrite(delete_write, null, {"http_sign" : false}));
+            deletes.push(freebase.mqlwrite(delete_write, null, {"http_sign" : "keystore"}));
           }
 
           // delete old release key
@@ -1564,7 +1564,7 @@ function set_app_release(resource, version) {
               if (add_write.length) {
                 // Don't sign so that the write user (appeditoruser)
                 // credentials are used instead of the user's
-                adds.push(freebase.mqlwrite(add_write, null, {"http_sign" : false}));
+                adds.push(freebase.mqlwrite(add_write, null, {"http_sign" : "keystore"}));
               }
 
               // add release key to new version
@@ -1626,7 +1626,7 @@ function register_host(resource, hostname, user) {
                 };
                 // Don't sign so that the write user (appeditoruser)
                 // credentials are used instead of the user's
-                deletes.push(freebase.mqlwrite(delete_prev_app, null, {"http_sign" : false}));
+                deletes.push(freebase.mqlwrite(delete_prev_app, null, {"http_sign" : "keystore"}));
               }
 
               // delete all existing hosts on the default domain
@@ -1648,7 +1648,7 @@ function register_host(resource, hostname, user) {
                   };
                   // Don't sign so that the write user (appeditoruser)
                   // credentials are used instead of the user's
-                  adds.push(freebase.mqlwrite(add_new_host, null, {"http_sign" : false}));
+                  adds.push(freebase.mqlwrite(add_new_host, null, {"http_sign" : "keystore"}));
 
 
                   // also list in the directory if this is the first release
@@ -1702,7 +1702,7 @@ function delete_all_hosts(resource, hosts) {
   if (delete_old_hosts.length) {
     // Don't sign so that the write user (appeditoruser)
     // credentials are used instead of the user's
-    promise = freebase.mqlwrite(delete_old_hosts, null, {"http_sign" : false});
+    promise = freebase.mqlwrite(delete_old_hosts, null, {"http_sign" : "keystore"});
   }
   
   return promise

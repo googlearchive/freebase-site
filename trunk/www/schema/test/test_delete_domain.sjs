@@ -169,7 +169,7 @@ test("delete domain base domain", {bug: "Skip create/delete domain test until cr
         guid: env.result.guid,
         key: {namespace: "/base", value: key, connect:"delete"},
         type: {id: "/type/domain", connect:"delete"}
-      }, null, {http_sign:false});
+      }, null, {http_sign: "keystore"});
     }
   })
   .then(function() {
@@ -181,7 +181,7 @@ test("delete domain base domain", {bug: "Skip create/delete domain test until cr
       key: {value:key, namespace:"/base"},
       type: {id: "/type/domain"},
       create: "unconditional"
-    }, null, {http_sign:false})
+    }, null, {http_sign: "keystore"})
     .then(function(env) {
       domain = env.result;
     });

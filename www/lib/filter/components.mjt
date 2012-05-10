@@ -94,7 +94,7 @@
       <acre:block if="bar_graph_data && bar_graph_data.length">
         <table class="bar-graph" cellspacing="0"  role="listbox">
           <tbody>
-            <acre:block for="i, data in bar_graph_data" if="i < 100 && data.id !== '/type'">
+            <acre:block for="i, data in bar_graph_data" if="i < 100">
               <acre:script>
                 var id = data.id;
                 var width = data.width;

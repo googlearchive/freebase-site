@@ -781,7 +781,10 @@
      if (fb.acre.freebase.googleapis_url) {
        url = fb.h.fb_googleapis_url("/mqlread");
        // new googleapis mqlread does not need the outer "query" envelope
-       data = {query:JSON.stringify(query)};
+       data = {
+           query:JSON.stringify(query),
+           key: fb.acre.freebase.api_key
+       };
      }
      else {
        url = fb.h.fb_api_url("/api/service/mqlread");

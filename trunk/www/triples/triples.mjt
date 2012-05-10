@@ -42,6 +42,7 @@
   var _ = i18n.gettext;
   var th = acre.require("helpers.sjs");
   var QUERY = _("query");
+  var LINKS = _("links");
 </acre:script>
 
 <acre:block def="head()">
@@ -160,7 +161,7 @@
     </acre:script>
     <th class="row-header odd" scope="row">
       <span class="wrapper">
-        ${property(o)}
+        ${property(id, o)}
         ${link_menu(o)}
       </span>
     </th>
@@ -206,8 +207,8 @@
   </acre:block>
 </acre:block>
 
-<acre:block def="property(o)">
-  ${a(o.master_property.id)}
+<acre:block def="property(id, o)">
+  <a href="${h.fb_url(id, [['links'],['property',o.master_property.id]])}">${o.master_property.id}</a>
 </acre:block>
 
 <acre:block def="target(o)">
@@ -284,6 +285,7 @@
         <a href="javascript:void(0);" class="more-action">menu</a>
       </span>
       <ul class="submenu row-menu">
+        <li class="row-menu-item"><a href="${h.fb_url(o.master_property.id, [['links']])}">${LINKS}</a></li>
         <li class="row-menu-item"><a href="${h.fb_url('/query', [['q',JSON.stringify(th.query(o))],['autorun',1]])}">${QUERY}</a></li>
       </ul>
     </li>

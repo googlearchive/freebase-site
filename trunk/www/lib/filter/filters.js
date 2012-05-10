@@ -36,11 +36,28 @@
     init_domain_type_property_filter: function(context) {
       // *** Initialize domain/type/property suggest input
       $(":text[name=domain], :text[name=type], :text[name=property]", context)
-        .suggest(fb.suggest_options.any("type:/type/domain", "type:/type/type", "type:/type/property"))
+        .suggest($.extend({
+            scoring: "schema",
+            format: null,
+            // The new search is no longer returning (notable) types for schema objects.
+            // However, it still support mql_output
+            mql_output: JSON.stringify([{
+                id: null,
+                name: null,
+                type: {
+                    id: null,
+                    "id|=": ["/type/domain", "/type/type", "/type/property"],
+                    limit: 1
+                }
+            }])
+        }, fb.suggest_options.any("type:/type/domain", 
+                                  "type:/type/type",
+                                  "type:/type/property")
+        ))
         .bind("fb-select", function(e, data) {
           var $this = $(this);
           $this.val(data.id);
-          var type = data["n:type"].id;
+          var type = data.type.id;
           if (type === "/type/domain") {
             $this.attr("name", "domain");
           }
@@ -51,6 +68,11 @@
             $this.attr("name", "property");
           }
           this.form.submit();
+        })
+        .parents(".filter-form").submit(function() {
+            // disable default submit (ENTER) without picking
+            // something from the suggest list
+            return false;
         });
     },
 

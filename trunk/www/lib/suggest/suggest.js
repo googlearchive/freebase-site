@@ -122,7 +122,7 @@
       // suggest parameters
       o.ac_param = {};
       $.each(["key", "filter", "spell", "exact", 
-              "lang", "scoring", "prefixed", "stemmed", "format"], function(i,n) {
+              "lang", "scoring", "prefixed", "stemmed", "format", "mql_output"], function(i,n) {
         var v = o[n];
         if (v === null || v === "") {
           return;
@@ -1250,7 +1250,7 @@
       if (nt && nt.name) {
         type.text(nt.name);
       }
-      else if (data.id && !/^\/\w\//.test(data.id)) {
+      else if (data.id) {
           // display human readable id if no notable type
           type.text(data.id);
       }

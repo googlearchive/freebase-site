@@ -1624,8 +1624,8 @@ function register_host(resource, hostname, user) {
                     connect : 'delete'
                   }
                 };
-                // Don't sign so that the write user (appeditoruser)
-                // credentials are used instead of the user's
+                // Sign with a write user (appeditoruser) 
+                // since it's a protected namespace
                 deletes.push(freebase.mqlwrite(delete_prev_app, null, {"http_sign" : "keystore"}));
               }
 
@@ -1646,8 +1646,8 @@ function register_host(resource, hostname, user) {
                       connect : 'insert'
                     }
                   };
-                  // Don't sign so that the write user (appeditoruser)
-                  // credentials are used instead of the user's
+                  // Sign with a write user (appeditoruser) 
+                  // since it's a protected namespace
                   adds.push(freebase.mqlwrite(add_new_host, null, {"http_sign" : "keystore"}));
 
 

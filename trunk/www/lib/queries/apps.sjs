@@ -2242,7 +2242,6 @@ function save_file_text(r, text, content_type, revision, name, acre_handler, bas
               return get_file_revision(r, e.errors[0].location)
                 .then(function(old_file) {
                   var lib_patch   = get_lib_patch();
-                  acre.syslog("old_file: "+ old_file.text, "ZZZ");
                   var diff = lib_patch.diff_lines(old_file.text, text);
 
                   throw new ServiceError("400 Bad Request", "/api/status/error/upload/content_mismatch", {

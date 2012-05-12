@@ -65,9 +65,9 @@
       </div>
       <div class="module-section alt">
         ${filter_components.creator_filter(c.object.id, c.filters)}
-      </div>      
+      </div>
     </div>
-  </div>    
+  </div>
   <div class="column data">
     ${topic_keys()}
   </div>
@@ -89,7 +89,7 @@
     <acre:block for="authority in c.authority_count">
       <li class="authority-list-item">
         <label>
-          <input type="checkbox" name="authority" value="${authority.id}" 
+          <input type="checkbox" name="authority" value="${authority.id}"
                  acre:attrs="authorities[authority.id] ? {checked:'checked'} : {}"
                  onchange="this.form.submit();"/>
           ${i18n.display_name(authority)} <span class="count">(${i18n_c.number(authority.count)})</span>
@@ -106,16 +106,16 @@
   <div class="column keys">
     <div class="section">
       <h1 class="table-title">${_("IDs")} (${i18n_c.number(keys.length)})</h1>
-      <table cellspacing="0" class="table table-sortable">  
+      <table cellspacing="0" class="table table-sortable">
          <thead>
           <tr>
-            <th class="column-header {sorter:'string'}" scope="column">
+            <th class="column-header first {sorter:'string'}" scope="column">
               <span class="sort-icon">${_("Key")}</span>
             </th>
             <th class="column-header {sorter:'string'}" scope="column">
               <span class="sort-icon">${_("Namespace")}</span>
             </th>
-            <th class="column-header first {sorter:'string'}" scope="column"> 
+            <th class="column-header first {sorter:'string'}" scope="column">
               <span class="sort-icon">${_("Authority")}</span>
             </th>
             <th class="column-header {sorter:'string'}" scope="column">

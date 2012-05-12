@@ -32,7 +32,7 @@
 
 /*
 ----------------------------
-  ### LESS mixins/variables 
+  ### LESS mixins/variables
 ----------------------------
 */
 
@@ -49,8 +49,8 @@
 ---------------------------
   ### Data Handling
 ----------------------------
- 
- * ### Data Lists 
+
+ * ### Data Lists
  *
  * The .data-list class is used anytime we output propbox data
  * This includes unique values, images, etc.
@@ -91,14 +91,14 @@
       background: #f1f2f3;
     }
   }
-  
+
   .add-row .form-field {
     padding-left: @gutter-value;
   }
 }
 
 /*
- * ### Data Tables 
+ * ### Data Tables
  *
  * The .data-table class should be used
  * for non-simple property data (eg. Mediator or CVT)
@@ -253,7 +253,7 @@
 }
 
 /*
- * Image styling within propbox 
+ * Image styling within propbox
  *
  * NOTE: size of the image should be handled by
  * our default image components. These styles should
@@ -283,7 +283,7 @@
 
 
 /*
- * Article styling within propbox 
+ * Article styling within propbox
  *
  * This is really rudimentary right.
  * TODO: revisit when we can show articles
@@ -432,6 +432,14 @@ table .edit-row .form-field {
   margin-left: 0;
 }
 
+.edit-row-head {
+  .linear_gradient;
+}
+
+.edit-row-head .close-msg {
+  float: right;
+}
+
 /*
  * Handle overflow gracefully in webkit browsers
  */
@@ -444,7 +452,7 @@ table .edit-row .form-field {
   width: 16px;
   height: 16px;
   background: white;
-}  
+}
 .data-section::-webkit-scrollbar-thumb {
   background: transparent;
 }
@@ -458,7 +466,7 @@ table .edit-row .form-field {
 }
 .data-section:hover::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, .1);
-} 
+}
 .data-section::-webkit-scrollbar-thumb:horizontal:hover,
 .data-section::-webkit-scrollbar-thumb:vertical:hover {
   background: rgba(0, 0, 0, .15);

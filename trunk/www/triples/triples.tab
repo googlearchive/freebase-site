@@ -80,9 +80,9 @@ var SPEC = {
     var promises = {
         topic: freebase.get_topic(id, {
             filter: [
-                "/synthetic/notability/notable_types",
-                "/synthetic/notability/notable_for",
-                "/synthetic/stats/linkcount"
+                "/common/topic/notable_types",
+                "/common/topic/notable_for",
+                "/freebase/object_profile/linkcount"
             ]
         })
         .then(function(topic) {

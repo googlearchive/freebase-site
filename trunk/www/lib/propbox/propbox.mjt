@@ -315,7 +315,31 @@
   <acre:script>
     var ect = prop_structure.expected_type.id;
   </acre:script>
-  <acre:block if="prop_value.id">
+  <acre:block if="h.is_literal_type(ect)">
+    <acre:script>
+      if (!("value" in prop_value)) {
+        prop_value.value = prop_value.text;
+      }
+      var attrs = h.extend({}, microdata.value(prop_structure, prop_value));
+      attrs["class"] = "property-value";
+    </acre:script>
+    <acre:block if="ect === '/type/datetime'">
+      ${i18n_c.datetime(prop_value.value, attrs)}
+    </acre:block>
+    <acre:block elif="ect === '/type/int' || ect === '/type/float'">
+      ${i18n_c.number(prop_value.value, attrs)}
+      <acre:block if="prop_structure.unit">
+        ${prop_structure.unit.abbreviation || ""}
+      </acre:block>
+    </acre:block>
+    <acre:block else="">
+      <span acre:attrs="attrs" data-value="${prop_value.value}">${prop_value.value}</span>
+      <acre:block if="ect === '/type/text' && prop_value.lang">
+        ${i18n_c.lang_code(prop_value.lang, lang)}
+      </acre:block>
+    </acre:block>
+  </acre:block>
+  <acre:block else="">
     <acre:block if="ect === '/common/image'">
       <acre:script>
         var image_options = {mode: "fillcropmid"};
@@ -341,30 +365,6 @@
          href="${h.fb_url(true, prop_value.id)}"
          data-id="${prop_value.id}">${text}</a>
       <acre:block if="show_lang">
-        ${i18n_c.lang_code(prop_value.lang, lang)}
-      </acre:block>
-    </acre:block>
-  </acre:block>
-  <acre:block else="">
-    <acre:script>
-      if (!("value" in prop_value)) {
-        prop_value.value = prop_value.text;
-      }
-      var attrs = h.extend({}, microdata.value(prop_structure, prop_value));
-      attrs["class"] = "property-value";
-    </acre:script>
-    <acre:block if="ect === '/type/datetime'">
-      ${i18n_c.datetime(prop_value.value, attrs)}
-    </acre:block>
-    <acre:block elif="ect === '/type/int' || ect === '/type/float'">
-      ${i18n_c.number(prop_value.value, attrs)}
-      <acre:block if="prop_structure.unit">
-        ${prop_structure.unit.abbreviation || ""}
-      </acre:block>
-    </acre:block>
-    <acre:block else="">
-      <span acre:attrs="attrs" data-value="${prop_value.value}">${prop_value.value}</span>
-      <acre:block if="ect === '/type/text' && prop_value.lang">
         ${i18n_c.lang_code(prop_value.lang, lang)}
       </acre:block>
     </acre:block>

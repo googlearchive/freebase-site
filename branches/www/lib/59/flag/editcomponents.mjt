@@ -1,0 +1,83 @@
+<!!--
+ Copyright 2012, Google Inc.
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+     * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above
+ copyright notice, this list of conditions and the following disclaimer
+ in the documentation and/or other materials provided with the
+ distribution.
+     * Neither the name of Google Inc. nor the names of its
+ contributors may be used to endorse or promote products derived from
+ this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ !!-->
+
+<acre:script>
+  var h = acre.require("helper/helpers.sjs");
+  var i18n = acre.require("i18n/i18n.sjs");  
+  var _ = i18n.gettext;
+  var image = acre.require("template/imagecomponents.mjt");
+  var form = acre.require("propbox/form.mjt");
+  var pb = acre.require("propbox/propbox.mjt");
+</acre:script>
+
+<acre:block def="merge_form(topic)">
+  <div class="modal">
+    <div class="modal-inner">
+      <h1 class="modal-title"><span>${_('Merge Topic')}</span></h1>
+      <div class="modal-content flag">
+        <table cellspacing="0" class="merge-topic">
+          <tbody>
+            <tr>
+              <td class="label">
+                <label class="form-label flag-label">${_("Merge")}</label>
+              </td>
+              <td>
+                <acre:script>
+                  var options = {
+                    maxwidth: 50,
+                    maxheight: 50,
+                    mode: 'fillcropmid'
+                  }
+                </acre:script>
+                ${image.image_thumb(topic.id, 50, options)}
+                <h2 class="topic-title"><a href="${h.fb_url(topic.mid)}">${i18n.display_name(topic)}</a></h2>
+                <span>${topic.mid}</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="label">
+                <label class="form-label flag-label">${_("With")}</label>
+              </td>
+              <td>
+                <p><strong>${_("Enter the name or id of a Topic")}</strong></p>
+                ${pb.data_input("/common/topic", "with")}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <input type="hidden" name="merge" value="${topic.mid}"/>
+      ${form.submit_buttons()}
+    </div>
+  </div>
+</acre:block>

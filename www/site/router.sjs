@@ -609,12 +609,7 @@ function init_site_rules(lib) {
     {
       "name": _("Article"),
       "type": "/common/document",
-      "promises": h.extend(true, [], DEFAULT_PROMISES).concat([{
-        "key": "article",
-        "app": "site",
-        "script": "queries/object.sjs",
-        "promise": "article"
-      }]),
+      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Content"),
@@ -645,12 +640,7 @@ function init_site_rules(lib) {
     {
       "name": _("Content"),
       "type": "/type/content",
-      "promises": h.extend(true, [], DEFAULT_PROMISES).concat([{
-        "key": "article",
-        "app": "site",
-        "script": "queries/object.sjs",
-        "promise": "article"
-      }]),
+      "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
           "name": _("Content"),

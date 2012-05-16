@@ -29,6 +29,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var apis = acre.require("lib/promise/apis");
+var deferred = apis.deferred;
+var freebase = apis.freebase;
+
 var SPEC = {
 
   template: "content.mjt",
@@ -36,14 +40,24 @@ var SPEC = {
   validate: function(params) {
     return [
       params.object,
-      params.article
+      params.object_type.id
     ];
   },
 
-  run: function(object, article) {
-    return {
-      object: object,
-      article: article
+  run: function(o, type) {
+    var result = {};
+
+    if (type === "/common/image") {
+      result.image = acre.freebase.imgurl(o.id, 960);
+    } else {
+      result.html = freebase.get_blob(o.id, "html")
+        .then(function(env) {
+          return env.body;
+        }, function() {
+          return null;
+        });
     }
+
+    return result;
   }
 };

@@ -88,7 +88,17 @@
 <acre:block def="head()">
   <!-- canonical url -->
   <link rel="canonical" href="${h.fb_url(true, c.object.id)}" />
-
+  <!-- Update address bar if ID changed in object router -->
+  <script acre:if="c.object && acre.request.path_info !== c.object.id">
+    (function() {
+      var new_url = "${acre.request.url.replace(acre.request.path_info, c.object.id)}";
+      if (typeof history.replaceState === 'function') {
+        history.replaceState(null, "", new_url);
+      } else {
+        window.loaction.href = new_url;
+      }      
+    })();
+  </script>
   <acre:block if="that_exports.head">
     ${that_exports.head()}
   </acre:block>

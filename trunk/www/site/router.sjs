@@ -487,6 +487,7 @@ function init_site_rules(lib) {
     {
       "name": _("Topic"),
       "type": "/common/topic",
+      "use_mid": true,
       "show_image": true,
       "promises": h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
@@ -680,6 +681,7 @@ function init_site_rules(lib) {
     {
       "name": _("Object"),
       "type": "/type/object",
+      "use_mid": true,
       "promises":  h.extend(true, [], DEFAULT_PROMISES),
       "tabs": [
         {
@@ -958,51 +960,38 @@ function ObjectRouter(app_labels) {
 
       if (o) {
 
-        if (o.replaced_by) {
+        if (o.replaced_by && (req_id.indexOf("/guid") !== 0)) {
           return h.redirect(self, o.replaced_by.mid);
         }
-        else if (!(req_id === o.mid || req_id === o.id)) {
-          // request id is NOT a mid and NOT a mql "approved" id
-          return h.redirect(self, o.mid);
-        }
-        else {
-          if (h.startsWith(req_id, "/en/")) {
-            // request id is /en/*, redirect to mid
-            return h.redirect(self, o.mid);
-          }
-          else if (req_id === o.mid && !(o.id === o.mid || h.startsWith(o.id, "/en"))) {
-            // request id is mid, but object id is NOT /en/*
-            return h.redirect(self, o.id);
-          }
-          else {
-            // we should now have the canonical id
-            o.id = o["q:id"];
 
-            // Build type map for object
-            var obj_types = h.map_array(o.type, "id");
-            obj_types["/type/object"] = true; // all valid IDs are /type/object
+        // Build type map for object
+        var obj_types = h.map_array(o.type, "id");
+        obj_types["/type/object"] = true; // all valid IDs are /type/object
 
-            var rule, i, l;
-            // Find correct rule for this object
-            for (i=0,l=route_list.length; i<l; i++) {
-              var route = route_list[i];
-              var type = route.type;
-              if (obj_types[type]) {
-                // clone tabs spec so we don't overwrite it
-                rule = h.extend(true, {}, route);
-                break;
-              }
-            }
-
-            // Turn tab config arrays into something more useful
-            if (!rule) {
-              throw "Missing rule configuration for this object";
-            }
-
-            acre.write(freebase_object.main(rule, o));
-            acre.exit();
+        var rule, i, l;
+        // Find correct rule for this object
+        for (i=0,l=route_list.length; i<l; i++) {
+          var route = route_list[i];
+          var type = route.type;
+          if (obj_types[type]) {
+            // clone tabs spec so we don't overwrite it
+            rule = h.extend(true, {}, route);
+            break;
           }
         }
+
+        // For topics and some other types, we always want to use mids
+        if (rule.use_mid) {
+          o.id = o.mid;
+        }
+
+        // Turn tab config arrays into something more useful
+        if (!rule) {
+          throw "Missing rule configuration for this object";
+        }
+
+        acre.write(freebase_object.main(rule, o));
+        acre.exit();
 
       }
     }

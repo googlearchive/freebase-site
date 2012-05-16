@@ -63,6 +63,21 @@ var validators = acre.require("validator/validators.sjs");
  * their sibling properties along with all the topic's types's properties
  * that meet the constraint of the options parameter filters.
  */
+
+/**
+ * Filters to get
+ * /type/object/type
+ * /common/topic/notable_for
+ * /common/topic/notable_type
+ * /freebase/object_profile/linkcount
+ */
+var REQUIRED_FILTERS = [
+    "/type/object/type", 
+    "/common/topic/notable_for", 
+    "/common/topic/notable_type", 
+    "/freebase/object_profile/linkcount"
+];
+
 function topic_structure(id, options) {
     options = options || {};
     var lang = options.lang || "/lang/en";
@@ -71,25 +86,26 @@ function topic_structure(id, options) {
         lang: h.lang_code(lang)
     };
     if (options.domain === "all") {
-        // the default is to get "everything" including user/base domains        
+        // the default is to get "everything" including user/base domains
     }
     else if (is_mql_id(options.domain)) {
         domain_filter = options.domain;
-        api_options.filter = [options.domain, "/type/object/type", "/synthetic"];
+        api_options.filter = [options.domain].concat(REQUIRED_FILTERS);
         api_options.limit = 20;
     }
     else if (is_mql_id(options.type)) {
         type_filter = options.type;
-        api_options.filter = [options.type, "/type/object/type", "/synthetic"];
+        api_options.filter = [options.type].concat(REQUIRED_FILTERS);
         api_options.limit = 100;
     }
     else if (is_mql_id(options.property)) {
         prop_filter = options.property;
-        api_options.filter = [options.property, "/type/object/type", "/synthetic"];
+        api_options.filter = [options.property].concat(REQUIRED_FILTERS);
         api_options.limit = 200;
     }
     else {
-        api_options.filter = ["commons", "/synthetic"];
+        // all REQUIRED_FILTERS returned with commons
+        api_options.filter = ["commons"];
     }
     return freebase.get_topic(id, api_options)
         .then(function(topic_result) {
@@ -104,13 +120,12 @@ function topic_structure(id, options) {
                 var instanceof_types = topic_props && topic_props["/type/object/type"];
                 instanceof_types = instanceof_types && instanceof_types.values;
 
-                // Gather up all asserted properties' types, 
-                // ignoring /synthetic/* and /type/object/*
+                // Gather up all asserted properties' types
                 var types = [];
                 var types_seen = {};
                 for (var pid in topic_props) {
-                    // skip /synthetic/* and /type/object/*
-                    if (!(pid.indexOf("/synthetic/") === 0 || pid.indexOf("/type/object/") === 0)) {
+                    // skip reverse properties (!/.../.../...)
+                    if (pid.indexOf("!") !== 0) {
                         var t = proploader.get_type_id(pid);
                         if (!types_seen[t]) {
                             types.push(t);
@@ -311,13 +326,13 @@ function to_structure(domains_list, lang) {
 
 /**
  * Use freebase.get_topic to get 
- * /synthetic/notability/notable_types and /synthetic/notability/notable_for
+ * /common/topic/notable_types and /common/topic/notable_for
  */
 function notability(o) {
     var options = {
         filter: [
-            "/synthetic/notability/notable_types", 
-            "/synthetic/notability/notable_for"
+            "/common/topic/notable_types", 
+            "/common/topic/notable_for"
         ]
     };
     return freebase.get_topic(o.id, options)
@@ -327,42 +342,38 @@ function notability(o) {
 };
 
 /**
- * Given freebase.get_topic result (with /synthetic/notability/*),
+ * Given freebase.get_topic result with notable_types and notable_for,
  * return the first notable_types and first notable_for values.
- * If freebase.get_topic result does not have /synthetic/notability/notable_types
- * nor /synthetic/notability/notable_for, return null.
+ * If freebase.get_topic result does not have notable_types
+ * nor notable_for, return null.
  */
 function get_notability(topic) {
     var p = topic && topic.property;
-    var notable_type;
-    var notable_for;
+    var notable_type = null;
+    var notable_for = null;
     if (p) {
-        notable_type = p["/synthetic/notability/notable_types"];
-        notable_type = notable_type && h.first_element(notable_type.values);
-        notable_for = p["/synthetic/notability/notable_for"];
-        notable_for = notable_for && h.first_element(notable_for.values);
-        // for the time being, notable_for id is nested 
-        // inside /synthetic/notable_for/object property values
-        if (notable_for) {
-            notable_for = 
-                h.first_element(notable_for.property["/synthetic/notable_for/object"].values);
+        if (p["/common/topic/notable_types"]) {
+            notable_type = h.first_element(p["/common/topic/notable_types"].values);
+        }
+        if (p["/common/topic/notable_for"]) {
+            notable_for = h.first_element(p["/common/topic/notable_for"].values);
         }
     }
     if (notable_type || notable_for) {
         return {
-            notable_type: notable_type || null,
-            notable_for: notable_for || null
+            notable_type: notable_type,
+            notable_for: notable_for
         };
     }
     return null;
 };
 
 /**
- * Use freebase.get_topic to get /synthetic/stats/linkcount
+ * Use freebase.get_topic to get /freebase/object_profile/linkcount
  */
 function linkcount(o) {
     var options = {
-        filter: ["/synthetic/stats/linkcount"]
+        filter: ["/freebase/object_profile/linkcount"]
     };
     return freebase.get_topic(o.id, options)
         .then(function(topic) {
@@ -371,13 +382,13 @@ function linkcount(o) {
 };
 
 /**
- * Given freebase.get_topic result (with /synthetic/stats/linkcount),
- * return the linkcount structure. If /synthetic/stats/linkcount does
+ * Given freebase.get_topic result (with /freebase/object_profile/linkcount),
+ * return the linkcount structure. If /freebase/object_profile/linkcount does
  * not exist, return null.
  */
 function get_linkcount(topic) {
     var p = topic && topic.property;
-    p = p && p["/synthetic/stats/linkcount"];
+    p = p && p["/freebase/object_profile/linkcount"];
     if (p) {
         return p.values || null;
     }

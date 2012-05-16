@@ -159,7 +159,7 @@ function get_linkcount_all(linkcount, all) {
 
 /**
  * Given the domain|type|property filter option and 
- * linkcount (from topic api /synthetic/stats/linkcount),
+ * linkcount (from topic api /freebase/object_profile/linkcount),
  * get the data suitable for a chart graph.
  *
  * If domain, the data is linkcount[domain],

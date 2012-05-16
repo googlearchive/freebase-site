@@ -58,7 +58,7 @@ var SPEC = {
             lang: langs.map(function(lang) {
                 return h.lang_code(lang);
             }),
-            filter: ["suggest", "/common/topic/image"]
+            filter: ["suggest"]
         })
         .then(function(r) {
             var name = id;
@@ -84,13 +84,13 @@ var SPEC = {
                 }                
 
                 // notable (disambiguating) properties
-                var props = r.property["/synthetic/notability/notable_properties"];
+                var props = r.property["/common/topic/notable_properties"];
                 if (props && props.values) {
                     props.values.forEach(function(prop) {
                         // only use it if we have a property name
                         // and the values of that property is returned in the topic result.
                         if (prop.text) {
-                            var prop_id = prop.property["/synthetic/notable_for/property"].values[0].id;
+                            var prop_id = prop.id;
                             if (r.property[prop_id]) {
                                 // The Topic API sometimes returns mids as property ids
                                 // (internal bug filed).
@@ -102,14 +102,20 @@ var SPEC = {
                 }
 
                 // notability (notable_for and notable_types)
-                var notable_for = r.property["/synthetic/notability/notable_for"];
-                var notable_types = r.property["/synthetic/notability/notable_types"];
+                var notable_for = r.property["/common/topic/notable_for"];
+                var notable_types = r.property["/common/topic/notable_types"];
+                var seen = {};
                 if (notable_for || notable_types) {
                     notability = [];
                     [notable_for, notable_types].forEach(function(notable) {
-                        notable.values.forEach(function(n) {
-                            notability.push(n.text);
-                        });
+                        if (notable && notable.values) {
+                            notable.values.forEach(function(n) {
+                                if (n.id && !seen[n.id]) {
+                                    notability.push(n.text);
+                                    seen[n.id] = true;
+                                }
+                            });
+                        }
                     });                    
                 }
             }

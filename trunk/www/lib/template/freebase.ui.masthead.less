@@ -30,7 +30,7 @@
  */
 
 
-/* 
+/*
  * #page-header holds:
  *   - object flag
  *   - object label
@@ -53,6 +53,14 @@
 
 #page-header.sticky {
   position: fixed;
+  top: 40px; // height of header
+  left: 0; right: 0;
+  z-index: 10;
+  margin: 0 auto;
+}
+
+#header.sticky {
+  position: fixed;
   top: 0;
   left: 0; right: 0;
   z-index: 10;
@@ -63,7 +71,7 @@
   margin-left: 100px;
 
   /*
-    Object Title 
+    Object Title
   */
 
   h1 {
@@ -213,7 +221,7 @@ a.label-trigger {
   }
 
   .property {
-    background-color: #ca9683; 
+    background-color: #ca9683;
     .linear_gradient(#ca9683, #c88d6a);
   }
 
@@ -344,7 +352,7 @@ spec has been implemented, including complete vcards, tooltips, etc.
   .box_shadow(-2px,0,2px,rgba(0,0,0,0.8));
 }
 
-.nav-utilities { 
+.nav-utilities {
   float: right;
   margin-right: 30px;
   border-right: 1px solid;
@@ -546,7 +554,7 @@ spec has been implemented, including complete vcards, tooltips, etc.
     font-weight: bold;
     padding-left: 10px;
   }
-  
+
   a {
     display: block;
     padding-left: 15px;
@@ -562,7 +570,7 @@ spec has been implemented, including complete vcards, tooltips, etc.
     list-style: none;
     line-height: 2;
   }
-  
+
   ul li a {
     padding-left: 15px;
   }

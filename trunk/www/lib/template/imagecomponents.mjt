@@ -118,7 +118,9 @@
       attrs.alt = image_id;
     }
   </acre:script>
-  <img src="${h.image_url(image_id, o)}" acre:attrs="attrs">
+  <a href="${h.fb_url(image_id)}">
+    <img src="${h.image_url(image_id, o)}" acre:attrs="attrs">
+  </a>
 </acre:block>
 
 <acre:block def="image_stack(images)">

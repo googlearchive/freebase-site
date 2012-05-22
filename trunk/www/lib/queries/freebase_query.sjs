@@ -37,15 +37,21 @@ var freebase = apis.freebase;
 
 function clean_query(q) {
   q.type = q["/freebase/query_hints/related_type"];
-  q.timestamp = acre.freebase.date_from_iso(q.timestamp);
-  if (q.key && q.key.namespace) {
+  if (q["/common/document/content"] &&
+     q["/common/document/content"].link &&
+     q["/common/document/content"].link.timestamp) {
+    q.timestamp = acre.freebase.date_from_iso(q["/common/document/content"].link.timestamp);
+  }
+  if (q.key && 
+      q.key.namespace &&
+      q.key.namespace.key &&
+      q.key.namespace.key.namespace) {
     q.domain = q.key.namespace.key.namespace;
   }
   return q;
 };
 
 function queries_by_domain(domain) {
-  console.log(JSON.stringify(domain_queries_mql(domain, true)));
   return deferred.all([
       freebase.mqlread(domain_queries_mql(domain, true)),
       freebase.mqlread(domain_queries_mql(domain, false))
@@ -66,7 +72,10 @@ function queries_by_user(user) {
       return env.result;
     })
     .then(function(queries) {
-      queries.forEach(clean_query);
+      queries.forEach(function(q) {
+        clean_query(q);
+        if (q.domain.id === user) delete q.domain;
+      });
       return queries;
     });
 };
@@ -147,10 +156,11 @@ function user_queries_mql(user) {
     },
     "/common/document/content": {
       "id": null,
-      "limit": 0
+      "link": {
+        "timestamp": null
+      }
     },
-    "timestamp": null,
-    "sort": "-timestamp",
+    "sort": "-/common/document/content.link.timestamp",
     "limit": 1000
   }];
 };

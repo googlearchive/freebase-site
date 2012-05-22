@@ -57,7 +57,7 @@
           <th class="column-header first {sorter: 'ignoreCase'}"><span class="sort-icon">${_("Name")}</span></th>
           <th class="column-header {sorter: 'ignoreCase'}"><span class="sort-icon">${_("Type")}</span></th>
           <th class="column-header {sorter: 'ignoreCase'}"><span class="sort-icon">${_("Domain")}</span></th>
-          <th class="column-header {sorter: 'datetime'}"><span class="sort-icons">${_("Created on")}</span></th>
+          <th class="column-header {sorter: 'datetime'}"><span class="sort-icons">${_("Updated on")}</span></th>
         </tr>
       </thead>
       <tbody>
@@ -69,7 +69,8 @@
             <a href="${h.fb_url(q.type.id)}">${i18n.display_name(q.type)}</a>
           </td>
           <td class="odd">
-            <a href="${h.fb_url(q.domain.id, [['queries']])}">${i18n.display_name(q.domain)}</a>
+            <a acre:if="q.domain" href="${h.fb_url(q.domain.id, [['queries']])}">${i18n.display_name(q.domain)}</a>
+            <acre:block else="">—</acre:block>
           </td>
           <td class="even">
             ${h.relative_date(q.timestamp)}

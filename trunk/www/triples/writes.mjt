@@ -180,7 +180,7 @@
       </span>
     </th>
     <td class="even">
-      ${triples.property(o)}
+      ${triples.property(id, o)}
     </td>
     <td class="odd">
       ${o.target_value ? triples.target_value(o) : triples.target(o)}
